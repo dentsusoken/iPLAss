@@ -23,8 +23,11 @@
 <%@ page import="java.sql.Timestamp" %>
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.Calendar" %>
+<%@ page import="java.util.Locale"%>
+<%@ page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatSetting" %>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
@@ -34,30 +37,36 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.TimestampPropertyEditor" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
-	String displayFormat(Timestamp time, TimeDispRange dispRange, boolean showWeekday) {
+	String displayFormat(Timestamp time, TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
 		if (time == null) {
 			return "";
 		}
-
-		String timeFormat = "";
-		if (TimeDispRange.isDispSec(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
-		} else if (TimeDispRange.isDispMin(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
-		} else if (TimeDispRange.isDispHour(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
-		}
-
 		DateFormat format = null;
-		if (showWeekday) {
-			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
-			//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
-			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
+
+		if (datetimeFormatPattern != null) {
+			//フォーマットの指定がある場合、指定されたフォーマットで表記する
+			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
 		} else {
-			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
-			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
+			String timeFormat = "";
+			if (TimeDispRange.isDispSec(dispRange)) {
+				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
+			} else if (TimeDispRange.isDispMin(dispRange)) {
+				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
+			} else if (TimeDispRange.isDispHour(dispRange)) {
+				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
+			}
+
+			if (showWeekday) {
+				String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
+				//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
+				format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
+			} else {
+				String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
+				format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
+			}
 		}
 		return format.format(time);
 	}
@@ -66,6 +75,7 @@
 		SimpleDateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateTimeFormat(), true);
 		return time != null ? format.format(time) : "";
 	}
+
 %>
 
 <%
@@ -84,9 +94,9 @@
 	String propName = editor.getPropertyName();
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
-	
+
 	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
-	
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (type == OutputType.VIEW) {
@@ -100,6 +110,8 @@
 			}
 		}
 
+		DateTimeFormatSetting formatInfo = ViewUtil.getFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
+
 		if (isMultiple) {
 			//複数
 %>
@@ -111,7 +123,7 @@
 					Timestamp t = array[i];
 %>
 <li>
-<c:out value="<%=displayFormat(t, editor.getDispRange(), editor.isShowWeekday()) %>"/>
+<c:out value="<%=displayFormat(t, editor.getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday()) %>"/>
 <%
 					if (outputHidden) {
 						String strHidden = format(t);
@@ -132,7 +144,7 @@
 			Timestamp t = propValue instanceof Timestamp ? (Timestamp) propValue : null;
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
-<c:out value="<%=displayFormat(t, editor.getDispRange(), editor.isShowWeekday()) %>"/>
+<c:out value="<%=displayFormat(t, editor.getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday()) %>"/>
 <%
 			if (outputHidden) {
 				String strHidden = format(t);

@@ -20,10 +20,13 @@
 
 package org.iplass.gem.command;
 
+import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,6 +38,7 @@ import org.iplass.gem.Theme;
 import org.iplass.gem.command.generic.detail.DetailFormViewData;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
@@ -44,6 +48,8 @@ import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.common.WebApiAutocompletionSetting;
+import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
+import org.iplass.mtp.view.generic.editor.LocalizedDateTimeFormatSetting;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.Element.EditDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -516,5 +522,76 @@ public class ViewUtil {
 			list = searchCondMap.get(key);
 		}
 		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
+	}
+
+	/**
+	 * 日付、時刻のフォーマットを設定する
+	 *
+	 * @param pattern フォーマットのパターン
+	 * @param datetimeLocale フォーマットのロケール
+	 * @return フォーマット設定
+	 */
+	public static DateFormat getDateTimeFormat(String pattern, String datetimeLocale) {
+		//指定されたフォーマットで、ロケール設定がない場合はデフォルトで指定されているロケールのものを使用する
+		Locale locale = ExecuteContext.getCurrentContext().getLocale();
+		if (datetimeLocale != null) {
+			String[] localeValue = datetimeLocale.split("_", 0);
+			if (localeValue.length <= 1) {
+				locale = new Locale(localeValue[0]);
+			} else if (localeValue.length <= 2) {
+				locale = new Locale(localeValue[0], localeValue[1]);
+			} else if (localeValue.length <= 3) {
+				locale = new Locale(localeValue[0], localeValue[1], localeValue[2]);
+			}
+		}
+
+		DateFormat format = new SimpleDateFormat(pattern, locale);
+
+		return format;
+	}
+
+	/**
+	 * 日付、時刻のフォーマットの設定を取得
+	 *
+	 * @param list フォーマット設定一覧
+	 * @return フォーマットの設定
+	 */
+	private static LocalizedDateTimeFormatSetting getDateTimeFormatSetting(List<LocalizedDateTimeFormatSetting> list) {
+		for (LocalizedDateTimeFormatSetting ldt : list) {
+			String localLang = ldt.getLangage();
+			String tenantLang = ExecuteContext.getCurrentContext().getLanguage();
+			if ((tenantLang.equals(localLang))) {
+				return ldt;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 日付、時刻のフォーマットを設定
+	 *
+	 * @param ldtInfoList 日付/時刻フォーマットの多言語設定情報
+	 * @param dtfInfo 日付/時刻フォーマットのデフォルト設定
+	 * @return settingInfo 日付/時刻フォーマットの設定
+	 */
+	public static DateTimeFormatSetting getFormatInfo(List<LocalizedDateTimeFormatSetting> ldtInfoList, DateTimeFormatSetting dtfInfo){
+		DateTimeFormatSetting settingInfo = new DateTimeFormatSetting();
+
+		if (ldtInfoList != null) {
+			// 多言語設定がある場合
+			LocalizedDateTimeFormatSetting ldf = getDateTimeFormatSetting(ldtInfoList);
+			if (ldf != null) {
+				settingInfo.setDatetimeFormat(ldf.getDateTimeFormat());
+				settingInfo.setDatetimeLocale(ldf.getDateTimeFormatLocale());
+				if (settingInfo != null) {
+					return settingInfo;
+				}
+			}
+		}
+		if (dtfInfo != null) {
+			settingInfo.setDatetimeFormat(dtfInfo.getDatetimeFormat());
+			settingInfo.setDatetimeLocale(dtfInfo.getDatetimeLocale());
+		}
+		return settingInfo;
 	}
 }

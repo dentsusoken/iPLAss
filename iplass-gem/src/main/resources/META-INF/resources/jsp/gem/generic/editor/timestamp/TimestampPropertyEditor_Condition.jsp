@@ -24,9 +24,12 @@
 <%@ page import="java.sql.Timestamp"%>
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Locale"%>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@ page import="org.iplass.mtp.util.DateUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatSetting" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimestampPropertyEditor" %>
@@ -48,28 +51,33 @@
 	}
 %>
 <%!
-	String displayFormat(String time, TimeDispRange dispRange, boolean showWeekday) {
+	String displayFormat(String time, TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
 		if (time == null) {
 			return "";
 		}
-
-		String timeFormat = "";
-		if (TimeDispRange.isDispSec(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
-		} else if (TimeDispRange.isDispMin(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
-		} else if (TimeDispRange.isDispHour(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
-		}
-
 		DateFormat format = null;
-		if (showWeekday) {
-			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
-			//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
-			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
+
+		if(datetimeFormatPattern != null){
+			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
 		} else {
-			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
-			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
+			String timeFormat = "";
+			if (TimeDispRange.isDispSec(dispRange)) {
+				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
+			} else if (TimeDispRange.isDispMin(dispRange)) {
+				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
+			} else if (TimeDispRange.isDispHour(dispRange)) {
+				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
+			}
+
+
+			if (showWeekday) {
+				String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
+				//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
+				format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
+			} else {
+				String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
+				format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
+			}
 		}
 
 		try {
@@ -79,6 +87,7 @@
 			return "";
 		}
 	}
+
 %>
 <%
 	TimestampPropertyEditor editor = (TimestampPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -161,6 +170,8 @@
 			style = style + customStyle;
 		}
 
+		DateTimeFormatSetting formatInfo = ViewUtil.getFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
+
 		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUserDateTimePicker)) {
 %>
 <span class="timestamppicker-field" style="<c:out value="<%=style %>"/>">
@@ -168,7 +179,7 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeFromDisplayValue = displayFormat(propValueFrom, editor.getDispRange(), editor.isShowWeekday());
+			String timeFromDisplayValue = displayFormat(propValueFrom, editor.getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday());
 			String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
 %>
 <span class="timestampselect-field" style="<c:out value="<%=style %>"/>">
@@ -220,7 +231,7 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeToDisplayValue = displayFormat(propValueTo, editor.getDispRange(), editor.isShowWeekday());
+			String timeToDisplayValue = displayFormat(propValueTo, editor.getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday());
 			String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
 %>
 <span class="timestampselect-field" style="<c:out value="<%=style %>"/>">

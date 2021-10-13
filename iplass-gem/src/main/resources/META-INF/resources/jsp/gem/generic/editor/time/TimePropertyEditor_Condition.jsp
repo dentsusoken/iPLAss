@@ -24,9 +24,12 @@
 <%@ page import="java.sql.Time"%>
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Locale"%>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@ page import="org.iplass.mtp.util.DateUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatSetting"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
@@ -48,13 +51,15 @@
 	}
 %>
 <%!
-	String displayFormat(String time, TimeDispRange dispRange) {
+	String displayFormat(String time, String datetimeFoematPattern, String datetimeLocale, TimeDispRange dispRange) {
 		if (time == null) {
 			return "";
 		}
 
 		DateFormat format = null;
-		if (TimeDispRange.isDispSec(dispRange)) {
+		if(datetimeFoematPattern != null){
+			format = ViewUtil.getDateTimeFormat(datetimeFoematPattern, datetimeLocale);
+		} else if (TimeDispRange.isDispSec(dispRange)) {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat(), false);
 		} else if (TimeDispRange.isDispMin(dispRange)) {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeMinFormat(), false);
@@ -71,6 +76,7 @@
 			return "";
 		}
 	}
+
 %>
 <%
 	TimePropertyEditor editor = (TimePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -153,6 +159,8 @@
 			style = style + customStyle;
 		}
 
+		DateTimeFormatSetting formatInfo = ViewUtil.getFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
+
 		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUseTimePicker)) {
 %>
 <span class="timepicker-field" style="<c:out value="<%=style %>"/>">
@@ -160,7 +168,7 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeFromDisplayValue = displayFormat(propValueFrom, editor.getDispRange());
+			String timeFromDisplayValue = displayFormat(propValueFrom, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.getDispRange());
 			String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">
@@ -210,7 +218,7 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeToDisplayValue = displayFormat(propValueTo, editor.getDispRange());
+			String timeToDisplayValue = displayFormat(propValueTo, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.getDispRange());
 			String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">

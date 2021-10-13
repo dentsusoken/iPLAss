@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.view.generic.editor;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlEnumValue;
@@ -164,12 +166,44 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	)
 	private DateTimeDisplayType displayType;
 
+	/** 日付/時刻のフォーマット設定 */
+	@MetaFieldInfo(
+			displayName="日付/時刻のフォーマット設定",
+			displayNameKey="generic_editor_DateTimePropertyEditor_dateTimeFormatListDisplaNameKey",
+			description="検索結果、詳細画面で表示する日付/時刻のフォーマットを設定する。",
+			inputType=InputType.REFERENCE,
+			multiple=false,
+			referenceClass=DateTimeFormatSetting.class,
+			displayOrder=105,
+			descriptionKey="generic_editor_DateTimePropertyEditor_dateTimeFormatListDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHRESULT}
+	)
+	private DateTimeFormatSetting datetimeFormat;
+
+	/** 日付/時刻のフォーマットの多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="日付/時刻のフォーマットの多言語設定",
+			displayNameKey="",
+			description="検索結果、詳細画面で表示する日付/時刻のフォーマットの多言語設定を行う。",
+			inputType=InputType.REFERENCE,
+			multiple=true,
+			referenceClass=LocalizedDateTimeFormatSetting.class,
+			displayOrder=110,
+			descriptionKey=""
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHRESULT}
+	)
+	private List<LocalizedDateTimeFormatSetting>  localizedDatetimeFormatList;
+
 	/** 検索条件の単一日指定 */
 	@MetaFieldInfo(
 			displayName="検索条件の単一日指定",
 			displayNameKey="generic_editor_DateTimePropertyEditor_singleDayConditionDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=110,
+			displayOrder=120,
 			description="検索条件の指定を単一日(時)にするかを設定します。<br>" +
 					"単一日とした場合、検索条件From非表示及び検索条件To非表示は無効になります。",
 			descriptionKey="generic_editor_DateTimePropertyEditor_singleDayConditionDescriptionKey"
@@ -184,7 +218,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 			displayName="検索条件From非表示",
 			displayNameKey="generic_editor_DateTimePropertyEditor_hideSearchConditionFromDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=120,
+			displayOrder=130,
 			description="検索条件のFromを非表示にするかを設定します。",
 			descriptionKey="generic_editor_DateTimePropertyEditor_hideSearchConditionFromDescriptionKey"
 	)
@@ -198,7 +232,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 			displayName="検索条件To非表示",
 			displayNameKey="generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=130,
+			displayOrder=140,
 			description="検索条件のToを非表示にするかを設定します。",
 			descriptionKey="generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey"
 	)
@@ -250,6 +284,38 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	@Override
 	public DateTimeDisplayType getDisplayType() {
 		return displayType;
+	}
+
+	/**
+	 * 日付/時刻のフォーマット設定を取得します。
+	 * @return datetimeFormat フォーマット設定
+	 */
+	public DateTimeFormatSetting getDatetimeFormat() {
+		return datetimeFormat;
+	}
+
+	/**
+	 * 日付/時刻のフォーマット設定を取得します。
+	 * @return datetimeFormat フォーマット設定
+	 */
+	public void setDatetimeFormat(DateTimeFormatSetting datetimeFormat) {
+		this.datetimeFormat = datetimeFormat;
+	}
+
+	/**
+	 * 日付/時刻のフォーマットの多言語設定情報を取得します。
+	 * @return localizedDatetimeFormatList フォーマットの多言語設定情報
+	 */
+	public List<LocalizedDateTimeFormatSetting> getLocalizedDatetimeFormatList() {
+		return localizedDatetimeFormatList;
+	}
+
+	/**
+	 * 日付/時刻のフォーマットの多言語設定情報を取得します。
+	 * @return localizedDatetimeFormatList フォーマットの多言語設定情報
+	 */
+	public void setLocalizedDatetimeFormatList(List<LocalizedDateTimeFormatSetting> localizedDatetimeFormatList) {
+		this.localizedDatetimeFormatList = localizedDatetimeFormatList;
 	}
 
 	@Override

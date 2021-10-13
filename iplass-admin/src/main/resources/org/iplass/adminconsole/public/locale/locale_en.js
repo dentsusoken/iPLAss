@@ -1812,6 +1812,12 @@ LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionFromDisplaNa
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionFromDescriptionKey = "Hide From of search condition.";
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaNameKey = "Hide 'To' of Search conditions ";
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey = "Hide To of search condition.";
+LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDisplaNameKey = "Date / time formatting";
+LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDescriptionKey = "Set the date / time format and locale to be displayed on the search results and details screen.";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeFormatDisplaNameKey = "Date / time formatting";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeFormatDescriptionKey = "Set the date and time format as a character string.";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeLocaleDisplaNameKey = "Date / time locale setting";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeLocaleDescriptionKey = "Set the locale that determines the display of the date and time formats as a character string.";
 LocaleInfo.generic_editor_EditorValue_labelDisplaNameKey = "Display name";
 LocaleInfo.generic_editor_EditorValue_labelDescriptionKey = "Set the label of choice.";
 LocaleInfo.generic_editor_EditorValue_valueDisplaNameKey = "Value";
@@ -1836,6 +1842,12 @@ LocaleInfo.generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaName
 LocaleInfo.generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey = "Specifies whether to insert the Label value as the Entity value when the display type is Label.";
 LocaleInfo.generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey = "Update with Label value";
 LocaleInfo.generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey = "Specifies whether to update the Label value as the Entity value when the display type is Label.";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_langageDisplaNameKey = "Date / time language setting";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_langageDescriptionKey = "Set the date / time format language.";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatDisplaNameKey = "Date / Time Formatting";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeDescriptionKey = "Set date / time format for multilingual settings.";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatLocaleDisplaNameKey = "Date / Time Locale Setting";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatDescriptionKey = "Set date / time locale for multilingual settings.";
 LocaleInfo.generic_editor_NestProperty_propertyNameDisplaNameKey = "Property name";
 LocaleInfo.generic_editor_NestProperty_propertyNameDescriptionKey = "Please specify the property name of a reference type.";
 LocaleInfo.generic_editor_NestProperty_DisplaNameKey = "Display Label";

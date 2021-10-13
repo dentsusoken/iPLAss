@@ -21,35 +21,48 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="java.sql.Date" %>
+<%@ page import="java.util.Locale"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
 <%@ page import="java.text.DateFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
+<%@ page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DatePropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatSetting"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.LocalizedDateTimeFormatSetting"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
-<%!
-	String displayFormat(Date date, boolean showWeekday) {
+<%!String displayFormat(Date date, String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
 		if (date == null) return "";
+		DateFormat format = null;
 
-		if (showWeekday) {
+		if (datetimeFormatPattern != null) {
+			//フォーマットの指定がある場合、指定されたフォーマットで表記する
+			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
+		} else if (showWeekday) {
 			//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
-			DateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat(), false, true);
-			return format.format(date);
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat(), false, true);
 		} else {
-			DateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), false);
-			return format.format(date);
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), false);
 		}
+		return format.format(date);
 	}
+
 	String format(Date date) {
 		DateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
 		return date != null ? format.format(date) : "";
 	}
+
 %>
 
 <%
@@ -68,7 +81,7 @@
 	String propName = editor.getPropertyName();
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
-	
+
 	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
 
 		//カスタムスタイル
@@ -84,6 +97,8 @@
 			}
 		}
 
+	DateTimeFormatSetting formatInfo = ViewUtil.getFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
+
 		if (isMultiple) {
 			//複数
 %>
@@ -94,7 +109,7 @@
 				for (int i = 0; i < array.length; i++) {
 %>
 <li>
-<c:out value="<%=displayFormat(array[i], editor.isShowWeekday()) %>" />
+<c:out value="<%=displayFormat(array[i], formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday()) %>" />
 <%
 					if (outputHidden) {
 						String strHidden = format(array[i]);
@@ -115,7 +130,7 @@
 			Date date = propValue instanceof Date ? (Date) propValue : null;
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
-<c:out value="<%=displayFormat(date, editor.isShowWeekday()) %>" />
+<c:out value="<%=displayFormat(date, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday()) %>" />
 <%
 			if (outputHidden) {
 				String strHidden = format(date);

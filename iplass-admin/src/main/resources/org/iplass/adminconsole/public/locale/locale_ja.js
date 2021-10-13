@@ -1812,6 +1812,12 @@ LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionFromDisplaNa
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionFromDescriptionKey = "検索条件のFromを非表示にします。";
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaNameKey = "検索条件Toを非表示";
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey = "検索条件のToを非表示にします。";
+LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDisplaNameKey = "日付/時刻のフォーマット設定";
+LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDescriptionKey = "検索結果、詳細画面で表示する日付/時刻のフォーマットとロケールを設定します。";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeFormatDisplaNameKey = "日付/時刻のフォーマット設定";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeFormatDescriptionKey = "日付、時刻のフォーマットを文字列で設定します。";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeLocaleDisplaNameKey = "日付/時刻のロケール設定";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeLocaleDescriptionKey = "日付、時刻のフォーマットの表示を決定するロケールを文字列で設定します。";
 LocaleInfo.generic_editor_EditorValue_labelDisplaNameKey = "表示名";
 LocaleInfo.generic_editor_EditorValue_labelDescriptionKey = "選択肢のラベルを設定します。";
 LocaleInfo.generic_editor_EditorValue_valueDisplaNameKey = "値";
@@ -1836,6 +1842,12 @@ LocaleInfo.generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaName
 LocaleInfo.generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey = "表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。";
 LocaleInfo.generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey = "Label形式の場合に表示値で更新する";
 LocaleInfo.generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey = "表示タイプがLabel形式の場合に表示値で更新するかを指定します。";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_langageDisplaNameKey = "日付/時刻の言語設定";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_langageDescriptionKey = "日付/時刻のフォーマットの言語を設定する。";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatDisplaNameKey = "日付/時刻のフォーマット設定";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeDescriptionKey = "多言語設定の日付/時刻のフォーマットを設定する。";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatLocaleDisplaNameKey = "日付/時刻のロケール設定";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatDescriptionKey = "多言語設定の日付/時刻のロケールを設定する。";
 LocaleInfo.generic_editor_NestProperty_propertyNameDisplaNameKey = "プロパティ名";
 LocaleInfo.generic_editor_NestProperty_propertyNameDescriptionKey = "参照型のプロパティ名を指定してください。";
 LocaleInfo.generic_editor_NestProperty_DisplaNameKey = "表示ラベル";

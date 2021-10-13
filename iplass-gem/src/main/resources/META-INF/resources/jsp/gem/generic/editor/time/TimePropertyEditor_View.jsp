@@ -23,26 +23,32 @@
 <%@ page import="java.sql.Time" %>
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.Calendar" %>
+<%@ page import="java.util.Locale"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatSetting"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
-	String displayFormat(Time time, TimeDispRange dispRange) {
+	String displayFormat(Time time, String datetimeFoematPattern, String datetimeLocale, TimeDispRange dispRange) {
 		if (time == null) {
 			return "";
 		}
 
 		DateFormat format = null;
-		if (TimeDispRange.isDispSec(dispRange)) {
+		if(datetimeFoematPattern != null){
+			format = ViewUtil.getDateTimeFormat(datetimeFoematPattern, datetimeLocale);
+		} else if (TimeDispRange.isDispSec(dispRange)) {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat(), false);
 		} else if (TimeDispRange.isDispMin(dispRange)) {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeMinFormat(), false);
@@ -61,6 +67,7 @@
 		SimpleDateFormat format = DateUtil.getSimpleDateFormat("HHmmssSSS", false);
 		return time != null ? format.format(time) : "";
 	}
+
 %>
 <%
 	TimePropertyEditor editor = (TimePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -94,6 +101,8 @@
 			}
 		}
 
+		DateTimeFormatSetting formatInfo = ViewUtil.getFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
+
 		if (isMultiple) {
 			//複数
 %>
@@ -105,7 +114,7 @@
 					Time t = array[i];
 %>
 <li>
-<c:out value="<%=displayFormat(t, editor.getDispRange()) %>"/>
+<c:out value="<%=displayFormat(t, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.getDispRange()) %>"/>
 <%
 					if (outputHidden) {
 						String strHidden = format(t);
@@ -126,7 +135,7 @@
 			Time t = propValue instanceof Time ? (Time) propValue : null;
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>">
-<c:out value="<%=displayFormat(t, editor.getDispRange()) %>"/>
+<c:out value="<%=displayFormat(t, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.getDispRange()) %>"/>
 <%
 			if (outputHidden) {
 				String strHidden = format(t);
