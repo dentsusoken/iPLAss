@@ -16,12 +16,14 @@ on:
     branches: [ master ]
   pull_request:
     # The branches below must be a subset of the branches above
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [ master ]
 
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
     permissions:
       actions: read
       contents: read
