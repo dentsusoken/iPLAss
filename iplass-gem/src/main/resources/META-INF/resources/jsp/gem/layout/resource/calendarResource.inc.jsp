@@ -28,8 +28,8 @@ if (StringUtil.isEmpty(language)) {
 	language = "ja";
 }
 %>
-<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/fullcalendar/3.5.1/dist/fullcalendar.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
-<link rel="stylesheet" type="text/css" media="screen, print" href="${m:esc(staticContentPath)}/webjars/fullcalendar/3.5.1/dist/fullcalendar.css?cv=<%=TemplateUtil.getAPIVersion()%>" />
+<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/fullcalendar/3.10.2/dist/fullcalendar.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
+<link rel="stylesheet" type="text/css" media="screen, print" href="${m:esc(staticContentPath)}/webjars/fullcalendar/3.10.2/dist/fullcalendar.css?cv=<%=TemplateUtil.getAPIVersion()%>" />
 <script type="text/javascript" src="${m:esc(staticContentPath)}/scripts/gem/module/calendar/calendar.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 <%
 if (!"en".equals(language)) { //enの場合はデフォルトを利用
