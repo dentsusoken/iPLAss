@@ -61,6 +61,7 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
+import org.iplass.mtp.entity.query.value.aggregate.Listagg;
 import org.iplass.mtp.entity.query.value.aggregate.Max;
 import org.iplass.mtp.entity.query.value.aggregate.Median;
 import org.iplass.mtp.entity.query.value.aggregate.Min;
@@ -70,6 +71,8 @@ import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
 import org.iplass.mtp.entity.query.value.aggregate.Sum;
 import org.iplass.mtp.entity.query.value.aggregate.VarPop;
 import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
+import org.iplass.mtp.entity.query.value.aggregate.WithinGroup;
+import org.iplass.mtp.entity.query.value.aggregate.WithinGroupSortSpec;
 import org.iplass.mtp.entity.query.value.controlflow.Case;
 import org.iplass.mtp.entity.query.value.controlflow.Else;
 import org.iplass.mtp.entity.query.value.controlflow.When;
@@ -873,4 +876,39 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		return new WindowSortSpec(ve, sortSpec.getType(), sortSpec.getNullOrderingSpec());
 	}
 
+	@Override
+	public ASTNode visit(Listagg listagg) {
+		Listagg copy = new Listagg();
+		copy.setDistinct(listagg.isDistinct());
+		if (listagg.getValue() != null) {
+			copy.setValue((ValueExpression) listagg.getValue().accept(this));
+		}
+		if (listagg.getSeparator() != null) {
+			copy.setSeparator((Literal) listagg.getSeparator().accept(this));
+		}
+		if (listagg.getWithinGroup() != null) {
+			copy.setWithinGroup((WithinGroup) listagg.getWithinGroup().accept(this));
+		}
+		return copy;
+	}
+
+	@Override
+	public ASTNode visit(WithinGroup withinGroup) {
+		WithinGroup copy = new WithinGroup();
+		if (withinGroup.getSortSpecList() != null) {
+			for (WithinGroupSortSpec s: withinGroup.getSortSpecList()) {
+				copy.add((WithinGroupSortSpec) s.accept(this));
+			}
+		}
+		return copy;
+	}
+
+	@Override
+	public ASTNode visit(WithinGroupSortSpec sortSpec) {
+		ValueExpression ve = null;
+		if (sortSpec.getSortKey() != null) {
+			ve = (ValueExpression) sortSpec.getSortKey().accept(this);
+		}
+		return new WithinGroupSortSpec(ve, sortSpec.getType(), sortSpec.getNullOrderingSpec());
+	}
 }

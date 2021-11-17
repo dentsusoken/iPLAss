@@ -36,6 +36,16 @@ import java.text.SimpleDateFormat;
 import org.iplass.mtp.entity.query.GroupBy.RollType;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
+import org.iplass.mtp.entity.query.value.aggregate.Avg;
+import org.iplass.mtp.entity.query.value.aggregate.Count;
+import org.iplass.mtp.entity.query.value.aggregate.Listagg;
+import org.iplass.mtp.entity.query.value.aggregate.Max;
+import org.iplass.mtp.entity.query.value.aggregate.Min;
+import org.iplass.mtp.entity.query.value.aggregate.StdDevPop;
+import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
+import org.iplass.mtp.entity.query.value.aggregate.Sum;
+import org.iplass.mtp.entity.query.value.aggregate.VarPop;
+import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
 import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.rdb.adapter.HintPlace;
 import org.iplass.mtp.impl.rdb.adapter.MultiInsertContext;
@@ -48,16 +58,20 @@ import org.iplass.mtp.impl.rdb.adapter.bulk.BulkUpdateContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.InOperatorBulkDeleteContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.PreparedBulkInsertContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.PreparedBulkUpdateContext;
+import org.iplass.mtp.impl.rdb.adapter.function.AggregateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.DynamicTypedFunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.StaticTypedFunctionAdapter;
+import org.iplass.mtp.impl.rdb.common.function.CountFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentDateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentDateTimeFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentTimeFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.ExtractDateFunctionAdapter;
+import org.iplass.mtp.impl.rdb.common.function.ListaggFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.LocalTimeFunctionAdapter;
 import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
 import org.iplass.mtp.impl.rdb.postgresql.function.PostgreSQLDateAddFunctionAdapter;
 import org.iplass.mtp.impl.rdb.postgresql.function.PostgreSQLDateDiffFunctionAdapter;
+import org.iplass.mtp.impl.rdb.postgresql.function.PostgreSQLListaggFunctionAdapter;
 import org.iplass.mtp.impl.rdb.postgresql.function.PostgreSQLRoundTruncFunctionAdapter;
 import org.iplass.mtp.spi.ServiceRegistry;
 
@@ -89,6 +103,7 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 	private String viewSubQueryAlias = "vsq";
 	private int maxViewNameLength = 63;
+	private boolean useStandardListaggFunction;
 
 	public PostgreSQLRdbAdapter() {
 		addFunction(new StaticTypedFunctionAdapter("CHAR_LENGTH", Long.class));
@@ -119,6 +134,21 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 		addFunction(new CurrentDateTimeFunctionAdapter());
 		addFunction(new LocalTimeFunctionAdapter());
 
+		addAggregateFunction(Count.class, new CountFunctionAdapter());
+		addAggregateFunction(Sum.class, new AggregateFunctionAdapter<Sum>("SUM", null));
+		addAggregateFunction(Avg.class, new AggregateFunctionAdapter<Avg>("AVG", Double.class));
+		addAggregateFunction(Max.class, new AggregateFunctionAdapter<Max>("MAX", null));
+		addAggregateFunction(Min.class, new AggregateFunctionAdapter<Min>("MIN", null));
+		addAggregateFunction(StdDevPop.class, new AggregateFunctionAdapter<StdDevPop>("STDDEV_POP", Double.class));
+		addAggregateFunction(StdDevSamp.class, new AggregateFunctionAdapter<StdDevSamp>("STDDEV_SAMP", Double.class));
+		addAggregateFunction(VarPop.class, new AggregateFunctionAdapter<VarPop>("VAR_POP", Double.class));
+		addAggregateFunction(VarSamp.class, new AggregateFunctionAdapter<VarSamp>("VAR_SAMP", Double.class));
+		if (useStandardListaggFunction) {
+			addAggregateFunction(Listagg.class, new ListaggFunctionAdapter());
+		} else {
+			addAggregateFunction(Listagg.class, new PostgreSQLListaggFunctionAdapter());
+		}
+
 		DateFormatSymbols symbols = new DateFormatSymbols();
 		symbols.setEras(new String[] { "-", "" });
 
@@ -134,6 +164,14 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 		} catch (ParseException e) {
 			throw new UnsupportedDataTypeException(e);
 		}
+	}
+
+	public boolean isUseStandardListaggFunction() {
+		return useStandardListaggFunction;
+	}
+
+	public void setUseStandardListaggFunction(boolean useStandardListaggFunction) {
+		this.useStandardListaggFunction = useStandardListaggFunction;
 	}
 
 	@Override

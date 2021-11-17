@@ -30,6 +30,7 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.ValueExpressionVisitor;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
+import org.iplass.mtp.entity.query.value.aggregate.Listagg;
 import org.iplass.mtp.entity.query.value.aggregate.Max;
 import org.iplass.mtp.entity.query.value.aggregate.Median;
 import org.iplass.mtp.entity.query.value.aggregate.Min;
@@ -39,6 +40,8 @@ import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
 import org.iplass.mtp.entity.query.value.aggregate.Sum;
 import org.iplass.mtp.entity.query.value.aggregate.VarPop;
 import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
+import org.iplass.mtp.entity.query.value.aggregate.WithinGroup;
+import org.iplass.mtp.entity.query.value.aggregate.WithinGroupSortSpec;
 import org.iplass.mtp.entity.query.value.controlflow.Case;
 import org.iplass.mtp.entity.query.value.controlflow.Else;
 import org.iplass.mtp.entity.query.value.controlflow.When;
@@ -282,6 +285,22 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 	@Override
 	public boolean visit(Median median) {
 		median.getValue().accept(this);
+		return false;
+	}
+
+	@Override
+	public boolean visit(Listagg listagg) {
+		type = propService.getPropertyType(String.class);
+		return false;
+	}
+
+	@Override
+	public boolean visit(WithinGroup withinGroup) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(WithinGroupSortSpec sortSpec) {
 		return false;
 	}
 

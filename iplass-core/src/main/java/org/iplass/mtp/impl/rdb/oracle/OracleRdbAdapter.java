@@ -38,8 +38,18 @@ import org.iplass.mtp.entity.query.GroupBy.RollType;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
+import org.iplass.mtp.entity.query.value.aggregate.Avg;
+import org.iplass.mtp.entity.query.value.aggregate.Count;
+import org.iplass.mtp.entity.query.value.aggregate.Listagg;
+import org.iplass.mtp.entity.query.value.aggregate.Max;
 import org.iplass.mtp.entity.query.value.aggregate.Median;
+import org.iplass.mtp.entity.query.value.aggregate.Min;
 import org.iplass.mtp.entity.query.value.aggregate.Mode;
+import org.iplass.mtp.entity.query.value.aggregate.StdDevPop;
+import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
+import org.iplass.mtp.entity.query.value.aggregate.Sum;
+import org.iplass.mtp.entity.query.value.aggregate.VarPop;
+import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
 import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.rdb.adapter.HintPlace;
 import org.iplass.mtp.impl.rdb.adapter.MultiInsertContext;
@@ -52,12 +62,15 @@ import org.iplass.mtp.impl.rdb.adapter.bulk.BulkUpdateContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.InOperatorBulkDeleteContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.PreparedBulkInsertContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.PreparedBulkUpdateContext;
+import org.iplass.mtp.impl.rdb.adapter.function.AggregateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.DynamicTypedFunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.StaticTypedFunctionAdapter;
+import org.iplass.mtp.impl.rdb.common.function.CountFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentDateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentDateTimeFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentTimeFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.ExtractDateFunctionAdapter;
+import org.iplass.mtp.impl.rdb.common.function.ListaggFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.LocalTimeFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.RoundTruncFunctionAdapter;
 import org.iplass.mtp.impl.rdb.oracle.function.OracleDateAddFunctionAdapter;
@@ -131,6 +144,20 @@ public class OracleRdbAdapter extends RdbAdapter {
 		addFunction(new CurrentDateTimeFunctionAdapter());
 		addFunction(new LocalTimeFunctionAdapter());
 
+		addAggregateFunction(Count.class, new CountFunctionAdapter());
+		addAggregateFunction(Sum.class, new AggregateFunctionAdapter<Sum>("SUM", null));
+		addAggregateFunction(Avg.class, new AggregateFunctionAdapter<Avg>("AVG", Double.class));
+		addAggregateFunction(Max.class, new AggregateFunctionAdapter<Max>("MAX", null));
+		addAggregateFunction(Min.class, new AggregateFunctionAdapter<Min>("MIN", null));
+		addAggregateFunction(StdDevPop.class, new AggregateFunctionAdapter<StdDevPop>("STDDEV_POP", Double.class));
+		addAggregateFunction(StdDevSamp.class, new AggregateFunctionAdapter<StdDevSamp>("STDDEV_SAMP", Double.class));
+		addAggregateFunction(VarPop.class, new AggregateFunctionAdapter<VarPop>("VAR_POP", Double.class));
+		addAggregateFunction(VarSamp.class, new AggregateFunctionAdapter<VarSamp>("VAR_SAMP", Double.class));
+		addAggregateFunction(Listagg.class, new ListaggFunctionAdapter());//distinct、 order by省略は19c以降可能
+
+		addAggregateFunction(Mode.class, new AggregateFunctionAdapter<Mode>("MODE", "STATS_MODE", null));
+		addAggregateFunction(Median.class, new AggregateFunctionAdapter<Median>("MEDIAN", null));
+		
 		DateFormatSymbols symbols = new DateFormatSymbols();
 		symbols.setEras(new String[] { "-", "" });
 
@@ -146,10 +173,6 @@ public class OracleRdbAdapter extends RdbAdapter {
 		} catch (ParseException e) {
 			throw new UnsupportedDataTypeException(e);
 		}
-
-		//TODO
-		//LOCALTIME(timestamp)
-
 	}
 
 	public boolean isUseFetchFirstClause() {
@@ -746,16 +769,6 @@ public class OracleRdbAdapter extends RdbAdapter {
 		this.enableBindHint = enableBindHint;
 	}
 	
-	public String aggregateFunctionName(Aggregate agg) {
-		if (agg instanceof Mode) {
-			return "STATS_MODE";
-		}
-		if (agg instanceof Median) {
-			return "MEDIAN";
-		}
-		return super.aggregateFunctionName(agg);
-	}
-
 	@Override
 	public boolean isAlwaysBind() {
 		return alwaysBind;

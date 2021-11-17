@@ -36,6 +36,7 @@ import org.iplass.mtp.entity.query.hint.SuppressWarningsHint;
 import org.iplass.mtp.entity.query.value.RowValueList;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
+import org.iplass.mtp.entity.query.value.aggregate.Listagg;
 import org.iplass.mtp.entity.query.value.aggregate.Max;
 import org.iplass.mtp.entity.query.value.aggregate.Median;
 import org.iplass.mtp.entity.query.value.aggregate.Min;
@@ -440,6 +441,11 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 
 		@Override
 		public boolean visit(Median median) {
+			return false;
+		}
+
+		@Override
+		public boolean visit(Listagg listagg) {
 			return false;
 		}
 

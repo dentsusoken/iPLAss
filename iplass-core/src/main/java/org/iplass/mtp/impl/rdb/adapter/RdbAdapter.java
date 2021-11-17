@@ -40,15 +40,7 @@ import org.iplass.mtp.entity.query.GroupBy.RollType;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
-import org.iplass.mtp.entity.query.value.aggregate.Avg;
-import org.iplass.mtp.entity.query.value.aggregate.Count;
-import org.iplass.mtp.entity.query.value.aggregate.Max;
-import org.iplass.mtp.entity.query.value.aggregate.Min;
-import org.iplass.mtp.entity.query.value.aggregate.StdDevPop;
-import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
-import org.iplass.mtp.entity.query.value.aggregate.Sum;
-import org.iplass.mtp.entity.query.value.aggregate.VarPop;
-import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
+import org.iplass.mtp.entity.query.value.primary.Function;
 import org.iplass.mtp.entity.query.value.window.CumeDist;
 import org.iplass.mtp.entity.query.value.window.DenseRank;
 import org.iplass.mtp.entity.query.value.window.PercentRank;
@@ -68,6 +60,7 @@ import org.iplass.mtp.impl.properties.extend.WrapperType;
 import org.iplass.mtp.impl.rdb.adapter.bulk.BulkDeleteContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.BulkInsertContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.BulkUpdateContext;
+import org.iplass.mtp.impl.rdb.adapter.function.AggregateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -76,12 +69,19 @@ import org.iplass.mtp.util.StringUtil;
 
 public abstract class RdbAdapter {
 
+	private String listaggDefaultSeparator = ",";
 	private String rdbTimeZone;
 	private TimeZone rdbTimeZoneInstance;
 
-	private HashMap<String, FunctionAdapter> functionMap = new HashMap<String, FunctionAdapter>();
 
-	protected void addFunction(FunctionAdapter functionAdapter) {
+	private HashMap<String, FunctionAdapter<Function>> functionMap = new HashMap<String, FunctionAdapter<Function>>();
+	private HashMap<Class<? extends Aggregate>, AggregateFunctionAdapter<? extends Aggregate>> aggMap = new HashMap<>();
+
+	protected <T extends Aggregate> void addAggregateFunction(Class<T> aggType, AggregateFunctionAdapter<T> functionAdapter) {
+		aggMap.put(aggType, functionAdapter);
+	}
+
+	protected void addFunction(FunctionAdapter<Function> functionAdapter) {
 		//LowerCase,UpperCase両方登録しとく
 		functionMap.put(functionAdapter.getFunctionName().toLowerCase(), functionAdapter);
 		functionMap.put(functionAdapter.getFunctionName().toUpperCase(), functionAdapter);
@@ -290,13 +290,18 @@ public abstract class RdbAdapter {
 		}
 	}
 
-	public final FunctionAdapter resolveFunction(String name) {
-		FunctionAdapter ret = functionMap.get(name);
+	public final FunctionAdapter<Function> resolveFunction(String name) {
+		FunctionAdapter<Function> ret = functionMap.get(name);
 		//ファンクション名をtoUpperCaseして再取得
 		if (ret == null) {
 			ret = functionMap.get(name.toUpperCase());
 		}
 		return ret;
+	}
+
+	@SuppressWarnings("unchecked")
+	public final <T extends Aggregate> AggregateFunctionAdapter<T> resolveAggregateFunction(Class<T> aggClass) {
+		return (AggregateFunctionAdapter<T>) aggMap.get(aggClass);
 	}
 
 	public abstract String systimestamp();
@@ -382,6 +387,14 @@ public abstract class RdbAdapter {
 	public abstract String rollUpEnd(RollType rollType);
 
 	public abstract void appendSortSpecExpression(StringBuilder sb, CharSequence sortValue, SortType sortType, NullOrderingSpec nullOrderingSpec);
+
+	public String getListaggDefaultSeparator() {
+		return listaggDefaultSeparator;
+	}
+
+	public void setListaggDefaultSeparator(String listaggDefaultSeparator) {
+		this.listaggDefaultSeparator = listaggDefaultSeparator;
+	}
 
 	public String getRdbTimeZone() {
 		return rdbTimeZone;
@@ -492,23 +505,13 @@ public abstract class RdbAdapter {
 	 */
 	public abstract int getThresholdCountOfUsePrepareStatement();
 
-	//FIXME 暫定の実装。ver3.1で正式対応
-	private HashMap<Class<? extends Aggregate>, String> aggNameMap = createAggNameMap();
-	private HashMap<Class<? extends Aggregate>, String> createAggNameMap() {
-		HashMap<Class<? extends Aggregate>, String> map = new HashMap<>();
-		map.put(Count.class, "COUNT");
-		map.put(Sum.class, "SUM");
-		map.put(Avg.class, "AVG");
-		map.put(Max.class, "MAX");
-		map.put(Min.class, "MIN");
-		map.put(StdDevPop.class, "STDDEV_POP");
-		map.put(StdDevSamp.class, "STDDEV_SAMP");
-		map.put(VarPop.class, "STDDEV_SAMP");
-		map.put(VarSamp.class, "VAR_SAMP");
-		return map;
-	}
 	public String aggregateFunctionName(Aggregate agg) {
-		return aggNameMap.get(agg.getClass());
+		AggregateFunctionAdapter<?> aa = aggMap.get(agg.getClass());
+		if (aa != null) {
+			return aa.getSqlFunctionName();
+		} else {
+			return null;
+		}
 	}
 
 	public abstract boolean isSupportWindowFunction();

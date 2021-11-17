@@ -30,6 +30,7 @@ import org.iplass.mtp.entity.query.value.primary.EntityField;
  *
  */
 public class SortSpec implements ASTNode {
+	//TODO v3.2でAbstractSortSpec継承に
 	private static final long serialVersionUID = -8115669253085961836L;
 
 	public enum SortType {

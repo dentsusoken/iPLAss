@@ -29,7 +29,7 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 
-public class MysqlDateDiffFunctionAdapter implements FunctionAdapter, DateTimeUnit {
+public class MysqlDateDiffFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
 	
 //	/*HOUR*/
 //	select timestampdiff(HOUR, '2011-03-01', '2012-03-01 01:01:01');

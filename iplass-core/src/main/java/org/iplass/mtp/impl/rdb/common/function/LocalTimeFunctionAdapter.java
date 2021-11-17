@@ -35,7 +35,7 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
  * @author K.Higuchi
  *
  */
-public class LocalTimeFunctionAdapter implements FunctionAdapter {
+public class LocalTimeFunctionAdapter implements FunctionAdapter<Function> {
 	
 	@Override
 	public String getFunctionName() {

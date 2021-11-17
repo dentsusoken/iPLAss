@@ -94,6 +94,8 @@ public interface QueryConstants {
 	public static final String VAR_SAMP = "VAR_SAMP";
 	public static final String MODE = "MODE";
 	public static final String MEDIAN = "MEDIAN";
+	public static final String LISTAGG = "LISTAGG";
+	public static final String WITHIN = "WITHIN";
 	
 	public static final String RANK = "RANK";
 	public static final String DENSE_RANK = "DENSE_RANK";
