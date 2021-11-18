@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 import org.iplass.mtp.impl.rdb.sqlserver.SqlServerRdbAdapter;
 
-public class SqlServerDateAddFunctionAdapter implements FunctionAdapter, DateTimeUnit {
+public class SqlServerDateAddFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
 
 	//date + 1 * INTERVAL '1' DAY
 	//date + 1 * INTERVAL '1' HOUR

@@ -37,9 +37,14 @@ import java.util.Map;
 import org.iplass.mtp.entity.query.GroupBy.RollType;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
-import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
+import org.iplass.mtp.entity.query.value.aggregate.Avg;
+import org.iplass.mtp.entity.query.value.aggregate.Count;
+import org.iplass.mtp.entity.query.value.aggregate.Listagg;
+import org.iplass.mtp.entity.query.value.aggregate.Max;
+import org.iplass.mtp.entity.query.value.aggregate.Min;
 import org.iplass.mtp.entity.query.value.aggregate.StdDevPop;
 import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
+import org.iplass.mtp.entity.query.value.aggregate.Sum;
 import org.iplass.mtp.entity.query.value.aggregate.VarPop;
 import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
 import org.iplass.mtp.impl.i18n.I18nService;
@@ -54,8 +59,10 @@ import org.iplass.mtp.impl.rdb.adapter.bulk.BulkUpdateContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.OrOperatorBulkDeleteContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.PreparedBulkInsertContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.PreparedBulkUpdateContext;
+import org.iplass.mtp.impl.rdb.adapter.function.AggregateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.DynamicTypedFunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.StaticTypedFunctionAdapter;
+import org.iplass.mtp.impl.rdb.common.function.CountFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentDateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentDateTimeFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentTimeFunctionAdapter;
@@ -64,6 +71,7 @@ import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerDateAddFunctionAdapte
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerDateDiffFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerExtractDateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerInstrFunctionAdapter;
+import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerListaggFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerModFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerRoundFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerSubstrFunctionAdapter;
@@ -129,6 +137,17 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 		addFunction(new CurrentTimeFunctionAdapter());
 		addFunction(new CurrentDateTimeFunctionAdapter());
 		addFunction(new LocalTimeFunctionAdapter());
+
+		addAggregateFunction(Count.class, new CountFunctionAdapter());
+		addAggregateFunction(Sum.class, new AggregateFunctionAdapter<Sum>("SUM", null));
+		addAggregateFunction(Avg.class, new AggregateFunctionAdapter<Avg>("AVG", Double.class));
+		addAggregateFunction(Max.class, new AggregateFunctionAdapter<Max>("MAX", null));
+		addAggregateFunction(Min.class, new AggregateFunctionAdapter<Min>("MIN", null));
+		addAggregateFunction(StdDevPop.class, new AggregateFunctionAdapter<StdDevPop>("STDDEV_POP", "STDEVP", Double.class));
+		addAggregateFunction(StdDevSamp.class, new AggregateFunctionAdapter<StdDevSamp>("STDDEV_SAMP", "STDEV", Double.class));
+		addAggregateFunction(VarPop.class, new AggregateFunctionAdapter<VarPop>("VAR_POP", "VARP", Double.class));
+		addAggregateFunction(VarSamp.class, new AggregateFunctionAdapter<VarSamp>("VAR_SAMP", "VAR", Double.class));
+		addAggregateFunction(Listagg.class, new SqlServerListaggFunctionAdapter());
 
 		I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -655,23 +674,6 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 	@Override
 	public int getThresholdCountOfUsePrepareStatement() {
 		return thresholdCountOfUsePrepareStatement;
-	}
-
-	@Override
-	public String aggregateFunctionName(Aggregate agg) {
-		if (agg instanceof StdDevPop) {
-			return "STDEVP";
-		}
-		if (agg instanceof StdDevSamp) {
-			return "STDEV";
-		}
-		if (agg instanceof VarPop) {
-			return "VARP";
-		}
-		if (agg instanceof VarSamp) {
-			return "VAR";
-		}
-		return super.aggregateFunctionName(agg);
 	}
 
 	public void setThresholdCountOfUsePrepareStatement(

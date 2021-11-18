@@ -29,7 +29,7 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 
-public class PostgreSQLDateDiffFunctionAdapter implements FunctionAdapter, DateTimeUnit {
+public class PostgreSQLDateDiffFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
 	
 //	/* HOUR */
 //	select trunc(extract(EPOCH FROM to_timestamp('2012-03-01 01:01:01','yyyy-mm-dd hh:mi:ss')-to_timestamp('2011-03-01','yyyy-mm-dd'))/60/60);

@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 import org.iplass.mtp.impl.rdb.oracle.OracleRdbAdapter;
 
-public class OracleDateDiffFunctionAdapter implements FunctionAdapter, DateTimeUnit {
+public class OracleDateDiffFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
 	
 //	/*HOUR*/
 //	select TRUNC((cast(to_timestamp('2012-03-01 12:12:12') as DATE)-cast('2011-03-01' as DATE))*24) from dual;

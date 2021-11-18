@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -22,43 +22,56 @@ package org.iplass.mtp.impl.rdb.adapter.function;
 
 import java.util.List;
 
-import org.iplass.mtp.entity.query.value.primary.Function;
+import org.iplass.mtp.entity.query.value.ValueExpression;
+import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-public abstract class BaseFunctionAdapter implements FunctionAdapter<Function> {
+public class AggregateFunctionAdapter<T extends Aggregate> implements FunctionAdapter<T> {
 	
 	private String functionName;
 	private String sqlFunctionName;
+
+	private Class<?> type;
 	
-	public BaseFunctionAdapter(String functionName) {
-		this.functionName = functionName;
-		this.sqlFunctionName = functionName;
+	public AggregateFunctionAdapter(String functionName, Class<?> type) {
+		this(functionName, functionName, type);
 	}
 	
-	public BaseFunctionAdapter(String functionName, String sqlFunctionName) {
+	public AggregateFunctionAdapter(String functionName, String sqlFunctionName, Class<?> type) {
 		this.functionName = functionName;
 		this.sqlFunctionName = sqlFunctionName;
+		this.type = type;
 	}
 	
+	public String getSqlFunctionName() {
+		return sqlFunctionName;
+	}
+
+	public void setSqlFunctionName(String sqlFunctionName) {
+		this.sqlFunctionName = sqlFunctionName;
+	}
+
 	@Override
-	public abstract Class<?> getType(Function function, ArgumentTypeResolver typeResolver);
+	public Class<?> getType(T function, ArgumentTypeResolver typeResolver) {
+		if (type != null) {
+			return type;
+		}
+		
+		ValueExpression value = function.getValue();
+		if (value != null) {
+			return typeResolver.resolveType(value);
+		} else {
+			return null;
+		}
+	};
 	
 	@Override
-	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
+	public void toSQL(FunctionContext context, T function, RdbAdapter rdb) {
 		context.append(sqlFunctionName);
 		context.append("(");
-		if (function.getArguments() != null) {
-			for (int i = 0; i < function.getArguments().size(); i++) {
-				if (i != 0) {
-					context.append(",");
-				}
-				context.appendArgument(function.getArguments().get(i));
-			}
-		}
+		context.appendArgument(function.getValue());
 		context.append(")");
 	}
-	
-	
 
 	@Override
 	public void toSQL(StringBuilder context, List<CharSequence> args, RdbAdapter rdb) {

@@ -50,6 +50,7 @@ import org.iplass.mtp.entity.query.hint.TimeoutHint;
 import org.iplass.mtp.entity.query.value.RowValueList;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
+import org.iplass.mtp.entity.query.value.aggregate.Listagg;
 import org.iplass.mtp.entity.query.value.aggregate.Max;
 import org.iplass.mtp.entity.query.value.aggregate.Median;
 import org.iplass.mtp.entity.query.value.aggregate.Min;
@@ -59,6 +60,8 @@ import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
 import org.iplass.mtp.entity.query.value.aggregate.Sum;
 import org.iplass.mtp.entity.query.value.aggregate.VarPop;
 import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
+import org.iplass.mtp.entity.query.value.aggregate.WithinGroup;
+import org.iplass.mtp.entity.query.value.aggregate.WithinGroupSortSpec;
 import org.iplass.mtp.entity.query.value.controlflow.Case;
 import org.iplass.mtp.entity.query.value.controlflow.Else;
 import org.iplass.mtp.entity.query.value.controlflow.When;
@@ -87,6 +90,7 @@ public interface ASTTransformer {
 	public ASTNode visit(Literal literal);
 	public ASTNode visit(EntityField entityField);
 	public ASTNode visit(ParenValue parenthesizedValue);
+
 	public ASTNode visit(Avg avg);
 	public ASTNode visit(Count count);
 	public ASTNode visit(Max max);
@@ -98,6 +102,10 @@ public interface ASTTransformer {
 	public ASTNode visit(VarSamp varSamp);
 	public ASTNode visit(Mode mode);
 	public ASTNode visit(Median median);
+	public ASTNode visit(Listagg listagg);
+	public ASTNode visit(WithinGroup withinGroup);
+	public ASTNode visit(WithinGroupSortSpec sortSpec);
+
 	public ASTNode visit(MinusSign minusSign);
 	public ASTNode visit(Polynomial polynomial);
 	public ASTNode visit(Term term);

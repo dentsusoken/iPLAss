@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 import org.iplass.mtp.impl.rdb.sqlserver.SqlServerRdbAdapter;
 
-public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter, DateTimeUnit {
+public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
 
 //	/*HOUR*/
 //	select DATEDIFF(SECOND, '2011-03-01', '2012-03-01 12:12:12')/60/60;

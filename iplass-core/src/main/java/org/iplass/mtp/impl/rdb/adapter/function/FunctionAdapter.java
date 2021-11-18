@@ -22,18 +22,18 @@ package org.iplass.mtp.impl.rdb.adapter.function;
 
 import java.util.List;
 
+import org.iplass.mtp.entity.query.ASTNode;
 import org.iplass.mtp.entity.query.value.ValueExpression;
-import org.iplass.mtp.entity.query.value.primary.Function;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-public interface FunctionAdapter {
+public interface FunctionAdapter<T extends ASTNode> {
 	
 	public String getFunctionName();
 
-	public abstract Class<?> getType(Function function,
+	public abstract Class<?> getType(T function,
 			ArgumentTypeResolver typeResolver);
 
-	public abstract void toSQL(FunctionContext context, Function function,
+	public abstract void toSQL(FunctionContext context, T function,
 			RdbAdapter rdb);
 
 	public abstract void toSQL(StringBuilder context, List<CharSequence> args, RdbAdapter rdb);

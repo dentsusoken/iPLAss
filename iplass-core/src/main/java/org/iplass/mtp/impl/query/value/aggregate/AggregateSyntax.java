@@ -24,6 +24,7 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
+import org.iplass.mtp.entity.query.value.aggregate.Listagg;
 import org.iplass.mtp.entity.query.value.aggregate.Max;
 import org.iplass.mtp.entity.query.value.aggregate.Median;
 import org.iplass.mtp.entity.query.value.aggregate.Min;
@@ -33,6 +34,8 @@ import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
 import org.iplass.mtp.entity.query.value.aggregate.Sum;
 import org.iplass.mtp.entity.query.value.aggregate.VarPop;
 import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
+import org.iplass.mtp.entity.query.value.aggregate.WithinGroup;
+import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.parser.EvalError;
 import org.iplass.mtp.impl.parser.ParseContext;
 import org.iplass.mtp.impl.parser.ParseException;
@@ -40,13 +43,18 @@ import org.iplass.mtp.impl.parser.Syntax;
 import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
+import org.iplass.mtp.impl.query.value.primary.LiteralSyntax;
 
 public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 	
 	private PolynomialSyntax polynomial;
+	private WithinGroupSyntax withinGroup;
+	private LiteralSyntax literal;
 	
 	public void init(SyntaxContext context) {
 		polynomial = context.getSyntax(PolynomialSyntax.class);
+		withinGroup = context.getSyntax(WithinGroupSyntax.class);
+		literal = context.getSyntax(LiteralSyntax.class);
 	}
 
 	public Aggregate parse(ParseContext str) throws ParseException {
@@ -54,7 +62,6 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 		Aggregate ag = null;
 		
 		int currentIndex = str.getCurrentIndex();
-		boolean isCount = false;
 		String token = str.nextToken(ParseContext.TOKEN_DELIMITERS);
 		if (token == null) {
 			throw new ParseException(new EvalError("aggregate function expected.", this, str));
@@ -64,7 +71,6 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 		switch (token) {
 		case COUNT:
 			ag = new Count();
-			isCount = true;
 			break;
 		case SUM:
 			ag = new Sum();
@@ -96,6 +102,9 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 		case MEDIAN:
 			ag = new Median();
 			break;
+		case LISTAGG:
+			ag = new Listagg();
+			break;
 		default:
 			str.setCurrentIndex(currentIndex);
 			throw new ParseException(new EvalError("aggregate function expected.", this, str));
@@ -109,11 +118,27 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 		str.consumeChars(LEFT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
 		
-		if (!isCount) {
+		if (ag instanceof Listagg) {
+			if (str.equalsNextToken(DISTINCT, ParseContext.WHITE_SPACES)) {
+				((Listagg) ag).setDistinct(true);
+				str.consumeChars(DISTINCT.length());
+				str.consumeChars(ParseContext.WHITE_SPACES);
+			}
 			ValueExpression nestedValue = polynomial.parse(str);
 			ag.setValue(nestedValue);
-		} else {
-			//countの場合はちょっと特殊
+			str.consumeChars(ParseContext.WHITE_SPACES);
+			if (str.startsWith(COMMA)) {
+				str.consumeChars(COMMA.length());
+				str.consumeChars(ParseContext.WHITE_SPACES);
+				Literal l = literal.parse(str);
+				if (!(l.getValue() instanceof String)) {
+					throw new ParseException(new EvalError("String literal expected.", this, str));
+				}
+				((Listagg) ag).setSeparator(l);
+				str.consumeChars(ParseContext.WHITE_SPACES);
+			}
+			
+		} else if (ag instanceof Count) {
 			if (!str.startsWith(RIGHT_PAREN)) {
 				if (str.equalsNextToken(DISTINCT, ParseContext.WHITE_SPACES)) {
 					((Count) ag).setDistinct(true);
@@ -123,6 +148,9 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 				ValueExpression nestedValue = polynomial.parse(str);
 				ag.setValue(nestedValue);
 			}
+		} else {
+			ValueExpression nestedValue = polynomial.parse(str);
+			ag.setValue(nestedValue);
 		}
 		
 		if (!str.startsWith(RIGHT_PAREN)) {
@@ -130,6 +158,18 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 		}
 		str.consumeChars(RIGHT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
+		
+		if (ag instanceof Listagg) {
+			//within group
+			currentIndex = str.getCurrentIndex();
+			try {
+				WithinGroup wg = withinGroup.parse(str);
+				((Listagg) ag).setWithinGroup(wg);
+				str.consumeChars(ParseContext.WHITE_SPACES);
+			} catch(ParseException e) {
+				str.setCurrentIndex(currentIndex);
+			}
+		}
 		
 		return ag;
 	}

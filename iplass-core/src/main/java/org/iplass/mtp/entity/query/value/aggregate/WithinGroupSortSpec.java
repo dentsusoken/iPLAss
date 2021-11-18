@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.entity.query.value.window;
+package org.iplass.mtp.entity.query.value.aggregate;
 
 import org.iplass.mtp.entity.query.ASTNode;
 import org.iplass.mtp.entity.query.ASTTransformer;
@@ -29,41 +29,42 @@ import org.iplass.mtp.entity.query.value.ValueExpressionVisitor;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 
 /**
- * Window関数のORDER BYのソート仕様を表す。
+ * WITHIN GROUPのソート仕様を表す。
  * 
  * @author K.Higuchi
  *
  */
-public class WindowSortSpec implements ASTNode {
+public class WithinGroupSortSpec implements ASTNode {
 	//TODO v3.2でAbstractSortSpec継承に
-	private static final long serialVersionUID = 5226124289545051191L;
+	private static final long serialVersionUID = -2258998740834898640L;
 
 	private ValueExpression sortKey;
 	private SortType type;
 	private NullOrderingSpec nullOrderingSpec;
 	
-	public WindowSortSpec() {
+	public WithinGroupSortSpec() {
 	}
 	
-	public WindowSortSpec(String sortKeyField, SortType type) {
+	public WithinGroupSortSpec(String sortKeyField, SortType type) {
 		super();
 		this.sortKey = new EntityField(sortKeyField);
 		this.type = type;
 	}
 	
-	public WindowSortSpec(ValueExpression sortKey, SortType type) {
+	public WithinGroupSortSpec(ValueExpression sortKey, SortType type) {
 		super();
 		this.sortKey = sortKey;
 		this.type = type;
 	}
 	
-	public WindowSortSpec(ValueExpression sortKey, SortType type, NullOrderingSpec nullOrderingSpec) {
+	public WithinGroupSortSpec(ValueExpression sortKey, SortType type, NullOrderingSpec nullOrderingSpec) {
 		super();
 		this.sortKey = sortKey;
 		this.type = type;
 		this.nullOrderingSpec = nullOrderingSpec;
 	}
 	
+	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
@@ -98,7 +99,7 @@ public class WindowSortSpec implements ASTNode {
 		this.nullOrderingSpec = nullOrderingSpec;
 	}
 	
-	public WindowSortSpec nulls(NullOrderingSpec nullOrderingSpec) {
+	public WithinGroupSortSpec nulls(NullOrderingSpec nullOrderingSpec) {
 		this.nullOrderingSpec = nullOrderingSpec;
 		return this;
 	}
@@ -138,7 +139,7 @@ public class WindowSortSpec implements ASTNode {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		WindowSortSpec other = (WindowSortSpec) obj;
+		WithinGroupSortSpec other = (WithinGroupSortSpec) obj;
 		if (nullOrderingSpec != other.nullOrderingSpec)
 			return false;
 		if (sortKey == null) {

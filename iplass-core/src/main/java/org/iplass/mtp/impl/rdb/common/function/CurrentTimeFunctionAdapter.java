@@ -34,7 +34,7 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
  * @author K.Higuchi
  *
  */
-public class CurrentTimeFunctionAdapter implements FunctionAdapter {
+public class CurrentTimeFunctionAdapter implements FunctionAdapter<Function> {
 
 	@Override
 	public String getFunctionName() {

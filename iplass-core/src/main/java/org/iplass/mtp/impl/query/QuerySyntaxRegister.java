@@ -38,6 +38,7 @@ import org.iplass.mtp.impl.query.hint.HintCommentSyntax;
 import org.iplass.mtp.impl.query.hint.HintSyntax;
 import org.iplass.mtp.impl.query.value.RowValueListSyntax;
 import org.iplass.mtp.impl.query.value.aggregate.AggregateSyntax;
+import org.iplass.mtp.impl.query.value.aggregate.WithinGroupSyntax;
 import org.iplass.mtp.impl.query.value.controlflow.CaseSyntax;
 import org.iplass.mtp.impl.query.value.controlflow.ElseSyntax;
 import org.iplass.mtp.impl.query.value.controlflow.WhenSyntax;
@@ -55,7 +56,6 @@ import org.iplass.mtp.impl.query.value.subquery.ScalarSubQuerySyntax;
 import org.iplass.mtp.impl.query.value.window.PartitionBySyntax;
 import org.iplass.mtp.impl.query.value.window.WindowFunctionSyntax;
 import org.iplass.mtp.impl.query.value.window.WindowOrderBySyntax;
-import org.iplass.mtp.impl.query.value.window.WindowSortSpecSyntax;
 
 public class QuerySyntaxRegister implements SyntaxRegister {
 
@@ -87,6 +87,7 @@ public class QuerySyntaxRegister implements SyntaxRegister {
 			new TermSyntax(),
 			new PrimaryValueSyntax(),
 			new AggregateSyntax(),
+			new WithinGroupSyntax(),
 			new ScalarSubQuerySyntax(),
 			new FunctionSyntax(),
 			new CastSyntax(),
@@ -100,7 +101,6 @@ public class QuerySyntaxRegister implements SyntaxRegister {
 			new WindowFunctionSyntax(),
 			new PartitionBySyntax(),
 			new WindowOrderBySyntax(),
-			new WindowSortSpecSyntax(),
 			new RowValueListSyntax(),
 
 			//Condition

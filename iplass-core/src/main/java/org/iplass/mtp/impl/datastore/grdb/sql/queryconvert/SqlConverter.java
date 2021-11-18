@@ -72,6 +72,7 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
+import org.iplass.mtp.entity.query.value.aggregate.Listagg;
 import org.iplass.mtp.entity.query.value.aggregate.Max;
 import org.iplass.mtp.entity.query.value.aggregate.Median;
 import org.iplass.mtp.entity.query.value.aggregate.Min;
@@ -81,6 +82,8 @@ import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
 import org.iplass.mtp.entity.query.value.aggregate.Sum;
 import org.iplass.mtp.entity.query.value.aggregate.VarPop;
 import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
+import org.iplass.mtp.entity.query.value.aggregate.WithinGroup;
+import org.iplass.mtp.entity.query.value.aggregate.WithinGroupSortSpec;
 import org.iplass.mtp.entity.query.value.controlflow.Case;
 import org.iplass.mtp.entity.query.value.controlflow.Else;
 import org.iplass.mtp.entity.query.value.controlflow.When;
@@ -121,6 +124,7 @@ import org.iplass.mtp.impl.entity.property.PropertyType;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
+import org.iplass.mtp.impl.rdb.adapter.function.AggregateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter.FunctionContext;
 
@@ -402,26 +406,34 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(Count count) {
 		push(count);
 		try {
-			String funcName = rdbAdaptor.aggregateFunctionName(count);
-			context.append(funcName);
-			if (count.getValue() == null) {
-				context.append("(*)");
-			} else {
-				context.append("(");
-				if (count.isDistinct()) {
-					context.append("DISTINCT ");
-				}
-				count.getValue().accept(this);
-				context.append(")");
-			}
+			aggregateFunction(count);
 			return false;
 		} finally {
 			pop(count);
 		}
 	}
 	
-	
 	private void aggregateFunction(Aggregate agg) {
+		@SuppressWarnings("unchecked")
+		AggregateFunctionAdapter<Aggregate> fa = (AggregateFunctionAdapter<Aggregate>) rdbAdaptor.resolveAggregateFunction(agg.getClass());
+		if (fa == null) {
+			throw new QueryException(agg.getClass().getSimpleName() + " not supported.");
+		}
+		
+		fa.toSQL(new FunctionContext() {
+			@Override
+			public void appendArgument(ValueExpression arg) {
+				arg.accept(SqlConverter.this);
+			}
+			
+			@Override
+			public void append(String str) {
+				context.append(str);
+			}
+		}, agg, rdbAdaptor);
+	}
+	
+	private void simpleAggregateFunction(Aggregate agg) {
 		String funcName = rdbAdaptor.aggregateFunctionName(agg);
 		context.append(funcName);
 		context.append("(");
@@ -433,7 +445,7 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(Sum sum) {
 		push(sum);
 		try {
-			aggregateFunction(sum);
+			simpleAggregateFunction(sum);
 			return false;
 		} finally {
 			pop(sum);
@@ -444,7 +456,7 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(Avg avg) {
 		push(avg);
 		try {
-			aggregateFunction(avg);
+			simpleAggregateFunction(avg);
 			return false;
 		} finally {
 			pop(avg);
@@ -455,7 +467,7 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(Max max) {
 		push(max);
 		try {
-			aggregateFunction(max);
+			simpleAggregateFunction(max);
 			return false;
 		} finally {
 			pop(max);
@@ -466,7 +478,7 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(Min min) {
 		push(min);
 		try {
-			aggregateFunction(min);
+			simpleAggregateFunction(min);
 			return false;
 		} finally {
 			pop(min);
@@ -477,7 +489,7 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(StdDevPop stdDevPop) {
 		push(stdDevPop);
 		try {
-			aggregateFunction(stdDevPop);
+			simpleAggregateFunction(stdDevPop);
 			return false;
 		} finally {
 			pop(stdDevPop);
@@ -488,7 +500,7 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(StdDevSamp stdDevSamp) {
 		push(stdDevSamp);
 		try {
-			aggregateFunction(stdDevSamp);
+			simpleAggregateFunction(stdDevSamp);
 			return false;
 		} finally {
 			pop(stdDevSamp);
@@ -499,7 +511,7 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(VarPop varPop) {
 		push(varPop);
 		try {
-			aggregateFunction(varPop);
+			simpleAggregateFunction(varPop);
 			return false;
 		} finally {
 			pop(varPop);
@@ -510,7 +522,7 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(VarSamp varSamp) {
 		push(varSamp);
 		try {
-			aggregateFunction(varSamp);
+			simpleAggregateFunction(varSamp);
 			return false;
 		} finally {
 			pop(varSamp);
@@ -521,7 +533,7 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(Mode mode) {
 		push(mode);
 		try {
-			aggregateFunction(mode);
+			simpleAggregateFunction(mode);
 			return false;
 		} finally {
 			pop(mode);
@@ -532,11 +544,32 @@ public class SqlConverter extends QueryVisitorSupport {
 	public boolean visit(Median median) {
 		push(median);
 		try {
-			aggregateFunction(median);
+			simpleAggregateFunction(median);
 			return false;
 		} finally {
 			pop(median);
 		}
+	}
+	
+	@Override
+	public boolean visit(Listagg listagg) {
+		push(listagg);
+		try {
+			aggregateFunction(listagg);
+			return false;
+		} finally {
+			pop(listagg);
+		}
+	}
+
+	@Override
+	public boolean visit(WithinGroup withinGroup) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(WithinGroupSortSpec sortSpec) {
+		return false;
 	}
 
 	@Override
@@ -2055,7 +2088,7 @@ public class SqlConverter extends QueryVisitorSupport {
 		push(function);
 		try {
 			
-			FunctionAdapter fa = rdbAdaptor.resolveFunction(function.getName());
+			FunctionAdapter<Function> fa = rdbAdaptor.resolveFunction(function.getName());
 			if (fa == null) {
 				throw new QueryException(function.getName() + " not supported.");
 			}

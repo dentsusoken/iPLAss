@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 
-public class MysqlDateAddFunctionAdapter implements FunctionAdapter, DateTimeUnit {
+public class MysqlDateAddFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
 	
 	//date_add(date, interval 1 day);
 	
