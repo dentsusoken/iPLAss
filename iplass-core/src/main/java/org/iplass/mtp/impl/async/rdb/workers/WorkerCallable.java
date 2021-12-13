@@ -99,7 +99,7 @@ public class WorkerCallable implements Callable<Void> {
 							} else {
 								mtpLogger.warn("queue:" + queue.getConfig().getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId() + ") is failed(cause:" + e + "). re-run after a while.");
 							}
-							throw e;
+							break;
 						case ABORT_LOG_FATAL:
 						case ABORT:
 							Transaction.required(transaction -> {
@@ -122,9 +122,9 @@ public class WorkerCallable implements Callable<Void> {
 									logger.warn("task status cant update to [abort].may be another process update status." + task);
 								}
 							});
-							throw e;
+							break;
 						default:
-							throw e;
+							break;
 						}
 					} finally {
 						ec.removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
