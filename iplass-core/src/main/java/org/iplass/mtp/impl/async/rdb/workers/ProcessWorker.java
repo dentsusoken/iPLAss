@@ -50,17 +50,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProcessWorker extends LocalWorker {
-	private static Logger logger = LoggerFactory.getLogger(ProcessWorker.class);
+	public static Logger logger = LoggerFactory.getLogger(ProcessWorker.class);
 	private static Logger fatalLogger = LoggerFactory.getLogger("mtp.fatal.async.rdb.processworker");
 
 	//別スレッドでプロセスのリターンを待機する。Process#waitForがタイムアウトを設定できないので（java8からできるっぽいけど）
-	private ExecutorService executor;
+	protected ExecutorService executor;
 	
 	public ProcessWorker(Queue queue, int workerId) {
 		super(queue, workerId);
 	}
 	
-	private Process createProcess(Task task) throws IOException {
+	protected Process createProcess(Task task) throws IOException {
 		ArrayList<String> command = new ArrayList<>();
 		command.add(queue.getConfig().getWorker().getJavaCommand());
 		if (queue.getConfig().getWorker().getVmArgs() != null) {
