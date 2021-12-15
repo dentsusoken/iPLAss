@@ -20,23 +20,9 @@
 
 package org.iplass.mtp.impl.async.rdb;
 
-import java.util.HashMap;
-
 public abstract class WorkerFactory {
 	public static final String WORKER_ID_DEF_NAME = "mtp.async.rdb.workers";
 	public static final String WORKER_PROCESS = "mtp.async.rdb.worker.process";
-		
-	private final HashMap<String, int[]> myWorkers = new HashMap<>();
-	private final boolean isWorkerProcess = false;
 	
 	public abstract Worker createWorker(Queue queue, int workerId);
-
-	public boolean isWorkerProcess() {
-		return isWorkerProcess;
-	}
-
-	public HashMap<String, int[]> getMyWorkers() {
-		return myWorkers;
-	}
-
 }

@@ -28,8 +28,6 @@ import org.iplass.mtp.impl.async.rdb.workers.ThreadWorker;
 import org.iplass.mtp.impl.core.config.ServerEnv;
 
 public class DefaultWorkerFactory extends WorkerFactory {
-	public static final String WORKER_ID_DEF_NAME = "mtp.async.rdb.workers";
-	public static final String WORKER_PROCESS = "mtp.async.rdb.worker.process";
 	
 	private static DefaultWorkerFactory factory = new DefaultWorkerFactory();
 	
