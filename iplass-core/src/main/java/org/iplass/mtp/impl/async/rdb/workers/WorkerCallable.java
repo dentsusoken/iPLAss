@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.async.rdb.workers;
 
 import java.util.concurrent.Callable;
 
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.async.ExceptionHandlingMode;
 import org.iplass.mtp.impl.async.AsyncTaskContextImpl;
 import org.iplass.mtp.impl.async.ExceptionHandleable;
@@ -38,6 +39,8 @@ import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import net.logstash.logback.argument.StructuredArguments;
 
 public class WorkerCallable implements Callable<Void> {
 	public static final String MDC_TASK_ID = "taskId";
@@ -175,9 +178,22 @@ public class WorkerCallable implements Callable<Void> {
 			} finally {
 				if (t != null) {
 					if (trace) {
-						mtpLogger.error(task.getCallable().toString() + "(id=" + task.getTaskId() + ")," + queue.getName() + "," + (System.currentTimeMillis() - start) + "ms,Error," + t.getMessage(), t);
+						mtpLogger.error("{}(id={}),{},{}ms,{},{}",
+								task.getCallable(),
+								task.getTaskId(),
+								StructuredArguments.value(LOG_ARG_QUEUE_NAME, queue.getName()),
+								StructuredArguments.value(LOG_ARG_EXECUTION_TIME, (System.currentTimeMillis() - start)),
+								StructuredArguments.value(LOG_ARG_ERROR_TYPE, errorType(t)),
+								StructuredArguments.value(LOG_ARG_ERROR_DESCRIPTION, t.getMessage()),
+								t);
 					} else {
-						mtpLogger.error(task.getCallable().toString() + "(id=" + task.getTaskId() + ")," + queue.getName() + ",Error," + t.getMessage(), t);
+						mtpLogger.error("{}(id={}),{},{},{}",
+								task.getCallable(),
+								task.getTaskId(),
+								StructuredArguments.value(LOG_ARG_QUEUE_NAME, queue.getName()),
+								StructuredArguments.value(LOG_ARG_ERROR_TYPE, errorType(t)),
+								StructuredArguments.value(LOG_ARG_ERROR_DESCRIPTION, t.getMessage()),
+								t);
 					}
 					if (t instanceof Error
 							|| task.getExceptionHandlingMode() == ExceptionHandlingMode.ABORT_LOG_FATAL) {
@@ -185,13 +201,32 @@ public class WorkerCallable implements Callable<Void> {
 					}
 				} else {
 					if (trace) {
-						mtpLogger.info(task.getCallable().toString() + "(id=" + task.getTaskId() + ")," + queue.getName() + "," + (System.currentTimeMillis() - start) + "ms");
+						mtpLogger.info("{}(id={}),{},{}ms",
+								task.getCallable(),
+								task.getTaskId(),
+								StructuredArguments.value(LOG_ARG_QUEUE_NAME, queue.getName()),
+								StructuredArguments.value(LOG_ARG_EXECUTION_TIME, (System.currentTimeMillis() - start)));
 					}
 				}
 			}
 		});
 	}
-	
+
+	private String errorType(Throwable t) {
+		if (t instanceof ApplicationException) {
+			return LOG_TYPE_APP_ERROR;
+		} else {
+			return LOG_TYPE_ERROR;
+		}
+	}
+
+	private static final String LOG_TYPE_APP_ERROR = "AppError";
+	private static final String LOG_TYPE_ERROR = "Error";
+	private static final String LOG_ARG_QUEUE_NAME = "queue_name";
+	private static final String LOG_ARG_EXECUTION_TIME = "execution_time";
+	private static final String LOG_ARG_ERROR_TYPE = "error_type";
+	private static final String LOG_ARG_ERROR_DESCRIPTION = "error_description";
+
 	private static class WrapException extends RuntimeException {
 		private static final long serialVersionUID = 1513733395068136003L;
 

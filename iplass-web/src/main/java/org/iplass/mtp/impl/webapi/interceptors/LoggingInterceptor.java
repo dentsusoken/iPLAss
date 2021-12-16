@@ -34,6 +34,7 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.interceptors.ExceptionInterceptor;
+import org.iplass.mtp.impl.web.interceptors.LoggingInterceptor.MessagePattern;
 import org.iplass.mtp.impl.webapi.rest.RestRequestContext;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;
@@ -158,25 +159,14 @@ public class LoggingInterceptor extends org.iplass.mtp.impl.command.interceptors
 				sqlCount = sqlCounter.get();
 			}
 
+			MessagePattern mp = MessagePattern.getInstance(executionTime, sqlCount, exp);
 			if (exp != null && !(exp instanceof ApplicationException)) {
-				if (ExceptionInterceptor.match(noStackTraceClass, exp)) {
-					webapiLogger.error(logStr(invocation, executionTime, sqlCount, exp));
-				} else {
-					webapiLogger.error(logStr(invocation, executionTime, sqlCount, exp), exp);
-				}
+				webapiLogger.error(mp.format(), mp.arguments(makeWebApiName(invocation), executionTime, sqlCount, exp, !ExceptionInterceptor.match(noStackTraceClass, exp)));
 			} else {
 				if (isWarnLog(executionTime, sqlCount)) {
-					if (exp != null && webapiLogger.isDebugEnabled()) {
-						webapiLogger.warn(logStr(invocation, executionTime, sqlCount, exp), exp);
-					} else {
-						webapiLogger.warn(logStr(invocation, executionTime, sqlCount, exp));
-					}
+					webapiLogger.warn(mp.format(), mp.arguments(makeWebApiName(invocation), executionTime, sqlCount, exp, webapiLogger.isDebugEnabled()));
 				} else {
-					if (exp != null && webapiLogger.isDebugEnabled()) {
-						webapiLogger.info(logStr(invocation, executionTime, sqlCount, exp), exp);
-					} else {
-						webapiLogger.info(logStr(invocation, executionTime, sqlCount, exp));
-					}
+					webapiLogger.info(mp.format(), mp.arguments(makeWebApiName(invocation), executionTime, sqlCount, exp, webapiLogger.isDebugEnabled()));
 				}
 			}
 			
@@ -194,35 +184,9 @@ public class LoggingInterceptor extends org.iplass.mtp.impl.command.interceptors
 		return false;
 	}
 
-	private String logStr(CommandInvocation invocation, long executionTime, int sqlCount, Throwable exp) {
-		
-		CharSequence requestPath = makeWebApiName((RestRequestContext) invocation.getRequest());
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(requestPath);
-		if (executionTime >= 0) {
-			sb.append(',');
-			sb.append(executionTime).append("ms");
-		}
-		if (sqlCount >= 0) {
-			sb.append(',');
-			sb.append(sqlCount).append("times(sql)");
-		}
-		if (exp != null) {
-			if (exp instanceof ApplicationException) {
-				sb.append(",AppError,");
-			} else {
-				sb.append(",Error,");
-			}
-			sb.append(exp.toString());
-		}
-		
-		return sb.toString();
-	}
-	
-
 	@SuppressWarnings("rawtypes")
-	private CharSequence makeWebApiName(RestRequestContext req) {
+	private CharSequence makeWebApiName(CommandInvocation invocation) {
+		RestRequestContext req = (RestRequestContext) invocation.getRequest();
 		String webApiName = WebRequestStack.getCurrent().getRequestPath().getTargetPath(true);
 
 		RequestType requestType = req.requestType();

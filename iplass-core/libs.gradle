@@ -54,11 +54,12 @@ dependencies {
 	// caffeine
 	implementation sharedLib('com.github.ben-manes.caffeine:caffeine')
 
-	//slf4j and logback
+	//slf4j/logback/logstash-logback-encoder
 	api sharedLib('org.slf4j:slf4j-api')
 	implementation sharedLib('ch.qos.logback:logback-classic')
 	runtimeOnly sharedLib('org.slf4j:jcl-over-slf4j')
-
+	implementation sharedLib('net.logstash.logback:logstash-logback-encoder')
+	
 	//jackson
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 

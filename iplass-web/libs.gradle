@@ -5,6 +5,8 @@ dependencies {
 	implementation 'org.codehaus.groovy:groovy'
 	implementation sharedLib('org.apache.httpcomponents:httpclient')
 
+	implementation sharedLib('net.logstash.logback:logstash-logback-encoder')
+
 	//apache POI
 	api sharedLib('org.apache.poi:poi')
 	api sharedLib('org.apache.poi:poi-ooxml')
