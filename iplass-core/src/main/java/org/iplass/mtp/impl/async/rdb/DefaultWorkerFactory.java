@@ -29,14 +29,8 @@ import org.iplass.mtp.impl.core.config.ServerEnv;
 
 public class DefaultWorkerFactory extends WorkerFactory {
 	
-	private static DefaultWorkerFactory factory = new DefaultWorkerFactory();
-	
 	private final HashMap<String, int[]> myWorkers;
 	private final boolean isWorkerProcess;
-	
-	public static DefaultWorkerFactory getFactory() {
-		return factory;
-	}
 	
 	public DefaultWorkerFactory() {
 		myWorkers = parseServerProperty();
