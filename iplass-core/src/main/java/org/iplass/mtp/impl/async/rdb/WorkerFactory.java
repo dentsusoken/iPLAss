@@ -20,80 +20,9 @@
 
 package org.iplass.mtp.impl.async.rdb;
 
-import java.util.HashMap;
-
-import org.iplass.mtp.impl.async.rdb.workers.ProcessWorker;
-import org.iplass.mtp.impl.async.rdb.workers.RemoteWorker;
-import org.iplass.mtp.impl.async.rdb.workers.ThreadWorker;
-import org.iplass.mtp.impl.core.config.ServerEnv;
-
-public class WorkerFactory {
+public abstract class WorkerFactory {
 	public static final String WORKER_ID_DEF_NAME = "mtp.async.rdb.workers";
 	public static final String WORKER_PROCESS = "mtp.async.rdb.worker.process";
 	
-	private static WorkerFactory factory = new WorkerFactory();
-	
-	private final HashMap<String, int[]> myWorkers;
-	private final boolean isWorkerProcess;
-	
-	public static WorkerFactory getFactory() {
-		return factory;
-	}
-	
-	private WorkerFactory() {
-		myWorkers = parseServerProperty();
-		String flg = System.getProperty(WORKER_PROCESS, "false");//あえて、直接SystemProperty
-		isWorkerProcess = Boolean.valueOf(flg);
-	}
-	
-	private HashMap<String, int[]> parseServerProperty() {
-		HashMap<String, int[]> map = new HashMap<>();
-		
-		//def format:
-		// [queueName]:[id]:[id],...
-		String def = ServerEnv.getInstance().getProperty(WORKER_ID_DEF_NAME);
-		if (def != null) {
-			String[] qAndIds = def.split(",");
-			for (String qi: qAndIds) {
-				String[] qiSplit = qi.trim().split(":");
-				int[] ids = new int[qiSplit.length - 1];
-				for (int i = 0; i < ids.length; i++) {
-					ids[i] = Integer.parseInt(qiSplit[i + 1].trim());
-				}
-				map.put(qiSplit[0], ids);
-			}
-		}
-		return map;
-	}
-
-	public Worker createWorker(Queue queue, int workerId) {
-		if (isWorkerProcess) {
-			//このプロセス自体がProcessWorkerのProcessの場合は、LocalWorkerは起動しない
-			return new RemoteWorker();
-		}
-		
-		WorkerConfig wc = queue.getConfig().getWorker();
-		if (wc.isLocal()) {
-			if (wc.isNewProcessPerTask()) {
-				return new ProcessWorker(queue, workerId);
-			} else {
-				return new ThreadWorker(queue, workerId);
-			}
-		} else {
-			int[] idList = myWorkers.get(queue.getName());
-			if (idList != null) {
-				for (int id: idList) {
-					if (id == workerId) {
-						if (wc.isNewProcessPerTask()) {
-							return new ProcessWorker(queue, workerId);
-						} else {
-							return new ThreadWorker(queue, workerId);
-						}
-					}
-				}
-			}
-			return new RemoteWorker();
-		}
-	}
-
+	public abstract Worker createWorker(Queue queue, int workerId);
 }

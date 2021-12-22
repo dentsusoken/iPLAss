@@ -88,12 +88,14 @@ public class RdbQueueService implements Service {
 		}
 		
 		queue = config.getValues("queue", QueueConfig.class);
+		
+		WorkerFactory workerFactory = config.getValue("workerFactory", WorkerFactory.class, new DefaultWorkerFactory());
 
 		queueMap = new HashMap<>();
 		queueIdMap = new HashMap<>();
 		if (queue != null) {
 			for (QueueConfig qc: queue) {
-				Queue q = new Queue(qc, taskIdCounter, taskIdCounterForGroup, rdb);
+				Queue q = new Queue(qc, taskIdCounter, taskIdCounterForGroup, rdb, workerFactory);
 				queueMap.put(q.getName(), q);
 				queueIdMap.put(qc.getId(), q);
 				if (q.getName().equalsIgnoreCase(DEFAULT_QUEUE_NAME)) {

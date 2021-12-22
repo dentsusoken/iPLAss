@@ -63,8 +63,12 @@ public class Queue {
 	private final int[][] workerIdMap;
 
 	private final Worker[] workers;
-
+	
 	public Queue(QueueConfig config, CounterService counter, CounterService counterForGroup, RdbAdapter rdb) {
+		this(config, counter, counterForGroup, rdb, null);
+	}
+
+	public Queue(QueueConfig config, CounterService counter, CounterService counterForGroup, RdbAdapter rdb, WorkerFactory workerFactory) {
 		this.config = config;
 		this.counter = counter;
 		this.counterForGroup = counterForGroup;
@@ -94,7 +98,7 @@ public class Queue {
 
 		workers = new Worker[config.getWorker().getActualWorkerSize()];
 		for (int i = 0; i < workers.length; i++) {
-			workers[i] = WorkerFactory.getFactory().createWorker(this, i);
+			workers[i] = workerFactory.createWorker(this, i);
 		}
 	}
 
