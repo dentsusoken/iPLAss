@@ -65,7 +65,7 @@ public class Queue {
 	private final Worker[] workers;
 	
 	public Queue(QueueConfig config, CounterService counter, CounterService counterForGroup, RdbAdapter rdb) {
-		this(config, counter, counterForGroup, rdb, null);
+		this(config, counter, counterForGroup, rdb, new DefaultWorkerFactory());
 	}
 
 	public Queue(QueueConfig config, CounterService counter, CounterService counterForGroup, RdbAdapter rdb, WorkerFactory workerFactory) {
