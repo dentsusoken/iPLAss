@@ -69,7 +69,27 @@ import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.rdb.connection.AdditionalWarnLogInfo;
 
+import net.logstash.logback.argument.StructuredArguments;
+
 public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
+	private static final int NO_INDEX_FLAG = 0b001;
+	private static final int WEAK_INDEX_FLAG = 0b010;
+	private static final int CORRELATED_SUBQUERY_CONDITION_FLAG = 0b100;
+	
+	private static final String[] ALERT_MESSAGE = {
+		null,
+		"!WITHOUT INDEX QUERY!", //001
+		"!LOW CARDINALITY INDEX QUERY!", //010
+		"!WITHOUT INDEX QUERY!", //011
+		"!CORRELATED SUBQUERY IN CONDITION QUERY!", //100
+		"!WITHOUT INDEX QUERY! !CORRELATED SUBQUERY IN CONDITION QUERY!", //101
+		"!LOW CARDINALITY INDEX QUERY! !CORRELATED SUBQUERY IN CONDITION QUERY!", //110
+		"!WITHOUT INDEX QUERY! !CORRELATED SUBQUERY IN CONDITION QUERY!" //111
+	};
+	
+	private static final String EQL_TYPE_EQL = "eql";
+	private static final String EQL_TYPE_COUNT = "eql(count)";
+	
 	private final Query query;
 	private final boolean count;
 	
@@ -79,9 +99,8 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 	private boolean checked;
 	
 	private boolean doLog;
-	private boolean noIndex;
-	private boolean weakIndex;
-	private boolean correlatedSubqueryCondition;
+	
+	private int alertFlags = 0b000;
 	
 	public EQLAdditionalWarnLogInfo(Query query, boolean count, EntityHandler eh, EntityContext ec) {
 		this.query = query;
@@ -94,28 +113,63 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 	public String toString() {
 		if (doLog) {
 			StringBuilder sb = new StringBuilder();
-			if (noIndex) {
-				sb.append("!WITHOUT INDEX QUERY! ");
-			} else if (weakIndex) {
-				sb.append("!LOW CARDINALITY INDEX QUERY! ");
-			}
-			if (correlatedSubqueryCondition) {
-				sb.append("!CORRELATED SUBQUERY IN CONDITION QUERY! ");
+			String msg = ALERT_MESSAGE[alertFlags];
+			if (msg != null) {
+				sb.append(msg).append(' ');
 			}
 			
 			if (count) {
-				sb.append("eql(count)=");
+				sb.append(EQL_TYPE_COUNT + "=");
 			} else {
-				sb.append("eql=");
+				sb.append(EQL_TYPE_EQL + "=");
 			}
 			sb.append(query);
 			return sb.toString();
 		} else {
 			if (count) {
-				return "eql(count)=" + query;
+				return EQL_TYPE_COUNT + "=" + query;
 			} else {
-				return "eql=" + query;
+				return EQL_TYPE_EQL + "=" + query;
 			}
+		}
+	}
+
+	@Override
+	public String logFormat() {
+		if (doLog) {
+			return "{} {}={}";
+		} else {
+			return "{}={}";
+		}
+	}
+
+	@Override
+	public int parameterSize() {
+		if (doLog) {
+			return 3;
+		} else {
+			return 2;
+		}
+	}
+
+	@Override
+	public void setParameter(int offset, Object[] params) {
+		if (doLog) {
+			params[offset] = StructuredArguments.value("alert_message", ALERT_MESSAGE[alertFlags]);
+			if (count) {
+				params[offset + 1] = StructuredArguments.value("eql_type", EQL_TYPE_COUNT);
+			} else {
+				params[offset + 1] = StructuredArguments.value("eql_type", EQL_TYPE_EQL);
+			}
+			params[offset + 2] = StructuredArguments.value("eql", query.toString());
+		} else {
+			if (count) {
+				params[offset] = StructuredArguments.value("eql_type", EQL_TYPE_COUNT);
+			} else {
+				params[offset] = StructuredArguments.value("eql_type", EQL_TYPE_EQL);
+			}
+			params[offset + 1] = StructuredArguments.value("eql", query.toString());
+			
 		}
 	}
 
@@ -129,10 +183,16 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 			} else {
 				SubQueryCheckWarning subQueryCheckWarning = new SubQueryCheckWarning(ec);
 				subQueryCheckWarning.check(query);
-				noIndex = !checkWarning.index || !subQueryCheckWarning.index;
-				weakIndex = !checkWarning.highCardinality || !subQueryCheckWarning.highCardinality;
-				correlatedSubqueryCondition = checkWarning.correlatedSubqueryCondition || subQueryCheckWarning.correlatedSubqueryCondition;
-				doLog = noIndex || weakIndex || correlatedSubqueryCondition;
+				if (!checkWarning.index || !subQueryCheckWarning.index) {
+					alertFlags |= NO_INDEX_FLAG;
+				};
+				if (!checkWarning.highCardinality || !subQueryCheckWarning.highCardinality) {
+					alertFlags |= WEAK_INDEX_FLAG;
+				};
+				if (checkWarning.correlatedSubqueryCondition || subQueryCheckWarning.correlatedSubqueryCondition) {
+					alertFlags |= CORRELATED_SUBQUERY_CONDITION_FLAG;
+				};
+				doLog = alertFlags > 0;
 			}
 			
 			checked = true;
@@ -140,8 +200,7 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 		
 		return doLog;
 	}
-	
-	
+
 	private static class SubQueryCheckWarning extends QueryVisitorSupport {
 		private EntityContext ec;
 		

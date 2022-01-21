@@ -48,6 +48,9 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.logstash.logback.argument.StructuredArguments;
+import net.logstash.logback.marker.Markers;
+
 public class PreparedStatementWrapper extends StatementWrapper implements
 		PreparedStatement {
 
@@ -85,7 +88,7 @@ public class PreparedStatementWrapper extends StatementWrapper implements
 		long start = System.currentTimeMillis();
 		try {
 			if (warnLogBefore && additionalWarnLogInfo != null && additionalWarnLogInfo.logBefore()) {
-				logger.warn(logStr(method, sql, -1, withParam));
+				logger.warn(Markers.append("warning_type", "alert"), withWarnLogFormat(method, sql, null, withParam), logParam(method, sql, null, withParam));
 			}
 			
 			return s.run();
@@ -94,47 +97,99 @@ public class PreparedStatementWrapper extends StatementWrapper implements
 			long queryTime = System.currentTimeMillis() - start;
 			if (warnLogThreshold > 0  && queryTime > warnLogThreshold) {
 				if (logger.isWarnEnabled()) {
-					logger.warn(logStr(method, sql, queryTime, withParam));
+					logger.warn(Markers.append("warning_type", "time"), withWarnLogFormat(method, sql, queryTime, withParam), logParam(method, sql, queryTime, withParam));
 				}
 			} else {
 				if (logger.isDebugEnabled()) {
-					logger.debug(logStr(method, sql, queryTime, withParam));
+					logger.debug(Markers.append("warning_type", "time"), withWarnLogFormat(method, sql, queryTime, withParam), logParam(method, sql, queryTime, withParam));
 				}
 			}
 		}
 	}
 
-	private String logStr(String method, String sql, long queryTime, boolean withParam) {
-		StringBuilder log = new StringBuilder();
-		log.append(method);
-		if (queryTime > -1) {
-			log.append(" time= ");
-			log.append(queryTime);
-			log.append(" ms.");
+	private Object[] logParam(String method, String sql, Long queryTime, boolean withParam) {
+		Object[] logParam;
+		int base;
+		if (queryTime == null) {
+			base = 2;
+		} else {
+			base = 3;
+		}
+		if (withParam) {
+			base += 2;
+		}
+		if (additionalWarnLogInfo == null) {
+			logParam = new Object[base];
+		} else {
+			logParam = new Object[base + additionalWarnLogInfo.parameterSize()];
+		}
+		
+		int i = 0;
+		logParam[i++] = StructuredArguments.value("method", method);
+		if (queryTime != null) {
+			logParam[i++] = StructuredArguments.value("execution_time", queryTime);
 		}
 		if (sql != null) {
-			log.append(" sql=");
-			log.append(sql);
+			logParam[i++] = StructuredArguments.value("sql", sql);
 		}
-		log.append(" -- ");
 		if (withParam) {
-			log.append("index= ");
-			log.append(indexs);
-			log.append(" values= ");
-			log.append(values);
+			logParam[i++] = StructuredArguments.value("sql_parameter_index", indexs);
+			logParam[i++] = StructuredArguments.value("sql_parameter_values", values);
 		}
 		if (additionalWarnLogInfo != null) {
-			log.append(" ");
-			log.append(additionalWarnLogInfo);
+			additionalWarnLogInfo.setParameter(base, logParam);
 		}
-		return log.toString();
+		return logParam;
+	}
+	
+	private String withWarnLogFormat(String method, String sql, Long queryTime, boolean withParam) {
+		String fmt;
+		if (queryTime == null) {
+			if (sql == null) {
+				if (withParam) {
+					fmt = "{} -- index= {} values= {}";
+				} else {
+					fmt = "{}";
+				}
+			} else {
+				if (withParam) {
+					fmt = "{} sql={} -- index= {} values= {}";
+					
+				} else {
+					fmt = "{} sql={}";
+				}
+			}
+		} else {
+			if (sql == null) {
+				if (withParam) {
+					fmt = "{} time= {} ms. -- index= {} values= {}";
+				} else {
+					fmt = "{} time= {} ms.";
+				}
+			} else {
+				if (withParam) {
+					fmt = "{} time= {} ms. sql={} -- index= {} values= {}";
+				} else {
+					fmt = "{} time= {} ms. sql={}";
+				}
+			}
+		}
+		
+		if (additionalWarnLogInfo == null) {
+			return fmt;
+		} else {
+			String warnLogFmt = additionalWarnLogInfo.logFormat();
+			StringBuilder sb = new StringBuilder(fmt.length() + 4 + warnLogFmt.length());
+			sb.append(fmt).append(" -- ").append(warnLogFmt);
+			return sb.toString();
+		}
 	}
 	
 	public void addBatch() throws SQLException {
 		try {
 			wrapped.addBatch();
 			if (logger.isDebugEnabled()) {
-				logger.debug(logStr("addBatch()", null, -1, true));
+				logger.debug(withWarnLogFormat("addBatch()", null, null, true), logParam("addBatch()", null, null, true));
 			}
 		} finally {
 			values.clear();

@@ -25,5 +25,11 @@ public interface AdditionalWarnLogInfo {
 	public boolean logBefore();
 	
 	public String toString();
+	
+	public String logFormat();
+	
+	public int parameterSize();
+	
+	public void setParameter(int offset, Object[] params);
 
 }
