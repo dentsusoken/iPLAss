@@ -13,12 +13,6 @@
 # Tenant Id
 export TENANT_ID=1
 
-# User Id
-export USER_ID=
-
-# Password
-export PASSWORD=
-
 # Search all version (if value true, Search all versions)
 export SEARCH_ALL_VERSION=false
 
@@ -31,7 +25,20 @@ export EXEC_MODE=BATCH
 #   ONLY_EXEC          : Only execute
 #   ONLY_COUNT         : Only count
 #   SHOW_SEARCH_RESULT : Show search result
+#   CSV_EXPORT : Export result at csv file
 export EQL_EXEC_MODE=ONLY_EXEC
+
+# User Id [Optional] (if value is '_empty_', no specify)
+export USER_ID=_empty_
+
+# Password [Optional] (if value is '_empty_', no specify)
+export PASSWORD=_empty_
+
+# Export dir [Optional] (if value is '_empty_', no specify)
+export EXPORT_DIR=_empty_
+
+# File name [Optional] (if value is '_empty_', no specify)
+export FILE_NAME=_empty_
 
 # Charset
 export CHARSET=UTF-8
@@ -47,7 +54,7 @@ export EQL="$1"
 export EXEC_APP=org.iplass.mtp.tools.batch.entity.EQLExecutor
 
 # App Arguments
-export APP_ARGS="${TENANT_ID} ${SEARCH_ALL_VERSION} ${EXEC_MODE} ${EQL_EXEC_MODE} ${USER_ID} ${PASSWORD}"
+export APP_ARGS="${TENANT_ID} ${SEARCH_ALL_VERSION} ${EXEC_MODE} ${EQL_EXEC_MODE} ${USER_ID} ${PASSWORD} ${EXPORT_DIR} ${FILE_NAME}"
 
 # ----------------------------------------------------
 # confirm

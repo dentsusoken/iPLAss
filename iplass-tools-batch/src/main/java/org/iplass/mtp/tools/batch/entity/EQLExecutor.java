@@ -20,6 +20,9 @@
 
 package org.iplass.mtp.tools.batch.entity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Scanner;
 
@@ -40,6 +43,8 @@ import org.slf4j.LoggerFactory;
 public class EQLExecutor extends MtpCuiBase {
 
 	private static Logger logger = LoggerFactory.getLogger(EQLExecutor.class);
+	
+	private static final String EMPTY = "_empty_";
 
 	private static final String SET_EQL_EXEC_MODE = "EQL_EXEC_MODE=";
 
@@ -64,7 +69,7 @@ public class EQLExecutor extends MtpCuiBase {
 	/** EQL実行モード */
 	private EQLExecMode eqlExecMode = EQLExecMode.ONLY_EXEC;
 	private enum EQLExecMode {
-		ONLY_EXEC, ONLY_COUNT, SHOW_SEARCH_RESULT
+		ONLY_EXEC, ONLY_COUNT, SHOW_SEARCH_RESULT, CSV_EXPORT
 	}
 
 	/** ユーザID */
@@ -72,6 +77,13 @@ public class EQLExecutor extends MtpCuiBase {
 
 	/** パスワード */
 	private String password;
+
+	/** 出力先ディレクトリ */
+	private String exportDirName;
+
+	/** ファイル名 */
+	private String fileName;
+
 
 	/**
 	 * コンストラクタ
@@ -104,12 +116,22 @@ public class EQLExecutor extends MtpCuiBase {
 		if (args.length > 4) {
 			eqlExecMode = EQLExecMode.valueOf(args[4]);
 		}
-		if (args.length > 5) {
+		if (args.length > 5 && !isEmpty(args[5])) {
 			userId = args[5];
 		}
-		if (args.length > 6) {
+		if (args.length > 6 && !isEmpty(args[6])) {
 			password = args[6];
 		}
+		if (args.length > 7 && !isEmpty(args[7])) {
+			exportDirName = args[7];
+		}
+		if (args.length > 8 && !isEmpty(args[8])) {
+			fileName = args[8];
+		}
+	}
+	
+	private boolean isEmpty(String str) {
+		return StringUtil.isBlank(str) || EMPTY.equals(str.toLowerCase());
 	}
 
 	public static void main(String... args) {
@@ -146,6 +168,18 @@ public class EQLExecutor extends MtpCuiBase {
 		if (tc == null) {
 			logError(rs("EQLExecutor.notFoundTenant", tenantId));
 			return isSuccess();
+		}
+		
+
+		if (EQLExecMode.CSV_EXPORT.equals(eqlExecMode)) {
+			if (StringUtil.isBlank(exportDirName)) {
+				logError(rs("EQLExecutor.notSpecifiedExportDir"));
+				return isSuccess();
+			}
+			if (StringUtil.isBlank(fileName)) {
+				logError(rs("EQLExecutor.notSpecifiedFileName"));
+				return isSuccess();
+			}
 		}
 
 		return ExecuteContext.executeAs(tc, () -> {
@@ -191,6 +225,18 @@ public class EQLExecutor extends MtpCuiBase {
 				count = entityToolService.executeEQLWithAuth(out, System.getProperty("file.encoding"), eql, isSearchAllVersion);
 			} else {
 				count = entityToolService.executeEQLWithAuth(out, System.getProperty("file.encoding"), eql, isSearchAllVersion, userId, password);
+			}
+			break;
+		case CSV_EXPORT:
+			File outFile = new File(exportDirName, fileName + ".csv");
+			try {
+				if (StringUtil.isBlank(userId)) {
+					count = entityToolService.executeEQLWithAuth(new FileOutputStream(outFile), System.getProperty("file.encoding"), eql, isSearchAllVersion);
+				} else {
+					count = entityToolService.executeEQLWithAuth(new FileOutputStream(outFile), System.getProperty("file.encoding"), eql, isSearchAllVersion, userId, password);
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
 			}
 			break;
 		}
