@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class EQLExecutor extends MtpCuiBase {
 
 	private static Logger logger = LoggerFactory.getLogger(EQLExecutor.class);
-	
+
 	private static final String SET_EQL_EXEC_MODE = "EQL_EXEC_MODE=";
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
