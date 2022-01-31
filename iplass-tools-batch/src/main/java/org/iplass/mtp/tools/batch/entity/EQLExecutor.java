@@ -44,8 +44,6 @@ public class EQLExecutor extends MtpCuiBase {
 
 	private static Logger logger = LoggerFactory.getLogger(EQLExecutor.class);
 	
-	private static final String EMPTY = "_empty_";
-
 	private static final String SET_EQL_EXEC_MODE = "EQL_EXEC_MODE=";
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
@@ -92,7 +90,7 @@ public class EQLExecutor extends MtpCuiBase {
 	 * args[4]・・・eqlExecMode["ONLY_EXEC":実行のみ, "ONLY_COUNT":カウントのみ, "SHOW_SEARCH_RESULT":検索結果表示]
 	 * args[5]・・・userId
 	 * args[6]・・・password
-	 * args[7]・・・outFile
+	 * args[7]・・・exportFile
 	 **/
 	public EQLExecutor(String... args) {
 		if (args == null || args.length < 2) {
@@ -160,7 +158,6 @@ public class EQLExecutor extends MtpCuiBase {
 			logError(rs("EQLExecutor.notFoundTenant", tenantId));
 			return isSuccess();
 		}
-		
 
 		if (EQLExecMode.CSV_EXPORT.equals(eqlExecMode) && StringUtil.isBlank(exportFile)) {
 			logError(rs("EQLExecutor.notSpecifiedExportFile"));
