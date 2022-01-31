@@ -31,17 +31,14 @@ REM   SHOW_SEARCH_RESULT : Show search result
 REM   CSV_EXPORT : Export result at csv file
 set EQL_EXEC_MODE=ONLY_EXEC
 
-REM User Id [Optional] (if value is '_empty_', no specify)
-set USER_ID=_empty_
+REM User Id [Optional]
+set USER_ID=
 
-REM Password [Optional] (if value is '_empty_', no specify)
-set PASSWORD=_empty_
+REM Password [Optional]
+set PASSWORD=
 
-REM Export dir [Optional] (if value is '_empty_', no specify)
-set EXPORT_DIR=_empty_
-
-REM File name [Optional] (if value is '_empty_', no specify)
-set FILE_NAME=_empty_
+REM Export File [Optional]
+set EXPORT_FILE=
 
 REM EQL statement (must be enclosed in double quotes)
 set EQL=%~1
@@ -54,7 +51,7 @@ REM APP class
 set EXEC_APP=org.iplass.mtp.tools.batch.entity.EQLExecutor
 
 REM App Arguments
-set APP_ARGS="%EQL%" %TENANT_ID% %SEARCH_ALL_VERSION% %EXEC_MODE% %EQL_EXEC_MODE% %USER_ID% %PASSWORD% %EXPORT_DIR% %FILE_NAME% 
+set APP_ARGS="%EQL%" %TENANT_ID% %SEARCH_ALL_VERSION% %EXEC_MODE% %EQL_EXEC_MODE% "%USER_ID%" "%PASSWORD%" "%EXPORT_FILE%" 
 
 REM ----------------------------------------------------
 REM confirm

@@ -78,11 +78,8 @@ public class EQLExecutor extends MtpCuiBase {
 	/** パスワード */
 	private String password;
 
-	/** 出力先ディレクトリ */
-	private String exportDirName;
-
-	/** ファイル名 */
-	private String fileName;
+	/** 出力ファイル名 */
+	private String exportFile;
 
 
 	/**
@@ -95,6 +92,7 @@ public class EQLExecutor extends MtpCuiBase {
 	 * args[4]・・・eqlExecMode["ONLY_EXEC":実行のみ, "ONLY_COUNT":カウントのみ, "SHOW_SEARCH_RESULT":検索結果表示]
 	 * args[5]・・・userId
 	 * args[6]・・・password
+	 * args[7]・・・outFile
 	 **/
 	public EQLExecutor(String... args) {
 		if (args == null || args.length < 2) {
@@ -116,24 +114,17 @@ public class EQLExecutor extends MtpCuiBase {
 		if (args.length > 4) {
 			eqlExecMode = EQLExecMode.valueOf(args[4]);
 		}
-		if (args.length > 5 && !isEmpty(args[5])) {
+		if (args.length > 5) {
 			userId = args[5];
 		}
-		if (args.length > 6 && !isEmpty(args[6])) {
+		if (args.length > 6) {
 			password = args[6];
 		}
-		if (args.length > 7 && !isEmpty(args[7])) {
-			exportDirName = args[7];
-		}
-		if (args.length > 8 && !isEmpty(args[8])) {
-			fileName = args[8];
+		if (args.length > 7) {
+			exportFile = args[7];
 		}
 	}
 	
-	private boolean isEmpty(String str) {
-		return StringUtil.isBlank(str) || EMPTY.equals(str.toLowerCase());
-	}
-
 	public static void main(String... args) {
 		try {
 			new EQLExecutor(args).execute();
@@ -171,15 +162,9 @@ public class EQLExecutor extends MtpCuiBase {
 		}
 		
 
-		if (EQLExecMode.CSV_EXPORT.equals(eqlExecMode)) {
-			if (StringUtil.isBlank(exportDirName)) {
-				logError(rs("EQLExecutor.notSpecifiedExportDir"));
-				return isSuccess();
-			}
-			if (StringUtil.isBlank(fileName)) {
-				logError(rs("EQLExecutor.notSpecifiedFileName"));
-				return isSuccess();
-			}
+		if (EQLExecMode.CSV_EXPORT.equals(eqlExecMode) && StringUtil.isBlank(exportFile)) {
+			logError(rs("EQLExecutor.notSpecifiedExportFile"));
+			return isSuccess();
 		}
 
 		return ExecuteContext.executeAs(tc, () -> {
@@ -228,7 +213,7 @@ public class EQLExecutor extends MtpCuiBase {
 			}
 			break;
 		case CSV_EXPORT:
-			File outFile = new File(exportDirName, fileName + ".csv");
+			File outFile = new File(exportFile);
 			try {
 				if (StringUtil.isBlank(userId)) {
 					count = entityToolService.executeEQLWithAuth(new FileOutputStream(outFile), System.getProperty("file.encoding"), eql, isSearchAllVersion);

@@ -28,17 +28,14 @@ export EXEC_MODE=BATCH
 #   CSV_EXPORT : Export result at csv file
 export EQL_EXEC_MODE=ONLY_EXEC
 
-# User Id [Optional] (if value is '_empty_', no specify)
-export USER_ID=_empty_
+# User Id [Optional]
+export USER_ID=
 
-# Password [Optional] (if value is '_empty_', no specify)
-export PASSWORD=_empty_
+# Password [Optional]
+export PASSWORD=
 
-# Export dir [Optional] (if value is '_empty_', no specify)
-export EXPORT_DIR=_empty_
-
-# File name [Optional] (if value is '_empty_', no specify)
-export FILE_NAME=_empty_
+# Export File [Optional]
+export EXPORT_FILE=
 
 # Charset
 export CHARSET=UTF-8
@@ -54,7 +51,7 @@ export EQL="$1"
 export EXEC_APP=org.iplass.mtp.tools.batch.entity.EQLExecutor
 
 # App Arguments
-export APP_ARGS="${TENANT_ID} ${SEARCH_ALL_VERSION} ${EXEC_MODE} ${EQL_EXEC_MODE} ${USER_ID} ${PASSWORD} ${EXPORT_DIR} ${FILE_NAME}"
+export APP_ARGS="${TENANT_ID} ${SEARCH_ALL_VERSION} ${EXEC_MODE} ${EQL_EXEC_MODE}"
 
 # ----------------------------------------------------
 # confirm
@@ -76,5 +73,5 @@ read wait
 # ----------------------------------------------------
 
 # execute tool
-java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} -D${LANG_ENV} -Dfile.encoding=${CHARSET} ${EXEC_APP} "${EQL}" ${APP_ARGS}
+java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} -D${LANG_ENV} -Dfile.encoding=${CHARSET} ${EXEC_APP} "${EQL}" ${APP_ARGS} "${USER_ID}" "${PASSWORD}" "${EXPORT_FILE}"
 
