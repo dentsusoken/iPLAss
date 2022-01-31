@@ -86,7 +86,7 @@ public class EQLExecutor extends MtpCuiBase {
 	 * args[1]・・・tenantId
 	 * args[2]・・・isSearchAllVersion
 	 * args[3]・・・execMode["BATCH":バッチモード, "INTERACT":対話モード]
-	 * args[4]・・・eqlExecMode["ONLY_EXEC":実行のみ, "ONLY_COUNT":カウントのみ, "SHOW_SEARCH_RESULT":検索結果表示]
+	 * args[4]・・・eqlExecMode["ONLY_EXEC":実行のみ, "ONLY_COUNT":カウントのみ, "SHOW_SEARCH_RESULT":検索結果表示, "CSV_EXPORT":検索結果をCSV出力]
 	 * args[5]・・・userId
 	 * args[6]・・・password
 	 * args[7]・・・exportFile
