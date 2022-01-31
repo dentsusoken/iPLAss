@@ -79,7 +79,6 @@ public class EQLExecutor extends MtpCuiBase {
 	/** 出力ファイル名 */
 	private String exportFile;
 
-
 	/**
 	 * コンストラクタ
 	 *
