@@ -124,7 +124,7 @@ public class EQLExecutor extends MtpCuiBase {
 			exportFile = args[7];
 		}
 	}
-	
+
 	public static void main(String... args) {
 		try {
 			new EQLExecutor(args).execute();
