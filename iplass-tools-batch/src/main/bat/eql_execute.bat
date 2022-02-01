@@ -16,12 +16,6 @@ REM ----------------------------------------------------
 REM Tenant Id
 set TENANT_ID=1
 
-REM User Id
-set USER_ID=
-
-REM Password
-set PASSWORD=
-
 REM Search all version (if value true, Search all versions)
 set SEARCH_ALL_VERSION=false
 
@@ -34,7 +28,17 @@ REM EQL execute mode
 REM   ONLY_EXEC          : Only execute
 REM   ONLY_COUNT         : Only count
 REM   SHOW_SEARCH_RESULT : Show search result
+REM   CSV_EXPORT : Export result at csv file
 set EQL_EXEC_MODE=ONLY_EXEC
+
+REM User Id [Optional]
+set USER_ID=
+
+REM Password [Optional]
+set PASSWORD=
+
+REM Export File [Optional]
+set EXPORT_FILE=
 
 REM EQL statement (must be enclosed in double quotes)
 set EQL=%~1
@@ -47,7 +51,7 @@ REM APP class
 set EXEC_APP=org.iplass.mtp.tools.batch.entity.EQLExecutor
 
 REM App Arguments
-set APP_ARGS="%EQL%" %TENANT_ID% %SEARCH_ALL_VERSION% %EXEC_MODE% %EQL_EXEC_MODE% %USER_ID% %PASSWORD%
+set APP_ARGS="%EQL%" %TENANT_ID% %SEARCH_ALL_VERSION% %EXEC_MODE% %EQL_EXEC_MODE% "%USER_ID%" "%PASSWORD%" "%EXPORT_FILE%" 
 
 REM ----------------------------------------------------
 REM confirm

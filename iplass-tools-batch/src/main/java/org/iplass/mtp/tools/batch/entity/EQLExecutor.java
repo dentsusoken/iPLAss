@@ -20,6 +20,9 @@
 
 package org.iplass.mtp.tools.batch.entity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Scanner;
 
@@ -64,7 +67,7 @@ public class EQLExecutor extends MtpCuiBase {
 	/** EQL実行モード */
 	private EQLExecMode eqlExecMode = EQLExecMode.ONLY_EXEC;
 	private enum EQLExecMode {
-		ONLY_EXEC, ONLY_COUNT, SHOW_SEARCH_RESULT
+		ONLY_EXEC, ONLY_COUNT, SHOW_SEARCH_RESULT, CSV_EXPORT
 	}
 
 	/** ユーザID */
@@ -73,6 +76,9 @@ public class EQLExecutor extends MtpCuiBase {
 	/** パスワード */
 	private String password;
 
+	/** 出力ファイル名 */
+	private String exportFile;
+
 	/**
 	 * コンストラクタ
 	 *
@@ -80,9 +86,10 @@ public class EQLExecutor extends MtpCuiBase {
 	 * args[1]・・・tenantId
 	 * args[2]・・・isSearchAllVersion
 	 * args[3]・・・execMode["BATCH":バッチモード, "INTERACT":対話モード]
-	 * args[4]・・・eqlExecMode["ONLY_EXEC":実行のみ, "ONLY_COUNT":カウントのみ, "SHOW_SEARCH_RESULT":検索結果表示]
+	 * args[4]・・・eqlExecMode["ONLY_EXEC":実行のみ, "ONLY_COUNT":カウントのみ, "SHOW_SEARCH_RESULT":検索結果表示, "CSV_EXPORT":検索結果をCSV出力]
 	 * args[5]・・・userId
 	 * args[6]・・・password
+	 * args[7]・・・exportFile
 	 **/
 	public EQLExecutor(String... args) {
 		if (args == null || args.length < 2) {
@@ -109,6 +116,9 @@ public class EQLExecutor extends MtpCuiBase {
 		}
 		if (args.length > 6) {
 			password = args[6];
+		}
+		if (args.length > 7) {
+			exportFile = args[7];
 		}
 	}
 
@@ -145,6 +155,11 @@ public class EQLExecutor extends MtpCuiBase {
 		TenantContext tc = tenantContextService.getTenantContext(tenantId);
 		if (tc == null) {
 			logError(rs("EQLExecutor.notFoundTenant", tenantId));
+			return isSuccess();
+		}
+
+		if (EQLExecMode.CSV_EXPORT.equals(eqlExecMode) && StringUtil.isBlank(exportFile)) {
+			logError(rs("EQLExecutor.notSpecifiedExportFile"));
 			return isSuccess();
 		}
 
@@ -191,6 +206,18 @@ public class EQLExecutor extends MtpCuiBase {
 				count = entityToolService.executeEQLWithAuth(out, System.getProperty("file.encoding"), eql, isSearchAllVersion);
 			} else {
 				count = entityToolService.executeEQLWithAuth(out, System.getProperty("file.encoding"), eql, isSearchAllVersion, userId, password);
+			}
+			break;
+		case CSV_EXPORT:
+			File outFile = new File(exportFile);
+			try {
+				if (StringUtil.isBlank(userId)) {
+					count = entityToolService.executeEQLWithAuth(new FileOutputStream(outFile), System.getProperty("file.encoding"), eql, isSearchAllVersion);
+				} else {
+					count = entityToolService.executeEQLWithAuth(new FileOutputStream(outFile), System.getProperty("file.encoding"), eql, isSearchAllVersion, userId, password);
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
 			}
 			break;
 		}
