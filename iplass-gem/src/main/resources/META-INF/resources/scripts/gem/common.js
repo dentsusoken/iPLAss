@@ -844,7 +844,10 @@ function numcheck(element) {
 	//数値変換可能かをチェック
 	if (isNaN(v)) {
 		alert(scriptContext.gem.locale.common.numcheckMsg);
-		element.value = "";
+		//element.value = "";
+		setTimeout(function() {
+			element.focus();
+		}, 100);
 		return;
 	}
 
@@ -3306,7 +3309,7 @@ function updateNestValue_Number(type, $node, parentPropName, name, entity) {
 		}
 	} else if (type == "LABEL") {
 		let dummyField = $("span.data-label.commaLabel", $node);
-		let hiddenArea = null; 
+		let hiddenArea = null;
 		if (dummyField.length > 0) {
 			dummyField.text(insertComma(val, separator));
 			hiddenArea = dummyField;

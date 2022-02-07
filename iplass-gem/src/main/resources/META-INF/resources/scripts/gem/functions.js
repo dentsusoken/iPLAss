@@ -986,9 +986,18 @@ $.fn.allInputCheck = function(){
 			$this.on("blur", function () {
 				var tb = this;
 				var val = $(tb).val().trim();	//空白だけの場合にNaNになるので除去
+				if (val.length == 0) {
+					//未入力時はアラート出さない
+					$(tb).val("");
+					return true;
+				}
+				val = replaceAll(val, ",", "");
 				if(isNaN(val)) {
 					alert(scriptContext.gem.locale.common.numcheckMsg);
-					$(tb).val("");
+					//$(tb).val("");
+					setTimeout(function() {
+						$(tb).focus();
+					}, 100);
 					return true;
 				}
 
@@ -3138,6 +3147,7 @@ function datepicker(selector) {
 					//pickerが表示されていない場合のみセット
 					$this.attr("data-prevalue", convertFromLocaleDateString($this.val()));
 				}
+				$this.removeAttr("data-error-focus");
 			});
 			if ($this.attr("data-showWeekday") === "true") {
 				$this.after($("<span  />").addClass("dp-weekday-label"));
@@ -3147,7 +3157,8 @@ function datepicker(selector) {
 		function isUnDispPicker(input) {
 			var $input = $(input);
 			var dispPicker = $input.attr("data-dispPicker");
-			return (typeof dispPicker === "undefined" || dispPicker == null);
+			var errorFocus = $input.attr("data-error-focus");
+			return (typeof dispPicker === "undefined" || dispPicker == null) && !errorFocus;
 		}
 
 		function fireOnChange(input) {
@@ -3166,11 +3177,17 @@ function datepicker(selector) {
 				//値をクリア(メッセージ表示する前にクリアする)
 				//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
 				//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
-				$input.val("");
+				//$input.val("");
 
 				if (options.showErrorMessage == true) {
 					alert(e);
 				}
+				//値の初期化をせずに再フォーカス、内部値のクリアはせずに終了
+				$input.attr("data-error-focus", true);
+				setTimeout(function() {
+					$input.focus();
+				}, 100);
+				return;
 			}
 
 			//focus時の値と比較して変更があるかをチェック
@@ -3337,13 +3354,15 @@ function timepicker(selector) {
 					//pickerが表示されていない場合のみセット
 					$this.attr("data-prevalue", convertFromTimeString(this));
 				}
+				$this.removeAttr("data-error-focus");
 			});
 		});
 
 		function isUnDispPicker(input) {
 			var $input = $(input);
 			var dispPicker = $input.attr("data-dispPicker");
-			return (typeof dispPicker === "undefined" || dispPicker == null);
+			var errorFocus = $input.attr("data-error-focus");
+			return (typeof dispPicker === "undefined" || dispPicker == null) && !errorFocus;
 		}
 
 		function convertFromTimeString(input) {
@@ -3373,11 +3392,17 @@ function timepicker(selector) {
 				//値をクリア(メッセージ表示する前にクリアする)
 				//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
 				//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
-				$input.val("");
+				//$input.val("");
 
 				if (options.showErrorMessage == true) {
 					alert(e);
 				}
+				//値の初期化をせずに再フォーカス、内部値のクリアはせずに終了
+				$input.attr("data-error-focus", true);
+				setTimeout(function() {
+					$input.focus();
+				}, 100);
+				return;
 			}
 
 			//focus時の値と比較して変更があるかをチェック
@@ -3535,6 +3560,7 @@ function datetimepicker(selector) {
 					//pickerが表示されていない場合のみセット
 					$this.attr("data-prevalue", convertFromLocaleDatetimeString($this.val()));
 				}
+				$this.removeAttr("data-error-focus");
 			});
 			if ($this.attr("data-showWeekday") === "true") {
 				$this.after($("<span  />").addClass("dp-weekday-label"));
@@ -3544,7 +3570,8 @@ function datetimepicker(selector) {
 		function isUnDispPicker(input) {
 			var $input = $(input);
 			var dispPicker = $input.attr("data-dispPicker");
-			return (typeof dispPicker === "undefined" || dispPicker == null);
+			var errorFocus = $input.attr("data-error-focus");
+			return (typeof dispPicker === "undefined" || dispPicker == null) && !errorFocus;
 		}
 
 		function fireOnChange(input) {
@@ -3561,11 +3588,17 @@ function datetimepicker(selector) {
 				//値をクリア(メッセージ表示する前にクリアする)
 				//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
 				//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
-				$input.val("");
+				//$input.val("");
 
 				if (options.showErrorMessage == true) {
 					alert(e);
 				}
+				//値の初期化をせずに再フォーカス、内部値のクリアはせずに終了
+				$input.attr("data-error-focus", true);
+				setTimeout(function() {
+					$input.focus();
+				}, 100);
+				return;
 			}
 
 			//focus時の値と比較して変更があるかをチェック
