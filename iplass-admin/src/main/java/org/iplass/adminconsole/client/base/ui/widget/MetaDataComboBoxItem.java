@@ -59,7 +59,7 @@ public class MetaDataComboBoxItem extends MtpComboBoxItem implements MtpWidgetCo
 			option = new ItemOption();
 		}
 
-		List<FormItemIcon> icons = new ArrayList<FormItemIcon>();
+		List<FormItemIcon> icons = new ArrayList<>();
 		if (option.isShowJump()) {
 			FormItemIcon iconJump = new FormItemIcon();
 			iconJump.setSrc(ICON_SHOW_META_DATA);
@@ -80,20 +80,24 @@ public class MetaDataComboBoxItem extends MtpComboBoxItem implements MtpWidgetCo
 			icons.add(iconJump);
 		}
 
-		FormItemIcon iconRefresh = new FormItemIcon();
-		iconRefresh.setSrc(ICON_REFRESH);
-		iconRefresh.addFormItemClickHandler(new FormItemClickHandler() {
+		if (option.isShowRefresh()) {
+			FormItemIcon iconRefresh = new FormItemIcon();
+			iconRefresh.setSrc(ICON_REFRESH);
+			iconRefresh.addFormItemClickHandler(new FormItemClickHandler() {
 
-			@Override
-			public void onFormItemClick(FormItemIconClickEvent event) {
-				fetchData();
-			}
-		});
-		iconRefresh.setPrompt("refresh MetaData list");
-		iconRefresh.setBaseStyle("adminButtonRounded");
-		icons.add(iconRefresh);
+				@Override
+				public void onFormItemClick(FormItemIconClickEvent event) {
+					fetchData();
+				}
+			});
+			iconRefresh.setPrompt("refresh MetaData list");
+			iconRefresh.setBaseStyle("adminButtonRounded");
+			icons.add(iconRefresh);
+		}
 
-		setIcons(icons.toArray(new FormItemIcon[]{}));
+		if (!icons.isEmpty()) {
+			setIcons(icons.toArray(new FormItemIcon[]{}));
+		}
 
 		MetaDataNameDS.setDataSource(this, definition, option.toMetaDataNameDSOption());
 	}
@@ -104,19 +108,31 @@ public class MetaDataComboBoxItem extends MtpComboBoxItem implements MtpWidgetCo
 		private boolean addDefault;
 		private String tooltip;
 		private boolean showJump;
+		private boolean showRefresh;
+		private boolean showTooltip;
 
 		public ItemOption() {
-			this(false, false, false);
+			this(false, false, false, true, true);
 		}
 
 		public ItemOption(boolean addBlank, boolean addDefault) {
-			this(addBlank, addDefault, false);
+			this(addBlank, addDefault, false, true, true);
 		}
 
 		public ItemOption(boolean addBlank, boolean addDefault, boolean showJump) {
+			this(addBlank, addDefault, showJump, true, true);
+		}
+
+		public ItemOption(boolean addBlank, boolean addDefault, boolean showJump, boolean showRefresh) {
+			this(addBlank, addDefault, showJump, showRefresh, true);
+		}
+
+		public ItemOption(boolean addBlank, boolean addDefault, boolean showJump, boolean showRefresh, boolean showTooltip) {
 			addBlank(addBlank);
 			this.addDefault(addDefault);
 			this.showJump(showJump);
+			this.showRefresh(showRefresh);
+			this.showTooltip(showTooltip);
 		}
 
 		public boolean isAddBlank() {
@@ -155,8 +171,26 @@ public class MetaDataComboBoxItem extends MtpComboBoxItem implements MtpWidgetCo
 			return this;
 		}
 
+		public boolean isShowRefresh() {
+			return showRefresh;
+		}
+
+		public ItemOption showRefresh(boolean showRefresh) {
+			this.showRefresh = showRefresh;
+			return this;
+		}
+
+		public boolean isShowTooltip() {
+			return showTooltip;
+		}
+
+		public ItemOption showTooltip(boolean showTooltip) {
+			this.showTooltip = showTooltip;
+			return this;
+		}
+
 		public MetaDataNameDSOption toMetaDataNameDSOption() {
-			return new MetaDataNameDSOption(addBlank, addDefault, tooltip);
+			return new MetaDataNameDSOption(addBlank, addDefault, tooltip, showTooltip);
 		}
 
 	}

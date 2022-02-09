@@ -101,43 +101,45 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
     	item.setOptionDataSource(getInstance(definition, option));
     	item.setValueField(DataSourceConstants.FIELD_NAME);
 
-    	//addValueHoverHandlerを利用したいが、ValueHoverはテキストがあふれないとEventが発生しないので、ItemHoverを利用
-    	item.addItemHoverHandler(new ItemHoverHandler() {
+    	if (option.isShowTooltip()) {
+        	//addValueHoverHandlerを利用したいが、ValueHoverはテキストがあふれないとEventが発生しないので、ItemHoverを利用
+        	item.addItemHoverHandler(new ItemHoverHandler() {
 
-			@Override
-			public void onItemHover(ItemHoverEvent event) {
+    			@Override
+    			public void onItemHover(ItemHoverEvent event) {
 
-				final ListGridRecord record = item.getSelectedRecord();
-				if (record != null) {
-					String tooltip = record.getAttributeAsString(DataSourceConstants.FIELD_TOOLTIP);
-					if (SmartGWTUtil.isNotEmpty(tooltip)) {
-						item.setPrompt(SmartGWTUtil.getHoverString(tooltip));
-					}
+    				final ListGridRecord record = item.getSelectedRecord();
+    				if (record != null) {
+    					String tooltip = record.getAttributeAsString(DataSourceConstants.FIELD_TOOLTIP);
+    					if (SmartGWTUtil.isNotEmpty(tooltip)) {
+    						item.setPrompt(SmartGWTUtil.getHoverString(tooltip));
+    					}
 
-				}
+    				}
 
-			}
-		});
-    	item.addChangedHandler(new ChangedHandler() {
+    			}
+    		});
+        	item.addChangedHandler(new ChangedHandler() {
 
-			@Override
-			public void onChanged(ChangedEvent event) {
-				//デフォルト値設定
-				item.setTooltip(option.getTooltip());
+    			@Override
+    			public void onChanged(ChangedEvent event) {
+    				//デフォルト値設定
+    				item.setTooltip(option.getTooltip());
 
-				getTooltip(item, definition.getName());
-			}
-		});
+    				getTooltip(item, definition.getName());
+    			}
+    		});
 
-    	if (item instanceof HasDataArrivedHandlers) {
-	    	((HasDataArrivedHandlers)item).addDataArrivedHandler(new DataArrivedHandler() {
+        	if (item instanceof HasDataArrivedHandlers) {
+    	    	((HasDataArrivedHandlers)item).addDataArrivedHandler(new DataArrivedHandler() {
 
-				@Override
-				public void onDataArrived(DataArrivedEvent event) {
-					//初期値に対するTooltip取得
-					getTooltip(item, definition.getName());
-				}
-			});
+    				@Override
+    				public void onDataArrived(DataArrivedEvent event) {
+    					//初期値に対するTooltip取得
+    					getTooltip(item, definition.getName());
+    				}
+    			});
+        	}
     	}
 
     	ListGrid pickListProperties = new ListGrid();
@@ -235,7 +237,7 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 
 	protected List<ListGridRecord> createRecords(List<Name> names, MetaDataNameDSOption option) {
 
-		List<ListGridRecord> records = new ArrayList<ListGridRecord>();
+		List<ListGridRecord> records = new ArrayList<>();
 
 		if (option.isAddBlank()) {
 			records.add(createBlankRecord());
@@ -286,19 +288,25 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 		private final boolean addBlank;
 		private final boolean addDefault;
 		private final String tooltip;
+		private final boolean showTooltip;
 
 		public MetaDataNameDSOption() {
-			this(false, false, null);
+			this(false, false, null, true);
 		}
 
 		public MetaDataNameDSOption(boolean addBlank, boolean addDefault) {
-			this(addBlank, addDefault, null);
+			this(addBlank, addDefault, null, true);
 		}
 
 		public MetaDataNameDSOption(boolean addBlank, boolean addDefault, String tooltip) {
+			this(addBlank, addDefault, tooltip, true);
+		}
+
+		public MetaDataNameDSOption(boolean addBlank, boolean addDefault, String tooltip, boolean showTooltip) {
 			this.addBlank = addBlank;
 			this.addDefault = addDefault;
 			this.tooltip = tooltip;
+			this.showTooltip = showTooltip;
 		}
 
 		public boolean isAddBlank() {
@@ -311,6 +319,10 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 
 		public String getTooltip() {
 			return tooltip;
+		}
+
+		public boolean isShowTooltip() {
+			return showTooltip;
 		}
 	}
 
