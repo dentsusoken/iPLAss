@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2022 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -50,10 +50,13 @@ import org.iplass.adminconsole.client.metadata.ui.webapi.WebApiPlugin;
 import org.iplass.adminconsole.client.metadata.ui.webhook.WebhookTemplatePlugin;
 import org.iplass.adminconsole.client.metadata.ui.webhook.webhookEndpoint.WebhookEndpointDefinitionPlugin;
 
-public class MetaDataPluginControllerImpl implements MetaDataPluginController {
+import com.google.gwt.core.client.GWT;
+
+public class GemMetaDataPluginController implements MetaDataPluginController {
 
 	@Override
 	public List<AdminPlugin> plugins() {
+		GWT.log("Loading metaData plugins are GEM mode.");
 
 		List<AdminPlugin> plugins = new ArrayList<AdminPlugin>();
 

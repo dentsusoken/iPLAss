@@ -9,11 +9,6 @@
 	<inherits name="com.google.gwt.logging.Logging" />
 	<set-property name="gwt.logging.enabled" value="FALSE"/>
 
-	<!-- switch metadata plugins -->
-	<replace-with class="org.iplass.adminconsole.client.metadata.ui.MetaDataPluginControllerImpl">
-		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController"/>
-	</replace-with>
-
 	<!-- switch metadata sharable controll -->
 	<replace-with class="org.iplass.adminconsole.client.metadata.ui.common.MetaDataSharableControllerImpl">
 		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.common.MetaDataSharableController"/>
