@@ -17,22 +17,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.adminconsole.shared.base.rpc.screen;
+package org.iplass.adminconsole.client.base.screen;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+public class ScreenModuleBasedUIFactoryGeneratorImpl implements ScreenModuleBasedUIFactoryGenerator {
 
-/**
- * 画面モジュール用ServiceAsync
- * 
- * @author Y.Ishida
- *
- */
-public interface ScreenModuleServiceAsync {
+	@Override
+	public ScreenModuleBasedUIFactory generate(String type) {
+		if (type.equals("GEM")) {
+			return new GemBasedUIFactory();
+		}
 
-	/**
-	 * 画面モジュールタイプを取得します
-	 * 
-	 * @param callback Callbackクラス
-	 */
-	public void getScreenModuleType(AsyncCallback<String> callback);
+		// 現状GEMしか画面モジュールは存在しないので、デフォルトはGEM
+		return new GemBasedUIFactory();
+	}
+
 }

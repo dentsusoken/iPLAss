@@ -17,8 +17,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.adminconsole.shared.base.rpc.screen;
+package org.iplass.adminconsole.server.base.service.screen;
 
-public enum ScreenModuleType {
-	GEM;
+/**
+ * GEMに依存した実装クラスを生成するFactory
+ * 
+ * @author Y.Ishida
+ *
+ */
+public class GemBasedClassFactory implements ScreenModuleBasedClassFactory {
+
 }

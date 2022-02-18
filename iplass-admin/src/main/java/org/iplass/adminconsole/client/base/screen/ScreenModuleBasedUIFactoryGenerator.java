@@ -17,22 +17,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.adminconsole.shared.base.rpc.screen;
+package org.iplass.adminconsole.client.base.screen;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
-/**
- * 画面モジュール用ServiceAsync
- * 
- * @author Y.Ishida
- *
- */
-public interface ScreenModuleServiceAsync {
+public interface ScreenModuleBasedUIFactoryGenerator {
 
 	/**
-	 * 画面モジュールタイプを取得します
+	 * 画面モジュールに依存したUIクラスを生成するFactoryのインスタンスを返します
 	 * 
-	 * @param callback Callbackクラス
+	 * @param type 画面モジュールタイプ
+	 * @return 画面モジュールに依存したUIクラスを生成するFactoryのインスタンス
 	 */
-	public void getScreenModuleType(AsyncCallback<String> callback);
+	public ScreenModuleBasedUIFactory generate(String type);
 }

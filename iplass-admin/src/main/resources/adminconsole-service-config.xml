@@ -24,6 +24,9 @@
 		<!-- AdminConsole上で環境情報としてサーバ情報を表示するか -->
 		<property name ="showServerInfo" value="true" />
 
+		<!-- 画面モジュールに依存した実装クラスを生成するFactoryのGenerator -->
+		<property name ="screenBasedFactoryGenerator" class="org.iplass.adminconsole.server.base.service.screen.ScreenModuleBasedClassFactoryGeneratorImpl" />
+
 		<!-- AdminConsoleで参照可能なログの設定 -->
 		<property name="logDownloadConfig" class="org.iplass.adminconsole.server.base.service.LogConfig">
 			<property name="enabled" value="true" />

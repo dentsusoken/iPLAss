@@ -22,8 +22,8 @@ package org.iplass.adminconsole.client;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
-import org.iplass.adminconsole.client.base.screen.GemBasedUIFactory;
 import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactory;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryGenerator;
 import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.auth.LoginDialog;
@@ -40,7 +40,6 @@ import org.iplass.adminconsole.shared.base.dto.tenant.TenantEnv;
 import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
 import org.iplass.adminconsole.shared.base.rpc.screen.ScreenModuleServiceAsync;
 import org.iplass.adminconsole.shared.base.rpc.screen.ScreenModuleServiceFactory;
-import org.iplass.adminconsole.shared.base.rpc.screen.ScreenModuleType;
 import org.iplass.adminconsole.shared.base.rpc.tenant.TenantServiceAsync;
 import org.iplass.adminconsole.shared.base.rpc.tenant.TenantServiceFactory;
 
@@ -172,17 +171,11 @@ public class AdminConsole implements EntryPoint {
 	private void getScreenModuleBasedUIFactory() {
 		ScreenModuleServiceAsync service = ScreenModuleServiceFactory.get();
 
-		service.getScreenModuleType(new AdminAsyncCallback<ScreenModuleType>() {
+		service.getScreenModuleType(new AdminAsyncCallback<String>() {
 			@Override
-			public void onSuccess(ScreenModuleType type) {
-				ScreenModuleBasedUIFactory factory;
-				if (type == ScreenModuleType.GEM) {
-					factory = new GemBasedUIFactory();
-				} else {
-					// 現状は、GEMのみなのでデフォルトはGEM
-					factory = new GemBasedUIFactory();
-				}
-
+			public void onSuccess(String type) {
+				ScreenModuleBasedUIFactoryGenerator factoryGenerator = GWT.create(ScreenModuleBasedUIFactoryGenerator.class);
+				ScreenModuleBasedUIFactory factory = factoryGenerator.generate(type);
 				ScreenModuleBasedUIFactoryHolder.init(factory);
 			}
 		});

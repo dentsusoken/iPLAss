@@ -17,14 +17,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.adminconsole.server.base.screen;
+package org.iplass.adminconsole.server.base.service.screen;
 
 /**
- * GEMに依存した実装クラスを生成するFactory
+ * 画面モジュールに依存した実装クラスを生成するFactoryのインタフェース
  * 
  * @author Y.Ishida
  *
  */
-public class GemBasedClassFactory implements ScreenModuleBasedClassFactory {
-
+public interface ScreenModuleBasedClassFactory {
 }

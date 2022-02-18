@@ -33,7 +33,7 @@ public interface ScreenModuleService extends XsrfProtectedService {
 	/**
 	 * 画面モジュールタイプを取得します
 	 * 
-	 * @return {@link ScreenModuleType}
+	 * @return 画面モジュールタイプ
 	 */
-	public ScreenModuleType getScreenModuleType();
+	public String getScreenModuleType();
 }

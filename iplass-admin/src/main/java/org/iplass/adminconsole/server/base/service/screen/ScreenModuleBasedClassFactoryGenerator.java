@@ -17,14 +17,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.adminconsole.server.base.screen;
+package org.iplass.adminconsole.server.base.service.screen;
 
-/**
- * {@link ScreenModuleBasedClassFactory} を保持するクラス
- * 
- * @author Y.Ishida
- *
- */
-public class ScreenModuleBasedClassFactoryHolder {
+public interface ScreenModuleBasedClassFactoryGenerator {
 
 }

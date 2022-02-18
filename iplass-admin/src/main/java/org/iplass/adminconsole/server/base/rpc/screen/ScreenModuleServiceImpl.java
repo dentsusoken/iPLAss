@@ -20,7 +20,6 @@
 package org.iplass.adminconsole.server.base.rpc.screen;
 
 import org.iplass.adminconsole.shared.base.rpc.screen.ScreenModuleService;
-import org.iplass.adminconsole.shared.base.rpc.screen.ScreenModuleType;
 
 import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
 
@@ -35,7 +34,7 @@ public class ScreenModuleServiceImpl extends XsrfProtectedServiceServlet impleme
 	private static final long serialVersionUID = -8773186849009881578L;
 
 	@Override
-	public ScreenModuleType getScreenModuleType() {
+	public String getScreenModuleType() {
 
 		boolean existsGem;
 		try {
@@ -45,7 +44,7 @@ public class ScreenModuleServiceImpl extends XsrfProtectedServiceServlet impleme
 			existsGem = false;
 		}
 
-		return existsGem ? ScreenModuleType.GEM : null;
+		return existsGem ? "GEM" : "DEFAULT";
 	}
 
 }

@@ -100,6 +100,11 @@
 	<replace-with class="org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionExplorerMainPaneControllerImpl">
 		<when-type-is class="org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionExplorerMainPaneController"/>
 	</replace-with>
+	
+	<!-- switch screen module based UI factory generator -->
+	<replace-with class="org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryGeneratorImpl">
+		<when-type-is class="org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryGenerator"/>
+	</replace-with>
 
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.iplass.adminconsole.client.AdminConsole'/>
