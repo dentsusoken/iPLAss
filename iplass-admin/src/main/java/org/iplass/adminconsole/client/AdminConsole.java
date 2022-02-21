@@ -68,7 +68,8 @@ public class AdminConsole implements EntryPoint {
 	private MainTopNav topNav;
 	private MainContentPane mainPane;
 
-	private TenantServiceAsync service;
+	private ScreenModuleServiceAsync screenModuleServiceAsync;
+	private TenantServiceAsync tenantServiceAsync;
 
 	/**
 	 * This is the entry point method.
@@ -158,23 +159,24 @@ public class AdminConsole implements EntryPoint {
 			public void onSuccess(XsrfToken token) {
 				AdminXsrfTokenHolder.init(token);
 
-				// 画面モジュールに依存したUIクラスを生成するFactoryを取得
-				getScreenModuleBasedUIFactory();
-
 				// テナントチェック
 				validateTenant();
+
+				// 画面モジュールに依存したUIクラスを生成するFactoryを取得
+				getScreenModuleBasedUIFactory();
 			}
 		});
 
 	}
 
 	private void getScreenModuleBasedUIFactory() {
-		ScreenModuleServiceAsync service = ScreenModuleServiceFactory.get();
+		screenModuleServiceAsync = ScreenModuleServiceFactory.get();
 
-		service.getScreenModuleType(new AdminAsyncCallback<String>() {
+		screenModuleServiceAsync.getScreenModuleType(new AdminAsyncCallback<String>() {
 			@Override
 			public void onSuccess(String type) {
-				ScreenModuleBasedUIFactoryGenerator factoryGenerator = GWT.create(ScreenModuleBasedUIFactoryGenerator.class);
+				ScreenModuleBasedUIFactoryGenerator factoryGenerator = GWT
+						.create(ScreenModuleBasedUIFactoryGenerator.class);
 				ScreenModuleBasedUIFactory factory = factoryGenerator.generate(type);
 				ScreenModuleBasedUIFactoryHolder.init(factory);
 			}
@@ -183,8 +185,8 @@ public class AdminConsole implements EntryPoint {
 
 	private void validateTenant() {
 		// テナント存在チェック
-		service = TenantServiceFactory.get();
-		service.getTenantEnv(getTenantId(), new TenantCheckAsyncCallback());
+		tenantServiceAsync = TenantServiceFactory.get();
+		tenantServiceAsync.getTenantEnv(getTenantId(), new TenantCheckAsyncCallback());
 	}
 
 	private void invalidMessage(String message) {
@@ -311,7 +313,7 @@ public class AdminConsole implements EntryPoint {
 	// ------------------------------
 	public void logoff() {
 
-		service.authLogoff(TenantInfoHolder.getId(), new AsyncCallback<Void>() {
+		tenantServiceAsync.authLogoff(TenantInfoHolder.getId(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onSuccess(Void result) {
