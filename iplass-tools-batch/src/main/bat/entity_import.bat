@@ -32,8 +32,16 @@ set ENTITY_NAME=%~1
 REM import file (if value is empty, specified by wizard or config file)
 set FILE="%~2"
 
+REM import binary data (if value is empty, specified by wizard or config file)
+set IMPORT_BINARY_DATA="%~3"
+
 if "%~1"=="" (
 set FILE=
+set IMPORT_BINARY_DATA=
+)
+
+if "%~2"=="" (
+set IMPORT_BINARY_DATA=
 )
 
 REM ----------------------------------------------------
@@ -44,7 +52,7 @@ REM APP class
 set EXEC_APP=org.iplass.mtp.tools.batch.entity.EntityImport
 
 REM App Arguments
-set APP_ARGS=%EXEC_MODE% %TENANT_ID% %ENTITY_NAME% %FILE%
+set APP_ARGS=%EXEC_MODE% %TENANT_ID% %ENTITY_NAME% %FILE% %IMPORT_BINARY_DATA%
 
 REM entity config
 set ENTITY_CONFIG_ARG=entity.config=%ENTITY_CONFIG%

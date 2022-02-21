@@ -29,9 +29,18 @@ export ENTITY_NAME="$1"
 # import file (if value is empty, specified by wizard or entity config)
 export FILE="$2"
 
+# import binary data (if value is empty, specified by wizard or entity config)
+export IMORT_BINARY_DATA="$3"
+
 if [ "${ENTITY_NAME}" = "" ]
 then
 export FILE=
+export IMPORT_BINARY_DATA=
+fi
+
+if [ "${FILE}" = "" ]
+then
+export IMPORT_BINARY_DATA=
 fi
 
 # ----------------------------------------------------

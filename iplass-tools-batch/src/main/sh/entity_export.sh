@@ -26,12 +26,21 @@ export ENTITY_CONFIG=./../conf/entity-exp-config.properties
 # Entity Name (if value is empty, specified by wizard or entity config)
 export ENTITY_NAME="$1"
 
-# export file (if value is empty, specified by wizard or entity config)
-export FILE="$2"
+# export directory (if value is empty, specified by wizard or entity config)
+export EXPORT_DIR="$2"
+
+# export binary data (if value is empty, specified by wizard or entity config)
+export EXPORT_BINARY_DATA="$3"
 
 if [ "${ENTITY_NAME}" = "" ]
 then
-export FILE=
+export EXPORT_DIR=
+export EXPORT_BINARY_DATA=
+fi
+
+if [ "${EXPORT_DIR}" = "" ]
+then
+export EXPORT_BINARY_DATA=
 fi
 
 # ----------------------------------------------------
@@ -71,7 +80,7 @@ fi
 # ----------------------------------------------------
 
 # execute tool
-java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} -D${LANG_ENV} -D${ENTITY_CONFIG_ARG} ${EXEC_APP} ${APP_ARGS} "${ENTITY_NAME}" "${FILE}"
+java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} -D${LANG_ENV} -D${ENTITY_CONFIG_ARG} ${EXEC_APP} ${APP_ARGS} "${ENTITY_NAME}" "${EXPORT_DIR}" "${EXPORT_BINARY_DATA}"
 
 if [ "${EXEC_MODE}" = "WIZARD" ]
 then

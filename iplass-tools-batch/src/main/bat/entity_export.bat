@@ -29,11 +29,19 @@ REM ----------------------------------------------------
 REM Entity Name (if value is empty, specified by wizard or config file)
 set ENTITY_NAME=%~1
 
-REM export file (if value is empty, specified by wizard or config file)
-set FILE="%~2"
+REM export directory (if value is empty, specified by wizard or config file)
+set EXPORT_DIR="%~2"
+
+REM export binary data (if value is empty, specified by wizard or config file)
+set EXPORT_BINARY_DATA="%~3"
 
 if "%~1"=="" (
-set FILE=
+set EXPORT_DIR=
+set EXPORT_BINARY_DATA=
+)
+
+if "%~2"=="" (
+set EXPORT_BINARY_DATA=
 )
 
 REM ----------------------------------------------------
@@ -44,7 +52,7 @@ REM APP class
 set EXEC_APP=org.iplass.mtp.tools.batch.entity.EntityExport
 
 REM App Arguments
-set APP_ARGS=%EXEC_MODE% %TENANT_ID% %ENTITY_NAME% %FILE%
+set APP_ARGS=%EXEC_MODE% %TENANT_ID% %ENTITY_NAME% %EXPORT_DIR% %EXPORT_BINARY_DATA%
 
 REM entity config
 set ENTITY_CONFIG_ARG=entity.config=%ENTITY_CONFIG%

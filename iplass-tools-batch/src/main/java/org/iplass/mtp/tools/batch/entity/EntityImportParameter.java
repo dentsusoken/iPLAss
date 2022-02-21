@@ -34,6 +34,8 @@ public class EntityImportParameter {
 	public static final String PROP_ENTITY_NAME = "entityName";
 	/** インポートファイル */
 	public static final String PROP_IMPORT_FILE = "importFile";
+	/** BinaryデータをImportするか */
+	public static final String PROP_IMPORT_BINARY_DATA = "importBinaryData";
 
 	/** Silentモード Entityデータ Truncate */
 	public static final String PROP_ENTITY_TRUNCATE = "entity.truncate";
@@ -82,6 +84,10 @@ public class EntityImportParameter {
 
 	//Importファイル(内部用)
 	private File importFile;
+	
+	//BinaryデータをImportするか
+	private boolean isImportBinaryData;
+
 
 	//EntityImport用条件
 	private EntityDataImportCondition entityImportCondition;
@@ -121,6 +127,14 @@ public class EntityImportParameter {
 
 	public void setImportFilePath(String importFilePath) {
 		this.importFilePath = importFilePath;
+	}
+	
+	public boolean isImportBinaryData() {
+		return isImportBinaryData;
+	}
+
+	public void setImportBinaryData(boolean isImportBinaryData) {
+		this.isImportBinaryData = isImportBinaryData;
 	}
 
 	public String getLocale() {

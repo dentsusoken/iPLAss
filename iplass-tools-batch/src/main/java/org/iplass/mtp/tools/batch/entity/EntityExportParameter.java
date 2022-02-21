@@ -32,8 +32,10 @@ public class EntityExportParameter {
 	public static final String PROP_TENANT_ID = "tenantId";
 	/** Entity名 */
 	public static final String PROP_ENTITY_NAME = "entityName";
-	/** エクスポートファイル */
-	public static final String PROP_EXPORT_FILE = "exportFile";
+	/** 出力先ディレクトリ */
+	public static final String PROP_EXPORT_DIR = "exportDir";
+	/** BinaryデータをExportするか */
+	public static final String PROP_EXPORT_BINARY_DATA = "exportBinaryData";
 	
 	/** Where条件 */
 	public static final String PROP_ENTITY_WHERE_CLAUSE = "entity.whereClause";
@@ -53,11 +55,14 @@ public class EntityExportParameter {
 	//Entity名
 	private String entityName;
 
-	//Exportファイル名
-	private String exportFileName;
+	//出力先ディレクトリ名
+	private String exportDirName = "./";
 
-	//Exportファイル(内部用)
-	private File exportFile;
+	//出力先ディレクトリ(内部用)
+	private File exportDir;
+	
+	//BinaryデータをExportするか
+	private boolean isExportBinaryData;
 
 	//EntityExport用条件
 	private EntityDataExportCondition entityExportCondition;
@@ -91,20 +96,28 @@ public class EntityExportParameter {
 		this.entityName = entityName;
 	}
 
-	public String getExportFileName() {
-		return exportFileName;
+	public String getExportDirName() {
+		return exportDirName;
 	}
 
-	public void setExportFileName(String exportFileName) {
-		this.exportFileName = exportFileName;
+	public void setExportDirName(String exportDirName) {
+		this.exportDirName = exportDirName;
 	}
 
-	public File getExportFile() {
-		return exportFile;
+	public File getExportDir() {
+		return exportDir;
 	}
 
-	public void setExportFile(File exportFile) {
-		this.exportFile = exportFile;
+	public void setExportDir(File exportDir) {
+		this.exportDir = exportDir;
+	}
+
+	public boolean isExportBinaryData() {
+		return isExportBinaryData;
+	}
+
+	public void setExportBinaryData(boolean isExportBinaryData) {
+		this.isExportBinaryData = isExportBinaryData;
 	}
 
 	public EntityDataExportCondition getEntityExportCondition() {

@@ -20,23 +20,7 @@
 
 package org.iplass.mtp.tools.batch.entity;
 
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_BULK_UPDATE;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_COMMIT_LIMIT;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_ERROR_SKIP;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_FORCE_UPDATE;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_IGNORE_INVALID_PROPERTY;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_ID;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_PW;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_NAME;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_NOTIFY_LISTENER;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_PREFIX_OID;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_TRUNCATE;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_UPDATE_DISUPDATABLE;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_ENTITY_WITH_VALIDATION;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_IMPORT_FILE;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_TENANT_ID;
-import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.PROP_TENANT_URL;
+import static org.iplass.mtp.tools.batch.entity.EntityImportParameter.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -122,6 +106,9 @@ public class EntityImport extends MtpCuiBase {
 
 	/** 実行CSVファイル */
 	private File importFile;
+	
+	/** BinaryデータをImportするか */
+	private boolean isImportBinaryData;
 
 	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
 	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
@@ -134,6 +121,7 @@ public class EntityImport extends MtpCuiBase {
 	 * args[1]・・・tenantId
 	 * args[2]・・・entity name
 	 * args[3]・・・import file
+	 * args[4]・・・import binary data
 	 **/
 	public static void main(String[] args) {
 
@@ -152,6 +140,7 @@ public class EntityImport extends MtpCuiBase {
 	 * args[1]・・・tenantId
 	 * args[2]・・・entity name
 	 * args[3]・・・import file
+	 * args[4]・・・import binary data
 	 **/
 	public EntityImport(String... args) {
 
@@ -177,6 +166,9 @@ public class EntityImport extends MtpCuiBase {
 				if (!"empty".equals(args[3].toLowerCase())) {
 					importFileName = args[3];
 				}
+			}
+			if (args.length > 4) {
+				isImportBinaryData =  Boolean.parseBoolean(args[4]);;
 			}
 		}
 	}
@@ -247,6 +239,11 @@ public class EntityImport extends MtpCuiBase {
 		this.importFileName = importFile;
 		return this;
 	}
+	
+	public EntityImport importBinaryData(boolean isImportBinaryData) {
+		this.isImportBinaryData = isImportBinaryData;
+		return this;
+	}
 
 	/**
 	 * Importします。
@@ -296,6 +293,7 @@ public class EntityImport extends MtpCuiBase {
 		logInfo("\ttenant name :" + param.getTenantName());
 		logInfo("\tentity name :" + param.getEntityName());
 		logInfo("\timport file :" + param.getImportFilePath());
+		logInfo("\timport binary data :" + param.isImportBinaryData());
 		logInfo("\timport file locale :" + param.getLocale());
 		logInfo("\timport file timezone :" + param.getTimezone());
 
@@ -374,8 +372,10 @@ public class EntityImport extends MtpCuiBase {
 			logInfo(rs("EntityImport.startImportEntityDataLog", entityPath));
 
 			EntityDataImportResult entityResult = null;
+			
+			String importBinaryDataDir = param.isImportBinaryData() ? param.getImportFile().getParent() : null;
 			try (FileInputStream fis = new FileInputStream(param.getImportFile())) {
-				entityResult = eps.importEntityData(param.getImportFilePath(), fis, entry, param.getEntityImportCondition(), null);
+				entityResult = eps.importEntityData(param.getImportFilePath(), fis, entry, param.getEntityImportCondition(), null, importBinaryDataDir);
 			} catch (IOException e) {
 				throw new SystemException(e);
 			}
@@ -512,6 +512,10 @@ public class EntityImport extends MtpCuiBase {
 				}
 
 			} while(validFile == false);
+			
+			///BinaryデータをImportするか
+			boolean isImportBinaryData = readConsoleBoolean(rs("EntityImport.Wizard.confirmImportBinaryDataMsg"), param.isImportBinaryData());
+			param.setImportBinaryData(isImportBinaryData);
 
 			//オプションをコンフィグから取得
 			EntityDataImportCondition condition = loadConfigCondition();
@@ -745,6 +749,12 @@ public class EntityImport extends MtpCuiBase {
 				importFileName = propImportFileName;
 			}
 		}
+		
+		//BinaryデータをImportするか
+		String propImportBinaryData = prop.getProperty(EntityImportParameter.PROP_IMPORT_BINARY_DATA);
+		if (StringUtil.isNotEmpty(propImportBinaryData)) {
+			isImportBinaryData = Boolean.valueOf(propImportBinaryData);
+		}
 	}
 
 	/**
@@ -957,6 +967,8 @@ public class EntityImport extends MtpCuiBase {
 			}
 			param.setImportFilePath(importFile.getPath());
 			param.setImportFile(importFile);
+			
+			param.setImportBinaryData(isImportBinaryData);
 
 			//オプションをコンフィグから取得
 			EntityDataImportCondition condition = loadConfigCondition();

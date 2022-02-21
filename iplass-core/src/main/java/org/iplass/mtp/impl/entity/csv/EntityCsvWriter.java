@@ -22,6 +22,8 @@ package org.iplass.mtp.impl.entity.csv;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -413,7 +415,7 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 				InputStream is = em.getInputStream(br);
 
 				if (is == null) {
-					//エラーにしてしまうと作成が出力が止まるので、ログにWaringメッセージ出力
+					//エラーにしてしまうと作成と出力が止まるので、ログにWaringメッセージ出力
 					logger.warn("cannot output binary data. entity = " + br.getDefinitionName() + ", lobid = " + br.getLobId());
 				} else {
 					try (InputStream bis = new BufferedInputStream(is)) {
@@ -427,6 +429,44 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 				}
 			} catch (IOException e) {
 				throw new EntityCsvException(e);
+			}
+		} else {
+			//出力先ディレクトリが指定されている場合はExportする
+			if(StringUtil.isNotBlank(option.getExportBinaryDataDir())) {
+				try {
+					File lobDir = new File(option.getExportBinaryDataDir());
+					if (!lobDir.exists()) {
+						lobDir.mkdir();
+					}
+					//ファイル名をEntity定義名.LOBIDに設定
+					//(参考)データ自体はLOBIDで一意（OracleはDB単位、MySQLはテナント単位）
+					File lobFile = new File(option.getExportBinaryDataDir() , definition.getName() + "." + br.getLobId());
+					if (lobFile.exists()) {
+						lobFile.delete();
+					}
+					lobFile.createNewFile();
+					
+					try (FileOutputStream fileBinaryStore = new FileOutputStream(lobFile);) {
+						InputStream is = em.getInputStream(br);
+						
+						if (is == null) {
+							//エラーにしてしまうと作成と出力が止まるので、ログにWaringメッセージ出力
+							logger.warn("cannot output binary data. entity = " + br.getDefinitionName() + ", lobid = " + br.getLobId());
+						} else {
+							try (InputStream bis = new BufferedInputStream(is)) {
+								byte[] buf = new byte[1024];
+								int len = 0;
+								while ((len = bis.read(buf)) >= 0) {
+									fileBinaryStore.write(buf, 0, len);
+								}
+							}
+						}
+					} catch (IOException e) {
+						throw new EntityCsvException(e);
+					}
+				} catch (IOException e) {
+					throw new EntityCsvException(e);
+				}
 			}
 		}
 	}

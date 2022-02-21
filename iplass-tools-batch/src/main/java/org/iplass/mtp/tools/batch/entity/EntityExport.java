@@ -86,12 +86,15 @@ public class EntityExport extends MtpCuiBase {
 
 	/** 実行Entity */
 	private EntityDefinition ed;
-	
-	/** 出力ファイル */
-	private File exportFile;
 
-	/** 出力ファイル名 */
-	private String exportFileName;
+	/**  出力先ディレクトリ名 */
+	private String exportDirName;
+	
+	/** BinaryデータをExportするか */
+	private boolean isExportBinaryData;
+	
+	/** LOBデータ格納パス */
+	public static final String ENTITY_LOB_DIR = "/lobs/";
 
 	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
 	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
@@ -102,7 +105,8 @@ public class EntityExport extends MtpCuiBase {
 	 * args[0]・・・execMode
 	 * args[1]・・・tenantId
 	 * args[2]・・・entity name
-	 * args[3]・・・export file
+	 * args[3]・・・export dir
+	 * args[4]・・・export binary data
 	 **/
 	public static void main(String[] args) {
 
@@ -121,6 +125,7 @@ public class EntityExport extends MtpCuiBase {
 	 * args[1]・・・tenantId
 	 * args[2]・・・entity name
 	 * args[3]・・・export file
+	 * args[4]・・・export binary data
 	 **/
 	public EntityExport(String... args) {
 
@@ -139,7 +144,10 @@ public class EntityExport extends MtpCuiBase {
 				entityName = args[2];
 			}
 			if (args.length > 3 && StringUtil.isNotBlank(args[3])) {
-				exportFileName = args[3];
+				exportDirName = args[3];
+			}
+			if (args.length > 4) {
+				isExportBinaryData =  Boolean.parseBoolean(args[4]);;
 			}
 		}
 	}
@@ -206,8 +214,13 @@ public class EntityExport extends MtpCuiBase {
 		return this;
 	}
 
-	public EntityExport file(String exportFile) {
-		this.exportFileName = exportFile;
+	public EntityExport file(String exportDir) {
+		this.exportDirName = exportDir;
+		return this;
+	}
+	
+	public EntityExport exportBinaryData(boolean isExportBinaryData) {
+		this.isExportBinaryData = isExportBinaryData;
 		return this;
 	}
 
@@ -244,7 +257,8 @@ public class EntityExport extends MtpCuiBase {
 		logInfo("■Execute Argument");
 		logInfo("\ttenant name :" + param.getTenantName());
 		logInfo("\tentity name :" + param.getEntityName());
-		logInfo("\texport file :" + param.getExportFileName());
+		logInfo("\texport directory :" + param.getExportDirName());
+		logInfo("\texport binary data :" + param.isExportBinaryData());
 
 		EntityDataExportCondition condition = param.getEntityExportCondition();
 		logInfo("\twhere clause :" + condition.getWhereClause());
@@ -286,9 +300,11 @@ public class EntityExport extends MtpCuiBase {
 			if (entry == null) {
 				throw new SystemException(rs("EntityExport.notExistsEntityMsg", param.getEntityName()));
 			}
-
-			try (FileOutputStream fos = new FileOutputStream(param.getExportFile())) {
-				eps.write(fos, entry, param.getEntityExportCondition());
+			
+			String exportBinaryDataDir = param.isExportBinaryData() ? param.getExportDirName() + ENTITY_LOB_DIR : null;
+			
+			try (FileOutputStream fos = new FileOutputStream(new File(param.getExportDir(), param.getEntityName() + ".csv"));)  {
+				eps.writeWithBinary(fos, entry, param.getEntityExportCondition(), null, exportBinaryDataDir);
 				return true;
 			} catch (IOException e) {
 				throw new SystemException(e);
@@ -360,19 +376,28 @@ public class EntityExport extends MtpCuiBase {
 				}
 			} while(validEntity == false);
 
-			//Exportファイル
+			//出力先ディレクトリ
 			boolean validExportFile = false;
 			do {
-				if (StringUtil.isEmpty(exportFileName)) {
-					exportFileName = readConsole(rs("EntityExport.Wizard.inputExportFileMsg"));
+				String inputExportDirName = exportDirName;
+				exportDirName = null;
+				if (StringUtil.isEmpty(inputExportDirName)) {
+					inputExportDirName = readConsole(rs("EntityExport.Wizard.inputExportDirMsg") + "(" + param.getExportDirName() + ")");
 				}
-				if (StringUtil.isNotBlank(exportFileName)) {
-					param.setExportFile(new File(exportFileName));
+				if (StringUtil.isNotBlank(inputExportDirName)) {
+					param.setExportDirName(inputExportDirName);
+				}
+				//チェック
+				File exportDir = new File(param.getExportDirName());
+				if (checkDir(exportDir)) {
+					param.setExportDir(exportDir);
 					validExportFile = true;
-				} else {
-					logWarn(rs("EntityExport.Wizard.requiredExportFileMsg"));
 				}
 			} while(validExportFile == false);
+			
+			///BinaryデータをExportするか
+			boolean isExportBinaryData = readConsoleBoolean(rs("EntityExport.Wizard.confirmExportBinaryDataMsg"), param.isExportBinaryData());
+			param.setExportBinaryData(isExportBinaryData);
 
 			//オプションをコンフィグから取得
 			EntityDataExportCondition condition = loadConfigCondition();
@@ -395,6 +420,9 @@ public class EntityExport extends MtpCuiBase {
 			
 			//条件をセット
 			param.setEntityExportCondition(condition);
+			
+			//実行情報出力
+			logArguments(param);
 			
 			return null;
 		});
@@ -491,12 +519,18 @@ public class EntityExport extends MtpCuiBase {
 			}
 		}
 
-		//ファイル名
-		if (exportFileName == null) {
-			String propExportFileName = prop.getProperty(EntityExportParameter.PROP_EXPORT_FILE);
-			if (StringUtil.isNotEmpty(propExportFileName)) {
-				exportFileName = propExportFileName;
+		//出力先ディレクトリ
+		if (exportDirName == null) {
+			String propExportDirName = prop.getProperty(EntityExportParameter.PROP_EXPORT_DIR);
+			if (StringUtil.isNotEmpty(propExportDirName)) {
+				exportDirName = propExportDirName;
 			}
+		}
+		
+		//BinaryデータをExportするか
+		String propExportBinaryData = prop.getProperty(EntityExportParameter.PROP_EXPORT_BINARY_DATA);
+		if (StringUtil.isNotEmpty(propExportBinaryData)) {
+			isExportBinaryData = Boolean.valueOf(propExportBinaryData);
 		}
 	}
 
@@ -579,10 +613,12 @@ public class EntityExport extends MtpCuiBase {
 			}
 		}
 
-		//ファイル
-		if (StringUtil.isNotEmpty(exportFileName)) {
-			File exportFile = new File(exportFileName);
-			this.exportFile = exportFile;
+		//出力先ディレクトリ
+		if (StringUtil.isNotEmpty(exportDirName)) {
+			File exportDir = new File(exportDirName);
+			if (!checkDir(exportDir)) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -614,13 +650,16 @@ public class EntityExport extends MtpCuiBase {
 			}
 			param.setEntityName(ed.getName());
 
-			//File
-			if (exportFileName == null) {
-				logError(rs("Common.requiredMsg", "Export file"));
+			if (StringUtil.isNotEmpty(exportDirName)) {
+				param.setExportDirName(exportDirName);
+			}
+			File exportDir = new File(param.getExportDirName());
+			if (!checkDir(exportDir)) {
 				return false;
 			}
-			param.setExportFileName(exportFileName);
-			param.setExportFile(exportFile);
+			param.setExportDir(exportDir);
+			
+			param.setExportBinaryData(isExportBinaryData);
 
 			//オプションをコンフィグから取得
 			EntityDataExportCondition condition = loadConfigCondition();
@@ -637,7 +676,18 @@ public class EntityExport extends MtpCuiBase {
 				return exportEntity(paramA);
 			});
 		});
-
+	}
+	
+	private boolean checkDir(File dir) {
+		if (!dir.exists()) {
+			dir.mkdirs();
+			logInfo(rs("EntityExport.createdDirMsg", dir.getPath()));
+		}
+		if (!dir.isDirectory()) {
+			logError(rs("EntityExport.notDirMsg", dir.getPath()));
+			return false;
+		}
+		return true;
 	}
 
 	@Override
