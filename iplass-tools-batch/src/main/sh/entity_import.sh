@@ -30,7 +30,7 @@ export ENTITY_NAME="$1"
 export FILE="$2"
 
 # import binary data (if value is empty, specified by wizard or entity config)
-export IMORT_BINARY_DATA="$3"
+export IMPORT_BINARY_DATA="$3"
 
 if [ "${ENTITY_NAME}" = "" ]
 then
@@ -80,7 +80,7 @@ fi
 # ----------------------------------------------------
 
 # execute tool
-java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} -D${LANG_ENV} -D${ENTITY_CONFIG_ARG} ${EXEC_APP} ${APP_ARGS} "${ENTITY_NAME}" "${FILE}"
+java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} -D${LANG_ENV} -D${ENTITY_CONFIG_ARG} ${EXEC_APP} ${APP_ARGS} "${ENTITY_NAME}" "${FILE}" "${IMPORT_BINARY_DATA}"
 
 if [ "${EXEC_MODE}" = "WIZARD" ]
 then
