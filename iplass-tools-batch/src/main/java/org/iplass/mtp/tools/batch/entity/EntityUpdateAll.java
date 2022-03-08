@@ -255,7 +255,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 	}
 
 	/**
-	 * Entityデータをエクスポートします。
+	 * Entityデータを更新します。
 	 */
 	private class EntityUpdateAllTask implements Supplier<Boolean> {
 
@@ -489,7 +489,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 
 		Tenant tenant = ts.getTenant(tenantId);
 		if (tenant == null) {
-			logError(rs("Common.requiredMsg", EntityUpdateAllParameter.PROP_TENANT_ID + " or " + EntityUpdateAllParameter.PROP_TENANT_URL));
+			logError(rs("Common.requiredMsg", EntityUpdateAllParameter.PROP_TENANT_ID));
 			return false;
 		}
 		logInfo("target tenant:[" + tenant.getId() + "]" + tenant.getName());

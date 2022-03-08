@@ -247,7 +247,7 @@ public class EntityDeleteAll extends MtpCuiBase {
 	}
 
 	/**
-	 * Entityデータをエクスポートします。
+	 * Entityデータを削除します。
 	 */
 	private class EntityDeleteAllTask implements Supplier<Boolean> {
 

@@ -24,8 +24,6 @@ import org.iplass.mtp.impl.tools.entity.EntityUpdateAllCondition;
 
 public class EntityUpdateAllParameter {
 
-	/** テナントURL */
-	public static final String PROP_TENANT_URL = "tenantUrl";
 	/** テナントID */
 	public static final String PROP_TENANT_ID = "tenantId";
 
