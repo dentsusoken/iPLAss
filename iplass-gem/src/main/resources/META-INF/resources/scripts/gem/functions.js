@@ -980,6 +980,7 @@ $.fn.allInputCheck = function(){
 
 		this.each(function(){
 			var $this = $(this);
+			var $parent = $this.closest(".property-data");
 
 			//あらかじめ設定されてるイベント消しとく
 			$this.removeAttr("onblur").off("blur");
@@ -989,16 +990,25 @@ $.fn.allInputCheck = function(){
 				if (val.length == 0) {
 					//未入力時はアラート出さない
 					$(tb).val("");
+					$(tb).removeClass("validate-error");
+					if ($(".validate-error", $parent).length === 0) {
+						$(".format-error", $parent).remove();
+					}
 					return true;
 				}
 				val = replaceAll(val, ",", "");
 				if(isNaN(val)) {
-					alert(scriptContext.gem.locale.common.numcheckMsg);
-					//$(tb).val("");
-					setTimeout(function() {
-						$(tb).focus();
-					}, 100);
+					$(tb).addClass("validate-error");
+					if ($(".format-error", $parent).length === 0) {
+						var $p = $("<p />").addClass("error format-error").appendTo($parent);
+						$("<span />").addClass("error").text(scriptContext.gem.locale.common.numcheckMsg).appendTo($p);
+					}
 					return true;
+				}
+
+				$(tb).removeClass("validate-error");
+				if ($(".validate-error", $parent).length === 0) {
+					$(".format-error", $parent).remove();
 				}
 
 				if (val != null && val != "") {
@@ -3147,7 +3157,6 @@ function datepicker(selector) {
 					//pickerが表示されていない場合のみセット
 					$this.attr("data-prevalue", convertFromLocaleDateString($this.val()));
 				}
-				$this.removeAttr("data-error-focus");
 			});
 			if ($this.attr("data-showWeekday") === "true") {
 				$this.after($("<span  />").addClass("dp-weekday-label"));
@@ -3157,12 +3166,12 @@ function datepicker(selector) {
 		function isUnDispPicker(input) {
 			var $input = $(input);
 			var dispPicker = $input.attr("data-dispPicker");
-			var errorFocus = $input.attr("data-error-focus");
-			return (typeof dispPicker === "undefined" || dispPicker == null) && !errorFocus;
+			return (typeof dispPicker === "undefined" || dispPicker == null);
 		}
 
 		function fireOnChange(input) {
 			var $input = $(input);
+			var $parent = $input.closest(".property-data"); // 詳細編集、検索画面のみ対応
 
 			//検証
 			try {
@@ -3173,21 +3182,30 @@ function datepicker(selector) {
 				if ($input.attr("data-notFillTime") !== "true") {
 					fillTime(input);
 				}
-			} catch (e) {
-				//値をクリア(メッセージ表示する前にクリアする)
-				//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
-				//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
-				//$input.val("");
 
-				if (options.showErrorMessage == true) {
-					alert(e);
+				$input.removeClass("validate-error");
+				if ($(".validate-error", $parent).length === 0) {
+					$(".format-error", $parent).remove();
 				}
-				//値の初期化をせずに再フォーカス、内部値のクリアはせずに終了
-				$input.attr("data-error-focus", true);
-				setTimeout(function() {
-					$input.focus();
-				}, 100);
-				return;
+			} catch (e) {
+				var suppressAlert = $input.attr("data-suppress-alert")
+				if (suppressAlert) {
+					$input.addClass("validate-error");
+					//アラートの代わりにエラーメッセージ
+					if ($(".format-error", $parent).length === 0) {
+						var $p = $("<p />").addClass("error format-error").appendTo($parent);
+						$("<span />").addClass("error").text(e).appendTo($p);
+					}
+				} else {
+					//値をクリア(メッセージ表示する前にクリアする)
+					//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
+					//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
+					$input.val("");
+
+					if (options.showErrorMessage == true) {
+						alert(e);
+					}
+				}
 			}
 
 			//focus時の値と比較して変更があるかをチェック
@@ -3354,15 +3372,13 @@ function timepicker(selector) {
 					//pickerが表示されていない場合のみセット
 					$this.attr("data-prevalue", convertFromTimeString(this));
 				}
-				$this.removeAttr("data-error-focus");
 			});
 		});
 
 		function isUnDispPicker(input) {
 			var $input = $(input);
 			var dispPicker = $input.attr("data-dispPicker");
-			var errorFocus = $input.attr("data-error-focus");
-			return (typeof dispPicker === "undefined" || dispPicker == null) && !errorFocus;
+			return (typeof dispPicker === "undefined" || dispPicker == null);
 		}
 
 		function convertFromTimeString(input) {
@@ -3380,6 +3396,7 @@ function timepicker(selector) {
 
 		function fireOnChange(input) {
 			var $input = $(input);
+			var $parent = $input.closest(".property-data"); // 詳細編集、検索画面のみ対応
 
 			//検証
 			try {
@@ -3388,21 +3405,30 @@ function timepicker(selector) {
 				var fixedSec = $input.attr("data-fixedSec") || options.fixedSec || "";
 				//common.js
 				validateTimePicker($input.val(), timeFormat, fixedMin, fixedSec, options.validErrMsg);
-			} catch (e) {
-				//値をクリア(メッセージ表示する前にクリアする)
-				//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
-				//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
-				//$input.val("");
 
-				if (options.showErrorMessage == true) {
-					alert(e);
+				$input.removeClass("validate-error");
+				if ($(".validate-error", $parent).length === 0) {
+					$(".format-error", $parent).remove();
 				}
-				//値の初期化をせずに再フォーカス、内部値のクリアはせずに終了
-				$input.attr("data-error-focus", true);
-				setTimeout(function() {
-					$input.focus();
-				}, 100);
-				return;
+			} catch (e) {
+				var suppressAlert = $input.attr("data-suppress-alert")
+				if (suppressAlert) {
+					$input.addClass("validate-error");
+					//アラートの代わりにエラーメッセージ
+					if ($(".format-error", $parent).length === 0) {
+						var $p = $("<p />").addClass("error format-error").appendTo($parent);
+						$("<span />").addClass("error").text(e).appendTo($p);
+					}
+				} else {
+					//値をクリア(メッセージ表示する前にクリアする)
+					//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
+					//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
+					$input.val("");
+
+					if (options.showErrorMessage == true) {
+						alert(e);
+					}
+				}
 			}
 
 			//focus時の値と比較して変更があるかをチェック
@@ -3560,7 +3586,6 @@ function datetimepicker(selector) {
 					//pickerが表示されていない場合のみセット
 					$this.attr("data-prevalue", convertFromLocaleDatetimeString($this.val()));
 				}
-				$this.removeAttr("data-error-focus");
 			});
 			if ($this.attr("data-showWeekday") === "true") {
 				$this.after($("<span  />").addClass("dp-weekday-label"));
@@ -3570,12 +3595,12 @@ function datetimepicker(selector) {
 		function isUnDispPicker(input) {
 			var $input = $(input);
 			var dispPicker = $input.attr("data-dispPicker");
-			var errorFocus = $input.attr("data-error-focus");
-			return (typeof dispPicker === "undefined" || dispPicker == null) && !errorFocus;
+			return (typeof dispPicker === "undefined" || dispPicker == null);
 		}
 
 		function fireOnChange(input) {
 			var $input = $(input);
+			var $parent = $input.closest(".property-data"); // 詳細編集、検索画面のみ対応
 
 			//検証
 			try {
@@ -3584,21 +3609,30 @@ function datetimepicker(selector) {
 				var fixedSec = $input.attr("data-fixedSec") || options.fixedSec || "";
 				//common.js
 				validateTimestampPicker($input.val(), options.inputDateFormat, timeFormat, fixedMin, fixedSec, options.validErrMsg);
-			} catch (e) {
-				//値をクリア(メッセージ表示する前にクリアする)
-				//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
-				//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
-				//$input.val("");
 
-				if (options.showErrorMessage == true) {
-					alert(e);
+				$input.removeClass("validate-error");
+				if ($(".validate-error", $parent).length === 0) {
+					$(".format-error", $parent).remove();
 				}
-				//値の初期化をせずに再フォーカス、内部値のクリアはせずに終了
-				$input.attr("data-error-focus", true);
-				setTimeout(function() {
-					$input.focus();
-				}, 100);
-				return;
+			} catch (e) {
+				var suppressAlert = $input.attr("data-suppress-alert")
+				if (suppressAlert) {
+					$input.addClass("validate-error");
+					//アラートの代わりにエラーメッセージ
+					if ($(".format-error", $parent).length === 0) {
+						var $p = $("<p />").addClass("error format-error").appendTo($parent);
+						$("<span />").addClass("error").text(e).appendTo($p);
+					}
+				} else {
+					//値をクリア(メッセージ表示する前にクリアする)
+					//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
+					//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
+					$input.val("");
+
+					if (options.showErrorMessage == true) {
+						alert(e);
+					}
+				}
 			}
 
 			//focus時の値と比較して変更があるかをチェック

@@ -136,7 +136,7 @@
 <%
 		} else {
 %>
-<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this)" />
+<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this, true)" />
 <%
 		}
 		String strDefaultTo = "";
@@ -160,7 +160,7 @@
 <%
 			} else {
 %>
-<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this)" />
+<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this, true)" />
 <%
 			}
 		}
@@ -170,8 +170,15 @@
 $(function() {
 	<%-- common.js --%>
 	addNormalConditionItemResetHandler(function(){
-		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=strDefault %>");
-		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val("<%=strDefaultTo %>");
+		var $from = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']");
+		$from.val("<%=strDefault %>");
+		var $to = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']");
+		$to.val("<%=strDefaultTo %>");
+
+		var $parent = $from.closest(".property-data");
+		$from.removeClass("validate-error");
+		$to.removeClass("validate-error");
+		$(".format-error", $parent).remove();
 	});
 <%
 		if (required) {
@@ -204,6 +211,37 @@ $(function() {
 	});
 <%
 			}
+		}
+
+		//フォーマットチェック
+		if (!editor.isSearchInRange()) {
+			//Fromのみ
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var val = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
+		if (typeof val !== "undefined" && val !== null && val !== "" && isNaN(val)) {
+			alert(scriptContext.gem.locale.common.numFormatErrorMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+		return true;
+	});
+<%
+		} else {
+			//範囲
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var val = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
+		var valTo = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val();
+		if ((typeof val !== "undefined" && val !== null && val !== "" && isNaN(val)) || (typeof valTo !== "undefined" && valTo != null && valTo !== "" && isNaN(valTo))) {
+			alert(scriptContext.gem.locale.common.numFormatErrorMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+
+		return true;
+	});
+<%
 		}
 %>
 });

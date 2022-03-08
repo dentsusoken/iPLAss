@@ -80,6 +80,7 @@
 
 	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
 	Object propValue = request.getAttribute(Constants.EDITOR_PROP_VALUE);
+	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
 
 	String defName = (String)request.getAttribute(Constants.DEF_NAME);
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
@@ -115,7 +116,7 @@
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/date/DatePropertyAutocompletion.jsp");
 	}
 
-	if (editor.getDisplayType() != DateTimeDisplayType.LABEL 
+	if (editor.getDisplayType() != DateTimeDisplayType.LABEL
 			&& editor.getDisplayType() != DateTimeDisplayType.HIDDEN && updatable) {
 
 		boolean isMultiple = pd.getMultiplicity() != 1;
@@ -137,11 +138,16 @@
 function <%=toggleAddBtnFunc%>() {
 	var display = $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
 	$("#id_addBtn_<c:out value="<%=propName%>"/>").toggle(display);
+
+	var $parent = $("#<%=StringUtil.escapeJavaScript(ulId)%>").closest(".property-data");
+	if ($(".validate-error", $parent).length === 0) {
+		$(".format-error", $parent).remove();
+	}
 }
 </script>
 <ul id="<c:out value="<%=ulId %>"/>" class="mb05">
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add picker-list" style="display: none;">
-<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel=<%=!editor.isHideButtonPanel()%> data-showWeekday=<%=editor.isShowWeekday()%> />
+<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel=<%=!editor.isHideButtonPanel()%> data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
 <input type="hidden" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 </li>
@@ -157,7 +163,7 @@ function <%=toggleAddBtnFunc%>() {
 					String onchange = "dateChange('" + StringUtil.escapeJavaScript(liId) + "')";
 %>
 <li id="<c:out value="<%=liId%>"/>" class="list-add picker-list">
-<input type="text" id="d_<c:out value="<%=liId%>"/>" class="inpbr datepicker" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<input type="text" id="d_<c:out value="<%=liId%>"/>" class="inpbr datepicker" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=hiddenDate%>"/>" />
 <script type="text/javascript">
@@ -176,6 +182,26 @@ $(function() {
 </ul>
 <input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>" onclick="addDateItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=pd.getMultiplicity() + 1%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="id_count_<c:out value="<%=propName%>"/>" value="<c:out value="<%=length%>"/>" />
+<script>
+$(function() {
+	<%-- common.js --%>
+	addEditValidator(function() {
+		var $input = $("#" + es("<%=ulId%>") + " li :text");
+		for (var i = 0; i < $input.length; i++) {
+			var val = $($input.get(i)).val();
+			if (typeof val !== "undefined" && val != null && val !== "") {
+				try {
+					validateDate(val, dateUtil.getInputDateFormat(), "");
+				} catch (e) {
+					alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateUtil.getInputDateFormat()))
+					return false;
+				}
+			}
+		}
+		return true;
+	});
+});
+</script>
 <%
 		} else {
 			//単一
@@ -190,12 +216,26 @@ $(function() {
 			}
 			String onchange = "dateChange('" + StringUtil.escapeJavaScript(propName) + "')";
 %>
-<input type="text" id="d_<c:out value="<%=propName%>"/>" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<input type="text" id="d_<c:out value="<%=propName%>"/>" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
 <input type="hidden" id="i_<c:out value="<%=propName %>"/>" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenDate %>"/>" />
 <script type="text/javascript">
 $(function() {
 	var date = convertToLocaleDateString("<%= StringUtil.escapeJavaScript(hiddenDate) %>");
 	$("#d_" + es("<%=StringUtil.escapeJavaScript(propName)%>")).val(date).trigger("blur");
+
+	<%-- common.js --%>
+	addEditValidator(function() {
+		var val = $("#d_" + es("<%=StringUtil.escapeJavaScript(propName)%>")).val();
+		if (typeof val !== "undefined" && val != null && val !== "") {
+			try {
+				validateDate(val, dateUtil.getInputDateFormat(), "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateUtil.getInputDateFormat()))
+				return false;
+			}
+		}
+		return true;
+	});
 });
 </script>
 <%
@@ -203,7 +243,7 @@ $(function() {
 
 	} else {
 		//LABELかHIDDENか更新不可
-		
+
 		if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
 			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
 		}

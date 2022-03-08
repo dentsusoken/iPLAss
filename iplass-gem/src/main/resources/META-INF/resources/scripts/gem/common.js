@@ -782,6 +782,35 @@ function resetDetailCondition() {
 }
 
 ////////////////////////////////////////////////////////
+//詳細・編集画面用のJavascript
+////////////////////////////////////////////////////////
+
+/**
+ * 編集画面Validatorの追加
+ * @param validatorFunc
+ */
+function addEditValidator(validatorFunc) {
+	if (!scriptContext["edit_validation"]) {
+		scriptContext["edit_validation"] = new Array();
+	}
+	scriptContext["edit_validation"].push(validatorFunc);
+}
+
+/**
+ * 検索条件共通Validate
+ * @returns {Boolean} true:OK
+ */
+function editValidate() {
+	var validators = scriptContext["edit_validation"];
+	if (validators && validators.length > 0) {
+		for (var i = 0; i < validators.length; i++) {
+			if (!validators[i].call(this)) return false;
+		}
+	}
+	return true;
+}
+
+////////////////////////////////////////////////////////
 //String・数値用のJavascript
 ////////////////////////////////////////////////////////
 
@@ -833,22 +862,40 @@ function copyText(liId, propName, idx, selector, delCallback) {
 
 /**
  * 数値チェック
+ * @param element 入力項目
+ * @param suppressAlert アラートを抑止し、値を保持
  */
-function numcheck(element) {
+function numcheck(element, suppressAlert) {
 	var v = element.value;
+	var $parent = $(element).closest(".property-data"); // 詳細編集、検索画面のみ対応
 	//空白のみの場合は空をセット
 	if (v.trim().length == 0) {
 		element.value = "";
+		$(element).removeClass("validate-error");
+		if ($(".validate-error", $parent).length === 0) {
+			$(".format-error", $parent).remove();
+		}
 		return;
 	}
 	//数値変換可能かをチェック
 	if (isNaN(v)) {
-		alert(scriptContext.gem.locale.common.numcheckMsg);
-		//element.value = "";
-		setTimeout(function() {
-			element.focus();
-		}, 100);
+		if (suppressAlert) {
+			$(element).addClass("validate-error");
+			//アラートの代わりにエラーメッセージ
+			if ($(".format-error", $parent).length === 0) {
+				var $p = $("<p />").addClass("error format-error").appendTo($parent);
+				$("<span />").addClass("error").text(scriptContext.gem.locale.common.numcheckMsg).appendTo($p);
+			}
+		} else {
+			alert(scriptContext.gem.locale.common.numcheckMsg);
+			element.value = "";
+		}
 		return;
+	}
+
+	$(element).removeClass("validate-error");
+	if ($(".validate-error", $parent).length === 0) {
+		$(".format-error", $parent).remove();
 	}
 
 	//前後の空白や0を消すためparseした値をセット
@@ -3733,22 +3780,23 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 		//形式による置換以外の処理
 		$headerRow.children("th").each(function(num) {
 			var type = getType(this);
+			var label = $(".property-label", this).text();
 			var $td = $copyRow.children(":nth-child(" + (num + 1) + ")");
 			if (type[0] == "String" || type[0] == "LongText") {
 				//文字列
 				addNestRow_String(type[1], $td, idx);
 			} else if (type[0] == "Decimal" || type[0] == "Float" || type[0] == "Integer") {
 				//数値
-				addNestRow_Number(type[1], $td, idx);
+				addNestRow_Number(type[1], $td, idx, label);
 			} else if (type[0] == "Date") {
 				//日付
-				addNestRow_Date(type[1], $td, idx);
+				addNestRow_Date(type[1], $td, idx, label);
 			} else if (type[0] == "Time") {
 				//時間
-				addNestRow_Time(type[1], $td, idx);
+				addNestRow_Time(type[1], $td, idx, label);
 			} else if (type[0] == "Timestamp") {
 				//日時
-				addNestRow_Timestamp(type[1], $td, idx);
+				addNestRow_Timestamp(type[1], $td, idx, label);
 			} else if (type[0] == "Binary") {
 				//バイナリ
 				$td.children(":file").each(function() {
@@ -3820,12 +3868,21 @@ function addNestRow_String(type, cell, idx) {
  * @param idx
  * @return
  */
-function addNestRow_Number(type, cell, idx) {
+function addNestRow_Number(type, cell, idx, label) {
 	var $text = $(cell).children(":text");
 	if ($text.hasClass("commaFieldDummy")) {
 		$text.removeClass("commaFieldDummy").addClass("commaField");
 		$text.commaField();
 	}
+	//登録、更新時の入力チェック
+	addEditValidator(function() {
+		var val = $text.val();
+		if (typeof val !== "undefined" && val !== null && val !== "" && isNaN(val)) {
+			alert(scriptContext.gem.locale.common.numFormatErrorMsg.replace("{0}", label));
+			return false;
+		}
+		return true;
+	});
 }
 
 /**
@@ -3834,13 +3891,27 @@ function addNestRow_Number(type, cell, idx) {
  * @param idx
  * @return
  */
-function addNestRow_Date(type, cell, idx) {
+function addNestRow_Date(type, cell, idx, label) {
 	if (type == "DATETIME") {
 		var id = $(cell).children("input:hidden:last").attr("id").substring(2);
 		$(cell).children(":text:first").each(function() {
 			this.removeAttribute("onchange");
 			$(this).change(function() {dateChange(id);});
 			datepicker(this);
+		});
+
+		//登録、更新時の入力チェック
+		addEditValidator(function() {
+			var val = $("#d_" + es(id)).val();
+			if (typeof val !== "undefined" && val != null && val !== "") {
+				try {
+					validateDate(val, dateUtil.getInputDateFormat(), "");
+				} catch (e) {
+					alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, label, dateUtil.getInputDateFormat()))
+					return false;
+				}
+			}
+			return true;
 		});
 	}
 }
@@ -3851,7 +3922,7 @@ function addNestRow_Date(type, cell, idx) {
  * @param idx
  * @return
  */
-function addNestRow_Time(type, cell, idx) {
+function addNestRow_Time(type, cell, idx, label) {
 	if (type == "DATETIME") {
 
 		var timeformat = $("span", cell).children(":text:first").attr("data-timeformat");
@@ -3864,6 +3935,21 @@ function addNestRow_Time(type, cell, idx) {
 				this.removeAttribute("onchange");
 				$(this).change(function() {timePickerChange(id);});
 				timepicker(this);
+			});
+
+			//登録、更新時の入力チェック
+			addEditValidator(function() {
+				var $input = $("#time_" + es(id));
+				var val = $input.val();
+				if (typeof val !== "undefined" && val !== null && val !== "") {
+					try {
+						validateTimePicker(val, timeformat, "", "", "");
+					} catch (e) {
+						alert(messageFormat(scriptContext.gem.locale.common.timeFormatErrorMsg, label, timeformat))
+						return false;
+					}
+				}
+				return true;
 			});
 
 		} else {
@@ -3884,7 +3970,7 @@ function addNestRow_Time(type, cell, idx) {
  * @param idx
  * @return
  */
-function addNestRow_Timestamp(type, cell, idx) {
+function addNestRow_Timestamp(type, cell, idx, label) {
 	if (type == "DATETIME") {
 
 		var timeformat = $("span", cell).children(":text:first").attr("data-timeformat");
@@ -3899,6 +3985,22 @@ function addNestRow_Timestamp(type, cell, idx) {
 				datetimepicker(this);
 			});
 
+			//登録、更新時の入力チェック
+			addEditValidator(function() {
+				var $input = $("#datetime_" + es(id));
+				var val = $input.val();
+				var dateFormat = dateUtil.getInputDateFormat();
+				if (typeof val !== "undefined" && val !== null && val !== "") {
+					try {
+						validateTimestampPicker(val, dateFormat, timeformat, "", "", "");
+					} catch (e) {
+						alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, label, dateFormat + " " + timeformat))
+						return false;
+					}
+				}
+				return true;
+			});
+
 		} else {
 
 			var id = $("span", cell).children("input:hidden:last").attr("id").substring(2);
@@ -3911,6 +4013,20 @@ function addNestRow_Timestamp(type, cell, idx) {
 				this.removeAttribute("onchange");
 				$(this).change(function() {timestampSelectChange(id);});
 				datepicker(this);
+			});
+
+			//登録、更新時の入力チェック
+			addEditValidator(function() {
+				var val = $("#d_" + es(id)).val();
+				if (typeof val !== "undefined" && val != null && val !== "") {
+					try {
+						validateDate(val, dateUtil.getInputDateFormat(), "");
+					} catch (e) {
+						alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, label, dateUtil.getInputDateFormat()))
+						return false;
+					}
+				}
+				return true;
 			});
 		}
 	}
