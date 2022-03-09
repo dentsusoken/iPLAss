@@ -68,7 +68,12 @@ public class AdminConsole implements EntryPoint {
 	/**
 	 * This is the entry point method.
 	 */
+	@Override
 	public void onModuleLoad() {
+
+		//Debug ModuleBaseURL
+		GWT.log("ModuleBaseURL:" + GWT.getModuleBaseURL());
+		GWT.log("ModuleBaseForStaticFiles:" + GWT.getModuleBaseForStaticFiles());
 
 		//例外発生時の設定
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
