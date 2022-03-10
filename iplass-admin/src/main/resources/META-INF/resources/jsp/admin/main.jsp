@@ -38,8 +38,8 @@
 
 	AdminConsoleService service = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
 
-	String getResourcePath() {
-		return TemplateUtil.getStaticContentPath() + service.getResourcePrefixPath() + "/mtpadmin/";
+	String getResourcePath(String contextPath) {
+		return contextPath + service.getResourcePrefixPath() + "/mtpadmin/";
 	}
 
 	boolean isBlank(String str) {
@@ -94,7 +94,8 @@
 	Tenant tenant = TemplateUtil.getTenant();
 
 	//リソースパス
-	String rsPath = getResourcePath();
+	String rsPath = getResourcePath(request.getContextPath());
+	request.setAttribute("rsPath", StringUtil.escapeHtml(rsPath));
 
 	//アイコン
 	String iconUrl = ViewUtil.getTenantGemInfo(tenant).getIconUrl();
@@ -130,31 +131,31 @@ var _language="<%=SafeHtmlUtils.fromString(argLang).asString()%>";
 <%-- SuperDevモードでSkinがロードできない対応
 http://forums.smartclient.com/forum/smart-gwt-technical-q-a/32571-gwt-2-7-smartgwt-5-does-not-load-skins
 --%>
-window.isomorphicDir = '<%=rsPath%>sc/';
+window.isomorphicDir = '${rsPath}sc/';
 <%-- imageパスとしてテナント名を除外 --%>
-window.imgDir = '<%=rsPath%>images/';
+window.imgDir = '${rsPath}images/';
 //-->
 </script>
 
 <%-- include the SC Core API --%>
-<script src="<%=rsPath%>sc/modules/ISC_Core.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/modules/ISC_Core.js?isc_version=<%=scVersionParam%>"></script>
 
 <%-- include SmartClient --%>
-<script src="<%=rsPath%>sc/modules/ISC_Foundation.js?isc_version=<%=scVersionParam%>"></script>
-<script src="<%=rsPath%>sc/modules/ISC_Containers.js?isc_version=<%=scVersionParam%>"></script>
-<script src="<%=rsPath%>sc/modules/ISC_Grids.js?isc_version=<%=scVersionParam%>"></script>
-<script src="<%=rsPath%>sc/modules/ISC_Forms.js?isc_version=<%=scVersionParam%>"></script>
-<script src="<%=rsPath%>sc/modules/ISC_RichTextEditor.js?isc_version=<%=scVersionParam%>"></script>
-<script src="<%=rsPath%>sc/modules/ISC_DataBinding.js?isc_version=<%=scVersionParam%>"></script>
-<script src="<%=rsPath%>sc/modules/ISC_Calendar.js?isc_version=<%=scVersionParam%>"></script>
-<script src="<%=rsPath%>sc/modules/ISC_Drawing.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/modules/ISC_Foundation.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/modules/ISC_Containers.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/modules/ISC_Grids.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/modules/ISC_Forms.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/modules/ISC_RichTextEditor.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/modules/ISC_DataBinding.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/modules/ISC_Calendar.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/modules/ISC_Drawing.js?isc_version=<%=scVersionParam%>"></script>
 
-<script src="<%=rsPath%>locale/locale_<%=adminLang%>.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
+<script src="${rsPath}locale/locale_<%=adminLang%>.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 
 <%-- load skin --%>
-<script src="<%=rsPath%>sc/skins/Enterprise/load_skin.js?isc_version=<%=scVersionParam%>"></script>
+<script src="${rsPath}sc/skins/Enterprise/load_skin.js?isc_version=<%=scVersionParam%>"></script>
 
-<script src="<%=rsPath%>mtpadmin.nocache.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
+<script src="${rsPath}mtpadmin.nocache.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 
 <%
 	String aceVersion = "1.4.5";
