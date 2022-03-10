@@ -123,7 +123,10 @@
 			}
 		}
 		Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
-
+		String tmpCls = "";
+		if (editor.isShowComma()) {
+			tmpCls += " commaField";
+		}
 		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 			String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 			strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
@@ -136,7 +139,9 @@
 <%
 		} else {
 %>
-<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this, true)" />
+<span>
+<input type="text" class="form-size-04 inpbr<c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this, true)" />
+</span>
 <%
 		}
 		String strDefaultTo = "";
@@ -160,7 +165,9 @@
 <%
 			} else {
 %>
-<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this, true)" />
+<span>
+<input type="text" class="form-size-04 inpbr<c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this, true)" />
+</span>
 <%
 			}
 		}
@@ -179,6 +186,11 @@ $(function() {
 		$from.removeClass("validate-error");
 		$to.removeClass("validate-error");
 		$(".format-error", $parent).remove();
+
+<%if (editor.isShowComma()) {%>
+		$(".commaField.dummyField", $parent).remove();
+		$(".commaField", $parent).show();
+<%}%>
 	});
 <%
 		if (required) {
