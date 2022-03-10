@@ -1162,8 +1162,9 @@ function closeBulkUpdateModalWindow() {
 <label><input type="radio" name="selectAllType" value="current">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.selectCurrentPage")}</label>
 </li>
 <% 		if (!"-1".equals(multiplicity)) { %>
+<c:set var="multiplicity" value="<%=multiplicity%>" />
 <li class="selectalltype-message">
-<%= TemplateUtil.getResourceString("mtp-gem-messages", "generic.element.section.SearchResultSection.selectAllTypeMessage", multiplicity) %>
+${m:rsp("mtp-gem-messages", "generic.element.section.SearchResultSection.selectAllTypeMessage", multiplicity)}
 </li>
 <% 		} %>
 </ul>
