@@ -42,11 +42,11 @@
 		if (pd instanceof ExpressionProperty) {
 			ExpressionProperty ep = (ExpressionProperty) pd;
 			if (ep.getResultType() != PropertyDefinitionType.STRING) {
-				throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+				throw new EntityViewRuntimeException(propName + " 's editor is unsupport "
 						+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 			}
 		} else {
-			throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+			throw new EntityViewRuntimeException(propName + " 's editor is unsupport "
 					+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 		}
 	}
@@ -80,4 +80,5 @@
 	request.removeAttribute(Constants.EDITOR_EDITOR);
 	request.removeAttribute(Constants.EDITOR_PROP_VALUE);
 	request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
+	request.removeAttribute(Constants.EDITOR_DISPLAY_LABEL);
 %>

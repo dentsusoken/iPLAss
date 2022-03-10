@@ -1,19 +1,19 @@
 <%--
  Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- 
+
  Unless you have purchased a commercial license,
  the following license terms apply:
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
  published by the Free Software Foundation, either version 3 of the
  License, or (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU Affero General Public License for more details.
- 
+
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
@@ -119,9 +119,9 @@
 
 		String[] defTmp = split(_defaultValue);
 		String defStrHidden = defTmp[6];
-		
-	    StringBuffer sbValue = new StringBuffer();
-	    StringBuffer sbDefValue = new StringBuffer();
+
+		StringBuffer sbValue = new StringBuffer();
+		StringBuffer sbDefValue = new StringBuffer();
 		sbValue.append(tmp[0]);
 		sbDefValue.append(defTmp[0]);
 		if (TimeDispRange.isDispHour(editor.getDispRange())) {
@@ -129,7 +129,7 @@
 				sbValue.append(" ");
 			}
 			sbValue.append(tmp[1]);
-	
+
 			if (!defTmp[1].isEmpty()) {
 				sbDefValue.append(" ");
 			}
@@ -140,7 +140,7 @@
 				sbValue.append(":");
 			}
 			sbValue.append(tmp[2]);
-	
+
 			if (!defTmp[1].isEmpty()) {
 				sbDefValue.append(":");
 			}
@@ -151,7 +151,7 @@
 				sbValue.append(":");
 			}
 			sbValue.append(tmp[3]);
-	
+
 			if (!defTmp[2].isEmpty()) {
 				sbDefValue.append(":");
 			}
@@ -175,7 +175,7 @@
 		if (defaultMsec == null) {
 			defaultMsec = "000";
 		}
-	
+
 		String timeFormat = null;
 		if (TimeDispRange.isDispSec(editor.getDispRange())) {
 			timeFormat = "HH:mm:ss";
@@ -190,7 +190,7 @@
 			timeFormat = "HH";
 			defaultHour = "";
 		}
-	
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
@@ -204,9 +204,9 @@
 		}
 
 		int minInterval = MinIntereval.toInt(editor.getInterval());
-	
+
 		String onchange = "timestampPickerChange('" + StringUtil.escapeJavaScript(_propName) + "')";
-	
+
 		String range = "SEC";
 		if (editor.getDispRange() != null) {
 			range = editor.getDispRange().toString();
@@ -214,14 +214,19 @@
 %>
 <input type="text" class="<c:out value="<%= cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="datetime_<c:out value="<%=_propName %>"/>"
 	    onchange="<%=onchange%>" data-stepmin="<c:out value="<%=minInterval %>"/>" data-timeformat="<c:out value="<%=timeFormat %>"/>"
-	    data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>"  data-fixedMSec="<c:out value="<%=defaultMsec%>"/>" data-showWeekday=<%=editor.isShowWeekday()%> />
+	    data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>"  data-fixedMSec="<c:out value="<%=defaultMsec%>"/>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
 <input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
 <script type="text/javascript">
 $(function() {
 	<%-- common.js --%>
 	addNormalConditionItemResetHandler(function(){
-		$("#datetime_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=sbDefValue.toString() %>");
+		var $datetime = $("#datetime_" + es("<%=StringUtil.escapeJavaScript(_propName)%>"));
+		$datetime.val("<%=sbDefValue.toString() %>");
 		$(":hidden[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=defStrHidden %>");
+
+		var $parent = $datetime.closest(".property-data");
+		$datetime.removeClass("validate-error");
+		$(".format-error", $parent).remove();
 	});
 	<%-- common.js --%>
 	addCommonValidator(function() {

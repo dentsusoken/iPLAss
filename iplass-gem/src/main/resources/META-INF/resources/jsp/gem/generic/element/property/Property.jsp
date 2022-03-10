@@ -96,9 +96,9 @@
 	}
 
 	boolean showDesc = (OutputType.EDIT == type || OutputType.BULK == type) && description != null && description.length() > 0;
-	
+
 	boolean isHidden = property.getEditor().isHide();
-	
+
 	if (!isHidden) {
 %>
 
@@ -119,7 +119,7 @@
 		}
 %>
 </th>
-<td id="id_td_<c:out value="<%=propName %>"/>" class="<c:out value="<%=style %>"/>">
+<td id="id_td_<c:out value="<%=propName %>"/>" class="<c:out value="<%=style %>"/> property-data">
 <%
 		if (showDesc) {
 %>
@@ -127,11 +127,12 @@
 <%
 		}
 	}
-	
+
 	//全Type共通部分
 	request.setAttribute(Constants.EDITOR_EDITOR, property.getEditor());
 	request.setAttribute(Constants.EDITOR_PROP_VALUE, propValue);
 	request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
+	request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
 	if (OutputType.EDIT == type || OutputType.BULK == type) {
 		request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
 		request.setAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA, rootEntity);
@@ -143,7 +144,7 @@
 <jsp:include page="<%=path %>" />
 <%
 	}
-	
+
 	if (!isHidden) {
 		if (showDesc) {
 %>

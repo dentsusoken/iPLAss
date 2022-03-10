@@ -24,6 +24,10 @@ scriptContext.gem.locale.common.name = "Name";
 scriptContext.gem.locale.common.numcheckMsg = "Please enter a number.";
 scriptContext.gem.locale.common.pleaseSelect = "Please Select";
 scriptContext.gem.locale.common.requiredMsg = "Please enter {0}.";
+scriptContext.gem.locale.common.numFormatErrorMsg = "Please enter a number {0}.";
+scriptContext.gem.locale.common.dateFormatErrorMsg = "Please enter the date {0} correctly. ({1})";
+scriptContext.gem.locale.common.timeFormatErrorMsg = "Please enter the time {0} correctly. ({1})";
+scriptContext.gem.locale.common.timestampFormatErrorMsg = "Please enter the date or time {0} correctly. ({1})";
 
 scriptContext.gem.locale.apendCategory("binary");
 scriptContext.gem.locale.binary.deleteLink = "Delete";

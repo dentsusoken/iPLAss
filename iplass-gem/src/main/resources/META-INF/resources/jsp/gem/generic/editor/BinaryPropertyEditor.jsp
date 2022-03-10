@@ -35,7 +35,7 @@
 	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof BinaryProperty)) {
 		//定義がBinaryPropertyでなければ表示不可
-		throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+		throw new EntityViewRuntimeException(propName + " 's editor is unsupport "
 				+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 	}
 
@@ -67,4 +67,5 @@
 	request.removeAttribute("editor");
 	request.removeAttribute("propValue");
 	request.removeAttribute("propertyDefinition");
+	request.removeAttribute(Constants.EDITOR_DISPLAY_LABEL);
 %>

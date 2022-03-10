@@ -736,7 +736,7 @@ $(function() {
 				}
 %>
 </th>
-<td id="id_td_<c:out value="<%=property.getPropertyName() %>"/>" class="<c:out value="<%=style %>"/>">
+<td id="id_td_<c:out value="<%=property.getPropertyName() %>"/>" class="<c:out value="<%=style %>"/> property-data">
 <%
 				property.getEditor().setPropertyName(property.getPropertyName());
 				String path = EntityViewUtil.getJspPath(property.getEditor(), ViewConst.DESIGN_TYPE_GEM);

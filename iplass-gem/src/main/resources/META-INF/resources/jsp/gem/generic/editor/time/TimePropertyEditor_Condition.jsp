@@ -238,10 +238,12 @@
 		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
 		editor.setPropertyName(propName);
 
-		if (required) {
 %>
 <script type="text/javascript">
 $(function() {
+<%
+		if (required) {
+%>
 	<%-- common.js --%>
 	addNormalValidator(function() {
 		var fromVal = $(":hidden[name='" + es("<%=StringUtil.escapeJavaScript(Constants.SEARCH_COND_PREFIX + propName + "From")%>") + "']").val();
@@ -253,10 +255,42 @@ $(function() {
 		}
 		return true;
 	});
+<%
+		}
+		//フォーマットチェック
+		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUseTimePicker)) {
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var $from = $("#time_" + es("<%=StringUtil.escapeJavaScript(propName + "0")%>"));
+		var fromVal = $from.val();
+		var timeFormat = $from.attr("data-timeformat");
+		if (typeof fromVal !== "undefined" && fromVal !== null && fromVal !== "") {
+			try {
+				validateTimePicker(fromVal, timeFormat, "", "", "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.timeFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", timeFormat))
+				return false;
+			}
+		}
+		var $to = $("#time_" + es("<%=StringUtil.escapeJavaScript(propName + "1")%>"));
+		var toVal = $to.val();
+		if (typeof toVal !== "undefined" && toVal !== null && toVal !== "") {
+			try {
+				validateTimePicker(toVal, timeFormat, "", "", "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.timeFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", timeFormat))
+				return false;
+			}
+		}
+		return true;
+	});
+<%
+		}
+%>
 });
 </script>
 <%
-		}
 	} else {
 		//HIDDEN
 

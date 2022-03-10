@@ -170,7 +170,7 @@
 %>
 <span style="<c:out value="<%=fromDisp %>"/>">
 <%-- XSS対応-メタの設定のため対応なし(onchange) --%>
-<input type="text" id="d_<c:out value="<%=propNameFrom %>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange %>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<input type="text" id="d_<c:out value="<%=propNameFrom %>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange %>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
 <input type="hidden" id="i_<c:out value="<%=propNameFrom%>"/>" name="<c:out value="<%=propNameFrom%>"/>" value="<c:out value="<%=propValueFrom%>"/>" />
 </span>
 <%
@@ -205,7 +205,7 @@
 %>
 <span style="<c:out value="<%=toDisp%>"/>">
 <%-- XSS対応-メタの設定のため対応なし(onchange) --%>
-<input type="text" id="d_<c:out value="<%=propNameTo%>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value=""  onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<input type="text" id="d_<c:out value="<%=propNameTo%>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value=""  onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
 <input type="hidden" id="i_<c:out value="<%=propNameTo %>"/>" name="<c:out value="<%=propNameTo %>"/>" value="<c:out value="<%=propValueTo %>"/>" />
 </span>
 <%
@@ -225,10 +225,17 @@ $(function() {
 		var defaultFrom = convertToLocaleDateString("<%=StringUtil.escapeJavaScript(defaultValueFrom)%>");
 		var defaultTo = convertToLocaleDateString("<%=StringUtil.escapeJavaScript(defaultValueTo)%>");
 
-		$("#d_" + es("<%=StringUtil.escapeJavaScript(propNameFrom)%>")).val(defaultFrom);
+		var $from = $("#d_" + es("<%=StringUtil.escapeJavaScript(propNameFrom)%>"));
+		$from.val(defaultFrom);
 		$("#i_" + es("<%=StringUtil.escapeJavaScript(propNameFrom)%>")).val("<%=StringUtil.escapeJavaScript(defaultValueFrom)%>");
-		$("#d_" + es("<%=StringUtil.escapeJavaScript(propNameTo)%>")).val(defaultTo);
+		var $to = $("#d_" + es("<%=StringUtil.escapeJavaScript(propNameTo)%>"));
+		$to.val(defaultTo);
 		$("#i_" + es("<%=StringUtil.escapeJavaScript(propNameTo)%>")).val("<%=StringUtil.escapeJavaScript(defaultValueTo)%>");
+
+		var $parent = $from.closest(".property-data");
+		$from.removeClass("validate-error");
+		$to.removeClass("validate-error");
+		$(".format-error", $parent).remove();
 	});
 
 <%
@@ -247,7 +254,30 @@ $(function() {
 	});
 <%
 		}
+	//フォーマットチェック
 %>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var fromVal = $("#d_" + es("<%=StringUtil.escapeJavaScript(propNameFrom)%>")).val();
+		var toVal = $("#d_" + es("<%=StringUtil.escapeJavaScript(propNameTo)%>")).val();
+		if (typeof fromVal !== "undefined" && fromVal != null && fromVal !== "") {
+			try {
+				validateDate(fromVal, dateUtil.getInputDateFormat(), "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateUtil.getInputDateFormat()))
+				return false;
+			}
+		}
+		if (typeof toVal !== "undefined" && toVal != null && toVal !== "") {
+			try {
+				validateDate(toVal, dateUtil.getInputDateFormat(), "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateUtil.getInputDateFormat()))
+				return false;
+			}
+		}
+		return true;
+	});
 });
 </script>
 <%

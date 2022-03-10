@@ -91,6 +91,7 @@
 
 	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
 	Object propValue = request.getAttribute(Constants.EDITOR_PROP_VALUE);
+	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
 
 	String defName = (String)request.getAttribute(Constants.DEF_NAME);
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
@@ -143,7 +144,7 @@
 	}
 
 	//タイプ毎に出力内容かえる
-	if (editor.getDisplayType() != DateTimeDisplayType.LABEL 
+	if (editor.getDisplayType() != DateTimeDisplayType.LABEL
 			&& editor.getDisplayType() != DateTimeDisplayType.HIDDEN && updatable) {
 
 		boolean isMultiple = pd.getMultiplicity() != 1;
@@ -166,6 +167,11 @@
 function <%=toggleAddBtnFunc%>(){
 	var display = $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
 	$("#id_addBtn_<c:out value="<%=propName %>" />").toggle(display);
+
+	var $parent = $("#<%=StringUtil.escapeJavaScript(ulId)%>").closest(".property-data");
+	if ($(".validate-error", $parent).length === 0) {
+		$(".format-error", $parent).remove();
+	}
 }
 </script>
 <%
@@ -198,7 +204,7 @@ function <%=toggleAddBtnFunc%>(){
 				}
 
 %>
-<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showWeekday=<%=editor.isShowWeekday()%>
+<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true"
 	data-stepmin="<c:out value="<%=minInterval %>"/>" data-timeformat="<c:out value="<%=sbFormat.toString() %>"/>"
 	data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>" data-fixedMSec="000"/>
 <input type="hidden" />
@@ -234,13 +240,35 @@ function <%=toggleAddBtnFunc%>(){
 <input type="button" id="id_addBtn_<c:out value="<%=propName %>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.timestamp.TimestampPropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>"
 	onclick="addTimestampPickerItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=pd.getMultiplicity() + 1 %>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="id_count_<c:out value="<%=propName %>"/>" value="<c:out value="<%=length %>"/>" />
+<script>
+$(function() {
+	<%-- common.js --%>
+	addEditValidator(function() {
+		var $input = $("#" + es("<%=ulId%>") + " li :text");
+		for (var i = 0; i < $input.length; i++) {
+			var val = $($input.get(i)).val();
+			var dateFormat = dateUtil.getInputDateFormat();
+			var timeFormat = $($input.get(i)).attr("data-timeformat");
+			if (typeof val !== "undefined" && val !== null && val !== "") {
+				try {
+					validateTimestampPicker(val, dateFormat, timeFormat, "", "", "");
+				} catch (e) {
+					alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateFormat + " " + timeFormat))
+					return false;
+				}
+			}
+		}
+		return true;
+	});
+});
+</script>
 
 <%
 			} else {
 %>
 <ul id="<c:out value="<%=ulId %>"/>" class="mb05">
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add picker-list timestampselect-field" style="display: none;">
-<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
 <%
 				if (TimeDispRange.isDispHour(editor.getDispRange())) {
 				//時間を表示
@@ -345,6 +373,26 @@ function <%=toggleAddBtnFunc%>(){
 <input type="button" id="id_addBtn_<c:out value="<%=propName %>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.timestamp.TimestampPropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>"
 	onclick="addTimestampSelectItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=pd.getMultiplicity() + 1 %>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="id_count_<c:out value="<%=propName %>"/>" value="<c:out value="<%=length %>"/>" />
+<script>
+$(function() {
+	<%-- common.js --%>
+	addEditValidator(function() {
+		var $input = $("#" + es("<%=ulId%>") + " li :text");
+		for (var i = 0; i < $input.length; i++) {
+			var val = $($input.get(i)).val();
+			if (typeof val !== "undefined" && val != null && val !== "") {
+				try {
+					validateDate(val, dateUtil.getInputDateFormat(), "");
+				} catch (e) {
+					alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateUtil.getInputDateFormat()))
+					return false;
+				}
+			}
+		}
+		return true;
+	});
+});
+</script>
 <%
 
 			}
@@ -361,12 +409,49 @@ function <%=toggleAddBtnFunc%>(){
 <span class="timestamppicker-field">
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
 </span>
+<script>
+$(function() {
+	<%-- common.js --%>
+	addEditValidator(function() {
+		var $input = $("#datetime_" + es("<%=StringUtil.escapeJavaScript(propName)%>"));
+		var val = $input.val();
+		var dateFormat = dateUtil.getInputDateFormat();
+		var timeFormat = $input.attr("data-timeformat");
+		if (typeof val !== "undefined" && val !== null && val !== "") {
+			try {
+				validateTimestampPicker(val, dateFormat, timeFormat, "", "", "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateFormat + " " + timeFormat))
+				return false;
+			}
+		}
+		return true;
+	});
+});
+</script>
 <%
 			} else {
 %>
 <span class="timestampselect-field">
 <jsp:include page="Timestamp.jsp"></jsp:include>
 </span>
+<script>
+$(function() {
+	<%-- common.js --%>
+	addEditValidator(function() {
+		var val = $("#d_" + es("<%=StringUtil.escapeJavaScript(propName)%>")).val();
+		if (typeof val !== "undefined" && val != null && val !== "") {
+			try {
+				validateDate(val, dateUtil.getInputDateFormat(), "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateUtil.getInputDateFormat()))
+				return false;
+			}
+		}
+		return true;
+	});
+});
+</script>
 <%
 				}
 			request.removeAttribute(Constants.EDITOR_PICKER_PROP_NAME);
@@ -374,7 +459,7 @@ function <%=toggleAddBtnFunc%>(){
 		}
 	} else {
 		//LABELかHIDDENか更新不可
-		
+
 		if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
 			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
 		}
