@@ -266,7 +266,7 @@
 <%
 	}
 %>
-<table class="tbl-section multi-col" data-colNum=<%=section.getColNum() %>>
+<table class="tbl-section multi-col" data-colNum=<%=section.getColNum() %> data-cell-class="<c:out value="<%=cellStyle %>"/>">
 <%
 	for (NestProperty property : nestList) {
 %>

@@ -2975,7 +2975,8 @@ $.fn.allInputCheck = function(){
 		var defaults = {
 			colNum:2,
 			exclude:".submit-area,.version-area",
-			deleteTarget:":has(div.deleteRow)"
+			deleteTarget:":has(div.deleteRow)",
+			cellClass:""
 		}
 		var options = $.extend(defaults, option);
 		if (!this) return false;
@@ -2985,6 +2986,9 @@ $.fn.allInputCheck = function(){
 
 			if ($this.attr("data-colNum")) {
 				options.colNum = $this.attr("data-colNum") - 0;
+			}
+			if ($this.attr("data-cell-class")) {
+				options.cellClass = $this.attr("data-cell-class");
 			}
 
 			//対象の行取得
@@ -3039,6 +3043,15 @@ $.fn.allInputCheck = function(){
 					}
 				}
 			});
+
+			// 指定列数に足りない場合は空をうめる
+			// ReferenceSectionの対応、SearchConditionSectionはBlankが設定される
+			if (colIndex !== 0) {
+				for (var i = colIndex; i < options.colNum; i++) {
+					$current.append($("<th/>").addClass(options.cellClass));
+					$current.append($("<td/>").addClass(options.cellClass));
+				}
+			}
 
 			//除外行は先頭以外をcolspanでくっつける(折り返さないように)
 			var $excludes = $(options.exclude, $this);
