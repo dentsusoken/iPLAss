@@ -30,7 +30,12 @@ public class SyntaxParser {
 	private static Logger logger = LoggerFactory.getLogger(SyntaxParser.class);
 	
 	private SyntaxContext sc;
+	private boolean continueParse = false;
 	
+	public void setContinueParse(boolean continueParse) {
+		this.continueParse = continueParse;
+	}
+
 	public SyntaxParser(String contextName) {
 		SyntaxService service = ServiceRegistry.getRegistry().getService(SyntaxService.class);
 		sc = service.getSyntaxContext(contextName);
@@ -56,7 +61,7 @@ public class SyntaxParser {
 			logger.trace("parse query:time=" + ((double) (System.nanoTime() - time)/1000000) + "ms.");
 		}
 		
-		if (!ctx.isEnd()) {
+		if (!ctx.isEnd() && !continueParse) {
 			throw new ParseException(new EvalError("Cant handle next token.", syntax, ctx));
 		}
 		

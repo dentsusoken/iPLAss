@@ -80,6 +80,7 @@ public class QuerySyntaxRegister implements SyntaxRegister {
 			new SortSpecSyntax(),
 			new LimitSyntax(),
 			new SubQuerySyntax(),
+			new EqualsSyntax(),
 
 			//ValueExpression
 			new MinusSignSyntax(),

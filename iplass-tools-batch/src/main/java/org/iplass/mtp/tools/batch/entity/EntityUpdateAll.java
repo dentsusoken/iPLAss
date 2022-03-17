@@ -36,9 +36,14 @@ import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ExpressionProperty;
 import org.iplass.mtp.entity.definition.properties.LongTextProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
+import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
+import org.iplass.mtp.impl.parser.ParseException;
+import org.iplass.mtp.impl.parser.SyntaxParser;
+import org.iplass.mtp.impl.query.EqualsSyntax;
+import org.iplass.mtp.impl.query.QueryService;
 import org.iplass.mtp.impl.tenant.TenantService;
 import org.iplass.mtp.impl.tools.entity.EntityToolService;
 import org.iplass.mtp.impl.tools.entity.EntityUpdateAllCondition;
@@ -86,6 +91,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private EntityToolService ets = ServiceRegistry.getRegistry().getService(EntityToolService.class);
 	private EntityDefinitionManager edm = ManagerLocator.manager(EntityDefinitionManager.class);
+	private QueryService qs = ServiceRegistry.getRegistry().getService(QueryService.class);
 
 	/**
 	 * args[0]・・・execMode
@@ -312,41 +318,41 @@ public class EntityUpdateAll extends MtpCuiBase {
 		}
 		return true;
 	}
-
-	private List<UpdateAllValue> getUpdateAllValue(EntityDefinition ed, String updateAllValueListStr) {
-		if (ed == null) {
-			return null;
-		}
-		
-		boolean validUpdateProperty = true; 
-		List<UpdateAllValue> updateAllValues = new ArrayList<>();
-		for(String updateAllValueStr : updateAllValueListStr.split(",")) {
-			int index = updateAllValueStr.indexOf("=");
-			if(index == -1) {
-				logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", updateAllValueStr));
-				validUpdateProperty = false;
-				continue;
-			}
-			
-			String propertyName = updateAllValueStr.substring(0, index);
-			String value = StringUtils.isEmpty(updateAllValueStr.substring(index + 1)) 
-					? null
-					: updateAllValueStr.substring(index + 1);
-			PropertyDefinition propertyDefinition = ed.getProperty(propertyName);
-			
-			if(propertyDefinition == null || !isShowRecord(propertyDefinition) || !isEnable(propertyDefinition)) {
-				logWarn(rs("EntityUpdateAll.notExistsPropertyNameMsg", propertyName));
-				validUpdateProperty = false;
-				continue;
-			}
-			updateAllValues.add(new UpdateAllValue(propertyName, value, UpdateAllValueType.VALUE_EXPRESSION));
-		}
-		
-		if(validUpdateProperty && updateAllValues.size() > 0) {
+	
+	private List<UpdateAllValue> getUpdateAllValue(EntityDefinition ed, String updateAllValueListStr) throws ParseException {
+		return getUpdateAllValue(ed, updateAllValueListStr, new ArrayList<>());
+	}
+	
+	private List<UpdateAllValue> getUpdateAllValue(EntityDefinition ed, String updateAllValueListStr, List<UpdateAllValue> updateAllValues) throws ParseException {
+		if(StringUtils.isBlank(updateAllValueListStr)) {
 			return updateAllValues;
-		} else {
+		}
+		
+		SyntaxParser syntaxParser = qs.getQueryParser();
+		syntaxParser.setContinueParse(true);
+		Equals equals = syntaxParser.parse(updateAllValueListStr, EqualsSyntax.class);
+		String propertyName = equals.getPropertyName();
+		String value = equals.getValue() == null
+				? null
+				: equals.getValue().toString();
+		PropertyDefinition propertyDefinition = ed.getProperty(propertyName);
+		
+		if(propertyDefinition == null || !isShowRecord(propertyDefinition) || !isEnable(propertyDefinition)) {
+			logWarn(rs("EntityUpdateAll.notExistsPropertyNameMsg", propertyName));
 			return null;
 		}
+		updateAllValues.add(new UpdateAllValue(propertyName, value, UpdateAllValueType.VALUE_EXPRESSION));
+		
+		int index = value != null 
+				? updateAllValueListStr.indexOf(propertyName) + propertyName.length() + value.length() + 1
+				: updateAllValueListStr.indexOf(propertyName) + propertyName.length() + 1;
+		while(updateAllValueListStr.length() > index && Character.isWhitespace(updateAllValueListStr.charAt(index))) {
+			index++;
+		}
+		if(updateAllValueListStr.startsWith(",", index)) {
+			return getUpdateAllValue(ed, updateAllValueListStr.substring(index + 1), updateAllValues);
+		}
+		return updateAllValues;
 	}
 
 	/**
@@ -429,14 +435,17 @@ public class EntityUpdateAll extends MtpCuiBase {
 						showValidPropertyList(ed);
 						continue;
 					}
-					List<UpdateAllValue> updateAllValues = getUpdateAllValue(ed, inputUpdateAllValue);
-					if(updateAllValues == null) {
+					List<UpdateAllValue> updateAllValues;
+					try {
+						updateAllValues = getUpdateAllValue(ed, inputUpdateAllValue);
+					} catch (ParseException e) {
+						logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", inputUpdateAllValue));
 						continue;
 					}
 					condition.addValues(updateAllValues);
 					validUpdateValue = true;
 				} else {
-					logWarn(rs("EntityUpdateAll.Wizard.requiredUpdateAllValuesMsg"));
+					logWarn(rs("EntityUpdateAll.requiredUpdateAllValuesMsg"));
 				}
 			} while(validUpdateValue == false);
 			
@@ -513,11 +522,14 @@ public class EntityUpdateAll extends MtpCuiBase {
 			
 			//UpdateAllValue
 			if (StringUtil.isBlank(updateAllValuesStr)) {
-				logWarn(rs("EntityUpdateAll.Wizard.requiredUpdateAllValuesMsg"));
+				logWarn(rs("EntityUpdateAll.requiredUpdateAllValuesMsg"));
 				return false;
 			}
-			List<UpdateAllValue> updateAllValues = getUpdateAllValue(ed, updateAllValuesStr);
-			if(updateAllValues == null) {
+			List<UpdateAllValue> updateAllValues;
+			try {
+				updateAllValues = getUpdateAllValue(ed, updateAllValuesStr);
+			} catch (ParseException e) {
+				logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", updateAllValuesStr));
 				return false;
 			}
 			condition.addValues(updateAllValues);
