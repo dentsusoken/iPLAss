@@ -30,11 +30,6 @@ public class SyntaxParser {
 	private static Logger logger = LoggerFactory.getLogger(SyntaxParser.class);
 	
 	private SyntaxContext sc;
-	private boolean continueParse = false;
-	
-	public void setContinueParse(boolean continueParse) {
-		this.continueParse = continueParse;
-	}
 
 	public SyntaxParser(String contextName) {
 		SyntaxService service = ServiceRegistry.getRegistry().getService(SyntaxService.class);
@@ -61,8 +56,31 @@ public class SyntaxParser {
 			logger.trace("parse query:time=" + ((double) (System.nanoTime() - time)/1000000) + "ms.");
 		}
 		
-		if (!ctx.isEnd() && !continueParse) {
+		if (!ctx.isEnd()) {
 			throw new ParseException(new EvalError("Cant handle next token.", syntax, ctx));
+		}
+		
+		return node;
+		
+	}
+	
+	public <T extends ASTNode> T parse(ParseContext ctx, Class<? extends Syntax<T>> parseAs) throws ParseException {
+		
+		long time = 0;
+		if (logger.isTraceEnabled()) {
+			time = System.nanoTime();
+		}
+		
+		Syntax<T> syntax = sc.getSyntax(parseAs);
+		
+		ctx.consumeChars(ParseContext.WHITE_SPACES);
+		
+		T node = syntax.parse(ctx);
+		
+		ctx.consumeChars(ParseContext.WHITE_SPACES);
+		
+		if (logger.isTraceEnabled()) {
+			logger.trace("parse query:time=" + ((double) (System.nanoTime() - time)/1000000) + "ms.");
 		}
 		
 		return node;

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.apache.commons.lang3.StringUtils;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.Entity;
@@ -37,13 +36,15 @@ import org.iplass.mtp.entity.definition.properties.ExpressionProperty;
 import org.iplass.mtp.entity.definition.properties.LongTextProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
+import org.iplass.mtp.entity.query.condition.predicate.Predicate;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
+import org.iplass.mtp.impl.parser.ParseContext;
 import org.iplass.mtp.impl.parser.ParseException;
-import org.iplass.mtp.impl.parser.SyntaxParser;
-import org.iplass.mtp.impl.query.EqualsSyntax;
+import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.QueryService;
+import org.iplass.mtp.impl.query.condition.predicate.PredicateSyntax;
 import org.iplass.mtp.impl.tenant.TenantService;
 import org.iplass.mtp.impl.tools.entity.EntityToolService;
 import org.iplass.mtp.impl.tools.entity.EntityUpdateAllCondition;
@@ -320,17 +321,23 @@ public class EntityUpdateAll extends MtpCuiBase {
 	}
 	
 	private List<UpdateAllValue> getUpdateAllValue(EntityDefinition ed, String updateAllValueListStr) throws ParseException {
-		return getUpdateAllValue(ed, updateAllValueListStr, new ArrayList<>());
+		ParseContext ctx = new ParseContext(updateAllValueListStr);
+		return getUpdateAllValue(ed, ctx, new ArrayList<>());
 	}
 	
-	private List<UpdateAllValue> getUpdateAllValue(EntityDefinition ed, String updateAllValueListStr, List<UpdateAllValue> updateAllValues) throws ParseException {
-		if(StringUtils.isBlank(updateAllValueListStr)) {
+	private List<UpdateAllValue> getUpdateAllValue(EntityDefinition ed, ParseContext ctx, List<UpdateAllValue> updateAllValues) throws ParseException {
+		ctx.consumeChars(ParseContext.WHITE_SPACES);
+		if(ctx.isEnd()) {
 			return updateAllValues;
 		}
 		
-		SyntaxParser syntaxParser = qs.getQueryParser();
-		syntaxParser.setContinueParse(true);
-		Equals equals = syntaxParser.parse(updateAllValueListStr, EqualsSyntax.class);
+		Predicate predicate = qs.getQueryParser().parse(ctx, PredicateSyntax.class);
+		if(!(predicate instanceof Equals)) {
+			logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", ctx.toString()));
+			return null;
+		}
+		
+		Equals equals = (Equals) predicate;
 		String propertyName = equals.getPropertyName();
 		String value = equals.getValue() == null
 				? null
@@ -343,14 +350,10 @@ public class EntityUpdateAll extends MtpCuiBase {
 		}
 		updateAllValues.add(new UpdateAllValue(propertyName, value, UpdateAllValueType.VALUE_EXPRESSION));
 		
-		int index = value != null 
-				? updateAllValueListStr.indexOf(propertyName) + propertyName.length() + value.length() + 1
-				: updateAllValueListStr.indexOf(propertyName) + propertyName.length() + 1;
-		while(updateAllValueListStr.length() > index && Character.isWhitespace(updateAllValueListStr.charAt(index))) {
-			index++;
-		}
-		if(updateAllValueListStr.startsWith(",", index)) {
-			return getUpdateAllValue(ed, updateAllValueListStr.substring(index + 1), updateAllValues);
+		ctx.consumeChars(ParseContext.WHITE_SPACES);
+		if(ctx.startsWith(QueryConstants.COMMA)) {
+			ctx.consumeChars(QueryConstants.COMMA.length());
+			return getUpdateAllValue(ed, ctx, updateAllValues);
 		}
 		return updateAllValues;
 	}
@@ -442,6 +445,9 @@ public class EntityUpdateAll extends MtpCuiBase {
 						logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", inputUpdateAllValue));
 						continue;
 					}
+					if(updateAllValues == null) {
+						continue;
+					}
 					condition.addValues(updateAllValues);
 					validUpdateValue = true;
 				} else {
@@ -530,6 +536,9 @@ public class EntityUpdateAll extends MtpCuiBase {
 				updateAllValues = getUpdateAllValue(ed, updateAllValuesStr);
 			} catch (ParseException e) {
 				logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", updateAllValuesStr));
+				return false;
+			}
+			if(updateAllValues == null) {
 				return false;
 			}
 			condition.addValues(updateAllValues);
