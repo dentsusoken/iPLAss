@@ -226,19 +226,20 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 	public void finish(final boolean modifyResult, final MetaEntity newOne,
 			final MetaEntity previous, final EntityContext context) {
 
+		MetaEntity toEnt;
+		if (modifyResult) {
+			toEnt = newOne;
+		} else {
+			toEnt = previous;
+		}
+
+		//SchemaControlのLOCK_STATUSをNO_LOCK
+		int ver = ((MetaGRdbEntityStore) toEnt.getEntityStoreDefinition()).getVersion();
+		
 		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
 
 			@Override
 			public Boolean logic() throws SQLException {
-				MetaEntity toEnt = null;
-				if (modifyResult) {
-					toEnt = newOne;
-				} else {
-					toEnt = previous;
-				}
-
-				//SchemaControlのLOCK_STATUSをNO_LOCK
-				int ver = ((MetaGRdbEntityStore) toEnt.getEntityStoreDefinition()).getVersion();
 				String sql = schlSql.toSql(context.getLocalTenantId(), toEnt.getId(), ver, LockStatus.LOCK, LockStatus.NO_LOCK, rdb);
 				int count = getStatement().executeUpdate(sql);
 				return count > 0;
@@ -247,7 +248,7 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 
 		Boolean res = exec.execute(rdb, true);
 		if (!res.booleanValue()) {
-			throw new EntityRuntimeException("fail unlock Entity:" + previous.getName() + "(tenant=" + context.getLocalTenantId() + ")");
+			throw new EntityRuntimeException("fail unlock Entity:" + previous.getName() + "(tenant=" + context.getLocalTenantId() + ",id=" + toEnt.getId() + ",version=" + ver + ",modifyResult=" + modifyResult + ")");
 		}
 	}
 
