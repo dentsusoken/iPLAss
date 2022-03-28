@@ -421,11 +421,27 @@ public class EntityExport extends MtpCuiBase {
 			//条件をセット
 			param.setEntityExportCondition(condition);
 			
-			//実行情報出力
-			logArguments(param);
-			
 			return null;
 		});
+		
+		boolean validExecute = false;
+		do {
+			//実行情報出力
+			logArguments(param);
+
+			boolean isExecute = readConsoleBoolean(rs("EntityExport.Wizard.confirmExportEntityMsg"), false);
+			if (isExecute) {
+				validExecute = true;
+			} else {
+				//defaultがfalseなので念のため再度確認
+				isExecute = readConsoleBoolean(rs("EntityExport.Wizard.confirmRetryMsg"), true);
+
+				if (isExecute) {
+					//再度実行
+					return wizard();
+				}
+			}
+		} while(validExecute == false);
 
 		//Consoleを削除してLogに切り替え
 		switchLog(false, true);
