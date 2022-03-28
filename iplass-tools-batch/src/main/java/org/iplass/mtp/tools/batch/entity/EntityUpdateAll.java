@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.Entity;
@@ -37,6 +38,7 @@ import org.iplass.mtp.entity.definition.properties.LongTextProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.Predicate;
+import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
@@ -321,39 +323,37 @@ public class EntityUpdateAll extends MtpCuiBase {
 	}
 	
 	private List<UpdateAllValue> getUpdateAllValue(EntityDefinition ed, String updateAllValueListStr) throws ParseException {
+		List<UpdateAllValue> updateAllValues = new ArrayList<>();
 		ParseContext ctx = new ParseContext(updateAllValueListStr);
-		return getUpdateAllValue(ed, ctx, new ArrayList<>());
-	}
-	
-	private List<UpdateAllValue> getUpdateAllValue(EntityDefinition ed, ParseContext ctx, List<UpdateAllValue> updateAllValues) throws ParseException {
-		ctx.consumeChars(ParseContext.WHITE_SPACES);
-		if(ctx.isEnd()) {
-			return updateAllValues;
-		}
-		
-		Predicate predicate = qs.getQueryParser().parse(ctx, PredicateSyntax.class);
-		if(!(predicate instanceof Equals)) {
-			logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", ctx.toString()));
-			return null;
-		}
-		
-		Equals equals = (Equals) predicate;
-		String propertyName = equals.getPropertyName();
-		String value = equals.getValue() == null
-				? null
-				: equals.getValue().toString();
-		PropertyDefinition propertyDefinition = ed.getProperty(propertyName);
-		
-		if(propertyDefinition == null || !isShowRecord(propertyDefinition) || !isEnable(propertyDefinition)) {
-			logWarn(rs("EntityUpdateAll.notExistsPropertyNameMsg", propertyName));
-			return null;
-		}
-		updateAllValues.add(new UpdateAllValue(propertyName, value, UpdateAllValueType.VALUE_EXPRESSION));
-		
-		ctx.consumeChars(ParseContext.WHITE_SPACES);
-		if(ctx.startsWith(QueryConstants.COMMA)) {
-			ctx.consumeChars(QueryConstants.COMMA.length());
-			return getUpdateAllValue(ed, ctx, updateAllValues);
+		while(!ctx.isEnd()) {
+			ctx.consumeChars(ParseContext.WHITE_SPACES);
+			if(ctx.startsWith(QueryConstants.COMMA)) {
+				ctx.consumeChars(QueryConstants.COMMA.length());
+			}
+			Predicate predicate = qs.getQueryParser().parse(ctx, PredicateSyntax.class);
+			if(!(predicate instanceof Equals)) {
+				logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", ctx.toString()));
+				return null;
+			}
+			
+			Equals equals = (Equals) predicate;
+			
+			if(!(equals.getProperty() instanceof EntityField)) {
+				logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", ctx.toString()));
+				return null;
+			}
+			
+			String propertyName = equals.getPropertyName();
+			String value = equals.getValue() == null
+					? null
+					: equals.getValue().toString();
+			PropertyDefinition propertyDefinition = ed.getProperty(propertyName);
+			
+			if(propertyDefinition == null || !isShowRecord(propertyDefinition) || !isEnable(propertyDefinition)) {
+				logWarn(rs("EntityUpdateAll.notExistsPropertyNameMsg", propertyName));
+				return null;
+			}
+			updateAllValues.add(new UpdateAllValue(propertyName, value, UpdateAllValueType.VALUE_EXPRESSION));
 		}
 		return updateAllValues;
 	}
@@ -399,7 +399,6 @@ public class EntityUpdateAll extends MtpCuiBase {
 		ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
-			//オプションをコンフィグから取得
 			EntityUpdateAllCondition condition = new EntityUpdateAllCondition();
 			
 			//Entity名
@@ -445,7 +444,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 						logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", inputUpdateAllValue));
 						continue;
 					}
-					if(updateAllValues == null) {
+					if(CollectionUtils.isEmpty(updateAllValues)) {
 						continue;
 					}
 					condition.addValues(updateAllValues);
@@ -464,27 +463,27 @@ public class EntityUpdateAll extends MtpCuiBase {
 			//条件をセット
 			param.setEntityUpdateAllCondition(condition);
 			
-			boolean validExecute = false;
-			do {
-				//実行情報出力
-				logArguments(param);
-
-				boolean isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmUpdateMsg"), false);
-				if (isExecute) {
-					validExecute = true;
-				} else {
-					//defaultがfalseなので念のため再度確認
-					isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmRetryMsg"), true);
-
-					if (isExecute) {
-						//再度実行
-						return wizard();
-					}
-				}
-			} while(validExecute == false);
-			
 			return null;
 		});
+		
+		boolean validExecute = false;
+		do {
+			//実行情報出力
+			logArguments(param);
+
+			boolean isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmUpdateMsg"), false);
+			if (isExecute) {
+				validExecute = true;
+			} else {
+				//defaultがfalseなので念のため再度確認
+				isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmRetryMsg"), true);
+
+				if (isExecute) {
+					//再度実行
+					return wizard();
+				}
+			}
+		} while(validExecute == false);
 
 		//Consoleを削除してLogに切り替え
 		switchLog(false, true);
@@ -538,7 +537,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 				logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", updateAllValuesStr));
 				return false;
 			}
-			if(updateAllValues == null) {
+			if(CollectionUtils.isEmpty(updateAllValues)) {
 				return false;
 			}
 			condition.addValues(updateAllValues);

@@ -341,27 +341,27 @@ public class EntityDeleteAll extends MtpCuiBase {
 			int commitLimit = readConsoleInteger(rs("EntityDeleteAll.Wizard.inputCommitUnitMsg"), 100);
 			param.setCommitLimit(commitLimit);
 			
-			boolean validExecute = false;
-			do {
-				//実行情報出力
-				logArguments(param);
-
-				boolean isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmDeleteMsg"), false);
-				if (isExecute) {
-					validExecute = true;
-				} else {
-					//defaultがfalseなので念のため再度確認
-					isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmRetryMsg"), true);
-
-					if (isExecute) {
-						//再度実行
-						return wizard();
-					}
-				}
-			} while(validExecute == false);
-			
 			return null;
 		});
+		
+		boolean validExecute = false;
+		do {
+			//実行情報出力
+			logArguments(param);
+
+			boolean isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmDeleteMsg"), false);
+			if (isExecute) {
+				validExecute = true;
+			} else {
+				//defaultがfalseなので念のため再度確認
+				isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmRetryMsg"), true);
+
+				if (isExecute) {
+					//再度実行
+					return wizard();
+				}
+			}
+		} while(validExecute == false);
 
 		//Consoleを削除してLogに切り替え
 		switchLog(false, true);

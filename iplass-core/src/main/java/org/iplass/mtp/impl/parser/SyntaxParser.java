@@ -36,36 +36,34 @@ public class SyntaxParser {
 		sc = service.getSyntaxContext(contextName);
 	}
 	
+	/**
+	 * パース処理を行います。パース処理が終わっていない場合はエラーとします。
+	 * 
+	 * @param src 文字列
+	 * @param parseAs 構文
+	 * @return ASTNode
+	 * @throws ParseException
+	 */
 	public <T extends ASTNode> T parse(String src, Class<? extends Syntax<T>> parseAs) throws ParseException {
-		
-		long time = 0;
-		if (logger.isTraceEnabled()) {
-			time = System.nanoTime();
-		}
-		
-		Syntax<T> syntax = sc.getSyntax(parseAs);
 		ParseContext ctx = new ParseContext(src);
-		
-		ctx.consumeChars(ParseContext.WHITE_SPACES);
-		
-		T node = syntax.parse(ctx);
-		
-		ctx.consumeChars(ParseContext.WHITE_SPACES);
-		
-		if (logger.isTraceEnabled()) {
-			logger.trace("parse query:time=" + ((double) (System.nanoTime() - time)/1000000) + "ms.");
-		}
-		
-		if (!ctx.isEnd()) {
-			throw new ParseException(new EvalError("Cant handle next token.", syntax, ctx));
-		}
-		
-		return node;
+		return parseContext(ctx, parseAs, false);
 		
 	}
 	
+	/**
+	 * パース処理を行います。パース処理が終わっていない場合もエラーとはしません。
+	 * 
+	 * @param src 文字列
+	 * @param parseAs 構文
+	 * @return ASTNode
+	 * @throws ParseException
+	 */
 	public <T extends ASTNode> T parse(ParseContext ctx, Class<? extends Syntax<T>> parseAs) throws ParseException {
+		return parseContext(ctx, parseAs, true);
 		
+	}
+	
+	private <T extends ASTNode> T parseContext(ParseContext ctx, Class<? extends Syntax<T>> parseAs, boolean isContinueParse) throws ParseException {
 		long time = 0;
 		if (logger.isTraceEnabled()) {
 			time = System.nanoTime();
@@ -83,8 +81,10 @@ public class SyntaxParser {
 			logger.trace("parse query:time=" + ((double) (System.nanoTime() - time)/1000000) + "ms.");
 		}
 		
+		if (!ctx.isEnd() && !isContinueParse) {
+			throw new ParseException(new EvalError("Cant handle next token.", syntax, ctx));
+		}
 		return node;
-		
 	}
 
 }
