@@ -461,7 +461,7 @@ public class EntityImport extends MtpCuiBase {
 		EntityImportParameter param = new EntityImportParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		ExecuteContext.executeAs(tc, ()->{
+		return ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			//Entity名
@@ -643,15 +643,13 @@ public class EntityImport extends MtpCuiBase {
 				}
 			} while(validExecute == false);
 
-			return null;
-		});
-
-		//Consoleを削除してLogに切り替え
-		switchLog(false, true);
-
-		//Import処理実行
-		return executeTask(param, (paramA) -> {
-			return importEntity(paramA);
+			//Consoleを削除してLogに切り替え
+			switchLog(false, true);
+	
+			//Import処理実行
+			return executeTask(param, (paramA) -> {
+				return importEntity(paramA);
+			});
 		});
 	}
 
