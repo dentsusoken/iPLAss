@@ -581,7 +581,7 @@ public class PackageImport extends MtpCuiBase {
 		PackageImportParameter param = new PackageImportParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		ExecuteContext.executeAs(tc, ()->{
+		return ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			//Importファイル
@@ -793,25 +793,23 @@ public class PackageImport extends MtpCuiBase {
 				}
 			} while(validExecute == false);
 
-			return null;
+			//ConsoleのLogListnerを一度削除してLog出力に切り替え
+			LogListner consoleLogListner = getConsoleLogListner();
+			removeLogListner(consoleLogListner);
+			LogListner loggingListner = getLoggingLogListner();
+			addLogListner(loggingListner);
+	
+			//Import処理実行
+			try {
+				importPack(param);
+	
+				return isSuccess();
+	
+			} finally {
+				removeLogListner(loggingListner);
+				addLogListner(consoleLogListner);
+			}
 		});
-
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
-
-		//Import処理実行
-		try {
-			importPack(param);
-
-			return isSuccess();
-
-		} finally {
-			removeLogListner(loggingListner);
-			addLogListner(consoleLogListner);
-		}
 	}
 
 	/**
