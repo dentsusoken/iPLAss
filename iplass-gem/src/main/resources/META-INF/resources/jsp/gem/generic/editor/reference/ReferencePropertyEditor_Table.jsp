@@ -422,7 +422,7 @@ $(function() {
 %>
 <th nowrap="nowrap" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=style%>"/>">
 <%-- XSS対応-メタの設定のため対応なし(title) --%>
-<%=title%>
+<span class="property-label"><%=title%></span>
 <%
 				if (required) {
 %>
@@ -588,7 +588,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					((ReferencePropertyEditor) nProp.getEditor())
 						.setObjectName(((ReferenceProperty) refPd).getObjectDefinitionName());
 				}
-				String cls = "col" + colNum;
+				String cls = "property-data col" + colNum;
 				String style = "";
 				if (nProp.getWidth() > 0) {
 					style = "width:" + nProp.getWidth() + "px; ";
@@ -709,14 +709,20 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					if (StringUtil.isNotBlank(nProp.getDescription())) {
 						description = TemplateUtil.getMultilingualString(nProp.getDescription(), nProp.getLocalizedDescriptionList());
 					}
+					//表示名
+					String title = TemplateUtil.getMultilingualString(
+							nProp.getDisplayLabel(), nProp.getLocalizedDisplayLabelList(),
+							refPd.getDisplayName(), refPd.getLocalizedDisplayNameList());
+
 					nProp.getEditor().setPropertyName(idxPropName + "." + refPd.getName());
 					request.setAttribute(Constants.EDITOR_EDITOR, nProp.getEditor());
+					request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, title);
 					request.setAttribute(Constants.EDITOR_PROP_VALUE, entity.getValue(refPd.getName()));
 					request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, refPd);
 					request.setAttribute(Constants.EDITOR_REF_NEST, true);//2重ネスト防止用フラグ
 					String path = EntityViewUtil.getJspPath(nProp.getEditor(), ViewConst.DESIGN_TYPE_GEM);
 
-					String cls = "col" + colNum;
+					String cls = "property-data col" + colNum;
 					String style = "";
 					if (nProp.getWidth() > 0) {
 						style = "width:" + nProp.getWidth() + "px; ";
@@ -904,7 +910,7 @@ $(function() {
 %>
 <th nowrap="nowrap" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=style%>"/>">
 <%-- XSS対応-メタの設定のため対応なし(title) --%>
-<%=title%>
+<span class="property-label"><%=title%></span>
 </th>
 <%
 				colNum++;

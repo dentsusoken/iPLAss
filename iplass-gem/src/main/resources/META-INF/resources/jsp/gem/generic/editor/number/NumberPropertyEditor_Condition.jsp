@@ -152,6 +152,10 @@
 			}
 		}
 		Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
+		String tmpCls = "";
+		if (editor.isShowComma()) {
+			tmpCls += " commaField";
+		}
 		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 			String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 			strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
@@ -164,7 +168,9 @@
 <%
 		} else {
 %>
-<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=value %>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this)" />
+<span>
+<input type="text" class="form-size-04 inpbr <c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<%=value %>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this, true)" />
+</span>
 <%
 		}
 		String strDefaultTo = "";
@@ -188,7 +194,9 @@
 <%
 			} else {
 %>
-<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this)" />
+<span>
+<input type="text" class="form-size-04 inpbr <c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this, true)" />
+</span>
 <%
 			}
 		}
@@ -197,8 +205,20 @@
 $(function() {
 	<%-- common.js --%>
 	addNormalConditionItemResetHandler(function(){
-		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=strDefault %>");
-		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val("<%=strDefaultTo %>");
+		var $from = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']");
+		$from.val("<%=strDefault %>");
+		var $to = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']");
+		$to.val("<%=strDefaultTo %>");
+
+		var $parent = $from.closest(".property-data");
+		$from.removeClass("validate-error");
+		$to.removeClass("validate-error");
+		$(".format-error", $parent).remove();
+
+<%if (editor.isShowComma()) {%>
+		$(".commaField.dummyField", $parent).remove();
+		$(".commaField", $parent).show();
+<%}%>
 	});
 <%
 		if (required) {
@@ -232,6 +252,37 @@ $(function() {
 	});
 <%
 			}
+		}
+
+		//フォーマットチェック
+		if (!editor.isSearchInRange()) {
+			//Fromのみ
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var val = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
+		if (typeof val !== "undefined" && val !== null && val !== "" && isNaN(val)) {
+			alert(scriptContext.gem.locale.common.numFormatErrorMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+		return true;
+	});
+<%
+		} else {
+			//範囲
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var val = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
+		var valTo = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val();
+		if ((typeof val !== "undefined" && val !== null && val !== "" && isNaN(val)) || (typeof valTo !== "undefined" && valTo != null && valTo !== "" && isNaN(valTo))) {
+			alert(scriptContext.gem.locale.common.numFormatErrorMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+
+		return true;
+	});
+<%
 		}
 %>
 });

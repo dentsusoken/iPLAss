@@ -1488,6 +1488,8 @@ p.nav-login-01 {
       width: 100%; }
   .tbl-search-01:not([colnum="1"]) td {
     width: auto; }
+  .tbl-search-01 span.error {
+    padding-bottom: 0; }
 
 .result-block {
   display: block;

@@ -1,19 +1,19 @@
 <%--
  Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- 
+
  Unless you have purchased a commercial license,
  the following license terms apply:
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
  published by the Free Software Foundation, either version 3 of the
  License, or (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU Affero General Public License for more details.
- 
+
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
@@ -79,7 +79,7 @@
 	if (nestDummyRow == null) {
 		nestDummyRow = false;
 	}
-	
+
 	String propName = editor.getPropertyName();
 
 	String[] tmp = split(_propValue);
@@ -96,17 +96,17 @@
 		String defMin = defTmp[1];
 		String defSec = defTmp[2];
 		String defStrHidden = defTmp[4];
-	
+
 		// 非表示項目設定がある場合の時間フォーマットと最大入力文字数を判断
 	    StringBuffer sbFormat = new StringBuffer();
 	    int maxLength = 2;
 	    sbFormat.append("HH");
-	
+
 	    StringBuffer sbValue = new StringBuffer();
 	    StringBuffer sbDefValue = new StringBuffer();
 	    sbValue.append(hour);
 	    sbDefValue.append(defHour);
-	
+
 	    String defaultMin = "00";
 	    String _defaultMin = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
 		if (_defaultMin != null) {
@@ -115,13 +115,13 @@
 		if (TimeDispRange.isDispMin(editor.getDispRange())) {
 			defaultMin = "";
 			sbFormat.append(":mm");
-	
+
 			if (!hour.isEmpty()) {
 				sbValue.append(":");
 			}
 			sbValue.append(min);
 			maxLength = 5;
-	
+
 			if (!defHour.isEmpty()) {
 				sbDefValue.append(":");
 			}
@@ -135,13 +135,13 @@
 	    if (TimeDispRange.isDispSec(editor.getDispRange())) {
 	    	defaultSec = "";
 	    	sbFormat.append(":ss");
-	
+
 			if (!min.isEmpty()) {
 				sbValue.append(":");
 	    	}
 			sbValue.append(sec);
 	    	maxLength = 8;
-	
+
 			if (!defMin.isEmpty()) {
 				sbDefValue.append(":");
 	    	}
@@ -166,14 +166,19 @@
 %>
 <input type="text" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=sbValue.toString() %>"/>" id="time_<c:out value="<%=_propName %>"/>" onchange="<%=onchange%>"
 	    maxlength="<c:out value="<%=maxLength %>"/>"  data-stepmin="<c:out value="<%=minInterval %>"/>" data-timeformat="<c:out value="<%=sbFormat.toString() %>"/>"
-	    data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>"/>
+	    data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>" data-suppress-alert="true"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=strHidden%>"/>" />
 <script type="text/javascript">
 $(function() {
 	<%-- common.js --%>
 	addNormalConditionItemResetHandler(function(){
-		$("#time_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=sbDefValue.toString() %>");
+		var $time = $("#time_" + es("<%=StringUtil.escapeJavaScript(_propName)%>"));
+		$time.val("<%=sbDefValue.toString() %>");
 		$(":hidden[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=defStrHidden %>");
+
+		var $parent = $time.closest(".property-data");
+		$time.removeClass("validate-error");
+		$(".format-error", $parent).remove();
 	});
 	<%-- common.js --%>
 	addCommonValidator(function() {

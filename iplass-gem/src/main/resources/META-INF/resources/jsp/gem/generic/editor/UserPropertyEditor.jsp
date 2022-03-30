@@ -53,7 +53,7 @@
 	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof StringProperty)) {
 		//定義がStringPropertyでなければ表示不可
-		throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+		throw new EntityViewRuntimeException(propName + " 's editor is unsupport "
 				+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 	}
 
@@ -77,7 +77,7 @@
 		}
 
 		if (editor.getDisplayType() != UserDisplayType.HIDDEN) {
-		
+
 			//カスタムスタイル
 			String customStyle = "";
 			if (type == OutputType.VIEW) {
@@ -150,7 +150,7 @@ $(function() {
 			//HIDDEN
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
-<%			
+<%
 		}
 	} else if (OutputType.SEARCHRESULT == type) {
 		//検索結果
@@ -184,4 +184,5 @@ $(function() {
 	request.removeAttribute(Constants.EDITOR_EDITOR);
 	request.removeAttribute(Constants.EDITOR_PROP_VALUE);
 	request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
+	request.removeAttribute(Constants.EDITOR_DISPLAY_LABEL);
 %>

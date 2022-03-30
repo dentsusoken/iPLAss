@@ -102,7 +102,7 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor imple
 			descriptionKey="generic_editor_NumberPropertyEditor_showCommaDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
 	protected boolean showComma;
 

@@ -28,6 +28,7 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.generic.search.SearchFormViewData" %>
 <%@ page import="org.iplass.gem.command.Constants" %>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%
 	//データ取得
 	String selectType = request.getParameter(Constants.SELECT_TYPE);
@@ -71,6 +72,9 @@
 
 	if (modalTarget == null) modalTarget = "";
 
+	//数値のカンマ区切りのセパレータ
+	String separator = ViewUtil.getGroupingSeparator();
+
 	request.setAttribute(Constants.ENTITY_DEFINITION, data.getEntityDefinition());
 
 	//権限チェック用に定義名をリクエストに保存
@@ -85,6 +89,7 @@
 <div class="generic_select s_<c:out value="<%=className %>"/>">
 <%@include file="../../layout/resource/mediaelementResource.inc.jsp" %>
 <script type="text/javascript">
+separator = "<%= separator %>";
 var selectArray = new Array();
 var multiplicity = <%=_multiplicity%>;
 var key = "<%=modalTarget%>";

@@ -137,6 +137,9 @@
 	if (TimeDispRange.NONE.equals(editor.getDispRange())) {
 		isUserDateTimePicker = false;
 	}
+	boolean showDatetimePicker = editor.getDisplayType() != DateTimeDisplayType.LABEL && isUserDateTimePicker;
+	boolean showLabel = editor.getDisplayType() == DateTimeDisplayType.LABEL;
+
 
 	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
 		//HIDDEN以外
@@ -160,7 +163,7 @@
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_VALUE, defaultValueFrom);
 
 		String customStyle = "";
-		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+		if (showLabel) {
 			//カスタムスタイル
 			String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 			String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
@@ -172,13 +175,13 @@
 
 		DateTimeFormatSetting formatInfo = ViewUtil.getFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
 
-		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUserDateTimePicker)) {
+		if (showDatetimePicker) {
 %>
 <span class="timestamppicker-field" style="<c:out value="<%=style %>"/>">
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
 </span>
 <%
-		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+		} else if (showLabel) {
 			String timeFromDisplayValue = displayFormat(propValueFrom, editor.getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday());
 			String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
 %>
@@ -209,7 +212,7 @@
 		if (hideTo) {
 			style = "display: none;";
 		}
-		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+		if (showLabel) {
 			style = style + customStyle;
 		}
 
@@ -224,13 +227,13 @@
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC, "59");
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_MSEC, "999");
 
-		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUserDateTimePicker)) {
+		if (showDatetimePicker) {
 %>
 <span class="timestamppicker-field" style="<c:out value="<%=style %>"/>">
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
 </span>
 <%
-		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+		} else if (showLabel) {
 			String timeToDisplayValue = displayFormat(propValueTo, editor.getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday());
 			String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
 %>
@@ -253,11 +256,12 @@
 		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
 		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_MSEC);
 		editor.setPropertyName(propName);
-
-		if (required) {
 %>
 <script type="text/javascript">
 $(function() {
+<%
+		if (required) {
+%>
 	<%-- common.js --%>
 	addNormalValidator(function() {
 		var fromVal = $(":hidden[name='" + es("<%=StringUtil.escapeJavaScript(Constants.SEARCH_COND_PREFIX + propName + "From")%>") + "']").val();
@@ -269,11 +273,70 @@ $(function() {
 		}
 		return true;
 	});
+<%
+		}
+		if (showDatetimePicker) {
+		//フォーマットチェック(DatetimePicker)
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var $from = $("#datetime_" + es("<%=StringUtil.escapeJavaScript(propName + "0")%>"));
+		var fromVal = $from.val();
+		var dateFormat = dateUtil.getInputDateFormat();
+		var timeFormat = $from.attr("data-timeformat");
+		if (typeof fromVal !== "undefined" && fromVal !== null && fromVal !== "") {
+			try {
+				validateTimestampPicker(fromVal, dateFormat, timeFormat, "", "", "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateFormat + " " + timeFormat))
+				return false;
+			}
+		}
+		var $to = $("#datetime_" + es("<%=StringUtil.escapeJavaScript(propName + "1")%>"));
+		var toVal = $to.val();
+		timeFormat = $to.attr("data-timeformat");
+		if (typeof toVal !== "undefined" && toVal !== null && toVal !== "") {
+			try {
+				validateTimestampPicker(toVal, dateFormat, timeFormat, "", "", "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateFormat + " " + timeFormat))
+				return false;
+			}
+		}
+		return true;
+	});
+<%
+		}
+		if (!showDatetimePicker && !showLabel) {
+			//フォーマットチェック(DatePicker)
+%>
+	addNormalValidator(function() {
+		var fromVal = $("#d_" + es("<%=StringUtil.escapeJavaScript(propName + "0")%>")).val();
+		var toVal = $("#d_" + es("<%=StringUtil.escapeJavaScript(propName + "1")%>")).val();
+		if (typeof fromVal !== "undefined" && fromVal != null && fromVal !== "") {
+			try {
+				validateDate(fromVal, dateUtil.getInputDateFormat(), "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateUtil.getInputDateFormat()))
+				return false;
+			}
+		}
+		if (typeof toVal !== "undefined" && toVal != null && toVal !== "") {
+			try {
+				validateDate(toVal, dateUtil.getInputDateFormat(), "");
+			} catch (e) {
+				alert(messageFormat(scriptContext.gem.locale.common.dateFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateUtil.getInputDateFormat()))
+				return false;
+			}
+		}
+		return true;
+	});
+<%
+		}
+%>
 });
 </script>
 <%
-		}
-
 	} else {
 		//HIDDEN
 
