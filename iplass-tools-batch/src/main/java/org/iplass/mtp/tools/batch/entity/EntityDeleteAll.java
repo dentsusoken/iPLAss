@@ -301,7 +301,7 @@ public class EntityDeleteAll extends MtpCuiBase {
 		EntityDeleteAllParameter param = new EntityDeleteAllParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		ExecuteContext.executeAs(tc, ()->{
+		return ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 			
 			//Entity名
@@ -341,34 +341,32 @@ public class EntityDeleteAll extends MtpCuiBase {
 			int commitLimit = readConsoleInteger(rs("EntityDeleteAll.Wizard.inputCommitUnitMsg"), 100);
 			param.setCommitLimit(commitLimit);
 			
-			return null;
-		});
-		
-		boolean validExecute = false;
-		do {
-			//実行情報出力
-			logArguments(param);
-
-			boolean isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmDeleteMsg"), false);
-			if (isExecute) {
-				validExecute = true;
-			} else {
-				//defaultがfalseなので念のため再度確認
-				isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmRetryMsg"), true);
-
+			boolean validExecute = false;
+			do {
+				//実行情報出力
+				logArguments(param);
+	
+				boolean isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmDeleteMsg"), false);
 				if (isExecute) {
-					//再度実行
-					return wizard();
+					validExecute = true;
+				} else {
+					//defaultがfalseなので念のため再度確認
+					isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmRetryMsg"), true);
+	
+					if (isExecute) {
+						//再度実行
+						return wizard();
+					}
 				}
-			}
-		} while(validExecute == false);
-
-		//Consoleを削除してLogに切り替え
-		switchLog(false, true);
-
-		//DeleteAll処理実行
-		return executeTask(param, (paramA) -> {
-			return deleteAll(paramA);
+			} while(validExecute == false);
+	
+			//Consoleを削除してLogに切り替え
+			switchLog(false, true);
+	
+			//DeleteAll処理実行
+			return executeTask(param, (paramA) -> {
+				return deleteAll(paramA);
+			});
 		});
 	}
 

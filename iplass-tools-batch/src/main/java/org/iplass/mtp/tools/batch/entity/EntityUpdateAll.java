@@ -396,7 +396,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 		EntityUpdateAllParameter param = new EntityUpdateAllParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		ExecuteContext.executeAs(tc, ()->{
+		return ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			EntityUpdateAllCondition condition = new EntityUpdateAllCondition();
@@ -463,34 +463,32 @@ public class EntityUpdateAll extends MtpCuiBase {
 			//条件をセット
 			param.setEntityUpdateAllCondition(condition);
 			
-			return null;
-		});
-		
-		boolean validExecute = false;
-		do {
-			//実行情報出力
-			logArguments(param);
-
-			boolean isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmUpdateMsg"), false);
-			if (isExecute) {
-				validExecute = true;
-			} else {
-				//defaultがfalseなので念のため再度確認
-				isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmRetryMsg"), true);
-
+			boolean validExecute = false;
+			do {
+				//実行情報出力
+				logArguments(param);
+	
+				boolean isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmUpdateMsg"), false);
 				if (isExecute) {
-					//再度実行
-					return wizard();
+					validExecute = true;
+				} else {
+					//defaultがfalseなので念のため再度確認
+					isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmRetryMsg"), true);
+	
+					if (isExecute) {
+						//再度実行
+						return wizard();
+					}
 				}
-			}
-		} while(validExecute == false);
-
-		//Consoleを削除してLogに切り替え
-		switchLog(false, true);
-
-		//UpdateAll処理実行
-		return executeTask(param, (paramA) -> {
-			return updateAll(paramA);
+			} while(validExecute == false);
+	
+			//Consoleを削除してLogに切り替え
+			switchLog(false, true);
+	
+			//UpdateAll処理実行
+			return executeTask(param, (paramA) -> {
+				return updateAll(paramA);
+			});
 		});
 	}
 

@@ -350,7 +350,7 @@ public class EntityExport extends MtpCuiBase {
 		EntityExportParameter param = new EntityExportParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		ExecuteContext.executeAs(tc, ()->{
+		return ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			//Entity名
@@ -421,34 +421,32 @@ public class EntityExport extends MtpCuiBase {
 			//条件をセット
 			param.setEntityExportCondition(condition);
 			
-			return null;
-		});
-		
-		boolean validExecute = false;
-		do {
-			//実行情報出力
-			logArguments(param);
-
-			boolean isExecute = readConsoleBoolean(rs("EntityExport.Wizard.confirmExportEntityMsg"), false);
-			if (isExecute) {
-				validExecute = true;
-			} else {
-				//defaultがfalseなので念のため再度確認
-				isExecute = readConsoleBoolean(rs("EntityExport.Wizard.confirmRetryMsg"), true);
-
+			boolean validExecute = false;
+			do {
+				//実行情報出力
+				logArguments(param);
+	
+				boolean isExecute = readConsoleBoolean(rs("EntityExport.Wizard.confirmExportEntityMsg"), false);
 				if (isExecute) {
-					//再度実行
-					return wizard();
+					validExecute = true;
+				} else {
+					//defaultがfalseなので念のため再度確認
+					isExecute = readConsoleBoolean(rs("EntityExport.Wizard.confirmRetryMsg"), true);
+	
+					if (isExecute) {
+						//再度実行
+						return wizard();
+					}
 				}
-			}
-		} while(validExecute == false);
-
-		//Consoleを削除してLogに切り替え
-		switchLog(false, true);
-
-		//Export処理実行
-		return executeTask(param, (paramA) -> {
-			return exportEntity(paramA);
+			} while(validExecute == false);
+	
+			//Consoleを削除してLogに切り替え
+			switchLog(false, true);
+	
+			//Export処理実行
+			return executeTask(param, (paramA) -> {
+				return exportEntity(paramA);
+			});
 		});
 	}
 
