@@ -43,6 +43,9 @@ public class EntityWriteOption extends ParseOption {
 
 	/** Binaryプロパティを出力するか */
 	private boolean withBinary = false;
+	
+	/** Binaryデータの出力先ディレクトリ */
+	private String exportBinaryDataDir;
 
 	/** Where条件 */
 	private Where where;
@@ -105,6 +108,14 @@ public class EntityWriteOption extends ParseOption {
 
 	public void setWithBinary(boolean withBinary) {
 		this.withBinary = withBinary;
+	}
+
+	public String getExportBinaryDataDir() {
+		return exportBinaryDataDir;
+	}
+
+	public void setExportBinaryDataDir(String exportBinaryDataDir) {
+		this.exportBinaryDataDir = exportBinaryDataDir;
 	}
 
 	public int getLimit() {
@@ -180,6 +191,11 @@ public class EntityWriteOption extends ParseOption {
 
 	public EntityWriteOption withBinary(boolean withBinary) {
 		setWithBinary(withBinary);
+		return this;
+	}
+	
+	public EntityWriteOption exportBinaryDataDir(String exportBinaryDataDir) {
+		setExportBinaryDataDir(exportBinaryDataDir);
 		return this;
 	}
 
