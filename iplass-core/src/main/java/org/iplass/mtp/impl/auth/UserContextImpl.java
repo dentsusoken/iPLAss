@@ -40,6 +40,11 @@ public class UserContextImpl implements UserContext {
 	public UserContextImpl(AccountHandle account, User userEntity) {
 		this.account = account;
 		this.userEntity = userEntity;
+		initGroupCode();
+		creationTime = System.currentTimeMillis();
+	}
+
+	private void initGroupCode() {
 		Set<String> list = new HashSet<>();
 		if (userEntity != null) {
 			Entity[] group = userEntity.getGroups();
@@ -77,9 +82,9 @@ public class UserContextImpl implements UserContext {
 		}
 		if (list.size() != 0) {
 			groupCode = list.toArray(new String[list.size()]);
+		} else {
+			groupCode = null;
 		}
-		
-		creationTime = System.currentTimeMillis();
 	}
 
 	public User getUser() {
@@ -127,6 +132,7 @@ public class UserContextImpl implements UserContext {
 	@Override
 	public void resetUserEntity(User userEntity) {
 		this.userEntity = userEntity;
+		initGroupCode();
 	}
 
 	@Override
