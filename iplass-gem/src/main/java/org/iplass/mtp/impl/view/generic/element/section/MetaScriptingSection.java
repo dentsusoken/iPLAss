@@ -73,6 +73,9 @@ public class MetaScriptingSection extends MetaSection {
 	/** 多言語設定情報 */
 	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
+	/** セクション内に配置した場合に枠線を表示 */
+	private boolean dispBorderInSection;
+
 	/**
 	 * スクリプトを取得します。
 	 * @return スクリプト
@@ -185,6 +188,22 @@ public class MetaScriptingSection extends MetaSection {
 		this.localizedTitleList = localizedTitleList;
 	}
 
+	/**
+	 * セクション内に配置した場合に枠線を表示を取得します。
+	 * @return セクション内に配置した場合に枠線を表示
+	 */
+	public boolean isDispBorderInSection() {
+		return dispBorderInSection;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を設定します。
+	 * @param dispBorderInSection セクション内に配置した場合に枠線を表示
+	 */
+	public void setDispBorderInSection(boolean dispBorderInSection) {
+		this.dispBorderInSection = dispBorderInSection;
+	}
+
 	@Override
 	public MetaScriptingSection copy() {
 		return ObjectUtil.deepCopy(this);
@@ -201,6 +220,7 @@ public class MetaScriptingSection extends MetaSection {
 		this.showLink = script.isShowLink();
 		this.hideDetail = script.isHideDetail();
 		this.hideView = script.isHideView();
+		this.dispBorderInSection = script.isDispBorderInSection();
 
 		// 言語毎の文字情報設定
 		localizedTitleList = I18nUtil.toMeta(script.getLocalizedTitleList());
@@ -218,6 +238,7 @@ public class MetaScriptingSection extends MetaSection {
 		script.setShowLink(showLink);
 		script.setHideDetail(hideDetail);
 		script.setHideView(hideView);
+		script.setDispBorderInSection(dispBorderInSection);
 		script.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 
 		return script;

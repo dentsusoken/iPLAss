@@ -1621,6 +1621,19 @@ div.recursiveTree {
     margin-left: 4px; }
   .tbl-section .dateRange span:nth-child(2) > input {
     margin-left: 4px; }
+  .tbl-section .layout-row {
+    height: auto;
+    visibility: collapse; }
+    .tbl-section .layout-row > th.section-data {
+      height: 0 !important;
+      border: none !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important; }
+    .tbl-section .layout-row > td.section-data {
+      height: 0 !important;
+      border: none !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important; }
 
 .tbl-reference {
   border: 1px solid #d5d5d5;
