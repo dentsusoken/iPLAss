@@ -68,6 +68,8 @@ class SimpleIndexDir implements IndexDir {
 				if (searcherManager == null) {
 					sm = new SearcherManager(directory, null);
 					searcherManager = sm;
+				} else {
+					sm = searcherManager;
 				}
 			}
 		}
