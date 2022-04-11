@@ -1592,8 +1592,9 @@ div.recursiveTree {
       width: 12%; }
   .tbl-section td.inner-section {
     border-left: 1px solid #d5d5d5;
-    padding: 9px 7px;
     vertical-align: top; }
+    .tbl-section td.inner-section.section-data {
+      padding: 9px 7px; }
   .tbl-section input {
     padding: 2px; }
     .tbl-section input.form-btn {

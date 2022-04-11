@@ -1798,7 +1798,9 @@ span.success, span.error {
     margin-top: 0;
     padding-top: 0; }
   .formArchive .inner-section > div > .sechead {
-    padding-top: 8px; }
+    padding-top: 12px; }
+    .formArchive .inner-section > div > .sechead > h3 {
+      margin-bottom: 12px; }
   .formArchive .upload-button {
     width: 100%;
     margin: 2px 0; }

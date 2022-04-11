@@ -195,6 +195,7 @@
 	if (hasSectionInFirstRow) {
 		//列幅崩れ回避のダミー行出力
 %>
+<thead>
 <tr class="layout-row">
 <%
 		for (int i = 0; i < section.getColNum(); i++) {
@@ -205,6 +206,7 @@
 		}
 %>
 </tr>
+</thead>
 <%
 	}
 	int index = 0;

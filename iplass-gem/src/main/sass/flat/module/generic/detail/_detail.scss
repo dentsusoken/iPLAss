@@ -132,7 +132,10 @@
 	}
 	.inner-section > div > .sechead {
 		//inner-section に対して12pxのpaddingが設定されているので、タイトル上のSpaceを調整
-		padding-top: 8px;
+		padding-top: 12px;
+		&> h3 {
+			margin-bottom: 12px;;
+		}
 	}
 	.upload-button {
 		width: 100%;
