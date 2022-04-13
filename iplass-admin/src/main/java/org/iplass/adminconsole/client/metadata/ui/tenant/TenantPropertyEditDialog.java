@@ -37,7 +37,7 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.tenant.TenantDS;
+import org.iplass.adminconsole.client.metadata.data.tenant.TenantColType;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 
@@ -111,13 +111,14 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		IButton ok = new IButton("OK");
 		ok.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					setValue();
 				}
 			}
 		});
 
-		IButton cancel = new IButton(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_cancel"));
+		IButton cancel = new IButton(
+				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_cancel"));
 		cancel.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				destroy();
@@ -138,7 +139,6 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		handlers.add(0, handler);
 	}
 
-
 	/**
 	 * タイプ別の画面サイズを調整します。
 	 */
@@ -148,11 +148,11 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		final DynamicForm form = new MtpForm();
 		form.setAutoFocus(true);
 
-		TenantDS.ColType type = (TenantDS.ColType)record.getAttributeAsObject("colType");
+		TenantColType type = (TenantColType) record.getAttributeAsObject("colType");
 		String name = record.getAttribute("name");
 		String title = record.getAttribute("title");
 
-		if (TenantDS.ColType.STRING.equals(type)) {
+		if (TenantColType.STRING.equals(type)) {
 			setHeight(200);
 
 			TextItem textItem = null;
@@ -162,7 +162,8 @@ public class TenantPropertyEditDialog extends MtpDialog {
 				langItem.setTitle(title);
 				langItem.setValue(record.getAttributeAsString("value"));
 
-				List<LocalizedStringDefinition> localizedStringList = (List<LocalizedStringDefinition>)JSOHelper.convertToJava((JavaScriptObject)record.getAttributeAsObject("localizedStringList"));
+				List<LocalizedStringDefinition> localizedStringList = (List<LocalizedStringDefinition>) JSOHelper
+						.convertToJava((JavaScriptObject) record.getAttributeAsObject("localizedStringList"));
 				langItem.setLocalizedList(localizedStringList);
 				textItem = langItem;
 			} else {
@@ -171,19 +172,19 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			}
 			form.setItems(textItem);
 			valueField = textItem;
-		} else if (TenantDS.ColType.INTEGER.equals(type)) {
+		} else if (TenantColType.INTEGER.equals(type)) {
 			setHeight(200);
 
 			IntegerItem textItem = new IntegerItem(name, title);
 			textItem.setValue(record.getAttributeAsInt("value"));
 			textItem.setWidth(100);
 
-			//TODO Validatorのセット
+			// TODO Validatorのセット
 
 			valueField = textItem;
 			form.setItems(textItem);
 
-		} else if (TenantDS.ColType.DATE.equals(type)) {
+		} else if (TenantColType.DATE.equals(type)) {
 			setHeight(200);
 
 			DateItem dateItem = SmartGWTUtil.createDateItem();
@@ -196,7 +197,7 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			dateItem.setValue(record.getAttributeAsDate("value"));
 			valueField = dateItem;
 			form.setItems(dateItem);
-		} else if (TenantDS.ColType.PASSWORD.equals(type)) {
+		} else if (TenantColType.PASSWORD.equals(type)) {
 			setHeight(200);
 
 			PasswordItem passwdItem = new PasswordItem(name, title);
@@ -204,13 +205,13 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			passwdItem.setValue(record.getAttributeAsString("value"));
 			valueField = passwdItem;
 			form.setItems(passwdItem);
-		} else if (TenantDS.ColType.BOOLEAN.equals(type)) {
+		} else if (TenantColType.BOOLEAN.equals(type)) {
 			setHeight(200);
 
 			RadioGroupItem radioGroupItem = new RadioGroupItem();
 			radioGroupItem.setTitle(title);
 			radioGroupItem.setWrap(false);
-			//RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
+			// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
 			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 			LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
 			setMap.putAll(valueMap);
@@ -218,15 +219,15 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			radioGroupItem.setValue(record.getAttributeAsBoolean("value").toString());
 			valueField = radioGroupItem;
 			form.setItems(radioGroupItem);
-			//一部タイトルが長いものがあるので設定
+			// 一部タイトルが長いものがあるので設定
 			form.setWrapItemTitles(false);
-		} else if (TenantDS.ColType.SELECTRADIO.equals(type)) {
+		} else if (TenantColType.SELECTRADIO.equals(type)) {
 			setHeight(200);
 
 			RadioGroupItem radioGroupItem = new RadioGroupItem();
 			radioGroupItem.setTitle(title);
 			radioGroupItem.setWrap(false);
-			//RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
+			// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
 			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 			LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
 			setMap.putAll(valueMap);
@@ -234,20 +235,21 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			radioGroupItem.setValue(record.getAttributeAsString("value"));
 			valueField = radioGroupItem;
 			form.setItems(radioGroupItem);
-			//一部タイトルが長いものがあるので設定
+			// 一部タイトルが長いものがあるので設定
 			form.setWrapItemTitles(false);
-		} else if (TenantDS.ColType.SELECTCHECKBOX.equals(type)) {
+		} else if (TenantColType.SELECTCHECKBOX.equals(type)) {
 
-			//RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
+			// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
 			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
-			List<String> valueList = (List<String>)JSOHelper.convertToJava((JavaScriptObject) record.getAttributeAsObject("value"));
+			List<String> valueList = (List<String>) JSOHelper
+					.convertToJava((JavaScriptObject) record.getAttributeAsObject("value"));
 			LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
 			setMap.putAll(valueMap);
 
 			CheckboxItem[] items = new CheckboxItem[setMap.size()];
 			valueFields = new CheckboxItem[setMap.size()];
 			int cnt = 0;
-			for(Map.Entry<String, String> e : setMap.entrySet()) {
+			for (Map.Entry<String, String> e : setMap.entrySet()) {
 				CheckboxItem checkboxItemItem = new CheckboxItem();
 				checkboxItemItem.setTitle(e.getValue());
 				checkboxItemItem.setName(e.getKey());
@@ -257,18 +259,18 @@ public class TenantPropertyEditDialog extends MtpDialog {
 				}
 				items[cnt] = checkboxItemItem;
 				valueFields[cnt] = checkboxItemItem;
-				cnt ++;
+				cnt++;
 //				valueField = checkboxItemItem;
 			}
 			form.setItems(items);
 
 			setHeight(180 + 20 * cnt);
-		} else if (TenantDS.ColType.SELECTCOMBO.equals(type)) {
+		} else if (TenantColType.SELECTCOMBO.equals(type)) {
 			setHeight(200);
 
 			SelectItem selectItem = new MtpSelectItem();
 			selectItem.setTitle(title);
-			//RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
+			// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
 			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 			LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
 			setMap.putAll(valueMap);
@@ -276,13 +278,13 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			selectItem.setValue(record.getAttributeAsString("value"));
 			valueField = selectItem;
 			form.setItems(selectItem);
-		} else if (TenantDS.ColType.SCRIPT.equals(type)) {
+		} else if (TenantColType.SCRIPT.equals(type)) {
 			createScriptDialog(form, type);
-		} else if (TenantDS.ColType.GROOVYTEMPLATE.equals(type)) {
+		} else if (TenantColType.GROOVYTEMPLATE.equals(type)) {
 			createScriptDialog(form, type);
 		}
 
-		//編集可否設定
+		// 編集可否設定
 		boolean canEdit = record.getAttributeAsBoolean("canEdit");
 		if (!canEdit) {
 			valueField.setDisabled(true);
@@ -291,13 +293,13 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		return form;
 	}
 
-	private void createScriptDialog(DynamicForm form, TenantDS.ColType colType) {
+	private void createScriptDialog(DynamicForm form, TenantColType colType) {
 
 		setHeight(500);
 
 		final ScriptEditorDialogMode editorMode;
 
-		if (colType == TenantDS.ColType.GROOVYTEMPLATE) {
+		if (colType == TenantColType.GROOVYTEMPLATE) {
 			editorMode = ScriptEditorDialogMode.JSP;
 		} else {
 			editorMode = ScriptEditorDialogMode.GROOVY_SCRIPT;
@@ -310,26 +312,28 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		SmartGWTUtil.setReadOnlyTextArea(sourceField);
 		valueField = sourceField;
 
-		ButtonItem editScript = new ButtonItem("editScript", AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_editScript"));
+		ButtonItem editScript = new ButtonItem("editScript",
+				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_editScript"));
 		editScript.setWidth(100);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_dispScriptEditDialog"));
+		editScript.setPrompt(
+				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_dispScriptEditDialog"));
 		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
 			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-				MetaDataUtil.showScriptEditDialog(editorMode,
-						SmartGWTUtil.getStringValue(sourceField),
-						"",	//TODO title
-						null,
-						AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_" + record.getAttributeAsString("name") + "Comment"),
+				MetaDataUtil.showScriptEditDialog(editorMode, SmartGWTUtil.getStringValue(sourceField), "", // TODO
+																											// title
+						null, AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_"
+								+ record.getAttributeAsString("name") + "Comment"),
 						new ScriptEditorDialogHandler() {
 
 							@Override
 							public void onSave(String text) {
 								sourceField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -346,29 +350,29 @@ public class TenantPropertyEditDialog extends MtpDialog {
 	 */
 	private void setValue() {
 
-		//編集可否設定
+		// 編集可否設定
 		boolean canEdit = record.getAttributeAsBoolean("canEdit");
 		if (!canEdit) {
-			//ダイアログ消去
+			// ダイアログ消去
 			destroy();
 			return;
 		}
 
-		TenantDS.ColType type = (TenantDS.ColType)record.getAttributeAsObject("colType");
-		if (TenantDS.ColType.BOOLEAN.equals(type)) {
-			//RadioGroupItemの値はString型のため、Booleanで保存
+		TenantColType type = (TenantColType) record.getAttributeAsObject("colType");
+		if (TenantColType.BOOLEAN.equals(type)) {
+			// RadioGroupItemの値はString型のため、Booleanで保存
 			record.setAttribute("value", new Boolean(valueField.getValue().toString()));
 
 			@SuppressWarnings("unchecked")
 			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 			record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
-		} else if (TenantDS.ColType.SELECTRADIO.equals(type)) {
+		} else if (TenantColType.SELECTRADIO.equals(type)) {
 			record.setAttribute("value", valueField.getValue());
 
 			@SuppressWarnings("unchecked")
 			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 			record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
-		} else if (TenantDS.ColType.SELECTCHECKBOX.equals(type)) {
+		} else if (TenantColType.SELECTCHECKBOX.equals(type)) {
 
 			List<String> valueList = new ArrayList<String>();
 			StringBuilder sb = new StringBuilder();
@@ -381,22 +385,22 @@ public class TenantPropertyEditDialog extends MtpDialog {
 					}
 					sb.append(item.getTitle());
 
-					cnt ++;
+					cnt++;
 				}
 			}
 			record.setAttribute("value", valueList);
 
 			record.setAttribute("displayValue", sb.toString());
-		} else if (TenantDS.ColType.SELECTCOMBO.equals(type)) {
+		} else if (TenantColType.SELECTCOMBO.equals(type)) {
 			record.setAttribute("value", valueField.getValue());
 
 			@SuppressWarnings("unchecked")
 			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 			record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
-		} else if (TenantDS.ColType.INTEGER.equals(type)) {
-			record.setAttribute("value", ((IntegerItem)valueField).getValueAsInteger());
-			record.setAttribute("displayValue", ((IntegerItem)valueField).getValueAsInteger());
-		} else if (TenantDS.ColType.SCRIPT.equals(type)) {
+		} else if (TenantColType.INTEGER.equals(type)) {
+			record.setAttribute("value", ((IntegerItem) valueField).getValueAsInteger());
+			record.setAttribute("displayValue", ((IntegerItem) valueField).getValueAsInteger());
+		} else if (TenantColType.SCRIPT.equals(type)) {
 			String status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_setting");
 			if (valueField.getValue() == null || valueField.getValue().equals("")) {
 				status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_noSetting");
@@ -408,15 +412,16 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			record.setAttribute("value", valueField.getValue());
 			record.setAttribute("displayValue", valueField.getValue());
 
-			if ("displayName".equals(valueField.getName()) || "passwordPatternErrorMessage".equals(valueField.getName())) {
-				record.setAttribute("localizedStringList", ((MetaDataLangTextItem)valueField).getLocalizedList());
+			if ("displayName".equals(valueField.getName())
+					|| "passwordPatternErrorMessage".equals(valueField.getName())) {
+				record.setAttribute("localizedStringList", ((MetaDataLangTextItem) valueField).getLocalizedList());
 			}
 		}
 
-		//ダイアログ消去
+		// ダイアログ消去
 		destroy();
 
-		//データ変更を通知
+		// データ変更を通知
 		fireDataChanged(record);
 	}
 
@@ -426,9 +431,9 @@ public class TenantPropertyEditDialog extends MtpDialog {
 	 * @param record 更新 {@link Record}
 	 */
 	private void fireDataChanged(Record record) {
-		//イベントに更新MenuItemをセットして発行する
+		// イベントに更新MenuItemをセットして発行する
 		DataChangedEvent event = new DataChangedEvent();
-		//event.setValueObject(record);
+		// event.setValueObject(record);
 		for (DataChangedHandler handler : handlers) {
 			handler.onDataChanged(event);
 		}

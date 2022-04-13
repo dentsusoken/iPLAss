@@ -22,8 +22,8 @@ package org.iplass.adminconsole.client.metadata.ui.tenant;
 
 import org.iplass.adminconsole.client.base.event.ViewMetaDataEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.metadata.data.tenant.TenantDS;
-import org.iplass.adminconsole.client.metadata.data.tenant.TenantDS.Category;
+import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
+import org.iplass.adminconsole.client.metadata.data.tenant.TenantCategory;
 import org.iplass.adminconsole.client.metadata.data.tenant.TenantDSCellFormatter;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaCommonHeaderPane;
@@ -69,35 +69,37 @@ public class TenantPluginControllerImpl implements TenantPluginController {
 		grid.setEmptyMessage("no item");
 		grid.setShowAsynchGroupingPrompt(false);
 
-		//一覧Group設定
+		// 一覧Group設定
 		grid.setGroupStartOpen(GroupStartOpen.ALL);
 		grid.setGroupByField("title");
-		//grid.setGroupIndentSize(100);	//インデントされないのでダミーフィールド作成
+		// grid.setGroupIndentSize(100); //インデントされないのでダミーフィールド作成
 
 		ListGridField indentField = new ListGridField("indent", " ");
 		indentField.setWidth(15);
 
-		ListGridField titleField = new ListGridField("title", AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_property"));
+		ListGridField titleField = new ListGridField("title",
+				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_property"));
 		titleField.setGroupValueFunction(new GroupValueFunction() {
 
 			@Override
-			public Object getGroupValue(Object value, ListGridRecord record,
-					ListGridField field, String fieldName, ListGrid grid) {
-				//Group値をレコードの"category"から取得する
+			public Object getGroupValue(Object value, ListGridRecord record, ListGridField field, String fieldName,
+					ListGrid grid) {
+				// Group値をレコードの"category"から取得する
 				return record.getAttribute("category");
 			}
 		});
 		titleField.setGroupTitleRenderer(new GroupTitleRenderer() {
 
 			@Override
-			public String getGroupTitle(Object groupValue, GroupNode groupNode,
-					ListGridField field, String fieldName, ListGrid grid) {
-				//上で返すGroup値をタイトルに指定する
-				return TenantDS.getCategoryName(Category.valueOf((String)groupValue));
+			public String getGroupTitle(Object groupValue, GroupNode groupNode, ListGridField field, String fieldName,
+					ListGrid grid) {
+				// 上で返すGroup値をタイトルに指定する
+				return BaseTenantDS.getTenantCategoryName(TenantCategory.valueOf((String) groupValue));
 			}
 		});
 
-		ListGridField valueField = new ListGridField("displayValue", AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_value"));
+		ListGridField valueField = new ListGridField("displayValue",
+				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_value"));
 		valueField.setCellFormatter(new TenantDSCellFormatter());
 
 		grid.setFields(indentField, titleField, valueField);
