@@ -19,8 +19,12 @@
  */
 package org.iplass.adminconsole.client.base.screen;
 
+import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
+import org.iplass.adminconsole.client.metadata.data.tenant.GemTenantDS;
 import org.iplass.adminconsole.client.metadata.ui.GemMetaDataPluginController;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController;
+import org.iplass.adminconsole.client.tools.data.metaexplorer.GemTenantImportSelectDS;
+import org.iplass.mtp.tenant.Tenant;
 
 /**
  * GEMモジュールに依存したUIクラスを生成するFactory
@@ -33,5 +37,15 @@ public class GemBasedUIFactory implements ScreenModuleBasedUIFactory {
 	@Override
 	public MetaDataPluginController createMetaDataPluginController() {
 		return new GemMetaDataPluginController();
+	}
+
+	@Override
+	public BaseTenantDS createTenantDataSource() {
+		return GemTenantDS.getInstance();
+	}
+
+	@Override
+	public BaseTenantDS createTenantImportSelectDataSource(Tenant tenant) {
+		return GemTenantImportSelectDS.getInstance(tenant);
 	}
 }

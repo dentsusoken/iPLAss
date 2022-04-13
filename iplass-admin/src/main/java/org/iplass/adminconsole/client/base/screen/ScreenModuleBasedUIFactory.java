@@ -19,7 +19,9 @@
  */
 package org.iplass.adminconsole.client.base.screen;
 
+import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController;
+import org.iplass.mtp.tenant.Tenant;
 
 /**
  * 画面モジュールに依存したUIクラスを生成するFactoryのインタフェース
@@ -34,5 +36,19 @@ public interface ScreenModuleBasedUIFactory {
 	 * 
 	 * @return {@link MetaDataPluginController} のインスタンス
 	 */
-	public MetaDataPluginController createMetaDataPluginController();
+	MetaDataPluginController createMetaDataPluginController();
+
+	/**
+	 * { @link BaseTenantDS } のインスタンスを生成する
+	 * 
+	 * @return { @link BaseTenantDS } のインスタンス
+	 */
+	BaseTenantDS createTenantDataSource();
+
+	/**
+	 * { @link BaseTenantDS } のインスタンスを生成する
+	 * 
+	 * @return { @link BaseTenantDS } のインスタンス
+	 */
+	BaseTenantDS createTenantImportSelectDataSource(Tenant tenant);
 }

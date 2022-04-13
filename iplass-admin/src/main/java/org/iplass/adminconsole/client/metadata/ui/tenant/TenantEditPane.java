@@ -23,8 +23,9 @@ package org.iplass.adminconsole.client.metadata.ui.tenant;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.metadata.data.tenant.TenantDS;
+import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
 import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataMainEditPane;
@@ -60,7 +61,7 @@ public class TenantEditPane extends MetaDataMainEditPane {
 
 	private ListGrid grid;
 
-	private TenantDS dataSource;
+	private BaseTenantDS dataSource;
 
 	private TenantServiceAsync service = TenantServiceFactory.get();
 
@@ -161,7 +162,7 @@ public class TenantEditPane extends MetaDataMainEditPane {
 			}
 		});
 
-		dataSource = TenantDS.getInstance();
+		dataSource = ScreenModuleBasedUIFactoryHolder.getFactory().createTenantDataSource();
 		grid.setDataSource(dataSource);
 		grid.setAutoFetchData(true);
 
