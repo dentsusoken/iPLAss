@@ -36,27 +36,13 @@ import org.iplass.mtp.tenant.TenantMailInfo;
 import org.iplass.mtp.tenant.web.TenantWebInfo;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.Record;
-import com.smartgwt.client.types.FieldType;
 import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public abstract class BaseTenantDS extends AbstractAdminDataSource {
 
 	protected static final String RESOURCE_PREFIX = "datasource_tenant_TenantDS_";
-
-	protected static final DataSourceField[] fields;
-	static {
-		DataSourceField name = new DataSourceField("name", FieldType.TEXT);
-		name.setPrimaryKey(true);
-		DataSourceField title = new DataSourceField("title", FieldType.TEXT);
-		DataSourceField value = new DataSourceField("value", FieldType.TEXT);
-		DataSourceField displayValue = new DataSourceField("displayValue", FieldType.TEXT);
-		DataSourceField category = new DataSourceField("category", FieldType.TEXT);
-
-		fields = new DataSourceField[] { name, title, value, displayValue, category };
-	}
 
 	/** 対象テナントデータ */
 	protected Tenant curTenant;
@@ -100,9 +86,10 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 	 */
 	public abstract Tenant getUpdateData();
 
-	protected static String getRS(String key) {
-		return AdminClientMessageUtil.getString(RESOURCE_PREFIX + key);
-	}
+	/**
+	 * 更新対処の{@link Tenant}にデータを設定します
+	 */
+	public abstract void applyToTenantField(Tenant tenant, String name, String valueKey);
 
 	protected ListGridRecord getFieldRecord(String fieldKey) {
 		return records.get(fieldKey);
@@ -199,7 +186,6 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 
 	protected boolean applyToAuthField(Tenant tenant, String name, String valueKey, ListGridRecord record) {
 		TenantAuthInfo tenantAuthInfo = tenant.getTenantConfig(TenantAuthInfo.class);
-
 		boolean applied = true;
 
 		if ("useRememberMe".equals(name)) {
@@ -217,7 +203,6 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 
 	protected boolean applyToMailField(Tenant tenant, String name, String valueKey, ListGridRecord record) {
 		TenantMailInfo tenantMailInfo = tenant.getTenantConfig(TenantMailInfo.class);
-
 		boolean applied = true;
 
 		if ("sendMailEnable".equals(name)) {
@@ -240,7 +225,6 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 	@SuppressWarnings("unchecked")
 	protected boolean applyToI18nField(Tenant tenant, String name, String valueKey, ListGridRecord record) {
 		TenantI18nInfo tenantI18nInfo = tenant.getTenantConfig(TenantI18nInfo.class);
-
 		boolean applied = true;
 
 		if ("useMultilingual".equals(name)) {
@@ -495,6 +479,9 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 			return record.getAttributeAsString(valueKey);
 		}
 	}
-	
-	public abstract void applyToTenantField(Tenant tenant, String name, String valueKey);
+
+	protected static String getRS(String key) {
+		return AdminClientMessageUtil.getString(RESOURCE_PREFIX + key);
+	}
+
 }

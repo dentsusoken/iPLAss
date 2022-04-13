@@ -39,13 +39,27 @@ import org.iplass.mtp.tenant.web.TenantWebInfo;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
+import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.rpc.RPCResponse;
+import com.smartgwt.client.types.FieldType;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class GemTenantDS extends BaseTenantDS {
 
 	private static GemTenantDS instance = null;
+
+	private static final DataSourceField[] fields;
+	static {
+		DataSourceField name = new DataSourceField("name", FieldType.TEXT);
+		name.setPrimaryKey(true);
+		DataSourceField title = new DataSourceField("title", FieldType.TEXT);
+		DataSourceField value = new DataSourceField("value", FieldType.TEXT);
+		DataSourceField displayValue = new DataSourceField("displayValue", FieldType.TEXT);
+		DataSourceField category = new DataSourceField("category", FieldType.TEXT);
+
+		fields = new DataSourceField[] { name, title, value, displayValue, category };
+	}
 
 	public static GemTenantDS getInstance() {
 		if (instance == null) {
@@ -140,7 +154,7 @@ public class GemTenantDS extends BaseTenantDS {
 		records = new LinkedHashMap<>();
 
 		TenantCategory category = null; // work用
-		LinkedHashMap<String, String> selectList = null; // work用		
+		LinkedHashMap<String, String> selectList = null; // work用
 		createCommonFieldRecord(category, selectList);
 		createAuthFieldRecord(category, selectList);
 		createGemFieldRecord(category, selectList, tenantInfo);
@@ -192,11 +206,6 @@ public class GemTenantDS extends BaseTenantDS {
 		return skinMap;
 	}
 
-	/**
-	 * {@link Tenant} データをレコードに反映します。
-	 *
-	 * @param tenant {@link Tenant}
-	 */
 	protected void applyToRecord(Tenant tenant) {
 		applyToRecord(tenant, "value", "displayValue");
 	}

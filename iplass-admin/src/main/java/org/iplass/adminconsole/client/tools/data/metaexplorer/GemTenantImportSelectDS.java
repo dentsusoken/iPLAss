@@ -66,9 +66,7 @@ public class GemTenantImportSelectDS extends GemTenantDS {
 	 */
 	private GemTenantImportSelectDS(Tenant fileTenant) {
 		super();
-
 		this.fileTenant = fileTenant;
-
 		// setFields(fields); 継承しているため、superのFieldとぶつかってWARNがでるのでgetInstanceで設定
 	}
 
