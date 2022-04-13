@@ -36,7 +36,6 @@ import org.iplass.mtp.tenant.TenantMailInfo;
 import org.iplass.mtp.tenant.gem.TenantGemInfo;
 import org.iplass.mtp.tenant.web.TenantWebInfo;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
@@ -141,36 +140,14 @@ public class GemTenantDS extends BaseTenantDS {
 		records = new LinkedHashMap<>();
 
 		TenantCategory category = null; // work用
-		LinkedHashMap<String, String> selectList = null; // work用
-
-		GWT.log("debug");
-		
+		LinkedHashMap<String, String> selectList = null; // work用		
 		createCommonFieldRecord(category, selectList);
-		
-		GWT.log("debug2");
-		
 		createAuthFieldRecord(category, selectList);
-		
-		GWT.log("debug3");
-		
-		
 		createGemFieldRecord(category, selectList, tenantInfo);
-		
-		
-		GWT.log("debug4");
-		
 		createWebFieldRecord(category, selectList);
-		
-		GWT.log("debug5");
 		createI18nFieldRecord(category, selectList, tenantInfo);
-		
-		GWT.log("debug6");
 		createMailFieldRecord(category, selectList);
-		
-		GWT.log("debug7");
 		createAdditionalFieldRecord(category, selectList);
-		
-		GWT.log("debug2");
 	}
 
 	protected void createGemFieldRecord(TenantCategory category, LinkedHashMap<String, String> selectList,
