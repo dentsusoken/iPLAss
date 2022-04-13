@@ -161,26 +161,9 @@ public class AdminConsole implements EntryPoint {
 
 				// テナントチェック
 				validateTenant();
-
-				// 画面モジュールに依存したUIクラスを生成するFactoryを取得
-				getScreenModuleBasedUIFactory();
 			}
 		});
 
-	}
-
-	private void getScreenModuleBasedUIFactory() {
-		screenModuleServiceAsync = ScreenModuleServiceFactory.get();
-
-		screenModuleServiceAsync.getScreenModuleType(new AdminAsyncCallback<String>() {
-			@Override
-			public void onSuccess(String type) {
-				ScreenModuleBasedUIFactoryGenerator factoryGenerator = GWT
-						.create(ScreenModuleBasedUIFactoryGenerator.class);
-				ScreenModuleBasedUIFactory factory = factoryGenerator.generate(type);
-				ScreenModuleBasedUIFactoryHolder.init(factory);
-			}
-		});
 	}
 
 	private void validateTenant() {
@@ -224,7 +207,8 @@ public class AdminConsole implements EntryPoint {
 				// テナント情報をセット
 				TenantInfoHolder.init(result, lang);
 
-				createMainPane();
+				// 画面モジュールに依存したUIクラスを生成するFactoryを取得
+				getScreenModuleBasedUIFactory();
 			} else {
 				// テナントが存在しない
 				throw new TenantNotFoundException(AdminClientMessageUtil.getString("ui_MtpAdmin_tenantInfoCannotGet"));
@@ -238,6 +222,22 @@ public class AdminConsole implements EntryPoint {
 			}
 			invalidMessage(AdminClientMessageUtil.getString("ui_MtpAdmin_systemErrNotContinue"), caught);
 		}
+	}
+
+	private void getScreenModuleBasedUIFactory() {
+		screenModuleServiceAsync = ScreenModuleServiceFactory.get();
+
+		screenModuleServiceAsync.getScreenModuleType(new AdminAsyncCallback<String>() {
+			@Override
+			public void onSuccess(String type) {
+				ScreenModuleBasedUIFactoryGenerator factoryGenerator = GWT
+						.create(ScreenModuleBasedUIFactoryGenerator.class);
+				ScreenModuleBasedUIFactory factory = factoryGenerator.generate(type);
+				ScreenModuleBasedUIFactoryHolder.init(factory);
+
+				createMainPane();
+			}
+		});
 	}
 
 	// ------------------------------
