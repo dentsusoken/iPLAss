@@ -337,15 +337,19 @@ public class AutoNumberValueListDialog extends MtpDialog {
 			List<KeyValue<String, Long>> values = new ArrayList<>();
 			for (ListGridRecord record : records) {
 				String key = record.getAttribute("unitKey");
-				//値が大きいと、record.getAttributeAsLongが丸まるためLong.valueOfで取得
-				Long value = Long.valueOf(record.getAttribute("currentValue"));
-				if (value == null) {
-					//未入力の場合にエラーになるので-1
-					value = -1L;
-				} else if (value < -1) {
-					//-1未満は-1
+
+				Long value = -1L;
+				String valueString = record.getAttribute("currentValue");
+
+				if (valueString != null) {
+					// 値が大きいと、record.getAttributeAsLongが丸まるためLong.valueOfで取得
+					value = Long.valueOf(valueString);
+				}
+				if (value < -1L) {
+					// -1未満は-1
 					value = -1L;
 				}
+
 				KeyValue<String, Long> keyValue = new KeyValue<>(key, value);
 				values.add(keyValue);
 			}
