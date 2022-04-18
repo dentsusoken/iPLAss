@@ -1252,11 +1252,6 @@ p.nav-login-01 {
   .tbl-information-detail td {
     padding: 20px; }
 
-.info-list .info-block {
-  border: 1px solid #ededed;
-  overflow-x: hidden;
-  overflow-y: auto; }
-
 /* 汎用画面 */
 .result-nav .preview span, .result-nav .next span {
   display: block;
