@@ -1219,6 +1219,11 @@ p.nav-login-01 {
   .pw-warn-area span {
     margin: 0 10px; }
 
+.info-list .info-block {
+  border: 1px solid #ededed;
+  overflow-x: hidden;
+  overflow-y: auto; }
+
 .content-block {
   float: left;
   display: block;
