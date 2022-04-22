@@ -272,7 +272,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 				final SearchQueryInterrupterHandler handler,
 				final List<CsvColumn> columns,
 				final int cacheLimit,
-				boolean isShowUserNameWithPrivilegedValue) {
+				final boolean isShowUserNameWithPrivilegedValue) {
 			this.handler = handler;
 			this.columns = columns;
 			this.cacheLimit = cacheLimit;
