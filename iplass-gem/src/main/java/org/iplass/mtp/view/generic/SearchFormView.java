@@ -204,7 +204,16 @@ public class SearchFormView extends FormView {
 			descriptionKey="generic_SearchFormView_deleteSpecificVersionDescriptionKey")
 	private boolean deleteSpecificVersion;
 
-
+	/** 特権実行でユーザー名を表示 */
+	@MetaFieldInfo(
+			displayName="特権実行でユーザー名を表示する",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1520,
+			description="ユーザー情報の参照権限が無くてもユーザー名を表示するかを指定します。",
+			displayNameKey="generic_SearchFormView_showUserNameWithPrivilegedDisplayNameKey",
+			descriptionKey="generic_SearchFormView_showUserNameWithPrivilegedDescriptionKey"
+	)
+	private boolean showUserNameWithPrivilegedValue;
 
 
 	/** EQLカスタム処理クラス名 */
@@ -513,6 +522,22 @@ public class SearchFormView extends FormView {
 	 */
 	public void setDeleteSpecificVersion(boolean deleteSpecificVersion) {
 		this.deleteSpecificVersion = deleteSpecificVersion;
+	}
+
+	/**
+	 * 特権実行でユーザー名を表示を取得します。
+	 * @return 特権実行でユーザー名を表示
+	 */
+	public boolean isShowUserNameWithPrivilegedValue() {
+		return showUserNameWithPrivilegedValue;
+	}
+
+	/**
+	 * 特権実行でユーザー名を表示を設定します。
+	 * @param showUserNameWithPrivilegedValue 特権実行でユーザー名を表示
+	 */
+	public void setShowUserNameWithPrivilegedValue(boolean showUserNameWithPrivilegedValue) {
+		this.showUserNameWithPrivilegedValue = showUserNameWithPrivilegedValue;
 	}
 
 	/**
