@@ -33,8 +33,10 @@ import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.In;
+import org.iplass.mtp.entity.query.value.RowValueList;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.auth.AuthContextHolder;
@@ -102,7 +104,12 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 	private void checkLimitCondition(final EntityHandler handler, SearchResultData resultData, EntityPermission permission, AuthContextHolder user, String responseKey) {
 		EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(permission);
 		if (eac.hasLimitCondition(permission, user)) {
+			boolean versionSpecified = handler.isVersioned();
 			Query q = new Query().select(Entity.OID).from(handler.getMetaData().getName());
+			if (versionSpecified) {
+				q.select().add(Entity.VERSION);
+			}
+
 			Condition cond = null;
 
 			List<SearchResultRow> rows = resultData.getRows();
@@ -110,13 +117,26 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 			if (rows.size() > 1) {
 				final List<ValueExpression> oids = new ArrayList<>();
 				resultData.getRows().forEach(row -> {
-					oids.add(new Literal(row.getEntity().getOid()));
+					if (versionSpecified) {
+						oids.add(new RowValueList(new Literal(row.getEntity().getOid()), new Literal(row.getEntity().getVersion())));
+					} else {
+						oids.add(new Literal(row.getEntity().getOid()));
+					}
 				});
-				In in = new In(Entity.OID);
+				In in;
+				if (versionSpecified) {
+					in = new In(new String[] {Entity.OID, Entity.VERSION});
+				} else {
+					in = new In(Entity.OID);
+				}
 				in.setValue(oids);
 				cond = in;
 			} else {
-				cond = new Equals(Entity.OID, rows.get(0).getEntity().getOid());
+				if (versionSpecified) {
+					cond = new And(new Equals(Entity.OID, rows.get(0).getEntity().getOid()), new Equals(Entity.VERSION, rows.get(0).getEntity().getVersion()));
+				} else {
+					cond = new Equals(Entity.OID, rows.get(0).getEntity().getOid());
+				}
 			}
 
 			q.where(cond);
@@ -130,7 +150,11 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 						new Predicate<Object[]>() {
 							@Override
 							public boolean test(Object[] dataModel) {
-								oids.add((String) dataModel[0]);
+								if (versionSpecified) {
+									oids.add(((String) dataModel[0]) + "." + dataModel[1]);
+								} else {
+									oids.add((String) dataModel[0]);
+								}
 								return true;
 							}
 						},
@@ -142,7 +166,13 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 
 			resultData.getRows().forEach(row -> {
 				Entity entity = row.getEntity();
-				if (!oids.contains(entity.getOid())) {
+				String ct;
+				if (versionSpecified) {
+					ct = entity.getOid() + "." + entity.getVersion();
+				} else {
+					ct = entity.getOid();
+				}
+				if (!oids.contains(ct)) {
 					row.getResponse().put(responseKey, String.valueOf(false));
 				}
 			});
