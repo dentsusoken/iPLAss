@@ -167,10 +167,12 @@
 
 	//先頭行にインナーセクションが含まれるか
 	boolean hasSectionInFirstRow = false;
-	for (int i = 0; i < section.getColNum(); i++) {
-		Element subElement = elementList.get(i);
-		if (subElement instanceof Section) {
-			hasSectionInFirstRow = true;
+	if (!elementList.isEmpty()) {
+		for (int i = 0; i < section.getColNum(); i++) {
+			Element subElement = elementList.get(i);
+			if (subElement instanceof Section) {
+				hasSectionInFirstRow = true;
+			}
 		}
 	}
 
