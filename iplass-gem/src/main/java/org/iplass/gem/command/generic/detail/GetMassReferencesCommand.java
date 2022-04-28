@@ -725,16 +725,32 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		Query q = new Query().select(Entity.OID, Entity.NAME)
 							 .from(User.DEFINITION_NAME)
 							 .where(new In(Entity.OID, userOidList.toArray()));
-		em.searchEntity(q, new Predicate<Entity>() {
 
-			@Override
-			public boolean test(Entity dataModel) {
-				if (!userMap.containsKey(dataModel.getOid())) {
-					userMap.put(dataModel.getOid(), dataModel);
+		if (context.getView().isShowUserNameWithPrivilegedValue()) {
+			AuthContext.doPrivileged(() -> {
+				em.searchEntity(q, new Predicate<Entity>() {
+
+					@Override
+					public boolean test(Entity dataModel) {
+						if (!userMap.containsKey(dataModel.getOid())) {
+							userMap.put(dataModel.getOid(), dataModel);
+						}
+						return true;
+					}
+				});
+			});
+		} else {
+			em.searchEntity(q, new Predicate<Entity>() {
+
+				@Override
+				public boolean test(Entity dataModel) {
+					if (!userMap.containsKey(dataModel.getOid())) {
+						userMap.put(dataModel.getOid(), dataModel);
+					}
+					return true;
 				}
-				return true;
-			}
-		});
+			});
+		}
 
 		context.setAttribute(Constants.USER_INFO_MAP, userMap);
 	}

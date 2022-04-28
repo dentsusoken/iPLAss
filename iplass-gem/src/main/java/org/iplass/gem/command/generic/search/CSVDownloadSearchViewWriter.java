@@ -266,7 +266,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		 * @param handler	SearchQueryInterrupterHandler
 		 * @param columns 列情報
 		 * @param cacheLimit １度の出力件数
-		 * @param isShowUserNameWithPrivilegedValue
+		 * @param isShowUserNameWithPrivilegedValue 特権実行でユーザ名を取得
 		 */
 		public CsvDownloadSearchImpl(
 				final SearchQueryInterrupterHandler handler,
