@@ -38,6 +38,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.Greater;
 import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
+import org.iplass.mtp.entity.query.hint.SuppressWarningsHint;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
@@ -79,22 +80,27 @@ public class SimpleTimebaseVersionController extends NumberbaseVersionController
 		if (option.getTargetVersion() == TargetVersion.NEW ||
 				(option.getUpdateProperties() != null &&
 				(option.getUpdateProperties().contains(Entity.START_DATE)
-						|| option.getUpdateProperties().contains(Entity.END_DATE)))) {
+						|| option.getUpdateProperties().contains(Entity.END_DATE)
+						|| option.getUpdateProperties().contains(Entity.STATE)))) {
 			Query q = new Query().select(new Count())
+					.hint(new SuppressWarningsHint())
 					.from(eh.getMetaData().getName())
 					.where(new And(
 							new Equals(Entity.OID, entity.getOid()),
+							new Equals(Entity.STATE, Entity.STATE_VALID_VALUE),
 							new Lesser(Entity.START_DATE, new ScalarSubQuery(
 									new Query().select(new EntityField(Entity.END_DATE))
 									.from(eh.getMetaData().getName())
 									.where(new And(new Equals(Entity.OID, entity.getOid()),
-											new Equals(Entity.VERSION, entity.getVersion())))
+											new Equals(Entity.VERSION, entity.getVersion()),
+											new Equals(Entity.STATE, Entity.STATE_VALID_VALUE)))
 									.versioned())),
 							new Greater(Entity.END_DATE, new ScalarSubQuery(
 									new Query().select(new EntityField(Entity.START_DATE))
 									.from(eh.getMetaData().getName())
 									.where(new And(new Equals(Entity.OID, entity.getOid()),
-											new Equals(Entity.VERSION, entity.getVersion())))
+											new Equals(Entity.VERSION, entity.getVersion()),
+											new Equals(Entity.STATE, Entity.STATE_VALID_VALUE)))
 									.versioned()))))
 					.versioned();
 			SearchResultIterator it = eh.getStrategy().search(entityContext, q, eh);
