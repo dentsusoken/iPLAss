@@ -55,12 +55,22 @@ public class MetaFulltextSearchViewParts extends MetaTopViewParts {
 
 	private boolean dispSearchWindow;
 
+	private boolean showUserNameWithPrivilegedValue;
+
 	public boolean isDispSearchWindow() {
 		return dispSearchWindow;
 	}
 
 	public void setDispSearchWindow(boolean dispSearchWindow) {
 		this.dispSearchWindow = dispSearchWindow;
+	}
+
+	public boolean isShowUserNameWithPrivilegedValue() {
+		return showUserNameWithPrivilegedValue;
+	}
+
+	public void setShowUserNameWithPrivilegedValue(boolean showUserNameWithPrivilegedValue) {
+		this.showUserNameWithPrivilegedValue = showUserNameWithPrivilegedValue;
 	}
 
 	public Map<String, Boolean> getDispEntities() {
@@ -91,6 +101,7 @@ public class MetaFulltextSearchViewParts extends MetaTopViewParts {
 		viewNames = fsvp.getViewNames();
 		dispEntities = fsvp.getDispEntities();
 		dispSearchWindow = fsvp.isDispSearchWindow();
+		showUserNameWithPrivilegedValue = fsvp.isShowUserNameWithPrivilegedValue();
 	}
 
 	@Override
@@ -100,6 +111,7 @@ public class MetaFulltextSearchViewParts extends MetaTopViewParts {
 		parts.setViewNames(viewNames);
 		parts.setDispEntities(dispEntities);
 		parts.setDispSearchWindow(dispSearchWindow);
+		parts.setShowUserNameWithPrivilegedValue(showUserNameWithPrivilegedValue);
 
 		return parts;
 	}

@@ -280,10 +280,24 @@ public abstract class SearchCommandBase implements Command {
 	private void setUserInfoMap(SearchContext context, final List<String> userOidList) {
 		//UserEntityを検索してリクエストに格納
 		final Map<String, Entity> userMap = new HashMap<String, Entity>();
+		final SearchContextBase searchContextBase = (SearchContextBase) context;
 
+		if (searchContextBase.getForm().isShowUserNameWithPrivilegedValue()) {
+			AuthContext.doPrivileged(() -> {
+				searchUserMap(userMap, userOidList);
+			});
+		} else {
+			searchUserMap(userMap, userOidList);
+		}
+		
+		context.getRequest().setAttribute(Constants.USER_INFO_MAP, userMap);
+	}
+
+	private void searchUserMap(Map<String, Entity> userMap, final List<String> userOidList) {
 		Query q = new Query().select(Entity.OID, Entity.NAME)
 							 .from(User.DEFINITION_NAME)
 							 .where(new In(Entity.OID, userOidList.toArray()));
+		
 		em.searchEntity(q, new Predicate<Entity>() {
 
 			@Override
@@ -294,10 +308,8 @@ public abstract class SearchCommandBase implements Command {
 				return true;
 			}
 		});
-
-		context.getRequest().setAttribute(Constants.USER_INFO_MAP, userMap);
 	}
-
+	
 	final protected void count(SearchContext context, Query query) {
 		final SearchContextBase _context = (SearchContextBase) context;
 

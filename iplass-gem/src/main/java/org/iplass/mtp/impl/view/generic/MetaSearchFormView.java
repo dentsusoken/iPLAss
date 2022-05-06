@@ -86,6 +86,9 @@ public class MetaSearchFormView extends MetaFormView {
 
 	/** 特定バージョンを削除するか */
 	private boolean deleteSpecificVersion;
+	
+	/** 特権実行でユーザー名を表示 */
+	private boolean showUserNameWithPrivilegedValue;
 
 	/** EQLカスタム処理クラス名 */
 	private String interrupterName;
@@ -334,6 +337,22 @@ public class MetaSearchFormView extends MetaFormView {
 	}
 
 	/**
+	 * 特権実行でユーザー名を表示を取得します。
+	 * @return 特権実行でユーザー名を表示
+	 */
+	public boolean isShowUserNameWithPrivilegedValue() {
+		return showUserNameWithPrivilegedValue;
+	}
+
+	/**
+	 * 特権実行でユーザー名を表示を設定します。
+	 * @param showUserNameWithPrivilegedValue 特権実行でユーザー名を表示
+	 */
+	public void setShowUserNameWithPrivilegedValue(boolean showUserNameWithPrivilegedValue) {
+		this.showUserNameWithPrivilegedValue = showUserNameWithPrivilegedValue;
+	}
+
+	/**
 	 * EQLカスタム処理クラス名を取得します。
 	 * @return EQLカスタム処理クラス名
 	 */
@@ -474,6 +493,7 @@ public class MetaSearchFormView extends MetaFormView {
 		javaScript = sForm.getJavaScript();
 		isPurge = sForm.isPurge();
 		deleteSpecificVersion = sForm.isDeleteSpecificVersion();
+		showUserNameWithPrivilegedValue = sForm.isShowUserNameWithPrivilegedValue();
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
 		searchFormViewHandlerName = sForm.getSearchFormViewHandlerName();
@@ -519,6 +539,7 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setJavaScript(javaScript);
 		form.setPurge(isPurge);
 		form.setDeleteSpecificVersion(deleteSpecificVersion);
+		form.setShowUserNameWithPrivilegedValue(showUserNameWithPrivilegedValue);
 		form.setInterrupterName(interrupterName);
 		form.setUseInterrupterForCsvDownload(useInterrupterForCsvDownload);
 		form.setSearchFormViewHandlerName(searchFormViewHandlerName);

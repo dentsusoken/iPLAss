@@ -27,10 +27,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -218,8 +220,19 @@ public final class FullTextSearchCommand implements Command {
 			.flatMap(oidSet -> oidSet.stream())
 			.collect(Collectors.toSet());
 		if (!userOidSet.isEmpty()) {
+			
 			//User名の検索
-			Map<String, Entity> userInfoMap = getUserInfoMap(em, userOidSet);
+			final Map<String, Entity> userInfoMap = new HashMap<String, Entity>();
+			FulltextSearchViewParts parts = getTopViewParts(roleName);
+
+			if (parts.isShowUserNameWithPrivilegedValue()) {
+				AuthContext.doPrivileged(() -> {
+					getUserInfoMap(em, userInfoMap, userOidSet);
+				});
+			} else {
+				getUserInfoMap(em, userInfoMap, userOidSet);
+			}
+
 			request.setAttribute(Constants.USER_INFO_MAP, userInfoMap);
 		}
 
@@ -778,14 +791,22 @@ public final class FullTextSearchCommand implements Command {
 		return fixedCount;
 	}
 
-	private Map<String, Entity> getUserInfoMap(EntityManager em, final Set<String> userOidSet) {
+	private void getUserInfoMap(EntityManager em, Map<String, Entity> userInfoMap, final Set<String> userOidSet) {
 
 		Query q = new Query().select(Entity.OID, Entity.NAME)
 							 .from(User.DEFINITION_NAME)
 							 .where(new In(Entity.OID, userOidSet.toArray()));
 
-		return em.searchEntity(q).getList().stream()
-				.collect(Collectors.toMap(Entity :: getOid, entity -> entity));
+		em.searchEntity(q, new Predicate<Entity>() {
+
+			@Override
+			public boolean test(Entity dataModel) {
+				if (!userInfoMap.containsKey(dataModel.getOid())) {
+					userInfoMap.put(dataModel.getOid(), dataModel);
+				}
+				return true;
+			}
+		});
 	}
 
 	protected NullOrderingSpec getNullOrderingSpec(NullOrderType type) {
