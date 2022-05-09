@@ -22,6 +22,9 @@ package org.iplass.mtp.view.generic.element.section;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -251,6 +254,51 @@ public class SearchConditionSection extends Section {
 			descriptionKey="generic_element_section_SearchConditionSection_hideCsvUploadDescriptionKey"
 	)
 	private boolean hideCsvUpload;
+	
+	/** CSVアップロードで登録を許可しない */
+	@MetaFieldInfo(
+			displayName="CSVアップロードで登録を許可しない",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadDenyInsertNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2010,
+			description="CSVアップロードで登録を許可しないかを設定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_csvUploadDenyInsertDescriptionKey"
+	)
+	private boolean csvUploadDenyInsert;
+	
+	/** CSVアップロードで更新を許可しない */
+	@MetaFieldInfo(
+			displayName="CSVアップロードで更新を許可しない",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadDenyUpdateNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2020,
+			description="CSVアップロードで更新を許可しないかを設定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_csvUploadDenyUpdateDescriptionKey"
+	)
+	private boolean csvUploadDenyUpdate;
+	
+	
+	/** CSVアップロードで削除を許可しない */
+	@MetaFieldInfo(
+			displayName="CSVアップロードで削除を許可しない",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadDenyDeleteNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2030,
+			description="CSVアップロードで削除を許可しないかを設定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_csvUploadDenyDeleteDescriptionKey"
+	)
+	private boolean csvUploadDenyDelete;
+	
+	/** CSVアップロード項目 */
+	@MetaFieldInfo(
+			displayName="CSVアップロード項目",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadPropertiesDisplayNameKey",
+			inputType=InputType.TEXT,
+			displayOrder=2040,
+			description="CSVアップロード対象の項目を指定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_csvUploadPropertiesDescriptionKey"
+	)
+	private String csvUploadProperties;
 
 	/** CSVアップロード時のトランザクション制御設定 */
 	@MetaFieldInfo(
@@ -258,7 +306,7 @@ public class SearchConditionSection extends Section {
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=CsvUploadTransactionType.class,
-			displayOrder=2010,
+			displayOrder=2050,
 			description="CSVアップロードボタンを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey"
 	)
@@ -423,6 +471,45 @@ public class SearchConditionSection extends Section {
 
 	public void setHideCsvUpload(boolean hideCsvUpload) {
 		this.hideCsvUpload = hideCsvUpload;
+	}
+
+	public boolean isCsvUploadDenyInsert() {
+		return csvUploadDenyInsert;
+	}
+
+	public void setCsvUploadDenyInsert(boolean csvUploadDenyInsert) {
+		this.csvUploadDenyInsert = csvUploadDenyInsert;
+	}
+
+	public boolean isCsvUploadDenyUpdate() {
+		return csvUploadDenyUpdate;
+	}
+
+	public void setCsvUploadDenyUpdate(boolean csvUploadDenyUpdate) {
+		this.csvUploadDenyUpdate = csvUploadDenyUpdate;
+	}
+
+	public boolean isCsvUploadDenyDelete() {
+		return csvUploadDenyDelete;
+	}
+
+	public void setCsvUploadDenyDelete(boolean csvUploadDenyDelete) {
+		this.csvUploadDenyDelete = csvUploadDenyDelete;
+	}
+
+	public String getCsvUploadProperties() {
+	    return csvUploadProperties;
+	}
+	
+	public Set<String> getCsvUploadPropertiesSet() {
+		if(csvUploadProperties == null) {
+			return null;
+		}
+	    return Stream.of(csvUploadProperties.split(",")).collect(Collectors.toSet());
+	}
+
+	public void setCsvUploadProperties(String csvUploadProperties) {
+	    this.csvUploadProperties = csvUploadProperties;
 	}
 
 	public CsvUploadTransactionType getCsvUploadTransactionType() {

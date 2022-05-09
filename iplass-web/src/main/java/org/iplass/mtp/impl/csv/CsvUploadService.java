@@ -168,7 +168,8 @@ public class CsvUploadService implements Service {
 	 *
 	 */
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
-			final TransactionType transactionType, final int commitLimit,
+			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete, 
+			final Set<String> csvUploadProperties, 	final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
 		final CsvUploadStatus result = new CsvUploadStatus();
@@ -196,6 +197,10 @@ public class CsvUploadService implements Service {
 					final ImportFunction func = new ImportFunction(em)
 							.ed(ed)
 							.iterator(iterator)
+							.isDenyInsert(isDenyInsert)
+							.isDenyUpdate(isDenyUpdate)
+							.isDenyDelete(isDenyDelete)
+							.csvUploadProperties(csvUploadProperties)
 							.transactionType(transactionType)
 							.commitLimit(commitLimit)
 							.useCtrl(useCtrl)
@@ -274,7 +279,8 @@ public class CsvUploadService implements Service {
 	 * Csvファイルを非同期でアップロードします。
 	 */
 	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
-			final TransactionType transactionType, final int commitLimit,
+			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete, 
+			final Set<String> csvUploadProperties, 	final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
 		// 非同期で実行するので、リクエスト処理完了時にアップロードファイルは削除されるため
@@ -289,6 +295,10 @@ public class CsvUploadService implements Service {
 				defName,
 				parameter,
 				uniqueKey,
+				isDenyInsert,
+				isDenyUpdate,
+				isDenyDelete,
+				csvUploadProperties,
 				transactionType,
 				commitLimit,
 				withReferenceVersion,
@@ -406,6 +416,10 @@ public class CsvUploadService implements Service {
 		private Iterator<Entity> iterator;
 		private TransactionType transactionType;
 		private boolean useCtrl;
+		private boolean isDenyInsert;
+		private boolean isDenyUpdate;
+		private boolean isDenyDelete; 
+		private Set<String> csvUploadProperties;
 		private int commitLimit;
 		private String uniqueKey = Entity.OID;
 		private List<String> properties;
@@ -423,6 +437,22 @@ public class CsvUploadService implements Service {
 		}
 		public ImportFunction iterator(Iterator<Entity> iterator) {
 			this.iterator = iterator;
+			return this;
+		}
+		public ImportFunction isDenyInsert(boolean isDenyInsert) {
+			this.isDenyInsert = isDenyInsert;
+			return this;
+		}
+		public ImportFunction isDenyUpdate(boolean isDenyUpdate) {
+			this.isDenyUpdate = isDenyUpdate;
+			return this;
+		}
+		public ImportFunction isDenyDelete(boolean isDenyDelete) {
+			this.isDenyDelete = isDenyDelete;
+			return this;
+		}
+		public ImportFunction csvUploadProperties(Set<String> csvUploadProperties) {
+			this.csvUploadProperties = csvUploadProperties;
 			return this;
 		}
 		public ImportFunction transactionType(TransactionType transactionType) {
@@ -496,6 +526,9 @@ public class CsvUploadService implements Service {
 					}
 
 					if (useCtrl == true && ctrlCode.equals(EntityCsvReader.CTRL_DELETE)) {
+						if(isDenyDelete) {
+							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyDeleteError"));
+						}
 						DeleteTargetVersion deleteTargetVersion = DeleteTargetVersion.ALL;
 						if (ed.getVersionControlType() != VersionControlType.NONE) {
 							if (deleteSpecificVersion && entity.getVersion() != null) {
@@ -528,22 +561,34 @@ public class CsvUploadService implements Service {
 
 					switch (execType) {
 					case INSERT:
+						if(isDenyInsert) {
+							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyInsertError"));
+						}
 						entity.setLockedBy(null);	//lockedByは指定されていても無視
 						String insertOid = em.insert(entity);
 						keyValueMap.put(uniqueKeyValue, insertOid);
 						insertCount ++;
 						break;
 					case UPDATE_SPECIFIC:
+						if(isDenyUpdate) {
+							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyUpdateError"));
+						}
 						em.update(entity, updateOption(TargetVersion.SPECIFIC));
 						//TODO storedTempOidMapを呼んでないが平気か？？？？？？
 						updateCount++;
 						break;
 					case UPDATE_VALID:
+						if(isDenyUpdate) {
+							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyUpdateError"));
+						}
 						em.update(entity, updateOption(TargetVersion.CURRENT_VALID));
 						keyValueMap.put(uniqueKeyValue, entity.getOid());
 						updateCount++;
 						break;
 					case UPDATE_NEW:
+						if(isDenyUpdate) {
+							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyUpdateError"));
+						}
 						entity.setVersion(null);
 						em.update(entity, updateOption(TargetVersion.NEW));
 						keyValueMap.put(uniqueKeyValue, entity.getOid());
@@ -641,7 +686,11 @@ public class CsvUploadService implements Service {
 
 			UpdateOption option = new UpdateOption(false);
 			if (updatablePropperties == null) {
-				updatablePropperties = filterPropperties();
+				if(csvUploadProperties != null) {
+					updatablePropperties = csvUploadProperties;
+				} else {
+					updatablePropperties = filterPropperties();
+				}
 			}
 			option.setUpdateProperties(new ArrayList<>(updatablePropperties));
 

@@ -115,7 +115,7 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 		if (async) {
 			// 非同期アップロード(トランザクション分割なし)
 			try (InputStream is = file.getInputStream()) {
-				service.asyncUpload(is, file.getFileName(), defName, null, uniqueKey, TransactionType.ONCE, 0, true, true);
+				service.asyncUpload(is, file.getFileName(), defName, null, uniqueKey, false, false, false, null, TransactionType.ONCE, 0, true, true);
 			} catch (IOException e) {
 				throw new SystemException(e);
 			}
@@ -129,7 +129,7 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 
 			// 同期アップロード(トランザクション分割なし)
 			try (InputStream is = file.getInputStream()) {
-				CsvUploadStatus result = service.upload(is, defName, uniqueKey, TransactionType.ONCE, 0, true, true);
+				CsvUploadStatus result = service.upload(is, defName, uniqueKey, false, false, false, null, TransactionType.ONCE, 0, true, true);
 				if (result.getStatus() != TaskStatus.COMPLETED) {
 					throw new EntityCsvException(result.getCode(), result.getMessage());
 				}

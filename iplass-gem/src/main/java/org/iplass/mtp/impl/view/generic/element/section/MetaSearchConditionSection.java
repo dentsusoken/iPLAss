@@ -84,6 +84,18 @@ public class MetaSearchConditionSection extends MetaSection {
 	/** CSVアップロードボタン非表示設定 */
 	private boolean hideCsvUpload;
 
+	/** CSVアップロードで登録を許可しない */
+	private boolean csvUploadDenyInsert;
+
+	/** CSVアップロードで更新を許可しない */
+	private boolean csvUploadDenyUpdate;
+
+	/** CSVアップロードで削除を許可しない */
+	private boolean csvUploadDenyDelete;
+	
+	/** CSVアップロード項目 */
+	private String csvUploadProperties;
+
 	/** CSVアップロード時のトランザクション制御設定 */
 	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;
 
@@ -177,6 +189,38 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	public void setHideCsvUpload(boolean hideCsvUpload) {
 		this.hideCsvUpload = hideCsvUpload;
+	}
+
+	public boolean isCsvUploadDenyInsert() {
+		return csvUploadDenyInsert;
+	}
+
+	public void setCsvUploadDenyInsert(boolean csvUploadDenyInsert) {
+		this.csvUploadDenyInsert = csvUploadDenyInsert;
+	}
+
+	public boolean isCsvUploadDenyUpdate() {
+		return csvUploadDenyUpdate;
+	}
+
+	public void setCsvUploadDenyUpdate(boolean csvUploadDenyUpdate) {
+		this.csvUploadDenyUpdate = csvUploadDenyUpdate;
+	}
+
+	public boolean isCsvUploadDenyDelete() {
+		return csvUploadDenyDelete;
+	}
+
+	public void setCsvUploadDenyDelete(boolean csvUploadDenyDelete) {
+		this.csvUploadDenyDelete = csvUploadDenyDelete;
+	}
+
+	public String getCsvUploadProperties() {
+		return csvUploadProperties;
+	}
+
+	public void setCsvUploadProperties(String csvUploadProperties) {
+		this.csvUploadProperties = csvUploadProperties;
 	}
 
 	public boolean isNonOutputOid() {
@@ -531,6 +575,10 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.nonOutputReference = section.isNonOutputReference();
 		this.nonOutputBinaryRef = section.isNonOutputBinaryRef();
 		this.hideCsvUpload = section.isHideCsvUpload();
+		this.csvUploadDenyInsert = section.isCsvUploadDenyInsert();
+		this.csvUploadDenyUpdate = section.isCsvUploadDenyUpdate();
+		this.csvUploadDenyDelete = section.isCsvUploadDenyDelete();
+		this.csvUploadProperties = section.getCsvUploadProperties();
 		this.hideCsvdownloadDialog = section.isHideCsvdownloadDialog();
 		this.specifyCharacterCode = section.getSpecifyCharacterCode();
 		this.csvUploadTransactionType = section.getCsvUploadTransactionType();
@@ -591,6 +639,10 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setNonOutputReference(this.nonOutputReference);
 		section.setNonOutputBinaryRef(this.nonOutputBinaryRef);
 		section.setHideCsvUpload(this.hideCsvUpload);
+		section.setCsvUploadDenyInsert(this.csvUploadDenyInsert);
+		section.setCsvUploadDenyUpdate(this.csvUploadDenyUpdate);
+		section.setCsvUploadDenyDelete(this.csvUploadDenyDelete);
+		section.setCsvUploadProperties(this.csvUploadProperties);
 		section.setHideCsvdownloadDialog(this.hideCsvdownloadDialog);
 		section.setSpecifyCharacterCode(this.specifyCharacterCode);
 		section.setCsvUploadTransactionType(this.csvUploadTransactionType);
