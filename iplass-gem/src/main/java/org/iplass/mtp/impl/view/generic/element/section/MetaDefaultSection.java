@@ -66,6 +66,15 @@ public class MetaDefaultSection extends MetaSection {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 6368546528151431462L;
+	/** dispBorderInSectionのデフォルト設定 */
+	private static boolean defaultDispBorderInSection;
+
+	static {
+		 // システムプロパティorデフォルトtrueで初期化
+		String value = System.getProperty("mtp.generic.dispBorderInSection", "true");
+		defaultDispBorderInSection = Boolean.parseBoolean(value);
+	}
+
 
 	public static MetaDefaultSection createInstance(Element element) {
 		return new MetaDefaultSection();
@@ -103,6 +112,9 @@ public class MetaDefaultSection extends MetaSection {
 
 	/** 下部のコンテンツ */
 	private String lowerContents;
+
+	/** セクション内に配置した場合に枠線を表示 */
+	private boolean dispBorderInSection = defaultDispBorderInSection;
 
 	/** 要素情報 */
 	private List<MetaElement> elements;
@@ -274,6 +286,22 @@ public class MetaDefaultSection extends MetaSection {
 	}
 
 	/**
+	 * セクション内に配置した場合に枠線を表示を取得します。
+	 * @return セクション内に配置した場合に枠線を表示
+	 */
+	public boolean isDispBorderInSection() {
+		return dispBorderInSection;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を設定します。
+	 * @param dispBorderInSection セクション内に配置した場合に枠線を表示
+	 */
+	public void setDispBorderInSection(boolean dispBorderInSection) {
+		this.dispBorderInSection = dispBorderInSection;
+	}
+
+	/**
 	 * 要素情報を取得します。
 	 * @return 要素情報
 	 */
@@ -335,6 +363,7 @@ public class MetaDefaultSection extends MetaSection {
 		this.hideView = section.isHideView();
 		this.upperContents = section.getUpperContents();
 		this.lowerContents = section.getLowerContents();
+		this.dispBorderInSection = section.isDispBorderInSection();
 		if (section.getElements().size() > 0) {
 			for (Element elem : section.getElements()) {
 				MetaElement mElem = null;
@@ -415,6 +444,7 @@ public class MetaDefaultSection extends MetaSection {
 		section.setHideView(hideView);
 		section.setUpperContents(this.upperContents);
 		section.setLowerContents(this.lowerContents);
+		section.setDispBorderInSection(this.dispBorderInSection);
 		if (this.getElements().size() > 0) {
 			for (MetaElement elem : this.getElements()) {
 				if (elem instanceof MetaSection) {

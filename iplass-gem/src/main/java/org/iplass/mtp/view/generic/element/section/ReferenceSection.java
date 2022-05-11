@@ -45,6 +45,15 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -5340250243884655144L;
 
+	/** dispBorderInSectionのデフォルト設定 */
+	private static boolean defaultDispBorderInSection;
+
+	static {
+		 // システムプロパティorデフォルトtrueで初期化
+		String value = System.getProperty("mtp.generic.dispBorderInSection", "true");
+		defaultDispBorderInSection = Boolean.parseBoolean(value);
+	}
+
 	/** 参照先Entity定義名 */
 	private String defintionName;
 
@@ -252,6 +261,16 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	)
 	private String lowerContents;
 
+	/** セクション内に配置した場合に枠線を表示 */
+	@MetaFieldInfo(
+			displayName="セクション内に配置した場合に枠線を表示",
+			displayNameKey="generic_element_section_ReferenceSection_dispBorderInSectionDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="セクション内に配置した場合に枠線を表示するかを指定します。",
+			displayOrder=410,
+			descriptionKey="generic_element_section_ReferenceSection_dispBorderInSectionDescriptionKey"
+	)
+	private boolean dispBorderInSection = defaultDispBorderInSection;
 
 	/** 上下コンテンツスクリプトのキー(内部用) */
 	private String contentScriptKey;
@@ -548,6 +567,22 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void setIndex(int index) {
 	    this.index = index;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を取得します。
+	 * @return セクション内に配置した場合に枠線を表示
+	 */
+	public boolean isDispBorderInSection() {
+		return dispBorderInSection;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を設定します。
+	 * @param dispBorderInSection セクション内に配置した場合に枠線を表示
+	 */
+	public void setDispBorderInSection(boolean dispBorderInSection) {
+		this.dispBorderInSection = dispBorderInSection;
 	}
 
 	/**

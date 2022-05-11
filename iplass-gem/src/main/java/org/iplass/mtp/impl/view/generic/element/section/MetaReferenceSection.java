@@ -52,6 +52,15 @@ public class MetaReferenceSection extends MetaSection {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -3690001980373138857L;
+	/** dispBorderInSectionのデフォルト設定 */
+	private static boolean defaultDispBorderInSection;
+
+	static {
+		 // システムプロパティorデフォルトtrueで初期化
+		String value = System.getProperty("mtp.generic.dispBorderInSection", "true");
+		defaultDispBorderInSection = Boolean.parseBoolean(value);
+	}
+
 
 	public static MetaReferenceSection createInstance(Element element) {
 		return new MetaReferenceSection();
@@ -104,6 +113,9 @@ public class MetaReferenceSection extends MetaSection {
 
 	/** データのインデックス */
 	private int index;
+
+	/** セクション内に配置した場合に枠線を表示 */
+	private boolean dispBorderInSection = defaultDispBorderInSection;
 
 	/** 上下コンテンツスクリプトのキー(内部用) */
 	private String contentScriptKey;
@@ -349,6 +361,22 @@ public class MetaReferenceSection extends MetaSection {
 	}
 
 	/**
+	 * セクション内に配置した場合に枠線を表示を取得します。
+	 * @return セクション内に配置した場合に枠線を表示
+	 */
+	public boolean isDispBorderInSection() {
+		return dispBorderInSection;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を設定します。
+	 * @param dispBorderInSection セクション内に配置した場合に枠線を表示
+	 */
+	public void setDispBorderInSection(boolean dispBorderInSection) {
+		this.dispBorderInSection = dispBorderInSection;
+	}
+
+	/**
 	 * 表示プロパティを追加します。
 	 * @param property 表示プロパティ
 	 */
@@ -401,6 +429,7 @@ public class MetaReferenceSection extends MetaSection {
 		upperContents = section.getUpperContents();
 		lowerContents = section.getLowerContents();
 		index = section.getIndex();
+		dispBorderInSection = section.isDispBorderInSection();
 		if (StringUtil.isNotBlank(section.getOrderPropName())) {
 			PropertyHandler orderProp = refEntity.getProperty(section.getOrderPropName(), ctx);
 			if (orderProp != null) orderPropId = orderProp.getId();
@@ -448,6 +477,7 @@ public class MetaReferenceSection extends MetaSection {
 		section.setUpperContents(upperContents);
 		section.setLowerContents(lowerContents);
 		section.setIndex(index);
+		section.setDispBorderInSection(dispBorderInSection);
 		if (StringUtil.isNotBlank(orderPropId)) {
 			PropertyHandler orderProp = refEntity.getPropertyById(orderPropId, ctx);
 			if (orderProp != null) section.setOrderPropName(orderProp.getName());
