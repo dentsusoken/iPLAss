@@ -73,9 +73,12 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 
 	/** CSVアップロードで削除を許可しない */
 	private boolean isDenyDelete;
-	
-	/** CSVアップロード項目 */
-	private Set<String> csvUploadProperties;
+
+	/** CSVアップロード登録項目 */
+	private Set<String> insertProperties;
+
+	/** CSVアップロード更新項目 */
+	private Set<String> updateProperties;
 
 	/** トランザクション方法 */
 	private TransactionType transactionType;
@@ -98,7 +101,8 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 	 * @param isDenyInsert CSVアップロードで登録を許可しない
 	 * @param isDenyUpdate CSVアップロードで更新を許可しない
 	 * @param isDenyDelete CSVアップロードで削除を許可しない
-	 * @param csvUploadProperties CSVアップロード項目
+	 * @param insertProperties CSVアップロード登録項目
+	 * @param updateProperties CSVアップロード更新項目
 	 * @param transactionType トランザクション方法
 	 * @param commitLimit トランザクション分割時のCommit単位
 	 * @param withReferenceVersion 参照値にバージョンが含まれているか
@@ -114,7 +118,8 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 			boolean isDenyInsert,
 			boolean isDenyUpdate,
 			boolean isDenyDelete,
-			Set<String> csvUploadProperties,
+			Set<String> insertProperties,
+			Set<String> updateProperties, 
 			TransactionType transactionType,
 			int commitLimit,
 			boolean withReferenceVersion,
@@ -130,7 +135,8 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		this.isDenyInsert = isDenyInsert;
 		this.isDenyUpdate = isDenyUpdate;
 		this.isDenyDelete = isDenyDelete;
-		this.csvUploadProperties = csvUploadProperties;
+		this.insertProperties = insertProperties;
+		this.updateProperties = updateProperties;
 		this.transactionType = transactionType;
 		this.commitLimit = commitLimit;
 		this.withReferenceVersion = withReferenceVersion;
@@ -205,7 +211,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		}
 
 		try (InputStream is = new FileInputStream(filePath)){
-			CsvUploadStatus result = service.upload(is, defName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, csvUploadProperties, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
+			CsvUploadStatus result = service.upload(is, defName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
 			return result;
 		} catch (FileNotFoundException e) {
 			throw new SystemException(e);

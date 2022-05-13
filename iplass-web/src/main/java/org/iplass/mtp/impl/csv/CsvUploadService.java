@@ -171,7 +171,7 @@ public class CsvUploadService implements Service {
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
-		return upload(is, defName, uniqueKey, false, false, false, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
+		return upload(is, defName, uniqueKey, false, false, false, null, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
 	}
 	
 	/**
@@ -180,7 +180,8 @@ public class CsvUploadService implements Service {
 	 */
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
 			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete, 
-			final Set<String> csvUploadProperties, 	final TransactionType transactionType, final int commitLimit,
+			final Set<String> insertProperties, final Set<String> updateProperties, 
+			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
 		final CsvUploadStatus result = new CsvUploadStatus();
@@ -211,7 +212,8 @@ public class CsvUploadService implements Service {
 							.isDenyInsert(isDenyInsert)
 							.isDenyUpdate(isDenyUpdate)
 							.isDenyDelete(isDenyDelete)
-							.csvUploadProperties(csvUploadProperties)
+							.insertProperties(insertProperties)
+							.updateProperties(updateProperties)
 							.transactionType(transactionType)
 							.commitLimit(commitLimit)
 							.useCtrl(useCtrl)
@@ -293,7 +295,7 @@ public class CsvUploadService implements Service {
 	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
-		asyncUpload(is, fileName, defName, parameter, uniqueKey, false, false, false, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
+		asyncUpload(is, fileName, defName, parameter, uniqueKey, false, false, false, null, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
 	}
 	
 	/**
@@ -301,7 +303,8 @@ public class CsvUploadService implements Service {
 	 */
 	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
 			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete, 
-			final Set<String> csvUploadProperties, 	final TransactionType transactionType, final int commitLimit,
+			final Set<String> insertProperties, final Set<String> updateProperties, 
+			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
 		// 非同期で実行するので、リクエスト処理完了時にアップロードファイルは削除されるため
@@ -319,7 +322,8 @@ public class CsvUploadService implements Service {
 				isDenyInsert,
 				isDenyUpdate,
 				isDenyDelete,
-				csvUploadProperties,
+				insertProperties,
+				updateProperties,
 				transactionType,
 				commitLimit,
 				withReferenceVersion,
@@ -440,7 +444,8 @@ public class CsvUploadService implements Service {
 		private boolean isDenyInsert;
 		private boolean isDenyUpdate;
 		private boolean isDenyDelete; 
-		private Set<String> csvUploadProperties;
+		private Set<String> insertProperties;
+		private Set<String> updateProperties;
 		private int commitLimit;
 		private String uniqueKey = Entity.OID;
 		private List<String> properties;
@@ -472,8 +477,12 @@ public class CsvUploadService implements Service {
 			this.isDenyDelete = isDenyDelete;
 			return this;
 		}
-		public ImportFunction csvUploadProperties(Set<String> csvUploadProperties) {
-			this.csvUploadProperties = csvUploadProperties;
+		public ImportFunction insertProperties(Set<String> insertProperties) {
+			this.insertProperties = insertProperties;
+			return this;
+		}
+		public ImportFunction updateProperties(Set<String> updateProperties) {
+			this.updateProperties = updateProperties;
 			return this;
 		}
 		public ImportFunction transactionType(TransactionType transactionType) {
@@ -584,6 +593,11 @@ public class CsvUploadService implements Service {
 					case INSERT:
 						if(isDenyInsert) {
 							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyInsertError"));
+						}
+						if(insertProperties != null) {
+							properties.stream()
+								.filter(property -> !insertProperties.contains(property))
+								.forEach(property -> entity.setValue(property, null));
 						}
 						entity.setLockedBy(null);	//lockedByは指定されていても無視
 						String insertOid = em.insert(entity);
@@ -707,8 +721,8 @@ public class CsvUploadService implements Service {
 
 			UpdateOption option = new UpdateOption(false);
 			if (updatablePropperties == null) {
-				if(csvUploadProperties != null) {
-					updatablePropperties = csvUploadProperties;
+				if(updateProperties != null) {
+					updatablePropperties = updateProperties;
 				} else {
 					updatablePropperties = filterPropperties();
 				}

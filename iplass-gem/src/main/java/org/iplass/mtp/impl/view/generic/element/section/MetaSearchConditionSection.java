@@ -93,8 +93,11 @@ public class MetaSearchConditionSection extends MetaSection {
 	/** CSVアップロードで削除を許可しない */
 	private boolean csvUploadDenyDelete;
 	
-	/** CSVアップロード項目 */
-	private String csvUploadProperties;
+	/** CSVアップロード登録項目 */
+	private String csvUploadInsertProperties;
+	
+	/** CSVアップロード更新項目 */
+	private String csvUploadUpdateProperties;
 
 	/** CSVアップロード時のトランザクション制御設定 */
 	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;
@@ -215,12 +218,20 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.csvUploadDenyDelete = csvUploadDenyDelete;
 	}
 
-	public String getCsvUploadProperties() {
-		return csvUploadProperties;
+	public String getCsvUploadInsertProperties() {
+		return csvUploadInsertProperties;
 	}
 
-	public void setCsvUploadProperties(String csvUploadProperties) {
-		this.csvUploadProperties = csvUploadProperties;
+	public void setCsvUploadInsertProperties(String csvUploadInsertProperties) {
+		this.csvUploadInsertProperties = csvUploadInsertProperties;
+	}
+
+	public String getCsvUploadUpdateProperties() {
+		return csvUploadUpdateProperties;
+	}
+
+	public void setCsvUploadUpdateProperties(String csvUploadUpdateProperties) {
+		this.csvUploadUpdateProperties = csvUploadUpdateProperties;
 	}
 
 	public boolean isNonOutputOid() {
@@ -578,7 +589,8 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.csvUploadDenyInsert = section.isCsvUploadDenyInsert();
 		this.csvUploadDenyUpdate = section.isCsvUploadDenyUpdate();
 		this.csvUploadDenyDelete = section.isCsvUploadDenyDelete();
-		this.csvUploadProperties = section.getCsvUploadProperties();
+		this.csvUploadInsertProperties = section.getCsvUploadInsertProperties();
+		this.csvUploadUpdateProperties = section.getCsvUploadUpdateProperties();
 		this.hideCsvdownloadDialog = section.isHideCsvdownloadDialog();
 		this.specifyCharacterCode = section.getSpecifyCharacterCode();
 		this.csvUploadTransactionType = section.getCsvUploadTransactionType();
@@ -642,7 +654,8 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setCsvUploadDenyInsert(this.csvUploadDenyInsert);
 		section.setCsvUploadDenyUpdate(this.csvUploadDenyUpdate);
 		section.setCsvUploadDenyDelete(this.csvUploadDenyDelete);
-		section.setCsvUploadProperties(this.csvUploadProperties);
+		section.setCsvUploadInsertProperties(this.csvUploadInsertProperties);
+		section.setCsvUploadUpdateProperties(this.csvUploadUpdateProperties);
 		section.setHideCsvdownloadDialog(this.hideCsvdownloadDialog);
 		section.setSpecifyCharacterCode(this.specifyCharacterCode);
 		section.setCsvUploadTransactionType(this.csvUploadTransactionType);

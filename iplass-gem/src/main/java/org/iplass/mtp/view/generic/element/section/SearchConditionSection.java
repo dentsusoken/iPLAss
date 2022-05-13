@@ -289,16 +289,27 @@ public class SearchConditionSection extends Section {
 	)
 	private boolean csvUploadDenyDelete;
 	
-	/** CSVアップロード項目 */
+	/** CSVアップロード登録項目 */
 	@MetaFieldInfo(
-			displayName="CSVアップロード項目",
-			displayNameKey="generic_element_section_SearchConditionSection_csvUploadPropertiesDisplayNameKey",
+			displayName="CSVアップロード登録項目",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadInsertPropertiesDisplayNameKey",
 			inputType=InputType.TEXT,
 			displayOrder=2040,
-			description="CSVアップロード対象の項目を指定します。",
-			descriptionKey="generic_element_section_SearchConditionSection_csvUploadPropertiesDescriptionKey"
+			description="CSVアップロードで登録する対象の項目を指定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_csvUploadInsertPropertiesDescriptionKey"
 	)
-	private String csvUploadProperties;
+	private String csvUploadInsertProperties;
+	
+	/** CSVアップロード更新項目 */
+	@MetaFieldInfo(
+			displayName="CSVアップロード更新項目",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadUpdatePropertiesDisplayNameKey",
+			inputType=InputType.TEXT,
+			displayOrder=2050,
+			description="CSVアップロードで更新する対象の項目を指定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_csvUploadUpdatePropertiesDescriptionKey"
+	)
+	private String csvUploadUpdateProperties;
 
 	/** CSVアップロード時のトランザクション制御設定 */
 	@MetaFieldInfo(
@@ -306,7 +317,7 @@ public class SearchConditionSection extends Section {
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=CsvUploadTransactionType.class,
-			displayOrder=2050,
+			displayOrder=2060,
 			description="CSVアップロードボタンを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey"
 	)
@@ -497,19 +508,34 @@ public class SearchConditionSection extends Section {
 		this.csvUploadDenyDelete = csvUploadDenyDelete;
 	}
 
-	public String getCsvUploadProperties() {
-	    return csvUploadProperties;
+	public String getCsvUploadInsertProperties() {
+	    return csvUploadInsertProperties;
 	}
 	
-	public Set<String> getCsvUploadPropertiesSet() {
-		if(csvUploadProperties == null) {
+	public Set<String> getCsvUploadInsertPropertiesSet() {
+		if(csvUploadInsertProperties == null) {
 			return null;
 		}
-	    return Stream.of(csvUploadProperties.split(",")).collect(Collectors.toSet());
+	    return Stream.of(csvUploadInsertProperties.replaceAll(" ","").split(",")).collect(Collectors.toSet());
 	}
 
-	public void setCsvUploadProperties(String csvUploadProperties) {
-	    this.csvUploadProperties = csvUploadProperties;
+	public void setCsvUploadInsertProperties(String csvUploadInsertProperties) {
+	    this.csvUploadInsertProperties = csvUploadInsertProperties;
+	}
+	
+	public String getCsvUploadUpdateProperties() {
+	    return csvUploadUpdateProperties;
+	}
+	
+	public Set<String> getCsvUploadUpdatePropertiesSet() {
+		if(csvUploadUpdateProperties == null) {
+			return null;
+		}
+	    return Stream.of(csvUploadUpdateProperties.replaceAll(" ","").split(",")).collect(Collectors.toSet());
+	}
+
+	public void setCsvUploadUpdateProperties(String csvUploadUpdateProperties) {
+	    this.csvUploadUpdateProperties = csvUploadUpdateProperties;
 	}
 
 	public CsvUploadTransactionType getCsvUploadTransactionType() {
