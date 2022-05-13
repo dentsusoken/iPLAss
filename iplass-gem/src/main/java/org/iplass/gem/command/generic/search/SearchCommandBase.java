@@ -234,6 +234,8 @@ public abstract class SearchCommandBase implements Command {
 
 		//検索前処理
 		final SearchQueryContext sqContext = _context.beforeSearch(query, SearchQueryType.SEACH);
+		
+		List<String> referenceNameKeyList = ((SearchContextBase) context).getForm().getWithoutConditionReferenceNameKey();
 
 		SearchResult<Entity> result = null;
 		if (sqContext.isDoPrivileged()) {
@@ -242,6 +244,11 @@ public abstract class SearchCommandBase implements Command {
 		} else {
 			if (sqContext.getWithoutConditionReferenceName() != null) {
 				result = EntityPermission.doQueryAs(sqContext.getWithoutConditionReferenceName(), () -> searchEntity(_context, userOidList, sqContext.getQuery()));
+				// 限定条件の除外設定がある場合に設定
+			} else if (referenceNameKeyList != null && !referenceNameKeyList.isEmpty()) {
+				result = EntityPermission.doQueryAs(
+						referenceNameKeyList.toArray(new String[referenceNameKeyList.size()]),
+						() -> searchEntity(_context, userOidList, sqContext.getQuery()));
 			} else {
 				result = searchEntity(_context, userOidList, sqContext.getQuery());
 			}
@@ -315,6 +322,8 @@ public abstract class SearchCommandBase implements Command {
 
 		//検索前処理
 		final SearchQueryContext sqContext = _context.beforeSearch(query, SearchQueryType.SEACH);
+		
+		List<String> referenceNameKeyList = ((SearchContextBase) context).getForm().getWithoutConditionReferenceNameKey();
 
 		Integer count = null;
 		if (sqContext.isDoPrivileged()) {
@@ -323,6 +332,11 @@ public abstract class SearchCommandBase implements Command {
 		} else {
 			if (sqContext.getWithoutConditionReferenceName() != null) {
 				count = EntityPermission.doQueryAs(sqContext.getWithoutConditionReferenceName(), () -> em.count(sqContext.getQuery()));
+				// 限定条件の除外設定がある場合に設定
+			} else if (referenceNameKeyList != null && !referenceNameKeyList.isEmpty()) {
+				count = EntityPermission.doQueryAs(
+						referenceNameKeyList.toArray(new String[referenceNameKeyList.size()]),
+						() -> em.count(sqContext.getQuery()));
 			} else {
 				count = em.count(sqContext.getQuery());
 			}

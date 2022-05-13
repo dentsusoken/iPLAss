@@ -536,11 +536,22 @@ public class DetailFormView extends FormView {
 	)
 	private String initScript;
 
+	/** 大量データ用参照セクションのEntity権限における限定条件の除外設定 */
+	@MetaFieldInfo(
+			displayName="大量データ用参照セクションのEntity権限における限定条件の除外設定",
+			displayNameKey="generic_DetailFormView_withoutConditionReferenceNameKeyDisplaNameKey",
+			inputType=InputType.MULTI_TEXT,
+			displayOrder=1660,
+			description="大量データ用参照セクションのEntity権限における限定条件を除外する参照先を指定します。",
+			descriptionKey="generic_DetailFormView_withoutConditionReferenceNameKeyDescriptionKey"
+	)
+	private List<String> withoutConditionReferenceNameKey;
+
 	/** カスタム登録処理クラス名 */
 	@MetaFieldInfo(
 			displayName="カスタム登録処理クラス名",
 			displayNameKey="generic_DetailFormView_interrupterNameDisplaNameKey",
-			displayOrder=1660,
+			displayOrder=1670,
 			description="データ登録時に行うカスタム登録処理のクラス名を指定します。<br>" +
 					"RegistrationInterrupterインターフェースを実装するクラスを指定してください。",
 
@@ -552,7 +563,7 @@ public class DetailFormView extends FormView {
 	@MetaFieldInfo(
 			displayName="カスタムロード処理クラス名",
 			displayNameKey="generic_DetailFormView_loadEntityInterrupterNameDisplaNameKey",
-			displayOrder=1670,
+			displayOrder=1680,
 			description="Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>" +
 					"LoadEntityInterrupterインターフェースを実装するクラスを指定してください。",
 
@@ -565,7 +576,7 @@ public class DetailFormView extends FormView {
 			displayName="詳細編集画面Handlerクラス名",
 			displayNameKey="generic_DetailFormView_detailFormViewHandlerNameDisplaNameKey",
 			inputType=InputType.MULTI_TEXT,
-			displayOrder=1680,
+			displayOrder=1690,
 			description="詳細編集画面の制御クラス名を指定します。<br>" +
 					"DetailFormViewHandlerインターフェースを実装するクラスを指定してください。",
 			descriptionKey="generic_DetailFormView_detailFormViewHandlerNameDescriptionKey"
@@ -1200,6 +1211,22 @@ public class DetailFormView extends FormView {
 	 */
 	public void setInitScript(String initScript) {
 	    this.initScript = initScript;
+	}
+
+	/**
+	 * 大量データ用参照セクションのEntity権限における限定条件の除外設定を取得します。
+	 * @return 大量データ用参照セクションのEntity権限における限定条件の除外設定
+	 */
+	public List<String> getWithoutConditionReferenceNameKey() {
+		return withoutConditionReferenceNameKey;
+	}
+
+	/**
+	 * 大量データ用参照セクションのEntity権限における限定条件の除外設定を設定します。
+	 * @param withoutConditionReferenceNameKey 
+	 */
+	public void setWithoutConditionReferenceNameKey(List<String> withoutConditionReferenceNameKey) {
+		this.withoutConditionReferenceNameKey = withoutConditionReferenceNameKey;
 	}
 
 	/**

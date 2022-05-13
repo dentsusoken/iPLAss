@@ -96,6 +96,9 @@ public class MetaSearchFormView extends MetaFormView {
 	/** EQLカスタム処理クラスをCSVダウンロードで利用するか */
 	private boolean useInterrupterForCsvDownload;
 
+	/** Entity権限における限定条件の除外設定 */
+	private List<String> withoutConditionReferenceNameKey;
+
 	/** 検索画面Handlerクラス名 */
 	private List<String> searchFormViewHandlerName;
 
@@ -353,6 +356,22 @@ public class MetaSearchFormView extends MetaFormView {
 	}
 
 	/**
+	 * Entity権限における限定条件の除外設定を取得します。
+	 * @return Entity権限における限定条件の除外設定
+	 */
+	public List<String> getWithoutConditionReferenceNameKey() {
+		return withoutConditionReferenceNameKey;
+	}
+
+	/**
+	 * Entity権限における限定条件の除外設定を設定します。
+	 * @param withoutConditionReferenceNameKey Entity権限における限定条件の除外設定
+	 */
+	public void setWithoutConditionReferenceNameKey(List<String> withoutConditionReferenceNameKey) {
+		this.withoutConditionReferenceNameKey = withoutConditionReferenceNameKey;
+	}
+
+	/**
 	 * EQLカスタム処理クラス名を取得します。
 	 * @return EQLカスタム処理クラス名
 	 */
@@ -494,6 +513,7 @@ public class MetaSearchFormView extends MetaFormView {
 		isPurge = sForm.isPurge();
 		deleteSpecificVersion = sForm.isDeleteSpecificVersion();
 		showUserNameWithPrivilegedValue = sForm.isShowUserNameWithPrivilegedValue();
+		withoutConditionReferenceNameKey = sForm.getWithoutConditionReferenceNameKey();
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
 		searchFormViewHandlerName = sForm.getSearchFormViewHandlerName();
@@ -540,6 +560,7 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setPurge(isPurge);
 		form.setDeleteSpecificVersion(deleteSpecificVersion);
 		form.setShowUserNameWithPrivilegedValue(showUserNameWithPrivilegedValue);
+		form.setWithoutConditionReferenceNameKey(withoutConditionReferenceNameKey);
 		form.setInterrupterName(interrupterName);
 		form.setUseInterrupterForCsvDownload(useInterrupterForCsvDownload);
 		form.setSearchFormViewHandlerName(searchFormViewHandlerName);

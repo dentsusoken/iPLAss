@@ -69,12 +69,18 @@ public abstract class SearchListPartsCommandBase implements Command {
 		//検索前処理
 		final SearchQueryContext sqContext = _context.beforeSearch(query, SearchQueryType.SEACH);
 
+		List<String> referenceNameKeyList = ((SearchContextBase) context).getForm().getWithoutConditionReferenceNameKey();
+
 		if (sqContext.isDoPrivileged()) {
 			//特権実行
 			return AuthContext.doPrivileged(() -> em.count(sqContext.getQuery()));
 		} else {
 			if (sqContext.getWithoutConditionReferenceName() != null) {
 				return EntityPermission.doQueryAs(sqContext.getWithoutConditionReferenceName(), () -> em.count(sqContext.getQuery()));
+				// 限定条件の除外設定がある場合に設定
+			} else if (referenceNameKeyList != null && !referenceNameKeyList.isEmpty()) {
+				return EntityPermission.doQueryAs(referenceNameKeyList.toArray(new String[referenceNameKeyList.size()]),
+						() -> em.count(sqContext.getQuery()));
 			} else {
 				return em.count(sqContext.getQuery());
 			}
@@ -88,6 +94,8 @@ public abstract class SearchListPartsCommandBase implements Command {
 		//検索前処理
 		final SearchQueryContext sqContext = _context.beforeSearch(query, SearchQueryType.SEACH);
 
+		List<String> referenceNameKeyList = ((SearchContextBase) context).getForm().getWithoutConditionReferenceNameKey();
+
 		SearchResult<Entity> result = null;
 		if (sqContext.isDoPrivileged()) {
 			//特権実行
@@ -95,6 +103,10 @@ public abstract class SearchListPartsCommandBase implements Command {
 		} else {
 			if (sqContext.getWithoutConditionReferenceName() != null) {
 				result = EntityPermission.doQueryAs(sqContext.getWithoutConditionReferenceName(), () -> searchEntity(_context, userOidList, sqContext.getQuery()));
+				// 限定条件の除外設定がある場合に設定
+			} else if (referenceNameKeyList != null && !referenceNameKeyList.isEmpty()) {
+				result = EntityPermission.doQueryAs(
+						referenceNameKeyList.toArray(new String[referenceNameKeyList.size()]), () -> searchEntity(_context, userOidList, sqContext.getQuery()));
 			} else {
 				result = searchEntity(_context, userOidList, sqContext.getQuery());
 			}
