@@ -167,6 +167,17 @@ public class CsvUploadService implements Service {
 	 * Csvファイルをアップロードします。
 	 *
 	 */
+	@Deprecated
+	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
+			final TransactionType transactionType, final int commitLimit,
+			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
+		return upload(is, defName, uniqueKey, false, false, false, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
+	}
+	
+	/**
+	 * Csvファイルをアップロードします。
+	 *
+	 */
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
 			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete, 
 			final Set<String> csvUploadProperties, 	final TransactionType transactionType, final int commitLimit,
@@ -275,6 +286,16 @@ public class CsvUploadService implements Service {
 		return result;
 	}
 
+	/**
+	 * Csvファイルを非同期でアップロードします。
+	 */
+	@Deprecated
+	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
+			final TransactionType transactionType, final int commitLimit,
+			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
+		asyncUpload(is, fileName, defName, parameter, uniqueKey, false, false, false, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
+	}
+	
 	/**
 	 * Csvファイルを非同期でアップロードします。
 	 */
