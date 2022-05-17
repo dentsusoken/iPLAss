@@ -292,8 +292,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 			checkUserPropertyEditor();
 
 			final SearchQueryContext sqc = handler.beforeSearch(query.versioned(true), SearchQueryType.CSV);
-			List<String> referenceNameKeyList = handler.getContext().getForm().getWithoutConditionReferenceNameKey();
-			
+
 			if (sqc.isDoPrivileged()) {
 				AuthContext.doPrivileged(() -> searchEntity(sqc, formatter));
 			} else {
@@ -301,12 +300,6 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 					EntityPermission.doQueryAs(sqc.getWithoutConditionReferenceName(), () -> {
 						searchEntity(sqc, formatter);
 						return null;
-					});
-					// 限定条件の除外設定がある場合に設定
-				} else if (referenceNameKeyList != null && !referenceNameKeyList.isEmpty()) {
-					EntityPermission.doQueryAs(referenceNameKeyList.toArray(new String[referenceNameKeyList.size()]), () -> {
-								searchEntity(sqc, formatter);
-								return null;
 					});
 				} else {
 					searchEntity(sqc, formatter);
