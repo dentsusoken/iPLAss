@@ -49,6 +49,7 @@ public class DefaultSection extends Section {
 	private static final long serialVersionUID = 8895232754105370651L;
 
 	/** dispBorderInSectionのデフォルト設定 */
+	@Deprecated
 	private static boolean defaultDispBorderInSection;
 
 	static {

@@ -46,6 +46,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	private static final long serialVersionUID = -5340250243884655144L;
 
 	/** dispBorderInSectionのデフォルト設定 */
+	@Deprecated
 	private static boolean defaultDispBorderInSection;
 
 	static {

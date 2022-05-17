@@ -67,6 +67,7 @@ public class MetaDefaultSection extends MetaSection {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 6368546528151431462L;
 	/** dispBorderInSectionのデフォルト設定 */
+	@Deprecated
 	private static boolean defaultDispBorderInSection;
 
 	static {

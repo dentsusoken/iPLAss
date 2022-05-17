@@ -53,6 +53,7 @@ public class MetaReferenceSection extends MetaSection {
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -3690001980373138857L;
 	/** dispBorderInSectionのデフォルト設定 */
+	@Deprecated
 	private static boolean defaultDispBorderInSection;
 
 	static {
