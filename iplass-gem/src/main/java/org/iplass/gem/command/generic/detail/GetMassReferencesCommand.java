@@ -231,7 +231,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 				if (!section.isHidePaging()) {
 					// ページング非表示の場合、件数は不要で、limitもかけずに全件取得
 					if ("true".equals(isCount)) {
-						int count = countEntity(context.getView(), context.getLoadEntityInterrupterHandler(), query, outputType);
+						int count = countEntity(context.getLoadEntityInterrupterHandler(), query, outputType);
 						request.setAttribute("count", count);
 					}
 
@@ -250,7 +250,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 				//UserのOIDリスト
 				final List<String> userOids = new ArrayList<>();
 
-				List<Entity> entityList = search(context.getView(), context.getLoadEntityInterrupterHandler(),
+				List<Entity> entityList = search(context.getLoadEntityInterrupterHandler(),
 						query, outputType, userNameProperties, userOids);
 
 				if (!userOids.isEmpty()) {
@@ -349,12 +349,11 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		return null;
 	}
 
-	private int countEntity(DetailFormView detailFormView, final LoadEntityInterrupterHandler handler, final Query query, final OutputType outputType) {
+	private int countEntity(final LoadEntityInterrupterHandler handler, final Query query, final OutputType outputType) {
 
  		//検索前処理
 		final SearchQueryContext sqContext = handler.beforeSearchMassReference(query.copy(), outputType);
 
-		List<String> referenceNameKeyList = detailFormView.getWithoutConditionReferenceNameKey();
  		Integer count = null;
 		if (sqContext.isDoPrivileged()) {
 			//特権実行
@@ -362,10 +361,6 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		} else {
 			if (sqContext.getWithoutConditionReferenceName() != null) {
 				count = EntityPermission.doQueryAs(sqContext.getWithoutConditionReferenceName(), () -> em.count(sqContext.getQuery()));
-			} else if (referenceNameKeyList != null && !referenceNameKeyList.isEmpty()) {
-				// 限定条件の除外設定がある場合に設定
-				count = EntityPermission.doQueryAs(
-						referenceNameKeyList.toArray(new String[referenceNameKeyList.size()]), () -> em.count(sqContext.getQuery()));
 			} else {
 				count = em.count(sqContext.getQuery());
 			}
@@ -374,13 +369,12 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
  		return count;
 	}
 
-	private List<Entity> search(DetailFormView detailFormView, final LoadEntityInterrupterHandler handler, final Query query,
+	private List<Entity> search(final LoadEntityInterrupterHandler handler, final Query query,
 			final OutputType outputType, final Set<String> userNameProperties, final List<String> userOids) {
 
  		//検索前処理
 		final SearchQueryContext sqContext = handler.beforeSearchMassReference(query.copy(), outputType);
 
-		List<String> referenceNameKeyList = detailFormView.getWithoutConditionReferenceNameKey();
  		List<Entity> result = null;
 		if (sqContext.isDoPrivileged()) {
 			//特権実行
@@ -392,12 +386,6 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 				result = EntityPermission.doQueryAs(sqContext.getWithoutConditionReferenceName(), () -> {
 					return searchEntity(handler, sqContext.getQuery(), outputType, userNameProperties, userOids);
 				});
-				// 限定条件の除外設定がある場合に設定
-			} else if (referenceNameKeyList != null && !referenceNameKeyList.isEmpty()) {
-				result = EntityPermission
-						.doQueryAs(referenceNameKeyList.toArray(new String[referenceNameKeyList.size()]), () -> {
-							return searchEntity(handler, sqContext.getQuery(), outputType, userNameProperties, userOids);
-						});
 			} else {
 				result = searchEntity(handler, sqContext.getQuery(), outputType, userNameProperties, userOids);
 			}
