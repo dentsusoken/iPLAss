@@ -160,6 +160,8 @@ public class SectionControllerImpl implements SectionController {
 						return;
 					}
 
+					// FIXME newした際にAdminConsole側でSystemPropertyが取得できないためサーバ側でインスタンス生成
+					// depricatedのフラグを削除した際は直接newする形に戻す
 					RefrectionServiceFactory.get().create(TenantInfoHolder.getId(), DefaultSection.class.getName(), new AdminAsyncCallback<Refrectable>() {
 						@Override
 						public void onSuccess(Refrectable result) {
@@ -237,6 +239,8 @@ public class SectionControllerImpl implements SectionController {
 								return;
 							}
 
+							// FIXME newした際にAdminConsole側でSystemPropertyが取得できないためサーバ側でインスタンス生成
+							// depricatedのフラグを削除した際は直接newする形に戻す
 							RefrectionServiceFactory.get().create(TenantInfoHolder.getId(), ReferenceSection.class.getName(), new AdminAsyncCallback<Refrectable>() {
 								@Override
 								public void onSuccess(Refrectable result) {
