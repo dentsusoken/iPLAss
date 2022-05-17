@@ -2343,6 +2343,16 @@ LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatNameK
 LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatDescriptionKey = "Specify the output format of multiplicity property when downloading CSV.<br/>References are not applicable.";
 LocaleInfo.generic_element_section_SearchConditionSection_hideCsvUploadDisplaNameKey = "Hide CSV upload button";
 LocaleInfo.generic_element_section_SearchConditionSection_hideCsvUploadDescriptionKey = "Hide the CSV upload button.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadDenyInsertNameKey = "Deny the insert at CSV upload.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadDenyInsertDescriptionKey = "Set whether to deny the insert at CSV upload.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadDenyUpdateNameKey = "Deny the update at CSV upload.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadDenyUpdateDescriptionKey = "Set whether to deny the update at CSV upload.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadDenyDeleteNameKey = "Deny the delete at CSV upload.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadDenyDeleteDescriptionKey = "Set whether to deny the delete at CSV upload.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadInsertPropertiesDisplayNameKey = "CSV upload insert properties";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadInsertPropertiesDescriptionKey = "Set the insert properties of the CSV upload target.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadUpdatePropertiesDisplayNameKey = "CSV upload update properties";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadUpdatePropertiesDescriptionKey = "Set the update properties of the CSV upload target.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplaNameKey = "Upper limit of downloads CSV number";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadMaxCountDescriptionKey = "Set the upper limit of the CSV download number.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplaNameKey = "CSV download Properties";
