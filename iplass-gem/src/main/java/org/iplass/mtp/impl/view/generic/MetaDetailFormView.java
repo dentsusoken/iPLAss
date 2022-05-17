@@ -155,9 +155,6 @@ public class MetaDetailFormView extends MetaFormView {
 	/** コピー対象 */
 	private CopyTarget copyTarget;
 
-	/**  大量データ用参照セクションのEntity権限における限定条件の除外設定 */
-	private List<String> withoutConditionReferenceNameKey;
-	
 	/** カスタム登録処理クラス名 */
 	private String interrupterName;
 
@@ -785,22 +782,6 @@ public class MetaDetailFormView extends MetaFormView {
 	}
 
 	/**
-	 * 大量データ用参照セクションのEntity権限における限定条件の除外設定を取得します。
-	 * @return 大量データ用参照セクションのEntity権限における限定条件の除外設定
-	 */
-	public List<String> getWithoutConditionReferenceNameKey() {
-		return withoutConditionReferenceNameKey;
-	}
-
-	/**
-	 * 大量データ用参照セクションのEntity権限における限定条件の除外設定を設定します。
-	 * @param withoutConditionReferenceNameKey 
-	 */
-	public void setWithoutConditionReferenceNameKey(List<String> withoutConditionReferenceNameKey) {
-		this.withoutConditionReferenceNameKey = withoutConditionReferenceNameKey;
-	}
-
-	/**
 	 * カスタム登録処理クラス名を取得します。
 	 * @return カスタム登録処理クラス名
 	 */
@@ -916,7 +897,6 @@ public class MetaDetailFormView extends MetaFormView {
 		validJavascriptDetailPage = dForm.isValidJavascriptDetailPage();
 		validJavascriptViewPage = dForm.isValidJavascriptViewPage();
 		copyTarget = dForm.getCopyTarget();
-		withoutConditionReferenceNameKey = dForm.getWithoutConditionReferenceNameKey();
 		interrupterName = dForm.getInterrupterName();
 		loadEntityInterrupterName = dForm.getLoadEntityInterrupterName();
 		detailFormViewHandlerName = dForm.getDetailFormViewHandlerName();
@@ -968,7 +948,6 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setForceUpadte(forceUpadte);
 		form.setShowUserNameWithPrivilegedValue(showUserNameWithPrivilegedValue);
 		form.setJavaScript(javaScript);
-		form.setWithoutConditionReferenceNameKey(withoutConditionReferenceNameKey);
 		form.setInterrupterName(interrupterName);
 		form.setLoadEntityInterrupterName(loadEntityInterrupterName);
 		form.setDetailFormViewHandlerName(detailFormViewHandlerName);
