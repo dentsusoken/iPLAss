@@ -251,6 +251,10 @@
 								sectionStyle = colNumCellStyle;
 							} else if (subElement instanceof TemplateSection && !((TemplateSection) subElement).isDispBorderInSection()) {
 								sectionStyle = colNumCellStyle;
+							} else if (subElement instanceof DefaultSection && !((DefaultSection) subElement).isDispBorderInSection()) {
+								sectionStyle = colNumCellStyle;
+							} else if (subElement instanceof ReferenceSection && !((ReferenceSection) subElement).isDispBorderInSection()) {
+								sectionStyle = colNumCellStyle;
 							}
 %>
 <td class="inner-section <c:out value="<%=sectionStyle %>"/>" colspan="2">
