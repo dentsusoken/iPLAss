@@ -79,7 +79,7 @@ public interface LoadEntityInterrupter {
 	 * @param view 詳細画面定義
 	 * @param defName Entity定義名
 	 * @param loadOption ロード時のオプション
-	 * @param property 参照プロパティ定義
+	 * @param property プロパティ定義
 	 * @param type ロード処理の種類
 	 * @return 実行結果
 	 * @deprecated use {@link #beforeLoadReference(RequestContext, FormView, String, LoadOption, ReferenceProperty, PropertyElement, LoadType)}
