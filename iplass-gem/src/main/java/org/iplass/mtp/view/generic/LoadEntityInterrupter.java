@@ -25,6 +25,8 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.view.generic.element.property.PropertyElement;
+import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 
 /**
  * Entityロード時にカスタムで処理を行わせるインターフェース
@@ -77,12 +79,30 @@ public interface LoadEntityInterrupter {
 	 * @param view 詳細画面定義
 	 * @param defName Entity定義名
 	 * @param loadOption ロード時のオプション
+	 * @param property 参照プロパティ定義
+	 * @param type ロード処理の種類
+	 * @return 実行結果
+	 * @deprecated use {@link #beforeLoadReference(RequestContext, FormView, String, LoadOption, ReferenceProperty, PropertyElement, LoadType)}
+	 */
+	@Deprecated
+	default public LoadEntityContext beforeLoadReference(RequestContext request, FormView view,
+			String defName, LoadOption loadOption, ReferenceProperty property, LoadType type) {
+		return new LoadEntityContext(loadOption);
+	}
+
+	/**
+	 * 参照プロパティに対するロード前処理を行います。
+	 * @param request リクエスト
+	 * @param view 詳細画面定義
+	 * @param defName Entity定義名
+	 * @param loadOption ロード時のオプション
 	 * @param property プロパティ定義
+	 * @param element エレメント
 	 * @param type ロード処理の種類
 	 * @return 実行結果
 	 */
 	default public LoadEntityContext beforeLoadReference(RequestContext request, FormView view,
-			String defName, LoadOption loadOption, ReferenceProperty property, LoadType type) {
+			String defName, LoadOption loadOption, ReferenceProperty property, PropertyElement element, LoadType type) {
 		return new LoadEntityContext(loadOption);
 	}
 
@@ -94,9 +114,25 @@ public interface LoadEntityInterrupter {
 	 * @param loadOption ロード時のオプション
 	 * @param property プロパティ定義
 	 * @param type ロード処理の種類
+	 * @deprecated use {@link #afterLoadReference(RequestContext, FormView, Entity, LoadOption, ReferenceProperty, PropertyElement, LoadType)}
 	 */
+	@Deprecated
 	default public void afterLoadReference(RequestContext request, FormView view,
 			Entity entity, LoadOption loadOption, ReferenceProperty property, LoadType type) {
+	}
+
+	/**
+	 * 参照プロパティに対するロード後処理を行います。
+	 * @param request リクエスト
+	 * @param view 詳細画面定義
+	 * @param entity Entity
+	 * @param loadOption ロード時のオプション
+	 * @param property プロパティ定義
+	 * @param element エレメント
+	 * @param type ロード処理の種類
+	 */
+	default public void afterLoadReference(RequestContext request, FormView view,
+			Entity entity, LoadOption loadOption, ReferenceProperty property, PropertyElement element, LoadType type) {
 	}
 
 	/**
@@ -107,9 +143,27 @@ public interface LoadEntityInterrupter {
 	 * @param query 検索用クエリ
 	 * @param outputType 出力タイプ(VIEWまたはEDIT)
 	 * @return 実行結果
+	 * @deprecated use {@link #beforeSearchMassReference(RequestContext, FormView, Query, ReferenceProperty, MassReferenceSection, OutputType)}
 	 */
+	@Deprecated
 	default public SearchQueryContext beforeSearchMassReference(RequestContext request, FormView view,
 			Query query, OutputType outputType) {
+		return new SearchQueryContext(query);
+	}
+
+	/**
+	 * 大量データ用参照セクションの検索前処理を行います。
+	 * 
+	 * @param request リクエスト
+	 * @param view 詳細画面定義
+	 * @param query 検索用クエリ
+	 * @param referenceProperty 参照プロパティ定義
+	 * @param section 大量データ用参照セクション
+	 * @param outputType 出力タイプ(VIEWまたはEDIT)
+	 * @return 実行結果
+	 */
+	default public SearchQueryContext beforeSearchMassReference(RequestContext request, FormView view, Query query,
+			ReferenceProperty referenceProperty, MassReferenceSection section, OutputType outputType) {
 		return new SearchQueryContext(query);
 	}
 
@@ -121,9 +175,24 @@ public interface LoadEntityInterrupter {
 	 * @param query 検索用クエリ
 	 * @param entity 検索結果
 	 * @param outputType 出力タイプ(VIEWまたはEDIT)
+	 * @deprecated use {@link #afterSearchMassReference(RequestContext, FormView, Query, ReferenceProperty, MassReferenceSection, OutputType)}
 	 */
+	@Deprecated
 	default public void afterSearchMassReference(RequestContext request, FormView view,
 			Query query, Entity entity, OutputType outputType) {
 	}
 
+	/**
+	 * 大量データ用参照セクションの検索後処理を行います。
+	 *
+	 * @param request リクエスト
+	 * @param view 詳細画面定義
+	 * @param query 検索用クエリ
+	 * @param referenceProperty 参照プロパティ定義
+	 * @param section 大量データ用参照セクション
+	 * @param outputType 出力タイプ(VIEWまたはEDIT)
+	 */
+	default public void afterSearchMassReference(RequestContext request, FormView view, Query query,
+			ReferenceProperty referenceProperty, MassReferenceSection section, OutputType outputType) {
+	}
 }
