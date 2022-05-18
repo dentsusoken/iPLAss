@@ -57,6 +57,7 @@ LocaleInfo.datasource_tenant_TenantDS_passResetDoseNotAllow = "許可しない";
 LocaleInfo.datasource_tenant_TenantDS_excludedChar = "自動生成パスワード設定除外文字列";
 LocaleInfo.datasource_tenant_TenantDS_randomPassLength = "自動生成パスワード長";
 LocaleInfo.datasource_tenant_TenantDS_displayName = "表示名";
+LocaleInfo.datasource_tenant_TenantDS_tenantNameSelector = "テナント名制御Script";
 LocaleInfo.datasource_tenant_TenantDS_tenantImageUrl = "ロゴURL (97x32px)";
 LocaleInfo.datasource_tenant_TenantDS_tenantImageUrlHelpText = "ヘッダに表示されるロゴのURLです。";
 LocaleInfo.datasource_tenant_TenantDS_tenantMiniImageUrl = "ロゴURL 小 (32x32px)";
@@ -1046,6 +1047,8 @@ LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_cancel = "キャンセル
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_eachLangDspName = "<div style=\"white-space: nowrap;\">言語毎の表示名を設定します。</div>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_editScript = "Script編集";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_dispScriptEditDialog = "<div style=\"white-space: nowrap;\">Scriptの編集ダイアログを表示します。</div>";
+LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_eachLangScript = "<div style=\"white-space: nowrap;\">言語毎のScriptを設定します。</div>";
+LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_tenantNameSelectorComment = "<p>テナント名を返却するGroovyTemplateを指定します。</p><ul><li>out : Writer</li><li>em : EntityManager</li><li>edm : EntityDefinitionManager</li><li>auth : AuthContext</li></ul>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_loginUrlSelectorComment = "<p>Action名を返却するScriptを指定します。認証が必要なActionに対してリクエストが行われた時に、このAction名を利用してログイン画面を表示します。</p><p>以下の変数がバインドされます。</p><ul><li>path: リクエストされたパス。Action名を表す（テナントコンテキストパスは含まない）</li><li>request: RequestContextのインスタンス</li></ul>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_reAuthUrlSelectorComment = "<p>Action名を返却するScriptを指定します。自動ログイン状態で「request the authentication」を有効にしたActionに対してリクエストが行われた時に、このAction名を利用して再認証画面を表示します。</p><p>以下の変数がバインドされます。</p><ul><li>path: リクエストされたパス。Action名を表す（テナントコンテキストパスは含まない）</li><li>request: RequestContextのインスタンス</li></ul>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_errorUrlSelectorComment = "<p>Template名を返却するScriptを指定します。システム内で例外が発生した場合に、このTemplate名を利用してエラー画面を表示します。</p><p>以下の変数がバインドされます。</p><ul><li>path: リクエストされたパス。Action名を表す（テナントコンテキストパスは含まない）</li><li>request: RequestContextのインスタンス</li><li>exception: Exceptionのインスタンス</li></ul>";

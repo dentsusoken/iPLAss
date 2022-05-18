@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.iplass.gem.EntityViewHelper;
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.Skin;
@@ -40,6 +41,9 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
+import org.iplass.mtp.impl.tenant.MetaTenant.MetaTenantHandler;
+import org.iplass.mtp.impl.tenant.MetaTenantService;
+import org.iplass.mtp.impl.tenant.gem.MetaTenantGemInfo.MetaTenantGemInfoRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.gem.TenantGemInfo;
@@ -439,6 +443,14 @@ public class ViewUtil {
 
 	public static String getDispTenantName() {
 		Tenant tenant = TemplateUtil.getTenant();
+		MetaTenantService metaTenantService = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
+		MetaTenantHandler handler = metaTenantService.getRuntimeByName(tenant.getName());
+		MetaTenantGemInfoRuntime metaTenantGemInfoRuntime = handler.getConfigRuntime(MetaTenantGemInfoRuntime.class);
+		String tenantNameSelector = metaTenantGemInfoRuntime.getTenantNameSelector();
+				
+		if(!StringUtils.isEmpty(tenantNameSelector)) {
+			return tenantNameSelector;
+		}
 		String dispTenantName = tenant.getDisplayName();
 
 		dispTenantName = TemplateUtil.getMultilingualString(dispTenantName, tenant.getLocalizedDisplayNameList());

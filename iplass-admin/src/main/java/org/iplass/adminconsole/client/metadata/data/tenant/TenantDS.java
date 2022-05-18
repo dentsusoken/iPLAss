@@ -250,6 +250,7 @@ public class TenantDS extends AbstractAdminDataSource {
 		createBoolRecord("useDisplayName", category, selectList);
 		selectList = getBoolList(getRS("show"), getRS("doNotShow"));
 		createBoolRecord("dispTenantName", category, selectList);
+		createRecord("tenantNameSelector", category, ColType.GROOVYTEMPLATE);
 		selectList = getSkinList(tenantInfo.getSkins());
 		createComboRecord("skin", category, selectList);
 		selectList = getThemeList(tenantInfo.getThemes());
@@ -456,6 +457,8 @@ public class TenantDS extends AbstractAdminDataSource {
 		setRecordValue("stylesheetFilePath", gem.getStylesheetFilePath(), valueKey, dispKey);
 		setRecordValue("useDisplayName", gem.isUseDisplayName(), valueKey, dispKey);
 		setRecordValue("dispTenantName", gem.isDispTenantName(), valueKey, dispKey);
+		record = setRecordValue("tenantNameSelector", gem.getTenantNameSelector(), valueKey, dispKey);
+		record.setAttribute("localizedTenantNameSelector", gem.getLocalizedTenantNameSelector());
 		String skinValue = gem.getSkin() != null ? gem.getSkin() : "";
 		setRecordValue("skin", skinValue, valueKey, dispKey);
 		String themeValue = gem.getTheme() != null ? gem.getTheme() : "";
@@ -662,6 +665,11 @@ public class TenantDS extends AbstractAdminDataSource {
 			tenantGemInfo.setUseDisplayName(record.getAttributeAsBoolean(valueKey));
 		} else if ("dispTenantName".equals(name)) {
 			tenantGemInfo.setDispTenantName(record.getAttributeAsBoolean(valueKey));
+		} else if ("tenantNameSelector".equals(name)) {
+			tenantGemInfo.setTenantNameSelector(record.getAttributeAsString(valueKey));
+			Object value = record.getAttributeAsObject("localizedTenantNameSelector");
+			Object localizedTenantNameSelector = JSOHelper.convertToJava((JavaScriptObject) value);
+			tenantGemInfo.setLocalizedTenantNameSelector((List<LocalizedStringDefinition>) localizedTenantNameSelector);
 		} else if ("skin".equals(name)) {
 			tenantGemInfo.setSkin(record.getAttributeAsString(valueKey));
 		} else if ("theme".equals(name)) {
