@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.iplass.gem.EntityViewHelper;
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.Skin;
@@ -446,20 +445,7 @@ public class ViewUtil {
 		MetaTenantService metaTenantService = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
 		MetaTenantHandler handler = metaTenantService.getRuntimeByName(tenant.getName());
 		MetaTenantGemInfoRuntime metaTenantGemInfoRuntime = handler.getConfigRuntime(MetaTenantGemInfoRuntime.class);
-		String tenantNameSelector = metaTenantGemInfoRuntime.getTenantNameSelector();
-				
-		if(!StringUtils.isEmpty(tenantNameSelector)) {
-			return tenantNameSelector;
-		}
-		String dispTenantName = tenant.getDisplayName();
-
-		dispTenantName = TemplateUtil.getMultilingualString(dispTenantName, tenant.getLocalizedDisplayNameList());
-
-		if (StringUtil.isEmpty(dispTenantName)){
-			dispTenantName = tenant.getName();
-		}
-
-		return dispTenantName;
+		return metaTenantGemInfoRuntime.getScreenTitle();
 	}
 
 	public static String getTenantImgUrlWithDispChecked() {

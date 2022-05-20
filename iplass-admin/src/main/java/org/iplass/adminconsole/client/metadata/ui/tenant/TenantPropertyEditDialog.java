@@ -281,8 +281,8 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		} else if (TenantDS.ColType.SCRIPT.equals(type)) {
 			createScriptDialog(form, type, false, null);
 		} else if (TenantDS.ColType.GROOVYTEMPLATE.equals(type)) {
-			if ("tenantNameSelector".equals(name)) {
-				createScriptDialog(form, type, true, "localizedTenantNameSelector");
+			if ("screenTitle".equals(name)) {
+				createScriptDialog(form, type, true, "localizedScreenTitle");
 			} else {
 				createScriptDialog(form, type, false, null);
 			}
@@ -474,8 +474,8 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			}
 			record.setAttribute("value", valueField.getValue());
 			record.setAttribute("displayValue", status);
-			if ("tenantNameSelector".equals(record.getAttribute("name"))) {
-				record.setAttribute("localizedTenantNameSelector", localizedStringList);
+			if ("screenTitle".equals(record.getAttribute("name"))) {
+				record.setAttribute("localizedScreenTitle", localizedStringList);
 			}
 		} else {
 

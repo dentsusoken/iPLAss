@@ -250,7 +250,7 @@ public class TenantDS extends AbstractAdminDataSource {
 		createBoolRecord("useDisplayName", category, selectList);
 		selectList = getBoolList(getRS("show"), getRS("doNotShow"));
 		createBoolRecord("dispTenantName", category, selectList);
-		createRecord("tenantNameSelector", category, ColType.GROOVYTEMPLATE);
+		createRecord("screenTitle", category, ColType.GROOVYTEMPLATE);
 		selectList = getSkinList(tenantInfo.getSkins());
 		createComboRecord("skin", category, selectList);
 		selectList = getThemeList(tenantInfo.getThemes());
@@ -457,8 +457,8 @@ public class TenantDS extends AbstractAdminDataSource {
 		setRecordValue("stylesheetFilePath", gem.getStylesheetFilePath(), valueKey, dispKey);
 		setRecordValue("useDisplayName", gem.isUseDisplayName(), valueKey, dispKey);
 		setRecordValue("dispTenantName", gem.isDispTenantName(), valueKey, dispKey);
-		record = setRecordValue("tenantNameSelector", gem.getTenantNameSelector(), valueKey, dispKey);
-		record.setAttribute("localizedTenantNameSelector", gem.getLocalizedTenantNameSelector());
+		record = setRecordValue("screenTitle", gem.getScreenTitle(), valueKey, dispKey);
+		record.setAttribute("localizedScreenTitle", gem.getLocalizedScreenTitle());
 		String skinValue = gem.getSkin() != null ? gem.getSkin() : "";
 		setRecordValue("skin", skinValue, valueKey, dispKey);
 		String themeValue = gem.getTheme() != null ? gem.getTheme() : "";
@@ -665,11 +665,11 @@ public class TenantDS extends AbstractAdminDataSource {
 			tenantGemInfo.setUseDisplayName(record.getAttributeAsBoolean(valueKey));
 		} else if ("dispTenantName".equals(name)) {
 			tenantGemInfo.setDispTenantName(record.getAttributeAsBoolean(valueKey));
-		} else if ("tenantNameSelector".equals(name)) {
-			tenantGemInfo.setTenantNameSelector(record.getAttributeAsString(valueKey));
-			Object value = record.getAttributeAsObject("localizedTenantNameSelector");
-			Object localizedTenantNameSelector = JSOHelper.convertToJava((JavaScriptObject) value);
-			tenantGemInfo.setLocalizedTenantNameSelector((List<LocalizedStringDefinition>) localizedTenantNameSelector);
+		} else if ("screenTitle".equals(name)) {
+			tenantGemInfo.setScreenTitle(record.getAttributeAsString(valueKey));
+			Object value = record.getAttributeAsObject("localizedScreenTitle");
+			Object localizedScreenTitle = JSOHelper.convertToJava((JavaScriptObject) value);
+			tenantGemInfo.setLocalizedScreenTitle((List<LocalizedStringDefinition>) localizedScreenTitle);
 		} else if ("skin".equals(name)) {
 			tenantGemInfo.setSkin(record.getAttributeAsString(valueKey));
 		} else if ("theme".equals(name)) {

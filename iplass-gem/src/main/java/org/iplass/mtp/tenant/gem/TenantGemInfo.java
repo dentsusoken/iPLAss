@@ -36,10 +36,10 @@ public class TenantGemInfo extends TenantConfig {
 	private boolean dispTenantName = true;
 	
 	/** テナント名制御Script */
-	private String tenantNameSelector;
+	private String screenTitle;
 	
 	/** 多言語設定用テナント名制御Script */
-	private List<LocalizedStringDefinition> localizedTenantNameSelector;
+	private List<LocalizedStringDefinition> localizedScreenTitle;
 
 	/** スキン */
 	private String skin;
@@ -104,20 +104,20 @@ public class TenantGemInfo extends TenantConfig {
 		this.dispTenantName = dispTenantName;
 	}
 
-	public String getTenantNameSelector() {
-		return tenantNameSelector;
+	public String getScreenTitle() {
+		return screenTitle;
 	}
 
-	public void setTenantNameSelector(String tenantNameSelector) {
-		this.tenantNameSelector = tenantNameSelector;
+	public void setScreenTitle(String screenTitle) {
+		this.screenTitle = screenTitle;
 	}
 
-	public List<LocalizedStringDefinition> getLocalizedTenantNameSelector() {
-		return localizedTenantNameSelector;
+	public List<LocalizedStringDefinition> getLocalizedScreenTitle() {
+		return localizedScreenTitle;
 	}
 
-	public void setLocalizedTenantNameSelector(List<LocalizedStringDefinition> localizedTenantNameSelector) {
-		this.localizedTenantNameSelector = localizedTenantNameSelector;
+	public void setLocalizedScreenTitle(List<LocalizedStringDefinition> localizedScreenTitle) {
+		this.localizedScreenTitle = localizedScreenTitle;
 	}
 
 	/**
@@ -255,9 +255,9 @@ public class TenantGemInfo extends TenantConfig {
 		result = prime * result + (useDisplayName ? 1231 : 1237);
 		result = prime * result + (dispTenantName ? 1231 : 1237);
 		result = prime * result
-				+ ((tenantNameSelector == null) ? 0 : tenantNameSelector.hashCode());
+				+ ((screenTitle == null) ? 0 : screenTitle.hashCode());
 		result = prime * result
-				+ ((localizedTenantNameSelector == null) ? 0 : localizedTenantNameSelector.hashCode());
+				+ ((localizedScreenTitle == null) ? 0 : localizedScreenTitle.hashCode());
 		result = prime * result
 				+ ((skin == null) ? 0 : skin.hashCode());
 		result = prime * result
@@ -294,16 +294,16 @@ public class TenantGemInfo extends TenantConfig {
 		if (dispTenantName != other.dispTenantName)
 			return false;
 		
-		if (tenantNameSelector == null) {
-			if (other.tenantNameSelector != null)
+		if (screenTitle == null) {
+			if (other.screenTitle != null)
 				return false;
-		} else if (!tenantNameSelector.equals(other.tenantNameSelector))
+		} else if (!screenTitle.equals(other.screenTitle))
 			return false;
 
-		if (localizedTenantNameSelector == null) {
-			if (other.localizedTenantNameSelector != null)
+		if (localizedScreenTitle == null) {
+			if (other.localizedScreenTitle != null)
 				return false;
-		} else if (!localizedTenantNameSelector.equals(other.localizedTenantNameSelector))
+		} else if (!localizedScreenTitle.equals(other.localizedScreenTitle))
 			return false;
 
 		if (skin == null) {
@@ -362,8 +362,8 @@ public class TenantGemInfo extends TenantConfig {
 		return "TenantWebInfo ["
 				+ "useDisplayName=" + useDisplayName
 				+ ", dispTenantName=" + dispTenantName
-				+ ", tenantNameSelector=" + tenantNameSelector
-				+ ", localizedTenantNameSelector=" + localizedTenantNameSelector
+				+ ", screenTitle=" + screenTitle
+				+ ", localizedScreenTitle=" + localizedScreenTitle
 				+ ", skin=" + skin
 				+ ", theme=" + theme
 				+ ", tenantImageUrl=" + tenantImageUrl
