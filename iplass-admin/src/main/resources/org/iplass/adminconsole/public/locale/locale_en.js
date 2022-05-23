@@ -1647,8 +1647,6 @@ LocaleInfo.generic_DetailFormView_customCopyScriptDisplaNameKey = "Custom Copy S
 LocaleInfo.generic_DetailFormView_customCopyScriptDescriptionKey = "It is GroovyScript to run when you select Custom in copy.<BR />The following objects are bound.<BR />Bind variable name   :  Content<BR />request     :  Request Information<BR />session     :  Session Information<BR />user        :  User Information<BR />entity               :  Entity of the source<BR />entityDefinition     :  Entity definition<BR />entityManager        :  EntityManager";
 LocaleInfo.generic_DetailFormView_initScriptDisplaNameKey = "Initialization script";
 LocaleInfo.generic_DetailFormView_initScriptDescriptionKey = "It is GroovyScript to run when you create a new Entity.<BR />Is called creating a new screen display above and make the initial value setting on the empty Entity.<BR />The following objects are bound.<BR />Bind variable name   :  Content<BR />request     :  Request Information<BR />session     :  Session Information<BR />user        :  User Information<BR />entity               :  empty Entity";
-LocaleInfo.generic_DetailFormView_withoutConditionReferenceNameKeyDisplaNameKey = "Exclusion of limiting conditions in Entity permissions";
-LocaleInfo.generic_DetailFormView_withoutConditionReferenceNameKeyDescriptionKey = "Specify references to exclude limiting conditions in Entity permissions.";
 LocaleInfo.generic_DetailFormView_interrupterNameDisplaNameKey = "Custom registration process class";
 LocaleInfo.generic_DetailFormView_interrupterNameDescriptionKey = "Specify the class name of a custom registration process used for data registration.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.RegistrationInterrupter.";
 LocaleInfo.generic_DetailFormView_loadEntityInterrupterNameDisplaNameKey = "Custom load process class";
@@ -2245,6 +2243,8 @@ LocaleInfo.generic_element_section_MassReferenceSection_detailTabActionNameDispl
 LocaleInfo.generic_element_section_MassReferenceSection_detailTabActionNameDescriptionKey = "Set the action when Ctrl + click the edit link on the detailed edit screen.";
 LocaleInfo.generic_element_section_MassReferenceSection_viewNameDisplaNameKey = "View definition name";
 LocaleInfo.generic_element_section_MassReferenceSection_viewNameDescriptionKey = "Set the View-defined name of the screen to display in the edit link is pressed.<br>Use the View definition of default if not specified.";
+LocaleInfo.generic_element_section_MassReferenceSection_withoutConditionReferenceNameKeyDisplaNameKey = "Exclusion of limiting conditions in Entity permissions";
+LocaleInfo.generic_element_section_MassReferenceSection_withoutConditionReferenceNameKeyDescriptionKey = "Specify references to exclude limiting conditions in Entity permissions.";
 LocaleInfo.generic_element_section_MassReferenceSection_changeEditLinkToViewLinkDisplaNameKey = "Change Edit link to Detail link";
 LocaleInfo.generic_element_section_MassReferenceSection_changeEditLinkToViewLinkDescriptionKey = "Change Edit link to Detail link.<br>When click on Detail link, Detail screen appears.";
 LocaleInfo.generic_element_section_MassReferenceSection_hideDeleteButtonDisplaNameKey = "Hide DeleteButton";

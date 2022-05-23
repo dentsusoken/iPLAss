@@ -101,6 +101,9 @@ public class MetaMassReferenceSection extends MetaSection {
 	/** ビュー定義名 */
 	private String viewName;
 
+	/** Entity権限における限定条件の除外設定 */
+	private List<String> withoutConditionReferenceNameKey;
+
 	/** 編集リンクを詳細リンクに変更 */
 	private boolean changeEditLinkToViewLink;
 
@@ -406,6 +409,22 @@ public class MetaMassReferenceSection extends MetaSection {
 	}
 
 	/**
+	 * Entity権限における限定条件の除外設定を取得します。
+	 * @return Entity権限における限定条件の除外設定
+	 */
+	public List<String> getWithoutConditionReferenceNameKey() {
+		return withoutConditionReferenceNameKey;
+	}
+
+	/**
+	 * Entity権限における限定条件の除外設定を設定します。
+	 * @param withoutConditionReferenceNameKey Entity権限における限定条件の除外設定
+	 */
+	public void setWithoutConditionReferenceNameKey(List<String> withoutConditionReferenceNameKey) {
+		this.withoutConditionReferenceNameKey = withoutConditionReferenceNameKey;
+	}
+
+	/**
 	 * 編集リンクを詳細リンクに変更するかを取得します。
 	 * @return 編集リンクを詳細リンクに変更するか
 	 */
@@ -673,6 +692,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		detailActionName = section.getDetailActionName();
 		detailTabActionName = section.getDetailTabActionName();
 		viewName = section.getViewName();
+		withoutConditionReferenceNameKey = section.getWithoutConditionReferenceNameKey();
 		changeEditLinkToViewLink = section.isChangeEditLinkToViewLink();
 		hideDeleteButton = section.isHideDeleteButton();
 		hideAddButton = section.isHideAddButton();
@@ -744,6 +764,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		section.setDetailActionName(detailActionName);
 		section.setDetailTabActionName(detailTabActionName);
 		section.setViewName(viewName);
+		section.setWithoutConditionReferenceNameKey(withoutConditionReferenceNameKey);
 		section.setChangeEditLinkToViewLink(changeEditLinkToViewLink);
 		section.setHideDeleteButton(hideDeleteButton);
 		section.setHideAddButton(hideAddButton);

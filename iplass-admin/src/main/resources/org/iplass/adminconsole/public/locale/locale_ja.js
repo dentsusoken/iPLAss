@@ -1647,8 +1647,6 @@ LocaleInfo.generic_DetailFormView_customCopyScriptDisplaNameKey = "カスタム�
 LocaleInfo.generic_DetailFormView_customCopyScriptDescriptionKey = "コピー対象でCustomを選択した際に実行されるGroovyScriptです。<BR />以下のオブジェクトがバインドされています。<BR />バインド変数名  ：内容<BR />request         ：リクエスト情報<BR />session         ：セッション情報<BR />user            ：ユーザ情報<BR />entity          ：コピー元のEntity<BR />entityDefinition：Entity定義<BR />entityManager   ：EntityManager";
 LocaleInfo.generic_DetailFormView_initScriptDisplaNameKey = "初期化スクリプト";
 LocaleInfo.generic_DetailFormView_initScriptDescriptionKey = "Entityを新規作成する際に実行されるGroovyScriptです。<BR />新規作成画面表示前に呼び出され、空のEntityに対して初期値設定等を行います。<BR />以下のオブジェクトがバインドされています。<BR />バインド変数名  ：内容<BR />request         ：リクエスト情報<BR />session         ：セッション情報<BR />user            ：ユーザ情報<BR />entity          ：空のEntity";
-LocaleInfo.generic_DetailFormView_withoutConditionReferenceNameKeyDisplaNameKey = "大量データ用参照セクションのEntity権限における限定条件の除外設定";
-LocaleInfo.generic_DetailFormView_withoutConditionReferenceNameKeyDescriptionKey = "大量データ用参照セクションのEntity権限における限定条件を除外する参照先のプロパティ名を指定してください。";
 LocaleInfo.generic_DetailFormView_interrupterNameDisplaNameKey = "カスタム登録処理クラス名";
 LocaleInfo.generic_DetailFormView_interrupterNameDescriptionKey = "データ登録時に行うカスタム登録処理のクラス名を指定します。<br>org.iplass.mtp.view.generic.RegistrationInterrupterインターフェースを実装するクラスを指定してください。";
 LocaleInfo.generic_DetailFormView_loadEntityInterrupterNameDisplaNameKey = "カスタムロード処理クラス名";
@@ -2245,6 +2243,8 @@ LocaleInfo.generic_element_section_MassReferenceSection_detailTabActionNameDispl
 LocaleInfo.generic_element_section_MassReferenceSection_detailTabActionNameDescriptionKey = "詳細編集画面の編集リンクをCtrl+クリックした時のアクションを設定します。";
 LocaleInfo.generic_element_section_MassReferenceSection_viewNameDisplaNameKey = "ビュー定義名";
 LocaleInfo.generic_element_section_MassReferenceSection_viewNameDescriptionKey = "編集リンク押下で表示する画面のView定義名を設定します。<br>未指定の場合はデフォルトのView定義を使用します。";
+LocaleInfo.generic_element_section_MassReferenceSection_withoutConditionReferenceNameKeyDisplaNameKey = "Entity権限における限定条件の除外設定";
+LocaleInfo.generic_element_section_MassReferenceSection_withoutConditionReferenceNameKeyDescriptionKey = "Entity権限における限定条件を除外する参照先のプロパティ名を指定してください。";
 LocaleInfo.generic_element_section_MassReferenceSection_changeEditLinkToViewLinkDisplaNameKey = "編集リンクを詳細リンクに変更";
 LocaleInfo.generic_element_section_MassReferenceSection_changeEditLinkToViewLinkDescriptionKey = "編集リンクを詳細リンクに変更します。<br>詳細リンクをクリックすると、詳細画面が表示されます。";
 LocaleInfo.generic_element_section_MassReferenceSection_hideDeleteButtonDisplaNameKey = "削除ボタンを非表示";
