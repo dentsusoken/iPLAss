@@ -57,7 +57,7 @@ LocaleInfo.datasource_tenant_TenantDS_passResetDoseNotAllow = "Does not allow";
 LocaleInfo.datasource_tenant_TenantDS_excludedChar = "Auto-create password setting exclusion string";
 LocaleInfo.datasource_tenant_TenantDS_randomPassLength = "Auto-create password length";
 LocaleInfo.datasource_tenant_TenantDS_displayName = "Display Name";
-LocaleInfo.datasource_tenant_TenantDS_screenTitle = "Tenant name control Script";
+LocaleInfo.datasource_tenant_TenantDS_screenTitle = "Screen Title";
 LocaleInfo.datasource_tenant_TenantDS_tenantImageUrl = "Logo URL (97x32px)";
 LocaleInfo.datasource_tenant_TenantDS_tenantImageUrlHelpText = "The URL of the logo displayed in the header.";
 LocaleInfo.datasource_tenant_TenantDS_tenantMiniImageUrl = "Logo URL mini (32x32px)";
@@ -1048,7 +1048,7 @@ LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_eachLangDspName = "<div s
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_editScript = "Edit script";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_dispScriptEditDialog = "<div style=\"white-space: nowrap;\">Display script edit dialog.</div>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_eachLangScript = "<div style=\"white-space: nowrap;\">Set the script for each language.</div>";
-LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_screenTitleComment = "<p>Specify Script to return tenant name.<p>The following variables are bound.</p></p><ul><li>request: RequestContext</li><li>out : Writer</li><li>em : EntityManager</li><li>edm : EntityDefinitionManager</li><li>auth : AuthContext</li></ul>";
+LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_screenTitleComment = "<p>Specify Script to return screen title.<p>The following variables are bound.</p></p><ul><li>request: RequestContext</li><li>out : Writer</li><li>em : EntityManager</li><li>edm : EntityDefinitionManager</li><li>auth : AuthContext</li></ul>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_loginUrlSelectorComment = "<p>Specify Script to return Action name.When a request is made to the authentication is required Action, to display the login screen using the Action name.</p><p>The following variables are bound.</p><ul><li>path: The requested path. Represents Action name (does not include tenant context path)</li><li>request: Instance of RequestContext</li></ul>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_reAuthUrlSelectorComment = "<p>Specify Script to return Action name.When a request is made to an Action for which 'request the authentication' is enabled in the automatic login state, this action name is used to display the re-authentication screen.</p><p>The following variables are bound.</p><ul><li>path: The requested path. Represents Action name (does not include tenant context path)</li><li>request: Instance of RequestContext</li></ul>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_errorUrlSelectorComment = "<p>Specify Script to return Template name.When an exception occurs in the system, an error screen is displayed using this Template name.</p><p>The following variables are bound.</p><ul><li>path: The requested path. Represents Action name (does not include tenant context path)</li><li>request: Instance of RequestContext</li><li>exception: Instance of Exception</li></ul>";

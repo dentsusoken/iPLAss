@@ -41,10 +41,14 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.gem.TenantGemInfo;
 import org.iplass.mtp.web.template.TemplateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 
 	private static final long serialVersionUID = -8193028509449590924L;
+	
+	private static Logger logger = LoggerFactory.getLogger(MetaTenantGemInfo.class);
 
 	/** テナント名の利用有無 */
 	private boolean useDisplayName = true;
@@ -382,7 +386,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 			try {
 				template.doTemplate(new GroovyTemplateBinding(sw, binding));
 			} catch (Exception e) {
-				setIllegalStateException(new RuntimeException(e));
+				logger.error(e.getMessage(), e);
 				return null;
 			}
 			String tenantName = sw.toString();
