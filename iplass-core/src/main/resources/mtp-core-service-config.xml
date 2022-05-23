@@ -1100,6 +1100,20 @@
 			<property name="lastNameIsFirst" value="false" />
 		</property>
 
+		<property name="genericFontFamilyList" value="serif" />
+		<property name="genericFontFamilyList" value="sans-serif" />
+		<property name="genericFontFamilyList" value="monospace" />
+		<property name="genericFontFamilyList" value="cursive" />
+		<property name="genericFontFamilyList" value="fantasy" />
+		<property name="genericFontFamilyList" value="system-ui" />
+		<property name="genericFontFamilyList" value="ui-serif" />
+		<property name="genericFontFamilyList" value="ui-sans-serif" />
+		<property name="genericFontFamilyList" value="ui-monospace" />
+		<property name="genericFontFamilyList" value="ui-rounded" />
+		<property name="genericFontFamilyList" value="math" />
+		<property name="genericFontFamilyList" value="emoji" />
+		<property name="genericFontFamilyList" value="fangsong" />
+
 		<property name="languageFonts" class="org.iplass.mtp.impl.i18n.LanguageFonts">
 			<property name="language" value="ja" />
 			<property name="fonts" value="Meiryo" />
