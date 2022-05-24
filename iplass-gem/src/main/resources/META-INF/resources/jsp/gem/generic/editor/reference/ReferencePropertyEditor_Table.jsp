@@ -672,7 +672,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			if (tmp.getOid() != null) {
 				if (reload == null || reload) {
 					LoadOption loadOption = getOption(refEd, editor, mappedBy, outputType);
-					final LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, LoadType.VIEW);
+					final LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
 					if (leContext.isDoPrivileged()) {
 						entity = AuthContext.doPrivileged(new Supplier<Entity>() {
 
@@ -952,7 +952,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			String trId = "id_tr_" + propName + i;
 			Entity entity = null;
 			final LoadOption loadOption = getOption(refEd, editor, mappedBy, outputType);
-			LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, LoadType.VIEW);
+			LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
 			if (leContext.isDoPrivileged()) {
 				entity = AuthContext.doPrivileged(new Supplier<Entity>() {
 

@@ -25,6 +25,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyElement;
 import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 
@@ -102,8 +103,8 @@ public interface LoadEntityInterrupter {
 	 * @return 実行結果
 	 */
 	default public LoadEntityContext beforeLoadReference(RequestContext request, FormView view,
-			String defName, LoadOption loadOption, ReferenceProperty property, PropertyElement element, LoadType type) {
-		return new LoadEntityContext(loadOption);
+			String defName, LoadOption loadOption, ReferenceProperty property, Element element, LoadType type) {
+		return beforeLoadReference(request, view, defName, loadOption, property, type);
 	}
 
 	/**
@@ -132,7 +133,8 @@ public interface LoadEntityInterrupter {
 	 * @param type ロード処理の種類
 	 */
 	default public void afterLoadReference(RequestContext request, FormView view,
-			Entity entity, LoadOption loadOption, ReferenceProperty property, PropertyElement element, LoadType type) {
+			Entity entity, LoadOption loadOption, ReferenceProperty property, Element element, LoadType type) {
+		afterLoadReference(request, view, entity, loadOption, property, type);
 	}
 
 	/**
@@ -164,7 +166,7 @@ public interface LoadEntityInterrupter {
 	 */
 	default public SearchQueryContext beforeSearchMassReference(RequestContext request, FormView view, Query query,
 			ReferenceProperty referenceProperty, MassReferenceSection section, OutputType outputType) {
-		return new SearchQueryContext(query);
+		return beforeSearchMassReference(request, view, query, outputType);
 	}
 
 	/**
@@ -190,9 +192,11 @@ public interface LoadEntityInterrupter {
 	 * @param query 検索用クエリ
 	 * @param referenceProperty 参照プロパティ定義
 	 * @param section 大量データ用参照セクション
+	 * @param entity 検索結果
 	 * @param outputType 出力タイプ(VIEWまたはEDIT)
 	 */
 	default public void afterSearchMassReference(RequestContext request, FormView view, Query query,
-			ReferenceProperty referenceProperty, MassReferenceSection section, OutputType outputType) {
+			ReferenceProperty referenceProperty, MassReferenceSection section, Entity entity, OutputType outputType) {
+		afterSearchMassReference(request, view, query, entity, outputType);
 	}
 }

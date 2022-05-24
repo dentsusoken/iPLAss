@@ -195,7 +195,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 
 		// 新規・更新されたものは参照プロパティにEntityを追加
 		for (UpdateSet us : registList) {
-			setMappedByValue(context, loadedEntity, mappedBy, defName, mpd, us.entity);
+			setMappedByValue(context, loadedEntity, mappedBy, defName, mpd, rp.getDisplayName(), us.entity);
 			errors.addAll(registReference(context, us.entity, us.updateProperty, rp.getName()));
 		}
 

@@ -236,7 +236,7 @@
 			Entity entity = null;
 			LoadOption loadOption = new LoadOption(false, false);
 			final String refDefName = editor.getObjectName();
-			final LoadEntityContext leContext = handler.beforeLoadReference(refDefName, loadOption, pd, LoadType.VIEW);
+			final LoadEntityContext leContext = handler.beforeLoadReference(refDefName, loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
 			if (leContext.isDoPrivileged()) {
 				entity = AuthContext.doPrivileged(new Supplier<Entity>() {
 

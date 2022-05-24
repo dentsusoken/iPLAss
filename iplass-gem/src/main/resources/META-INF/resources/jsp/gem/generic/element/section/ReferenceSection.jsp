@@ -168,7 +168,7 @@
 			final Entity tmp = entity;
 			LoadOption loadOption = getOption(edm.get(section.getDefintionName()), section);
 
-			final LoadEntityContext leContext = handler.beforeLoadReference(entity.getDefinitionName(), loadOption, rp, LoadType.VIEW);
+			final LoadEntityContext leContext = handler.beforeLoadReference(entity.getDefinitionName(), loadOption, rp, rp.getDisplayName(), LoadType.VIEW);
 			if (leContext.isDoPrivileged()) {
 				entity = AuthContext.doPrivileged(new Supplier<Entity>() {
 
