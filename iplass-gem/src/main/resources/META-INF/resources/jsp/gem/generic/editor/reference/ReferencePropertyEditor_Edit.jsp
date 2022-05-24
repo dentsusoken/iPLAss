@@ -248,7 +248,7 @@
 			} else {
 				entity = em.load(refEntity.getOid(), refEntity.getVersion(), refDefName, leContext.getLoadOption());
 			}
-			handler.afterLoadReference(entity, loadOption, pd, LoadType.VIEW);
+			handler.afterLoadReference(entity, loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
 			return entity;
 		} else {
 			return refEntity;

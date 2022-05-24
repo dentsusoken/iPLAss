@@ -684,7 +684,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					} else {
 						entity = em.load(tmp.getOid(), tmp.getVersion(), tmp.getDefinitionName(), leContext.getLoadOption());
 					}
-					handler.afterLoadReference(entity, loadOption, pd, LoadType.VIEW);
+					handler.afterLoadReference(entity, loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
 				}
 			} else {
 				insertRow = true;
@@ -965,7 +965,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				entity = em.load(tmp.getOid(), tmp.getVersion(), tmp.getDefinitionName(), loadOption);
 			}
 			if (entity == null) entity = tmp;//取れなかったら元データで
-			handler.afterLoadReference(entity, loadOption, pd, LoadType.VIEW);
+			handler.afterLoadReference(entity, loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
 			request.setAttribute(Constants.EDITOR_REF_NEST_VALUE, entity);//JoinProperty用
 			request.setAttribute(Constants.EDITOR_PARENT_ENTITY, entity);//参照の新規登録時のパラメータ用
 %>

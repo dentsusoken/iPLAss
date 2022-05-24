@@ -180,7 +180,7 @@
 			} else {
 				entity = em.load(tmp.getOid(), tmp.getVersion(), tmp.getDefinitionName(), leContext.getLoadOption());
 			}
-			handler.afterLoadReference(entity, loadOption, rp, LoadType.VIEW);
+			handler.afterLoadReference(entity, loadOption, rp, rp.getDisplayName(), LoadType.VIEW);
 		}
 	}
 
