@@ -89,17 +89,14 @@ public class LoadEntityInterrupterHandler {
 	 * @param defName Entity定義名
 	 * @param loadOption ロード時のオプション
 	 * @param property プロパティ定義
-	 * @param rpDisplayName プロパティ表示名
+	 * @param element エレメント
 	 * @param type ロード処理の種類
 	 * @return 実行結果
 	 */
-	public LoadEntityContext beforeLoadReference(String defName, LoadOption loadOption, ReferenceProperty property, String rpDisplayName, LoadType type) {
+	public LoadEntityContext beforeLoadReference(String defName, LoadOption loadOption, ReferenceProperty property, Element element, LoadType type) {
 		FormView formView = context.getView();
 		loadOption.setLocalized(formView.isLocalizationData());
-		
-		// 参照プロパティのElement
-		Element element = context.getProperty().stream()
-				.filter(pe -> pe.getPropertyName().equals(rpDisplayName)).findFirst().get();
+
 		return interrupter.beforeLoadReference(request, formView, defName, loadOption, property, element, type);
 	}
 
@@ -108,15 +105,13 @@ public class LoadEntityInterrupterHandler {
 	 * @param after Entity
 	 * @param loadOption ロード時のオプション
 	 * @param property プロパティ定義
+	 * @param element エレメント
 	 * @param type ロード処理の種類
 	 */
-	public void afterLoadReference(Entity entity, LoadOption loadOption, ReferenceProperty property, String rpDisplayName, LoadType type) {
+	public void afterLoadReference(Entity entity, LoadOption loadOption, ReferenceProperty property, Element element, LoadType type) {
 		FormView formView = context.getView();
 		loadOption.setLocalized(formView.isLocalizationData());
 
-		// 参照プロパティのElement
-		Element element = context.getProperty().stream()
-				.filter(pe -> pe.getPropertyName().equals(rpDisplayName)).findFirst().get();
 		interrupter.afterLoadReference(request, formView, entity, loadOption, property, element, type);
 	}
 

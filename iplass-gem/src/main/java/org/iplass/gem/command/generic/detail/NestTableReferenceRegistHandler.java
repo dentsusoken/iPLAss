@@ -174,7 +174,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 
 		// 新規・更新されたものは参照プロパティにEntityを追加
 		for (Entity entity : registList) {
-			setMappedByValue(context, loadedEntity, mappedBy, defName, mpd, rp.getDisplayName(), entity);
+			setMappedByValue(context, loadedEntity, mappedBy, defName, mpd, property, entity);
 			errors.addAll(registReference(context, entity, updateProperties, rp.getName()));
 		}
 
@@ -190,7 +190,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 					}
 				} else {
 					for (Entity de : deleteList) {
-						delMappedByValue(context, inputEntity, mappedBy, defName, mpd, rp.getDisplayName(), de);
+						delMappedByValue(context, inputEntity, mappedBy, defName, mpd, property, de);
 						List<String> delProperties = new ArrayList<>();
 						delProperties.add(mappedBy);
 						errors.addAll(registReference(context, de, delProperties, rp.getName()));

@@ -37,6 +37,7 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
+import org.iplass.mtp.view.generic.element.section.ReferenceSection;
 
 /**
  * 参照セクション用の登録処理
@@ -185,7 +186,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 			if (!updateProperties.contains(mappedBy)) {
 				updateProperties.add(mappedBy);
 			}
-			usList.add(new UpdateSet(val.getEntity(), updateProperties));
+			usList.add(new UpdateSet(val.getEntity(), updateProperties, val.getSection()));
 		}
 
 		// 参照元の登録
@@ -195,7 +196,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 
 		// 新規・更新されたものは参照プロパティにEntityを追加
 		for (UpdateSet us : registList) {
-			setMappedByValue(context, loadedEntity, mappedBy, defName, mpd, rp.getDisplayName(), us.entity);
+			setMappedByValue(context, loadedEntity, mappedBy, defName, mpd, us.section, us.entity);
 			errors.addAll(registReference(context, us.entity, us.updateProperty, rp.getName()));
 		}
 
@@ -332,9 +333,11 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 	private class UpdateSet {
 		Entity entity;
 		List<String> updateProperty;
-		public UpdateSet(Entity entity, List<String> updateProperty) {
+		ReferenceSection section;
+		public UpdateSet(Entity entity, List<String> updateProperty, ReferenceSection section) {
 			this.entity = entity;
 			this.updateProperty = updateProperty;
+			this.section = section;
 		}
 	}
 

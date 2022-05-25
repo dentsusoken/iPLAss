@@ -42,6 +42,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.EditPage"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.InsertType" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType"%>
+<%@ page import="org.iplass.mtp.view.generic.element.Element"%>
 <%@ page import="org.iplass.mtp.view.generic.LoadEntityInterrupter.LoadType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ApplicationException"%>
@@ -155,6 +156,7 @@
 	if (mappedBy == null) mappedBy = "";
 	request.removeAttribute(Constants.EDITOR_REF_MAPPEDBY);
 	String reloadUrl = (String) request.getAttribute(Constants.EDITOR_REF_RELOAD_URL);
+	Element element = (Element) request.getAttribute(Constants.ELEMENT);
 
 	//本体のEntity
 	Entity parentEntity = (Entity) request.getAttribute(Constants.EDITOR_PARENT_ENTITY);
@@ -662,7 +664,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 </tr>
 <%
 		//データ出力
-
 		for (int i = 0; i < entities.size(); i++) {
 			final Entity tmp = entities.get(i);
 			String trId = "id_tr_" + propName + i;
@@ -672,7 +673,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			if (tmp.getOid() != null) {
 				if (reload == null || reload) {
 					LoadOption loadOption = getOption(refEd, editor, mappedBy, outputType);
-					final LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
+					final LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, element, LoadType.VIEW);
 					if (leContext.isDoPrivileged()) {
 						entity = AuthContext.doPrivileged(new Supplier<Entity>() {
 
@@ -684,7 +685,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					} else {
 						entity = em.load(tmp.getOid(), tmp.getVersion(), tmp.getDefinitionName(), leContext.getLoadOption());
 					}
-					handler.afterLoadReference(entity, loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
+					handler.afterLoadReference(entity, loadOption, pd, element, LoadType.VIEW);
 				}
 			} else {
 				insertRow = true;
@@ -952,7 +953,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			String trId = "id_tr_" + propName + i;
 			Entity entity = null;
 			final LoadOption loadOption = getOption(refEd, editor, mappedBy, outputType);
-			LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
+			LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, element, LoadType.VIEW);
 			if (leContext.isDoPrivileged()) {
 				entity = AuthContext.doPrivileged(new Supplier<Entity>() {
 
@@ -965,7 +966,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				entity = em.load(tmp.getOid(), tmp.getVersion(), tmp.getDefinitionName(), loadOption);
 			}
 			if (entity == null) entity = tmp;//取れなかったら元データで
-			handler.afterLoadReference(entity, loadOption, pd, pd.getDisplayName(), LoadType.VIEW);
+			handler.afterLoadReference(entity, loadOption, pd, element, LoadType.VIEW);
 			request.setAttribute(Constants.EDITOR_REF_NEST_VALUE, entity);//JoinProperty用
 			request.setAttribute(Constants.EDITOR_PARENT_ENTITY, entity);//参照の新規登録時のパラメータ用
 %>
