@@ -31,6 +31,8 @@ import org.iplass.mtp.view.generic.LoadEntityInterrupter;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter.LoadType;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchQueryContext;
+import org.iplass.mtp.view.generic.element.Element;
+import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 
 /**
  * カスタム登録処理ハンドラ
@@ -87,13 +89,15 @@ public class LoadEntityInterrupterHandler {
 	 * @param defName Entity定義名
 	 * @param loadOption ロード時のオプション
 	 * @param property プロパティ定義
+	 * @param element エレメント
 	 * @param type ロード処理の種類
 	 * @return 実行結果
 	 */
-	public LoadEntityContext beforeLoadReference(String defName, LoadOption loadOption, ReferenceProperty property, LoadType type) {
+	public LoadEntityContext beforeLoadReference(String defName, LoadOption loadOption, ReferenceProperty property, Element element, LoadType type) {
 		FormView formView = context.getView();
 		loadOption.setLocalized(formView.isLocalizationData());
-		return interrupter.beforeLoadReference(request, formView, defName, loadOption, property, type);
+
+		return interrupter.beforeLoadReference(request, formView, defName, loadOption, property, element, type);
 	}
 
 	/**
@@ -101,25 +105,29 @@ public class LoadEntityInterrupterHandler {
 	 * @param after Entity
 	 * @param loadOption ロード時のオプション
 	 * @param property プロパティ定義
+	 * @param element エレメント
 	 * @param type ロード処理の種類
 	 */
-	public void afterLoadReference(Entity entity, LoadOption loadOption, ReferenceProperty property, LoadType type) {
+	public void afterLoadReference(Entity entity, LoadOption loadOption, ReferenceProperty property, Element element, LoadType type) {
 		FormView formView = context.getView();
 		loadOption.setLocalized(formView.isLocalizationData());
-		interrupter.afterLoadReference(request, formView, entity, loadOption, property, type);
+
+		interrupter.afterLoadReference(request, formView, entity, loadOption, property, element, type);
 	}
 
 	/**
 	 * 大量データ用参照セクションの検索前処理を行います。
-	 *
 	 * @param query 検索用クエリ
+	 * @param referenceProperty 参照プロパティ定義
+	 * @param section 大量データ用参照セクション
 	 * @param outputType 出力タイプ(VIEWまたはEDIT)
 	 * @return 実行結果
 	 */
-	public SearchQueryContext beforeSearchMassReference(Query query, OutputType outputType) {
+
+	public SearchQueryContext beforeSearchMassReference(Query query, ReferenceProperty referenceProperty, MassReferenceSection section, OutputType outputType) {
 		FormView formView = context.getView();
 		query.setLocalized(formView.isLocalizationData());
-		SearchQueryContext ret = interrupter.beforeSearchMassReference(request, formView, query, outputType);
+		SearchQueryContext ret = interrupter.beforeSearchMassReference(request, formView, query, referenceProperty, section, outputType);
 		return ret;
 	}
 
@@ -127,12 +135,14 @@ public class LoadEntityInterrupterHandler {
 	 * 大量データ用参照セクションの検索後処理を行います。
 	 *
 	 * @param query 検索用クエリ
+	 * @param referenceProperty 参照プロパティ定義
+	 * @param section 大量データ用参照セクション
 	 * @param entity 検索結果
 	 * @param outputType 出力タイプ(VIEWまたはEDIT)
 	 */
-	public void afterSearchMassReference(Query query, Entity entity, OutputType outputType) {
+	public void afterSearchMassReference(Query query, ReferenceProperty referenceProperty, MassReferenceSection section, Entity entity, OutputType outputType) {
 		FormView formView = context.getView();
-		interrupter.afterSearchMassReference(request, formView, query, entity, outputType);
+		interrupter.afterSearchMassReference(request, formView, query, referenceProperty, section, entity, outputType);
 	}
 
 }
