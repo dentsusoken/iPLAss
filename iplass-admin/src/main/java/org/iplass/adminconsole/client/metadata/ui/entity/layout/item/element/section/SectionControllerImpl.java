@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
@@ -35,6 +36,8 @@ import org.iplass.adminconsole.client.metadata.ui.common.EntityPropertySelectIte
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
+import org.iplass.adminconsole.shared.metadata.rpc.refrect.RefrectionServiceFactory;
+import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -157,15 +160,22 @@ public class SectionControllerImpl implements SectionController {
 						return;
 					}
 
-					DefaultSection section = new DefaultSection();
-					section.setDispFlag(true);
-					section.setTitle(title.getValue() != null ? title.getValue().toString() : "");
-					section.setColNum(SmartGWTUtil.getIntegerValue(colNum));
-					section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
+					// FIXME newした際にAdminConsole側でSystemPropertyが取得できないためサーバ側でインスタンス生成
+					// depricatedのフラグを削除した際は直接newする形に戻す
+					RefrectionServiceFactory.get().create(TenantInfoHolder.getId(), DefaultSection.class.getName(), new AdminAsyncCallback<Refrectable>() {
+						@Override
+						public void onSuccess(Refrectable result) {
+							DefaultSection section = (DefaultSection) result;
+							section.setDispFlag(true);
+							section.setTitle(title.getValue() != null ? title.getValue().toString() : "");
+							section.setColNum(SmartGWTUtil.getIntegerValue(colNum));
+							section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
 
-					DefaultSectionControl window = new DefaultSectionControl(defName, triggerType, section);
-					callback.onCreated(window);
-					destroy();
+							DefaultSectionControl window = new DefaultSectionControl(defName, triggerType, section);
+							callback.onCreated(window);
+							destroy();
+						}
+					});
 				}
 			});
 
@@ -229,17 +239,24 @@ public class SectionControllerImpl implements SectionController {
 								return;
 							}
 
-							ReferenceProperty rp = (ReferenceProperty) pd;
-							ReferenceSection section = new ReferenceSection();
-							section.setDefintionName(rp.getObjectDefinitionName());
-							section.setPropertyName(name);
-							section.setDispFlag(true);
-							section.setTitle(rp.getDisplayName());
-							section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
+							// FIXME newした際にAdminConsole側でSystemPropertyが取得できないためサーバ側でインスタンス生成
+							// depricatedのフラグを削除した際は直接newする形に戻す
+							RefrectionServiceFactory.get().create(TenantInfoHolder.getId(), ReferenceSection.class.getName(), new AdminAsyncCallback<Refrectable>() {
+								@Override
+								public void onSuccess(Refrectable result) {
+									ReferenceProperty rp = (ReferenceProperty) pd;
+									ReferenceSection section = (ReferenceSection) result;
+									section.setDefintionName(rp.getObjectDefinitionName());
+									section.setPropertyName(name);
+									section.setDispFlag(true);
+									section.setTitle(rp.getDisplayName());
+									section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
 
-							ReferenceSectionControl window = new ReferenceSectionControl(defName, triggerType, section);
-							callback.onCreated(window);
-							destroy();
+									ReferenceSectionControl window = new ReferenceSectionControl(defName, triggerType, section);
+									callback.onCreated(window);
+									destroy();
+								}
+							});
 						}
 
 						@Override

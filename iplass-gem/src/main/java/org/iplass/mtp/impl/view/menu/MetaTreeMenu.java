@@ -145,7 +145,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 * 定義の表示名を表示かどうかを設定します。
 	 * @param showMenuDisplayName 定義の表示名を表示かどうか
 	 */
-	public void setIsShowMenuDisplayName(boolean showMenuDisplayName) {
+	public void setShowMenuDisplayName(boolean showMenuDisplayName) {
 	    this.showMenuDisplayName = showMenuDisplayName;
 	}
 

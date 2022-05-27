@@ -20,6 +20,9 @@
 
 package org.iplass.mtp.tenant.gem;
 
+import java.util.List;
+
+import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.tenant.TenantConfig;
 
 public class TenantGemInfo extends TenantConfig {
@@ -31,6 +34,12 @@ public class TenantGemInfo extends TenantConfig {
 
 	/** ログイン画面、エラー画面でテナント名表示 */
 	private boolean dispTenantName = true;
+	
+	/** テナント名制御Script */
+	private String screenTitle;
+	
+	/** 多言語設定用テナント名制御Script */
+	private List<LocalizedStringDefinition> localizedScreenTitle;
 
 	/** スキン */
 	private String skin;
@@ -93,6 +102,22 @@ public class TenantGemInfo extends TenantConfig {
 	 */
 	public void setDispTenantName(boolean dispTenantName) {
 		this.dispTenantName = dispTenantName;
+	}
+
+	public String getScreenTitle() {
+		return screenTitle;
+	}
+
+	public void setScreenTitle(String screenTitle) {
+		this.screenTitle = screenTitle;
+	}
+
+	public List<LocalizedStringDefinition> getLocalizedScreenTitle() {
+		return localizedScreenTitle;
+	}
+
+	public void setLocalizedScreenTitle(List<LocalizedStringDefinition> localizedScreenTitle) {
+		this.localizedScreenTitle = localizedScreenTitle;
 	}
 
 	/**
@@ -230,6 +255,10 @@ public class TenantGemInfo extends TenantConfig {
 		result = prime * result + (useDisplayName ? 1231 : 1237);
 		result = prime * result + (dispTenantName ? 1231 : 1237);
 		result = prime * result
+				+ ((screenTitle == null) ? 0 : screenTitle.hashCode());
+		result = prime * result
+				+ ((localizedScreenTitle == null) ? 0 : localizedScreenTitle.hashCode());
+		result = prime * result
 				+ ((skin == null) ? 0 : skin.hashCode());
 		result = prime * result
 				+ ((theme == null) ? 0 : theme.hashCode());
@@ -263,6 +292,18 @@ public class TenantGemInfo extends TenantConfig {
 			return false;
 
 		if (dispTenantName != other.dispTenantName)
+			return false;
+		
+		if (screenTitle == null) {
+			if (other.screenTitle != null)
+				return false;
+		} else if (!screenTitle.equals(other.screenTitle))
+			return false;
+
+		if (localizedScreenTitle == null) {
+			if (other.localizedScreenTitle != null)
+				return false;
+		} else if (!localizedScreenTitle.equals(other.localizedScreenTitle))
 			return false;
 
 		if (skin == null) {
@@ -321,6 +362,8 @@ public class TenantGemInfo extends TenantConfig {
 		return "TenantWebInfo ["
 				+ "useDisplayName=" + useDisplayName
 				+ ", dispTenantName=" + dispTenantName
+				+ ", screenTitle=" + screenTitle
+				+ ", localizedScreenTitle=" + localizedScreenTitle
 				+ ", skin=" + skin
 				+ ", theme=" + theme
 				+ ", tenantImageUrl=" + tenantImageUrl

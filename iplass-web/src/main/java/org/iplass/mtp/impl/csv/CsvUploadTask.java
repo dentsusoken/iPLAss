@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.iplass.mtp.SystemException;
@@ -63,6 +64,21 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 
 	/** UniqueKeyプロパティ名 */
 	private String uniqueKey;
+	
+	/** CSVアップロードで登録を許可しない */
+	private boolean isDenyInsert;
+
+	/** CSVアップロードで更新を許可しない */
+	private boolean isDenyUpdate;
+
+	/** CSVアップロードで削除を許可しない */
+	private boolean isDenyDelete;
+
+	/** CSVアップロード登録項目 */
+	private Set<String> insertProperties;
+
+	/** CSVアップロード更新項目 */
+	private Set<String> updateProperties;
 
 	/** トランザクション方法 */
 	private TransactionType transactionType;
@@ -82,6 +98,11 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 	 * @param defName Entity定義名
 	 * @param parameter タスクパラメータ
 	 * @param uniqueKey UniqueKeyプロパティ名
+	 * @param isDenyInsert CSVアップロードで登録を許可しない
+	 * @param isDenyUpdate CSVアップロードで更新を許可しない
+	 * @param isDenyDelete CSVアップロードで削除を許可しない
+	 * @param insertProperties CSVアップロード登録項目
+	 * @param updateProperties CSVアップロード更新項目
 	 * @param transactionType トランザクション方法
 	 * @param commitLimit トランザクション分割時のCommit単位
 	 * @param withReferenceVersion 参照値にバージョンが含まれているか
@@ -94,6 +115,11 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 			String defName,
 			String parameter,
 			String uniqueKey,
+			boolean isDenyInsert,
+			boolean isDenyUpdate,
+			boolean isDenyDelete,
+			Set<String> insertProperties,
+			Set<String> updateProperties, 
 			TransactionType transactionType,
 			int commitLimit,
 			boolean withReferenceVersion,
@@ -106,6 +132,11 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		this.defName = defName;
 		this.parameter = parameter;
 		this.uniqueKey = uniqueKey;
+		this.isDenyInsert = isDenyInsert;
+		this.isDenyUpdate = isDenyUpdate;
+		this.isDenyDelete = isDenyDelete;
+		this.insertProperties = insertProperties;
+		this.updateProperties = updateProperties;
 		this.transactionType = transactionType;
 		this.commitLimit = commitLimit;
 		this.withReferenceVersion = withReferenceVersion;
@@ -180,7 +211,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		}
 
 		try (InputStream is = new FileInputStream(filePath)){
-			CsvUploadStatus result = service.upload(is, defName, uniqueKey, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
+			CsvUploadStatus result = service.upload(is, defName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
 			return result;
 		} catch (FileNotFoundException e) {
 			throw new SystemException(e);

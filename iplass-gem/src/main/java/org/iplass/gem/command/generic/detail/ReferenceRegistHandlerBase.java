@@ -45,6 +45,7 @@ import org.iplass.mtp.view.generic.LoadEntityInterrupter.LoadType;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
+import org.iplass.mtp.view.generic.element.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,12 +65,13 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	 * @param entity Entity
 	 * @param loadOption ロード時のオプション
 	 * @param property プロパティ定義
+	 * @param element エレメント
 	 * @return Entity
 	 */
-	protected Entity loadReference(RegistrationCommandContext context, final Entity entity, LoadOption loadOption, ReferenceProperty property) {
+	protected Entity loadReference(RegistrationCommandContext context, final Entity entity, LoadOption loadOption, ReferenceProperty property, Element element) {
 		Entity e = null;
 		if (entity.getOid() != null) {
-			final LoadEntityContext leContext = context.getLoadEntityInterrupterHandler().beforeLoadReference(entity.getDefinitionName(), loadOption, property, LoadType.UPDATE);
+			final LoadEntityContext leContext = context.getLoadEntityInterrupterHandler().beforeLoadReference(entity.getDefinitionName(), loadOption, property, element, LoadType.UPDATE);
 			if (leContext.isDoPrivileged()) {
 				//特権実行
 				e = AuthContext.doPrivileged(() -> {
@@ -80,7 +82,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 				//データ取得
 				e = em.load(entity.getOid(), entity.getVersion() ,entity.getDefinitionName(), leContext.getLoadOption());
 			}
-			context.getLoadEntityInterrupterHandler().afterLoadReference(e, loadOption, property, LoadType.UPDATE);
+			context.getLoadEntityInterrupterHandler().afterLoadReference(e, loadOption, property, element, LoadType.UPDATE);
 		}
 		return e;
 	}
@@ -170,10 +172,11 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	 * @param mappedBy 被参照項目のプロパティ
 	 * @param defName 参照先のEntity定義名
 	 * @param rpd 参照プロパティ定義
+	 * @param element エレメント
 	 * @param refEntity 参照元Entity
 	 */
 	protected void setMappedByValue(RegistrationCommandContext context, Entity entity, String mappedBy, String defName,
-			ReferenceProperty rpd, Entity refEntity) {
+			ReferenceProperty rpd, Element element, Entity refEntity) {
 		if (rpd.getMultiplicity() != 1) {
 			//参照が多重の場合
 			if (refEntity.getOid() == null) {
@@ -182,7 +185,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 			} else {
 				//追加の場合は登録済みのデータに追加する
 				//本体は参照プロパティとして設定されてるはずなので、被参照のロードは不要
-				Entity tmp = loadReference(context, refEntity, new LoadOption(true, false), rpd);
+				Entity tmp = loadReference(context, refEntity, new LoadOption(true, false), rpd, element);
 				if (tmp != null && tmp.getValue(mappedBy) != null) {
 					Entity[] entities =  tmp.getValue(mappedBy);
 					List<Entity> list = new ArrayList<Entity>(Arrays.asList(entities));
@@ -209,15 +212,16 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	 * @param mappedBy 被参照項目のプロパティ
 	 * @param defName 参照先のEntity定義名
 	 * @param rpd 参照プロパティ定義
+	 * @param element エレメント
 	 * @param refEntity 参照元Entity
 	 */
 	protected void delMappedByValue(RegistrationCommandContext context, Entity entity, String mappedBy, String defName,
-			ReferenceProperty rpd, Entity refEntity) {
+			ReferenceProperty rpd, Element element, Entity refEntity) {
 		if (rpd.getMultiplicity() != 1) {
 			//参照が多重の場合
 			//refEntityはentityをロードした時に設定されてるデータなので、一度ロードする
 			//本体は参照プロパティとして設定されてるはずなので、被参照のロードは不要
-			Entity tmp = loadReference(context, refEntity, new LoadOption(true, false), rpd);
+			Entity tmp = loadReference(context, refEntity, new LoadOption(true, false), rpd, element);
 
 			//参照先から本データを除く
 			Entity[] entities = tmp.getValue(mappedBy);
