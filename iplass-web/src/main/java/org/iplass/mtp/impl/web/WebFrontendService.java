@@ -207,7 +207,7 @@ public class WebFrontendService implements Service {
 		return isExecMagicByteCheck;
 	}
 
-	public MagicByteChecker getMagicByteCheaker() {
+	public MagicByteChecker getMagicByteChecker() {
 		return magicByteChecker;
 	}
 

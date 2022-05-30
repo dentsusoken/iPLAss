@@ -106,7 +106,7 @@ public class TestUploadFileHandle implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			webFront.getMagicByteCheaker().checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
 		}
 
 		FileInputStream is = null;
@@ -141,7 +141,7 @@ public class TestUploadFileHandle implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			webFront.getMagicByteCheaker().checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
 		}
 
 		try {
@@ -165,7 +165,7 @@ public class TestUploadFileHandle implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			webFront.getMagicByteCheaker().checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
 		}
 
 		try {
@@ -183,7 +183,7 @@ public class TestUploadFileHandle implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			webFront.getMagicByteCheaker().checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
 		}
 
 		try {
