@@ -170,7 +170,7 @@ public interface LoadEntityInterrupter {
 			ReferenceProperty referenceProperty, MassReferenceSection section, OutputType outputType) {
 		SearchQueryContext searchQueryContext =  beforeSearchMassReference(request, view, query, outputType);
 		List<String> withoutConditionReferenceNameKey = section.getWithoutConditionReferenceNameKey();
-		if (withoutConditionReferenceNameKey != null && !withoutConditionReferenceNameKey.isEmpty()) {
+		if (searchQueryContext.getWithoutConditionReferenceName() == null && withoutConditionReferenceNameKey != null) {
 			searchQueryContext.setWithoutConditionReferenceName(
 					withoutConditionReferenceNameKey.toArray(new String[withoutConditionReferenceNameKey.size()]));
 		}

@@ -68,7 +68,7 @@ public interface SearchQueryInterrupter {
 	default public SearchQueryContext beforeSearch(RequestContext request, SearchFormView view, Query query, SearchQueryType type) {
 		SearchQueryContext searchQueryContext = beforeSearch(request, view, query); // 既存向けに旧メソッドを呼び出す
 		List<String> withoutConditionReferenceNameKey = view.getWithoutConditionReferenceNameKey();
-		if (withoutConditionReferenceNameKey != null && !withoutConditionReferenceNameKey.isEmpty()) {
+		if (searchQueryContext.getWithoutConditionReferenceName() == null && withoutConditionReferenceNameKey != null) {
 			searchQueryContext.setWithoutConditionReferenceName(
 					withoutConditionReferenceNameKey.toArray(new String[withoutConditionReferenceNameKey.size()]));
 		}

@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.view.generic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -90,14 +91,14 @@ public class MetaSearchFormView extends MetaFormView {
 	/** 特権実行でユーザー名を表示 */
 	private boolean showUserNameWithPrivilegedValue;
 
+	/** Entity権限における限定条件の除外設定 */
+	private List<String> withoutConditionReferenceNameKey;
+
 	/** EQLカスタム処理クラス名 */
 	private String interrupterName;
 
 	/** EQLカスタム処理クラスをCSVダウンロードで利用するか */
 	private boolean useInterrupterForCsvDownload;
-
-	/** Entity権限における限定条件の除外設定 */
-	private List<String> withoutConditionReferenceNameKey;
 
 	/** 検索画面Handlerクラス名 */
 	private List<String> searchFormViewHandlerName;
@@ -513,10 +514,12 @@ public class MetaSearchFormView extends MetaFormView {
 		isPurge = sForm.isPurge();
 		deleteSpecificVersion = sForm.isDeleteSpecificVersion();
 		showUserNameWithPrivilegedValue = sForm.isShowUserNameWithPrivilegedValue();
-		withoutConditionReferenceNameKey = sForm.getWithoutConditionReferenceNameKey();
+		withoutConditionReferenceNameKey =
+				sForm.getWithoutConditionReferenceNameKey() == null ? null : new ArrayList<>(sForm.getWithoutConditionReferenceNameKey());
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
-		searchFormViewHandlerName = sForm.getSearchFormViewHandlerName();
+		searchFormViewHandlerName =
+				sForm.getSearchFormViewHandlerName() == null ? null : new ArrayList<>(sForm.getSearchFormViewHandlerName());
 		if (sForm.getTopSection1() != null) {
 			topSection1 = MetaSection.createInstance(sForm.getTopSection1());
 			topSection1.applyConfig(sForm.getTopSection1(), definitionId);
@@ -560,11 +563,12 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setPurge(isPurge);
 		form.setDeleteSpecificVersion(deleteSpecificVersion);
 		form.setShowUserNameWithPrivilegedValue(showUserNameWithPrivilegedValue);
-		form.setWithoutConditionReferenceNameKey(withoutConditionReferenceNameKey);
+		form.setWithoutConditionReferenceNameKey(
+				withoutConditionReferenceNameKey == null ? null : new ArrayList<>(withoutConditionReferenceNameKey));
 		form.setInterrupterName(interrupterName);
 		form.setUseInterrupterForCsvDownload(useInterrupterForCsvDownload);
-		form.setSearchFormViewHandlerName(searchFormViewHandlerName);
-
+		form.setSearchFormViewHandlerName(
+				searchFormViewHandlerName == null ? null : new ArrayList<>(searchFormViewHandlerName));
 		if (topSection1 != null) {
 			form.setTopSection1((Section) topSection1.currentConfig(definitionId));
 		}
