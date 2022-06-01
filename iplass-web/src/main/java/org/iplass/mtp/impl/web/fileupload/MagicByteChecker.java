@@ -26,5 +26,5 @@ import java.io.File;
  * アップロードされたファイルのマジックバイトをチェックするためのインタフェース。
  */
 public interface MagicByteChecker {
-	public void checkMagicByte(File tempFile, String mineType, String fileName);
+	public void checkMagicByte(File tempFile, String mimeType, String fileName);
 }

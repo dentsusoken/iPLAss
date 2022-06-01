@@ -25,7 +25,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -47,49 +49,38 @@ public class DefaultMagicByteChecker implements MagicByteChecker {
 	}
 
 	@Override
-	public void checkMagicByte(File tempFile, String mineType, String fileName) {
+	public void checkMagicByte(File tempFile, String mimeType, String fileName) {
 		String extension = StringUtil.substringAfterLast(fileName, ".");
-		String magicByte = readMagicByte(tempFile);
-		if(!isCorrectMagicByte(mineType, extension, magicByte)) {
+		byte[] magicByte = readMagicByte(tempFile);
+		if(!isCorrectMagicByte(mimeType, extension, magicByte)) {
 			throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
 		}
 	}
 	
-	private boolean isCorrectMagicByte(String mineType, String extension, String magicByte) {
-		//mineTypeとextensionの組み合わせが定義されていない場合はマジックバイトチェックをしない
-		if(magicByteRule == null || !magicByteRule.stream()
-				.filter(rule -> rule.matchMineType(mineType))
-				.filter(rule -> rule.matchExtension(extension))
-				.findFirst().isPresent()) {
+	private boolean isCorrectMagicByte(String mimeType, String extension, byte[] magicByte) {
+		if(magicByteRule == null) {
 			return true;
 		}
-
-		return magicByteRule.stream()
-				.filter(rule -> rule.matchMineType(mineType))
+		
+		List<MagicByteRule> filteredMagicByteRule = magicByteRule.stream()
+				.filter(rule -> rule.matchMimeType(mimeType))
 				.filter(rule -> rule.matchExtension(extension))
+				.collect(Collectors.toList());
+		
+		//mimeTypeとextensionの組み合わせが定義されていない場合はマジックバイトチェックをしない
+		return CollectionUtils.isEmpty(filteredMagicByteRule) || filteredMagicByteRule.stream()
 				.anyMatch(rule -> rule.matchMagicByte(magicByte));
 	}
 	
-	private static String readMagicByte(File tempFile) {
+	private static byte[] readMagicByte(File tempFile) {
 		byte[] buf = new byte[128];
 
 		try(InputStream is = new FileInputStream(tempFile);) {
 			is.read(buf);
 		} catch (IOException e) {
 			logger.warn("upload file is externally deleted. maybe contains virus." , e);
-		}
-
-		StringBuffer temp = new StringBuffer();
-		int cnt = 0;
-		for (byte b : buf) {
-			temp.append(String.format("%02x", b));
-			cnt += 1;
-			if (cnt > 64) {
-				break;
-			}
-		}
-
-		return temp.toString();
+		} 
+		return buf;
 	}
 
 	private static String resourceString(String key, Object... arguments) {

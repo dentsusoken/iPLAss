@@ -310,50 +310,55 @@
 		<!-- MagicByteCheck実行 -->
 		<property name="magicByteChecker" class="org.iplass.mtp.impl.web.fileupload.DefaultMagicByteChecker" >
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="image/gif" />
-				<property name="magicBytePattern" value="^474946383761.*|^474946383961.*" />
+				<property name="mimeTypePattern" value="image/gif" />
+				<property name="magicByte" value="474946383761" />
+				<property name="magicByte" value="474946383961" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="image/bmp" />
-				<property name="magicBytePattern" value="^424d.*" />
+				<property name="mimeTypePattern" value="image/bmp" />
+				<property name="magicByte" value="424d" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="image/jpeg" />
-				<property name="magicBytePattern" value="^ffd8.*" />
+				<property name="mimeTypePattern" value="image/jpeg" />
+				<property name="magicByte" value="ffd8" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="image/png" />
-				<property name="magicBytePattern" value="^89504e470d0a1a0a.*" />
+				<property name="mimeTypePattern" value="image/png" />
+				<property name="magicByte" value="89504e470d0a1a0a" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="application/x-shockwave-flash" />
-				<property name="magicBytePattern" value="^465753.*|^435753.*" />
+				<property name="mimeTypePattern" value="application/x-shockwave-flash" />
+				<property name="magicByte" value="465753" />
+				<property name="magicByte" value="435753" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="application/pdf" />
-				<property name="magicBytePattern" value="^25504446.*" />
+				<property name="mimeTypePattern" value="application/pdf" />
+				<property name="magicByte" value="25504446" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="^application/vnd[.]ms-.*|^application/msword.*" />
-				<property name="magicBytePattern" value="^504b030414000600.*|^d0cf11e0a1b11ae1.*|^7b5c72746631.*" />
+				<property name="mimeTypePattern" value="^application/vnd[.]ms-.*|^application/msword.*" />
+				<property name="magicByte" value="504b030414000600" />
+				<property name="magicByte" value="d0cf11e0a1b11ae1" />
+				<property name="magicByte" value="7b5c72746631" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="^application/vnd[.]ms-.*|^application/msword.*" />
+				<property name="mimeTypePattern" value="^application/vnd[.]ms-.*|^application/msword.*" />
 				<property name="extensionPattern" value="^csv$" />
-				<property name="magicBytePattern" value=".*" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
 				<property name="extensionPattern" value="^xls$" />
-				<property name="magicBytePattern" value="^d0cf11e0a1b11ae1.*" />
+				<property name="magicByte" value="d0cf11e0a1b11ae1" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="^application/vnd[.]openxmlformats-officedocument.*" />
-				<property name="magicBytePattern" value="^504b030414000600.*|^d0cf11e0a1b11ae1.*" />
+				<property name="mimeTypePattern" value="^application/vnd[.]openxmlformats-officedocument.*" />
+				<property name="magicByte" value="504b030414000600" />
+				<property name="magicByte" value="d0cf11e0a1b11ae1" />
 			</property>
 			<property name="magicByteRule" class="org.iplass.mtp.impl.web.fileupload.MagicByteRule" >
-				<property name="mineTypePattern" value="^application/vnd[.]openxmlformats-officedocument.*" />
+				<property name="mimeTypePattern" value="^application/vnd[.]openxmlformats-officedocument.*" />
 				<property name="extensionPattern" value="^xlsx$|^docx$|^pptx$" />
-				<property name="magicBytePattern" value="^504b030414000808.*|^d0cf11e0a1b11ae1.*" />
+				<property name="magicByte" value="504b030414000808" />
+				<property name="magicByte" value="d0cf11e0a1b11ae1" />
 			</property>
 		</property>
 	</service>
