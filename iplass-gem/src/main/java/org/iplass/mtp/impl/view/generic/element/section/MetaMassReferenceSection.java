@@ -692,7 +692,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		detailActionName = section.getDetailActionName();
 		detailTabActionName = section.getDetailTabActionName();
 		viewName = section.getViewName();
-		withoutConditionReferenceNameKey = section.getWithoutConditionReferenceNameKey();
+		withoutConditionReferenceNameKey = section.getWithoutConditionReferenceNameKey() == null ? null : new ArrayList<>(section.getWithoutConditionReferenceNameKey());
 		changeEditLinkToViewLink = section.isChangeEditLinkToViewLink();
 		hideDeleteButton = section.isHideDeleteButton();
 		hideAddButton = section.isHideAddButton();
@@ -764,7 +764,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		section.setDetailActionName(detailActionName);
 		section.setDetailTabActionName(detailTabActionName);
 		section.setViewName(viewName);
-		section.setWithoutConditionReferenceNameKey(withoutConditionReferenceNameKey);
+		section.setWithoutConditionReferenceNameKey(withoutConditionReferenceNameKey == null ? null : new ArrayList<>(withoutConditionReferenceNameKey));
 		section.setChangeEditLinkToViewLink(changeEditLinkToViewLink);
 		section.setHideDeleteButton(hideDeleteButton);
 		section.setHideAddButton(hideAddButton);
