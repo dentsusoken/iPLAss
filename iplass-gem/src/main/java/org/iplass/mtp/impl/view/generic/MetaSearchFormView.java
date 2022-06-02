@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.view.generic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -456,7 +457,7 @@ public class MetaSearchFormView extends MetaFormView {
 		isPurge = sForm.isPurge();
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
-		searchFormViewHandlerName = sForm.getSearchFormViewHandlerName();
+		searchFormViewHandlerName = sForm.getSearchFormViewHandlerName() == null ? null : new ArrayList<>(sForm.getSearchFormViewHandlerName());
 		if (sForm.getTopSection1() != null) {
 			topSection1 = MetaSection.createInstance(sForm.getTopSection1());
 			topSection1.applyConfig(sForm.getTopSection1(), definitionId);
@@ -500,7 +501,7 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setPurge(isPurge);
 		form.setInterrupterName(interrupterName);
 		form.setUseInterrupterForCsvDownload(useInterrupterForCsvDownload);
-		form.setSearchFormViewHandlerName(searchFormViewHandlerName);
+		form.setSearchFormViewHandlerName(searchFormViewHandlerName == null ? null : new ArrayList<>(searchFormViewHandlerName));
 		if (topSection1 != null) {
 			form.setTopSection1((Section) topSection1.currentConfig(definitionId));
 		}

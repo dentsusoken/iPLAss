@@ -810,7 +810,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		addActionName = rpe.getAddActionName();
 		viewName = rpe.getViewName();
 		urlParameter = rpe.getUrlParameter();
-		urlParameterAction = rpe.getUrlParameterAction();
+		urlParameterAction = rpe.getUrlParameterAction() != null ? new ArrayList<>(rpe.getUrlParameterAction()) : null;
 		sortItem = sortProperty != null ? sortProperty.getId() : null;
 		sortType = rpe.getSortType();
 		editPage = rpe.getEditPage();
@@ -906,7 +906,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setAddActionName(addActionName);
 		editor.setViewName(viewName);
 		editor.setUrlParameter(urlParameter);
-		editor.setUrlParameterAction(urlParameterAction);
+		editor.setUrlParameterAction(urlParameterAction != null ? new ArrayList<>(urlParameterAction) : null);
 		editor.setUrlParameterScriptKey(urlParameterScriptKey);
 		editor.setSortItem(sortProperty != null ? sortProperty.getName() : null);
 		editor.setSortType(sortType);
