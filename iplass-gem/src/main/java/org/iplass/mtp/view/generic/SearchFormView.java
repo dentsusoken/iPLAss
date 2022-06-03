@@ -221,8 +221,7 @@ public class SearchFormView extends FormView {
 			displayNameKey="generic_SearchFormView_withoutConditionReferenceNameKeyDisplaNameKey",
 			inputType=InputType.MULTI_TEXT,
 			displayOrder=1600,
-			description="Entity権限における限定条件を除外する参照先を指定します。<br>" +
-					"参照がネストされている場合は最下層の参照先Entity名を指定してください。。",
+			description="Entity権限における限定条件を除外する参照先を指定します。",
 			descriptionKey="generic_SearchFormView_withoutConditionReferenceNameKeyDescriptionKey"
 	)
 	private List<String> withoutConditionReferenceNameKey;
