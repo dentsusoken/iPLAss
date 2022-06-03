@@ -899,7 +899,7 @@ public class MetaDetailFormView extends MetaFormView {
 		copyTarget = dForm.getCopyTarget();
 		interrupterName = dForm.getInterrupterName();
 		loadEntityInterrupterName = dForm.getLoadEntityInterrupterName();
-		detailFormViewHandlerName = dForm.getDetailFormViewHandlerName();
+		detailFormViewHandlerName = dForm.getDetailFormViewHandlerName() == null ? null : new ArrayList<>(dForm.getDetailFormViewHandlerName());
 		customCopyScript = dForm.getCustomCopyScript();
 		initScript = dForm.getInitScript();
 	}
@@ -950,7 +950,7 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setJavaScript(javaScript);
 		form.setInterrupterName(interrupterName);
 		form.setLoadEntityInterrupterName(loadEntityInterrupterName);
-		form.setDetailFormViewHandlerName(detailFormViewHandlerName);
+		form.setDetailFormViewHandlerName(detailFormViewHandlerName == null ? null : new ArrayList<>(detailFormViewHandlerName));
 		form.setCustomCopyScript(customCopyScript);
 		form.setInitScript(initScript);
 		if (validJavascriptDetailPage != null) {
