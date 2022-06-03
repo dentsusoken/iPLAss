@@ -20,11 +20,43 @@
 
 package org.iplass.mtp.impl.web.fileupload;
 
-import java.io.File;
+import java.util.regex.Pattern;
 
-/**
- * アップロードされたファイルのマジックバイトをチェックするためのインタフェース。
- */
-public interface MagicByteChecker {
-	public void checkMagicByte(File tempFile, String contentType, String fileName);
+public class MagicByteRuleCondition {
+
+	private boolean useRegex;
+	private String value;
+	private Pattern pattern;
+
+	public boolean isUseRegex() {
+		return useRegex;
+	}
+	
+	public void setUseRegex(boolean useRegex) {
+		this.useRegex = useRegex;
+	}
+	
+	public String getValue() {
+		return value;
+	}
+	
+	public void setValue(String value) {
+		this.value = value;
+		if(useRegex) {
+			this.pattern = Pattern.compile(value);
+		}
+	}
+	
+	public void compilePattern() {
+		if(isUseRegex()) {
+			this.pattern = Pattern.compile(value);
+		}
+	}
+
+	public boolean match(String inputValue) {
+		if(isUseRegex()) {
+			return this.pattern == null || this.pattern.matcher(inputValue).matches();
+		}
+		return value.equals(inputValue);
+	}
 }

@@ -25,9 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -49,8 +47,10 @@ public class DefaultMagicByteChecker implements MagicByteChecker {
 	}
 
 	@Override
-	public void checkMagicByte(File tempFile, String mimeType, String fileName) {
+	public void checkMagicByte(File tempFile, String contentType, String fileName) {
 		String extension = StringUtil.substringAfterLast(fileName, ".");
+		int index = contentType.indexOf(';');
+		String mimeType = index < 0 ? contentType : contentType.substring(0, index);
 		byte[] magicByte = readMagicByte(tempFile);
 		if(!isCorrectMagicByte(mimeType, extension, magicByte)) {
 			throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
@@ -62,14 +62,20 @@ public class DefaultMagicByteChecker implements MagicByteChecker {
 			return true;
 		}
 		
-		List<MagicByteRule> filteredMagicByteRule = magicByteRule.stream()
-				.filter(rule -> rule.matchMimeType(mimeType))
-				.filter(rule -> rule.matchExtension(extension))
-				.collect(Collectors.toList());
+		boolean isMatchCondition = false;
 		
-		//mimeTypeとextensionの組み合わせが定義されていない場合はマジックバイトチェックをしない
-		return CollectionUtils.isEmpty(filteredMagicByteRule) || filteredMagicByteRule.stream()
-				.anyMatch(rule -> rule.matchMagicByte(magicByte));
+		//TODO 今後要改善。ルール全件をなめないようにする。
+		for(MagicByteRule rule : magicByteRule) {
+			if(rule.matchMimeType(mimeType) && rule.matchExtension(extension)) {
+				isMatchCondition = true;
+				if(rule.matchMagicByte(magicByte)) {
+					return true;
+				}
+			}
+		}
+		
+		//mimeTypeとextensionの組み合わせが定義されていない場合はtrueで返却する
+		return !isMatchCondition;
 	}
 	
 	private static byte[] readMagicByte(File tempFile) {

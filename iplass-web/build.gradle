@@ -1,4 +1,6 @@
 apply from: 'libs.gradle'
 dependencies {
 	api project(':iplass-core')
+	implementation sharedLib('commons-codec:commons-codec')
+	implementation sharedLib('org.apache.commons:commons-collections4')
 }
