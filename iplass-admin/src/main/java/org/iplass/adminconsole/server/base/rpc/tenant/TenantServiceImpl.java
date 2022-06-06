@@ -67,6 +67,9 @@ import org.iplass.mtp.impl.core.config.ServerEnv;
 import org.iplass.mtp.impl.i18n.EnableLanguages;
 import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.i18n.I18nUtil;
+import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
+import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
+import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
 import org.iplass.mtp.impl.util.PlatformUtil;
 import org.iplass.mtp.impl.util.PlatformUtil.PlatformInfo;
 import org.iplass.mtp.spi.ServiceConfigrationException;
@@ -379,6 +382,10 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 			env.setOutputDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat());
 			env.setOutputTimeSecFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat());
 			env.setOutputDateTimeSecFormat(TemplateUtil.getLocaleFormat().getOutputDatetimeSecFormat());
+
+			RdbAdapterService ras = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
+			RdbAdapter adapter = ras.getRdbAdapter();
+			env.setMySql(adapter != null ? adapter instanceof MysqlRdbAdaptor : false);
 
 		} finally {
 			ExecuteContext.finContext();

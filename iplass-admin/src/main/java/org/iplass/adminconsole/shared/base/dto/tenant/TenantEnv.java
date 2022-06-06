@@ -56,6 +56,9 @@ public class TenantEnv implements Serializable {
 	/** DateTime出力用書式 */
 	private String outputDateTimeSecFormat;
 
+	/** MySqlを使用しているか */
+	private boolean isMySql;
+
 	public Tenant getTenant() {
 		return tenant;
 	}
@@ -124,4 +127,10 @@ public class TenantEnv implements Serializable {
 		this.outputDateTimeSecFormat = outputDateTimeSecFormat;
 	}
 
+	public boolean isMySql() {
+		return isMySql;
+	}
+	public void setMySql(boolean isMySql) {
+		this.isMySql = isMySql;
+	}
 }
