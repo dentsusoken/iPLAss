@@ -69,7 +69,6 @@ import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
-import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
 import org.iplass.mtp.impl.util.PlatformUtil;
 import org.iplass.mtp.impl.util.PlatformUtil.PlatformInfo;
 import org.iplass.mtp.spi.ServiceConfigrationException;
@@ -385,7 +384,7 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 
 			RdbAdapterService ras = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
 			RdbAdapter adapter = ras.getRdbAdapter();
-			env.setMySql(adapter != null ? adapter instanceof MysqlRdbAdaptor : false);
+			env.setRdbAdapterName(adapter != null ? adapter.getClass().getSimpleName() : "");
 
 		} finally {
 			ExecuteContext.finContext();

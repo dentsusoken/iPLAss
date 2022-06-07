@@ -71,8 +71,8 @@ public class DecimalAttributePane extends VLayout implements PropertyAttributePa
 		addMember(form);
 
 		// MySqlの場合に注意喚起のメッセージを設定する
-		if (TenantInfoHolder.isMySql()) {
-			mySqlLabel = new Label(rs("ui_metadata_entity_DecimalAttributePane_useDiv"));
+		if (TenantInfoHolder.getRdbAdapterName().equals("MysqlRdbAdaptor")) {
+			mySqlLabel = new Label(rs("ui_metadata_entity_DecimalAttributePane_divPrecisionIncrement"));
 			mySqlLabel.setAutoHeight();
 			mySqlLabel.setWidth100();
 			mySqlLabel.setAlign(Alignment.CENTER);

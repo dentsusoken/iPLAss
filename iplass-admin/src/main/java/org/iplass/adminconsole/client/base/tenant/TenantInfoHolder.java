@@ -139,7 +139,7 @@ public class TenantInfoHolder {
 		return serverTimeZone;
 	}
 
-	public static boolean isMySql() {
-		return tenantEnv.isMySql();
+	public static String getRdbAdapterName() {
+		return tenantEnv.getRdbAdapterName();
 	}
 }
