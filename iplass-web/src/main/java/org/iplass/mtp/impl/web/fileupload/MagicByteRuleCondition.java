@@ -25,8 +25,8 @@ import java.util.regex.Pattern;
 public class MagicByteRuleCondition {
 
 	private boolean useRegex;
-	private String value;
-	private Pattern pattern;
+	private String pattern;
+	private Pattern patternCompile;
 
 	public boolean isUseRegex() {
 		return useRegex;
@@ -36,27 +36,19 @@ public class MagicByteRuleCondition {
 		this.useRegex = useRegex;
 	}
 	
-	public String getValue() {
-		return value;
+	public String getPattern() {
+		return pattern;
 	}
 	
-	public void setValue(String value) {
-		this.value = value;
-		if(useRegex) {
-			this.pattern = Pattern.compile(value);
-		}
-	}
-	
-	public void compilePattern() {
-		if(isUseRegex()) {
-			this.pattern = Pattern.compile(value);
-		}
+	public void setPattern(String pattern) {
+		this.pattern = pattern;
+		this.patternCompile = Pattern.compile(pattern);
 	}
 
 	public boolean match(String inputValue) {
 		if(isUseRegex()) {
-			return this.pattern == null || this.pattern.matcher(inputValue).matches();
+			return this.patternCompile == null || this.patternCompile.matcher(inputValue).matches();
 		}
-		return value.equals(inputValue);
+		return this.patternCompile == null || this.patternCompile.pattern().equals(inputValue);
 	}
 }

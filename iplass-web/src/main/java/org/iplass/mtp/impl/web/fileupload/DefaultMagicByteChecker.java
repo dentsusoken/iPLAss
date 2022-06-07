@@ -61,21 +61,15 @@ public class DefaultMagicByteChecker implements MagicByteChecker {
 		if(magicByteRule == null) {
 			return true;
 		}
-		
-		boolean isMatchCondition = false;
-		
-		//TODO 今後要改善。ルール全件をなめないようにする。
+
 		for(MagicByteRule rule : magicByteRule) {
 			if(rule.matchMimeType(mimeType) && rule.matchExtension(extension)) {
-				isMatchCondition = true;
-				if(rule.matchMagicByte(magicByte)) {
-					return true;
-				}
+				return rule.matchMagicByte(magicByte);
 			}
 		}
 		
 		//mimeTypeとextensionの組み合わせが定義されていない場合はtrueで返却する
-		return !isMatchCondition;
+		return true;
 	}
 	
 	private static byte[] readMagicByte(File tempFile) {
