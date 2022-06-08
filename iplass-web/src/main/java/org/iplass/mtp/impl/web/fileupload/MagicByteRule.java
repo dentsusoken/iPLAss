@@ -40,6 +40,7 @@ public class MagicByteRule {
 
 	public void setMimeType(MagicByteRuleCondition mimeType) {
 		this.mimeType = mimeType;
+		this.mimeType.compilePattern();
 	}
 
 	public MagicByteRuleCondition getExtension() {
@@ -48,6 +49,7 @@ public class MagicByteRule {
 
 	public void setExtension(MagicByteRuleCondition extension) {
 		this.extension = extension;
+		this.extension.compilePattern();
 	}
 
 	public List<String> getMagicByte() {

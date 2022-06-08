@@ -42,13 +42,18 @@ public class MagicByteRuleCondition {
 	
 	public void setPattern(String pattern) {
 		this.pattern = pattern;
-		this.patternCompile = Pattern.compile(pattern);
+	}
+	
+	public void compilePattern() {
+		if(isUseRegex()) {
+			this.patternCompile = Pattern.compile(this.pattern);
+		}
 	}
 
 	public boolean match(String inputValue) {
 		if(isUseRegex()) {
 			return this.patternCompile == null || this.patternCompile.matcher(inputValue).matches();
 		}
-		return this.patternCompile == null || this.patternCompile.pattern().equals(inputValue);
+		return this.pattern.equals(inputValue);
 	}
 }
