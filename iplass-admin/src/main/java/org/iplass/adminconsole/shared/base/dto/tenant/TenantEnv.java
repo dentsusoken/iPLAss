@@ -56,6 +56,9 @@ public class TenantEnv implements Serializable {
 	/** DateTime出力用書式 */
 	private String outputDateTimeSecFormat;
 
+	/** RdbAdapter名 */
+	private String rdbAdapterName;
+
 	public Tenant getTenant() {
 		return tenant;
 	}
@@ -124,4 +127,10 @@ public class TenantEnv implements Serializable {
 		this.outputDateTimeSecFormat = outputDateTimeSecFormat;
 	}
 
+	public String getRdbAdapterName() {
+		return rdbAdapterName;
+	}
+	public void setRdbAdapterName(String rdbAdapterName) {
+		this.rdbAdapterName = rdbAdapterName;
+	}
 }
