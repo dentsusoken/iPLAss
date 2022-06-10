@@ -390,20 +390,22 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	search();
 
 	function search() {
-		
-		var entityListLink = $(".link-list-01.entity-list");
-		entityListLink.hide();
 
+		// 読み込み中の表示設定
 		var loading = $("#load_searchResult_<%=id%>");
 		loading.removeClass("ui-state-active");
 		loading.removeClass("ui-state-default");
 		loading.show();
+
+		var entityListLink = $(".link-list-01.entity-list");
+		entityListLink.hide();
 
 		var sortKey = $table.attr("data-sortKey");
 		var sortType = $table.attr("data-sortType");
 		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(entityListParts.defName)}", "${m:escJs(entityListParts.viewName)}", "${m:escJs(entityListParts.filterName)}", offset, sortKey, sortType, "<%=searchAsync%>", function(count, list) {
 			$pager.setPage(offset, list.length, count);
 
+			// 検索後にボタン行を表示する
 			entityListLink.show();
 
 			grid.clearGridData(true);
@@ -464,7 +466,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 				}
 				return false;
 			});
-			
+
 			var isSubModal = $("body.modal-body").length != 0;
 			if (isSubModal) {
 				var a = $("#searchResult_<%=id%> .modal-lnk");
