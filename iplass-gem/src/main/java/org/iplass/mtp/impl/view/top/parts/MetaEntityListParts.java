@@ -75,6 +75,9 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	/** 高さ */
 	private Integer height;
 
+	/** 非同期検索するか */
+	private boolean searchAsync;
+
 	/** 多言語設定情報 */
 	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
@@ -203,6 +206,22 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	}
 
 	/**
+	 * 非同期検索するかを取得します。
+	 * @return 非同期検索するか
+	 */
+	public boolean isSearchAsync() {
+		return searchAsync;
+	}
+
+	/**
+	 * 非同期検索するかを設定します。
+	 * @param searchAsync 
+	 */
+	public void setSearchAsync(boolean searchAsync) {
+		this.searchAsync = searchAsync;
+	}
+
+	/**
 	 * 多言語設定情報を取得します。
 	 * @return リスト
 	 */
@@ -249,6 +268,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		filterName = e.getFilterName();
 		title = e.getTitle();
 		height = e.getHeight();
+		searchAsync = e.isSearchAsync();
 
 		// 言語毎の文字情報設定
 		localizedTitleList = I18nUtil.toMeta(e.getLocalizedTitleList());
@@ -276,6 +296,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		parts.setFilterName(filterName);
 		parts.setTitle(title);
 		parts.setHeight(height);
+		parts.setSearchAsync(searchAsync);
 		parts.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 		parts.setIconTag(iconTag);
 

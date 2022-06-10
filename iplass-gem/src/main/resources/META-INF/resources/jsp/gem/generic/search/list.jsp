@@ -124,6 +124,9 @@
 	if (gridHeight == null || gridHeight < 0) {
 		gridHeight = 160;
 	}
+	
+	// searchAsync
+	boolean searchAsync = parts.isSearchAsync();
 
 	AuthContext auth = AuthContext.getCurrentContext();
 	boolean canUpdate = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.UPDATE));
@@ -135,7 +138,7 @@
 		cellStyle = cellStyle + " " + parts.getStyle();
 	}
 %>
-<div class="<c:out value="<%=cellStyle %>"/>" id="topview-parts-id_${partsCnt}" style="display:none;">
+<div class="<c:out value="<%=cellStyle %>"/>" id="topview-parts-id_${partsCnt}" >
 <h3 class="hgroup-02">
 ${entityListParts.iconTag}
 ${m:esc(title)}
@@ -200,7 +203,6 @@ $(function() {
 	}
 
 	var colModel = new Array();
-	var isloaded = false;
 	colModel.push({name:"orgOid", idnex:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid", formatter:oidCellFormatter});
 	colModel.push({name:"orgVersion", idnex:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
 	colModel.push({name:'_mtpDetailLink', index:'_mtpDetailLink', width:${m:rs("mtp-gem-messages", "generic.search.list.detailLinkWidth")}, sortable:false, align:'center', frozen:true, label:"", classes:"detail-links", cellattr: cellAttrFunc});
@@ -388,10 +390,21 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	search();
 
 	function search() {
+		
+		var entityListLink = $(".link-list-01.entity-list");
+		entityListLink.hide();
+
+		var loading = $("#load_searchResult_<%=id%>");
+		loading.removeClass("ui-state-active");
+		loading.removeClass("ui-state-default");
+		loading.show();
+
 		var sortKey = $table.attr("data-sortKey");
 		var sortType = $table.attr("data-sortType");
-		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(entityListParts.defName)}", "${m:escJs(entityListParts.viewName)}", "${m:escJs(entityListParts.filterName)}", offset, sortKey, sortType, function(count, list) {
+		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(entityListParts.defName)}", "${m:escJs(entityListParts.viewName)}", "${m:escJs(entityListParts.filterName)}", offset, sortKey, sortType, "<%=searchAsync%>", function(count, list) {
 			$pager.setPage(offset, list.length, count);
+
+			entityListLink.show();
 
 			grid.clearGridData(true);
 			grid.setGridParam({"_data": list}).trigger("reloadGrid");
@@ -451,7 +464,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 				}
 				return false;
 			});
-
+			
 			var isSubModal = $("body.modal-body").length != 0;
 			if (isSubModal) {
 				var a = $("#searchResult_<%=id%> .modal-lnk");

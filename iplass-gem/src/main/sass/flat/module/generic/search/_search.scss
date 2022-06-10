@@ -226,6 +226,10 @@
 		}
 	}
 }
+.ui-jqgrid > .loading {
+  font-size: 1rem;
+  font-weight: normal;
+}
 #csv-download-dialog fieldset {
 	text-align: left;
 	width: 100%;
