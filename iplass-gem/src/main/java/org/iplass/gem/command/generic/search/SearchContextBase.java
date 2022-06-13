@@ -685,57 +685,37 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return UserPropertyEditorを利用しているプロパティ名の一覧
 	 */
 	public Set<String> getUseUserPropertyEditorPropertyName() {
-		if (useUserPropertyEditorPropertyNameList == null) {
-			//UserPropertyEditorを使用しているlockedbyプロパティを取得
-			useUserPropertyEditorPropertyNameList
-				= getUseUserPropertyEditorPropertyName(Entity.LOCKED_BY, Entity.CREATE_BY, Entity.UPDATE_BY);
-		}
-		return useUserPropertyEditorPropertyNameList;
-	}
 
-	/**
-	 * 指定のプロパティ名を持ち、UserPropertyEditorを利用している検索結果のプロパティ名を取得します。
-	 * @param propNames
-	 * @return
-	 */
-	private Set<String> getUseUserPropertyEditorPropertyName(String... propNames) {
-		Set<String> ret = new HashSet<>();
+		if (useUserPropertyEditorPropertyNameList != null) {
+			return useUserPropertyEditorPropertyNameList;
+		}
+
+		useUserPropertyEditorPropertyNameList = new HashSet<>();
+
 		List<PropertyColumn> properties = getColumnProperties();
 		for (PropertyColumn property : properties) {
 			String propertyName = property.getPropertyName();
 
 			if (property.getEditor() instanceof ReferencePropertyEditor) {
-				//ネストの項目を確認
+				// ネストの項目を確認
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 				if (!editor.getNestProperties().isEmpty()) {
-					Set<String> nest = getUseUserPropertyEditorNestPropertyName(editor, propNames);
+					Set<String> nest = getUseUserPropertyEditorNestPropertyName(editor);
 					for (String nestPropertyName : nest) {
 						String _nestPropertyName = propertyName + "." + nestPropertyName;
-						ret.add(_nestPropertyName);
+						useUserPropertyEditorPropertyNameList.add(_nestPropertyName);
 					}
 				}
 			} else if (property.getEditor() instanceof UserPropertyEditor) {
-				//直接指定項目の確認
-				for (String propName : propNames) {
-					boolean isUserEditor = false;
-					if (propertyName.contains(".")) {
-						//ReferencePropertyの直接指定
-						isUserEditor = propertyName.endsWith("." + propName);
-					} else {
-						//通常Property
-						isUserEditor = propertyName.equals(propName);
-					}
-					if (isUserEditor) {
-						ret.add(propertyName);
-					}
-				}
+				useUserPropertyEditorPropertyNameList.add(propertyName);
 			}
 
 		}
-		return ret;
+
+		return useUserPropertyEditorPropertyNameList;
 	}
 
-	private Set<String> getUseUserPropertyEditorNestPropertyName(ReferencePropertyEditor editor, String... propNames) {
+	private Set<String> getUseUserPropertyEditorNestPropertyName(ReferencePropertyEditor editor) {
 		Set<String> ret = new HashSet<>();
 		for (NestProperty property : editor.getNestProperties()) {
 
@@ -743,19 +723,15 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				//再ネストの項目を確認
 				ReferencePropertyEditor nestEditor = (ReferencePropertyEditor) property.getEditor();
 				if (!nestEditor.getNestProperties().isEmpty()) {
-					Set<String> nest = getUseUserPropertyEditorNestPropertyName(nestEditor, propNames);
+					Set<String> nest = getUseUserPropertyEditorNestPropertyName(nestEditor);
 					for (String nestPropertyName : nest) {
 						String _nestPropertyName = property.getPropertyName() + "." + nestPropertyName;
 						ret.add(_nestPropertyName);
 					}
 				}
 			} else if (property.getEditor() instanceof UserPropertyEditor) {
-				//NestProperty項目
-				for (String propName : propNames) {
-					if (propName.equals(property.getPropertyName())) {
-						ret.add(property.getPropertyName());
-					}
-				}
+				// NestProperty項目
+				ret.add(property.getPropertyName());
 			}
 		}
 		return ret;
