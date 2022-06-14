@@ -361,6 +361,7 @@ LocaleInfo.ui_metadata_common_MetaDataUpdateCallback_failedUpdateMetaDataMsg = "
 LocaleInfo.ui_metadata_entity_CreateEntityDialog_nameErr = "名前には英数字、アンダースコアのみ利用することができます。\n先頭は英字のみ利用することができます。\nパスにはピリオドを利用します。";
 LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment1 = "<font color=\"red\">※保存されているEntity定義から生成します。編集中の場合は先に保存してください。</font>";
 LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment2 = "<font color=\"red\">※参照Entityに対してもMapping指定する場合は、参照先EntityのMappingを先に指定してください。</font>";
+LocaleInfo.ui_metadata_entity_DecimalAttributePane_divPrecisionIncrement = "※小数点第5位以下を使用する場合はMySQLのシステム変数\"div_precision_increment\"を設定してください。";
 LocaleInfo.ui_metadata_entity_EntityAttributeEditPane_failed = "失敗";
 LocaleInfo.ui_metadata_entity_EntityAttributeEditPane_failedGetScreenInfo = "画面情報の取得に失敗しました。";
 LocaleInfo.ui_metadata_entity_EntityAttributeEditPane_versionControleTypeComment = "バージョンの管理方式を指定します。<br/><table><tr><td>NONE</td><td>・・・</td><td>1つのoidに対して複数のバージョンを保持しません。</td></tr><tr><td>NUMBER BASE</td><td>・・・</td><td>1つのoidに対して複数のバージョンを保持します。</td></tr><tr><td>TIME BASE</td><td>・・・</td><td>1つのoidに対して複数の有効期間を保持します。</td></tr><tr><td>SIMPLE TIME BASE</td><td>・・・</td><td>1つのoidに対して複数の有効期間を保持します。異なるバージョンにおいて、有効期間の重複はできません。</td></tr><tr><td>STATE BASE</td><td>・・・</td><td>1つのoidに対して複数のバージョンを保持します。stateプロパティが有効なバージョンが最大１つとなるように制御されます。</td></tr>";

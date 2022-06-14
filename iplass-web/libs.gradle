@@ -6,6 +6,9 @@ dependencies {
 	implementation sharedLib('org.apache.httpcomponents:httpclient')
 
 	implementation sharedLib('net.logstash.logback:logstash-logback-encoder')
+	
+	implementation sharedLib('commons-codec:commons-codec')
+	implementation sharedLib('org.apache.commons:commons-collections4')
 
 	//apache POI
 	api sharedLib('org.apache.poi:poi')

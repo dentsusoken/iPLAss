@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property.type;
 import java.util.LinkedHashMap;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
@@ -32,6 +33,8 @@ import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttrib
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyListGridRecord;
 import org.iplass.mtp.entity.definition.properties.RoundingMode;
 
+import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -46,6 +49,9 @@ public class DecimalAttributePane extends VLayout implements PropertyAttributePa
 
 	/** 丸めモード */
 	private SelectItem selRoundMode;
+	
+	/** mySQL用メッセージ */
+	private Label mySqlLabel;
 
 	public DecimalAttributePane() {
 
@@ -64,6 +70,16 @@ public class DecimalAttributePane extends VLayout implements PropertyAttributePa
 
 		addMember(form);
 
+		// MySqlの場合に注意喚起のメッセージを設定する
+		if (TenantInfoHolder.getRdbAdapterName().equals("MysqlRdbAdaptor")) {
+			mySqlLabel = new Label(rs("ui_metadata_entity_DecimalAttributePane_divPrecisionIncrement"));
+			mySqlLabel.setAutoHeight();
+			mySqlLabel.setWidth100();
+			mySqlLabel.setAlign(Alignment.CENTER);
+			mySqlLabel.setMargin(5);
+			addMember(mySqlLabel);
+		}
+		
 		initialize();
 	}
 

@@ -139,4 +139,7 @@ public class TenantInfoHolder {
 		return serverTimeZone;
 	}
 
+	public static String getRdbAdapterName() {
+		return tenantEnv.getRdbAdapterName();
+	}
 }
