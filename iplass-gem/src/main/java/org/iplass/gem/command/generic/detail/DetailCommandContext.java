@@ -1136,7 +1136,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 			return useUserPropertyEditorPropertyNameList;
 		}
 
-		Set<String> useUserPropertyEditorPropertyNameList = new HashSet<>();
+		useUserPropertyEditorPropertyNameList = new HashSet<>();
 		for (PropertyItem property : getDisplayProperty(isDetail)) {
 			String propertyName = property.getPropertyName();
 
