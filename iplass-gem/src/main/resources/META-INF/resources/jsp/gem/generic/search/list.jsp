@@ -138,7 +138,7 @@
 		cellStyle = cellStyle + " " + parts.getStyle();
 	}
 %>
-<div class="<c:out value="<%=cellStyle %>"/>" id="topview-parts-id_${partsCnt}" >
+<div class="<c:out value="<%=cellStyle %>"/>" id="topview-parts-id_${partsCnt}" style="display:none;">
 <h3 class="hgroup-02">
 ${entityListParts.iconTag}
 ${m:esc(title)}
@@ -391,22 +391,31 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 
 	function search() {
 
-		// 読み込み中の表示設定
-		var loading = $("#load_searchResult_<%=id%>");
-		loading.removeClass("ui-state-active");
-		loading.removeClass("ui-state-default");
-		loading.show();
-
+		var searchAsync = "<%=searchAsync%>" == "true" ? true : false;
 		var entityListLink = $(".link-list-01.entity-list");
-		entityListLink.hide();
+
+		// 非同期の場合のみ読み込み中の表示設定をする
+		if (searchAsync) {
+			var topviewParts = $("#topview-parts-id_${partsCnt}");
+			topviewParts.show();
+
+			var loading = $("#load_searchResult_<%=id%>");
+			loading.removeClass("ui-state-active");
+			loading.removeClass("ui-state-default");
+			loading.show();
+			
+			entityListLink.hide();
+		}
 
 		var sortKey = $table.attr("data-sortKey");
 		var sortType = $table.attr("data-sortType");
 		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(entityListParts.defName)}", "${m:escJs(entityListParts.viewName)}", "${m:escJs(entityListParts.filterName)}", offset, sortKey, sortType, "<%=searchAsync%>", function(count, list) {
 			$pager.setPage(offset, list.length, count);
 
-			// 検索後にボタン行を表示する
-			entityListLink.show();
+			if (searchAsync) {
+				// 検索後にボタン行を表示する
+				entityListLink.show();
+			}
 
 			grid.clearGridData(true);
 			grid.setGridParam({"_data": list}).trigger("reloadGrid");
