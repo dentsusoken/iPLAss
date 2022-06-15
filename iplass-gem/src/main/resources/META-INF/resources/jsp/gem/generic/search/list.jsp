@@ -396,6 +396,9 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 
 		// 非同期の場合のみ読み込み中の表示設定をする
 		if (searchAsync) {
+			// "読み込み中"の表示と被らないようにデータをクリア
+			grid.clearGridData(true);
+
 			var topviewParts = $("#topview-parts-id_${partsCnt}");
 			topviewParts.show();
 
@@ -404,6 +407,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			loading.removeClass("ui-state-default");
 			loading.show();
 			
+			//　読み込み中はボタン行を非表示にする
 			entityListLink.hide();
 		}
 

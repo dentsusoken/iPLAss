@@ -374,7 +374,7 @@ function searchEntityList(webapi, defName, viewName, filterName, offset, sortKey
 		var count = results.count;
 		var list = results.htmlData;
 		if (func && $.isFunction(func)) func.call(this, count, list);
-	}, searchAsync);
+	}, searchAsync == "true" ? true : false);
 }
 
 function searchNameList(webapi, defName, viewName, filterName, offset, func) {
