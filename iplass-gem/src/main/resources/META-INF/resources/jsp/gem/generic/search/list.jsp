@@ -392,7 +392,8 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	function search() {
 
 		var searchAsync = "<%=searchAsync%>" == "true" ? true : false;
-		var entityListLink = $(".link-list-01.entity-list");
+
+		var entityListLink = $("#topview-parts-id_${partsCnt} ").find('.link-list-01.entity-list');
 
 		// 非同期の場合のみ読み込み中の表示設定をする
 		if (searchAsync) {
