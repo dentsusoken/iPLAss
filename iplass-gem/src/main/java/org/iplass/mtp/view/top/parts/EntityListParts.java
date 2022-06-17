@@ -41,6 +41,9 @@ public class EntityListParts extends TemplateParts {
 	/** 高さ */
 	private Integer height;
 
+	/** 非同期検索するか */
+	private boolean searchAsync;
+
 	/** 多言語設定情報 */
 	private List<LocalizedStringDefinition> localizedTitleList;
 
@@ -171,6 +174,22 @@ public class EntityListParts extends TemplateParts {
 	 */
 	public void setHeight(Integer height) {
 	    this.height = height;
+	}
+
+	/**
+	 * 非同期検索するかを取得します。
+	 * @return 非同期検索するか
+	 */
+	public boolean isSearchAsync() {
+		return searchAsync;
+	}
+
+	/**
+	 * 非同期検索するかを設定します。
+	 * @param searchAsync 
+	 */
+	public void setSearchAsync(boolean searchAsync) {
+		this.searchAsync = searchAsync;
 	}
 
 	/**
