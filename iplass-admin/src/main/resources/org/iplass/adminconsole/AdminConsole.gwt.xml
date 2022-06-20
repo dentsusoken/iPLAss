@@ -86,11 +86,6 @@
 		<when-type-is class="org.iplass.adminconsole.client.tools.ui.ToolsPluginController"/>
 	</replace-with>
 
-	<!-- switch lang explorer setting controll -->
-	<replace-with class="org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingControllerImpl">
-		<when-type-is class="org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingController"/>
-	</replace-with>
-
 	<!-- switch entity explorer main controll -->
 	<replace-with class="org.iplass.adminconsole.client.tools.ui.entityexplorer.EntityExplorerMainPaneControllerImpl">
 		<when-type-is class="org.iplass.adminconsole.client.tools.ui.entityexplorer.EntityExplorerMainPaneController"/>

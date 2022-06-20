@@ -25,13 +25,13 @@ import java.util.LinkedHashMap;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.MetaDataTreeDS.FIELD_NAME;
 import org.iplass.adminconsole.client.tools.ui.langexplorer.LangTreeGridPane.AdvancedSearchExecHandler;
 import org.iplass.adminconsole.shared.tools.dto.langexplorer.OutputMode;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.RepositoryType;
 
-import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
@@ -74,7 +74,7 @@ public class LangListPane extends VLayout {
 	private LangTreeGridPane grid;
 	private LangEditListPane langEditListPane;
 
-	private LangExplorerSettingController controller = GWT.create(LangExplorerSettingController.class);
+	private LangExplorerSettingController controller = ScreenModuleBasedUIFactoryHolder.getFactory().createLangExplorerSettingController();
 
 	/**
 	 * コンストラクタ
