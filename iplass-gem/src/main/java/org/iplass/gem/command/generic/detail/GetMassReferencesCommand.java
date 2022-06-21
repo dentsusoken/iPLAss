@@ -245,7 +245,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 
 				//User名に変換が必要なプロパティを取得
 				final Set<String> userNameProperties = getUseUserPropertyEditorPropertyName(section.getProperties(),
-						OutputType.EDIT == outputType, Entity.LOCKED_BY, Entity.CREATE_BY, Entity.UPDATE_BY);
+						OutputType.EDIT == outputType);
 
 				//UserのOIDリスト
 				final List<String> userOids = new ArrayList<>();
@@ -683,7 +683,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		return edm.get(pd.getObjectDefinitionName());
 	}
 
-	private Set<String> getUseUserPropertyEditorPropertyName(List<NestProperty> nestProperties, boolean isDetail, String... propNames) {
+	private Set<String> getUseUserPropertyEditorPropertyName(List<NestProperty> nestProperties, boolean isDetail) {
 		Set<String> ret = new HashSet<>();
 		for (NestProperty property : nestProperties) {
 			if ((isDetail && property.isHideDetail()) || (!isDetail && property.isHideView())) continue;
@@ -691,32 +691,18 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			String propertyName = property.getPropertyName();
 
 			if (property.getEditor() instanceof ReferencePropertyEditor) {
-				//ネストの項目を確認
+				// ネストの項目を確認
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 				if (!editor.getNestProperties().isEmpty()) {
-					Set<String> nest = getUseUserPropertyEditorPropertyName(editor.getNestProperties(), isDetail, propNames);
+					Set<String> nest = getUseUserPropertyEditorPropertyName(editor.getNestProperties(), isDetail);
 					for (String nestPropertyName : nest) {
 						String _nestPropertyName = propertyName + "." + nestPropertyName;
 						ret.add(_nestPropertyName);
 					}
 				}
 			} else if (property.getEditor() instanceof UserPropertyEditor) {
-				//直接指定項目の確認
-				for (String propName : propNames) {
-					boolean isUserEditor = false;
-					if (propertyName.contains(".")) {
-						//ReferencePropertyの直接指定
-						isUserEditor = propertyName.endsWith("." + propName);
-					} else {
-						//通常Property
-						isUserEditor = propertyName.equals(propName);
-					}
-					if (isUserEditor) {
-						ret.add(propertyName);
-					}
-				}
+				ret.add(propertyName);
 			}
-
 		}
 		return ret;
 	}

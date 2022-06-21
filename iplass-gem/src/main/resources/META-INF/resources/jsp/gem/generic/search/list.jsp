@@ -124,6 +124,9 @@
 	if (gridHeight == null || gridHeight < 0) {
 		gridHeight = 160;
 	}
+	
+	// searchAsync
+	boolean searchAsync = parts.isSearchAsync();
 
 	AuthContext auth = AuthContext.getCurrentContext();
 	boolean canUpdate = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.UPDATE));
@@ -200,7 +203,6 @@ $(function() {
 	}
 
 	var colModel = new Array();
-	var isloaded = false;
 	colModel.push({name:"orgOid", idnex:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid", formatter:oidCellFormatter});
 	colModel.push({name:"orgVersion", idnex:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
 	colModel.push({name:'_mtpDetailLink', index:'_mtpDetailLink', width:${m:rs("mtp-gem-messages", "generic.search.list.detailLinkWidth")}, sortable:false, align:'center', frozen:true, label:"", classes:"detail-links", cellattr: cellAttrFunc});
@@ -388,10 +390,37 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	search();
 
 	function search() {
+
+		var searchAsync = "<%=searchAsync%>" == "true" ? true : false;
+
+		var entityListLink = $("#topview-parts-id_${partsCnt} ").find('.link-list-01.entity-list');
+
+		// 非同期の場合のみ読み込み中の表示設定をする
+		if (searchAsync) {
+			// "読み込み中"の表示と被らないようにデータをクリア
+			grid.clearGridData(true);
+
+			var topviewParts = $("#topview-parts-id_${partsCnt}");
+			topviewParts.show();
+
+			var loading = $("#load_searchResult_<%=id%>");
+			loading.removeClass("ui-state-active");
+			loading.removeClass("ui-state-default");
+			loading.show();
+			
+			//　読み込み中はボタン行を非表示にする
+			entityListLink.hide();
+		}
+
 		var sortKey = $table.attr("data-sortKey");
 		var sortType = $table.attr("data-sortType");
-		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(entityListParts.defName)}", "${m:escJs(entityListParts.viewName)}", "${m:escJs(entityListParts.filterName)}", offset, sortKey, sortType, function(count, list) {
+		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(entityListParts.defName)}", "${m:escJs(entityListParts.viewName)}", "${m:escJs(entityListParts.filterName)}", offset, sortKey, sortType, "<%=searchAsync%>", function(count, list) {
 			$pager.setPage(offset, list.length, count);
+
+			if (searchAsync) {
+				// 検索後にボタン行を表示する
+				entityListLink.show();
+			}
 
 			grid.clearGridData(true);
 			grid.setGridParam({"_data": list}).trigger("reloadGrid");

@@ -27,6 +27,7 @@ ext {
 		//apache commons
 		'org.apache.commons:commons-lang3': '3.7',
 		'org.apache.commons:commons-text': '1.2',
+		'org.apache.commons:commons-collections4': '4.4',
 		'commons-io:commons-io': '2.8.0',
 		'commons-beanutils:commons-beanutils': '1.9.4',
 		'commons-codec:commons-codec': '1.15',
@@ -54,8 +55,8 @@ ext {
 		'org.apache.poi:poi-scratchpad': '4.1.2',
 		'org.apache.poi:poi-ooxml': '4.1.2',
 		
-		'org.jxls:jxls': '2.8.1',
-		'org.jxls:jxls-poi': '2.8.1',
+		'org.jxls:jxls': '2.11.0',
+		'org.jxls:jxls-poi': '2.11.0',
 		
 		'org.codehaus.groovy:groovy-bom': '3.0.7',//by bom
 		

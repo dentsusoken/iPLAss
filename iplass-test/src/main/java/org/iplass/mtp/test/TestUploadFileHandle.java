@@ -33,7 +33,6 @@ import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.command.UploadFileSizeOverException;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.impl.util.UploadFileUtil;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -107,7 +106,7 @@ public class TestUploadFileHandle implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			UploadFileUtil.checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
 		}
 
 		FileInputStream is = null;
@@ -142,7 +141,7 @@ public class TestUploadFileHandle implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			UploadFileUtil.checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
 		}
 
 		try {
@@ -166,7 +165,7 @@ public class TestUploadFileHandle implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			UploadFileUtil.checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
 		}
 
 		try {
@@ -184,7 +183,7 @@ public class TestUploadFileHandle implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			UploadFileUtil.checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
 		}
 
 		try {
