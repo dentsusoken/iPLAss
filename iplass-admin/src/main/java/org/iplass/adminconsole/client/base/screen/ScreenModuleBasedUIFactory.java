@@ -21,6 +21,7 @@ package org.iplass.adminconsole.client.base.screen;
 
 import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController;
+import org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingController;
 import org.iplass.mtp.tenant.Tenant;
 
 /**
@@ -51,4 +52,11 @@ public interface ScreenModuleBasedUIFactory {
 	 * @return { @link BaseTenantDS } のインスタンス
 	 */
 	BaseTenantDS createTenantImportSelectDataSource(Tenant tenant);
+	
+	/**
+	 * {@link LangExplorerSettingController}  のインスタンスを生成する
+	 * 
+	 * @return {@link LangExplorerSettingController} のインスタンス
+	 */
+	LangExplorerSettingController createLangExplorerSettingController();
 }

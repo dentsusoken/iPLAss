@@ -58,7 +58,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-public class LangExplorerSettingControllerImpl implements LangExplorerSettingController {
+public class GemLangExplorerSettingController implements LangExplorerSettingController {
 
 	/** メタデータサービス */
 	private static final MetaDataServiceAsync service = MetaDataServiceFactory.get();

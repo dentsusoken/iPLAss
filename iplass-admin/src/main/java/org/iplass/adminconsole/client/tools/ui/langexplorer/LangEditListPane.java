@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.shared.base.dto.i18n.MultiLangFieldInfo;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -62,7 +63,7 @@ public class LangEditListPane extends VLayout {
 	/** メタデータサービス */
 	private final MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
-	private LangExplorerSettingController controller = GWT.create(LangExplorerSettingController.class);
+	private LangExplorerSettingController controller = ScreenModuleBasedUIFactoryHolder.getFactory().createLangExplorerSettingController();
 
 	public LangEditListPane() {
 
