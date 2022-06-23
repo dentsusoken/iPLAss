@@ -393,13 +393,13 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	/** Entity権限における限定条件の除外設定 */
 	@MetaFieldInfo(
 			displayName="Entity権限における限定条件の除外設定",
-			displayNameKey="generic_element_section_MassReferenceSection_withoutConditionReferenceNameKeyDisplaNameKey",
+			displayNameKey="generic_element_section_MassReferenceSection_withoutConditionReferenceNameDisplayNameKey",
 			inputType=InputType.MULTI_TEXT,
 			displayOrder=5030,
 			description="Entity権限における限定条件を除外する参照先を指定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_withoutConditionReferenceNameKeyDescriptionKey"
+			descriptionKey="generic_element_section_MassReferenceSection_withoutConditionReferenceNameDescriptionKey"
 	)
-	private List<String> withoutConditionReferenceNameKey;
+	private List<String> withoutConditionReferenceName;
 
 
 	/** 上部のコンテンツ */
@@ -736,16 +736,16 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * Entity権限における限定条件の除外設定を取得します。
 	 * @return Entity権限における限定条件の除外設定
 	 */
-	public List<String> getWithoutConditionReferenceNameKey() {
-		return withoutConditionReferenceNameKey;
+	public List<String> getWithoutConditionReferenceName() {
+		return withoutConditionReferenceName;
 	}
 
 	/**
 	 * Entity権限における限定条件の除外設定を設定します。
-	 * @param withoutConditionReferenceNameKey Entity権限における限定条件の除外設定
+	 * @param withoutConditionReferenceName Entity権限における限定条件の除外設定
 	 */
-	public void setWithoutConditionReferenceNameKey(List<String> withoutConditionReferenceNameKey) {
-		this.withoutConditionReferenceNameKey = withoutConditionReferenceNameKey;
+	public void setWithoutConditionReferenceName(List<String> withoutConditionReferenceName) {
+		this.withoutConditionReferenceName = withoutConditionReferenceName;
 	}
 
 	/**

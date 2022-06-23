@@ -169,10 +169,10 @@ public interface LoadEntityInterrupter {
 	default public SearchQueryContext beforeSearchMassReference(RequestContext request, FormView view, Query query,
 			ReferenceProperty referenceProperty, MassReferenceSection section, OutputType outputType) {
 		SearchQueryContext searchQueryContext =  beforeSearchMassReference(request, view, query, outputType);
-		List<String> withoutConditionReferenceNameKey = section.getWithoutConditionReferenceNameKey();
-		if (searchQueryContext.getWithoutConditionReferenceName() == null && withoutConditionReferenceNameKey != null) {
+		List<String> withoutConditionReferenceName = section.getWithoutConditionReferenceName();
+		if (searchQueryContext.getWithoutConditionReferenceName() == null && withoutConditionReferenceName != null) {
 			searchQueryContext.setWithoutConditionReferenceName(
-					withoutConditionReferenceNameKey.toArray(new String[withoutConditionReferenceNameKey.size()]));
+					withoutConditionReferenceName.toArray(new String[withoutConditionReferenceName.size()]));
 		}
 		return searchQueryContext;
 	}

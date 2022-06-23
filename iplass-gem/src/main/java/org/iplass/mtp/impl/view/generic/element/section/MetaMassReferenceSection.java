@@ -102,7 +102,7 @@ public class MetaMassReferenceSection extends MetaSection {
 	private String viewName;
 
 	/** Entity権限における限定条件の除外設定 */
-	private List<String> withoutConditionReferenceNameKey;
+	private List<String> withoutConditionReferenceName;
 
 	/** 編集リンクを詳細リンクに変更 */
 	private boolean changeEditLinkToViewLink;
@@ -412,16 +412,16 @@ public class MetaMassReferenceSection extends MetaSection {
 	 * Entity権限における限定条件の除外設定を取得します。
 	 * @return Entity権限における限定条件の除外設定
 	 */
-	public List<String> getWithoutConditionReferenceNameKey() {
-		return withoutConditionReferenceNameKey;
+	public List<String> getWithoutConditionReferenceName() {
+		return withoutConditionReferenceName;
 	}
 
 	/**
 	 * Entity権限における限定条件の除外設定を設定します。
-	 * @param withoutConditionReferenceNameKey Entity権限における限定条件の除外設定
+	 * @param withoutConditionReferenceName Entity権限における限定条件の除外設定
 	 */
-	public void setWithoutConditionReferenceNameKey(List<String> withoutConditionReferenceNameKey) {
-		this.withoutConditionReferenceNameKey = withoutConditionReferenceNameKey;
+	public void setWithoutConditionReferenceName(List<String> withoutConditionReferenceName) {
+		this.withoutConditionReferenceName = withoutConditionReferenceName;
 	}
 
 	/**
@@ -692,8 +692,8 @@ public class MetaMassReferenceSection extends MetaSection {
 		detailActionName = section.getDetailActionName();
 		detailTabActionName = section.getDetailTabActionName();
 		viewName = section.getViewName();
-		withoutConditionReferenceNameKey =
-				section.getWithoutConditionReferenceNameKey() == null ? null : new ArrayList<>(section.getWithoutConditionReferenceNameKey());
+		withoutConditionReferenceName =
+				section.getWithoutConditionReferenceName() == null ? null : new ArrayList<>(section.getWithoutConditionReferenceName());
 		changeEditLinkToViewLink = section.isChangeEditLinkToViewLink();
 		hideDeleteButton = section.isHideDeleteButton();
 		hideAddButton = section.isHideAddButton();
@@ -765,8 +765,8 @@ public class MetaMassReferenceSection extends MetaSection {
 		section.setDetailActionName(detailActionName);
 		section.setDetailTabActionName(detailTabActionName);
 		section.setViewName(viewName);
-		section.setWithoutConditionReferenceNameKey(
-				withoutConditionReferenceNameKey == null ? null : new ArrayList<>(withoutConditionReferenceNameKey));
+		section.setWithoutConditionReferenceName(
+				withoutConditionReferenceName == null ? null : new ArrayList<>(withoutConditionReferenceName));
 		section.setChangeEditLinkToViewLink(changeEditLinkToViewLink);
 		section.setHideDeleteButton(hideDeleteButton);
 		section.setHideAddButton(hideAddButton);

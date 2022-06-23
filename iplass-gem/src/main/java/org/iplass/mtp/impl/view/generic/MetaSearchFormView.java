@@ -92,7 +92,7 @@ public class MetaSearchFormView extends MetaFormView {
 	private boolean showUserNameWithPrivilegedValue;
 
 	/** Entity権限における限定条件の除外設定 */
-	private List<String> withoutConditionReferenceNameKey;
+	private List<String> withoutConditionReferenceName;
 
 	/** EQLカスタム処理クラス名 */
 	private String interrupterName;
@@ -360,16 +360,16 @@ public class MetaSearchFormView extends MetaFormView {
 	 * Entity権限における限定条件の除外設定を取得します。
 	 * @return Entity権限における限定条件の除外設定
 	 */
-	public List<String> getWithoutConditionReferenceNameKey() {
-		return withoutConditionReferenceNameKey;
+	public List<String> getWithoutConditionReferenceName() {
+		return withoutConditionReferenceName;
 	}
 
 	/**
 	 * Entity権限における限定条件の除外設定を設定します。
-	 * @param withoutConditionReferenceNameKey Entity権限における限定条件の除外設定
+	 * @param withoutConditionReferenceName Entity権限における限定条件の除外設定
 	 */
-	public void setWithoutConditionReferenceNameKey(List<String> withoutConditionReferenceNameKey) {
-		this.withoutConditionReferenceNameKey = withoutConditionReferenceNameKey;
+	public void setWithoutConditionReferenceName(List<String> withoutConditionReferenceName) {
+		this.withoutConditionReferenceName = withoutConditionReferenceName;
 	}
 
 	/**
@@ -514,8 +514,8 @@ public class MetaSearchFormView extends MetaFormView {
 		isPurge = sForm.isPurge();
 		deleteSpecificVersion = sForm.isDeleteSpecificVersion();
 		showUserNameWithPrivilegedValue = sForm.isShowUserNameWithPrivilegedValue();
-		withoutConditionReferenceNameKey =
-				sForm.getWithoutConditionReferenceNameKey() == null ? null : new ArrayList<>(sForm.getWithoutConditionReferenceNameKey());
+		withoutConditionReferenceName =
+				sForm.getWithoutConditionReferenceName() == null ? null : new ArrayList<>(sForm.getWithoutConditionReferenceName());
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
 		searchFormViewHandlerName =
@@ -563,8 +563,8 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setPurge(isPurge);
 		form.setDeleteSpecificVersion(deleteSpecificVersion);
 		form.setShowUserNameWithPrivilegedValue(showUserNameWithPrivilegedValue);
-		form.setWithoutConditionReferenceNameKey(
-				withoutConditionReferenceNameKey == null ? null : new ArrayList<>(withoutConditionReferenceNameKey));
+		form.setWithoutConditionReferenceName(
+				withoutConditionReferenceName == null ? null : new ArrayList<>(withoutConditionReferenceName));
 		form.setInterrupterName(interrupterName);
 		form.setUseInterrupterForCsvDownload(useInterrupterForCsvDownload);
 		form.setSearchFormViewHandlerName(
