@@ -23,7 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity;
 import java.util.ArrayList;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.common.Callable;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataCreateDialog;
@@ -88,7 +88,7 @@ public class CreateEntityDialog extends MetaDataCreateDialog {
 	private void createEntity(final SaveInfo saveInfo, final boolean isCopyMode) {
 
 		if (isCopyMode) {
-			service.copyEntityDefinition(TenantInfoHolder.getId(), getSourceName(),
+			ScreenModuleBasedUIFactoryHolder.getFactory().createEntityOperationController().copyEntityDefinition(getSourceName(),
 					saveInfo.getName(), saveInfo.getDisplayName(), saveInfo.getDescription(),
 					SmartGWTUtil.getBooleanValue(copyEntityView), SmartGWTUtil.getBooleanValue(copyEntityFilter), SmartGWTUtil.getBooleanValue(copyEntityWebAPI),
 					new SaveResultCallback());
@@ -103,7 +103,7 @@ public class CreateEntityDialog extends MetaDataCreateDialog {
 			definition.setInheritedDefinition(EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME);
 			definition.setPropertyList(new ArrayList<PropertyDefinition>());
 
-			service.createEntityDefinition(TenantInfoHolder.getId(), definition, new SaveResultCallback());
+			ScreenModuleBasedUIFactoryHolder.getFactory().createEntityOperationController().createEntityDefinition(definition, new SaveResultCallback());
 		}
 	}
 
