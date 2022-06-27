@@ -52,4 +52,11 @@ public interface EntityOperationController {
 	public void copyEntityDefinition(String sourceName, String newName, String displayName, String description,
 			boolean isCopyEntityView, boolean isCopyEntityFilter, boolean isCopyEntityWebAPI,
 			AsyncCallback<AdminDefinitionModifyResult> callback);
+
+	/**
+	 * Entity定義を削除します。
+	 * @param defName 定義名
+	 * @param callback コールバック
+	 */
+	public void deleteEntityDefinition(String defName, AsyncCallback<AdminDefinitionModifyResult> callback);
 }

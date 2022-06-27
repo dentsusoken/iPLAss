@@ -30,6 +30,7 @@ import org.iplass.adminconsole.client.base.event.ViewEntityDataEvent;
 import org.iplass.adminconsole.client.base.event.ViewMetaDataEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.plugin.ContentSelectedEvent;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.layout.AdminMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
@@ -422,7 +423,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
-		service.deleteEntityDefinition(TenantInfoHolder.getId(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+		ScreenModuleBasedUIFactoryHolder.getFactory().createEntityOperationController().deleteEntityDefinition(itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// 失敗時
