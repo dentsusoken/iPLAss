@@ -215,12 +215,22 @@ public class SearchFormView extends FormView {
 	)
 	private boolean showUserNameWithPrivilegedValue;
 
+	/** Entity権限における限定条件の除外設定 */
+	@MetaFieldInfo(
+			displayName="Entity権限における限定条件の除外設定",
+			displayNameKey="generic_SearchFormView_withoutConditionReferenceNameDisplayNameKey",
+			inputType=InputType.MULTI_TEXT,
+			displayOrder=1600,
+			description="Entity権限における限定条件を除外する参照先を指定します。",
+			descriptionKey="generic_SearchFormView_withoutConditionReferenceNameDescriptionKey"
+	)
+	private List<String> withoutConditionReferenceName;
 
 	/** EQLカスタム処理クラス名 */
 	@MetaFieldInfo(
 			displayName="EQLカスタム処理クラス名",
 			displayNameKey="generic_SearchFormView_interrupterNameDisplaNameKey",
-			displayOrder=1600,
+			displayOrder=1610,
 			description="検索実行前にクエリをカスタマイズするためのクラス名を指定します。<br>" +
 					"SearchQueryInterrupterインターフェースを実装するクラスを指定してください。",
 			descriptionKey="generic_SearchFormView_interrupterNameDescriptionKey"
@@ -232,7 +242,7 @@ public class SearchFormView extends FormView {
 			displayName="EQLカスタム処理クラスをCSVダウンロードで利用するか",
 			displayNameKey="generic_SearchFormView_useInterrupterForCsvDownloadDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=1610,
+			displayOrder=1620,
 			description="EQLカスタム処理クラスをCSVダウンロードで利用するかを指定します。",
 			descriptionKey="generic_SearchFormView_useInterrupterForCsvDownloadDescriptionKey"
 	)
@@ -243,7 +253,7 @@ public class SearchFormView extends FormView {
 			displayName="検索画面Handlerクラス名",
 			displayNameKey="generic_SearchFormView_searchFormViewHandlerNameDisplaNameKey",
 			inputType=InputType.MULTI_TEXT,
-			displayOrder=1620,
+			displayOrder=1630,
 			description="検索画面の制御クラス名を指定します。<br>" +
 					"SearchFormViewHandlerインターフェースを実装するクラスを指定してください。",
 			descriptionKey="generic_SearchFormView_searchFormViewHandlerNameDescriptionKey"
@@ -538,6 +548,22 @@ public class SearchFormView extends FormView {
 	 */
 	public void setShowUserNameWithPrivilegedValue(boolean showUserNameWithPrivilegedValue) {
 		this.showUserNameWithPrivilegedValue = showUserNameWithPrivilegedValue;
+	}
+
+	/**
+	 * Entity権限における限定条件の除外設定を取得します。
+	 * @return Entity権限における限定条件の除外設定
+	 */
+	public List<String> getWithoutConditionReferenceName() {
+		return withoutConditionReferenceName;
+	}
+
+	/**
+	 * Entity権限における限定条件の除外設定を設定します。
+	 * @param withoutConditionReferenceName Entity権限における限定条件の除外設定
+	 */
+	public void setWithoutConditionReferenceName(List<String> withoutConditionReferenceName) {
+		this.withoutConditionReferenceName = withoutConditionReferenceName;
 	}
 
 	/**
