@@ -59,4 +59,13 @@ public interface EntityOperationController {
 	 * @param callback コールバック
 	 */
 	public void deleteEntityDefinition(String defName, AsyncCallback<AdminDefinitionModifyResult> callback);
+
+	/**
+	 * Entity定義名を変更します。
+	 * @param className 定義のクラス名
+	 * @param fromName 変更前の定義名
+	 * @param toName 変更後の定義名
+	 * @param callback コールバック
+	 */
+	public void renameDefinition(String className, String fromName, String toName, AsyncCallback<AdminDefinitionModifyResult> callback);
 }

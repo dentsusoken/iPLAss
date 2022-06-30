@@ -57,4 +57,9 @@ public class GemEntityOperationController implements EntityOperationController {
 	public void deleteEntityDefinition(String defName, AsyncCallback<AdminDefinitionModifyResult> callback) {
 		service.deleteEntityDefinition(TenantInfoHolder.getId(), defName, callback);
 	}
+
+	@Override
+	public void renameDefinition(String className, String fromName, String toName, AsyncCallback<AdminDefinitionModifyResult> callback) {
+		service.renameDefinition(TenantInfoHolder.getId(), className, fromName, toName, callback);
+	}
 }
