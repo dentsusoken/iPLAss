@@ -465,6 +465,9 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 							auditLogger.logMetadata(MetaDataAction.UPDATE, EntityWebApiDefinition.class.getName(), "fromName:" + fromName + " toName:" + toName);
 							dm.rename(EntityWebApiDefinition.class, fromName, toName);
 						}
+						if (dm.getInfo(MenuItem.class, convertPath(fromName)) != null) {
+							dm.rename(MenuItem.class, convertPath(fromName), convertPath(toName));
+						}
 					}
 
 				} catch (Exception e) {
@@ -1992,7 +1995,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		});
 	}
 
-	
+
 	/* ---------------------------------------
 	 * Webhook Endpoint Security Info
 	 --------------------------------------- */
@@ -2023,7 +2026,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	}
 
 	/**
-	 * 
+	 *
 	 * returns a map of <defName,Url>
 	 * */
 	public Map<String, String> getEndpointFullListWithUrl(int tenantId){
