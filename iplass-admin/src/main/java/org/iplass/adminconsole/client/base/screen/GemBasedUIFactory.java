@@ -23,8 +23,6 @@ import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
 import org.iplass.adminconsole.client.metadata.data.tenant.GemTenantDS;
 import org.iplass.adminconsole.client.metadata.ui.GemMetaDataPluginController;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController;
-import org.iplass.adminconsole.client.metadata.ui.entity.EntityOperationController;
-import org.iplass.adminconsole.client.metadata.ui.entity.GemEntityOperationController;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.GemTenantImportSelectDS;
 import org.iplass.adminconsole.client.tools.ui.langexplorer.GemLangExplorerSettingController;
 import org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingController;
@@ -56,10 +54,5 @@ public class GemBasedUIFactory implements ScreenModuleBasedUIFactory {
 	@Override
 	public LangExplorerSettingController createLangExplorerSettingController() {
 		return new GemLangExplorerSettingController();
-	}
-
-	@Override
-	public EntityOperationController createEntityOperationController() {
-		return new GemEntityOperationController();
 	}
 }

@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.iplass.adminconsole.server.base.service.screen.ScreenModuleBasedClassFactoryGenerator;
+import org.iplass.adminconsole.server.base.service.screen.ScreenModuleBasedClassFactoryHolder;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -70,6 +71,7 @@ public class AdminConsoleService implements Service {
 		maxUploadFileSize = config.getValue("maxUploadFileSize", Long.class, DEFAULT_MAX_FILE_SIZE);
 		screenBasedFactoryGenerator = config.getValue("screenBasedFactoryGenerator",
 				ScreenModuleBasedClassFactoryGenerator.class);
+		ScreenModuleBasedClassFactoryHolder.init(screenBasedFactoryGenerator.generate());
 	}
 
 	@Override
@@ -176,5 +178,5 @@ public class AdminConsoleService implements Service {
 	public ScreenModuleBasedClassFactoryGenerator getScreenBasedFactoryGenerator() {
 		return screenBasedFactoryGenerator;
 	}
-	
+
 }

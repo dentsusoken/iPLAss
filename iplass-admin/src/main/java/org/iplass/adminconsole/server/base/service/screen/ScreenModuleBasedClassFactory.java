@@ -19,6 +19,8 @@
  */
 package org.iplass.adminconsole.server.base.service.screen;
 
+import org.iplass.adminconsole.server.metadata.rpc.EntityDefinitionOperationController;
+
 /**
  * 画面モジュールに依存した実装クラスを生成するFactoryのインタフェース
  * 
@@ -26,4 +28,6 @@ package org.iplass.adminconsole.server.base.service.screen;
  *
  */
 public interface ScreenModuleBasedClassFactory {
+
+	public EntityDefinitionOperationController getEntityOperationController();
 }
