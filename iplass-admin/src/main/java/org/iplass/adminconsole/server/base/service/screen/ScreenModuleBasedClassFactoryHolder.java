@@ -26,5 +26,16 @@ package org.iplass.adminconsole.server.base.service.screen;
  *
  */
 public class ScreenModuleBasedClassFactoryHolder {
+	private static ScreenModuleBasedClassFactory FACTORY;
 
+	public static void init(ScreenModuleBasedClassFactory factory) {
+		FACTORY = factory;
+	}
+
+	public static ScreenModuleBasedClassFactory getFactory() {
+		return FACTORY;
+	}
+
+	private ScreenModuleBasedClassFactoryHolder() {
+	}
 }

@@ -21,7 +21,6 @@ package org.iplass.adminconsole.client.base.screen;
 
 import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController;
-import org.iplass.adminconsole.client.metadata.ui.entity.EntityOperationController;
 import org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingController;
 import org.iplass.mtp.tenant.Tenant;
 
@@ -60,11 +59,4 @@ public interface ScreenModuleBasedUIFactory {
 	 * @return {@link LangExplorerSettingController} のインスタンス
 	 */
 	LangExplorerSettingController createLangExplorerSettingController();
-
-	/**
-	 * {@link EntityOperationController}  のインスタンスを生成する
-	 *
-	 * @return {@link EntityOperationController} のインスタンス
-	 */
-	EntityOperationController createEntityOperationController();
 }

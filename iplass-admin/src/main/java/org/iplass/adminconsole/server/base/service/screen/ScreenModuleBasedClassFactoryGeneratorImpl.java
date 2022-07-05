@@ -21,4 +21,32 @@ package org.iplass.adminconsole.server.base.service.screen;
 
 public class ScreenModuleBasedClassFactoryGeneratorImpl implements ScreenModuleBasedClassFactoryGenerator {
 
+	@Override
+	public ScreenModuleBasedClassFactory generate() {
+		String type = getScreenModuleType();
+		if (type.equals("GEM")) {
+			return new GemBasedClassFactory();
+		}
+
+		// 現状GEMしか画面モジュールは存在しないので、デフォルトはGEM
+		return new GemBasedClassFactory();
+	}
+
+	/**
+	 * 画面モジュール判定
+	 * @return 画面モジュールの種類
+	 */
+	private String getScreenModuleType() {
+
+		boolean existsGem;
+		try {
+			Class.forName("org.iplass.gem.GemConfigService");
+			existsGem = true;
+		} catch (ClassNotFoundException e) {
+			existsGem = false;
+		}
+
+		return existsGem ? "GEM" : "DEFAULT";
+	}
+
 }

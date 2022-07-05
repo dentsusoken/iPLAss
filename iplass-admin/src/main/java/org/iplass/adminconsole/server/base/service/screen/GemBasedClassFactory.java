@@ -19,6 +19,9 @@
  */
 package org.iplass.adminconsole.server.base.service.screen;
 
+import org.iplass.adminconsole.server.metadata.rpc.EntityDefinitionOperationController;
+import org.iplass.adminconsole.server.metadata.rpc.GemEntityDefinitionOperationController;
+
 /**
  * GEMに依存した実装クラスを生成するFactory
  * 
@@ -27,4 +30,8 @@ package org.iplass.adminconsole.server.base.service.screen;
  */
 public class GemBasedClassFactory implements ScreenModuleBasedClassFactory {
 
+
+	public EntityDefinitionOperationController getEntityOperationController() {
+		return new GemEntityDefinitionOperationController();
+	}
 }

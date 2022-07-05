@@ -21,4 +21,5 @@ package org.iplass.adminconsole.server.base.service.screen;
 
 public interface ScreenModuleBasedClassFactoryGenerator {
 
+	public ScreenModuleBasedClassFactory generate();
 }
