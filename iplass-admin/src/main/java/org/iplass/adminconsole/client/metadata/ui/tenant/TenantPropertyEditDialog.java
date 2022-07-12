@@ -39,8 +39,10 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.tenant.TenantColType;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
+import org.iplass.adminconsole.client.metadata.ui.common.LocalizedScriptSettingDialog;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
@@ -52,6 +54,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.CanvasItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.DateItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
@@ -279,9 +282,13 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			valueField = selectItem;
 			form.setItems(selectItem);
 		} else if (TenantColType.SCRIPT.equals(type)) {
-			createScriptDialog(form, type);
+			createScriptDialog(form, type, false, null);
 		} else if (TenantColType.GROOVYTEMPLATE.equals(type)) {
-			createScriptDialog(form, type);
+			if ("screenTitle".equals(name)) {
+				createScriptDialog(form, type, true, "localizedScreenTitle");
+			} else {
+				createScriptDialog(form, type, false, null);
+			}
 		}
 
 		// 編集可否設定
@@ -293,8 +300,10 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		return form;
 	}
 
-
-	private void createScriptDialog(DynamicForm form, TenantColType colType) {
+	@SuppressWarnings("unchecked")
+	private void createScriptDialog(DynamicForm form, TenantColType colType, boolean isLocalized,
+			String localizedPropertyName) {
+		GWT.log(localizedPropertyName);
 
 		setHeight(500);
 
@@ -313,37 +322,105 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		SmartGWTUtil.setReadOnlyTextArea(sourceField);
 		valueField = sourceField;
 
-		ButtonItem editScript = new ButtonItem("editScript",
-				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_editScript"));
-		editScript.setWidth(100);
-		editScript.setColSpan(3);
-		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(
-				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_dispScriptEditDialog"));
-		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+		if (isLocalized) {
+			CanvasItem langBtnField = new CanvasItem();
+			langBtnField.setShowTitle(false);
+			langBtnField.setStartRow(true);
+			langBtnField.setColSpan(3);
 
-			@Override
-			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-				MetaDataUtil.showScriptEditDialog(editorMode, SmartGWTUtil.getStringValue(sourceField), "", // TODO
-																											// title
-						null, AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_"
-								+ record.getAttributeAsString("name") + "Comment"),
-						new ScriptEditorDialogHandler() {
+			HLayout langBtnLayout = new HLayout();
+			langBtnLayout.setAutoHeight();
+			langBtnLayout.setAlign(Alignment.RIGHT);
+			langBtnField.setCanvas(langBtnLayout);
 
-							@Override
-							public void onSave(String text) {
-								sourceField.setValue(text);
-							}
+			IButton editScript = new IButton();
+			editScript.setTitle(
+					AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_editScript"));
+			editScript.setWidth(100);
+			editScript.setPrompt(AdminClientMessageUtil
+					.getString("ui_metadata_tenant_TenantPropertyEditDialog_dispScriptEditDialog"));
+			editScript.addClickHandler(new ClickHandler() {
 
-							@Override
-							public void onCancel() {
-							}
-						});
-			}
-		});
+				@Override
+				public void onClick(ClickEvent event) {
+					MetaDataUtil.showScriptEditDialog(editorMode, SmartGWTUtil.getStringValue(sourceField), "", null,
+							AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_"
+									+ record.getAttributeAsString("name") + "Comment"),
+							new ScriptEditorDialogHandler() {
 
-		form.setHeight100();
-		form.setItems(editScript, sourceField);
+								@Override
+								public void onSave(String text) {
+									sourceField.setValue(text);
+								}
+
+								@Override
+								public void onCancel() {
+								}
+							});
+				}
+			});
+			langBtnLayout.addMember(editScript);
+
+			IButton langBtn = new IButton();
+			langBtn.setTitle("Languages");
+			langBtn.setIcon("world.png");
+			langBtn.setPrompt(SmartGWTUtil.getHoverString(
+					AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_eachLangScript")));
+			localizedStringList = (List<LocalizedStringDefinition>) JSOHelper
+					.convertToJava((JavaScriptObject) record.getAttributeAsObject(localizedPropertyName)) == null
+							? new ArrayList<LocalizedStringDefinition>()
+							: (List<LocalizedStringDefinition>) JSOHelper.convertToJava(
+									(JavaScriptObject) record.getAttributeAsObject(localizedPropertyName));
+
+			langBtn.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+
+					LocalizedScriptSettingDialog dialog = new LocalizedScriptSettingDialog(localizedStringList,
+							AdminClientMessageUtil
+									.getString("datasource_tenant_TenantDS_" + record.getAttributeAsString("name")),
+							"ui_metadata_tenant_TenantPropertyEditDialog_" + record.getAttributeAsString("name")
+									+ "Comment");
+					dialog.show();
+				}
+			});
+			langBtnLayout.addMember(langBtn);
+
+			form.setHeight100();
+			form.setItems(langBtnField, sourceField);
+		} else {
+			ButtonItem editScript = new ButtonItem("editScript",
+					AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_editScript"));
+			editScript.setWidth(100);
+			editScript.setColSpan(3);
+			editScript.setAlign(Alignment.RIGHT);
+			editScript.setPrompt(AdminClientMessageUtil
+					.getString("ui_metadata_tenant_TenantPropertyEditDialog_dispScriptEditDialog"));
+			editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+				@Override
+				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+					MetaDataUtil.showScriptEditDialog(editorMode, SmartGWTUtil.getStringValue(sourceField), "", null,
+							AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_"
+									+ record.getAttributeAsString("name") + "Comment"),
+							new ScriptEditorDialogHandler() {
+
+								@Override
+								public void onSave(String text) {
+									sourceField.setValue(text);
+								}
+
+								@Override
+								public void onCancel() {
+								}
+							});
+				}
+			});
+
+			form.setHeight100();
+			form.setItems(editScript, sourceField);
+		}
 
 	}
 
@@ -402,13 +479,14 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		} else if (TenantColType.INTEGER.equals(type)) {
 			record.setAttribute("value", ((IntegerItem) valueField).getValueAsInteger());
 			record.setAttribute("displayValue", ((IntegerItem) valueField).getValueAsInteger());
-		} else if (TenantColType.SCRIPT.equals(type)) {
+		} else if (TenantColType.SCRIPT.equals(type) || TenantColType.GROOVYTEMPLATE.equals(type)) {
 			String status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_setting");
 			if (valueField.getValue() == null || valueField.getValue().equals("")) {
 				status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_noSetting");
 			}
 			record.setAttribute("value", valueField.getValue());
 			record.setAttribute("displayValue", status);
+
 			if ("screenTitle".equals(record.getAttribute("name"))) {
 				record.setAttribute("localizedScreenTitle", localizedStringList);
 			}
