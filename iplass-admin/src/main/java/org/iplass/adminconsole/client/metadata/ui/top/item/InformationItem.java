@@ -222,8 +222,7 @@ public class InformationItem extends PartsItem {
 			passwordWarningAgeField.setDefaultValue(5);	//初期値5
 			SmartGWTUtil.addHoverToFormItem(passwordWarningAgeField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_specifyPasswordWarnremainDay"));
 
-			passwordWarningMessageField = new MetaDataLangTextAreaItem();
-			passwordWarningMessageField.setTitle("Custom message");
+			passwordWarningMessageField = new MetaDataLangTextAreaItem("passwordWarningMessage", "Custom message");
 			passwordWarningMessageField.setColSpan(2);
 			passwordWarningMessageField.setHeight(100);
 			SmartGWTUtil.addHoverToFormItem(passwordWarningMessageField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_specifyCustomWarnMessage"));

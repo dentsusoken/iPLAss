@@ -148,6 +148,9 @@
 	&:not([colnum="1"]) td {
 		width: auto;
 	}
+	span.error {
+		padding-bottom: 0;
+	}
 }
 .result-block {
 	display: block;
@@ -173,7 +176,7 @@
 			margin-top: 20px;
 		}
 	}
-	
+
 	//jqgrid adjust borders
 	@extend %extend_jqgrid_border_adjust;
 }
@@ -222,6 +225,10 @@
 			background: $url_gss_2 center center no-repeat;
 		}
 	}
+}
+.ui-jqgrid > .loading {
+  font-size: 1rem;
+  font-weight: normal;
 }
 #csv-download-dialog fieldset {
 	text-align: left;

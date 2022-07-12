@@ -79,7 +79,7 @@ public class TenantPropertyEditDialog extends MtpDialog {
 	private FormItem valueField;
 	private FormItem[] valueFields;
 
-//	private List<LocalizedStringDefinition> localizedStringList;
+	private List<LocalizedStringDefinition> localizedStringList;
 
 	public TenantPropertyEditDialog(Record record) {
 
@@ -293,6 +293,7 @@ public class TenantPropertyEditDialog extends MtpDialog {
 		return form;
 	}
 
+
 	private void createScriptDialog(DynamicForm form, TenantColType colType) {
 
 		setHeight(500);
@@ -343,6 +344,7 @@ public class TenantPropertyEditDialog extends MtpDialog {
 
 		form.setHeight100();
 		form.setItems(editScript, sourceField);
+
 	}
 
 	/**
@@ -407,6 +409,9 @@ public class TenantPropertyEditDialog extends MtpDialog {
 			}
 			record.setAttribute("value", valueField.getValue());
 			record.setAttribute("displayValue", status);
+			if ("screenTitle".equals(record.getAttribute("name"))) {
+				record.setAttribute("localizedScreenTitle", localizedStringList);
+			}
 		} else {
 
 			record.setAttribute("value", valueField.getValue());

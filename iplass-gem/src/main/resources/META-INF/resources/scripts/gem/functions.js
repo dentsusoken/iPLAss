@@ -980,16 +980,35 @@ $.fn.allInputCheck = function(){
 
 		this.each(function(){
 			var $this = $(this);
+			var $parent = $this.closest(".property-data");
 
 			//あらかじめ設定されてるイベント消しとく
 			$this.removeAttr("onblur").off("blur");
 			$this.on("blur", function () {
 				var tb = this;
 				var val = $(tb).val().trim();	//空白だけの場合にNaNになるので除去
-				if(isNaN(val)) {
-					alert(scriptContext.gem.locale.common.numcheckMsg);
+				if (val.length == 0) {
+					//未入力時はアラート出さない
 					$(tb).val("");
+					$(tb).removeClass("validate-error");
+					if ($(".validate-error", $parent).length === 0) {
+						$(".format-error", $parent).remove();
+					}
 					return true;
+				}
+				val = replaceAll(val, ",", "");
+				if(isNaN(val)) {
+					$(tb).addClass("validate-error");
+					if ($(".format-error", $parent).length === 0) {
+						var $p = $("<p />").addClass("error format-error").appendTo($parent);
+						$("<span />").addClass("error").text(scriptContext.gem.locale.common.numcheckMsg).appendTo($p);
+					}
+					return true;
+				}
+
+				$(tb).removeClass("validate-error");
+				if ($(".validate-error", $parent).length === 0) {
+					$(".format-error", $parent).remove();
 				}
 
 				if (val != null && val != "") {
@@ -2956,7 +2975,8 @@ $.fn.allInputCheck = function(){
 		var defaults = {
 			colNum:2,
 			exclude:".submit-area,.version-area",
-			deleteTarget:":has(div.deleteRow)"
+			deleteTarget:":has(div.deleteRow)",
+			cellClass:""
 		}
 		var options = $.extend(defaults, option);
 		if (!this) return false;
@@ -2966,6 +2986,9 @@ $.fn.allInputCheck = function(){
 
 			if ($this.attr("data-colNum")) {
 				options.colNum = $this.attr("data-colNum") - 0;
+			}
+			if ($this.attr("data-cell-class")) {
+				options.cellClass = $this.attr("data-cell-class");
 			}
 
 			//対象の行取得
@@ -3020,6 +3043,15 @@ $.fn.allInputCheck = function(){
 					}
 				}
 			});
+
+			// 指定列数に足りない場合は空をうめる
+			// ReferenceSectionの対応、SearchConditionSectionはBlankが設定される
+			if (colIndex !== 0) {
+				for (var i = colIndex; i < options.colNum; i++) {
+					$current.append($("<th/>").addClass(options.cellClass));
+					$current.append($("<td/>").addClass(options.cellClass));
+				}
+			}
 
 			//除外行は先頭以外をcolspanでくっつける(折り返さないように)
 			var $excludes = $(options.exclude, $this);
@@ -3152,6 +3184,7 @@ function datepicker(selector) {
 
 		function fireOnChange(input) {
 			var $input = $(input);
+			var $parent = $input.closest(".property-data"); // 詳細編集、検索画面のみ対応
 
 			//検証
 			try {
@@ -3162,14 +3195,29 @@ function datepicker(selector) {
 				if ($input.attr("data-notFillTime") !== "true") {
 					fillTime(input);
 				}
-			} catch (e) {
-				//値をクリア(メッセージ表示する前にクリアする)
-				//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
-				//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
-				$input.val("");
 
-				if (options.showErrorMessage == true) {
-					alert(e);
+				$input.removeClass("validate-error");
+				if ($(".validate-error", $parent).length === 0) {
+					$(".format-error", $parent).remove();
+				}
+			} catch (e) {
+				var suppressAlert = $input.attr("data-suppress-alert")
+				if (suppressAlert) {
+					$input.addClass("validate-error");
+					//アラートの代わりにエラーメッセージ
+					if ($(".format-error", $parent).length === 0) {
+						var $p = $("<p />").addClass("error format-error").appendTo($parent);
+						$("<span />").addClass("error").text(e).appendTo($p);
+					}
+				} else {
+					//値をクリア(メッセージ表示する前にクリアする)
+					//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
+					//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
+					$input.val("");
+
+					if (options.showErrorMessage == true) {
+						alert(e);
+					}
 				}
 			}
 
@@ -3361,6 +3409,7 @@ function timepicker(selector) {
 
 		function fireOnChange(input) {
 			var $input = $(input);
+			var $parent = $input.closest(".property-data"); // 詳細編集、検索画面のみ対応
 
 			//検証
 			try {
@@ -3369,14 +3418,29 @@ function timepicker(selector) {
 				var fixedSec = $input.attr("data-fixedSec") || options.fixedSec || "";
 				//common.js
 				validateTimePicker($input.val(), timeFormat, fixedMin, fixedSec, options.validErrMsg);
-			} catch (e) {
-				//値をクリア(メッセージ表示する前にクリアする)
-				//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
-				//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
-				$input.val("");
 
-				if (options.showErrorMessage == true) {
-					alert(e);
+				$input.removeClass("validate-error");
+				if ($(".validate-error", $parent).length === 0) {
+					$(".format-error", $parent).remove();
+				}
+			} catch (e) {
+				var suppressAlert = $input.attr("data-suppress-alert")
+				if (suppressAlert) {
+					$input.addClass("validate-error");
+					//アラートの代わりにエラーメッセージ
+					if ($(".format-error", $parent).length === 0) {
+						var $p = $("<p />").addClass("error format-error").appendTo($parent);
+						$("<span />").addClass("error").text(e).appendTo($p);
+					}
+				} else {
+					//値をクリア(メッセージ表示する前にクリアする)
+					//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
+					//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
+					$input.val("");
+
+					if (options.showErrorMessage == true) {
+						alert(e);
+					}
 				}
 			}
 
@@ -3549,6 +3613,7 @@ function datetimepicker(selector) {
 
 		function fireOnChange(input) {
 			var $input = $(input);
+			var $parent = $input.closest(".property-data"); // 詳細編集、検索画面のみ対応
 
 			//検証
 			try {
@@ -3557,14 +3622,29 @@ function datetimepicker(selector) {
 				var fixedSec = $input.attr("data-fixedSec") || options.fixedSec || "";
 				//common.js
 				validateTimestampPicker($input.val(), options.inputDateFormat, timeFormat, fixedMin, fixedSec, options.validErrMsg);
-			} catch (e) {
-				//値をクリア(メッセージ表示する前にクリアする)
-				//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
-				//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
-				$input.val("");
 
-				if (options.showErrorMessage == true) {
-					alert(e);
+				$input.removeClass("validate-error");
+				if ($(".validate-error", $parent).length === 0) {
+					$(".format-error", $parent).remove();
+				}
+			} catch (e) {
+				var suppressAlert = $input.attr("data-suppress-alert")
+				if (suppressAlert) {
+					$input.addClass("validate-error");
+					//アラートの代わりにエラーメッセージ
+					if ($(".format-error", $parent).length === 0) {
+						var $p = $("<p />").addClass("error format-error").appendTo($parent);
+						$("<span />").addClass("error").text(e).appendTo($p);
+					}
+				} else {
+					//値をクリア(メッセージ表示する前にクリアする)
+					//直接入力時にフォーカスロストすると2度呼ばれる(onCloseとblur)ためalert前にクリアする
+					//(最初のイベントで値がクリアされて次のチェックでは引っかからない)
+					$input.val("");
+
+					if (options.showErrorMessage == true) {
+						alert(e);
+					}
 				}
 			}
 

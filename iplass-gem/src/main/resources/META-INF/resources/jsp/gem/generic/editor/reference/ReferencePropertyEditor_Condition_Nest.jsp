@@ -59,7 +59,7 @@
 
 	Boolean showProperty = (Boolean) request.getAttribute(Constants.EDITOR_REF_SHOW_PROPERTY);
 	if (showProperty == null) showProperty = true;
-	
+
 	//HIDDENの場合は、UseNestConditionWithPropertyが指定されていても不可
 	boolean useNestCondition = editor.getDisplayType() != ReferenceDisplayType.HIDDEN && editor.isUseNestConditionWithProperty();
 
@@ -200,7 +200,7 @@ $(function() {
 				}
 %>
 </th>
-<td id="id_td_<c:out value="<%=idName %>"/>_<c:out value="<%=np.getPropertyName() %>"/>" class="<c:out value="<%=nestStyle%>" />">
+<td id="id_td_<c:out value="<%=idName %>"/>_<c:out value="<%=np.getPropertyName() %>"/>" class="<c:out value="<%=nestStyle%>" /> property-data">
 <%
 				PropertyEditor npEditor = np.getEditor();
 				npEditor.setPropertyName(editor.getPropertyName() + "." + _pd.getName());
@@ -208,7 +208,7 @@ $(function() {
 				if (path != null) {
 					request.setAttribute(Constants.EDITOR_STYLE, nestPropStyle);
 					request.setAttribute(Constants.EDITOR_REQUIRED, np.isRequiredNormal());
-					request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, np.getDisplayLabel());
+					request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
 					request.setAttribute(Constants.EDITOR_EDITOR, npEditor);
 					request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, _pd);
 					if (defaultSearchCond != null) {

@@ -471,6 +471,17 @@ public class DetailFormView extends FormView {
 	)
 	private boolean forceUpadte;
 
+	/** 特権実行でユーザー名を表示 */
+	@MetaFieldInfo(
+			displayName="特権実行でユーザー名を表示する",
+			displayNameKey="generic_DetailFormView_showUserNameWithPrivilegedDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1630,
+			description="ユーザー情報の参照権限が無くてもユーザー名を表示するかを指定します。",
+			descriptionKey="generic_DetailFormView_showUserNameWithPrivilegedDescriptionKey"
+	)
+	private boolean showUserNameWithPrivilegedValue;
+		
 	/** コピー対象 */
 	@MetaFieldInfo(
 			displayName="コピー対象",
@@ -1109,6 +1120,22 @@ public class DetailFormView extends FormView {
 	 */
 	public void setForceUpadte(boolean forceUpadte) {
 		this.forceUpadte = forceUpadte;
+	}
+
+	/**
+	 * 特権実行でユーザー名を表示を取得します。
+	 * @return 特権実行でユーザー名を表示
+	 */
+	public boolean isShowUserNameWithPrivilegedValue() {
+		return showUserNameWithPrivilegedValue;
+	}
+
+	/**
+	 * 特権実行でユーザー名を表示を設定します。
+	 * @param showUserNameWithPrivilegedValue 特権実行でユーザー名を表示
+	 */
+	public void setShowUserNameWithPrivilegedValue(boolean showUserNameWithPrivilegedValue) {
+		this.showUserNameWithPrivilegedValue = showUserNameWithPrivilegedValue;
 	}
 
 	/**

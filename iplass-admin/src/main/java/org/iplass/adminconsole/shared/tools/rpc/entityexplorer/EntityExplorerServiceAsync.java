@@ -27,14 +27,14 @@ import org.iplass.adminconsole.shared.base.dto.entity.EntityDataTransferTypeList
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.CrawlEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.DefragEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataCountResultInfo;
-import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataDeleteResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataListResultInfo;
-import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityUpdateAllCondition;
-import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityUpdateAllResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityTreeNode;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.impl.tools.entity.EntityDataDeleteResultInfo;
+import org.iplass.mtp.impl.tools.entity.EntityUpdateAllCondition;
+import org.iplass.mtp.impl.tools.entity.EntityUpdateAllResultInfo;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

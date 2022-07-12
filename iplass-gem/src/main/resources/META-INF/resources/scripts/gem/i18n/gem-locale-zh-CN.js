@@ -24,6 +24,10 @@ scriptContext.gem.locale.common.name = "名称";
 scriptContext.gem.locale.common.numcheckMsg = "请输入数值。";
 scriptContext.gem.locale.common.pleaseSelect = "请选择";
 scriptContext.gem.locale.common.requiredMsg = "请输入{0}。";
+scriptContext.gem.locale.common.numFormatErrorMsg = "请输入一个数字 {0}。";
+scriptContext.gem.locale.common.dateFormatErrorMsg = "请输入正确的日期 {0}。 ({1})";
+scriptContext.gem.locale.common.timeFormatErrorMsg = "请输入正确的时间 {0}。 ({1})";
+scriptContext.gem.locale.common.timestampFormatErrorMsg = "请输入正确的日期或时间 {0}。 ({1})";
 
 scriptContext.gem.locale.apendCategory("binary");
 scriptContext.gem.locale.binary.deleteLink = "删除";

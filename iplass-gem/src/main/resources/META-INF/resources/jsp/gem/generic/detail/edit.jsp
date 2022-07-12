@@ -192,6 +192,8 @@ function onclick_save(action, target, hidden) {
 		return;
 	}
 
+	if (!validation()) return;
+
 	button_onclick(action, hidden);
 	if (target) $(target).prop("disabled", true);
 }
@@ -199,6 +201,8 @@ function onclick_insert(action, target, hidden) {
 	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.detail.saveMsg')}")) {
 		return;
 	}
+
+	if (!validation()) return;
 
 	button_onclick(action, hidden);
 	if (target) $(target).prop("disabled", true);
@@ -236,6 +240,10 @@ function cancel() {
 		<%=Constants.SEARCH_COND%>:$(":hidden[name='searchCond']").val(),
 		<%=Constants.TOPVIEW_LIST_OFFSET%>:"<%=StringUtil.escapeJavaScript(topViewListOffset)%>"
 	});
+}
+function validation() {
+	<%-- common.js --%>
+	return editValidate();
 }
 </script>
 <%

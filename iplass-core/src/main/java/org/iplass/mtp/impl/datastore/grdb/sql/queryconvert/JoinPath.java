@@ -247,6 +247,7 @@ public class JoinPath {
 				
 				if (dataModelHandler.isVersioned() && !matched.isMappedBy) {
 					matched.joinRefWithDataTable = true;
+					isUse = true;
 				}
 
 //				if (pHandler.getMetaData().getVersionControlType() == VersionControlReferenceType.RECORD_BASE) {

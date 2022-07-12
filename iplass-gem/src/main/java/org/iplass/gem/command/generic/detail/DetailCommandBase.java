@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
@@ -146,28 +147,38 @@ public abstract class DetailCommandBase extends RegistrationCommandBase<DetailCo
 			}
 		}
 
-
 		if (!userOidList.isEmpty()) {
 			//UserEntityを検索してリクエストに格納
 			final Map<String, Entity> userMap = new HashMap<String, Entity>();
 
-			Query q = new Query().select(Entity.OID, Entity.NAME)
-								 .from(User.DEFINITION_NAME)
-								 .where(new In(Entity.OID, userOidList.toArray()));
-			em.searchEntity(q, new Predicate<Entity>() {
-
-				@Override
-				public boolean test(Entity dataModel) {
-					if (!userMap.containsKey(dataModel.getOid())) {
-						userMap.put(dataModel.getOid(), dataModel);
-					}
-					return true;
-				}
-			});
+			if (context.getView().isShowUserNameWithPrivilegedValue()) {
+				AuthContext.doPrivileged(() -> {
+					searchUserMap(userMap, userOidList);
+				});
+			} else {
+				searchUserMap(userMap, userOidList);
+			}
 
 			context.setAttribute(Constants.USER_INFO_MAP, userMap);
 		}
 
+	}
+
+	private void searchUserMap(Map<String, Entity> userMap, final List<String> userOidList) {
+		Query q = new Query().select(Entity.OID, Entity.NAME)
+							 .from(User.DEFINITION_NAME)
+							 .where(new In(Entity.OID, userOidList.toArray()));
+		
+		em.searchEntity(q, new Predicate<Entity>() {
+
+			@Override
+			public boolean test(Entity dataModel) {
+				if (!userMap.containsKey(dataModel.getOid())) {
+					userMap.put(dataModel.getOid(), dataModel);
+				}
+				return true;
+			}
+		});
 	}
 
 	private class UserRefData {

@@ -168,7 +168,7 @@
 			final Entity tmp = entity;
 			LoadOption loadOption = getOption(edm.get(section.getDefintionName()), section);
 
-			final LoadEntityContext leContext = handler.beforeLoadReference(entity.getDefinitionName(), loadOption, rp, LoadType.VIEW);
+			final LoadEntityContext leContext = handler.beforeLoadReference(entity.getDefinitionName(), loadOption, rp, element, LoadType.VIEW);
 			if (leContext.isDoPrivileged()) {
 				entity = AuthContext.doPrivileged(new Supplier<Entity>() {
 
@@ -180,7 +180,7 @@
 			} else {
 				entity = em.load(tmp.getOid(), tmp.getVersion(), tmp.getDefinitionName(), leContext.getLoadOption());
 			}
-			handler.afterLoadReference(entity, loadOption, rp, LoadType.VIEW);
+			handler.afterLoadReference(entity, loadOption, rp, element, LoadType.VIEW);
 		}
 	}
 
@@ -214,7 +214,7 @@
 	//定義名を参照型のものに置き換える、後でdefNameに戻す
 	String defName = (String) request.getAttribute(Constants.DEF_NAME);
 	request.setAttribute(Constants.DEF_NAME, section.getDefintionName());
-	
+
 	//出力対象の選定
 	//ReferenceSectionのNestは複数列の場合にblankなどでレイアウト調整できないので、
 	//表示対象でないものは除外して、列を詰めていく
@@ -241,7 +241,7 @@
 			}
 		}
 	}
- 
+
 %>
 
 <div id="<c:out value="<%=id %>"/>" class="<c:out value="<%=style %>"/>">
@@ -266,7 +266,7 @@
 <%
 	}
 %>
-<table class="tbl-section multi-col" data-colNum=<%=section.getColNum() %>>
+<table class="tbl-section multi-col" data-colNum=<%=section.getColNum() %> data-cell-class="<c:out value="<%=cellStyle %>"/>">
 <%
 	for (NestProperty property : nestList) {
 %>
@@ -324,7 +324,7 @@
 		}
 %>
 </th>
-<td id="id_td_<c:out value="<%=propName %>"/>" class="<c:out value="<%=cellStyle %>"/>">
+<td id="id_td_<c:out value="<%=propName %>"/>" class="<c:out value="<%=cellStyle %>"/> property-data">
 <%
 		if (showDesc) {
 %>
@@ -336,6 +336,7 @@
 			Object propValue = entity != null ? entity.getValue(propName) : null;
 			request.setAttribute(Constants.EDITOR_EDITOR, property.getEditor());
 			request.setAttribute(Constants.EDITOR_PROP_VALUE, propValue);
+			request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
 			request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
 			request.setAttribute(Constants.EDITOR_REF_NEST, true);
 			request.setAttribute(Constants.EDITOR_REF_NEST_VALUE, entity);//JoinProperty用
@@ -346,6 +347,7 @@
 <%
 			request.removeAttribute(Constants.EDITOR_EDITOR);
 			request.removeAttribute(Constants.EDITOR_PROP_VALUE);
+			request.removeAttribute(Constants.EDITOR_DISPLAY_LABEL);
 			request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 			request.removeAttribute(Constants.EDITOR_REF_NEST);
 			request.removeAttribute(Constants.EDITOR_REF_NEST_VALUE);

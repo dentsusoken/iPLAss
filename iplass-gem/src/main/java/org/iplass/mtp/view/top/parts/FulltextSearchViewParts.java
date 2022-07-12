@@ -33,12 +33,22 @@ public class FulltextSearchViewParts extends TopViewParts {
 
 	private boolean dispSearchWindow;
 
+	private boolean showUserNameWithPrivilegedValue;
+	
 	public boolean isDispSearchWindow() {
 		return dispSearchWindow;
 	}
 
 	public void setDispSearchWindow(boolean dispSearchWindow) {
 		this.dispSearchWindow = dispSearchWindow;
+	}
+	
+	public boolean isShowUserNameWithPrivilegedValue() {
+		return showUserNameWithPrivilegedValue;
+	}
+
+	public void setShowUserNameWithPrivilegedValue(boolean showUserNameWithPrivilegedValue) {
+		this.showUserNameWithPrivilegedValue = showUserNameWithPrivilegedValue;
 	}
 
 	public Map<String, String> getViewNames() {

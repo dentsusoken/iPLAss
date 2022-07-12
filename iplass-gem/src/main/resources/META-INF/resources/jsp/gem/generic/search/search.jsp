@@ -85,6 +85,9 @@
 
 	String iconTag = ViewUtil.getIconTag(view);
 
+	//数値のカンマ区切りのセパレータ
+	String separator = ViewUtil.getGroupingSeparator();
+
 	AuthContext auth = AuthContext.getCurrentContext();
 	request.setAttribute(Constants.ENTITY_DEFINITION, ed);
 
@@ -145,6 +148,7 @@
 %>
 <input class="gr-btn gr-size-02 mb10" type="button" value="${m:rs('mtp-gem-messages', 'generic.search.search.csvUpBtn')}" onclick="csvupload()" />
 <script type="text/javascript">
+separator = "<%= separator %>";
 function csvupload(){
 	var csvUpload = contextPath + "/<%=StringUtil.escapeJavaScript(csvUpload)%>";
 	submitCsvupload(csvUpload);

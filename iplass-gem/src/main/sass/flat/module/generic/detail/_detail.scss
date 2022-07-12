@@ -132,7 +132,10 @@
 	}
 	.inner-section > div > .sechead {
 		//inner-section に対して12pxのpaddingが設定されているので、タイトル上のSpaceを調整
-		padding-top: 8px;
+		padding-top: 12px;
+		&> h3 {
+			margin-bottom: 12px;;
+		}
 	}
 	.upload-button {
 		width: 100%;
@@ -220,6 +223,22 @@
 	}
 	.dateRange span:nth-child(2) > input {
 		margin-left: 4px;
+	}
+	.layout-row {
+		height: auto;
+		visibility: collapse;
+		> th.section-data {
+			height: 0 !important;
+			border: none !important;
+			padding-top: 0 !important;
+			padding-bottom: 0 !important;
+		}
+		> td.section-data {
+			height: 0 !important;
+			border: none !important;
+			padding-top: 0 !important;
+			padding-bottom: 0 !important;
+		}
 	}
 }
 .tbl-reference {

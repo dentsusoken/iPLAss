@@ -181,8 +181,9 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		SearchQueryInterrupterHandler handler = context.getSearchQueryInterrupterHandler();
 		MultipleFormat multipleFormat = context.getMultipleFormat();
 		boolean isOutputCodeValue = context.isOutputCodeValue();
+		boolean isShowUserNameWithPrivilegedValue = ((SearchContextBase) context).getForm().isShowUserNameWithPrivilegedValue();
 
-		new CsvDownloadSearchImpl(handler, columns, cacheLimit).execute(
+		new CsvDownloadSearchImpl(handler, columns, cacheLimit, isShowUserNameWithPrivilegedValue).execute(
 				query, new EntityViewTypeFormatter(this, columns, multipleFormat, isOutputCodeValue));
 	}
 
@@ -255,6 +256,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		private List<CsvColumn> columns;
 		private int cacheLimit;
 		private EntityManager em;
+		private boolean isShowUserNameWithPrivilegedValue;
 
 		private Set<String> userProperties;
 
@@ -264,15 +266,18 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		 * @param handler	SearchQueryInterrupterHandler
 		 * @param columns 列情報
 		 * @param cacheLimit １度の出力件数
+		 * @param isShowUserNameWithPrivilegedValue 特権実行でユーザ名を取得
 		 */
 		public CsvDownloadSearchImpl(
 				final SearchQueryInterrupterHandler handler,
 				final List<CsvColumn> columns,
-				final int cacheLimit) {
+				final int cacheLimit,
+				final boolean isShowUserNameWithPrivilegedValue) {
 			this.handler = handler;
 			this.columns = columns;
 			this.cacheLimit = cacheLimit;
 			this.em = ManagerLocator.manager(EntityManager.class);
+			this.isShowUserNameWithPrivilegedValue = isShowUserNameWithPrivilegedValue;
 		}
 
 		/**
@@ -392,13 +397,25 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 					 .from(User.DEFINITION_NAME)
 					 .where(new In(Entity.OID, userOides.toArray()));
 
-			em.searchEntity(q, new Predicate<Entity>() {
-				@Override
-				public boolean test(Entity entity) {
-					userMap.put(entity.getOid(), entity.getName());
-					return true;
-				}
-			});
+			if (isShowUserNameWithPrivilegedValue) {
+				AuthContext.doPrivileged(() -> {
+					em.searchEntity(q, new Predicate<Entity>() {
+						@Override
+						public boolean test(Entity entity) {
+							userMap.put(entity.getOid(), entity.getName());
+							return true;
+						}
+					});
+				});
+			} else {
+				em.searchEntity(q, new Predicate<Entity>() {
+					@Override
+					public boolean test(Entity entity) {
+						userMap.put(entity.getOid(), entity.getName());
+						return true;
+					}
+				});
+			}
 
 			for (Entity entity : tmpResult) {
 

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -62,6 +62,9 @@ public class MetaTemplateSection extends MetaSection {
 
 	/** 多言語設定情報 */
 	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+
+	/** セクション内に配置した場合に枠線を表示 */
+	private boolean dispBorderInSection;
 
 	/**
 	 * テンプレート名を取得します。
@@ -175,6 +178,22 @@ public class MetaTemplateSection extends MetaSection {
 		this.localizedTitleList = localizedTitleList;
 	}
 
+	/**
+	 * セクション内に配置した場合に枠線を表示を取得します。
+	 * @return セクション内に配置した場合に枠線を表示
+	 */
+	public boolean isDispBorderInSection() {
+		return dispBorderInSection;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を設定します。
+	 * @param dispBorderInSection セクション内に配置した場合に枠線を表示
+	 */
+	public void setDispBorderInSection(boolean dispBorderInSection) {
+		this.dispBorderInSection = dispBorderInSection;
+	}
+
 	@Override
 	public MetaSection copy() {
 		return ObjectUtil.deepCopy(this);
@@ -191,6 +210,7 @@ public class MetaTemplateSection extends MetaSection {
 		this.showLink = section.isShowLink();
 		this.hideDetail = section.isHideDetail();
 		this.hideView = section.isHideView();
+		this.dispBorderInSection = section.isDispBorderInSection();
 
 		// 言語毎の文字情報設定
 		localizedTitleList = I18nUtil.toMeta(section.getLocalizedTitleList());
@@ -207,6 +227,7 @@ public class MetaTemplateSection extends MetaSection {
 		section.setShowLink(showLink);
 		section.setHideDetail(hideDetail);
 		section.setHideView(hideView);
+		section.setDispBorderInSection(dispBorderInSection);
 		section.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 
 		return section;

@@ -65,6 +65,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor.SelectDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor"%>
+<%@ page import="org.iplass.mtp.view.generic.element.Element"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailCommandContext"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
@@ -186,7 +187,7 @@
 
 	//Linkタイプ、Labelタイプの場合の参照Entityのチェック
 	//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-	List<Entity> getLinkTypeItems(String defName, String viewName, Object propValue, ReferenceProperty pd, ReferencePropertyEditor editor) {
+	List<Entity> getLinkTypeItems(String defName, String viewName, Object propValue, ReferenceProperty pd, ReferencePropertyEditor editor, Element element) {
 		if (propValue == null) {
 			return Collections.emptyList();
 		}
@@ -201,7 +202,7 @@
 			Entity[] entities = (Entity[]) propValue;
 			if (entities != null) {
 				for (Entity refEntity : entities) {
-					Entity entity = loadItem(refEntity, editor, pd, handler, em);
+					Entity entity = loadItem(refEntity, editor, pd, handler, em, element);
 					if (entity != null) {
 						entityList.add(entity);
 					}
@@ -210,7 +211,7 @@
 		} else if (propValue instanceof Entity) {
 			Entity refEntity = (Entity) propValue;
 			if (refEntity != null) {
-				Entity entity = loadItem(refEntity, editor, pd, handler, em);
+				Entity entity = loadItem(refEntity, editor, pd, handler, em, element);
 				if (entity != null) {
 					entityList.add(entity);
 				}
@@ -226,7 +227,7 @@
 		return context.getLoadEntityInterrupterHandler();
 	}
 
-	Entity loadItem(final Entity refEntity, final ReferencePropertyEditor editor, final ReferenceProperty pd, final LoadEntityInterrupterHandler handler, final EntityManager em) {
+	Entity loadItem(final Entity refEntity, final ReferencePropertyEditor editor, final ReferenceProperty pd, final LoadEntityInterrupterHandler handler, final EntityManager em, final Element element) {
 		//念のためOIDチェック
 		if (refEntity.getOid() == null) {
 			return null;
@@ -236,7 +237,7 @@
 			Entity entity = null;
 			LoadOption loadOption = new LoadOption(false, false);
 			final String refDefName = editor.getObjectName();
-			final LoadEntityContext leContext = handler.beforeLoadReference(refDefName, loadOption, pd, LoadType.VIEW);
+			final LoadEntityContext leContext = handler.beforeLoadReference(refDefName, loadOption, pd, element, LoadType.VIEW);
 			if (leContext.isDoPrivileged()) {
 				entity = AuthContext.doPrivileged(new Supplier<Entity>() {
 
@@ -248,7 +249,7 @@
 			} else {
 				entity = em.load(refEntity.getOid(), refEntity.getVersion(), refDefName, leContext.getLoadOption());
 			}
-			handler.afterLoadReference(entity, loadOption, pd, LoadType.VIEW);
+			handler.afterLoadReference(entity, loadOption, pd, element, LoadType.VIEW);
 			return entity;
 		} else {
 			return refEntity;
@@ -324,6 +325,7 @@
 	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
 	Object propValue = request.getAttribute(Constants.EDITOR_PROP_VALUE);
 
+	Element element = (Element) request.getAttribute(Constants.ELEMENT);
 	String defName = (String)request.getAttribute(Constants.DEF_NAME);
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	ReferenceProperty pd = (ReferenceProperty) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
@@ -462,7 +464,7 @@
 		}
 
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor, element);
 
 		//ネストテーブルに使われる際に、プロパティ名にカッコとドット区切りを入れ替える
 		String _propName = propName.replace("[", "").replace("]","").replace(".", "_");
@@ -863,7 +865,7 @@ $(function() {
 		}
 
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor, element);
 
 		//ネストテーブルに使われる際に、プロパティ名にカッコとドット区切りを入れ替える
 		String _propName = propName.replace("[", "").replace("]","").replace(".", "_");
@@ -1095,7 +1097,7 @@ $(function() {
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="<c:out value="<%=(!hideDeleteButton && updatable) %>"/>" class="mb05">
 <%
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor, element);
 		int length = entityList.size();
 		//多重度が１で、登録されたデータが1件も無い場合、空エンティティ1件を作成します。
 		if (!isMultiple && length == 0) {
@@ -1278,7 +1280,7 @@ function <%=toggleAddBtnFunc%>() {
 <%
 	} else {
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor, element);
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, entityList.toArray(new Entity[0]));
 		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
 %>

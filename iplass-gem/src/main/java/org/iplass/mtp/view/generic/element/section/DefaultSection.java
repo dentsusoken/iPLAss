@@ -48,6 +48,16 @@ public class DefaultSection extends Section {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 8895232754105370651L;
 
+	/** dispBorderInSectionのデフォルト設定 */
+	@Deprecated
+	private static boolean defaultDispBorderInSection;
+
+	static {
+		 // システムプロパティorデフォルトtrueで初期化
+		String value = System.getProperty("mtp.generic.dispBorderInSection", "true");
+		defaultDispBorderInSection = Boolean.parseBoolean(value);
+	}
+
 	/** 詳細編集非表示設定 */
 	@MetaFieldInfo(
 			displayName="詳細編集非表示設定",
@@ -184,6 +194,17 @@ public class DefaultSection extends Section {
 			displayOrder=1020
 	)
 	private String lowerContents;
+
+	/** セクション内に配置した場合に枠線を表示 */
+	@MetaFieldInfo(
+			displayName="セクション内に配置した場合に枠線を表示",
+			displayNameKey="generic_element_section_DefaultSection_dispBorderInSectionDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="セクション内に配置した場合に枠線を表示するかを指定します。",
+			displayOrder=410,
+			descriptionKey="generic_element_section_DefaultSection_dispBorderInSectionDescriptionKey"
+	)
+	private boolean dispBorderInSection = defaultDispBorderInSection;
 
 	/** カスタムスタイルキー(内部用) */
 	private String styleScriptKey;
@@ -408,6 +429,22 @@ public class DefaultSection extends Section {
 	 */
 	public void setLowerContents(String lowerContents) {
 	    this.lowerContents = lowerContents;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を取得します。
+	 * @return セクション内に配置した場合に枠線を表示
+	 */
+	public boolean isDispBorderInSection() {
+		return dispBorderInSection;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を設定します。
+	 * @param dispBorderInSection セクション内に配置した場合に枠線を表示
+	 */
+	public void setDispBorderInSection(boolean dispBorderInSection) {
+		this.dispBorderInSection = dispBorderInSection;
 	}
 
 	/**

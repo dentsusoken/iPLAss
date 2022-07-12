@@ -20,9 +20,12 @@
 
 package org.iplass.mtp.impl.tools.entityport;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -162,6 +165,22 @@ public class EntityPortingService implements Service {
 	 * @throws IOException
 	 */
 	public int writeWithBinary(final OutputStream os, final MetaDataEntry entry, final EntityDataExportCondition condition, final ZipOutputStream zos) throws IOException {
+		return writeWithBinary(os, entry, condition, zos, null);
+	}
+
+	/**
+	 * EntityデータをCSV形式でExportします。
+	 *
+	 * @param os        出力先CSVファイル(Stream)
+	 * @param entry     出力対象Entity
+	 * @param condition Export条件
+	 * @param zos    Lobを追加するZipのOutputStream
+	 * @param lobPrefixPath LobをZipに追加する際のPrefixPath
+	 * @param exportBinaryDataDir Binaryデータの出力先ディレクトリ
+	 * @return 出力件数
+	 * @throws IOException
+	 */
+	public int writeWithBinary(final OutputStream os, final MetaDataEntry entry, final EntityDataExportCondition condition, final ZipOutputStream zos, String exportBinaryDataDir) throws IOException {
 
 		EntityDefinition definition = edm.get(entry.getMetaData().getName());
 
@@ -187,6 +206,7 @@ public class EntityPortingService implements Service {
 		EntityWriteOption option = new EntityWriteOption()
 				.withReferenceVersion(true)
 				.withBinary(true)
+				.exportBinaryDataDir(exportBinaryDataDir)
 				.where(where)
 				.orderBy(orderBy)
 				.dateFormat(DATE_FORMAT)
@@ -211,6 +231,21 @@ public class EntityPortingService implements Service {
 	 * @return Import結果
 	 */
 	public EntityDataImportResult importEntityData(String targetName, final InputStream is, final MetaDataEntry entry, final EntityDataImportCondition condition, final ZipFile zipFile) {
+		return importEntityData(targetName, is, entry, condition, zipFile, null);
+	}
+		
+	/**
+	 * EntityデータをImportします。
+	 *
+	 * @param targetName インポート対象の名前(Package名またはCSVファイル名)
+	 * @param is CSVファイル(Stream)
+	 * @param entry 対象Entity
+	 * @param condition Import条件
+	 * @param zipFile LOBファイルが格納されているzipファイル(nullの場合、LOBファイルは取り込みません)
+	 * @param importBinaryDataDir LOBファイルが格納されているディレクトリ(nullの場合、LOBファイルは取り込みません)
+	 * @return Import結果
+	 */
+	public EntityDataImportResult importEntityData(String targetName, final InputStream is, final MetaDataEntry entry, final EntityDataImportCondition condition, final ZipFile zipFile, final String importBinaryDataDir) {
 
 		toolLogger.info("start entity data import. {target:{}, entity:{}}", targetName, entry.getPath());
 
@@ -236,9 +271,9 @@ public class EntityPortingService implements Service {
 
 			//インポート
 			if (condition.isBulkUpdate()) {
-				bulkImportCSV(is, definition, condition, zipFile, result);
+				bulkImportCSV(is, definition, condition, zipFile, importBinaryDataDir, result);
 			} else {
-				sequenceImportCSV(is, definition, condition, zipFile, result);
+				sequenceImportCSV(is, definition, condition, zipFile, importBinaryDataDir, result);
 			}
 
 			return result;
@@ -327,7 +362,7 @@ public class EntityPortingService implements Service {
 	}
 
 	private int sequenceImportCSV(final InputStream is, final EntityDefinition definition, final EntityDataImportCondition condition,
-			final ZipFile zipFile, final EntityDataImportResult result) {
+			final ZipFile zipFile, final String importBinaryDataDir, final EntityDataImportResult result) {
 
 		return Transaction.required(new Function<Transaction, Integer>() {
 
@@ -374,7 +409,7 @@ public class EntityPortingService implements Service {
 											entity = iterator.next();
 
 											//バイナリファイルの登録
-											registBinaryReference(definition, entity, zipFile);
+											registBinaryReference(definition, entity, zipFile, importBinaryDataDir);
 
 											//Entityの登録
 											if (registEntity(condition, entity, definition, useCtrl, headerProperties, currentCount, result)){
@@ -465,9 +500,9 @@ public class EntityPortingService implements Service {
 		});
 	}
 
-	private void registBinaryReference(final EntityDefinition definition, final Entity entity, final ZipFile zipFile) {
+	private void registBinaryReference(final EntityDefinition definition, final Entity entity, final ZipFile zipFile, final String importBinaryDataDir) {
 
-		if (zipFile == null) {
+		if (zipFile == null && StringUtil.isEmpty(importBinaryDataDir)) {
 			return;
 		}
 
@@ -476,12 +511,12 @@ public class EntityPortingService implements Service {
 			Object value = entity.getValue(property.getName());
 			if (value != null) {
 				if (value instanceof BinaryReference) {
-					BinaryReference br = registBinaryReference(definition, (BinaryReference)value, zipFile);
+					BinaryReference br = registBinaryReference(definition, (BinaryReference)value, zipFile, importBinaryDataDir);
 					entity.setValue(property.getName(), br);
 				} else if (value instanceof BinaryReference[]) {
 					BinaryReference[] brArray = (BinaryReference[])value;
 					for (int i = 0; i < brArray.length; i++) {
-						brArray[i] = registBinaryReference(definition, brArray[i], zipFile);
+						brArray[i] = registBinaryReference(definition, brArray[i], zipFile, importBinaryDataDir);
 					}
 					entity.setValue(property.getName(), brArray);
 				}
@@ -489,22 +524,30 @@ public class EntityPortingService implements Service {
 		});
 	}
 
-	private BinaryReference registBinaryReference(final EntityDefinition definition, final BinaryReference br, final ZipFile zipFile) {
+	private BinaryReference registBinaryReference(final EntityDefinition definition, final BinaryReference br, final ZipFile zipFile, final String importBinaryDataDir) {
 
-		if (br != null && zipFile != null) {
+		if (br != null) {
 			String lobId = Long.toString(br.getLobId());
-
 			String entryPath = ENTITY_LOB_DIR + definition.getName() + "." + lobId;
-			ZipEntry zipEntry = zipFile.getEntry(entryPath);
-
-			if (zipEntry == null) {
-				logger.warn("Fail to find binary data. path = " + entryPath);
-			} else {
-				try (InputStream is = zipFile.getInputStream(zipEntry)){
-
+			
+			if(zipFile != null) {
+				ZipEntry zipEntry = zipFile.getEntry(entryPath);
+				
+				if (zipEntry == null) {
+					logger.warn("Fail to find binary data. path = " + entryPath);
+				} else {
+					try (InputStream is = zipFile.getInputStream(zipEntry)){
+						return em.createBinaryReference(br.getName(), br.getType(), is);
+					} catch (IOException e) {
+						logger.warn("Fail to create binary data. path = " + entryPath);
+					}
+				}
+			} else if(StringUtil.isNotEmpty(importBinaryDataDir)) {
+				File lobFile = Paths.get(importBinaryDataDir, entryPath).toFile();
+				try (InputStream is = new FileInputStream(lobFile)){
 					return em.createBinaryReference(br.getName(), br.getType(), is);
 				} catch (IOException e) {
-					logger.warn("Fail to create binary data. path = " + entryPath);
+					logger.warn("Fail to create binary data. path = " + lobFile.getName());
 				}
 			}
 		}
@@ -770,7 +813,7 @@ public class EntityPortingService implements Service {
 	}
 
 	private int bulkImportCSV(final InputStream is, final EntityDefinition definition, final EntityDataImportCondition condition,
-			final ZipFile zipFile, final EntityDataImportResult result) {
+			final ZipFile zipFile, final String importBinaryDataDir, final EntityDataImportResult result) {
 
 		return Transaction.required(new Function<Transaction, Integer>() {
 
@@ -801,7 +844,7 @@ public class EntityPortingService implements Service {
 
 								try {
 									PortingBulkUpdatable bulkUpdatable = new PortingBulkUpdatable(
-											iterator, updateProperties, definition, condition, zipFile, result);
+											iterator, updateProperties, definition, condition, zipFile, importBinaryDataDir, result);
 									em.bulkUpdate(bulkUpdatable);
 
 									return bulkUpdatable.getRegistCount();
@@ -869,23 +912,25 @@ public class EntityPortingService implements Service {
 		private EntityDefinition definition;
 		private EntityDataImportCondition condition;
 		private ZipFile zipFile;
+		String importBinaryDataDir;
 		private EntityDataImportResult result;
 
 		private int registCount = 0;
 
 		public PortingBulkUpdatable(Iterator<Entity> internal, List<String> updateProperties,
-				EntityDefinition definition, EntityDataImportCondition condition, ZipFile zipFile, EntityDataImportResult result) {
+				EntityDefinition definition, EntityDataImportCondition condition, ZipFile zipFile, String importBinaryDataDir, EntityDataImportResult result) {
 			this.internal = internal;
 			this.updateProperties = updateProperties;
 			this.definition = definition;
 			this.condition = condition;
 			this.zipFile = zipFile;
+			this.importBinaryDataDir = importBinaryDataDir;
 			this.result = result;
 		}
 
 		@Override
 		public Iterator<BulkUpdateEntity> iterator() {
-			return new BulkIterator(internal, definition, condition, zipFile);
+			return new BulkIterator(internal, definition, condition, zipFile, importBinaryDataDir);
 		}
 
 		@Override
@@ -937,15 +982,17 @@ public class EntityPortingService implements Service {
 		private EntityDefinition definition;
 		private EntityDataImportCondition condition;
 		private ZipFile zipFile;
+		private String importBinaryDataDir;
 
 		private int storeCount = 0;
 
 		private BulkIterator(Iterator<Entity> internal, EntityDefinition definition,
-				EntityDataImportCondition condition, ZipFile zipFile) {
+				EntityDataImportCondition condition, ZipFile zipFile, String importBinaryDataDir) {
 			this.internal = internal;
 			this.definition = definition;
 			this.condition = condition;
 			this.zipFile = zipFile;
+			this.importBinaryDataDir = importBinaryDataDir;
 		}
 
 		@Override
@@ -984,7 +1031,7 @@ public class EntityPortingService implements Service {
 			}
 
 			//バイナリファイルの登録
-			registBinaryReference(definition, entity, zipFile);
+			registBinaryReference(definition, entity, zipFile, importBinaryDataDir);
 
 			switch (ctrl) {
 			case EntityCsvReader.CTRL_DELETE:

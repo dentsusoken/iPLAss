@@ -84,7 +84,7 @@
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 	String execType = (String)request.getAttribute(Constants.EXEC_TYPE);
 	boolean isInsert = Constants.EXEC_TYPE_INSERT.equals(execType);
-	
+
 	String defName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 
 	//表示判定スクリプトバインド用エンティティ
@@ -94,7 +94,7 @@
 
 	if ((type == OutputType.EDIT && section.isHideDetail())
 			|| (type == OutputType.VIEW && section.isHideView())) return;
-	
+
 	//新規の場合、システム項目は非表示
 	if (isInsert && Constants.AUTO_GENERATE_DETAIL_SYSTEM_SECTION_CSS_CLASS.equals(section.getStyle())) {
 		return;
@@ -106,7 +106,8 @@
 	if (section.getColNum() == 0) {
 		section.setColNum(1);
 	}
-	String cellStyle = "section-data col" + section.getColNum();
+	String colNumCellStyle = "col" + section.getColNum();
+	String cellStyle = "section-data " + colNumCellStyle;
 
 	int rowNum = section.getElements().size() / section.getColNum();
 	if (section.getElements().size() % section.getColNum() > 0) {
@@ -164,6 +165,17 @@
 		}
 	}
 
+	//先頭行にインナーセクションが含まれるか
+	boolean hasSectionInFirstRow = false;
+	if (!elementList.isEmpty()) {
+		for (int i = 0; i < section.getColNum(); i++) {
+			Element subElement = elementList.get(i);
+			if (subElement instanceof Section) {
+				hasSectionInFirstRow = true;
+			}
+		}
+	}
+
 	String title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
 
 	//カスタムスタイル用のSectionKEYをセット
@@ -182,6 +194,23 @@
 %>
 <table class="tbl-section">
 <%
+	if (hasSectionInFirstRow) {
+		//列幅崩れ回避のダミー行出力
+%>
+<thead>
+<tr class="layout-row">
+<%
+		for (int i = 0; i < section.getColNum(); i++) {
+%>
+<th class="section-data <c:out value="<%=colNumCellStyle %>"/>"></th>
+<td class="section-data <c:out value="<%=colNumCellStyle %>"/>"></td>
+<%
+		}
+%>
+</tr>
+</thead>
+<%
+	}
 	int index = 0;
 	for (int i = 0; i < rowNum; i++) {
 		//行内のElementがすべて非表示になってないかチェック
@@ -217,8 +246,18 @@
 					if (path != null) {
 						boolean isSection = subElement instanceof Section;
 						if (isSection){
+							String sectionStyle = cellStyle;
+							if (subElement instanceof ScriptingSection && !((ScriptingSection) subElement).isDispBorderInSection()) {
+								sectionStyle = colNumCellStyle;
+							} else if (subElement instanceof TemplateSection && !((TemplateSection) subElement).isDispBorderInSection()) {
+								sectionStyle = colNumCellStyle;
+							} else if (subElement instanceof DefaultSection && !((DefaultSection) subElement).isDispBorderInSection()) {
+								sectionStyle = colNumCellStyle;
+							} else if (subElement instanceof ReferenceSection && !((ReferenceSection) subElement).isDispBorderInSection()) {
+								sectionStyle = colNumCellStyle;
+							}
 %>
-<td class="inner-section <c:out value="<%=cellStyle %>"/>" colspan="2">
+<td class="inner-section <c:out value="<%=sectionStyle %>"/>" colspan="2">
 <%
 						}
 %>

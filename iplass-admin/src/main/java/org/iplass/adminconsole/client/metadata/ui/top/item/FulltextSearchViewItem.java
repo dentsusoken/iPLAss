@@ -112,7 +112,17 @@ public class FulltextSearchViewItem extends PartsItem {
 			} else {
 				isDispSearchWindow.setValue(parts.isDispSearchWindow());
 			}
-			form.setItems(isDispSearchWindow);
+			
+			CheckboxItem isShowUserNameWithPrivilegedValue = new CheckboxItem();
+			isShowUserNameWithPrivilegedValue.setTitle("Display user name in privileged execution");
+			isShowUserNameWithPrivilegedValue.setName("showUserName");
+			if (isInitDrop) {
+				isShowUserNameWithPrivilegedValue.setValue(false);
+			} else {
+				isShowUserNameWithPrivilegedValue.setValue(parts.isShowUserNameWithPrivilegedValue());
+			}
+
+			form.setItems(isDispSearchWindow, isShowUserNameWithPrivilegedValue);
 
 			container.addMember(form);
 
@@ -147,6 +157,9 @@ public class FulltextSearchViewItem extends PartsItem {
 
 					FormItem dispSearchWindow = form.getField("dispSearchWindow");
 					parts.setDispSearchWindow(SmartGWTUtil.getBooleanValue(dispSearchWindow));
+
+					FormItem showUserName = form.getField("showUserName");
+					parts.setShowUserNameWithPrivilegedValue(SmartGWTUtil.getBooleanValue(showUserName));
 
 					destroy();
 				}
