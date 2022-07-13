@@ -269,8 +269,6 @@ public class GemTenantDS extends BaseTenantDS {
 			tenant.setTenantConfig(gem);
 		}
 
-		record = setRecordValue("displayName", tenant.getDisplayName(), valueKey, dispKey);
-		record.setAttribute("localizedStringList", tenant.getLocalizedDisplayNameList());
 		setRecordValue("tenantImageUrl", gem.getTenantImageUrl(), valueKey, dispKey);
 		setRecordValue("tenantMiniImageUrl", gem.getTenantMiniImageUrl(), valueKey, dispKey);
 		setRecordValue("tenantLargeImageUrl", gem.getTenantLargeImageUrl(), valueKey, dispKey);

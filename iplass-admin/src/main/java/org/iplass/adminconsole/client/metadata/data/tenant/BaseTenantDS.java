@@ -321,10 +321,12 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 	}
 
 	protected void setCommonFieldRecord(Tenant tenant, String valueKey, String dispKey) {
+		ListGridRecord record = null; // work用
 		setRecordValue("id", tenant.getId(), valueKey, dispKey);
 		setRecordValue("name", tenant.getName(), valueKey, dispKey);
 		setRecordValue("url", tenant.getUrl(), valueKey, dispKey);
-
+		record = setRecordValue("displayName", tenant.getDisplayName(), valueKey, dispKey);
+		record.setAttribute("localizedStringList", tenant.getLocalizedDisplayNameList());
 		setRecordValue("description", tenant.getDescription(), valueKey, dispKey);
 		setRecordValue("from", tenant.getFrom(), valueKey, dispKey);
 		setRecordValue("to", tenant.getTo(), valueKey, dispKey);

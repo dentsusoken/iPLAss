@@ -23,10 +23,14 @@ import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
 import org.iplass.adminconsole.client.metadata.data.tenant.GemTenantDS;
 import org.iplass.adminconsole.client.metadata.ui.GemMetaDataPluginController;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController;
+import org.iplass.adminconsole.client.metadata.ui.tenant.BaseTenantPropertyEditDialog;
+import org.iplass.adminconsole.client.metadata.ui.tenant.GemTenantPropertyEditDialog;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.GemTenantImportSelectDS;
 import org.iplass.adminconsole.client.tools.ui.langexplorer.GemLangExplorerSettingController;
 import org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingController;
 import org.iplass.mtp.tenant.Tenant;
+
+import com.smartgwt.client.data.Record;
 
 /**
  * GEMモジュールに依存したUIクラスを生成するFactory
@@ -54,5 +58,10 @@ public class GemBasedUIFactory implements ScreenModuleBasedUIFactory {
 	@Override
 	public LangExplorerSettingController createLangExplorerSettingController() {
 		return new GemLangExplorerSettingController();
+	}
+
+	@Override
+	public BaseTenantPropertyEditDialog createTenantPropertyEditDialog(Record record) {
+		return new GemTenantPropertyEditDialog(record);
 	}
 }

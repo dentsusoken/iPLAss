@@ -42,7 +42,6 @@ import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.client.metadata.ui.common.LocalizedScriptSettingDialog;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
@@ -70,7 +69,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
  * テナントプロパティ編集ダイアログ
  *
  */
-public class TenantPropertyEditDialog extends MtpDialog {
+public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 
 	/** 対象レコード */
 	private Record record;
@@ -79,12 +78,12 @@ public class TenantPropertyEditDialog extends MtpDialog {
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
 	/** 入力フィールド */
-	private FormItem valueField;
-	private FormItem[] valueFields;
+	protected FormItem valueField;
+	protected FormItem[] valueFields;
 
-	private List<LocalizedStringDefinition> localizedStringList;
+	protected List<LocalizedStringDefinition> localizedStringList;
 
-	public TenantPropertyEditDialog(Record record) {
+	public BaseTenantPropertyEditDialog(Record record) {
 
 		this.record = record;
 
@@ -303,8 +302,6 @@ public class TenantPropertyEditDialog extends MtpDialog {
 	@SuppressWarnings("unchecked")
 	private void createScriptDialog(DynamicForm form, TenantColType colType, boolean isLocalized,
 			String localizedPropertyName) {
-		GWT.log(localizedPropertyName);
-
 		setHeight(500);
 
 		final ScriptEditorDialogMode editorMode;
