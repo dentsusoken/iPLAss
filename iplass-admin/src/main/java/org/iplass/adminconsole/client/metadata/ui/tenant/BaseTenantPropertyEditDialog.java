@@ -72,7 +72,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 
 	/** 対象レコード */
-	private Record record;
+	protected Record record;
 
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
@@ -145,7 +145,7 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 	 * タイプ別の画面サイズを調整します。
 	 */
 	@SuppressWarnings("unchecked")
-	private DynamicForm createForm(Record record) {
+	protected DynamicForm createForm(Record record) {
 
 		final DynamicForm form = new MtpForm();
 		form.setAutoFocus(true);
@@ -300,7 +300,7 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void createScriptDialog(DynamicForm form, TenantColType colType, boolean isLocalized,
+	protected void createScriptDialog(DynamicForm form, TenantColType colType, boolean isLocalized,
 			String localizedPropertyName) {
 		setHeight(500);
 
@@ -424,7 +424,7 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 	/**
 	 * 保存処理
 	 */
-	private void setValue() {
+	protected void setValue() {
 
 		// 編集可否設定
 		boolean canEdit = record.getAttributeAsBoolean("canEdit");
@@ -510,7 +510,7 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 	 *
 	 * @param record 更新 {@link Record}
 	 */
-	private void fireDataChanged(Record record) {
+	protected void fireDataChanged(Record record) {
 		// イベントに更新MenuItemをセットして発行する
 		DataChangedEvent event = new DataChangedEvent();
 		// event.setValueObject(record);
