@@ -77,9 +77,6 @@ public class ScriptingSection extends Section {
 	)
 	private boolean hideView;
 
-
-
-
 	/** タイトル */
 	@MetaFieldInfo(
 			displayName="タイトル",
@@ -108,9 +105,6 @@ public class ScriptingSection extends Section {
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
-
-
-
 	/** id */
 	@MetaFieldInfo(
 			displayName="id",
@@ -138,9 +132,6 @@ public class ScriptingSection extends Section {
 	)
 	private boolean showLink;
 
-
-
-
 	/** スクリプト */
 	@MetaFieldInfo(
 			displayName="スクリプト",
@@ -156,6 +147,19 @@ public class ScriptingSection extends Section {
 	)
 	private String script;
 
+	/** セクション内に配置した場合に枠線を表示 */
+	@MetaFieldInfo(
+			displayName="セクション内に配置した場合に枠線を表示",
+			displayNameKey="generic_element_section_ScriptingSection_dispBorderInSectionDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="セクション内に配置した場合に枠線を表示するかを指定します。",
+			displayOrder=410,
+			descriptionKey="generic_element_section_ScriptingSection_dispBorderInSectionDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean dispBorderInSection;
 
 	/** スクリプトのキー */
 	private String key;
@@ -304,6 +308,22 @@ public class ScriptingSection extends Section {
 		}
 
 		localizedTitleList.add(localizedTitle);
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を取得します。
+	 * @return セクション内に配置した場合に枠線を表示
+	 */
+	public boolean isDispBorderInSection() {
+		return dispBorderInSection;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を設定します。
+	 * @param dispBorderInSection セクション内に配置した場合に枠線を表示
+	 */
+	public void setDispBorderInSection(boolean dispBorderInSection) {
+		this.dispBorderInSection = dispBorderInSection;
 	}
 
 }

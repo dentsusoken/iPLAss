@@ -46,7 +46,7 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.form.fields.IntegerItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -79,6 +79,7 @@ public class AutoNumberValueListDialog extends MtpDialog {
 
 		IButton btnSave = new IButton("Save");
 		btnSave.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				gridPane.save();
 			}
@@ -86,6 +87,7 @@ public class AutoNumberValueListDialog extends MtpDialog {
 
 		IButton btnCancel = new IButton("Cancel");
 		btnCancel.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
@@ -256,8 +258,10 @@ public class AutoNumberValueListDialog extends MtpDialog {
 			ListGridField unitKeyField = new ListGridField("unitKey", "Unit Key");
 
 			ListGridField valueField = new ListGridField("currentValue", "Value");
-			//数値のみ入力可能
-			IntegerItem valueInputField = new IntegerItem();
+			//数値のみ入力可能、18桁まで、IntegerItemだと、大きい数字で勝手に変更されるのでTextItemにする
+			TextItem valueInputField = new TextItem();
+			valueInputField.setKeyPressFilter("[0-9-]");
+			valueInputField.setLength(18);
 			valueField.setEditorProperties(valueInputField);
 
 			setFields(statusField, unitKeyField, valueField);
@@ -294,7 +298,8 @@ public class AutoNumberValueListDialog extends MtpDialog {
 				ListGridRecord record = new ListGridRecord();
 				record.setAttribute("status", NO_CHANGE);
 				record.setAttribute("unitKey", value.getKey());
-				record.setAttribute("currentValue",value.getValue());
+				// 値が大きいと丸まるため文字列で保持
+				record.setAttribute("currentValue", value.getValue().toString());
 				records[i] = record;
 			}
 			setData(records);
@@ -332,22 +337,27 @@ public class AutoNumberValueListDialog extends MtpDialog {
 			List<KeyValue<String, Long>> values = new ArrayList<>();
 			for (ListGridRecord record : records) {
 				String key = record.getAttribute("unitKey");
-				Integer value = record.getAttributeAsInt("currentValue");
-				if (value == null) {
-					//未入力の場合にエラーになるので-1
-					value = -1;
-				} else if (value < -1) {
-					//-1未満は-1
-					value = -1;
+
+				Long value = -1L;
+				String valueString = record.getAttribute("currentValue");
+
+				if (valueString != null) {
+					// 値が大きいと、record.getAttributeAsLongが丸まるためLong.valueOfで取得
+					value = Long.valueOf(valueString);
 				}
-				KeyValue<String, Long> keyValue = new KeyValue<>(key, Long.valueOf(value));
+				if (value < -1L) {
+					// -1未満は-1
+					value = -1L;
+				}
+
+				KeyValue<String, Long> keyValue = new KeyValue<>(key, value);
 				values.add(keyValue);
 			}
 			return values;
 		}
 
 		private void itemValueChanged(int rowNum) {
-			ListGridRecord record = (ListGridRecord)getRecord(rowNum);
+			ListGridRecord record = getRecord(rowNum);
 
 			//変更がない状態のもののみ変更ありに更新(オリジナルとの値チェックまではしない)
 			String status = record.getAttribute("status");

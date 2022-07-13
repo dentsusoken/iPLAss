@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.upload;
 
 import java.io.InputStream;
+import java.util.Set;
 
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
@@ -110,6 +111,11 @@ public final class CsvUploadCommand extends DetailCommandBase {
 
 		GemConfigService gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 		int commitLimit = gcs.getCsvUploadCommitCount();
+		boolean isDenyInsert = form.getCondSection().isCsvUploadDenyInsert();
+		boolean isDenyUpdate = form.getCondSection().isCsvUploadDenyUpdate();
+		boolean isDenyDelete = form.getCondSection().isCsvUploadDenyDelete();
+		Set<String> insertProperties = form.getCondSection().getCsvUploadInsertPropertiesSet();
+		Set<String> updateProperties = form.getCondSection().getCsvUploadUpdatePropertiesSet();
 		CsvUploadTransactionType csvUploadTransactionType = form.getCondSection().getCsvUploadTransactionType();
 
 		CsvUploadService service = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
@@ -123,7 +129,7 @@ public final class CsvUploadCommand extends DetailCommandBase {
 			// 非同期アップロード(パラメータとしてView名を設定)
 
 			try (InputStream is = file.getInputStream()){
-				service.asyncUpload(is, file.getFileName(), defName, viewName, uniqueKey,
+				service.asyncUpload(is, file.getFileName(), defName, viewName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
 						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), form.isDeleteSpecificVersion());
 
 				return Constants.CMD_EXEC_SUCCESS_ASYNC;
@@ -168,7 +174,7 @@ public final class CsvUploadCommand extends DetailCommandBase {
 			}
 
 			try (InputStream is = file.getInputStream()){
-				CsvUploadStatus result = service.upload(is, defName, uniqueKey,
+				CsvUploadStatus result = service.upload(is, defName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
 						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), form.isDeleteSpecificVersion());
 
 				request.setAttribute(Constants.MESSAGE, result.getMessage() != null ? StringUtil.escapeHtml(result.getMessage()).replace("\n", "<br/>") : null);

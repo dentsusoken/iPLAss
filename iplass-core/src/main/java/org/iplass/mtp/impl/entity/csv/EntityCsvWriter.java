@@ -22,6 +22,8 @@ package org.iplass.mtp.impl.entity.csv;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -399,36 +401,61 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 	}
 
 	private void writeBinaryData(final BinaryReference br, final ZipOutputStream binaryStore) {
-
-		//Zipが渡されている場合、Zipに追加する
-		if (binaryStore != null) {
-			try {
+		try {
+			//Zipが渡されている場合、Zipに追加する
+			if (binaryStore != null) {
 				//ファイル名をEntity定義名.LOBIDに設定
 				//(参考)データ自体はLOBIDで一意（OracleはDB単位、MySQLはテナント単位）
 				String entryName = "lobs/" + definition.getName() + "." + br.getLobId();
 
 				ZipEntry zentry = new ZipEntry(entryName);
 				binaryStore.putNextEntry(zentry);
-
-				InputStream is = em.getInputStream(br);
-
-				if (is == null) {
-					//エラーにしてしまうと作成が出力が止まるので、ログにWaringメッセージ出力
-					logger.warn("cannot output binary data. entity = " + br.getDefinitionName() + ", lobid = " + br.getLobId());
-				} else {
-					try (InputStream bis = new BufferedInputStream(is)) {
-						byte[] buf = new byte[1024];
-						int len = 0;
-						while ((len = bis.read(buf)) >= 0) {
-							binaryStore.write(buf, 0, len);
-						}
-						binaryStore.closeEntry();
+				if(write(br, binaryStore)) {
+					binaryStore.closeEntry();
+				}
+				
+			} else {
+				//出力先ディレクトリが指定されている場合はExportする
+				if(StringUtil.isNotBlank(option.getExportBinaryDataDir())) {
+					File lobDir = new File(option.getExportBinaryDataDir());
+					if (!lobDir.exists()) {
+						lobDir.mkdir();
+					}
+					//ファイル名をEntity定義名.LOBIDに設定
+					//(参考)データ自体はLOBIDで一意（OracleはDB単位、MySQLはテナント単位）
+					File lobFile = new File(option.getExportBinaryDataDir() , definition.getName() + "." + br.getLobId());
+					if (lobFile.exists()) {
+						lobFile.delete();
+					}
+					lobFile.createNewFile();
+					
+					try (FileOutputStream fileBinaryStore = new FileOutputStream(lobFile);) {
+						write(br, fileBinaryStore);
+					} catch (IOException e) {
+						throw new EntityCsvException(e);
 					}
 				}
-			} catch (IOException e) {
-				throw new EntityCsvException(e);
+			}
+		} catch (IOException e) {
+			throw new EntityCsvException(e);
+		}
+	}
+	
+	private boolean write(final BinaryReference br, final OutputStream outputStream) throws IOException {
+		InputStream is = em.getInputStream(br);
+		if (is != null) {
+			try (InputStream bis = new BufferedInputStream(is)) {
+				byte[] buf = new byte[1024];
+				int len = 0;
+				while ((len = bis.read(buf)) >= 0) {
+					outputStream.write(buf, 0, len);
+				}
+				return true;
 			}
 		}
+		//エラーにしてしまうと作成と出力が止まるので、ログにWaringメッセージ出力
+		logger.warn("cannot output binary data. entity = " + br.getDefinitionName() + ", lobid = " + br.getLobId());
+		return false;
 	}
 
 	private String toJsonString(Object value) {

@@ -27,9 +27,11 @@ import java.util.function.Predicate;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.NoPermissionException;
 import org.iplass.mtp.entity.DeleteCondition;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityConcurrentUpdateException;
 import org.iplass.mtp.entity.SearchOption;
+import org.iplass.mtp.entity.TargetVersion;
 import org.iplass.mtp.entity.UpdateCondition;
 import org.iplass.mtp.entity.UpdateCondition.UpdateValue;
 import org.iplass.mtp.entity.UpdateOption;
@@ -52,8 +54,10 @@ import org.iplass.mtp.entity.permission.EntityPropertyPermission;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.In;
+import org.iplass.mtp.entity.query.value.RowValueList;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.auth.AuthContextHolder;
@@ -132,7 +136,7 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 										resourceString("impl.entity.auth.EntityAuthInterceptor.noReference", reh.getLocalizedDisplayName()));
 							}
 							//限定条件が設定されている場合は、実際にデータ検索して、検索可能な範囲かチェック
-							checkLimitCondition(reh, value, rerPerm, user);
+							checkLimitCondition(reh, value, rerPerm, user, false);
 						}
 					}
 
@@ -142,36 +146,83 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			String oid = invocation.proceed();
 
 			//登録可能なデータ範囲か？
-			//TODO 本当は登録前に確認したい（insert後じゃないと、条件文（データ範囲条件）を付けて検索できない）
-			checkLimitCondition(eh, oid, perm, user);
+			Object key;
+			if (eh.isVersioned() && invocation.getInsertOption().isVersionSpecified()) {
+				key = new Object[] {oid, inv.getEntity().getVersion()};
+			} else {
+				key = oid;
+			}
+			checkLimitCondition(eh, key, perm, user, eh.isVersioned());
 
 			return oid;
 		}
 
 	}
 
-	private void checkLimitCondition(final EntityHandler eh, Object value, EntityPermission permission, AuthContextHolder user) {
+	private void checkLimitCondition(final EntityHandler eh, Object value, EntityPermission permission, AuthContextHolder user, boolean versionSpecified) {
+		//withVersion=trueの場合は、versioned queryを発行しバージョンまで一致するかチェック
+		
 		EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(permission);
 		if (eac.hasLimitCondition(permission, user)) {
 			Query q = new Query().select(Entity.OID).from(eh.getMetaData().getName());
+			if (versionSpecified) {
+				q.select().add(Entity.VERSION);
+			}
 			Condition cond = null;
 			if (value instanceof Entity[]) {
 				Entity[] eList = (Entity[]) value;
 				List<ValueExpression> oids = new ArrayList<ValueExpression>();
 				for (Entity e: eList) {
-					oids.add(new Literal(e.getOid()));
+					if (versionSpecified) {
+						Long ver = e.getVersion();
+						if (ver == null) {
+							ver = 0L;
+						}
+						oids.add(new RowValueList(new Literal(e.getOid()), new Literal(ver)));
+					} else {
+						oids.add(new Literal(e.getOid()));
+					}
 				}
 				if (oids.size() == 0) {
 					//ブランクの配列であった場合など
 					return;
 				}
-				In in = new In(Entity.OID);
+				In in;
+				if (versionSpecified) {
+					in = new In(new String[] {Entity.OID, Entity.VERSION});
+				} else {
+					in = new In(Entity.OID);
+				}
 				in.setValue(oids);
 				cond = in;
 			} else if (value instanceof Entity) {
-				cond = new Equals(Entity.OID, ((Entity) value).getOid());
+				if (versionSpecified) {
+					Long ver = ((Entity) value).getVersion();
+					if (ver == null) {
+						ver = 0L;
+					}
+					cond = new And(new Equals(Entity.OID, ((Entity) value).getOid()), new Equals(Entity.VERSION, ver));
+				} else {
+					cond = new Equals(Entity.OID, ((Entity) value).getOid());
+				}
 			} else {
-				cond = new Equals(Entity.OID, (String) value);
+				if (versionSpecified) {
+					String oid;
+					Long ver;
+					if (value instanceof Object[]) {
+						oid = (String) ((Object[]) value)[0];
+						ver = (Long) ((Object[]) value)[1];
+						if (ver == null) {
+							ver = 0L;
+						}
+					} else {
+						oid = (String) value;
+						ver = 0L;
+					}
+					cond = new And(new Equals(Entity.OID, oid), new Equals(Entity.VERSION, ver));
+				} else {
+					cond = new Equals(Entity.OID, (String) value);
+				}
 			}
 
 			q.where(cond);
@@ -185,7 +236,11 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 						new Predicate<Object[]>() {
 							@Override
 							public boolean test(Object[] dataModel) {
-								oids.add((String) dataModel[0]);
+								if (versionSpecified) {
+									oids.add(((String) dataModel[0]) + "." + dataModel[1]);
+								} else {
+									oids.add((String) dataModel[0]);
+								}
 								return true;
 							}
 						},
@@ -197,19 +252,54 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 
 			if (value instanceof Entity[]) {
 				for (Entity e: (Entity[]) value) {
-					if (!oids.contains(e.getOid())) {
-//						throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の" + action.getDisplayName() + "権限がありません");
+					String ct;
+					if (versionSpecified) {
+						Long ver = e.getVersion();
+						if (ver == null) {
+							ver = 0L;
+						}
+						ct = e.getOid() + "." + ver;
+					} else {
+						ct = e.getOid();
+					}
+					if (!oids.contains(ct)) {
 						throw new NoPermissionException(getPermissionExceptionMessage(eh, permission.getAction()));
 					}
 				}
 			} else if (value instanceof Entity) {
-				if (!oids.contains(((Entity) value).getOid())) {
-//					throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の" + action.getDisplayName() + "権限がありません");
+				String ct;
+				if (versionSpecified) {
+					Long ver = ((Entity) value).getVersion();
+					if (ver == null) {
+						ver = 0L;
+					}
+					ct = ((Entity) value).getOid() + "." + ver;
+				} else {
+					ct = ((Entity) value).getOid();
+				}
+				if (!oids.contains(ct)) {
 					throw new NoPermissionException(getPermissionExceptionMessage(eh, permission.getAction()));
 				}
 			} else {
-				if (!oids.contains((String) value)) {
-//					throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の" + action.getDisplayName() + "権限がありません");
+				String ct;
+				if (versionSpecified) {
+					String oid;
+					Long ver;
+					if (value instanceof Object[]) {
+						oid = (String) ((Object[]) value)[0];
+						ver = (Long) ((Object[]) value)[1];
+						if (ver == null) {
+							ver = 0L;
+						}
+					} else {
+						oid = (String) value;
+						ver = 0L;
+					}
+					ct = oid + "." + ver;
+				} else {
+					ct = (String) value;
+				}
+				if (!oids.contains(ct)) {
 					throw new NoPermissionException(getPermissionExceptionMessage(eh, permission.getAction()));
 				}
 			}
@@ -258,7 +348,7 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 
 			//更新可能なデータ範囲か？
-			checkLimitCondition(eh, inv.getEntity().getOid(), perm, user);
+			checkLimitCondition(eh, inv.getEntity(), perm, user, eh.isVersioned() && TargetVersion.SPECIFIC == inv.getUpdateOption().getTargetVersion());
 
 			//項目レベルでのチェック
 			UpdateOption updateOption = invocation.getUpdateOption();
@@ -286,7 +376,7 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 											resourceString("impl.entity.auth.EntityAuthInterceptor.noReference", reh.getLocalizedDisplayName()));
 								}
 								//限定条件が設定されている場合は、実際にデータ検索して、検索可能な範囲かチェック
-								checkLimitCondition(reh, value, refPerm, user);
+								checkLimitCondition(reh, value, refPerm, user, false);
 							}
 						}
 					}
@@ -322,7 +412,7 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 
 			//更新可能なデータ範囲か？
-			checkLimitCondition(eh, inv.getEntity().getOid(), perm, user);
+			checkLimitCondition(eh, inv.getEntity(), perm, user, eh.isVersioned() && DeleteTargetVersion.SPECIFIC == inv.getDeleteOption().getTargetVersion());
 
 			invocation.proceed();
 		}

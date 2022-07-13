@@ -21,8 +21,11 @@ package org.iplass.adminconsole.client.base.screen;
 
 import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController;
+import org.iplass.adminconsole.client.metadata.ui.tenant.BaseTenantPropertyEditDialog;
 import org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingController;
 import org.iplass.mtp.tenant.Tenant;
+
+import com.smartgwt.client.data.Record;
 
 /**
  * 画面モジュールに依存したUIクラスを生成するFactoryのインタフェース
@@ -52,6 +55,13 @@ public interface ScreenModuleBasedUIFactory {
 	 * @return { @link BaseTenantDS } のインスタンス
 	 */
 	BaseTenantDS createTenantImportSelectDataSource(Tenant tenant);
+	
+	/**
+	 * { @link BaseTenantPropertyEditDialog } のインスタンスを生成する
+	 * 
+	 * @return { @link BaseTenantPropertyEditDialog } のインスタンス
+	 */
+	BaseTenantPropertyEditDialog createTenantPropertyEditDialog(Record record);
 	
 	/**
 	 * {@link LangExplorerSettingController}  のインスタンスを生成する

@@ -101,7 +101,13 @@ public abstract class SearchListPartsCommandBase implements Command {
 		}
 
 		if (!userOidList.isEmpty()) {
-			setUserInfoMap(context, userOidList);
+			if (_context.getForm().isShowUserNameWithPrivilegedValue()) {
+				AuthContext.doPrivileged(() -> {
+					setUserInfoMap(context, userOidList);
+				});
+			} else {
+				setUserInfoMap(context, userOidList);
+			}
 		}
 		return result;
 	}

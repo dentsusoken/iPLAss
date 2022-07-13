@@ -58,6 +58,9 @@ public class I18nService implements Service {
 
 	private List<LanguageFonts> languageFonts;
 
+	/** 総称フォントリスト */
+	private List<String> genericFontFamilyList;
+	
 	public Locale selectLangLocale(Locale tenantLocale) {
 		String langTag = tenantLocale.toLanguageTag();
 		langTag = toValidLanguageTag(langTag);
@@ -93,6 +96,12 @@ public class I18nService implements Service {
 	}
 	public void setEnableLanguages(List<EnableLanguages> enableLanguages) {
 		this.enableLanguages = enableLanguages;
+	}
+	public List<String> getGenericFontFamilyList() {
+		return genericFontFamilyList;
+	}
+	public void setGenericFontFamilyList(List<String> genericFontFamilyList) {
+		this.genericFontFamilyList = genericFontFamilyList;
 	}
 	public Locale getLocale() {
 		return locale;
@@ -195,6 +204,8 @@ public class I18nService implements Service {
 		}
 
 		languageFonts = (List<LanguageFonts>) config.getBeans("languageFonts");
+
+		genericFontFamilyList = config.getValues("genericFontFamilyList");
 	}
 
 	@Override

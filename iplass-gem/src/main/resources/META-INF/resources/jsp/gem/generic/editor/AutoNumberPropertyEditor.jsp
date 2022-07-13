@@ -49,7 +49,7 @@
 	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof AutoNumberProperty)) {
 		//定義がAutoNumberPropertyでなければ表示不可
-		throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+		throw new EntityViewRuntimeException(propName + " 's editor is unsupport "
 			+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 	}
 
@@ -58,7 +58,7 @@
 		String str = propValue != null ? propValue.toString() : "";
 
 		if (editor.getDisplayType() != AutoNumberDisplayType.HIDDEN) {
-			
+
 			//カスタムスタイル
 			String customStyle = "";
 			if (OutputType.EDIT == type) {
@@ -90,11 +90,11 @@
 		if (strValues != null && strValues.length > 0) str = strValues[0];
 
 		if (editor.getDisplayType() != AutoNumberDisplayType.HIDDEN) {
-		
+
 			String[] strDefaultValues = defaultValue instanceof String[] ? (String[]) defaultValue : null;
 			String strDefault = "";
 			if (strDefaultValues != null && strDefaultValues.length > 0) strDefault = strDefaultValues[0];
-	
+
 			//カスタムスタイル
 			String customStyle = "";
 			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
@@ -152,4 +152,5 @@ $(function() {
 	request.removeAttribute(Constants.EDITOR_EDITOR);
 	request.removeAttribute(Constants.EDITOR_PROP_VALUE);
 	request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
+	request.removeAttribute(Constants.EDITOR_DISPLAY_LABEL);
 %>

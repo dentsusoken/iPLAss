@@ -288,7 +288,7 @@ public class MetaDataImport extends MtpCuiBase {
 		MetaDataImportParameter param = new MetaDataImportParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		ExecuteContext.executeAs(tc, ()->{
+		return ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			//Importファイル
@@ -365,16 +365,14 @@ public class MetaDataImport extends MtpCuiBase {
 					}
 				}
 			} while(validExecute == false);
-
-			return null;
-		});
-
-		//Consoleを削除してLogに切り替え
-		switchLog(false, true);
-
-		//Import処理実行
-		return executeTask(param, (paramA) -> {
-			return importMeta(paramA);
+			
+			//Consoleを削除してLogに切り替え
+			switchLog(false, true);
+	
+			//Import処理実行
+			return executeTask(param, (paramA) -> {
+				return importMeta(paramA);
+			});
 		});
 	}
 

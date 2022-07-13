@@ -583,7 +583,7 @@ public class PackageImport extends MtpCuiBase {
 		PackageImportParameter param = new PackageImportParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		ExecuteContext.executeAs(tc, ()->{
+		return ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			//Importファイル
@@ -798,16 +798,14 @@ public class PackageImport extends MtpCuiBase {
 					}
 				}
 			} while(validExecute == false);
-
-			return null;
-		});
-
-		//Consoleを削除してLogに切り替え
-		switchLog(false, true);
-
-		//Import処理実行
-		return executeTask(param, (paramA) -> {
-			return importPack(paramA);
+			
+			//Consoleを削除してLogに切り替え
+			switchLog(false, true);
+	
+			//Import処理実行
+			return executeTask(param, (paramA) -> {
+				return importPack(paramA);
+			});
 		});
 	}
 

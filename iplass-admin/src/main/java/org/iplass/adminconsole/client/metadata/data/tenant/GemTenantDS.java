@@ -29,6 +29,7 @@ import org.iplass.adminconsole.shared.base.rpc.tenant.TenantServiceFactory;
 import org.iplass.adminconsole.shared.metadata.dto.tenant.TenantInfo;
 import org.iplass.gem.Skin;
 import org.iplass.gem.Theme;
+import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.TenantAuthInfo;
 import org.iplass.mtp.tenant.TenantI18nInfo;
@@ -36,6 +37,7 @@ import org.iplass.mtp.tenant.TenantMailInfo;
 import org.iplass.mtp.tenant.gem.TenantGemInfo;
 import org.iplass.mtp.tenant.web.TenantWebInfo;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
@@ -43,6 +45,7 @@ import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.types.FieldType;
+import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class GemTenantDS extends BaseTenantDS {
@@ -178,11 +181,12 @@ public class GemTenantDS extends BaseTenantDS {
 		createBoolRecord("useDisplayName", category, selectList);
 		selectList = getBoolList(getRS("show"), getRS("doNotShow"));
 		createBoolRecord("dispTenantName", category, selectList);
+		createRecord("screenTitle", category, TenantColType.GROOVYTEMPLATE);
 		selectList = getSkinList(tenantInfo.getSkins());
 		createComboRecord("skin", category, selectList);
 		selectList = getThemeList(tenantInfo.getThemes());
 		createComboRecord("theme", category, selectList);
-	}
+	}	
 
 	private LinkedHashMap<String, String> getThemeList(List<Theme> themes) {
 		final LinkedHashMap<String, String> themeMap = new LinkedHashMap<>(2);
@@ -265,8 +269,6 @@ public class GemTenantDS extends BaseTenantDS {
 			tenant.setTenantConfig(gem);
 		}
 
-		record = setRecordValue("displayName", tenant.getDisplayName(), valueKey, dispKey);
-		record.setAttribute("localizedStringList", tenant.getLocalizedDisplayNameList());
 		setRecordValue("tenantImageUrl", gem.getTenantImageUrl(), valueKey, dispKey);
 		setRecordValue("tenantMiniImageUrl", gem.getTenantMiniImageUrl(), valueKey, dispKey);
 		setRecordValue("tenantLargeImageUrl", gem.getTenantLargeImageUrl(), valueKey, dispKey);
@@ -276,12 +278,15 @@ public class GemTenantDS extends BaseTenantDS {
 		setRecordValue("stylesheetFilePath", gem.getStylesheetFilePath(), valueKey, dispKey);
 		setRecordValue("useDisplayName", gem.isUseDisplayName(), valueKey, dispKey);
 		setRecordValue("dispTenantName", gem.isDispTenantName(), valueKey, dispKey);
+		record = setRecordValue("screenTitle", gem.getScreenTitle(), valueKey, dispKey);
+		record.setAttribute("localizedScreenTitle", gem.getLocalizedScreenTitle());
 		String skinValue = gem.getSkin() != null ? gem.getSkin() : "";
 		setRecordValue("skin", skinValue, valueKey, dispKey);
 		String themeValue = gem.getTheme() != null ? gem.getTheme() : "";
 		setRecordValue("theme", themeValue, valueKey, dispKey);
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	protected boolean applyToGemField(Tenant tenant, String name, String valueKey, ListGridRecord record) {
 		TenantGemInfo tenantGemInfo = tenant.getTenantConfig(TenantGemInfo.class);
 		boolean applied = true;
@@ -290,6 +295,11 @@ public class GemTenantDS extends BaseTenantDS {
 			tenantGemInfo.setUseDisplayName(record.getAttributeAsBoolean(valueKey));
 		} else if ("dispTenantName".equals(name)) {
 			tenantGemInfo.setDispTenantName(record.getAttributeAsBoolean(valueKey));
+		} else if ("screenTitle".equals(name)) {
+			tenantGemInfo.setScreenTitle(record.getAttributeAsString(valueKey));
+			Object value = record.getAttributeAsObject("localizedScreenTitle");
+			Object localizedScreenTitle = JSOHelper.convertToJava((JavaScriptObject) value);
+			tenantGemInfo.setLocalizedScreenTitle((List<LocalizedStringDefinition>) localizedScreenTitle);
 		} else if ("skin".equals(name)) {
 			tenantGemInfo.setSkin(record.getAttributeAsString(valueKey));
 		} else if ("theme".equals(name)) {

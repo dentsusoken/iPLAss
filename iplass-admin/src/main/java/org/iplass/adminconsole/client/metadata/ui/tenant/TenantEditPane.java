@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.tenant;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactory;
 import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
@@ -79,10 +80,11 @@ public class TenantEditPane extends MetaDataMainEditPane {
 	/**
 	 * コンストラクタ
 	 */
-	public TenantEditPane(final TenantMainPane owner, MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
+	public TenantEditPane(final TenantMainPane owner, MetaDataItemMenuTreeNode targetNode,
+			DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
 
-		//レイアウト設定
+		// レイアウト設定
 		setWidth100();
 
 		controller.setControllTarget(owner, this);
@@ -111,16 +113,16 @@ public class TenantEditPane extends MetaDataMainEditPane {
 				curVersion = entry.getDefinitionInfo().getVersion();
 				curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(
+						curDefinition.getClass().getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
 
-		//配置
+		// 配置
 		addMember(headerPane);
 
-
-		//表示データの取得
+		// 表示データの取得
 		initializeData();
 
 	}
@@ -130,10 +132,10 @@ public class TenantEditPane extends MetaDataMainEditPane {
 	 */
 	private void initializeData() {
 
-		//テナント情報一覧の作成
+		// テナント情報一覧の作成
 		createTenantGrid();
 
-		//ステータスチェック
+		// ステータスチェック
 		// TODO 各種URLセレクターのエラーは表示されない
 		StatusCheckUtil.statuCheck(Tenant.class.getName(), defName, this);
 	}
@@ -143,7 +145,7 @@ public class TenantEditPane extends MetaDataMainEditPane {
 	 */
 	private void createTenantGrid() {
 
-		//既にGridが表示されている場合は削除
+		// 既にGridが表示されている場合は削除
 		if (grid != null) {
 			removeMember(grid);
 			grid.destroy();
@@ -152,7 +154,7 @@ public class TenantEditPane extends MetaDataMainEditPane {
 
 		grid = controller.createGrid();
 
-		//一覧ダブルクリック処理
+		// 一覧ダブルクリック処理
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 
 			@Override
@@ -169,7 +171,6 @@ public class TenantEditPane extends MetaDataMainEditPane {
 		addMember(grid);
 	}
 
-
 	/**
 	 * 編集ダイアログ表示処理
 	 *
@@ -177,13 +178,14 @@ public class TenantEditPane extends MetaDataMainEditPane {
 	 * @param rowNum 行番号
 	 */
 	private void showPropertyEditDialog(final Record record, final int rowNum) {
-		TenantPropertyEditDialog dialog = new TenantPropertyEditDialog(record);
+		ScreenModuleBasedUIFactory factory = ScreenModuleBasedUIFactoryHolder.getFactory();
+		BaseTenantPropertyEditDialog dialog = factory.createTenantPropertyEditDialog(record);
 		dialog.addDataChangeHandler(new DataChangedHandler() {
 
 			@Override
 			public void onDataChanged(DataChangedEvent event) {
 
-				//画面の更新(対象行のみ)
+				// 画面の更新(対象行のみ)
 				grid.refreshRow(rowNum);
 
 			}
@@ -198,20 +200,21 @@ public class TenantEditPane extends MetaDataMainEditPane {
 	private void save() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_saveConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_saveTenantComment") , new BooleanCallback() {
+				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_saveTenantComment"),
+				new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					//更新対象の取得
-					Tenant tenant = dataSource.getUpdateData();
-					DefinitionEntry entry = dataSource.getTenantEntry();
-					curVersion = entry.getDefinitionInfo().getVersion();
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							// 更新対象の取得
+							Tenant tenant = dataSource.getUpdateData();
+							DefinitionEntry entry = dataSource.getTenantEntry();
+							curVersion = entry.getDefinitionInfo().getVersion();
 
-					updateTenant(tenant, true);
-				}
-			}
-		});
+							updateTenant(tenant, true);
+						}
+					}
+				});
 	}
 
 	/**
@@ -220,15 +223,15 @@ public class TenantEditPane extends MetaDataMainEditPane {
 	private void cancel() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					initializeData();
-				}
-			}
-		});
+				AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_cancelConfirmComment"),
+				new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							initializeData();
+						}
+					}
+				});
 	}
 
 	/**
@@ -238,38 +241,43 @@ public class TenantEditPane extends MetaDataMainEditPane {
 	 */
 	private void updateTenant(final Tenant tenant, boolean checkVersion) {
 
-		service.updateTenant(TenantInfoHolder.getId(), tenant, curVersion, checkVersion, true, new AsyncCallback<Boolean>() {
+		service.updateTenant(TenantInfoHolder.getId(), tenant, curVersion, checkVersion, true,
+				new AsyncCallback<Boolean>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				if (caught instanceof MetaVersionCheckException) {
-					SC.ask(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_overwriteConfirm"),
-							AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_overwriteConfirmComment"), new BooleanCallback() {
+					@Override
+					public void onFailure(Throwable caught) {
+						if (caught instanceof MetaVersionCheckException) {
+							SC.ask(AdminClientMessageUtil
+									.getString("ui_metadata_tenant_TenantEditPane_overwriteConfirm"),
+									AdminClientMessageUtil
+											.getString("ui_metadata_tenant_TenantEditPane_overwriteConfirmComment"),
+									new BooleanCallback() {
 
-						@Override
-						public void execute(Boolean value) {
+										@Override
+										public void execute(Boolean value) {
 
-							if (value) {
-								updateTenant(tenant, false);
-							}
+											if (value) {
+												updateTenant(tenant, false);
+											}
+										}
+									});
+						} else {
+							// 失敗時
+							SC.warn(AdminClientMessageUtil.getString(
+									"ui_metadata_tenant_TenantEditPane_failedToSaveTenant") + caught.getMessage());
 						}
-					});
-				} else {
-					// 失敗時
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_failedToSaveTenant") + caught.getMessage());
-				}
-			}
+					}
 
-			@Override
-			public void onSuccess(Boolean result) {
-				SC.say(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_completion"),
-						AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_tenantSave"));
+					@Override
+					public void onSuccess(Boolean result) {
+						SC.say(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_completion"),
+								AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_tenantSave"));
 
-				//TenantInfoHolderのリロード
-				reloadTenantInfoHolder();
-			}
+						// TenantInfoHolderのリロード
+						reloadTenantInfoHolder();
+					}
 
-		});
+				});
 	}
 
 	private void reloadTenantInfoHolder() {
@@ -277,14 +285,15 @@ public class TenantEditPane extends MetaDataMainEditPane {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_failedToSaveTenant") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantEditPane_failedToSaveTenant")
+						+ caught.getMessage());
 			}
 
 			@Override
 			public void onSuccess(TenantEnv result) {
 				TenantInfoHolder.reload(result);
 
-				//再表示
+				// 再表示
 				initializeData();
 			}
 		});

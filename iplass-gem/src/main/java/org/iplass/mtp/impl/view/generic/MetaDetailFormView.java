@@ -149,6 +149,9 @@ public class MetaDetailFormView extends MetaFormView {
 	/** 更新時に強制的に更新処理を行う */
 	private boolean forceUpadte;
 
+	/** 特権実行でユーザー名を表示 */
+	private boolean showUserNameWithPrivilegedValue;
+
 	/** コピー対象 */
 	private CopyTarget copyTarget;
 
@@ -683,6 +686,22 @@ public class MetaDetailFormView extends MetaFormView {
 	}
 
 	/**
+	 * 特権実行でユーザー名を表示を取得します。
+	 * @return 特権実行でユーザー名を表示
+	 */
+	public boolean isShowUserNameWithPrivilegedValue() {
+		return showUserNameWithPrivilegedValue;
+	}
+
+	/**
+	 * 特権実行でユーザー名を表示を設定します。
+	 * @param showUserNameWithPrivilegedValue 特権実行でユーザー名を表示
+	 */
+	public void setShowUserNameWithPrivilegedValue(boolean showUserNameWithPrivilegedValue) {
+		this.showUserNameWithPrivilegedValue = showUserNameWithPrivilegedValue;
+	}
+
+	/**
 	 * JavaScriptを取得します。
 	 * @return JavaScript
 	 */
@@ -873,13 +892,14 @@ public class MetaDetailFormView extends MetaFormView {
 		purgeCompositionedEntity = dForm.isPurgeCompositionedEntity();
 		loadDefinedReferenceProperty = dForm.isLoadDefinedReferenceProperty();
 		forceUpadte = dForm.isForceUpadte();
+		showUserNameWithPrivilegedValue = dForm.isShowUserNameWithPrivilegedValue();
 		javaScript = dForm.getJavaScript();
 		validJavascriptDetailPage = dForm.isValidJavascriptDetailPage();
 		validJavascriptViewPage = dForm.isValidJavascriptViewPage();
 		copyTarget = dForm.getCopyTarget();
 		interrupterName = dForm.getInterrupterName();
 		loadEntityInterrupterName = dForm.getLoadEntityInterrupterName();
-		detailFormViewHandlerName = dForm.getDetailFormViewHandlerName();
+		detailFormViewHandlerName = dForm.getDetailFormViewHandlerName() == null ? null : new ArrayList<>(dForm.getDetailFormViewHandlerName());
 		customCopyScript = dForm.getCustomCopyScript();
 		initScript = dForm.getInitScript();
 	}
@@ -926,10 +946,11 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setPurgeCompositionedEntity(purgeCompositionedEntity);
 		form.setLoadDefinedReferenceProperty(loadDefinedReferenceProperty);
 		form.setForceUpadte(forceUpadte);
+		form.setShowUserNameWithPrivilegedValue(showUserNameWithPrivilegedValue);
 		form.setJavaScript(javaScript);
 		form.setInterrupterName(interrupterName);
 		form.setLoadEntityInterrupterName(loadEntityInterrupterName);
-		form.setDetailFormViewHandlerName(detailFormViewHandlerName);
+		form.setDetailFormViewHandlerName(detailFormViewHandlerName == null ? null : new ArrayList<>(detailFormViewHandlerName));
 		form.setCustomCopyScript(customCopyScript);
 		form.setInitScript(initScript);
 		if (validJavascriptDetailPage != null) {

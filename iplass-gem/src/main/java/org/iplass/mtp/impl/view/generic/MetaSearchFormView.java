@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.view.generic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -86,6 +87,12 @@ public class MetaSearchFormView extends MetaFormView {
 
 	/** 特定バージョンを削除するか */
 	private boolean deleteSpecificVersion;
+	
+	/** 特権実行でユーザー名を表示 */
+	private boolean showUserNameWithPrivilegedValue;
+
+	/** Entity権限における限定条件の除外設定 */
+	private List<String> withoutConditionReferenceName;
 
 	/** EQLカスタム処理クラス名 */
 	private String interrupterName;
@@ -334,6 +341,38 @@ public class MetaSearchFormView extends MetaFormView {
 	}
 
 	/**
+	 * 特権実行でユーザー名を表示を取得します。
+	 * @return 特権実行でユーザー名を表示
+	 */
+	public boolean isShowUserNameWithPrivilegedValue() {
+		return showUserNameWithPrivilegedValue;
+	}
+
+	/**
+	 * 特権実行でユーザー名を表示を設定します。
+	 * @param showUserNameWithPrivilegedValue 特権実行でユーザー名を表示
+	 */
+	public void setShowUserNameWithPrivilegedValue(boolean showUserNameWithPrivilegedValue) {
+		this.showUserNameWithPrivilegedValue = showUserNameWithPrivilegedValue;
+	}
+
+	/**
+	 * Entity権限における限定条件の除外設定を取得します。
+	 * @return Entity権限における限定条件の除外設定
+	 */
+	public List<String> getWithoutConditionReferenceName() {
+		return withoutConditionReferenceName;
+	}
+
+	/**
+	 * Entity権限における限定条件の除外設定を設定します。
+	 * @param withoutConditionReferenceName Entity権限における限定条件の除外設定
+	 */
+	public void setWithoutConditionReferenceName(List<String> withoutConditionReferenceName) {
+		this.withoutConditionReferenceName = withoutConditionReferenceName;
+	}
+
+	/**
 	 * EQLカスタム処理クラス名を取得します。
 	 * @return EQLカスタム処理クラス名
 	 */
@@ -474,9 +513,13 @@ public class MetaSearchFormView extends MetaFormView {
 		javaScript = sForm.getJavaScript();
 		isPurge = sForm.isPurge();
 		deleteSpecificVersion = sForm.isDeleteSpecificVersion();
+		showUserNameWithPrivilegedValue = sForm.isShowUserNameWithPrivilegedValue();
+		withoutConditionReferenceName =
+				sForm.getWithoutConditionReferenceName() == null ? null : new ArrayList<>(sForm.getWithoutConditionReferenceName());
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
-		searchFormViewHandlerName = sForm.getSearchFormViewHandlerName();
+		searchFormViewHandlerName =
+				sForm.getSearchFormViewHandlerName() == null ? null : new ArrayList<>(sForm.getSearchFormViewHandlerName());
 		if (sForm.getTopSection1() != null) {
 			topSection1 = MetaSection.createInstance(sForm.getTopSection1());
 			topSection1.applyConfig(sForm.getTopSection1(), definitionId);
@@ -519,10 +562,13 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setJavaScript(javaScript);
 		form.setPurge(isPurge);
 		form.setDeleteSpecificVersion(deleteSpecificVersion);
+		form.setShowUserNameWithPrivilegedValue(showUserNameWithPrivilegedValue);
+		form.setWithoutConditionReferenceName(
+				withoutConditionReferenceName == null ? null : new ArrayList<>(withoutConditionReferenceName));
 		form.setInterrupterName(interrupterName);
 		form.setUseInterrupterForCsvDownload(useInterrupterForCsvDownload);
-		form.setSearchFormViewHandlerName(searchFormViewHandlerName);
-
+		form.setSearchFormViewHandlerName(
+				searchFormViewHandlerName == null ? null : new ArrayList<>(searchFormViewHandlerName));
 		if (topSection1 != null) {
 			form.setTopSection1((Section) topSection1.currentConfig(definitionId));
 		}

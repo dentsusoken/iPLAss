@@ -356,7 +356,7 @@ function searchSelectList(webapi, searchType, formName, func) {
 	});
 }
 
-function searchEntityList(webapi, defName, viewName, filterName, offset, sortKey, sortType, func) {
+function searchEntityList(webapi, defName, viewName, filterName, offset, sortKey, sortType, searchAsync, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
@@ -369,11 +369,12 @@ function searchEntityList(webapi, defName, viewName, filterName, offset, sortKey
 		params += ",\"sortType\":\"" + sortType + "\"";
 	}
 	params += "}";
+
 	postAsync(webapi, params, function(results){
 		var count = results.count;
 		var list = results.htmlData;
 		if (func && $.isFunction(func)) func.call(this, count, list);
-	});
+	}, searchAsync == "true" ? true : false);
 }
 
 function searchNameList(webapi, defName, viewName, filterName, offset, func) {

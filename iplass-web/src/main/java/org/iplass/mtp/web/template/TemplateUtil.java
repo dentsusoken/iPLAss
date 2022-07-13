@@ -50,6 +50,7 @@ import org.iplass.mtp.message.MessageItem;
 import org.iplass.mtp.message.MessageManager;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
+import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.ResourceBundleUtil;
 import org.iplass.mtp.util.StringUtil;
 
@@ -481,11 +482,29 @@ public class TemplateUtil {
 	}
 
 	private static String getLangFont(LanguageFonts fonts) {
+		List<String> genericFontFamilyList = ServiceRegistry.getRegistry().getService(I18nService.class)
+				.getGenericFontFamilyList();
+		boolean isNotEmptyGenericFontFamilyList = CollectionUtil.isNotEmpty(genericFontFamilyList);
+
+		String genericFontFamily = null;
+
 		StringBuilder sb = new StringBuilder();
 		for (String font : fonts.getFonts()) {
-			if (sb.length() != 0) sb.append(",");
+			if (isNotEmptyGenericFontFamilyList && genericFontFamilyList.contains(font)) {
+				genericFontFamily = font;
+				continue;
+			}
+
+			if (sb.length() != 0) {
+				sb.append(",");
+			}
 			sb.append("\"").append(font).append("\"");
 		}
+
+		if (genericFontFamily != null) {
+			sb.append(",").append(genericFontFamily);
+		}
+
 		return sb.toString();
 	}
 }

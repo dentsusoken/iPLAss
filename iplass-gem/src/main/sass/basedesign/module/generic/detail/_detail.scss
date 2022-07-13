@@ -54,8 +54,10 @@
 		}
 		&.inner-section {
 			border-left: 1px solid $color_quill_gray_approx;
-			padding: 9px 7px;
 			vertical-align: top; //複数列のsection配置の片方をCloseした場合に上に寄せる
+			&.section-data {
+				padding: 9px 7px;
+			}
 		}
 	}
 	input {
@@ -95,6 +97,22 @@
 	}
 	.dateRange span:nth-child(2) > input  {
 		margin-left: 4px;
+	}
+	.layout-row {
+		height: auto;
+		visibility: collapse;
+		> th.section-data {
+			height: 0 !important;
+			border: none !important;
+			padding-top: 0 !important;
+			padding-bottom: 0 !important;
+		}
+		> td.section-data {
+			height: 0 !important;
+			border: none !important;
+			padding-top: 0 !important;
+			padding-bottom: 0 !important;
+		}
 	}
 }
 //nesttable

@@ -29,9 +29,9 @@ import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataCountResultInfo;
-import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataDeleteResultInfo;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceAsync;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceFactory;
+import org.iplass.mtp.impl.tools.entity.EntityDataDeleteResultInfo;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.VerticalAlignment;

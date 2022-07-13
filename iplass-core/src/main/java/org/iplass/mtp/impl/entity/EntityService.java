@@ -78,6 +78,7 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 	public static final String ENTITY_NAME = "Entity";
 
 	private static final Logger logger = LoggerFactory.getLogger(EntityService.class);
+	private static Logger fatalLogger = LoggerFactory.getLogger("mtp.fatal");
 
 	public static class TypeMap extends DefinitionMetaDataTypeMap<EntityDefinition, MetaEntity> {
 		public TypeMap() {
@@ -241,7 +242,11 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 				}
 
 			} finally {
-				configDataModel.finish(res, newMeta, prevMeta, context);
+				try {
+					configDataModel.finish(res, newMeta, prevMeta, context);
+				} catch (RuntimeException e) {
+					fatalLogger.error("Entity metadata update process could not be completed correctly.:" + e.toString(), e);
+				}
 			}
 
 		}
@@ -407,10 +412,13 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 
 
 	private void doFinish(final boolean modifyResult, final ApplyMetaDataStrategy st, final int tenantId, final MetaEntity newOne, final MetaEntity previous, final EntityContext context) {
-
-		Transaction.requiresNew(t -> {
-			st.finish(modifyResult, newOne, previous, context);
-		});
+		try {
+			Transaction.requiresNew(t -> {
+				st.finish(modifyResult, newOne, previous, context);
+			});
+		} catch (RuntimeException e) {
+			fatalLogger.error("Entity metadata update process could not be completed correctly. cause:" + e.toString(), e);
+		}
 	}
 
 	public Future<String> updateDataModelSchema(final EntityDefinition definition) {

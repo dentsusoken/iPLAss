@@ -108,14 +108,14 @@
 
 	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
 		//HIDDEN以外
-		
+
 		String[] defTmp = split(_defaultValue);
 		String defDate = defTmp[0];
 		String defHour = defTmp[1];
 		String defMin = defTmp[2];
 		String defSec = defTmp[3];
 		String defStr = defTmp[5];
-	
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
@@ -132,7 +132,7 @@
 
 		String onchange = "timestampSelectChange('" + StringUtil.escapeJavaScript(_propName) + "')";
 %>
-<input type="text" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="d_<c:out value="<%=_propName %>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-notFillTime="<%=editor.isNotFillTime()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<input type="text" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="d_<c:out value="<%=_propName %>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-notFillTime="<%=editor.isNotFillTime()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
 <%
 		String defaultHour = "00";
 		String _defaultHour = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_HOUR);
@@ -235,7 +235,8 @@ $(function() {
 	<%-- common.js --%>
 	addNormalConditionItemResetHandler(function(){
 		var defaultDate = convertToLocaleDateString("<%= StringUtil.escapeJavaScript(defDate) %>");
-		$("#d_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val(defaultDate);
+		var $date = $("#d_" + es("<%=StringUtil.escapeJavaScript(_propName)%>"));
+		$date.val(defaultDate);
 <%
 		if (TimeDispRange.isDispHour(editor.getDispRange())) {
 %>
@@ -254,6 +255,10 @@ $(function() {
 		}
 %>
 		$("#i_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=defStr %>");
+
+		var $parent = $date.closest(".property-data");
+		$date.removeClass("validate-error");
+		$(".format-error", $parent).remove();
 	});
 	<%-- common.js --%>
 	addCommonValidator(function() {

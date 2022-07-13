@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import org.iplass.mtp.impl.web.RequestPath.PathType;
 import org.iplass.mtp.impl.web.fileupload.FileScanner;
+import org.iplass.mtp.impl.web.fileupload.MagicByteChecker;
 import org.iplass.mtp.impl.web.mdc.HttpHeaderMdcValueResolver;
 import org.iplass.mtp.impl.web.mdc.MdcValueResolver;
 import org.iplass.mtp.impl.web.mdc.RemoteAddrMdcValueResolver;
@@ -119,8 +120,11 @@ public class WebFrontendService implements Service {
 	/** ウィルススキャン実行 */
 	private FileScanner uploadFileScanner;
 
-	/** ExecMagicByteCheck実施 */
+	/** ExecMagicByteCheck実施するか */
 	private boolean isExecMagicByteCheck;
+	
+	/** ExecMagicByteCheck実施 */
+	private MagicByteChecker magicByteChecker;
 
 	/** ダイレクトアクセス時のポート */
 	private String directAccessPort;
@@ -201,6 +205,10 @@ public class WebFrontendService implements Service {
 
 	public boolean isExecMagicByteCheck() {
 		return isExecMagicByteCheck;
+	}
+
+	public MagicByteChecker getMagicByteChecker() {
+		return magicByteChecker;
 	}
 
 	public FileScanner getUploadFileScanner() {
@@ -325,6 +333,8 @@ public class WebFrontendService implements Service {
 		uploadFileScanner = (FileScanner) config.getBean("uploadFileScanner");
 
 		isExecMagicByteCheck = Boolean.valueOf(config.getValue("isExecMagicByteCheck"));
+		
+		magicByteChecker = config.getValue("magicByteChecker", MagicByteChecker.class);
 
 		directAccessPort = config.getValue("directAccessPort");
 

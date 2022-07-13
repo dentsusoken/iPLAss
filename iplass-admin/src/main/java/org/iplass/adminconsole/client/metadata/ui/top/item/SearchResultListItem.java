@@ -53,6 +53,7 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -124,6 +125,7 @@ public class SearchResultListItem extends PartsItem {
 		private ComboBoxItem viewForDetailField;
 		private SelectItem filterField;
 		private IntegerItem heightField;
+		private CheckboxItem searchAsync;
 
 		private List<DataChangedHandler> handlers = new ArrayList<>();
 
@@ -202,8 +204,11 @@ public class SearchResultListItem extends PartsItem {
 			heightField = new IntegerItem("height", "Height");
 			heightField.setWidth("100%");
 			heightField.setValue(parts.getHeight());
+			
+			searchAsync = new CheckboxItem("searchAsync", "Search asynchronously");
+			searchAsync.setValue(parts.isSearchAsync());
 
-			form.setItems(entityField, viewField, viewForLinkField, viewForDetailField, filterField, titleField, iconTagField, styleField, heightField);
+			form.setItems(entityField, viewField, viewForLinkField, viewForDetailField, filterField, titleField, iconTagField, styleField, heightField, searchAsync);
 
 			container.addMember(form);
 
@@ -222,6 +227,7 @@ public class SearchResultListItem extends PartsItem {
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
 						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
 						parts.setHeight(heightField.getValueAsInteger());
+						parts.setSearchAsync(searchAsync.getValueAsBoolean());
 						parts.setLocalizedTitleList(titleField.getLocalizedList());
 						fireDataChanged();
 						destroy();

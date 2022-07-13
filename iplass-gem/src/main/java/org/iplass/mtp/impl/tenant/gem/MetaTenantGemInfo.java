@@ -20,22 +20,48 @@
 
 package org.iplass.mtp.impl.tenant.gem;
 
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.i18n.I18nUtil;
+import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
+import org.iplass.mtp.impl.script.GroovyScriptEngine;
+import org.iplass.mtp.impl.script.ScriptEngine;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
+import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
+import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.tenant.MetaTenant.MetaTenantHandler;
 import org.iplass.mtp.impl.tenant.MetaTenantConfig;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.gem.TenantGemInfo;
+import org.iplass.mtp.web.template.TemplateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 
 	private static final long serialVersionUID = -8193028509449590924L;
+	
+	private static Logger logger = LoggerFactory.getLogger(MetaTenantGemInfo.class);
 
 	/** テナント名の利用有無 */
 	private boolean useDisplayName = true;
 
 	/** ログイン画面、エラー画面でテナント名を表示するか否か */
 	private boolean dispTenantName;
+	
+	/** テナント名制御Script */
+	private String screenTitle;
+	
+	/** 多言語設定用テナント名制御Script */
+	private List<MetaLocalizedString> localizedScreenTitle;
 
 	/** スキン */
 	private String skin;
@@ -98,6 +124,22 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 */
 	public void setDispTenantName(boolean dispTenantName) {
 		this.dispTenantName = dispTenantName;
+	}
+	
+	public String getScreenTitle() {
+		return screenTitle;
+	}
+
+	public void setScreenTitle(String screenTitle) {
+		this.screenTitle = screenTitle;
+	}
+
+	public List<MetaLocalizedString> getLocalizedScreenTitle() {
+		return localizedScreenTitle;
+	}
+
+	public void setLocalizedScreenTitle(List<MetaLocalizedString> localizedScreenTitle) {
+		this.localizedScreenTitle = localizedScreenTitle;
 	}
 
 	/**
@@ -237,6 +279,8 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	public void applyConfig(TenantGemInfo definition) {
 		setUseDisplayName(definition.isUseDisplayName());
 		setDispTenantName(definition.isDispTenantName());
+		setScreenTitle(definition.getScreenTitle());
+		setLocalizedScreenTitle(I18nUtil.toMeta(definition.getLocalizedScreenTitle()));
 		setSkin(definition.getSkin());
 		setTheme(definition.getTheme());
 		setTenantImageUrl(definition.getTenantImageUrl());
@@ -252,6 +296,8 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 		TenantGemInfo definition = new TenantGemInfo();
 		definition.setUseDisplayName(useDisplayName);
 		definition.setDispTenantName(dispTenantName);
+		definition.setScreenTitle(getScreenTitle());
+		definition.setLocalizedScreenTitle(I18nUtil.toDef(getLocalizedScreenTitle()));
 		definition.setSkin(getSkin() != null ? getSkin().toLowerCase() : null);
 		definition.setTheme(getTheme() != null ? getTheme().toLowerCase(): null);
 		definition.setTenantImageUrl(getTenantImageUrl());
@@ -269,8 +315,83 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	}
 
 	public class MetaTenantGemInfoRuntime extends MetaTenantConfigRuntime {
+		
+		/** テナント名制御Script */
+		private GroovyTemplate screenTitleTemplate;
+		
+		/** 多言語設定用テナント名制御Script */
+		private Map<String, GroovyTemplate> localizedScreenTitleTemplate;
+		
+		private ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 
 		public MetaTenantGemInfoRuntime() {
+			if (screenTitle != null) {
+				try {
+					String scriptName = "MetaTenantGemInfo_screenTitle";
+					this.screenTitleTemplate = GroovyTemplateCompiler.compile(
+							screenTitle,
+							scriptName, (GroovyScriptEngine) scriptEngine);
+				} catch (Exception e) {
+					setIllegalStateException(new RuntimeException(e));
+				}
+			}
+			if (localizedScreenTitle != null) {
+				try {
+					this.localizedScreenTitleTemplate = localizedScreenTitle.stream()
+					.collect(Collectors.toMap(
+							MetaLocalizedString::getLocaleName,
+							l -> GroovyTemplateCompiler.compile(
+									l.getStringValue(),
+									"MetaTenantGemInfo_screenTitle_" + l.getLocaleName(), 
+									(GroovyScriptEngine) scriptEngine)));
+				} catch (Exception e) {
+					setIllegalStateException(new RuntimeException(e));
+				}
+			}
+		}
+		
+		public String getScreenTitle() {
+			String screenTitleByTemplate = getScreenTitleByTemplate(); 
+			if(!StringUtils.isEmpty(screenTitleByTemplate)) {
+				return screenTitleByTemplate;
+			}
+			Tenant tenant = TemplateUtil.getTenant();
+			String dispTenantName = tenant.getDisplayName();
+
+			dispTenantName = TemplateUtil.getMultilingualString(dispTenantName, tenant.getLocalizedDisplayNameList());
+
+			if (StringUtils.isEmpty(dispTenantName)){
+				dispTenantName = tenant.getName();
+			}
+			return dispTenantName;
+		}
+		
+		private String getScreenTitleByTemplate() {
+			GroovyTemplate template = null;
+			String lang = ExecuteContext.getCurrentContext().getLanguage();
+
+			if (lang != null && localizedScreenTitleTemplate != null && localizedScreenTitleTemplate.containsKey(lang)) {
+				template = localizedScreenTitleTemplate.get(lang);
+			} else if (screenTitleTemplate != null) {
+				template = screenTitleTemplate;
+			}
+			
+			if(template == null) {
+				return null;
+			}
+			
+			Map<String, Object> binding = new HashMap<String, Object>();
+			binding.put("request", TemplateUtil.getRequestContext());
+			
+			StringWriter sw = new StringWriter();
+			try {
+				template.doTemplate(new GroovyTemplateBinding(sw, binding));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				return null;
+			}
+			String tenantName = sw.toString();
+			return tenantName;
 		}
 
 		@Override

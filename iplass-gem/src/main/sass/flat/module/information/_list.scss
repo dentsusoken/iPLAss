@@ -67,3 +67,10 @@
 		margin: 0 10px;
 	}
 }
+.info-list {
+	.info-block {
+		border: 1px solid $color_gallery_approx;
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+}
