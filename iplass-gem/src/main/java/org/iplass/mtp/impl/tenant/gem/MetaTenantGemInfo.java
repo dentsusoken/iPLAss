@@ -27,8 +27,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.i18n.I18nUtil;
+import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.ScriptEngine;
@@ -60,7 +61,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	private String screenTitle;
 	
 	/** 多言語設定用テナント名制御Script */
-	private List<LocalizedStringDefinition> localizedScreenTitle;
+	private List<MetaLocalizedString> localizedScreenTitle;
 
 	/** スキン */
 	private String skin;
@@ -133,11 +134,11 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 		this.screenTitle = screenTitle;
 	}
 
-	public List<LocalizedStringDefinition> getLocalizedScreenTitle() {
+	public List<MetaLocalizedString> getLocalizedScreenTitle() {
 		return localizedScreenTitle;
 	}
 
-	public void setLocalizedScreenTitle(List<LocalizedStringDefinition> localizedScreenTitle) {
+	public void setLocalizedScreenTitle(List<MetaLocalizedString> localizedScreenTitle) {
 		this.localizedScreenTitle = localizedScreenTitle;
 	}
 
@@ -279,7 +280,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 		setUseDisplayName(definition.isUseDisplayName());
 		setDispTenantName(definition.isDispTenantName());
 		setScreenTitle(definition.getScreenTitle());
-		setLocalizedScreenTitle(definition.getLocalizedScreenTitle());
+		setLocalizedScreenTitle(I18nUtil.toMeta(definition.getLocalizedScreenTitle()));
 		setSkin(definition.getSkin());
 		setTheme(definition.getTheme());
 		setTenantImageUrl(definition.getTenantImageUrl());
@@ -296,7 +297,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 		definition.setUseDisplayName(useDisplayName);
 		definition.setDispTenantName(dispTenantName);
 		definition.setScreenTitle(getScreenTitle());
-		definition.setLocalizedScreenTitle(getLocalizedScreenTitle());
+		definition.setLocalizedScreenTitle(I18nUtil.toDef(getLocalizedScreenTitle()));
 		definition.setSkin(getSkin() != null ? getSkin().toLowerCase() : null);
 		definition.setTheme(getTheme() != null ? getTheme().toLowerCase(): null);
 		definition.setTenantImageUrl(getTenantImageUrl());
@@ -338,7 +339,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 				try {
 					this.localizedScreenTitleTemplate = localizedScreenTitle.stream()
 					.collect(Collectors.toMap(
-							LocalizedStringDefinition::getLocaleName,
+							MetaLocalizedString::getLocaleName,
 							l -> GroovyTemplateCompiler.compile(
 									l.getStringValue(),
 									"MetaTenantGemInfo_screenTitle_" + l.getLocaleName(), 
