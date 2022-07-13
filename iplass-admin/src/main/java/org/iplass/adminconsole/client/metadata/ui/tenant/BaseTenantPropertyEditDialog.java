@@ -84,7 +84,6 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 	protected List<LocalizedStringDefinition> localizedStringList;
 
 	public BaseTenantPropertyEditDialog(Record record) {
-
 		this.record = record;
 
 		setTitle(record.getAttribute("title"));
@@ -144,8 +143,7 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 	/**
 	 * タイプ別の画面サイズを調整します。
 	 */
-	@SuppressWarnings("unchecked")
-	protected DynamicForm createForm(Record record) {
+	private DynamicForm createForm(Record record) {
 
 		final DynamicForm form = new MtpForm();
 		form.setAutoFocus(true);
@@ -155,139 +153,25 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 		String title = record.getAttribute("title");
 
 		if (TenantColType.STRING.equals(type)) {
-			setHeight(200);
-
-			TextItem textItem = null;
-			if ("displayName".equals(name) || "passwordPatternErrorMessage".equals(name)) {
-				MetaDataLangTextItem langItem = new MetaDataLangTextItem();
-				langItem.setName(name);
-				langItem.setTitle(title);
-				langItem.setValue(record.getAttributeAsString("value"));
-
-				List<LocalizedStringDefinition> localizedStringList = (List<LocalizedStringDefinition>) JSOHelper
-						.convertToJava((JavaScriptObject) record.getAttributeAsObject("localizedStringList"));
-				langItem.setLocalizedList(localizedStringList);
-				textItem = langItem;
-			} else {
-				textItem = new MtpTextItem(name, title);
-				textItem.setValue(record.getAttributeAsString("value"));
-			}
-			form.setItems(textItem);
-			valueField = textItem;
+			createStringForm(name, title, form);
 		} else if (TenantColType.INTEGER.equals(type)) {
-			setHeight(200);
-
-			IntegerItem textItem = new IntegerItem(name, title);
-			textItem.setValue(record.getAttributeAsInt("value"));
-			textItem.setWidth(100);
-
-			// TODO Validatorのセット
-
-			valueField = textItem;
-			form.setItems(textItem);
-
+			createIntegerForm(name, title, form);
 		} else if (TenantColType.DATE.equals(type)) {
-			setHeight(200);
-
-			DateItem dateItem = SmartGWTUtil.createDateItem();
-			dateItem.setName(name);
-			dateItem.setTitle(title);
-//			DateItem dateItem = new DateItem(name, title);
-//			dateItem.setUseTextField(true);
-//			dateItem.setDateFormatter(DateDisplayFormat.TOJAPANSHORTDATE);
-//			dateItem.setWidth(100);
-			dateItem.setValue(record.getAttributeAsDate("value"));
-			valueField = dateItem;
-			form.setItems(dateItem);
+			createDateForm(name, title, form);
 		} else if (TenantColType.PASSWORD.equals(type)) {
-			setHeight(200);
-
-			PasswordItem passwdItem = new PasswordItem(name, title);
-			passwdItem.setWidth("100%");
-			passwdItem.setValue(record.getAttributeAsString("value"));
-			valueField = passwdItem;
-			form.setItems(passwdItem);
+			createPasswordForm(name, title, form);
 		} else if (TenantColType.BOOLEAN.equals(type)) {
-			setHeight(200);
-
-			RadioGroupItem radioGroupItem = new RadioGroupItem();
-			radioGroupItem.setTitle(title);
-			radioGroupItem.setWrap(false);
-			// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
-			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
-			LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
-			setMap.putAll(valueMap);
-			radioGroupItem.setValueMap(setMap);
-			radioGroupItem.setValue(record.getAttributeAsBoolean("value").toString());
-			valueField = radioGroupItem;
-			form.setItems(radioGroupItem);
-			// 一部タイトルが長いものがあるので設定
-			form.setWrapItemTitles(false);
+			createBooleanForm(name, title, form);
 		} else if (TenantColType.SELECTRADIO.equals(type)) {
-			setHeight(200);
-
-			RadioGroupItem radioGroupItem = new RadioGroupItem();
-			radioGroupItem.setTitle(title);
-			radioGroupItem.setWrap(false);
-			// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
-			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
-			LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
-			setMap.putAll(valueMap);
-			radioGroupItem.setValueMap(setMap);
-			radioGroupItem.setValue(record.getAttributeAsString("value"));
-			valueField = radioGroupItem;
-			form.setItems(radioGroupItem);
-			// 一部タイトルが長いものがあるので設定
-			form.setWrapItemTitles(false);
+			createSelectRadioForm(name, title, form);
 		} else if (TenantColType.SELECTCHECKBOX.equals(type)) {
-
-			// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
-			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
-			List<String> valueList = (List<String>) JSOHelper
-					.convertToJava((JavaScriptObject) record.getAttributeAsObject("value"));
-			LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
-			setMap.putAll(valueMap);
-
-			CheckboxItem[] items = new CheckboxItem[setMap.size()];
-			valueFields = new CheckboxItem[setMap.size()];
-			int cnt = 0;
-			for (Map.Entry<String, String> e : setMap.entrySet()) {
-				CheckboxItem checkboxItemItem = new CheckboxItem();
-				checkboxItemItem.setTitle(e.getValue());
-				checkboxItemItem.setName(e.getKey());
-
-				if (valueList.contains(e.getKey())) {
-					checkboxItemItem.setValue(true);
-				}
-				items[cnt] = checkboxItemItem;
-				valueFields[cnt] = checkboxItemItem;
-				cnt++;
-//				valueField = checkboxItemItem;
-			}
-			form.setItems(items);
-
-			setHeight(180 + 20 * cnt);
+			createSelectCheckBoxForm(name, title, form);
 		} else if (TenantColType.SELECTCOMBO.equals(type)) {
-			setHeight(200);
-
-			SelectItem selectItem = new MtpSelectItem();
-			selectItem.setTitle(title);
-			// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
-			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
-			LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
-			setMap.putAll(valueMap);
-			selectItem.setValueMap(setMap);
-			selectItem.setValue(record.getAttributeAsString("value"));
-			valueField = selectItem;
-			form.setItems(selectItem);
+			createSelectComboForm(name, title, form);
 		} else if (TenantColType.SCRIPT.equals(type)) {
-			createScriptDialog(form, type, false, null);
+			createScriptForm(form, type, false, null);
 		} else if (TenantColType.GROOVYTEMPLATE.equals(type)) {
-			if ("screenTitle".equals(name)) {
-				createScriptDialog(form, type, true, "localizedScreenTitle");
-			} else {
-				createScriptDialog(form, type, false, null);
-			}
+			createGroovyTemplateForm(form, type, name);
 		}
 
 		// 編集可否設定
@@ -300,7 +184,153 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void createScriptDialog(DynamicForm form, TenantColType colType, boolean isLocalized,
+	protected void createStringForm(String name, String title, DynamicForm form) {
+		setHeight(200);
+
+		TextItem textItem = null;
+		if ("displayName".equals(name) || "passwordPatternErrorMessage".equals(name)) {
+			MetaDataLangTextItem langItem = new MetaDataLangTextItem();
+			langItem.setName(name);
+			langItem.setTitle(title);
+			langItem.setValue(record.getAttributeAsString("value"));
+
+			List<LocalizedStringDefinition> localizedStringList = (List<LocalizedStringDefinition>) JSOHelper
+					.convertToJava((JavaScriptObject) record.getAttributeAsObject("localizedStringList"));
+			langItem.setLocalizedList(localizedStringList);
+			textItem = langItem;
+		} else {
+			textItem = new MtpTextItem(name, title);
+			textItem.setValue(record.getAttributeAsString("value"));
+		}
+		form.setItems(textItem);
+		valueField = textItem;
+	}
+
+	protected void createIntegerForm(String name, String title, DynamicForm form) {
+		setHeight(200);
+
+		IntegerItem textItem = new IntegerItem(name, title);
+		textItem.setValue(record.getAttributeAsInt("value"));
+		textItem.setWidth(100);
+
+		valueField = textItem;
+		form.setItems(textItem);
+	}
+
+	protected void createDateForm(String name, String title, DynamicForm form) {
+		setHeight(200);
+
+		DateItem dateItem = SmartGWTUtil.createDateItem();
+		dateItem.setName(name);
+		dateItem.setTitle(title);
+		dateItem.setValue(record.getAttributeAsDate("value"));
+		valueField = dateItem;
+		form.setItems(dateItem);
+	}
+
+	protected void createPasswordForm(String name, String title, DynamicForm form) {
+		setHeight(200);
+
+		PasswordItem passwdItem = new PasswordItem(name, title);
+		passwdItem.setWidth("100%");
+		passwdItem.setValue(record.getAttributeAsString("value"));
+		valueField = passwdItem;
+		form.setItems(passwdItem);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void createBooleanForm(String name, String title, DynamicForm form) {
+		setHeight(200);
+
+		RadioGroupItem radioGroupItem = new RadioGroupItem();
+		radioGroupItem.setTitle(title);
+		radioGroupItem.setWrap(false);
+		// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
+		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
+		LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
+		setMap.putAll(valueMap);
+		radioGroupItem.setValueMap(setMap);
+		radioGroupItem.setValue(record.getAttributeAsBoolean("value").toString());
+		valueField = radioGroupItem;
+		form.setItems(radioGroupItem);
+		// 一部タイトルが長いものがあるので設定
+		form.setWrapItemTitles(false);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void createSelectRadioForm(String name, String title, DynamicForm form) {
+		setHeight(200);
+
+		RadioGroupItem radioGroupItem = new RadioGroupItem();
+		radioGroupItem.setTitle(title);
+		radioGroupItem.setWrap(false);
+		// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
+		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
+		LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
+		setMap.putAll(valueMap);
+		radioGroupItem.setValueMap(setMap);
+		radioGroupItem.setValue(record.getAttributeAsString("value"));
+		valueField = radioGroupItem;
+		form.setItems(radioGroupItem);
+		// 一部タイトルが長いものがあるので設定
+		form.setWrapItemTitles(false);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void createSelectCheckBoxForm(String name, String title, DynamicForm form) {
+		// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
+		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
+		List<String> valueList = (List<String>) JSOHelper
+				.convertToJava((JavaScriptObject) record.getAttributeAsObject("value"));
+		LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
+		setMap.putAll(valueMap);
+
+		CheckboxItem[] items = new CheckboxItem[setMap.size()];
+		valueFields = new CheckboxItem[setMap.size()];
+		int cnt = 0;
+		for (Map.Entry<String, String> e : setMap.entrySet()) {
+			CheckboxItem checkboxItemItem = new CheckboxItem();
+			checkboxItemItem.setTitle(e.getValue());
+			checkboxItemItem.setName(e.getKey());
+
+			if (valueList.contains(e.getKey())) {
+				checkboxItemItem.setValue(true);
+			}
+			items[cnt] = checkboxItemItem;
+			valueFields[cnt] = checkboxItemItem;
+			cnt++;
+		}
+		form.setItems(items);
+
+		setHeight(180 + 20 * cnt);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void createSelectComboForm(String name, String title, DynamicForm form) {
+		setHeight(200);
+
+		SelectItem selectItem = new MtpSelectItem();
+		selectItem.setTitle(title);
+		// RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
+		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
+		LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
+		setMap.putAll(valueMap);
+		selectItem.setValueMap(setMap);
+		selectItem.setValue(record.getAttributeAsString("value"));
+		valueField = selectItem;
+		form.setItems(selectItem);
+	}
+
+	protected void createGroovyTemplateForm(DynamicForm form, TenantColType type, String name) {
+		if ("screenTitle".equals(name)) {
+			createScriptForm(form, type, true, "localizedScreenTitle");
+		} else {
+			createScriptForm(form, type, false, null);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void createScriptForm(DynamicForm form, TenantColType colType, boolean isLocalized,
 			String localizedPropertyName) {
 		setHeight(500);
 
@@ -424,7 +454,7 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 	/**
 	 * 保存処理
 	 */
-	protected void setValue() {
+	private void setValue() {
 
 		// 編集可否設定
 		boolean canEdit = record.getAttributeAsBoolean("canEdit");
@@ -436,66 +466,19 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 
 		TenantColType type = (TenantColType) record.getAttributeAsObject("colType");
 		if (TenantColType.BOOLEAN.equals(type)) {
-			// RadioGroupItemの値はString型のため、Booleanで保存
-			record.setAttribute("value", new Boolean(valueField.getValue().toString()));
-
-			@SuppressWarnings("unchecked")
-			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
-			record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
+			setBooleanValue();
 		} else if (TenantColType.SELECTRADIO.equals(type)) {
-			record.setAttribute("value", valueField.getValue());
-
-			@SuppressWarnings("unchecked")
-			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
-			record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
+			setSelectRadioValue();
 		} else if (TenantColType.SELECTCHECKBOX.equals(type)) {
-
-			List<String> valueList = new ArrayList<String>();
-			StringBuilder sb = new StringBuilder();
-			int cnt = 0;
-			for (FormItem item : valueFields) {
-				if (item.getValue() != null && new Boolean(item.getValue().toString())) {
-					valueList.add((String) item.getName());
-					if (cnt > 0) {
-						sb.append(", ");
-					}
-					sb.append(item.getTitle());
-
-					cnt++;
-				}
-			}
-			record.setAttribute("value", valueList);
-
-			record.setAttribute("displayValue", sb.toString());
+			setSelectCheckBoxValue();
 		} else if (TenantColType.SELECTCOMBO.equals(type)) {
-			record.setAttribute("value", valueField.getValue());
-
-			@SuppressWarnings("unchecked")
-			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
-			record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
+			setSelectComboValue();
 		} else if (TenantColType.INTEGER.equals(type)) {
-			record.setAttribute("value", ((IntegerItem) valueField).getValueAsInteger());
-			record.setAttribute("displayValue", ((IntegerItem) valueField).getValueAsInteger());
+			setIntegerValue();
 		} else if (TenantColType.SCRIPT.equals(type) || TenantColType.GROOVYTEMPLATE.equals(type)) {
-			String status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_setting");
-			if (valueField.getValue() == null || valueField.getValue().equals("")) {
-				status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_noSetting");
-			}
-			record.setAttribute("value", valueField.getValue());
-			record.setAttribute("displayValue", status);
-
-			if ("screenTitle".equals(record.getAttribute("name"))) {
-				record.setAttribute("localizedScreenTitle", localizedStringList);
-			}
+			setScriptOrGroovyTemplateValue();
 		} else {
-
-			record.setAttribute("value", valueField.getValue());
-			record.setAttribute("displayValue", valueField.getValue());
-
-			if ("displayName".equals(valueField.getName())
-					|| "passwordPatternErrorMessage".equals(valueField.getName())) {
-				record.setAttribute("localizedStringList", ((MetaDataLangTextItem) valueField).getLocalizedList());
-			}
+			setElseTypeValue();
 		}
 
 		// ダイアログ消去
@@ -505,12 +488,84 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 		fireDataChanged(record);
 	}
 
+	protected void setElseTypeValue() {
+		record.setAttribute("value", valueField.getValue());
+		record.setAttribute("displayValue", valueField.getValue());
+
+		if ("displayName".equals(valueField.getName()) || "passwordPatternErrorMessage".equals(valueField.getName())) {
+			record.setAttribute("localizedStringList", ((MetaDataLangTextItem) valueField).getLocalizedList());
+		}
+	}
+
+	protected void setScriptOrGroovyTemplateValue() {
+		String status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_setting");
+		if (valueField.getValue() == null || valueField.getValue().equals("")) {
+			status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_noSetting");
+		}
+		record.setAttribute("value", valueField.getValue());
+		record.setAttribute("displayValue", status);
+
+		if ("screenTitle".equals(record.getAttribute("name"))) {
+			record.setAttribute("localizedScreenTitle", localizedStringList);
+		}
+	}
+
+	protected void setIntegerValue() {
+		record.setAttribute("value", ((IntegerItem) valueField).getValueAsInteger());
+		record.setAttribute("displayValue", ((IntegerItem) valueField).getValueAsInteger());
+	}
+
+	protected void setSelectComboValue() {
+		record.setAttribute("value", valueField.getValue());
+
+		@SuppressWarnings("unchecked")
+		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
+		record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
+	}
+
+	protected void setSelectCheckBoxValue() {
+		List<String> valueList = new ArrayList<String>();
+		StringBuilder sb = new StringBuilder();
+		int cnt = 0;
+		for (FormItem item : valueFields) {
+			if (item.getValue() != null && new Boolean(item.getValue().toString())) {
+				valueList.add((String) item.getName());
+				if (cnt > 0) {
+					sb.append(", ");
+				}
+				sb.append(item.getTitle());
+
+				cnt++;
+			}
+		}
+		record.setAttribute("value", valueList);
+
+		record.setAttribute("displayValue", sb.toString());
+	}
+
+	protected void setSelectRadioValue() {
+		record.setAttribute("value", valueField.getValue());
+
+		@SuppressWarnings("unchecked")
+		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
+		record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
+	}
+
+	protected void setBooleanValue() {
+		// RadioGroupItemの値はString型のため、Booleanで保存
+		record.setAttribute("value", new Boolean(valueField.getValue().toString()));
+
+		@SuppressWarnings("unchecked")
+		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
+		record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
+	}
+
 	/**
 	 * データの変更を通知します。
 	 *
 	 * @param record 更新 {@link Record}
 	 */
-	protected void fireDataChanged(Record record) {
+	private void fireDataChanged(Record record) {
 		// イベントに更新MenuItemをセットして発行する
 		DataChangedEvent event = new DataChangedEvent();
 		// event.setValueObject(record);
