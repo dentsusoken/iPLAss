@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2022 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -26,7 +26,7 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityInfo;
+import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityViewInfo;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceAsync;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceFactory;
 
@@ -40,7 +40,7 @@ import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-public class SimpleEntityInfoDS extends AbstractAdminDataSource {
+public class EntityViewInfoDS extends AbstractAdminDataSource {
 
 	public enum FIELD_NAME {
 		NAME,
@@ -48,10 +48,10 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 
 		DATA_COUNT,
 
-		LISTENER_COUNT,
-		VERSIONING,
-
-		REPOSITORY,
+		DETAIL_VIEW_COUNT,
+		SEARCH_VIEW_COUNT,
+		BULK_VIEW_COUNT,
+		VIEW_CONTROL,
 
 		IS_ERROR,
 		ERROR_MESSAGE,
@@ -63,14 +63,14 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 	 * @param isGetDataCount データ件数取得有無
 	 * @return DSインスタンス
 	 */
-	public static SimpleEntityInfoDS getInstance(boolean isGetDataCount) {
-		return new SimpleEntityInfoDS(isGetDataCount);
+	public static EntityViewInfoDS getInstance(boolean isGetDataCount) {
+		return new EntityViewInfoDS(isGetDataCount);
 	}
 
 	/** 件数取得制御フラグ */
 	private boolean isGetDataCount = false;
 
-	private SimpleEntityInfoDS(boolean isGetDataCount) {
+	private EntityViewInfoDS(boolean isGetDataCount) {
 		this.isGetDataCount = isGetDataCount;
 
 		DataSourceField name = new DataSourceTextField(FIELD_NAME.NAME.name());
@@ -79,12 +79,12 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 
 		DataSourceField count = new DataSourceTextField(FIELD_NAME.DATA_COUNT.name());
 
-		DataSourceField listenerCount = new DataSourceTextField(FIELD_NAME.LISTENER_COUNT.name());
-		DataSourceField versioning = new DataSourceTextField(FIELD_NAME.VERSIONING.name());
+		DataSourceField detailViewCount = new DataSourceTextField(FIELD_NAME.DETAIL_VIEW_COUNT.name());
+		DataSourceField searchViewCount = new DataSourceTextField(FIELD_NAME.SEARCH_VIEW_COUNT.name());
+		DataSourceField bulkViewCount = new DataSourceTextField(FIELD_NAME.BULK_VIEW_COUNT.name());
+		DataSourceField viewControl = new DataSourceTextField(FIELD_NAME.VIEW_CONTROL.name());
 
-		DataSourceField repository = new DataSourceTextField(FIELD_NAME.REPOSITORY.name());
-
-		setFields(name, displayName, count, listenerCount, versioning, repository);
+		setFields(name, displayName, count, detailViewCount, searchViewCount, bulkViewCount, viewControl);
 	}
 
 	@Override
@@ -92,10 +92,10 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 			final DSResponse response) {
 
 		EntityExplorerServiceAsync service = EntityExplorerServiceFactory.get();
-		service.getSimpleEntityList(TenantInfoHolder.getId(), isGetDataCount, new AsyncCallback<List<SimpleEntityInfo>>() {
+		service.getEntityViewList(TenantInfoHolder.getId(), isGetDataCount, new AsyncCallback<List<EntityViewInfo>>() {
 
 			@Override
-			public void onSuccess(List<SimpleEntityInfo> entities) {
+			public void onSuccess(List<EntityViewInfo> entities) {
 				List<ListGridRecord> records = createRecord(entities);
 				response.setData(records.toArray(new ListGridRecord[]{}));
 				response.setTotalRows(records.size());
@@ -107,7 +107,7 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 			public void onFailure(Throwable caught) {
 				GWT.log("error!!!", caught);
 
-				SC.warn(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_failedToGetEntityList") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_EntityViewInfoDS_failedToGetEntityList") + caught.getMessage());
 
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);
@@ -116,12 +116,12 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 
 	}
 
-	private List<ListGridRecord> createRecord(List<SimpleEntityInfo> entities) {
+	private List<ListGridRecord> createRecord(List<EntityViewInfo> entities) {
 
 		List<ListGridRecord> list = new ArrayList<>();
 
 		if (entities != null) {
-			for (SimpleEntityInfo entity : entities) {
+			for (EntityViewInfo entity : entities) {
 				ListGridRecord record = new ListGridRecord();
 				record.setAttribute(FIELD_NAME.NAME.name(), entity.getName());
 				record.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), entity.getDisplayName());
@@ -130,9 +130,10 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 				} else {
 					record.setAttribute(FIELD_NAME.DATA_COUNT.name(), "-");
 				}
-				record.setAttribute(FIELD_NAME.LISTENER_COUNT.name(), entity.getListenerCount());
-				record.setAttribute(FIELD_NAME.VERSIONING.name(), entity.getVersionControlType());
-				record.setAttribute(FIELD_NAME.REPOSITORY.name(), entity.getRepository());
+				record.setAttribute(FIELD_NAME.DETAIL_VIEW_COUNT.name(), entity.getDetailFormViewCount());
+				record.setAttribute(FIELD_NAME.SEARCH_VIEW_COUNT.name(), entity.getSearchFormViewCount());
+				record.setAttribute(FIELD_NAME.BULK_VIEW_COUNT.name(), entity.getBulkFormViewCount());
+				record.setAttribute(FIELD_NAME.VIEW_CONTROL.name(), entity.getViewControl());
 
 				record.setAttribute(FIELD_NAME.IS_ERROR.name(), entity.isError());
 				record.setAttribute(FIELD_NAME.ERROR_MESSAGE.name(), entity.getErrorMessage());

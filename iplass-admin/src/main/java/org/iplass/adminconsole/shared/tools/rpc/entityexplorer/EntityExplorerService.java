@@ -28,6 +28,7 @@ import org.iplass.adminconsole.shared.tools.dto.entityexplorer.CrawlEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.DefragEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataCountResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataListResultInfo;
+import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityViewInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityTreeNode;
@@ -63,6 +64,15 @@ public interface EntityExplorerService extends XsrfProtectedService , EntityData
 	 * @return {@link SimpleEntityTreeNode}
 	 */
 	public SimpleEntityTreeNode getSimpleEntityTree(final int tenantId, final boolean isGetDataCount);
+
+	/**
+	 * <p>Entityの画面定義のリストを取得します。</p>
+	 *
+	 * @param tenantId テナントID
+	 * @param isGetDataCount データ件数取得有無
+	 * @return {@link SimpleEntityInfo}
+	 */
+	public List<EntityViewInfo> getEntityViewList(int tenantId, boolean isGetDataCount);
 
 	/**
 	 * <p>Entityデータを検索します。</p>
