@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2022 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -18,21 +18,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist;
+package org.iplass.adminconsole.client.tools.ui.entityexplorer.entityview.gem;
 
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
-import org.iplass.adminconsole.client.base.ui.widget.MetaDataViewGridButton;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.tools.data.entityexplorer.SimpleEntityInfoDS;
-import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.adminconsole.client.tools.data.entityexplorer.EntityViewInfoDS;
 
 import com.smartgwt.client.types.SelectionAppearance;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -44,8 +40,6 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.DataArrivedEvent;
 import com.smartgwt.client.widgets.grid.events.DataArrivedHandler;
-import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
-import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripButton;
@@ -53,13 +47,10 @@ import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 /**
  * EQLWorksheetパネル
  */
-public class EntityListPane extends VLayout {
+public class GemEntityViewListPane extends VLayout {
 
 	private static final String EXPORT_ICON = "[SKIN]/actions/download.png";
 	private static final String REFRESH_ICON = "[SKIN]/actions/refresh.png";
-	private static final String ERROR_ICON = "[SKINIMG]/actions/exclamation.png";
-
-	private EntityDataListMainPane mainPane;
 
 	private CheckboxItem showCountItem;
 
@@ -69,8 +60,7 @@ public class EntityListPane extends VLayout {
 	/**
 	 * コンストラクタ
 	 */
-	public EntityListPane(EntityDataListMainPane mainPane) {
-		this.mainPane = mainPane;
+	public GemEntityViewListPane(GemEntityViewMainPane mainPane) {
 
 		//レイアウト設定
 		setWidth100();
@@ -84,7 +74,7 @@ public class EntityListPane extends VLayout {
 		final ToolStripButton configExportButton = new ToolStripButton();
 		configExportButton.setIcon(EXPORT_ICON);
 		configExportButton.setTitle("ConfigExport");
-		configExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_exportEntityDef")));
+		configExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_exportEntityDef")));
 		configExportButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -98,8 +88,7 @@ public class EntityListPane extends VLayout {
 
 		showCountItem = new CheckboxItem();
 		showCountItem.setTitle("Get Data Count");
-		showCountItem.setTooltip(SmartGWTUtil.getHoverString(
-				AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_dataNumOften")));
+		showCountItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_dataNumOften")));
 		showCountItem.addChangedHandler(new ChangedHandler() {
 
 			@Override
@@ -119,7 +108,7 @@ public class EntityListPane extends VLayout {
 
 		final ToolStripButton refreshButton = new ToolStripButton();
 		refreshButton.setIcon(REFRESH_ICON);
-		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_refreshList")));
+		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_refreshList")));
 		refreshButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -129,34 +118,7 @@ public class EntityListPane extends VLayout {
 		});
 		toolStrip.addButton(refreshButton);
 
-		grid = new ListGrid(){
-			@Override
-			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
-				final String fieldName = this.getFieldName(colNum);
-				if ("explorerButton".equals(fieldName)) {
-					if (!record.getAttributeAsBoolean(SimpleEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
-						MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
-						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_showMetaDataEditScreen")));
-						button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
-							@Override
-							public String targetDefinitionName() {
-								return record.getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.NAME.name());
-							}
-						});
-						return button;
-					}
-				} else if ("error".equals(fieldName)) {
-					if (record.getAttributeAsBoolean(SimpleEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
-						record.setEnabled(false);
-						GridActionImgButton recordCanvas = new GridActionImgButton();
-						recordCanvas.setActionButtonSrc(ERROR_ICON);
-						recordCanvas.setActionButtonPrompt(record.getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.ERROR_MESSAGE.name()));
-						return recordCanvas;
-					}
-				}
-				return null;
-			}
-		};
+		grid = new ListGrid();
 
 		grid.setWidth100();
 		grid.setHeight100();
@@ -186,15 +148,6 @@ public class EntityListPane extends VLayout {
 				setRecordCount(grid.getTotalRows());
 			}
 		});
-		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
-
-			@Override
-			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				String name = event.getRecord().getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.NAME.name());
-				showExplorer(name);
-			}
-
-		});
 
 		addMember(toolStrip);
 		addMember(grid);
@@ -213,17 +166,17 @@ public class EntityListPane extends VLayout {
 	private void exportConfig() {
 		ListGridRecord[] records = grid.getSelectedRecords();
 		if (records == null || records.length == 0) {
-			SC.say(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_selectEntityTarget"));
+			SC.say(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_selectEntityTarget"));
 			return;
 		}
 
 		String[] defNames = new String[records.length];
 		int i = 0;
 		for (ListGridRecord record : records) {
-			defNames[i] = record.getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.NAME.name());
+			defNames[i] = record.getAttributeAsString(EntityViewInfoDS.FIELD_NAME.NAME.name());
 			i++;
 		}
-		EntityConfigDownloadDialog dialog = new EntityConfigDownloadDialog(defNames);
+		GemEntityConfigDownloadDialog dialog = new GemEntityConfigDownloadDialog(defNames);
 		dialog.show();
 
 	}
@@ -231,34 +184,28 @@ public class EntityListPane extends VLayout {
 
 	private void refreshGrid() {
 		boolean isGetDataCount = showCountItem.getValueAsBoolean();
-		SimpleEntityInfoDS ds = SimpleEntityInfoDS.getInstance(isGetDataCount);
+		EntityViewInfoDS ds = EntityViewInfoDS.getInstance(isGetDataCount);
 		grid.setDataSource(ds);
 
 		//（参考）setFieldsは、setDataSource後に指定しないと効かない
 
 		//ボタンを表示したいためListGridFieldを指定
-		ListGridField explorerField = new ListGridField("explorerButton", " ");
-		explorerField.setWidth(25);
-		ListGridField errorField = new ListGridField("error", " ");
-		errorField.setWidth(25);
-		ListGridField nameField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.NAME.name(), "Name");
-		ListGridField displayNameField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), "DisplayName");
-		ListGridField countField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), "Count");
+		ListGridField nameField = new ListGridField(EntityViewInfoDS.FIELD_NAME.NAME.name(), "Name");
+		ListGridField displayNameField = new ListGridField(EntityViewInfoDS.FIELD_NAME.DISPLAY_NAME.name(), "DisplayName");
+		ListGridField countField = new ListGridField(EntityViewInfoDS.FIELD_NAME.DATA_COUNT.name(), "Count");
 		countField.setWidth(70);
-		ListGridField listenerCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.LISTENER_COUNT.name(), "Listeners");
-		listenerCountField.setWidth(75);
-		ListGridField versioningField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.VERSIONING.name(), "Version Control");
-		versioningField.setWidth(75);
-		ListGridField repositoryField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.REPOSITORY.name(), "Repository");
-		repositoryField.setWidth(60);
+		ListGridField detailViewCountField = new ListGridField(EntityViewInfoDS.FIELD_NAME.DETAIL_VIEW_COUNT.name(), "DetailViews");
+		detailViewCountField.setWidth(90);
+		ListGridField searchViewCountField = new ListGridField(EntityViewInfoDS.FIELD_NAME.SEARCH_VIEW_COUNT.name(), "SearchViews");
+		searchViewCountField.setWidth(90);
+		ListGridField bulkViewCountField = new ListGridField(EntityViewInfoDS.FIELD_NAME.BULK_VIEW_COUNT.name(), "BulkViews");
+		bulkViewCountField.setWidth(90);
+		ListGridField viewControlField = new ListGridField(EntityViewInfoDS.FIELD_NAME.VIEW_CONTROL.name(), "ViewControls");
+		viewControlField.setWidth(100);
 
-		grid.setFields(explorerField, errorField, nameField, displayNameField, countField, listenerCountField, versioningField, repositoryField);
+		grid.setFields(nameField, displayNameField, countField, detailViewCountField, searchViewCountField, bulkViewCountField, viewControlField);
 
 		grid.fetchData();
-	}
-
-	private void showExplorer(String entityName) {
-		mainPane.showDataListPane(entityName);
 	}
 
 }
