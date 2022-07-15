@@ -152,11 +152,9 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	private static final Logger logger = LoggerFactory.getLogger(MetaDataServiceImpl.class);
 
 	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	private EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	private TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
 	private ActionMappingDefinitionManager amm = ManagerLocator.getInstance().getManager(ActionMappingDefinitionManager.class);
 	private StaticResourceDefinitionManager srdm = ManagerLocator.getInstance().getManager(StaticResourceDefinitionManager.class);
-	private MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
 	private EntityWebApiDefinitionManager ewdm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
 	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
 	private WebhookEndpointDefinitionManager wepdm = ManagerLocator.getInstance().getManager(WebhookEndpointDefinitionManager.class);
@@ -728,25 +726,9 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 					}
 
 					// メニューItemの更新
-					MenuItem menuItem = mm.get(convertPath(definition.getName()));
-					if(menuItem != null) {
-						// 更新対象化チェックする
-						String itemDispName = menuItem.getDisplayName();
-						String entityDispName = definition.getDisplayName();
-						if(itemDispName != null && !itemDispName.equals(entityDispName)) {
-							// データは異なる。
-							EntityDefinition oldEd = edm.get(definition.getName());
-							if(itemDispName.equals(oldEd.getDisplayName())) {
-								// メニューと同一(デフォルト)なので修正する
-								menuItem.setDisplayName(definition.getDisplayName());
-
-								auditLogger.logMetadata(MetaDataAction.UPDATE, MenuItem.class.getName(), "name:" + menuItem.getName());
-								DefinitionModifyResult ret = mm.update(menuItem);
-								if (!ret.isSuccess()) {
-									return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
-								}
-							}
-						}
+					AdminDefinitionModifyResult ret = ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController().updateMenuItem(definition);
+					if (ret != null) {
+						return ret;
 					}
 
 					//非同期で実行するため、結果を確認しないで正常を返す
@@ -1041,6 +1023,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Map<String, List<String>>>() {
 			@Override
 			public Map<String, List<String>> call() {
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 				Map<String, List<String>> viewsMap = new HashMap<String, List<String>>();
 
 				for (String defName : edm.definitionList()) {
@@ -1083,6 +1066,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			@Override
 			public SearchFormView call() {
 				auditLogger.logMetadata(MetaDataAction.CREATE, SearchFormView.class.getName(), "name:" + name);
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 				return evm.createDefaultSearchFormView(name);
 			}
 		});
@@ -1094,6 +1078,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			@Override
 			public DetailFormView call() {
 				auditLogger.logMetadata(MetaDataAction.CREATE, DetailFormView.class.getName(), "name:" + name);
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 				return evm.createDefaultDetailFormView(name);
 			}
 		});
@@ -1105,6 +1090,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			@Override
 			public BulkFormView call() {
 				auditLogger.logMetadata(MetaDataAction.CREATE, BulkFormView.class.getName(), "name:" + name);
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 				return evm.createDefaultBulkFormView(name);
 			}
 		});
@@ -1135,6 +1121,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			@Override
 			public MenuItemHolder call() {
 
+				MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
 				List<String> names = mm.definitionList();
 
 				if (names == null) {
@@ -1169,6 +1156,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 				}
 
 				auditLogger.logMetadata(MetaDataAction.CREATE, MenuItem.class.getName(), "name:" + definition.getName());
+				MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
 				DefinitionModifyResult ret = mm.create(definition);
 				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
 			}
@@ -1188,6 +1176,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 				}
 
 				auditLogger.logMetadata(MetaDataAction.UPDATE, MenuItem.class.getName(), "name:" + definition.getName());
+				MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
 				DefinitionModifyResult ret = mm.update(definition);
 				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
 			}

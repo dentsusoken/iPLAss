@@ -39,6 +39,13 @@ public interface EntityDefinitionOperationController {
 	public AdminDefinitionModifyResult createMenuItem(EntityDefinition definition);
 
 	/**
+	 * Entity定義に紐づくメニューを更新
+	 * @param definition Entity定義
+	 * @return 処理結果
+	 */
+	public AdminDefinitionModifyResult updateMenuItem(EntityDefinition definition);
+
+	/**
 	 * 画面系の定義をコピー
 	 * @param sourceName 変更元のEntity定義名
 	 * @param newName 変更後のEntity定義名

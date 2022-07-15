@@ -30,6 +30,7 @@ import org.iplass.mtp.definition.DefinitionInfo;
 import org.iplass.mtp.definition.DefinitionManager;
 import org.iplass.mtp.definition.DefinitionModifyResult;
 import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterManager;
 import org.iplass.mtp.view.generic.EntityView;
@@ -54,6 +55,7 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 	private static final Logger logger = LoggerFactory.getLogger(GemEntityDefinitionOperationController.class);
 
 	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
+	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 	private EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	private EntityFilterManager efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
 	private EntityWebApiDefinitionManager ewm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
@@ -98,6 +100,31 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 			}
 		} else {
 			logger.info("{} 's entity menu item is not create. already exists for other menu item.", definition.getName());
+		}
+		return null;
+	}
+
+	@Override
+	public AdminDefinitionModifyResult updateMenuItem(EntityDefinition definition) {
+		MenuItem menuItem = mm.get(convertPath(definition.getName()));
+		if(menuItem != null) {
+			// 更新対象化チェックする
+			String itemDispName = menuItem.getDisplayName();
+			String entityDispName = definition.getDisplayName();
+			if(itemDispName != null && !itemDispName.equals(entityDispName)) {
+				// データは異なる。
+				EntityDefinition oldEd = edm.get(definition.getName());
+				if(itemDispName.equals(oldEd.getDisplayName())) {
+					// メニューと同一(デフォルト)なので修正する
+					menuItem.setDisplayName(definition.getDisplayName());
+
+					auditLogger.logMetadata(MetaDataAction.UPDATE, MenuItem.class.getName(), "name:" + menuItem.getName());
+					DefinitionModifyResult ret = mm.update(menuItem);
+					if (!ret.isSuccess()) {
+						return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
+					}
+				}
+			}
 		}
 		return null;
 	}

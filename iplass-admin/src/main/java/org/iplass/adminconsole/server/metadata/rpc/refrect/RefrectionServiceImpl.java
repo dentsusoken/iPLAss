@@ -61,8 +61,6 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 	private static final long serialVersionUID = 5813243665867941856L;
 	private static final Logger logger = LoggerFactory.getLogger(RefrectionServiceImpl.class);
 
-	private EntityViewService evs = ServiceRegistry.getRegistry().getService(EntityViewService.class);
-
 	/**
 	 * インターフェースクラスを解析して、フィールド情報を各フィールドの値を取得する。
 	 *
@@ -314,6 +312,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 			getFieldInfo(list, cls.getSuperclass(), ignoreFields);
 		}
 
+		EntityViewService evs = ServiceRegistry.getRegistry().getService(EntityViewService.class);
 		for (Field field : cls.getDeclaredFields()) {
 			MetaFieldInfo annotation = field.getAnnotation(MetaFieldInfo.class);
 			if (annotation != null && !ignoreFields.contains(field.getName())) {

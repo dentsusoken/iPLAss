@@ -66,7 +66,6 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 	private static final long serialVersionUID = -3459617043325559477L;
 
 	private EntityDefinitionManager edm;
-	private EntityViewManager evm;
 	private DefinitionService ds;
 	private AdminAuditLoggingService aals;
 
@@ -75,7 +74,6 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 		super.init();
 
 		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 		ds = ServiceRegistry.getRegistry().getService(DefinitionService.class);
 		aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
 	}
@@ -282,6 +280,7 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 			//レスポンス設定
 			DownloadUtil.setCsvResponseHeader(resp, fileName, encode);
 
+			EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 			int i = 1;
 			for (String defName : defNames) {
 				//EntityViewの取得
