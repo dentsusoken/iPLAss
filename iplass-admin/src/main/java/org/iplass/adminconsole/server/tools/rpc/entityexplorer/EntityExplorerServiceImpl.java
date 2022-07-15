@@ -100,11 +100,10 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	/** シリアルバージョンNo */
 	private static final long serialVersionUID = -3459617043325559477L;
 
-	private static final String USER_ENTITY = "mtp.auth.User";
+//	private static final String USER_ENTITY = "mtp.auth.User";
 
 	private EntityManager em = AdminEntityManager.getInstance();
 	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	private EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	private EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
 	private FulltextSearchManager fsm = ManagerLocator.getInstance().getManager(FulltextSearchManager.class);
 	private RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
@@ -197,6 +196,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 				List<MetaDataEntryInfo> entityList = ehs.list();
 
 				EntityContext ec = EntityContext.getCurrentContext();
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 
 				List<EntityViewInfo> infoList = new ArrayList<>();
 				for (MetaDataEntryInfo entryInfo : entityList) {
@@ -283,6 +283,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	}
 
 	private void convertNode(SimpleEntityTreeNode entityNode, MetaTreeNode metaNode, boolean isGetDataCount) {
+		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+
 		entityNode.setPath(metaNode.getPath());
 		entityNode.setName(metaNode.getName());
 //		entityNode.setContextPath(metaNode.getContextPath());
