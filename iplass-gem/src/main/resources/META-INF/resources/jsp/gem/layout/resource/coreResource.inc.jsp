@@ -63,7 +63,7 @@ scriptContext.locale.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownP
 <script src="${staticContentPath}/scripts/gem/common.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/webapi.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/plugin/fixHeight.js?cv=${apiVersion}"></script>
-<script src="${staticContentPath}/webjars/momentjs/2.29.3/min/moment-with-locales.min.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/webjars/momentjs/2.29.4/min/moment-with-locales.min.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/font-awesome/5.13.1/js/all.min.js?cv=${apiVersion}"></script>
 
 <link rel="stylesheet" href="${staticContentPath}/webjars/jquery-ui/1.12.1/themes/base/jquery-ui.min.css?cv=${apiVersion}" />
