@@ -20,10 +20,21 @@
 package org.iplass.mtp.impl.auth.oauth.jwt;
 
 import java.util.Map;
+import java.util.function.Function;
+
+import org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationService;
+import org.iplass.mtp.spi.ServiceRegistry;
 
 public interface JwtProcessor {
 	
-	public String preferredAlgorithm(CertificateKeyPair key);
-	public String encode(Map<String, Object> claims, CertificateKeyPair key);
+	public static JwtProcessor getInstance() {
+		//TODO OAuthAuthorizationServiceから分離する
+		return ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class).getJwtProcessor();
+	}
+	
+	public String preferredAlgorithm(CertificateKeyPair key) throws InvalidKeyException;
+	public void checkValidVerificationKey(String alg, CertificateKeyPair key) throws InvalidKeyException;
+	public String encode(Map<String, Object> claims, CertificateKeyPair key) throws InvalidKeyException;
+	public Jwt decode(String jwt, int allowedClockSkewMinutes, Function<String, Map<String, Object>> jwkResolver) throws InvalidKeyException, InvalidJwtException;
 
 }

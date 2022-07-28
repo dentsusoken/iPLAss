@@ -464,6 +464,20 @@ public class MetaDataContext {
 		}
 		return entry;
 	}
+	
+	/**
+	 * 指定のIDのメタデータをキャッシュクリアしリロードします。
+	 * 
+	 * @param id
+	 */
+	public void reloadById(String id) {
+		MetaDataEntry reload = repository.loadById(tenantId, id, false);
+		if (reload != null) {
+			reload.initRuntime();
+			cache.notifyUpdate(reload);
+			updateNodeCache(reload.getPath());
+		}
+	}
 
 	private void doAfterUpdateProccess(String path, MetaDataEntry current, String pathBefore) {
 		MetaDataEntry reload = repository.load(tenantId, path, false);

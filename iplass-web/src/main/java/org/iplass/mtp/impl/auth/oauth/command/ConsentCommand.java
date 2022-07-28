@@ -28,10 +28,10 @@ import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.ActionMapping.ClientCacheType;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationService;
-import org.iplass.mtp.impl.auth.oauth.OAuthConstants;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization.OAuthAuthorizationRuntime;
 import org.iplass.mtp.impl.auth.oauth.code.AuthorizationCode;
 import org.iplass.mtp.impl.auth.oauth.code.AuthorizationRequest;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 

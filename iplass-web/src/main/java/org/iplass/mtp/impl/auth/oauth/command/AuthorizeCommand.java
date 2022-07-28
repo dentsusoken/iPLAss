@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.auth.oauth.command;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -38,10 +36,12 @@ import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization.OAuthAuthorizationR
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.OAuthApplicationException;
 import org.iplass.mtp.impl.auth.oauth.OAuthClientService;
-import org.iplass.mtp.impl.auth.oauth.OAuthConstants;
 import org.iplass.mtp.impl.auth.oauth.OAuthRuntimeException;
 import org.iplass.mtp.impl.auth.oauth.code.AuthorizationCode;
 import org.iplass.mtp.impl.auth.oauth.code.AuthorizationRequest;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthEndpointConstants;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.WebRequestConstants;
@@ -64,25 +64,7 @@ import org.slf4j.LoggerFactory;
 @Template(name=AuthorizeCommand.TMPL_POST, displayName="OAuth Post Response Mode", path="/jsp/oauth/OAuthPost.jsp", contentType="text/html; charset=utf-8")
 @Template(name=AuthorizeCommand.TMPL_CONSENT, displayName="Default OAuth Consent View", path="/jsp/oauth/Consent.jsp", contentType="text/html; charset=utf-8")
 @CommandClass(name="mtp/oauth/AuthorizeCommand", displayName="OAuth2.0 Authorization Endpoint")
-public class AuthorizeCommand implements Command {
-	static final String PARAM_DEFINITION_NAME = "defName";
-	static final String PARAM_RESPONSE_TYPE = "response_type";//noneは未サポート
-	static final String PARAM_CLIENT_ID = "client_id";
-	static final String PARAM_REDIRECT_URI ="redirect_uri";
-	static final String PARAM_SCOPE = "scope";
-	static final String PARAM_STATE = "state";
-	static final String PARAM_CODE = "code";
-	static final String PARAM_RESPONSE_MODE = "response_mode";
-	static final String PARAM_ERROR = "error";
-	static final String PARAM_ERROR_DESCRIPTION = "error_description";
-	static final String PARAM_CODE_CHALLENGE = "code_challenge";
-	static final String PARAM_CODE_CHALLENGE_METHOD = "code_challenge_method";
-	
-	//oidc
-	static final String PARAM_NONCE = "nonce";
-	static final String PARAM_PROMPT = "prompt";
-	static final String PARAM_MAX_AGE = "max_age";
-	//static final String PARAM_REQUEST = "request";//そのうちサポート。JARMと同時に
+public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 
 	static final String STAT_SUCCESS_REDIRECT = "SUCCESS_REDIRECT";
 	static final String STAT_SUCCESS_POST = "SUCCESS_POST";
@@ -96,7 +78,7 @@ public class AuthorizeCommand implements Command {
 	static final String REQUEST_AUTHORIZATION_REQUEST = "authorizationRequest";
 	static final String REQUEST_ERROR = "error";
 
-	public static final String SESSION_AUTHORIZATION_REQUEST = "authorizationRequest";
+	public static final String SESSION_AUTHORIZATION_REQUEST = "org.iplass.mtp.oauth.authorizationRequest";
 
 	public static final String TMPL_POST = "oauth/OAuthPost";
 	public static final String TMPL_CONSENT = "oauth/Consent";
@@ -196,11 +178,7 @@ public class AuthorizeCommand implements Command {
 	}
 	
 	private String encode(String str) {
-		try {
-			return URLEncoder.encode(str, "UTF-8").replace("+", "%20");
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+		return OAuthUtil.encodeRfc3986(str);
 	}
 	
 	private String createRedirectUri(AuthorizationRequest authReq, Consumer<StringBuilder> appender) {

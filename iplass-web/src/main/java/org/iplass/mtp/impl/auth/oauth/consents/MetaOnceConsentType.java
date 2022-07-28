@@ -26,8 +26,8 @@ import org.iplass.mtp.auth.oauth.definition.ConsentTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.consents.OnceConsentTypeDefinition;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.auth.oauth.MetaConsentType;
-import org.iplass.mtp.impl.auth.oauth.OAuthConstants;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
 
 /**
  * 一度承認済みのscopeに関しては承認画面を出さないMetaConsentType。

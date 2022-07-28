@@ -11,6 +11,7 @@
 		<property name="org.iplass.mtp.auth.oauth.definition.OAuthAuthorizationDefinitionManager" value="org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.auth.oauth.definition.OAuthClientDefinitionManager" value="org.iplass.mtp.impl.auth.oauth.OAuthClientDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.auth.oauth.definition.OAuthResourceServerDefinitionManager" value="org.iplass.mtp.impl.auth.oauth.OAuthResourceServerDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.auth.oidc.definition.OpenIdConnectDefinitionManager" value="org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdConnectDefinitionManagerImpl" />
 	</service>
 
 	<!-- MetaData JAXB configuration -->
@@ -23,6 +24,8 @@
 	<service>
 		<interface>org.iplass.mtp.impl.metadata.MetaDataRepository</interface>
 		<property name="annotatedClass" value="org.iplass.mtp.impl.webapi.command.MetaDataRefs" additional="true" />
+		<property name="annotatedClass" value="org.iplass.mtp.impl.auth.oauth.command.MetaDataRefs" additional="true" />
+		<property name="annotatedClass" value="org.iplass.mtp.impl.auth.authenticate.oidc.command.MetaDataRefs" additional="true" />
 		<property name="resourcePath" value="/mtp-web-metadata.xml" additional="true" />
 
 		<!-- shared MetaData config -->
@@ -47,6 +50,7 @@
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationService$TypeMap" additional="true" />
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.oauth.OAuthClientService$TypeMap" additional="true" />
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.oauth.OAuthResourceServerService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdConnectService$TypeMap" additional="true" />
 	</service>
 
 	<!-- Tenant関連 -->
@@ -100,6 +104,10 @@
 				
 				<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.builtin.web.IdPasswordAutoLoginHandler" />
 			</property>
+		</property>
+
+		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.oidc.OIDCAuthenticationProvider" inherit="false">
+ 			<property name="providerName" value="oidc" />
 		</property>
 
 		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.oauth.AccessTokenAuthenticationProvider" inherit="false">
@@ -171,6 +179,10 @@
 				<property name="hashAlgorithm" value="SHA-256" />
 			</property>
 		</property>
+		<property name="handler" class="org.iplass.mtp.impl.auth.authenticate.oidc.ClientSecretHandler" additional="true" >
+			<property name="type" value="OIDCCS" />
+			<property name="store" value="default" />
+		</property>
 	</service>
 	<service>
 		<interface>org.iplass.mtp.impl.util.random.SecureRandomService</interface>
@@ -185,6 +197,11 @@
 			<property name="useStrongSecureRandom" value="false" />
 		</property>
 		<property name="clientSecretGenerator">
+			<property name="numBitsOfSecureRandomToken" value="256" />
+			<property name="radixOfSecureRandomToken" value="64" />
+			<property name="useStrongSecureRandom" value="false" />
+		</property>
+		<property name="codeVerifierGenerator">
 			<property name="numBitsOfSecureRandomToken" value="256" />
 			<property name="radixOfSecureRandomToken" value="64" />
 			<property name="useStrongSecureRandom" value="false" />
@@ -205,7 +222,7 @@
 		
 		<property name="jwtProcessor" class="org.iplass.mtp.impl.auth.oauth.jwt.JjwtProcesor" />
 		
-		<!-- if OpenID Connect enabled, configure keyStore that uses for sign to ID Token as JWT -->
+		<!-- if OpenID Connect(as OP) enabled, configure keyStore that uses for sign to ID Token as JWT -->
 		<!--
 		<property name="jwtKeyStore" class="org.iplass.mtp.impl.auth.oauth.jwt.SimpleJwtKeyStore">
 			<property name="keyStoreType" value="PKCS12" />
@@ -229,6 +246,19 @@
 	</service>
 	<service>
 		<interface>org.iplass.mtp.impl.auth.oauth.OAuthResourceServerService</interface>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdConnectService</interface>
+		<!-- httpClientConfig must be properly configured. -->
+		<!-- 
+		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig">
+			<property name="proxyHost" value="[set proxyHost if needed]" />
+			<property name="proxyPort" value="[set proxyPort if needed]" />
+			<property name="poolingMaxTotal" value="[set poolingMaxTotal if needed]" />
+			<property name="poolingDefaultMaxPerRoute" value="[set poolingDefaultMaxPerRoute if needed]" />
+			<property name="poolingTimeToLive" value="[set poolingTimeToLive if needed]" />
+		</property>
+		 -->
 	</service>
 
 	<!-- Web関連 -->

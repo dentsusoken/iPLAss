@@ -593,6 +593,154 @@
         <versionControlType>NONE</versionControlType>
     </metaData>
 </metaDataEntry>
+<metaDataEntry name="/entity/mtp/auth/oidc/OpenIdProviderAccount" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>User Accounts in OpenID Provider</description>
+        <displayName>OpenID Provider Account</displayName>
+        <id>E0027</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>OpenIDプロバイダのアカウント</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>OpenID Provider Account</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.oidc.OpenIdProviderAccount</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>Unique Key</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>1</id>
+            <indexType>UNIQUE</indexType>
+            <multiplicity>1</multiplicity>
+            <name>uniqueKey</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>OpenIdConnect Definition Name</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_2</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>2</id>
+            <indexType>NON_INDEXED</indexType>
+            <multiplicity>1</multiplicity>
+            <name>openIdConnectDefinitionName</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>Subject ID</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_3</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>3</id>
+            <indexType>NON_INDEXED</indexType>
+            <multiplicity>1</multiplicity>
+            <name>subjectId</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>Subject Name</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_4</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>4</id>
+            <indexType>NON_INDEXED</indexType>
+            <multiplicity>1</multiplicity>
+            <name>subjectName</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>User</displayName>
+            <id>5</id>
+            <indexType>NON_INDEXED</indexType>
+            <multiplicity>1</multiplicity>
+            <name>user</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <referenceEntityMetaDataId>E0001</referenceEntityMetaDataId>
+            <referenceType>ASSOCIATION</referenceType>
+            <versionControlType>CURRENT_BASE</versionControlType>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>User Oid</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_5</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>6</id>
+            <indexType>NON_UNIQUE</indexType>
+            <multiplicity>1</multiplicity>
+            <name>userOid</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>5</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxIndexedVarchar>
+            <maxUniqueIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxUniqueIndexedVarchar>
+            <version>0</version>
+        </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>true</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdProviderAccountEntityEventListener</className>
+        </eventListenerList>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+        <namePropertyId>1</namePropertyId>
+        <versionControlType>NONE</versionControlType>
+    </metaData>
+</metaDataEntry>
 </contextPath>
 
 <contextPath name="/oauth/authZ">

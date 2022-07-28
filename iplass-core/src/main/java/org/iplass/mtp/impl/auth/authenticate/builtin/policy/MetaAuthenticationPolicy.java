@@ -73,6 +73,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 	private boolean recordLastLoginDate = true;
 	private MetaRememberMePolicy rememberMePolicy;
 	private List<String> authenticationProvider;
+	private List<String> openIdConnectDefinition;
 
 	/** ユーザ作成時、パスワード更新時にその情報を受け取る為のListener */
 	private List<MetaAccountNotificationListener> notificationListener;
@@ -127,6 +128,14 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		this.notificationListener = notificationListener;
 	}
 
+	public List<String> getOpenIdConnectDefinition() {
+		return openIdConnectDefinition;
+	}
+
+	public void setOpenIdConnectDefinition(List<String> openIdConnectDefinition) {
+		this.openIdConnectDefinition = openIdConnectDefinition;
+	}
+
 	@Override
 	public AuthenticationPolicyRuntime createRuntime(MetaDataConfig metaDataConfig) {
 		return new AuthenticationPolicyRuntime();
@@ -179,6 +188,12 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		} else {
 			authenticationProvider = null;
 		}
+
+		if (def.getOpenIdConnectDefinition() != null) {
+			openIdConnectDefinition = new ArrayList<String>(def.getOpenIdConnectDefinition());
+		} else {
+			openIdConnectDefinition = null;
+		}
 	}
 
 	public AuthenticationPolicyDefinition currentConfig() {
@@ -210,6 +225,10 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 
 		if (authenticationProvider != null) {
 			def.setAuthenticationProvider(new ArrayList<>(authenticationProvider));
+		}
+
+		if (openIdConnectDefinition != null) {
+			def.setOpenIdConnectDefinition(new ArrayList<>(openIdConnectDefinition));
 		}
 
 		return def;

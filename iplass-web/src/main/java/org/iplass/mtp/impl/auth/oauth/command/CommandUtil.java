@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.auth.oauth.command;
 
-import java.util.List;
-
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
@@ -30,7 +28,8 @@ import org.iplass.mtp.impl.auth.authenticate.builtin.web.BasicAuthUtil;
 import org.iplass.mtp.impl.auth.authenticate.builtin.web.WWWAuthenticateException;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.OAuthClientService;
-import org.iplass.mtp.impl.auth.oauth.OAuthConstants;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthEndpointConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
@@ -41,20 +40,18 @@ class CommandUtil {
 	//client_assertion
 	//client_assertion_type
 	
-	static final String PARAM_CLIENT_ID = "client_id";
-	static final String PARAM_CLIENT_SECRET = "client_secret";
 
 	private static Logger logger = LoggerFactory.getLogger(CommandUtil.class);
 	private static OAuthClientService clientService = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
 	
 	static IdPasswordCredential clientCredential(RequestContext request) {
-		String clientId = StringUtil.stripToNull(request.getParam(PARAM_CLIENT_ID));
+		String clientId = StringUtil.stripToNull(request.getParam(OAuthEndpointConstants.PARAM_CLIENT_ID));
 		String clientSecret = null;
 		if (clientId != null) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("get client credential from parameter. clientId:" + clientId);
 			}
-			clientSecret = StringUtil.stripToNull(request.getParam(PARAM_CLIENT_SECRET));
+			clientSecret = StringUtil.stripToNull(request.getParam(OAuthEndpointConstants.PARAM_CLIENT_SECRET));
 			return new IdPasswordCredential(clientId, clientSecret);
 		}
 		
