@@ -93,7 +93,7 @@ TemplateUtil.includeTemplate("gem/layout/header", pageContext);
 
 <%if (errorMessage != null) {%>
 <div class="error">
-<span class="error"><%= errorMessage %></span>
+<span class="error"><c:out value="<%=errorMessage%>"/></span>
 </div>
 <%}%>
 
