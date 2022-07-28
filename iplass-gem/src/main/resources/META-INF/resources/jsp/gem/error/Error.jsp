@@ -69,7 +69,7 @@ ${m:rs("mtp-gem-messages", "error.Error.errOccurred")}
 <tr>
 <td>
 <%if (e instanceof ApplicationException) {%>
-<%=e.getMessage()%><br />
+<c:out value="<%=e.getMessage()%>"/><br />
 <%} else {%>
 ${m:rs("mtp-gem-messages", "error.Error.retryMsg")}<br />
 <%if (request.getAttribute("org.iplass.mtp.adminAddress") != null) {%>
