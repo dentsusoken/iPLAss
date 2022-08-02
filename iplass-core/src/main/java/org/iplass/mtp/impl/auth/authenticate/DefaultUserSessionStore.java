@@ -29,9 +29,14 @@ import org.iplass.mtp.spi.Config;
 
 public class DefaultUserSessionStore implements UserSessionStore {
 	
+	public enum SessionFixationProtectionMethod {
+		NEW_SESSION, CHANGE_SESSION_ID;
+	}
+	
 	private SessionService sessionService;
 	
 	private boolean shareLoginSession;
+	private SessionFixationProtectionMethod sessionFixationProtection = SessionFixationProtectionMethod.CHANGE_SESSION_ID;
 	
 	public DefaultUserSessionStore() {
 	}
@@ -42,6 +47,14 @@ public class DefaultUserSessionStore implements UserSessionStore {
 
 	public void setShareLoginSession(boolean shareLoginSession) {
 		this.shareLoginSession = shareLoginSession;
+	}
+
+	public SessionFixationProtectionMethod getSessionFixationProtection() {
+		return sessionFixationProtection;
+	}
+
+	public void setSessionFixationProtection(SessionFixationProtectionMethod sessionFixationProtection) {
+		this.sessionFixationProtection = sessionFixationProtection;
 	}
 
 	public SessionService getSessionService() {
@@ -64,27 +77,31 @@ public class DefaultUserSessionStore implements UserSessionStore {
 			return null;
 		}
 	}
-
+	
 	@Override
 	public void setUserContext(UserContext user, boolean withSessionInit) {
-		
-		if (withSessionInit) {
-			//既存セッションの破棄と生成
-			//TODO 破棄するか？別テナントの情報が破棄されてしまう。破棄しない場合は、Sessionハイジャック対策にログインセッション（cookie）をテナント毎別途管理する必要あり
-			Session session = sessionService.getSession(false);
-			if (session != null) {
-				session.invalidate();
+		Session session;
+		if (sessionFixationProtection == SessionFixationProtectionMethod.CHANGE_SESSION_ID) {
+			session = sessionService.getSession(true);
+			if (withSessionInit) {
+				session.changeSessionId();
 			}
+		} else {
+			if (withSessionInit) {
+				session = sessionService.getSession(false);
+				if (session != null) {
+					session.invalidate();
+				}
+			}
+			session = sessionService.getSession(true);
 		}
 		
-		Session session = sessionService.getSession(true);
 		if (shareLoginSession) {
 			session.setAttribute(AuthService.USER_HANDLE_NAME, user);
 		} else {
 			int tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
 			session.setAttribute(AuthService.USER_HANDLE_NAME + "." + tenantId, user);
 		}
-
 	}
 
 	@Override
