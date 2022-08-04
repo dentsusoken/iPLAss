@@ -284,9 +284,11 @@ $(function() {
 		var fromVal = $from.val();
 		var dateFormat = dateUtil.getInputDateFormat();
 		var timeFormat = $from.attr("data-timeformat");
+		var fixedmin = $from.attr("data-fixedmin");
+		var fixedsec = $from.attr("data-fixedsec");
 		if (typeof fromVal !== "undefined" && fromVal !== null && fromVal !== "") {
 			try {
-				validateTimestampPicker(fromVal, dateFormat, timeFormat, "", "", "");
+				validateTimestampPicker(fromVal, dateFormat, timeFormat, fixedmin, fixedsec);
 			} catch (e) {
 				alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateFormat + " " + timeFormat))
 				return false;
@@ -297,7 +299,7 @@ $(function() {
 		timeFormat = $to.attr("data-timeformat");
 		if (typeof toVal !== "undefined" && toVal !== null && toVal !== "") {
 			try {
-				validateTimestampPicker(toVal, dateFormat, timeFormat, "", "", "");
+				validateTimestampPicker(toVal, dateFormat, timeFormat, fixedmin, fixedsec);
 			} catch (e) {
 				alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateFormat + " " + timeFormat))
 				return false;
