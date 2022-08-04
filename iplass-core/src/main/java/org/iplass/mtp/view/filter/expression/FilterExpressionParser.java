@@ -23,9 +23,9 @@ package org.iplass.mtp.view.filter.expression;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.entity.query.QueryException;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.util.StringUtil;
 
 /**
@@ -130,6 +130,6 @@ public class FilterExpressionParser {
 	}
 
 	private static String resourceString(String key, Object... arguments) {
-		return GemResourceBundleUtil.resourceString(key, arguments);
+		return CoreResourceBundleUtil.resourceString(key, arguments);
 	}
 }
