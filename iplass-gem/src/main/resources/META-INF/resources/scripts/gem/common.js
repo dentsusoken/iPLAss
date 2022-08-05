@@ -3926,6 +3926,8 @@ function addNestRow_Time(type, cell, idx, label) {
 	if (type == "DATETIME") {
 
 		var timeformat = $("span", cell).children(":text:first").attr("data-timeformat");
+		var fixedmin = $("span", cell).children(":text:first").attr("data-fixedmin");
+		var fixedsec = $("span", cell).children(":text:first").attr("data-fixedsec");
 		var stepmin = $("span", cell).children(":text:first").attr("data-stepmin");
 
 		if (timeformat && timeformat.length > 0 && stepmin && stepmin.length > 0) {
@@ -3943,7 +3945,7 @@ function addNestRow_Time(type, cell, idx, label) {
 				var val = $input.val();
 				if (typeof val !== "undefined" && val !== null && val !== "") {
 					try {
-						validateTimePicker(val, timeformat, "", "", "");
+						validateTimePicker(val, timeformat, fixedmin, fixedsec);
 					} catch (e) {
 						alert(messageFormat(scriptContext.gem.locale.common.timeFormatErrorMsg, label, timeformat))
 						return false;
@@ -3974,6 +3976,8 @@ function addNestRow_Timestamp(type, cell, idx, label) {
 	if (type == "DATETIME") {
 
 		var timeformat = $("span", cell).children(":text:first").attr("data-timeformat");
+		var fixedmin = $("span", cell).children(":text:first").attr("data-fixedmin");
+		var fixedsec = $("span", cell).children(":text:first").attr("data-fixedsec");
 		var stepmin = $("span", cell).children(":text:first").attr("data-stepmin");
 
 		if (timeformat && timeformat.length > 0 && stepmin && stepmin.length > 0) {
@@ -3992,7 +3996,7 @@ function addNestRow_Timestamp(type, cell, idx, label) {
 				var dateFormat = dateUtil.getInputDateFormat();
 				if (typeof val !== "undefined" && val !== null && val !== "") {
 					try {
-						validateTimestampPicker(val, dateFormat, timeformat, "", "", "");
+						validateTimestampPicker(val, dateFormat, timeformat, fixedmin, fixedsec);
 					} catch (e) {
 						alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, label, dateFormat + " " + timeformat))
 						return false;

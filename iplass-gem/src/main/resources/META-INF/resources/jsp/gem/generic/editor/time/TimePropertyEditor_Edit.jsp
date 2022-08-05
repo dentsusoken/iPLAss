@@ -237,11 +237,14 @@ $(function() {
 	addEditValidator(function() {
 		var $input = $("#" + es("<%=ulId%>") + " li :text");
 		for (var i = 0; i < $input.length; i++) {
-			var val = $($input.get(i)).val();
-			var timeFormat = $($input.get(i)).attr("data-timeformat");
+			var $_input = $($input.get(i));
+			var val = $_input.val();
+			var timeFormat = $_input.attr("data-timeformat");
+			var fixedmin = $_input.attr("data-fixedmin");
+			var fixedsec = $_input.attr("data-fixedsec");
 			if (typeof val !== "undefined" && val !== null && val !== "") {
 				try {
-					validateTimePicker(val, timeFormat, "", "", "");
+					validateTimePicker(val, timeFormat, fixedmin, fixedsec);
 				} catch (e) {
 					alert(messageFormat(scriptContext.gem.locale.common.timeFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", timeFormat))
 					return false;
@@ -371,9 +374,11 @@ $(function() {
 		var $input = $("#time_" + es("<%=StringUtil.escapeJavaScript(propName)%>"));
 		var val = $input.val();
 		var timeFormat = $input.attr("data-timeformat");
+		var fixedmin = $input.attr("data-fixedmin");
+		var fixedsec = $input.attr("data-fixedsec");
 		if (typeof val !== "undefined" && val !== null && val !== "") {
 			try {
-				validateTimePicker(val, timeFormat, "", "", "");
+				validateTimePicker(val, timeFormat, fixedmin, fixedsec);
 			} catch (e) {
 				alert(messageFormat(scriptContext.gem.locale.common.timeFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", timeFormat))
 				return false;
