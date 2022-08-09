@@ -76,6 +76,7 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 	static final String REQUEST_TMPL_NAME = "templateName";
 	static final String REQUEST_AUTHORIZATION_CODE = "authorizationCode";
 	static final String REQUEST_AUTHORIZATION_REQUEST = "authorizationRequest";
+	static final String REQUEST_ISS = "iss";
 	static final String REQUEST_ERROR = "error";
 
 	public static final String SESSION_AUTHORIZATION_REQUEST = "org.iplass.mtp.oauth.authorizationRequest";
@@ -161,7 +162,7 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 				authReq.getScopes().remove(OAuthConstants.SCOPE_OFFLINE_ACCESS);
 				
 				AuthorizationCode code = authRuntime.generateCode(authReq);
-				return success(request, code);
+				return success(request, code, authRuntime.issuerId(request));
 			}
 		} catch (NeedTrustedAuthenticationException e) {
 			//redirect to Login screen
@@ -170,10 +171,10 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 			if (logger.isDebugEnabled()) {
 				logger.debug(e.getMessage(), e);
 			}
-			return error(request, e.getCode(), e.getDescription(), authReq);
+			return error(request, e.getCode(), e.getDescription(), authReq, authRuntime.issuerId(request));
 		} catch (RuntimeException e) {
 			logger.error(e.getMessage(), e);
-			return error(request, OAuthConstants.ERROR_SERVER_ERROR, "See server log for details.", authReq);
+			return error(request, OAuthConstants.ERROR_SERVER_ERROR, "See server log for details.", authReq, authRuntime.issuerId(request));
 		}
 	}
 	
@@ -198,11 +199,12 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 		return redirectUri.toString();
 	}
 	
-	String success(RequestContext request, AuthorizationCode code) {
+	String success(RequestContext request, AuthorizationCode code, String iss) {
 		
 		if (OAuthConstants.RESPONSE_MODE_FORM_POST.equals(code.getRequest().getResponseMode())) {
 			request.setAttribute(REQUEST_AUTHORIZATION_REQUEST, code.getRequest());
 			request.setAttribute(REQUEST_AUTHORIZATION_CODE, code);
+			request.setAttribute(REQUEST_ISS, iss);
 			return STAT_SUCCESS_POST;
 		} else {
 			String redirectUri = createRedirectUri(code.getRequest(), sb -> {
@@ -210,6 +212,7 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 				if (code.getRequest().getState() != null) {
 					sb.append('&').append(PARAM_STATE).append('=').append(encode(code.getRequest().getState()));
 				}
+				sb.append('&').append(PARAM_ISS).append('=').append(encode(iss));
 			});
 			
 			request.setAttribute(WebRequestConstants.REDIRECT_PATH, redirectUri.toString());
@@ -217,11 +220,12 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 		}
 	}
 	
-	String error(RequestContext request, String errorCode, String errorDescription, AuthorizationRequest authReq) {
+	String error(RequestContext request, String errorCode, String errorDescription, AuthorizationRequest authReq, String iss) {
 		
 		if (OAuthConstants.RESPONSE_MODE_FORM_POST.equals(authReq.getResponseMode())) {
 			request.setAttribute(REQUEST_AUTHORIZATION_REQUEST, authReq);
 			request.setAttribute(REQUEST_ERROR, new OAuthApplicationException(errorCode, errorDescription));
+			request.setAttribute(REQUEST_ISS, iss);
 			return STAT_ERROR_POST;
 		} else {
 			String redirectUri = createRedirectUri(authReq, sb -> {
@@ -232,6 +236,7 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 				if (authReq.getState() != null) {
 					sb.append('&').append(PARAM_STATE).append('=').append(encode(authReq.getState()));
 				}
+				sb.append('&').append(PARAM_ISS).append('=').append(encode(iss));
 			});
 			
 			request.setAttribute(WebRequestConstants.REDIRECT_PATH, redirectUri.toString());

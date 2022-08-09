@@ -76,12 +76,12 @@ public class ConsentCommand implements Command {
 			request.getSession().removeAttribute(AuthorizeCommand.SESSION_AUTHORIZATION_REQUEST);
 		}
 		
+		OAuthAuthorizationRuntime authRuntime = authorizationService.getRuntimeByName(authReq.getAuthorizationServerId());
 		if (SUBMIT_ACCEPT.equals(submit)) {
-			OAuthAuthorizationRuntime authRuntime = authorizationService.getRuntimeByName(authReq.getAuthorizationServerId());
 			AuthorizationCode code = authRuntime.generateCode(authReq);
-			return authorizeCommand.success(request, code);
+			return authorizeCommand.success(request, code, authRuntime.issuerId(request));
 		} else {
-			return authorizeCommand.error(request, OAuthConstants.ERROR_ACCESS_DENIED, "User canceled OAuth request.", authReq);
+			return authorizeCommand.error(request, OAuthConstants.ERROR_ACCESS_DENIED, "User canceled OAuth request.", authReq, authRuntime.issuerId(request));
 		}
 	}
 

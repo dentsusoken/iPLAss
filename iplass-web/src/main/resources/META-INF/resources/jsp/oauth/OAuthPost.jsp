@@ -43,6 +43,7 @@
     <c:if test="${not empty authorizationRequest.state}">
       <input type="hidden" name="state" value="${m:esc(authorizationRequest.state)}" />
     </c:if>
+    <input type="hidden" name="iss" value="${m:esc(iss)}" />
 </form>
 </body>
 </html>
