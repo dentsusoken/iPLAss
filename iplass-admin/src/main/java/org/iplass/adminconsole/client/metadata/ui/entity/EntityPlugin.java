@@ -278,16 +278,6 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 		});
 		items.add(viewControlItem);
 
-		// EntityFilter
-		MenuItem filterItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openFilter"), CONTEXT_MENU_ICON_FILTER);
-		filterItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				getFilterEntityViewTreeNode(itemNode);
-			}
-		});
-		items.add(filterItem);
-
 		return items;
 	}
 
@@ -299,6 +289,16 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 	 */
 	protected List<MenuItem> createEntityBottomMenuItem(MetaDataItemMenuTreeNode itemNode) {
 		List<MenuItem> items = new ArrayList<>();
+
+		// EntityFilter
+		MenuItem filterItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openFilter"), CONTEXT_MENU_ICON_FILTER);
+		filterItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				getFilterEntityViewTreeNode(itemNode);
+			}
+		});
+		items.add(filterItem);
 
 		// Entity名前変更
 		MenuItem renameItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_renameEntity"), MetaDataConstants.CONTEXT_MENU_ICON_RENAME);
