@@ -1284,6 +1284,10 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		ExecuteContext execContext = ExecuteContext.getCurrentContext();
 		EntityContext entityContext = EntityContext.getCurrentContext();
+		
+		if (option.getTargetVersion() == DeleteTargetVersion.SPECIFIC && !option.isPurge()) {
+			throw new EntityRuntimeException("Version-specified option is only supported when the purge option is true.");
+		}
 
 		boolean isLocked = getStrategy().lock(entityContext, this, entity.getOid());
 		if (!isLocked) {
