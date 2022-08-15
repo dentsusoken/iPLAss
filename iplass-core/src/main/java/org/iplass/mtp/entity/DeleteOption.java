@@ -75,6 +75,7 @@ public class DeleteOption {
 	/**
 	 * Entityがバージョン管理されている場合に、削除対象とする対象バージョンを指定。
 	 * デフォルトはALL。
+	 * DeleteTargetVersion.SPECIFICを指定した場合、purgeはfalseに設定できません。
 	 * 
 	 * @param targetVersion
 	 */
@@ -95,6 +96,7 @@ public class DeleteOption {
 	/**
 	 * ごみ箱に入れず、物理削除するかどうかを設定。
 	 * trueの場合、物理削除。
+	 * DeleteTargetVersion.SPECIFICを指定した場合、purgeはfalseに設定できません。
 	 * 
 	 * @param purge
 	 */
@@ -175,7 +177,8 @@ public class DeleteOption {
 	}
 	
 	/**
-	 * 削除時、パージしないように設定
+	 * 削除時、パージしないように設定。
+	 * DeleteTargetVersion.SPECIFICを指定した場合、purgeはfalseに設定できません。
 	 * @return
 	 */
 	public DeleteOption noPurge() {
