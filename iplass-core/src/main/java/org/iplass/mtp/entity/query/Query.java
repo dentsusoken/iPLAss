@@ -128,7 +128,7 @@ import org.iplass.mtp.util.StringUtil;
  * &lt;minus sign&gt; ::= - &lt;paren value&gt;<br>
  * &lt;paren value&gt; ::= &lt;primary value&gt; | (&lt;value expression&gt;)<br>
  * &lt;primary value&gt; := &lt;aggregate&gt; | &lt;array value&gt; | &lt;case&gt; | &lt;entity field&gt; | &lt;function&gt; | &lt;cast&gt; | &lt;literal&gt; | &lt;scalar subquery&gt; | &lt;window function&gt;<br>
- * &lt;aggregate&gt; ::= {AVG | MAX | MEDIAN | MIN | MODE | SUM | STDDEV_POP | STDDEV_SAMP | VAR_POP | VAR_SAMP}(&lt;value expression&gt;) | COUNT([DISTINCT] [&lt;value expression&gt;])<br>
+ * &lt;aggregate&gt; ::= {AVG | MAX | MEDIAN | MIN | MODE | SUM | STDDEV_POP | STDDEV_SAMP | VAR_POP | VAR_SAMP}(&lt;value expression&gt;) | COUNT([DISTINCT] [&lt;value expression&gt;]) | LISTAGG([DISTINCT] &lt;value expression&gt;[,&lt;string literal&gt;]) [WITHIN GROUP(ORDER BY &lt;sort spec&gt; {,&lt;sort spec&gt;}*)]<br>
  * &lt;array value&gt; ::= "ARRAY[" &lt;value expression&gt; {,&lt;value expression&gt;}* "]"<br>
  * &lt;case&gt; ::= CASE WHEN &lt;condition&gt; THEN &lt;value expression&gt; {WHEN &lt;condition&gt; THEN &lt;value expression&gt;}* [ELSE &lt;value expression&gt;] END<br>
  * &lt;entity field&gt; ::= &lt;property name&gt; | &lt;reference&gt;.&lt;property name&gt; | &lt;correlated entity field&gt;<br>
@@ -204,7 +204,7 @@ public class Query implements ASTNode {
 	private OrderBy orderBy;
 	private Limit limit;
 
-	private boolean versiond = false;
+	private boolean versioned = false;
 	private boolean localized = false;
 
 	public Query() {
@@ -231,7 +231,7 @@ public class Query implements ASTNode {
 		this.orderBy = q.orderBy;
 		this.refer = q.refer;
 		this.select = q.select;
-		this.versiond = q.versiond;
+		this.versioned = q.versioned;
 		this.where = q.where;
 	}
 	
@@ -252,7 +252,7 @@ public class Query implements ASTNode {
 		result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
 		result = prime * result + ((refer == null) ? 0 : refer.hashCode());
 		result = prime * result + ((select == null) ? 0 : select.hashCode());
-		result = prime * result + (versiond ? 1231 : 1237);
+		result = prime * result + (versioned ? 1231 : 1237);
 		result = prime * result + ((where == null) ? 0 : where.hashCode());
 		return result;
 	}
@@ -303,7 +303,7 @@ public class Query implements ASTNode {
 				return false;
 		} else if (!select.equals(other.select))
 			return false;
-		if (versiond != other.versiond)
+		if (versioned != other.versioned)
 			return false;
 		if (where == null) {
 			if (other.where != null)
@@ -349,7 +349,7 @@ public class Query implements ASTNode {
 			sb.append(" ");
 			sb.append(limit.toString());
 		}
-		if (versiond) {
+		if (versioned) {
 			sb.append(" versioned");
 		}
 		if (localized) {
@@ -421,12 +421,30 @@ public class Query implements ASTNode {
 		this.limit = limit;
 	}
 
+	/**
+	 * @deprecated use {@link #isVersioned()}
+	 * @return
+	 */
+	@Deprecated
 	public boolean isVersiond() {
-		return versiond;
+		return versioned;
 	}
 
-	public void setVersiond(boolean versiond) {
-		this.versiond = versiond;
+	/**
+	 * @deprecated use {@link #setVersioned(boolean)}
+	 * @param versioned
+	 */
+	@Deprecated
+	public void setVersiond(boolean versioned) {
+		this.versioned = versioned;
+	}
+
+	public boolean isVersioned() {
+		return versioned;
+	}
+
+	public void setVersioned(boolean versioned) {
+		this.versioned = versioned;
 	}
 
 	public boolean isLocalized() {
@@ -731,7 +749,7 @@ public class Query implements ASTNode {
 	}
 
 	public Query versioned(boolean versioned) {
-		this.versiond = versioned;
+		this.versioned = versioned;
 		return this;
 	}
 	

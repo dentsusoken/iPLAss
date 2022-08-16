@@ -148,7 +148,7 @@ public abstract class SearchCommandBase implements Command {
 		query.setSelect(context.getSelect());
 		query.setFrom(context.getFrom());
 		query.setWhere(context.getWhere());
-		query.setVersiond(context.isVersioned());
+		query.setVersioned(context.isVersioned());
 
 		return query;
 	}
@@ -159,7 +159,7 @@ public abstract class SearchCommandBase implements Command {
 		query.select(Entity.OID, Entity.VERSION);
 		query.from(context.getDefName());
 		query.setWhere(context.getWhere());
-		query.setVersiond(context.isVersioned());
+		query.setVersioned(context.isVersioned());
 
 		return query;
 	}
@@ -170,7 +170,7 @@ public abstract class SearchCommandBase implements Command {
 		query.select(Entity.OID, Entity.VERSION, Entity.UPDATE_DATE);
 		query.from(context.getDefName());
 		query.setWhere(context.getWhere());
-		query.setVersiond(context.isVersioned());
+		query.setVersioned(context.isVersioned());
 
 		return query;
 	}

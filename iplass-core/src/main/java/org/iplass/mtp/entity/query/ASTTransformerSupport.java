@@ -293,7 +293,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		if (query.getLimit() != null) {
 			q.setLimit((Limit) query.getLimit().accept(this));
 		}
-		q.setVersiond(query.isVersiond());
+		q.setVersioned(query.isVersioned());
 		q.setLocalized(query.isLocalized());
 
 		return q;

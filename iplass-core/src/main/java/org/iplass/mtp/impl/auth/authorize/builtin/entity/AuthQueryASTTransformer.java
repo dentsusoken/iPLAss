@@ -387,7 +387,7 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 
 		//条件文でバージョンカラムが指定されている場合は、Inのサブクエリーでは全バージョンを対象にする
 		if (isVersionSpecify) {
-			q.setVersiond(true);
+			q.setVersioned(true);
 		}
 		
 		SubQuery sq = new SubQuery(q);

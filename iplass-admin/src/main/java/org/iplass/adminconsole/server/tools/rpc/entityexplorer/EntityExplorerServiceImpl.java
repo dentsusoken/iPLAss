@@ -353,7 +353,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 					result.addLogMessage("Limit : limit = " + limit + ", offset = " + offset);
 
 					if (isSearcgAllVersion) {
-						query.setVersiond(isSearcgAllVersion);
+						query.setVersioned(isSearcgAllVersion);
 						result.addLogMessage("Versioned : versioned");
 					}
 				} catch (Throwable e) {
@@ -415,7 +415,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 					}
 
 					if (isSearcgAllVersion) {
-						counter.setVersiond(isSearcgAllVersion);
+						counter.setVersioned(isSearcgAllVersion);
 						result.addLogMessage("Versioned : versioned");
 					}
 
@@ -481,7 +481,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 					}
 
 					if (isSearcgAllVersion) {
-						counter.setVersiond(isSearcgAllVersion);
+						counter.setVersioned(isSearcgAllVersion);
 					}
 				} catch (Throwable e) {
 					logger.error(e.getMessage(), e);

@@ -84,7 +84,7 @@ public class EqlCsvDownloadServiceImpl extends AdminDownloadService {
 		final Query query = checkQuery;
 
 		//実行Queryの設定
-		query.setVersiond(isSearchAllVersion);
+		query.setVersioned(isSearchAllVersion);
 
 		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
 		aals.logDownload("EqlWorkSheetCsvDownload", filename, query);

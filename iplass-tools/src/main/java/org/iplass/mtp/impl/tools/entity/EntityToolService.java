@@ -122,8 +122,8 @@ public class EntityToolService implements Service {
 
 	public int executeEQL(String eql, boolean isSearchAllVersion, boolean isCount) {
 		Query query = new PreparedQuery(eql).query(null);
-		if (!query.isVersiond() && isSearchAllVersion) {
-			query.setVersiond(true);
+		if (!query.isVersioned() && isSearchAllVersion) {
+			query.setVersioned(true);
 		}
 
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
@@ -152,8 +152,8 @@ public class EntityToolService implements Service {
 			throw new EntityToolRuntimeException(getRS("invalidEQLStatement", eql), e);
 		}
 
-		if (!query.isVersiond() && isSearchAllVersion) {
-			query.setVersiond(true);
+		if (!query.isVersioned() && isSearchAllVersion) {
+			query.setVersioned(true);
 		}
 
 		try (QueryCsvWriter writer = new QueryCsvWriter(out, query, new QueryWriteOption().charset(charset))) {

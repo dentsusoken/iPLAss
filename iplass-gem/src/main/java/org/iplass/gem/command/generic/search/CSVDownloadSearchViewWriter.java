@@ -166,7 +166,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		query.setSelect(context.getSelect());
 		query.from(context.getDefName());
 		query.setWhere(context.getWhere());
-		query.setVersiond(context.isVersioned());
+		query.setVersioned(context.isVersioned());
 		query.setOrderBy(context.getOrderBy());
 
 		int maxCount = gcs.getCsvDownloadMaxCount();
