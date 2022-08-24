@@ -612,24 +612,22 @@
 
 		<property name="useFulltextSearch" value="false" />
 		<property name="maxRows" value="1000" />
-		<property name="highlightPreTag" value="&lt;b style=&quot;background:aquamarine&quot;&gt;" />
-		<property name="highlightPostTag" value="&lt;/b&gt;" />
 		<property name="throwExceptionWhenOverLimit" value="true"/>
 
 		<!-- solr利用 -->
 		<!--
 		<class>org.iplass.mtp.impl.fulltextsearch.FulltextSearchSolrService</class>
 		<property name="solrUrl" value="http://ADDRESS:PORT/solr/coreName/" />
+		<property name="highlightPreTag" value="&lt;b style=&quot;background:aquamarine&quot;&gt;" />
+		<property name="highlightPostTag" value="&lt;/b&gt;" />
 		 -->
 
 		<!-- lucene利用 -->
-		<class>org.iplass.mtp.impl.fulltextsearch.FulltextSearchLuceneService</class>
-		<property name="directory" value="D:\tmp\lucene" />
+		<class>org.iplass.mtp.impl.fulltextsearch.lucene.LuceneFulltextSearchService</class>
 		<property name="defaultOperator" value="AND" />
-		<property name="analyzer" value="org.apache.lucene.analysis.ja.JapaneseAnalyzer" />
-		<property name="indexWriterRAMBufferSizeMB" value="64.0"/>
-		<property name="redundantTimeMinutes" value="10"/>
-		<property name="indexWriterCommitLimit" value="-1"/>
+		<!--
+		<property name="directory" value="[/set/your/lucene/index/dir]" />
+		 -->
 
 		<!-- BinaryReferenceのParse可能な最大文字数 -->
 		<property name="binaryParseLimitLength" value="100000"/>

@@ -175,14 +175,18 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 	
 	@Override
 	public void initTenantContext(TenantContext tenantContext) {
-		contexts.computeIfAbsent(tenantContext.getTenantId(), key -> new LuceneFulltextSearchContext(this, tenantContext));
+		if (isUseFulltextSearch()) {
+			contexts.computeIfAbsent(tenantContext.getTenantId(), key -> new LuceneFulltextSearchContext(this, tenantContext));
+		}
 	}
 
 	@Override
 	public void destroyTenantContext(TenantContext tenantContext) {
-		LuceneFulltextSearchContext fsc = contexts.remove(tenantContext.getTenantId());
-		if (fsc != null) {
-			fsc.destroy();
+		if (isUseFulltextSearch()) {
+			LuceneFulltextSearchContext fsc = contexts.remove(tenantContext.getTenantId());
+			if (fsc != null) {
+				fsc.destroy();
+			}
 		}
 	}
 
