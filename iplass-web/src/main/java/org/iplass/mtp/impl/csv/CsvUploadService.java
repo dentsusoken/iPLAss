@@ -567,17 +567,16 @@ public class CsvUploadService implements Service {
 						if (ed.getVersionControlType() != VersionControlType.NONE
 								&& deleteSpecificVersion && entity.getVersion() != null) {
 
-							searchResult = em.searchEntity(onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion()),
-									new SearchOption().countTotal());
+							searchResult = em.searchEntity(onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion()));
 
 							//特定versionのみ削除
 							deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
 
 						} else {
-							searchResult = em.searchEntity(noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue), new SearchOption().countTotal());
+							searchResult = em.searchEntity(noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue));
 						}
 
-						if (searchResult.getTotalCount() == 0) {
+						if (searchResult.getFirst() == null) {
 							continue;
 						}
 
