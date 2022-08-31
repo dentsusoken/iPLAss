@@ -555,17 +555,32 @@ public class CsvUploadService implements Service {
 						ctrlCode = EntityCsvReader.CTRL_MERGE;
 					}
 
-					if (useCtrl == true && ctrlCode.equals(EntityCsvReader.CTRL_DELETE)) {
+					if (useCtrl && ctrlCode.equals(EntityCsvReader.CTRL_DELETE)) {
 						if(isDenyDelete) {
 							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyDeleteError"));
 						}
 						DeleteTargetVersion deleteTargetVersion = DeleteTargetVersion.ALL;
-						if (ed.getVersionControlType() != VersionControlType.NONE) {
-							if (deleteSpecificVersion && entity.getVersion() != null) {
-								//特定versionのみ削除
-								deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
-							}
+						
+						SearchResult<Entity> searchResult = null;
+						
+						// 特定versionを削除するか
+						if (ed.getVersionControlType() != VersionControlType.NONE
+								&& deleteSpecificVersion && entity.getVersion() != null) {
+
+							searchResult = em.searchEntity(onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion()));
+
+							//特定versionのみ削除
+							deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
+
+						} else {
+							searchResult = em.searchEntity(noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue));
 						}
+
+						if (searchResult.getFirst() == null) {
+							continue;
+						}
+
+						entity.setOid(searchResult.getFirst().getOid());
 						em.delete(entity, new DeleteOption(false, deleteTargetVersion));
 						deleteCount ++;
 						continue;
@@ -662,11 +677,7 @@ public class CsvUploadService implements Service {
 						entity.setOid(keyValueMap.get(uniqueKeyValue));
 					} else {
 						if (entity.getVersion() != null) {
-							Query q = new Query()
-								.select(Entity.OID)
-								.from(ed.getName())
-								.where(new And(new Equals(Entity.OID, uniqueKeyValue), new Equals(Entity.VERSION, entity.getVersion())))
-								.versioned(true);
+							Query q = onVersionQuery(ed.getName(), Entity.OID, uniqueKeyValue, entity.getVersion());
 							int count = em.count(q);
 							if (count > 0) {
 								execType = ExecType.UPDATE_SPECIFIC;
@@ -715,6 +726,14 @@ public class CsvUploadService implements Service {
 				.select(Entity.OID)
 				.from(defName)
 				.where(new Equals(uniqueKey, uniqueKeyValue));
+		}
+		
+		private Query onVersionQuery(String defName, String uniqueKey, Object uniqueKeyValue, Long version) {
+			return new Query()
+					.select(Entity.OID)
+					.from(ed.getName())
+					.where(new And(new Equals(uniqueKey, uniqueKeyValue), new Equals(Entity.VERSION, version)))
+					.versioned(true);
 		}
 
 		private UpdateOption updateOption(TargetVersion targetVersion) {
