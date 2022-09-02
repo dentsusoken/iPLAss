@@ -25,6 +25,14 @@ import org.iplass.mtp.definition.TypedDefinitionManager;
 public interface OpenIdConnectDefinitionManager extends TypedDefinitionManager<OpenIdConnectDefinition> {
 	
 	/**
+	 * 指定のOpenIdConnect定義のClient Secretを取得します。
+	 * 
+	 * @param oidcDefinitionName OpenIdConnect定義名
+	 * @return clientSecret Client Secret
+	 */
+	public String getClientSecret(String oidcDefinitionName);
+
+	/**
 	 * 指定のOpenIdConnect定義のClient Secretを保存します。
 	 * 
 	 * @param oidcDefinitionName OpenIdConnect定義名

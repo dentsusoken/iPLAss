@@ -61,6 +61,7 @@ import org.iplass.mtp.async.AsyncTaskInfoSearchCondtion;
 import org.iplass.mtp.async.AsyncTaskManager;
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
+import org.iplass.mtp.auth.oidc.definition.OpenIdConnectDefinitionManager;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.DefinitionEntry;
 import org.iplass.mtp.definition.DefinitionInfo;
@@ -182,6 +183,8 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 	private OAuthClientService oacs = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
 	private OAuthResourceServerService oars = ServiceRegistry.getRegistry().getService(OAuthResourceServerService.class);
+	
+	private OpenIdConnectDefinitionManager oicdm = ManagerLocator.getInstance().getManager(OpenIdConnectDefinitionManager.class);
 
 
 	/* ---------------------------------------
@@ -1992,6 +1995,32 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		});
 	}
 
+	/* ---------------------------------------
+	 * OpenIDConnect
+	 --------------------------------------- */
+
+	@Override
+	public String getClientSecret(final int tenantId, final String definitionName) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
+
+			@Override
+			public String call() {
+				return oicdm.getClientSecret(definitionName);
+			}
+		});
+	}
+
+	@Override
+	public void createClientSecret(final int tenantId, final String definitionName, final String clientSecret) {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+
+			@Override
+			public Void call() {
+				oicdm.saveClientSecret(definitionName, clientSecret);
+				return null;
+			}
+		});
+	}
 	
 	/* ---------------------------------------
 	 * Webhook Endpoint Security Info

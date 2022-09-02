@@ -383,36 +383,36 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			opService = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
 			em = ManagerLocator.manager(EntityManager.class);
 			clientSecret = opService.getClientSecret(getId());
-			if (clientSecret == null) {
-				setIllegalStateException(new IllegalStateException("Client Secret unspecified."));
-			}
+//			if (clientSecret == null) {
+//				setIllegalStateException(new IllegalStateException("Client Secret unspecified."));
+//			}
 			if (jwksContents != null && !jwksContents.isEmpty()) {
 				jwks = new LocalJwks(jwksContents, opService);
 			} else if (jwksEndpoint != null) {
 				jwks = new RemoteJwks(jwksEndpoint, opService);
 			} else {
-				setIllegalStateException(new IllegalStateException("jwks endpoint or contents must specified"));
+//				setIllegalStateException(new IllegalStateException("jwks endpoint or contents must specified"));
 			}
 			opEndpoint = new OPEndpoint(tokenEndpoint, userInfoEndpoint, opService);
 			
-			if (issuer == null) {
-				setIllegalStateException(new NullPointerException("issuer must specified"));
-			}
-			if (authorizationEndpoint == null) {
-				setIllegalStateException(new NullPointerException("authorizationEndpoint must specified"));
-			}
-			if (tokenEndpoint == null) {
-				setIllegalStateException(new NullPointerException("tokenEndpoint must specified"));
-			}
-			if (clientId == null) {
-				setIllegalStateException(new NullPointerException("clientId must specified"));
-			}
-			if (clientAuthenticationType == null) {
-				setIllegalStateException(new NullPointerException("clientAuthenticationType must specified"));
-			}
-			if (subjectNameClaim == null) {
-				setIllegalStateException(new NullPointerException("subjectNameClaim must specified"));
-			}
+//			if (issuer == null) {
+//				setIllegalStateException(new NullPointerException("issuer must specified"));
+//			}
+//			if (authorizationEndpoint == null) {
+//				setIllegalStateException(new NullPointerException("authorizationEndpoint must specified"));
+//			}
+//			if (tokenEndpoint == null) {
+//				setIllegalStateException(new NullPointerException("tokenEndpoint must specified"));
+//			}
+//			if (clientId == null) {
+//				setIllegalStateException(new NullPointerException("clientId must specified"));
+//			}
+//			if (clientAuthenticationType == null) {
+//				setIllegalStateException(new NullPointerException("clientAuthenticationType must specified"));
+//			}
+//			if (subjectNameClaim == null) {
+//				setIllegalStateException(new NullPointerException("subjectNameClaim must specified"));
+//			}
 			
 			try {
 				if (backUrlAfterAuth != null) {

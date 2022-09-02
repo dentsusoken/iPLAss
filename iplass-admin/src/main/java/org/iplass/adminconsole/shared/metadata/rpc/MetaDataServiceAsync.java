@@ -468,6 +468,14 @@ public interface MetaDataServiceAsync {
 	void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName, AsyncCallback<Void> callback);
 
 	/* ---------------------------------------
+	 * OpenIDConnect
+	 --------------------------------------- */
+
+	public void getClientSecret(final int tenantId, final String definitionName, AsyncCallback<String> callback);
+
+	public void createClientSecret(final int tenantId, final String definitionName, final String clientSecret, AsyncCallback<Void> callback);
+	
+	/* ---------------------------------------
 	 * Webhook Endpoint Security Info
 	 --------------------------------------- */
 	public void updateWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType,AsyncCallback<Void> callback);
