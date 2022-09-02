@@ -283,6 +283,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		}
 		
 		definition.setSubjectNameClaim(SmartGWTUtil.getStringValue(txtSubjectNameClaimField));
+		definition.setAutoUserProvisioningHandler(SmartGWTUtil.getStringValue(txtAutoUserProvisioningHandlerField));
 		definition.setEnableTransientUser(SmartGWTUtil.getBooleanValue(chkEnableTransientUserField));
 
 		definition.setBackUrlAfterAuth(SmartGWTUtil.getStringValue(txtBackUrlAfterAuthField));
