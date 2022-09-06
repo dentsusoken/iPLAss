@@ -53,6 +53,7 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 	private boolean logQuery;
 	private boolean logSelectValueWithLabel;
 	private boolean logReferenceWithLabel;
+	private LogMaskHandler logMaskHandler;
 
 	public boolean isLogQuery() {
 		return logQuery;
@@ -103,6 +104,8 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 		if (config.getValue("cutSize") != null) {
 			textMaxLength = Integer.parseInt(config.getValue("textMaxLength"));
 		}
+
+		logMaskHandler = (LogMaskHandler) config.getValue("maskingHandler", LogMaskHandler.class);
 	}
 
 	public void log(String action, Object detail) {
@@ -112,6 +115,13 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 			str = detail.toString().replace("\n", "\\n").replace("\r", "\\r");
 		}
 		logger.info(action + "," + str);
+	}
+
+	private Object maskValue(String definitionName, String keyName,  Object target) {
+		if (target == null || logMaskHandler == null) {
+			return target;
+		}
+		return logMaskHandler.maskingProperty(definitionName, keyName, target.toString());
 	}
 
 	private void cutAppend(StringBuilder sb, Object target) {
@@ -154,7 +164,7 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 						}
 						if (valArray[i] instanceof GenericEntity) {
 							sb.append("{\"oid\":\"").append(((GenericEntity) valArray[i]).getOid()).append("\",\"name\":\"");
-							cutAppend(sb, ((GenericEntity) valArray[i]).getName());
+							cutAppend(sb, maskValue(entity.getDefinitionName(), key.getName(), ((GenericEntity) valArray[i]).getName()));
 							sb.append("\"}");
 						} else {
 							Object toLogVal;
@@ -165,7 +175,7 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 							}
 							if (toLogVal instanceof String) {
 								sb.append("\"");
-								cutAppend(sb, toLogVal);
+								cutAppend(sb, maskValue(entity.getDefinitionName(), key.getName(),toLogVal));
 								sb.append("\"");
 							} else {
 								sb.append(toLogVal);
@@ -175,7 +185,7 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 					sb.append("]");
 				} else if (val instanceof GenericEntity) {
 					sb.append("{\"oid\":\"").append(((GenericEntity) val).getOid()).append("\",\"name\":\"");
-					cutAppend(sb, ((GenericEntity) val).getName());
+					cutAppend(sb, maskValue(entity.getDefinitionName(), key.getName(),((GenericEntity) val).getName()));
 					sb.append("\"}");
 				} else {
 					if (pt != null) {
@@ -183,7 +193,7 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 					}
 					if (val instanceof String) {
 						sb.append("\"");
-						cutAppend(sb, val);
+						cutAppend(sb, maskValue(entity.getDefinitionName(), key.getName(),(String) val));
 						sb.append("\"");
 					} else {
 						sb.append(val);

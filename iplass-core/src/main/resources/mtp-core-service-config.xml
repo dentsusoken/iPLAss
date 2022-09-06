@@ -678,6 +678,22 @@
 		<!-- log出力時、Referenceのoidとnameを出力する場合はtrue -->
 		<property name="logReferenceWithLabel" value="true" />
 
+		<!-- logファイルへ出力されるプロパティのマスク設定 -->
+		<!--
+		<property name="maskingHandler" class="org.iplass.mtp.impl.entity.auditlog.LogHashMaskHandler">
+			<property name="maskTargetStore" class="org.iplass.mtp.impl.entity.auditlog.MaskTargetStore">
+				<property name="maskEntity" value="entity1" />
+				<property name="maskProperties" value="propertyA" />
+				<property name="maskProperties" value="propertyB" />
+			</property>
+			<property name="maskTargetStore" class="org.iplass.mtp.impl.entity.auditlog.MaskTargetStore">
+				<property name="maskEntity" value="entity2" />
+				<property name="maskProperties" value="propertyC" />
+				<property name="maskProperties" value="propertyD" />
+			</property>
+			<property name="hashAlgorithm" value="SHA-256" />
+		</property>
+		-->	
 	</service>
 
 	<service>
