@@ -105,7 +105,7 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 			textMaxLength = Integer.parseInt(config.getValue("textMaxLength"));
 		}
 
-		logMaskHandler = (LogMaskHandler) config.getValue("maskingHandler", LogMaskHandler.class);
+		logMaskHandler = (LogMaskHandler) config.getValue("logMaskHandler", LogMaskHandler.class);
 	}
 
 	public void log(String action, Object detail) {

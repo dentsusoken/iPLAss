@@ -680,7 +680,7 @@
 
 		<!-- logファイルへ出力されるプロパティのマスク設定 -->
 		<!--
-		<property name="maskingHandler" class="org.iplass.mtp.impl.entity.auditlog.LogHashMaskHandler">
+		<property name="logMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogHashMaskHandler">
 			<property name="maskTargetStore" class="org.iplass.mtp.impl.entity.auditlog.MaskTargetStore">
 				<property name="maskEntity" value="entity1" />
 				<property name="maskProperties" value="propertyA" />
