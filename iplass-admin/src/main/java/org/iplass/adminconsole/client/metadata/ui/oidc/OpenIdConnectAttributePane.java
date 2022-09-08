@@ -7,13 +7,18 @@ package org.iplass.adminconsole.client.metadata.ui.oidc;
 import java.util.LinkedHashMap;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.auth.oidc.definition.ClientAuthenticationType;
 import org.iplass.mtp.auth.oidc.definition.OpenIdConnectDefinition;
 import org.iplass.mtp.auth.oidc.definition.ResponseMode;
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
@@ -58,8 +63,8 @@ public class OpenIdConnectAttributePane extends VLayout {
 	private TextItem txtAutoUserProvisioningHandlerField;
 	private CheckboxItem chkEnableTransientUserField;
 
-	private TextItem txtBackUrlAfterAuthField;
-	private TextItem txtBackUrlAfterConnectField;
+	private TextAreaItem txtBackUrlAfterAuthField;
+	private TextAreaItem txtBackUrlAfterConnectField;
 
 	public OpenIdConnectAttributePane() {
 		initialize();
@@ -174,19 +179,78 @@ public class OpenIdConnectAttributePane extends VLayout {
 
 		chkEnableTransientUserField = new CheckboxItem("enableTransientUser", "Enable Transient User");
 
-		txtBackUrlAfterAuthField = new TextItem();
+
+		ButtonItem backUrlAfterAuthCondBtn = new ButtonItem();
+		backUrlAfterAuthCondBtn.setTitle("Edit");
+		backUrlAfterAuthCondBtn.setWidth(100);
+		backUrlAfterAuthCondBtn.setStartRow(true);
+		backUrlAfterAuthCondBtn.setColSpan(4);
+		backUrlAfterAuthCondBtn.setAlign(Alignment.RIGHT);
+		backUrlAfterAuthCondBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+			@Override
+			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
+						SmartGWTUtil.getStringValue(txtBackUrlAfterAuthField),
+						ScriptEditorDialogCondition.OPENID_CONNECT_RP_BACK_URL_AFTER_AUTH,
+						"ui_metadata_oidc_OpenIdConnectEditPane_backUrlAfterAuthHint",
+						null,
+						new ScriptEditorDialogHandler() {
+
+							@Override
+							public void onSave(String text) {
+								txtBackUrlAfterAuthField.setValue(text);
+							}
+							@Override
+							public void onCancel() {
+							}
+						});
+			}
+		});
+
+		txtBackUrlAfterAuthField = new TextAreaItem();
 		txtBackUrlAfterAuthField.setTitle("Back Url After Auth");
 		txtBackUrlAfterAuthField.setWidth("100%");
 		txtBackUrlAfterAuthField.setBrowserSpellCheck(false);
 		txtBackUrlAfterAuthField.setColSpan(3);
 		txtBackUrlAfterAuthField.setStartRow(true);
+		SmartGWTUtil.setReadOnlyTextArea(txtBackUrlAfterAuthField);
 
-		txtBackUrlAfterConnectField = new TextItem();
+		ButtonItem backUrlAfterConnectCondBtn = new ButtonItem();
+		backUrlAfterConnectCondBtn.setTitle("Edit");
+		backUrlAfterConnectCondBtn.setWidth(100);
+		backUrlAfterConnectCondBtn.setStartRow(true);
+		backUrlAfterConnectCondBtn.setColSpan(4);
+		backUrlAfterConnectCondBtn.setAlign(Alignment.RIGHT);
+		backUrlAfterConnectCondBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+			@Override
+			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
+						SmartGWTUtil.getStringValue(txtBackUrlAfterConnectField),
+						ScriptEditorDialogCondition.OPENID_CONNECT_RP_BACK_URL_AFTER_CONNECT,
+						"ui_metadata_oidc_OpenIdConnectEditPane_backUrlAfterConnectHint",
+						null,
+						new ScriptEditorDialogHandler() {
+
+							@Override
+							public void onSave(String text) {
+								txtBackUrlAfterConnectField.setValue(text);
+							}
+							@Override
+							public void onCancel() {
+							}
+						});
+			}
+		});
+
+		txtBackUrlAfterConnectField = new TextAreaItem();
 		txtBackUrlAfterConnectField.setTitle("Back Url After Connect");
 		txtBackUrlAfterConnectField.setWidth("100%");
 		txtBackUrlAfterConnectField.setBrowserSpellCheck(false);
 		txtBackUrlAfterConnectField.setColSpan(3);
 		txtBackUrlAfterConnectField.setStartRow(true);
+		SmartGWTUtil.setReadOnlyTextArea(txtBackUrlAfterConnectField);
 
 		form.setItems(txtIssuerField,
 				txtAuthorizationEndpointField,
@@ -205,7 +269,9 @@ public class OpenIdConnectAttributePane extends VLayout {
 				txtSubjectNameClaimField,
 				txtAutoUserProvisioningHandlerField,
 				chkEnableTransientUserField,
+				backUrlAfterAuthCondBtn,
 				txtBackUrlAfterAuthField,
+				backUrlAfterConnectCondBtn,
 				txtBackUrlAfterConnectField);
 
 		addMember(form);
@@ -293,4 +359,9 @@ public class OpenIdConnectAttributePane extends VLayout {
 	public boolean validate() {
 		return form.validate();
 	}
+	
+	private String rs(String key) {
+		return AdminClientMessageUtil.getString(key);
+	}
+
 }

@@ -66,17 +66,6 @@ public class ClientSecretDialog extends MtpDialog {
 		});
 
 		footer.setMembers(save, cancel);
-		
-		initialize();
-	}
-
-	private void initialize() {
-		service.getClientSecret(TenantInfoHolder.getId(), definitionName, new AdminAsyncCallback<String>() {
-			@Override
-			public void onSuccess(String result) {
-				txtClientSecretField.setValue(result);
-			}
-		});
 	}
 
 	private void saveClientSecret(String clientSecret) {

@@ -496,7 +496,6 @@ public interface MetaDataService extends XsrfProtectedService {
 	/* ---------------------------------------
 	 * OpenIDConnect
 	 --------------------------------------- */
-	public String getClientSecret(final int tenantId, final String definitionName);
 
 	public void createClientSecret(final int tenantId, final String definitionName, final String clientSecret);
 

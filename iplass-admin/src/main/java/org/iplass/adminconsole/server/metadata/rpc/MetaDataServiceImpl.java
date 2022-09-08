@@ -2000,17 +2000,6 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	 --------------------------------------- */
 
 	@Override
-	public String getClientSecret(final int tenantId, final String definitionName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
-
-			@Override
-			public String call() {
-				return oicdm.getClientSecret(definitionName);
-			}
-		});
-	}
-
-	@Override
 	public void createClientSecret(final int tenantId, final String definitionName, final String clientSecret) {
 		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
 

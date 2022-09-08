@@ -358,63 +358,64 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 		private GroovyTemplate backUrlAfterConnectTmpl;
 		
 		private OpenIdConnectRuntime() {
-			if (autoUserProvisioningHandler != null) {
-				try {
-					aup = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class).createInstanceAs(AutoUserProvisioningHandler.class, autoUserProvisioningHandler);
-					aup.init(currentConfig());
-				} catch (ClassNotFoundException e) {
-					throw new IllegalStateException(e);
-				}
-			}
-			
-			scopeParamSet = new HashSet<>();
-			StringBuilder sb = new StringBuilder();
-			sb.append(OAuthConstants.SCOPE_OPENID);
-			scopeParamSet.add(OAuthConstants.SCOPE_OPENID);
-			if (scopes != null  && scopes.size() > 0) {
-				for (String sc: scopes) {
-					if (!OAuthConstants.SCOPE_OPENID.equals(sc)) {
-						sb.append(' ').append(sc);
-						scopeParamSet.add(sc);
+			try {
+				if (autoUserProvisioningHandler != null) {
+					try {
+						aup = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class).createInstanceAs(AutoUserProvisioningHandler.class, autoUserProvisioningHandler);
+						aup.init(currentConfig());
+					} catch (ClassNotFoundException e) {
+						throw new IllegalStateException(e);
 					}
 				}
-			}
-			scopeParamValue = sb.toString();
-			opService = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
-			em = ManagerLocator.manager(EntityManager.class);
-			clientSecret = opService.getClientSecret(getId());
-//			if (clientSecret == null) {
-//				setIllegalStateException(new IllegalStateException("Client Secret unspecified."));
-//			}
-			if (jwksContents != null && !jwksContents.isEmpty()) {
-				jwks = new LocalJwks(jwksContents, opService);
-			} else if (jwksEndpoint != null) {
-				jwks = new RemoteJwks(jwksEndpoint, opService);
-			} else {
-//				setIllegalStateException(new IllegalStateException("jwks endpoint or contents must specified"));
-			}
-			opEndpoint = new OPEndpoint(tokenEndpoint, userInfoEndpoint, opService);
-			
-//			if (issuer == null) {
-//				setIllegalStateException(new NullPointerException("issuer must specified"));
-//			}
-//			if (authorizationEndpoint == null) {
-//				setIllegalStateException(new NullPointerException("authorizationEndpoint must specified"));
-//			}
-//			if (tokenEndpoint == null) {
-//				setIllegalStateException(new NullPointerException("tokenEndpoint must specified"));
-//			}
-//			if (clientId == null) {
-//				setIllegalStateException(new NullPointerException("clientId must specified"));
-//			}
-//			if (clientAuthenticationType == null) {
-//				setIllegalStateException(new NullPointerException("clientAuthenticationType must specified"));
-//			}
-//			if (subjectNameClaim == null) {
-//				setIllegalStateException(new NullPointerException("subjectNameClaim must specified"));
-//			}
-			
-			try {
+				scopeParamSet = new HashSet<>();
+				StringBuilder sb = new StringBuilder();
+				sb.append(OAuthConstants.SCOPE_OPENID);
+				scopeParamSet.add(OAuthConstants.SCOPE_OPENID);
+				if (scopes != null  && scopes.size() > 0) {
+					for (String sc: scopes) {
+						if (!OAuthConstants.SCOPE_OPENID.equals(sc)) {
+							sb.append(' ').append(sc);
+							scopeParamSet.add(sc);
+						}
+					}
+				}
+				scopeParamValue = sb.toString();
+				opService = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
+				em = ManagerLocator.manager(EntityManager.class);
+				clientSecret = opService.getClientSecret(getId());
+				if (clientSecret == null) {
+					throw new IllegalStateException("Client Secret unspecified.");
+				}
+				if (jwksContents != null && !jwksContents.isEmpty()) {
+					jwks = new LocalJwks(jwksContents, opService);
+				} else if (jwksEndpoint != null) {
+					jwks = new RemoteJwks(jwksEndpoint, opService);
+				} else {
+					if(validateSign) {
+						throw new IllegalStateException("jwks endpoint or contents must specified");
+					}
+				}
+				opEndpoint = new OPEndpoint(tokenEndpoint, userInfoEndpoint, opService);
+				
+				if (issuer == null) {
+					throw new NullPointerException("issuer must specified");
+				}
+				if (authorizationEndpoint == null) {
+					throw new NullPointerException("authorizationEndpoint must specified");
+				}
+				if (tokenEndpoint == null) {
+					throw new NullPointerException("tokenEndpoint must specified");
+				}
+				if (clientId == null) {
+					throw new NullPointerException("clientId must specified");
+				}
+				if (clientAuthenticationType == null) {
+					throw new NullPointerException("clientAuthenticationType must specified");
+				}
+				if (subjectNameClaim == null) {
+					new NullPointerException("subjectNameClaim must specified");
+				}
+				
 				if (backUrlAfterAuth != null) {
 					backUrlAfterAuthTmpl = GroovyTemplateCompiler.compile(
 							backUrlAfterAuth,
@@ -425,8 +426,8 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 							backUrlAfterConnect,
 							"OpenIdConnect_backUrlAfterConnect_" + getName(), (GroovyScriptEngine) scriptEngine);
 				}
-			} catch (RuntimeException e) {
-				setIllegalStateException(e);
+			} catch(RuntimeException e) {
+			    setIllegalStateException(e);
 			}
 		}
 		
