@@ -111,7 +111,7 @@
 				String buttonDisplayLabel = TemplateUtil.getMultilingualString(button.getDisplayLabel(), button.getLocalizedDisplayLabelList());
 %>
 <%-- XSS対応-メタの設定のため対応なし(button.getOnclickEvent) --%>
-<li class="btn"><input type="button" value="<c:out value="<%=buttonDisplayLabel %>"/>" class="<c:out value="<%=cssClass %>"/>" style="<c:out value="<%=customStyle %>"/>" onclick="<%=button.getOnclickEvent() %>" /></li>
+<li class="btn"><input type="button" value="<c:out value="<%=buttonDisplayLabel %>"/>" class="<c:out value="<%=cssClass %>"/> disabled-btn" style="<c:out value="<%=customStyle %>"/>" disabled="disabled" onclick="<%=button.getOnclickEvent() %>" /></li>
 <%
 			}
 		}
@@ -119,7 +119,7 @@
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
 		if (data.isCanUpdate()) {
 %>
-<li class="btn save-btn"><input type="button" class="gr-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" /></li>
+<li class="btn save-btn"><input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" disabled="disabled" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" /></li>
 <%
 		} else {
 %>
@@ -129,7 +129,7 @@
 	} else {
 		if (data.isCanCreate()) {
 %>
-<li class="btn insert-btn"><input type="button" class="gr-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" /></li>
+<li class="btn insert-btn"><input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" disabled="disabled" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" /></li>
 <%
 		} else {
 %>
