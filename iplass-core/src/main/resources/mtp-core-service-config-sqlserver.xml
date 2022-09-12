@@ -39,7 +39,6 @@
 			<property name="alwaysBind" value="false" />
 			<property name="defaultQueryTimeout" value="0" />
 			<property name="lockTimeout" value="0" />
-			<property name="optimizerHint" value="FAST 100" />
 		</property>
 	</service>
 

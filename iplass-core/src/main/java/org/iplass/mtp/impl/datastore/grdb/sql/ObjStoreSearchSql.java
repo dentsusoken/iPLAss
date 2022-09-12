@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.query.GroupBy;
@@ -62,6 +63,19 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 	public ToSqlResult query(EntityHandler metaData,
 			EntityContext context,
 			Query query, boolean withLock, boolean treatBindHint, Integer stringTypeLengthOnQuery, RdbAdapter rdbAdaptor) {
+		return queryImpl(metaData, context, query, treatBindHint, stringTypeLengthOnQuery, rdbAdaptor,
+				sql -> {
+					if (withLock) {
+						return rdbAdaptor.createRowLockSql(sql.toString());
+					} else {
+						return sql;
+					}
+				});
+	}
+
+	private ToSqlResult queryImpl(EntityHandler metaData,
+			EntityContext context,
+			Query query, boolean treatBindHint, Integer stringTypeLengthOnQuery, RdbAdapter rdbAdaptor, UnaryOperator<CharSequence> modifiier) {
 
 		long time = 0;
 		if (logger.isTraceEnabled()) {
@@ -94,11 +108,7 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 				}
 			}
 			query.accept(converter);
-			if (withLock) {
-				return new ToSqlResult(rdbAdaptor.createRowLockSql(sqlContext.toSelectSql()), sqlContext.toOrderedBindVariables(true));
-			} else {
-				return new ToSqlResult(sqlContext.toSelectSql(), sqlContext.toOrderedBindVariables(true));
-			}
+			return new ToSqlResult(sqlContext.sqlEnded(modifiier.apply(sqlContext.toSelectSql())), sqlContext.toOrderedBindVariables(true));
 
 		} finally {
 			if (logger.isTraceEnabled()) {
@@ -296,8 +306,8 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 		Query subQuery = query.copy();
 		subQuery.setOrderBy(null);
 
-		ToSqlResult res = query(metaData, context, subQuery, false, enableBindVariable, null, rdbAdaptor);
-		res.sql = "SELECT COUNT(*) FROM (" + res.sql + ") CT";
+		ToSqlResult res = queryImpl(metaData, context, subQuery, enableBindVariable, null, rdbAdaptor,
+				sql -> "SELECT COUNT(*) FROM (" + sql + ") CT");
 		return res;
 	}
 

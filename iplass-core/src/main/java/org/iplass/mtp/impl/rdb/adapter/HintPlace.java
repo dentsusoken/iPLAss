@@ -21,5 +21,5 @@
 package org.iplass.mtp.impl.rdb.adapter;
 
 public enum HintPlace {
-	HEAD_OF_SQL, AFTER_SELECT
+	HEAD_OF_SQL, AFTER_SELECT, END_OF_SQL
 }

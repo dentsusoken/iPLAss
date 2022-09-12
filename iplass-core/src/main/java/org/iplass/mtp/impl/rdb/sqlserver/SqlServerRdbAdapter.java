@@ -81,6 +81,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 public class SqlServerRdbAdapter extends RdbAdapter {
 
 	private static final String[] optimizerHintBracket = {"OPTION (", ")"};
+	private static final String[] tableHintBracket = {"WITH (", ")"};
 
 	private int lockTimeout = 0;
 	private String timestampFunction = "GETDATE()";
@@ -88,7 +89,7 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 	private String monthsBetweenFunction = "DATEDIFF";
 	private boolean isUseSubQueryForIndexJoin = true;
 
-	private String optimizerHint = "FAST 100";
+	private String optimizerHint;
 
 	private boolean enableBindHint = false;
 	private boolean alwaysBind = false;
@@ -190,7 +191,7 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 
 	@Override
 	public HintPlace getOptimizerHintPlace() {
-		return HintPlace.AFTER_SELECT;
+		return HintPlace.END_OF_SQL;
 	}
 
 	@Override
@@ -714,18 +715,17 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 
 	@Override
 	public boolean isSupportOptimizerHint() {
-		// FIXME サブクエリに付かないようにする対応が必要
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isSupportTableHint() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public String[] getTableHintBracket() {
-		return null;
+		return tableHintBracket;
 	}
 
 	@Override
