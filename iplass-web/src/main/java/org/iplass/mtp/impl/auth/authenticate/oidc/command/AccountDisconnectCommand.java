@@ -37,8 +37,10 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(name=AccountDisconnectCommand.WEBAPI_NAME,
+	accepts=RequestType.REST_FORM,
 	methods=MethodType.POST,
 	cacheControlType=CacheControlType.NO_CACHE,
 	tokenCheck=@WebApiTokenCheck(useFixedToken=true),
