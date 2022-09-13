@@ -382,18 +382,18 @@
 					<property name="useRegex" value="true" />
 					<property name="pattern" value="^application/vnd[.]ms-.*|^application/msword.*" />
 				</property>
-				<property name="magicByte" value="504b030414000600" />
-				<property name="magicByte" value="d0cf11e0a1b11ae1" />
-				<property name="magicByte" value="7b5c72746631" />
+				<property name="extension" class="org.iplass.mtp.impl.web.fileupload.MagicByteRuleCondition" >
+					<property name="pattern" value="csv" />
+				</property>
 			</property>
 			<property name="magicByteRule" >
 				<property name="mimeType" >
 					<property name="useRegex" value="true" />
 					<property name="pattern" value="^application/vnd[.]ms-.*|^application/msword.*" />
 				</property>
-				<property name="extension" class="org.iplass.mtp.impl.web.fileupload.MagicByteRuleCondition" >
-					<property name="pattern" value="csv" />
-				</property>
+				<property name="magicByte" value="504b030414000600" />
+				<property name="magicByte" value="d0cf11e0a1b11ae1" />
+				<property name="magicByte" value="7b5c72746631" />
 			</property>
 			<property name="magicByteRule" >
 				<property name="extension" >
