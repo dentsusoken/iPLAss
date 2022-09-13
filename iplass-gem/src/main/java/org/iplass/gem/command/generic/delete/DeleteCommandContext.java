@@ -131,12 +131,17 @@ public class DeleteCommandContext extends GenericCommandContext {
 			deleteTargetVersion = DeleteTargetVersion.ALL;
 			if (getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
 				boolean isDeleteSpecificVersion = getView().isDeleteSpecificVersion();
-				if (isDeleteSpecificVersion) {
+				if (isDeleteSpecificVersion && isAllVersion()) {
 					deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
 				}
 			}
 		}
 		return deleteTargetVersion;
+	}
+
+	private boolean isAllVersion() {
+		String allVer = getRequest().getParam("allVersion");
+		return "1".equals(allVer);
 	}
 
 	protected String resourceString(String key, Object... arguments) {

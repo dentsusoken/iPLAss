@@ -968,8 +968,9 @@ function doDelete() {
 function deleteByCondition() {
 	$.blockUI({message: $("#blockLayer"), css: {width: "20px", left: "50%", top: "50%"}});
 	var type = $(":hidden[name='searchType']").val();
+	var allVersion = $("[name*='allVersion']:checked", $("[name='" + type + "Form']")).val();
 	var t = $(":hidden[name='_t']").val();
-	deleteAll("<%=StringUtil.escapeJavaScript(deleteAllWebapi)%>", type, type + "Form", t, function(message) {
+	deleteAll("<%=StringUtil.escapeJavaScript(deleteAllWebapi)%>", type, type + "Form", allVersion, t, function(message) {
 		if (message && message.length > 0) {
 			alert(message);
 		} else {
@@ -995,8 +996,10 @@ function deleteRow(isConfirmed) {
 		//rowid_oid_version
 		oid.push(id + "_" + row.orgOid + "_" + row.orgVersion);
 	}
+	var type = $(":hidden[name='searchType']").val();
+	var allVersion = $("[name*='allVersion']:checked", $("[name='" + type + "Form']")).val();
 	var t = $(":hidden[name='_t']").val();
-	deleteList("<%=StringUtil.escapeJavaScript(deleteListWebapi)%>", oid, "<%=StringUtil.escapeJavaScript(viewName)%>", t, function(message) {
+	deleteList("<%=StringUtil.escapeJavaScript(deleteListWebapi)%>", oid, "<%=StringUtil.escapeJavaScript(viewName)%>", allVersion, t, function(message) {
 		if (message && message.length > 0) {
 			alert(message);
 		} else {
