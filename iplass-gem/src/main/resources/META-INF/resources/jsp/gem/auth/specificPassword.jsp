@@ -84,7 +84,6 @@ if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) 
 <c:out value="<%=errorMessage%>"/>
 </div>
 <form id="resetSpecificPassForm" method="POST" action="${m:tcPath()}/<%=ResetSpecificPasswordCommand.ACTION_RESET_SPECIFIC_PASSWORD%>">
-${m:outputToken('FORM_XHTML', true)}
 <% if (oid != null) {%>
 <input type="hidden" name="oid" value="<%=oid%>" />
 <% }%>
@@ -120,6 +119,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="cancel();return false;">${m:rs("mtp-gem-messages", "auth.SpecificPassword.cancel")}</a></li>
 </ul>
 </div>
+${m:outputToken('FORM_XHTML', true)}
 </form>
 </div>
 <script type="text/javascript">
