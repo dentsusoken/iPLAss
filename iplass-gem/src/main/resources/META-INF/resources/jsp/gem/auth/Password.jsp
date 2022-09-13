@@ -177,7 +177,6 @@ if (!"true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 <m:auth privileged="true">
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.Password.inputUserInfo")}</h3>
 <form action="${m:tcPath()}/<%=UpdateUserCommand.ACTION_NAME%>" method="POST">
-${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="defName" value="<c:out value="<%=User.DEFINITION_NAME%>"/>" />
 <input type="hidden" name="oid" value="<c:out value="<%=user.getOid()%>"/>" />
 <input type="hidden" name="version" value="<c:out value="<%=user.getVersion()%>"/>" />
@@ -233,6 +232,7 @@ if ("true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 </div>
 </div>
 <p><input type="submit" value="${m:rs('mtp-gem-messages', 'auth.Password.save')}" class="gr-btn" /></p>
+${m:outputToken('FORM_XHTML', true)}
 </form>
 </m:auth>
 <%
