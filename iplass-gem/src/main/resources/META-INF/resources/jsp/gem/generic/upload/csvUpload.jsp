@@ -208,7 +208,6 @@ $(function(){
 <%
 	}
 %>
-${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="searchCond" value="${m:esc(searchCond)}" />
 
@@ -236,6 +235,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <li class="cancel-link mt05"><a href="javascript:void(0)" onclick="cancel();return false;">${m:rs("mtp-gem-messages", "generic.csvUpload.cancel")}</a></li>
 </ul>
 </div>
+${m:outputToken('FORM_XHTML', true)}
 </form>
 
 <div class="csvupload_description flat-block-top">

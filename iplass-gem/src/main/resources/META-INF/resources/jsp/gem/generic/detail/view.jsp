@@ -239,7 +239,6 @@ function dataUnlock() {
 	}
 %>
 <form id="detailForm" method="post" action="<c:out value="<%=edit %>"/>">
-${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="searchCond" value="<c:out value="<%=searchCond%>"/>" />
 <input type="hidden" name="_copyTarget" value="<c:out value="<%=copyTarget.value()%>"/>" />
@@ -293,6 +292,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <div class="operation-bar operation-bar_bottom">
 <jsp:include page="viewButton.inc.jsp" />
 </div><!--operation-bar-->
+${m:outputToken('FORM_XHTML', true)}
 </form>
 </div>
 
