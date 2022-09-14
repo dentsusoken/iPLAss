@@ -115,9 +115,9 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 					.collect(Collectors.groupingBy(MaskTarget::getEntity));
 			targetMap = new HashMap<>();
 			for (String key : entityGroupingMap.keySet()) {
-				List<MaskTarget> ｔargetEntityList = entityGroupingMap.get(key);
+				List<MaskTarget> targetEntityList = entityGroupingMap.get(key);
 				Map<String, LogMaskHandler> propertyMap = new HashMap<>();
-				ｔargetEntityList.forEach(target -> propertyMap.put(target.getProperty(), target.getMaskHandler()));
+				targetEntityList.forEach(target -> propertyMap.put(target.getProperty(), target.getMaskHandler()));
 				targetMap.put(key, propertyMap);
 			}
 		}
