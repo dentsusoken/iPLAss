@@ -22,17 +22,12 @@ public class LogHashMaskHandler extends LogMaskHandler {
 	}
 
 	@Override
-	public String maskingProperty(String definitionName, String keyName, String value) {
-		if (isTargetProperty(definitionName, keyName)) {
-			try {
-				// ハッシュ化する
-				return HashUtil.digest(value, hashAlgorithm);
-			} catch (NoSuchAlgorithmException e) {
-				throw new ServiceConfigrationException("invalid PasswordHashAlgorithm", e);
-			}
+	public String maskingProperty(String value) {
+		try {
+			// ハッシュ化する
+			return HashUtil.digest(value, hashAlgorithm);
+		} catch (NoSuchAlgorithmException e) {
+			throw new ServiceConfigrationException("invalid PasswordHashAlgorithm", e);
 		}
-
-		return value;
 	}
-
 }

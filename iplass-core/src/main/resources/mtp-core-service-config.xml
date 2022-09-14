@@ -679,21 +679,29 @@
 		<property name="logReferenceWithLabel" value="true" />
 
 		<!-- logファイルへ出力されるプロパティのマスク設定 -->
-		<!--
-		<property name="logMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogHashMaskHandler">
-			<property name="maskTargetStore" class="org.iplass.mtp.impl.entity.auditlog.MaskTargetStore">
-				<property name="maskEntity" value="entity1" />
-				<property name="maskProperties" value="propertyA" />
-				<property name="maskProperties" value="propertyB" />
-			</property>
-			<property name="maskTargetStore" class="org.iplass.mtp.impl.entity.auditlog.MaskTargetStore">
-				<property name="maskEntity" value="entity2" />
-				<property name="maskProperties" value="propertyC" />
-				<property name="maskProperties" value="propertyD" />
-			</property>
-			<property name="hashAlgorithm" value="SHA-256" />
+		<property name="maskTarget" class="org.iplass.mtp.impl.entity.auditlog.MaskTarget">
+			<property name="entity" value="entity1" />
+			<property name="property" value="propertyA" />
+			<property name="maskHandler" ref="allMaskHandler" />
 		</property>
-		-->	
+		<property name="maskTarget" class="org.iplass.mtp.impl.entity.auditlog.MaskTarget">
+			<property name="entity" value="*" />
+			<property name="property" value="propertyB" />
+			<property name="maskHandler" ref="hashMaskHandler" />
+		</property>
+		<property name="maskTarget" class="org.iplass.mtp.impl.entity.auditlog.MaskTarget">
+			<property name="entity" value="entity2" />
+			<property name="property" value="*" />
+			<property name="maskHandler" ref="hashMaskHandler" />
+		</property>
+		<bean name="allMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogAllMaskHandler"></bean>
+		<bean name="regexMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogRegexMaskHandler">
+			<property name="maskRegex" value=".+?" />
+		</bean>
+		<bean name="hashMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogHashMaskHandler">
+			<property name="hashAlgorithm" value="SHA-256" />
+		</bean>
+		
 	</service>
 
 	<service>

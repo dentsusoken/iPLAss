@@ -17,11 +17,8 @@ public class LogRegexMaskHandler extends LogMaskHandler {
 	}
 
 	@Override
-	public String maskingProperty(String definitionName, String keyName, String value) {
-		if (isTargetProperty(definitionName, keyName)) {
-			// 指定された正規表現でマスクする
-			return value.replaceAll(maskRegex, MASK_CHAR);
-		}
-		return value;
+	public String maskingProperty(String value) {
+		// 指定された正規表現でマスクする
+		return value.replaceAll(maskRegex, MASK_CHAR);
 	}
 }
