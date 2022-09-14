@@ -243,7 +243,6 @@
 	}
 %>
 <form id="detailForm" method="post" action="<%=action%>">
-${m:outputToken('FORM_XHTML', true)}
 <%
 	if (!isSelectAll) {
 %>
@@ -474,6 +473,7 @@ $(function() {
 %>
 </div>
 </div>
+${m:outputToken('FORM_XHTML', true)}
 </form>
 <script type="text/javascript">
 function onclick_cancel() {

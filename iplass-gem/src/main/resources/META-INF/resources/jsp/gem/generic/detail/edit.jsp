@@ -245,6 +245,9 @@ function validation() {
 	<%-- common.js --%>
 	return editValidate();
 }
+$(function(){
+	$('.disabled-btn').removeAttr('disabled');
+});
 </script>
 <%
 	if (form.isValidJavascriptDetailPage() && StringUtil.isNotBlank(form.getJavaScript())) {
@@ -267,7 +270,6 @@ function validation() {
 	}
 %>
 <form id="detailForm" method="post" action="<c:out value="<%=defaultAction%>"/>">
-${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="searchCond" value="<c:out value="<%=searchCond%>"/>" />
 <input type="hidden" name="execType" value="<c:out value="<%=execType%>"/>" />
@@ -331,5 +333,6 @@ ${m:outputToken('FORM_XHTML', true)}
 <div class="operation-bar operation-bar_bottom">
 <jsp:include page="editButton.inc.jsp" />
 </div><!--operation-bar-->
+${m:outputToken('FORM_XHTML', true)}
 </form>
 </div>
