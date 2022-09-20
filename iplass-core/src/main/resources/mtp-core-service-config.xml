@@ -700,15 +700,6 @@
 		<bean name="regexMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogRegexMaskHandler">
 			<property name="maskChar" value="x" />
 			<property name="maskRegex" value=".+?" />
-			<buildScript>
-				import org.iplass.mtp.impl.entity.auditlog.LogRegexMaskHandler;
-				import java.util.regex.Pattern;
-				
-				LogRegexMaskHandler handler = new LogRegexMaskHandler();
-				handler.maskChar = properties.maskChar;
-				handler.pattern = Pattern.compile(properties.maskRegex);
-				return handler;
-			</buildScript>
 		</bean>
 		<bean name="hashMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogHashMaskHandler">
 			<property name="hashAlgorithm" value="SHA-256" />

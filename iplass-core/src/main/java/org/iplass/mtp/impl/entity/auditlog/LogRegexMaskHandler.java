@@ -25,16 +25,32 @@ import java.util.regex.Pattern;
 public class LogRegexMaskHandler implements LogMaskHandler {
 
 	private String maskChar = "*";
+	private String maskRegex;
+
+	public String getMaskChar() {
+		return maskChar;
+	}
+
+	public void setMaskChar(String maskChar) {
+		this.maskChar = maskChar;
+	}
+
+	public String getMaskRegex() {
+		return maskRegex;
+	}
+
+	public void setMaskRegex(String maskRegex) {
+		this.maskRegex = maskRegex;
+	}
+
 	private Pattern pattern;
 
 	@Override
 	public String mask(String value) {
-		//TODO
-		/*　ServiceConfigのbuildScriptで生成しておく？
 		if (pattern == null) {
 			pattern = Pattern.compile(maskRegex);
 		}
-		*/
+
 		// 指定された正規表現でマスクする
 		return pattern.matcher(value).replaceAll(maskChar);
 	}
