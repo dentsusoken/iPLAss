@@ -26,6 +26,7 @@ public class LogRegexMaskHandler implements LogMaskHandler {
 
 	private String maskChar = "*";
 	private String maskRegex;
+	private Pattern pattern;
 
 	public String getMaskChar() {
 		return maskChar;
@@ -41,16 +42,12 @@ public class LogRegexMaskHandler implements LogMaskHandler {
 
 	public void setMaskRegex(String maskRegex) {
 		this.maskRegex = maskRegex;
+		// 正規表現にあわせてPatternも生成しておく
+		pattern = Pattern.compile(maskRegex);
 	}
-
-	private Pattern pattern;
 
 	@Override
 	public String mask(String value) {
-		if (pattern == null) {
-			pattern = Pattern.compile(maskRegex);
-		}
-
 		// 指定された正規表現でマスクする
 		return pattern.matcher(value).replaceAll(maskChar);
 	}
