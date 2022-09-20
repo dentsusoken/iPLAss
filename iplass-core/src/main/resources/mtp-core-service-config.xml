@@ -687,16 +687,28 @@
 		<property name="maskTarget" class="org.iplass.mtp.impl.entity.auditlog.MaskTarget">
 			<property name="entity" value="*" />
 			<property name="property" value="propertyB" />
-			<property name="maskHandler" ref="hashMaskHandler" />
+			<property name="maskHandler" ref="regexMaskHandler" />
 		</property>
 		<property name="maskTarget" class="org.iplass.mtp.impl.entity.auditlog.MaskTarget">
 			<property name="entity" value="entity2" />
 			<property name="property" value="*" />
-			<property name="maskHandler" ref="hashMaskHandler" />
+			<property name="maskHandler" ref="allMaskHandler" />
 		</property>
-		<bean name="allMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogAllMaskHandler"></bean>
+		<bean name="allMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogAllMaskHandler">
+			<property name="maskString" value="*****" />
+		</bean>
 		<bean name="regexMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogRegexMaskHandler">
+			<property name="maskChar" value="x" />
 			<property name="maskRegex" value=".+?" />
+			<buildScript>
+				import org.iplass.mtp.impl.entity.auditlog.LogRegexMaskHandler;
+				import java.util.regex.Pattern;
+				
+				LogRegexMaskHandler handler = new LogRegexMaskHandler();
+				handler.maskChar = properties.maskChar;
+				handler.pattern = Pattern.compile(properties.maskRegex);
+				return handler;
+			</buildScript>
 		</bean>
 		<bean name="hashMaskHandler" class="org.iplass.mtp.impl.entity.auditlog.LogHashMaskHandler">
 			<property name="hashAlgorithm" value="SHA-256" />

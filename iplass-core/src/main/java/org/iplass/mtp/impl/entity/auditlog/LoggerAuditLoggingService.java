@@ -1,19 +1,19 @@
-/*
+/* 
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -57,7 +57,8 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 	private boolean logSelectValueWithLabel;
 	private boolean logReferenceWithLabel;
 	private Map<String, Map<String, LogMaskHandler>> targetMap;
-	
+	private boolean hasWildcard;
+
 	public boolean isLogQuery() {
 		return logQuery;
 	}
@@ -120,6 +121,9 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 				targetEntityList.forEach(target -> propertyMap.put(target.getProperty(), target.getMaskHandler()));
 				targetMap.put(key, propertyMap);
 			}
+			
+			// ワイルドカードのEntityがあるか
+			hasWildcard = targetMap.containsKey("*");
 		}
 	}
 
@@ -137,19 +141,36 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 			return value;
 		}
 
-		// マスク対象のEntityがあるか
-		Map<String, LogMaskHandler> propertyMap = targetMap.containsKey(entityName) ? targetMap.get(entityName) : targetMap.get("*");
-		if (propertyMap == null) {
+		Map<String, LogMaskHandler> propertyMap = targetMap.get(entityName);
+		// Entity名指定でマスク対象が無く、ワイルドカードの設定がない場合はマスクしない
+		if (propertyMap == null && !hasWildcard) {
 			return value;
 		}
 
-		// マスク対象のPropetyがあるか
-		LogMaskHandler maskHandler = propertyMap.containsKey(propertyName) ? propertyMap.get(propertyName) : propertyMap.get("*");
+		LogMaskHandler maskHandler = null;
+
+		// Entity名指定でマスク対象を取得する
+		if (propertyMap != null) {
+			maskHandler = propertyMap.get(propertyName);
+			if (maskHandler == null) {
+				maskHandler = propertyMap.get("*");
+			}
+		}
+
+		// Entity名指定でマスク対象が無いがワイルドカード指定がある場合、ワイルドカードのマスク対象を取得
+		if (maskHandler == null && hasWildcard) {
+			propertyMap = targetMap.get("*");
+			maskHandler = propertyMap.get(propertyName);
+			if (maskHandler == null) {
+				maskHandler = propertyMap.get("*");
+			}
+		}
+
 		if (maskHandler == null) {
 			return value;
 		}
 
-		return maskHandler.maskingProperty(value.toString());
+		return maskHandler.mask(value.toString());
 	}
 
 	private void cutAppend(StringBuilder sb, Object target) {
