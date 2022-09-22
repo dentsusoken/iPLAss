@@ -49,6 +49,12 @@ public class OpenIdConnectDefinitionManagerImpl extends AbstractTypedDefinitionM
 	}
 
 	@Override
+	public String getClientSecret(String oidcDefinitionName) {
+		OpenIdConnectRuntime r = service.getRuntimeByName(oidcDefinitionName);
+		return service.getClientSecret(r.getMetaData().getId());
+	}
+
+	@Override
 	public void saveClientSecret(String oidcDefinitionName, String clientSecret) {
 		OpenIdConnectRuntime r = service.getRuntimeByName(oidcDefinitionName);
 		service.saveClientSecret(r.getMetaData().getId(), clientSecret);

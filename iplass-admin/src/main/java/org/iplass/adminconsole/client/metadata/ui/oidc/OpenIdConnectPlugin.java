@@ -1,24 +1,8 @@
 /*
- * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- *
- * Unless you have purchased a commercial license,
- * the following license terms apply:
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * Copyright 2022 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  */
 
-package org.iplass.adminconsole.client.metadata.ui.oauth.client;
+package org.iplass.adminconsole.client.metadata.ui.oidc;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
@@ -31,25 +15,24 @@ import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
-import org.iplass.mtp.auth.oauth.definition.OAuthClientDefinition;
+import org.iplass.mtp.auth.oidc.definition.OpenIdConnectDefinition;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-
-public class OAuthClientPlugin extends DefaultMetaDataPlugin {
+public class OpenIdConnectPlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
-	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_SECURITY + "/OAuth (Server)";
+	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_SECURITY;
 
 	/** ノード名 */
-	private static final String NODE_NAME = "OAuthClient";
-
+	private static final String NODE_NAME = "/OpenIDConnect_RP";
+	
 	/** ノード表示名 */
-	private static final String NODE_DISPLAY_NAME = "OAuthClient";
+	private static final String NODE_DISPLAY_NAME = "OpenIDConnect(RP)";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "computer_key.png";
+	private static final String NODE_ICON = "openIdConnect.png";
 
 	@Override
 	public String getCategoryName() {
@@ -63,6 +46,11 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected String nodeDisplayName() {
+		return AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_oidcTemplate");
+	}
+
+	@Override
+	protected String rootNodeDisplayName() {
 		return NODE_DISPLAY_NAME;
 	}
 
@@ -73,15 +61,14 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected String definitionClassName() {
-		return OAuthClientDefinition.class.getName();
+		return OpenIdConnectDefinition.class.getName();
 	}
 
 	@Override
 	protected void itemCreateAction(String folderPath) {
-		CreateOAuthClientDialog dialog = new CreateOAuthClientDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
+		CreateOpenIdConnectDialog dialog = new CreateOpenIdConnectDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
-
 			@Override
 			public void onDataChanged(DataChangedEvent event) {
 				refreshWithSelect(event.getValueName(), null);
@@ -92,7 +79,7 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected void itemCopyAction(MetaDataItemMenuTreeNode itemNode) {
-		CreateOAuthClientDialog dialog = new CreateOAuthClientDialog(definitionClassName(), nodeDisplayName(), "", true);
+		CreateOpenIdConnectDialog dialog = new CreateOpenIdConnectDialog(definitionClassName(), nodeDisplayName(), "", true);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
 			@Override
@@ -100,7 +87,6 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 				refreshWithSelect(event.getValueName(), null);
 			}
 		});
-		dialog.show();
 		dialog.setSourceName(itemNode.getDefName());
 		dialog.show();
 	}
@@ -108,34 +94,37 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), definitionClassName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_failedToDelete") + caught.getMessage());
-			}
+		service.deleteDefinition(TenantInfoHolder.getId(), OpenIdConnectDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+
 			@Override
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_deleteComp"));
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_completion"),
+							AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_deleteOidcTemplateComp"));
 
 					refresh();
 					removeTab(itemNode);
 				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_failedToDelete") + result.getMessage());
+					SC.warn(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_failedToDeleteOidcTemplate") + result.getMessage());
 				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// 失敗時
+				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPluginManager_failedToDeleteOidcTemplate") + caught.getMessage());
 			}
 		});
 	}
 
 	@Override
 	protected MetaDataMainEditPane workSpaceContents(MetaDataItemMenuTreeNode itemNode) {
-		return new OAuthClientEditPane(itemNode, this);
+		return new OpenIdConnectEditPane(itemNode, this);
 	}
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{OAuthClientEditPane.class};
+		return new Class[]{OpenIdConnectEditPane.class};
 	}
+
 }
