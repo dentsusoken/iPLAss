@@ -45,6 +45,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.data.RecordList;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -447,7 +448,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 		public ValidationGrid() {
 
 			setMargin(5);
-			setHeight(101);
+			setHeight(1);
 			setWidth100();
 
 			setShowAllColumns(true);
@@ -464,6 +465,10 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			setCanDragRecordsOut(true);
 			setCanAcceptDroppedRecords(true);
 			setCanReorderRecords(true);
+
+			setOverflow(Overflow.VISIBLE);
+			setBodyOverflow(Overflow.VISIBLE);
+			setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
 
 			ListGridField validationField = new ListGridField(ValidationListGridRecord.VALTYPE, "Type");
 			validationField.setWidth(100);
