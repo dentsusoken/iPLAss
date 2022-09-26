@@ -29,6 +29,7 @@ import org.iplass.adminconsole.client.metadata.ui.entity.property.type.SortInfoE
 import org.iplass.adminconsole.shared.metadata.dto.entity.SortInfo;
 
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -124,7 +125,7 @@ public class SortInfoListPane extends VLayout {
 
 	public void applyTo(ReferenceAttribute referenceAttribute) {
 
-		List<SortInfo> sortList = new ArrayList<SortInfo>();
+		List<SortInfo> sortList = new ArrayList<>();
 		for (ListGridRecord sortRecord : gridSort.getRecords()) {
 			SortInfoListGridRecord sRecord = (SortInfoListGridRecord) sortRecord;
 			SortInfo sort = new SortInfo();
@@ -169,7 +170,7 @@ public class SortInfoListPane extends VLayout {
 		public SortInfoGrid() {
 
 			setMargin(5);
-			setHeight(110);
+			setHeight(1);
 			setWidth100();
 
 			setShowAllColumns(true);
@@ -186,6 +187,10 @@ public class SortInfoListPane extends VLayout {
 			setCanDragRecordsOut(true);
 			setCanAcceptDroppedRecords(true);
 			setCanReorderRecords(true);
+
+			setOverflow(Overflow.VISIBLE);
+			setBodyOverflow(Overflow.VISIBLE);
+			setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
 
 			ListGridField sortNameField = new ListGridField("propertyName", "Property Name");
 			ListGridField sortTypeField = new ListGridField("sortType", "Order");

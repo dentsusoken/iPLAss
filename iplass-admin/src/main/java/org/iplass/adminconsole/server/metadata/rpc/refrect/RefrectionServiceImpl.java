@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -193,6 +194,9 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 							logger.error(e.getMessage(), e);
 						}
 
+						Collections.sort(nameList, (name1, name2) -> {
+							return name1.getName().compareTo(name2.getName());
+						});
 						return nameList.toArray(new Name[nameList.size()]);
 					}
 				});
