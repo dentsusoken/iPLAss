@@ -277,6 +277,10 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/auth/oauth/definition/consents/OnceConsentTypeDefinition.java'
 		include 'mtp/auth/oauth/definition/consents/ScriptingConsentTypeDefinition.java'
 
+		include 'mtp/auth/oidc/definition/OpenIdConnectDefinition.java'
+		include 'mtp/auth/oidc/definition/ResponseMode.java'
+		include 'mtp/auth/oidc/definition/ClientAuthenticationType.java'
+
 		include 'mtp/web/actionmapping/definition/ActionMappingDefinition.java'
 		include 'mtp/web/actionmapping/definition/ActionMappingDefinitionModifyResult.java'
 		include 'mtp/web/actionmapping/definition/ClientCacheType.java'

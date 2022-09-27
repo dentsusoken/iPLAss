@@ -82,7 +82,7 @@ public class AccountConnectCommand implements Command {
 			throw new OIDCRuntimeException("policy not allow OpenIdConnectDefinition:" + oidp.getMetaData().getName());
 		}
 
-		String backUrlAfterConnect = oidp.backUrlAfterAuth(request);
+		String backUrlAfterConnect = oidp.backUrlAfterConnect(request);
 		
 		OIDCState state = oidp.newOIDCState(backUrlAfterConnect, oidp.createRedirectUri(request, AccountConnectCallbackCommand.ACTION_NAME));
 		request.getSession().setAttribute(SESSION_OIDC_STATE, state);

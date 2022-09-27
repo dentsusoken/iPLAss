@@ -100,6 +100,10 @@ public interface ScriptEditorDialogConstants {
 
 	public static final String PUSHNOTIFICATION_TEMPLATE_CONFIGSCRIPT = "PushNotificationTemplate.ConfigScript";
 
+	public static final String OPENID_CONNECT_RP_BACK_URL_AFTER_AUTH = "OpenIDConnect(RP).BackUrlAfterAuth";
+
+	public static final String OPENID_CONNECT_RP_BACK_URL_AFTER_CONNECT = "OpenIDConnect(RP).BackUrlAfterConnect";
+
 	//TODO
 	//MetaFieldSettingPane
 	//TenantPropertyEditDialog

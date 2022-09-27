@@ -23,7 +23,7 @@ package org.iplass.mtp.auth.oidc.definition;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 
 public interface OpenIdConnectDefinitionManager extends TypedDefinitionManager<OpenIdConnectDefinition> {
-	
+
 	/**
 	 * 指定のOpenIdConnect定義のClient Secretを保存します。
 	 * 

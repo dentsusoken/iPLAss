@@ -491,6 +491,13 @@ public interface MetaDataService extends XsrfProtectedService {
 	public String generateCredentialOAuthResourceServer(final int tenantId, final String definitionName);
 
 	public void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName);
+	
+
+	/* ---------------------------------------
+	 * OpenIDConnect
+	 --------------------------------------- */
+
+	public void createClientSecret(final int tenantId, final String definitionName, final String clientSecret);
 
 	/* ---------------------------------------
 	 * Webhook Endpoint Security Info
