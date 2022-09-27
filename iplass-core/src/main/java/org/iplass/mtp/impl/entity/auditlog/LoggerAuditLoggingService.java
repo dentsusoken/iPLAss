@@ -56,8 +56,8 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 	private boolean logQuery;
 	private boolean logSelectValueWithLabel;
 	private boolean logReferenceWithLabel;
-	private Map<String, Map<String, LogMaskHandler>> targetMap;
-	private boolean hasWildcard;
+	private Map<String, PropertyMaskTarget> maskTargetMap;
+	private boolean hasEntityWildcard;
 
 	public boolean isLogQuery() {
 		return logQuery;
@@ -114,17 +114,40 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 			List<MaskTarget> maskTarget = config.getValues("maskTarget", MaskTarget.class);
 			Map<String, List<MaskTarget>> entityGroupingMap = maskTarget.stream()
 					.collect(Collectors.groupingBy(MaskTarget::getEntity));
-			targetMap = new HashMap<>();
-			for (String key : entityGroupingMap.keySet()) {
-				List<MaskTarget> targetEntityList = entityGroupingMap.get(key);
-				Map<String, LogMaskHandler> propertyMap = new HashMap<>();
-				targetEntityList.forEach(target -> propertyMap.put(target.getProperty(), target.getMaskHandler()));
-				targetMap.put(key, propertyMap);
+
+			maskTargetMap = new HashMap<>();
+			for (String entityName : entityGroupingMap.keySet()) {
+				Map<String, LogMaskHandler> propertyMaskMap = new HashMap<>();
+				PropertyMaskTarget propertyMaskTarget = new PropertyMaskTarget();
+				List<MaskTarget> targetEntityList = entityGroupingMap.get(entityName);
+				targetEntityList.forEach(target -> propertyMaskMap.put(target.getProperty(), target.getMaskHandler()));
+				propertyMaskTarget.propertyMap = propertyMaskMap;
+
+				// ワイルドカードのPropertyがあるか
+				propertyMaskTarget.hasWildcard = propertyMaskMap.containsKey("*");
+				maskTargetMap.put(entityName, propertyMaskTarget);
 			}
-			
-			// ワイルドカードのEntityがあるか
-			hasWildcard = targetMap.containsKey("*");
+
+			if (maskTargetMap.containsKey("*")) {
+				hasEntityWildcard = true;
+
+				// Entityのワイルドカードがある場合、各Entityのマスク設定に追加する
+				maskTargetMap.forEach((key, value) -> {
+					if (!key.equals("*")) {
+						PropertyMaskTarget target = maskTargetMap.get("*");
+						value.propertyMap.putAll(target.propertyMap);
+						if (target.hasWildcard) {
+							value.hasWildcard = true;
+						}
+					}
+				});
+			}
 		}
+	}
+
+	private class PropertyMaskTarget {
+		boolean hasWildcard;
+		Map<String, LogMaskHandler> propertyMap;
 	}
 
 	public void log(String action, Object detail) {
@@ -136,34 +159,18 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 		logger.info(action + "," + str);
 	}
 
-	private Object maskValue(String entityName, String propertyName, Object value) {
-		if (value == null || targetMap == null) {
+	private Object maskValue(String propertyName, Object value, PropertyMaskTarget propertyMaskTarget) {
+		if (value == null || propertyMaskTarget == null) {
 			return value;
 		}
 
-		Map<String, LogMaskHandler> propertyMap = targetMap.get(entityName);
-		// Entity名指定でマスク対象が無く、ワイルドカードの設定がない場合はマスクしない
-		if (propertyMap == null && !hasWildcard) {
-			return value;
-		}
-
+		Map<String, LogMaskHandler> propertyMap = propertyMaskTarget.propertyMap;
 		LogMaskHandler maskHandler = null;
 
-		// Entity名指定でマスク対象を取得する
-		if (propertyMap != null) {
+		if (propertyMaskTarget.hasWildcard) {
+			maskHandler = propertyMap.get("*");
+		} else {
 			maskHandler = propertyMap.get(propertyName);
-			if (maskHandler == null) {
-				maskHandler = propertyMap.get("*");
-			}
-		}
-
-		// Entity名指定でマスク対象が無いがワイルドカード指定がある場合、ワイルドカードのマスク対象を取得
-		if (maskHandler == null && hasWildcard) {
-			propertyMap = targetMap.get("*");
-			maskHandler = propertyMap.get(propertyName);
-			if (maskHandler == null) {
-				maskHandler = propertyMap.get("*");
-			}
 		}
 
 		if (maskHandler == null) {
@@ -179,7 +186,7 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 		} else {
 			String s = target.toString();
 			if (logCompact) {
-				if (s.length() > textMaxLength) {	
+				if (s.length() > textMaxLength) {
 					s = s.substring(0, textMaxLength);
 					sb.append(s);
 					sb.append("...");
@@ -195,6 +202,15 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 		sb.append("{\"definitionName\":\"").append(entity.getDefinitionName()).append("\"");
 		sb.append(",\"oid\":\"").append(entity.getOid()).append("\"");
 		if (logProps != null) {
+
+			PropertyMaskTarget propertyMaskTarget = null;
+			if (maskTargetMap != null) {
+				propertyMaskTarget = maskTargetMap.get(entity.getDefinitionName());
+				if (propertyMaskTarget == null && hasEntityWildcard) {
+					propertyMaskTarget = maskTargetMap.get("*");
+				}
+			}
+
 			for (PropertyHandler key: logProps) {
 				sb.append(",");
 				sb.append("\"").append(key.getName()).append("\":");
@@ -213,7 +229,7 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 						}
 						if (valArray[i] instanceof GenericEntity) {
 							sb.append("{\"oid\":\"").append(((GenericEntity) valArray[i]).getOid()).append("\",\"name\":\"");
-							cutAppend(sb, maskValue(entity.getDefinitionName(), key.getName(), ((GenericEntity) valArray[i]).getName()));
+							cutAppend(sb, maskValue(key.getName(), ((GenericEntity) valArray[i]).getName(), propertyMaskTarget));
 							sb.append("\"}");
 						} else {
 							Object toLogVal;
@@ -224,17 +240,17 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 							}
 							if (toLogVal instanceof String) {
 								sb.append("\"");
-								cutAppend(sb, maskValue(entity.getDefinitionName(), key.getName(),toLogVal));
+								cutAppend(sb, maskValue(key.getName(), toLogVal, propertyMaskTarget));
 								sb.append("\"");
 							} else {
-								sb.append(toLogVal);
+								sb.append(maskValue(key.getName(), toLogVal, propertyMaskTarget));
 							}
 						}
 					}
 					sb.append("]");
 				} else if (val instanceof GenericEntity) {
 					sb.append("{\"oid\":\"").append(((GenericEntity) val).getOid()).append("\",\"name\":\"");
-					cutAppend(sb, maskValue(entity.getDefinitionName(), key.getName(), ((GenericEntity) val).getName()));
+					cutAppend(sb, maskValue(key.getName(), ((GenericEntity) val).getName(), propertyMaskTarget));
 					sb.append("\"}");
 				} else {
 					if (pt != null) {
@@ -242,10 +258,10 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 					}
 					if (val instanceof String) {
 						sb.append("\"");
-						cutAppend(sb, maskValue(entity.getDefinitionName(), key.getName(),(String) val));
+						cutAppend(sb, maskValue(key.getName(), val, propertyMaskTarget));
 						sb.append("\"");
 					} else {
-						sb.append(val);
+						sb.append(maskValue(key.getName(), val, propertyMaskTarget));
 					}
 				}
 			}

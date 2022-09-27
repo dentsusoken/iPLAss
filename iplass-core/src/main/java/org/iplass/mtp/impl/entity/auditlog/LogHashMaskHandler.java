@@ -43,7 +43,7 @@ public class LogHashMaskHandler implements LogMaskHandler {
 			// ハッシュ化する
 			return HashUtil.digest(value, hashAlgorithm);
 		} catch (NoSuchAlgorithmException e) {
-			throw new ServiceConfigrationException("invalid PasswordHashAlgorithm", e);
+			throw new ServiceConfigrationException("invalid MaskHashAlgorithm", e);
 		}
 	}
 }
