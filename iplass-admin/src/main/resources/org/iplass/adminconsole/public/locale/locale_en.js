@@ -1868,6 +1868,8 @@ LocaleInfo.generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaName
 LocaleInfo.generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey = "Specifies whether to insert the Label value as the Entity value when the display type is Label.";
 LocaleInfo.generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey = "Update with Label value";
 LocaleInfo.generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey = "Specifies whether to update the Label value as the Entity value when the display type is Label.";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_localizedDateTimeFormatSettingNameKey = "Multilingual date/time format settings";
+LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_localizedDateTimeFormatSettingDescriptionKey = "Set multilingual date/time formats to be displayed in search and detail views.";
 LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_langageDisplaNameKey = "Date / time language setting";
 LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_langageDescriptionKey = "Set the date / time format language.";
 LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatDisplaNameKey = "Date / Time Formatting";
