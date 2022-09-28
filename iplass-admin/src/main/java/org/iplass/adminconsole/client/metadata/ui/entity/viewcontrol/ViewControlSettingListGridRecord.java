@@ -49,7 +49,7 @@ public class ViewControlSettingListGridRecord extends ListGridRecord {
 
 		//表示名を設定
 		if (SmartGWTUtil.isEmpty(value)) {
-			setDisplayName("(defailt)");
+			setDisplayName("(default)");
 		} else {
 			setDisplayName(value);
 		}
