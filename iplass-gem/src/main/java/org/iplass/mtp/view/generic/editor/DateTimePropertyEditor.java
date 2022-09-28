@@ -185,13 +185,13 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	/** 日付/時刻のフォーマットの多言語設定情報 */
 	@MetaFieldInfo(
 			displayName="日付/時刻のフォーマットの多言語設定",
-			displayNameKey="",
+			displayNameKey="generic_editor_LocalizedDateTimeFormatSetting_localizedDateTimeFormatSettingNameKey",
 			description="検索結果、詳細画面で表示する日付/時刻のフォーマットの多言語設定を行う。",
 			inputType=InputType.REFERENCE,
 			multiple=true,
 			referenceClass=LocalizedDateTimeFormatSetting.class,
 			displayOrder=110,
-			descriptionKey=""
+			descriptionKey="generic_editor_LocalizedDateTimeFormatSetting_localizedDateTimeFormatSettingDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHRESULT}
