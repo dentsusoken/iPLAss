@@ -172,11 +172,9 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 		Map<String, LogMaskHandler> propertyMap = propertyMaskTarget.propertyMap;
 		LogMaskHandler maskHandler = null;
 
-		// ワイルドカードよりproperty指定の設定を優先する
-		if (propertyMaskTarget.hasWildcard && !propertyMap.containsKey(propertyName)) {
+		maskHandler = propertyMap.get(propertyName);
+		if (maskHandler == null && propertyMaskTarget.hasWildcard) {
 			maskHandler = propertyMap.get("*");
-		} else {
-			maskHandler = propertyMap.get(propertyName);
 		}
 
 		if (maskHandler == null) {
