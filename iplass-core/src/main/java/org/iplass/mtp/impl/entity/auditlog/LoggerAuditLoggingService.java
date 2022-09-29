@@ -135,7 +135,12 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 				maskTargetMap.forEach((key, value) -> {
 					if (!key.equals("*")) {
 						PropertyMaskTarget target = maskTargetMap.get("*");
-						value.propertyMap.putAll(target.propertyMap);
+						
+						target.propertyMap.forEach((wildcardKey, wildcardValue) -> {
+							// 各Entityのproperty設定を上書きしないように追加
+							value.propertyMap.putIfAbsent(wildcardKey, wildcardValue);
+						});
+
 						if (target.hasWildcard) {
 							value.hasWildcard = true;
 						}
@@ -167,7 +172,8 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 		Map<String, LogMaskHandler> propertyMap = propertyMaskTarget.propertyMap;
 		LogMaskHandler maskHandler = null;
 
-		if (propertyMaskTarget.hasWildcard) {
+		// ワイルドカードよりproperty指定の設定を優先する
+		if (propertyMaskTarget.hasWildcard && !propertyMap.containsKey(propertyName)) {
 			maskHandler = propertyMap.get("*");
 		} else {
 			maskHandler = propertyMap.get(propertyName);
