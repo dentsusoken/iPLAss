@@ -677,7 +677,6 @@
 		<property name="logSelectValueWithLabel" value="true" />
 		<!-- log出力時、Referenceのoidとnameを出力する場合はtrue -->
 		<property name="logReferenceWithLabel" value="true" />
-
 	</service>
 
 	<service>
