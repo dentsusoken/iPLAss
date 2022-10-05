@@ -400,6 +400,11 @@ public class AuthService implements Service {
 	}
 
 	void initializeSession(UserContext user, boolean withSessionInit) {
+		if (withSessionInit && isAuthenticate()) {
+			//SessionFixationProtectionMethod.CHANGE_SESSION_IDの場合の考慮。
+			//既にログイン済みだった場合はSessionをクリア
+			logout();
+		}
 		//既存セッションの破棄と生成
 		userSessionStore.setUserContext(user, withSessionInit);
 
