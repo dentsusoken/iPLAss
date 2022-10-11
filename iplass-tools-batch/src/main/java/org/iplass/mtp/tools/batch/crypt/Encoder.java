@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.iplass.mtp.impl.core.config.BootstrapProps;
+import org.iplass.mtp.impl.core.config.DefaultPropertyValueCoder;
 import org.iplass.mtp.impl.core.config.PropertyValueCoder;
 
 public class Encoder {
@@ -67,40 +68,14 @@ public class Encoder {
 		
 		Properties prop = getProperties();
 		
-		String keyAlg = prop.getProperty(PropertyValueCoder.KEY_ALGORITHM, PropertyValueCoder.DEFAULT_KEY_ALGORITHM);
-		int keyLength = PropertyValueCoder.DEFAULT_KEY_LENGTH;
-		if (prop.getProperty(PropertyValueCoder.KEY_LENGTH) != null) {
-			keyLength = Integer.parseInt(prop.getProperty(PropertyValueCoder.KEY_LENGTH));
-		}
-		String cipherAlg = prop.getProperty(PropertyValueCoder.CIPHER_ALGORITHM, PropertyValueCoder.DEFAULT_CIPHER_ALGORITHM);
-		byte[] keySalt = null;
-		if (prop.getProperty(PropertyValueCoder.KEY_SALT) != null) {
-			keySalt = prop.getProperty(PropertyValueCoder.KEY_SALT).getBytes("utf-8");
-		}
-		int keyStretch = PropertyValueCoder.DEFAULT_STRETCH;
-		if (prop.getProperty(PropertyValueCoder.KEY_STRETCH) != null) {
-			keyStretch = Integer.parseInt(prop.getProperty(PropertyValueCoder.KEY_STRETCH));
+		String propertyValueCoderName = prop.getProperty(PropertyValueCoder.PROPERTY_VALUE_CODER, DefaultPropertyValueCoder.class.getName());
+		if(DefaultPropertyValueCoder.class.getName().equals(propertyValueCoderName)) {
+			prop.setProperty(DefaultPropertyValueCoder.PASSPHRASE_SUPPLIER, EncoderConsolePassphraseSupplier.class.getName());
 		}
 		
-		PropertyValueCoder coder = new PropertyValueCoder(keyAlg, keyLength, cipherAlg, keySalt, keyStretch,
-				() -> {
-					System.out.println("enter passphrase:");
-					BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-					try {
-						String passphrase1 = console.readLine();
-						System.out.println("enter same passphrase again:");
-						String passphrase2 = console.readLine();
-						
-						if (!passphrase1.equals(passphrase2)) {
-							throw new RuntimeException("passphrase unmatch");
-						}
-						return passphrase1.toCharArray();
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				});
+		PropertyValueCoder coder = (PropertyValueCoder) Class.forName(propertyValueCoderName).newInstance();
+		coder.open(prop);
 
-		
 		while (true) {
 			String plain;
 			if (args.length > 0) {

@@ -21,8 +21,6 @@ package org.iplass.mtp.impl.core.config;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 import org.iplass.mtp.spi.ServiceConfigrationException;
@@ -82,7 +80,6 @@ public class DecodePreprocessor implements ConfigPreprocessor {
 	}
 	
 	private PropertyValueCoder getPropertyValueCoder(String fileName) {
-
 		Properties prop = new Properties();
 		try {
 			String content = FileUtil.readContent(fileName);
@@ -96,40 +93,12 @@ public class DecodePreprocessor implements ConfigPreprocessor {
 		}
 		
 		try {
-
-			String passphraseSupplierName = prop.getProperty(PropertyValueCoder.PASSPHRASE_SUPPLIER, PropertyFilePassphraseSupplier.class.getName());
-			try (PassphraseSupplier passphraseSupplier = (PassphraseSupplier) Class.forName(passphraseSupplierName).newInstance()) {
-				passphraseSupplier.open(prop);
-				String keySalt = prop.getProperty(PropertyValueCoder.KEY_SALT);
-				byte[] saltByte = null;
-				if (keySalt != null) {
-					saltByte = MessageDigest.getInstance("SHA-256").digest(keySalt.getBytes("utf-8"));
-				}
-
-				PropertyValueCoder coder = new PropertyValueCoder(
-						prop.getProperty(PropertyValueCoder.KEY_ALGORITHM),
-						toInt(prop.getProperty(PropertyValueCoder.KEY_LENGTH)),
-						prop.getProperty(PropertyValueCoder.CIPHER_ALGORITHM),
-						saltByte,
-						toInt(prop.getProperty(PropertyValueCoder.KEY_STRETCH)),
-						passphraseSupplier
-						);
-				return coder;
-			}
-
-
-		} catch (IOException | NoSuchAlgorithmException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			String propertyValueCoderName = prop.getProperty(PropertyValueCoder.PROPERTY_VALUE_CODER, DefaultPropertyValueCoder.class.getName());
+			PropertyValueCoder coder = (PropertyValueCoder) Class.forName(propertyValueCoderName).newInstance();
+			coder.open(prop);
+			return coder;
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			throw new ServiceConfigrationException(e);
 		}
 	}
-
-	private int toInt(String val) {
-		if (val == null) {
-			return -1;
-		} else {
-			return Integer.parseInt(val);
-		}
-	}
-
-
 }
