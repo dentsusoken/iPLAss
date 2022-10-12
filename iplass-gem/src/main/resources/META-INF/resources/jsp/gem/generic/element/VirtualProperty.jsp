@@ -37,7 +37,10 @@
 	Object value = request.getAttribute(Constants.ENTITY_DATA);
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
+	String viewName = (String) request.getAttribute(Constants.VIEW_NAME);
+	if (viewName == null) viewName = "";	
 	Integer colNum = (Integer) request.getAttribute(Constants.COL_NUM);
+	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
 
 	VirtualPropertyItem property = (VirtualPropertyItem) element;
 	String propName = property.getPropertyName();
@@ -120,6 +123,8 @@
 		request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
 		request.setAttribute(Constants.IS_VIRTUAL, true);
 		if (OutputType.EDIT == type) {
+			request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
+			request.setAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA, rootEntity);
 			request.setAttribute(Constants.EDITOR_REQUIRED, required);
 		}
 %>
@@ -143,6 +148,26 @@
 <%-- XSS対応-メタの設定のため対応なし(description) --%>
 <p class="explanation"><%=description %></p>
 <%
+		}
+		if ((OutputType.EDIT == type) && property.getAutocompletionSetting() != null) {
+			request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
+			request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
+			request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, propName);
+			request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, pd.getMultiplicity());
+			String autocompletionPath = "/jsp/gem/generic/common/Autocompletion.jsp";
+%>
+<jsp:include page="<%=autocompletionPath%>" />
+<%
+			request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
+			request.removeAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA);
+			request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
+			request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
+			request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
+			request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
+			request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
+		}
+		if (OutputType.EDIT == type) {
+			request.removeAttribute(Constants.EDITOR_REQUIRED);
 		}
 %>
 </td>

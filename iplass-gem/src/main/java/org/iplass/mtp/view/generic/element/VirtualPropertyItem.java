@@ -38,6 +38,7 @@ import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.ViewConst;
+import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
 import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DecimalPropertyEditor;
@@ -269,6 +270,21 @@ public class VirtualPropertyItem extends Element implements PropertyElement, Csv
 	)
 	@MultiLang(itemNameGetter = "getPropertyName")
 	private PropertyEditor editor;
+
+	/** 自動補完設定 */
+	@MetaFieldInfo(
+			displayName="自動補完設定",
+			displayNameKey="generic_element_VirtualPropertyItem_autocompletionSettingDisplaNameKey",
+			inputType=InputType.REFERENCE,
+			referenceClass=AutocompletionSetting.class,
+			displayOrder=2000,
+			description="自動補完設定を設定します。",
+			descriptionKey="generic_element_VirtualPropertyItem_autocompletionSettingDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION, FieldReferenceType.BULK}
+	)
+	private AutocompletionSetting autocompletionSetting;
 
 	/**
 	 * プロパティ名を取得します。
@@ -540,6 +556,22 @@ public class VirtualPropertyItem extends Element implements PropertyElement, Csv
 	 */
 	public void setOutputCsv(boolean outputCsv) {
 		this.outputCsv = outputCsv;
+	}
+
+	/**
+	 * 自動補完設定を取得します。
+	 * @return autocompletionSetting 自動補完設定
+	 */
+	public AutocompletionSetting getAutocompletionSetting() {
+		return autocompletionSetting;
+	}
+
+	/**
+	 * 自動補完設定を設定します。
+	 * @param autocompletionSetting 自動補完設定
+	 */
+	public void setAutocompletionSetting(AutocompletionSetting autocompletionSetting) {
+		this.autocompletionSetting = autocompletionSetting;
 	}
 
 }

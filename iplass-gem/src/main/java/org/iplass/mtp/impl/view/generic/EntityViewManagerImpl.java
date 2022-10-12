@@ -84,6 +84,7 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
 import org.iplass.mtp.view.generic.element.Element;
+import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
@@ -243,6 +244,16 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 						return editor;
 					} else {
 						return getEditor(subPropName, editor);
+					}
+				}
+			} else if (element instanceof VirtualPropertyItem) {
+				VirtualPropertyItem property = (VirtualPropertyItem) element;
+				if (property.getPropertyName().equals(currentPropName)) {
+					if (subPropName == null) {
+						property.getEditor().setPropertyName(property.getPropertyName());
+						return property.getEditor();
+					} else {
+						return getEditor(subPropName, property.getEditor());
 					}
 				}
 			} else if (element instanceof DefaultSection) {
@@ -849,10 +860,16 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		} else {
 			editor = getPropertyEditor(definitionName, viewType, viewName, propName, entity);
 		}
+		
+		PropertyDefinition pd = null;
 		//連動先の多重度が複数の場合、Listで格納
 		//連動先の多重度が単数の場合、値をそのまま格納
-		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, edm.get(definitionName));
-		Object currValue = pd.getMultiplicity() == 1 ? (currentValue.size() > 0 ? currentValue.get(0) : "") : currentValue;
+		try {
+			pd = EntityViewUtil.getPropertyDefinition(propName, edm.get(definitionName));
+		} catch (IllegalArgumentException e) {
+			// 仮想プロパティでentityからPropertyDefinitionが取得できない場合
+		}
+		Object currValue = (pd == null) || (pd.getMultiplicity() == 1) ? (currentValue.size() > 0 ? currentValue.get(0) : "") : currentValue;
 		boolean isReference = editor instanceof ReferencePropertyEditor;
 		Object value = autocompletionSetting.handle(param, currValue, isReference);
 
