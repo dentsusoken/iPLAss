@@ -66,6 +66,8 @@ public class PasswordPolicyDefinition implements Serializable {
 	private String randomPasswordExcludeChars;
 	/** 自動生成パスワードの長さ */
 	private int randomPasswordLength;
+	/** 自動生成パスワードが有効な最大期間 （日）。0は無限。*/
+	private int maximumRandomPasswordAge;
 
 	/**
 	 * パスワードが有効な最大期間 （日）。0は無限。
@@ -309,6 +311,22 @@ public class PasswordPolicyDefinition implements Serializable {
 	 */
 	public void setRandomPasswordLength(int randomPasswordLength) {
 		this.randomPasswordLength = randomPasswordLength;
+	}
+	
+	/**
+	 * 自動生成パスワードが有効な最大期間 （日）。0は無限。
+	 * @return
+	 */
+	public int getMaximumRandomPasswordAge() {
+		return maximumRandomPasswordAge;
+	}
+
+	/**
+	 * @see #getMaximumRandomPasswordAge()
+	 * @param maximumRandomPasswordAge
+	 */
+	public void setMaximumRandomPasswordAge(int maximumRandomPasswordAge) {
+		this.maximumRandomPasswordAge = maximumRandomPasswordAge;
 	}
 
 }

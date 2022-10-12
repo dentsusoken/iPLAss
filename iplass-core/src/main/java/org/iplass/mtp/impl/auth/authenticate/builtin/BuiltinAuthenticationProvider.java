@@ -46,6 +46,7 @@ import org.iplass.mtp.auth.policy.definition.NotificationType;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.SearchResult;
+import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
@@ -400,22 +401,22 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					account.setPolicyName(policy.getMetaData().getName());
 
 					//パスワード生成
-					boolean isGenPasswoed = true;
+					boolean isGenPassword = true;
 					String newPassword;
 					if (policy.getMetaData().getPasswordPolicy().isCreateAccountWithSpecificPassword()) {
 						//パスワード指定方式の場合
 						if (user.getPassword() != null) {
 							newPassword = user.getPassword();
-							isGenPasswoed = false;
+							isGenPassword = false;
 							account.setLastPasswordChange(new Date(System.currentTimeMillis()));
 						} else {
 							newPassword = policy.makePassword();
-							isGenPasswoed = true;
+							isGenPassword = true;
 						}
 					} else {
 						//仮パスワード発行方式の場合
 						newPassword = policy.makePassword();
-						isGenPasswoed = true;
+						isGenPassword = true;
 					}
 
 					final String salt = makeSalt();
@@ -433,9 +434,17 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 
 					// アカウント情報を登録する
 					accountDao.registAccount(account, registId);
+					
+					if(isGenPassword && policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
+						//自動生成パスワードの有効期間を設定する
+						long currentTimeMillis = System.currentTimeMillis();
+						User userEntity = getUserEntity(user.getAccountId(), true);
+						userEntity.setEndDate(new Timestamp(currentTimeMillis + TimeUnit.DAYS.toMillis(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge())));
+						updateUserEndDate(userEntity);
+					}
 
 					//通知
-					policy.notify(new PasswordNotification(NotificationType.CREATED, user.getOid(), newPassword, isGenPasswoed));
+					policy.notify(new PasswordNotification(NotificationType.CREATED, user.getOid(), newPassword, isGenPassword));
 				} else {
 					//存在している場合は、エラー
 					throw new UserExistsException(resourceString("impl.auth.authenticate.builtin.BuiltinAuthenticationProvider.userRemainTrash"));
@@ -663,6 +672,13 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					}
 				}
 
+				User userEntity = getUserEntity(account.getAccountId(), true);
+				//終了日が設定されている場合はnullで更新する
+				if(userEntity.getEndDate() != null) {
+					userEntity.setEndDate(null);
+					updateUserEndDate(userEntity);
+				}
+
 				//通知
 				policy.notify(new PasswordNotification(NotificationType.CREDENTIAL_UPDATED, account.getOid(), newIdPass.getPassword(), false));
 			}
@@ -755,8 +771,22 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				//パスワード更新
 				Password pass = null;
 				Timestamp updateTime = null;
-				if (!isGenPassword) {
-					updateTime = new Timestamp(System.currentTimeMillis());
+				long currentTimeMillis = System.currentTimeMillis();
+				if (isGenPassword) {
+					User userEntity = getUserEntity(credential.getId(), true);
+					//自動生成パスワードの有効期間を設定する
+					if(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
+						userEntity.setEndDate(new Timestamp(currentTimeMillis + TimeUnit.DAYS.toMillis(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge())));
+						updateUserEndDate(userEntity);
+					} else {
+						//前回リセットされた際の終了日が残っている場合はnullで更新しておく
+						if(userEntity.getEndDate() != null) {
+							userEntity.setEndDate(null);
+							updateUserEndDate(userEntity);
+						}
+					}
+				} else {
+					updateTime = new Timestamp(currentTimeMillis);
 				}
 
 				if (passwordHashSettings == null) {
@@ -828,6 +858,15 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 						return (User) user.getList().get(0);
 					}
 					return null;
+			});
+		}
+
+		//ユーザEntityのEndDate更新
+		private void updateUserEndDate(final User user) {
+			AuthContext.doPrivileged(() -> {
+				UpdateOption option = new UpdateOption();
+				option.setUpdateProperties(Entity.END_DATE);
+				ManagerLocator.getInstance().getManager(EntityManager.class).update(user, option);
 			});
 		}
 

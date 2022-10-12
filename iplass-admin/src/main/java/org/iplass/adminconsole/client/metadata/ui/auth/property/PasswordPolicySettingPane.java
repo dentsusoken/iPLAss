@@ -58,6 +58,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 	private TextItem txtRandomPasswordIncludeSigns;
 	private TextItem txtRandomPasswordExcludeChars;
 	private IntegerItem txtRandomPasswordLength;
+	private IntegerItem txtMaximumRandomPasswordAge;
 
 	public PasswordPolicySettingPane() {
 
@@ -127,9 +128,14 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		SmartGWTUtil.setRequired(txtRandomPasswordLength);
 		txtRandomPasswordLength.setStartRow(true);
 
+		txtMaximumRandomPasswordAge = new MtpIntegerItem();
+		txtMaximumRandomPasswordAge.setTitle("Max Random Password Age(day)");
+		SmartGWTUtil.setRequired(txtMaximumRandomPasswordAge);
+
 		txtPasswordHistoryCount = new MtpIntegerItem();
 		txtPasswordHistoryCount.setTitle("Password History Count");
 		SmartGWTUtil.setRequired(txtPasswordHistoryCount);
+		txtPasswordHistoryCount.setStartRow(true);
 		
 		txtPasswordHistoryPeriod = new MtpIntegerItem();
 		txtPasswordHistoryPeriod.setTitle("Password History Period");
@@ -148,7 +154,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 				chkDenySamePasswordAsAccountId,
 				txtDenyList,
 				txtPasswordPatternErrorMessage, space, langBtn, txtRandomPasswordIncludeSigns,
-				txtRandomPasswordExcludeChars, txtRandomPasswordLength,
+				txtRandomPasswordExcludeChars, txtRandomPasswordLength, txtMaximumRandomPasswordAge,
 				txtPasswordHistoryCount, txtPasswordHistoryPeriod, 
 				space, chkCreateAccountWithSpecificPassword, new SpacerItem(), chkResetPasswordWithSpecificPassword);
 
@@ -173,6 +179,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtRandomPasswordIncludeSigns.setValue(passwordPolicyDefinition.getRandomPasswordIncludeSigns());
 		txtRandomPasswordExcludeChars.setValue(passwordPolicyDefinition.getRandomPasswordExcludeChars());
 		txtRandomPasswordLength.setValue(passwordPolicyDefinition.getRandomPasswordLength());
+		txtMaximumRandomPasswordAge.setValue(passwordPolicyDefinition.getMaximumRandomPasswordAge());
 	}
 
 	@Override
@@ -195,6 +202,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		passwordPolicyDefinition.setRandomPasswordIncludeSigns(SmartGWTUtil.getStringValue(txtRandomPasswordIncludeSigns, true));
 		passwordPolicyDefinition.setRandomPasswordExcludeChars(SmartGWTUtil.getStringValue(txtRandomPasswordExcludeChars, true));
 		passwordPolicyDefinition.setRandomPasswordLength(SmartGWTUtil.getIntegerValue(txtRandomPasswordLength));
+		passwordPolicyDefinition.setMaximumRandomPasswordAge(SmartGWTUtil.getIntegerValue(txtMaximumRandomPasswordAge));
 
 		definition.setPasswordPolicy(passwordPolicyDefinition);
 
