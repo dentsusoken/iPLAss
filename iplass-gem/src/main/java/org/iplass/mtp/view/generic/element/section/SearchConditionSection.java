@@ -212,7 +212,7 @@ public class SearchConditionSection extends Section {
 	@MetaFieldInfo(
 			displayName="CSVダウンロード件数の上限値",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplaNameKey",
-			inputType=InputType.TEXT,
+			inputType=InputType.NUMBER,
 			displayOrder=1070,
 			description="CSVダウンロード件数の上限値を設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDescriptionKey"
@@ -254,7 +254,7 @@ public class SearchConditionSection extends Section {
 			descriptionKey="generic_element_section_SearchConditionSection_hideCsvUploadDescriptionKey"
 	)
 	private boolean hideCsvUpload;
-	
+
 	/** CSVアップロードで登録を許可しない */
 	@MetaFieldInfo(
 			displayName="CSVアップロードで登録を許可しない",
@@ -265,7 +265,7 @@ public class SearchConditionSection extends Section {
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadDenyInsertDescriptionKey"
 	)
 	private boolean csvUploadDenyInsert;
-	
+
 	/** CSVアップロードで更新を許可しない */
 	@MetaFieldInfo(
 			displayName="CSVアップロードで更新を許可しない",
@@ -276,8 +276,8 @@ public class SearchConditionSection extends Section {
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadDenyUpdateDescriptionKey"
 	)
 	private boolean csvUploadDenyUpdate;
-	
-	
+
+
 	/** CSVアップロードで削除を許可しない */
 	@MetaFieldInfo(
 			displayName="CSVアップロードで削除を許可しない",
@@ -288,7 +288,7 @@ public class SearchConditionSection extends Section {
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadDenyDeleteDescriptionKey"
 	)
 	private boolean csvUploadDenyDelete;
-	
+
 	/** CSVアップロード登録項目 */
 	@MetaFieldInfo(
 			displayName="CSVアップロード登録項目",
@@ -299,7 +299,7 @@ public class SearchConditionSection extends Section {
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadInsertPropertiesDescriptionKey"
 	)
 	private String csvUploadInsertProperties;
-	
+
 	/** CSVアップロード更新項目 */
 	@MetaFieldInfo(
 			displayName="CSVアップロード更新項目",
@@ -511,7 +511,7 @@ public class SearchConditionSection extends Section {
 	public String getCsvUploadInsertProperties() {
 	    return csvUploadInsertProperties;
 	}
-	
+
 	public Set<String> getCsvUploadInsertPropertiesSet() {
 		if(csvUploadInsertProperties == null) {
 			return null;
@@ -522,11 +522,11 @@ public class SearchConditionSection extends Section {
 	public void setCsvUploadInsertProperties(String csvUploadInsertProperties) {
 	    this.csvUploadInsertProperties = csvUploadInsertProperties;
 	}
-	
+
 	public String getCsvUploadUpdateProperties() {
 	    return csvUploadUpdateProperties;
 	}
-	
+
 	public Set<String> getCsvUploadUpdatePropertiesSet() {
 		if(csvUploadUpdateProperties == null) {
 			return null;
