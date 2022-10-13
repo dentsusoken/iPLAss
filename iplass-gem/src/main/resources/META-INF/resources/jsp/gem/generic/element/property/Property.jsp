@@ -141,7 +141,6 @@
 	String path =  EntityViewUtil.getJspPath(property.getEditor(), ViewConst.DESIGN_TYPE_GEM);
 	if (path != null) {
 %>
-<p>Property.jsp path ::: <%=path %></p>
 <jsp:include page="<%=path %>" />
 <%
 	}
