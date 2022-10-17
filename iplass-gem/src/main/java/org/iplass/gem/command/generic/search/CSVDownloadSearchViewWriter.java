@@ -174,7 +174,9 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		if (section.getCsvdownloadMaxCount() != null) {
 			maxCount = section.getCsvdownloadMaxCount();
 		}
-		query.setLimit(new Limit(maxCount));
+		if (maxCount > 0) {
+			query.setLimit(new Limit(maxCount));
+		}
 
 		int cacheLimit = gcs.getSearchResultCacheLimit();
 
