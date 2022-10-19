@@ -27,6 +27,7 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpIntegerItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
@@ -37,6 +38,7 @@ import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
 import org.iplass.mtp.auth.policy.definition.PasswordPolicyDefinition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 
+import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
@@ -44,6 +46,7 @@ import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.validator.IsIntegerValidator;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class PasswordPolicySettingPane extends AbstractSettingPane {
 
@@ -65,6 +68,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 	private IntegerItem txtMaximumRandomPasswordAge;
 	private ButtonItem customUserEndDateBtn;
 	private TextAreaItem txaCustomUserEndDate;
+	private DynamicForm passwordGenerationForm;
 
 	public PasswordPolicySettingPane() {
 
@@ -122,6 +126,39 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 			}
 		});
 
+		txtPasswordHistoryCount = new MtpIntegerItem();
+		txtPasswordHistoryCount.setTitle("Password History Count");
+		SmartGWTUtil.setRequired(txtPasswordHistoryCount);
+		txtPasswordHistoryCount.setStartRow(true);
+		
+		txtPasswordHistoryPeriod = new MtpIntegerItem();
+		txtPasswordHistoryPeriod.setTitle("Password History Period");
+		SmartGWTUtil.setRequired(txtPasswordHistoryPeriod);
+
+		chkCreateAccountWithSpecificPassword = new CheckboxItem();
+		chkCreateAccountWithSpecificPassword.setShowTitle(false);
+		chkCreateAccountWithSpecificPassword.setTitle("Create Account With Specific Password.");
+
+		chkResetPasswordWithSpecificPassword = new CheckboxItem();
+		chkResetPasswordWithSpecificPassword.setShowTitle(false);
+		chkResetPasswordWithSpecificPassword.setTitle("Reset Password With Specific Password.");
+
+		form.setItems(
+				txtMaximumPasswordAge, txtMinimumPasswordAge, txtPasswordPattern, space,
+				chkDenySamePasswordAsAccountId,
+				txtDenyList,
+				txtPasswordPatternErrorMessage, space, langBtn, 
+				txtPasswordHistoryCount, txtPasswordHistoryPeriod, 
+				space, chkCreateAccountWithSpecificPassword, new SpacerItem(), chkResetPasswordWithSpecificPassword);
+
+		addMember(form);
+
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setWidth100();
+		spacer.setHeight(10);
+
+		addMember(spacer);
+		
 		txtRandomPasswordIncludeSigns = new MtpTextItem();
 		txtRandomPasswordIncludeSigns.setTitle("Random Password Include Signs");
 		txtRandomPasswordIncludeSigns.setStartRow(true);
@@ -175,34 +212,14 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		SmartGWTUtil.setReadOnlyTextArea(txaCustomUserEndDate);
 		SmartGWTUtil.addHoverToFormItem(txaCustomUserEndDate, AdminClientMessageUtil.getString("metadata_auth_AuthenticationPolicyEditPane_customUserEndDateTooltip"));
 
-		txtPasswordHistoryCount = new MtpIntegerItem();
-		txtPasswordHistoryCount.setTitle("Password History Count");
-		SmartGWTUtil.setRequired(txtPasswordHistoryCount);
-		txtPasswordHistoryCount.setStartRow(true);
-		
-		txtPasswordHistoryPeriod = new MtpIntegerItem();
-		txtPasswordHistoryPeriod.setTitle("Password History Period");
-		SmartGWTUtil.setRequired(txtPasswordHistoryPeriod);
+		passwordGenerationForm = new MtpForm2Column();
+		passwordGenerationForm.setGroupTitle("Password Generation Setting");
+		passwordGenerationForm.setIsGroup(true);
+		passwordGenerationForm.setPadding(5);
+		passwordGenerationForm.setItems(txtRandomPasswordIncludeSigns, txtRandomPasswordExcludeChars, txtRandomPasswordLength, txtMaximumRandomPasswordAge,
+				space, customUserEndDateBtn, txaCustomUserEndDate);
 
-		chkCreateAccountWithSpecificPassword = new CheckboxItem();
-		chkCreateAccountWithSpecificPassword.setShowTitle(false);
-		chkCreateAccountWithSpecificPassword.setTitle("Create Account With Specific Password.");
-
-		chkResetPasswordWithSpecificPassword = new CheckboxItem();
-		chkResetPasswordWithSpecificPassword.setShowTitle(false);
-		chkResetPasswordWithSpecificPassword.setTitle("Reset Password With Specific Password.");
-
-		form.setItems(
-				txtMaximumPasswordAge, txtMinimumPasswordAge, txtPasswordPattern, space,
-				chkDenySamePasswordAsAccountId,
-				txtDenyList,
-				txtPasswordPatternErrorMessage, space, langBtn, txtRandomPasswordIncludeSigns,
-				txtRandomPasswordExcludeChars, txtRandomPasswordLength, txtMaximumRandomPasswordAge,
-				space, customUserEndDateBtn, txaCustomUserEndDate,
-				txtPasswordHistoryCount, txtPasswordHistoryPeriod, 
-				space, chkCreateAccountWithSpecificPassword, new SpacerItem(), chkResetPasswordWithSpecificPassword);
-
-		addMember(form);
+		addMember(passwordGenerationForm);
 	}
 
 	@Override
