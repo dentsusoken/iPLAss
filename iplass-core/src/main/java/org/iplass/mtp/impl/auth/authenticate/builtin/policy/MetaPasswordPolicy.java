@@ -63,6 +63,8 @@ public class MetaPasswordPolicy implements MetaData {
 	private int randomPasswordLength;
 	/** 自動生成パスワードが有効な最大期間 （日）。0は無限。*/
 	private int maximumRandomPasswordAge;
+	/** ユーザー終了日をカスタムで設定するScript */
+	private String customUserEndDate;
 
 	public int getMaximumPasswordAge() {
 		return maximumPasswordAge;
@@ -187,6 +189,14 @@ public class MetaPasswordPolicy implements MetaData {
 		this.maximumRandomPasswordAge = maximumRandomPasswordAge;
 	}
 
+	public String getCustomUserEndDate() {
+		return customUserEndDate;
+	}
+
+	public void setCustomUserEndDate(String customUserEndDate) {
+		this.customUserEndDate = customUserEndDate;
+	}
+
 	@Override
 	public MetaPasswordPolicy copy() {
 		return ObjectUtil.deepCopy(this);
@@ -207,6 +217,7 @@ public class MetaPasswordPolicy implements MetaData {
 		randomPasswordExcludeChars = def.getRandomPasswordExcludeChars();
 		randomPasswordLength = def.getRandomPasswordLength();
 		maximumRandomPasswordAge = def.getMaximumRandomPasswordAge();
+		customUserEndDate = def.getCustomUserEndDate();
 		resetPasswordWithSpecificPassword = def.isResetPasswordWithSpecificPassword();
 	}
 
@@ -226,6 +237,7 @@ public class MetaPasswordPolicy implements MetaData {
 		def.setRandomPasswordExcludeChars(randomPasswordExcludeChars);
 		def.setRandomPasswordLength(randomPasswordLength);
 		def.setMaximumRandomPasswordAge(maximumRandomPasswordAge);
+		def.setCustomUserEndDate(customUserEndDate);
 		def.setResetPasswordWithSpecificPassword(resetPasswordWithSpecificPassword);
 		return def;
 	}

@@ -673,9 +673,10 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				}
 
 				User userEntity = getUserEntity(account.getAccountId(), true);
-				//終了日が設定されている場合はnullで更新する
+				//カスタム終了日が設定されている場合は更新する
 				if(userEntity.getEndDate() != null) {
-					userEntity.setEndDate(null);
+					Timestamp endDate = policy.getCustomUserEndDate(userEntity);
+					userEntity.setEndDate(endDate);
 					updateUserEndDate(userEntity);
 				}
 
@@ -778,12 +779,6 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					if(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
 						userEntity.setEndDate(new Timestamp(currentTimeMillis + TimeUnit.DAYS.toMillis(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge())));
 						updateUserEndDate(userEntity);
-					} else {
-						//前回リセットされた際の終了日が残っている場合はnullで更新しておく
-						if(userEntity.getEndDate() != null) {
-							userEntity.setEndDate(null);
-							updateUserEndDate(userEntity);
-						}
 					}
 				} else {
 					updateTime = new Timestamp(currentTimeMillis);

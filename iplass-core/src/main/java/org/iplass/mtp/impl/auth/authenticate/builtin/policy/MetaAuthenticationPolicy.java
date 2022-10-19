@@ -20,15 +20,20 @@
 
 package org.iplass.mtp.impl.auth.authenticate.builtin.policy;
 
+import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.CredentialUpdateException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.auth.policy.AccountNotification;
@@ -44,11 +49,17 @@ import org.iplass.mtp.impl.auth.authenticate.AccountManagementModule;
 import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
 import org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccount;
 import org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccountHandle;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
+import org.iplass.mtp.impl.script.GroovyScriptEngine;
+import org.iplass.mtp.impl.script.ScriptEngine;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
+import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
+import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.util.random.SecureRandomGenerator;
@@ -241,7 +252,10 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		private Set<String> denyList;
 		private char[] randomPasswordIncludeSigns;
 		private char[] randomPasswordExcludeChars;
+		private GroovyTemplate customUserEndDateTemplate;
 		private AccountManagementModule amm;
+
+		private ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 
 		public AuthenticationPolicyRuntime() {
 			try {
@@ -267,6 +281,16 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 					}
 					if (passwordPolicy.getRandomPasswordExcludeChars() != null && passwordPolicy.getRandomPasswordExcludeChars().length() > 0) {
 						randomPasswordExcludeChars = passwordPolicy.getRandomPasswordExcludeChars().toCharArray();
+					}
+					if (StringUtils.isNotEmpty(passwordPolicy.getCustomUserEndDate())) {
+						try {
+							String scriptName = "MetaPasswordPolicy_customUserEndDate";
+							this.customUserEndDateTemplate = GroovyTemplateCompiler.compile(
+									passwordPolicy.getCustomUserEndDate(),
+									scriptName, (GroovyScriptEngine) scriptEngine);
+						} catch (Exception e) {
+							setIllegalStateException(new RuntimeException(e));
+						}
 					}
 				}
 
@@ -585,6 +609,23 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 			}
 		}
 
+		public Timestamp getCustomUserEndDate(User user) {
+			if(customUserEndDateTemplate == null) {
+				return null;
+			}
+			Map<String, Object> binding = new HashMap<String, Object>();
+			binding.put("user", user);
+			StringWriter sw = new StringWriter();
+			try {
+				customUserEndDateTemplate.doTemplate(new GroovyTemplateBinding(sw, binding));
+			} catch (Exception e) {
+				setIllegalStateException(new RuntimeException(e));
+			}
+			if(StringUtils.isEmpty(sw.toString())) {
+				return null;
+			}
+			return Timestamp.valueOf(sw.toString());
+		}
 	}
 
 	private static String resourceString(String key, Object... arguments) {
