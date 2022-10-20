@@ -51,9 +51,9 @@ ext {
 		'org.apache.pdfbox:pdfbox-tools': '2.0.24',
 		'org.ccil.cowan.tagsoup:tagsoup': '1.2.1',
 		
-		'org.apache.poi:poi': '4.1.2',
-		'org.apache.poi:poi-scratchpad': '4.1.2',
-		'org.apache.poi:poi-ooxml': '4.1.2',
+		'org.apache.poi:poi': '5.2.3',
+		'org.apache.poi:poi-scratchpad': '5.2.3',
+		'org.apache.poi:poi-ooxml': '5.2.3',
 		
 		'org.jxls:jxls': '2.11.0',
 		'org.jxls:jxls-poi': '2.11.0',
@@ -69,6 +69,7 @@ ext {
 		'org.slf4j:slf4j-api': '1.7.32',
 		'org.slf4j:jcl-over-slf4j': '1.7.32',
 		'org.slf4j:log4j-over-slf4j': '1.7.32',
+		'org.apache.logging.log4j:log4j-to-slf4j': '2.19.0',
 		'ch.qos.logback:logback-classic': '1.2.7',
 		'net.logstash.logback:logstash-logback-encoder': '7.0.1',
 		
