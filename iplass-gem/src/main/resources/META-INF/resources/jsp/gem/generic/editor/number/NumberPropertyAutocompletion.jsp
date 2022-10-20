@@ -49,10 +49,21 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
+
+var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 <%
-	if (editor.getDisplayType() == NumberDisplayType.TEXT) {
+	if (editor.getDisplayType() == NumberDisplayType.TEXT || editor.getDisplayType() == NumberDisplayType.LABEL) {
 		if (multiplicity == 1) {
 %>
+<%
+			// ラベル表示の場合はラベルに値を設定
+			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+%>
+labelValue.textContent = value;
+<%
+			}
+%>
+
 $("[name='" + propName + "']").val(value);
 <%
 			if (editor.isShowComma()) {
