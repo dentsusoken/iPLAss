@@ -434,12 +434,13 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 
 					// アカウント情報を登録する
 					accountDao.registAccount(account, registId);
-					
-					if(isGenPassword && policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
+
+					if (isGenPassword && policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
 						//自動生成パスワードの有効期間を設定する
 						long currentTimeMillis = System.currentTimeMillis();
 						User userEntity = getUserEntity(user.getAccountId(), true);
-						userEntity.setEndDate(new Timestamp(currentTimeMillis + TimeUnit.DAYS.toMillis(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge())));
+						userEntity.setEndDate(new Timestamp(currentTimeMillis + TimeUnit.DAYS
+								.toMillis(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge())));
 						updateUserEndDate(userEntity);
 					}
 
@@ -672,12 +673,14 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					}
 				}
 
-				User userEntity = getUserEntity(account.getAccountId(), true);
-				//カスタム終了日が設定されている場合は更新する
-				if(userEntity.getEndDate() != null) {
-					Timestamp endDate = policy.getCustomUserEndDate(userEntity);
-					userEntity.setEndDate(endDate);
-					updateUserEndDate(userEntity);
+				if (policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
+					User userEntity = getUserEntity(account.getAccountId(), true);
+					//カスタム終了日が設定されている場合は更新する
+					if (userEntity.getEndDate() != null) {
+						Timestamp endDate = policy.getCustomUserEndDate(userEntity);
+						userEntity.setEndDate(endDate);
+						updateUserEndDate(userEntity);
+					}
 				}
 
 				//通知
@@ -774,10 +777,11 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				Timestamp updateTime = null;
 				long currentTimeMillis = System.currentTimeMillis();
 				if (isGenPassword) {
-					User userEntity = getUserEntity(credential.getId(), true);
 					//自動生成パスワードの有効期間を設定する
-					if(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
-						userEntity.setEndDate(new Timestamp(currentTimeMillis + TimeUnit.DAYS.toMillis(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge())));
+					if (policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
+						User userEntity = getUserEntity(credential.getId(), true);
+						userEntity.setEndDate(new Timestamp(currentTimeMillis + TimeUnit.DAYS
+								.toMillis(policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge())));
 						updateUserEndDate(userEntity);
 					}
 				} else {
