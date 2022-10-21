@@ -66,6 +66,10 @@ public class PasswordPolicyDefinition implements Serializable {
 	private String randomPasswordExcludeChars;
 	/** 自動生成パスワードの長さ */
 	private int randomPasswordLength;
+	/** 自動生成パスワードが有効な最大期間 （日）。0は無限。*/
+	private int maximumRandomPasswordAge;
+	/** ユーザー終了日をカスタムで設定するScript */
+	private String customUserEndDate;
 
 	/**
 	 * パスワードが有効な最大期間 （日）。0は無限。
@@ -309,6 +313,38 @@ public class PasswordPolicyDefinition implements Serializable {
 	 */
 	public void setRandomPasswordLength(int randomPasswordLength) {
 		this.randomPasswordLength = randomPasswordLength;
+	}
+	
+	/**
+	 * 自動生成パスワードが有効な最大期間 （日）。0は無限。
+	 * @return
+	 */
+	public int getMaximumRandomPasswordAge() {
+		return maximumRandomPasswordAge;
+	}
+
+	/**
+	 * @see #getMaximumRandomPasswordAge()
+	 * @param maximumRandomPasswordAge
+	 */
+	public void setMaximumRandomPasswordAge(int maximumRandomPasswordAge) {
+		this.maximumRandomPasswordAge = maximumRandomPasswordAge;
+	}
+
+	/**
+	 * ユーザー終了日をカスタムで設定するScript
+	 * @return
+	 */
+	public String getCustomUserEndDate() {
+		return customUserEndDate;
+	}
+
+	/**
+	 * @see #getCustomUserEndDate()
+	 * @param customUserEndDate
+	 */
+	public void setCustomUserEndDate(String customUserEndDate) {
+		this.customUserEndDate = customUserEndDate;
 	}
 
 }
