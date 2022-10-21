@@ -280,7 +280,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 					}
 					if (StringUtils.isNotEmpty(passwordPolicy.getCustomUserEndDate())) {
 						try {
-							String scriptName = "MetaPasswordPolicy_customUserEndDate";
+							String scriptName = "MetaPasswordPolicy_customUserEndDate_" + getName();
 							this.customUserEndDateScript = (GroovyScript) scriptEngine.createScript(
 									passwordPolicy.getCustomUserEndDate(), scriptName);
 						} catch (Exception e) {
