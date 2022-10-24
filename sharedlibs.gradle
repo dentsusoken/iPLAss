@@ -36,11 +36,11 @@ ext {
 		'org.apache.httpcomponents:httpmime': '4.5.13',
 		
 		//lucene
-		'org.apache.lucene:lucene-queryparser': '8.6.2',
-		'org.apache.lucene:lucene-analyzers-kuromoji': '8.6.2',
-		'org.apache.lucene:lucene-analyzers-smartcn': '8.6.2',
-		'org.apache.lucene:lucene-backward-codecs': '8.6.2',
-		'org.apache.lucene:lucene-highlighter': '8.6.2',
+		'org.apache.lucene:lucene-queryparser': '8.11.2',
+		'org.apache.lucene:lucene-analyzers-kuromoji': '8.11.2',
+		'org.apache.lucene:lucene-analyzers-smartcn': '8.11.2',
+		'org.apache.lucene:lucene-backward-codecs': '8.11.2',
+		'org.apache.lucene:lucene-highlighter': '8.11.2',
 		
 		//tika(依存関係多いので明示的に指定する)
 		'org.apache.tika:tika-core': '1.26',
