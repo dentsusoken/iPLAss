@@ -66,11 +66,11 @@ ext {
 		
 		'com.github.ben-manes.caffeine:caffeine': '2.6.2',
 		
-		'org.slf4j:slf4j-api': '1.7.32',
-		'org.slf4j:jcl-over-slf4j': '1.7.32',
-		'org.slf4j:log4j-over-slf4j': '1.7.32',
+		'org.slf4j:slf4j-api': '1.7.36',
+		'org.slf4j:jcl-over-slf4j': '1.7.36',
+		'org.slf4j:log4j-over-slf4j': '1.7.36',
 		'org.apache.logging.log4j:log4j-to-slf4j': '2.19.0',
-		'ch.qos.logback:logback-classic': '1.2.7',
+		'ch.qos.logback:logback-classic': '1.2.11',
 		'net.logstash.logback:logstash-logback-encoder': '7.0.1',
 		
 		'org.bouncycastle:bcmail-jdk15on': '1.69',
