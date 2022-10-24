@@ -45,10 +45,8 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 
 	private SelectItem fileTypeField;
 
-	private SelectItem csvTargetField;
 	private SelectItem csvEncodeField;
 
-	private CheckboxItem xmlEntityViewField;
 	private CheckboxItem xmlEntityFilterField;
 	private CheckboxItem xmlEntityMenuItemField;
 	private CheckboxItem xmlEntityWebAPIField;
@@ -72,7 +70,7 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 	public EntityConfigDownloadDialog(final String defName, final String[] defNames, final TARGET target) {
 
 		setWidth(400);
-		setHeight(250);
+		setHeight(220);
 		String title = "Export Entity Definition : ";
 		if (defName != null) {
 			title += defName;
@@ -98,22 +96,11 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 			}
 		});
 
-		csvTargetField = new SelectItem();
-		csvTargetField.setTitle("Target");
-		csvTargetField.setValueMap(TARGET.PROPERTY.name(), TARGET.VIEW.name());
-		csvTargetField.setValue(target.name());
-		csvTargetField.setVisible(false);
-
 		csvEncodeField = new SelectItem();
 		csvEncodeField.setTitle("Encode");
 		csvEncodeField.setValueMap(ENCODE.UTF8.name(), ENCODE.MS932.name());
 		csvEncodeField.setValue(ENCODE.UTF8.name());
 		csvEncodeField.setVisible(false);
-
-		xmlEntityViewField = new CheckboxItem();
-		xmlEntityViewField.setTitle("with entity view definition.");
-		xmlEntityViewField.setValue(true);
-		xmlEntityViewField.setVisible(false);
 
 		xmlEntityFilterField = new CheckboxItem();
 		xmlEntityFilterField.setTitle("with entity filter definition.");
@@ -139,7 +126,7 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 		optionForm.setWidth100();
 		optionForm.setNumCols(2);
 		optionForm.setColWidths(80, "*");
-		optionForm.setItems(csvTargetField, csvEncodeField, xmlEntityViewField, xmlEntityFilterField, xmlEntityMenuItemField, xmlEntityWebAPIField);
+		optionForm.setItems(csvEncodeField, xmlEntityFilterField, xmlEntityMenuItemField, xmlEntityWebAPIField);
 		optionForm.setIsGroup(true);
 		optionForm.setGroupTitle("Type Settings");
 
@@ -164,9 +151,10 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 					.addParameter("definitionName", defName)
 					.addParameter("definitionNames", defNamesString(defNames))
 					.addParameter("fileType", FILETYPE.valueOf(SmartGWTUtil.getStringValue(fileTypeField)).name())
-					.addParameter("csvOutputTarget", TARGET.valueOf(SmartGWTUtil.getStringValue(csvTargetField)).name())
+					.addParameter("csvOutputTarget", TARGET.PROPERTY.name())
 					.addParameter("csvEncode", ENCODE.valueOf(SmartGWTUtil.getStringValue(csvEncodeField)).getValue())
-					.addParameter("xmlEntityView", SmartGWTUtil.getBooleanValue(xmlEntityViewField) + "")
+					.addParameter("xmlEntity", "true")
+					.addParameter("xmlEntityView", "false")
 					.addParameter("xmlEntityFilter", SmartGWTUtil.getBooleanValue(xmlEntityFilterField) + "")
 					.addParameter("xmlEntityMenuItem", SmartGWTUtil.getBooleanValue(xmlEntityMenuItemField) + "")
 					.addParameter("xmlEntityWebAPI", SmartGWTUtil.getBooleanValue(xmlEntityWebAPIField) + "")
@@ -207,17 +195,13 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 	private void dispTypeOption() {
 		FILETYPE type = FILETYPE.valueOf(fileTypeField.getValueAsString());
 		if (FILETYPE.CSV == type) {
-			csvTargetField.show();
 			csvEncodeField.show();
-			xmlEntityViewField.hide();
 			xmlEntityFilterField.hide();
 			xmlEntityMenuItemField.hide();
 			xmlEntityWebAPIField.hide();
 		} else {
 			//XMLの場合は全部のメタのため対象は固定
-			csvTargetField.hide();
 			csvEncodeField.hide();
-			xmlEntityViewField.show();
 			xmlEntityFilterField.show();
 			xmlEntityMenuItemField.show();
 			xmlEntityWebAPIField.show();

@@ -217,6 +217,9 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/mail/template/definition/MailTemplateDefinitionModifyResult.java'
 		include 'mtp/mail/template/definition/PlainTextBodyPart.java'
 
+		include 'mtp/view/filter/EntityFilter.java'
+		include 'mtp/view/filter/EntityFilterItem.java'
+
 		include 'mtp/webhook/template/definition/WebhookSubscriber.java'
 		include 'mtp/webhook/template/definition/WebhookTemplateDefinition.java'
 		include 'mtp/webhook/template/definition/WebhookHeaderDefinition.java'
@@ -363,9 +366,6 @@ task copyGwtTransSrc(type: Sync) {
 
 		include 'mtp/view/calendar/EntityCalendar.java'
 		include 'mtp/view/calendar/EntityCalendarItem.java'
-
-		include 'mtp/view/filter/EntityFilter.java'
-		include 'mtp/view/filter/EntityFilterItem.java'
 
 		include 'mtp/view/generic/DetailFormView.java'
 		include 'mtp/view/generic/EntityView.java'

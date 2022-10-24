@@ -26,6 +26,7 @@ import org.iplass.adminconsole.client.base.event.AdminConsoleGlobalEventBus;
 import org.iplass.adminconsole.client.base.event.RefreshMetaDataEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.plugin.AdminPlugin;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.layout.AdminMenuTreeGrid;
 import org.iplass.adminconsole.client.base.ui.layout.AdminMenuTreeNode;
@@ -39,7 +40,6 @@ import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.DragDataAction;
@@ -53,9 +53,13 @@ import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 /**
- * <p>MetaDataSetting用メニューグリッドです。</p>
+ * <p>
+ * MetaDataSetting用メニューグリッドです。
+ * </p>
  *
- * <p>{@link RefreshClickHandler} を実装しています。</p>
+ * <p>
+ * {@link RefreshClickHandler} を実装しています。
+ * </p>
  *
  * @author lis70i
  */
@@ -86,21 +90,21 @@ public class MetaDataPluginTreeGrid extends AdminMenuTreeGrid {
 	private MetaDataPluginTreeGrid(MainWorkspaceTab mainPane) {
 		super(mainPane);
 
-		//Dragを可能にする
+		// Dragを可能にする
 		setSelectionType(SelectionStyle.SINGLE);
 		setCanDragRecordsOut(true);
 		setDragDataAction(DragDataAction.NONE);
 		setDragAppearance(DragAppearance.TRACKER);
 		setDragType(MetaDataConstants.METADATA_DRAG_DROP_TYPE);
 
-		//Drag開始処理
+		// Drag開始処理
 		addDragStartHandler(new DragStartHandler() {
 
 			@Override
 			public void onDragStart(DragStartEvent event) {
 				TreeNode node = (TreeNode) getSelectedRecord();
 				if (!(node instanceof MetaDataItemMenuTreeNode)) {
-					//Folderは対象外
+					// Folderは対象外
 					event.cancel();
 				}
 			}
@@ -111,31 +115,32 @@ public class MetaDataPluginTreeGrid extends AdminMenuTreeGrid {
 
 			@Override
 			public String hoverHTML(Object value, ListGridRecord record, int rowNum, final int colNum) {
-				final AdminMenuTreeNode node = (AdminMenuTreeNode)Tree.nodeForRecord(record);
+				final AdminMenuTreeNode node = (AdminMenuTreeNode) Tree.nodeForRecord(record);
 				if (node instanceof MetaDataItemMenuTreeNode) {
-					final MetaDataItemMenuTreeNode item = (MetaDataItemMenuTreeNode)node;
+					final MetaDataItemMenuTreeNode item = (MetaDataItemMenuTreeNode) node;
 
 					if (item.isHoverLoaded()) {
 						return SmartGWTUtil.getHoverString(item.getHover());
 					} else {
 
-						metaService.getMetaDisplayInfo(TenantInfoHolder.getId(), item.getDefPath(), new AsyncCallback<I18nMetaDisplayInfo>() {
+						metaService.getMetaDisplayInfo(TenantInfoHolder.getId(), item.getDefPath(),
+								new AsyncCallback<I18nMetaDisplayInfo>() {
 
-							@Override
-							public void onFailure(Throwable caught) {
-								//特に何もしない
-								item.setHoverLoaded(true);
-							}
+									@Override
+									public void onFailure(Throwable caught) {
+										// 特に何もしない
+										item.setHoverLoaded(true);
+									}
 
-							@Override
-							public void onSuccess(I18nMetaDisplayInfo result) {
-								item.setHoverLoaded(true);
-								item.setHover(result.getI18nDisplayName());
-							}
+									@Override
+									public void onSuccess(I18nMetaDisplayInfo result) {
+										item.setHoverLoaded(true);
+										item.setHover(result.getI18nDisplayName());
+									}
 
-						});
+								});
 
-						//ここでなにか返さないといけない(TODO 1度目では値が返らない)
+						// ここでなにか返さないといけない(TODO 1度目では値が返らない)
 						return SmartGWTUtil.getHoverString(item.getHover());
 					}
 
@@ -149,7 +154,8 @@ public class MetaDataPluginTreeGrid extends AdminMenuTreeGrid {
 
 	@Override
 	protected List<AdminPlugin> plugins() {
-		MetaDataPluginController controller = GWT.create(MetaDataPluginController.class);
+		MetaDataPluginController controller = ScreenModuleBasedUIFactoryHolder.getFactory()
+				.createMetaDataPluginController();
 		return controller.plugins();
 	}
 
@@ -159,13 +165,14 @@ public class MetaDataPluginTreeGrid extends AdminMenuTreeGrid {
 
 			@Override
 			public void onSuccess(Void result) {
-				//キャッシュのクリアが成功したらTenant情報再読み込み(他で変更されている可能性があるので)
+				// キャッシュのクリアが成功したらTenant情報再読み込み(他で変更されている可能性があるので)
 				reloadTenantInfoHolder();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_MetaDataSettingTreeGrid_failedToClearCache") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("ui_MetaDataSettingTreeGrid_failedToClearCache")
+						+ caught.getMessage());
 			}
 		});
 	}
@@ -175,14 +182,15 @@ public class MetaDataPluginTreeGrid extends AdminMenuTreeGrid {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_MetaDataSettingTreeGrid_failedToClearCache") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("ui_MetaDataSettingTreeGrid_failedToClearCache")
+						+ caught.getMessage());
 			}
 
 			@Override
 			public void onSuccess(TenantEnv result) {
 				TenantInfoHolder.reload(result);
 
-				//リフレッシュする
+				// リフレッシュする
 				RefreshMetaDataEvent.fire(AdminConsoleGlobalEventBus.getEventBus());
 			}
 		});

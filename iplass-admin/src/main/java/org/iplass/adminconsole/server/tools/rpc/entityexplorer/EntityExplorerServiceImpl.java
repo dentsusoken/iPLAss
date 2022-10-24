@@ -41,6 +41,7 @@ import org.iplass.adminconsole.shared.tools.dto.entityexplorer.CrawlEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.DefragEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataCountResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataListResultInfo;
+import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityViewInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityTreeNode;
@@ -99,11 +100,10 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	/** シリアルバージョンNo */
 	private static final long serialVersionUID = -3459617043325559477L;
 
-	private static final String USER_ENTITY = "mtp.auth.User";
+//	private static final String USER_ENTITY = "mtp.auth.User";
 
 	private EntityManager em = AdminEntityManager.getInstance();
 	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	private EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	private EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
 	private FulltextSearchManager fsm = ManagerLocator.getInstance().getManager(FulltextSearchManager.class);
 	private RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
@@ -132,16 +132,12 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
 					EntityDefinition definition = null;
 					int listenerCount = 0;
-					EntityView view = null;
 					int totalCount = -1;
 					boolean isError = false;
 					String errorMessage = null;
 					try {
 						//Definition取得
 						definition = ehs.getRuntimeById(entryInfo.getId()).getMetaData().currentConfig(ec);
-
-						//View取得
-						view = evm.get(definition.getName());
 
 						//件数取得
 						if (isGetDataCount) {
@@ -174,13 +170,75 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 					}
 					info.setListenerCount(listenerCount);
 					info.setCount(totalCount);
+					info.setRepository(entryInfo.getRepository());
+					info.setError(isError);
+					if (isError) {
+						info.setErrorMessage(errorMessage);
+					}
+					infoList.add(info);
+				}
+
+				return infoList;
+			}
+
+		});
+	}
+
+	@Override
+	public List<EntityViewInfo> getEntityViewList(final int tenantId, final boolean isGetDataCount) {
+
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<EntityViewInfo>>() {
+
+			@Override
+			public List<EntityViewInfo> call() {
+
+				//DefinitionのList取得
+				List<MetaDataEntryInfo> entityList = ehs.list();
+
+				EntityContext ec = EntityContext.getCurrentContext();
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+
+				List<EntityViewInfo> infoList = new ArrayList<>();
+				for (MetaDataEntryInfo entryInfo : entityList) {
+
+					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
+					EntityDefinition definition = null;
+					EntityView view = null;
+					int totalCount = -1;
+					boolean isError = false;
+					String errorMessage = null;
+					try {
+						definition = ehs.getRuntimeById(entryInfo.getId()).getMetaData().currentConfig(ec);
+
+						//View取得
+						view = evm.get(definition.getName());
+
+						//件数取得
+						if (isGetDataCount) {
+							Query query = new Query().select(Entity.OID).from(definition.getName());
+							totalCount = em.count(query);
+						}
+					} catch (Exception e) {
+						logger.error(resourceString("errGetEntityInfo"), e);
+						isError = true;
+						errorMessage = (e.getMessage() != null ? e.getMessage() : e.getClass().getName());
+					}
+
+					EntityViewInfo info = new EntityViewInfo();
+					//Definitionが取得できなかったらとりあえずPathをセット
+					if (definition != null) {
+						info.setName(definition.getName());
+					} else {
+						info.setName(entryInfo.getPath());
+					}
+					info.setDisplayName(entryInfo.getDisplayName());
+					info.setCount(totalCount);
 					if (view != null) {
 						info.setDetailFormViewCount(view.getDetailFormViewNames() != null ? view.getDetailFormViewNames().length : 0);
 						info.setSearchFormViewCount(view.getSearchFormViewNames() != null ? view.getSearchFormViewNames().length : 0);
 						info.setBulkFormViewCount(view.getBulkFormViewNames() != null ? view.getBulkFormViewNames().length : 0);
 						info.setViewControl(view.getViewControlSettings() != null && view.getViewControlSettings().size() > 0 ? "*" : "");
 					}
-					info.setRepository(entryInfo.getRepository());
 					info.setError(isError);
 					if (isError) {
 						info.setErrorMessage(errorMessage);
@@ -225,6 +283,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	}
 
 	private void convertNode(SimpleEntityTreeNode entityNode, MetaTreeNode metaNode, boolean isGetDataCount) {
+		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+
 		entityNode.setPath(metaNode.getPath());
 		entityNode.setName(metaNode.getName());
 //		entityNode.setContextPath(metaNode.getContextPath());

@@ -66,7 +66,6 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 	private static final long serialVersionUID = -3459617043325559477L;
 
 	private EntityDefinitionManager edm;
-	private EntityViewManager evm;
 	private DefinitionService ds;
 	private AdminAuditLoggingService aals;
 
@@ -75,7 +74,6 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 		super.init();
 
 		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 		ds = ServiceRegistry.getRegistry().getService(DefinitionService.class);
 		aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
 	}
@@ -89,6 +87,7 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 		final String defNames = req.getParameter("definitionNames");
 		final String csvOutputTarget = req.getParameter("csvOutputTarget");
 		final String csvEncode = req.getParameter("csvEncode");
+		final String xmlEntity = req.getParameter("xmlEntity");
 		final String xmlEntityView = req.getParameter("xmlEntityView");
 		final String xmlEntityFilter = req.getParameter("xmlEntityFilter");
 		final String xmlEntityMenuItem = req.getParameter("xmlEntityMenuItem");
@@ -103,11 +102,12 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 			}
 			csvDownload(tenantId, getDefNames(defName, defNames), csvOutputTarget, execEncode, resp);
 		} else if (FILETYPE.XML.equals(FILETYPE.valueOf(fileType))) {
+			boolean isOutEntity = Boolean.valueOf(xmlEntity);
 			boolean isOutEntityView = Boolean.valueOf(xmlEntityView);
 			boolean isOutEntityFilter = Boolean.valueOf(xmlEntityFilter);
 			boolean isOutEntityMenuItem = Boolean.valueOf(xmlEntityMenuItem);
 			boolean isOutEntityWebAPI = Boolean.valueOf(xmlEntityWebAPI);
-			xmlDownload(tenantId, getDefNames(defName, defNames), isOutEntityView, isOutEntityFilter, isOutEntityMenuItem, isOutEntityWebAPI, resp);
+			xmlDownload(tenantId, getDefNames(defName, defNames), isOutEntity, isOutEntityView, isOutEntityFilter, isOutEntityMenuItem, isOutEntityWebAPI, resp);
 		}
 	}
 
@@ -130,7 +130,7 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 		}
 	}
 
-	private void xmlDownload(final int tenantId, final String[] defNames,
+	private void xmlDownload(final int tenantId, final String[] defNames, final boolean isOutEntity,
 			final boolean isOutEntityView, final boolean isOutEntityFilter, final boolean isOutEntityMenuItem, final boolean isOutEntityWebAPI,
 			final HttpServletResponse resp) {
 
@@ -145,7 +145,9 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 			if (entity == null) {
 				continue;
 			}
-			entryPaths.add(entity.getPath());
+			if (isOutEntity) {
+				entryPaths.add(entity.getPath());
+			}
 			entityIds.add(entity.getMetaData().getId());
 
 			if (isOutEntityView) {
@@ -278,6 +280,7 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 			//レスポンス設定
 			DownloadUtil.setCsvResponseHeader(resp, fileName, encode);
 
+			EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 			int i = 1;
 			for (String defName : defNames) {
 				//EntityViewの取得

@@ -48,11 +48,6 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 		LISTNER_COUNT,
 		VERSIONING,
 
-		DETAIL_VIEW_COUNT,
-		SEARCH_VIEW_COUNT,
-		BULK_VIEW_COUNT,
-		VIEW_CONTROL,
-
 		REPOSITORY,
 
 		IS_ERROR,
@@ -179,10 +174,6 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 		}
 		node.setAttribute(FIELD_NAME.LISTNER_COUNT.name(), item.getListenerCount());
 		node.setAttribute(FIELD_NAME.VERSIONING.name(), item.getVersionControlType());
-		node.setAttribute(FIELD_NAME.DETAIL_VIEW_COUNT.name(), item.getDetailFormViewCount());
-		node.setAttribute(FIELD_NAME.SEARCH_VIEW_COUNT.name(), item.getSearchFormViewCount());
-		node.setAttribute(FIELD_NAME.BULK_VIEW_COUNT.name(), item.getBulkFormViewCount());
-		node.setAttribute(FIELD_NAME.VIEW_CONTROL.name(), item.getViewControl());
 		node.setIsFolder(false);
 		return node;
 	}

@@ -26,6 +26,7 @@
 		<property name="org.iplass.mtp.tenant.TenantManager" value="org.iplass.mtp.impl.tenant.TenantManagerImpl" />
 		<property name="org.iplass.mtp.transaction.TransactionManager" class="org.iplass.mtp.impl.transaction.TransactionService$TransactionManagerConstructor" />
 		<property name="org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager" value="org.iplass.mtp.impl.script.UtilityClassDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.view.filter.EntityFilterManager" value="org.iplass.mtp.impl.view.filter.EntityFilterManagerImpl"/>
 		<property name="org.iplass.mtp.webhook.WebhookManager" value="org.iplass.mtp.impl.webhook.WebhookManagerImpl" />
 		<property name="org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinitionManager" value="org.iplass.mtp.impl.webhook.template.WebhookTemplateDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinitionManager" value="org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointDefinitionManagerImpl" />
@@ -98,6 +99,7 @@
 		<property name="typeMap" value="org.iplass.mtp.impl.prefs.PreferenceService$TypeMap" />
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService$TypeMap" />
 		<property name="typeMap" value="org.iplass.mtp.impl.pushnotification.PushNotificationService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.view.filter.EntityFilterService$TypeMap"/>
 		<property name="typeMap" value="org.iplass.mtp.impl.webhook.WebhookServiceImpl$TypeMap" />
 		<property name="typeMap" value="org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointServiceImpl$TypeMap" />
 	</service>

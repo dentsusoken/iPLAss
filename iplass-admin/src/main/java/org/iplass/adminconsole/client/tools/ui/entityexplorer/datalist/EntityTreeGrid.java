@@ -124,14 +124,6 @@ public class EntityTreeGrid extends MtpTreeGrid {
 		listenerCountField.setWidth(75);
 		TreeGridField versioningField = new TreeGridField(FIELD_NAME.VERSIONING.name(), "Version Control");
 		versioningField.setWidth(75);
-		TreeGridField detailViewCountField = new TreeGridField(FIELD_NAME.DETAIL_VIEW_COUNT.name(), "DetailViews");
-		detailViewCountField.setWidth(95);
-		TreeGridField searchViewCountField = new TreeGridField(FIELD_NAME.SEARCH_VIEW_COUNT.name(), "SearchViews");
-		searchViewCountField.setWidth(95);
-		TreeGridField bulkViewCountField = new TreeGridField(FIELD_NAME.BULK_VIEW_COUNT.name(), "BulkViews");
-		bulkViewCountField.setWidth(95);
-		TreeGridField viewControlField = new TreeGridField(FIELD_NAME.VIEW_CONTROL.name(), "ViewControls");
-		viewControlField.setWidth(40);
 
 		TreeGridField repositoryField = new TreeGridField(FIELD_NAME.REPOSITORY.name(), "Repository", 70);
 		repositoryField.setAlign(Alignment.CENTER);
@@ -143,7 +135,7 @@ public class EntityTreeGrid extends MtpTreeGrid {
 				return SmartGWTUtil.getHoverString(record.getAttribute(FIELD_NAME.REPOSITORY.name()));
 			}
 		});
-		setFields(displayNameField, errorField, pathField, countField, listenerCountField, versioningField, detailViewCountField, searchViewCountField, bulkViewCountField, viewControlField, repositoryField);
+		setFields(displayNameField, errorField, pathField, countField, listenerCountField, versioningField, repositoryField);
 
 		fetchData();
 	}

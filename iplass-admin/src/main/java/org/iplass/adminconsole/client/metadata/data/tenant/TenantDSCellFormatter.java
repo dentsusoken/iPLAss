@@ -30,10 +30,11 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class TenantDSCellFormatter implements CellFormatter {
 
-	//Grid上のフォーマットだが、入力可能なので入力形式に合わせる
+	// Grid上のフォーマットだが、入力可能なので入力形式に合わせる
 	private final DateTimeFormat dateFormatter = SmartGWTUtil.createInputDateFormat();
 
-	public TenantDSCellFormatter(){}
+	public TenantDSCellFormatter() {
+	}
 
 	@Override
 	public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
@@ -41,11 +42,11 @@ public class TenantDSCellFormatter implements CellFormatter {
 			return null;
 		}
 
-		if (TenantDS.ColType.DATE.equals((TenantDS.ColType)(record.getAttributeAsObject("colType")))) {
-			//日付のフォーマット
-			return dateFormatter.format((Date)value);
-		} else if (TenantDS.ColType.PASSWORD.equals((TenantDS.ColType)(record.getAttributeAsObject("colType")))) {
-			//パスワードは表示しない
+		if (TenantColType.DATE.equals((TenantColType) (record.getAttributeAsObject("colType")))) {
+			// 日付のフォーマット
+			return dateFormatter.format((Date) value);
+		} else if (TenantColType.PASSWORD.equals((TenantColType) (record.getAttributeAsObject("colType")))) {
+			// パスワードは表示しない
 			return "*****";
 		} else {
 			return value.toString();

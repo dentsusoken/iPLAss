@@ -4,7 +4,6 @@
 	<service>
 		<interface>org.iplass.mtp.impl.core.ManagerFactory</interface>
 		<property name="org.iplass.mtp.view.calendar.EntityCalendarManager" value="org.iplass.mtp.impl.view.calendar.EntityCalendarManagerImpl" additional="true" />
-		<property name="org.iplass.mtp.view.filter.EntityFilterManager" value="org.iplass.mtp.impl.view.filter.EntityFilterManagerImpl" additional="true" />
 		<property name="org.iplass.mtp.view.generic.EntityViewManager" value="org.iplass.mtp.impl.view.generic.EntityViewManagerImpl" additional="true" />
 		<property name="org.iplass.mtp.view.menu.MenuItemManager" value="org.iplass.mtp.impl.view.menu.MenuItemManagerImpl" additional="true" />
 		<property name="org.iplass.mtp.view.menu.MenuTreeManager" value="org.iplass.mtp.impl.view.menu.MenuTreeManagerImpl" additional="true" />
@@ -29,7 +28,6 @@
 	<service>
 		<interface>org.iplass.mtp.impl.definition.DefinitionService</interface>
 		<property name="typeMap" value="org.iplass.mtp.impl.view.calendar.EntityCalendarService$TypeMap" additional="true" />
-		<property name="typeMap" value="org.iplass.mtp.impl.view.filter.EntityFilterService$TypeMap" additional="true" />
 		<property name="typeMap" value="org.iplass.mtp.impl.view.generic.EntityViewService$TypeMap" additional="true" />
 		<property name="typeMap" value="org.iplass.mtp.impl.view.menu.MenuItemService$TypeMap" additional="true" />
 		<property name="typeMap" value="org.iplass.mtp.impl.view.top.TopViewDefinitionService$TypeMap" additional="true" />

@@ -9,11 +9,6 @@
 	<inherits name="com.google.gwt.logging.Logging" />
 	<set-property name="gwt.logging.enabled" value="FALSE"/>
 
-	<!-- switch metadata plugins -->
-	<replace-with class="org.iplass.adminconsole.client.metadata.ui.MetaDataPluginControllerImpl">
-		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController"/>
-	</replace-with>
-
 	<!-- switch metadata sharable controll -->
 	<replace-with class="org.iplass.adminconsole.client.metadata.ui.common.MetaDataSharableControllerImpl">
 		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.common.MetaDataSharableController"/>
@@ -91,11 +86,6 @@
 		<when-type-is class="org.iplass.adminconsole.client.tools.ui.ToolsPluginController"/>
 	</replace-with>
 
-	<!-- switch lang explorer setting controll -->
-	<replace-with class="org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingControllerImpl">
-		<when-type-is class="org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingController"/>
-	</replace-with>
-
 	<!-- switch entity explorer main controll -->
 	<replace-with class="org.iplass.adminconsole.client.tools.ui.entityexplorer.EntityExplorerMainPaneControllerImpl">
 		<when-type-is class="org.iplass.adminconsole.client.tools.ui.entityexplorer.EntityExplorerMainPaneController"/>
@@ -104,6 +94,11 @@
 	<!-- switch permission explorer main controll -->
 	<replace-with class="org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionExplorerMainPaneControllerImpl">
 		<when-type-is class="org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionExplorerMainPaneController"/>
+	</replace-with>
+	
+	<!-- switch screen module based UI factory generator -->
+	<replace-with class="org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryGeneratorImpl">
+		<when-type-is class="org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryGenerator"/>
 	</replace-with>
 
 	<!-- Specify the app entry point class.                         -->

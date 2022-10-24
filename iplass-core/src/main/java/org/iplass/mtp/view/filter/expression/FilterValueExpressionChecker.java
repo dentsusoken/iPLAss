@@ -23,7 +23,6 @@ package org.iplass.mtp.view.filter.expression;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.entity.query.QueryException;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.ConditionVisitor;
@@ -43,6 +42,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
+import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 
 /**
  * Filter条件式がサポートされた式かをチェックします。
@@ -198,6 +198,6 @@ public class FilterValueExpressionChecker implements ConditionVisitor {
 	}
 
 	private static String resourceString(String key, Object... arguments) {
-		return GemResourceBundleUtil.resourceString(key, arguments);
+		return CoreResourceBundleUtil.resourceString(key, arguments);
 	}
 }

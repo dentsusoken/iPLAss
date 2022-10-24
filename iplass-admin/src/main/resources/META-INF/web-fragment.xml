@@ -58,6 +58,15 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>adminScreenModuleService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.base.rpc.screen.ScreenModuleServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminScreenModuleService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/screen</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>adminEqlService</servlet-name>
 		<servlet-class>org.iplass.adminconsole.server.base.rpc.entity.EqlServiceImpl</servlet-class>
 	</servlet>
