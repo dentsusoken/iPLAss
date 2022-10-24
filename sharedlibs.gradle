@@ -5,16 +5,16 @@ ext {
 		'jakarta.mail:jakarta.mail-api': '1.6.5',
 		'jakarta.validation:jakarta.validation-api': '2.0.2',
 		'jakarta.el:jakarta.el-api': '3.0.3',
-
+		
 		'jakarta.activation:jakarta.activation-api': '1.2.2',
 		'jakarta.xml.bind:jakarta.xml.bind-api': '2.3.3',
-
+		
 		'jakarta.servlet:jakarta.servlet-api': '4.0.4',
 		'jakarta.servlet.jsp:jakarta.servlet.jsp-api': '2.3.6',
 		'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api': '1.2.7',
 		'jakarta.ws.rs:jakarta.ws.rs-api': '2.1.6',
 		'jakarta.annotation:jakarta.annotation-api': '1.3.5',
-
+		
 		//JakartaEE8 runtimes
 		'com.sun.mail:jakarta.mail': '1.6.5',
 		'org.hibernate.validator:hibernate-validator': '6.1.5.Final',
@@ -31,17 +31,17 @@ ext {
 		'commons-io:commons-io': '2.8.0',
 		'commons-beanutils:commons-beanutils': '1.9.4',
 		'commons-codec:commons-codec': '1.15',
-
+		
 		'org.apache.httpcomponents:httpclient': '4.5.13',
 		'org.apache.httpcomponents:httpmime': '4.5.13',
-
+		
 		//lucene
 		'org.apache.lucene:lucene-queryparser': '8.11.2',
 		'org.apache.lucene:lucene-analyzers-kuromoji': '8.11.2',
 		'org.apache.lucene:lucene-analyzers-smartcn': '8.11.2',
 		'org.apache.lucene:lucene-backward-codecs': '8.11.2',
 		'org.apache.lucene:lucene-highlighter': '8.11.2',
-
+		
 		//tika(依存関係多いので明示的に指定する)
 		'org.apache.tika:tika-core': '1.26',
 		'org.apache.tika:tika-parsers': '1.26',
@@ -50,54 +50,54 @@ ext {
 		'org.apache.pdfbox:pdfbox': '2.0.24',
 		'org.apache.pdfbox:pdfbox-tools': '2.0.24',
 		'org.ccil.cowan.tagsoup:tagsoup': '1.2.1',
-
+		
 		'org.apache.poi:poi': '5.2.3',
 		'org.apache.poi:poi-scratchpad': '5.2.3',
 		'org.apache.poi:poi-ooxml': '5.2.3',
-
+		
 		'org.jxls:jxls': '2.11.0',
 		'org.jxls:jxls-poi': '2.11.0',
-
+		
 		'org.codehaus.groovy:groovy-bom': '3.0.12',//by bom
-
+		
 		'com.fasterxml.jackson:jackson-bom': '2.13.4.20221013',//by bom
-
+		
 		'net.sf.supercsv:super-csv': '2.4.0',
-
+		
 		'com.github.ben-manes.caffeine:caffeine': '2.6.2',
-
+		
 		'org.slf4j:slf4j-api': '1.7.32',
 		'org.slf4j:jcl-over-slf4j': '1.7.32',
 		'org.slf4j:log4j-over-slf4j': '1.7.32',
 		'org.apache.logging.log4j:log4j-to-slf4j': '2.19.0',
 		'ch.qos.logback:logback-classic': '1.2.7',
 		'net.logstash.logback:logstash-logback-encoder': '7.0.1',
-
+		
 		'org.bouncycastle:bcmail-jdk15on': '1.69',
-
+		
 		'org.jgroups:jgroups': '4.2.16.Final',
-
+		
 		'com.googlecode.gwtupload:gwtupload': '1.0.3',
-
+		
 		'org.infinispan:infinispan-core': '9.1.6.Final',
 		'org.jboss.marshalling:jboss-marshalling-osgi': '2.0.6.Final',
-
+		
 		'io.lettuce:lettuce-core': '5.3.3.RELEASE',
-
+		
 		'net.sf.jasperreports:jasperreports': '6.17.0',
 		'commons-fileupload:commons-fileupload': '1.3.3',
 		'io.jsonwebtoken:jjwt-api': '0.11.5',
 		'io.jsonwebtoken:jjwt-impl': '0.11.5',
 		'io.jsonwebtoken:jjwt-jackson': '0.11.5',
-
+		
 		'com.ibm.icu:icu4j': '69.1',
-
-
+		
+		
 		'junit:junit': '4.13.1',
-
+		
 		//webjars(admin)
 		'org.webjars.npm:ace-builds': '1.4.11',
-
+		
 		//webjars(gem)
 		'org.webjars:jquery': '3.5.1',
 		'org.webjars:pdf-js': '1.9.426',
@@ -105,29 +105,29 @@ ext {
 		'org.webjars:jquery-blockui': '2.70-1',
 		'org.webjars:jQuery-Timepicker-Addon': '1.6.3',
 		'org.webjars:momentjs': '2.29.4',
-
+		
 		'org.webjars.npm:free-jqgrid': '4.15.5',
 		'org.webjars.npm:jqtree': '1.4.9',
 		'org.webjars.npm:viewerjs': '1.9.0',
-
+		
 		'org.webjars.bower:jquery-ui': '1.12.1',
 		'org.webjars.bower:blueimp-file-upload': '10.30.1',
 		'org.webjars.bower:fullcalendar': '3.10.2',
 		'org.webjars.bower:jQuery-contextMenu': '2.6.2',
 		'org.webjars.bower:mediaelement': '4.2.5',
-
+		
 		'org.webjars:font-awesome': '5.13.1',
-
+		
 		//for jsp compilation
 		'org.apache.tomcat:tomcat-jasper': '9.0.37',
 		'org.glassfish.web:jakarta.servlet.jsp.jstl': '1.2.6'
-
+		
 	]
-
+	
 	sharedLib = { String name ->
 		return name + ':' + sharedLibs[name]
 	}
-
+	
 	//globally exclude libraries
 	globalExcludes = [
 		//use jcl-over-slf4j
@@ -144,8 +144,8 @@ configurations {
 dependencies {
 	implementation platform(sharedLib('org.codehaus.groovy:groovy-bom'))
 	implementation platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
-
-
+	
+	
 	//provided JavaEE(JakartaEE)8 apis
 	//java mail
 	jeecoreapis sharedLib('jakarta.mail:jakarta.mail-api')
@@ -158,8 +158,8 @@ dependencies {
 	jeecoreapis sharedLib('jakarta.activation:jakarta.activation-api')
 	//JAXB for java11
 	jeecoreapis sharedLib('jakarta.xml.bind:jakarta.xml.bind-api')
-
-
+	
+	
 	//provided JavaEE(JakartaEE)8 web apis
 	//Servlet
 	jeewebapis sharedLib('jakarta.servlet:jakarta.servlet-api')
@@ -177,8 +177,8 @@ dependencies {
 	jeewebapis sharedLib('jakarta.ws.rs:jakarta.ws.rs-api')
 	//Common Annotations for the Java Platform
 	jeewebapis sharedLib('jakarta.annotation:jakarta.annotation-api')
-
-
+	
+	
 	//JavaEE(JakartaEE)8 runtime for tomcat9
 	//jstl runtime
 	jeeruntime4tomcat sharedLib('org.glassfish.web:jakarta.servlet.jsp.jstl')
@@ -203,5 +203,7 @@ dependencies {
 
 	//JAF runtime for java11
 	jeeruntime4tomcat sharedLib('com.sun.activation:jakarta.activation')
-
+	
 }
+
+
