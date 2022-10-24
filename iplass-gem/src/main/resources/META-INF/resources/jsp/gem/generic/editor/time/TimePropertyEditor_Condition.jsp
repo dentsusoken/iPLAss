@@ -265,9 +265,11 @@ $(function() {
 		var $from = $("#time_" + es("<%=StringUtil.escapeJavaScript(propName + "0")%>"));
 		var fromVal = $from.val();
 		var timeFormat = $from.attr("data-timeformat");
+		var fixedmin = $from.attr("data-fixedmin");
+		var fixedsec = $from.attr("data-fixedsec");
 		if (typeof fromVal !== "undefined" && fromVal !== null && fromVal !== "") {
 			try {
-				validateTimePicker(fromVal, timeFormat, "", "", "");
+				validateTimePicker(fromVal, timeFormat, fixedmin, fixedsec);
 			} catch (e) {
 				alert(messageFormat(scriptContext.gem.locale.common.timeFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", timeFormat))
 				return false;
@@ -277,7 +279,7 @@ $(function() {
 		var toVal = $to.val();
 		if (typeof toVal !== "undefined" && toVal !== null && toVal !== "") {
 			try {
-				validateTimePicker(toVal, timeFormat, "", "", "");
+				validateTimePicker(toVal, timeFormat, fixedmin, fixedsec);
 			} catch (e) {
 				alert(messageFormat(scriptContext.gem.locale.common.timeFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", timeFormat))
 				return false;

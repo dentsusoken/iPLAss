@@ -34,14 +34,14 @@ Also, jar is published at Maven Central with groupId : org.iplass.
 
 example when using gradle：
 
- implementation 'org.iplass:iplass-gem:3.1.21'
+ implementation 'org.iplass:iplass-gem:3.1.24'
 
 example when using  maven：
 
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>3.1.21</version>
+   <version>3.1.24</version>
    <type>pom</type>
  </dependency>
 
@@ -114,7 +114,7 @@ To build with gradle, use
 
  > gradlew
 
-NOTE: There are third-party libraries which do not have public maven. They have to be placed in the lib directory manualy. 
+NOTE: There are third-party libraries which do not have public maven. They have to be placed in the lib directory manualy.
 
 Please refer to the following documents.
 lib/smartgwt/note.txt

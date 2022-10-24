@@ -51,6 +51,7 @@ public class AuthenticationPolicyDefinition implements Definition {
 	private boolean recordLastLoginDate = true;
 	private RememberMePolicyDefinition rememberMePolicy;
 	private List<String> authenticationProvider;
+	private List<String> openIdConnectDefinition;
 	
 	/** ユーザ作成時、パスワード更新時にその情報を受け取る為のListener */
 	private List<AccountNotificationListenerDefinition> notificationListener;
@@ -190,4 +191,11 @@ public class AuthenticationPolicyDefinition implements Definition {
 		this.notificationListener = notificationListener;
 	}
 
+	public List<String> getOpenIdConnectDefinition() {
+		return openIdConnectDefinition;
+	}
+
+	public void setOpenIdConnectDefinition(List<String> openIdConnectDefinition) {
+		this.openIdConnectDefinition = openIdConnectDefinition;
+	}
 }

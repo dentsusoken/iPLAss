@@ -56,7 +56,7 @@
 			<property name="thresholdCountOfUsePrepareStatement" value="50" />
 			<property name="batchSize" value="100" />
 			<property name="defaultQueryTimeout" value="0" />
-			<property name="useFetchFirstClause" value="false" />
+			<property name="useFetchFirstClause" value="true" />
 		</property>
 	</service>
 	

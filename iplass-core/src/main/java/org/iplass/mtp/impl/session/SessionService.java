@@ -95,7 +95,7 @@ public abstract class SessionService implements Service {
 		private static KeyGenerator gen = new KeyGenerator();
 		
 		private final ConcurrentHashMap<String, Object> store;
-		private final String id;
+		private volatile String id;
 		private final SessionService service;
 		private final long createDate;
 		
@@ -145,6 +145,11 @@ public abstract class SessionService implements Service {
 		@Override
 		public long getCreationTime() {
 			return createDate;
+		}
+
+		@Override
+		public void changeSessionId() {
+			id = "es-" + gen.generateId();
 		}
 	}
 	

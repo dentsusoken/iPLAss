@@ -175,8 +175,20 @@ public abstract class DefaultMetaDataPlugin extends DefaultAdminPlugin implement
 	@Override
 	public AdminMenuTreeNode createPluginRootNode() {
 		rootNode = new AdminMenuTreeNode(nodeName(), nodeIcon(), nodeTypeRoot());
+		rootNode.setTitle(rootNodeDisplayName());
 		return rootNode;
 	}
+
+	/**
+     * ルートノードの表示名を指定したい場合にカスタマイズしてください。
+     * アルファベット以外の文字を利用する場合などを想定しています。
+     * デフォルトではnodeNameを設定します。
+     *
+     * @return ルートノードの表示名
+     */
+    protected String rootNodeDisplayName() {
+        return nodeName();
+    }
 
 	/**
 	 * <p>ノードがダブルクリックされた際の処理を実装します。</p>

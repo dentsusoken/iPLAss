@@ -37,7 +37,6 @@ import java.text.SimpleDateFormat;
 import org.iplass.mtp.entity.query.GroupBy.RollType;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
-import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
 import org.iplass.mtp.entity.query.value.aggregate.Listagg;
@@ -102,7 +101,7 @@ public class OracleRdbAdapter extends RdbAdapter {
 	private int defaultFetchSize;
 	
 	//Oracle 12cから利用可能なFETCH FIRST句を使うか否か
-	private boolean useFetchFirstClause;
+	private boolean useFetchFirstClause = true;
 
 	private String viewSubQueryAlias = "vsq";
 

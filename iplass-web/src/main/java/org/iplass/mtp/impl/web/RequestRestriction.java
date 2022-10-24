@@ -135,7 +135,7 @@ public class RequestRestriction implements ServiceInitListener<WebFrontendServic
 		if (pathPattern != null) {
 			if (pathPatternCompile == null
 					|| !pathPatternCompile.pattern().equals(pathPattern)) {
-				pathPatternCompile = Pattern.compile(pathPattern);
+				pathPatternCompile = Pattern.compile(pathPattern, Pattern.DOTALL);
 			}
 		} else {
 			pathPatternCompile = null;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2022 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -18,13 +18,27 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.impl.fulltextsearch;
+package org.iplass.mtp.impl.auth.authenticate.oidc;
 
-import org.apache.lucene.analysis.ja.JapaneseAnalyzer;
-import org.apache.lucene.analysis.ja.JapaneseTokenizer;
+import org.iplass.mtp.SystemException;
 
-public class JapaneseNormalAnalyzer extends JapaneseAnalyzer {
-	public JapaneseNormalAnalyzer() {
-		super(null, JapaneseTokenizer.Mode.NORMAL, getDefaultStopSet(), getDefaultStopTags());
+public class OIDCRuntimeException extends SystemException {
+	private static final long serialVersionUID = 165637931160342234L;
+
+	public OIDCRuntimeException() {
+		super();
 	}
+
+	public OIDCRuntimeException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public OIDCRuntimeException(String message) {
+		super(message);
+	}
+
+	public OIDCRuntimeException(Throwable cause) {
+		super(cause);
+	}
+
 }

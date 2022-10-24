@@ -391,7 +391,7 @@ function searchNameList(webapi, defName, viewName, filterName, offset, func) {
 	});
 }
 
-function deleteList(webapi, oid, viewName, _t, func) {
+function deleteList(webapi, oid, viewName, allVersion, _t, func) {
 	var first = true;
 	var params = "{";
 	params += "\"defName\":\"" + $(":hidden[name='defName']").val() + "\"";
@@ -406,6 +406,7 @@ function deleteList(webapi, oid, viewName, _t, func) {
 		params += "\"" + this + "\"";
 	});
 	params += "]";
+	params += ",\"allVersion\":\"" + allVersion + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
 	params += "}";
 	postAsync(webapi, params, function(results) {
@@ -414,7 +415,7 @@ function deleteList(webapi, oid, viewName, _t, func) {
 	});
 }
 
-function deleteAll(webapi, searchType, formName, _t, func) {
+function deleteAll(webapi, searchType, formName, allVersion, _t, func) {
 	//共通項目defName,searchType
 	$(":hidden[name='searchType']").val(searchType);
 	$(":hidden[name='formName']").val(formName);
@@ -423,6 +424,7 @@ function deleteAll(webapi, searchType, formName, _t, func) {
 	data += "&searchType=" + searchType;
 	data += "&isSearch=false";
 	data += "&isCount=true";
+	data += "&allVersion=" + allVersion;
 	data += "&_t=" + _t;
 	$.ajax({
 		type: "POST",

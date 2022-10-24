@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2022 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -18,13 +18,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.impl.fulltextsearch;
+package org.iplass.mtp.auth.oidc.definition;
 
-import org.apache.lucene.analysis.ja.JapaneseAnalyzer;
-import org.apache.lucene.analysis.ja.JapaneseTokenizer;
-
-public class JapaneseExtendedAnalyzer extends JapaneseAnalyzer {
-	public JapaneseExtendedAnalyzer() {
-		super(null, JapaneseTokenizer.Mode.EXTENDED, getDefaultStopSet(), getDefaultStopTags());
-	}
+/**
+ * OIDCのClient Authentication種別を表すEnumです。
+ * 
+ * @author K.Higuchi
+ *
+ */
+public enum ClientAuthenticationType {
+	CLIENT_SECRET_BASIC,
+	CLIENT_SECRET_POST
+	//TODO
+	//CLIENT_SECRET_JWT,
+	//PRIVATE_KEY_JWT
 }

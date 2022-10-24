@@ -58,6 +58,7 @@ dependencies {
 	api sharedLib('org.slf4j:slf4j-api')
 	implementation sharedLib('ch.qos.logback:logback-classic')
 	runtimeOnly sharedLib('org.slf4j:jcl-over-slf4j')
+	runtimeOnly sharedLib('org.apache.logging.log4j:log4j-to-slf4j')
 	implementation sharedLib('net.logstash.logback:logstash-logback-encoder')
 	
 	//jackson

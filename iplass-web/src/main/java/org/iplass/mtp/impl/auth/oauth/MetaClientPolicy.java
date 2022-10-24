@@ -25,6 +25,7 @@ import java.util.List;
 import org.iplass.mtp.auth.oauth.definition.ClientPolicyDefinition;
 import org.iplass.mtp.auth.oauth.definition.ClientType;
 import org.iplass.mtp.impl.auth.oauth.MetaConsentType.ConsentTypeRuntime;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 

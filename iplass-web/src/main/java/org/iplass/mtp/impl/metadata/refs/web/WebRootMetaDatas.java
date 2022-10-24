@@ -21,6 +21,7 @@ package org.iplass.mtp.impl.metadata.refs.web;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
 
+import org.iplass.mtp.impl.auth.authenticate.oidc.MetaOpenIdConnect;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthResourceServer;
@@ -41,6 +42,7 @@ import org.iplass.mtp.impl.webapi.MetaWebApi;
 	,MetaOAuthAuthorization.class
 	,MetaOAuthClient.class
 	,MetaOAuthResourceServer.class
+	,MetaOpenIdConnect.class
 })
 class WebRootMetaDatas {
 	//Web系のMetaDataへのXmlSeeAlsoを管理するためだけのクラス

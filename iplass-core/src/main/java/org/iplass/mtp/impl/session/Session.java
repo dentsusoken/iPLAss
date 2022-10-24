@@ -29,7 +29,7 @@ public interface Session {
 	public void removeAttribute(String name);
 	public Iterator<String> getAttributeNames();
 	public void invalidate();
-	
+	public void changeSessionId();
 	public Object getSessionMutexObject();
 	public long getCreationTime();
 	

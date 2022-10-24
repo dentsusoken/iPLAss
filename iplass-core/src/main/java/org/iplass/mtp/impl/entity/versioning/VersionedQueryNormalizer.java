@@ -161,7 +161,7 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 		if (q.getWhere() != null && q.getWhere().getCondition() != null) {
 			and.addExpression(new Paren(q.getWhere().getCondition()));
 		}
-		if (!isVersionSpecify && !q.isVersiond()) {
+		if (!isVersionSpecify && !q.isVersioned()) {
 			and.addExpression(vc.mainQueryCondition(eh, q.getFrom().getAsOf(), context));
 		}
 		if (refs.size() != 0) {
@@ -189,7 +189,7 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 			}
 		}
 		
-		q.setVersiond(true);
+		q.setVersioned(true);
 		return q;
 	}
 	

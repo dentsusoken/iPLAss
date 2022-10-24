@@ -176,7 +176,6 @@
 	}
 %>
 <form id="detailForm" method="post" action="<%=action%>">
-${m:outputToken('FORM_XHTML', true)}
 <%
 	if (!isSelectAll) {
 %>
@@ -336,6 +335,7 @@ $(function() {
 </ul>
 </div>
 </div>
+${m:outputToken('FORM_XHTML', true)}
 </form>
 <input type="hidden" id="confirmEditSave" value="<%=ViewUtil.isConfirmEditSave()%>" />
 <script type="text/javascript">

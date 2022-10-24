@@ -107,7 +107,9 @@ public abstract class DeleteCommandBase implements Command {
 		DeleteResult ret = new DeleteResult();
 		try {
 			DeleteOption option = new DeleteOption(false, targetVersion);
-			option.setPurge(isPurge);
+			if (targetVersion == DeleteTargetVersion.ALL) {
+				option.setPurge(isPurge);
+			}
 			em.delete(entity, option);
 			ret.setResultType(ResultType.SUCCESS);
 		} catch (ApplicationException e) {

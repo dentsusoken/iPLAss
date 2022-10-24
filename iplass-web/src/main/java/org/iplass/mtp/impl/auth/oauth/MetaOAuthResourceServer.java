@@ -32,6 +32,7 @@ import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
 import org.iplass.mtp.impl.auth.oauth.MetaCustomTokenIntrospector.CustomTokenIntrospectorRuntime;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization.OAuthAuthorizationRuntime;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;

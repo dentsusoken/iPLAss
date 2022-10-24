@@ -28,6 +28,7 @@ import org.iplass.adminconsole.client.metadata.ui.auth.property.AccountLockoutPo
 import org.iplass.adminconsole.client.metadata.ui.auth.property.AccountNotificationListenerSettingPane;
 import org.iplass.adminconsole.client.metadata.ui.auth.property.AuditLogSettingPane;
 import org.iplass.adminconsole.client.metadata.ui.auth.property.AuthenticationProviderSettingPane;
+import org.iplass.adminconsole.client.metadata.ui.auth.property.OpenIdConnectPolicySettingPane;
 import org.iplass.adminconsole.client.metadata.ui.auth.property.PasswordPolicySettingPane;
 import org.iplass.adminconsole.client.metadata.ui.auth.property.RememberMePolicySettingPane;
 
@@ -44,6 +45,7 @@ public class AuthenticationPolicyAttributeControllerImpl implements Authenticati
 		settingPaneList.add(new AuditLogSettingPane());
 		settingPaneList.add(new AccountNotificationListenerSettingPane());
 		settingPaneList.add(new AuthenticationProviderSettingPane());
+		settingPaneList.add(new OpenIdConnectPolicySettingPane());
 
 		return settingPaneList;
 	}

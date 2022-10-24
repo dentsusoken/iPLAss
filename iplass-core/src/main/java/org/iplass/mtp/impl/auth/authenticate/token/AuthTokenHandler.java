@@ -129,7 +129,7 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 		return service;
 	}
 	
-	public String newTokenString() {
+	public String newTokenString(AuthTokenInfo tokenInfo) {
 		if (generator != null) {
 			return generator.secureRandomToken();
 		} else {
@@ -186,7 +186,7 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 	public AuthToken newAuthToken(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
 		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
 		String seriesString = newSeriesString(userUniqueId, policyName, tokenInfo);
-		String tokenString = newTokenString();
+		String tokenString = newTokenString(tokenInfo);
 		Serializable details = createDetails(seriesString, tokenString, userUniqueId, policyName, tokenInfo);
 		return new AuthToken(tenantId, getType(), userUniqueId, seriesString, tokenString, policyName, new Timestamp(System.currentTimeMillis()), details);
 	}

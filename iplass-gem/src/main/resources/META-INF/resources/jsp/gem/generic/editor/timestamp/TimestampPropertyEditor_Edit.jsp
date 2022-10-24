@@ -246,12 +246,15 @@ $(function() {
 	addEditValidator(function() {
 		var $input = $("#" + es("<%=ulId%>") + " li :text");
 		for (var i = 0; i < $input.length; i++) {
-			var val = $($input.get(i)).val();
+			var $_input = $($input.get(i));
+			var val = $_input.val();
 			var dateFormat = dateUtil.getInputDateFormat();
-			var timeFormat = $($input.get(i)).attr("data-timeformat");
+			var timeFormat = $_input.attr("data-timeformat");
+			var fixedmin = $_input.attr("data-fixedmin");
+			var fixedsec = $_input.attr("data-fixedsec");
 			if (typeof val !== "undefined" && val !== null && val !== "") {
 				try {
-					validateTimestampPicker(val, dateFormat, timeFormat, "", "", "");
+					validateTimestampPicker(val, dateFormat, timeFormat, fixedmin, fixedsec);
 				} catch (e) {
 					alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateFormat + " " + timeFormat))
 					return false;
@@ -417,9 +420,11 @@ $(function() {
 		var val = $input.val();
 		var dateFormat = dateUtil.getInputDateFormat();
 		var timeFormat = $input.attr("data-timeformat");
+		var fixedmin = $input.attr("data-fixedmin");
+		var fixedsec = $input.attr("data-fixedsec");
 		if (typeof val !== "undefined" && val !== null && val !== "") {
 			try {
-				validateTimestampPicker(val, dateFormat, timeFormat, "", "", "");
+				validateTimestampPicker(val, dateFormat, timeFormat, fixedmin, fixedsec);
 			} catch (e) {
 				alert(messageFormat(scriptContext.gem.locale.common.timestampFormatErrorMsg, "<%=StringUtil.escapeJavaScript(displayLabel)%>", dateFormat + " " + timeFormat))
 				return false;

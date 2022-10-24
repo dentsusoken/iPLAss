@@ -58,7 +58,7 @@ public abstract class SearchListPartsCommandBase implements Command {
 		query.setSelect(context.getSelect());
 		query.setFrom(context.getFrom());
 		query.setWhere(context.getWhere());
-		query.setVersiond(context.isVersioned());
+		query.setVersioned(context.isVersioned());
 
 		return query;
 	}

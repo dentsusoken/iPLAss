@@ -120,7 +120,7 @@ public class QuerySyntax implements Syntax<Query>, QueryConstants {
 		str.consumeChars(ParseContext.WHITE_SPACES);
 		if (!str.isEnd()) {
 			if (str.equalsNextToken(VERSIONED, ParseContext.TOKEN_DELIMITERS)) {
-				q.setVersiond(true);
+				q.setVersioned(true);
 				str.consumeChars(VERSIONED.length());
 			}
 		}

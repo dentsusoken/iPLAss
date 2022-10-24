@@ -19,9 +19,9 @@
  */
 package org.iplass.mtp.impl.auth.oauth.consents;
 
+import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections4.list.UnmodifiableList;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.oauth.definition.ClientType;
 import org.iplass.mtp.auth.oauth.definition.ConsentTypeDefinition;
@@ -92,9 +92,9 @@ public class MetaScriptingConsentType extends MetaConsentType {
 			sc.setAttribute(SESSION_BINDING_NAME, SessionBinding.newSessionBinding());
 			sc.setAttribute(USER_BINDING_NAME, AuthContextHolder.getAuthContext().newUserBinding());
 			sc.setAttribute(AUTH_CONTEXT_BINDING_NAME, AuthContext.getCurrentContext());
-			sc.setAttribute(REQUIRED_SCOPES_BINDING_NAME, new UnmodifiableList<>(scopes));
+			sc.setAttribute(REQUIRED_SCOPES_BINDING_NAME, Collections.unmodifiableList(scopes));
 			if (currentToken != null) {
-				sc.setAttribute(GRANTED_SCOPES_BINDING_NAME, new UnmodifiableList<>(currentToken.getGrantedScopes()));
+				sc.setAttribute(GRANTED_SCOPES_BINDING_NAME, Collections.unmodifiableList(currentToken.getGrantedScopes()));
 			}
 			
 			Boolean ret = (Boolean) scriptRuntime.eval(sc);

@@ -36,6 +36,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.iplass.mtp.impl.http.ExponentialBackoff;
 import org.iplass.mtp.impl.http.HttpClientConfig;
 import org.iplass.mtp.impl.pushnotification.PushNotificationService;
 import org.iplass.mtp.pushnotification.PushNotification;
@@ -61,7 +62,7 @@ public class FCMPushNotificationService extends PushNotificationService {
 
 	private RegistrationIdHandler registrationIdHandler;
 	//for Exponential Backoff
-	private org.iplass.mtp.impl.http.ExponentialBackoff exponentialBackoff;
+	private ExponentialBackoff exponentialBackoff;
 
 	private HttpClientConfig httpClientConfig;
 

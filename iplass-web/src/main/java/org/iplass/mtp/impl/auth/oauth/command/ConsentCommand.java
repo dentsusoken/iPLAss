@@ -28,10 +28,10 @@ import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.ActionMapping.ClientCacheType;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationService;
-import org.iplass.mtp.impl.auth.oauth.OAuthConstants;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization.OAuthAuthorizationRuntime;
 import org.iplass.mtp.impl.auth.oauth.code.AuthorizationCode;
 import org.iplass.mtp.impl.auth.oauth.code.AuthorizationRequest;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 
@@ -76,12 +76,12 @@ public class ConsentCommand implements Command {
 			request.getSession().removeAttribute(AuthorizeCommand.SESSION_AUTHORIZATION_REQUEST);
 		}
 		
+		OAuthAuthorizationRuntime authRuntime = authorizationService.getRuntimeByName(authReq.getAuthorizationServerId());
 		if (SUBMIT_ACCEPT.equals(submit)) {
-			OAuthAuthorizationRuntime authRuntime = authorizationService.getRuntimeByName(authReq.getAuthorizationServerId());
 			AuthorizationCode code = authRuntime.generateCode(authReq);
-			return authorizeCommand.success(request, code);
+			return authorizeCommand.success(request, code, authRuntime.issuerId(request));
 		} else {
-			return authorizeCommand.error(request, OAuthConstants.ERROR_ACCESS_DENIED, "User canceled OAuth request.", authReq);
+			return authorizeCommand.error(request, OAuthConstants.ERROR_ACCESS_DENIED, "User canceled OAuth request.", authReq, authRuntime.issuerId(request));
 		}
 	}
 

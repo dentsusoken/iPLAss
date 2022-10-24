@@ -158,7 +158,15 @@ public class HttpSessionService extends SessionService {
 		public long getCreationTime() {
 			return httpSession.getCreationTime();
 		}
-		
+
+		@Override
+		public void changeSessionId() {
+			WebRequestStack request = WebRequestStack.getCurrent();
+			if (request == null) {
+				throw new IllegalStateException("HttpServletRequest cannot be identified.");
+			}
+			request.getRequest().changeSessionId();
+		}
 	}
 	
 	public static class MutexObject implements Serializable {

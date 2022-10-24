@@ -407,7 +407,7 @@ public class BuiltinAuthToolService implements Service {
 		countQuery.select(User.ACCOUNT_ID)
 				.from(User.DEFINITION_NAME)
 				.where(where.getCondition())
-				.setVersiond(false);
+				.setVersioned(false);
 
 		return em.count(countQuery);
 	}
@@ -428,7 +428,7 @@ public class BuiltinAuthToolService implements Service {
 				.where(where.getCondition())
 				.order(new SortSpec(User.ACCOUNT_ID, SortType.ASC))
 				.limit(limit, offset)
-				.setVersiond(false);
+				.setVersioned(false);
 
 		em.searchEntity(query, new Predicate<User>() {
 

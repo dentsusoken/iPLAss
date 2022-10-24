@@ -543,6 +543,6 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		} else {
 			startDate = previousToken.getStartDate();
 		}
-		return new AuthToken(previousToken.getTenantId(), previousToken.getType(), previousToken.getOwnerId(), previousToken.getSeries(), tokenHandler.newTokenString(), previousToken.getPolicyName(), startDate, previousToken.getDetails());
+		return new AuthToken(previousToken.getTenantId(), previousToken.getType(), previousToken.getOwnerId(), previousToken.getSeries(), tokenHandler.newTokenString(null), previousToken.getPolicyName(), startDate, previousToken.getDetails());
 	}
 }

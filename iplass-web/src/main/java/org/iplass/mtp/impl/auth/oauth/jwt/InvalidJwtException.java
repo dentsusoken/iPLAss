@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2022 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -17,16 +17,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.pushnotification.fcm;
 
-/**
- * org.iplass.mtp.impl.http.ExponentialBackoffとしてパッケージ移動。
- * 当該パッケージのクラスはver.3.1.0で削除予定。
- * 
- * 
- * @deprecated use org.iplass.mtp.impl.http.ExponentialBackoff
- */
-@Deprecated
-public class ExponentialBackoff extends org.iplass.mtp.impl.http.ExponentialBackoff {
+package org.iplass.mtp.impl.auth.oauth.jwt;
+
+import org.iplass.mtp.SystemException;
+
+public class InvalidJwtException extends SystemException {
+	private static final long serialVersionUID = 1523602721483591493L;
+
+	public InvalidJwtException() {
+		super();
+	}
+
+	public InvalidJwtException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public InvalidJwtException(String message) {
+		super(message);
+	}
+
+	public InvalidJwtException(Throwable cause) {
+		super(cause);
+	}
 
 }

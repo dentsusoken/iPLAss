@@ -177,6 +177,9 @@ function onDialogClose() {
 	consumeToken("<%=ConsumeTokenCommand.WEBAPI_NAME%>", $("[name='_t']").val());
 	return true;
 }
+$(function(){
+	$('.disabled-btn').removeAttr('disabled');
+});
 </script>
 <%
 	if (form.isValidJavascriptDetailPage() && StringUtil.isNotBlank(form.getJavaScript())) {
@@ -199,7 +202,6 @@ function onDialogClose() {
 	}
 %>
 <form id="detailForm" method="post" action="">
-${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="modalTarget" value="<c:out value="<%=modalTarget%>"/>" />
 <input type="hidden" name="execType" value="<c:out value="<%=execType%>"/>" />
@@ -263,5 +265,6 @@ ${m:outputToken('FORM_XHTML', true)}
 <div class="operation-bar operation-bar_bottom">
 <jsp:include page="editButton.inc.jsp" />
 </div><!--operation-bar-->
+${m:outputToken('FORM_XHTML', true)}
 </form>
 </div>

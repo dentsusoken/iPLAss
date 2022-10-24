@@ -1284,6 +1284,10 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		ExecuteContext execContext = ExecuteContext.getCurrentContext();
 		EntityContext entityContext = EntityContext.getCurrentContext();
+		
+		if (option.getTargetVersion() == DeleteTargetVersion.SPECIFIC && !option.isPurge()) {
+			throw new EntityRuntimeException("Version-specified option is only supported when the purge option is true.");
+		}
 
 		boolean isLocked = getStrategy().lock(entityContext, this, entity.getOid());
 		if (!isLocked) {
@@ -1600,7 +1604,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		EntityContext entityContext = EntityContext.getCurrentContext();
 
 		//バージョン制御用にクエリー変換
-		if (!cond.isVersiond()) {
+		if (!cond.isVersioned()) {
 			cond = (Query) new VersionedQueryNormalizer(service.getVersionController(this), this, entityContext, null).visit(cond);
 			if (log.isDebugEnabled()) {
 				log.debug("translate to versioned query:" + cond);
@@ -1655,7 +1659,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		EntityContext entityContext = EntityContext.getCurrentContext();
 
 		//バージョン制御用にクエリー変換
-		if (!query.isVersiond()) {
+		if (!query.isVersioned()) {
 			query = (Query) new VersionedQueryNormalizer(service.getVersionController(this), this, entityContext, null).visit(query);
 			if (log.isDebugEnabled()) {
 				log.debug("translate to versioned query:" + query);
@@ -1669,7 +1673,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 	private void searchEntity(Query cond, boolean structuredEntity, ExecuteContext mtfContext, EntityContext entityContext, EntityStreamSearchHandler<Entity> streamSearchHandler, Predicate<Entity> callback) {
 
 		//バージョン制御用にクエリー変換
-		if (!cond.isVersiond()) {
+		if (!cond.isVersioned()) {
 			cond = (Query) new VersionedQueryNormalizer(service.getVersionController(this), this, entityContext, null).visit(cond);
 			if (log.isDebugEnabled()) {
 				log.debug("translate to versioned query:" + cond);

@@ -259,7 +259,7 @@ public class ExpressionType extends VirtualType {
 			
 			//FIXME ここでバージョンクエリー変換しているのはカッコ悪い。。。
 			if (upper == null) {
-				if (!q.isVersiond()) {
+				if (!q.isVersioned()) {
 					EntityContext context = EntityContext.getCurrentContext();
 					EntityService ehService = ServiceRegistry.getRegistry().getService(EntityService.class);
 					EntityHandler eh = ehService.getRuntimeByName(q.getFrom().getEntityName());

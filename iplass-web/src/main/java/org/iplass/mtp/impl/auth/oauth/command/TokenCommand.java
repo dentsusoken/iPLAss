@@ -34,10 +34,11 @@ import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization.OAuthAuthorizationRuntime;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.OAuthApplicationException;
-import org.iplass.mtp.impl.auth.oauth.OAuthConstants;
 import org.iplass.mtp.impl.auth.oauth.OAuthTokens;
 import org.iplass.mtp.impl.auth.oauth.idtoken.IdToken;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthEndpointConstants;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.CacheControlType;
@@ -55,13 +56,7 @@ import org.iplass.mtp.webapi.definition.StateType;
 	responseType="application/json"
 )
 @CommandClass(name="mtp/oauth/TokenCommand", displayName="OAuth2.0 Token Endpoint")
-public class TokenCommand implements Command {
-	
-	static final String PARAM_GRANT_TYPE = "grant_type";
-	static final String PARAM_CODE = "code";
-	static final String PARAM_REDIRECT_URI ="redirect_uri";
-	static final String PARAM_CODE_VERIFIER = "code_verifier";
-	static final String PARAM_REFRESH_TOKEN = "refresh_token";
+public class TokenCommand implements Command, OAuthEndpointConstants {
 	
 	static final String STAT_SUCCESS = "SUCCESS";
 	
@@ -101,18 +96,18 @@ public class TokenCommand implements Command {
 	
 	private Object toResponseEntity(AccessToken accessToken, IdToken idToken, RequestContext request, OAuthAuthorizationRuntime authServer) {
 		Map<String, Object> res = new HashMap<>();
-		res.put("access_token", accessToken.getTokenEncoded());
-		res.put("token_type", OAuthConstants.TOKEN_TYPE_BEARER);
-		res.put("expires_in", accessToken.getExpiresIn());
+		res.put(OAuthEndpointConstants.PARAM_ACCESS_TOKEN, accessToken.getTokenEncoded());
+		res.put(OAuthEndpointConstants.PARAM_TOKEN_TYPE, OAuthConstants.TOKEN_TYPE_BEARER);
+		res.put(OAuthEndpointConstants.PARAM_EXPIRES_IN, accessToken.getExpiresIn());
 		if (accessToken.getGrantedScopes() != null) {
-			res.put("scope", String.join(" ", accessToken.getGrantedScopes()));
+			res.put(OAuthEndpointConstants.PARAM_SCOPE, String.join(" ", accessToken.getGrantedScopes()));
 		}
 		if (accessToken.getRefreshToken() != null) {
-			res.put("refresh_token", accessToken.getRefreshToken().getTokenEncoded());
-			res.put("refresh_token_expires_in", accessToken.getRefreshToken().getExpiresIn());
+			res.put(OAuthEndpointConstants.PARAM_REFRESH_TOKEN, accessToken.getRefreshToken().getTokenEncoded());
+			res.put(OAuthEndpointConstants.PARAM_REFRESH_TOKEN_EXPIRES_IN, accessToken.getRefreshToken().getExpiresIn());
 		}
 		if (idToken != null) {
-			res.put("id_token", idToken.getTokenEncoded(authServer.issuerId(request)));
+			res.put(OAuthEndpointConstants.PARAM_ID_TOKEN, idToken.getTokenEncoded(authServer.issuerId(request)));
 		}
 		return res;
 	}

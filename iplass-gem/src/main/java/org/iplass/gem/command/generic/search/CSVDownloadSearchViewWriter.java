@@ -166,7 +166,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		query.setSelect(context.getSelect());
 		query.from(context.getDefName());
 		query.setWhere(context.getWhere());
-		query.setVersiond(context.isVersioned());
+		query.setVersioned(context.isVersioned());
 		query.setOrderBy(context.getOrderBy());
 
 		int maxCount = gcs.getCsvDownloadMaxCount();
@@ -174,7 +174,9 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		if (section.getCsvdownloadMaxCount() != null) {
 			maxCount = section.getCsvdownloadMaxCount();
 		}
-		query.setLimit(new Limit(maxCount));
+		if (maxCount > 0) {
+			query.setLimit(new Limit(maxCount));
+		}
 
 		int cacheLimit = gcs.getSearchResultCacheLimit();
 

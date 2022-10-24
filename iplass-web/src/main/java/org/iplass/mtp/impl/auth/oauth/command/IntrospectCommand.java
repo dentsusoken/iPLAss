@@ -39,9 +39,10 @@ import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthResourceServer.OAuthResourceServerRuntime;
 import org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationService;
 import org.iplass.mtp.impl.auth.oauth.OAuthClientService;
-import org.iplass.mtp.impl.auth.oauth.OAuthConstants;
 import org.iplass.mtp.impl.auth.oauth.OAuthResourceServerService;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthEndpointConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
@@ -59,10 +60,7 @@ import org.slf4j.LoggerFactory;
 	responseType="application/json"
 )
 @CommandClass(name="mtp/oauth/IntrospectCommand", displayName="OAuth2.0 Introspection Endpoint")
-public class IntrospectCommand implements Command {
-
-	static final String PARAM_TOKEN = "token";
-	static final String PARAM_TOKEN_TYPE_HINT = "token_type_hint";
+public class IntrospectCommand implements Command, OAuthEndpointConstants {
 	
 	static final String STAT_SUCCESS = "SUCCESS";
 	

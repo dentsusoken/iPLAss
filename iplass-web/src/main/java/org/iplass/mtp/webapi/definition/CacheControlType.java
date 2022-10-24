@@ -42,7 +42,7 @@ public enum CacheControlType {
 	
 	/**
 	 * キャッシュを許可しません。
-	 * 具体的にはCache-Controlをno-store,no-cache指定します
+	 * 具体的にはCache-Controlをprivate, no-store, no-cache, must-revalidate指定します
 	 * （加えて、HTTP/1.0の場合は、Pragmaをno-cache指定します）。
 	 * 
 	 */

@@ -66,8 +66,8 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 				try {
 //					query = Query.newQuery(eql);
 					query = new PreparedQuery(eql).query(null);
-					if (!query.isVersiond() && isSearchAllVersion) {
-						query.setVersiond(true);
+					if (!query.isVersioned() && isSearchAllVersion) {
+						query.setVersioned(true);
 					}
 				} catch (QueryException e) {
 					logger.warn(e.getMessage(), e);

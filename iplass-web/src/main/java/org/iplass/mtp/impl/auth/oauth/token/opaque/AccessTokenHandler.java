@@ -37,9 +37,9 @@ import org.iplass.mtp.impl.auth.oauth.AccessTokenCredential;
 import org.iplass.mtp.impl.auth.oauth.MetaClientPolicy.ClientPolicyRuntime;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization.OAuthAuthorizationRuntime;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
-import org.iplass.mtp.impl.auth.oauth.OAuthConstants;
 import org.iplass.mtp.impl.auth.oauth.OAuthRuntimeException;
 import org.iplass.mtp.impl.auth.oauth.token.opaque.RefreshTokenMement.RefreshTokenInfo;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.spi.Config;
 

@@ -19,11 +19,7 @@
  */
 package org.iplass.mtp.impl.auth.oauth;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +43,8 @@ import org.iplass.mtp.impl.auth.oauth.code.AuthorizationRequest;
 import org.iplass.mtp.impl.auth.oauth.idtoken.IdToken;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.auth.oauth.token.RefreshToken;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
+import org.iplass.mtp.impl.auth.oauth.util.OAuthUtil;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
@@ -434,31 +432,6 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 			return false;
 		}
 		
-		private String calcCodeChallenge(String codeChallengeMethod, String codeVerifier) {
-			if (codeVerifier == null) {
-				return null;
-			}
-			if (codeChallengeMethod == null) {
-				//code_verifier == code_challenge.
-				return codeVerifier;
-			} else switch (codeChallengeMethod) {
-			case OAuthConstants.CODE_CHALLENGE_METHOD_PLAIN:
-				//code_verifier == code_challenge.
-				return codeVerifier;
-			case OAuthConstants.CODE_CHALLENGE_METHOD_S256:
-				//BASE64URL-ENCODE(SHA256(ASCII(code_verifier))) == code_challenge
-				try {
-					return Base64.getUrlEncoder().withoutPadding().encodeToString(
-							MessageDigest.getInstance("SHA-256").digest(codeVerifier.getBytes("UTF-8")));
-				} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-					throw new RuntimeException(e);
-				}
-			default:
-				return null;
-			}
-			
-		}
-
 		public OAuthTokens exchangeCodeToToken(String codeStr, String redirectUri, String codeVerifier, OAuthClientRuntime client) {
 			if (!getId().equals(client.getMetaData().getAuthorizationServerId())) {
 				throw new OAuthRuntimeException("client's authServer is unmatch");
@@ -474,9 +447,11 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 			
 			//PKCE
 			if (code.getRequest().getCodeChallenge() != null) {
-				if (!code.getRequest().getCodeChallenge().equals(calcCodeChallenge(code.getRequest().getCodeChallengeMethod(), codeVerifier))) {
+				if (!code.getRequest().getCodeChallenge().equals(OAuthUtil.calcCodeChallenge(code.getRequest().getCodeChallengeMethod(), codeVerifier))) {
 					throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_GRANT, "invalid code/redirect_uri/client_id/code_verifier.");
 				}
+			} else if (codeVerifier != null) {
+				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_GRANT, "invalid code/redirect_uri/client_id/code_verifier.");
 			}
 			
 			AccessToken accessToken = service.getAccessTokenStore().createAccessToken(client, code.getRequest().getUser().getOid(), code.getRequest().getScopes());

@@ -344,20 +344,23 @@ public class SqlQueryContext {
 		}
 	}
 
+	private boolean needAppendHint() {
+		return rdb.isSupportOptimizerHint() && 
+				(hintSb.length() != 0 || rdb.getOptimizerHint() != null);
+	}
+	
 	private void appendHint(StringBuilder sb) {
-		if (hintSb.length() != 0 || rdb.getOptimizerHint() != null) {
-			String[] hintBracket = rdb.getOptimizerHintBracket();
-			if (hintBracket != null && hintBracket[0] != null) {
-				sb.append(hintBracket[0]);
-			}
-			if (hintSb.length() != 0) {
-				sb.append(hintSb);
-			} else {
-				sb.append(rdb.getOptimizerHint());
-			}
-			if (hintBracket != null && hintBracket[1] != null) {
-				sb.append(hintBracket[1]);
-			}
+		String[] hintBracket = rdb.getOptimizerHintBracket();
+		if (hintBracket != null && hintBracket[0] != null) {
+			sb.append(hintBracket[0]);
+		}
+		if (hintSb.length() != 0) {
+			sb.append(hintSb);
+		} else {
+			sb.append(rdb.getOptimizerHint());
+		}
+		if (hintBracket != null && hintBracket[1] != null) {
+			sb.append(hintBracket[1]);
 		}
 	}
 
@@ -461,14 +464,16 @@ public class SqlQueryContext {
 		}
 	}
 
+	//TODO CharSequenceに
 	public String toSelectSql() {
 		return toSelectSql(null);
 	}
 
+	//TODO CharSequenceに
 	public String toSelectSql(String additionalJoin) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT ");
-		if (rdb.isSupportOptimizerHint() && rdb.getOptimizerHintPlace() == HintPlace.AFTER_SELECT) {
+		if (needAppendHint() && rdb.getOptimizerHintPlace() == HintPlace.AFTER_SELECT) {
 			appendHint(sb);
 			sb.append(" ");
 		}
@@ -539,7 +544,7 @@ public class SqlQueryContext {
 			sql = sb;
 		}
 
-		if (rdb.isSupportOptimizerHint() && rdb.getOptimizerHintPlace() == HintPlace.HEAD_OF_SQL) {
+		if (needAppendHint() && rdb.getOptimizerHintPlace() == HintPlace.HEAD_OF_SQL) {
 			StringBuilder sb2 = new StringBuilder();
 			appendHint(sb2);
 			sb2.append(" ");
@@ -547,6 +552,22 @@ public class SqlQueryContext {
 			sql = sb2;
 		}
 
+		return sql.toString();
+	}
+	
+	//SQLの末尾にヒント句を付与するため
+	public String sqlEnded(CharSequence sql) {
+		if (rdb.getOptimizerHintPlace() == HintPlace.END_OF_SQL && parentContext == null && needAppendHint()) {
+			StringBuilder sb2;
+			if (sql instanceof StringBuilder) {
+				sb2 = (StringBuilder) sql;
+			} else {
+				sb2 = new StringBuilder(sql);
+			}
+			sb2.append(" ");
+			appendHint(sb2);
+			sql = sb2;
+		}
 		return sql.toString();
 	}
 

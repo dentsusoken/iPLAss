@@ -40,7 +40,7 @@ import com.smartgwt.client.util.SC;
 public class OAuthResourceServerPlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
-	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_SECURITY + "/OAuth";
+	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_SECURITY + "/OAuth (Server)";
 
 	/** ノード名 */
 	private static final String NODE_NAME = "OAuthResourceServer";

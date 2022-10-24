@@ -36,6 +36,7 @@ import org.iplass.adminconsole.client.metadata.ui.message.MessagePlugin;
 import org.iplass.adminconsole.client.metadata.ui.oauth.authorize.OAuthAuthorizationPlugin;
 import org.iplass.adminconsole.client.metadata.ui.oauth.client.OAuthClientPlugin;
 import org.iplass.adminconsole.client.metadata.ui.oauth.resource.OAuthResourceServerPlugin;
+import org.iplass.adminconsole.client.metadata.ui.oidc.OpenIdConnectPlugin;
 import org.iplass.adminconsole.client.metadata.ui.prefs.PrefsPlugin;
 import org.iplass.adminconsole.client.metadata.ui.pushnotification.PushNotificationTemplatePlugin;
 import org.iplass.adminconsole.client.metadata.ui.selectvalue.SelectValuePlugin;
@@ -64,6 +65,7 @@ public class GemMetaDataPluginController implements MetaDataPluginController {
 		plugins.add(new PrefsPlugin());
 
 		plugins.add(new AuthenticationPolicyPlugin());
+		plugins.add(new OpenIdConnectPlugin());
 		plugins.add(new OAuthAuthorizationPlugin());
 		plugins.add(new OAuthClientPlugin());
 		plugins.add(new OAuthResourceServerPlugin());
