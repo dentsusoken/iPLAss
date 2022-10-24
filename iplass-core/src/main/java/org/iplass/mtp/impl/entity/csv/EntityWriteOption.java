@@ -43,7 +43,7 @@ public class EntityWriteOption extends ParseOption {
 
 	/** Binaryプロパティを出力するか */
 	private boolean withBinary = false;
-	
+
 	/** Binaryデータの出力先ディレクトリ */
 	private String exportBinaryDataDir;
 
@@ -57,6 +57,9 @@ public class EntityWriteOption extends ParseOption {
 	private int limit = 0;
 
 	private boolean withMappedByReference;
+
+	/** バージョンを出力するか */
+	private boolean versioned = true;
 
 	/** 列の表示名出力文字列 */
 	private Function<PropertyDefinition, String> columnDisplayName = property -> "";
@@ -142,6 +145,14 @@ public class EntityWriteOption extends ParseOption {
 		this.orderBy = orderBy;
 	}
 
+	public boolean isVersioned() {
+		return versioned;
+	}
+
+	public void setVersioned(boolean versioned) {
+		this.versioned = versioned;
+	}
+
 	public Function<PropertyDefinition, String> getColumnDisplayName() {
 		return columnDisplayName;
 	}
@@ -193,7 +204,7 @@ public class EntityWriteOption extends ParseOption {
 		setWithBinary(withBinary);
 		return this;
 	}
-	
+
 	public EntityWriteOption exportBinaryDataDir(String exportBinaryDataDir) {
 		setExportBinaryDataDir(exportBinaryDataDir);
 		return this;
@@ -211,6 +222,11 @@ public class EntityWriteOption extends ParseOption {
 
 	public EntityWriteOption orderBy(OrderBy orderBy) {
 		setOrderBy(orderBy);
+		return this;
+	}
+
+	public EntityWriteOption versioned(boolean versioned) {
+		setVersioned(versioned);
 		return this;
 	}
 

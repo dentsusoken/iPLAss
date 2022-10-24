@@ -81,6 +81,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 				.where(context.getWhere())
 				.orderBy(context.getOrderBy())
 				.limit(maxCount)
+				.versioned(context.isVersioned())
 				.columnDisplayName(property -> {
 					if (context.isNoDispName()) {
 						return "";
