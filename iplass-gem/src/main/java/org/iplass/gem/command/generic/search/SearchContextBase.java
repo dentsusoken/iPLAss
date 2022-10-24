@@ -246,21 +246,23 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		} else {
 			// ソート設定がない場合
 			String sortKey = getSortKey();
-			if (Entity.OID.equals(sortKey)) {
-				orderBy = new OrderBy();
-				orderBy.add(sortKey, getSortType());
-			} else {
-				PropertyColumn property = getLayoutPropertyColumn(sortKey);
-				// OID以外はSearchResultに定義されているPropertyのみ許可
-				if (property != null) {
-					PropertyDefinition pd = getPropertyDefinition(sortKey);
-					// 参照プロパティの場合、画面上の表示項目でソート
-					if (pd instanceof ReferenceProperty) {
-						sortKey = sortKey + "." + getDisplayNestProperty(property);
-					}
-					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+			if (sortKey != null) {
+				if (Entity.OID.equals(sortKey)) {
 					orderBy = new OrderBy();
-					orderBy.add(sortKey, getSortType(), nullOrderingSpec);
+					orderBy.add(sortKey, getSortType());
+				} else {
+					PropertyColumn property = getLayoutPropertyColumn(sortKey);
+					// OID以外はSearchResultに定義されているPropertyのみ許可
+					if (property != null) {
+						PropertyDefinition pd = getPropertyDefinition(sortKey);
+						// 参照プロパティの場合、画面上の表示項目でソート
+						if (pd instanceof ReferenceProperty) {
+							sortKey = sortKey + "." + getDisplayNestProperty(property);
+						}
+						NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+						orderBy = new OrderBy();
+						orderBy.add(sortKey, getSortType(), nullOrderingSpec);
+					}
 				}
 			}
 		}
