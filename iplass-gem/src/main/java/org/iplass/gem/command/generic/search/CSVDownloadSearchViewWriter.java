@@ -293,7 +293,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 			//UserPropertyEditorのチェック
 			checkUserPropertyEditor();
 
-			final SearchQueryContext sqc = handler.beforeSearch(query.versioned(true), SearchQueryType.CSV);
+			final SearchQueryContext sqc = handler.beforeSearch(query, SearchQueryType.CSV);
 
 			if (sqc.isDoPrivileged()) {
 				AuthContext.doPrivileged(() -> searchEntity(sqc, formatter));
