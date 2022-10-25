@@ -149,7 +149,7 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	 */
 	private String getRollName() {
 		RequestContext context = TemplateUtil.getRequestContext();
-		String roleName = (String) context.getAttribute("roleName");
+		String roleName = (String) context.getSession().getAttribute("roleName");
 		if (roleName == null || roleName.isEmpty()) roleName = "DEFAULT";
 		return roleName;
 	}
