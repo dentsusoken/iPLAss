@@ -149,7 +149,7 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 		query.setOrderBy(option.getOrderBy());
 
 		if (ed.getVersionControlType() != VersionControlType.NONE) {
-			query.versioned(true);
+			query.versioned(option.isVersioned());
 		} else {
 			query.versioned(false);
 		}
