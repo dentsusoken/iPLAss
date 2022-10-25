@@ -31,8 +31,10 @@
 	String calendarName = request.getParameter(Constants.CALENDAR_NAME);
 	String modalTarget = request.getParameter(Constants.MODAL_TARGET);
 
+	calendarName = StringUtil.escapeJavaScript(calendarName);
+	
 	if (modalTarget == null) modalTarget = "";
-	else modalTarget = StringUtil.escapeHtml(modalTarget);
+	else modalTarget = StringUtil.escapeJavaScript(modalTarget);
 
 	String language = TemplateUtil.getLanguage();
 	if (StringUtil.isEmpty(language)) {

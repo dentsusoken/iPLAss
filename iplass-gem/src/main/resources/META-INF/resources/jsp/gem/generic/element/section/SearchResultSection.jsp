@@ -87,7 +87,15 @@
 	HashMap<String, Object> defaultSearchCond = (HashMap<String, Object>) request.getAttribute(Constants.DEFAULT_SEARCH_COND);
 	String executeSearch = getDefaultValue(defaultSearchCond, searchCond, Constants.EXECUTE_SEARCH);
 
-	String multiplicity = request.getParameter(Constants.SELECT_MULTI);
+	String _multiplicity = request.getParameter(Constants.SELECT_MULTI);
+	int multiplicity = 1;
+	if (_multiplicity != null) {
+		try {
+			multiplicity = Integer.parseInt(_multiplicity);
+		} catch (NumberFormatException e) {
+		}
+	}
+
 	String _permitConditionSelectAll = request.getParameter(Constants.PERMIT_CONDITION_SELECT_ALL);
 	//全選択の範囲、trueの場合は他ページも含む検索条件に一致する全データ
 	boolean permitConditionSelectAll = StringUtil.isNotBlank(_permitConditionSelectAll) && "true".equals(_permitConditionSelectAll);
@@ -1161,7 +1169,7 @@ function closeBulkUpdateModalWindow() {
 <li>
 <label><input type="radio" name="selectAllType" value="current">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.selectCurrentPage")}</label>
 </li>
-<% 		if (!"-1".equals(multiplicity)) { %>
+<% 		if (multiplicity != -1) { %>
 <c:set var="multiplicity" value="<%=multiplicity%>" />
 <li class="selectalltype-message">
 ${m:rsp("mtp-gem-messages", "generic.element.section.SearchResultSection.selectAllTypeMessage", multiplicity)}

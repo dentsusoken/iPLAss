@@ -490,10 +490,26 @@ function <%=toggleInsBtnFunc%>() {
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%
 			if (editPageDetail) {
+				String showReference = "showReference(" 
+					+ "'" + StringUtil.escapeJavaScript(viewAction) + "'" 
+					+ ", '" + StringUtil.escapeJavaScript(refDefName) + "'"
+					+ ", '" + StringUtil.escapeJavaScript(refEntity.getOid()) + "'"
+					+ ", '" + refEntity.getVersion() + "'"
+					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+					+ ", " + refEdit 
+					+ ", null"
+					+ ", '" + rootDefName + "'"
+					+ ", '" + viewName + "'"
+					+ ", '" + propName + "'"
+					+ ", '" + viewType + "'"
+					+ ", '" + refSectionIndex + "'"
+					+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
+					+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'" 
+					+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
- onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')">
- <c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" 
+ id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -501,10 +517,18 @@ function <%=toggleInsBtnFunc%>() {
  onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleInsBtnFunc%>)" />
 <%				}
 			} else {
+				String showReference = "showReference(" 
+						+ "'" + StringUtil.escapeJavaScript(viewAction) + "'" 
+						+ ", '" + StringUtil.escapeJavaScript(refDefName) + "'"
+						+ ", '" + StringUtil.escapeJavaScript(refEntity.getOid()) + "'"
+						+ ", '" + refEntity.getVersion() + "'"
+						+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+						+ ", false"  
+						+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
- onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
- <c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" 
+ id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 			}
 %>
@@ -893,10 +917,26 @@ function <%=toggleInsBtnFunc%>() {
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%
 			if (editPageDetail) {
+				String showReference = "showReference(" 
+						+ "'" + StringUtil.escapeJavaScript(viewAction) + "'" 
+						+ ", '" + StringUtil.escapeJavaScript(refDefName) + "'"
+						+ ", '" + StringUtil.escapeJavaScript(refEntity.getOid()) + "'"
+						+ ", '" + refEntity.getVersion() + "'"
+						+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+						+ ", " + refEdit 
+						+ ", null"
+						+ ", '" + rootDefName + "'"
+						+ ", '" + viewName + "'"
+						+ ", '" + propName + "'"
+						+ ", '" + viewType + "'"
+						+ ", '" + refSectionIndex + "'"
+						+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
+						+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'" 
+						+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
- onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')">
- <c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" 
+ id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -904,10 +944,18 @@ function <%=toggleInsBtnFunc%>() {
  onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleInsBtnFunc%>)" />
 <%				}
 			} else {
+				String showReference = "showReference(" 
+						+ "'" + StringUtil.escapeJavaScript(viewAction) + "'" 
+						+ ", '" + StringUtil.escapeJavaScript(refDefName) + "'"
+						+ ", '" + StringUtil.escapeJavaScript(refEntity.getOid()) + "'"
+						+ ", '" + refEntity.getVersion() + "'"
+						+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+						+ ", false"  
+						+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
- onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
- <c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" 
+ id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			}
 %>
@@ -1158,15 +1206,33 @@ $(function() {
 				String insBtnId = "ins_btn_" + propName + i;
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>"
- data-parentOid="<%=StringUtil.escapeJavaScript(parentOid)%>"
- data-parentVersion="<%=StringUtil.escapeJavaScript(parentVersion)%>"
+ data-parentOid="<c:out value="<%=StringUtil.escapeJavaScript(parentOid)%>"/>"
+ data-parentVersion="<c:out value="<%=StringUtil.escapeJavaScript(parentVersion)%>"/>"
 />
 <%
 			}
+
+			String showReference = "showReference(" 
+					+ "'" + StringUtil.escapeJavaScript(viewAction) + "'" 
+					+ ", '" + StringUtil.escapeJavaScript(refDefName) + "'"
+					+ ", '" + StringUtil.escapeJavaScript(refEntity.getOid()) + "'"
+					+ ", '" + refEntity.getVersion() + "'"
+					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+					+ ", " + refEdit 
+					+ ", null"
+					+ ", '" + rootDefName + "'"
+					+ ", '" + viewName + "'"
+					+ ", '" + propName + "'"
+					+ ", '" + viewType + "'"
+					+ ", '" + refSectionIndex + "'"
+					+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
+					+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'" 
+					+ ")";
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
 			if (!hideDeleteButton && updatable) {
@@ -1227,8 +1293,8 @@ $(function() {
 		if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn"
- data-parentOid="<%=StringUtil.escapeJavaScript(parentOid)%>"
- data-parentVersion="<%=StringUtil.escapeJavaScript(parentVersion)%>"
+ data-parentOid="<c:out value="<%=StringUtil.escapeJavaScript(parentOid)%>"/>"
+ data-parentVersion="<c:out value="<%=StringUtil.escapeJavaScript(parentVersion)%>"/>"
 />
 <%
 		}
