@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -71,7 +71,7 @@ public class LongTextType extends ComplexWrapperType {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		
+
 		return true;
 	}
 
@@ -111,7 +111,7 @@ public class LongTextType extends ComplexWrapperType {
 	public PropertyDefinitionType getDataStoreEnumType() {
 		return PropertyDefinitionType.STRING;
 	}
-	
+
 	@Override
 	public boolean isNeedPrevStoreTypeValueOnToStoreTypeValue() {
 		return true;
@@ -133,7 +133,7 @@ public class LongTextType extends ComplexWrapperType {
 			if (extendTypeValue != null && ((String) extendTypeValue).length() != 0) {
 				LongText newVal = new LongText(-1, (String) extendTypeValue);
 				int inlineStoreMaxLength = inlineStoreMaxLength(eh);
-				
+
 				if (!newVal.isInlineStore(inlineStoreMaxLength)) {
 					LobHandler lm = LobHandler.getInstance(LOB_STORE_NAME);
 					Lob bin = lm.createBinaryData(LOB_NAME, "text/plain", eh.getMetaData().getId(), ph.getId(), oid, version);
@@ -197,7 +197,7 @@ public class LongTextType extends ComplexWrapperType {
 			return Math.min(LongText.service.getLongTextInlineStoreMaxLength(), dataStoreStringMaxLength - META_PART_LENGTH);
 		}
 	}
-	
+
 
 	public static class LongText {
 
@@ -226,7 +226,7 @@ public class LongTextType extends ComplexWrapperType {
 		}
 
 		private LongText(String stringExpression) {
-			if (stringExpression.startsWith("L=")) {
+			if (stringExpression != null && stringExpression.startsWith("L=")) {
 				lobId = Long.parseLong(stringExpression.substring(2, 18).trim());
 				if (stringExpression.length() > META_PART_LENGTH) {
 					text = stringExpression.substring(META_PART_LENGTH);
@@ -278,14 +278,14 @@ public class LongTextType extends ComplexWrapperType {
 		@Override
 		public void setContext(EntityContext context) {
 			this.context = context;
-			lobHandler = (LobHandler) LobHandler.getInstance(LOB_STORE_NAME);
+			lobHandler = LobHandler.getInstance(LOB_STORE_NAME);
 		}
 
 		@Override
 		public void nextCalled(List<Object> values) {
 
 			//list lob stored value
-			ArrayList<Long> lobedValues = new ArrayList<Long>();
+			ArrayList<Long> lobedValues = new ArrayList<>();
 			for (Object v: values) {
 				LongText lt = new LongText((String) v);
 				if (lt.lobId != -1) {
@@ -300,7 +300,7 @@ public class LongTextType extends ComplexWrapperType {
 				}
 				Lob[] res = lobHandler.getBinaryReference(lobIdList, context);
 				if (res != null) {
-					currentRowValue = new HashMap<Long, Lob>();
+					currentRowValue = new HashMap<>();
 					for (Lob bin: res) {
 						currentRowValue.put(bin.getLobId(), bin);
 					}
@@ -329,7 +329,7 @@ public class LongTextType extends ComplexWrapperType {
 			if (bin == null) {
 				return null;
 			}
-			
+
 			try {
 				return new String(bin.getByte(), "utf-8");
 			} catch (UnsupportedEncodingException e) {
