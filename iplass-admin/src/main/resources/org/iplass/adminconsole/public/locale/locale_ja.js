@@ -152,6 +152,7 @@ LocaleInfo.ui_MenuPane_windowClose = "Windowを閉じてよろしいですか？
 LocaleInfo.ui_MenuPane_closeWindow = "WindowをCloseします";
 LocaleInfo.ui_MenuPane_failedToGetPlatformInfo = "Platform情報の取得に失敗しました。<br/>原因：";
 LocaleInfo.ui_MetaDataSettingTreeGrid_failedToClearCache = "キャッシュ情報のクリアに失敗しました。原因：<br/>";
+LocaleInfo.ui_MtpAdmin_rpcTokenErr = "ログインセッションがタイムアウトもしくは切断されたため処理を継続できませんでした。再度管理画面を開き直してください。";
 LocaleInfo.ui_MtpAdmin_uncaughtException = "Catchされない例外が発生しました。";
 LocaleInfo.ui_MtpAdmin_systemErrNotContinue = "システムエラーが発生したため処理を続行できません。";
 LocaleInfo.ui_MtpAdmin_tenantInfoCannotGet = "テナント情報が取得できません。";

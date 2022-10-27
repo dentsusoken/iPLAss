@@ -48,6 +48,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RpcTokenException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.rpc.XsrfToken;
 import com.google.gwt.user.client.rpc.XsrfTokenService;
@@ -106,6 +107,9 @@ public class AdminConsole implements EntryPoint {
 
 					// プログレス表示を消す
 					SmartGWTUtil.hideProgress();
+				} else if (e instanceof RpcTokenException) {
+					// XsrfTokenエラー
+					invalidMessage(AdminClientMessageUtil.getString("ui_MtpAdmin_rpcTokenErr"), e);
 				} else {
 					// その他のエラー
 					invalidMessage(AdminClientMessageUtil.getString("ui_MtpAdmin_systemErrNotContinue"), e);
