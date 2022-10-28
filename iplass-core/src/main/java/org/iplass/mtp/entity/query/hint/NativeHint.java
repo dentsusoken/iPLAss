@@ -22,6 +22,7 @@ package org.iplass.mtp.entity.query.hint;
 
 import org.iplass.mtp.entity.query.ASTNode;
 import org.iplass.mtp.entity.query.ASTTransformer;
+import org.iplass.mtp.entity.query.QueryException;
 
 /**
  * EQLが変換されたデータベースネイティブのSQL文に付与するヒントを指定するヒント句です。<br>
@@ -50,11 +51,13 @@ public class NativeHint extends Hint {
 	
 	public NativeHint(String hintExpression) {
 		this.hintExpression = hintExpression;
+		checkValidHint();
 	}
 	
 	public NativeHint(String table, String hintExpression) {
 		this.table = table;
 		this.hintExpression = hintExpression;
+		checkValidHint();
 	}
 	
 	public String getTable() {
@@ -71,6 +74,18 @@ public class NativeHint extends Hint {
 
 	public void setHintExpression(String hintExpression) {
 		this.hintExpression = hintExpression;
+		checkValidHint();
+	}
+	
+	private void checkValidHint() {
+		if (hintExpression != null) {
+			if (hintExpression.contains(";")
+					|| hintExpression.contains("--")
+					|| hintExpression.contains("/*")
+					|| hintExpression.contains("*/")) {
+				throw new QueryException("NativeHint expression:'" + hintExpression + "' is not valid.");
+			}
+		}
 	}
 	
 	@Override
