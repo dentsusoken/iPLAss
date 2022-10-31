@@ -20,6 +20,13 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="org.iplass.mtp.entity.SelectValue" %>
+<%@ page import="org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.EditorValue" %>
 
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor" %>
@@ -49,11 +56,47 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
+
+var labelValue = document.getElementsByName("data-label-" + propName).item(0);
+
 <%
 	if (editor.getDisplayType() == SelectDisplayType.SELECT) {
 %>
 $("[name='" + propName + "']").val(value);
 <%
+	// ラベル表示の場合はhtmlを書き換え
+	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
+		List<EditorValue> autocompletionEditorValues = (List<EditorValue>)request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
+		Map<String, EditorValue> editorMap = new HashMap<>();
+		for (int i = 0; i < autocompletionEditorValues.size(); i++) {
+			String[] editorValue = {autocompletionEditorValues.get(i).getLabel(), autocompletionEditorValues.get(i).getStyle()};
+			editorMap.put(autocompletionEditorValues.get(i).getValue(), autocompletionEditorValues.get(i)); 
+		}
+
+%>
+var editorMap = new Map();
+<c:forEach items="<%=editorMap%>" var="editorValue" varStatus="loop">
+var tmp = {};
+tmp['label'] = '${editorValue.value.label}';
+tmp['style'] = '${editorValue.value.style}';
+editorMap.set('${editorValue.key}', tmp);
+</c:forEach>
+var newContent = '';
+
+if (multiplicity == 1) {
+	newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label + '</li>'
+		+ '<input type="hidden" name="multi1" value="' + value + '">';
+	
+} else {
+	for (i =  0; i < value.length; i++) {
+		newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label + '</li>'
+			+ '<input type="hidden" name="multi1" value="' + value[i] + '">';
+	}
+}
+document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+
+<%
+
 	} else {
 		if (multiplicity == 1) {
 			//radio

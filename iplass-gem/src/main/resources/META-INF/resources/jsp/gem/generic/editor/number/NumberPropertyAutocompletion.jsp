@@ -71,7 +71,20 @@ $("[name='" + propName + "']").val(value);
 $("[name='" + propName + "']").prev().trigger("focus");
 <%
 			}
-		} else  {
+		} else {
+			
+			// ラベル表示の場合はhtml書き換え
+			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+%>
+var newContent = '';
+for (i =  0; i < value.length; i++) {
+newContent = newContent + '<li>' + value[i] + '</li>'
+			+ '<input type="hidden" name="multi1" value="' + value[i] + '">';
+}
+document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+<%
+				
+			} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -80,13 +93,14 @@ for (var i = 0; i < value.length; i++) {
 	}
 	$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
 <%
-			if (editor.isShowComma()) {
+				if (editor.isShowComma()) {
 %>
 	$("[name='" + propName + "']:eq(" + i + ")").prev().trigger("focus");
 <%
+				}
 			}
 %>
-}
+
 <%
 		}
 	}

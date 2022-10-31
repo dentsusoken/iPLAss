@@ -35,6 +35,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor.SelectDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.ViewUtil" %>
 
 <%!
 	EditorValue getValue(SelectPropertyEditor editor, SelectValue value, List<LocalizedSelectValueDefinition> localeValueList, List<SelectValue> selectValueList) {
@@ -75,6 +76,20 @@
 		}
 		return values;
 	}
+
+	List<EditorValue> getLabelValues(SelectPropertyEditor editor, Object value, PropertyDefinition pd, List<SelectValue> selectValueList, List<LocalizedSelectValueDefinition> localeValueList) {
+		List<EditorValue> values = new ArrayList<EditorValue>();
+		SelectValue[] array = value instanceof SelectValue[] ? (SelectValue[]) value : null;
+		if (array != null) {
+			for (SelectValue tmp : array) {
+				EditorValue ev = getValue(editor, tmp, localeValueList, selectValueList);
+				if (ev != null) {
+					values.add(ev);
+				}
+			}
+		}
+		return values;
+	}
 %>
 
 <%
@@ -98,6 +113,12 @@
 	//タイプ毎に出力内容かえる
 	List<EditorValue> values = getValues(editor, propValue, pd, selectValueList, localeValueList);
 
+	if (ViewUtil.isAutocompletionTarget() && editor.getDisplayType() == SelectDisplayType.LABEL) {
+		SelectValue[] selectValueArray = new SelectValue[selectValueList.size()];
+		List<EditorValue> autocompletionEditorValues = getLabelValues(editor, selectValueList.toArray(selectValueArray), pd, selectValueList, localeValueList);
+		request.setAttribute("autocompletionEditorValues", autocompletionEditorValues);
+	}
+
 	if (editor.getDisplayType() != SelectDisplayType.HIDDEN) {
 		//カスタムスタイル
 		String customStyle = "";
@@ -112,7 +133,7 @@
 			}
 		}
 %>
-<ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<ul name="data-label-<c:out value="<%=propName %>"/>" class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
 		for (EditorValue tmp : values) {
 			String style = tmp.getStyle() != null ? tmp.getStyle() : "";
