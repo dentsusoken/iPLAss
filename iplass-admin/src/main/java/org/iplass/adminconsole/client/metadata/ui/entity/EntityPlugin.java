@@ -495,9 +495,13 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 	 * @param itemNode 選択Node
 	 */
 	private void detailOpenAction(MetaDataItemMenuTreeNode itemNode) {
-		DetailLayoutPanel detail = GWT.create(DetailLayoutPanel.class);
-		detail.setTarget(itemNode, this);
-		workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_DETAIL_LAYOUT, TAB_SUB_NAME_DETAIL_LAYOUT , (Canvas)detail);
+		if (workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_DETAIL_LAYOUT)) {
+			workspace.selectTab(itemNode.getDefName(), TAB_SUB_NAME_DETAIL_LAYOUT);
+		} else {
+			DetailLayoutPanel detail = GWT.create(DetailLayoutPanel.class);
+			detail.setTarget(itemNode, this);
+			workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_DETAIL_LAYOUT, TAB_SUB_NAME_DETAIL_LAYOUT , (Canvas)detail);
+		}
 	}
 
 	/**
@@ -508,15 +512,23 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 	 * @param itemNode 選択Node
 	 */
 	private void searchOpenAction(MetaDataItemMenuTreeNode itemNode) {
-		SearchLayoutPanel search = GWT.create(SearchLayoutPanel.class);
-		search.setTarget(itemNode, this);
-		workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_SEARCH_LAYOUT, TAB_SUB_NAME_SEARCH_LAYOUT , (Canvas)search);
+		if (workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_SEARCH_LAYOUT)) {
+			workspace.selectTab(itemNode.getDefName(), TAB_SUB_NAME_SEARCH_LAYOUT);
+		} else {
+			SearchLayoutPanel search = GWT.create(SearchLayoutPanel.class);
+			search.setTarget(itemNode, this);
+			workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_SEARCH_LAYOUT, TAB_SUB_NAME_SEARCH_LAYOUT , (Canvas)search);
+		}
 	}
 
 	private void bulkOpenAction(MetaDataItemMenuTreeNode itemNode) {
-		BulkLayoutPanel bulk = GWT.create(BulkLayoutPanel.class);
-		bulk.setTarget(itemNode, this);
-		workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_BULK_LAYOUT, TAB_SUB_NAME_BULK_LAYOUT , (Canvas)bulk);
+		if (workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_BULK_LAYOUT)) {
+			workspace.selectTab(itemNode.getDefName(), TAB_SUB_NAME_BULK_LAYOUT);
+		} else {
+			BulkLayoutPanel bulk = GWT.create(BulkLayoutPanel.class);
+			bulk.setTarget(itemNode, this);
+			workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_BULK_LAYOUT, TAB_SUB_NAME_BULK_LAYOUT , (Canvas)bulk);
+		}
 	}
 
 	/**
@@ -527,9 +539,13 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 	 * @param itemNode 選択Node
 	 */
 	private void viewControlOpenAction(MetaDataItemMenuTreeNode itemNode) {
-		ViewControlPanel viewControl = GWT.create(ViewControlPanel.class);
-		viewControl.setTarget(itemNode, this);
-		workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_VIEW_CONTROL, TAB_SUB_NAME_VIEW_CONTROL , (Canvas) viewControl);
+		if (workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_VIEW_CONTROL)) {
+			workspace.selectTab(itemNode.getDefName(), TAB_SUB_NAME_VIEW_CONTROL);
+		} else {
+			ViewControlPanel viewControl = GWT.create(ViewControlPanel.class);
+			viewControl.setTarget(itemNode, this);
+			workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_VIEW_CONTROL, TAB_SUB_NAME_VIEW_CONTROL , (Canvas) viewControl);
+		}
 	}
 
 	/**
@@ -551,8 +567,12 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 	 * @param node 選択Node
 	 */
 	private void webAPIOpenAction() {
-		EntityWebApiEditPanel webapi = GWT.create(EntityWebApiEditPanel.class);
-		workspace.addTab(TAB_SUB_NAME_WEBAPI, CONTEXT_MENU_ICON_WEBAPI, TAB_SUB_NAME_WEBAPI , (Canvas)webapi);
+		if (workspace.existTab(TAB_SUB_NAME_WEBAPI, TAB_SUB_NAME_WEBAPI)) {
+			workspace.selectTab(TAB_SUB_NAME_WEBAPI, TAB_SUB_NAME_WEBAPI);
+		} else {
+			EntityWebApiEditPanel webapi = GWT.create(EntityWebApiEditPanel.class);
+			workspace.addTab(TAB_SUB_NAME_WEBAPI, CONTEXT_MENU_ICON_WEBAPI, TAB_SUB_NAME_WEBAPI , (Canvas)webapi);
+		}
 	}
 
 	/**
@@ -563,9 +583,13 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 	 * @param node 選択Node
 	 */
 	private void filterOpenAction(MetaDataItemMenuTreeNode itemNode) {
-		FilterEditPanel filter = GWT.create(FilterEditPanel.class);
-		filter.setTarget(itemNode, this);
-		workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_FILTER, TAB_SUB_NAME_FILTER , (Canvas)filter);
+		if (workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_FILTER)) {
+			workspace.selectTab(itemNode.getDefName(), TAB_SUB_NAME_FILTER);
+		} else {
+			FilterEditPanel filter = GWT.create(FilterEditPanel.class);
+			filter.setTarget(itemNode, this);
+			workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_FILTER, TAB_SUB_NAME_FILTER , (Canvas)filter);
+		}
 	}
 
 	/**
