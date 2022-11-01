@@ -79,8 +79,9 @@ if (value === true || value === "true") {
 		$("[name='" + propName + "']").click();
 	}
 }
+
 <%
-		} else  {
+		} else {
 %>
 for (var i = 0; i < value.length; i++) {
 	var isChecked = $("[name='" + propName + i + "']").is(":checked");
@@ -96,6 +97,28 @@ for (var i = 0; i < value.length; i++) {
 }
 <%
 		}
+	} else if (editor.getDisplayType() == BooleanDisplayType.LABEL) {
+		String[] autocompletionBooleanLabel = (String[]) request.getAttribute("autocompletionBooleanLabel");
+		String trueLabel = autocompletionBooleanLabel[0];
+		String falseLabel = autocompletionBooleanLabel[1];
+%>
+var labelValue = document.getElementsByName("data-label-" + propName).item(0);
+var newContent = '';
+
+if (multiplicity == 1) {
+	var booleanLabel = (value === true || value === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
+	newContent = booleanLabel + '<input type="hidden" name="' + propName + '" value="' + value + '">';
+} else {
+
+	for (i =  0; i < value.length; i++) {
+		var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
+		newContent = newContent + '<li>' + booleanLabel + '</li>'
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
+	}
+}
+document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+
+<%
 	}
 } else {
 	//検索画面

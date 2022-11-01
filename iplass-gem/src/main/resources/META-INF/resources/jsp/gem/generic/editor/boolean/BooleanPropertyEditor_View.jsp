@@ -30,6 +30,7 @@
 <%@page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@page import="org.iplass.gem.command.Constants"%>
 <%@page import="org.iplass.gem.command.GemResourceBundleUtil"%>
+<%@ page import="org.iplass.gem.command.ViewUtil" %>
 
 <%
 	BooleanPropertyEditor editor = (BooleanPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -63,7 +64,13 @@
 					GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_View.invalid"),
 					GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_View.invalid"));
 		}
-	
+		
+		// 自動補完があるラベルの場合は、表示に必要な情報をセットする
+		if (ViewUtil.isAutocompletionTarget() && editor.getDisplayType() == BooleanDisplayType.LABEL) {
+			String[] booleanLabel = {trueLabel, falseLabel};
+			request.setAttribute("autocompletionBooleanLabel", booleanLabel);
+		}
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (type == OutputType.VIEW) {
@@ -81,7 +88,7 @@
 			//複数
 			Boolean[] array = propValue instanceof Boolean[] ? (Boolean[]) propValue : null;
 %>
-<ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<ul name="data-label-<c:out value="<%=propName %>"/>"  class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
 			for (int i = 0; i < pd.getMultiplicity(); i++) {
 %>
@@ -117,7 +124,7 @@
 			String str = b != null ? b.toString() : "";
 			String label = b != null ? b ? trueLabel : falseLabel : str;
 %>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-true-label="<c:out value="<%=trueLabel %>"/>" data-false-label="<c:out value="<%=falseLabel %>"/>">
+<span name="data-label-<c:out value="<%=propName %>"/>"  class="data-label" style="<c:out value="<%=customStyle %>"/>" data-true-label="<c:out value="<%=trueLabel %>"/>" data-false-label="<c:out value="<%=falseLabel %>"/>">
 <c:out value="<%=label %>"/>
 <%
 			if (outputHidden) {

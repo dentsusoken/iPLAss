@@ -113,10 +113,11 @@
 	//タイプ毎に出力内容かえる
 	List<EditorValue> values = getValues(editor, propValue, pd, selectValueList, localeValueList);
 
+	// 自動補完があるラベルの場合は、表示に必要な情報をセットする
 	if (ViewUtil.isAutocompletionTarget() && editor.getDisplayType() == SelectDisplayType.LABEL) {
 		SelectValue[] selectValueArray = new SelectValue[selectValueList.size()];
 		List<EditorValue> autocompletionEditorValues = getLabelValues(editor, selectValueList.toArray(selectValueArray), pd, selectValueList, localeValueList);
-		request.setAttribute("autocompletionEditorValues", autocompletionEditorValues);
+		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES, autocompletionEditorValues);
 	}
 
 	if (editor.getDisplayType() != SelectDisplayType.HIDDEN) {

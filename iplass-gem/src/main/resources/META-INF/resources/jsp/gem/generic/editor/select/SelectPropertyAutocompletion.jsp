@@ -66,7 +66,7 @@ $("[name='" + propName + "']").val(value);
 <%
 	// ラベル表示の場合はhtmlを書き換え
 	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
-		List<EditorValue> autocompletionEditorValues = (List<EditorValue>)request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
+		List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
 		Map<String, EditorValue> editorMap = new HashMap<>();
 		for (int i = 0; i < autocompletionEditorValues.size(); i++) {
 			String[] editorValue = {autocompletionEditorValues.get(i).getLabel(), autocompletionEditorValues.get(i).getStyle()};
@@ -85,12 +85,12 @@ var newContent = '';
 
 if (multiplicity == 1) {
 	newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label + '</li>'
-		+ '<input type="hidden" name="multi1" value="' + value + '">';
+		+ '<input type="hidden" name="' + propName + '" value="' + value + '">';
 	
 } else {
 	for (i =  0; i < value.length; i++) {
 		newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label + '</li>'
-			+ '<input type="hidden" name="multi1" value="' + value[i] + '">';
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
 	}
 }
 document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
