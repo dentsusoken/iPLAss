@@ -34,14 +34,14 @@ Also, jar is published at Maven Central with groupId : org.iplass.
 
 example when using gradle：
 
- implementation 'org.iplass:iplass-gem:3.1.25'
+ implementation 'org.iplass:iplass-gem:3.2.0'
 
 example when using  maven：
 
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>3.1.25</version>
+   <version>3.2.0</version>
    <type>pom</type>
  </dependency>
 
@@ -95,17 +95,17 @@ Supports Redis for cachestorage.
 ## Branches
 
 ### master
-The master branch contains the source code of the development version, which is regarded as version 3.2.x.
+The master branch contains the source code of the latest stable version, which is regarded as version 3.2.x.
 
 NOTE: It is (Java8 | Java11 | Java17) / JakartaEE8(JavaEE8) based.
 
 ### 3.1.x
-3.1.x branch contains the source code of the current stable version.
+3.1.x branch contains the source code of the previous stable version.
 
 NOTE: It is (Java8 | Java11) / JakartaEE8(JavaEE8) based.
 
 ### 3.0.x
-3.0.x branch contains the source code of the previous stable version.
+3.0.x branch contains the source code of the old stable version.
 
 NOTE: It is (Java8 | Java11) / JavaEE7 based.
 
