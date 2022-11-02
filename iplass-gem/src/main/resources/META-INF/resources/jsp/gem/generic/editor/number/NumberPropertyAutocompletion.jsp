@@ -54,8 +54,6 @@ var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 <%
 	if (editor.getDisplayType() == NumberDisplayType.TEXT || editor.getDisplayType() == NumberDisplayType.LABEL) {
 		if (multiplicity == 1) {
-%>
-<%
 			// ラベル表示の場合はラベルに値を設定
 			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 %>
@@ -79,11 +77,10 @@ $("[name='" + propName + "']").prev().trigger("focus");
 var newContent = '';
 for (i =  0; i < value.length; i++) {
 newContent = newContent + '<li>' + value[i] + '</li>'
-			+ '<input type="hidden" name="multi1" value="' + value[i] + '">';
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
 }
 document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
 <%
-				
 			} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>

@@ -25,7 +25,6 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.DecimalPropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor.NumberDisplayType"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
-
 <%
 DecimalPropertyEditor editor = (DecimalPropertyEditor) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR);
 String viewType = StringUtil.escapeJavaScript((String) request.getAttribute(Constants.AUTOCOMPLETION_VIEW_TYPE));
@@ -49,9 +48,18 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
+
+var labelValue = document.getElementsByName("data-label-" + propName).item(0);
+
 <%
-	if (editor.getDisplayType() == NumberDisplayType.TEXT) {
+	if (editor.getDisplayType() == NumberDisplayType.TEXT || editor.getDisplayType() == NumberDisplayType.LABEL) {
 		if (multiplicity == 1) {
+			// ラベル表示の場合はラベルに値を設定
+			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+%>
+labelValue.textContent = value;
+<%
+			}
 %>
 $("[name='" + propName + "']").val(value);
 <%
@@ -60,7 +68,21 @@ $("[name='" + propName + "']").val(value);
 $("[name='" + propName + "']").prev().trigger("focus");
 <%
 			}
+
 		} else  {
+			
+			// ラベル表示の場合はhtml書き換え
+			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+%>
+var newContent = '';
+for (i =  0; i < value.length; i++) {
+newContent = newContent + '<li>' + value[i] + '</li>'
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
+}
+document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+<%
+			}
+
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
