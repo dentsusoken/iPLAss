@@ -233,7 +233,7 @@ public class EntityPortingService implements Service {
 	public EntityDataImportResult importEntityData(String targetName, final InputStream is, final MetaDataEntry entry, final EntityDataImportCondition condition, final ZipFile zipFile) {
 		return importEntityData(targetName, is, entry, condition, zipFile, null);
 	}
-		
+
 	/**
 	 * EntityデータをImportします。
 	 *
@@ -529,10 +529,10 @@ public class EntityPortingService implements Service {
 		if (br != null) {
 			String lobId = Long.toString(br.getLobId());
 			String entryPath = ENTITY_LOB_DIR + definition.getName() + "." + lobId;
-			
+
 			if(zipFile != null) {
 				ZipEntry zipEntry = zipFile.getEntry(entryPath);
-				
+
 				if (zipEntry == null) {
 					logger.warn("Fail to find binary data. path = " + entryPath);
 				} else {
@@ -571,7 +571,7 @@ public class EntityPortingService implements Service {
 		InsertOption insertOption = null;
 		if (StringUtil.isNotEmpty(uniqueValue)) {
 
-			if (definition.getVersionControlType().equals(VersionControlType.VERSIONED)) {
+			if (definition.getVersionControlType() != VersionControlType.NONE) {
 				//バージョン管理している場合
 				if (entity.getVersion() != null) {
 					//バージョン管理かつバージョンが指定されている場合はバージョンで検索
