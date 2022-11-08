@@ -9,6 +9,7 @@ dependencies {
 	
 	implementation sharedLib('commons-codec:commons-codec')
 	implementation sharedLib('org.apache.commons:commons-collections4')
+	implementation sharedLib('commons-io:commons-io')
 
 	//apache POI
 	api sharedLib('org.apache.poi:poi')
