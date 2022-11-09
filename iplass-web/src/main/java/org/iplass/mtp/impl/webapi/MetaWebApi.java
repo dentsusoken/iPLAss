@@ -36,6 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Variant;
 
+import org.apache.commons.io.FilenameUtils;
 import org.iplass.mtp.command.CommandRuntimeException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
@@ -55,19 +56,19 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.web.CorsConfig;
 import org.iplass.mtp.impl.web.ParameterValueMap;
+import org.iplass.mtp.impl.web.RequestPath.PathType;
 import org.iplass.mtp.impl.web.RequestRestriction;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebRequestContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
-import org.iplass.mtp.impl.web.RequestPath.PathType;
 import org.iplass.mtp.impl.web.fileupload.MultiPartParameterValueMap;
 import org.iplass.mtp.impl.webapi.MetaWebApiParamMap.WebApiParamMapRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRuntimeException;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiParamMapDefinition;
@@ -589,17 +590,21 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				if (accessControlAllowOrigin.indexOf(' ') >= 0) {
 					String[] accessControlAllowOriginArray = StringUtil.split(accessControlAllowOrigin, ' ');
 					for (String s: accessControlAllowOriginArray) {
-						if ("*".equals(s) || origin.equals(s)) {
+						if (isMatchOrigin(origin, s)) {
 							return true;
 						}
 					}
 				} else {
-					if ("*".equals(accessControlAllowOrigin) || origin.equals(accessControlAllowOrigin)) {
+					if (isMatchOrigin(origin, accessControlAllowOrigin)) {
 						return true;
 					}
 				}
 			}
 			return false;
+		}
+		
+		private boolean isMatchOrigin(String origin, String accessControlAllowOrigin) {
+			return FilenameUtils.wildcardMatch(origin, accessControlAllowOrigin);
 		}
 		
 		public String corsAccessControlAllowMethods() {
