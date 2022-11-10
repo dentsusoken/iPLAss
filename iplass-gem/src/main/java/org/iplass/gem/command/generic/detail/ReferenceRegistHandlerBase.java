@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.entity.Entity;
@@ -321,5 +322,9 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	@Override
 	public void setForceUpdate(boolean forceUpdate) {
 		this.forceUpdate = forceUpdate;
+	}
+
+	protected static String resourceString(String key, Object... arguments) {
+		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
 }
