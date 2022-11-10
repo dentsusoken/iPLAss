@@ -98,6 +98,13 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 					List<ValidateError> errors = new ArrayList<>();
 					if (checkMultiple(rp, errors)) {
 						registReference(context, inputEntity, loadedEntity, ed, property, rp, errors);
+
+						if (!errors.isEmpty()) {
+							ValidateError ve = new ValidateError();
+							ve.addErrorMessage(resourceString("command.generic.detail.NestTableReferenceRegistHandler.errorInTable"));
+							ve.setPropertyName(rp.getName());
+							errors.add(ve);
+						}
 					}
 					function.execute(errors);
 				}
@@ -113,6 +120,13 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 					List<ValidateError> errors = new ArrayList<>();
 					if (checkMultiple(rp, errors)) {
 						registMappedbyReference(context, inputEntity, loadedEntity, ed, property, rp, errors);
+
+						if (!errors.isEmpty()) {
+							ValidateError ve = new ValidateError();
+							ve.addErrorMessage(resourceString("command.generic.detail.NestTableReferenceRegistHandler.errorInTable"));
+							ve.setPropertyName(rp.getName());
+							errors.add(ve);
+						}
 					}
 					function.execute(errors);
 				}
@@ -327,7 +341,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 				ValidateError error = new ValidateError();
 				error.setPropertyName(p.getName());
 //				error.addErrorMessage(TemplateUtil.getResourceString("登録可能なデータは{0}件までです。", p.getMultiplicity()));
-				error.addErrorMessage("登録可能なデータは" + p.getMultiplicity() + "件までです。");
+				error.addErrorMessage(resourceString("command.generic.detail.NestTableReferenceRegistHandler.errorOverLimit", p.getMultiplicity()));
 				errors.add(error);
 				return false;
 			}
