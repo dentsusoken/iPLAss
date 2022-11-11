@@ -22,18 +22,13 @@ package org.iplass.mtp.impl.fulltextsearch.lucene;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -56,22 +51,14 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.MMapDirectory;
-import org.apache.tika.exception.EncryptedDocumentException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;
-import org.iplass.mtp.definition.DefinitionSummary;
-import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.definition.EntityDefinition;
-import org.iplass.mtp.entity.definition.EntityDefinitionManager;
-import org.iplass.mtp.entity.fulltextsearch.FulltextSearchCondition;
-import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchRuntimeException;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.Select;
-import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.condition.predicate.GreaterEqual;
 import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.entity.query.value.ValueExpression;
@@ -80,19 +67,12 @@ import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.definition.DefinitionService;
-import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
-import org.iplass.mtp.impl.entity.property.MetaProperty;
-import org.iplass.mtp.impl.entity.property.MetaReferenceProperty;
-import org.iplass.mtp.impl.fulltextsearch.AbstractFulltextSeachService;
-import org.iplass.mtp.impl.fulltextsearch.FulltextSearchResult;
-import org.iplass.mtp.impl.fulltextsearch.parser.BinaryNameTypeParser;
-import org.iplass.mtp.impl.fulltextsearch.parser.BinaryReferenceParseException;
-import org.iplass.mtp.impl.fulltextsearch.parser.BinaryReferenceParser;
+import org.iplass.mtp.impl.fulltextsearch.AbstractFulltextSearchService;
+import org.iplass.mtp.impl.fulltextsearch.IndexedEntity;
 import org.iplass.mtp.impl.fulltextsearch.sql.DeleteLogTable.Status;
-import org.iplass.mtp.impl.i18n.LocaleFormat;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
@@ -100,21 +80,16 @@ import org.iplass.mtp.impl.util.InternalDateUtil;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
+public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 
 	private static Logger logger = LoggerFactory.getLogger(LuceneFulltextSearchService.class);
 
 	private AnalyzerSetting analyzerSetting;
 	private Operator defaultOperator;
-	private long redundantTimeMinutes;
-
-	private List<BinaryReferenceParser> binaryParsers;
-	private int binaryParseLimitLength = 100000;
 
 	private long searcherAutoRefreshTimeMinutes = -1;
 	private Timer timer;
@@ -124,9 +99,6 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 	private String directory;
 	private Class<?> luceneFSDirectoryClass;
 	private int maxChunkSizeMB;
-	
-	private String scorePropertyName = "score";
-	private boolean includeMappedByReferenceIfNoPropertySpecified = false;
 	
 	private ConcurrentHashMap<Integer, LuceneFulltextSearchContext> contexts;
 	
@@ -226,25 +198,12 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 			}
 			maxChunkSizeMB = config.getValue("luceneFSDirectoryMaxChunkSizeMB", Integer.TYPE, MMapDirectory.DEFAULT_MAX_CHUNK_SIZE);
 			
-			binaryParsers = (List<BinaryReferenceParser>) config.getValues("binaryParser", BinaryReferenceParser.class);
-			if (binaryParsers == null) {
-				//未指定の場合は、NameTypeParserを設定
-				binaryParsers = Collections.singletonList(new BinaryNameTypeParser());
-			} else {
-				//最後にNameTypeParserを設定
-				if (!(binaryParsers.get(binaryParsers.size() - 1) instanceof BinaryNameTypeParser)) {
-					binaryParsers.add(new BinaryNameTypeParser());
-				}
-			}
-			binaryParseLimitLength = config.getValue("binaryParseLimitLength", Integer.TYPE, 100000);
-			
 			searcherAutoRefreshTimeMinutes = config.getValue("searcherAutoRefreshTimeMinutes", Long.TYPE, -1L);
 			if (searcherAutoRefreshTimeMinutes > 0) {
 				timer = new Timer("Searcher refresh timer", true);
 			}
 			
 			indexWriterSetting = config.getValue("indexWriterSetting", IndexWriterSetting.class, new IndexWriterSetting());
-			redundantTimeMinutes = config.getValue("redundantTimeMinutes", Long.TYPE, 10L);
 			
 			analyzerSetting = config.getValue("analyzerSetting", AnalyzerSetting.class);
 			if (analyzerSetting == null) {
@@ -254,8 +213,6 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 		}
 		
 		defaultOperator = config.getValue("defaultOperator", Operator.class);
-		scorePropertyName = config.getValue("scorePropertyName", String.class, "score");
-		includeMappedByReferenceIfNoPropertySpecified = config.getValue("includeMappedByReferenceIfNoPropertySpecified", Boolean.class, false);
 	}
 
 	@Override
@@ -269,25 +226,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 	}
 
 	@Override
-	public void execCrawlEntity(String... defNames) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		if (defNames == null || defNames.length == 0) {
-			// 対象エンティティの取得
-			List<DefinitionSummary> defList = edm.definitionNameList();
-
-			// エンティティ毎にデータをクロールする
-			for (final DefinitionSummary def : defList) {
-				createIndexData(tenantId, def.getName());
-			}
-		} else {
-			for (String defName : defNames) {
-				createIndexData(tenantId, defName);
-			}
-		}
-	}
-
-	private void createIndexData(final int tenantId, String defName) {
+	protected void createIndexData(final int tenantId, String defName) {
 		// 存在しないdefinitionNameが指定された場合は終了
 		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(DefinitionService.getInstance().getPath(EntityDefinition.class, defName));
 		if (entry == null) {
@@ -296,7 +235,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 		}
 
 		// Crawl対象Entityでない場合は終了
-		MetaEntity meta = (MetaEntity)entry.getMetaData();
+		MetaEntity meta = (MetaEntity) entry.getMetaData();
 		if (!meta.isCrawl()) {
 			logger.debug(defName + " is not crawl target entity.");
 			return;
@@ -418,38 +357,6 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 			}
 		});
 	}
-	
-	private Map<String, String> generateCrawlPropMap(MetaEntity meta) {
-		// 対象プロパティのリストを作成する
-		Map<String, String> crawlPropertyNameMap = new HashMap<String, String>();
-
-		EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
-		MetaEntity superMeta = ehs.getRuntimeById(meta.getInheritedEntityMetaDataId()).getMetaData();
-
-		for (String crawlId : meta.getCrawlPropertyId()) {
-			MetaProperty metaProperty = meta.getDeclaredPropertyById(crawlId);
-			if (metaProperty == null) {
-				metaProperty = superMeta.getDeclaredPropertyById(crawlId);
-			}
-			
-			if (metaProperty != null) {
-				String propertyName = metaProperty.getName();
-				if (metaProperty instanceof MetaReferenceProperty) {
-					crawlPropertyNameMap.put(propertyName + ".name", metaProperty.getId());
-				} else {
-					crawlPropertyNameMap.put(propertyName, metaProperty.getId());
-				}
-			} else {
-				logger.warn("### DefinitionName " + "[" + meta.getName() + "] ### crawlId " + crawlId + " is not found.");
-			}
-		}
-			
-		return crawlPropertyNameMap;
-	}
-
-	private LocaleFormat getLocaleFormat() {
-		return ExecuteContext.getCurrentContext().getLocaleFormat();
-	}
 
 	private boolean createIndexByQuery(final Query query, final int tenantId, final String objDefId, final EntityIndexWriter writer, final Map<String, String> crawlPropertyNameMap) {
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
@@ -509,78 +416,11 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 	}
 	
 	private Field toField(String fieldName, Object val) throws IOException {
-		if (val instanceof Timestamp) {
-			final SimpleDateFormat dateTimeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDatetimeSecFormat(), true);
-			dateTimeFormat.setLenient(false);
-			return new TextField(fieldName, dateTimeFormat.format((Timestamp) val), Field.Store.NO);
-		} else if (val instanceof Date) {
-			final SimpleDateFormat dateFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDateFormat(), false);
-			dateFormat.setLenient(false);
-			return new TextField(fieldName, dateFormat.format((Date) val), Field.Store.NO);
-		} else if (val instanceof Time) {
-			final SimpleDateFormat timeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputTimeSecFormat(), false);
-			timeFormat.setLenient(false);
-			return new TextField(fieldName, timeFormat.format((Time) val), Field.Store.NO);
-		} else if (val instanceof BigDecimal) {
-			return new TextField(fieldName, ((BigDecimal) val).toPlainString(), Field.Store.NO);
-		} else if (val instanceof Long) {
-			return new TextField(fieldName, val.toString(), Field.Store.NO);
-		} else if (val instanceof Double) {
-			return new TextField(fieldName, val.toString(), Field.Store.NO);
-		} else if (val instanceof BinaryReference) {
-			return new TextField(fieldName, parseBinaryReference((BinaryReference) val), Field.Store.NO);
-		} else {
-			return new TextField(fieldName, val.toString(), Field.Store.NO);
-		}
-	}
-
-	private String parseBinaryReference(BinaryReference br) throws IOException {
-
-		//順番にサポートしているかをチェック
-		for (int i = 0; i < binaryParsers.size(); i++) {
-			BinaryReferenceParser support = binaryParsers.get(i).getParser(br);
-			if (support != null) {
-				try {
-					String value = support.parse(br, binaryParseLimitLength);
-
-					//EmptyParserの場合、空なのでチェック
-					if (StringUtil.isNotEmpty(value)) {
-						logger.debug("binary reference parsed on " + support.getClass().getSimpleName()
-								+ ". type=" + br.getType());
-						return value;
-					}
-				} catch(BinaryReferenceParseException e) {
-					if (e.getCause() != null && e.getCause() instanceof EncryptedDocumentException) {
-						//パスワードエラーの場合は解析できないのでNameTypeParserで出力
-						logger.warn("binary reference parse error. document is encrypted. so try to NameTypeParser.");
-						i = binaryParsers.size() - 2;
-					} else {
-						//それ以外の場合はWARNログに出力して、次のParserへ
-						logger.warn("binary reference parse error. so try to parse on next paser. type="
-								+ br.getType() + ",parser=" + support.getClass().getSimpleName(), e);
-					}
-				}
-			}
-		}
-
-		//必ずNameTypeParserが設定されるのでありえない
-		throw new FulltextSearchRuntimeException("invalid service status.");
+		return new TextField(fieldName, toValue(val), Field.Store.NO);
 	}
 	
-	private static class IndexedEntity {
-		String defName;
-		String oid;
-		float score;
-		
-		IndexedEntity(String defName, String oid, float score) {
-			this.defName = defName;
-			this.oid = oid;
-			this.score = score;
-		}
-	}
-	
-	
-	private List<IndexedEntity> fulltextSearchImpl(Integer tenantId, EntityHandler eh, String fulltext, int limit) {
+	@Override
+	protected List<IndexedEntity> fulltextSearchImpl(Integer tenantId, EntityHandler eh, String fulltext, int limit) {
 		
 		if (eh == null || StringUtil.isEmpty(fulltext)) {
 			return Collections.emptyList();
@@ -635,231 +475,6 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 				}
 			}
 		}
-	}
-	
-	private <T extends Entity> SearchResult<T> entitySearchImpl(List<IndexedEntity> oidList, EntityHandler eh, FulltextSearchCondition condition) {
-		if (oidList.isEmpty()) {
-			return new SearchResult<T>(-1, null);
-		}
-		
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		Query query = new Query();
-		
-		if (condition == null || condition.getProperties() == null) {
-			query.selectAll(eh.getMetaData().getName(), true, true, true, includeMappedByReferenceIfNoPropertySpecified);
-		} else {
-			for (String prop: condition.getProperties()) {
-				query.select().add(prop);
-			}
-			if (!condition.getProperties().contains(Entity.OID)) {
-				//scoreのマッピングのため最低限必要
-				query.select().add(Entity.OID);
-			}
-			//order by項目がない場合、追加
-			if (condition != null && condition.getOrder() != null) {
-				for (SortSpec sortSpec : condition.getOrder().getSortSpecList()) {
-					String sortKey = sortSpec.getSortKey().toString();
-					if (!condition.getProperties().contains(sortKey)) {
-						query.select().add(sortKey);
-					}
-				}
-			}
-			
-			query.from(eh.getMetaData().getName());
-		}
-		
-		In in = new In();
-		in.setPropertyName(Entity.OID);
-		List<ValueExpression> inValues = new ArrayList<ValueExpression>(oidList.size());
-		for (IndexedEntity ie: oidList) {
-			inValues.add(new Literal(ie.oid));
-		}
-		in.setValue(inValues);
-		query.where(in);
-		
-		if (condition != null && condition.getOrder() != null) {
-			query.setOrderBy(condition.getOrder());
-		}
-		
-		SearchResult<T> searched = em.searchEntity(query);
-		if (searched.getList().isEmpty()) {
-			return searched;
-		}
-		
-		if (condition == null || condition.getOrder() == null) {
-			//sort by score
-			//and set score value to each entity
-			Map<String, T> map = new HashMap<>((int)(searched.getList().size() / 0.75f) + 1, 0.75f);
-			for (T e: searched.getList()) {
-				map.put(e.getOid(), e);
-			}
-			ArrayList<T> mergedList = new ArrayList<>(searched.getList().size());
-			for (IndexedEntity ie: oidList) {
-				T e = map.get(ie.oid);
-				if (e != null) {
-					e.setValue(scorePropertyName, ie.score);
-					mergedList.add(e);
-				}
-			}
-			return new SearchResult<T>(searched.getTotalCount(), mergedList);
-		} else {
-			//set score value to each entity 
-			Map<String, IndexedEntity> map = new HashMap<>((int)(oidList.size() / 0.75f) + 1, 0.75f);
-			for (IndexedEntity ie: oidList) {
-				map.put(ie.oid, ie);
-			}
-			for (T e: searched.getList()) {
-				IndexedEntity ie = map.get(e.getOid());
-				e.setValue(scorePropertyName, ie.score);
-			}
-			return searched;
-		}
-	}
-	
-	@Override
-	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String searchDefName, String fulltext) {
-		EntityContext ec = EntityContext.getCurrentContext();
-		EntityHandler eh = ec.getHandlerByName(searchDefName);
-		List<IndexedEntity> fromIndexList = fulltextSearchImpl(ec.getTenantId(eh), eh, fulltext, getMaxRows());
-		return entitySearchImpl(fromIndexList, eh, null);
-	}
-
-	@Override
-	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String fulltext) {
-		FulltextSearchOption option = new FulltextSearchOption();
-		for (Map.Entry<String, List<String>> data : entityProperties.entrySet()) {
-			FulltextSearchCondition cond = new FulltextSearchCondition(data.getValue());
-			option.getConditions().put(data.getKey(), cond);
-		}
-		return fulltextSearchEntity(fulltext, option);
-	}
-	
-	private interface GetScore<T> {
-		float get(T t);
-	}
-
-	private <T> List<T> mergeSortByScore(List<T> list1, List<T> list2, int maxSize, GetScore<T> func) {
-		//list1, list2それぞれ事前にscore順でソートされている前提
-		if (list2.isEmpty()) {
-			return list1;
-		}
-		if (list1.isEmpty()) {
-			return list2;
-		}
-		int size = list1.size() + list2.size();
-		if (maxSize > 0 && size > maxSize) {
-			size = maxSize;
-		}
-		
-		ArrayList<T> mergeList = new ArrayList<>(size);
-		for (int i = 0, i1 = 0, i2 = 0; i < size; i++) {
-			if (i1 >= list1.size()) {
-				mergeList.add(list2.get(i2));
-				i2++;
-			} else if (i2 >= list2.size()) {
-				mergeList.add(list1.get(i1));
-				i1++;
-			} else {
-				T ie1 = list1.get(i1);
-				T ie2 = list2.get(i2);
-				if (func.get(ie1) > func.get(ie2)) {
-					mergeList.add(ie1);
-					i1++;
-				} else {
-					mergeList.add(ie2);
-					i2++;
-				}
-			}
-		}
-		
-		return mergeList;
-	}
-	
-	private static class TempEntityList {
-		EntityHandler eh;
-		List<IndexedEntity> oids = new ArrayList<>();
-		FulltextSearchCondition cond;
-		
-		TempEntityList(EntityHandler eh, FulltextSearchCondition cond) {
-			this.eh = eh;
-			this.cond = cond;
-		}
-	}
-
-	@Override
-	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String fulltext, FulltextSearchOption option) {
-		if (option.getConditions().size() <= 1) {
-			EntityContext ec = EntityContext.getCurrentContext();
-			Map.Entry<String, FulltextSearchCondition> e = option.getConditions().entrySet().iterator().next();
-			EntityHandler eh = ec.getHandlerByName(e.getKey());
-			List<IndexedEntity> fromIndexList = fulltextSearchImpl(ec.getTenantId(eh), eh, fulltext, getMaxRows());
-			return entitySearchImpl(fromIndexList, eh, e.getValue());
-		} else {
-			//複数Entity全体でmaxRowsに絞る
-			EntityContext ec = EntityContext.getCurrentContext();
-			List<IndexedEntity> fromIndexList = Collections.emptyList();
-			Map<String, TempEntityList> tempEntityListMap = new LinkedHashMap<>();
-			boolean hasOrderBy = false;
-			
-			for (Map.Entry<String, FulltextSearchCondition> e: option.getConditions().entrySet()) {
-				EntityHandler eh = ec.getHandlerByName(e.getKey());
-				List<IndexedEntity> iel = fulltextSearchImpl(ec.getTenantId(eh), eh, fulltext, getMaxRows());
-				fromIndexList = mergeSortByScore(fromIndexList, iel, getMaxRows(), t -> t.score);
-				tempEntityListMap.put(e.getKey(), new TempEntityList(eh, e.getValue()));
-				hasOrderBy = hasOrderBy || (e.getValue() != null && e.getValue().getOrder() != null);
-			}
-			
-			if (fromIndexList.isEmpty()) {
-				return new SearchResult<>(-1, null);
-			}
-			
-			//divide by defName
-			for (IndexedEntity ie: fromIndexList) {
-				TempEntityList tel = tempEntityListMap.get(ie.defName);
-				tel.oids.add(ie);
-			}
-			
-			List<T> resultList = new ArrayList<>();
-			for (Map.Entry<String, TempEntityList> e: tempEntityListMap.entrySet()) {
-				TempEntityList tel = e.getValue();
-				if (tel.oids.size() > 0) {
-					SearchResult<T> resPerEntity = entitySearchImpl(tel.oids, tel.eh, tel.cond);
-					if (hasOrderBy) {
-						resultList.addAll(resPerEntity.getList());
-					} else {
-						resultList = mergeSortByScore(resultList, resPerEntity.getList(), getMaxRows(), t -> t.getValue(scorePropertyName));
-					}
-				}
-			}
-			
-			return new SearchResult<>(-1, resultList);
-		}
-	}
-
-	@Override
-	public List<String> fulltextSearchOidList(String searchDefName, String fulltext) {
-		EntityContext ec = EntityContext.getCurrentContext();
-		EntityHandler eh = ec.getHandlerByName(searchDefName);
-		List<IndexedEntity> fromIndexList = fulltextSearchImpl(ec.getTenantId(eh), eh, fulltext, -1);
-		List<String> res = new ArrayList<>(fromIndexList.size());
-		for (IndexedEntity ie: fromIndexList) {
-			res.add(ie.oid);
-		}
-		return res;
-	}
-
-	@Override
-	public List<FulltextSearchResult> execFulltextSearch(String searchDefName, String keywords) {
-		EntityContext ec = EntityContext.getCurrentContext();
-		EntityHandler eh = ec.getHandlerByName(searchDefName);
-		List<IndexedEntity> fromIndexList = fulltextSearchImpl(ec.getTenantId(eh), eh, keywords, getMaxRows());
-		List<FulltextSearchResult> res = new ArrayList<>(fromIndexList.size());
-		for (IndexedEntity ie: fromIndexList) {
-			FulltextSearchResult r = new FulltextSearchResult();
-			r.setOid(ie.oid);
-			res.add(r);
-		}
-		return res;
 	}
 
 	@Override
