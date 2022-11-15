@@ -102,7 +102,7 @@
 		if (isMultiple) {
 			//複数
 %>
-<ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<ul name="data-label-<c:out value="<%=propName %>"/>"  class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
 			Date[] array = propValue instanceof Date[] ? (Date[]) propValue : null;
 			if (array != null) {
@@ -129,7 +129,7 @@
 			//単一
 			Date date = propValue instanceof Date ? (Date) propValue : null;
 %>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
+<span name="data-label-<c:out value="<%=propName %>"/>"  class="data-label" style="<c:out value="<%=customStyle %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
 <c:out value="<%=displayFormat(date, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday()) %>" />
 <%
 			if (outputHidden) {

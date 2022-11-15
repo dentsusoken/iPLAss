@@ -23,6 +23,7 @@
 
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
 
 <%
@@ -35,6 +36,36 @@ if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
 	// 詳細画面
 %>
 var multiplicity = <%=multiplicity%>;
+<%
+	if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+%>
+var labelValue = document.getElementsByName("data-label-" + propName).item(0);
+var newContent = '';
+
+if (multiplicity == 1) {
+	label = '';
+	hiddenValue = '';
+	// 多重度無しでもEQLとGroovyで戻り値が違うため判定
+	if (value[1] != null) {
+		label = value[0];
+		hiddenValue = value[1];
+	} else {
+		label = value[0][0];
+		hiddenValue = value[0][1];
+	}
+	newContent = label + ' <input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+} else {
+	for (const labelArray of value) {
+		newContent = newContent  + '<li>' + labelArray[0]
+			+ '<input type="hidden" name="' + propName + '" value="' + labelArray[1] + '"> </li>';
+	}
+}
+document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+
+<% 
+	// ラベル表示以外の場合
+	} else {
+%>
 if (multiplicity == 1) {
 	if (value instanceof Array) {
 		value = value.length > 0 ? value[0] : "";
@@ -49,8 +80,8 @@ if (multiplicity == 1) {
 	}
 }
 <%
-	if (editor.isUseTimePicker()) {
-		if (multiplicity == 1) {
+		if (editor.isUseTimePicker()) {
+			if (multiplicity == 1) {
 %>
 var $time = $("#time_" + propName);
 var timeFormat = $time.attr("data-timeformat");
@@ -58,7 +89,7 @@ var timeFormat = $time.attr("data-timeformat");
 $time.val(dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), timeFormat));
 $("#i_" + propName).val(value);
 <%
-		} else  {
+			} else  {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -71,9 +102,9 @@ for (var i = 0; i < value.length; i++) {
 	$("#i_" + propName + i).val(value[i]);
 }
 <%
-		}
-	} else {
-		if (multiplicity == 1) {
+			}
+		} else {
+			if (multiplicity == 1) {
 %>
 $("#h_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), dateUtil.getInputHourFormat()));
 $("#m_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), dateUtil.getInputMinFormat()));
@@ -81,7 +112,7 @@ $("#s_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerTimeFo
 $("#ms_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), "SSS"));
 $("#i_" + propName).val(value);
 <%
-		} else  {
+			} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -95,6 +126,7 @@ for (var i = 0; i < value.length; i++) {
 	$("#i_" + propName + i).val(value[i]);
 }
 <%
+			}
 		}
 	}
 } else {

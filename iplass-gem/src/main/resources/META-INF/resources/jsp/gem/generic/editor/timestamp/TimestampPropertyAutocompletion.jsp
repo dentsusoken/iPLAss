@@ -24,6 +24,7 @@
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimestampPropertyEditor" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 
 <%
 TimestampPropertyEditor editor = (TimestampPropertyEditor) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR);
@@ -35,23 +36,53 @@ if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
 	// 詳細画面
 %>
 var multiplicity = <%=multiplicity%>;
+<%
+	if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+%>
+var labelValue = document.getElementsByName("data-label-" + propName).item(0);
+var newContent = '';
+
 if (multiplicity == 1) {
-	if (value instanceof Array) {
-		value = value.length > 0 ? value[0] : "";
-	}
-} else {
-	if (value instanceof Array) {
-		if (value.length > multiplicity) {
-			value = value.slice(0, multiplicity);
-		}
+	label = '';
+	hiddenValue = '';
+	// 多重度無しでもEQLとGroovyで戻り値が違うため判定
+	if (value[1] != null) {
+		label = value[0];
+		hiddenValue = value[1];
 	} else {
-		value = [value];
+		label = value[0][0];
+		hiddenValue = value[0][1];
+	}
+	newContent = label + ' <input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+} else {
+	for (const labelArray of value) {
+		newContent = newContent  + '<li>' + labelArray[0]
+			+ '<input type="hidden" name="' + propName + '" value="' + labelArray[1] + '"> </li>';
 	}
 }
+document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+
 <%
-	if (editor.isUseDatetimePicker()) {
-		// datetimepicker
+	// ラベル表示以外の場合
+	} else {
+%>
 		if (multiplicity == 1) {
+			if (value instanceof Array) {
+				value = value.length > 0 ? value[0] : "";
+			}
+		} else {
+			if (value instanceof Array) {
+				if (value.length > multiplicity) {
+					value = value.slice(0, multiplicity);
+				}
+			} else {
+				value = [value];
+			}
+		}
+<%		
+		if (editor.isUseDatetimePicker()) {
+			// datetimepicker
+			if (multiplicity == 1) {
 %>
 var $datetime = $("#datetime_" + propName);
 var timeFormat = $datetime.attr("data-timeformat");
@@ -67,8 +98,8 @@ if (timeFormat == "HH:mm:ss") {
 $datetime.val(convertToLocaleDatetimeString(value, dateUtil.getServerDatetimeFormat(), range)).trigger("blur");
 $("#i_" + propName).val(value);
 <%
-		} else  {
-			//フィールドあるか、戻り値のサイズ、クリックして追加
+			} else  {
+				//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
 	if ($("[name='" + propName + "']:eq(" + i + ")").length == 0) {
@@ -88,10 +119,10 @@ for (var i = 0; i < value.length; i++) {
 	$("#i_" + propName + i).val(value[i]);
 }
 <%
-		}
-	} else {
-		// datepicker + pulldown
-		if (multiplicity == 1) {
+			}
+		} else {
+			// datepicker + pulldown
+			if (multiplicity == 1) {
 %>
 $("#d_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat())).trigger("blur");
 $("#h_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), dateUtil.getInputHourFormat()));
@@ -100,7 +131,7 @@ $("#s_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDateti
 $("#ms_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), "SSS"));
 $("#i_" + propName).val(value);
 <%
-		} else  {
+			} else  {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -115,6 +146,7 @@ for (var i = 0; i < value.length; i++) {
 	$("#i_" + propName + i).val(value[i]);
 }
 <%
+			}
 		}
 	}
 } else {
