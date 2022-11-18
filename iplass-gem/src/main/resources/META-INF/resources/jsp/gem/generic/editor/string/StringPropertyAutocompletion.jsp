@@ -49,16 +49,37 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
+
+var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 <%
 	if (editor.getDisplayType() == StringDisplayType.TEXT
 		|| editor.getDisplayType() == StringDisplayType.TEXTAREA
-		|| editor.getDisplayType() == StringDisplayType.PASSWORD) {
+		|| editor.getDisplayType() == StringDisplayType.PASSWORD
+		|| editor.getDisplayType() == StringDisplayType.LABEL) {
 		if (multiplicity == 1) {
+			// ラベル表示の場合はラベルに値を設定
+			if (editor.getDisplayType() == StringDisplayType.LABEL) {
+%>
+labelValue.innerHTML = value.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;');
+<%
+			}
 %>
 $("[name='" + propName + "']").val(value);
 <%
 		} else  {
-			//フィールドあるか、戻り値のサイズ、クリックして追加
+			
+			// ラベル表示の場合はhtml書き換え
+			if (editor.getDisplayType() == StringDisplayType.LABEL) {
+%>
+var newContent = '';
+for (i =  0; i < value.length; i++) {
+newContent = newContent + '<li>' + value[i].replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;') + '</li>'
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
+}
+document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+<%
+				} else {
+				//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
 	if ($("[name='" + propName + "']:eq(" + i + ")").length == 0) {
@@ -67,6 +88,7 @@ for (var i = 0; i < value.length; i++) {
 	$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
 }
 <%
+			}
 		}
 	} else if (editor.getDisplayType() == StringDisplayType.SELECT) {
 %>

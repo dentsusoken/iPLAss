@@ -96,9 +96,6 @@ for (var i = 0; i < value.length; i++) {
 <%
 				}
 			}
-%>
-
-<%
 		}
 	}
 } else {
