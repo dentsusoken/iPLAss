@@ -1115,7 +1115,6 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		} else if (value instanceof SelectValue) {
 			return ((SelectValue) value).getValue();
 		}
-		
 		return value;
 	}
 
