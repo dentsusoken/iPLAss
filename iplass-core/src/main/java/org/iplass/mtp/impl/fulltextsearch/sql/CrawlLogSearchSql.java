@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.fulltextsearch.sql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.iplass.mtp.impl.fulltextsearch.AbstractFulltextSeachService.CrawlTimestampDto;
+import org.iplass.mtp.impl.fulltextsearch.AbstractFulltextSearchService.CrawlTimestampDto;
 import org.iplass.mtp.impl.rdb.adapter.QuerySqlHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 

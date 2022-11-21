@@ -24,7 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import org.iplass.mtp.impl.fulltextsearch.AbstractFulltextSeachService.RestoreDto;
+import org.iplass.mtp.impl.fulltextsearch.AbstractFulltextSearchService.RestoreDto;
 import org.iplass.mtp.impl.fulltextsearch.sql.DeleteLogTable.Status;
 import org.iplass.mtp.impl.rdb.adapter.QuerySqlHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;

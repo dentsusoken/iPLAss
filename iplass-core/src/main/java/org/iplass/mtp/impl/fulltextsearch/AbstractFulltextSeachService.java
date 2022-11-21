@@ -55,6 +55,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public abstract class AbstractFulltextSeachService implements FulltextSearchService {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractFulltextSeachService.class);
@@ -183,7 +184,10 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 				try {
 					while(rs.next()) {
 
-						CrawlTimestampDto dto = crawlLogSearchSql.toFulltextSearchCrawlTimestampDto(rs, rdb);
+						CrawlTimestampDto dto = new CrawlTimestampDto();
+						dto.setObjDefId(rs.getString(1));
+						dto.setObjDefVer(rs.getString(2));
+						dto.setUpDate(rs.getTimestamp(3, rdb.rdbCalendar()));
 						data.put(dto.getObjDefId(), dto);
 					}
 				} finally {
@@ -246,7 +250,17 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 				List<RestoreDto> dtoList = new ArrayList<RestoreDto>();
 				try {
 					while(rs.next()) {
-						dtoList.add(deleteLogSearchSql.toFulltextSearchRestoreDto(rs));
+						RestoreDto dto = new RestoreDto();
+
+						dto.setTenantId(rs.getInt(1));
+						dto.setObjDefId(rs.getString(2));
+						dto.setObjId(rs.getString(3));
+						dto.setObjVer(rs.getLong(4));
+						dto.setStatus(Status.codeOf(rs.getString(5)));
+
+						String id = dto.getTenantId() + "_" + dto.getObjDefId() + "_" + dto.getObjId() + "_" + dto.getObjVer();
+						dto.setId(id);
+						dtoList.add(dto);
 					}
 				} finally {
 					rs.close();
