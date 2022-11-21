@@ -17,7 +17,6 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
@@ -186,7 +185,30 @@ for (var i = 0; i < value.length; i++) {
 }
 <%-- Dummy行が存在するので、 multiplicity + 1 --%>
 toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
+
 <%
+	} else if (editor.getDisplayType() == ReferenceDisplayType.LABEL) {
+%>
+var labelValue = document.getElementsByName("data-label-" + propName).item(0);
+<%
+		if (multiplicity == 1) {
+%>
+			labelValue.textContent = <%=editor.getDisplayLabelItem() == null ? "value[0].name" : "value[0]." + editor.getDisplayLabelItem() %>;
+<%
+			} else {
+%>
+var newContent = '';
+for (var i = 0; i < value.length; i++) {
+	var liId = "li_" + propName + i;
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	var _value = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+	newContent = newContent + '<li id="' + liId + '" >' + label
+			+ '<input type="hidden" name="' + propName + '" value="' + _value + '">' + '</li>';
+}
+document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+
+<%
+		}
 	}
 } else {
 	// 検索画面

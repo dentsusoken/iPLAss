@@ -17,7 +17,6 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
@@ -396,7 +395,7 @@
 			}
 		}
 %>
-<ul class="data-label" id="<c:out value="<%=ulId %>"/>" data-deletable="<c:out value="<%=(!hideDeleteButton && updatable) %>"/>">
+<ul name="data-label-<c:out value="<%=propName %>"/>"  class="data-label" id="<c:out value="<%=ulId %>"/>" data-deletable="<c:out value="<%=(!hideDeleteButton && updatable) %>"/>">
 <%
 		for (int i = 0; i < entityList.size(); i++) {
 			Entity refEntity = entityList.get(i);
@@ -414,7 +413,7 @@
 
 				if (StringUtil.isNotEmpty(customStyle)) {
 %>
-<span style="<c:out value="<%=customStyle %>"/>">
+<span name="data-label-<c:out value="<%=propName %>"/>"  style="<c:out value="<%=customStyle %>"/>">
 <%
 				}
 %>
