@@ -36,11 +36,11 @@ ext {
 		'org.apache.httpcomponents:httpmime': '4.5.13',
 		
 		//lucene
-		'org.apache.lucene:lucene-queryparser': '8.6.2',
-		'org.apache.lucene:lucene-analyzers-kuromoji': '8.6.2',
-		'org.apache.lucene:lucene-analyzers-smartcn': '8.6.2',
-		'org.apache.lucene:lucene-backward-codecs': '8.6.2',
-		'org.apache.lucene:lucene-highlighter': '8.6.2',
+		'org.apache.lucene:lucene-queryparser': '8.11.2',
+		'org.apache.lucene:lucene-analyzers-kuromoji': '8.11.2',
+		'org.apache.lucene:lucene-analyzers-smartcn': '8.11.2',
+		'org.apache.lucene:lucene-backward-codecs': '8.11.2',
+		'org.apache.lucene:lucene-highlighter': '8.11.2',
 		
 		//tika(依存関係多いので明示的に指定する)
 		'org.apache.tika:tika-core': '1.26',
@@ -51,25 +51,26 @@ ext {
 		'org.apache.pdfbox:pdfbox-tools': '2.0.24',
 		'org.ccil.cowan.tagsoup:tagsoup': '1.2.1',
 		
-		'org.apache.poi:poi': '4.1.2',
-		'org.apache.poi:poi-scratchpad': '4.1.2',
-		'org.apache.poi:poi-ooxml': '4.1.2',
+		'org.apache.poi:poi': '5.2.3',
+		'org.apache.poi:poi-scratchpad': '5.2.3',
+		'org.apache.poi:poi-ooxml': '5.2.3',
 		
 		'org.jxls:jxls': '2.11.0',
 		'org.jxls:jxls-poi': '2.11.0',
 		
 		'org.codehaus.groovy:groovy-bom': '3.0.12',//by bom
 		
-		'com.fasterxml.jackson:jackson-bom': '2.13.2.20220328',//by bom
+		'com.fasterxml.jackson:jackson-bom': '2.13.4.20221013',//by bom
 		
 		'net.sf.supercsv:super-csv': '2.4.0',
 		
 		'com.github.ben-manes.caffeine:caffeine': '2.6.2',
 		
-		'org.slf4j:slf4j-api': '1.7.32',
-		'org.slf4j:jcl-over-slf4j': '1.7.32',
-		'org.slf4j:log4j-over-slf4j': '1.7.32',
-		'ch.qos.logback:logback-classic': '1.2.7',
+		'org.slf4j:slf4j-api': '1.7.36',
+		'org.slf4j:jcl-over-slf4j': '1.7.36',
+		'org.slf4j:log4j-over-slf4j': '1.7.36',
+		'org.apache.logging.log4j:log4j-to-slf4j': '2.19.0',
+		'ch.qos.logback:logback-classic': '1.2.11',
 		'net.logstash.logback:logstash-logback-encoder': '7.0.1',
 		
 		'org.bouncycastle:bcmail-jdk15on': '1.69',

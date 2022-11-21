@@ -104,6 +104,8 @@ public interface ScriptEditorDialogConstants {
 
 	public static final String OPENID_CONNECT_RP_BACK_URL_AFTER_CONNECT = "OpenIDConnect(RP).BackUrlAfterConnect";
 
+	public static final String PASSWORD_POLICY_CUSTOM_USER_END_DATE = "PasswordPolicy.CustomUserEndDate";
+
 	//TODO
 	//MetaFieldSettingPane
 	//TenantPropertyEditDialog

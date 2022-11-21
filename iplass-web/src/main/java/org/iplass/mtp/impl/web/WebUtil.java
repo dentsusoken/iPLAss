@@ -464,7 +464,7 @@ public class WebUtil {
 				}
 			} else {
 				req.getResponse().setHeader("Cache-Control",
-							"no-store,no-cache");
+							"private, no-store, no-cache, must-revalidate");
 				if ("HTTP/1.0".equals(req.getRequest().getProtocol())) {
 					req.getResponse().setHeader("Pragma", "no-cache");
 				}

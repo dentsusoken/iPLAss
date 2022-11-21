@@ -100,7 +100,6 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 	private AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
 	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
-	private GemConfigService gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 
 	private MetaDataAuditLogger auditLogger = MetaDataAuditLogger.getLogger();
 
@@ -430,6 +429,7 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 				info.setTenantEntry(entry);
 
 				if (doGetOption) {
+					GemConfigService gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 					info.setSkins(gcs.getSkins());
 					info.setThemes(gcs.getThemes());
 

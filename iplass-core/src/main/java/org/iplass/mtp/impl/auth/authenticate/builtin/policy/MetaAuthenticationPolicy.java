@@ -29,6 +29,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.CredentialUpdateException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.auth.policy.AccountNotification;
@@ -44,11 +46,16 @@ import org.iplass.mtp.impl.auth.authenticate.AccountManagementModule;
 import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
 import org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccount;
 import org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccountHandle;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
+import org.iplass.mtp.impl.script.GroovyScript;
+import org.iplass.mtp.impl.script.ScriptContext;
+import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.util.random.SecureRandomGenerator;
@@ -241,7 +248,10 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		private Set<String> denyList;
 		private char[] randomPasswordIncludeSigns;
 		private char[] randomPasswordExcludeChars;
+		private GroovyScript customUserEndDateScript;
 		private AccountManagementModule amm;
+
+		private ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 
 		public AuthenticationPolicyRuntime() {
 			try {
@@ -267,6 +277,15 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 					}
 					if (passwordPolicy.getRandomPasswordExcludeChars() != null && passwordPolicy.getRandomPasswordExcludeChars().length() > 0) {
 						randomPasswordExcludeChars = passwordPolicy.getRandomPasswordExcludeChars().toCharArray();
+					}
+					if (StringUtils.isNotEmpty(passwordPolicy.getCustomUserEndDate())) {
+						try {
+							String scriptName = "MetaPasswordPolicy_customUserEndDate_" + getName();
+							this.customUserEndDateScript = (GroovyScript) scriptEngine.createScript(
+									passwordPolicy.getCustomUserEndDate(), scriptName);
+						} catch (Exception e) {
+							setIllegalStateException(new RuntimeException(e));
+						}
 					}
 				}
 
@@ -585,6 +604,17 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 			}
 		}
 
+		public Timestamp getCustomUserEndDate(User user) {
+			if(customUserEndDateScript == null) {
+				return null;
+			}
+			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			ScriptEngine ss = tc.getScriptEngine();
+
+			ScriptContext sc = ss.newScriptContext();
+			sc.setAttribute("user", user);
+			return (Timestamp) customUserEndDateScript.eval(sc);
+		}
 	}
 
 	private static String resourceString(String key, Object... arguments) {

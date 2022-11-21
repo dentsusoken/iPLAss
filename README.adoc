@@ -35,14 +35,14 @@ https://iplass.org/downloads/
 
 gradleでの定義例：
 
- implementation 'org.iplass:iplass-gem:3.1.24'
+ implementation 'org.iplass:iplass-gem:3.2.0'
 
 mavenでの設定例：
 
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>3.1.24</version>
+   <version>3.2.0</version>
    <type>pom</type>
  </dependency>
 
@@ -96,17 +96,17 @@ Redisアドオンモジュールです。 +
 ## Branches
 
 ### master
-現在の開発中のバージョン3.2.xのソースはmasterブランチです。
+現在の最新のバージョン3.2.xのソースはmasterブランチです。
 
 NOTE: (Java8 | Java11 | Java17) / JakartaEE8(JavaEE8)ベースです
 
 ### 3.1.x
-現在の最新の安定版3.1.xのソースは3.1.xブランチです。
+以前の安定版3.1.xのソースは3.1.xブランチです。
 
 NOTE: (Java8 | Java11) / JakartaEE8(JavaEE8)ベースです
 
 ### 3.0.x
-以前の安定版3.0.xのソースは3.0.xブランチです。
+過去の安定版3.0.xのソースは3.0.xブランチです。
 
 NOTE: (Java8 | Java11) / JavaEE7ベースです
 

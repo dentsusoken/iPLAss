@@ -22,6 +22,9 @@ package org.iplass.adminconsole.client;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactory;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryGenerator;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.auth.LoginDialog;
 import org.iplass.adminconsole.client.base.ui.auth.LoginHandler;
@@ -35,6 +38,8 @@ import org.iplass.adminconsole.shared.base.dto.auth.UnauthenticatedException;
 import org.iplass.adminconsole.shared.base.dto.auth.UnauthorizedAccessException;
 import org.iplass.adminconsole.shared.base.dto.tenant.TenantEnv;
 import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
+import org.iplass.adminconsole.shared.base.rpc.screen.ScreenModuleServiceAsync;
+import org.iplass.adminconsole.shared.base.rpc.screen.ScreenModuleServiceFactory;
 import org.iplass.adminconsole.shared.base.rpc.tenant.TenantServiceAsync;
 import org.iplass.adminconsole.shared.base.rpc.tenant.TenantServiceFactory;
 
@@ -43,6 +48,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RpcTokenException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.rpc.XsrfToken;
 import com.google.gwt.user.client.rpc.XsrfTokenService;
@@ -63,7 +69,8 @@ public class AdminConsole implements EntryPoint {
 	private MainTopNav topNav;
 	private MainContentPane mainPane;
 
-	private TenantServiceAsync service;
+	private ScreenModuleServiceAsync screenModuleServiceAsync;
+	private TenantServiceAsync tenantServiceAsync;
 
 	/**
 	 * This is the entry point method.
@@ -71,55 +78,58 @@ public class AdminConsole implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 
-		//Debug ModuleBaseURL
+		// Debug ModuleBaseURL
 		GWT.log("ModuleBaseURL:" + GWT.getModuleBaseURL());
 		GWT.log("ModuleBaseForStaticFiles:" + GWT.getModuleBaseForStaticFiles());
 
-		//例外発生時の設定
+		// 例外発生時の設定
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			@Override
 			public void onUncaughtException(Throwable e) {
 				if (e instanceof TenantNotFoundException) {
-					//テナント情報不明
+					// テナント情報不明
 					invalidMessage(e.getMessage(), e);
 				} else if (e instanceof UnauthenticatedException) {
-					//認証エラー
+					// 認証エラー
 
-					//ログイン画面表示
+					// ログイン画面表示
 					showLoginDialog();
 				} else if (e instanceof UnauthorizedAccessException) {
-					//権限エラー
+					// 権限エラー
 					invalidMessage(e.getMessage(), e);
 				} else if (e instanceof AdminUncaughtException) {
-					//処理されないエラー
+					// 処理されないエラー
 					invalidMessage(AdminClientMessageUtil.getString("ui_MtpAdmin_systemErrNotContinue"), e);
 				} else if (e instanceof JavaScriptException) {
-					//GWTのJavaScriptエラー（メッセージは表示しない）
+					// GWTのJavaScriptエラー（メッセージは表示しない）
 
 					GWT.log(AdminClientMessageUtil.getString("ui_MtpAdmin_uncaughtException"), e);
 
-					//プログレス表示を消す
+					// プログレス表示を消す
 					SmartGWTUtil.hideProgress();
+				} else if (e instanceof RpcTokenException) {
+					// XsrfTokenエラー
+					invalidMessage(AdminClientMessageUtil.getString("ui_MtpAdmin_rpcTokenErr"), e);
 				} else {
-					//その他のエラー
+					// その他のエラー
 					invalidMessage(AdminClientMessageUtil.getString("ui_MtpAdmin_systemErrNotContinue"), e);
 				}
 			}
 		});
 
-		//テナント情報の初期化
+		// テナント情報の初期化
 		GWT.log("init admin console: tenantId=[" + getTenantId() + "]");
 
-		//全体レイアウト表示
+		// 全体レイアウト表示
 		container = new VLayout();
 		container.setWidth100();
 		container.setHeight100();
 		container.setMargin(8);
 
-		//container.show();	//smartgwt3.1でshowだとエラーになるためdrawに変更
+		// container.show(); //smartgwt3.1でshowだとエラーになるためdrawに変更
 		container.draw();
 
-		//初期化
+		// 初期化
 		initialize();
 
 	}
@@ -136,31 +146,29 @@ public class AdminConsole implements EntryPoint {
 		$wnd.close();
 	}-*/;
 
-	//------------------------------
-	//初期処理
-	//------------------------------
+	// ------------------------------
+	// 初期処理
+	// ------------------------------
 
 	private void initialize() {
 		SmartGWTUtil.showProgress("Loading Tenant Information.<br/>Please wait ....");
 
-//		//テナントチェック
-//		validateTenant();
-		//Token取得
+		// Token取得
 		getXsrfToken();
 	}
 
 	private void getXsrfToken() {
 
-		//Tokenの取得
+		// Tokenの取得
 		XsrfTokenServiceAsync xsrf = GWT.create(XsrfTokenService.class);
-		((ServiceDefTarget)xsrf).setServiceEntryPoint(GWT.getModuleBaseURL() + "xsrf");
+		((ServiceDefTarget) xsrf).setServiceEntryPoint(GWT.getModuleBaseURL() + "xsrf");
 		xsrf.getNewXsrfToken(new AdminAsyncCallback<XsrfToken>() {
 
 			@Override
 			public void onSuccess(XsrfToken token) {
 				AdminXsrfTokenHolder.init(token);
 
-				//テナントチェック
+				// テナントチェック
 				validateTenant();
 			}
 		});
@@ -168,11 +176,9 @@ public class AdminConsole implements EntryPoint {
 	}
 
 	private void validateTenant() {
-
-		//テナント存在チェック
-		service = TenantServiceFactory.get();
-		service.getTenantEnv(getTenantId(), new TenantCheckAsyncCallback());
-
+		// テナント存在チェック
+		tenantServiceAsync = TenantServiceFactory.get();
+		tenantServiceAsync.getTenantEnv(getTenantId(), new TenantCheckAsyncCallback());
 	}
 
 	private void invalidMessage(String message) {
@@ -190,64 +196,76 @@ public class AdminConsole implements EntryPoint {
 		SC.warn(message);
 	}
 
-	//------------------------------
-	//テナントチェック
-	//------------------------------
-
+	// ------------------------------
+	// テナントチェック
+	// ------------------------------
 	private class TenantCheckAsyncCallback implements AsyncCallback<TenantEnv> {
 
 		@Override
 		public void onSuccess(TenantEnv result) {
 
 			if (result != null) {
-
 				String lang = getLanguage();
 				if (lang == null || lang.isEmpty()) {
-					//引数で指定されていない場合はログインしたテナントから設定（まだユーザが確定していないので）
+					// 引数で指定されていない場合はログインしたテナントから設定（まだユーザが確定していないので）
 					if (result.getTenantLocale() != null && !result.getTenantLocale().isEmpty()) {
 						lang = result.getTenantLocale().split("_")[0];
 					}
 				}
 
-				//テナント情報をセット
+				// テナント情報をセット
 				TenantInfoHolder.init(result, lang);
 
-				createMainPane();
-
+				// 画面モジュールに依存したUIクラスを生成するFactoryを取得
+				getScreenModuleBasedUIFactory();
 			} else {
-				//テナントが存在しない
+				// テナントが存在しない
 				throw new TenantNotFoundException(AdminClientMessageUtil.getString("ui_MtpAdmin_tenantInfoCannotGet"));
-				//invalidMessage(MultilingualUtil.getInstance().getString("ui_MtpAdmin_tenantInfoCannotGetID") + getTenantId());
 			}
 		}
 
 		@Override
 		public void onFailure(Throwable caught) {
-			if (caught instanceof  TenantNotFoundException) {
-				throw (TenantNotFoundException)caught;
+			if (caught instanceof TenantNotFoundException) {
+				throw (TenantNotFoundException) caught;
 			}
 			invalidMessage(AdminClientMessageUtil.getString("ui_MtpAdmin_systemErrNotContinue"), caught);
 		}
-
 	}
 
-	//------------------------------
-	//メイン画面生成
-	//------------------------------
+	private void getScreenModuleBasedUIFactory() {
+		screenModuleServiceAsync = ScreenModuleServiceFactory.get();
+
+		screenModuleServiceAsync.getScreenModuleType(new AdminAsyncCallback<String>() {
+			@Override
+			public void onSuccess(String type) {
+				ScreenModuleBasedUIFactoryGenerator factoryGenerator = GWT
+						.create(ScreenModuleBasedUIFactoryGenerator.class);
+				ScreenModuleBasedUIFactory factory = factoryGenerator.generate(type);
+				ScreenModuleBasedUIFactoryHolder.init(factory);
+
+				createMainPane();
+			}
+		});
+	}
+
+	// ------------------------------
+	// メイン画面生成
+	// ------------------------------
 	private void createMainPane() {
 		createMainPane(false);
 	}
+
 	private void createMainPane(boolean isDirect) {
-		//既に作成されているかのチェック（メニューが表示されているかで）
+		// 既に作成されているかのチェック（メニューが表示されているかで）
 		if (topNav != null) {
-			//既に作成済み（途中でセッションが切れて再ログインした場合など）の場合は
-			//ダイレクトでログインしたかをセットして終了
+			// 既に作成済み（途中でセッションが切れて再ログインした場合など）の場合は
+			// ダイレクトでログインしたかをセットして終了
 			topNav.setDirectLogin(isDirect);
 			return;
 		}
 
-
-		//メニュー部
+		// メニュー部
 		topNav = new MainTopNav(new MainTopNavHandler() {
 
 			@Override
@@ -264,7 +282,7 @@ public class AdminConsole implements EntryPoint {
 		topNav.setDirectLogin(isDirect);
 		topNav.setWidth100();
 
-		//メイン部
+		// メイン部
 		mainPane = new MainContentPane();
 
 		container.addMember(topNav);
@@ -273,10 +291,9 @@ public class AdminConsole implements EntryPoint {
 		SmartGWTUtil.hideProgress();
 	}
 
-	//------------------------------
-	//ログイン画面表示
-	//------------------------------
-
+	// ------------------------------
+	// ログイン画面表示
+	// ------------------------------
 	private void showLoginDialog() {
 
 		final LoginDialog dialog = new LoginDialog();
@@ -300,19 +317,18 @@ public class AdminConsole implements EntryPoint {
 		SmartGWTUtil.hideProgress();
 	}
 
-	//------------------------------
-	//ログオフ処理
-	//------------------------------
-
+	// ------------------------------
+	// ログオフ処理
+	// ------------------------------
 	public void logoff() {
 
-		service.authLogoff(TenantInfoHolder.getId(), new AsyncCallback<Void>() {
+		tenantServiceAsync.authLogoff(TenantInfoHolder.getId(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onSuccess(Void result) {
 				clearMainPane();
 
-				//ログイン画面表示
+				// ログイン画面表示
 				showLoginDialog();
 			}
 
@@ -350,12 +366,12 @@ public class AdminConsole implements EntryPoint {
 		disableLayout.setBackgroundColor("darkgray");
 		disableLayout.setOpacity(60);
 
-        Label title = new Label("Disabled AdminConsole");
-        title.setStyleName("AdminDisabledMessage");
+		Label title = new Label("Disabled AdminConsole");
+		title.setStyleName("AdminDisabledMessage");
 
-        disableLayout.addMember(title);
+		disableLayout.addMember(title);
 
-        container.addMember(disableLayout);
+		container.addMember(disableLayout);
 	}
 
 }

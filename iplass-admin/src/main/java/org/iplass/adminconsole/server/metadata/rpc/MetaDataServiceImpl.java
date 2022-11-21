@@ -34,6 +34,7 @@ import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.AdminEntityManager;
 import org.iplass.adminconsole.server.base.service.auditlog.MetaDataAction;
 import org.iplass.adminconsole.server.base.service.auditlog.MetaDataAuditLogger;
+import org.iplass.adminconsole.server.base.service.screen.ScreenModuleBasedClassFactoryHolder;
 import org.iplass.adminconsole.shared.base.dto.KeyValue;
 import org.iplass.adminconsole.shared.base.dto.i18n.I18nMetaDisplayInfo;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
@@ -115,8 +116,6 @@ import org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
-import org.iplass.mtp.view.filter.EntityFilter;
-import org.iplass.mtp.view.filter.EntityFilterManager;
 import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.EntityView;
@@ -126,8 +125,6 @@ import org.iplass.mtp.view.menu.ActionMenuItem;
 import org.iplass.mtp.view.menu.EntityMenuItem;
 import org.iplass.mtp.view.menu.MenuItem;
 import org.iplass.mtp.view.menu.MenuItemManager;
-import org.iplass.mtp.view.menu.MenuTree;
-import org.iplass.mtp.view.menu.MenuTreeManager;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinitionManager;
 import org.iplass.mtp.web.staticresource.definition.LocalizedStaticResourceDefinition;
 import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinition;
@@ -155,17 +152,10 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 	private static final Logger logger = LoggerFactory.getLogger(MetaDataServiceImpl.class);
 
-	private static final String DEFAULT = "DEFAULT";//common削除でMenuCommandが無くなったのでここに定義
-
 	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	private EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	private EntityFilterManager efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
-	private EntityWebApiDefinitionManager ewm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
 	private TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
 	private ActionMappingDefinitionManager amm = ManagerLocator.getInstance().getManager(ActionMappingDefinitionManager.class);
 	private StaticResourceDefinitionManager srdm = ManagerLocator.getInstance().getManager(StaticResourceDefinitionManager.class);
-	private MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
-	private MenuTreeManager mtm = ManagerLocator.getInstance().getManager(MenuTreeManager.class);
 	private EntityWebApiDefinitionManager ewdm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
 	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
 	private WebhookEndpointDefinitionManager wepdm = ManagerLocator.getInstance().getManager(WebhookEndpointDefinitionManager.class);
@@ -456,18 +446,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 					if (className.equals(EntityDefinition.class.getName())) {
 						//Entityの場合はEntityView、EntityFilter、EntityWebAPIも更新
-						if (dm.getInfo(EntityView.class, fromName) != null) {
-							auditLogger.logMetadata(MetaDataAction.UPDATE, EntityView.class.getName(), "fromName:" + fromName + " toName:" + toName);
-							dm.rename(EntityView.class, fromName, toName);
-						}
-						if (dm.getInfo(EntityFilter.class, fromName) != null) {
-							auditLogger.logMetadata(MetaDataAction.UPDATE, EntityFilter.class.getName(), "fromName:" + fromName + " toName:" + toName);
-							dm.rename(EntityFilter.class, fromName, toName);
-						}
-						if (dm.getInfo(EntityWebApiDefinition.class, fromName) != null) {
-							auditLogger.logMetadata(MetaDataAction.UPDATE, EntityWebApiDefinition.class.getName(), "fromName:" + fromName + " toName:" + toName);
-							dm.rename(EntityWebApiDefinition.class, fromName, toName);
-						}
+						ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController().renameViewDefinition(fromName, toName);
 					}
 
 				} catch (Exception e) {
@@ -728,18 +707,6 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		});
 	}
 
-	private String getEntitySimpleName(String path) {
-		if (path.contains(".")) {
-			if (path.lastIndexOf(".") < path.length()) {
-				return path.substring(path.lastIndexOf(".") + 1);
-			} else {
-				return path.substring(path.lastIndexOf("."));
-			}
-		} else {
-			return path;
-		}
-	}
-
 	@Override
 	public AdminDefinitionModifyResult updateEntityDefinition(int tenantId, final EntityDefinition definition, final int currentVersion, final boolean checkVersion) {
 		return updateEntityDefinition(tenantId, definition, currentVersion, null, checkVersion);
@@ -762,25 +729,9 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 					}
 
 					// メニューItemの更新
-					MenuItem menuItem = mm.get(convertPath(definition.getName()));
-					if(menuItem != null) {
-						// 更新対象化チェックする
-						String itemDispName = menuItem.getDisplayName();
-						String entityDispName = definition.getDisplayName();
-						if(itemDispName != null && !itemDispName.equals(entityDispName)) {
-							// データは異なる。
-							EntityDefinition oldEd = edm.get(definition.getName());
-							if(itemDispName.equals(oldEd.getDisplayName())) {
-								// メニューと同一(デフォルト)なので修正する
-								menuItem.setDisplayName(definition.getDisplayName());
-
-								auditLogger.logMetadata(MetaDataAction.UPDATE, MenuItem.class.getName(), "name:" + menuItem.getName());
-								DefinitionModifyResult ret = mm.update(menuItem);
-								if (!ret.isSuccess()) {
-									return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
-								}
-							}
-						}
+					AdminDefinitionModifyResult ret = ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController().updateMenuItem(definition);
+					if (ret != null) {
+						return ret;
 					}
 
 					//非同期で実行するため、結果を確認しないで正常を返す
@@ -825,76 +776,9 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 					//対象のEntity定義がSharedOverwriteの場合は削除しても、Sharedとして残るので関連メタデータは削除しない
 					DefinitionInfo entity = dm.getInfo(EntityDefinition.class, name);
 					if (!entity.isSharedOverwrite()) {
-
-						//EntityViewの削除
-						DefinitionInfo view = dm.getInfo(EntityView.class, name);
-						if(view != null && !view.isShared()) {
-
-							auditLogger.logMetadata(MetaDataAction.DELETE, EntityView.class.getName(), "name:" + name);
-							DefinitionModifyResult retEv = evm.remove(name);
-							if (!retEv.isSuccess()) {
-								return new AdminDefinitionModifyResult(retEv.isSuccess(), retEv.getMessage());
-							}
-						}
-						//EntityFilterの削除
-						DefinitionInfo filter = dm.getInfo(EntityFilter.class, name);
-						if (filter != null && !filter.isShared()) {
-							auditLogger.logMetadata(MetaDataAction.DELETE, EntityFilter.class.getName(), "name:" + name);
-							DefinitionModifyResult retEf = efm.remove(name);
-							if (!retEf.isSuccess()) {
-								return new AdminDefinitionModifyResult(retEf.isSuccess(), retEf.getMessage());
-							}
-						}
-						//EntityWebAPIの削除
-						DefinitionInfo webapi = dm.getInfo(EntityWebApiDefinition.class, name);
-						if (webapi != null && !webapi.isShared()) {
-							auditLogger.logMetadata(MetaDataAction.DELETE, EntityWebApiDefinition.class.getName(), "name:" + name);
-							DefinitionModifyResult retEw = ewm.remove(name);
-							if (!retEw.isSuccess()) {
-								return new AdminDefinitionModifyResult(retEw.isSuccess(), retEw.getMessage());
-							}
-						}
-
-						// メニューTreeの更新
-						for (String menuTreeName : mtm.definitionList()) {
-							MenuTree menuTree = mtm.get(menuTreeName);
-							if(menuTree != null && menuTree.getMenuItems() != null) {
-								List<MenuItem> items = menuTree.getMenuItems();
-								boolean update = false;
-								for (int i = (items.size() -1 ) ; i >= 0; i--) {
-									MenuItem menuItem = items.get(i);
-									if(menuItem instanceof EntityMenuItem) {
-										if(name.equals(((EntityMenuItem) menuItem).getEntityDefinitionName())) {
-											items.remove(i);
-											update = true;
-										}
-									}
-								}
-								if(update) {
-									auditLogger.logMetadata(MetaDataAction.UPDATE, MenuTree.class.getName(), "name:" + menuTree.getName());
-									DefinitionModifyResult ret2 = mtm.update(menuTree);
-									if (!ret2.isSuccess()) {
-										return new AdminDefinitionModifyResult(ret2.isSuccess(), ret2.getMessage());
-									}
-								}
-							}
-
-						}
-
-						//メニュItemの削除(万が一メニューツリーに一つも紐づいていない場合もあり得るので全Itemをチェック)
-						for (String menuItemName : mm.definitionList()) {
-							DefinitionEntry menuItem = dm.getDefinitionEntry(MenuItem.class, menuItemName);
-							if (menuItem != null && !menuItem.getDefinitionInfo().isShared()) {
-								if(menuItem.getDefinition() instanceof EntityMenuItem) {
-									if(name.equals(((EntityMenuItem)menuItem.getDefinition()).getEntityDefinitionName())) {
-										auditLogger.logMetadata(MetaDataAction.DELETE, MenuItem.class.getName(), "name:" + menuItemName);
-										DefinitionModifyResult ret3 = mm.remove(menuItemName);
-										if (!ret3.isSuccess()) {
-											return new AdminDefinitionModifyResult(ret3.isSuccess(), ret3.getMessage());
-										}
-									}
-								}
-							}
+						AdminDefinitionModifyResult ret = ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController().deleteViewDefinition(name);
+						if (ret != null) {
+							return ret;
 						}
 					}
 
@@ -934,50 +818,10 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 					AdminDefinitionModifyResult ret = createEntity(ed);
 
 					if (ret.isSuccess()) {
-						if (isCopyEntityView) {
-							EntityView ev = evm.get(sourceName);
-							if (ev != null) {
-								ev.setName(newName);
-								ev.setDisplayName(displayName);
-								ev.setDescription(description);
-								ev.setDefinitionName(newName);
-
-								auditLogger.logMetadata(MetaDataAction.CREATE, EntityView.class.getName(), "name:" + ev.getName());
-								DefinitionModifyResult retEv = evm.create(ev);
-								if (!retEv.isSuccess()) {
-									return new AdminDefinitionModifyResult(retEv.isSuccess(), retEv.getMessage());
-								}
-							}
-						}
-						if (isCopyEntityFilter) {
-							EntityFilter ef = efm.get(sourceName);
-							if (ef != null) {
-								ef.setName(newName);
-								ef.setDisplayName(displayName);
-								ef.setDescription(description);
-								ef.setDefinitionName(newName);
-
-								auditLogger.logMetadata(MetaDataAction.CREATE, EntityFilter.class.getName(), "name:" + ef.getName());
-								DefinitionModifyResult retEf = efm.create(ef);
-								if (!retEf.isSuccess()) {
-									return new AdminDefinitionModifyResult(retEf.isSuccess(), retEf.getMessage());
-								}
-							}
-						}
-						if (isCopyEntityWebAPI) {
-							EntityWebApiDefinition ew = ewm.get(sourceName);
-							if (ew != null) {
-								//ew.setName(newName);
-								ew.setName(newName);
-								ew.setDisplayName(displayName);
-								//ew.setDescription(description);
-
-								auditLogger.logMetadata(MetaDataAction.CREATE, EntityWebApiDefinition.class.getName(), "name:" + ew.getName());
-								DefinitionModifyResult retEw = ewm.create(ew);
-								if (!retEw.isSuccess()) {
-									return new AdminDefinitionModifyResult(retEw.isSuccess(), retEw.getMessage());
-								}
-							}
+						AdminDefinitionModifyResult ret2 = ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController()
+								.copyViewDefinition(sourceName, newName, displayName, description, isCopyEntityView, isCopyEntityFilter, isCopyEntityWebAPI);
+						if (ret2 != null) {
+							return ret2;
 						}
 					}
 
@@ -1004,41 +848,9 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		EntityDefinitionModifyResult ret = edm.create(definition);
 
 		if(ret.isSuccess()) {
-			//EntityメニューItemを生成し、DEFAULTメニューに追加する
-
-			//自動生成するEntityMenuItemの名前は「/」に変換
-			String path = convertPath(definition.getName());
-
-			//存在チェック(Entityが無効な場合、メタデータ上には存在してもMenuItemとしてはnullが返ってくるためDefinitionInfoでチェック)
-			//MenuItem oldItem = mm.getMenuItem(path);
-			DefinitionInfo oldItem = dm.getInfo(MenuItem.class, path);
-			if (oldItem == null) {
-				EntityMenuItem entityItem = new EntityMenuItem();
-				entityItem.setName(path);
-				if (definition.getDisplayName() != null && !definition.getDisplayName().isEmpty()) {
-					entityItem.setDisplayName(definition.getDisplayName());
-				} else {
-					entityItem.setDisplayName(getEntitySimpleName(definition.getName()));
-				}
-				entityItem.setEntityDefinitionName(definition.getName());
-
-				auditLogger.logMetadata(MetaDataAction.CREATE, MenuItem.class.getName(), "name:" + entityItem.getName());
-				DefinitionModifyResult ret2 = mm.create(entityItem);
-				if (!ret2.isSuccess()) {
-					return new AdminDefinitionModifyResult(ret2.isSuccess(), ret2.getMessage());
-				}
-
-				MenuTree tree = mtm.get(DEFAULT);
-				if(tree != null) {
-					tree.addMenuItem(entityItem);
-					auditLogger.logMetadata(MetaDataAction.UPDATE, MenuTree.class.getName(), "name:" + tree.getName());
-					DefinitionModifyResult ret3 = mtm.update(tree);
-					if (!ret3.isSuccess()) {
-						return new AdminDefinitionModifyResult(ret3.isSuccess(), ret3.getMessage());
-					}
-				}
-			} else {
-				logger.info("{} 's entity menu item is not create. already exists for other menu item.", definition.getName());
+			AdminDefinitionModifyResult ret2 = ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController().createMenuItem(definition);
+			if (ret2 != null) {
+				return ret2;
 			}
 		}
 		return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
@@ -1214,6 +1026,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Map<String, List<String>>>() {
 			@Override
 			public Map<String, List<String>> call() {
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 				Map<String, List<String>> viewsMap = new HashMap<String, List<String>>();
 
 				for (String defName : edm.definitionList()) {
@@ -1256,6 +1069,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			@Override
 			public SearchFormView call() {
 				auditLogger.logMetadata(MetaDataAction.CREATE, SearchFormView.class.getName(), "name:" + name);
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 				return evm.createDefaultSearchFormView(name);
 			}
 		});
@@ -1267,6 +1081,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			@Override
 			public DetailFormView call() {
 				auditLogger.logMetadata(MetaDataAction.CREATE, DetailFormView.class.getName(), "name:" + name);
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 				return evm.createDefaultDetailFormView(name);
 			}
 		});
@@ -1278,6 +1093,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			@Override
 			public BulkFormView call() {
 				auditLogger.logMetadata(MetaDataAction.CREATE, BulkFormView.class.getName(), "name:" + name);
+				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 				return evm.createDefaultBulkFormView(name);
 			}
 		});
@@ -1308,6 +1124,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			@Override
 			public MenuItemHolder call() {
 
+				MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
 				List<String> names = mm.definitionList();
 
 				if (names == null) {
@@ -1342,6 +1159,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 				}
 
 				auditLogger.logMetadata(MetaDataAction.CREATE, MenuItem.class.getName(), "name:" + definition.getName());
+				MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
 				DefinitionModifyResult ret = mm.create(definition);
 				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
 			}
@@ -1361,6 +1179,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 				}
 
 				auditLogger.logMetadata(MetaDataAction.UPDATE, MenuItem.class.getName(), "name:" + definition.getName());
+				MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
 				DefinitionModifyResult ret = mm.update(definition);
 				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
 			}
@@ -1998,7 +1817,6 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	/* ---------------------------------------
 	 * OpenIDConnect
 	 --------------------------------------- */
-
 	@Override
 	public void createClientSecret(final int tenantId, final String definitionName, final String clientSecret) {
 		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
@@ -2010,7 +1828,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			}
 		});
 	}
-	
+
 	/* ---------------------------------------
 	 * Webhook Endpoint Security Info
 	 --------------------------------------- */
@@ -2041,7 +1859,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	}
 
 	/**
-	 * 
+	 *
 	 * returns a map of <defName,Url>
 	 * */
 	public Map<String, String> getEndpointFullListWithUrl(int tenantId){

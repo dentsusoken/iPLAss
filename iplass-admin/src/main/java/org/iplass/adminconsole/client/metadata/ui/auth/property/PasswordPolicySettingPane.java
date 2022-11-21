@@ -24,15 +24,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpIntegerItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
 import org.iplass.mtp.auth.policy.definition.PasswordPolicyDefinition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 
+import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
@@ -40,6 +46,7 @@ import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.validator.IsIntegerValidator;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class PasswordPolicySettingPane extends AbstractSettingPane {
 
@@ -58,6 +65,10 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 	private TextItem txtRandomPasswordIncludeSigns;
 	private TextItem txtRandomPasswordExcludeChars;
 	private IntegerItem txtRandomPasswordLength;
+	private IntegerItem txtMaximumRandomPasswordAge;
+	private ButtonItem customUserEndDateBtn;
+	private TextAreaItem txaCustomUserEndDate;
+	private DynamicForm passwordGenerationForm;
 
 	public PasswordPolicySettingPane() {
 
@@ -115,21 +126,10 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 			}
 		});
 
-		txtRandomPasswordIncludeSigns = new MtpTextItem();
-		txtRandomPasswordIncludeSigns.setTitle("Random Password Include Signs");
-		txtRandomPasswordIncludeSigns.setStartRow(true);
-
-		txtRandomPasswordExcludeChars = new MtpTextItem();
-		txtRandomPasswordExcludeChars.setTitle("Random Password Exclude Chars");
-
-		txtRandomPasswordLength = new MtpIntegerItem();
-		txtRandomPasswordLength.setTitle("Random Password Length");
-		SmartGWTUtil.setRequired(txtRandomPasswordLength);
-		txtRandomPasswordLength.setStartRow(true);
-
 		txtPasswordHistoryCount = new MtpIntegerItem();
 		txtPasswordHistoryCount.setTitle("Password History Count");
 		SmartGWTUtil.setRequired(txtPasswordHistoryCount);
+		txtPasswordHistoryCount.setStartRow(true);
 		
 		txtPasswordHistoryPeriod = new MtpIntegerItem();
 		txtPasswordHistoryPeriod.setTitle("Password History Period");
@@ -147,12 +147,79 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 				txtMaximumPasswordAge, txtMinimumPasswordAge, txtPasswordPattern, space,
 				chkDenySamePasswordAsAccountId,
 				txtDenyList,
-				txtPasswordPatternErrorMessage, space, langBtn, txtRandomPasswordIncludeSigns,
-				txtRandomPasswordExcludeChars, txtRandomPasswordLength,
+				txtPasswordPatternErrorMessage, space, langBtn, 
 				txtPasswordHistoryCount, txtPasswordHistoryPeriod, 
 				space, chkCreateAccountWithSpecificPassword, new SpacerItem(), chkResetPasswordWithSpecificPassword);
 
 		addMember(form);
+
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setWidth100();
+		spacer.setHeight(10);
+
+		addMember(spacer);
+		
+		txtRandomPasswordIncludeSigns = new MtpTextItem();
+		txtRandomPasswordIncludeSigns.setTitle("Random Password Include Signs");
+		txtRandomPasswordIncludeSigns.setStartRow(true);
+
+		txtRandomPasswordExcludeChars = new MtpTextItem();
+		txtRandomPasswordExcludeChars.setTitle("Random Password Exclude Chars");
+
+		txtRandomPasswordLength = new MtpIntegerItem();
+		txtRandomPasswordLength.setTitle("Random Password Length");
+		SmartGWTUtil.setRequired(txtRandomPasswordLength);
+		txtRandomPasswordLength.setStartRow(true);
+
+		txtMaximumRandomPasswordAge = new MtpIntegerItem();
+		txtMaximumRandomPasswordAge.setTitle("Max Random Password Age(day)");
+		SmartGWTUtil.setRequired(txtMaximumRandomPasswordAge);
+		
+		customUserEndDateBtn = new ButtonItem();
+		customUserEndDateBtn.setTitle("Edit");
+		customUserEndDateBtn.setWidth(100);
+		customUserEndDateBtn.setStartRow(false);
+		customUserEndDateBtn.setColSpan(3);
+		customUserEndDateBtn.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyEditPane_displayEditDialogSource")));
+		customUserEndDateBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+			@Override
+			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
+						SmartGWTUtil.getStringValue(txaCustomUserEndDate),
+						ScriptEditorDialogCondition.PASSWORD_POLICY_CUSTOM_USER_END_DATE,
+						"ui_metadata_auth_AuthenticationPolicyEditPane_customUserEndDateScriptHint",
+						null,
+						new ScriptEditorDialogHandler() {
+
+							@Override
+							public void onSave(String text) {
+								txaCustomUserEndDate.setValue(text);
+							}
+							@Override
+							public void onCancel() {
+							}
+						});
+			}
+
+		});
+
+		txaCustomUserEndDate = new TextAreaItem();
+		txaCustomUserEndDate.setTitle("Custom User End Date Script");
+		txaCustomUserEndDate.setColSpan(3);
+		txaCustomUserEndDate.setWidth("100%");
+		txaCustomUserEndDate.setHeight(100);
+		SmartGWTUtil.setReadOnlyTextArea(txaCustomUserEndDate);
+		SmartGWTUtil.addHoverToFormItem(txaCustomUserEndDate, AdminClientMessageUtil.getString("metadata_auth_AuthenticationPolicyEditPane_customUserEndDateTooltip"));
+
+		passwordGenerationForm = new MtpForm2Column();
+		passwordGenerationForm.setGroupTitle("Password Generation Setting");
+		passwordGenerationForm.setIsGroup(true);
+		passwordGenerationForm.setPadding(5);
+		passwordGenerationForm.setItems(txtRandomPasswordIncludeSigns, txtRandomPasswordExcludeChars, txtRandomPasswordLength, txtMaximumRandomPasswordAge,
+				space, customUserEndDateBtn, txaCustomUserEndDate);
+
+		addMember(passwordGenerationForm);
 	}
 
 	@Override
@@ -173,6 +240,8 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtRandomPasswordIncludeSigns.setValue(passwordPolicyDefinition.getRandomPasswordIncludeSigns());
 		txtRandomPasswordExcludeChars.setValue(passwordPolicyDefinition.getRandomPasswordExcludeChars());
 		txtRandomPasswordLength.setValue(passwordPolicyDefinition.getRandomPasswordLength());
+		txaCustomUserEndDate.setValue(passwordPolicyDefinition.getCustomUserEndDate());
+		txtMaximumRandomPasswordAge.setValue(passwordPolicyDefinition.getMaximumRandomPasswordAge());
 	}
 
 	@Override
@@ -195,6 +264,8 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		passwordPolicyDefinition.setRandomPasswordIncludeSigns(SmartGWTUtil.getStringValue(txtRandomPasswordIncludeSigns, true));
 		passwordPolicyDefinition.setRandomPasswordExcludeChars(SmartGWTUtil.getStringValue(txtRandomPasswordExcludeChars, true));
 		passwordPolicyDefinition.setRandomPasswordLength(SmartGWTUtil.getIntegerValue(txtRandomPasswordLength));
+		passwordPolicyDefinition.setCustomUserEndDate(SmartGWTUtil.getStringValue(txaCustomUserEndDate));
+		passwordPolicyDefinition.setMaximumRandomPasswordAge(SmartGWTUtil.getIntegerValue(txtMaximumRandomPasswordAge));
 
 		definition.setPasswordPolicy(passwordPolicyDefinition);
 

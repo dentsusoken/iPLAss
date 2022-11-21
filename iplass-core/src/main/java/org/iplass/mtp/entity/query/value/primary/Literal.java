@@ -119,7 +119,7 @@ public class Literal extends PrimaryValue {
 	
 	private void checkValidLiteral() {
 		if (value instanceof ASTNode) {
-			throw new QueryException(value + " is not valid Literal.");
+			throw new QueryException(value + " [type:" + value.getClass().getName() + "] is not valid Literal.");
 		}
 	}
 	

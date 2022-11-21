@@ -21,11 +21,10 @@
 package org.iplass.adminconsole.client.tools.ui.metaexplorer;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.tenant.TenantDS;
+import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
 import org.iplass.adminconsole.client.metadata.data.tenant.TenantDSCellFormatter;
-import org.iplass.adminconsole.client.metadata.data.tenant.TenantDS.Category;
-import org.iplass.adminconsole.client.tools.data.metaexplorer.TenantImportSelectDS;
 import org.iplass.mtp.tenant.Tenant;
 
 import com.smartgwt.client.data.Record;
@@ -59,7 +58,7 @@ public class MetaDataImportTenantPane extends VLayout {
 
 	private ListGrid grid;
 
-	private TenantImportSelectDS dataSource;
+	private BaseTenantDS dataSource;
 
 	private TenantSelectActionCallback callback;
 
@@ -143,7 +142,7 @@ public class MetaDataImportTenantPane extends VLayout {
 			public String getGroupTitle(Object groupValue, GroupNode groupNode,
 					ListGridField field, String fieldName, ListGrid grid) {
 				//上で返すGroup値をタイトルに指定する
-				return TenantDS.getCategoryName(Category.valueOf((String)groupValue));
+				return BaseTenantDS.getTenantCategoryName((String) groupValue);
 			}
 		});
 
@@ -157,7 +156,7 @@ public class MetaDataImportTenantPane extends VLayout {
 
 		grid.setSelectionProperty("mySelected");	//選択状態保持用
 
-		dataSource = TenantImportSelectDS.getInstance(fileTenant);
+		dataSource = ScreenModuleBasedUIFactoryHolder.getFactory().createTenantImportSelectDataSource(fileTenant);
 		grid.setDataSource(dataSource);
 		grid.setAutoFetchData(true);
 		grid.setShowAsynchGroupingPrompt(false);
@@ -308,10 +307,13 @@ public class MetaDataImportTenantPane extends VLayout {
 				}
 			});
 		} else {
-			//選択項目を反映したTenantの取得
-			//Tenant importTenant = dataSource.getImportData(grid.getSelectedRecords());
-			Tenant importTenant = dataSource.getImportData(selectedRecord);
-			callback.selected(importTenant);
+			Tenant tenant = dataSource.getUpdateData();
+
+			for (Record record : selectedRecord) {
+				String name = record.getAttribute("name");
+				dataSource.applyToTenantField(tenant, name, "fileValue");
+			}
+			callback.selected(tenant);
 		}
 	}
 

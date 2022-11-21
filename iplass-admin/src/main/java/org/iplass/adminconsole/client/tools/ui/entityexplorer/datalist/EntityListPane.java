@@ -249,18 +249,10 @@ public class EntityListPane extends VLayout {
 		listenerCountField.setWidth(75);
 		ListGridField versioningField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.VERSIONING.name(), "Version Control");
 		versioningField.setWidth(75);
-		ListGridField detailViewCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DETAIL_VIEW_COUNT.name(), "DetailViews");
-		detailViewCountField.setWidth(95);
-		ListGridField searchViewCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.SEARCH_VIEW_COUNT.name(), "SearchViews");
-		searchViewCountField.setWidth(95);
-		ListGridField bulkViewCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.BULK_VIEW_COUNT.name(), "BulkViews");
-		bulkViewCountField.setWidth(95);
-		ListGridField viewControlField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.VIEW_CONTROL.name(), "ViewControls");
-		viewControlField.setWidth(40);
 		ListGridField repositoryField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.REPOSITORY.name(), "Repository");
 		repositoryField.setWidth(60);
 
-		grid.setFields(explorerField, errorField, nameField, displayNameField, countField, listenerCountField, versioningField, detailViewCountField, searchViewCountField, bulkViewCountField, viewControlField, repositoryField);
+		grid.setFields(explorerField, errorField, nameField, displayNameField, countField, listenerCountField, versioningField, repositoryField);
 
 		grid.fetchData();
 	}
