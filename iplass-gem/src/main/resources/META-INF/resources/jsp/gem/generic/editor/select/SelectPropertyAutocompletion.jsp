@@ -84,13 +84,13 @@ editorMap.set('${editorValue.key}', tmp);
 var newContent = '';
 
 if (multiplicity == 1) {
-	newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label + '</li>'
-		+ '<input type="hidden" name="' + propName + '" value="' + value + '">';
+	newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label 
+		+ '<input type="hidden" name="' + propName + '" value="' + value + '"> </li>';
 	
 } else {
 	for (i =  0; i < value.length; i++) {
-		newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label + '</li>'
-			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
+		newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
 	}
 }
 document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;

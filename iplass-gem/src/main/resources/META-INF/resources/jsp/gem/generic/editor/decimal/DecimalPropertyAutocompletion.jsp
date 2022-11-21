@@ -76,8 +76,8 @@ $("[name='" + propName + "']").prev().trigger("focus");
 %>
 var newContent = '';
 for (i =  0; i < value.length; i++) {
-newContent = newContent + '<li>' + value[i] + '</li>'
-			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
+newContent = newContent + '<li>' + value[i]
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
 }
 document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
 <%

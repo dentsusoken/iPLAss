@@ -73,8 +73,8 @@ $("[name='" + propName + "']").val(value);
 %>
 var newContent = '';
 for (i =  0; i < value.length; i++) {
-newContent = newContent + '<li>' + value[i].replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;') + '</li>'
-			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
+newContent = newContent + '<li>' + value[i].replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
 }
 document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
 <%

@@ -112,8 +112,8 @@ if (multiplicity == 1) {
 
 	for (i =  0; i < value.length; i++) {
 		var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
-		newContent = newContent + '<li>' + booleanLabel + '</li>'
-			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
+		newContent = newContent + '<li>' + booleanLabel
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
 	}
 }
 document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
