@@ -95,6 +95,9 @@ for (var i = 0; i < value.length; i++) {
 	$("[name='" + propName + "']:eq(" + i + ")").prev().trigger("focus");
 <%
 				}
+%>
+}
+<%
 			}
 		}
 	}
