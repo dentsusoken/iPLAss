@@ -348,19 +348,20 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 			}
 			sb.append(")");
 		} else {
-			sb.append(" AND ");
+			sb.append(" AND (");
 			for (int i = 0; i < keys.size(); i++) {
 				if (i != 0) {
 					sb.append(" OR ");
 				}
 				sb.append("(");
 				sb.append(ObjStoreTable.OBJ_ID).append("='").append(rdbAdaptor.sanitize((String) keys.get(i)[0])).append("'");
-				sb.append(" OR ");
+				sb.append(" AND ");
 				sb.append(ObjStoreTable.OBJ_VER).append("=").append(keys.get(i)[1]);
-				sb.append(" OR ");
+				sb.append(" AND ");
 				sb.append(ObjStoreTable.PG_NO).append("=0");
 				sb.append(")");
 			}
+			sb.append(")");
 		}
 
 		return sb.toString();
