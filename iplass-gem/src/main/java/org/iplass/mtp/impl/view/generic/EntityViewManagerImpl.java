@@ -962,7 +962,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 					// ラベルと値を設定
 					labelValue.add(labelStr);
 					labelValue.add(convertAutocompletionValue);
-					returnValue = new ArrayList<>(labelValue);;
+					returnValue = new ArrayList<>(labelValue);
 				} else {
 					returnValue = convertAutocompletionValue;
 				}
