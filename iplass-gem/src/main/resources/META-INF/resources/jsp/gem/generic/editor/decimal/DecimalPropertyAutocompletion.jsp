@@ -52,7 +52,9 @@ if (multiplicity == 1) {
 var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 
 <%
-	if (editor.getDisplayType() == NumberDisplayType.TEXT || editor.getDisplayType() == NumberDisplayType.LABEL) {
+	if (editor.getDisplayType() == NumberDisplayType.TEXT
+			 || editor.getDisplayType() == NumberDisplayType.LABEL
+			 || editor.getDisplayType() == NumberDisplayType.HIDDEN) {
 		if (multiplicity == 1) {
 			// ラベル表示の場合はラベルに値を設定
 			if (editor.getDisplayType() == NumberDisplayType.LABEL) {

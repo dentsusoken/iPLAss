@@ -55,6 +55,7 @@ var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 	if (editor.getDisplayType() == StringDisplayType.TEXT
 		|| editor.getDisplayType() == StringDisplayType.TEXTAREA
 		|| editor.getDisplayType() == StringDisplayType.PASSWORD
+		|| editor.getDisplayType() == StringDisplayType.HIDDEN
 		|| editor.getDisplayType() == StringDisplayType.LABEL) {
 		if (multiplicity == 1) {
 			// ラベル表示の場合はラベルに値を設定
