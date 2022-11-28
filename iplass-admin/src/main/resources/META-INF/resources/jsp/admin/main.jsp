@@ -86,7 +86,7 @@
 %>
 
 <%
-	String scVersion = "12.1p_2020-09-01.js";				//SmartGWT変更時に設定
+	String scVersion = "13.0p_2022-11-05.js";				//SmartGWT変更時に設定
 
 	String scVersionParam = toHexString(scVersion.getBytes());
 
