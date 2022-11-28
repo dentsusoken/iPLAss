@@ -190,6 +190,7 @@ window.imgDir = '${rsPath}images/';
 <script src="${acePath}mode-jsp.js" charset="utf-8"></script>
 <script src="${acePath}mode-sql.js" charset="utf-8"></script>
 <script src="${acePath}mode-text.js" charset="utf-8"></script>
+<script src="${acePath}mode-typescript.js" charset="utf-8"></script>
 <script src="${acePath}mode-xml.js" charset="utf-8"></script>
 
 <%-- Ace snippets files --%>
@@ -202,6 +203,7 @@ window.imgDir = '${rsPath}images/';
 <script src="${acePath}snippets/jsp.js" charset="utf-8"></script>
 <script src="${acePath}snippets/sql.js" charset="utf-8"></script>
 <script src="${acePath}snippets/text.js" charset="utf-8"></script>
+<script src="${acePath}snippets/typescript.js" charset="utf-8"></script>
 <script src="${acePath}snippets/xml.js" charset="utf-8"></script>
 </head>
 <body>
