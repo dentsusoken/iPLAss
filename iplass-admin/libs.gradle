@@ -1,5 +1,5 @@
 ext {
-	gwtVersion = "2.9.0"
+	gwtVersion = "2.10.0"
 }
 
 configurations {
@@ -26,6 +26,6 @@ dependencies {
 		include 'smartgwt/**'
 	}
 
-	runtimeOnly "com.google.gwt:gwt-servlet:${gwtVersion}"
+	runtimeOnly "org.gwtproject:gwt-servlet:${gwtVersion}"
 
 }

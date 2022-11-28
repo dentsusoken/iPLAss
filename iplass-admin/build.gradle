@@ -1,5 +1,5 @@
 plugins {
-  id "org.wisepersist.gwt" version "1.1.6"
+  id "org.docstr.gwt" version "1.1.22"
 }
 
 apply from: 'libs.gradle'
@@ -12,6 +12,14 @@ dependencies {
 
 apply plugin: 'gwt-compiler'
 apply plugin: 'eclipse'
+
+eclipse {
+
+	//gwtSdkをClassPathに追加
+	classpath {
+		plusConfigurations += [ configurations.gwtSdk ]
+	}
+}
 
 sourceSets {
 	main {
@@ -51,10 +59,6 @@ gwt {
 	sourceLevel = 'auto'
 	compiler {
 		strict = true;
-	}
-	// The following is only needed if you don't use the Google Plugin for Eclipse.
-	eclipse {
-		addGwtContainer = false // Default set to true
 	}
 }
 
