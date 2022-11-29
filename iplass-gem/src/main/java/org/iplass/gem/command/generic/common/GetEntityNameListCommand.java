@@ -195,7 +195,7 @@ public final class GetEntityNameListCommand implements Command, HasDisplayScript
 			// displayPropとuniquePropが同じ値になる可能性があるので、クリア処理を最後に実行します。
 			// 「Name」、「OID」、「VERSION」がラベルプロパティ項目として設定された場合、クリアしません。
 			if (StringUtil.isNotBlank(dispLabelProp) &&
-				!Entity.NAME.equals(dispLabelProp) && !Entity.OID.equals(dispLabelProp) && !Entity.VERSION.equals(dispLabelProp)) {
+					!Entity.NAME.equals(dispLabelProp) && !Entity.OID.equals(dispLabelProp) && !Entity.VERSION.equals(dispLabelProp)) {
 				entity.setValue(dispLabelProp, null);
 			}
 			// 「OID」がユニークキー項目として設定された場合、クリアしません。
