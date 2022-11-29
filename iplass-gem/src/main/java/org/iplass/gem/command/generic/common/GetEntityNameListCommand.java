@@ -193,8 +193,9 @@ public final class GetEntityNameListCommand implements Command, HasDisplayScript
 				entity.setValue(Constants.REF_UNIQUE_VALUE, entity.getValue(uniqueProp));
 			}
 			// displayPropとuniquePropが同じ値になる可能性があるので、クリア処理を最後に実行します。
-			// 「Name」がラベルプロパティ項目として設定された場合、クリアしません。
-			if (StringUtil.isNotBlank(dispLabelProp) && !Entity.NAME.equals(dispLabelProp)) {
+			// 「Name」、「OID」、「VERSION」がラベルプロパティ項目として設定された場合、クリアしません。
+						if (StringUtil.isNotBlank(dispLabelProp) &&
+								!Entity.NAME.equals(dispLabelProp) && !Entity.OID.equals(dispLabelProp) && !Entity.VERSION.equals(dispLabelProp)) {
 				entity.setValue(dispLabelProp, null);
 			}
 			// 「OID」がユニークキー項目として設定された場合、クリアしません。
