@@ -17,7 +17,6 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
@@ -138,39 +137,33 @@
 			request.removeAttribute(Constants.EDITOR_REQUIRED);
 		}
 	}
-	
-	if (!property.getEditor().isHide()) {
-		//非表示ではない場合
-		
-		if (showDesc) {
+
+	if (showDesc) {
 %>
 </p>
 <%-- XSS対応-メタの設定のため対応なし(description) --%>
 <p class="explanation"><%=description %></p>
 <%
-		}
-		if ((OutputType.EDIT == type) && property.getAutocompletionSetting() != null) {
-			request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
-			request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
-			request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, propName);
-			request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, pd.getMultiplicity());
-			String autocompletionPath = "/jsp/gem/generic/common/Autocompletion.jsp";
+	}
+	if ((OutputType.EDIT == type) && property.getAutocompletionSetting() != null) {
+		request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
+		request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
+		request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, propName);
+		request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, pd.getMultiplicity());
+		String autocompletionPath = "/jsp/gem/generic/common/Autocompletion.jsp";
 %>
 <jsp:include page="<%=autocompletionPath%>" />
 <%
-			request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
-			request.removeAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA);
-			request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
-			request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
-			request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
-			request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
-			request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
-		}
-		if (OutputType.EDIT == type) {
-			request.removeAttribute(Constants.EDITOR_REQUIRED);
-		}
-%>
-</td>
-<%
+		request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
+		request.removeAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA);
+		request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
+		request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
+		request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
+		request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
+		request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
+	}
+	if (OutputType.EDIT == type) {
+		request.removeAttribute(Constants.EDITOR_REQUIRED);
 	}
 %>
+</td>
