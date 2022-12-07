@@ -173,14 +173,14 @@ public class CsvUploadService implements Service {
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 		return upload(is, defName, uniqueKey, false, false, false, null, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
 	}
-	
+
 	/**
 	 * Csvファイルをアップロードします。
 	 *
 	 */
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
-			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete, 
-			final Set<String> insertProperties, final Set<String> updateProperties, 
+			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
+			final Set<String> insertProperties, final Set<String> updateProperties,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
@@ -233,7 +233,7 @@ public class CsvUploadService implements Service {
 
 					} catch (EntityDuplicateValueException e) {
 						ex = new ApplicationException(resourceString("impl.csv.CsvUploadService.rowMsg", readCount + func.readCount())
-								+ resourceString("impl.csv.CsvUploadService.overlapMsg"));
+								+ resourceString("impl.csv.CsvUploadService.overlapMsg"), e);
 					} catch (EntityValidationException e) {
 						String errorMessage = " ";
 						if (e.getValidateResults() != null) {
@@ -242,9 +242,13 @@ public class CsvUploadService implements Service {
 							}
 						}
 						ex = new ApplicationException(resourceString("impl.csv.CsvUploadService.rowMsg", readCount + func.readCount())
-								+ resourceString("impl.csv.CsvUploadService.validationMsg") + errorMessage);
+								+ resourceString("impl.csv.CsvUploadService.validationMsg") + errorMessage, e);
+					} catch (ApplicationException e) {
+						// ApplicationExceptionはメッセージを利用
+						ex = new ApplicationException(resourceString("impl.csv.CsvUploadService.rowMsg", readCount + func.readCount()) + e.getMessage(), e);
 					} catch (Exception e) {
-						ex = new ApplicationException(resourceString("impl.csv.CsvUploadService.rowMsg", readCount + func.readCount()) + e.getMessage());
+						// 上記以外な内部エラーとしてメッセージを返す
+						ex = new ApplicationException(resourceString("impl.csv.CsvUploadService.rowInternalErr", readCount + func.readCount()), e);
 					} finally {
 						//件数を更新
 						readCount+= func.readCount();
@@ -275,7 +279,7 @@ public class CsvUploadService implements Service {
 		} catch (EntityCsvException e) {
 			logger.error(e.getMessage(), e);
 			return asFailedResult(result, e.getCode(), e.getMessage());
-		} catch (Exception e) {
+		} catch (ApplicationException e) {
 			logger.error(e.getMessage(), e);
 			return asFailedResult(result, "CE9000", e.getMessage());
 		}
@@ -297,13 +301,13 @@ public class CsvUploadService implements Service {
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 		asyncUpload(is, fileName, defName, parameter, uniqueKey, false, false, false, null, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
 	}
-	
+
 	/**
 	 * Csvファイルを非同期でアップロードします。
 	 */
 	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
-			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete, 
-			final Set<String> insertProperties, final Set<String> updateProperties, 
+			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
+			final Set<String> insertProperties, final Set<String> updateProperties,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
@@ -443,7 +447,7 @@ public class CsvUploadService implements Service {
 		private boolean useCtrl;
 		private boolean isDenyInsert;
 		private boolean isDenyUpdate;
-		private boolean isDenyDelete; 
+		private boolean isDenyDelete;
 		private Set<String> insertProperties;
 		private Set<String> updateProperties;
 		private int commitLimit;
@@ -560,9 +564,9 @@ public class CsvUploadService implements Service {
 							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyDeleteError"));
 						}
 						DeleteTargetVersion deleteTargetVersion = DeleteTargetVersion.ALL;
-						
+
 						SearchResult<Entity> searchResult = null;
-						
+
 						// 特定versionを削除するか
 						if (ed.getVersionControlType() != VersionControlType.NONE
 								&& deleteSpecificVersion && entity.getVersion() != null) {
@@ -727,7 +731,7 @@ public class CsvUploadService implements Service {
 				.from(defName)
 				.where(new Equals(uniqueKey, uniqueKeyValue));
 		}
-		
+
 		private Query onVersionQuery(String defName, String uniqueKey, Object uniqueKeyValue, Long version) {
 			return new Query()
 					.select(Entity.OID)
