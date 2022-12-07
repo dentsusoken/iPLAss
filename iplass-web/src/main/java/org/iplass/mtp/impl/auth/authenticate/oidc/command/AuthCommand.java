@@ -29,12 +29,16 @@ import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.impl.auth.authenticate.oidc.MetaOpenIdConnect.OpenIdConnectRuntime;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.auth.authenticate.oidc.OIDCRuntimeException;
 import org.iplass.mtp.impl.auth.authenticate.oidc.OIDCState;
 import org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdConnectService;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.WebRequestConstants;
+import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,10 +58,12 @@ import org.slf4j.LoggerFactory;
 @CommandClass(name="mtp/oidc/AuthCommand", displayName="OpenID Connect Login processing")
 public class AuthCommand implements Command {
 	
-	static final String ACTION_NAME = "oidc/auth";
-	static final String PARAM_DEFINITION_NAME = "defName";
-	static final String STAT_SUCCESS = "SUCCESS";
-	static final String SESSION_OIDC_STATE = "org.iplass.mtp.oidc.state";
+	public static final String PARAM_DEFINITION_NAME = "defName";
+	public static final String REQUEST_ERROR_TEMPLATE = "org.iplass.mtp.oidc.errorTemplate";
+	
+	public static final String ACTION_NAME = "oidc/auth";
+	public static final String STAT_SUCCESS = "SUCCESS";
+	public static final String SESSION_OIDC_STATE = "org.iplass.mtp.oidc.state";
 	
 	private static Logger logger = LoggerFactory.getLogger(AuthCommand.class);
 	
@@ -73,12 +79,25 @@ public class AuthCommand implements Command {
 		if (oidp == null) {
 			throw new OIDCRuntimeException("no OpenIdProvider Definition:" + defName);
 		}
+		
 		String backUrlAfterAuth = oidp.backUrlAfterAuth(request);
 		if (backUrlAfterAuth == null) {
 			backUrlAfterAuth = (String) request.getAttribute(WebRequestConstants.REDIRECT_PATH);
 		}
+		if (backUrlAfterAuth == null) {
+			//トップ画面へ遷移
+			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+			String menuUrl = WebUtil.getTenantWebInfo(tenant).getHomeUrl();
+			if (menuUrl != null && menuUrl.length() != 0) {
+				backUrlAfterAuth = TemplateUtil.getTenantContextPath() + menuUrl;
+			} else {
+				backUrlAfterAuth = TemplateUtil.getTenantContextPath() + "/";
+			}
+		}
 		
-		OIDCState state = oidp.newOIDCState(backUrlAfterAuth, oidp.createRedirectUri(request, AuthCallbackCommand.ACTION_NAME));
+		String errorTemplate = (String) request.getAttribute(REQUEST_ERROR_TEMPLATE);
+		
+		OIDCState state = oidp.newOIDCState(backUrlAfterAuth, oidp.createRedirectUri(request, AuthCallbackCommand.ACTION_NAME), errorTemplate);
 		request.getSession().setAttribute(SESSION_OIDC_STATE, state);
 
 		String redirect = oidp.authorizeUrl(state);

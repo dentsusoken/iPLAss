@@ -58,10 +58,10 @@ import org.slf4j.LoggerFactory;
 )
 @CommandClass(name="mtp/oidc/AccountConnectCommand", displayName="OpenID Connect Account Connect processing")
 public class AccountConnectCommand implements Command {
-	static final String ACTION_NAME = "oidc/connect";
-	static final String PARAM_DEFINITION_NAME = "defName";
-	static final String STAT_SUCCESS = "SUCCESS";
-	static final String SESSION_OIDC_STATE = "org.iplass.mtp.oidc.connect.state";
+	public static final String ACTION_NAME = "oidc/connect";
+	public static final String PARAM_DEFINITION_NAME = "defName";
+	public static final String STAT_SUCCESS = "SUCCESS";
+	public static final String SESSION_OIDC_STATE = "org.iplass.mtp.oidc.connect.state";
 
 	private static Logger logger = LoggerFactory.getLogger(AccountConnectCommand.class);
 	
@@ -83,8 +83,12 @@ public class AccountConnectCommand implements Command {
 		}
 
 		String backUrlAfterConnect = oidp.backUrlAfterConnect(request);
+		if (backUrlAfterConnect == null) {
+			backUrlAfterConnect = (String) request.getAttribute(WebRequestConstants.REDIRECT_PATH);
+		}
+		String errorTemplate = (String) request.getAttribute(AuthCommand.REQUEST_ERROR_TEMPLATE);
 		
-		OIDCState state = oidp.newOIDCState(backUrlAfterConnect, oidp.createRedirectUri(request, AccountConnectCallbackCommand.ACTION_NAME));
+		OIDCState state = oidp.newOIDCState(backUrlAfterConnect, oidp.createRedirectUri(request, AccountConnectCallbackCommand.ACTION_NAME), errorTemplate);
 		request.getSession().setAttribute(SESSION_OIDC_STATE, state);
 
 		String redirect = oidp.authorizeUrl(state);
