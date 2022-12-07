@@ -496,7 +496,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			return sb.toString();
 		}
 
-		public OIDCState newOIDCState(String backUrlAfterAuth, String redirectUri) {
+		public OIDCState newOIDCState(String backUrlAfterAuth, String redirectUri, String errorTemplateName) {
 			checkState();
 			
 			OIDCState state = new OIDCState();
@@ -504,6 +504,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			state.setBackUrlAfterAuth(backUrlAfterAuth);
 			state.setIssuer(issuer);
 			state.setRedirectUri(redirectUri);
+			state.setErrorTemplateName(errorTemplateName);
 			if (useNonce) {
 				state.setNonce(RandomHolder.randomForNonce.secureRandomToken());
 			}
@@ -811,10 +812,14 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 		}
 
 		public void connect(String userOid, OIDCValidateResult vr) {
+			connect(userOid, vr.getSubjectId(), vr.getSubjectName());
+		}
+
+		public void connect(String userOid, String subjectId, String subjectName) {
 			GenericEntity e = new GenericEntity(OpenIdProviderAccountEntityEventListener.DEFINITION_NAME);
 			e.setValue(OpenIdProviderAccountEntityEventListener.OIDC_DEFINITION_NAME, getName());
-			e.setValue(OpenIdProviderAccountEntityEventListener.SUBJECT_ID, vr.getSubjectId());
-			e.setValue(OpenIdProviderAccountEntityEventListener.SUBJECT_NAME, vr.getSubjectName());
+			e.setValue(OpenIdProviderAccountEntityEventListener.SUBJECT_ID, subjectId);
+			e.setValue(OpenIdProviderAccountEntityEventListener.SUBJECT_NAME, subjectName);
 			e.setValue(OpenIdProviderAccountEntityEventListener.USER, new User(userOid, null, false));
 			
 			AuthContext.doPrivileged(() -> em.insert(e));

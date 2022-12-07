@@ -33,7 +33,14 @@ public class OIDCState implements Serializable {
 	private long createTime = System.currentTimeMillis();
 	
 	private String backUrlAfterAuth;
+	private String errorTemplateName;
 
+	public String getErrorTemplateName() {
+		return errorTemplateName;
+	}
+	public void setErrorTemplateName(String errorTemplateName) {
+		this.errorTemplateName = errorTemplateName;
+	}
 	public long getCreateTime() {
 		return createTime;
 	}

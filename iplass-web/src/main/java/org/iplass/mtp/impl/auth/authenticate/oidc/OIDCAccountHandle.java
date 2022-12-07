@@ -20,10 +20,14 @@
 
 package org.iplass.mtp.impl.auth.authenticate.oidc;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 
@@ -52,7 +56,12 @@ public class OIDCAccountHandle implements AccountHandle {
 	private String refreshToken;
 	private Set<String> scopes;
 
-	static String createSubjectUniqueKey(String subjectId, String openIdConnectDefinitionName) {
+	public static String createSubjectUniqueKey(String subjectId, String openIdConnectDefinitionName) {
+		try {
+			subjectId = URLEncoder.encode(subjectId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new SystemException(e);
+		}
 		String uniqueKey;
 		if (OpenIdConnectService.DEFAULT_NAME.equals(openIdConnectDefinitionName)) {
 			uniqueKey = subjectId;
@@ -60,6 +69,26 @@ public class OIDCAccountHandle implements AccountHandle {
 			uniqueKey = subjectId + UNIQUE_KEY_SEPARATOR + openIdConnectDefinitionName.replace('/', '.');
 		}
 		return uniqueKey;
+	}
+	
+	public static String[] subjectAndDefinitionNameFromUniqueKey(String uniqueKey) {
+		String sub = null;
+		String defName = null;
+		int i = uniqueKey.lastIndexOf(UNIQUE_KEY_SEPARATOR);
+		if (i < 0) {
+			sub = uniqueKey;
+			defName = OpenIdConnectService.DEFAULT_NAME;
+		} else {
+			sub = uniqueKey.substring(0, i);
+			defName = uniqueKey.substring(i + 1);
+		}
+		try {
+			sub = URLDecoder.decode(sub, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new SystemException(e);
+		}
+		defName = defName.replace('.', '/');
+		return new String[] {sub, defName};
 	}
 
 	public OIDCAccountHandle(String subjectId, String subjectName, String openIdConnectDefinitionName, Map<String, Object> attributeMap, String accessToken, Long accessTokenExpiresIn, String refreshToken, Set<String> scopes) {
