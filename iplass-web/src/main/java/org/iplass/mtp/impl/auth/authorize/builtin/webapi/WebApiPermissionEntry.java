@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.auth.authorize.builtin.webapi;
 
 import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.auth.authorize.builtin.TenantAuthorizeContext;
+import org.iplass.mtp.impl.command.RequestContextBinding;
 import org.iplass.mtp.impl.command.SessionBinding;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.script.Script;
@@ -77,6 +78,7 @@ class WebApiPermissionEntry {
 		sc.setAttribute("session", SessionBinding.newSessionBinding());
 		sc.setAttribute("webApi", webApiName);
 		sc.setAttribute("parameter", new WebApiParameterBinding(param));
+		sc.setAttribute("request", RequestContextBinding.newRequestContextBinding());
 		Boolean ret;
 		try {
 			ret = (Boolean) parameterCondition.eval(sc);

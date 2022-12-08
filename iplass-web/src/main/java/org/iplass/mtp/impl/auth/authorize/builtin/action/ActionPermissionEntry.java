@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.auth.authorize.builtin.action;
 
 import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.auth.authorize.builtin.TenantAuthorizeContext;
+import org.iplass.mtp.impl.command.RequestContextBinding;
 import org.iplass.mtp.impl.command.SessionBinding;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.script.Script;
@@ -82,6 +83,7 @@ class ActionPermissionEntry {
 		sc.setAttribute("session", SessionBinding.newSessionBinding());
 		sc.setAttribute("action", actionName);
 		sc.setAttribute("parameter", new ActionParameterBinding(param));
+		sc.setAttribute("request", RequestContextBinding.newRequestContextBinding());
 		Boolean ret;
 		try {
 			ret = (Boolean) parameterCondition.eval(sc);
