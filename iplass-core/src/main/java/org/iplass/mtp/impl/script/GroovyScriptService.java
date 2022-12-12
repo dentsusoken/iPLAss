@@ -150,7 +150,7 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 		if (initScript != null) {
 			expandScriptRefs = new ArrayList<>();
 			for (int i = 0; i < initScript.size(); i++) {
-				String src = getScriptSrc(initScript.get(0));
+				String src = getScriptSrc(initScript.get(i));
 				GroovyScript expandScriptRef = new GroovyScript(parentClassLoader, src, "___initScript_" + i + "___");
 				expandScriptRef.eval(new GroovyScriptContext());
 				expandScriptRefs.add(expandScriptRef);
