@@ -1771,7 +1771,7 @@ LocaleInfo.generic_common_AutocompletionProperty_referencePropertyIndexDescripti
 LocaleInfo.generic_common_AutocompletionSetting_propertiesDisplaNameKey = "連動元のプロパティ";
 LocaleInfo.generic_common_AutocompletionSetting_propertiesDescriptionKey = "連動元のプロパティを指定します。<br>複数指定した場合、いずれかのプロパティが変更されると、全ての項目の値をパラメータとして補完処理を呼び出します。";
 LocaleInfo.generic_common_JavascriptAutocompletionSetting_javascriptDisplaNameKey = "Javascript";
-LocaleInfo.generic_common_JavascriptAutocompletionSetting_javascriptDescriptionKey = "連動元のプロパティが変更された際に実行する自動補完のJavascriptを設定します。<br>連動元のプロパティの値は以下の形式でJavascript変数になっています。<br><pre>var sourceVales = {\r\n  プロパティ名1:プロパティ値,\r\n  プロパティ名2:[プロパティ値,...], *多重度が2以上の場合\r\n}</pre>";
+LocaleInfo.generic_common_JavascriptAutocompletionSetting_javascriptDescriptionKey = "連動元のプロパティが変更された際に実行する自動補完のJavascriptを設定します。<br>連動元のプロパティの値は以下の形式でJavascript変数になっています。<br><pre>var sourceVales = {\r\n  プロパティ名1:[プロパティ値],\r\n  プロパティ名2:[プロパティ値,...], *多重度に関わらずプロパティ値は配列になる\r\n}</pre>";
 LocaleInfo.generic_common_WebApiAutocompletionSetting_autocompletionTypeDisplaNameKey = "自動補完タイプ";
 LocaleInfo.generic_common_WebApiAutocompletionSetting_autocompletionTypeDescriptionKey = "自動補完する値を取得する方法を指定します。。<BR />EQL          : 設定されたEQLを実行し、その結果で自動補完します。<BR />GROOVYSCRIPT : Groovyscriptの実行結果を自動補完します。";
 LocaleInfo.generic_common_WebApiAutocompletionSetting_eqlDisplaNameKey = "EQL";
