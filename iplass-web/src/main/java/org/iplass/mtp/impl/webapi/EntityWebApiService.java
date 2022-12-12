@@ -61,6 +61,8 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	private String csvDateTimeFormat;
 	private String csvDateFormat;
 	private String csvTimeFormat;
+	
+	private boolean enableNativeHint;
 
 	//for backward compatibility
 	private boolean csvListWithMappedByReference;
@@ -68,6 +70,10 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	private boolean loadWithMappedByReference;
 
 	private boolean throwSearchResultLimitExceededException;
+
+	public boolean isEnableNativeHint() {
+		return enableNativeHint;
+	}
 
 	public boolean isThrowSearchResultLimitExceededException() {
 		return throwSearchResultLimitExceededException;
@@ -108,6 +114,7 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 
 	@Override
 	public void init(Config config) {
+		enableNativeHint = config.getValue("enableNativeHint", Boolean.TYPE, Boolean.FALSE);
 		maxLimit = config.getValue("maxLimit", Integer.class, 1000);
 		csvDateTimeFormat = config.getValue("csvDateTimeFormat", String.class, null);
 		csvDateFormat = config.getValue("csvDateFormat", String.class, null);

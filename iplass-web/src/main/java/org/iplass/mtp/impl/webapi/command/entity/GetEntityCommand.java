@@ -21,7 +21,9 @@ package org.iplass.mtp.impl.webapi.command.entity;
 
 import static org.iplass.mtp.impl.web.WebResourceBundleUtil.resourceString;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +43,11 @@ import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.QueryVisitor;
+import org.iplass.mtp.entity.query.QueryVisitorSupport;
+import org.iplass.mtp.entity.query.hint.Hint;
+import org.iplass.mtp.entity.query.hint.HintComment;
+import org.iplass.mtp.entity.query.hint.NativeHint;
 import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
 import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
 import org.iplass.mtp.impl.entity.csv.QueryCsvWriter;
@@ -54,6 +61,8 @@ import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.entity.SearchResultLimitExceededException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -72,6 +81,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 		overwritable=false)
 @CommandClass(name="mtp/entity/GetEntityCommand", displayName="Entity Query/Load Web API", overwritable=false)
 public final class GetEntityCommand extends AbstractEntityCommand {
+	private static final Logger logger = LoggerFactory.getLogger(GetEntityCommand.class);
 
 	public static final String PARAM_QUERY = "query";
 	public static final String PARAM_TABLE_MODE = "tabular";
@@ -156,6 +166,28 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private void queryImpl(Query query, RequestContext request, boolean byQuery, ResType resType, boolean withMappedBy) {
 
 		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
+		
+		if (!entityWebApiService.isEnableNativeHint()) {
+			QueryVisitor qv = new QueryVisitorSupport() {
+				@Override
+				public boolean visit(HintComment hintComment) {
+					if (hintComment.getHintList() != null) {
+						List<Hint> checked = new ArrayList<>();
+						for (Hint h: hintComment.getHintList()) {
+							if (h instanceof NativeHint) {
+								logger.warn("Native Hint is disable at Entity Web API, so remove hint: " + h);
+							} else {
+								checked.add(h);
+							}
+						}
+						hintComment.setHintList(checked);
+					}
+					return false;
+				}
+				
+			};
+			query.accept(qv);
+		}
 
 		SearchOption option = new SearchOption();
 		option.setReturnStructuredEntity(true);
