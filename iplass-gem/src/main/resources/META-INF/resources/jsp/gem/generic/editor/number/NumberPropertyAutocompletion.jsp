@@ -36,6 +36,34 @@ if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
 	// 詳細画面
 %>
 var multiplicity = <%=multiplicity%>;
+<%
+	if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+%>
+var newContent = '';
+
+if (multiplicity == 1) {
+	label = '';
+	hiddenValue = '';
+
+	if (value[0] == null) {
+		label = value.label;
+		hiddenValue = value.value;
+	} else {
+		label = value[0].label;
+		hiddenValue = value[0].value;
+	}
+	newContent = label + ' <input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+} else {
+	for (const labelValue of value) {
+		newContent = newContent  + '<li>' + labelValue.label
+			+ '<input type="hidden" name="' + propName + '" value="' + labelValue.value + '"> </li>';
+	}
+}
+document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+<% 
+	// ラベル表示以外の場合
+	} else {
+%>
 if (multiplicity == 1) {
 	if (value instanceof Array) {
 		value = value.length > 0 ? value[0] : "";
@@ -50,20 +78,11 @@ if (multiplicity == 1) {
 	}
 }
 
-var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 <%
 	if (editor.getDisplayType() == NumberDisplayType.TEXT
-			 || editor.getDisplayType() == NumberDisplayType.LABEL
 			 || editor.getDisplayType() == NumberDisplayType.HIDDEN) {
 		if (multiplicity == 1) {
-			// ラベル表示の場合はラベルに値を設定
-			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 %>
-labelValue.textContent = value;
-<%
-			}
-%>
-
 $("[name='" + propName + "']").val(value);
 <%
 			if (editor.isShowComma()) {
@@ -72,18 +91,6 @@ $("[name='" + propName + "']").prev().trigger("focus");
 <%
 			}
 		} else {
-			
-			// ラベル表示の場合はhtml書き換え
-			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
-%>
-var newContent = '';
-for (i =  0; i < value.length; i++) {
-newContent = newContent + '<li>' + value[i] + '</li>'
-			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
-}
-document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
-<%
-			} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {

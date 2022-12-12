@@ -102,7 +102,6 @@ for (var i = 0; i < value.length; i++) {
 		String trueLabel = autocompletionBooleanLabel[0];
 		String falseLabel = autocompletionBooleanLabel[1];
 %>
-var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 var newContent = '';
 
 if (multiplicity == 1) {

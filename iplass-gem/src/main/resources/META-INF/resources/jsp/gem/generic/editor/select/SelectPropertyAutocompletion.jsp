@@ -57,8 +57,6 @@ if (multiplicity == 1) {
 	}
 }
 
-var labelValue = document.getElementsByName("data-label-" + propName).item(0);
-
 <%
 	if (editor.getDisplayType() == SelectDisplayType.SELECT) {
 %>
@@ -66,21 +64,13 @@ $("[name='" + propName + "']").val(value);
 <%
 	// ラベル表示の場合はhtmlを書き換え
 	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
-		List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
-		Map<String, EditorValue> editorMap = new HashMap<>();
-		for (int i = 0; i < autocompletionEditorValues.size(); i++) {
-			String[] editorValue = {autocompletionEditorValues.get(i).getLabel(), autocompletionEditorValues.get(i).getStyle()};
-			editorMap.put(autocompletionEditorValues.get(i).getValue(), autocompletionEditorValues.get(i)); 
-		}
-
+		 List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
 %>
 var editorMap = new Map();
-<c:forEach items="<%=editorMap%>" var="editorValue" varStatus="loop">
-var tmp = {};
-tmp['label'] = '${editorValue.value.label}';
-tmp['style'] = '${editorValue.value.style}';
-editorMap.set('${editorValue.key}', tmp);
+<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
+	editorMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
 </c:forEach>
+
 var newContent = '';
 
 if (multiplicity == 1) {

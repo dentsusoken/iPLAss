@@ -50,7 +50,6 @@ if (multiplicity == 1) {
 	}
 }
 
-var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 <%
 	if (editor.getDisplayType() == StringDisplayType.TEXT
 		|| editor.getDisplayType() == StringDisplayType.TEXTAREA
@@ -61,6 +60,7 @@ var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 			// ラベル表示の場合はラベルに値を設定
 			if (editor.getDisplayType() == StringDisplayType.LABEL) {
 %>
+var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 labelValue.innerHTML = value.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;');
 <%
 			}

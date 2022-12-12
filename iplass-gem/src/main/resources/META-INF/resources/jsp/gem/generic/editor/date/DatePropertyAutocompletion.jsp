@@ -39,25 +39,24 @@ var multiplicity = <%=multiplicity%>;
 <%
 	if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 %>
-var labelValue = document.getElementsByName("data-label-" + propName).item(0);
 var newContent = '';
 
 if (multiplicity == 1) {
 	label = '';
 	hiddenValue = '';
-	// 多重度無しでもEQLとGroovyで戻り値が違うため判定
-	if (value[1] != null) {
-		label = value[0];
-		hiddenValue = value[1];
+
+	if (value[0] == null) {
+		label = value.label;
+		hiddenValue = value.value;
 	} else {
-		label = value[0][0];
-		hiddenValue = value[0][1];
+		label = value[0].label;
+		hiddenValue = value[0].value;
 	}
 	newContent = label + ' <input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
 } else {
-	for (const labelArray of value) {
-		newContent = newContent  + '<li>' + labelArray[0]
-			+ '<input type="hidden" name="' + propName + '" value="' + labelArray[1] + '"> </li>';
+	for (const labelValue of value) {
+		newContent = newContent  + '<li>' + labelValue.label
+			+ '<input type="hidden" name="' + propName + '" value="' + labelValue.value + '"> </li>';
 	}
 }
 document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
