@@ -919,9 +919,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			if (editor instanceof NumberPropertyEditor && editor.getDisplayType() == NumberDisplayType.LABEL) {
 				format = getDisplayNumberFormat((NumberPropertyEditor) editor);
 			} else if (editor instanceof TimePropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				format = getDisplayDateFormat(formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), ((TimePropertyEditor) editor).getDispRange());
+				format = getDisplayTimeFormat(((TimePropertyEditor) editor).getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale());
 			} else if (editor instanceof TimestampPropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				format = getDisplayDateFormat(((TimestampPropertyEditor) editor).getDispRange(), formatInfo.getDatetimeFormat(),
+				format = getDisplayTimestampFormat(((TimestampPropertyEditor) editor).getDispRange(), formatInfo.getDatetimeFormat(),
 						formatInfo.getDatetimeLocale(), ((TimestampPropertyEditor) editor).isShowWeekday());
 			} else if (editor instanceof DatePropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 				format = getDisplayDateFormat(formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), ((DatePropertyEditor) editor).isShowWeekday());
@@ -1015,41 +1015,45 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return df;
 		}
 	}
-	
-	private DateFormat getDisplayDateFormat(TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
+
+	private DateFormat getDisplayTimestampFormat(TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
 		DateFormat format = null;
 
 		if (datetimeFormatPattern != null) {
-			//フォーマットの指定がある場合、指定されたフォーマットで表記する
+			// フォーマットの指定がある場合、指定されたフォーマットで表記する
 			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
-		} else {
-			String timeFormat = "";
-			if (TimeDispRange.isDispSec(dispRange)) {
-				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
-			} else if (TimeDispRange.isDispMin(dispRange)) {
-				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
-			} else if (TimeDispRange.isDispHour(dispRange)) {
-				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
-			}
+			return format;
+		}
 
-			if (showWeekday) {
-				String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
-				//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
-				format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
-			} else {
-				String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
-				format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
-			}
+		String timeFormat = "";
+		if (TimeDispRange.isDispSec(dispRange)) {
+			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
+		} else if (TimeDispRange.isDispMin(dispRange)) {
+			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
+		} else if (TimeDispRange.isDispHour(dispRange)) {
+			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
+		}
+
+		if (showWeekday) {
+			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
+			// テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
+			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
+		} else {
+			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
+			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
 		}
 		return format;
 	}
 
-	private DateFormat getDisplayDateFormat(String datetimeFormatPattern, String datetimeLocale, TimeDispRange dispRange) {
+	private DateFormat getDisplayTimeFormat(TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale) {
 
 		DateFormat format = null;
 		if(datetimeFormatPattern != null){
 			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
-		} else if (TimeDispRange.isDispSec(dispRange)) {
+			return format;
+		}
+
+		if (TimeDispRange.isDispSec(dispRange)) {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat(), false);
 		} else if (TimeDispRange.isDispMin(dispRange)) {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeMinFormat(), false);
@@ -1065,9 +1069,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		if (datetimeFormatPattern != null) {
 			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
-		} else if (showWeekday) {
-			//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
-			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat(), false, true);
+			return format;
+		}
+
+		if (showWeekday) {
+			// テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat(), false,
+					true);
 		} else {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), false);
 		}
