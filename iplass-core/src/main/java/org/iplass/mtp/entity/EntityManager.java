@@ -307,6 +307,7 @@ public interface EntityManager extends Manager {
 	 *
 	 * <b>注意</b><br>
 	 * Binary型、LongText型、AutoNumber型を利用している場合、bulkUpdate利用によっても高速化は望めない場合があります。<br>
+	 * バージョン管理時はバージョン番号を明示的に指定する必要があります。<br>
 	 * また、{@link BulkUpdateEntity.UpdateMethod#MERGE}を利用している場合、bulkUpdate利用によっても高速化は望めない場合があります。
 	 *
 	 * @param bulkUpdatable
