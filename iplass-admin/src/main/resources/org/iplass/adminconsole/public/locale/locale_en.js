@@ -2408,6 +2408,8 @@ LocaleInfo.generic_element_section_SearchConditionSection_specifyCharacterCodeNa
 LocaleInfo.generic_element_section_SearchConditionSection_specifyCharacterCodeDescriptionKey = "Specify the character code when downloading CSV.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvUploadTransactionTypeDisplaNameKey = "CSV upload transaction type";
 LocaleInfo.generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey = "I set the timing of commit CSV upload. I will choose from two types ONCE, the DIVISION. <br />It is committed when the processing of all the rows in the CSV file is over: ONCE. <br />It is committed in a unit that is set in the service-config: DIVISION.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadInterrupterNameDisplaNameKey = "Custom csv upload process class";
+LocaleInfo.generic_element_section_SearchConditionSection_csvUploadInterrupterNameDescriptionKey = "Specify the class name of a custom csv upload process used for data registration.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.SearchFormCsvUploadInterrupter.";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplaNameKey = "Display number of search results";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "Specify the number of documents to be displayed in the list of search results.";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplaNameKey = "Display height of search results";

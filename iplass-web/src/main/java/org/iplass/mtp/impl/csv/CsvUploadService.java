@@ -50,17 +50,20 @@ import org.iplass.mtp.async.ExceptionHandlingMode;
 import org.iplass.mtp.async.TaskStatus;
 import org.iplass.mtp.async.TaskTimeoutException;
 import org.iplass.mtp.auth.AuthContext;
+import org.iplass.mtp.csv.CsvRegistrationType;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityDuplicateValueException;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.EntityValidationException;
+import org.iplass.mtp.entity.InsertOption;
 import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.TargetVersion;
 import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.ValidateResult;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -81,8 +84,10 @@ import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Propagation;
 import org.iplass.mtp.transaction.Transaction;
+import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,6 +188,23 @@ public class CsvUploadService implements Service {
 			final Set<String> insertProperties, final Set<String> updateProperties,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
+		return upload(is, defName, uniqueKey,
+				isDenyInsert, isDenyUpdate, isDenyDelete,
+				insertProperties, updateProperties,
+				transactionType, commitLimit,
+				withReferenceVersion, deleteSpecificVersion, null);
+	}
+
+	/**
+	 * Csvファイルをアップロードします。
+	 *
+	 */
+	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
+			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
+			final Set<String> insertProperties, final Set<String> updateProperties,
+			final TransactionType transactionType, final int commitLimit,
+			final boolean withReferenceVersion, final boolean deleteSpecificVersion,
+			final String interrupterClassName) {
 
 		final CsvUploadStatus result = new CsvUploadStatus();
 		final EntityDefinition ed  = edm.get(defName);
@@ -204,6 +226,8 @@ public class CsvUploadService implements Service {
 
 				Iterator<Entity> iterator = reader.iterator();
 
+				CsvUploadInterrupter interrupter = createInterrupter(interrupterClassName);
+
 				while(iterator.hasNext()) {
 
 					final ImportFunction func = new ImportFunction(em)
@@ -221,7 +245,8 @@ public class CsvUploadService implements Service {
 							.properties(properties)
 							.updatablePropperties(updatablePropperties)
 							.keyValueMap(keyValueMap)
-							.deleteSpecificVersion(deleteSpecificVersion);
+							.deleteSpecificVersion(deleteSpecificVersion)
+							.interrupter(interrupter);
 
 					ApplicationException ex = null;
 					try {
@@ -247,7 +272,7 @@ public class CsvUploadService implements Service {
 						// ApplicationExceptionはメッセージを利用
 						ex = new ApplicationException(resourceString("impl.csv.CsvUploadService.rowMsg", readCount + func.readCount()) + e.getMessage(), e);
 					} catch (Exception e) {
-						// 上記以外な内部エラーとしてメッセージを返す
+						// 上記以外は内部エラーとしてメッセージを返す
 						ex = new ApplicationException(resourceString("impl.csv.CsvUploadService.rowInternalErr", readCount + func.readCount()), e);
 					} finally {
 						//件数を更新
@@ -285,6 +310,26 @@ public class CsvUploadService implements Service {
 		}
 	}
 
+	private CsvUploadInterrupter createInterrupter(String className) {
+		CsvUploadInterrupter interrupter = null;
+		if (StringUtil.isNotEmpty(className)) {
+			logger.debug("set csv upload interrupter. class=" + className);
+			UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+			try {
+				interrupter = ucdm.createInstanceAs(CsvUploadInterrupter.class, className);
+			} catch (ClassNotFoundException e) {
+				logger.error(className + " can not instantiate.", e);
+				throw new ApplicationException(resourceString("impl.csv.CsvUploadService.internalErr"));
+			}
+		}
+		if (interrupter == null) {
+			//何もしないデフォルトInterrupter生成
+			logger.debug("set default csv upload interrupter.");
+			interrupter = new CsvUploadInterrupter(){};
+		}
+		return interrupter;
+	}
+
 	private CsvUploadStatus asFailedResult(CsvUploadStatus result, String code, String message) {
 		result.setCode(code);
 		result.setMessage(message);
@@ -310,6 +355,22 @@ public class CsvUploadService implements Service {
 			final Set<String> insertProperties, final Set<String> updateProperties,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
+		asyncUpload(is, fileName, defName, parameter, uniqueKey,
+				isDenyInsert, isDenyUpdate, isDenyDelete,
+				insertProperties, updateProperties,
+				transactionType, commitLimit,
+				withReferenceVersion, deleteSpecificVersion,
+				null);
+	}
+
+	/**
+	 * Csvファイルを非同期でアップロードします。
+	 */
+	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
+			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
+			final Set<String> insertProperties, final Set<String> updateProperties,
+			final TransactionType transactionType, final int commitLimit,
+			final boolean withReferenceVersion, final boolean deleteSpecificVersion, String interrupterClassName) {
 
 		// 非同期で実行するので、リクエスト処理完了時にアップロードファイルは削除されるため
 		// 一時ファイルとしてコピーしておく
@@ -331,7 +392,8 @@ public class CsvUploadService implements Service {
 				transactionType,
 				commitLimit,
 				withReferenceVersion,
-				deleteSpecificVersion);
+				deleteSpecificVersion,
+				interrupterClassName);
 
 		AsyncTaskOption option = new AsyncTaskOption();
 		option.setExceptionHandlingMode(ExceptionHandlingMode.ABORT);
@@ -457,6 +519,8 @@ public class CsvUploadService implements Service {
 		private Map<Object, String> keyValueMap;
 		private boolean deleteSpecificVersion;
 
+		private CsvUploadInterrupter interrupter = new CsvUploadInterrupter() {};
+
 		public ImportFunction(EntityManager em) {
 			this.em = em;
 		}
@@ -523,6 +587,14 @@ public class CsvUploadService implements Service {
 			this.deleteSpecificVersion = deleteSpecificVersion;
 			return this;
 		}
+		public ImportFunction interrupter(CsvUploadInterrupter interrupter) {
+			if (interrupter != null) {
+				this.interrupter = interrupter;
+			} else {
+				this.interrupter = new CsvUploadInterrupter() {};
+			}
+			return this;
+		}
 
 		public int readCount() {
 			return readCount;
@@ -553,103 +625,15 @@ public class CsvUploadService implements Service {
 					Entity entity = iterator.next();
 					readCount ++;
 
-					Object uniqueKeyValue = entity.getValue(uniqueKey);
 					String ctrlCode = entity.getValue(EntityCsvReader.CTRL_CODE_KEY);
 					if (StringUtil.isEmpty(ctrlCode)) {
 						ctrlCode = EntityCsvReader.CTRL_MERGE;
 					}
 
 					if (useCtrl && ctrlCode.equals(EntityCsvReader.CTRL_DELETE)) {
-						if(isDenyDelete) {
-							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyDeleteError"));
-						}
-						DeleteTargetVersion deleteTargetVersion = DeleteTargetVersion.ALL;
-
-						SearchResult<Entity> searchResult = null;
-
-						// 特定versionを削除するか
-						if (ed.getVersionControlType() != VersionControlType.NONE
-								&& deleteSpecificVersion && entity.getVersion() != null) {
-
-							searchResult = em.searchEntity(onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion()));
-
-							//特定versionのみ削除
-							deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
-
-						} else {
-							searchResult = em.searchEntity(noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue));
-						}
-
-						if (searchResult.getFirst() == null) {
-							continue;
-						}
-
-						entity.setOid(searchResult.getFirst().getOid());
-						em.delete(entity, new DeleteOption(false, deleteTargetVersion));
-						deleteCount ++;
-						continue;
-					}
-
-					ExecType execType = execType(ed, uniqueKey, uniqueKeyValue, entity, keyValueMap);
-
-					if (useCtrl) {
-						if (execType == ExecType.INSERT) {
-							if (!(ctrlCode.equals(EntityCsvReader.CTRL_INSERT) || ctrlCode.equals(EntityCsvReader.CTRL_MERGE))) {
-								throw new ApplicationException(resourceString("impl.csv.CsvUploadService.ctrlFlgUpdateError"));
-							}
-						}
-
-						if (execType == ExecType.UPDATE_SPECIFIC
-								|| execType == ExecType.UPDATE_VALID
-								|| execType == ExecType.UPDATE_NEW) {
-							if (!(ctrlCode.equals(EntityCsvReader.CTRL_UPDATE) || ctrlCode.equals(EntityCsvReader.CTRL_MERGE))) {
-								throw new ApplicationException(resourceString("impl.csv.CsvUploadService.ctrlFlgInsertError"));
-							}
-						}
-					}
-
-					switch (execType) {
-					case INSERT:
-						if(isDenyInsert) {
-							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyInsertError"));
-						}
-						if(insertProperties != null) {
-							properties.stream()
-								.filter(property -> !insertProperties.contains(property))
-								.forEach(property -> entity.setValue(property, null));
-						}
-						entity.setLockedBy(null);	//lockedByは指定されていても無視
-						String insertOid = em.insert(entity);
-						keyValueMap.put(uniqueKeyValue, insertOid);
-						insertCount ++;
-						break;
-					case UPDATE_SPECIFIC:
-						if(isDenyUpdate) {
-							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyUpdateError"));
-						}
-						em.update(entity, updateOption(TargetVersion.SPECIFIC));
-						//TODO storedTempOidMapを呼んでないが平気か？？？？？？
-						updateCount++;
-						break;
-					case UPDATE_VALID:
-						if(isDenyUpdate) {
-							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyUpdateError"));
-						}
-						em.update(entity, updateOption(TargetVersion.CURRENT_VALID));
-						keyValueMap.put(uniqueKeyValue, entity.getOid());
-						updateCount++;
-						break;
-					case UPDATE_NEW:
-						if(isDenyUpdate) {
-							throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyUpdateError"));
-						}
-						entity.setVersion(null);
-						em.update(entity, updateOption(TargetVersion.NEW));
-						keyValueMap.put(uniqueKeyValue, entity.getOid());
-						updateCount++;
-						break;
-					default:
-						throw new ApplicationException(resourceString("impl.csv.CsvUploadService.invalid"));
+						deleteEntity(entity);
+					} else {
+						registEntity(entity, ctrlCode);
 					}
 				}
 
@@ -667,6 +651,164 @@ public class CsvUploadService implements Service {
 			}
 		}
 
+		private void deleteEntity(Entity entity) {
+			if(isDenyDelete) {
+				throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyDeleteError"));
+			}
+
+			DeleteTargetVersion deleteTargetVersion = DeleteTargetVersion.ALL;
+
+			SearchResult<Entity> searchResult = null;
+			Object uniqueKeyValue = entity.getValue(uniqueKey);
+
+			// 特定versionを削除するか
+			if (ed.getVersionControlType() != VersionControlType.NONE
+					&& deleteSpecificVersion && entity.getVersion() != null) {
+
+				searchResult = em.searchEntity(onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion()));
+
+				//特定versionのみ削除
+				deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
+
+			} else {
+				searchResult = em.searchEntity(noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue));
+			}
+
+			if (searchResult.getFirst() == null) {
+				return;
+			}
+
+			entity.setOid(searchResult.getFirst().getOid());
+
+			interrupter.dataMapping(readCount, entity, ed, CsvRegistrationType.DELETE);
+
+			List<ValidateError> errors = new ArrayList<>();
+
+			errors.addAll(interrupter.beforeRegist(readCount, entity, ed, CsvRegistrationType.DELETE));
+
+			if (CollectionUtil.isEmpty(errors)) {
+				try {
+					em.delete(entity, interrupter.deleteOption(new DeleteOption(false, deleteTargetVersion)));
+				} catch (EntityValidationException e) {
+					errors.addAll(e.getValidateResults());
+				}
+			}
+			errors.addAll(interrupter.afterRegist(readCount, entity, ed, CsvRegistrationType.DELETE));
+
+			if (CollectionUtil.isNotEmpty(errors)) {
+				throw new EntityValidationException("valiation error.", errors);
+			}
+
+			deleteCount ++;
+		}
+
+		private void registEntity(Entity entity, String ctrlCode) {
+
+			Object uniqueKeyValue = entity.getValue(uniqueKey);
+
+			ExecType execType = execType(ed, uniqueKey, uniqueKeyValue, entity, keyValueMap);
+
+			if (useCtrl) {
+				if (execType == ExecType.INSERT) {
+					if (!(ctrlCode.equals(EntityCsvReader.CTRL_INSERT) || ctrlCode.equals(EntityCsvReader.CTRL_MERGE))) {
+						throw new ApplicationException(resourceString("impl.csv.CsvUploadService.ctrlFlgUpdateError"));
+					}
+				}
+
+				if (execType == ExecType.UPDATE_SPECIFIC
+						|| execType == ExecType.UPDATE_VALID
+						|| execType == ExecType.UPDATE_NEW) {
+					if (!(ctrlCode.equals(EntityCsvReader.CTRL_UPDATE) || ctrlCode.equals(EntityCsvReader.CTRL_MERGE))) {
+						throw new ApplicationException(resourceString("impl.csv.CsvUploadService.ctrlFlgInsertError"));
+					}
+				}
+			}
+
+			List<ValidateError> errors = new ArrayList<>();
+
+			switch (execType) {
+			case INSERT:
+				if(isDenyInsert) {
+					throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyInsertError"));
+				}
+
+				if(insertProperties != null) {
+					properties.stream()
+						.filter(property -> !insertProperties.contains(property))
+						.forEach(property -> entity.setValue(property, null));
+				}
+				// lockedByは指定されていても無視
+				entity.setLockedBy(null);
+
+				interrupter.dataMapping(readCount, entity, ed, CsvRegistrationType.INSERT);
+
+				errors.addAll(interrupter.beforeRegist(readCount, entity, ed, CsvRegistrationType.INSERT));
+
+				if (CollectionUtil.isEmpty(errors)) {
+					try {
+						InsertOption insertOption = interrupter.insertOption(new InsertOption());
+						String insertOid = em.insert(entity, insertOption);
+						keyValueMap.put(uniqueKeyValue, insertOid);
+					} catch (EntityValidationException e) {
+						errors.addAll(e.getValidateResults());
+					}
+				} else {
+					//既にエラーが発生してたら入力チェックのみ実施
+					ValidateResult vr = em.validate(entity);
+					if (vr != null && vr.hasError()) {
+						errors.addAll(vr.getErrors());
+					}
+				}
+
+				errors.addAll(interrupter.afterRegist(readCount, entity, ed, CsvRegistrationType.INSERT));
+
+				if (CollectionUtil.isNotEmpty(errors)) {
+					throw new EntityValidationException("valiation error.", errors);
+				}
+
+				insertCount ++;
+				break;
+			case UPDATE_SPECIFIC:
+			case UPDATE_VALID:
+			case UPDATE_NEW:
+				if(isDenyUpdate) {
+					throw new ApplicationException(resourceString("impl.csv.CsvUploadService.denyUpdateError"));
+				}
+
+				interrupter.dataMapping(readCount, entity, ed, CsvRegistrationType.UPDATE);
+
+				errors.addAll(interrupter.beforeRegist(readCount, entity, ed, CsvRegistrationType.UPDATE));
+
+				if (CollectionUtil.isEmpty(errors)) {
+					try {
+						UpdateOption updateOption = interrupter.updateOption(updateOption(execType));
+						em.update(entity, updateOption);
+						keyValueMap.put(uniqueKeyValue, entity.getOid());
+					} catch (EntityValidationException e) {
+						errors.addAll(e.getValidateResults());
+					}
+				} else {
+					//既にエラーが発生してたら入力チェックのみ実施
+					ValidateResult vr = em.validate(entity);
+					if (vr != null && vr.hasError()) {
+						errors.addAll(vr.getErrors());
+					}
+				}
+
+				errors.addAll(interrupter.afterRegist(readCount, entity, ed, CsvRegistrationType.UPDATE));
+
+				if (CollectionUtil.isNotEmpty(errors)) {
+					throw new EntityValidationException("valiation error.", errors);
+				}
+
+				updateCount++;
+				break;
+			default:
+				throw new ApplicationException(resourceString("impl.csv.CsvUploadService.invalid"));
+			}
+
+		}
+
 		private ExecType execType(EntityDefinition ed, String uniqueKey, Object uniqueKeyValue, Entity entity, Map<Object, String> keyValueMap) {
 
 			ExecType execType = null;
@@ -681,7 +823,7 @@ public class CsvUploadService implements Service {
 						entity.setOid(keyValueMap.get(uniqueKeyValue));
 					} else {
 						if (entity.getVersion() != null) {
-							Query q = onVersionQuery(ed.getName(), Entity.OID, uniqueKeyValue, entity.getVersion());
+							Query q = onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion());
 							int count = em.count(q);
 							if (count > 0) {
 								execType = ExecType.UPDATE_SPECIFIC;
@@ -740,7 +882,7 @@ public class CsvUploadService implements Service {
 					.versioned(true);
 		}
 
-		private UpdateOption updateOption(TargetVersion targetVersion) {
+		private UpdateOption updateOption(ExecType execType) {
 
 			UpdateOption option = new UpdateOption(false);
 			if (updatablePropperties == null) {
@@ -752,6 +894,14 @@ public class CsvUploadService implements Service {
 			}
 			option.setUpdateProperties(new ArrayList<>(updatablePropperties));
 
+			TargetVersion targetVersion = null;
+			if (execType == ExecType.UPDATE_SPECIFIC) {
+				targetVersion = TargetVersion.SPECIFIC;
+			} else if (execType == ExecType.UPDATE_VALID) {
+				targetVersion = TargetVersion.CURRENT_VALID;
+			} else if (execType == ExecType.UPDATE_NEW) {
+				targetVersion = TargetVersion.NEW;
+			}
 			option.setTargetVersion(targetVersion);
 
 			return option;

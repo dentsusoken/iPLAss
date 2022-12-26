@@ -487,15 +487,18 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 		//UTF-8 BOM対応
 		if (header.size() > 0) {
-			if (header.get(0).charAt(0) == 0xFEFF) {
-				header.set(0, String.copyValueOf(header.get(0).toCharArray(), 1, header.get(0).toCharArray().length - 1));
-			}
+			header.set(0, excludeBOM(header.get(0)));
 		}
 		if (properties.size() > 0) {
-			if (properties.get(0).charAt(0) == 0xFEFF) {
-				properties.set(0, String.copyValueOf(properties.get(0).toCharArray(), 1, properties.get(0).toCharArray().length - 1));
-			}
+			properties.set(0, excludeBOM(properties.get(0)));
 		}
+	}
+
+	private String excludeBOM(String value) {
+		if (value.charAt(0) == 0xFEFF) {
+			return String.copyValueOf(value.toCharArray(), 1, value.toCharArray().length - 1);
+		}
+		return value;
 	}
 
 	private void validateHeader() {

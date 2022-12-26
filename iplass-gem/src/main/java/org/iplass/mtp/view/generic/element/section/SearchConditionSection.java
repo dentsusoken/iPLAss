@@ -323,7 +323,14 @@ public class SearchConditionSection extends Section {
 	)
 	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;;
 
-
+	/** カスタムCSVアップロード処理クラス名 */
+	@MetaFieldInfo(
+			displayName="カスタムCSVアップロード処理クラス名",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadInterrupterNameDisplaNameKey",
+			displayOrder=2070,
+			descriptionKey="generic_element_section_SearchConditionSection_csvUploadInterrupterNameDescriptionKey"
+	)
+	private String csvUploadInterrupterName;
 
 
 	/** 重複行をまとめるか */
@@ -560,6 +567,22 @@ public class SearchConditionSection extends Section {
 
 	public void setSpecifyCharacterCode(CsvDownloadSpecifyCharacterCode specifyCharacterCode) {
 		this.specifyCharacterCode = specifyCharacterCode;
+	}
+
+	/**
+	 * カスタムCSVアップロード処理クラス名を取得します。
+	 * @return カスタムCSVアップロード処理クラス名
+	 */
+	public String getCsvUploadInterrupterName() {
+		return csvUploadInterrupterName;
+	}
+
+	/**
+	 * カスタムCSVアップロード処理クラス名を設定します。
+	 * @param csvUploadInterrupterName カスタムCSVアップロード処理クラス名
+	 */
+	public void setCsvUploadInterrupterName(String csvUploadInterrupterName) {
+		this.csvUploadInterrupterName = csvUploadInterrupterName;
 	}
 
 	/**

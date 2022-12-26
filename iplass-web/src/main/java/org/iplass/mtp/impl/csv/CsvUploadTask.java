@@ -64,7 +64,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 
 	/** UniqueKeyプロパティ名 */
 	private String uniqueKey;
-	
+
 	/** CSVアップロードで登録を許可しない */
 	private boolean isDenyInsert;
 
@@ -90,6 +90,9 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 	/** 特定バージョンを削除するか */
 	private boolean deleteSpecificVersion;
 
+	/** CsvUploadInterrupterクラス名 */
+	private String interrupterClassName;
+
 	/**
 	 * コンストラクタ
 	 * @param filePath Uploadされたファイルの物理Path
@@ -107,6 +110,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 	 * @param commitLimit トランザクション分割時のCommit単位
 	 * @param withReferenceVersion 参照値にバージョンが含まれているか
 	 * @param deleteSpecificVersion 特定バージョンを削除するか
+	 * @param interrupterClassName CsvUploadInterrupterクラス名
 	 */
 	public CsvUploadTask(
 			String filePath,
@@ -119,11 +123,12 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 			boolean isDenyUpdate,
 			boolean isDenyDelete,
 			Set<String> insertProperties,
-			Set<String> updateProperties, 
+			Set<String> updateProperties,
 			TransactionType transactionType,
 			int commitLimit,
 			boolean withReferenceVersion,
-			boolean deleteSpecificVersion) {
+			boolean deleteSpecificVersion,
+			String interrupterClassName) {
 		super();
 
 		this.filePath = filePath;
@@ -141,6 +146,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		this.commitLimit = commitLimit;
 		this.withReferenceVersion = withReferenceVersion;
 		this.deleteSpecificVersion = deleteSpecificVersion;
+		this.interrupterClassName = interrupterClassName;
 	}
 
 	public String getFilePath() {
@@ -211,7 +217,12 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		}
 
 		try (InputStream is = new FileInputStream(filePath)){
-			CsvUploadStatus result = service.upload(is, defName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
+			CsvUploadStatus result = service.upload(is, defName, uniqueKey,
+					isDenyInsert, isDenyUpdate, isDenyDelete,
+					insertProperties, updateProperties,
+					transactionType, commitLimit,
+					withReferenceVersion, deleteSpecificVersion,
+					interrupterClassName);
 			return result;
 		} catch (FileNotFoundException e) {
 			throw new SystemException(e);
