@@ -92,15 +92,18 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	/** CSVアップロードで削除を許可しない */
 	private boolean csvUploadDenyDelete;
-	
+
 	/** CSVアップロード登録項目 */
 	private String csvUploadInsertProperties;
-	
+
 	/** CSVアップロード更新項目 */
 	private String csvUploadUpdateProperties;
 
 	/** CSVアップロード時のトランザクション制御設定 */
 	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;
+
+	/** カスタムCSVアップロード処理クラス名 */
+	private String csvUploadInterrupterName;
 
 	/** CSVダウンロードボタン非表示設定 */
 	private boolean hideCsvdownload;
@@ -184,6 +187,22 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	public void setCsvUploadTransactionType(CsvUploadTransactionType csvUploadTransactionType) {
 		this.csvUploadTransactionType = csvUploadTransactionType;
+	}
+
+	/**
+	 * カスタムCSVアップロード処理クラス名を取得します。
+	 * @return カスタムCSVアップロード処理クラス名
+	 */
+	public String getCsvUploadInterrupterName() {
+		return csvUploadInterrupterName;
+	}
+
+	/**
+	 * カスタムCSVアップロード処理クラス名を設定します。
+	 * @param csvUploadInterrupterName カスタムCSVアップロード処理クラス名
+	 */
+	public void setCsvUploadInterrupterName(String csvUploadInterrupterName) {
+		this.csvUploadInterrupterName = csvUploadInterrupterName;
 	}
 
 	public boolean isHideCsvUpload() {
@@ -594,6 +613,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.hideCsvdownloadDialog = section.isHideCsvdownloadDialog();
 		this.specifyCharacterCode = section.getSpecifyCharacterCode();
 		this.csvUploadTransactionType = section.getCsvUploadTransactionType();
+		this.csvUploadInterrupterName = section.getCsvUploadInterrupterName();
 		this.csvdownloadMaxCount = section.getCsvdownloadMaxCount();
 		this.csvdownloadProperties = section.getCsvdownloadProperties();
 		this.csvdownloadFileNameFormat = section.getCsvdownloadFileNameFormat();
@@ -659,6 +679,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setHideCsvdownloadDialog(this.hideCsvdownloadDialog);
 		section.setSpecifyCharacterCode(this.specifyCharacterCode);
 		section.setCsvUploadTransactionType(this.csvUploadTransactionType);
+		section.setCsvUploadInterrupterName(this.csvUploadInterrupterName);
 		section.setCsvdownloadMaxCount(this.csvdownloadMaxCount);
 		section.setCsvdownloadProperties(this.csvdownloadProperties);
 		section.setCsvdownloadFileNameFormat(this.csvdownloadFileNameFormat);

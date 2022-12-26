@@ -130,7 +130,8 @@ public final class CsvUploadCommand extends DetailCommandBase {
 
 			try (InputStream is = file.getInputStream()){
 				service.asyncUpload(is, file.getFileName(), defName, viewName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
-						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), form.isDeleteSpecificVersion());
+						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), form.isDeleteSpecificVersion(),
+						form.getCondSection().getCsvUploadInterrupterName());
 
 				return Constants.CMD_EXEC_SUCCESS_ASYNC;
 
@@ -175,7 +176,8 @@ public final class CsvUploadCommand extends DetailCommandBase {
 
 			try (InputStream is = file.getInputStream()){
 				CsvUploadStatus result = service.upload(is, defName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
-						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), form.isDeleteSpecificVersion());
+						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), form.isDeleteSpecificVersion(),
+						form.getCondSection().getCsvUploadInterrupterName());
 
 				request.setAttribute(Constants.MESSAGE, result.getMessage() != null ? StringUtil.escapeHtml(result.getMessage()).replace("\n", "<br/>") : null);
 				request.setAttribute("insertCount", result.getInsertCount());
