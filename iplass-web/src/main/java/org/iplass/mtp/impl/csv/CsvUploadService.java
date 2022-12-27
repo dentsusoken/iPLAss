@@ -767,6 +767,7 @@ public class CsvUploadService implements Service {
 						&& !s.equals(EntityCsvReader.CTRL_CODE_KEY))
 					.map(s -> ed.getProperty(s))
 					.filter(pd -> pd != null)
+					.filter(pd -> pd.isUpdatable())
 					.filter(pd -> !(pd instanceof ExpressionProperty) && !(pd instanceof BinaryProperty))
 					.filter(pd -> !(pd instanceof ReferenceProperty) || ((ReferenceProperty)pd).getMappedBy() == null)
 					.map(PropertyDefinition :: getName)
