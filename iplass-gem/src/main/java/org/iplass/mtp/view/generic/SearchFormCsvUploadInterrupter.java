@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.view.generic;
 
-import org.iplass.mtp.impl.csv.CsvUploadInterrupter;
+import org.iplass.mtp.csv.CsvUploadInterrupter;
 
 /**
  *  汎用検索画面にカスタムでCSVアップロード処理を行わせるインターフェース

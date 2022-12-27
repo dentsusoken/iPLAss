@@ -18,12 +18,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.impl.csv;
+package org.iplass.mtp.csv;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.iplass.mtp.csv.CsvRegistrationType;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.InsertOption;
@@ -35,6 +34,19 @@ import org.iplass.mtp.entity.definition.EntityDefinition;
  * カスタムでCSVアップロード処理を行わせるインターフェース
  */
 public interface CsvUploadInterrupter {
+
+	/**
+	 * CSVアップロード登録処理の種類
+	 */
+	public enum CsvRegistrationType {
+
+		/** 新規追加 */
+		INSERT,
+		/** 更新 */
+		UPDATE,
+		/** 削除 */
+		DELETE
+	}
 
 	/**
 	 * CSVデータから登録用のデータをマッピングします。
