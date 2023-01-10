@@ -189,14 +189,6 @@ toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.LABEL) {
 %>
-var labelValue = document.getElementsByName("data-label-" + propName).item(0);
-<%
-		if (multiplicity == 1) {
-%>
-			labelValue.textContent = <%=editor.getDisplayLabelItem() == null ? "value[0].name" : "value[0]." + editor.getDisplayLabelItem() %>;
-<%
-			} else {
-%>
 var newContent = '';
 for (var i = 0; i < value.length; i++) {
 	var liId = "li_" + propName + i;
@@ -205,10 +197,36 @@ for (var i = 0; i < value.length; i++) {
 	newContent = newContent + '<li id="' + liId + '" >' + label
 			+ '<input type="hidden" name="' + propName + '" value="' + _value + '">' + '</li>';
 }
-document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
+
+if (value.length > 0) {
+	$("[name='data-label-" + propName + "']").html(newContent);
+}
 
 <%
-		}
+	} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
+%>
+
+var propLength = $('[name=' + propName + ']').length;
+var newContent = '';
+for (i =  0; i < value.length; i++) {
+	var hiddenValue = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+	if (i > propLength - 1) {
+		newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+		continue;
+	}
+	$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
+}
+
+// 項目数が増える場合に追加する
+if (propLength && value.length > propLength) {
+	$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
+// 項目に値が無い場合は新規に追加する
+} else if (!propLength) {
+	$(".hidden-input-area:first").append($(newContent));
+}
+
+<%
+
 	}
 } else {
 	// 検索画面

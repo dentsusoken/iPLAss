@@ -104,19 +104,39 @@ for (var i = 0; i < value.length; i++) {
 %>
 var newContent = '';
 
-if (multiplicity == 1) {
-	var booleanLabel = (value === true || value === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
-	newContent = booleanLabel + '<input type="hidden" name="' + propName + '" value="' + value + '">';
+// 自動補完の値が空の場合
+if (value == null) {
+	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
+	$("[name='" + propName + "']:first").parent().html(newContent);
 } else {
+	if (multiplicity == 1) {
+		var booleanLabel = (value === true || value === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
+		newContent = booleanLabel + '<input type="hidden" name="' + propName + '" value="' + value + '">';
 
+	} else {
+		for (i =  0; i < value.length; i++) {
+			if (value[i] == null) {
+				newContent = newContent + '<li> <input type="hidden" name="' + propName + '" value=""> </li>';
+				continue;
+			}
+			var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
+			newContent = newContent + '<li>' + booleanLabel
+				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
+		}
+	}
+	$("[name='data-label-" + propName + "']").html(newContent);
+}
+
+<%
+	} else if (editor.getDisplayType() == BooleanDisplayType.HIDDEN) {
+%>
+if (multiplicity == 1) {
+	$('[name=' + propName + ']').val(value);
+} else {
 	for (i =  0; i < value.length; i++) {
-		var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
-		newContent = newContent + '<li>' + booleanLabel
-			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
+		$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
 	}
 }
-document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
-
 <%
 	}
 } else {

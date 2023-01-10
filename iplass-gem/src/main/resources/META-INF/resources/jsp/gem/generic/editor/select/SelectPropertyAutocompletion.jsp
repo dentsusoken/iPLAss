@@ -64,27 +64,64 @@ $("[name='" + propName + "']").val(value);
 <%
 	// ラベル表示の場合はhtmlを書き換え
 	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
-		 List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
+		List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
 %>
-var editorMap = new Map();
-<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
-	editorMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
-</c:forEach>
+// 自動補完の値が空の場合
+if (!value || (!value[0] && !value.label)) {
+	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
+	$("[name='" + propName + "']:first").parent().html(newContent);
 
-var newContent = '';
+} else {
+	var editorMap = new Map();
+	<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
+		editorMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
+	</c:forEach>
+	
+	var newContent = '';
+	
+	if (multiplicity == 1) {
+		newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label 
+			+ '<input type="hidden" name="' + propName + '" value="' + value + '"> </li>';
 
+	} else {
+		for (i =  0; i < value.length; i++) {
+			newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label
+				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
+		}
+	}
+	$("[name='data-label-" + propName + "']").html(newContent);
+}
+<%
+	} else if(editor.getDisplayType() == SelectDisplayType.HIDDEN) {
+%>
+var propLength = $('[name=' + propName + ']').length;
 if (multiplicity == 1) {
-	newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label 
-		+ '<input type="hidden" name="' + propName + '" value="' + value + '"> </li>';
+	// プロパティ値が無い場合はタグ追加
+	if (!propLength) {
+		$(".hidden-input-area:first").append('<input type="hidden" name="' + propName + '" value="">');
+	}
+	$('[name=' + propName + ']').val(value);
 	
 } else {
+	
+	var newContent = '';
 	for (i =  0; i < value.length; i++) {
-		newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label
-			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
+		var hiddenValue = value[i] ? value[i] : "";
+		if (i > propLength - 1) {
+			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+			continue;
+		}
+		$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
+	}
+
+	// 項目数が増える場合に追加する
+	if (propLength && value.length > propLength) {
+		$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
+	// 項目に値が無い場合は新規に追加する
+	} else if (!propLength) {
+		$(".hidden-input-area:first").append($(newContent));
 	}
 }
-document.getElementsByName("data-label-" + propName).item(0).innerHTML = newContent;
-
 <%
 
 	} else {
