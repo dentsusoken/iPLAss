@@ -23,7 +23,6 @@ package org.iplass.mtp.impl.view.generic;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -955,18 +954,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return convertAutocompletionValue;
 		}
 
+		if (convertAutocompletionValue == null || convertAutocompletionValue.toString().isEmpty()) {
+			return convertAutocompletionValue;
+		}
+
 		String labelStr = "";
 
 		if (editor instanceof NumberPropertyEditor) {
-
-			try {
-				// 整数か小数か
-				Long.parseLong(String.valueOf(value));
-				value = Long.valueOf(String.valueOf(value));
-
-			} catch (NumberFormatException e) {
-				value = new BigDecimal(String.valueOf(value));
-			}
+			value = ConvertUtil.convert(javaType, String.valueOf(value));
 		}
 
 		if (editor instanceof DateTimePropertyEditor) {
@@ -982,7 +977,6 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				value = value instanceof Date ? (Date) value
 						: (Date) ConvertUtil.convert(javaType, String.valueOf(value));
 			}
-
 		}
 
 		labelStr = format.format(value);
