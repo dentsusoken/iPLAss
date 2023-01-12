@@ -1,6 +1,8 @@
-dependencies {
-	compileOnly configurations.jeewebapis
+configurations {
+	compileOnly.extendsFrom(jeewebapis)
+}
 
+dependencies {
 	api sharedLib('junit:junit')
 
 	//groovy

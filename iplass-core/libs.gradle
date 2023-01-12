@@ -1,6 +1,8 @@
-dependencies {
-	compileOnly configurations.jeecoreapis
+configurations {
+	compileOnly.extendsFrom(jeecoreapis)
+}
 
+dependencies {
 	//apache commons
 	implementation sharedLib('commons-io:commons-io')
 	implementation sharedLib('commons-beanutils:commons-beanutils')

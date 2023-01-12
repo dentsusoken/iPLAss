@@ -68,7 +68,7 @@ task copyStaticResources(type: Sync) {
 task archiveStaticResources(type: Zip) {
 	dependsOn('copyStaticResources')
 
-	archiveName = "${project.name}-staticresources-${version}.zip"
+	archiveAppendix = 'staticresources'
 
 	//META-INF/resourcesをZIP圧縮
 	from ('build/tmp/staticresources/META-INF/resources') {
@@ -82,11 +82,10 @@ task archiveStaticResources(type: Zip) {
  */
 configurations {
 	jspcc
+	jspcc.extendsFrom(implementation)
+	jspcc.extendsFrom(compileOnly)
 }
-dependencies {
-	jspcc configurations.implementation
-	jspcc configurations.compileOnly
-}
+
 task compileJsp(dependsOn: ["compileJava",':iplass-core:jar',':iplass-web:jar']) {
 	doLast {
 		def taskName = "compileJsp"

@@ -64,7 +64,7 @@ subprojects { subproject ->
 		manifest {
 			attributes 'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})"
 			attributes 'Implementation-Title': subproject.name
-			attributes 'Implementation-Version': version
+			attributes 'Implementation-Version': project.version
 			attributes 'Implementation-Vendor': vendor
 			attributes 'Build-Date': new Date().format('yyyy/MM/dd HH:mm:ss')
 		}

@@ -1,7 +1,9 @@
-dependencies {
-	compileOnly configurations.jeecoreapis
-	compileOnly configurations.jeewebapis
+configurations {
+	compileOnly.extendsFrom(jeecoreapis)
+	compileOnly.extendsFrom(jeewebapis)
+}
 
+dependencies {
 	implementation 'org.codehaus.groovy:groovy'
 	implementation sharedLib('org.apache.httpcomponents:httpclient')
 
