@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.view.generic;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -90,6 +91,8 @@ import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange;
+import org.iplass.mtp.view.generic.editor.DecimalPropertyEditor;
+import org.iplass.mtp.view.generic.editor.IntegerPropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.NumberPropertyEditor;
@@ -933,18 +936,18 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				List<?> list = (List<?>) value;
 				List<Object> retList = new ArrayList<>();
 				for (Object obj : list) {
-					retList.add(makeConvertAutocompletionValue(obj, editor, format, pd.getJavaType()));
+					retList.add(makeConvertAutocompletionValue(obj, editor, format));
 				}
 				returnValue = retList;
 			} else {
-				returnValue = makeConvertAutocompletionValue(value, editor, format, pd.getJavaType());
+				returnValue = makeConvertAutocompletionValue(value, editor, format);
 			}
 		}
 
 		return returnValue;
 	}
 
-	private Object makeConvertAutocompletionValue(Object value, PropertyEditor editor, Format format, Class<?> javaType) {
+	private Object makeConvertAutocompletionValue(Object value, PropertyEditor editor, Format format) {
 
 		Object convertAutocompletionValue = convertAutocompletionValue(value);
 
@@ -960,8 +963,10 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		String labelStr = "";
 
-		if (editor instanceof NumberPropertyEditor) {
-			value = ConvertUtil.convert(javaType, String.valueOf(value));
+		if (editor instanceof IntegerPropertyEditor) {
+			value = ConvertUtil.convert(Long.class, String.valueOf(value));
+		} else if (editor instanceof DecimalPropertyEditor) {
+			value = ConvertUtil.convert(BigDecimal.class, String.valueOf(value));
 		}
 
 		if (editor instanceof DateTimePropertyEditor) {
@@ -969,13 +974,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			// PropertyEditorにあわせて値の型変換
 			if (editor instanceof TimePropertyEditor) {
 				value = value instanceof Time ? (Time) value
-						: (Time) ConvertUtil.convert(javaType, String.valueOf(value));
+						: (Time) ConvertUtil.convert(Time.class, String.valueOf(value));
 			} else if (editor instanceof TimestampPropertyEditor) {
 				value = value instanceof Timestamp ? (Timestamp) value
-						: (Timestamp) ConvertUtil.convert(javaType, String.valueOf(value));
+						: (Timestamp) ConvertUtil.convert(Timestamp.class, String.valueOf(value));
 			} else if (editor instanceof DatePropertyEditor) {
 				value = value instanceof Date ? (Date) value
-						: (Date) ConvertUtil.convert(javaType, String.valueOf(value));
+						: (Date) ConvertUtil.convert(Date.class, String.valueOf(value));
 			}
 		}
 
