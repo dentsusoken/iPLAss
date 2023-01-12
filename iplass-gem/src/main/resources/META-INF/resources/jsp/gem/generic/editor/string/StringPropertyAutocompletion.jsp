@@ -60,12 +60,15 @@ if (multiplicity == 1) {
 			// ラベル表示の場合はラベルに値を設定
 			if (editor.getDisplayType() == StringDisplayType.LABEL) {
 %>
-var labelValue = document.getElementsByName("data-label-" + propName).item(0);
+var newContent = '';
+
 if (!value) {
-	labelValue.innerHTML = "";
+	newContent = '<input type="hidden" name="' + propName + '" value="">';
 } else {
-	labelValue.innerHTML = value.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;');
+	newContent = value.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
+		+ '<input type="hidden" name="' + propName + '" value="">';
 }
+$("[name='data-label-" + propName + "']").html(newContent);
 <%
 			}
 %>
