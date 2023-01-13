@@ -964,17 +964,17 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		// PropertyEditorにあわせて値の型変換
 		if (editor instanceof IntegerPropertyEditor) {
-		  value = ConvertUtil.convert(Long.class, value);
+			value = ConvertUtil.convert(Long.class, value);
 		} else if (editor instanceof DecimalPropertyEditor) {
-		  value = ConvertUtil.convert(BigDecimal.class, value);
+			value = ConvertUtil.convert(BigDecimal.class, value);
 		} else if (editor instanceof FloatPropertyEditor) {
 			value = ConvertUtil.convert(Double.class, value);
 		} else if (editor instanceof TimePropertyEditor) {
-		  value = ConvertUtil.convert(Time.class, value);
+			value = ConvertUtil.convert(Time.class, value);
 		} else if (editor instanceof TimestampPropertyEditor) {
-		  value = ConvertUtil.convert(Timestamp.class, value);
+			value = ConvertUtil.convert(Timestamp.class, value);
 		} else if (editor instanceof DatePropertyEditor) {
-		  value = ConvertUtil.convert(Date.class, value);
+			value = ConvertUtil.convert(Date.class, value);
 		}
 
 		String labelStr = format.format(value);
