@@ -92,6 +92,7 @@ import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange;
 import org.iplass.mtp.view.generic.editor.DecimalPropertyEditor;
+import org.iplass.mtp.view.generic.editor.FloatPropertyEditor;
 import org.iplass.mtp.view.generic.editor.IntegerPropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
@@ -964,9 +965,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		String labelStr = "";
 
 		if (editor instanceof IntegerPropertyEditor) {
-			value = ConvertUtil.convert(Long.class, String.valueOf(value));
+			value = ConvertUtil.convert(Long.class, value);
 		} else if (editor instanceof DecimalPropertyEditor) {
-			value = ConvertUtil.convert(BigDecimal.class, String.valueOf(value));
+			value = ConvertUtil.convert(BigDecimal.class, value);
+		} else if (editor instanceof FloatPropertyEditor) {
+			value = ConvertUtil.convert(Double.class, value);
 		}
 
 		if (editor instanceof DateTimePropertyEditor) {
@@ -974,13 +977,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			// PropertyEditorにあわせて値の型変換
 			if (editor instanceof TimePropertyEditor) {
 				value = value instanceof Time ? (Time) value
-						: (Time) ConvertUtil.convert(Time.class, String.valueOf(value));
+						: (Time) ConvertUtil.convert(Time.class, value);
 			} else if (editor instanceof TimestampPropertyEditor) {
 				value = value instanceof Timestamp ? (Timestamp) value
-						: (Timestamp) ConvertUtil.convert(Timestamp.class, String.valueOf(value));
+						: (Timestamp) ConvertUtil.convert(Timestamp.class, value);
 			} else if (editor instanceof DatePropertyEditor) {
 				value = value instanceof Date ? (Date) value
-						: (Date) ConvertUtil.convert(Date.class, String.valueOf(value));
+						: (Date) ConvertUtil.convert(Date.class, value);
 			}
 		}
 
