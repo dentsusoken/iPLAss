@@ -962,32 +962,22 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return convertAutocompletionValue;
 		}
 
-		String labelStr = "";
-
+		// PropertyEditorにあわせて値の型変換
 		if (editor instanceof IntegerPropertyEditor) {
-			value = ConvertUtil.convert(Long.class, value);
+		  value = ConvertUtil.convert(Long.class, value);
 		} else if (editor instanceof DecimalPropertyEditor) {
-			value = ConvertUtil.convert(BigDecimal.class, value);
+		  value = ConvertUtil.convert(BigDecimal.class, value);
 		} else if (editor instanceof FloatPropertyEditor) {
 			value = ConvertUtil.convert(Double.class, value);
+		} else if (editor instanceof TimePropertyEditor) {
+		  value = ConvertUtil.convert(Time.class, value);
+		} else if (editor instanceof TimestampPropertyEditor) {
+		  value = ConvertUtil.convert(Timestamp.class, value);
+		} else if (editor instanceof DatePropertyEditor) {
+		  value = ConvertUtil.convert(Date.class, value);
 		}
 
-		if (editor instanceof DateTimePropertyEditor) {
-
-			// PropertyEditorにあわせて値の型変換
-			if (editor instanceof TimePropertyEditor) {
-				value = value instanceof Time ? (Time) value
-						: (Time) ConvertUtil.convert(Time.class, value);
-			} else if (editor instanceof TimestampPropertyEditor) {
-				value = value instanceof Timestamp ? (Timestamp) value
-						: (Timestamp) ConvertUtil.convert(Timestamp.class, value);
-			} else if (editor instanceof DatePropertyEditor) {
-				value = value instanceof Date ? (Date) value
-						: (Date) ConvertUtil.convert(Date.class, value);
-			}
-		}
-
-		labelStr = format.format(value);
+		String labelStr = format.format(value);
 
 		// ラベルと値を設定
 		Map<String, Object> labelValue = new HashMap<>();
