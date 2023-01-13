@@ -4,12 +4,13 @@ ext {
 
 configurations {
 	wjRuntime
+	
+	compileOnly.extendsFrom(jeecoreapis)
+	compileOnly.extendsFrom(jeewebapis)
+	runtimeOnly.extendsFrom(wjRuntime)
 }
 
 dependencies {
-	compileOnly configurations.jeecoreapis
-	compileOnly configurations.jeewebapis
-	
 	//supercsv
 	implementation sharedLib('net.sf.supercsv:super-csv')
 
@@ -19,7 +20,6 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
 	wjRuntime sharedLib('org.webjars.npm:ace-builds')
-	runtimeOnly configurations.wjRuntime
 
 	//smart gwt has no public maven repository
 	compileOnly fileTree(rootProject.ext.localLibDir) {

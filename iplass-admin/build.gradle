@@ -47,6 +47,9 @@ processResources {
 	exclude 'org/iplass/adminconsole/public/**'
 	exclude 'edu/ycp/cs/dh/acegwt/**/*.gwt.xml'
 	exclude 'edu/ycp/cs/dh/acegwt/public/**'
+
+	// 重複ファイル設定（コピーされたファイルを正とする）
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 gwt {
@@ -509,7 +512,7 @@ task copyStaticResources(type: Sync) {
 task archiveStaticResources(type: Zip) {
 	dependsOn('copyStaticResources')
 
-	archiveName = "${project.name}-staticresources-${version}.zip"
+	archiveAppendix = 'staticresources'
 
 	//META-INF/resourcesをZIP圧縮
 	from ('build/tmp/staticresources/META-INF/resources') {

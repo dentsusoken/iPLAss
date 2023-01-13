@@ -2,6 +2,10 @@ configurations {
 	wjRuntime
 	jasper
 
+	compileOnly.extendsFrom(jeecoreapis)
+	compileOnly.extendsFrom(jeewebapis)
+	runtimeOnly.extendsFrom(wjRuntime)
+
 	// ビルドパスが競合してエラーになるのでnpmとbowerのものは除外
 	all*.exclude group: 'org.webjars.npm', module: 'jquery'
 	all*.exclude group: 'org.webjars.bower', module: 'jquery'
@@ -12,9 +16,6 @@ configurations {
 }
 
 dependencies {
-	compileOnly configurations.jeecoreapis
-	compileOnly configurations.jeewebapis
-
 	implementation sharedLib('org.apache.commons:commons-text')
 	implementation 'org.codehaus.groovy:groovy'
 
@@ -40,8 +41,6 @@ dependencies {
 
 	//css
 	wjRuntime sharedLib('org.webjars:font-awesome')
-
-	runtimeOnly configurations.wjRuntime
 
 	//jsp
 	jasper sharedLib('org.apache.tomcat:tomcat-jasper')
