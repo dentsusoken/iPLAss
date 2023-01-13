@@ -65,7 +65,9 @@ public enum DateRange {
 	/** 翌90日間 */
 	NEXT_90_DAYS,
 	/** 翌180日間 */
-	NEXT_180_DAYS;
+	NEXT_180_DAYS,
+	/** カスタム */
+	CUSTOM;
 
 	/**
 	 * 日付範囲の開始日時を返します。
