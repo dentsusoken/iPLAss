@@ -1771,7 +1771,7 @@ LocaleInfo.generic_common_AutocompletionProperty_referencePropertyIndexDescripti
 LocaleInfo.generic_common_AutocompletionSetting_propertiesDisplaNameKey = "Property of linkage source";
 LocaleInfo.generic_common_AutocompletionSetting_propertiesDescriptionKey = "Specify the properties of the linkage source. <br>If more than one is specified, when one of the properties is changed, supplement processing is called with the values of all items as parameters.";
 LocaleInfo.generic_common_JavascriptAutocompletionSetting_javascriptDisplaNameKey = "Javascript";
-LocaleInfo.generic_common_JavascriptAutocompletionSetting_javascriptDescriptionKey = "Set auto-completion Javascript to be executed when the linkage source property is changed.<br>The value of the linkage source property is javascript variable in the following format.<br><pre>var sourceVales = {\r\n  Property name 1: Property value,\r\n  Property name 2: [property value, ...], * when multiplicity is 2 or more \r\n}</pre>";
+LocaleInfo.generic_common_JavascriptAutocompletionSetting_javascriptDescriptionKey = "Set auto-completion Javascript to be executed when the linkage source property is changed.<br>The value of the linkage source property is javascript variable in the following format.<br><pre>var sourceVales = {\r\n  Property name 1: [Property value],\r\n  Property name 2: [property value, ...], * It will be an array value regardless of multiplicity \r\n}</pre>";
 LocaleInfo.generic_common_WebApiAutocompletionSetting_autocompletionTypeDisplaNameKey = "Autocompletion type";
 LocaleInfo.generic_common_WebApiAutocompletionSetting_autocompletionTypeDescriptionKey = "Specify how to obtain the value to be autocompleted.<br>EQL: Executes the set EQL and auto-complements with the result.<br>GROOVYSCRIPT: Automatically complements Groovyscript execution results.";
 LocaleInfo.generic_common_WebApiAutocompletionSetting_eqlDisplaNameKey = "EQL";
@@ -2164,6 +2164,8 @@ LocaleInfo.generic_element_VirtualPropertyItem_editorDisplaNameKey = "Property E
 LocaleInfo.generic_element_VirtualPropertyItem_editorDescriptionKey = "Specify the property editor to match the format you want to display.";
 LocaleInfo.generic_element_VirtualPropertyItem_requiredDisplayTypeDisplaNameKey = "Display required mark";
 LocaleInfo.generic_element_VirtualPropertyItem_requiredDisplayTypeDescriptionKey = "Required mark is displayed on the edit screen.<BR />DEFAULT  : Do not show the required attributes<BR />DISPLAY  : Show the required attributes<BR />NONE     : Do not show the required attributes";
+LocaleInfo.generic_element_VirtualPropertyItem_autocompletionSettingDisplaNameKey = "Autocompletion Setting";
+LocaleInfo.generic_element_VirtualPropertyItem_autocompletionSettingDescriptionKey = "Set autocompletion setting.";
 LocaleInfo.generic_element_property_PropertyBase_displayLabelDisplaNameKey = "Labels";
 LocaleInfo.generic_element_property_PropertyBase_displayLabelDescriptionKey = "Set the label displayed on the screen.";
 LocaleInfo.generic_element_property_PropertyBase_editorDisplaNameKey = "Property Editor";

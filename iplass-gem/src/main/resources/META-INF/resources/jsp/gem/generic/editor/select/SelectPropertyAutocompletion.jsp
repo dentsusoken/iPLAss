@@ -20,6 +20,13 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="org.iplass.mtp.entity.SelectValue" %>
+<%@ page import="org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.EditorValue" %>
 
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor" %>
@@ -49,11 +56,74 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
+
 <%
 	if (editor.getDisplayType() == SelectDisplayType.SELECT) {
 %>
 $("[name='" + propName + "']").val(value);
 <%
+	// ラベル表示の場合はhtmlを書き換え
+	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
+		List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
+%>
+// 自動補完の値が空の場合
+if (!value || (!value[0] && !value.label)) {
+	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
+	$("[name='" + propName + "']:first").parent().html(newContent);
+
+} else {
+	var editorMap = new Map();
+	<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
+		editorMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
+	</c:forEach>
+	
+	var newContent = '';
+	
+	if (multiplicity == 1) {
+		newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label 
+			+ '<input type="hidden" name="' + propName + '" value="' + value + '"> </li>';
+
+	} else {
+		for (i =  0; i < value.length; i++) {
+			newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label
+				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
+		}
+	}
+	$("[name='data-label-" + propName + "']").html(newContent);
+}
+<%
+	} else if(editor.getDisplayType() == SelectDisplayType.HIDDEN) {
+%>
+var propLength = $('[name=' + propName + ']').length;
+if (multiplicity == 1) {
+	// プロパティ値が無い場合はタグ追加
+	if (!propLength) {
+		$(".hidden-input-area:first").append('<input type="hidden" name="' + propName + '" value="">');
+	}
+	$('[name=' + propName + ']').val(value);
+	
+} else {
+	
+	var newContent = '';
+	for (i =  0; i < value.length; i++) {
+		var hiddenValue = value[i] ? value[i] : "";
+		if (i > propLength - 1) {
+			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+			continue;
+		}
+		$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
+	}
+
+	// 項目数が増える場合に追加する
+	if (propLength && value.length > propLength) {
+		$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
+	// 項目に値が無い場合は新規に追加する
+	} else if (!propLength) {
+		$(".hidden-input-area:first").append($(newContent));
+	}
+}
+<%
+
 	} else {
 		if (multiplicity == 1) {
 			//radio

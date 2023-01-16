@@ -23,9 +23,14 @@ package org.iplass.mtp.impl.view.generic;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +45,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.gem.command.ViewUtil;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
@@ -59,6 +66,7 @@ import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
+import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
@@ -78,12 +86,25 @@ import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.common.AutocompletionHandleException;
+import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
+import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
+import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor;
+import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType;
+import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange;
+import org.iplass.mtp.view.generic.editor.DecimalPropertyEditor;
+import org.iplass.mtp.view.generic.editor.FloatPropertyEditor;
+import org.iplass.mtp.view.generic.editor.IntegerPropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
+import org.iplass.mtp.view.generic.editor.NumberPropertyEditor;
+import org.iplass.mtp.view.generic.editor.NumberPropertyEditor.NumberDisplayType;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
+import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
+import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
+import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
@@ -243,6 +264,16 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 						return editor;
 					} else {
 						return getEditor(subPropName, editor);
+					}
+				}
+			} else if (element instanceof VirtualPropertyItem) {
+				VirtualPropertyItem property = (VirtualPropertyItem) element;
+				if (property.getPropertyName().equals(currentPropName)) {
+					if (subPropName == null) {
+						property.getEditor().setPropertyName(property.getPropertyName());
+						return property.getEditor();
+					} else {
+						return getEditor(subPropName, property.getEditor());
 					}
 				}
 			} else if (element instanceof DefaultSection) {
@@ -849,10 +880,16 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		} else {
 			editor = getPropertyEditor(definitionName, viewType, viewName, propName, entity);
 		}
+		
+		PropertyDefinition pd = null;
 		//連動先の多重度が複数の場合、Listで格納
 		//連動先の多重度が単数の場合、値をそのまま格納
-		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, edm.get(definitionName));
-		Object currValue = pd.getMultiplicity() == 1 ? (currentValue.size() > 0 ? currentValue.get(0) : "") : currentValue;
+		try {
+			pd = EntityViewUtil.getPropertyDefinition(propName, edm.get(definitionName));
+		} catch (IllegalArgumentException e) {
+			// 仮想プロパティでentityからPropertyDefinitionが取得できない場合
+		}
+		Object currValue = (pd == null) || (pd.getMultiplicity() == 1) ? (currentValue.size() > 0 ? currentValue.get(0) : "") : currentValue;
 		boolean isReference = editor instanceof ReferencePropertyEditor;
 		Object value = autocompletionSetting.handle(param, currValue, isReference);
 
@@ -873,6 +910,26 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			}
 			returnValue = value;
 		} else {
+
+			DateTimeFormatSetting formatInfo = null;
+			Format format = null;
+
+			if (editor instanceof DateTimePropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				formatInfo = ViewUtil.getFormatInfo(((DateTimePropertyEditor) editor).getLocalizedDatetimeFormatList(),
+						((DateTimePropertyEditor) editor).getDatetimeFormat());
+			}
+
+			if (editor instanceof NumberPropertyEditor && editor.getDisplayType() == NumberDisplayType.LABEL) {
+				format = getDisplayNumberFormat((NumberPropertyEditor) editor);
+			} else if (editor instanceof TimePropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				format = getDisplayTimeFormat(((TimePropertyEditor) editor).getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale());
+			} else if (editor instanceof TimestampPropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				format = getDisplayTimestampFormat(((TimestampPropertyEditor) editor).getDispRange(), formatInfo.getDatetimeFormat(),
+						formatInfo.getDatetimeLocale(), ((TimestampPropertyEditor) editor).isShowWeekday());
+			} else if (editor instanceof DatePropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				format = getDisplayDateFormat(formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), ((DatePropertyEditor) editor).isShowWeekday());
+			}
+			
 			if (value instanceof Entity) {
 				// スクリプト、EQLの結果がEntityの場合はプロパティの値だけ返す
 				returnValue = ((Entity) value).getValue(propName);
@@ -880,15 +937,141 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				List<?> list = (List<?>) value;
 				List<Object> retList = new ArrayList<>();
 				for (Object obj : list) {
-					retList.add(convertAutocompletionValue(obj));
+					retList.add(makeConvertAutocompletionValue(obj, editor, format));
 				}
 				returnValue = retList;
 			} else {
-				returnValue = convertAutocompletionValue(value);
+				returnValue = makeConvertAutocompletionValue(value, editor, format);
 			}
 		}
 
 		return returnValue;
+	}
+
+	private Object makeConvertAutocompletionValue(Object value, PropertyEditor editor, Format format) {
+
+		Object convertAutocompletionValue = convertAutocompletionValue(value);
+
+		// フォーマット対象のプロパティでなくラベルでない場合はconvertした値を返却
+		if (!(editor instanceof DateTimePropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL)
+				&& !(editor instanceof NumberPropertyEditor && editor.getDisplayType() == NumberDisplayType.LABEL)) {
+			return convertAutocompletionValue;
+		}
+
+		if (convertAutocompletionValue == null || convertAutocompletionValue.toString().isEmpty()) {
+			return convertAutocompletionValue;
+		}
+
+		// PropertyEditorにあわせて値の型変換
+		if (editor instanceof IntegerPropertyEditor) {
+			value = ConvertUtil.convert(Long.class, value);
+		} else if (editor instanceof DecimalPropertyEditor) {
+			value = ConvertUtil.convert(BigDecimal.class, value);
+		} else if (editor instanceof FloatPropertyEditor) {
+			value = ConvertUtil.convert(Double.class, value);
+		} else if (editor instanceof TimePropertyEditor) {
+			value = ConvertUtil.convert(Time.class, value);
+		} else if (editor instanceof TimestampPropertyEditor) {
+			value = ConvertUtil.convert(Timestamp.class, value);
+		} else if (editor instanceof DatePropertyEditor) {
+			value = ConvertUtil.convert(Date.class, value);
+		}
+
+		String labelStr = format.format(value);
+
+		// ラベルと値を設定
+		Map<String, Object> labelValue = new HashMap<>();
+		labelValue.put("value", convertAutocompletionValue);
+		labelValue.put("label", labelStr);
+		return labelValue;
+	}
+
+	private Format getDisplayNumberFormat(NumberPropertyEditor editor) {
+		GemConfigService gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		String format = editor.getNumberFormat();
+		DecimalFormat df = new DecimalFormat();
+		if (gemConfig.isFormatNumberWithComma()) {
+			// カンマでフォーマットする場合は指定のフォーマットがある場合だけフォーマット適用
+			if (format != null) {
+				df.applyPattern(format);
+				return df;
+			} else {
+				NumberFormat nf = NumberFormat.getInstance(TemplateUtil.getLocale());
+				return nf;
+			}
+		} else {
+			// カンマでフォーマットしない場合はフォーマットがない場合に数値のみのフォーマットを適用
+			if (format == null)
+				format = "#.###";
+			df.applyPattern(format);
+			return df;
+		}
+	}
+
+	private DateFormat getDisplayTimestampFormat(TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
+		DateFormat format = null;
+
+		if (datetimeFormatPattern != null) {
+			// フォーマットの指定がある場合、指定されたフォーマットで表記する
+			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
+			return format;
+		}
+
+		String timeFormat = "";
+		if (TimeDispRange.isDispSec(dispRange)) {
+			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
+		} else if (TimeDispRange.isDispMin(dispRange)) {
+			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
+		} else if (TimeDispRange.isDispHour(dispRange)) {
+			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
+		}
+
+		if (showWeekday) {
+			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
+			// テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
+			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
+		} else {
+			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
+			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
+		}
+		return format;
+	}
+
+	private DateFormat getDisplayTimeFormat(TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale) {
+
+		DateFormat format = null;
+		if(datetimeFormatPattern != null){
+			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
+			return format;
+		}
+
+		if (TimeDispRange.isDispSec(dispRange)) {
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat(), false);
+		} else if (TimeDispRange.isDispMin(dispRange)) {
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeMinFormat(), false);
+		} else if (TimeDispRange.isDispHour(dispRange)) {
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeHourFormat(), false);
+		}
+
+		return format;
+	}
+
+	private DateFormat getDisplayDateFormat(String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
+		DateFormat format = null;
+
+		if (datetimeFormatPattern != null) {
+			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
+			return format;
+		}
+
+		if (showWeekday) {
+			// テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat(), false,
+					true);
+		} else {
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), false);
+		}
+		return format;
 	}
 
 	private PropertyEditor getPropertyEditor(String definitionName, String viewName, String propName, Integer referenceSectionIndex) {

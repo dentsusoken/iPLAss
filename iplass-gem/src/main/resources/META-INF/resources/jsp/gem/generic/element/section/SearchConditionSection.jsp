@@ -824,6 +824,7 @@ $(function() {
 						//指定検索条件がある場合は、Editor側ではセットせずSearchResultSection側で設定
 					}
 					request.setAttribute(Constants.EDITOR_DEFAULT_VALUE, defaultValue);
+					request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
 %>
 <jsp:include page="<%=path%>" />
 <%
@@ -834,6 +835,22 @@ $(function() {
 					request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 					request.removeAttribute(Constants.EDITOR_PROP_VALUE);
 					request.removeAttribute(Constants.EDITOR_DEFAULT_VALUE);
+				}
+				if (property.getAutocompletionSetting() != null) {
+					request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
+					request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
+					request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, property.getPropertyName());
+					request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, 1);
+					String autocompletionPath = "/jsp/gem/generic/common/SearchConditionAutocompletion.jsp";
+%>
+<jsp:include page="<%=autocompletionPath %>"/>
+<%
+					request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
+					request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
+					request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
+					request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
+					request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
+					request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
 				}
 %>
 </td>
@@ -918,7 +935,9 @@ $(function() {
 			pd = EntityViewUtil.getPropertyDefinition(property);
 			editor = property.getEditor();
 			editor.setPropertyName(propertyName);
+			autocompletionSetting = property.getAutocompletionSetting();
 		}
+
 		String path = EntityViewUtil.getJspPath(editor, ViewConst.DESIGN_TYPE_GEM);
 		if (path != null) {
 //			request.setAttribute(Constants.EDITOR_STYLE, style);//nest項目があった場合のクラスのプレフィックスに
@@ -945,6 +964,22 @@ $(function() {
 			request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 			request.removeAttribute(Constants.EDITOR_PROP_VALUE);
 			request.removeAttribute(Constants.EDITOR_DEFAULT_VALUE);
+		}
+		if (autocompletionSetting != null) {
+			request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
+			request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
+			request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, propertyName);
+			request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, 1);
+			String autocompletionPath = "/jsp/gem/generic/common/SearchConditionAutocompletion.jsp";
+%>
+<jsp:include page="<%=autocompletionPath %>"/>
+<%
+			request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
+			request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
+			request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
+			request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
+			request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
+			request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
 		}
 	}
 %>

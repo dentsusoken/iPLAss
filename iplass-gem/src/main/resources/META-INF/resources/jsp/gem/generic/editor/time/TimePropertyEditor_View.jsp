@@ -63,7 +63,6 @@
 		return value;
 	}
 	String format(Time time) {
-// 		SimpleDateFormat format = new SimpleDateFormat("HHmmssSSS");
 		SimpleDateFormat format = DateUtil.getSimpleDateFormat("HHmmssSSS", false);
 		return time != null ? format.format(time) : "";
 	}
@@ -106,7 +105,7 @@
 		if (isMultiple) {
 			//複数
 %>
-<ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<ul name="data-label-<c:out value="<%=propName %>"/>" class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
 			Time[] array = propValue instanceof Time[] ? (Time[]) propValue : null;
 			if (array != null) {
@@ -134,7 +133,7 @@
 			//単一
 			Time t = propValue instanceof Time ? (Time) propValue : null;
 %>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>">
+<span name="data-label-<c:out value="<%=propName %>"/>" class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>">
 <c:out value="<%=displayFormat(t, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.getDispRange()) %>"/>
 <%
 			if (outputHidden) {

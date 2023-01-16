@@ -49,15 +49,45 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
+
 <%
 	if (editor.getDisplayType() == StringDisplayType.TEXT
 		|| editor.getDisplayType() == StringDisplayType.TEXTAREA
-		|| editor.getDisplayType() == StringDisplayType.PASSWORD) {
+		|| editor.getDisplayType() == StringDisplayType.PASSWORD
+		|| editor.getDisplayType() == StringDisplayType.LABEL) {
 		if (multiplicity == 1) {
+
+			// ラベル表示の場合はラベルに値を設定
+			if (editor.getDisplayType() == StringDisplayType.LABEL) {
+%>
+var newContent = '';
+
+if (!value) {
+	newContent = '<input type="hidden" name="' + propName + '" value="">';
+} else {
+	newContent = value.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
+		+ '<input type="hidden" name="' + propName + '" value="">';
+}
+$("[name='data-label-" + propName + "']").html(newContent);
+<%
+			}
 %>
 $("[name='" + propName + "']").val(value);
 <%
-		} else  {
+		} else {
+
+			// ラベル表示の場合はhtml書き換え
+			if (editor.getDisplayType() == StringDisplayType.LABEL) {
+%>
+var newContent = '';
+for (i =  0; i < value.length; i++) {
+	var hiddenValue = value[i] ? value[i] : "";
+	newContent = newContent + '<li>' + hiddenValue.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
+				+ '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '"> </li>';
+}
+$("[name='data-label-" + propName + "']").html(newContent);
+<%
+			} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -67,6 +97,7 @@ for (var i = 0; i < value.length; i++) {
 	$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
 }
 <%
+			}
 		}
 	} else if (editor.getDisplayType() == StringDisplayType.SELECT) {
 %>
@@ -77,7 +108,7 @@ $("[name='" + propName + "']").val(value);
 %>
 CKEDITOR.instances[propName].setData(value);
 <%
-		} else  {
+		} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -89,6 +120,31 @@ for (var i = 0; i < value.length; i++) {
 }
 <%
 		}
+	} else if (editor.getDisplayType() == StringDisplayType.HIDDEN) {
+%>
+if (multiplicity == 1) {
+	$('[name=' + propName + ']').val(value);
+} else {
+	var propLength = $('[name=' + propName + ']').length;
+	var newContent = '';
+	for (i =  0; i < value.length; i++) {
+		hiddenValue = value[i] ? value[i] : "";
+		if (i > propLength - 1) {
+			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+			continue;
+		}
+		$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
+	}
+
+	// 項目数が増える場合に追加する
+	if (propLength && value.length > propLength) {
+		$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
+	// 項目に値が無い場合は新規に追加する
+	} else if (!propLength) {
+		$(".hidden-input-area:first").append($(newContent));
+	}
+}
+<%
 	}
 } else {
 	// 検索画面

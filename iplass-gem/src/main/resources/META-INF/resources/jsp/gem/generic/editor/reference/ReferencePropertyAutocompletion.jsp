@@ -17,7 +17,6 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
@@ -186,7 +185,48 @@ for (var i = 0; i < value.length; i++) {
 }
 <%-- Dummy行が存在するので、 multiplicity + 1 --%>
 toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
+
 <%
+	} else if (editor.getDisplayType() == ReferenceDisplayType.LABEL) {
+%>
+var newContent = '';
+for (var i = 0; i < value.length; i++) {
+	var liId = "li_" + propName + i;
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	var _value = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+	newContent = newContent + '<li id="' + liId + '" >' + label
+			+ '<input type="hidden" name="' + propName + '" value="' + _value + '">' + '</li>';
+}
+
+if (value.length > 0) {
+	$("[name='data-label-" + propName + "']").html(newContent);
+}
+
+<%
+	} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
+%>
+
+var propLength = $('[name=' + propName + ']').length;
+var newContent = '';
+for (i =  0; i < value.length; i++) {
+	var hiddenValue = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+	if (i > propLength - 1) {
+		newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+		continue;
+	}
+	$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
+}
+
+// 項目数が増える場合に追加する
+if (propLength && value.length > propLength) {
+	$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
+// 項目に値が無い場合は新規に追加する
+} else if (!propLength) {
+	$(".hidden-input-area:first").append($(newContent));
+}
+
+<%
+
 	}
 } else {
 	// 検索画面

@@ -144,37 +144,33 @@
 <jsp:include page="<%=path %>" />
 <%
 	}
-
-	if (!isHidden) {
-		if (showDesc) {
+	if (showDesc) {
 %>
 </p>
 <%-- XSS対応-メタの設定のため対応なし(description) --%>
 <p class="explanation"><%=description %></p>
 <%
-		}
-		if ((OutputType.EDIT == type || OutputType.BULK == type) && property.getAutocompletionSetting() != null) {
-			request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
+	}
+	if ((OutputType.EDIT == type || OutputType.BULK == type) && property.getAutocompletionSetting() != null) {
+		request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
 			request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
-			request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, propName);
-			request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, pd.getMultiplicity());
-			String autocompletionPath = "/jsp/gem/generic/common/Autocompletion.jsp";
+		request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, propName);
+		request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, pd.getMultiplicity());
+		String autocompletionPath = "/jsp/gem/generic/common/Autocompletion.jsp";
 %>
 <jsp:include page="<%=autocompletionPath%>" />
 <%
-			request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
-			request.removeAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA);
-			request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
-			request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
-			request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
-			request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
-			request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
-		}
-		if (OutputType.EDIT == type || OutputType.BULK == type) {
-			request.removeAttribute(Constants.EDITOR_REQUIRED);
-		}
-%>
-</td>
-<%
+		request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
+		request.removeAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA);
+		request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
+		request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
+		request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
+		request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
+		request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
+	}
+	if (OutputType.EDIT == type || OutputType.BULK == type) {
+		request.removeAttribute(Constants.EDITOR_REQUIRED);
 	}
 %>
+</td>
+

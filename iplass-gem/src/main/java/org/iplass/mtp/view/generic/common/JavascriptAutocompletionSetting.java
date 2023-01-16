@@ -46,8 +46,8 @@ public class JavascriptAutocompletionSetting extends AutocompletionSetting {
 				+ "連動元のプロパティの値は以下の形式で変数になっています。<br>"
 				+ "<pre>"
 				+ "var pVal = {\r\n"
-				+ "  プロパティ名1:プロパティ値,\r\n"
-				+ "  プロパティ名2:[プロパティ値,...], *多重度が2以上の場合\r\n"
+				+ "  プロパティ名1:[プロパティ値],\r\n"
+				+ "  プロパティ名2:[プロパティ値,...], *多重度に関わらずプロパティ値は配列になる\r\n"
 				+ "}"
 				+ "</pre>",
 		descriptionKey="generic_common_JavascriptAutocompletionSetting_javascriptDescriptionKey"

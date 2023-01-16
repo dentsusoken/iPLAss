@@ -107,7 +107,7 @@
 		if (isMultiple) {
 			//複数
 %>
-<ul class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
+<ul name="data-label-<c:out value="<%=propName %>"/>" class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
 <%
 			Number[] array = propValue instanceof Number[] ? (Number[]) propValue : null;
 			if (array != null) {
@@ -122,8 +122,9 @@
 					if (tmp instanceof Double) hiddenValue = "" + ((Double)tmp).doubleValue();
 					else if (tmp instanceof Long) hiddenValue = "" + ((Long)tmp).longValue();
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
 </li>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+
 <%
 				}
 			}
@@ -134,15 +135,16 @@
 			//単数
 			String str = propValue instanceof Number ? format(editor.getNumberFormat(), (Number) propValue) : "";
 %>
-<span class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
+<span name="data-label-<c:out value="<%=propName %>"/>" class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
 <c:out value="<%=str %>"/>
 <%
 			String hiddenValue = "";
 			if (propValue instanceof Double) hiddenValue = "" + ((Double)propValue).doubleValue();
 			else if (propValue instanceof Long) hiddenValue = "" + ((Long)propValue).longValue();
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
 </span>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+
 <%
 		}
 	} else {

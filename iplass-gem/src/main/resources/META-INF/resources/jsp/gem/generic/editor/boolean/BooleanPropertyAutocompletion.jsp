@@ -79,8 +79,9 @@ if (value === true || value === "true") {
 		$("[name='" + propName + "']").click();
 	}
 }
+
 <%
-		} else  {
+		} else {
 %>
 for (var i = 0; i < value.length; i++) {
 	var isChecked = $("[name='" + propName + i + "']").is(":checked");
@@ -96,6 +97,47 @@ for (var i = 0; i < value.length; i++) {
 }
 <%
 		}
+	} else if (editor.getDisplayType() == BooleanDisplayType.LABEL) {
+		String[] autocompletionBooleanLabel = (String[]) request.getAttribute("autocompletionBooleanLabel");
+		String trueLabel = autocompletionBooleanLabel[0];
+		String falseLabel = autocompletionBooleanLabel[1];
+%>
+var newContent = '';
+
+// 自動補完の値が空の場合
+if (value == null) {
+	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
+	$("[name='" + propName + "']:first").parent().html(newContent);
+} else {
+	if (multiplicity == 1) {
+		var booleanLabel = (value === true || value === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
+		newContent = booleanLabel + '<input type="hidden" name="' + propName + '" value="' + value + '">';
+
+	} else {
+		for (i =  0; i < value.length; i++) {
+			if (value[i] == null) {
+				newContent = newContent + '<li> <input type="hidden" name="' + propName + '" value=""> </li>';
+				continue;
+			}
+			var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
+			newContent = newContent + '<li>' + booleanLabel
+				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
+		}
+	}
+	$("[name='data-label-" + propName + "']").html(newContent);
+}
+
+<%
+	} else if (editor.getDisplayType() == BooleanDisplayType.HIDDEN) {
+%>
+if (multiplicity == 1) {
+	$('[name=' + propName + ']').val(value);
+} else {
+	for (i =  0; i < value.length; i++) {
+		$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
+	}
+}
+<%
 	}
 } else {
 	//検索画面

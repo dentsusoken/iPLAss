@@ -106,7 +106,7 @@
 		//詳細編集か詳細表示の場合だけ表示する
 		if (OutputType.EDIT == type || OutputType.VIEW == type) {
 %>
-<span class="data-label">
+<span name="data-label-<c:out value="<%=propName %>"/>" class="data-label">
 <%
 			if (isMultiple) {
 				String[] array = propValue instanceof String[] ? (String[]) propValue : null;
@@ -174,7 +174,7 @@ $(function() {
 		if (isMultiple) {
 			List<EditorValue> values = getValues(editor, propValue, pd);
 %>
-<ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<ul name="data-label-<c:out value="<%=propName %>"/>" class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
 			for (EditorValue tmp : values) {
 				String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
@@ -195,7 +195,7 @@ $(function() {
 				label = EntityViewUtil.getStringPropertySelectTypeLabel(ev);
 			}
 %>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<span name="data-label-<c:out value="<%=propName %>"/>"  class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <c:out value="<%=label %>"/>
 </span>
 <%
@@ -224,7 +224,7 @@ $(function() {
 		
 		if (isMultiple) {
 %>
-<ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<ul name="data-label-<c:out value="<%=propName %>"/>"  class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
 			String[] array = propValue instanceof String[] ? (String[]) propValue : null;
 			if (array != null) {
@@ -268,7 +268,7 @@ $(function() {
 				str = str.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
 			}
 %>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<span name="data-label-<c:out value="<%=propName %>"/>" class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%-- XSS対応-エスケープ処理済み＆HTMLタグ出力のため対応なし --%>
 <%=str %>
 <%

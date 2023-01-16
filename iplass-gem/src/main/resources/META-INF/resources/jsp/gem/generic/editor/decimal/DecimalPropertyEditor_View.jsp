@@ -106,7 +106,7 @@
 		if (isMultiple) {
 			//複数
 %>
-<ul class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
+<ul name="data-label-<c:out value="<%=propName %>"/>"  class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
 <%
 			BigDecimal[] array = propValue instanceof BigDecimal[] ? (BigDecimal[]) propValue : null;
 			if (array != null) {
@@ -135,7 +135,7 @@
 			BigDecimal target = propValue instanceof BigDecimal ? (BigDecimal) propValue : null;
 			String str = format(editor.getNumberFormat(), target);
 %>
-<span class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
+<span name="data-label-<c:out value="<%=propName %>"/>"  class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
 <c:out value="<%=str %>"/>
 <%
 			if (outputHidden) {

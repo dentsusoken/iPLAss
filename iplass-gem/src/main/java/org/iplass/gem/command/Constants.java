@@ -236,6 +236,7 @@ public class Constants {
 	public static final String AUTOCOMPLETION_REF_NEST_PROP_NAME = "autocompletionNestPropName";
 	public static final String AUTOCOMPLETION_REF_SECTION_INDEX = "autocompletionReferenceSectionIndex";
 	public static final String AUTOCOMPLETION_ROOT_ENTITY_DATA = "autocompletionRootEntityData";
+	public static final String AUTOCOMPLETION_EDITOR_VALUES = "autocompletionEditorValues";
 
 	// お知らせ用
 	public static final String DATA_ENTITY = "entity";

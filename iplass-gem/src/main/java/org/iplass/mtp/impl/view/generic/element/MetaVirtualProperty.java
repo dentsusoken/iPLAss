@@ -23,9 +23,15 @@ package org.iplass.mtp.impl.view.generic.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.mtp.impl.entity.EntityContext;
+import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
+import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting;
+import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
@@ -84,6 +90,9 @@ public class MetaVirtualProperty extends MetaElement {
 
 	/** CSVの出力 */
 	private boolean outputCsv = false;
+
+	/** 自動補完設定 */
+	private MetaAutocompletionSetting autocompletionSetting;
 
 	/**
 	 * プロパティ名を取得します。
@@ -325,6 +334,22 @@ public class MetaVirtualProperty extends MetaElement {
 		this.outputCsv = outputCsv;
 	}
 
+	/**
+	 * 自動補完設定を取得します。
+	 * @return autocompletionSetting 自動補完設定
+	 */
+	public MetaAutocompletionSetting getAutocompletionSetting() {
+		return autocompletionSetting;
+	}
+
+	/**
+	 * 自動補完設定を設定します。
+	 * @param autocompletionSetting 自動補完設定
+	 */
+	public void setAutocompletionSetting(MetaAutocompletionSetting autocompletionSetting) {
+		this.autocompletionSetting = autocompletionSetting;
+	}
+
 	@Override
 	public MetaVirtualProperty copy() {
 		return ObjectUtil.deepCopy(this);
@@ -352,6 +377,13 @@ public class MetaVirtualProperty extends MetaElement {
 			property.getEditor().setPropertyName(propertyName);
 			editor.applyConfig(property.getEditor());
 			this.editor = editor;
+		}
+
+		EntityContext context = EntityContext.getCurrentContext();
+		EntityHandler entity = context.getHandlerById(definitionId);
+		if (property.getAutocompletionSetting() != null) {
+			this.autocompletionSetting = MetaAutocompletionSetting.createInstance(property.getAutocompletionSetting());
+			autocompletionSetting.applyConfig(property.getAutocompletionSetting(), entity, null);
 		}
 
 		// 言語毎の文字情報設定
@@ -383,10 +415,27 @@ public class MetaVirtualProperty extends MetaElement {
 		if (editor != null) {
 			property.setEditor(editor.currentConfig(propertyName));
 		}
+		if (autocompletionSetting != null) {
+			EntityContext metaContext = EntityContext.getCurrentContext();
+			EntityHandler entity = metaContext.getHandlerById(definitionId);
+			property.setAutocompletionSetting(autocompletionSetting.currentConfig(entity, null));
+		}
+		
+		
 		property.setLocalizedDisplayLabelList(I18nUtil.toDef(localizedDisplayLabelList));
 		property.setLocalizedDescriptionList(I18nUtil.toDef(localizedDescriptionList));
 		property.setLocalizedTooltipList(I18nUtil.toDef(localizedTooltipList));
 		return property;
 	}
 
+	@Override
+	public ElementRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
+		if (autocompletionSetting != null) {
+			AutocompletionSettingRuntime runtime = autocompletionSetting.createRuntime(entityView);
+			if (runtime != null) {
+				entityView.addAutocompletionSetting(runtime);
+			}
+		}
+		return super.createRuntime(entityView, formView);
+	}
 }

@@ -24,6 +24,7 @@
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimestampPropertyEditor" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 
 <%
 TimestampPropertyEditor editor = (TimestampPropertyEditor) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR);
@@ -35,6 +36,79 @@ if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
 	// 詳細画面
 %>
 var multiplicity = <%=multiplicity%>;
+<%
+	if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+%>
+var newContent = '';
+
+// 自動補完の値が空の場合
+if (!value || (!value[0] && !value.label)) {
+	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
+	$("[name='" + propName + "']:first").parent().html(newContent);
+
+} else {
+	if (multiplicity == 1) {
+		var label = '';
+		var hiddenValue = '';
+		if (value[0] == null) {
+			label = value.label;
+			hiddenValue = value.value;
+		} else {
+			label = value[0].label;
+			hiddenValue = value[0].value;
+		}
+		newContent = label + ' <input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+		
+	} else {
+		for (const labelValue of value) {
+			newContent = newContent  + '<li>' + labelValue.label
+				+ '<input type="hidden" name="' + propName + '" value="' + labelValue.value + '"> </li>';
+		}
+	}
+	$("[name='data-label-" + propName + "']").html(newContent);
+}
+<%
+	} else if(editor.getDisplayType() == DateTimeDisplayType.HIDDEN) {
+%>
+if (multiplicity == 1) {
+	if (value instanceof Array) {
+		value = value.length > 0 ? value[0] : "";
+	}
+} else {
+	if (value instanceof Array) {
+		if (value.length > multiplicity) {
+			value = value.slice(0, multiplicity);
+		}
+	} else {
+		value = [value];
+	}
+}
+
+if (multiplicity == 1) {
+	$('[name=' + propName + ']').val(value);
+} else {
+	var propLength = $('[name=' + propName + ']').length;
+	var newContent = '';
+	for (i =  0; i < value.length; i++) {
+		hiddenValue = value[i] ? value[i] : "";
+		if (i > propLength - 1) {
+			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
+			continue;
+		}
+		$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
+	}
+
+	// 項目数が増える場合に追加する
+	if (propLength && value.length > propLength) {
+		$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
+	// 項目に値が無い場合は新規に追加する
+	} else if (!propLength) {
+		$(".hidden-input-area:first").append($(newContent));
+	}
+}
+<%
+	} else {
+%>
 if (multiplicity == 1) {
 	if (value instanceof Array) {
 		value = value.length > 0 ? value[0] : "";
@@ -49,9 +123,9 @@ if (multiplicity == 1) {
 	}
 }
 <%
-	if (editor.isUseDatetimePicker()) {
-		// datetimepicker
-		if (multiplicity == 1) {
+		if (editor.isUseDatetimePicker()) {
+			// datetimepicker
+			if (multiplicity == 1) {
 %>
 var $datetime = $("#datetime_" + propName);
 var timeFormat = $datetime.attr("data-timeformat");
@@ -67,8 +141,8 @@ if (timeFormat == "HH:mm:ss") {
 $datetime.val(convertToLocaleDatetimeString(value, dateUtil.getServerDatetimeFormat(), range)).trigger("blur");
 $("#i_" + propName).val(value);
 <%
-		} else  {
-			//フィールドあるか、戻り値のサイズ、クリックして追加
+			} else  {
+				//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
 	if ($("[name='" + propName + "']:eq(" + i + ")").length == 0) {
@@ -88,10 +162,10 @@ for (var i = 0; i < value.length; i++) {
 	$("#i_" + propName + i).val(value[i]);
 }
 <%
-		}
-	} else {
-		// datepicker + pulldown
-		if (multiplicity == 1) {
+			}
+		} else {
+			// datepicker + pulldown
+			if (multiplicity == 1) {
 %>
 $("#d_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat())).trigger("blur");
 $("#h_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), dateUtil.getInputHourFormat()));
@@ -100,7 +174,7 @@ $("#s_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDateti
 $("#ms_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), "SSS"));
 $("#i_" + propName).val(value);
 <%
-		} else  {
+			} else  {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -115,6 +189,7 @@ for (var i = 0; i < value.length; i++) {
 	$("#i_" + propName + i).val(value[i]);
 }
 <%
+			}
 		}
 	}
 } else {
