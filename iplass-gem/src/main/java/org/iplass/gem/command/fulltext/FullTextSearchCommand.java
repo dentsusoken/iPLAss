@@ -546,10 +546,11 @@ public final class FullTextSearchCommand implements Command {
 			PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(sortKey, info.getEntityDefinition());
 			if (pd != null) {
 				// 有効なプロパティのみ対象にする
-				SortSetting ss = new SortSetting();
 				SearchResultSection section = info.getSearchFormView().getResultSection();
 				PropertyColumn property = getLayoutPropertyColumn(sortKey, section);
 				if (property != null) {
+					SortSetting ss = new SortSetting();
+
 					// 参照プロパティの場合、画面上の表示項目でソート
 					if (pd instanceof ReferenceProperty) {
 						sortKey = sortKey + "." + getDisplayNestProperty(property);
@@ -588,7 +589,7 @@ public final class FullTextSearchCommand implements Command {
 		PropertyEditor editor = refProp.getEditor();
 		if (editor instanceof ReferencePropertyEditor
 				&& StringUtil.isNotEmpty(((ReferencePropertyEditor) editor).getDisplayLabelItem())) {
-			return ((ReferencePropertyEditor)editor).getDisplayLabelItem();
+			return ((ReferencePropertyEditor) editor).getDisplayLabelItem();
 		} else {
 			return Entity.NAME;
 		}
