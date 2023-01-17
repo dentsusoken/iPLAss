@@ -127,11 +127,18 @@ subprojects { subproject ->
 javadoc {
 	source(project(':iplass-core').sourceSets['main'].allJava)
 	source(project(':iplass-web').sourceSets['main'].allJava)
-	exclude('**/impl/**')
+	source(project(':iplass-gem').sourceSets['main'].allJava)
+	source(project(':iplass-test').sourceSets['main'].allJava)
+	exclude 'META-INF/**'
+	exclude 'org/iplass/adminconsole/**'
+	exclude 'org/iplass/gem/**'
+	exclude '**/impl/**'
 
 	classpath += project(':iplass-core').sourceSets['main'].compileClasspath
 	classpath += project(':iplass-web').sourceSets['main'].compileClasspath
 	classpath += files(project(':iplass-web').sourceSets['main'].allJava.srcDirs)
+	classpath += project(':iplass-gem').sourceSets['main'].compileClasspath
+	classpath += project(':iplass-test').sourceSets['main'].compileClasspath
 
 	failOnError = false
 }
@@ -139,7 +146,12 @@ javadoc {
 task copyJavadocJava(type: Copy) {
 	from project(':iplass-core').sourceSets['main'].allJava
 	from project(':iplass-web').sourceSets['main'].allJava
+	from project(':iplass-gem').sourceSets['main'].allJava
+	from project(':iplass-test').sourceSets['main'].allJava
 	into "${buildDir}/docSrc/${javadocLang}"
+	exclude 'META-INF/**'
+	exclude 'org/iplass/adminconsole/**'
+	exclude 'org/iplass/gem/**'
 	exclude '**/impl/**'
 
 	filteringCharset 'UTF-8'
@@ -179,6 +191,9 @@ task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
 	classpath += project(':iplass-core').sourceSets['main'].compileClasspath
 	classpath += project(':iplass-web').sourceSets['main'].compileClasspath
 	classpath += files(project(':iplass-web').sourceSets['main'].allJava.srcDirs)
+	classpath += project(':iplass-gem').sourceSets['main'].compileClasspath
+	classpath += project(':iplass-test').sourceSets['main'].compileClasspath
+	classpath += project(':iplass-admin').sourceSets['main'].compileClasspath
 
 	options.encoding = 'UTF-8'
 	options.docEncoding = 'UTF-8'
