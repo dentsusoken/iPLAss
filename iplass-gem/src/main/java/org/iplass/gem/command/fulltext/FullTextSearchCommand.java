@@ -547,16 +547,20 @@ public final class FullTextSearchCommand implements Command {
 			if (pd != null) {
 				// 有効なプロパティのみ対象にする
 				SortSetting ss = new SortSetting();
-				ss.setSortKey(sortKey);
-				String sortType = info.getSortType();
-				if (StringUtil.isBlank(sortType)) {
-					ss.setSortType(ConditionSortType.DESC);
-				} else {
-					ss.setSortType(ConditionSortType.valueOf(sortType));
-				}
 				SearchResultSection section = info.getSearchFormView().getResultSection();
 				PropertyColumn property = getLayoutPropertyColumn(sortKey, section);
 				if (property != null) {
+					// 参照プロパティの場合、画面上の表示項目でソート
+					if (pd instanceof ReferenceProperty) {
+						sortKey = sortKey + "." + getDisplayNestProperty(property);
+					}
+					ss.setSortKey(sortKey);
+					String sortType = info.getSortType();
+					if (StringUtil.isBlank(sortType)) {
+						ss.setSortType(ConditionSortType.DESC);
+					} else {
+						ss.setSortType(ConditionSortType.valueOf(sortType));
+					}
 					ss.setNullOrderType(property.getNullOrderType());
 					setting.add(ss);
 				}
@@ -580,22 +584,25 @@ public final class FullTextSearchCommand implements Command {
 		return null;
 	}
 
+	private String getDisplayNestProperty(PropertyColumn refProp) {
+		PropertyEditor editor = refProp.getEditor();
+		if (editor instanceof ReferencePropertyEditor
+				&& StringUtil.isNotEmpty(((ReferencePropertyEditor) editor).getDisplayLabelItem())) {
+			return ((ReferencePropertyEditor)editor).getDisplayLabelItem();
+		} else {
+			return Entity.NAME;
+		}
+	}
+
 	private OrderBy getOrderBy(EntityDefinition ed, List<SortSetting> setting) {
 		OrderBy orderBy = null;
 		if (setting != null && !setting.isEmpty()) {
 			for (SortSetting ss : setting) {
 				if (ss.getSortKey() != null) {
-					String key = null;
-					PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(ss.getSortKey(), ed);
-					if (pd instanceof ReferenceProperty) {
-						key = ss.getSortKey() + "." + Entity.OID;
-					} else {
-						key = ss.getSortKey();
-					}
 					SortType type = SortType.valueOf(ss.getSortType().name());
 					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
 					if (orderBy == null) orderBy = new OrderBy();
-					orderBy.add(key, type, nullOrderingSpec);
+					orderBy.add(ss.getSortKey(), type, nullOrderingSpec);
 				}
 			}
 		}
