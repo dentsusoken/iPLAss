@@ -139,7 +139,7 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 
 	/** RichText表示タグ許可設定 */
 	@MetaFieldInfo(
-			displayName="RichText表示タグ許可設定",
+			displayName="RichText表示時にタグを許可",
 			displayNameKey="generic_editor_StringPropertyEditor_allowedContentDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=150,
@@ -150,6 +150,20 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
 	private boolean allowedContent;
+
+	/** RickTextで表示モードの場合、リンク動作許可 */
+	@MetaFieldInfo(
+			displayName="RichText表示時にリンク動作を許可",
+			displayNameKey="generic_editor_StringPropertyEditor_allowRichTextEditorLinkActionDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=152,
+			description="RichText選択時のみ有効となります。リッチテキストエディタで許可されていないリンク動作を利用できるようにします。",
+			descriptionKey="generic_editor_StringPropertyEditor_allowRichTextEditorLinkActionDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean allowRichTextEditorLinkAction;
 
 	/** RickTextで表示モードの場合、ツールバーなどを表示しないか */
 	@MetaFieldInfo(
@@ -293,21 +307,39 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 	}
 
 	/**
-	 * RichText表示タグ許可を設定します。
+	 * RichText表示タグ許可を取得します。
 	 *
-	 * @return allowedContent RichText表示タグ許可設定
+	 * @return RichText表示タグ許可設定
 	 */
 	public boolean isAllowedContent() {
 		return allowedContent;
 	}
 
 	/**
-	 * RichText表示タグ許可設定を取得します。
+	 * RichText表示タグ許可設定を設定します。
 	 *
-	 * @param RichText表示タグ許可設定
+	 * @param allowedContent RichText表示タグ許可設定
 	 */
 	public void setAllowedContent(boolean allowedContent) {
 		this.allowedContent = allowedContent;
+	}
+
+	/**
+	 * RickTextで表示モードの場合、リンク動作許可を取得します。
+	 *
+	 * @return RickTextで表示モードの場合、リンク動作許可
+	 */
+	public boolean isAllowRichTextEditorLinkAction() {
+		return allowRichTextEditorLinkAction;
+	}
+
+	/**
+	 * RickTextで表示モードの場合、リンク動作許可を設定します。
+	 *
+	 * @param allowRichTextEditorLinkAction RickTextで表示モードの場合、リンク動作許可
+	 */
+	public void setAllowRichTextEditorLinkAction(boolean allowRichTextEditorLinkAction) {
+		this.allowRichTextEditorLinkAction = allowRichTextEditorLinkAction;
 	}
 
 	/**

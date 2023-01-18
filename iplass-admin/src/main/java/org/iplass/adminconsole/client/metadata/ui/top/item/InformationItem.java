@@ -108,6 +108,7 @@ public class InformationItem extends PartsItem {
 		private IntegerItem numberOfDisplayField;
 		private CheckboxItem chkEnableHtmlTag;
 		private CheckboxItem chkUseRichtextEditor;
+		private CheckboxItem chkAllowRichTextEditorLinkAction;
 		private MtpTextAreaItem txaRichtextEditorOption;
 		private MtpTextAreaItem txaDetailCustomStyle;
 
@@ -160,11 +161,13 @@ public class InformationItem extends PartsItem {
 			chkEnableHtmlTag = new CheckboxItem();
 			chkEnableHtmlTag.setTitle("Enable Html Tag");
 			chkUseRichtextEditor = new CheckboxItem();
-			chkUseRichtextEditor.setTitle("Use Richtext Editor");
+			chkUseRichtextEditor.setTitle("Use RichText Editor");
+			chkAllowRichTextEditorLinkAction = new CheckboxItem();
+			chkAllowRichTextEditorLinkAction.setTitle("Allow RichText Editor Link Action");
 
 			txaRichtextEditorOption = new MtpTextAreaItem();
 			txaRichtextEditorOption.setColSpan(2);
-			txaRichtextEditorOption.setTitle("Richtext Editor Option");
+			txaRichtextEditorOption.setTitle("RichText Editor Option");
 			txaRichtextEditorOption.setHeight(100);
 
 			ButtonItem btnEditEetailCustomStyle = new ButtonItem();
@@ -199,7 +202,8 @@ public class InformationItem extends PartsItem {
 			SmartGWTUtil.setReadOnlyTextArea(txaDetailCustomStyle);
 
 			infoListForm.setItems(dispRangeField, numberOfDisplayField, chkEnableHtmlTag,
-					chkUseRichtextEditor, txaRichtextEditorOption, btnEditEetailCustomStyle, txaDetailCustomStyle);
+					chkUseRichtextEditor, chkAllowRichTextEditorLinkAction, txaRichtextEditorOption,
+					btnEditEetailCustomStyle, txaDetailCustomStyle);
 
 			//------------------------------
 			//Password Warning Message
@@ -272,6 +276,7 @@ public class InformationItem extends PartsItem {
 						parts.setNumberOfDisplay(SmartGWTUtil.getIntegerValue(numberOfDisplayField));
 						parts.setEnableHtmlTag(SmartGWTUtil.getBooleanValue(chkEnableHtmlTag));
 						parts.setUseRichtextEditor(SmartGWTUtil.getBooleanValue(chkUseRichtextEditor));
+						parts.setAllowRichTextEditorLinkAction(SmartGWTUtil.getBooleanValue(chkAllowRichTextEditorLinkAction));
 						parts.setRichtextEditorOption(SmartGWTUtil.getStringValue(txaRichtextEditorOption));
 						parts.setDetailCustomStyle(SmartGWTUtil.getStringValue(txaDetailCustomStyle));
 						destroy();
@@ -337,6 +342,7 @@ public class InformationItem extends PartsItem {
 
 			chkEnableHtmlTag.setValue(parts.isEnableHtmlTag());
 			chkUseRichtextEditor.setValue(parts.isUseRichtextEditor());
+			chkAllowRichTextEditorLinkAction.setValue(parts.isAllowRichTextEditorLinkAction());
 			txaRichtextEditorOption.setValue(parts.getRichtextEditorOption());
 			txaDetailCustomStyle.setValue(parts.getDetailCustomStyle());
 			numberOfDisplayField.setValue(parts.getNumberOfDisplay());
