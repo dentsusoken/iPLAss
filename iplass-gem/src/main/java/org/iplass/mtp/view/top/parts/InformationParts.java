@@ -67,6 +67,9 @@ public class InformationParts extends ActionParts {
 	/** リッチテキストエディタの利用 */
 	private boolean useRichtextEditor;
 
+	/** リッチテキストエディタで表示モードの場合、リンク動作許可 */
+	private boolean allowRichTextEditorLinkAction;
+
 	/** リッチテキストエディタオプション */
 	private String richtextEditorOption;
 
@@ -297,6 +300,24 @@ public class InformationParts extends ActionParts {
 	 */
 	public void setUseRichtextEditor(boolean useRichtextEditor) {
 		this.useRichtextEditor = useRichtextEditor;
+	}
+
+	/**
+	 * リッチテキストエディタで表示モードの場合、リンク動作許可を取得します。
+	 *
+	 * @return RickTextで表示モードの場合、リンク動作許可
+	 */
+	public boolean isAllowRichTextEditorLinkAction() {
+		return allowRichTextEditorLinkAction;
+	}
+
+	/**
+	 * リッチテキストエディタで表示モードの場合、リンク動作許可を設定します。
+	 *
+	 * @param allowRichTextEditorLinkAction リッチテキストエディタで表示モードの場合、リンク動作許可
+	 */
+	public void setAllowRichTextEditorLinkAction(boolean allowRichTextEditorLinkAction) {
+		this.allowRichTextEditorLinkAction = allowRichTextEditorLinkAction;
 	}
 
 	/**

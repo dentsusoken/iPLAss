@@ -81,7 +81,6 @@
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
-	boolean allowedContent = editor.isAllowedContent();
 	Boolean outputHidden = (Boolean) request.getAttribute(Constants.OUTPUT_HIDDEN);
 	if (outputHidden == null) outputHidden = false;
 
@@ -139,17 +138,13 @@
 %>
 <script type="text/javascript">
 $(function() {
-<%		if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) { %>
-	var opt = <%=editor.getRichtextEditorOption()%>;
-	if (typeof opt.readOnly === "undefined") opt.readOnly = true;
-<%		} else { %>
-	var opt = { readOnly: true, allowedContent:<%=allowedContent%> };
-<%		} %>
-	if (typeof opt.extraPlugins === "undefined") opt.extraPlugins = "autogrow";
-	if (typeof opt.autoGrow_onStartup === "undefined") opt.autoGrow_onStartup = true;
-<% 		if (editor.isHideRichtextEditorToolBar()) { %>
-	var readyOpt = {
+	var defaults = {
+		readOnly:true,
+		allowedContent: <%=editor.isAllowedContent()%>,
+		extraPlugins: "autogrow",
+		autoGrow_onStartup: true,
 		on: {
+<% 		if (editor.isHideRichtextEditorToolBar()) { %>
 			instanceReady: function (evt) {
 				<%-- 全体border、ツールバーを非表示 --%>
 				var containerId = evt.editor.container.$.id;
@@ -157,14 +152,34 @@ $(function() {
 				$("#" + containerId).css("border", "none");
 				$("#" + editorId + "_top").hide();
 				$("#" + editorId + "_bottom").hide();
-			}
-		}
-	}
-	$.extend(opt, readyOpt);
+			},
+<%		} %>
+<%		if (editor.isAllowRichTextEditorLinkAction()) { %>
+			<%-- Link制御 --%>
+			contentDom: function (event) {
+				var editor = event.editor;
+				var editable = editor.editable();
+				editable.attachListener( editable, 'click', function( evt ) {
+					var link = new CKEDITOR.dom.elementPath( evt.data.getTarget(), this ).contains('a');
+					if ( link && evt.data.$.which == 1 && link.isReadOnly() ) {
+						var target = link.getAttribute('target') ? link.getAttribute( 'target' ) : '_self';
+						window.open(link.getAttribute('href'), target);
+					}
+				}, null, null, 15 );
+			},
 <% 		} %>
+		},
+	};
+	
+<%		if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) { %>
+	var custom = <%=editor.getRichtextEditorOption()%>;
+<%		} else { %>
+	var custom = {}; 
+<%		} %>
+	var option = $.extend(true, {}, defaults, custom);
 
 	$("textarea[name='<%=StringUtil.escapeJavaScript(propName)%>']").ckeditor(
-		function() {}, opt
+		function() {}, option
 	);
 });
 </script>

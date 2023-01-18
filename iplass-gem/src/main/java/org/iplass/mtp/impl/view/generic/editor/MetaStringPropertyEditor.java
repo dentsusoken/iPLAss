@@ -66,6 +66,9 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** RichText表示タグ許可設定 */
 	private boolean allowedContent = false;
 
+	/** RickTextで表示モードの場合、リンク動作許可 */
+	private boolean allowRichTextEditorLinkAction;
+
 	/** 最大文字数 */
 	private int maxlength;
 
@@ -104,21 +107,39 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	}
 
 	/**
-	 * RichText表示タグ許可を設定します。
+	 * RichText表示タグ許可を取得します。
 	 *
-	 * @return allowedContent RichText表示タグ許可設定
+	 * @return RichText表示タグ許可設定
 	 */
 	public boolean isAllowedContent() {
 		return allowedContent;
 	}
 
 	/**
-	 * RichText表示タグ許可設定を取得します。
+	 * RichText表示タグ許可設定を設定します。
 	 *
-	 * @param RichText表示タグ許可設定
+	 * @param allowedContent RichText表示タグ許可設定
 	 */
 	public void setAllowedContent(boolean allowedContent) {
 		this.allowedContent = allowedContent;
+	}
+
+	/**
+	 * RickTextで表示モードの場合、リンク動作許可を取得します。
+	 *
+	 * @return RickTextで表示モードの場合、リンク動作許可
+	 */
+	public boolean isAllowRichTextEditorLinkAction() {
+		return allowRichTextEditorLinkAction;
+	}
+
+	/**
+	 * RickTextで表示モードの場合、リンク動作許可を設定します。
+	 *
+	 * @param allowRichTextEditorLinkAction RickTextで表示モードの場合、リンク動作許可
+	 */
+	public void setAllowRichTextEditorLinkAction(boolean allowRichTextEditorLinkAction) {
+		this.allowRichTextEditorLinkAction = allowRichTextEditorLinkAction;
 	}
 
 	/**
@@ -230,6 +251,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		StringPropertyEditor e = (StringPropertyEditor) editor;
 		displayType = e.getDisplayType();
 		allowedContent = e.isAllowedContent();
+		allowRichTextEditorLinkAction = e.isAllowRichTextEditorLinkAction();
 		maxlength = e.getMaxlength();
 		values = e.getValues();
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
@@ -246,6 +268,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		StringPropertyEditor e = (StringPropertyEditor) editor;
 		displayType = e.getDisplayType();
 		allowedContent = e.isAllowedContent();
+		allowRichTextEditorLinkAction = e.isAllowRichTextEditorLinkAction();
 		maxlength = e.getMaxlength();
 		values = e.getValues();
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
@@ -262,6 +285,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 
 		editor.setDisplayType(displayType);
 		editor.setAllowedContent(allowedContent);
+		editor.setAllowRichTextEditorLinkAction(allowRichTextEditorLinkAction);
 		editor.setMaxlength(maxlength);
 		editor.setValues(values);
 		editor.setSearchExactMatchCondition(searchExactMatchCondition);
@@ -279,6 +303,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 
 		e.setDisplayType(displayType);
 		e.setAllowedContent(allowedContent);
+		e.setAllowRichTextEditorLinkAction(allowRichTextEditorLinkAction);
 		e.setMaxlength(maxlength);
 		e.setValues(values);
 		e.setSearchExactMatchCondition(searchExactMatchCondition);

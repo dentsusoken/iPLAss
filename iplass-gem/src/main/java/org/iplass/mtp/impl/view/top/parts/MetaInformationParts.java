@@ -103,6 +103,9 @@ public class MetaInformationParts extends MetaActionParts {
 	/** リッチテキストエディタの利用 */
 	private boolean useRichtextEditor;
 
+	/** リッチテキストエディタで表示モードの場合、リンク動作許可 */
+	private boolean allowRichTextEditorLinkAction;
+
 	/** リッチテキストエディタオプション */
 	private String richtextEditorOption;
 
@@ -321,6 +324,24 @@ public class MetaInformationParts extends MetaActionParts {
 	}
 
 	/**
+	 * リッチテキストエディタで表示モードの場合、リンク動作許可を取得します。
+	 *
+	 * @return RickTextで表示モードの場合、リンク動作許可
+	 */
+	public boolean isAllowRichTextEditorLinkAction() {
+		return allowRichTextEditorLinkAction;
+	}
+
+	/**
+	 * リッチテキストエディタで表示モードの場合、リンク動作許可を設定します。
+	 *
+	 * @param allowRichTextEditorLinkAction リッチテキストエディタで表示モードの場合、リンク動作許可
+	 */
+	public void setAllowRichTextEditorLinkAction(boolean allowRichTextEditorLinkAction) {
+		this.allowRichTextEditorLinkAction = allowRichTextEditorLinkAction;
+	}
+
+	/**
 	 * リッチテキストエディタオプションを取得します。
 	 * @return リッチテキストエディタオプション
 	 */
@@ -372,6 +393,7 @@ public class MetaInformationParts extends MetaActionParts {
 		passwordWarnMarkStyleClass = definition.getPasswordWarnMarkStyleClass();
 		availableHtmlTag = definition.isEnableHtmlTag();
 		useRichtextEditor = definition.isUseRichtextEditor();
+		allowRichTextEditorLinkAction = definition.isAllowRichTextEditorLinkAction();
 		richtextEditorOption = definition.getRichtextEditorOption();
 		detailCustomStyle = definition.getDetailCustomStyle();
 		numberOfDisplay = definition.getNumberOfDisplay();
@@ -394,6 +416,7 @@ public class MetaInformationParts extends MetaActionParts {
 		parts.setPasswordWarnMarkStyleClass(passwordWarnMarkStyleClass);
 		parts.setEnableHtmlTag(availableHtmlTag);
 		parts.setUseRichtextEditor(useRichtextEditor);
+		parts.setAllowRichTextEditorLinkAction(allowRichTextEditorLinkAction);
 		parts.setRichtextEditorOption(richtextEditorOption);
 		parts.setDetailCustomStyle(detailCustomStyle);
 		parts.setNumberOfDisplay(numberOfDisplay);

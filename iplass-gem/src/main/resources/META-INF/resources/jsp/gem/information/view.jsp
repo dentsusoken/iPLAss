@@ -122,29 +122,46 @@
 %>
 <script type="text/javascript">
 $(function() {
-<%		if (StringUtil.isNotBlank(parts.getRichtextEditorOption())) { %>
-	var opt = <%=parts.getRichtextEditorOption()%>;
-	if (typeof opt.readOnly === "undefined") opt.readOnly = true;
-<%		} else { %>
-	var opt = { readOnly: true, allowedContent:<%=enableHtmlTag%> };
+	var defaults = {
+			readOnly:true,
+			allowedContent: <%=enableHtmlTag%>,
+			extraPlugins: "autogrow",
+			autoGrow_onStartup: true,
+			on: {
+				instanceReady: function (event) {
+					<%-- 全体border、ツールバーを非表示 --%>
+					var containerId = event.editor.container.$.id;
+					var editorId = event.editor.id;
+					$("#" + containerId).css("border", "none");
+					$("#" + editorId + "_top").hide();
+					$("#" + editorId + "_bottom").hide();
+				},
+<%		if (parts.isAllowRichTextEditorLinkAction()) { %>
+				<%-- Link制御 --%>
+				contentDom: function (event) {
+					var editor = event.editor;
+					var editable = editor.editable();
+					editable.attachListener( editable, 'click', function( evt ) {
+						var link = new CKEDITOR.dom.elementPath( evt.data.getTarget(), this ).contains('a');
+						if ( link && evt.data.$.which == 1 && link.isReadOnly() ) {
+							var target = link.getAttribute('target') ? link.getAttribute( 'target' ) : '_self';
+							window.open(link.getAttribute('href'), target);
+						}
+					}, null, null, 15 );
+				},
 <%		} %>
-	if (typeof opt.extraPlugins === "undefined") opt.extraPlugins = "autogrow";
-	if (typeof opt.autoGrow_onStartup === "undefined") opt.autoGrow_onStartup = true;
-	var readyOpt = {
-		on: {
-			instanceReady: function (evt) {
-				<%-- 全体border、ツールバーを非表示 --%>
-				var containerId = evt.editor.container.$.id;
-				var editorId = evt.editor.id;
-				$("#" + containerId).css("border", "none");
-				$("#" + editorId + "_top").hide();
-				$("#" + editorId + "_bottom").hide();
-			}
-		}
-	}
-	$.extend(opt, readyOpt);
+			},
+		};
+
+<%		if (StringUtil.isNotBlank(parts.getRichtextEditorOption())) { %>
+	var custom = <%=parts.getRichtextEditorOption()%>;
+<%		} else { %>
+	var custom = {}; 
+<%		} %>
+	var option = $.extend(true, {}, defaults, custom);
+
 	$("textarea[name='infomation_content']").ckeditor(
-		function() {}, opt
+		function() {}, option
 	);
 });
 </script>
