@@ -154,10 +154,17 @@ $(function() {
 				$("#" + editorId + "_bottom").hide();
 			},
 <%		} %>
-<%		if (editor.isAllowRichTextEditorLinkAction()) { %>
-			<%-- Link制御 --%>
 			contentDom: function (event) {
 				var editor = event.editor;
+<% 		if (editor.isHideRichtextEditorToolBar()) { %>
+				<%-- ツールバーを表示しない場合は、bodyのmargin削除 --%>
+				var body = editor.document.getBody();
+				body.setStyles({
+				    margin: 0,
+				});
+<%		} %>
+<%		if (editor.isAllowRichTextEditorLinkAction()) { %>
+				<%-- Link制御 --%>
 				var editable = editor.editable();
 				editable.attachListener( editable, 'click', function( evt ) {
 					var link = new CKEDITOR.dom.elementPath( evt.data.getTarget(), this ).contains('a');
@@ -166,8 +173,8 @@ $(function() {
 						window.open(link.getAttribute('href'), target);
 					}
 				}, null, null, 15 );
-			},
 <% 		} %>
+			},
 		},
 	};
 	
