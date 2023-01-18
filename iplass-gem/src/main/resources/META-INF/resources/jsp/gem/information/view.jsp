@@ -136,10 +136,15 @@ $(function() {
 					$("#" + editorId + "_top").hide();
 					$("#" + editorId + "_bottom").hide();
 				},
-<%		if (parts.isAllowRichTextEditorLinkAction()) { %>
-				<%-- Link制御 --%>
 				contentDom: function (event) {
 					var editor = event.editor;
+					<%-- bodyのmargin削除 --%>
+					var body = editor.document.getBody();
+					body.setStyles({
+					    margin: 0,
+					});
+<%		if (parts.isAllowRichTextEditorLinkAction()) { %>
+					<%-- Link制御 --%>
 					var editable = editor.editable();
 					editable.attachListener( editable, 'click', function( evt ) {
 						var link = new CKEDITOR.dom.elementPath( evt.data.getTarget(), this ).contains('a');
@@ -148,8 +153,8 @@ $(function() {
 							window.open(link.getAttribute('href'), target);
 						}
 					}, null, null, 15 );
-				},
 <%		} %>
+				},
 			},
 		};
 
