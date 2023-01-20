@@ -25,6 +25,7 @@ import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthManager;
+import org.iplass.mtp.auth.login.AuthenticationProcessType;
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.login.CredentialExpiredException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
@@ -121,7 +122,6 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 	@Override
 	public String execute(RequestContext request) {
 		//Login CSRFチェック
-		//TODO 通常のCSRFと違い、referrerのチェックも必要か？？
 		if (checkLoginToken) {
 			TokenStore ts = TokenStore.getTokenStore(request.getSession());
 			if (ts == null || !ts.isValid(request.getParam(TokenStore.TOKEN_PARAM_NAME), true)) {
@@ -143,8 +143,13 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 			if (ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseRememberMe()) {
 				cre.setAuthenticationFactor(RememberMeConstants.FACTOR_REMEMBER_ME_FLAG, rememberMe);
 			}
-			auth.login(cre);
 			setRedirectPathAfterLogin(request, redirectPath);
+			//認証後のActionが信頼された認証を要求する場合は、ログイン処理時にそのことを通知する
+			String redirectPathAfterLogin = (String) request.getAttribute(RESULT_REDIRECT_PATH);
+			if (WebUtil.needTrustedLogin(redirectPathAfterLogin)) {
+				cre.setAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.TRUSTED_LOGIN);
+			}
+			auth.login(cre);
 			return Constants.CMD_EXEC_SUCCESS;
 
 		} catch (LoginFailedException e) {

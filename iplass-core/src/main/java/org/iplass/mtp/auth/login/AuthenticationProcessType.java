@@ -18,18 +18,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.impl.auth;
+package org.iplass.mtp.auth.login;
 
 /**
  * 認証処理の種類を表すenum。
+ * 
  * AuthenticationProviderのlogin()呼び出し時に
  * CredentialのauthenticationFactorにセットされる。
- * ログインなのか、再認証なのかを判断可能。
+ * 通常のログインなのか、もしくは信頼された認証を必要とするかを判断可能。
+ * 
+ * ログイン処理時に明示的に信頼された認証を必要とする場合は、
+ * AuthenticationProcessType.TRUSTED_LOGINをCredentialにセットしてログイン処理を呼び出す。
  * 
  * @author K.Higuchi
  *
  */
 public enum AuthenticationProcessType {
 	LOGIN,
-	RE_AUTH
+	TRUSTED_LOGIN
 }

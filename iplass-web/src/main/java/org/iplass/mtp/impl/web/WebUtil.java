@@ -50,6 +50,7 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType;
 import org.iplass.mtp.web.actionmapping.permission.ActionPermission;
 import org.iplass.mtp.web.actionmapping.permission.RequestContextActionParameter;
+import org.iplass.mtp.web.template.TemplateUtil;
 
 public class WebUtil {
 //	private static final String TENANT_CONTEXT_PATH = "tenantContextPath";
@@ -62,6 +63,24 @@ public class WebUtil {
 //	private static final Object EXECLUDE_URL_VALUE = new Object();
 //
 	private WebUtil() {
+	}
+
+	public static boolean needTrustedLogin(String requestPath) {
+		String tenantContextPath = TemplateUtil.getTenantContextPath();
+		String actionPath = requestPath.substring(tenantContextPath.length() + 1);
+		int i = actionPath.indexOf('?');
+		if (i >= 0) {
+			actionPath = actionPath.substring(0, i);
+		}
+		
+		ActionMappingService amService = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+		WebFrontendService webFrontendService = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+		ActionMappingRuntime actionMapping = amService.getByPathHierarchy(actionPath, webFrontendService.getWelcomeAction());
+		if (actionMapping != null && actionMapping.getMetaData().isNeedTrustedAuthenticate()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public static boolean isValidInternalUrl(String url) {

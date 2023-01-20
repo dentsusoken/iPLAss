@@ -203,17 +203,7 @@ public class DispatcherFilter implements Filter {
 		WebRequestStack requestStack = null;
 
 		try {
-			ActionMappingRuntime actionMapping = amService.getByPathHierarchy(actionPath);
-			if (actionMapping == null
-					&& webFrontendService.getWelcomeAction() != null
-					&& (actionPath.length() == 0 || actionPath.endsWith("/"))) {
-				for (String wa: webFrontendService.getWelcomeAction()) {
-					actionMapping = amService.getByPathHierarchy(actionPath + wa);
-					if (actionMapping != null) {
-						break;
-					}
-				}
-			}
+			ActionMappingRuntime actionMapping = amService.getByPathHierarchy(actionPath, webFrontendService.getWelcomeAction());
 
 			if (actionMapping != null) {
 				logger.debug("call actionMapping:" + actionMapping.getMetaData().getName());

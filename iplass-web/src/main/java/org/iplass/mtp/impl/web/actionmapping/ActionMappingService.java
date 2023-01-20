@@ -98,6 +98,25 @@ public class ActionMappingService extends AbstractTypedMetaDataService<MetaActio
 		return null;
 	}
 
+	public ActionMappingRuntime getByPathHierarchy(String name, List<String> welcomeActionNameList) {
+		ActionMappingRuntime actionMapping = getByPathHierarchy(name);
+		if (actionMapping == null
+				&& welcomeActionNameList != null
+				&& (name.length() == 0 || name.endsWith("/"))) {
+			MetaDataContext context = MetaDataContext.getContext();
+			for (String wa: welcomeActionNameList) {
+				String waPath = name + wa;
+				if (context.exists(ACTION_MAPPING_META_PATH, waPath)) {
+					actionMapping = context.getMetaDataHandler(ActionMappingRuntime.class, ACTION_MAPPING_META_PATH + waPath);
+				}
+				if (actionMapping != null) {
+					break;
+				}
+			}
+		}
+		return actionMapping;
+	}
+
 	@Override
 	public Class<MetaActionMapping> getMetaDataType() {
 		return MetaActionMapping.class;

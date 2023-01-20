@@ -21,6 +21,10 @@
 package org.iplass.mtp.auth.login;
 
 public interface Credential {
+	/** 
+	 * authenticationFactorにAuthenticationProcessTypeをセットする際のキー名
+	 */
+	public static final String FACTOR_AUTHENTICATION_PROCESS_TYPE = "mtp.auth.AuthenticationProcessType";
 	
 	public String getId();
 	

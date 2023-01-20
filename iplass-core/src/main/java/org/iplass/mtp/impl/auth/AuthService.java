@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 import org.iplass.mtp.auth.Permission;
 import org.iplass.mtp.auth.User;
+import org.iplass.mtp.auth.login.AuthenticationProcessType;
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.login.CredentialExpiredException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
@@ -63,7 +64,6 @@ import org.slf4j.LoggerFactory;
 public class AuthService implements Service {
 	private static Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-	public static final String AUTH_FACTOR_AUTHENTICATION_PROCESS_TYPE = "mtp.auth.AuthenticationProcessType";
 	public static final String MDC_USER = "user";
 	public static final String USER_HANDLE_NAME = "mtp.auth.UserHandle";
 	static final String HOLDER_NAME = "mtp.auth.authCotnextHolder";
@@ -263,7 +263,9 @@ public class AuthService implements Service {
 	public void login(Credential credential) throws LoginFailedException, CredentialExpiredException {//TODO LoginExceptionでよいか？？
 
 		try {
-			credential.setAuthenticationFactor(AUTH_FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.LOGIN);
+			if (credential.getAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE) == null) {
+				credential.setAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.LOGIN);
+			}
 			UserContext user = authenticate(credential);
 			//セッション情報初期化
 			initializeSession(user, true);
@@ -327,7 +329,7 @@ public class AuthService implements Service {
 		if (pre == null || pre instanceof AnonymousUserContext) {
 			throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
 		}
-		credential.setAuthenticationFactor(AUTH_FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.RE_AUTH);
+		credential.setAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.TRUSTED_LOGIN);
 		UserContext user = authenticate(credential);
 		if (!pre.getAccount().getUnmodifiableUniqueKey().equals(user.getAccount().getUnmodifiableUniqueKey())) {
 			authenticationProviders[pre.getAccount().getAuthenticationProviderIndex()].getAuthLogger().loginFail(credential, null);
