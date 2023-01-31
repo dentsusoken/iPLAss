@@ -137,6 +137,9 @@ public class LobHandler {
 			if (eac.hasLimitCondition(perm, user)) {
 				Query q = new Query().select(Entity.OID).from(entityDefName)
 						.where(new Equals(Entity.OID, lob.getOid()));
+				if (eh.isVersioned()) {
+					q.versioned();
+				}
 
 				if (em.count(q) == 0) {
 					return false;
