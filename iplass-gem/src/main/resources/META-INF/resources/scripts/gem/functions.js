@@ -1657,6 +1657,7 @@ $.fn.allInputCheck = function(){
 				previewFunc: null,
 				nextFunc: null,
 				searchFunc: null,
+				pagingInputErrorFunc: null,
 				previousLabel: scriptContext.gem.locale.pager.previous,
 				nextLabel: scriptContext.gem.locale.pager.next
 		};
@@ -1821,6 +1822,7 @@ $.fn.allInputCheck = function(){
 				previewFunc: options.previewFunc,
 				nextFunc: options.nextFunc,
 				searchFunc: options.searchFunc,
+				pagingInputErrorFunc: options.pagingInputErrorFunc,
 				setPage: function(offset, length, count) {
 					//件数
 					var tail = offset + limit;
@@ -1930,8 +1932,12 @@ $.fn.allInputCheck = function(){
 			if (options.showPageJump) {
 				$current.css("ime-mode", "disabled").on("change", function() {
 					var v = Number($(this).val());
-					if (isNaN(v)) {
-						alert(scriptContext.gem.locale.common.numcheckMsg);
+					if (!isValidNumber(v)) {
+						if ($v.pagingInputErrorFunc && $.isFunction($v.pagingInputErrorFunc)) {
+							$v.pagingInputErrorFunc(this);
+						} else {
+							alert(scriptContext.gem.locale.common.numcheckMsg);
+						}
 						if ($(this).attr("beforeValue")) {
 							$(this).val($(this).attr("beforeValue"));
 						} else {
@@ -1965,6 +1971,30 @@ $.fn.allInputCheck = function(){
 				var $clickable = $("<span />").addClass("clickable").appendTo($parent);
 				var $link = $("<a />").attr("href", "javascript:void(0)").text(label).appendTo($clickable);
 				var $unclickable = $("<span />").addClass("unclickable").text(label).appendTo($parent);
+			}
+
+			function isValidNumber(value) {
+				if (isNaN(value)) {
+					// 数字変換不可
+					return false;
+				}
+				
+				if (!$v.maxPage) {
+					// maxPage未設定
+					return false;
+				}
+				
+				var num = value - 0;
+				if (num < 1) {
+					// 0以下値入力
+					return false;
+				}
+				if (num > $v.maxPage) {
+					// maxPageを超える
+					return false;
+				}
+				
+				return true;
 			}
 		}
 	};

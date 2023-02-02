@@ -161,6 +161,11 @@
 		width: 100%;
 	}
 }
+.hgroup-02 {
+	span.paginInputError {
+		color: $red;
+	}
+}
 .result-data {
 	display: block;
 	float: left;
