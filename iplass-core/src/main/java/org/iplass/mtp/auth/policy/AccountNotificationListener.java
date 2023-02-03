@@ -39,7 +39,7 @@ public interface AccountNotificationListener {
 	}
 	
 	/**
-	 * ユーザアカウントが作成された後呼び出されます。
+	 * ユーザーアカウントが作成された後呼び出されます。
 	 *
 	 * @param notification 通知の本体
 	 */
@@ -47,7 +47,7 @@ public interface AccountNotificationListener {
 	}
 
 	/**
-	 * ユーザアカウントのパスワードがリセットされた後呼び出されます。
+	 * ユーザーアカウントのパスワードがリセットされた後呼び出されます。
 	 *
 	 * @param notification 通知の本体
 	 */
@@ -55,7 +55,7 @@ public interface AccountNotificationListener {
 	}
 	
 	/**
-	 * ユーザアカウントがロックアウトされた後呼び出されます。
+	 * ユーザーアカウントがロックアウトされた後呼び出されます。
 	 * 
 	 * @param notification 通知の本体
 	 */
@@ -80,7 +80,7 @@ public interface AccountNotificationListener {
 	}
 	
 	/**
-	 * ユーザアカウントが削除される場合呼び出されます。
+	 * ユーザーアカウントが削除される場合呼び出されます。
 	 * （※他のメソッドと異なり、実際の削除処理前に呼び出されます）
 	 * 
 	 * @param notification

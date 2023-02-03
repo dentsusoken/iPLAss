@@ -47,7 +47,7 @@ public final class ChangeRoleCommand implements Command {
 	public String execute(RequestContext request) {
 		String roleName = request.getParam(Constants.ROLE_NAME);
 
-		//ユーザが対象ロールに紐づくか確認
+		//ユーザーが対象ロールに紐づくか確認
 		AuthContext authContext = AuthContext.getCurrentContext();
 		if (authContext.userInRole(roleName)) {
 			request.getSession().setAttribute(Constants.ROLE_NAME, roleName);

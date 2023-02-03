@@ -40,7 +40,7 @@ public interface UploadFileHandle {
 	/**
 	 * アップロードされたファイルをBinaryReferenceのインスタンスに変換。
 	 * 変換されたBinaryReferenceはEntityの属性として保存されるまでは、
-	 * テンポラリLOBとしてアップロードしたユーザのみが参照可能な状態。
+	 * テンポラリLOBとしてアップロードしたユーザーのみが参照可能な状態。
 	 * 
 	 * 
 	 * @return

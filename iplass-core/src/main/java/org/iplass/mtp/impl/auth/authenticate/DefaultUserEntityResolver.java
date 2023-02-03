@@ -200,7 +200,7 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 
 			return null;
 		} catch (Exception e) {
-			//ユーザエンティティの状態が不正
+			//ユーザーエンティティの状態が不正
 			throw new EntityRuntimeException("failed to search " + User.DEFINITION_NAME + ".", e);
 		}
 
@@ -260,7 +260,7 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 			}
 			return null;
 		} catch (Exception e) {
-			//ユーザエンティティの状態が不正
+			//ユーザーエンティティの状態が不正
 			throw new EntityRuntimeException("failed to search " + User.DEFINITION_NAME + ".", e);
 		}
 

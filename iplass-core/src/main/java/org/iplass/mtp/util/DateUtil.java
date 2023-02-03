@@ -94,7 +94,7 @@ public class DateUtil {
 	 * 
 	 * @param pattern
 	 * @param useTenantTimeZone システムのデフォルトタイムゾーンではなく、テナントに設定されるタイムゾーンを利用する場合はtrueを指定します
-	 * @param useUserLangLocale テナントに設定されるロケールではなく、当該処理を実行しているユーザの言語に紐付くロケールを利用する場合はtrueを指定します。
+	 * @param useUserLangLocale テナントに設定されるロケールではなく、当該処理を実行しているユーザーの言語に紐付くロケールを利用する場合はtrueを指定します。
 	 * @return
 	 */
 	public static SimpleDateFormat getSimpleDateFormat(String pattern, boolean useTenantTimeZone, boolean useUserLangLocale) {

@@ -205,7 +205,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 	}
 
 	boolean isPermit(EntityPermission.Action action, AuthContextHolder userAuthContext) {
-		//admin（かつ、他テナントユーザでない）は全権限保持
+		//admin（かつ、他テナントユーザーでない）は全権限保持
 		UserBinding user = userAuthContext.newUserBinding(tenantAuthContext);
 		if (user.isGrantAllPermissions()) {
 			return true;
@@ -229,7 +229,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 	boolean isPermit(String propertyName, EntityPropertyPermission.Action action,
 			AuthContextHolder userAuthContext) {
 
-		//admin（かつ、他テナントユーザでない）は全権限保持
+		//admin（かつ、他テナントユーザーでない）は全権限保持
 		UserBinding user = userAuthContext.newUserBinding(tenantAuthContext);
 		if (user.isGrantAllPermissions()) {
 			return true;
@@ -285,7 +285,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 	public Condition addLimitingCondition(Condition orignal, EntityPermission.Action action,
 			AuthContextHolder userAuthContext) {
 
-		//admin（かつ、他テナントユーザでない）は全権限保持
+		//admin（かつ、他テナントユーザーでない）は全権限保持
 		UserBinding user = userAuthContext.newUserBinding(tenantAuthContext);
 		if (user.isGrantAllPermissions()) {
 			return orignal;
@@ -335,7 +335,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 	@Override
 	public Query modifyQuery(Query orignal, EntityPermission.Action action, EntityPropertyPermission.Action propAction, AuthContextHolder userAuthContext) {
 
-//		//admin（かつ、他テナントユーザでない）は全権限保持
+//		//admin（かつ、他テナントユーザーでない）は全権限保持
 //		UserBinding user = new UserBinding(userAuthContext.getUserContext(), tenantAuthContext);
 //		if (user.isAdmin()) {
 //			return orignal;
@@ -366,7 +366,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 	@Override
 	public boolean hasLimitCondition(EntityPermission permission, AuthContextHolder userAuthContext) {
 
-		//admin（かつ、他テナントユーザでない）は全権限保持
+		//admin（かつ、他テナントユーザーでない）は全権限保持
 		UserBinding user = userAuthContext.newUserBinding(tenantAuthContext);
 		if (user.isGrantAllPermissions()) {
 			return false;

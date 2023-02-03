@@ -83,7 +83,7 @@ public class PackageImport extends MtpCuiBase {
 	//インポートファイル(引数)
 	private String importFile;
 
-	/** ユーザID(InsertするEntityにAuditプロパティの値を指定する場合、必須) */
+	/** ユーザーID(InsertするEntityにAuditプロパティの値を指定する場合、必須) */
 	private String userId;
 
 	/** パスワード */
@@ -716,7 +716,7 @@ public class PackageImport extends MtpCuiBase {
 				condition.setInsertEnableAuditPropertySpecification(isInsertEnableAuditPropertySpecification);
 
 				if (condition.isInsertEnableAuditPropertySpecification()) {
-					//ユーザ情報の入力
+					//ユーザー情報の入力
 					do {
 						String executeUserId = readConsole(rs("PackageImport.Wizard.confirmExecuteUserId"));
 						if (StringUtil.isNotEmpty(executeUserId)) {
@@ -996,7 +996,7 @@ public class PackageImport extends MtpCuiBase {
 					condition.setInsertEnableAuditPropertySpecification(Boolean.valueOf(insertEnableAuditPropertySpecification));
 				}
 				if (condition.isInsertEnableAuditPropertySpecification()) {
-					//実行ユーザID、PWを取得
+					//実行ユーザーID、PWを取得
 					String execUserId = prop.getProperty(PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_ID);
 					if (StringUtil.isNotEmpty(execUserId)) {
 						userId = execUserId;

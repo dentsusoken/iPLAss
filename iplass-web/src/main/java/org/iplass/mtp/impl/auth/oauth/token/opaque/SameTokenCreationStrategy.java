@@ -192,7 +192,7 @@ public class SameTokenCreationStrategy implements TokenCreationStrategy {
 				at = Transaction.requiresNew(t -> {
 					AuthToken storeToken = handler.authTokenStore().getBySeries(tenantId, handler.getType(), series);
 					if (storeToken == null) {
-						//ユーザ操作によるToken削除の可能性などあり
+						//ユーザー操作によるToken削除の可能性などあり
 						return null;
 					}
 					AccessTokenMement atm = (AccessTokenMement) storeToken.getDetails();

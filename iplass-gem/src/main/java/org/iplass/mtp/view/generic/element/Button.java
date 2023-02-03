@@ -77,7 +77,7 @@ public class Button extends Element {
 					"バインド変数名  ：内容<BR />" +
 					"request         ：リクエスト<BR />" +
 					"session         ：セッション<BR />" +
-					"user            ：ユーザ<BR />" +
+					"user            ：ユーザー<BR />" +
 					"outputType      ：表示タイプ<BR />" +
 					"entity          ：表示対象のエンティティ",
 

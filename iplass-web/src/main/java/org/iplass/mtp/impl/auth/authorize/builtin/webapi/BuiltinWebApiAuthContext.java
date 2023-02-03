@@ -83,7 +83,7 @@ class BuiltinWebApiAuthContext extends BuiltinAuthorizationContext implements We
 
 	@Override
 	public boolean isPermit(Permission permission, AuthContextHolder user) {
-		//admin（かつ、他テナントユーザでない）は全権限保持
+		//admin（かつ、他テナントユーザーでない）は全権限保持
 		UserBinding userBinding = user.newUserBinding(tenantAuthContext);
 		if (userBinding.isGrantAllPermissions()) {
 			return true;

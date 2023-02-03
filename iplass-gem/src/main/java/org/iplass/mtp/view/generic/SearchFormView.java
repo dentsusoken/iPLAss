@@ -64,13 +64,13 @@ public class SearchFormView extends FormView {
 	)
 	private boolean hideTrash;
 
-	/** ごみ箱操作をユーザ削除データに限定するか */
+	/** ごみ箱操作をユーザー削除データに限定するか */
 	@MetaFieldInfo(
-			displayName="ごみ箱操作をユーザ削除データに限定",
+			displayName="ごみ箱操作をユーザー削除データに限定",
 			displayNameKey="generic_SearchFormView_allowTrashOperationToRecycleByDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=220,
-			description="ユーザが操作可能なごみ箱データを自分が削除したデータのみに制限するかを設定します。",
+			description="ユーザーが操作可能なごみ箱データを自分が削除したデータのみに制限するかを設定します。",
 			descriptionKey="generic_SearchFormView_allowTrashOperationToRecycleByDescriptionKey"
 	)
 	private boolean allowTrashOperationToRecycleBy;
@@ -327,16 +327,16 @@ public class SearchFormView extends FormView {
 	}
 
 	/**
-	 * ごみ箱操作をユーザ削除データに限定するかを取得します。
-	 * @return ごみ箱操作をユーザ削除データに限定するか
+	 * ごみ箱操作をユーザー削除データに限定するかを取得します。
+	 * @return ごみ箱操作をユーザー削除データに限定するか
 	 */
 	public boolean isAllowTrashOperationToRecycleBy() {
 		return allowTrashOperationToRecycleBy;
 	}
 
 	/**
-	 * ごみ箱操作をユーザ削除データに限定するかを設定します。
-	 * @param allowTrashOperationToRecycleBy ごみ箱操作をユーザ削除データに限定するか
+	 * ごみ箱操作をユーザー削除データに限定するかを設定します。
+	 * @param allowTrashOperationToRecycleBy ごみ箱操作をユーザー削除データに限定するか
 	 */
 	public void setAllowTrashOperationToRecycleBy(boolean allowTrashOperationToRecycleBy) {
 		this.allowTrashOperationToRecycleBy = allowTrashOperationToRecycleBy;

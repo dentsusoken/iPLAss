@@ -36,7 +36,7 @@ import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefiniti
  * <table border="1">
  * <tr><th>変数名</th><th>オブジェクトの説明</th></tr>
  * <tr><td>tenant</td><td>テナント情報。org.iplass.mtp.tenant.Tenantのインスタンス</td></tr>
- * <tr><td>user</td><td>ユーザ情報。org.iplass.mtp.auth.Userのインスタンス</td></tr>
+ * <tr><td>user</td><td>ユーザー情報。org.iplass.mtp.auth.Userのインスタンス</td></tr>
  * <tr><td>newPassword</td><td>自動生成されたパスワード。String。アカウント作成時、パスワードリセット時に参照可能</td></tr>
  * <tr><td>updatedPropertyNames</td><td>アカウント属性更新時の更新されたプロパティ名のList</td></tr>
  * 
@@ -134,8 +134,8 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	}
 	
 	/**
-	 * ユーザ削除時のメールのテンプレート。
-	 * テンプレートが指定された場合、ユーザアカウントが削除された場合、当該アカウントにメールが送信される。
+	 * ユーザー削除時のメールのテンプレート。
+	 * テンプレートが指定された場合、ユーザーアカウントが削除された場合、当該アカウントにメールが送信される。
 	 * @return
 	 */
 	public String getRemoveUserMailTemplate() {

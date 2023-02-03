@@ -32,7 +32,7 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 public class MetaClientPolicy implements MetaData {
 	private static final long serialVersionUID = 3667544863207206056L;
 
-	//TODO ClientType別にClientの認証方法をカスタム可能に（たとえば、public clientの場合、client_id以外にユーザエージェントもチェックしたいとか）
+	//TODO ClientType別にClientの認証方法をカスタム可能に（たとえば、public clientの場合、client_id以外にユーザーエージェントもチェックしたいとか）
 	//tokenEndpointAuthMethod
 
 	private ClientType clientType;

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * <p>
  * 本設定を有効化することにより、
  * EQLでの検索時、登録、更新時に
- * 実行ユーザに紐づく形で、自動的に適切な言語のデータを取得、更新することが可能となる（それぞれの処理実行時にlocalizedオプションをtrueに指定した場合）。
+ * 実行ユーザーに紐づく形で、自動的に適切な言語のデータを取得、更新することが可能となる（それぞれの処理実行時にlocalizedオプションをtrueに指定した場合）。
  * </p>
  * 
  * @author K.Higuchi

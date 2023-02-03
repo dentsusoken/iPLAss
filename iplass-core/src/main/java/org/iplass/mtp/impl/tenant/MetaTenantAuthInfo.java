@@ -52,7 +52,7 @@ public class MetaTenantAuthInfo extends MetaTenantConfig<TenantAuthInfo> {
 	}
 
 	/**
-	 * ユーザを管理可能とするロールを取得します。
+	 * ユーザーを管理可能とするロールを取得します。
 	 *
 	 * @return
 	 */
@@ -61,7 +61,7 @@ public class MetaTenantAuthInfo extends MetaTenantConfig<TenantAuthInfo> {
 	}
 
 	/**
-	 * ユーザを管理可能（パスワードリセット、accountPlicyの設定、adminフラグの設定など）とするロールを指定します。
+	 * ユーザーを管理可能（パスワードリセット、accountPlicyの設定、adminフラグの設定など）とするロールを指定します。
 	 * adminフラグを更新不可としたい場合は、別途当該ロールにEntity権限を設定します。
 	 *
 	 * @param userAdminRoles

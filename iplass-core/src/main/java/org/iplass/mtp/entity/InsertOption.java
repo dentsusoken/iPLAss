@@ -61,7 +61,7 @@ public class InsertOption {
 	 * 指定してその値のまま登録する場合にtrueを指定します。
 	 * デフォルトはfalseです。
 	 * このフラグを利用する場合、
-	 * 当該処理を呼び出すユーザがadmin権限を保持している必要があります。
+	 * 当該処理を呼び出すユーザーがadmin権限を保持している必要があります。
 	 * 
 	 * @param enableAuditPropertySpecification
 	 */
@@ -205,7 +205,7 @@ public class InsertOption {
 	 * インサートするEntityにcreateBy,createDate,updateBy,updateDateの値を
 	 * 指定してその値のまま登録するように設定します。
 	 * このフラグを利用する場合、
-	 * 当該処理を呼び出すユーザがadmin権限を保持している必要があります。
+	 * 当該処理を呼び出すユーザーがadmin権限を保持している必要があります。
 	 * 
 	 * @return
 	 */

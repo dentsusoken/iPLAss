@@ -613,7 +613,7 @@ public class EntityManagerImpl implements EntityManager {
 			if (!option.isForceUpdate()) {
 				//TargetVersion.NEWの場合は、引数のEntityにversionが指定されているかどうかで比較対象を変える
 				//TODO TargetVersion.NEWの場合はこの形でよいか？？
-				//TODO タイムスタンプ使ってない場合、事前にロックしないと、項目単位で別ユーザに上書きされてる可能性ありなので気を付ける旨マニュアルなどに記述必要
+				//TODO タイムスタンプ使ってない場合、事前にロックしないと、項目単位で別ユーザーに上書きされてる可能性ありなので気を付ける旨マニュアルなどに記述必要
 				Entity currentStore = null;
 				LoadOption lop = new LoadOption(true, false);
 				if (option.isLocalized()) {

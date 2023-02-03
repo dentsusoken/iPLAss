@@ -299,7 +299,7 @@ public class EntityPortingService implements Service {
 
 					auditLogger.info("deleteAll entity," + definition.getName());
 
-					//ユーザEntity以外の場合、deleteAll可能かチェック(deleteAllではListnerが実行されないため)
+					//ユーザーEntity以外の場合、deleteAll可能かチェック(deleteAllではListnerが実行されないため)
 					boolean canDeleteAll = false;
 					if (User.DEFINITION_NAME.equals(definition.getName())) {
 						isUserEntity = true;
@@ -321,13 +321,13 @@ public class EntityPortingService implements Service {
 						option.setCheckLockedByUser(false);
 
 						if (isUserEntity) {
-							//ユーザEntityの場合、実行者を除外する
+							//ユーザーEntityの場合、実行者を除外する
 							query.where(new NotEquals(User.OID, executeContext.getClientId()));
 
-							//ユーザEntityの場合、Listenerを実行してt_account削除
+							//ユーザーEntityの場合、Listenerを実行してt_account削除
 							option.setNotifyListeners(true);
 						} else {
-							//ユーザEntity以外の場合、Listenerの実行は指定されたもの
+							//ユーザーEntity以外の場合、Listenerの実行は指定されたもの
 							option.setNotifyListeners(cond.isNotifyListeners());
 						}
 
@@ -633,10 +633,10 @@ public class EntityPortingService implements Service {
 			}
 		}
 
-		//Userエンティティの場合の実行ユーザチェック
+		//Userエンティティの場合の実行ユーザーチェック
 		if (entity.getOid() != null && User.DEFINITION_NAME.equals(definition.getName())) {
 			if (entity.getOid().equals(executeContext.getClientId())) {
-				//UserEntityの場合、実行ユーザは更新不可
+				//UserEntityの場合、実行ユーザーは更新不可
 				result.addMessages(rs("entityport.importUserSkipMessage", definition.getName(), index, entity.getOid(), entity.getValue(User.ACCOUNT_ID)));
 				return false;
 			}

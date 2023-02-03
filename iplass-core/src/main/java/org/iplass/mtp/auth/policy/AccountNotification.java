@@ -46,7 +46,7 @@ public class AccountNotification {
 		return type;
 	}
 	/**
-	 * 対象のユーザのoid
+	 * 対象のユーザーのoid
 	 * 
 	 * @return
 	 */

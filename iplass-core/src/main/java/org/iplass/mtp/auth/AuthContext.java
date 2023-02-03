@@ -56,22 +56,22 @@ public abstract class AuthContext {
 	public abstract Tenant getTenant();//TODO 公開する情報を絞るべきか？？
 
 	/**
-	 * 現在実行中のユーザを取得します。
-	 * 代理ログインしている場合は、成り代わり先のユーザを取得します。
+	 * 現在実行中のユーザーを取得します。
+	 * 代理ログインしている場合は、成り代わり先のユーザーを取得します。
 	 *
 	 * @return
 	 */
 	public abstract User getUser();
 	
 	/**
-	 * 現在実行中のユーザに紐付く認証トークンのリストを取得します。
+	 * 現在実行中のユーザーに紐付く認証トークンのリストを取得します。
 	 * @return
 	 */
 	public abstract AuthTokenInfoList getAuthTokenInfos();
 
 	/**
-	 * 現在実行中のユーザの認証ポリシー名を取得します。
-	 * 代理ログインしている場合は、成り代わり先のユーザの認証ポリシー名を取得します。
+	 * 現在実行中のユーザーの認証ポリシー名を取得します。
+	 * 代理ログインしている場合は、成り代わり先のユーザーの認証ポリシー名を取得します。
 	 *
 	 * @return ポリシー名
 	 */
@@ -79,8 +79,8 @@ public abstract class AuthContext {
 
 	/**
 	 * 現在のセキュリティコンテキストに紐づいている属性を取得します。
-	 * 認証されたユーザのUserエンティティのプロパティ、
-	 * また、認証プロバイダが返却したユーザ属性を取得可能です。
+	 * 認証されたユーザーのUserエンティティのプロパティ、
+	 * また、認証プロバイダが返却したユーザー属性を取得可能です。
 	 *
 	 * @param name
 	 * @return
@@ -89,14 +89,14 @@ public abstract class AuthContext {
 	
 	/**
 	 * 現在のセッションが認証された時間を取得します。
-	 * 未ログインユーザの場合は、返却される値は不定です。
+	 * 未ログインユーザーの場合は、返却される値は不定です。
 	 * 
 	 * @return
 	 */
 	public abstract long getAuthTime();
 
 	/**
-	 * 現在のセッションが認証済みユーザによるものか否かを取得します。
+	 * 現在のセッションが認証済みユーザーによるものか否かを取得します。
 	 *
 	 * @return
 	 */
@@ -117,7 +117,7 @@ public abstract class AuthContext {
 	public abstract Class<? extends Credential> getCredentialTypeForTrust();
 
 	/**
-	 * 現在実行中のユーザが当該ロールかどうかを判定します。
+	 * 現在実行中のユーザーが当該ロールかどうかを判定します。
 	 *
 	 * @param role ロール名
 	 * @return
@@ -125,7 +125,7 @@ public abstract class AuthContext {
 	public abstract boolean userInRole(String role);
 
 	/**
-	 * 現在実行中のユーザが引数のpermission（権限）を保持しているかどうかを判定します。
+	 * 現在実行中のユーザーが引数のpermission（権限）を保持しているかどうかを判定します。
 	 *
 	 * @param permission 判定したいPermissionのインスタンス
 	 * @return 許可される場合true
@@ -135,8 +135,8 @@ public abstract class AuthContext {
 	/**
 	 *
 	 * 現在のAuthContext（User情報、セキュリティ権限）を再読み込みします。
-	 * ユーザ情報のセキュリティに関連する属性等を変更した場合、
-	 * 現在ログインしているユーザの権限状態を最新化したい場合に呼び出します。
+	 * ユーザー情報のセキュリティに関連する属性等を変更した場合、
+	 * 現在ログインしているユーザーの権限状態を最新化したい場合に呼び出します。
 	 *
 	 */
 	public abstract void refresh();

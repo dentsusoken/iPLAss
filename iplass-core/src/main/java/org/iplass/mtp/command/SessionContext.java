@@ -40,7 +40,7 @@ public interface SessionContext {
 	public Iterator<String> getAttributeNames();
 
 	/**
-	 * 当該リクエストをしたユーザが事前に同一セッションにてアップしたテンポラリLOB（まだEntityとして保存していないBinaryReference）を取得します。
+	 * 当該リクエストをしたユーザーが事前に同一セッションにてアップしたテンポラリLOB（まだEntityとして保存していないBinaryReference）を取得します。
 	 *
 	 * @param lobId テンポラリLOBとして保存時に発行されたlobId
 	 * @return

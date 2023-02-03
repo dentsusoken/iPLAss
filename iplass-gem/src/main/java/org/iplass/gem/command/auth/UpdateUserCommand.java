@@ -63,7 +63,7 @@ import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
 	needTrustedAuthenticate=true,
 	result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_UPDATE_PASSWORD)
 )
-@CommandClass(name="gem/auth/UpdateUserCommand", displayName="ユーザ情報更新")
+@CommandClass(name="gem/auth/UpdateUserCommand", displayName="ユーザー情報更新")
 public final class UpdateUserCommand extends DetailCommandBase {
 
 	public static final String ACTION_NAME = "gem/auth/updateUser";

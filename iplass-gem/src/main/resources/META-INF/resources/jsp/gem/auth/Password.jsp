@@ -95,7 +95,7 @@
 		errorMessage = "";
 	}
 
-	//ユーザ情報メンテナンス用
+	//ユーザー情報メンテナンス用
 	String defName = User.DEFINITION_NAME;
 	AuthContext auth = AuthContext.getCurrentContext();
 

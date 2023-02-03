@@ -28,7 +28,7 @@ import org.iplass.mtp.impl.runtime.EntryPointImpl;
  * <% if (doclang == "ja") {%>
  * <p>
  * EntryPointを利用し、Servletコンテナ外のコード上から、
- * 直接iPLAssの初期化・破棄、また特定のテナント・ユーザを指定してのロジックの実行を行うことが可能です。
+ * 直接iPLAssの初期化・破棄、また特定のテナント・ユーザーを指定してのロジックの実行を行うことが可能です。
  * 
  * EntryPointは当該クラスがロードされるクラスローダ単位に一つのみ存在可能です。
  * </p>

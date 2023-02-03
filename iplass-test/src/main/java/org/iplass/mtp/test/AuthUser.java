@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * テスト実施時のユーザを指定します。
+ * テスト実施時のユーザーを指定します。
  * クラス、メソッドに指定可能です。
  * 
  * @author K.Higuchi

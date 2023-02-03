@@ -78,7 +78,7 @@ public class EntityAuthContextHandler extends AuthorizationContextHandler {
 
 	@Override
 	protected AuthorizationContext defaultAuthorizationContext(String contextName, TenantAuthorizeContext tac) {
-		//他テナントのユーザの場合は、ReadOnlyがデフォルト
+		//他テナントのユーザーの場合は、ReadOnlyがデフォルト
 		if (ExecuteContext.getCurrentContext().getClientTenantId() != tac.getTenantContext().getTenantId()) {
 			return new DefaultEntityAuthContext(contextName, null, null, tac, true);
 		} else {

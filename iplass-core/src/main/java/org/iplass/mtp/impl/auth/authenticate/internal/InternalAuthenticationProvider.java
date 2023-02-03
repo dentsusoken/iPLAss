@@ -36,7 +36,7 @@ import org.iplass.mtp.impl.auth.log.AuthLoggerService;
 import org.iplass.mtp.spi.Config;
 
 /**
- * プログラム内部処理から、とあるユーザとして認証したい場合に利用するAuthenticationProvider。
+ * プログラム内部処理から、とあるユーザーとして認証したい場合に利用するAuthenticationProvider。
  * 
  * @author K.Higuchi
  *

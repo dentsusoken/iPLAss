@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 
 /**
  * LDAP使用時のアカウントハンドラ<br>
- * LDAPで保持しているユーザ情報を保持する。
+ * LDAPで保持しているユーザー情報を保持する。
  *
  * @author 藤田　義弘
  *

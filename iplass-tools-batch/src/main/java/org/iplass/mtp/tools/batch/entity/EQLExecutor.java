@@ -70,7 +70,7 @@ public class EQLExecutor extends MtpCuiBase {
 		ONLY_EXEC, ONLY_COUNT, SHOW_SEARCH_RESULT, CSV_EXPORT
 	}
 
-	/** ユーザID */
+	/** ユーザーID */
 	private String userId;
 
 	/** パスワード */

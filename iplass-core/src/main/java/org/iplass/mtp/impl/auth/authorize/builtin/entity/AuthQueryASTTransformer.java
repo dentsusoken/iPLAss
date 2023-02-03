@@ -336,7 +336,7 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 		}
 
 		Condition cond = null;
-		//admin（かつ、他テナントユーザでない）は全権限保持
+		//admin（かつ、他テナントユーザーでない）は全権限保持
 		UserBinding userBind = user.newUserBinding(tenantAuthContext);
 		if (!userBind.isGrantAllPermissions() && !eqaContext.isWithoutConditionReferenceName(EntityQueryAuthContextHolder.REFERENCE_THIS)) {
 			cond = entityAuthContext.addLimitingCondition(null, action, user);

@@ -512,7 +512,7 @@ public class DetailFormView extends FormView {
 					"entity          ：コピー元のEntity<BR />" +
 					"entityDefinition：Entity定義<BR />" +
 					"entityManager   ：EntityManager"+
-					"user            ：ユーザ情報",
+					"user            ：ユーザー情報",
 
 			descriptionKey="generic_DetailFormView_customCopyScriptDescriptionKey"
 	)
@@ -530,7 +530,7 @@ public class DetailFormView extends FormView {
 					"以下のオブジェクトがバインドされています。<BR />" +
 					"バインド変数名  ：内容<BR />" +
 					"entity          ：空のEntity" +
-					"user            ：ユーザ情報",
+					"user            ：ユーザー情報",
 
 			descriptionKey="generic_DetailFormView_initScriptDescriptionKey"
 	)

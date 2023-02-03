@@ -300,7 +300,7 @@ public class EntityToolService implements Service {
 				try {
 					execCond = whereClause;
 
-					//Userエンティティの場合、実行ユーザは削除しない
+					//Userエンティティの場合、実行ユーザーは削除しない
 					ExecuteContext ec = ExecuteContext.getCurrentContext();
 					if (USER_ENTITY.equals(defName)) {
 						String execUserOid = ec.getClientId();
@@ -418,7 +418,7 @@ public class EntityToolService implements Service {
 					for (String oid : oids) {
 						//Load(存在チェック)
 						Entity entity = em.load(oid, defName, loadOption);
-						//Userエンティティの場合、実行ユーザは削除しない
+						//Userエンティティの場合、実行ユーザーは削除しない
 						if (isUserEntity && oid.equals(execUserOid)) {
 							continue;
 						}

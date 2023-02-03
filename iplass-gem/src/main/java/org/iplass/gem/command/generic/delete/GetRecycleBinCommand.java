@@ -80,7 +80,7 @@ public final class GetRecycleBinCommand implements Command{
 		final List<Entity> list = new ArrayList<Entity>();
 		em.getRecycleBin(defName, entity -> {
 			if (isAllowTrashOperationToRecycleBy) {
-				// ユーザ自身が削除したデータのみ
+				// ユーザー自身が削除したデータのみ
 				if (userOid.equals(entity.getUpdateBy())) {
 					list.add(entity);
 				}

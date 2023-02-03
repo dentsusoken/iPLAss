@@ -34,7 +34,7 @@ public class TenantCreateParameter {
 	private String tenantUrl;
 	// テナント表示名
 	private String tenantDisplayName;
-	// 初期ユーザID
+	// 初期ユーザーID
 	private String adminUserId;
 	// パスワード
 	private String adminPassword;

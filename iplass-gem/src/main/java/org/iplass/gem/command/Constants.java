@@ -272,7 +272,7 @@ public class Constants {
 	// ロック処理
 	public static final String LOCK_RESULT = "lockResult";
 
-	//ユーザ情報変更
+	//ユーザー情報変更
 	public static final String UPDATE_USER_INFO = "updateUserInfo";
 
 	// コマンド内でEntityに設定しているフラグ等

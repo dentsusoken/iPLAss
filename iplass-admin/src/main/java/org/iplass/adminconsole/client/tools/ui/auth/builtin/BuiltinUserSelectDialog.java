@@ -150,7 +150,7 @@ public class BuiltinUserSelectDialog extends AbstractWindow {
 	}
 
 	/**
-	 * ユーザ属性での検索
+	 * ユーザー属性での検索
 	 */
 	private class UserAttributeCriteriaPane extends VLayout {
 

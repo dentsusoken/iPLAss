@@ -23,7 +23,7 @@ package org.iplass.mtp.auth;
 import org.iplass.mtp.entity.GenericEntity;
 
 /**
- * ユーザのランク（職位、会員種別など）を表す。
+ * ユーザーのランク（職位、会員種別など）を表す。
  * Entity定義上、mtp.auth.Rankで定義される。
  * 
  * 

@@ -36,10 +36,10 @@ import org.iplass.mtp.auth.login.CredentialUpdateException;
  */
 public interface AccountManagementModule {
 
-	/** ユーザアクティベーション 仮パスワード設定方式*/
+	/** ユーザーアクティベーション 仮パスワード設定方式*/
 	public static final String USER_ACTIVATION_PUBLISH = "publish";
 
-	/** ユーザアクティベーション パスワード指定方式(未指定の場合は仮パスワード方式)*/
+	/** ユーザーアクティベーション パスワード指定方式(未指定の場合は仮パスワード方式)*/
 	public static final String USER_ACTIVATION_SPECIFY_OR_PUBLISH = "specifyOrPublish";
 
 	public boolean canCreate();

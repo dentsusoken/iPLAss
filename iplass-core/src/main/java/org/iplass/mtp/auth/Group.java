@@ -25,7 +25,7 @@ import org.iplass.mtp.entity.GenericEntity;
 /**
  * グループを表す。
  * Entity定義上、mtp.auth.Groupで定義される。
- * グループにはユーザを所属させることが可能。
+ * グループにはユーザーを所属させることが可能。
  * 
  * @author K.Higuchi
  *

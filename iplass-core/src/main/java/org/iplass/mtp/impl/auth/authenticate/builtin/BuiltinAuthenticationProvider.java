@@ -120,8 +120,8 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 	}
 
 	/**
-	 * ログインユーザ共有か否かを取得
-	 * @return boolean 共有テナントのユーザ情報がデータ共有か否かを返却
+	 * ログインユーザー共有か否かを取得
+	 * @return boolean 共有テナントのユーザー情報がデータ共有か否かを返却
 	 */
 //	@Override
 	public boolean isSharedLoginUser() {
@@ -374,12 +374,12 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					}
 				}
 
-				//TODO ここの段階で、ユーザ存在チェックは必要か？
+				//TODO ここの段階で、ユーザー存在チェックは必要か？
 				//Userの取得
 				User userEntity = getUserEntity(user.getAccountId(), false);
 				//Userが存在していた場合
 				if (userEntity != null) {
-					// ユーザがすでに存在していた場合はエラーとする。
+					// ユーザーがすでに存在していた場合はエラーとする。
 					throw new UserExistsException(resourceString("impl.auth.authenticate.builtin.BuiltinAuthenticationProvider.alreadyRegistered"));
 				}
 			}
@@ -429,7 +429,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 						account.setSalt("$" + newest.getVersion() + "$" + salt);
 					}
 
-					//ユーザパスワードクリア
+					//ユーザーパスワードクリア
 					user.setPassword(null);
 
 					// アカウント情報を登録する
@@ -479,7 +479,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				}
 			}
 
-			//ログインユーザ共有でない場合または、テナントIDが共有テナントの場合
+			//ログインユーザー共有でない場合または、テナントIDが共有テナントの場合
 			if (canUpdate()) {
 				int tenantId = getTenantId();
 				BuiltinAccount account = accountDao.getAccountFromOid(tenantId, user.getOid());
@@ -509,13 +509,13 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				// 更新要否の確認
 				boolean updateFlg = false;
 
-				//ユーザIDに変更が発生していた場合
+				//ユーザーIDに変更が発生していた場合
 				if (updateProperties.contains(User.ACCOUNT_ID)) {
 					//Userの取得
 					User userEntity = getUserEntity(user.getAccountId(), false);
 					//Userが存在していた場合
 					if (userEntity != null && !(userEntity.getOid().equals(user.getOid()))) {
-						// ユーザがすでに存在していた場合はエラーとする。
+						// ユーザーがすでに存在していた場合はエラーとする。
 						throw new UserExistsException(resourceString("impl.auth.authenticate.builtin.BuiltinAuthenticationProvider.alreadyRegistered"));
 					}
 
@@ -556,7 +556,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					throw new ApplicationException(resourceString("impl.auth.authenticate.builtin.BuiltinAuthenticationProvider.deleteOwnData"));
 				}
 
-				//管理者ではないユーザが管理者を削除するのは不可
+				//管理者ではないユーザーが管理者を削除するのは不可
 				if (user.isAdmin() && !authContext.getUser().isAdmin() && !authContext.isPrivileged()) {
 					throw new NoPermissionException(resourceString("impl.auth.authenticate.builtin.BuiltinAuthenticationProvider.canNotDeleteAdmin"));
 				}
@@ -583,7 +583,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 
 		@Override
 		public void purge(User user) {
-			//ログインユーザ共有でない場合または、テナントIDが共有テナントの場合
+			//ログインユーザー共有でない場合または、テナントIDが共有テナントの場合
 			if (canPurge()) {
 				int tenantId = getTenantId();
 				//アカウント情報削除
@@ -821,7 +821,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 			});
 		}
 
-		//ユーザEntity取得
+		//ユーザーEntity取得
 		private User getUserEntity(final String accountId, final boolean withAllProp) {
 			return AuthContext.doPrivileged(() -> {
 				if (withAllProp) {
@@ -846,7 +846,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 			});
 		}
 
-		//oidからユーザEntity取得
+		//oidからユーザーEntity取得
 		private User getUserEntityFromOid(final String oid) {
 			return AuthContext.doPrivileged(() -> {
 				Query query =
@@ -860,7 +860,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 			});
 		}
 
-		//ユーザEntityのEndDate更新
+		//ユーザーEntityのEndDate更新
 		private void updateUserEndDate(final User user) {
 			AuthContext.doPrivileged(() -> {
 				UpdateOption option = new UpdateOption();

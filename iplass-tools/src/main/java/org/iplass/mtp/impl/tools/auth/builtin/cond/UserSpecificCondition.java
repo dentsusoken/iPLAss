@@ -25,7 +25,7 @@ import java.sql.Date;
 public class UserSpecificCondition implements BuiltinAuthUserSearchCondition {
 
 	public enum SpecificType {
-		/** ロックユーザ */
+		/** ロックユーザー */
 		LOCKED,
 		/** パスワード有効期間 */
 		EXPIRED_PASSWORD,

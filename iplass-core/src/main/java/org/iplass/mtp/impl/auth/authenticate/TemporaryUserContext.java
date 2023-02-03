@@ -24,9 +24,9 @@ import org.iplass.mtp.auth.User;
 import org.iplass.mtp.impl.auth.UserContextImpl;
 
 /**
- *  テンポラリユーザコンテキスト
+ *  テンポラリユーザーコンテキスト
  * 
- *  一時的に作成されるユーザ用のコンテキストクラス
+ *  一時的に作成されるユーザー用のコンテキストクラス
  * 
  * @author 藤田 義弘
  *

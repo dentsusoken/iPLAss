@@ -165,7 +165,7 @@ public class UpdateOption {
 	/** 変更項目が一つもなくとも、更新処理を実行する（結果、タイムスタンプ、更新者が更新される）かどうか。デフォルトfalse */
 	private boolean forceUpdate = false;
 	
-	/** ユーザによるデータのロックをチェックするかどうか。デフォルトtrue */
+	/** ユーザーによるデータのロックをチェックするかどうか。デフォルトtrue */
 	private boolean checkLockedByUser = true;
 	
 	private boolean withValidation = true;
@@ -299,12 +299,12 @@ public class UpdateOption {
 	}
 
 	/**
-	 * {@link EntityManager#lockByUser(String, String)}により、ユーザによってロックされている場合、
+	 * {@link EntityManager#lockByUser(String, String)}により、ユーザーによってロックされている場合、
 	 * 更新エラー(EntityLockedByUserException)とするかどうかを設定します。
 	 * デフォルトはtrueです。
-	 * ユーザの画面操作によらない属性をバックエンドのプログラムから更新するような場合、
+	 * ユーザーの画面操作によらない属性をバックエンドのプログラムから更新するような場合、
 	 * 当該更新オプションをfalseに指定して更新することにより、
-	 * バックエンドのプログラムはユーザのロック状態によらず、属性を更新することが可能となります。
+	 * バックエンドのプログラムはユーザーのロック状態によらず、属性を更新することが可能となります。
 	 * 
 	 * @param checkLockedByUser
 	 */
@@ -421,7 +421,7 @@ public class UpdateOption {
 	}
 	
 	/**
-	 * ユーザにより、当該Entityがロックされているか否かを確認せず更新処理します。
+	 * ユーザーにより、当該Entityがロックされているか否かを確認せず更新処理します。
 	 * @return
 	 */
 	public UpdateOption noCheckLockedByUser() {
