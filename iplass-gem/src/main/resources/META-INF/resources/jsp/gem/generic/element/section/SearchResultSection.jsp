@@ -615,7 +615,10 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			doSearch($(":hidden[name='searchType']").val(), val, false, $(".ui-icon-search"), "pager");
 		},
 		pagingInputErrorFunc: function() {
-			$(".paginInputError").show().fadeOut(2000);
+			$pager.lock();
+			$(".paginInputError").show().fadeOut(2000, function() {
+				$pager.unlock();
+			});
 		}
 	});
 <%

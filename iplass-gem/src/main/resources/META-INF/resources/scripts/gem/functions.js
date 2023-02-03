@@ -1668,7 +1668,7 @@ $.fn.allInputCheck = function(){
 			init($this, options);
 
 			//jQueryオブジェクトのメソッドをjavascriptオブジェクトで利用する為、内部メソッドをバインド
-			var methods = ["setPage"];
+			var methods = ["setPage", "lock", "unlock"];
 			for (var i = 0; i < methods.length; i++) {
 				_bindMethod($this, this, methods[i]);
 			}
@@ -1682,6 +1682,18 @@ $.fn.allInputCheck = function(){
 		ret.setPage = function(offset, length, count) {
 			$(this).each(function() {
 				this.setPage(offset, length, count);
+			});
+		};
+
+		ret.lock = function() {
+			$(this).each(function() {
+				this.lock(this);
+			});
+		};
+
+		ret.unlock = function() {
+			$(this).each(function() {
+				this.unlock(this);
 			});
 		};
 
@@ -1797,6 +1809,10 @@ $.fn.allInputCheck = function(){
 					}
 
 					$("a", $linkList).on("click", function() {
+						if ($v.lockStatus === true) {
+							return false;
+						}
+
 						var offset = $(this).attr("offset");
 						if ($v.searchFunc && $.isFunction($v.searchFunc)) {
 							$v.searchFunc.call(this, offset);
@@ -1823,6 +1839,13 @@ $.fn.allInputCheck = function(){
 				nextFunc: options.nextFunc,
 				searchFunc: options.searchFunc,
 				pagingInputErrorFunc: options.pagingInputErrorFunc,
+				lockStatus: false,
+				lock: function() {
+					this.lockStatus = true;
+				},
+				unlock: function() {
+					this.lockStatus = false;
+				},
 				setPage: function(offset, length, count) {
 					//件数
 					var tail = offset + limit;
@@ -1919,11 +1942,19 @@ $.fn.allInputCheck = function(){
 			});
 
 			$("a", $preview).on("click", function() {
+				if ($v.lockStatus === true) {
+					return false;
+				}
+
 				if ($v.previewFunc && $.isFunction($v.previewFunc)) {
 					$v.previewFunc.call(this, limit);
 				}
 			});
 			$("a", $next).on("click", function() {
+				if ($v.lockStatus === true) {
+					return false;
+				}
+
 				if ($v.nextFunc && $.isFunction($v.nextFunc)) {
 					$v.nextFunc.call(this, limit);
 				}
@@ -1945,6 +1976,10 @@ $.fn.allInputCheck = function(){
 						}
 					}
 				}).on("keypress", function(event) {
+					if ($v.lockStatus === true) {
+						return false;
+					}
+
 					if( event.which === 13 ){
 						$searchBtn.click();
 					}
@@ -1957,6 +1992,10 @@ $.fn.allInputCheck = function(){
 				}).on("mouseleave", function() {
 					$(this).removeClass("hover");
 				}).on("click", function() {
+					if ($v.lockStatus === true) {
+						return false;
+					}
+
 					var currentPage = $current.val();
 					//notCount=trueかつshowSearchBtn=trueの場合、maxPageが設定されてません。
 					if (!$v.maxPage || $v.maxPage && currentPage > 0 && currentPage <= $v.maxPage) {
