@@ -616,7 +616,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 		},
 		pagingInputErrorFunc: function() {
 			$pager.lock();
-			$(".paginInputError").show().fadeOut(2000, function() {
+			$(".paginInputError").show().fadeOut(1500, function() {
 				$pager.unlock();
 			});
 		}
