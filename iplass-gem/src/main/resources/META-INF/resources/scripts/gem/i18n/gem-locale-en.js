@@ -38,6 +38,7 @@ scriptContext.gem.locale.binary.notVewFlash = "You can not view Flash.";
 scriptContext.gem.locale.apendCategory("date");
 scriptContext.gem.locale.date.datepickerBtn = "Input from the calendar";
 scriptContext.gem.locale.date.timepickerBtn = "Input from the slider";
+scriptContext.gem.locale.date.pickerClearBtn = "Clear";
 scriptContext.gem.locale.date.validateDateErrMsg = "Please enter the date correctly. ({0})";
 scriptContext.gem.locale.date.validateTimeErrMsg = "Please enter the time correctly. ({0})";
 scriptContext.gem.locale.date.validateTimestampErrMsg = "Please enter the correct date or time. ({0})";

@@ -116,6 +116,12 @@
 		String defSec = defTmp[3];
 		String defStr = defTmp[5];
 
+		// 入力フィールドに設定する readonly 属性の決定（isRestrictDirectEditing が true の場合は、 readonly 属性を付与する）
+		String valueAttributeReadonly = editor.isRestrictDirectEditing() ? "readonly" : "";
+		// 値の存在判断。（値がある場合のみ、対応する属性 data-(max|min)-date を付与する）
+		boolean isExistMinDate = editor.getMinDate() != null;
+		boolean isExistMaxDate = editor.getMaxDate() != null;
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
@@ -132,7 +138,7 @@
 
 		String onchange = "timestampSelectChange('" + StringUtil.escapeJavaScript(_propName) + "')";
 %>
-<input type="text" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="d_<c:out value="<%=_propName %>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-notFillTime="<%=editor.isNotFillTime()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
+<input type="text" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="d_<c:out value="<%=_propName %>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-notFillTime="<%=editor.isNotFillTime()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <% if (isExistMinDate) { %> data-min-date="<c:out value="<%= editor.getMinDate() %>"/>"<% } if (isExistMaxDate) { %> data-max-date="<c:out value="<%= editor.getMaxDate() %>"/>"<% } %> <%= valueAttributeReadonly %> />
 <%
 		String defaultHour = "00";
 		String _defaultHour = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_HOUR);

@@ -116,6 +116,12 @@
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/date/DatePropertyAutocompletion.jsp");
 	}
 
+	// 入力フィールドに設定する readonly 属性の決定（isRestrictDirectEditing が true の場合は、 readonly 属性を付与する）
+	String valueAttributeReadonly = editor.isRestrictDirectEditing() ? "readonly" : "";
+	// 値の存在判断。（値がある場合のみ、対応する属性 data-(max|min)-date を付与する）
+	boolean isExistMinDate = editor.getMinDate() != null;
+	boolean isExistMaxDate = editor.getMaxDate() != null;
+
 	if (editor.getDisplayType() != DateTimeDisplayType.LABEL
 			&& editor.getDisplayType() != DateTimeDisplayType.HIDDEN && updatable) {
 
@@ -147,7 +153,7 @@ function <%=toggleAddBtnFunc%>() {
 </script>
 <ul id="<c:out value="<%=ulId %>"/>" class="mb05">
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add picker-list" style="display: none;">
-<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel=<%=!editor.isHideButtonPanel()%> data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
+<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel=<%=!editor.isHideButtonPanel()%> data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <% if (isExistMinDate) { %> data-min-date="<c:out value="<%= editor.getMinDate() %>"/>"<% } if (isExistMaxDate) { %> data-max-date="<c:out value="<%= editor.getMaxDate() %>"/>"<% } %> <%= valueAttributeReadonly %> />
 <input type="hidden" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 </li>
@@ -163,7 +169,7 @@ function <%=toggleAddBtnFunc%>() {
 					String onchange = "dateChange('" + StringUtil.escapeJavaScript(liId) + "')";
 %>
 <li id="<c:out value="<%=liId%>"/>" class="list-add picker-list">
-<input type="text" id="d_<c:out value="<%=liId%>"/>" class="inpbr datepicker" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
+<input type="text" id="d_<c:out value="<%=liId%>"/>" class="inpbr datepicker" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <% if (isExistMinDate) { %> data-min-date="<c:out value="<%= editor.getMinDate() %>"/>"<% } if (isExistMaxDate) { %> data-max-date="<c:out value="<%= editor.getMaxDate() %>"/>"<% } %> <%= valueAttributeReadonly %> />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=hiddenDate%>"/>" />
 <script type="text/javascript">
@@ -216,7 +222,7 @@ $(function() {
 			}
 			String onchange = "dateChange('" + StringUtil.escapeJavaScript(propName) + "')";
 %>
-<input type="text" id="d_<c:out value="<%=propName%>"/>" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
+<input type="text" id="d_<c:out value="<%=propName%>"/>" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <% if (isExistMinDate) { %> data-min-date="<c:out value="<%= editor.getMinDate() %>"/>"<% } if (isExistMaxDate) { %> data-max-date="<c:out value="<%= editor.getMaxDate() %>"/>"<% } %> <%= valueAttributeReadonly %> />
 <input type="hidden" id="i_<c:out value="<%=propName %>"/>" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenDate %>"/>" />
 <script type="text/javascript">
 $(function() {

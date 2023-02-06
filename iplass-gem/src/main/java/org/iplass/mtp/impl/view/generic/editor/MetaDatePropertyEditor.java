@@ -37,6 +37,7 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
 /**
  * 日付型プロパティエディタのメタデータ
  * @author lis3wg
+ * @author SEKIGUCHI Naoya
  */
 public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 
@@ -53,12 +54,29 @@ public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 	/** 曜日を表示 */
 	private boolean showWeekday;
 
+	/** 最大日付*/
+	private String minDate;
+
+	/** 最大日付*/
+	private String maxDate;
+
+	/** テキストフィールドへの直接入力を制限する */
+	private boolean restrictDirectEditing;
+
 	/**
 	 * 現在日付設定ボタン表示可否を取得します。
 	 * @return 現在日付設定ボタン表示可否
 	 */
 	public boolean isHideButtonPanel() {
-	    return hideButtonPanel;
+		return hideButtonPanel;
+	}
+
+	/**
+	 * 現在日付設定ボタン表示可否を設定します。
+	 * @param hideButtonPanel 現在日付設定ボタン表示可否
+	 */
+	public void setHideButtonPanel(boolean hideButtonPanel) {
+		this.hideButtonPanel = hideButtonPanel;
 	}
 
 	/**
@@ -76,11 +94,52 @@ public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 	}
 
 	/**
-	 * 現在日付設定ボタン表示可否を設定します。
-	 * @param hideButtonPanel 現在日付設定ボタン表示可否
+	 * 最小日付を取得する
+	 * @return 最小日付
 	 */
-	public void setHideButtonPanel(boolean hideButtonPanel) {
-	    this.hideButtonPanel = hideButtonPanel;
+	public String getMinDate() {
+		return minDate;
+	}
+
+	/**
+	 * 最小日付を設定する
+	 * @param minDate 最小日付
+	 */
+	public void setMinDate(String minDate) {
+		this.minDate = minDate;
+	}
+
+	/**
+	 * 最大日付を取得する
+	 * @return 最大日付
+	 */
+	public String getMaxDate() {
+		return maxDate;
+	}
+
+	/**
+	 * 最大日付を設定する
+	 * @param maxDate 最大日付
+	 */
+	public void setMaxDate(String maxDate) {
+		this.maxDate = maxDate;
+	}
+
+	/**
+	 * テキストフィールドへの直接入力を制限する値を取得する
+	 * @return テキストフィールドへの直接入力を制限する（true: 直接入力不可能、false: 直接入力可能）
+	 */
+	public boolean isRestrictDirectEditing() {
+		return restrictDirectEditing;
+	}
+
+	/**
+	 * テキストフィールドへの直接入力を制限する値を設定する
+	 * @param restrictDirectEditing テキストフィールドへの直接入力を制限する
+	 * @see {@link #isRestrictDirectEditing()}
+	 */
+	public void setRestrictDirectEditing(boolean restrictDirectEditing) {
+		this.restrictDirectEditing = restrictDirectEditing;
 	}
 
 	@Override
@@ -90,6 +149,9 @@ public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 		DatePropertyEditor de = (DatePropertyEditor) editor;
 		this.hideButtonPanel = de.isHideButtonPanel();
 		this.showWeekday = de.isShowWeekday();
+		this.minDate = de.getMinDate();
+		this.maxDate = de.getMaxDate();
+		this.restrictDirectEditing = de.isRestrictDirectEditing();
 	}
 
 	@Override
@@ -99,6 +161,10 @@ public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 
 		editor.setHideButtonPanel(hideButtonPanel);
 		editor.setShowWeekday(showWeekday);
+		editor.setMinDate(minDate);
+		editor.setMaxDate(maxDate);
+		editor.setRestrictDirectEditing(restrictDirectEditing);
+
 		return editor;
 	}
 

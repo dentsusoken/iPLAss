@@ -211,10 +211,18 @@
 		if (editor.getDispRange() != null) {
 			range = editor.getDispRange().toString();
 		}
+		
+		// 入力フィールドに設定する readonly 属性の決定（isRestrictDirectEditing が true の場合は、 readonly 属性を付与する）
+		String valueAttributeReadonly = editor.isRestrictDirectEditing() ? "readonly" : "";
+		// 値の存在判断。（値がある場合のみ、対応する属性 data-(max|min)-date を付与する）
+		boolean isExistMinDate = editor.getMinDate() != null;
+		boolean isExistMaxDate = editor.getMaxDate() != null;
+	
 %>
 <input type="text" class="<c:out value="<%= cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="datetime_<c:out value="<%=_propName %>"/>"
 	    onchange="<%=onchange%>" data-stepmin="<c:out value="<%=minInterval %>"/>" data-timeformat="<c:out value="<%=timeFormat %>"/>"
-	    data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>"  data-fixedMSec="<c:out value="<%=defaultMsec%>"/>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
+	    data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>"  data-fixedMSec="<c:out value="<%=defaultMsec%>"/>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" 
+	    <% if (isExistMinDate) { %> data-min-date="<c:out value="<%= editor.getMinDate() %>"/>"<% } if (isExistMaxDate) { %> data-max-date="<c:out value="<%= editor.getMaxDate() %>"/>"<% } %> <%= valueAttributeReadonly %> />
 <input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
 <script type="text/javascript">
 $(function() {
