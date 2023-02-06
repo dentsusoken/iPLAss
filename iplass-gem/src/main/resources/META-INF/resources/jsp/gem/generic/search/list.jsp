@@ -261,7 +261,7 @@ $(function() {
 							hidden = ", hidden:true";
 						}
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>, cellattr: cellAttrFunc});
 <%
 					} else if (nest.size() > 0) {
 						String style = property.getStyle() != null ? property.getStyle() : "";
@@ -299,7 +299,7 @@ $(function() {
 			String style = property.getStyle() != null ? property.getStyle() : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", sortable:false <%=hidden%><%=width%><%=align%>});
+colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", sortable:false <%=hidden%><%=width%><%=align%>, cellattr: cellAttrFunc});
 <%
 		}
 	}

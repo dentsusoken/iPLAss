@@ -315,7 +315,7 @@ $(function() {
 					}
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>, cellattr: cellAttrFunc});
 <%
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 					//参照型のName以外を表示する場合
@@ -341,7 +341,7 @@ $(function() {
 						}
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%><%=align%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%><%=align%>, cellattr: cellAttrFunc});
 <%
 					} else if (nest.size() > 0) {
 						String style = property.getStyle() != null ? property.getStyle() : "";
@@ -378,7 +378,7 @@ $(function() {
 			String style = property.getStyle() != null ? property.getStyle() : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", sortable:false <%=hidden%><%=width%><%=align%>});
+colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", sortable:false <%=hidden%><%=width%><%=align%>, cellattr: cellAttrFunc});
 <%
 		}
 	}
