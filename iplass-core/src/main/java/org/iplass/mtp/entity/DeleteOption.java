@@ -34,7 +34,7 @@ public class DeleteOption {
 	/** ごみ箱に入れず、物理削除するかどうか（デフォルトtrue） */
 	private boolean purge = true;
 	
-	/**　ユーザによるロックのチェックを行うかどうか。デフォルトtrue */
+	/**　ユーザーによるロックのチェックを行うかどうか。デフォルトtrue */
 	private boolean checkLockedByUser = true;
 	
 	private boolean notifyListeners = true;
@@ -124,22 +124,22 @@ public class DeleteOption {
 	}
 
 	/**
-	 * {@link EntityManager#lockByUser(String, String)}により、ユーザによってロックされている場合、
+	 * {@link EntityManager#lockByUser(String, String)}により、ユーザーによってロックされている場合、
 	 * 更新エラー(EntityLockedByUserException)とするかどうか。
 	 * 
-	 * @return trueの場合、別ユーザによりロックされている場合は更新エラーとする。
+	 * @return trueの場合、別ユーザーによりロックされている場合は更新エラーとする。
 	 */
 	public boolean isCheckLockedByUser() {
 		return checkLockedByUser;
 	}
 
 	/**
-	 * {@link EntityManager#lockByUser(String, String)}により、ユーザによってロックされている場合、
+	 * {@link EntityManager#lockByUser(String, String)}により、ユーザーによってロックされている場合、
 	 * 更新エラー(EntityLockedByUserException)とするかどうかをセット。
 	 * デフォルトtrue。
 	 * 例えば、バックエンドのクリーンナッププログラムにてすでに無用なデータを削除するような場合、
 	 * 当該オプションをfalseに指定して削除することにより、
-	 * バックエンドのプログラムはユーザのロック状態によらず、データを削除することが可能となる。
+	 * バックエンドのプログラムはユーザーのロック状態によらず、データを削除することが可能となる。
 	 * 
 	 * @param checkLockedByUser
 	 */
@@ -168,7 +168,7 @@ public class DeleteOption {
 	
 	
 	/**
-	 * ユーザにより、当該Entityがロックされているか否かを確認せず削除処理する。
+	 * ユーザーにより、当該Entityがロックされているか否かを確認せず削除処理する。
 	 * @return
 	 */
 	public DeleteOption noCheckLockedByUser() {

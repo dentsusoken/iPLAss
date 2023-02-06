@@ -105,7 +105,7 @@ public interface MetaDataPortingService extends Service {
 	void patchEntityDataWithPrivilegedAuth(PatchEntityDataParameter param);
 
 	/**
-	 * Entityデータのパッチ処理をユーザ認証モードで行います。
+	 * Entityデータのパッチ処理をユーザー認証モードで行います。
 	 * 
 	 * @param param EntityDataパッチパラメータ
 	 */

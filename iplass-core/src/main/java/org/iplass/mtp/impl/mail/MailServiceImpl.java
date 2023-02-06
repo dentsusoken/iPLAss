@@ -660,7 +660,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		Properties props = new Properties();
 		props.putAll(sendProperties);
 		
-		//Message-IDでローカルサーバ名/ローカルユーザが出ないように
+		//Message-IDでローカルサーバ名/ローカルユーザーが出ないように
 		props.setProperty("mail.from", mail.getFromAddress().getAddress());
 
 		//mail.smtp.from

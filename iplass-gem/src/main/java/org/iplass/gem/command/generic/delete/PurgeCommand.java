@@ -96,7 +96,7 @@ public final class PurgeCommand extends DeleteCommandBase {
 					for (Long id : subList) {
 						try {
 							if (isAllowTrashOperationToRecycleBy) {
-								// ユーザ自身が削除したデータのみ
+								// ユーザー自身が削除したデータのみ
 								Entity rb = em.getRecycleBin(id, defName);
 								if (userOid.equals(rb.getUpdateBy())) {
 									em.purge(id, defName);

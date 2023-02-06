@@ -23,7 +23,7 @@ package org.iplass.mtp.auth;
 import org.iplass.mtp.entity.GenericEntity;
 
 /**
- * ユーザを表現するEntity。
+ * ユーザーを表現するEntity。
  * 当該Entityに保持されるプロパティは、
  * Entityとして設計されているmtp.auth.Userと一致するとは限らない。
  * セキュリティの認証機構に応じて、その認証機構特有のプロパティが設定されることがある。

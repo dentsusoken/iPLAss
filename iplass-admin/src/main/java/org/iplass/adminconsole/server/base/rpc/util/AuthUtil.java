@@ -118,7 +118,7 @@ public class AuthUtil {
 	 * @param request HttpServletRequest
 	 * @param response HttpServletResponse
 	 * @param tenantId テナントID
-	 * @param id ユーザID
+	 * @param id ユーザーID
 	 * @param password パスワード
 	 */
 	public static void authLogin(

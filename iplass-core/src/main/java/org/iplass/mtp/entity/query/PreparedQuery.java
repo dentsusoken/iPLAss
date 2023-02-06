@@ -45,7 +45,7 @@ import org.iplass.mtp.impl.query.prepared.PreparedQueryTemplateFactory;
  * <p>
  * デフォルトでバインド可能な変数、関数
  * <ul>
- * <li>user : 実行するユーザの情報。※１参照</li>
+ * <li>user : 実行するユーザーの情報。※１参照</li>
  * <li>date : 現在日時のjava.util.Dateのインスタンス。</li>
  * <li>sysdate : 現在日付（時間含まず）の文字列。テナントローカルなタイムゾーンの日付。例：2011-01-20</li>
  * <li>sysdatetime : 現在日時の文字列。テナントローカルなタイムゾーンの日時。例：2011-01-18 02:05:03.348</li>
@@ -75,13 +75,13 @@ import org.iplass.mtp.impl.query.prepared.PreparedQueryTemplateFactory;
  * バインドされているインスタンス自体はorg.iplass.mtp.auth.Userではない点注意。
  * Userエンティティに登録されている属性に加えて、以下の変数/関数を取得/実行可能。
  * <ul>
- * <li>groupCode : ユーザの所属するグループのグループコードのString[]。（※セキュリティのEntityの限定条件に利用する場合、groupOidの利用の方が高速です。）</li>
- * <li>groupCodeWithChildren : ユーザの所属するグループ、およびそのサブグループ含めたすべてのグループコードのString[]。</li>
- * <li>groupCodeWithParents : ユーザの所属するグループ、およびその親グループ（ルートまで）含めたすべてのグループコードのString[]。</li>
- * <li>groupOid : ユーザの所属するグループのoidのString[]。</li>
- * <li>groupOidWithChildren : ユーザの所属するグループ、およびそのサブグループ含めたすべてのグループのoidのString[]。</li>
- * <li>groupOidWithParents : ユーザの所属するグループ、およびその親グループ（ルートまで）含めたすべてのグループのoidのString[]。</li>
- * <li>memberOf(String): ユーザが、引数のグループコードのメンバ（サブグループに所属していても）の場合trueを返す。</li>
+ * <li>groupCode : ユーザーの所属するグループのグループコードのString[]。（※セキュリティのEntityの限定条件に利用する場合、groupOidの利用の方が高速です。）</li>
+ * <li>groupCodeWithChildren : ユーザーの所属するグループ、およびそのサブグループ含めたすべてのグループコードのString[]。</li>
+ * <li>groupCodeWithParents : ユーザーの所属するグループ、およびその親グループ（ルートまで）含めたすべてのグループコードのString[]。</li>
+ * <li>groupOid : ユーザーの所属するグループのoidのString[]。</li>
+ * <li>groupOidWithChildren : ユーザーの所属するグループ、およびそのサブグループ含めたすべてのグループのoidのString[]。</li>
+ * <li>groupOidWithParents : ユーザーの所属するグループ、およびその親グループ（ルートまで）含めたすべてのグループのoidのString[]。</li>
+ * <li>memberOf(String): ユーザーが、引数のグループコードのメンバ（サブグループに所属していても）の場合trueを返す。</li>
  * </ul>
  * </p>
  *

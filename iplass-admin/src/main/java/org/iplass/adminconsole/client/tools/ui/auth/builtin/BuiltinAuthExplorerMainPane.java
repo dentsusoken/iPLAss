@@ -220,7 +220,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			specificTypeForm.setFields(specificTypeItem);
 
 			//------------------------
-			//ロックユーザ
+			//ロックユーザー
 			//------------------------
 			lockedUserForm = new DynamicForm();
 			lockedUserForm.setWidth100();
@@ -426,7 +426,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 	}
 
 	/**
-	 * ユーザ属性での検索
+	 * ユーザー属性での検索
 	 */
 	private class UserAttributeCriteriaPane extends VLayout {
 
@@ -834,7 +834,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 				return;
 			}
 
-			//選択ユーザの取得
+			//選択ユーザーの取得
 			ListGridRecord[] records = grid.getSelectedRecords();
 			List<BuiltinAuthUserDto> users = new ArrayList<BuiltinAuthUserDto>(records.length);
 			for (ListGridRecord record : records) {

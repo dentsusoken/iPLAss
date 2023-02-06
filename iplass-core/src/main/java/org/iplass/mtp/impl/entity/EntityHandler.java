@@ -1059,7 +1059,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 			}
 		}
 
-		//当該ユーザがロックしているもの、もしくは他ユーザにロックされていないことを確認
+		//当該ユーザーがロックしているもの、もしくは他ユーザーにロックされていないことを確認
 		String lockedByUser = null;
 		if (option.isCheckLockedByUser()) {
 			//oid単位でロックがされる前提で、、
@@ -1299,7 +1299,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 			}
 		}
 
-		//当該ユーザがロックしているもの、もしくは他ユーザにロックされていないことを確認
+		//当該ユーザーがロックしているもの、もしくは他ユーザーにロックされていないことを確認
 		//oid単位でロックがされる前提で、、
 		//TODO ReferencePropertyはカスケードデリート対象のみをロードする形に
 		Entity beforeEntity = new EntityLoadInvocationImpl(entity.getOid(), entity.getVersion(), new LoadOption(true, false), false, service.getInterceptors(), this).proceed();

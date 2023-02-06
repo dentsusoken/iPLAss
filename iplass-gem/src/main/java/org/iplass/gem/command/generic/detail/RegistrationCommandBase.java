@@ -152,10 +152,10 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	}
 
 	/**
-	 * ロックユーザを取得します。
+	 * ロックユーザーを取得します。
 	 *
 	 * @param target ロック対象Entity
-	 * @return ロックユーザ
+	 * @return ロックユーザー
 	 */
 	protected Entity getLockedByUser(Entity target) {
 		if (target.getLockedBy() != null) {

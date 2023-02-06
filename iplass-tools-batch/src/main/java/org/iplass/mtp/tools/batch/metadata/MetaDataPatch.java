@@ -70,7 +70,7 @@ public class MetaDataPatch extends MtpCuiBase {
 				execMode = ExecMode.WIZARD;
 			}
 		}
-		// ユーザIDが未指定の場合は特権モードで実行
+		// ユーザーIDが未指定の場合は特権モードで実行
 		if (args.length > 4 && !isEmpty(args[4])) {
 			userId = args[4];
 		}
@@ -202,8 +202,8 @@ public class MetaDataPatch extends MtpCuiBase {
 			validNewMetaDataFilePath = true;
 		} while (!validNewMetaDataFilePath);
 
-		// ユーザID(任意)
-		// ユーザIDを入力してください。
+		// ユーザーID(任意)
+		// ユーザーIDを入力してください。
 		userId = readConsole(rs("Wizard.inputUserIdMsg"));
 
 		// パスワード(任意)
@@ -277,7 +277,7 @@ public class MetaDataPatch extends MtpCuiBase {
 	private boolean proceedPatch(PatchEntityDataParameter param) {
 
 		if (StringUtil.isNotBlank(userId)) {
-			// ユーザ認証
+			// ユーザー認証
 			service.patchEntityDataWithUserAuth(param, userId, password);
 		} else {
 			// 特権モード

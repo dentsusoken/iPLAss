@@ -85,7 +85,7 @@ public class ProcessLobValidator implements LobValidator {
 
 	@Override
 	public void stored(Lob lob, String streamWriteChecksum) {
-		//ユーザのoid
+		//ユーザーのoid
 		String user = ExecuteContext.getCurrentContext().getClientId();
 
 		//FileLobStoreの場合にファイルパスを取得
@@ -101,7 +101,7 @@ public class ProcessLobValidator implements LobValidator {
 		ArrayList<String> cmd = new ArrayList<>();
 		cmd.addAll(command);
 
-		//[ファイルパス] [チェックサム] [ファイル名] [ユーザOID]
+		//[ファイルパス] [チェックサム] [ファイル名] [ユーザーOID]
 		cmd.add(filePath);
 		cmd.add(streamWriteChecksum);
 		cmd.add(lob.getName());

@@ -23,7 +23,7 @@ package org.iplass.mtp.auth;
 import org.iplass.mtp.entity.EntityDuplicateValueException;
 
 /**
- * User作成の際、すでに同一アカウントのユーザが存在する場合、スローされる例外。<br>
+ * User作成の際、すでに同一アカウントのユーザーが存在する場合、スローされる例外。<br>
  * 
  * @author K.Higuchi
  *

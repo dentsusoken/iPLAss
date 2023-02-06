@@ -39,7 +39,7 @@ public interface RegistrationIdHandler {
 	
 	/**
 	 * registrationIdで指定される登録トークンは無効であることを通知します。
-	 * ユーザの端末から、アプリケーションがアンインストールされた場合などに、通知されます。
+	 * ユーザーの端末から、アプリケーションがアンインストールされた場合などに、通知されます。
 	 * 
 	 * @param registrationId
 	 */

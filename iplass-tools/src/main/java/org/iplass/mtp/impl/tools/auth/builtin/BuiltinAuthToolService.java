@@ -91,10 +91,10 @@ public class BuiltinAuthToolService implements Service {
 	}
 
 	/**
-	 * ユーザ情報を検索します。
+	 * ユーザー情報を検索します。
 	 *
 	 * @param param 検索条件
-	 * @return ユーザ情報
+	 * @return ユーザー情報
 	 */
 	public BuiltinAuthUserSearchResult search(final BuiltinAuthUserSearchParameter param) {
 		BuiltinAuthUserSearchResult result = new BuiltinAuthUserSearchResult();
@@ -198,7 +198,7 @@ public class BuiltinAuthToolService implements Service {
 	}
 
 	/**
-	 * ユーザ情報をCSV出力します。
+	 * ユーザー情報をCSV出力します。
 	 *
 	 * @param os OutputStream
 	 * @param param 検索条件
@@ -498,11 +498,11 @@ public class BuiltinAuthToolService implements Service {
 	}
 
 	/**
-	 * ユーザ情報を検索します。
-	 * 該当ユーザ１件ごとにCallbackに返します。
+	 * ユーザー情報を検索します。
+	 * 該当ユーザー１件ごとにCallbackに返します。
 	 *
 	 * @param param 検索条件
-	 * @param callback 該当ユーザ情報を処理するCallback
+	 * @param callback 該当ユーザー情報を処理するCallback
 	 */
 	private void search(final BuiltinAuthUserSearchParameter param, final Predicate<BuiltinAuthUser> callback) {
 
@@ -551,7 +551,7 @@ public class BuiltinAuthToolService implements Service {
 	}
 
 	/**
-	 * ユーザのログインエラー回数をリセットします。
+	 * ユーザーのログインエラー回数をリセットします。
 	 *
 	 * @param accountIds 対象アカウントID
 	 * @return 更新結果

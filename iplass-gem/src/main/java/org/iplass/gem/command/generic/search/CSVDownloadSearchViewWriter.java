@@ -268,7 +268,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		 * @param handler	SearchQueryInterrupterHandler
 		 * @param columns 列情報
 		 * @param cacheLimit １度の出力件数
-		 * @param isShowUserNameWithPrivilegedValue 特権実行でユーザ名を取得
+		 * @param isShowUserNameWithPrivilegedValue 特権実行でユーザー名を取得
 		 */
 		public CsvDownloadSearchImpl(
 				final SearchQueryInterrupterHandler handler,
@@ -348,7 +348,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 
 					if (tmpResult.size() == cacheLimit) {
 
-						//ユーザ情報を反映
+						//ユーザー情報を反映
 						setUserProperty(tmpResult, userOides);
 
 						//指定されたformatterの呼び出し
@@ -368,7 +368,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 
 			});
 
-			//ユーザ情報を反映
+			//ユーザー情報を反映
 			setUserProperty(tmpResult, userOides);
 
 			//指定されたformatterの呼び出し
@@ -383,7 +383,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		 * Userプロパティ情報をEntityにセットします。
 		 *
 		 * @param tmpResult 検索結果のEntityのリスト
-		 * @param userOides ユーザのOID情報
+		 * @param userOides ユーザーのOID情報
 		 */
 		private void setUserProperty(List<Entity> tmpResult, Set<String> userOides) {
 
@@ -392,7 +392,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 				return;
 			}
 
-			// ユーザ情報の検索
+			// ユーザー情報の検索
 			final Map<String, String> userMap = new HashMap<>();
 
 			Query q = new Query().select(Entity.OID, Entity.NAME)

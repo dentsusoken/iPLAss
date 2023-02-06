@@ -49,7 +49,7 @@ public class MetaSearchFormView extends MetaFormView {
 	/** ごみ箱を隠すか */
 	private boolean hideTrash;
 
-	/** ごみ箱操作をユーザ削除データに限定するか */
+	/** ごみ箱操作をユーザー削除データに限定するか */
 	private boolean allowTrashOperationToRecycleBy;
 
 	/** 新規作成ボタンを隠すか */
@@ -133,16 +133,16 @@ public class MetaSearchFormView extends MetaFormView {
 	}
 
 	/**
-	 * ごみ箱操作をユーザ削除データに限定するかを取得します。
-	 * @return ごみ箱操作をユーザ削除データに限定するか
+	 * ごみ箱操作をユーザー削除データに限定するかを取得します。
+	 * @return ごみ箱操作をユーザー削除データに限定するか
 	 */
 	public boolean isAllowTrashOperationToRecycleBy() {
 		return allowTrashOperationToRecycleBy;
 	}
 
 	/**
-	 * ごみ箱操作をユーザ削除データに限定するかを設定します。
-	 * @param allowTrashOperationToRecycleBy ごみ箱操作をユーザ削除データに限定するか
+	 * ごみ箱操作をユーザー削除データに限定するかを設定します。
+	 * @param allowTrashOperationToRecycleBy ごみ箱操作をユーザー削除データに限定するか
 	 */
 	public void setAllowTrashOperationToRecycleBy(boolean allowTrashOperationToRecycleBy) {
 		this.allowTrashOperationToRecycleBy = allowTrashOperationToRecycleBy;

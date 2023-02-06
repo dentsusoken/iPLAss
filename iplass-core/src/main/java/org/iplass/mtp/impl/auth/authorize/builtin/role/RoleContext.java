@@ -72,7 +72,7 @@ public class RoleContext {
 	// user.accountId='admin' && user.groupCode.any{it.matches('hoge.*')} && user.rank.level > 5
 	public boolean userInRole(AuthContextHolder userAuthContext) {
 
-		//admin（かつ、他テナントユーザでない）は全権限保持
+		//admin（かつ、他テナントユーザーでない）は全権限保持
 		UserBinding user = userAuthContext.newUserBinding(tenantAuthContext);
 		if (user.isGrantAllPermissions()) {
 			return true;

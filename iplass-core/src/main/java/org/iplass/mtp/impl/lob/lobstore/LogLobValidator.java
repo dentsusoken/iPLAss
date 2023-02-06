@@ -53,7 +53,7 @@ public class LogLobValidator implements LobValidator {
 
 	@Override
 	public void stored(Lob lob, String streamWriteChecksum) {
-		//ユーザのoid
+		//ユーザーのoid
 		String user = ExecuteContext.getCurrentContext().getClientId();
 
 		//FileLobStoreの場合にファイルパスを取得

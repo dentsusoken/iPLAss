@@ -395,7 +395,7 @@ public class SearchConditionSection extends Section {
 					"変数としてinitCondMap(Map<String, Object>)がバインドされています。<BR />" +
 					"このスクリプト内でinitCondMapに「key:プロパティ名(sc_なしです)、value：初期条件とする値」という形式で値を設定することで初期条件として値が設定されます。<BR />" +
 					"<BR/>" +
-					"バインド変数として、「user：ユーザ情報」、「request：リクエスト情報」、「session：セッション情報」があらかじめバインドされています。<BR/>" +
+					"バインド変数として、「user：ユーザー情報」、「request：リクエスト情報」、「session：セッション情報」があらかじめバインドされています。<BR/>" +
 					"リクエストパラメータで「sc_プロパティ名」として指定された条件がある場合は、予めinitCondMapに設定されています。<BR />" +
 					"Reference Propertyの場合はOIDを値に設定する必要があります。<BR />" +
 					"同一プロパティに複数の条件を設定する場合は配列で設定してください。",

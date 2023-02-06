@@ -37,7 +37,7 @@
 						</localizedTitleList>
 						<colNum>1</colNum>
 						<elements xsi:type="metaPropertyItem">
-							<!-- ユーザID -->
+							<!-- ユーザーID -->
 							<dispFlag>true</dispFlag>
 							<propertyId>2</propertyId>
 							<isSystemProperty>false</isSystemProperty>
@@ -179,7 +179,7 @@ if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
-		// ユーザ管理が可能なロールを持っているか
+		// ユーザー管理が可能なロールを持っているか
 	    if (tenant.tenantAuthInfo.userAdminRoles != null) {
 	        for (def role: tenant.tenantAuthInfo.userAdminRoles) {
 	            if (auth.userInRole(role)) {
@@ -241,7 +241,7 @@ if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
-		// ユーザ管理が可能なロールを持っているか
+		// ユーザー管理が可能なロールを持っているか
 		if (tenant.tenantAuthInfo.userAdminRoles != null) {
 			for (def role: tenant.tenantAuthInfo.userAdminRoles) {
 				if (auth.userInRole(role)) {
@@ -311,7 +311,7 @@ function resetSpecificPassword(){
 					<sections xsi:type="metaDefaultSection">
 						<dispFlag>true</dispFlag>
 						<expandable>true</expandable>
-						<title>ユーザ情報</title>
+						<title>ユーザー情報</title>
 						<localizedTitleList>
 							<localeName>ja</localeName>
 							<stringValue>ユーザー情報</stringValue>
@@ -334,7 +334,7 @@ function resetSpecificPassword(){
 						</localizedTitleList>
 						<colNum>1</colNum>
 						<elements xsi:type="metaPropertyItem">
-							<!-- ユーザID -->
+							<!-- ユーザーID -->
 							<dispFlag>true</dispFlag>
 							<propertyId>2</propertyId>
 							<isSystemProperty>false</isSystemProperty>
@@ -553,7 +553,7 @@ if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
-		// ユーザ管理が可能なロールを持っているか
+		// ユーザー管理が可能なロールを持っているか
 	    if (tenant.tenantAuthInfo.userAdminRoles != null) {
 	        for (def role: tenant.tenantAuthInfo.userAdminRoles) {
 	            if (auth.userInRole(role)) {
@@ -615,7 +615,7 @@ if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
-		// ユーザ管理が可能なロールを持っているか
+		// ユーザー管理が可能なロールを持っているか
 		if (tenant.tenantAuthInfo.userAdminRoles != null) {
 			for (def role: tenant.tenantAuthInfo.userAdminRoles) {
 				if (auth.userInRole(role)) {
@@ -685,10 +685,10 @@ function resetSpecificPassword(){
 					<sections xsi:type="metaDefaultSection">
 						<dispFlag>true</dispFlag>
 						<expandable>true</expandable>
-						<title>ユーザ情報</title>
+						<title>ユーザー情報</title>
 						<localizedTitleList>
 							<localeName>ja</localeName>
-							<stringValue>ユーザ情報</stringValue>
+							<stringValue>ユーザー情報</stringValue>
 						</localizedTitleList>
 						<localizedTitleList>
 							<localeName>en</localeName>
@@ -782,7 +782,7 @@ function resetSpecificPassword(){
 						</localizedTitleList>
 						<conditionDispCount>5</conditionDispCount>
 						<elements xsi:type="metaPropertyItem">
-							<!-- ユーザID -->
+							<!-- ユーザーID -->
 							<dispFlag>true</dispFlag>
 							<propertyId>2</propertyId>
 							<isSystemProperty>false</isSystemProperty>
@@ -878,7 +878,7 @@ function resetSpecificPassword(){
 							</editor>
 						</elements>
 						<elements xsi:type="metaPropertyItem">
-							<!-- 一時ログインユーザ -->
+							<!-- 一時ログインユーザー -->
 							<dispFlag>true</dispFlag>
 							<propertyId>16</propertyId>
 							<isSystemProperty>false</isSystemProperty>
@@ -964,7 +964,7 @@ function resetSpecificPassword(){
 						</localizedTitleList>
 						<dispRowCount>20</dispRowCount>
 						<elements xsi:type="metaPropertyColumn">
-							<!-- ユーザID -->
+							<!-- ユーザーID -->
 							<dispFlag>true</dispFlag>
 							<propertyId>2</propertyId>
 							<isSystemProperty>false</isSystemProperty>
@@ -1068,16 +1068,16 @@ function resetSpecificPassword(){
 							</editor>
 						</elements>
 						<elements xsi:type="metaPropertyColumn">
-							<!-- 一時ログインユーザ -->
+							<!-- 一時ログインユーザー -->
 							<dispFlag>true</dispFlag>
 							<propertyId>16</propertyId>
 							<isSystemProperty>false</isSystemProperty>
 							<editor xsi:type="metaBooleanPropertyEditor">
 								<displayType>Checkbox</displayType>
-								<trueLabel>一時ログインユーザ</trueLabel>
+								<trueLabel>一時ログインユーザー</trueLabel>
 								<localizedTrueLabelList>
 									<localeName>ja</localeName>
-									<stringValue>一時ログインユーザ</stringValue>
+									<stringValue>一時ログインユーザー</stringValue>
 								</localizedTrueLabelList>
 								<localizedTrueLabelList>
 									<localeName>en</localeName>
@@ -1135,7 +1135,7 @@ function resetSpecificPassword(){
 						</localizedTitleList>
 						<conditionDispCount>5</conditionDispCount>
 						<elements xsi:type="metaPropertyItem">
-							<!-- ユーザID -->
+							<!-- ユーザーID -->
 							<dispFlag>true</dispFlag>
 							<propertyId>2</propertyId>
 							<isSystemProperty>false</isSystemProperty>
@@ -1206,7 +1206,7 @@ function resetSpecificPassword(){
 						</localizedTitleList>
 						<dispRowCount>20</dispRowCount>
 						<elements xsi:type="metaPropertyColumn">
-							<!-- ユーザID -->
+							<!-- ユーザーID -->
 							<dispFlag>true</dispFlag>
 							<propertyId>2</propertyId>
 							<isSystemProperty>false</isSystemProperty>

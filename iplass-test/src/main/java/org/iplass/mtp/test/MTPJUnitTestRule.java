@@ -48,7 +48,7 @@ import org.junit.runners.model.Statement;
  * JUnitに単体テスト用のユーティリティ処理を組み込むためのTestRuleです。
  * </p>
  * <p>
- * MTPJUnitTestRuleを組み込むことにより、容易な方法により、iPLAssの設定ファイルの指定、テナント、テストユーザの設定、トランザクション制御を行うことが可能です。
+ * MTPJUnitTestRuleを組み込むことにより、容易な方法により、iPLAssの設定ファイルの指定、テナント、テストユーザーの設定、トランザクション制御を行うことが可能です。
  * 設定方法は以下のいずれかの方法、またその組み合わせで行うことが可能です。
  * </p>
  * <dl>
@@ -93,13 +93,13 @@ import org.junit.runners.model.Statement;
  * </tr>
  * <tr>
  * <td>userId</td>
- * <td>テスト実行時のユーザのaccountIdを指定します。<br>
+ * <td>テスト実行時のユーザーのaccountIdを指定します。<br>
  * 設定例：<br>
  * userId=testUser</td>
  * </tr>
  * <tr>
  * <td>password</td>
- * <td>テスト実行時のユーザのパスワードを指定します。<br>
+ * <td>テスト実行時のユーザーのパスワードを指定します。<br>
  * 設定例：<br>
  * password=testUserPass</td>
  * </tr>
@@ -107,7 +107,7 @@ import org.junit.runners.model.Statement;
  * 
  * <h3>クラスレベルアノテーションによる指定、及びメソッドレベルアノテーションによる指定方法</h3>
  * <p>
- * アノテーションにより、クラス単位、メソッド単位でテナント、ユーザなどの指定が可能です。
+ * アノテーションにより、クラス単位、メソッド単位でテナント、ユーザーなどの指定が可能です。
  * 指定可能なアノテーションは以下です。
  * </p>
  * <ul>

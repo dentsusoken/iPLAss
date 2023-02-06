@@ -33,7 +33,7 @@ public class BuiltinAuthUserDto implements Serializable {
 
 	/** OID */
 	private String oid;
-	/** ユーザID */
+	/** ユーザーID */
 	private String accountId;
 	/** policy名 */
 	private String policyName;

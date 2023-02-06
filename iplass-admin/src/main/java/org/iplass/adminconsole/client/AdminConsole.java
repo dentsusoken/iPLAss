@@ -207,7 +207,7 @@ public class AdminConsole implements EntryPoint {
 			if (result != null) {
 				String lang = getLanguage();
 				if (lang == null || lang.isEmpty()) {
-					// 引数で指定されていない場合はログインしたテナントから設定（まだユーザが確定していないので）
+					// 引数で指定されていない場合はログインしたテナントから設定（まだユーザーが確定していないので）
 					if (result.getTenantLocale() != null && !result.getTenantLocale().isEmpty()) {
 						lang = result.getTenantLocale().split("_")[0];
 					}

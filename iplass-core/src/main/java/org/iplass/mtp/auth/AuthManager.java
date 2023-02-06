@@ -166,7 +166,7 @@ public interface AuthManager extends Manager {
 	 * </pre>
 	 *
 	 * といった形で、Userなどを検索する際の条件に指定可能。<br>
-	 * 返却されるoidのリストは、実行するユーザのセキュリティ権限によらず、すべてのoidが返却される。
+	 * 返却されるoidのリストは、実行するユーザーのセキュリティ権限によらず、すべてのoidが返却される。
 	 *
 	 * @param type
 	 * @param groupCode
@@ -177,7 +177,7 @@ public interface AuthManager extends Manager {
 	public void login(Credential credential) throws LoginFailedException, CredentialExpiredException;
 
 	/**
-	 * 現在のログインセッションを信頼されたものにするために再認証する（セッション内に格納されているユーザ情報以外のものは保持される）。
+	 * 現在のログインセッションを信頼されたものにするために再認証する（セッション内に格納されているユーザー情報以外のものは保持される）。
 	 *
 	 * @param credential
 	 * @throws LoginFailedException

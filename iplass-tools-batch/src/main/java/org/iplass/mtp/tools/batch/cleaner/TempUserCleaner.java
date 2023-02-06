@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * テンポラリーユーザ削除ツール
+ * テンポラリーユーザー削除ツール
  *
- * アプリにて作成されたテンポラリーユーザを定期的削除するために使用する。
+ * アプリにて作成されたテンポラリーユーザーを定期的削除するために使用する。
  *
  * @author lis71n
  *
@@ -75,7 +75,7 @@ public class TempUserCleaner extends MtpSilentBatch {
 	}
 
 	/**
-	 * テナント内のテンポラリーユーザを削除します。
+	 * テナント内のテンポラリーユーザーを削除します。
 	 *
 	 * @return boolean 成功：true 失敗：false
 	 * @throws Exception
@@ -93,7 +93,7 @@ public class TempUserCleaner extends MtpSilentBatch {
 				logArguments();
 
 				Transaction.required(t -> {
-					//有効期限切れのテンポラリーユーザ情報検索(有効終了日が現在日付より小さい場合且つ、テンポラリーフラグがtrueの場合)
+					//有効期限切れのテンポラリーユーザー情報検索(有効終了日が現在日付より小さい場合且つ、テンポラリーフラグがtrueの場合)
 					Query query = new Query()
 										.selectAll(User.DEFINITION_NAME, true, false)
 										.where(new And()
@@ -101,7 +101,7 @@ public class TempUserCleaner extends MtpSilentBatch {
 												.lt(User.END_DATE, new java.sql.Date(ExecuteContext.getCurrentContext().getCurrentTimestamp().getTime())));
 					org.iplass.mtp.entity.SearchResult<Entity> user = em.searchEntity(query);
 
-					//テンポラリーユーザ物理削除
+					//テンポラリーユーザー物理削除
 					for(Entity entity : user.getList() ){
 						em.delete(entity, new DeleteOption(false));
 					}

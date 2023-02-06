@@ -21,7 +21,7 @@
 package org.iplass.mtp.entity;
 
 /**
- * 別ユーザにてロックされているEntityを更新しようとした場合にスローされる例外。
+ * 別ユーザーにてロックされているEntityを更新しようとした場合にスローされる例外。
  * 
  * @author K.Higuchi
  *

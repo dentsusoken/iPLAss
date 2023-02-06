@@ -55,7 +55,7 @@ public class OAuthAuthorizationDefinition implements Definition {
 	
 	/**
 	 * OAuth2によるアクセスを許可するroleを指定します。
-	 * すべてのユーザに許可する場合は、*を指定します。
+	 * すべてのユーザーに許可する場合は、*を指定します。
 	 * @param availableRoles
 	 */
 	public void setAvailableRoles(List<String> availableRoles) {

@@ -29,7 +29,7 @@ import org.iplass.mtp.auth.login.Credential;
  * シンプルな認証トークンで認証する際のCredentialです。
  * 認証時にはトークン文字列を指定します。
  * 認証トークンは事前にAuthTokenInfoListにて生成する必要があります。
- * SimpleAuthTokenは、当該トークンが紐付くユーザとしてのアクセスを許可します。
+ * SimpleAuthTokenは、当該トークンが紐付くユーザーとしてのアクセスを許可します。
  * また、SimpleAuthTokenは明示的に削除されるまで、永続的に有効です。
  * 
  * @author K.Higuchi

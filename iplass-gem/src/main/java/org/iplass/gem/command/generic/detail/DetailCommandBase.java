@@ -121,7 +121,7 @@ public abstract class DetailCommandBase extends RegistrationCommandBase<DetailCo
 			}
 		}
 
-		// 参照元分のユーザ情報を再取得
+		// 参照元分のユーザー情報を再取得
 		if (!datas.isEmpty()) {
 			for (Map.Entry<String, UserRefData> data : datas.entrySet()) {
 				UserRefData userRef = data.getValue();

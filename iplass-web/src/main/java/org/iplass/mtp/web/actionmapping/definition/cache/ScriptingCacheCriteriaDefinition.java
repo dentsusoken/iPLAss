@@ -31,7 +31,7 @@ import org.iplass.mtp.entity.query.PreparedQuery;
  * スクリプト中では以下の変数をバインド済み。
  * <ul>
  * <li>request: RequestContextのインスタンス</li>
- * <li>user : 実行するユーザの情報。※１{@link PreparedQuery}を参照のこと。</li>
+ * <li>user : 実行するユーザーの情報。※１{@link PreparedQuery}を参照のこと。</li>
  * <li>auth : AuthContextのインスタンス</li>
  * </ul>
  * </p>

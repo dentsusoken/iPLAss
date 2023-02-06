@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * LDAP使用時の認証プロバイダー<br>
- * LDAPで保持しているユーザ、パスワード情報を利用して認証する
+ * LDAPで保持しているユーザー、パスワード情報を利用して認証する
  *
  * @author 藤田　義弘
  *

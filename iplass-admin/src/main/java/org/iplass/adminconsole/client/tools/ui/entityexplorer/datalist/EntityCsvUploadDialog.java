@@ -382,7 +382,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 					//if (User.DEFINITION_NAME.equals(EntityCsvUploadDialog.this.defName)
 					if ("mtp.auth.User".equals(defName)
 							&& SmartGWTUtil.getBooleanValue(chkTruncateField)) {
-						//ユーザEntityを削除する場合は警告
+						//ユーザーEntityを削除する場合は警告
 
 						SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_userTruncateConfirm"), new BooleanCallback() {
 

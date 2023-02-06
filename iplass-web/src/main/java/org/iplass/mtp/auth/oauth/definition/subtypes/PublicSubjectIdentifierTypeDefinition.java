@@ -54,7 +54,7 @@ public class PublicSubjectIdentifierTypeDefinition extends SubjectIdentifierType
 
 	/**
 	 * 公開用のsubjectIdとするUserエンティティのプロパティを指定します。
-	 * 当該プロパティの値はユーザ単位にユニークである必要があります。
+	 * 当該プロパティの値はユーザー単位にユニークである必要があります。
 	 * 
 	 * @param subjectIdMappedUserProperty
 	 */

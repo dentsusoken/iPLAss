@@ -18,7 +18,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 /**
  * バッチタスクを実行するための簡易的なCallableのラッパー。
- * コンストラクタで指定されるテナント、（および、指定のユーザ）で
+ * コンストラクタで指定されるテナント、（および、指定のユーザー）で
  * 実行コンテキストを初期化して実際の処理を呼び出す。
  * Callableをimplementsしているので、バッチ起動スレッドから直接call()を呼び出してもよいし、
  * ExecutorServiceを利用して非同期スレッドで実行してもよい。
@@ -38,7 +38,7 @@ public class BatchTask<V> implements Callable<V> {
 	
 	/**
 	 * 指定のtenantNameで初期化し、actualTaskを実行する。
-	 * ユーザは未指定。Entityの更新ユーザやログには、"batchTask"として記録される。
+	 * ユーザーは未指定。Entityの更新ユーザーやログには、"batchTask"として記録される。
 	 * 権限は、特権実行として判断される。
 	 * 
 	 * @param actualTask
@@ -50,9 +50,9 @@ public class BatchTask<V> implements Callable<V> {
 	
 	/**
 	 * 指定のtenantName、指定のuserId、passwordで初期化し、actualTaskを実行する。
-	 * 権限は指定のユーザの権限が適用される。
+	 * 権限は指定のユーザーの権限が適用される。
 	 * userIdがnullの場合は、
-	 * Entityの更新ユーザやログには、"batchTask"として記録される。
+	 * Entityの更新ユーザーやログには、"batchTask"として記録される。
 	 * また、権限は、特権実行として判断される。
 	 * 
 	 * @param actualTask

@@ -31,7 +31,7 @@ public class BuiltinAuthUser implements Serializable {
 	private boolean isUserExist;
 	private boolean isAccountExist;
 
-	/** ユーザID */
+	/** ユーザーID */
 	private String accountId;
 	/** OID */
 	private String oid;

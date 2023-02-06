@@ -24,7 +24,7 @@ import java.util.List;
 import org.iplass.mtp.auth.login.Credential;
 
 /**
- * ユーザに紐付く認証トークンの一覧を表すインタフェースです。
+ * ユーザーに紐付く認証トークンの一覧を表すインタフェースです。
  * 
  * @author K.Higuchi
  *

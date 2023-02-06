@@ -36,7 +36,7 @@ import org.iplass.mtp.spi.ServiceInitListener;
 public interface AuthenticationProvider extends ServiceInitListener<AuthService> {
 
 	/**
-	 * ログイン処理を行い、認証されたユーザへの参照を示すUserHandleを返す。
+	 * ログイン処理を行い、認証されたユーザーへの参照を示すUserHandleを返す。
 	 *
 	 * @param credential
 	 * @return
@@ -44,7 +44,7 @@ public interface AuthenticationProvider extends ServiceInitListener<AuthService>
 	public AccountHandle login(Credential credential);
 	
 	/**
-	 * 指定のユーザのログアウト処理をする。
+	 * 指定のユーザーのログアウト処理をする。
 	 *
 	 * @param user
 	 */

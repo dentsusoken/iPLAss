@@ -303,7 +303,7 @@ public interface EntityManager extends Manager {
 	 * 更新処理の際は、EntityEventListenerの呼び出しや、Validation、タイムスタンプチェック、CascadeDelete処理などは実行されません。
 	 * 外部のマスタデータの取り込み、初期データImportなどの用途での利用を想定しています。
 	 * bulkUpdatableのclose()は処理後（もしくは例外発生後）、当メソッド内で呼び出されます。<br>
-	 * bulkUpdate()を呼び出す実行ユーザは当該Entityに対して登録、更新、削除権限を範囲条件なしに保有している必要があります。<br>
+	 * bulkUpdate()を呼び出す実行ユーザーは当該Entityに対して登録、更新、削除権限を範囲条件なしに保有している必要があります。<br>
 	 * 更新、削除時には対象とするEntityのoidを指定してください。また、バージョン管理が有効の場合はversionの値も明示的に指定する必要があります。<br>
 	 *
 	 * <b>注意</b><br>
@@ -368,11 +368,11 @@ public interface EntityManager extends Manager {
 	 */
 	public OutputStream getOutputStream(BinaryReference binaryReference);
 
-//全てのユーザのロックができてしまってよいか（インタフェースとしてユーザIDを開放すべきか）
-//⇒apiレベルでは自身のユーザIDでロック＆開放。管理者は誰のIDのものでも開放できる
+//全てのユーザーのロックができてしまってよいか（インタフェースとしてユーザーIDを開放すべきか）
+//⇒apiレベルでは自身のユーザーIDでロック＆開放。管理者は誰のIDのものでも開放できる
 	/**
-	 * 現在、当該メソッドを呼び出しているユーザにて、 指定のEntityをデータをロックします。
-	 * ユーザによるロックはunlockByUser()メソッドにて明示的に開放しない限り、
+	 * 現在、当該メソッドを呼び出しているユーザーにて、 指定のEntityをデータをロックします。
+	 * ユーザーによるロックはunlockByUser()メソッドにて明示的に開放しない限り、
 	 * トランザクションを終了してもロックは保持されます。
 	 *
 	 * @param oid オブジェクトID
@@ -382,7 +382,7 @@ public interface EntityManager extends Manager {
 	public boolean lockByUser(String oid, String definitionName);
 
 	/**
-	 * ユーザにてロックされているEntityのデータのロックを解除します。
+	 * ユーザーにてロックされているEntityのデータのロックを解除します。
 	 *
 	 *
 	 * @param oid オブジェクトID
@@ -395,7 +395,7 @@ public interface EntityManager extends Manager {
 	/**
 	 * ごみ箱から、削除します。
 	 * recycleBinIdは、ごみ箱内のデータを一意に特定するidです（oidは重複する可能性があるため）。<br>
-	 * purge()を呼び出す実行ユーザは当該Entityに対して削除権限を範囲条件なしに保有している必要があります。<br>
+	 * purge()を呼び出す実行ユーザーは当該Entityに対して削除権限を範囲条件なしに保有している必要があります。<br>
 	 *
 	 * @param recycleBinId ごみ箱内のデータを一意に特定するid
 	 * @param definitionName Entity定義名
@@ -404,7 +404,7 @@ public interface EntityManager extends Manager {
 
 	/**
 	 * ごみ箱から復活します。<br>
-	 * restore()を呼び出す実行ユーザは当該Entityに対して削除権限を範囲条件なしに保有しているか、
+	 * restore()を呼び出す実行ユーザーは当該Entityに対して削除権限を範囲条件なしに保有しているか、
 	 * もしくは自身がごみ箱に格納したEntityである必要があります。<br>
 	 *
 	 * @param recycleBinId ごみ箱内のデータを一意に特定するid

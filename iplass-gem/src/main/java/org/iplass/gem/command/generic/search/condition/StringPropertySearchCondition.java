@@ -85,7 +85,7 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 	public List<Condition> convertDetailCondition() {
 		PropertyEditor editor = getEditor();
 		if (editor instanceof UserPropertyEditor) {
-			//画面で指定された方法でユーザ検索
+			//画面で指定された方法でユーザー検索
 			List<Condition> conditions = new ArrayList<>();
 
 			//propertyName入れ替えて条件作成

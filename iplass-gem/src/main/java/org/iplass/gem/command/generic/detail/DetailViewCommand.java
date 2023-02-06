@@ -305,7 +305,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 			if (entity != null && entity.getLockedBy() != null) {
 				String userOid = AuthContext.getCurrentContext().getUser().getOid();
 				if (!entity.getLockedBy().equals(userOid)) {
-					//他ユーザによるロックあり
+					//他ユーザーによるロックあり
 					Entity user = getLockedByUser(entity);
 					String message = null;
 					if (user == null) {

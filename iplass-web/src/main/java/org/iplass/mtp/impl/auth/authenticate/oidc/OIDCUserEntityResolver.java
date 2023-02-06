@@ -61,7 +61,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 /**
  * OIDCAuthenticationProvider用のUserEntityResolver。
- * OpenIDConnect定義に基づきユーザを解決。
+ * OpenIDConnect定義に基づきユーザーを解決。
  *
  * @author K.Higuchi
  *
@@ -198,7 +198,7 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 
 			return null;
 		} catch (Exception e) {
-			//ユーザエンティティの状態が不正
+			//ユーザーエンティティの状態が不正
 			throw new EntityRuntimeException("failed to search " + User.DEFINITION_NAME + ".", e);
 		}
 	}

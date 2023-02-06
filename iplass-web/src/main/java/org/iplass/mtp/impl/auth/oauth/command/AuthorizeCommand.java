@@ -90,7 +90,7 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 	
 	//TODO https://tools.ietf.org/html/rfc8252
 	//Authorization servers can protect against these fake agents by requiring an authentication factor only available to genuine external user agents.
-	//ユーザエージェントでチェックするしかないか？
+	//ユーザーエージェントでチェックするしかないか？
 
 	/**
 	 * Authorization Code Grant/Flow (with PKCE) のみサポート

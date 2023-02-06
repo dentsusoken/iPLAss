@@ -82,7 +82,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 	private List<String> authenticationProvider;
 	private List<String> openIdConnectDefinition;
 
-	/** ユーザ作成時、パスワード更新時にその情報を受け取る為のListener */
+	/** ユーザー作成時、パスワード更新時にその情報を受け取る為のListener */
 	private List<MetaAccountNotificationListener> notificationListener;
 
 	public List<String> getAuthenticationProvider() {
@@ -501,7 +501,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		 * @param tenant
 		 *            テナント情報
 		 * @param id
-		 *            ユーザID
+		 *            ユーザーID
 		 * @param account
 		 *            アカウント情報
 		 * @return true:最小期間内/false:最小期間外

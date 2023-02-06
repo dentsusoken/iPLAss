@@ -64,7 +64,7 @@ public interface Entity {
 	/** Entityの状態（バージョン管理下で、有効/無効を識別する） */
 	public static final String STATE = "state";
 	
-	/** Entityが編集ロックされている場合、ロックしているユーザのID */
+	/** Entityが編集ロックされている場合、ロックしているユーザーのID */
 	public static final String LOCKED_BY = "lockedBy";
 	
 	/** Entityの有効期間開始日時 */

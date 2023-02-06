@@ -96,7 +96,7 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 			throw new SystemException("not logined");
 		}
 
-		// ユーザチェック
+		// ユーザーチェック
 		String oid = request.getParam(Constants.OID);
 		if (oid == null) {
 			throw new SystemException("oid is null");
@@ -143,10 +143,10 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 			password = newPass1;
 		}
 
-		// ユーザ更新時であること
+		// ユーザー更新時であること
 		String execType = request.getParam(Constants.EXEC_TYPE);
 		if (!Constants.EXEC_TYPE_UPDATE.equals(execType)) {
-			// ユーザ更新でないため、エラー
+			// ユーザー更新でないため、エラー
 			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyUpdate"));
 			return Constants.CMD_EXEC_ERROR;
 		}

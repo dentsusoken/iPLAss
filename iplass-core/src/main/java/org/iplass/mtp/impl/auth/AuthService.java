@@ -196,7 +196,7 @@ public class AuthService implements Service {
 			account = searchAccount(credential, providerIndex);
 			providerIndex = account.getAuthenticationProviderIndex();
 
-			//ユーザエンティティ存在チェック
+			//ユーザーエンティティ存在チェック
 			userEntity = authenticationProviders[providerIndex].getUserEntityResolver().searchUser(account);
 			if (userEntity != null && !isValidAuthProviderOnAuthPolicy(userEntity, providerIndex)) {
 				userEntity = null;
@@ -317,8 +317,8 @@ public class AuthService implements Service {
 	}
 
 	/**
-	 * 再認証して、セッション上のユーザ情報を更新する（セッション自体は破棄しない）。
-	 * 同一ユーザではない（AccountHandleのunmodifiableUniqueKeyで判断）場合は、LoginFailedExceptionがスローされる。
+	 * 再認証して、セッション上のユーザー情報を更新する（セッション自体は破棄しない）。
+	 * 同一ユーザーではない（AccountHandleのunmodifiableUniqueKeyで判断）場合は、LoginFailedExceptionがスローされる。
 	 *
 	 * @param credential
 	 * @throws LoginFailedException
@@ -369,7 +369,7 @@ public class AuthService implements Service {
 	}
 
 	private User validateUser(Credential credential, AccountHandle account, User userEntity) {
-		//ユーザエンティティ存在チェック
+		//ユーザーエンティティ存在チェック
 		if (userEntity == null) {
 			authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger().loginFail(credential, null);
 			throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
@@ -413,7 +413,7 @@ public class AuthService implements Service {
 		//ExecuteContextから、login前のAuthContextをクリア
 		AuthContextHolder.reflesh();
 
-		//ExecuteContext/LogのユーザID更新
+		//ExecuteContext/LogのユーザーID更新
 		ExecuteContext exec = ExecuteContext.getCurrentContext();
 		UserContext uc = AuthContextHolder.getAuthContext().getUserContext();
 		exec.setClientId(uc.getIdForLog());

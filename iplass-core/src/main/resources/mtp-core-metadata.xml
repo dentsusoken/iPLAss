@@ -458,7 +458,7 @@ return true</script>
             <type xsi:type="stringType"/>
         </declaredPropertyList>
         <declaredPropertyList xsi:type="metaPrimitiveProperty">
-            <displayName>ロックユーザ</displayName>
+            <displayName>ロックユーザー</displayName>
             <entityStoreProperty xsi:type="metaGRdbPropertyStore">
                 <columnName>LOCK_USER</columnName>
                 <isNative>true</isNative>
@@ -466,7 +466,7 @@ return true</script>
             <id>lockedBy</id>
             <localizedDisplayNameList>
                 <localeName>ja</localeName>
-                <stringValue>ロックユーザ</stringValue>
+                <stringValue>ロックユーザー</stringValue>
             </localizedDisplayNameList>
             <localizedDisplayNameList>
                 <localeName>en</localeName>
@@ -1340,7 +1340,7 @@ return true</script>
 </metaDataEntry>
 <metaDataEntry name="/entity/mtp/auth/Group" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <description>ユーザに設定可能なグループ定義です。
+        <description>ユーザーに設定可能なグループ定義です。
 階層化することも可能です。</description>
         <displayName>グループ情報</displayName>
         <id>E0006</id>
@@ -1498,7 +1498,7 @@ return true</script>
 </metaDataEntry>
 <metaDataEntry name="/entity/mtp/auth/Rank" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <description>ユーザに設定可能なランク定義です。</description>
+        <description>ユーザーに設定可能なランク定義です。</description>
         <displayName>ランク情報</displayName>
         <id>E0002</id>
         <localizedDisplayNameList>
@@ -1965,7 +1965,7 @@ return true</script>
 </metaDataEntry>
 <metaDataEntry name="/entity/mtp/auth/User" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <description>ユーザ定義です。</description>
+        <description>ユーザー定義です。</description>
         <displayName>ユーザー情報</displayName>
         <id>E0001</id>
         <localizedDisplayNameList>
@@ -1992,7 +1992,7 @@ return true</script>
         <auditLog>false</auditLog>
         <crawl>false</crawl>
         <declaredPropertyList xsi:type="metaPrimitiveProperty">
-            <displayName>ユーザID</displayName>
+            <displayName>ユーザーID</displayName>
             <entityStoreProperty xsi:type="metaGRdbPropertyStore">
                 <pageNo>0</pageNo>
                 <columnName>STR_1</columnName>
@@ -2005,7 +2005,7 @@ return true</script>
             <indexType>UNIQUE</indexType>
             <localizedDisplayNameList>
                 <localeName>ja</localeName>
-                <stringValue>ユーザID</stringValue>
+                <stringValue>ユーザーID</stringValue>
             </localizedDisplayNameList>
             <localizedDisplayNameList>
                 <localeName>en</localeName>
@@ -2038,10 +2038,10 @@ return true</script>
                 <min>4</min>
             </validations>
             <validations xsi:type="metaValidationRegex">
-                <errorMessage>ユーザIDには「英数字」および「-」(マイナス)「@」「_」「.」(ピリオド)のみ利用可能です。</errorMessage>
+                <errorMessage>ユーザーIDには「英数字」および「-」(マイナス)「@」「_」「.」(ピリオド)のみ利用可能です。</errorMessage>
                 <localizedErrorMessageList>
                     <localeName>ja</localeName>
-                    <stringValue>ユーザIDには「英数字」および「-」(マイナス)「@」「_」「.」(ピリオド)のみ利用可能です。</stringValue>
+                    <stringValue>ユーザーIDには「英数字」および「-」(マイナス)「@」「_」「.」(ピリオド)のみ利用可能です。</stringValue>
                 </localizedErrorMessageList>
                 <localizedErrorMessageList>
                     <localeName>en</localeName>
@@ -2377,7 +2377,7 @@ return true</script>
             <type xsi:type="booleanType"/>
         </declaredPropertyList>
         <declaredPropertyList xsi:type="metaPrimitiveProperty">
-            <displayName>一時ログインユーザ</displayName>
+            <displayName>一時ログインユーザー</displayName>
             <entityStoreProperty xsi:type="metaGRdbPropertyStore">
                 <pageNo>0</pageNo>
                 <columnName>STR_9</columnName>
@@ -2386,7 +2386,7 @@ return true</script>
             <id>16</id>
             <localizedDisplayNameList>
                 <localeName>ja</localeName>
-                <stringValue>一時ログインユーザ</stringValue>
+                <stringValue>一時ログインユーザー</stringValue>
             </localizedDisplayNameList>
             <localizedDisplayNameList>
                 <localeName>en</localeName>
@@ -2604,22 +2604,22 @@ return true;</script>
     <metaData xsi:type="metaMailTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <id>MT0001</id>
         <name>mtp/auth/UserCreateMail</name>
-        <displayName>ユーザ登録通知メール</displayName>
-        <description>標準メール通知リスナーBuiltinMailNotificationListnerのユーザ登録時に通知するメールメッセージ定義です。
+        <displayName>ユーザー登録通知メール</displayName>
+        <description>標準メール通知リスナーBuiltinMailNotificationListnerのユーザー登録時に通知するメールメッセージ定義です。
 メッセージ生成時に以下のバインド変数を渡します。
 tenant(api.tenant.Tenant)、user(api.auth.User)、newPassword(String)</description>
-        <subject>【${tenant.displayName}】ユーザ登録のお知らせ</subject>
+        <subject>【${tenant.displayName}】ユーザー登録のお知らせ</subject>
         <message>
             <content>${user.name}様
 
-${tenant.displayName}に「${user.name}」様のユーザ登録が行われました。
+${tenant.displayName}に「${user.name}」様のユーザー登録が行われました。
 
-ユーザIDと仮パスワードが発行されましたので、下記URLから${tenant.displayName}にアクセスし、
+ユーザーIDと仮パスワードが発行されましたので、下記URLから${tenant.displayName}にアクセスし、
 パスワードの登録作業を実施して下さい。
 
    URL: XXXXXXXX
-   ユーザID: ${user.accountId}
-   ユーザ名: ${user.name}
+   ユーザーID: ${user.accountId}
+   ユーザー名: ${user.name}
    仮パスワード: ${newPassword}
 
 =====================================================================
@@ -2648,11 +2648,11 @@ COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESE
         <description>標準メール通知リスナーBuiltinMailNotificationListnerのパスワードリセット時に通知するメールメッセージ定義です。
 メッセージ生成時に以下のバインド変数を渡します。
 tenant(api.tenant.Tenant)、user(api.auth.User)、newPassword(String)</description>
-        <subject>【${tenant.displayName}】ユーザ情報パスワードリセットのお知らせ</subject>
+        <subject>【${tenant.displayName}】ユーザー情報パスワードリセットのお知らせ</subject>
         <message>
             <content>${user.name}様
 
-（ユーザID：${user.accountId}）のパスワードがリセットされました。
+（ユーザーID：${user.accountId}）のパスワードがリセットされました。
 
 仮パスワードが発行されましたので、下記URLから${tenant.displayName}にアクセスし、
 パスワードの登録作業を実施して下さい。
@@ -2683,18 +2683,18 @@ COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESE
         <id>MT0004</id>
         <name>mtp/auth/CredentialResetWithSpecifiedPasswordMail</name>
         <displayName>パスワード指定リセット通知メール</displayName>
-        <description>標準メール通知リスナーBuiltinMailNotificationListnerのユーザ登録時に通知するメールメッセージ定義です。
+        <description>標準メール通知リスナーBuiltinMailNotificationListnerのユーザー登録時に通知するメールメッセージ定義です。
 メッセージ生成時に以下のバインド変数を渡します。
 tenant(api.tenant.Tenant)、user(api.auth.User)、newPassword(String)</description>
-        <subject>【${tenant.displayName}】ユーザ情報パスワードリセットのお知らせ</subject>
+        <subject>【${tenant.displayName}】ユーザー情報パスワードリセットのお知らせ</subject>
         <message>
             <content>${user.name}様
 
-（ユーザID：${user.accountId}）のパスワードがリセットされました。
+（ユーザーID：${user.accountId}）のパスワードがリセットされました。
 
    URL: XXXXXXXX
-   ユーザID: ${user.accountId}
-   ユーザ名: ${user.name}
+   ユーザーID: ${user.accountId}
+   ユーザー名: ${user.name}
 
 =====================================================================
 □ 本メールにお心当たりが無い方へ
