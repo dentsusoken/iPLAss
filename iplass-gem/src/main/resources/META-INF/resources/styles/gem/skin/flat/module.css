@@ -1504,6 +1504,9 @@ p.nav-login-01 {
     margin-bottom: 0;
     width: 100%; }
 
+.hgroup-02 span.paginInputError {
+  color: #f00; }
+
 .result-data {
   display: block;
   float: left;

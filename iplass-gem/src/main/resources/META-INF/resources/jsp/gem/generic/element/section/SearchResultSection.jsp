@@ -172,6 +172,7 @@
 ${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.srchrslt")}
 <span class="chagne-condition" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.conditionChanged")}</span>
 <span class="searching" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.searching")}</span>
+<span class="paginInputError" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.paginInputError")}</span>
 </h3>
 <div class="result-data" style="display:none;">
 <%
@@ -612,6 +613,12 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			}
 			var val = currentPage * limit;
 			doSearch($(":hidden[name='searchType']").val(), val, false, $(".ui-icon-search"), "pager");
+		},
+		pagingInputErrorFunc: function() {
+			$pager.lock();
+			$(".paginInputError").show().fadeOut(1500, function() {
+				$pager.unlock();
+			});
 		}
 	});
 <%
