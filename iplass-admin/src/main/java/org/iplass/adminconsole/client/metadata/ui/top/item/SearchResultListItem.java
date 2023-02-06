@@ -46,9 +46,7 @@ import org.iplass.mtp.view.top.parts.EntityListParts;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.HeaderControls;
 import com.smartgwt.client.util.SC;
-import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -79,27 +77,24 @@ public class SearchResultListItem extends PartsItem {
 		this.service = MetaDataServiceFactory.get();
 		setTitle("SearchResult List(" + parts.getDefName() + ")");
 		setBackgroundColor("#DDDDFF");
-
-		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				EntityListItemSettingDialog dialog = new EntityListItemSettingDialog();
-				dialog.addDataChangedHandler(new DataChangedHandler() {
-
-					@Override
-					public void onDataChanged(DataChangedEvent event) {
-						setTitle("SearchResult List(" + parts.getDefName() + ")");
-					}
-				});
-				dialog.show();
-			}
-		}), HeaderControls.CLOSE_BUTTON);
 	}
 
 	@Override
 	public EntityListParts getParts() {
 		return parts;
+	}
+
+	@Override
+	protected void onOpen() {
+		EntityListItemSettingDialog dialog = new EntityListItemSettingDialog();
+		dialog.addDataChangedHandler(new DataChangedHandler() {
+
+			@Override
+			public void onDataChanged(DataChangedEvent event) {
+				setTitle("SearchResult List(" + parts.getDefName() + ")");
+			}
+		});
+		dialog.show();
 	}
 
 	@Override
@@ -196,7 +191,7 @@ public class SearchResultListItem extends PartsItem {
 			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			iconTagField.setValue(parts.getIconTag());
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_EntityListItem_iconTagComment"));
-			
+
 			styleField = new MtpTextItem("style", "Class");
 			styleField.setValue(parts.getStyle());
 			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
@@ -204,7 +199,7 @@ public class SearchResultListItem extends PartsItem {
 			heightField = new IntegerItem("height", "Height");
 			heightField.setWidth("100%");
 			heightField.setValue(parts.getHeight());
-			
+
 			searchAsync = new CheckboxItem("searchAsync", "Search asynchronously");
 			searchAsync.setValue(parts.isSearchAsync());
 

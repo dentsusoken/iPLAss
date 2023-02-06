@@ -23,6 +23,13 @@ package org.iplass.adminconsole.client.metadata.ui.top.item;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 
+import com.smartgwt.client.types.HeaderControls;
+import com.smartgwt.client.widgets.HeaderControl;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.DoubleClickEvent;
+import com.smartgwt.client.widgets.events.DoubleClickHandler;
+
 /**
  *
  * @author lis3wg
@@ -45,9 +52,32 @@ public abstract class PartsItem extends AbstractWindow {
 
 		// ダミーで空のスタイルを指定しないとsmartget3.1からはsetBackgroundColorが有効にならない
 		setStyleName("");
+
+		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				onOpen();
+			}
+
+		}), HeaderControls.CLOSE_BUTTON);
+
+		//DoubleClickで設定画面表示
+		addDoubleClickHandler(new DoubleClickHandler() {
+
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				onOpen();
+			}
+		});
 	}
 
 	public abstract TopViewParts getParts();
+
+	/**
+	 * アイテムの設定画面を開きます。
+	 */
+	protected abstract void onOpen();
 
 	public void setDropAreaType(String dropAreaType) {
 		this.dropAreaType = dropAreaType;

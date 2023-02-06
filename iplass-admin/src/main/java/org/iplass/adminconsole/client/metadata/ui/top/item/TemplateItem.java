@@ -32,8 +32,6 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 
-import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -55,28 +53,25 @@ public class TemplateItem extends PartsItem {
 		this.parts = parts;
 		setTitle("Template(" + parts.getTemplatePath() + ")");
 		setBackgroundColor("#F0F0F0");
-
-		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				TemplateItemSettingDialog dialog = new TemplateItemSettingDialog(
-						TemplateItem.this.parts.getTemplatePath());
-				dialog.addDataChangedHandler(new DataChangedHandler() {
-
-					@Override
-					public void onDataChanged(DataChangedEvent event) {
-						setTitle("Template(" + parts.getTemplatePath() + ")");
-					}
-				});
-				dialog.show();
-			}
-		}), HeaderControls.CLOSE_BUTTON);
 	}
 
 	@Override
 	public TemplateParts getParts() {
 		return parts;
+	}
+
+	@Override
+	protected void onOpen() {
+		TemplateItemSettingDialog dialog = new TemplateItemSettingDialog(
+				TemplateItem.this.parts.getTemplatePath());
+		dialog.addDataChangedHandler(new DataChangedHandler() {
+
+			@Override
+			public void onDataChanged(DataChangedEvent event) {
+				setTitle("Template(" + parts.getTemplatePath() + ")");
+			}
+		});
+		dialog.show();
 	}
 
 	@Override
@@ -120,6 +115,7 @@ public class TemplateItem extends PartsItem {
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					if (form.validate()){
 						parts.setTemplatePath(SmartGWTUtil.getStringValue(templateField));
@@ -131,6 +127,7 @@ public class TemplateItem extends PartsItem {
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}

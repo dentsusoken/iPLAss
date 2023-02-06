@@ -24,11 +24,6 @@ import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.LastLoginParts;
 
-import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.widgets.HeaderControl;
-import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
-
 /**
  *
  * @author lis3wg
@@ -43,26 +38,21 @@ public class LastLoginItem extends PartsItem {
 	public LastLoginItem(LastLoginParts parts, PartsOperationHandler controler) {
 		this.parts = parts;
 		this.controler = controler;
-		
+
 		setTitle("Last Login");
 		setBackgroundColor("#F5F5F5");
-		
-		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				TopViewContentItemSettingDialog dialog = new TopViewContentItemSettingDialog(parts);
-				dialog.setTitle("Last Login");
-				dialog.show();
-			}
-
-		}), HeaderControls.CLOSE_BUTTON);
-		
 	}
 
 	@Override
 	public LastLoginParts getParts() {
 		return parts;
+	}
+
+	@Override
+	protected void onOpen() {
+		TopViewContentItemSettingDialog dialog = new TopViewContentItemSettingDialog(parts);
+		dialog.setTitle("Last Login");
+		dialog.show();
 	}
 
 	@Override
