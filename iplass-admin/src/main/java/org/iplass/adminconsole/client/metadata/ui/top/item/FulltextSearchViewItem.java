@@ -31,9 +31,7 @@ import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
 
 import com.smartgwt.client.data.Record;
-import com.smartgwt.client.types.HeaderControls;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -68,19 +66,17 @@ public class FulltextSearchViewItem extends PartsItem {
 
 		setTitle("Fulltext Search");
 		setBackgroundColor("#A0A0A0");
-		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				FulltextSearchViewItemSettingDialog dialog = new FulltextSearchViewItemSettingDialog();
-				dialog.show();
-			}
-		}), HeaderControls.CLOSE_BUTTON);
 	}
 
 	@Override
 	public FulltextSearchViewParts getParts() {
 		return parts;
+	}
+
+	@Override
+	protected void onOpen() {
+		FulltextSearchViewItemSettingDialog dialog = new FulltextSearchViewItemSettingDialog();
+		dialog.show();
 	}
 
 	@Override
@@ -112,7 +108,7 @@ public class FulltextSearchViewItem extends PartsItem {
 			} else {
 				isDispSearchWindow.setValue(parts.isDispSearchWindow());
 			}
-			
+
 			CheckboxItem isShowUserNameWithPrivilegedValue = new CheckboxItem();
 			isShowUserNameWithPrivilegedValue.setTitle("Display user name in privileged execution");
 			isShowUserNameWithPrivilegedValue.setName("showUserName");
@@ -131,6 +127,7 @@ public class FulltextSearchViewItem extends PartsItem {
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					//入力情報をパーツに
 					Map<String, String> viewNamsMap = new HashMap<String, String>();
@@ -167,6 +164,7 @@ public class FulltextSearchViewItem extends PartsItem {
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}

@@ -37,9 +37,7 @@ import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.HeaderControls;
 import com.smartgwt.client.util.SC;
-import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -66,20 +64,17 @@ public class UserMaintenanceItem extends PartsItem {
 		this.service = MetaDataServiceFactory.get();
 		setTitle("User Maintenance");
 		setBackgroundColor("#909090");
-
-		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				UserMaintenanceItemSettingDialog dialog = new UserMaintenanceItemSettingDialog();
-				dialog.show();
-			}
-		}), HeaderControls.CLOSE_BUTTON);
 	}
 
 	@Override
 	public UserMaintenanceParts getParts() {
 		return parts;
+	}
+
+	@Override
+	protected void onOpen() {
+		UserMaintenanceItemSettingDialog dialog = new UserMaintenanceItemSettingDialog();
+		dialog.show();
 	}
 
 	@Override
@@ -118,6 +113,7 @@ public class UserMaintenanceItem extends PartsItem {
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					if (form.validate()){
 						//入力情報をパーツに
@@ -129,6 +125,7 @@ public class UserMaintenanceItem extends PartsItem {
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}

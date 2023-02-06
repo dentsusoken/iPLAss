@@ -29,8 +29,6 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.PreviewDateParts;
 
-import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -51,20 +49,17 @@ public class PreviewDateItem extends PartsItem {
 		this.controler = controler;
 		setTitle("Preview Date");
 		setBackgroundColor("#909090");
-
-		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				PreviewDatePartsItemSettingDialog dialog = new PreviewDatePartsItemSettingDialog();
-				dialog.show();
-			}
-		}), HeaderControls.CLOSE_BUTTON);
 	}
 
 	@Override
 	public PreviewDateParts getParts() {
 		return parts;
+	}
+
+	@Override
+	protected void onOpen() {
+		PreviewDatePartsItemSettingDialog dialog = new PreviewDatePartsItemSettingDialog();
+		dialog.show();
 	}
 
 	@Override

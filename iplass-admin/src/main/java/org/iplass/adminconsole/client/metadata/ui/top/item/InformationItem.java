@@ -42,8 +42,6 @@ import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange;
 import org.iplass.mtp.view.top.parts.InformationParts;
 
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -73,21 +71,17 @@ public class InformationItem extends PartsItem {
 
 		setTitle("Information List");
 		setBackgroundColor("#BBBBFF");
-
-		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				InformationItemSettingDialog dialog = new InformationItemSettingDialog();
-				dialog.show();
-			}
-
-		}), HeaderControls.CLOSE_BUTTON);
 	}
 
 	@Override
 	public InformationParts getParts() {
 		return parts;
+	}
+
+	@Override
+	protected void onOpen() {
+		InformationItemSettingDialog dialog = new InformationItemSettingDialog();
+		dialog.show();
 	}
 
 	@Override

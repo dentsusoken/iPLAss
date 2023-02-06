@@ -29,8 +29,6 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.CalendarParts;
 
-import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -51,20 +49,17 @@ public class CalendarItem extends PartsItem {
 		this.controler = controler;
 		setBackgroundColor("#FFBBFF");
 		setTitle("Calendar(" + parts.getCalendarName() + ")");
-
-		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				CalendarItemSettingDialog dialog = new CalendarItemSettingDialog();
-				dialog.show();
-			}
-		}), HeaderControls.CLOSE_BUTTON);
 	}
 
 	@Override
 	public CalendarParts getParts() {
 		return parts;
+	}
+
+	@Override
+	protected void onOpen() {
+		CalendarItemSettingDialog dialog = new CalendarItemSettingDialog();
+		dialog.show();
 	}
 
 	@Override
@@ -95,7 +90,7 @@ public class CalendarItem extends PartsItem {
 			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			iconTagField.setValue(parts.getIconTag());
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_CalendarItem_iconTagComment"));
-			
+
 			styleField = new MtpTextItem("style", "Class");
 			styleField.setValue(parts.getStyle());
 			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
@@ -106,6 +101,7 @@ public class CalendarItem extends PartsItem {
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					if (form.validate()){
 						//入力情報をパーツに
@@ -118,6 +114,7 @@ public class CalendarItem extends PartsItem {
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}
