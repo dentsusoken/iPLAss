@@ -147,7 +147,7 @@ public class TimestampPropertyEditor extends DateTimePropertyEditor {
 	@MetaFieldInfo(
 			displayName = "最小日付",
 			displayNameKey = "generic_editor_TimestampPropertyEditor_minDateDisplaNameKey",
-			description = "DatePicker を利用した入力を行う際の最小日付を設定します。 jQuery UI Datepicker のオプション 'minDate' の設定値を利用可能です。",
+			description = "DatetimePicker を利用した入力を行う際の最小日付を設定します。 jQuery UI Datepicker のオプション 'minDate' の設定値を利用可能です。",
 			descriptionKey = "generic_editor_TimestampPropertyEditor_minDateDescriptionKey",
 			displayOrder = 1080)
 	@EntityViewField(referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK })
@@ -157,7 +157,7 @@ public class TimestampPropertyEditor extends DateTimePropertyEditor {
 	@MetaFieldInfo(
 			displayName = "最大日付",
 			displayNameKey = "generic_editor_TimestampPropertyEditor_maxDateDisplaNameKey",
-			description = "DatePicker を利用した入力を行う際の最大日付を設定します。 jQuery UI DatePicker のオプション 'maxDate' の設定値を利用可能です。",
+			description = "DatetimePicker を利用した入力を行う際の最大日付を設定します。 jQuery UI DatePicker のオプション 'maxDate' の設定値を利用可能です。",
 			descriptionKey = "generic_editor_TimestampPropertyEditor_maxDateDescriptionKey",
 			displayOrder = 1090)
 	@EntityViewField(referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK })
@@ -166,7 +166,7 @@ public class TimestampPropertyEditor extends DateTimePropertyEditor {
 	/** テキストフィールドへの直接入力を制限する */
 	@MetaFieldInfo(displayName = "テキストフィールドへの直接入力を制限する",
 			displayNameKey = "generic_editor_TimestampPropertyEditor_restrictDirectEditingDisplaNameKey",
-			description = "チェックをすると、直接入力ができなくなり DatePicker の入力のみ受け付けるようになります。",
+			description = "チェックをすると、直接入力ができなくなり DatetimePicker の入力のみ受け付けるようになります。",
 			descriptionKey = "generic_editor_TimestampPropertyEditor_restrictDirectEditingDescriptionKey",
 			inputType = InputType.CHECKBOX,
 			displayOrder = 1100)

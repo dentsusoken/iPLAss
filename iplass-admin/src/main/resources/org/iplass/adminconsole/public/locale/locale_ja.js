@@ -2093,11 +2093,11 @@ LocaleInfo.generic_editor_TimestampPropertyEditor_useDatetimePickerDescriptionKe
 LocaleInfo.generic_editor_TimestampPropertyEditor_showWeekdayDisplaNameKey = "曜日を表示";
 LocaleInfo.generic_editor_TimestampPropertyEditor_showWeekdayDescriptionKey = "曜日を表示します。";
 LocaleInfo.generic_editor_TimestampPropertyEditor_minDateDisplaNameKey="最小日付";
-LocaleInfo.generic_editor_TimestampPropertyEditor_minDateDescriptionKey="DatePicker を利用した入力を行う際の最小日付を設定します。 jQuery UI Datepicker のオプション 'minDate' の設定値を利用可能です。";
+LocaleInfo.generic_editor_TimestampPropertyEditor_minDateDescriptionKey="DatetimePicker を利用した入力を行う際の最小日付を設定します。 jQuery UI Datepicker のオプション 'minDate' の設定値を利用可能です。";
 LocaleInfo.generic_editor_TimestampPropertyEditor_maxDateDisplaNameKey="最大日付";
-LocaleInfo.generic_editor_TimestampPropertyEditor_maxDateDescriptionKey="DatePicker を利用した入力を行う際の最大日付を設定します。 jQuery UI Datepicker のオプション 'maxDate' の設定値を利用可能です。";
+LocaleInfo.generic_editor_TimestampPropertyEditor_maxDateDescriptionKey="DatetimePicker を利用した入力を行う際の最大日付を設定します。 jQuery UI Datepicker のオプション 'maxDate' の設定値を利用可能です。";
 LocaleInfo.generic_editor_TimestampPropertyEditor_restrictDirectEditingDisplaNameKey="テキストフィールドへの直接入力を制限する";
-LocaleInfo.generic_editor_TimestampPropertyEditor_restrictDirectEditingDescriptionKey="チェックをすると、直接入力ができなくなり DatePicker の入力のみ受け付けるようになります。";
+LocaleInfo.generic_editor_TimestampPropertyEditor_restrictDirectEditingDescriptionKey="チェックをすると、直接入力ができなくなり DatetimePicker の入力のみ受け付けるようになります。";
 LocaleInfo.generic_editor_UserPropertyEditor_displayTypeDisplaNameKey = "表示タイプ";
 LocaleInfo.generic_editor_UserPropertyEditor_displayTypeDescriptionKey = "画面に表示する方法を選択します。";
 LocaleInfo.generic_element_Button_displayTypeDisplaNameKey = "表示タイプ";

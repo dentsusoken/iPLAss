@@ -2093,11 +2093,11 @@ LocaleInfo.generic_editor_TimestampPropertyEditor_useDatetimePickerDescriptionKe
 LocaleInfo.generic_editor_TimestampPropertyEditor_showWeekdayDisplaNameKey="Show weekday";
 LocaleInfo.generic_editor_TimestampPropertyEditor_showWeekdayDescriptionKey="Show weekday.";
 LocaleInfo.generic_editor_TimestampPropertyEditor_minDateDisplaNameKey="Minimum Date";
-LocaleInfo.generic_editor_TimestampPropertyEditor_minDateDescriptionKey="Sets the minimum date for input using the DatePicker. The configuration of the jQuery UI Datepicker option 'minDate' can be used.";
+LocaleInfo.generic_editor_TimestampPropertyEditor_minDateDescriptionKey="Sets the minimum date for input using the DatetimePicker. The configuration of the jQuery UI Datepicker option 'minDate' can be used.";
 LocaleInfo.generic_editor_TimestampPropertyEditor_maxDateDisplaNameKey="Maximum Date";
-LocaleInfo.generic_editor_TimestampPropertyEditor_maxDateDescriptionKey="Sets the maximum date for input using the DatePicker. The configuration of the jQuery UI Datepicker option 'maxDate' can be used.";
+LocaleInfo.generic_editor_TimestampPropertyEditor_maxDateDescriptionKey="Sets the maximum date for input using the DatetimePicker. The configuration of the jQuery UI Datepicker option 'maxDate' can be used.";
 LocaleInfo.generic_editor_TimestampPropertyEditor_restrictDirectEditingDisplaNameKey="Restrict direct input to text fields";
-LocaleInfo.generic_editor_TimestampPropertyEditor_restrictDirectEditingDescriptionKey="If checked, direct input is disabled and only DatePicker input is accepted.";
+LocaleInfo.generic_editor_TimestampPropertyEditor_restrictDirectEditingDescriptionKey="If checked, direct input is disabled and only DatetimePicker input is accepted.";
 LocaleInfo.generic_editor_UserPropertyEditor_displayTypeDisplaNameKey = "Display Type";
 LocaleInfo.generic_editor_UserPropertyEditor_displayTypeDescriptionKey = "Select how to display on the screen.";
 LocaleInfo.generic_element_Button_displayTypeDisplaNameKey = "Display Type";
