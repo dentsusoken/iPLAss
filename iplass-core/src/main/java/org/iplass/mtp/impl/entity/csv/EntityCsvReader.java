@@ -681,6 +681,10 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 			}
 			return valStr;
 		} else if (pd instanceof ReferenceProperty) {
+			if (StringUtil.isEmpty(valStr)) {
+				return null;
+			}
+
 			ReferenceProperty rpd = (ReferenceProperty)pd;
 
 			ReferenceInfo reference = references.get(headerName);
@@ -690,15 +694,9 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				= StringUtil.isNotEmpty(prefixOid) && CollectionUtil.isEmpty(reference.ed.getOidPropertyName()) ? prefixOid : "";
 
 			if (rpd.getMultiplicity() == 1) {
-				if (StringUtil.isEmpty(valStr)) {
-					return null;
-				}
 				Entity entity = generateReferenceEntity(valStr, rpd, reference.ed, refOidPrefix);
 				return entity;
 			} else {
-				if (StringUtil.isEmpty(valStr)) {
-					return new Entity[0];
-				}
 				ArrayList<Entity> eList = new ArrayList<>();
 				String[] oidList = valStr.split(",");
 				for (String oid: oidList) {
@@ -843,12 +841,12 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 		public Object convEntity(String value) {
 
+			if (StringUtil.isEmpty(value)) {
+				return null;
+			}
+
 			ReferenceProperty rp = (ReferenceProperty)definition.getProperty(propName);
 			if (rp.getMultiplicity() == 1) {
-				if (StringUtil.isEmpty(value)) {
-					return null;
-				}
-
 				Object uniqueValue = conv(value, null, unique);
 				if (uniqueValue != null) {
 					//uniqueKey -> Entity変換
@@ -857,10 +855,6 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 				return null;
 			} else {
-				if (StringUtil.isEmpty(value)) {
-					return new Entity[0];
-				}
-
 				ArrayList<Entity> eList = new ArrayList<>();
 				String[] uniqueList = value.split(",");
 				for (String uniqueStr: uniqueList) {
