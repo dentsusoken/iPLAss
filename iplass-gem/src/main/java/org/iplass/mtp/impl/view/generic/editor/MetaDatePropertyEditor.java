@@ -57,8 +57,14 @@ public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 	/** 最大日付*/
 	private String minDate;
 
+	/** 最小日付の設定値をファンクション実行する */
+	private boolean minDateFunction;
+
 	/** 最大日付*/
 	private String maxDate;
+
+	/** 最大日付の設定値をファンクション実行する */
+	private boolean maxDateFunction;
 
 	/** テキストフィールドへの直接入力を制限する */
 	private boolean restrictDirectEditing;
@@ -110,6 +116,22 @@ public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 	}
 
 	/**
+	 * 最小日付の設定値を JS ファンクション実行するパラメータを取得する
+	 * @return ファンクション実行するか（true: ファンクション実行する、false: 設定値を利用する）
+	 */
+	public boolean isMinDateFunction() {
+		return minDateFunction;
+	}
+
+	/**
+	 * 最小日付の設定値を JS ファンクション実行するパラメータを設定する
+	 * @param minDateFunction ファンクション実行するか
+	 */
+	public void setMinDateFunction(boolean minDateFunction) {
+		this.minDateFunction = minDateFunction;
+	}
+
+	/**
 	 * 最大日付を取得する
 	 * @return 最大日付
 	 */
@@ -123,6 +145,22 @@ public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 	 */
 	public void setMaxDate(String maxDate) {
 		this.maxDate = maxDate;
+	}
+
+	/**
+	 * 最大日付の設定値を JS ファンクション実行するパラメータを取得する
+	 * @return ファンクション実行するか（true: ファンクション実行する、false: 設定値を利用する）
+	 */
+	public boolean isMaxDateFunction() {
+		return maxDateFunction;
+	}
+
+	/**
+	 * 最大日付の設定値を JS ファンクション実行するパラメータを設定する
+	 * @param maxDateFunction ファンクション実行するか
+	 */
+	public void setMaxDateFunction(boolean maxDateFunction) {
+		this.maxDateFunction = maxDateFunction;
 	}
 
 	/**
@@ -150,7 +188,9 @@ public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 		this.hideButtonPanel = de.isHideButtonPanel();
 		this.showWeekday = de.isShowWeekday();
 		this.minDate = de.getMinDate();
+		this.minDateFunction = de.isMinDateFunction();
 		this.maxDate = de.getMaxDate();
+		this.maxDateFunction = de.isMaxDateFunction();
 		this.restrictDirectEditing = de.isRestrictDirectEditing();
 	}
 
@@ -162,7 +202,9 @@ public class MetaDatePropertyEditor extends MetaDateTimePropertyEditor {
 		editor.setHideButtonPanel(hideButtonPanel);
 		editor.setShowWeekday(showWeekday);
 		editor.setMinDate(minDate);
+		editor.setMinDateFunction(minDateFunction);
 		editor.setMaxDate(maxDate);
+		editor.setMaxDateFunction(maxDateFunction);
 		editor.setRestrictDirectEditing(restrictDirectEditing);
 
 		return editor;

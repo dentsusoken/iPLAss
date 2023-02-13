@@ -103,24 +103,32 @@
 	 * <ul>
 	 * <li>リスト説明 ⇒ 属性キー: 属性値の内容説明
 	 * <li>data-min-date: DatePropertyEditor#getMinDate() の設定値</li>
+	 * <li>data-min-date-function: DatePropertyEditor#isMinDateFunction() で判断。 data-min-date の値が function として実行される場合 true が設定される</li>
 	 * <li>data-max-date: DatePropertyEditor#getMaxDate() の設定値</li>
+	 * <li>data-max-date-function: DatePropertyEditor#isMaxDateFunction() で判断。data-max-date の値が function として実行される場合 true が設定される</li>
 	 * <li>readonly: DatePropertyEditor#isRestrictDirectEditing() が true の場合にキーを指定</li>
 	 * </ul>
 	 *
-	 * @param dateEditor DatePropertyEditor インスタンス
+	 * @param editor DatePropertyEditor インスタンス
 	 * @return 入力フィールドの属性情報
 	 */
-	String getInputAttrs(DatePropertyEditor dateEditor) {
+	String getInputAttrs(DatePropertyEditor editor) {
 		StringBuilder attrs = new StringBuilder("");
 		attrs
 			// getMinDate() で設定が存在していれば data-min-date 属性を設定する
-			.append(getAttribute("data-min-date", dateEditor.getMinDate()))
+			.append(getAttribute("data-min-date", editor.getMinDate()))
+			.append(" ")
+			// isMinDateFunction が true の場合は、 data-min-date-function="true" を付与する
+			.append(editor.isMinDateFunction() ? "data-min-date-function=\"true\"" : "")
 			.append(" ")
 			// getMaxDate() で設定が存在していれば data-max-date 属性を設定する
-			.append(getAttribute("data-max-date", dateEditor.getMaxDate()))
+			.append(getAttribute("data-max-date", editor.getMaxDate()))
+			.append(" ")
+			// isMaxDateFunction が true の場合は、 data-max-date-function="true" を付与する
+			.append(editor.isMaxDateFunction() ? "data-max-date-function=\"true\"" : "")
 			.append(" ")
 			// isRestrictDirectEditing が true の場合は、 readonly 属性を付与する
-			.append(dateEditor.isRestrictDirectEditing() ? "readonly" : "");
+			.append(editor.isRestrictDirectEditing() ? "readonly" : "");
 		return attrs.toString();
 	}
 %>

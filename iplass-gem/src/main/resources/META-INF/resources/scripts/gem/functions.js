@@ -3200,7 +3200,7 @@ function datepicker(selector) {
 				);
 			}
 		};
-		
+
 		// フォーカスイベントでクリアボタンを追加する
 		// TODO ui 1.13 で onUpdateDatepicker を利用したイベント制御に変更した場合は、本メソッドは不要
 		const appendClearButtonWithFocusEvent = function(input) {
@@ -3212,7 +3212,38 @@ function datepicker(selector) {
 				// クリアボタンが追加されていなければ、クリアボタンを追加する
 				appendClearButton(input);
 			}
-		}
+		};
+
+		// ファンクション実行結果を取得する
+		const getFunctionCallResult = function(fnName, parent, input) {
+			if (!fnName) {
+				// ファンクション名の指定がない場合は終了
+				return undefined;
+			}
+			// '.' で分割する
+			const fnNameArr = fnName.split('.');
+			// ファンクションとファンクションの親オブジェクトを取得する
+			const fnArr = fnNameArr.reduce(function (pv, cv, idx, arr) {
+				const curr = pv && pv[0];
+				
+				if (!curr) {
+					return undefined;
+				}
+				// 最後の位置では以下のようになる
+				// curr[cv] = ファンクション
+				// curr     = 親オブジェクト
+				return [curr[cv], curr];
+			}, [parent, null]);
+			
+			const fn = fnArr && fnArr[0];
+			const fnParent = fnArr && fnArr[1]; 
+			if (!fn || !fnParent || 'function' !== typeof fn) {
+				// 'function' !== typeof fn の場合は、 fn が function ではない
+				return null;
+			}
+			// ファンクション実行
+			return fn.call(fnParent, $(input));
+		};
 
 		this.each(function() {
 			var $this = $(this);
@@ -3229,11 +3260,13 @@ function datepicker(selector) {
 				$this.addClass(formatClass);
 			}
 			$this.attr("maxLength", formatLength + 2);
-			
+
 			// .datepicker selector の data-* 属性の取得
+			const minDate = this.dataset.minDateFunction === 'true' ? getFunctionCallResult(this.dataset.minDate, window, this) : this.dataset.minDate;
+			const maxDate = this.dataset.maxDateFunction === 'true' ? getFunctionCallResult(this.dataset.maxDate, window, this) : this.dataset.maxDate;
 			const extendOptions = {
-				minDate: this.dataset.minDate,
-				maxDate: this.dataset.maxDate,
+				minDate,
+				maxDate,
 			};
 
 			$this.datepicker({
@@ -3476,7 +3509,7 @@ function timepicker(selector) {
 				// クリアボタンが追加されていなければ、クリアボタンを追加する
 				appendClearButton(input);
 			}
-		}
+		};
 
 		this.each(function() {
 			var $this = $(this);
@@ -3697,7 +3730,7 @@ function datetimepicker(selector) {
 				);
 			}
 		};
-		
+
 		// フォーカスイベントでクリアボタンを追加する
 		// TODO ui 1.13 で onUpdateDatepicker を利用したイベント制御に変更した場合は、本メソッドは不要
 		const appendClearButtonWithFocusEvent = function(input) {
@@ -3709,7 +3742,38 @@ function datetimepicker(selector) {
 				// クリアボタンが追加されていなければ、クリアボタンを追加する
 				appendClearButton(input);
 			}
-		}
+		};
+
+		// ファンクション実行結果を取得する
+		const getFunctionCallResult = function(fnName, parent, input) {
+			if (!fnName) {
+				// ファンクション名の指定がない場合は終了
+				return undefined;
+			}
+			// '.' で分割する
+			const fnNameArr = fnName.split('.');
+			// ファンクションとファンクションの親オブジェクトを取得する
+			const fnArr = fnNameArr.reduce(function (pv, cv, idx, arr) {
+				const curr = pv && pv[0];
+				
+				if (!curr) {
+					return undefined;
+				}
+				// 最後の位置では以下のようになる
+				// curr[cv] = ファンクション
+				// curr     = 親オブジェクト
+				return [curr[cv], curr];
+			}, [parent, null]);
+			
+			const fn = fnArr && fnArr[0];
+			const fnParent = fnArr && fnArr[1]; 
+			if (!fn || !fnParent || 'function' !== typeof fn) {
+				// 'function' !== typeof fn の場合は、 fn が function ではない
+				return null;
+			}
+			// ファンクション実行
+			return fn.call(fnParent, $(input));
+		};
 
 		this.each(function() {
 			var $this = $(this);
@@ -3739,10 +3803,13 @@ function datetimepicker(selector) {
 			$this.attr("maxLength", formatLength + 2);
 
 			// .datetimepicker selector の data-* 属性の取得
+			const minDate = this.dataset.minDateFunction === 'true' ? getFunctionCallResult(this.dataset.minDate, window, this) : this.dataset.minDate;
+			const maxDate = this.dataset.maxDateFunction === 'true' ? getFunctionCallResult(this.dataset.maxDate, window, this) : this.dataset.maxDate;
 			const extendOptions = {
-				minDate: this.dataset.minDate,
-				maxDate: this.dataset.maxDate,
+				minDate,
+				maxDate,
 			};
+
 
 			$this.datetimepicker({
 				showOn: 'both',

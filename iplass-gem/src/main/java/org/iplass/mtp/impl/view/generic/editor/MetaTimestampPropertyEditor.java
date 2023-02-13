@@ -71,8 +71,14 @@ public class MetaTimestampPropertyEditor extends MetaDateTimePropertyEditor {
 	/** 最小日付 */
 	private String minDate;
 
+	/** 最小日付の設定値をファンクション実行する */
+	private boolean minDateFunction;
+
 	/** 最大日付 */
 	private String maxDate;
+
+	/** 最大日付の設定値をファンクション実行する */
+	private boolean maxDateFunction;
 
 	/** テキストフィールドへの直接入力を制限する */
 	private boolean restrictDirectEditing;
@@ -187,6 +193,22 @@ public class MetaTimestampPropertyEditor extends MetaDateTimePropertyEditor {
 	}
 
 	/**
+	 * 最小日付の設定値を JS ファンクション実行するパラメータを取得する
+	 * @return ファンクション実行するか（true: ファンクション実行する、false: 設定値を利用する）
+	 */
+	public boolean isMinDateFunction() {
+		return minDateFunction;
+	}
+
+	/**
+	 * 最小日付の設定値を JS ファンクション実行するパラメータを設定する
+	 * @param minDateFunction ファンクション実行するか
+	 */
+	public void setMinDateFunction(boolean minDateFunction) {
+		this.minDateFunction = minDateFunction;
+	}
+
+	/**
 	 * 最大日付を取得する
 	 * @return 最大日付
 	 */
@@ -200,6 +222,22 @@ public class MetaTimestampPropertyEditor extends MetaDateTimePropertyEditor {
 	 */
 	public void setMaxDate(String maxDate) {
 		this.maxDate = maxDate;
+	}
+
+	/**
+	 * 最大日付の設定値を JS ファンクション実行するパラメータを取得する
+	 * @return ファンクション実行するか（true: ファンクション実行する、false: 設定値を利用する）
+	 */
+	public boolean isMaxDateFunction() {
+		return maxDateFunction;
+	}
+
+	/**
+	 * 最大日付の設定値を JS ファンクション実行するパラメータを設定する
+	 * @param maxDateFunction ファンクション実行するか
+	 */
+	public void setMaxDateFunction(boolean maxDateFunction) {
+		this.maxDateFunction = maxDateFunction;
 	}
 
 	/**
@@ -231,7 +269,9 @@ public class MetaTimestampPropertyEditor extends MetaDateTimePropertyEditor {
 		this.useDatetimePicker = pe.isUseDatetimePicker();
 		this.showWeekday = pe.isShowWeekday();
 		this.minDate = pe.getMinDate();
+		this.minDateFunction = pe.isMinDateFunction();
 		this.maxDate = pe.getMaxDate();
+		this.maxDateFunction = pe.isMaxDateFunction();
 		this.restrictDirectEditing = pe.isRestrictDirectEditing();
 	}
 
@@ -247,7 +287,9 @@ public class MetaTimestampPropertyEditor extends MetaDateTimePropertyEditor {
 		editor.setUseDatetimePicker(this.useDatetimePicker);
 		editor.setShowWeekday(this.showWeekday);
 		editor.setMinDate(minDate);
+		editor.setMinDateFunction(minDateFunction);
 		editor.setMaxDate(maxDate);
+		editor.setMaxDateFunction(maxDateFunction);
 		editor.setRestrictDirectEditing(restrictDirectEditing);
 
 		return editor;

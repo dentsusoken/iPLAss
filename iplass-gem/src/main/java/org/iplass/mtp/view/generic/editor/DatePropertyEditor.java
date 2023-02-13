@@ -95,15 +95,33 @@ public class DatePropertyEditor extends DateTimePropertyEditor {
 	@EntityViewField(referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK })
 	private String minDate;
 
+	/** 最小日付の設定値をファンクション実行する */
+	@MetaFieldInfo(displayName = "最小日付の設定値をファンクション実行する",
+			displayNameKey = "generic_editor_DatePropertyEditor_minDateFunctionDisplaNameKey",
+			description = "チェックをすると、最小日付の文字列を javascript function として実行し、実行結果を DatePicker の最小日付として設定します。",
+			descriptionKey = "generic_editor_DatePropertyEditor_minDateFunctionDescriptionKey",
+			inputType = InputType.CHECKBOX, displayOrder = 1050)
+	@EntityViewField(referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK })
+	private boolean minDateFunction;
+
 	/** 最大日付 */
 	@MetaFieldInfo(
 			displayName = "最大日付",
 			displayNameKey = "generic_editor_DatePropertyEditor_maxDateDisplaNameKey",
 			description = "DatePicker を利用した入力を行う際の最大日付を設定します。 jQuery UI DatePicker のオプション 'maxDate' の設定値を利用可能です。",
 			descriptionKey = "generic_editor_DatePropertyEditor_maxDateDescriptionKey",
-			displayOrder = 1050)
+			displayOrder = 1060)
 	@EntityViewField(referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK })
 	private String maxDate;
+
+	/** 最大日付の設定値をファンクション実行する */
+	@MetaFieldInfo(displayName = "最大日付の設定値をファンクション実行する",
+			displayNameKey = "generic_editor_DatePropertyEditor_maxDateFunctionDisplaNameKey",
+			description = "チェックをすると、最大日付の文字列を javascript function として実行し、実行結果を DatePicker の最大日付として設定します。",
+			descriptionKey = "generic_editor_DatePropertyEditor_maxDateFunctionDescriptionKey",
+			inputType = InputType.CHECKBOX, displayOrder = 1070)
+	@EntityViewField(referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK })
+	private boolean maxDateFunction;
 
 	/** テキストフィールドへの直接入力を制限する */
 	@MetaFieldInfo(
@@ -112,7 +130,7 @@ public class DatePropertyEditor extends DateTimePropertyEditor {
 			description = "チェックをすると、直接入力ができなくなり DatePicker の入力のみ受け付けるようになります。",
 			descriptionKey = "generic_editor_DatePropertyEditor_restrictDirectEditingDescriptionKey",
 			inputType = InputType.CHECKBOX,
-			displayOrder = 1060)
+			displayOrder = 1080)
 	@EntityViewField(referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK })
 	private boolean restrictDirectEditing;
 
@@ -179,6 +197,22 @@ public class DatePropertyEditor extends DateTimePropertyEditor {
 	}
 
 	/**
+	 * 最小日付の設定値を JS ファンクション実行するパラメータを取得する
+	 * @return ファンクション実行するか（true: ファンクション実行する、false: 設定値を利用する）
+	 */
+	public boolean isMinDateFunction() {
+		return minDateFunction;
+	}
+
+	/**
+	 * 最小日付の設定値を JS ファンクション実行するパラメータを設定する
+	 * @param minDateFunction ファンクション実行するか
+	 */
+	public void setMinDateFunction(boolean minDateFunction) {
+		this.minDateFunction = minDateFunction;
+	}
+
+	/**
 	 * 最大日付を取得する
 	 * @return 最大日付
 	 */
@@ -192,6 +226,22 @@ public class DatePropertyEditor extends DateTimePropertyEditor {
 	 */
 	public void setMaxDate(String maxDate) {
 		this.maxDate = maxDate;
+	}
+
+	/**
+	 * 最大日付の設定値を JS ファンクション実行するパラメータを取得する
+	 * @return ファンクション実行するか（true: ファンクション実行する、false: 設定値を利用する）
+	 */
+	public boolean isMaxDateFunction() {
+		return maxDateFunction;
+	}
+
+	/**
+	 * 最大日付の設定値を JS ファンクション実行するパラメータを設定する
+	 * @param maxDateFunction ファンクション実行するか
+	 */
+	public void setMaxDateFunction(boolean maxDateFunction) {
+		this.maxDateFunction = maxDateFunction;
 	}
 
 	/**
