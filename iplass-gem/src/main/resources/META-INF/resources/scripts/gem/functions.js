@@ -3810,7 +3810,6 @@ function datetimepicker(selector) {
 				maxDate,
 			};
 
-
 			$this.datetimepicker({
 				showOn: 'both',
 				buttonImage: options.buttonImage,
