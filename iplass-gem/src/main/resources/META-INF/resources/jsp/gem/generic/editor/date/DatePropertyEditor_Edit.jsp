@@ -74,6 +74,55 @@
 		}
 		return null;
 	}
+	/**
+	 * 文字列をサニタイズする
+	 *
+	 * @param value 対象文字列
+	 * @return サニタイズ後の文字列
+	 */
+	String sanitize(String value) {
+		return StringUtil.escapeHtml(StringUtil.escapeJavaScript(value));
+	}
+	/**
+	 * ノードに設定する属性キー・バリューを取得する。
+	 * バリューの値はサニタイズする。
+	 *
+	 * @param key 属性キー
+	 * @param configValue 設定値
+	 * @return 属性文字列 （${key}="${configValue}"）。設定値が空の場合は空文字を返却。
+	 */
+	String getAttribute(String key, String configValue) {
+		if (null == configValue || "".equals(configValue)) {
+			return "";
+		}
+		return key + "=\"" + sanitize(configValue) + "\"";
+	}
+	/**
+	 * 入力フィールドの属性情報を取得する。
+	 * 設定対象の属性値は以下の通り。
+	 * <ul>
+	 * <li>リスト説明 ⇒ 属性キー: 属性値の内容説明
+	 * <li>data-min-date: DatePropertyEditor#getMinDate() の設定値</li>
+	 * <li>data-max-date: DatePropertyEditor#getMaxDate() の設定値</li>
+	 * <li>readonly: DatePropertyEditor#isRestrictDirectEditing() が true の場合にキーを指定</li>
+	 * </ul>
+	 *
+	 * @param dateEditor DatePropertyEditor インスタンス
+	 * @return 入力フィールドの属性情報
+	 */
+	String getInputAttrs(DatePropertyEditor dateEditor) {
+		StringBuilder attrs = new StringBuilder("");
+		attrs
+			// getMinDate() で設定が存在していれば data-min-date 属性を設定する
+			.append(getAttribute("data-min-date", dateEditor.getMinDate()))
+			.append(" ")
+			// getMaxDate() で設定が存在していれば data-max-date 属性を設定する
+			.append(getAttribute("data-max-date", dateEditor.getMaxDate()))
+			.append(" ")
+			// isRestrictDirectEditing が true の場合は、 readonly 属性を付与する
+			.append(dateEditor.isRestrictDirectEditing() ? "readonly" : "");
+		return attrs.toString();
+	}
 %>
 <%
 	DatePropertyEditor editor = (DatePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -116,11 +165,8 @@
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/date/DatePropertyAutocompletion.jsp");
 	}
 
-	// 入力フィールドに設定する readonly 属性の決定（isRestrictDirectEditing が true の場合は、 readonly 属性を付与する）
-	String valueAttributeReadonly = editor.isRestrictDirectEditing() ? "readonly" : "";
-	// 値の存在判断。（値がある場合のみ、対応する属性 data-(max|min)-date を付与する）
-	boolean isExistMinDate = editor.getMinDate() != null;
-	boolean isExistMaxDate = editor.getMaxDate() != null;
+	// 入力フィールドの属性値を取得する
+	String inputAttributes = getInputAttrs(editor);
 
 	if (editor.getDisplayType() != DateTimeDisplayType.LABEL
 			&& editor.getDisplayType() != DateTimeDisplayType.HIDDEN && updatable) {
@@ -153,7 +199,7 @@ function <%=toggleAddBtnFunc%>() {
 </script>
 <ul id="<c:out value="<%=ulId %>"/>" class="mb05">
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add picker-list" style="display: none;">
-<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel=<%=!editor.isHideButtonPanel()%> data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <% if (isExistMinDate) { %> data-min-date="<c:out value="<%= editor.getMinDate() %>"/>"<% } if (isExistMaxDate) { %> data-max-date="<c:out value="<%= editor.getMaxDate() %>"/>"<% } %> <%= valueAttributeReadonly %> />
+<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel=<%=!editor.isHideButtonPanel()%> data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <%= inputAttributes %> />
 <input type="hidden" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 </li>
@@ -169,7 +215,7 @@ function <%=toggleAddBtnFunc%>() {
 					String onchange = "dateChange('" + StringUtil.escapeJavaScript(liId) + "')";
 %>
 <li id="<c:out value="<%=liId%>"/>" class="list-add picker-list">
-<input type="text" id="d_<c:out value="<%=liId%>"/>" class="inpbr datepicker" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <% if (isExistMinDate) { %> data-min-date="<c:out value="<%= editor.getMinDate() %>"/>"<% } if (isExistMaxDate) { %> data-max-date="<c:out value="<%= editor.getMaxDate() %>"/>"<% } %> <%= valueAttributeReadonly %> />
+<input type="text" id="d_<c:out value="<%=liId%>"/>" class="inpbr datepicker" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <%= inputAttributes %> />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=hiddenDate%>"/>" />
 <script type="text/javascript">
@@ -222,7 +268,7 @@ $(function() {
 			}
 			String onchange = "dateChange('" + StringUtil.escapeJavaScript(propName) + "')";
 %>
-<input type="text" id="d_<c:out value="<%=propName%>"/>" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <% if (isExistMinDate) { %> data-min-date="<c:out value="<%= editor.getMinDate() %>"/>"<% } if (isExistMaxDate) { %> data-max-date="<c:out value="<%= editor.getMaxDate() %>"/>"<% } %> <%= valueAttributeReadonly %> />
+<input type="text" id="d_<c:out value="<%=propName%>"/>" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <%= inputAttributes %> />
 <input type="hidden" id="i_<c:out value="<%=propName %>"/>" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenDate %>"/>" />
 <script type="text/javascript">
 $(function() {
