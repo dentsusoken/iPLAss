@@ -181,7 +181,14 @@ $(function() {
 			if (!dif) count++;
 			else break;
 		}
-		if (count > 1) return " style=\"vertical-align: center !important;\" rowspan=\"" + count + "\"";
+		if (count > 1) {
+			var label = $(rdata[colModel.name]).text();
+			var title = "";
+			if (typeof label !== "undefined" && label !== null && label !== "") {
+				title = " title=\"" + label + "\"";
+			}
+			return title + " style=\"vertical-align: center !important;\" rowspan=\"" + count + "\"";
+		}
 		else return null;
 <%
 	} else {
