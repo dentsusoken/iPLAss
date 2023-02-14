@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.query.GroupBy;
@@ -295,9 +296,11 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 
 		Query subQuery = query.copy();
 		subQuery.setOrderBy(null);
+		
+		UnaryOperator<CharSequence> sqlModifiier = rdbAdaptor.countQuery(subQuery);
 
 		ToSqlResult res = query(metaData, context, subQuery, false, enableBindVariable, null, rdbAdaptor);
-		res.sql = "SELECT COUNT(*) FROM (" + res.sql + ") CT";
+		res.sql = sqlModifiier.apply(res.sql).toString();
 		return res;
 	}
 

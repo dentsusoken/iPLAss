@@ -34,8 +34,10 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.TimeZone;
+import java.util.function.UnaryOperator;
 
 import org.iplass.mtp.entity.EntityRuntimeException;
+import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.GroupBy.RollType;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
@@ -72,7 +74,6 @@ public abstract class RdbAdapter {
 	private String listaggDefaultSeparator = ",";
 	private String rdbTimeZone;
 	private TimeZone rdbTimeZoneInstance;
-
 
 	private HashMap<String, FunctionAdapter<Function>> functionMap = new HashMap<String, FunctionAdapter<Function>>();
 	private HashMap<Class<? extends Aggregate>, AggregateFunctionAdapter<? extends Aggregate>> aggMap = new HashMap<>();
@@ -123,6 +124,10 @@ public abstract class RdbAdapter {
 		} else {
 			return castExp[0] + valExpr + castExp[1];
 		}
+	}
+
+	public UnaryOperator<CharSequence> countQuery(Query q) {
+		return sql -> "SELECT COUNT(*) FROM (" + sql + ") CT";
 	}
 
 	public abstract boolean isSupportOptimizerHint();
