@@ -149,10 +149,13 @@
 			if (editor.isShowComma()) {
 				tmpCls += " commaFieldDummy";
 			}
-			String deleteCallbackFunc = "deleteCallback_" + StringUtil.escapeJavaScript(propName);
+			String toggleAddBtnFunc = "toggleAddBtn_" + StringUtil.escapeJavaScript(propName);
 %>
 <script type="text/javascript">
-function <%=deleteCallbackFunc%>() {
+function <%=toggleAddBtnFunc%>() {
+	var display = $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	$("#id_addBtn_<c:out value="<%=propName%>"/>").toggle(display);
+
 	var $parent = $("#<%=StringUtil.escapeJavaScript(ulId)%>").closest(".property-data");
 	if ($(".validate-error", $parent).length === 0) {
 		$(".format-error", $parent).remove();
@@ -176,14 +179,17 @@ function <%=deleteCallbackFunc%>() {
 					String liId = "li_" + propName + i;
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<input type="text" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" onblur="numcheck(this, true)" <c:out value="<%=maxlength%>"/> /> <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.number.NumberPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=deleteCallbackFunc%>)" />
+<input type="text" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" onblur="numcheck(this, true)" <c:out value="<%=maxlength%>"/> />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.number.NumberPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc%>)" />
 </li>
 <%
 				}
 			}
+			String addBtnStyle = "";
+			if (array != null && array.length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
 %>
 </ul>
-<input type="button" id="id_addBtn_<c:out value="<%=propName %>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.number.NumberPropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" onclick="addTextItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=pd.getMultiplicity() + 1%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', ':text', null, <%=deleteCallbackFunc%>)" />
+<input type="button" id="id_addBtn_<c:out value="<%=propName %>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.number.NumberPropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>" onclick="addTextItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=pd.getMultiplicity() + 1%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', ':text', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="id_count_<c:out value="<%=propName %>"/>" value="<c:out value="<%=length %>"/>" />
 <script>
 $(function() {
