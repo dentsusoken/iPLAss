@@ -38,6 +38,7 @@ scriptContext.gem.locale.binary.notVewFlash = "不能显示Flash。";
 scriptContext.gem.locale.apendCategory("date");
 scriptContext.gem.locale.date.datepickerBtn = "从日历输入";
 scriptContext.gem.locale.date.timepickerBtn = "从滑动条输入";
+scriptContext.gem.locale.date.pickerClearBtn = "清除";
 scriptContext.gem.locale.date.validateDateErrMsg = "请输入正确的日期。 ({0})";
 scriptContext.gem.locale.date.validateTimeErrMsg = "请输入正确的时间。 ({0})";
 scriptContext.gem.locale.date.validateTimestampErrMsg = "请输入正确的日期或时间。 ({0})";

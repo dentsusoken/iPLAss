@@ -85,6 +85,63 @@
 		}
 		return false;
 	}
+	/**
+	 * 文字列をサニタイズする
+	 *
+	 * @param value 対象文字列
+	 * @return サニタイズ後の文字列
+	 */
+	String sanitize(String value) {
+		return StringUtil.escapeHtml(StringUtil.escapeJavaScript(value));
+	}
+	/**
+	 * ノードに設定する属性キー・バリューを取得する。
+	 * バリューの値はサニタイズする。
+	 *
+	 * @param key 属性キー
+	 * @param configValue 設定値
+	 * @return 属性文字列 （${key}="${configValue}"）。設定値が空の場合は空文字を返却。
+	 */
+	String getAttribute(String key, String configValue) {
+		if (null == configValue || "".equals(configValue)) {
+			return "";
+		}
+		return key + "=\"" + sanitize(configValue) + "\"";
+	}
+	/**
+	 * 入力フィールドの属性情報を取得する。
+	 * 設定対象の属性値は以下の通り。
+	 * <ul>
+	 * <li>リスト説明 ⇒ 属性キー: 属性値の内容説明
+	 * <li>data-min-date: TimestampPropertyEditor#getMinDate() の設定値</li>
+	 * <li>data-min-date-function: TimestampPropertyEditor#isMinDateFunction() で判断。 data-min-date の値が function として実行される場合 true が設定される</li>
+	 * <li>data-max-date: TimestampPropertyEditor#getMaxDate() の設定値</li>
+	 * <li>data-max-date-function: TimestampPropertyEditor#isMaxDateFunction() で判断。data-max-date の値が function として実行される場合 true が設定される</li>
+	 * <li>readonly: TimestampPropertyEditor#isRestrictDirectEditing() が true の場合にキーを指定</li>
+	 * </ul>
+	 *
+	 * @param editor TimestampPropertyEditor インスタンス
+	 * @return 入力フィールドの属性情報
+	 */
+	String getInputAttrs(TimestampPropertyEditor editor) {
+		StringBuilder attrs = new StringBuilder("");
+		attrs
+			// getMinDate() で設定が存在していれば data-min-date 属性を設定する
+			.append(getAttribute("data-min-date", editor.getMinDate()))
+			.append(" ")
+			// isMinDateFunction が true の場合は、 data-min-date-function="true" を付与する
+			.append(editor.isMinDateFunction() ? "data-min-date-function=\"true\"" : "")
+			.append(" ")
+			// getMaxDate() で設定が存在していれば data-max-date 属性を設定する
+			.append(getAttribute("data-max-date", editor.getMaxDate()))
+			.append(" ")
+			// isMaxDateFunction が true の場合は、 data-max-date-function="true" を付与する
+			.append(editor.isMaxDateFunction() ? "data-max-date-function=\"true\"" : "")
+			.append(" ")
+			// isRestrictDirectEditing が true の場合は、 readonly 属性を付与する
+			.append(editor.isRestrictDirectEditing() ? "readonly" : "");
+		return attrs.toString();
+	}
 %>
 <%
 	TimestampPropertyEditor editor = (TimestampPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -142,6 +199,9 @@
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/timestamp/TimestampPropertyAutocompletion.jsp");
 	}
+
+	// 入力フィールドの属性値を取得する
+	String inputAttributes = getInputAttrs(editor);
 
 	//タイプ毎に出力内容かえる
 	if (editor.getDisplayType() != DateTimeDisplayType.LABEL
@@ -206,7 +266,8 @@ function <%=toggleAddBtnFunc%>(){
 %>
 <input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true"
 	data-stepmin="<c:out value="<%=minInterval %>"/>" data-timeformat="<c:out value="<%=sbFormat.toString() %>"/>"
-	data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>" data-fixedMSec="000"/>
+	data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>" data-fixedMSec="000"
+	<%= inputAttributes %> />
 <input type="hidden" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.timestamp.TimestampPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 </li>
@@ -271,7 +332,7 @@ $(function() {
 %>
 <ul id="<c:out value="<%=ulId %>"/>" class="mb05">
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add picker-list timestampselect-field" style="display: none;">
-<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
+<input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <%= inputAttributes %> />
 <%
 				if (TimeDispRange.isDispHour(editor.getDispRange())) {
 				//時間を表示

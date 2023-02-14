@@ -83,6 +83,63 @@
 		}
 		return ret;
 	}
+	/**
+	 * 文字列をサニタイズする
+	 *
+	 * @param value 対象文字列
+	 * @return サニタイズ後の文字列
+	 */
+	String sanitize(String value) {
+		return StringUtil.escapeHtml(StringUtil.escapeJavaScript(value));
+	}
+	/**
+	 * ノードに設定する属性キー・バリューを取得する。
+	 * バリューの値はサニタイズする。
+	 *
+	 * @param key 属性キー
+	 * @param configValue 設定値
+	 * @return 属性文字列 （${key}="${configValue}"）。設定値が空の場合は空文字を返却。
+	 */
+	String getAttribute(String key, String configValue) {
+		if (null == configValue || "".equals(configValue)) {
+			return "";
+		}
+		return key + "=\"" + sanitize(configValue) + "\"";
+	}
+	/**
+	 * 入力フィールドの属性情報を取得する。
+	 * 設定対象の属性値は以下の通り。
+	 * <ul>
+	 * <li>リスト説明 ⇒ 属性キー: 属性値の内容説明
+	 * <li>data-min-date: TimestampPropertyEditor#getMinDate() の設定値</li>
+	 * <li>data-min-date-function: TimestampPropertyEditor#isMinDateFunction() で判断。 data-min-date の値が function として実行される場合 true が設定される</li>
+	 * <li>data-max-date: TimestampPropertyEditor#getMaxDate() の設定値</li>
+	 * <li>data-max-date-function: TimestampPropertyEditor#isMaxDateFunction() で判断。data-max-date の値が function として実行される場合 true が設定される</li>
+	 * <li>readonly: TimestampPropertyEditor#isRestrictDirectEditing() が true の場合にキーを指定</li>
+	 * </ul>
+	 *
+	 * @param editor TimestampPropertyEditor インスタンス
+	 * @return 入力フィールドの属性情報
+	 */
+	String getInputAttrs(TimestampPropertyEditor editor) {
+		StringBuilder attrs = new StringBuilder("");
+		attrs
+			// getMinDate() で設定が存在していれば data-min-date 属性を設定する
+			.append(getAttribute("data-min-date", editor.getMinDate()))
+			.append(" ")
+			// isMinDateFunction が true の場合は、 data-min-date-function="true" を付与する
+			.append(editor.isMinDateFunction() ? "data-min-date-function=\"true\"" : "")
+			.append(" ")
+			// getMaxDate() で設定が存在していれば data-max-date 属性を設定する
+			.append(getAttribute("data-max-date", editor.getMaxDate()))
+			.append(" ")
+			// isMaxDateFunction が true の場合は、 data-max-date-function="true" を付与する
+			.append(editor.isMaxDateFunction() ? "data-max-date-function=\"true\"" : "")
+			.append(" ")
+			// isRestrictDirectEditing が true の場合は、 readonly 属性を付与する
+			.append(editor.isRestrictDirectEditing() ? "readonly" : "");
+		return attrs.toString();
+	}
 %>
 <%
 	TimestampPropertyEditor editor = (TimestampPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -116,6 +173,9 @@
 		String defSec = defTmp[3];
 		String defStr = defTmp[5];
 
+		// 入力フィールドの属性値を取得する
+		String inputAttributes = getInputAttrs(editor);
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
@@ -132,7 +192,7 @@
 
 		String onchange = "timestampSelectChange('" + StringUtil.escapeJavaScript(_propName) + "')";
 %>
-<input type="text" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="d_<c:out value="<%=_propName %>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-notFillTime="<%=editor.isNotFillTime()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" />
+<input type="text" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="d_<c:out value="<%=_propName %>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-notFillTime="<%=editor.isNotFillTime()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <%= inputAttributes %> />
 <%
 		String defaultHour = "00";
 		String _defaultHour = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_HOUR);

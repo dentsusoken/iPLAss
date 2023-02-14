@@ -38,6 +38,7 @@ scriptContext.gem.locale.binary.notVewFlash = "ไม่สามารถแส
 scriptContext.gem.locale.apendCategory("date");
 scriptContext.gem.locale.date.datepickerBtn = "ป้อนข้อมูลจากปฏิทิน";
 scriptContext.gem.locale.date.timepickerBtn = "ป้อนข้อมูลจากแถบเลื่อน";
+scriptContext.gem.locale.date.pickerClearBtn = "ชัดเจน";
 scriptContext.gem.locale.date.validateDateErrMsg = "กรุณาใส่วันที่ให้ถูกต้อง ({0})";
 scriptContext.gem.locale.date.validateTimeErrMsg = "กรุณาใส่เวลาให้ถูกต้อง ({0})";
 scriptContext.gem.locale.date.validateTimestampErrMsg = "กรุณาใส่วันที่หรือเวลาให้ถูกต้อง ({0})";

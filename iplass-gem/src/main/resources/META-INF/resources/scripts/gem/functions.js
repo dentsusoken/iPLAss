@@ -3171,7 +3171,8 @@ function datepicker(selector) {
 			showErrorMessage: true,
 			validErrMsg: null,
 			onChangeActual: function(){},
-			dayLabelSelector: ".dp-weekday-label"
+			dayLabelSelector: ".dp-weekday-label",
+			pickerClearButtonText: scriptContext.gem.locale.date.pickerClearBtn,
 		}
 		var options = $.extend(defaults, option);
 		if (!this) return false;
@@ -3183,6 +3184,66 @@ function datepicker(selector) {
 			}
 			options.buttonImage = contentPath + "/images/gem/skin/" + skinName + "/icon-calender-01.png";
 		}
+
+		// クリアボタンを追加する
+		const appendClearButton = function(input) {
+			const $input = $(input);
+			const $buttonPane = $input.datepicker('widget').find('.ui-datepicker-buttonpane');
+			if ($buttonPane.length > 0) {
+				// $buttonPane が存在していたら、クリアボタンを追加する
+				$buttonPane.append(
+					$('<button type="button" class="ui-datepicker-clear ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all"></button>')
+						.text(options.pickerClearButtonText)
+						.on('click', null, $input, function(event) {
+							event.data.val('');
+						})
+				);
+			}
+		};
+
+		// フォーカスイベントでクリアボタンを追加する
+		// TODO ui 1.13 で onUpdateDatepicker を利用したイベント制御に変更した場合は、本メソッドは不要
+		const appendClearButtonWithFocusEvent = function(input) {
+			const $input = $(input);
+			const $buttonPane = $input.datepicker('widget').find('.ui-datepicker-buttonpane');
+			// focus イベントは、様々なタイミングで発生する。
+			// picker 表示状態で focus イベントが発生し、ボタンが追加されることを抑制する。
+			if ($buttonPane.length > 0 && $buttonPane.find('.ui-datepicker-clear').length === 0) {
+				// クリアボタンが追加されていなければ、クリアボタンを追加する
+				appendClearButton(input);
+			}
+		};
+
+		// ファンクション実行結果を取得する
+		const getFunctionCallResult = function(fnName, parent, input) {
+			if (!fnName) {
+				// ファンクション名の指定がない場合は終了
+				return undefined;
+			}
+			// '.' で分割する
+			const fnNameArr = fnName.split('.');
+			// ファンクションとファンクションの親オブジェクトを取得する
+			const fnArr = fnNameArr.reduce(function (pv, cv, idx, arr) {
+				const curr = pv && pv[0];
+				
+				if (!curr) {
+					return undefined;
+				}
+				// 最後の位置では以下のようになる
+				// curr[cv] = ファンクション
+				// curr     = 親オブジェクト
+				return [curr[cv], curr];
+			}, [parent, null]);
+			
+			const fn = fnArr && fnArr[0];
+			const fnParent = fnArr && fnArr[1]; 
+			if (!fn || !fnParent || 'function' !== typeof fn) {
+				// 'function' !== typeof fn の場合は、 fn が function ではない
+				return null;
+			}
+			// ファンクション実行
+			return fn.call(fnParent, $(input));
+		};
 
 		this.each(function() {
 			var $this = $(this);
@@ -3200,6 +3261,14 @@ function datepicker(selector) {
 			}
 			$this.attr("maxLength", formatLength + 2);
 
+			// .datepicker selector の data-* 属性の取得
+			const minDate = this.dataset.minDateFunction === 'true' ? getFunctionCallResult(this.dataset.minDate, window, this) : this.dataset.minDate;
+			const maxDate = this.dataset.maxDateFunction === 'true' ? getFunctionCallResult(this.dataset.maxDate, window, this) : this.dataset.maxDate;
+			const extendOptions = {
+				minDate: minDate,
+				maxDate: maxDate,
+			};
+
 			$this.datepicker({
 				showOn: 'both',
 				buttonImage: options.buttonImage,
@@ -3208,6 +3277,8 @@ function datepicker(selector) {
 				showMonthAfterYear: true,
 				showButtonPanel:$this.attr("data-showButtonPanel") == "true",//今日ボタン表示
 				dateFormat: options.dateFormat,
+				minDate: extendOptions.minDate,
+				maxDate: extendOptions.maxDate,
 				beforeShow: function() {
 					//初回時のためここでセット(beforeShow->focus)
 					$this.attr("data-prevalue", convertFromLocaleDateString($this.val()));
@@ -3239,7 +3310,22 @@ function datepicker(selector) {
 					//pickerが表示されていない場合のみセット
 					$this.attr("data-prevalue", convertFromLocaleDateString($this.val()));
 				}
+				
+				// クリアボタンを追加する
+				// TODO ui 1.13 になれば、 onUpdateDatepicker が追加されるので、そちらで追加することが正しい
+				appendClearButtonWithFocusEvent(this);
 			});
+
+			if (this.hasAttribute('readonly')) {
+				// readonly テキストフィールドの場合、削除操作のみ受け付ける
+				$this.on('keydown', function(keyboardEvent) {
+					if (/(Delete)|(Backspace)/i.test(keyboardEvent.code)) {
+						// Delete or Backspace キーであれば、入力値を空に設定する。
+						this.value = '';
+					}
+				});
+			}
+
 			if ($this.attr("data-showWeekday") === "true") {
 				$this.after($("<span  />").addClass("dp-weekday-label"));
 			}
@@ -3382,7 +3468,8 @@ function timepicker(selector) {
 			buttonImage: null,
 			showErrorMessage: true,
 			validErrMsg: null,
-			onChangeActual: function(){}
+			onChangeActual: function(){},
+			pickerClearButtonText: scriptContext.gem.locale.date.pickerClearBtn,
 		}
 		var options = $.extend(defaults, option);
 		if (!this) return false;
@@ -3394,6 +3481,35 @@ function timepicker(selector) {
 			}
 			options.buttonImage = contentPath + "/images/gem/skin/" + skinName + "/icon-clock.png";
 		}
+
+		// クリアボタンを追加する
+		const appendClearButton = function(input) {
+			const $input = $(input);
+			const $buttonPane = $input.datepicker('widget').find('.ui-datepicker-buttonpane');
+			if ($buttonPane.length > 0) {
+				// $buttonPane が存在していたら、クリアボタンを追加する
+				$buttonPane.append(
+					$('<button type="button" class="ui-datepicker-clear ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all"></button>')
+						.text(options.pickerClearButtonText)
+						.on('click', null, $input, function(event) {
+							event.data.val('');
+						})
+				);
+			}
+		};
+		
+		// フォーカスイベントでクリアボタンを追加する
+		// TODO ui 1.13 で onUpdateDatepicker を利用したイベント制御に変更した場合は、本メソッドは不要
+		const appendClearButtonWithFocusEvent = function(input) {
+			const $input = $(input);
+			const $buttonPane = $input.datepicker('widget').find('.ui-datepicker-buttonpane');
+			// focus イベントは、様々なタイミングで発生する。
+			// picker 表示状態で focus イベントが発生し、ボタンが追加されることを抑制する。
+			if ($buttonPane.length > 0 && $buttonPane.find('.ui-datepicker-clear').length === 0) {
+				// クリアボタンが追加されていなければ、クリアボタンを追加する
+				appendClearButton(input);
+			}
+		};
 
 		this.each(function() {
 			var $this = $(this);
@@ -3454,6 +3570,10 @@ function timepicker(selector) {
 					//pickerが表示されていない場合のみセット
 					$this.attr("data-prevalue", convertFromTimeString(this));
 				}
+
+				// クリアボタンを追加する
+				// TODO ui 1.13 になれば、 onUpdateDatepicker が追加されるので、そちらで追加することが正しい
+				appendClearButtonWithFocusEvent(this);
 			});
 		});
 
@@ -3581,7 +3701,8 @@ function datetimepicker(selector) {
 			showErrorMessage: true,
 			validErrMsg: null,
 			onChangeActual: function(){},
-			dayLabelSelector: ".dp-weekday-label"
+			dayLabelSelector: ".dp-weekday-label",
+			pickerClearButtonText: scriptContext.gem.locale.date.pickerClearBtn,
 		}
 		var options = $.extend(defaults, option);
 		if (!this) return false;
@@ -3593,6 +3714,66 @@ function datetimepicker(selector) {
 			}
 			options.buttonImage = contentPath + "/images/gem/skin/" + skinName + "/icon-calender-01.png";
 		}
+
+		// クリアボタンを追加する
+		const appendClearButton = function(input) {
+			const $input = $(input);
+			const $buttonPane = $input.datepicker('widget').find('.ui-datepicker-buttonpane');
+			if ($buttonPane.length > 0) {
+				// $buttonPane が存在していたら、クリアボタンを追加する
+				$buttonPane.append(
+					$('<button type="button" class="ui-datepicker-clear ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all"></button>')
+						.text(options.pickerClearButtonText)
+						.on('click', null, $input, function(event) {
+							event.data.val('');
+						})
+				);
+			}
+		};
+
+		// フォーカスイベントでクリアボタンを追加する
+		// TODO ui 1.13 で onUpdateDatepicker を利用したイベント制御に変更した場合は、本メソッドは不要
+		const appendClearButtonWithFocusEvent = function(input) {
+			const $input = $(input);
+			const $buttonPane = $input.datepicker('widget').find('.ui-datepicker-buttonpane');
+			// focus イベントは、様々なタイミングで発生する。
+			// picker 表示状態で focus イベントが発生し、ボタンが追加されることを抑制する。
+			if ($buttonPane.length > 0 && $buttonPane.find('.ui-datepicker-clear').length === 0) {
+				// クリアボタンが追加されていなければ、クリアボタンを追加する
+				appendClearButton(input);
+			}
+		};
+
+		// ファンクション実行結果を取得する
+		const getFunctionCallResult = function(fnName, parent, input) {
+			if (!fnName) {
+				// ファンクション名の指定がない場合は終了
+				return undefined;
+			}
+			// '.' で分割する
+			const fnNameArr = fnName.split('.');
+			// ファンクションとファンクションの親オブジェクトを取得する
+			const fnArr = fnNameArr.reduce(function (pv, cv, idx, arr) {
+				const curr = pv && pv[0];
+				
+				if (!curr) {
+					return undefined;
+				}
+				// 最後の位置では以下のようになる
+				// curr[cv] = ファンクション
+				// curr     = 親オブジェクト
+				return [curr[cv], curr];
+			}, [parent, null]);
+			
+			const fn = fnArr && fnArr[0];
+			const fnParent = fnArr && fnArr[1]; 
+			if (!fn || !fnParent || 'function' !== typeof fn) {
+				// 'function' !== typeof fn の場合は、 fn が function ではない
+				return null;
+			}
+			// ファンクション実行
+			return fn.call(fnParent, $(input));
+		};
 
 		this.each(function() {
 			var $this = $(this);
@@ -3621,6 +3802,14 @@ function datetimepicker(selector) {
 			}
 			$this.attr("maxLength", formatLength + 2);
 
+			// .datetimepicker selector の data-* 属性の取得
+			const minDate = this.dataset.minDateFunction === 'true' ? getFunctionCallResult(this.dataset.minDate, window, this) : this.dataset.minDate;
+			const maxDate = this.dataset.maxDateFunction === 'true' ? getFunctionCallResult(this.dataset.maxDate, window, this) : this.dataset.maxDate;
+			const extendOptions = {
+				minDate: minDate,
+				maxDate: maxDate,
+			};
+
 			$this.datetimepicker({
 				showOn: 'both',
 				buttonImage: options.buttonImage,
@@ -3630,6 +3819,8 @@ function datetimepicker(selector) {
 				dateFormat: options.dateFormat,
 				timeFormat : timeFormat,
 				stepMinute: Number(stepMinute),	//数値に変換
+				minDate: extendOptions.minDate,
+				maxDate: extendOptions.maxDate,
 				beforeShow: function(ip, dp, tp) {
 					//初回時のためここでセット(beforeShow->focus)
 					$this.attr("data-prevalue", convertFromLocaleDatetimeString($this.val()));
@@ -3668,7 +3859,22 @@ function datetimepicker(selector) {
 					//pickerが表示されていない場合のみセット
 					$this.attr("data-prevalue", convertFromLocaleDatetimeString($this.val()));
 				}
+
+				// クリアボタンを追加する
+				// TODO ui 1.13 になれば、 onUpdateDatepicker が追加されるので、そちらで追加することが正しい
+				appendClearButtonWithFocusEvent(this);
 			});
+
+			if (this.hasAttribute('readonly')) {
+				// readonly テキストフィールドの場合、削除操作のみ受け付ける
+				$this.on('keydown', function(keyboardEvent) {
+					if (/(Delete)|(Backspace)/i.test(keyboardEvent.code)) {
+						// Delete or Backspace キーであれば、入力値を空に設定する。
+						this.value = '';
+					}
+				});
+			}
+
 			if ($this.attr("data-showWeekday") === "true") {
 				$this.after($("<span  />").addClass("dp-weekday-label"));
 			}

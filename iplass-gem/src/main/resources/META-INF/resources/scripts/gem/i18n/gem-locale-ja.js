@@ -38,6 +38,7 @@ scriptContext.gem.locale.binary.notVewFlash = "Flashを表示できません。"
 scriptContext.gem.locale.apendCategory("date");
 scriptContext.gem.locale.date.datepickerBtn = "カレンダーから入力";
 scriptContext.gem.locale.date.timepickerBtn = "スライダーから入力";
+scriptContext.gem.locale.date.pickerClearBtn = "クリア";
 scriptContext.gem.locale.date.validateDateErrMsg = "日付を正しく入力してください。({0})";
 scriptContext.gem.locale.date.validateTimeErrMsg = "時間を正しく入力してください。({0})";
 scriptContext.gem.locale.date.validateTimestampErrMsg = "日付もしくは時間を正しく入力してください。({0})";
