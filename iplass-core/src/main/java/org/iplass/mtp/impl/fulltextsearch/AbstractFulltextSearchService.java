@@ -393,6 +393,7 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 	
 	protected abstract List<IndexedEntity> fulltextSearchImpl(Integer tenantId, EntityHandler eh, String fulltext, int limit);
 	
+	@SuppressWarnings("unchecked")
 	private <T extends Entity> SearchResult<T> entitySearchImpl(List<IndexedEntity> oidList, EntityHandler eh, FulltextSearchCondition condition) {
 		if (oidList.isEmpty()) {
 			return new SearchResult<T>(-1, null);
@@ -445,16 +446,36 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		if (condition == null || condition.getOrder() == null) {
 			//sort by score
 			//and set score value to each entity
-			Map<String, T> map = new HashMap<>((int)(searched.getList().size() / 0.75f) + 1, 0.75f);
+			Map<String, Object> map = new HashMap<>((int)(searched.getList().size() / 0.75f) + 1, 0.75f);
 			for (T e: searched.getList()) {
-				map.put(e.getOid(), e);
+				map.compute(e.getOid(), (k, v)-> {
+					if (v == null) {
+						return e;
+					} else if (v instanceof List) {
+						((List<T>) v).add(e);
+						return v;
+					} else {
+						List<T> ret = new ArrayList<>();
+						ret.add((T) v);
+						ret.add(e);
+						return ret;
+					}
+				});
 			}
 			ArrayList<T> mergedList = new ArrayList<>(searched.getList().size());
 			for (IndexedEntity ie: oidList) {
-				T e = map.get(ie.getOid());
-				if (e != null) {
-					e.setValue(scorePropertyName, ie.getScore());
-					mergedList.add(e);
+				Object o = map.get(ie.getOid());
+				if (o != null) {
+					if (o instanceof List) {
+						for (T e: (List<T>) o) {
+							e.setValue(scorePropertyName, ie.getScore());
+							mergedList.add(e);
+						}
+					} else {
+						T e = (T) o;
+						e.setValue(scorePropertyName, ie.getScore());
+						mergedList.add(e);
+					}
 				}
 			}
 			return new SearchResult<T>(searched.getTotalCount(), mergedList);
