@@ -54,6 +54,7 @@
 			<property name="defaultQueryTimeout" value="0" />
 			<property name="supportOptimizerHint" value="true" />
 			<property name="supportWindowFunction" value="true" />
+			<property name="optimizeCountQuery" value="true" />
 			<property name="localTemporaryTableManageOutsideTransaction" value="false" />
 			<property name="localTemporaryTableCreatedByDataSource" value="false" />
 		</property>

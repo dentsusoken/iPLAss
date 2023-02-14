@@ -305,12 +305,12 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 
 		Query subQuery = query.copy();
 		subQuery.setOrderBy(null);
+		
+		UnaryOperator<CharSequence> sqlModifiier = rdbAdaptor.countQuery(subQuery);
 
-		ToSqlResult res = queryImpl(metaData, context, subQuery, enableBindVariable, null, rdbAdaptor,
-				sql -> "SELECT COUNT(*) FROM (" + sql + ") CT");
+		ToSqlResult res = queryImpl(metaData, context, subQuery, enableBindVariable, null, rdbAdaptor, sqlModifiier);
 		return res;
 	}
-
 
 	public String checkExistsSql(int tenantId, EntityHandler eh, Entity entity, RdbAdapter rdbAdaptor) {
 		StringBuilder sb = new StringBuilder();
