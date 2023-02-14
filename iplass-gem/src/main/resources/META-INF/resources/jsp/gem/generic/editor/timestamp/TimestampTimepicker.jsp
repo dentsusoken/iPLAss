@@ -137,6 +137,7 @@
 			.append(" ")
 			// isMinDateFunction が true の場合は、 data-min-date-function="true" を付与する
 			.append(editor.isMinDateFunction() ? "data-min-date-function=\"true\"" : "")
+			.append(" ")
 			// getMaxDate() で設定が存在していれば data-max-date 属性を設定する
 			.append(getAttribute("data-max-date", editor.getMaxDate()))
 			.append(" ")

@@ -3265,8 +3265,8 @@ function datepicker(selector) {
 			const minDate = this.dataset.minDateFunction === 'true' ? getFunctionCallResult(this.dataset.minDate, window, this) : this.dataset.minDate;
 			const maxDate = this.dataset.maxDateFunction === 'true' ? getFunctionCallResult(this.dataset.maxDate, window, this) : this.dataset.maxDate;
 			const extendOptions = {
-				minDate,
-				maxDate,
+				minDate: minDate,
+				maxDate: maxDate,
 			};
 
 			$this.datepicker({
@@ -3806,8 +3806,8 @@ function datetimepicker(selector) {
 			const minDate = this.dataset.minDateFunction === 'true' ? getFunctionCallResult(this.dataset.minDate, window, this) : this.dataset.minDate;
 			const maxDate = this.dataset.maxDateFunction === 'true' ? getFunctionCallResult(this.dataset.maxDate, window, this) : this.dataset.maxDate;
 			const extendOptions = {
-				minDate,
-				maxDate,
+				minDate: minDate,
+				maxDate: maxDate,
 			};
 
 			$this.datetimepicker({
