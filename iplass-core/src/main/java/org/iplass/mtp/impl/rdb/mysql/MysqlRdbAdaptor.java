@@ -32,10 +32,17 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.UnaryOperator;
 
 import org.iplass.mtp.entity.query.GroupBy.RollType;
+import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
+import org.iplass.mtp.entity.query.hint.Hint;
+import org.iplass.mtp.entity.query.hint.NativeHint;
+import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
 import org.iplass.mtp.entity.query.value.aggregate.Listagg;
@@ -85,6 +92,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	private static final String DATE_MAX = "99991231235959999";
 	private static final String[] optimizerHintBracket = {"/*+", "*/"};
 
+	private boolean optimizeCountQuery;
 	private boolean useFractionalSecondsOnTimestamp = true;
 	private boolean supportOptimizerHint = false;
 	private boolean supportWindowFunction = false;
@@ -108,7 +116,6 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 
 	long dateMin;
 	long dateMax;
-
 	public MysqlRdbAdaptor() {
 		addFunction(new StaticTypedFunctionAdapter("CHAR_LENGTH", Long.class));
 		addFunction(new StaticTypedFunctionAdapter("INSTR", Long.class));
@@ -914,6 +921,48 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 
 	public void setMultiTableTrickClauseForUpdate(String multiTableTrickClauseForUpdate) {
 		this.multiTableTrickClauseForUpdate = multiTableTrickClauseForUpdate;
+	}
+
+	public boolean isOptimizeCountQuery() {
+		return optimizeCountQuery;
+	}
+
+	public void setOptimizeCountQuery(boolean optimizeCountQuery) {
+		this.optimizeCountQuery = optimizeCountQuery;
+	}
+	
+	@Override
+	public UnaryOperator<CharSequence> countQuery(Query q) {
+		//導出テーブルのマージ最適化が行われた場合、クエリーブロックのヒント句が適切にマージされないので、
+		//マージ最適化が発生すると想定される場合は、導出テーブル使わない形でEQLレベルで対処する。
+		if (!isOptimizeCountQuery() || !isSupportOptimizerHint() || !hasNativeHint(q)) {
+			return super.countQuery(q);
+		}
+		
+		OptimizeCountQueryChecker checker = new OptimizeCountQueryChecker();
+		q.accept(checker);
+		if (checker.possible) {
+			List<ValueExpression> sl = new ArrayList<>();
+			sl.add(new Count());
+			q.getSelect().setSelectValues(sl);
+			return sql -> sql;
+		} else {
+			return super.countQuery(q);
+		}
+	}
+	
+	private boolean hasNativeHint(Query q) {
+		if (q.getSelect().getHintComment() != null) {
+			List<Hint> hl = q.getSelect().getHintComment().getHintList();
+			if (hl != null) {
+				for (Hint h: hl) {
+					if (h instanceof NativeHint) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 }

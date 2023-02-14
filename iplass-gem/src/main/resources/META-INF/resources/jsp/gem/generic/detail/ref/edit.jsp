@@ -149,6 +149,9 @@ function onclick_save(action, target) {
 	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.ref.detail.saveMsg')}")) {
 		return;
 	}
+
+	if (!validation()) return;
+
 	button_onclick(action);
 	if (target) $(target).prop("disabled", true);
 }
@@ -156,6 +159,9 @@ function onclick_insert(action, target) {
 	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.ref.detail.saveMsg')}")) {
 		return;
 	}
+
+	if (!validation()) return;
+
 	button_onclick(action);
 	if (target) $(target).prop("disabled", true);
 }
@@ -176,6 +182,10 @@ function onDialogClose() {
 	}
 	consumeToken("<%=ConsumeTokenCommand.WEBAPI_NAME%>", $("[name='_t']").val());
 	return true;
+}
+function validation() {
+	<%-- common.js --%>
+	return editValidate();
 }
 $(function(){
 	$('.disabled-btn').removeAttr('disabled');

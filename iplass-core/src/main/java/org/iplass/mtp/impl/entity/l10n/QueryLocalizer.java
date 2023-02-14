@@ -76,22 +76,21 @@ class QueryLocalizer extends ASTTransformerSupport {
 		if (lastDot < 0) {
 			//直下のプロパティ
 			PropertyHandler ph = target.eh.getProperty(propName, ec);
-			if (ph == null) {
-				throw new QueryException(entityField + " not defined.");
-			}
-			if (ph instanceof PrimitivePropertyHandler) {
-				if (target.eh.getMetaData().getDataLocalizationStrategy() != null
-						&& target.eh.getMetaData().getDataLocalizationStrategy() instanceof MetaEachPropertyDataLocalizationStrategy) {
-					l10nPropName = propName + "_" + userLangReplace();
-					PropertyHandler l10nPh = target.eh.getProperty(l10nPropName, ec);
-					if (l10nPh == null) {
-						l10nPropName = null;
+			if (ph != null) {
+				if (ph instanceof PrimitivePropertyHandler) {
+					if (target.eh.getMetaData().getDataLocalizationStrategy() != null
+							&& target.eh.getMetaData().getDataLocalizationStrategy() instanceof MetaEachPropertyDataLocalizationStrategy) {
+						l10nPropName = propName + "_" + userLangReplace();
+						PropertyHandler l10nPh = target.eh.getProperty(l10nPropName, ec);
+						if (l10nPh == null) {
+							l10nPropName = null;
+						}
 					}
+				} else {
+					//Reference
+					EntityHandler refEh = ((ReferencePropertyHandler) ph).getReferenceEntityHandler(ec);
+					target.addRefers(propName, refEh);
 				}
-			} else {
-				//Reference
-				EntityHandler refEh = ((ReferencePropertyHandler) ph).getReferenceEntityHandler(ec);
-				target.addRefers(propName, refEh);
 			}
 		} else {
 			//参照先のプロパティ
@@ -102,24 +101,23 @@ class QueryLocalizer extends ASTTransformerSupport {
 			EntityHandler targetEh = ref.getReferenceEntityHandler(ec);
 			String propNameDirect = propName.substring(lastDot + 1, propName.length());
 			PropertyHandler ph = targetEh.getProperty(propNameDirect, ec);
-			if (ph == null) {
-				throw new QueryException(entityField + " not defined.");
-			}
 			
-			if (ph instanceof PrimitivePropertyHandler) {
-				if (targetEh.getMetaData().getDataLocalizationStrategy() != null
-						&& targetEh.getMetaData().getDataLocalizationStrategy() instanceof MetaEachPropertyDataLocalizationStrategy) {
-					l10nPropName = propName + "_" + userLangReplace();
-					String l10nPropNameDirect = propNameDirect + "_" + userLangReplace();
-					PropertyHandler l10nPh = targetEh.getProperty(l10nPropNameDirect, ec);
-					if (l10nPh == null) {
-						l10nPropName = null;
+			if (ph != null) {
+				if (ph instanceof PrimitivePropertyHandler) {
+					if (targetEh.getMetaData().getDataLocalizationStrategy() != null
+							&& targetEh.getMetaData().getDataLocalizationStrategy() instanceof MetaEachPropertyDataLocalizationStrategy) {
+						l10nPropName = propName + "_" + userLangReplace();
+						String l10nPropNameDirect = propNameDirect + "_" + userLangReplace();
+						PropertyHandler l10nPh = targetEh.getProperty(l10nPropNameDirect, ec);
+						if (l10nPh == null) {
+							l10nPropName = null;
+						}
 					}
+				} else {
+					//Reference
+					EntityHandler refEh = ((ReferencePropertyHandler) ph).getReferenceEntityHandler(ec);
+					target.addRefers(propName, refEh);
 				}
-			} else {
-				//Reference
-				EntityHandler refEh = ((ReferencePropertyHandler) ph).getReferenceEntityHandler(ec);
-				target.addRefers(propName, refEh);
 			}
 			
 			//参照階層のチェック
