@@ -155,6 +155,7 @@ public class Constants {
 	public static final String EDITOR_PROP_VALUE = "propValue";
 	public static final String EDITOR_DEFAULT_VALUE = "propDefaultValue";
 	public static final String EDITOR_PARENT_ENTITY = "parentEntity";
+	public static final String EDITOR_UNIQUE_ID = "editorUniqueId";
 
 	public static final String EDITOR_SELECT_VALUE_LIST = "selectValueList";
 	public static final String EDITOR_LOCAL_VALUE_LIST = "localValueList";

@@ -243,7 +243,10 @@ function cancel() {
 }
 function validation() {
 	<%-- common.js --%>
-	return editValidate();
+	var ret = editValidate();
+	var message = !ret ? "${m:rs('mtp-gem-messages', 'command.generic.detail.DetailCommandBase.inputErr')}" : "";
+	$(".detail_edit > .page-error").text(message);
+	return ret;
 }
 $(function(){
 	$('.disabled-btn').removeAttr('disabled');
@@ -260,15 +263,15 @@ $(function(){
 	}
 %>
 <h3 class="hgroup-02 hgroup-02-01"><%= GemResourceBundleUtil.resourceString("generic.detail.detail.edit", displayName) %></h3>
+<span class="error page-error">
 <%
 	if (StringUtil.isNotBlank(message)) {
 %>
-<span class="error">
 <c:out value="<%= message %>"/>
-</span>
 <%
 	}
 %>
+</span>
 <form id="detailForm" method="post" action="<c:out value="<%=defaultAction%>"/>">
 <input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="searchCond" value="<c:out value="<%=searchCond%>"/>" />

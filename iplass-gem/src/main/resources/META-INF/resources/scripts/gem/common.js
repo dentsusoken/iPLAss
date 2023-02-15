@@ -797,17 +797,91 @@ function addEditValidator(validatorFunc) {
 }
 
 /**
- * 検索条件共通Validate
+ * 編集画面Validate処理
  * @returns {Boolean} true:OK
  */
 function editValidate() {
+	var ret = true;
+
+	//Editor独自のチェック
 	var validators = scriptContext["edit_validation"];
 	if (validators && validators.length > 0) {
 		for (var i = 0; i < validators.length; i++) {
-			if (!validators[i].call(this)) return false;
+			if (!validators[i].call(this)) {
+				ret = false;
+				//1つでもエラーであれば抜ける
+				break;
+			}
 		}
 	}
-	return true;
+
+	//Inputのtype、patternによるチェック(StringPropertyEditor)
+	if (!$("#detailForm")[0].checkValidity()) {
+    	ret = false;
+  	}
+	return ret;
+}
+
+/**
+ * 編集画面Inputの独自type、patternのValidateエラー時のカスタムメッセージを追加
+ * @param id プロパティKEY
+ * @param type メッセージの種類
+ * @param message メッセージ
+ */
+function addHtmlValidationMessage(id, type, message) {
+	if (!scriptContext.gem["html_validation"]) {
+		scriptContext.gem["html_validation"] = new Array();
+	}
+	if (!scriptContext.gem.html_validation[id]) {
+		scriptContext.gem.html_validation[id] = new Map();
+	}
+	
+	scriptContext.gem.html_validation[id].set(type, message);
+}
+
+/**
+ * 編集画面Inputの独自type、patternのValidate処理
+ * @param element 対象のInput
+ */
+function typeValidate(element) {
+	var $element = $(element);
+
+	// メッセージの初期化
+	var $parent = $element.closest(".property-data");
+	$element.removeClass("validate-error");
+	if ($(".validate-error", $parent).length === 0) {
+		$(".format-error", $parent).remove();
+	}
+	
+	$element[0].checkValidity();
+}
+
+/**
+ * 編集画面Inputの独自type、patternのValidateエラー表示処理
+ * @param event Invalidイベント
+ * @param element 対象のInput
+ */
+function typeInvalid(event, element) {
+	var $element = $(element);
+
+	var $parent = $element.closest(".property-data");
+	$element.addClass("validate-error");
+	if ($(".format-error", $parent).length === 0) {
+		var $errorArea = $("<p />").addClass("error format-error").appendTo($parent);
+
+		var message = event.target.validationMessage;
+
+		var key=$parent.attr("data-editor-id") 
+		var customMessageMap = scriptContext.gem.html_validation && scriptContext.gem.html_validation[key];
+		if (customMessageMap) {
+			if (event.target.validity.patternMismatch && customMessageMap.get("patternMismatch")) {
+				message = customMessageMap.get("patternMismatch");
+			} else if (event.target.validity.typeMismatch && customMessageMap.get("typeMismatch")) {
+				message = customMessageMap.get("typeMismatch");
+			}
+		}
+		$("<span />").addClass("error").text(message).appendTo($errorArea);
+	}
 }
 
 ////////////////////////////////////////////////////////

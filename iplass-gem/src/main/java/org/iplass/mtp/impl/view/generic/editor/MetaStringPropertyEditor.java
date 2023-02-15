@@ -69,6 +69,15 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** RickTextで表示モードの場合、リンク動作許可 */
 	private boolean allowRichTextEditorLinkAction;
 
+	/** 入力タイプ */
+	private String inputType;
+
+	/** 入力パターン */
+	private String inputPattern;
+
+	/** HTML入力エラーメッセージ */
+	private MetaHtmlValidationMessage htmlValidationMessage;
+
 	/** 最大文字数 */
 	private int maxlength;
 
@@ -140,6 +149,54 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	 */
 	public void setAllowRichTextEditorLinkAction(boolean allowRichTextEditorLinkAction) {
 		this.allowRichTextEditorLinkAction = allowRichTextEditorLinkAction;
+	}
+
+	/**
+	 * 入力タイプを取得します。
+	 * @return 入力タイプ
+	 */
+	public String getInputType() {
+		return inputType;
+	}
+
+	/**
+	 * 入力タイプを設定します。
+	 * @param inputType 入力タイプ
+	 */
+	public void setInputType(String inputType) {
+		this.inputType = inputType;
+	}
+
+	/**
+	 * 入力パターンを取得します。
+	 * @return 入力パターン
+	 */
+	public String getInputPattern() {
+		return inputPattern;
+	}
+
+	/**
+	 * 入力パターンを設定します。
+	 * @param inputPattern 入力パターン
+	 */
+	public void setInputPattern(String inputPattern) {
+		this.inputPattern = inputPattern;
+	}
+
+	/**
+	 * HTML入力エラーメッセージを取得します。
+	 * @return HTML入力エラーメッセージ
+	 */
+	public MetaHtmlValidationMessage getHtmlValidationMessage() {
+		return htmlValidationMessage;
+	}
+
+	/**
+	 * HTML入力エラーメッセージを設定します。
+	 * @param htmlValidationMessage HTML入力エラーメッセージ
+	 */
+	public void setHtmlValidationMessage(MetaHtmlValidationMessage htmlValidationMessage) {
+		this.htmlValidationMessage = htmlValidationMessage;
 	}
 
 	/**
@@ -252,6 +309,16 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		displayType = e.getDisplayType();
 		allowedContent = e.isAllowedContent();
 		allowRichTextEditorLinkAction = e.isAllowRichTextEditorLinkAction();
+
+		inputType = e.getInputType();
+		inputPattern = e.getInputPattern();
+		if (e.getHtmlValidationMessage() != null) {
+			htmlValidationMessage = new MetaHtmlValidationMessage();
+			htmlValidationMessage.applyConfig(e.getHtmlValidationMessage());
+		} else {
+			htmlValidationMessage = null;
+		}
+
 		maxlength = e.getMaxlength();
 		values = e.getValues();
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
@@ -269,6 +336,16 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		displayType = e.getDisplayType();
 		allowedContent = e.isAllowedContent();
 		allowRichTextEditorLinkAction = e.isAllowRichTextEditorLinkAction();
+
+		inputType = e.getInputType();
+		inputPattern = e.getInputPattern();
+		if (e.getHtmlValidationMessage() != null) {
+			htmlValidationMessage = new MetaHtmlValidationMessage();
+			htmlValidationMessage.applyConfig(e.getHtmlValidationMessage());
+		} else {
+			htmlValidationMessage = null;
+		}
+
 		maxlength = e.getMaxlength();
 		values = e.getValues();
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
@@ -286,6 +363,13 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setDisplayType(displayType);
 		editor.setAllowedContent(allowedContent);
 		editor.setAllowRichTextEditorLinkAction(allowRichTextEditorLinkAction);
+
+		editor.setInputType(inputType);
+		editor.setInputPattern(inputPattern);
+		if (htmlValidationMessage != null) {
+			editor.setHtmlValidationMessage(htmlValidationMessage.currentConfig());
+		}
+
 		editor.setMaxlength(maxlength);
 		editor.setValues(values);
 		editor.setSearchExactMatchCondition(searchExactMatchCondition);
@@ -304,6 +388,15 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		e.setDisplayType(displayType);
 		e.setAllowedContent(allowedContent);
 		e.setAllowRichTextEditorLinkAction(allowRichTextEditorLinkAction);
+
+		e.setInputType(inputType);
+		e.setInputPattern(inputPattern);
+		if (htmlValidationMessage != null) {
+			e.setHtmlValidationMessage(htmlValidationMessage.currentConfig());
+		} else {
+			e.setHtmlValidationMessage(null);
+		}
+
 		e.setMaxlength(maxlength);
 		e.setValues(values);
 		e.setSearchExactMatchCondition(searchExactMatchCondition);

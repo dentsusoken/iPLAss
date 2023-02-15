@@ -286,6 +286,8 @@
 		String nestDisplayName = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList());
 		String displayName = TemplateUtil.getMultilingualString(pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 		String displayLabel = nestDisplayName != null ? nestDisplayName : displayName;
+		String editorUniqueID = StringUtil.isNotEmpty(element.getElementRuntimeId()) ? element.getElementRuntimeId() : "";
+		editorUniqueID += "_" + section.getPropertyName() + "[" + dataIndex + "]_" + propName;
 %>
 <th id="id_th_<c:out value="<%=propName %>"/>" class="<c:out value="<%=cellStyle %>"/>">
 <%-- XSS対応-メタの設定のため対応なし(displayLabel) --%>
@@ -324,7 +326,7 @@
 		}
 %>
 </th>
-<td id="id_td_<c:out value="<%=propName %>"/>" class="<c:out value="<%=cellStyle %>"/> property-data">
+<td id="id_td_<c:out value="<%=propName %>"/>" class="<c:out value="<%=cellStyle %>"/> property-data" data-editor-id="<c:out value="<%=editorUniqueID%>"/>">
 <%
 		if (showDesc) {
 %>
@@ -342,6 +344,7 @@
 			request.setAttribute(Constants.EDITOR_REF_NEST_VALUE, entity);//JoinProperty用
 			request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
 			request.setAttribute(Constants.REF_SECTION_INDEX, new Integer(dataIndex));
+			request.setAttribute(Constants.EDITOR_UNIQUE_ID, editorUniqueID);
 %>
 <jsp:include page="<%=path %>" />
 <%
@@ -352,6 +355,7 @@
 			request.removeAttribute(Constants.EDITOR_REF_NEST);
 			request.removeAttribute(Constants.EDITOR_REF_NEST_VALUE);
 			request.removeAttribute(Constants.REF_SECTION_INDEX);
+			request.removeAttribute(Constants.EDITOR_UNIQUE_ID);
 		}
 		if (showDesc) {
 %>
