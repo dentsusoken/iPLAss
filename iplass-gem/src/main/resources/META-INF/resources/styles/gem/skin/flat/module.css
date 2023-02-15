@@ -1735,7 +1735,7 @@ p.nav-login-01 {
   float: left;
   width: 100%; }
 
-.tbl-section input[type=text], .tbl-section input[type=password], .tbl-section textarea {
+.tbl-section input[type=text], .tbl-section input.custom-type-text, .tbl-section input[type=password], .tbl-section textarea {
   border: 1px solid #ddd;
   font-size: 1rem;
   width: 100%;
@@ -1762,7 +1762,7 @@ p.nav-login-01 {
   padding: 2px 0;
   margin: 2px 15px 2px 0; }
 
-.list-add input[type=text], .list-add input[type=password] {
+.list-add input[type=text], .list-add input.custom-type-text, .list-add input[type=password] {
   height: 25px;
   width: calc(100% - 80px);
   border: 0 !important; }
@@ -1858,6 +1858,8 @@ span.success, span.error {
     border: 1px solid #ddd;
     vertical-align: top; }
     .tbl-section td.section-data .list-add input[type=text] {
+      margin: 0; }
+    .tbl-section td.section-data .list-add input.custom-type-text {
       margin: 0; }
     .tbl-section td.section-data .list-add input[type=password] {
       margin: 0; }

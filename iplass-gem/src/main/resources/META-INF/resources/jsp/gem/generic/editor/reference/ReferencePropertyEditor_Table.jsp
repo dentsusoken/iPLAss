@@ -578,11 +578,14 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				if (StringUtil.isNotBlank(nProp.getDescription())) {
 					description = TemplateUtil.getMultilingualString(nProp.getDescription(), nProp.getLocalizedDescriptionList());
 				}
+				String editorUniqueID = StringUtil.isNotEmpty(element.getElementRuntimeId()) ? element.getElementRuntimeId() : "";
+				editorUniqueID += "_" + propName + "_" + refPd.getName();
 				nProp.getEditor().setPropertyName(propName + "[Dummy]." + refPd.getName());
 				request.setAttribute(Constants.EDITOR_EDITOR, nProp.getEditor());
 				request.setAttribute(Constants.EDITOR_PROP_VALUE, null);
 				request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, refPd);
 				request.setAttribute(Constants.EDITOR_REF_NEST, true);//2重ネスト防止用フラグ
+				request.setAttribute(Constants.EDITOR_UNIQUE_ID, editorUniqueID);
 				String path = EntityViewUtil.getJspPath(nProp.getEditor(), ViewConst.DESIGN_TYPE_GEM);
 				if (refPd instanceof ReferenceProperty
 						&& nProp.getEditor() instanceof ReferencePropertyEditor) {
@@ -599,7 +602,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					style += "display:none; ";
 				}
 %>
-<td class="<c:out value="<%=cls%>"/>" data-propName="<c:out value="<%=refPd.getName()%>"/>" style="<c:out value="<%=style%>"/>">
+<td class="<c:out value="<%=cls%>"/>" data-propName="<c:out value="<%=refPd.getName()%>"/>" style="<c:out value="<%=style%>"/>"
+  data-editor-id="<c:out value="<%=editorUniqueID%>"/>">
 <%
 				if (path != null) {
 %>
@@ -710,6 +714,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					if (StringUtil.isNotBlank(nProp.getDescription())) {
 						description = TemplateUtil.getMultilingualString(nProp.getDescription(), nProp.getLocalizedDescriptionList());
 					}
+					String editorUniqueID = StringUtil.isNotEmpty(element.getElementRuntimeId()) ? element.getElementRuntimeId() : "";
+					editorUniqueID += "_" + propName + "_" + refPd.getName();
 					//表示名
 					String title = TemplateUtil.getMultilingualString(
 							nProp.getDisplayLabel(), nProp.getLocalizedDisplayLabelList(),
@@ -721,6 +727,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					request.setAttribute(Constants.EDITOR_PROP_VALUE, entity.getValue(refPd.getName()));
 					request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, refPd);
 					request.setAttribute(Constants.EDITOR_REF_NEST, true);//2重ネスト防止用フラグ
+					request.setAttribute(Constants.EDITOR_UNIQUE_ID, editorUniqueID);
 					String path = EntityViewUtil.getJspPath(nProp.getEditor(), ViewConst.DESIGN_TYPE_GEM);
 
 					String cls = "property-data col" + colNum;
@@ -732,7 +739,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 						style += "display:none; ";
 					}
 %>
-<td class="<c:out value="<%=cls%>"/>" data-propName="<c:out value="<%=refPd.getName()%>"/>" style="<c:out value="<%=style%>"/>">
+<td class="<c:out value="<%=cls%>"/>" data-propName="<c:out value="<%=refPd.getName()%>"/>" style="<c:out value="<%=style%>"/>"
+  data-editor-id="<c:out value="<%=editorUniqueID%>"/>">
 <%
 					if (isFirstCol) {
 						isFirstCol = false;

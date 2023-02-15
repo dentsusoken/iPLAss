@@ -170,6 +170,9 @@
 	input[type=text] {
 		@extend %extend_gdd_2;
 	}
+	input.custom-type-text {
+		@extend %extend_gdd_2;
+	}
 	input[type=password] {
 		@extend %extend_gdd_2;
 	}
@@ -201,6 +204,9 @@
 		vertical-align: top;
 		.list-add {
 			input[type=text] {
+				margin: 0;
+			}
+			input.custom-type-text {
 				margin: 0;
 			}
 			input[type=password] {
@@ -331,6 +337,9 @@
 			float: none;
 			margin-left: 10px;
 		}
+	}
+	input.custom-type-text {
+		@extend %extend_gdd_5;
 	}
 	input[type=password] {
 		@extend %extend_gdd_5;
