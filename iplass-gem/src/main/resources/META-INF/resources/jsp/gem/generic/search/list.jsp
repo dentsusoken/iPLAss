@@ -182,7 +182,7 @@ $(function() {
 			else break;
 		}
 		if (count > 1) {
-			var label = $(rdata[colModel.name]).text();
+			var label = $.jgrid.stripHtml(rdata[colModel.name]).replace(/'/g, "&apos;");
 			var title = "";
 			if (typeof label !== "undefined" && label !== null && label !== "") {
 				title = " title=\"" + label + "\"";
