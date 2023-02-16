@@ -516,30 +516,30 @@ function deleteSessionStorage(name) {
  * @param validatorFunc
  */
 function addCommonValidator(validatorFunc) {
-	if (!scriptContext["validator"]) {
-		scriptContext["validator"] = new Array();
+	if (!scriptContext.gem["validation"]) {
+		scriptContext.gem["validation"] = new Array();
 	}
-	scriptContext["validator"].push(validatorFunc);
+	scriptContext.gem["validation"].push(validatorFunc);
 }
 /**
  * 通常検索Validatorの追加
  * @param validatorFunc
  */
 function addNormalValidator(validatorFunc) {
-	if (!scriptContext["normal_validation"]) {
-		scriptContext["normal_validation"] = new Array();
+	if (!scriptContext.gem["normal_validation"]) {
+		scriptContext.gem["normal_validation"] = new Array();
 	}
-	scriptContext["normal_validation"].push(validatorFunc);
+	scriptContext.gem["normal_validation"].push(validatorFunc);
 }
 /**
  * 詳細検索Validatorの追加
  * @param validatorFunc
  */
 function addDetailValidator(validatorFunc) {
-	if (!scriptContext["detail_validation"]) {
-		scriptContext["detail_validation"] = new Array();
+	if (!scriptContext.gem["detail_validation"]) {
+		scriptContext.gem["detail_validation"] = new Array();
 	}
-	scriptContext["detail_validation"].push(validatorFunc);
+	scriptContext.gem["detail_validation"].push(validatorFunc);
 }
 
 /**
@@ -547,7 +547,7 @@ function addDetailValidator(validatorFunc) {
  * @returns {Boolean} true:OK
  */
 function condCommonValidate(searchType) {
-	var validators = scriptContext["validator"];
+	var validators = scriptContext.gem["validation"];
 	if (validators && validators.length > 0) {
 		for (var i = 0; i < validators.length; i++) {
 			if (!validators[i].call(this)) return false;
@@ -562,7 +562,7 @@ function condCommonValidate(searchType) {
  * @returns {Boolean} true:OK
  */
 function condTypeValidate(searchType) {
-	var validators = scriptContext[searchType + "_validation"];
+	var validators = scriptContext.gem[searchType + "_validation"];
 	if (validators && validators.length > 0) {
 		for (var i = 0; i < validators.length; i++) {
 			if (!validators[i].call(this)) return false;
@@ -640,10 +640,10 @@ function detailRequiresAtLeastOneFieldValidate(message, param) {
  * @param resetFunc
  */
 function addNormalConditionItemResetHandler(resetFunc) {
-	if (!scriptContext["normal_resetter"]) {
-		scriptContext["normal_resetter"] = new Array();
+	if (!scriptContext.gem["normal_resetter"]) {
+		scriptContext.gem["normal_resetter"] = new Array();
 	}
-	scriptContext["normal_resetter"].push(resetFunc);
+	scriptContext.gem["normal_resetter"].push(resetFunc);
 }
 
 /**
@@ -654,10 +654,10 @@ function addNormalConditionItemResetHandler(resetFunc) {
  * @param resetFunc
  */
 function addNormalConditionItemCustomResetHandler(resetFunc) {
-	if (!scriptContext["normal_custom_resetter"]) {
-		scriptContext["normal_custom_resetter"] = new Array();
+	if (!scriptContext.gem["normal_custom_resetter"]) {
+		scriptContext.gem["normal_custom_resetter"] = new Array();
 	}
-	scriptContext["normal_custom_resetter"].push(resetFunc);
+	scriptContext.gem["normal_custom_resetter"].push(resetFunc);
 }
 
 /**
@@ -667,7 +667,7 @@ function addNormalConditionItemCustomResetHandler(resetFunc) {
 function resetNormalCondition() {
 	var curData = $("[name='normalForm']").serialize();
 	var reset = false;
-	var resetters = scriptContext["normal_resetter"];
+	var resetters = scriptContext.gem["normal_resetter"];
 	if (resetters && resetters.length > 0) {
 		for (var i = 0; i < resetters.length; i++) {
 			resetters[i].call(this);
@@ -675,7 +675,7 @@ function resetNormalCondition() {
 		reset = true;
 	}
 	//通常のリセットのあとにカスタム呼び出し
-	var customs = scriptContext["normal_custom_resetter"];
+	var customs = scriptContext.gem["normal_custom_resetter"];
 	if (customs && customs.length > 0) {
 		for (var i = 0; i < customs.length; i++) {
 			customs[i].call(this);
@@ -790,10 +790,10 @@ function resetDetailCondition() {
  * @param validatorFunc
  */
 function addEditValidator(validatorFunc) {
-	if (!scriptContext["edit_validation"]) {
-		scriptContext["edit_validation"] = new Array();
+	if (!scriptContext.gem["edit_validation"]) {
+		scriptContext.gem["edit_validation"] = new Array();
 	}
-	scriptContext["edit_validation"].push(validatorFunc);
+	scriptContext.gem["edit_validation"].push(validatorFunc);
 }
 
 /**
@@ -804,7 +804,7 @@ function editValidate() {
 	var ret = true;
 
 	//Editor独自のチェック
-	var validators = scriptContext["edit_validation"];
+	var validators = scriptContext.gem["edit_validation"];
 	if (validators && validators.length > 0) {
 		for (var i = 0; i < validators.length; i++) {
 			if (!validators[i].call(this)) {
@@ -3850,12 +3850,15 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 			replaceDummyAttr(this, "data-propName", idx);
 		});
 		$copyRow.addClass("stripeRow");
+		
+		var columns = [];
 
 		//形式による置換以外の処理
 		$headerRow.children("th").each(function(num) {
 			var type = getType(this);
 			var label = $(".property-label", this).text();
 			var $td = $copyRow.children(":nth-child(" + (num + 1) + ")");
+			columns.push($td);
 			if (type[0] == "String" || type[0] == "LongText") {
 				//文字列
 				addNestRow_String(type[1], $td, idx);
@@ -3908,7 +3911,14 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 				$(".down-icon", $td).on("click", function(){shiftDown(rowId)});
 			} else if (type[0] == "last") {
 				//削除ボタン
-				$($td).children(":button").on("click", function() {deleteRefTableRow(rowId, delCallback);});
+				$($td).children(":button").on("click", function() {
+					deleteRefTableRow(rowId, function(id) {
+						// 列に対して削除をマーク
+						columns.forEach(column => column.addClass('invalid-row'));
+						columns = null;
+						if (delCallback && $.isFunction(delCallback)) delCallback.call(this, id);
+					});
+				});
 			}
 		});
 
@@ -3950,6 +3960,10 @@ function addNestRow_Number(type, cell, idx, label) {
 	}
 	//登録、更新時の入力チェック
 	addEditValidator(function() {
+		// 削除行は除外
+		if ($(cell).hasClass("invalid-row")) {
+			return true;
+		}
 		var val = $text.val();
 		if (typeof val !== "undefined" && val !== null && val !== "" && isNaN(val)) {
 			alert(scriptContext.gem.locale.common.numFormatErrorMsg.replace("{0}", label));
@@ -3976,6 +3990,10 @@ function addNestRow_Date(type, cell, idx, label) {
 
 		//登録、更新時の入力チェック
 		addEditValidator(function() {
+			// 削除行は除外
+			if ($(cell).hasClass("invalid-row")) {
+				return true;
+			}
 			var val = $("#d_" + es(id)).val();
 			if (typeof val !== "undefined" && val != null && val !== "") {
 				try {
@@ -4015,6 +4033,10 @@ function addNestRow_Time(type, cell, idx, label) {
 
 			//登録、更新時の入力チェック
 			addEditValidator(function() {
+				// 削除行は除外
+				if ($(cell).hasClass("invalid-row")) {
+					return true;
+				}
 				var $input = $("#time_" + es(id));
 				var val = $input.val();
 				if (typeof val !== "undefined" && val !== null && val !== "") {
@@ -4065,6 +4087,10 @@ function addNestRow_Timestamp(type, cell, idx, label) {
 
 			//登録、更新時の入力チェック
 			addEditValidator(function() {
+				// 削除行は除外
+				if ($(cell).hasClass("invalid-row")) {
+					return true;
+				}
 				var $input = $("#datetime_" + es(id));
 				var val = $input.val();
 				var dateFormat = dateUtil.getInputDateFormat();
@@ -4095,6 +4121,10 @@ function addNestRow_Timestamp(type, cell, idx, label) {
 
 			//登録、更新時の入力チェック
 			addEditValidator(function() {
+				// 削除行は除外
+				if ($(cell).hasClass("invalid-row")) {
+					return true;
+				}
 				var val = $("#d_" + es(id)).val();
 				if (typeof val !== "undefined" && val != null && val !== "") {
 					try {

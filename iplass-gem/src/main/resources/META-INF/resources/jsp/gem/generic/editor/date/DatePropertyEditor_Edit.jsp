@@ -278,11 +278,14 @@ $(function() {
 %>
 <input type="text" id="d_<c:out value="<%=propName%>"/>" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <%= inputAttributes %> />
 <input type="hidden" id="i_<c:out value="<%=propName %>"/>" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenDate %>"/>" />
+<%
+			if (!nestDummyRow) {
+				//NestTableダミー行は出力しない＆コピー時はコピー処理側から追加
+%>
 <script type="text/javascript">
 $(function() {
 	var date = convertToLocaleDateString("<%= StringUtil.escapeJavaScript(hiddenDate) %>");
 	$("#d_" + es("<%=StringUtil.escapeJavaScript(propName)%>")).val(date).trigger("blur");
-
 	<%-- common.js --%>
 	addEditValidator(function() {
 		var val = $("#d_" + es("<%=StringUtil.escapeJavaScript(propName)%>")).val();
@@ -299,8 +302,8 @@ $(function() {
 });
 </script>
 <%
+			}
 		}
-
 	} else {
 		//LABELかHIDDENか更新不可
 

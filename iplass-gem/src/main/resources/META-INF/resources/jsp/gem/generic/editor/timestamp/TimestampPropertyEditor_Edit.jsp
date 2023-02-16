@@ -155,6 +155,10 @@
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
+	Boolean nestDummyRow = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST_DUMMY_ROW);
+	if (nestDummyRow == null) {
+		nestDummyRow = false;
+	}
 
 	Boolean isVirtual = (Boolean) request.getAttribute(Constants.IS_VIRTUAL);
 	if (isVirtual == null) isVirtual = false;
@@ -473,6 +477,10 @@ $(function() {
 <span class="timestamppicker-field">
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
 </span>
+<%
+				if (!nestDummyRow) {
+					//NestTableダミー行は出力しない＆コピー時はコピー処理側から追加
+%>
 <script>
 $(function() {
 	<%-- common.js --%>
@@ -496,11 +504,16 @@ $(function() {
 });
 </script>
 <%
+				}
 			} else {
 %>
 <span class="timestampselect-field">
 <jsp:include page="Timestamp.jsp"></jsp:include>
 </span>
+<%
+				if (!nestDummyRow) {
+					//NestTableダミー行は出力しない＆コピー時はコピー処理側から追加
+%>
 <script>
 $(function() {
 	<%-- common.js --%>
@@ -520,6 +533,7 @@ $(function() {
 </script>
 <%
 				}
+			}
 			request.removeAttribute(Constants.EDITOR_PICKER_PROP_NAME);
 			request.removeAttribute(Constants.EDITOR_PICKER_PROP_VALUE);
 		}
