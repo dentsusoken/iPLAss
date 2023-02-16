@@ -114,6 +114,7 @@ if (multiplicity == 1) {
 	if (value instanceof Array) {
 		value = value.length > 0 ? value[0] : "";
 	}
+	if (value == null) value = "";
 } else {
 	if (value instanceof Array) {
 		if (value.length > multiplicity) {
@@ -121,6 +122,10 @@ if (multiplicity == 1) {
 		}
 	} else {
 		value = [value];
+	}
+	
+	for (var i = 0; i < value.length; i++) {
+		if (value[i] == null) value[i] = "";
 	}
 }
 <%
@@ -151,6 +156,10 @@ if (value instanceof Array) {
 	}
 } else {
 	value = [value];
+}
+
+for (var i = 0; i < value.length; i++) {
+	if (value[i] == null) value[i] = "";
 }
 <%
 	boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();

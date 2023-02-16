@@ -57,12 +57,22 @@ $("[name='" + propName + "']").val(value);
 	} else if (editor.getDisplayType() == BooleanDisplayType.RADIO) {
 		if (multiplicity == 1) {
 %>
-$("[name='" + propName + "'][value='" + value + "']").click();
+if (!((value === true || value === "true") || (value === false || value === "false"))) {
+	$("[name='" + propName + "']").prop('checked', false);
+	$("[name='" + propName + "']").prev('span').removeClass('checked');
+} else {
+	$("[name='" + propName + "'][value='" + value + "']").click();
+}
 <%
-		} else  {
+		} else {
 %>
-for (var i = 0; i < value.length; i++) {
-	$("[name='" + propName + i + "'][value='" + value[i] + "']").click();
+if (value.length == 1 && !((value[0] === true || value[0] === "true") || (value[0] === false || value[0] === "false"))) {
+	$("[name='" + propName + "0']").prop('checked', false);
+	$("[name='" + propName + "0']").prev('span').removeClass('checked');
+} else {
+	for (var i = 0; i < value.length; i++) {
+		$("[name='" + propName + i + "'][value='" + value[i] + "']").click();
+	}
 }
 <%
 		}
@@ -104,15 +114,19 @@ for (var i = 0; i < value.length; i++) {
 %>
 var newContent = '';
 
-// 自動補完の値が空の場合
-if (value == null) {
-	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
-	$("[name='" + propName + "']:first").parent().html(newContent);
-} else {
-	if (multiplicity == 1) {
+if (multiplicity == 1) {
+	if (!((value === true || value === "true") || (value === false || value === "false"))) {
+		newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
+		$("[name='" + propName + "']:first").parent().html(newContent);
+	} else {
 		var booleanLabel = (value === true || value === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
 		newContent = booleanLabel + '<input type="hidden" name="' + propName + '" value="' + value + '">';
-
+		$("[name='data-label-" + propName + "']").html(newContent);
+	}
+} else {
+	if (value.length == 1 && !((value[0] === true || value[0] === "true") || (value[0] === false || value[0] === "false"))) {
+		newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
+		$("[name='" + propName + "']:first").parent().html(newContent);
 	} else {
 		for (i =  0; i < value.length; i++) {
 			if (value[i] == null) {
@@ -122,10 +136,11 @@ if (value == null) {
 			var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
 			newContent = newContent + '<li>' + booleanLabel
 				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
+			$("[name='data-label-" + propName + "']").html(newContent);
 		}
 	}
-	$("[name='data-label-" + propName + "']").html(newContent);
 }
+
 
 <%
 	} else if (editor.getDisplayType() == BooleanDisplayType.HIDDEN) {
@@ -152,7 +167,12 @@ $("[name='sc_" + propName + "']").val(value);
 <%
 	} else {
 %>
-$("[name='sc_" + propName + "'][value='" + value + "']").click();
+if ((value === true || value === "true")
+	|| (value === false || value === "false")) {
+	$("[name='sc_" + propName + "'][value='" + value + "']").click();
+} else {
+	$("[name='sc_" + propName + "']:last").click();
+}
 <%
 	}
 }

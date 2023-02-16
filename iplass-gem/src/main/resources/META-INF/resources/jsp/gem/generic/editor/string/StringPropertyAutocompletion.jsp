@@ -40,6 +40,7 @@ if (multiplicity == 1) {
 	if (value instanceof Array) {
 		value = value.length > 0 ? value[0] : "";
 	}
+	if (value == null) value = "";
 } else {
 	if (value instanceof Array) {
 		if (value.length > multiplicity) {
@@ -47,6 +48,10 @@ if (multiplicity == 1) {
 		}
 	} else {
 		value = [value];
+	}
+	
+	for (var i = 0; i < value.length; i++) {
+		if (value[i] == null) value[i] = "";
 	}
 }
 
@@ -80,12 +85,20 @@ $("[name='" + propName + "']").val(value);
 			if (editor.getDisplayType() == StringDisplayType.LABEL) {
 %>
 var newContent = '';
-for (i =  0; i < value.length; i++) {
-	var hiddenValue = value[i] ? value[i] : "";
-	newContent = newContent + '<li>' + hiddenValue.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
-				+ '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '"> </li>';
+
+// 自動補完の値が空の場合
+if (!value || (value.length == 1 && !value[0])) {
+	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
+	$("[name='" + propName + "']:first").parent().html(newContent);
+
+} else {
+	for (i =  0; i < value.length; i++) {
+		var hiddenValue = value[i] ? value[i] : "";
+		newContent = newContent + '<li>' + hiddenValue.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
+					+ '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '"> </li>';
+	}
+	$("[name='data-label-" + propName + "']").html(newContent);
 }
-$("[name='data-label-" + propName + "']").html(newContent);
 <%
 			} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加

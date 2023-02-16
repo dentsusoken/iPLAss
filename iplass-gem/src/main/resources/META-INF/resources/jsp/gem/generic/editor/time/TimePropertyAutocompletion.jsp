@@ -114,6 +114,7 @@ if (multiplicity == 1) {
 	if (value instanceof Array) {
 		value = value.length > 0 ? value[0] : "";
 	}
+	if (value == null) value = "";
 } else {
 	if (value instanceof Array) {
 		if (value.length > multiplicity) {
@@ -122,6 +123,10 @@ if (multiplicity == 1) {
 	} else {
 		value = [value];
 	}
+	
+	for (var i = 0; i < value.length; i++) {
+		if (value[i] == null) value[i] = "";
+	}
 }
 <%
 		if (editor.isUseTimePicker()) {
@@ -129,8 +134,9 @@ if (multiplicity == 1) {
 %>
 var $time = $("#time_" + propName);
 var timeFormat = $time.attr("data-timeformat");
+var formatString = value.length > 0 ? dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), timeFormat) : "";
 
-$time.val(dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), timeFormat));
+$time.val(formatString);
 $("#i_" + propName).val(value);
 <%
 			} else  {
@@ -142,7 +148,8 @@ for (var i = 0; i < value.length; i++) {
 	}
 	var $time = $("#time_" + propName + i);
 	var timeFormat = $time.attr("data-timeformat");
-	$time.val(dateUtil.newFormatString(value[i], dateUtil.getServerTimeFormat(), timeFormat));
+	var formatString = value[i].length > 0 ? dateUtil.newFormatString(value[i], dateUtil.getServerTimeFormat(), timeFormat) : "";
+	$time.val(formatString);
 	$("#i_" + propName + i).val(value[i]);
 }
 <%
@@ -183,6 +190,10 @@ if (value instanceof Array) {
 } else {
 	value = [value];
 }
+
+for (var i = 0; i < value.length; i++) {
+	if (value[i] == null) value[i] = "";
+}
 <%
 	boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();
 	boolean hideTo = editor.isSingleDayCondition() ? true : editor.isHideSearchConditionTo();
@@ -194,7 +205,8 @@ if (value.length > 0) {
 	var $timeFrom = $("#time_" + propName + "0");
 	var timeFormatFrom = $timeFrom.attr("data-timeformat");
 
-	$timeFrom.val(dateUtil.newFormatString(value[0], dateUtil.getServerTimeFormat(), timeFormatFrom));
+	var formatDateFromString = value[0].length > 0 ? dateUtil.newFormatString(value[0], dateUtil.getServerTimeFormat(), timeFormatFrom) : "";
+	$timeFrom.val(formatDateFromString);
 	$("#i_" + propName + "0").val(value[0]);
 }
 <%
@@ -205,7 +217,8 @@ if (value.length > 1) {
 	var $timeTo = $("#time_" + propName + "1");
 	var timeFormatTo = $timeTo.attr("data-timeformat");
 
-	$timeTo.val(dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), timeFormatTo));
+	var formatDateToString = value[0].length > 0 ? dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), timeFormatTo) : "";
+	$timeTo.val(formatDateToString);
 	$("#i_" + propName + "1").val(value[1]);
 }
 <%

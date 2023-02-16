@@ -113,6 +113,7 @@ if (multiplicity == 1) {
 	if (value instanceof Array) {
 		value = value.length > 0 ? value[0] : "";
 	}
+	if (value == null) value = "";
 } else {
 	if (value instanceof Array) {
 		if (value.length > multiplicity) {
@@ -120,6 +121,10 @@ if (multiplicity == 1) {
 		}
 	} else {
 		value = [value];
+	}
+	
+	for (var i = 0; i < value.length; i++) {
+		if (value[i] == null) value[i] = "";
 	}
 }
 <%
@@ -158,6 +163,8 @@ for (var i = 0; i < value.length; i++) {
 	} else if (timeFormat == "HH") {
 		range = "HOUR";
 	}
+	var formatDateString = value[i].length > 0 ? convertToLocaleDatetimeString(value[i], dateUtil.getServerDatetimeFormat(), range) : "";
+
 	$datetime.val(convertToLocaleDatetimeString(value[i], dateUtil.getServerDatetimeFormat(), range)).trigger("blur");
 	$("#i_" + propName + i).val(value[i]);
 }
@@ -167,7 +174,9 @@ for (var i = 0; i < value.length; i++) {
 			// datepicker + pulldown
 			if (multiplicity == 1) {
 %>
-$("#d_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat())).trigger("blur");
+var formatDateString = value.length > 0 ? dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat()) : "";
+
+$("#d_" + propName).val(formatDateString).trigger("blur");
 $("#h_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), dateUtil.getInputHourFormat()));
 $("#m_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), dateUtil.getInputMinFormat()));
 $("#s_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), dateUtil.getInputSecFormat()));
@@ -181,7 +190,8 @@ for (var i = 0; i < value.length; i++) {
 	if ($("[name='" + propName + "']:eq(" + i + ")").length == 0) {
 		$("#id_addBtn_" + propName).click();
 	}
-	$("#d_" + propName + i).val(dateUtil.newFormatString(value[i], dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat())).trigger("blur");
+	var formatDateString = value[i].length > 0 ? dateUtil.newFormatString(value[i], dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat()) : "";
+	$("#d_" + propName + i).val(formatDateString).trigger("blur");
 	$("#h_" + propName + i).val(dateUtil.newFormatString(value[i], dateUtil.getServerDatetimeFormat(), dateUtil.getInputHourFormat()));
 	$("#m_" + propName + i).val(dateUtil.newFormatString(value[i], dateUtil.getServerDatetimeFormat(), dateUtil.getInputMinFormat()));
 	$("#s_" + propName + i).val(dateUtil.newFormatString(value[i], dateUtil.getServerDatetimeFormat(), dateUtil.getInputSecFormat()));
@@ -201,6 +211,10 @@ if (value instanceof Array) {
 	}
 } else {
 	value = [value];
+}
+
+for (var i = 0; i < value.length; i++) {
+	if (value[i] == null) value[i] = "";
 }
 <%
 	boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();
@@ -251,7 +265,8 @@ if (value.length > 1) {
 		if (!hideFrom) {
 %>
 if (value.length > 0) {
-	$("#d_" + propName + "0").val(dateUtil.newFormatString(value[0], dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat())).trigger("blur");
+	var formatDateFromString = value[0].length > 0 ? dateUtil.newFormatString(value[0], dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat()) : "";
+	$("#d_" + propName + "0").val(formatDateFromString).trigger("blur");
 	$("#h_" + propName + "0").val(dateUtil.newFormatString(value[0], dateUtil.getServerDatetimeFormat(), dateUtil.getInputHourFormat()));
 	$("#m_" + propName + "0").val(dateUtil.newFormatString(value[0], dateUtil.getServerDatetimeFormat(), dateUtil.getInputMinFormat()));
 	$("#s_" + propName + "0").val(dateUtil.newFormatString(value[0], dateUtil.getServerDatetimeFormat(), dateUtil.getInputSecFormat()));
@@ -263,7 +278,8 @@ if (value.length > 0) {
 		if (!hideTo) {
 %>
 if (value.length > 1) {
-	$("#d_" + propName + "1").val(dateUtil.newFormatString(value[1], dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat())).trigger("blur");
+	var formatDateToString = value[1].length > 0 ? dateUtil.newFormatString(value[1], dateUtil.getServerDatetimeFormat(), dateUtil.getInputDateFormat()) : "";
+	$("#d_" + propName + "1").val(formatDateToString).trigger("blur");
 	$("#h_" + propName + "1").val(dateUtil.newFormatString(value[1], dateUtil.getServerDatetimeFormat(), dateUtil.getInputHourFormat()));
 	$("#m_" + propName + "1").val(dateUtil.newFormatString(value[1], dateUtil.getServerDatetimeFormat(), dateUtil.getInputMinFormat()));
 	$("#s_" + propName + "1").val(dateUtil.newFormatString(value[1], dateUtil.getServerDatetimeFormat(), dateUtil.getInputSecFormat()));

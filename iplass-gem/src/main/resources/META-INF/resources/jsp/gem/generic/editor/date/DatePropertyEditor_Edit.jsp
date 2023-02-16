@@ -218,18 +218,19 @@ function <%=toggleAddBtnFunc%>() {
 				length = array.length;
 				for (int i = 0; i < array.length; i++) {
 					String liId = "li_" + propName + i;
+					String inputId = propName + i;
 					String str = dateToString(array[i], TemplateUtil.getLocaleFormat().getOutputDateFormat());
 					String hiddenDate = dateToString(array[i], TemplateUtil.getLocaleFormat().getServerDateFormat());
 					String onchange = "dateChange('" + StringUtil.escapeJavaScript(liId) + "')";
 %>
 <li id="<c:out value="<%=liId%>"/>" class="list-add picker-list">
-<input type="text" id="d_<c:out value="<%=liId%>"/>" class="inpbr datepicker" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <%= inputAttributes %> />
+<input type="text" id="d_<c:out value="<%=inputId%>"/>" class="inpbr datepicker" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> data-suppress-alert="true" <%= inputAttributes %> />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc%>)" />
-<input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=hiddenDate%>"/>" />
+<input type="hidden" id="i_<c:out value="<%=inputId%>"/>" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=hiddenDate%>"/>" />
 <script type="text/javascript">
 $(function() {
 	var date = convertToLocaleDateString("<%=StringUtil.escapeJavaScript(hiddenDate)%>");
-	$("#d_" + es("<%=StringUtil.escapeJavaScript(liId)%>")).val(date).trigger("blur");
+	$("#d_" + es("<%=StringUtil.escapeJavaScript(inputId)%>")).val(date).trigger("blur");
 });
 </script>
 </li>

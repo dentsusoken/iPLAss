@@ -904,7 +904,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 						throw new AutocompletionHandleException();
 					}
 				}
-			} else if (!(value instanceof Entity)) {
+			} else if (value != null && !(value instanceof Entity)) {
 				logger.error("For return type, please set Entity class as return value. The result type of this execution is of type " + value.getClass().getName() + ".");
 				throw new AutocompletionHandleException();
 			}

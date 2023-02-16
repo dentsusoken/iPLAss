@@ -128,15 +128,28 @@ if (multiplicity == 1) {
 		if (multiplicity == 1) {
 			//radio
 %>
-$("[name='" + propName + "'][value='" + value + "']").click();
+// 自動補完の値が空の場合、未選択とする
+if (!value) {
+	$("[name='" + propName + "']").prop('checked', false);
+	$("[name='" + propName + "']").prev('span').removeClass('checked');
+} else {
+	$("[name='" + propName + "'][value='" + value + "']").click();
+}
+
 <%
 		} else  {
 			//checkbox
 %>
-for (var i = 0; i < value.length; i++) {
-	var isChecked = $("[name='" + propName + "'][value='" + value[i] + "']").is(":checked");
-	if (!isChecked) {
-		$("[name='" + propName + "'][value='" + value[i] + "']").click();
+// 自動補完の値が空の場合、未選択とする
+if (!value || (value.length == 1 && !value[0])) {
+	$("[name='" + propName + "']").prop('checked', false);
+	$("[name='" + propName + "']").prev('span').removeClass('checked');
+} else {
+	for (var i = 0; i < value.length; i++) {
+		var isChecked = $("[name='" + propName + "'][value='" + value[i] + "']").is(":checked");
+		if (!isChecked) {
+			$("[name='" + propName + "'][value='" + value[i] + "']").click();
+		}
 	}
 }
 <%
@@ -151,16 +164,26 @@ if (!(value instanceof Array)) {
 <%
 	if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) {
 %>
-for (var i = 0; i < value.length; i++) {
-	var isChecked = $("[name='sc_" + propName + "'][value='" + value[i] + "']").is(":checked");
-	if (!isChecked) {
-		$("[name='sc_" + propName + "'][value='" + value[i] + "']").click();
+if (!value || (value.length == 1 && !value[0])) {
+	$("[name='sc_" + propName + "']").prop('checked', false);
+	$("[name='sc_" + propName + "']").prev('span').removeClass('checked');
+} else {
+	for (var i = 0; i < value.length; i++) {
+		var isChecked = $("[name='sc_" + propName + "'][value='" + value[i] + "']").is(":checked");
+		if (!isChecked) {
+			$("[name='sc_" + propName + "'][value='" + value[i] + "']").click();
+		}
 	}
 }
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.RADIO) {
 %>
-$("[name='sc_" + propName + "'][value='" + value[0] + "']").click();
+if (!value || (value.length == 1 && !value[0])) {
+	$("[name='sc_" + propName + "']").prop('checked', false);
+	$("[name='sc_" + propName + "']").prev('span').removeClass('checked');
+} else {
+	$("[name='sc_" + propName + "'][value='" + value[0] + "']").click();
+}
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.SELECT) {
 %>

@@ -107,7 +107,7 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
-if (value.length > 0) {
+if (value.length > 0 && value[0] != null) {
 	appendIfHasMore(propName, value);
 }
 var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
@@ -117,38 +117,55 @@ var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\.
 var callback = function() {
 	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 };
-if (value.length > 0) {
-	$("#ul_" + _propName).children().remove();
+
+if (value.length > 0 && value[0] != null) {
+	if (value.length > 0) {
+		$("#ul_" + _propName).children().remove();
+	}
+	for (var i = 0; i < value.length; i++) {
+		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+		addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
+	}
+	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
+} else {
+	$("#ul_" + propName + " li:first").remove();
 }
-for (var i = 0; i < value.length; i++) {
-	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
-}
-toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX) {
 %>
-for (var i = 0; i < value.length; i++) {
-	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	$("[name='" + propName + "'][value='" + key + "']").click();
+if (value.length > 0 && value[0] != null) {
+	
+	for (var i = 0; i < value.length; i++) {
+		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		$("[name='" + propName + "'][value='" + key + "']").click();
+	}
+} else {
+	// 自動補完の値が空の場合、未選択とする
+	$("[name='" + propName + "']").prop('checked', false);
+	$("[name='" + propName + "']").prev('span').removeClass('checked');
 }
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.SELECT) {
 %>
-var oid = [];
-for (var i = 0; i < value.length; i++) {
-	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	oid.push(key);
+if (value.length > 0 && value[0] != null) {
+	var oid = [];
+	for (var i = 0; i < value.length; i++) {
+		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		oid.push(key);
+	}
+	$("[name='" + propName + "']").val(oid);
+} else {
+	// 自動補完の値が空の場合、未選択とする
+	$("[name='" + propName + "']").val("");
 }
-$("[name='" + propName + "']").val(oid);
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.REFCOMBO) {
 %>
 for (var i = 0; i < value.length; i++) {
 	$("select[name='" + propName + "']").refCombo({
 		reset:true,
-		oid:value[i].oid
+		oid:value[i] == null ? "" : value[i].oid
 	});
 }
 <%
@@ -157,15 +174,20 @@ for (var i = 0; i < value.length; i++) {
 var callback = function() {
 	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 };
-if (value.length > 0) {
-	$("#ul_" + _propName).children().remove();
+
+if (value.length > 0 && value[0] != null) {
+	if (value.length > 0) {
+		$("#ul_" + _propName).children().remove();
+	}
+	for (var i = 0; i < value.length; i++) {
+		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+		addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
+	}
+	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
+} else {
+	$("#ul_" + propName + " li:first").remove();
 }
-for (var i = 0; i < value.length; i++) {
-	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
-}
-toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
 %>
@@ -173,35 +195,46 @@ var callback = function() {
 	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
 	toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
 };
-if (value.length > 0) {
-	$("#ul_" + _propName).children(":visible").remove();
-}
-for (var i = 0; i < value.length; i++) {
-	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	var unique = <%="value[i]." + editor.getUniqueItem() %>;
-	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
-	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", propName, multiplicity + 1, "ul_" + _propName, "id_li_" + _propName + "Dummmy", <%=refEdit%>, "id_count_" + _propName, callback ,"<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
-}
-<%-- Dummy行が存在するので、 multiplicity + 1 --%>
-toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
 
+if (value.length > 0 && value[0] != null) {
+
+	if (value.length > 0) {
+		$("#ul_" + _propName).children(":visible").remove();
+	}
+	for (var i = 0; i < value.length; i++) {
+		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+		var unique = <%="value[i]." + editor.getUniqueItem() %>;
+		<%-- Dummy行が存在するので、 multiplicity + 1 --%>
+		addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", propName, multiplicity + 1, "ul_" + _propName, "id_li_" + _propName + "Dummmy", <%=refEdit%>, "id_count_" + _propName, callback ,"<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
+	}
+	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
+	toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
+} else {
+	$("#ul_" + propName + " li:first").remove();
+}
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.LABEL) {
 %>
 var newContent = '';
-for (var i = 0; i < value.length; i++) {
-	var liId = "li_" + propName + i;
-	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	var _value = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	newContent = newContent + '<li id="' + liId + '" >' + label
-			+ '<input type="hidden" name="' + propName + '" value="' + _value + '">' + '</li>';
-}
 
-if (value.length > 0) {
-	$("[name='data-label-" + propName + "']").html(newContent);
+// 自動補完の値が空の場合
+if (!value || (value.length == 1 && !value[0])) {
+	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
+	$("[name='" + propName + "']:first").parent().html(newContent);
+} else {
+	for (var i = 0; i < value.length; i++) {
+		var liId = "li_" + propName + i;
+		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+		var _value = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		newContent = newContent + '<li id="' + liId + '" >' + label
+				+ '<input type="hidden" name="' + propName + '" value="' + _value + '">' + '</li>';
+	}
+	
+	if (value.length > 0) {
+		$("[name='data-label-" + propName + "']").html(newContent);
+	}
 }
-
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
 %>
@@ -242,15 +275,27 @@ var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\.
 	if (editor.getDisplayType() == ReferenceDisplayType.SELECT) {
 %>
 var oid = [];
-for (var i = 0; i < value.length; i++) {
-	oid.push(value[i].oid);
+if (value.length > 0 && value[0] != null) {
+	for (var i = 0; i < value.length; i++) {
+		oid.push(value[i].oid);
+	}
+	$("[name='sc_" + propName + "']").val(oid);
+} else {
+	// 自動補完の値が空の場合、未選択とする
+	$("[name='sc_" + propName + "']").val("");
 }
-$("[name='sc_" + propName + "']").val(oid);
+
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX) {
 %>
-for (var i = 0; i < value.length; i++) {
-	$("[name='sc_" + propName + "'][value='" + value[i].oid + "']").click();
+if (value.length > 0 && value[0] != null) {
+	for (var i = 0; i < value.length; i++) {
+		$("[name='sc_" + propName + "'][value='" + value[i].oid + "']").click();
+	}
+} else {
+	// 自動補完の値が空の場合、未選択とする
+	$("[name='sc_" + propName + "']").prop('checked', false);
+	$("[name='sc_" + propName + "']").prev('span').removeClass('checked');
 }
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.REFCOMBO) {
@@ -258,7 +303,7 @@ for (var i = 0; i < value.length; i++) {
 for (var i = 0; i < value.length; i++) {
 	$("select[name='sc_" + propName + "']").refCombo({
 		reset:true,
-		oid:value[i].oid
+		oid:value[i] == null ? "" : value[i].oid
 	});
 }
 <%
@@ -270,24 +315,33 @@ value = value.length > 0 ? value.slice(0, 1) : [];
 <%
 		}
 %>
-if (value.length > 0) {
-	$("#ul_sc_" + _propName).children().remove();
-}
-for (var i = 0; i < value.length; i++) {
-	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	addReference("li_sc_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, "sc_" + propName, "ul_sc_" + _propName, false);
+if (value.length > 0 && value[0] != null) {
+
+	if (value.length > 0) {
+		$("#ul_sc_" + _propName).children().remove();
+	}
+	for (var i = 0; i < value.length; i++) {
+		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+		addReference("li_sc_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, "sc_" + propName, "ul_sc_" + _propName, false);
+	}
+} else {
+	$("#ul_sc_" + propName + " li:first").remove();
 }
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.TREE) {
 %>
-if (value.length > 0) {
-	$("#ul_sc_" + _propName).children().remove();
-}
-for (var i = 0; i < value.length; i++) {
-	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	addReference("li_sc_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, "sc_" + propName, "ul_sc_" + _propName, false);
+if (value.length > 0 && value[0] != null) {
+	if (value.length > 0) {
+		$("#ul_sc_" + _propName).children().remove();
+	}
+	for (var i = 0; i < value.length; i++) {
+		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+		addReference("li_sc_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, "sc_" + propName, "ul_sc_" + _propName, false);
+	}
+} else {
+	$("#ul_sc_" + propName + " li:first").remove();
 }
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
@@ -298,15 +352,19 @@ value = value.length > 0 ? value.slice(0, 1) : [];
 <%
 		}
 %>
-if (value.length > 0) {
-	$("#ul_sc_" + _propName).children(":visible").remove();
-}
-for (var i = 0; i < value.length; i++) {
-	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	var unique = <%="value[i]." + editor.getUniqueItem() %>;
-	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
-	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", "sc_" + propName, -1, "ul_sc_" + _propName, "id_li_sc_" + _propName + "Dummmy", false, "id_count_sc_" + _propName);
+if (value.length > 0 && value[0] != null) {
+	if (value.length > 0) {
+		$("#ul_sc_" + _propName).children(":visible").remove();
+	}
+	for (var i = 0; i < value.length; i++) {
+		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+		var unique = <%="value[i]." + editor.getUniqueItem() %>;
+		<%-- Dummy行が存在するので、 multiplicity + 1 --%>
+		addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", "sc_" + propName, -1, "ul_sc_" + _propName, "id_li_sc_" + _propName + "Dummmy", false, "id_count_sc_" + _propName);
+	}
+} else {
+	$("#ul_sc_" + propName + " li:first").remove();
 }
 <%
 	}
