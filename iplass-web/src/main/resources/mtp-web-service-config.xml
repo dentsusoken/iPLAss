@@ -273,6 +273,7 @@
 			<property name="contentDispositionTypeName" value="*" />
 			<property name="unescapeCharacter" value="-._~" />
 			<property name="defaultContentDispositionTypeName" value="ATTACHMENT" />
+			<property name="useBothFilenameAttributes" value="false" />
 		</property>
 		<!-- IE11 -->
 		<!-- IE11の場合、INLINEではブランクをエスケープしない -->
@@ -280,6 +281,7 @@
 			<property name="userAgentKey" value="Trident" />
 			<property name="contentDispositionTypeName" value="INLINE" />
 			<property name="unescapeCharacter" value="-._~ " />
+			<property name="useBothFilenameAttributes" value="false" />
 			<!--
 			<property name="defaultContentDispositionTypeName" value="" />
 			 -->
