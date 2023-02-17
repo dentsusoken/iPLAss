@@ -32,7 +32,8 @@ public class ContentDispositionPolicy {
 
 	private static Logger logger = LoggerFactory.getLogger(ContentDispositionPolicy.class);
 
-	private static String CONTENT_DISPOSITION_FILENAME_FORMAT = "filename=\"%s\"; filename*=%s''%s";
+	private static String CONTENT_DISPOSITION_FILENAME_FORMAT = "filename*=%s''%s";
+	private static String CONTENT_DISPOSITION_BOTH_FILENAME_FORMAT = "filename=\"%s\"; filename*=%s''%s";
 
 	/** UserAgent識別子(*はデフォルト) */
 	private String userAgentKey;
@@ -43,9 +44,11 @@ public class ContentDispositionPolicy {
 	/** ContentDispositionType名(*は全て) */
 	private String contentDispositionTypeName;
 
-
 	/** エスケープしない文字(Alphabet、数値は無条件でエスケープ除外) */
 	private String unescapeCharacter;
+
+	/** filenameとfilename*を両方利用するか */
+	private boolean useBothFilenameAttributes;
 
 	public String getUserAgentKey() {
 		return userAgentKey;
@@ -79,8 +82,16 @@ public class ContentDispositionPolicy {
 		this.unescapeCharacter = unescapeCharacter;
 	}
 
+	public boolean isUseBothFilenameAttributes() {
+		return useBothFilenameAttributes;
+	}
+
+	public void setUseBothFilenameAttributes(boolean useBothFilenameAttributes) {
+		this.useBothFilenameAttributes = useBothFilenameAttributes;
+	}
+
 	public boolean isDefault() {
-		//userAgentKeyが"*"の場合、デフォルトに設定
+		// userAgentKeyが"*"の場合、デフォルトに設定
 		return "*".equals(userAgentKey);
 	}
 
@@ -92,7 +103,7 @@ public class ContentDispositionPolicy {
 		StringBuilder ret = new StringBuilder();
 
 		if (type == null) {
-			//typeが直接指定されていない場合は、service-configで指定されている値を使用
+			// typeが直接指定されていない場合は、service-configで指定されている値を使用
 			type = getDefaultContentDispositionType();
 		}
 		if (type != null) {
@@ -110,12 +121,11 @@ public class ContentDispositionPolicy {
 
 	private boolean matchType(ContentDispositionType type) {
 		ContentDispositionType target = type;
-		//タイプが未指定の場合は、デフォルトでチェック
+		// タイプが未指定の場合は、デフォルトでチェック
 		if (type == null) {
 			target = getDefaultContentDispositionType();
 		}
-		return (target == null
-				|| "*".equals(contentDispositionTypeName)
+		return (target == null || "*".equals(contentDispositionTypeName)
 				|| type == ContentDispositionType.valueOf(contentDispositionTypeName));
 	}
 
@@ -136,8 +146,7 @@ public class ContentDispositionPolicy {
 				}
 				if (isUnescape(b)) {
 					bos.write(b);
-				}
-				else {
+				} else {
 					bos.write('%');
 					char hex1 = Character.toUpperCase(Character.forDigit((b >> 4) & 0xF, 16));
 					char hex2 = Character.toUpperCase(Character.forDigit(b & 0xF, 16));
@@ -146,7 +155,10 @@ public class ContentDispositionPolicy {
 				}
 			}
 			String escapeName = new String(bos.toByteArray(), "US-ASCII");
-			return String.format(CONTENT_DISPOSITION_FILENAME_FORMAT, fileName, StandardCharsets.UTF_8.name(), escapeName);
+			return isUseBothFilenameAttributes()
+					? String.format(CONTENT_DISPOSITION_BOTH_FILENAME_FORMAT, fileName, StandardCharsets.UTF_8.name(),
+							escapeName)
+					: String.format(CONTENT_DISPOSITION_FILENAME_FORMAT, StandardCharsets.UTF_8.name(), escapeName);
 		}
 	}
 
@@ -157,7 +169,7 @@ public class ContentDispositionPolicy {
 		if (ch >= '0' && ch <= '9') {
 			return true;
 		}
-		//外部で指定されている文字列
+		// 外部で指定されている文字列
 		if (unescapeCharacter != null) {
 			return unescapeCharacter.indexOf(ch) >= 0;
 		}
