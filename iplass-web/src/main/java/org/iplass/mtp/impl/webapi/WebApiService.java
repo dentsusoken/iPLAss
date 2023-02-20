@@ -37,7 +37,7 @@ import org.iplass.mtp.webapi.definition.WebApiDefinitionManager;
 
 public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebApiRuntime> implements Service {
 
-	//TODO マッピングしているCommandの更新・削除イベントを監視し、関連するActionMappingのキャッシュをクリア
+	// TODO マッピングしているCommandの更新・削除イベントを監視し、関連するActionMappingのキャッシュをクリア
 
 	public static final String WEB_API_META_PATH = "/webapi/";
 
@@ -45,6 +45,7 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		public TypeMap() {
 			super(getFixedPath(), MetaWebApi.class, WebApiDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<WebApiDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(WebApiDefinitionManager.class);
@@ -55,9 +56,11 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 	private Map<String, String> xRequestedWithMap;
 	@Deprecated
 	private CorsConfig cors;
-	
+
 	private boolean enableDefinitionApi;
 	private boolean enableBinaryApi;
+	private boolean writeEncodedFilenameInBinaryApi;
+	private String unescapeFilenameCharacterInBinaryApi;
 
 	public static String getFixedPath() {
 		return WEB_API_META_PATH;
@@ -72,24 +75,35 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		statusMap = new HashMap<>();
 		List<StatusMap> smList = config.getValues("statusMap", StatusMap.class);
 		if (smList != null) {
-			for (StatusMap sm: smList) {
-				statusMap.put(sm.getException(),  sm.getStatus());
+			for (StatusMap sm : smList) {
+				statusMap.put(sm.getException(), sm.getStatus());
 			}
 		}
-		
+
 		xRequestedWithMap = config.getValue("xRequestedWithMap", Map.class);
-		
+
 		cors = config.getValue("cors", CorsConfig.class);
 		enableDefinitionApi = config.getValue("enableDefinitionApi", Boolean.class, Boolean.FALSE);
 		enableBinaryApi = config.getValue("enableBinaryApi", Boolean.class, Boolean.FALSE);
+		writeEncodedFilenameInBinaryApi = config.getValue("writeEncodedFilenameInBinaryApi", Boolean.class,
+				Boolean.FALSE);
+		unescapeFilenameCharacterInBinaryApi = config.getValue("unescapeFilenameCharacterInBinaryApi");
 	}
-	
+
 	public boolean isEnableDefinitionApi() {
 		return enableDefinitionApi;
 	}
 
 	public boolean isEnableBinaryApi() {
 		return enableBinaryApi;
+	}
+
+	public boolean isWriteEncodedFilenameInBinaryApi() {
+		return writeEncodedFilenameInBinaryApi;
+	}
+
+	public String getUnescapeFilenameCharacterInBinaryApi() {
+		return unescapeFilenameCharacterInBinaryApi;
 	}
 
 	@Deprecated
@@ -100,7 +114,7 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 	public Map<String, String> getXRequestedWithMap() {
 		return xRequestedWithMap;
 	}
-	
+
 	private String withHttpMethod(String path, String httpMethod) {
 		if (path.endsWith("/")) {
 			return path + httpMethod;
@@ -110,9 +124,9 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 	}
 
 	public WebApiRuntime getByPathHierarchy(String name, String httpMethod) {
-		
+
 		MetaDataContext context = MetaDataContext.getContext();
-		
+
 		if (httpMethod != null) {
 			String withMethod = withHttpMethod(name, httpMethod);
 			if (context.exists(WEB_API_META_PATH, withMethod)) {
@@ -122,7 +136,7 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		if (context.exists(WEB_API_META_PATH, name)) {
 			return context.getMetaDataHandler(WebApiRuntime.class, WEB_API_META_PATH + name);
 		}
-		
+
 		String path = name;
 		int index = -1;
 		while ((index = path.lastIndexOf("/")) >= 0) {
@@ -149,19 +163,18 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 	public Class<WebApiRuntime> getRuntimeType() {
 		return WebApiRuntime.class;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public int mapStatus(Throwable e) {
-		
-		for (Class<? extends Throwable> type = e.getClass();
-				type != Throwable.class;
-				type = (Class<? extends Throwable>) type.getSuperclass()) {
+
+		for (Class<? extends Throwable> type = e
+				.getClass(); type != Throwable.class; type = (Class<? extends Throwable>) type.getSuperclass()) {
 			Integer status = statusMap.get(type);
 			if (status != null) {
 				return status;
 			}
 		}
-		
+
 		return 500;
 	}
 
