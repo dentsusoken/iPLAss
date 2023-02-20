@@ -472,6 +472,8 @@
 		<interface>org.iplass.mtp.impl.webapi.WebApiService</interface>
 		<property name="enableDefinitionApi" value="false" />
 		<property name="enableBinaryApi" value="false" />
+		<property name="writeEncodedFilenameInBinaryApi" value="false" />
+		<property name="unescapeFilenameCharacterInBinaryApi" value="-._~" />
 
 		<property name="xRequestedWithMap">
 			<property name="X-Requested-With" value="XMLHttpRequest" />
