@@ -221,7 +221,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 				for (Object[] data : result.getList()) {
 					if (data.length > 0) {
 						// 多重度複数のpropertyをSELECTするとdata[0]が配列になる
-						if (data[0].getClass().isArray()) {
+						if (data[0] != null && data[0].getClass().isArray()) {
 							for (Object value : (Object[]) data[0]) {
 								ret.add(value);
 							}
