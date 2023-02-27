@@ -36,44 +36,12 @@ if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
 	// 詳細画面
 %>
 var multiplicity = <%=multiplicity%>;
-<%
-	if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-%>
-var newContent = '';
 
-// 自動補完の値が空の場合
-if (!value || (!value[0] && !value.label)) {
-	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
-	$("[name='" + propName + "']:first").parent().html(newContent);
-
-} else {
-	if (multiplicity == 1) {
-		var label = '';
-		var hiddenValue = '';
-		if (value[0] == null) {
-			label = value.label;
-			hiddenValue = value.value;
-		} else {
-			label = value[0].label;
-			hiddenValue = value[0].value;
-		}
-		newContent = label + ' <input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
-		
-	} else {
-		for (const labelValue of value) {
-			newContent = newContent  + '<li>' + labelValue.label
-				+ '<input type="hidden" name="' + propName + '" value="' + labelValue.value + '"> </li>';
-		}
-	}
-	$("[name='data-label-" + propName + "']").html(newContent);
-}
-<%
-	} else if(editor.getDisplayType() == DateTimeDisplayType.HIDDEN) {
-%>
 if (multiplicity == 1) {
 	if (value instanceof Array) {
 		value = value.length > 0 ? value[0] : "";
 	}
+	if (value == null) value = "";
 } else {
 	if (value instanceof Array) {
 		if (value.length > multiplicity) {
@@ -82,7 +50,44 @@ if (multiplicity == 1) {
 	} else {
 		value = [value];
 	}
+
+	// 空配列の場合、全件クリアとするため設定
+	if (value.length == 0) {
+		value = new Array($("[name='" + propName + "']").length);
+	}
+
+	for (var i = 0; i < value.length; i++) {
+		if (value[i] == null) value[i] = "";
+	}
 }
+<%
+	if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+%>
+
+var newContent = '';
+
+if (multiplicity == 1) {
+	if (!value) {
+		newContent = "" + '<input type="hidden" name="' + propName + '" value="">';
+	} else {
+		newContent = value.label + '<input type="hidden" name="' + propName + '" value="' + value.value + '">';
+	}
+	$("[name='data-label-" + propName + "']").html(newContent);
+} else {
+	var dataLabelEle = $("[name='data-label-" + propName + "'] li");
+	for (var i = 0; i < value.length; i++) {
+		if (dataLabelEle[i] != null) dataLabelEle[i].remove();
+		if (!value[i]) {
+			continue;
+		}
+		newContent = newContent  + '<li>' + value[i].label
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i].value + '"> </li>';
+	}
+	$(newContent).prependTo($("[name='data-label-" + propName + "']"));
+}
+<%
+	} else if(editor.getDisplayType() == DateTimeDisplayType.HIDDEN) {
+%>
 
 if (multiplicity == 1) {
 	$('[name=' + propName + ']').val(value);
@@ -110,24 +115,7 @@ if (multiplicity == 1) {
 <% 
 	} else {
 %>
-if (multiplicity == 1) {
-	if (value instanceof Array) {
-		value = value.length > 0 ? value[0] : "";
-	}
-	if (value == null) value = "";
-} else {
-	if (value instanceof Array) {
-		if (value.length > multiplicity) {
-			value = value.slice(0, multiplicity);
-		}
-	} else {
-		value = [value];
-	}
-	
-	for (var i = 0; i < value.length; i++) {
-		if (value[i] == null) value[i] = "";
-	}
-}
+
 <%
 		if (editor.isUseTimePicker()) {
 			if (multiplicity == 1) {
@@ -160,7 +148,6 @@ for (var i = 0; i < value.length; i++) {
 $("#h_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), dateUtil.getInputHourFormat()));
 $("#m_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), dateUtil.getInputMinFormat()));
 $("#s_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), dateUtil.getInputSecFormat()));
-$("#ms_" + propName).val(dateUtil.newFormatString(value, dateUtil.getServerTimeFormat(), "SSS"));
 $("#i_" + propName).val(value);
 <%
 			} else {
@@ -173,7 +160,6 @@ for (var i = 0; i < value.length; i++) {
 	$("#h_" + propName + i).val(dateUtil.newFormatString(value[i], dateUtil.getServerTimeFormat(), dateUtil.getInputHourFormat()));
 	$("#m_" + propName + i).val(dateUtil.newFormatString(value[i], dateUtil.getServerTimeFormat(), dateUtil.getInputMinFormat()));
 	$("#s_" + propName + i).val(dateUtil.newFormatString(value[i], dateUtil.getServerTimeFormat(), dateUtil.getInputSecFormat()));
-	$("#ms_" + propName + i).val(dateUtil.newFormatString(value[i], dateUtil.getServerTimeFormat(), "SSS"));
 	$("#i_" + propName + i).val(value[i]);
 }
 <%
@@ -217,7 +203,7 @@ if (value.length > 1) {
 	var $timeTo = $("#time_" + propName + "1");
 	var timeFormatTo = $timeTo.attr("data-timeformat");
 
-	var formatDateToString = value[0].length > 0 ? dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), timeFormatTo) : "";
+	var formatDateToString = value[1].length > 0 ? dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), timeFormatTo) : "";
 	$timeTo.val(formatDateToString);
 	$("#i_" + propName + "1").val(value[1]);
 }
@@ -231,7 +217,6 @@ if (value.length > 0) {
 	$("#h_" + propName + "0").val(dateUtil.newFormatString(value[0], dateUtil.getServerTimeFormat(), dateUtil.getInputHourFormat()));
 	$("#m_" + propName + "0").val(dateUtil.newFormatString(value[0], dateUtil.getServerTimeFormat(), dateUtil.getInputMinFormat()));
 	$("#s_" + propName + "0").val(dateUtil.newFormatString(value[0], dateUtil.getServerTimeFormat(), dateUtil.getInputSecFormat()));
-	$("#ms_" + propName + "0").val(dateUtil.newFormatString(value[0], dateUtil.getServerTimeFormat(), "SSS"));
 	$("#i_" + propName + "0").val(value[0]);
 }
 <%
@@ -242,7 +227,6 @@ if (value.length > 1) {
 	$("#h_" + propName + "1").val(dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), dateUtil.getInputHourFormat()));
 	$("#m_" + propName + "1").val(dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), dateUtil.getInputMinFormat()));
 	$("#s_" + propName + "1").val(dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), dateUtil.getInputSecFormat()));
-	$("#ms_" + propName + "1").val(dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), "SSS"));
 	$("#i_" + propName + "1").val(value[1]);
 }
 <%

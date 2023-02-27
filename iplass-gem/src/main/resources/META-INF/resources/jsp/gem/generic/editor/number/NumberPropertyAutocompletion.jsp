@@ -36,43 +36,7 @@ if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
 	// 詳細画面
 %>
 var multiplicity = <%=multiplicity%>;
-<%
-	if (editor.getDisplayType() == NumberDisplayType.LABEL) {
-%>
-var newContent = '';
 
-// 自動補完の値が空の場合
-if (!value || (!value[0] && !value.label)) {
-	$("[name='" + propName + "']:first").val("");
-	if (multiplicity == 1) {
-		$("[name='" + propName + "']:first").prev('span').html("");
-	} else {
-		$("[name='" + propName + "']:first").prev('li').html("");
-	}
-} else {
-	if (multiplicity == 1) {
-		var label = '';
-		var hiddenValue = '';
-		if (value[0] == null) {
-			label = value.label;
-			hiddenValue = value.value;
-		} else {
-			label = value[0].label;
-			hiddenValue = value[0].value;
-		}
-		newContent = label + ' <input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
-
-	} else {
-		for (const labelValue of value) {
-			newContent = newContent  + '<li>' + labelValue.label
-				+ '</li><input type="hidden" name="' + propName + '" value="' + labelValue.value + '">';
-		}
-	}
-	$("[name='data-label-" + propName + "']").html(newContent);
-}
-<% 
-	} else if(editor.getDisplayType() == NumberDisplayType.HIDDEN) {
-%>
 if (multiplicity == 1) {
 	if (value instanceof Array) {
 		value = value.length > 0 ? value[0] : "";
@@ -85,8 +49,38 @@ if (multiplicity == 1) {
 	} else {
 		value = [value];
 	}
+	// 空配列の場合、全件クリアとするため設定
+	if (value.length == 0) {
+		value = new Array($("[name='" + propName + "']").length);
+	}
 }
+<%
+	if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+%>
+var newContent = '';
 
+if (multiplicity == 1) {
+	if (!value) {
+		newContent = "" + '<input type="hidden" name="' + propName + '" value="">';
+	} else {
+		newContent = value.label + '<input type="hidden" name="' + propName + '" value="' + value.value + '">';
+	}
+	$("[name='data-label-" + propName + "']").html(newContent);
+} else {
+	var dataLabelEle = $("[name='data-label-" + propName + "'] li");
+	for (var i = 0; i < value.length; i++) {
+		if (dataLabelEle[i] != null) dataLabelEle[i].remove();
+		if (!value[i]) {
+			continue;
+		}
+		newContent = newContent  + '<li>' + value[i].label
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i].value + '"> </li>';
+	}
+	$(newContent).prependTo($("[name='data-label-" + propName + "']"));
+}
+<% 
+	} else if(editor.getDisplayType() == NumberDisplayType.HIDDEN) {
+%>
 if (multiplicity == 1) {
 	$('[name=' + propName + ']').val(value);
 } else {
@@ -111,34 +105,18 @@ if (multiplicity == 1) {
 	}
 }
 <% 
-	} else {
-%>
-if (multiplicity == 1) {
-	if (value instanceof Array) {
-		value = value.length > 0 ? value[0] : "";
-	}
-} else {
-	if (value instanceof Array) {
-		if (value.length > multiplicity) {
-			value = value.slice(0, multiplicity);
-		}
-	} else {
-		value = [value];
-	}
-}
+	} else if (editor.getDisplayType() == NumberDisplayType.TEXT) {
 
-<%
-		if (editor.getDisplayType() == NumberDisplayType.TEXT) {
-			if (multiplicity == 1) {
+		if (multiplicity == 1) {
 %>
 $("[name='" + propName + "']").val(value);
 <%
-				if (editor.isShowComma()) {
+			if (editor.isShowComma()) {
 %>
 $("[name='" + propName + "']").prev().trigger("focus");
 <%
-				}
-			} else {
+			}
+		} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -147,15 +125,14 @@ for (var i = 0; i < value.length; i++) {
 	}
 	$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
 <%
-				if (editor.isShowComma()) {
+			if (editor.isShowComma()) {
 %>
 	$("[name='" + propName + "']:eq(" + i + ")").prev().trigger("focus");
 <%
-				}
+			}
 %>
 }
 <%
-			}
 		}
 	}
 } else {
