@@ -303,6 +303,7 @@
 			<property name="contentDispositionTypeName" value="*" />
 			<property name="unescapeCharacter" value="-._~" />
 			<property name="defaultContentDispositionTypeName" value="ATTACHMENT" />
+			<property name="useBothFilenameAttributes" value="false" />
 		</property>
 		<!-- IE11 -->
 		<!-- IE11の場合、INLINEではブランクをエスケープしない -->
@@ -310,6 +311,7 @@
 			<property name="userAgentKey" value="Trident" />
 			<property name="contentDispositionTypeName" value="INLINE" />
 			<property name="unescapeCharacter" value="-._~ " />
+			<property name="useBothFilenameAttributes" value="false" />
 			<!--
 			<property name="defaultContentDispositionTypeName" value="" />
 			 -->
@@ -470,6 +472,8 @@
 		<interface>org.iplass.mtp.impl.webapi.WebApiService</interface>
 		<property name="enableDefinitionApi" value="false" />
 		<property name="enableBinaryApi" value="false" />
+		<property name="writeEncodedFilenameInBinaryApi" value="false" />
+		<property name="unescapeFilenameCharacterInBinaryApi" value="-._~" />
 
 		<property name="xRequestedWithMap">
 			<property name="X-Requested-With" value="XMLHttpRequest" />

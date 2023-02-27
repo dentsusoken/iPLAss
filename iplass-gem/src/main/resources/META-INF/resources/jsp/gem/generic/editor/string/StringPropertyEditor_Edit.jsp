@@ -235,8 +235,40 @@
 			//cls = "form-size-08 inpbr";
 		}
 		String maxlength = "";
-		if (editor.getMaxlength() > 0) {
-			maxlength = " maxlength=" + editor.getMaxlength();
+		String inputType = "text";
+		String inputPattern = "";
+		if (editor.getDisplayType() == StringDisplayType.TEXT) {
+			//テキスト
+			if (editor.getMaxlength() > 0) {
+				maxlength = "maxlength=" + editor.getMaxlength();
+			}
+			if (StringUtil.isNotEmpty(editor.getInputType())) {
+				inputType = editor.getInputType();
+			}
+		}
+		if (editor.getDisplayType() == StringDisplayType.TEXT 
+				|| editor.getDisplayType() == StringDisplayType.PASSWORD) {
+			if (StringUtil.isNotEmpty(editor.getInputPattern())) {
+				inputPattern = "pattern=\"" + StringUtil.escapeHtml(editor.getInputPattern()) + "\"";
+			}
+			if (editor.getHtmlValidationMessage() != null) {
+				String editorId = (String)request.getAttribute(Constants.EDITOR_UNIQUE_ID);
+%>
+<script type="text/javascript">
+$(function() {
+<%				if (StringUtil.isNotEmpty(editor.getHtmlValidationMessage().getTypeMismatch())) {
+					String message = TemplateUtil.getMultilingualString(editor.getHtmlValidationMessage().getTypeMismatch(), editor.getHtmlValidationMessage().getLocalizedTypeMismatchList());
+%>
+	addHtmlValidationMessage("<%=StringUtil.escapeJavaScript(editorId)%>", "typeMismatch", "<%=StringUtil.escapeJavaScript(message)%>");
+<%				}
+				if (StringUtil.isNotEmpty(editor.getHtmlValidationMessage().getPatternMismatch())) {
+					String message = TemplateUtil.getMultilingualString(editor.getHtmlValidationMessage().getPatternMismatch(), editor.getHtmlValidationMessage().getLocalizedPatternMismatchList());
+%>
+	addHtmlValidationMessage("<%=StringUtil.escapeJavaScript(editorId)%>", "patternMismatch", "<%=StringUtil.escapeJavaScript(message)%>");
+<%				} %>
+});
+</script>
+<%			}
 		}
 
 		if (editor.getDisplayType() != StringDisplayType.LABEL
@@ -260,9 +292,10 @@
 <%
 				if (editor.getDisplayType() == StringDisplayType.TEXT) {
 					//テキスト
-					selector = ":text";
+					selector = "input[type='" + inputType + "']";
 %>
-<input type="text" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" <c:out value="<%=maxlength%>"/> />
+<input type="<%=inputType %>" class="<c:out value="<%=cls %>"/> custom-type-text" style="<c:out value="<%=customStyle%>"/>" <%=maxlength%> <%=inputPattern%> 
+	onblur="typeValidate(this)" oninvalid="typeInvalid(arguments[0], this)"/>
 <%
 				} else if (editor.getDisplayType() == StringDisplayType.TEXTAREA) {
 					//テキストエリア
@@ -278,9 +311,10 @@
 <%
 				} else if (editor.getDisplayType() == StringDisplayType.PASSWORD) {
 					//パスワード
-					selector = ":password";
+					selector = "input[type='password']";
 %>
-<input type="password" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>"/>
+<input type="password" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>"  <%=inputPattern%>
+	onblur="typeValidate(this)" oninvalid="typeInvalid(arguments[0], this)"/>
 <%
 				}
 %>
@@ -300,7 +334,8 @@
 						if (editor.getDisplayType() == StringDisplayType.TEXT) {
 							//テキスト
 %>
-<input type="text" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" <c:out value="<%=maxlength%>"/> />
+<input type="<%=inputType %>" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" class="<c:out value="<%=cls %>"/> custom-type-text" style="<c:out value="<%=customStyle%>"/>" <%=maxlength%> <%=inputPattern%> 
+	onblur="typeValidate(this)" oninvalid="typeInvalid(arguments[0], this)"/>
 <%
 						} else if (editor.getDisplayType() == StringDisplayType.TEXTAREA) {
 							//テキストエリア
@@ -329,7 +364,8 @@ $(function() {
 						} else if (editor.getDisplayType() == StringDisplayType.PASSWORD) {
 							//パスワード
 %>
-<input type="password" name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str %>"/>" />
+<input type="password" name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str %>"/>" <%=inputPattern%>
+	onblur="typeValidate(this)" oninvalid="typeInvalid(arguments[0], this)"/>
 <%
 						}
 %>
@@ -392,6 +428,11 @@ $(function() {
 function <%=toggleAddBtnFunc%>(){
 	var display = $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
 	$("#id_addBtn_<%=escapedPropName%>").toggle(display);
+
+	var $parent = $("#<%=StringUtil.escapeJavaScript(ulId)%>").closest(".property-data");
+	if ($(".validate-error", $parent).length === 0) {
+		$(".format-error", $parent).remove();
+	}
 }
 </script>
 <%
@@ -407,7 +448,8 @@ function <%=toggleAddBtnFunc%>(){
 				if (editor.getDisplayType() == StringDisplayType.TEXT) {
 					//テキスト
 %>
-<input type="text" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=str %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" <c:out value="<%=maxlength%>"/> />
+<input type="<%=inputType %>" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=str %>"/>" class="<c:out value="<%=cls %>"/> custom-type-text" style="<c:out value="<%=customStyle%>"/>" <%=maxlength%> <%=inputPattern%> 
+	onblur="typeValidate(this)" oninvalid="typeInvalid(arguments[0], this)"/>
 <%
 				} else if (editor.getDisplayType() == StringDisplayType.TEXTAREA) {
 					//テキストエリア
@@ -441,7 +483,8 @@ $(function() {
 				} else if (editor.getDisplayType() == StringDisplayType.PASSWORD) {
 					//パスワード
 %>
-<input type="password" name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str %>"/>" />
+<input type="password" name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str %>"/>" <%=inputPattern%>
+	onblur="typeValidate(this)" oninvalid="typeInvalid(arguments[0], this)"/>
 <%
 				}
 			}

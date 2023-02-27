@@ -87,7 +87,7 @@
 				}
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,nestStyle) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=nestStyle%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%><%=align%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=nestStyle%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%><%=align%>, cellattr: cellAttrFunc});
 <%
 			}
 		}

@@ -78,6 +78,55 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 	)
 	private StringDisplayType displayType;
 
+	/** 入力タイプ */
+	@MetaFieldInfo(
+			displayName="入力タイプ",
+			displayNameKey="generic_editor_StringPropertyEditor_inputTypeDisplaNameKey",
+			inputType=InputType.TEXT,
+			displayOrder=102,
+			rangeCheck=true,
+			minRange=0,
+			description="表示タイプがTEXTの場合の、inputのtype属性を設定します。<br>" +
+					"未指定の場合はtextになります。",
+			descriptionKey="generic_editor_StringPropertyEditor_inputTypeDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String inputType;
+
+	/** 入力パターン */
+	@MetaFieldInfo(
+			displayName="入力パターン",
+			displayNameKey="generic_editor_StringPropertyEditor_inputPatternDisplaNameKey",
+			inputType=InputType.TEXT,
+			displayOrder=104,
+			rangeCheck=true,
+			minRange=0,
+			description="表示タイプがTEXT、PASSWORDの場合の、inputのpattern属性を設定します。",
+			descriptionKey="generic_editor_StringPropertyEditor_inputPatternDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String inputPattern;
+
+	/** HTML入力エラーメッセージ */
+	@MetaFieldInfo(
+			displayName="HTML入力エラーメッセージ",
+			displayNameKey="generic_editor_StringPropertyEditor_htmlValidationMessageDisplaNameKey",
+			inputType=InputType.REFERENCE,
+			referenceClass=HtmlValidationMessage.class,
+			displayOrder=106,
+			description="inputのtype、patternに不一致の場合のメッセージを設定します。",
+			descriptionKey="generic_editor_StringPropertyEditor_htmlValidationMessageDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	@MultiLang(isMultiLangValue=false)
+	private HtmlValidationMessage htmlValidationMessage;
+
 	/** 最大文字数 */
 	@MetaFieldInfo(
 			displayName="最大文字数",
@@ -245,6 +294,54 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 	@Override
 	public boolean isHide() {
 		return displayType == StringDisplayType.HIDDEN;
+	}
+
+	/**
+	 * 入力タイプを取得します。
+	 * @return 入力タイプ
+	 */
+	public String getInputType() {
+		return inputType;
+	}
+
+	/**
+	 * 入力タイプを設定します。
+	 * @param inputType 入力タイプ
+	 */
+	public void setInputType(String inputType) {
+		this.inputType = inputType;
+	}
+
+	/**
+	 * 入力パターンを取得します。
+	 * @return 入力パターン
+	 */
+	public String getInputPattern() {
+		return inputPattern;
+	}
+
+	/**
+	 * 入力パターンを設定します。
+	 * @param inputPattern 入力パターン
+	 */
+	public void setInputPattern(String inputPattern) {
+		this.inputPattern = inputPattern;
+	}
+
+	/**
+	 * HTML入力エラーメッセージを取得します。
+	 * @return HTML入力エラーメッセージ
+	 */
+	public HtmlValidationMessage getHtmlValidationMessage() {
+		return htmlValidationMessage;
+	}
+
+	/**
+	 * HTML入力エラーメッセージを設定します。
+	 * @param htmlValidationMessage HTML入力エラーメッセージ
+	 */
+	public void setHtmlValidationMessage(HtmlValidationMessage htmlValidationMessage) {
+		this.htmlValidationMessage = htmlValidationMessage;
 	}
 
 	/**
