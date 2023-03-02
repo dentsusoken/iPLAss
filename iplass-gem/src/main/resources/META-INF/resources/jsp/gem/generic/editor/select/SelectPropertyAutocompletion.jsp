@@ -62,63 +62,55 @@ if (multiplicity == 1) {
 %>
 $("[name='" + propName + "']").val(value);
 <%
-	// ラベル表示の場合はhtmlを書き換え
 	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
 		List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
 %>
-// 自動補完の値が空の場合
-if (!value || (!value[0] && !value.label)) {
-	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
-	$("[name='" + propName + "']:first").parent().html(newContent);
+// 表示ラベルと値をセット
+var editorMap = new Map();
+<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
+	editorMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
+</c:forEach>
 
-} else {
-	var editorMap = new Map();
-	<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
-		editorMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
-	</c:forEach>
-	
-	var newContent = '';
-	
-	if (multiplicity == 1) {
+var newContent = '';
+
+if (multiplicity == 1) {
+	if (value) {
 		newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label 
 			+ '<input type="hidden" name="' + propName + '" value="' + value + '"> </li>';
-
-	} else {
+	}
+} else {
+	if (value) {
 		for (i =  0; i < value.length; i++) {
+			if (value[i] == null || value[i].length == 0) {
+				continue;	
+			}
 			newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label
 				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
 		}
 	}
-	$("[name='data-label-" + propName + "']").html(newContent);
 }
+$("[name='data-label-" + propName + "']").html(newContent);
+
 <%
 	} else if(editor.getDisplayType() == SelectDisplayType.HIDDEN) {
 %>
-var propLength = $('[name=' + propName + ']').length;
 if (multiplicity == 1) {
 	// プロパティ値が無い場合はタグ追加
-	if (!propLength) {
+	if (!$('[name=' + propName + ']').length) {
 		$(".hidden-input-area:first").append('<input type="hidden" name="' + propName + '" value="">');
 	}
 	$('[name=' + propName + ']').val(value);
 	
 } else {
-	
+	$('[name=' + propName + ']').remove();
 	var newContent = '';
 	for (i =  0; i < value.length; i++) {
-		var hiddenValue = value[i] ? value[i] : "";
-		if (i > propLength - 1) {
-			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
-			continue;
+		if (value[i]) {
+			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
 		}
-		$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
 	}
 
-	// 項目数が増える場合に追加する
-	if (propLength && value.length > propLength) {
-		$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
-	// 項目に値が無い場合は新規に追加する
-	} else if (!propLength) {
+	if (newContent.length > 0) {
 		$(".hidden-input-area:first").append($(newContent));
 	}
 }
@@ -128,29 +120,30 @@ if (multiplicity == 1) {
 		if (multiplicity == 1) {
 			//radio
 %>
-// 自動補完の値が空の場合、未選択とする
-if (!value) {
-	$("[name='" + propName + "']").prop('checked', false);
-	$("[name='" + propName + "']").prev('span').removeClass('checked');
-} else {
-	$("[name='" + propName + "'][value='" + value + "']").click();
-}
+// クリック状態を解除する
+$("[name='" + propName + "']").each(function() {
+	if ($(this).is(":checked")) {
+		$(this).click();
+		return false;
+	}
+});
 
+var clickValue = !value ? "" : value; 
+$("[name='" + propName + "'][value='" + clickValue + "']").click();
 <%
 		} else  {
 			//checkbox
 %>
-// 自動補完の値が空の場合、未選択とする
-if (!value || (value.length == 1 && !value[0])) {
-	$("[name='" + propName + "']").prop('checked', false);
-	$("[name='" + propName + "']").prev('span').removeClass('checked');
-} else {
-	for (var i = 0; i < value.length; i++) {
-		var isChecked = $("[name='" + propName + "'][value='" + value[i] + "']").is(":checked");
-		if (!isChecked) {
-			$("[name='" + propName + "'][value='" + value[i] + "']").click();
-		}
+// クリック状態を解除する
+$("[name='" + propName + "']").each(function() {
+	if ($(this).is(":checked")) {
+		$(this).click();
 	}
+});
+
+for (var i = 0; i < value.length; i++) {
+	var clickValue = !value[i] ? "" : value[i]; 
+	$("[name='" + propName + "'][value='" + clickValue + "']").click();
 }
 <%
 		}
@@ -164,25 +157,33 @@ if (!(value instanceof Array)) {
 <%
 	if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) {
 %>
-if (!value || (value.length == 1 && !value[0])) {
-	$("[name='sc_" + propName + "']").prop('checked', false);
-	$("[name='sc_" + propName + "']").prev('span').removeClass('checked');
-} else {
-	for (var i = 0; i < value.length; i++) {
-		var isChecked = $("[name='sc_" + propName + "'][value='" + value[i] + "']").is(":checked");
-		if (!isChecked) {
-			$("[name='sc_" + propName + "'][value='" + value[i] + "']").click();
-		}
+// クリック状態を解除する
+$("[name='sc_" + propName + "']").each(function() {
+	if ($(this).is(":checked")) {
+		$(this).click();
 	}
+});
+
+for (var i = 0; i < value.length; i++) {
+	var clickValue = !value[i] ? "" : value[i]; 
+	$("[name='sc_" + propName + "'][value='" + clickValue + "']").click();
 }
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.RADIO) {
 %>
-if (!value || (value.length == 1 && !value[0])) {
-	$("[name='sc_" + propName + "']").prop('checked', false);
-	$("[name='sc_" + propName + "']").prev('span').removeClass('checked');
+// クリック状態を解除する
+$("[name='sc_" + propName + "']").each(function() {
+	if ($(this).is(":checked")) {
+		$(this).click();
+		return false;
+	}
+});
+
+if (!value) {
+	// 未指定をクリック
+	$("[name='sc_" + propName + "']:last").click();
 } else {
-	$("[name='sc_" + propName + "'][value='" + value[0] + "']").click();
+	$("[name='sc_" + propName + "'][value='" + value + "']").click();
 }
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.SELECT) {
