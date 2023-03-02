@@ -20,6 +20,8 @@
 
 package org.iplass.gem.command.generic.detail;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.iplass.gem.command.Constants;
@@ -44,6 +46,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityValidationException;
 import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.properties.AutoNumberProperty;
 import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceType;
@@ -173,6 +176,18 @@ public final class DetailViewCommand extends DetailCommandBase {
 
 	public static final String REF_DETAIL_ACTION_NAME = "gem/generic/detail/ref/edit";
 
+	/** SHALLOWコピー時の除外プロパティ */
+	private static final List<String> EXCLUDED_COPY_PROPERTIES;
+
+	static {
+		EXCLUDED_COPY_PROPERTIES = Collections.unmodifiableList(Arrays.asList(
+				Entity.OID, Entity.VERSION,
+				Entity.CREATE_BY, Entity.CREATE_DATE,
+				Entity.UPDATE_BY, Entity.UPDATE_DATE,
+				Entity.LOCKED_BY
+				));
+	}
+
 	private boolean detail;
 
 	public boolean isDetail() {
@@ -266,8 +281,6 @@ public final class DetailViewCommand extends DetailCommandBase {
 		String ret = Constants.CMD_EXEC_SUCCESS;
 		if (context.isCopy()) {
 			if (context.getCopyTarget() == CopyTarget.SHALLOW) {
-				//コピーの場合はoid、作成者とかを消す
-				//→参照型はASSOCIATIONで逆参照でないもの以外は消す
 				initCopyProperty(context, data.getEntity());
 				data.setExecType(Constants.EXEC_TYPE_INSERT);
 			} else if (context.getCopyTarget() == CopyTarget.DEEP) {
@@ -352,40 +365,39 @@ public final class DetailViewCommand extends DetailCommandBase {
 	 */
 	protected void initCopyProperty(DetailCommandContext context, Entity entity) {
 		if (entity == null) return;
+
 		for (PropertyDefinition pd : context.getPropertyList()) {
-			boolean isReset = false;
-			//変更不可項目なら初期化
-			if (!pd.isUpdatable()) isReset = true;
-			//参照型でCOMPOSITIONか逆参照なら初期化
-			if (!isReset && pd instanceof ReferenceProperty) {
+			if (EXCLUDED_COPY_PROPERTIES.contains(pd.getName())) {
+				// 除外プロパティは初期化
+				entity.setValue(pd.getName(), null);
+			} else if (pd instanceof AutoNumberProperty) {
+				//AutoNumberは初期化
+				entity.setValue(pd.getName(), null);
+			} else if (pd instanceof ReferenceProperty) {
+				//参照型でCOMPOSITIONか被参照なら初期化
 				ReferenceProperty rp = (ReferenceProperty) pd;
 				if (rp.getReferenceType() == ReferenceType.COMPOSITION || rp.getMappedBy() != null) {
-					isReset = true;
+					entity.setValue(pd.getName(), null);
 				}
-			}
-
-			if (isReset) entity.setValue(pd.getName(), null);
-			else {
+			} else if (pd instanceof BinaryProperty) {
 				//バイナリの場合はデータもコピー
-				if (pd instanceof BinaryProperty) {
-					Object value = null;
-					if (pd.getMultiplicity() == 1) {
-						BinaryReference br = entity.getValue(pd.getName());
-						// データをシャッローコピーするか判断します。
-						if (br != null) value = context.isShallowCopyLobData() ? shallowCopyBinary(br) : copyBinary(br);
-					} else {
-						BinaryReference[] br = entity.getValue(pd.getName());
-						if (br != null && br.length > 0) {
-							BinaryReference[] _br = new BinaryReference[br.length];
-							for (int i = 0; i < br.length; i++) {
-								// データをシャッローコピーするか判断します。
-								_br[i] = context.isShallowCopyLobData() ? shallowCopyBinary(br[i]) : copyBinary(br[i]);
-							}
-							value = _br;
+				Object value = null;
+				if (pd.getMultiplicity() == 1) {
+					BinaryReference br = entity.getValue(pd.getName());
+					// データをSHALLOWコピーするか判断
+					if (br != null) value = context.isShallowCopyLobData() ? shallowCopyBinary(br) : copyBinary(br);
+				} else {
+					BinaryReference[] br = entity.getValue(pd.getName());
+					if (br != null && br.length > 0) {
+						BinaryReference[] _br = new BinaryReference[br.length];
+						for (int i = 0; i < br.length; i++) {
+							// データをSHALLOWコピーするか判断
+							_br[i] = context.isShallowCopyLobData() ? shallowCopyBinary(br[i]) : copyBinary(br[i]);
 						}
+						value = _br;
 					}
-					entity.setValue(pd.getName(), value);
 				}
+				entity.setValue(pd.getName(), value);
 			}
 		}
 	}
