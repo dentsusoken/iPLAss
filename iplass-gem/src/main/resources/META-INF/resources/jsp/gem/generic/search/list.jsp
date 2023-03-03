@@ -166,7 +166,8 @@ $(function() {
 			if (row.orgOid != beforeRow.orgOid || row.orgVersion != beforeRow.orgVersion || row[colName] != beforeRow[colName]) {
 				dif = true;
 			}
-			if (!dif) return " style=\"display:none;\" ";//同じ場合は非表示にする
+			//同じ場合は非表示にする、タイトルを指定しないと(""含む)CELL値が設定されるので指定
+			if (!dif) return " title=\"&nbsp;\" style=\"display:none;\" ";
 		}
 		//この行から何行分rowspanを設定するか計算
 		var count = 0;
@@ -183,13 +184,14 @@ $(function() {
 		}
 		if (count > 1) {
 			var label = $.jgrid.stripHtml(rdata[colModel.name]).replace(/'/g, "&apos;");
-			var title = "";
-			if (typeof label !== "undefined" && label !== null && label !== "") {
-				title = " title=\"" + label + "\"";
+			if (!label || typeof label === "undefined") {
+				//タイトルを指定しないと(""含む)CELL値が設定されるので指定
+				label = "&nbsp;";
 			}
-			return title + " style=\"vertical-align: center !important;\" rowspan=\"" + count + "\"";
+			return " title=\"" + label + "\" style=\"vertical-align: center !important;\" rowspan=\"" + count + "\"";
+		} else {
+			return null;
 		}
-		else return null;
 <%
 	} else {
 %>
