@@ -20,9 +20,11 @@
 
 package org.iplass.mtp.impl.auth.authenticate.builtin;
 
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.iplass.mtp.impl.util.HashUtil;
+import org.iplass.mtp.spi.ServiceConfigrationException;
 
 public class PasswordHashSetting {
 
@@ -30,14 +32,7 @@ public class PasswordHashSetting {
 	private String passwordHashAlgorithm;
 	private String systemSalt;
 	private int stretchCount = 1000;
-	private boolean usePasswordSalt = true;
 	
-	public boolean isUsePasswordSalt() {
-		return usePasswordSalt;
-	}
-	public void setUsePasswordSalt(boolean usePasswordSalt) {
-		this.usePasswordSalt = usePasswordSalt;
-	}
 	public String getVersion() {
 		return version;
 	}
@@ -61,6 +56,14 @@ public class PasswordHashSetting {
 	}
 	public void setStretchCount(int stretchCount) {
 		this.stretchCount = stretchCount;
+	}
+	
+	public void checkValidConfiguration() {
+		try {
+			MessageDigest.getInstance(getPasswordHashAlgorithm());
+		} catch (NoSuchAlgorithmException e) {
+			throw new ServiceConfigrationException("invalid PasswordHashAlgorithm", e);
+		}
 	}
 	
 	protected String hash(String password, String salt) {

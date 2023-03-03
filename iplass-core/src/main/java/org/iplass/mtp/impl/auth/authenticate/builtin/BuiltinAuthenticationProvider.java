@@ -286,13 +286,9 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 		if (passwordHashSettings == null) {
 			throw new ServiceConfigrationException("passwordHashSettings must specified.");
 		}
-		//check hash alg
+		//check hash config is valid
 		for (PasswordHashSetting phs: passwordHashSettings) {
-			try {
-				MessageDigest.getInstance(phs.getPasswordHashAlgorithm());
-			} catch (NoSuchAlgorithmException e) {
-				throw new ServiceConfigrationException("invalid PasswordHashAlgorithm", e);
-			}
+			phs.checkValidConfiguration();
 		}
 	}
 
