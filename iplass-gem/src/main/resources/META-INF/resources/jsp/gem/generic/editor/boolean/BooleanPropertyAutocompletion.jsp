@@ -52,58 +52,81 @@ if (multiplicity == 1) {
 <%
 	if (editor.getDisplayType() == BooleanDisplayType.SELECT) {
 %>
+// booleanをそのままセットすると選択されない、かつnullも対応のため変換する
+if (multiplicity == 1) value = [value];
 $("[name='" + propName + "']").val(value);
 <%
 	} else if (editor.getDisplayType() == BooleanDisplayType.RADIO) {
 		if (multiplicity == 1) {
 %>
-if (!((value === true || value === "true") || (value === false || value === "false"))) {
-	$("[name='" + propName + "']").prop('checked', false);
-	$("[name='" + propName + "']").prev('span').removeClass('checked');
-} else {
-	$("[name='" + propName + "'][value='" + value + "']").click();
-}
+// クリック状態を解除する
+$("[name='" + propName + "']").each(function() {
+	if ($(this).is(":checked")) {
+		$(this).click();
+		return false;
+	}
+});
+
+$("[name='" + propName + "'][value='" + value + "']").click();
 <%
 		} else {
 %>
-if (value.length == 1 && !((value[0] === true || value[0] === "true") || (value[0] === false || value[0] === "false"))) {
-	$("[name='" + propName + "0']").prop('checked', false);
-	$("[name='" + propName + "0']").prev('span').removeClass('checked');
-} else {
-	for (var i = 0; i < value.length; i++) {
-		$("[name='" + propName + i + "'][value='" + value[i] + "']").click();
-	}
+// 空配列の場合は全て解除する
+if (value.length == 0) {
+	// クリック状態を解除する
+	$("#id_td_" + propName + " input[type='radio']").each(function() {
+		if ($(this).is(":checked")) {
+			$(this).click();
+		}
+	});
+}
+
+for (var i = 0; i < value.length; i++) {
+	// クリック状態を解除する
+	$("[name='" + propName + i + "']").each(function() {
+		if ($(this).is(":checked")) {
+			$(this).click();
+			return false;
+		}
+	});
+	$("[name='" + propName + i + "'][value='" + value[i] + "']").click();
 }
 <%
 		}
 	} else if (editor.getDisplayType() == BooleanDisplayType.CHECKBOX) {
 		if (multiplicity == 1) {
 %>
-var isChecked = $("[name='" + propName + "']").is(":checked");
-if (value === true || value === "true") {
-	if (!isChecked) {
-		$("[name='" + propName + "']").click();
+// クリック状態を解除する
+$("[name='" + propName + "']").each(function() {
+	if ($(this).is(":checked")) {
+		$(this).click();
+		return false;
 	}
-} else {
-	if (isChecked) {
-		$("[name='" + propName + "']").click();
-	}
-}
+});
 
+$("[name='" + propName + "'][value='" + value + "']").click();
 <%
 		} else {
 %>
+// 空配列の場合は全て解除する
+if (value.length == 0) {
+	// クリック状態を解除する
+	$("#id_td_" + propName + " input[type='radio']").each(function() {
+		if ($(this).is(":checked")) {
+			$(this).click();
+		}
+	});
+}
+
 for (var i = 0; i < value.length; i++) {
-	var isChecked = $("[name='" + propName + i + "']").is(":checked");
-	if (value[i] === true || value[i] === "true") {
-		if (!isChecked) {
-			$("[name='" + propName + i + "']").click();
+	// クリック状態を解除する
+	$("[name='" + propName + i + "']").each(function() {
+		if ($(this).is(":checked")) {
+			$(this).click();
+			return false;
 		}
-	} else {
-		if (isChecked) {
-			$("[name='" + propName + i + "']").click();
-		}
-	}
+	});
+	$("[name='" + propName + i + "'][value='" + value[i] + "']").click();
 }
 <%
 		}
@@ -124,30 +147,34 @@ if (multiplicity == 1) {
 		$("[name='data-label-" + propName + "']").html(newContent);
 	}
 } else {
-	if (value.length == 1 && !((value[0] === true || value[0] === "true") || (value[0] === false || value[0] === "false"))) {
-		newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
-		$("[name='" + propName + "']:first").parent().html(newContent);
-	} else {
-		for (i =  0; i < value.length; i++) {
-			if (value[i] == null) {
-				newContent = newContent + '<li> <input type="hidden" name="' + propName + '" value=""> </li>';
-				continue;
-			}
-			var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
-			newContent = newContent + '<li>' + booleanLabel
-				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
-			$("[name='data-label-" + propName + "']").html(newContent);
-		}
+
+	// 空配列の場合、全件クリアとするため設定
+	if (value.length == 0) {
+		value = new Array($("[name='" + propName + "']").length);
 	}
+
+	var dataLabelEle = $("[name='data-label-" + propName + "'] li");
+	for (i =  0; i < value.length; i++) {
+		if (dataLabelEle[i] != null) dataLabelEle[i].remove();
+		if (!((value[i] === true || value[i] === "true") || (value[i] === false || value[i] === "false"))) {
+			continue;
+		}
+		var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
+		newContent = newContent + '<li>' + booleanLabel
+			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
+	}
+	$(newContent).prependTo($("[name='data-label-" + propName + "']"));
 }
-
-
 <%
 	} else if (editor.getDisplayType() == BooleanDisplayType.HIDDEN) {
 %>
 if (multiplicity == 1) {
 	$('[name=' + propName + ']').val(value);
 } else {
+	// 空配列の場合、全件クリアとするため設定
+	if (value.length == 0) {
+		value = new Array($("[name='" + propName + "']").length);
+	}
 	for (i =  0; i < value.length; i++) {
 		$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
 	}
@@ -163,6 +190,8 @@ if (value instanceof Array) {
 <%
 	if (editor.getDisplayType() == BooleanDisplayType.SELECT) {
 %>
+// booleanをそのままセットすると選択されない、かつnullも対応のため変換する
+value = [value];
 $("[name='sc_" + propName + "']").val(value);
 <%
 	} else {
