@@ -191,8 +191,8 @@ if (value.length > 0) {
 	var $timeFrom = $("#time_" + propName + "0");
 	var timeFormatFrom = $timeFrom.attr("data-timeformat");
 
-	var formatDateFromString = value[0].length > 0 ? dateUtil.newFormatString(value[0], dateUtil.getServerTimeFormat(), timeFormatFrom) : "";
-	$timeFrom.val(formatDateFromString);
+	var formatTimeFromString = value[0].length > 0 ? dateUtil.newFormatString(value[0], dateUtil.getServerTimeFormat(), timeFormatFrom) : "";
+	$timeFrom.val(formatTimeFromString);
 	$("#i_" + propName + "0").val(value[0]);
 }
 <%
@@ -203,8 +203,8 @@ if (value.length > 1) {
 	var $timeTo = $("#time_" + propName + "1");
 	var timeFormatTo = $timeTo.attr("data-timeformat");
 
-	var formatDateToString = value[1].length > 0 ? dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), timeFormatTo) : "";
-	$timeTo.val(formatDateToString);
+	var formatTimeToString = value[1].length > 0 ? dateUtil.newFormatString(value[1], dateUtil.getServerTimeFormat(), timeFormatTo) : "";
+	$timeTo.val(formatTimeToString);
 	$("#i_" + propName + "1").val(value[1]);
 }
 <%
