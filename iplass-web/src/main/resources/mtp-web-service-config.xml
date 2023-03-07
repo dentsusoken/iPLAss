@@ -415,6 +415,11 @@
 				<property name="magicByte" value="504B030414000000" />
 			</property>
 		</property>
+
+		<!-- マルチパートリクエストのパラメータ最大数 未指定時はデフォルト値（10000）を適用 -->
+		<!-- 
+		<property name="maxMultipartParameterCount" value="10000" />
+		 -->
 	</service>
 
 	<!-- Entity関連 -->

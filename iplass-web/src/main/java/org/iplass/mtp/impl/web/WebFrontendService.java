@@ -42,7 +42,11 @@ import org.iplass.mtp.web.actionmapping.definition.ClientCacheType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Webアプリケーション全般の動作を管理するサービス
+ *
+ * @author SEKIGUCHI Naoya
+ */
 public class WebFrontendService implements Service {
 
 	static final String MDC_VALUE_RESOLVER_UUID = "generateUuid";
@@ -51,6 +55,8 @@ public class WebFrontendService implements Service {
 	static final String MDC_VALUE_RESOLVER_REMOTE_ADDR = "remoteAddr";
 	static final String MDC_VALUE_RESOLVER_HEADER_PREFIX = "header.";
 
+	/** マルチパートリクエストのパラメータ最大数のデフォルト値 */
+	private static final long DEFAULT_MAX_MULTIPART_PARAMETER_COUNT = 10000L;
 
 	private static Logger logger = LoggerFactory.getLogger(WebFrontendService.class);
 
@@ -59,7 +65,6 @@ public class WebFrontendService implements Service {
 	private String defaultContentType;
 	private ClientCacheType defaultClientCacheType;
 
-	
 	/**
 	 * iPLAss管理対象外のパスの定義のPattern。
 	 * ServletContextPathより後のパスのパターンを指定する。
@@ -68,19 +73,19 @@ public class WebFrontendService implements Service {
 	 * 静的コンテンツのパス、独自実装のServletのパスなどを指定する想定。
 	 */
 	private Pattern excludePathes;
-	
+
 	/**
 	 * DispatcherFilterにてテナントの確定処理まで実施するが、iPLAss内に定義されるAction/WebAPIを呼び出さず、
 	 * 後続FilterChainにdoFilterするパスのPattern。
 	 * テナントコンテキストパスより後のパスのパターンを指定。
 	 */
 	private Pattern throughPathes;
-	
+
 	/**
 	 * iPLAss内に定義されるWebAPI(REST)の呼び出しと認識するパス定義。
 	 * テナントコンテキストパスより後のパスを指定。
 	 * ※Patternではなく、定義されたパスに前方一致するパスをWebAPIコールと判断する。
-	 * 
+	 *
 	 */
 	private List<String> restPath;
 
@@ -90,22 +95,22 @@ public class WebFrontendService implements Service {
 	 * サーバ毎に実行するAction/WebAPIを限定したい場合等に利用。
 	 */
 	private Pattern acceptPathes;
-	
+
 	/**
 	 * リクエストを拒否するパスのPattern。
 	 * テナントコンテキストパスより後のパスのパターンを指定。
 	 * サーバ毎に実行するAction/WebAPIを限定したい場合等に利用。
 	 * acceptPathesと、rejectPathes両方指定された場合、
 	 * 適用順は、acceptPathes -> rejectPathesとなる。
-	 * 
+	 *
 	 * acceptPathesでマッチしても、rejectPathesでもマッチしたら、拒否となる。
-	 * 
+	 *
 	 */
 	private Pattern rejectPathes;
-	
+
 	private List<RequestRestriction> requestRestrictions;
 	private RequestRestriction defaultRequestRestriction;
-	
+
 	/** ログアウト時にキックするURL */
 	private String logoutUrl;
 
@@ -122,7 +127,7 @@ public class WebFrontendService implements Service {
 
 	/** ExecMagicByteCheck実施するか */
 	private boolean isExecMagicByteCheck;
-	
+
 	/** ExecMagicByteCheck実施 */
 	private MagicByteChecker magicByteChecker;
 
@@ -137,13 +142,16 @@ public class WebFrontendService implements Service {
 
 	private boolean tenantAsDomain;
 	private String fixedTenant;
-	
+
+	/** マルチパートリクエストのパラメータ最大数 */
+	private long maxMultipartParameterCount;
+
 	private Map<String, MdcValueResolver> mdc;
-	
+
 	public Map<String, MdcValueResolver> getMdc() {
 		return mdc;
 	}
-	
+
 	public boolean isAcceptPathes(String path) {
 		boolean ret = (getAcceptPathes() == null || getAcceptPathes().matcher(path).matches());
 		if (getRejectPathes() != null) {
@@ -179,7 +187,7 @@ public class WebFrontendService implements Service {
 	public Pattern getRejectPathes() {
 		return rejectPathes;
 	}
-	
+
 	public Pattern getThroughPathes() {
 		return throughPathes;
 	}
@@ -247,11 +255,11 @@ public class WebFrontendService implements Service {
 
 				try {
 					if (tFile.mkdirs()) {
-						logger.info("create tempFileDir:" + tFile.getAbsolutePath());
-						//権限設定（777）
-						tFile.setReadable(true, false);
-						tFile.setWritable(true, false);
-						tFile.setExecutable(true, false);
+					logger.info("create tempFileDir:" + tFile.getAbsolutePath());
+					//権限設定（777）
+					tFile.setReadable(true, false);
+					tFile.setWritable(true, false);
+					tFile.setExecutable(true, false);
 					} else {
 						throw new ServiceConfigrationException("tempFileDir create failed:" + tFile.getAbsolutePath());
 					}
@@ -288,17 +296,17 @@ public class WebFrontendService implements Service {
 
 		loginUrlSelector = (LoginUrlSelector) config.getBean("loginUrlSelector");
 
-		
+
 		List<String> accept = config.getValues("acceptPath");
 		if (accept != null && accept.size() > 0) {
 			acceptPathes = Pattern.compile(String.join("|", accept));
 		}
-		
+
 		List<String> reject = config.getValues("rejectPath");
 		if (reject != null && reject.size() > 0) {
 			rejectPathes = Pattern.compile(String.join("|", reject));
 		}
-		
+
 		List<String> exclude = config.getValues("excludePath");
 		if (exclude != null && exclude.size() > 0) {
 			excludePathes = Pattern.compile(String.join("|", exclude));
@@ -320,7 +328,7 @@ public class WebFrontendService implements Service {
 		if (defaultRequestRestriction == null) {
 			defaultRequestRestriction = createDefaultRequestRestriction(config);
 		}
-		
+
 		restPath = config.getValues("restPath");
 
 		logoutUrl = config.getValue("logoutUrl");
@@ -333,7 +341,7 @@ public class WebFrontendService implements Service {
 		uploadFileScanner = (FileScanner) config.getBean("uploadFileScanner");
 
 		isExecMagicByteCheck = Boolean.valueOf(config.getValue("isExecMagicByteCheck"));
-		
+
 		magicByteChecker = config.getValue("magicByteChecker", MagicByteChecker.class);
 
 		directAccessPort = config.getValue("directAccessPort");
@@ -353,8 +361,12 @@ public class WebFrontendService implements Service {
 		}
 
 		fixedTenant = config.getValue("fixedTenant");
-		
-		
+
+		// マルチパートリクエストのパラメータ最大数を設定
+		// 設定が無い場合はデフォルト値を設定する
+		maxMultipartParameterCount = config
+				.getValue("maxMultipartParameterCount", Long.class, DEFAULT_MAX_MULTIPART_PARAMETER_COUNT).intValue();
+
 		Map<String, Object> mdcFromConfig = config.getValue("mdc", Map.class);
 		if (mdcFromConfig != null) {
 			mdc = new HashMap<>();
@@ -387,57 +399,57 @@ public class WebFrontendService implements Service {
 			}
 		}
 	}
-	
+
 	private RequestRestriction createDefaultRequestRestriction(Config config) {
 		RequestRestriction rr  =new RequestRestriction();
 		rr.setAllowMethods(Arrays.asList("*"));
 		rr.setAllowContentTypes(Arrays.asList("*/*"));
 		rr.setMaxFileSize(config.getValue("maxUploadFileSize", Long.class, -1L));
-		
+
 		rr.inited(this, config);
 		return rr;
 	}
-	
+
 	public RequestRestriction getRequestRestriction(String metaDataName, PathType type) {
 		String path = null;
-		
+
 		if (requestRestrictions != null) {
 			switch (type) {
-			case ACTION:
-				path = "/" + metaDataName;
-				for (RequestRestriction rr: requestRestrictions) {
-					if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
-						return rr;
-					}
-				}
-				if (welcomeAction != null) {
-					int slaIndex = path.lastIndexOf('/');
-					String shortName = slaIndex < 0 ? path: path.substring(slaIndex + 1);
-					
-					for (String wa: welcomeAction) {
-						if (wa.equals(shortName)) {
-							String remainPath = path.substring(0, slaIndex + 1);
-							for (RequestRestriction rr: requestRestrictions) {
-								if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(remainPath).matches()) {
-									return rr;
-								}
-							}
-						}
-					}
-				}
-				break;
-			case REST:
-				for (String rp : restPath) {
-					path = rp + metaDataName;
+				case ACTION:
+					path = "/" + metaDataName;
 					for (RequestRestriction rr: requestRestrictions) {
 						if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
 							return rr;
 						}
 					}
-				}
-				break;
-			default:
-				break;
+					if (welcomeAction != null) {
+						int slaIndex = path.lastIndexOf('/');
+						String shortName = slaIndex < 0 ? path: path.substring(slaIndex + 1);
+
+						for (String wa: welcomeAction) {
+							if (wa.equals(shortName)) {
+								String remainPath = path.substring(0, slaIndex + 1);
+								for (RequestRestriction rr: requestRestrictions) {
+									if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(remainPath).matches()) {
+										return rr;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case REST:
+					for (String rp : restPath) {
+						path = rp + metaDataName;
+						for (RequestRestriction rr: requestRestrictions) {
+							if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
+								return rr;
+							}
+						}
+					}
+					break;
+				default:
+					break;
 			}
 		}
 		return defaultRequestRestriction;
@@ -469,7 +481,7 @@ public class WebFrontendService implements Service {
 	 * @return テナント、Auth、Dispatchで除外するURLの定義
 	 */
 	public Pattern getExcluePathes() {
-	    return excludePathes;
+		return excludePathes;
 	}
 
 	/**
@@ -477,7 +489,7 @@ public class WebFrontendService implements Service {
 	 * @return ログアウト時にキックするURL
 	 */
 	public String getLogoutUrl() {
-	    return logoutUrl;
+		return logoutUrl;
 	}
 
 	public List<String> getRestPath() {
@@ -492,4 +504,24 @@ public class WebFrontendService implements Service {
 		return directAccessPort;
 	}
 
+	/**
+	 * <p>
+	 * マルチパートリクエストのパラメータ最大数を取得する。
+	 * </p>
+	 *
+	 * <p>
+	 * デフォルト値は {@link #DEFAULT_MAX_MULTIPART_PARAMETER_COUNT} で定義され、初期化時に設定する。<br>
+	 * 本パラメータは以下のように利用されることを想定する。
+	 * <ul>
+	 * <li>
+	 * -1 を設定した場合、パラメータは制限されない。
+	 * </li>
+	 * </ul>
+	 * </p>
+	 *
+	 * @return マルチパートリクエストのパラメータ最大数
+	 */
+	public long getMaxMultipartParameterCount() {
+		return maxMultipartParameterCount;
+	}
 }
