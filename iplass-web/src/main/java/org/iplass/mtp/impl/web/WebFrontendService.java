@@ -56,7 +56,7 @@ public class WebFrontendService implements Service {
 	static final String MDC_VALUE_RESOLVER_HEADER_PREFIX = "header.";
 
 	/** マルチパートリクエストのパラメータ最大数のデフォルト値 */
-	private static final long DEFAULT_MAX_MULTIPART_PARAMETER_COUNT = 10000L;
+	private static final Long DEFAULT_MAX_MULTIPART_PARAMETER_COUNT = Long.valueOf(10000L);
 
 	private static Logger logger = LoggerFactory.getLogger(WebFrontendService.class);
 
@@ -255,11 +255,11 @@ public class WebFrontendService implements Service {
 
 				try {
 					if (tFile.mkdirs()) {
-					logger.info("create tempFileDir:" + tFile.getAbsolutePath());
-					//権限設定（777）
-					tFile.setReadable(true, false);
-					tFile.setWritable(true, false);
-					tFile.setExecutable(true, false);
+						logger.info("create tempFileDir:" + tFile.getAbsolutePath());
+						//権限設定（777）
+						tFile.setReadable(true, false);
+						tFile.setWritable(true, false);
+						tFile.setExecutable(true, false);
 					} else {
 						throw new ServiceConfigrationException("tempFileDir create failed:" + tFile.getAbsolutePath());
 					}
@@ -365,7 +365,7 @@ public class WebFrontendService implements Service {
 		// マルチパートリクエストのパラメータ最大数を設定
 		// 設定が無い場合はデフォルト値を設定する
 		maxMultipartParameterCount = config
-				.getValue("maxMultipartParameterCount", Long.class, DEFAULT_MAX_MULTIPART_PARAMETER_COUNT).intValue();
+				.getValue("maxMultipartParameterCount", Long.class, DEFAULT_MAX_MULTIPART_PARAMETER_COUNT).longValue();
 
 		Map<String, Object> mdcFromConfig = config.getValue("mdc", Map.class);
 		if (mdcFromConfig != null) {
