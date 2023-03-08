@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -38,7 +38,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.impl.web.ParameterValueMap;
+import org.iplass.mtp.impl.web.RequestParameterCountLimitException;
+import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,17 +55,27 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 	private List<UploadFileHandleImpl> tempFiles;
 	//Webからのリクエストパラメータ
 	protected Map<String, Object> valueMap;
-	
+
 	private boolean init;
 	private ServletContext servletContext;
 	private HttpServletRequest req;
 	private long maxFileSize = -1;
+	/**
+	 * リクエストパラメータ最大数
+	 * @see WebFrontendService#getMaxMultipartParameterCount()
+	 */
+	// NOTE 変更要素があれば getter / setter を用意し使用する。現状は固定の設定とする。
+	private long maxParameterCount;
 
 	public MultiPartParameterValueMap(ServletContext servletContext, HttpServletRequest req) {
 		this.servletContext = servletContext;
 		this.req = req;
+		// マルチパートリクエストのリクエストパラメータ数最大数を設定する
+		maxParameterCount = ServiceRegistry.getRegistry().getService(WebFrontendService.class)
+				.getMaxMultipartParameterCount();
+
 	}
-	
+
 	public long getMaxFileSize() {
 		return maxFileSize;
 	}
@@ -75,9 +88,9 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 		if (init) {
 			return;
 		}
-		
+
 		init = true;
-		
+
 		long start = 0L;
 		if (logger.isDebugEnabled()) {
 			start = System.currentTimeMillis();
@@ -90,7 +103,14 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 		// Parse the request
 		try {
 			FileItemIterator iter = upload.getItemIterator(req);
+			long parameterCount = 0L;
 			while (iter.hasNext()) {
+				if (parameterCount == maxParameterCount) {
+					// パラメータ数が上限を超過する場合、例外をスローする
+					throw new RequestParameterCountLimitException(
+							"Multipart request parameters exceeds the limit. limit: " + maxParameterCount);
+				}
+
 				FileItemStream item = iter.next();
 				String name = item.getFieldName();
 				if (item.isFormField()) {
@@ -124,7 +144,9 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 							throw new WebProcessRuntimeException(name + " is alerady used as form field name.");
 						}
 					}
-			    }
+				}
+				// パラメータ数インクリメント
+				parameterCount += 1L;
 			}
 		} catch (FileUploadException | IOException e) {
 			cleanTempResource();
@@ -136,7 +158,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 
 		//変更禁止
 		valueMap = Collections.unmodifiableMap(valueMap);
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("MultiPartRequest parsed. time:" + (System.currentTimeMillis() - start));
 		}
@@ -151,6 +173,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 		}
 	}
 
+	@Override
 	public Map<String, Object> getParamMap() {
 		init();
 		return valueMap;
