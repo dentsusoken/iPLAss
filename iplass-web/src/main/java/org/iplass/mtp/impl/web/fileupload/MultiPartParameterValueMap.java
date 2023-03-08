@@ -38,7 +38,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.impl.web.ParameterValueMap;
-import org.iplass.mtp.impl.web.RequestParameterCountLimitExceededRuntimeException;
+import org.iplass.mtp.impl.web.RequestParameterCountLimitException;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -107,7 +107,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 			while (iter.hasNext()) {
 				if (parameterCount == maxParameterCount) {
 					// パラメータ数が上限を超過する場合、例外をスローする
-					throw new RequestParameterCountLimitExceededRuntimeException(
+					throw new RequestParameterCountLimitException(
 							"Multipart request parameters exceeds the limit. limit: " + maxParameterCount);
 				}
 

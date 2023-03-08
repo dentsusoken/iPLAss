@@ -7,14 +7,14 @@ import org.iplass.mtp.SystemException;
  *
  * @author SEKIGUCHI Naoya
  */
-public class RequestParameterCountLimitExceededRuntimeException extends SystemException {
+public class RequestParameterCountLimitException extends SystemException {
 	/** serialVersionUID */
 	private static final long serialVersionUID = -2142613930705878581L;
 
 	/**
 	 * コンストラクタ
 	 */
-	public RequestParameterCountLimitExceededRuntimeException() {
+	public RequestParameterCountLimitException() {
 		super();
 	}
 
@@ -23,7 +23,7 @@ public class RequestParameterCountLimitExceededRuntimeException extends SystemEx
 	 * @param message 例外メッセージ
 	 * @param cause 発生原因例外
 	 */
-	public RequestParameterCountLimitExceededRuntimeException(String message, Throwable cause) {
+	public RequestParameterCountLimitException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
@@ -31,7 +31,7 @@ public class RequestParameterCountLimitExceededRuntimeException extends SystemEx
 	 * コンストラクタ
 	 * @param message 例外メッセージ
 	 */
-	public RequestParameterCountLimitExceededRuntimeException(String message) {
+	public RequestParameterCountLimitException(String message) {
 		super(message);
 	}
 
@@ -39,7 +39,7 @@ public class RequestParameterCountLimitExceededRuntimeException extends SystemEx
 	 * コンストラクタ
 	 * @param cause 発生原因例外
 	 */
-	public RequestParameterCountLimitExceededRuntimeException(Throwable cause) {
+	public RequestParameterCountLimitException(Throwable cause) {
 		super(cause);
 	}
 }
