@@ -107,7 +107,7 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
-if (value.length > 0 && value[0] != null) {
+if (value.length > 0) {
 	appendIfHasMore(propName, value);
 }
 var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
@@ -118,19 +118,20 @@ var callback = function() {
 	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 };
 
-if (value.length > 0 && value[0] != null) {
-	if (value.length > 0) {
-		$("#ul_" + _propName).children().remove();
-	}
-	for (var i = 0; i < value.length; i++) {
-		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-		addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
-	}
-	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
-} else {
-	$("#ul_" + propName + " li:first").remove();
+if (value.length > 0) {
+	$("#ul_" + _propName).children().remove();
 }
+for (var i = 0; i < value.length; i++) {
+	if (!value[i]) {
+		continue;
+	}
+
+	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
+}
+
+toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX) {
 %>
@@ -218,23 +219,21 @@ if (value.length > 0 && value[0] != null) {
 %>
 var newContent = '';
 
-// 自動補完の値が空の場合
-if (!value || (value.length == 1 && !value[0])) {
-	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
-	$("[name='" + propName + "']:first").parent().html(newContent);
-} else {
-	for (var i = 0; i < value.length; i++) {
-		var liId = "li_" + propName + i;
-		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-		var _value = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-		newContent = newContent + '<li id="' + liId + '" >' + label
-				+ '<input type="hidden" name="' + propName + '" value="' + _value + '">' + '</li>';
+var dataLabelEle = $("[name='data-label-" + propName + "'] li");
+
+for (var i = 0; i < value.length; i++) {
+	if (dataLabelEle[i] != null) dataLabelEle[i].remove();
+	if (!value[i]) {
+		continue;
 	}
-	
-	if (value.length > 0) {
-		$("[name='data-label-" + propName + "']").html(newContent);
-	}
+	var liId = "li_" + propName + i;
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	var _value = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+	newContent = newContent + '<li id="' + liId + '" >' + label
+			+ '<input type="hidden" name="' + propName + '" value="' + _value + '">' + '</li>';
 }
+
+$(newContent).prependTo($("[name='data-label-" + propName + "']"));
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
 %>
@@ -242,7 +241,7 @@ if (!value || (value.length == 1 && !value[0])) {
 var propLength = $('[name=' + propName + ']').length;
 var newContent = '';
 for (i =  0; i < value.length; i++) {
-	var hiddenValue = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+	var hiddenValue = value[i] ? value[i].oid + "_" + (value[i].version ? value[i].version : "0") : "";
 	if (i > propLength - 1) {
 		newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
 		continue;

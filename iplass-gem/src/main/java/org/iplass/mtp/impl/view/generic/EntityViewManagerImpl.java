@@ -899,7 +899,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			if (value instanceof List<?>) {
 				List<?> list = (List<?>) value;
 				for (Object obj : list) {
-					if (!(obj instanceof Entity)) {
+					if (obj != null && !(obj instanceof Entity)) {
 						logger.error("For return type, please set Entity class as return value. The result type of this execution is of type " + obj.getClass().getName() + ".");
 						throw new AutocompletionHandleException();
 					}
