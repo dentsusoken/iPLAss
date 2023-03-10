@@ -179,11 +179,11 @@ $("[name='sc_" + propName + "']").each(function() {
 	}
 });
 
-if (!value) {
+if (!value[0]) {
 	// 未指定をクリック
 	$("[name='sc_" + propName + "']:last").click();
 } else {
-	$("[name='sc_" + propName + "'][value='" + value + "']").click();
+	$("[name='sc_" + propName + "'][value='" + value[0] + "']").click();
 }
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.SELECT) {
