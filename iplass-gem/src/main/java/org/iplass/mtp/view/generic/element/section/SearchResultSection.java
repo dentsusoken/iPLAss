@@ -85,7 +85,6 @@ public class SearchResultSection extends Section {
 			inputType=InputType.NUMBER,
 			rangeCheck=true,
 			minRange=0,
-			maxRange=200,
 			displayOrder=200,
 			description="検索結果の一覧に表示する件数を指定します。",
 			descriptionKey="generic_element_section_SearchResultSection_dispRowCountDescriptionKey"
