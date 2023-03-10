@@ -114,8 +114,25 @@
 <c:out value="<%=displayPropLabel %>" />
 <%
 					} else {
+						String showReference = "showReference(" 
+							+ "'" + StringUtil.escapeJavaScript(view) + "'" 
+							+ ", '" + StringUtil.escapeJavaScript(editor.getObjectName()) + "'"
+							+ ", '" + StringUtil.escapeJavaScript(entity.getOid()) + "'"
+							+ ", '" + entity.getVersion() + "'"
+							+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+							+ ", " + refEdit
+							+ ", null"
+							+ ", '" + StringUtil.escapeJavaScript(rootDefName) + "'"
+							+ ", '" + StringUtil.escapeJavaScript(viewName) + "'"
+							+ ", '" + StringUtil.escapeJavaScript(propName) + "'"
+							+ ", '" + StringUtil.escapeJavaScript(viewType) + "'"
+							+ ", null"
+							+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
+							+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
+							+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', null, '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />" 
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 					}
 				}
@@ -146,8 +163,25 @@
 <c:out value="<%=entity.getName() %>" />
 <%
 						} else {
+							String showReference = "showReference(" 
+								+ "'" + StringUtil.escapeJavaScript(view) + "'" 
+								+ ", '" + StringUtil.escapeJavaScript(editor.getObjectName()) + "'"
+								+ ", '" + StringUtil.escapeJavaScript(entity.getOid()) + "'"
+								+ ", '" + entity.getVersion() + "'"
+								+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+								+ ", " + refEdit
+								+ ", null"
+								+ ", '" + StringUtil.escapeJavaScript(rootDefName) + "'"
+								+ ", '" + StringUtil.escapeJavaScript(viewName) + "'"
+								+ ", '" + StringUtil.escapeJavaScript(propName) + "'"
+								+ ", '" + StringUtil.escapeJavaScript(viewType) + "'"
+								+ ", null"
+								+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
+								+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
+								+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', null, '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=entity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />" 
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=entity.getName() %>" /></a>
 <%
 						}
 					}
