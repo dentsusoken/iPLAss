@@ -788,10 +788,23 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _viewName = StringUtil.escapeJavaScript(viewName);
 				if (showRefEditLink) {
 					//編集リンク
+
+					String editReference = "editReference(" 
+						+ "'" + _detailAction + "'" 
+						+ ", '" + _refDefName + "'"
+						+ ", '" + _entityOid + "'"
+						+ ", '" + _trId + "'"
+						+ ", '" + _idxPropName + "'"
+						+ ", " + i
+						+ ", '" + _viewAction + "'"
+						+ ", '" + _rootDefName + "'"
+						+ ", '" + _viewName + "'"
+						+ ", '" + _propName + "'"
+						+ ")";
 %>
 <td nowrap="nowrap" class="colLink center">
 <a href="javascript:void(0);" class="modal-lnk"
- onclick="editReference('<%=_detailAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_trId%>', '<%=_idxPropName%>', <%=i%>, '<%=_viewAction%>', '<%=_rootDefName%>', '<%=_viewName%>', '<%=_propName%>')">
+ onclick="<c:out value="<%=editReference %>"/>">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.edit")}</a>
 </td>
 <%
@@ -799,10 +812,19 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					//詳細リンク
 					String _viewUrlParam = StringUtil.escapeJavaScript(
 							evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
+
+					String viewEditableReference = "viewEditableReference(" 
+						+ "'" + _viewAction + "'" 
+						+ ", '" + _refDefName + "'"
+						+ ", '" + _entityOid + "'"
+						+ ", '" + _reloadUrl + "'"
+						+ ", true"
+						+ ", '" + _viewUrlParam + "'"
+						+ ")";
 %>
 <td nowrap="nowrap" class="colLink center">
 <a href="javascript:void(0);" class="modal-lnk"
- onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', true, '<%=_viewUrlParam%>')">
+ onclick="<c:out value="<%=viewEditableReference %>"/>">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.detail")}</a>
 </td>
 <%
@@ -811,21 +833,33 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 
 			//表示順
 			if (showUpDownBtn) {
+				String shiftUp = "shiftUp(" 
+					+ "'" + StringUtil.escapeJavaScript(trId) + "'" 
+					+ ")";
+				String shiftDown = "shiftDown(" 
+					+ "'" + StringUtil.escapeJavaScript(trId) + "'" 
+					+ ")";
 %>
 <td class="orderCol">
 <input type="hidden" name="tableOrderIndex[<%=i%>]" value="<%=i%>">
-<span class="order-icon up-icon"><i class="fas fa-caret-up" onclick="shiftUp('<%=StringUtil.escapeJavaScript(trId)%>')"></i></span>
-<span class="order-icon down-icon"><i class="fas fa-caret-down" onclick="shiftDown('<%=StringUtil.escapeJavaScript(trId)%>')"></i></span>
+<span class="order-icon up-icon"><i class="fas fa-caret-up"
+ onclick="<c:out value="<%=shiftUp %>"/>"></i></span>
+<span class="order-icon down-icon"><i class="fas fa-caret-down"
+ onclick="<c:out value="<%=shiftDown %>"/>"></i></span>
 </td>
 <%
 			}
 
 			//削除ボタン
 			if (showDeleteBtn) {
+				String deleteRefTableRow = "deleteRefTableRow(" 
+					+ "'" + StringUtil.escapeJavaScript(trId) + "'" 
+					+ ", toggleAddBtn_" + StringUtil.escapeJavaScript(propName)
+					+ ")";
 %>
 <td nowrap="nowrap">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.delete')}" class="gr-btn-02 del-btn"
-		onclick="deleteRefTableRow('<%=StringUtil.escapeJavaScript(trId)%>', toggleAddBtn_<%=StringUtil.escapeJavaScript(propName)%>)" />
+ onclick="<c:out value="<%=deleteRefTableRow %>"/>" />
 </td>
 <%
 			}
@@ -1048,11 +1082,19 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _reloadUrl = StringUtil.escapeJavaScript(reloadUrl);
 				String _viewUrlParam = StringUtil.escapeJavaScript(
 						evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
+
+				String viewEditableReference = "viewEditableReference(" 
+					+ "'" + _viewAction + "'" 
+					+ ", '" + _refDefName + "'"
+					+ ", '" + _entityOid + "'"
+					+ ", '" + _reloadUrl + "'"
+					+ ", " + refEditParam
+					+ ", '" + _viewUrlParam + "'"
+					+ ")";
 %>
 <td nowrap="nowrap" class="colLink center">
 <a href="javascript:void(0);" class="modal-lnk"
- onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', <%=refEditParam%>, '<%=_viewUrlParam%>')">
- <%= GemResourceBundleUtil.resourceString(strKey) %></a>
+ onclick="<c:out value="<%=viewEditableReference %>"/>"><%= GemResourceBundleUtil.resourceString(strKey) %></a>
 </td>
 <%
 			}
@@ -1066,14 +1108,37 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _reloadUrl = StringUtil.escapeJavaScript(reloadUrl);
 				String _rootDefName = StringUtil.escapeJavaScript(rootDefName);
 				String _viewName = StringUtil.escapeJavaScript(viewName);
+
+				String shiftUpOrder = "shiftOrder(" 
+					+ "'" + UpdateTableOrderCommand.WEBAPI_NAME + "'" 
+					+ ", '" + _trId + "'"
+					+ ", '" + _orderPropName + "'"
+					+ ", '" + _propName + "'"
+					+ ", '" + _refDefName + "'"
+					+ ", true"
+					+ ", '" + _reloadUrl + "'"
+					+ ", '" + _rootDefName + "'"
+					+ ", '" + _viewName + "'"
+					+ ")";
+				String shiftDownOrder = "shiftOrder(" 
+					+ "'" + UpdateTableOrderCommand.WEBAPI_NAME + "'" 
+					+ ", '" + _trId + "'"
+					+ ", '" + _orderPropName + "'"
+					+ ", '" + _propName + "'"
+					+ ", '" + _refDefName + "'"
+					+ ", false"
+					+ ", '" + _reloadUrl + "'"
+					+ ", '" + _rootDefName + "'"
+					+ ", '" + _viewName + "'"
+					+ ")";
 %>
 <td class="orderCol">
-<span class="order-icon up-icon"><i class="fas fa-caret-up"
- onclick="shiftOrder('<%=UpdateTableOrderCommand.WEBAPI_NAME%>', '<%=_trId%>', '<%=_orderPropName%>', '<%=_propName%>', '<%=_refDefName%>', true, '<%=_reloadUrl%>', '<%=_rootDefName%>', '<%=_viewName%>')">
-</i></span>
-<span class="order-icon down-icon"><i class="fas fa-caret-down"
- onclick="shiftOrder('<%=UpdateTableOrderCommand.WEBAPI_NAME%>', '<%=_trId%>', '<%=_orderPropName%>', '<%=_propName%>', '<%=_refDefName%>', false, '<%=_reloadUrl%>', '<%=_rootDefName%>', '<%=_viewName%>')">
-</i></span>
+<span class="order-icon up-icon">
+<i class="fas fa-caret-up" onclick="<c:out value="<%=shiftUpOrder %>"/>"></i>
+</span>
+<span class="order-icon down-icon">
+<i class="fas fa-caret-down" onclick="<c:out value="<%=shiftDownOrder %>"/>"></i>
+</span>
 </td>
 <%
 			}

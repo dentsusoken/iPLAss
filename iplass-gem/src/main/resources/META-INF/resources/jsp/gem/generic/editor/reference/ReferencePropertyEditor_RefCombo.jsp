@@ -92,6 +92,10 @@
 			for (int i = 0; i < array.length; i++) {
 				String oid = array[i] != null ? array[i].getOid() != null ? array[i].getOid() : "" : "";
 				String liId = "li_" + editor.getPropertyName() + i;
+
+				String deleteItem = "deleteItem(" 
+					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
+					+ ")";
 %>
 <li id="<c:out value="<%=liId %>"/>">
 <select name="${m:esc(editor.propertyName)}" class="form-size-02 inpbr refCombo" style="<c:out value="<%=customStyle%>"/>" data-oid="<c:out value="<%=oid%>"/>"
@@ -100,7 +104,9 @@
  data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>" data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
  data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>"
  data-entityOid="<%=StringUtil.escapeJavaScript(rootOid)%>" data-entityVersion="<%=StringUtil.escapeJavaScript(rootVersion)%>">
-</select> <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_RefCombo.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+</select>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_RefCombo.delete')}" class="gr-btn-02 del-btn"
+ onclick="<c:out value="<%=deleteItem %>"/>" />
 </li>
 <%
 			}

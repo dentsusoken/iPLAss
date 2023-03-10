@@ -512,9 +512,13 @@ function <%=toggleInsBtnFunc%>() {
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
+					String deleteItem = "deleteItem(" 
+						+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
+						+ ", " + toggleInsBtnFunc
+						+ ")";
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" 
- onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleInsBtnFunc%>)" />
+ onclick="<c:out value="<%=deleteItem %>"/>" />
 <%				}
 			} else {
 				String showReference = "showReference(" 
@@ -939,9 +943,13 @@ function <%=toggleInsBtnFunc%>() {
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
+					String deleteItem = "deleteItem(" 
+						+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
+						+ ", " + toggleInsBtnFunc
+						+ ")";
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" 
- onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleInsBtnFunc%>)" />
+ onclick="<c:out value="<%=deleteItem %>"/>" />
 <%				}
 			} else {
 				String showReference = "showReference(" 
@@ -1238,8 +1246,13 @@ $(function() {
 			if (!hideDeleteButton && updatable) {
 
 				if (isMultiple) {
+					String deleteItem = "deleteItem(" 
+						+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
+						+ ", " + toggleAddBtnFunc
+						+ ")";
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc %>)" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
+ onclick="<c:out value="<%=deleteItem %>"/>"/>
 <%
 				} else {
 %>
@@ -1319,6 +1332,16 @@ $(function() {
 		if (isMultiple) {
 			String addBtnStyle = "";
 			if (pd.getMultiplicity() != -1 && length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
+
+			String addUniqueRefItem = "addUniqueRefItem(" 
+				+ "'" + StringUtil.escapeJavaScript(ulId) + "'" 
+				+ ", " + multiplicity
+				+ ", '" + StringUtil.escapeJavaScript(dummyRowId) + "'"
+				+ ", '" + StringUtil.escapeJavaScript(propName) + "'"
+				+ ", 'id_count_" + StringUtil.escapeJavaScript(propName) + "'"
+				+ ", " + toggleAddBtnFunc
+				+ ", " + toggleAddBtnFunc
+				+ ")";
 %>
 <script type="text/javascript">
 function <%=toggleAddBtnFunc%>() {
@@ -1326,7 +1349,8 @@ function <%=toggleAddBtnFunc%>() {
 	$("#id_addBtn_<c:out value="<%=propName%>"/>").toggle(display);
 }
 </script>
-<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>" onclick="addUniqueRefItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=multiplicity%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
+<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>"
+ onclick="<c:out value="<%=addUniqueRefItem %>"/>" />
 <%
 		}
 
