@@ -456,10 +456,18 @@
 					EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 					String _viewUrlParam = StringUtil.escapeJavaScript(
 							evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
+
+					String viewEditableReference = "viewEditableReference(" 
+						+ "'" + _viewAction + "'" 
+						+ ", '" + _refDefName + "'"
+						+ ", '" + _entityOid + "'"
+						+ ", '" + _reloadUrl + "'"
+						+ ", true"
+						+ ", '" + _viewUrlParam + "'"
+						+ ")";
 %>
 <a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"
- onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', true, '<%=_viewUrlParam%>')">
- <c:out value="<%=displayPropLabel %>" /></a>
+ onclick="<c:out value="<%=viewEditableReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" />
 <%
 					if (!hideDeleteButton && updatable) {
@@ -486,19 +494,51 @@ $(function() {
 				} else {
 					//参照のみ
 					String linkId = propName + "_" + refEntity.getOid();
+
+					String showReference = "showReference(" 
+						+ "'" + StringUtil.escapeJavaScript(viewAction) + "'" 
+						+ ", '" + StringUtil.escapeJavaScript(refDefName) + "'"
+						+ ", '" + StringUtil.escapeJavaScript(refEntity.getOid()) + "'"
+						+ ", '" + refEntity.getVersion() + "'"
+						+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+						+ ", " + refEdit
+						+ ", null"
+						+ ", '" + StringUtil.escapeJavaScript(rootDefName) + "'"
+						+ ", '" + StringUtil.escapeJavaScript(viewName) + "'"
+						+ ", '" + StringUtil.escapeJavaScript(propName) + "'"
+						+ ", 'detail'"
+						+ ", '" + refSectionIndex + "'"
+						+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
+						+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
+						+ ")";
 %>
 <a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />"
- onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion()%>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'detail', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')">
- <c:out value="<%=displayPropLabel %>" /></a>
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				}
 			} else {
 				//Select,Checkbox,RefCombo
 				String linkId = propName + "_" + refEntity.getOid();
+
+				String showReference = "showReference(" 
+					+ "'" + StringUtil.escapeJavaScript(viewAction) + "'" 
+					+ ", '" + StringUtil.escapeJavaScript(refDefName) + "'"
+					+ ", '" + StringUtil.escapeJavaScript(refEntity.getOid()) + "'"
+					+ ", '" + refEntity.getVersion() + "'"
+					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+					+ ", " + refEdit
+					+ ", null"
+					+ ", '" + StringUtil.escapeJavaScript(rootDefName) + "'"
+					+ ", '" + StringUtil.escapeJavaScript(viewName) + "'"
+					+ ", '" + StringUtil.escapeJavaScript(propName) + "'"
+					+ ", 'detail'"
+					+ ", '" + refSectionIndex + "'"
+					+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
+					+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
+					+ ")";
 %>
 <a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />"
- onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'detail', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')">
- <c:out value="<%=displayPropLabel %>" /></a>
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			}
 			if (outputHidden) {
@@ -666,10 +706,26 @@ $(function() {
 			}
 
 			String linkId = propName + "_" + refEntity.getOid();
+
+			String showReference = "showReference(" 
+				+ "'" + StringUtil.escapeJavaScript(viewAction) + "'" 
+				+ ", '" + StringUtil.escapeJavaScript(refDefName) + "'"
+				+ ", '" + StringUtil.escapeJavaScript(refEntity.getOid()) + "'"
+				+ ", '" + refEntity.getVersion() + "'"
+				+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
+				+ ", " + refEdit
+				+ ", null"
+				+ ", '" + StringUtil.escapeJavaScript(rootDefName) + "'"
+				+ ", '" + StringUtil.escapeJavaScript(viewName) + "'"
+				+ ", '" + StringUtil.escapeJavaScript(propName) + "'"
+				+ ", 'detail'"
+				+ ", '" + refSectionIndex + "'"
+				+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
+				+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
+				+ ")";
 %>
 <a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />"
- onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'detail', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')">
- <c:out value="<%=displayPropLabel %>" /></a>
+ onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			if (outputHidden) {
 				String _value = refEntity.getOid() + "_" + refEntity.getVersion();
