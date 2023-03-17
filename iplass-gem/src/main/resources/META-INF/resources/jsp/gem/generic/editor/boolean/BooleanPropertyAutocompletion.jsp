@@ -46,7 +46,18 @@ if (multiplicity == 1) {
 			value = value.slice(0, multiplicity);
 		}
 	} else {
-		value = [value];
+		if (value != null) {
+			value = [value];
+		}
+	}
+
+	if (value != null) {
+		if (value.length < multiplicity) {
+			value = value.concat(new Array(multiplicity - value.length));
+		}
+	} else {
+		// nullの場合は1件のみクリアとする
+		value = new Array(1);
 	}
 }
 <%
@@ -60,11 +71,8 @@ $("[name='" + propName + "']").val(value);
 		if (multiplicity == 1) {
 %>
 // クリック状態を解除する
-$("[name='" + propName + "']").each(function() {
-	if ($(this).is(":checked")) {
-		$(this).click();
-		return false;
-	}
+$("[name='" + propName + "']:checked").each(function() {
+	$(this).click();
 });
 
 $("[name='" + propName + "'][value='" + value + "']").click();
@@ -74,20 +82,16 @@ $("[name='" + propName + "'][value='" + value + "']").click();
 // 空配列の場合は全て解除する
 if (value.length == 0) {
 	// クリック状態を解除する
-	$("#id_td_" + propName + " input[type='radio']").each(function() {
-		if ($(this).is(":checked")) {
-			$(this).click();
-		}
+	$("#id_td_" + propName + " input[type='radio']:checked").each(function() {
+		$(this).click();
 	});
 }
 
 for (var i = 0; i < value.length; i++) {
 	// クリック状態を解除する
-	$("[name='" + propName + i + "']").each(function() {
-		if ($(this).is(":checked")) {
-			$(this).click();
-			return false;
-		}
+	$("[name='" + propName + i + "']:checked").each(function() {
+		$(this).click();
+		return false;
 	});
 	$("[name='" + propName + i + "'][value='" + value[i] + "']").click();
 }
@@ -97,11 +101,9 @@ for (var i = 0; i < value.length; i++) {
 		if (multiplicity == 1) {
 %>
 // クリック状態を解除する
-$("[name='" + propName + "']").each(function() {
-	if ($(this).is(":checked")) {
-		$(this).click();
-		return false;
-	}
+$("[name='" + propName + "']:checked").each(function() {
+	$(this).click();
+	return false;
 });
 
 $("[name='" + propName + "'][value='" + value + "']").click();
@@ -111,20 +113,15 @@ $("[name='" + propName + "'][value='" + value + "']").click();
 // 空配列の場合は全て解除する
 if (value.length == 0) {
 	// クリック状態を解除する
-	$("#id_td_" + propName + " input[type='radio']").each(function() {
-		if ($(this).is(":checked")) {
-			$(this).click();
-		}
+	$("#id_td_" + propName + " input[type='checkbox']:checked").each(function() {
+		$(this).click();
 	});
 }
 
 for (var i = 0; i < value.length; i++) {
 	// クリック状態を解除する
-	$("[name='" + propName + i + "']").each(function() {
-		if ($(this).is(":checked")) {
-			$(this).click();
-			return false;
-		}
+	$("[name='" + propName + i + "']:checked").each(function() {
+		$(this).click();
 	});
 	$("[name='" + propName + i + "'][value='" + value[i] + "']").click();
 }

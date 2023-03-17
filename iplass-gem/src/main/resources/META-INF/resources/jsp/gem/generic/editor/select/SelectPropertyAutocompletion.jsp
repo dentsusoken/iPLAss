@@ -53,7 +53,19 @@ if (multiplicity == 1) {
 			value = value.slice(0, multiplicity);
 		}
 	} else {
-		value = [value];
+		if (value != null) {
+			value = [value];
+		}
+	}
+
+	if (value != null) {
+		var propLength = $("[name='" + propName + "']").length;
+		if (value.length < propLength) {
+			value = value.concat(new Array(propLength - value.length));
+		}
+	} else {
+		// nullの場合は1件のみクリアとする
+		value = new Array(1);
 	}
 }
 
@@ -121,11 +133,9 @@ if (multiplicity == 1) {
 			//radio
 %>
 // クリック状態を解除する
-$("[name='" + propName + "']").each(function() {
-	if ($(this).is(":checked")) {
-		$(this).click();
-		return false;
-	}
+$("[name='" + propName + "']:checked").each(function() {
+	$(this).click();
+	return false;
 });
 
 var clickValue = !value ? "" : value; 
@@ -135,10 +145,8 @@ $("[name='" + propName + "'][value='" + clickValue + "']").click();
 			//checkbox
 %>
 // クリック状態を解除する
-$("[name='" + propName + "']").each(function() {
-	if ($(this).is(":checked")) {
-		$(this).click();
-	}
+$("[name='" + propName + "']:checked").each(function() {
+	$(this).click();
 });
 
 for (var i = 0; i < value.length; i++) {
@@ -158,10 +166,8 @@ if (!(value instanceof Array)) {
 	if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) {
 %>
 // クリック状態を解除する
-$("[name='sc_" + propName + "']").each(function() {
-	if ($(this).is(":checked")) {
-		$(this).click();
-	}
+$("[name='sc_" + propName + "']:checked").each(function() {
+	$(this).click();
 });
 
 for (var i = 0; i < value.length; i++) {
@@ -172,11 +178,9 @@ for (var i = 0; i < value.length; i++) {
 	} else if (editor.getDisplayType() == SelectDisplayType.RADIO) {
 %>
 // クリック状態を解除する
-$("[name='sc_" + propName + "']").each(function() {
-	if ($(this).is(":checked")) {
-		$(this).click();
-		return false;
-	}
+$("[name='sc_" + propName + "']:checked").each(function() {
+	$(this).click();
+	return false;
 });
 
 if (!value[0]) {

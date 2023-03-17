@@ -47,11 +47,19 @@ if (multiplicity == 1) {
 			value = value.slice(0, multiplicity);
 		}
 	} else {
-		value = [value];
+		if (value != null) {
+			value = [value];
+		}
 	}
-	// 空配列の場合、全件クリアとするため設定
-	if (value.length == 0) {
-		value = new Array($("[name='" + propName + "']").length);
+
+	if (value != null) {
+		var propLength = $("[name='" + propName + "']").length;
+		if (value.length < propLength) {
+			value = value.concat(new Array(propLength - value.length));
+		}
+	} else {
+		// nullの場合は1件のみクリアとする
+		value = new Array(1);
 	}
 }
 <%

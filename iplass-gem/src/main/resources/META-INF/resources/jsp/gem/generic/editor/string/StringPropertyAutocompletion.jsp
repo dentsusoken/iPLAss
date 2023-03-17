@@ -47,9 +47,21 @@ if (multiplicity == 1) {
 			value = value.slice(0, multiplicity);
 		}
 	} else {
-		value = [value];
+		if (value != null) {
+			value = [value];
+		}
 	}
-	
+
+	if (value != null) {
+		var propLength = $("[name='" + propName + "']").length;
+		if (value.length < propLength) {
+			value = value.concat(new Array(propLength - value.length));
+		}
+	} else {
+		// nullの場合は1件のみクリアとする
+		value = new Array(1);
+	}
+
 	for (var i = 0; i < value.length; i++) {
 		if (value[i] == null) value[i] = "";
 	}
