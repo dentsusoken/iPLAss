@@ -109,7 +109,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	private int thresholdCountOfUsePrepareStatement = -1;
 	private int maxFetchSize = 100;
 	private int defaultQueryTimeout;
-	private int defaultFetchSize;
+	private int defaultFetchSize = -1;
 
 	private String viewSubQueryAlias = "vsq";
 	private int maxViewNameLength = 64;

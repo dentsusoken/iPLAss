@@ -63,7 +63,7 @@ public abstract class SqlExecuter<R> {
 		if (rdb.getDefaultQueryTimeout() != ps.getQueryTimeout()) {
 			ps.setQueryTimeout(rdb.getDefaultQueryTimeout());
 		}
-		if (rdb.getDefaultFetchSize() != ps.getFetchSize()) {
+		if (rdb.getDefaultFetchSize() >= 0 && rdb.getDefaultFetchSize() != ps.getFetchSize()) {
 			ps.setFetchSize(rdb.getDefaultFetchSize());
 		}
 		pstmt.add(ps);
@@ -79,7 +79,7 @@ public abstract class SqlExecuter<R> {
 		if (rdb.getDefaultQueryTimeout() != ps.getQueryTimeout()) {
 			ps.setQueryTimeout(rdb.getDefaultQueryTimeout());
 		}
-		if (rdb.getDefaultFetchSize() != ps.getFetchSize()) {
+		if (rdb.getDefaultFetchSize() >= 0 && rdb.getDefaultFetchSize() != ps.getFetchSize()) {
 			ps.setFetchSize(rdb.getDefaultFetchSize());
 		}
 		pstmt.add(ps);
@@ -93,7 +93,7 @@ public abstract class SqlExecuter<R> {
 			if (rdb.getDefaultQueryTimeout() != stmt.getQueryTimeout()) {
 				stmt.setQueryTimeout(rdb.getDefaultQueryTimeout());
 			}
-			if (rdb.getDefaultFetchSize() != stmt.getFetchSize()) {
+			if (rdb.getDefaultFetchSize() >= 0 && rdb.getDefaultFetchSize() != stmt.getFetchSize()) {
 				stmt.setFetchSize(rdb.getDefaultFetchSize());
 			}
 		}
