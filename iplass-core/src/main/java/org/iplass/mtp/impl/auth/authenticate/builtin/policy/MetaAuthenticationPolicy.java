@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.CredentialUpdateException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
@@ -39,6 +40,10 @@ import org.iplass.mtp.auth.policy.PasswordNotification;
 import org.iplass.mtp.auth.policy.PropertyNotification;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
+import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.SearchResult;
+import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.auth.AccountManagementModuleWrapper;
 import org.iplass.mtp.impl.auth.AuthService;
 import org.iplass.mtp.impl.auth.LoggingAccountManagementModule;
@@ -536,6 +541,26 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 				if(denyList.contains(password)) {
 					String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 					throw new CredentialUpdateException(passwordPatternErrorMessage);
+				}
+
+				List<String> selectPropList = new ArrayList<>();
+
+				// DenyListに${プロパティ名}で設定されているプロパティを取得する
+				denyList.forEach(deny -> {
+					if (deny.startsWith("${")) {
+						selectPropList.add(deny.substring(2, deny.length() - 1));
+					}
+				});
+
+				if (!selectPropList.isEmpty()) {
+					EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+					Query q = new Query().select(selectPropList.toArray()).from(User.DEFINITION_NAME)
+							.where(new Equals(User.ACCOUNT_ID, accountId));
+					SearchResult<Object[]> result = em.search(q);
+					if (Arrays.asList(result.getFirst()).contains((Object) password)) {
+						String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
+						throw new CredentialUpdateException(passwordPatternErrorMessage);
+					}
 				}
 			}
 		}
