@@ -41,7 +41,6 @@ import org.iplass.mtp.auth.policy.PropertyNotification;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.auth.AccountManagementModuleWrapper;
@@ -543,23 +542,42 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 					throw new CredentialUpdateException(passwordPatternErrorMessage);
 				}
 
-				List<String> selectPropList = new ArrayList<>();
+				List<String> selectUserList = new ArrayList<>();
 
 				// DenyListに${プロパティ名}で設定されているプロパティを取得する
 				denyList.forEach(deny -> {
-					if (deny.startsWith("${")) {
-						selectPropList.add(deny.substring(2, deny.length() - 1));
+					// Userエンティティのプロパティを取得
+					if (deny.startsWith("${user.") && deny.endsWith("}")) {
+						selectUserList.add(deny.substring(7, deny.length() - 1));
 					}
 				});
 
-				if (!selectPropList.isEmpty()) {
+				if (!selectUserList.isEmpty()) {
 					EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-					Query q = new Query().select(selectPropList.toArray()).from(User.DEFINITION_NAME)
+					Query q = new Query().select(selectUserList.toArray()).from(User.DEFINITION_NAME)
 							.where(new Equals(User.ACCOUNT_ID, accountId));
-					SearchResult<Object[]> result = em.search(q);
-					if (Arrays.asList(result.getFirst()).contains((Object) password)) {
-						String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
-						throw new CredentialUpdateException(passwordPatternErrorMessage);
+					Object[] result = em.search(q).getFirst();
+
+					for (Object property : result) {
+						// 多重度複数の場合
+						if (property != null && property.getClass().isArray()) {
+							Object[] values = (Object[]) property;
+							for (Object value : values) {
+								if (password.equals(value)) {
+									String passwordPatternErrorMessage = I18nUtil.stringMeta(
+											passwordPolicy.getPasswordPatternErrorMessage(),
+											passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
+									throw new CredentialUpdateException(passwordPatternErrorMessage);
+								}
+							}
+						} else {
+							if (password.equals(property)) {
+								String passwordPatternErrorMessage = I18nUtil.stringMeta(
+										passwordPolicy.getPasswordPatternErrorMessage(),
+										passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
+								throw new CredentialUpdateException(passwordPatternErrorMessage);
+							}
+						}
 					}
 				}
 			}
