@@ -79,14 +79,6 @@ $("[name='" + propName + "'][value='" + value + "']").click();
 <%
 		} else {
 %>
-// 空配列の場合は全て解除する
-if (value.length == 0) {
-	// クリック状態を解除する
-	$("#id_td_" + propName + " input[type='radio']:checked").each(function() {
-		$(this).click();
-	});
-}
-
 for (var i = 0; i < value.length; i++) {
 	// クリック状態を解除する
 	$("[name='" + propName + i + "']:checked").each(function() {
@@ -103,27 +95,23 @@ for (var i = 0; i < value.length; i++) {
 // クリック状態を解除する
 $("[name='" + propName + "']:checked").each(function() {
 	$(this).click();
-	return false;
 });
 
-$("[name='" + propName + "'][value='" + value + "']").click();
+if (value === true || value === "true") {
+	$("[name='" + propName + "'][value='" + value + "']").click();
+}
 <%
 		} else {
 %>
-// 空配列の場合は全て解除する
-if (value.length == 0) {
-	// クリック状態を解除する
-	$("#id_td_" + propName + " input[type='checkbox']:checked").each(function() {
-		$(this).click();
-	});
-}
-
 for (var i = 0; i < value.length; i++) {
 	// クリック状態を解除する
 	$("[name='" + propName + i + "']:checked").each(function() {
 		$(this).click();
 	});
-	$("[name='" + propName + i + "'][value='" + value[i] + "']").click();
+
+	if (value[i] === true || value[i] === "true") {
+		$("[name='" + propName + i + "'][value='" + value[i] + "']").click();
+	}
 }
 <%
 		}
@@ -154,11 +142,12 @@ if (multiplicity == 1) {
 	for (i =  0; i < value.length; i++) {
 		if (dataLabelEle[i] != null) dataLabelEle[i].remove();
 		if (!((value[i] === true || value[i] === "true") || (value[i] === false || value[i] === "false"))) {
-			continue;
+			newContent = newContent + '<li> <input type="hidden" name="' + propName + '" value=""> </li>';
+		} else {
+			var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
+			newContent = newContent + '<li>' + booleanLabel
+				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
 		}
-		var booleanLabel = (value[i] === true || value[i] === "true") ? "<%=trueLabel %>" : "<%=falseLabel %>";
-		newContent = newContent + '<li>' + booleanLabel
-			+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
 	}
 	$(newContent).prependTo($("[name='data-label-" + propName + "']"));
 }
