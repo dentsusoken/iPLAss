@@ -556,29 +556,30 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 					EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 					Query q = new Query().select(selectUserList.toArray()).from(User.DEFINITION_NAME)
 							.where(new Equals(User.ACCOUNT_ID, accountId));
-					Object[] result = em.search(q).getFirst();
+					List<Object[]> result = em.search(q).getList();
 
-					for (Object property : result) {
-						// 多重度複数の場合
-						if (property != null && property.getClass().isArray()) {
-							Object[] values = (Object[]) property;
-							for (Object value : values) {
-								if (password.equals(value)) {
+					result.forEach(properties -> {
+						for (Object property : properties) {
+							if (property != null && property.getClass().isArray()) {
+								Object[] values = (Object[]) property;
+								for (Object value : values) {
+									if (password.equals(value)) {
+										String passwordPatternErrorMessage = I18nUtil.stringMeta(
+												passwordPolicy.getPasswordPatternErrorMessage(),
+												passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
+										throw new CredentialUpdateException(passwordPatternErrorMessage);
+									}
+								}
+							} else {
+								if (password.equals(property)) {
 									String passwordPatternErrorMessage = I18nUtil.stringMeta(
 											passwordPolicy.getPasswordPatternErrorMessage(),
 											passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 									throw new CredentialUpdateException(passwordPatternErrorMessage);
 								}
 							}
-						} else {
-							if (password.equals(property)) {
-								String passwordPatternErrorMessage = I18nUtil.stringMeta(
-										passwordPolicy.getPasswordPatternErrorMessage(),
-										passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
-								throw new CredentialUpdateException(passwordPatternErrorMessage);
-							}
 						}
-					}
+					});
 				}
 			}
 		}
