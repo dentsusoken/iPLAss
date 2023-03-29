@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.CredentialUpdateException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
@@ -39,6 +40,9 @@ import org.iplass.mtp.auth.policy.PasswordNotification;
 import org.iplass.mtp.auth.policy.PropertyNotification;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
+import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.auth.AccountManagementModuleWrapper;
 import org.iplass.mtp.impl.auth.AuthService;
 import org.iplass.mtp.impl.auth.LoggingAccountManagementModule;
@@ -536,6 +540,46 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 				if(denyList.contains(password)) {
 					String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 					throw new CredentialUpdateException(passwordPatternErrorMessage);
+				}
+
+				List<String> selectUserList = new ArrayList<>();
+
+				// DenyListに${プロパティ名}で設定されているプロパティを取得する
+				denyList.forEach(deny -> {
+					// Userエンティティのプロパティを取得
+					if (deny.startsWith("${user.") && deny.endsWith("}")) {
+						selectUserList.add(deny.substring(7, deny.length() - 1));
+					}
+				});
+
+				if (!selectUserList.isEmpty()) {
+					EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+					Query q = new Query().select(selectUserList.toArray()).from(User.DEFINITION_NAME)
+							.where(new Equals(User.ACCOUNT_ID, accountId));
+					List<Object[]> result = em.search(q).getList();
+
+					result.forEach(properties -> {
+						for (Object property : properties) {
+							if (property != null && property.getClass().isArray()) {
+								Object[] values = (Object[]) property;
+								for (Object value : values) {
+									if (password.equals(value)) {
+										String passwordPatternErrorMessage = I18nUtil.stringMeta(
+												passwordPolicy.getPasswordPatternErrorMessage(),
+												passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
+										throw new CredentialUpdateException(passwordPatternErrorMessage);
+									}
+								}
+							} else {
+								if (password.equals(property)) {
+									String passwordPatternErrorMessage = I18nUtil.stringMeta(
+											passwordPolicy.getPasswordPatternErrorMessage(),
+											passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
+									throw new CredentialUpdateException(passwordPatternErrorMessage);
+								}
+							}
+						}
+					});
 				}
 			}
 		}
