@@ -225,8 +225,10 @@ public class UpdateOption {
 
 	/**
 	 * バージョン管理時、更新対象のバージョンを指定します。
-	 * デフォルト値はTargetVersion.CURRENT_VALIDです。
-	 * TargetVersion.SPECIFICの場合は、更新対象のEntityにversion項目のセットが必要です。
+	 * デフォルト値はTargetVersion.CURRENT_VALIDです。<br>
+	 * TargetVersion.SPECIFICの場合は、更新対象のEntityにversion項目のセットが必要です。<br>
+	 * TargetVersion.NEWの場合、updatePropertiesに未指定の値はベースとなるEntityの値がコピーされます。ベースとなるEntityは、
+	 * 更新対象のEntityにversionが指定された場合はそのバージョンがベースになります。versionが未指定の場合は、現状の有効なバージョンがベースになります。
 	 * 
 	 * @param targetVersion
 	 */

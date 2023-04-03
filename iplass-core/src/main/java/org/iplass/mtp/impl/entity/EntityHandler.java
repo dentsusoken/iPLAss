@@ -1506,6 +1506,10 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		searchCond.select().addHint(new FetchSizeHint(1));
 
+		if (version != null && option != null && option.isVersioned()) {
+			searchCond.versioned();
+		}
+
 		//インナークラスとの受け渡し用
 		final Entity[] result = new Entity[]{null};
 		//セキュリティロジックを通したいので、Invocation経由でQuery呼び出し
@@ -1516,7 +1520,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 					result[0] = val;
 					if (refList.size() != 0) {
 						for (ReferencePropertyHandler refProp: refList) {
-							setLoadRef(val, refProp, mtfContext, entityContext);
+							setLoadRef(val, refProp, mtfContext, entityContext, searchCond.isVersioned());
 						}
 					}
 					return true;
@@ -1531,7 +1535,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 	}
 
 	private void setLoadRef(final Entity e, final ReferencePropertyHandler refProp,
-			final ExecuteContext mtfContext, final EntityContext entityContext) {
+			final ExecuteContext mtfContext, final EntityContext entityContext, final boolean versioned) {
 
 
 		Query searchCond = new Query();
@@ -1553,11 +1557,14 @@ public class EntityHandler extends BaseMetaDataRuntime {
 //			}
 //		}
 		searchCond.where(whereCond);
+		
+		EntityHandler refEH = refProp.getReferenceEntityHandler(entityContext);
+		
 		if (refProp.getMetaData().getOrderBy() != null && refProp.getMetaData().getOrderBy().size() > 0) {
 			//TODO 事前にパース可能か？
 			OrderBy q = new OrderBy();
 			for (ReferenceSortSpec rss: refProp.getMetaData().getOrderBy()) {
-				PropertyHandler ph = refProp.getReferenceEntityHandler(entityContext).getPropertyById(rss.getSortPropertyMetaDataId(), entityContext);
+				PropertyHandler ph = refEH.getPropertyById(rss.getSortPropertyMetaDataId(), entityContext);
 				if (ph != null && !(ph instanceof ReferencePropertyHandler)) {
 					searchCond.getSelect().add(refProp.getName() + "." + ph.getName());
 					if (rss.getSortType() == ReferenceSortSpec.SortType.DESC) {
@@ -1571,7 +1578,9 @@ public class EntityHandler extends BaseMetaDataRuntime {
 				searchCond.setOrderBy(q);
 			}
 		}
-//		searchCond.setVersiond(true);
+		if (refEH.isVersioned() && versioned) {
+			searchCond.versioned();
+		}
 
 		final ArrayList<Entity> refList = new ArrayList<>();
 		//セキュリティロジックを通したいので、Invocation経由でQuery
@@ -1580,7 +1589,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 			public boolean test(Object[] val) {
 				//1件もない場合、参照間はOUTER JOINなので、1件だけnullの値が返ってくる。。。。
 				if (val[0] != null) {
-					Entity refEntity = refProp.getReferenceEntityHandler(entityContext).newInstance();
+					Entity refEntity = refEH.newInstance();
 					refEntity.setValue(Entity.OID, val[0]);
 					refEntity.setValue(Entity.VERSION, val[1]);
 					refEntity.setValue(Entity.NAME, val[2]);
@@ -1590,7 +1599,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 			}
 		}, InvocationType.SEARCH, service.getInterceptors(), this).proceed();
 		if (refList.size() != 0) {
-			e.setValue(refProp.getName(), refList.toArray(refProp.getReferenceEntityHandler(entityContext).newArrayInstance(refList.size())));
+			e.setValue(refProp.getName(), refList.toArray(refEH.newArrayInstance(refList.size())));
 		}
 	}
 
