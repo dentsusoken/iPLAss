@@ -99,6 +99,9 @@ public class CsvUploadService implements Service {
 	/** CSVアップロードエラー表示件数上限値 */
 	private int showErrorLimitCount;
 
+	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
+	private boolean mustOrderByWithLimit;
+
 	private EntityManager em = null;
 	private EntityDefinitionManager edm = null;
 
@@ -116,6 +119,7 @@ public class CsvUploadService implements Service {
 		edm = ManagerLocator.manager(EntityDefinitionManager.class);
 
 		showErrorLimitCount = config.getValue("showErrorLimitCount", Integer.class, 100);
+		mustOrderByWithLimit = config.getValue("mustOrderByWithLimit", Boolean.class, false);
 	}
 
 	@Override
@@ -128,6 +132,15 @@ public class CsvUploadService implements Service {
 	 */
 	public int getShowErrorLimitCount() {
 		return showErrorLimitCount;
+	}
+
+	/**
+	 * CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するかを取得します。
+	 * SQLServerでのダウロード処理用のフラグです。
+	 * @return CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するか
+	 */
+	public boolean isMustOrderByWithLimit() {
+		return mustOrderByWithLimit;
 	}
 
 	/**
@@ -173,14 +186,14 @@ public class CsvUploadService implements Service {
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 		return upload(is, defName, uniqueKey, false, false, false, null, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
 	}
-	
+
 	/**
 	 * Csvファイルをアップロードします。
 	 *
 	 */
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
-			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete, 
-			final Set<String> insertProperties, final Set<String> updateProperties, 
+			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
+			final Set<String> insertProperties, final Set<String> updateProperties,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
@@ -297,13 +310,13 @@ public class CsvUploadService implements Service {
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 		asyncUpload(is, fileName, defName, parameter, uniqueKey, false, false, false, null, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
 	}
-	
+
 	/**
 	 * Csvファイルを非同期でアップロードします。
 	 */
 	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
-			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete, 
-			final Set<String> insertProperties, final Set<String> updateProperties, 
+			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
+			final Set<String> insertProperties, final Set<String> updateProperties,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
@@ -443,7 +456,7 @@ public class CsvUploadService implements Service {
 		private boolean useCtrl;
 		private boolean isDenyInsert;
 		private boolean isDenyUpdate;
-		private boolean isDenyDelete; 
+		private boolean isDenyDelete;
 		private Set<String> insertProperties;
 		private Set<String> updateProperties;
 		private int commitLimit;

@@ -42,6 +42,8 @@ import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.QueryVisitorSupport;
+import org.iplass.mtp.entity.query.SortSpec;
+import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.impl.entity.csv.EntityWriteOption.SearchQueryCsvContext;
@@ -181,12 +183,21 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 				}
 			}
 		}
+
 		//orderby条件の多重度チェック
 		if (optQuery.getOrderBy() != null) {
 			if (new MultiReferenceChecker(ed).test(optQuery.getOrderBy())) {
 				//多重度が複数のReferenceは指定不可(複数行出力されるが、distinctできないため)
 				logger.debug("query [order by] removed. because [order by] contains multiple reference property. removed order by:" + optQuery.getOrderBy());
 				optQuery.setOrderBy(null);
+			}
+		}
+
+		//Limit指定かつOrderBy未指定のチェック（SQLServer対応）
+		if (optQuery.getLimit() != null && optQuery.getOrderBy() == null) {
+			if (option.isMustOrderByWithLimit()) {
+				logger.debug("query [order by] `oid desc` is specified. because mustOrderByWithLimit is true.");
+				optQuery.order(new SortSpec(Entity.OID, SortType.DESC));
 			}
 		}
 

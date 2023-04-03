@@ -36,16 +36,22 @@ public class EntityWriteOption extends ParseOption {
 	private String charset = "UTF-8";
 
 	/** 列ごとにクォートを出力するか */
-	private boolean quoteAll = false;
+	private boolean quoteAll;
+
+	/** 全バージョンデータを出力するか */
+	private boolean versioned = true;
 
 	/** 参照Entityのバージョンを出力するか */
 	private boolean withReferenceVersion = true;
 
 	/** Binaryプロパティを出力するか */
-	private boolean withBinary = false;
+	private boolean withBinary;
 
 	/** Binaryデータの出力先ディレクトリ */
 	private String exportBinaryDataDir;
+
+	/** 被参照プロパティを出力するか */
+	private boolean withMappedByReference;
 
 	/** Where条件 */
 	private Where where;
@@ -56,10 +62,8 @@ public class EntityWriteOption extends ParseOption {
 	/** 出力上限値。0以下は無制限 */
 	private int limit = 0;
 
-	private boolean withMappedByReference;
-
-	/** バージョンを出力するか */
-	private boolean versioned = true;
+	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
+	private boolean mustOrderByWithLimit;
 
 	/** 列の表示名出力文字列 */
 	private Function<PropertyDefinition, String> columnDisplayName = property -> "";
@@ -145,6 +149,14 @@ public class EntityWriteOption extends ParseOption {
 		this.orderBy = orderBy;
 	}
 
+	public boolean isMustOrderByWithLimit() {
+		return mustOrderByWithLimit;
+	}
+
+	public void setMustOrderByWithLimit(boolean mustOrderByWithLimit) {
+		this.mustOrderByWithLimit = mustOrderByWithLimit;
+	}
+
 	public boolean isVersioned() {
 		return versioned;
 	}
@@ -210,6 +222,11 @@ public class EntityWriteOption extends ParseOption {
 		return this;
 	}
 
+	public EntityWriteOption withMappedByReference(boolean withMappedByReference) {
+		setWithMappedByReference(withMappedByReference);
+		return this;
+	}
+
 	public EntityWriteOption limit(int limit) {
 		setLimit(limit);
 		return this;
@@ -222,6 +239,11 @@ public class EntityWriteOption extends ParseOption {
 
 	public EntityWriteOption orderBy(OrderBy orderBy) {
 		setOrderBy(orderBy);
+		return this;
+	}
+
+	public EntityWriteOption mustOrderByWithLimit(boolean mustOrderByWithLimit) {
+		setMustOrderByWithLimit(mustOrderByWithLimit);
 		return this;
 	}
 

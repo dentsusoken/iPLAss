@@ -41,6 +41,7 @@ import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.impl.csv.CsvUploadService;
 import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
 import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
 import org.iplass.mtp.impl.entity.csv.QueryCsvWriter;
@@ -66,7 +67,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebApi(name="mtp/entity/GET",
 		accepts={RequestType.REST_FORM},
 		methods={MethodType.GET},
-		results={GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT, GetEntityCommand.RESULT_ENTITY, 
+		results={GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT, GetEntityCommand.RESULT_ENTITY,
 				GetEntityCommand.RESULT_CSV, GetEntityCommand.RESULT_JSON, GetEntityCommand.RESULT_XML},
 		responseType="application/json, application/xml, text/csv;charset=utf-8",
 		overwritable=false)
@@ -85,15 +86,15 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	public static final String RESULT_CSV = "csv";
 	public static final String RESULT_JSON = "json";
 	public static final String RESULT_XML = "xml";
-	
-	
+
+
 	private enum ResType {
 		CSV,
 		JSON,
 		XML,
 		OTHER
 	}
-	
+
 	private final JAXBContext context;
 	private final Map<String, String> nameSpaceMap;
 	private final JsonFactory jsonFactory;
@@ -111,21 +112,21 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		WebApiResponse webApiResponse = new WebApiResponse();
 		Document doc;
 		Marshaller marshaller;
-		try { 
+		try {
 			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 			marshaller = context.createMarshaller();
 			marshaller.marshal(webApiResponse, doc);
 		} catch (ParserConfigurationException | JAXBException e) {
 			throw new SystemException(e);
 		}
-		
+
 		Element element = doc.getDocumentElement();
 		NamedNodeMap namedNodeMap = element.getAttributes();
-		
+
 		for(int i=0;i<namedNodeMap.getLength();i++) {
 			String[] str = namedNodeMap.item(i).getNodeName().split(":");
 			nameSpaceMap.put(str[1], namedNodeMap.item(i).getNodeValue());
-		}	
+		}
 	}
 
 	// api/entity?query=SELECT...
@@ -135,7 +136,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			throw new NullPointerException("query must specify");
 		}
 		Query query = Query.newQuery(eql);
-		
+
 		queryImpl(query, request, true, resType(request), false);
 	}
 
@@ -149,7 +150,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		if (filter != null) {
 			query.where(filter);
 		}
-		
+
 		queryImpl(query, request, false, resType, withMappedBy);
 	}
 
@@ -159,7 +160,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 
 		SearchOption option = new SearchOption();
 		option.setReturnStructuredEntity(true);
-		
+
 		if (resType == ResType.CSV) {
 			if (byQuery) {
 				queryCsv(query, request);
@@ -169,7 +170,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		} else {
 			boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
 			boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
-			
+
 			if (tabular) {
 				if (resType == ResType.JSON) {
 					queryJson(query, request, countTotal);
@@ -185,30 +186,30 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private void queryOther(Query query, RequestContext request, boolean countTotal) {
 		SearchOption option = new SearchOption();
 		option.setReturnStructuredEntity(true);
-		
+
 		boolean noLimit = (query.getLimit() == null);
 		if (countTotal || (entityWebApiService.isThrowSearchResultLimitExceededException() && noLimit)) {
 			option.setCountTotal(true);
 		}
-		
+
 		if (noLimit) {
 			query.limit(entityWebApiService.getMaxLimit());
 		}
-		
+
 		if (query.getLimit().getLimit() > entityWebApiService.getMaxLimit()) {
 			throw new IllegalArgumentException("Can not specify limit more than " + entityWebApiService.getMaxLimit());
 		}
-		
+
 		SearchResult<?> res = em.searchEntity(query, option);
-		
+
 		if (entityWebApiService.isThrowSearchResultLimitExceededException()
 				&& noLimit
 				&& res.getTotalCount() > entityWebApiService.getMaxLimit()) {
 			throw new SearchResultLimitExceededException(resourceString("impl.webapi.command.entity.GetEntityCommand.limitExceeded"));
 		}
-		
+
 		request.setAttribute(RESULT_ENTITY_LIST, res.getList());
-		
+
 		if (countTotal) {
 			request.setAttribute(RESULT_COUNT, res.getTotalCount());
 		}
@@ -231,16 +232,19 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 
 	private void listCsv(Query query, RequestContext request, boolean withMappedBy) {
 
+		CsvUploadService csvUploadService = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
+
 		//TODO EntitySearchCsvWriter使う場合、queryのselect項目利用できず再度EntitySearchCsvWriterで項目選択させる必要あり、、
 		StreamingOutput stream = out -> {
-			
+
 			EntityWriteOption option = new EntityWriteOption()
 					.where(query.getWhere())
-					.orderBy(query.getOrderBy());
-			option.setDateFormat(entityWebApiService.getCsvDateFormat());
-			option.setDatetimeSecFormat(entityWebApiService.getCsvDateTimeFormat());
-			option.setTimeSecFormat(entityWebApiService.getCsvTimeFormat());
-			option.setWithMappedByReference(withMappedBy);
+					.orderBy(query.getOrderBy())
+					.dateFormat(entityWebApiService.getCsvDateFormat())
+					.datetimeSecFormat(entityWebApiService.getCsvDateTimeFormat())
+					.timeSecFormat(entityWebApiService.getCsvTimeFormat())
+					.withMappedByReference(withMappedBy)
+					.mustOrderByWithLimit(csvUploadService.isMustOrderByWithLimit());
 			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(), option)) {
 				writer.write();
 			}
@@ -251,25 +255,25 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private void queryJson(Query query, RequestContext request, boolean countTotal) {
 
 		StreamingOutput stream = out -> {
-			
+
 			try (QueryJsonWriter writer = new QueryJsonWriter(out, query, countTotal, mapper, jsonFactory)) {
 				writer.write();
 			}
 		};
 		request.setAttribute(RESULT_JSON, stream);
 	}
-	
+
 	private void queryXml(Query query, RequestContext request,  boolean countTotal) {
-		
+
 		StreamingOutput stream = out -> {
-			
+
 			try (QueryXmlWriter writer = new QueryXmlWriter(out, query, countTotal, context, nameSpaceMap, new DateXmlAdapter())) {
 				writer.write();
 			}
 		};
 		request.setAttribute(RESULT_XML, stream);
 	}
-	
+
 	private ResType resType(RequestContext request) {
 		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
 		if (accept != null) {
@@ -282,17 +286,17 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			}
 		}
 		return ResType.OTHER;
-		
+
 	}
 
 //	private boolean isCSV(String accept) {
 //		return accept != null && accept.startsWith("text/csv");
 //	}
-//	
+//
 //	private boolean isJSON(String accept) {
 //		return accept != null && accept.startsWith("application/json");
 //	}
-//	
+//
 //	private boolean isXML(String accept) {
 //		return accept != null && accept.startsWith("application/xml");
 //	}
