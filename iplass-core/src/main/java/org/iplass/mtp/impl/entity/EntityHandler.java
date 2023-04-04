@@ -1518,9 +1518,6 @@ public class EntityHandler extends BaseMetaDataRuntime {
 				}
 			}
 		}
-		if ((!isVersioned() || version != null) && option != null && option.isVersioned()) {
-			searchCond.versioned();
-		}
 
 		//インナークラスとの受け渡し用
 		final Entity[] result = new Entity[]{null};
