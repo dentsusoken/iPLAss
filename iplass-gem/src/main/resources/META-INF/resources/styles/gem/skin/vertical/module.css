@@ -1435,6 +1435,10 @@ div.recursiveTree {
   display: block;
   margin-bottom: 5px; }
 
+#csv-download-dialog fieldset {
+  text-align: left;
+  padding-bottom: 5px; }
+
 .singleRowSelect {
   margin-left: 4px; }
 

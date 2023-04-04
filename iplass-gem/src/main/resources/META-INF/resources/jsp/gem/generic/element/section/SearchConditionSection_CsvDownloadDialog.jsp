@@ -119,8 +119,8 @@ function showCsvDownloadDialog(searchType, buttonId, validate, callback) {
 	dialog.dialog({
 		resizable: false,
 		autoOpen: false,
-		height: 200,
-		width: 300,
+		height: 230,
+		width: 360,
 		modal: true,
 		buttons: [
 			{
