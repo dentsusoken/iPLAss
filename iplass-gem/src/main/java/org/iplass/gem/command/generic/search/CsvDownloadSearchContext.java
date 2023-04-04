@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.iplass.gem.command.Constants;
@@ -117,7 +118,7 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 	public Select getSelect() {
 		if (isOutputSpecifyProperties() && !isOutputResult()) {
 			boolean distinct = getConditionSection().isDistinct();
-			String[] properties = getConditionSection().getCsvdownloadProperties().split(",");
+			Set<String> properties = getConditionSection().getCsvdownloadPropertiesSet();
 			Select select = new Select();
 			select.setDistinct(distinct);
 			for (String property : properties) {
@@ -250,7 +251,7 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 			//出力列を直接指定の場合
 			ArrayList<CsvColumn> columns = new ArrayList<>();
 
-			String[] propertyNames = getConditionSection().getCsvdownloadProperties().split(",");
+			Set<String> propertyNames = getConditionSection().getCsvdownloadPropertiesSet();
 			for (String propertyName : propertyNames) {
 				CsvColumn column = getCsvColumn(propertyName);
 				if (column != null) {

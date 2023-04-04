@@ -22,7 +22,9 @@ package org.iplass.gem.command.generic.search;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.iplass.gem.GemConfigService;
@@ -70,6 +72,12 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 			maxCount = section.getCsvdownloadMaxCount();
 		}
 
+		//直接プロパティ指定
+		List<String> directProperties = null;
+		if (section.getCsvdownloadUploadableProperties() != null) {
+			directProperties = new ArrayList<String>(section.getCsvdownloadUploadablePropertiesSet());
+		}
+
 		//Selectプロパティをソート条件保持用
 		final Map<SelectProperty, Boolean> sortMap = new HashMap<>();
 
@@ -81,6 +89,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 				.charset(charset)
 				.quoteAll(gcs.isCsvDownloadQuoteAll())
 				.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+				.properties(directProperties)
 				.where(context.getWhere())
 				.orderBy(context.getOrderBy())
 				.limit(maxCount)

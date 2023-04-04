@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.entity.csv;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -52,6 +53,9 @@ public class EntityWriteOption extends ParseOption {
 
 	/** 被参照プロパティを出力するか */
 	private boolean withMappedByReference;
+
+	/** 出力プロパティ(直接指定) */
+	private List<String> properties;
 
 	/** Where条件 */
 	private Where where;
@@ -131,6 +135,14 @@ public class EntityWriteOption extends ParseOption {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+
+	public List<String> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(List<String> properties) {
+		this.properties = properties;
 	}
 
 	public Where getWhere() {
@@ -229,6 +241,11 @@ public class EntityWriteOption extends ParseOption {
 
 	public EntityWriteOption limit(int limit) {
 		setLimit(limit);
+		return this;
+	}
+
+	public EntityWriteOption properties(List<String> properties) {
+		setProperties(properties);
 		return this;
 	}
 
