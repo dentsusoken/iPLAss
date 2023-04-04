@@ -177,9 +177,10 @@ public class LoadOption {
 	}
 	
 	/**
-	 * Load時にversionを指定している場合に有効なフラグです。
 	 * 参照先のEntityがバージョン管理されているEntityの場合、
 	 * 参照先のEntityを保存時点のバージョンで取得します。
+	 * Load対象のEntity自体もバージョン管理されている場合は、
+	 * ロード対象Entityのversionまでを指定している場合に有効なフラグとなります。
 	 * 
 	 * @return
 	 */

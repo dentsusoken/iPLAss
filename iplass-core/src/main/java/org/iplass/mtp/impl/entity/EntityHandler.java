@@ -1506,7 +1506,19 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		searchCond.select().addHint(new FetchSizeHint(1));
 
-		if (version != null && option != null && option.isVersioned()) {
+		if (option != null && option.isVersioned()) {
+			//バージョン管理されていないEntity、もしくはバージョン管理されていてかつversionまで指定の際に有効
+			if (!isVersioned()) {
+				searchCond.versioned();
+			} else {
+				if (version != null) {
+					searchCond.versioned();
+				} else {
+					log.warn("LoadOption.versioned=true specified, but since the Entity to be load is itself versioned, this flag will be enabled if the version of the load target is also specified.");
+				}
+			}
+		}
+		if ((!isVersioned() || version != null) && option != null && option.isVersioned()) {
 			searchCond.versioned();
 		}
 
