@@ -22,6 +22,7 @@ package org.iplass.adminconsole.view.annotation;
 
 public enum InputType {
 	TEXT,//S
+	TEXT_AREA,
 	MULTI_TEXT,
 	SCRIPT,//S
 	NUMBER,//S

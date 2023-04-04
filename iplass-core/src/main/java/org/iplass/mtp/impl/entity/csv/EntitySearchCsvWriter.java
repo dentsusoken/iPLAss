@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
 import org.iplass.mtp.ManagerLocator;
@@ -47,6 +48,7 @@ import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.impl.entity.csv.EntityWriteOption.SearchQueryCsvContext;
+import org.iplass.mtp.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -202,19 +204,23 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 		}
 
 		if (context.isDoPrivileged()) {
-			return AuthContext.doPrivileged(() -> searchEntity(writer, optQuery, hasMultiReference));
+			return AuthContext.doPrivileged(() -> doSearch(writer, optQuery, hasMultiReference));
 		} else {
 			if (context.getWithoutConditionReferenceName() != null) {
 				return EntityPermission.doQueryAs(context.getWithoutConditionReferenceName(),
-						() -> searchEntity(writer, optQuery, hasMultiReference));
+						() -> doSearch(writer, optQuery, hasMultiReference));
 			}
 		}
-		return searchEntity(writer, optQuery, hasMultiReference);
+		return doSearch(writer, optQuery, hasMultiReference);
 	}
 
-	private int searchEntity(final EntityCsvWriter writer, final Query optQuery, final boolean hasMultiReference) {
+	private int doSearch(final EntityCsvWriter writer, final Query optQuery, final boolean hasMultiReference) {
+
+		// プロパティを直接指定している場合の対象Reference取得
+		final List<String> directReferenceNames = getDirectReferenceNames(hasMultiReference, writer.getProperties());
 
 		final int[] count = new int[1];
+
 		em.searchEntity(optQuery, new Predicate<Entity>() {
 
 			@Override
@@ -224,7 +230,12 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 				//TODO パフォーマンス改善 oid単位にロードしないように
 				if (hasMultiReference) {
 					LoadOption loadOption = new LoadOption();
-					loadOption.setWithMappedByReference(option.isWithMappedByReference());
+					if (CollectionUtil.isNotEmpty(option.getProperties())) {
+						// プロパティを直接指定している場合は対象のReferenceのみ指定
+						loadOption.setLoadReferences(directReferenceNames);
+					} else {
+						loadOption.setWithMappedByReference(option.isWithMappedByReference());
+					}
 
 					entity = em.load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), loadOption);
 				}
@@ -239,6 +250,24 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 		});
 
 		return count[0];
+	}
+
+	/**
+	 * 直接プロパティ指定時の参照プロパティを返します。
+	 *
+	 * @param hasMultiReference 多重度複数の参照が含まれるか
+	 * @param properties 出力対象プロパティ
+	 * @return 出力対象参照プロパティ名
+	 */
+	private List<String> getDirectReferenceNames(boolean hasMultiReference, List<PropertyDefinition> properties) {
+		if (!hasMultiReference || CollectionUtil.isEmpty(option.getProperties())) {
+			// 対象外
+			return null;
+		}
+		return properties.stream()
+				.filter(property -> property instanceof ReferenceProperty)
+				.map(property -> property.getName())
+				.collect(Collectors.toList());
 	}
 
 	private static class MultiReferenceChecker extends QueryVisitorSupport {

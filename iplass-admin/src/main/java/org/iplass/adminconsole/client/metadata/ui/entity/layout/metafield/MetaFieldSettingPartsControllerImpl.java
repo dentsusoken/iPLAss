@@ -28,6 +28,7 @@ import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpIntegerItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.FieldInfo;
@@ -53,6 +54,14 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 		FormItem item = null;
 		if (info.getInputType() == InputType.TEXT) {
 			item = new MtpTextItem();
+			if (info.isRequired()) {
+				SmartGWTUtil.setRequired(item);
+			}
+			if (pane.getValue(info.getName()) != null) {
+				item.setValue(pane.getValueAs(String.class, info.getName()));
+			}
+		} else if (info.getInputType() == InputType.TEXT_AREA) {
+			item = new MtpTextAreaItem();
 			if (info.isRequired()) {
 				SmartGWTUtil.setRequired(item);
 			}
