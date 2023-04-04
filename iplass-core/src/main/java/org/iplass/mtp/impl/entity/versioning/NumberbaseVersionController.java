@@ -261,7 +261,7 @@ public class NumberbaseVersionController implements VersionController {
 	}
 
 	private Entity merge(Entity entity, UpdateOption option, EntityHandler eh, EntityContext entityContext) {
-		Entity before = new EntityLoadInvocationImpl(entity.getOid(), entity.getVersion(), new LoadOption(true, false), false, eh.getService().getInterceptors(), eh).proceed();
+		Entity before = new EntityLoadInvocationImpl(entity.getOid(), entity.getVersion(), new LoadOption(true, false).versioned(), false, eh.getService().getInterceptors(), eh).proceed();
 		if (before == null) {
 			throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getLocalizedDisplayName()));
 		}

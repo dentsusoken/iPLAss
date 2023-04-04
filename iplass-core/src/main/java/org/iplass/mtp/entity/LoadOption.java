@@ -37,6 +37,7 @@ public class LoadOption {
 	private List<String> loadReferences;
 	private boolean localized = false;
 	private boolean notifyListeners = true;
+	private boolean versioned;
 
 	/**
 	 * withReference = true,
@@ -86,6 +87,14 @@ public class LoadOption {
 		}
 	}
 	
+	public boolean isVersioned() {
+		return versioned;
+	}
+
+	public void setVersioned(boolean versioned) {
+		this.versioned = versioned;
+	}
+
 	public boolean isNotifyListeners() {
 		return notifyListeners;
 	}
@@ -166,12 +175,25 @@ public class LoadOption {
 		this.notifyListeners = false;
 		return this;
 	}
+	
+	/**
+	 * 参照先のEntityがバージョン管理されているEntityの場合、
+	 * 参照先のEntityを保存時点のバージョンで取得します。
+	 * Load対象のEntity自体もバージョン管理されている場合は、
+	 * ロード対象Entityのversionまでを指定している場合に有効なフラグとなります。
+	 * 
+	 * @return
+	 */
+	public LoadOption versioned() {
+		this.versioned = true;
+		return this;
+	}
 
 	@Override
 	public String toString() {
-		return "LoadOption [withReference=" + withReference
-				+ ", withMappedByReference=" + withMappedByReference
-				+ ", loadReferences=" + loadReferences + ", localized="
-				+ localized + "]";
+		return "LoadOption [withReference=" + withReference + ", withMappedByReference=" + withMappedByReference
+				+ ", loadReferences=" + loadReferences + ", localized=" + localized + ", notifyListeners="
+				+ notifyListeners + ", versioned=" + versioned + "]";
 	}
+
 }

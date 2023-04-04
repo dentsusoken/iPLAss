@@ -223,6 +223,11 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 
 	@Override
 	public Entity load(EntityLoadInvocation invocation) {
+		if (invocation.getLoadOption() != null && invocation.getLoadOption().isVersioned()) {
+			//versioned指定の場合はキャッシュしない（TODO 現時点では）
+			return super.load(invocation);
+		}
+		
 		EntityHandler eh = ((EntityLoadInvocationImpl) invocation).getEntityHandler();
 
 		CacheStore cache = getCache();
