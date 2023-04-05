@@ -105,6 +105,9 @@ public class CsvUploadService implements Service {
 	/** CSVアップロードエラー表示件数上限値 */
 	private int showErrorLimitCount;
 
+	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
+	private boolean mustOrderByWithLimit;
+
 	private EntityManager em = null;
 	private EntityDefinitionManager edm = null;
 
@@ -122,6 +125,7 @@ public class CsvUploadService implements Service {
 		edm = ManagerLocator.manager(EntityDefinitionManager.class);
 
 		showErrorLimitCount = config.getValue("showErrorLimitCount", Integer.class, 100);
+		mustOrderByWithLimit = config.getValue("mustOrderByWithLimit", Boolean.class, false);
 	}
 
 	@Override
@@ -134,6 +138,15 @@ public class CsvUploadService implements Service {
 	 */
 	public int getShowErrorLimitCount() {
 		return showErrorLimitCount;
+	}
+
+	/**
+	 * CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するかを取得します。
+	 * SQLServerでのダウロード処理用のフラグです。
+	 * @return CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するか
+	 */
+	public boolean isMustOrderByWithLimit() {
+		return mustOrderByWithLimit;
 	}
 
 	/**

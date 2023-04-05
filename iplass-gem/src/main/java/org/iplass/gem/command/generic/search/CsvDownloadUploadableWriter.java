@@ -29,6 +29,7 @@ import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.generic.search.CsvDownloadSearchContext.CsvColumn;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
+import org.iplass.mtp.impl.csv.CsvUploadService;
 import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
 import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
 import org.iplass.mtp.impl.entity.csv.EntityWriteOption.SearchQueryCsvContext;
@@ -47,11 +48,13 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 	private CsvDownloadSearchContext context;
 
 	private GemConfigService gcs = null;
+	private CsvUploadService cus = null;
 
 	public CsvDownloadUploadableWriter(final CsvDownloadSearchContext context) {
 		this.context = context;
 
 		gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		cus = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
 	}
 
 	@Override
@@ -82,6 +85,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 				.orderBy(context.getOrderBy())
 				.limit(maxCount)
 				.versioned(context.isVersioned())
+				.mustOrderByWithLimit(cus.isMustOrderByWithLimit())
 				.columnDisplayName(property -> {
 					if (context.isNoDispName()) {
 						return "";
