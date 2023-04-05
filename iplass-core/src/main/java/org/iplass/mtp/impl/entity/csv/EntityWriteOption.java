@@ -36,16 +36,22 @@ public class EntityWriteOption extends ParseOption {
 	private String charset = "UTF-8";
 
 	/** 列ごとにクォートを出力するか */
-	private boolean quoteAll = false;
+	private boolean quoteAll;
+
+	/** 全バージョンデータを出力するか */
+	private boolean versioned = true;
 
 	/** 参照Entityのバージョンを出力するか */
 	private boolean withReferenceVersion = true;
 
 	/** Binaryプロパティを出力するか */
-	private boolean withBinary = false;
+	private boolean withBinary;
 
 	/** Binaryデータの出力先ディレクトリ */
 	private String exportBinaryDataDir;
+
+	/** 被参照プロパティを出力するか */
+	private boolean withMappedByReference;
 
 	/** Where条件 */
 	private Where where;
@@ -56,15 +62,13 @@ public class EntityWriteOption extends ParseOption {
 	/** 出力上限値。0以下は無制限 */
 	private int limit = 0;
 
-	private boolean withMappedByReference;
+	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
+	private boolean mustOrderByWithLimit;
 
-	/** バージョンを出力するか */
-	private boolean versioned = true;
-
-	/** 列の表示名出力文字列 */
+	/** 列の表示名出力文字列を返す関数 */
 	private Function<PropertyDefinition, String> columnDisplayName = property -> "";
 
-	/** SelectPropertyのソート */
+	/** SelectPropertyのソートをするかを返す関数 */
 	private Function<SelectProperty, Boolean> sortSelectValue = property -> false;
 
 	/** 検索実行前Query処理 */
@@ -73,178 +77,436 @@ public class EntityWriteOption extends ParseOption {
 	/** 検索実行後Query処理 */
 	private BiConsumer<Query, Entity> afterSearch = (query, entity) -> {};
 
-	public boolean isWithMappedByReference() {
-		return withMappedByReference;
-	}
-
-	public void setWithMappedByReference(boolean withMappedByReference) {
-		this.withMappedByReference = withMappedByReference;
-	}
-
+	/**
+	 * 出力文字コードを返します。
+	 *
+	 * @return 出力文字コード
+	 */
 	public String getCharset() {
 		return charset;
 	}
 
+	/**
+	 * 出力文字コードを設定します。
+	 *
+	 * @param charset 出力文字コード
+	 */
 	public void setCharset(String charset) {
 		this.charset = charset;
 	}
 
-	public boolean isQuoteAll() {
-		return quoteAll;
-	}
-
-	public void setQuoteAll(boolean quoteAll) {
-		this.quoteAll = quoteAll;
-	}
-
-	public boolean isWithReferenceVersion() {
-		return withReferenceVersion;
-	}
-
-	public void setWithReferenceVersion(boolean withReferenceVersion) {
-		this.withReferenceVersion = withReferenceVersion;
-	}
-
-	public boolean isWithBinary() {
-		return withBinary;
-	}
-
-	public void setWithBinary(boolean withBinary) {
-		this.withBinary = withBinary;
-	}
-
-	public String getExportBinaryDataDir() {
-		return exportBinaryDataDir;
-	}
-
-	public void setExportBinaryDataDir(String exportBinaryDataDir) {
-		this.exportBinaryDataDir = exportBinaryDataDir;
-	}
-
-	public int getLimit() {
-		return limit;
-	}
-
-	public void setLimit(int limit) {
-		this.limit = limit;
-	}
-
-	public Where getWhere() {
-		return where;
-	}
-
-	public void setWhere(Where where) {
-		this.where = where;
-	}
-
-	public OrderBy getOrderBy() {
-		return orderBy;
-	}
-
-	public void setOrderBy(OrderBy orderBy) {
-		this.orderBy = orderBy;
-	}
-
-	public boolean isVersioned() {
-		return versioned;
-	}
-
-	public void setVersioned(boolean versioned) {
-		this.versioned = versioned;
-	}
-
-	public Function<PropertyDefinition, String> getColumnDisplayName() {
-		return columnDisplayName;
-	}
-
-	public void setColumnDisplayName(Function<PropertyDefinition, String> columnDisplayName) {
-		this.columnDisplayName = columnDisplayName;
-	}
-
-	public Function<SelectProperty, Boolean> getSortSelectValue() {
-		return sortSelectValue;
-	}
-
-	public void setSortSelectValue(Function<SelectProperty, Boolean> sortSelectValue) {
-		this.sortSelectValue = sortSelectValue;
-	}
-
-	public Function<Query, SearchQueryCsvContext> getBeforeSearch() {
-		return beforeSearch;
-	}
-
-	public void setBeforeSearch(Function<Query, SearchQueryCsvContext> beforeSearch) {
-		this.beforeSearch = beforeSearch;
-	}
-
-	public BiConsumer<Query, Entity> getAfterSearch() {
-		return afterSearch;
-	}
-
-	public void setAfterSearch(BiConsumer<Query, Entity> afterSearch) {
-		this.afterSearch = afterSearch;
-	}
-
+	/**
+	 * 出力文字コードを設定します。
+	 *
+	 * @param charset 出力文字コード
+	 * @return インスタンス
+	 */
 	public EntityWriteOption charset(String charset) {
 		setCharset(charset);
 		return this;
 	}
 
+	/**
+	 * 列ごとにクォートを出力するかを返します。
+	 *
+	 * @return 列ごとにクォートを出力するか
+	 */
+	public boolean isQuoteAll() {
+		return quoteAll;
+	}
+
+	/**
+	 * 列ごとにクォートを出力するかを設定します。
+	 *
+	 * @param quoteAll 列ごとにクォートを出力するか
+	 */
+	public void setQuoteAll(boolean quoteAll) {
+		this.quoteAll = quoteAll;
+	}
+
+	/**
+	 * 列ごとにクォートを出力するかを設定します。
+	 *
+	 * @param quoteAll 列ごとにクォートを出力するか
+	 * @return インスタンス
+	 */
 	public EntityWriteOption quoteAll(boolean quoteAll) {
 		setQuoteAll(quoteAll);
 		return this;
 	}
 
-	public EntityWriteOption withReferenceVersion(boolean withReferenceVersion) {
-		setWithReferenceVersion(withReferenceVersion);
-		return this;
+	/**
+	 * 全バージョンデータを出力するかを返します。
+	 *
+	 * @return 全バージョンデータを出力するか
+	 */
+	public boolean isVersioned() {
+		return versioned;
 	}
 
-	public EntityWriteOption withBinary(boolean withBinary) {
-		setWithBinary(withBinary);
-		return this;
+	/**
+	 * 全バージョンデータを出力するかを設定します。
+	 *
+	 * @param versioned 全バージョンデータを出力するか
+	 */
+	public void setVersioned(boolean versioned) {
+		this.versioned = versioned;
 	}
 
-	public EntityWriteOption exportBinaryDataDir(String exportBinaryDataDir) {
-		setExportBinaryDataDir(exportBinaryDataDir);
-		return this;
-	}
-
-	public EntityWriteOption limit(int limit) {
-		setLimit(limit);
-		return this;
-	}
-
-	public EntityWriteOption where(Where where) {
-		setWhere(where);
-		return this;
-	}
-
-	public EntityWriteOption orderBy(OrderBy orderBy) {
-		setOrderBy(orderBy);
-		return this;
-	}
-
+	/**
+	 * 全バージョンデータを出力するかを設定します。
+	 *
+	 * @param versioned 全バージョンデータを出力するか
+	 * @return インスタンス
+	 */
 	public EntityWriteOption versioned(boolean versioned) {
 		setVersioned(versioned);
 		return this;
 	}
 
+	/**
+	 * 参照Entityのバージョンを出力するかを返します。
+	 *
+	 * @return 参照Entityのバージョンを出力するか
+	 */
+	public boolean isWithReferenceVersion() {
+		return withReferenceVersion;
+	}
+
+	/**
+	 * 参照Entityのバージョンを出力するかを設定します。
+	 *
+	 * @param withReferenceVersion 参照Entityのバージョンを出力するか
+	 */
+	public void setWithReferenceVersion(boolean withReferenceVersion) {
+		this.withReferenceVersion = withReferenceVersion;
+	}
+
+	/**
+	 * 参照Entityのバージョンを出力するかを設定します。
+	 *
+	 * @param withReferenceVersion 参照Entityのバージョンを出力するか
+	 * @return インスタンス
+	 */
+	public EntityWriteOption withReferenceVersion(boolean withReferenceVersion) {
+		setWithReferenceVersion(withReferenceVersion);
+		return this;
+	}
+
+	/**
+	 * Binaryプロパティを出力するかを返します。
+	 *
+	 * @return Binaryプロパティを出力するか
+	 */
+	public boolean isWithBinary() {
+		return withBinary;
+	}
+
+	/**
+	 * Binaryプロパティを出力するかを設定します。
+	 *
+	 * @param withBinary Binaryプロパティを出力するか
+	 */
+	public void setWithBinary(boolean withBinary) {
+		this.withBinary = withBinary;
+	}
+
+	/**
+	 * Binaryプロパティを出力するかを設定します。
+	 *
+	 * @param withBinary Binaryプロパティを出力するか
+	 * @return インスタンス
+	 */
+	public EntityWriteOption withBinary(boolean withBinary) {
+		setWithBinary(withBinary);
+		return this;
+	}
+
+	/**
+	 * Binaryデータの出力先ディレクトリを返します。
+	 *
+	 * @return Binaryデータの出力先ディレクトリ
+	 */
+	public String getExportBinaryDataDir() {
+		return exportBinaryDataDir;
+	}
+
+	/**
+	 * Binaryデータの出力先ディレクトリを設定します。
+	 *
+	 * @param exportBinaryDataDir Binaryデータの出力先ディレクトリ
+	 */
+	public void setExportBinaryDataDir(String exportBinaryDataDir) {
+		this.exportBinaryDataDir = exportBinaryDataDir;
+	}
+
+	/**
+	 * Binaryデータの出力先ディレクトリを設定します。
+	 *
+	 * @param exportBinaryDataDir Binaryデータの出力先ディレクトリ
+	 * @return インスタンス
+	 */
+	public EntityWriteOption exportBinaryDataDir(String exportBinaryDataDir) {
+		setExportBinaryDataDir(exportBinaryDataDir);
+		return this;
+	}
+
+	/**
+	 * 被参照プロパティを出力するかを返します。
+	 *
+	 * @return 被参照プロパティを出力するか
+	 */
+	public boolean isWithMappedByReference() {
+		return withMappedByReference;
+	}
+
+	/**
+	 * 被参照プロパティを出力するかを設定します。
+	 *
+	 * @param withMappedByReference 被参照プロパティを出力するか
+	 */
+	public void setWithMappedByReference(boolean withMappedByReference) {
+		this.withMappedByReference = withMappedByReference;
+	}
+
+	/**
+	 * 被参照プロパティを出力するかを設定します。
+	 *
+	 * @param withMappedByReference 被参照プロパティを出力するか
+	 * @return インスタンス
+	 */
+	public EntityWriteOption withMappedByReference(boolean withMappedByReference) {
+		setWithMappedByReference(withMappedByReference);
+		return this;
+	}
+
+	/**
+	 * Where条件を返します。
+	 *
+	 * @return Where条件
+	 */
+	public Where getWhere() {
+		return where;
+	}
+
+	/**
+	 * Where条件を設定します。
+	 *
+	 * @param where Where条件
+	 */
+	public void setWhere(Where where) {
+		this.where = where;
+	}
+
+	/**
+	 * Where条件を設定します。
+	 *
+	 * @param where Where条件
+	 * @return インスタンス
+	 */
+	public EntityWriteOption where(Where where) {
+		setWhere(where);
+		return this;
+	}
+
+	/**
+	 * OrderBy条件を返します。
+	 *
+	 * @return OrderBy条件
+	 */
+	public OrderBy getOrderBy() {
+		return orderBy;
+	}
+
+	/**
+	 * OrderBy条件を設定します。
+	 *
+	 * @param orderBy OrderBy条件
+	 */
+	public void setOrderBy(OrderBy orderBy) {
+		this.orderBy = orderBy;
+	}
+
+	/**
+	 * OrderBy条件を設定します。
+	 *
+	 * @param orderBy OrderBy条件
+	 * @return インスタンス
+	 */
+	public EntityWriteOption orderBy(OrderBy orderBy) {
+		setOrderBy(orderBy);
+		return this;
+	}
+
+	/**
+	 * 出力上限値を返します。
+	 *
+	 * @return 出力上限値
+	 */
+	public int getLimit() {
+		return limit;
+	}
+
+	/**
+	 * 出力上限値を設定します。0以下は無制限です。
+	 *
+	 * @param limit 出力上限値
+	 */
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+
+	/**
+	 * 出力上限値を設定します。0以下は無制限です。
+	 *
+	 * @param limit 出力上限値
+	 * @return インスタンス
+	 */
+	public EntityWriteOption limit(int limit) {
+		setLimit(limit);
+		return this;
+	}
+
+	/**
+	 * CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するかを返します。
+	 *
+	 * @return CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するか
+	 */
+	public boolean isMustOrderByWithLimit() {
+		return mustOrderByWithLimit;
+	}
+
+	/**
+	 * CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するかを設定します。
+	 *
+	 * @param mustOrderByWithLimit CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するか
+	 */
+	public void setMustOrderByWithLimit(boolean mustOrderByWithLimit) {
+		this.mustOrderByWithLimit = mustOrderByWithLimit;
+	}
+
+	/**
+	 * CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するかを設定します。
+	 *
+	 * @param mustOrderByWithLimit CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するか
+	 * @return インスタンス
+	 */
+	public EntityWriteOption mustOrderByWithLimit(boolean mustOrderByWithLimit) {
+		setMustOrderByWithLimit(mustOrderByWithLimit);
+		return this;
+	}
+
+	/**
+	 *  列の表示名出力文字列を返す関数を返します。
+	 *
+	 * @return 列の表示名出力文字列を返す関数
+	 */
+	public Function<PropertyDefinition, String> getColumnDisplayName() {
+		return columnDisplayName;
+	}
+
+	/**
+	 * 列の表示名出力文字列を返す関数を設定します。
+	 *
+	 * @param columnDisplayName 列の表示名出力文字列を返す関数
+	 */
+	public void setColumnDisplayName(Function<PropertyDefinition, String> columnDisplayName) {
+		this.columnDisplayName = columnDisplayName;
+	}
+
+	/**
+	 * 列の表示名出力文字列を返す関数を設定します。
+	 *
+	 * @param columnDisplayName 列の表示名出力文字列を返す関数
+	 * @return インスタンス
+	 */
 	public EntityWriteOption columnDisplayName(Function<PropertyDefinition, String> columnDisplayName) {
 		setColumnDisplayName(columnDisplayName);
 		return this;
 	}
 
+	/**
+	 * SelectPropertyのソートするかを返す関数を返します。
+	 *
+	 * @return SelectPropertyのソートするかを返す関数
+	 */
+	public Function<SelectProperty, Boolean> getSortSelectValue() {
+		return sortSelectValue;
+	}
+
+	/**
+	 * SelectPropertyのソートするかを返す関数を設定します。
+	 *
+	 * @param sortSelectValue SelectPropertyのソートするかを返す関数
+	 */
+	public void setSortSelectValue(Function<SelectProperty, Boolean> sortSelectValue) {
+		this.sortSelectValue = sortSelectValue;
+	}
+
+	/**
+	 * SelectPropertyのソートをするかを返す関数を設定します。
+	 *
+	 * @param sortSelectValue SelectPropertyのソートをするかを返す関数
+	 * @return インスタンス
+	 */
 	public EntityWriteOption sortSelectValue(Function<SelectProperty, Boolean> sortSelectValue) {
 		setSortSelectValue(sortSelectValue);
 		return this;
 	}
 
+	/**
+	 * 検索実行前Query処理を返します。
+	 *
+	 * @return 検索実行前Query処理
+	 */
+	public Function<Query, SearchQueryCsvContext> getBeforeSearch() {
+		return beforeSearch;
+	}
+
+	/**
+	 * 検索実行前Query処理を設定します。
+	 *
+	 * @param beforeSearch 検索実行前Query処理
+	 */
+	public void setBeforeSearch(Function<Query, SearchQueryCsvContext> beforeSearch) {
+		this.beforeSearch = beforeSearch;
+	}
+
+	/**
+	 * 検索実行前Query処理を設定します。
+	 *
+	 * @param beforeSearch 検索実行前Query処理
+	 * @return インスタンス
+	 */
 	public EntityWriteOption beforeSearch(Function<Query, SearchQueryCsvContext> beforeSearch) {
 		setBeforeSearch(beforeSearch);
 		return this;
 	}
 
+	/**
+	 * 検索実行後Query処理を返します。
+	 *
+	 * @return 検索実行後Query処理
+	 */
+	public BiConsumer<Query, Entity> getAfterSearch() {
+		return afterSearch;
+	}
+
+	/**
+	 * 検索実行後Query処理を設定します。
+	 *
+	 * @param afterSearch 検索実行後Query処理
+	 */
+	public void setAfterSearch(BiConsumer<Query, Entity> afterSearch) {
+		this.afterSearch = afterSearch;
+	}
+
+	/**
+	 * 検索実行後Query処理を設定します。
+	 *
+	 * @param afterSearch 検索実行後Query処理
+	 * @return インスタンス
+	 */
 	public EntityWriteOption afterSearch(BiConsumer<Query, Entity> afterSearch) {
 		setAfterSearch(afterSearch);
 		return this;

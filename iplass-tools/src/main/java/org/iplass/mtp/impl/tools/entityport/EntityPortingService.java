@@ -70,6 +70,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 import org.iplass.mtp.entity.query.hint.FetchSizeHint;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.csv.CsvUploadService;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.csv.EntityCsvException;
@@ -92,6 +93,7 @@ import org.iplass.mtp.impl.tools.metaport.MetaDataTagEntity;
 import org.iplass.mtp.impl.tools.pack.PackageEntity;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
@@ -202,6 +204,8 @@ public class EntityPortingService implements Service {
 			orderBy.add(new SortSpec(Entity.VERSION, SortType.ASC));
 		}
 
+		CsvUploadService csvUploadService = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
+
 		//Writer生成
 		EntityWriteOption option = new EntityWriteOption()
 				.withReferenceVersion(true)
@@ -211,7 +215,8 @@ public class EntityPortingService implements Service {
 				.orderBy(orderBy)
 				.dateFormat(DATE_FORMAT)
 				.datetimeSecFormat(DATE_TIME_FORMAT)
-				.timeSecFormat(TIME_FORMAT);
+				.timeSecFormat(TIME_FORMAT)
+				.mustOrderByWithLimit(csvUploadService.isMustOrderByWithLimit());
 		int count = 0;
 		try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(os, definition.getName(), option, zos)) {
 			count = writer.write();
