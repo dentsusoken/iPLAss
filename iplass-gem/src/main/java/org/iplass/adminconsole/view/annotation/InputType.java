@@ -21,15 +21,16 @@
 package org.iplass.adminconsole.view.annotation;
 
 public enum InputType {
-	TEXT,//S
+	TEXT,
 	MULTI_TEXT,
-	SCRIPT,//S
-	NUMBER,//S
-	CHECKBOX,//S
-//	RADIO,//S ラジオと選択はEnumで
-//	SELECT,//M Enum以外での入力方法が必要なものあるか？
-	REFERENCE,//S,M
-	ENUM,//S(Radio),M(Select)
+	TEXT_AREA,
+	SCRIPT,
+	NUMBER,
+	CHECKBOX,
+//	RADIO,//ラジオと選択はEnumで
+//	SELECT,
+	REFERENCE,
+	ENUM,
 	ACTION,
 	WEBAPI,
 	TEMPLATE,

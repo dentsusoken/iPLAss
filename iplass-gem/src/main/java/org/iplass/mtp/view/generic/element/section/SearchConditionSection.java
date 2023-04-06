@@ -21,6 +21,7 @@
 package org.iplass.mtp.view.generic.element.section;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -223,12 +224,23 @@ public class SearchConditionSection extends Section {
 	@MetaFieldInfo(
 			displayName="CSVダウンロード項目",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplaNameKey",
-			inputType=InputType.TEXT,
+			inputType=InputType.TEXT_AREA,
 			displayOrder=1080,
 			description="CSV出力対象の項目を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDescriptionKey"
 	)
 	private String csvdownloadProperties;
+
+	/** Upload形式のCSVダウンロード項目 */
+	@MetaFieldInfo(
+			displayName="CSVダウンロード項目(Upload形式)",
+			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadUploadablePropertiesDisplaNameKey",
+			inputType=InputType.TEXT_AREA,
+			displayOrder=1085,
+			description="Upload形式のCSV出力対象の項目を指定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadUploadablePropertiesDescriptionKey"
+	)
+	private String csvdownloadUploadableProperties;
 
 	/** CSVファイル名Format */
 	@MetaFieldInfo(
@@ -293,7 +305,7 @@ public class SearchConditionSection extends Section {
 	@MetaFieldInfo(
 			displayName="CSVアップロード登録項目",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadInsertPropertiesDisplayNameKey",
-			inputType=InputType.TEXT,
+			inputType=InputType.TEXT_AREA,
 			displayOrder=2040,
 			description="CSVアップロードで登録する対象の項目を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadInsertPropertiesDescriptionKey"
@@ -304,7 +316,7 @@ public class SearchConditionSection extends Section {
 	@MetaFieldInfo(
 			displayName="CSVアップロード更新項目",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadUpdatePropertiesDisplayNameKey",
-			inputType=InputType.TEXT,
+			inputType=InputType.TEXT_AREA,
 			displayOrder=2050,
 			description="CSVアップロードで更新する対象の項目を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadUpdatePropertiesDescriptionKey"
@@ -523,7 +535,7 @@ public class SearchConditionSection extends Section {
 		if(csvUploadInsertProperties == null) {
 			return null;
 		}
-	    return Stream.of(csvUploadInsertProperties.replaceAll(" ","").split(",")).collect(Collectors.toSet());
+		return splitCommaString(csvUploadInsertProperties);
 	}
 
 	public void setCsvUploadInsertProperties(String csvUploadInsertProperties) {
@@ -538,7 +550,7 @@ public class SearchConditionSection extends Section {
 		if(csvUploadUpdateProperties == null) {
 			return null;
 		}
-	    return Stream.of(csvUploadUpdateProperties.replaceAll(" ","").split(",")).collect(Collectors.toSet());
+		return splitCommaString(csvUploadUpdateProperties);
 	}
 
 	public void setCsvUploadUpdateProperties(String csvUploadUpdateProperties) {
@@ -747,6 +759,16 @@ public class SearchConditionSection extends Section {
 	    return csvdownloadProperties;
 	}
 
+	/**
+	 * CSVダウンロード項目をSet形式で取得します。
+	 * @return CSVダウンロード項目
+	 */
+	public Set<String> getCsvdownloadPropertiesSet() {
+		if(csvdownloadProperties == null) {
+			return null;
+		}
+		return splitCommaString(csvdownloadProperties);
+	}
 
 	/**
 	 * CSVダウンロード項目を設定します。
@@ -756,6 +778,32 @@ public class SearchConditionSection extends Section {
 	    this.csvdownloadProperties = csvdownloadProperties;
 	}
 
+	/**
+	 * Upload形式のCSVダウンロード項目を取得します。
+	 * @return Upload形式のCSVダウンロード項目
+	 */
+	public String getCsvdownloadUploadableProperties() {
+	    return csvdownloadUploadableProperties;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード項目をSet形式で取得します。
+	 * @return Upload形式のCSVダウンロード項目
+	 */
+	public Set<String> getCsvdownloadUploadablePropertiesSet() {
+		if(csvdownloadUploadableProperties == null) {
+			return null;
+		}
+		return splitCommaString(csvdownloadUploadableProperties);
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード項目を設定します。
+	 * @param csvdownloadUploadableProperties Upload形式のCSVダウンロード項目
+	 */
+	public void setCsvdownloadUploadableProperties(String csvdownloadUploadableProperties) {
+	    this.csvdownloadUploadableProperties = csvdownloadUploadableProperties;
+	}
 
 	/**
 	 * CSVファイル名Format(GroovyTemplate)を取得します。
@@ -883,5 +931,16 @@ public class SearchConditionSection extends Section {
 	 */
 	public void setScriptKey(String scriptKey) {
 		this.scriptKey = scriptKey;
+	}
+
+	/**
+	 * カンマ区切りを分割します。
+	 * StringUtilが使えないので、独自処理します。
+	 * @param value 値
+	 * @return 分割結果
+	 */
+	private Set<String> splitCommaString(String value) {
+		String sanitized = value.replace(" ","").replace("\n", "").replace("\r", "");
+	    return Stream.of(sanitized.split(",")).collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 }

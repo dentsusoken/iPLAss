@@ -129,6 +129,9 @@ public class MetaSearchConditionSection extends MetaSection {
 	/** CSVダウンロード項目 */
 	private String csvdownloadProperties;
 
+	/** Upload形式のCSVダウンロード項目 */
+	private String csvdownloadUploadableProperties;
+
 	/** CSVダウンロードファイル名Format(GroovyTemplate) */
 	private String csvdownloadFileNameFormat;
 
@@ -422,6 +425,22 @@ public class MetaSearchConditionSection extends MetaSection {
 	}
 
 	/**
+	 * Upload形式のCSVダウンロード項目を取得します。
+	 * @return Upload形式のCSVダウンロード項目
+	 */
+	public String getCsvdownloadUploadableProperties() {
+	    return csvdownloadUploadableProperties;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード項目を設定します。
+	 * @param csvdownloadUploadableProperties Upload形式のCSVダウンロード項目
+	 */
+	public void setCsvdownloadUploadableProperties(String csvdownloadUploadableProperties) {
+	    this.csvdownloadUploadableProperties = csvdownloadUploadableProperties;
+	}
+
+	/**
 	 * CSVダウンロードファイル名Format(GroovyTemplate)を取得します。
 	 * @return CSVダウンロードファイル名Format(GroovyTemplate)
 	 */
@@ -616,6 +635,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.csvUploadInterrupterName = section.getCsvUploadInterrupterName();
 		this.csvdownloadMaxCount = section.getCsvdownloadMaxCount();
 		this.csvdownloadProperties = section.getCsvdownloadProperties();
+		this.csvdownloadUploadableProperties = section.getCsvdownloadUploadableProperties();
 		this.csvdownloadFileNameFormat = section.getCsvdownloadFileNameFormat();
 		this.csvMultipleFormat = section.getCsvMultipleFormat();
 
@@ -682,6 +702,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setCsvUploadInterrupterName(this.csvUploadInterrupterName);
 		section.setCsvdownloadMaxCount(this.csvdownloadMaxCount);
 		section.setCsvdownloadProperties(this.csvdownloadProperties);
+		section.setCsvdownloadUploadableProperties(this.csvdownloadUploadableProperties);
 		section.setCsvdownloadFileNameFormat(this.csvdownloadFileNameFormat);
 		section.setCsvMultipleFormat(this.csvMultipleFormat);
 

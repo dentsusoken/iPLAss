@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.entity.csv;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -52,6 +53,9 @@ public class EntityWriteOption extends ParseOption {
 
 	/** 被参照プロパティを出力するか */
 	private boolean withMappedByReference;
+
+	/** 出力プロパティ(直接指定) */
+	private List<String> properties;
 
 	/** Where条件 */
 	private Where where;
@@ -277,6 +281,35 @@ public class EntityWriteOption extends ParseOption {
 	 */
 	public EntityWriteOption withMappedByReference(boolean withMappedByReference) {
 		setWithMappedByReference(withMappedByReference);
+		return this;
+	}
+
+	/**
+	 * 出力プロパティ(直接指定)を返します。
+	 *
+	 * @return 出力プロパティ(直接指定)
+	 */
+	public List<String> getProperties() {
+		return properties;
+	}
+
+	/**
+	 * 出力プロパティ(直接指定)を設定します。
+	 *
+	 * @param properties 出力プロパティ(直接指定)
+	 */
+	public void setProperties(List<String> properties) {
+		this.properties = properties;
+	}
+
+	/**
+	 * 出力プロパティ(直接指定)を設定します。
+	 *
+	 * @param properties 出力プロパティ(直接指定)
+	 * @return インスタンス
+	 */
+	public EntityWriteOption properties(List<String> properties) {
+		setProperties(properties);
 		return this;
 	}
 

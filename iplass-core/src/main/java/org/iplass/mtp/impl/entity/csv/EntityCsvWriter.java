@@ -34,6 +34,7 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -63,6 +64,7 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.permission.EntityPropertyPermission;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
@@ -236,7 +238,10 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 		}
 
 		//対象プロパティ取得
-		properties = definition.getPropertyList().stream()
+		List<PropertyDefinition> outputProperties = getOutputProperties();
+
+		//対象プロパティの検証
+		properties = outputProperties.stream()
 				.filter(property ->
 					// 参照可能権限を保持している場合のみ追加
 					auth.checkPermission(
@@ -257,6 +262,41 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 				.collect(Collectors.toList());
 
 		isInit = true;
+	}
+
+	/**
+	 * 出力対象のプロパティを返します。
+	 *
+	 * @return 出力対象のプロパティ
+	 */
+	private List<PropertyDefinition> getOutputProperties() {
+		List<PropertyDefinition> outputProperties = null;
+		if (CollectionUtil.isNotEmpty(option.getProperties())) {
+			// 出力プロパティの直接指定
+			outputProperties = new ArrayList<>();
+
+			outputProperties.add(definition.getProperty(Entity.OID));
+			if (definition.getVersionControlType() != VersionControlType.NONE) {
+				outputProperties.add(definition.getProperty(Entity.VERSION));
+			}
+
+			outputProperties.addAll(option.getProperties().stream()
+					.filter(propertyName ->
+						!(propertyName.equals(Entity.OID) || propertyName.equals(Entity.VERSION))
+					)
+					.map(propertyName -> {
+						PropertyDefinition property = definition.getProperty(propertyName);
+						if (property == null) {
+							throw new EntityCsvException(propertyName + " is invalid property in " + definition.getName());
+						}
+						return property;
+					})
+					.collect(Collectors.toList()));
+
+		} else {
+			outputProperties = definition.getPropertyList();
+		}
+		return outputProperties;
 	}
 
 	private void writeText(String text) {
@@ -413,7 +453,7 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 				if(write(br, binaryStore)) {
 					binaryStore.closeEntry();
 				}
-				
+
 			} else {
 				//出力先ディレクトリが指定されている場合はExportする
 				if(StringUtil.isNotBlank(option.getExportBinaryDataDir())) {
@@ -428,7 +468,7 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 						lobFile.delete();
 					}
 					lobFile.createNewFile();
-					
+
 					try (FileOutputStream fileBinaryStore = new FileOutputStream(lobFile);) {
 						write(br, fileBinaryStore);
 					} catch (IOException e) {
@@ -440,7 +480,7 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 			throw new EntityCsvException(e);
 		}
 	}
-	
+
 	private boolean write(final BinaryReference br, final OutputStream outputStream) throws IOException {
 		InputStream is = em.getInputStream(br);
 		if (is != null) {
