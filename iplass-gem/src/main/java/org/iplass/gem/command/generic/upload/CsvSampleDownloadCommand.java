@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,7 @@ import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.web.ResultStreamWriter;
 import org.iplass.mtp.web.template.TemplateUtil;
@@ -145,6 +147,7 @@ public final class CsvSampleDownloadCommand implements Command {
 
 		private String charset;
 		private EntityDefinition ed;
+		private SearchConditionSection condition;
 		private SearchResultSection result;
 
 		public CSVDownloadSampleWriter(String charset, EntityDefinition ed, EntityView ev, String viewName) {
@@ -152,17 +155,25 @@ public final class CsvSampleDownloadCommand implements Command {
 			this.ed = ed;
 
 			SearchFormView form = FormViewUtil.getSearchFormView(ed, ev, viewName);
+			condition = form != null ? form.getCondSection() : null;
 			result = form != null ? form.getResultSection() : null;
 		}
 
 		@Override
 		public void write(OutputStream out) throws IOException {
 
+			//直接プロパティ指定
+			List<String> directProperties = null;
+			if (condition != null && condition.getCsvdownloadUploadableProperties() != null) {
+				directProperties = new ArrayList<String>(condition.getCsvdownloadUploadablePropertiesSet());
+			}
+
 			//Writer生成
 			EntityWriteOption option = new EntityWriteOption()
 					.charset(charset)
 					.quoteAll(gcs.isCsvDownloadQuoteAll())
 					.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+					.properties(directProperties)
 					.columnDisplayName(property -> getColumnName(property));
 
 			try (EntityCsvWriter writer = new EntityCsvWriter(ed, out, option)) {
