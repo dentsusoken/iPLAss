@@ -124,10 +124,10 @@ public class ObjStoreMaintenanceSql extends UpdateSqlHandler {
 	}
 
 	public String updateCol(int tenantId, String metaId, int defVer, int pageNo, List<ColCopy> ccl, String tableNamePostfix, RdbAdapter rdb) {
-		return updateColInternal(tenantId, metaId, defVer, pageNo, ccl, MetaGRdbEntityStore.makeObjStoreName(tableNamePostfix), rdb);
+		return updateColInternal(tenantId, metaId, defVer, pageNo, ccl, MetaGRdbEntityStore.makeObjStoreName(tableNamePostfix), false, rdb);
 	}
 
-	private String updateColInternal(int tenantId, String metaId, int defVer, int pageNo, List<ColCopy> ccl, String tableName, RdbAdapter rdb) {
+	private String updateColInternal(int tenantId, String metaId, int defVer, int pageNo, List<ColCopy> ccl, String tableName, boolean isRB, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		if (rdb.isNeedFromClauseTableAliasUpdateStatement()) {
 			sb.append("UPDATE ").append("M");
@@ -206,6 +206,10 @@ public class ObjStoreMaintenanceSql extends UpdateSqlHandler {
 						sb.append(" AND ");
 						sb.append("M.").append(ObjStoreTable.OBJ_DEF_ID).append("=S.").append(ObjStoreTable.OBJ_DEF_ID);
 						sb.append(" AND ");
+						if (isRB) {
+							sb.append("M.").append(ObjStoreTable.RB_ID).append("=S.").append(ObjStoreTable.RB_ID);
+							sb.append(" AND ");
+						}
 						sb.append("S.").append(ObjStoreTable.PG_NO).append("=").append(cc.getFromPageNo());
 						sb.append(" AND ");
 						sb.append("M.").append(ObjStoreTable.OBJ_ID).append("=S.").append(ObjStoreTable.OBJ_ID);
@@ -226,6 +230,10 @@ public class ObjStoreMaintenanceSql extends UpdateSqlHandler {
 							sb.append(" AND ");
 							sb.append("M.").append(ObjStoreTable.OBJ_DEF_ID).append("=S.").append(ObjStoreTable.OBJ_DEF_ID);
 							sb.append(" AND ");
+							if (isRB) {
+								sb.append("M.").append(ObjStoreTable.RB_ID).append("=S.").append(ObjStoreTable.RB_ID);
+								sb.append(" AND ");
+							}
 							sb.append("S.").append(ObjStoreTable.PG_NO).append("=").append(cc.getFromPageNo());
 							sb.append(" AND ");
 							sb.append("M.").append(ObjStoreTable.OBJ_ID).append("=S.").append(ObjStoreTable.OBJ_ID);
@@ -251,6 +259,10 @@ public class ObjStoreMaintenanceSql extends UpdateSqlHandler {
 						sb.append(" AND ");
 						sb.append("M.").append(ObjStoreTable.OBJ_DEF_ID).append("=S.").append(ObjStoreTable.OBJ_DEF_ID);
 						sb.append(" AND ");
+						if (isRB) {
+							sb.append("M.").append(ObjStoreTable.RB_ID).append("=S.").append(ObjStoreTable.RB_ID);
+							sb.append(" AND ");
+						}
 						sb.append("S.").append(ObjStoreTable.PG_NO).append("=").append(cc.getFromPageNo());
 						sb.append(" AND ");
 						sb.append("M.").append(ObjStoreTable.OBJ_ID).append("=S.").append(ObjStoreTable.OBJ_ID);
@@ -273,17 +285,17 @@ public class ObjStoreMaintenanceSql extends UpdateSqlHandler {
 	}
 
 	public String updateColRB(int tenantId, String metaId, int defVer, int pageNo, List<ColCopy> ccl, String tableNamePostfix, RdbAdapter rdb) {
-		return updateColInternal(tenantId, metaId, defVer, pageNo, ccl, MetaGRdbEntityStore.makeObjRbTableName(tableNamePostfix), rdb);
+		return updateColInternal(tenantId, metaId, defVer, pageNo, ccl, MetaGRdbEntityStore.makeObjRbTableName(tableNamePostfix), true, rdb);
 	}
 
 	public String updateColDirectJoin(int tenantId, String metaId, int defVer, List<ColCopy>[] ccl, String tableNamePostfix, RdbAdapter rdb) {
-		return updateColDirectJoinInternal(tenantId, metaId, defVer, ccl, MetaGRdbEntityStore.makeObjStoreName(tableNamePostfix), rdb);
+		return updateColDirectJoinInternal(tenantId, metaId, defVer, ccl, MetaGRdbEntityStore.makeObjStoreName(tableNamePostfix), false, rdb);
 	}
 	public String updateColDirectJoinRB(int tenantId, String metaId, int defVer, List<ColCopy>[] ccl, String tableNamePostfix, RdbAdapter rdb) {
-		return updateColDirectJoinInternal(tenantId, metaId, defVer, ccl, MetaGRdbEntityStore.makeObjRbTableName(tableNamePostfix), rdb);
+		return updateColDirectJoinInternal(tenantId, metaId, defVer, ccl, MetaGRdbEntityStore.makeObjRbTableName(tableNamePostfix), true, rdb);
 	}
 
-	private String updateColDirectJoinInternal(int tenantId, String metaId, int defVer, List<ColCopy>[] ccls, String tableName, RdbAdapter rdb) {
+	private String updateColDirectJoinInternal(int tenantId, String metaId, int defVer, List<ColCopy>[] ccls, String tableName, boolean isRB, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		if (rdb.isNeedFromClauseTableAliasUpdateStatement()) {
 			sb.append("UPDATE ").append("p0");
@@ -291,7 +303,7 @@ public class ObjStoreMaintenanceSql extends UpdateSqlHandler {
 			sb.append("UPDATE ").append(tableName).append(" p0");
 		}
 
-		multitableJoinClause(sb, tenantId, metaId, defVer, ccls, tableName, rdb);
+		multitableJoinClause(sb, tenantId, metaId, defVer, ccls, tableName, isRB, rdb);
 		multitableUpdateSetClause(sb, tenantId, metaId, defVer, ccls, rdb);
 
 		if (rdb.isNeedFromClauseTableAliasUpdateStatement()) {
@@ -304,7 +316,7 @@ public class ObjStoreMaintenanceSql extends UpdateSqlHandler {
 		return sb.toString();
 	}
 
-	private void multitableJoinClause(StringBuilder sb, int tenantId, String metaId, int defVer, List<ColCopy>[] ccls, String tableName, RdbAdapter rdb) {
+	private void multitableJoinClause(StringBuilder sb, int tenantId, String metaId, int defVer, List<ColCopy>[] ccls, String tableName, boolean isRB, RdbAdapter rdb) {
 		TreeSet<Integer> joinPages = new TreeSet<>();
 		for (int i = 0; i < ccls.length; i++) {
 			if (ccls[i] != null) {
@@ -324,6 +336,9 @@ public class ObjStoreMaintenanceSql extends UpdateSqlHandler {
 			sb.append(" INNER JOIN ").append(tableName).append(" p").append(i);
 			sb.append(" ON p0.").append(ObjStoreTable.TENANT_ID).append("=p").append(i).append(".").append(ObjStoreTable.TENANT_ID);
 			sb.append(" AND p0.").append(ObjStoreTable.OBJ_DEF_ID).append("=p").append(i).append(".").append(ObjStoreTable.OBJ_DEF_ID);
+			if (isRB) {
+				sb.append(" AND p0.").append(ObjStoreTable.RB_ID).append("=p").append(i).append(".").append(ObjStoreTable.RB_ID);
+			}
 			sb.append(" AND p0.").append(ObjStoreTable.OBJ_ID).append("=p").append(i).append(".").append(ObjStoreTable.OBJ_ID);
 			sb.append(" AND p0.").append(ObjStoreTable.OBJ_VER).append("=p").append(i).append(".").append(ObjStoreTable.OBJ_VER);
 			sb.append(" AND p").append(i).append(".").append(ObjStoreTable.PG_NO).append("=").append(i);
