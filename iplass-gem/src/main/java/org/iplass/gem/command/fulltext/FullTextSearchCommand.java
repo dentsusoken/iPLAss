@@ -220,7 +220,7 @@ public final class FullTextSearchCommand implements Command {
 			.flatMap(oidSet -> oidSet.stream())
 			.collect(Collectors.toSet());
 		if (!userOidSet.isEmpty()) {
-			
+
 			//User名の検索
 			final Map<String, Entity> userInfoMap = new HashMap<String, Entity>();
 			FulltextSearchViewParts parts = getTopViewParts(roleName);
@@ -714,7 +714,7 @@ public final class FullTextSearchCommand implements Command {
 					colModel.setWidth(width);
 					colModel.setAlign(align);
 					colModel.setClasses(style);
-					colModel.setSortable(true);
+					colModel.setSortable(ViewUtil.getEntityViewHelper().isSortable(pd));
 					colModels.add(colModel);
 
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
@@ -732,7 +732,7 @@ public final class FullTextSearchCommand implements Command {
 						colModel.setWidth(width);
 						colModel.setAlign(align);
 						colModel.setClasses(style);
-						colModel.setSortable(true);
+						colModel.setSortable(ViewUtil.getEntityViewHelper().isSortable(pd));
 						colModels.add(colModel);
 					} else {
 						//参照型のName以外を表示する場合
@@ -786,6 +786,7 @@ public final class FullTextSearchCommand implements Command {
 					colModel.setWidth(width);
 					colModel.setAlign(align);
 					colModel.setClasses(nestStyle);
+					colModel.setSortable(ViewUtil.getEntityViewHelper().isSortable(rpd));
 					colModels.add(colModel);
 
 					//UserPropertyEditorのチェック
