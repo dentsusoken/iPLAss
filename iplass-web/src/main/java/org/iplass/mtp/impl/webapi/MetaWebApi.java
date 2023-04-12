@@ -424,7 +424,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 				//method
 				for (MethodType mt: MethodType.values()) {
-					if (name.endsWith(mt.toString())) {
+					if (name.endsWith(mt.toString()) && name.charAt(name.length() - mt.toString().length() - 1) == '/') {
 						specificMethod = mt;
 						parentName = name.substring(0, name.length() - mt.toString().length() - 1);
 						break;

@@ -84,7 +84,7 @@ public class WebApiVariableParameterValueMap implements ParameterValueMap {
 	private void initRawSubPath() {
 		if (noSubPath == false && rawSubPath == null) {
 			String path = reqPath.getTargetPath(true);
-			String webApiName = webApi.getMetaData().getName();
+			String webApiName = webApi.getPublicWebApiName();
 			if (path.length() > webApiName.length()) {
 				rawSubPath = path.substring(webApiName.length() + 1);
 			} else {
