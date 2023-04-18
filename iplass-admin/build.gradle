@@ -433,6 +433,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/generic/element/Element.java'
 		include 'mtp/view/generic/element/Link.java'
 		include 'mtp/view/generic/element/ScriptingElement.java'
+		include 'mtp/view/generic/element/SortItem.java'
 		include 'mtp/view/generic/element/TemplateElement.java'
 		include 'mtp/view/generic/element/VirtualPropertyItem.java'
 

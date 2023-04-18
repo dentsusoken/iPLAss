@@ -1,4 +1,4 @@
-// jqgridスタイル上書き
+//jqgridスタイル上書き
 //TODO 本当はmodule/style.cssに定義したいが、ここでjquery-ui系に対する指定があるので移動できない。
 //skinに依存しているのはソートアイコンだけ
 
@@ -11,7 +11,7 @@
 // $color_curious_blue_approx: #178fe5;
 // $color_pattens_blue_approx: #dfeffc;
 // $color_storm_dust_approx: #666666;
-
+// $color_mine_shaft_approx: #333333;
 //urls
 // $url_pjg1: url(../../../../images/gem/skin/vertical/icon-arrow-04.png);
 // $url_pjg2: url(../../../../images/gem/skin/vertical/icon-arrow-05.png);
@@ -35,18 +35,18 @@
 		margin-bottom: 0;
 		border: none;
 		background: $color_gray_nurse_approx;
-		color: $color_matisse_approx;
+		color: $color_mine_shaft_approx;
 	}
 	.ui-jqgrid-view {
 		width: auto !important;
 	}
-  //ヘッダの表示色指定
-  //「.ui-jqgrid-hdiv」は列が少ない場合にそれ以降も合わせるために指定
-  //「.ui-th-column」を指定しないと「.ui-state-default」が優先されるので注意
+	//ヘッダの表示色指定
+	//「.ui-jqgrid-hdiv」は列が少ない場合にそれ以降も合わせるために指定
+	//「.ui-th-column」を指定しないと「.ui-state-default」が優先されるので注意
 	.ui-jqgrid-hdiv {
 		width: auto !important;
 		background: $color_gray_nurse_approx;
-		color: $color_matisse_approx;
+		color: $color_mine_shaft_approx;
 	}
 	.ui-jqgrid-bdiv {
 		width: auto !important;
@@ -54,7 +54,7 @@
 	.ui-jqgrid-pager {
 		width: auto !important;
 	}
-  //ボーダーを重ねる
+	//ボーダーを重ねる
 	.ui-jqgrid-htable {
 		border-collapse: collapse;
 	}
@@ -62,8 +62,8 @@
 		border-collapse: collapse;
 	}
 	> {
-    //標準ではborder-boxになっているのでcontent-box(paddingとborderを含めない)に変更。
-    //font-sizeはjqgrid側の定義(11px)を上書きして12pxに
+		//標準ではborder-boxになっているのでcontent-box(paddingとborderを含めない)に変更。
+		//font-sizeはjqgrid側の定義(11px)を上書きして12pxに
 		.ui-jqgrid-view {
 			//Instead of the line below you could use @include box-sizing($bs)
 			box-sizing: content-box;
@@ -73,52 +73,48 @@
 			font-size: 12px;
 		}
 	}
-  //テーブル、ヘッダの角を丸めない
+	//テーブル、ヘッダの角を丸めない
 	&.ui-corner-all {
 		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 		border-radius: 0;
 	}
-  //タイトルバーは利用しない
+	//タイトルバーは利用しない
 	.ui-jqgrid-titlebar {
 		display: none;
 	}
 	th {
 		&.ui-th-column {
 			background: $color_gray_nurse_approx;
-			color: $color_matisse_approx;
-      //ヘッダはhover時も同じ色にする
-			&.ui-state-hover {
-				color: $color_matisse_approx;
-			}
+			color: $color_mine_shaft_approx;
 		}
 		&.ui-th-column-header {
 			background: $color_gray_nurse_approx;
-			color: $color_matisse_approx;
+			color: $color_mine_shaft_approx;
 		}
 	}
 	tr {
 		&.jqgrow {
 			background: $white;
-			border: none;//データ行には線を引かない。デフォルトではui-widget-contentにborder 1px。tdで引く。
+			border: none; //データ行には線を引かない。デフォルトではui-widget-contentにborder 1px。tdで引く。
 			td {
-        //データ行のborder
-        //「.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td」を指定しないとjqgrid.cssが優先されるので注意
+				//データ行のborder
+				//「.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td」を指定しないとjqgrid.cssが優先されるので注意
 				border-bottom: 0 none;
 				border-color: $color_celeste_approx;
-				padding: 5px 0 5px 5px;//データ行は右は0にする
+				padding: 5px 0 5px 5px; //データ行は右は0にする
 				vertical-align: middle;
 				&.row-header {
 					background: $color_gray_nurse_approx;
-					color: $color_matisse_approx;
+					color: $color_mine_shaft_approx;
 				}
-        //データ行のアンカー
+				//データ行のアンカー
 				a {
 					color: $color_matisse_approx;
 					&:hover {
 						color: $color_curious_blue_approx;
 						text-decoration: underline;
 					}
-          //検索結果の「詳細/編集」の間のborder設定
+					//検索結果の「詳細/編集」の間のborder設定
 					&.jqborder {
 						margin-right: 5px;
 						padding-right: 5px;
@@ -129,16 +125,16 @@
 					padding: 0 5px;
 				}
 				&.sel_radio {
-					padding-right: 5px;//通常の列として定義しているので、チェックボックス同様右にスペースを空ける
+					padding-right: 5px; //通常の列として定義しているので、チェックボックス同様右にスペースを空ける
 				}
 			}
 			&.myAltRowClass {
 				background: $color_alabaster_approx;
 			}
 		}
-    //データ行の配置
-    //データ行の先頭(width指定部分)は上下は0、右も0にする
-    //データが1行もない場合に1px分表示されるので、背景である「.ui-widget-content」のbackgroundに線を合わせる。borderサイズをいじると列幅がずれるので注意
+		//データ行の配置
+		//データ行の先頭(width指定部分)は上下は0、右も0にする
+		//データが1行もない場合に1px分表示されるので、背景である「.ui-widget-content」のbackgroundに線を合わせる。borderサイズをいじると列幅がずれるので注意
 		&.jqgfirstrow td {
 			padding: 0 0 0 5px;
 			border-color: $color_alabaster_approx;
@@ -146,7 +142,7 @@
 				padding: 0 5px;
 			}
 			&.sel_radio {
-				padding-right: 5px;//通常の列として定義しているので、チェックボックス同様右にスペースを空ける
+				padding-right: 5px; //通常の列として定義しているので、チェックボックス同様右にスペースを空ける
 			}
 		}
 		&.jqg-first-row-header th {
@@ -158,7 +154,7 @@
 				padding: 0 5px;
 			}
 			&.sel_radio {
-				padding-right: 5px;//通常の列として定義しているので、チェックボックス同様右にスペースを空ける
+				padding-right: 5px; //通常の列として定義しているので、チェックボックス同様右にスペースを空ける
 			}
 		}
 	}
@@ -182,9 +178,9 @@
 	.ui-state-highlight {
 		@extend %extend_pjg1;
 	}
-  //ソートアイコン
+	//ソートアイコン
 	.s-ico {
-		float: right;//アイコン表示場所を右端にする
+		float: right; //アイコン表示場所を右端にする
 		display: block;
 		height: 0;
 		> .ui-grid-ico-sort {
@@ -194,16 +190,17 @@
 			&.ui-icon-desc.ui-icon.ui-sort-ltr {
 				background: $url_pjg1 no-repeat left center !important;
 				top: -1.5em;
-				margin-left: 0;//-4pxを消す(標準は両方表示するためずらしている)
+				margin-left: 0; //-4pxを消す(標準は両方表示するためずらしている)
 			}
 			&.ui-icon-asc.ui-icon.ui-sort-ltr {
 				background: $url_pjg2 no-repeat left center !important;
 				top: -1.5em;
-				margin-left: 0;//3pxを消す(標準は両方表示するためずらしている)
+				margin-left: 0; //3pxを消す(標準は両方表示するためずらしている)
 			}
 		}
 	}
 	.ui-jqgrid-sortable {
+		color: $color_matisse_approx;
 		.ui-grid-ico-sort {
 			display:none; //ui-jqgrid-sortableにasc、descが付いていないアイコンは非表示
 		}
@@ -214,26 +211,26 @@
 			display: inline-block;
 		}
 	}
-  //Tree形式のツリー部分用、長いと下にずれるのでinlineに変更。標準ではinline-block
+	//Tree形式のツリー部分用、長いと下にずれるのでinlineに変更。標準ではinline-block
 	.cell-wrapperleaf {
 		display: inline;
 	}
 	.cell-wrapper {
 		display: inline;
 	}
-  //テーブル、ヘッダの角を丸めない
+	//テーブル、ヘッダの角を丸めない
 	.corner-top.ui-jqgrid-hdiv {
 		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 		border-radius: 0;
 	}
 	.ui-jqgrid-labels th {
-    //ヘッダの表示位置
-    //「.ui-jqgrid .ui-jqgrid-labels th.ui-th-column」まで指定しないとjqgrid.css設定が優先されるので注意
+		//ヘッダの表示位置
+		//「.ui-jqgrid .ui-jqgrid-labels th.ui-th-column」まで指定しないとjqgrid.css設定が優先されるので注意
 		&.ui-th-column {
-			text-align: left;//テキストを左寄せ
-			padding: 5px 0 5px 5px;//右はリサイズバーのため0にする
-      //タイトルが長い場合に、ソートアイコンがかぶるので対応。
-      //ColNamesまたはcolModelのlableで<p class="title">label</p>を設定
+			text-align: left; //テキストを左寄せ
+			padding: 5px 0 5px 5px; //右はリサイズバーのため0にする
+			//タイトルが長い場合に、ソートアイコンがかぶるので対応。
+			//ColNamesまたはcolModelのlableで<p class="title">label</p>を設定
 			.asc p.title {
 				margin-right: 18px;
 				overflow: hidden;
@@ -244,7 +241,7 @@
 			}
 		}
 		&.jqgh_cbox {
-			text-align: center;//ヘッダの全選択チェックボックスを中心に持ってくる
+			text-align: center; //ヘッダの全選択チェックボックスを中心に持ってくる
 		}
 	}
 	.ui-widget-header .ui-state-highlight {

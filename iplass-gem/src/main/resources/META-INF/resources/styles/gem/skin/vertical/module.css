@@ -698,13 +698,13 @@ img.ui-datepicker-trigger {
     margin-bottom: 0;
     border: none;
     background: #eaeaea;
-    color: #225d97; }
+    color: #333333; }
   .ui-jqgrid .ui-jqgrid-view {
     width: auto !important; }
   .ui-jqgrid .ui-jqgrid-hdiv {
     width: auto !important;
     background: #eaeaea;
-    color: #225d97; }
+    color: #333333; }
   .ui-jqgrid .ui-jqgrid-bdiv {
     width: auto !important; }
   .ui-jqgrid .ui-jqgrid-pager {
@@ -724,12 +724,10 @@ img.ui-datepicker-trigger {
     display: none; }
   .ui-jqgrid th.ui-th-column {
     background: #eaeaea;
-    color: #225d97; }
-    .ui-jqgrid th.ui-th-column.ui-state-hover {
-      color: #225d97; }
+    color: #333333; }
   .ui-jqgrid th.ui-th-column-header {
     background: #eaeaea;
-    color: #225d97; }
+    color: #333333; }
   .ui-jqgrid tr.jqgrow {
     background: #ffffff;
     border: none; }
@@ -740,7 +738,7 @@ img.ui-datepicker-trigger {
       vertical-align: middle; }
       .ui-jqgrid tr.jqgrow td.row-header {
         background: #eaeaea;
-        color: #225d97; }
+        color: #333333; }
       .ui-jqgrid tr.jqgrow td a {
         color: #225d97; }
         .ui-jqgrid tr.jqgrow td a:hover {
@@ -784,12 +782,14 @@ img.ui-datepicker-trigger {
       background: url(../../../../images/gem/skin/vertical/icon-arrow-05.png) no-repeat left center !important;
       top: -1.5em;
       margin-left: 0; }
-  .ui-jqgrid .ui-jqgrid-sortable .ui-grid-ico-sort {
-    display: none; }
-  .ui-jqgrid .ui-jqgrid-sortable.desc .ui-grid-ico-sort.ui-icon-desc {
-    display: inline-block; }
-  .ui-jqgrid .ui-jqgrid-sortable.asc .ui-grid-ico-sort.ui-icon-asc {
-    display: inline-block; }
+  .ui-jqgrid .ui-jqgrid-sortable {
+    color: #225d97; }
+    .ui-jqgrid .ui-jqgrid-sortable .ui-grid-ico-sort {
+      display: none; }
+    .ui-jqgrid .ui-jqgrid-sortable.desc .ui-grid-ico-sort.ui-icon-desc {
+      display: inline-block; }
+    .ui-jqgrid .ui-jqgrid-sortable.asc .ui-grid-ico-sort.ui-icon-asc {
+      display: inline-block; }
   .ui-jqgrid .cell-wrapperleaf {
     display: inline; }
   .ui-jqgrid .cell-wrapper {

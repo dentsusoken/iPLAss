@@ -722,17 +722,18 @@ button.dialog-csvdl-btn {
     font-weight: bold !important; }
   .ui-jqgrid .ui-jqgrid-htable th {
     background: #ededed;
-    color: #115d85;
     transition: background 300ms;
     border-right: 1px solid #ddd;
     position: relative; }
     .ui-jqgrid .ui-jqgrid-htable th div {
       margin: 0 !important;
       position: static !important; }
-      .ui-jqgrid .ui-jqgrid-htable th div.ui-jqgrid-sortable.asc {
-        margin-right: 20px !important; }
-      .ui-jqgrid .ui-jqgrid-htable th div.ui-jqgrid-sortable.desc {
-        margin-right: 20px !important; }
+      .ui-jqgrid .ui-jqgrid-htable th div.ui-jqgrid-sortable {
+        color: #115d85; }
+        .ui-jqgrid .ui-jqgrid-htable th div.ui-jqgrid-sortable.asc {
+          margin-right: 20px !important; }
+        .ui-jqgrid .ui-jqgrid-htable th div.ui-jqgrid-sortable.desc {
+          margin-right: 20px !important; }
     .ui-jqgrid .ui-jqgrid-htable th p {
       line-height: 40px;
       text-align: left; }
@@ -806,11 +807,6 @@ button.dialog-csvdl-btn {
     display: inline; }
   .ui-jqgrid .frozen-div.ui-jqgrid-hdiv th.ui-th-column:last-child {
     border-bottom: #ddd 1px solid; }
-  .ui-jqgrid .frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr > td {
-    background: #ededed !important;
-    color: #115d85; }
-  .ui-jqgrid .frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr:not(:last-child) > td {
-    border-bottom: 1px solid #ddd !important; }
 
 .ui-jqgrid-view {
   border: 1px solid #ddd; }
@@ -822,6 +818,15 @@ button.dialog-csvdl-btn {
 
 .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr.jqgfirstrow > td {
   padding: 0; }
+
+.ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr > td {
+  background: #ededed !important; }
+
+.ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr:not(:last-child) > td {
+  border-bottom: 1px solid #ddd !important; }
+
+.ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr.ui-state-hover td {
+  background: #d4d4d4 !important; }
 
 ul.jqtree-tree li.jqtree-selected > .jqtree-element, ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
   background: #add866;

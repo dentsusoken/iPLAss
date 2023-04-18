@@ -55,6 +55,9 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	/** テキストの配置 */
 	private TextAlign textAlign;
 
+	/** ソートを許可 */
+	private boolean sortable = true;
+
 	/** CSVの出力 */
 	private boolean outputCsv = true;
 
@@ -113,6 +116,22 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	}
 
 	/**
+	 * ソートを許可するかを取得します。
+	 * @return ソートを許可するか
+	 */
+	public boolean isSortable() {
+		return sortable;
+	}
+
+	/**
+	 * ソートを許可するかを設定します。
+	 * @param sortable ソートを許可するか
+	 */
+	public void setSortable(boolean sortable) {
+		this.sortable = sortable;
+	}
+
+	/**
 	 * CSVに出力するかを取得します。
 	 * @return CSVに出力するか
 	 */
@@ -167,6 +186,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 		width = p.getWidth();
 		nullOrderType =  p.getNullOrderType();
 		textAlign = p.getTextAlign();
+		sortable = p.isSortable();
 		outputCsv = p.isOutputCsv();
 
 		if(p.getBulkUpdateEditor() != null) {
@@ -205,6 +225,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 		p.setWidth(width);
 		p.setNullOrderType(nullOrderType);
 		p.setTextAlign(textAlign);
+		p.setSortable(sortable);
 		p.setOutputCsv(outputCsv);
 		if (bulkUpdateEditor != null) {
 			p.setBulkUpdateEditor(bulkUpdateEditor.currentConfig(p.getPropertyName()));

@@ -115,7 +115,6 @@
 		th {
 			@extend %extend_pjg_1;
 			background: $color_gallery_approx;
-			color: $color_venice_blue_approx;
 			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
 			transition: background 300ms;
 			border-right: 1px solid $color_alto_approx;
@@ -124,6 +123,7 @@
 				margin: 0 !important;
 				position: static !important;
 				&.ui-jqgrid-sortable {
+					color: $color_venice_blue_approx;
 					&.asc {
 						margin-right: 20px !important;
 					}
@@ -259,15 +259,6 @@
 	.frozen-div.ui-jqgrid-hdiv th.ui-th-column:last-child {
 		border-bottom: $color_alto_approx 1px solid;
 	}
-	.frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr {
-		> td {
-			background: $color_gallery_approx !important;
-			color: $color_venice_blue_approx;
-		}
-		&:not(:last-child) > td {
-			border-bottom: 1px solid $color_alto_approx !important;
-		}
-	}
 	.ui-state-hover td {
 		@extend %extend_pjg_4;
 	}
@@ -281,14 +272,29 @@
 .ui-jqgrid-view {
 	border: 1px solid $color_alto_approx;
 }
-.ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr {
-	> td {
-		padding: 10px;
-		background: $white;
-		border-color: $color_alto_approx;
+.ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv {
+	tr.ui-row-ltr {
+		> td {
+			padding: 10px;
+			background: $white;
+			border-color: $color_alto_approx;
+		}
+		&.jqgfirstrow > td {
+			padding: 0;
+		}
+	}
+	&.frozen-bdiv {
+		tr.ui-row-ltr {
+			> td {
+				background: $color_gallery_approx !important;
 			}
-	&.jqgfirstrow > td {
-		padding: 0;
+			&:not(:last-child) > td {
+				border-bottom: 1px solid $color_alto_approx !important;
+			}
+			&.ui-state-hover td {
+				background: $color_quill_gray_approx !important;
+			}
+		}
 	}
 }
 .modal-body .ui-jqgrid {

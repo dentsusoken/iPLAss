@@ -1918,6 +1918,8 @@ LocaleInfo.generic_editor_NestProperty_requiredDisplayTypeDisplaNameKey = "Displ
 LocaleInfo.generic_editor_NestProperty_requiredDisplayTypeDescriptionKey = "Required mark is displayed on the edit screen.<BR />DEFAULT  : Show the required attributes according to the setting of the property definition<BR />DISPLAY  : Show the required attributes<BR />NONE     : Do not show the required attributes";
 LocaleInfo.generic_editor_NestProperty_editorDisplaNameKey = "Property Editor";
 LocaleInfo.generic_editor_NestProperty_editorDescriptionKey = "Please select a property editor to match the type of the property";
+LocaleInfo.generic_editor_NestProperty_sortableDisplaNameKey = "Allow Sort";
+LocaleInfo.generic_editor_NestProperty_sortableDescriptionKey = "Allows sorting on the screen.";
 LocaleInfo.generic_editor_NestProperty_outputCsvDisplaNameKey = "Output CSV";
 LocaleInfo.generic_editor_NestProperty_outputCsvDescriptionKey = "Specify whether to output to CSV.";
 LocaleInfo.generic_editor_NestProperty_requiredNormalDisplaNameKey = "Required items in normal search";
@@ -2209,6 +2211,8 @@ LocaleInfo.generic_element_property_PropertyBase_autocompletionSettingDisplaName
 LocaleInfo.generic_element_property_PropertyBase_autocompletionSettingDescriptionKey = "Set autocompletion setting.";
 LocaleInfo.generic_element_property_PropertyColumn_widthDisplaNameKey = "Column width";
 LocaleInfo.generic_element_property_PropertyColumn_widthDescriptionKey = "Specify the column width.";
+LocaleInfo.generic_element_property_PropertyColumn_sortableDisplaNameKey = "Allow Sort";
+LocaleInfo.generic_element_property_PropertyColumn_sortableDescriptionKey = "Allows sorting on the screen.";
 LocaleInfo.generic_element_property_PropertyColumn_nullOrderTypeDisplaNameKey = "Sort order of the null item";
 LocaleInfo.generic_element_property_PropertyColumn_nullOrderTypeDescriptionKey = "Specify the sort order of the null item.<br>NONE: unspecified, DB dependent<br>FIRST: Sort to top null item<br>LAST: Sort tail to null item";
 LocaleInfo.generic_element_property_PropertyColumn_outputCsvDisplaNameKey = "Output CSV";
