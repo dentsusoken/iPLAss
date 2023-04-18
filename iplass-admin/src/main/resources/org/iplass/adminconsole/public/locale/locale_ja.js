@@ -1918,6 +1918,8 @@ LocaleInfo.generic_editor_NestProperty_requiredDisplayTypeDisplaNameKey = "必�
 LocaleInfo.generic_editor_NestProperty_requiredDisplayTypeDescriptionKey = "編集画面で必須マークを表示します。<BR />DEFAULT : プロパティ定義の必須設定に従って必須属性を表示<BR />DISPLAY : 必須属性を表示<BR />NONE    : 必須属性を表示しない";
 LocaleInfo.generic_editor_NestProperty_editorDisplaNameKey = "プロパティエディタ";
 LocaleInfo.generic_editor_NestProperty_editorDescriptionKey = "プロパティの型にあわせたプロパティエディタを選択してください";
+LocaleInfo.generic_editor_NestProperty_sortableDisplaNameKey = "ソートを許可";
+LocaleInfo.generic_editor_NestProperty_sortableDescriptionKey = "画面でのソートを可能にします。";
 LocaleInfo.generic_editor_NestProperty_outputCsvDisplaNameKey = "CSVに出力する";
 LocaleInfo.generic_editor_NestProperty_outputCsvDescriptionKey = "CSVに出力するかを指定します。";
 LocaleInfo.generic_editor_NestProperty_requiredNormalDisplaNameKey = "通常検索での必須項目";
@@ -2209,6 +2211,8 @@ LocaleInfo.generic_element_property_PropertyBase_autocompletionSettingDisplaName
 LocaleInfo.generic_element_property_PropertyBase_autocompletionSettingDescriptionKey = "自動補完設定を設定します。";
 LocaleInfo.generic_element_property_PropertyColumn_widthDisplaNameKey = "列幅";
 LocaleInfo.generic_element_property_PropertyColumn_widthDescriptionKey = "列幅を指定します。";
+LocaleInfo.generic_element_property_PropertyColumn_sortableDisplaNameKey = "ソートを許可";
+LocaleInfo.generic_element_property_PropertyColumn_sortableDescriptionKey = "画面でのソートを可能にします。";
 LocaleInfo.generic_element_property_PropertyColumn_nullOrderTypeDisplaNameKey = "null項目のソート順";
 LocaleInfo.generic_element_property_PropertyColumn_nullOrderTypeDescriptionKey = "null項目のソート順を指定します。<br>NONE:未指定、DB依存<br>FIRST:null項目を先頭にソート<br>LAST:null項目を後尾にソート";
 LocaleInfo.generic_element_property_PropertyColumn_outputCsvDisplaNameKey = "CSVに出力する";

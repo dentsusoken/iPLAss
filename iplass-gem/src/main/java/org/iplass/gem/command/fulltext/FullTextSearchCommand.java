@@ -714,7 +714,7 @@ public final class FullTextSearchCommand implements Command {
 					colModel.setWidth(width);
 					colModel.setAlign(align);
 					colModel.setClasses(style);
-					colModel.setSortable(ViewUtil.getEntityViewHelper().isSortable(pd));
+					colModel.setSortable(property.isSortable() && ViewUtil.getEntityViewHelper().isSortable(pd));
 					colModels.add(colModel);
 
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
@@ -732,7 +732,7 @@ public final class FullTextSearchCommand implements Command {
 						colModel.setWidth(width);
 						colModel.setAlign(align);
 						colModel.setClasses(style);
-						colModel.setSortable(ViewUtil.getEntityViewHelper().isSortable(pd));
+						colModel.setSortable(property.isSortable() && ViewUtil.getEntityViewHelper().isSortable(pd));
 						colModels.add(colModel);
 					} else {
 						//参照型のName以外を表示する場合
@@ -786,7 +786,7 @@ public final class FullTextSearchCommand implements Command {
 					colModel.setWidth(width);
 					colModel.setAlign(align);
 					colModel.setClasses(nestStyle);
-					colModel.setSortable(ViewUtil.getEntityViewHelper().isSortable(rpd));
+					colModel.setSortable(np.isSortable() && ViewUtil.getEntityViewHelper().isSortable(rpd));
 					colModels.add(colModel);
 
 					//UserPropertyEditorのチェック

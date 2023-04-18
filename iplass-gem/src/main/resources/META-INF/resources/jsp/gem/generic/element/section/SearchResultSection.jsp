@@ -294,7 +294,7 @@ $(function() {
 					}
 					String style = property.getStyle() != null ? property.getStyle() : "";
 					String sortable = "sortable:true";
-					if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
+					if (!property.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
 						sortable = "sortable:false";
 					}
 					String hidden = ", hidden:false";
@@ -319,7 +319,7 @@ $(function() {
 					}
 					String style = property.getStyle() != null ? property.getStyle() : "";
 					String sortable = "sortable:true";
-					if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
+					if (!property.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
 						sortable = "sortable:false";
 					}
 %>
@@ -341,7 +341,7 @@ $(function() {
 						}
 						String style = property.getStyle() != null ? property.getStyle() : "";
 						String sortable = "sortable:true";
-						if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
+						if (!property.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
 							sortable = "sortable:false";
 						}
 						String hidden = ", hidden:false";

@@ -270,7 +270,7 @@ public class SearchResultSection extends Section {
 	)
 	private List<LocalizedStringDefinition> localizedBulkUpdateDisplayLabel;
 
-	/** ソートアイテム */
+	/** 一括更新デフォルト選択項目 */
 	@MetaFieldInfo(
 			displayName="一括更新デフォルト選択項目",
 			displayNameKey="generic_element_section_SearchResultSection_bulkUpdateDefaultSelectionDisplaNameKey",
@@ -305,9 +305,6 @@ public class SearchResultSection extends Section {
 			descriptionKey="generic_element_section_SearchResultSection_forceUpadteDescriptionKey"
 	)
 	private boolean forceUpadte;
-
-	/** カスタムスタイルキー */
-	private String scriptKey;
 
 	/** カスタム登録処理クラス名 */
 	@MetaFieldInfo(
@@ -381,22 +378,9 @@ public class SearchResultSection extends Section {
 	)
 	private String bulkUpdateInterrupterName;
 
-	public DeleteAllCommandTransactionType getDeleteAllCommandTransactionType() {
-		return deleteAllCommandTransactionType;
-	}
+	/** カスタムスタイルキー */
+	private String scriptKey;
 
-	public void setDeleteAllCommandTransactionType(DeleteAllCommandTransactionType deleteAllCommandTransactionType) {
-		this.deleteAllCommandTransactionType = deleteAllCommandTransactionType;
-	}
-
-	public BulkUpdateAllCommandTransactionType getBulkUpdateAllCommandTransactionType() {
-		return bulkUpdateAllCommandTransactionType;
-	}
-
-	public void setBulkUpdateAllCommandTransactionType(
-			BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType) {
-		this.bulkUpdateAllCommandTransactionType = bulkUpdateAllCommandTransactionType;
-	}
 
 	/**
 	 * デフォルトコンストラクタ
@@ -818,4 +802,22 @@ public class SearchResultSection extends Section {
 	public void setBulkUpdateInterrupterName(String bulkUpdateInterrupterName) {
 		this.bulkUpdateInterrupterName = bulkUpdateInterrupterName;
 	}
+
+	public DeleteAllCommandTransactionType getDeleteAllCommandTransactionType() {
+		return deleteAllCommandTransactionType;
+	}
+
+	public void setDeleteAllCommandTransactionType(DeleteAllCommandTransactionType deleteAllCommandTransactionType) {
+		this.deleteAllCommandTransactionType = deleteAllCommandTransactionType;
+	}
+
+	public BulkUpdateAllCommandTransactionType getBulkUpdateAllCommandTransactionType() {
+		return bulkUpdateAllCommandTransactionType;
+	}
+
+	public void setBulkUpdateAllCommandTransactionType(
+			BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType) {
+		this.bulkUpdateAllCommandTransactionType = bulkUpdateAllCommandTransactionType;
+	}
+
 }

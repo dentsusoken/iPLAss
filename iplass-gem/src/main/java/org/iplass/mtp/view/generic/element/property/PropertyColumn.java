@@ -35,6 +35,7 @@ import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.element.CsvItem;
+import org.iplass.mtp.view.generic.element.SortItem;
 
 /**
  * 検索結果一覧用のプロパティ情報
@@ -44,7 +45,7 @@ import org.iplass.mtp.view.generic.element.CsvItem;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/property/PropertyColumn.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class PropertyColumn extends PropertyBase implements CsvItem {
+public class PropertyColumn extends PropertyBase implements CsvItem, SortItem {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -98567336076608090L;
@@ -76,7 +77,16 @@ public class PropertyColumn extends PropertyBase implements CsvItem {
 	private TextAlign textAlign;
 
 
-
+	/** ソートを許可 */
+	@MetaFieldInfo(
+			displayName="ソートを許可",
+			displayNameKey="generic_element_property_PropertyColumn_sortableDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2090,
+			description="ソートを許可するかを設定します。",
+			descriptionKey="generic_element_property_PropertyColumn_sortableDescriptionKey"
+	)
+	private boolean sortable = true;
 
 	/** null項目のソート順 */
 	@MetaFieldInfo(
@@ -158,6 +168,23 @@ public class PropertyColumn extends PropertyBase implements CsvItem {
 	 */
 	public void setWidth(int width) {
 	    this.width = width;
+	}
+
+	/**
+	 * ソートを許可するかを取得します。
+	 * @return ソートを許可するか
+	 */
+	@Override
+	public boolean isSortable() {
+		return sortable;
+	}
+
+	/**
+	 * ソートを許可するかを設定します。
+	 * @param sortable ソートを許可するか
+	 */
+	public void setSortable(boolean sortable) {
+		this.sortable = sortable;
 	}
 
 	/**

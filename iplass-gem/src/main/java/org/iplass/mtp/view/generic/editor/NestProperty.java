@@ -34,12 +34,13 @@ import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.element.CsvItem;
+import org.iplass.mtp.view.generic.element.SortItem;
 
 /**
  * 参照型でテーブル表示等の場合に表示する参照先のプロパティ定義
  * @author lis3wg
  */
-public class NestProperty implements Refrectable, CsvItem {
+public class NestProperty implements Refrectable, CsvItem, SortItem {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -7849466975195960549L;
@@ -269,6 +270,20 @@ public class NestProperty implements Refrectable, CsvItem {
 	)
 	private boolean requiredDetail;
 
+	/** ソートを許可 */
+	@MetaFieldInfo(
+			displayName="ソートを許可",
+			displayNameKey="generic_editor_NestProperty_sortableDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=690,
+			description="ソートを許可するかを設定します。",
+			descriptionKey="generic_editor_NestProperty_sortableDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT}
+	)
+	private boolean sortable = true;
+
 	/** CSVの出力 */
 	@MetaFieldInfo(
 			displayName="CSVに出力する",
@@ -308,6 +323,7 @@ public class NestProperty implements Refrectable, CsvItem {
 	 * プロパティ名を取得します。
 	 * @return プロパティ名
 	 */
+	@Override
 	public String getPropertyName() {
 		return propertyName;
 	}
@@ -324,6 +340,7 @@ public class NestProperty implements Refrectable, CsvItem {
 	 * 表示名を取得します。
 	 * @return 表示名
 	 */
+	@Override
 	public String getDisplayLabel() {
 		return displayLabel;
 	}
@@ -480,6 +497,23 @@ public class NestProperty implements Refrectable, CsvItem {
 	}
 
 	/**
+	 * ソートを許可するかを取得します。
+	 * @return ソートを許可するか
+	 */
+	@Override
+	public boolean isSortable() {
+		return sortable;
+	}
+
+	/**
+	 * ソートを許可するかを設定します。
+	 * @param sortable ソートを許可するか
+	 */
+	public void setSortable(boolean sortable) {
+		this.sortable = sortable;
+	}
+
+	/**
 	 * CSVに出力するかを取得します。
 	 * @return CSVに出力するか
 	 */
@@ -500,6 +534,7 @@ public class NestProperty implements Refrectable, CsvItem {
 	 * プロパティエディタを取得します。
 	 * @return プロパティエディタ
 	 */
+	@Override
 	public PropertyEditor getEditor() {
 		return editor;
 	}
@@ -532,6 +567,7 @@ public class NestProperty implements Refrectable, CsvItem {
 	 * 多言語設定情報を取得します。
 	 * @return リスト
 	 */
+	@Override
 	public List<LocalizedStringDefinition> getLocalizedDisplayLabelList() {
 		return localizedDisplayLabelList;
 	}
