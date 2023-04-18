@@ -137,8 +137,6 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 		return collector.getDefNames();
 	}
 
-
-
 	@Override
 	public void query(EntityQueryInvocation invocation) {
 		if (invocation.getSearchOption().getResultMode() == ResultMode.STREAM) {
@@ -161,7 +159,7 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 			if (hint != null && usedEntityDefs != null) {
 				Predicate<?> callback = invocation.getPredicate();
 				CacheStore store = getCache(true);
-				CacheEntry ce = store.get(q);
+				CacheEntry ce = store.get(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity()));
 				if (ce == null
 						|| ce.getValue() == null
 						|| !((QueryCache) ce.getValue()).canIterate(invocation.getType())
@@ -176,7 +174,7 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 
 					QueryCache qc = new QueryCache(list.size(), list, invocation.getType(), hint.getTTL());
 					q = q.copy();
-					ce = new CacheEntry(q, qc, (Object) usedEntityDefs);
+					ce = new CacheEntry(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity()), qc, (Object) usedEntityDefs);
 					store.put(ce, true);
 				} else {
 					if (logger.isTraceEnabled()) {
@@ -210,14 +208,14 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 
 		if (hint != null && usedEntityDefs != null) {
 			CacheStore store = getCache(true);
-			CacheEntry ce = store.get(q);
+			CacheEntry ce = store.get(new QueryCacheKey(q, false));
 			if (ce == null
 					|| ce.getValue() == null
 					|| ((QueryCache) ce.getValue()).getCount() == null) {
 				int ret = invocation.proceed();
 				QueryCache qc = new QueryCache(ret, null, invocation.getType(), hint.getTTL());
 				q = q.copy();
-				ce = new CacheEntry(q, qc, (Object) usedEntityDefs);
+				ce = new CacheEntry(new QueryCacheKey(q, false), qc, (Object) usedEntityDefs);
 				store.put(ce, true);
 			} else {
 				if (logger.isTraceEnabled()) {
