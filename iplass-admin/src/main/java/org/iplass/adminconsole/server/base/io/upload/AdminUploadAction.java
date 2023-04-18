@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +49,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.iplass.adminconsole.server.base.service.AdminConsoleService;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gwtupload.server.AbstractUploadListener;
 import gwtupload.server.HasKey;
@@ -79,6 +80,10 @@ import gwtupload.server.exceptions.UploadTimeoutException;
 public abstract class AdminUploadAction extends UploadAction {
 
 	private static final long serialVersionUID = -5553465242497700877L;
+	/** TODO ロガー 動作確認用。後で消す。 */
+	private static final Logger LOG = LoggerFactory.getLogger(AdminUploadAction.class);
+	/** アップロードした FileItem 格納先 */
+	protected transient List<FileItem> uploadedItems = null;
 
 	/** copy: UploadAction - contextParameter removeSessionFiles */
 	private boolean removeSessionFiles = false;
@@ -129,7 +134,9 @@ public abstract class AdminUploadAction extends UploadAction {
 		if (stat == null) {
 			stat = new HashMap<String, String>();
 		}
-		List<FileItem> s = getMyLastReceivedFileItems(request);
+		// NOTE FileItemは、メンバ変数から取得する
+		// List<FileItem> s = getMyLastReceivedFileItems(request);
+		List<FileItem> s = this.uploadedItems;
 		if (s != null) {
 			String files = "";
 			String params = "";
@@ -263,15 +270,22 @@ public abstract class AdminUploadAction extends UploadAction {
 		try {
 			// Receive the files and form elements, updating the progress status
 
+			LOG.info("========================= doPost parsePostRequest =========================");
 			// EDIT - parsePostRequest に変更する
 			// error = super.parsePostRequest(request, response); // origin code
 			error = parsePostRequest(request, response); // edit code
+			LOG.info("========================= doPost parsePostRequest finish =========================");
 
 			if (error == null) {
+				LOG.info("========================= doPost getFileItemsSummary =========================");
 				// Fill files status before executing user code which could remove session files
 				getFileItemsSummary(request, tags);
+				LOG.info("========================= doPost getFileItemsSummary finish =========================");
 				// Call to the user code
-				message = executeAction(request, getMyLastReceivedFileItems(request));
+				LOG.info("========================= doPost executeAction =========================");
+				// message = executeAction(request, getMyLastReceivedFileItems(request));
+				message = executeAction(request, this.uploadedItems);
+				LOG.info("========================= doPost executeAction finish =========================");
 			}
 		} catch (UploadCanceledException e) {
 			renderXmlResponse(request, response, "<" + TAG_CANCELED + ">true</" + TAG_CANCELED + ">");
@@ -283,6 +297,15 @@ public abstract class AdminUploadAction extends UploadAction {
 			logger.info("Unknown Exception when receiving a file.", e);
 			error = e.getMessage();
 		} finally {
+			// アップロード処理が完了したら、FileItem をクリア
+			if (this.uploadedItems != null) {
+				for (FileItem f : this.uploadedItems) {
+					if (f != null && !f.isFormField()) {
+						f.delete();
+					}
+				}
+				this.uploadedItems = null;
+			}
 			perThreadRequest.set(null);
 		}
 
@@ -361,26 +384,29 @@ public abstract class AdminUploadAction extends UploadAction {
 			// Receive the files
 			logger.error("UPLOAD-SERVLET (" + session.getId() + ") parsing HTTP POST request ");
 			uploadedItems = uploader.parseRequest(request);
-			session.removeAttribute(getSessionLastFilesKey(request));
+			// session.removeAttribute(getSessionLastFilesKey(request));
 			logger.error(
 					"UPLOAD-SERVLET (" + session.getId() + ") parsed request, " + uploadedItems.size() + " items received.");
 
+			// NOTE セッションには格納しない
 			// Received files are put in session
-			List<FileItem> sessionFiles = getMySessionFileItems(request);
-			if (sessionFiles == null) {
-				sessionFiles = new ArrayList<FileItem>();
-			}
+			// List<FileItem> sessionFiles = getMySessionFileItems(request);
+			// if (sessionFiles == null) {
+			// sessionFiles = new ArrayList<FileItem>();
+			// }
 
 			String error = "";
 			if (uploadedItems.size() > 0) {
-				sessionFiles.addAll(uploadedItems);
-				String msg = "";
-				for (FileItem i : sessionFiles) {
-					msg += i.getFieldName() + " => " + i.getName() + "(" + i.getSize() + " bytes),";
-				}
-				logger.debug("UPLOAD-SERVLET (" + session.getId() + ") puting items in session: " + msg);
-				session.setAttribute(getSessionFilesKey(request), sessionFiles);
-				session.setAttribute(getSessionLastFilesKey(request), uploadedItems);
+				// NOTE セッションには格納しない
+				// sessionFiles.addAll(uploadedItems);
+				// String msg = "";
+				// for (FileItem i : sessionFiles) {
+				// msg += i.getFieldName() + " => " + i.getName() + "(" + i.getSize() + " bytes),";
+				// }
+				// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") puting items in session: " + msg);
+				// session.setAttribute(getSessionFilesKey(request), sessionFiles);
+				// session.setAttribute(getSessionLastFilesKey(request), uploadedItems);
+				this.uploadedItems = uploadedItems;
 			} else if (!isAppEngine()) {
 				logger.error("UPLOAD-SERVLET (" + session.getId() + ") error NO DATA received ");
 				error += getMessage("no_data");
@@ -433,5 +459,81 @@ public abstract class AdminUploadAction extends UploadAction {
 		} catch (NumberFormatException e) {
 		}
 		return size;
+	}
+
+	/**
+	 * Method executed each time the client asks the server for the progress status.
+	 * It uses the listener to generate the adequate response
+	 *
+	 * @param request
+	 * @param fieldname
+	 * @return a map of tag/values to be rendered
+	 */
+	@Override
+	protected Map<String, String> getUploadStatus(HttpServletRequest request, String fieldname, Map<String, String> ret) {
+		// UploadServlet#getUploadStatus をコピーし、セッション内ファイルを確認する箇所を削除
+		perThreadRequest.set(request);
+		HttpSession session = request.getSession();
+
+		if (ret == null) {
+			ret = new HashMap<String, String>();
+		}
+
+		long currentBytes = 0;
+		long totalBytes = 0;
+		long percent = 0;
+		AbstractUploadListener listener = getCurrentListener(request);
+		if (listener != null) {
+			if (listener.isFinished()) {
+
+			} else if (listener.getException() != null) {
+				if (listener.getException() instanceof UploadCanceledException) {
+					ret.put(TAG_CANCELED, "true");
+					ret.put(TAG_FINISHED, TAG_CANCELED);
+					logger.error("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " canceled by the user after "
+							+ listener.getBytesRead() + " Bytes");
+				} else {
+					String errorMsg = getMessage("server_error", listener.getException().getMessage());
+					ret.put(TAG_ERROR, errorMsg);
+					ret.put(TAG_FINISHED, TAG_ERROR);
+					logger.error("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " finished with error: "
+							+ listener.getException().getMessage());
+				}
+			} else {
+				currentBytes = listener.getBytesRead();
+				totalBytes = listener.getContentLength();
+				percent = totalBytes != 0 ? currentBytes * 100 / totalBytes : 0;
+				// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " " + currentBytes +
+				// "/" + totalBytes + " " + percent + "%");
+				ret.put(TAG_PERCENT, "" + percent);
+				ret.put(TAG_CURRENT_BYTES, "" + currentBytes);
+				ret.put(TAG_TOTAL_BYTES, "" + totalBytes);
+			}
+			// NOTE セッションファイルは考慮しない。
+			// } else if (getMySessionFileItems(request) != null) {
+			// if (fieldname == null) {
+			// ret.put(TAG_FINISHED, "ok");
+			// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + request.getQueryString() +
+			// " finished with files: " + session.getAttribute(getSessionFilesKey(request)));
+			// } else {
+			// List<FileItem> sessionFiles = getMySessionFileItems(request);
+			// for (FileItem file : sessionFiles) {
+			// if (file.isFormField() == false && file.getFieldName().equals(fieldname)) {
+			// ret.put(TAG_FINISHED, "ok");
+			// ret.put(UConsts.PARAM_FILENAME, fieldname);
+			// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname +
+			// " finished with files: " + session.getAttribute(getSessionFilesKey(request)));
+			// }
+			// }
+			// }
+		} else {
+			logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: no listener in session");
+			ret.put("wait", "listener is null");
+		}
+		if (ret.containsKey(TAG_FINISHED)) {
+			removeCurrentListener(request);
+		}
+		perThreadRequest.set(null);
+		return ret;
 	}
 }
