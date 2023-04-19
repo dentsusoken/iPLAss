@@ -33,17 +33,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import org.apache.commons.fileupload.FileCountLimitExceededException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.iplass.adminconsole.server.base.service.AdminConsoleService;
@@ -52,13 +46,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 import gwtupload.server.AbstractUploadListener;
 import gwtupload.server.HasKey;
-import gwtupload.server.UploadAction;
-import gwtupload.server.UploadServlet;
 import gwtupload.server.exceptions.UploadActionException;
-import gwtupload.server.exceptions.UploadCanceledException;
-import gwtupload.server.exceptions.UploadException;
-import gwtupload.server.exceptions.UploadSizeLimitException;
-import gwtupload.server.exceptions.UploadTimeoutException;
 
 /**
  * gwt-uploadのUploadActionで解決できない問題を解決する。
@@ -75,16 +63,9 @@ import gwtupload.server.exceptions.UploadTimeoutException;
  *
  * @author SEKIGUCHI Naoya
  */
-public abstract class AdminUploadAction extends UploadAction {
+public abstract class AdminUploadAction extends ThreadLocalFileItemUploadAction {
 
 	private static final long serialVersionUID = -5553465242497700877L;
-	/** アップロードした FileItem 格納先 */
-	protected transient ThreadLocal<List<FileItem>> uploadedItems = new ThreadLocal<>();
-
-	/** copy: UploadAction - contextParameter removeSessionFiles */
-	private boolean removeSessionFiles = false;
-	/** copy: UploadAction - contextParameter removeData */
-	private boolean removeData = false;
 
 	/** 最大パラメータ(ファイル）数 */
 	protected long maxParameterCount;
@@ -96,11 +77,6 @@ public abstract class AdminUploadAction extends UploadAction {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-
-		// copy: UploadAction#init
-		ServletContext ctx = config.getServletContext();
-		removeSessionFiles = Boolean.parseBoolean(ctx.getInitParameter("removeSessionFiles"));
-		removeData = Boolean.parseBoolean(ctx.getInitParameter("removeData"));
 
 		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
 		// マルチパートリクエストの最大パラメータ数を設定する。
@@ -224,6 +200,15 @@ public abstract class AdminUploadAction extends UploadAction {
 		return new AdminFileItemFactory();
 	}
 
+	@Override
+	protected ServletFileUpload getServletFileUpload(FileItemFactory factory, AbstractUploadListener listener) {
+		ServletFileUpload uploader = super.getServletFileUpload(factory, listener);
+		// EDIT - fileCountMax を設定する
+		uploader.setFileCountMax(maxParameterCount);
+
+		return uploader;
+	}
+
 	/**
 	 * <p>FileItem生成用クラス</p>
 	 *
@@ -249,311 +234,4 @@ public abstract class AdminUploadAction extends UploadAction {
 		}
 	}
 
-	/*
-	 * from: UploadAction#doPost
-	 *
-	 * parsePostRequest の呼び出しを、super コールから this コールに変更する。
-	 */
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String error = null;
-		String message = null;
-		Map<String, String> tags = new HashMap<String, String>();
-
-		perThreadRequest.set(request);
-		try {
-			try {
-				// Receive the files and form elements, updating the progress status
-				// EDIT - parsePostRequest に変更する
-				// error = super.parsePostRequest(request, response); // origin code
-				error = parsePostRequest(request, response); // edit code
-
-				if (error == null) {
-					// Fill files status before executing user code which could remove session files
-					getFileItemsSummary(request, tags);
-					// Call to the user code
-					message = executeAction(request, getMyLastReceivedFileItems(request));
-				}
-			} catch (UploadCanceledException e) {
-				renderXmlResponse(request, response, "<" + TAG_CANCELED + ">true</" + TAG_CANCELED + ">");
-				return;
-			} catch (UploadActionException e) {
-				logger.info("ExecuteUploadActionException when receiving a file.", e);
-				error = e.getMessage();
-			} catch (Exception e) {
-				logger.info("Unknown Exception when receiving a file.", e);
-				error = e.getMessage();
-			} finally {
-				perThreadRequest.set(null);
-			}
-
-			String postResponse = null;
-			AbstractUploadListener listener = getCurrentListener(request);
-			if (error != null) {
-				postResponse = "<" + TAG_ERROR + ">" + error + "</" + TAG_ERROR + ">";
-				renderXmlResponse(request, response, postResponse);
-				if (listener != null) {
-					listener.setException(new RuntimeException(error));
-				}
-				UploadServlet.removeSessionFileItems(request);
-			} else {
-				if (message != null) {
-					// see issue #139
-					tags.put("message", "<![CDATA[" + message + "]]>");
-				}
-				postResponse = statusToString(tags);
-				renderXmlResponse(request, response, postResponse, true);
-			}
-			finish(request, postResponse);
-
-			if (removeSessionFiles) {
-				removeSessionFileItems(request, removeData);
-			}
-		} finally {
-			// サブクラスでは executeAction 初期タイミングで、readRequest 実行し、別の一時ファイルに読み取っている。
-			// TODO この位置で良いか？FileItem で管理しているファイルはいらないので、削除して良い。消さない限りファイルが残ってしまう。
-			removeFileItems(request, removeData);
-		}
-	}
-
-	/**
-	 * ファイルアイテムを削除する
-	 * @param request HttpServletRequest
-	 * @param removeData ファイルを削除するか否か
-	 */
-	protected void removeFileItems(HttpServletRequest request, boolean removeData) {
-		// アップロード処理が完了したら、FileItem をクリア
-		logger.error("UPLOAD-SERVLET (" + request.getSession().getId() + ") removeFileItems: removeData=" + removeData);
-		try {
-			// TODO removeData のチェックが必要か？
-			if (removeData && this.uploadedItems.get() != null) {
-				logger.error("UPLOAD-SERVLET (" + request.getSession().getId() + ") removeFileItems: remove section.");
-				for (FileItem f : this.uploadedItems.get()) {
-					if (f != null && !f.isFormField()) {
-						f.delete();
-					}
-				}
-			}
-		} finally {
-			this.uploadedItems.remove();
-		}
-	}
-	/*
-	 * from: UploadServlet#parsePostRequest
-	 *
-	 * GWT Upload で利用している ServletFileUpload インスタンスに fileCountMax を指定したい。
-	 *
-	 * そのため、UploadServlet#parsePostRequest をコピー後カスタマイズし fileCountMax を設定する。
-	 */
-	@Override
-	protected String parsePostRequest(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			String delay = request.getParameter(PARAM_DELAY);
-			uploadDelay = Integer.parseInt(delay);
-		} catch (Exception e) {
-		}
-
-		HttpSession session = request.getSession();
-
-		logger.debug("UPLOAD-SERVLET (" + session.getId() + ") new upload request received.");
-
-		AbstractUploadListener listener = getCurrentListener(request);
-		if (listener != null) {
-			if (!listener.isFrozen() && !listener.isCanceled() && (listener.getPercent() < 100)) {
-				String error = getMessage("busy");
-				logger.error("UPLOAD-SERVLET (" + session.getId() + ") " + error);
-				return error;
-			}
-			removeCurrentListener(request);
-		}
-
-		// Create a file upload progress listener, and put it in the user session,
-		// so the browser can use ajax to query status of the upload process
-		listener = createNewListener(request);
-
-		List<FileItem> uploadedItems;
-		try {
-
-			// Call to a method which the user can override
-			checkRequest(request);
-
-			// Create the factory used for uploading files,
-			FileItemFactory factory = getFileItemFactory(getContentLength(request));
-			ServletFileUpload uploader = new ServletFileUpload(factory);
-			uploader.setSizeMax(maxSize);
-			uploader.setFileSizeMax(maxFileSize);
-			uploader.setProgressListener(listener);
-			// EDIT - fileCountMax を設定する
-			uploader.setFileCountMax(maxParameterCount);
-
-			// Receive the files
-			logger.error("UPLOAD-SERVLET (" + session.getId() + ") parsing HTTP POST request ");
-			uploadedItems = uploader.parseRequest(request);
-			// session.removeAttribute(getSessionLastFilesKey(request));
-			logger.error(
-					"UPLOAD-SERVLET (" + session.getId() + ") parsed request, " + uploadedItems.size() + " items received.");
-
-			// NOTE セッションには格納しない
-			// Received files are put in session
-			// List<FileItem> sessionFiles = getMySessionFileItems(request);
-			// if (sessionFiles == null) {
-			// sessionFiles = new ArrayList<FileItem>();
-			// }
-
-			String error = "";
-			if (uploadedItems.size() > 0) {
-				// NOTE セッションには格納しない
-				// sessionFiles.addAll(uploadedItems);
-				// String msg = "";
-				// for (FileItem i : sessionFiles) {
-				// msg += i.getFieldName() + " => " + i.getName() + "(" + i.getSize() + " bytes),";
-				// }
-				// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") puting items in session: " + msg);
-				// session.setAttribute(getSessionFilesKey(request), sessionFiles);
-				// session.setAttribute(getSessionLastFilesKey(request), uploadedItems);
-				this.uploadedItems.set(uploadedItems);
-			} else if (!isAppEngine()) {
-				logger.error("UPLOAD-SERVLET (" + session.getId() + ") error NO DATA received ");
-				error += getMessage("no_data");
-			}
-			return error.length() > 0 ? error : null;
-
-			// So much silly questions in the list about this issue.
-		} catch (LinkageError e) {
-			logger.error("UPLOAD-SERVLET (" + request.getSession().getId() + ") Exception: " + e.getMessage() + "\n"
-					+ stackTraceToString(e));
-			RuntimeException ex = new UploadActionException(getMessage("restricted", e.getMessage()), e);
-			listener.setException(ex);
-			throw ex;
-		} catch (SizeLimitExceededException e) {
-			RuntimeException ex = new UploadSizeLimitException(e.getPermittedSize(), e.getActualSize());
-			listener.setException(ex);
-			throw ex;
-		} catch (FileCountLimitExceededException e) {
-			// EDIT - fileCountMax を設定することで発生する例外をハンドリング
-			RuntimeException ex = new UploadActionException(
-					"The request was rejected because its parameter count, exceeds the maximum: " + maxParameterCount, e);
-			listener.setException(ex);
-			throw ex;
-		} catch (UploadSizeLimitException e) {
-			listener.setException(e);
-			throw e;
-		} catch (UploadCanceledException e) {
-			listener.setException(e);
-			throw e;
-		} catch (UploadTimeoutException e) {
-			listener.setException(e);
-			throw e;
-		} catch (Throwable e) {
-			logger.error("UPLOAD-SERVLET (" + request.getSession().getId() + ") Unexpected Exception -> " + e.getMessage()
-			+ "\n" + stackTraceToString(e));
-			e.printStackTrace();
-			RuntimeException ex = new UploadException(e);
-			listener.setException(ex);
-			throw ex;
-		}
-	}
-
-	@Override
-	public List<FileItem> getMyLastReceivedFileItems(HttpServletRequest request) {
-		// アップロードされたの FileItem を取得する。ファイル情報はメンバー変数より取得する。
-		return this.uploadedItems.get();
-	}
-
-	@Override
-	public List<FileItem> getMySessionFileItems(HttpServletRequest request) {
-		// セッションファイルを格納しないので、null 返却する。AdminUploadAction 経由ではコールされる経路がない
-		return null;
-	}
-
-	/*
-	 * from: UploadServlet#getContentLength
-	 */
-	private long getContentLength(HttpServletRequest request) {
-		long size = -1;
-		try {
-			size = Long.parseLong(request.getHeader(FileUploadBase.CONTENT_LENGTH));
-		} catch (NumberFormatException e) {
-		}
-		return size;
-	}
-
-	// UploadServlet#getUploadStatus をコピーし、セッション内ファイルを確認する箇所を削除
-	// TODO このメソッドは無くてもとりあえず動く。listener は必ず UploadListener 利用される為、session 内の Listener が null になるパターンはない。
-	// UploadListener 以外が利用されるためには、ServletContext init-param に appEngine = true の設定が必要
-	/**
-	 * Method executed each time the client asks the server for the progress status.
-	 * It uses the listener to generate the adequate response
-	 *
-	 * @param request
-	 * @param fieldname
-	 * @return a map of tag/values to be rendered
-	 */
-	@Override
-	protected Map<String, String> getUploadStatus(HttpServletRequest request, String fieldname, Map<String, String> ret) {
-		perThreadRequest.set(request);
-		HttpSession session = request.getSession();
-
-		if (ret == null) {
-			ret = new HashMap<String, String>();
-		}
-
-		long currentBytes = 0;
-		long totalBytes = 0;
-		long percent = 0;
-		AbstractUploadListener listener = getCurrentListener(request);
-		if (listener != null) {
-			if (listener.isFinished()) {
-
-			} else if (listener.getException() != null) {
-				if (listener.getException() instanceof UploadCanceledException) {
-					ret.put(TAG_CANCELED, "true");
-					ret.put(TAG_FINISHED, TAG_CANCELED);
-					logger.error("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " canceled by the user after "
-							+ listener.getBytesRead() + " Bytes");
-				} else {
-					String errorMsg = getMessage("server_error", listener.getException().getMessage());
-					ret.put(TAG_ERROR, errorMsg);
-					ret.put(TAG_FINISHED, TAG_ERROR);
-					logger.error("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " finished with error: "
-							+ listener.getException().getMessage());
-				}
-			} else {
-				currentBytes = listener.getBytesRead();
-				totalBytes = listener.getContentLength();
-				percent = totalBytes != 0 ? currentBytes * 100 / totalBytes : 0;
-				// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " " + currentBytes +
-				// "/" + totalBytes + " " + percent + "%");
-				ret.put(TAG_PERCENT, "" + percent);
-				ret.put(TAG_CURRENT_BYTES, "" + currentBytes);
-				ret.put(TAG_TOTAL_BYTES, "" + totalBytes);
-			}
-			// NOTE セッションファイルは考慮しない。
-			// } else if (getMySessionFileItems(request) != null) {
-			// if (fieldname == null) {
-			// ret.put(TAG_FINISHED, "ok");
-			// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + request.getQueryString()
-			// + " finished with files: " + session.getAttribute(getSessionFilesKey(request)));
-			// } else {
-			// List<FileItem> sessionFiles = getMySessionFileItems(request);
-			// for (FileItem file : sessionFiles) {
-			// if (file.isFormField() == false && file.getFieldName().equals(fieldname)) {
-			// ret.put(TAG_FINISHED, "ok");
-			// ret.put(UConsts.PARAM_FILENAME, fieldname);
-			// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " finished with files:
-			// "
-			// + session.getAttribute(getSessionFilesKey(request)));
-			// }
-			// }
-			// }
-		} else {
-			logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: no listener in session");
-			ret.put("wait", "listener is null");
-		}
-		if (ret.containsKey(TAG_FINISHED)) {
-			removeCurrentListener(request);
-		}
-		perThreadRequest.set(null);
-		return ret;
-	}
 }
