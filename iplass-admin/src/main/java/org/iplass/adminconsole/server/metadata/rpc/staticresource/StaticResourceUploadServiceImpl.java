@@ -78,9 +78,6 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 			//リクエスト情報の取得
 			readRequest(request, sessionFiles, args);
 
-			//セッションからファイルを削除
-		    super.removeSessionFileItems(request);
-
 		    //リクエスト情報の検証
 			validateRequest(args);
 
@@ -270,7 +267,7 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 			//（更新に必要なIDはStaticResourceDefinitionManagerで同一名のIDが設定される）
 			definition = new StaticResourceDefinition();
 		} else {
-			definition = (StaticResourceDefinition) oldDefinition;
+			definition = oldDefinition;
 			oldLocaleList = definition.getLocalizedResourceList();
 		}
 
