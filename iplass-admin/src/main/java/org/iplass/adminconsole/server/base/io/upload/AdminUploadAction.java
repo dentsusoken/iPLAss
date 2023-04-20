@@ -25,16 +25,12 @@ import static gwtupload.shared.UConsts.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -45,16 +41,11 @@ import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 import gwtupload.server.AbstractUploadListener;
-import gwtupload.server.HasKey;
-import gwtupload.server.exceptions.UploadActionException;
 
 /**
  * gwt-uploadのUploadActionで解決できない問題を解決する。
  *
  * <ul>
- * <li>
- * レスポンスに返すSummary情報を生成する際に、文字コードを指定する（デフォルトではマルチバイト文字が化ける）。
- * </li>
  * <li>
  * commons-fileupload の ServletFileUpload インスタンスに、最大ファイル数（fileCountMax）を設定する。
  * </li>
@@ -100,30 +91,6 @@ public abstract class AdminUploadAction extends ThreadLocalFileItemUploadAction 
 		return contextTempDir;
 	}
 
-	@Override
-	protected Map<String, String> getFileItemsSummary(
-			HttpServletRequest request, Map<String, String> stat) {
-		if (stat == null) {
-			stat = new HashMap<String, String>();
-		}
-		List<FileItem> s = getMyLastReceivedFileItems(request);
-		if (s != null) {
-			String files = "";
-			String params = "";
-			for (FileItem i : s) {
-				if (i.isFormField()) {
-					params += formFieldToXml(i);
-				} else {
-					files += fileFieldToXml(i);
-				}
-			}
-			stat.put(TAG_FILES, files);
-			stat.put(TAG_PARAMS, "<![CDATA[" + params + "]]>");
-			stat.put(TAG_FINISHED, "ok");
-		}
-		return stat;
-	}
-
 	protected final byte[] convertFileToByte(File file) {
 		byte[] bytes = null;
 		FileInputStream is = null;
@@ -157,43 +124,6 @@ public abstract class AdminUploadAction extends ThreadLocalFileItemUploadAction 
 
 		return bytes;
 	}
-
-	private String formFieldToXml(FileItem i) {
-		Map<String, String> item = new HashMap<String, String>();
-
-		//カスタマイズ START
-		//item.put(TAG_VALUE, "" + i.getString());
-		try {
-			item.put(TAG_VALUE, "" + i.getString("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			throw new UploadActionException(e);
-		}
-		//カスタマイズ END
-
-		item.put(TAG_FIELD, "" + i.getFieldName());
-
-		Map<String, String> param = new HashMap<String, String>();
-		param.put(TAG_PARAM, statusToString(item));
-		return statusToString(param);
-	}
-
-	private String fileFieldToXml(FileItem i) {
-		Map<String, String> item = new HashMap<String, String>();
-		item.put(TAG_CTYPE, i.getContentType() != null ? i.getContentType()
-				: "unknown");
-		item.put(TAG_SIZE, "" + i.getSize());
-		item.put(TAG_NAME, "" + i.getName());
-		item.put(TAG_FIELD, "" + i.getFieldName());
-		if (i instanceof HasKey) {
-			String k = ((HasKey) i).getKeyString();
-			item.put(TAG_KEY, k);
-		}
-
-		Map<String, String> file = new HashMap<String, String>();
-		file.put(TAG_FILE, statusToString(item));
-		return statusToString(file);
-	}
-
 
 	@Override
 	protected FileItemFactory getFileItemFactory(long requestSize) {
