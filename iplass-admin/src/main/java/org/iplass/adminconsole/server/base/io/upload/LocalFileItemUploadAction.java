@@ -60,7 +60,8 @@ import gwtupload.server.exceptions.UploadTimeoutException;
  * 修正概要
  * <ol>
  * <li>アップロードしたファイルをセッションに格納せず、メソッドローカル変数で管理する形に変更</li>
- * <li>レスポンスに返すSummary情報を生成する際に、文字コードを指定（デフォルトではマルチバイト文字が化ける）。</li>
+ * <li>レスポンスに返すSummary情報を生成する際に、文字コードを指定（デフォルトではマルチバイト文字が化ける）</li>
+ * <li>UploadListener もセッションを利用しない（isAppEngine の返却値を常に true 返却する）</li>
  * </ol>
  * </p>
  * 
@@ -68,11 +69,25 @@ import gwtupload.server.exceptions.UploadTimeoutException;
  * UploadAction ではアップロード対象ファイルの情報（FileItem）をセッションで管理することを基本としている。
  * 本クラスは、commons-fileupload のバージョンアップの影響により FileItem が Serializable を実装しなくなった為、
  * セッションに格納せず、ローカル変数に格納し情報を管理す方法を取る。 
+ * 
+ * トレードオフとして、セッションをまたいだファイルアップロード操作ができなくなってしまう。
+ * ※AdminConsoleのファイルアップロードでは、ファイルを取得した後にファイル削除しているため、実質影響はない。
  * </p>
  * 
  * <p>
- * トレードオフとして、セッションをまたいだファイルアップロード操作ができなくなってしまう。
- * ※AdminConsoleのファイルアップロードでは、ファイルを取得した後にファイル削除しているため、実質影響はない。
+ * UploadListener もセッション利用しないことを選択。
+ * 注意点として、サーバをクラスタ構成にしている場合、アップロード処理の管理がサーバ毎になる。
+ * Stickyセッションを選択していない場合は、同一セッションで複数アップロード処理が実行できるケースがある。
+ * </p>
+ * 
+ * <p>
+ * 注記
+ * <ul>
+ * <li>
+ * {@link gwtupload.server.UploadServlet#getUploadStatus(HttpServletRequest, String, Map)} でセッションファイルを参照している実装があるが、
+ * AdminConsole のファイルアップロードではファイルアップロード状況を確認しない実装とした。
+ * </li>
+ * </ul>
  * </p>
  * 
  * <p>
@@ -277,6 +292,19 @@ public class LocalFileItemUploadAction extends UploadAction {
 	}
 
 	/**
+	* Just a method to detect whether the web container is running with appengine
+	* restrictions.
+	*
+	* @return true if the case of the application is running in appengine
+	*/
+	@Override
+	public boolean isAppEngine() {
+		// EDIT - APサーバ内で完結する（常にtrue）形にする
+		// return appEngine;
+		return true;
+	}
+
+	/**
 	 * This method parses the submit action, puts in session a listener where the
 	 * progress status is updated, and eventually stores the received data in
 	 * the user session.
@@ -356,13 +384,8 @@ public class LocalFileItemUploadAction extends UploadAction {
 			// }
 			// return error.length() > 0 ? error : null;
 
-			String error = "";
-			if (uploadedItems.size() > 0) {
-				return new ParsePostRequestResult(null, uploadedItems);
-			}
-			logger.error("UPLOAD-SERVLET (" + session.getId() + ") error NO DATA received ");
-			error += getMessage("no_data");
-			return new ParsePostRequestResult(error, null);
+			// uploadedItems を返却する（元ロジックには、isAppEngine で判定する箇所が存在していたが、常に true を返却するため、シンプルな形に変更。
+			return new ParsePostRequestResult(null, uploadedItems);
 
 			// So much silly questions in the list about this issue.
 		} catch (LinkageError e) {
@@ -439,84 +462,6 @@ public class LocalFileItemUploadAction extends UploadAction {
 		// EDIT - 現行のメソッドは廃止。final 化し、Override も禁止。
 		throw new UnsupportedOperationException(
 				"Method is unavailable. Please use #getFileItemsSummary(HttpServletRequest, Map<String, String>, List<FileItem>).");
-	}
-
-	// NOTE このメソッドは無くてもとりあえず動く。listener は必ず UploadListener 利用される為、session 内の Listener が null になるパターンはない。
-	// NOTE UploadListener 以外が利用されるためには、ServletContext init-param に appEngine = true の設定が必要
-	/**
-	 * Method executed each time the client asks the server for the progress status.
-	 * It uses the listener to generate the adequate response
-	 *
-	 * @param request
-	 * @param fieldname
-	 * @return a map of tag/values to be rendered
-	 */
-	@Override
-	protected Map<String, String> getUploadStatus(HttpServletRequest request, String fieldname, Map<String, String> ret) {
-		perThreadRequest.set(request);
-		HttpSession session = request.getSession();
-
-		if (ret == null) {
-			ret = new HashMap<String, String>();
-		}
-
-		long currentBytes = 0;
-		long totalBytes = 0;
-		long percent = 0;
-		AbstractUploadListener listener = getCurrentListener(request);
-		if (listener != null) {
-			if (listener.isFinished()) {
-
-			} else if (listener.getException() != null) {
-				if (listener.getException() instanceof UploadCanceledException) {
-					ret.put(TAG_CANCELED, "true");
-					ret.put(TAG_FINISHED, TAG_CANCELED);
-					logger.error("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " canceled by the user after "
-							+ listener.getBytesRead() + " Bytes");
-				} else {
-					String errorMsg = getMessage("server_error", listener.getException().getMessage());
-					ret.put(TAG_ERROR, errorMsg);
-					ret.put(TAG_FINISHED, TAG_ERROR);
-					logger.error("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " finished with error: "
-							+ listener.getException().getMessage());
-				}
-			} else {
-				currentBytes = listener.getBytesRead();
-				totalBytes = listener.getContentLength();
-				percent = totalBytes != 0 ? currentBytes * 100 / totalBytes : 0;
-				// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " " + currentBytes +
-				// "/" + totalBytes + " " + percent + "%");
-				ret.put(TAG_PERCENT, "" + percent);
-				ret.put(TAG_CURRENT_BYTES, "" + currentBytes);
-				ret.put(TAG_TOTAL_BYTES, "" + totalBytes);
-			}
-			// EDIT - セッションファイルは考慮しない
-			// } else if (getMySessionFileItems(request) != null) {
-			// if (fieldname == null) {
-			// ret.put(TAG_FINISHED, "ok");
-			// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + request.getQueryString()
-			// + " finished with files: " + session.getAttribute(getSessionFilesKey(request)));
-			// } else {
-			// List<FileItem> sessionFiles = getMySessionFileItems(request);
-			// for (FileItem file : sessionFiles) {
-			// if (file.isFormField() == false && file.getFieldName().equals(fieldname)) {
-			// ret.put(TAG_FINISHED, "ok");
-			// ret.put(UConsts.PARAM_FILENAME, fieldname);
-			// logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: " + fieldname + " finished with files:
-			// "
-			// + session.getAttribute(getSessionFilesKey(request)));
-			// }
-			// }
-			// }
-		} else {
-			logger.debug("UPLOAD-SERVLET (" + session.getId() + ") getUploadStatus: no listener in session");
-			ret.put("wait", "listener is null");
-		}
-		if (ret.containsKey(TAG_FINISHED)) {
-			removeCurrentListener(request);
-		}
-		perThreadRequest.set(null);
-		return ret;
 	}
 
 	private long getContentLength(HttpServletRequest request) {

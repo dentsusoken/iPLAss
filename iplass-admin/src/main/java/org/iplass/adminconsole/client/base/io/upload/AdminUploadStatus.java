@@ -20,14 +20,20 @@
 
 package org.iplass.adminconsole.client.base.io.upload;
 
-import gwtupload.client.BaseUploadStatus;
-
 import java.util.EnumSet;
+
+import gwtupload.client.BaseUploadStatus;
 
 public class AdminUploadStatus extends BaseUploadStatus {
 
 	public AdminUploadStatus() {
 		//キャンセルを利用不可に設定
 		setCancelConfiguration(EnumSet.of(CancelBehavior.DISABLED));
+	}
+
+	@Override
+	protected void updateStatusPanel(boolean showProgress, String statusMessage) {
+		// アップロード進捗状況を常に表示しない
+		super.updateStatusPanel(false, null);
 	}
 }
