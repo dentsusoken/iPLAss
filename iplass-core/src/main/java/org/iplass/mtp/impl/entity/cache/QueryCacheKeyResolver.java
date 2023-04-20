@@ -24,15 +24,28 @@ import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.impl.cache.store.keyresolver.CacheKeyResolver;
 
 public class QueryCacheKeyResolver implements CacheKeyResolver {
+	static final String FLAG_RETURN_STRUCTURED_ENTITY = "RSE:";
 
 	@Override
 	public String toString(Object cacheKey) {
-		return cacheKey.toString();
+		QueryCacheKey k = (QueryCacheKey) cacheKey;
+		if (k.returnStructuredEntity) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(FLAG_RETURN_STRUCTURED_ENTITY).append(k.query.toString());
+			return sb.toString();
+		} else {
+			return k.query.toString();
+		}
 	}
 
 	@Override
 	public Object toCacheKey(String cacheKeyString) {
-		return Query.newQuery(cacheKeyString);
+		if (cacheKeyString.startsWith(FLAG_RETURN_STRUCTURED_ENTITY)) {
+			Query q =  Query.newQuery(cacheKeyString.substring(FLAG_RETURN_STRUCTURED_ENTITY.length()));
+			return new QueryCacheKey(q, true);
+		} else {
+			return new QueryCacheKey(Query.newQuery(cacheKeyString), false);
+		}
 	}
 
 }
