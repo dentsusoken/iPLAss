@@ -54,7 +54,7 @@ import gwtupload.server.exceptions.UploadTimeoutException;
 
 // NOTE AdminUploadAction に拡張していくと責務が大きくなりすぎてしまうため、リファクタリング
 /**
- * ファイルアップロードアクションクラス（ファイル情報をローカル変数対応版）
+ * ファイルアップロードアクションクラス（セッションを利用せず、ファイル情報をローカル変数対応版）
  * 
  * <p>
  * 修正概要
@@ -97,10 +97,10 @@ import gwtupload.server.exceptions.UploadTimeoutException;
  * @author SEKIGUCHI Naoya
  *
  */
-public class LocalFileItemUploadAction extends UploadAction {
+public class UploadActionNotUseSession extends UploadAction {
 
 	/** シリアルバージョンUID */
-	private static final long serialVersionUID = 6863306479845001945L;
+	private static final long serialVersionUID = 7875576716469462797L;
 
 	// ===================================== classes =====================================
 	// ------------------------------------- CUSTOMIZED -------------------------------------

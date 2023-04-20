@@ -54,7 +54,7 @@ import gwtupload.server.AbstractUploadListener;
  *
  * @author SEKIGUCHI Naoya
  */
-public abstract class AdminUploadAction extends LocalFileItemUploadAction {
+public abstract class AdminUploadAction extends UploadActionNotUseSession {
 
 	private static final long serialVersionUID = -5553465242497700877L;
 
