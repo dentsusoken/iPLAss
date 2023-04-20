@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2023 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.iplass.adminconsole.server.base.io.upload;
 
 import static gwtupload.shared.UConsts.*;
@@ -34,12 +54,20 @@ import gwtupload.server.exceptions.UploadTimeoutException;
 
 // NOTE AdminUploadAction に拡張していくと責務が大きくなりすぎてしまうため、リファクタリング
 /**
- * ファイルアップロードアクションクラス（ファイル情報をスレッドローカル格納版）
+ * ファイルアップロードアクションクラス（ファイル情報をローカル変数対応版）
+ * 
+ * <p>
+ * 修正概要
+ * <ol>
+ * <li>アップロードしたファイルをセッションに格納せず、メソッドローカル変数で管理する形に変更</li>
+ * <li>レスポンスに返すSummary情報を生成する際に、文字コードを指定（デフォルトではマルチバイト文字が化ける）。</li>
+ * </ol>
+ * </p>
  * 
  * <p>
  * UploadAction ではアップロード対象ファイルの情報（FileItem）をセッションで管理することを基本としている。
  * 本クラスは、commons-fileupload のバージョンアップの影響により FileItem が Serializable を実装しなくなった為、
- * セッションに格納せず、ローカルメンバー変数に格納し情報を管理す方法を取る。 
+ * セッションに格納せず、ローカル変数に格納し情報を管理す方法を取る。 
  * </p>
  * 
  * <p>
@@ -54,21 +82,34 @@ import gwtupload.server.exceptions.UploadTimeoutException;
  * @author SEKIGUCHI Naoya
  *
  */
-// FIXME クラス名を変更する
-public class ThreadLocalFileItemUploadAction extends UploadAction {
+public class LocalFileItemUploadAction extends UploadAction {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 6863306479845001945L;
 
 	// ===================================== classes =====================================
 	// ------------------------------------- CUSTOMIZED -------------------------------------
+	/**
+	 * ParsePostRequest メソッドの返却値クラス
+	 * 文字列 error の他に、アップロード対象ファイル uploadItems を取得したいため作成。
+	 * 
+	 * @author SEKIGUCHI Naoya
+	 *
+	 */
 	private static class ParsePostRequestResult {
+		/** エラー文字列 */
 		private String error;
+		/** アップロードファイル */
 		private List<FileItem> uploadedItems;
 
-		public ParsePostRequestResult(String error, List<FileItem> uploadItems) {
+		/**
+		 * コンストラクタ
+		 * @param error エラー文字列
+		 * @param uploadedItems アップロードアイテム
+		 */
+		public ParsePostRequestResult(String error, List<FileItem> uploadedItems) {
 			this.error = error;
-			this.uploadedItems = uploadItems;
+			this.uploadedItems = uploadedItems;
 		}
 	}
 
@@ -84,6 +125,8 @@ public class ThreadLocalFileItemUploadAction extends UploadAction {
 	// ------------------------------------- CUSTOMIZED -------------------------------------
 	/**
 	 * formFieldToXml の復号時の文字コードを設定する
+	 * 本メソッドで指定しない場合のデフォルト値は、{@link StandardCharsets.UTF_8} である。
+	 * 
 	 * @param charset 文字コードセット
 	 */
 	public void setFormFieldToXmlCharsets(Charset charset) {
@@ -214,9 +257,10 @@ public class ThreadLocalFileItemUploadAction extends UploadAction {
 	 * Return the list of FileItems stored in session under the session key.
 	 */
 	// FIXME(manolo): Not sure about the convenience of this and sessionFilesKey.
+	@Deprecated
 	@Override
-	public List<FileItem> getMySessionFileItems(HttpServletRequest request) {
-		// EDIT - セッションは利用しない。セッションをまたいだファイル情報は返却しない
+	public final List<FileItem> getMySessionFileItems(HttpServletRequest request) {
+		// EDIT - セッションは利用しない。セッションをまたいだファイル情報は返却しない。final 化し、deprecated 設定。
 		// return getSessionFileItems(request, getSessionFilesKey(request));
 		return null;
   }
@@ -224,9 +268,10 @@ public class ThreadLocalFileItemUploadAction extends UploadAction {
 	/**
 	 * Return the most recent list of FileItems received under the session key
 	 */
+	@Deprecated
 	@Override
-	public List<FileItem> getMyLastReceivedFileItems(HttpServletRequest request) {
-		// EDIT - セッションは利用しない。アップロードしたファイルは POST リクエスト実行中のみ有効とする。
+	public final List<FileItem> getMyLastReceivedFileItems(HttpServletRequest request) {
+		// EDIT - セッションは利用しない。アップロードしたファイルは POST リクエスト実行中のみ有効とする。final 化し、deprecated 設定。
 		// return getLastReceivedFileItems(request, getSessionLastFilesKey(request));
 		return null;
 	}
@@ -359,7 +404,8 @@ public class ThreadLocalFileItemUploadAction extends UploadAction {
 	@Override
 	protected final String parsePostRequest(HttpServletRequest request, HttpServletResponse response) {
 		// EDIT - 現行のメソッドは廃止。final 化し、Override も禁止。
-		throw new UnsupportedOperationException("FIXME メッセージを書く");
+		throw new UnsupportedOperationException(
+				"Method is unavailable. Please use #doParsePostRequest(HttpServletRequest, HttpServletResponse).");
 	}
 
 	protected Map<String, String> getFileItemsSummary(HttpServletRequest request, Map<String, String> stat,
@@ -391,7 +437,8 @@ public class ThreadLocalFileItemUploadAction extends UploadAction {
 	@Override
 	protected final Map<String, String> getFileItemsSummary(HttpServletRequest request, Map<String, String> stat) {
 		// EDIT - 現行のメソッドは廃止。final 化し、Override も禁止。
-		throw new UnsupportedOperationException("FIXME メッセージを書く");
+		throw new UnsupportedOperationException(
+				"Method is unavailable. Please use #getFileItemsSummary(HttpServletRequest, Map<String, String>, List<FileItem>).");
 	}
 
 	// NOTE このメソッドは無くてもとりあえず動く。listener は必ず UploadListener 利用される為、session 内の Listener が null になるパターンはない。
