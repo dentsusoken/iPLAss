@@ -76,9 +76,6 @@ public class MetaDataConfigUploadServiceImpl extends AdminUploadAction {
 			//リクエスト情報の取得
 			readRequest(request, sessionFiles, args);
 
-			//セッションからファイルを削除
-		    super.removeSessionFileItems(request);
-
 		    //リクエスト情報の検証
 			validateRequest(args);
 

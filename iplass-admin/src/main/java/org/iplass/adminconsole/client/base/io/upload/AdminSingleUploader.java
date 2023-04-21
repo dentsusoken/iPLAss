@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.XMLParser;
 
-import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
 import gwtupload.client.SingleUploader;
 import gwtupload.client.Utils;
@@ -53,16 +52,18 @@ public class AdminSingleUploader extends SingleUploader {
 
 	@Override
 	public void update() {
-		//Firefoxの場合にUNINITIALIZEDになったあとにもSubmitCompleteEventが発生して、
-		//serverRawResponseの解析に失敗した後にこのメソッドが呼ばれてget_statusリクエストを実行してしまうため、
-		//get_statusリクエストを実行しないように対応
-		if (getStatus() == Status.UNINITIALIZED) {
-			GWT.log("update() called on UNINITIALIZED status. skip update.");
-			return;
-		}
-		GWT.log("update() called on " + getStatus() + " status.");
+		// AdminConsole のファイルアップロード処理では、アップロード進捗状況を表示しない。そのため、状況更新リクエストを発行しない。
 
-		super.update();
+		// //Firefoxの場合にUNINITIALIZEDになったあとにもSubmitCompleteEventが発生して、
+		// //serverRawResponseの解析に失敗した後にこのメソッドが呼ばれてget_statusリクエストを実行してしまうため、
+		// //get_statusリクエストを実行しないように対応
+		// if (getStatus() == Status.UNINITIALIZED) {
+		// GWT.log("update() called on UNINITIALIZED status. skip update.");
+		// return;
+		// }
+		// GWT.log("update() called on " + getStatus() + " status.");
+		//
+		// super.update();
 	}
 
 	/**
