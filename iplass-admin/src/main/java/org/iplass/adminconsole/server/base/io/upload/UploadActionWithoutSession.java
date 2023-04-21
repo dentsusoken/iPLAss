@@ -97,10 +97,9 @@ import gwtupload.server.exceptions.UploadTimeoutException;
  * @author SEKIGUCHI Naoya
  *
  */
-public class UploadActionNotUseSession extends UploadAction {
-
+public class UploadActionWithoutSession extends UploadAction {
 	/** シリアルバージョンUID */
-	private static final long serialVersionUID = 7875576716469462797L;
+	private static final long serialVersionUID = -7144817943543581440L;
 
 	// ===================================== classes =====================================
 	// ------------------------------------- CUSTOMIZED -------------------------------------
