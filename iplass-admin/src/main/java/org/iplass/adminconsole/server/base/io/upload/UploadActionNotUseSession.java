@@ -208,7 +208,7 @@ public class UploadActionNotUseSession extends UploadAction {
 		try {
 			try {
 				// Receive the files and form elements, updating the progress status
-				// EDIT - parsePostRequest に変更する。try 内だけで一時的に利用する。
+				// EDIT - doParsePostRequest に変更する。返却値は try 内だけで一時的に利用する。
 				// error = super.parsePostRequest(request, response); // origin code
 				ParsePostRequestResult parseResult = doParsePostRequest(request, response); // edit code
 				error = parseResult.error;
@@ -356,10 +356,15 @@ public class UploadActionNotUseSession extends UploadAction {
 			// uploader.setProgressListener(listener);
 			uploader = getServletFileUpload(factory, listener);
 			// Receive the files
-			logger.error("UPLOAD-SERVLET (" + session.getId() + ") parsing HTTP POST request ");
+			// EDIT - LOG LEVEL を debug に変更
+			// logger.error("UPLOAD-SERVLET (" + session.getId() + ") parsing HTTP POST request ");
+			logger.debug("UPLOAD-SERVLET (" + session.getId() + ") parsing HTTP POST request ");
 			uploadedItems = uploader.parseRequest(request);
 			session.removeAttribute(getSessionLastFilesKey(request));
-			logger.error("UPLOAD-SERVLET (" + session.getId() + ") parsed request, " + uploadedItems.size() + " items received.");
+			// EDIT - LOG LEVEL を debug に変更
+			// logger.error("UPLOAD-SERVLET (" + session.getId() + ") parsed request, " + uploadedItems.size() + " items
+			// received.");
+			logger.debug("UPLOAD-SERVLET (" + session.getId() + ") parsed request, " + uploadedItems.size() + " items received.");
 
 			// EDIT - セッションには格納しない
 			// // Received files are put in session
