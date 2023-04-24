@@ -72,6 +72,7 @@ public class AuthService implements Service {
 
 	//認証プロバイダ名称 Accounthandle設定用
 	private static final String PROVIDER_NAME = "providerName";
+	private static final String AUTHENTICATION_PROCESS_TYPE = "authenticationProcessType";
 
 	private AuthenticationProvider[] authenticationProviders;
 //	private AccountManagementModule[] amm;
@@ -209,11 +210,7 @@ public class AuthService implements Service {
 		}
 		userEntity = validateUser(account.getCredential(), account, userEntity);
 
-//		//認証プロバイダー決定のため設定
-//		amm = new LoggingAccountManagementModule(authenticationProviders[account.getAuthenticationProviderIndex()], this);
-
-//		//認証プロバイダー名設定
-//		account.getAttributeMap().put(PROVIDER_NAME, authenticationProviders[account.getAuthenticationProviderIndex()].getProviderName());
+		account.getAttributeMap().put(AUTHENTICATION_PROCESS_TYPE, credential.getAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE));
 
 		//UserContext生成
 		UserContext user;
@@ -222,10 +219,6 @@ public class AuthService implements Service {
 		} else {
 			user = new UserContextImpl(account, userEntity);
 		}
-
-		//ログイン成功の通知＆ログ出力
-		authenticationProviders[account.getAuthenticationProviderIndex()].afterLoginSuccess(account);
-		authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger().loginSuccess(user);
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("login process time:" + (System.currentTimeMillis() - time) + "ms.");
@@ -267,6 +260,11 @@ public class AuthService implements Service {
 				credential.setAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.LOGIN);
 			}
 			UserContext user = authenticate(credential);
+			
+			//ログイン成功の通知＆ログ出力
+			authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].afterLoginSuccess(user.getAccount());
+			authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].getAuthLogger().loginSuccess(user);
+
 			//セッション情報初期化
 			initializeSession(user, true);
 
@@ -335,6 +333,10 @@ public class AuthService implements Service {
 			authenticationProviders[pre.getAccount().getAuthenticationProviderIndex()].getAuthLogger().loginFail(credential, null);
 			throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
 		}
+		
+		//ログイン成功の通知＆ログ出力
+		authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].afterLoginSuccess(user.getAccount());
+		authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].getAuthLogger().loginSuccess(user);
 
 		initializeSession(user, false);
 	}

@@ -78,10 +78,20 @@ public abstract class AuthContext {
 	public abstract String getPolicyName();
 
 	/**
+	 * <p>
 	 * 現在のセキュリティコンテキストに紐づいている属性を取得します。
 	 * 認証されたユーザーのUserエンティティのプロパティ、
 	 * また、認証プロバイダが返却したユーザー属性を取得可能です。
-	 *
+	 * </p>
+	 * <p>
+	 * 利用する認証プロバイダによらず次の属性を取得可能です。
+	 * </p>
+	 * <table border=1>
+	 * <tr><th>属性名</th><th>説明</th></tr>
+	 * <tr><td>providerName</td><td>このアカウントを認証した認証プロバイダ名</td></tr>
+	 * <tr><td>authenticationProcessType</td><td>このアカウントを認証した際の{@link org.iplass.mtp.auth.login.AuthenticationProcessType AuthenticationProcessType}
+	 * </table>
+	 * 
 	 * @param name
 	 * @return
 	 */
