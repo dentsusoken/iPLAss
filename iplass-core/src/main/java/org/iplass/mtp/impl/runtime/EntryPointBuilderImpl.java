@@ -66,7 +66,7 @@ public class EntryPointBuilderImpl implements EntryPointBuilder {
 			}
 		}
 		
-		customProps().put(BootstrapProps.SERVER_ID, concatRoles);
+		customProps().put(BootstrapProps.SERVER_ROLES, concatRoles);
 		return this;
 	}
 
