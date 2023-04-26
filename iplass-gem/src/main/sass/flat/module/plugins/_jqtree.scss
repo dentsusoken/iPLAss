@@ -10,17 +10,6 @@
 //urls
 // $url_pjt_1: url(../../../../webjars/jqtree/1.4.2/static/spinner.gif);
 
-//@extend-elements
-//original selectors
-//ul.jqtree-tree li.jqtree-selected >.jqtree-element, ul.jqtree-tree li.jqtree-selected >.jqtree-element:hover
-%extend_pjt_1 {
-	background: $color_wild_willow_approx;
-	background-color: transparent;
-	background-image: none;
-	//Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
-	text-shadow: none;
-}
-
 ul.jqtree-tree {
 	margin-left: 12px;
 	.jqtree-title {
@@ -34,12 +23,18 @@ ul.jqtree-tree {
 		top: 30%;
 	}
 	.jqtree-element {
+		text-shadow: none;
 		padding: 7px 0 6px;
-		&.hover {
-			background: $color_pattens_blue_approx !important;
-		}
 	}
 	li {
+		&.jqtree-folder {
+			margin-bottom: 0;
+			
+			&.jqtree-closed {
+				margin-bottom: 0;
+			}
+		}
+
 		&.no-draggable {
 			.jqtree-toggler {
 				cursor: pointer;
@@ -48,10 +43,14 @@ ul.jqtree-tree {
 				cursor: auto;
 			}
 		}
+	
 		&.jqtree-selected > .jqtree-element {
-			@extend %extend_pjt_1;
+			text-shadow: none;
+			background: $color_pattens_blue_approx;
+
 			&:hover {
-				@extend %extend_pjt_1;
+				text-shadow: none;
+				background: $color_pattens_blue_approx;
 			}
 		}
 	}
@@ -68,6 +67,7 @@ ul.jqtree-tree {
 span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
 	width: auto !important;
 }
+
 .lyt-shortcut-01 ul.jqtree-tree {
 	margin-left: 0;
 	.jqtree-toggler {
@@ -86,6 +86,9 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
 		}
 		span {
 			color: $white;
+			&:hover {
+				color: $color_selective_yellow_approx;
+			}
 		}
 	}
 	> li {

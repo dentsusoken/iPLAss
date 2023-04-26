@@ -50,10 +50,17 @@ input[type=submit].gr-btn {
 		background-color: $button_hover_color;
 	}
 }
-ul.jqtree-tree li.jqtree-selected > .jqtree-element {
-	background: $selection_color;
-	&:hover {
+ul.jqtree-tree {
+	.jqtree-element {
+ 		&.hover {
+ 			background: $selection_color;
+ 		}
+	}
+	li.jqtree-selected > .jqtree-element {
 		background: $selection_color;
+		&:hover {
+			background: $selection_color;
+		}
 	}
 }
 .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell {

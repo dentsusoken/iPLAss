@@ -828,12 +828,6 @@ button.dialog-csvdl-btn {
 .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr.ui-state-hover td {
   background: #d4d4d4 !important; }
 
-ul.jqtree-tree li.jqtree-selected > .jqtree-element, ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
-  background: #add866;
-  background-color: transparent;
-  background-image: none;
-  text-shadow: none; }
-
 ul.jqtree-tree {
   margin-left: 12px; }
   ul.jqtree-tree .jqtree-title {
@@ -845,13 +839,22 @@ ul.jqtree-tree {
     position: absolute;
     top: 30%; }
   ul.jqtree-tree .jqtree-element {
+    text-shadow: none;
     padding: 7px 0 6px; }
-    ul.jqtree-tree .jqtree-element.hover {
-      background: #dfeffc !important; }
+  ul.jqtree-tree li.jqtree-folder {
+    margin-bottom: 0; }
+    ul.jqtree-tree li.jqtree-folder.jqtree-closed {
+      margin-bottom: 0; }
   ul.jqtree-tree li.no-draggable .jqtree-toggler {
     cursor: pointer; }
   ul.jqtree-tree li.no-draggable > .jqtree-element {
     cursor: auto; }
+  ul.jqtree-tree li.jqtree-selected > .jqtree-element {
+    text-shadow: none;
+    background: #dfeffc; }
+    ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
+      text-shadow: none;
+      background: #dfeffc; }
   ul.jqtree-tree .ui-draggable-dragging {
     background: #f6f6f6;
     padding: 5px;
@@ -875,6 +878,8 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
         color: #fff; }
     .lyt-shortcut-01 ul.jqtree-tree li span {
       color: #fff; }
+      .lyt-shortcut-01 ul.jqtree-tree li span:hover {
+        color: #ffb900; }
   .lyt-shortcut-01 ul.jqtree-tree > li {
     padding-left: 47px; }
 
@@ -1392,8 +1397,7 @@ p.nav-login-01 {
     padding-left: 10px; }
     .recursiveTree .treeContents li span {
       white-space: nowrap;
-      display: block;
-      padding: 7px 0 6px; }
+      display: block; }
 
 .result-block .next {
   margin-right: 30px; }

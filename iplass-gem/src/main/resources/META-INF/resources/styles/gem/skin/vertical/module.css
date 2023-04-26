@@ -822,10 +822,18 @@ ul.jqtree-tree {
     top: 30%; }
   ul.jqtree-tree .jqtree-title {
     margin-left: inherit; }
+  ul.jqtree-tree .jqtree-element {
+    padding: 7px 0 6px; }
+  ul.jqtree-tree li.jqtree-folder {
+    margin-bottom: 0; }
+    ul.jqtree-tree li.jqtree-folder.jqtree-closed {
+      margin-bottom: 0; }
   ul.jqtree-tree li.jqtree-selected > .jqtree-element {
-    background: #e0f2ff !important; }
+    text-shadow: none;
+    background: #e0f2ff; }
     ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
-      background: #e0f2ff !important; }
+      text-shadow: none;
+      background: #e0f2ff; }
 
 .cke_1_dialog .cke_dialog_contents {
   background: #efefef !important;
@@ -940,6 +948,8 @@ ul.jqtree-tree {
     background: #e4e4e4;
     background: linear-gradient(#e4e4e4 0, #cccccc 95%);
     text-align: center; }
+  .lyt-shortcut-01 ul.jqtree-tree .jqtree-element:hover {
+    background: url(../../../../images/gem/skin/vertical/bg-default-01.png) no-repeat scroll 5% 50% #ededed; }
 
 .widget-contents {
   padding: 5px 5px 2px;
@@ -1038,9 +1048,6 @@ ul.jqtree-tree {
 
 .lyt-shortcut-01 .treeViewList .jqtree-tree {
   margin-left: 17px; }
-
-.lyt-shortcut-01 .treeViewList .jqtree-element {
-  padding: 7px 0 6px; }
 
 /*--------
  認証系
@@ -1263,8 +1270,7 @@ div.recursiveTree {
     padding-left: 10px; }
     div.recursiveTree .treeContents li span {
       white-space: nowrap;
-      display: block;
-      padding: 7px 0 6px; }
+      display: block; }
 
 /* 検索画面 */
 .tabList-search-01 li:first-child a, .tabList-search-01 li.current:first-child a {

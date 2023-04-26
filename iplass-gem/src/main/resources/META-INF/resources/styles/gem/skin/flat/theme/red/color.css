@@ -58,6 +58,9 @@ input[type=submit].gr-btn {
   input[type=submit].gr-btn:hover {
     background-color: #d32f2f; }
 
+ul.jqtree-tree .jqtree-element.hover {
+  background: #f8bbd0; }
+
 ul.jqtree-tree li.jqtree-selected > .jqtree-element {
   background: #f8bbd0; }
   ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
