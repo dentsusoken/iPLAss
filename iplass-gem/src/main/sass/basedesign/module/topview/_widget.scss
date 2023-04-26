@@ -2,9 +2,6 @@
 // $color_celeste_approx: #cdcdcd;
 // $color_mercury_approx: #e6e6e6;
 
-//urls
-$url_tw1: url(../../../../images/gem/skin/vertical/icon-arrow-08.png);
-
 //ウィジェット共通
 .topview-widget {
     margin-bottom: 10px;
@@ -35,6 +32,11 @@ $url_tw1: url(../../../../images/gem/skin/vertical/icon-arrow-08.png);
 		background: $color_mercury_approx;
 		background: linear-gradient($color_mercury_approx 0, $color_celeste_approx 95%);
 		text-align: center;
+	}
+	ul.jqtree-tree .jqtree-element {
+		&:hover {
+			background: $url_tw2 no-repeat scroll 5% 50% $color_gallery_approx;
+		}
 	}
 }
 .widget-contents {

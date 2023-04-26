@@ -16,10 +16,26 @@ ul.jqtree-tree {
 	.jqtree-title {
 		margin-left: inherit;
 	}
-	li.jqtree-selected > .jqtree-element {
-		background: $color_pattens_blue_approx !important;
-		&:hover {
-			background: $color_pattens_blue_approx !important;
+	.jqtree-element {
+		padding: 7px 0 6px;
+	}
+	li {
+		&.jqtree-folder {
+			margin-bottom: 0;
+			
+			&.jqtree-closed {
+				margin-bottom: 0;
+			}
+		}
+	
+		&.jqtree-selected > .jqtree-element {
+			text-shadow: none;
+			background: $color_pattens_blue_approx;
+
+			&:hover {
+				text-shadow: none;
+				background: $color_pattens_blue_approx;
+			}
 		}
 	}
 }
