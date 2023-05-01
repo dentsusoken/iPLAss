@@ -205,7 +205,7 @@ public class UpdateOption {
 			copy.updateProperties = new ArrayList<>(updateProperties);
 		}
 		copy.checkTimestamp = checkTimestamp;
-		copy.targetVersion = TargetVersion.CURRENT_VALID;
+		copy.targetVersion = targetVersion;
 		copy.purgeCompositionedEntity = purgeCompositionedEntity;
 		copy.forceUpdate = forceUpdate;
 		copy.checkLockedByUser = checkLockedByUser;
