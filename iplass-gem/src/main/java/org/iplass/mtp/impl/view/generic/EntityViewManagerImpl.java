@@ -54,11 +54,17 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.definition.DefinitionModifyResult;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.SelectValue;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.query.PreparedQuery;
+import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.condition.expr.And;
+import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.command.RequestContextBinding;
 import org.iplass.mtp.impl.command.SessionBinding;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
@@ -131,6 +137,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	/** 画面定義を扱うサービス */
 	private EntityViewService service;
 	private EntityDefinitionManager edm;
+	private EntityManager em;
 
 	/**
 	 * コンストラクタ
@@ -138,6 +145,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	public EntityViewManagerImpl() {
 		service = ServiceRegistry.getRegistry().getService(EntityViewService.class);
 		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance().getManager(EntityManager.class);
 	}
 
 	@Override
@@ -880,7 +888,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		} else {
 			editor = getPropertyEditor(definitionName, viewType, viewName, propName, entity);
 		}
-		
+
 		PropertyDefinition pd = null;
 		//連動先の多重度が複数の場合、Listで格納
 		//連動先の多重度が単数の場合、値をそのまま格納
@@ -929,7 +937,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			} else if (editor instanceof DatePropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 				format = getDisplayDateFormat(formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), ((DatePropertyEditor) editor).isShowWeekday());
 			}
-			
+
 			if (value instanceof Entity) {
 				// スクリプト、EQLの結果がEntityの場合はプロパティの値だけ返す
 				returnValue = ((Entity) value).getValue(propName);
@@ -1269,6 +1277,49 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
+	}
+
+	@Override
+	public boolean isPermitEntityReference(String definitionName, String viewName, Entity entity) {
+
+		EntityView entityView = get(definitionName);
+		if (entityView == null) {
+			return true;
+		}
+
+		// 定義があっても自動生成の可能性もあるため、FormViewUtil経由で取得
+		EntityDefinition entityDefinition = edm.get(definitionName);
+		DetailFormView detailView = FormViewUtil.getDetailFormView(entityDefinition, entityView, viewName);
+
+		if (detailView.isApplySearchLayoutDefaultCondition()) {
+			SearchFormView searchView = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
+			if (StringUtil.isNotEmpty(searchView.getCondSection().getDefaultCondition())) {
+				// デフォルト検索条件を取得
+				Condition defaultCond = getSearchConditionSectionDefaultCondition(
+						definitionName, searchView.getCondSection());
+
+				// PK
+				Condition pkCond = null;
+				if (entityDefinition.getVersionControlType() != VersionControlType.NONE) {
+					pkCond = new And(
+							new Equals(Entity.OID, entity.getOid()),
+							new Equals(Entity.VERSION, entity.getVersion()));
+				} else {
+					pkCond = new Equals(Entity.OID, entity.getOid());
+				}
+
+				Query query = new Query()
+						.select(Entity.OID)
+						.from(definitionName)
+						.where(new And(pkCond, defaultCond));
+
+				if (em.count(query) == 0) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 }
