@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.delete;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.ResultType;
 import org.iplass.gem.command.generic.detail.DetailViewCommand;
 import org.iplass.gem.command.generic.search.SearchViewCommand;
@@ -54,6 +55,8 @@ import org.iplass.mtp.view.generic.DetailFormView;
 	result={
 		@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_SEARCH),
 		@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
+		@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+				layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
 		@Result(status=Constants.CMD_EXEC_SUCCESS_BACK_PATH, type=Type.JSP,
 				value=Constants.CMD_RSLT_JSP_BACK_PATH,
 				templateName="gem/generic/backPath"),
@@ -108,6 +111,12 @@ public final class DeleteCommand extends DeleteCommandBase {
 				deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
 			}
 			Entity entity = loadEntity(defName, oid, targetVersion);
+
+			if (entity == null 
+					|| !evm.hasEntityReferencePermissionDetailFormView(context.getDefinitionName(), context.getViewName(), entity)) {
+				request.setAttribute(Constants.MESSAGE, GemResourceBundleUtil.resourceString("command.generic.detail.DetailViewCommand.noPermission"));
+				return Constants.CMD_EXEC_ERROR_NODATA;
+			}
 
 			if (entity != null) {
 				DeleteResult ret = deleteEntity(entity, form.isPurge(), deleteTargetVersion);

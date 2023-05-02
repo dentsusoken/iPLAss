@@ -424,6 +424,16 @@ public class DetailFormView extends FormView {
 
 
 
+	/** ロード時にSearchLayoutのデフォルト検索条件を適用する */
+	@MetaFieldInfo(
+			displayName="ロード時にSearchLayoutのデフォルト検索条件を適用する",
+			displayNameKey="generic_DetailFormView_applySearchLayoutDefaultConditionDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1505,
+			description="ロード時にSearchLayoutのデフォルト検索条件を適用するかを設定します。",
+			descriptionKey="generic_DetailFormView_applySearchLayoutDefaultConditionDescriptionKey"
+	)
+	private boolean applySearchLayoutDefaultCondition = true;
 
 	/** 物理削除するかどうか */
 	@MetaFieldInfo(
@@ -434,9 +444,6 @@ public class DetailFormView extends FormView {
 			displayNameKey="generic_DetailFormView_isPurgeDisplaNameKey",
 			descriptionKey="generic_DetailFormView_isPurgeDescriptionKey")
 	private boolean isPurge;
-
-
-
 
 	/** 親子関係の参照を物理削除するか */
 	@MetaFieldInfo(
@@ -481,7 +488,7 @@ public class DetailFormView extends FormView {
 			descriptionKey="generic_DetailFormView_showUserNameWithPrivilegedDescriptionKey"
 	)
 	private boolean showUserNameWithPrivilegedValue;
-		
+
 	/** コピー対象 */
 	@MetaFieldInfo(
 			displayName="コピー対象",
@@ -1056,6 +1063,22 @@ public class DetailFormView extends FormView {
 	 */
 	public void setCheckEntityPermissionLimitConditionOfButton(boolean checkEntityPermissionLimitConditionOfButton) {
 		this.checkEntityPermissionLimitConditionOfButton = checkEntityPermissionLimitConditionOfButton;
+	}
+
+	/**
+	 * ロード時にSearchLayoutのデフォルト検索条件を適用するかを取得します。
+	 * @return ロード時にSearchLayoutのデフォルト検索条件を適用するか
+	 */
+	public boolean isApplySearchLayoutDefaultCondition() {
+		return applySearchLayoutDefaultCondition;
+	}
+
+	/**
+	 * ロード時にSearchLayoutのデフォルト検索条件を適用するかを設定します。
+	 * @param applySearchLayoutDefaultCondition ロード時にSearchLayoutのデフォルト検索条件を適用するか
+	 */
+	public void setApplySearchLayoutDefaultCondition(boolean applySearchLayoutDefaultCondition) {
+		this.applySearchLayoutDefaultCondition = applySearchLayoutDefaultCondition;
 	}
 
 	/**

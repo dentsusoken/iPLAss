@@ -137,6 +137,9 @@ public class MetaDetailFormView extends MetaFormView {
 	/** Entity権限の可能範囲条件でボタン表示を制御 */
 	private boolean checkEntityPermissionLimitConditionOfButton;
 
+	/** ロード時にSearchLayoutのデフォルト検索条件を適用する */
+	private boolean applySearchLayoutDefaultCondition;
+
 	/** 物理削除するかどうか */
 	private boolean isPurge;
 
@@ -622,6 +625,22 @@ public class MetaDetailFormView extends MetaFormView {
 	}
 
 	/**
+	 * ロード時にSearchLayoutのデフォルト検索条件を適用するかを取得します。
+	 * @return ロード時にSearchLayoutのデフォルト検索条件を適用するか
+	 */
+	public boolean isApplySearchLayoutDefaultCondition() {
+		return applySearchLayoutDefaultCondition;
+	}
+
+	/**
+	 * ロード時にSearchLayoutのデフォルト検索条件を適用するかを設定します。
+	 * @param applySearchLayoutDefaultCondition ロード時にSearchLayoutのデフォルト検索条件を適用するか
+	 */
+	public void setApplySearchLayoutDefaultCondition(boolean applySearchLayoutDefaultCondition) {
+		this.applySearchLayoutDefaultCondition = applySearchLayoutDefaultCondition;
+	}
+
+	/**
 	 * 物理削除するかどうかを取得します。
 	 * @return 物理削除するかどうか
 	 */
@@ -888,6 +907,7 @@ public class MetaDetailFormView extends MetaFormView {
 		hideDelete = dForm.isHideDelete();
 		showDeleteSpecificVersion = dForm.isShowDeleteSpecificVersion();
 		checkEntityPermissionLimitConditionOfButton = dForm.isCheckEntityPermissionLimitConditionOfButton();
+		applySearchLayoutDefaultCondition = dForm.isApplySearchLayoutDefaultCondition();
 		isPurge = dForm.isPurge();
 		purgeCompositionedEntity = dForm.isPurgeCompositionedEntity();
 		loadDefinedReferenceProperty = dForm.isLoadDefinedReferenceProperty();
@@ -942,6 +962,7 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setHideDelete(hideDelete);
 		form.setShowDeleteSpecificVersion(showDeleteSpecificVersion);
 		form.setCheckEntityPermissionLimitConditionOfButton(checkEntityPermissionLimitConditionOfButton);
+		form.setApplySearchLayoutDefaultCondition(applySearchLayoutDefaultCondition);
 		form.setPurge(isPurge);
 		form.setPurgeCompositionedEntity(purgeCompositionedEntity);
 		form.setLoadDefinedReferenceProperty(loadDefinedReferenceProperty);

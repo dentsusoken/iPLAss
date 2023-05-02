@@ -66,6 +66,8 @@ import org.iplass.mtp.view.generic.DetailFormView;
 			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
 			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		},
 		tokenCheck=@TokenCheck
@@ -83,6 +85,8 @@ import org.iplass.mtp.view.generic.DetailFormView;
 			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 		},
 		tokenCheck=@TokenCheck
@@ -124,6 +128,11 @@ public final class UpdateCommand extends DetailCommandBase {
 				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName());
 			} else {
 				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), (List<String>) null);
+			}
+			if (current == null 
+					|| !evm.hasEntityReferencePermissionDetailFormView(context.getDefinitionName(), context.getViewName(), current)) {
+				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.noPermission"));
+				return Constants.CMD_EXEC_ERROR_NODATA;
 			}
 			context.setCurrentEntity(current);
 		}
