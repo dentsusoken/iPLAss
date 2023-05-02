@@ -129,7 +129,8 @@ public final class UpdateCommand extends DetailCommandBase {
 			} else {
 				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), (List<String>) null);
 			}
-			if (current == null || !evm.isPermitEntityReference(context.getDefinitionName(), context.getViewName(), current)) {
+			if (current == null 
+					|| !evm.hasEntityReferencePermissionDetailFormView(context.getDefinitionName(), context.getViewName(), current)) {
 				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.noPermission"));
 				return Constants.CMD_EXEC_ERROR_NODATA;
 			}

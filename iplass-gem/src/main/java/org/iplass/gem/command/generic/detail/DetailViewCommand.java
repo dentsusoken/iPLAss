@@ -239,7 +239,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.noPermission"));
 				return Constants.CMD_EXEC_ERROR_NODATA;
 			}
-			if (!evm.isPermitEntityReference(context.getDefinitionName(), context.getViewName(), entity)) {
+			if (!evm.hasEntityReferencePermissionDetailFormView(context.getDefinitionName(), context.getViewName(), entity)) {
 				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.noPermission"));
 				return Constants.CMD_EXEC_ERROR_NODATA;
 			}

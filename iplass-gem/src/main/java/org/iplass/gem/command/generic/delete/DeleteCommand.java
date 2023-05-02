@@ -112,7 +112,8 @@ public final class DeleteCommand extends DeleteCommandBase {
 			}
 			Entity entity = loadEntity(defName, oid, targetVersion);
 
-			if (entity == null || !evm.isPermitEntityReference(context.getDefinitionName(), context.getViewName(), entity)) {
+			if (entity == null 
+					|| !evm.hasEntityReferencePermissionDetailFormView(context.getDefinitionName(), context.getViewName(), entity)) {
 				request.setAttribute(Constants.MESSAGE, GemResourceBundleUtil.resourceString("command.generic.detail.DetailViewCommand.noPermission"));
 				return Constants.CMD_EXEC_ERROR_NODATA;
 			}

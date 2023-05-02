@@ -255,13 +255,13 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	public void checkState(String definitionName);
 
 	/**
-	 * Entityデータの参照が許可されているかを返します。
+	 * 詳細編集画面でEntityデータの参照が許可されているかを返します。
 	 *
 	 * @param definitionName Entity定義名
 	 * @param viewName view名
 	 * @param entity エンティティ
 	 * @return 許可されているか
 	 */
-	public boolean isPermitEntityReference(String definitionName, String viewName, Entity entity);
+	public boolean hasEntityReferencePermissionDetailFormView(String definitionName, String viewName, Entity entity);
 
 }

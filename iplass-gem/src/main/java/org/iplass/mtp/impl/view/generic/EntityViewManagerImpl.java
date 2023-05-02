@@ -1280,7 +1280,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
-	public boolean isPermitEntityReference(String definitionName, String viewName, Entity entity) {
+	public boolean hasEntityReferencePermissionDetailFormView(String definitionName, String viewName, Entity entity) {
 
 		EntityView entityView = get(definitionName);
 		if (entityView == null) {
