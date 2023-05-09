@@ -57,10 +57,12 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 
 	private boolean isDefault;
 
+	@Override
 	public Connection getConnection() {
 		return getConnection(null);
 	}
 
+	@Override
 	public Connection getConnection(Function<Connection, Connection> afterGetPhysicalConnectionHandler) {
 		if (isDefault) {
 			TransactionService ts = ServiceRegistry.getRegistry().getService(TransactionService.class);
@@ -75,8 +77,8 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 				if (t.getStatus() == TransactionStatus.ACTIVE) {
 					if (t.getCon() == null) {
 						try {
-							if (rh == null || rh.isInUse() || t.isReadOnly()) {
-								//ResourceHolder使ってない場合/既にResourceHolder利用されている場合/ReadOnlyの場合は物理Connection
+							if (rh == null || rh.isInUse() || (isCreateConnectionIfReadOnlyTransaction() && t.isReadOnly())) {
+								// ResourceHolder使ってない場合/既にResourceHolder利用されている場合/ReadOnlyの場合に新規にコネクション作成するかつ、ReadOnlyの場合は物理Connection
 								t.setCon(new LocalTransactionConnectionWrapper(
 										getPhysicalConnection(afterGetPhysicalConnectionHandler), true, null, warnLogThreshold, warnLogBefore, countSqlExecution));
 							} else {
@@ -200,6 +202,7 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 
 	protected abstract Connection getConnectionInternal();
 
+	@Override
 	public void init(Config config) {
 
 		String serviceName = config.getServiceName();
@@ -218,22 +221,27 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 		
 	}
 
+	@Override
 	public boolean isWarnLogBefore() {
 		return warnLogBefore;
 	}
 
+	@Override
 	public int getWarnLogThreshold() {
 		return warnLogThreshold;
 	}
 
+	@Override
 	public TransactionIsolationLevel getTransactionIsolationLevel() {
 		return transactionIsolationLevel;
 	}
 	
+	@Override
 	public boolean isCountSqlExecution() {
 		return countSqlExecution;
 	}
 	
+	@Override
 	public AtomicInteger getCounterOfSqlExecution() {
 		if (countSqlExecution) {
 			ExecuteContext ec = ExecuteContext.getCurrentContext();
@@ -248,4 +256,13 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 		}
 	}
 
+	/**
+	 * 読み取り専用トランザクションの場合に、新規にコネクションを作成するか。
+	 * 新規にコネクションを作成する場合は、true を返却する。
+	 * 
+	 * @return 新規にコネクションを作成する場合は true 
+	 */
+	protected boolean isCreateConnectionIfReadOnlyTransaction() {
+		return false;
+	}
 }

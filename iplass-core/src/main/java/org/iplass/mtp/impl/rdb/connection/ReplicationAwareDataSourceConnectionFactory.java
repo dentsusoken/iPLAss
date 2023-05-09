@@ -148,4 +148,8 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 		}
 	}
 
+	@Override
+	public boolean isCreateConnectionIfReadOnlyTransaction() {
+		return true;
+	}
 }
