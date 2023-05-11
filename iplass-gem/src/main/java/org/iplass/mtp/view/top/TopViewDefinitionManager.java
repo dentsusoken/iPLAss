@@ -76,13 +76,29 @@ public interface TopViewDefinitionManager extends TypedDefinitionManager<TopView
 
 	/**
 	 * ロール対象となるTopViewParts定義を返します。
+	 *
+	 * @param type 対象TopViewPartsクラス
+	 * @return 対象TopViewParts
+	 */
+	public <T extends TopViewParts> T getRequestTopViewParts(Class<T> type);
+
+	/**
+	 * ロール対象となるTopViewParts定義を返します。
 	 * 対象が存在しない場合は、空のリストを返します。
 	 *
 	 * @param type 対象TopViewPartsクラス
 	 * @return 対象TopViewParts
 	 */
-	public <T extends TopViewParts> List<T> getRequestTopViewParts(Class<T> type);
+	public <T extends TopViewParts> List<T> getRequestTopViewPartsList(Class<T> type);
 
+
+	/**
+	 * ロール対象となるTopViewPartsのHandlerを返します。
+	 *
+	 * @param type 対象TopViewPartsHandlerクラス
+	 * @return 対象TopViewPartsHandler
+	 */
+	public <T extends TopViewPartsHandler> T getRequestTopViewPartsHandler(Class<T> type);
 
 	/**
 	 * ロール対象となるTopViewPartsのHandlerを返します。
@@ -91,7 +107,7 @@ public interface TopViewDefinitionManager extends TypedDefinitionManager<TopView
 	 * @param type 対象TopViewPartsHandlerクラス
 	 * @return 対象TopViewPartsHandler
 	 */
-	public <T extends TopViewPartsHandler> List<T> getRequestTopViewPartsHandler(Class<T> type);
+	public <T extends TopViewPartsHandler> List<T> getRequestTopViewPartsHandlerList(Class<T> type);
 
 	/**
 	 * 指定された型のTopViewParts定義を返します。

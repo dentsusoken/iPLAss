@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.view.top;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
+import org.iplass.mtp.impl.view.top.parts.HasNestPartsHandler;
 import org.iplass.mtp.impl.view.top.parts.MetaTopViewParts;
 import org.iplass.mtp.impl.view.top.parts.TopViewPartsHandler;
 
@@ -46,6 +48,8 @@ public class TopViewHandler extends BaseMetaDataRuntime {
 	private List<TopViewPartsHandler> parts;
 	private List<TopViewPartsHandler> widgets;
 	private Map<String, TopViewPartsHandler> handlerMap;
+	private List<TopViewPartsHandler> allParts;
+	private List<TopViewPartsHandler> allWidgets;
 
 	/**
 	 * コンストラクタ
@@ -55,24 +59,49 @@ public class TopViewHandler extends BaseMetaDataRuntime {
 			this.metadata = metadata;
 			handlerMap = new HashMap<>();
 			parts = new ArrayList<>();
-			for (MetaTopViewParts meta : metadata.getParts()) {
-				TopViewPartsHandler handler = meta.createRuntime(this);
-				parts.add(handler);
-				if (handler.getHandlerKey() != null) {
-					handlerMap.put(handler.getHandlerKey(), handler);
-				}
+			allParts = new ArrayList<>();
+			for (MetaTopViewParts part : metadata.getParts()) {
+				TopViewPartsHandler partHandler = part.createRuntime(this);
+				parts.add(partHandler);
+				List<TopViewPartsHandler> handlers = getAllPartsHandler(partHandler);
+				allParts.addAll(handlers);
+				handlers.forEach(handler -> {
+					if (handler.getHandlerKey() != null) {
+						handlerMap.put(handler.getHandlerKey(), handler);
+					}
+				});
 			}
 			widgets = new ArrayList<>();
-			for (MetaTopViewParts meta : metadata.getWidgets()) {
-				TopViewPartsHandler handler = meta.createRuntime(this);
-				widgets.add(handler);
-				if (handler.getHandlerKey() != null) {
-					handlerMap.put(handler.getHandlerKey(), handler);
-				}
+			allWidgets = new ArrayList<>();
+			for (MetaTopViewParts widget : metadata.getWidgets()) {
+				TopViewPartsHandler widgetHandler = widget.createRuntime(this);
+				widgets.add(widgetHandler);
+				List<TopViewPartsHandler> handlers = getAllPartsHandler(widgetHandler);
+				allWidgets.addAll(handlers);
+				handlers.forEach(handler -> {
+					if (handler.getHandlerKey() != null) {
+						handlerMap.put(handler.getHandlerKey(), handler);
+					}
+				});
 			}
-
 		} catch (RuntimeException e) {
 			setIllegalStateException(e);
+		}
+	}
+
+	/**
+	 * NestされたPartsも含めたHandlerを返します。
+	 * @param handler 自身のhandler
+	 * @return NestされたPartsも含めたHandler
+	 */
+	private List<TopViewPartsHandler> getAllPartsHandler(TopViewPartsHandler handler) {
+		if (handler instanceof HasNestPartsHandler) {
+			List<TopViewPartsHandler> handlers = new ArrayList<>();
+			handlers.add(handler);
+			handlers.addAll(((HasNestPartsHandler)handler).getNestParts());
+			return handlers;
+		} else {
+			return Arrays.asList(handler);
 		}
 	}
 
@@ -163,4 +192,23 @@ public class TopViewHandler extends BaseMetaDataRuntime {
 	public TopViewPartsHandler getHandler(String key) {
 		return handlerMap.get(key);
 	}
+
+	/**
+	 * 全てのパーツを返します。
+	 *
+	 * @return 全てのパーツのリスト
+	 */
+	public List<TopViewPartsHandler> getAllParts() {
+		return allParts;
+	}
+
+	/**
+	 * 全てのウィジェットを返します。
+	 *
+	 * @return 全てのウィジェットのリスト
+	 */
+	public List<TopViewPartsHandler> getAllWidgets() {
+		return allWidgets;
+	}
+
 }

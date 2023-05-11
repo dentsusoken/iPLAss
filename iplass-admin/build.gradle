@@ -475,6 +475,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/top/parts/CsvDownloadSettingsParts.java'
 		include 'mtp/view/top/parts/EntityListParts.java'
 		include 'mtp/view/top/parts/FulltextSearchViewParts.java'
+		include 'mtp/view/top/parts/HasNestParts.java'
 		include 'mtp/view/top/parts/InformationParts.java'
 		include 'mtp/view/top/parts/LastLoginParts.java'
 		include 'mtp/view/top/parts/PreviewDateParts.java'
