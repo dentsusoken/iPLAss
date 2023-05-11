@@ -41,7 +41,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-
+/**
+ * ConnectionFactory 抽象クラス
+ * 
+ * <p>
+ * ConnectionFactoryの基本的な機能実装を行います。
+ * </p>
+ * 
+ * @author SEKIGUCHI Naoya
+ *
+ */
 public abstract class AbstractConnectionFactory extends ConnectionFactory {
 	
 	public static final String CLIENT_INFO_THREAD_NAME = "thread";
@@ -54,6 +63,8 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 	
 	private Map<String, Object> clientInfoMap;
 	private int clientInfoMaxLength;
+	/** ReadOnlyトランザクションの時に、コネクションを新規作成するかの判定フラグ */
+	private boolean isCreateConnectionIfReadOnlyTransaction;
 
 	private boolean isDefault;
 
@@ -77,7 +88,7 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 				if (t.getStatus() == TransactionStatus.ACTIVE) {
 					if (t.getCon() == null) {
 						try {
-							if (rh == null || rh.isInUse() || (isCreateConnectionIfReadOnlyTransaction() && t.isReadOnly())) {
+							if (rh == null || rh.isInUse() || (isCreateConnectionIfReadOnlyTransaction && t.isReadOnly())) {
 								// ResourceHolder使ってない場合/既にResourceHolder利用されている場合/ReadOnlyの場合に新規にコネクション作成するかつ、ReadOnlyの場合は物理Connection
 								t.setCon(new LocalTransactionConnectionWrapper(
 										getPhysicalConnection(afterGetPhysicalConnectionHandler), true, null, warnLogThreshold, warnLogBefore, countSqlExecution));
@@ -219,6 +230,8 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 		clientInfoMap = config.getValue("clientInfoMap", Map.class);
 		clientInfoMaxLength = config.getValue("clientInfoMaxLength", Integer.TYPE, -1);
 		
+		isCreateConnectionIfReadOnlyTransaction = config.getValue("isCreateConnectionIfReadOnlyTransaction", Boolean.TYPE,
+				isCreateConnectionIfReadOnlyTransactionDefaultValue());
 	}
 
 	@Override
@@ -257,12 +270,14 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 	}
 
 	/**
-	 * 読み取り専用トランザクションの場合に、新規にコネクションを作成するか。
+	 * 読み取り専用トランザクションの場合に、新規にコネクションを作成するかのデフォルト設定値。
 	 * 新規にコネクションを作成する場合は、true を返却する。
+	 * 本メソッドは、{@link #init(Config)} でサービス初期化時に実行される。
+	 * 本クラスの派生サービスの初期値は false を指定する。
 	 * 
 	 * @return 新規にコネクションを作成する場合は true 
 	 */
-	protected boolean isCreateConnectionIfReadOnlyTransaction() {
+	protected boolean isCreateConnectionIfReadOnlyTransactionDefaultValue() {
 		return false;
 	}
 }
