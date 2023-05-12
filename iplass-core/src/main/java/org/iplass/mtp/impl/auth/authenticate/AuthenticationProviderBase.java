@@ -96,6 +96,9 @@ public abstract class AuthenticationProviderBase implements AuthenticationProvid
 		@Override
 		public void resetLockoutStatus(String accountId) {
 		}
+		@Override
+		public void afterUpdate(User user, String policyName, List<String> updateProperties) {
+		}
 	};
 	
 	private AuthLogger authLogger;

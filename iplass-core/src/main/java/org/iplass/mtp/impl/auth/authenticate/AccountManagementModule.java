@@ -54,6 +54,8 @@ public interface AccountManagementModule {
 	public void create(User user);
 	public void afterCreate(User user);
 	public void update(User user, List<String> updateProperties);
+	//既存のカスタム実装への影響考慮してdefaultとする
+	public default void afterUpdate(User user, String policyName, List<String> updateProperties) {}
 	public void remove(User user);
 	public void restore(User user);
 	public void purge(User user);

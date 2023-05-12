@@ -532,13 +532,14 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				if(updateFlg) {
 					accountDao.updateAccount(account, updateId);
 				}
+			}
+		}
 
-				//通知
-				if (policy == null) {
-					policy = getPolicy(account.getPolicyName());
-				}
-				policy.notify(new PropertyNotification(NotificationType.PROPERTY_UPDATED, account.getOid(), new ArrayList<>(updateProperties)));
-
+		@Override
+		public void afterUpdate(User user, String policyName, List<String> updateProperties) {
+			if (canUpdate()) {
+				AuthenticationPolicyRuntime policy = getPolicy(policyName);
+				policy.notify(new PropertyNotification(NotificationType.PROPERTY_UPDATED, user.getOid(), new ArrayList<>(updateProperties)));
 			}
 		}
 

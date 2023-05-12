@@ -153,6 +153,13 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 	}
 
 	@Override
+	public void afterUpdate(User user, String policyName, List<String> updateProperties) {
+		for (AccountManagementModule m: list) {
+			m.afterUpdate(user, policyName, updateProperties);
+		}
+	}
+
+	@Override
 	public void remove(User user) {
 		for (AccountManagementModule m: list) {
 			m.remove(user);

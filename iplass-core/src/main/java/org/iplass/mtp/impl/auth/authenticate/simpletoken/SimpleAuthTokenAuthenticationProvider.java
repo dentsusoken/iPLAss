@@ -209,6 +209,10 @@ public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProvide
 		}
 
 		@Override
+		public void afterUpdate(User user, String policyName, List<String> updateProperties) {
+		}
+
+		@Override
 		public void remove(User user) {
 			UserEntityResolver uer = getUserEntityResolver();
 			tokenHandler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), authTokenType, user.getValue(uer.getUnmodifiableUniqueKeyProperty()).toString());

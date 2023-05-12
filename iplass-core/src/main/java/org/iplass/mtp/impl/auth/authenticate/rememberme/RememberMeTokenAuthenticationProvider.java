@@ -441,6 +441,11 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		}
 
 		@Override
+		public void afterUpdate(User user, String policyName, List<String> updateProperties) {
+			am().afterUpdate(user, policyName, updateProperties);
+		}
+
+		@Override
 		public void remove(User user) {
 			if (am().canRemove()) {
 				am().remove(user);

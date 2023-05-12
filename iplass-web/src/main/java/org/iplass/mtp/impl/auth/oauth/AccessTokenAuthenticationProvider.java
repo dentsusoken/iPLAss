@@ -177,6 +177,10 @@ public class AccessTokenAuthenticationProvider extends AuthenticationProviderBas
 		}
 
 		@Override
+		public void afterUpdate(User user, String policyName, List<String> updateProperties) {
+		}
+
+		@Override
 		public void remove(User user) {
 			UserEntityResolver uer = getUserEntityResolver();
 			authorizationService.getAccessTokenStore().revokeTokenByUserOid(user.getValue(uer.getUnmodifiableUniqueKeyProperty()).toString());

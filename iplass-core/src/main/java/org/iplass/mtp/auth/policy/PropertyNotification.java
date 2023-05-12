@@ -30,6 +30,7 @@ public class PropertyNotification extends AccountNotification {
 
 	public PropertyNotification(NotificationType type, String userOid, List<String> updatedPropertyNames) {
 		super(type, userOid);
+		this.updatedPropertyNames = updatedPropertyNames;
 	}
 	
 	public List<String> getUpdatedPropertyNames() {

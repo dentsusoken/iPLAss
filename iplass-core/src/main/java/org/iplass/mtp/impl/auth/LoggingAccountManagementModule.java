@@ -92,6 +92,11 @@ public class LoggingAccountManagementModule implements AccountManagementModule {
 	}
 
 	@Override
+	public void afterUpdate(User user, String policyName, List<String> updateProperties) {
+		amm.afterUpdate(user, policyName, updateProperties);
+	}
+
+	@Override
 	public void remove(User user) {
 		amm.remove(user);
 	}

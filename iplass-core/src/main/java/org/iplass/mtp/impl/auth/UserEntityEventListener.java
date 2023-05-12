@@ -195,6 +195,27 @@ public class UserEntityEventListener implements EntityEventListener {
 
 		return true;
 	}
+	
+	
+
+	@Override
+	public void afterUpdate(Entity entity, EntityEventContext context) {
+		UpdateOption uo = (UpdateOption) context.getAttribute(EntityEventContext.UPDATE_OPTION);
+		Entity before = (Entity) context.getAttribute(EntityEventContext.BEFORE_UPDATE_ENTITY);
+		
+		String policyName = before.getValue(User.ACCOUNT_POLICY);
+		if (uo.getUpdateProperties().contains(User.ACCOUNT_POLICY)) {
+			policyName = (String) entity.getValue(User.ACCOUNT_POLICY);
+		}
+		AccountManagementModule amm = authService.getAccountManagementModule(policyName);
+		if (amm.canUpdate()) {
+			if (entity instanceof User) {
+				amm.afterUpdate((User) entity, policyName, uo.getUpdateProperties());
+			} else {
+				amm.afterUpdate(((GenericEntity) entity).copyAs(User.class), policyName, uo.getUpdateProperties());
+			}
+		}
+	}
 
 	@Override
 	public void afterRestore(Entity entity) {
