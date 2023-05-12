@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.view.top;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.view.top.TopViewDefinition;
 import org.iplass.mtp.view.top.TopViewDefinitionManager;
 import org.iplass.mtp.view.top.TopViewDefinitionModifyResult;
+import org.iplass.mtp.view.top.parts.HasNestParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.web.template.TemplateUtil;
 
@@ -82,12 +84,22 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	}
 
 	@Override
-	public <T extends TopViewParts> List<T> getRequestTopViewParts(Class<T> type) {
+	public <T extends TopViewParts> T getRequestTopViewParts(Class<T> type) {
+		return getTopViewParts(getRequestTopView(), type);
+	}
+
+	@Override
+	public <T extends TopViewParts> List<T> getRequestTopViewPartsList(Class<T> type) {
 		return getTopViewPartsList(getRequestTopView(), type);
 	}
 
 	@Override
-	public <T extends TopViewPartsHandler> List<T> getRequestTopViewPartsHandler(Class<T> type) {
+	public <T extends TopViewPartsHandler> T getRequestTopViewPartsHandler(Class<T> type) {
+		return getTopViewPartsHandler(getRequestTopViewHandler(), type);
+	}
+
+	@Override
+	public <T extends TopViewPartsHandler> List<T> getRequestTopViewPartsHandlerList(Class<T> type) {
 		return getTopViewPartsHandlerList(getRequestTopViewHandler(), type);
 	}
 
@@ -95,7 +107,7 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	@SuppressWarnings("unchecked")
 	public <T extends TopViewParts> T getTopViewParts(TopViewDefinition definition, Class<T> type) {
 		if (definition != null) {
-			Optional<T> typeParts = definition.getParts().stream()
+			Optional<T> typeParts = getAllParts(definition).stream()
 					.filter(type::isInstance)
 					.map(part -> (T)part)
 					.findFirst();
@@ -108,7 +120,7 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	@SuppressWarnings("unchecked")
 	public <T extends TopViewParts> List<T> getTopViewPartsList(TopViewDefinition definition, Class<T> type) {
 		if (definition != null) {
-			List<T> typeParts = definition.getParts().stream()
+			List<T> typeParts = getAllParts(definition).stream()
 					.filter(type::isInstance)
 					.map(part -> (T)part)
 					.collect(Collectors.toList());
@@ -117,11 +129,25 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 		return Collections.emptyList();
 	}
 
+	private List<TopViewParts> getAllParts(TopViewDefinition definition) {
+		if (definition != null) {
+			final List<TopViewParts> allParts = new ArrayList<>();
+			definition.getParts().forEach(parts -> {
+				allParts.add(parts);
+				if (parts instanceof HasNestParts) {
+					allParts.addAll(((HasNestParts)parts).getNestParts());
+				}
+			});
+			return allParts;
+		}
+		return Collections.emptyList();
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends TopViewPartsHandler> T getTopViewPartsHandler(TopViewHandler handler, Class<T> type) {
 		if (handler != null) {
-			Optional<T> typeParts = handler.getParts().stream()
+			Optional<T> typeParts = handler.getAllParts().stream()
 					.filter(type::isInstance)
 					.map(part -> (T)part)
 					.findFirst();
@@ -134,7 +160,7 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	@SuppressWarnings("unchecked")
 	public <T extends TopViewPartsHandler> List<T> getTopViewPartsHandlerList(TopViewHandler handler, Class<T> type) {
 		if (handler != null) {
-			List<T> typeParts = handler.getParts().stream()
+			List<T> typeParts = handler.getAllParts().stream()
 					.filter(type::isInstance)
 					.map(part -> (T)part)
 					.collect(Collectors.toList());

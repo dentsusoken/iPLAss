@@ -22,6 +22,9 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -136,7 +139,7 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 	 * 2分割パーツランタイム
 	 * @author lis3wg
 	 */
-	public class SeparatorPartsHandler extends TopViewPartsHandler {
+	public class SeparatorPartsHandler extends TopViewPartsHandler implements HasNestPartsHandler {
 
 		/** 左エリアパーツ */
 		private TopViewPartsHandler leftParts;
@@ -220,5 +223,29 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 			return rightParts;
 		}
 
+		@Override
+		public List<TopViewPartsHandler> getNestParts() {
+			List<TopViewPartsHandler> nestParts = new ArrayList<>();
+			if (leftParts != null) {
+				nestParts.addAll(getNestParts(leftParts));
+			}
+			if (rightParts != null) {
+				nestParts.addAll(getNestParts(rightParts));
+			}
+			return nestParts;
+		}
+
+		private List<TopViewPartsHandler> getNestParts(TopViewPartsHandler parts) {
+			if (parts instanceof HasNestPartsHandler) {
+				List<TopViewPartsHandler> nestParts = new ArrayList<>();
+				nestParts.add(parts);
+				nestParts.addAll(((HasNestPartsHandler)parts).getNestParts());
+				return nestParts;
+			} else {
+				return Arrays.asList(parts);
+			}
+		}
+
 	}
+
 }

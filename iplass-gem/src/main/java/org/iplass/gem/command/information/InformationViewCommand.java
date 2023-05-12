@@ -20,9 +20,8 @@
 
 package org.iplass.gem.command.information;
 
-import java.util.List;
-
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -45,10 +44,17 @@ import org.iplass.mtp.view.top.parts.InformationParts;
 @ActionMapping(
 	name=InformationViewCommand.ACTION_NAME,
 	displayName="お知らせ詳細表示",
-	result=@Result(type=Type.JSP,
+	result= {
+		@Result(status=Constants.CMD_EXEC_SUCCESS,
+			type=Type.JSP,
 			value=Constants.CMD_RSLT_JSP_INFO_VIEW,
 			templateName="gem/information/view",
+			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+		@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+		@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 			layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
+	}
 )
 @CommandClass(name="gem/information/InformationDetailViewCommand", displayName="お知らせ詳細表示")
 public final class InformationViewCommand implements Command {
@@ -79,18 +85,22 @@ public final class InformationViewCommand implements Command {
 		if (oid != null) {
 			entity = em.load(oid, version ,InformationListCommand.INFORMATION_ENTITY, new LoadOption(false, false));
 		}
+		if (entity == null) {
+			request.setAttribute(Constants.MESSAGE, GemResourceBundleUtil.resourceString("information.view.noPermission"));
+			return Constants.CMD_EXEC_ERROR_NODATA;
+		}
 
 		//パーツ
-		InformationParts infoParts = null;
-		List<InformationParts> parts = tvdm.getRequestTopViewParts(InformationParts.class);
-		if (!parts.isEmpty()) {
-			infoParts = parts.get(0);
+		InformationParts infoParts = tvdm.getRequestTopViewParts(InformationParts.class);
+		if (infoParts == null) {
+			request.setAttribute(Constants.MESSAGE, GemResourceBundleUtil.resourceString("information.view.viewErr"));
+			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
 		//カスタムスタイル
 		String customStyle = null;
-		if (infoParts != null && StringUtil.isNotEmpty(infoParts.getDetailCustomStyle())) {
-			customStyle = tvdm.getRequestTopViewPartsHandler(InformationPartsHandler.class).get(0).getDetailCustomStyle(entity);
+		if (StringUtil.isNotEmpty(infoParts.getDetailCustomStyle())) {
+			customStyle = tvdm.getRequestTopViewPartsHandler(InformationPartsHandler.class).getDetailCustomStyle(entity);
 		} else {
 			customStyle = "";
 		}
