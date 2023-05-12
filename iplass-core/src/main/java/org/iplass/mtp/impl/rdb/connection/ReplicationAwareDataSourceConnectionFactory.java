@@ -148,4 +148,9 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 		}
 	}
 
+	@Override
+	protected boolean isCreateConnectionIfReadOnlyTransactionDefaultValue() {
+		// 本クラスの場合は、ReadOnly トランザクション時にコネクションを新規に作成したいので、true を返却する
+		return true;
+	}
 }
