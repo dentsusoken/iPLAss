@@ -105,6 +105,7 @@ public final class UpdateMappedbyReferenceCommand implements Command {
 		if (pd instanceof ReferenceProperty) {
 			ReferenceProperty rp = (ReferenceProperty) pd;
 			if (StringUtil.isNotEmpty(rp.getMappedBy())) {
+				EntityDefinition red = edm.get(rp.getObjectDefinitionName());
 				for (int i = 0; i < delCount; i++) {
 					// 削除対象のoid、version取得
 					String refEntityKey = request.getParam("refEntityKey_" + i);
@@ -122,7 +123,6 @@ public final class UpdateMappedbyReferenceCommand implements Command {
 					try {
 						if (rp.getReferenceType() == ReferenceType.ASSOCIATION) {
 							// 被参照の削除の場合は相手を更新
-							EntityDefinition red = edm.get(rp.getObjectDefinitionName());
 							update(oid, refEntity, rp, red);
 						} else if (rp.getReferenceType() == ReferenceType.COMPOSITION) {
 							// 親子の場合は削除
