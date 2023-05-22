@@ -28,6 +28,7 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.pack.PackageDS;
 import org.iplass.adminconsole.client.tools.data.pack.PackageDS.FIELD_NAME;
@@ -235,7 +236,7 @@ public class PackageListPane extends VLayout {
 		});
 		toolStrip.addButton(refreshButton);
 
-		grid = new ListGrid(){
+		grid = new MtpListGrid(){
 			@Override
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				String fieldName = this.getFieldName(colNum);
@@ -286,17 +287,16 @@ public class PackageListPane extends VLayout {
 
 		grid.setWidth100();
 		grid.setHeight100();
-		grid.setShowAllRecords(true);
-		grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
 
-		grid.setCanFreezeFields(false);
-		grid.setCanPickFields(false);
-		grid.setCanCollapseGroup(false);
-		grid.setCanGroupBy(false);
+		//データ件数が多い場合を考慮し、false
+		grid.setShowAllRecords(false);
 
 		//CheckBox選択設定
 		grid.setSelectionType(SelectionStyle.SIMPLE);
 		grid.setSelectionAppearance(SelectionAppearance.CHECKBOX);
+
+		//ソートを許可
+		grid.setCanSort(true);
 
 		//この２つを指定することでcreateRecordComponentが有効
 		grid.setShowRecordComponents(true);

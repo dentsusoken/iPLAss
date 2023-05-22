@@ -29,6 +29,7 @@ import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.MetaDataTagDS;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.MetaDataTagDS.FIELD_NAME;
@@ -142,7 +143,7 @@ public class MetaDataTagSelectDialog extends AbstractWindow {
 		});
 		toolStrip.addButton(refreshButton);
 
-		grid = new ListGrid(){
+		grid = new MtpListGrid(){
 			@Override
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				String fieldName = this.getFieldName(colNum);
@@ -183,18 +184,13 @@ public class MetaDataTagSelectDialog extends AbstractWindow {
 
 		grid.setWidth100();
 		grid.setHeight100();
-		grid.setShowAllRecords(true);
-		grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-
-		grid.setCanFreezeFields(false);
-		grid.setCanPickFields(false);
-		grid.setCanCollapseGroup(false);
-		grid.setCanGroupBy(false);
-		grid.setCanFreezeFields(false);
 
 		//CheckBox選択設定
 		grid.setSelectionType(SelectionStyle.SIMPLE);
 		grid.setSelectionAppearance(SelectionAppearance.CHECKBOX);
+
+		//ソートを許可
+		grid.setCanSort(true);
 
 		//この２つを指定することでcreateRecordComponentが有効
 		grid.setShowRecordComponents(true);
@@ -227,6 +223,7 @@ public class MetaDataTagSelectDialog extends AbstractWindow {
 
 		IButton cancelButton = new IButton("Cancel");
 		cancelButton.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}

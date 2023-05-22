@@ -24,6 +24,7 @@ package org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataViewGridButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.SimpleEntityInfoDS;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -129,7 +130,7 @@ public class EntityListPane extends VLayout {
 		});
 		toolStrip.addButton(refreshButton);
 
-		grid = new ListGrid(){
+		grid = new MtpListGrid(){
 			@Override
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				final String fieldName = this.getFieldName(colNum);
@@ -160,20 +161,19 @@ public class EntityListPane extends VLayout {
 
 		grid.setWidth100();
 		grid.setHeight100();
-		//grid.setShowAllRecords(true);		//これをtrueにすると件数が多い場合に全て表示されない不具合発生
-		grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-		grid.setShowRowNumbers(true);		//行番号表示
 
-		grid.setCanFreezeFields(false);
-		grid.setShowSelectedStyle(false);
-		grid.setCanGroupBy(false);
-		grid.setCanPickFields(false);
+		//データ件数が多い場合を考慮し、false
+		grid.setShowAllRecords(false);
 
-		grid.setCanDragSelectText(true);	//セルの値をドラッグで選択可能（コピー用）にする
+		//行番号表示
+		grid.setShowRowNumbers(true);
 
 		//CheckBox選択設定
 		grid.setSelectionType(SelectionStyle.SIMPLE);
 		grid.setSelectionAppearance(SelectionAppearance.CHECKBOX);
+
+		//ソートを許可
+		grid.setCanSort(true);
 
 		//この２つを指定することでcreateRecordComponentが有効
 		grid.setShowRecordComponents(true);

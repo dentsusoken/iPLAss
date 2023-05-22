@@ -22,10 +22,10 @@ package org.iplass.adminconsole.client.tools.ui.permissionexplorer;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionListGridDS;
 import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionListGridDS.PermissionListGridRecord;
 
-import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
@@ -36,7 +36,7 @@ import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
-public abstract class PermissionListGrid extends ListGrid implements PermissionGrid {
+public abstract class PermissionListGrid extends MtpListGrid implements PermissionGrid {
 
 	private PermissionListGridDS ds;
 
@@ -97,10 +97,8 @@ public abstract class PermissionListGrid extends ListGrid implements PermissionG
 		setWidth100();
 		setHeight100();
 
-		setShowAllRecords(true);
-		setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-
-		setShowRowNumbers(true);		//行番号表示
+		//行番号表示
+		setShowRowNumbers(true);
 		ListGridField rowNumberField = new ListGridField();
 		rowNumberField.setWidth(30);
 		rowNumberField.setFrozen(true);
@@ -108,17 +106,12 @@ public abstract class PermissionListGrid extends ListGrid implements PermissionG
 
 		setShowSelectedStyle(false);
 
-		setCanFreezeFields(false);
-		setCanGroupBy(false);
-		setCanPickFields(false);
-		setCanSort(false);
-		setCanAutoFitFields(false);
-		setCanDragSelectText(true);	//セルの値をドラッグで選択可能（コピー用）にする
 		setCanSelectCells(true);
 
-		// 横スクロールを表示する為の処理
-		setAutoFitFieldWidths(true);							//データにより幅自動調節
-		setAutoFitFieldsFillViewport(false);					//幅が足りないときに先頭行の自動的に伸ばさない
+		//列幅自動調節（タイトルに設定）
+		setAutoFitFieldWidths(true);
+		//幅が足りないときに先頭行を自動的に伸ばさない
+		setAutoFitFieldsFillViewport(false);
 
 		addCellContextClickHandler(new CellContextClickHandler() {
 

@@ -46,6 +46,10 @@ public class MtpTreeGrid extends TreeGrid {
 		//Chromeで画面zoom設定によってアイコンが表示されないので大きくする
 		//実際のアイコンサイズはCSSで調整
 		setIconSize(18); //16->18
+
+		setCanAutoFitFields(false);
+		setCanResizeFields(true);
+		setCanShowFilterEditor(false);
 	}
 
 	/**

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.permissionexplorer.RoleDS;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionGrid;
@@ -46,7 +47,6 @@ import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
@@ -145,28 +145,19 @@ public class RoleListPane extends PermissionListPane {
 		//RoleListPaneでは不要(呼ばれない)
 	}
 
-	private class RoleListGrid extends ListGrid implements PermissionGrid {
+	private class RoleListGrid extends MtpListGrid implements PermissionGrid {
 
 		public RoleListGrid() {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);	// 列を全て表示
-			setShowAllRecords(true);	// レコードを全て表示
-
+			//これを指定しないと表示が崩れる
 			setOverflow(Overflow.VISIBLE);
 			setBodyOverflow(Overflow.VISIBLE);
 
-			setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-
-			setCanResizeFields(true);	//列幅変更可
-			setCanSort(false);			//ソート不可
-			setCanGroupBy(false);		//Group化不可
-			setCanPickFields(false);	//列の選択不可
-			setCanAutoFitFields(false);	//自動列幅調整不可
-
 			// レコード編集
 			addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+				@Override
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 					ListGridRecord record = event.getRecord();
 					editRole(record);
