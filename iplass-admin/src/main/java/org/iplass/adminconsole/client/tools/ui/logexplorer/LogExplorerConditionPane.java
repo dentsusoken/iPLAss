@@ -31,6 +31,7 @@ import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
@@ -57,7 +58,6 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.DateTimeItem;
-import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -267,7 +267,7 @@ public class LogExplorerConditionPane extends VLayout {
 
 	}
 
-	private class LogConditionListGrid extends ListGrid {
+	private class LogConditionListGrid extends MtpListGrid {
 
 		private LogConditionDS ds;
 
@@ -275,16 +275,12 @@ public class LogExplorerConditionPane extends VLayout {
 
 			setWidth100();
 			setHeight100();
-			//setShowAllRecords(true);		//これをtrueにすると件数が多い場合に全て表示されない不具合発生
-			setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-			setShowRowNumbers(true);		//行番号表示
 
-			setCanResizeFields(true);	//列幅変更可
-			setCanSort(false);			//ソート不可
-			setCanGroupBy(false);		//Group化不可
-			setCanPickFields(false);	//列の選択不可
-			setCanAutoFitFields(false);	//列幅の自動調整不可(崩れるので)
-			setCanDragSelectText(true);	//セルの値をドラッグで選択可能（コピー用）にする
+			//データ件数が多い場合を考慮し、false
+			setShowAllRecords(false);
+
+			//行番号表示
+			setShowRowNumbers(true);
 
 			refreshGrid();
 		}

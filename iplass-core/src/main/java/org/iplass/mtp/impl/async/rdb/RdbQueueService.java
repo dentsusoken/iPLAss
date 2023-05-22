@@ -78,7 +78,7 @@ public class RdbQueueService implements Service {
 		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
 		taskIdCounter = config.getDependentService("TaskIdCounter");
 		taskIdCounterForGroup = config.getDependentService("TaskIdCounterGrouping");
-		
+
 		if (config.getValue("cleanupHistoryOnInit") != null) {
 			cleanupHistoryOnInit = Boolean.valueOf(config.getValue("cleanupHistoryOnInit"));
 		}
@@ -86,9 +86,9 @@ public class RdbQueueService implements Service {
 		if (config.getValue("historyHoldDay") != null) {
 			historyHoldDay = Integer.parseInt(config.getValue("historyHoldDay"));
 		}
-		
+
 		queue = config.getValues("queue", QueueConfig.class);
-		
+
 		WorkerFactory workerFactory = config.getValue("workerFactory", WorkerFactory.class, new DefaultWorkerFactory());
 
 		queueMap = new HashMap<>();
@@ -103,12 +103,12 @@ public class RdbQueueService implements Service {
 				}
 			}
 		}
-		
+
 		if (useQueue) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("RdbQueueService initialize process started.init queues...");
 			}
-			
+
 			if (defaultQueue == null) {
 				throw new ServiceConfigrationException("default queue(named 'default') is not specified");
 			}
@@ -147,7 +147,7 @@ public class RdbQueueService implements Service {
 
 	public Queue getQueue(String queueName) {
 		if (useQueue == false) {
-			throw new ServiceConfigrationException("RdbQueueService.useQueue=false. set to ture if use RdbQueueService.");
+			throw new ServiceConfigrationException("RdbQueueService.useQueue=false. set to true if use RdbQueueService.");
 		}
 		if (queueName == null) {
 			return defaultQueue;
@@ -158,7 +158,7 @@ public class RdbQueueService implements Service {
 
 	public Queue getQueueById(int id) {
 		if (useQueue == false) {
-			throw new ServiceConfigrationException("RdbQueueService.useQueue=false. set to ture if use RdbQueueService.");
+			throw new ServiceConfigrationException("RdbQueueService.useQueue=false. set to true if use RdbQueueService.");
 		}
 		return queueIdMap.get(id);
 	}

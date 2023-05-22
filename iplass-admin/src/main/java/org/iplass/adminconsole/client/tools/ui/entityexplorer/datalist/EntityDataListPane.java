@@ -29,6 +29,7 @@ import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.EntitySearchResultDS;
@@ -65,8 +66,6 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.DataArrivedEvent;
 import com.smartgwt.client.widgets.grid.events.DataArrivedHandler;
-import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
-import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -489,7 +488,7 @@ public class EntityDataListPane extends VLayout {
 			//------------------------
 			//Grid
 			//------------------------
-			grid = new ListGrid() {
+			grid = new MtpListGrid() {
 				@Override
 				protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 					final String fieldName = this.getFieldName(colNum);
@@ -520,20 +519,20 @@ public class EntityDataListPane extends VLayout {
 			};
 			grid.setWidth100();
 			grid.setHeight100();
-			grid.setShowAllRecords(false);		//データ件数が多い場合を考慮し、false
-			grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
 
-			grid.setAutoFitFieldWidths(true);							//データにより幅自動調節
-//			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//幅の調節をタイトルとデータに設定
-			grid.setAutoFitWidthApproach(AutoFitWidthApproach.TITLE);	//幅の調節をタイトルとデータに設定
-			grid.setAutoFitFieldsFillViewport(false);					//幅が足りないときに先頭行の自動的に伸ばさない
+			//データ件数が多い場合を考慮し、false
+			grid.setShowAllRecords(false);
+			//列数が多い場合を考慮し、false
+			grid.setShowAllColumns(false);
 
-			grid.setShowRowNumbers(true);		//行番号表示
-			grid.setCanDragSelectText(true);	//セルの値をドラッグで選択可能（コピー用）にする
+			//列幅自動調節（タイトルに設定）
+			grid.setAutoFitFieldWidths(true);
+			grid.setAutoFitWidthApproach(AutoFitWidthApproach.TITLE);
+			//幅が足りないときに先頭行を自動的に伸ばさない
+			grid.setAutoFitFieldsFillViewport(false);
 
-			grid.setCanSort(false);
-			grid.setCanGroupBy(false);
-			grid.setCanPickFields(false);
+			//行番号表示
+			grid.setShowRowNumbers(true);
 
 			//CheckBox選択設定
 			grid.setSelectionType(SelectionStyle.SIMPLE);
@@ -551,19 +550,13 @@ public class EntityDataListPane extends VLayout {
 				}
 			});
 
-			//データ編集画面表示
-			grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
-
-				@Override
-				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					//TODO 個別編集画面
-//					EntityDefinition definition = ds.getDefinition();
-//					String oid = event.getRecord().getAttributeAsString(Entity.OID);
-//					//DSでtoStringしているので。
-//					String version = event.getRecord().getAttributeAsString(Entity.VERSION);
-//					mainPane.showDataEditPane(definition, oid, Long.valueOf(version));
-				}
-			});
+			//TODO データ編集画面表示
+//			grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+//
+//				@Override
+//				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
+//				}
+//			});
 
 			//この２つを指定することでcreateRecordComponentが有効
 			grid.setShowRecordComponents(true);

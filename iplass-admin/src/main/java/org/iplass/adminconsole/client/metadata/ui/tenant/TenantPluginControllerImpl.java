@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.tenant;
 
 import org.iplass.adminconsole.client.base.event.ViewMetaDataEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.metadata.data.tenant.BaseTenantDS;
 import org.iplass.adminconsole.client.metadata.data.tenant.TenantCategory;
 import org.iplass.adminconsole.client.metadata.data.tenant.TenantDSCellFormatter;
@@ -51,23 +52,10 @@ public class TenantPluginControllerImpl implements TenantPluginController {
 	@Override
 	public ListGrid createGrid() {
 
-		ListGrid grid = new ListGrid();
-		grid.setCanEdit(false);
+		ListGrid grid = new MtpListGrid();
 		grid.setWidth100();
 		grid.setHeight100();
 		grid.setCellHeight(22);
-		grid.setShowAllRecords(true);
-		grid.setLeaveScrollbarGap(false);
-		grid.setShowFilterEditor(false);
-		grid.setCanSort(false);
-		grid.setCanAutoFitFields(false);
-		grid.setCanFreezeFields(false);
-		grid.setCanGroupBy(false);
-		grid.setCanPickFields(false);
-		grid.setCanDragRecordsOut(false);
-		grid.setCanDrop(false);
-		grid.setEmptyMessage("no item");
-		grid.setShowAsynchGroupingPrompt(false);
 
 		// 一覧Group設定
 		grid.setGroupStartOpen(GroupStartOpen.ALL);

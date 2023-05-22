@@ -29,6 +29,7 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.shared.base.dto.i18n.MultiLangFieldInfo;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -112,7 +113,7 @@ public class LangEditListPane extends VLayout {
 		}
 
 		//グリッド作成
-		ListGrid listGrid = new ListGrid();
+		ListGrid listGrid = new MtpListGrid();
 
 		listGrid.setCanEdit(true);
 		listGrid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
@@ -231,6 +232,7 @@ public class LangEditListPane extends VLayout {
 
 			IButton save = new IButton("Save");
 			save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+				@Override
 				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 					controller.updateMultiLangInfo(parent, definitionClassName, definitionName, path);
 				}
@@ -238,6 +240,7 @@ public class LangEditListPane extends VLayout {
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+				@Override
 				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 					controller.displayMultiLangInfo(parent, definitionClassName, definitionName, path);
 				}
@@ -245,6 +248,7 @@ public class LangEditListPane extends VLayout {
 
 			IButton export = new IButton("Export");
 			export.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+				@Override
 				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 					controller.exportMultiLangInfo(path, definitionName);
 				}
@@ -252,6 +256,7 @@ public class LangEditListPane extends VLayout {
 
 			IButton importButton = new IButton("Import");
 			importButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+				@Override
 				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 					LangCsvUploadDialog dialog = new LangCsvUploadDialog(OutputMode.SINGLE, definitionName, path);
 					dialog.addDialogCloseHandler(new DataChangedHandler() {

@@ -24,6 +24,7 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.logexplorer.LogFileDS;
 import org.iplass.adminconsole.client.tools.data.logexplorer.LogFileDS.FIELD_NAME;
@@ -93,7 +94,7 @@ public class LogExplorerFileListPane extends VLayout {
 		});
 		toolStrip.addButton(refreshButton);
 
-		grid = new ListGrid(){
+		grid = new MtpListGrid(){
 			@Override
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				String fieldName = this.getFieldName(colNum);
@@ -119,17 +120,9 @@ public class LogExplorerFileListPane extends VLayout {
 
 		grid.setWidth100();
 		grid.setHeight100();
-		grid.setShowAllRecords(true);
-		grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
 
-		grid.setCanFreezeFields(false);
-		grid.setCanPickFields(false);
-		grid.setCanCollapseGroup(false);
-		grid.setCanGroupBy(false);
-		grid.setCanMultiSort(false);
-		grid.setCanAutoFitFields(false);
-		grid.setShowHeaderMenuButton(false);
-
+		//ソートを許可
+		grid.setCanSort(true);
 
 		//この２つを指定することでcreateRecordComponentが有効
 		grid.setShowRecordComponents(true);
