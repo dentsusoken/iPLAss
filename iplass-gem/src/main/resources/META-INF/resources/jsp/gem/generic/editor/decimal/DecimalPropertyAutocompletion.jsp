@@ -32,35 +32,11 @@ Integer multiplicity = (Integer) request.getAttribute(Constants.AUTOCOMPLETION_M
 if (multiplicity == null) multiplicity = 1;
 //呼び出し元は/common/Autocompletion.jsp、以降はWebApiの結果を反映する部分のJavascript、結果の変数はvalue
 if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
-	// 詳細画面
+	//編集画面
 %>
-var multiplicity = <%=multiplicity%>;
-
-if (multiplicity == 1) {
-	if (value instanceof Array) {
-		value = value.length > 0 ? value[0] : "";
-	}
-} else {
-	if (value instanceof Array) {
-		if (value.length > multiplicity) {
-			value = value.slice(0, multiplicity);
-		}
-	} else {
-		if (value != null) {
-			value = [value];
-		}
-	}
-
-	if (value != null) {
-		var propLength = $("[name='" + propName + "']").length;
-		if (value.length < propLength) {
-			value = value.concat(new Array(propLength - value.length));
-		}
-	} else {
-		// nullの場合は1件のみクリアとする
-		value = new Array(1);
-	}
-}
+const multiplicity = <%=multiplicity%>;
+const inputLength = $("[name='" + propName + "']").length;
+value = normalizedDetailAutoCompletionValue(value, multiplicity, inputLength, null);
 <%
 	if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 %>

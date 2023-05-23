@@ -28,9 +28,17 @@
 
 <%
 BinaryPropertyEditor editor = (BinaryPropertyEditor) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR);
+String viewType = StringUtil.escapeJavaScript((String) request.getAttribute(Constants.AUTOCOMPLETION_VIEW_TYPE));
 Integer multiplicity = (Integer) request.getAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
 if (multiplicity == null) multiplicity = 1;
 //呼び出し元は/common/Autocompletion.jsp、以降はWebApiの結果を反映する部分のJavascript、結果の変数はvalue
+if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
+	//Binary型は編集画面での利用は想定しない
+	//BinaryPropertyEditor_Edit.jspで指定していない
+} else {
+	//検索画面
+	//検索条件では、多重度に関係なく1が設定される(SearchConditionSection.jsp)
+	//検索条件のファイル名のみ
 %>
 var multiplicity = <%=multiplicity%>;
 if (multiplicity == 1) {
@@ -46,7 +54,7 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
-<%
-//Binary型は詳細画面での利用は想定しない、検索条件のファイル名のみ
-%>
 $("[name='sc_" + propName + "']").val(value);
+<%
+}
+%>

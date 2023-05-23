@@ -5072,3 +5072,59 @@ var dateUtil = new DateUtil({
 		timeSecFormat:scriptContext.locale.inputTimeSecFormat
 	}
 });
+
+////////////////////////////////////////////////////////
+//自動補完用のJavascript
+////////////////////////////////////////////////////////
+/**
+ * 編集画面の自動補完値の正規化
+ * 
+ * @param value 自動補完値
+ * @param multiplicity 多重度
+ * @param inputLength 表示されている入力領域の数
+ * @param nullValue nullまたはundefinedの場合の値
+ * @returns 正規化した値
+ */
+function normalizedDetailAutoCompletionValue(value, multiplicity, inputLength, nullValue = null) {
+
+	let normalizedValue;
+	if (multiplicity === 1) {
+		if (value instanceof Array) {
+			normalizedValue = value.length > 0 ? value[0] : nullValue;
+		} else {
+			normalizedValue = value;
+		}
+		if (nullValue !== null && normalizedValue == null) {
+			// nullまたはundefinedは、nullValueで置き換え
+			normalizedValue = nullValue;
+		}
+	} else {
+		if (value instanceof Array) {
+			if (multiplicity > 0 && value.length > multiplicity) {
+				// 多重度分まででカット
+				normalizedValue = value.slice(0, multiplicity);
+			} else {
+				normalizedValue = value;
+			}
+		} else {
+			// 配列化
+			normalizedValue = [value];
+		}
+
+		if (value != null) {
+			// nullまたはundefinedの場合は既存動作の整合性のため１件目のみクリアするので対象外
+			if (normalizedValue.length < inputLength) {
+				// 既に表示されている入力領域分、追加する
+				normalizedValue = normalizedValue.concat(Array(inputLength - normalizedValue.length).fill(nullValue));
+			}
+		}
+
+		if (nullValue !== null) {
+			normalizedValue = normalizedValue.map(function( value ) {
+				// nullまたはundefinedは、nullValueで置き換え
+				return value == null ? nullValue : value;
+			});
+		}
+	}
+	return normalizedValue;
+}
