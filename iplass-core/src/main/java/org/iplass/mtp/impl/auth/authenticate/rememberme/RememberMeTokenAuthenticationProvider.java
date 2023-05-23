@@ -316,6 +316,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 			clientStore.clearToken();
 			tokenHandler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), authTokenType, user.getUnmodifiableUniqueKey());
 		});
+		
+		authenticationProvider.logout(user);
 	}
 
 	@Override
