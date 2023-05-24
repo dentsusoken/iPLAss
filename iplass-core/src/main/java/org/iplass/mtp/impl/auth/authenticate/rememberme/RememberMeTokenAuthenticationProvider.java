@@ -86,6 +86,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 
 	private TrustedAuthValidator trustedAuthValidator;
 
+	private AutoLoginHandler autoLoginHandler;
+
 	private AuthService service;
 
 	private AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
@@ -130,6 +132,10 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 			trustedAuthValidator.inited(service, this);
 		}
 		tokenHandler = (RememberMeTokenHandler) tokenService.getHandler(authTokenType);
+		
+		if (autoLoginHandler != null) {
+			autoLoginHandler.inited(service, this);
+		}
 
 		this.service = service;
 	}
@@ -492,7 +498,15 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 
 	@Override
 	public AutoLoginHandler getAutoLoginHandler() {
-		return this;
+		if (autoLoginHandler == null) {
+			return this;
+		} else {
+			return autoLoginHandler;
+		}
+	}
+
+	public void setAutoLoginHandler(AutoLoginHandler autoLoginHandler) {
+		this.autoLoginHandler = autoLoginHandler;
 	}
 
 	@Override

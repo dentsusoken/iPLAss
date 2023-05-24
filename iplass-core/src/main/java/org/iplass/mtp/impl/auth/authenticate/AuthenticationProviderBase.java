@@ -195,6 +195,10 @@ public abstract class AuthenticationProviderBase implements AuthenticationProvid
 			trustedAuthValidator = new DefaultTrustedAuthValidator(getAccountHandleClassForTrust().getName(), getCredentialTypeForTrust().getName());
 		}
 		trustedAuthValidator.inited(service, this);
+		
+		if (autoLoginHandler != null) {
+			autoLoginHandler.inited(service, this);
+		}
 	}
 	
 	protected abstract Class<? extends AccountHandle> getAccountHandleClassForTrust();

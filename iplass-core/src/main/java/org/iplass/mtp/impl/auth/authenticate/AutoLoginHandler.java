@@ -21,6 +21,7 @@ package org.iplass.mtp.impl.auth.authenticate;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.impl.auth.AuthService;
 import org.iplass.mtp.impl.auth.UserContext;
 
 public interface AutoLoginHandler {
@@ -32,5 +33,8 @@ public interface AutoLoginHandler {
 	}
 	
 	public default void handleSuccess(AutoLoginInstruction ali, RequestContext req, UserContext user) {
+	}
+	
+	public default void inited(AuthService service, AuthenticationProvider provider) {
 	}
 }
