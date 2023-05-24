@@ -52,33 +52,13 @@ $("[name='" + propName + "']").val(value);
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
 		List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
+		//表示ラベルと値をセット
 %>
-// 表示ラベルと値をセット
-var editorMap = new Map();
+var editorValueMap = new Map();
 <c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
-	editorMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
+	editorValueMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
 </c:forEach>
-
-var newContent = '';
-
-if (multiplicity == 1) {
-	if (value) {
-		newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label 
-			+ '<input type="hidden" name="' + propName + '" value="' + value + '"> </li>';
-	}
-} else {
-	if (value) {
-		for (i =  0; i < value.length; i++) {
-			if (value[i] == null || value[i].length == 0) {
-				continue;	
-			}
-			newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label
-				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
-		}
-	}
-}
-$("[name='data-label-" + propName + "']").html(newContent);
-
+renderDetailAutoCompletionLabelTypeEditorValueFormat(value, multiplicity, propName, editorValueMap);
 <%
 	} else if(editor.getDisplayType() == SelectDisplayType.HIDDEN) {
 %>

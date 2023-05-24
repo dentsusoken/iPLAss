@@ -41,49 +41,12 @@ value = normalizedDetailAutoCompletionValue(value, multiplicity, inputLength, ""
 <%
 	if (editor.getDisplayType() == StringDisplayType.TEXT
 		|| editor.getDisplayType() == StringDisplayType.TEXTAREA
-		|| editor.getDisplayType() == StringDisplayType.PASSWORD
-		|| editor.getDisplayType() == StringDisplayType.LABEL) {
+		|| editor.getDisplayType() == StringDisplayType.PASSWORD) {
 		if (multiplicity == 1) {
-
-			// ラベル表示の場合はラベルに値を設定
-			if (editor.getDisplayType() == StringDisplayType.LABEL) {
-%>
-var newContent = '';
-
-if (!value) {
-	newContent = '<input type="hidden" name="' + propName + '" value="">';
-} else {
-	newContent = value.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
-		+ '<input type="hidden" name="' + propName + '" value="">';
-}
-$("[name='data-label-" + propName + "']").html(newContent);
-<%
-			}
 %>
 $("[name='" + propName + "']").val(value);
 <%
 		} else {
-
-			// ラベル表示の場合はhtml書き換え
-			if (editor.getDisplayType() == StringDisplayType.LABEL) {
-%>
-var newContent = '';
-
-// 自動補完の値が空の場合
-if (!value || (value.length == 1 && !value[0])) {
-	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
-	$("[name='" + propName + "']:first").parent().html(newContent);
-
-} else {
-	for (i =  0; i < value.length; i++) {
-		var hiddenValue = value[i] ? value[i] : "";
-		newContent = newContent + '<li>' + hiddenValue.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
-					+ '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '"> </li>';
-	}
-	$("[name='data-label-" + propName + "']").html(newContent);
-}
-<%
-			} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -93,8 +56,24 @@ for (var i = 0; i < value.length; i++) {
 	$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
 }
 <%
-			}
 		}
+	} else if (editor.getDisplayType() == StringDisplayType.LABEL) {
+%>
+renderDetailAutoCompletionLabelType(value, multiplicity, propName,
+	function(value) {
+		if (!value) {
+			return ""
+		}
+		return value.replaceAll("\r\n", "<br>").replaceAll("\n", "<br>").replaceAll("\r", "<br>").replaceAll(" ", "&nbsp;");
+	},
+	function(value) {
+		if (!value) {
+			return "";
+		}
+		return value;
+	}
+);
+<%
 	} else if (editor.getDisplayType() == StringDisplayType.SELECT) {
 %>
 $("[name='" + propName + "']").val(value);

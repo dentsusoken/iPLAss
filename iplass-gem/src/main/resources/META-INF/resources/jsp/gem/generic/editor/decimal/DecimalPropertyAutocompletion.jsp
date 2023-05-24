@@ -40,29 +40,8 @@ value = normalizedDetailAutoCompletionValue(value, multiplicity, inputLength, nu
 <%
 	if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 %>
-
-var newContent = '';
-
-if (multiplicity == 1) {
-	if (!value) {
-		newContent = "" + '<input type="hidden" name="' + propName + '" value="">';
-	} else {
-		newContent = value.label + '<input type="hidden" name="' + propName + '" value="' + value.value + '">';
-	}
-	$("[name='data-label-" + propName + "']").html(newContent);
-} else {
-	var dataLabelEle = $("[name='data-label-" + propName + "'] li");
-	for (var i = 0; i < value.length; i++) {
-		if (dataLabelEle[i] != null) dataLabelEle[i].remove();
-		if (!value[i]) {
-			continue;
-		}
-		newContent = newContent  + '<li>' + value[i].label
-			+ '<input type="hidden" name="' + propName + '" value="' + value[i].value + '"> </li>';
-	}
-	$(newContent).prependTo($("[name='data-label-" + propName + "']"));
-}
-<% 
+renderDetailAutoCompletionLabelTypeLabelFormat(value, multiplicity, propName);
+<%
 	} else if(editor.getDisplayType() == NumberDisplayType.HIDDEN) {
 %>
 

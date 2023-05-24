@@ -5128,3 +5128,117 @@ function normalizedDetailAutoCompletionValue(value, multiplicity, inputLength, n
 	}
 	return normalizedValue;
 }
+
+/**
+ * 編集画面のLable形式の自動補完値の表示
+ * 
+ * @param value 自動補完値(正規化した値)
+ * @param multiplicity 多重度
+ * @param propName プロパティ名
+ * @param labelFunction 値に対するLabelを返す関数
+ * @param hiddenFunction 値に対するhidden値を返す関数
+ */
+function renderDetailAutoCompletionLabelType(value, multiplicity, propName, labelFunction, hiddenFunction) {
+
+	if (multiplicity == 1) {
+		const labelValue = labelFunction(value);
+		const hiddenValue = hiddenFunction(value);
+		const newLabel = labelValue 
+			+ "<input type='hidden' name='" + propName + "' value='" + hiddenValue + "'>";
+
+		$("[name='data-label-" + propName + "']").html(newLabel);
+
+	} else {
+		// nullによる先頭のみクリアを考慮し、値分でLoopし、対象行をクリア、新しい値を先頭に追加
+		let newLabels = "";
+		const currentLables = $("[name='data-label-" + propName + "'] li");
+		for (let i = 0; i < value.length; i++) {
+			if (currentLables[i] != null) currentLables[i].remove();
+			
+			const labelValue = labelFunction(value[i]);
+			const hiddenValue = hiddenFunction(value[i]);
+			const newLabel = "<li>" + labelValue 
+				+ "<input type='hidden' name='" + propName + "' value='" + hiddenValue + "'></li>";
+			newLabels += newLabel;
+		}
+
+		$(newLabels).prependTo($("[name='data-label-" + propName + "']"));
+	}
+}
+
+/**
+ * 編集画面のLable形式の自動補完値の表示
+ * 値が{label, value}形式の場合
+ * 
+ * @param value 自動補完値(正規化した値)
+ * @param multiplicity 多重度
+ * @param propName プロパティ名
+ */
+function renderDetailAutoCompletionLabelTypeLabelFormat(value, multiplicity, propName) {
+
+	renderDetailAutoCompletionLabelType(value, multiplicity, propName,
+		function(value) {
+			if (!value) {
+				return ""
+			}
+			return value.label;
+		},
+		function(value) {
+			if (!value) {
+				return "";
+			}
+			return value.value;
+		}
+	);
+}
+
+/**
+ * 編集画面のLable形式の自動補完値の表示
+ * EditorValueで表示する形式の場合
+ * 
+ * @param value 自動補完値(正規化した値)
+ * @param multiplicity 多重度
+ * @param propName プロパティ名
+ * @param editorValueMap EditorValueのMap
+ */
+function renderDetailAutoCompletionLabelTypeEditorValueFormat(value, multiplicity, propName, editorValueMap) {
+
+	if (multiplicity == 1) {
+		//値が有効の場合のみ出力
+		if (value && editorValueMap.has(String(value))) {
+			const editorValue = editorValueMap.get(String(value));
+			const newLabel = "<li class='" + editorValue.style + "'>" 
+				+ editorValue.label 
+				+ "<input type='hidden' name='" + propName + "' value='" + value + "'>"
+				+ "</li>";
+
+			$("[name='data-label-" + propName + "']").html(newLabel);
+		} else {
+			$("[name='data-label-" + propName + "']").html("");
+		}
+	} else {
+		// nullによる先頭のみクリアを考慮し、値分でLoopし、対象行をクリア、新しい値を先頭に追加
+		let newLabels = "";
+		const currentLables = $("[name='data-label-" + propName + "'] li");
+		for (let i = 0; i < value.length; i++) {
+			if (currentLables[i] != null) currentLables[i].remove();
+			
+			if (value[i] && editorValueMap.has(String(value[i]))) {
+				const editorValue = editorValueMap.get(String(value[i]));
+				const newLabel = "<li class='" + editorValue.style + "'>"
+					+ editorValue.label 
+					+ "<input type='hidden' name='" + propName + "' value='" + value[i] + "'>"
+					+ "</li>";
+				newLabels += newLabel;
+			} else {
+				const newLabel = "<li>"
+					+ "<input type='hidden' name='" + propName + "'>"
+					+ "</li>";
+				newLabels += newLabel;
+			}
+		}
+
+		$(newLabels).prependTo($("[name='data-label-" + propName + "']"));
+	}
+
+}
