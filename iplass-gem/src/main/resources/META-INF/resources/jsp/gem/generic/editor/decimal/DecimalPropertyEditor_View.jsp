@@ -153,15 +153,23 @@
 		
 		if (isMultiple) {
 			//複数
+%>
+<ul name="data-hidden-<c:out value="<%=propName %>"/>">
+<%
 			BigDecimal[] array = propValue instanceof BigDecimal[] ? (BigDecimal[]) propValue : null;
 			if (array != null) {
 				for (int i = 0; i < array.length; i++) {
 					String hiddenValue = array[i] instanceof BigDecimal ? ((BigDecimal)array[i]).toPlainString() : "";
 %>
+<li>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+</li>
 <%
 				}
 			}
+%>
+</ul>
+<%
 		} else {
 			//単一
 			String hiddenValue = propValue instanceof BigDecimal ? ((BigDecimal)propValue).toPlainString() : "";

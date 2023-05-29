@@ -318,6 +318,10 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		if (params != null) {
 			SelectValue[] ret = Arrays.stream(params)
 					.map(param -> {
+						if (StringUtil.isEmpty(param)) {
+							return null;
+						}
+
 						if(selectProperty == null) {
 							return new SelectValue(param);
 						}

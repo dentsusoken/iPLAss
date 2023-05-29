@@ -122,8 +122,8 @@
 					if (tmp instanceof Double) hiddenValue = "" + ((Double)tmp).doubleValue();
 					else if (tmp instanceof Long) hiddenValue = "" + ((Long)tmp).longValue();
 %>
-</li>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+</li>
 
 <%
 				}
@@ -142,8 +142,8 @@
 			if (propValue instanceof Double) hiddenValue = "" + ((Double)propValue).doubleValue();
 			else if (propValue instanceof Long) hiddenValue = "" + ((Long)propValue).longValue();
 %>
-</span>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+</span>
 
 <%
 		}
@@ -152,6 +152,9 @@
 		
 		if (isMultiple) {
 			//複数
+%>
+<ul name="data-hidden-<c:out value="<%=propName %>"/>">
+<%
 			Number[] array = propValue instanceof Number[] ? (Number[]) propValue : null;
 			if (array != null) {
 				for (int i = 0; i < array.length; i++) {
@@ -160,10 +163,15 @@
 					if (tmp instanceof Double) hiddenValue = "" + ((Double)tmp).doubleValue();
 					else if (tmp instanceof Long) hiddenValue = "" + ((Long)tmp).longValue();
 %>
+<li>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+</li>
 <%
 				}
 			}
+%>
+</ul>
+<%
 		} else {
 			//単数
 			String hiddenValue = "";

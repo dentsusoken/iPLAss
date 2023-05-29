@@ -40,104 +40,64 @@ Integer multiplicity = (Integer) request.getAttribute(Constants.AUTOCOMPLETION_M
 if (multiplicity == null) multiplicity = 1;
 //呼び出し元は/common/Autocompletion.jsp、以降はWebApiの結果を反映する部分のJavascript、結果の変数はvalue
 if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
-	// 詳細画面
+	//編集画面
 %>
-var multiplicity = <%=multiplicity%>;
-if (multiplicity == 1) {
-	if (value instanceof Array) {
-		value = value.length > 0 ? value[0] : "";
-	}
-} else {
-	if (value instanceof Array) {
-		if (value.length > multiplicity) {
-			value = value.slice(0, multiplicity);
-		}
-	} else {
-		value = [value];
-	}
-}
-
+const multiplicity = <%=multiplicity%>;
+const inputLength = $("[name='" + propName + "']").length;
+value = normalizedDetailAutoCompletionValue(value, multiplicity, inputLength, "");
 <%
 	if (editor.getDisplayType() == SelectDisplayType.SELECT) {
 %>
 $("[name='" + propName + "']").val(value);
 <%
-	// ラベル表示の場合はhtmlを書き換え
 	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
 		List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
+		//表示ラベルと値をセット
 %>
-// 自動補完の値が空の場合
-if (!value || (!value[0] && !value.label)) {
-	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
-	$("[name='" + propName + "']:first").parent().html(newContent);
-
-} else {
-	var editorMap = new Map();
-	<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
-		editorMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
-	</c:forEach>
-	
-	var newContent = '';
-	
-	if (multiplicity == 1) {
-		newContent = '<li class="' + editorMap.get(String(value)).style + '">' + editorMap.get(String(value)).label 
-			+ '<input type="hidden" name="' + propName + '" value="' + value + '"> </li>';
-
-	} else {
-		for (i =  0; i < value.length; i++) {
-			newContent = newContent + '<li class="' + editorMap.get(String(value[i])).style + '">' + editorMap.get(String(value[i])).label
-				+ '<input type="hidden" name="' + propName + '" value="' + value[i] + '"> </li>';
-		}
-	}
-	$("[name='data-label-" + propName + "']").html(newContent);
-}
+var editorValueMap = new Map();
+<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
+	editorValueMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
+</c:forEach>
+renderDetailAutoCompletionLabelTypeEditorValueFormat(value, multiplicity, propName, editorValueMap);
 <%
 	} else if(editor.getDisplayType() == SelectDisplayType.HIDDEN) {
+		List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
 %>
-var propLength = $('[name=' + propName + ']').length;
-if (multiplicity == 1) {
-	// プロパティ値が無い場合はタグ追加
-	if (!propLength) {
-		$(".hidden-input-area:first").append('<input type="hidden" name="' + propName + '" value="">');
-	}
-	$('[name=' + propName + ']').val(value);
-	
-} else {
-	
-	var newContent = '';
-	for (i =  0; i < value.length; i++) {
-		var hiddenValue = value[i] ? value[i] : "";
-		if (i > propLength - 1) {
-			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
-			continue;
+var editorValueMap = new Map();
+<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
+	editorValueMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
+</c:forEach>
+renderDetailAutoCompletionHiddenType(value, multiplicity, propName, 
+	function(value) {
+		if (value && editorValueMap.has(String(value))) {
+			return value;
 		}
-		$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
+		return "";
 	}
-
-	// 項目数が増える場合に追加する
-	if (propLength && value.length > propLength) {
-		$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
-	// 項目に値が無い場合は新規に追加する
-	} else if (!propLength) {
-		$(".hidden-input-area:first").append($(newContent));
-	}
-}
+);
 <%
-
 	} else {
 		if (multiplicity == 1) {
 			//radio
 %>
+// クリック状態を解除する
+$("[name='" + propName + "']:checked").each(function() {
+	$(this).click();
+	return false;
+});
+
 $("[name='" + propName + "'][value='" + value + "']").click();
 <%
 		} else  {
 			//checkbox
 %>
+// クリック状態を解除する
+$("[name='" + propName + "']:checked").each(function() {
+	$(this).click();
+});
+
 for (var i = 0; i < value.length; i++) {
-	var isChecked = $("[name='" + propName + "'][value='" + value[i] + "']").is(":checked");
-	if (!isChecked) {
-		$("[name='" + propName + "'][value='" + value[i] + "']").click();
-	}
+	$("[name='" + propName + "'][value='" + value[i] + "']").click();
 }
 <%
 		}
@@ -151,16 +111,29 @@ if (!(value instanceof Array)) {
 <%
 	if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) {
 %>
+// クリック状態を解除する
+$("[name='sc_" + propName + "']:checked").each(function() {
+	$(this).click();
+});
+
 for (var i = 0; i < value.length; i++) {
-	var isChecked = $("[name='sc_" + propName + "'][value='" + value[i] + "']").is(":checked");
-	if (!isChecked) {
-		$("[name='sc_" + propName + "'][value='" + value[i] + "']").click();
-	}
+	$("[name='sc_" + propName + "'][value='" + value[i] + "']").click();
 }
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.RADIO) {
 %>
-$("[name='sc_" + propName + "'][value='" + value[0] + "']").click();
+// クリック状態を解除する
+$("[name='sc_" + propName + "']:checked").each(function() {
+	$(this).click();
+	return false;
+});
+
+if (!value[0]) {
+	// 未指定をクリック
+	$("[name='sc_" + propName + "']:last").click();
+} else {
+	$("[name='sc_" + propName + "'][value='" + value[0] + "']").click();
+}
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.SELECT) {
 %>

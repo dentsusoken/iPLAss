@@ -33,61 +33,20 @@ Integer multiplicity = (Integer) request.getAttribute(Constants.AUTOCOMPLETION_M
 if (multiplicity == null) multiplicity = 1;
 //呼び出し元は/common/Autocompletion.jsp、以降はWebApiの結果を反映する部分のJavascript、結果の変数はvalue
 if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
-	// 詳細画面
+	//編集画面
 %>
-var multiplicity = <%=multiplicity%>;
-if (multiplicity == 1) {
-	if (value instanceof Array) {
-		value = value.length > 0 ? value[0] : "";
-	}
-} else {
-	if (value instanceof Array) {
-		if (value.length > multiplicity) {
-			value = value.slice(0, multiplicity);
-		}
-	} else {
-		value = [value];
-	}
-}
-
+const multiplicity = <%=multiplicity%>;
+const inputLength = $("[name='" + propName + "']").length;
+value = normalizedDetailAutoCompletionValue(value, multiplicity, inputLength, "");
 <%
 	if (editor.getDisplayType() == StringDisplayType.TEXT
 		|| editor.getDisplayType() == StringDisplayType.TEXTAREA
-		|| editor.getDisplayType() == StringDisplayType.PASSWORD
-		|| editor.getDisplayType() == StringDisplayType.LABEL) {
+		|| editor.getDisplayType() == StringDisplayType.PASSWORD) {
 		if (multiplicity == 1) {
-
-			// ラベル表示の場合はラベルに値を設定
-			if (editor.getDisplayType() == StringDisplayType.LABEL) {
-%>
-var newContent = '';
-
-if (!value) {
-	newContent = '<input type="hidden" name="' + propName + '" value="">';
-} else {
-	newContent = value.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
-		+ '<input type="hidden" name="' + propName + '" value="">';
-}
-$("[name='data-label-" + propName + "']").html(newContent);
-<%
-			}
 %>
 $("[name='" + propName + "']").val(value);
 <%
 		} else {
-
-			// ラベル表示の場合はhtml書き換え
-			if (editor.getDisplayType() == StringDisplayType.LABEL) {
-%>
-var newContent = '';
-for (i =  0; i < value.length; i++) {
-	var hiddenValue = value[i] ? value[i] : "";
-	newContent = newContent + '<li>' + hiddenValue.replaceAll('\r\n', '<BR>').replaceAll('\n', '<BR>').replaceAll('\r', '<BR>').replaceAll(' ', '&nbsp;')
-				+ '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '"> </li>';
-}
-$("[name='data-label-" + propName + "']").html(newContent);
-<%
-			} else {
 			//フィールドあるか、戻り値のサイズ、クリックして追加
 %>
 for (var i = 0; i < value.length; i++) {
@@ -97,8 +56,24 @@ for (var i = 0; i < value.length; i++) {
 	$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
 }
 <%
-			}
 		}
+	} else if (editor.getDisplayType() == StringDisplayType.LABEL) {
+%>
+renderDetailAutoCompletionLabelType(value, multiplicity, propName,
+	function(value) {
+		if (!value) {
+			return ""
+		}
+		return value.replaceAll("\r\n", "<br>").replaceAll("\n", "<br>").replaceAll("\r", "<br>").replaceAll(" ", "&nbsp;");
+	},
+	function(value) {
+		if (!value) {
+			return "";
+		}
+		return value;
+	}
+);
+<%
 	} else if (editor.getDisplayType() == StringDisplayType.SELECT) {
 %>
 $("[name='" + propName + "']").val(value);
@@ -122,28 +97,7 @@ for (var i = 0; i < value.length; i++) {
 		}
 	} else if (editor.getDisplayType() == StringDisplayType.HIDDEN) {
 %>
-if (multiplicity == 1) {
-	$('[name=' + propName + ']').val(value);
-} else {
-	var propLength = $('[name=' + propName + ']').length;
-	var newContent = '';
-	for (i =  0; i < value.length; i++) {
-		hiddenValue = value[i] ? value[i] : "";
-		if (i > propLength - 1) {
-			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
-			continue;
-		}
-		$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
-	}
-
-	// 項目数が増える場合に追加する
-	if (propLength && value.length > propLength) {
-		$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
-	// 項目に値が無い場合は新規に追加する
-	} else if (!propLength) {
-		$(".hidden-input-area:first").append($(newContent));
-	}
-}
+renderDetailAutoCompletionHiddenType(value, multiplicity, propName);
 <%
 	}
 } else {

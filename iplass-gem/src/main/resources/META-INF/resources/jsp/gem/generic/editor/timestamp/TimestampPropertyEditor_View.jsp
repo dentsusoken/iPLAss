@@ -162,16 +162,24 @@
 
 		if (isMultiple) {
 			//複数
+%>
+<ul name="data-hidden-<c:out value="<%=propName %>"/>">
+<%
 			Timestamp[] array = propValue instanceof Timestamp[] ? (Timestamp[]) propValue : null;
 			if (array != null) {
 				for (int i = 0; i < array.length; i++) {
 					Timestamp t = array[i];
 					String strHidden = format(t);
 %>
+<li>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
+</li>
 <%
 				}
 			}
+%>
+</ul>
+<%
 		} else {
 			//単一
 			Timestamp t = propValue instanceof Timestamp ? (Timestamp) propValue : null;

@@ -5072,3 +5072,211 @@ var dateUtil = new DateUtil({
 		timeSecFormat:scriptContext.locale.inputTimeSecFormat
 	}
 });
+
+////////////////////////////////////////////////////////
+//自動補完用のJavascript
+////////////////////////////////////////////////////////
+/**
+ * 編集画面の自動補完値の正規化
+ * 
+ * @param value 自動補完値
+ * @param multiplicity 多重度
+ * @param inputLength 表示されている入力領域の数
+ * @param nullValue nullまたはundefinedの場合の値
+ * @returns 正規化した値
+ */
+function normalizedDetailAutoCompletionValue(value, multiplicity, inputLength, nullValue = null) {
+
+	let normalizedValue;
+	if (multiplicity === 1) {
+		if (value instanceof Array) {
+			normalizedValue = value.length > 0 ? value[0] : nullValue;
+		} else {
+			normalizedValue = value;
+		}
+		if (nullValue !== null && normalizedValue == null) {
+			// nullまたはundefinedは、nullValueで置き換え
+			normalizedValue = nullValue;
+		}
+	} else {
+		if (value instanceof Array) {
+			if (multiplicity > 0 && value.length > multiplicity) {
+				// 多重度分まででカット
+				normalizedValue = value.slice(0, multiplicity);
+			} else {
+				normalizedValue = value;
+			}
+		} else {
+			// 配列化
+			normalizedValue = [value];
+		}
+
+		if (value != null) {
+			// nullまたはundefinedの場合は既存動作の整合性のため１件目のみクリアするので対象外
+			if (normalizedValue.length < inputLength) {
+				// 既に表示されている入力領域分、追加する
+				normalizedValue = normalizedValue.concat(Array(inputLength - normalizedValue.length).fill(nullValue));
+			}
+		}
+
+		if (nullValue !== null) {
+			normalizedValue = normalizedValue.map(function( value ) {
+				// nullまたはundefinedは、nullValueで置き換え
+				return value == null ? nullValue : value;
+			});
+		}
+	}
+	return normalizedValue;
+}
+
+/**
+ * 編集画面のLable形式の自動補完値の表示
+ * 
+ * @param value 自動補完値(正規化した値)
+ * @param multiplicity 多重度
+ * @param propName プロパティ名
+ * @param labelFunction 値に対するLabelを返す関数
+ * @param hiddenFunction 値に対するhidden値を返す関数
+ */
+function renderDetailAutoCompletionLabelType(value, multiplicity, propName, labelFunction, hiddenFunction) {
+
+	if (multiplicity == 1) {
+		const labelValue = labelFunction(value);
+		const hiddenValue = hiddenFunction(value);
+		const newLabel = labelValue 
+			+ "<input type='hidden' name='" + propName + "' value='" + hiddenValue + "'>";
+
+		$("[name='data-label-" + propName + "']").html(newLabel);
+
+	} else {
+		// nullによる先頭のみクリアを考慮し、値分でLoopし、対象行をクリア、新しい値を先頭に追加
+		let newLabels = "";
+		const currentLables = $("[name='data-label-" + propName + "'] li");
+		for (let i = 0; i < value.length; i++) {
+			if (currentLables[i] != null) currentLables[i].remove();
+			
+			const labelValue = labelFunction(value[i]);
+			const hiddenValue = hiddenFunction(value[i]);
+			const newLabel = "<li>" + labelValue 
+				+ "<input type='hidden' name='" + propName + "' value='" + hiddenValue + "'></li>";
+			newLabels += newLabel;
+		}
+
+		$(newLabels).prependTo($("[name='data-label-" + propName + "']"));
+	}
+}
+
+/**
+ * 編集画面のLable形式の自動補完値の表示
+ * 値が{label, value}形式の場合
+ * 
+ * @param value 自動補完値(正規化した値)
+ * @param multiplicity 多重度
+ * @param propName プロパティ名
+ */
+function renderDetailAutoCompletionLabelTypeLabelFormat(value, multiplicity, propName) {
+
+	renderDetailAutoCompletionLabelType(value, multiplicity, propName,
+		function(value) {
+			if (!value) {
+				return ""
+			}
+			return value.label;
+		},
+		function(value) {
+			if (!value) {
+				return "";
+			}
+			return value.value;
+		}
+	);
+}
+
+/**
+ * 編集画面のLable形式の自動補完値の表示
+ * EditorValueで表示する形式の場合
+ * 
+ * @param value 自動補完値(正規化した値)
+ * @param multiplicity 多重度
+ * @param propName プロパティ名
+ * @param editorValueMap EditorValueのMap
+ */
+function renderDetailAutoCompletionLabelTypeEditorValueFormat(value, multiplicity, propName, editorValueMap) {
+
+	if (multiplicity == 1) {
+		//値が有効の場合のみ出力
+		if (value && editorValueMap.has(String(value))) {
+			const editorValue = editorValueMap.get(String(value));
+			const newLabel = "<li class='" + editorValue.style + "'>" 
+				+ editorValue.label 
+				+ "<input type='hidden' name='" + propName + "' value='" + value + "'>"
+				+ "</li>";
+
+			$("[name='data-label-" + propName + "']").html(newLabel);
+		} else {
+			$("[name='data-label-" + propName + "']").html("");
+		}
+	} else {
+		// nullによる先頭のみクリアを考慮し、値分でLoopし、対象行をクリア、新しい値を先頭に追加
+		let newLabels = "";
+		const currentLables = $("[name='data-label-" + propName + "'] li");
+		for (let i = 0; i < value.length; i++) {
+			if (currentLables[i] != null) currentLables[i].remove();
+			
+			if (value[i] && editorValueMap.has(String(value[i]))) {
+				const editorValue = editorValueMap.get(String(value[i]));
+				const newLabel = "<li class='" + editorValue.style + "'>"
+					+ editorValue.label 
+					+ "<input type='hidden' name='" + propName + "' value='" + value[i] + "'>"
+					+ "</li>";
+				newLabels += newLabel;
+			} else {
+				const newLabel = "<li>"
+					+ "<input type='hidden' name='" + propName + "'>"
+					+ "</li>";
+				newLabels += newLabel;
+			}
+		}
+
+		$(newLabels).prependTo($("[name='data-label-" + propName + "']"));
+	}
+
+}
+
+/**
+ * 編集画面のHidden形式の自動補完値の表示
+ * hidden値を検証したい場合はhiddenFunctionを指定して検証してください。
+ * 
+ * @param value 自動補完値(正規化した値)
+ * @param multiplicity 多重度
+ * @param propName プロパティ名
+ * @param hiddenFunction 値に対するhidden値を返す関数
+ */
+function renderDetailAutoCompletionHiddenType(value, multiplicity, propName, hiddenFunction = null) {
+
+	if (multiplicity == 1) {
+		const hiddenValue = getHiddenValue(value, hiddenFunction);
+		$('[name=' + propName + ']').val(hiddenValue);
+	} else {
+		// nullによる先頭のみクリアを考慮し、値分でLoopし、対象行をクリア、新しい値を先頭に追加
+		let newHiddens = "";
+		const currentHiddens = $("[name='data-hidden-" + propName + "'] li");
+		for (let i = 0; i < value.length; i++) {
+			if (currentHiddens[i] != null) currentHiddens[i].remove();
+			
+			const hiddenValue = getHiddenValue(value[i], hiddenFunction);
+			const newHidden = "<li>" + "<input type='hidden' name='" + propName + "' value='" + hiddenValue + "'></li>";
+			newHiddens += newHidden;
+		}
+
+		$(newHiddens).prependTo($("[name='data-hidden-" + propName + "']"));
+	}
+	
+	function getHiddenValue(value, hiddenFunction) {
+		if (hiddenFunction) {
+			return hiddenFunction(value);
+		} else {
+			return value != null ? value : "";
+		}
+	}
+}

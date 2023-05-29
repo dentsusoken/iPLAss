@@ -33,97 +33,21 @@ Integer multiplicity = (Integer) request.getAttribute(Constants.AUTOCOMPLETION_M
 if (multiplicity == null) multiplicity = 1;
 //呼び出し元は/common/Autocompletion.jsp、以降はWebApiの結果を反映する部分のJavascript、結果の変数はvalue
 if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
-	// 詳細画面
+	//編集画面
 %>
-var multiplicity = <%=multiplicity%>;
+const multiplicity = <%=multiplicity%>;
+const inputLength = $("[name='" + propName + "']").length;
+value = normalizedDetailAutoCompletionValue(value, multiplicity, inputLength, "");
 <%
 	if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 %>
-var newContent = '';
-
-// 自動補完の値が空の場合
-if (!value || (!value[0] && !value.label)) {
-	newContent = "" + ' <input type="hidden" name="' + propName + '" value="">';
-	$("[name='" + propName + "']:first").parent().html(newContent);
-
-} else {
-	if (multiplicity == 1) {
-		var label = '';
-		var hiddenValue = '';
-		if (value[0] == null) {
-			label = value.label;
-			hiddenValue = value.value;
-		} else {
-			label = value[0].label;
-			hiddenValue = value[0].value;
-		}
-		newContent = label + ' <input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
-		
-	} else {
-		for (const labelValue of value) {
-			newContent = newContent  + '<li>' + labelValue.label
-				+ '<input type="hidden" name="' + propName + '" value="' + labelValue.value + '"> </li>';
-		}
-	}
-	$("[name='data-label-" + propName + "']").html(newContent);
-}
+renderDetailAutoCompletionLabelTypeLabelFormat(value, multiplicity, propName);
 <%
 	} else if(editor.getDisplayType() == DateTimeDisplayType.HIDDEN) {
 %>
-if (multiplicity == 1) {
-	if (value instanceof Array) {
-		value = value.length > 0 ? value[0] : "";
-	}
-} else {
-	if (value instanceof Array) {
-		if (value.length > multiplicity) {
-			value = value.slice(0, multiplicity);
-		}
-	} else {
-		value = [value];
-	}
-}
-
-if (multiplicity == 1) {
-	$('[name=' + propName + ']').val(value);
-} else {
-	var propLength = $('[name=' + propName + ']').length;
-	var newContent = '';
-	for (i =  0; i < value.length; i++) {
-		var hiddenValue = value[i] ? value[i] : "";
-		if (i > propLength - 1) {
-			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
-			continue;
-		}
-		$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
-	}
-
-	// 項目数が増える場合に追加する
-	if (propLength && value.length > propLength) {
-		$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
-	// 項目に値が無い場合は新規に追加する
-	} else if (!propLength) {
-		$(".hidden-input-area:first").append($(newContent));
-	}
-}
-<% 
-	} else {
-%>
-
-if (multiplicity == 1) {
-	if (value instanceof Array) {
-		value = value.length > 0 ? value[0] : "";
-	}
-} else {
-	if (value instanceof Array) {
-		if (value.length > multiplicity) {
-			value = value.slice(0, multiplicity);
-		}
-	} else {
-		value = [value];
-	}
-}
+renderDetailAutoCompletionHiddenType(value, multiplicity, propName);
 <%
+	} else {
 		if (multiplicity == 1) {
 %>
 $("#d_" + propName).val(convertToLocaleDateString(value)).trigger("blur");
@@ -151,6 +75,10 @@ if (value instanceof Array) {
 	}
 } else {
 	value = [value];
+}
+
+for (var i = 0; i < value.length; i++) {
+	if (value[i] == null) value[i] = "";
 }
 <%
 	boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();

@@ -224,15 +224,24 @@ $(function() {
 		}
 	} else if (editor.getDisplayType() == StringDisplayType.HIDDEN) {
 		if (isMultiple) {
+			//複数
+%>
+<ul name="data-hidden-<c:out value="<%=propName %>"/>">
+<%
 			String[] array = propValue instanceof String[] ? (String[]) propValue : null;
 			if (array != null) {
 				for (int i = 0; i < array.length; i++) {
 					String str = array[i] != null ? array[i] : "";
 %>
+<li>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+</li>
 <%
 				}
 			}
+%>
+</ul>
+<%
 		} else {
 			//単一
 			String str = propValue instanceof String ? (String) propValue : "";

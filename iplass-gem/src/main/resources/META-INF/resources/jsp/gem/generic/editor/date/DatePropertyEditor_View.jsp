@@ -147,15 +147,23 @@
 		//HIDDEN
 		if (isMultiple) {
 			//複数
+%>
+<ul name="data-hidden-<c:out value="<%=propName %>"/>">
+<%
 			Date[] array = propValue instanceof Date[] ? (Date[]) propValue : null;
 			if (array != null) {
 				for (int i = 0; i < array.length; i++) {
 					String strHidden = format(array[i]);
 %>
+<li>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
+</li>
 <%
 				}
 			}
+%>
+</ul>
+<%
 		} else {
 			//単一
 			Date date = propValue instanceof Date ? (Date) propValue : null;
