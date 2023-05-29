@@ -275,11 +275,19 @@ ${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_View.canN
 <%
 	} else {
 		//HIDDEN
+%>
+<ul name="data-hidden-<c:out value="<%=propName %>"/>">
+<%
 		for (int i = 0; i < brList.size(); i++) {
 			BinaryReference br = brList.get(i);
 %>
+<li>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=br.getLobId() %>"/>" />
+</li>
 <%
 		}
+%>
+</ul>
+<%
 	}
 %>

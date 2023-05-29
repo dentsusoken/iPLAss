@@ -110,11 +110,15 @@
 
 	String propName = editor.getPropertyName();
 
+	boolean isMultiple = pd.getMultiplicity() != 1;
+
 	//タイプ毎に出力内容かえる
 	List<EditorValue> values = getValues(editor, propValue, pd, selectValueList, localeValueList);
 
 	// 自動補完があるラベルの場合は、表示に必要な情報をセットする
-	if (ViewUtil.isAutocompletionTarget() && editor.getDisplayType() == SelectDisplayType.LABEL) {
+	if (ViewUtil.isAutocompletionTarget() 
+			&& (editor.getDisplayType() == SelectDisplayType.LABEL
+				|| editor.getDisplayType() == SelectDisplayType.HIDDEN)) {
 		SelectValue[] selectValueArray = new SelectValue[selectValueList.size()];
 		List<EditorValue> autocompletionEditorValues = getLabelValues(editor, selectValueList.toArray(selectValueArray), pd, selectValueList, localeValueList);
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES, autocompletionEditorValues);
@@ -156,9 +160,26 @@
 <%
 	} else {
 		//HIDDEN
-		for (EditorValue tmp : values) {
+		if (isMultiple) {
+			//複数
 %>
-<input type="hidden" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=tmp.getValue()%>"/>" />
+<ul name="data-hidden-<c:out value="<%=propName %>"/>">
+<%
+			for (EditorValue editorValue : values) {
+%>
+<li>
+<input type="hidden" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=editorValue.getValue()%>"/>" />
+</li>
+<%
+			}
+%>
+</ul>
+<%
+		} else {
+			//単一
+			String strHidden = values != null && values.size() > 0 ? values.get(0).getValue() : "";
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
 <%
 		}
 	}

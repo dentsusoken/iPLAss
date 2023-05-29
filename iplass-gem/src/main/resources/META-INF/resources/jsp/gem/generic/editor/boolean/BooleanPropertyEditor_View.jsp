@@ -141,6 +141,9 @@
 
 		if (isMultiple) {
 			//複数
+%>
+<ul name="data-hidden-<c:out value="<%=propName %>"/>">
+<%
 			Boolean[] array = propValue instanceof Boolean[] ? (Boolean[]) propValue : null;
 			for (int i = 0; i < pd.getMultiplicity(); i++) {
 				String str = "";
@@ -148,15 +151,20 @@
 					str = array[i].toString();
 				}
 %>
+<li>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+</li>
 <%
 			}
+%>
+</ul>
+<%
 		} else {
 			//単一
 			Boolean b = propValue instanceof Boolean ? (Boolean) propValue : null;
-			String str = b != null ? b.toString() : "";
+			String strHidden = b != null ? b.toString() : "";
 %>
-			<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+			<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
 <%
 		}
 	}
