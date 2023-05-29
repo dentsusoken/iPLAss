@@ -5242,3 +5242,41 @@ function renderDetailAutoCompletionLabelTypeEditorValueFormat(value, multiplicit
 	}
 
 }
+
+/**
+ * 編集画面のHidden形式の自動補完値の表示
+ * hidden値を検証したい場合はhiddenFunctionを指定して検証してください。
+ * 
+ * @param value 自動補完値(正規化した値)
+ * @param multiplicity 多重度
+ * @param propName プロパティ名
+ * @param hiddenFunction 値に対するhidden値を返す関数
+ */
+function renderDetailAutoCompletionHiddenType(value, multiplicity, propName, hiddenFunction = null) {
+
+	if (multiplicity == 1) {
+		const hiddenValue = getHiddenValue(value, hiddenFunction);
+		$('[name=' + propName + ']').val(hiddenValue);
+	} else {
+		// nullによる先頭のみクリアを考慮し、値分でLoopし、対象行をクリア、新しい値を先頭に追加
+		let newHiddens = "";
+		const currentHiddens = $("[name='data-hidden-" + propName + "'] li");
+		for (let i = 0; i < value.length; i++) {
+			if (currentHiddens[i] != null) currentHiddens[i].remove();
+			
+			const hiddenValue = getHiddenValue(value[i], hiddenFunction);
+			const newHidden = "<li>" + "<input type='hidden' name='" + propName + "' value='" + hiddenValue + "'></li>";
+			newHiddens += newHidden;
+		}
+
+		$(newHiddens).prependTo($("[name='data-hidden-" + propName + "']"));
+	}
+	
+	function getHiddenValue(value, hiddenFunction) {
+		if (hiddenFunction) {
+			return hiddenFunction(value);
+		} else {
+			return value != null ? value : "";
+		}
+	}
+}

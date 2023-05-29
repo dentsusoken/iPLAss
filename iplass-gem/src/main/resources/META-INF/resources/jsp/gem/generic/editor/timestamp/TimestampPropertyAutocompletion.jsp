@@ -45,29 +45,7 @@ renderDetailAutoCompletionLabelTypeLabelFormat(value, multiplicity, propName);
 <%
 	} else if(editor.getDisplayType() == DateTimeDisplayType.HIDDEN) {
 %>
-
-if (multiplicity == 1) {
-	$('[name=' + propName + ']').val(value);
-} else {
-	var propLength = $('[name=' + propName + ']').length;
-	var newContent = '';
-	for (i =  0; i < value.length; i++) {
-		hiddenValue = value[i] ? value[i] : "";
-		if (i > propLength - 1) {
-			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + hiddenValue + '">';
-			continue;
-		}
-		$("[name='" + propName + "']:eq(" + i + ")").val(hiddenValue);
-	}
-
-	// 項目数が増える場合に追加する
-	if (propLength && value.length > propLength) {
-		$("[name='" + propName + "']:eq(" + (propLength - 1) + ")").after($(newContent));
-	// 項目に値が無い場合は新規に追加する
-	} else if (!propLength) {
-		$(".hidden-input-area:first").append($(newContent));
-	}
-}
+renderDetailAutoCompletionHiddenType(value, multiplicity, propName);
 <%
 	} else {
 		if (editor.isUseDatetimePicker()) {

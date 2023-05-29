@@ -61,29 +61,21 @@ var editorValueMap = new Map();
 renderDetailAutoCompletionLabelTypeEditorValueFormat(value, multiplicity, propName, editorValueMap);
 <%
 	} else if(editor.getDisplayType() == SelectDisplayType.HIDDEN) {
+		List<EditorValue> autocompletionEditorValues = (List<EditorValue>) request.getAttribute(Constants.AUTOCOMPLETION_EDITOR_VALUES);
 %>
-if (multiplicity == 1) {
-	// プロパティ値が無い場合はタグ追加
-	if (!$('[name=' + propName + ']').length) {
-		$(".hidden-input-area:first").append('<input type="hidden" name="' + propName + '" value="">');
-	}
-	$('[name=' + propName + ']').val(value);
-	
-} else {
-	$('[name=' + propName + ']').remove();
-	var newContent = '';
-	for (i =  0; i < value.length; i++) {
-		if (value[i]) {
-			newContent = newContent + '<input type="hidden" name="' + propName + '" value="' + value[i] + '">';
+var editorValueMap = new Map();
+<c:forEach items="<%=autocompletionEditorValues%>" var="editorValue">
+	editorValueMap.set('${editorValue.value}', {label:'${editorValue.label}', style:'${editorValue.style}'});
+</c:forEach>
+renderDetailAutoCompletionHiddenType(value, multiplicity, propName, 
+	function(value) {
+		if (value && editorValueMap.has(String(value))) {
+			return value;
 		}
+		return "";
 	}
-
-	if (newContent.length > 0) {
-		$(".hidden-input-area:first").append($(newContent));
-	}
-}
+);
 <%
-
 	} else {
 		if (multiplicity == 1) {
 			//radio

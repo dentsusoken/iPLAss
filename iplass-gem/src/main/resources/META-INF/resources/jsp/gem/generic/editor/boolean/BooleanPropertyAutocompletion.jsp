@@ -113,15 +113,16 @@ renderDetailAutoCompletionLabelType(value, multiplicity, propName,
 );
 <%
 	} else if (editor.getDisplayType() == BooleanDisplayType.HIDDEN) {
-		if (multiplicity == 1) {
 %>
-$('[name=' + propName + ']').val(value);
-<%		} else { %>
-for (let i = 0; i < value.length; i++) {
-	$("[name='" + propName + "']:eq(" + i + ")").val(value[i]);
-}
-<%
+renderDetailAutoCompletionHiddenType(value, multiplicity, propName, 
+	function(value) {
+		if (!((value === true || value === "true") || (value === false || value === "false"))) {
+			return "";
 		}
+		return value;
+	}
+);
+<%
 	}
 } else {
 	//検索画面
