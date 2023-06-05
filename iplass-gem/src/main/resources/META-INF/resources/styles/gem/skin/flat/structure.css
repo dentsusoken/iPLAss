@@ -55,7 +55,7 @@ a {
 
 #header {
   zoom: 1;
-  height: 80px;
+  height: auto;
   line-height: 80px;
   padding: 0 20px 0 30px;
   background: #4c7607; }

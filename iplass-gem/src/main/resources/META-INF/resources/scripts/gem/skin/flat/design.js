@@ -245,16 +245,6 @@ $(function() {
 			}
 		});
 
-		/** 画面サイズ変更時にヘッダの高さを調整 */
-		window.addEventListener("load", function(){
-			setHeaderHeaderHight();
-			this.window.addEventListener("resize", setHeaderHeaderHight);
-		});
-
-		/** ナビゲーション開閉時にヘッダの高さを調整 */
-		const navResizeObserver = new ResizeObserver(setHeaderHeaderHight);
-		navResizeObserver.observe(document.querySelector(".cms-title"));
-
 		//2階層目以降のnodeメニューアイテムにnav-sub-detailを設定
 		$("#nav ul.subMenuList").addClass("nav-sub-detail");
 		$("#nav ul.subMenuList .menu-node > ul").addClass("nav-sub-detail");
@@ -697,29 +687,4 @@ function clearAllDelete() {
 		});
 	};
 })(jQuery);
-/**
-* ヘッダーのタイトルの高さを調整
-*/
-function setHeaderHeaderHight(){
-	// タイトル幅が画面幅を超えた場合、ヘッダーの高さを調整
-
-	// ヘッダーの要素を取得
-	const headerElement = document.getElementById("header");
-
-	// タイトル部の幅を取得
-	const titleWidth = document.querySelector(".header-title").offsetWidth;
-
-	// ロゴ部分の幅を取得
-	const logoWidth = document.querySelector(".cms-title").offsetWidth;
-
-	// ユーザーメニューの幅を取得
-	const userNavWidth = document.getElementById("user-nav").offsetWidth;
-
-	// タイトル部の高さを修正
-	if (titleWidth >= (headerElement.offsetWidth - (logoWidth + userNavWidth + 50))) {
-		headerElement.style.height = `170px`;
-	} else {
-		headerElement.style.height = `80px`;
-	}
-}
 
