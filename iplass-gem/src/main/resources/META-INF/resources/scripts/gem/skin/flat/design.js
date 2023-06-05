@@ -687,4 +687,3 @@ function clearAllDelete() {
 		});
 	};
 })(jQuery);
-
