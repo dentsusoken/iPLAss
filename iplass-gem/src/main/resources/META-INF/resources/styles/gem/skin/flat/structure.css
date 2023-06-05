@@ -55,7 +55,7 @@ a {
 
 #header {
   zoom: 1;
-  height: 80px;
+  height: auto;
   line-height: 80px;
   padding: 0 20px 0 30px;
   background: #4c7607; }
@@ -66,9 +66,14 @@ a {
 .nomenu-layout #header #title i {
   display: none; }
 
+.nav-closed .header-title {
+  max-width: calc(100% - 60px) !important; }
+
 .header-title {
   display: inline-block;
-  margin-left: 22px; }
+  margin-left: 22px;
+  max-width: calc(100% - 250px);
+  overflow-wrap: anywhere; }
   .header-title h1 {
     vertical-align: middle;
     letter-spacing: -0.02em;
@@ -752,7 +757,6 @@ a {
   padding-left: 90px; }
 
 #content-inner {
-  margin-left: -250px;
   padding-bottom: 50px;
   float: right;
   min-height: calc(100vh - 140px);

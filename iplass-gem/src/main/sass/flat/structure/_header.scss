@@ -6,7 +6,7 @@
 }
 #header {
 	zoom: 1;
-	height: 80px;
+	height: auto;
 	line-height: 80px;
 	padding: 0 20px 0 30px;
 	background: $color_green_leaf_approx;
@@ -19,9 +19,16 @@
 		display: none;
 	}
 }
+.nav-closed{
+	.header-title {
+		max-width: calc(100% - 60px) !important;
+	}
+}
 .header-title {
 	display: inline-block;
 	margin-left: 22px;
+	max-width: calc(100% - 250px);
+	overflow-wrap: anywhere;
 	h1 {
 		vertical-align: middle;
 		letter-spacing: -0.02em;
