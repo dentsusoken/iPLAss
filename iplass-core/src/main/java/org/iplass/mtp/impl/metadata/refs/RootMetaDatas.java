@@ -38,6 +38,7 @@ import org.iplass.mtp.impl.tenant.MetaTenant;
 import org.iplass.mtp.impl.tenant.MetaTenantAuthInfo;
 import org.iplass.mtp.impl.tenant.MetaTenantI18nInfo;
 import org.iplass.mtp.impl.tenant.MetaTenantMailInfo;
+import org.iplass.mtp.impl.view.filter.MetaEntityFilter;
 import org.iplass.mtp.impl.webhook.endpoint.MetaWebhookEndpoint;
 import org.iplass.mtp.impl.webhook.template.MetaWebhookTemplate;
 
@@ -46,6 +47,7 @@ import org.iplass.mtp.impl.webhook.template.MetaWebhookTemplate;
 	,MetaInterceptorClass.class
 	,MetaMetaCommand.class
 	,MetaEntity.class
+	,MetaEntityFilter.class
 	,MetaMailTemplate.class
 	,MetaSmsMailTemplate.class
 	,MetaMessageCategory.class

@@ -315,10 +315,6 @@
 		<property name ="filterSettingProperty" value="true" />
 	</service>
 	<service final="true">
-		<interface>org.iplass.mtp.impl.view.filter.EntityFilterService</interface>
-		<class>org.iplass.mtp.impl.view.filter.EntityFilterService</class>
-	</service>
-	<service final="true">
 		<interface>org.iplass.mtp.impl.view.menu.MenuTreeService</interface>
 		<class>org.iplass.mtp.impl.view.menu.MenuTreeService</class>
 	</service>

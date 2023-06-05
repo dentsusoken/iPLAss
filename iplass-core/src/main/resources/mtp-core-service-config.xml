@@ -560,6 +560,11 @@
 		<property name="separateTransaction" value="true" />
 		<property name="retryCount" value="3" />
 	</service>
+	<!-- EntityFilter -->
+	<service final="true">
+		<interface>org.iplass.mtp.impl.view.filter.EntityFilterService</interface>
+		<class>org.iplass.mtp.impl.view.filter.EntityFilterService</class>
+	</service>
 
 	<!-- Command関連 -->
 	<service>
