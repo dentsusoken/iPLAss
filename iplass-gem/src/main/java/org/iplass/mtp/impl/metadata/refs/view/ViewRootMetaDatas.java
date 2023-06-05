@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.tenant.gem.MetaTenantGemInfo;
 import org.iplass.mtp.impl.view.calendar.MetaCalendar;
-import org.iplass.mtp.impl.view.filter.MetaEntityFilter;
 import org.iplass.mtp.impl.view.generic.MetaEntityView;
 import org.iplass.mtp.impl.view.menu.MetaMenu;
 import org.iplass.mtp.impl.view.menu.MetaTreeMenu;
@@ -32,7 +31,6 @@ import org.iplass.mtp.impl.view.treeview.MetaTreeView;
 
 @XmlSeeAlso({
 	MetaCalendar.class
-	,MetaEntityFilter.class
 	,MetaEntityView.class
 	,MetaMenu.class
 	,MetaTreeMenu.class
@@ -41,5 +39,5 @@ import org.iplass.mtp.impl.view.treeview.MetaTreeView;
 	,MetaTenantGemInfo.class
 })
 class ViewRootMetaDatas {
-	//View系のMetaDataへのXmlSeeAlsoを管理するためだけのクラス
+	// View系のMetaDataへのXmlSeeAlsoを管理するためだけのクラス
 }
