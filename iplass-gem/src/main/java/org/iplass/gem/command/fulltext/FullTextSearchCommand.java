@@ -682,7 +682,7 @@ public final class FullTextSearchCommand implements Command {
 		colModel.setWidth(Integer.parseInt(getRS("detailLinkWidth")));
 		colModel.setAlign("center");
 		colModel.setClasses("detail-links");
-		colModel.setGrouping(true);
+		colModel.setGrouping(resultSection.isGroupingData());
 		colModels.add(colModel);
 
 		List<PropertyColumn> properties = resultSection.getElements().stream()
