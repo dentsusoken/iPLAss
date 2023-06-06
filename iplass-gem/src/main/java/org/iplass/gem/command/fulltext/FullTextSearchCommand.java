@@ -682,6 +682,7 @@ public final class FullTextSearchCommand implements Command {
 		colModel.setWidth(Integer.parseInt(getRS("detailLinkWidth")));
 		colModel.setAlign("center");
 		colModel.setClasses("detail-links");
+		colModel.setGrouping(true);
 		colModels.add(colModel);
 
 		List<PropertyColumn> properties = resultSection.getElements().stream()
@@ -715,6 +716,7 @@ public final class FullTextSearchCommand implements Command {
 					colModel.setAlign(align);
 					colModel.setClasses(style);
 					colModel.setSortable(property.isSortable() && ViewUtil.getEntityViewHelper().isSortable(pd));
+					colModel.setGrouping(resultSection.isGroupingData());
 					colModels.add(colModel);
 
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
@@ -733,6 +735,7 @@ public final class FullTextSearchCommand implements Command {
 						colModel.setAlign(align);
 						colModel.setClasses(style);
 						colModel.setSortable(property.isSortable() && ViewUtil.getEntityViewHelper().isSortable(pd));
+						colModel.setGrouping(resultSection.isGroupingData());
 						colModels.add(colModel);
 					} else {
 						//参照型のName以外を表示する場合
@@ -740,7 +743,7 @@ public final class FullTextSearchCommand implements Command {
 						String style = property.getStyle() != null ? property.getStyle() : null;
 
 						fixedCount = createNestColModel(colModels, userPropertyNames,
-								nest, propName, (ReferenceProperty)pd, style, fixedCount, edm);
+								nest, propName, (ReferenceProperty)pd, style, fixedCount, edm, resultSection.isGroupingData());
 					}
 				}
 			}
@@ -755,7 +758,7 @@ public final class FullTextSearchCommand implements Command {
 
 	private int createNestColModel(List<ColModel> colModels, List<String> userPropertyNames,
 			List<NestProperty> nest, String propName, ReferenceProperty rp, String style,
-			int fixedCount, EntityDefinitionManager edm) {
+			int fixedCount, EntityDefinitionManager edm, boolean isGroupingData) {
 
 		EntityDefinition red = edm.get(rp.getObjectDefinitionName());
 		int colCount = 0;
@@ -771,7 +774,7 @@ public final class FullTextSearchCommand implements Command {
 					//再Nest
 					fixedCount = createNestColModel(colModels, userPropertyNames,
 							((ReferencePropertyEditor)np.getEditor()).getNestProperties(),
-							nestPropName, (ReferenceProperty)rpd, nestStyle, fixedCount, edm);
+							nestPropName, (ReferenceProperty)rpd, nestStyle, fixedCount, edm, isGroupingData);
 				} else {
 					String sortPropName = StringUtil.escapeHtml(nestPropName);
 					String displayLabel = TemplateUtil.getMultilingualString(
@@ -787,6 +790,7 @@ public final class FullTextSearchCommand implements Command {
 					colModel.setAlign(align);
 					colModel.setClasses(nestStyle);
 					colModel.setSortable(np.isSortable() && ViewUtil.getEntityViewHelper().isSortable(rpd));
+					colModel.setGrouping(isGroupingData);
 					colModels.add(colModel);
 
 					//UserPropertyEditorのチェック
