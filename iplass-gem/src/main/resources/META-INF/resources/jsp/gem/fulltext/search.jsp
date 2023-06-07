@@ -188,6 +188,7 @@ $(function(){
 	execSearch(param);
 });
 
+var gridList = [];
 function execSearch(param) {
 	$("div.result-block").show();
 	$(".searching").show();
@@ -262,7 +263,11 @@ function createTemplate(listId, defName, displayName, crawlDate, colModels) {
 		$(colModels).each(function(index) {
 			if (this.name === "orgOid") {
 				this.formatter = oidCellFormatter;
-				return false;
+			}
+			if (this.grouping === true) {
+				this.cellattr = groupingCellAttr;
+			} else {
+				this.cellattr = noneGroupingCellAttr;
 			}
 		});
 	}
@@ -306,14 +311,34 @@ function createTemplate(listId, defName, displayName, crawlDate, colModels) {
 			if (curSortKey !== "" && curSortType !== "") {
 				$("#" + listId).sortGrid(curSortKey, false, curSortType.toLowerCase());
 			}
+		},
+		onSelectRow: function(rowid, e) {
+			var row = grid.getRowData(rowid);
+			var id = row.orgOid + "_" + row.orgVersion;
+			var rowIndex = parseInt(rowid) - 1;
+
+			clearRowHighlight(grid, rowIndex);
+
+			if (e) {
+				$("tr[id]", grid).each(function() {
+					var _rowid = $(this).attr("id");
+					if (_rowid == rowid) return;
+					var _row = grid.getRowData(_rowid);
+					var _id = _row.orgOid + "_" + _row.orgVersion;
+					if (id == _id) $(this).addClass("ui-state-highlight");
+				});
+			}
 		}
+
 	});
+	gridList.push({id:listId, grid: grid});
 	return grid;
 }
 
 function setData(grid, listId, data, viewUrl, editUrl, showEditLink) {
 
 	grid.clearGridData();
+	grid.setGridParam({"_data": data}).trigger("reloadGrid");
 
 	//リンク生成
 	var $detailLink = $("<p/>");
@@ -412,5 +437,72 @@ function resetSortCondition() {
 	$(":hidden[name^='sortKey_']", $form).val("");
 	$(":hidden[name^='sortType_']", $form).val("");
 }
+function getGrid(id) {
+	var ret = null;
+	$(gridList).each(function() {
+		var gridData = this;
+		if (gridData.id === id) {
+			ret = gridData.grid;
+			return false;
+		}
+	});
+	return ret;
+}
+function groupingCellAttr(rowId, val, rowObject, colModel, rdata) {
+	var rowIndex = parseInt(rowId) - 1;
+	var grid = getGrid(this.id);
+	var data = grid.getGridParam("_data");
+	var row = data[rowIndex];
+	var colName = colModel.name;
+
+	if (rowIndex > 0) {
+		var beforeRow = data[rowIndex - 1];
+		//前の行と値が同じか確認
+		var dif = false;
+		if (row.orgOid != beforeRow.orgOid || row.orgVersion != beforeRow.orgVersion || row[colName] != beforeRow[colName]) {
+			dif = true;
+		}
+		//同じ場合は非表示にする、タイトルを指定しないと(""含む)CELL値が設定されるので指定
+		if (!dif) return " title=\"&nbsp;\" style=\"display:none;\" ";
+	}
+
+	//この行から何行分rowspanを設定するか計算
+	var count = 0;
+	for (var i = rowIndex; i < data.length; i++) {
+		if (i >= data.length) break;
+		var nextRow = data[i];
+		var dif = false;
+		if (row.orgOid != nextRow.orgOid || row.orgVersion != nextRow.orgVersion || row[colName] != nextRow[colName]) {
+			dif = true;
+			break;
+		}
+		if (!dif) count++;
+		else break;
+	}
+	if (count > 1) {
+		var label = $.jgrid.stripHtml(rdata[colModel.name]).replace(/'/g, "&apos;");
+		if (!label || typeof label === "undefined") {
+			//タイトルを指定しないと(""含む)CELL値が設定されるので指定
+			label = "&nbsp;";
+		}
+		return " title=\"" + label + "\" style=\"vertical-align: center !important;\" rowspan=\"" + count + "\"";
+	} else {
+		return null;
+	}
+}
+
+function noneGroupingCellAttr(rowId, val, rowObject, colModel, rdata) {
+	return null;
+}
+
+function clearRowHighlight(grid, rowIndex) {
+	var $rows = $("tr.jqgrow", grid);
+	if (rowIndex >= $rows.length) return;
+	//選択された行以外にハイライトをクリアします。
+	$rows.each(function(index) {
+		if (index != rowIndex) $(this).removeClass("ui-state-highlight");
+	});
+}
+
 </script>
 </div>

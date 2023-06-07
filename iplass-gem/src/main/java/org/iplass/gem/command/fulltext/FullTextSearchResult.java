@@ -144,6 +144,9 @@ public class FullTextSearchResult {
 		/** jqGrid.colModel.classes */
 		private String classes;
 
+		/** cellAttrでのグループ化 */
+		private boolean grouping = false;
+		
 		public ColModel(String name, String label) {
 			this.name = name;
 			this.index = name;
@@ -222,5 +225,12 @@ public class FullTextSearchResult {
 			this.classes = classes;
 		}
 
+		public boolean isGrouping() {
+			return grouping;
+		}
+		
+		public void setGrouping(boolean grouping) {
+			this.grouping = grouping;
+		}
 	}
 }
