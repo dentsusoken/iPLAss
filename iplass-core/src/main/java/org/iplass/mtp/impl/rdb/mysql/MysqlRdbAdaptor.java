@@ -145,6 +145,15 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		addFunction(new CurrentDateTimeFunctionAdapter());
 		addFunction(new LocalTimeFunctionAdapter());
 
+		// 三角関数
+		addFunction(new StaticTypedFunctionAdapter("SIN", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("COS", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("TAN", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("ASIN", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("ACOS", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("ATAN", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("ATAN2", Double.class));
+
 		addAggregateFunction(Count.class, new CountFunctionAdapter());
 		addAggregateFunction(Sum.class, new AggregateFunctionAdapter<Sum>("SUM", null));
 		addAggregateFunction(Avg.class, new AggregateFunctionAdapter<Avg>("AVG", Double.class));

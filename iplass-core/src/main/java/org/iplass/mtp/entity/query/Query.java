@@ -134,7 +134,7 @@ import org.iplass.mtp.util.StringUtil;
  * &lt;entity field&gt; ::= &lt;property name&gt; | &lt;reference&gt;.&lt;property name&gt; | &lt;correlated entity field&gt;<br>
  * &lt;reference&gt; ::= &lt;reference name&gt;{.&lt;reference name&gt;}*<br>
  * &lt;function&gt; ::= &lt;function name&gt;() | &lt;function name&gt;(&lt;value expression&gt;{,&lt;value expression&gt;}*)<br>
- * &lt;function name&gt; ::= REPLACE | UPPER | LOWER | CONCAT | SUBSTR | INSTR | CHAR_LENGTH | MOD | SQRT | POWER | ABS | CEIL | FLOOR | ROUND | TRUNCATE | YEAR | MONTH | DAY | HOUR | MINUTE | SECOND | DATE_ADD | DATE_DIFF | CURRENT_DATE | CURRENT_TIME | CURRENT_DATETIME | LOCALTIME<br>
+ * &lt;function name&gt; ::= REPLACE | UPPER | LOWER | CONCAT | SUBSTR | INSTR | CHAR_LENGTH | MOD | SQRT | POWER | ABS | CEIL | FLOOR | ROUND | TRUNCATE | SIN | COS | TAN | ASIN | ACOS | ATAN | ATAN2 | YEAR | MONTH | DAY | HOUR | MINUTE | SECOND | DATE_ADD | DATE_DIFF | CURRENT_DATE | CURRENT_TIME | CURRENT_DATETIME | LOCALTIME<br>
  * &lt;cast&gt; ::= CAST(&lt;value expression&gt; AS &lt;data type&gt;)<br>
  * &lt;data type&gt; ::= STRING | INTEGER | FLOAT | DECIMAL | BOOLEAN | SELECT | DATE | TIME | DATETIME<br>
  * &lt;scalar subquery&gt; ::= &lt;subquery&gt;<br>
@@ -777,6 +777,7 @@ public class Query implements ASTNode {
 	}
 
 
+	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

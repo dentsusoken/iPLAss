@@ -139,6 +139,15 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 		addFunction(new CurrentDateTimeFunctionAdapter());
 		addFunction(new LocalTimeFunctionAdapter());
 
+		// 三角関数
+		addFunction(new StaticTypedFunctionAdapter("SIN", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("COS", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("TAN", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("ASIN", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("ACOS", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("ATAN", Double.class));
+		addFunction(new StaticTypedFunctionAdapter("ATAN2", "ATN2", Double.class));
+
 		addAggregateFunction(Count.class, new CountFunctionAdapter());
 		addAggregateFunction(Sum.class, new AggregateFunctionAdapter<Sum>("SUM", null));
 		addAggregateFunction(Avg.class, new AggregateFunctionAdapter<Avg>("AVG", Double.class));
@@ -249,18 +258,21 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 		}
 	}
 
+	@Override
 	public String toDateExpression(Date date) {
 		checkDateRange(date);
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
 		return "CONVERT(DATE, '" + fmt.format(date) + "')";
 	}
 
+	@Override
 	public String toTimeExpression(Time time) {
 		checkDateRange(time);
 		SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss");
 		return "CONVERT(DATETIME2, '1970-01-01 " + fmt.format(time) + "')";
 	}
 
+	@Override
 	public String toTimeStampExpression(Timestamp date) {
 		checkDateRange(date);
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -270,6 +282,7 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 		return "CONVERT(DATETIME2, '" + fmt.format(date) + "')";
 	}
 
+	@Override
 	public String systimestamp() {
 		return timestampFunction;
 	}
@@ -342,6 +355,7 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 		return super.cast(fromSqlType, toSqlType, valExpr, lengthOrPrecision, scale);
 	}
 
+	@Override
 	public MultiInsertContext createMultiInsertContext(Statement stmt) {
 		return new SqlServerMultiInsertContext(stmt);
 	}
