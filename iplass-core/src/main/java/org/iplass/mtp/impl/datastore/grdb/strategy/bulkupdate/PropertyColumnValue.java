@@ -45,7 +45,7 @@ public class PropertyColumnValue extends DynamicColumnValue {
 		if (asNative) {
 			super.bindExpression(sb);
 		} else {
-			type.appendToTypedColForPrepare(sb, rdb);
+			type.appendToTypedCol(sb, rdb, () -> type.appendParameterPlaceholder(sb, rdb));
 		}
 	}
 

@@ -296,7 +296,7 @@ public class SqlConverter extends QueryVisitorSupport {
 		try {
 			BaseRdbTypeAdapter type = rdbAdaptor.getRdbTypeAdapter(literal.getValue());
 			if (literal.getValue() != null && context.isEnableBindVariable() && literal.isBindable()) {
-				context.getCurrentSb().append("?");
+				type.appendParameterPlaceholder(context.getCurrentSb(), rdbAdaptor);
 				context.addBindVariable(literal.getValue(), type);
 			} else {
 				type.appendToSqlAsRealType(literal.getValue(), context.getCurrentSb(), rdbAdaptor);
@@ -1621,7 +1621,7 @@ public class SqlConverter extends QueryVisitorSupport {
 
 		BaseRdbTypeAdapter type = rdbAdaptor.getRdbTypeAdapter(patternStr);
 		if (context.isEnableBindVariable() && pattern.isBindable()) {
-			context.getCurrentSb().append("?");
+			type.appendParameterPlaceholder(context.getCurrentSb(), rdbAdaptor);
 			context.addBindVariable(patternStr, type);
 		} else {
 			type.appendToSqlAsRealType(patternStr, context.getCurrentSb(), rdbAdaptor);

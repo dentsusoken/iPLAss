@@ -49,7 +49,11 @@ import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
 import org.iplass.mtp.entity.query.value.aggregate.Sum;
 import org.iplass.mtp.entity.query.value.aggregate.VarPop;
 import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
+import org.iplass.mtp.impl.entity.property.PropertyService;
+import org.iplass.mtp.impl.entity.property.PropertyType;
 import org.iplass.mtp.impl.i18n.I18nService;
+import org.iplass.mtp.impl.properties.basic.DateType;
+import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.HintPlace;
 import org.iplass.mtp.impl.rdb.adapter.MultiInsertContext;
 import org.iplass.mtp.impl.rdb.adapter.MultiTableUpdateMethod;
@@ -79,7 +83,9 @@ import org.iplass.mtp.spi.ServiceRegistry;
 public class OracleRdbAdapter extends RdbAdapter {
 
 	private static final String[] optimizerHintBracket = {"/*+", "*/"};
-	
+	private static OracleDateRdbTypeAdapter oracleDateRdbTypeAdapter =
+			new OracleDateRdbTypeAdapter(ServiceRegistry.getRegistry().getService(PropertyService.class).getPropertyType(java.sql.Date.class));
+
 	private int lockTimeout = 0;
 	private String timestampFunction = "CURRENT_TIMESTAMP(3)";
 	private String addMonthsFunction = "ADD_MONTHS";
@@ -102,6 +108,7 @@ public class OracleRdbAdapter extends RdbAdapter {
 	
 	//Oracle 12cから利用可能なFETCH FIRST句を使うか否か
 	private boolean useFetchFirstClause = true;
+	private boolean bindDateAsString = true;
 
 	private String viewSubQueryAlias = "vsq";
 
@@ -172,6 +179,14 @@ public class OracleRdbAdapter extends RdbAdapter {
 		} catch (ParseException e) {
 			throw new UnsupportedDataTypeException(e);
 		}
+	}
+
+	public boolean isBindDateAsString() {
+		return bindDateAsString;
+	}
+
+	public void setBindDateAsString(boolean bindDateAsString) {
+		this.bindDateAsString = bindDateAsString;
 	}
 
 	public boolean isUseFetchFirstClause() {
@@ -901,5 +916,23 @@ public class OracleRdbAdapter extends RdbAdapter {
 		sb.append(selectSql).append(";").append(lf).append(lf);
 
 		return sb.toString();
+	}
+
+	@Override
+	public BaseRdbTypeAdapter getRdbTypeAdapter(Object value) {
+		if (bindDateAsString && value instanceof Date) {
+			return oracleDateRdbTypeAdapter;
+		} else {
+			return super.getRdbTypeAdapter(value);
+		}
+	}
+
+	@Override
+	public BaseRdbTypeAdapter getRdbTypeAdapter(PropertyType propType) {
+		if (bindDateAsString && propType instanceof DateType) {
+			return oracleDateRdbTypeAdapter;
+		} else {
+			return super.getRdbTypeAdapter(propType);
+		}
 	}
 }

@@ -122,7 +122,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		callback.run();
 	}
 
-	public void appendToTypedColForPrepare(StringBuilder context, RdbAdapter rdb) {
+	public void appendParameterPlaceholder(StringBuilder context, RdbAdapter rdb) {
 		context.append("?");
 	}
 
@@ -331,26 +331,6 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 			} else {
 				super.appendToTypedCol(context, rdb, callback);
-			}
-		}
-
-
-		public void appendToTypedColForPrepare(StringBuilder context, RdbAdapter rdb) {
-			DecimalType type = (DecimalType) propertyType;
-			if (type.getScale() > 0) {
-				context.append("1");
-				for (int i = 0; i < type.getScale(); i++) {
-					context.append("0");
-				}
-				context.append("*(?)");
-			} else if (type.getScale() < 0) {
-				context.append("(?)/");
-				context.append("1");
-				for (int i = 0; i > type.getScale(); i--) {
-					context.append("0");
-				}
-			} else {
-				super.appendToTypedColForPrepare(context, rdb);
 			}
 		}
 
