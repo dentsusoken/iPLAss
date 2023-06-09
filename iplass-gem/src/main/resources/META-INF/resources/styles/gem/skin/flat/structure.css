@@ -121,7 +121,7 @@ a {
     margin-top: 25px; }
     #user-nav #search .fullsearch {
       display: block;
-      width: 300px;
+      width: 315px;
       height: 30px;
       padding: 10px;
       padding-right: 15px;
@@ -228,7 +228,7 @@ a {
   #user-nav .search-text {
     float: left;
     position: relative;
-    width: 170px;
+    width: 185px;
     padding-left: 10px;
     overflow: hidden;
     height: 30px; }
