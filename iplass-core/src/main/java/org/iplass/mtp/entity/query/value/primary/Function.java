@@ -53,6 +53,13 @@ import org.iplass.mtp.entity.query.value.ValueExpressionVisitor;
  * <li>FLOOR(数値式)　：Long　：小数部を切り下げする。TRUNCATEとの違いは、数値式が負数の場合の処理。</li>
  * <li>ROUND(数値式,小数位)　：BigDecimal/Long　：数値式を四捨五入（数値式がDouble型の場合は銀行丸め処理）する。引数の数値の型により返却される型は異なる。小数位の指定が、0以下の場合はLong</li>
  * <li>TRUNCATE(数値式,小数位)　：BigDecimal/Long　：数値式を切り捨てする。引数の数値の型により返却される型は異なる。小数位の指定が、0以下の場合はLong</li>
+ * <li>SIN(数値式)　：Double　：サインを計算する</li>
+ * <li>COS(数値式)　：Double　：コサインを計算する</li>
+ * <li>TAN(数値式)　：Double　：タンジェントを計算する</li>
+ * <li>ASIN(数値式)　：Double　：アークサインを計算する</li>
+ * <li>ACOS(数値式)　：Double　：アークコサインを計算する</li>
+ * <li>ATAN(数値式)　：Double　：アークタンジェントを計算する</li>
+ * <li>ATAN2(数値式,数値式)　：Double　：y/xのアーク・タンジェントを計算する</li>
  *
  * </ul>
  *
@@ -134,6 +141,7 @@ public class Function extends PrimaryValue {
 		return sb.toString();
 	}
 
+	@Override
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (getArguments() != null) {
@@ -144,6 +152,7 @@ public class Function extends PrimaryValue {
 		}
 	}
 
+	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
