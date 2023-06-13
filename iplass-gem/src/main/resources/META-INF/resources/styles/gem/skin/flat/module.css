@@ -1894,6 +1894,8 @@ span.success, span.error {
       border: none !important;
       padding-top: 0 !important;
       padding-bottom: 0 !important; }
+  .tbl-section .data-label {
+    overflow-wrap: break-word; }
 
 .tbl-reference th {
   width: 180px;
