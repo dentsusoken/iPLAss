@@ -116,6 +116,9 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 				case NO_CACHE:
 					meta.setCacheControlType(CacheControlType.NO_CACHE);
 					break;
+				case CACHE_PUBLIC:
+					meta.setCacheControlType(CacheControlType.CACHE_PUBLIC);
+					break;
 				default:
 					break;
 			}
