@@ -34,6 +34,7 @@ import org.iplass.mtp.impl.web.mdc.HttpHeaderMdcValueResolver;
 import org.iplass.mtp.impl.web.mdc.MdcValueResolver;
 import org.iplass.mtp.impl.web.mdc.RemoteAddrMdcValueResolver;
 import org.iplass.mtp.impl.web.mdc.RemoteHostMdcValueResolver;
+import org.iplass.mtp.impl.web.mdc.SessionIdMdcValueResolver;
 import org.iplass.mtp.impl.web.mdc.UuidMdcValueResolver;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -54,6 +55,7 @@ public class WebFrontendService implements Service {
 	static final String MDC_VALUE_RESOLVER_REMOTE_HOST = "remoteHost";
 	static final String MDC_VALUE_RESOLVER_REMOTE_ADDR = "remoteAddr";
 	static final String MDC_VALUE_RESOLVER_HEADER_PREFIX = "header.";
+	static final String MDC_VALUE_RESOLVER_SESSION_ID = "sessionId";
 
 	/** マルチパートリクエストのパラメータ最大数のデフォルト値 */
 	private static final Long DEFAULT_MAX_MULTIPART_PARAMETER_COUNT = Long.valueOf(10000L);
@@ -387,6 +389,8 @@ public class WebFrontendService implements Service {
 							if (headerName.length() > 0) {
 								mdc.put(e.getKey(), new HttpHeaderMdcValueResolver(headerName));
 							}
+						} else if (MDC_VALUE_RESOLVER_SESSION_ID.equals(valStr)) {
+							mdc.put(e.getKey(), new SessionIdMdcValueResolver());
 						} else {
 							throw new ServiceConfigrationException("unrecognized mdc value:" + valStr);
 						}
