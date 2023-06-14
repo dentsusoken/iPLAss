@@ -1,25 +1,28 @@
 /*
  * Copyright (C) 2016 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.iplass.adminconsole.server.base.service.auditlog;
 
+import java.util.List;
+
+import org.iplass.mtp.entity.EntityKey;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.impl.entity.auditlog.LoggerAuditLoggingService;
 import org.iplass.mtp.spi.Config;
@@ -105,6 +108,30 @@ public class AdminAuditLoggingService extends LoggerAuditLoggingService {
 		if (version != null) {
 			sb.append(",\"version\":\"").append(version).append("\"");
 		}
+		if (option != null) {
+			sb.append(",\"option\":{").append(option).append("}");
+		}
+		sb.append("}");
+
+		log(ACTION_LOAD, sb);
+	}
+
+	/**
+	 * <p>Entityのバッチload処理に対するログ出力</p>
+	 * <p>バッチload処理に対して、ログ出力を追加。</p>
+	 *
+	 * @param keys EntityKey情報
+	 * @param definitionName 定義名
+	 * @param option オプション
+	 */
+	public void logBatchLoad(List<EntityKey> keys, String definitionName, LoadOption option) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{\"definitionName\":\"").append(definitionName).append("\"");
+		sb.append(",\"keys\":[");
+		keys.forEach(key -> {
+			sb.append(key + ",");
+		});
+		sb.append("]");
 		if (option != null) {
 			sb.append(",\"option\":{").append(option).append("}");
 		}

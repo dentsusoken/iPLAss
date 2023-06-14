@@ -236,6 +236,31 @@ public interface EntityManager extends Manager {
 	public Entity loadAndLock(String oid, String definitionName, LoadOption option);
 
 	/**
+	 * 指定のEntityキー情報で特定されるデータを取得します。
+	 * 取得するプロパティは、Entityに定義されているもの全てを取得します。
+	 * ReferencePropertyが定義されている場合は、
+	 * 当該プロパティにはoidとnameが格納されたEntityのインスタンスが格納されます。
+	 * ReferencePropertyが指定されている場合で、そのプロパティが複数可の場合は、
+	 * 当該プロパティはEntity[]の形で取得されます。
+	 *
+	 * @param keys Entityキー情報
+	 * @param definitionName Entity定義名
+	 * @return キー情報で指定されるデータ
+	 */
+	public List<Entity> batchLoad(List<EntityKey> keys, String definitionName);
+
+	/**
+	 * 指定のEntityキー情報で特定されるデータを取得します。
+	 * 取得するプロパティは、optionにて指定されたものです。
+	 *
+	 * @param keys Entityキー情報
+	 * @param definitionName Entity定義名
+	 * @param option 読込オプション、読み込むプロパティを指定可能
+	 * @return キー情報で指定されるデータ
+	 */
+	public List<Entity> batchLoad(List<EntityKey> keys, String definitionName, LoadOption option);
+
+	/**
 	 * 指定の引数のentityを追加します。
 	 * entityにoid（オブジェクトID）が設定されていても必ず新しいIDで採番されます。
 	 *
@@ -335,15 +360,15 @@ public interface EntityManager extends Manager {
 	 * @return
 	 */
 	public BinaryReference createBinaryReference(String name, String type, InputStream is);
-	
+
 	/**
 	 * BinaryReferenceを新規に作成します。
 	 * 引数のfileのデータを同時にバイナリデータとして書き込みます。<br>
 	 * 作成されたBinaryReferenceはまだEntityに紐付いていない状態です。<br>
 	 * nameが未指定の場合は、fileの名前がnameに指定されます。
 	 * typeが未指定の場合は、fileの拡張子からmimetypeが解決されます。
-	 * 
-	 * @param file 
+	 *
+	 * @param file
 	 * @param name
 	 * @param type
 	 * @return
@@ -498,7 +523,7 @@ public interface EntityManager extends Manager {
 	 * クエリ実行結果に対して、指定のワードで全文検索します。
 	 *<pre><b>メモリを大量消費する恐れがありますので、絞り込む条件とリミット条件を指定した上でご利用してください。</b></pre>
 	 *
-	 * @param Query クエリ、Entity.OIDを検索項目として設定する必要が有ります。 <pre>Entity.OIDを指定しないと、空のリストが返されます。</pre> 
+	 * @param Query クエリ、Entity.OIDを検索項目として設定する必要が有ります。 <pre>Entity.OIDを指定しないと、空のリストが返されます。</pre>
 	 * @param keyword 全文検索用キーワード
 	 * @return SearchOption 検索時のオプション、countTotal=trueの場合総件数を積み上げる
 	 */
