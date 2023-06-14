@@ -244,6 +244,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 					.datetimeSecFormat(entityWebApiService.getCsvDateTimeFormat())
 					.timeSecFormat(entityWebApiService.getCsvTimeFormat())
 					.withMappedByReference(withMappedBy)
+					.batchLoadLimit(csvUploadService.getBatchLoadLimitForMultipleReference())
 					.mustOrderByWithLimit(csvUploadService.isMustOrderByWithLimit());
 			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(), option)) {
 				writer.write();

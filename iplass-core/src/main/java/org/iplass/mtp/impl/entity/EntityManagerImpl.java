@@ -45,6 +45,7 @@ import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityConcurrentUpdateException;
+import org.iplass.mtp.entity.EntityKey;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.EntityValidationException;
@@ -63,6 +64,7 @@ import org.iplass.mtp.entity.bulkupdate.BulkUpdatable;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.definition.properties.AutoNumberProperty;
 import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
@@ -72,8 +74,17 @@ import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.Select;
+import org.iplass.mtp.entity.query.SortSpec;
+import org.iplass.mtp.entity.query.SortSpec.SortType;
+import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.entity.query.hint.Hint;
 import org.iplass.mtp.entity.query.hint.ReadOnlyHint;
+import org.iplass.mtp.entity.query.value.RowValueList;
+import org.iplass.mtp.entity.query.value.ValueExpression;
+import org.iplass.mtp.entity.query.value.primary.EntityField;
+import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.interceptor.EntityBulkUpdateInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityCountInvocationImpl;
@@ -106,6 +117,8 @@ import org.iplass.mtp.transaction.Propagation;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionOption;
 import org.iplass.mtp.transaction.TransactionStatus;
+import org.iplass.mtp.util.CollectionUtil;
+import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,7 +151,7 @@ public class EntityManagerImpl implements EntityManager {
 			t.setRollbackOnly();
 		}
 	}
-	
+
 	private <R> R withReadOnlyCheck(Query q, ResultMode resultMode, Function<Transaction, R> func) {
 		Transaction t = Transaction.getCurrent();
 		if (!t.isReadOnly() && resultMode == ResultMode.AT_ONCE && hasReadOnlyHint(q)) {
@@ -147,7 +160,7 @@ public class EntityManagerImpl implements EntityManager {
 			return func.apply(t);
 		}
 	}
-	
+
 	private boolean hasReadOnlyHint(Query q) {
 		if (q.getSelect().getHintComment() == null) {
 			return false;
@@ -176,7 +189,7 @@ public class EntityManagerImpl implements EntityManager {
 				EntityHandler handler = getEntityHandler(query.getFrom().getEntityName());
 				return new EntityCountInvocationImpl(query, ehService.getInterceptors(), handler).proceed();
 			});
-			
+
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
@@ -286,6 +299,71 @@ public class EntityManagerImpl implements EntityManager {
 	}
 
 	@Override
+	public List<Entity> batchLoad(List<EntityKey> keys, String definitionName) {
+		return batchLoad(keys, definitionName, null);
+	}
+
+	@Override
+	public List<Entity> batchLoad(List<EntityKey> keys, String definitionName, LoadOption option) {
+		final LoadOption loadOption = option != null ? option: new LoadOption();
+
+		EntityContext entityContext = EntityContext.getCurrentContext();
+		EntityDefinition ed = getEntityHandler(definitionName).getMetaData().currentConfig(entityContext);
+
+		Select select = new Select();
+		ed.getPropertyList().forEach(pd -> {
+			if (pd instanceof ReferenceProperty) {
+				ReferenceProperty rp = (ReferenceProperty)pd;
+				if (CollectionUtil.isNotEmpty(loadOption.getLoadReferences())) {
+					if (!loadOption.getLoadReferences().contains(rp.getName())) {
+						return;
+					}
+				} else {
+					if (StringUtil.isNotEmpty(rp.getMappedBy())) {
+						if (!loadOption.isWithMappedByReference()) {
+							return;
+						}
+					} else {
+						if (!loadOption.isWithReference()) {
+							return;
+						}
+					}
+				}
+				select.add(new EntityField(pd.getName() + "." + Entity.OID));
+				select.add(new EntityField(pd.getName() + "." + Entity.VERSION));
+			} else {
+				select.add(pd.getName());
+			}
+		});
+
+		Condition condition = null;
+		if (ed.getVersionControlType() != VersionControlType.NONE) {
+			List<ValueExpression> values = keys.stream()
+					.map(key -> new RowValueList(key.getOid(), key.getVersion() != null ? key.getVersion() : 0))
+					.collect(Collectors.toList());
+			condition = new In(new String[] {Entity.OID, Entity.VERSION}, values);
+		} else {
+			List<ValueExpression> values = keys.stream()
+					.map(key -> new Literal(key.getOid()))
+					.collect(Collectors.toList());
+			condition = new In(new EntityField(Entity.OID), values);
+		}
+
+		Query query = new Query();
+		query.setSelect(select);
+		query.from(definitionName);
+		query.where(condition);
+		query.order(new SortSpec(Entity.OID, SortType.DESC));
+
+		SearchOption searchOption = new SearchOption();
+		searchOption.setCountTotal(false);
+		searchOption.setNotifyListeners(loadOption.isNotifyListeners());
+		searchOption.setReturnStructuredEntity(true);
+
+		return searchEntity(query, searchOption).getList();
+	}
+
+	@Override
 	public SearchResult<Object[]> search(Query query) {
 		return search(query, new SearchOption());
 	}
@@ -303,22 +381,23 @@ public class EntityManagerImpl implements EntityManager {
 		} else {
 			finalOption = option;
 		}
-		
+
 		try {
 			return withReadOnlyCheck(query, finalOption.getResultMode(), t -> {
-				
+
 				int counts = -1;
 				if (finalOption.isCountTotal()) {
 					Query countQuery = query.copy();
 					countQuery.setLimit(null);
 					counts = count(countQuery);
 				}
-	
+
 				//検索処理実行
 				EntityHandler eh = getEntityHandler(query.getFrom().getEntityName());
 				if (finalOption.getResultMode() == ResultMode.AT_ONCE) {
 					final List<Object[]> list = new ArrayList<Object[]>();
 					search(eh, query, finalOption, new Predicate<Object[]>() {
+							@Override
 							public boolean test(Object[] val) {
 								list.add(val);
 								return true;
@@ -354,24 +433,25 @@ public class EntityManagerImpl implements EntityManager {
 		} else {
 			finalOption = option;
 		}
-		
+
 		try {
 			return withReadOnlyCheck(query, finalOption.getResultMode(), t -> {
-				
+
 				//TODO select * from の対応する？（*をどこまでと考える？別Entityの参照属性は？）
-	
+
 				int counts = -1;
 				if (finalOption.isCountTotal()) {
 					Query countQuery = query.copy();
 					countQuery.setLimit(null);
 					counts = count(countQuery);
 				}
-	
+
 				//検索処理実行
 				EntityHandler eh = getEntityHandler(query.getFrom().getEntityName());
 				if (finalOption.getResultMode() == ResultMode.AT_ONCE) {
 					final List<T> list = new ArrayList<T>();
 					searchEntity(eh, query, finalOption, new Predicate<T>() {
+						@Override
 						public boolean test(T val) {
 							list.add(val);
 							return true;
@@ -545,7 +625,7 @@ public class EntityManagerImpl implements EntityManager {
 			}
 
 			EntityHandler handler = getEntityHandler(entity.getDefinitionName());
-			
+
 			if (option.isEnableAuditPropertySpecification()) {
 				//adminのみ可能
 				AuthContext auth = AuthContext.getCurrentContext();
@@ -1005,11 +1085,11 @@ public class EntityManagerImpl implements EntityManager {
 			if (!file.exists()) {
 				throw new EntityRuntimeException("file is not exists:" + file.getPath());
 			}
-			
+
 			if (file.isDirectory()) {
 				throw new EntityRuntimeException("file is directory:" + file.getPath());
 			}
-			
+
 			if (type == null) {
 				try {
 					type = Files.probeContentType(file.toPath());
@@ -1021,7 +1101,7 @@ public class EntityManagerImpl implements EntityManager {
 			if (name == null) {
 				name = file.getName();
 			}
-			
+
 			try {
 				LobHandler lm = LobHandler.getInstance(BinaryType.LOB_STORE_NAME);
 				Lob bin = lm.crateBinaryDataTemporary(name, type, sessionService.getSession(true).getId());
@@ -1195,7 +1275,7 @@ public class EntityManagerImpl implements EntityManager {
 		try {
 
 			Entity[] ret = new Entity[1];
-			
+
 			new EntityGetRecycleBinInvocationImpl(e -> {
 				ret[0] = e;
 				return false;
@@ -1430,7 +1510,7 @@ public class EntityManagerImpl implements EntityManager {
 	/**
 	 * 親子関係を持つエンティティをディープコピーする場合、再帰的に参照先エンティティがコピーされるので、
 	 * バリデーションエラーが発生した場合、親エンティティの参照プロパティ情報を設定する。
-	 * 
+	 *
 	 * @param e バリデーションエラー
 	 * @param referenceProperty 親の参照プロパティ
 	 */

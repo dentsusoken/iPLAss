@@ -66,6 +66,9 @@ public class EntityWriteOption extends ParseOption {
 	/** 出力上限値。0以下は無制限 */
 	private int limit = 0;
 
+	/** 多重度複数の参照を含む検索処理の一括ロード上限値。0以下は無制限 */
+	private int batchLoadLimit = 0;
+
 	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
 	private boolean mustOrderByWithLimit;
 
@@ -135,6 +138,14 @@ public class EntityWriteOption extends ParseOption {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+
+	public int getBatchLoadLimit() {
+		return batchLoadLimit;
+	}
+
+	public void setBatchLoadLimit(int batchLoadLimit) {
+		this.batchLoadLimit = batchLoadLimit;
 	}
 
 	public List<String> getProperties() {
@@ -241,6 +252,11 @@ public class EntityWriteOption extends ParseOption {
 
 	public EntityWriteOption limit(int limit) {
 		setLimit(limit);
+		return this;
+	}
+
+	public EntityWriteOption batchLoadLimit(int batchLoadLimit) {
+		setBatchLoadLimit(batchLoadLimit);
 		return this;
 	}
 
