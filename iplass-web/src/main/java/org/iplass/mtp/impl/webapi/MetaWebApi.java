@@ -432,6 +432,12 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				}
 				
 				WebFrontendService wfs = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+				if (getCacheControlType() != null) {
+					cacheControlType = getCacheControlType();
+				} else {
+					cacheControlType = wfs.getDefaultCacheControlType();
+				}
+
 				requestRestrictionRuntime = wfs.getRequestRestriction(getPublicWebApiName(), PathType.REST);
 				if (!requestRestrictionRuntime.isForce()) {
 					if (maxRequestBodySize != null || maxFileSize != null

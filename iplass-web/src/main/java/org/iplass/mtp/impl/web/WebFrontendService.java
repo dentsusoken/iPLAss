@@ -39,6 +39,7 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.iplass.mtp.web.actionmapping.definition.ClientCacheType;
+import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +65,7 @@ public class WebFrontendService implements Service {
 	private String staticContentPath;
 	private String defaultContentType;
 	private ClientCacheType defaultClientCacheType;
+	private CacheControlType defaultCacheControlType;
 
 	/**
 	 * iPLAss管理対象外のパスの定義のPattern。
@@ -292,6 +294,17 @@ public class WebFrontendService implements Service {
 			}
 		}
 
+		String defaultCacheControlType = config.getValue("defaultCacheControlType");
+		if (defaultCacheControlType != null) {
+			if (defaultCacheControlType.equals("NO_CACHE")) {
+				this.defaultCacheControlType = CacheControlType.NO_CACHE;
+			} else if (defaultCacheControlType.equals("CACHE")) {
+				this.defaultCacheControlType = CacheControlType.CACHE;
+			} else {
+				throw new ServiceConfigrationException("defaultCacheControlType incorrect:" + defaultCacheControlType);
+			}
+		}
+
 		errorUrlSelector = (ErrorUrlSelector) config.getBean("errorUrlSelector");
 
 		loginUrlSelector = (LoginUrlSelector) config.getBean("loginUrlSelector");
@@ -469,6 +482,10 @@ public class WebFrontendService implements Service {
 
 	public ClientCacheType getDefaultClientCacheType() {
 		return defaultClientCacheType;
+	}
+
+	public CacheControlType getDefaultCacheControlType() {
+		return defaultCacheControlType;
 	}
 
 	@Deprecated
