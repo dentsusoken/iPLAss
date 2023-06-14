@@ -529,14 +529,22 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	}
 	
 	/**
-	 * リクエストから検索上限を取得します。
-	 * 検索上限が指定されていない場合は検索画面のデフォルトソート上限を取得します。
+	 * リクエストから検索上限を取得します。検索上限が指定されていない場合は、定義またはservice-config設定から補完します。
+	 * リクエストの検索上限は、定義またはservice-config設定の上限を超えることはできません。
+	 * 
 	 * @return
 	 */
 	protected Integer getSearchLimit() {
-		Integer limit = request.getParamAsInt(Constants.SEARCH_LIMIT);
-		if (limit == null) limit = ViewUtil.getSearchLimit(getResultSection());
-		return limit;
+		// 定義またはservice-config設定の上限
+		Integer limit = ViewUtil.getSearchLimit(getResultSection());
+
+		// リクエストパラメータの検索上限
+		Integer requestedLimit = request.getParamAsInt(Constants.SEARCH_LIMIT);
+		if (requestedLimit == null) {
+			return limit;
+		}
+
+		return limit > requestedLimit ? requestedLimit : limit;
 	}
 
 	/**
