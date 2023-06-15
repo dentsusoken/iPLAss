@@ -66,6 +66,9 @@ public class EntityWriteOption extends ParseOption {
 	/** 出力上限値。0以下は無制限 */
 	private int limit = 0;
 
+	/** 多重度複数の参照を含む検索処理の一括ロード上限値。0以下は無制限 */
+	private int batchLoadLimit = 0;
+
 	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
 	private boolean mustOrderByWithLimit;
 
@@ -397,6 +400,35 @@ public class EntityWriteOption extends ParseOption {
 	 */
 	public EntityWriteOption limit(int limit) {
 		setLimit(limit);
+		return this;
+	}
+
+	/**
+	 * 多重度複数の参照を含む検索処理の一括ロード上限値を返します。
+	 *
+	 * @return 多重度複数の参照を含む検索処理の一括ロード上限値
+	 */
+	public int getBatchLoadLimit() {
+		return batchLoadLimit;
+	}
+
+	/**
+	 * 多重度複数の参照を含む検索処理の一括ロード上限値を設定します。0以下は無制限です。
+	 *
+	 * @param batchLoadLimit 多重度複数の参照を含む検索処理の一括ロード上限値
+	 */
+	public void setBatchLoadLimit(int batchLoadLimit) {
+		this.batchLoadLimit = batchLoadLimit;
+	}
+
+	/**
+	 * 多重度複数の参照を含む検索処理の一括ロード上限値を設定します。0以下は無制限です。
+	 *
+	 * @param batchLoadLimit 多重度複数の参照を含む検索処理の一括ロード上限値
+	 * @return インスタンス
+	 */
+	public EntityWriteOption batchLoadLimit(int batchLoadLimit) {
+		setBatchLoadLimit(batchLoadLimit);
 		return this;
 	}
 

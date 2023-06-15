@@ -35,6 +35,7 @@ import org.iplass.mtp.entity.DeepCopyOption;
 import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityKey;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.InsertOption;
 import org.iplass.mtp.entity.LoadOption;
@@ -173,6 +174,18 @@ public class AdminEntityManager implements EntityManager {
 	public Entity loadAndLock(String oid, String definitionName, LoadOption option) {
 		aals.logLoad(oid, null, definitionName, option);
 		return em.loadAndLock(oid, definitionName, option);
+	}
+
+	@Override
+	public List<Entity> batchLoad(List<EntityKey> keys, String definitionName) {
+		aals.logBatchLoad(keys, definitionName, null);
+		return em.batchLoad(keys, definitionName);
+	}
+
+	@Override
+	public List<Entity> batchLoad(List<EntityKey> keys, String definitionName, LoadOption option) {
+		aals.logBatchLoad(keys, definitionName, option);
+		return em.batchLoad(keys, definitionName, option);
 	}
 
 	@Override

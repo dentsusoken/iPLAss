@@ -105,6 +105,9 @@ public class CsvUploadService implements Service {
 	/** CSVアップロードエラー表示件数上限値 */
 	private int showErrorLimitCount;
 
+	/** 多重度複数の参照を含む検索処理の一括ロード上限値。0以下は無制限 */
+	private int batchLoadLimitForMultipleReference;
+
 	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
 	private boolean mustOrderByWithLimit;
 
@@ -125,6 +128,7 @@ public class CsvUploadService implements Service {
 		edm = ManagerLocator.manager(EntityDefinitionManager.class);
 
 		showErrorLimitCount = config.getValue("showErrorLimitCount", Integer.class, 100);
+		batchLoadLimitForMultipleReference = config.getValue("batchLoadLimitForMultipleReference", Integer.class, 100);
 		mustOrderByWithLimit = config.getValue("mustOrderByWithLimit", Boolean.class, false);
 	}
 
@@ -138,6 +142,14 @@ public class CsvUploadService implements Service {
 	 */
 	public int getShowErrorLimitCount() {
 		return showErrorLimitCount;
+	}
+
+	/**
+	 * CSVダウンロード時に対象Entityが多重度複数の参照を含む場合に一括ロードする上限値を取得します。
+	 * @return CSVダウンロード時に多重度複数の参照を含む検索処理の一括ロード上限値
+	 */
+	public int getBatchLoadLimitForMultipleReference() {
+		return batchLoadLimitForMultipleReference;
 	}
 
 	/**

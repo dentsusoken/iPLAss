@@ -216,6 +216,7 @@ public class EntityPortingService implements Service {
 				.dateFormat(DATE_FORMAT)
 				.datetimeSecFormat(DATE_TIME_FORMAT)
 				.timeSecFormat(TIME_FORMAT)
+				.batchLoadLimit(csvUploadService.getBatchLoadLimitForMultipleReference())
 				.mustOrderByWithLimit(csvUploadService.isMustOrderByWithLimit());
 		int count = 0;
 		try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(os, definition.getName(), option, zos)) {

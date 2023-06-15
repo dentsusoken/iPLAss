@@ -93,6 +93,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 				.where(context.getWhere())
 				.orderBy(context.getOrderBy())
 				.limit(maxCount)
+				.batchLoadLimit(cus.getBatchLoadLimitForMultipleReference())
 				.versioned(context.isVersioned())
 				.mustOrderByWithLimit(cus.isMustOrderByWithLimit())
 				.columnDisplayName(property -> {

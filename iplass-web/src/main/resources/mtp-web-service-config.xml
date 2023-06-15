@@ -655,12 +655,20 @@
 		<interface>org.iplass.mtp.impl.csv.CsvUploadService</interface>
 		<class>org.iplass.mtp.impl.csv.CsvUploadService</class>
 		<!-- CSVアップロードエラー表示件数上限値 (-1は無制限)  -->
+		<!--
 		<property name="showErrorLimitCount" value="100"/>
+		-->
+		<!-- 多重度複数の参照を含む検索処理の一括ロード上限値。0以下は無制限 -->
+		<!--
+		<property name="batchLoadLimitForMultipleReference" value="100"/>
+		-->
 		<!--
 		 CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するか。
 		 SQLServerの場合はtrueを指定すること。  
 		-->
+		<!--
 		<property name="mustOrderByWithLimit" value="false"/>
+		-->
 	</service>
 
 </serviceDefinition>
