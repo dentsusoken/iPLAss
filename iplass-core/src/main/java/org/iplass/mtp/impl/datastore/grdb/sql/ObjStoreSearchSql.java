@@ -63,6 +63,19 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 	public ToSqlResult query(EntityHandler metaData,
 			EntityContext context,
 			Query query, boolean withLock, boolean treatBindHint, Integer stringTypeLengthOnQuery, RdbAdapter rdbAdaptor) {
+		return queryImpl(metaData, context, query, treatBindHint, stringTypeLengthOnQuery, rdbAdaptor,
+				sql -> {
+					if (withLock) {
+						return rdbAdaptor.createRowLockSql(sql.toString());
+					} else {
+						return sql;
+					}
+				});
+	}
+
+	private ToSqlResult queryImpl(EntityHandler metaData,
+			EntityContext context,
+			Query query, boolean treatBindHint, Integer stringTypeLengthOnQuery, RdbAdapter rdbAdaptor, UnaryOperator<CharSequence> modifiier) {
 
 		long time = 0;
 		if (logger.isTraceEnabled()) {
@@ -95,11 +108,7 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 				}
 			}
 			query.accept(converter);
-			if (withLock) {
-				return new ToSqlResult(rdbAdaptor.createRowLockSql(sqlContext.toSelectSql()), sqlContext.toOrderedBindVariables(true));
-			} else {
-				return new ToSqlResult(sqlContext.toSelectSql(), sqlContext.toOrderedBindVariables(true));
-			}
+			return new ToSqlResult(sqlContext.sqlEnded(modifiier.apply(sqlContext.toSelectSql())), sqlContext.toOrderedBindVariables(true));
 
 		} finally {
 			if (logger.isTraceEnabled()) {
@@ -299,11 +308,9 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 		
 		UnaryOperator<CharSequence> sqlModifiier = rdbAdaptor.countQuery(subQuery);
 
-		ToSqlResult res = query(metaData, context, subQuery, false, enableBindVariable, null, rdbAdaptor);
-		res.sql = sqlModifiier.apply(res.sql).toString();
+		ToSqlResult res = queryImpl(metaData, context, subQuery, enableBindVariable, null, rdbAdaptor, sqlModifiier);
 		return res;
 	}
-
 
 	public String checkExistsSql(int tenantId, EntityHandler eh, Entity entity, RdbAdapter rdbAdaptor) {
 		StringBuilder sb = new StringBuilder();
