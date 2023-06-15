@@ -73,6 +73,7 @@ import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.entity.query.Limit;
+import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.Select;
 import org.iplass.mtp.entity.query.SortSpec;
@@ -337,23 +338,27 @@ public class EntityManagerImpl implements EntityManager {
 		});
 
 		Condition condition = null;
+		OrderBy orderBy = new OrderBy();
 		if (ed.getVersionControlType() != VersionControlType.NONE) {
 			List<ValueExpression> values = keys.stream()
 					.map(key -> new RowValueList(key.getOid(), key.getVersion() != null ? key.getVersion() : 0))
 					.collect(Collectors.toList());
 			condition = new In(new String[] {Entity.OID, Entity.VERSION}, values);
+			orderBy.add(new SortSpec(Entity.OID, SortType.DESC));
+			orderBy.add(new SortSpec(Entity.VERSION, SortType.DESC));
 		} else {
 			List<ValueExpression> values = keys.stream()
 					.map(key -> new Literal(key.getOid()))
 					.collect(Collectors.toList());
 			condition = new In(new EntityField(Entity.OID), values);
+			orderBy.add(new SortSpec(Entity.OID, SortType.DESC));
 		}
 
 		Query query = new Query();
 		query.setSelect(select);
 		query.from(definitionName);
 		query.where(condition);
-		query.order(new SortSpec(Entity.OID, SortType.DESC));
+		query.setOrderBy(orderBy);
 
 		SearchOption searchOption = new SearchOption();
 		searchOption.setCountTotal(false);
