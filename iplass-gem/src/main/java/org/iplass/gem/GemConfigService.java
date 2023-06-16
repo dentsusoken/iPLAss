@@ -49,7 +49,7 @@ public class GemConfigService implements Service {
 	private int csvDownloadMaxCount;
 
 	/** Upload形式のCSVダウンロード時の一括ロード件数 */
-	private int uploadableCsvdownloadLoadSize;
+	private int uploadableCsvDownloadLoadSize;
 
 	/** CSVダウンロード選択可能文字コード */
 	private List<String> csvDownloadCharacterCode;
@@ -149,7 +149,7 @@ public class GemConfigService implements Service {
 		loadWithReference = Boolean.valueOf(config.getValue("loadWithReference"));
 		formatNumberWithComma = Boolean.valueOf(config.getValue("formatNumberWithComma"));
 		csvDownloadMaxCount = config.getValue("csvDownloadMaxCount", Integer.class, 65535);
-		uploadableCsvdownloadLoadSize = config.getValue("uploadableCsvdownloadLoadSize", Integer.class, 1);
+		uploadableCsvDownloadLoadSize = config.getValue("uploadableCsvDownloadLoadSize", Integer.class, 1);
 		csvDownloadCharacterCode = config.getValues("csvDownloadCharacterCode");
 		if (csvDownloadCharacterCode == null) {
 			csvDownloadCharacterCode = new ArrayList<>();
@@ -335,8 +335,8 @@ public class GemConfigService implements Service {
 	 * Upload形式のCSVダウンロード時の一括ロード件数を取得します。
 	 * @return Upload形式のCSVダウンロード時の一括ロード件数
 	 */
-	public int getUploadableCsvdownloadLoadSize() {
-		return uploadableCsvdownloadLoadSize;
+	public int getUploadableCsvDownloadLoadSize() {
+		return uploadableCsvDownloadLoadSize;
 	}
 
 	/**

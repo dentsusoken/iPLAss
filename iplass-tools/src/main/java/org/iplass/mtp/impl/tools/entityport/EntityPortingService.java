@@ -125,7 +125,7 @@ public class EntityPortingService implements Service {
 				})));
 
 	/** Upload形式のCSVダウンロード時の一括ロード件数 */
-	private int uploadableCsvdownloadLoadSize;
+	private int uploadableCsvDownloadLoadSize;
 
 	private SyntaxService syntaxService;
 
@@ -135,7 +135,7 @@ public class EntityPortingService implements Service {
 	@Override
 	public void init(Config config) {
 
-		uploadableCsvdownloadLoadSize = config.getValue("uploadableCsvdownloadLoadSize", Integer.class, 1);
+		uploadableCsvDownloadLoadSize = config.getValue("uploadableCsvDownloadLoadSize", Integer.class, 1);
 
 		syntaxService = config.getDependentService(SyntaxService.class);
 
@@ -222,7 +222,7 @@ public class EntityPortingService implements Service {
 				.dateFormat(DATE_FORMAT)
 				.datetimeSecFormat(DATE_TIME_FORMAT)
 				.timeSecFormat(TIME_FORMAT)
-				.loadSizeOfHasMultipleReferenceEntity(uploadableCsvdownloadLoadSize)
+				.loadSizeOfHasMultipleReferenceEntity(uploadableCsvDownloadLoadSize)
 				.mustOrderByWithLimit(csvUploadService.isMustOrderByWithLimit());
 		int count = 0;
 		try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(os, definition.getName(), option, zos)) {

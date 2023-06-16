@@ -74,7 +74,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 		}
 
 		//多重度複数の参照を含む検索時の一括ロード件数
-		int loadSizeOfHasMultipleReferenceEntity = gcs.getUploadableCsvdownloadLoadSize();
+		int loadSizeOfHasMultipleReferenceEntity = gcs.getUploadableCsvDownloadLoadSize();
 		if (section.getUploadableCsvdownloadLoadSize() != null) {
 			loadSizeOfHasMultipleReferenceEntity = section.getUploadableCsvdownloadLoadSize();
 		}
