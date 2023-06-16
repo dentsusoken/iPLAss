@@ -66,8 +66,8 @@ public class EntityWriteOption extends ParseOption {
 	/** 出力上限値。0以下は無制限 */
 	private int limit = 0;
 
-	/** 多重度複数の参照を含む検索処理の一括ロード上限値。0以下は無制限 */
-	private int batchLoadLimit = 0;
+	/** 多重度複数の参照を含む検索時の一括ロード件数。1以下は1件ずつロードする。 */
+	private int loadSizeOfHasMultipleReferenceEntity = 1;
 
 	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
 	private boolean mustOrderByWithLimit;
@@ -140,12 +140,12 @@ public class EntityWriteOption extends ParseOption {
 		this.limit = limit;
 	}
 
-	public int getBatchLoadLimit() {
-		return batchLoadLimit;
+	public int getLoadSizeOfHasMultipleReferenceEntity() {
+		return loadSizeOfHasMultipleReferenceEntity;
 	}
 
-	public void setBatchLoadLimit(int batchLoadLimit) {
-		this.batchLoadLimit = batchLoadLimit;
+	public void setLoadSizeOfHasMultipleReferenceEntity(int loadSizeOfHasMultipleReferenceEntity) {
+		this.loadSizeOfHasMultipleReferenceEntity = loadSizeOfHasMultipleReferenceEntity;
 	}
 
 	public List<String> getProperties() {
@@ -255,8 +255,8 @@ public class EntityWriteOption extends ParseOption {
 		return this;
 	}
 
-	public EntityWriteOption batchLoadLimit(int batchLoadLimit) {
-		setBatchLoadLimit(batchLoadLimit);
+	public EntityWriteOption loadSizeOfHasMultipleReferenceEntity(int loadSizeOfHasMultipleReferenceEntity) {
+		setLoadSizeOfHasMultipleReferenceEntity(loadSizeOfHasMultipleReferenceEntity);
 		return this;
 	}
 

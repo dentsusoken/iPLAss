@@ -286,13 +286,17 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 		final int[] count = new int[1];
 		final List<Entity> entities = new ArrayList<>();
 		em.searchEntity(query, entity -> {
-			entities.add(entity);
-
-			if (option.getBatchLoadLimit() > 0) {
-				if (entities.size() % option.getBatchLoadLimit() == 0) {
+			if (option.getLoadSizeOfHasMultipleReferenceEntity() > 1) {
+				entities.add(entity);
+				if (entities.size() % option.getLoadSizeOfHasMultipleReferenceEntity() == 0) {
 					count[0] += writeBatchLoadEntity(query, entities, loadOption);
 					entities.clear();
 				}
+			} else {
+				Entity loadEntity = em.load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), loadOption);
+				option.getAfterSearch().accept(query.copy(), loadEntity);
+				writer.writeEntity(loadEntity);
+				count[0] = count[0] + 1;
 			}
 			return true;
 		});
@@ -305,7 +309,7 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 	}
 
 	/**
-	 * 多重度複数の参照を含むEntityデータをロードしてデータを出力します。
+	 * 多重度複数の参照を含むEntityデータを一括ロードしてデータを出力します。
 	 *
 	 * @param query 検索Query
 	 * @param entities ロード対象Entityデータ

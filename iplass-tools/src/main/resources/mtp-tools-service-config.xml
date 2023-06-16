@@ -48,6 +48,11 @@
 	<service>
 		<interface>org.iplass.mtp.impl.tools.entityport.EntityPortingService</interface>
 		<depend>org.iplass.mtp.impl.parser.SyntaxService</depend>
+
+		<!-- CSVダウンロード時に多重度複数の参照を含む場合の一括ロード件数 -->
+		<!--
+		<property name="uploadableCsvdownloadLoadSize" value="1" />
+		-->
 	</service>
 
 	<service>

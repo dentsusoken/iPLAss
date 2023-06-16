@@ -86,6 +86,11 @@
 		<!-- CSVダウンロード件数上限値 -->
 		<property name="csvDownloadMaxCount" value="65535" />
 
+		<!-- Upload形式のCSVダウンロード時に多重度複数の参照を含む場合の一括ロード件数 -->
+		<!--
+		<property name="uploadableCsvdownloadLoadSize" value="1" />
+		-->
+
 		<!-- CSVダウンロード文字コード -->
 		<property name="csvDownloadCharacterCode" value="UTF-8"/>
 
