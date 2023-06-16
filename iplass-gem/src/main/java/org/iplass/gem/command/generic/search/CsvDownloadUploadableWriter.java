@@ -65,11 +65,18 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 		EntityDefinition ed = context.getEntityDefinition();
 		String charset = context.getCharacterCode();
 
+		SearchConditionSection section = context.getConditionSection();
+
 		//Limit
 		int maxCount = gcs.getCsvDownloadMaxCount();
-		SearchConditionSection section = context.getConditionSection();
 		if (section.getCsvdownloadMaxCount() != null) {
 			maxCount = section.getCsvdownloadMaxCount();
+		}
+
+		//多重度複数の参照を含む検索時の一括ロード件数
+		int loadSizeOfHasMultipleReferenceEntity = gcs.getUploadableCsvDownloadLoadSize();
+		if (section.getUploadableCsvdownloadLoadSize() != null) {
+			loadSizeOfHasMultipleReferenceEntity = section.getUploadableCsvdownloadLoadSize();
 		}
 
 		//直接プロパティ指定
@@ -93,7 +100,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 				.where(context.getWhere())
 				.orderBy(context.getOrderBy())
 				.limit(maxCount)
-				.batchLoadLimit(cus.getBatchLoadLimitForMultipleReference())
+				.loadSizeOfHasMultipleReferenceEntity(loadSizeOfHasMultipleReferenceEntity)
 				.versioned(context.isVersioned())
 				.mustOrderByWithLimit(cus.isMustOrderByWithLimit())
 				.columnDisplayName(property -> {
