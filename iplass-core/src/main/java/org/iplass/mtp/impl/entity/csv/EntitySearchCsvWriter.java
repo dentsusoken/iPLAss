@@ -24,13 +24,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityKey;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -104,15 +104,15 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 		writer = new EntityCsvWriter(ed, out, option, binaryStore);
 
 		//多重度複数のReferenceが存在するか
-		boolean hasMultiReference = hasMultiReference(writer.getProperties());
+		boolean hasMultiReference = hasMultiReference();
 
-		Query query = createQuery(ed, writer.getProperties(), hasMultiReference);
+		Query query = createQuery(ed, hasMultiReference);
 
 		//Header出力
 		writer.writeHeader();
 
 		// CSV レコードを出力
-		return searchEntity(writer, ed, query, hasMultiReference);
+		return writeData(ed, query, hasMultiReference);
 	}
 
 	@Override
@@ -126,12 +126,11 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 	/**
 	 * 出力プロパティに多重度複数のReferenceが存在するかを判定します。
 	 *
-	 * @param properties 出力対象プロパティ
 	 * @return 多重度複数のReferenceが存在するか
 	 */
-	private boolean hasMultiReference(final List<PropertyDefinition> properties) {
+	private boolean hasMultiReference() {
 
-		return properties.stream()
+		return writer.getProperties().stream()
 				.filter(property ->property instanceof ReferenceProperty)
 				.anyMatch(property -> property.getMultiplicity() != 1);
 	}
@@ -140,11 +139,10 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 	 * Queryを生成します。
 	 *
 	 * @param ed Entity定義
-	 * @param properties 出力対象プロパティ
 	 * @param hasMultiReference 多重度複数のReferenceを含むか
 	 * @return Query
 	 */
-	private Query createQuery(final EntityDefinition ed, final List<PropertyDefinition> properties, final boolean hasMultiReference) {
+	private Query createQuery(final EntityDefinition ed, final boolean hasMultiReference) {
 
 		final List<String> select = new ArrayList<>();
 
@@ -153,7 +151,7 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 			select.add(Entity.OID);
 			select.add(Entity.VERSION);
 		} else {
-			properties.forEach(property -> {
+			writer.getProperties().forEach(property -> {
 				String propName = property.getName();
 				if (property instanceof ReferenceProperty) {
 					select.add(propName + "." + Entity.OID);
@@ -184,15 +182,14 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 	}
 
 	/**
-	 * Queryを検証してCSVを出力します。
+	 * Queryを検証してデータを出力します。
 	 *
-	 * @param writer EntityCsvWriter
 	 * @param ed Entity定義
 	 * @param query Query
 	 * @param hasMultiReference 多重度複数のReferenceを含むか
 	 * @return 処理件数
 	 */
-	private int searchEntity(final EntityCsvWriter writer, final EntityDefinition ed, final Query query, final boolean hasMultiReference) {
+	private int writeData(final EntityDefinition ed, final Query query, final boolean hasMultiReference) {
 
 		final SearchQueryCsvContext context = option.getBeforeSearch().apply(query);
 		final Query optQuery = context.getQuery();
@@ -205,7 +202,7 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 				optQuery.getSelect().setDistinct(true);
 				logger.debug("specified distinct for select. because [where conditions] contains multiple reference property. query:" + optQuery);
 
-				//orderbyはクリア
+				//OrderByはクリア
 				if (optQuery.getOrderBy() != null) {
 					logger.debug("query [order by] removed. because [where conditions] contains multiple reference property. removed order by:" + optQuery.getOrderBy());
 					optQuery.setOrderBy(null);
@@ -213,7 +210,7 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 			}
 		}
 
-		//orderby条件の多重度チェック
+		//OrderBy条件の多重度チェック
 		if (optQuery.getOrderBy() != null) {
 			if (new MultiReferenceChecker(ed).test(optQuery.getOrderBy())) {
 				//多重度が複数のReferenceは指定不可(複数行出力されるが、distinctできないため)
@@ -231,70 +228,111 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 		}
 
 		if (context.isDoPrivileged()) {
-			return AuthContext.doPrivileged(() -> doSearch(writer, optQuery, hasMultiReference));
+			return AuthContext.doPrivileged(() -> doSearch(optQuery, hasMultiReference));
 		} else {
 			if (context.getWithoutConditionReferenceName() != null) {
 				return EntityPermission.doQueryAs(context.getWithoutConditionReferenceName(),
-						() -> doSearch(writer, optQuery, hasMultiReference));
+						() -> doSearch(optQuery, hasMultiReference));
 			}
 		}
-		return doSearch(writer, optQuery, hasMultiReference);
+		return doSearch(optQuery, hasMultiReference);
 	}
 
-	private int doSearch(final EntityCsvWriter writer, final Query optQuery, final boolean hasMultiReference) {
+	/**
+	 * 検索を実行してデータを出力します。
+	 *
+	 * @param query 検索Query
+	 * @param hasMultiReference 多重度複数の参照を含むか
+	 * @return 出力件数
+	 */
+	private int doSearch(final Query query, final boolean hasMultiReference) {
 
-		// プロパティを直接指定している場合の対象Reference取得
-		final List<String> directReferenceNames = getDirectReferenceNames(hasMultiReference, writer.getProperties());
+		// 多重度複数の参照を含む場合は別処理
+		if (hasMultiReference) {
+			return doSearchMultiReference(query);
+		}
 
 		final int[] count = new int[1];
 
-		em.searchEntity(optQuery, new Predicate<Entity>() {
+		em.searchEntity(query, entity -> {
+			option.getAfterSearch().accept(query.copy(), entity);
 
-			@Override
-			public boolean test(Entity entity) {
+			writer.writeEntity(entity);
 
-				//多重度複数のReferenceがある場合はLoadする
-				//TODO パフォーマンス改善 oid単位にロードしないように
-				if (hasMultiReference) {
-					LoadOption loadOption = new LoadOption();
-					if (CollectionUtil.isNotEmpty(option.getProperties())) {
-						// プロパティを直接指定している場合は対象のReferenceのみ指定
-						loadOption.setLoadReferences(directReferenceNames);
-					} else {
-						loadOption.setWithMappedByReference(option.isWithMappedByReference());
-					}
-
-					entity = em.load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), loadOption);
-				}
-
-				option.getAfterSearch().accept(optQuery.copy(), entity);
-
-				writer.writeEntity(entity);
-
-				count[0] = count[0] + 1;
-				return true;
-			}
+			count[0] = count[0] + 1;
+			return true;
 		});
 
 		return count[0];
 	}
 
 	/**
-	 * 直接プロパティ指定時の参照プロパティを返します。
+	 * 多重度複数の参照を含む検索を実行してデータを出力します。
 	 *
-	 * @param hasMultiReference 多重度複数の参照が含まれるか
-	 * @param properties 出力対象プロパティ
-	 * @return 出力対象参照プロパティ名
+	 * @param query 検索Query
+	 * @return 出力件数
 	 */
-	private List<String> getDirectReferenceNames(boolean hasMultiReference, List<PropertyDefinition> properties) {
-		if (!hasMultiReference || CollectionUtil.isEmpty(option.getProperties())) {
-			// 対象外
-			return null;
+	private int doSearchMultiReference(final Query query) {
+
+		final LoadOption loadOption = new LoadOption();
+		if (CollectionUtil.isNotEmpty(option.getProperties())) {
+			// プロパティを直接指定している場合は対象のReferenceのみ指定
+			List<String> references = writer.getProperties().stream()
+					.filter(property -> property instanceof ReferenceProperty)
+					.map(property -> property.getName())
+					.collect(Collectors.toList());
+			loadOption.setLoadReferences(references);
+		} else {
+			loadOption.setWithMappedByReference(option.isWithMappedByReference());
 		}
-		return properties.stream()
-				.filter(property -> property instanceof ReferenceProperty)
-				.map(property -> property.getName())
+
+		final int[] count = new int[1];
+		final List<Entity> entities = new ArrayList<>();
+		em.searchEntity(query, entity -> {
+			if (option.getLoadSizeOfHasMultipleReferenceEntity() > 1) {
+				entities.add(entity);
+				if (entities.size() % option.getLoadSizeOfHasMultipleReferenceEntity() == 0) {
+					count[0] += writeBatchLoadEntity(query, entities, loadOption);
+					entities.clear();
+				}
+			} else {
+				Entity loadEntity = em.load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), loadOption);
+				option.getAfterSearch().accept(query.copy(), loadEntity);
+				writer.writeEntity(loadEntity);
+				count[0] = count[0] + 1;
+			}
+			return true;
+		});
+
+		if (!entities.isEmpty()) {
+			count[0] += writeBatchLoadEntity(query, entities, loadOption);
+		}
+
+		return count[0];
+	}
+
+	/**
+	 * 多重度複数の参照を含むEntityデータを一括ロードしてデータを出力します。
+	 *
+	 * @param query 検索Query
+	 * @param entities ロード対象Entityデータ
+	 * @param loadOption ロードオプション
+	 * @return 出力件数
+	 */
+	private int writeBatchLoadEntity(final Query query, List<Entity> entities, LoadOption loadOption) {
+
+		List<EntityKey> keys = entities.stream()
+				.map(entity -> new EntityKey(entity.getOid(), entity.getVersion()))
 				.collect(Collectors.toList());
+
+		List<Entity> loadEntities = em.batchLoad(keys, definitionName, loadOption);
+
+		loadEntities.forEach(entity -> {
+			option.getAfterSearch().accept(query.copy(), entity);
+			writer.writeEntity(entity);
+		});
+
+		return loadEntities.size();
 	}
 
 	private static class MultiReferenceChecker extends QueryVisitorSupport {

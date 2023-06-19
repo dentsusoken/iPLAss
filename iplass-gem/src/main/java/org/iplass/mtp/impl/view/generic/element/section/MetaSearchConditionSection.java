@@ -126,6 +126,9 @@ public class MetaSearchConditionSection extends MetaSection {
 	/** CSVダウンロード件数の上限値 */
 	private Integer csvdownloadMaxCount;
 
+	/** Upload形式のCSVダウンロード時の一括ロード件数 */
+	private Integer uploadableCsvdownloadLoadSize;
+
 	/** CSVダウンロード項目 */
 	private String csvdownloadProperties;
 
@@ -166,6 +169,22 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	public void setCsvdownloadMaxCount(Integer csvdownloadMaxCount) {
 		this.csvdownloadMaxCount = csvdownloadMaxCount;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード時の一括ロード件数を取得します。
+	 * @return Upload形式のCSVダウンロード時の一括ロード件数
+	 */
+	public Integer getUploadableCsvdownloadLoadSize() {
+		return uploadableCsvdownloadLoadSize;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード時の一括ロード件数を設定します。
+	 * @param uploadableCsvdownloadLoadSize Upload形式のCSVダウンロード時の一括ロード件数
+	 */
+	public void setUploadableCsvdownloadLoadSize(Integer uploadableCsvdownloadLoadSize) {
+		this.uploadableCsvdownloadLoadSize = uploadableCsvdownloadLoadSize;
 	}
 
 	public boolean isHideCsvdownloadDialog() {
@@ -634,6 +653,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.csvUploadTransactionType = section.getCsvUploadTransactionType();
 		this.csvUploadInterrupterName = section.getCsvUploadInterrupterName();
 		this.csvdownloadMaxCount = section.getCsvdownloadMaxCount();
+		this.uploadableCsvdownloadLoadSize = section.getUploadableCsvdownloadLoadSize();
 		this.csvdownloadProperties = section.getCsvdownloadProperties();
 		this.csvdownloadUploadableProperties = section.getCsvdownloadUploadableProperties();
 		this.csvdownloadFileNameFormat = section.getCsvdownloadFileNameFormat();
@@ -701,6 +721,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setCsvUploadTransactionType(this.csvUploadTransactionType);
 		section.setCsvUploadInterrupterName(this.csvUploadInterrupterName);
 		section.setCsvdownloadMaxCount(this.csvdownloadMaxCount);
+		section.setUploadableCsvdownloadLoadSize(this.uploadableCsvdownloadLoadSize);
 		section.setCsvdownloadProperties(this.csvdownloadProperties);
 		section.setCsvdownloadUploadableProperties(this.csvdownloadUploadableProperties);
 		section.setCsvdownloadFileNameFormat(this.csvdownloadFileNameFormat);

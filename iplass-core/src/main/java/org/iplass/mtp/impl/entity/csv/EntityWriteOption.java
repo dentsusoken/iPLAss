@@ -66,6 +66,9 @@ public class EntityWriteOption extends ParseOption {
 	/** 出力上限値。0以下は無制限 */
 	private int limit = 0;
 
+	/** 多重度複数の参照を含む検索時の一括ロード件数。1以下は1件ずつロードする。 */
+	private int loadSizeOfHasMultipleReferenceEntity = 1;
+
 	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
 	private boolean mustOrderByWithLimit;
 
@@ -397,6 +400,35 @@ public class EntityWriteOption extends ParseOption {
 	 */
 	public EntityWriteOption limit(int limit) {
 		setLimit(limit);
+		return this;
+	}
+
+	/**
+	 * 多重度複数の参照を含む検索時の一括ロード件数を返します。
+	 *
+	 * @return 多重度複数の参照を含む検索時の一括ロード件数
+	 */
+	public int getLoadSizeOfHasMultipleReferenceEntity() {
+		return loadSizeOfHasMultipleReferenceEntity;
+	}
+
+	/**
+	 * 多重度複数の参照を含む検索時の一括ロード件数を設定します。1以下は1件ずつロードします。
+	 *
+	 * @param loadSizeOfHasMultipleReferenceEntity 多重度複数の参照を含む検索時の一括ロード件数
+	 */
+	public void setLoadSizeOfHasMultipleReferenceEntity(int loadSizeOfHasMultipleReferenceEntity) {
+		this.loadSizeOfHasMultipleReferenceEntity = loadSizeOfHasMultipleReferenceEntity;
+	}
+
+	/**
+	 * 多重度複数の参照を含む検索時の一括ロード件数を設定します。1以下は1件ずつロードします。
+	 *
+	 * @param loadSizeOfHasMultipleReferenceEntity 多重度複数の参照を含む検索時の一括ロード件数
+	 * @return インスタンス
+	 */
+	public EntityWriteOption loadSizeOfHasMultipleReferenceEntity(int loadSizeOfHasMultipleReferenceEntity) {
+		setLoadSizeOfHasMultipleReferenceEntity(loadSizeOfHasMultipleReferenceEntity);
 		return this;
 	}
 
