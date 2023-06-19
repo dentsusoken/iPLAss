@@ -220,6 +220,17 @@ public class SearchConditionSection extends Section {
 	)
 	private Integer csvdownloadMaxCount;
 
+	/** Upload形式のCSVダウンロード時の一括ロード件数 */
+	@MetaFieldInfo(
+			displayName="Upload形式のCSVダウンロード時の一括ロード件数",
+			displayNameKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDisplaNameKey",
+			inputType=InputType.NUMBER,
+			displayOrder=1075,
+			description="Upload形式のCSVダウンロード時に多重度複数の参照を含む場合の一括ロード件数",
+			descriptionKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDescriptionKey"
+	)
+	private Integer uploadableCsvdownloadLoadSize;
+
 	/** CSVダウンロード項目 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロード項目",
@@ -742,13 +753,36 @@ public class SearchConditionSection extends Section {
 		this.hideCsvdownload = hideCsvdownload;
 	}
 
+	/**
+	 * CSVダウンロードの上限件数を取得します。
+	 * @return CSVダウンロードの上限件数
+	 */
 	public Integer getCsvdownloadMaxCount() {
 		return csvdownloadMaxCount;
 	}
 
-
+	/**
+	 * CSVダウンロードの上限件数を設定します。
+	 * @param csvdownloadMaxCount CSVダウンロードの上限件数
+	 */
 	public void setCsvdownloadMaxCount(Integer csvdownloadMaxCount) {
 		this.csvdownloadMaxCount = csvdownloadMaxCount;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード時の一括ロード件数を取得します。
+	 * @return Upload形式のCSVダウンロード時の一括ロード件数
+	 */
+	public Integer getUploadableCsvdownloadLoadSize() {
+		return uploadableCsvdownloadLoadSize;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード時の一括ロード件数を設定します。
+	 * @param uploadableCsvdownloadLoadSize Upload形式のCSVダウンロード時の一括ロード件数
+	 */
+	public void setUploadableCsvdownloadLoadSize(Integer uploadableCsvdownloadLoadSize) {
+		this.uploadableCsvdownloadLoadSize = uploadableCsvdownloadLoadSize;
 	}
 
 	/**
