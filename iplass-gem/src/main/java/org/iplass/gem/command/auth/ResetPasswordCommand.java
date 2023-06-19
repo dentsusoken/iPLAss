@@ -57,8 +57,8 @@ import org.iplass.mtp.tenant.TenantAuthInfo;
 			paramMapping=@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}"),
 			clientCacheType=ClientCacheType.NO_CACHE,
 			command={
-					@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;"),
-					@CommandConfig(commandClass=ResetPasswordCommand.class)
+					@CommandConfig(commandClass=ResetPasswordCommand.class),
+					@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;")
 				},
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
@@ -70,8 +70,8 @@ import org.iplass.mtp.tenant.TenantAuthInfo;
 			paramMapping=@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}"),
 			clientCacheType=ClientCacheType.NO_CACHE,
 			command={
-					@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;"),
-					@CommandConfig(commandClass=ResetPasswordCommand.class)
+					@CommandConfig(commandClass=ResetPasswordCommand.class),
+					@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;")
 				},
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
