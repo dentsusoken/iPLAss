@@ -78,7 +78,6 @@
 			<!-- 
 			<property name="stringTypeLengthOnQuery" value="256" />
 			 -->
-			<property name="useCounterService" value="true" />
 			<property name="storageSpace">
 				<property name="storageSpaceName" value="default" />
 				<property name="varcharColumns" value="64" />
