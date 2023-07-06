@@ -89,6 +89,11 @@ public class MySQLTenantRdbManager extends DefaultTenantRdbManager {
 
 							//作られているPartitionの最大値を取得
 							PartitionInfo info = getTablePartitionInfo(storageSpaceTableName);
+							if (null == info) {
+								// Partitionが存在しない場合は、次のテーブルを確認
+								continue;
+							}
+
 							ret.add(info);
 						}
 					} else {
@@ -104,6 +109,11 @@ public class MySQLTenantRdbManager extends DefaultTenantRdbManager {
 
 						//作られているPartitionの最大値を取得
 						PartitionInfo info = getTablePartitionInfo(tableName);
+						if (null == info) {
+							// Partitionが存在しない場合は、次のテーブルを確認
+							continue;
+						}
+
 						ret.add(info);
 					}
 				}
@@ -141,6 +151,15 @@ public class MySQLTenantRdbManager extends DefaultTenantRdbManager {
 					if(rs.next()) {
 						//先頭のpartition_nameがテナントの最大
 						String max_partition_name = rs.getString(1);
+
+						if (null == max_partition_name) {
+							// パーティション名が null （パーティションが存在しない）の場合は、警告ログを出力。
+							// パーティションが存在しない為、情報としては null 返却する。
+							logger.warn("Table '{}' has no partitions. Please check service-config settings or table creation DDL.",
+									tableName);
+							return null;
+						}
+
 						partitionNames.add(max_partition_name);
 
 						//partition_nameからテナントIDを取得
