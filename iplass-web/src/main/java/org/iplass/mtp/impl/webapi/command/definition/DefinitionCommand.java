@@ -40,8 +40,8 @@ import org.iplass.mtp.impl.webapi.WebApiService;
 import org.iplass.mtp.impl.webapi.command.Constants;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,22 +49,26 @@ import org.slf4j.LoggerFactory;
 		accepts={RequestType.REST_FORM},
 		methods={MethodType.GET},
 		results={DefinitionCommand.RESULT_DEFINITION, DefinitionCommand.RESULT_DEFINITION_LIST},
+		supportBearerToken = true,
 		overwritable=false)
 @WebApi(name="mtp/definition/POST",
 		accepts={RequestType.REST_JSON, RequestType.REST_XML},
 		methods={MethodType.POST},
 		restJson=@RestJson(parameterName=DefinitionCommand.PARAM_DEFINITION, parameterType=Definition.class),
 		restXml=@RestXml(parameterName=DefinitionCommand.PARAM_DEFINITION),
+		supportBearerToken = true,
 		overwritable=false)
 @WebApi(name="mtp/definition/PUT",
 		accepts={RequestType.REST_JSON, RequestType.REST_XML},
 		methods={MethodType.PUT},
 		restJson=@RestJson(parameterName=DefinitionCommand.PARAM_DEFINITION, parameterType=Definition.class),
 		restXml=@RestXml(parameterName=DefinitionCommand.PARAM_DEFINITION),
+		supportBearerToken = true,
 		overwritable=false)
 @WebApi(name="mtp/definition/DELETE",
 		accepts={RequestType.REST_FORM},
 		methods={MethodType.DELETE},
+		supportBearerToken = true,
 		overwritable=false)
 @CommandClass(name="mtp/definition/DefinitionCommand", displayName="Definition Web API", overwritable=false)
 public final class DefinitionCommand implements Command, Constants {
