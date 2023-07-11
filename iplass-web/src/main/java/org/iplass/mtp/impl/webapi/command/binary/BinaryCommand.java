@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 	name = "mtp/bin/GET",
 	accepts = { RequestType.REST_FORM },
 	methods = { MethodType.GET },
+	supportBearerToken = true,
 	overwritable = false
 )
 @WebApi(
@@ -60,6 +61,7 @@ import org.slf4j.LoggerFactory;
 	accepts = { RequestType.REST_FORM },
 	methods = { MethodType.POST },
 	results = { BinaryCommand.RESULT_LOB_ID },
+	supportBearerToken = true,
 	overwritable = false
 )
 @CommandClass(name = "mtp/binary/BinaryCommand", displayName = "Binary Web API", overwritable = false)
