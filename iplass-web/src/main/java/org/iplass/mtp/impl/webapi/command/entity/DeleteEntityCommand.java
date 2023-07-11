@@ -26,12 +26,13 @@ import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.GenericEntity;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(name="mtp/entity/DELETE",
 		accepts={RequestType.REST_FORM},
 		methods={MethodType.DELETE},
+		supportBearerToken = true,
 		overwritable=false)
 @CommandClass(name="mtp/entity/DeleteEntityCommand", displayName="Entity Delete Web API", overwritable=false)
 public final class DeleteEntityCommand extends AbstractEntityCommand {

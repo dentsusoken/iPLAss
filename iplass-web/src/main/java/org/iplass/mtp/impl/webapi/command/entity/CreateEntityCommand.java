@@ -49,6 +49,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		restXml=@RestXml(parameterName=CreateEntityCommand.PARAM_ENTITY),
 		results={CreateEntityCommand.RESULT_OID,
 				CreateEntityCommand.RESULT_UPLOAD_INSERT, CreateEntityCommand.RESULT_UPLOAD_UPDATE, CreateEntityCommand.RESULT_UPLOAD_DELETE},
+		supportBearerToken = true,
 		overwritable=false)
 @CommandClass(name="mtp/entity/CreateEntityCommand", displayName="Entity Create Web API", overwritable=false)
 public final class CreateEntityCommand extends AbstractEntityCommand {

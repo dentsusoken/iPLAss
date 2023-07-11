@@ -79,6 +79,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 		results={GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT, GetEntityCommand.RESULT_ENTITY,
 				GetEntityCommand.RESULT_CSV, GetEntityCommand.RESULT_JSON, GetEntityCommand.RESULT_XML},
 		responseType="application/json, application/xml, text/csv;charset=utf-8",
+		supportBearerToken = true,
 		overwritable=false)
 @CommandClass(name="mtp/entity/GetEntityCommand", displayName="Entity Query/Load Web API", overwritable=false)
 public final class GetEntityCommand extends AbstractEntityCommand {

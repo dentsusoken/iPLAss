@@ -41,6 +41,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		restJson=@RestJson(parameterName=UpdateEntityCommand.PARAM_ENTITY, parameterType=Entity.class),
 		restXml=@RestXml(parameterName=UpdateEntityCommand.PARAM_ENTITY),
 		results={UpdateEntityCommand.RESULT_OID, UpdateEntityCommand.RESULT_OID_LIST},
+		supportBearerToken = true,
 		overwritable=false)
 @CommandClass(name="mtp/entity/UpdateEntityCommand", displayName="Entity Update Web API", overwritable=false)
 public final class UpdateEntityCommand extends AbstractEntityCommand {
