@@ -20,12 +20,29 @@
 
 package org.iplass.mtp.view.generic;
 
+import java.util.List;
+
 import org.iplass.mtp.csv.CsvUploadInterrupter;
+import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.entity.definition.PropertyDefinition;
 
 /**
  *  汎用検索画面にカスタムでCSVアップロード処理を行わせるインターフェース
  *
  */
 public interface SearchFormCsvUploadInterrupter extends CsvUploadInterrupter {
+
+	/**
+	 * サンプルCSVデータを返します。
+	 * nullを返す場合、プロパティ型に応じてランダムな値を出力します。
+	 *
+	 * @param definition Entity定義
+	 * @param properties 出力対象プロパティ定義
+	 * @return サンプルCSVデータ
+	 */
+	default public List<Entity> sampleCsvData(EntityDefinition definition, List<PropertyDefinition> properties) {
+		return null;
+	}
 
 }
