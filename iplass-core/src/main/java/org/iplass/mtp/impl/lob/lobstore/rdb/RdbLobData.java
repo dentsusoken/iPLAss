@@ -127,7 +127,7 @@ public class RdbLobData implements LobData {
 	public OutputStream getBinaryOutputStream() {
 		return new LobOutputStream();
 	}
-	
+
 	@Override
 	public void transferFrom(File file) throws IOException {
 		byte[] buf = new byte[8192];
@@ -401,7 +401,11 @@ public class RdbLobData implements LobData {
 						stmt.setLong(i++, blob.length());
 					}
 				} else {
-					stmt.setBytes(i++, ((ByteArrayOutputStream) os).toByteArray());
+					byte[] lobBytes = ((ByteArrayOutputStream) os).toByteArray();
+					stmt.setBytes(i++, lobBytes);
+					if (manageLobSizeOnRdb) {
+						stmt.setLong(i++, lobBytes.length);
+					}
 				}
 				stmt.setInt(i++, tenantId);
 				stmt.setLong(i++, lobDataId);
