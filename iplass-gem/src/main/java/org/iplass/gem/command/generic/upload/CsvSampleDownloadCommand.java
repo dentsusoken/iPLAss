@@ -35,6 +35,8 @@ import java.util.Optional;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -69,15 +71,19 @@ import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.SearchFormCsvUploadInterrupter;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.web.ResultStreamWriter;
 import org.iplass.mtp.web.template.TemplateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ActionMapping(
 		name=CsvSampleDownloadCommand.ACTION_NAME,
@@ -91,6 +97,8 @@ import org.iplass.mtp.web.template.TemplateUtil;
 )
 @CommandClass(name="gem/generic/upload/CsvSampleDownloadCommand", displayName="CSVサンプルファイルダウンロード")
 public final class CsvSampleDownloadCommand implements Command {
+
+	private static Logger logger = LoggerFactory.getLogger(CsvSampleDownloadCommand.class);
 
 	public static final String ACTION_NAME = "gem/generic/upload/sample";
 
@@ -162,13 +170,13 @@ public final class CsvSampleDownloadCommand implements Command {
 		@Override
 		public void write(OutputStream out) throws IOException {
 
-			//直接プロパティ指定
+			// 直接プロパティ指定
 			List<String> directProperties = null;
 			if (condition != null && condition.getCsvdownloadUploadableProperties() != null) {
 				directProperties = new ArrayList<String>(condition.getCsvdownloadUploadablePropertiesSet());
 			}
 
-			//Writer生成
+			// Writer生成
 			EntityWriteOption option = new EntityWriteOption()
 					.charset(charset)
 					.quoteAll(gcs.isCsvDownloadQuoteAll())
@@ -178,15 +186,35 @@ public final class CsvSampleDownloadCommand implements Command {
 
 			try (EntityCsvWriter writer = new EntityCsvWriter(ed, out, option)) {
 
-				//Header出力
+				// 出力データの生成
+				List<Entity> entities = null;
+				if (condition != null && StringUtil.isNotEmpty(condition.getCsvUploadInterrupterName())) {
+					SearchFormCsvUploadInterrupter interrupter = null;
+					logger.debug("set csv upload interrupter. class=" + condition.getCsvUploadInterrupterName());
+					UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+					try {
+						interrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class, condition.getCsvUploadInterrupterName());
+						entities = interrupter.sampleCsvData(ed, writer.getProperties());
+					} catch (ClassNotFoundException e) {
+						logger.error(condition.getCsvUploadInterrupterName() + " can not instantiate.", e);
+						throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.upload.CsvSampleDownloadCommand.internalErr"));
+					}
+				}
+				if (entities == null) {
+					// ダミーエンティティの作成
+					entities = new ArrayList<>(2);
+					for (int i = 0; i < 2; i++) {
+						entities.add(createDummyEntity(writer.getProperties()));
+					}
+				}
+
+				// Header出力
 				writer.writeHeader();
 
 				// CSV レコードを出力
-				for (int i = 0; i < 2; i++) {
-					// ダミーエンティティの作成
-					Entity entity = createDummyEntity(writer.getProperties());
+				entities.forEach(entity -> {
 					writer.writeEntity(entity);
-				}
+				});
 			}
 
 		}
@@ -231,7 +259,7 @@ public final class CsvSampleDownloadCommand implements Command {
 				}
 
 				if (propName.equals(Entity.STATE)) {
-					entity.setState(new SelectValue("V", "有効"));
+					entity.setState(new SelectValue(Entity.STATE_VALID_VALUE));
 					continue;
 				}
 
