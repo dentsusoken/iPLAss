@@ -73,6 +73,7 @@ import org.iplass.mtp.impl.rdb.postgresql.function.PostgreSQLDateAddFunctionAdap
 import org.iplass.mtp.impl.rdb.postgresql.function.PostgreSQLDateDiffFunctionAdapter;
 import org.iplass.mtp.impl.rdb.postgresql.function.PostgreSQLListaggFunctionAdapter;
 import org.iplass.mtp.impl.rdb.postgresql.function.PostgreSQLRoundTruncFunctionAdapter;
+import org.iplass.mtp.impl.rdb.postgresql.function.PostgreSQLSubstrFunctionAdapter;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class PostgreSQLRdbAdapter extends RdbAdapter {
@@ -109,7 +110,7 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 		addFunction(new StaticTypedFunctionAdapter("CHAR_LENGTH", Long.class));
 		addFunction(new StaticTypedFunctionAdapter("INSTR", Long.class));
 		addFunction(new StaticTypedFunctionAdapter("CONCAT", String.class));
-		addFunction(new StaticTypedFunctionAdapter("SUBSTR", String.class));
+		addFunction(new PostgreSQLSubstrFunctionAdapter("SUBSTR"));
 		addFunction(new StaticTypedFunctionAdapter("REPLACE", String.class));
 		addFunction(new DynamicTypedFunctionAdapter("MOD", new int[]{0,1}));
 		addFunction(new StaticTypedFunctionAdapter("SQRT", Double.class));
