@@ -39,12 +39,26 @@ import org.iplass.mtp.impl.cache.store.event.CacheInvalidateEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheRemoveEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheUpdateEvent;
 
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
+import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
+import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
+
 public abstract class RedisCacheStoreBase implements CacheStore {
+
+	protected StatefulRedisConnection<String, Object> statefulConnection;
+	protected RedisCommands<String, Object> commands;
+
+	protected StatefulRedisPubSubConnection<String, String> pubSubConnection;
+	protected RedisPubSubCommands<String, String> pubSubCommands;
+
+	protected final long timeToLive;
+	protected final boolean isSave;
+
+	protected NamespaceSerializedObjectCodec codec;
 
 	private final RedisCacheStoreFactory factory;
 	private final String namespace;
-	private final long timeToLive;
-	private final boolean isSave;
 
 	private List<CacheEventListener> listeners;
 
@@ -53,6 +67,11 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 		this.namespace = namespace;
 		this.timeToLive = timeToLive;
 		this.isSave = isSave;
+
+		this.codec = new NamespaceSerializedObjectCodec(namespace);
+		this.statefulConnection = factory.getClient().connect(codec);
+		this.commands = statefulConnection.sync();
+		this.pubSubConnection = factory.getClient().connectPubSub();
 
 		listeners = new CopyOnWriteArrayList<CacheEventListener>();
 	}
@@ -82,12 +101,35 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 		return listeners;
 	}
 
-	protected long getTimeToLive() {
-		return timeToLive;
+	@Override
+	public int getSize() {
+		return commands.dbsize().intValue();
 	}
 
-	protected boolean isSave() {
-		return isSave;
+	@Override
+	public void destroy() {
+		if (pubSubCommands != null && statefulConnection.isOpen()) {
+			pubSubCommands.unsubscribe("__keyevent@0__:expired");
+			pubSubCommands.shutdown(isSave);
+			pubSubCommands = null;
+		}
+		if (pubSubConnection != null && pubSubConnection.isOpen()) {
+			pubSubConnection.close();
+			pubSubConnection = null;
+		}
+		if (commands != null && statefulConnection.isOpen()) {
+			commands.shutdown(isSave);
+			commands = null;
+		}
+		if (statefulConnection != null && statefulConnection.isOpen()) {
+			statefulConnection.close();
+			statefulConnection = null;
+		}
+	}
+
+	@Override
+	public String trace() {
+		return commands.info();
 	}
 
 	protected void notifyRemoved(CacheEntry entry) {

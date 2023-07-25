@@ -26,13 +26,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.iplass.mtp.impl.cache.store.CacheEntry;
-import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
-import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.RedisPubSubListener;
 
 public class RedisIndexedCacheStore extends RedisCacheStoreBase {
@@ -40,21 +36,14 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	private static final Logger logger = LoggerFactory.getLogger(RedisIndexedCacheStore.class);
 
 	private final int indexSize;
-	private final RedisCacheStore wrapped;
 
-	private StatefulRedisConnection<String, Object> redisIndexConn;
-	private RedisCommands<String, Object> redisIndexCmds;
-
-	public RedisIndexedCacheStore(RedisCacheStoreFactory factory, String namespace, int indexSize, boolean isSave, RedisCacheStore wrapped) {
-		super(factory, namespace, wrapped.getTimeToLive(), isSave);
+	public RedisIndexedCacheStore(RedisCacheStoreFactory factory, String namespace, long timeToLive, int indexSize,
+			boolean isSave) {
+		super(factory, namespace, timeToLive, isSave);
 
 		this.indexSize = indexSize;
-		this.wrapped = wrapped;
 
-		redisIndexConn = factory.getClient().connect(new NamespaceSerializedObjectCodec(namespace));
-		redisIndexCmds = redisIndexConn.sync();
-
-		wrapped.addPubSubListener(new RedisPubSubListener<String, String>() {
+		pubSubConnection.addListener(new RedisPubSubListener<String, String>() {
 			@Override
 			public void unsubscribed(String channel, long count) {
 			}
@@ -77,7 +66,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 			@Override
 			public void message(String channel, String message) {
-				String prefix = wrapped.getCodec().getNamespaceHandler().getPrefix();
+				String prefix = codec.getNamespaceHandler().getPrefix();
 				if (message.startsWith(prefix)) {
 					if (logger.isDebugEnabled()) {
 						logger.debug(String.format("Occur expired event. channel:%s, message:%s", channel, message));
@@ -90,92 +79,69 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	}
 
 	@Override
-	public String getNamespace() {
-		return wrapped.getNamespace();
-	}
-
-	@Override
-	public CacheStoreFactory getFactory() {
-		return wrapped.getFactory();
-	}
-
-	@Override
 	public CacheEntry put(CacheEntry entry, boolean clean) {
-		CacheEntry previous = wrapped.put(redisIndexCmds, entry, false);
-		if (previous != null) {
-			removeFromIndex(previous);
-		}
-		addToIndex(entry);
-		wrapped.exec();
-		if (previous == null) {
-			wrapped.notifyPut(entry);
-		} else {
-			wrapped.notifyUpdated(previous, entry);
-		}
-		return previous;
+		/*
+		 * CacheEntry previous = wrapped.put(redisIndexCmds, entry, false); if (previous
+		 * != null) { removeFromIndex(previous); } addToIndex(entry); wrapped.exec(); if
+		 * (previous == null) { wrapped.notifyPut(entry); } else {
+		 * wrapped.notifyUpdated(previous, entry); } return previous;
+		 */
+		return null;
 	}
 
 	@Override
 	public CacheEntry putIfAbsent(CacheEntry entry) {
-		CacheEntry previous = wrapped.putIfAbsent(redisIndexCmds, entry, false);
-		if (previous == null) {
-			addToIndex(entry);
-			wrapped.exec();
-			wrapped.notifyPut(entry);
-		}
-		return previous;
+		/*
+		 * CacheEntry previous = wrapped.putIfAbsent(redisIndexCmds, entry, false); if
+		 * (previous == null) { addToIndex(entry); wrapped.exec();
+		 * wrapped.notifyPut(entry); } return previous;
+		 */
+		return null;
 	}
 
 	@Override
 	public CacheEntry get(Object key) {
-		return wrapped.get(key);
+		return key != null ? (CacheEntry) commands.get(encodeBase64(key)) : null;
 	}
 
 	@Override
 	public CacheEntry remove(Object key) {
-		CacheEntry previous = wrapped.remove(redisIndexCmds, key, false);
-		if (previous != null) {
-			removeFromIndex(previous);
-			wrapped.exec();
-			wrapped.notifyRemoved(previous);
-		}
-		return previous;
+		/*
+		 * CacheEntry previous = wrapped.remove(redisIndexCmds, key, false); if
+		 * (previous != null) { removeFromIndex(previous); wrapped.exec();
+		 * wrapped.notifyRemoved(previous); } return previous;
+		 */
+		return null;
 	}
 
 	@Override
 	public boolean remove(CacheEntry entry) {
-		CacheEntry previous = wrapped.remove(redisIndexCmds, entry, false);
-		if (previous != null) {
-			removeFromIndex(entry);
-			wrapped.exec();
-			wrapped.notifyRemoved(previous);
-			return true;
-		}
+		/*
+		 * CacheEntry previous = wrapped.remove(redisIndexCmds, entry, false); if
+		 * (previous != null) { removeFromIndex(entry); wrapped.exec();
+		 * wrapped.notifyRemoved(previous); return true; } return false;
+		 */
 		return false;
 	}
 
 	@Override
 	public CacheEntry replace(CacheEntry entry) {
-		CacheEntry previous = wrapped.replace(redisIndexCmds, entry, false);
-		if (previous != null) {
-			removeFromIndex(previous);
-			addToIndex(entry);
-			wrapped.exec();
-			wrapped.notifyUpdated(previous, entry);
-		}
-		return previous;
+		/*
+		 * CacheEntry previous = wrapped.replace(redisIndexCmds, entry, false); if
+		 * (previous != null) { removeFromIndex(previous); addToIndex(entry);
+		 * wrapped.exec(); wrapped.notifyUpdated(previous, entry); } return previous;
+		 */
+		return null;
 	}
 
 	@Override
 	public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-		boolean previous = wrapped.replace(redisIndexCmds, oldEntry, newEntry, false);
-		if (previous) {
-			removeFromIndex(oldEntry);
-			addToIndex(newEntry);
-			wrapped.exec();
-			wrapped.notifyUpdated(oldEntry, newEntry);
-		}
-		return previous;
+		/*
+		 * boolean previous = wrapped.replace(redisIndexCmds, oldEntry, newEntry,
+		 * false); if (previous) { removeFromIndex(oldEntry); addToIndex(newEntry);
+		 * wrapped.exec(); wrapped.notifyUpdated(oldEntry, newEntry); } return previous;
+		 */
+		return false;
 	}
 
 	@Override
@@ -185,12 +151,12 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public List<Object> keySet() {
-		List<String> keys = redisIndexCmds.keys("*");
+		List<String> keys = commands.keys("*");
 		if (keys != null && !keys.isEmpty()) {
 			List<Object> keyList = new ArrayList<Object>();
 			keys.forEach(key -> {
 				Object keyObj = decodeBase64(key);
-				if (!(keyObj instanceof IndexKey)) {	// IndexのKeyは除く
+				if (!(keyObj instanceof IndexKey)) { // IndexのKeyは除く
 					keyList.add(keyObj);
 				}
 			});
@@ -201,10 +167,10 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry getByIndex(int indexKey, Object indexValue) {
-		List<Object> keyList = redisIndexCmds.lrange(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, -1L);
+		List<Object> keyList = commands.lrange(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, -1L);
 		for (Object key : keyList) {
 			if (!isExpired(key)) {
-				return wrapped.get(key);
+				return get(key);
 			}
 			removeFromIndex(indexKey, indexValue, key);
 		}
@@ -213,12 +179,12 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public List<CacheEntry> getListByIndex(int indexKey, Object indexValue) {
-		List<Object> keyList = redisIndexCmds.lrange(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, -1L);
+		List<Object> keyList = commands.lrange(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, -1L);
 		if (keyList != null && !keyList.isEmpty()) {
 			List<CacheEntry> entryList = new ArrayList<CacheEntry>();
 			keyList.forEach(key -> {
 				if (!isExpired(key)) {
-					entryList.add(wrapped.get(key));
+					entryList.add(get(key));
 				} else {
 					removeFromIndex(indexKey, indexValue, key);
 				}
@@ -235,47 +201,8 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 		return entryList;
 	}
 
-	@Override
-	public void addCacheEventListenner(CacheEventListener listener) {
-		wrapped.addCacheEventListenner(listener);
-	}
-
-	@Override
-	public void removeCacheEventListenner(CacheEventListener listener) {
-		wrapped.removeCacheEventListenner(listener);
-	}
-
-	@Override
-	public List<CacheEventListener> getListeners() {
-		return wrapped.getListeners();
-	}
-	
-	@Override
-	public int getSize() {
-		return wrapped.getSize();
-	}
-
-	@Override
-	public String trace() {
-		return wrapped.trace();
-	}
-
-	@Override
-	public void destroy() {
-		wrapped.destroy();
-
-		if (redisIndexCmds != null && redisIndexCmds.isOpen()) {
-			redisIndexCmds.shutdown(isSave());
-			redisIndexCmds = null;
-		}
-		if (redisIndexConn != null && redisIndexConn.isOpen()) {
-			redisIndexConn.close();
-			redisIndexConn = null;
-		}
-	}
-
 	private void pushToIndex(int index, Object indexValue, Object key) {
-		wrapped.rpush(encodeBase64(new IndexKey(index, indexValue)),  key);
+		commands.rpush(encodeBase64(new IndexKey(index, indexValue)), key);
 	}
 
 	private void addToIndex(CacheEntry entry) {
@@ -297,7 +224,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	}
 
 	private void removeFromIndex(int indexKey, Object indexValue, Object key) {
-		wrapped.lrem(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, key);
+		commands.lrem(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, key);
 	}
 
 	private void removeFromIndex(CacheEntry entry) {
@@ -319,14 +246,14 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	}
 
 	private void removeAllFromIndex(Object key) {
-		List<String> iKeyList = redisIndexCmds.keys("*");
-		redisIndexCmds.multi();
-		iKeyList.forEach(iKey -> redisIndexCmds.lrem(iKey, 0, key));
-		redisIndexCmds.exec();
+		List<String> iKeyList = commands.keys("*");
+		commands.multi();
+		iKeyList.forEach(iKey -> commands.lrem(iKey, 0, key));
+		commands.exec();
 	}
 
 	private boolean isExpired(Object key) {
-		return redisIndexCmds.ttl(encodeBase64(key)).longValue() == -2L;
+		return commands.ttl(encodeBase64(key)).longValue() == -2L;
 	}
 
 	private static final class IndexKey implements Serializable {
@@ -373,5 +300,5 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 			return "IndexKey [index=" + index + ", value=" + value + "]";
 		}
 	}
-	
+
 }

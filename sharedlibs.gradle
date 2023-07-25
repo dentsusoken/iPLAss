@@ -82,7 +82,7 @@ ext {
 		'org.infinispan:infinispan-core': '9.1.6.Final',
 		'org.jboss.marshalling:jboss-marshalling-osgi': '2.0.6.Final',
 		
-		'io.lettuce:lettuce-core': '5.3.3.RELEASE',
+		'io.lettuce:lettuce-core': '6.2.5.RELEASE',
 		
 		'net.sf.jasperreports:jasperreports': '6.17.0',
 		'commons-fileupload:commons-fileupload': '1.5',

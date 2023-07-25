@@ -43,11 +43,12 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 	private RedisClient client;
 
 	private String serverName;
-	private long timeToLive = 0L;		// Seconds(0以下無期限)
+	private long timeToLive = 0L; // Seconds(0以下無期限)
 
 	@Override
 	public CacheStore createCacheStore(String namespace) {
-		return createCacheStoreInternal(namespace);
+		return getIndexCount() > 0 ? new RedisIndexedCacheStore(this, namespace, timeToLive, getIndexCount(), false)
+				: new RedisCacheStore(this, namespace, timeToLive, false);
 	}
 
 	@Override
@@ -79,9 +80,7 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 		}
 
 		ClientResources resouces = DefaultClientResources.builder().build();
-		RedisURI.Builder uriBuilder = RedisURI.builder()
-				.withHost(server.getHost())
-				.withPort(server.getPort());
+		RedisURI.Builder uriBuilder = RedisURI.builder().withHost(server.getHost()).withPort(server.getPort());
 		if (server.getTimeout() > 0) {
 			uriBuilder.withTimeout(Duration.ofSeconds(server.getTimeout()));
 		}
@@ -106,11 +105,6 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 
 	public void setTimeToLive(long timeToLive) {
 		this.timeToLive = timeToLive;
-	}
-
-	private CacheStore createCacheStoreInternal(String namespace) {
-		RedisCacheStore store = new RedisCacheStore(this, namespace, timeToLive, false);
-		return getIndexCount() > 0 ? new RedisIndexedCacheStore(this, namespace, getIndexCount(), false, store) : store;
 	}
 
 }
