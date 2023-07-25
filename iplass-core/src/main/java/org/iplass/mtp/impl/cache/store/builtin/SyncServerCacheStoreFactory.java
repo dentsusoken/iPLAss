@@ -152,12 +152,10 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 						if (msg.getEventName().startsWith(CLUSTER_EVENT_NAME_MARK_DIRTY)) {
 							Object key = cacheKeyResolver.toCacheKey(msg.getParameter(CLUSTER_MESSAGE_CACHE_KEY));
 							Object[] index = null;
-							String[] indexValueList = new String[getIndexCount()];
 							if (getIndexCount() > 0) {
 								index = new Object[getIndexCount()];
 								for (int i = 0; i < index.length; i++) {
 									String iVal = msg.getParameter(CLUSTER_MESSAGE_INDEX_PREFIX + i);
-									indexValueList[i] = iVal;
 									if (iVal != null) {
 										index[i] = cacheIndexResolver.get(i).toCacheKey(iVal);
 									}
@@ -175,19 +173,21 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 							}
 
 							// ネガティブキャッシュ削除
-							for (int i = 0; i < indexValueList.length; i++) {
-								String indexValue = indexValueList[i];
-								if (null != indexValue) {
-									// インデックス検索を実施する。複数キャッシュを許容している可能性があるので、List 検索する
-									List<CacheEntry> cacheEntryList = wrapped.getListByIndex(i, indexValue);
-									if (null != cacheEntryList) {
-										for (CacheEntry cacheEntry : cacheEntryList) {
-											if (null != cacheEntry && cacheEntry.getKey() instanceof NullKey) {
-												// 対象キャッシュがネガティブキャッシュの場合は削除
-												wrapped.remove(cacheEntry);
-												notifyRemoveCache(cacheEntry, cacheEventListenerList, listener);
-												logger.debug("remove negative cache entry by cluster message.namespace={}, key={}, indexKey={}, indexValue={}, negativeCacheKey={}",
-														namespace, key, i, indexValue, cacheEntry.getKey());
+							if (null != index) {
+								for (int i = 0; i < index.length; i++) {
+									Object indexValue = index[i];
+									if (null != indexValue) {
+										// インデックス検索を実施する。複数キャッシュを許容している可能性があるので、List 検索する
+										List<CacheEntry> cacheEntryList = wrapped.getListByIndex(i, indexValue);
+										if (null != cacheEntryList) {
+											for (CacheEntry cacheEntry : cacheEntryList) {
+												if (null != cacheEntry && cacheEntry.getKey() instanceof NullKey) {
+													// 対象キャッシュがネガティブキャッシュの場合は削除
+													wrapped.remove(cacheEntry);
+													notifyRemoveCache(cacheEntry, cacheEventListenerList, listener);
+													logger.debug("remove negative cache entry by cluster message.namespace={}, key={}, indexKey={}, indexValue={}, negativeCacheKey={}",
+															namespace, key, i, indexValue, cacheEntry.getKey());
+												}
 											}
 										}
 									}
