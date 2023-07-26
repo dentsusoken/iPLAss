@@ -153,18 +153,27 @@ public class CsvUploadService implements Service {
 	 * Uploadファイルを検証します。
 	 */
 	public void validate(InputStream is, String defName, final boolean withReferenceVersion) {
-		validate(is, defName, withReferenceVersion, showErrorLimitCount);
+		validate(is, defName, withReferenceVersion, null);
 	}
 
 	/**
 	 * Uploadファイルを検証します。
 	 */
-	public void validate(InputStream is, String defName, final boolean withReferenceVersion, final int errorLimit) {
+	public void validate(InputStream is, String defName, final boolean withReferenceVersion, final String interrupterClassName) {
+		validate(is, defName, withReferenceVersion, interrupterClassName, showErrorLimitCount);
+	}
+
+	/**
+	 * Uploadファイルを検証します。
+	 */
+	public void validate(InputStream is, String defName, final boolean withReferenceVersion, final String interrupterClassName, final int errorLimit) {
 
 		EntityDefinition ed  = edm.get(defName);
+		final CsvUploadInterrupter interrupter = createInterrupter(interrupterClassName);
 
 		try (EntityCsvReaderForCheck reader = new EntityCsvReaderForCheck(ed, is, ENCODE, errorLimit)){
 			reader.withReferenceVersion(withReferenceVersion);
+			reader.setCustomColumnNameMap(getCustomColumnNameMap(ed, interrupter));
 			reader.check();
 		} catch (UnsupportedEncodingException e) {
 			throw new EntityCsvException("CE0001", resourceString("impl.csv.CsvUploadService.invalidFileMsg"));
@@ -223,8 +232,11 @@ public class CsvUploadService implements Service {
 		final CsvUploadStatus result = new CsvUploadStatus();
 		final EntityDefinition ed  = edm.get(defName);
 
+		final CsvUploadInterrupter interrupter = createInterrupter(interrupterClassName);
+
 		try (EntityCsvReader reader = new EntityCsvReader(ed, is, ENCODE)){
 			reader.withReferenceVersion(withReferenceVersion);
+			reader.setCustomColumnNameMap(getCustomColumnNameMap(ed, interrupter));
 
 			Transaction.with(Propagation.SUPPORTS, t -> {
 
@@ -235,12 +247,10 @@ public class CsvUploadService implements Service {
 
 				List<String> properties = reader.properties();
 				boolean useCtrl = reader.isUseCtrl();
-				Set<String> updatablePropperties = null;
+				Set<String> updatableProperties = null;
 				Map<Object, String> keyValueMap = new HashMap<>();
 
 				Iterator<Entity> iterator = reader.iterator();
-
-				CsvUploadInterrupter interrupter = createInterrupter(interrupterClassName);
 
 				while(iterator.hasNext()) {
 
@@ -257,7 +267,7 @@ public class CsvUploadService implements Service {
 							.useCtrl(useCtrl)
 							.uniqueKey(uniqueKey)
 							.properties(properties)
-							.updatablePropperties(updatablePropperties)
+							.updatableProperties(updatableProperties)
 							.keyValueMap(keyValueMap)
 							.deleteSpecificVersion(deleteSpecificVersion)
 							.interrupter(interrupter);
@@ -268,7 +278,7 @@ public class CsvUploadService implements Service {
 						Transaction.requiresNew(func);
 
 						//更新対象Propertyを保持
-						updatablePropperties = func.updatablePropperties();
+						updatableProperties = func.updatableProperties();
 
 					} catch (EntityDuplicateValueException e) {
 						ex = new ApplicationException(resourceString("impl.csv.CsvUploadService.rowMsg", readCount + func.readCount())
@@ -324,6 +334,12 @@ public class CsvUploadService implements Service {
 		}
 	}
 
+	/**
+	 * CsvUploadInterrupterを生成します。
+	 *
+	 * @param className クラス名
+	 * @return CsvUploadInterrupter
+	 */
 	private CsvUploadInterrupter createInterrupter(String className) {
 		CsvUploadInterrupter interrupter = null;
 		if (StringUtil.isNotEmpty(className)) {
@@ -344,6 +360,30 @@ public class CsvUploadService implements Service {
 		return interrupter;
 	}
 
+	/**
+	 * カラム名とプロパティ名のマッピング情報を生成します。
+	 *
+	 * @param ed Entity定義
+	 * @param interrupter CsvUploadInterrupter
+	 * @return カラム名とプロパティ名のマッピング情報
+	 */
+	private Map<String, String> getCustomColumnNameMap(EntityDefinition ed, CsvUploadInterrupter interrupter) {
+		if (interrupter.columnNameMap(ed) != null) {
+			//プロパティ名、カラム名をカラム名、プロパティ名に変換
+			return interrupter.columnNameMap(ed).entrySet().stream()
+					.collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+		}
+		return null;
+	}
+
+	/**
+	 * 出力失敗時の結果を生成します。
+	 *
+	 * @param result ステータス
+	 * @param code エラーコード
+	 * @param message メッセージ
+	 * @return 出力失敗時の結果
+	 */
 	private CsvUploadStatus asFailedResult(CsvUploadStatus result, String code, String message) {
 		result.setCode(code);
 		result.setMessage(message);
@@ -529,7 +569,7 @@ public class CsvUploadService implements Service {
 		private int commitLimit;
 		private String uniqueKey = Entity.OID;
 		private List<String> properties;
-		private Set<String> updatablePropperties;
+		private Set<String> updatableProperties;
 		private Map<Object, String> keyValueMap;
 		private boolean deleteSpecificVersion;
 
@@ -589,8 +629,8 @@ public class CsvUploadService implements Service {
 			this.properties = properties;
 			return this;
 		}
-		public ImportFunction updatablePropperties(Set<String> updatablePropperties) {
-			this.updatablePropperties = updatablePropperties;
+		public ImportFunction updatableProperties(Set<String> updatableProperties) {
+			this.updatableProperties = updatableProperties;
 			return this;
 		}
 		public ImportFunction keyValueMap(Map<Object, String> keyValueMap) {
@@ -622,8 +662,8 @@ public class CsvUploadService implements Service {
 		public int deleteCount() {
 			return deleteCount;
 		}
-		public Set<String> updatablePropperties() {
-			return updatablePropperties;
+		public Set<String> updatableProperties() {
+			return updatableProperties;
 		}
 
 		@Override
@@ -899,14 +939,14 @@ public class CsvUploadService implements Service {
 		private UpdateOption updateOption(ExecType execType) {
 
 			UpdateOption option = new UpdateOption(false);
-			if (updatablePropperties == null) {
+			if (updatableProperties == null) {
 				if(updateProperties != null) {
-					updatablePropperties = updateProperties;
+					updatableProperties = updateProperties;
 				} else {
-					updatablePropperties = filterPropperties();
+					updatableProperties = filterProperties();
 				}
 			}
-			option.setUpdateProperties(new ArrayList<>(updatablePropperties));
+			option.setUpdateProperties(new ArrayList<>(updatableProperties));
 
 			TargetVersion targetVersion = null;
 			if (execType == ExecType.UPDATE_SPECIFIC) {
@@ -921,7 +961,7 @@ public class CsvUploadService implements Service {
 			return option;
 		}
 
-		private Set<String> filterPropperties() {
+		private Set<String> filterProperties() {
 
 			//多重度複数の場合に重複するのでsetで返す
 			return properties.stream()

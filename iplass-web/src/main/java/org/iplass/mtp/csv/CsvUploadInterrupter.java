@@ -22,6 +22,7 @@ package org.iplass.mtp.csv;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
@@ -46,6 +47,18 @@ public interface CsvUploadInterrupter {
 		UPDATE,
 		/** 削除 */
 		DELETE
+	}
+
+	/**
+	 * プロパティ名に対する出力CSV列名のマッピング定義を返します。
+	 * keyをプロパティ名、valueを出力CSV列名として定義します。
+	 * nullを返す場合は、Entity定義から決定します。
+	 *
+	 * @param definition Entity定義
+	 * @return プロパティ名に対する出力CSV列名のマッピング定義
+	 */
+	default public Map<String, String> columnNameMap(EntityDefinition definition) {
+		return null;
 	}
 
 	/**

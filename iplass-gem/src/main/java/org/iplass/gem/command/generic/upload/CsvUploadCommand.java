@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.upload;
 
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Set;
 
 import org.iplass.gem.GemConfigService;
@@ -29,6 +30,7 @@ import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.detail.DetailCommandBase;
 import org.iplass.gem.command.generic.detail.DetailCommandContext;
 import org.iplass.mtp.ApplicationException;
+import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.async.TaskStatus;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.UploadFileHandle;
@@ -45,8 +47,10 @@ import org.iplass.mtp.impl.csv.TransactionType;
 import org.iplass.mtp.impl.entity.csv.EntityCsvException;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.SearchFormCsvUploadInterrupter;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvUploadTransactionType;
 import org.slf4j.Logger;
@@ -96,10 +100,10 @@ public final class CsvUploadCommand extends DetailCommandBase {
 
 		// viewNameから一括ロールバックか件数単位でコミットかを取得(csvUploadTransactionType)
 		String defName = ed.getName();
-		EntityView view = evm.get(ed.getName());
-		SearchFormView form = FormViewUtil.getSearchFormView(ed, view, viewName);
+		EntityView view = context.getEntityView();
+		SearchFormView searchFormView = FormViewUtil.getSearchFormView(ed, view, viewName);
 
-		if (form == null) {
+		if (searchFormView == null) {
 			request.setAttribute(Constants.MESSAGE, GemResourceBundleUtil.resourceString("command.generic.upload.CSVUploadCommand.viewErr"));
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
@@ -108,15 +112,16 @@ public final class CsvUploadCommand extends DetailCommandBase {
 		request.setAttribute("detailFormView", context.getView());
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
 		request.setAttribute("requiredProperties", CsvUploadUtil.getRequiredProperties(ed));
+		request.setAttribute("customColumnNameMap", getCustomColumnNameMap(ed, searchFormView));
 
 		GemConfigService gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 		int commitLimit = gcs.getCsvUploadCommitCount();
-		boolean isDenyInsert = form.getCondSection().isCsvUploadDenyInsert();
-		boolean isDenyUpdate = form.getCondSection().isCsvUploadDenyUpdate();
-		boolean isDenyDelete = form.getCondSection().isCsvUploadDenyDelete();
-		Set<String> insertProperties = form.getCondSection().getCsvUploadInsertPropertiesSet();
-		Set<String> updateProperties = form.getCondSection().getCsvUploadUpdatePropertiesSet();
-		CsvUploadTransactionType csvUploadTransactionType = form.getCondSection().getCsvUploadTransactionType();
+		boolean isDenyInsert = searchFormView.getCondSection().isCsvUploadDenyInsert();
+		boolean isDenyUpdate = searchFormView.getCondSection().isCsvUploadDenyUpdate();
+		boolean isDenyDelete = searchFormView.getCondSection().isCsvUploadDenyDelete();
+		Set<String> insertProperties = searchFormView.getCondSection().getCsvUploadInsertPropertiesSet();
+		Set<String> updateProperties = searchFormView.getCondSection().getCsvUploadUpdatePropertiesSet();
+		CsvUploadTransactionType csvUploadTransactionType = searchFormView.getCondSection().getCsvUploadTransactionType();
 
 		CsvUploadService service = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
 
@@ -130,8 +135,8 @@ public final class CsvUploadCommand extends DetailCommandBase {
 
 			try (InputStream is = file.getInputStream()){
 				service.asyncUpload(is, file.getFileName(), defName, viewName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
-						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), form.isDeleteSpecificVersion(),
-						form.getCondSection().getCsvUploadInterrupterName());
+						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), searchFormView.isDeleteSpecificVersion(),
+						searchFormView.getCondSection().getCsvUploadInterrupterName());
 
 				return Constants.CMD_EXEC_SUCCESS_ASYNC;
 
@@ -153,7 +158,7 @@ public final class CsvUploadCommand extends DetailCommandBase {
 			// 同期アップロード
 
 			try (InputStream is = file.getInputStream()){
-				service.validate(is, defName, gcs.isCsvDownloadReferenceVersion());
+				service.validate(is, defName, gcs.isCsvDownloadReferenceVersion(), searchFormView.getCondSection().getCsvUploadInterrupterName());
 			} catch (EntityCsvException e) {
 				if (logger.isDebugEnabled()) {
 					logger.debug(e.getMessage(), e);
@@ -176,8 +181,8 @@ public final class CsvUploadCommand extends DetailCommandBase {
 
 			try (InputStream is = file.getInputStream()){
 				CsvUploadStatus result = service.upload(is, defName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
-						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), form.isDeleteSpecificVersion(),
-						form.getCondSection().getCsvUploadInterrupterName());
+						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), searchFormView.isDeleteSpecificVersion(),
+						searchFormView.getCondSection().getCsvUploadInterrupterName());
 
 				request.setAttribute(Constants.MESSAGE, result.getMessage() != null ? StringUtil.escapeHtml(result.getMessage()).replace("\n", "<br/>") : null);
 				request.setAttribute("insertCount", result.getInsertCount());
@@ -221,4 +226,23 @@ public final class CsvUploadCommand extends DetailCommandBase {
 		}
 	}
 
+	private Map<String, String> getCustomColumnNameMap(EntityDefinition ed, SearchFormView searchFormView) {
+
+		if (searchFormView != null) {
+			if (StringUtil.isNotEmpty(searchFormView.getCondSection().getCsvUploadInterrupterName())) {
+				UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+				SearchFormCsvUploadInterrupter interrupter = null;
+				try {
+					interrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class, searchFormView.getCondSection().getCsvUploadInterrupterName());
+					return interrupter.columnNameMap(ed);
+				} catch (ClassNotFoundException e) {
+					logger.error(searchFormView.getCondSection().getCsvUploadInterrupterName() + " can not instantiate.", e);
+					throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.upload.CSVUploadCommand.internalErr"));
+				}
+
+			}
+		}
+
+		return null;
+	}
 }

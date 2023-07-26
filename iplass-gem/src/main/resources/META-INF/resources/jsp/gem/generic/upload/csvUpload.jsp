@@ -24,6 +24,7 @@
 
 <%@ page import="org.iplass.mtp.async.TaskStatus"%>
 <%@ page import="org.iplass.mtp.auth.AuthContext" %>
+<%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.IndexType" %>
@@ -42,13 +43,52 @@
 
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Map"%>
 
+<%!
+	/**
+	 * プロパティに対する表示名を返します。
+	 *
+	 * @param propertyName プロパティ名
+	 * @param customColumnNameMap プロパティ名に対する出力CSV列名のマッピング定義
+	 */
+	String getDispPropertyName(String propertyName, Map<String, String> customColumnNameMap) {
+		if (customColumnNameMap != null) {
+			String displayPropertyName = customColumnNameMap.get(propertyName);
+			if (StringUtil.isNotEmpty(displayPropertyName)) {
+				return displayPropertyName;
+			}
+		}
+		
+		return propertyName;
+	}
+
+	/**
+	 * 必須プロパティに対する表示名を返します。
+	 *
+	 * @param requiredProperties 必須プロパティ名
+	 * @param customColumnNameMap プロパティ名に対する出力CSV列名のマッピング定義
+	 */
+	String getRequiredPropertyNames(List<String> requiredProperties, Map<String, String> customColumnNameMap) {
+		StringBuilder requiredPropertyNames = new StringBuilder();
+		if (requiredProperties != null) {
+			requiredProperties.forEach(propertyName -> {
+				if (requiredPropertyNames.length() > 0) {
+					requiredPropertyNames.append(", ");
+				}
+				requiredPropertyNames.append(getDispPropertyName(propertyName, customColumnNameMap));
+			});
+		}
+		return requiredPropertyNames.toString();
+	}
+%>
 <%
 	// データ取得
 	String contextPath = TemplateUtil.getTenantContextPath();
 
 	String message = (String) request.getAttribute(Constants.MESSAGE);
-	String requiredProperties = (String) request.getAttribute("requiredProperties");
+	List<String> requiredProperties = (List<String>) request.getAttribute("requiredProperties");
+	Map<String, String> customColumnNameMap = (Map<String, String>) request.getAttribute("customColumnNameMap");
 
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
 	DetailFormView form = (DetailFormView) request.getAttribute("detailFormView");
@@ -218,9 +258,9 @@ $(function(){
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.selectUniqueKey")}</h3>
 
 <ul class="csvupload_uniquekey clear">
-<li><label><input name="uniqueKey" type="radio" value="oid" checked />oid</label></li>
+<li><label><input name="uniqueKey" type="radio" value="<%=Entity.OID%>" checked /><c:out value="<%=getDispPropertyName(Entity.OID, customColumnNameMap) %>"/></label></li>
 <%	for (String propName : uniquePropList) { %>
-<li><label><input name="uniqueKey" type="radio" value="<%=propName%>" /><%=propName%></label></li>
+<li><label><input name="uniqueKey" type="radio" value="<%=propName%>" /><c:out value="<%=getDispPropertyName(propName, customColumnNameMap) %>"/></label></li>
 <%	} %>
 </ul>
 
@@ -240,15 +280,15 @@ ${m:outputToken('FORM_XHTML', true)}
 
 <div class="csvupload_description flat-block-top">
 <ul>
-<li>${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription1")}</li>
-<li>${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription2")}</li>
-<li>${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription3")}</li>
-<li>${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription4")}</li>
-<li>${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription5")}</li>
-<li>${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription6")}</li>
-<li>${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription7")}</li>
-<li><%= GemResourceBundleUtil.resourceString("generic.csvUpload.uploadDescription8", requiredProperties) %></li>
-<li>${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription9")}</li>
+<li class="desc1">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription1")}</li>
+<li class="desc2">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription2")}</li>
+<li class="desc3">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription3")}</li>
+<li class="desc4">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription4")}</li>
+<li class="desc5">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription5")}</li>
+<li class="desc6">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription6")}</li>
+<li class="desc7">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription7")}</li>
+<li class="desc8"><%= GemResourceBundleUtil.resourceString("generic.csvUpload.uploadDescription8", getRequiredPropertyNames(requiredProperties, customColumnNameMap)) %></li>
+<li class="desc9">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription9")}</li>
 </ul>
 </div>
 

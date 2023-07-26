@@ -89,7 +89,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 		final Map<SelectProperty, Boolean> sortMap = new HashMap<>();
 
 		//Interrupter
-		final SearchQueryInterrupterHandler handler = context.getSearchQueryInterrupterHandler();
+		final SearchQueryInterrupterHandler queryInterrupter = context.getSearchQueryInterrupterHandler();
 
 		//Writer生成
 		EntityWriteOption option = new EntityWriteOption()
@@ -103,13 +103,8 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 				.loadSizeOfHasMultipleReferenceEntity(loadSizeOfHasMultipleReferenceEntity)
 				.versioned(context.isVersioned())
 				.mustOrderByWithLimit(cus.isMustOrderByWithLimit())
-				.columnDisplayName(property -> {
-					if (context.isNoDispName()) {
-						return "";
-					} else {
-						return "(" + context.getColumnLabel(property.getName()) + ")";
-					}
-				})
+				.columnName(property -> context.getColumnName(property))
+				.multipleColumnName((property, index) -> context.getMultipleColumnName(property, index))
 				.sortSelectValue(property -> {
 					//Selectプロパティをソートするか
 					return sortMap.computeIfAbsent(property, select -> {
@@ -125,14 +120,14 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 					});
 				})
 				.beforeSearch(query -> {
-					SearchQueryContext sqc = handler.beforeSearch(query, SearchQueryType.CSV);
+					SearchQueryContext sqc = queryInterrupter.beforeSearch(query, SearchQueryType.CSV);
 					SearchQueryCsvContext sqcc = new SearchQueryCsvContext(sqc.getQuery());
 					sqcc.setDoPrivileged(sqc.isDoPrivileged());
 					sqcc.setWithoutConditionReferenceName(sqc.getWithoutConditionReferenceName());
 					return sqcc;
 				})
 				.afterSearch((query, entity) -> {
-					handler.afterSearch(query, entity, SearchQueryType.CSV);
+					queryInterrupter.afterSearch(query, entity, SearchQueryType.CSV);
 				});
 
 		try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, ed.getName(), option)) {
