@@ -197,7 +197,8 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 	}
 
 	public boolean isNoDispName() {
-		return Boolean.valueOf(getRequest().getParam("isNoDispName"));
+		return getConditionSection().isNonOutputDisplayName() 
+				|| Boolean.valueOf(getRequest().getParam("isNoDispName"));
 	}
 
 	public boolean isOutputResult() {

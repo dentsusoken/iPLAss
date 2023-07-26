@@ -185,6 +185,17 @@ public class SearchConditionSection extends Section {
 	)
 	private boolean nonOutputReference;
 
+	/** CSVダウンロード時表示名非出力設定 */
+	@MetaFieldInfo(
+			displayName="CSVダウンロード時表示名非出力設定 ",
+			displayNameKey="generic_element_section_SearchConditionSection_nonOutputDisplayNameDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1045,
+			description="Upload形式のCSVダウンロード時表示名を出力しないかを設定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_nonOutputDisplayNameDescriptionKey"
+	)
+	private boolean nonOutputDisplayName;
+
 	/** 多重度プロパティのCSV出力フォーマット */
 	@MetaFieldInfo(
 			displayName="多重度プロパティのCSV出力フォーマット",
@@ -504,6 +515,14 @@ public class SearchConditionSection extends Section {
 
 	public void setNonOutputReference(boolean nonOutputReference) {
 		this.nonOutputReference = nonOutputReference;
+	}
+
+	public boolean isNonOutputDisplayName() {
+		return nonOutputDisplayName;
+	}
+
+	public void setNonOutputDisplayName(boolean nonOutputDisplayName) {
+		this.nonOutputDisplayName = nonOutputDisplayName;
 	}
 
 	public boolean isHideCsvUpload() {

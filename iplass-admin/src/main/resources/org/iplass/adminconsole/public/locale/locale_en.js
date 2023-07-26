@@ -2414,6 +2414,8 @@ LocaleInfo.generic_element_section_SearchConditionSection_nonOutputBinaryRefDisp
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputBinaryRefDescriptionKey = "Do not output the name of BinaryReference when downloading CSV.";
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputReferenceDisplaNameKey = "Do not output reference when downloading CSV";
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputReferenceDescriptionKey = "Do not output reference when downloading CSV.";
+LocaleInfo.generic_element_section_SearchConditionSection_nonOutputDisplayNameDisplaNameKey = "Do not output display name when downloading CSV";
+LocaleInfo.generic_element_section_SearchConditionSection_nonOutputDisplayNameDescriptionKey = "Do not output display name when downloading CSV in Upload format. Do not show selection options in the download dialog.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatNameKey = "CSV download multiple format";
 LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatDescriptionKey = "Specify the output format of multiplicity property when downloading CSV.<br/>References are not applicable.";
 LocaleInfo.generic_element_section_SearchConditionSection_hideCsvUploadDisplaNameKey = "Hide CSV upload button";
