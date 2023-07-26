@@ -57,8 +57,11 @@ public class GemConfigService implements Service {
 	/** CSVダウンロード常時ダブルクォート出力 */
 	private boolean csvDownloadQuoteAll;
 
-	/** CSVダウンロード参照項目バージョン出力 */
+	/** Upload形式のCSVダウンロード参照項目バージョン出力 */
 	private boolean csvDownloadReferenceVersion;
+
+	/** Upload形式のCSVダウンロード時に被参照プロパティも出力する */
+	private boolean uploadableCsvDownloadWithMappedByReference;
 
 	/** CSVアップロードコミット単位 */
 	private int csvUploadCommitCount;
@@ -156,41 +159,19 @@ public class GemConfigService implements Service {
 			csvDownloadCharacterCode.add("UTF-8");
 		}
 
-		if (config.getValue("csvDownloadQuoteAll") != null) {
-			csvDownloadQuoteAll = Boolean.valueOf(config.getValue("csvDownloadQuoteAll"));
-		} else {
-			csvDownloadQuoteAll = true;
-		}
+		csvDownloadQuoteAll = config.getValue("csvDownloadQuoteAll", Boolean.class, true);
 
-		String csvdownloadReferenceVersion = config.getValue("csvDownloadReferenceVersion");
-		if (csvdownloadReferenceVersion != null) {
-			csvDownloadReferenceVersion = Boolean.valueOf(csvdownloadReferenceVersion);
-		} else {
-			csvDownloadReferenceVersion = true;
-		}
+		csvDownloadReferenceVersion = config.getValue("csvDownloadReferenceVersion", Boolean.class, true);
 
-		String csvUploadCommitCount = config.getValue("csvUploadCommitCount");
-		if (csvUploadCommitCount != null) {
-			this.csvUploadCommitCount = Integer.parseInt(csvUploadCommitCount);
-		} else {
-			this.csvUploadCommitCount = 1000;
-		}
+		uploadableCsvDownloadWithMappedByReference = config.getValue("uploadableCsvDownloadWithMappedByReference", Boolean.class, false);
+
+		csvUploadCommitCount = config.getValue("csvUploadCommitCount", Integer.class, 1000);
 
 		csvUploadAsync = Boolean.valueOf(config.getValue("csvUploadAsync"));
 
-		String csvUploadStatusPollingInterval = config.getValue("csvUploadStatusPollingInterval");
-		if (csvUploadStatusPollingInterval != null) {
-			this.csvUploadStatusPollingInterval = Integer.parseInt(csvUploadStatusPollingInterval);
-		} else {
-			this.csvUploadStatusPollingInterval = 10000;
-		}
+		csvUploadStatusPollingInterval = config.getValue("csvUploadStatusPollingInterval", Integer.class, 10000);
 
-		String searchResultCacheLimit = config.getValue("searchResultCacheLimit");
-		if (searchResultCacheLimit != null) {
-			this.searchResultCacheLimit = Integer.parseInt(searchResultCacheLimit);
-		} else {
-			this.searchResultCacheLimit = 300;
-		}
+		searchResultCacheLimit = config.getValue("searchResultCacheLimit", Integer.class, 300);
 
 		confirmEditSave = Boolean.valueOf(config.getValue("confirmEditSave"));
 
@@ -200,70 +181,29 @@ public class GemConfigService implements Service {
 
 		showSeachCondResetButton = Boolean.valueOf(config.getValue("showSeachCondResetButton"));
 
-		String searchResultDispRowCount = config.getValue("searchResultDispRowCount");
-		if (searchResultDispRowCount != null) {
-			this.searchResultDispRowCount = Integer.parseInt(searchResultDispRowCount);
-		} else {
-			this.searchResultDispRowCount = 10;
-		}
+		searchResultDispRowCount = config.getValue("searchResultDispRowCount", Integer.class, 10);
 
-		String searchInterval = config.getValue("searchInterval");
-		if (searchInterval != null) {
-			this.searchInterval = Integer.parseInt(searchInterval);
-		} else {
-			this.searchInterval = 1000;
-		}
+		searchInterval = config.getValue("searchInterval", Integer.class, 1000);
 
-		String csvDownloadInterval = config.getValue("csvDownloadInterval");
-		if (csvDownloadInterval != null) {
-			this.csvDownloadInterval = Integer.parseInt(csvDownloadInterval);
-		} else {
-			this.csvDownloadInterval = 1000;
-		}
+		csvDownloadInterval = config.getValue("csvDownloadInterval", Integer.class, 1000);
 
-		if (config.getValue("csvDownloadWithFooter") != null) {
-			csvDownloadWithFooter = Boolean.valueOf(config.getValue("csvDownloadWithFooter"));
-		} else {
-			csvDownloadWithFooter = false;
-		}
+		csvDownloadWithFooter = config.getValue("csvDownloadWithFooter", Boolean.class, false);
 		csvDownloadFooter = config.getValue("csvDownloadFooter");
 		if (csvDownloadFooter == null) {
 			csvDownloadFooter = "";
 		}
 
-		if (config.getValue("showPulldownPleaseSelectLabel") != null) {
-			showPulldownPleaseSelectLabel = Boolean.valueOf(config.getValue("showPulldownPleaseSelectLabel"));
-		} else {
-			showPulldownPleaseSelectLabel = true;
-		}
+		showPulldownPleaseSelectLabel = config.getValue("showPulldownPleaseSelectLabel", Boolean.class, true);
 
 		datePickerDefaultOption = config.getValue("datePickerDefaultOption", String.class, null);
 
-		if (config.getValue("recycleBinMaxCount") != null) {
-			recycleBinMaxCount = Integer.valueOf(config.getValue("recycleBinMaxCount"));
-		} else {
-			this.recycleBinMaxCount = 100;
-		}
+		recycleBinMaxCount = config.getValue("recycleBinMaxCount", Integer.class, 100);
 
-		String deleteAllCommandBatchSize = config.getValue("deleteAllCommandBatchSize");
-		if (deleteAllCommandBatchSize != null){
-			this.deleteAllCommandBatchSize = Integer.parseInt(deleteAllCommandBatchSize);
-		} else {
-			this.deleteAllCommandBatchSize = 100;
-		}
+		deleteAllCommandBatchSize = config.getValue("deleteAllCommandBatchSize", Integer.class, 100);
 
-		String bulkUpdateAllCommandBatchSize = config.getValue("bulkUpdateAllCommandBatchSize");
-		if (bulkUpdateAllCommandBatchSize != null){
-			this.bulkUpdateAllCommandBatchSize = Integer.parseInt(bulkUpdateAllCommandBatchSize);
-		} else {
-			this.bulkUpdateAllCommandBatchSize = 100;
-		}
+		bulkUpdateAllCommandBatchSize = config.getValue("bulkUpdateAllCommandBatchSize", Integer.class, 100);
 
-		if (config.getValue("shallowCopyLobData") != null) {
-			this.shallowCopyLobData = Boolean.valueOf(config.getValue("shallowCopyLobData"));
-		} else {
-			this.shallowCopyLobData = false;
-		}
+		shallowCopyLobData = config.getValue("shallowCopyLobData", Boolean.class, false);
 
 		skins = config.getValues("skins", Skin.class);
 		themes = config.getValues("themes", Theme.class);
@@ -361,6 +301,14 @@ public class GemConfigService implements Service {
 	 */
 	public boolean isCsvDownloadReferenceVersion() {
 	    return csvDownloadReferenceVersion;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード時に被参照プロパティも出力を取得します。
+	 * @return Upload形式のCSVダウンロード時に被参照プロパティも出力
+	 */
+	public boolean isUploadableCsvDownloadWithMappedByReference() {
+		return uploadableCsvDownloadWithMappedByReference;
 	}
 
 	/**

@@ -253,12 +253,16 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 				)
 				.filter(property -> {
 					//被参照の除外チェック
-					return option.isWithMappedByReference() || (!(property instanceof ReferenceProperty) || ((ReferenceProperty)property).getMappedBy() == null);
+					return option.isWithMappedByReference()
+							|| CollectionUtil.isNotEmpty(option.getProperties())
+							|| (!(property instanceof ReferenceProperty) || ((ReferenceProperty)property).getMappedBy() == null);
 				})
-				.filter(property ->
+				.filter(property -> {
 					//BinaryPropertyの除外チェック
-					option.isWithBinary() || !(property instanceof BinaryProperty)
-				)
+					return option.isWithBinary()
+							|| CollectionUtil.isNotEmpty(option.getProperties())
+							|| !(property instanceof BinaryProperty);
+				})
 				.collect(Collectors.toList());
 
 		isInit = true;

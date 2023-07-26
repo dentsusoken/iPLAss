@@ -185,6 +185,7 @@ public final class CsvSampleDownloadCommand implements Command {
 					.charset(charset)
 					.quoteAll(gcs.isCsvDownloadQuoteAll())
 					.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+					.withMappedByReference(gcs.isUploadableCsvDownloadWithMappedByReference())
 					.properties(directProperties)
 					.columnName(property -> getColumnName(property))
 					.multipleColumnName((property, index) -> getMultipleColumnName(property, index));
