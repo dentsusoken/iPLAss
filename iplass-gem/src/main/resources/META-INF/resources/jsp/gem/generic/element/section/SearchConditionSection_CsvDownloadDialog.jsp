@@ -39,10 +39,17 @@
 		<input type="checkbox" name="forUpload" id="forUpload" value="1"  onchange="checkForUpload()"/>
 		<label for="forUpload">${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.forUpload")}</label>
 	</fieldset>
+<%
+	if (!section.isNonOutputDisplayName()) {
+		// 表示名を明示的に出力しないか
+%>
 	<fieldset class="fs-checkbox disabled" id="fsNoDispName">
 		<input type="checkbox" name="noDispName" id="noDispName" value="1" disabled="disabled" />
 		<label for="noDispName">${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.noDispName")}</label>
 	</fieldset>
+<%
+	}
+%>
 	<fieldset class="fs-checkbox" id="fsDownloadCodeValue">
 		<input type="checkbox" name="downloadCodeValue" id="downloadCodeValue" value="1" />
 		<label for="downloadCodeValue">${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.downloadCodeValue")}</label>
@@ -129,7 +136,10 @@ function showCsvDownloadDialog(searchType, buttonId, validate, callback) {
 				click: function() {
 						var execType = $("input[name=execType]", dialog).val();
 						var forUpload = $("#forUpload").is(':checked');
-						var noDispName = $("#noDispName").is(':checked');
+						var noDispName = null;
+						<%if (!section.isNonOutputDisplayName()) {%>
+						noDispName = $("#noDispName").is(':checked');
+						<%}%>
 						var downloadCodeValue = $("#downloadCodeValue").prop('checked');
 						var characterCode = $("#characterCode").val();
 						var outputResult = null;

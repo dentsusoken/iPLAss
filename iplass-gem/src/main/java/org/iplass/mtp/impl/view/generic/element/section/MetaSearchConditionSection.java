@@ -123,6 +123,9 @@ public class MetaSearchConditionSection extends MetaSection {
 	/** CSVダウンロード時BinaryReference出力設定 */
 	private boolean nonOutputBinaryRef;
 
+	/** CSVダウンロード時表示名非出力設定 */
+	private boolean nonOutputDisplayName;
+
 	/** CSVダウンロード件数の上限値 */
 	private Integer csvdownloadMaxCount;
 
@@ -297,6 +300,14 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	public void setNonOutputBinaryRef(boolean nonOutputBinaryRef) {
 		this.nonOutputBinaryRef = nonOutputBinaryRef;
+	}
+
+	public boolean isNonOutputDisplayName() {
+		return nonOutputDisplayName;
+	}
+
+	public void setNonOutputDisplayName(boolean nonOutputDisplayName) {
+		this.nonOutputDisplayName = nonOutputDisplayName;
 	}
 
 	/**
@@ -642,6 +653,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.nonOutputOid = section.isNonOutputOid();
 		this.nonOutputReference = section.isNonOutputReference();
 		this.nonOutputBinaryRef = section.isNonOutputBinaryRef();
+		this.nonOutputDisplayName = section.isNonOutputDisplayName();
 		this.hideCsvUpload = section.isHideCsvUpload();
 		this.csvUploadDenyInsert = section.isCsvUploadDenyInsert();
 		this.csvUploadDenyUpdate = section.isCsvUploadDenyUpdate();
@@ -710,6 +722,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setNonOutputOid(this.nonOutputOid);
 		section.setNonOutputReference(this.nonOutputReference);
 		section.setNonOutputBinaryRef(this.nonOutputBinaryRef);
+		section.setNonOutputDisplayName(this.nonOutputDisplayName);
 		section.setHideCsvUpload(this.hideCsvUpload);
 		section.setCsvUploadDenyInsert(this.csvUploadDenyInsert);
 		section.setCsvUploadDenyUpdate(this.csvUploadDenyUpdate);

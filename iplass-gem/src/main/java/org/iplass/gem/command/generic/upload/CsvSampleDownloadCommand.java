@@ -267,7 +267,11 @@ public final class CsvSampleDownloadCommand implements Command {
 				return columnName;
 			}
 
-			return property.getName() + "(" + getColumnLabel(property) + ")";
+			if (condition != null && condition.isNonOutputDisplayName()) {
+				return property.getName();
+			} else {
+				return property.getName() + "(" + getColumnLabel(property) + ")";
+			}
 		}
 
 		/**
@@ -285,7 +289,12 @@ public final class CsvSampleDownloadCommand implements Command {
 				return columnName + "[" + index + "]";
 			}
 
-			return property.getName() + "[" + index + "]" + "(" + getColumnLabel(property) + ")";
+			if (condition != null && condition.isNonOutputDisplayName()) {
+				return property.getName() + "[" + index + "]";
+			} else {
+				return property.getName() + "[" + index + "]" + "(" + getColumnLabel(property) + ")";
+			}
+
 		}
 
 		/**
