@@ -199,7 +199,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		CsvUploadService service = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
 
 		try (InputStream is = new FileInputStream(filePath)) {
-			service.validate(is, defName, withReferenceVersion);
+			service.validate(is, defName, withReferenceVersion, interrupterClassName);
 		} catch (FileNotFoundException e) {
 			throw new SystemException(e);
 		} catch (EntityCsvException e) {

@@ -105,17 +105,26 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 	/** Referenceプロパティの場合はバージョンも指定  */
 	private boolean withReferenceVersion;
+
 	/** OIDに付けるPrefix  */
 	private String prefixOid;
+
 	/** 存在しないプロパティは無視  */
 	private boolean ignoreNotExistsProperty;
+
 	/** InsertするEntityにcreateBy,createDate,updateBy,updateDateの値を指定 */
 	private boolean enableAuditPropertySpecification;
+
+	/**
+	 * プロパティ名とヘッダのカラム名のマッピング定義。
+	 * keyをカラム名、valueをプロパティ名とする。
+	 */
+	private Map<String, String> customColumnNameMap;
 
 	private Reader reader;
 	private CsvListReader csvListReader;
 
-	private List<String> header;
+	private List<String> headers;
 	private List<String> properties;
 	private List<Integer> arrayIndex;
 	private Map<String, ReferenceInfo> references;
@@ -259,6 +268,26 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 		return this;
 	}
 
+	/**
+	 * プロパティ名とヘッダのカラム名のマッピング定義を設定します。
+	 *
+	 * @param customColumnNameMap プロパティ名とヘッダのカラム名のマッピング定義
+	 */
+	public void setCustomColumnNameMap(Map<String, String> customColumnNameMap) {
+		this.customColumnNameMap = customColumnNameMap;
+	}
+
+	/**
+	 * プロパティ名とヘッダのカラム名のマッピング定義を設定します。
+	 *
+	 * @param customColumnNameMap プロパティ名とヘッダのカラム名のマッピング定義
+	 * @return インスタンス
+	 */
+	public EntityCsvReader customColumnNameMap(Map<String, String> customColumnNameMap) {
+		this.customColumnNameMap = customColumnNameMap;
+		return this;
+	}
+
 	public boolean isUseCtrl() {
 		init();
 		return useCtrl;
@@ -314,39 +343,39 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				entity.setDefinitionName(definition.getName());
 
 				Set<String> multiProp = new HashSet<>();
-				for (int i = 0; i < header.size(); i++) {
+				for (int i = 0; i < headers.size(); i++) {
 
-					String headerName = header.get(i);
+					String headerName = headers.get(i);
+					String propName = properties.get(i);
 
 					if (!enableAuditPropertySpecification &&
-							(headerName.equals(Entity.UPDATE_BY)
-							|| headerName.equals(Entity.UPDATE_DATE)
-//							|| headerName.equals(Entity.LOCKED_BY)
-							|| headerName.equals(Entity.CREATE_BY)
-							|| headerName.equals(Entity.CREATE_DATE))) {
+							(propName.equals(Entity.UPDATE_BY)
+							|| propName.equals(Entity.UPDATE_DATE)
+//							|| propName.equals(Entity.LOCKED_BY)
+							|| propName.equals(Entity.CREATE_BY)
+							|| propName.equals(Entity.CREATE_DATE))) {
 						continue;
 					}
 
 					String value = currentLine.get(i);
 
-					if (i == 0 && headerName.equals(CTRL_CODE_KEY)) {
+					if (i == 0 && propName.equals(CTRL_CODE_KEY)) {
 						entity.setValue(CTRL_CODE_KEY, value);
 						continue;
 					}
 
 					try {
-						String propName = headerName;
 						Object propValue = null;
 						if (headerName.contains(".")) {
 							//ReferenceのUniqueKey指定対応
-							if (references.get(headerName) != null) {
-								propName = references.get(headerName).propName;
-								propValue = references.get(headerName).convEntity(value);
+							if (references.get(propName) != null) {
+								propName = references.get(propName).propName;
+								propValue = references.get(propName).convEntity(value);
 							} else {
-								propValue = conv(value, headerName, null);
+								propValue = conv(value, propName, null);
 							}
 						} else {
-							propValue = conv(value, headerName, definition.getProperty(propName));
+							propValue = conv(value, propName, definition.getProperty(propName));
 						}
 						if (arrayIndex.get(i) == NVL) {
 							entity.setValue(propName, propValue);
@@ -404,7 +433,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 	protected List<String> header() {
 		init();
-		return header;
+		return headers;
 	}
 
 	protected List<String> readLine() throws IOException {
@@ -414,34 +443,34 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 	protected void validateLine(List<String> line) {
 		init();
-		if (line.size() != header.size()) {
+		if (line.size() != headers.size()) {
 			throw new EntityCsvException("CE2006",
-					rs("impl.csv.EntityCsvReader.mismatchHeadSize", header.size(), line.size()));
+					rs("impl.csv.EntityCsvReader.mismatchHeadSize", headers.size(), line.size()));
 		}
 	}
 
-	protected void validateValue(String headerName, String value) {
+	protected void validateValue(String headerName, String propName, String value) {
 		init();
 
 		try {
 			if (!enableAuditPropertySpecification &&
-					(headerName.equals(Entity.UPDATE_BY)
-					|| headerName.equals(Entity.UPDATE_DATE)
-//					|| headerName.equals(Entity.LOCKED_BY)
-					|| headerName.equals(Entity.CREATE_BY)
-					|| headerName.equals(Entity.CREATE_DATE))) {
+					(propName.equals(Entity.UPDATE_BY)
+					|| propName.equals(Entity.UPDATE_DATE)
+//					|| propName.equals(Entity.LOCKED_BY)
+					|| propName.equals(Entity.CREATE_BY)
+					|| propName.equals(Entity.CREATE_DATE))) {
 				return;
 			}
 
 			//ReferenceのUniqueKey指定対応
 			if (headerName.contains(".")) {
-				if (references.get(headerName) != null) {
-					conv(value, headerName, references.get(headerName).unique);
+				if (references.get(propName) != null) {
+					conv(value, propName, references.get(propName).unique);
 				} else {
-					conv(value, headerName, null);
+					conv(value, propName, null);
 				}
 			} else {
-				conv(value, headerName, definition.getProperty(headerName));
+				conv(value, propName, definition.getProperty(propName));
 			}
 
 		} catch (Exception e) {
@@ -452,7 +481,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 	private void readHeader(final List<String> headerLine) {
 
-		header = new ArrayList<>(headerLine.size());
+		headers = new ArrayList<>(headerLine.size());
 		arrayIndex = new ArrayList<>(headerLine.size());
 		properties = new ArrayList<>(headerLine.size());
 		for (int i = 0; i < headerLine.size(); i++) {
@@ -474,23 +503,31 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				}
 				headerName = headerName.substring(0, headerName.indexOf('['));
 			}
-			header.add(headerName);
+
+			//UTF-8 BOM対応
+			if (i == 0) {
+				headerName = excludeBOM(headerName);
+			}
+
+			headers.add(headerName);
 			arrayIndex.add(index);
 
-			//ReferenceのUniqueKey指定対応
 			String propName = headerName;
+
+			// カラム名のカスタマイズ対応
+			// カラム名をプロパティ名に変換する
+			if (customColumnNameMap != null) {
+				String customPropertyName = customColumnNameMap.get(headerName);
+				if (StringUtil.isNotEmpty(customPropertyName)) {
+					propName = customPropertyName;
+				}
+			}
+
+			//ReferenceのUniqueKey指定対応
 			if (headerName.contains(".")) {
 				propName = headerName.substring(0, headerName.indexOf("."));
 			}
 			properties.add(propName);
-		}
-
-		//UTF-8 BOM対応
-		if (header.size() > 0) {
-			header.set(0, excludeBOM(header.get(0)));
-		}
-		if (properties.size() > 0) {
-			properties.set(0, excludeBOM(properties.get(0)));
 		}
 	}
 
@@ -503,9 +540,10 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 	private void validateHeader() {
 
-		for (int i = 0; i < header.size(); i++) {
+		for (int i = 0; i < headers.size(); i++) {
 
-			String headerName = header.get(i);
+			String headerName = headers.get(i);
+			String propName = properties.get(i);
 
 			if (i ==0 && CTRL_CODE_KEY.equals(headerName)) {
 				useCtrl = true;
@@ -516,12 +554,11 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 			ReferenceInfo reference = null;
 			if (headerName.contains(".")) {
 				//ReferenceのUniqueKey指定対応
-				String propName = properties.get(i);
 				String uniqueKey = headerName.substring(propName.length() + 1);
 				ReferenceProperty rp = (ReferenceProperty)definition.getProperty(propName);
 				if (rp == null) {
 					if (ignoreNotExistsProperty) {
-						logger.warn(definition.getName() + " has not " + headerName + " property. skip header.");
+						logger.warn(definition.getName() + " has not " + propName + " property. skip header.");
 					} else {
 						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
 					}
@@ -544,10 +581,10 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 					pd = rp;
 				}
 			} else {
-				pd = definition.getProperty(headerName);
+				pd = definition.getProperty(propName);
 				if (pd == null) {
 					if (ignoreNotExistsProperty) {
-						logger.warn(definition.getName() + " has not " + headerName + " property. skip header.");
+						logger.warn(definition.getName() + " has not " + propName + " property. skip header.");
 					} else {
 						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
 					}
@@ -558,7 +595,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 						if (red == null) {
 							throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
 						}
-						reference = new ReferenceInfo(headerName, red, null);
+						reference = new ReferenceInfo(propName, red, null);
 					}
 				}
 			}
@@ -586,12 +623,12 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				if (references == null) {
 					references = new HashMap<>();
 				}
-				references.put(headerName, reference);
+				references.put(propName, reference);
 			}
 		}
 	}
 
-	private Object conv(String valStr, String headerName, PropertyDefinition pd) {
+	private Object conv(String valStr, String propName, PropertyDefinition pd) {
 
 		//Propertyが存在しない場合はそのまま文字列を返す
 		if (pd == null) {
@@ -687,7 +724,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 			ReferenceProperty rpd = (ReferenceProperty)pd;
 
-			ReferenceInfo reference = references.get(headerName);
+			ReferenceInfo reference = references.get(propName);
 
 			//参照Entityに設定するOIDPrefix、カスタムOIDが設定されている場合は無視
 			String refOidPrefix

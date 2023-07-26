@@ -34,7 +34,7 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 public interface SearchFormCsvUploadInterrupter extends CsvUploadInterrupter {
 
 	/**
-	 * サンプルCSVデータを返します。
+	 * 出力するサンプルCSVデータを返します。
 	 * nullを返す場合、プロパティ型に応じてランダムな値を出力します。
 	 *
 	 * @param definition Entity定義

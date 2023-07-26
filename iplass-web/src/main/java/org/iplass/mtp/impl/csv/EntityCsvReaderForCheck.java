@@ -72,10 +72,11 @@ public class EntityCsvReaderForCheck extends EntityCsvReader {
 				int start = isUseCtrl() ? 1 : 0;
 				for (int i = start; i < header().size(); i++) {
 					String headerName = header().get(i);
+					String propName = properties().get(i);
 					String value = list.get(i);
 
 					try {
-						validateValue(headerName, value);
+						validateValue(headerName, propName, value);
 					} catch (EntityCsvException e) {
 						// 型変換に失敗した場合は全てのエラーを保持して最後にエクセプションをスローする。
 						errorMsgList.add(resourceString("impl.csv.EntityCsvReaderForCheck.rowError", cnt, e.getMessage()));

@@ -20,9 +20,14 @@
 
 package org.iplass.gem.command.generic.upload;
 
+import java.util.Map;
+
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.detail.DetailCommandBase;
 import org.iplass.gem.command.generic.detail.DetailCommandContext;
+import org.iplass.mtp.ApplicationException;
+import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.action.ActionMapping;
@@ -31,6 +36,14 @@ import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
+import org.iplass.mtp.view.generic.EntityView;
+import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.SearchFormCsvUploadInterrupter;
+import org.iplass.mtp.view.generic.SearchFormView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CSVアップロード画面表示用コマンド
@@ -54,6 +67,8 @@ import org.iplass.mtp.entity.definition.EntityDefinition;
 )
 public final class CsvUploadIndexCommand extends DetailCommandBase {
 
+	private static Logger logger = LoggerFactory.getLogger(CsvUploadIndexCommand.class);
+
 	public static final String ACTION_NAME = "gem/generic/upload/index";
 
 	@Override
@@ -61,13 +76,35 @@ public final class CsvUploadIndexCommand extends DetailCommandBase {
 		DetailCommandContext context = getContext(request);
 		EntityDefinition ed = context.getEntityDefinition();
 
-		request.setAttribute("entityDefinition", ed);
+		request.setAttribute(Constants.ENTITY_DEFINITION, ed);
 		request.setAttribute("detailFormView", context.getView());
-
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
-
 		request.setAttribute("requiredProperties", CsvUploadUtil.getRequiredProperties(ed));
+		request.setAttribute("customColumnNameMap", getCustomColumnNameMap(context));
 
 		return Constants.CMD_EXEC_SUCCESS;
 	}
+
+	private Map<String, String> getCustomColumnNameMap(DetailCommandContext context) {
+
+		EntityView view = context.getEntityView();
+		SearchFormView searchFormView = FormViewUtil.getSearchFormView(context.getEntityDefinition(), view, context.getViewName());
+		if (searchFormView != null) {
+			if (StringUtil.isNotEmpty(searchFormView.getCondSection().getCsvUploadInterrupterName())) {
+				UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+				SearchFormCsvUploadInterrupter interrupter = null;
+				try {
+					interrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class, searchFormView.getCondSection().getCsvUploadInterrupterName());
+					return interrupter.columnNameMap(context.getEntityDefinition());
+				} catch (ClassNotFoundException e) {
+					logger.error(searchFormView.getCondSection().getCsvUploadInterrupterName() + " can not instantiate.", e);
+					throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.upload.CsvUploadIndexCommand.internalErr"));
+				}
+
+			}
+		}
+
+		return null;
+	}
+
 }
