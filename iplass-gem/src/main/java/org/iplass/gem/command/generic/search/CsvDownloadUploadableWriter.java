@@ -96,6 +96,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 				.charset(charset)
 				.quoteAll(gcs.isCsvDownloadQuoteAll())
 				.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+				.withMappedByReference(gcs.isUploadableCsvDownloadWithMappedByReference())
 				.properties(directProperties)
 				.where(context.getWhere())
 				.orderBy(context.getOrderBy())
