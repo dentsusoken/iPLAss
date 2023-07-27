@@ -38,7 +38,7 @@ public class RedisCacheStoreLuaScript {
 			"local timeToLive = tonumber(ARGV[1])\n" +
 			"local cacheEntry = ARGV[2]\n" +
 			"local previous = redis.call('GET', cacheKey)\n" +
-			"if previous == nil then\n" +
+			"if not previous then\n" +
 			"	if timeToLive > 0 then\n" +
 			"		redis.call('SETEX', cacheKey, timeToLive, cacheEntry)\n" +
 			"	else\n" +
