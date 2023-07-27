@@ -21,13 +21,18 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.mtp.ApplicationException;
+import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.csv.MultipleFormat;
@@ -42,9 +47,11 @@ import org.iplass.mtp.entity.query.Select;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.impl.entity.csv.EntityCsvException;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
+import org.iplass.mtp.view.generic.SearchFormCsvUploadInterrupter;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter;
@@ -68,6 +75,8 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 	private static final String DEFAULT_CHAR_SET = "UTF-8";
 
 	private SearchContextBase context;
+
+	private Map<String, String> customColumnNameMap;
 
 	public CsvDownloadSearchContext(SearchContextBase context) {
 		this.context = context;
@@ -188,7 +197,8 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 	}
 
 	public boolean isNoDispName() {
-		return Boolean.valueOf(getRequest().getParam("isNoDispName"));
+		return getConditionSection().isNonOutputDisplayName() 
+				|| Boolean.valueOf(getRequest().getParam("isNoDispName"));
 	}
 
 	public boolean isOutputResult() {
@@ -550,14 +560,59 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 	 * @param propertyName プロパティ名
 	 * @return NestProperty
 	 */
-	private NestProperty getNestProperty(List<NestProperty> properties, String propName) {
+	private NestProperty getNestProperty(List<NestProperty> properties, String propertyName) {
 		Optional<NestProperty> nest = properties.stream()
-			.filter(property -> propName.equals(property.getPropertyName()))
+			.filter(property -> propertyName.equals(property.getPropertyName()))
 			.findFirst();
 		if (nest.isPresent()) {
 			return nest.get();
 		} else {
 			return null;
+		}
+	}
+
+	/**
+	 * 出力列名を返します。
+	 * アップロード形式の場合に利用します。
+	 *
+	 * @param property プロパティ定義
+	 * @return 出力列名
+	 */
+	public String getColumnName(PropertyDefinition property) {
+
+		// 出力列名のカスタマイズチェック
+		String columnName = getCustomColumnNameMap().get(property.getName());
+		if (StringUtil.isNotEmpty(columnName)) {
+			return columnName;
+		}
+
+		if (isNoDispName()) {
+			return property.getName();
+		} else {
+			return property.getName() + "(" + getColumnLabel(property.getName()) + ")";
+		}
+	}
+
+	/**
+	 * 多重度複数プロパティの出力列名を返します。
+	 * アップロード形式の場合に利用します。
+	 *
+	 * @param property プロパティ定義
+	 * @param index 多重度のIndex
+	 * @return 出力列名
+	 */
+	public String getMultipleColumnName(PropertyDefinition property, int index) {
+
+		// 出力列名のカスタマイズチェック
+		String columnName = getCustomColumnNameMap().get(property.getName());
+		if (StringUtil.isNotEmpty(columnName)) {
+			return columnName + "[" + index + "]";
+		}
+
+		if (isNoDispName()) {
+			return property.getName() + "[" + index + "]";
+		} else {
+			return property.getName() + "[" + index + "]" + "(" + getColumnLabel(property.getName()) + ")";
 		}
 	}
 
@@ -568,7 +623,7 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 	 * @param propertyName プロパティ名
 	 * @return 出力列ラベル
 	 */
-	public String getColumnLabel(String propertyName) {
+	private String getColumnLabel(String propertyName) {
 		CsvColumn csvColumn = getCsvColumn(propertyName);
 		return getColumnLabel(csvColumn);
 	}
@@ -655,6 +710,39 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 				return new SearchQueryInterrupterHandler(getRequest(), context, getDefaultSearchQueryInterrupter());
 			}
 		}
+	}
+
+	/**
+	 * プロパティ名に対する出力CSV列名のマッピング定義を返します。
+	 *
+	 * @return プロパティ名に対する出力CSV列名のマッピング定義
+	 */
+	private Map<String, String> getCustomColumnNameMap() {
+
+		if (customColumnNameMap != null) {
+			return customColumnNameMap;
+		}
+
+		SearchFormCsvUploadInterrupter csvUploadInterrupter = null;
+		if (getConditionSection() != null && StringUtil.isNotEmpty(getConditionSection().getCsvUploadInterrupterName())) {
+			UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+			try {
+				csvUploadInterrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class, getConditionSection().getCsvUploadInterrupterName());
+			} catch (ClassNotFoundException e) {
+				log.error(getConditionSection().getCsvUploadInterrupterName() + " can not instantiate.", e);
+				throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.search.CsvDownloadSearchContext.internalErr"));
+			}
+		} else {
+			csvUploadInterrupter = new SearchFormCsvUploadInterrupter() {};
+		}
+
+		customColumnNameMap = csvUploadInterrupter.columnNameMap(getEntityDefinition());
+
+		// 再作成しないように初期化
+		if (customColumnNameMap == null) {
+			customColumnNameMap = Collections.emptyMap();
+		}
+		return customColumnNameMap;
 	}
 
 	private class SearchQueryInterrupterHandlerForUpload extends SearchQueryInterrupterHandler {

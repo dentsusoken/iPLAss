@@ -27,6 +27,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,6 +159,9 @@ public final class CsvSampleDownloadCommand implements Command {
 		private SearchConditionSection condition;
 		private SearchResultSection result;
 
+		private SearchFormCsvUploadInterrupter interrupter;
+		private Map<String, String> cusomColumnNameMap;
+
 		public CSVDownloadSampleWriter(String charset, EntityDefinition ed, EntityView ev, String viewName) {
 			this.charset = charset;
 			this.ed = ed;
@@ -181,25 +185,15 @@ public final class CsvSampleDownloadCommand implements Command {
 					.charset(charset)
 					.quoteAll(gcs.isCsvDownloadQuoteAll())
 					.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+					.withMappedByReference(gcs.isUploadableCsvDownloadWithMappedByReference())
 					.properties(directProperties)
-					.columnDisplayName(property -> getColumnName(property));
+					.columnName(property -> getColumnName(property))
+					.multipleColumnName((property, index) -> getMultipleColumnName(property, index));
 
 			try (EntityCsvWriter writer = new EntityCsvWriter(ed, out, option)) {
 
 				// 出力データの生成
-				List<Entity> entities = null;
-				if (condition != null && StringUtil.isNotEmpty(condition.getCsvUploadInterrupterName())) {
-					SearchFormCsvUploadInterrupter interrupter = null;
-					logger.debug("set csv upload interrupter. class=" + condition.getCsvUploadInterrupterName());
-					UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
-					try {
-						interrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class, condition.getCsvUploadInterrupterName());
-						entities = interrupter.sampleCsvData(ed, writer.getProperties());
-					} catch (ClassNotFoundException e) {
-						logger.error(condition.getCsvUploadInterrupterName() + " can not instantiate.", e);
-						throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.upload.CsvSampleDownloadCommand.internalErr"));
-					}
-				}
+				List<Entity> entities = getSearchFormCsvUploadInterrupter().sampleCsvData(ed, writer.getProperties());
 				if (entities == null) {
 					// ダミーエンティティの作成
 					entities = new ArrayList<>(2);
@@ -219,19 +213,118 @@ public final class CsvSampleDownloadCommand implements Command {
 
 		}
 
+		private SearchFormCsvUploadInterrupter getSearchFormCsvUploadInterrupter() {
+			if (interrupter != null) {
+				return interrupter;
+			}
+
+			if (condition != null && StringUtil.isNotEmpty(condition.getCsvUploadInterrupterName())) {
+				UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+				try {
+					interrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class, condition.getCsvUploadInterrupterName());
+				} catch (ClassNotFoundException e) {
+					logger.error(condition.getCsvUploadInterrupterName() + " can not instantiate.", e);
+					throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.upload.CsvSampleDownloadCommand.internalErr"));
+				}
+			} else {
+				interrupter = new SearchFormCsvUploadInterrupter() {};
+			}
+			return interrupter;
+		}
+
+		/**
+		 * プロパティ名に対する出力CSV列名のマッピング定義を返します。
+		 *
+		 * @return プロパティ名に対する出力CSV列名のマッピング定義
+		 */
+		private Map<String, String> getCustomColumnNameMap() {
+
+			if (cusomColumnNameMap != null) {
+				return cusomColumnNameMap;
+			}
+
+			SearchFormCsvUploadInterrupter csvUploadInterrupter = getSearchFormCsvUploadInterrupter();
+
+			cusomColumnNameMap = csvUploadInterrupter.columnNameMap(ed);
+
+			// 再作成しないように初期化
+			if (cusomColumnNameMap == null) {
+				cusomColumnNameMap = Collections.emptyMap();
+			}
+			return cusomColumnNameMap;
+		}
+
+		/**
+		 * 出力列名を返します。
+		 *
+		 * @param property プロパティ定義
+		 * @return 出力列名
+		 */
 		private String getColumnName(PropertyDefinition property) {
+
+			// 出力列名のカスタマイズチェック
+			String columnName = getCustomColumnNameMap().get(property.getName());
+			if (StringUtil.isNotEmpty(columnName)) {
+				return columnName;
+			}
+
+			if (condition != null && condition.isNonOutputDisplayName()) {
+				return property.getName();
+			} else {
+				return property.getName() + "(" + getColumnLabel(property) + ")";
+			}
+		}
+
+		/**
+		 * 多重度複数プロパティの出力列名を返します。
+		 *
+		 * @param property プロパティ定義
+		 * @param index 多重度のIndex
+		 * @return 出力列名
+		 */
+		private String getMultipleColumnName(PropertyDefinition property, int index) {
+
+			// 出力列名のカスタマイズチェック
+			String columnName = getCustomColumnNameMap().get(property.getName());
+			if (StringUtil.isNotEmpty(columnName)) {
+				return columnName + "[" + index + "]";
+			}
+
+			if (condition != null && condition.isNonOutputDisplayName()) {
+				return property.getName() + "[" + index + "]";
+			} else {
+				return property.getName() + "[" + index + "]" + "(" + getColumnLabel(property) + ")";
+			}
+
+		}
+
+		/**
+		 * 出力列名のラベルを返します。
+		 *
+		 * @param property プロパティ定義
+		 * @return 出力列名のラベル
+		 */
+		private String getColumnLabel(PropertyDefinition property) {
 			//画面定義からカラムの表示ラベル取得
 			PropertyColumn column = getPropertyColumn(property);
 			if (column != null && StringUtil.isNotEmpty(column.getDisplayLabel())) {
 				String displayLabel = TemplateUtil.getMultilingualString(column.getDisplayLabel(), column.getLocalizedDisplayLabelList());
-				if (displayLabel != null) return "(" + displayLabel + ")";
+				if (displayLabel != null) {
+					return displayLabel;
+				}
 			}
 
 			//取れない場合はEntity定義から取得
-			return "(" + TemplateUtil.getMultilingualString(property.getDisplayName(), property.getLocalizedDisplayNameList()) + ")";
+			return TemplateUtil.getMultilingualString(property.getDisplayName(), property.getLocalizedDisplayNameList());
 		}
 
-		public PropertyColumn getPropertyColumn(PropertyDefinition property) {
+		/**
+		 * 検索結果設定から対象のプロパティ設定を取得します。
+		 *
+		 * @param property プロパティ定義
+		 * @return 検索結果プロパティ設定
+		 */
+		private PropertyColumn getPropertyColumn(PropertyDefinition property) {
 
 			if (result == null) {
 				return null;
@@ -246,6 +339,12 @@ public final class CsvSampleDownloadCommand implements Command {
 			return null;
 		}
 
+		/**
+		 * 出力するEntityデータを生成します。
+		 *
+		 * @param properties 出力対象プロパティ
+		 * @return Entityデータ
+		 */
 		private Entity createDummyEntity(List<PropertyDefinition> properties) {
 
 			Entity entity = new GenericEntity();

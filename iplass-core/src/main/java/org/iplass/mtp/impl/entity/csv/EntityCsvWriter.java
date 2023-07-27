@@ -141,20 +141,20 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 		init();
 
 		IntStream.range(0, properties.size()).forEach(i -> {
+			if (i != 0) {
+				writeComma();
+			}
+
 			PropertyDefinition property = properties.get(i);
 			if (!(property instanceof ReferenceProperty) && property.getMultiplicity() != 1) {
 				IntStream.range(0, property.getMultiplicity()).forEach(j -> {
 					if (j != 0) {
 						writeComma();
 					}
-					writeText(property.getName() + "[" + j + "]" + option.getColumnDisplayName().apply(property));
+					writeText(option.getMultipleColumnName().apply(property, j));
 				});
 			} else {
-				writeText(property.getName() + option.getColumnDisplayName().apply(property));
-			}
-
-			if (i < properties.size() - 1) {
-				writeComma();
+				writeText(option.getColumnName().apply(property));
 			}
 		});
 
@@ -253,12 +253,16 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 				)
 				.filter(property -> {
 					//被参照の除外チェック
-					return option.isWithMappedByReference() || (!(property instanceof ReferenceProperty) || ((ReferenceProperty)property).getMappedBy() == null);
+					return option.isWithMappedByReference()
+							|| CollectionUtil.isNotEmpty(option.getProperties())
+							|| (!(property instanceof ReferenceProperty) || ((ReferenceProperty)property).getMappedBy() == null);
 				})
-				.filter(property ->
+				.filter(property -> {
 					//BinaryPropertyの除外チェック
-					option.isWithBinary() || !(property instanceof BinaryProperty)
-				)
+					return option.isWithBinary()
+							|| CollectionUtil.isNotEmpty(option.getProperties())
+							|| !(property instanceof BinaryProperty);
+				})
 				.collect(Collectors.toList());
 
 		isInit = true;
@@ -275,10 +279,9 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 			// 出力プロパティの直接指定
 			outputProperties = new ArrayList<>();
 
+			// バージョンの出力要否は後続の検証によりチェック
 			outputProperties.add(definition.getProperty(Entity.OID));
-			if (definition.getVersionControlType() != VersionControlType.NONE) {
-				outputProperties.add(definition.getProperty(Entity.VERSION));
-			}
+			outputProperties.add(definition.getProperty(Entity.VERSION));
 
 			outputProperties.addAll(option.getProperties().stream()
 					.filter(propertyName ->

@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.entity.csv;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.iplass.mtp.entity.Entity;
@@ -72,8 +73,12 @@ public class EntityWriteOption extends ParseOption {
 	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
 	private boolean mustOrderByWithLimit;
 
-	/** 列の表示名出力文字列を返す関数 */
-	private Function<PropertyDefinition, String> columnDisplayName = property -> "";
+	/** 列名の出力文字列を返す関数 */
+	private Function<PropertyDefinition, String> columnName = property -> property.getName();
+
+	/** 多重度複数プロパティの列名の出力文字列を返す関数 */
+	private BiFunction<PropertyDefinition, Integer, String> multipleColumnName
+			= (property, index) -> property.getName() + "[" + index + "]";
 
 	/** SelectPropertyのソートをするかを返す関数 */
 	private Function<SelectProperty, Boolean> sortSelectValue = property -> false;
@@ -462,31 +467,60 @@ public class EntityWriteOption extends ParseOption {
 	}
 
 	/**
-	 *  列の表示名出力文字列を返す関数を返します。
+	 *  列の出力文字列を返す関数を返します。
 	 *
-	 * @return 列の表示名出力文字列を返す関数
+	 * @return 列の出力文字列を返す関数
 	 */
-	public Function<PropertyDefinition, String> getColumnDisplayName() {
-		return columnDisplayName;
+	public Function<PropertyDefinition, String> getColumnName() {
+		return columnName;
 	}
 
 	/**
-	 * 列の表示名出力文字列を返す関数を設定します。
+	 * 列の出力文字列を返す関数を設定します。
 	 *
-	 * @param columnDisplayName 列の表示名出力文字列を返す関数
+	 * @param columnName 列の出力文字列を返す関数
 	 */
-	public void setColumnDisplayName(Function<PropertyDefinition, String> columnDisplayName) {
-		this.columnDisplayName = columnDisplayName;
+	public void setColumnName(Function<PropertyDefinition, String> columnName) {
+		this.columnName = columnName;
 	}
 
 	/**
-	 * 列の表示名出力文字列を返す関数を設定します。
+	 * 列の出力文字列を返す関数を設定します。
 	 *
-	 * @param columnDisplayName 列の表示名出力文字列を返す関数
+	 * @param columnName 列の出力文字列を返す関数
 	 * @return インスタンス
 	 */
-	public EntityWriteOption columnDisplayName(Function<PropertyDefinition, String> columnDisplayName) {
-		setColumnDisplayName(columnDisplayName);
+	public EntityWriteOption columnName(Function<PropertyDefinition, String> columnName) {
+		setColumnName(columnName);
+		return this;
+	}
+
+	/**
+	 *  多重度複数プロパティの列の出力文字列を返す関数を返します。
+	 *
+	 * @return 多重度複数プロパティの列の出力文字列を返す関数
+	 */
+	public BiFunction<PropertyDefinition, Integer, String> getMultipleColumnName() {
+		return multipleColumnName;
+	}
+
+	/**
+	 * 多重度複数プロパティの列の出力文字列を返す関数を設定します。
+	 *
+	 * @param multipleColumnName 多重度複数プロパティの列の出力文字列を返す関数
+	 */
+	public void setMultipleColumnName(BiFunction<PropertyDefinition, Integer, String> multipleColumnName) {
+		this.multipleColumnName = multipleColumnName;
+	}
+
+	/**
+	 * 多重度複数プロパティの列の出力文字列を返す関数を設定します。
+	 *
+	 * @param multipleColumnName 多重度複数プロパティの列の出力文字列を返す関数
+	 * @return インスタンス
+	 */
+	public EntityWriteOption multipleColumnName(BiFunction<PropertyDefinition, Integer, String> multipleColumnName) {
+		setMultipleColumnName(multipleColumnName);
 		return this;
 	}
 
