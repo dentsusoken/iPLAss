@@ -20,16 +20,9 @@
 
 package org.iplass.mtp.impl.redis.cache.store;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.iplass.mtp.MtpException;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
@@ -46,8 +39,8 @@ import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
 
 public abstract class RedisCacheStoreBase implements CacheStore {
 
-	protected StatefulRedisConnection<String, Object> statefulConnection;
-	protected RedisCommands<String, Object> commands;
+	protected StatefulRedisConnection<Object, Object> statefulConnection;
+	protected RedisCommands<Object, Object> commands;
 
 	protected StatefulRedisPubSubConnection<String, String> pubSubConnection;
 	protected RedisPubSubCommands<String, String> pubSubCommands;
@@ -162,26 +155,6 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 
 	protected boolean hasListener() {
 		return listeners != null ? listeners.size() > 0 : false;
-	}
-
-	protected String encodeBase64(Object obj) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try (ObjectOutputStream bis = new ObjectOutputStream(baos)) {
-			bis.writeObject(obj);
-			bis.flush();
-			return Base64.getEncoder().encodeToString(baos.toByteArray());
-		} catch (IOException e) {
-			throw new MtpException(e);
-		}
-	}
-
-	protected Object decodeBase64(String src) {
-		ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(src));
-		try (ObjectInputStream ois = new ObjectInputStream(bais)) {
-			return ois.readObject();
-		} catch (IOException | ClassNotFoundException e) {
-			throw new MtpException(e);
-		}
 	}
 
 }

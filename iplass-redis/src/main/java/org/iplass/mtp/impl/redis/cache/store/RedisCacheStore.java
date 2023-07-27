@@ -20,8 +20,7 @@
 
 package org.iplass.mtp.impl.redis.cache.store;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import org.iplass.mtp.impl.cache.store.CacheEntry;
@@ -62,12 +61,12 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 			@Override
 			public void message(String channel, String message) {
-				String prefix = codec.getNamespaceHandler().getPrefix();
+				String prefix = codec.getPrefix();
 				if (message.startsWith(prefix)) {
 					if (logger.isDebugEnabled()) {
 						logger.debug(String.format("Occuer expired event. channel:%s, message:%s", channel, message));
 					}
-					Object key = decodeBase64(message.substring(prefix.length()));
+					Object key = codec.decodeKey(ByteBuffer.wrap(codec.getCharset().encode(message).array()));
 					notifyRemoved(new CacheEntry(key, null));
 				}
 			}
@@ -78,16 +77,13 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry get(Object key) {
-		return key != null ? (CacheEntry) commands.get(encodeBase64(key)) : null;
+		return key != null ? (CacheEntry) commands.get(key) : null;
 	}
 
 	@Override
 	public CacheEntry put(CacheEntry entry, boolean clean) {
-		String strKey = encodeBase64(entry.getKey());
-
 		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT, ScriptOutputType.VALUE,
-				new String[] { strKey }, timeToLive, entry);
-
+				new Object[] { entry.getKey() }, timeToLive, entry);
 		if (previous == null) {
 			notifyPut(entry);
 		} else {
@@ -98,10 +94,8 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry putIfAbsent(CacheEntry entry) {
-		String strKey = encodeBase64(entry.getKey());
-
 		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT, ScriptOutputType.VALUE,
-				new String[] { strKey }, timeToLive, entry);
+				new Object[] { entry.getKey() }, timeToLive, entry);
 
 		if (previous == null) {
 			notifyPut(entry);
@@ -111,11 +105,8 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry remove(Object key) {
-
-		String strKey = encodeBase64(key);
-
 		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE, ScriptOutputType.VALUE,
-				new String[] { strKey });
+				new Object[] { key });
 
 		if (previous != null) {
 			notifyRemoved(previous);
@@ -125,11 +116,8 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public boolean remove(CacheEntry entry) {
-
-		String strKey = encodeBase64(entry.getKey());
-
 		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE, ScriptOutputType.VALUE,
-				new String[] { strKey });
+				new Object[] { entry.getKey() });
 
 		if (previous != null) {
 			notifyRemoved(previous);
@@ -140,10 +128,8 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry replace(CacheEntry entry) {
-		String strKey = encodeBase64(entry.getKey());
-
 		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE, ScriptOutputType.VALUE,
-				new String[] { strKey }, timeToLive, entry);
+				new Object[] { entry.getKey() }, timeToLive, entry);
 
 		if (previous != null) {
 			notifyUpdated(previous, entry);
@@ -156,10 +142,9 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 		if (!oldEntry.getKey().equals(newEntry.getKey())) {
 			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
 		}
-		String strKey = encodeBase64(newEntry.getKey());
 
-		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE, ScriptOutputType.VALUE,
-				new String[] { strKey }, timeToLive, newEntry);
+		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE_NEW, ScriptOutputType.VALUE,
+				new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
 
 		if (previous != null) {
 			notifyUpdated(oldEntry, newEntry);
@@ -169,13 +154,8 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public List<Object> keySet() {
-		List<String> keys = commands.keys("*");
-		if (CollectionUtil.isNotEmpty(keys)) {
-			List<Object> keyList = new ArrayList<Object>();
-			keys.forEach(key -> keyList.add(decodeBase64(key)));
-			return keyList;
-		}
-		return Collections.emptyList();
+		List<Object> keys = commands.keys("*");
+		return keys;
 	}
 
 	@Override
@@ -183,9 +163,9 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 		if (hasListener()) {
 			keySet().forEach(key -> remove(key));
 		} else {
-			List<String> keys = commands.keys("*");
+			List<Object> keys = commands.keys("*");
 			if (CollectionUtil.isNotEmpty(keys)) {
-				commands.del(keys.toArray(new String[keys.size()]));
+				commands.del(keys.toArray(new Object[keys.size()]));
 			}
 		}
 	}

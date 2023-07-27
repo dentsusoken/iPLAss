@@ -21,11 +21,13 @@
 package org.iplass.mtp.impl.redis.cache.store;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.iplass.mtp.impl.cache.store.CacheEntry;
+import org.iplass.mtp.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,12 +68,12 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 			@Override
 			public void message(String channel, String message) {
-				String prefix = codec.getNamespaceHandler().getPrefix();
+				String prefix = codec.getPrefix();
 				if (message.startsWith(prefix)) {
 					if (logger.isDebugEnabled()) {
 						logger.debug(String.format("Occur expired event. channel:%s, message:%s", channel, message));
 					}
-					Object key = decodeBase64(message.substring(prefix.length()));
+					Object key = codec.decodeKey(ByteBuffer.wrap(codec.getCharset().encode(message).array()));
 					removeAllFromIndex(key);
 				}
 			}
@@ -101,7 +103,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry get(Object key) {
-		return key != null ? (CacheEntry) commands.get(encodeBase64(key)) : null;
+		return key != null ? (CacheEntry) commands.get(key) : null;
 	}
 
 	@Override
@@ -151,13 +153,12 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public List<Object> keySet() {
-		List<String> keys = commands.keys("*");
-		if (keys != null && !keys.isEmpty()) {
+		List<Object> keys = commands.keys("*");
+		if (CollectionUtil.isNotEmpty(keys)) {
 			List<Object> keyList = new ArrayList<Object>();
 			keys.forEach(key -> {
-				Object keyObj = decodeBase64(key);
-				if (!(keyObj instanceof IndexKey)) { // IndexのKeyは除く
-					keyList.add(keyObj);
+				if (!(key instanceof IndexKey)) { // IndexのKeyは除く
+					keyList.add(key);
 				}
 			});
 			return keyList;
@@ -167,7 +168,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry getByIndex(int indexKey, Object indexValue) {
-		List<Object> keyList = commands.lrange(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, -1L);
+		List<Object> keyList = commands.lrange(new IndexKey(indexKey, indexValue), 0L, -1L);
 		for (Object key : keyList) {
 			if (!isExpired(key)) {
 				return get(key);
@@ -179,7 +180,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public List<CacheEntry> getListByIndex(int indexKey, Object indexValue) {
-		List<Object> keyList = commands.lrange(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, -1L);
+		List<Object> keyList = commands.lrange(new IndexKey(indexKey, indexValue), 0L, -1L);
 		if (keyList != null && !keyList.isEmpty()) {
 			List<CacheEntry> entryList = new ArrayList<CacheEntry>();
 			keyList.forEach(key -> {
@@ -202,7 +203,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	}
 
 	private void pushToIndex(int index, Object indexValue, Object key) {
-		commands.rpush(encodeBase64(new IndexKey(index, indexValue)), key);
+		commands.rpush(new IndexKey(index, indexValue), key);
 	}
 
 	private void addToIndex(CacheEntry entry) {
@@ -224,7 +225,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	}
 
 	private void removeFromIndex(int indexKey, Object indexValue, Object key) {
-		commands.lrem(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, key);
+		commands.lrem(new IndexKey(indexKey, indexValue), 0L, key);
 	}
 
 	private void removeFromIndex(CacheEntry entry) {
@@ -246,14 +247,14 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	}
 
 	private void removeAllFromIndex(Object key) {
-		List<String> iKeyList = commands.keys("*");
+		List<Object> iKeyList = commands.keys("*");
 		commands.multi();
 		iKeyList.forEach(iKey -> commands.lrem(iKey, 0, key));
 		commands.exec();
 	}
 
 	private boolean isExpired(Object key) {
-		return commands.ttl(encodeBase64(key)).longValue() == -2L;
+		return commands.ttl(key).longValue() == -2L;
 	}
 
 	private static final class IndexKey implements Serializable {

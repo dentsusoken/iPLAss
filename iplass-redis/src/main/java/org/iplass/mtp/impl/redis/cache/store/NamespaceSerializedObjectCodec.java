@@ -27,54 +27,92 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Base64;
+
+import org.iplass.mtp.SystemException;
 
 import io.lettuce.core.codec.RedisCodec;
 
-public class NamespaceSerializedObjectCodec implements RedisCodec<String, Object> {
+public class NamespaceSerializedObjectCodec implements RedisCodec<Object, Object> {
 
 	private final Charset charset = Charset.forName("UTF-8");
-    private final NamespaceHandler nsHandler;
+
+	private final String prefix;
 
 	public NamespaceSerializedObjectCodec(String namespace) {
-		nsHandler = new NamespaceHandler(namespace);
+		this.prefix = namespace + ":";
 	}
 
-	public NamespaceHandler getNamespaceHandler() {
-		return nsHandler;
+	public Charset getCharset() {
+		return charset;
 	}
 
-    @Override
-    public String decodeKey(ByteBuffer bytes) {
-        return nsHandler.remove(charset.decode(bytes).toString());
-    }
+	public String getPrefix() {
+		return prefix;
+	}
 
-    @Override
-    public Object decodeValue(ByteBuffer bytes) {
-        try {
-            byte[] array = new byte[bytes.remaining()];
-            bytes.get(array);
-            ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(array));
-            return is.readObject();
-        } catch (Exception e) {
-            return null;
-        }
-    }
+	@Override
+	public Object decodeKey(ByteBuffer bytes) {
+		try {
+			String strKey = removePrefix(charset.decode(bytes).toString());
+			ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(strKey)));
+			return is.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			throw new SystemException(e);
+		}
+	}
 
-    @Override
-    public ByteBuffer encodeKey(String key) {
-        return charset.encode(nsHandler.add(key));
-    }
+	@Override
+	public Object decodeValue(ByteBuffer bytes) {
+		try {
+			byte[] array = new byte[bytes.remaining()];
+			bytes.get(array);
+			ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(array));
+			return is.readObject();
+		} catch (Exception e) {
+			throw new SystemException(e);
+		}
+	}
 
-    @Override
-    public ByteBuffer encodeValue(Object value) {
-        try {
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            ObjectOutputStream os = new ObjectOutputStream(bytes);
-            os.writeObject(value);
-            return ByteBuffer.wrap(bytes.toByteArray());
-        } catch (IOException e) {
-            return null;
-        }
-    }
+	@Override
+	public ByteBuffer encodeKey(Object key) {
+		try {
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			ObjectOutputStream os = new ObjectOutputStream(bytes);
+			os.writeObject(key);
+			String strKey = Base64.getEncoder().encodeToString(bytes.toByteArray());
+			return charset.encode(addPrefix(strKey));
+		} catch (IOException e) {
+			throw new SystemException(e);
+		}
+	}
+
+	@Override
+	public ByteBuffer encodeValue(Object value) {
+		// LuaScriptの引数として渡されるtimeToLiveはシリアライズしない（デシリアライズが必要になることはない）
+		if (value instanceof Long) {
+			return ByteBuffer.wrap(String.valueOf(value).getBytes());
+		}
+
+		try {
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			ObjectOutputStream os = new ObjectOutputStream(bytes);
+			os.writeObject(value);
+			return ByteBuffer.wrap(bytes.toByteArray());
+		} catch (IOException e) {
+			throw new SystemException(e);
+		}
+	}
+
+	private String addPrefix(String key) {
+		return key == null ? null : prefix + key;
+	}
+
+	private String removePrefix(String key) {
+		if (key != null && key.startsWith(prefix)) {
+			key = key.substring(prefix.length());
+		}
+		return key;
+	}
 
 }
