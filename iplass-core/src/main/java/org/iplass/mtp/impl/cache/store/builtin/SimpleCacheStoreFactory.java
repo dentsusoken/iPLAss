@@ -29,6 +29,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheHandler;
@@ -53,6 +55,24 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 	private int size = -1;
 	private boolean multiThreaded = true;
 	private long evictionInterval = -1;
+	private boolean fineGrainedLock;
+	private List<FineGrainedLockIndexConfig> indexConfig;
+	
+	public List<FineGrainedLockIndexConfig> getIndexConfig() {
+		return indexConfig;
+	}
+
+	public void setIndexConfig(List<FineGrainedLockIndexConfig> indexConfig) {
+		this.indexConfig = indexConfig;
+	}
+
+	public boolean isFineGrainedLock() {
+		return fineGrainedLock;
+	}
+
+	public void setFineGrainedLock(boolean fineGrainedLock) {
+		this.fineGrainedLock = fineGrainedLock;
+	}
 
 	public long getEvictionInterval() {
 		return evictionInterval;
@@ -135,10 +155,18 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				}
 				ret = new ConcurrentHashMapCacheStore(namespace, this, initialCapacity, loadFactor, concurrencyLevel, timeToLive, size);
 			} else {
-				if (logger.isTraceEnabled()) {
-					logger.trace("create IndexedConcurrentHashMapCacheStore:namespace=" + namespace);
+				if (fineGrainedLock) {
+					if (logger.isTraceEnabled()) {
+						logger.trace("create FineGrainedLockIndexedConcurrentHashMapCacheStore:namespace=" + namespace);
+					}
+					ret = new FineGrainedLockIndexedConcurrentHashMapCacheStore(namespace, this, initialCapacity, timeToLive, size, getIndexCount(), indexConfig);
+					
+				} else {
+					if (logger.isTraceEnabled()) {
+						logger.trace("create IndexedConcurrentHashMapCacheStore:namespace=" + namespace);
+					}
+					ret = new IndexedConcurrentHashMapCacheStore(namespace, this, initialCapacity, loadFactor, concurrencyLevel, timeToLive, size, getIndexCount());
 				}
-				ret = new IndexedConcurrentHashMapCacheStore(namespace, this, initialCapacity, loadFactor, concurrencyLevel, timeToLive, size, getIndexCount());
 			}
 		} else {
 			if (size > 0) {
@@ -173,7 +201,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		return true;
 	}
 
-	private static boolean isStillAliveOrNull(CacheEntry e, long timeToLive) {
+	static boolean isStillAliveOrNull(CacheEntry e, long timeToLive) {
 		if (e == null) {
 			return true;
 		}
@@ -187,6 +215,10 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		}
 	}
 
+	/**
+	 * Index利用しない場合のマルチスレッド対応されたCacheStore。
+	 * 
+	 */
 	public static class ConcurrentHashMapCacheStore extends SimpleCacheStoreBase {
 
 		private final Cache<Object, CacheEntry> cache;
@@ -273,6 +305,51 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				notifyPut(entry);
 			}
 			return putted;
+		}
+
+		/**
+		 * mappingFunctionはkeyが紐づいていない際に、厳密に一度のみの呼び出しとなる。
+		 * 
+		 */
+		@Override
+		public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+			boolean[] computed = new boolean[1];
+			CacheEntry entry = cache.asMap().computeIfAbsent(key, k -> {
+				computed[0] = true;
+				return mappingFunction.apply(k);
+			});
+			
+			if (computed[0] && entry != null) {
+				notifyPut(entry);
+			}
+			return entry;
+		}
+
+		/**
+		 * remappingFunctionは同一keyに対しての処理は他の競合スレッドはブロックされ、アトミックに処理される。
+		 */
+		@Override
+		public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+			CacheEntry[] old = new CacheEntry[1];
+			CacheEntry entry = cache.asMap().compute(key, (k, v) -> {
+				old[0] = v;
+				return remappingFunction.apply(k, v);
+			});
+			
+			if (entry != null) {
+				//put
+				if (old[0] == null) {
+					notifyPut(entry);
+				} else {
+					notifyUpdated(old[0], entry);
+				}
+			} else {
+				//remove
+				if (old[0] != null) {
+					notifyRemoved(entry);
+				}
+			}
+			return entry;
 		}
 
 		@Override
@@ -374,11 +451,11 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 	}
 
 
+	/**
+	 * キャッシュデータの更新頻度が低い場合に最適なIndex付きのConcurrentHashMapCacheStoreの実装。
+	 * 
+	 */
 	public static class IndexedConcurrentHashMapCacheStore extends SimpleCacheStoreBase {
-		//TODO ConcurrentHashMap継承した、IndexedConcurrentHashMapみたいのを作りたいんだけど、使いたいLock変数（Segument）がパッケージプライベートなので、現時点では断念。。。
-		//TODO index更新する場合、一度に1つしか更新できない。。。ConcurrentHashMapと同等の並列性を目指すなら、ConcurerntHashMapを自作しかない。。。
-		
-		//FIXME java8のcompute系のメソッドを利用する形に
 		
 		private final ReentrantReadWriteLock indexLock = new ReentrantReadWriteLock();
 
@@ -543,6 +620,70 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					notifyPut(entry);
 				}
 				return putted;
+			} finally {
+				indexLock.writeLock().unlock();
+			}
+		}
+
+		/**
+		 * mappingFunctionはkeyが紐づいていない際に、厳密に一度のみの呼び出しとなる。
+		 * 
+		 */
+		@Override
+		public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+			indexLock.writeLock().lock();
+			try {
+				boolean[] computed = new boolean[1];
+				CacheEntry entry = cache.asMap().computeIfAbsent(key, k -> {
+					computed[0] = true;
+					return mappingFunction.apply(k);
+				});
+				
+				if (computed[0] && entry != null) {
+					addToIndex(entry);
+					notifyPut(entry);
+				}
+				return entry;
+				
+			} finally {
+				indexLock.writeLock().unlock();
+			}
+		}
+
+		/**
+		 * remappingFunctionは同一keyに対しての処理は他の競合スレッドはブロックされ、アトミックに処理される。
+		 */
+		@Override
+		public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+			indexLock.writeLock().lock();
+			try {
+				CacheEntry[] old = new CacheEntry[1];
+				CacheEntry entry = cache.asMap().compute(key, (k, v) -> {
+					old[0] = v;
+					return remappingFunction.apply(k, v);
+				});
+				
+				if (entry != null) {
+					//put
+					if (old[0] == null) {
+						addToIndex(entry);
+						notifyPut(entry);
+					} else {
+						//同一エントリの場合はindex更新しない
+						if (old[0] != entry) {
+							removeFromIndex(old[0], false);
+							addToIndex(entry);
+						}
+						notifyUpdated(old[0], entry);
+					}
+				} else {
+					//remove
+					if (old[0] != null) {
+						removeFromIndex(old[0], false);
+						notifyRemoved(entry);
+					}
+				}
+				return entry;
 			} finally {
 				indexLock.writeLock().unlock();
 			}
@@ -740,7 +881,6 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		}
 	}
-
 
 	@Override
 	public CacheHandler createCacheHandler(CacheStore store) {

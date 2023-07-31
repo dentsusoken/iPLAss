@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.Configuration;
@@ -248,6 +250,16 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 		}
 
 		@Override
+		public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+			return cache.computeIfAbsent(key, mappingFunction);
+		}
+
+		@Override
+		public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+			return cache.compute(key, remappingFunction);
+		}
+
+		@Override
 		public CacheEntry get(Object key) {
 			return cache.get(key);
 		}
@@ -330,7 +342,6 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 		protected Cache<Object, CacheEntry> getCache() {
 			return cache;
 		}
-
 	}
 
 	private static ThreadLocal<InfinispanCacheContextHolder> holder = new ThreadLocal<>();

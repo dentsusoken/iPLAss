@@ -36,6 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.cache.CacheService;
@@ -686,6 +688,90 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			}
 			
 			throw new SystemException("cant putIfAbsent CacheEntry cause retry count over:" + entry);
+		}
+
+		@Override
+		public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+			for (int count = 0; count <= retryCount; count++) {
+				try (Connection con = rdb.getConnection(connectionFactoryName)) {
+					CacheEntry pre = getInternal(key, false, con);
+					if (pre == null) {
+						CacheEntry entry = mappingFunction.apply(key);
+						if (insertInternal(entry, con)) {
+							notifyPut(entry);
+							return entry;
+						};
+					} else {
+						if (isStillAliveOrNull(pre)) {
+							return pre;
+						} else {
+							CacheEntry entry = mappingFunction.apply(key);
+							if (updateInternal(entry, true, pre.getVersion(), con)) {
+								notifyPut(entry);
+								return entry;
+							}
+						}
+					}
+				} catch (SQLException e) {
+					if (!rdb.isDuplicateValueException(e)) {
+						throw new SystemException("cant computeIfAbsent CacheEntry to RDB:" + key, e);
+					}
+				}
+			}
+			
+			throw new SystemException("cant computeIfAbsent CacheEntry cause retry count over:" + key);
+		}
+
+		@Override
+		public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+			for (int count = 0; count <= retryCount; count++) {
+				try (Connection con = rdb.getConnection(connectionFactoryName)) {
+					CacheEntry pre = getInternal(key, false, con);
+					if (pre == null) {
+						CacheEntry entry = remappingFunction.apply(key, pre);
+						if (entry != null) {
+							if (insertInternal(entry, con)) {
+								notifyPut(entry);
+								return entry;
+							};
+						} else {
+							return null;
+						}
+					} else {
+						if (isStillAliveOrNull(pre)) {
+							CacheEntry entry = remappingFunction.apply(key, pre);
+							if (entry != null) {
+								if (updateInternal(entry, true, pre.getVersion(), con)) {
+									notifyPut(entry);
+									return entry;
+								}
+							} else {
+								if (deleteInternal(pre.getKey(), true, pre.getVersion(), con)) {
+									notifyRemoved(pre);
+									return null;
+								}
+							}
+						} else {
+							CacheEntry entry = remappingFunction.apply(key, null);
+							if (entry != null) {
+								if (updateInternal(entry, true, pre.getVersion(), con)) {
+									notifyPut(entry);
+									return entry;
+								}
+							} else {
+								deleteInternal(pre.getKey(), true, pre.getVersion(), con);
+								return null;
+							}
+						}
+					}
+				} catch (SQLException e) {
+					if (!rdb.isDuplicateValueException(e)) {
+						throw new SystemException("cant computeIfAbsent CacheEntry to RDB:" + key, e);
+					}
+				}
+			}
+			
+			throw new SystemException("cant computeIfAbsent CacheEntry cause retry count over:" + key);
 		}
 
 		@Override

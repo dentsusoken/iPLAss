@@ -812,6 +812,12 @@
 				<property name="cacheKeyResolver" class="org.iplass.mtp.impl.entity.cache.QueryCacheKeyResolver" />
 				<property name="cacheIndexResolver" class="org.iplass.mtp.impl.cache.store.keyresolver.StringCacheKeyResolver" />
 				<property name="store" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+					<property name="fineGrainedLock" value="true" />
+					<property name="indexConfig" class="org.iplass.mtp.impl.cache.store.builtin.FineGrainedLockIndexConfig">
+						<property name="shardSize" value="16" />
+						<property name="fair" value="true" />
+					</property>
+					
 					<!-- 12時間有効 -->
 					<property name="timeToLive" value="43200000" />
 					<!-- 最大128 -->

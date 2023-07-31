@@ -21,6 +21,8 @@
 package org.iplass.mtp.impl.cache.store;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
 
@@ -37,6 +39,69 @@ public interface CacheStore {
 	public CacheStoreFactory getFactory();
 	
 	public int getSize();
+	
+	/**
+	 * ConcurrentMapが提供するcomputeIfAbsentと同等の機能性を提供するメソッド。
+	 * デフォルト実装ではmappingFunctionが複数回呼び出される可能性はある。
+	 * 厳密にmappingFunctionが1度しか呼び出されないか否かは各CacheStore実装クラスによる。
+	 * 
+	 * @param key
+	 * @param mappingFunction
+	 * @return
+	 */
+	public default CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+		CacheEntry v, newValue;
+		return ((v = get(key)) == null &&
+				(newValue = mappingFunction.apply(key)) != null &&
+				(v = putIfAbsent(newValue)) == null) ? newValue : v;
+	}
+
+	/**
+	 * ConcurrentMapが提供するcomputeと同等の機能性を提供するメソッド。
+	 * デフォルト実装ではremappingFunctionが複数回呼び出される可能性はある。
+	 * 厳密にremappingFunctionが1度しか呼び出されないか否かは各CacheStore実装クラスによる。
+	 * 
+	 * @param key
+	 * @param remappingFunction
+	 * @return
+	 */
+	public default CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+		CacheEntry oldValue = get(key);
+		for(;;) {
+			CacheEntry newValue = remappingFunction.apply(key, oldValue);
+			if (newValue == null) {
+				//remove
+				if (oldValue != null) {
+					if (remove(oldValue)) {
+						//success
+						return null;
+					} else {
+						//retry
+						oldValue = get(key);
+					}
+				} else {
+					return null;
+				}
+			} else {
+				//put
+				if (oldValue != null) {
+					if (replace(oldValue, newValue)) {
+						//success
+						return newValue;
+					} else {
+						//retry
+						oldValue = get(key);
+					}
+				} else {
+					oldValue = putIfAbsent(newValue);
+					if (oldValue == null) {
+						//success
+						return newValue;
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * 

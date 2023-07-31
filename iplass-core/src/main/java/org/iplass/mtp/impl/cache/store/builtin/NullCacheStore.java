@@ -23,6 +23,8 @@ package org.iplass.mtp.impl.cache.store.builtin;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStore;
@@ -65,6 +67,16 @@ public class NullCacheStore implements CacheStore {
 	@Override
 	public CacheEntry putIfAbsent(CacheEntry entry) {
 		return null;
+	}
+
+	@Override
+	public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+		return mappingFunction.apply(key);
+	}
+
+	@Override
+	public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+		return remappingFunction.apply(key, null);
 	}
 
 	@Override
