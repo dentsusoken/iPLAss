@@ -64,7 +64,7 @@ ext {
 		
 		'net.sf.supercsv:super-csv': '2.4.0',
 		
-		'com.github.ben-manes.caffeine:caffeine': '2.6.2',
+		'com.github.ben-manes.caffeine:caffeine': '2.9.3',
 		
 		'org.slf4j:slf4j-api': '1.7.36',
 		'org.slf4j:jcl-over-slf4j': '1.7.36',
