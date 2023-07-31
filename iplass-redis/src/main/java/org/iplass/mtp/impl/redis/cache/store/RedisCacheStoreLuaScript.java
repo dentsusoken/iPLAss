@@ -47,24 +47,40 @@ public class RedisCacheStoreLuaScript {
 			"end\n" +
 			"return previous";
 
-	public static final String REMOVE = 
+	public static final String REMOVE_BY_KEY = 
 			"local cacheKey = KEYS[1]\n" + 
 			"local previous = redis.call('GET', cacheKey)\n" +
-			"if previous == nil then\n" +
+			"if not previous then\n" +
 			"	return nil\n" +
 			"else\n" +
 			"	redis.call('DEL', cacheKey)" +
 			"end\n" +
 			"return previous";
 
-	public static final String REMOVE_ALL = "";
+	public static final String REMOVE_BY_ENTRY = 
+			"local cacheKey = KEYS[1]\n" + 
+			"local cacheEntry = ARGV[1]\n" +
+			"local previous = redis.call('GET', cacheKey)\n" +
+			"if not previous or previous ~= cacheEntry then\n" +
+			"	return nil\n" +
+			"else\n" +
+			"	redis.call('DEL', cacheKey)" +
+			"end\n" +
+			"return previous";
+
+	public static final String REMOVE_ALL =
+			"local key = KEYS[1]\n" +
+			"local keys = redis.call('KEYS', key)\n" +
+			"if keys ~= nil then\n" +
+			"	redis.call('DEL', unpack(keys))\n" +
+			"end";
 
 	public static final String REPLACE = 
 			"local cacheKey = KEYS[1]\n" + 
 			"local timeToLive = tonumber(ARGV[1])\n" +
 			"local cacheEntry = ARGV[2]\n" +
 			"local previous = redis.call('GET', cacheKey)\n" +
-			"if previous == nil then\n" +
+			"if not previous then\n" +
 			"	return nil\n" +
 			"end\n" +
 			"if timeToLive > 0 then\n" +
@@ -80,7 +96,7 @@ public class RedisCacheStoreLuaScript {
 			"local oldEntry = ARGV[2]\n" +
 			"local cacheEntry = ARGV[3]\n" +
 			"local previous = redis.call('GET', cacheKey)\n" +
-			"if previous == nil or previous ~= oldEntry then\n" +
+			"if not previous or previous ~= oldEntry then\n" +
 			"	return nil\n" +
 			"end\n" +
 			"if timeToLive > 0 then\n" +

@@ -47,7 +47,7 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 
 	@Override
 	public CacheStore createCacheStore(String namespace) {
-		return getIndexCount() > 0 ? new RedisIndexedCacheStore(this, namespace, timeToLive, getIndexCount(), false)
+		return getIndexCount() > 0 ? new IndexedRedisCacheStore(this, namespace, timeToLive, getIndexCount(), false)
 				: new RedisCacheStore(this, namespace, timeToLive, false);
 	}
 

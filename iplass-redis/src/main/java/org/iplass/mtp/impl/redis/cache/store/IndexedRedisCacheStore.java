@@ -33,13 +33,13 @@ import org.slf4j.LoggerFactory;
 
 import io.lettuce.core.pubsub.RedisPubSubListener;
 
-public class RedisIndexedCacheStore extends RedisCacheStoreBase {
+public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
-	private static final Logger logger = LoggerFactory.getLogger(RedisIndexedCacheStore.class);
+	private static final Logger logger = LoggerFactory.getLogger(IndexedRedisCacheStore.class);
 
 	private final int indexSize;
 
-	public RedisIndexedCacheStore(RedisCacheStoreFactory factory, String namespace, long timeToLive, int indexSize,
+	public IndexedRedisCacheStore(RedisCacheStoreFactory factory, String namespace, long timeToLive, int indexSize,
 			boolean isSave) {
 		super(factory, namespace, timeToLive, isSave);
 

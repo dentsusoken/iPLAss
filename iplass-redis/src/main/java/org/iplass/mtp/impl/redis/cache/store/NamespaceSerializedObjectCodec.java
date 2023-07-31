@@ -76,6 +76,11 @@ public class NamespaceSerializedObjectCodec implements RedisCodec<Object, Object
 
 	@Override
 	public ByteBuffer encodeKey(Object key) {
+		// Key一括取得時はシリアライズしない
+		if (key.equals("*")) {
+			return ByteBuffer.wrap((addPrefix("*")).getBytes());
+		}
+
 		try {
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			ObjectOutputStream os = new ObjectOutputStream(bytes);
@@ -89,7 +94,7 @@ public class NamespaceSerializedObjectCodec implements RedisCodec<Object, Object
 
 	@Override
 	public ByteBuffer encodeValue(Object value) {
-		// LuaScriptの引数として渡されるtimeToLiveはシリアライズしない（デシリアライズが必要になることはない）
+		// LuaScriptの引数として渡されるtimeToLiveはシリアライズしない
 		if (value instanceof Long) {
 			return ByteBuffer.wrap(String.valueOf(value).getBytes());
 		}

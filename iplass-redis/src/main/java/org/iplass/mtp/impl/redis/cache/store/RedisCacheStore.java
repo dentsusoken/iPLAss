@@ -20,11 +20,9 @@
 
 package org.iplass.mtp.impl.redis.cache.store;
 
-import java.nio.ByteBuffer;
 import java.util.List;
 
 import org.iplass.mtp.impl.cache.store.CacheEntry;
-import org.iplass.mtp.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,9 +62,9 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 				String prefix = codec.getPrefix();
 				if (message.startsWith(prefix)) {
 					if (logger.isDebugEnabled()) {
-						logger.debug(String.format("Occuer expired event. channel:%s, message:%s", channel, message));
+						logger.debug(String.format("Occur expired event. channel:%s, message:%s", channel, message));
 					}
-					Object key = codec.decodeKey(ByteBuffer.wrap(codec.getCharset().encode(message).array()));
+					Object key = codec.decodeKey(codec.getCharset().encode(message));
 					notifyRemoved(new CacheEntry(key, null));
 				}
 			}
@@ -84,6 +82,7 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 	public CacheEntry put(CacheEntry entry, boolean clean) {
 		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT, ScriptOutputType.VALUE,
 				new Object[] { entry.getKey() }, timeToLive, entry);
+
 		if (previous == null) {
 			notifyPut(entry);
 		} else {
@@ -105,7 +104,7 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry remove(Object key) {
-		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE, ScriptOutputType.VALUE,
+		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_KEY, ScriptOutputType.VALUE,
 				new Object[] { key });
 
 		if (previous != null) {
@@ -116,8 +115,8 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public boolean remove(CacheEntry entry) {
-		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE, ScriptOutputType.VALUE,
-				new Object[] { entry.getKey() });
+		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY,
+				ScriptOutputType.VALUE, new Object[] { entry.getKey() }, entry);
 
 		if (previous != null) {
 			notifyRemoved(previous);
@@ -163,10 +162,7 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 		if (hasListener()) {
 			keySet().forEach(key -> remove(key));
 		} else {
-			List<Object> keys = commands.keys("*");
-			if (CollectionUtil.isNotEmpty(keys)) {
-				commands.del(keys.toArray(new Object[keys.size()]));
-			}
+			commands.eval(RedisCacheStoreLuaScript.REMOVE_ALL, ScriptOutputType.MULTI, new Object[] { "*" });
 		}
 	}
 
