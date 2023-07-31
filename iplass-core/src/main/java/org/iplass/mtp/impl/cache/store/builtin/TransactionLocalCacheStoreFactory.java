@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
@@ -262,6 +265,181 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				});
 				
 				return previous;
+			}
+		}
+
+		/**
+		 * mappingFunctionはトランザクション内にてまだ読み込みしていない場合のみ、バックエンドストアで同期的にAtomicに処理される。
+		 * トランザクション内に当該Keyが読み込まれたあとは、トランザクションローカルで処理される。
+		 * トランザクションローカルのcomputeIfAbsentでバックエンドストアの値と変更がある場合、トランザクションコミット時にバックエンドストアの値が更新される。
+		 * バックエンドストアの値の更新が競合した場合は、バックエンドの値は無効化される。
+		 */
+		@Override
+		public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+			CacheEntry ce = getStore().get(key);
+			if (ce == null) {
+				//clean load
+				CacheEntry backendEntry = backendCacheStore.computeIfAbsent(key, mappingFunction);
+				if (backendEntry != null) {
+					if (logger.isTraceEnabled()) {
+						logger.trace("put local cache!key=" + backendEntry.getKey() + ",version=" + backendEntry.getVersion() + ",value=" + backendEntry.getValue());
+					}
+					getStore().put(backendEntry, false);
+				}
+				
+				return backendEntry;
+			} else {
+				if (ce != null && !(ce instanceof RemovedCacheEntry)) {
+					return ce;
+				}
+				
+				CacheEntry backendEntry = backendCacheStore.get(key);
+				CacheEntry computedLocal = mappingFunction.apply(key);
+				if (computedLocal != null) {
+					getStore().put(computedLocal, false);
+				}
+				
+				//dirtyの場合は、トランザクションコミットのタイミングで更新
+				addOrRunTransactionListener(new TransactionListener() {
+					@Override
+					public void afterRollback(Transaction t) {
+					}
+
+					@Override
+					public void afterCommit(Transaction t) {
+						if (logger.isTraceEnabled()) {
+							logger.trace("cas shared cache!key=" + key + ",mappingFunction=" + mappingFunction);
+						}
+						boolean isConflict = true;
+						try {
+							if (backendEntry == null) {
+								CacheEntry sheredPrevious = backendCacheStore.putIfAbsent(computedLocal);
+								if (sheredPrevious == null) {
+									isConflict = false;
+								} else {
+									if (logger.isDebugEnabled()) {
+										logger.debug("maybe another Thread Updated newly version:" + sheredPrevious.getVersion() + ".  so markInvalid CacheEntry:" + key);
+									}
+								}
+							} else {
+								//backendがnullでないが、ローカルトランザクション上削除->computeした
+								if (computedLocal == null) {
+									backendCacheStore.remove(key);
+									isConflict = false;
+								} else {
+									if (backendCacheStore.replace(backendEntry, computedLocal)) {
+										isConflict = false;
+									}
+								}
+							}
+						} finally {
+							if (isConflict) {
+								if (logger.isDebugEnabled()) {
+									logger.debug("maybe another Thread Updated newly version. so so markInvalid CacheEntry:" + key + ", mappingFunction:" + mappingFunction);
+								}
+								//状態があやしいので、無効化する
+								try {
+									backendCacheStore.remove(key);
+								} catch (RuntimeException e) {
+									logger.error("cache may be illegal state... cause:" + e, e);
+								}
+							}
+						}
+					}
+				});
+				return null;
+			}
+			
+			
+		}
+
+		/**
+		 * remappingFunctionはトランザクション内にてまだ読み込みしていない場合のみ、バックエンドストアで同期的にAtomicに処理される。
+		 * トランザクション内に当該Keyが読み込まれたあとは、トランザクションローカルで処理される。
+		 * トランザクションローカルのcomputeでバックエンドストアの値と変更がある場合、トランザクションコミット時にバックエンドストアの値が更新される。
+		 * バックエンドストアの値の更新が競合した場合は、バックエンドの値は無効化される。
+		 * 
+		 */
+		@Override
+		public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+			
+			CacheEntry localEntry = getStore().get(key);
+			
+			if (localEntry == null) {
+				//clean load
+				CacheEntry backendEntry = backendCacheStore.compute(key, remappingFunction);
+				if (backendEntry != null) {
+					if (logger.isTraceEnabled()) {
+						logger.trace("put local cache!key=" + backendEntry.getKey() + ",version=" + backendEntry.getVersion() + ",value=" + backendEntry.getValue());
+					}
+					getStore().put(backendEntry, false);
+				}
+				return backendEntry;
+			} else {
+				CacheEntry backendEntry = backendCacheStore.get(key);
+				CacheEntry computedLocal = getStore().compute(key, (k, v) -> {
+					CacheEntry realCe;
+					if (v instanceof RemovedCacheEntry) {
+						realCe = null;
+					} else {
+						realCe = v;
+					}
+					CacheEntry computedCe = remappingFunction.apply(k, realCe);
+					if (computedCe == null) {
+						if (v instanceof RemovedCacheEntry) {
+							return v;
+						} else {
+							return new RemovedCacheEntry(v);
+						}
+					}
+					return computedCe;
+				});
+				
+				if (Objects.equals(computedLocal, backendEntry)) {
+					return computedLocal;
+				}
+				
+				//dirtyの場合は、トランザクションコミットのタイミングでCAS
+				addOrRunTransactionListener(new TransactionListener() {
+					@Override
+					public void afterRollback(Transaction t) {
+					}
+
+					@Override
+					public void afterCommit(Transaction t) {
+
+						if (logger.isTraceEnabled()) {
+							logger.trace("cas shared cache!key=" + key + ",remappingFunction=" + remappingFunction);
+						}
+						boolean isConflict = true;
+						try {
+							if (computedLocal instanceof RemovedCacheEntry) {
+								backendCacheStore.remove(key);
+								isConflict = false;
+							} else {
+								if (backendEntry != null) {
+									//backendがnull以外の場合はcasしてみる
+									if(backendCacheStore.replace(backendEntry, computedLocal)) {
+										isConflict = false;
+									}
+								}
+							}
+						} finally {
+							if (isConflict) {
+								if (logger.isDebugEnabled()) {
+									logger.debug("maybe another Thread Updated newly version. so so markInvalid CacheEntry:" + key + ", remappingFunction:" + remappingFunction);
+								}
+								try {
+									backendCacheStore.remove(key);
+								} catch (RuntimeException e) {
+									logger.error("cache may be illegal state... cause:" + e, e);
+								}
+							}
+						}
+					}
+				});
+				
+				return computedLocal;
 			}
 		}
 
@@ -910,7 +1088,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			super(actual.getKey(), null, actual.getVersion() + 1, actual.getIndexValues());
 		}
 	}
-
+	
 	@Override
 	public CacheStoreFactory getLowerLevel() {
 		return backendStore;

@@ -49,9 +49,7 @@ import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.entity.interceptor.EntityCountInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityInvocationImpl;
-import org.iplass.mtp.impl.entity.interceptor.EntityQueryInvocationImpl;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,9 +69,7 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 		if (eh.getMetaData().isQueryCache()) {
 			CacheStore cache = getCache(false);
 			if (cache != null) {
-				synchronized(eh) {
-					cache.removeByIndex(0, eh.getMetaData().getName());
-				}
+				cache.removeByIndex(0, eh.getMetaData().getName());
 			}
 		}
 	}
@@ -146,7 +142,7 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 		} else {
 			Query q = invocation.getQuery();
 			CacheHint hint = hasCacheHintAndEnableCache(q, invocation);
-			String[] usedEntityDefs = null;
+			final String[] usedEntityDefs;
 			if (hint != null) {
 				//クエリで利用しているEntityすべてキャッシュ可能になっているか確認
 				EntityContext ec = EntityContext.getCurrentContext();
@@ -154,19 +150,21 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 				if (isEnableCache(ueds, ec)) {
 					usedEntityDefs = ueds;
 				} else {
+					usedEntityDefs = null;
 					logger.warn("Cant cache query, because query references non queryCache-able Entity. eql:" + q);
 				}
+			} else {
+				usedEntityDefs = null;
 			}
 
 			if (hint != null && usedEntityDefs != null) {
 				Predicate<?> callback = invocation.getPredicate();
 				CacheStore store = getCache(true);
-				CacheEntry ce = store.get(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity()));
+				QueryCacheKey key = new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity());
+				CacheEntry ce = store.get(key);
 				if (isInvalidQueryCache(invocation, ce)) {
-					//同一クエリーの検索がバックエンドに発行されないように。（結局はEntity定義単位でロックが必要となるのでEntityHandlerでロック）
-					synchronized(((EntityQueryInvocationImpl) invocation).getEntityHandler()) {
-						ce = store.get(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity()));
-						if (isInvalidQueryCache(invocation, ce)) {
+					ce = store.compute(key, (k, v) -> {
+						if (isInvalidQueryCache(invocation, v)) {
 							ArrayList<Object> list = new ArrayList<>();
 							invocation.setPredicate(dataModel -> {
 								list.add(dataModel);
@@ -176,15 +174,14 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 							invocation.proceed();
 
 							QueryCache qc = new QueryCache(list.size(), list, invocation.getType(), hint.getTTL());
-							q = q.copy();
-							ce = new CacheEntry(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity()), qc, (Object) usedEntityDefs);
-							store.put(ce, true);
+							return new CacheEntry(new QueryCacheKey(q.copy(), invocation.getSearchOption().isReturnStructuredEntity()), qc, (Object) usedEntityDefs);
 						} else {
 							if (logger.isTraceEnabled()) {
 								logger.trace("Result list from global cache:" + q);
 							}
+							return v;
 						}
-					}
+					});
 				} else {
 					if (logger.isTraceEnabled()) {
 						logger.trace("Result list from global cache:" + q);
@@ -217,7 +214,7 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 	public int count(EntityCountInvocation invocation) {
 		Query q = invocation.getQuery();
 		CacheHint hint = hasCacheHintAndEnableCache(q, invocation);
-		String[] usedEntityDefs = null;
+		final String[] usedEntityDefs;
 		if (hint != null) {
 			//クエリで利用しているEntityすべてキャッシュ可能になっているか確認
 			EntityContext ec = EntityContext.getCurrentContext();
@@ -225,29 +222,30 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 			if (isEnableCache(ueds, ec)) {
 				usedEntityDefs = ueds;
 			} else {
+				usedEntityDefs = null;
 				logger.warn("Cant cache query, because query references non queryCache-able Entity. eql:" + q);
 			}
+		} else {
+			usedEntityDefs = null;
 		}
 
 		if (hint != null && usedEntityDefs != null) {
 			CacheStore store = getCache(true);
-			CacheEntry ce = store.get(new QueryCacheKey(q, false));
+			QueryCacheKey key = new QueryCacheKey(q, false);
+			CacheEntry ce = store.get(key);
 			if (isInvalidCountCache(ce)) {
-				//同一クエリーの検索がバックエンドに発行されないように。（結局はEntity定義単位でロックが必要となるのでEntityHandlerでロック）
-				synchronized(((EntityCountInvocationImpl) invocation).getEntityHandler()) {
-					ce = store.get(new QueryCacheKey(q, false));
-					if (isInvalidCountCache(ce)) {
+				ce = store.compute(key, (k, v) -> {
+					if (isInvalidCountCache(v)) {
 						int ret = invocation.proceed();
 						QueryCache qc = new QueryCache(ret, null, invocation.getType(), hint.getTTL());
-						q = q.copy();
-						ce = new CacheEntry(new QueryCacheKey(q, false), qc, (Object) usedEntityDefs);
-						store.put(ce, true);
+						return new CacheEntry(new QueryCacheKey(q.copy(), false), qc, (Object) usedEntityDefs);
 					} else {
 						if (logger.isTraceEnabled()) {
 							logger.trace("Result list from global cache:" + q);
 						}
+						return v;
 					}
-				}
+				});
 			} else {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Result list from global cache:" + q);

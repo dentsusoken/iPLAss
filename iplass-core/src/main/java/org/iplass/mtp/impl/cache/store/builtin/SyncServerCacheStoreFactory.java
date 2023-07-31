@@ -21,6 +21,8 @@
 package org.iplass.mtp.impl.cache.store.builtin;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheHandler;
@@ -261,6 +263,35 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 				sendByKeyEvent(entry);
 			}
 			return e;
+		}
+
+		@Override
+		public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+			boolean[] computed = new boolean[1];
+			CacheEntry entry = wrapped.computeIfAbsent(key, k -> {
+				computed[0] = true;
+				return mappingFunction.apply(k);
+			});
+			
+			if (computed[0] && entry != null) {
+				sendByKeyEvent(entry);
+			}
+			return entry;
+		}
+
+		@Override
+		public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+			CacheEntry[] old = new CacheEntry[1];
+			CacheEntry entry = wrapped.compute(key, (k, v) -> {
+				old[0] = v;
+				return remappingFunction.apply(k, v);
+			});
+			
+			if (entry != old[0]) {
+				//通知は値が変更された場合に限定する
+				sendByKeyEvent((entry != null)? entry: old[0]);
+			}
+			return entry;
 		}
 
 		@Override

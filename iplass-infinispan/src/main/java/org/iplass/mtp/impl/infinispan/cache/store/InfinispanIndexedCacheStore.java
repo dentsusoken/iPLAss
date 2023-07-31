@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.locks.LockSupport;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.infinispan.Cache;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
@@ -193,6 +195,26 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 			mainteIndex(null, entry);
 		}
 		return previous;
+	}
+
+	@Override
+	public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+		return wrapped.computeIfAbsent(key, k -> {
+			CacheEntry computed = mappingFunction.apply(k);
+			if (computed != null) {
+				mainteIndex(null, computed);
+			}
+			return computed;
+		});
+	}
+
+	@Override
+	public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+		return wrapped.compute(key, (k, v) -> {
+			CacheEntry computed = remappingFunction.apply(k, v);
+			mainteIndex(v, computed);
+			return computed;
+		});
 	}
 
 	@Override
