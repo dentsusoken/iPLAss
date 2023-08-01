@@ -69,11 +69,9 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 	private void notifyUpdate(EntityInvocation<?> invocation) {
 		EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
 		if (eh.getMetaData().isQueryCache()) {
-			CacheStore cache = getCache(false);
-			if (cache != null) {
-				synchronized(eh) {
-					cache.removeByIndex(0, eh.getMetaData().getName());
-				}
+			CacheStore cache = getCache(true);
+			synchronized(eh) {
+				cache.removeByIndex(0, eh.getMetaData().getName());
 			}
 		}
 	}
