@@ -57,8 +57,8 @@ import org.iplass.mtp.impl.web.actionmapping.Result.ResultRuntime;
 import org.iplass.mtp.impl.web.actionmapping.cache.MetaCacheCriteria;
 import org.iplass.mtp.impl.web.actionmapping.cache.MetaCacheCriteria.CacheCriteriaRuntime;
 import org.iplass.mtp.impl.web.fileupload.MultiPartParameterValueMap;
-import org.iplass.mtp.impl.web.template.TemplateService;
 import org.iplass.mtp.impl.web.template.MetaTemplate.TemplateRuntime;
+import org.iplass.mtp.impl.web.template.TemplateService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
@@ -90,6 +90,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 	private static final String PUT = "PUT";
 	private static final String DELETE = "DELETE";
 	private static final String TRACE = "TRACE";
+	private static final String WILDCARD = "*";
 
 	/** クライアントでのキャッシュ指定。未指定の場合はキャッシュを許す。 */
 	private ClientCacheType clientCacheType;
@@ -134,7 +135,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 	private boolean needTrustedAuthenticate;
 
 	private String[] allowRequestContentTypes;
-	
+
 	private Long maxRequestBodySize;
 	private Long maxFileSize;
 
@@ -276,15 +277,18 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		this.tokenCheck = tokenCheck;
 	}
 
+	@Override
 	public ActionMappingRuntime createRuntime(MetaDataConfig metaDataConfig) {
 		return new ActionMappingRuntime(metaDataConfig);
 	}
 
+	@Override
 	public MetaActionMapping copy() {
 		return ObjectUtil.deepCopy(this);
 	}
 
 	//Definition → Meta
+	@Override
 	public void applyConfig(ActionMappingDefinition definition) {
 		name = definition.getName();
 		displayName = definition.getDisplayName();
@@ -353,7 +357,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		}
 
 		needTrustedAuthenticate = definition.isNeedTrustedAuthenticate();
-		
+
 
 		if (definition.getAllowRequestContentTypes() != null) {
 			allowRequestContentTypes = new String[definition.getAllowRequestContentTypes().length];
@@ -361,12 +365,13 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		} else {
 			allowRequestContentTypes = null;
 		}
-		
+
 		maxRequestBodySize = definition.getMaxRequestBodySize();
 		maxFileSize = definition.getMaxFileSize();
 	}
 
 	//Meta → Definition
+	@Override
 	public ActionMappingDefinition currentConfig() {
 		ActionMappingDefinition definition = new ActionMappingDefinition();
 
@@ -428,7 +433,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 			definition.setAllowRequestContentTypes(new String[allowRequestContentTypes.length]);
 			System.arraycopy(allowRequestContentTypes, 0, definition.getAllowRequestContentTypes(), 0, allowRequestContentTypes.length);
 		}
-		
+
 		definition.setMaxRequestBodySize(maxRequestBodySize);
 		definition.setMaxFileSize(maxFileSize);
 		return definition;
@@ -448,7 +453,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		private ClientCacheType clientCacheTypeRuntime;
 
 		private CacheCriteriaRuntime cacheCriteriaRuntime;
-		
+
 		private RequestRestriction requestRestrictionRuntime;
 		private String allowString;
 
@@ -503,7 +508,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				} else {
 					clientCacheTypeRuntime = getClientCacheType();
 				}
-				
+
 				requestRestrictionRuntime = wfs.getRequestRestriction(getName(), PathType.ACTION);
 				if (!requestRestrictionRuntime.isForce()) {
 					if (maxRequestBodySize != null || maxFileSize != null
@@ -526,12 +531,12 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 						if (allowRequestContentTypes != null && allowRequestContentTypes.length > 0) {
 							requestRestrictionRuntime.setAllowContentTypes(Arrays.asList(allowRequestContentTypes));
 						}
-						
+
 						requestRestrictionRuntime.init();
 					}
 				}
 				allowString = allowString();
-				
+
 				//キャッシュ基準
 				if (cacheCriteria != null) {
 					cacheCriteriaRuntime = cacheCriteria.createRuntime(MetaActionMapping.this);
@@ -542,44 +547,55 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				cmdInterceptors = is.getInterceptors(ActionMappingService.COMMAND_INTERCEPTOR_NAME);
 				ActionMappingService as = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
 				reqInterceptors = as.getInterceptors();
-				
+
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
 
 		}
-		
+
 		private String allowString() {
 			StringBuilder sb = new StringBuilder();
 			for (String m: requestRestrictionRuntime.getAllowMethods()) {
-				if (sb.length() != 0) {
-					sb.append(", ");
-				}
 				switch (m) {
 				case GET:
-					sb.append(GET + ", " + HEAD);
+					sb.append(GET).append(", ").append(HEAD).append(", ");
 					break;
 				case POST:
-					sb.append(POST);
+					sb.append(POST).append(", ");
 					break;
 				case PUT:
-					sb.append(PUT);
+					sb.append(PUT).append(", ");
 					break;
 				case DELETE:
-					sb.append(DELETE);
+					sb.append(DELETE).append(", ");
+					break;
+				case WILDCARD:
+					// GET
+					sb.append(GET).append(", ").append(HEAD).append(", ");
+					// POST
+					sb.append(POST).append(", ");
+					// PUT
+					sb.append(PUT).append(", ");
+					// DELETE
+					sb.append(DELETE).append(", ");
 					break;
 				default:
+					// PATCH, CONNECT は設定しない
+					// HEAD は GET メソッド指定時に同時設定する
+					// OPTIONS, TRACE は最後に無条件設定する
 					break;
 				}
 			}
-			sb.append(", " + TRACE + ", " + OPTIONS);
+			sb.append(TRACE).append(", ").append(OPTIONS);
 			return sb.toString();
 		}
 
+		@Override
 		public MetaActionMapping getMetaData() {
 			return MetaActionMapping.this;
 		}
-		
+
 		public RequestRestriction getRequestRestriction() {
 			return requestRestrictionRuntime;
 		}
@@ -625,7 +641,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 			while( reqHeaderEnum.hasMoreElements() ) {
 				String headerName = reqHeaderEnum.nextElement();
 				buffer.append(CRLF).append(headerName).append(": ")
-					.append(req.getRequest().getHeader(headerName));
+				.append(req.getRequest().getHeader(headerName));
 			}
 
 			buffer.append(CRLF);
@@ -663,30 +679,30 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				break;
 			default:
 				req.getResponse().sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
-	            return;
+				return;
 			}
 
 			if (!requestRestrictionRuntime.isAllowedMethod(httpMethod)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("reject Request. HTTP Method:" + httpMethod + " not allowed for Action:" + getName());
 				}
-		        String protocol = req.getRequest().getProtocol();
-		        if (protocol.endsWith("1.1")) {
+				String protocol = req.getRequest().getProtocol();
+				if (protocol.endsWith("1.1")) {
 					req.getResponse().setHeader("Allow", allowString);
-		        	req.getResponse().sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-		        } else {
-		        	req.getResponse().sendError(HttpServletResponse.SC_BAD_REQUEST);
-		        }
-		        return;
+					req.getResponse().sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+				} else {
+					req.getResponse().sendError(HttpServletResponse.SC_BAD_REQUEST);
+				}
+				return;
 			}
-			
+
 			String rct = req.getRequest().getContentType();
 			if (rct != null && !requestRestrictionRuntime.isAllowedContentType(rct)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("reject Request. Content Type:" + rct + " not allowed for Action:" + getName());
 				}
-	        	req.getResponse().sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
-		        return;
+				req.getResponse().sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+				return;
 			}
 
 			// 部品の場合、クライアントからの直接呼出し不可
@@ -719,16 +735,16 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 			RequestContext requestContext = req.getRequestContext();
 			//cache tenantContextPath( and for implicit object: "tenantContextPath" in JSP)
 			requestContext.setAttribute(WebRequestConstants.TENANT_CONTEXT_PATH, req.getRequestPath().getTenantContextPath(req.getRequest()));
-			
+
 			if (requestContext instanceof WebRequestContext) {
 				WebRequestContext webRequestContext = (WebRequestContext) requestContext;
 				ParameterValueMap currentValueMap = webRequestContext.getValueMap();
-				
+
 				//set maxFileSize
 				if (currentValueMap instanceof MultiPartParameterValueMap) {
 					((MultiPartParameterValueMap) currentValueMap).setMaxFileSize(requestRestrictionRuntime.maxFileSize());
 				}
-				
+
 				//parameter map
 				if (paramMap != null) {
 					VariableParameterValueMap variableValueMap = new VariableParameterValueMap(currentValueMap, req.getRequestPath(), this);
@@ -746,7 +762,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				invoke.proceedRequest();
 			}
 		}
-		
+
 		public Map<String, List<ParamMapRuntime>> getParamMapRuntimes() {
 			checkState();
 			return paramMapRuntimes;
