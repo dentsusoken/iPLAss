@@ -70,6 +70,8 @@ subprojects { subproject ->
 		}
 	}
 
+	task allDeps(type: DependencyReportTask) {}
+
 	task copyJavadocJava(type: Copy) {
 		from sourceSets['main'].allJava
 		into "${buildDir}/docSrc/${javadocLang}"
