@@ -69,8 +69,8 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 				}
 			}
 		});
-		pubSubCommands = pubSubConnection.sync();
-		pubSubCommands.subscribe("__keyevent@0__:expired"); // Expiredイベントのみ受信、DB番号は0固定
+		this.pubSubCommands = pubSubConnection.sync();
+		pubSubCommands.subscribe("__keyevent@" + String.valueOf(factory.getServer().getDatabase()) + "__:expired"); // Expiredイベントのみ受信、DB番号は0固定
 	}
 
 	@Override

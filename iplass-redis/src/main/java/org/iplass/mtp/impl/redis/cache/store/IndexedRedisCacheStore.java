@@ -31,6 +31,7 @@ import org.iplass.mtp.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.lettuce.core.ScriptOutputType;
 import io.lettuce.core.pubsub.RedisPubSubListener;
 
 public class IndexedRedisCacheStore extends RedisCacheStoreBase {
@@ -81,69 +82,92 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 	}
 
 	@Override
-	public CacheEntry put(CacheEntry entry, boolean clean) {
-		/*
-		 * CacheEntry previous = wrapped.put(redisIndexCmds, entry, false); if (previous
-		 * != null) { removeFromIndex(previous); } addToIndex(entry); wrapped.exec(); if
-		 * (previous == null) { wrapped.notifyPut(entry); } else {
-		 * wrapped.notifyUpdated(previous, entry); } return previous;
-		 */
-		return null;
-	}
-
-	@Override
-	public CacheEntry putIfAbsent(CacheEntry entry) {
-		/*
-		 * CacheEntry previous = wrapped.putIfAbsent(redisIndexCmds, entry, false); if
-		 * (previous == null) { addToIndex(entry); wrapped.exec();
-		 * wrapped.notifyPut(entry); } return previous;
-		 */
-		return null;
-	}
-
-	@Override
 	public CacheEntry get(Object key) {
 		return key != null ? (CacheEntry) commands.get(key) : null;
 	}
 
 	@Override
+	public CacheEntry put(CacheEntry entry, boolean clean) {
+
+		CacheEntry previous = (CacheEntry) commands.eval(IndexedRedisCacheStoreLuaScript.PUT, ScriptOutputType.VALUE,
+				new Object[] { entry.getKey() }, timeToLive, entry);
+		if (previous != null) {
+			removeFromIndex(previous);
+		}
+		addToIndex(entry);
+		if (previous == null) {
+			notifyPut(entry);
+		} else {
+			notifyUpdated(previous, entry);
+		}
+		return previous;
+	}
+
+	@Override
+	public CacheEntry putIfAbsent(CacheEntry entry) {
+		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT, ScriptOutputType.VALUE,
+				new Object[] { entry.getKey() }, timeToLive, entry);
+
+		if (previous == null) {
+			addToIndex(entry);
+			notifyPut(entry);
+		}
+		return previous;
+	}
+
+	@Override
 	public CacheEntry remove(Object key) {
-		/*
-		 * CacheEntry previous = wrapped.remove(redisIndexCmds, key, false); if
-		 * (previous != null) { removeFromIndex(previous); wrapped.exec();
-		 * wrapped.notifyRemoved(previous); } return previous;
-		 */
-		return null;
+		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_KEY, ScriptOutputType.VALUE,
+				new Object[] { key });
+
+		if (previous != null) {
+			removeFromIndex(previous);
+			notifyRemoved(previous);
+		}
+		return previous;
 	}
 
 	@Override
 	public boolean remove(CacheEntry entry) {
-		/*
-		 * CacheEntry previous = wrapped.remove(redisIndexCmds, entry, false); if
-		 * (previous != null) { removeFromIndex(entry); wrapped.exec();
-		 * wrapped.notifyRemoved(previous); return true; } return false;
-		 */
+		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY,
+				ScriptOutputType.VALUE, new Object[] { entry.getKey() }, entry);
+
+		if (previous != null) {
+			removeFromIndex(previous);
+			notifyRemoved(previous);
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public CacheEntry replace(CacheEntry entry) {
-		/*
-		 * CacheEntry previous = wrapped.replace(redisIndexCmds, entry, false); if
-		 * (previous != null) { removeFromIndex(previous); addToIndex(entry);
-		 * wrapped.exec(); wrapped.notifyUpdated(previous, entry); } return previous;
-		 */
-		return null;
+		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE, ScriptOutputType.VALUE,
+				new Object[] { entry.getKey() }, timeToLive, entry);
+
+		if (previous != null) {
+			removeFromIndex(previous);
+			addToIndex(entry);
+			notifyUpdated(previous, entry);
+		}
+		return previous;
 	}
 
 	@Override
 	public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-		/*
-		 * boolean previous = wrapped.replace(redisIndexCmds, oldEntry, newEntry,
-		 * false); if (previous) { removeFromIndex(oldEntry); addToIndex(newEntry);
-		 * wrapped.exec(); wrapped.notifyUpdated(oldEntry, newEntry); } return previous;
-		 */
-		return false;
+		if (!oldEntry.getKey().equals(newEntry.getKey())) {
+			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
+		}
+
+		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE_NEW, ScriptOutputType.VALUE,
+				new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
+
+		if (previous != null) {
+			removeFromIndex(oldEntry);
+			addToIndex(newEntry);
+			notifyUpdated(oldEntry, newEntry);
+		}
+		return previous != null;
 	}
 
 	@Override

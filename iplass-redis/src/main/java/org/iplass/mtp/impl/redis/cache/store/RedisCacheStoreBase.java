@@ -66,7 +66,7 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 		this.commands = statefulConnection.sync();
 		this.pubSubConnection = factory.getClient().connectPubSub();
 
-		listeners = new CopyOnWriteArrayList<CacheEventListener>();
+		this.listeners = new CopyOnWriteArrayList<CacheEventListener>();
 	}
 
 	@Override
@@ -102,7 +102,8 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 	@Override
 	public void destroy() {
 		if (pubSubCommands != null && statefulConnection.isOpen()) {
-			pubSubCommands.unsubscribe("__keyevent@0__:expired");
+			pubSubCommands
+					.unsubscribe("__keyevent@" + String.valueOf(factory.getServer().getDatabase()) + "__:expired");
 			pubSubCommands.shutdown(isSave);
 			pubSubCommands = null;
 		}

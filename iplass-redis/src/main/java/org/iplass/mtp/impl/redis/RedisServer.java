@@ -25,7 +25,11 @@ public class RedisServer {
 	private String serverName;
 	private String host;
 	private int port = 6379;
-	private long timeout = 0L;		// Seconds(0以下無期限)
+	private long timeout = 0L; // Seconds(0以下無期限)
+	private int database = 0;
+	private String userName;
+	private String password;
+	private boolean ssl = false;
 
 	public String getServerName() {
 		return serverName;
@@ -57,6 +61,38 @@ public class RedisServer {
 
 	public void setTimeout(long timeout) {
 		this.timeout = timeout;
+	}
+
+	public int getDatabase() {
+		return database;
+	}
+
+	public void setDatabase(int database) {
+		this.database = database;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public boolean isSsl() {
+		return ssl;
+	}
+
+	public void setSsl(boolean ssl) {
+		this.ssl = ssl;
 	}
 
 }
