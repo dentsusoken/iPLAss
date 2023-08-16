@@ -80,9 +80,12 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private static final long serialVersionUID = 2590900624234333139L;
 
 	private static Logger logger = LoggerFactory.getLogger(MetaWebApi.class);
-	
+
 	public static final String HEADER_ACCEPT = "Accept";
 	public static final String COMMAND_INTERCEPTOR_NAME = "webApi";
+
+	/** HTTPMethod 指定時のワイルドカード */
+	private static final String WILDCARD = "*";
 
 	/** このWebAPIが呼び出されたときに実行するCommand。 */
 	private MetaCommand command;
@@ -131,7 +134,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private boolean needTrustedAuthenticate;
 
 	private String[] allowRequestContentTypes;
-	
+
 	private Long maxRequestBodySize;
 	private Long maxFileSize;
 
@@ -158,7 +161,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	public void setAllowRequestContentTypes(String[] allowRequestContentTypes) {
 		this.allowRequestContentTypes = allowRequestContentTypes;
 	}
-	
+
 	public String[] getOauthScopes() {
 		return oauthScopes;
 	}
@@ -365,7 +368,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 		private MethodType specificMethod;
 		private String parentName;
-		
+
 		private RequestRestriction requestRestrictionRuntime;
 		private String corsAllowString;
 
@@ -376,21 +379,21 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 					cmd = command.createRuntime();
 				}
 
-//			if (paramMap != null) {
-//				mapFromTo = new HashMap<String, String>();
-//				mapToFrom = new HashMap<String, String>();
-//				ArrayList<ParamMap> variables = new ArrayList<ParamMap>();
-//				for (ParamMap p: paramMap) {
-//					mapFromTo.put(p.getMapFrom(), p.getName());
-//					mapToFrom.put(p.getName(), p.getMapFrom());
-//					if (p.getMapFrom().startsWith("{") && p.getMapFrom().endsWith("}")) {
-//						variables.add(p);
-//					}
-//				}
-//				if (variables.size() > 0) {
-//					variableParamMap = variables.toArray(new ParamMap[variables.size()]);
-//				}
-//			}
+				//			if (paramMap != null) {
+				//				mapFromTo = new HashMap<String, String>();
+				//				mapToFrom = new HashMap<String, String>();
+				//				ArrayList<ParamMap> variables = new ArrayList<ParamMap>();
+				//				for (ParamMap p: paramMap) {
+				//					mapFromTo.put(p.getMapFrom(), p.getName());
+				//					mapToFrom.put(p.getName(), p.getMapFrom());
+				//					if (p.getMapFrom().startsWith("{") && p.getMapFrom().endsWith("}")) {
+				//						variables.add(p);
+				//					}
+				//				}
+				//				if (variables.size() > 0) {
+				//					variableParamMap = variables.toArray(new ParamMap[variables.size()]);
+				//				}
+				//			}
 
 				if (webApiParamMap != null) {
 					webApiParamMapRuntimes = new HashMap<>();
@@ -430,7 +433,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 						break;
 					}
 				}
-				
+
 				WebFrontendService wfs = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
 				if (getCacheControlType() != null) {
 					cacheControlType = getCacheControlType();
@@ -460,11 +463,11 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 						if (allowRequestContentTypes != null && allowRequestContentTypes.length > 0) {
 							requestRestrictionRuntime.setAllowContentTypes(Arrays.asList(allowRequestContentTypes));
 						}
-						
+
 						requestRestrictionRuntime.init();
 					}
 				}
-				
+
 				corsAllowString = corsAllowString();
 
 
@@ -472,16 +475,40 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				setIllegalStateException(e);
 			}
 		}
-		
+
 		private String corsAllowString() {
 			StringBuilder sb = new StringBuilder();
 			for (String m: requestRestrictionRuntime.getAllowMethods()) {
-				if (sb.length() != 0) {
-					sb.append(", ");
+				switch (m) {
+				case HttpMethod.GET:
+					sb.append(HttpMethod.GET).append(", ");
+					break;
+				case HttpMethod.POST:
+					sb.append(HttpMethod.POST).append(", ");
+					break;
+				case HttpMethod.PUT:
+					sb.append(HttpMethod.PUT).append(", ");
+					break;
+				case HttpMethod.DELETE:
+					sb.append(HttpMethod.DELETE).append(", ");
+					break;
+				case WILDCARD:
+					// GET
+					sb.append(HttpMethod.GET).append(", ");
+					// POST
+					sb.append(HttpMethod.POST).append(", ");
+					// PUT
+					sb.append(HttpMethod.PUT).append(", ");
+					// DELETE
+					sb.append(HttpMethod.DELETE).append(", ");
+					break;
+				default:
+					// HEAD, PATCH, TRACE, CONNECT は設定しない
+					// OPTIONS は最後に無条件設定する
+					break;
 				}
-				sb.append(m);
 			}
-			sb.append(", " + HttpMethod.OPTIONS);
+			sb.append(HttpMethod.OPTIONS);
 			return sb.toString();
 		}
 
@@ -553,17 +580,17 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			if (cc == null) {
 				cc = service.getCors();
 			}
-			
+
 			if (!requestRestrictionRuntime.isForce()) {
 				if (accessControlAllowOriginTemplate != null) {
 					return accessControlAllowCredentials;
 				}
 			}
-			
+
 			if (cc != null) {
 				return cc.isAllowCredentials();
 			}
-			
+
 			return false;
 		}
 
@@ -572,14 +599,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			if (cc == null) {
 				cc = service.getCors();
 			}
-			
+
 			if (!requestRestrictionRuntime.isForce()) {
 				String acao = getAccessControlAllowOrigin(req);
 				if (acao != null) {
 					return corsAllowOrign(origin, acao);
 				}
 			}
-			
+
 			if (cc != null && cc.getAllowOrigin() != null) {
 				for (String s: cc.getAllowOrigin()) {
 					if (corsAllowOrign(origin, s)) {
@@ -587,7 +614,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 					}
 				}
 			}
-			
+
 			return false;
 		}
 
@@ -608,15 +635,16 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			}
 			return false;
 		}
-		
+
 		private boolean isMatchOrigin(String origin, String accessControlAllowOrigin) {
 			return FilenameUtils.wildcardMatch(origin, accessControlAllowOrigin);
 		}
-		
+
 		public String corsAccessControlAllowMethods() {
 			return corsAllowString;
 		}
 
+		@Override
 		public MetaWebApi getMetaData() {
 			return MetaWebApi.this;
 		}
@@ -686,17 +714,17 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			if (contentType == null) {
 				return;
 			}
-			
+
 			if (!requestRestrictionRuntime.isAllowedContentType(contentType)) {
 				throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE);
 			}
 		}
-		
+
 		public void checkMethodType(String requestMethod) {
 			if (HttpMethod.OPTIONS.equals(requestMethod)) {
 				return;
 			}
-			
+
 			if (!requestRestrictionRuntime.isAllowedMethod(requestMethod)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("reject Request. HTTP Method:" + requestMethod + " not allowed for WebAPI:" + getName());
@@ -704,7 +732,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				throw new WebApplicationException(Status.METHOD_NOT_ALLOWED);
 			}
 		}
-		
+
 		public boolean isSufficientOAuthScope(List<String> grantedScopes) {
 			if (oauthScopes == null || oauthScopes.length == 0) {
 				return false;
@@ -712,7 +740,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			if (grantedScopes == null || grantedScopes.size() == 0) {
 				return false;
 			}
-			
+
 			for (String os: oauthScopes) {
 				if (os.indexOf(' ') > 0) {
 					String[] osSplit = os.split(" ");
@@ -732,6 +760,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	}
 
 	// Meta → Definition
+	@Override
 	public WebApiDefinition currentConfig() {
 		WebApiDefinition definition = new WebApiDefinition();
 
@@ -790,7 +819,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setAccessControlAllowOrigin(accessControlAllowOrigin);
 		definition.setAccessControlAllowCredentials(accessControlAllowCredentials);
 		definition.setNeedTrustedAuthenticate(needTrustedAuthenticate);
-		
+
 		if (oauthScopes != null) {
 			definition.setOauthScopes(Arrays.copyOf(oauthScopes, oauthScopes.length));
 		}
@@ -799,7 +828,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			definition.setAllowRequestContentTypes(new String[allowRequestContentTypes.length]);
 			System.arraycopy(allowRequestContentTypes, 0, definition.getAllowRequestContentTypes(), 0, allowRequestContentTypes.length);
 		}
-		
+
 		definition.setMaxRequestBodySize(maxRequestBodySize);
 		definition.setMaxFileSize(maxFileSize);
 
@@ -807,6 +836,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	}
 
 	// Definition → Meta
+	@Override
 	public void applyConfig(WebApiDefinition definition) {
 		name = definition.getName();
 		displayName = definition.getDisplayName();
@@ -882,20 +912,20 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		accessControlAllowOrigin = definition.getAccessControlAllowOrigin();
 		accessControlAllowCredentials = definition.isAccessControlAllowCredentials();
 		needTrustedAuthenticate = definition.isNeedTrustedAuthenticate();
-		
+
 		if (definition.getOauthScopes() != null) {
 			oauthScopes = Arrays.copyOf(definition.getOauthScopes(), definition.getOauthScopes().length);
 		} else {
 			oauthScopes = null;
 		}
-		
+
 		if (definition.getAllowRequestContentTypes() != null) {
 			allowRequestContentTypes = new String[definition.getAllowRequestContentTypes().length];
 			System.arraycopy(definition.getAllowRequestContentTypes(), 0, allowRequestContentTypes, 0, allowRequestContentTypes.length);
 		} else {
 			allowRequestContentTypes = null;
 		}
-		
+
 		maxRequestBodySize = definition.getMaxRequestBodySize();
 		maxFileSize = definition.getMaxFileSize();
 	}
