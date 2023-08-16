@@ -32,7 +32,7 @@
 
 <%-- enの場合はデフォルトを利用 --%>
 <c:if test="${language != 'en'}" >
-<script src="${staticContentPath}/webjars/jquery-ui/1.12.1/ui/minified/i18n/datepicker-${language}.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/webjars/jquery-ui/ui/i18n/datepicker-${language}.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/jQuery-Timepicker-Addon/1.6.3/i18n/jquery-ui-timepicker-${language}.js?cv=${apiVersion}"></script>
 </c:if>
 <script src="${staticContentPath}/scripts/gem/plugin/jQuery-Timepicker-Addon/jquery-ui-timepicker-addon-mtp.js?cv=${apiVersion}"></script>
