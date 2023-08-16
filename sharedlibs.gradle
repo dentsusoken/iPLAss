@@ -112,7 +112,6 @@ ext {
 		
 		'org.webjars.bower:blueimp-file-upload': '10.30.1',
 		'org.webjars.bower:fullcalendar': '3.10.2',
-		'org.webjars.bower:jQuery-contextMenu': '2.6.2',
 		'org.webjars.bower:mediaelement': '4.2.5',
 		
 		'org.webjars.bowergithub.jquery:jquery-ui': '1.13.2',
