@@ -23,6 +23,8 @@ package org.iplass.mtp.impl.redis.cache.store;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
@@ -31,40 +33,41 @@ import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
 import org.iplass.mtp.impl.cache.store.event.CacheInvalidateEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheRemoveEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheUpdateEvent;
+import org.iplass.mtp.impl.redis.RedisRuntimeException;
 
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
+import io.lettuce.core.support.ConnectionPoolSupport;
 
 public abstract class RedisCacheStoreBase implements CacheStore {
 
-	protected StatefulRedisConnection<Object, Object> statefulConnection;
-	protected RedisCommands<Object, Object> commands;
-
-	protected StatefulRedisPubSubConnection<String, String> pubSubConnection;
+	protected final StatefulRedisPubSubConnection<String, String> pubSubConnection;
 	protected RedisPubSubCommands<String, String> pubSubCommands;
-
-	protected final long timeToLive;
-	protected final boolean isSave;
-
-	protected NamespaceSerializedObjectCodec codec;
 
 	private final RedisCacheStoreFactory factory;
 	private final String namespace;
+	protected final long timeToLive;
 
-	private List<CacheEventListener> listeners;
+	protected final NamespaceSerializedObjectCodec codec;
+	protected final GenericObjectPool<StatefulRedisConnection<Object, Object>> pool;
 
-	public RedisCacheStoreBase(RedisCacheStoreFactory factory, String namespace, long timeToLive, boolean isSave) {
+	private final List<CacheEventListener> listeners;
+
+	public RedisCacheStoreBase(RedisCacheStoreFactory factory, String namespace, long timeToLive,
+			RedisCacheStorePoolConfig redisCacheStorePoolConfig) {
+		this.pubSubConnection = factory.getClient().connectPubSub();
 		this.factory = factory;
 		this.namespace = namespace;
 		this.timeToLive = timeToLive;
-		this.isSave = isSave;
 
 		this.codec = new NamespaceSerializedObjectCodec(namespace);
-		this.statefulConnection = factory.getClient().connect(codec);
-		this.commands = statefulConnection.sync();
-		this.pubSubConnection = factory.getClient().connectPubSub();
+
+		GenericObjectPoolConfig<StatefulRedisConnection<Object, Object>> poolConfig = new GenericObjectPoolConfig<>();
+		redisCacheStorePoolConfig.apply(poolConfig);
+
+		this.pool = ConnectionPoolSupport.createGenericObjectPool(() -> factory.getClient().connect(codec), poolConfig);
 
 		this.listeners = new CopyOnWriteArrayList<CacheEventListener>();
 	}
@@ -80,6 +83,11 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 	}
 
 	@Override
+	public List<CacheEventListener> getListeners() {
+		return listeners;
+	}
+
+	@Override
 	public void addCacheEventListenner(CacheEventListener listener) {
 		listeners.add(listener);
 	}
@@ -90,40 +98,30 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 	}
 
 	@Override
-	public List<CacheEventListener> getListeners() {
-		return listeners;
-	}
-
-	@Override
 	public int getSize() {
-		return commands.dbsize().intValue();
-	}
-
-	@Override
-	public void destroy() {
-		if (pubSubCommands != null && statefulConnection.isOpen()) {
-			pubSubCommands
-					.unsubscribe("__keyevent@" + String.valueOf(factory.getServer().getDatabase()) + "__:expired");
-			pubSubCommands.shutdown(isSave);
-			pubSubCommands = null;
-		}
-		if (pubSubConnection != null && pubSubConnection.isOpen()) {
-			pubSubConnection.close();
-			pubSubConnection = null;
-		}
-		if (commands != null && statefulConnection.isOpen()) {
-			commands.shutdown(isSave);
-			commands = null;
-		}
-		if (statefulConnection != null && statefulConnection.isOpen()) {
-			statefulConnection.close();
-			statefulConnection = null;
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			List<Object> keys = commands.keys("*");
+			return keys == null ? 0 : keys.size();
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
 		}
 	}
 
 	@Override
 	public String trace() {
-		return commands.info();
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			return commands.info();
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
+		}
+	}
+
+	@Override
+	public void destroy() {
+		pool.close();
+		factory.getClient().shutdown();
 	}
 
 	protected void notifyRemoved(CacheEntry entry) {

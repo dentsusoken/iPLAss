@@ -21,30 +21,35 @@
 package org.iplass.mtp.impl.redis.cache.store;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
+import org.iplass.mtp.impl.redis.RedisRuntimeException;
 import org.iplass.mtp.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.lettuce.core.ScriptOutputType;
+import io.lettuce.core.TransactionResult;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.RedisPubSubListener;
 
 public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 	private static final Logger logger = LoggerFactory.getLogger(IndexedRedisCacheStore.class);
 
+	private final int retryCount;
 	private final int indexSize;
 
 	public IndexedRedisCacheStore(RedisCacheStoreFactory factory, String namespace, long timeToLive, int indexSize,
-			boolean isSave) {
-		super(factory, namespace, timeToLive, isSave);
+			RedisCacheStorePoolConfig redisCacheStorePoolConfig) {
+		super(factory, namespace, timeToLive, redisCacheStorePoolConfig);
 
 		this.indexSize = indexSize;
+		this.retryCount = factory.getRetryCount();
 
 		pubSubConnection.addListener(new RedisPubSubListener<String, String>() {
 			@Override
@@ -74,83 +79,211 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 					if (logger.isDebugEnabled()) {
 						logger.debug(String.format("Occur expired event. channel:%s, message:%s", channel, message));
 					}
-					Object key = codec.decodeKey(ByteBuffer.wrap(codec.getCharset().encode(message).array()));
-					removeAllFromIndex(key);
+					Object key = codec.decodeKey(codec.getCharset().encode(message));
+					notifyRemoved(new CacheEntry(key, null));
+					removeAllIndex(key);
 				}
 			}
 		});
+		this.pubSubCommands = pubSubConnection.sync();
+		pubSubCommands.subscribe("__keyevent@" + String.valueOf(factory.getServer().getDatabase()) + "__:expired"); // Expiredイベントのみ受信、DB番号は0固定
 	}
 
 	@Override
 	public CacheEntry get(Object key) {
-		return key != null ? (CacheEntry) commands.get(key) : null;
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			return key != null ? (CacheEntry) commands.get(key) : null;
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
+		}
 	}
 
 	@Override
 	public CacheEntry put(CacheEntry entry, boolean clean) {
+		for (int count = 0; count <= retryCount; count++) {
+			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+				RedisCommands<Object, Object> commands = connection.sync();
+				commands.watch(entry.getKey());
 
-		CacheEntry previous = (CacheEntry) commands.eval(IndexedRedisCacheStoreLuaScript.PUT, ScriptOutputType.VALUE,
-				new Object[] { entry.getKey() }, timeToLive, entry);
-		if (previous != null) {
-			removeFromIndex(previous);
+				List<IndexKey> indexKeys = getIndexKeysFromEntry(entry);
+				commands.watch(indexKeys);
+
+				CacheEntry previous = get(entry.getKey());
+
+				commands.multi();
+
+				if (timeToLive > 0) {
+					commands.setex(entry.getKey(), timeToLive, entry);
+				} else {
+					commands.set(entry.getKey(), entry);
+				}
+
+				if (previous != null) {
+					removeIndexValues(previous, commands);
+				}
+				addIndexValues(entry, indexKeys, commands);
+
+				TransactionResult result = commands.exec();
+				if (result.wasDiscarded()) {
+					continue;
+				}
+
+				if (previous == null) {
+					notifyPut(entry);
+				} else {
+					notifyUpdated(previous, entry);
+				}
+				return previous;
+			} catch (Exception e) {
+				throw new RedisRuntimeException(e);
+			}
 		}
-		addToIndex(entry);
-		if (previous == null) {
-			notifyPut(entry);
-		} else {
-			notifyUpdated(previous, entry);
-		}
-		return previous;
+		throw new SystemException("can not put CacheEntry cause retry count over:" + entry);
 	}
 
 	@Override
 	public CacheEntry putIfAbsent(CacheEntry entry) {
-		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT, ScriptOutputType.VALUE,
-				new Object[] { entry.getKey() }, timeToLive, entry);
+		for (int count = 0; count <= retryCount; count++) {
+			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+				RedisCommands<Object, Object> commands = connection.sync();
+				commands.watch(entry.getKey());
 
-		if (previous == null) {
-			addToIndex(entry);
-			notifyPut(entry);
+				List<IndexKey> indexKeys = getIndexKeysFromEntry(entry);
+				commands.watch(indexKeys);
+
+				CacheEntry previous = get(entry.getKey());
+
+				if (previous == null) {
+					commands.multi();
+
+					if (timeToLive > 0) {
+						commands.setex(entry.getKey(), timeToLive, entry);
+					} else {
+						commands.set(entry.getKey(), entry);
+					}
+
+					addIndexValues(entry, indexKeys, commands);
+
+					TransactionResult result = commands.exec();
+					if (result.wasDiscarded()) {
+						continue;
+					}
+
+					notifyPut(entry);
+					return null;
+				} else {
+					commands.unwatch();
+					return previous;
+				}
+			} catch (Exception e) {
+				throw new RedisRuntimeException(e);
+			}
 		}
-		return previous;
+		throw new SystemException("can not putIfAbsent CacheEntry cause retry count over:" + entry);
 	}
 
 	@Override
 	public CacheEntry remove(Object key) {
-		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_KEY, ScriptOutputType.VALUE,
-				new Object[] { key });
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			commands.watch(key);
 
-		if (previous != null) {
-			removeFromIndex(previous);
-			notifyRemoved(previous);
+			CacheEntry previous = get(key);
+
+			if (previous != null) {
+				List<IndexKey> indexKeys = getIndexKeysFromEntry(previous);
+				commands.watch(indexKeys);
+
+				commands.multi();
+
+				commands.del(key);
+				removeIndexValues(previous, commands);
+
+				TransactionResult result = commands.exec();
+				if (result.wasDiscarded()) {
+					throw new SystemException("can not remove CacheEntry. key:" + key);
+				}
+
+				notifyRemoved(previous);
+				return previous;
+			} else {
+				commands.unwatch();
+				return null;
+			}
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
 		}
-		return previous;
 	}
 
 	@Override
 	public boolean remove(CacheEntry entry) {
-		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY,
-				ScriptOutputType.VALUE, new Object[] { entry.getKey() }, entry);
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			commands.watch(entry.getKey());
 
-		if (previous != null) {
-			removeFromIndex(previous);
-			notifyRemoved(previous);
-			return true;
+			CacheEntry previous = get(entry.getKey());
+
+			if (previous != null && previous.equals(entry)) {
+				List<IndexKey> indexKeys = getIndexKeysFromEntry(previous);
+				commands.watch(indexKeys);
+
+				commands.multi();
+
+				commands.del(entry.getKey());
+				removeIndexValues(entry, commands);
+
+				TransactionResult result = commands.exec();
+				if (result.wasDiscarded()) {
+					throw new SystemException("can not remove CacheEntry. key:" + entry.getKey());
+				}
+
+				notifyRemoved(previous);
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
 		}
-		return false;
 	}
 
 	@Override
 	public CacheEntry replace(CacheEntry entry) {
-		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE, ScriptOutputType.VALUE,
-				new Object[] { entry.getKey() }, timeToLive, entry);
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			commands.watch(entry.getKey());
 
-		if (previous != null) {
-			removeFromIndex(previous);
-			addToIndex(entry);
-			notifyUpdated(previous, entry);
+			CacheEntry previous = get(entry.getKey());
+
+			if (previous != null) {
+				List<IndexKey> indexKeys = getIndexKeysFromEntry(previous);
+				commands.watch(indexKeys);
+
+				commands.multi();
+
+				if (timeToLive > 0) {
+					commands.setex(entry.getKey(), timeToLive, entry);
+				} else {
+					commands.set(entry.getKey(), entry);
+				}
+
+				removeIndexValues(entry, commands);
+				addIndexValues(entry, indexKeys, commands);
+
+				TransactionResult result = commands.exec();
+				if (result.wasDiscarded()) {
+					throw new SystemException("can not replace CacheEntry. key:" + entry.getKey());
+				}
+
+				notifyUpdated(previous, entry);
+				return previous;
+			} else {
+				commands.unwatch();
+				return null;
+			}
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
 		}
-		return previous;
 	}
 
 	@Override
@@ -159,15 +292,41 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
 		}
 
-		CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE_NEW, ScriptOutputType.VALUE,
-				new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			commands.watch(oldEntry.getKey());
 
-		if (previous != null) {
-			removeFromIndex(oldEntry);
-			addToIndex(newEntry);
-			notifyUpdated(oldEntry, newEntry);
+			CacheEntry previous = get(oldEntry.getKey());
+
+			if (previous != null && previous.equals(oldEntry)) {
+				List<IndexKey> indexKeys = getIndexKeysFromEntry(previous);
+				commands.watch(indexKeys);
+
+				commands.multi();
+
+				if (timeToLive > 0) {
+					commands.setex(newEntry.getKey(), timeToLive, newEntry);
+				} else {
+					commands.set(newEntry.getKey(), newEntry);
+				}
+
+				removeIndexValues(newEntry, commands);
+				addIndexValues(newEntry, indexKeys, commands);
+
+				TransactionResult result = commands.exec();
+				if (result.wasDiscarded()) {
+					throw new SystemException("can not replace CacheEntry. key:" + newEntry.getKey());
+				}
+
+				notifyUpdated(previous, newEntry);
+				return true;
+			} else {
+				commands.unwatch();
+				return false;
+			}
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
 		}
-		return previous != null;
 	}
 
 	@Override
@@ -177,46 +336,69 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public List<Object> keySet() {
-		List<Object> keys = commands.keys("*");
-		if (CollectionUtil.isNotEmpty(keys)) {
-			List<Object> keyList = new ArrayList<Object>();
-			keys.forEach(key -> {
-				if (!(key instanceof IndexKey)) { // IndexのKeyは除く
-					keyList.add(key);
-				}
-			});
-			return keyList;
-		}
-		return Collections.emptyList();
-	}
-
-	@Override
-	public CacheEntry getByIndex(int indexKey, Object indexValue) {
-		List<Object> keyList = commands.lrange(new IndexKey(indexKey, indexValue), 0L, -1L);
-		for (Object key : keyList) {
-			if (!isExpired(key)) {
-				return get(key);
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			List<Object> keys = commands.keys("*");
+			if (CollectionUtil.isNotEmpty(keys)) {
+				List<Object> keyList = new ArrayList<Object>();
+				keys.forEach(key -> {
+					if (!(key instanceof IndexKey)) { // IndexのKeyは除く
+						keyList.add(key);
+					}
+				});
+				return keyList;
 			}
-			removeFromIndex(indexKey, indexValue, key);
+			return Collections.emptyList();
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
 		}
-		return null;
 	}
 
 	@Override
-	public List<CacheEntry> getListByIndex(int indexKey, Object indexValue) {
-		List<Object> keyList = commands.lrange(new IndexKey(indexKey, indexValue), 0L, -1L);
-		if (keyList != null && !keyList.isEmpty()) {
-			List<CacheEntry> entryList = new ArrayList<CacheEntry>();
-			keyList.forEach(key -> {
-				if (!isExpired(key)) {
-					entryList.add(get(key));
+	public CacheEntry getByIndex(int index, Object indexValue) {
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+
+			IndexKey indexKey = new IndexKey(index, indexValue);
+			List<Object> entryKeyList = commands.lrange(indexKey, 0L, -1L);
+
+			for (Object entryKey : entryKeyList) {
+				CacheEntry entry = get(entryKey);
+				if (entry != null) {
+					return entry;
 				} else {
-					removeFromIndex(indexKey, indexValue, key);
+					removeIndexValues(entry, commands);
 				}
-			});
-			return entryList;
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
 		}
-		return Collections.emptyList();
+	}
+
+	@Override
+	public List<CacheEntry> getListByIndex(int index, Object indexValue) {
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			IndexKey indexKey = new IndexKey(index, indexValue);
+			List<Object> entryKeyList = commands.lrange(indexKey, 0L, -1L);
+
+			if (CollectionUtil.isNotEmpty(entryKeyList)) {
+				List<CacheEntry> entryList = new ArrayList<CacheEntry>();
+				entryKeyList.forEach(entryKey -> {
+					CacheEntry entry = get(entryKey);
+					if (entry != null) {
+						entryList.add(entry);
+					} else {
+						removeIndexValues(entry, commands);
+					}
+				});
+				return entryList;
+			}
+			return Collections.emptyList();
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
+		}
 	}
 
 	@Override
@@ -226,59 +408,59 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 		return entryList;
 	}
 
-	private void pushToIndex(int index, Object indexValue, Object key) {
-		commands.rpush(new IndexKey(index, indexValue), key);
-	}
+	private List<IndexKey> getIndexKeysFromEntry(CacheEntry entry) {
+		List<IndexKey> indexKeys = new ArrayList<>();
 
-	private void addToIndex(CacheEntry entry) {
 		for (int i = 0; i < indexSize; i++) {
-			Object iKey = entry.getIndexValue(i);
-			if (iKey instanceof Object[]) {
-				Object[] iKeyArray = (Object[]) iKey;
-				for (int j = 0; j < iKeyArray.length; j++) {
-					if (iKeyArray[j] != null) {
-						pushToIndex(i, iKeyArray[j], entry.getKey());
+			Object indexValue = entry.getIndexValue(i);
+			if (indexValue instanceof Object[]) {
+				Object[] indexValueArray = (Object[]) indexValue;
+				for (int j = 0; j < indexValueArray.length; j++) {
+					if (indexValueArray[j] != null) {
+						indexKeys.add(new IndexKey(i, indexValueArray[j]));
 					}
 				}
 			} else {
-				if (iKey != null) {
-					pushToIndex(i, iKey, entry.getKey());
+				if (indexValue != null) {
+					indexKeys.add(new IndexKey(i, indexValue));
 				}
 			}
 		}
+
+		return indexKeys;
 	}
 
-	private void removeFromIndex(int indexKey, Object indexValue, Object key) {
-		commands.lrem(new IndexKey(indexKey, indexValue), 0L, key);
-	}
-
-	private void removeFromIndex(CacheEntry entry) {
-		for (int i = 0; i < indexSize; i++) {
-			Object iKey = entry.getIndexValue(i);
-			if (iKey instanceof Object[]) {
-				Object[] iKeyArray = (Object[]) iKey;
-				for (int j = 0; j < iKeyArray.length; j++) {
-					if (iKeyArray[j] != null) {
-						removeFromIndex(i, iKeyArray[j], entry.getKey());
-					}
-				}
-			} else {
-				if (iKey != null) {
-					removeFromIndex(i, iKey, entry.getKey());
-				}
-			}
+	private void addIndexValues(CacheEntry entry, List<IndexKey> indexKeys, RedisCommands<Object, Object> commands) {
+		for (IndexKey indexKey : indexKeys) {
+			pushIndex(indexKey, entry.getKey(), commands);
 		}
 	}
 
-	private void removeAllFromIndex(Object key) {
-		List<Object> iKeyList = commands.keys("*");
-		commands.multi();
-		iKeyList.forEach(iKey -> commands.lrem(iKey, 0, key));
-		commands.exec();
+	private void pushIndex(IndexKey indexKey, Object entryKey, RedisCommands<Object, Object> commands) {
+		commands.rpush(indexKey, entryKey);
 	}
 
-	private boolean isExpired(Object key) {
-		return commands.ttl(key).longValue() == -2L;
+	private void removeIndex(IndexKey indexKey, Object entryKey, RedisCommands<Object, Object> commands) {
+		commands.lrem(indexKey, 0L, entryKey);
+	}
+
+	private void removeIndexValues(CacheEntry entry, RedisCommands<Object, Object> commands) {
+		List<IndexKey> indexKeys = getIndexKeysFromEntry(entry);
+		for (IndexKey indexKey : indexKeys) {
+			removeIndex(indexKey, entry.getKey(), commands);
+		}
+	}
+
+	private void removeAllIndex(Object key) {
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			List<Object> indexKeyList = commands.keys("*");
+			commands.multi();
+			indexKeyList.forEach(indexKey -> commands.lrem(indexKey, 0, key));
+			commands.exec();
+		} catch (Exception e) {
+			throw new RedisRuntimeException(e);
+		}
 	}
 
 	private static final class IndexKey implements Serializable {

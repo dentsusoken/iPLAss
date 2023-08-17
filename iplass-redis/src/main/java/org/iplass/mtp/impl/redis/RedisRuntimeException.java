@@ -17,20 +17,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.redis.cache.store;
+package org.iplass.mtp.impl.redis;
 
-public class IndexedRedisCacheStoreLuaScript {
+import org.iplass.mtp.SystemException;
 
-	public static final String PUT = "";
+public class RedisRuntimeException extends SystemException {
 
-	public static final String REMOVE = "";
+	private static final long serialVersionUID = 8271412128977083405L;
 
-	public static final String REPLACE = "";
+	public RedisRuntimeException() {
+		super();
+	}
 
-	public static final String GET_BY_INDEX = "";
+	public RedisRuntimeException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-	public static final String GET_LIST_BY_INDEX = "";
+	public RedisRuntimeException(String message) {
+		super(message);
+	}
 
-	public static final String REMOVE_BY_INDEX = "";
-
+	public RedisRuntimeException(Throwable cause) {
+		super(cause);
+	}
 }

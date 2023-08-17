@@ -45,10 +45,17 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 	private String serverName;
 	private long timeToLive = 0L; // Seconds(0以下無期限)
 
+	private int retryCount;
+	private RedisCacheStorePoolConfig poolConfig;
+
 	@Override
 	public CacheStore createCacheStore(String namespace) {
-		return getIndexCount() > 0 ? new IndexedRedisCacheStore(this, namespace, timeToLive, getIndexCount(), false)
-				: new RedisCacheStore(this, namespace, timeToLive, false);
+		if (poolConfig == null) {
+			this.poolConfig = new RedisCacheStorePoolConfig();
+		}
+		return getIndexCount() > 0
+				? new IndexedRedisCacheStore(this, namespace, timeToLive, getIndexCount(), poolConfig)
+				: new RedisCacheStore(this, namespace, timeToLive, poolConfig);
 	}
 
 	@Override
@@ -120,6 +127,18 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 
 	public void setTimeToLive(long timeToLive) {
 		this.timeToLive = timeToLive;
+	}
+
+	public void setPoolConfig(RedisCacheStorePoolConfig poolConfig) {
+		this.poolConfig = poolConfig;
+	}
+
+	public int getRetryCount() {
+		return retryCount;
+	}
+
+	public void setRetryCount(int retryCount) {
+		this.retryCount = retryCount;
 	}
 
 }
