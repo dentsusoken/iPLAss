@@ -502,7 +502,7 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 				if (entry != null) {
 					return entry;
 				} else {
-					// 有効期限切れのEntryに紐づくインデックスを削除する
+					// 有効期限切れのCacheEntryに紐づくインデックスを削除する
 					removeIndex(new IndexKey(index, indexValue), entryKey, commands);
 				}
 			}
@@ -527,7 +527,7 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 					if (entry != null) {
 						entryList.add(entry);
 					} else {
-						// 有効期限切れのEntryに紐づくインデックスを削除する
+						// 有効期限切れのCacheEntryに紐づくインデックスを削除する
 						removeIndex(new IndexKey(index, indexValue), entryKey, commands);
 					}
 				});
@@ -586,15 +586,20 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 		commands.lrem(indexKey, 0L, entryKey);
 	}
 
-	private void removeAllIndexByEntryKey(Object key) {
+	// TODO 削除方法が非効率
+	private void removeAllIndexByEntryKey(Object entryKey) {
 		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 			RedisCommands<Object, Object> commands = connection.sync();
-			List<Object> indexKeyList = commands.keys("*");
+			List<Object> keyList = commands.keys("*");
 			commands.multi();
-			indexKeyList.forEach(indexKey -> commands.lrem(indexKey, 0, key));
+			keyList.forEach(key -> {
+				if (key instanceof IndexKey) {
+					commands.lrem(key, 0, entryKey);
+				}
+			});
 			commands.exec();
 		} catch (Exception e) {
-			throw new RedisRuntimeException("can not removeAllIndex. key:" + key, e);
+			throw new RedisRuntimeException("can not removeAllIndexByEntryKey. key:" + entryKey, e);
 		}
 	}
 
