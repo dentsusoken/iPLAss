@@ -1,4 +1,5 @@
 dependencies {
 	implementation sharedLib('org.apache.commons:commons-lang3')
 	implementation sharedLib('io.lettuce:lettuce-core')
+	implementation sharedLib('org.apache.commons:commons-pool2')
 }

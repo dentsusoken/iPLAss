@@ -28,6 +28,7 @@ ext {
 		'org.apache.commons:commons-lang3': '3.7',
 		'org.apache.commons:commons-text': '1.2',
 		'org.apache.commons:commons-collections4': '4.4',
+		'org.apache.commons:commons-pool2': '2.11.1',
 		'commons-io:commons-io': '2.8.0',
 		'commons-beanutils:commons-beanutils': '1.9.4',
 		'commons-codec:commons-codec': '1.15',
@@ -82,7 +83,7 @@ ext {
 		'org.infinispan:infinispan-core': '9.1.6.Final',
 		'org.jboss.marshalling:jboss-marshalling-osgi': '2.0.6.Final',
 		
-		'io.lettuce:lettuce-core': '5.3.3.RELEASE',
+		'io.lettuce:lettuce-core': '6.2.5.RELEASE',
 		
 		'net.sf.jasperreports:jasperreports': '6.17.0',
 		'commons-fileupload:commons-fileupload': '1.5',

@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.redis.cache.store;
 
 import java.time.Duration;
 
-import org.iplass.mtp.MtpException;
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.cache.CacheService;
 import org.iplass.mtp.impl.cache.store.CacheHandler;
 import org.iplass.mtp.impl.cache.store.CacheStore;
@@ -43,11 +43,15 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 	private RedisClient client;
 
 	private String serverName;
-	private long timeToLive = 0L;		// Seconds(0以下無期限)
+	private long timeToLive = 0L; // Seconds(0以下無期限)
+	private int retryCount;
+	private RedisCacheStorePoolConfig poolConfig;
 
 	@Override
 	public CacheStore createCacheStore(String namespace) {
-		return createCacheStoreInternal(namespace);
+		return getIndexCount() > 0
+				? new IndexedRedisCacheStore(this, namespace, timeToLive, getIndexCount(), poolConfig)
+				: new RedisCacheStore(this, namespace, timeToLive, poolConfig);
 	}
 
 	@Override
@@ -73,19 +77,28 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 	@Override
 	public void inited(CacheService service, Config config) {
 		RedisService rs = config.getDependentService(RedisService.class);
-		server = rs.getRedisServer(serverName);
+		this.server = rs.getRedisServer(serverName);
 		if (server == null) {
-			throw new MtpException("Unknown redis server name: " + serverName);
+			throw new SystemException("Unknown redis server name: " + serverName);
 		}
 
 		ClientResources resouces = DefaultClientResources.builder().build();
-		RedisURI.Builder uriBuilder = RedisURI.builder()
-				.withHost(server.getHost())
-				.withPort(server.getPort());
+
+		RedisURI.Builder uriBuilder = RedisURI.builder().withHost(server.getHost()).withPort(server.getPort())
+				.withDatabase(server.getDatabase());
 		if (server.getTimeout() > 0) {
 			uriBuilder.withTimeout(Duration.ofSeconds(server.getTimeout()));
 		}
-		client = RedisClient.create(resouces, uriBuilder.build());
+
+		uriBuilder.withSsl(server.isSsl());
+		if (server.getPassword() != null) {
+			if (server.getUserName() != null) {
+				uriBuilder.withAuthentication(server.getUserName(), server.getPassword().toCharArray());
+			} else {
+				uriBuilder.withPassword(server.getPassword().toCharArray());
+			}
+		}
+		this.client = RedisClient.create(resouces, uriBuilder.build());
 	}
 
 	@Override
@@ -100,6 +113,10 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 		return client;
 	}
 
+	public RedisServer getServer() {
+		return server;
+	}
+
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
 	}
@@ -108,9 +125,16 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 		this.timeToLive = timeToLive;
 	}
 
-	private CacheStore createCacheStoreInternal(String namespace) {
-		RedisCacheStore store = new RedisCacheStore(this, namespace, timeToLive, false);
-		return getIndexCount() > 0 ? new RedisIndexedCacheStore(this, namespace, getIndexCount(), false, store) : store;
+	public void setPoolConfig(RedisCacheStorePoolConfig poolConfig) {
+		this.poolConfig = poolConfig;
+	}
+
+	public int getRetryCount() {
+		return retryCount;
+	}
+
+	public void setRetryCount(int retryCount) {
+		this.retryCount = retryCount;
 	}
 
 }

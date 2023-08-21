@@ -20,42 +20,32 @@
 
 package org.iplass.mtp.impl.redis.cache.store;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
+import org.iplass.mtp.impl.redis.RedisRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.lettuce.core.RedisNoScriptException;
+import io.lettuce.core.ScriptOutputType;
 import io.lettuce.core.TransactionResult;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.RedisPubSubListener;
-import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
-import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
 
 public class RedisCacheStore extends RedisCacheStoreBase {
 
 	private static final Logger logger = LoggerFactory.getLogger(RedisCacheStore.class);
 
-	private StatefulRedisConnection<String, Object> redisConn;
-	private RedisCommands<String, Object> redisCmds;
+	public RedisCacheStore(RedisCacheStoreFactory factory, String namespace, long timeToLive,
+			RedisCacheStorePoolConfig redisCacheStorePoolConfig) {
+		super(factory, namespace, timeToLive, redisCacheStorePoolConfig);
 
-	private StatefulRedisPubSubConnection<String, String> psConn;
-	private RedisPubSubCommands<String, String> psCmds;
-
-	private NamespaceSerializedObjectCodec codec;
-
-	public RedisCacheStore(RedisCacheStoreFactory factory, String namespace, long timeToLive, boolean isSave) {
-		super(factory, namespace, timeToLive, isSave);
-
-		codec = new NamespaceSerializedObjectCodec(namespace);
-
-		redisConn = factory.getClient().connect(codec);
-		redisCmds = redisConn.sync();
-		psConn = factory.getClient().connectPubSub();
-		psConn.addListener(new RedisPubSubListener<String, String>() {
+		pubSubConnection.addListener(new RedisPubSubListener<String, String>() {
 			@Override
 			public void unsubscribed(String channel, long count) {
 			}
@@ -78,182 +68,318 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 			@Override
 			public void message(String channel, String message) {
-				String prefix = codec.getNamespaceHandler().getPrefix();
+				String prefix = codec.getPrefix();
 				if (message.startsWith(prefix)) {
 					if (logger.isDebugEnabled()) {
-						logger.debug(String.format("Occuer expired event. channel:%s, message:%s", channel, message));
+						logger.debug(String.format("Occur expired event. channel:%s, message:%s", channel, message));
 					}
-					Object key = decodeBase64(message.substring(prefix.length()));
+					Object key = codec.decodeKey(codec.getCharset().encode(message));
 					notifyRemoved(new CacheEntry(key, null));
 				}
 			}
 		});
-		psCmds = psConn.sync();
-		psCmds.subscribe("__keyevent@0__:expired");		// Expiredイベントのみ受信、DB番号は0固定
-	}
-
-	private boolean isExist(RedisCommands<String, Object> readCmds, String... keys) {
-		return readCmds.exists(keys).compareTo(Long.valueOf(0L)) > 0;
-	}
-
-	CacheEntry put(RedisCommands<String, Object> readCmds, CacheEntry entry, boolean doExec) {
-		String strKey = encodeBase64(entry.getKey());
-		watch(strKey);
-		CacheEntry previous = (CacheEntry) readCmds.get(strKey);
-		multi();
-		if (getTimeToLive() > 0) {
-			redisCmds.setex(strKey, getTimeToLive(), entry);
-		} else {
-			redisCmds.set(strKey, entry);
-		}
-		if (doExec) { exec(); }
-		return previous;
-	}
-
-	@Override
-	public CacheEntry put(CacheEntry entry, boolean clean) {
-		CacheEntry previous = put(redisCmds, entry, true);
-		if (previous == null) {
-			notifyPut(entry);
-		} else {
-			notifyUpdated(previous, entry);
-		}
-		return previous;
-	}
-
-	CacheEntry putIfAbsent(RedisCommands<String, Object> readCmds, CacheEntry entry, boolean doExec) {
-		String strKey = encodeBase64(entry.getKey());
-		watch(strKey);
-		CacheEntry previous = (CacheEntry) readCmds.get(strKey);
-		if (previous == null) {
-			multi();
-			if (getTimeToLive() > 0) {
-				redisCmds.setex(strKey, getTimeToLive(), entry);
-			} else {
-				redisCmds.set(strKey, entry);
-			}
-			if (doExec) { exec(); }
-		} else {
-			unwatch();
-		}
-		return previous;
-	}
-
-	@Override
-	public CacheEntry putIfAbsent(CacheEntry entry) {
-		CacheEntry previous = putIfAbsent(redisCmds, entry, true);
-		if (previous == null) {
-			notifyPut(entry);
-		}
-		return previous;
+		this.pubSubCommands = pubSubConnection.sync();
+		pubSubCommands.subscribe("__keyevent@" + String.valueOf(factory.getServer().getDatabase()) + "__:expired"); // Expiredイベントのみ受信、DB番号は0固定
 	}
 
 	@Override
 	public CacheEntry get(Object key) {
-		return key != null ? (CacheEntry) redisCmds.get(encodeBase64(key)) : null;
-	}
-
-	private CacheEntry remove(RedisCommands<String, Object> readCmds, String key, boolean doExec) {
-		watch(key);
-		if (isExist(readCmds, key)) {
-			CacheEntry previous = (CacheEntry) readCmds.get(key);
-			multi();
-			redisCmds.del(key);
-			if (doExec) { exec(); }
-			return previous;
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			return key != null ? (CacheEntry) commands.get(key) : null;
+		} catch (Exception e) {
+			throw new RedisRuntimeException("can not get CacheEntry. key:" + key, e);
 		}
-		unwatch();
-		return null;
 	}
 
-	CacheEntry remove(RedisCommands<String, Object> readCmds, Object key, boolean doExec) {
-		if (key == null) { return null; }
-		CacheEntry previous = remove(readCmds, encodeBase64(key), doExec);
-		return previous;
+	@Override
+	public CacheEntry put(CacheEntry entry, boolean clean) {
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			String sha = commands.digest(RedisCacheStoreLuaScript.PUT);
+
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { entry.getKey() },
+						timeToLive, entry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT, ScriptOutputType.VALUE,
+						new Object[] { entry.getKey() }, timeToLive, entry);
+			}
+
+			if (previous == null) {
+				notifyPut(entry);
+			} else {
+				notifyUpdated(previous, entry);
+			}
+			return previous;
+		} catch (Exception e) {
+			throw new RedisRuntimeException("can not put CacheEntry. entry:" + entry, e);
+		}
+	}
+
+	@Override
+	public CacheEntry putIfAbsent(CacheEntry entry) {
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			String sha = commands.digest(RedisCacheStoreLuaScript.PUT_IF_ABSENT);
+
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { entry.getKey() },
+						timeToLive, entry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT, ScriptOutputType.VALUE,
+						new Object[] { entry.getKey() }, timeToLive, entry);
+			}
+
+			if (previous == null) {
+				notifyPut(entry);
+			}
+			return previous;
+		} catch (Exception e) {
+			throw new RedisRuntimeException("can not putIfAbsent CacheEntry. entry:" + entry, e);
+		}
+	}
+
+	@Override
+	public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+		for (int count = 0; count <= retryCount; count++) {
+			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+				RedisCommands<Object, Object> commands = connection.sync();
+
+				commands.watch(key);
+
+				CacheEntry oldEntry = get(key);
+				CacheEntry newEntry = remappingFunction.apply(key, oldEntry);
+				if (newEntry == null) {
+					if (oldEntry != null) {
+						commands.multi();
+
+						// remove
+						String sha = commands.digest(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY);
+						try {
+							commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { key }, oldEntry);
+						} catch (RedisNoScriptException e) {
+							commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY, ScriptOutputType.VALUE,
+									new Object[] { key }, oldEntry);
+						}
+
+						TransactionResult result = commands.exec();
+						if (result.wasDiscarded()) {
+							continue;
+						}
+
+						notifyRemoved(oldEntry);
+						return null;
+					} else {
+						commands.unwatch();
+						return null;
+					}
+				} else {
+					if (oldEntry != null) {
+						commands.multi();
+
+						// replace
+						if (!oldEntry.getKey().equals(newEntry.getKey())) {
+							throw new IllegalArgumentException("oldEntry key not equals newEntry key");
+						}
+						String sha = commands.digest(RedisCacheStoreLuaScript.REPLACE_NEW);
+
+						try {
+							commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { newEntry.getKey() },
+									timeToLive, oldEntry, newEntry);
+						} catch (RedisNoScriptException e) {
+							commands.eval(RedisCacheStoreLuaScript.REPLACE_NEW, ScriptOutputType.VALUE,
+									new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
+						}
+
+						TransactionResult result = commands.exec();
+						if (result.wasDiscarded()) {
+							continue;
+						}
+
+						notifyUpdated(oldEntry, newEntry);
+						return newEntry;
+					} else {
+						commands.multi();
+
+						// putIfAbsent
+						String sha = commands.digest(RedisCacheStoreLuaScript.PUT_IF_ABSENT);
+						try {
+							commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { key }, timeToLive, newEntry);
+						} catch (RedisNoScriptException e) {
+							commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT, ScriptOutputType.VALUE,
+									new Object[] { key }, timeToLive, newEntry);
+						}
+
+						TransactionResult result = commands.exec();
+						if (result.wasDiscarded()) {
+							continue;
+						}
+
+						notifyPut(newEntry);
+						return newEntry;
+					}
+				}
+			} catch (Exception e) {
+				throw new RedisRuntimeException("can not compute CacheEntry. key:" + key, e);
+			}
+		}
+		throw new SystemException("can not compute CacheEntry cause retry count over. key:" + key);
+	}
+
+	@Override
+	public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+		for (int count = 0; count <= retryCount; count++) {
+			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+				RedisCommands<Object, Object> commands = connection.sync();
+
+				commands.watch(key);
+
+				CacheEntry oldEntry = get(key);
+				if (oldEntry == null) {
+					commands.multi();
+
+					// putIfAbsent
+					CacheEntry newEntry = mappingFunction.apply(key);
+					if (newEntry != null) {
+						String sha = commands.digest(RedisCacheStoreLuaScript.PUT_IF_ABSENT);
+						try {
+							commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { key }, timeToLive, newEntry);
+						} catch (RedisNoScriptException e) {
+							commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT, ScriptOutputType.VALUE,
+									new Object[] { key }, timeToLive, newEntry);
+						}
+
+						TransactionResult result = commands.exec();
+						if (result.wasDiscarded()) {
+							continue;
+						}
+
+						notifyPut(newEntry);
+						return newEntry;
+					}
+				} else {
+					commands.unwatch();
+					return oldEntry;
+				}
+			} catch (Exception e) {
+				throw new RedisRuntimeException("can not computeIfAbsent CacheEntry. key:" + key, e);
+			}
+		}
+		throw new SystemException("can not computeIfAbsent CacheEntry cause retry count over. key:" + key);
 	}
 
 	@Override
 	public CacheEntry remove(Object key) {
-		CacheEntry previous = remove(redisCmds, key, true);
-		if (previous != null) {
-			notifyRemoved(previous);
-		}
-		return previous;
-	}
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			String sha = commands.digest(RedisCacheStoreLuaScript.REMOVE_BY_KEY);
 
-	CacheEntry remove(RedisCommands<String, Object> readCmds, CacheEntry entry, boolean doExec) {
-		String strKey = encodeBase64(entry.getKey());
-		watch(strKey);
-		if (isExist(readCmds, strKey)) {
-			CacheEntry previous = (CacheEntry) readCmds.get(strKey);
-			if (previous != null && previous.equals(entry)) {
-				multi();
-				redisCmds.del(strKey);
-				if (doExec) { exec(); }
-				return previous;
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { key });
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_KEY, ScriptOutputType.VALUE,
+						new Object[] { key });
 			}
+
+			if (previous != null) {
+				notifyRemoved(previous);
+			}
+			return previous;
+		} catch (Exception e) {
+			throw new RedisRuntimeException("can not remove CacheEntry. key:" + key, e);
 		}
-		unwatch();
-		return null;
 	}
 
 	@Override
 	public boolean remove(CacheEntry entry) {
-		CacheEntry previous = remove(redisCmds, entry, true);
-		if (previous != null && previous.equals(entry)) {
-			notifyRemoved(previous);
-			return true;
-		}
-		return false;
-	}
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			String sha = commands.digest(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY);
 
-	CacheEntry replace(RedisCommands<String, Object> readCmds, CacheEntry entry, boolean doExec) {
-		String strKey = encodeBase64(entry.getKey());
-		watch(strKey);
-		if (isExist(readCmds, strKey)) {
-			CacheEntry preEntry = (CacheEntry) readCmds.get(strKey);
-			multi();
-			if (getTimeToLive() > 0) {
-				redisCmds.setex(strKey, getTimeToLive(), entry);
-			} else {
-				redisCmds.set(strKey, entry);
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { entry.getKey() },
+						entry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY, ScriptOutputType.VALUE,
+						new Object[] { entry.getKey() }, entry);
 			}
-			if (doExec) { exec(); }
-			return preEntry;
+
+			if (previous != null) {
+				notifyRemoved(previous);
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			throw new RedisRuntimeException("can not remove CacheEntry. entry:" + entry, e);
 		}
-		unwatch();
-		return null;
 	}
 
 	@Override
 	public CacheEntry replace(CacheEntry entry) {
-		CacheEntry previous = replace(redisCmds, entry, true);
-		if (previous != null) {
-			notifyUpdated(previous, entry);
-		}
-		return previous;
-	}
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			String sha = commands.digest(RedisCacheStoreLuaScript.REPLACE);
 
-	boolean replace(RedisCommands<String, Object> readCmds, CacheEntry oldEntry, CacheEntry newEntry, boolean doExec) {
-		if (!oldEntry.getKey().equals(newEntry.getKey())) {
-			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { entry.getKey() },
+						timeToLive, entry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE, ScriptOutputType.VALUE,
+						new Object[] { entry.getKey() }, timeToLive, entry);
+			}
+
+			if (previous != null) {
+				notifyUpdated(previous, entry);
+			}
+			return previous;
+		} catch (Exception e) {
+			throw new RedisRuntimeException("can not replace CacheEntry. entry:" + entry, e);
 		}
-		String strKey = encodeBase64(newEntry.getKey());
-		watch(strKey);
-		if (isExist(readCmds, strKey) && oldEntry.equals(readCmds.get(strKey))) {
-			return replace(readCmds, newEntry, doExec) != null;
-		}
-		unwatch();
-		return false;
 	}
 
 	@Override
 	public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-		boolean previous = replace(redisCmds, oldEntry, newEntry, true);
-		if (previous) {
-			notifyUpdated(oldEntry, newEntry);
+		if (!oldEntry.getKey().equals(newEntry.getKey())) {
+			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
 		}
-		return previous;
+
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			String sha = commands.digest(RedisCacheStoreLuaScript.REPLACE_NEW);
+
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE,
+						new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE_NEW, ScriptOutputType.VALUE,
+						new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
+			}
+
+			if (previous != null) {
+				notifyUpdated(oldEntry, newEntry);
+			}
+			return previous != null;
+		} catch (Exception e) {
+			throw new RedisRuntimeException("can not replace CacheEntry. entry:" + newEntry, e);
+		}
+	}
+
+	@Override
+	public List<Object> keySet() {
+		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+			RedisCommands<Object, Object> commands = connection.sync();
+			List<Object> keys = commands.keys("*");
+			return keys;
+		} catch (Exception e) {
+			throw new RedisRuntimeException("can not get cache keySet", e);
+		}
 	}
 
 	@Override
@@ -261,104 +387,37 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 		if (hasListener()) {
 			keySet().forEach(key -> remove(key));
 		} else {
-			List<String> keys = redisCmds.keys("*");
-			if (keys != null && !keys.isEmpty()) {
-				redisCmds.del(keys.toArray(new String[keys.size()]));
+			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+				RedisCommands<Object, Object> commands = connection.sync();
+				String sha = commands.digest(RedisCacheStoreLuaScript.REMOVE_ALL);
+
+				try {
+					commands.evalsha(sha, ScriptOutputType.MULTI, new Object[] { "*" });
+				} catch (RedisNoScriptException e) {
+					commands.eval(RedisCacheStoreLuaScript.REMOVE_ALL, ScriptOutputType.MULTI, new Object[] { "*" });
+				}
+			} catch (Exception e) {
+				throw new RedisRuntimeException("can not remove all CacheEntry", e);
 			}
 		}
 	}
 
 	@Override
-	public List<Object> keySet() {
-		List<String> keys = redisCmds.keys("*");
-		if (keys != null && !keys.isEmpty()) {
-			List<Object> keyList = new ArrayList<Object>();
-			keys.forEach(key -> keyList.add(decodeBase64(key)));
-			return keyList;
-		}
-		return Collections.emptyList();
-	}
-
-	@Override
 	public CacheEntry getByIndex(int indexKey, Object indexValue) {
+		// Noop
 		return null;
 	}
 
 	@Override
 	public List<CacheEntry> getListByIndex(int indexKey, Object indexValue) {
+		// Noop
 		return null;
 	}
 
 	@Override
 	public List<CacheEntry> removeByIndex(int indexKey, Object indexValue) {
+		// Noop
 		return null;
-	}
-	
-	@Override
-	public int getSize() {
-		return redisCmds.dbsize().intValue();
-	}
-
-	@Override
-	public String trace() {
-		return redisCmds.info();
-	}
-
-	@Override
-	public void destroy() {
-		if (psCmds != null && psCmds.isOpen()) {
-			psCmds.unsubscribe("__keyevent@0__:expired");
-			psCmds.shutdown(false);
-			psCmds = null;
-		}
-		if (psConn != null && psConn.isOpen()) {
-			psConn.close();
-			psConn = null;
-		}
-		if (redisCmds != null && redisCmds.isOpen()) {
-			redisCmds.shutdown(isSave());
-			redisCmds = null;
-		}
-		if (redisConn != null && redisConn.isOpen()) {
-			redisConn.close();
-			redisConn = null;
-		}
-	}
-
-	NamespaceSerializedObjectCodec getCodec() {
-		return codec;
-	}
-
-	void addPubSubListener(RedisPubSubListener<String, String> listener) {
-		psConn.addListener(listener);
-	}
-
-	String multi() {
-		return redisCmds.multi();
-	}
-
-	TransactionResult exec() {
-		return redisCmds.exec();
-	}
-
-	String discard() {
-		return redisCmds.discard();
-	}
-
-	String watch(String... keys) {
-		return redisCmds.watch(keys);
-	}
-
-	String unwatch() {
-		return redisCmds.unwatch();
-	}
-
-	Long lrem(String key, long count, Object value) {
-		return redisCmds.lrem(key, count, value);
-	}
-
-	Long rpush(String key, Object... values) {
-		return redisCmds.rpush(key, values);
 	}
 
 }
