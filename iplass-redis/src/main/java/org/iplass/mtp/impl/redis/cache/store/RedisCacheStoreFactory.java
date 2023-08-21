@@ -44,15 +44,11 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 
 	private String serverName;
 	private long timeToLive = 0L; // Seconds(0以下無期限)
-
 	private int retryCount;
 	private RedisCacheStorePoolConfig poolConfig;
 
 	@Override
 	public CacheStore createCacheStore(String namespace) {
-		if (poolConfig == null) {
-			this.poolConfig = new RedisCacheStorePoolConfig();
-		}
 		return getIndexCount() > 0
 				? new IndexedRedisCacheStore(this, namespace, timeToLive, getIndexCount(), poolConfig)
 				: new RedisCacheStore(this, namespace, timeToLive, poolConfig);

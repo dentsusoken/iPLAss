@@ -49,6 +49,7 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 	private final RedisCacheStoreFactory factory;
 	private final String namespace;
 	protected final long timeToLive;
+	protected final int retryCount;
 
 	protected final NamespaceSerializedObjectCodec codec;
 	protected final GenericObjectPool<StatefulRedisConnection<Object, Object>> pool;
@@ -61,11 +62,14 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 		this.factory = factory;
 		this.namespace = namespace;
 		this.timeToLive = timeToLive;
+		this.retryCount = factory.getRetryCount();
 
 		this.codec = new NamespaceSerializedObjectCodec(namespace);
 
 		GenericObjectPoolConfig<StatefulRedisConnection<Object, Object>> poolConfig = new GenericObjectPoolConfig<>();
-		redisCacheStorePoolConfig.apply(poolConfig);
+		if (redisCacheStorePoolConfig != null) {
+			redisCacheStorePoolConfig.apply(poolConfig);
+		}
 
 		this.pool = ConnectionPoolSupport.createGenericObjectPool(() -> factory.getClient().connect(codec), poolConfig);
 

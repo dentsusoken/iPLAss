@@ -25,7 +25,7 @@ public class RedisServer {
 	private String serverName;
 	private String host;
 	private int port = 6379;
-	private long timeout = 0L; // Seconds(0以下無期限)
+	private long timeout = 0L;
 	private int database = 0;
 	private String userName;
 	private String password;

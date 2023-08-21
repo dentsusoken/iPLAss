@@ -21,13 +21,18 @@
 package org.iplass.mtp.impl.redis.cache.store;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.redis.RedisRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.lettuce.core.RedisNoScriptException;
 import io.lettuce.core.ScriptOutputType;
+import io.lettuce.core.TransactionResult;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.RedisPubSubListener;
@@ -83,7 +88,7 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 			RedisCommands<Object, Object> commands = connection.sync();
 			return key != null ? (CacheEntry) commands.get(key) : null;
 		} catch (Exception e) {
-			throw new RedisRuntimeException(e);
+			throw new RedisRuntimeException("can not get CacheEntry. key:" + key, e);
 		}
 	}
 
@@ -91,8 +96,16 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 	public CacheEntry put(CacheEntry entry, boolean clean) {
 		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 			RedisCommands<Object, Object> commands = connection.sync();
-			CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT, ScriptOutputType.VALUE,
-					new Object[] { entry.getKey() }, timeToLive, entry);
+			String sha = commands.digest(RedisCacheStoreLuaScript.PUT);
+
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { entry.getKey() },
+						timeToLive, entry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT, ScriptOutputType.VALUE,
+						new Object[] { entry.getKey() }, timeToLive, entry);
+			}
 
 			if (previous == null) {
 				notifyPut(entry);
@@ -101,7 +114,7 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 			}
 			return previous;
 		} catch (Exception e) {
-			throw new RedisRuntimeException(e);
+			throw new RedisRuntimeException("can not put CacheEntry. entry:" + entry, e);
 		}
 	}
 
@@ -109,31 +122,175 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 	public CacheEntry putIfAbsent(CacheEntry entry) {
 		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 			RedisCommands<Object, Object> commands = connection.sync();
-			CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT,
-					ScriptOutputType.VALUE, new Object[] { entry.getKey() }, timeToLive, entry);
+			String sha = commands.digest(RedisCacheStoreLuaScript.PUT_IF_ABSENT);
+
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { entry.getKey() },
+						timeToLive, entry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT, ScriptOutputType.VALUE,
+						new Object[] { entry.getKey() }, timeToLive, entry);
+			}
 
 			if (previous == null) {
 				notifyPut(entry);
 			}
 			return previous;
 		} catch (Exception e) {
-			throw new RedisRuntimeException(e);
+			throw new RedisRuntimeException("can not putIfAbsent CacheEntry. entry:" + entry, e);
 		}
+	}
+
+	@Override
+	public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
+		for (int count = 0; count <= retryCount; count++) {
+			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+				RedisCommands<Object, Object> commands = connection.sync();
+
+				commands.watch(key);
+
+				CacheEntry oldEntry = get(key);
+				CacheEntry newEntry = remappingFunction.apply(key, oldEntry);
+				if (newEntry == null) {
+					if (oldEntry != null) {
+						commands.multi();
+
+						// remove
+						String sha = commands.digest(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY);
+						try {
+							commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { key }, oldEntry);
+						} catch (RedisNoScriptException e) {
+							commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY, ScriptOutputType.VALUE,
+									new Object[] { key }, oldEntry);
+						}
+
+						TransactionResult result = commands.exec();
+						if (result.wasDiscarded()) {
+							continue;
+						}
+
+						notifyRemoved(oldEntry);
+						return null;
+					} else {
+						commands.unwatch();
+						return null;
+					}
+				} else {
+					if (oldEntry != null) {
+						commands.multi();
+
+						// replace
+						if (!oldEntry.getKey().equals(newEntry.getKey())) {
+							throw new IllegalArgumentException("oldEntry key not equals newEntry key");
+						}
+						String sha = commands.digest(RedisCacheStoreLuaScript.REPLACE_NEW);
+
+						try {
+							commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { newEntry.getKey() },
+									timeToLive, oldEntry, newEntry);
+						} catch (RedisNoScriptException e) {
+							commands.eval(RedisCacheStoreLuaScript.REPLACE_NEW, ScriptOutputType.VALUE,
+									new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
+						}
+
+						TransactionResult result = commands.exec();
+						if (result.wasDiscarded()) {
+							continue;
+						}
+
+						notifyUpdated(oldEntry, newEntry);
+						return newEntry;
+					} else {
+						commands.multi();
+
+						// putIfAbsent
+						String sha = commands.digest(RedisCacheStoreLuaScript.PUT_IF_ABSENT);
+						try {
+							commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { key }, timeToLive, newEntry);
+						} catch (RedisNoScriptException e) {
+							commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT, ScriptOutputType.VALUE,
+									new Object[] { key }, timeToLive, newEntry);
+						}
+
+						TransactionResult result = commands.exec();
+						if (result.wasDiscarded()) {
+							continue;
+						}
+
+						notifyPut(newEntry);
+						return newEntry;
+					}
+				}
+			} catch (Exception e) {
+				throw new RedisRuntimeException("can not compute CacheEntry. key:" + key, e);
+			}
+		}
+		throw new SystemException("can not compute CacheEntry cause retry count over. key:" + key);
+	}
+
+	@Override
+	public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
+		for (int count = 0; count <= retryCount; count++) {
+			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
+				RedisCommands<Object, Object> commands = connection.sync();
+
+				commands.watch(key);
+
+				CacheEntry oldEntry = get(key);
+				if (oldEntry == null) {
+					commands.multi();
+
+					// putIfAbsent
+					CacheEntry newEntry = mappingFunction.apply(key);
+					if (newEntry != null) {
+						String sha = commands.digest(RedisCacheStoreLuaScript.PUT_IF_ABSENT);
+						try {
+							commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { key }, timeToLive, newEntry);
+						} catch (RedisNoScriptException e) {
+							commands.eval(RedisCacheStoreLuaScript.PUT_IF_ABSENT, ScriptOutputType.VALUE,
+									new Object[] { key }, timeToLive, newEntry);
+						}
+
+						TransactionResult result = commands.exec();
+						if (result.wasDiscarded()) {
+							continue;
+						}
+
+						notifyPut(newEntry);
+						return newEntry;
+					}
+				} else {
+					commands.unwatch();
+					return oldEntry;
+				}
+			} catch (Exception e) {
+				throw new RedisRuntimeException("can not computeIfAbsent CacheEntry. key:" + key, e);
+			}
+		}
+		throw new SystemException("can not computeIfAbsent CacheEntry cause retry count over. key:" + key);
 	}
 
 	@Override
 	public CacheEntry remove(Object key) {
 		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 			RedisCommands<Object, Object> commands = connection.sync();
-			CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_KEY,
-					ScriptOutputType.VALUE, new Object[] { key });
+			String sha = commands.digest(RedisCacheStoreLuaScript.REMOVE_BY_KEY);
+
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { key });
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_KEY, ScriptOutputType.VALUE,
+						new Object[] { key });
+			}
 
 			if (previous != null) {
 				notifyRemoved(previous);
 			}
 			return previous;
 		} catch (Exception e) {
-			throw new RedisRuntimeException(e);
+			throw new RedisRuntimeException("can not remove CacheEntry. key:" + key, e);
 		}
 	}
 
@@ -141,8 +298,16 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 	public boolean remove(CacheEntry entry) {
 		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 			RedisCommands<Object, Object> commands = connection.sync();
-			CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY,
-					ScriptOutputType.VALUE, new Object[] { entry.getKey() }, entry);
+			String sha = commands.digest(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY);
+
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { entry.getKey() },
+						entry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REMOVE_BY_ENTRY, ScriptOutputType.VALUE,
+						new Object[] { entry.getKey() }, entry);
+			}
 
 			if (previous != null) {
 				notifyRemoved(previous);
@@ -150,7 +315,7 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 			}
 			return false;
 		} catch (Exception e) {
-			throw new RedisRuntimeException(e);
+			throw new RedisRuntimeException("can not remove CacheEntry. entry:" + entry, e);
 		}
 	}
 
@@ -158,15 +323,23 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 	public CacheEntry replace(CacheEntry entry) {
 		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 			RedisCommands<Object, Object> commands = connection.sync();
-			CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE, ScriptOutputType.VALUE,
-					new Object[] { entry.getKey() }, timeToLive, entry);
+			String sha = commands.digest(RedisCacheStoreLuaScript.REPLACE);
+
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE, new Object[] { entry.getKey() },
+						timeToLive, entry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE, ScriptOutputType.VALUE,
+						new Object[] { entry.getKey() }, timeToLive, entry);
+			}
 
 			if (previous != null) {
 				notifyUpdated(previous, entry);
 			}
 			return previous;
 		} catch (Exception e) {
-			throw new RedisRuntimeException(e);
+			throw new RedisRuntimeException("can not replace CacheEntry. entry:" + entry, e);
 		}
 	}
 
@@ -178,15 +351,23 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 		try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 			RedisCommands<Object, Object> commands = connection.sync();
-			CacheEntry previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE_NEW,
-					ScriptOutputType.VALUE, new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
+			String sha = commands.digest(RedisCacheStoreLuaScript.REPLACE_NEW);
+
+			CacheEntry previous;
+			try {
+				previous = (CacheEntry) commands.evalsha(sha, ScriptOutputType.VALUE,
+						new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
+			} catch (RedisNoScriptException e) {
+				previous = (CacheEntry) commands.eval(RedisCacheStoreLuaScript.REPLACE_NEW, ScriptOutputType.VALUE,
+						new Object[] { newEntry.getKey() }, timeToLive, oldEntry, newEntry);
+			}
 
 			if (previous != null) {
 				notifyUpdated(oldEntry, newEntry);
 			}
 			return previous != null;
 		} catch (Exception e) {
-			throw new RedisRuntimeException(e);
+			throw new RedisRuntimeException("can not replace CacheEntry. entry:" + newEntry, e);
 		}
 	}
 
@@ -197,7 +378,7 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 			List<Object> keys = commands.keys("*");
 			return keys;
 		} catch (Exception e) {
-			throw new RedisRuntimeException(e);
+			throw new RedisRuntimeException("can not get cache keySet", e);
 		}
 	}
 
@@ -208,9 +389,15 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 		} else {
 			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 				RedisCommands<Object, Object> commands = connection.sync();
-				commands.eval(RedisCacheStoreLuaScript.REMOVE_ALL, ScriptOutputType.MULTI, new Object[] { "*" });
+				String sha = commands.digest(RedisCacheStoreLuaScript.REMOVE_ALL);
+
+				try {
+					commands.evalsha(sha, ScriptOutputType.MULTI, new Object[] { "*" });
+				} catch (RedisNoScriptException e) {
+					commands.eval(RedisCacheStoreLuaScript.REMOVE_ALL, ScriptOutputType.MULTI, new Object[] { "*" });
+				}
 			} catch (Exception e) {
-				throw new RedisRuntimeException(e);
+				throw new RedisRuntimeException("can not remove all CacheEntry", e);
 			}
 		}
 	}
