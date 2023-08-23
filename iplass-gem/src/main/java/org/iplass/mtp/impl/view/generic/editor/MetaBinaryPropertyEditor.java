@@ -85,12 +85,15 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
 
+	/** アップロード受け入れ可能な MIME Type */
+	private String uploadAcceptMimeTypesPattern;
+
 	/**
 	 * 表示タイプを取得します。
 	 * @return 表示タイプ
 	 */
 	public BinaryDisplayType getDisplayType() {
-	    return displayType;
+		return displayType;
 	}
 
 	/**
@@ -98,7 +101,7 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @param displayType 表示タイプ
 	 */
 	public void setDisplayType(BinaryDisplayType displayType) {
-	    this.displayType = displayType;
+		this.displayType = displayType;
 	}
 
 	/**
@@ -218,7 +221,7 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @return PDF表示時にPDF.jsを利用
 	 */
 	public boolean isUsePdfjs() {
-	    return usePdfjs;
+		return usePdfjs;
 	}
 
 	/**
@@ -226,7 +229,7 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @param usePdfjs PDF表示時にPDF.jsを利用
 	 */
 	public void setUsePdfjs(boolean usePdfjs) {
-	    this.usePdfjs = usePdfjs;
+		this.usePdfjs = usePdfjs;
 	}
 
 	/**
@@ -297,6 +300,22 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 		this.updateWithLabelValue = updateWithLabelValue;
 	}
 
+	/**
+	 * アップロード受け入れ可能な MIME Type を取得します。
+	 * @return アップロード受け入れ可能な MIME Type
+	 */
+	public String getUploadAcceptMimeTypesPattern() {
+		return uploadAcceptMimeTypesPattern;
+	}
+
+	/**
+	 * アップロード受け入れ可能な MIME Type を設定します
+	 * @param uploadAcceptMimeTypesPattern アップロード受け入れ可能な MIME Type
+	 */
+	public void setUploadAcceptMimeTypesPattern(String uploadAcceptMimeTypesPattern) {
+		this.uploadAcceptMimeTypesPattern = uploadAcceptMimeTypesPattern;
+	}
+
 	@Override
 	public MetaBinaryPropertyEditor copy() {
 		return ObjectUtil.deepCopy(this);
@@ -320,6 +339,7 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 		hideDeleteButton = e.isHideDeleteButton();
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
+		uploadAcceptMimeTypesPattern = e.getUploadAcceptMimeTypesPattern();
 	}
 
 	@Override
@@ -340,6 +360,8 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setHideDeleteButton(hideDeleteButton);
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);
+		editor.setUploadAcceptMimeTypesPattern(uploadAcceptMimeTypesPattern);
+
 		return editor;
 	}
 

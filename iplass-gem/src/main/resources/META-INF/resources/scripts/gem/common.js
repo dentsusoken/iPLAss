@@ -1813,6 +1813,8 @@ function uploadFile(file, token) {
 	var $file = $(file);
 
 	var fileId = $file.attr("id");
+	var viewName = $file.attr("data-vname");
+	var defName = $file.attr("data-dname");
 	var propName = $file.attr("data-pname");
 	var max = $file.attr("data-multiplicity") - 0;
 	var displayType = $file.attr("data-displayType");
@@ -1825,7 +1827,7 @@ function uploadFile(file, token) {
 
 	var option = {};
 	if (typeof token !== "undefined" && token != null && token != "") {
-		option.formData = {"_t": token};
+		option.formData = { "_t": token, "viewName": viewName, "defName": defName, "propName": propName };
 	}
 	$.extend(option, {
 		url: $file.attr("data-uploadUrl"),

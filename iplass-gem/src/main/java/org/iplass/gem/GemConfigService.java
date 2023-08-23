@@ -124,6 +124,9 @@ public class GemConfigService implements Service {
 	/** Binaryダウンロード時のログ出力設定 */
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
 
+	/** エンティティのバイナリプロパティにアップロード受け入れ可能なMIME Types */
+	private String binaryUploadAcceptMimeTypesPattern;
+
 	/** カラー */
 	private List<ImageColorSetting> imageColors;
 
@@ -148,6 +151,7 @@ public class GemConfigService implements Service {
 	@Override
 	public void init(Config config) {
 		binaryDownloadLoggingTargetProperty = config.getValues("binaryDownloadLoggingTargetProperty", BinaryDownloadLoggingTargetProperty.class);
+		binaryUploadAcceptMimeTypesPattern = config.getValue("binaryUploadAcceptMimeTypesPattern");
 		imageColors = config.getValues("imageColors", ImageColorSetting.class);
 		loadWithReference = Boolean.valueOf(config.getValue("loadWithReference"));
 		formatNumberWithComma = Boolean.valueOf(config.getValue("formatNumberWithComma"));
@@ -300,7 +304,7 @@ public class GemConfigService implements Service {
 	 * @return CSVダウンロード参照項目バージョン出力
 	 */
 	public boolean isCsvDownloadReferenceVersion() {
-	    return csvDownloadReferenceVersion;
+		return csvDownloadReferenceVersion;
 	}
 
 	/**
@@ -390,7 +394,7 @@ public class GemConfigService implements Service {
 	 * @return 検索処理のインターバル
 	 */
 	public int getSearchInterval() {
-	    return searchInterval;
+		return searchInterval;
 	}
 
 	/**
@@ -398,7 +402,7 @@ public class GemConfigService implements Service {
 	 * @return CSVダウンロードのインターバル
 	 */
 	public int getCsvDownloadInterval() {
-	    return csvDownloadInterval;
+		return csvDownloadInterval;
 	}
 
 	/**
@@ -406,7 +410,7 @@ public class GemConfigService implements Service {
 	 * @return 汎用検索のCSVダウンロードでフッターを出力するか
 	 */
 	public boolean isCsvDownloadWithFooter() {
-	    return csvDownloadWithFooter;
+		return csvDownloadWithFooter;
 	}
 
 	/**
@@ -414,7 +418,7 @@ public class GemConfigService implements Service {
 	 * @return 汎用検索のCSVダウンロードのフッター文言
 	 */
 	public String getCsvDownloadFooter() {
-	    return csvDownloadFooter;
+		return csvDownloadFooter;
 	}
 
 	/**
@@ -436,6 +440,14 @@ public class GemConfigService implements Service {
 
 	public List<BinaryDownloadLoggingTargetProperty> getBinaryDownloadLoggingTargetProperty() {
 		return binaryDownloadLoggingTargetProperty;
+	}
+
+	/**
+	 * エンティティのバイナリプロパティにアップロード受け入れ可能なMIME Typesを取得します。
+	 * @return エンティティのバイナリプロパティにアップロード可能なMIME Types
+	 */
+	public String getBinaryUploadAcceptMimeTypesPattern() {
+		return binaryUploadAcceptMimeTypesPattern;
 	}
 
 	public List<ImageColorSetting> getImageColors() {
@@ -465,7 +477,7 @@ public class GemConfigService implements Service {
 	}
 
 	public List<Skin> getSkins() {
-	    return skins;
+		return skins;
 	}
 
 	public List<Theme> getThemes() {
@@ -525,7 +537,7 @@ public class GemConfigService implements Service {
 	 * @return Gem許可ロール
 	 */
 	public List<String> getPermitRolesToGem() {
-	    return permitRolesToGem;
+		return permitRolesToGem;
 	}
 
 	/**
@@ -533,7 +545,6 @@ public class GemConfigService implements Service {
 	 * @return EntityViewが未定義の場合の許可ロール
 	 */
 	public List<String> getPermitRolesToNoView() {
-	    return permitRolesToNoView;
+		return permitRolesToNoView;
 	}
-
 }

@@ -65,7 +65,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=100,
 			description="画面に表示する方法を選択します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_displayTypeDescriptionKey"
-	)
+			)
 	private BinaryDisplayType displayType;
 
 	/** 画像の高さ */
@@ -76,10 +76,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=110,
 			description="バイナリが画像の場合に表示する画像の高さを設定します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_heightDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-	)
+			)
 	private int height;
 
 	/** 画像の幅 */
@@ -90,10 +90,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=120,
 			description="バイナリが画像の場合に表示する画像の幅を設定します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_widthDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-	)
+			)
 	private int width;
 
 	/** アップロードアクション名 */
@@ -104,10 +104,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=130,
 			description="アップロード時に実行されるアクションを設定します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_uploadActionNameDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
-	)
+			)
 	private String uploadActionName;
 
 	/** ダウンロードアクション名 */
@@ -118,10 +118,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=140,
 			description="ダウンロード時に実行されるアクションを設定します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_downloadActionNameDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-	)
+			)
 	private String downloadActionName;
 
 	/** 新しいタブで開くか */
@@ -132,10 +132,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=150,
 			description="リンククリック時にバイナリの内容を新しいタブで表示します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_openNewTabDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-	)
+			)
 	private boolean openNewTab;
 
 	/** 画像表示時に回転ボタンを表示 */
@@ -146,10 +146,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=153,
 			description="画像リンクの横に回転ボタンを表示します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_showImageRotateButtonDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
-	)
+			)
 	private boolean showImageRotateButton;
 
 	/** 画像表示時にイメージViewerを利用 */
@@ -160,10 +160,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=156,
 			description="画像をViewerを利用して表示します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_useImageViewerDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-	)
+			)
 	private boolean useImageViewer = true;
 
 	/** PDF表示時にPDF.jsを利用 */
@@ -174,11 +174,11 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=160,
 			description="PDF.jsを利用してPDFの表示を行います。<br>"
 					+ "細工されたPDFによる情報詐取(JVNTA#94087669)の対策が必要な場合に利用てください。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_usePdfjsDescriptionKey"
-	)
+					descriptionKey="generic_editor_BinaryPropertyEditor_usePdfjsDescriptionKey"
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-	)
+			)
 	private boolean usePdfjs;
 
 	/** ファイル選択ボタンを非表示する */
@@ -189,10 +189,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=170,
 			description="編集画面にて当バイナリファイルがいない場合、ファイル選択ボタンを非表示にします。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_hideSelectButtonDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
-	)
+			)
 	private boolean hideSelectButton;
 
 	/** 削除ボタンを非表示する */
@@ -203,10 +203,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayOrder=180,
 			description="編集画面にて当バイナリファイルデータを削除するボタンを非表示にします。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_hideDeleteButtonDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
-	)
+			)
 	private boolean hideDeleteButton;
 
 	/** Label形式の場合の登録制御 */
@@ -217,10 +217,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			inputType=InputType.CHECKBOX,
 			displayOrder=200,
 			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
-	)
+			)
 	private boolean insertWithLabelValue = true;
 
 	/** Label形式の場合の更新制御 */
@@ -231,11 +231,25 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			inputType=InputType.CHECKBOX,
 			displayOrder=210,
 			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
-	)
+			)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
-	)
+			)
 	private boolean updateWithLabelValue = false;
+
+	/** アップロード受け入れ可能な MIME Type */
+	@MetaFieldInfo(
+			displayName = "アップロード受け入れ可能な MIME Type",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_uploadAcceptMimeTypesDisplaNameKey",
+			description = "アップロード受け入れ可能な MIME Type をカンマ区切りで指定します。設定しない場合は Service-Config 設定の org.iplass.gem.GemConfigService binaryUploadAcceptMimeTypes で指定された MIME Type を受け入れます。",
+			inputType = InputType.TEXT,
+			displayOrder = 220,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_uploadAcceptMimeTypesDescriptionKey"
+			)
+	@EntityViewField(
+			referenceTypes = { FieldReferenceType.DETAIL }
+			)
+	private String uploadAcceptMimeTypesPattern;
 
 	/**
 	 * コンストラクタ
@@ -381,7 +395,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 	 * @return PDF表示時にPDF.jsを利用
 	 */
 	public boolean isUsePdfjs() {
-	    return usePdfjs;
+		return usePdfjs;
 	}
 
 	/**
@@ -389,7 +403,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 	 * @param usePdfjs PDF表示時にPDF.jsを利用
 	 */
 	public void setUsePdfjs(boolean usePdfjs) {
-	    this.usePdfjs = usePdfjs;
+		this.usePdfjs = usePdfjs;
 	}
 
 	/**
@@ -455,6 +469,23 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 	 */
 	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
 		this.updateWithLabelValue = updateWithLabelValue;
+	}
+
+	/**
+	 * アップロード受け入れ可能な MIME Typeを取得します
+	 *
+	 * @return アップロード受け入れ可能な MIME Type
+	 */
+	public String getUploadAcceptMimeTypesPattern() {
+		return uploadAcceptMimeTypesPattern;
+	}
+
+	/**
+	 * アップロード受け入れ可能な MIME Type を設定します
+	 * @param uploadAcceptMimeTypes アップロード受け入れ可能な MIME Type
+	 */
+	public void setUploadAcceptMimeTypesPattern(String uploadAcceptMimeTypes) {
+		this.uploadAcceptMimeTypesPattern = uploadAcceptMimeTypes;
 	}
 
 	@Override
