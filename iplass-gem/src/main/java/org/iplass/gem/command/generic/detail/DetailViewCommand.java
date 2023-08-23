@@ -29,6 +29,7 @@ import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.detail.handler.ShowDetailViewEventHandler;
 import org.iplass.gem.command.generic.detail.handler.ShowEditViewEventHandler;
 import org.iplass.mtp.ApplicationException;
+import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -54,6 +55,9 @@ import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
+import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinitionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 詳細画面表示用コマンド
@@ -168,6 +172,8 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 })
 public final class DetailViewCommand extends DetailCommandBase {
 
+	private static Logger logger = LoggerFactory.getLogger(DetailViewCommand.class);
+
 	public static final String VIEW_ACTION_NAME = "gem/generic/detail/view";
 
 	public static final String REF_VIEW_ACTION_NAME = "gem/generic/detail/ref/view";
@@ -188,6 +194,9 @@ public final class DetailViewCommand extends DetailCommandBase {
 				));
 	}
 
+	/** ActionMappingDefinitionManager */
+	private ActionMappingDefinitionManager amdm = null;
+
 	private boolean detail;
 
 	public boolean isDetail() {
@@ -203,6 +212,8 @@ public final class DetailViewCommand extends DetailCommandBase {
 	 */
 	public DetailViewCommand() {
 		super();
+
+		amdm = ManagerLocator.manager(ActionMappingDefinitionManager.class);
 	}
 
 	@Override
@@ -220,6 +231,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 			// SearchCommandからのChainの可能性があるので、Attributeから取得する
 			oid = (String) request.getAttribute(Constants.OID);
 		}
+		String backPath = context.getBackPath();
 
 		//各種定義取得
 		DetailFormView view = context.getView();
@@ -242,6 +254,13 @@ public final class DetailViewCommand extends DetailCommandBase {
 			if (!evm.hasEntityReferencePermissionDetailFormView(context.getDefinitionName(), context.getViewName(), entity)) {
 				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.noPermission"));
 				return Constants.CMD_EXEC_ERROR_NODATA;
+			}
+		}
+
+		if (StringUtil.isNotEmpty(backPath)) {
+			if (amdm.get(backPath) == null) {
+				logger.error("backPath is invalid. value=[" + backPath + "]");
+				throw new ApplicationException(resourceString("command.generic.detail.DetailViewCommand.internalErr"));
 			}
 		}
 

@@ -25,6 +25,7 @@ import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.ResultType;
 import org.iplass.gem.command.generic.detail.DetailViewCommand;
 import org.iplass.gem.command.generic.search.SearchViewCommand;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -39,6 +40,9 @@ import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
+import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinitionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Entity削除コマンド
@@ -66,6 +70,8 @@ import org.iplass.mtp.view.generic.DetailFormView;
 @CommandClass(name="gem/generic/delete/DeleteCommand", displayName="削除")
 public final class DeleteCommand extends DeleteCommandBase {
 
+	private static Logger logger = LoggerFactory.getLogger(DeleteCommand.class);
+
 	public static final String ACTION_NAME = "gem/generic/delete/delete";
 
 	/** バージョン指定削除KEY */
@@ -77,6 +83,9 @@ public final class DeleteCommand extends DeleteCommandBase {
 	/** 検索用コマンド */
 	private SearchViewCommand search;
 
+	/** ActionMappingDefinitionManager */
+	private ActionMappingDefinitionManager amdm = null;
+
 	/**
 	 * コンストラクタ
 	 */
@@ -84,6 +93,8 @@ public final class DeleteCommand extends DeleteCommandBase {
 		detail = new DetailViewCommand();
 		detail.setDetail(true);
 		search = new SearchViewCommand();
+
+		amdm = ManagerLocator.manager(ActionMappingDefinitionManager.class);
 	}
 
 	@Override
@@ -112,7 +123,7 @@ public final class DeleteCommand extends DeleteCommandBase {
 			}
 			Entity entity = loadEntity(defName, oid, targetVersion);
 
-			if (entity == null 
+			if (entity == null
 					|| !evm.hasEntityReferencePermissionDetailFormView(context.getDefinitionName(), context.getViewName(), entity)) {
 				request.setAttribute(Constants.MESSAGE, GemResourceBundleUtil.resourceString("command.generic.detail.DetailViewCommand.noPermission"));
 				return Constants.CMD_EXEC_ERROR_NODATA;
@@ -135,6 +146,10 @@ public final class DeleteCommand extends DeleteCommandBase {
 			search.execute(request);
 			return Constants.CMD_EXEC_SUCCESS;
 		} else {
+			if (amdm.get(backPath) == null) {
+				logger.error("backPath is invalid. value=[" + backPath + "]");
+				throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.detail.DeleteCommand.internalErr"));
+			}
 			request.setAttribute(Constants.DEF_NAME, defName);
 			request.setAttribute(Constants.SEARCH_COND, searchCond);
 			request.setAttribute(Constants.BACK_PATH, backPath);

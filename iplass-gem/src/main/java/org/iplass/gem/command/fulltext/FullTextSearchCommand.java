@@ -112,7 +112,6 @@ import org.slf4j.LoggerFactory;
 public final class FullTextSearchCommand implements Command {
 
 	public static final String SEARCH_WEB_API_NAME = "gem/fulltext/search";
-	public static final String SEARCH_VIEW_ACTION_NAME = "gem/fulltext/searchview";
 
 	private static Logger logger = LoggerFactory.getLogger(FullTextSearchCommand.class);
 

@@ -215,30 +215,30 @@ $(function(){
 %>
 </span>
 <form id="detailForm" method="post" action="">
-<input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
-<input type="hidden" name="modalTarget" value="<c:out value="<%=modalTarget%>"/>" />
-<input type="hidden" name="execType" value="<c:out value="<%=execType%>"/>" />
-<input type="hidden" name="parentDefName" value="<c:out value="<%=parentDefName%>" />" />
-<input type="hidden" name="parentViewName" value="<c:out value="<%=parentViewName%>" />" />
-<input type="hidden" name="parentPropName" value="<c:out value="<%=parentPropName%>" />" />
-<input type="hidden" name="entityOid" value="<c:out value="<%=entityOid%>" />" />
-<input type="hidden" name="entityVersion" value="<c:out value="<%=entityVersion%>" />" />
-<input type="hidden" name="viewType" value="<c:out value="<%=viewType%>" />" />
-<input type="hidden" name="referenceSectionIndex" value="<c:out value="<%=refSectionIndex%>" />" />
+<input type="hidden" name="<%=Constants.DEF_NAME%>" value="<c:out value="<%=defName%>"/>" />
+<input type="hidden" name="<%=Constants.MODAL_TARGET%>" value="<c:out value="<%=modalTarget%>"/>" />
+<input type="hidden" name="<%=Constants.EXEC_TYPE%>" value="<c:out value="<%=execType%>"/>" />
+<input type="hidden" name="<%=Constants.PARENT_DEFNAME%>" value="<c:out value="<%=parentDefName%>" />" />
+<input type="hidden" name="<%=Constants.PARENT_VIEWNAME%>" value="<c:out value="<%=parentViewName%>" />" />
+<input type="hidden" name="<%=Constants.PARENT_PROPNAME%>" value="<c:out value="<%=parentPropName%>" />" />
+<input type="hidden" name="<%=Constants.DISPLAY_SCRIPT_ENTITY_OID%>" value="<c:out value="<%=entityOid%>" />" />
+<input type="hidden" name="<%=Constants.DISPLAY_SCRIPT_ENTITY_VERSION%>" value="<c:out value="<%=entityVersion%>" />" />
+<input type="hidden" name="<%=Constants.VIEW_TYPE%>" value="<c:out value="<%=viewType%>" />" />
+<input type="hidden" name="<%=Constants.REF_SECTION_INDEX%>" value="<c:out value="<%=refSectionIndex%>" />" />
 <%
 	if (oid != null) {
 %>
-<input type="hidden" name="oid" value="<c:out value="<%=oid%>"/>" />
+<input type="hidden" name="<%=Constants.OID%>" value="<c:out value="<%=oid%>"/>" />
 <%
 	}
 	if (updateDate != null) {
 %>
-<input type="hidden" name="timestamp" value="<c:out value="<%=updateDate%>"/>" />
+<input type="hidden" name="<%=Constants.TIMESTAMP%>" value="<c:out value="<%=updateDate%>"/>" />
 <%
 	}
 	if (version != null) {
 %>
-<input type="hidden" name="version" value="<c:out value="<%=version%>"/>" />
+<input type="hidden" name="<%=Constants.VERSION%>" value="<c:out value="<%=version%>"/>" />
 <%
 	}
 %>
