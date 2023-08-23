@@ -240,11 +240,11 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 	/** アップロード受け入れ可能な MIME Type */
 	@MetaFieldInfo(
 			displayName = "アップロード受け入れ可能な MIME Type",
-			displayNameKey = "generic_editor_LabelablePropertyEditor_uploadAcceptMimeTypesDisplaNameKey",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_uploadAcceptMimeTypesPatternDisplaNameKey",
 			description = "アップロード受け入れ可能な MIME Type をカンマ区切りで指定します。設定しない場合は Service-Config 設定の org.iplass.gem.GemConfigService binaryUploadAcceptMimeTypes で指定された MIME Type を受け入れます。",
 			inputType = InputType.TEXT,
 			displayOrder = 220,
-			descriptionKey = "generic_editor_LabelablePropertyEditor_uploadAcceptMimeTypesDescriptionKey"
+			descriptionKey = "generic_editor_LabelablePropertyEditor_uploadAcceptMimeTypesPatternDescriptionKey"
 			)
 	@EntityViewField(
 			referenceTypes = { FieldReferenceType.DETAIL }
