@@ -28,7 +28,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.iplass.mtp.impl.web.RequestPath.PathType;
+import org.iplass.mtp.impl.web.fileupload.DefaultFileTypeDetector;
 import org.iplass.mtp.impl.web.fileupload.FileScanner;
+import org.iplass.mtp.impl.web.fileupload.FileTypeDetector;
 import org.iplass.mtp.impl.web.fileupload.MagicByteChecker;
 import org.iplass.mtp.impl.web.mdc.HttpHeaderMdcValueResolver;
 import org.iplass.mtp.impl.web.mdc.MdcValueResolver;
@@ -129,6 +131,9 @@ public class WebFrontendService implements Service {
 	/** ウィルススキャン実行 */
 	private FileScanner uploadFileScanner;
 
+	/** アップロードファイルタイプ検出機能 */
+	private FileTypeDetector uploadFileTypeDetector;
+
 	/** ExecMagicByteCheck実施するか */
 	private boolean isExecMagicByteCheck;
 
@@ -225,6 +230,14 @@ public class WebFrontendService implements Service {
 
 	public FileScanner getUploadFileScanner() {
 		return uploadFileScanner;
+	}
+
+	/**
+	 * アップロードファイルタイプ検出機能を取得する
+	 * @return アップロードファイルタイプ検出機能
+	 */
+	public FileTypeDetector getUploadFileTypeDetector() {
+		return uploadFileTypeDetector;
 	}
 
 	public LoginUrlSelector getLoginUrlSelector() {
@@ -355,6 +368,8 @@ public class WebFrontendService implements Service {
 
 		uploadFileScanner = (FileScanner) config.getBean("uploadFileScanner");
 
+		uploadFileTypeDetector = config.getValue("uploadFileTypeDetector", FileTypeDetector.class, new DefaultFileTypeDetector());
+
 		isExecMagicByteCheck = Boolean.valueOf(config.getValue("isExecMagicByteCheck"));
 
 		magicByteChecker = config.getValue("magicByteChecker", MagicByteChecker.class);
@@ -432,41 +447,41 @@ public class WebFrontendService implements Service {
 
 		if (requestRestrictions != null) {
 			switch (type) {
-				case ACTION:
-					path = "/" + metaDataName;
+			case ACTION:
+				path = "/" + metaDataName;
+				for (RequestRestriction rr: requestRestrictions) {
+					if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
+						return rr;
+					}
+				}
+				if (welcomeAction != null) {
+					int slaIndex = path.lastIndexOf('/');
+					String shortName = slaIndex < 0 ? path: path.substring(slaIndex + 1);
+
+					for (String wa: welcomeAction) {
+						if (wa.equals(shortName)) {
+							String remainPath = path.substring(0, slaIndex + 1);
+							for (RequestRestriction rr: requestRestrictions) {
+								if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(remainPath).matches()) {
+									return rr;
+								}
+							}
+						}
+					}
+				}
+				break;
+			case REST:
+				for (String rp : restPath) {
+					path = rp + metaDataName;
 					for (RequestRestriction rr: requestRestrictions) {
 						if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
 							return rr;
 						}
 					}
-					if (welcomeAction != null) {
-						int slaIndex = path.lastIndexOf('/');
-						String shortName = slaIndex < 0 ? path: path.substring(slaIndex + 1);
-
-						for (String wa: welcomeAction) {
-							if (wa.equals(shortName)) {
-								String remainPath = path.substring(0, slaIndex + 1);
-								for (RequestRestriction rr: requestRestrictions) {
-									if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(remainPath).matches()) {
-										return rr;
-									}
-								}
-							}
-						}
-					}
-					break;
-				case REST:
-					for (String rp : restPath) {
-						path = rp + metaDataName;
-						for (RequestRestriction rr: requestRestrictions) {
-							if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
-								return rr;
-							}
-						}
-					}
-					break;
-				default:
-					break;
+				}
+				break;
+			default:
+				break;
 			}
 		}
 		return defaultRequestRestriction;

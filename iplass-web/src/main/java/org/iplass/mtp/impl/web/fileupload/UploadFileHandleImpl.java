@@ -35,7 +35,6 @@ import java.nio.file.Path;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.fileupload.util.Streams;
-import org.apache.tika.Tika;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.command.UploadFileSizeOverException;
@@ -52,8 +51,6 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadFileHandleImpl.class);
 	private static WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
-	/** Tikaデフォルトインスタンス */
-	private static Tika tika = new Tika();
 
 	public static UploadFileHandleImpl toUploadFileHandle(InputStream is, String fileName, String type, ServletContext servletContext, long maxSize) throws IOException {
 		try {
@@ -101,9 +98,10 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 					throw e;
 				}
 
-				// NOTE 一度ファイル保存しているため、ファイルをインターフェースとしている。ファイルを保存しなくなる場合は、別途対応が必要。引数の is を指定する方法ではうまく動かない。
+				// NOTE 一度ファイル保存しているため、ファイルをインターフェースとしている。ローカルにファイルを保存することを前提としている。
 				// ファイルからメディアタイプ（MIME Type）を取得
-				String mediaType = detectMediaType(tempFile, fileName, type);
+				FileTypeDetector fileTypeDetector = webFront.getUploadFileTypeDetector();
+				String mediaType = fileTypeDetector.detect(tempFile, fileName, type);
 
 				if (maxSize != -1 && size > maxSize) {
 					value = new UploadFileHandleImpl(tempFile, fileName, mediaType, size, true);
@@ -122,28 +120,6 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * ファイルからメディアタイプを検出する。
-	 *
-	 * <p>
-	 * メディアタイプの検出には、 apache tika を利用する。
-	 * 例外発生時には警告ログを出力し、引数の defaultType を返却する。
-	 * </p>
-	 *
-	 * @param file 対象ファイル
-	 * @param fileName アップロード時のファイル名
-	 * @param defaultType 検出できない場合のデフォルト値
-	 * @return ファイルから検出したメディアタイプ
-	 */
-	private static String detectMediaType(File file, String fileName, String defaultType) {
-		try (InputStream in = new FileInputStream(file)) {
-			return tika.detect(in, fileName);
-		} catch (IOException e) {
-			logger.warn("Unable to retrieve media type.", e);
-			return defaultType;
 		}
 	}
 
