@@ -447,41 +447,41 @@ public class WebFrontendService implements Service {
 
 		if (requestRestrictions != null) {
 			switch (type) {
-			case ACTION:
-				path = "/" + metaDataName;
-				for (RequestRestriction rr: requestRestrictions) {
-					if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
-						return rr;
-					}
-				}
-				if (welcomeAction != null) {
-					int slaIndex = path.lastIndexOf('/');
-					String shortName = slaIndex < 0 ? path: path.substring(slaIndex + 1);
-
-					for (String wa: welcomeAction) {
-						if (wa.equals(shortName)) {
-							String remainPath = path.substring(0, slaIndex + 1);
-							for (RequestRestriction rr: requestRestrictions) {
-								if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(remainPath).matches()) {
-									return rr;
-								}
-							}
-						}
-					}
-				}
-				break;
-			case REST:
-				for (String rp : restPath) {
-					path = rp + metaDataName;
+				case ACTION:
+					path = "/" + metaDataName;
 					for (RequestRestriction rr: requestRestrictions) {
 						if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
 							return rr;
 						}
 					}
-				}
-				break;
-			default:
-				break;
+					if (welcomeAction != null) {
+						int slaIndex = path.lastIndexOf('/');
+						String shortName = slaIndex < 0 ? path: path.substring(slaIndex + 1);
+
+						for (String wa: welcomeAction) {
+							if (wa.equals(shortName)) {
+								String remainPath = path.substring(0, slaIndex + 1);
+								for (RequestRestriction rr: requestRestrictions) {
+									if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(remainPath).matches()) {
+										return rr;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case REST:
+					for (String rp : restPath) {
+						path = rp + metaDataName;
+						for (RequestRestriction rr: requestRestrictions) {
+							if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
+								return rr;
+							}
+						}
+					}
+					break;
+				default:
+					break;
 			}
 		}
 		return defaultRequestRestriction;
