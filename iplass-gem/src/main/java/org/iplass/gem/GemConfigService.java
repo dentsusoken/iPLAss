@@ -124,7 +124,7 @@ public class GemConfigService implements Service {
 	/** Binaryダウンロード時のログ出力設定 */
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
 
-	/** エンティティのバイナリプロパティにアップロード受け入れ可能なMIME Types */
+	/** エンティティのバイナリプロパティにアップロード受け入れ可能な MIME Types  正規表現パターン */
 	private String binaryUploadAcceptMimeTypesPattern;
 
 	/** カラー */
@@ -443,8 +443,8 @@ public class GemConfigService implements Service {
 	}
 
 	/**
-	 * エンティティのバイナリプロパティにアップロード受け入れ可能なMIME Typesを取得します。
-	 * @return エンティティのバイナリプロパティにアップロード可能なMIME Types
+	 * エンティティのバイナリプロパティにアップロード受け入れ可能なMIME Types 正規表現パターンを取得します。
+	 * @return エンティティのバイナリプロパティにアップロード可能なMIME Types 正規表現パターン
 	 */
 	public String getBinaryUploadAcceptMimeTypesPattern() {
 		return binaryUploadAcceptMimeTypesPattern;

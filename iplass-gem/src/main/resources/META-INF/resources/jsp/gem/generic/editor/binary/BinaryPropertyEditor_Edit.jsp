@@ -137,9 +137,7 @@
 		if (pd.getMultiplicity() > 1) multiple = "multiple";
 
 		String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
-		if (viewName == null || viewName.length() == 0) {
-			viewName = (String)request.getAttribute(Constants.ROLE_NAME);
-		}
+		if (viewName == null) viewName = "";
 
 		if (request.getAttribute(Constants.UPLOAD_LIB_LOADED) == null) {
 			request.setAttribute(Constants.UPLOAD_LIB_LOADED, true);

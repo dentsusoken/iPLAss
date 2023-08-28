@@ -85,7 +85,7 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
 
-	/** アップロード受け入れ可能な MIME Type */
+	/** アップロード受け入れ可能な MIME Type 正規表現パターン*/
 	private String uploadAcceptMimeTypesPattern;
 
 	/**
@@ -301,16 +301,16 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	}
 
 	/**
-	 * アップロード受け入れ可能な MIME Type を取得します。
-	 * @return アップロード受け入れ可能な MIME Type
+	 * アップロード受け入れ可能な MIME Type 正規表現パターンを取得します。
+	 * @return アップロード受け入れ可能な MIME Type 正規表現パターン
 	 */
 	public String getUploadAcceptMimeTypesPattern() {
 		return uploadAcceptMimeTypesPattern;
 	}
 
 	/**
-	 * アップロード受け入れ可能な MIME Type を設定します
-	 * @param uploadAcceptMimeTypesPattern アップロード受け入れ可能な MIME Type
+	 * アップロード受け入れ可能な MIME Type 正規表現パターンを設定します
+	 * @param uploadAcceptMimeTypesPattern アップロード受け入れ可能な MIME Type 正規表現パターン
 	 */
 	public void setUploadAcceptMimeTypesPattern(String uploadAcceptMimeTypesPattern) {
 		this.uploadAcceptMimeTypesPattern = uploadAcceptMimeTypesPattern;

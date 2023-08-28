@@ -239,9 +239,9 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 
 	/** アップロード受け入れ可能な MIME Type */
 	@MetaFieldInfo(
-			displayName = "アップロード受け入れ可能な MIME Type",
+			displayName = "アップロード受け入れ可能な MIME Type パターン",
 			displayNameKey = "generic_editor_LabelablePropertyEditor_uploadAcceptMimeTypesPatternDisplaNameKey",
-			description = "アップロード受け入れ可能な MIME Type をカンマ区切りで指定します。設定しない場合は Service-Config 設定の org.iplass.gem.GemConfigService binaryUploadAcceptMimeTypes で指定された MIME Type を受け入れます。",
+			description = "アップロード受け入れ可能な MIME Type を正規表現パターンで指定します。設定しない場合は Service-Config 設定の org.iplass.gem.GemConfigService binaryUploadAcceptMimeTypes で指定された MIME Type を受け入れます。",
 			inputType = InputType.TEXT,
 			displayOrder = 220,
 			descriptionKey = "generic_editor_LabelablePropertyEditor_uploadAcceptMimeTypesPatternDescriptionKey"
@@ -472,9 +472,9 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 	}
 
 	/**
-	 * アップロード受け入れ可能な MIME Typeを取得します
+	 * アップロード受け入れ可能な MIME Type 正規表現パターンを取得します
 	 *
-	 * @return アップロード受け入れ可能な MIME Type
+	 * @return アップロード受け入れ可能な MIME Type 正規表現パターン
 	 */
 	public String getUploadAcceptMimeTypesPattern() {
 		return uploadAcceptMimeTypesPattern;

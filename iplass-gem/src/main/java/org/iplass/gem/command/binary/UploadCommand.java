@@ -154,11 +154,11 @@ public final class UploadCommand implements Command {
 
 		if (null != editor && StringUtil.isNotBlank(editor.getUploadAcceptMimeTypesPattern())) {
 			// プロパティエディタに許可する MIME Type が指定されている場合は、プロパティエディタを優先する
-			isAccept = buildMimeTypesPattern(editor.getUploadAcceptMimeTypesPattern()).matcher(type).matches();
+			isAccept = Pattern.compile(editor.getUploadAcceptMimeTypesPattern()).matcher(type).matches();
 
 		} else if (StringUtil.isNotBlank(service.getBinaryUploadAcceptMimeTypesPattern())) {
 			// プロパティエディタに設定が無く、GemConfigServiceの受け入れ許可設定が存在する場合は、GemConfigService の設定で許可設定を行う
-			isAccept = buildMimeTypesPattern(service.getBinaryUploadAcceptMimeTypesPattern()).matcher(type).matches();
+			isAccept = Pattern.compile(service.getBinaryUploadAcceptMimeTypesPattern()).matcher(type).matches();
 		}
 		// else {
 		// // プロパティエディタ、GemServiceConfig に設定が無い場合はチェックしない
@@ -224,36 +224,6 @@ public final class UploadCommand implements Command {
 
 		// 定義が無い場合は null を返却
 		return null;
-	}
-
-	/**
-	 * MIME Typeカンマ区切り文字列を正規表現パターンに変換する
-	 *
-	 * <p>
-	 * 変換例
-	 * <ul>
-	 * <li>text/html ⇒ ^(text\/html)$</li>
-	 * <li>image/*, application/zip ⇒ ^(image\/.*|application\/zip)$</li>
-	 * </ul>
-	 * </p>
-	 *
-	 * @param mimeTypes 変換対象MIMETypeカンマ区切り文字列
-	 * @return 正規表現パターン
-	 */
-	private Pattern buildMimeTypesPattern(String mimeTypes) {
-		if (null == mimeTypes) {
-			return null;
-		}
-
-		// 正規表現パターンに変換
-		String mimeTypePatternString = mimeTypes
-				// 正規表現用の置換。空白を除去、カンマをパイプに変換
-				.replaceAll(" ", "").replaceAll(",", "|")
-				// ["/" -> "\/"], ["." -> "\."], ["+" -> "\+"], ["*" -> ".*"]
-				.replaceAll("\\/", "\\\\/").replaceAll("\\.", "\\\\.")
-				.replaceAll("\\+", "\\\\+").replaceAll("\\*", ".*");
-
-		return Pattern.compile("^(" + mimeTypePatternString + ")$");
 	}
 
 	/**
