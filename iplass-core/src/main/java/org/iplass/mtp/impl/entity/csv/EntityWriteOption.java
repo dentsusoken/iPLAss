@@ -66,7 +66,10 @@ public class EntityWriteOption extends ParseOption {
 	/** 出力上限値。0以下は無制限 */
 	private int limit = 0;
 
-	/** 多重度複数の参照を含む検索時の一括ロード件数。1以下は1件ずつロードする。 */
+	/** 多重度複数の参照を含む検索時に一括でロードするか。 */
+	private boolean loadOnceOfHasMultipleReferenceEntity;
+
+	/** 多重度複数の参照を含む検索時のロード単位。1以下は1件ずつロードする。 */
 	private int loadSizeOfHasMultipleReferenceEntity = 1;
 
 	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
@@ -140,10 +143,38 @@ public class EntityWriteOption extends ParseOption {
 		this.limit = limit;
 	}
 
+	/**
+	 * 多重度複数の参照を含む検索時に一括でロードするかを返します。
+	 *
+	 * @return 多重度複数の参照を含む検索時に一括でロードするか
+	 */
+	public boolean isLoadOnceOfHasMultipleReferenceEntity() {
+		return loadOnceOfHasMultipleReferenceEntity;
+	}
+
+	/**
+	 * 多重度複数の参照を含む検索時に一括でロードするかを設定します。
+	 *
+	 * @param loadOnceOfHasMultipleReferenceEntity 多重度複数の参照を含む検索時に一括でロードするか
+	 */
+	public void setLoadOnceOfHasMultipleReferenceEntity(boolean loadOnceOfHasMultipleReferenceEntity) {
+		this.loadOnceOfHasMultipleReferenceEntity = loadOnceOfHasMultipleReferenceEntity;
+	}
+
+	/**
+	 * 多重度複数の参照を含む検索時のロード単位を返します。
+	 *
+	 * @return 多重度複数の参照を含む検索時のロード単位
+	 */
 	public int getLoadSizeOfHasMultipleReferenceEntity() {
 		return loadSizeOfHasMultipleReferenceEntity;
 	}
 
+	/**
+	 * 多重度複数の参照を含む検索時のロード単位を設定します。1以下は1件ずつロードします。
+	 *
+	 * @param loadSizeOfHasMultipleReferenceEntity 多重度複数の参照を含む検索時のロード単位
+	 */
 	public void setLoadSizeOfHasMultipleReferenceEntity(int loadSizeOfHasMultipleReferenceEntity) {
 		this.loadSizeOfHasMultipleReferenceEntity = loadSizeOfHasMultipleReferenceEntity;
 	}
@@ -255,6 +286,23 @@ public class EntityWriteOption extends ParseOption {
 		return this;
 	}
 
+	/**
+	 * 多重度複数の参照を含む検索時に一括でロードするかを設定します。
+	 *
+	 * @param loadOnceOfHasMultipleReferenceEntity 多重度複数の参照を含む検索時に一括でロードするか
+	 * @return インスタンス
+	 */
+	public EntityWriteOption loadOnceOfHasMultipleReferenceEntity(boolean loadOnceOfHasMultipleReferenceEntity) {
+		setLoadOnceOfHasMultipleReferenceEntity(loadOnceOfHasMultipleReferenceEntity);
+		return this;
+	}
+
+	/**
+	 * 多重度複数の参照を含む検索時のロード単位を設定します。1以下は1件ずつロードします。
+	 *
+	 * @param loadSizeOfHasMultipleReferenceEntity 多重度複数の参照を含む検索時のロード単位
+	 * @return インスタンス
+	 */
 	public EntityWriteOption loadSizeOfHasMultipleReferenceEntity(int loadSizeOfHasMultipleReferenceEntity) {
 		setLoadSizeOfHasMultipleReferenceEntity(loadSizeOfHasMultipleReferenceEntity);
 		return this;

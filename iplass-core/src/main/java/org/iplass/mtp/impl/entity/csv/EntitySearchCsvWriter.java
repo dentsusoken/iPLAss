@@ -33,6 +33,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityKey;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.LoadOption;
+import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -142,7 +143,7 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 
 		final List<String> select = new ArrayList<>();
 
-		if (hasMultiReference) {
+		if (hasMultiReference && !option.isLoadOnceOfHasMultipleReferenceEntity()) {
 			//OIDとVERSIONのみ。後でLoadする
 			select.add(Entity.OID);
 			select.add(Entity.VERSION);
@@ -243,14 +244,20 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 	 */
 	private int doSearch(final Query query, final boolean hasMultiReference) {
 
-		// 多重度複数の参照を含む場合は別処理
-		if (hasMultiReference) {
+		// 多重度複数の参照を含む場合で、一括ロード以外は別処理
+		if (hasMultiReference && !option.isLoadOnceOfHasMultipleReferenceEntity()) {
 			return doSearchMultiReference(query);
 		}
 
 		final int[] count = new int[1];
 
-		em.searchEntity(query, entity -> {
+		SearchOption searchOption = new SearchOption();
+		if (hasMultiReference && option.isLoadOnceOfHasMultipleReferenceEntity()) {
+			// 多重度複数の参照を含む場合で、一括ロード時は構造化で取得
+			searchOption.setReturnStructuredEntity(true);
+		}
+
+		em.searchEntity(query, searchOption, entity -> {
 
 			option.getAfterSearch().accept(query.copy(), entity);
 

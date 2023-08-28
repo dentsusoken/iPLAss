@@ -220,13 +220,24 @@ public class SearchConditionSection extends Section {
 	)
 	private Integer csvdownloadMaxCount;
 
-	/** Upload形式のCSVダウンロード時の一括ロード件数 */
+	/** Upload形式のCSVダウンロード時に一括でロードする */
 	@MetaFieldInfo(
-			displayName="Upload形式のCSVダウンロード時の一括ロード件数",
+			displayName="Upload形式のCSVダウンロード時に一括でロードする ",
+			displayNameKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadAtOnceDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1073,
+			description="Upload形式のCSVダウンロードで、多重度複数の参照を含む場合に一括でロードをするかを設定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadAtOnceDescriptionKey"
+	)
+	private boolean uploadableCsvdownloadLoadAtOnce;
+
+	/** Upload形式のCSVダウンロード時のロード単位 */
+	@MetaFieldInfo(
+			displayName="Upload形式のCSVダウンロード時のロード単位",
 			displayNameKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDisplaNameKey",
 			inputType=InputType.NUMBER,
 			displayOrder=1075,
-			description="Upload形式のCSVダウンロード時に多重度複数の参照を含む場合の一括ロード件数",
+			description="Upload形式のCSVダウンロードで、多重度複数の参照を含む場合に一度にロードする件数を設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDescriptionKey"
 	)
 	private Integer uploadableCsvdownloadLoadSize;
@@ -739,16 +750,32 @@ public class SearchConditionSection extends Section {
 	}
 
 	/**
-	 * Upload形式のCSVダウンロード時の一括ロード件数を取得します。
-	 * @return Upload形式のCSVダウンロード時の一括ロード件数
+	 * Upload形式のCSVダウンロード時に一括でロードするかを取得します。
+	 * @return Upload形式のCSVダウンロード時に一括でロードするか
+	 */
+	public boolean isUploadableCsvdownloadLoadAtOnce() {
+		return uploadableCsvdownloadLoadAtOnce;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード時に一括でロードするかを設定します。
+	 * @param uploadableCsvdownloadLoadAtOnce Upload形式のCSVダウンロード時に一括でロードするか
+	 */
+	public void setUploadableCsvdownloadLoadAtOnce(boolean uploadableCsvdownloadLoadAtOnce) {
+		this.uploadableCsvdownloadLoadAtOnce = uploadableCsvdownloadLoadAtOnce;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード時のロード単位を取得します。
+	 * @return Upload形式のCSVダウンロード時のロード単位
 	 */
 	public Integer getUploadableCsvdownloadLoadSize() {
 		return uploadableCsvdownloadLoadSize;
 	}
 
 	/**
-	 * Upload形式のCSVダウンロード時の一括ロード件数を設定します。
-	 * @param uploadableCsvdownloadLoadSize Upload形式のCSVダウンロード時の一括ロード件数
+	 * Upload形式のCSVダウンロード時のロード単位を設定します。
+	 * @param uploadableCsvdownloadLoadSize Upload形式のCSVダウンロード時のロード単位
 	 */
 	public void setUploadableCsvdownloadLoadSize(Integer uploadableCsvdownloadLoadSize) {
 		this.uploadableCsvdownloadLoadSize = uploadableCsvdownloadLoadSize;
