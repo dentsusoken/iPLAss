@@ -193,16 +193,16 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 	}
 
 	public boolean isForUpload() {
-		return Boolean.valueOf(getRequest().getParam("isForUpload"));
+		return Boolean.valueOf(getRequest().getParam(Constants.CSV_IS_FOR_UPLOAD));
 	}
 
 	public boolean isNoDispName() {
-		return getConditionSection().isNonOutputDisplayName() 
-				|| Boolean.valueOf(getRequest().getParam("isNoDispName"));
+		return getConditionSection().isNonOutputDisplayName()
+				|| Boolean.valueOf(getRequest().getParam(Constants.CSV_IS_NO_DISP_NAME));
 	}
 
 	public boolean isOutputResult() {
-		return Boolean.valueOf(getRequest().getParam("isOutputResult"));
+		return Boolean.valueOf(getRequest().getParam(Constants.CSV_IS_OUTPUT_RESULT));
 	}
 
 	public boolean isOutputCodeValue() {

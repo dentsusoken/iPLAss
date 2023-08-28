@@ -2432,8 +2432,10 @@ LocaleInfo.generic_element_section_SearchConditionSection_csvUploadUpdatePropert
 LocaleInfo.generic_element_section_SearchConditionSection_csvUploadUpdatePropertiesDescriptionKey = "Set the update properties of the CSV upload target.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplaNameKey = "Upper limit of downloads CSV number";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadMaxCountDescriptionKey = "Set the upper limit of the CSV download number.";
+LocaleInfo.generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadAtOnceDisplaNameKey = "Load once when downloading CSV in Upload format";
+LocaleInfo.generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadAtOnceDescriptionKey = "Set whether CSV downloads in Upload format should be loaded once when multiple references are included.";
 LocaleInfo.generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDisplaNameKey = "Size of batch loads when downloading CSV in Upload format";
-LocaleInfo.generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDescriptionKey = "Specify the size of batch loads when downloading CSV in Upload format and multiple references are included.";
+LocaleInfo.generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDescriptionKey = "Specify the size of batch loads when downloading CSV in Upload format and multiple references are included. This setting is ignored for load once ON.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplaNameKey = "CSV download Properties";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadPropertiesDescriptionKey = "Set the properties of the CSV download target.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadUploadablePropertiesDisplaNameKey = "CSV download Properties(for uploading)";
