@@ -1402,11 +1402,11 @@ $(function() {
 	}
 %>
 
-<input type="hidden" name="defName" value="<c:out value="<%=ed.getName()%>"/>">
-<input type="hidden" name="searchType" value="<c:out value="<%=_searchType%>"/>">
+<input type="hidden" name="<%=Constants.DEF_NAME %>" value="<c:out value="<%=ed.getName()%>"/>">
+<input type="hidden" name="<%=Constants.SEARCH_TYPE %>" value="<c:out value="<%=_searchType%>"/>">
 <input type="hidden" name="formName" value="<c:out value="<%=_searchType%>"/>Form">
-<input type="hidden" name="sortKey" value="">
-<input type="hidden" name="sortType" value="">
-<input type="hidden" name="isForUpload" value="">
+<input type="hidden" name="<%=Constants.SEARCH_SORTKEY %>" value="">
+<input type="hidden" name="<%=Constants.SEARCH_SORTTYPE %>" value="">
+<input type="hidden" name="<%=Constants.CSV_IS_FOR_UPLOAD %>" value="">
 </div><!--box-search-01-->
 </div><!--tab-wrap-->
