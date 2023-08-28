@@ -47,6 +47,7 @@ public class Constants {
 	public static final String DATA = "data";
 	public static final String REF_EDIT = "refEdit";
 	public static final String COPY = "copy";
+	public static final String COPY_TARGET = "copyTarget";
 	public static final String DIALOG_MODE = "isDialog";
 
 	public static final String SEARCH_TYPE = "searchType";

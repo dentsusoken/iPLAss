@@ -6,13 +6,19 @@ configurations {
 	compileOnly.extendsFrom(jeewebapis)
 	runtimeOnly.extendsFrom(wjRuntime)
 
-	// ビルドパスが競合してエラーになるのでnpmとbowerのものは除外
+	// jqueryはorg.webjars:jqueryを利用。
+	// それ以外は除外
 	all*.exclude group: 'org.webjars.npm', module: 'jquery'
 	all*.exclude group: 'org.webjars.bower', module: 'jquery'
-	all*.exclude group: 'org.webjars.bower', module: 'moment'
+	all*.exclude group: 'org.webjars.bowergithub.jquery', module: 'jquery-dist'
 	
-	// jquery-uiはbowerを利用。ビルドパスが競合してエラーになるのでそれ以外のものは除外(Timepicker-Addonで参照)
+	// jquery-uiはorg.webjars.bowergithub.jquery:jquery-uiを利用。
+	// org.webjars:jquery-uiは除外(org.webjars:jQuery-Timepicker-Addonで参照)
 	all*.exclude group: 'org.webjars', module: 'jquery-ui'
+
+	// momentはorg.webjars:momentjsを利用。
+	// org.webjars.bower:momentは除外(org.webjars.bower:fullcalendarで参照)
+	all*.exclude group: 'org.webjars.bower', module: 'moment'
 }
 
 dependencies {
@@ -34,10 +40,11 @@ dependencies {
 	wjRuntime sharedLib('org.webjars.npm:jqtree')
 	wjRuntime sharedLib('org.webjars.npm:viewerjs')
 
-	wjRuntime sharedLib('org.webjars.bower:jquery-ui')
 	wjRuntime sharedLib('org.webjars.bower:blueimp-file-upload')
 	wjRuntime sharedLib('org.webjars.bower:fullcalendar')
 	wjRuntime sharedLib('org.webjars.bower:mediaelement')
+
+	wjRuntime sharedLib('org.webjars.bowergithub.jquery:jquery-ui')
 
 	//css
 	wjRuntime sharedLib('org.webjars:font-awesome')

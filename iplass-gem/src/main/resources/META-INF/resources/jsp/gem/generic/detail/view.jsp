@@ -154,7 +154,7 @@
 <script type="text/javascript">
 function onclick_submit() {
 	var $form = $("#detailForm");
-	$form.append("<input type='hidden' name='fromView' value='true' />");
+	$form.append("<input type='hidden' name='<%=Constants.FROM_VIEW%>' value='true' />");
 	$form.submit();
 }
 function onclick_copy() {
@@ -166,13 +166,13 @@ function onclick_copy() {
 			return;
 		}
 		var $form = $("#detailForm");
-		$form.append("<input type='hidden' name='copy' value='true' />");
+		$form.append("<input type='hidden' name='<%=Constants.COPY%>' value='true' />");
 		$form.submit();
 	}
 }
 function onclick_newversion() {
 	var $form = $("#detailForm");
-	$form.append("<input type='hidden' name='newversion' value='true' />");
+	$form.append("<input type='hidden' name='<%=Constants.NEWVERSION%>' value='true' />");
 	$form.submit();
 }
 function viewref(defName, oid, action) {
@@ -239,26 +239,26 @@ function dataUnlock() {
 	}
 %>
 <form id="detailForm" method="post" action="<c:out value="<%=edit %>"/>">
-<input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
-<input type="hidden" name="searchCond" value="<c:out value="<%=searchCond%>"/>" />
-<input type="hidden" name="_copyTarget" value="<c:out value="<%=copyTarget.value()%>"/>" />
-<input type="hidden" name="copyTarget" value="<c:out value="<%=copyTarget.value()%>"/>" />
-<input type="hidden" name="backPath" value="<c:out value="<%=backPath%>"/>" />
-<input type="hidden" name="topViewListOffset" value="<c:out value="<%=topViewListOffset%>"/>" />
+<input type="hidden" name="<%=Constants.DEF_NAME%>" value="<c:out value="<%=defName%>"/>" />
+<input type="hidden" name="<%=Constants.SEARCH_COND%>" value="<c:out value="<%=searchCond%>"/>" />
+<input type="hidden" name="_<%=Constants.COPY_TARGET%>" value="<c:out value="<%=copyTarget.value()%>"/>" />
+<input type="hidden" name="<%=Constants.COPY_TARGET%>" value="<c:out value="<%=copyTarget.value()%>"/>" />
+<input type="hidden" name="<%=Constants.BACK_PATH%>" value="<c:out value="<%=backPath%>"/>" />
+<input type="hidden" name="<%=Constants.TOPVIEW_LIST_OFFSET%>" value="<c:out value="<%=topViewListOffset%>"/>" />
 <%
 	if (oid != null) {
 %>
-<input type="hidden" name="oid" value="<c:out value="<%=oid%>"/>" />
+<input type="hidden" name="<%=Constants.OID%>" value="<c:out value="<%=oid%>"/>" />
 <%
 	}
 	if (updateDate != null) {
 %>
-<input type="hidden" name="timestamp" value="<c:out value="<%=updateDate%>"/>" />
+<input type="hidden" name="<%=Constants.TIMESTAMP%>" value="<c:out value="<%=updateDate%>"/>" />
 <%
 	}
 	if (version != null) {
 %>
-<input type="hidden" name="version" value="<c:out value="<%=version%>"/>" />
+<input type="hidden" name="<%=Constants.VERSION%>" value="<c:out value="<%=version%>"/>" />
 <%
 	}
 %>
@@ -319,7 +319,7 @@ $(function() {
 				}
 				$(this).dialog("close");
 				var $form = $("#detailForm");
-				$form.append("<input type='hidden' name='copy' value='true' />");
+				$form.append("<input type='hidden' name='<%=Constants.COPY%>' value='true' />");
 				$("#detailForm").submit();
 			},
 			"${m:rs('mtp-gem-messages', 'generic.detail.view.cancel')}": function() { $(this).dialog("close");}

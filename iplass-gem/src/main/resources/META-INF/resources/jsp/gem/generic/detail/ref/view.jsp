@@ -168,13 +168,13 @@ function onclick_copy() {
 		$("#selectCopyTargetDialog").dialog("open");
 	} else {
 		var $form = $("#detailForm");
-		$form.append("<input type='hidden' name='copy' value='true' />");
+		$form.append("<input type='hidden' name='<%=Constants.COPY%>' value='true' />");
 		$("#detailForm").submit();
 	}
 }
 function onclick_newversion() {
 	var $form = $("#detailForm");
-	$form.append("<input type='hidden' name='newversion' value='true' />");
+	$form.append("<input type='hidden' name='<%=Constants.NEWVERSION%>' value='true' />");
 	$form.submit();
 }
 function viewref(defName, oid, action) {
@@ -309,7 +309,7 @@ $(function() {
 				$(":hidden[name='copyTarget']").val(copyTarget);
 				$(this).dialog("close");
 				var $form = $("#detailForm");
-				$form.append("<input type='hidden' name='copy' value='true' />");
+				$form.append("<input type='hidden' name='<%=Constants.COPY%>' value='true' />");
 				$("#detailForm").submit();
 			},
 			"${m:rs('mtp-gem-messages', 'generic.detail.ref.view.cancel')}": function() { $(this).dialog("close");}
