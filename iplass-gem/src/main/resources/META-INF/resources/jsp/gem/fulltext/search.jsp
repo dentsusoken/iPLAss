@@ -40,6 +40,7 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ManagerLocator" %>
 <%@ page import="org.iplass.gem.command.fulltext.FullTextSearchCommand"%>
+<%@ page import="org.iplass.gem.command.fulltext.FullTextSearchViewCommand"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%
@@ -348,7 +349,7 @@ function setData(grid, listId, data, viewUrl, editUrl, showEditLink) {
 		a.modalWindow();
 	}
 	$(".fixHeight").fixHeight();
-	var option = {"<%=Constants.BACK_PATH%>":"<%=FullTextSearchCommand.SEARCH_VIEW_ACTION_NAME%>"};
+	var option = {"<%=Constants.BACK_PATH%>":"<%=FullTextSearchViewCommand.SEARCH_VIEW_ACTION_NAME%>"};
 	$(".detailLink", $("#" + listId)).click(function(e) {
 		var action = $(this).attr("action");
 		var oid = $(this).attr("oid");

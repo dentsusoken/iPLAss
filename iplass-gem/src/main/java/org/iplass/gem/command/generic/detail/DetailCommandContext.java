@@ -475,7 +475,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 	}
 
 	public CopyTarget getCopyTarget() {
-		String copyTarget = getParam("copyTarget");
+		String copyTarget = getParam(Constants.COPY_TARGET);
 		if (copyTarget == null || copyTarget.isEmpty()) {
 			return CopyTarget.SHALLOW;
 		}
@@ -547,6 +547,14 @@ public class DetailCommandContext extends RegistrationCommandContext
 	 */
 	public String getExecType() {
 		return getParam(Constants.EXEC_TYPE);
+	}
+
+	/**
+	 * リクエストからキャンセル時の遷移パスを取得します。
+	 * @return 遷移パス
+	 */
+	public String getBackPath() {
+		return getParam(Constants.BACK_PATH);
 	}
 
 	/**

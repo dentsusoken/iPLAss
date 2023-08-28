@@ -111,7 +111,10 @@
 				String buttonDisplayLabel = TemplateUtil.getMultilingualString(button.getDisplayLabel(), button.getLocalizedDisplayLabelList());
 %>
 <%-- XSS対応-メタの設定のため対応なし(button.getOnclickEvent) --%>
-<li class="btn"><input type="button" value="<c:out value="<%=buttonDisplayLabel %>"/>" class="<c:out value="<%=cssClass %>"/>" style="<c:out value="<%=customStyle %>"/>" onclick="<%=button.getOnclickEvent() %>" /></li>
+<li class="btn">
+<input type="button" value="<c:out value="<%=buttonDisplayLabel %>"/>" class="<c:out value="<%=cssClass %>"/>" 
+	style="<c:out value="<%=customStyle %>"/>" onclick="<%=button.getOnclickEvent() %>" />
+</li>
 <%
 			}
 		}
@@ -119,7 +122,10 @@
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
 		if (data.isCanUpdate()) {
 %>
-<li class="btn save-btn"><input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" disabled="disabled" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" /></li>
+<li class="btn save-btn">
+<input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" 
+	disabled="disabled" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" />
+</li>
 <%
 		} else {
 %>
@@ -129,7 +135,10 @@
 	} else {
 		if (data.isCanCreate()) {
 %>
-<li class="btn insert-btn"><input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" disabled="disabled" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" /></li>
+<li class="btn insert-btn">
+<input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" 
+	disabled="disabled" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" />
+</li>
 <%
 		} else {
 %>
@@ -138,7 +147,9 @@
 		}
 	}
 %>
-<li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="cancel();return false;">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.cancel")}</a></li>
+<li class="mt05 cancel-link">
+<a href="javascript:void(0)" onclick="cancel();return false;">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.cancel")}</a>
+</li>
 </ul>
 
 <script type="text/javascript">
