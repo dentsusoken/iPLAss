@@ -73,7 +73,10 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 			maxCount = section.getCsvdownloadMaxCount();
 		}
 
-		//多重度複数の参照を含む検索時の一括ロード件数
+		//多重度複数の参照を含む検索時に一括ロードするか
+		boolean loadOnceOfHasMultipleReferenceEntity = section.isUploadableCsvdownloadLoadAtOnce();
+
+		//多重度複数の参照を含む検索時のロード単位
 		int loadSizeOfHasMultipleReferenceEntity = gcs.getUploadableCsvDownloadLoadSize();
 		if (section.getUploadableCsvdownloadLoadSize() != null) {
 			loadSizeOfHasMultipleReferenceEntity = section.getUploadableCsvdownloadLoadSize();
@@ -101,6 +104,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 				.where(context.getWhere())
 				.orderBy(context.getOrderBy())
 				.limit(maxCount)
+				.loadOnceOfHasMultipleReferenceEntity(loadOnceOfHasMultipleReferenceEntity)
 				.loadSizeOfHasMultipleReferenceEntity(loadSizeOfHasMultipleReferenceEntity)
 				.versioned(context.isVersioned())
 				.mustOrderByWithLimit(cus.isMustOrderByWithLimit())
