@@ -125,6 +125,9 @@ public class Constants {
 	public static final String CSV_CHARACTER_CODE = "characterCode";
 	public static final String CSV_FILE_DOWNLOAD_TOKEN = "fileDownloadToken";
 	public static final String CSV_IS_OUTPUT_CODE_VALUE = "isOutputCodeValue";
+	public static final String CSV_IS_FOR_UPLOAD = "isForUpload";
+	public static final String CSV_IS_NO_DISP_NAME = "isNoDispName";
+	public static final String CSV_IS_OUTPUT_RESULT = "isOutputResult";
 
 	public static final String AND = "And";
 	public static final String OR = "Or";
