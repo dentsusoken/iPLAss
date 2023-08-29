@@ -1841,7 +1841,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 	//参照で追加した行で、なぜかjQueryのセレクタでelementが取れない
 	var $input = $("#" + es(fileId));
 	var $ul = $("#ul_" + es(propName));
-	var $li = $("<li id='li_" + propName + count + "'>").addClass("list-bin").appendTo($ul);
+	var $li = $("<li />").attr("id", "li_" + propName + count).addClass("list-bin").appendTo($ul);
 
 	var download = $input.attr("data-downloadUrl") + "?id=" + brLobId;
 	var ref = $input.attr("data-refUrl") + "?id=" + brLobId;
@@ -1863,7 +1863,8 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 		// 入力内容も消えてしまうので、少なくともアップロード時は別タブ表示にしておく
 		if (brType.indexOf("application/pdf") > -1 && usePdfjs) {
 			var pdfPath = pdfviewer + "?file=" + encodeURIComponent(download);
-			$li.append("<a href='" + pdfPath + "' target='_blank' class='link-bin'>" + brName + "</a> ");
+			const $a = $("<a />").attr("href", pdfPath).attr("target", "_blank").addClass("link-btn").text(brName);
+			$li.append($a);
 		} else if (brType.indexOf("image") > -1 && useImageViewer && openNewTab) {
 			//ImageViewer＋別タブの場合のみViewer起動
 			var imageViewerPath = imgviewer + "?id=" + brLobId;
@@ -1878,7 +1879,8 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 			});
 			$li.append($link);
 		} else {
-			$li.append("<a href='" + download + "' target='_blank' class='link-bin'>" + brName + "</a> ");
+			const $a = $("<a />").attr("href", download).attr("target", "_blank").addClass("link-btn").text(brName);
+			$li.append($a);
 		}
 	}
 
@@ -1903,7 +1905,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 	}
 
 	//削除ボタン
-	$("<a href='javascript:void(0)' class='binaryDelete del-btn link-bin'> " + scriptContext.gem.locale.binary.deleteLink + "</a>")
+	$("<a />").attr("href", "javascript:void(0)").addClass("binaryDelete del-btn link-bin").text(scriptContext.gem.locale.binary.deleteLink)
 			.appendTo($li).click(function() {
 		//liを削除
 		$li.remove();
@@ -1917,7 +1919,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 	if (displayType && (displayType == "BINARY" || displayType == "PREVIEW")) {
 		if (brType && brType.indexOf("image") > -1) {
 			//imageファイルの場合は画像を表示
-			var $p = $("<p id='p_" + propName + count + "' class='mb0' />").appendTo($li);
+			var $p = $("<p />").attr("id", "p_" + propName + count).addClass("mb0").appendTo($li);
 
 			var $img = $("<img/>")
 				.attr("src", ref)
@@ -1954,20 +1956,35 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 			// swfファイルの場合はアニメーションを表示
 			var width = $input.attr("data-binWidth") - 0;
 			var height = $input.attr("data-binHeight") - 0;
-			var $p = $("<p id='p_" + propName + count + "' class='mb0' />").appendTo($li);
-			var $img = $("<object data='" + ref + "' type='application/x-shockwave-flash' width='" + width + "' height='" + height + "' ><param name='movie' value='" + ref + "' /><param name='quality' value='high'>" + scriptContext.gem.locale.binary.notVewFlash + "</object>").appendTo($p);
+			var $p = $("<p />").attr("id", "p_" + propName + count).addClass("mb0").appendTo($li);
+			var $img = $("<object />").attr("data", ref).attr("type", "application/x-shockwave-flash").attr("width", width).attr("height", height);
+			$img.append($("<param />").attr("name", "movie").attr("value", ref));
+			$img.append($("<param />").attr("name", "quality").attr("value", "high").text(scriptContext.gem.locale.binary.notVewFlash));
+			$img.appendTo($p);
 		} else if (brType && brType.indexOf("video/mpeg") > -1) {
 			// mpegファイルの場合は動画を表示
 			var width = $input.attr("data-binWidth") - 0;
 			var height = $input.attr("data-binHeight") - 0;
-			var $p = $("<p id='p_" + propName + count + "' class='mb0' />").appendTo($li);
-			var $img = $("<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B' width='" + width + "' height='" + height + "'><param name='src' value='" + ref + "' /><param name='autostart' value='true' /><param name='type' value='video/mpeg'><param name='controller' value='true' /><embed src='" + ref + "' scale='ToFit' width='" + width + "' height='" + height + "'></embed></object>").appendTo($p);
+			var $p = $("<p />").attr("id", "p_" + propName + count).addClass("mb0").appendTo($li);
+			var $img = $("<object />").attr("classid", 'clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B').attr("width", width).attr("height", height);
+			$img.append($("<param />").attr("name", "src").attr("value", ref));
+			$img.append($("<param />").attr("name", "autostart").attr("value", "true"));
+			$img.append($("<param />").attr("name", "type").attr("value", "video/mpeg"));
+			$img.append($("<param />").attr("name", "controller").attr("value", "true"));
+			$img.append($("<embed />").attr("src", ref).attr("scale", "ToFit").attr("width", width).attr("height", height));
+			$img.appendTo($p);
 		} else if (brType && brType.indexOf("video/quicktime") > -1) {
 			// movファイルの場合は動画を表示
 			var width = $input.attr("data-binWidth") - 0;
 			var height = $input.attr("data-binHeight") - 0;
-			var $p = $("<p id='p_" + propName + count + "' class='mb0' />").appendTo($li);
-			var $img = $("<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B' codebase='http://www.apple.com/qtactivex/qtplugin.cab' width='" + width + "' height='" + height + "'><param name='src' value='" + ref + "'><param name='autoplay' value='true'><param name='type' value='video/quicktime'><param name='scale' value='ToFit'><embed src='" + ref + "' autoplay='true' scale='ToFit' type='video/quicktime' pluginspage='http://www.apple.com/quicktime/download/' width='" + width + "' height='" + height + "'></object>").appendTo($p);
+			var $p = $("<p />").attr("id", "p_" + propName + count).addClass("mb0").appendTo($li);
+			var $img = $("<object />").attr("classid", 'clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B').attr("codebase", 'http://www.apple.com/qtactivex/qtplugin.cab').attr("width", width).attr("height", height);
+			$img.append($("<param />").attr("name", "src").attr("value", ref));
+			$img.append($("<param />").attr("name", "autoplay").attr("value", "true"));
+			$img.append($("<param />").attr("name", "type").attr("value", "video/quicktime"));
+			$img.append($("<param />").attr("name", "scale").attr("value", "ToFit"));
+			$img.append($("<embed />").attr("src", ref).attr("autoplay", "true").attr("scale", "ToFit").attr("type", "video/quicktime").attr("pluginspage", "http://www.apple.com/quicktime/download/").attr("width", width).attr("height", height));
+			$img.appendTo($p);
 		} else if (brType && brType.indexOf("audio/mpeg") > -1) {
 			// mp3の場合はaudioタグを利用
 			createAudioElement($li, "audio/mpeg", propName + count, ref);

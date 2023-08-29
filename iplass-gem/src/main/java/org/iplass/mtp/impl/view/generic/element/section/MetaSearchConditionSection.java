@@ -123,7 +123,10 @@ public class MetaSearchConditionSection extends MetaSection {
 	/** CSVダウンロード件数の上限値 */
 	private Integer csvdownloadMaxCount;
 
-	/** Upload形式のCSVダウンロード時の一括ロード件数 */
+	/** Upload形式のCSVダウンロード時に一括でロードする */
+	private boolean uploadableCsvdownloadLoadAtOnce;
+
+	/** Upload形式のCSVダウンロード時のロード単位 */
 	private Integer uploadableCsvdownloadLoadSize;
 
 	/** CSVダウンロード項目 */
@@ -169,16 +172,32 @@ public class MetaSearchConditionSection extends MetaSection {
 	}
 
 	/**
-	 * Upload形式のCSVダウンロード時の一括ロード件数を取得します。
-	 * @return Upload形式のCSVダウンロード時の一括ロード件数
+	 * Upload形式のCSVダウンロード時に一括でロードするかを取得します。
+	 * @return Upload形式のCSVダウンロード時に一括でロードするか
+	 */
+	public boolean isUploadableCsvdownloadLoadAtOnce() {
+		return uploadableCsvdownloadLoadAtOnce;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード時に一括でロードするかを設定します。
+	 * @param uploadableCsvdownloadLoadAtOnce Upload形式のCSVダウンロード時に一括でロードするか
+	 */
+	public void setUploadableCsvdownloadLoadAtOnce(boolean uploadableCsvdownloadLoadAtOnce) {
+		this.uploadableCsvdownloadLoadAtOnce = uploadableCsvdownloadLoadAtOnce;
+	}
+
+	/**
+	 * Upload形式のCSVダウンロード時のロード単位を取得します。
+	 * @return Upload形式のCSVダウンロード時のロード単位
 	 */
 	public Integer getUploadableCsvdownloadLoadSize() {
 		return uploadableCsvdownloadLoadSize;
 	}
 
 	/**
-	 * Upload形式のCSVダウンロード時の一括ロード件数を設定します。
-	 * @param uploadableCsvdownloadLoadSize Upload形式のCSVダウンロード時の一括ロード件数
+	 * Upload形式のCSVダウンロード時のロード単位を設定します。
+	 * @param uploadableCsvdownloadLoadSize Upload形式のCSVダウンロード時のロード単位
 	 */
 	public void setUploadableCsvdownloadLoadSize(Integer uploadableCsvdownloadLoadSize) {
 		this.uploadableCsvdownloadLoadSize = uploadableCsvdownloadLoadSize;
@@ -633,6 +652,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.specifyCharacterCode = section.getSpecifyCharacterCode();
 		this.csvUploadTransactionType = section.getCsvUploadTransactionType();
 		this.csvdownloadMaxCount = section.getCsvdownloadMaxCount();
+		this.uploadableCsvdownloadLoadAtOnce = section.isUploadableCsvdownloadLoadAtOnce();
 		this.uploadableCsvdownloadLoadSize = section.getUploadableCsvdownloadLoadSize();
 		this.csvdownloadProperties = section.getCsvdownloadProperties();
 		this.csvdownloadUploadableProperties = section.getCsvdownloadUploadableProperties();
@@ -700,6 +720,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setSpecifyCharacterCode(this.specifyCharacterCode);
 		section.setCsvUploadTransactionType(this.csvUploadTransactionType);
 		section.setCsvdownloadMaxCount(this.csvdownloadMaxCount);
+		section.setUploadableCsvdownloadLoadAtOnce(this.uploadableCsvdownloadLoadAtOnce);
 		section.setUploadableCsvdownloadLoadSize(this.uploadableCsvdownloadLoadSize);
 		section.setCsvdownloadProperties(this.csvdownloadProperties);
 		section.setCsvdownloadUploadableProperties(this.csvdownloadUploadableProperties);
