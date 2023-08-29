@@ -159,6 +159,11 @@
 			<property name="propertyName" value="archive" />
 		</property>
 
+		<!-- バイナリファイルアップロード受け入れ可能な MIME Type パターン。正規表現を指定する。 -->
+		<!-- 
+		<property name="binaryUploadAcceptMimeTypesPattern" value="^(image/.*|application/pdf|text/csv)$" />
+		-->
+
 		<!-- 汎用画面、メニュー用のイメージカラー設定 -->
 		<property name="imageColors">
 			<property name="colorName" value="blue" />

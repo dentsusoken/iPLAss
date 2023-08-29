@@ -13,6 +13,11 @@ dependencies {
 	implementation sharedLib('org.apache.commons:commons-collections4')
 	implementation sharedLib('commons-io:commons-io')
 
+	implementation(sharedLib('org.apache.tika:tika-core'))
+	implementation(sharedLib('org.apache.tika:tika-parsers')) {
+		transitive = false
+	}
+
 	//apache POI
 	api sharedLib('org.apache.poi:poi')
 	api sharedLib('org.apache.poi:poi-ooxml')

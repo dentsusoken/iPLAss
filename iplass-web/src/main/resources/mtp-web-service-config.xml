@@ -337,6 +337,16 @@
 		</property>
 		 -->
 
+		<!-- ファイルタイプ（MIME Type・メディアタイプ）検出機能 -->
+		<!-- デフォルト。未指定の場合も以下のインスタンスが設定される -->
+		<!-- 
+		<property name="uploadFileTypeDetector" class="org.iplass.mtp.impl.web.fileupload.DefaultFileTypeDetector" />
+		-->
+		<!-- Apache Tika を利用したファイルタイプ（MIME Type・メディアタイプ）検出機能 -->
+		<!--
+		<property name="uploadFileTypeDetector" class="org.iplass.mtp.impl.web.fileupload.TikaFileTypeDetector" />
+		-->
+
 		<!-- MagicByteCheck実行するか -->
 		<property name="isExecMagicByteCheck" value="true" />
 		<!-- MagicByteCheck実行 -->

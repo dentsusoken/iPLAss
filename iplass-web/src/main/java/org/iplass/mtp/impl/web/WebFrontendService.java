@@ -28,7 +28,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.iplass.mtp.impl.web.RequestPath.PathType;
+import org.iplass.mtp.impl.web.fileupload.DefaultFileTypeDetector;
 import org.iplass.mtp.impl.web.fileupload.FileScanner;
+import org.iplass.mtp.impl.web.fileupload.FileTypeDetector;
 import org.iplass.mtp.impl.web.fileupload.MagicByteChecker;
 import org.iplass.mtp.impl.web.mdc.HttpHeaderMdcValueResolver;
 import org.iplass.mtp.impl.web.mdc.MdcValueResolver;
@@ -129,6 +131,9 @@ public class WebFrontendService implements Service {
 	/** ウィルススキャン実行 */
 	private FileScanner uploadFileScanner;
 
+	/** アップロードファイルタイプ検出機能 */
+	private FileTypeDetector uploadFileTypeDetector;
+
 	/** ExecMagicByteCheck実施するか */
 	private boolean isExecMagicByteCheck;
 
@@ -225,6 +230,14 @@ public class WebFrontendService implements Service {
 
 	public FileScanner getUploadFileScanner() {
 		return uploadFileScanner;
+	}
+
+	/**
+	 * アップロードファイルタイプ検出機能を取得する
+	 * @return アップロードファイルタイプ検出機能
+	 */
+	public FileTypeDetector getUploadFileTypeDetector() {
+		return uploadFileTypeDetector;
 	}
 
 	public LoginUrlSelector getLoginUrlSelector() {
@@ -354,6 +367,8 @@ public class WebFrontendService implements Service {
 		contentDispositionPolicies = (List<ContentDispositionPolicy>) config.getBeans("contentDispositionPolicy");
 
 		uploadFileScanner = (FileScanner) config.getBean("uploadFileScanner");
+
+		uploadFileTypeDetector = config.getValue("uploadFileTypeDetector", FileTypeDetector.class, new DefaultFileTypeDetector());
 
 		isExecMagicByteCheck = Boolean.valueOf(config.getValue("isExecMagicByteCheck"));
 

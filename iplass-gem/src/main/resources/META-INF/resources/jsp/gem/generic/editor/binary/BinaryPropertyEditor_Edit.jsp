@@ -136,6 +136,9 @@
 		String multiple = "";
 		if (pd.getMultiplicity() > 1) multiple = "multiple";
 
+		String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
+		if (viewName == null) viewName = "";
+
 		if (request.getAttribute(Constants.UPLOAD_LIB_LOADED) == null) {
 			request.setAttribute(Constants.UPLOAD_LIB_LOADED, true);
 %>
@@ -152,7 +155,9 @@
  data-imgviewerUrl="<c:out value="<%=imgviewer %>" />" data-useImageViewer="<%=editor.isUseImageViewer()%>"
  data-showImageRotateButton="<%=editor.isShowImageRotateButton() %>"  data-openNewTab="<%=editor.isOpenNewTab() %>"
  data-multiplicity="<c:out value="<%=pd.getMultiplicity() %>" />" data-binWidth="<c:out value="<%=editor.getWidth() %>" />"
- data-binHeight="<c:out value="<%=editor.getHeight() %>" />" data-token="${m:fixToken()}" <c:out value="<%=multiple%>" /> />
+ data-binHeight="<c:out value="<%=editor.getHeight() %>" />" data-token="${m:fixToken()}" <c:out value="<%=multiple%>" /> 
+ data-vname="<c:out value="<%=viewName %>"/>" data-dname="<c:out value="<%=defName %>"/>"
+ />
  <%
 		}
  %>
