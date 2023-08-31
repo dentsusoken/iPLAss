@@ -34,14 +34,14 @@ Also, jar is published at Maven Central with groupId : org.iplass.
 
 example when using gradle：
 
- implementation 'org.iplass:iplass-gem:3.2.9'
+ implementation 'org.iplass:iplass-gem:3.2.10'
 
 example when using  maven：
 
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>3.2.9</version>
+   <version>3.2.10</version>
    <type>pom</type>
  </dependency>
 
