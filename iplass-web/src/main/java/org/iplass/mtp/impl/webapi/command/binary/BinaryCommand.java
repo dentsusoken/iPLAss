@@ -206,7 +206,7 @@ public final class BinaryCommand implements Command, Constants {
 		WebApiService service = ServiceRegistry.getRegistry().getService(WebApiService.class);
 
 		if (StringUtil.isNotBlank(service.getBinaryUploadAcceptMimeTypesPattern())) {
-			// プロパティエディタに設定が無く、GemConfigServiceの受け入れ許可設定が存在する場合は、GemConfigService の設定で許可設定を行う
+			// WebApiServiceの受け入れ許可設定が存在する場合は、WebApiService の設定で許可設定を行う
 			isAccept = Pattern.compile(service.getBinaryUploadAcceptMimeTypesPattern()).matcher(type).matches();
 		}
 		// else {
