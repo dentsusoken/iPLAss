@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -42,6 +43,7 @@ import org.iplass.mtp.impl.definition.DefinitionService;
 import org.iplass.mtp.impl.webapi.WebApiService;
 import org.iplass.mtp.impl.webapi.command.Constants;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
@@ -50,20 +52,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebApi(
-	name = "mtp/bin/GET",
-	accepts = { RequestType.REST_FORM },
-	methods = { MethodType.GET },
-	supportBearerToken = true,
-	overwritable = false
-)
+		name = "mtp/bin/GET",
+		accepts = { RequestType.REST_FORM },
+		methods = { MethodType.GET },
+		supportBearerToken = true,
+		overwritable = false
+		)
 @WebApi(
-	name = "mtp/bin/POST",
-	accepts = { RequestType.REST_FORM },
-	methods = { MethodType.POST },
-	results = { BinaryCommand.RESULT_LOB_ID },
-	supportBearerToken = true,
-	overwritable = false
-)
+		name = "mtp/bin/POST",
+		accepts = { RequestType.REST_FORM },
+		methods = { MethodType.POST },
+		results = { BinaryCommand.RESULT_LOB_ID },
+		supportBearerToken = true,
+		overwritable = false
+		)
 @CommandClass(name = "mtp/binary/BinaryCommand", displayName = "Binary Web API", overwritable = false)
 public final class BinaryCommand implements Command, Constants {
 	private static Logger logger = LoggerFactory.getLogger(BinaryCommand.class);
@@ -96,6 +98,14 @@ public final class BinaryCommand implements Command, Constants {
 
 	private String doPost(RequestContext request) {
 		UploadFileHandle file = request.getParamAsFile(PARAM_UPLOAD_FILE);
+
+		// ファイルのtypeを確認する
+		if (null != file && isRejectMimeTypes(file.getType())) {
+			logger.error("File upload rejected. fileName = {}, fileType = {}, fileSize = {}.", file.getFileName(), file.getType(),
+					file.getSize());
+			throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE);
+		}
+
 		BinaryReference br = file.toBinaryReference();
 		request.setAttribute(RESULT_LOB_ID, br.getLobId());
 
@@ -182,5 +192,28 @@ public final class BinaryCommand implements Command, Constants {
 			return webApiService.getUnescapeFilenameCharacterInBinaryApi().indexOf(ch) >= 0;
 		}
 		return false;
+	}
+
+	/**
+	 * アップロードファイルは拒否される MIME Type（メディアタイプ）であるか確認する
+	 *
+	 * @param type MIME Type（メディアタイプ）
+	 * @return 判定結果（拒否される場合 true ）
+	 */
+	private boolean isRejectMimeTypes(String type) {
+		boolean isAccept = true;
+
+		WebApiService service = ServiceRegistry.getRegistry().getService(WebApiService.class);
+
+		if (StringUtil.isNotBlank(service.getBinaryUploadAcceptMimeTypesPattern())) {
+			// プロパティエディタに設定が無く、GemConfigServiceの受け入れ許可設定が存在する場合は、GemConfigService の設定で許可設定を行う
+			isAccept = Pattern.compile(service.getBinaryUploadAcceptMimeTypesPattern()).matcher(type).matches();
+		}
+		// else {
+		// // WebApiService に設定が無い場合はチェックしない
+		// }
+
+		// 拒否判定の為、accept を反転する
+		return !isAccept;
 	}
 }

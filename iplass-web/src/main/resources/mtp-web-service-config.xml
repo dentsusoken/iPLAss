@@ -486,9 +486,14 @@
 	<service>
 		<interface>org.iplass.mtp.impl.webapi.WebApiService</interface>
 		<property name="enableDefinitionApi" value="false" />
-		<property name="enableBinaryApi" value="false" />
+		<property name="enableBinaryApi" value="true" />
 		<property name="writeEncodedFilenameInBinaryApi" value="false" />
 		<property name="unescapeFilenameCharacterInBinaryApi" value="-._~" />
+
+		<!-- バイナリファイルアップロード受け入れ可能な MIME Type パターン。正規表現を指定する。 -->
+		<!--
+		property name="binaryUploadAcceptMimeTypesPattern" value="^(image/.*|application/pdf|text/csv)$" />
+		-->
 
 		<property name="xRequestedWithMap">
 			<property name="X-Requested-With" value="XMLHttpRequest" />
