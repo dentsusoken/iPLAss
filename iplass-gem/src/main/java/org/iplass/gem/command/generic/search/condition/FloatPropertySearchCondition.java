@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -48,15 +48,22 @@ public class FloatPropertySearchCondition extends PropertySearchCondition {
 	public List<Condition> convertNormalCondition() {
 		List<Condition> conditions = new ArrayList<Condition>();
 		Double[] dbl = (Double[]) getValue();
-		if (getEditor().isSearchInRange()) {
-			//From-To検索
+		if (!getEditor().isSearchInRange()) {
+			// 単一検索
+			// 1番目を利用
+			if (dbl.length > 0 && dbl[0] != null) {
+				conditions.add(new Equals(getPropertyName(), dbl[0]));
+			}
+		} else {
+			// From-To検索
+			// 2番目、3番目を利用
 			Double from = null;
 			Double to = null;
-			if (dbl.length > 0 && dbl[0] != null) {
-				from = dbl[0];
-			}
 			if (dbl.length > 1 && dbl[1] != null) {
-				to = dbl[1];
+				from = dbl[1];
+			}
+			if (dbl.length > 2 && dbl[2] != null) {
+				to = dbl[2];
 			}
 			if (from != null && to != null) {
 				conditions.add(new Between(getPropertyName(), from, to));
@@ -64,10 +71,6 @@ public class FloatPropertySearchCondition extends PropertySearchCondition {
 				conditions.add(new GreaterEqual(getPropertyName(), from));
 			} else if (from == null && to != null) {
 				conditions.add(new LesserEqual(getPropertyName(), to));
-			}
-		} else {
-			if (dbl.length > 0 && dbl[0] != null) {
-				conditions.add(new Equals(getPropertyName(), dbl[0]));
 			}
 		}
 

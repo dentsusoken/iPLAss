@@ -137,6 +137,12 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 		return null;
 	}
 
+	/**
+	 * NormarSearchContext#getExpressionValueで取得した値を型に合わせて変換
+	 *
+	 * @param type 型
+	 * @return 型に合わせて変換された値
+	 */
 	private Object getNormalTypeValue(ExpressionSearchConditionType type) {
 		PropertyEditor editor = ((ExpressionPropertyEditor) getEditor()).getEditor();
 		if (type == ExpressionSearchConditionType.BOOLEAN) {
@@ -169,37 +175,79 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 			return (from == null && to == null) ? null : new Timestamp[]{from, to};
 		} else if (type == ExpressionSearchConditionType.DECIMAL) {
 			String[] value = (String[]) getValue();
-			BigDecimal from = null;
-			BigDecimal to = null;
-			if (value.length > 0 && value[0] != null) {
-				from = ConvertUtil.convertFromString(BigDecimal.class, value[0]);
+			DecimalPropertyEditor dpe = (DecimalPropertyEditor) editor;
+			if (!dpe.isSearchInRange()) {
+				// 単一検索
+				// 1番目を利用
+				BigDecimal single = null;
+				if (value.length > 0 && value[0] != null) {
+					single = ConvertUtil.convertFromString(BigDecimal.class, value[0]);
+				}
+				return single == null ? null : new BigDecimal[]{single};
+			} else {
+				// 範囲検索
+				// 2番目(From)、3番目(To)を利用
+				BigDecimal from = null;
+				BigDecimal to = null;
+				if (value.length > 1 && value[1] != null) {
+					from = ConvertUtil.convertFromString(BigDecimal.class, value[1]);
+				}
+				if (value.length > 2 && value[2] != null) {
+					to = ConvertUtil.convertFromString(BigDecimal.class, value[2]);
+				}
+				// 長さ3の配列で返す
+				return (from == null && to == null) ? null : new BigDecimal[]{null, from, to};
 			}
-			if (value.length > 1 && value[1] != null) {
-				to = ConvertUtil.convertFromString(BigDecimal.class, value[1]);
-			}
-			return (from == null && to == null) ? null : new BigDecimal[]{from, to};
 		} else if (type == ExpressionSearchConditionType.FLOAT) {
 			String[] value = (String[]) getValue();
-			Double from = null;
-			Double to = null;
-			if (value.length > 0 && value[0] != null) {
-				from = ConvertUtil.convertFromString(Double.class, value[0]);
+			FloatPropertyEditor fpe = (FloatPropertyEditor) editor;
+			if (!fpe.isSearchInRange()) {
+				// 単一検索
+				// 1番目を利用
+				Double single = null;
+				if (value.length > 0 && value[0] != null) {
+					single = ConvertUtil.convertFromString(Double.class, value[0]);
+				}
+				return single == null ? null : new Double[]{single};
+			} else {
+				// 範囲検索
+				// 2番目(From)、3番目(To)を利用
+				Double from = null;
+				Double to = null;
+				if (value.length > 1 && value[1] != null) {
+					from = ConvertUtil.convertFromString(Double.class, value[1]);
+				}
+				if (value.length > 2 && value[2] != null) {
+					to = ConvertUtil.convertFromString(Double.class, value[2]);
+				}
+				// 長さ3の配列で返す
+				return (from == null && to == null) ? null : new Double[]{null, from, to};
 			}
-			if (value.length > 1 && value[1] != null) {
-				to = ConvertUtil.convertFromString(Double.class, value[1]);
-			}
-			return (from == null && to == null) ? null : new Double[]{from, to};
 		} else if (type == ExpressionSearchConditionType.INTEGER) {
 			String[] value = (String[]) getValue();
-			Long from = null;
-			Long to = null;
-			if (value.length > 0 && value[0] != null) {
-				from = ConvertUtil.convertFromString(Long.class, value[0]);
+			IntegerPropertyEditor ipe = (IntegerPropertyEditor) editor;
+			if (!ipe.isSearchInRange()) {
+				// 単一検索
+				// 1番目を利用
+				Long single = null;
+				if (value.length > 0 && value[0] != null) {
+					single = ConvertUtil.convertFromString(Long.class, value[0]);
+				}
+				return single == null ? null : new Long[]{single};
+			} else {
+				// 範囲検索
+				// 2番目(From)、3番目(To)を利用
+				Long from = null;
+				Long to = null;
+				if (value.length > 1 && value[1] != null) {
+					from = ConvertUtil.convertFromString(Long.class, value[1]);
+				}
+				if (value.length > 2 && value[2] != null) {
+					to = ConvertUtil.convertFromString(Long.class, value[2]);
+				}
+				// 長さ3の配列で返す
+				return (from == null && to == null) ? null : new Long[]{null, from, to};
 			}
-			if (value.length > 1 && value[1] != null) {
-				to = ConvertUtil.convertFromString(Long.class, value[1]);
-			}
-			return (from == null && to == null) ? null : new Long[]{from, to};
 		} else if (type == ExpressionSearchConditionType.SELECT) {
 			String[] value = (String[]) getValue();
 			if (value == null || value.length == 0) return null;

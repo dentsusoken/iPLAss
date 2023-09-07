@@ -86,12 +86,18 @@ if (value instanceof Array) {
 } else {
 	value = [value];
 }
+<%
+	if (!editor.isSearchInRange()) {
+%>
 if (value.length > 0) {
 	$("[name='sc_" + propName + "']").val(value[0]);
 }
 <%
-	if (editor.isSearchInRange()) {
+	} else {
 %>
+if (value.length > 0) {
+	$("[name='sc_" + propName + "From']").val(value[0]);
+}
 if (value.length > 1) {
 	$("[name='sc_" + propName + "To']").val(value[1]);
 }

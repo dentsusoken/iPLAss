@@ -169,9 +169,12 @@
 			}
 		} else if (editor instanceof NumberPropertyEditor) {
 			NumberPropertyEditor _editor = (NumberPropertyEditor) editor;
-			properties.append(",");
-			properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("\"");
-			if (isNormal && _editor.isSearchInRange()) {
+			if (isNormal && !_editor.isSearchInRange()) {
+				properties.append(",");
+				properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("\"");
+			} else {
+				properties.append(",");
+				properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("From\"");
 				properties.append(",");
 				properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("To\"");
 			}

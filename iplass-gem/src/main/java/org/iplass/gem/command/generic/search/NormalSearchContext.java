@@ -309,18 +309,20 @@ public class NormalSearchContext extends SearchContextBase {
 		final String conditionPrefix = Constants.SEARCH_COND_PREFIX;
 
 		Object ret = null;
-		//範囲検索のため時間系プロパティはパラメータ二つ取得する
 		if (p instanceof DateProperty) {
+			// 単一検索、範囲検索が判断できないため2つ取得する
 			Date[] date = new Date[2];
 			date[0] = getRequest().getParamAsDate(conditionPrefix + propName + "From", TemplateUtil.getLocaleFormat().getServerDateFormat());
 			date[1] = getRequest().getParamAsDate(conditionPrefix + propName + "To", TemplateUtil.getLocaleFormat().getServerDateFormat());
 			ret = (date[0] == null && date[1] == null) ? null : date;
 		} else if (p instanceof TimeProperty) {
+			// 単一検索、範囲検索が判断できないため2つ取得する
 			Time[] time = new Time[2];
 			time[0] = getRequest().getParamAsTime(conditionPrefix + propName + "From", TemplateUtil.getLocaleFormat().getServerTimeFormat());
 			time[1] = getRequest().getParamAsTime(conditionPrefix + propName + "To", TemplateUtil.getLocaleFormat().getServerTimeFormat());
 			ret = (time[0] == null && time[1] == null) ? null : time;
 		} else if (p instanceof DateTimeProperty) {
+			// 単一検索、範囲検索が判断できないため2つ取得する
 			Timestamp[] timestamp = new Timestamp[2];
 			timestamp[0] = getRequest().getParamAsTimestamp(conditionPrefix + propName + "From", TemplateUtil.getLocaleFormat().getServerDateTimeFormat());
 			timestamp[1] = getRequest().getParamAsTimestamp(conditionPrefix + propName + "To", TemplateUtil.getLocaleFormat().getServerDateTimeFormat());
@@ -345,20 +347,29 @@ public class NormalSearchContext extends SearchContextBase {
 		} else if (p instanceof ExpressionProperty) {
 			ret = getExpressionValue((ExpressionProperty) p, conditionPrefix + propName);
 		} else if (p instanceof DecimalProperty) {
-			BigDecimal[] decimal = new BigDecimal[2];
+			// 単一検索、範囲検索の判断ができないため3つ取得する
+			// DecimalPropertySearchConditionで判定
+			BigDecimal[] decimal = new BigDecimal[3];
 			decimal[0] = getRequest().getParamAsBigDecimal(conditionPrefix + propName);
-			decimal[1] = getRequest().getParamAsBigDecimal(conditionPrefix + propName + "To");
-			ret = (decimal[0] == null && decimal[1] == null) ? null : decimal;
+			decimal[1] = getRequest().getParamAsBigDecimal(conditionPrefix + propName + "From");
+			decimal[2] = getRequest().getParamAsBigDecimal(conditionPrefix + propName + "To");
+			ret = (decimal[0] == null && decimal[1] == null && decimal[2] == null) ? null : decimal;
 		} else if (p instanceof FloatProperty) {
-			Double[] dbl = new Double[2];
+			// 単一検索、範囲検索の判断ができないため3つ取得する
+			// FloatPropertySearchConditionで判定
+			Double[] dbl = new Double[3];
 			dbl[0] =  getRequest().getParamAsDouble(conditionPrefix + propName);
-			dbl[1] =  getRequest().getParamAsDouble(conditionPrefix + propName + "To");
-			ret = (dbl[0] == null && dbl[1] == null) ? null : dbl;
+			dbl[1] =  getRequest().getParamAsDouble(conditionPrefix + propName + "From");
+			dbl[2] =  getRequest().getParamAsDouble(conditionPrefix + propName + "To");
+			ret = (dbl[0] == null && dbl[1] == null && dbl[2] == null) ? null : dbl;
 		} else if (p instanceof IntegerProperty) {
-			Long[] lng = new Long[2];
+			// 単一検索、範囲検索の判断ができないため3つ取得する
+			// IntegerPropertySearchConditionで判定
+			Long[] lng = new Long[3];
 			lng[0] = getRequest().getParamAsLong(conditionPrefix + propName);
-			lng[1] = getRequest().getParamAsLong(conditionPrefix + propName + "To");
-			ret = (lng[0] == null && lng[1] == null) ? null : lng;
+			lng[1] = getRequest().getParamAsLong(conditionPrefix + propName + "From");
+			lng[2] = getRequest().getParamAsLong(conditionPrefix + propName + "To");
+			ret = (lng[0] == null && lng[1] == null && lng[2] == null) ? null : lng;
 		} else {
 			String value = getRequest().getParam(conditionPrefix + propName);
 			if (value == null || value.trim().length() == 0) return null;
@@ -421,26 +432,35 @@ public class NormalSearchContext extends SearchContextBase {
 			}
 			return ret;
 		} else if (ep.getResultType() == PropertyDefinitionType.DECIMAL) {
-			String[] ret = new String[2];
+			String[] ret = new String[3];
+			// Editor未指定時または単一検索
 			ret[0] = getRequest().getParam(propName);
-			ret[1] = getRequest().getParam(propName + "To");
-			if (StringUtil.isBlank(ret[0]) && StringUtil.isBlank(ret[1]) ) {
+			// 範囲検索
+			ret[1] = getRequest().getParam(propName + "From");
+			ret[2] = getRequest().getParam(propName + "To");
+			if (StringUtil.isBlank(ret[0]) && StringUtil.isBlank(ret[1]) && StringUtil.isBlank(ret[2])) {
 				return null;
 			}
 			return ret;
 		} else if (ep.getResultType() == PropertyDefinitionType.FLOAT) {
-			String[] ret = new String[2];
-			ret[0] = getRequest().getParam(propName);
-			ret[1] = getRequest().getParam(propName + "To");
-			if (StringUtil.isBlank(ret[0]) && StringUtil.isBlank(ret[1]) ) {
+			String[] ret = new String[3];
+			// Editor未指定時または単一検索
+			ret[0] = getRequest().getParam(propName); // Editor未指定時または単一検索
+			// 範囲検索
+			ret[1] = getRequest().getParam(propName + "From");
+			ret[2] = getRequest().getParam(propName + "To");
+			if (StringUtil.isBlank(ret[0]) && StringUtil.isBlank(ret[1]) && StringUtil.isBlank(ret[2])) {
 				return null;
 			}
 			return ret;
 		} else if (ep.getResultType() == PropertyDefinitionType.INTEGER) {
-			String[] ret = new String[2];
+			String[] ret = new String[3];
+			// Editor未指定時または単一検索
 			ret[0] = getRequest().getParam(propName);
-			ret[1] = getRequest().getParam(propName + "To");
-			if (StringUtil.isBlank(ret[0]) && StringUtil.isBlank(ret[1]) ) {
+			// 範囲検索
+			ret[1] = getRequest().getParam(propName + "From");
+			ret[2] = getRequest().getParam(propName + "To");
+			if (StringUtil.isBlank(ret[0]) && StringUtil.isBlank(ret[1]) && StringUtil.isBlank(ret[2])) {
 				return null;
 			}
 			return ret;
