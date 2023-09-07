@@ -1949,6 +1949,10 @@ LocaleInfo.generic_editor_NumericRangePropertyEditor_errorMessageNameDisplaNameK
 LocaleInfo.generic_editor_NumericRangePropertyEditor_errorMessageNameDescriptionKey = "Set an error message when the magnitude relationship between From and To is incorrect.";
 LocaleInfo.generic_editor_NumberPropertyEditor_displayTypeDisplaNameKey = "Display Type";
 LocaleInfo.generic_editor_NumberPropertyEditor_displayTypeDescriptionKey = "Select how to display on the screen.";
+LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionFromDisplaNameKey = "Hide 'From' of Search conditions ";
+LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionFromDescriptionKey = "Hide From of search condition.";
+LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionToDisplaNameKey = "Hide 'To' of Search conditions ";
+LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionToDescriptionKey = "Hide To of search condition.";
 LocaleInfo.generic_editor_NumberPropertyEditor_numberFormatDisplaNameKey = "Number format";
 LocaleInfo.generic_editor_NumberPropertyEditor_numberFormatDescriptionKey = "Specify the desired format to format when displaying.";
 LocaleInfo.generic_editor_NumberPropertyEditor_showCommaDisplaNameKey = "Display comma";

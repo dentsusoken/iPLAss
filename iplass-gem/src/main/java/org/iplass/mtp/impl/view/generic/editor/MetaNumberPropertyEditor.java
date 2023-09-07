@@ -65,16 +65,22 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	private NumberDisplayType displayType;
 
 	/** 数値のフォーマット */
-	protected String numberFormat;
+	private String numberFormat;
 
 	/** 表示内容をカンマ表示するか */
-	protected boolean showComma;
+	private boolean showComma;
 
 	/** 範囲で検索するか */
-	protected boolean searchInRange;
+	private boolean searchInRange;
+
+	/** 検索条件From非表示設定 */
+	private boolean hideSearchConditionFrom;
+
+	/** 検索条件To非表示設定 */
+	private boolean hideSearchConditionTo;
 
 	/** 最大文字数 */
-	protected int maxlength;
+	private int maxlength;
 
 	/** Label形式の場合の登録制御 */
 	private boolean insertWithLabelValue = true;
@@ -147,6 +153,38 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	}
 
 	/**
+	 * 検索条件From非表示設定を取得します。
+	 * @return 検索条件From非表示設定
+	 */
+	public boolean isHideSearchConditionFrom() {
+	    return hideSearchConditionFrom;
+	}
+
+	/**
+	 * 検索条件From非表示設定を設定します。
+	 * @param hideSearchConditionFrom 検索条件From非表示設定
+	 */
+	public void setHideSearchConditionFrom(boolean hideSearchConditionFrom) {
+	    this.hideSearchConditionFrom = hideSearchConditionFrom;
+	}
+
+	/**
+	 * 検索条件To非表示設定を取得します。
+	 * @return 検索条件To非表示設定
+	 */
+	public boolean isHideSearchConditionTo() {
+	    return hideSearchConditionTo;
+	}
+
+	/**
+	 * 検索条件To非表示設定を設定します。
+	 * @param hideSearchConditionTo 検索条件To非表示設定
+	 */
+	public void setHideSearchConditionTo(boolean hideSearchConditionTo) {
+	    this.hideSearchConditionTo = hideSearchConditionTo;
+	}
+
+	/**
 	 * 最大文字数を取得します。
 	 * @return 最大文字数
 	 */
@@ -207,6 +245,8 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 		numberFormat = pe.getNumberFormat();
 		showComma = pe.isShowComma();
 		searchInRange = pe.isSearchInRange();
+		hideSearchConditionFrom = pe.isHideSearchConditionFrom();
+		hideSearchConditionTo = pe.isHideSearchConditionTo();
 		maxlength = pe.getMaxlength();
 		insertWithLabelValue = pe.isInsertWithLabelValue();
 		updateWithLabelValue = pe.isUpdateWithLabelValue();
@@ -221,7 +261,8 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 		pe.setNumberFormat(numberFormat);
 		pe.setShowComma(showComma);
 		pe.setSearchInRange(searchInRange);
-		pe.setMaxlength(maxlength);
+		pe.setHideSearchConditionFrom(hideSearchConditionFrom);
+		pe.setHideSearchConditionTo(hideSearchConditionTo);
 		pe.setInsertWithLabelValue(insertWithLabelValue);
 		pe.setUpdateWithLabelValue(updateWithLabelValue);
 	}

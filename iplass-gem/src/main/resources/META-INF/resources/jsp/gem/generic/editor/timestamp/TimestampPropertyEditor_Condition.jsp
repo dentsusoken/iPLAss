@@ -198,9 +198,9 @@
 <%
 		}
 
-		if (!hideFrom && !hideTo) {
+		if (!editor.isSingleDayCondition()) {
 %>
-&nbsp;～&nbsp;
+<span class="range-symbol">&nbsp;～&nbsp;</span>
 <%
 		}
 

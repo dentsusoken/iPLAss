@@ -224,6 +224,8 @@ $(function() {
 		} else {
 			// 範囲検索
 
+			String dispStyleFrom = editor.isHideSearchConditionFrom() ? "display: none;" : "";
+
 			String strDefaultFrom = "";
 			if (defaultValue != null && defaultValue.length > 0) {
 				strDefaultFrom = convertNumber(defaultValue[0], editor);
@@ -233,7 +235,7 @@ $(function() {
 				strDefaultFrom = _strDefaultFrom != null && _strDefaultFrom.length > 0 ? _strDefaultFrom[0] : strDefaultFrom;
 				String formatValue = format(strDefaultFrom, editor);
 %>
-<span  style="<c:out value="<%=customStyle%>"/>">
+<span style="<c:out value="<%=dispStyleFrom + customStyle%>"/>">
 <c:out value="<%=formatValue %>"/>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>From" value="<c:out value="<%=strDefaultFrom %>"/>" />
 </span>
@@ -244,15 +246,17 @@ $(function() {
 					inputValueFrom = convertNumber(propValue[0], editor);
 				}
 %>
-<span>
+<span style="<c:out value="<%=dispStyleFrom%>"/>">
 <input type="text" class="form-size-04 inpbr <c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" 
 	value="<%=inputValueFrom %>" name="<c:out value="<%=propName %>"/>From" onblur="numcheck(this, true)" />
 </span>
 <%
 			}
 %>
-&nbsp;～&nbsp;
+<span class="range-symbol">&nbsp;～&nbsp;</span>
 <%
+			String dispStyleTo = editor.isHideSearchConditionTo() ? "display: none;" : "";
+
 			String strDefaultTo = "";
 			if (defaultValue != null && defaultValue.length > 1) {
 				strDefaultTo = convertNumber(defaultValue[1], editor);
@@ -262,7 +266,7 @@ $(function() {
 				strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
 				String formatValue = format(strDefaultTo, editor);
 %>
-<span  style="<c:out value="<%=customStyle%>"/>">
+<span  style="<c:out value="<%=dispStyleTo + customStyle%>"/>">
 <c:out value="<%=formatValue %>"/>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
 </span>
@@ -273,7 +277,7 @@ $(function() {
 					inputValueTo = convertNumber(propValue[1], editor);
 				}
 %>
-<span>
+<span style="<c:out value="<%=dispStyleTo%>"/>">
 <input type="text" class="form-size-04 inpbr <c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" 
 	value="<%=inputValueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this, true)" />
 </span>
