@@ -169,11 +169,23 @@
 			}
 		} else if (editor instanceof NumberPropertyEditor) {
 			NumberPropertyEditor _editor = (NumberPropertyEditor) editor;
-			properties.append(",");
-			properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("\"");
-			if (isNormal && _editor.isSearchInRange()) {
+			if (isNormal) {
+				if (!_editor.isSearchInRange()) {
+					properties.append(",");
+					properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("\"");
+				} else {
+					if (!_editor.isHideSearchConditionFrom()) {
+						properties.append(",");
+						properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("From\"");
+					}
+					if (!_editor.isHideSearchConditionTo()) {
+						properties.append(",");
+						properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("To\"");
+					}
+				}
+			} else {
 				properties.append(",");
-				properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("To\"");
+				properties.append("\"").append(StringUtil.escapeJavaScript(originPropName)).append("\"");
 			}
 		} else if (editor instanceof ReferencePropertyEditor) {
 			if (!propName.contains(".")) {

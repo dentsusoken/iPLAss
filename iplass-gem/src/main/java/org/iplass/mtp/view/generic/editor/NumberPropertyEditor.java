@@ -78,7 +78,7 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor imple
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
-	protected int maxlength;
+	private int maxlength;
 
 	/** 数値のフォーマット */
 	@MetaFieldInfo(
@@ -90,7 +90,7 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor imple
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
 	)
-	protected String numberFormat;
+	private String numberFormat;
 
 	/** 表示内容をカンマ表示するか */
 	@MetaFieldInfo(
@@ -104,7 +104,7 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor imple
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
-	protected boolean showComma;
+	private boolean showComma;
 
 	/** 範囲で検索するか */
 	@MetaFieldInfo(
@@ -118,7 +118,35 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor imple
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION}
 	)
-	protected boolean searchInRange;
+	private boolean searchInRange;
+
+	/** 検索条件From非表示設定 */
+	@MetaFieldInfo(
+			displayName="検索条件From非表示",
+			displayNameKey="generic_editor_NumberPropertyEditor_hideSearchConditionFromDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=143,
+			description="検索条件のFromを非表示にするかを設定します。",
+			descriptionKey="generic_editor_NumberPropertyEditor_hideSearchConditionFromDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private boolean hideSearchConditionFrom;
+
+	/** 検索条件To非表示設定 */
+	@MetaFieldInfo(
+			displayName="検索条件To非表示",
+			displayNameKey="generic_editor_NumberPropertyEditor_hideSearchConditionToDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=145,
+			description="検索条件のToを非表示にするかを設定します。",
+			descriptionKey="generic_editor_NumberPropertyEditor_hideSearchConditionToDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private boolean hideSearchConditionTo;
 
 	/** 初期値 */
 	@MetaFieldInfo(
@@ -131,7 +159,7 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor imple
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
-	protected String defaultValue;
+	private String defaultValue;
 
 	/** Label形式の場合の登録制御 */
 	@MetaFieldInfo(
@@ -225,6 +253,38 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor imple
 	 */
 	public void setSearchInRange(boolean searchInRange) {
 	    this.searchInRange = searchInRange;
+	}
+
+	/**
+	 * 検索条件From非表示設定を取得します。
+	 * @return 検索条件From非表示設定
+	 */
+	public boolean isHideSearchConditionFrom() {
+	    return hideSearchConditionFrom;
+	}
+
+	/**
+	 * 検索条件From非表示設定を設定します。
+	 * @param hideSearchConditionFrom 検索条件From非表示設定
+	 */
+	public void setHideSearchConditionFrom(boolean hideSearchConditionFrom) {
+	    this.hideSearchConditionFrom = hideSearchConditionFrom;
+	}
+
+	/**
+	 * 検索条件To非表示設定を取得します。
+	 * @return 検索条件To非表示設定
+	 */
+	public boolean isHideSearchConditionTo() {
+	    return hideSearchConditionTo;
+	}
+
+	/**
+	 * 検索条件To非表示設定を設定します。
+	 * @param hideSearchConditionTo 検索条件To非表示設定
+	 */
+	public void setHideSearchConditionTo(boolean hideSearchConditionTo) {
+	    this.hideSearchConditionTo = hideSearchConditionTo;
 	}
 
 	/**

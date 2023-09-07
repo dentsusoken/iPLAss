@@ -87,29 +87,13 @@
 	if (required == null) required = false;
 	String propName = Constants.SEARCH_COND_PREFIX + editor.getPropertyName();
 
-	String value = "";
-	if (propValue != null && propValue.length > 0 && checkDecimal(propValue[0])) {
-		value = propValue[0];
-	}
-
-	String valueTo = "";
-	if (editor.isSearchInRange()) {
-		if (propValue != null && propValue.length > 1 && checkDecimal(propValue[1])) {
-			valueTo = propValue[1];
-		}
-	}
-
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/decimal/DecimalPropertyAutocompletion.jsp");
 	}
+
 	if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
 		//HIDDEN以外
-
-		String strDefault = "";
-		if (defaultValue != null && defaultValue.length > 0 && checkDecimal(defaultValue[0])) {
-			strDefault = defaultValue[0];
-		}
 
 		//カスタムスタイル
 		String customStyle = "";
@@ -127,75 +111,60 @@
 		if (editor.isShowComma()) {
 			tmpCls += " commaField";
 		}
-		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
-			String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
-			strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
-			String str = format(editor.getNumberFormat(), strDefault);
+
+		if (!editor.isSearchInRange()) {
+			// 単一検索
+
+			String strDefault = "";
+			if (defaultValue != null && defaultValue.length > 0 && checkDecimal(defaultValue[0])) {
+				strDefault = defaultValue[0];
+			}
+
+			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+				String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+				strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
+				String formatValue = format(editor.getNumberFormat(), strDefault);
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
-<c:out value="<%=str %>"/>
+<c:out value="<%=formatValue %>"/>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
 </span>
 <%
-		} else {
-%>
-<span>
-<input type="text" class="form-size-04 inpbr<c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this, true)" />
-</span>
-<%
-		}
-		String strDefaultTo = "";
-		if (editor.isSearchInRange()) {
-
-			if (defaultValue != null && defaultValue.length > 1 && checkDecimal(defaultValue[1])) {
-				strDefaultTo = defaultValue[1];
-			}
-%>
-&nbsp;～&nbsp;
-<%
-			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
-				String[] _strDefaultTo = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
-				strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
-				String str = format(editor.getNumberFormat(), strDefaultTo);
-%>
-<span  style="<c:out value="<%=customStyle%>"/>">
-<c:out value="<%=str %>"/>
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
-</span>
-<%
 			} else {
+				String inputValue = "";
+				if (propValue != null && propValue.length > 0 && checkDecimal(propValue[0])) {
+					inputValue = propValue[0];
+				}
 %>
 <span>
-<input type="text" class="form-size-04 inpbr<c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this, true)" />
+<input type="text" class="form-size-04 inpbr<c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+	value="<c:out value="<%=inputValue %>"/>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this, true)" />
 </span>
 <%
 			}
-		}
 %>
-
 <script type="text/javascript">
 $(function() {
 	<%-- common.js --%>
 	addNormalConditionItemResetHandler(function(){
-		var $from = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']");
-		$from.val("<%=strDefault %>");
-		var $to = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']");
-		$to.val("<%=strDefaultTo %>");
+		var $input = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']");
+		$input.val("<%=strDefault %>");
 
-		var $parent = $from.closest(".property-data");
-		$from.removeClass("validate-error");
-		$to.removeClass("validate-error");
+		var $parent = $input.closest(".property-data");
+		$input.removeClass("validate-error");
 		$(".format-error", $parent).remove();
 
-<%if (editor.isShowComma()) {%>
+<%
+			if (editor.isShowComma()) {
+%>
 		$(".commaField.dummyField", $parent).remove();
 		$(".commaField", $parent).show();
-<%}%>
+<%
+			}
+%>
 	});
 <%
-		if (required) {
-			if (!editor.isSearchInRange()) {
-				//Fromのみ
+			if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -207,27 +176,9 @@ $(function() {
 		return true;
 	});
 <%
-			} else {
-				//範囲
-%>
-	<%-- common.js --%>
-	addNormalValidator(function() {
-		var val = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
-		var valTo = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val();
-		if ((typeof val === "undefined" || val == null || val == "") && (typeof valTo === "undefined" || valTo == null || valTo == "")) {
-			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
-			return false;
-		}
-
-		return true;
-	});
-<%
 			}
-		}
 
-		//フォーマットチェック
-		if (!editor.isSearchInRange()) {
-			//Fromのみ
+			//フォーマットチェック
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -238,15 +189,123 @@ $(function() {
 		}
 		return true;
 	});
+});
+</script>
+
 <%
 		} else {
-			//範囲
+			// 範囲検索
+
+			String dispStyleFrom = editor.isHideSearchConditionFrom() ? "display: none;" : "";
+			
+			String strDefaultFrom = "";
+			if (defaultValue != null && defaultValue.length > 0 && checkDecimal(defaultValue[0])) {
+				strDefaultFrom = defaultValue[0];
+			}
+			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+				String[] _strDefaultFrom = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "From");
+				strDefaultFrom = _strDefaultFrom != null && _strDefaultFrom.length > 0 ? _strDefaultFrom[0] : strDefaultFrom;
+				String formatValue = format(editor.getNumberFormat(), strDefaultFrom);
+%>
+<span style="<c:out value="<%=dispStyleFrom + customStyle%>"/>">
+<c:out value="<%=formatValue %>"/>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>From" value="<c:out value="<%=strDefaultFrom %>"/>" />
+</span>
+<%
+			} else {
+				String inputValueFrom = "";
+				if (propValue != null && propValue.length > 0 && checkDecimal(propValue[0])) {
+					inputValueFrom = propValue[0];
+				}
+%>
+<span style="<c:out value="<%=dispStyleFrom%>"/>">
+<input type="text" class="form-size-04 inpbr<c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+	value="<c:out value="<%=inputValueFrom %>"/>" name="<c:out value="<%=propName %>"/>From" onblur="numcheck(this, true)" />
+</span>
+<%
+			}
+%>
+<span class="range-symbol">&nbsp;～&nbsp;</span>
+<%
+
+			String dispStyleTo = editor.isHideSearchConditionTo() ? "display: none;" : "";
+
+			String strDefaultTo = "";
+			if (defaultValue != null && defaultValue.length > 1 && checkDecimal(defaultValue[1])) {
+				strDefaultTo = defaultValue[1];
+			}
+			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+				String[] _strDefaultTo = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
+				strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
+				String formatValue = format(editor.getNumberFormat(), strDefaultTo);
+%>
+<span style="<c:out value="<%=dispStyleTo + customStyle%>"/>">
+<c:out value="<%=formatValue %>"/>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
+</span>
+<%
+			} else {
+				String inputValueTo = "";
+				if (propValue != null && propValue.length > 1 && checkDecimal(propValue[1])) {
+					inputValueTo = propValue[1];
+				}
+%>
+<span style="<c:out value="<%=dispStyleTo%>"/>">
+<input type="text" class="form-size-04 inpbr<c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+	value="<%=inputValueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this, true)" />
+</span>
+<%
+			}
+%>
+<script type="text/javascript">
+$(function() {
+	<%-- common.js --%>
+	addNormalConditionItemResetHandler(function(){
+		var $from = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>From") + "']");
+		$from.val("<%=strDefaultFrom %>");
+		var $to = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']");
+		$to.val("<%=strDefaultTo %>");
+
+		var $parent = $from.closest(".property-data");
+		$from.removeClass("validate-error");
+		$to.removeClass("validate-error");
+		$(".format-error", $parent).remove();
+
+<%
+			if (editor.isShowComma()) {
+%>
+		$(".commaField.dummyField", $parent).remove();
+		$(".commaField", $parent).show();
+<%
+			}
+%>
+	});
+<%
+			if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
-		var val = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
+		var valFrom = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>From") + "']").val();
 		var valTo = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val();
-		if ((typeof val !== "undefined" && val !== null && val !== "" && isNaN(val)) || (typeof valTo !== "undefined" && valTo != null && valTo !== "" && isNaN(valTo))) {
+		if ((typeof valFrom === "undefined" || valFrom == null || valFrom == "") 
+				&& (typeof valTo === "undefined" || valTo == null || valTo == "")) {
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+
+		return true;
+	});
+<%
+			}
+
+			//フォーマットチェック
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var valFrom = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>From") + "']").val();
+		var valTo = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val();
+		if ((typeof valFrom !== "undefined" && valFrom !== null && valFrom !== "" && isNaN(valFrom)) 
+				|| (typeof valTo !== "undefined" && valTo != null && valTo !== "" && isNaN(valTo))) {
 			alert(scriptContext.gem.locale.common.numFormatErrorMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
@@ -254,19 +313,33 @@ $(function() {
 		return true;
 	});
 <%
-		}
 %>
 });
 </script>
-<%
+
+<%		}
 	} else {
 		//HIDDEN
+		if (!editor.isSearchInRange()) {
+			String inputValue = "";
+			if (propValue != null && propValue.length > 0 && checkDecimal(propValue[0])) {
+				inputValue = propValue[0];
+			}
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=value %>"/>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=inputValue %>"/>"/>
 <%
-		if (editor.isSearchInRange()) {
+		} else {
+			String inputValueFrom = "";
+			if (propValue != null && propValue.length > 0 && checkDecimal(propValue[0])) {
+				inputValueFrom = propValue[0];
+			}
+			String inputValueTo = "";
+			if (propValue != null && propValue.length > 1 && checkDecimal(propValue[1])) {
+				inputValueTo = propValue[1];
+			}
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=valueTo %>"/>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>From" value="<c:out value="<%=inputValueFrom %>"/>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=inputValueTo %>"/>"/>
 <%
 		}
 

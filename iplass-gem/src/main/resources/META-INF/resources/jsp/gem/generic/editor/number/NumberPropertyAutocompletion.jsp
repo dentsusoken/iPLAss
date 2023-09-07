@@ -87,16 +87,30 @@ if (value instanceof Array) {
 } else {
 	value = [value];
 }
+<%
+	if (!editor.isSearchInRange()) {
+		// 単一検索
+%>
 if (value.length > 0) {
 	$("[name='sc_" + propName + "']").val(value[0]);
 }
 <%
-	if (editor.isSearchInRange()) {
+	} else {
+		// 範囲検索
+		if (!editor.isHideSearchConditionFrom()) {
+%>
+if (value.length > 0) {
+	$("[name='sc_" + propName + "From']").val(value[0]);
+}
+<%
+		}
+		if (!editor.isHideSearchConditionTo()) {
 %>
 if (value.length > 1) {
 	$("[name='sc_" + propName + "To']").val(value[1]);
 }
 <%
+		}
 	}
 }
 %>
