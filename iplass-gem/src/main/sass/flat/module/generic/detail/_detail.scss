@@ -221,14 +221,16 @@
 	.cke {
 		margin: 2px 0;
 	}
-	.numericRange input {
-		width: 45%;
+	.numericRange {
+		> span:nth-child(n+2) {
+			margin-left: 4px; //2つ目以降の先頭を空ける
+		}
+		input {
+			width: 45%;
+		}
 	}
-	.numericRange span:nth-child(2) input {
-		margin-left: 4px;
-	}
-	.dateRange span:nth-child(2) > input {
-		margin-left: 4px;
+	.dateRange > span:nth-child(n+2) {
+		margin-left: 4px; //2つ目以降の先頭を空ける
 	}
 	.layout-row {
 		height: auto;

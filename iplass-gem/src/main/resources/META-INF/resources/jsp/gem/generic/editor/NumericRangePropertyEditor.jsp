@@ -101,6 +101,7 @@ String getObjectName(String prefix, EntityDefinition ed){
 	String fromKey = fromEditor.getPropertyName().replaceAll("\\.", "_");
 
 	if (OutputType.SEARCHCONDITION == type) {
+		// 検索条件の場合、単一指定モードに強制的に変更
 		((NumberPropertyEditor) editor.getEditor()).setSearchInRange(false);
 	}
 
@@ -131,8 +132,8 @@ String getObjectName(String prefix, EntityDefinition ed){
 		request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, toPd);
 		String toKey = toEditor.getPropertyName().replaceAll("\\.", "_");
 %>
-<span id="numericrange_<c:out value="<%=toKey%>" />">
 <span class="range-symbol">&nbsp;${m:rs('mtp-gem-messages', 'generic.editor.common.rangeSymbol')}&nbsp;</span>
+<span id="numericrange_<c:out value="<%=toKey%>" />">
 <jsp:include page="<%=path%>" />
 </span>
 <%

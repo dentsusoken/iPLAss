@@ -1628,9 +1628,9 @@ div.recursiveTree {
       width: 10%; }
     .tbl-section th.section-data.col5 {
       width: 8%; }
-  .tbl-section .numericRange span:nth-child(2) input {
+  .tbl-section .numericRange > span:nth-child(n+2) {
     margin-left: 4px; }
-  .tbl-section .dateRange span:nth-child(2) > input {
+  .tbl-section .dateRange > span:nth-child(n+2) {
     margin-left: 4px; }
   .tbl-section .layout-row {
     height: auto;
