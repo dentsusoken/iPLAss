@@ -23,7 +23,9 @@ package org.iplass.mtp.impl.webapi;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import org.apache.poi.util.StringUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
@@ -62,7 +64,7 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 	private boolean writeEncodedFilenameInBinaryApi;
 	private String unescapeFilenameCharacterInBinaryApi;
 	/** バイナリファイルアップロード時に受け入れ可能な MIME Type 正規表現パターン */
-	private String binaryUploadAcceptMimeTypesPattern;
+	private Pattern acceptMimeTypesPatternInBinaryApi;
 
 	public static String getFixedPath() {
 		return WEB_API_META_PATH;
@@ -92,7 +94,11 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		writeEncodedFilenameInBinaryApi = config.getValue("writeEncodedFilenameInBinaryApi", Boolean.class,
 				Boolean.FALSE);
 		unescapeFilenameCharacterInBinaryApi = config.getValue("unescapeFilenameCharacterInBinaryApi");
-		binaryUploadAcceptMimeTypesPattern = config.getValue("binaryUploadAcceptMimeTypesPattern");
+
+		String acceptMimeTypesPatternInBinaryApi = config.getValue("acceptMimeTypesPatternInBinaryApi");
+		this.acceptMimeTypesPatternInBinaryApi = StringUtil.isNotBlank(acceptMimeTypesPatternInBinaryApi)
+				? Pattern.compile(acceptMimeTypesPatternInBinaryApi)
+				: null;
 	}
 
 	public boolean isEnableDefinitionApi() {
@@ -115,8 +121,8 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 	 * バイナリファイルアップロード時に受け入れ可能な MIME Type 正規表現パターンを取得する
 	 * @return バイナリファイルアップロード時に受け入れ可能な MIME Type 正規表現パターン
 	 */
-	public String getBinaryUploadAcceptMimeTypesPattern() {
-		return binaryUploadAcceptMimeTypesPattern;
+	public Pattern getAcceptMimeTypesPatternInBinaryApi() {
+		return acceptMimeTypesPatternInBinaryApi;
 	}
 
 	@Deprecated

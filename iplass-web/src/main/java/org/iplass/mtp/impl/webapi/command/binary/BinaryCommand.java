@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Pattern;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -43,7 +42,6 @@ import org.iplass.mtp.impl.definition.DefinitionService;
 import org.iplass.mtp.impl.webapi.WebApiService;
 import org.iplass.mtp.impl.webapi.command.Constants;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
@@ -205,9 +203,9 @@ public final class BinaryCommand implements Command, Constants {
 
 		WebApiService service = ServiceRegistry.getRegistry().getService(WebApiService.class);
 
-		if (StringUtil.isNotBlank(service.getBinaryUploadAcceptMimeTypesPattern())) {
+		if (null != service.getAcceptMimeTypesPatternInBinaryApi()) {
 			// WebApiServiceの受け入れ許可設定が存在する場合は、WebApiService の設定で許可設定を行う
-			isAccept = Pattern.compile(service.getBinaryUploadAcceptMimeTypesPattern()).matcher(type).matches();
+			isAccept = service.getAcceptMimeTypesPatternInBinaryApi().matcher(type).matches();
 		}
 		// else {
 		// // WebApiService に設定が無い場合はチェックしない
