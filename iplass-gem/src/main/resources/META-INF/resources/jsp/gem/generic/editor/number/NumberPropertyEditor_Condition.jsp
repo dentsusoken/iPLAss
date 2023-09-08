@@ -154,8 +154,8 @@
 				strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
 				String formatValue = format(strDefault, editor);
 %>
-<span  style="<c:out value="<%=customStyle%>"/>">
-<c:out value="<%=formatValue %>"/>
+<span style="<c:out value="<%=customStyle%>"/>">
+<span class="data-label"><c:out value="<%=formatValue %>"/></span>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
 </span>
 <%
@@ -236,8 +236,8 @@ $(function() {
 				strDefaultFrom = _strDefaultFrom != null && _strDefaultFrom.length > 0 ? _strDefaultFrom[0] : strDefaultFrom;
 				String formatValue = format(strDefaultFrom, editor);
 %>
-<span style="<c:out value="<%=dispStyleFrom + customStyle%>"/>">
-<c:out value="<%=formatValue %>"/>
+<span class="numeric-range" style="<c:out value="<%=dispStyleFrom + customStyle%>"/>">
+<span class="data-label"><c:out value="<%=formatValue %>"/></span>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>From" value="<c:out value="<%=strDefaultFrom %>"/>" />
 </span>
 <%
@@ -247,7 +247,7 @@ $(function() {
 					inputValueFrom = convertNumber(propValue[0], editor);
 				}
 %>
-<span style="<c:out value="<%=dispStyleFrom%>"/>">
+<span class="numeric-range" style="<c:out value="<%=dispStyleFrom%>"/>">
 <input type="text" class="form-size-04 inpbr <c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" 
 	value="<%=inputValueFrom %>" name="<c:out value="<%=propName %>"/>From" onblur="numcheck(this, true)" />
 </span>
@@ -272,8 +272,8 @@ $(function() {
 				strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
 				String formatValue = format(strDefaultTo, editor);
 %>
-<span  style="<c:out value="<%=dispStyleTo + customStyle%>"/>">
-<c:out value="<%=formatValue %>"/>
+<span class="numeric-range" style="<c:out value="<%=dispStyleTo + customStyle%>"/>">
+<span class="data-label"><c:out value="<%=formatValue %>"/></span>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
 </span>
 <%
@@ -283,7 +283,7 @@ $(function() {
 					inputValueTo = convertNumber(propValue[1], editor);
 				}
 %>
-<span style="<c:out value="<%=dispStyleTo%>"/>">
+<span class="numeric-range" style="<c:out value="<%=dispStyleTo%>"/>">
 <input type="text" class="form-size-04 inpbr <c:out value="<%=tmpCls %>"/>" style="<c:out value="<%=customStyle%>"/>" 
 	value="<%=inputValueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this, true)" />
 </span>
