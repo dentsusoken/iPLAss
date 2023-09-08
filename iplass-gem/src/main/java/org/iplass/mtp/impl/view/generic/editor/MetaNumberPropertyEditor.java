@@ -79,6 +79,9 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	/** 検索条件To非表示設定 */
 	private boolean hideSearchConditionTo;
 
+	/** 検索条件範囲記号非表示設定 */
+	private boolean hideSearchConditionRangeSymbol;
+
 	/** 最大文字数 */
 	private int maxlength;
 
@@ -185,6 +188,22 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	}
 
 	/**
+	 * 検索条件範囲記号非表示設定を取得します。
+	 * @return 検索条件範囲記号非表示設定
+	 */
+	public boolean isHideSearchConditionRangeSymbol() {
+		return hideSearchConditionRangeSymbol;
+	}
+
+	/**
+	 * 検索条件範囲記号非表示設定を設定します。
+	 * @param hideSearchConditionRangeSymbol 検索条件範囲記号非表示設定
+	 */
+	public void setHideSearchConditionRangeSymbol(boolean hideSearchConditionRangeSymbol) {
+		this.hideSearchConditionRangeSymbol = hideSearchConditionRangeSymbol;
+	}
+
+	/**
 	 * 最大文字数を取得します。
 	 * @return 最大文字数
 	 */
@@ -247,6 +266,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 		searchInRange = pe.isSearchInRange();
 		hideSearchConditionFrom = pe.isHideSearchConditionFrom();
 		hideSearchConditionTo = pe.isHideSearchConditionTo();
+		hideSearchConditionRangeSymbol = pe.isHideSearchConditionRangeSymbol();
 		maxlength = pe.getMaxlength();
 		insertWithLabelValue = pe.isInsertWithLabelValue();
 		updateWithLabelValue = pe.isUpdateWithLabelValue();
@@ -263,6 +283,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 		pe.setSearchInRange(searchInRange);
 		pe.setHideSearchConditionFrom(hideSearchConditionFrom);
 		pe.setHideSearchConditionTo(hideSearchConditionTo);
+		pe.setHideSearchConditionRangeSymbol(hideSearchConditionRangeSymbol);
 		pe.setInsertWithLabelValue(insertWithLabelValue);
 		pe.setUpdateWithLabelValue(updateWithLabelValue);
 	}

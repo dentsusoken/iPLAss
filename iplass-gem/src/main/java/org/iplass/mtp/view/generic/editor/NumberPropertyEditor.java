@@ -148,6 +148,20 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor imple
 	)
 	private boolean hideSearchConditionTo;
 
+	/** 検索条件範囲記号非表示設定 */
+	@MetaFieldInfo(
+			displayName="検索条件範囲記号非表示",
+			displayNameKey="generic_editor_NumberPropertyEditor_hideSearchConditionRangeSymbolDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=147,
+			description="検索条件の範囲記号を非表示にするかを設定します。FromまたはToが非表示の場合に有効になります。",
+			descriptionKey="generic_editor_NumberPropertyEditor_hideSearchConditionRangeSymbolDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private boolean hideSearchConditionRangeSymbol;
+
 	/** 初期値 */
 	@MetaFieldInfo(
 			displayName="初期値",
@@ -285,6 +299,22 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor imple
 	 */
 	public void setHideSearchConditionTo(boolean hideSearchConditionTo) {
 	    this.hideSearchConditionTo = hideSearchConditionTo;
+	}
+
+	/**
+	 * 検索条件範囲記号非表示設定を取得します。
+	 * @return 検索条件範囲記号非表示設定
+	 */
+	public boolean isHideSearchConditionRangeSymbol() {
+		return hideSearchConditionRangeSymbol;
+	}
+
+	/**
+	 * 検索条件範囲記号非表示設定を設定します。
+	 * @param hideSearchConditionRangeSymbol 検索条件範囲記号非表示設定
+	 */
+	public void setHideSearchConditionRangeSymbol(boolean hideSearchConditionRangeSymbol) {
+		this.hideSearchConditionRangeSymbol = hideSearchConditionRangeSymbol;
 	}
 
 	/**

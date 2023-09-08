@@ -19,8 +19,8 @@
  --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
-
 <%@ page import="java.sql.Timestamp"%>
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.List" %>
@@ -199,9 +199,12 @@
 		}
 
 		if (!editor.isSingleDayCondition()) {
+			if ((!editor.isHideSearchConditionFrom() && !editor.isHideSearchConditionTo())
+					|| !editor.isHideSearchConditionRangeSymbol()) {
 %>
-<span class="range-symbol">&nbsp;～&nbsp;</span>
+<span class="range-symbol">&nbsp;${m:rs('mtp-gem-messages', 'generic.editor.common.rangeSymbol')}&nbsp;</span>
 <%
+			}
 		}
 
 		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "To");

@@ -73,6 +73,9 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 	/** 検索条件To非表示設定 */
 	private boolean hideSearchConditionTo;
 
+	/** 検索条件範囲記号非表示設定 */
+	private boolean hideSearchConditionRangeSymbol = true;
+
 	/** Label形式の場合の登録制御 */
 	private boolean insertWithLabelValue = true;
 
@@ -176,6 +179,22 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 	}
 
 	/**
+	 * 検索条件範囲記号非表示設定を取得します。
+	 * @return 検索条件範囲記号非表示設定
+	 */
+	public boolean isHideSearchConditionRangeSymbol() {
+		return hideSearchConditionRangeSymbol;
+	}
+
+	/**
+	 * 検索条件範囲記号非表示設定を設定します。
+	 * @param hideSearchConditionRangeSymbol 検索条件範囲記号非表示設定
+	 */
+	public void setHideSearchConditionRangeSymbol(boolean hideSearchConditionRangeSymbol) {
+		this.hideSearchConditionRangeSymbol = hideSearchConditionRangeSymbol;
+	}
+
+	/**
 	 * 表示タイプがLabel形式の場合に、登録時に登録対象にするかを返します。
 	 *
 	 * @return true：登録対象
@@ -220,6 +239,7 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 		singleDayCondition = e.isSingleDayCondition();
 		hideSearchConditionFrom = e.isHideSearchConditionFrom();
 		hideSearchConditionTo = e.isHideSearchConditionTo();
+		hideSearchConditionRangeSymbol = e.isHideSearchConditionRangeSymbol();
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
 
@@ -254,6 +274,7 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 		pe.setSingleDayCondition(singleDayCondition);
 		pe.setHideSearchConditionFrom(hideSearchConditionFrom);
 		pe.setHideSearchConditionTo(hideSearchConditionTo);
+		pe.setHideSearchConditionRangeSymbol(hideSearchConditionRangeSymbol);
 		pe.setInsertWithLabelValue(insertWithLabelValue);
 		pe.setUpdateWithLabelValue(updateWithLabelValue);
 

@@ -232,7 +232,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 			displayName="検索条件To非表示",
 			displayNameKey="generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=140,
+			displayOrder=135,
 			description="検索条件のToを非表示にするかを設定します。",
 			descriptionKey="generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey"
 	)
@@ -240,6 +240,20 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 			referenceTypes={FieldReferenceType.SEARCHCONDITION}
 	)
 	private boolean hideSearchConditionTo;
+
+	/** 検索条件範囲記号非表示設定 */
+	@MetaFieldInfo(
+			displayName="検索条件範囲記号非表示",
+			displayNameKey="generic_editor_DateTimePropertyEditor_hideSearchConditionRangeSymbolDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=140,
+			description="検索条件の範囲記号を非表示にするかを設定します。FromまたはToが非表示の場合に有効になります。",
+			descriptionKey="generic_editor_DateTimePropertyEditor_hideSearchConditionRangeSymbolDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private boolean hideSearchConditionRangeSymbol;
 
 	/** Label形式の場合の登録制御 */
 	@MetaFieldInfo(
@@ -369,6 +383,22 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	 */
 	public void setHideSearchConditionTo(boolean hideSearchConditionTo) {
 	    this.hideSearchConditionTo = hideSearchConditionTo;
+	}
+
+	/**
+	 * 検索条件範囲記号非表示設定を取得します。
+	 * @return 検索条件範囲記号非表示設定
+	 */
+	public boolean isHideSearchConditionRangeSymbol() {
+		return hideSearchConditionRangeSymbol;
+	}
+
+	/**
+	 * 検索条件範囲記号非表示設定を設定します。
+	 * @param hideSearchConditionRangeSymbol 検索条件範囲記号非表示設定
+	 */
+	public void setHideSearchConditionRangeSymbol(boolean hideSearchConditionRangeSymbol) {
+		this.hideSearchConditionRangeSymbol = hideSearchConditionRangeSymbol;
 	}
 
 	@Override
