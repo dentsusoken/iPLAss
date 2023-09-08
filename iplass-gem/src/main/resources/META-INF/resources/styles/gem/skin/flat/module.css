@@ -1488,6 +1488,8 @@ p.nav-login-01 {
     border: 1px solid #ddd; }
     .tbl-search-01 input.form-size-04 {
       width: 100%; }
+  .tbl-search-01 .numeric-range input.inpbr {
+    width: 45%; }
   .tbl-search-01 input[type=text] {
     font-size: 1rem;
     padding: 2px 5px;
