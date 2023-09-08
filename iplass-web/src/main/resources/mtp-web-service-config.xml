@@ -492,7 +492,7 @@
 
 		<!-- バイナリファイルアップロード受け入れ可能な MIME Type パターン。正規表現を指定する。 -->
 		<!--
-		<property name="binaryUploadAcceptMimeTypesPattern" value="^(image/.*|application/pdf|text/csv)$" />
+		<property name="acceptMimeTypesPatternInBinaryApi" value="^(image/.*|application/pdf|text/csv)$" />
 		-->
 
 		<property name="xRequestedWithMap">
