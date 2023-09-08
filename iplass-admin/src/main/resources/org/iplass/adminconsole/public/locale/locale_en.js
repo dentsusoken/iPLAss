@@ -1859,6 +1859,8 @@ LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionFromDisplaNa
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionFromDescriptionKey = "Hide From of search condition.";
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaNameKey = "Hide 'To' of Search conditions ";
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey = "Hide To of search condition.";
+LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionRangeSymbolDisplaNameKey = "Hide range symbols of Search conditions";
+LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionRangeSymbolDescriptionKey = "Hide the range symbol of search condition. This is used when in range search mode and From or To is hidden.";
 LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDisplaNameKey = "Date / time formatting";
 LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDescriptionKey = "Set the date / time format and locale to be displayed on the search results and details screen.";
 LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeFormatDisplaNameKey = "Date / time formatting";
@@ -1953,6 +1955,8 @@ LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionFromDisplaName
 LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionFromDescriptionKey = "Hide From of search condition.";
 LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionToDisplaNameKey = "Hide 'To' of Search conditions ";
 LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionToDescriptionKey = "Hide To of search condition.";
+LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionRangeSymbolDisplaNameKey = "Hide range symbols of Search conditions";
+LocaleInfo.generic_editor_NumberPropertyEditor_hideSearchConditionRangeSymbolDescriptionKey = "Hide the range symbol of search condition. This is used when in range search mode and From or To is hidden.";
 LocaleInfo.generic_editor_NumberPropertyEditor_numberFormatDisplaNameKey = "Number format";
 LocaleInfo.generic_editor_NumberPropertyEditor_numberFormatDescriptionKey = "Specify the desired format to format when displaying.";
 LocaleInfo.generic_editor_NumberPropertyEditor_showCommaDisplaNameKey = "Display comma";

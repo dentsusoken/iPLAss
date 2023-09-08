@@ -19,6 +19,7 @@
  --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
@@ -33,7 +34,6 @@
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
-<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%!
 String getObjectName(String prefix, EntityDefinition ed){
 	String objName = "";
@@ -130,11 +130,9 @@ String getObjectName(String prefix, EntityDefinition ed){
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, toPropValue);
 		request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, toPd);
 		String toKey = toEditor.getPropertyName().replaceAll("\\.", "_");
-
-		String dash = GemResourceBundleUtil.resourceString("generic.editor.NumericRangePropertyEditor.range");
 %>
 <span id="numericrange_<c:out value="<%=toKey%>" />">
-<c:out value="<%=dash %>"></c:out>
+<span class="range-symbol">&nbsp;${m:rs('mtp-gem-messages', 'generic.editor.common.rangeSymbol')}&nbsp;</span>
 <jsp:include page="<%=path%>" />
 </span>
 <%
