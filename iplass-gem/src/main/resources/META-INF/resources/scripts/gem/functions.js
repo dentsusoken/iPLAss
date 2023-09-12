@@ -606,6 +606,7 @@ $.fn.allInputCheck = function(){
 
 /**
  * モーダルダイアログ初期化
+ * @deprecated
  */
 (function($){
 	$.fn.modalDialog = function(option){
@@ -616,21 +617,25 @@ $.fn.allInputCheck = function(){
 		var options = $.extend(defaults, option);
 		if (!this) return false;
 		return this.each(function() {
-			var rootWindow = null;
-			if (!parent.document.rootWindow) {
-				rootWindow = parent.document;
+			var rootDocument = null;
+			if (!parent.document.rootDocument) {
+				rootDocument = parent.document;
 			} else {
-				rootWindow = parent.document.rootWindow
+				rootDocument = parent.document.rootDocument;
 			}
-			document.rootWindow = rootWindow;
+			document.rootDocument = rootDocument;
+			// 既存のカスタムScriptの利用を想定し、rootWindowも設定
+			// @deprecated use document.rootDocument
+			document.rootWindow = rootDocument;
+			
 			var name = uniqueId();
 			document.targetName = name;
 			var windowManager = null;
-			if (!rootWindow.scriptContext["windowManager"]) {
+			if (!rootDocument.scriptContext["windowManager"]) {
 				windowManager = {};
-				rootWindow.scriptContext["windowManager"] = windowManager;
+				rootDocument.scriptContext["windowManager"] = windowManager;
 			} else {
-				windowManager = rootWindow.scriptContext["windowManager"];
+				windowManager = rootDocument.scriptContext["windowManager"];
 			}
 			windowManager[name] = document;
 
@@ -648,7 +653,7 @@ $.fn.allInputCheck = function(){
 //			$(options.btn).subModalWindow();	//モーダルウィンドウ
 //			$(options.lnk).subModalWindow();
 
-			rootWindow.scriptContext["createModalFunction"].call(this, options.dialogs, name, function(){
+			rootDocument.scriptContext["createModalFunction"].call(this, options.dialogs, name, function(){
 				$(options.controls).subModalWindow();	//モーダルウィンドウ
 			});
 		});
@@ -834,11 +839,11 @@ $.fn.allInputCheck = function(){
 			resizable: true
 		};
 
-		var rootWindow = document.rootWindow;
+		var rootDocument = document.rootDocument;
 		var targetName = document.targetName;
 		var $document = $(document);
 		var $window = $(window);
-		var $frame = $("iframe[name='" + targetName + "']", rootWindow);
+		var $frame = $("iframe[name='" + targetName + "']", rootDocument);
 		var $under = $frame.parent();
 		var $overlay = $under.prev();
 		var $dialog = $under.parent();
@@ -850,8 +855,8 @@ $.fn.allInputCheck = function(){
 				$under.height(options.dialogHeight);
 				$overlay.fadeIn(options.speed);
 				$under.fadeIn(options.speed);
-				rootWindow.scriptContext.overlayManager.addOverlay($overlay);
-				$under.css({zIndex:rootWindow.scriptContext.overlayManager.nextZindex()});
+				rootDocument.scriptContext.overlayManager.addOverlay($overlay);
+				$under.css({zIndex: rootDocument.scriptContext.overlayManager.nextZindex()});
 			},
 			hide : function() {
 //				$overlay.fadeOut(options.speed);
@@ -860,7 +865,7 @@ $.fn.allInputCheck = function(){
 				$under.fadeOut(0);
 				$("iframe", $under).attr("src", "about:blank");
 				$(".modal-restore", $under).click();
-				rootWindow.scriptContext.overlayManager.removeOverlay($overlay);
+				rootDocument.scriptContext.overlayManager.removeOverlay($overlay);
 				$under.css({zIndex:0});
 			}
 		};
@@ -877,7 +882,7 @@ $.fn.allInputCheck = function(){
 				$frame.parents(".modal-dialog").trigger(new $.Event('closeModalDialog', {}));
 			});
 			$under.on("click", ".modal-maximize.sub-modal-maximize", function(){
-				var pw = $(rootWindow).width();
+				var pw = $(rootDocument).width();
 				$under.addClass("fullWindow");
 				setModalWindowToCenter(pw);
 			});
@@ -916,8 +921,8 @@ $.fn.allInputCheck = function(){
 		function resizeHandler(){
 			$overlay.width(0);
 			$overlay.css({
-				height : $(rootWindow).height(),//$document.height(),
-				width : $(rootWindow).width(),//$window.width()
+				height : $(rootDocument).height(),//$document.height(),
+				width : $(rootDocument).width(),//$window.width()
 				top: 0,
 				left: 0,
 				position:"absolute"
@@ -927,7 +932,7 @@ $.fn.allInputCheck = function(){
 
 		function setModalWindowToCenter(pw){
 			if ($under.hasClass("fullWindow")) {
-				var pwd = rootWindow.scriptContext.getWindow();
+				var pwd = rootDocument.scriptContext.getWindow();
 				var dialogHeight = $(pwd).height() - 40;
 				//frameはheader分減らす
 				var frameHeight = dialogHeight - 49;
@@ -941,7 +946,7 @@ $.fn.allInputCheck = function(){
 				});
 				$frame.height(frameHeight);
 			} else {
-				var pwd = rootWindow.scriptContext.getWindow();
+				var pwd = rootDocument.scriptContext.getWindow();
 				var windowHeight = $(pwd).height();
 				var windowWidth = pw != null ? pw : $(pwd).width();
 

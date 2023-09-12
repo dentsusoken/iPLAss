@@ -41,7 +41,7 @@ var key = "<%=modalTarget%>";
 var modalTarget = key != "" ? key : null;
 $(function() {
 	var target = null;
-	var windowManager = document.rootWindow.scriptContext["windowManager"];
+	var windowManager = document.rootDocument.scriptContext["windowManager"];
 	if (modalTarget && windowManager && windowManager[document.targetName]) {
 		$("#modal-title-" + modalTarget, parent.document).text("${m:rsp("mtp-gem-messages", "layout.header.about", appName)}");
 		target = windowManager[modalTarget];
