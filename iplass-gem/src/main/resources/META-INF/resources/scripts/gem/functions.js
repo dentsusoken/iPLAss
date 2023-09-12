@@ -679,8 +679,8 @@ $.fn.allInputCheck = function(){
 			const $this = $(this);
 			const $document = $(document);
 			const $window = $(window);
-			const $overlay = $(options.overlay, document);
-			const $under = $(options.under, document);
+			const $overlay = $document.find(options.overlay);
+			const $under = $document.find(options.under);
 			const $frame = $("iframe", $under);
 
 			$this.attr("targetName", $frame.attr("name"));
@@ -830,8 +830,6 @@ $.fn.allInputCheck = function(){
  * サブモーダルウィンドウ
  *
  * [オプション]
- * overlay: バックグランドコンテンツSelector
- * under: モーダルコンテンツSelector
  * dialogHeight: ダイアログの高さ
  * dialogWidth: ダイアログの幅
  * resizable: 最大化可能か
@@ -842,8 +840,6 @@ $.fn.allInputCheck = function(){
 		if (!this) return false;
 
 		const defaults = {
-			overlay : 'body.modal-body .modal-wrap',
-			under : 'body.modal-body .modal-inner',
 			dialogHeight: 735,
 			dialogWidth: 750,
 			resizable: true
