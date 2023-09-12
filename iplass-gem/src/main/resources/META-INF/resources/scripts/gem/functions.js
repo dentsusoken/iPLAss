@@ -704,7 +704,7 @@ $.fn.allInputCheck = function(){
 			};
 			$this.on("click", function(){
 				//ダイアログを起動したものをトリガーとして保持しておき、
-				//maximize,restoreから呼び出せるようにする。
+				//maximize,restore,resizeHandlerから呼び出せるようにする。
 				$trigger = $this;
 
 				$under.removeClass("unresizable");
@@ -714,9 +714,9 @@ $.fn.allInputCheck = function(){
 
 				fade.show();
 				resizeHandler();
-				$window.on("resize", resizeHandler);
 			});
-			//maximize,restoreで起動したtriggerにあわせてサイズ調整できるようfunction紐づけ
+
+			//maximize,restore,resizeHandlerで起動したtriggerにあわせてサイズ調整できるようfunction紐づけ
 			$this.setModalWindowToCenter = setModalWindowToCenter;
 
 			//メインのレイアウトから呼ばれるダイアログは共通のため、初期化は1回だけ
@@ -735,14 +735,12 @@ $.fn.allInputCheck = function(){
 					$under.addClass("fullWindow");
 					//$thisと違って共通部分なので、複数のダイアログがいると最初の初期化時のものが実行されてしまう
 					//⇒dialogHeigth:550を指定しても、先に730で指定してると730になってしまう
-//					setModalWindowToCenter();
 					//ダイアログを呼び出したトリガーに紐づくfunctionを呼び出し、
 					//別のトリガーで指定したサイズにならないようにする
 					$trigger.setModalWindowToCenter();
 				});
 				$under.on("click", ".modal-restore", function() {
 					$under.removeClass("fullWindow");
-//					setModalWindowToCenter();
 					$trigger.setModalWindowToCenter();
 				});
 				$overlay.on("click", function(){
@@ -755,6 +753,10 @@ $.fn.allInputCheck = function(){
 					fade.hide();
 					$frame.parents(".modal-dialog").trigger(new $.Event('closeModalDialog', {}));
 				});
+
+				// ウインドウのリサイズでサイズ、配置調整
+				$window.on("resize", resizeHandler);
+
 				$under.attr("initialized", true);
 			}
 
@@ -769,7 +771,13 @@ $.fn.allInputCheck = function(){
 					left: 0,
 					position:"absolute"
 				});
-				setModalWindowToCenter()
+
+				// トリガーが指定されている場合は、トリガーのオプションで配置調整
+				if ($trigger) {
+					$trigger.setModalWindowToCenter();
+				} else {
+					setModalWindowToCenter();
+				}
 			}
 
 			function setModalWindowToCenter(){
@@ -829,6 +837,7 @@ $.fn.allInputCheck = function(){
  * resizable: 最大化可能か
  */
 (function($){
+	let $trigger = null;
 	$.fn.subModalWindow = function(option){
 		if (!this) return false;
 
@@ -842,7 +851,6 @@ $.fn.allInputCheck = function(){
 
 		const rootDocument = document.rootDocument;
 		const targetName = document.targetName;
-		const $window = $(window);
 		const $frame = $("iframe[name='" + targetName + "']", rootDocument);
 		const $under = $frame.parent();
 		const $overlay = $under.prev();
@@ -882,11 +890,11 @@ $.fn.allInputCheck = function(){
 			});
 			$under.on("click", ".modal-maximize.sub-modal-maximize", function(){
 				$under.addClass("fullWindow");
-				setModalWindowToCenter();
+				$trigger.setModalWindowToCenter();
 			});
 			$under.on("click", ".modal-restore.sub-modal-restore", function(){
 				$under.removeClass("fullWindow");
-				setModalWindowToCenter();
+				$trigger.setModalWindowToCenter();
 			});
 			$overlay.on("click", function(){
 				//GemConfigServiceで編集画面でキャンセル時に確認ダイアログを表示する設定になってる場合確認を行う
@@ -898,6 +906,11 @@ $.fn.allInputCheck = function(){
 				fade.hide();
 				$frame.parents(".modal-dialog").trigger(new $.Event('closeModalDialog', {}));
 			});
+
+			// ルートウインドウのリサイズでサイズ、配置調整
+			const $rootWindow = $(rootDocument.scriptContext.getWindow());
+			$rootWindow.on("resize", resizeHandler);
+
 			$under.attr("initialized", true);
 		}
 
@@ -905,6 +918,10 @@ $.fn.allInputCheck = function(){
 			const $this = $(this);
 
 			$this.on("click", function(){
+				// ダイアログを起動したものをトリガーとして保持しておき、
+				// maximize,restore,resizeHandlerから呼び出せるようにする。
+				$trigger = $this;
+
 				$under.removeClass("unresizable");
 				if (options.resizable == false) {
 					$under.addClass("unresizable");
@@ -912,8 +929,10 @@ $.fn.allInputCheck = function(){
 
 				fade.show();
 				resizeHandler();
-				$window.on("resize", resizeHandler);
 			});
+
+			//maximize,restore,resizeHandlerで、起動したtriggerにあわせてサイズ調整できるようfunction紐づけ
+			$this.setModalWindowToCenter = setModalWindowToCenter;
 		});
 
 		function resizeHandler(){
@@ -925,7 +944,13 @@ $.fn.allInputCheck = function(){
 				left: 0,
 				position:"absolute"
 			});
-			setModalWindowToCenter()
+
+			// トリガーが指定されている場合は、トリガーのオプションで配置調整
+			if ($trigger) {
+				$trigger.setModalWindowToCenter();
+			} else {
+				setModalWindowToCenter();
+			}
 		}
 
 		function setModalWindowToCenter(){
