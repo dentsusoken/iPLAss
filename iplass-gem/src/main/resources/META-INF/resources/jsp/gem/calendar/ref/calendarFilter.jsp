@@ -58,7 +58,7 @@ $(function() {
 
 	// 検索ボタン押下処理
 	var func = null;
-	var windowManager = document.rootWindow.scriptContext["windowManager"];
+	var windowManager = document.rootDocument.scriptContext["windowManager"];
 	if (modalTarget && windowManager && windowManager[document.targetName]) {
 		var win = windowManager[modalTarget];
 		func = win.scriptContext["editReferenceCallback"];

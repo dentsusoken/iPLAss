@@ -69,7 +69,7 @@ $(function() {
 	var key = "${m:escJs(modalTarget)}";
 	var modalTarget = key != "" ? key : null;
 	var target = null;
-	var windowManager = document.rootWindow.scriptContext["windowManager"];
+	var windowManager = document.rootDocument.scriptContext["windowManager"];
 	if (modalTarget && windowManager && windowManager[document.targetName]) {
 		$("#modal-title-" + modalTarget, parent.document).text("${m:escJs(previewDateTitle)}");
 		target = windowManager[modalTarget];

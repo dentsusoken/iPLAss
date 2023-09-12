@@ -103,7 +103,7 @@ if (!modalTarget) {
 <%}%>
 $(function() {
 	var target = null;
-	var windowManager = document.rootWindow.scriptContext["windowManager"];
+	var windowManager = document.rootDocument.scriptContext["windowManager"];
 	if (modalTarget && windowManager && windowManager[document.targetName]) {
 		$("#modal-title-" + modalTarget, parent.document).text("<%=displayName%>");
 		target = windowManager[modalTarget];
@@ -122,7 +122,7 @@ $(function() {
 });
 function closeModal() {
 	var func = null;
-	var windowManager = document.rootWindow.scriptContext["windowManager"];
+	var windowManager = document.rootDocument.scriptContext["windowManager"];
 	if (modalTarget && windowManager && windowManager[document.targetName]) {
 		var win = windowManager[modalTarget];
 		func = win.scriptContext["searchReferenceCallback"];

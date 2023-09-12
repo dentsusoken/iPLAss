@@ -66,7 +66,7 @@ ${m:rs("mtp-gem-messages", "generic.error.errOccurred")}
 <script type="text/javascript">
 function historyBack() {
 	if ($("body.modal-body").length != 0) {
-		document.rootWindow.scriptContext["closeModalFunction"].call(this);
+		document.rootDocument.scriptContext["closeModalFunction"].call(this);
 	} else {
 		history.back();
 	}

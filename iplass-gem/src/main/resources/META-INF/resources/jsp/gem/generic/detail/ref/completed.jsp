@@ -139,7 +139,7 @@ $(function() {
 		name:"<%=StringUtil.escapeJavaScript((String)data.getEntity().getValue(dispPropLabel))%>"
 	};
 	var func = null;
-	var windowManager = document.rootWindow.scriptContext["windowManager"];
+	var windowManager = document.rootDocument.scriptContext["windowManager"];
 	if (modalTarget && windowManager && windowManager[document.targetName]) {
 		var win = windowManager[modalTarget];
 		func = win.scriptContext["editReferenceCallback"];
