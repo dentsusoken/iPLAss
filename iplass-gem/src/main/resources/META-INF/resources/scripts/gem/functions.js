@@ -643,7 +643,10 @@ $.fn.allInputCheck = function(){
 
 			rootDocument.scriptContext["createModalFunction"].call(this, options.dialogs, name, function(){
 				// サブモーダルウィンドウ化
-				$(options.controls).subModalWindow();
+				const subModals = $.find(options.controls);
+				if (subModals.length) {
+					$(subModals).subModalWindow();
+				}
 			});
 		});
 	};
