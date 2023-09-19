@@ -22,9 +22,7 @@ package org.iplass.gem.command.binary;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.Stack;
-import java.util.regex.Pattern;
 
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
@@ -40,21 +38,14 @@ import org.iplass.mtp.command.annotation.action.ActionMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.entity.BinaryReference;
+import org.iplass.mtp.impl.view.generic.FormViewRuntimeUtil;
+import org.iplass.mtp.impl.view.generic.editor.MetaBinaryPropertyEditor.BinaryPropertyEditorRuntime;
 import org.iplass.mtp.impl.web.token.TokenStore;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.transaction.TransactionStatus;
 import org.iplass.mtp.util.StringUtil;
-import org.iplass.mtp.view.generic.DetailFormView;
-import org.iplass.mtp.view.generic.EntityView;
-import org.iplass.mtp.view.generic.EntityViewManager;
-import org.iplass.mtp.view.generic.editor.BinaryPropertyEditor;
-import org.iplass.mtp.view.generic.editor.PropertyEditor;
-import org.iplass.mtp.view.generic.element.Element;
-import org.iplass.mtp.view.generic.element.property.PropertyItem;
-import org.iplass.mtp.view.generic.element.section.DefaultSection;
-import org.iplass.mtp.view.generic.element.section.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,8 +61,6 @@ import org.slf4j.LoggerFactory;
 @CommandClass(name="gem/binary/UploadCommand", displayName="アップロード")
 public final class UploadCommand implements Command {
 	private static Logger logger = LoggerFactory.getLogger(UploadCommand.class);
-	/** デフォルトビュー名 */
-	private static final String DEFAULT_VIEW_NAME = "DEFAULT";
 
 	public static final String ACTION_NAME = "gem/binary/upload";
 
@@ -90,18 +79,19 @@ public final class UploadCommand implements Command {
 		}
 
 		// プロパティエディタを取得する情報をリクエストから取得
-		String viewName = request.getParam(Constants.VIEW_NAME);
 		String defName = request.getParam(Constants.DEF_NAME);
+		String viewName = request.getParam(Constants.VIEW_NAME);
 		String propName = request.getParam(Constants.PROP_NAME);
 
 		// プロパティエディタを取得
-		BinaryPropertyEditor editor = getBinaryPropertyEditor(defName, propName, viewName);
+		BinaryPropertyEditorRuntime editorRuntime = FormViewRuntimeUtil.getPropertyEditorRuntime(defName, viewName, propName,
+				BinaryPropertyEditorRuntime.class);
 
 		try {
 			UploadFileHandle file = request.getParamAsFile("filePath");
 			request.setAttribute("contentType", "application/xml");
 
-			if (file != null && isRejectMimeTypes(file.getType(), editor)) {
+			if (file != null && isRejectMimeTypes(file.getType(), editorRuntime)) {
 				logger.error("File upload rejected. fileName = {}, fileType = {}, fileSize = {}.", file.getFileName(), file.getType(),
 						file.getSize());
 				request.setAttribute(Constants.CMD_RSLT_STREAM,
@@ -144,21 +134,21 @@ public final class UploadCommand implements Command {
 	 * アップロードファイルは拒否される MIME Type（メディアタイプ）であるか確認する
 	 *
 	 * @param type MIME Type（メディアタイプ）
-	 * @param editor 当該プロパティのプロパティエディタ
+	 * @param editorRuntime 当該プロパティのプロパティエディタランタイム
 	 * @return 判定結果（拒否される場合 true ）
 	 */
-	private boolean isRejectMimeTypes(String type, BinaryPropertyEditor editor) {
+	private boolean isRejectMimeTypes(String type, BinaryPropertyEditorRuntime editorRuntime) {
 		boolean isAccept = true;
 
 		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 
-		if (null != editor && StringUtil.isNotBlank(editor.getUploadAcceptMimeTypesPattern())) {
+		if (null != editorRuntime && null != editorRuntime.getUploadAcceptMimeTypesPattern()) {
 			// プロパティエディタに許可する MIME Type が指定されている場合は、プロパティエディタを優先する
-			isAccept = Pattern.compile(editor.getUploadAcceptMimeTypesPattern()).matcher(type).matches();
+			isAccept = editorRuntime.getUploadAcceptMimeTypesPattern().matcher(type).matches();
 
-		} else if (StringUtil.isNotBlank(service.getBinaryUploadAcceptMimeTypesPattern())) {
+		} else if (null != service.getBinaryUploadAcceptMimeTypesPattern()) {
 			// プロパティエディタに設定が無く、GemConfigServiceの受け入れ許可設定が存在する場合は、GemConfigService の設定で許可設定を行う
-			isAccept = Pattern.compile(service.getBinaryUploadAcceptMimeTypesPattern()).matcher(type).matches();
+			isAccept = service.getBinaryUploadAcceptMimeTypesPattern().matcher(type).matches();
 		}
 		// else {
 		// // プロパティエディタ、GemServiceConfig に設定が無い場合はチェックしない
@@ -166,64 +156,6 @@ public final class UploadCommand implements Command {
 
 		// 拒否判定の為、accept を反転する
 		return !isAccept;
-	}
-
-	/**
-	 * エンティティのビュー定義を取得する
-	 * @param defName エンティティ定義名
-	 * @param viewName エンティティビュー名
-	 * @return エンティティビュー定義
-	 */
-	private DetailFormView getDetailFormView(String defName, String viewName) {
-		EntityViewManager manager = ManagerLocator.manager(EntityViewManager.class);
-		EntityView entityViewDef = manager.get(defName);
-
-		// エンティティビュー定義が無い場合は null 返却
-		if (null == entityViewDef) {
-			return null;
-		}
-
-		if (DEFAULT_VIEW_NAME.equals(viewName) || StringUtil.isEmpty(viewName)) {
-			// ビュー名が "DEFUALT" もしくは、view名が無い場合はデフォルトを取得する
-			return entityViewDef.getDefaultDetailFormView();
-		}
-		// ビュー名を取得する
-		return entityViewDef.getDetailFormView(viewName);
-	}
-
-	/**
-	 * 指定されたプロパティのバイナリプロパティエディターを取得する
-	 * @param defName エンティティ定義名
-	 * @param propName プロパティ名
-	 * @param viewName ビュー名
-	 * @return バイナリプロパティエディター
-	 */
-	private BinaryPropertyEditor getBinaryPropertyEditor(String defName, String propName, String viewName) {
-		DetailFormView view = getDetailFormView(defName, viewName);
-
-		if (view == null || propName == null) {
-			return null;
-		}
-
-		// TODO ビュー中に複数の同一プロパティが存在していた場合、正しく取得することができない。
-		List<Section> sections = view.getSections();
-		for (Section section : sections) {
-			if (section instanceof DefaultSection) {
-				for (Element element : ((DefaultSection) section).getElements()) {
-					if (element instanceof PropertyItem) {
-						if (propName.equals(((PropertyItem) element).getPropertyName())) {
-							PropertyEditor editor = ((PropertyItem) element).getEditor();
-							if (editor instanceof BinaryPropertyEditor) {
-								return (BinaryPropertyEditor) editor;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// 定義が無い場合は null を返却
-		return null;
 	}
 
 	/**

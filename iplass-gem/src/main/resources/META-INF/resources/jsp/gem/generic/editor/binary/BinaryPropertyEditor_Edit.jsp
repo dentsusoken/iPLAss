@@ -29,6 +29,7 @@
 <%@ page import="org.iplass.mtp.auth.AuthContext" %>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPropertyPermission" %>
 <%@ page import="org.iplass.mtp.entity.BinaryReference"%>
+<%@ page import="org.iplass.mtp.entity.definition.EntityDefinition" %>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition" %>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.BinaryPropertyEditor" %>
@@ -137,7 +138,16 @@
 		if (pd.getMultiplicity() > 1) multiple = "multiple";
 
 		String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
-		if (viewName == null) viewName = "";
+		if (viewName == null) {
+			viewName = "";
+		}
+		// NOTE ネストプロパティの場合、defName ではネスト先のエンティティ名が取得できてしまう。
+		//      entityDefinition キーで取得する値は表示しているビューのエンティティ定義なので、そこからエンティティ名を取得する
+		EntityDefinition entityDefinition = (EntityDefinition)request.getAttribute(Constants.ENTITY_DEFINITION);
+		String rootDefName = defName;
+		if (entityDefinition != null) {
+			rootDefName = entityDefinition.getName();
+		}
 
 		if (request.getAttribute(Constants.UPLOAD_LIB_LOADED) == null) {
 			request.setAttribute(Constants.UPLOAD_LIB_LOADED, true);
@@ -156,7 +166,7 @@
  data-showImageRotateButton="<%=editor.isShowImageRotateButton() %>"  data-openNewTab="<%=editor.isOpenNewTab() %>"
  data-multiplicity="<c:out value="<%=pd.getMultiplicity() %>" />" data-binWidth="<c:out value="<%=editor.getWidth() %>" />"
  data-binHeight="<c:out value="<%=editor.getHeight() %>" />" data-token="${m:fixToken()}" <c:out value="<%=multiple%>" /> 
- data-vname="<c:out value="<%=viewName %>"/>" data-dname="<c:out value="<%=defName %>"/>"
+ data-vname="<c:out value="<%=viewName %>"/>" data-dname="<c:out value="<%=rootDefName %>"/>"
  />
  <%
 		}

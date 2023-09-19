@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2023 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -17,25 +17,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+package org.iplass.mtp.impl.view.generic.element.section;
 
-package org.iplass.mtp.impl.view.generic;
+import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorRuntime;
 
-import java.util.List;
-
-import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
-
-public interface HasMetaNestProperty {
+/**
+ * セクションプロパティランタイムインターフェース
+ *
+ * <p>
+ * 内部管理用のランタイム情報インターフェース
+ * </p>
+ *
+ * <p>package private</p>
+ *
+ * @author SEKIGUCHI Naoya
+ */
+interface SectionPropertyRuntime {
 	/**
-	 * オブジェクトIDを取得する。
-	 *
-	 * <p>
-	 * 本プロパティを所有する Entity のオブジェクト ID が設定されます。
-	 * </p>
-	 *
-	 * @return オブジェクトID
+	 * プロパティ名を取得する
+	 * @return プロパティ名
 	 */
-	String getObjectId();
+	String getPropertyName();
 
-	List<MetaNestProperty> getNestProperties();
-
+	/**
+	 * プロパティエディタを取得する
+	 * @return プロパティエディタ
+	 */
+	PropertyEditorRuntime getEditor();
 }
