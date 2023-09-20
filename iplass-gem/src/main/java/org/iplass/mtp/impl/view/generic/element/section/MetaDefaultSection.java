@@ -565,8 +565,7 @@ public class MetaDefaultSection extends MetaSection {
 
 								// ネストプロパティランタイム管理用インスタンスのビルダーを作成
 								// ネストプロパティの場合は、通常プロパティの element に該当する情報が無いので、設定されない。
-								// TODO propertyLayout#convertName を利用しているが、MetaNestProperty に HasEntityPropertyインターフェース実装が正しいか。
-								String nestPropertyName = propertyLayout.convertName(nest.getPropertyId(), context, nestEh);
+								String nestPropertyName = nest.convertName(nest.getPropertyId(), context, nestEh);
 								SectionPropertyRuntimeBuilder nestBuilder = new SectionPropertyRuntimeBuilder(nestPropertyName);
 
 								if (nestEditor != null) {

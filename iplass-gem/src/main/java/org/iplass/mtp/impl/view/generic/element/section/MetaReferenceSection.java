@@ -40,7 +40,6 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntime;
-import org.iplass.mtp.impl.view.generic.HasEntityProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorRuntime;
@@ -524,9 +523,6 @@ public class MetaReferenceSection extends MetaSection {
 		public ReferenceSectionRuntime(MetaReferenceSection metadata, EntityViewRuntime entityView, FormViewRuntime formView) {
 			super(metadata, entityView);
 
-			// TODO プロパティ名に変換する機能を利用するため、無名インスタンスを作成
-			HasEntityProperty propertyConverter = new HasEntityProperty() {
-			};
 			EntityContext ctx = EntityContext.getCurrentContext();
 			EntityHandler parentEntityHandler = ctx.getHandlerById(entityView.getMetaData().getDefinitionId());
 			ReferencePropertyHandler referencePropertyHandler = (ReferencePropertyHandler) parentEntityHandler
@@ -544,7 +540,7 @@ public class MetaReferenceSection extends MetaSection {
 					}
 
 					// Referenceプロパティの参照先プロパティの情報を取得
-					String nestPropertyName = propertyConverter.convertName(meta.getPropertyId(), ctx, referenceEntityHandler);
+					String nestPropertyName = meta.convertName(meta.getPropertyId(), ctx, referenceEntityHandler);
 					SectionPropertyRuntimeBuilder nestPropertyRuntimeBuilder = new SectionPropertyRuntimeBuilder(nestPropertyName);
 
 					MetaPropertyEditor nestPropertyEditor = meta.getEditor();
