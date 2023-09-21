@@ -99,7 +99,7 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 public class DetailCommandContext extends RegistrationCommandContext
-		implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
+implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(DetailCommandContext.class);
 
@@ -246,9 +246,9 @@ public class DetailCommandContext extends RegistrationCommandContext
 				if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
 						&& !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
 					Optional<ReferenceSectionPropertyItem> ret = propList.stream().filter(p -> p instanceof ReferenceSectionPropertyItem)
-						.map(p -> (ReferenceSectionPropertyItem) p)
-						.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
-						.findFirst();
+							.map(p -> (ReferenceSectionPropertyItem) p)
+							.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
+							.findFirst();
 
 					if (ret.isPresent()) {
 						ret.get().getSections().add(rs);
@@ -330,9 +330,9 @@ public class DetailCommandContext extends RegistrationCommandContext
 				if (EntityViewUtil.isDisplayElement(getDefinitionName(), elem.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
 						&& !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
 					Optional<ReferenceSectionPropertyItem> ret = propList.stream().filter(p -> p instanceof ReferenceSectionPropertyItem)
-						.map(p -> (ReferenceSectionPropertyItem) p)
-						.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
-						.findFirst();
+							.map(p -> (ReferenceSectionPropertyItem) p)
+							.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
+							.findFirst();
 
 					if (ret.isPresent()) {
 						ret.get().getSections().add(rs);
@@ -353,7 +353,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 	private ReferenceSectionPropertyItem createReferenceSectionPropertyItem(ReferenceSection section) {
 		ReferenceSectionPropertyItem property = new ReferenceSectionPropertyItem();
 		property.setPropertyName(section.getPropertyName());
-//		property.setDispFlag(section.getDispFlag());
+		//		property.setDispFlag(section.getDispFlag());
 		property.getSections().add(section);
 		return property;
 	}
@@ -615,8 +615,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 				//Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix +  p.getName();
 				getErrors().stream()
-					.filter(error -> error.getPropertyName().equals(name))
-					.forEach(error -> error.setPropertyName(errorName));
+				.filter(error -> error.getPropertyName().equals(name))
+				.forEach(error -> error.setPropertyName(errorName));
 			}
 		}
 		return entity;
@@ -1373,7 +1373,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 
 		if (!errorBinaryList.isEmpty()) {
 			// 許可されていない（パターンマッチしない）ファイルタイプの場合は、エラーメッセージ設定
-			String errorMessage = resourceString("command.generic.detail.DetailCommandContext.uncceptedFileType",
+			String errorMessage = resourceString("command.generic.detail.DetailCommandContext.unacceptedFileType",
 					String.join(",", errorBinaryList.stream().map(v -> v.getName()).collect(Collectors.toList())));
 			ValidateError e = new ValidateError();
 			e.setPropertyName(fullPropertyName);
