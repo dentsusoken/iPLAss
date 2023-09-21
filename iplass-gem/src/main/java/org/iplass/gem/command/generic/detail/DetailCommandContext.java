@@ -330,9 +330,9 @@ implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
 				if (EntityViewUtil.isDisplayElement(getDefinitionName(), elem.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
 						&& !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
 					Optional<ReferenceSectionPropertyItem> ret = propList.stream().filter(p -> p instanceof ReferenceSectionPropertyItem)
-							.map(p -> (ReferenceSectionPropertyItem) p)
-							.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
-							.findFirst();
+						.map(p -> (ReferenceSectionPropertyItem) p)
+						.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
+						.findFirst();
 
 					if (ret.isPresent()) {
 						ret.get().getSections().add(rs);
@@ -353,7 +353,7 @@ implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
 	private ReferenceSectionPropertyItem createReferenceSectionPropertyItem(ReferenceSection section) {
 		ReferenceSectionPropertyItem property = new ReferenceSectionPropertyItem();
 		property.setPropertyName(section.getPropertyName());
-		//		property.setDispFlag(section.getDispFlag());
+//		property.setDispFlag(section.getDispFlag());
 		property.getSections().add(section);
 		return property;
 	}
@@ -615,8 +615,8 @@ implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
 				//Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix +  p.getName();
 				getErrors().stream()
-				.filter(error -> error.getPropertyName().equals(name))
-				.forEach(error -> error.setPropertyName(errorName));
+					.filter(error -> error.getPropertyName().equals(name))
+					.forEach(error -> error.setPropertyName(errorName));
 			}
 		}
 		return entity;
