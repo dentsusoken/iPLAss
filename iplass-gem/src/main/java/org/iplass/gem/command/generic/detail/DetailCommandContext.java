@@ -99,7 +99,7 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 public class DetailCommandContext extends RegistrationCommandContext
-	implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
+		implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(DetailCommandContext.class);
 
