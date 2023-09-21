@@ -1373,7 +1373,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 
 		if (!errorBinaryList.isEmpty()) {
 			// 許可されていない（パターンマッチしない）ファイルタイプの場合は、エラーメッセージ設定
-			String errorMessage = resourceString("command.generic.detail.DetailCommandContext.uncceptedFileType",
+			String errorMessage = resourceString("command.generic.detail.DetailCommandContext.unacceptedFileType",
 					String.join(",", errorBinaryList.stream().map(v -> v.getName()).collect(Collectors.toList())));
 			ValidateError e = new ValidateError();
 			e.setPropertyName(fullPropertyName);
