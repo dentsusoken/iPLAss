@@ -99,7 +99,7 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 public class DetailCommandContext extends RegistrationCommandContext
-implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
+	implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(DetailCommandContext.class);
 
@@ -246,9 +246,9 @@ implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
 				if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
 						&& !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
 					Optional<ReferenceSectionPropertyItem> ret = propList.stream().filter(p -> p instanceof ReferenceSectionPropertyItem)
-							.map(p -> (ReferenceSectionPropertyItem) p)
-							.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
-							.findFirst();
+						.map(p -> (ReferenceSectionPropertyItem) p)
+						.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
+						.findFirst();
 
 					if (ret.isPresent()) {
 						ret.get().getSections().add(rs);
