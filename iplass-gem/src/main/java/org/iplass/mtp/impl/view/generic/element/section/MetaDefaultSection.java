@@ -71,7 +71,7 @@ public class MetaDefaultSection extends MetaSection {
 	private static boolean defaultDispBorderInSection;
 
 	static {
-		 // システムプロパティorデフォルトtrueで初期化
+		// システムプロパティorデフォルトtrueで初期化
 		String value = System.getProperty("mtp.generic.dispBorderInSection", "true");
 		defaultDispBorderInSection = Boolean.parseBoolean(value);
 	}
@@ -211,7 +211,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @return リンクを表示するか
 	 */
 	public boolean isShowLink() {
-	    return showLink;
+		return showLink;
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @param showLink リンクを表示するか
 	 */
 	public void setShowLink(boolean showLink) {
-	    this.showLink = showLink;
+		this.showLink = showLink;
 	}
 
 	/**
@@ -227,7 +227,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @return 詳細編集非表示設定
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -235,7 +235,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @param hideDetail 詳細編集非表示設定
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -243,7 +243,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @return 詳細表示非表示設定
 	 */
 	public boolean isHideView() {
-	    return hideView;
+		return hideView;
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @param hideView 詳細表示非表示設定
 	 */
 	public void setHideView(boolean hideView) {
-	    this.hideView = hideView;
+		this.hideView = hideView;
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @return 上部のコンテンツ
 	 */
 	public String getUpperContents() {
-	    return upperContents;
+		return upperContents;
 	}
 
 	/**
@@ -267,7 +267,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @param upperContents 上部のコンテンツ
 	 */
 	public void setUpperContents(String upperContents) {
-	    this.upperContents = upperContents;
+		this.upperContents = upperContents;
 	}
 
 	/**
@@ -275,7 +275,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @return 下部のコンテンツ
 	 */
 	public String getLowerContents() {
-	    return lowerContents;
+		return lowerContents;
 	}
 
 	/**
@@ -283,7 +283,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @param lowerContents 下部のコンテンツ
 	 */
 	public void setLowerContents(String lowerContents) {
-	    this.lowerContents = lowerContents;
+		this.lowerContents = lowerContents;
 	}
 
 	/**
@@ -510,10 +510,13 @@ public class MetaDefaultSection extends MetaSection {
 	 * ランタイム
 	 * @author lis3wg
 	 */
-	public class DefaultSectionRuntime extends SectionRuntime {
-
+	public class DefaultSectionRuntime extends SectionRuntime implements HasSectionPropertyRuntimeMap {
+		// TODO 要素情報の取得意味が不明
 		/** 要素情報*/
 		private List<ElementRuntime> elements;
+
+		/** セクションに設定されているプロパティ情報。キーはプロパティ名。 */
+		private Map<String, SectionPropertyRuntime> sectionPropertyRuntimeMap = new HashMap<>();
 
 		/**
 		 * コンストラクタ
@@ -529,29 +532,63 @@ public class MetaDefaultSection extends MetaSection {
 			elements = new ArrayList<>();
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();
 			for (MetaElement element : metadata.getElements()) {
-				elements.add(element.createRuntime(entityView, formView));
+				ElementRuntime elementRuntime = element.createRuntime(entityView, formView);
+				elements.add(elementRuntime);
 
 				if (element instanceof MetaPropertyLayout) {
 					MetaPropertyLayout propertyLayout = (MetaPropertyLayout)element;
 					MetaPropertyEditor editor = propertyLayout.getEditor();
+
+					// element が MetaPropertyLaytout であれば、propertyRuntime として管理する。
+					// プロパティIDからプロパティ名に変換
+					String propertyName = propertyLayout.convertName(propertyLayout.getPropertyId(), context, eh);
+					// プロパティランタイム管理用インスタンスのビルダーを作成
+					SectionPropertyRuntimeBuilder builder = new SectionPropertyRuntimeBuilder(propertyName);
+					builder.element(elementRuntime);
+
 					if (editor != null) {
 						PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView, formView, propertyLayout, context, eh);
 						customStyleMap.put(editor.getOutputCustomStyleScriptKey(), runtime.getOutputCustomStyleScript());
 						customStyleMap.put(editor.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 
+						// PropertyEditorRuntime を設定
+						builder.editor(runtime);
+
 						if (editor instanceof HasMetaNestProperty) {
+							// ネストプロパティの場合は、ネスト先プロパティの情報を管理する。
+							// ネストエンティティのエンティティハンドラ
+							EntityHandler nestEh = context.getHandlerById(((HasMetaNestProperty) editor).getObjectId());
+							// プロパティ情報に格納するプロパティインスタンス
+							Map<String, SectionPropertyRuntime> nestProperties = new HashMap<>();
 							for (MetaNestProperty nest : ((HasMetaNestProperty)editor).getNestProperties()) {
 								MetaPropertyEditor nestEditor = nest.getEditor();
+
+								// ネストプロパティランタイム管理用インスタンスのビルダーを作成
+								// ネストプロパティの場合は、通常プロパティの element に該当する情報が無いので、設定されない。
+								String nestPropertyName = nest.convertName(nest.getPropertyId(), context, nestEh);
+								SectionPropertyRuntimeBuilder nestBuilder = new SectionPropertyRuntimeBuilder(nestPropertyName);
+
 								if (nestEditor != null) {
 									//TODO nest type check
 									PropertyEditorRuntime nestRuntime = (PropertyEditorRuntime)nestEditor.createRuntime(entityView, formView, null, context, eh);
 									customStyleMap.put(nestEditor.getOutputCustomStyleScriptKey(), nestRuntime.getOutputCustomStyleScript());
 									customStyleMap.put(nestEditor.getInputCustomStyleScriptKey(), nestRuntime.getInputCustomStyleScript());
+
+									// PropertyEditorRuntime を設定
+									nestBuilder.editor(nestRuntime);
 								}
+								nestProperties.put(nestPropertyName, nestBuilder.build());
 							}
+
+							// ネストプロパティランタイム情報を、ビルダーに設定
+							builder.nest(nestProperties);
 						}
 					}
+
+					// プロパティランタイムを生成
+					sectionPropertyRuntimeMap.put(propertyName, builder.build());
 				}
+
 				if (element instanceof MetaButton) {
 					MetaButton button = (MetaButton)element;
 					ButtonRuntime runtime = button.createRuntime(entityView, formView);
@@ -592,6 +629,11 @@ public class MetaDefaultSection extends MetaSection {
 			TenantContext tenant = ExecuteContext.getCurrentContext().getTenantContext();
 			return GroovyTemplateCompiler.compile(
 					script, key, (GroovyScriptEngine) tenant.getScriptEngine());
+		}
+
+		@Override
+		public Map<String, SectionPropertyRuntime> getSectionPropertyRuntimeMap() {
+			return sectionPropertyRuntimeMap;
 		}
 	}
 }

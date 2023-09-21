@@ -21,7 +21,9 @@
 package org.iplass.mtp.impl.view.generic.element.section;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
@@ -39,6 +41,8 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
+import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
+import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.element.Element;
@@ -57,7 +61,7 @@ public class MetaReferenceSection extends MetaSection {
 	private static boolean defaultDispBorderInSection;
 
 	static {
-		 // システムプロパティorデフォルトtrueで初期化
+		// システムプロパティorデフォルトtrueで初期化
 		String value = System.getProperty("mtp.generic.dispBorderInSection", "true");
 		defaultDispBorderInSection = Boolean.parseBoolean(value);
 	}
@@ -126,7 +130,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return プロパティID
 	 */
 	public String getPropertyId() {
-	    return propertyId;
+		return propertyId;
 	}
 
 	/**
@@ -134,7 +138,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param propertyId プロパティID
 	 */
 	public void setPropertyId(String propertyId) {
-	    this.propertyId = propertyId;
+		this.propertyId = propertyId;
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return タイトル
 	 */
 	public String getTitle() {
-	    return title;
+		return title;
 	}
 
 	/**
@@ -150,7 +154,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param title タイトル
 	 */
 	public void setTitle(String title) {
-	    this.title = title;
+		this.title = title;
 	}
 
 	/**
@@ -158,7 +162,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return セクションの展開可否
 	 */
 	public boolean isExpandable() {
-	    return expandable;
+		return expandable;
 	}
 
 	/**
@@ -166,7 +170,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param expandable セクションの展開可否
 	 */
 	public void setExpandable(boolean expandable) {
-	    this.expandable = expandable;
+		this.expandable = expandable;
 	}
 
 	/**
@@ -174,7 +178,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return id
 	 */
 	public String getId() {
-	    return id;
+		return id;
 	}
 
 	/**
@@ -182,7 +186,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param id id
 	 */
 	public void setId(String id) {
-	    this.id = id;
+		this.id = id;
 	}
 
 	/**
@@ -190,7 +194,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return クラス名
 	 */
 	public String getStyle() {
-	    return style;
+		return style;
 	}
 
 	/**
@@ -198,7 +202,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param style クラス名
 	 */
 	public void setStyle(String style) {
-	    this.style = style;
+		this.style = style;
 	}
 
 	/**
@@ -222,7 +226,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return リンクを表示するか
 	 */
 	public boolean isShowLink() {
-	    return showLink;
+		return showLink;
 	}
 
 	/**
@@ -230,7 +234,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param showLink リンクを表示するか
 	 */
 	public void setShowLink(boolean showLink) {
-	    this.showLink = showLink;
+		this.showLink = showLink;
 	}
 
 	/**
@@ -238,7 +242,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return 詳細編集非表示設定
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -246,7 +250,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param hideDetail 詳細編集非表示設定
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -254,7 +258,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return 詳細表示非表示設定
 	 */
 	public boolean isHideView() {
-	    return hideView;
+		return hideView;
 	}
 
 	/**
@@ -262,7 +266,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param hideView 詳細表示非表示設定
 	 */
 	public void setHideView(boolean hideView) {
-	    this.hideView = hideView;
+		this.hideView = hideView;
 	}
 
 	/**
@@ -285,7 +289,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return 上部のコンテンツ
 	 */
 	public String getUpperContents() {
-	    return upperContents;
+		return upperContents;
 	}
 
 	/**
@@ -293,7 +297,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param upperContents 上部のコンテンツ
 	 */
 	public void setUpperContents(String upperContents) {
-	    this.upperContents = upperContents;
+		this.upperContents = upperContents;
 	}
 
 	/**
@@ -301,7 +305,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return 下部のコンテンツ
 	 */
 	public String getLowerContents() {
-	    return lowerContents;
+		return lowerContents;
 	}
 
 	/**
@@ -309,7 +313,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param lowerContents 下部のコンテンツ
 	 */
 	public void setLowerContents(String lowerContents) {
-	    this.lowerContents = lowerContents;
+		this.lowerContents = lowerContents;
 	}
 
 	/**
@@ -318,7 +322,7 @@ public class MetaReferenceSection extends MetaSection {
 	 */
 	public List<MetaNestProperty> getProperties() {
 		if (properties == null) properties = new ArrayList<>();
-	    return properties;
+		return properties;
 	}
 
 	/**
@@ -326,7 +330,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param properties 表示プロパティ
 	 */
 	public void setProperties(List<MetaNestProperty> properties) {
-	    this.properties = properties;
+		this.properties = properties;
 	}
 
 	/**
@@ -334,7 +338,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return 表示順プロパティ
 	 */
 	public String getOrderPropName() {
-	    return orderPropId;
+		return orderPropId;
 	}
 
 	/**
@@ -342,7 +346,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param orderPropName 表示順プロパティ
 	 */
 	public void setOrderPropName(String orderPropName) {
-	    this.orderPropId = orderPropName;
+		this.orderPropId = orderPropName;
 	}
 
 	/**
@@ -350,7 +354,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return データのインデックス
 	 */
 	public int getIndex() {
-	    return index;
+		return index;
 	}
 
 	/**
@@ -358,7 +362,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @param index データのインデックス
 	 */
 	public void setIndex(int index) {
-	    this.index = index;
+		this.index = index;
 	}
 
 	/**
@@ -501,7 +505,7 @@ public class MetaReferenceSection extends MetaSection {
 
 	@Override
 	public SectionRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
-		return new ReferenceSectionRuntime(this, entityView);
+		return new ReferenceSectionRuntime(this, entityView, formView);
 	}
 
 	/**
@@ -509,17 +513,52 @@ public class MetaReferenceSection extends MetaSection {
 	 * @author lis3wg
 	 *
 	 */
-	public class ReferenceSectionRuntime extends SectionRuntime {
+	public class ReferenceSectionRuntime extends SectionRuntime implements HasSectionPropertyRuntimeMap {
+		/**
+		 * Referenceセクションで保持しているプロパティランタイム情報マップ。
+		 * 本プロパティで取得できるプロパティは、ReferenceProperty で、ネストプロパティとして、参照先のプロパティを保持している。
+		 */
+		private Map<String, SectionPropertyRuntime> sectionPropertyRuntimeMap = new HashMap<>();
 
-		public ReferenceSectionRuntime(MetaReferenceSection metadata, EntityViewRuntime entityView) {
+		public ReferenceSectionRuntime(MetaReferenceSection metadata, EntityViewRuntime entityView, FormViewRuntime formView) {
 			super(metadata, entityView);
+
+			EntityContext ctx = EntityContext.getCurrentContext();
+			EntityHandler parentEntityHandler = ctx.getHandlerById(entityView.getMetaData().getDefinitionId());
+			ReferencePropertyHandler referencePropertyHandler = (ReferencePropertyHandler) parentEntityHandler
+					.getPropertyById(metadata.getPropertyId(), ctx);
+			EntityHandler referenceEntityHandler = referencePropertyHandler.getReferenceEntityHandler(ctx);
+
+			SectionPropertyRuntimeBuilder referencePropertyRuntimeBuilder = new SectionPropertyRuntimeBuilder(
+					referencePropertyHandler.getName());
+
 			if (properties != null && !properties.isEmpty()) {
+				Map<String, SectionPropertyRuntime> nestPropertyRuntimeMap = new HashMap<>();
 				for (MetaNestProperty meta : properties) {
 					if (meta.getAutocompletionSetting()  != null) {
 						entityView.addAutocompletionSetting(meta.getAutocompletionSetting().createRuntime(entityView));
 					}
+
+					// Referenceプロパティの参照先プロパティの情報を取得
+					String nestPropertyName = meta.convertName(meta.getPropertyId(), ctx, referenceEntityHandler);
+					SectionPropertyRuntimeBuilder nestPropertyRuntimeBuilder = new SectionPropertyRuntimeBuilder(nestPropertyName);
+
+					MetaPropertyEditor nestPropertyEditor = meta.getEditor();
+					if (null != nestPropertyEditor) {
+						// nestPropertyEditor が存在すれば、ランタイムを生成する
+						PropertyEditorRuntime runtime = (PropertyEditorRuntime) nestPropertyEditor.createRuntime(entityView, formView, null,
+								ctx, referenceEntityHandler);
+						nestPropertyRuntimeBuilder.editor(runtime);
+					}
+					// ネストプロパティを設定する
+					nestPropertyRuntimeMap.put(nestPropertyName, nestPropertyRuntimeBuilder.build());
 				}
+				// リファレンスプロパティにネストプロパティを設定
+				referencePropertyRuntimeBuilder.nest(nestPropertyRuntimeMap);
 			}
+			// プロパティを設定する
+			sectionPropertyRuntimeMap.put(referencePropertyHandler.getName(), referencePropertyRuntimeBuilder.build());
+
 			//上下コンテンツのコンパイル
 			if (StringUtil.isNotEmpty(metadata.upperContents) || StringUtil.isNotEmpty(metadata.lowerContents)) {
 				if (metadata.contentScriptKey == null) {
@@ -537,11 +576,17 @@ public class MetaReferenceSection extends MetaSection {
 					entityView.addTemplate(lowerKey, compile(metadata.lowerContents, lowerKey));
 				}
 			}
+
 		}
 
 		@Override
 		public MetaReferenceSection getMetaData() {
 			return (MetaReferenceSection) super.getMetaData();
+		}
+
+		@Override
+		public Map<String, SectionPropertyRuntime> getSectionPropertyRuntimeMap() {
+			return sectionPropertyRuntimeMap;
 		}
 
 		private GroovyTemplate compile(String script, String key) {
@@ -550,5 +595,4 @@ public class MetaReferenceSection extends MetaSection {
 					script, key, (GroovyScriptEngine) tenant.getScriptEngine());
 		}
 	}
-
 }

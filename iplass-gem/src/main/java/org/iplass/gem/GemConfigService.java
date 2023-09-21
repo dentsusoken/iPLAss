@@ -26,8 +26,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.poi.util.StringUtil;
 import org.iplass.gem.AutoGenerateSetting.DisplayPosition;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.spi.Config;
@@ -125,7 +127,7 @@ public class GemConfigService implements Service {
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
 
 	/** エンティティのバイナリプロパティにアップロード受け入れ可能な MIME Types  正規表現パターン */
-	private String binaryUploadAcceptMimeTypesPattern;
+	private Pattern binaryUploadAcceptMimeTypesPattern;
 
 	/** カラー */
 	private List<ImageColorSetting> imageColors;
@@ -151,7 +153,11 @@ public class GemConfigService implements Service {
 	@Override
 	public void init(Config config) {
 		binaryDownloadLoggingTargetProperty = config.getValues("binaryDownloadLoggingTargetProperty", BinaryDownloadLoggingTargetProperty.class);
-		binaryUploadAcceptMimeTypesPattern = config.getValue("binaryUploadAcceptMimeTypesPattern");
+		String binaryUploadAcceptMimeTypesPattern = config.getValue("binaryUploadAcceptMimeTypesPattern");
+		this.binaryUploadAcceptMimeTypesPattern = StringUtil.isNotBlank(binaryUploadAcceptMimeTypesPattern)
+				? Pattern.compile(binaryUploadAcceptMimeTypesPattern)
+				: null;
+
 		imageColors = config.getValues("imageColors", ImageColorSetting.class);
 		loadWithReference = Boolean.valueOf(config.getValue("loadWithReference"));
 		formatNumberWithComma = Boolean.valueOf(config.getValue("formatNumberWithComma"));
@@ -446,7 +452,7 @@ public class GemConfigService implements Service {
 	 * エンティティのバイナリプロパティにアップロード受け入れ可能なMIME Types 正規表現パターンを取得します。
 	 * @return エンティティのバイナリプロパティにアップロード可能なMIME Types 正規表現パターン
 	 */
-	public String getBinaryUploadAcceptMimeTypesPattern() {
+	public Pattern getBinaryUploadAcceptMimeTypesPattern() {
 		return binaryUploadAcceptMimeTypesPattern;
 	}
 

@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.iplass.gem.GemConfigService;
@@ -40,6 +41,7 @@ import org.iplass.gem.command.generic.detail.handler.ShowDetailLayoutViewEvent;
 import org.iplass.gem.command.generic.detail.handler.ShowDetailViewEventHandler;
 import org.iplass.gem.command.generic.detail.handler.ShowEditViewEventHandler;
 import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.EntityRuntimeException;
@@ -59,6 +61,9 @@ import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.definition.properties.TimeProperty;
 import org.iplass.mtp.impl.util.ConvertUtil;
+import org.iplass.mtp.impl.view.generic.DetailFormViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntimeUtil;
+import org.iplass.mtp.impl.view.generic.editor.MetaBinaryPropertyEditor.BinaryPropertyEditorRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
@@ -67,6 +72,7 @@ import org.iplass.mtp.view.generic.DetailFormViewHandler;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
+import org.iplass.mtp.view.generic.editor.BinaryPropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.LabelablePropertyEditor;
@@ -1194,6 +1200,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 	 */
 	protected void validate(Entity entity) {
 		List<PropertyItem> properties = getDisplayProperty(true);
+		DetailFormViewRuntime formViewRuntime = FormViewRuntimeUtil.getFormViewRuntime(getDefinitionName(), getViewName(),
+				DetailFormViewRuntime.class);
 		for (PropertyItem property : properties) {
 			if (property.getEditor() instanceof DateRangePropertyEditor) {
 				//日付の逆転チェック
@@ -1203,6 +1211,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 				//数値の逆転チェック
 				NumericRangePropertyEditor editor = (NumericRangePropertyEditor) property.getEditor();
 				checkNumericRange(editor, entity, property.getPropertyName(), editor.getToPropertyName(), "");
+			} else if (property.getEditor() instanceof BinaryPropertyEditor) {
+				checkBinary(formViewRuntime, property.getPropertyName(), entity, "");
 			} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 				Object val = entity.getValue(property.getPropertyName());
@@ -1231,6 +1241,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 								//数値の逆転チェック
 								NumericRangePropertyEditor de = (NumericRangePropertyEditor) np.getEditor();
 								checkNumericRange(de, ary[i], np.getPropertyName(), de.getToPropertyName(), errorPrefix);
+							} else if (np.getEditor() instanceof BinaryPropertyEditor) {
+								checkBinary(formViewRuntime, np.getPropertyName(), ary[i], errorPrefix);
 							}
 						}
 					}
@@ -1308,6 +1320,99 @@ public class DetailCommandContext extends RegistrationCommandContext
 				setValidateErrorMessage(editor, fromName, errorPrefix, "command.generic.detail.DetailCommandContext.invalidNumericRange");
 			}
 		}
+	}
+
+	/**
+	 * バイナリプロパティのチェック
+	 *
+	 * <p>
+	 * チェック内容は以下の通り
+	 *
+	 * <ul>
+	 * <li>ファイルタイプについて、プロパティエディタもしくは、GemConfigService の受け入れ MIME Type パターンのチェック</li>
+	 * </ul>
+	 * </p>
+	 * @param editor プロパティエディタ
+	 * @param propertyName プロパティ名
+	 * @param entity エンティティ
+	 * @param propertyPrefix ネストプロパティの上位プロパティ名
+	 */
+	private void checkBinary(DetailFormViewRuntime viewRuntime, String propertyName, Entity entity, String propertyPrefix) {
+		Object propertyValue = entity.getValue(propertyName);
+		if (null == propertyValue) {
+			// 値が null であれば何もしない
+			return;
+		}
+
+		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+
+		// SectionRuntime のプロパティはネストプロパティを意識した形で情報を保管している。
+		// そのため、ネストプロパティの場合は、parent[0].child というプロパティ名でプロパティエディタを取得する
+		String fullPropertyName = propertyPrefix + propertyName;
+		BinaryPropertyEditorRuntime editorRuntime = FormViewRuntimeUtil.getPropertyEditorRuntime(viewRuntime, fullPropertyName,
+				BinaryPropertyEditorRuntime.class);
+
+		List<BinaryReference> errorBinaryList = resolveValue(entity, propertyName, (BinaryReference value) -> {
+			// MIME Type パターンのチェック
+			boolean isAccept = true;
+			// ファイル MIME Type の検査
+			if (null != editorRuntime && null != editorRuntime.getUploadAcceptMimeTypesPattern()) {
+				// プロパティエディタに許可する MIME Type が指定されている場合は、プロパティエディタを優先する
+				isAccept = editorRuntime.getUploadAcceptMimeTypesPattern().matcher(value.getType()).matches();
+
+			} else if (null != service.getBinaryUploadAcceptMimeTypesPattern()) {
+				// プロパティエディタに設定が無く、GemConfigServiceの受け入れ許可設定が存在する場合は、GemConfigService の設定で許可設定を行う
+				isAccept = service.getBinaryUploadAcceptMimeTypesPattern().matcher(value.getType()).matches();
+			}
+			// else {
+			// // プロパティエディタ、GemServiceConfig に設定が無い場合はチェックしない
+			// }
+
+			return isAccept;
+		});
+
+		if (!errorBinaryList.isEmpty()) {
+			// 許可されていない（パターンマッチしない）ファイルタイプの場合は、エラーメッセージ設定
+			String errorMessage = resourceString("command.generic.detail.DetailCommandContext.uncceptedFileType",
+					String.join(",", errorBinaryList.stream().map(v -> v.getName()).collect(Collectors.toList())));
+			ValidateError e = new ValidateError();
+			e.setPropertyName(fullPropertyName);
+			e.addErrorMessage(errorMessage);
+			getErrors().add(e);
+		}
+	}
+
+	/**
+	 * エンティティの値を解決（単一、配列）し検証処理を実行する
+	 *
+	 * @param <R> プロパティデータ型
+	 * @param entity エンティティデータ
+	 * @param propertyName 対象プロパティ名
+	 * @param logic 検証処理。検証処理の返却値は次の通り（正常終了: true, 問題あり: false）。
+	 * @return 問題のあったデータリスト
+	 */
+	@SuppressWarnings("unchecked")
+	protected <R> List<R> resolveValue(Entity entity, String propertyName, Function<R, Boolean> logic) {
+		Object value = entity.getValue(propertyName);
+
+		List<R> result = new ArrayList<>();
+
+		if (null != value && value.getClass().isArray()) {
+			// 値が配列の場合
+			for (R o : (R[]) value) {
+				if (!logic.apply(o)) {
+					result.add(o);
+				}
+			}
+
+		} else {
+			// 値が単一値。値が null の場合も単一値として検証を実施する
+			if (!logic.apply((R) value)) {
+				result.add((R) value);
+			}
+		}
+
+		return result;
 	}
 
 	/**

@@ -31,6 +31,7 @@ import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.generic.HasEntityProperty;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting;
 import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
@@ -44,7 +45,7 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
  *
  * @author lis3wg
  */
-public class MetaNestProperty implements MetaData {
+public class MetaNestProperty implements MetaData, HasEntityProperty {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -5324754433567181221L;
@@ -108,7 +109,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return プロパティID
 	 */
 	public String getPropertyId() {
-	    return propertyId;
+		return propertyId;
 	}
 
 	/**
@@ -116,7 +117,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param propertyId プロパティID
 	 */
 	public void setPropertyId(String propertyId) {
-	    this.propertyId = propertyId;
+		this.propertyId = propertyId;
 	}
 
 	/**
@@ -124,7 +125,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return 表示名
 	 */
 	public String getDisplayLabel() {
-	    return displayLabel;
+		return displayLabel;
 	}
 
 	/**
@@ -132,7 +133,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param displayLabel 表示名
 	 */
 	public void setDisplayLabel(String displayLabel) {
-	    this.displayLabel = displayLabel;
+		this.displayLabel = displayLabel;
 	}
 
 	/**
@@ -140,7 +141,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return 説明
 	 */
 	public String getDescription() {
-	    return description;
+		return description;
 	}
 
 	/**
@@ -148,7 +149,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param description 説明
 	 */
 	public void setDescription(String description) {
-	    this.description = description;
+		this.description = description;
 	}
 
 	/**
@@ -156,7 +157,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return ツールチップ
 	 */
 	public String getTooltip() {
-	    return tooltip;
+		return tooltip;
 	}
 
 	/**
@@ -164,7 +165,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param tooltip ツールチップ
 	 */
 	public void setTooltip(String tooltip) {
-	    this.tooltip = tooltip;
+		this.tooltip = tooltip;
 	}
 
 	/**
@@ -172,7 +173,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return 列幅
 	 */
 	public int getWidth() {
-	    return width;
+		return width;
 	}
 
 	/**
@@ -180,7 +181,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param width 列幅
 	 */
 	public void setWidth(int width) {
-	    this.width = width;
+		this.width = width;
 	}
 
 	/**
@@ -188,7 +189,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return テキストの配置
 	 */
 	public TextAlign getTextAlign() {
-	    return textAlign;
+		return textAlign;
 	}
 
 	/**
@@ -196,7 +197,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param textAlign テキストの配置
 	 */
 	public void setTextAlign(TextAlign textAlign) {
-	    this.textAlign = textAlign;
+		this.textAlign = textAlign;
 	}
 
 	/**
@@ -204,7 +205,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return 詳細編集非表示設定
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -212,7 +213,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param hideDetail 詳細編集非表示設定
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -220,7 +221,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return 詳細表示非表示設定
 	 */
 	public boolean isHideView() {
-	    return hideView;
+		return hideView;
 	}
 
 	/**
@@ -228,7 +229,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param hideView 詳細表示非表示設定
 	 */
 	public void setHideView(boolean hideView) {
-	    this.hideView = hideView;
+		this.hideView = hideView;
 	}
 
 	/**
@@ -252,7 +253,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return 通常検索で必須条件にする
 	 */
 	public boolean isRequiredNormal() {
-	    return requiredNormal;
+		return requiredNormal;
 	}
 
 	/**
@@ -260,7 +261,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param requiredNormal 通常検索で必須条件にする
 	 */
 	public void setRequiredNormal(boolean requiredNormal) {
-	    this.requiredNormal = requiredNormal;
+		this.requiredNormal = requiredNormal;
 	}
 
 	/**
@@ -268,7 +269,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return 詳細検索で必須条件にする
 	 */
 	public boolean isRequiredDetail() {
-	    return requiredDetail;
+		return requiredDetail;
 	}
 
 	/**
@@ -276,7 +277,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param requiredDetail 詳細検索で必須条件にする
 	 */
 	public void setRequiredDetail(boolean requiredDetail) {
-	    this.requiredDetail = requiredDetail;
+		this.requiredDetail = requiredDetail;
 	}
 
 	/**
@@ -316,7 +317,7 @@ public class MetaNestProperty implements MetaData {
 	 * @return プロパティエディタ
 	 */
 	public MetaPropertyEditor getEditor() {
-	    return editor;
+		return editor;
 	}
 
 	/**
@@ -324,7 +325,7 @@ public class MetaNestProperty implements MetaData {
 	 * @param editor プロパティエディタ
 	 */
 	public void setEditor(MetaPropertyEditor editor) {
-	    this.editor = editor;
+		this.editor = editor;
 	}
 
 	/**

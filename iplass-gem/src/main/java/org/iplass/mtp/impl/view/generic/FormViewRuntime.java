@@ -77,4 +77,11 @@ public class FormViewRuntime {
 		return metaData;
 	}
 
+	/**
+	 * FormView セクションランタイムリストを取得します。
+	 * @return セクションランタイムリスト
+	 */
+	public List<SectionRuntime> getSections() {
+		return sections;
+	}
 }

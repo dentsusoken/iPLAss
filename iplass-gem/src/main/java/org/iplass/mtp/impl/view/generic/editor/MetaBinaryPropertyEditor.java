@@ -20,11 +20,12 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
+import java.util.regex.Pattern;
+
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.metadata.MetaDataRuntime;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntime;
@@ -37,8 +38,8 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
  * バイナリ型プロパティエディタのメタデータ
  * @author lis3wg
  */
-public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 
+public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 8428866745088395378L;
 
@@ -85,7 +86,7 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
 
-	/** アップロード受け入れ可能な MIME Type 正規表現パターン*/
+	/** アップロード受け入れ可能な MIME Type 正規表現パターン */
 	private String uploadAcceptMimeTypesPattern;
 
 	/**
@@ -366,14 +367,45 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	}
 
 	@Override
-	public MetaDataRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+	public BinaryPropertyEditorRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
 			MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
-		return new PropertyEditorRuntime(entityView, formView, propertyLayout, context, eh) {
-			@Override
-			protected boolean checkPropertyType(PropertyDefinition pd) {
-				return pd == null || pd instanceof BinaryProperty;
-			}
+		return new BinaryPropertyEditorRuntime(entityView, formView, propertyLayout, context, eh);
+	}
 
-		};
+	/**
+	 * バイナリプロパティエディターランタイム
+	 */
+	public class BinaryPropertyEditorRuntime extends PropertyEditorRuntime {
+		/** コンパイル済みアップロード受け入れ可能な MIME Type 正規表現パターン */
+		private Pattern uploadAcceptMimeTypesPattern;
+
+		/**
+		 * コンストラクタ
+		 * @param entityView エンティティビューランタイム
+		 * @param formView FormViewランタイム
+		 * @param propertyLayout プロパティレイアウトメタ情報
+		 * @param context エンティティコンテキスト
+		 * @param eh エンティティハンドラー
+		 */
+		public BinaryPropertyEditorRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+				MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
+			super(entityView, formView, propertyLayout, context, eh);
+			this.uploadAcceptMimeTypesPattern = null != MetaBinaryPropertyEditor.this.uploadAcceptMimeTypesPattern
+					? Pattern.compile(MetaBinaryPropertyEditor.this.uploadAcceptMimeTypesPattern)
+					: null;
+		}
+
+		@Override
+		protected boolean checkPropertyType(PropertyDefinition pd) {
+			return pd == null || pd instanceof BinaryProperty;
+		}
+
+		/**
+		 * コンパイル済みアップロード受け入れ可能な MIME Type 正規表現パターンを取得する
+		 * @return コンパイル済みアップロード受け入れ可能な MIME Type 正規表現パターン
+		 */
+		public Pattern getUploadAcceptMimeTypesPattern() {
+			return uploadAcceptMimeTypesPattern;
+		}
 	}
 }
