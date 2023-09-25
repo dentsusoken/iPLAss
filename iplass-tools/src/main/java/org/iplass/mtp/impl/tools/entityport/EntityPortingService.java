@@ -127,6 +127,9 @@ public class EntityPortingService implements Service {
 	/** Upload形式のCSVダウンロード時の一括ロード件数 */
 	private int uploadableCsvDownloadLoadSize;
 
+	/** UserエンティティのInsert時にパスワード指定を可能にするか */
+	private boolean canCreateUserWithSpecificPassword;
+
 	private SyntaxService syntaxService;
 
 	private EntityManager em;
@@ -135,6 +138,7 @@ public class EntityPortingService implements Service {
 	@Override
 	public void init(Config config) {
 		uploadableCsvDownloadLoadSize = config.getValue("uploadableCsvDownloadLoadSize", Integer.class, 1);
+		canCreateUserWithSpecificPassword = config.getValue("canCreateUserWithSpecificPassword", Boolean.class, false);
 
 		syntaxService = config.getDependentService(SyntaxService.class);
 
@@ -389,6 +393,12 @@ public class EntityPortingService implements Service {
 						.prefixOid(condition.getPrefixOid())
 						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty())
 						.enableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
+
+					if (definition.getName().equals(User.DEFINITION_NAME)
+							&& canCreateUserWithSpecificPassword) {
+						// Userエンティティの場合、パスワードを許可
+						reader.setVirtualProperties(Arrays.asList(User.PASSWORD));
+					}
 
 					final Iterator<Entity> iterator = reader.iterator();
 					final List<String> headerProperties = reader.properties();

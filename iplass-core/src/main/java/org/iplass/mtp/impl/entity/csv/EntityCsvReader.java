@@ -121,11 +121,15 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 	 */
 	private Map<String, String> customColumnNameMap;
 
+	/** 許可する仮想のプロパティ名。UserEntityのパスワードなど。 */
+	private List<String> virtualProperties;
+
 	private Reader reader;
 	private CsvListReader csvListReader;
 
 	private List<String> headers;
 	private List<String> properties;
+	private List<String> excludeProperties;
 	private List<Integer> arrayIndex;
 	private Map<String, ReferenceInfo> references;
 	private boolean isInit;
@@ -288,6 +292,26 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 		return this;
 	}
 
+	/**
+	 * 許可する仮想のプロパティ名を設定します。
+	 *
+	 * @param virtualProperties 許可する仮想のプロパティ名
+	 */
+	public void setVirtualProperties(List<String> virtualProperties) {
+		this.virtualProperties = virtualProperties;
+	}
+
+	/**
+	 * 許可する仮想のプロパティ名を設定します。
+	 *
+	 * @param virtualProperties 許可する仮想のプロパティ名
+	 * @return インスタンス
+	 */
+	public EntityCsvReader virtualProperties(List<String> virtualProperties) {
+		this.virtualProperties = virtualProperties;
+		return this;
+	}
+
 	public boolean isUseCtrl() {
 		init();
 		return useCtrl;
@@ -361,6 +385,11 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 					if (i == 0 && propName.equals(CTRL_CODE_KEY)) {
 						entity.setValue(CTRL_CODE_KEY, value);
+						continue;
+					}
+
+					// 除外対象プロパティ
+					if (excludeProperties.contains(propName)) {
 						continue;
 					}
 
@@ -540,6 +569,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 	private void validateHeader() {
 
+		excludeProperties = new ArrayList<>();
 		for (int i = 0; i < headers.size(); i++) {
 
 			String headerName = headers.get(i);
@@ -557,8 +587,13 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				String uniqueKey = headerName.substring(propName.length() + 1);
 				ReferenceProperty rp = (ReferenceProperty)definition.getProperty(propName);
 				if (rp == null) {
-					if (ignoreNotExistsProperty) {
+					if (virtualProperties != null && virtualProperties.contains(propName)) {
+						// 仮想プロパティとして許可
+						logger.info(definition.getName() + "'s " + propName + " property is virtual property.");
+					} else if (ignoreNotExistsProperty) {
+						// 除外プロパティに追加
 						logger.warn(definition.getName() + " has not " + propName + " property. skip header.");
+						excludeProperties.add(propName);
 					} else {
 						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
 					}
@@ -583,8 +618,13 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 			} else {
 				pd = definition.getProperty(propName);
 				if (pd == null) {
-					if (ignoreNotExistsProperty) {
+					if (virtualProperties != null && virtualProperties.contains(propName)) {
+						// 仮想プロパティとして許可
+						logger.info(definition.getName() + "'s " + propName + " property is virtual property.");
+					} else if (ignoreNotExistsProperty) {
+						// 除外プロパティに追加
 						logger.warn(definition.getName() + " has not " + propName + " property. skip header.");
+						excludeProperties.add(propName);
 					} else {
 						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
 					}
