@@ -170,6 +170,7 @@ public class SectionControllerImpl implements SectionController {
 							section.setTitle(title.getValue() != null ? title.getValue().toString() : "");
 							section.setColNum(SmartGWTUtil.getIntegerValue(colNum));
 							section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
+							section.setEditDisplayType(null);
 
 							DefaultSectionControl window = new DefaultSectionControl(defName, triggerType, section);
 							callback.onCreated(window);
@@ -251,6 +252,7 @@ public class SectionControllerImpl implements SectionController {
 									section.setDispFlag(true);
 									section.setTitle(rp.getDisplayName());
 									section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
+									section.setEditDisplayType(null);
 
 									ReferenceSectionControl window = new ReferenceSectionControl(defName, triggerType, section);
 									callback.onCreated(window);
