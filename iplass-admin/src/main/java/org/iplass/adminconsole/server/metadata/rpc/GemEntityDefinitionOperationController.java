@@ -76,11 +76,6 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 		if (oldItem == null) {
 			EntityMenuItem entityItem = new EntityMenuItem();
 			entityItem.setName(path);
-			if (definition.getDisplayName() != null && !definition.getDisplayName().isEmpty()) {
-				entityItem.setDisplayName(definition.getDisplayName());
-			} else {
-				entityItem.setDisplayName(getEntitySimpleName(definition.getName()));
-			}
 			entityItem.setEntityDefinitionName(definition.getName());
 
 			auditLogger.logMetadata(MetaDataAction.CREATE, MenuItem.class.getName(), "name:" + entityItem.getName());
@@ -290,18 +285,6 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 	 */
 	private String convertPath(String path) {
 		return path.replace(".","/");
-	}
-
-	private String getEntitySimpleName(String path) {
-		if (path.contains(".")) {
-			if (path.lastIndexOf(".") < path.length()) {
-				return path.substring(path.lastIndexOf(".") + 1);
-			} else {
-				return path.substring(path.lastIndexOf("."));
-			}
-		} else {
-			return path;
-		}
 	}
 
 }
