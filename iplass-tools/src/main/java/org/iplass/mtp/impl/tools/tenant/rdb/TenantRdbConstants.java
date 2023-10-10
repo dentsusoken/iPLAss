@@ -20,47 +20,64 @@
 
 package org.iplass.mtp.impl.tools.tenant.rdb;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface TenantRdbConstants {
 
+	/** テーブルリストとテーブルのユニークキー。ユニークキーが不明な場合は空文字を設定。（t_tenant, t_account を除く） */
+	@SuppressWarnings("serial")
+	public static final Map<String, String> TABLE_LIST_UNIQUE_COLS = Collections.unmodifiableMap(new HashMap<String, String>() {
+		{
+			put("counter", "tenant_id, cnt_name, inc_unit_key");
+			put("crawl_log", "tenant_id, obj_def_id, obj_def_ver");
+			// NOTE delete_log - PK なし
+			put("delete_log", "tenant_id, obj_def_id, obj_id, obj_ver");
+			put("lob_store", "tenant_id, lob_data_id");
+			// NOTE obj_blob - PK なし
+			put("obj_blob", "tenant_id, lob_id");
+			// NOTE obj_blob_rb - PK なし
+			put("obj_blob_rb", "tenant_id, rb_id");
+
+			// NOTE ver 3系では obj_data、obj_data_rb テーブルは存在しない
+			put("obj_data", "");
+			put("obj_data_rb", "");
+
+			put("obj_store", "tenant_id, obj_def_id, obj_id, obj_ver, pg_no");
+			put("obj_store_rb", "tenant_id, obj_def_id, rb_id");
+
+			// NOTE obj_ref - PK なし (ReferenceDeleteSql#deleteByOidAndVersion を参考に列指定）
+			put("obj_ref", "tenant_id, obj_def_id, ref_def_id, obj_id, obj_ver");
+			// NOTE obj_ref_rb - PK なし (obj_ref に rb_id を加えて列指定）
+			put("obj_ref_rb", "rb_id, tenant_id, obj_def_id, ref_def_id, obj_id, obj_ver");
+
+			// NOTE obj_index_* - PK なし (IndexDeleteSql#deleteByOidAndVersion を参考に列を指定)
+			put("obj_index_date", "tenant_id, obj_def_id, col_name, obj_id, obj_ver");
+			put("obj_index_dbl", "tenant_id, obj_def_id, col_name, obj_id, obj_ver");
+			put("obj_index_num", "tenant_id, obj_def_id, col_name, obj_id, obj_ver");
+			put("obj_index_str", "tenant_id, obj_def_id, col_name, obj_id, obj_ver");
+			put("obj_index_ts", "tenant_id, obj_def_id, col_name, obj_id, obj_ver");
+
+			// NOTE obj_index_* - PK なし (IndexDeleteSql#deleteByOidAndVersion を参考に列を指定)
+			put("obj_unique_date", "tenant_id, obj_def_id, col_name, obj_id");
+			put("obj_unique_dbl", "tenant_id, obj_def_id, col_name, obj_id");
+			put("obj_unique_num", "tenant_id, obj_def_id, col_name, obj_id");
+			put("obj_unique_str", "tenant_id, obj_def_id, col_name, obj_id");
+			put("obj_unique_ts", "tenant_id, obj_def_id, col_name, obj_id");
+
+			put("obj_meta", "tenant_id, obj_def_id, obj_def_ver");
+			put("schema_ctrl", "tenant_id, obj_def_id");
+			put("task_queue", "q_id, tenant_id, task_id");
+			put("task_queue_hi", "q_id, tenant_id, task_id");
+		}
+	});
+
 	/** テーブルリスト（t_tenant、t_accountを除く） */
-	public static final String[] TABLE_LIST = {
-		"counter",
-		"crawl_log",
-		"delete_log",
-		"lob_store",
-		"obj_blob",
-		"obj_blob_rb",
-
-		"obj_data",
-		"obj_data_rb",
-
-		"obj_store",
-		"obj_store_rb",
-
-		"obj_ref",
-		"obj_ref_rb",
-
-		"obj_index_date",
-		"obj_index_dbl",
-		"obj_index_num",
-		"obj_index_str",
-		"obj_index_ts",
-
-		"obj_unique_date",
-		"obj_unique_dbl",
-		"obj_unique_num",
-		"obj_unique_str",
-		"obj_unique_ts",
-
-		"obj_meta",
-		"schema_ctrl",
-		"task_queue",
-		"task_queue_hi"
-	};
+	public static final String[] TABLE_LIST = TABLE_LIST_UNIQUE_COLS.keySet().toArray(new String[TABLE_LIST_UNIQUE_COLS.size()]);
 
 	/**
 	 * <p>Partition除外テーブルリスト</p>

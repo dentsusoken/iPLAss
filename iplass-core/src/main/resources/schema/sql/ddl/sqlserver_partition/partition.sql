@@ -5,16 +5,25 @@ IF NOT EXISTS (SELECT 'X' FROM SYS.FILEGROUPS WHERE NAME='FG_MTDB_0') ALTER DATA
 IF NOT EXISTS (SELECT 'X' FROM SYS.FILEGROUPS WHERE NAME='FG_MTDB_1') ALTER DATABASE mtdb ADD FILEGROUP FG_MTDB_1;
 GO
 
+DECLARE @PathSeparator varchar(2);
 DECLARE @DataFilePath varchar(256);
 DECLARE @DataFileName varchar(256);
 DECLARE @Query varchar(512);
 
 SELECT
-	@DataFilePath = (LEFT(PHYSICAL_NAME, LEN(PHYSICAL_NAME) - CHARINDEX('\', REVERSE(PHYSICAL_NAME) + '\')))
+	@PathSeparator = CASE WHEN 1 <= COUNT(*) THEN '\' ELSE '/' END
+FROM 
+	(SELECT UPPER(@@VERSION) AS ver) v
+WHERE
+	v.ver like '%WINDOWS%'
+;
+
+SELECT
+	@DataFilePath = (LEFT(PHYSICAL_NAME, LEN(PHYSICAL_NAME) - CHARINDEX(@PathSeparator, REVERSE(PHYSICAL_NAME) + @PathSeparator)))
 FROM
 	(SELECT PHYSICAL_NAME FROM SYS.DATABASE_FILES WHERE NAME='mtdb') AS PHYSICAL_NAME;
 
-SET @DataFileName = '''' + @DataFilePath + '\mtdb_0.ndf' + '''';
+SET @DataFileName = '''' + @DataFilePath + @PathSeparator + 'mtdb_0.ndf' + '''';
 SET @Query = 'ALTER DATABASE mtdb ADD FILE ('
     + 'NAME = mtdb_0,'
     + 'FILENAME = ' + @DataFileName + ','
@@ -22,7 +31,7 @@ SET @Query = 'ALTER DATABASE mtdb ADD FILE ('
     + 'FILEGROWTH = 1MB)'
 	+ 'TO FILEGROUP FG_MTDB_0'
 IF NOT EXISTS (SELECT 'X' FROM SYS.DATABASE_FILES WHERE NAME='mtdb_0') EXEC(@Query);
-SET @DataFileName = '''' + @DataFilePath + '\mtdb_1.ndf' + '''';
+SET @DataFileName = '''' + @DataFilePath + @PathSeparator + 'mtdb_1.ndf' + '''';
 SET @Query = 'ALTER DATABASE mtdb ADD FILE ('
     + 'NAME = mtdb_1,'
     + 'FILENAME = ' + @DataFileName + ','

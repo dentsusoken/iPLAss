@@ -48,7 +48,7 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 	private static final Logger logger = LoggerFactory.getLogger(PostgreSQLTenantRdbManager.class);
 
 	private static final String SQL_EXIST_TENANT = "select 1 where exists (select * from t_tenant where url = ?)";
-	private static final String SQL_EXIST_TABLE = "select count(*) from information_schema.tables where table_schema = ? and table_name = ?";
+	private static final String SQL_EXIST_TABLE = "select count(*) from information_schema.tables where table_schema = ? and lower(table_name) = lower(?)";
 
 	private static final String SQL_LAST_TENANT_ID = "select last_value from seq_t_tenant_id where is_called = true";
 	private static final String SQL_IS_PARTITIONED_TABLE = "select 1 where exists (select oid from pg_class where relname = ? and relkind = 'p')";
@@ -68,8 +68,8 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 
 	private RdbAdapter adapter;
 
-	public PostgreSQLTenantRdbManager(RdbAdapter adapter) {
-		super(adapter);
+	public PostgreSQLTenantRdbManager(RdbAdapter adapter, TenantRdbManagerParameter parameter) {
+		super(adapter, parameter);
 		this.adapter = adapter;
 	}
 
@@ -101,7 +101,7 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 	public List<PartitionInfo> getPartitionInfo() {
 		return Transaction.required(t -> {
 			List<PartitionInfo> partitionList = new ArrayList<>();
-	
+
 			Stream.of(getTableList()).filter(table -> isPartitionTargetTable(table)).forEach(tableName -> {
 				if (isStorageSpaceTable(tableName)) {
 					getStorageSpacePostfix(true).stream().filter(postfix -> isExistsTable(toStorageSpaceTableName(tableName, postfix), true)).forEach(postfix -> {
@@ -117,7 +117,7 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 					}
 				}
 			});
-	
+
 			return partitionList;
 		});
 	}
@@ -441,6 +441,39 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 
 	private String getPartitionResourceMessage(String lang, String suffix, Object... args) {
 		return ToolsResourceBundleUtil.resourceString(lang, "tenant.partition." + suffix, args);
+	}
+
+	@Override
+	protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String uniqueColumn,
+			int deleteRows) {
+
+		if (StringUtil.isNotEmpty(uniqueColumn)) {
+			// ユニークカラムの指定がある場合のSQLExecuter
+			return new SqlExecuter<Integer>() {
+				@Override
+				public Integer logic() throws SQLException {
+					String sql = "delete from " + tableName + " where (" + uniqueColumn + ") in (select " + uniqueColumn + " from "
+							+ tableName + " where tenant_id = ? limit ?)";
+					PreparedStatement ps = getPreparedStatement(sql);
+					ps.setInt(1, tenantId);
+					ps.setInt(2, deleteRows);
+
+					return ps.executeUpdate();
+				}
+			};
+		}
+
+		// ユニークカラムの指定が無い場合の SQLExecuter
+		return new SqlExecuter<Integer>() {
+			@Override
+			public Integer logic() throws SQLException {
+				String sql = "delete from " + tableName + " where tenant_id = ?";
+				PreparedStatement ps = getPreparedStatement(sql);
+				ps.setInt(1, tenantId);
+
+				return ps.executeUpdate();
+			}
+		};
 	}
 
 }

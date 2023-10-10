@@ -25,7 +25,14 @@
 		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.CreateAppAdminRoleProcess" />
 		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.CreateGemUserRoleProcess" />
 		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.CreateCompleteProcess" />
-
+		
+		<!-- TenartRdbManagerパラメータ -->
+		<property name="tenantRdbManagerParameter" class="org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbManagerParameter">
+			<!-- テナント削除時のレコード削除件数。デフォルト値は 1,000,000 -->
+			<!--
+			<property name="deleteRows" value="1000000" />
+			-->
+		</property>
 	</service>
 
 	<service>

@@ -65,8 +65,12 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 
 	private RdbAdapter adapter;
 
-	public DefaultTenantRdbManager(RdbAdapter adapter) {
+	/** TenantRdbManager パラメータ */
+	private TenantRdbManagerParameter tenantRdbManagerParameter;
+
+	public DefaultTenantRdbManager(RdbAdapter adapter, TenantRdbManagerParameter tenantRdbManagerParameter) {
 		this.adapter = adapter;
+		this.tenantRdbManagerParameter = tenantRdbManagerParameter;
 	}
 
 	protected abstract boolean isExistsTable(String tableName);
@@ -185,21 +189,20 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 
 	@Override
 	public boolean deleteTenant(final TenantDeleteParameter param, final boolean deleteAccount, final LogHandler logHandler) {
+		// その他の削除（各テーブル削除時に、個別トランザクションを開始し処理を行う）
+		deleteTenantTables(param, logHandler);
 
 		boolean isSuccess = Transaction.requiresNew(t -> {
 
-				//テナントの削除
-				deleteTenantTable(param, logHandler);
+			//アカウントの削除
+			if (deleteAccount) {
+				deleteAccountTable(param, logHandler);
+			}
 
-				//アカウントの削除
-				if (deleteAccount) {
-					deleteAccountTable(param, logHandler);
-				}
+			// テナントの削除
+			deleteTenantTable(param, logHandler);
 
-				//その他の削除
-				deleteTenantTables(param, logHandler);
-
-				return true;
+			return true;
 		});
 
 		if (isSuccess) {
@@ -250,38 +253,77 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 	private void deleteTenantTables(TenantDeleteParameter param, LogHandler logHandler) {
 
 		for (String tableName : getTableList()) {
+			String uniqueColumn = getUniqueColumn(tableName);
 			if (isStorageSpaceTable(tableName)) {
 				//StorageSpaceの場合、Postfix分Loop
 				for (String postfix : getStorageSpacePostfix(false)) {
 					String storageSpaceTableName = tableName + postfix;
 					if (isExistsTable(storageSpaceTableName, true)) {
-						int row = deleteTenantTables(param.getTenantId(), storageSpaceTableName);
+						int row = deleteTenantRecords(param, storageSpaceTableName, uniqueColumn, logHandler);
 						logHandler.info(getDeleteResourceMessage(param.getLoggerLanguage(), "deletedTableMsg", storageSpaceTableName, row));
 					}
 				}
 			} else {
 				if (isExistsTable(tableName, false)) {
-					int row = deleteTenantTables(param.getTenantId(), tableName);
+					int row = deleteTenantRecords(param, tableName, uniqueColumn, logHandler);
 					logHandler.info(getDeleteResourceMessage(param.getLoggerLanguage(), "deletedTableMsg", tableName, row));
 				}
 			}
 		}
 	}
 
-	private int deleteTenantTables(int tenantId, String tableName) {
+	/**
+	 * テナントレコードを削除する
+	 * @param param テナント削除パラメーター
+	 * @param tableName 物理テーブル名
+	 * @param uniqueColumn 物理テーブルのユニークカラム ( column1, column2, .... )
+	 * @param logHandler ログハンドラ
+	 * @return レコード削除件数
+	 */
+	private int deleteTenantRecords(TenantDeleteParameter param, String tableName, String uniqueColumn, LogHandler logHandler) {
+		int actualDeletedRows = 0;
+		int deleteRows = getTenantRdbManagerParameter().getDeleteRows();
+		boolean isContinue = true;
 
-		SqlExecuter<Integer> exec = new SqlExecuter<Integer>() {
-			@Override
-			public Integer logic() throws SQLException {
-				String sql = "delete from " + tableName + " where tenant_id = ?";
-				PreparedStatement ps = getPreparedStatement(sql);
-				ps.setInt(1, tenantId);
+		SqlExecuter<Integer> tenantRecordDeleteExecuter = getTenantRecordDeleteExecuter(param.getTenantId(), tableName, uniqueColumn,
+				deleteRows);
 
-				return ps.executeUpdate();
+		do {
+			// トランザクション開始し、削除実行
+			Integer actual = Transaction.<Integer> requiresNew(t -> {
+				return tenantRecordDeleteExecuter.execute(adapter, true);
+			});
+
+			// 削除件数の加算
+			actualDeletedRows += actual;
+			// 削除の継続判断（削除予定行よりも実際削除行が多いもしくは同一であれば継続。PKが無いテーブルもあるため、想定よりも多く削除する可能性があると考えられる）
+			isContinue = deleteRows <= actual;
+
+			// 処理継続時のみログ出力（最終的な削除ログは、呼び出し元で出力）
+			if (isContinue) {
+				logHandler.info(getDeleteResourceMessage(param.getLoggerLanguage(), "deletingTableMsg", tableName, actualDeletedRows));
 			}
-		};
-		return exec.execute(adapter, true);
+		} while (isContinue);
+
+		return actualDeletedRows;
 	}
+
+	/**
+	 * テナントレコードを削除するSQLExecuterインスタンスを取得する
+	 *
+	 * <p>
+	 * 大量データ場合に一度に大量削除を行わないように deleteRows で指定された件数ずつ削除を行う。
+	 * 件数削除が実施できない場合（limit 句が利用できず、uniqueColumn の指定が無い場合など）はテーブルのテナントID単位で削除を行う。
+	 * </p>
+	 *
+	 * @param tenantId 削除対象テナントID
+	 * @param tableName 削除対象テーブル名
+	 * @param uniqueColumn 削除対象テーブルのユニークカラム。ユニークカラムは指定が無い場合もあり得る（旧バージョン互換テーブル）
+	 * @param deleteRows 削除行数
+	 * @return SQLExecuterインスタンス
+	 */
+	abstract protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String uniqueColumn,
+			int deleteRows);
 
 	protected String[] getTableList() {
 		return TenantRdbConstants.TABLE_LIST;
@@ -353,6 +395,28 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 
 		//存在チェック対象以外は、true
 		return true;
+	}
+
+	/**
+	 * TenantRdbManager パラメータを取得する
+	 * @return TenantRdbManager パラメータ
+	 */
+	protected TenantRdbManagerParameter getTenantRdbManagerParameter() {
+		return this.tenantRdbManagerParameter;
+	}
+
+	/**
+	 * テーブルに対するユニークカラムを取得する
+	 *
+	 * <p>
+	 * テーブルによっては、ユニークカラムの指定が無い場合もあり得る。カラム指定が無い場合はSQL実行側で対処を行う。
+	 * </p>
+	 *
+	 * @param tableName テーブル名
+	 * @return ユニークカラム
+	 */
+	private String getUniqueColumn(String tableName) {
+		return TenantRdbConstants.TABLE_LIST_UNIQUE_COLS.get(tableName);
 	}
 
 	private String getDeleteResourceMessage(String lang, String suffix, Object... args) {

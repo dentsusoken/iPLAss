@@ -44,19 +44,19 @@ public class MySQLTenantRdbManager extends DefaultTenantRdbManager {
 
 	private static Logger logger = LoggerFactory.getLogger(MySQLTenantRdbManager.class);
 
-	private static final String MYSQL_EXIST_TABLE_SQL = "select count(*) from information_schema.tables where table_name = ?";
-	private static final String MYSQL_EXIST_TABLE_SQL_WITH_SCHEMA = "select count(*) from information_schema.tables where table_schema = ? and table_name = ?";
+	private static final String MYSQL_EXIST_TABLE_SQL = "select count(*) from information_schema.tables where lower(table_name) = lower(?)";
+	private static final String MYSQL_EXIST_TABLE_SQL_WITH_SCHEMA = "select count(*) from information_schema.tables where table_schema = ? and lower(table_name) = lower(?)";
 
-	private static final String MYSQL_MAX_PARTITION_SQL = "select partition_name from information_schema.partitions where table_name = ? order by length(partition_name) desc , partition_name desc";
-	private static final String MYSQL_MAX_PARTITION_SQL_WITH_SCHEMA = "select partition_name from information_schema.partitions where table_schema = ? and table_name = ? order by length(partition_name) desc , partition_name desc";
+	private static final String MYSQL_MAX_PARTITION_SQL = "select partition_name from information_schema.partitions where lower(table_name) = lower(?) order by length(partition_name) desc , partition_name desc";
+	private static final String MYSQL_MAX_PARTITION_SQL_WITH_SCHEMA = "select partition_name from information_schema.partitions where table_schema = ? and lower(table_name) = lower(?) order by length(partition_name) desc , partition_name desc";
 
-	private static final String MYSQL_EXIST_PARTITION_SQL = "select count(*) from information_schema.partitions where table_name = ? and partition_name = ?";
-	private static final String MYSQL_EXIST_PARTITION_SQL_WITH_SCHEMA = "select count(*) from information_schema.partitions where table_schema = ? and table_name = ? and partition_name = ?";
+	private static final String MYSQL_EXIST_PARTITION_SQL = "select count(*) from information_schema.partitions where lower(table_name) = lower(?) and lower(partition_name) = lower(?)";
+	private static final String MYSQL_EXIST_PARTITION_SQL_WITH_SCHEMA = "select count(*) from information_schema.partitions where table_schema = ? and lower(table_name) = lower(?) and lower(partition_name) = lower(?)";
 
 	private RdbAdapter adapter;
 
-	public MySQLTenantRdbManager(RdbAdapter adapter) {
-		super(adapter);
+	public MySQLTenantRdbManager(RdbAdapter adapter, TenantRdbManagerParameter parameter) {
+		super(adapter, parameter);
 		this.adapter = adapter;
 	}
 
@@ -446,6 +446,22 @@ public class MySQLTenantRdbManager extends DefaultTenantRdbManager {
 
 	private String getPartitionResourceMessage(String lang, String suffix, Object... args) {
 		return ToolsResourceBundleUtil.resourceString(lang, "tenant.partition." + suffix, args);
+	}
+
+	@Override
+	protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String uniqueColumn,
+			int deleteRows) {
+		return new SqlExecuter<Integer>() {
+			@Override
+			public Integer logic() throws SQLException {
+				String sql = "delete from " + tableName + " where tenant_id = ? limit ?";
+				PreparedStatement ps = getPreparedStatement(sql);
+				ps.setInt(1, tenantId);
+				ps.setInt(2, deleteRows);
+
+				return ps.executeUpdate();
+			}
+		};
 	}
 
 }
