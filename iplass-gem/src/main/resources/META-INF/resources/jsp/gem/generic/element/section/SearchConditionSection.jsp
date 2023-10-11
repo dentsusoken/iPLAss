@@ -1069,7 +1069,21 @@ function detailDatetimeChange(obj, cnt) {
 	var value = obj.value;
 	var ms = dateUtil.newFormatString(value, dateUtil.getServerDatetimeFormat(), "SSS");
 	var datetime = convertFromLocaleDatetimeString(value, dateUtil.getServerDatetimeFormat());
-	$("#" + condKey + " :hidden").attr("value", datetime);
+
+	// 入力されたミリ秒を取得する。
+	var strInputMs = value.replace(/[^0-9]/g, '').substr(14); 
+	// 選択された条件を取得する。
+	var condPredicate = "<%=Constants.DETAIL_COND_PREDICATE%>" + cnt;
+	var valPredicate = document.getElementsByName(condPredicate).item(0).value;
+
+	// ミリ秒が未入力、「以下」又は「より大きい」の場合だけ、ディフォルトで999補完する。
+	if (valPredicate == "<%=Constants.GREATER %>" || valPredicate == "<%=Constants.LESSEREQUALS %>"){
+		if (strInputMs == null || strInputMs == "") {
+			ms = "999";
+		}
+	}
+
+	$("#" + condKey + " :hidden").attr("value", datetime + ms);
 }
 
 $(function() {
