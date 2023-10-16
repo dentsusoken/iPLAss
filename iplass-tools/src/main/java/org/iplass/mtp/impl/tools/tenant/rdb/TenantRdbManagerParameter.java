@@ -30,7 +30,7 @@ package org.iplass.mtp.impl.tools.tenant.rdb;
  */
 public class TenantRdbManagerParameter {
 	/** 削除行数 */
-	private int deleteRows = 1_000_000;
+	private int deleteRows = 10_000;
 
 	/**
 	 * 削除行数を設定します

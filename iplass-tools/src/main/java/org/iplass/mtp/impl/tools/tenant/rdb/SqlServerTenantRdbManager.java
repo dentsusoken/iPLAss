@@ -283,7 +283,7 @@ public class SqlServerTenantRdbManager extends DefaultTenantRdbManager {
 	}
 
 	@Override
-	protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String uniqueColumn,
+	protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String deletionUnitColumns,
 			int deleteRows) {
 		return new SqlExecuter<Integer>() {
 			@Override

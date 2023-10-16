@@ -253,19 +253,19 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 	private void deleteTenantTables(TenantDeleteParameter param, LogHandler logHandler) {
 
 		for (String tableName : getTableList()) {
-			String uniqueColumn = getUniqueColumn(tableName);
+			String deletionUnitColumns = getDeletionUnitColumns(tableName);
 			if (isStorageSpaceTable(tableName)) {
 				//StorageSpaceの場合、Postfix分Loop
 				for (String postfix : getStorageSpacePostfix(false)) {
 					String storageSpaceTableName = tableName + postfix;
 					if (isExistsTable(storageSpaceTableName, true)) {
-						int row = deleteTenantRecords(param, storageSpaceTableName, uniqueColumn, logHandler);
+						int row = deleteTenantRecords(param, storageSpaceTableName, deletionUnitColumns, logHandler);
 						logHandler.info(getDeleteResourceMessage(param.getLoggerLanguage(), "deletedTableMsg", storageSpaceTableName, row));
 					}
 				}
 			} else {
 				if (isExistsTable(tableName, false)) {
-					int row = deleteTenantRecords(param, tableName, uniqueColumn, logHandler);
+					int row = deleteTenantRecords(param, tableName, deletionUnitColumns, logHandler);
 					logHandler.info(getDeleteResourceMessage(param.getLoggerLanguage(), "deletedTableMsg", tableName, row));
 				}
 			}
@@ -274,19 +274,26 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 
 	/**
 	 * テナントレコードを削除する
+	 *
+	 * <p>
+	 * 削除単位カラムは PostgreSQL タイプの削除時のみ利用する変数。
+	 * </p>
+	 *
+	 * @see #getTenantRecordDeleteExecuter(int, String, String, int)
 	 * @param param テナント削除パラメーター
 	 * @param tableName 物理テーブル名
-	 * @param uniqueColumn 物理テーブルのユニークカラム ( column1, column2, .... )
+	 * @param deletionUnitColumns 物理テーブルの削除単位カラム (値例： column1, column2, .... )
 	 * @param logHandler ログハンドラ
 	 * @return レコード削除件数
 	 */
-	private int deleteTenantRecords(TenantDeleteParameter param, String tableName, String uniqueColumn, LogHandler logHandler) {
+	private int deleteTenantRecords(TenantDeleteParameter param, String tableName, String deletionUnitColumns,
+			LogHandler logHandler) {
 		int actualDeletedRows = 0;
 		int deleteRows = getTenantRdbManagerParameter().getDeleteRows();
 		boolean isContinue = true;
 
-		SqlExecuter<Integer> tenantRecordDeleteExecuter = getTenantRecordDeleteExecuter(param.getTenantId(), tableName, uniqueColumn,
-				deleteRows);
+		SqlExecuter<Integer> tenantRecordDeleteExecuter = getTenantRecordDeleteExecuter(param.getTenantId(), tableName,
+				deletionUnitColumns, deleteRows);
 
 		do {
 			// トランザクション開始し、削除実行
@@ -313,16 +320,26 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 	 *
 	 * <p>
 	 * 大量データ場合に一度に大量削除を行わないように deleteRows で指定された件数ずつ削除を行う。
-	 * 件数削除が実施できない場合（limit 句が利用できず、uniqueColumn の指定が無い場合など）はテーブルのテナントID単位で削除を行う。
+	 * 件数削除が実施できない場合（limit 句が利用できず、deletionUnitColumns の指定が無い場合。実質、PostgreSQL のみ）はテーブルのテナントID単位で削除を行う。
+	 * </p>
+	 *
+	 * <p>
+	 * 削除時の件数指定方法（PostgreSQL のみ DELETE 時に件数指定ができない）
+	 * <ul>
+	 * <li>MySQL: <code>delete from ${TABLE_NAME} where tenant_id = ${TENANT_ID} limit ${DELETE_NUMBER}</code></li>
+	 * <li>Oracle: <code>delete from ${TABLE_NAME} where tenant_id = ${TENANT_ID} and rownum &lt;= ${DELETE_NUMBER}</code></li>
+	 * <li>PostgreSQL: <code>delete from ${TABLE_NAME} where ( ${DELETION_UNIT_COLS} ) in ( select ${DELETION_UNIT_COLS} from ${TABLE_NAME} where tenant_id = ${TENANT_ID} limit ${DELETE_NUMBER} )</code></li>
+	 * <li>SQL Server: <code>delete top(${DELETE_NUMBER}) from ${TABLE_NAME} where tenant_id = ${TENANT_ID}</code></li>
+	 * </ul>
 	 * </p>
 	 *
 	 * @param tenantId 削除対象テナントID
 	 * @param tableName 削除対象テーブル名
-	 * @param uniqueColumn 削除対象テーブルのユニークカラム。ユニークカラムは指定が無い場合もあり得る（旧バージョン互換テーブル）
+	 * @param deletionUnitColumns 削除対象テーブルの削除単位カラム。削除単位カラム空文字が設定される場合もある（旧バージョン互換テーブル）。{@link #getDeletionUnitColumns(String)} で取得する。
 	 * @param deleteRows 削除行数
 	 * @return SQLExecuterインスタンス
 	 */
-	abstract protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String uniqueColumn,
+	abstract protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String deletionUnitColumns,
 			int deleteRows);
 
 	protected String[] getTableList() {
@@ -406,17 +423,17 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 	}
 
 	/**
-	 * テーブルに対するユニークカラムを取得する
+	 * テーブル削除時の削除単位カラムを取得する
 	 *
 	 * <p>
-	 * テーブルによっては、ユニークカラムの指定が無い場合もあり得る。カラム指定が無い場合はSQL実行側で対処を行う。
+	 * 削除単位カラムはユニークキーに近しいカラムを指定する。テーブルによってはカラムの指定が無い場合（空文字）もあり得る。
 	 * </p>
 	 *
 	 * @param tableName テーブル名
-	 * @return ユニークカラム
+	 * @return 削除単位カラム
 	 */
-	private String getUniqueColumn(String tableName) {
-		return TenantRdbConstants.TABLE_LIST_UNIQUE_COLS.get(tableName);
+	private String getDeletionUnitColumns(String tableName) {
+		return TenantRdbConstants.TABLE_LIST_DELETION_UNIT_COLS.get(tableName);
 	}
 
 	private String getDeleteResourceMessage(String lang, String suffix, Object... args) {
