@@ -33,13 +33,13 @@ import org.iplass.mtp.impl.tools.tenant.log.LogHandler;
 
 public class OracleTenantRdbManager extends DefaultTenantRdbManager {
 
-	private static final String ORACLE_EXIST_TABLE_SQL = "select count(*) from user_tables where lower(table_name) = ?";
-	private static final String ORACLE_EXIST_SYNONYM_SQL = "select count(*) from user_synonyms where lower(synonym_name) = ?";
+	private static final String ORACLE_EXIST_TABLE_SQL = "select count(*) from user_tables where lower(table_name) = lower(?)";
+	private static final String ORACLE_EXIST_SYNONYM_SQL = "select count(*) from user_synonyms where lower(synonym_name) = lower(?)";
 
 	private RdbAdapter adapter;
 
-	public OracleTenantRdbManager(RdbAdapter adapter) {
-		super(adapter);
+	public OracleTenantRdbManager(RdbAdapter adapter, TenantRdbManagerParameter parameter) {
+		super(adapter, parameter);
 		this.adapter = adapter;
 	}
 
@@ -100,4 +100,19 @@ public class OracleTenantRdbManager extends DefaultTenantRdbManager {
 		};
 	}
 
+	@Override
+	protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String deletionUnitColumns,
+			int deleteRows) {
+		return new SqlExecuter<Integer>() {
+			@Override
+			public Integer logic() throws SQLException {
+				String sql = "delete from " + tableName + " where tenant_id = ? and rownum <= ?";
+				PreparedStatement ps = getPreparedStatement(sql);
+				ps.setInt(1, tenantId);
+				ps.setInt(2, deleteRows);
+
+				return ps.executeUpdate();
+			}
+		};
+	}
 }

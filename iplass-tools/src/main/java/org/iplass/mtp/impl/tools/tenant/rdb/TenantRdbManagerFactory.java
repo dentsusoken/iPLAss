@@ -20,8 +20,10 @@
 
 package org.iplass.mtp.impl.tools.tenant.rdb;
 
+import java.sql.SQLException;
 import java.util.List;
 
+import org.iplass.mtp.impl.rdb.SqlExecuter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
 import org.iplass.mtp.impl.rdb.oracle.OracleRdbAdapter;
@@ -33,25 +35,25 @@ import org.iplass.mtp.impl.tools.tenant.log.LogHandler;
 
 public class TenantRdbManagerFactory {
 
-	public TenantRdbManager createManager(RdbAdapter adapter) {
+	public TenantRdbManager createManager(RdbAdapter adapter, TenantRdbManagerParameter parameter) {
 
 		if (adapter instanceof OracleRdbAdapter) {
-			return new OracleTenantRdbManager(adapter);
+			return new OracleTenantRdbManager(adapter, parameter);
 		} else if (adapter instanceof MysqlRdbAdaptor) {
-			return new MySQLTenantRdbManager(adapter);
+			return new MySQLTenantRdbManager(adapter, parameter);
 		} else if (adapter instanceof SqlServerRdbAdapter) {
-			return new SqlServerTenantRdbManager(adapter);
+			return new SqlServerTenantRdbManager(adapter, parameter);
 		} else if (adapter instanceof PostgreSQLRdbAdapter) {
-			return new PostgreSQLTenantRdbManager(adapter);
+			return new PostgreSQLTenantRdbManager(adapter, parameter);
 		} else {
-			return new EmptyTenantRdbManager(adapter);
+			return new EmptyTenantRdbManager(adapter, parameter);
 		}
 	}
 
 	private static class EmptyTenantRdbManager extends DefaultTenantRdbManager {
 
-		public EmptyTenantRdbManager(RdbAdapter adapter) {
-			super(adapter);
+		public EmptyTenantRdbManager(RdbAdapter adapter, TenantRdbManagerParameter parameter) {
+			super(adapter, parameter);
 		}
 
 		@Override
@@ -77,6 +79,17 @@ public class TenantRdbManagerFactory {
 		@Override
 		protected boolean isExistsTable(String tableName) {
 			return false;
+		}
+
+		@Override
+		protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String uniqueColumn,
+				int deleteRows) {
+			return new SqlExecuter<Integer>() {
+				@Override
+				public Integer logic() throws SQLException {
+					return 0;
+				}
+			};
 		}
 
 	}
