@@ -29,9 +29,13 @@ import java.util.stream.Stream;
 
 public interface TenantRdbConstants {
 
-	/** テーブルリストとテーブルのユニークキー。ユニークキーが不明な場合は空文字を設定。（t_tenant, t_account を除く） */
+	/**
+	 * テーブルリストとテーブルの削除単位カラム。削除単位カラムが不明な場合は空文字を設定。（t_tenant, t_account を除く）
+	 * 削除単位カラムは、削除時に件数指定が不可能な場合に使用する。実質利用はPostgreSQLのみ利用するカラムとなっている。
+	 */
 	@SuppressWarnings("serial")
-	public static final Map<String, String> TABLE_LIST_UNIQUE_COLS = Collections.unmodifiableMap(new HashMap<String, String>() {
+	public static final Map<String, String> TABLE_LIST_DELETION_UNIT_COLS = Collections
+			.unmodifiableMap(new HashMap<String, String>() {
 		{
 			put("counter", "tenant_id, cnt_name, inc_unit_key");
 			put("crawl_log", "tenant_id, obj_def_id, obj_def_ver");
@@ -77,7 +81,8 @@ public interface TenantRdbConstants {
 	});
 
 	/** テーブルリスト（t_tenant、t_accountを除く） */
-	public static final String[] TABLE_LIST = TABLE_LIST_UNIQUE_COLS.keySet().toArray(new String[TABLE_LIST_UNIQUE_COLS.size()]);
+	public static final String[] TABLE_LIST = TABLE_LIST_DELETION_UNIT_COLS.keySet()
+			.toArray(new String[TABLE_LIST_DELETION_UNIT_COLS.size()]);
 
 	/**
 	 * <p>Partition除外テーブルリスト</p>

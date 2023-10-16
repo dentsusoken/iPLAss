@@ -28,9 +28,9 @@
 		
 		<!-- TenartRdbManagerパラメータ -->
 		<property name="tenantRdbManagerParameter" class="org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbManagerParameter">
-			<!-- テナント削除時のレコード削除件数。デフォルト値は 1,000,000 -->
+			<!-- テナント削除時のレコード削除件数。デフォルト値は 10,000 -->
 			<!--
-			<property name="deleteRows" value="1000000" />
+			<property name="deleteRows" value="10000" />
 			-->
 		</property>
 	</service>

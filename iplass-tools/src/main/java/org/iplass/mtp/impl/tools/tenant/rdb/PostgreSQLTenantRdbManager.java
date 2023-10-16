@@ -444,16 +444,16 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 	}
 
 	@Override
-	protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String uniqueColumn,
+	protected SqlExecuter<Integer> getTenantRecordDeleteExecuter(int tenantId, String tableName, String deletionUnitColumns,
 			int deleteRows) {
 
-		if (StringUtil.isNotEmpty(uniqueColumn)) {
+		if (StringUtil.isNotEmpty(deletionUnitColumns)) {
 			// ユニークカラムの指定がある場合のSQLExecuter
 			return new SqlExecuter<Integer>() {
 				@Override
 				public Integer logic() throws SQLException {
-					String sql = "delete from " + tableName + " where (" + uniqueColumn + ") in (select " + uniqueColumn + " from "
-							+ tableName + " where tenant_id = ? limit ?)";
+					String sql = "delete from " + tableName + " where (" + deletionUnitColumns + ") in (select " + deletionUnitColumns
+							+ " from " + tableName + " where tenant_id = ? limit ?)";
 					PreparedStatement ps = getPreparedStatement(sql);
 					ps.setInt(1, tenantId);
 					ps.setInt(2, deleteRows);
