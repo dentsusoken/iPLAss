@@ -23,6 +23,7 @@ package org.iplass.gem.command.generic.search.condition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.search.SearchConditionDetail;
@@ -46,6 +47,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -207,6 +209,16 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 				//nestPropertyがない(参照プロパティ自体)か参照のnestPropertyならnameで検索
 				Object conditionValue = convertDetailValue(detail);
 				propName = propName + "." + "name";
+
+				// 詳細検索で表示ラベルとして扱うプロパティを検索条件に利用する
+				GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+				if (service.isUseDisplayLabelItemInDetailSearch()) {
+					String strDisplayLabelItem = ((ReferencePropertyEditor)getReferencePropertyEditor()).getDisplayLabelItem();
+					boolean blIsUseSearchDialog = ((ReferencePropertyEditor)getReferencePropertyEditor()).isUseSearchDialog();
+					if(!strDisplayLabelItem.isBlank() && blIsUseSearchDialog) {
+						propName = detail.getPropertyName() + "." + strDisplayLabelItem;
+					}
+				}
 
 				if (Constants.EQUALS.equals(detail.getPredicate())) {
 					conditions.add(new Equals(propName, conditionValue));
