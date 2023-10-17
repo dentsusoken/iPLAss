@@ -213,10 +213,11 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 				// 詳細検索で表示ラベルとして扱うプロパティを検索条件に利用する
 				GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 				if (service.isUseDisplayLabelItemInDetailSearch()) {
-					String strDisplayLabelItem = ((ReferencePropertyEditor)getReferencePropertyEditor()).getDisplayLabelItem();
-					boolean blIsUseSearchDialog = ((ReferencePropertyEditor)getReferencePropertyEditor()).isUseSearchDialog();
-					if(!strDisplayLabelItem.isBlank() && blIsUseSearchDialog) {
-						propName = detail.getPropertyName() + "." + strDisplayLabelItem;
+					String displayLabelItem = getReferencePropertyEditor().getDisplayLabelItem();
+					boolean isUseSearchDialog = getReferencePropertyEditor().isUseSearchDialog();
+
+					if(displayLabelItem != null && !displayLabelItem.isBlank() && isUseSearchDialog) {
+						propName = detail.getPropertyName() + "." + displayLabelItem;
 					}
 				}
 
