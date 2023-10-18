@@ -131,8 +131,8 @@
 		<!-- 汎用検索のCSVダウンロードのフッター文言 -->
 		<property name="csvDownloadFooter" value=""/>
 
-		<!-- 詳細検索で表示ラベルとして扱うプロパティを検索条件に利用するか -->
-		<property name="useDisplayLabelItemInDetailSearch" value="false"/>
+		<!-- 検索処理で表示ラベルとして扱うプロパティを検索条件に利用するか -->
+		<property name="useDisplayLabelItemInSearch" value="false"/>
 
 		<!-- CSVアップロード非同期設定 -->
 		<!-- true(非同期)を設定する場合は、 RdbQueueServiceのuseQueueプロパティをtrueに設定してください。 -->

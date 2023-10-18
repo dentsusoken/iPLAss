@@ -132,6 +132,21 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 						conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
 					}
 				}
+			} else if ((editor.getDisplayType() == ReferenceDisplayType.LINK && !editor.isUseSearchDialog())
+					 || (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && !editor.isUseSearchDialog())){
+				// 検索処理で表示ラベルとして扱うプロパティを検索条件に利用する
+				GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+				if (service.isUseDisplayLabelItemInSearch()) {
+					String displayLabelItem = getReferencePropertyEditor().getDisplayLabelItem();
+
+					if(displayLabelItem != null && !displayLabelItem.isBlank()) {
+						// 表示ラベルの部分一致
+						Entity entity = (Entity) value;
+						if (entity.getName() != null && !entity.getName().isEmpty()) {
+							conditions.add(new Like(getPropertyName() + "." + displayLabelItem, entity.getName(), Like.MatchPattern.PARTIAL));
+						}
+					}
+				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.TREE) {
 				Entity[] list = (Entity[]) value;
 				if (list != null) {
@@ -210,14 +225,19 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 				Object conditionValue = convertDetailValue(detail);
 				propName = propName + "." + "name";
 
-				// 詳細検索で表示ラベルとして扱うプロパティを検索条件に利用する
+				// 検索処理で表示ラベルとして扱うプロパティを検索条件に利用する
 				GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
-				if (service.isUseDisplayLabelItemInDetailSearch()) {
+				if (service.isUseDisplayLabelItemInSearch()) {
 					String displayLabelItem = getReferencePropertyEditor().getDisplayLabelItem();
 					boolean isUseSearchDialog = getReferencePropertyEditor().isUseSearchDialog();
 
-					if(displayLabelItem != null && !displayLabelItem.isBlank() && isUseSearchDialog) {
-						propName = detail.getPropertyName() + "." + displayLabelItem;
+					if(displayLabelItem != null && !displayLabelItem.isBlank()) {
+						if(isUseSearchDialog) {
+							propName = detail.getPropertyName() + "." + displayLabelItem;
+						} else if ((getReferencePropertyEditor().getDisplayType() == ReferenceDisplayType.LINK && !isUseSearchDialog)
+								 || (getReferencePropertyEditor().getDisplayType() == ReferenceDisplayType.UNIQUE && !isUseSearchDialog)){
+							propName = detail.getPropertyName() + "." + displayLabelItem;
+						}
 					}
 				}
 
