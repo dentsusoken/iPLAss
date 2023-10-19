@@ -125,3 +125,10 @@ https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
 商用ライセンスをご希望の方は、 下記リンクよりお問い合わせください。
 
 https://www.isid.co.jp/solution/iPLAss.html
+
+## Work with us
+
+iPLAssを一緒に開発していただける仲間を募集中です。
+ご興味ある方は、是非下記リンクからご応募ください！
+
+https://groupcareers.isid.co.jp/pgisid/u/job.phtml?job_code=781&company_code=1[ISIDグループ キャリア採用ページ 製品・プラットフォーム開発エンジニア]
