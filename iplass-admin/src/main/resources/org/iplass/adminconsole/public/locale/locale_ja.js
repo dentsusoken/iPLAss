@@ -1838,6 +1838,8 @@ LocaleInfo.generic_editor_DateRangePropertyEditor_editorDisplaNameKey = "プロ�
 LocaleInfo.generic_editor_DateRangePropertyEditor_editorDescriptionKey = "プロパティの型にあわせたプロパティエディタを選択してください。";
 LocaleInfo.generic_editor_DateRangePropertyEditor_inputNullFromDisplayNameKey = "Fromの未入力を許容";
 LocaleInfo.generic_editor_DateRangePropertyEditor_inputNullFromDescriptionKey = "編集画面：Fromの入力欄の未入力を許容します。<br>検索条件：Fromが未入力のデータを検索対象に追加します。";
+LocaleInfo.generic_editor_DateRangePropertyEditor_fromConditionAsLesserEqualDisplayNameKey = "Fromプロパティに対して値を含めて検索する";
+LocaleInfo.generic_editor_DateRangePropertyEditor_fromConditionAsLesserEqualDescriptionKey = "Fromプロパティに対して値を含めて検索する（<=）かを設定します。";
 LocaleInfo.generic_editor_DateRangePropertyEditor_toPropertyNameDisplaNameKey = "Toプロパティ名";
 LocaleInfo.generic_editor_DateRangePropertyEditor_toPropertyNameDescriptionKey = "このプロパティと組み合わせて表示する他のプロパティを指定します。<br>指定するプロパティの型はこのプロパティに合わせて下さい。";
 LocaleInfo.generic_editor_DateRangePropertyEditor_toEditorDisplaNameKey = "Toプロパティエディタ";
@@ -1847,6 +1849,8 @@ LocaleInfo.generic_editor_DateRangePropertyEditor_toPropertyDisplayNameDescripti
 LocaleInfo.generic_editor_DateRangePropertyEditor_localizedToPropertyDisplayNameListDisplaNameKey = "詳細検索でのToプロパティ表示名の多言語設定";
 LocaleInfo.generic_editor_DateRangePropertyEditor_inputNullToDisplayNameKey = "Toの未入力を許容";
 LocaleInfo.generic_editor_DateRangePropertyEditor_inputNullToDescriptionKey = "編集画面：Toの入力欄の未入力を許容します。<br>検索条件：Toが未入力のデータを検索対象に追加します。";
+LocaleInfo.generic_editor_DateRangePropertyEditor_toConditionAsGreaterEqualDisplayNameKey = "Toプロパティに対して値を含めて検索する";
+LocaleInfo.generic_editor_DateRangePropertyEditor_toConditionAsGreaterEqualDescriptionKey = "Toプロパティに対して値を含めて検索する（>=）かを設定します。";
 LocaleInfo.generic_editor_DateRangePropertyEditor_equivalentInputDisplayNameKey = "同値を許容";
 LocaleInfo.generic_editor_DateRangePropertyEditor_equivalentInputDescriptionKey = "編集画面：FromとToに同値が設定されるのを許容します。<br>検索条件：FromとToが同値のデータを検索対象に追加します。";
 LocaleInfo.generic_editor_DateRangePropertyEditor_errorMessageNameDisplaNameKey = "エラーメッセージ";
@@ -1936,6 +1940,8 @@ LocaleInfo.generic_editor_NumericRangePropertyEditor_editorDisplaNameKey = "プ�
 LocaleInfo.generic_editor_NumericRangePropertyEditor_editorDescriptionKey = "プロパティの型にあわせたプロパティエディタを選択してください。";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullFromDisplayNameKey = "Fromの未入力を許容";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullFromDescriptionKey = "編集画面：Fromの入力欄の未入力を許容します。<br>検索条件：Fromが未入力のデータを検索対象に追加します。";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_fromConditionAsLesserEqualDisplayNameKey = "Fromプロパティに対して値を含めて検索する";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_fromConditionAsLesserEqualDescriptionKey = "Fromプロパティに対して値を含めて検索する（<=）かを設定します。";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyNameDisplaNameKey = "Toプロパティ名";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyNameDescriptionKey = "このプロパティと組み合わせて表示する他のプロパティを指定します。<br>指定するプロパティの型はこのプロパティに合わせて下さい。";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDisplaNameKey = "詳細検索でのToプロパティ表示名";
@@ -1945,6 +1951,8 @@ LocaleInfo.generic_editor_NumericRangePropertyEditor_toEditorDisplaNameKey = "To
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toEditorDescriptionKey = "プロパティの型にあわせたプロパティエディタを選択してください。<br>未指定の場合、プロパティエディタの設定が有効になります。";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullToDisplayNameKey = "Toの未入力を許容";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullToDescriptionKey = "編集画面：Toの入力欄の未入力を許容します。<br>検索条件：Toが未入力のデータを検索対象に追加します。";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_toConditionAsGreaterEqualDisplayNameKey = "Toプロパティに対して値を含めて検索する";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_toConditionAsGreaterEqualDescriptionKey = "Toプロパティに対して値を含めて検索する（>=）かを設定します。";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_equivalentInputDisplayNameKey = "同値を許容";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_equivalentInputDescriptionKey = "編集画面：FromとToに同値が設定されるのを許容します。<br>検索条件：FromとToが同値のデータを検索対象に追加します。";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_errorMessageNameDisplaNameKey = "エラーメッセージ";

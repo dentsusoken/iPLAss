@@ -93,6 +93,20 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	)
 	private boolean inputNullFrom;
 
+	/** Fromプロパティに対して値を含めて検索する*/
+	@MetaFieldInfo(
+			displayName="Fromプロパティに対して値を含めて検索する",
+			displayNameKey="generic_editor_NumericRangePropertyEditor_fromConditionAsLesserEqualDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=108,
+			description="Fromプロパティに対して値を含めて検索するかを設定します。",
+			descriptionKey="generic_editor_NumericRangePropertyEditor_fromConditionAsLesserEqualDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private boolean fromConditionAsLesserEqual = true;
+
 	/** Toプロパティ名 */
 	@MetaFieldInfo(displayName="Toプロパティ名",
 			displayNameKey="generic_editor_NumericRangePropertyEditor_toPropertyNameDisplaNameKey",
@@ -168,6 +182,20 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	)
 	private boolean inputNullTo;
 
+	/** Toプロパティに対して値を含めて検索する*/
+	@MetaFieldInfo(
+			displayName="Toプロパティに対して値を含めて検索する",
+			displayNameKey="generic_editor_NumericRangePropertyEditor_toConditionAsGreaterEqualDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=133,
+			description="Toプロパティに対して値を含めて検索するかを設定します。",
+			descriptionKey="generic_editor_NumericRangePropertyEditor_toConditionAsGreaterEqualDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private boolean toConditionAsGreaterEqual;
+
 	/** 同値の入力を許容するか*/
 	@MetaFieldInfo(
 			displayName="同値の入力を許可",
@@ -232,6 +260,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	/**
 	 * @return editor
 	 */
+	@Override
 	public PropertyEditor getEditor() {
 		return editor;
 	}
@@ -258,8 +287,25 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	}
 
 	/**
+	 * Fromプロパティに対して値を含めて検索するかを取得します。
+	 * @return Fromプロパティに対して値を含めて検索するか
+	 */
+	public boolean isFromConditionAsLesserEqual() {
+		return fromConditionAsLesserEqual;
+	}
+
+	/**
+	 * Fromプロパティに対して値を含めて検索するかを設定します。
+	 * @param fromConditionAsLesserEqual Fromプロパティに対して値を含めて検索するか
+	 */
+	public void setFromConditionAsLesserEqual(boolean fromConditionAsLesserEqual) {
+		this.fromConditionAsLesserEqual = fromConditionAsLesserEqual;
+	}
+
+	/**
 	 * @return toEditor
 	 */
+	@Override
 	public PropertyEditor getToEditor() {
 		return toEditor;
 	}
@@ -274,6 +320,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	/**
 	 * @return toPropertyName
 	 */
+	@Override
 	public String getToPropertyName() {
 		return toPropertyName;
 	}
@@ -288,6 +335,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	/**
 	 * @return toPropertyDisplayName
 	 */
+	@Override
 	public String getToPropertyDisplayName() {
 		return toPropertyDisplayName;
 	}
@@ -303,6 +351,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	 * Toプロパティ表示名の多言語設定情報を取得します。
 	 * @return リスト
 	 */
+	@Override
 	public List<LocalizedStringDefinition> getLocalizedToPropertyDisplayNameList() {
 		return localizedToPropertyDisplayNameList;
 	}
@@ -330,6 +379,22 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	}
 
 	/**
+	 * Toプロパティに対して値を含めて検索するかを取得します。
+	 * @return Toプロパティに対して値を含めて検索するか
+	 */
+	public boolean isToConditionAsGreaterEqual() {
+		return toConditionAsGreaterEqual;
+	}
+
+	/**
+	 * Toプロパティに対して値を含めて検索するかを設定します。
+	 * @param toConditionAsGreaterEqual Toプロパティに対して値を含めて検索するか
+	 */
+	public void setToConditionAsGreaterEqual(boolean toConditionAsGreaterEqual) {
+		this.toConditionAsGreaterEqual = toConditionAsGreaterEqual;
+	}
+
+	/**
 	 * @return equivalentInput
 	 */
 	public boolean isEquivalentInput() {
@@ -346,6 +411,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	/**
 	 * @return errorMessage
 	 */
+	@Override
 	public String getErrorMessage() {
 		return errorMessage;
 	}
@@ -360,6 +426,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	/**
 	 * @return localizedErrorMessageList
 	 */
+	@Override
 	public List<LocalizedStringDefinition> getLocalizedErrorMessageList() {
 		return localizedErrorMessageList;
 	}
