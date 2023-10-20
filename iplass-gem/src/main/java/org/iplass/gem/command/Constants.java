@@ -289,6 +289,8 @@ public class Constants {
 
 	//リクエストのattributeに設定している項目
 	public static final String VALID_ERROR_LIST = "validErrorList";
+	/** エラー画面のタイトル */
+	public static final String ERROR_TITLE = "errorTitle";
 
 	//アイテム表示判定スクリプト用
 	public static final String DISPLAY_SCRIPT_ENTITY_OID = "entityOid";
