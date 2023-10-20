@@ -22,6 +22,7 @@
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
+<%@ page import="java.util.Optional"%>
 <%@ page import="org.iplass.mtp.web.WebRequestConstants"%>
 <%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
@@ -30,6 +31,8 @@
 <%
 	String selectType = request.getParameter(Constants.SELECT_TYPE);
 
+	String errorTitle = Optional.ofNullable((String) request.getAttribute(Constants.ERROR_TITLE))
+			.orElse(GemResourceBundleUtil.resourceString("generic.error.errOccurred"));
 	Exception e = (Exception) request.getAttribute(WebRequestConstants.EXCEPTION);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
 	if (message == null) {
@@ -50,7 +53,7 @@
 <span>
 <i class="far fa-circle default-icon"></i>
 </span>
-${m:rs("mtp-gem-messages", "generic.error.errOccurred")}
+<c:out value="<%=errorTitle%>"/>
 </h2>
 <table class="tbl-error mb10">
 <tbody>
