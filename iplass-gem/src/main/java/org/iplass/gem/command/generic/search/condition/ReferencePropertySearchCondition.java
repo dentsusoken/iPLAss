@@ -174,9 +174,6 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 			} else {
 				Entity entity = (Entity) value;
 				if (entity.getName() != null && !entity.getName().isEmpty()) {
-					//conditions.add(new Like(getPropertyName() + ".name", "%" + StringUtil.escapeEqlForLike(entity.getName()) + "%"));
-					//conditions.add(new Like(getPropertyName() + "." + Entity.NAME, entity.getName(), Like.MatchPattern.PARTIAL));
-
 					// 検索処理で表示ラベルとして扱うプロパティを検索条件に利用する
 					GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 					String displayLabelItem = getReferencePropertyEditor().getDisplayLabelItem();
@@ -218,13 +215,14 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 			if (nestProperty == null || nestProperty instanceof ReferenceProperty) {
 				//nestPropertyがない(参照プロパティ自体)か参照のnestPropertyならnameで検索
 				Object conditionValue = convertDetailValue(detail);
-				propName = propName + "." + "name";
-
-				//検索処理で表示ラベルとして扱うプロパティを検索条件に利用する
+				
 				GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 				String displayLabelItem = getReferencePropertyEditor().getDisplayLabelItem();
 				if (service.isUseDisplayLabelItemInSearch() && displayLabelItem != null && !displayLabelItem.isBlank()) {
-					propName = detail.getPropertyName() + "." + displayLabelItem;
+					//表示ラベルとして扱うプロパティが設定されたら検索条件に利用する
+					propName = propName + "." + displayLabelItem;
+				} else {
+					propName = propName + "." + Entity.NAME;
 				}
 
 				if (Constants.EQUALS.equals(detail.getPredicate())) {
