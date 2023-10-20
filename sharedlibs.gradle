@@ -80,8 +80,7 @@ ext {
 		
 		'com.googlecode.gwtupload:gwtupload': '1.0.3',
 		
-		'org.infinispan:infinispan-core': '9.1.6.Final',
-		'org.jboss.marshalling:jboss-marshalling-osgi': '2.0.6.Final',
+		'org.infinispan:infinispan-core': '9.4.24.Final',
 		
 		'io.lettuce:lettuce-core': '6.2.5.RELEASE',
 		
