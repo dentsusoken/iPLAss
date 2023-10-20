@@ -105,6 +105,9 @@ public class GemConfigService implements Service {
 	/** 汎用検索のCSVダウンロードのフッター文言 */
 	private String csvDownloadFooter;
 
+	/** 検索処理で表示ラベルとして扱うプロパティを検索条件に利用するか */
+	private boolean useDisplayLabelItemInSearch;
+
 	/** プルダウンの「選択してください」を表示するか */
 	private boolean showPulldownPleaseSelectLabel;
 
@@ -202,6 +205,8 @@ public class GemConfigService implements Service {
 		if (csvDownloadFooter == null) {
 			csvDownloadFooter = "";
 		}
+
+		useDisplayLabelItemInSearch = config.getValue("useDisplayLabelItemInSearch", Boolean.class, false);
 
 		showPulldownPleaseSelectLabel = config.getValue("showPulldownPleaseSelectLabel", Boolean.class, true);
 
@@ -425,6 +430,14 @@ public class GemConfigService implements Service {
 	 */
 	public String getCsvDownloadFooter() {
 		return csvDownloadFooter;
+	}
+
+	/**
+	 * 検索処理で表示ラベルとして扱うプロパティを検索条件に利用するかを取得します。
+	 * @return 検索処理で表示ラベルとして扱うプロパティを検索条件に利用するか
+	 */
+	public boolean isUseDisplayLabelItemInSearch() {
+		return useDisplayLabelItemInSearch;
 	}
 
 	/**

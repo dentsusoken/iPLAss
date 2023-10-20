@@ -23,6 +23,7 @@ package org.iplass.gem.command.generic.search.condition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.search.SearchConditionDetail;
@@ -46,6 +47,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -170,11 +172,18 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 					}
 				}
 			} else {
-				//名前の部分一致
 				Entity entity = (Entity) value;
 				if (entity.getName() != null && !entity.getName().isEmpty()) {
-					//conditions.add(new Like(getPropertyName() + ".name", "%" + StringUtil.escapeEqlForLike(entity.getName()) + "%"));
-					conditions.add(new Like(getPropertyName() + "." + Entity.NAME, entity.getName(), Like.MatchPattern.PARTIAL));
+					// 検索処理で表示ラベルとして扱うプロパティを検索条件に利用する
+					GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+					String displayLabelItem = getReferencePropertyEditor().getDisplayLabelItem();
+					if (service.isUseDisplayLabelItemInSearch() && displayLabelItem != null && !displayLabelItem.isBlank()) {
+						//表示ラベルの部分一致
+						conditions.add(new Like(getPropertyName() + "." + displayLabelItem, entity.getName(), Like.MatchPattern.PARTIAL));
+					} else {
+						//名前の部分一致
+						conditions.add(new Like(getPropertyName() + "." + Entity.NAME, entity.getName(), Like.MatchPattern.PARTIAL));
+					}
 				}
 			}
 		}
@@ -206,7 +215,15 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 			if (nestProperty == null || nestProperty instanceof ReferenceProperty) {
 				//nestPropertyがない(参照プロパティ自体)か参照のnestPropertyならnameで検索
 				Object conditionValue = convertDetailValue(detail);
-				propName = propName + "." + "name";
+				
+				GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+				String displayLabelItem = getReferencePropertyEditor().getDisplayLabelItem();
+				if (service.isUseDisplayLabelItemInSearch() && displayLabelItem != null && !displayLabelItem.isBlank()) {
+					//表示ラベルとして扱うプロパティが設定されたら検索条件に利用する
+					propName = propName + "." + displayLabelItem;
+				} else {
+					propName = propName + "." + Entity.NAME;
+				}
 
 				if (Constants.EQUALS.equals(detail.getPredicate())) {
 					conditions.add(new Equals(propName, conditionValue));
