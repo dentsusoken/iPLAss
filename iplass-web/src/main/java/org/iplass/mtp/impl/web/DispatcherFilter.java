@@ -117,6 +117,7 @@ public class DispatcherFilter implements Filter {
 				if (logger.isDebugEnabled()) {
 					logger.debug("can not determine tenant.URL=" + req.getServletPath());
 				}
+				ExecuteContext.finContext();
 				res.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
