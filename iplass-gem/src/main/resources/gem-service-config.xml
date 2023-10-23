@@ -134,6 +134,9 @@
 		<!-- 検索処理で表示ラベルとして扱うプロパティを検索条件に利用するか -->
 		<property name="useDisplayLabelItemInSearch" value="false"/>
 
+		<!-- CSVダウンロード処理で表示ラベルとして扱うプロパティを出力するか -->
+		<property name="useDisplayLabelItemInCsvDownload" value="false"/>
+
 		<!-- CSVアップロード非同期設定 -->
 		<!-- true(非同期)を設定する場合は、 RdbQueueServiceのuseQueueプロパティをtrueに設定してください。 -->
 		<property name="csvUploadAsync" value="false"/>
