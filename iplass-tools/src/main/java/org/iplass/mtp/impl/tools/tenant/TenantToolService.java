@@ -39,6 +39,7 @@ import org.iplass.mtp.impl.tools.tenant.create.TenantCreateProcess;
 import org.iplass.mtp.impl.tools.tenant.log.LogHandler;
 import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbManager;
 import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbManagerFactory;
+import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbManagerParameter;
 import org.iplass.mtp.impl.util.InternalDateUtil;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -70,7 +71,6 @@ public class TenantToolService implements Service {
 
 	private TenantRdbManager rdbManager;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
 		tenantContextService = config.getDependentService(TenantContextService.class);
@@ -80,9 +80,12 @@ public class TenantToolService implements Service {
 
 		RdbAdapter rdbAdapter = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
 
-		createProcesses = (List<TenantCreateProcess>) config.getBeans("createProcesses");
+		createProcesses = config.getValues("createProcesses", TenantCreateProcess.class);
 
-		rdbManager = new TenantRdbManagerFactory().createManager(rdbAdapter);
+		// TenantRdbManager のパラメータを取得
+		TenantRdbManagerParameter parameter = config.getValue("tenantRdbManagerParameter", TenantRdbManagerParameter.class);
+		// TenantRdbManager インスタンス生成
+		rdbManager = new TenantRdbManagerFactory().createManager(rdbAdapter, parameter);
 	}
 
 	@Override

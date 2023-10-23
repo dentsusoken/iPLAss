@@ -1838,6 +1838,8 @@ LocaleInfo.generic_editor_DateRangePropertyEditor_editorDisplaNameKey = "Propert
 LocaleInfo.generic_editor_DateRangePropertyEditor_editorDescriptionKey = "Set the property editor tailored to the type of the property.";
 LocaleInfo.generic_editor_DateRangePropertyEditor_inputNullFromDisplayNameKey = "Allow no input of From";
 LocaleInfo.generic_editor_DateRangePropertyEditor_inputNullFromDescriptionKey = "Edit screen: Allows no input in the From input field. <br> Search condition: Adds data for which From is not entered to the search target.";
+LocaleInfo.generic_editor_DateRangePropertyEditor_fromConditionAsLesserEqualDisplayNameKey = "Conditions of the From property including values";
+LocaleInfo.generic_editor_DateRangePropertyEditor_fromConditionAsLesserEqualDescriptionKey = "Sets the search condition for the From property to include the value (<=)";
 LocaleInfo.generic_editor_DateRangePropertyEditor_toPropertyNameDisplaNameKey = "To property name";
 LocaleInfo.generic_editor_DateRangePropertyEditor_toPropertyNameDescriptionKey = "Specify other properties to display in combination with this property. <br>Please match the property type you specify with this property.";
 LocaleInfo.generic_editor_DateRangePropertyEditor_toEditorDisplaNameKey = "To property editor";
@@ -1846,7 +1848,9 @@ LocaleInfo.generic_editor_DateRangePropertyEditor_toPropertyDisplayNameDisplaNam
 LocaleInfo.generic_editor_DateRangePropertyEditor_toPropertyDisplayNameDescriptionKey = "Set the label of the To property to be displayed in the detailed search.";
 LocaleInfo.generic_editor_DateRangePropertyEditor_localizedToPropertyDisplayNameListDisplaNameKey = "Multilingual setting of To property display name in detailed search";
 LocaleInfo.generic_editor_DateRangePropertyEditor_inputNullToDisplayNameKey = "Allow no input of To";
-LocaleInfo.generic_editor_DateRangePropertyEditor_inputNullToDescriptionKey = "Edit screen: Allows no input in the From input field. <br> Search condition: Adds data for which From is not entered to the search target.";
+LocaleInfo.generic_editor_DateRangePropertyEditor_inputNullToDescriptionKey = "Edit screen: Allows no input in the To input field. <br> Search condition: Adds data for which To is not entered to the search target.";
+LocaleInfo.generic_editor_DateRangePropertyEditor_toConditionAsGreaterEqualDisplayNameKey = "Conditions of the To property including values";
+LocaleInfo.generic_editor_DateRangePropertyEditor_toConditionAsGreaterEqualDescriptionKey = "Sets the search condition for the To property to include the value (>=)";
 LocaleInfo.generic_editor_DateRangePropertyEditor_equivalentInputDisplayNameKey = "Equivalence allowed";
 LocaleInfo.generic_editor_DateRangePropertyEditor_equivalentInputDescriptionKey = "Edit screen: Allows the same value to be set for From and To. <br> Search condition: Adds data with the same value of From and To to the search target.";
 LocaleInfo.generic_editor_DateRangePropertyEditor_errorMessageNameDisplaNameKey = "Error message";
@@ -1936,6 +1940,8 @@ LocaleInfo.generic_editor_NumericRangePropertyEditor_editorDisplaNameKey = "Prop
 LocaleInfo.generic_editor_NumericRangePropertyEditor_editorDescriptionKey = "Set the property editor tailored to the type of the property.";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullFromDisplayNameKey = "Allow no input of From";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullFromDescriptionKey = "Edit screen: Allows no input in the From input field. <br> Search condition: Adds data for which From is not entered to the search target.";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_fromConditionAsLesserEqualDisplayNameKey = "Conditions of the From property including values";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_fromConditionAsLesserEqualDescriptionKey = "Sets the search condition for the From property to include the value (<=)";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyNameDisplaNameKey = "To property name";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyNameDescriptionKey = "Specify other properties to display in combination with this property. <br>Please match the property type you specify with this property.";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDisplaNameKey = "To property display name in detailed search";
@@ -1944,7 +1950,9 @@ LocaleInfo.generic_editor_NumericRangePropertyEditor_localizedToPropertyDisplayN
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toEditorDisplaNameKey = "To property editor";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toEditorDescriptionKey = "Set the property editor tailored to the type of the property.<br>If unspecified, the property editor setting will be effective.";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullToDisplayNameKey = "Allow no input of To";
-LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullToDescriptionKey = "Edit screen: Allows no input in the From input field. <br> Search condition: Adds data for which From is not entered to the search target.";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullToDescriptionKey = "Edit screen: Allows no input in the To input field. <br> Search condition: Adds data for which To is not entered to the search target.";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_toConditionAsGreaterEqualDisplayNameKey = "Conditions of the To property including values";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_toConditionAsGreaterEqualDescriptionKey = "Sets the search condition for the To property to include the value (>=)";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_equivalentInputDisplayNameKey = "Equivalence allowed";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_equivalentInputDescriptionKey = "Edit screen: Allows the same value to be set for From and To. <br> Search condition: Adds data with the same value of From and To to the search target.";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_errorMessageNameDisplaNameKey = "Error message";

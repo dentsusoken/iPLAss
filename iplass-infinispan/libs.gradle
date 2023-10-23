@@ -1,10 +1,7 @@
 dependencies {
 	implementation (sharedLib('org.infinispan:infinispan-core')) {
 		exclude(group: 'log4j')//use log4j-over-slf4j
-		exclude(group: 'org.jboss.marshalling', module: 'jboss-marshalling-osgi')//use 2.0.6.Final for java11
 	}
 	runtimeOnly sharedLib('org.slf4j:log4j-over-slf4j')
 
-	//JBoss Marshalling OSGi Bundle for java11
-	runtimeOnly sharedLib('org.jboss.marshalling:jboss-marshalling-osgi')
 }

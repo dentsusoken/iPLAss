@@ -80,8 +80,7 @@ ext {
 		
 		'com.googlecode.gwtupload:gwtupload': '1.0.3',
 		
-		'org.infinispan:infinispan-core': '9.1.6.Final',
-		'org.jboss.marshalling:jboss-marshalling-osgi': '2.0.6.Final',
+		'org.infinispan:infinispan-core': '9.4.24.Final',
 		
 		'io.lettuce:lettuce-core': '6.2.5.RELEASE',
 		
@@ -102,7 +101,7 @@ ext {
 		//webjars(gem)
 		'org.webjars:jquery': '3.5.1',
 		'org.webjars:pdf-js': '3.1.81',
-		'org.webjars:ckeditor': '4.14.0',
+		'org.webjars:ckeditor': '4.22.1',
 		'org.webjars:jquery-blockui': '2.70-1',
 		'org.webjars:jQuery-Timepicker-Addon': '1.6.3',
 		'org.webjars:momentjs': '2.29.4',

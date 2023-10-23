@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -147,7 +147,9 @@
 			// to the one set by previous resizeEditor() call.
 			if ( newHeight != currentHeight && lastHeight != newHeight ) {
 				newHeight = editor.fire( 'autoGrow', { currentHeight: currentHeight, newHeight: newHeight } ).newHeight;
-				editor.resize( editor.container.getStyle( 'width' ), newHeight, true );
+
+				// Set width parameter as null, to update only the height of the editor. (#4891)
+				editor.resize( null, newHeight, true );
 				lastHeight = newHeight;
 			}
 

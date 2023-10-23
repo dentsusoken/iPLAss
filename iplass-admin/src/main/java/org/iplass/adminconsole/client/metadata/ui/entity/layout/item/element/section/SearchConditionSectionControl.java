@@ -210,7 +210,7 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 							BlankSpace space = new BlankSpace();
 							space.setDispFlag(true);
 							ElementControl blank = new ElementControl(defName, getTriggerType(), space);
-							col.addMember(blank);
+							col.addMember(blank, dropPosition);
 						}
 					}
 

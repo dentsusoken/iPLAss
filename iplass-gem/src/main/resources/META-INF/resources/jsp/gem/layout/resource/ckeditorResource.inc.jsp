@@ -22,8 +22,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 
-<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/ckeditor/4.14.0/full/ckeditor.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
-<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/ckeditor/4.14.0/full/adapters/jquery.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
+<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/ckeditor/4.22.1/full/ckeditor.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
+<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/ckeditor/4.22.1/full/adapters/jquery.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 <script type="text/javascript">
 CKEDITOR.config.customConfig = "${m:esc(staticContentPath)}/scripts/gem/plugin/ckeditor/mtpconfig.js";
 </script>

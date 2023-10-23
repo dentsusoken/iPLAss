@@ -27,6 +27,11 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.expr.Or;
+import org.iplass.mtp.entity.query.condition.predicate.Greater;
+import org.iplass.mtp.entity.query.condition.predicate.GreaterEqual;
+import org.iplass.mtp.entity.query.condition.predicate.IsNull;
+import org.iplass.mtp.entity.query.condition.predicate.Lesser;
+import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
@@ -67,39 +72,70 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 	@Override
 	public List<Condition> convertNormalCondition() {
 		List<Condition> conditions = new ArrayList<Condition>();
-		String parentName = "";
 		Object[] obl = (Object[]) getValue();
-		//From-To検索
-		Object val = null;
+
 		boolean inputNullFrom = getEditor().isInputNullFrom();
 		boolean inputNullTo = getEditor().isInputNullTo();
 		boolean equivalentInput = getEditor().isEquivalentInput();
-		Or or = new Or();
 
 		if (obl.length > 0 && obl[0] != null) {
-			val = obl[0];
-		}
-		if (val != null) {
+			Object val = obl[0];
+
+			String parentName = "";
 			if (getParent() != null && getEditor().getToPropertyName().indexOf(".") == -1) {
 				parentName =  getParent()  + ".";
 			}
-			or.addExpression(new And().lte(getPropertyName(), val).gt(parentName + getEditor().getToPropertyName(), val));
+			String fromPropertyName = getPropertyName();
+			String toPropertyName = parentName + getEditor().getToPropertyName();
+
+			Or or = new Or();
+			or.addExpression(new And(fromCondition(fromPropertyName, val), toCondition(toPropertyName, val)));
 
 			if (inputNullFrom) {
-				or.addExpression(new And().isNull(getPropertyName()).gt(parentName + getEditor().getToPropertyName(), val));
+				or.addExpression(new And(new IsNull(fromPropertyName), toCondition(toPropertyName, val)));
 			}
 
 			if (inputNullTo) {
-				or.addExpression(new And().lte(getPropertyName(), val).isNull(parentName + getEditor().getToPropertyName()));
+				or.addExpression(new And(fromCondition(fromPropertyName, val), new IsNull(toPropertyName)));
 			}
 
 			if (equivalentInput) {
-				or.addExpression(new And().eq(getPropertyName(), val).eq(parentName + getEditor().getToPropertyName(), val));
+				or.addExpression(new And().eq(fromPropertyName, val).eq(toPropertyName, val));
 			}
+			conditions.add(or);
 		}
-		conditions.add(or);
 
 		return conditions;
+	}
+
+	/**
+	 * Fromの比較条件を返します。
+	 *
+	 * @param propertyName プロパティ名
+	 * @param value 値
+	 * @return Fromの比較条件
+	 */
+	private Condition fromCondition(String propertyName, Object value) {
+		if (getEditor().isFromConditionAsLesserEqual()) {
+			return new LesserEqual(propertyName, value);
+		} else {
+			return new Lesser(propertyName, value);
+		}
+	}
+
+	/**
+	 * Toの比較条件を返します。
+	 *
+	 * @param propertyName プロパティ名
+	 * @param value 値
+	 * @return Toの比較条件
+	 */
+	private Condition toCondition(String propertyName, Object value) {
+		if (getEditor().isToConditionAsGreaterEqual()) {
+			return new GreaterEqual(propertyName, value);
+		} else {
+			return new Greater(propertyName, value);
+		}
 	}
 
 	@Override
