@@ -177,7 +177,7 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 					// 検索処理で表示ラベルとして扱うプロパティを検索条件に利用する
 					GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 					String displayLabelItem = getReferencePropertyEditor().getDisplayLabelItem();
-					if (service.isUseDisplayLabelItemInSearch() && displayLabelItem != null && StringUtil.isNotBlank(displayLabelItem)) {
+					if (service.isUseDisplayLabelItemInSearch() && StringUtil.isNotBlank(displayLabelItem)) {
 						//表示ラベルの部分一致
 						conditions.add(new Like(getPropertyName() + "." + displayLabelItem, entity.getName(), Like.MatchPattern.PARTIAL));
 					} else {
@@ -218,7 +218,7 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 				
 				GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 				String displayLabelItem = getReferencePropertyEditor().getDisplayLabelItem();
-				if (service.isUseDisplayLabelItemInSearch() && displayLabelItem != null && StringUtil.isNotBlank(displayLabelItem)) {
+				if (service.isUseDisplayLabelItemInSearch() && StringUtil.isNotBlank(displayLabelItem)) {
 					//表示ラベルとして扱うプロパティが設定されたら検索条件に利用する
 					propName = propName + "." + displayLabelItem;
 				} else {
