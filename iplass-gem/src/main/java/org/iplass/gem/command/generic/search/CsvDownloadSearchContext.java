@@ -658,7 +658,13 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 			CsvItem csvItem = csvColumn.getCsvItem();
 			if (!StringUtil.isEmpty(csvItem.getDisplayLabel())) {
 				String displayLabel = TemplateUtil.getMultilingualString(csvItem.getDisplayLabel(), csvItem.getLocalizedDisplayLabelList());
-				if (displayLabel != null) return displayLabel;
+				if (displayLabel != null) {
+					if (csvColumn.getReferenceProperty() != null && csvColumn.getPropertyDefinition().getName().equals(Entity.OID)) {
+						return displayLabel + "(ID)";
+					} else {
+						return displayLabel;
+					}
+				}
 			}
 		}
 
