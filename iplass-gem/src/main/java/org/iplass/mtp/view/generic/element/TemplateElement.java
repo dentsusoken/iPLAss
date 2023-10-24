@@ -33,6 +33,7 @@ import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
+import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.ViewConst;
 
 /**
@@ -102,6 +103,54 @@ public class TemplateElement extends Element {
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
+	/** クラス名 */
+	@MetaFieldInfo(
+			displayName="クラス名",
+			displayNameKey="generic_element_TemplateElement_styleDisplaNameKey",
+			displayOrder=320,
+			description="スタイルシートのクラス名を指定します。" +
+					"複数指定する場合は半角スペースで区切ってください。",
+			descriptionKey="generic_element_TemplateElement_styleDescriptionKey"
+	)
+	private String style;
+
+	/** ツールチップ */
+	@MetaFieldInfo(
+			displayName="ツールチップ",
+			displayNameKey="generic_element_TemplateElement_tooltipDisplaNameKey",
+			description="ツールチップに表示する説明を設定します。",
+			descriptionKey="generic_element_TemplateElement_tooltipDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTooltipList",
+			displayOrder=420
+	)
+	@MultiLang()
+	private String tooltip;
+
+	/** ツールチップの多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="ツールチップの多言語設定",
+			displayNameKey="generic_element_TemplateElement_localizedTooltipListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=430
+	)
+	private List<LocalizedStringDefinition> localizedTooltipList;
+
+	/** 必須属性表示タイプ */
+	@MetaFieldInfo(
+			displayName="必須属性表示",
+			displayNameKey="generic_element_TemplateElement_requiredDisplayTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=RequiredDisplayType.class,
+			displayOrder=440,
+			description="詳細画面で必須表示を行うかを設定します。<BR />" +
+					"DEFAULT : プロパティ定義の必須設定に従って必須属性を表示<BR />" +
+					"DISPLAY : 必須属性を表示<BR />" +
+					"NONE    : 必須属性を表示しない",
+			descriptionKey="generic_element_TemplateElement_requiredDisplayTypeDescriptionKey"
+	)
+	private RequiredDisplayType requiredDisplayType;
+
 
 
 
@@ -116,22 +165,6 @@ public class TemplateElement extends Element {
 			descriptionKey="generic_element_TemplateElement_templateNameDescriptionKey"
 	)
 	private String templateName;
-
-	/**
-	 * タイトルを取得します。
-	 * @return タイトル
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * タイトルを設定します。
-	 * @param title タイトル
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
 
 	/**
 	 * 詳細編集非表示設定を取得します。
@@ -166,19 +199,19 @@ public class TemplateElement extends Element {
 	}
 
 	/**
-	 * テンプレート名を取得します。
-	 * @return テンプレート名
+	 * タイトルを取得します。
+	 * @return タイトル
 	 */
-	public String getTemplateName() {
-		return templateName;
+	public String getTitle() {
+		return title;
 	}
 
 	/**
-	 * テンプレート名を設定します。
-	 * @param templateName テンプレート名
+	 * タイトルを設定します。
+	 * @param title タイトル
 	 */
-	public void setTemplateName(String templateName) {
-		this.templateName = templateName;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	/**
@@ -207,6 +240,98 @@ public class TemplateElement extends Element {
 		}
 
 		localizedTitleList.add(localizedTitle);
+	}
+
+	/**
+	 * クラス名を取得します。
+	 * @return クラス名
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * クラス名を設定します。
+	 * @param style クラス名
+	 */
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
+	/**
+	 * ツールチップを取得します。
+	 * @return ツールチップ
+	 */
+	public String getTooltip() {
+		return tooltip;
+	}
+
+	/**
+	 * ツールチップを設定します。
+	 * @param tooltip ツールチップ
+	 */
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
+	}
+
+	/**
+	 * ツールチップの多言語設定情報を取得します。
+	 * @return リスト
+	 */
+	public List<LocalizedStringDefinition> getLocalizedTooltipList() {
+		return localizedTooltipList;
+	}
+
+	/**
+	 * ツールチップの多言語設定情報を設定します。
+	 * @param localizedTooltipList リスト
+	 */
+	public void setLocalizedTooltipList(List<LocalizedStringDefinition> localizedTooltipList) {
+		this.localizedTooltipList = localizedTooltipList;
+	}
+
+	/**
+	 * ツールチップの多言語設定情報を追加します。
+	 * @param 多言語設定情報
+	 */
+	public void addLocalizedTooltip(LocalizedStringDefinition localizedTooltip) {
+		if (localizedTooltipList == null) {
+			localizedTooltipList = new ArrayList<LocalizedStringDefinition>();
+		}
+
+		localizedTooltipList.add(localizedTooltip);
+	}
+
+	/**
+	 * 必須属性表示タイプを取得します。
+	 * @return 必須属性表示タイプ
+	 */
+	public RequiredDisplayType getRequiredDisplayType() {
+		return requiredDisplayType;
+	}
+
+	/**
+	 * 必須属性表示タイプを設定します。
+	 * @param requiredDisplayType 必須属性表示タイプ
+	 */
+	public void setRequiredDisplayType(RequiredDisplayType requiredDisplayType) {
+		this.requiredDisplayType = requiredDisplayType;
+	}
+
+	/**
+	 * テンプレート名を取得します。
+	 * @return テンプレート名
+	 */
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	/**
+	 * テンプレート名を設定します。
+	 * @param templateName テンプレート名
+	 */
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
 	}
 
 }
