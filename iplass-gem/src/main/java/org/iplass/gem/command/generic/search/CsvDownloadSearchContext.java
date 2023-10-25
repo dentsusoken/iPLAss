@@ -453,16 +453,12 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 					if (service.isUseDisplayLabelItemInCsvDownload() && StringUtil.isNotBlank(displayLabelItem)) {
 						//表示ラベルとして扱うプロパティが設定されたら表示ラベルを利用する
 						csvColumn = new CsvColumn(propertyName + "." + displayLabelItem);
-					} else {
-						csvColumn = new CsvColumn(propertyName + "." + Entity.NAME);
-					}
-					csvColumn.setReferenceProperty(pd);
-					if (service.isUseDisplayLabelItemInCsvDownload() && StringUtil.isNotBlank(displayLabelItem)) {
-						//表示ラベルとして扱うプロパティが設定されたら表示ラベルを利用する
 						csvColumn.setPropertyDefinition(red.getProperty(displayLabelItem));
 					} else {
+						csvColumn = new CsvColumn(propertyName + "." + Entity.NAME);
 						csvColumn.setPropertyDefinition(red.getProperty(Entity.NAME));
 					}
+					csvColumn.setReferenceProperty(pd);
 					csvColumn.setCsvItem(csvItem);
 					csvColumn.setColumnLabel(getColumnLabel(csvColumn));
 					columnMap.putIfAbsent(csvColumn.getPropertyName(), csvColumn);
