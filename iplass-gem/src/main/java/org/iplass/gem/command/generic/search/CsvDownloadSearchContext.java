@@ -666,13 +666,13 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 
 		//取れない場合はEntity定義から取得
 
-		//参照プロパティが設定されている場合、OIDまたはNameを自動的に設定しているので、参照プロパティ名を出力
+		//参照プロパティが設定されている場合、参照プロパティの表示名を出力
 		if (csvColumn.getReferenceProperty() != null) {
 			PropertyDefinition pd = csvColumn.getReferenceProperty();
 			String referenceName = TemplateUtil.getMultilingualString(pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 			if (csvColumn.getPropertyDefinition() != null && csvColumn.getPropertyDefinition().getName().equals(Entity.OID)) {
 				return referenceName + "(ID)";
-			} else if (csvColumn.getPropertyDefinition() != null && csvColumn.getPropertyDefinition().getName().equals(Entity.NAME)) {
+			} else {
 				return referenceName;
 			}
 		}
