@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ApplicationException;
@@ -46,6 +47,7 @@ import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.Select;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.impl.entity.csv.EntityCsvException;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.EntityView;
@@ -443,9 +445,20 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 						oidColumn.setColumnLabel(getColumnLabel(oidColumn));
 						columnMap.putIfAbsent(oidColumn.getPropertyName(), oidColumn);
 					}
-					CsvColumn csvColumn = new CsvColumn(propertyName + "." + Entity.NAME);
+
+					GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+					String displayLabelItem = ((ReferencePropertyEditor)csvItem.getEditor()).getDisplayLabelItem();
+					
+					CsvColumn csvColumn = null;
+					if (service.isUseDisplayLabelItemInCsvDownload() && StringUtil.isNotBlank(displayLabelItem)) {
+						//表示ラベルとして扱うプロパティが設定されたら表示ラベルを利用する
+						csvColumn = new CsvColumn(propertyName + "." + displayLabelItem);
+						csvColumn.setPropertyDefinition(red.getProperty(displayLabelItem));
+					} else {
+						csvColumn = new CsvColumn(propertyName + "." + Entity.NAME);
+						csvColumn.setPropertyDefinition(red.getProperty(Entity.NAME));
+					}
 					csvColumn.setReferenceProperty(pd);
-					csvColumn.setPropertyDefinition(red.getProperty(Entity.NAME));
 					csvColumn.setCsvItem(csvItem);
 					csvColumn.setColumnLabel(getColumnLabel(csvColumn));
 					columnMap.putIfAbsent(csvColumn.getPropertyName(), csvColumn);
@@ -641,7 +654,13 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 			CsvItem csvItem = csvColumn.getCsvItem();
 			if (!StringUtil.isEmpty(csvItem.getDisplayLabel())) {
 				String displayLabel = TemplateUtil.getMultilingualString(csvItem.getDisplayLabel(), csvItem.getLocalizedDisplayLabelList());
-				if (displayLabel != null) return displayLabel;
+				if (displayLabel != null) {
+					if (csvColumn.getReferenceProperty() != null && csvColumn.getPropertyDefinition().getName().equals(Entity.OID)) {
+						return displayLabel + "(ID)";
+					} else {
+						return displayLabel;
+					}
+				}
 			}
 		}
 
