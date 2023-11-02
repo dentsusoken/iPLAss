@@ -261,6 +261,11 @@ public class AuthService implements Service {
 			}
 			UserContext user = authenticate(credential);
 			
+			if (isAuthenticate()) {
+				//afterLoginSuccess()呼び出しより前でlogoutする
+				logout();
+				AuthContextHolder.reflesh();
+			}
 			//ログイン成功の通知＆ログ出力
 			authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].afterLoginSuccess(user.getAccount());
 			authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].getAuthLogger().loginSuccess(user);
