@@ -589,7 +589,6 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		for (IndexedEntity ie: fromIndexList) {
 			List<String> oidList = resMap.get(ie.getDefName());
 			oidList.add(ie.getOid());
-			resMap.put(ie.getDefName(), oidList);
 		}
 		
 		return resMap;
