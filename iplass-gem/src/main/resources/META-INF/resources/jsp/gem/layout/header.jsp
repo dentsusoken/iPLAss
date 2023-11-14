@@ -58,7 +58,7 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%@ page import="org.iplass.gem.command.auth.LogoutCommand"%>
 <%@ page import="org.iplass.gem.command.auth.RevokeApplicationCommand"%>
-<%@ page import="org.iplass.gem.command.auth.UpdatePasswordCommand"%>
+<%@ page import="org.iplass.gem.command.auth.ViewUpdatePasswordCommand"%>
 <%@ page import="org.iplass.gem.command.fulltext.FullTextSearchViewCommand"%>
 <%@ page import="org.iplass.gem.command.preview.PreviewDateViewCommand"%>
 
@@ -462,7 +462,7 @@ $(function() {
 <script>
 function changePassword() {
 	clearMenuState();
-	submitForm(contextPath + "/<%=UpdatePasswordCommand.ACTION_VIEW_UPDATE_PASSWORD%>", {defName: "<%=User.DEFINITION_NAME%>", viewName: "<c:out value="<%=viewName%>"/>"});
+	submitForm(contextPath + "/<%=ViewUpdatePasswordCommand.ACTION_VIEW_UPDATE_PASSWORD%>", {defName: "<%=User.DEFINITION_NAME%>", viewName: "<c:out value="<%=viewName%>"/>"});
 }
 </script>
 </li>
