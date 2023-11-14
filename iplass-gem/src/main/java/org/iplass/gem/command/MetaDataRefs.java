@@ -30,7 +30,7 @@ import org.iplass.gem.command.auth.RevokeApplicationCommand;
 import org.iplass.gem.command.auth.UpdateExpirePasswordCommand;
 import org.iplass.gem.command.auth.UpdatePasswordCommand;
 import org.iplass.gem.command.auth.UpdateUserCommand;
-import org.iplass.gem.command.auth.ViewUpdatePasswordCommand;
+import org.iplass.gem.command.auth.ViewUserMaintenanceCommand;
 import org.iplass.gem.command.binary.DownloadCommand;
 import org.iplass.gem.command.binary.UploadCommand;
 import org.iplass.gem.command.calendar.AddCalendarCommand;
@@ -189,7 +189,7 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	//認証
 	LoginCommand.class,
 	LogoutCommand.class,
-	ViewUpdatePasswordCommand.class,
+	ViewUserMaintenanceCommand.class,
 	UpdatePasswordCommand.class,
 	UpdateExpirePasswordCommand.class,
 	ResetPasswordCommand.class,

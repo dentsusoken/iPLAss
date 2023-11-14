@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2023 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -17,12 +17,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package org.iplass.gem.command.auth;
 
 import org.iplass.gem.command.Constants;
-import org.iplass.gem.command.GemResourceBundleUtil;
-import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.command.Command;
@@ -37,23 +34,24 @@ import org.iplass.mtp.view.top.TopViewDefinition;
 import org.iplass.mtp.view.top.TopViewDefinitionManager;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@ActionMapping(name=ViewUpdatePasswordCommand.ACTION_VIEW_UPDATE_PASSWORD,
+/**
+ * ユーザー情報変更画面表示
+ * @author EDS Y.Yasuda
+ *
+ */
+@ActionMapping(name=ViewUserMaintenanceCommand.ACTION_VIEW_UPDATE_PASSWORD,
 		clientCacheType=ClientCacheType.CACHE,
 		needTrustedAuthenticate=true,
 		result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_UPDATE_PASSWORD)
 )
-@CommandClass(name="gem/auth/ViewUpdatePasswordCommand", displayName="パスワード更新画面表示")
+@CommandClass(name="gem/auth/ViewUserMaintenanceCommand", displayName="ユーザー情報変更画面表示")
 @Template(
 		name=Constants.TEMPLATE_UPDATE_PASSWORD,
 		path=Constants.CMD_RSLT_JSP_UPDATE_PASSWORD,
 		layoutActionName=Constants.LAYOUT_NORMAL_ACTION
 )
-public final class ViewUpdatePasswordCommand implements Command, AuthCommandConstants {
-
-	private static Logger logger = LoggerFactory.getLogger(UpdatePasswordCommand.class);
+public final class ViewUserMaintenanceCommand implements Command, AuthCommandConstants {
 
 	public static final String ACTION_VIEW_UPDATE_PASSWORD = "gem/auth/password";
 
@@ -61,27 +59,11 @@ public final class ViewUpdatePasswordCommand implements Command, AuthCommandCons
 
 	@Override
 	public String execute(RequestContext request) {
-		String defName = request.getParam(Constants.DEF_NAME);
-		String viewName = request.getParam(Constants.VIEW_NAME);
-
 		UserMaintenanceParts parts = getUserMaintenanceParts();
 		if (parts != null) {
-			//Entity定義名チェック
-			if (defName == null || !User.DEFINITION_NAME.equals(defName)) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("invalid defName: " + defName);
-				}
-				throw new ApplicationException(resourceString("command.auth.ViewUpdatePasswordCommand.invalidParam"));
-			}
-
-			//View名チェック
-			String settingViewName = parts.getViewName() != null ? parts.getViewName() : "";
-			if (viewName != null && !settingViewName.equals(viewName)) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("invalid viewName: " + viewName + ", expected: " + settingViewName);
-				}
-				throw new ApplicationException(resourceString("command.auth.ViewUpdatePasswordCommand.invalidParam"));
-			}
+			//Entity定義名設定
+			request.setAttribute(Constants.MAINTENANCE_DEF_NAME, User.DEFINITION_NAME);
+			request.setAttribute(Constants.MAINTENANCE_VIEW_NAME, parts.getViewName());
 		}
 
 		return null;
@@ -101,9 +83,5 @@ public final class ViewUpdatePasswordCommand implements Command, AuthCommandCons
 			}
 		}
 		return null;
-	}
-
-	private static String resourceString(String key, Object... arguments) {
-		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
 }

@@ -279,6 +279,8 @@ public class Constants {
 
 	//ユーザー情報変更
 	public static final String UPDATE_USER_INFO = "updateUserInfo";
+	public static final String MAINTENANCE_DEF_NAME = "maintenanceDefName";
+	public static final String MAINTENANCE_VIEW_NAME = "maintenanceViewName";
 
 	// コマンド内でEntityに設定しているフラグ等
 	public static final String REF_INDEX = "##refIndex";
