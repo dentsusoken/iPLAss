@@ -45,7 +45,6 @@
 <%@ page import="org.iplass.mtp.view.top.parts.FulltextSearchViewParts"%>
 <%@ page import="org.iplass.mtp.view.top.parts.PreviewDateParts"%>
 <%@ page import="org.iplass.mtp.view.top.parts.TopViewParts"%>
-<%@ page import="org.iplass.mtp.view.top.parts.UserMaintenanceParts"%>
 <%@ page import="org.iplass.mtp.view.top.TopViewDefinition"%>
 <%@ page import="org.iplass.mtp.view.top.TopViewDefinitionManager"%>
 <%@ page import="org.iplass.mtp.web.actionmapping.permission.ActionPermission"%>
@@ -164,17 +163,6 @@
 			}
 		}
 		return entityMap;
-	}
-
-	String getUserMaintenanceViewName(TopViewDefinition topView) {
-		if (topView != null) {
-			for (TopViewParts parts : topView.getParts()) {
-				if (parts instanceof UserMaintenanceParts) {
-					return ((UserMaintenanceParts) parts).getViewName();
-				}
-			}
-		}
-		return "";
 	}
 %>
 <%
@@ -455,7 +443,6 @@ $(function() {
 
 		if (!user.isAnonymous()) {
 			if(am.canUpdateCredential(user.getAccountPolicy())) {
-				String viewName = getUserMaintenanceViewName(topView);
 %>
 <li class="password">
 <a href="javascript:void(0)" onclick="changePassword()">${m:rs("mtp-gem-messages", "layout.header.passChng")}</a>
