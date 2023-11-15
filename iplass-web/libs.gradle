@@ -32,7 +32,6 @@ dependencies {
 	//jasper reports
 	implementation(sharedLib('net.sf.jasperreports:jasperreports')) {
 		//define minimum dependency
-		exclude(group: 'org.codehaus.castor', module: 'castor-xml')
 		exclude(group: 'org.eclipse.jdt', module: 'ecj')
 		exclude(group: 'org.jfree', module: 'jcommon')
 		exclude(group: 'org.jfree', module: 'jfreechart')
