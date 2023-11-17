@@ -277,6 +277,8 @@ public class Constants {
 
 	//ユーザ情報変更
 	public static final String UPDATE_USER_INFO = "updateUserInfo";
+	public static final String NESTTABLE_DEF_NAME = "nestTableDefName";
+	public static final String NESTTABLE_VIEW_NAME = "nestTableViewName";
 
 	// コマンド内でEntityに設定しているフラグ等
 	public static final String REF_INDEX = "##refIndex";
