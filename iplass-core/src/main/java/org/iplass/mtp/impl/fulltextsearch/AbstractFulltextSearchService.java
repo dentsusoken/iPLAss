@@ -574,6 +574,27 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 	}
 
 	@Override
+	public Map<String, List<String>> fulltextSearchOidList(List<String> searchDefNames, String fulltext) {
+		Map<String, List<String>> resMap = new HashMap<>();
+		EntityContext ec = EntityContext.getCurrentContext();
+		List<IndexedEntity> fromIndexList = Collections.emptyList();
+
+		for (String searchDefName: searchDefNames) {
+			resMap.put(searchDefName, new ArrayList<String>());
+			EntityHandler eh = ec.getHandlerByName(searchDefName);
+			List<IndexedEntity> iel = fulltextSearchImpl(ec.getTenantId(eh), eh, fulltext, getMaxRows());
+			fromIndexList = mergeSortByScore(fromIndexList, iel, getMaxRows(), t -> t.getScore());
+		}
+
+		for (IndexedEntity ie: fromIndexList) {
+			List<String> oidList = resMap.get(ie.getDefName());
+			oidList.add(ie.getOid());
+		}
+		
+		return resMap;
+	}
+
+	@Override
 	public List<FulltextSearchResult> execFulltextSearch(String searchDefName, String keywords) {
 		EntityContext ec = EntityContext.getCurrentContext();
 		EntityHandler eh = ec.getHandlerByName(searchDefName);

@@ -318,6 +318,11 @@ public class AdminEntityManager implements EntityManager {
 	}
 
 	@Override
+	public Map<String, List<String>> fulltextSearchOidList(List<String> definitionNames, String keyword) {
+		return em.fulltextSearchOidList(definitionNames, keyword);
+	}
+
+	@Override
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Query query, String keyword, SearchOption option) {
 		return em.fulltextSearchEntity(query, keyword, option);
 	}

@@ -511,6 +511,16 @@ public interface EntityManager extends Manager {
 	public List<String> fulltextSearchOidList(String definitionName, String keyword);
 
 	/**
+	 * 指定のワードで全文検索し、対象Entity毎のoidリストのMapを取得します。
+	 * definitionNames、keywordは必須。未指定の場合は空のMapを返却します。
+	 *
+	 * @param definitionNames Entity定義名のリスト
+	 * @param keyword 全文検索用キーワード
+	 * @return 検索キーワードを含むエンティティデータのoidリストのMap
+	 */
+	public Map<String, List<String>> fulltextSearchOidList(List<String> definitionNames, String keyword);
+
+	/**
 	 * 指定のワードで全文検索し、指定プロパティのみを取得します。
 	 * entityPropertiesが未指定の場合は利用テナントの全エンティティに対して全文検索を実施します。
 	 *
