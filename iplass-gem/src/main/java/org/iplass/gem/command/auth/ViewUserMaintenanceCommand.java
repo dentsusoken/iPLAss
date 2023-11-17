@@ -62,8 +62,8 @@ public final class ViewUserMaintenanceCommand implements Command, AuthCommandCon
 		UserMaintenanceParts parts = getUserMaintenanceParts();
 		if (parts != null) {
 			//Entity定義名設定
-			request.setAttribute(Constants.MAINTENANCE_DEF_NAME, User.DEFINITION_NAME);
-			request.setAttribute(Constants.MAINTENANCE_VIEW_NAME, parts.getViewName());
+			request.setAttribute(Constants.NESTTABLE_DEF_NAME, User.DEFINITION_NAME);
+			request.setAttribute(Constants.NESTTABLE_VIEW_NAME, parts.getViewName());
 		}
 
 		return null;

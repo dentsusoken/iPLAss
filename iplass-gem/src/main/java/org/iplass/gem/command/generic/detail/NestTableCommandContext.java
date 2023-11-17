@@ -65,12 +65,12 @@ public class NestTableCommandContext extends DetailCommandContext {
 	 */
 	private void init() {
 		// Command側でパラメータを指定された場合は置き換え
-		String defName = (String) request.getAttribute(Constants.MAINTENANCE_DEF_NAME);
+		String defName = (String) request.getAttribute(Constants.NESTTABLE_DEF_NAME);
 		if (defName != null) {
 			setDefName(defName);
 		}
 
-		String viewName = (String) request.getAttribute(Constants.MAINTENANCE_VIEW_NAME);
+		String viewName = (String) request.getAttribute(Constants.NESTTABLE_VIEW_NAME);
 		if (viewName != null) {
 			setViewName(viewName);
 		}
