@@ -47,7 +47,7 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.mtp.ManagerLocator" %>
-<%@ page import="org.iplass.gem.command.generic.detail.DetailCommandContext"%>
+<%@ page import="org.iplass.gem.command.generic.detail.NestTableCommandContext"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@ page import="org.iplass.gem.command.generic.detail.LoadEntityInterrupterHandler"%>
 <%@ page import="org.iplass.gem.command.generic.detail.UpdateReferencePropertyCommand"%>
@@ -101,7 +101,7 @@
 		return viewAction;
 	}
 	LoadEntityInterrupterHandler getLoadEntityInterrupterHandler(EntityManager em, EntityDefinitionManager edm, EntityViewManager evm) {
-		DetailCommandContext context = new DetailCommandContext(TemplateUtil.getRequestContext(), em, edm);//ここでこれを作るのはちょっと微妙だが・・・
+		NestTableCommandContext context = new NestTableCommandContext(TemplateUtil.getRequestContext(), em, edm);//ここでこれを作るのはちょっと微妙だが・・・
 		context.setEntityDefinition(edm.get(context.getDefinitionName()));
 		context.setEntityView(evm.get(context.getDefinitionName()));
 		return context.getLoadEntityInterrupterHandler();

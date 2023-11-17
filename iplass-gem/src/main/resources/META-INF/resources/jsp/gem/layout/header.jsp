@@ -57,7 +57,7 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%@ page import="org.iplass.gem.command.auth.LogoutCommand"%>
 <%@ page import="org.iplass.gem.command.auth.RevokeApplicationCommand"%>
-<%@ page import="org.iplass.gem.command.auth.UpdatePasswordCommand"%>
+<%@ page import="org.iplass.gem.command.auth.ViewUserMaintenanceCommand"%>
 <%@ page import="org.iplass.gem.command.fulltext.FullTextSearchViewCommand"%>
 <%@ page import="org.iplass.gem.command.preview.PreviewDateViewCommand"%>
 
@@ -163,7 +163,8 @@
 			}
 		}
 		return entityMap;
-	}%>
+	}
+%>
 <%
 	int tenantId = TemplateUtil.getClientTenantId();
 	Tenant tenant = TemplateUtil.getTenant();
@@ -448,7 +449,7 @@ $(function() {
 <script>
 function changePassword() {
 	clearMenuState();
-	submitForm(contextPath + "/<%=UpdatePasswordCommand.ACTION_VIEW_UPDATE_PASSWORD%>");
+	submitForm(contextPath + "/<%=ViewUserMaintenanceCommand.ACTION_VIEW_UPDATE_PASSWORD%>");
 }
 </script>
 </li>
