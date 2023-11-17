@@ -32,11 +32,14 @@ dependencies {
 	//jasper reports
 	implementation(sharedLib('net.sf.jasperreports:jasperreports')) {
 		//define minimum dependency
-		exclude(group: 'org.codehaus.castor', module: 'castor-xml')
 		exclude(group: 'org.eclipse.jdt', module: 'ecj')
 		exclude(group: 'org.jfree', module: 'jcommon')
 		exclude(group: 'org.jfree', module: 'jfreechart')
+		exclude(group: 'com.github.librepdf', module: 'openpdf')
 	}
+	// openpdf (for use JasperReports) 
+	runtimeOnly sharedLib('com.github.librepdf:openpdf')
+
 	api(sharedLib('net.sf.jasperreports:jasperreports')) {
 		transitive = false
 	}
