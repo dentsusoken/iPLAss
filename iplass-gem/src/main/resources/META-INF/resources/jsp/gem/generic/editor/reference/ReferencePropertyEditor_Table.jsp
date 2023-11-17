@@ -47,7 +47,7 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.mtp.ManagerLocator" %>
-<%@ page import="org.iplass.gem.command.generic.detail.DetailCommandContext"%>
+<%@ page import="org.iplass.gem.command.generic.detail.NestTableCommandContext"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@ page import="org.iplass.gem.command.generic.detail.LoadEntityInterrupterHandler"%>
 <%@ page import="org.iplass.gem.command.generic.detail.UpdateReferencePropertyCommand"%>
@@ -101,7 +101,7 @@
 		return viewAction;
 	}
 	LoadEntityInterrupterHandler getLoadEntityInterrupterHandler(EntityManager em, EntityDefinitionManager edm, EntityViewManager evm) {
-		DetailCommandContext context = new DetailCommandContext(TemplateUtil.getRequestContext(), em, edm);//ここでこれを作るのはちょっと微妙だが・・・
+		NestTableCommandContext context = new NestTableCommandContext(TemplateUtil.getRequestContext(), em, edm);//ここでこれを作るのはちょっと微妙だが・・・
 		context.setEntityDefinition(edm.get(context.getDefinitionName()));
 		context.setEntityView(evm.get(context.getDefinitionName()));
 		return context.getLoadEntityInterrupterHandler();
@@ -781,8 +781,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				if (showRefEditLink) {
 					//編集リンク
 
-					String editReference = "editReference(" 
-						+ "'" + _detailAction + "'" 
+					String editReference = "editReference("
+						+ "'" + _detailAction + "'"
 						+ ", '" + _refDefName + "'"
 						+ ", '" + _entityOid + "'"
 						+ ", '" + _trId + "'"
@@ -805,8 +805,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					String _viewUrlParam = StringUtil.escapeJavaScript(
 							evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
 
-					String viewEditableReference = "viewEditableReference(" 
-						+ "'" + _viewAction + "'" 
+					String viewEditableReference = "viewEditableReference("
+						+ "'" + _viewAction + "'"
 						+ ", '" + _refDefName + "'"
 						+ ", '" + _entityOid + "'"
 						+ ", '" + _reloadUrl + "'"
@@ -825,12 +825,12 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 
 			//表示順
 			if (showUpDownBtn) {
-				String shiftUp = "shiftUp(" 
-					+ "'" + StringUtil.escapeJavaScript(trId) + "'" 
+				String shiftUp = "shiftUp("
+					+ "'" + StringUtil.escapeJavaScript(trId) + "'"
 					+ ")";
 
-				String shiftDown = "shiftDown(" 
-					+ "'" + StringUtil.escapeJavaScript(trId) + "'" 
+				String shiftDown = "shiftDown("
+					+ "'" + StringUtil.escapeJavaScript(trId) + "'"
 					+ ")";
 %>
 <td class="orderCol">
@@ -847,8 +847,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 
 			//削除ボタン
 			if (showDeleteBtn) {
-				String deleteRefTableRow = "deleteRefTableRow(" 
-					+ "'" + StringUtil.escapeJavaScript(trId) + "'" 
+				String deleteRefTableRow = "deleteRefTableRow("
+					+ "'" + StringUtil.escapeJavaScript(trId) + "'"
 					+ ", toggleAddBtn_" + StringUtil.escapeJavaScript(propName)
 					+ ")";
 %>
@@ -1077,8 +1077,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _reloadUrl = StringUtil.escapeJavaScript(reloadUrl);
 				String _viewUrlParam = StringUtil.escapeJavaScript(
 						evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
-				String viewEditableReference = "viewEditableReference(" 
-					+ "'" + _viewAction + "'" 
+				String viewEditableReference = "viewEditableReference("
+					+ "'" + _viewAction + "'"
 					+ ", '" + _refDefName + "'"
 					+ ", '" + _entityOid + "'"
 					+ ", '" + _reloadUrl + "'"
@@ -1104,8 +1104,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _rootDefName = StringUtil.escapeJavaScript(rootDefName);
 				String _viewName = StringUtil.escapeJavaScript(viewName);
 
-				String shiftUpOrder = "shiftOrder(" 
-					+ "'" + UpdateTableOrderCommand.WEBAPI_NAME + "'" 
+				String shiftUpOrder = "shiftOrder("
+					+ "'" + UpdateTableOrderCommand.WEBAPI_NAME + "'"
 					+ ", '" + _trId + "'"
 					+ ", '" + _orderPropName + "'"
 					+ ", '" + _propName + "'"
@@ -1116,8 +1116,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					+ ", '" + _viewName + "'"
 					+ ")";
 
-				String shiftDownOrder = "shiftOrder(" 
-					+ "'" + UpdateTableOrderCommand.WEBAPI_NAME + "'" 
+				String shiftDownOrder = "shiftOrder("
+					+ "'" + UpdateTableOrderCommand.WEBAPI_NAME + "'"
 					+ ", '" + _trId + "'"
 					+ ", '" + _orderPropName + "'"
 					+ ", '" + _propName + "'"

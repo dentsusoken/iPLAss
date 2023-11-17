@@ -45,7 +45,6 @@
 <%@ page import="org.iplass.mtp.view.top.parts.FulltextSearchViewParts"%>
 <%@ page import="org.iplass.mtp.view.top.parts.PreviewDateParts"%>
 <%@ page import="org.iplass.mtp.view.top.parts.TopViewParts"%>
-<%@ page import="org.iplass.mtp.view.top.parts.UserMaintenanceParts"%>
 <%@ page import="org.iplass.mtp.view.top.TopViewDefinition"%>
 <%@ page import="org.iplass.mtp.view.top.TopViewDefinitionManager"%>
 <%@ page import="org.iplass.mtp.web.actionmapping.permission.ActionPermission"%>
@@ -58,7 +57,7 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%@ page import="org.iplass.gem.command.auth.LogoutCommand"%>
 <%@ page import="org.iplass.gem.command.auth.RevokeApplicationCommand"%>
-<%@ page import="org.iplass.gem.command.auth.UpdatePasswordCommand"%>
+<%@ page import="org.iplass.gem.command.auth.ViewUserMaintenanceCommand"%>
 <%@ page import="org.iplass.gem.command.fulltext.FullTextSearchViewCommand"%>
 <%@ page import="org.iplass.gem.command.preview.PreviewDateViewCommand"%>
 
@@ -165,17 +164,6 @@
 		}
 		return entityMap;
 	}
-
-	String getUserMaintenanceViewName(TopViewDefinition topView) {
-		if (topView != null) {
-			for (TopViewParts parts : topView.getParts()) {
-				if (parts instanceof UserMaintenanceParts) {
-					return ((UserMaintenanceParts) parts).getViewName();
-				}
-			}
-		}
-		return "";
-	}
 %>
 <%
 	int tenantId = TemplateUtil.getClientTenantId();
@@ -225,7 +213,7 @@
 				//パーツがある場合はパーツ設定
 				showPreviewDate = previewDateParts.isUsePreviewDate();
 
-				if (showPreviewDate) { 
+				if (showPreviewDate) {
 					titlePreviewDate = I18nUtil.stringDef(previewDateParts.getTitle(), previewDateParts.getLocalizedTitleList());
 				}
 			}
@@ -235,7 +223,7 @@
 			}
 		}
 	}
-	
+
 	//全文検索対象の取得
 	Map<String, String> fulltextEntities = null;
 	if (showNavi) {
@@ -455,14 +443,13 @@ $(function() {
 
 		if (!user.isAnonymous()) {
 			if(am.canUpdateCredential(user.getAccountPolicy())) {
-				String viewName = getUserMaintenanceViewName(topView);
 %>
 <li class="password">
 <a href="javascript:void(0)" onclick="changePassword()">${m:rs("mtp-gem-messages", "layout.header.passChng")}</a>
 <script>
 function changePassword() {
 	clearMenuState();
-	submitForm(contextPath + "/<%=UpdatePasswordCommand.ACTION_VIEW_UPDATE_PASSWORD%>", {defName: "<%=User.DEFINITION_NAME%>", viewName: "<c:out value="<%=viewName%>"/>"});
+	submitForm(contextPath + "/<%=ViewUserMaintenanceCommand.ACTION_VIEW_UPDATE_PASSWORD%>");
 }
 </script>
 </li>
