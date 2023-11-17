@@ -52,6 +52,14 @@ public abstract class AdminDownloadService extends HttpServlet {
 		download(req, resp);
 	}
 
+	@Override
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
+			throws ServletException, IOException {
+		//エンコード指定
+		req.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		download(req, resp);
+	}
+
 	/**
 	 * 権限チェックを実行したのち、{@link #doDownload(HttpServletRequest, HttpServletResponse, int)} を実行します。
 	 * 
