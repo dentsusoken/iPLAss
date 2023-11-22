@@ -4261,6 +4261,16 @@ function addNestRow_Reference(type, cell, idx) {
 			var callback = scriptContext[callbackKey];
 			insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, $insButton, null, viewType, refSectionIndex, entityOid, entityVersion);
 		});
+	} else if (type == "SELECT") {
+		// 連動プロパティの対応
+		var $refLinkSelect = $(".refLinkSelect", $(cell));
+		replaceDummyAttr($refLinkSelect, "data-linkName", idx);
+		$(".refLinkSelect", $(cell)).refLinkSelect();
+	} else if (type == "CHECKBOX") {
+		// 連動プロパティの対応
+		var $refLinkRadio = $(".refLinkRadio", $(cell));
+		replaceDummyAttr($refLinkRadio, "data-linkName", idx);
+		$(".refLinkRadio", $(cell)).refLinkRadio();
 	} else if (type == "UNIQUE") {
 		var $li = $(".unique-list", $(cell));
 		replaceDummyAttr($li, "data-propName", idx);

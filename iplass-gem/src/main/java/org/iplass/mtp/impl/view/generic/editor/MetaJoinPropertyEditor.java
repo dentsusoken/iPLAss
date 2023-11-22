@@ -67,6 +67,7 @@ public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements 
 	 * オブジェクトIDを取得します。
 	 * @return オブジェクトID
 	 */
+	@Override
 	public String getObjectId() {
 	    return objectId;
 	}
@@ -164,7 +165,7 @@ public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements 
 		}
 		for (NestProperty nest : e.getProperties()) {
 			MetaNestProperty mnp = new MetaNestProperty();
-			mnp.applyConfig(nest, entity, null);
+			mnp.applyConfig(nest, entity, null, null);
 			if (mnp.getPropertyId() != null) addProperty(mnp);
 		}
 	}
@@ -199,7 +200,7 @@ public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements 
 			_editor.setEditor(editor.currentConfig(propertyName));
 		}
 		for (MetaNestProperty nest : getProperties()) {
-			NestProperty np = nest.currentConfig(entity, null);
+			NestProperty np = nest.currentConfig(entity, null, null);
 			if (np != null && np.getPropertyName() != null) _editor.addProperty(np);
 		}
 		return _editor;

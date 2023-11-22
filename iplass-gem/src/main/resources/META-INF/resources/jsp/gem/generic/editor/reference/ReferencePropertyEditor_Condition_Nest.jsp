@@ -209,6 +209,7 @@ $(function() {
 					request.setAttribute(Constants.EDITOR_STYLE, nestPropStyle);
 					request.setAttribute(Constants.EDITOR_REQUIRED, np.isRequiredNormal());
 					request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
+					request.setAttribute(Constants.EDITOR_REF_NEST_PROP_NAME, propName);
 					request.setAttribute(Constants.EDITOR_EDITOR, npEditor);
 					request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, _pd);
 					if (defaultSearchCond != null) {
@@ -226,6 +227,7 @@ $(function() {
 					request.removeAttribute(Constants.EDITOR_STYLE);
 					request.removeAttribute(Constants.EDITOR_REQUIRED);
 					request.removeAttribute(Constants.EDITOR_DISPLAY_LABEL);
+					request.removeAttribute(Constants.EDITOR_REF_NEST_PROP_NAME);
 					request.removeAttribute(Constants.EDITOR_EDITOR);
 					request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 					request.removeAttribute(Constants.EDITOR_PROP_VALUE);

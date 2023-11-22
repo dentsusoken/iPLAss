@@ -77,11 +77,14 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	/** プロパティと一緒にネスト項目を条件に利用するか */
 	private boolean useNestConditionWithProperty;
 
-	/** オブジェクトID(参照EntityのID) */
+	/** 参照先オブジェクトID */
 	private String objectId;
 
 	/** 参照元オブジェクトID */
 	private String referenceFromObjectId;
+
+	/** ルートオブジェクトID、NestPropertyの場合に利用 */
+	private String rootObjectId;
 
 	/** 参照型の表示プロパティ */
 	private List<MetaNestProperty> nestProperties;
@@ -205,16 +208,17 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	}
 
 	/**
-	 * オブジェクトIDを取得します。
-	 * @return オブジェクトID
+	 * 参照先オブジェクトIDを取得します。
+	 * @return 参照先オブジェクトID
 	 */
+	@Override
 	public String getObjectId() {
 		return objectId;
 	}
 
 	/**
-	 * オブジェクトIDを設定します。
-	 * @param objectName オブジェクトID
+	 * 参照先オブジェクトIDを設定します。
+	 * @param objectName 参照先オブジェクトID
 	 */
 	public void setObjectId(String objectName) {
 		this.objectId = objectName;
@@ -234,6 +238,23 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 */
 	public void setReferenceFromObjectId(String referenceFromObjectId) {
 		this.referenceFromObjectId = referenceFromObjectId;
+	}
+
+	/**
+	 * ルートオブジェクトIDを取得します。
+	 * NestProperty上のEditorで設定されます。
+	 * @return ルートオブジェクトID
+	 */
+	public String getRootObjectId() {
+		return rootObjectId;
+	}
+
+	/**
+	 * ルートオブジェクトIDを設定します。
+	 * @param rootObjectId ルートオブジェクトID
+	 */
+	public void setRootObjectId(String rootObjectId) {
+		this.rootObjectId = rootObjectId;
 	}
 
 	/**
@@ -838,29 +859,47 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
 
 		EntityContext context = EntityContext.getCurrentContext();
-		EntityHandler refEntity = context.getHandlerByName(rpe.getObjectName());
+
+		EntityHandler referenceEntity = context.getHandlerByName(rpe.getObjectName());
+		objectId = referenceEntity.getMetaData().getId();
+
 		EntityHandler fromEntity = null;
 		if (rpe.getReferenceFromObjectName() != null) {
 			fromEntity = context.getHandlerByName(rpe.getReferenceFromObjectName());
 		}
+		if (fromEntity != null) {
+			referenceFromObjectId = fromEntity.getMetaData().getId();
+		} else {
+			referenceFromObjectId = null;
+		}
+
+		EntityHandler rootEntity = null;
+		if (rpe.getRootObjectName() != null) {
+			rootEntity = context.getHandlerByName(rpe.getRootObjectName());
+		}
+		if (rootEntity != null) {
+			rootObjectId = rootEntity.getMetaData().getId();
+		} else {
+			rootObjectId = null;
+			// ルートを参照元Entityとする
+			rootEntity = fromEntity;
+		}
+
+		displayType = rpe.getDisplayType();
 
 		PropertyHandler sortProperty = null;
 		if (rpe.getSortItem() != null) {
-			sortProperty = refEntity.getProperty(rpe.getSortItem(), context);
-		}
-		displayType = rpe.getDisplayType();
-		objectId = refEntity.getMetaData().getId();
-		if (fromEntity != null) {
-			referenceFromObjectId = fromEntity.getMetaData().getId();
+			sortProperty = referenceEntity.getProperty(rpe.getSortItem(), context);
 		}
 		PropertyHandler displayLabelProperty = null;
 		if (rpe.getDisplayLabelItem() != null) {
-			displayLabelProperty = refEntity.getProperty(rpe.getDisplayLabelItem(), context);
+			displayLabelProperty = referenceEntity.getProperty(rpe.getDisplayLabelItem(), context);
 		}
 		PropertyHandler uniqueProperty = null;
 		if (rpe.getUniqueItem() != null) {
-			uniqueProperty = refEntity.getProperty(rpe.getUniqueItem(), context);
+			uniqueProperty = referenceEntity.getProperty(rpe.getUniqueItem(), context);
 		}
+
 		useSearchDialog = rpe.isUseSearchDialog();
 		singleSelect = rpe.isSingleSelect();
 		useNestConditionWithProperty = rpe.isUseNestConditionWithProperty();
@@ -891,25 +930,25 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		displayLabelItem = displayLabelProperty != null ? displayLabelProperty.getId() : null;
 		uniqueItem = uniqueProperty != null ? uniqueProperty.getId() : null;
 		if (rpe.getTableOrderPropertyName() != null) {
-			PropertyHandler tableOrderProperty = refEntity.getProperty(rpe.getTableOrderPropertyName(), context);
+			PropertyHandler tableOrderProperty = referenceEntity.getProperty(rpe.getTableOrderPropertyName(), context);
 			tableOrderPropertyId = tableOrderProperty != null ? tableOrderProperty.getId() : null;
 		}
 		forceUpadte = rpe.isForceUpadte();
 		for (NestProperty np : rpe.getNestProperties()) {
 			MetaNestProperty mnp = new MetaNestProperty();
-			mnp.applyConfig(np, refEntity, fromEntity);
+			mnp.applyConfig(np, referenceEntity, fromEntity, rootEntity);
 			if (mnp.getPropertyId() != null) addNestProperty(mnp);
 		}
 		if (rpe.getReferenceComboSetting() != null && rpe.getReferenceComboSetting().getPropertyName() != null) {
 			MetaReferenceComboSetting tmp = new MetaReferenceComboSetting();
-			tmp.applyConfig(rpe.getReferenceComboSetting(), refEntity);
+			tmp.applyConfig(rpe.getReferenceComboSetting(), referenceEntity);
 
 			//プロパティIDが設定されてない場合は保存しない(不正なプロパティ名や被参照でない場合等)
 			if (tmp.getPropertyId() != null) referenceComboSetting = tmp;
 		}
 		if (rpe.getReferenceRecursiveTreeSetting() != null) {
 			MetaReferenceRecursiveTreeSetting setting = new MetaReferenceRecursiveTreeSetting();
-			setting.applyConfig(rpe.getReferenceRecursiveTreeSetting(), refEntity);
+			setting.applyConfig(rpe.getReferenceRecursiveTreeSetting(), referenceEntity);
 
 			//プロパティIDが設定されてない場合は保存しない
 			if (setting.getChildPropertyId() != null) referenceRecursiveTreeSetting = setting;
@@ -917,7 +956,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		if (rpe.getLinkProperty() != null && fromEntity != null) {
 			//参照元Entityが設定されている場合のみ有効にする
 			MetaLinkProperty link = new MetaLinkProperty();
-			link.applyConfig(rpe.getLinkProperty(), refEntity, fromEntity);
+			link.applyConfig(rpe.getLinkProperty(), referenceEntity, fromEntity, rootEntity);
 			linkProperty = link;
 		}
 		insertWithLabelValue = rpe.isInsertWithLabelValue();
@@ -929,36 +968,49 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	public PropertyEditor currentConfig(String propertyName) {
 		//対象Entityの存在チェック
 		EntityContext context = EntityContext.getCurrentContext();
-		EntityHandler refEntity = context.getHandlerById(objectId);
-		if (refEntity == null) {
+
+		EntityHandler referenceEntity = context.getHandlerById(objectId);
+		if (referenceEntity == null) {
 			return null;
-		}
-		EntityHandler fromEntity = null;
-		if (referenceFromObjectId != null) {
-			fromEntity = context.getHandlerById(referenceFromObjectId);
 		}
 
 		ReferencePropertyEditor editor = new ReferencePropertyEditor();
 		super.fillTo(editor);
 
-		PropertyHandler sortProperty = null;
-		if (sortItem != null) {
-			sortProperty = refEntity.getPropertyById(sortItem, context);
-		}
 		editor.setDisplayType(displayType);
-		if (refEntity != null) {
-			editor.setObjectName(refEntity.getMetaData().getName());
+
+		editor.setObjectName(referenceEntity.getMetaData().getName());
+
+		EntityHandler fromEntity = null;
+		if (referenceFromObjectId != null) {
+			fromEntity = context.getHandlerById(referenceFromObjectId);
 		}
 		if (fromEntity != null) {
 			editor.setReferenceFromObjectName(fromEntity.getMetaData().getName());
 		}
+
+		EntityHandler rootEntity = null;
+		if (rootObjectId != null) {
+			rootEntity = context.getHandlerById(rootObjectId);
+		}
+		if (rootEntity != null) {
+			editor.setRootObjectName(rootEntity.getMetaData().getName());
+		} else {
+			// ルートを参照元Entityとする
+			rootEntity = fromEntity;
+		}
+
 		PropertyHandler displayLabelProperty = null;
 		if (displayLabelItem != null) {
-			displayLabelProperty = refEntity.getPropertyById(displayLabelItem, context);
+			displayLabelProperty = referenceEntity.getPropertyById(displayLabelItem, context);
 		}
 		PropertyHandler uniqueProperty = null;
 		if (uniqueItem != null) {
-			uniqueProperty = refEntity.getPropertyById(uniqueItem, context);
+			uniqueProperty = referenceEntity.getPropertyById(uniqueItem, context);
+		}
+		PropertyHandler sortProperty = null;
+		if (sortItem != null) {
+			sortProperty = referenceEntity.getPropertyById(sortItem, context);
 		}
 		editor.setUseSearchDialog(useSearchDialog);
 		editor.setSingleSelect(singleSelect);
@@ -991,23 +1043,23 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setDisplayLabelItem(displayLabelProperty != null ? displayLabelProperty.getName() : null);
 		editor.setUniqueItem(uniqueProperty != null ? uniqueProperty.getName() : null);
 		if (tableOrderPropertyId != null) {
-			PropertyHandler tableOrderProperty = refEntity.getPropertyById(tableOrderPropertyId, context);
+			PropertyHandler tableOrderProperty = referenceEntity.getPropertyById(tableOrderPropertyId, context);
 			editor.setTableOrderPropertyName(tableOrderProperty != null ? tableOrderProperty.getName() : null);
 		}
 		editor.setForceUpadte(forceUpadte);
 		for (MetaNestProperty mnp : getNestProperties()) {
-			NestProperty np = mnp.currentConfig(refEntity, fromEntity);
+			NestProperty np = mnp.currentConfig(referenceEntity, fromEntity, rootEntity);
 			if (np != null && np.getPropertyName() != null) editor.addNestProperty(np);
 		}
 		if (referenceComboSetting != null && referenceComboSetting.getPropertyId() != null) {
-			editor.setReferenceComboSetting(referenceComboSetting.currentConfig(refEntity));
+			editor.setReferenceComboSetting(referenceComboSetting.currentConfig(referenceEntity));
 		}
 		if (referenceRecursiveTreeSetting != null && referenceRecursiveTreeSetting.getChildPropertyId() != null) {
-			editor.setReferenceRecursiveTreeSetting(referenceRecursiveTreeSetting.currentConfig(refEntity));
+			editor.setReferenceRecursiveTreeSetting(referenceRecursiveTreeSetting.currentConfig(referenceEntity));
 		}
 		if (linkProperty != null && fromEntity != null) {
 			//参照元Entityが設定されている場合のみ有効にする
-			editor.setLinkProperty(linkProperty.currentConfig(refEntity, fromEntity));
+			editor.setLinkProperty(linkProperty.currentConfig(referenceEntity, fromEntity, rootEntity));
 		}
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);

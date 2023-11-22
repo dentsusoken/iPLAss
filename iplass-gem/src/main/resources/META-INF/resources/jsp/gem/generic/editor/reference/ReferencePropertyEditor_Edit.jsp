@@ -62,6 +62,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.EditPage"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefSortType" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor.SelectDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor"%>
@@ -80,7 +81,7 @@
 
 <%!
 	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, Entity entity,
-			PropertyEditor upperEditor) {
+			PropertyEditor upperEditor, String nestPropertyName, int nestDataIndex) {
 		Condition condition = defaultCondition;
 
 		boolean doSearch = true;
@@ -89,7 +90,19 @@
 			//連動の場合は上位値を取得して値が設定されている場合のみ検索
 			doSearch = false;
 			if (entity != null) {
-				Object upperValue = entity.getValue(linkProperty.getLinkFromPropertyName());
+				Object upperValue = null;
+				if (linkProperty.isWithNestProperty()) {
+					// 同じNestTable内のプロパティに連動する場合は、NestTableのデータから取得
+					upperValue = getNestTableUpperValue(
+							entity, 
+							editor.getReferenceFromObjectName(),
+							nestPropertyName,
+							linkProperty.getLinkFromPropertyName(),
+							upperEditor instanceof ReferencePropertyEditor,
+							nestDataIndex);
+				} else {
+					upperValue = entity.getValue(linkProperty.getLinkFromPropertyName());
+				}
 				if (upperValue != null) {
 					//参照元の値を条件に追加
 					String upperPropName = linkProperty.getLinkToPropertyName();
@@ -141,7 +154,7 @@
 					q.select().add(sortItem);
 				}
 				SortType sortType = SortSpec.SortType.ASC;
-				if ("DESC".equals(editor.getSortType().name())) {
+				if (RefSortType.DESC == editor.getSortType()) {
 					sortType = SortSpec.SortType.DESC;
 				}
 				q.order(new SortSpec(sortItem, sortType));
@@ -154,9 +167,41 @@
 		}
 	}
 
-	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty, Entity entity) {
+	Object getNestTableUpperValue(Entity rootEntity, String referenceEntityName, String nestPropertyName, String linkFromPropertyName, boolean reference, int nestDataIndex) {
+		// ダミー行は対象外
+		if (nestDataIndex < 0) {
+			return null;
+		}
+		Entity rowData = rootEntity.getValue(nestPropertyName + "[" + nestDataIndex + "]");
+		if (rowData != null) {
+			// Fromのプロパティがロードデータに含まれない場合は検索する
+			if (!linkFromPropertyName.equals(Entity.OID) 
+					&& !linkFromPropertyName.equals(Entity.VERSION)
+					&& !linkFromPropertyName.equals(Entity.NAME)) {
+				if (reference) {
+					loadReferenceEntityProperty(rowData, new String[]{
+							linkFromPropertyName + "." + Entity.OID,
+							linkFromPropertyName + "." + Entity.VERSION,
+							linkFromPropertyName + "." + Entity.NAME});
+				} else {
+					loadReferenceEntityProperty(rowData, linkFromPropertyName);
+				}
+			}
+			return rowData.getValue(linkFromPropertyName);
+		}
+		return null;
+	}
+
+	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty, String nestPropertyName, Entity entity) {
+		String upperPropertyName = null;
+		if (linkProperty.isWithNestProperty()) {
+			// 同じNestTable内のプロパティに連動する場合は、NestTableのプロパティを付加
+			upperPropertyName = nestPropertyName + "." + linkProperty.getLinkFromPropertyName();
+		} else {
+			upperPropertyName = linkProperty.getLinkFromPropertyName();
+		}
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_DETAIL, viewName, linkProperty.getLinkFromPropertyName(), entity);
+		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_DETAIL, viewName, upperPropertyName, entity);
 	}
 
 	String getLinkUpperType(PropertyEditor editor) {
@@ -330,7 +375,7 @@
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	ReferenceProperty pd = (ReferenceProperty) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
-	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
+	String execType = (String)request.getAttribute(Constants.EXEC_TYPE);
 	OutputType outputType = (OutputType)request.getAttribute(Constants.OUTPUT_TYPE);
 	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) {
@@ -340,8 +385,23 @@
 	}
 
 	boolean isInsert = Constants.EXEC_TYPE_INSERT.equals(execType);
+
 	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
 	if (nest == null) nest = false;
+
+	// NestTable参照元プロパティ名
+	String nestPropertyName = "";
+	// NestTable行Index
+	int nestDataIndex = -1;
+	if (nest) {
+		//NestTableのプロパティ名(参照元)を取得
+		nestPropertyName = (String)request.getAttribute(Constants.EDITOR_REF_NEST_PROP_NAME);
+		//NestTableの処理対象データのIndexを取得
+		if (request.getAttribute(Constants.EDITOR_REF_NEST_DATA_INDEX) != null) {
+			nestDataIndex = (int)request.getAttribute(Constants.EDITOR_REF_NEST_DATA_INDEX);
+		}
+	}
+
 	Boolean useBulkView = (Boolean) request.getAttribute(Constants.BULK_UPDATE_USE_BULK_VIEW);
 	if (useBulkView == null) useBulkView = false;
 
@@ -681,11 +741,11 @@ $(function() {
 		PropertyEditor upperEditor = null;
 		String upperType = null;
 		if (editor.getLinkProperty() != null) {
-			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), rootEntity);
+			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), nestPropertyName, rootEntity);
 			upperType = getLinkUpperType(upperEditor);
 		}
 
-		List<Entity> entityList = getSelectItems(editor, condition, entity, upperEditor);
+		List<Entity> entityList = getSelectItems(editor, condition, entity, upperEditor, nestPropertyName, nestDataIndex);
 
 		//リスト
 		List<String> oid = new ArrayList<String>();
@@ -715,16 +775,37 @@ $(function() {
 		String size = isMultiple ? "5" : "1";
 
 		if (editor.getLinkProperty() != null && upperType != null && !isMultiple) {
-			//連動設定(連動元のタイプがサポートの場合のみ、かつ多重度は1のみサポート)
+			// 連動設定(連動元のタイプがサポートの場合のみ、かつ多重度は1のみサポート)
 			LinkProperty link = editor.getLinkProperty();
+			
+			// 連動先のプロパティ名
+			String linkToPropName = null;
+			if (nest) {
+				// NestTable上の場合は、参照元も付加
+				linkToPropName = nestPropertyName + "." + pd.getName();
+			} else {
+				// 参照プロパティ名
+				linkToPropName = pd.getName();
+			}
 
+			// 連動元のアイテム名
+			String linkFromName = null;
+			if (link.isWithNestProperty()) {
+				// 連動元がNestTableの場合は、参照元と行Indexも付加
+				linkFromName = nestPropertyName 
+						+ "[" + (nestDataIndex < 0 ? Constants.EDITOR_REF_NEST_DUMMY_ROW_INDEX : nestDataIndex) + "]"
+						+ "." + link.getLinkFromPropertyName();
+			} else {
+				linkFromName = link.getLinkFromPropertyName();
+			}
 %>
-<select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr refLinkSelect" style="<c:out value="<%=customStyle%>"/>" size="<c:out value="<%=size %>"/>"
+<select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr refLinkSelect" 
+ style="<c:out value="<%=customStyle%>"/>" size="<c:out value="<%=size %>"/>"
  data-defName="<c:out value="<%=rootDefName %>"/>"
  data-viewType="<%=viewType %>"
  data-viewName="<c:out value="<%=viewName %>"/>"
- data-propName="<c:out value="<%=pd.getName() %>"/>"
- data-linkName="<c:out value="<%=link.getLinkFromPropertyName() %>"/>"
+ data-propName="<c:out value="<%=linkToPropName %>"/>"
+ data-linkName="<c:out value="<%=linkFromName %>"/>"
  data-prefix=""
  data-getItemWebapiName="<%=GetReferenceLinkItemCommand.WEBAPI_NAME %>"
  data-upperType="<c:out value="<%=upperType %>"/>"
@@ -750,7 +831,8 @@ $(function() {
 <%
 		} else {
 %>
-<select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>" size="<c:out value="<%=size %>"/>" <c:out value="<%=multiple %>"/>>
+<select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" 
+ style="<c:out value="<%=customStyle%>"/>" size="<c:out value="<%=size %>"/>" <c:out value="<%=multiple %>"/>>
 <%
 			if (!isMultiple) {
 %>
@@ -776,11 +858,11 @@ $(function() {
 		PropertyEditor upperEditor = null;
 		String upperType = null;
 		if (editor.getLinkProperty() != null) {
-			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), rootEntity);
+			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), nestPropertyName, rootEntity);
 			upperType = getLinkUpperType(upperEditor);
 		}
 
-		List<Entity> entityList = getSelectItems(editor, condition, entity, upperEditor);
+		List<Entity> entityList = getSelectItems(editor, condition, entity, upperEditor, nestPropertyName, nestDataIndex);
 
 		//リスト
 		List<String> oid = new ArrayList<String>();
@@ -814,14 +896,35 @@ $(function() {
 		if (editor.getLinkProperty() != null && upperType != null && !isMultiple) {
 			//連動設定(連動元のタイプがサポートの場合のみ、かつ多重度は1のみサポート)
 			LinkProperty link = editor.getLinkProperty();
+
+			// 連動先のプロパティ名
+			String linkToPropName = null;
+			if (nest) {
+				// NestTable上の場合は、参照元も付加
+				linkToPropName = nestPropertyName + "." + pd.getName();
+			} else {
+				// 参照プロパティ名
+				linkToPropName = pd.getName();
+			}
+
+			// 連動元のアイテム名
+			String linkFromName = null;
+			if (link.isWithNestProperty()) {
+				// 連動元がNestTableの場合は、参照元と行Indexも付加
+				linkFromName = nestPropertyName 
+						+ "[" + (nestDataIndex < 0 ? Constants.EDITOR_REF_NEST_DUMMY_ROW_INDEX : nestDataIndex) + "]"
+						+ "." + link.getLinkFromPropertyName();
+			} else {
+				linkFromName = link.getLinkFromPropertyName();
+			}
 %>
 <ul class="<c:out value="<%=cls %>"/> refLinkRadio"
  data-itemName="<c:out value="<%=propName %>"/>"
  data-defName="<c:out value="<%=rootDefName %>"/>"
  data-viewType="<%=viewType %>"
  data-viewName="<c:out value="<%=viewName %>"/>"
- data-propName="<c:out value="<%=pd.getName() %>"/>"
- data-linkName="<c:out value="<%=link.getLinkFromPropertyName() %>"/>"
+ data-propName="<c:out value="<%=linkToPropName %>"/>"
+ data-linkName="<c:out value="<%=linkFromName %>"/>"
  data-prefix=""
  data-getItemWebapiName="<%=GetReferenceLinkItemCommand.WEBAPI_NAME %>"
  data-upperType="<c:out value="<%=upperType %>"/>"
@@ -990,7 +1093,7 @@ function <%=toggleInsBtnFunc%>() {
 				String upperType = "";
 				if (editor.getLinkProperty() != null) {
 					linkPropName = editor.getLinkProperty().getLinkFromPropertyName();
-					PropertyEditor upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), rootEntity);
+					PropertyEditor upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), nestPropertyName, rootEntity);
 					upperType = getLinkUpperType(upperEditor);
 				}
 %>

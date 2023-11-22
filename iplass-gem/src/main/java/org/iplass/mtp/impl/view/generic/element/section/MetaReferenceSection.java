@@ -412,14 +412,14 @@ public class MetaReferenceSection extends MetaSection {
 		ReferenceSection section = (ReferenceSection) element;
 
 		EntityContext ctx = EntityContext.getCurrentContext();
-		EntityHandler entity = ctx.getHandlerById(definitionId);
-		if (entity == null) return;
+		EntityHandler fromEntity = ctx.getHandlerById(definitionId);
+		if (fromEntity == null) return;
 
-		PropertyHandler property = entity.getProperty(section.getPropertyName(), ctx);
+		PropertyHandler property = fromEntity.getProperty(section.getPropertyName(), ctx);
 		if (!(property instanceof ReferencePropertyHandler)) return;
 
 		ReferencePropertyHandler refHandler = (ReferencePropertyHandler) property;
-		EntityHandler refEntity = refHandler.getReferenceEntityHandler(ctx);
+		EntityHandler referenceEntity = refHandler.getReferenceEntityHandler(ctx);
 
 		propertyId = refHandler.getId();
 		title = section.getTitle();
@@ -436,12 +436,12 @@ public class MetaReferenceSection extends MetaSection {
 		index = section.getIndex();
 		dispBorderInSection = section.isDispBorderInSection();
 		if (StringUtil.isNotBlank(section.getOrderPropName())) {
-			PropertyHandler orderProp = refEntity.getProperty(section.getOrderPropName(), ctx);
+			PropertyHandler orderProp = referenceEntity.getProperty(section.getOrderPropName(), ctx);
 			if (orderProp != null) orderPropId = orderProp.getId();
 		}
 		for (NestProperty nest : section.getProperties()) {
 			MetaNestProperty meta = new MetaNestProperty();
-			meta.applyConfig(nest, refEntity, entity);
+			meta.applyConfig(nest, referenceEntity, fromEntity, fromEntity);
 			if (meta.getPropertyId() != null) addProperty(meta);
 		}
 
@@ -455,20 +455,20 @@ public class MetaReferenceSection extends MetaSection {
 
 		super.fillTo(section, definitionId);
 		EntityContext ctx = EntityContext.getCurrentContext();
-		EntityHandler entity = ctx.getHandlerById(definitionId);
-		if (entity == null) return null;
+		EntityHandler fromEntity = ctx.getHandlerById(definitionId);
+		if (fromEntity == null) return null;
 
-		PropertyHandler property = entity.getPropertyById(propertyId, ctx);
+		PropertyHandler property = fromEntity.getPropertyById(propertyId, ctx);
 		if (property == null || !(property instanceof ReferencePropertyHandler)) return null;
 
 		ReferencePropertyHandler refHandler = (ReferencePropertyHandler) property;
-		EntityHandler refEntity = refHandler.getReferenceEntityHandler(ctx);
-		if (refEntity == null) {
+		EntityHandler referenceEntity = refHandler.getReferenceEntityHandler(ctx);
+		if (referenceEntity == null) {
 			//参照Entityが存在しない場合はnull
 			return null;
 		}
 
-		section.setDefintionName(refEntity.getMetaData().getName());
+		section.setDefintionName(referenceEntity.getMetaData().getName());
 		section.setPropertyName(refHandler.getName());
 		section.setTitle(title);
 		section.setExpandable(expandable);
@@ -484,11 +484,11 @@ public class MetaReferenceSection extends MetaSection {
 		section.setIndex(index);
 		section.setDispBorderInSection(dispBorderInSection);
 		if (StringUtil.isNotBlank(orderPropId)) {
-			PropertyHandler orderProp = refEntity.getPropertyById(orderPropId, ctx);
+			PropertyHandler orderProp = referenceEntity.getPropertyById(orderPropId, ctx);
 			if (orderProp != null) section.setOrderPropName(orderProp.getName());
 		}
 		for (MetaNestProperty meta : getProperties()) {
-			NestProperty nest = meta.currentConfig(refEntity, entity);
+			NestProperty nest = meta.currentConfig(referenceEntity, fromEntity, fromEntity);
 			if (nest != null) section.addProperty(nest);
 		}
 		section.setContentScriptKey(contentScriptKey);

@@ -177,6 +177,7 @@ public class Constants {
 	public static final String EDITOR_REF_ENTITY_VALUE_MAP = "entityValueMap";
 	public static final String EDITOR_REF_NEST = "nest";
 	public static final String EDITOR_REF_NEST_DUMMY_ROW = "nestDummyRow";
+	public static final String EDITOR_REF_NEST_DUMMY_ROW_INDEX = "Dummy";
 	public static final String EDITOR_REF_NEST_PROPERTY = "nestProperty";
 	public static final String EDITOR_REF_NEST_PROPERTY_ITEM = "nestPropertyItem";
 	public static final String EDITOR_REF_NEST_PROPERTY_PREFIX = "nest_";
@@ -184,6 +185,7 @@ public class Constants {
 	public static final String EDITOR_REF_NEST_EDITOR = "nestEditor";
 	public static final String EDITOR_REF_NEST_STYLE = "nestStyle";
 	public static final String EDITOR_REF_NEST_VALUE = "nestValue";
+	public static final String EDITOR_REF_NEST_DATA_INDEX = "nestIndex";
 	public static final String EDITOR_REF_NEST_REQUIRED = "nestRequired";
 	public static final String EDITOR_REF_NEST_DISPLAY_LABEL = "nestDisplayLabel";
 	public static final String EDITOR_REF_SHOW_PROPERTY = "showProperty";
