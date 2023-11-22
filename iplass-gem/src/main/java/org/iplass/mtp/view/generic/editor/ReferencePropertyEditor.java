@@ -722,11 +722,14 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 
 
 
-	/** オブジェクト名 */
+	/** 参照先オブジェクト名 */
 	private String objectName;
 
 	/** 参照元オブジェクト名 */
 	private String referenceFromObjectName;
+
+	/** ルートオブジェクト名、NestPropertyの場合に利用 */
+	private String rootObjectName;
 
 	/** URLパラメータをコンパイルした際に生成したキー */
 	private String urlParameterScriptKey;
@@ -1354,16 +1357,16 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	}
 
 	/**
-	 * オブジェクト名を取得します。
-	 * @return オブジェクト名
+	 * 参照先オブジェクト名を取得します。
+	 * @return 参照先オブジェクト名
 	 */
 	public String getObjectName() {
 		return objectName;
 	}
 
 	/**
-	 * オブジェクト名を設定します。
-	 * @param objectName オブジェクト名
+	 * 参照先オブジェクト名を設定します。
+	 * @param objectName 参照先オブジェクト名
 	 */
 	public void setObjectName(String objectName) {
 		this.objectName = objectName;
@@ -1383,6 +1386,23 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 */
 	public void setReferenceFromObjectName(String referenceFromObjectName) {
 		this.referenceFromObjectName = referenceFromObjectName;
+	}
+
+	/**
+	 * ルートオブジェクト名を取得します。
+	 * NestProperty上のEditorで設定されます。
+	 * @return ルートオブジェクト名
+	 */
+	public String getRootObjectName() {
+		return rootObjectName;
+	}
+
+	/**
+	 * ルートオブジェクト名を設定します。
+	 * @param rootObjectName ルートオブジェクト名
+	 */
+	public void setRootObjectName(String rootObjectName) {
+		this.rootObjectName = rootObjectName;
 	}
 
 	/**

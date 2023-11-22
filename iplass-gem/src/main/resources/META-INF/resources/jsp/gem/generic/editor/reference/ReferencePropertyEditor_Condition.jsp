@@ -80,9 +80,16 @@
 		return null;
 	}
 
-	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty) {
+	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty, String nestPropertyName) {
+		String upperPropertyName = null;
+		if (linkProperty.isWithNestProperty()) {
+			// 同じNestTable内のプロパティに連動する場合は、NestTableのプロパティを付加
+			upperPropertyName = nestPropertyName + "." + linkProperty.getLinkFromPropertyName();
+		} else {
+			upperPropertyName = linkProperty.getLinkFromPropertyName();
+		}
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_SEARCH, viewName, linkProperty.getLinkFromPropertyName(), null);
+		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_SEARCH, viewName, upperPropertyName, null);
 	}
 
 	String getLinkUpperType(PropertyEditor editor) {
@@ -113,8 +120,9 @@
 		return null;
 	}
 
-	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, Map<String, List<String>> searchCondMap, HashMap<String, Object> defaultSearchCond,
-			PropertyEditor upperEditor) {
+	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, Map<String, List<String>> searchCondMap, 
+			HashMap<String, Object> defaultSearchCond, PropertyEditor upperEditor, String nestPropertyName) {
+
 		Condition condition = defaultCondition;
 
 		boolean doSearch = true;
@@ -122,13 +130,20 @@
 		if (linkProperty != null) {
 			//連動の場合は上位値を取得して値が設定されている場合のみ検索
 			doSearch = false;
-			String[] upperValyeArray = ViewUtil.getSearchCondValue(searchCondMap, Constants.SEARCH_COND_PREFIX + linkProperty.getLinkFromPropertyName());
+
+			String upperPropertyName = null;
+			if (linkProperty.isWithNestProperty()) {
+				upperPropertyName = nestPropertyName + "." + linkProperty.getLinkFromPropertyName();
+			} else {
+				upperPropertyName = linkProperty.getLinkFromPropertyName();
+			}
+			String[] upperValyeArray = ViewUtil.getSearchCondValue(searchCondMap, Constants.SEARCH_COND_PREFIX + upperPropertyName);
 			String upperValue = upperValyeArray != null && upperValyeArray.length > 0 ? upperValyeArray[0] : null;
 			if (upperValue == null) {
 				//パラメータで設定されていない場合は、初期値用Mapからチェック
 				if (defaultSearchCond != null) {
 					//こっちはPrefixは不要
-					Object tmp = defaultSearchCond.get(linkProperty.getLinkFromPropertyName());
+					Object tmp = defaultSearchCond.get(upperPropertyName);
 					if (tmp instanceof String[] && ((String[])tmp).length > 0) {
 						upperValue = ((String[])tmp)[0];
 					}
@@ -242,9 +257,11 @@
 	Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 	String defName = request.getParameter(Constants.DEF_NAME);
 
-
 	String propName = Constants.SEARCH_COND_PREFIX + editor.getPropertyName();
 
+	// NestTable参照元プロパティ名
+	String nestPropertyName = (String)request.getAttribute(Constants.EDITOR_REF_NEST_PROP_NAME);
+	
 	boolean isMultiple = !editor.isSingleSelect();
 
 	Condition condition = null;
@@ -286,11 +303,11 @@
 		PropertyEditor upperEditor = null;
 		String upperType = null;
 		if (editor.getLinkProperty() != null) {
-			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty());
+			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), nestPropertyName);
 			upperType = getLinkUpperType(upperEditor);
 		}
 
-		List<Entity> entityList = getSelectItems(editor, condition,  searchCondMap, defaultSearchCond, upperEditor);
+		List<Entity> entityList = getSelectItems(editor, condition,  searchCondMap, defaultSearchCond, upperEditor, nestPropertyName);
 
 		String value = "";
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
@@ -307,13 +324,32 @@
 		if (editor.getLinkProperty() != null && upperType != null) {
 			//連動設定(連動元のタイプがサポートの場合のみサポート)
 			LinkProperty link = editor.getLinkProperty();
+			
+			// 連動先のプロパティ名
+			String linkToPropName = null;
+			if (StringUtil.isNotEmpty(nestPropertyName)) {
+				// NestTable上の場合は、参照元も付加
+				linkToPropName = nestPropertyName + "." + pd.getName();
+			} else {
+				// 参照プロパティ名
+				linkToPropName = pd.getName();
+			}
+
+			// 連動元のアイテム名
+			String linkFromName = null;
+			if (link.isWithNestProperty()) {
+				// 連動元がNestTableの場合は、参照元も付加
+				linkFromName = nestPropertyName + "." + link.getLinkFromPropertyName();
+			} else {
+				linkFromName = link.getLinkFromPropertyName();
+			}
 %>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr refLinkSelect" style="<c:out value="<%=customStyle%>"/>"
 data-defName="<c:out value="<%=rootDefName %>"/>"
 data-viewType="<%=Constants.VIEW_TYPE_SEARCH %>"
 data-viewName="<c:out value="<%=viewName %>"/>"
-data-propName="<c:out value="<%=pd.getName() %>"/>"
-data-linkName="<c:out value="<%=link.getLinkFromPropertyName() %>"/>"
+data-propName="<c:out value="<%=linkToPropName %>"/>"
+data-linkName="<c:out value="<%=linkFromName %>"/>"
 data-prefix="<%=Constants.SEARCH_COND_PREFIX %>"
 data-getItemWebapiName="<%=GetReferenceLinkItemCommand.WEBAPI_NAME %>"
 data-upperType="<c:out value="<%=upperType %>"/>"
@@ -862,7 +898,7 @@ $(function() {
 		String upperType = "";
 		if (editor.getLinkProperty() != null) {
 			linkPropName = editor.getLinkProperty().getLinkFromPropertyName();
-			PropertyEditor upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty());
+			PropertyEditor upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), nestPropertyName);
 			upperType = getLinkUpperType(upperEditor);
 		}
 %>

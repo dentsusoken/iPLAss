@@ -331,7 +331,7 @@
 		//-------------------------
 
 		String countId = "id_" + propName + "_count";
-		String dummyRowId = "id_tr_" + propName + "Dummy";
+		String dummyRowId = "id_tr_" + propName + Constants.EDITOR_REF_NEST_DUMMY_ROW_INDEX;
 		//追加ボタン
 		if (showInsertBtn && (editor.getInsertType() != null && editor.getInsertType() == InsertType.TOP)) {
 			String _rootDefName = StringUtil.escapeJavaScript(rootDefName);
@@ -508,7 +508,6 @@ $(function() {
 %>
 <jsp:include page="<%=autocompletionPath %>"/>
 <%
-					request.removeAttribute(Constants.EDITOR_REF_NEST_PROP_NAME);
 					request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
 					request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
 					request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
@@ -565,8 +564,11 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <tr id="<c:out value="<%=dummyRowId%>"/>" style="display: none;">
 <%
 		colNum = 0;
+		String idxPropName = propName + "[" + Constants.EDITOR_REF_NEST_DUMMY_ROW_INDEX + "]";
+
 		//新規追加のために一時的に書き換える
 		request.setAttribute(Constants.EXEC_TYPE, Constants.EXEC_TYPE_INSERT);
+
 		for (NestProperty nProp : editor.getNestProperties()) {
 			PropertyDefinition refPd = refEd.getProperty(nProp.getPropertyName());
 			if (refPd.getMultiplicity() != 1) {
@@ -578,13 +580,19 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				if (StringUtil.isNotBlank(nProp.getDescription())) {
 					description = TemplateUtil.getMultilingualString(nProp.getDescription(), nProp.getLocalizedDescriptionList());
 				}
+
 				String editorUniqueID = StringUtil.isNotEmpty(element.getElementRuntimeId()) ? element.getElementRuntimeId() : "";
 				editorUniqueID += "_" + propName + "_" + refPd.getName();
-				nProp.getEditor().setPropertyName(propName + "[Dummy]." + refPd.getName());
+
+				nProp.getEditor().setPropertyName(idxPropName + "." + refPd.getName());
+
 				request.setAttribute(Constants.EDITOR_EDITOR, nProp.getEditor());
 				request.setAttribute(Constants.EDITOR_PROP_VALUE, null);
 				request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, refPd);
-				request.setAttribute(Constants.EDITOR_REF_NEST, true);//2重ネスト防止用フラグ
+				//2重ネスト防止用フラグ
+				request.setAttribute(Constants.EDITOR_REF_NEST, true);
+				request.setAttribute(Constants.EDITOR_REF_NEST_PROP_NAME, propName);
+				request.setAttribute(Constants.EDITOR_REF_NEST_DATA_INDEX, -1);
 				request.setAttribute(Constants.EDITOR_UNIQUE_ID, editorUniqueID);
 				String path = EntityViewUtil.getJspPath(nProp.getEditor(), ViewConst.DESIGN_TYPE_GEM);
 				if (refPd instanceof ReferenceProperty
@@ -611,6 +619,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <%
 				}
 				request.removeAttribute(Constants.EDITOR_REF_NEST);
+				request.removeAttribute(Constants.EDITOR_REF_NEST_PROP_NAME);
+				request.removeAttribute(Constants.EDITOR_REF_NEST_DATA_INDEX);
 
 				if (StringUtil.isNotBlank(description)) {
 %>
@@ -629,7 +639,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 
 		//編集リンク
 		if (refEdit) {
-			String idxPropName = propName + "[Dummy]";
 			//追加できるということは新規で編集できるので、更新権限がなくても編集側のActionを呼び出す
 %>
 <td nowrap="nowrap" class="colLink center">
@@ -646,7 +655,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 		if (showUpDownBtn) {
 %>
 <td class="orderCol">
-<input type="hidden" name="tableOrderIndex[Dummy]" >
+<input type="hidden" name="tableOrderIndex[<%=Constants.EDITOR_REF_NEST_DUMMY_ROW_INDEX%>]" >
 <span class="order-icon up-icon"><i class="fas fa-caret-up"></i></span>
 <span class="order-icon down-icon"><i class="fas fa-caret-down"></i></span>
 </td>
@@ -702,7 +711,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <tr id="<c:out value="<%=trId%>"/>">
 <%
 			colNum = 0;
-			String idxPropName = propName + "[" + i + "]";
+			idxPropName = propName + "[" + i + "]";
 			for (NestProperty nProp : editor.getNestProperties()) {
 				PropertyDefinition refPd = refEd.getProperty(nProp.getPropertyName());
 				if (refPd.getMultiplicity() != 1) {
@@ -714,19 +723,24 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					if (StringUtil.isNotBlank(nProp.getDescription())) {
 						description = TemplateUtil.getMultilingualString(nProp.getDescription(), nProp.getLocalizedDescriptionList());
 					}
+
 					String editorUniqueID = StringUtil.isNotEmpty(element.getElementRuntimeId()) ? element.getElementRuntimeId() : "";
 					editorUniqueID += "_" + propName + "_" + refPd.getName();
-					//表示名
+
 					String title = TemplateUtil.getMultilingualString(
 							nProp.getDisplayLabel(), nProp.getLocalizedDisplayLabelList(),
 							refPd.getDisplayName(), refPd.getLocalizedDisplayNameList());
 
 					nProp.getEditor().setPropertyName(idxPropName + "." + refPd.getName());
+
 					request.setAttribute(Constants.EDITOR_EDITOR, nProp.getEditor());
 					request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, title);
 					request.setAttribute(Constants.EDITOR_PROP_VALUE, entity.getValue(refPd.getName()));
 					request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, refPd);
-					request.setAttribute(Constants.EDITOR_REF_NEST, true);//2重ネスト防止用フラグ
+					//2重ネスト防止用フラグ
+					request.setAttribute(Constants.EDITOR_REF_NEST, true);
+					request.setAttribute(Constants.EDITOR_REF_NEST_PROP_NAME, propName);
+					request.setAttribute(Constants.EDITOR_REF_NEST_DATA_INDEX, i);
 					request.setAttribute(Constants.EDITOR_UNIQUE_ID, editorUniqueID);
 					String path = EntityViewUtil.getJspPath(nProp.getEditor(), ViewConst.DESIGN_TYPE_GEM);
 
@@ -751,14 +765,22 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <%
 						}
 					}
-					if (insertRow) request.setAttribute(Constants.EXEC_TYPE, Constants.EXEC_TYPE_INSERT);
+					if (insertRow) {
+						request.setAttribute(Constants.EXEC_TYPE, Constants.EXEC_TYPE_INSERT);
+					}
 					if (path != null) {
 %>
 <jsp:include page="<%=path%>" />
 <%
 					}
-					if (insertRow) request.setAttribute(Constants.EXEC_TYPE, execType);
+					if (insertRow) {
+						request.setAttribute(Constants.EXEC_TYPE, execType);
+					}
+
 					request.removeAttribute(Constants.EDITOR_REF_NEST);
+					request.removeAttribute(Constants.EDITOR_REF_NEST_PROP_NAME);
+					request.removeAttribute(Constants.EDITOR_REF_NEST_DATA_INDEX);
+
 					if (StringUtil.isNotBlank(description)) {
 %>
 <br />

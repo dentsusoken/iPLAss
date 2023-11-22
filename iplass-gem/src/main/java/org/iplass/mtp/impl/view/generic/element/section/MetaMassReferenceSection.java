@@ -662,11 +662,11 @@ public class MetaMassReferenceSection extends MetaSection {
 		MassReferenceSection section = (MassReferenceSection) element;
 
 		EntityContext ctx = EntityContext.getCurrentContext();
-		EntityHandler entity = ctx.getHandlerById(definitionId);
-		if (entity == null) return;
+		EntityHandler fromEntity = ctx.getHandlerById(definitionId);
+		if (fromEntity == null) return;
 
 		//被参照プロパティかチェックする
-		PropertyHandler property = entity.getProperty(section.getPropertyName(), ctx);
+		PropertyHandler property = fromEntity.getProperty(section.getPropertyName(), ctx);
 		if (!(property instanceof ReferencePropertyHandler)) {
 			throw new EntityRuntimeException(section.getPropertyName() + " is not ReferenceProperty.");
 		}
@@ -676,7 +676,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		if (mappedBy == null) {
 			throw new EntityRuntimeException(section.getPropertyName() + " is not MappedByProperty. MassReferencePropertyEditor is supports only MappedByProperty.");
 		}
-		EntityHandler refEntity = mappedBy.getParent();
+		EntityHandler referenceEntity = mappedBy.getParent();
 
 		propertyId = property.getId();
 		title = section.getTitle();
@@ -709,14 +709,14 @@ public class MetaMassReferenceSection extends MetaSection {
 		filterConditionScript = section.getFilterConditionScript();
 		for (NestProperty np : section.getProperties()) {
 			MetaNestProperty mnp = new MetaNestProperty();
-			mnp.applyConfig(np, refEntity, entity);
+			mnp.applyConfig(np, referenceEntity, fromEntity, fromEntity);
 			if (mnp.getPropertyId() != null) addNestProperty(mnp);
 		}
 
 		if (!section.getSortSetting().isEmpty()) {
 			for (SortSetting setting : section.getSortSetting()) {
 				MetaSortSetting meta = new MetaSortSetting();
-				meta.applyConfig(setting, ctx, refEntity);
+				meta.applyConfig(setting, ctx, referenceEntity);
 				addSortSetting(meta);
 			}
 		}
@@ -731,26 +731,26 @@ public class MetaMassReferenceSection extends MetaSection {
 		super.fillTo(section, definitionId);
 
 		EntityContext ctx = EntityContext.getCurrentContext();
-		EntityHandler entity = ctx.getHandlerById(definitionId);
-		if (entity == null) return null;
+		EntityHandler fromEntity = ctx.getHandlerById(definitionId);
+		if (fromEntity == null) return null;
 
-		PropertyHandler property = entity.getPropertyById(propertyId, ctx);
+		PropertyHandler property = fromEntity.getPropertyById(propertyId, ctx);
 		if (property == null || !(property instanceof ReferencePropertyHandler)) return null;
 		ReferencePropertyHandler rp = (ReferencePropertyHandler) property;
 
-		EntityHandler refEntity = null;
+		EntityHandler referenceEntity = null;
 		if (rp != null) {
 			ReferencePropertyHandler mappedBy = rp.getMappedByPropertyHandler(ctx);
 			if (mappedBy != null) {
-				refEntity = mappedBy.getParent();
+				referenceEntity = mappedBy.getParent();
 			}
 		}
-		if (refEntity == null) {
+		if (referenceEntity == null) {
 			//参照Entityが存在しない場合はnull
 			return null;
 		}
 
-		section.setDefintionName(refEntity.getMetaData().getName());
+		section.setDefintionName(referenceEntity.getMetaData().getName());
 		section.setPropertyName(rp.getName());
 		section.setTitle(title);
 		section.setExpandable(expandable);
@@ -783,15 +783,15 @@ public class MetaMassReferenceSection extends MetaSection {
 		section.setContentScriptKey(contentScriptKey);
 
 		for (MetaNestProperty mnp : getNestProperties()) {
-			if (refEntity != null) {
-				NestProperty np = mnp.currentConfig(refEntity, entity);
+			if (referenceEntity != null) {
+				NestProperty np = mnp.currentConfig(referenceEntity, fromEntity, fromEntity);
 				if (np != null) section.addProperty(np);
 			}
 		}
 
 		if (!getSortSetting().isEmpty()) {
 			for (MetaSortSetting meta : getSortSetting()) {
-				SortSetting ss = meta.currentConfig(ctx, refEntity);
+				SortSetting ss = meta.currentConfig(ctx, referenceEntity);
 				if (ss != null) section.addSortSetting(ss);
 			}
 		}

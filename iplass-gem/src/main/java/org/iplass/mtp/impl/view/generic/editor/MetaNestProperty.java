@@ -392,9 +392,17 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		this.localizedTooltipList = localizedTooltipList;
 	}
 
-	public void applyConfig(NestProperty property, EntityHandler entity, EntityHandler rootEntity) {
+	/**
+	 * DefinitionをMetaDataに変換します。
+	 *
+	 * @param property プロパティ定義
+	 * @param referenceEntity 参照先Entity定義
+	 * @param fromEntity 参照元Entity定義
+	 * @param rootEntity ルートEntity定義
+	 */
+	public void applyConfig(NestProperty property, EntityHandler referenceEntity, EntityHandler fromEntity, EntityHandler rootEntity) {
 		EntityContext ctx = EntityContext.getCurrentContext();
-		PropertyHandler ph = entity.getProperty(property.getPropertyName(), ctx);
+		PropertyHandler ph = referenceEntity.getProperty(property.getPropertyName(), ctx);
 //		if (ph == null || ph.getMetaData().getMultiplicity() != 1) return;
 		//検索画面が多重度1でないプロパティを扱えるのでチェックを変更
 		//ただし、詳細画面は変わらず扱えないため、JSP側ではじく
@@ -417,17 +425,27 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		MetaPropertyEditor editor = MetaPropertyEditor.createInstance(property.getEditor());
 
 		if (property.getEditor() instanceof JoinPropertyEditor) {
-			((JoinPropertyEditor) property.getEditor()).setObjectName(entity.getMetaData().getName());
+			((JoinPropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData().getName());
 		} else if (property.getEditor() instanceof DateRangePropertyEditor) {
-			((DateRangePropertyEditor) property.getEditor()).setObjectName(entity.getMetaData().getName());
+			((DateRangePropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData().getName());
 		} else if (property.getEditor() instanceof NumericRangePropertyEditor) {
-			((NumericRangePropertyEditor) property.getEditor()).setObjectName(entity.getMetaData().getName());
+			((NumericRangePropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData().getName());
 		} else if (property.getEditor() instanceof ReferencePropertyEditor) {
+			ReferencePropertyEditor rpe = (ReferencePropertyEditor) property.getEditor();
 			if (ph instanceof ReferencePropertyHandler) {
-				String objName = ((ReferencePropertyHandler) ph).getReferenceEntityHandler(ctx).getMetaData().getName();
-				((ReferencePropertyEditor) property.getEditor()).setObjectName(objName);
+				// 参照先Entity名をセット
+				ReferencePropertyHandler rph = (ReferencePropertyHandler) ph;
+				String objName = rph.getReferenceEntityHandler(ctx).getMetaData().getName();
+				rpe.setObjectName(objName);
+				// 参照元Entity名をセット
+				if (rph.getParent() != null) {
+					rpe.setReferenceFromObjectName(rph.getParent().getMetaData().getName());
+				}
+				// ルートEntity名をセット
+				if (rootEntity != null) {
+					rpe.setRootObjectName(rootEntity.getMetaData().getName());
+				}
 			}
-//			((ReferencePropertyEditor) property.getEditor()).setObjectName(entity.getMetaData().getName());
 		}
 
 		if (editor != null) {
@@ -438,7 +456,7 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 
 		if (property.getAutocompletionSetting() != null) {
 			autocompletionSetting = MetaAutocompletionSetting.createInstance(property.getAutocompletionSetting());
-			autocompletionSetting.applyConfig(property.getAutocompletionSetting(), entity, rootEntity);
+			autocompletionSetting.applyConfig(property.getAutocompletionSetting(), referenceEntity, rootEntity);
 		}
 
 		// 言語毎の文字情報設定
@@ -452,9 +470,17 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 
 	}
 
-	public NestProperty currentConfig(EntityHandler entity, EntityHandler rootEntity) {
+	/**
+	 * MetaDataをDefinitionに変換します。
+	 *
+	 * @param referenceEntity 参照先Entity定義
+	 * @param fromEntity 参照元Entity定義
+	 * @param rootEntity ルートEntity定義
+	 * @return Definition
+	 */
+	public NestProperty currentConfig(EntityHandler referenceEntity, EntityHandler fromEntity, EntityHandler rootEntity) {
 		EntityContext ctx = EntityContext.getCurrentContext();
-		PropertyHandler ph = entity.getPropertyById(propertyId, ctx);
+		PropertyHandler ph = referenceEntity.getPropertyById(propertyId, ctx);
 //		if (ph == null || ph.getMetaData().getMultiplicity() != 1) return null;
 		//検索画面が多重度1でないプロパティを扱えるのでチェックを変更
 		//ただし、詳細画面は変わらず扱えないため、JSP側ではじく
@@ -479,7 +505,7 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		}
 
 		if (autocompletionSetting != null) {
-			property.setAutocompletionSetting(autocompletionSetting.currentConfig(entity, rootEntity));
+			property.setAutocompletionSetting(autocompletionSetting.currentConfig(referenceEntity, rootEntity));
 		}
 
 		property.setLocalizedDisplayLabelList(I18nUtil.toDef(localizedDisplayLabelList));
