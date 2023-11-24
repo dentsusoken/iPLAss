@@ -924,6 +924,7 @@ $(function() {
  data-viewType="<%=viewType %>"
  data-viewName="<c:out value="<%=viewName %>"/>"
  data-propName="<c:out value="<%=linkToPropName %>"/>"
+ data-radioTogglable="<c:out value="<%=radioTogglable %>"/>"
  data-linkName="<c:out value="<%=linkFromName %>"/>"
  data-prefix=""
  data-getItemWebapiName="<%=GetReferenceLinkItemCommand.WEBAPI_NAME %>"
