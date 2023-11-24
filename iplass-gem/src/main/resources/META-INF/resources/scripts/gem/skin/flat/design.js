@@ -552,6 +552,13 @@ function onClickPseudoRadio() {
 }
 
 /**
+ * 連動プロパティへデザイン毎の処理を適用
+ */
+var applyDesignRefLinkRadio = function(elements) {
+	elements.each(createPseudoObject);
+}
+
+/**
  * 検索画面の全削除時のチェック解除
  */
 function clearAllDelete() {

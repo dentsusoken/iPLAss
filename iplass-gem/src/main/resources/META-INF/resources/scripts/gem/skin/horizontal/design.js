@@ -587,3 +587,10 @@ $(function(){
 function clearAllDelete() {
 	$("#cb_searchResult").prop("checked", false);
 }
+
+/**
+ * 連動プロパティへデザイン毎の処理を適用
+ */
+var applyDesignRefLinkRadio = function(elements) {
+	elements.filter(".radio-togglable").togglableRadio();
+}
