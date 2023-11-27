@@ -3900,6 +3900,11 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 					var token = $(this).attr("token");
 					uploadFile(this, token);
 				});
+			} else if (type[0] == "Select") {
+				//Select
+				$td.children("ul").each(function() {
+					replaceDummyAttr(this, "data-itemname", idx);
+				});
 			} else if (type[0] == "Reference") {
 				//参照
 				addNestRow_Reference(type[1], $td, idx);
