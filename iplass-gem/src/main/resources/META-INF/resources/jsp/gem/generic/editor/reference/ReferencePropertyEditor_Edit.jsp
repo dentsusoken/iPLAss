@@ -959,7 +959,7 @@ $(function() {
 <%
 		} else {
 %>
-<ul class="<c:out value="<%=cls %>"/>">
+<ul class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
 <%
 			for (Entity refEntity : entityList) {
 %>
