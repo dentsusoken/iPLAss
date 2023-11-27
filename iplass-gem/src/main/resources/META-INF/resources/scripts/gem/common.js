@@ -4179,7 +4179,7 @@ function addNestRow_Reference(type, cell, idx) {
 		});
 		$selButton.off("click");
 
-		var $insButton = $(".ins-btn", $(cell));
+		var $insButton = $(".ins-btn", cell);
 		$insButton.off("click");
 
 		if ($("body.modal-body").length != 0) {
@@ -4233,12 +4233,12 @@ function addNestRow_Reference(type, cell, idx) {
 			insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, $insButton, null, viewType, refSectionIndex, entityOid, entityVersion);
 		});
 	} else if (type == "TREE") {
-		var $selBtn = $(".sel-btn", $(cell));
+		var $selBtn = $(".sel-btn", cell);
 		replaceDummyAttr($selBtn, "data-container", idx);
 		replaceDummyAttr($selBtn, "data-uniqueName", idx);
 		$selBtn.refRecursiveTree();
 
-		var $insButton = $(".ins-btn", $(cell));
+		var $insButton = $(".ins-btn", cell);
 		$insButton.off("click");
 
 		if ($("body.modal-body").length != 0) {
@@ -4268,21 +4268,24 @@ function addNestRow_Reference(type, cell, idx) {
 		});
 	} else if (type == "SELECT") {
 		// 連動プロパティの対応
-		var $refLinkSelect = $(".refLinkSelect", $(cell));
+		var $refLinkSelect = $(".refLinkSelect", cell);
 		replaceDummyAttr($refLinkSelect, "data-linkName", idx);
-		$(".refLinkSelect", $(cell)).refLinkSelect();
+		$(".refLinkSelect", cell).refLinkSelect();
 	} else if (type == "CHECKBOX") {
+		var $radioWrap = $("ul", cell);
+		replaceDummyAttr($radioWrap, "data-itemName", idx);
+		
 		// 連動プロパティの対応
-		var $refLinkRadio = $(".refLinkRadio", $(cell));
+		var $refLinkRadio = $(".refLinkRadio", cell);
 		replaceDummyAttr($refLinkRadio, "data-linkName", idx);
-		$(".refLinkRadio", $(cell)).refLinkRadio();
+		$(".refLinkRadio", cell).refLinkRadio();
 	} else if (type == "UNIQUE") {
-		var $li = $(".unique-list", $(cell));
+		var $li = $(".unique-list", cell);
 		replaceDummyAttr($li, "data-propName", idx);
-		$(".refUnique", $(cell)).refUnique();
+		$(".refUnique", cell).refUnique();
 	} else if (type == "REFCOMBO") {
 		//TODO 連動コンボ時の初期ロードで実行されるjavascriptをどうにかする
-		$(cell).children("select").each(function() {
+		cell.children("select").each(function() {
 		});
 	}
 }
