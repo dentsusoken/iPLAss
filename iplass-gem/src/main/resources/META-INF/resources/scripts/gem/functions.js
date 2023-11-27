@@ -2762,6 +2762,7 @@ $.fn.allInputCheck = function(){
 				viewType:$v.attr("data-viewType"),
 				viewName:$v.attr("data-viewName"),
 				propName:$v.attr("data-propName"),
+				radioTogglable:$v.attr("data-radioTogglable"),
 				linkName:$v.attr("data-linkName"),
 				prefix:$v.attr("data-prefix"),
 				getItemWebapiName:$v.attr("data-getItemWebapiName"),
@@ -2836,9 +2837,17 @@ $.fn.allInputCheck = function(){
 							value: entity.oid + "_" + entity.version ,
 							name: $v.propName
 						}).appendTo($label);
+						if ($v.radioTogglable) {
+							$radio.addClass($v.radioTogglable);
+						}
 						$("<span />").text(entity.name).appendTo($label);
 
 						$v.append($li);
+					}
+
+					//デザイン固有の処理があったら呼び出し
+					if (applyDesignRefLinkRadio) {
+						applyDesignRefLinkRadio($("input[type=radio]:not('.applied-pseudo')", $v));
 					}
 				});
 			}
