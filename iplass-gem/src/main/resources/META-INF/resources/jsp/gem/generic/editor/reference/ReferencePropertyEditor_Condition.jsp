@@ -71,13 +71,47 @@
 		if (property.getEditor() == null) return false;
 		return true;
 	}
+
+	/**
+	 * 連動コンボの上位層の検索状態を取得します。
+	 *
+	 * @param searchCondMap 検索条件Map
+	 * @param propName 下層プロパティ名
+	 * @param setting 対象のコンボ設定
+	 * @return [0]：選択最下層のプロパティ名、[1]：選択最下層のOID
+	 */
 	String[] getRefComboUpperCondition(Map<String, List<String>> searchCondMap, String propName, ReferenceComboSetting setting) {
 		String name = propName + "." + setting.getPropertyName();
 		String[] value = ViewUtil.getSearchCondValue(searchCondMap, name);
-		if ((value == null) && (setting.getParent() != null)) {
+		if (value != null) {
+			return new String[] {
+				name, value[0]
+			};
+		}
+		if (setting.getParent() != null) {
 			return getRefComboUpperCondition(searchCondMap, name, setting.getParent());
 		}
 		return null;
+	}
+
+	/**
+	 * Entityデータを最小限のプロパティでロードします。
+	 * 
+	 * @param definitionName Entity定義名
+	 * @param oid 対象OID
+	 * @param addPropNames OID、VERSION以外に取得したいプロパティ。多重度複数のReferenceは考慮していません。
+	 * @return ロードEntityデータ
+	 */
+	Entity loadReferenceEntity(String definitionName, String oid, Object... addPropNames) {
+		Query query = new Query().select(Entity.OID, Entity.VERSION);
+		if (addPropNames != null && addPropNames.length > 0) {
+			query.getSelect().add(addPropNames);
+		}
+		query.from(definitionName)
+			.where(new Equals(Entity.OID, oid));
+		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		Entity ret = em.searchEntity(query).getFirst();
+		return ret;
 	}
 
 	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty) {
@@ -463,30 +497,35 @@ $(function() {
 </script>
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.REFCOMBO) {
-		Entity entity = null;
-		//パラメータに初期値があれば初期値でロード(searchCondMapがnullでない場合は入ってこない)
+
+		//最下層の選択データの取得
+		Entity currentEntity = null;
+		
+		//パラメータに初期値があれば初期値でロード
+		//検索実行済の場合(searchCondMapがnullでない場合）は設定されない
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
-			//TODO serchEntityで検索
-			entity = em.load(propValue[0], rp.getObjectDefinitionName(), new LoadOption(false, false));
+			currentEntity = loadReferenceEntity(rp.getObjectDefinitionName(), propValue[0]);
 		}
-		//searchCondMapに初期値があればsearchCondMapの値でロード
-		if (entity == null) {
+
+		//検索実行時の条件が設定されていれば条件値の値でロード
+		if (currentEntity == null) {
 			//js側で復元できないのでこっちで復元
-			String[] ary = ViewUtil.getSearchCondValue(searchCondMap, propName);
-			if (ary != null && ary.length > 0) {
-				//TODO serchEntityで検索
-				entity = em.load(ary[0], rp.getObjectDefinitionName(), new LoadOption(false, false));
+			String[] searchCondValue = ViewUtil.getSearchCondValue(searchCondMap, propName);
+			if (searchCondValue != null && searchCondValue.length > 0) {
+				currentEntity = loadReferenceEntity(rp.getObjectDefinitionName(), searchCondValue[0]);
 			}
 		}
+
+		String currentOid = currentEntity != null ? currentEntity.getOid() : "";
 
 		RefComboSearchType searchType = editor.getSearchType();
 		if (searchType == null) searchType = RefComboSearchType.NONE;
 
-		//最階層が未選択で上位階層で検索を許可している場合、上位階層の選択条件をチェック
+		//最下層が未選択の場合、上位階層の選択状態をチェック
 		String upperName = "";
 		String upperOid = "";
-		if (entity == null && editor.getReferenceComboSetting() != null && searchType == RefComboSearchType.UPPER) {
+		if (currentEntity == null && editor.getReferenceComboSetting() != null) {
 			String[] upperCondition = getRefComboUpperCondition(searchCondMap, pd.getName(), editor.getReferenceComboSetting());
 			if (upperCondition != null && upperCondition.length > 1
 					&& StringUtil.isNotBlank(upperCondition[0]) && StringUtil.isNotBlank(upperCondition[1])) {
@@ -494,16 +533,17 @@ $(function() {
 				upperOid = upperCondition[1];
 			}
 		}
-		String oid = entity != null ? entity.getOid() != null ? entity.getOid() : "" : "";
 
+		//デフォルト値(リセット値)の取得
 		//初期設定では上位のみの指定は許可していないので考慮不要
-		Entity defEntity = null;
+		String defaultOid = "";
 		String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 		if (defaultValue != null && defaultValue.length > 0) {
-			//TODO serchEntityで検索
-			defEntity = em.load(defaultValue[0], rp.getObjectDefinitionName(), new LoadOption(false, false));
+			Entity defaultEntity = loadReferenceEntity(rp.getObjectDefinitionName(), defaultValue[0]);
+			if (defaultEntity != null) {
+				defaultOid = defaultEntity.getOid();
+			}
 		}
-		String defOid = defEntity != null ? defEntity.getOid() != null ? defEntity.getOid() : "" : "";
 
 		String _defName = (String) request.getAttribute(Constants.DEF_NAME);
 		if (viewName == null) viewName = "";
@@ -513,16 +553,16 @@ $(function() {
 %>
 <%-- XSS対応-メタの設定のため対応なし(searchType) --%>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr refCombo" style="<c:out value="<%=customStyle%>"/>"
- data-oid="<c:out value="<%=oid%>"/>"
- data-propName="<c:out value="<%=pd.getName() %>"/>"
  data-defName="<c:out value="<%=_defName %>"/>"
  data-viewName="<c:out value="<%=viewName %>"/>"
+ data-propName="<c:out value="<%=pd.getName() %>"/>"
+ data-viewType="<%=Constants.VIEW_TYPE_SEARCH %>"
+ data-searchType="<%=searchType%>"
+ data-prefix="sc_"
  data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
  data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>"
  data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
- data-viewType="<%=Constants.VIEW_TYPE_SEARCH %>"
- data-prefix="sc_"
- data-searchType="<%=searchType%>"
+ data-oid="<c:out value="<%=currentOid%>"/>"
  data-upperName="<c:out value="<%=upperName%>" />"
  data-upperOid="<c:out value="<%=upperOid%>" />"
  data-norewrite="true"
@@ -535,7 +575,7 @@ $(function() {
 		<%-- 再ロード --%>
 		$("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").refCombo({
 			reset:true,
-			oid:"<%=StringUtil.escapeJavaScript(defOid)%>"
+			oid:"<%=StringUtil.escapeJavaScript(defaultOid)%>"
 		});
 	});
 <%
