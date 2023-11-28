@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -33,9 +33,9 @@ import org.iplass.mtp.impl.datastore.grdb.sql.SchemaControlHandleLockSql;
 import org.iplass.mtp.impl.datastore.grdb.sql.SchemaControlInsertSql;
 import org.iplass.mtp.impl.datastore.grdb.sql.SchemaControlSearchSql;
 import org.iplass.mtp.impl.datastore.grdb.sql.SchemaControlUpdateVersionSql;
+import org.iplass.mtp.impl.datastore.grdb.strategy.metadata.ColContext.ColCopy;
 import org.iplass.mtp.impl.datastore.grdb.strategy.metadata.ColResolver;
 import org.iplass.mtp.impl.datastore.grdb.strategy.metadata.LockStatus;
-import org.iplass.mtp.impl.datastore.grdb.strategy.metadata.ColContext.ColCopy;
 import org.iplass.mtp.impl.datastore.grdb.strategy.metadata.diff.UpdEntity;
 import org.iplass.mtp.impl.datastore.strategy.ApplyMetaDataStrategy;
 import org.iplass.mtp.impl.entity.EntityContext;
@@ -179,7 +179,8 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 
 		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context,
 				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) previous.getStoreMapping()),
-				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) newOne.getStoreMapping()), rdb);
+				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) newOne.getStoreMapping()), rdb,
+				dataStore.isForceRegenerateTableNamePostfix());
 		updateDiff.modifyMetaData();
 
 		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
@@ -235,7 +236,7 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 
 		//SchemaControlのLOCK_STATUSをNO_LOCK
 		int ver = ((MetaGRdbEntityStore) toEnt.getEntityStoreDefinition()).getVersion();
-		
+
 		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
 
 			@Override
