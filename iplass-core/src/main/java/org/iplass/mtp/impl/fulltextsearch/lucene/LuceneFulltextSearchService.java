@@ -246,6 +246,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 		// Crawl対象プロパティが0件以下の場合は終了
 		if (meta.getCrawlPropertyId() == null || meta.getCrawlPropertyId().isEmpty()) {
 			logger.warn(defName + " have no crawl target property. so skip crawl.");
+			logger.info("end crawl " + defName);
 			return;
 		}
 
@@ -348,6 +349,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 						updateCrawlLog(objDefId, objDefVer, now);
 					}
 					writer.commit();
+					logger.info("end crawl " + defName);
 				} catch (IOException | RuntimeException e) {
 					writer.rollback();
 					throw e;
