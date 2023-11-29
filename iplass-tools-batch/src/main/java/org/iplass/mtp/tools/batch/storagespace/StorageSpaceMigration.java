@@ -38,6 +38,9 @@ public class StorageSpaceMigration extends MtpCuiBase {
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private static StorageSpaceService storageSpaceService = ServiceRegistry.getRegistry().getService(StorageSpaceService.class);
 
+	/** 疑似パーティション位置を自動で決定する為のコンソール入力文字 */
+	private static final String CONSOLE_INPUT_PSEUDO_PARTITION_LOCATION_AUTO = "auto";
+
 	/** 実行モード */
 	private ExecMode execMode = ExecMode.WIZARD;
 
@@ -243,8 +246,29 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		int tableCount = getStorageSpaceMap(storageSpaceName).getTableCount();
 		if (1 < tableCount) {
 			// 疑似パーティションが定義されている場合、パーティション位置を指定
-			setPseudoPartitionLocation(
-					readConsoleInteger(rs("StorageSpaceMigration.Wizard.pseudoPartitionPositionMsg", tableCount - 1), pseudoPartitionLocation));
+			boolean validPseudoPartitionLocation = false;
+			do {
+				String readPseudoPartitionLocation = readConsole(
+						rs("StorageSpaceMigration.Wizard.pseudoPartitionLocationMsg", tableCount - 1, CONSOLE_INPUT_PSEUDO_PARTITION_LOCATION_AUTO));
+				if (StringUtil.isNotBlank(readPseudoPartitionLocation)) {
+					if (StringUtil.equalsIgnoreCase(CONSOLE_INPUT_PSEUDO_PARTITION_LOCATION_AUTO, readPseudoPartitionLocation)) {
+						// auto が入力された場合は、デフォルト値のまま進める
+						validPseudoPartitionLocation = true;
+					} else {
+						try {
+							int pseudoPartitionLocation = Integer.parseInt(readPseudoPartitionLocation);
+							if (0 > pseudoPartitionLocation || pseudoPartitionLocation >= tableCount) {
+								// 想定外の設定値の場合は再入力する
+								throw new IllegalArgumentException();
+							}
+							setPseudoPartitionLocation(pseudoPartitionLocation);
+							validPseudoPartitionLocation = true;
+						} catch (IllegalArgumentException e) {
+							logWarn(rs("StorageSpaceMigration.Wizard.invalidPseudoPartitionLocationMsg", CONSOLE_INPUT_PSEUDO_PARTITION_LOCATION_AUTO));
+						}
+					}
+				}
+			} while (validPseudoPartitionLocation == false);
 		}
 
 		// WithCleanup
@@ -286,6 +310,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 				// パーティション位置のチェック
 				int tableCount = 0 < storageSpaceMap.getTableCount() ? storageSpaceMap.getTableCount() : 1;
 				if (tableCount <= pseudoPartitionLocation) {
+					// 最大値チェックは SILENT パターンでは必要
 					// 最大パーティション位置以上の場合は、エラー終了。
 					// storageSpaceMap.getTableCount() = 2 の場合 ⇒ OBJ_STORE__SPNAME, OBJ_STORE__SPNAME__1 が定義される。
 					// pseudoPartitionLocation として指定可能な範囲は、 0 ～ 1となる。2 は指定不可能。
