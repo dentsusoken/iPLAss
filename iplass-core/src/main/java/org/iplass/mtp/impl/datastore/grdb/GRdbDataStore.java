@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -44,21 +44,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GRdbDataStore extends RdbDataStore {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(GRdbDataStore.class);
-	
+
 	private GRdbEntityStoreStrategy entityStore;
 	private GRdbApplyMetaDataStrategy applyMeta;
 	private Map<String, StorageSpaceMap> storageSpaceMap;
-	
+
 	private List<StorageSpaceMap> storageSpace;
 	private boolean enableWindowFunctionEmulation;
-	
+
 	private Integer stringTypeLengthOnQuery;
-	
+
+	/** 強制的なテーブル名接尾辞の再生成（true の場合に再生成する） */
+	private boolean forceRegenerateTableNamePostfix;
+
 	public GRdbDataStore() {
 	}
-	
+
 	public Map<String, StorageSpaceMap> getStorageSpaceMap() {
 		return storageSpaceMap;
 	}
@@ -68,7 +71,7 @@ public class GRdbDataStore extends RdbDataStore {
 	public void setStorageSpace(List<StorageSpaceMap> storageSpace) {
 		this.storageSpace = storageSpace;
 	}
-	
+
 	@Override
 	public ApplyMetaDataStrategy getApplyMetaDataStrategy() {
 		return applyMeta;
@@ -96,6 +99,30 @@ public class GRdbDataStore extends RdbDataStore {
 		this.stringTypeLengthOnQuery = stringTypeLengthOnQuery;
 	}
 
+	/**
+	 * ストレージスペース名が同一の場合に、強制的なテーブル名接尾辞の再生成を実施するかを取得する。
+	 * @return true の場合、ストレージスペース名が同一の場合でも強制的にテーブル名接尾辞を再生成する
+	 */
+	public boolean isForceRegenerateTableNamePostfix() {
+		return forceRegenerateTableNamePostfix;
+	}
+
+	/**
+	 * ストレージスペース名が同一の場合に、強制的なテーブル名接尾辞の再生成を実施するかを設定する。
+	 *
+	 * <p>
+	 * 本フラグを設定することで、エンティティ定義更新時にテーブルスペース位置（tableNamePostfix）に変更が入る。
+	 * ストレージスペース移行を実施する際に設定することを想定しており、業務アプリから設定してはいけない。
+	 * </p>
+	 *
+	 * @see org.iplass.mtp.impl.datastore.grdb.strategy.GRdbApplyMetaDataStrategy#modify(org.iplass.mtp.impl.entity.MetaEntity, org.iplass.mtp.impl.entity.MetaEntity, org.iplass.mtp.impl.entity.EntityContext, int[])
+	 * @see org.iplass.mtp.impl.datastore.grdb.strategy.metadata.diff.UpdEntity#modifyMetaData()
+	 * @param forceRegenerateTableNamePostfix true の場合、ストレージスペース名が同一の場合でも強制的にテーブル名接尾辞を再生成する
+	 */
+	public void setForceRegenerateTableNamePostfix(boolean forceRegenerateTableNamePostfix) {
+		this.forceRegenerateTableNamePostfix = forceRegenerateTableNamePostfix;
+	}
+
 	@Override
 	public void inited(StoreService service, Config config) {
 		storageSpaceMap = new HashMap<>();
@@ -107,7 +134,7 @@ public class GRdbDataStore extends RdbDataStore {
 
 		CounterService cs = config.getDependentService(CounterService.OID_COUNTER_SERVICE_NAME);
 		RdbAdapter rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
-		
+
 		entityStore = new GRdbEntityStoreStrategy(this, rdb, cs);
 		applyMeta = new GRdbApplyMetaDataStrategy(this, rdb);
 	}
@@ -135,7 +162,7 @@ public class GRdbDataStore extends RdbDataStore {
 			return Collections.emptyList();
 		}
 	}
-	
+
 	public StorageSpaceMap getStorageSpaceMapOrDefault(String name) {
 		StorageSpaceMap ret = storageSpaceMap.get(name);
 		if (ret == null) {

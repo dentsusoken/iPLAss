@@ -104,18 +104,18 @@ public class StringUtil {
 			default:
 				break;
 			}
-		
+
 			if (needSanitaizing) {
 				break;
 			}
 		}
-		
+
 		if (!needSanitaizing) {
 			return str;
 		}
-		
+
 		StringBuilder buff = new StringBuilder();
-		
+
 		for (int i = 0; i < str.length(); i++) {
 			current = str.charAt(i);
 			switch (current) {
@@ -130,10 +130,10 @@ public class StringUtil {
 			default:
 				break;
 			}
-			
+
 			buff.append(current);
 		}
-		
+
 		return buff.toString();
 	}
 
@@ -147,7 +147,7 @@ public class StringUtil {
 		return StringEscapeUtils.escapeXml10(str);
 	}
 
-    /**
+	/**
 	 * XML1.0仕様に基づくエスケープ処理をする。
 	 *
 	 * @param str
@@ -170,7 +170,7 @@ public class StringUtil {
 		return StringEscapeUtils.escapeXml11(str);
 	}
 
-    /**
+	/**
 	 * XML1.1仕様に基づくエスケープ処理をする。
 	 *
 	 * @param str
@@ -186,21 +186,21 @@ public class StringUtil {
 	public static String unescapeXml(String str) {
 		return StringEscapeUtils.unescapeXml(str);
 	}
-    /**
-     * HTML4.0レベルで定義されるエンティティ、および'を&#039;に変換するエスケープ処理をする。
-     *
-     * @param str
+	/**
+	 * HTML4.0レベルで定義されるエンティティ、および'を&#039;に変換するエスケープ処理をする。
+	 *
+	 * @param str
 	 * @return エスケープされた文字列。strがnullの場合はnullが返却
-     */
+	 */
 	public static String escapeHtml(String str) {
 		return ESCAPE_HTML4_SP.translate(str);
 	}
 	/**
-     * HTML4.0レベルで定義されるエンティティ、および'を&#039;に変換するエスケープ処理をする。
+	 * HTML4.0レベルで定義されるエンティティ、および'を&#039;に変換するエスケープ処理をする。
 	 *
 	 * @param str
-     * @param emptyIfNull strがnullの場合、空文字で返却するか否か
-     * @return エスケープされた文字列
+	 * @param emptyIfNull strがnullの場合、空文字で返却するか否か
+	 * @return エスケープされた文字列
 	 */
 	public static String escapeHtml(String str, boolean emptyIfNull) {
 		if (emptyIfNull && str == null) {
@@ -216,7 +216,7 @@ public class StringUtil {
 	 * ランダムな文字列を生成します。
 	 * 長期間にわたり保存するトークンとして利用する場合、
 	 * 当メソッドが返却する文字列では十分に安全ではない可能性があります。
-	 * 
+	 *
 	 * @return
 	 */
 	public static String randomToken() {
@@ -386,6 +386,10 @@ public class StringUtil {
 
 	public static boolean equalsIgnoreCase(String str1, String str2) {
 		return StringUtils.equalsIgnoreCase(str1, str2);
+	}
+
+	public static boolean equals(String cs1, String cs2) {
+		return StringUtils.equals(cs1, cs2);
 	}
 
 	public static boolean endsWithIgnoreCase(String str, String suffix) {

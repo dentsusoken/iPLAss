@@ -35,6 +35,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -44,7 +45,10 @@ import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;
 import org.iplass.mtp.impl.datastore.RdbDataStore;
 import org.iplass.mtp.impl.datastore.StoreService;
 import org.iplass.mtp.impl.datastore.grdb.GRdbDataStore;
+import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore;
+import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore.GRdbEntityStoreRuntime;
 import org.iplass.mtp.impl.datastore.grdb.StorageSpaceMap;
+import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
@@ -58,6 +62,7 @@ import org.iplass.mtp.impl.tools.entityport.EntityDataImportCondition;
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportResult;
 import org.iplass.mtp.impl.tools.entityport.EntityPortingService;
 import org.iplass.mtp.spi.Config;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 
@@ -86,7 +91,7 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 			"obj_unique_str",
 			"obj_unique_ts"
 	};
-	
+
 	private static final String[] INDEX_TABLES = {
 			"obj_index_date",
 			"obj_index_dbl",
@@ -94,7 +99,7 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 			"obj_index_str",
 			"obj_index_ts"
 	};
-	
+
 	private static final String[] UNIQUE_TABLES = {
 			"obj_unique_date",
 			"obj_unique_dbl",
@@ -150,12 +155,6 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 			throw new IllegalArgumentException(getRS("noStorageSpace", storageSpaceName));
 		}
 
-		// StorageSpace同一チェック
-		String currentStorageSpaceName = ((SchemalessRdbStore) edm.get(entityDefinition.getName()).getStoreDefinition()).getStorageSpace();
-		if (storageSpaceName.equals(currentStorageSpaceName)) {
-			throw new IllegalArgumentException(getRS("sameStorageSpace", storageSpaceName));
-		}
-
 		// MetaDataEntry取得
 		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(EntityService.ENTITY_META_PATH + entityDefinition.getName().replace(".", "/"));
 
@@ -167,8 +166,17 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 			exportCSV(tempFile, entry);
 
 			// StorageSpace変更
+			String beforeTableNamePostfix = getTableNamePostfix(entityDefinition.getName());
+			// changeStorageSpace メソッドを超えた場合、エンティティ定義に更新が入っている
 			if (!changeStorageSpace(edm.get(entityDefinition.getName()), storageSpaceName)) {
 				throw new StorageSpaceRuntimeException(getRS("failedChangeStorageSpace"));
+			}
+			String afterTableNamePostfix = getTableNamePostfix(entityDefinition.getName());
+
+			// tableNamePostfix 同一チェック
+			if (StringUtil.equals(beforeTableNamePostfix, afterTableNamePostfix)) {
+				// 変更前後でテーブルスペース位置が同じ場合、処理を終了する
+				throw new IllegalArgumentException(getRS("sameTableNamePostfix", afterTableNamePostfix));
 			}
 
 			// EntityCSVデータインポート
@@ -186,13 +194,39 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 
 	@Override
 	public void cleanup(int tenantId, String storageSpaceName, MetaEntity metaEntity) {
+		cleanupInner(tenantId, storageSpaceName, metaEntity, (ssm) -> ssm.allTableNamePostfix());
+	}
+
+	@Override
+	public void cleanup(int tenantId, String storageSpaceName, MetaEntity metaEntity, String tableNamePostfix) {
+		cleanupInner(tenantId, storageSpaceName, metaEntity, (ssm) -> Arrays.asList(new String[] { tableNamePostfix }));
+	}
+
+	@Override
+	public String getTableNamePostfix(String entityName) {
+		EntityService entityService = ServiceRegistry.getRegistry().getService(EntityService.class);
+		EntityHandler entityHandler = entityService.getRuntimeByName(entityName);
+		GRdbEntityStoreRuntime entityStoreRuntime = (GRdbEntityStoreRuntime) entityHandler.getEntityStoreRuntime();
+
+		MetaGRdbEntityStore metaEntityStore = (MetaGRdbEntityStore) entityStoreRuntime.getMetaData();
+		return metaEntityStore.getTableNamePostfix();
+	}
+
+	/**
+	 * ストレージスペースクリーン内部処理
+	 * @param tenantId テナントID
+	 * @param storageSpaceName ストレージスペース名
+	 * @param metaEntity Entityメタデータ
+	 * @param postfixListFn テーブル名接尾辞取得ファンクション
+	 */
+	private void cleanupInner(int tenantId, String storageSpaceName, MetaEntity metaEntity, Function<StorageSpaceMap, List<String>> postfixListFn) {
 		// StorageSpace存在チェック
 		StorageSpaceMap ssm = ((GRdbDataStore) storeService.getDataStore()).getStorageSpaceMapOrDefault(storageSpaceName);
 		if (!ssm.getStorageSpaceName().equals(storageSpaceName)) {
 			// 指定のStorageSpaceが存在しない
 			throw new IllegalArgumentException(getRS("noStorageSpace", storageSpaceName));
 		}
-		List<String> postfixList = ssm.allTableNamePostfix();
+		List<String> postfixList = postfixListFn.apply(ssm);
 
 		final String objDefId = metaEntity.getId();
 		final List<String> objIdList = findObjId(tenantId, objDefId, postfixList, rdbAdapterService.getRdbAdapter());

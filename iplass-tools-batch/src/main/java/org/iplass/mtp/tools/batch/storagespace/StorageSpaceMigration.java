@@ -11,6 +11,10 @@ import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
+import org.iplass.mtp.impl.datastore.DataStore;
+import org.iplass.mtp.impl.datastore.StoreService;
+import org.iplass.mtp.impl.datastore.grdb.GRdbDataStore;
+import org.iplass.mtp.impl.datastore.grdb.StorageSpaceMap;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
@@ -19,6 +23,7 @@ import org.iplass.mtp.impl.tools.storagespace.StorageSpaceService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.storagespace.tableallocators.LocationSpecificationTableAllocator;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +37,9 @@ public class StorageSpaceMigration extends MtpCuiBase {
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private static StorageSpaceService storageSpaceService = ServiceRegistry.getRegistry().getService(StorageSpaceService.class);
+
+	/** 疑似パーティション位置を自動で決定する為のコンソール入力文字 */
+	private static final String CONSOLE_INPUT_PSEUDO_PARTITION_LOCATION_AUTO = "auto";
 
 	/** 実行モード */
 	private ExecMode execMode = ExecMode.WIZARD;
@@ -48,14 +56,26 @@ public class StorageSpaceMigration extends MtpCuiBase {
 	/** クリーンアップ指示 */
 	private boolean withCleanup = true;
 
+	/** 疑似パーティション位置（マイナス値の場合は自動決定する） */
+	private int pseudoPartitionLocation = -1;
+
 	/**
 	 * コンストラクタ
 	 *
-	 * args[0]・・・execMode["Wizard" or "Silent"]
-	 * args[1]・・・tenantId
-	 * args[2]・・・entityName
-	 * args[3]・・・storageSpaceName
-	 * args[4]・・・withCleanup
+	 * <p>
+	 * <ul>
+	 * <li>args[0]・・・execMode["Wizard" or "Silent"]</li>
+	 * <li>args[1]・・・tenantId</li>
+	 * <li>args[2]・・・entityName</li>
+	 * <li>args[3]・・・storageSpaceName</li>
+	 * <li>args[4]・・・withCleanup</li>
+	 * <li>args[5]・・・pseudoPartitionLocation</li>
+	 * </ul>
+	 * </p>
+	 *
+	 * <p>
+	 * pseudoPartitionLocation は後から追加したパラメータとなっている。互換性維持の為、最後に追加している。
+	 * </p>
 	 **/
 	public StorageSpaceMigration(String... args) {
 		if (args != null) {
@@ -74,6 +94,9 @@ public class StorageSpaceMigration extends MtpCuiBase {
 			if (args.length > 4) {
 				setWithCleanup(Boolean.valueOf(args[4]));
 			}
+			if (args.length > 5) {
+				setPseudoPartitionLocation(Integer.valueOf(args[5]));
+			}
 		}
 	}
 
@@ -87,6 +110,9 @@ public class StorageSpaceMigration extends MtpCuiBase {
 			new StorageSpaceMigration(args).execute();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			// 全サービス終了
+			ServiceRegistry.getRegistry().destroyAllService();
 		}
 	}
 
@@ -133,6 +159,15 @@ public class StorageSpaceMigration extends MtpCuiBase {
 	 */
 	public void setWithCleanup(boolean withCleanup) {
 		this.withCleanup = withCleanup;
+	}
+
+	/**
+	 * 疑似パーティション位置を設定します。
+	 *
+	 * @param pseudoPartitionLocation 疑似パーティション位置
+	 */
+	public void setPseudoPartitionLocation(int pseudoPartitionLocation) {
+		this.pseudoPartitionLocation = pseudoPartitionLocation;
 	}
 
 	/**
@@ -207,6 +242,35 @@ public class StorageSpaceMigration extends MtpCuiBase {
 			}
 		} while(validStorageSpaceName == false);
 
+		// 対象のストレージスペースに疑似パーティションが定義されているか確認
+		int tableCount = getStorageSpaceMap(storageSpaceName).getTableCount();
+		if (1 < tableCount) {
+			// 疑似パーティションが定義されている場合、パーティション位置を指定
+			boolean validPseudoPartitionLocation = false;
+			do {
+				String readPseudoPartitionLocation = readConsole(
+						rs("StorageSpaceMigration.Wizard.pseudoPartitionLocationMsg", tableCount - 1, CONSOLE_INPUT_PSEUDO_PARTITION_LOCATION_AUTO));
+				if (StringUtil.isNotBlank(readPseudoPartitionLocation)) {
+					if (StringUtil.equalsIgnoreCase(CONSOLE_INPUT_PSEUDO_PARTITION_LOCATION_AUTO, readPseudoPartitionLocation)) {
+						// auto が入力された場合は、デフォルト値のまま進める
+						validPseudoPartitionLocation = true;
+					} else {
+						try {
+							int pseudoPartitionLocation = Integer.parseInt(readPseudoPartitionLocation);
+							if (0 > pseudoPartitionLocation || pseudoPartitionLocation >= tableCount) {
+								// 想定外の設定値の場合は再入力する
+								throw new IllegalArgumentException();
+							}
+							setPseudoPartitionLocation(pseudoPartitionLocation);
+							validPseudoPartitionLocation = true;
+						} catch (IllegalArgumentException e) {
+							logWarn(rs("StorageSpaceMigration.Wizard.invalidPseudoPartitionLocationMsg", CONSOLE_INPUT_PSEUDO_PARTITION_LOCATION_AUTO));
+						}
+					}
+				}
+			} while (validPseudoPartitionLocation == false);
+		}
+
 		// WithCleanup
 		setWithCleanup(readConsoleBoolean(rs("StorageSpaceMigration.Wizard.confirmCleanupMsg"), withCleanup));
 
@@ -239,7 +303,30 @@ public class StorageSpaceMigration extends MtpCuiBase {
 				return isSuccess();
 			}
 
+			if (0 <= pseudoPartitionLocation) {
+				// 疑似パーティション位置を指定されている場合、指定されたパーティションインデックスを指定する
+				StorageSpaceMap storageSpaceMap = getStorageSpaceMap(storageSpaceName);
+
+				// パーティション位置のチェック
+				int tableCount = 0 < storageSpaceMap.getTableCount() ? storageSpaceMap.getTableCount() : 1;
+				if (tableCount <= pseudoPartitionLocation) {
+					// 最大値チェックは SILENT パターンでは必要
+					// 最大パーティション位置以上の場合は、エラー終了。
+					// storageSpaceMap.getTableCount() = 2 の場合 ⇒ OBJ_STORE__SPNAME, OBJ_STORE__SPNAME__1 が定義される。
+					// pseudoPartitionLocation として指定可能な範囲は、 0 ～ 1となる。2 は指定不可能。
+					throw new IllegalArgumentException(rs("StorageSpaceMigration.overPseudoPartitionPosition", tableCount - 1, pseudoPartitionLocation));
+				}
+				storageSpaceMap.setTableAllocator(new LocationSpecificationTableAllocator(pseudoPartitionLocation));
+
+				// ストレージスペースが同一でも、強制敵にテーブル名接尾辞を再生成する
+				// このフラグ設定は、ストレージスペース移行機能（本機能）だけで設定することを想定し用意している
+				StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
+				DataStore dataStore = storeService.getDataStore();
+				((GRdbDataStore) dataStore).setForceRegenerateTableNamePostfix(true);
+			}
+
 			String currentStorageSpaceName = ((SchemalessRdbStore) ed.getStoreDefinition()).getStorageSpace();
+			String currentTableNamePostfix = storageSpaceService.getTableNamePostfix(entityName);
 
 			try {
 				// StorageSpace移行
@@ -255,7 +342,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 							EntityHandler.class, EntityService.ENTITY_META_PATH + entityName.replace(".", "/")).getMetaData();
 
 					// 移行元StorageSpaceクリーンアップ
-					storageSpaceService.cleanup(tenantId, currentStorageSpaceName, metaEntity);
+					storageSpaceService.cleanup(tenantId, currentStorageSpaceName, metaEntity, currentTableNamePostfix);
 				} catch (Exception e) {
 					logError(rs("StorageSpaceMigration.failedCleanup"), e);
 					return isSuccess();
@@ -273,4 +360,26 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		return logger;
 	}
 
+	/**
+	 * StoreService から StorageSpaceMap 定義を取得する
+	 * @param storageSpaceName 取得対象のストレージスペース名
+	 * @return StorageSpaceMap
+	 */
+	private StorageSpaceMap getStorageSpaceMap(String storageSpaceName) {
+		StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
+		DataStore dataStore = storeService.getDataStore();
+		if (null != dataStore && dataStore instanceof GRdbDataStore) {
+			StorageSpaceMap storageSpaceMap = ((GRdbDataStore) dataStore).getStorageSpaceMap().get(storageSpaceName);
+			// ストレージスペース存在チェック
+			if (null == storageSpaceMap) {
+				// ストレージスペースマップが存在しない場合、エラー終了
+				throw new IllegalArgumentException(rs("StorageSpaceMigration.notFoundStorageSpace", storageSpaceName));
+			}
+
+			return storageSpaceMap;
+		}
+
+		throw new RuntimeException(
+				"DataStore is null or the class is of an unexpected type. type = " + (null == dataStore ? "null" : dataStore.getClass().getName()));
+	}
 }
