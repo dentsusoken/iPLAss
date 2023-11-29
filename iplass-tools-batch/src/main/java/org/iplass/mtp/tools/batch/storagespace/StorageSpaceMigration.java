@@ -239,8 +239,13 @@ public class StorageSpaceMigration extends MtpCuiBase {
 			}
 		} while(validStorageSpaceName == false);
 
-		// パーティション位置
-		setPseudoPartitionLocation(readConsoleInteger(rs("StorageSpaceMigration.Wizard.pseudoPartitionPositionMsg"), pseudoPartitionLocation));
+		// 対象のストレージスペースに疑似パーティションが定義されているか確認
+		int tableCount = getStorageSpaceMap(storageSpaceName).getTableCount();
+		if (1 < tableCount) {
+			// 疑似パーティションが定義されている場合、パーティション位置を指定
+			setPseudoPartitionLocation(
+					readConsoleInteger(rs("StorageSpaceMigration.Wizard.pseudoPartitionPositionMsg", tableCount - 1), pseudoPartitionLocation));
+		}
 
 		// WithCleanup
 		setWithCleanup(readConsoleBoolean(rs("StorageSpaceMigration.Wizard.confirmCleanupMsg"), withCleanup));
@@ -276,32 +281,23 @@ public class StorageSpaceMigration extends MtpCuiBase {
 
 			if (0 <= pseudoPartitionLocation) {
 				// 疑似パーティション位置を指定されている場合、指定されたパーティションインデックスを指定する
+				StorageSpaceMap storageSpaceMap = getStorageSpaceMap(storageSpaceName);
+
+				// パーティション位置のチェック
+				int tableCount = 0 < storageSpaceMap.getTableCount() ? storageSpaceMap.getTableCount() : 1;
+				if (tableCount <= pseudoPartitionLocation) {
+					// 最大パーティション位置以上の場合は、エラー終了。
+					// storageSpaceMap.getTableCount() = 2 の場合 ⇒ OBJ_STORE__SPNAME, OBJ_STORE__SPNAME__1 が定義される。
+					// pseudoPartitionLocation として指定可能な範囲は、 0 ～ 1となる。2 は指定不可能。
+					throw new IllegalArgumentException(rs("StorageSpaceMigration.overPseudoPartitionPosition", tableCount - 1, pseudoPartitionLocation));
+				}
+				storageSpaceMap.setTableAllocator(new LocationSpecificationTableAllocator(pseudoPartitionLocation));
+
+				// ストレージスペースが同一でも、強制敵にテーブル名接尾辞を再生成する
+				// このフラグ設定は、ストレージスペース移行機能（本機能）だけで設定することを想定し用意している
 				StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
 				DataStore dataStore = storeService.getDataStore();
-				if (dataStore instanceof GRdbDataStore) {
-					StorageSpaceMap storageSpaceMap = ((GRdbDataStore) dataStore).getStorageSpaceMap().get(storageSpaceName);
-
-					// ストレージスペース
-					if (null == storageSpaceMap) {
-						// ストレージスペースマップが存在しない場合、エラー終了
-						throw new IllegalArgumentException(rs("StorageSpaceMigration.notFoundStorageSpace", storageSpaceName));
-					}
-
-					// パーティション位置のチェック
-					int tableCount = 0 < storageSpaceMap.getTableCount() ? storageSpaceMap.getTableCount() : 1;
-					if (tableCount <= pseudoPartitionLocation) {
-						// 最大パーティション位置以上の場合は、エラー終了。
-						// storageSpaceMap.getTableCount() = 2 の場合 ⇒ OBJ_STORE__SPNAME, OBJ_STORE__SPNAME__1 が定義される。
-						// pseudoPartitionLocation として指定可能な範囲は、 0 ～ 1となる。2 は指定不可能。
-						throw new IllegalArgumentException(
-								rs("StorageSpaceMigration.overPseudoPartitionPosition", tableCount - 1, pseudoPartitionLocation));
-					}
-					storageSpaceMap.setTableAllocator(new LocationSpecificationTableAllocator(pseudoPartitionLocation));
-
-					// ストレージスペースが同一でも、強制敵にテーブル名接尾辞を再生成する
-					// このフラグ設定は、ストレージスペース移行機能（本機能）だけで設定することを想定し用意している
-					((GRdbDataStore) dataStore).setForceRegenerateTableNamePostfix(true);
-				}
+				((GRdbDataStore) dataStore).setForceRegenerateTableNamePostfix(true);
 			}
 
 			String currentStorageSpaceName = ((SchemalessRdbStore) ed.getStoreDefinition()).getStorageSpace();
@@ -339,4 +335,26 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		return logger;
 	}
 
+	/**
+	 * StoreService から StorageSpaceMap 定義を取得する
+	 * @param storageSpaceName 取得対象のストレージスペース名
+	 * @return StorageSpaceMap
+	 */
+	private StorageSpaceMap getStorageSpaceMap(String storageSpaceName) {
+		StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
+		DataStore dataStore = storeService.getDataStore();
+		if (null != dataStore && dataStore instanceof GRdbDataStore) {
+			StorageSpaceMap storageSpaceMap = ((GRdbDataStore) dataStore).getStorageSpaceMap().get(storageSpaceName);
+			// ストレージスペース存在チェック
+			if (null == storageSpaceMap) {
+				// ストレージスペースマップが存在しない場合、エラー終了
+				throw new IllegalArgumentException(rs("StorageSpaceMigration.notFoundStorageSpace", storageSpaceName));
+			}
+
+			return storageSpaceMap;
+		}
+
+		throw new RuntimeException(
+				"DataStore is null or the class is of an unexpected type. type = " + (null == dataStore ? "null" : dataStore.getClass().getName()));
+	}
 }
