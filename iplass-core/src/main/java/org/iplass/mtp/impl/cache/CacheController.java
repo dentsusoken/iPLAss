@@ -432,20 +432,25 @@ public class CacheController<K, V> {
 		ServiceRegistry.getRegistry().getService(CacheService.class).invalidate(store.getNamespace());
 	}
 
+	//TODO voidに
 	public String trace() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("CacheController Info");
-		builder.append("\nCacheController:" + this);
-		builder.append("\n\tCacheStore:" + store);
-		builder.append("\n\tLoadingAdapter:" + adapter);
-		builder.append("\n\thasVersion:" + hasVersion);
-		builder.append("\n\tindexCount:" + indexCount);
-		builder.append("\n\tuseNegativeCacheOnSharedCache:" + useNegativeCacheOnSharedCache);
+		if (logger.isTraceEnabled()) {
+			StringBuilder builder = new StringBuilder();
+			builder.append("CacheController Info");
+			builder.append("\nCacheController:" + this);
+			builder.append("\n\tCacheStore:" + store);
+			builder.append("\n\tLoadingAdapter:" + adapter);
+			builder.append("\n\thasVersion:" + hasVersion);
+			builder.append("\n\tindexCount:" + indexCount);
+			builder.append("\n\tuseNegativeCacheOnSharedCache:" + useNegativeCacheOnSharedCache);
 
-		builder.append("\n" + store.trace());
+			builder.append("\n" + store.trace());
 
-		logger.trace(builder.toString());
-		return builder.toString();
+			logger.trace(builder.toString());
+			return builder.toString();
+		} else {
+			return "CacheController Info(no details)";
+		}
 	}
 
 }

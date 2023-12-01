@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -40,11 +41,14 @@ import org.infinispan.notifications.cachelistener.event.CacheEntryCreatedEvent;
 import org.infinispan.notifications.cachelistener.event.CacheEntryInvalidatedEvent;
 import org.infinispan.notifications.cachelistener.event.CacheEntryModifiedEvent;
 import org.infinispan.notifications.cachelistener.event.CacheEntryRemovedEvent;
+import org.infinispan.util.function.SerializableBiFunction;
+import org.infinispan.util.function.SerializableFunction;
 import org.iplass.mtp.impl.cache.CacheService;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheHandler;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
+import org.iplass.mtp.impl.cache.store.TimeToLiveCalculator;
 import org.iplass.mtp.impl.cache.store.event.CacheCreateEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
 import org.iplass.mtp.impl.cache.store.event.CacheEventType;
@@ -69,6 +73,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 	private boolean createOnStartup = false;
 	private CacheStore sharedInstance;
 	private String cacheConfigrationName;
+	private TimeToLiveCalculator timeToLiveCalculator;
 
 	private int indexRemoveRetryCount = 10;
 	private long indexRemoveRetryInterval = 100;// ms
@@ -92,6 +97,14 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			}
 			sharedInstance = createCacheStoreInternal(getNamespace());
 		}
+	}
+
+	public TimeToLiveCalculator getTimeToLiveCalculator() {
+		return timeToLiveCalculator;
+	}
+
+	public void setTimeToLiveCalculator(TimeToLiveCalculator timeToLiveCalculator) {
+		this.timeToLiveCalculator = timeToLiveCalculator;
 	}
 
 	public int getIndexRemoveRetryCount() {
@@ -210,6 +223,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 	public static class InfinispanCacheStore implements CacheStore {
 		private final InfinispanCacheStoreFactory factory;
 		private final Cache<Object, CacheEntry> cache;
+		private final TimeToLiveCalculator timeToLiveCalculator;
 
 		private List<CacheEventListener> listeners = new CopyOnWriteArrayList<CacheEventListener>();
 
@@ -221,6 +235,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			}
 			cache = factory.cm.getCache(namespace);
 			cache.addListener(new InfinispanCacheListener(listeners));
+			timeToLiveCalculator= factory.getTimeToLiveCalculator();
 		}
 
 		@Override
@@ -235,33 +250,114 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 
 		@Override
 		public CacheEntry put(CacheEntry entry, boolean clean) {
+			if (timeToLiveCalculator != null) {
+				timeToLiveCalculator.set(entry);
+			}
+			
 			if (clean) {
-				cache.putForExternalRead(entry.getKey(), entry);
+				if (entry.getTimeToLive() == null) {
+					cache.putForExternalRead(entry.getKey(), entry);
+				} else {
+					cache.putForExternalRead(entry.getKey(), entry, entry.getTimeToLive(), TimeUnit.MILLISECONDS);
+				}
 				return null;
 			} else {
-				return cache.put(entry.getKey(), entry);
+				if (entry.getTimeToLive() == null) {
+					return cache.put(entry.getKey(), entry);
+				} else {
+					return cache.put(entry.getKey(), entry, entry.getTimeToLive(), TimeUnit.MILLISECONDS);
+				}
 			}
 
 		}
 
 		@Override
 		public CacheEntry putIfAbsent(CacheEntry entry) {
-			return cache.putIfAbsent(entry.getKey(), entry);
+			if (timeToLiveCalculator != null) {
+				timeToLiveCalculator.set(entry);
+			}
+			
+			if (entry.getTimeToLive() == null) {
+				return cache.putIfAbsent(entry.getKey(), entry);
+			} else {
+				return cache.putIfAbsent(entry.getKey(), entry, entry.getTimeToLive(), TimeUnit.MILLISECONDS);
+			}
 		}
 
 		@Override
 		public CacheEntry computeIfAbsent(Object key, Function<Object, CacheEntry> mappingFunction) {
-			return cache.computeIfAbsent(key, mappingFunction);
+			//ttlはmappingFunction実行しないと決められないので、有効期限チェックはgetのタイミングとする
+			return cache.computeIfAbsent(key, new MappingFunctionWithTTL(mappingFunction, timeToLiveCalculator));
+		}
+		
+		static class MappingFunctionWithTTL implements SerializableFunction<Object, CacheEntry> {
+			private static final long serialVersionUID = 6304426240300516685L;
+
+			Function<Object, CacheEntry> mappingFunction;
+			TimeToLiveCalculator timeToLiveCalculator;
+			
+			MappingFunctionWithTTL(Function<Object, CacheEntry> mappingFunction, TimeToLiveCalculator timeToLiveCalculator) {
+				this.mappingFunction = mappingFunction;
+				this.timeToLiveCalculator = timeToLiveCalculator;
+			}
+			
+			@Override
+			public CacheEntry apply(Object k) {
+				CacheEntry e = mappingFunction.apply(k);
+				if (e != null && timeToLiveCalculator != null) {
+					timeToLiveCalculator.set(e);
+				}
+				return e;
+			}
+			
 		}
 
 		@Override
 		public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
-			return cache.compute(key, remappingFunction);
+			//ttlはremappingFunction実行しないと決められないので、有効期限チェックはgetのタイミングとする
+			return cache.compute(key, new RemappingFunctionWithTTL(remappingFunction, timeToLiveCalculator));
+		}
+
+		static class RemappingFunctionWithTTL implements SerializableBiFunction<Object, CacheEntry, CacheEntry> {
+			private static final long serialVersionUID = -5435097223745759694L;
+
+			BiFunction<Object, CacheEntry, CacheEntry> remappingFunction;
+			TimeToLiveCalculator timeToLiveCalculator;
+			
+			RemappingFunctionWithTTL(BiFunction<Object, CacheEntry, CacheEntry> remappingFunction, TimeToLiveCalculator timeToLiveCalculator) {
+				this.remappingFunction = remappingFunction;
+				this.timeToLiveCalculator = timeToLiveCalculator;
+			}
+			
+			@Override
+			public CacheEntry apply(Object k, CacheEntry v) {
+				CacheEntry e = remappingFunction.apply(k, v);
+				if (e != null && e != v && timeToLiveCalculator != null) {
+					timeToLiveCalculator.set(e);
+				}
+				return e;
+			}
+			
+		}
+
+		static boolean isStillAliveOrNull(CacheEntry e) {
+			if (e == null) {
+				return true;
+			}
+			if (e.getTimeToLive() == null) {
+				return true;
+			}
+			return System.currentTimeMillis() < e.getExpirationTime();
 		}
 
 		@Override
 		public CacheEntry get(Object key) {
-			return cache.get(key);
+			CacheEntry e = cache.get(key);
+			if (!isStillAliveOrNull(e)) {
+				remove(e);
+				return null;
+			}
+			return e;
 		}
 
 		@Override
@@ -276,12 +372,29 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 
 		@Override
 		public CacheEntry replace(CacheEntry entry) {
-			return cache.replace(entry.getKey(), entry);
+			if (timeToLiveCalculator != null) {
+				timeToLiveCalculator.set(entry);
+			}
+			if (entry.getTimeToLive() == null) {
+				return cache.replace(entry.getKey(), entry);
+			} else {
+				return cache.replace(entry.getKey(), entry, entry.getTimeToLive(), TimeUnit.MILLISECONDS);
+			}
 		}
 
 		@Override
 		public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-			return cache.replace(oldEntry.getKey(), oldEntry, newEntry);
+			if (!oldEntry.getKey().equals(newEntry.getKey())) {
+				throw new IllegalArgumentException("oldEntry key not equals newEntryKey");
+			}
+			if (timeToLiveCalculator != null) {
+				timeToLiveCalculator.set(newEntry);
+			}
+			if (newEntry.getTimeToLive() == null) {
+				return cache.replace(oldEntry.getKey(), oldEntry, newEntry);
+			} else {
+				return cache.replace(oldEntry.getKey(), oldEntry, newEntry, newEntry.getTimeToLive(), TimeUnit.MILLISECONDS);
+			}
 		}
 
 		@Override

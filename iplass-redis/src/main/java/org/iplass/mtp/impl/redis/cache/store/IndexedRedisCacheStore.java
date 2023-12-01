@@ -29,6 +29,7 @@ import java.util.function.Function;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
+import org.iplass.mtp.impl.cache.store.TimeToLiveCalculator;
 import org.iplass.mtp.impl.redis.RedisRuntimeException;
 import org.iplass.mtp.util.CollectionUtil;
 import org.slf4j.Logger;
@@ -45,9 +46,10 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 	private final int indexSize;
 
-	public IndexedRedisCacheStore(RedisCacheStoreFactory factory, String namespace, long timeToLive, int indexSize,
+	public IndexedRedisCacheStore(RedisCacheStoreFactory factory, String namespace,
+			TimeToLiveCalculator timeToLiveCalculator, int indexSize,
 			RedisCacheStorePoolConfig redisCacheStorePoolConfig) {
-		super(factory, namespace, timeToLive, redisCacheStorePoolConfig);
+		super(factory, namespace, timeToLiveCalculator, redisCacheStorePoolConfig);
 
 		this.indexSize = indexSize;
 
@@ -101,6 +103,7 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry put(CacheEntry entry, boolean clean) {
+		setTtl(entry);
 		for (int count = 0; count <= retryCount; count++) {
 			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 				RedisCommands<Object, Object> commands = connection.sync();
@@ -116,8 +119,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 				commands.multi();
 
-				if (timeToLive > 0) {
-					commands.setex(entry.getKey(), timeToLive, entry);
+				if (entry.getTimeToLive().longValue() > 0L) {
+					commands.setex(entry.getKey(), getTtlSeconds(entry), entry);
 				} else {
 					commands.set(entry.getKey(), entry);
 				}
@@ -146,6 +149,7 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry putIfAbsent(CacheEntry entry) {
+		setTtl(entry);
 		for (int count = 0; count <= retryCount; count++) {
 			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 				RedisCommands<Object, Object> commands = connection.sync();
@@ -156,8 +160,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 				if (previous == null) {
 					commands.multi();
 
-					if (timeToLive > 0) {
-						commands.setex(entry.getKey(), timeToLive, entry);
+					if (entry.getTimeToLive().longValue() >= 0L) {
+						commands.setex(entry.getKey(), getTtlSeconds(entry), entry);
 					} else {
 						commands.set(entry.getKey(), entry);
 					}
@@ -217,6 +221,7 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 						return null;
 					}
 				} else {
+					setTtl(newEntry);
 					if (oldEntry != null) {
 						// replace
 						if (!oldEntry.getKey().equals(newEntry.getKey())) {
@@ -225,8 +230,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 						commands.multi();
 
-						if (timeToLive > 0) {
-							commands.setex(newEntry.getKey(), timeToLive, newEntry);
+						if (newEntry.getTimeToLive().longValue() >= 0L) {
+							commands.setex(newEntry.getKey(), getTtlSeconds(newEntry), newEntry);
 						} else {
 							commands.set(newEntry.getKey(), newEntry);
 						}
@@ -244,8 +249,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 						commands.multi();
 
 						// putIfAbsent
-						if (timeToLive > 0) {
-							commands.setex(newEntry.getKey(), timeToLive, newEntry);
+						if (newEntry.getTimeToLive().longValue() >= 0L) {
+							commands.setex(newEntry.getKey(), getTtlSeconds(newEntry), newEntry);
 						} else {
 							commands.set(newEntry.getKey(), newEntry);
 						}
@@ -282,8 +287,9 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 					// putIfAbsent
 					CacheEntry newEntry = mappingFunction.apply(key);
 					if (newEntry != null) {
-						if (timeToLive > 0) {
-							commands.setex(newEntry.getKey(), timeToLive, newEntry);
+						setTtl(newEntry);
+						if (newEntry.getTimeToLive().longValue() >= 0L) {
+							commands.setex(newEntry.getKey(), getTtlSeconds(newEntry), newEntry);
 						} else {
 							commands.set(newEntry.getKey(), newEntry);
 						}
@@ -380,6 +386,7 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry replace(CacheEntry entry) {
+		setTtl(entry);
 		for (int count = 0; count <= retryCount; count++) {
 			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 				RedisCommands<Object, Object> commands = connection.sync();
@@ -393,8 +400,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 					commands.multi();
 
-					if (timeToLive > 0) {
-						commands.setex(entry.getKey(), timeToLive, entry);
+					if (entry.getTimeToLive().longValue() >= 0L) {
+						commands.setex(entry.getKey(), getTtlSeconds(entry), entry);
 					} else {
 						commands.set(entry.getKey(), entry);
 					}
@@ -425,6 +432,7 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
 		}
 
+		setTtl(newEntry);
 		for (int count = 0; count <= retryCount; count++) {
 			try (StatefulRedisConnection<Object, Object> connection = pool.borrowObject()) {
 				RedisCommands<Object, Object> commands = connection.sync();
@@ -438,8 +446,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 					commands.multi();
 
-					if (timeToLive > 0) {
-						commands.setex(newEntry.getKey(), timeToLive, newEntry);
+					if (newEntry.getTimeToLive().longValue() >= 0L) {
+						commands.setex(newEntry.getKey(), getTtlSeconds(newEntry), newEntry);
 					} else {
 						commands.set(newEntry.getKey(), newEntry);
 					}

@@ -22,12 +22,14 @@ package org.iplass.mtp.impl.redis.cache.store;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
+import org.iplass.mtp.impl.cache.store.TimeToLiveCalculator;
 import org.iplass.mtp.impl.cache.store.event.CacheCreateEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
 import org.iplass.mtp.impl.cache.store.event.CacheInvalidateEvent;
@@ -48,7 +50,8 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 
 	private final RedisCacheStoreFactory factory;
 	private final String namespace;
-	protected final long timeToLive;
+	//redisの場合は、精度は秒まで。
+	private final TimeToLiveCalculator timeToLiveCalculator;
 	protected final int retryCount;
 
 	protected final NamespaceSerializedObjectCodec codec;
@@ -56,12 +59,12 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 
 	private final List<CacheEventListener> listeners;
 
-	public RedisCacheStoreBase(RedisCacheStoreFactory factory, String namespace, long timeToLive,
-			RedisCacheStorePoolConfig redisCacheStorePoolConfig) {
+	public RedisCacheStoreBase(RedisCacheStoreFactory factory, String namespace,
+			TimeToLiveCalculator timeToLiveCalculator, RedisCacheStorePoolConfig redisCacheStorePoolConfig) {
 		this.pubSubConnection = factory.getClient().connectPubSub();
 		this.factory = factory;
 		this.namespace = namespace;
-		this.timeToLive = timeToLive;
+		this.timeToLiveCalculator = timeToLiveCalculator;
 		this.retryCount = factory.getRetryCount();
 
 		this.codec = new NamespaceSerializedObjectCodec(namespace);
@@ -74,6 +77,18 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 		this.pool = ConnectionPoolSupport.createGenericObjectPool(() -> factory.getClient().connect(codec), poolConfig);
 
 		this.listeners = new CopyOnWriteArrayList<CacheEventListener>();
+	}
+	
+	protected long getTtlSeconds(CacheEntry entry) {
+		if (entry.getTimeToLive().longValue() < 0) {
+			return 0L;
+		} else {
+			return TimeUnit.MILLISECONDS.toSeconds(entry.getTimeToLive());
+		}
+	}
+	
+	protected void setTtl(CacheEntry entry) {
+		timeToLiveCalculator.set(entry);
 	}
 
 	@Override

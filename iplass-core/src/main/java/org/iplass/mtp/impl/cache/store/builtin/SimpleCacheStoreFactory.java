@@ -36,6 +36,8 @@ import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheHandler;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
+import org.iplass.mtp.impl.cache.store.DefaultTimeToLiveCalculator;
+import org.iplass.mtp.impl.cache.store.TimeToLiveCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +60,16 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 	private boolean fineGrainedLock;
 	private List<FineGrainedLockIndexConfig> indexConfig;
 	
+	private TimeToLiveCalculator timeToLiveCalculator = new DefaultTimeToLiveCalculator();
+
+	public TimeToLiveCalculator getTimeToLiveCalculator() {
+		return timeToLiveCalculator;
+	}
+
+	public void setTimeToLiveCalculator(TimeToLiveCalculator timeToLiveCalculator) {
+		this.timeToLiveCalculator = timeToLiveCalculator;
+	}
+
 	public List<FineGrainedLockIndexConfig> getIndexConfig() {
 		return indexConfig;
 	}
@@ -104,6 +116,9 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 	public void setTimeToLive(long timeToLive) {
 		this.timeToLive = timeToLive;
+		if (timeToLiveCalculator instanceof DefaultTimeToLiveCalculator) {
+			((DefaultTimeToLiveCalculator) timeToLiveCalculator).setTimeToLive(timeToLive);
+		}
 	}
 
 	public int getInitialCapacity() {
@@ -139,6 +154,8 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				return MIN_POLLING_INTERVAL;
 			}
 			return ei;
+		} else if (!(timeToLiveCalculator instanceof DefaultTimeToLiveCalculator)) {
+			return MIN_POLLING_INTERVAL * 5;
 		}
 
 		return -1;
@@ -153,19 +170,19 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				if (logger.isTraceEnabled()) {
 					logger.trace("create ConcurrentHashMapCacheStore:namespace=" + namespace);
 				}
-				ret = new ConcurrentHashMapCacheStore(namespace, this, initialCapacity, loadFactor, concurrencyLevel, timeToLive, size);
+				ret = new ConcurrentHashMapCacheStore(namespace, this, initialCapacity, loadFactor, concurrencyLevel, timeToLiveCalculator, size);
 			} else {
 				if (fineGrainedLock) {
 					if (logger.isTraceEnabled()) {
 						logger.trace("create FineGrainedLockIndexedConcurrentHashMapCacheStore:namespace=" + namespace);
 					}
-					ret = new FineGrainedLockIndexedConcurrentHashMapCacheStore(namespace, this, initialCapacity, timeToLive, size, getIndexCount(), indexConfig);
+					ret = new FineGrainedLockIndexedConcurrentHashMapCacheStore(namespace, this, initialCapacity, timeToLiveCalculator, size, getIndexCount(), indexConfig);
 					
 				} else {
 					if (logger.isTraceEnabled()) {
 						logger.trace("create IndexedConcurrentHashMapCacheStore:namespace=" + namespace);
 					}
-					ret = new IndexedConcurrentHashMapCacheStore(namespace, this, initialCapacity, loadFactor, concurrencyLevel, timeToLive, size, getIndexCount());
+					ret = new IndexedConcurrentHashMapCacheStore(namespace, this, initialCapacity, loadFactor, concurrencyLevel, timeToLiveCalculator, size, getIndexCount());
 				}
 			}
 		} else {
@@ -201,18 +218,14 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		return true;
 	}
 
-	static boolean isStillAliveOrNull(CacheEntry e, long timeToLive) {
+	static boolean isStillAliveOrNull(CacheEntry e) {
 		if (e == null) {
 			return true;
 		}
-		if (timeToLive <= 0) {
+		if (e.getTimeToLive() == null) {
 			return true;
 		}
-		if (System.currentTimeMillis() - e.getCreationTime() > timeToLive) {
-			return false;
-		} else {
-			return true;
-		}
+		return System.currentTimeMillis() < e.getExpirationTime();
 	}
 
 	/**
@@ -222,12 +235,12 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 	public static class ConcurrentHashMapCacheStore extends SimpleCacheStoreBase {
 
 		private final Cache<Object, CacheEntry> cache;
-		private long timeToLive;
+		private TimeToLiveCalculator timeToLiveCalculator;
 
 		public ConcurrentHashMapCacheStore(String namespace, CacheStoreFactory factory, int initialCapacity,
-                float loadFactor, int concurrencyLevel, long timeToLive, int size) {
+                float loadFactor, int concurrencyLevel, TimeToLiveCalculator timeToLiveCalculator, int size) {
 			super(namespace, true, factory);
-			this.timeToLive = timeToLive;
+			this.timeToLiveCalculator = timeToLiveCalculator;
 			if (size > 0) {
 				cache = Caffeine.newBuilder()
 						.maximumSize(size)
@@ -260,7 +273,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				return null;
 			}
 			CacheEntry e = cache.getIfPresent(key);
-			if (!isStillAliveOrNull(e, timeToLive)) {
+			if (!isStillAliveOrNull(e)) {
 				remove(e);
 				return null;
 			}
@@ -269,6 +282,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public CacheEntry put(CacheEntry entry, boolean isClean) {
+			timeToLiveCalculator.set(entry);
 			CacheEntry previous = cache.asMap().put(entry.getKey(), entry);
 			if (previous == null) {
 				notifyPut(entry);
@@ -300,6 +314,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public CacheEntry putIfAbsent(CacheEntry entry) {
+			timeToLiveCalculator.set(entry);
 			CacheEntry putted = cache.asMap().putIfAbsent(entry.getKey(), entry);
 			if (putted == null) {
 				notifyPut(entry);
@@ -316,7 +331,11 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			boolean[] computed = new boolean[1];
 			CacheEntry entry = cache.asMap().computeIfAbsent(key, k -> {
 				computed[0] = true;
-				return mappingFunction.apply(k);
+				CacheEntry computedEntry = mappingFunction.apply(k);
+				if (computedEntry != null) {
+					timeToLiveCalculator.set(computedEntry);
+				}
+				return computedEntry;
 			});
 			
 			if (computed[0] && entry != null) {
@@ -333,7 +352,11 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			CacheEntry[] old = new CacheEntry[1];
 			CacheEntry entry = cache.asMap().compute(key, (k, v) -> {
 				old[0] = v;
-				return remappingFunction.apply(k, v);
+				CacheEntry computedEntry = remappingFunction.apply(k, v);
+				if (computedEntry != null && computedEntry != v) {
+					timeToLiveCalculator.set(computedEntry);
+				}
+				return computedEntry;
 			});
 			
 			if (entry != null) {
@@ -363,6 +386,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public CacheEntry replace(CacheEntry entry) {
+			timeToLiveCalculator.set(entry);
 			CacheEntry previous = cache.asMap().replace(entry.getKey(), entry);
 			if (previous != null) {
 				notifyUpdated(previous, entry);
@@ -375,6 +399,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			if (!oldEntry.getKey().equals(newEntry.getKey())) {
 				throw new IllegalArgumentException("oldEntry key not equals newEntryKey");
 			}
+			timeToLiveCalculator.set(newEntry);
 			boolean res = cache.asMap().replace(newEntry.getKey(), oldEntry, newEntry);
 			if (res) {
 				notifyUpdated(oldEntry, newEntry);
@@ -460,13 +485,13 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		private final ReentrantReadWriteLock indexLock = new ReentrantReadWriteLock();
 
 		private final Cache<Object, CacheEntry> cache;
-		private long timeToLive;
+		private TimeToLiveCalculator timeToLiveCalculator;
 		private final HashMap<Object, Object>[] indexCache;
 
 		public IndexedConcurrentHashMapCacheStore(String namespace, CacheStoreFactory factory, int initialCapacity,
-                float loadFactor, int concurrencyLevel, long timeToLive, int size, int indexCount) {
+                float loadFactor, int concurrencyLevel, TimeToLiveCalculator timeToLiveCalculator, int size, int indexCount) {
 			super(namespace, true, factory);
-			this.timeToLive = timeToLive;
+			this.timeToLiveCalculator = timeToLiveCalculator;
 
 			if (size > 0) {
 				cache = Caffeine.newBuilder()
@@ -546,7 +571,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				return null;
 			}
 			CacheEntry e = cache.getIfPresent(key);
-			if (!isStillAliveOrNull(e, timeToLive)) {
+			if (!isStillAliveOrNull(e)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("invalidate " + e + ", cause timeToLive");
 				}
@@ -558,6 +583,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public CacheEntry put(CacheEntry entry, boolean isClean) {
+			timeToLiveCalculator.set(entry);
 			indexLock.writeLock().lock();
 			try {
 				CacheEntry previous = cache.asMap().put(entry.getKey(), entry);
@@ -612,6 +638,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public CacheEntry putIfAbsent(CacheEntry entry) {
+			timeToLiveCalculator.set(entry);
 			indexLock.writeLock().lock();
 			try {
 				CacheEntry putted = cache.asMap().putIfAbsent(entry.getKey(), entry);
@@ -636,7 +663,11 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				boolean[] computed = new boolean[1];
 				CacheEntry entry = cache.asMap().computeIfAbsent(key, k -> {
 					computed[0] = true;
-					return mappingFunction.apply(k);
+					CacheEntry computedEntry = mappingFunction.apply(k);
+					if (computedEntry != null) {
+						timeToLiveCalculator.set(computedEntry);
+					}
+					return computedEntry;
 				});
 				
 				if (computed[0] && entry != null) {
@@ -660,7 +691,11 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				CacheEntry[] old = new CacheEntry[1];
 				CacheEntry entry = cache.asMap().compute(key, (k, v) -> {
 					old[0] = v;
-					return remappingFunction.apply(k, v);
+					CacheEntry computedEntry = remappingFunction.apply(k, v);
+					if (computedEntry != null && computedEntry != v) {
+						timeToLiveCalculator.set(computedEntry);
+					}
+					return computedEntry;
 				});
 				
 				if (entry != null) {
@@ -706,6 +741,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public CacheEntry replace(CacheEntry entry) {
+			timeToLiveCalculator.set(entry);
 			indexLock.writeLock().lock();
 			try {
 				CacheEntry previous = cache.asMap().replace(entry.getKey(), entry);
@@ -725,6 +761,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			if (!oldEntry.getKey().equals(newEntry.getKey())) {
 				throw new IllegalArgumentException("oldEntry key not equals newEntryKey");
 			}
+			timeToLiveCalculator.set(newEntry);
 			indexLock.writeLock().lock();
 			try {
 				boolean res = cache.asMap().replace(newEntry.getKey(), oldEntry, newEntry);

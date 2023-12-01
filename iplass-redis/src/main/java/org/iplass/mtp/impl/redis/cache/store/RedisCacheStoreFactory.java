@@ -21,12 +21,15 @@
 package org.iplass.mtp.impl.redis.cache.store;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.cache.CacheService;
 import org.iplass.mtp.impl.cache.store.CacheHandler;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
+import org.iplass.mtp.impl.cache.store.DefaultTimeToLiveCalculator;
+import org.iplass.mtp.impl.cache.store.TimeToLiveCalculator;
 import org.iplass.mtp.impl.redis.RedisServer;
 import org.iplass.mtp.impl.redis.RedisService;
 import org.iplass.mtp.spi.Config;
@@ -44,14 +47,15 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 
 	private String serverName;
 	private long timeToLive = 0L; // Seconds(0以下無期限)
+	private TimeToLiveCalculator timeToLiveCalculator;
 	private int retryCount;
 	private RedisCacheStorePoolConfig poolConfig;
 
 	@Override
 	public CacheStore createCacheStore(String namespace) {
 		return getIndexCount() > 0
-				? new IndexedRedisCacheStore(this, namespace, timeToLive, getIndexCount(), poolConfig)
-				: new RedisCacheStore(this, namespace, timeToLive, poolConfig);
+				? new IndexedRedisCacheStore(this, namespace, timeToLiveCalculator, getIndexCount(), poolConfig)
+				: new RedisCacheStore(this, namespace, timeToLiveCalculator, poolConfig);
 	}
 
 	@Override
@@ -99,6 +103,14 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 			}
 		}
 		this.client = RedisClient.create(resouces, uriBuilder.build());
+
+		if (timeToLiveCalculator == null) {
+			if (timeToLive > 0) {
+				timeToLiveCalculator = new DefaultTimeToLiveCalculator(TimeUnit.SECONDS.toMillis(timeToLive));
+			} else {
+				timeToLiveCalculator = new DefaultTimeToLiveCalculator();
+			}
+		}
 	}
 
 	@Override
@@ -137,4 +149,11 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 		this.retryCount = retryCount;
 	}
 
+	public TimeToLiveCalculator getTimeToLiveCalculator() {
+		return timeToLiveCalculator;
+	}
+
+	public void setTimeToLiveCalculator(TimeToLiveCalculator timeToLiveCalculator) {
+		this.timeToLiveCalculator = timeToLiveCalculator;
+	}
 }

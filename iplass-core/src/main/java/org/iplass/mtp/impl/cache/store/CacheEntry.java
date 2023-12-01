@@ -29,8 +29,9 @@ public class CacheEntry implements Serializable {
 	private final Object key;
 	private final Object value;
 	private final long version;//楽観ロック用
-	private final Object[] indexValues;
+	private final Object[] indexValues;//equals,hashCodeに含めない。
 	private final long creationTime;
+	private Long timeToLive;//equals,hashCodeに含めない。-1は無制限の意味。msで指定。
 
 	public CacheEntry(Object key, Object value, long version, long creationTime, Object... indexValues) {
 		this.key = key;
@@ -85,7 +86,27 @@ public class CacheEntry implements Serializable {
 	public Object[] getIndexValues() {
 		return indexValues;
 	}
-	
+
+	public long getExpirationTime() {
+		if (timeToLive == null || timeToLive < 0L) {
+			return Long.MAX_VALUE;
+		}
+		long exp = creationTime + timeToLive;
+		if (exp < 0) {
+			//桁あふれ
+			return Long.MAX_VALUE;
+		}
+		return exp;
+	}
+
+	public Long getTimeToLive() {
+		return timeToLive;
+	}
+
+	public void setTimeToLive(Long timeToLive) {
+		this.timeToLive = timeToLive;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -128,9 +149,9 @@ public class CacheEntry implements Serializable {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [key=" + key + ", value=" + value + ", version="
-				+ version + ", indexValues=" + Arrays.deepToString(indexValues)
-				+ ", creationTime=" + creationTime + "]";
+		return "CacheEntry [key=" + key + ", value=" + value + ", version=" + version + ", indexValues="
+				+ Arrays.deepToString(indexValues) + ", creationTime=" + creationTime + ", timeToLive=" + timeToLive
+				+ "]";
 	}
 
 }

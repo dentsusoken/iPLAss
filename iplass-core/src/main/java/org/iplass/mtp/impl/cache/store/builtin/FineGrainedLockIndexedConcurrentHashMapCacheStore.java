@@ -29,6 +29,7 @@ import java.util.function.Function;
 
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
+import org.iplass.mtp.impl.cache.store.TimeToLiveCalculator;
 import org.iplass.mtp.impl.cache.store.builtin.FineGrainedLockIndex.IndexValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,13 +50,13 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 	private static Logger logger = LoggerFactory.getLogger(FineGrainedLockIndexedConcurrentHashMapCacheStore.class);
 
 	private final Cache<Object, CacheEntry> cache;
-	private long timeToLive;
+	private TimeToLiveCalculator timeToLiveCalculator;
 	private final FineGrainedLockIndex[] indexCache;
 
 	public FineGrainedLockIndexedConcurrentHashMapCacheStore(String namespace, CacheStoreFactory factory,
-			int initialCapacity, long timeToLive, int size, int indexCount, List<FineGrainedLockIndexConfig> indexConfig) {
+			int initialCapacity, TimeToLiveCalculator timeToLiveCalculator, int size, int indexCount, List<FineGrainedLockIndexConfig> indexConfig) {
 		super(namespace, true, factory);
-		this.timeToLive = timeToLive;
+		this.timeToLiveCalculator = timeToLiveCalculator;
 
 		if (size > 0) {
 			cache = Caffeine.newBuilder().maximumSize(size).initialCapacity(initialCapacity)
@@ -102,7 +103,7 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 			return null;
 		}
 		CacheEntry e = cache.getIfPresent(key);
-		if (!SimpleCacheStoreFactory.isStillAliveOrNull(e, timeToLive)) {
+		if (!SimpleCacheStoreFactory.isStillAliveOrNull(e)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("invalidate " + e + ", cause timeToLive");
 			}
@@ -114,6 +115,7 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 
 	@Override
 	public CacheEntry put(CacheEntry entry, boolean isClean) {
+		timeToLiveCalculator.set(entry);
 		
 		if (entry.getKey() instanceof NullKey) {
 			//NullKeyの場合は本体には格納しない
@@ -172,6 +174,7 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 			throw new UnsupportedOperationException("PutIfAbsent with Null Entry(NullKey) is Unsupported.");
 		}
 		
+		timeToLiveCalculator.set(entry);
 		CacheEntry[] previous = new CacheEntry[1];
 		cache.asMap().compute(entry.getKey(), (k, v) -> {
 			previous[0] = v;
@@ -207,6 +210,8 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 			computed[0] = true;
 			CacheEntry v = mappingFunction.apply(k);
 			if (v != null) {
+				timeToLiveCalculator.set(v);
+				
 				try (FineGrainedLockState fgls = new FineGrainedLockState(v, null, indexCache)) {
 					fgls.maintain();
 				}
@@ -230,6 +235,9 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 			old[0] = v;
 			CacheEntry newV = remappingFunction.apply(k, v);
 			if (v != newV) {
+				if (newV != null) {
+					timeToLiveCalculator.set(newV);
+				}
 				try (FineGrainedLockState fgls = new FineGrainedLockState(newV, v, indexCache)) {
 					fgls.maintain();
 				}
@@ -278,6 +286,7 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 
 	@Override
 	public CacheEntry replace(CacheEntry entry) {
+		timeToLiveCalculator.set(entry);
 		CacheEntry[] previous = new CacheEntry[1];
 		cache.asMap().computeIfPresent(entry.getKey(), (k, v) -> {
 			previous[0] = v;
@@ -299,6 +308,7 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 			throw new IllegalArgumentException("oldEntry key not equals newEntryKey");
 		}
 		
+		timeToLiveCalculator.set(newEntry);
 		CacheEntry[] previous = new CacheEntry[1];
 		boolean[] res = new boolean[1];
 		cache.asMap().computeIfPresent(newEntry.getKey(), (k, v) -> {

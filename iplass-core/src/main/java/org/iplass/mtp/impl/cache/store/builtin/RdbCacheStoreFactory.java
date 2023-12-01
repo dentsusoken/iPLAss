@@ -45,6 +45,8 @@ import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheHandler;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
+import org.iplass.mtp.impl.cache.store.DefaultTimeToLiveCalculator;
+import org.iplass.mtp.impl.cache.store.TimeToLiveCalculator;
 import org.iplass.mtp.impl.cache.store.event.CacheCreateEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
 import org.iplass.mtp.impl.cache.store.event.CacheInvalidateEvent;
@@ -80,6 +82,16 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 	private int retryCount;
 	private long timeToLive = -1;
 	
+	private TimeToLiveCalculator timeToLiveCalculator = new DefaultTimeToLiveCalculator();
+	
+	public TimeToLiveCalculator getTimeToLiveCalculator() {
+		return timeToLiveCalculator;
+	}
+
+	public void setTimeToLiveCalculator(TimeToLiveCalculator timeToLiveCalculator) {
+		this.timeToLiveCalculator = timeToLiveCalculator;
+	}
+
 	public String getTableName() {
 		return tableName;
 	}
@@ -94,6 +106,9 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 	public void setTimeToLive(long timeToLive) {
 		this.timeToLive = timeToLive;
+		if (timeToLiveCalculator instanceof DefaultTimeToLiveCalculator) {
+			((DefaultTimeToLiveCalculator) timeToLiveCalculator).setTimeToLive(timeToLive);
+		}
 	}
 
 	public int getRetryCount() {
@@ -275,8 +290,6 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		private String keySetSql = "SELECT " + KEY + "," + CRE_TIME + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
 		private String countSqlWithCheckInvalidDate = "SELECT COUNT(*)" + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
 		
-		//FIXME 更新時にINVALID_TIMEを更新
-		
 		RdbCacheStore(String namespace) {
 			this.namespace = namespace;
 			listeners = new CopyOnWriteArrayList<CacheEventListener>();
@@ -424,18 +437,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			if (e == null) {
 				return true;
 			}
-			return isStillAlive(e.getCreationTime());
-		}
-		
-		private boolean isStillAlive(long createTime) {
-			if (getTimeToLive() <= 0) {
-				return true;
-			}
-			if (System.currentTimeMillis() - createTime > getTimeToLive()) {
-				return false;
-			} else {
-				return true;
-			}
+			return System.currentTimeMillis() < e.getExpirationTime();
 		}
 		
 		@Override
@@ -478,6 +480,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				sql = getSql;
 			}
 			try (PreparedStatement ps = con.prepareStatement(sql)) {
+				long now = System.currentTimeMillis();
 				ps.setString(1, getNamespace());
 				if (key instanceof NullKey) {
 					ps.setString(2, key.toString());
@@ -485,7 +488,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					ps.setString(2, cacheKeyResolver.toString(key));
 				}
 				if (checkInvalidDate) {
-					ps.setLong(3, System.currentTimeMillis());
+					ps.setLong(3, now);
 				}
 				
 				try (ResultSet rs = ps.executeQuery()) {
@@ -510,7 +513,12 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 							}
 						}
 						
-						return new CacheEntry(key, value, rs.getLong(VER), rs.getLong(CRE_TIME), index);
+						CacheEntry ce = new CacheEntry(key, value, rs.getLong(VER), rs.getLong(CRE_TIME), index);
+						timeToLiveCalculator.set(ce);
+						if (checkInvalidDate && now >= ce.getExpirationTime()) {
+							return null;
+						}
+						return ce;
 					} else {
 						return null;
 					}
@@ -545,7 +553,8 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				}
 				ps.setLong(2, entry.getVersion());
 				ps.setLong(3, entry.getCreationTime());
-				ps.setLong(4, invalidTime(entry.getCreationTime()));
+				timeToLiveCalculator.set(entry);
+				ps.setLong(4, entry.getExpirationTime());
 				
 				int cnt = 4;
 				if (getIndexCount() > 0) {
@@ -581,14 +590,6 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			}
 		}
 		
-		private long invalidTime(long creationTime) {
-			if (timeToLive <= 0) {
-				return Long.MAX_VALUE;
-			} else {
-				return creationTime + timeToLive;
-			}
-		}
-		
 		private boolean insertInternal(CacheEntry entry, Connection con) throws SQLException {
 			try (PreparedStatement ps = con.prepareStatement(insertSql)) {
 				ps.setString(1, getNamespace());
@@ -604,7 +605,8 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				}
 				ps.setLong(4, entry.getVersion());
 				ps.setLong(5, entry.getCreationTime());
-				ps.setLong(6, invalidTime(entry.getCreationTime()));
+				timeToLiveCalculator.set(entry);
+				ps.setLong(6, entry.getExpirationTime());
 
 				int cnt = 6;
 				if (getIndexCount() > 0) {
@@ -933,9 +935,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					try (ResultSet rs = ps.executeQuery()) {
 						List<Object> ret = new ArrayList<>();
 						while (rs.next()) {
-							if (isStillAlive(rs.getLong(2))) {
-								ret.add(toKey(rs.getString(1)));
-							}
+							ret.add(toKey(rs.getString(1)));
 						}
 						return ret;
 					}
@@ -952,41 +952,42 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			}
 			
 			try (PreparedStatement ps = con.prepareStatement(getByIndexSql(indexKey))) {
+				long now = System.currentTimeMillis();
 				ps.setString(1, getNamespace());
 				ps.setString(2, cacheIndexResolver.get(indexKey).toString(indexValue));
-				ps.setLong(3, System.currentTimeMillis());
+				ps.setLong(3, now);
 				
 				try (ResultSet rs = ps.executeQuery()) {
 					List<CacheEntry> ret = new ArrayList<>();
 					while (rs.next()) {
-						long createTime = rs.getLong(CRE_TIME);
-						if (isStillAlive(createTime)) {
-							Object key = toKey(rs.getString(KEY));
-							Object[] index = null;
-							if (getIndexCount() > 0) {
-								index = new Object[getIndexCount()];
-								for (int i = 0; i < getIndexCount(); i++) {
-									index[i] = cacheIndexResolver.get(i).toCacheKey(rs.getString(INDEX + i));
-								}
+						Object key = toKey(rs.getString(KEY));
+						Object[] index = null;
+						if (getIndexCount() > 0) {
+							index = new Object[getIndexCount()];
+							for (int i = 0; i < getIndexCount(); i++) {
+								index[i] = cacheIndexResolver.get(i).toCacheKey(rs.getString(INDEX + i));
 							}
-							
-							byte[] valByte = rs.getBytes(VAL);
-							Object value = null;
-							if (valByte != null && valByte.length > 0) {
-								ByteArrayInputStream byteIn = new ByteArrayInputStream(valByte);
-								try {
-									ObjectInputStream in = new ObjectInputStream(byteIn);
-									value = in.readObject();
-								} catch (ClassNotFoundException | IOException e) {
-									throw new SystemException(e);
-								}
+						}
+						
+						byte[] valByte = rs.getBytes(VAL);
+						Object value = null;
+						if (valByte != null && valByte.length > 0) {
+							ByteArrayInputStream byteIn = new ByteArrayInputStream(valByte);
+							try {
+								ObjectInputStream in = new ObjectInputStream(byteIn);
+								value = in.readObject();
+							} catch (ClassNotFoundException | IOException e) {
+								throw new SystemException(e);
 							}
-							
-							ret.add(new CacheEntry(key, value, rs.getLong(VER), rs.getLong(CRE_TIME), index));
-							
-							if (onlyFirst) {
-								return ret;
-							}
+						}
+						CacheEntry ce = new CacheEntry(key, value, rs.getLong(VER), rs.getLong(CRE_TIME), index);
+						timeToLiveCalculator.set(ce);
+						if (now < ce.getExpirationTime()) {
+							ret.add(ce);
+						}
+						
+						if (onlyFirst && ret.size() > 0) {
+							return ret;
 						}
 					}
 					return ret;
