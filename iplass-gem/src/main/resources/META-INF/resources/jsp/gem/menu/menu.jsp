@@ -384,7 +384,7 @@ boolean showIcon(MenuItem item) {
 						target = "_blank";
 					}
 %>
-<li class="menu_<c:out value="<%=itemId%>"/> menu-url" id="<c:out value="<%=itemId%>"/>">
+<li class="<c:out value="<%=nodeImageColorStyle%>"/> menu-url" id="<c:out value="<%=itemId%>"/>">
 <p>
 <%-- XSS対応-メタの設定のため対応なし(params) --%>
 <a href="<%=url%>" class="urlLink" target="<%=target%>">
