@@ -2579,6 +2579,8 @@ LocaleInfo.generic_element_section_TemplateSection_dispBorderInSectionDescriptio
 LocaleInfo.generic_element_section_VersionSection_titleDisplayNameKey = "Title";
 LocaleInfo.generic_element_section_VersionSection_titleDescriptionKey = "Set the title of the section.";
 LocaleInfo.generic_element_section_VersionSection_localizedTitleListDisplayNameKey = "Multilingual Settings";
+LocaleInfo.generic_element_section_VersionSection_idDisplayNameKey = "id";
+LocaleInfo.generic_element_section_VersionSection_idDescriptionKey = "Set an ID that is unique on the screen.";
 LocaleInfo.generic_element_section_VersionSection_styleDisplayNameKey = "Class name";
 LocaleInfo.generic_element_section_VersionSection_styleDescriptionKey = "Specify the class name of the style sheet. Please, separated by a space if you want to specify more than one.";
 LocaleInfo.generic_element_section_VersionSection_showLinkDisplaNameKey = "show link";

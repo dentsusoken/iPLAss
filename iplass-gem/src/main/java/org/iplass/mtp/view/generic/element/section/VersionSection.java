@@ -75,6 +75,16 @@ public class VersionSection extends Section {
 	)
 	private String style;
 
+	/** id */
+	@MetaFieldInfo(
+			displayName="id",
+			displayNameKey="generic_element_section_VersionSection_idDisplayNameKey",
+			displayOrder=330,
+			description="画面上で一意となるIDを設定してください。",
+			descriptionKey="generic_element_section_VersionSection_idDescriptionKey"
+	)
+	private String id;
+
 	/** リンクを表示するか */
 	@MetaFieldInfo(
 			displayName="リンクを表示するか",
@@ -144,6 +154,22 @@ public class VersionSection extends Section {
 	 */
 	public void setStyle(String style) {
 		this.style = style;
+	}
+
+	/**
+	 * idを取得します。
+	 * @return id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * idを設定します。
+	 * @param id id
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**

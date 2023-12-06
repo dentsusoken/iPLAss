@@ -46,7 +46,7 @@
 		style = section.getStyle();
 	}
 %>
-<div id="<c:out value="<%=id %>"/>" class="<c:out value="<%=style %>"/>">
+<div id="<c:out value="<%=id %>"/>" class="scripting-section <c:out value="<%=style %>"/>">
 <%
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	evm.executeTemplate(ed.getName(), section.getKey(), request, response, application, pageContext);

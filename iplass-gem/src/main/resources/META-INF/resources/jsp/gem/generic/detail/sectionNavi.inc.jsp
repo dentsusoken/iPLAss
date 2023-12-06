@@ -96,13 +96,17 @@
 <%
 		} else  if (section instanceof VersionSection) {
 			if (OutputType.VIEW == type) {
+				String id = "version_section";
+				if (StringUtil.isNotBlank(((VersionSection) section).getId())) {
+					id = ((VersionSection) section).getId();
+				}
 				String title = GemResourceBundleUtil.resourceString("generic.detail.sectionNavi.diffVersion");
 				if (StringUtil.isNotBlank(((VersionSection) section).getTitle())) {
 					title = TemplateUtil.getMultilingualString(((VersionSection) section).getTitle(), ((VersionSection) section).getLocalizedTitleList());
 				}
 %>
 <li>
-<a href="#version_section" ><c:out value="<%=title %>"/></a>
+<a href="#<c:out value="<%=id %>"/>" ><c:out value="<%=title %>"/></a>
 </li>
 <%
 			}

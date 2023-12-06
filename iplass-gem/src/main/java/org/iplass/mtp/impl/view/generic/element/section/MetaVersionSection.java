@@ -51,6 +51,9 @@ public class MetaVersionSection extends MetaSection {
 	/** クラス名 */
 	private String style;
 
+	/** id */
+	private String id;
+
 	/** リンクを表示するか */
 	private boolean showLink;
 
@@ -103,6 +106,22 @@ public class MetaVersionSection extends MetaSection {
 	}
 
 	/**
+	 * idを取得します。
+	 * @return id
+	 */
+	public String getId() {
+	    return id;
+	}
+
+	/**
+	 * idを設定します。
+	 * @param id id
+	 */
+	public void setId(String id) {
+	    this.id = id;
+	}
+
+	/**
 	 * リンクを表示するかを取得します。
 	 * @return リンクを表示するか
 	 */
@@ -125,6 +144,7 @@ public class MetaVersionSection extends MetaSection {
 		VersionSection section = (VersionSection) element;
 		title = section.getTitle();
 		style = section.getStyle();
+		id = section.getId();
 		showLink = section.isShowLink();
 
 		// 言語毎の文字情報設定
@@ -138,6 +158,7 @@ public class MetaVersionSection extends MetaSection {
 
 		section.setTitle(title);
 		section.setStyle(style);
+		section.setId(id);
 		section.setShowLink(showLink);
 		
 		section.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));

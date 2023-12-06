@@ -182,7 +182,7 @@
 		title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
 	}
 %>
-<div id="<c:out value="<%=id %>"/>" class="result-block <c:out value="<%=secStyle %>"/>" style="display:none;">
+<div id="<c:out value="<%=id %>"/>" class="result-block search-result-section <c:out value="<%=secStyle %>"/>" style="display:none;">
 <h3 class="hgroup-02">
 <c:out value="<%=title %>"/>
 <span class="chagne-condition" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.conditionChanged")}</span>

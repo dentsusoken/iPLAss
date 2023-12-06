@@ -2579,6 +2579,8 @@ LocaleInfo.generic_element_section_TemplateSection_dispBorderInSectionDescriptio
 LocaleInfo.generic_element_section_VersionSection_titleDisplayNameKey = "タイトル";
 LocaleInfo.generic_element_section_VersionSection_titleDescriptionKey = "セクションのタイトルを設定します。";
 LocaleInfo.generic_element_section_VersionSection_localizedTitleListDisplayNameKey = "多言語設定";
+LocaleInfo.generic_element_section_VersionSection_idDisplayNameKey = "id";
+LocaleInfo.generic_element_section_VersionSection_idDescriptionKey = "画面上で一意となるIDを設定します。";
 LocaleInfo.generic_element_section_VersionSection_styleDisplayNameKey = "クラス名";
 LocaleInfo.generic_element_section_VersionSection_styleDescriptionKey = "スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。";
 LocaleInfo.generic_element_section_VersionSection_showLinkDisplaNameKey = "ジャンプリンクを表示";

@@ -44,7 +44,7 @@
 		style = section.getStyle();
 	}
 %>
-<div id="<c:out value="<%=id %>"/>" class="<c:out value="<%=style %>"/>">
+<div id="<c:out value="<%=id %>"/>" class="template-section <c:out value="<%=style %>"/>">
 <%
 	TemplateUtil.includeTemplate(section.getTemplateName(), pageContext);
 %>

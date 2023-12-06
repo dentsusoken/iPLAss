@@ -244,7 +244,7 @@
 
 %>
 
-<div id="<c:out value="<%=id %>"/>" class="<c:out value="<%=style %>"/>">
+<div id="<c:out value="<%=id %>"/>" class="reference-section <c:out value="<%=style %>"/>">
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
