@@ -166,10 +166,25 @@
 
 	Boolean multiSelect = OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete || OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate || OutputType.MULTISELECT == type;
 	if (multiSelect == null) multiSelect = false;
+
+	String id = "";
+	if (StringUtil.isNotBlank(section.getId())) {
+		id = section.getId();
+	}
+
+	String secStyle = "";
+	if (StringUtil.isNotBlank(section.getStyle())) {
+		secStyle = section.getStyle();
+	}
+
+	String title = GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSection.srchrslt");
+	if (StringUtil.isNotBlank(section.getTitle())) {
+		title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
+	}
 %>
-<div class="result-block" style="display:none;">
+<div id="<c:out value="<%=id %>"/>" class="result-block <c:out value="<%=secStyle %>"/>" style="display:none;">
 <h3 class="hgroup-02">
-${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.srchrslt")}
+<c:out value="<%=title %>"/>
 <span class="chagne-condition" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.conditionChanged")}</span>
 <span class="searching" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.searching")}</span>
 <span class="paginInputError" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.paginInputError")}</span>

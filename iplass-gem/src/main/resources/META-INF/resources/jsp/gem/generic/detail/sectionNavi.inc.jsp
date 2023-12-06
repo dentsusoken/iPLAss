@@ -23,10 +23,12 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@ page import="java.util.List"%>
+<%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.element.section.*"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%
 	//データ取得
 	@SuppressWarnings("unchecked") List<Section> sections = (List<Section>) request.getAttribute(Constants.NAV_SECTION);
@@ -94,9 +96,13 @@
 <%
 		} else  if (section instanceof VersionSection) {
 			if (OutputType.VIEW == type) {
+				String title = GemResourceBundleUtil.resourceString("generic.detail.sectionNavi.diffVersion");
+				if (StringUtil.isNotBlank(((VersionSection) section).getTitle())) {
+					title = TemplateUtil.getMultilingualString(((VersionSection) section).getTitle(), ((VersionSection) section).getLocalizedTitleList());
+				}
 %>
 <li>
-<a href="#version_section" >${m:rs("mtp-gem-messages", "generic.detail.sectionNavi.diffVersion")}</a>
+<a href="#version_section" ><c:out value="<%=title %>"/></a>
 </li>
 <%
 			}

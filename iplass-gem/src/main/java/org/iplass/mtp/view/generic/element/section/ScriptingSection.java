@@ -105,6 +105,16 @@ public class ScriptingSection extends Section {
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
+	/** クラス名 */
+	@MetaFieldInfo(
+			displayName="クラス名",
+			displayNameKey="generic_element_section_ScriptingSection_styleDisplayNameKey",
+			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
+			descriptionKey="generic_element_section_ScriptingSection_styleDescriptionKey",
+			displayOrder=320
+	)
+	private String style;
+
 	/** id */
 	@MetaFieldInfo(
 			displayName="id",
@@ -200,6 +210,22 @@ public class ScriptingSection extends Section {
 	 */
 	public void setTitle(String title) {
 	    this.title = title;
+	}
+
+	/**
+	 * クラス名を取得します。
+	 * @return クラス名
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * クラス名を設定します。
+	 * @param style クラス名
+	 */
+	public void setStyle(String style) {
+		this.style = style;
 	}
 
 	/**

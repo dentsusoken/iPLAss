@@ -20,6 +20,11 @@
 
 package org.iplass.mtp.impl.view.generic.element.section;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.iplass.mtp.impl.i18n.I18nUtil;
+import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.section.VersionSection;
@@ -37,8 +42,65 @@ public class MetaVersionSection extends MetaSection {
 		return new MetaVersionSection();
 	}
 
+	/** タイトル */
+	private String title;
+
+	/** 多言語設定情報 */
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
+
+	/** クラス名 */
+	private String style;
+
 	/** リンクを表示するか */
 	private boolean showLink;
+
+	/**
+	 * タイトルを取得します。
+	 * @return タイトル
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * タイトルを設定します。
+	 * @param title タイトル
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * 多言語設定情報を取得します。
+	 * @return リスト
+	 */
+	public List<MetaLocalizedString> getLocalizedTitleList() {
+		return localizedTitleList;
+	}
+
+	/**
+	 * 多言語設定情報を設定します。
+	 * @param リスト
+	 */
+	public void setLocalizedTitleList(List<MetaLocalizedString> localizedTitleList) {
+		this.localizedTitleList = localizedTitleList;
+	}
+
+	/**
+	 * クラス名を取得します。
+	 * @return クラス名
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * クラス名を設定します。
+	 * @param style クラス名
+	 */
+	public void setStyle(String style) {
+		this.style = style;
+	}
 
 	/**
 	 * リンクを表示するかを取得します。
@@ -61,7 +123,12 @@ public class MetaVersionSection extends MetaSection {
 		super.fillFrom(element, definitionId);
 
 		VersionSection section = (VersionSection) element;
+		title = section.getTitle();
+		style = section.getStyle();
 		showLink = section.isShowLink();
+
+		// 言語毎の文字情報設定
+		localizedTitleList = I18nUtil.toMeta(section.getLocalizedTitleList());
 	}
 
 	@Override
@@ -69,7 +136,12 @@ public class MetaVersionSection extends MetaSection {
 		VersionSection section = new VersionSection();
 		super.fillTo(section, definitionId);
 
+		section.setTitle(title);
+		section.setStyle(style);
 		section.setShowLink(showLink);
+		
+		section.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
+
 		return section;
 	}
 

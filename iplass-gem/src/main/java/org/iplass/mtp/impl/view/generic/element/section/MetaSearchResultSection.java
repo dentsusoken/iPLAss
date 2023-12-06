@@ -59,6 +59,18 @@ public class MetaSearchResultSection extends MetaSection {
 		return new MetaSearchResultSection();
 	}
 
+	/** タイトル */
+	private String title;
+
+	/** 多言語設定情報 */
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
+
+	/** id */
+	private String id;
+
+	/** クラス名 */
+	private String style;
+
 	/** 表示行数 */
 	private Integer dispRowCount;
 
@@ -140,6 +152,69 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 一括更新コミットトランザクション制御設定*/
 	private BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType = BulkUpdateAllCommandTransactionType.DIVISION;
 
+	/**
+	 * タイトルを取得します。
+	 * @return タイトル
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * タイトルを設定します。
+	 * @param title タイトル
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * 多言語設定情報を取得します。
+	 * @return リスト
+	 */
+	public List<MetaLocalizedString> getLocalizedTitleList() {
+		return localizedTitleList;
+	}
+
+	/**
+	 * 多言語設定情報を設定します。
+	 * @param リスト
+	 */
+	public void setLocalizedTitleList(List<MetaLocalizedString> localizedTitleList) {
+		this.localizedTitleList = localizedTitleList;
+	}
+
+	/**
+	 * idを取得します。
+	 * @return id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * idを設定します。
+	 * @param id id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * クラス名を取得します。
+	 * @return クラス名
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * クラス名を設定します。
+	 * @param style クラス名
+	 */
+	public void setStyle(String style) {
+		this.style = style;
+	}
 
 	/**
 	 * 表示行数を取得します。
@@ -579,6 +654,9 @@ public class MetaSearchResultSection extends MetaSection {
 		super.fillFrom(element, definitionId);
 
 		SearchResultSection section = (SearchResultSection) element;
+		this.title = section.getTitle();
+		this.id = section.getId();
+		this.style = section.getStyle();
 		this.dispRowCount = section.getDispRowCount();
 		this.dispHeight = section.getDispHeight();
 		this.groupingData = section.isGroupingData();
@@ -619,6 +697,9 @@ public class MetaSearchResultSection extends MetaSection {
 				this.addElement(e);
 			}
 		}
+
+		// 言語毎の文字情報設定
+		localizedTitleList = I18nUtil.toMeta(section.getLocalizedTitleList());
 	}
 
 	@Override
@@ -627,6 +708,9 @@ public class MetaSearchResultSection extends MetaSection {
 		super.fillTo(section, definitionId);
 
 		section.setScriptKey(scriptKey);
+		section.setTitle(title);
+		section.setId(id);
+		section.setStyle(style);
 		section.setDispRowCount(this.dispRowCount);
 		section.setDispHeight(this.dispHeight);
 		section.setGroupingData(this.isGroupingData());
@@ -662,6 +746,9 @@ public class MetaSearchResultSection extends MetaSection {
 				}
 			}
 		}
+
+		section.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
+
 		return section;
 	}
 	@Override

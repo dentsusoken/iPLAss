@@ -25,12 +25,14 @@
 <%@ page import="org.iplass.mtp.entity.definition.*" %>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.element.Element" %>
+<%@ page import="org.iplass.mtp.view.generic.element.section.VersionSection" %>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailFormViewData"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@ page import="org.iplass.gem.command.generic.detail.GetVersionCommand"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%
@@ -52,8 +54,19 @@
 	String defName = ed.getName();
 	String viewName = data.getView().getName();
 	String urlPath = ViewUtil.getParamMappingPath(defName, viewName);
+	
+	VersionSection section = (VersionSection) element;
+	String style = "";
+	if (StringUtil.isNotBlank(section.getStyle())) {
+		style = section.getStyle();
+	}
+
+	String title = GemResourceBundleUtil.resourceString("generic.element.section.VersionSection.anotherVer");
+	if (StringUtil.isNotBlank(section.getTitle())) {
+		title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
+	}
 %>
-<div id="version_section">
+<div id="version_section" class="<c:out value="<%=style %>"/>">
 <script type="text/javascript">
 $(function() {
 	$("div.other-version").off("click");
@@ -89,7 +102,7 @@ $(function() {
 </script>
 
 <div class="hgroup-03 sechead other-version disclosure-close">
-<h3><span>${m:rs("mtp-gem-messages", "generic.element.section.VersionSection.anotherVer")}</span></h3>
+<h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
 
 <div class="version-block" style="display:none;">
