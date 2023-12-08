@@ -194,6 +194,8 @@ class BulkUpdateAdapter implements BulkUpdatable {
 				forInternalUse.getEntity().setValue(BEFORE_UPDATE_ENTITY, beforedelete);;
 				break;
 			case MERGE:
+				//厳密にinsert/update判断できないのですべてのpropertyにnormalize実施、
+				eh.nomalizeInternal(forInternalUse.getEntity(), null, ec);
 				if (forInternalUse.getEntity().getOid() == null) {
 					//insert
 					eh.preprocessInsertDirect(forInternalUse.getEntity(), ec, complexWrapperTypePropList);
