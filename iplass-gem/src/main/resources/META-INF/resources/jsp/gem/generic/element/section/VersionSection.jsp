@@ -56,9 +56,9 @@
 	String urlPath = ViewUtil.getParamMappingPath(defName, viewName);
 	
 	VersionSection section = (VersionSection) element;
-	String id = "version_section";
+	String id = "id=\"version_section\"";
 	if (StringUtil.isNotBlank(section.getId())) {
-		id = section.getId();
+		id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 	}
 
 	String style = "";
@@ -71,7 +71,7 @@
 		title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
 	}
 %>
-<div id="<c:out value="<%=id %>"/>" class="version-section <c:out value="<%=style %>"/>">
+<div <%=id %> class="version-section <c:out value="<%=style %>"/>">
 <script type="text/javascript">
 $(function() {
 	$("div.other-version").off("click");

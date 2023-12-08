@@ -37,14 +37,14 @@
 			|| (type == OutputType.VIEW && section.isHideView())) return;
 
 	String id = "";
-	if (section.getId() != null) id = section.getId();
+	if (section.getId() != null) id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 
 	String style = "";
 	if (StringUtil.isNotBlank(section.getStyle())) {
 		style = section.getStyle();
 	}
 %>
-<div id="<c:out value="<%=id %>"/>" class="template-section <c:out value="<%=style %>"/>">
+<div <%=id %> class="template-section <c:out value="<%=style %>"/>">
 <%
 	TemplateUtil.includeTemplate(section.getTemplateName(), pageContext);
 %>

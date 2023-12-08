@@ -66,7 +66,7 @@
 
 	String id = "";
 	if (StringUtil.isNotBlank(section.getId())) {
-		id = section.getId();
+		id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 	}
 
 	String style = "";
@@ -161,7 +161,7 @@
 	//非同期で参照先のEntityを被参照のOIDで検索する
 %>
 
-<div id="<c:out value="<%=id %>"/>" class="mass-reference-section <c:out value="<%=style %>"/>">
+<div <%=id %> class="mass-reference-section <c:out value="<%=style %>"/>">
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>

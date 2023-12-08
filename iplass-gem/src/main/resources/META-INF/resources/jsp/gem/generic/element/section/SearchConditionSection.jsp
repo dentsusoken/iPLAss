@@ -405,7 +405,7 @@
 
 	String id = "";
 	if (StringUtil.isNotBlank(section.getId())) {
-		id = section.getId();
+		id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 	}
 
 	String secStyle = "";
@@ -413,7 +413,7 @@
 		secStyle = section.getStyle();
 	}
 %>
-<div id="<c:out value="<%=id %>"/>" class="tab-wrap search-condition-section <c:out value="<%=secStyle %>"/>">
+<div <%=id %> class="tab-wrap search-condition-section <c:out value="<%=secStyle %>"/>">
 <script type="text/javascript">
 function validation(searchType) {
 	<%-- common.js --%>
