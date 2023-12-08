@@ -127,8 +127,25 @@ public class SearchConditionSection extends Section {
 	)
 	private boolean hideFixedCondition;
 
+	/** クラス名 */
+	@MetaFieldInfo(
+			displayName="クラス名",
+			displayNameKey="generic_element_section_SearchConditionSection_styleDisplayNameKey",
+			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
+			descriptionKey="generic_element_section_SearchConditionSection_styleDescriptionKey",
+			displayOrder=320
+	)
+	private String style;
 
-
+	/** id */
+	@MetaFieldInfo(
+			displayName="id",
+			displayNameKey="generic_element_section_SearchConditionSection_idDisplayNameKey",
+			displayOrder=400,
+			description="画面上で一意となるIDを設定してください。",
+			descriptionKey="generic_element_section_SearchConditionSection_idDescriptionKey"
+	)
+	private String id;
 
 	/** CSVダウンロードボタン非表示設定 */
 	@MetaFieldInfo(
@@ -765,6 +782,38 @@ public class SearchConditionSection extends Section {
 	 */
 	public void setHideFixedCondition(boolean hideFixedCondition) {
 		this.hideFixedCondition = hideFixedCondition;
+	}
+
+	/**
+	 * クラス名を取得します。
+	 * @return クラス名
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * クラス名を設定します。
+	 * @param style クラス名
+	 */
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
+	/**
+	 * idを取得します。
+	 * @return id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * idを設定します。
+	 * @param id id
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**

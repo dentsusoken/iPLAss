@@ -58,6 +58,9 @@ public class MetaScriptingSection extends MetaSection {
 	/** id */
 	private String id;
 
+	/** クラス名 */
+	private String style;
+
 	/** リンクを表示するか */
 	private boolean showLink;
 
@@ -122,6 +125,22 @@ public class MetaScriptingSection extends MetaSection {
 	 */
 	public void setId(String id) {
 	    this.id = id;
+	}
+
+	/**
+	 * クラス名を取得します。
+	 * @return クラス名
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * クラス名を設定します。
+	 * @param style クラス名
+	 */
+	public void setStyle(String style) {
+		this.style = style;
 	}
 
 	/**
@@ -217,6 +236,7 @@ public class MetaScriptingSection extends MetaSection {
 		this.script = script.getScript();
 		title = script.getTitle();
 		id = script.getId();
+		this.style = script.getStyle();
 		this.showLink = script.isShowLink();
 		this.hideDetail = script.isHideDetail();
 		this.hideView = script.isHideView();
@@ -235,6 +255,7 @@ public class MetaScriptingSection extends MetaSection {
 		script.setKey(key);
 		script.setTitle(title);
 		script.setId(id);
+		script.setStyle(style);
 		script.setShowLink(showLink);
 		script.setHideDetail(hideDetail);
 		script.setHideView(hideView);

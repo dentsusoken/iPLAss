@@ -402,8 +402,18 @@
 	//連打防止のインターバル
 	int searchInterval = ViewUtil.getSearchInterval();
 	int csvDownloadInterval = ViewUtil.getCsvDownloadInterval();
+
+	String id = "";
+	if (StringUtil.isNotBlank(section.getId())) {
+		id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
+	}
+
+	String secStyle = "";
+	if (StringUtil.isNotBlank(section.getStyle())) {
+		secStyle = section.getStyle();
+	}
 %>
-<div class="tab-wrap">
+<div <%=id %> class="tab-wrap search-condition-section <c:out value="<%=secStyle %>"/>">
 <script type="text/javascript">
 function validation(searchType) {
 	<%-- common.js --%>

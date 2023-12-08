@@ -21,6 +21,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
+<%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.*" %>
 <%@ page import="org.iplass.mtp.view.generic.element.*" %>
 <%@ page import="org.iplass.mtp.view.generic.element.section.*" %>
@@ -36,9 +37,14 @@
 			|| (type == OutputType.VIEW && section.isHideView())) return;
 
 	String id = "";
-	if (section.getId() != null) id = section.getId();
+	if (section.getId() != null) id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
+
+	String style = "";
+	if (StringUtil.isNotBlank(section.getStyle())) {
+		style = section.getStyle();
+	}
 %>
-<div id="<c:out value="<%=id %>"/>">
+<div <%=id %> class="template-section <c:out value="<%=style %>"/>">
 <%
 	TemplateUtil.includeTemplate(section.getTemplateName(), pageContext);
 %>

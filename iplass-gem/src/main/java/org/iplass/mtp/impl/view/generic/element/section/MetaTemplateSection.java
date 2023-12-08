@@ -51,6 +51,9 @@ public class MetaTemplateSection extends MetaSection {
 	/** id */
 	private String id;
 
+	/** クラス名 */
+	private String style;
+
 	/** リンクを表示するか */
 	private boolean showLink;
 
@@ -112,6 +115,22 @@ public class MetaTemplateSection extends MetaSection {
 	 */
 	public void setId(String id) {
 	    this.id = id;
+	}
+
+	/**
+	 * クラス名を取得します。
+	 * @return クラス名
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * クラス名を設定します。
+	 * @param style クラス名
+	 */
+	public void setStyle(String style) {
+		this.style = style;
 	}
 
 	/**
@@ -207,6 +226,7 @@ public class MetaTemplateSection extends MetaSection {
 		this.templateName = section.getTemplateName();
 		title = section.getTitle();
 		id = section.getId();
+		this.style = section.getStyle();
 		this.showLink = section.isShowLink();
 		this.hideDetail = section.isHideDetail();
 		this.hideView = section.isHideView();
@@ -224,6 +244,7 @@ public class MetaTemplateSection extends MetaSection {
 		section.setTemplateName(templateName);
 		section.setTitle(title);
 		section.setId(id);
+		section.setStyle(style);
 		section.setShowLink(showLink);
 		section.setHideDetail(hideDetail);
 		section.setHideView(hideView);
