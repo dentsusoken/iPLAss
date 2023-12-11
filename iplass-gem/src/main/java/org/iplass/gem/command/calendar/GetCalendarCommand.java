@@ -264,10 +264,10 @@ public final class GetCalendarCommand implements Command {
 			}
 			calendarData.setStart(dateTimeToString(date));
 			calendarData.setCalendarEntityData(new CalendarEntityData(e, time, item));
-			calendarData.setTextColor(item.getEntityColor());
+			calendarData.setColor(item.getEntityColor());
 			if (StringUtil.isNotEmpty(item.getColorConfig())) {
 				String resultColor = ecm.getColorConfigResult(calendarName, e);
-				calendarData.setTextColor(resultColor);
+				calendarData.setColor(resultColor);
 			}
 
 			calendarlist.add(calendarData);
@@ -359,10 +359,10 @@ public final class GetCalendarCommand implements Command {
 
 			calendarData.setTitle(e.getName());
 			calendarData.setStart(stoDate);
-			calendarData.setTextColor(item.getEntityColor());
+			calendarData.setColor(item.getEntityColor());
 			if (StringUtil.isNotEmpty(item.getColorConfig())) {
 				String resultColor = ecm.getColorConfigResult(calendarName, e);
-				calendarData.setTextColor(resultColor);
+				calendarData.setColor(resultColor);
 			}
 
 			if (isAllDayEvent(fromDate, toDate)) {

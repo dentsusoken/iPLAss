@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command.calendar;
 
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.calendar.EntityCalendar.CalendarType;
 
 
@@ -49,8 +50,8 @@ public class CalendarData {
 	/** 終日フラグ trueの時は終日欄に表示されます */
 	private boolean allDay;
 	
-	/** エンティティごとの予定表、テキスト色 */
-	private String textColor;
+	/** エンティティごとの予定表の色 */
+	private String color;
 	
 	/** カレンダーに表示するEntityのデータ */
 	private CalendarEntityData calendarEntityData;
@@ -111,28 +112,21 @@ public class CalendarData {
 
 	/** 月表示かつallday = false の場合、透過100% */
 	public String getBackgroundColor() {
-		if(!allDay && CalendarType.MONTH.toString().equals(calendarType)) {
-			return "rgba(255,255,255,0.0)";
+		
+		if(StringUtil.isNotBlank(color)) {
+			return color;
+		} else {
+			return "rgba(255,255,255,1.0)";
 		}
-			
-		return "rgba(255,255,255,1.0)";
 	}
 
 	
-	public void setTextColor(String textColor) {
-		this.textColor = textColor;
+	public void setColor(String color) {
+		this.color = color;
 	}
 
-	public String getTextColor() {
-		return textColor;
+	public String getColor() {
+		return color;
 	}
 	
-	public String getBorderColor() {
-		if(!allDay && CalendarType.MONTH.toString().equals(calendarType)) {
-			return "rgba(255,255,255,0.0)";
-		}
-		return null;
-	}
-
-
 }
