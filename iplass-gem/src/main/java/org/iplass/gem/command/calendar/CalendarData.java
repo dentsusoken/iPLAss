@@ -119,10 +119,6 @@ public class CalendarData {
 		if(StringUtil.isNotBlank(color)) {
 			return color;
 		} else {
-			if(!allDay && CalendarType.MONTH.toString().equals(calendarType)) {
-				return "rgba(255,255,255,0.0)";
-			}
-				
 			return "rgba(255,255,255,1.0)";
 		}
 	}
@@ -145,9 +141,6 @@ public class CalendarData {
 	}
 	
 	public String getBorderColor() {
-		if(!allDay && CalendarType.MONTH.toString().equals(calendarType)) {
-			return "rgba(255,255,255,0.0)";
-		}
 		return null;
 	}
 
