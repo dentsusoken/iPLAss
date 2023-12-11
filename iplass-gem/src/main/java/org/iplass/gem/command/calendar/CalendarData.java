@@ -53,9 +53,6 @@ public class CalendarData {
 	/** エンティティごとの予定表の色 */
 	private String color;
 	
-	/** エンティティごとの予定表、テキスト色 */
-	private String textColor;
-	
 	/** カレンダーに表示するEntityのデータ */
 	private CalendarEntityData calendarEntityData;
 	
@@ -132,17 +129,4 @@ public class CalendarData {
 		return color;
 	}
 	
-	public void setTextColor(String textColor) {
-		this.textColor = textColor;
-	}
-
-	public String getTextColor() {
-		return textColor;
-	}
-	
-	public String getBorderColor() {
-		return null;
-	}
-
-
 }
