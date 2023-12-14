@@ -45,9 +45,13 @@ public class OracleDateRdbTypeAdapter extends BaseRdbTypeAdapter.Date {
 	public void setParameter(int index, Object javaTypeValue,
 			PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
 		java.sql.Date val = toRdb(javaTypeValue, rdb);
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-		String dateStr = fmt.format(val);
-		stmt.setString(index, dateStr);
+		if (val != null) {
+			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+			String dateStr = fmt.format(val);
+			stmt.setString(index, dateStr);
+		} else {
+			stmt.setString(index, null);
+		}
 	}
 
 	@Override
