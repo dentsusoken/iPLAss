@@ -99,9 +99,9 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 	private boolean isParts;
 
 	/** このActionMappingで処理されるCommand,Templateを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
-	private boolean isPrivilaged = false;
+	private boolean isPrivileged = false;
 
-	/** このActionの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilagedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
+	/** このActionの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
 	private boolean isPublicAction;
 
 	/** このActionMappingが呼び出されたときに実行するCommand。未指定可（Commandは実行せずテンプレートを表示）。 */
@@ -221,12 +221,24 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		this.isPublicAction = isPublicAction;
 	}
 
+	/** @deprecated {@link #isPrivileged()} を使用してください。 */
+	@Deprecated
 	public boolean isPrivilaged() {
-		return isPrivilaged;
+		return isPrivileged;
 	}
 
-	public void setPrivilaged(boolean isPrivilaged) {
-		this.isPrivilaged = isPrivilaged;
+	/** @deprecated {@link #setPrivileged(boolean)} を使用してください。 */
+	@Deprecated
+	public void setPrivilaged(boolean isPrivileged) {
+		this.isPrivileged = isPrivileged;
+	}
+
+	public boolean isPrivileged() {
+		return isPrivileged;
+	}
+
+	public void setPrivileged(boolean isPrivileged) {
+		this.isPrivileged = isPrivileged;
 	}
 
 	public ParamMap[] getParamMap() {
@@ -299,7 +311,13 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		clientCacheMaxAge = definition.getClientCacheMaxAge();
 
 		isParts = definition.isParts();
-		isPrivilaged = definition.isPrivilaged();
+		
+		if (definition.isPrivileged()) {
+			isPrivileged = definition.isPrivileged();
+		} else {
+			isPrivileged = definition.isPrivilaged();
+		}
+		
 		isPublicAction = definition.isPublicAction();
 
 		if (definition.getCommandConfig() != null) {
@@ -383,7 +401,8 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		definition.setClientCacheType(clientCacheType);
 		definition.setClientCacheMaxAge(clientCacheMaxAge);
 		definition.setParts(isParts);
-		definition.setPrivilaged(isPrivilaged);
+		definition.setPrivilaged(isPrivileged);
+		definition.setPrivileged(isPrivileged);
 		definition.setPublicAction(isPublicAction);
 
 		if (command != null) {

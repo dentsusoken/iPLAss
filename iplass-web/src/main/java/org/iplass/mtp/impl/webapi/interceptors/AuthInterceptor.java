@@ -63,9 +63,14 @@ public class AuthInterceptor implements CommandInterceptor {
 	private SessionService sessionService = ServiceRegistry.getRegistry().getService(SessionService.class);
 
 	private AuthContextHolder getAuthContextHolder(WebApiRuntime webapi) {
-		if (webapi.getMetaData().isPrivilaged()) {
+		if (webapi.getMetaData().isPrivileged()) {
 			if (logger.isDebugEnabled()) {
-				logger.debug("do as privilaged webapi:" + webapi.getMetaData().getName());
+				logger.debug("do as Privileged webapi:" + webapi.getMetaData().getName());
+			}
+			return AuthContextHolder.getAuthContext().privilegedAuthContextHolder();
+		} else if (webapi.getMetaData().isPrivilaged()) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("do as Privileged webapi:" + webapi.getMetaData().getName());
 			}
 			return AuthContextHolder.getAuthContext().privilegedAuthContextHolder();
 		} else {
