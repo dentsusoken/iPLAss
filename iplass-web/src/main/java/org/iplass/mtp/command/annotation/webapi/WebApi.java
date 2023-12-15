@@ -77,7 +77,10 @@ public @interface WebApi {
 	boolean overwritable() default true;
 	boolean permissionSharable() default false;
 
+	/** @deprecated {@link #accessControlAllowOrigin()} を使用してください。 */
+	@Deprecated
 	String accessControlAllowOrign() default "";
+	String accessControlAllowOrigin() default "";
 	boolean accessControlAllowCredentials() default false;
 	boolean needTrustedAuthenticate() default false;
 

@@ -108,7 +108,7 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 			return AuthContextHolder.getAuthContext().privilegedAuthContextHolder();
 		} else if (action.getMetaData().isPrivilaged()) {
 			if (logger.isDebugEnabled()) {
-				logger.debug("do as Privileged action:" + action.getMetaData().getName());
+				logger.debug("do as Privilaged action:" + action.getMetaData().getName());
 			}
 			return AuthContextHolder.getAuthContext().privilegedAuthContextHolder();
 		} else {
