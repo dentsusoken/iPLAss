@@ -20,6 +20,7 @@
 package org.iplass.mtp.impl.entity.cache;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import org.iplass.mtp.entity.Entity;
@@ -172,7 +173,11 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 							invocation.proceed();
 
 							QueryCache qc = new QueryCache(list.size(), list, invocation.getType(), hint.getTTL());
-							return new CacheEntry(new QueryCacheKey(q.copy(), invocation.getSearchOption().isReturnStructuredEntity()), qc, (Object) usedEntityDefs);
+							CacheEntry newCe = new CacheEntry(new QueryCacheKey(q.copy(), invocation.getSearchOption().isReturnStructuredEntity()), qc, (Object) usedEntityDefs);
+							if (hint.getTTL() > 0) {
+								newCe.setTimeToLive(TimeUnit.SECONDS.toMillis(hint.getTTL()));
+							}
+							return newCe;
 						} else {
 							if (logger.isTraceEnabled()) {
 								logger.trace("Result list from global cache:" + q);
@@ -236,7 +241,11 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 					if (isInvalidCountCache(v)) {
 						int ret = invocation.proceed();
 						QueryCache qc = new QueryCache(ret, null, invocation.getType(), hint.getTTL());
-						return new CacheEntry(new QueryCacheKey(q.copy(), false), qc, (Object) usedEntityDefs);
+						CacheEntry newCe = new CacheEntry(new QueryCacheKey(q.copy(), false), qc, (Object) usedEntityDefs);
+						if (hint.getTTL() > 0) {
+							newCe.setTimeToLive(TimeUnit.SECONDS.toMillis(hint.getTTL()));
+						}
+						return newCe;
 					} else {
 						if (logger.isTraceEnabled()) {
 							logger.trace("Result list from global cache:" + q);
