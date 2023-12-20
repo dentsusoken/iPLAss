@@ -35,6 +35,7 @@ import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.core.config.ServiceDefinition;
 import org.iplass.mtp.impl.core.config.ServiceDefinitionParser;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.util.StringUtil;
 
 public class ServiceConfigViewer {
@@ -96,7 +97,12 @@ public class ServiceConfigViewer {
 	}
 
 	public boolean execute() throws Exception {
-		return proceed();
+		try {
+			return proceed();
+		} finally {
+			// リソース破棄
+			MtpBatchResourceDisposer.disposeResource();
+		}
 	}
 
 	private boolean proceed() {

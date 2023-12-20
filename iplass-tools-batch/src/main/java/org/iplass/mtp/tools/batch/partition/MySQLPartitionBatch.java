@@ -28,6 +28,7 @@ import org.iplass.mtp.impl.tools.tenant.PartitionInfo;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
 import org.iplass.mtp.impl.tools.tenant.log.LogHandler;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.partition.MySQLPartitionManagerApp;
 import org.iplass.mtp.util.StringUtil;
@@ -58,6 +59,13 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
+			if (instance.getExecMode() == MySQLPartitionBatchExecMode.GUI) {
+				MtpBatchResourceDisposer.addShutdownHookForDisposeResource(() -> {
+					// NOTE 個別の破棄処理が必要な場合は、ここに実装する。
+				});
+			} else {
+				MtpBatchResourceDisposer.disposeResource();
+			}
 		}
 	}
 

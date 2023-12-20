@@ -14,6 +14,7 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
@@ -74,15 +75,20 @@ public class EntityDataCrawler extends MtpSilentBatch {
 					}
 				}
 
-				if (tenantId >= 0) {
-					(new EntityDataCrawler(mode, tenantId, ename)).execute();
-				} else {
-					List<TenantInfo> tenants = getValidTenantInfoList();
-					if (tenants != null) {
-						for (TenantInfo t: tenants) {
-							(new EntityDataCrawler(mode, t.getId(), ename)).execute();
+				try {
+					if (tenantId >= 0) {
+						(new EntityDataCrawler(mode, tenantId, ename)).execute();
+					} else {
+						List<TenantInfo> tenants = getValidTenantInfoList();
+						if (tenants != null) {
+							for (TenantInfo t: tenants) {
+								(new EntityDataCrawler(mode, t.getId(), ename)).execute();
+							}
 						}
 					}
+				} finally {
+					// リソース破棄
+					MtpBatchResourceDisposer.disposeResource();
 				}
 			}
 		}
