@@ -124,6 +124,15 @@ public interface FulltextSearchService extends Service {
 	 */
 	List<String> fulltextSearchOidList(String defName, String keyword);
 
+	/**
+	 * 全文検索を実行し、対象Entity毎の検索結果OIDリストのMapを返す。 
+	 *
+	 * @param defNames Entity定義名のリスト
+	 * @param keyword キーワード
+	 * @return 対象Entity毎の検索結果OIDリストのMap
+	 */
+	Map<String, List<String>> fulltextSearchOidList(List<String> defNames, String keyword);
+
 
 	//TODO 現状Luceneの場合、FulltextSearchResultはoidのみ
 	/**
