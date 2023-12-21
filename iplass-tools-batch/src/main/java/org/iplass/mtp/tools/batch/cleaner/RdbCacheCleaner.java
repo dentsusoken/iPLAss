@@ -8,6 +8,7 @@ import org.iplass.mtp.impl.cache.store.builtin.RdbCacheStoreFactory;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,12 @@ public class RdbCacheCleaner extends MtpSilentBatch {
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 
 	public static void main(String[] args) throws Exception {
-		new RdbCacheCleaner().clean();
+		try {
+			new RdbCacheCleaner().clean();
+		} finally {
+			// リソース破棄
+			MtpBatchResourceDisposer.disposeResource();
+		}
 	}
 
 	public RdbCacheCleaner() {

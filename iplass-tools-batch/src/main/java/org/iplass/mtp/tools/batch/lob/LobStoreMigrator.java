@@ -32,6 +32,7 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
@@ -73,15 +74,20 @@ public class LobStoreMigrator extends MtpSilentBatch {
 		String rootDir = args[2];
 		int tenantId = Integer.parseInt(args[3]);
 
-		if (tenantId >= 0) {
-			(new LobStoreMigrator(mode, target, rootDir, tenantId)).execute();
-		} else {
-			List<TenantInfo> tenants = getValidTenantInfoList();
-			if (tenants != null) {
-				for (TenantInfo t: tenants) {
-					(new LobStoreMigrator(mode, target, rootDir, t.getId())).execute();
+		try {
+			if (tenantId >= 0) {
+				(new LobStoreMigrator(mode, target, rootDir, tenantId)).execute();
+			} else {
+				List<TenantInfo> tenants = getValidTenantInfoList();
+				if (tenants != null) {
+					for (TenantInfo t: tenants) {
+						(new LobStoreMigrator(mode, target, rootDir, t.getId())).execute();
+					}
 				}
 			}
+		} finally {
+			// リソース破棄
+			MtpBatchResourceDisposer.disposeResource();
 		}
 	}
 
