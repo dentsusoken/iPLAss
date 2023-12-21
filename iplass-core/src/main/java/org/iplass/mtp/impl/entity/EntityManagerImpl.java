@@ -1537,6 +1537,11 @@ public class EntityManagerImpl implements EntityManager {
 	}
 
 	@Override
+	public Map<String, List<String>> fulltextSearchOidList(List<String> defNames, String fulltext) {
+		return fulltextSearchService.fulltextSearchOidList(defNames, fulltext);
+	}
+
+	@Override
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties,
 			String fulltext) {
 		return fulltextSearchService.fulltextSearchEntity(entityProperties, fulltext);

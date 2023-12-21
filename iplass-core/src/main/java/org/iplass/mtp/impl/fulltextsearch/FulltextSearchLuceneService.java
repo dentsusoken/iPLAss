@@ -786,6 +786,13 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 		}
 	}
 
+	@Deprecated
+	@Override
+	public Map<String, List<String>> fulltextSearchOidList(List<String> searchDefNames, String fulltext) {
+		//未実装
+		throw new UnsupportedOperationException("Method is unavailable.");
+	}
+
 	@Override
 	public List<FulltextSearchResult> execFulltextSearch(String searchDefName, String keywords) {
 		if (searcherManager == null) {
