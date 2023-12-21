@@ -22,6 +22,7 @@ import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.tools.storagespace.StorageSpaceService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
+import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.storagespace.tableallocators.LocationSpecificationTableAllocator;
 import org.iplass.mtp.util.StringUtil;
@@ -111,8 +112,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			// 全サービス終了
-			ServiceRegistry.getRegistry().destroyAllService();
+			MtpBatchResourceDisposer.disposeResource();
 		}
 	}
 

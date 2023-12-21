@@ -14,6 +14,7 @@ import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.tools.clean.RecycleBinCleanService;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
@@ -56,15 +57,21 @@ public class RbCleaner extends MtpSilentBatch {
 		if (args != null && args.length > 0 && StringUtil.isNotEmpty(args[0])) {
 			tenantId = Integer.parseInt(args[0]);
 		}
-		if (tenantId >= 0) {
-			(new RbCleaner(tenantId)).clean(purgeTargetDate);
-		} else {
-			List<TenantInfo> tenants = getValidTenantInfoList();
-			if (tenants != null) {
-				for (TenantInfo t: tenants) {
-					(new RbCleaner(t.getId())).clean(purgeTargetDate);
+		
+		try {
+			if (tenantId >= 0) {
+				(new RbCleaner(tenantId)).clean(purgeTargetDate);
+			} else {
+				List<TenantInfo> tenants = getValidTenantInfoList();
+				if (tenants != null) {
+					for (TenantInfo t: tenants) {
+						(new RbCleaner(t.getId())).clean(purgeTargetDate);
+					}
 				}
 			}
+		} finally {
+			// リソース破棄
+			MtpBatchResourceDisposer.disposeResource();
 		}
 	}
 

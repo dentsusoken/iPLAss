@@ -39,6 +39,7 @@ import org.iplass.mtp.impl.tools.tenant.TenantToolService;
 import org.iplass.mtp.impl.tools.tenant.log.LogHandler;
 import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.tenant.TenantManagerApp;
 import org.iplass.mtp.util.StringUtil;
@@ -76,6 +77,13 @@ public class TenantBatch extends MtpCuiBase {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
+			if (instance.getExecMode() == TenantBatchExecMode.GUI) {
+				MtpBatchResourceDisposer.addShutdownHookForDisposeResource(() -> {
+					// NOTE 個別の破棄処理が必要な場合は、ここに実装する。
+				});
+			} else {
+				MtpBatchResourceDisposer.disposeResource();
+			}
 		}
 	}
 

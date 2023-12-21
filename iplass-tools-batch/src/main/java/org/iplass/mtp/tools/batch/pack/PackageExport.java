@@ -60,6 +60,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
@@ -102,6 +103,8 @@ public class PackageExport extends MtpCuiBase {
 			e.printStackTrace();
 		} finally {
 			ExecuteContext.finContext();
+			// リソース破棄
+			MtpBatchResourceDisposer.disposeResource();
 		}
 	}
 
