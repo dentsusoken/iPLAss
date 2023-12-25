@@ -109,9 +109,9 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private String restXmlParameterName = null;
 
 	/** このWebAPIで処理されるCommandを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
-	private boolean isPrivilaged = false;
+	private boolean isPrivileged = false;
 
-	/** このWebAPIの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilagedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
+	/** このWebAPIの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
 	private boolean isPublicWebApi;
 
 	/** Tokenチェックの実行設定。未指定可(Tokenチェックは実行されない)。 */
@@ -249,12 +249,24 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		this.tokenCheck = tokenCheck;
 	}
 
+	/** @deprecated {@link #isPrivileged()} を使用してください。 */
+	@Deprecated
 	public boolean isPrivilaged() {
-		return isPrivilaged;
+		return isPrivileged;
 	}
 
-	public void setPrivilaged(boolean isPrivilaged) {
-		this.isPrivilaged = isPrivilaged;
+	/** @deprecated {@link #setPrivileged(boolean)} を使用してください。 */
+	@Deprecated
+	public void setPrivilaged(boolean isPrivileged) {
+		this.isPrivileged = isPrivileged;
+	}
+
+	public boolean isPrivileged() {
+		return isPrivileged;
+	}
+
+	public void setPrivileged(boolean isPrivileged) {
+		this.isPrivileged = isPrivileged;
 	}
 
 	public boolean isPublicWebApi() {
@@ -794,7 +806,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setCacheControlType(cacheControlType);
 		definition.setCacheControlMaxAge(cacheControlMaxAge);
 
-		definition.setPrivilaged(isPrivilaged);
+		definition.setPrivilaged(isPrivileged);
+		definition.setPrivileged(isPrivileged);
 		definition.setPublicWebApi(isPublicWebApi);
 		definition.setCheckXRequestedWithHeader(isCheckXRequestedWithHeader);
 
@@ -848,7 +861,13 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			results = null;
 		}
 
-		isPrivilaged = definition.isPrivilaged();
+		if (definition.isPrivileged()) 
+		{
+			isPrivileged = definition.isPrivileged();
+		} else {
+			isPrivileged = definition.isPrivilaged();
+		}
+		
 		isPublicWebApi = definition.isPublicWebApi();
 		isCheckXRequestedWithHeader = definition.isCheckXRequestedWithHeader();
 

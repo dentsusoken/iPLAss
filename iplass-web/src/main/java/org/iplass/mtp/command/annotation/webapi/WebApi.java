@@ -69,12 +69,18 @@ public @interface WebApi {
 	long cacheControlMaxAge() default -1;
 
 	boolean checkXRequestedWithHeader() default true;
+	/** @deprecated {@link #privileged()} を使用してください。 */
+	@Deprecated
 	boolean privilaged() default false;
+	boolean privileged() default false;
 	boolean publicWebApi() default false;
 	boolean overwritable() default true;
 	boolean permissionSharable() default false;
 
+	/** @deprecated {@link #accessControlAllowOrigin()} を使用してください。 */
+	@Deprecated
 	String accessControlAllowOrign() default "";
+	String accessControlAllowOrigin() default "";
 	boolean accessControlAllowCredentials() default false;
 	boolean needTrustedAuthenticate() default false;
 

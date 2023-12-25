@@ -30,6 +30,7 @@ import org.iplass.mtp.impl.command.MetaCommand;
 import org.iplass.mtp.impl.command.MetaCommandFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.definition.CacheControlType;
 
 
@@ -145,7 +146,12 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 		if (webapi.oauthScopes() != null && webapi.oauthScopes().length > 0) {
 			meta.setOauthScopes(webapi.oauthScopes());
 		}
-		meta.setPrivilaged(webapi.privilaged());
+		meta.setPrivileged(webapi.privileged());
+		if (webapi.privileged()) {
+			meta.setPrivilaged(webapi.privileged());
+		} else {
+			meta.setPrivilaged(webapi.privilaged());
+		}
 		meta.setPublicWebApi(webapi.publicWebApi());
 		meta.setCheckXRequestedWithHeader(webapi.checkXRequestedWithHeader());
 		meta.setResponseType(webapi.responseType());
@@ -172,7 +178,11 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 		}
 
 		meta.setSynchronizeOnSession(webapi.synchronizeOnSession());
-		meta.setAccessControlAllowOrigin(webapi.accessControlAllowOrign());
+		if (StringUtil.isNotBlank(webapi.accessControlAllowOrigin())) {
+			meta.setAccessControlAllowOrigin(webapi.accessControlAllowOrigin());
+		} else {
+			meta.setAccessControlAllowOrigin(webapi.accessControlAllowOrign());
+		}
 		meta.setAccessControlAllowCredentials(webapi.accessControlAllowCredentials());
 		meta.setNeedTrustedAuthenticate(webapi.needTrustedAuthenticate());
 
