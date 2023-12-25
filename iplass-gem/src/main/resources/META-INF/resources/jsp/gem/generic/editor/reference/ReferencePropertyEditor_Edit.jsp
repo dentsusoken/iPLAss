@@ -1460,7 +1460,7 @@ function <%=toggleAddBtnFunc%>() {
 
 	} else if (editor.getDisplayType() == ReferenceDisplayType.REFCOMBO && updatable && !isMappedby) {
 		//連動コンボ
-		//多重度1限定
+		//多重度1限定 //FIXME 多重度複数のロジックもあるが限定か？
 %>
 <jsp:include page="ReferencePropertyEditor_RefCombo.jsp" />
 <%

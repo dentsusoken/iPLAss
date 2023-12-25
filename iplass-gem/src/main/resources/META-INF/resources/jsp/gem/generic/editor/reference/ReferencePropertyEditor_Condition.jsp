@@ -51,8 +51,8 @@
 <%@ page import="org.iplass.mtp.ManagerLocator" %>
 <%@ page import="org.iplass.mtp.impl.util.ConvertUtil" %>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
+<%@ page import="org.iplass.gem.command.generic.refcombo.GetReferenceComboSettingCommand"%>
 <%@ page import="org.iplass.gem.command.generic.reflink.GetReferenceLinkItemCommand"%>
-<%@ page import="org.iplass.gem.command.generic.refcombo.GetEditorCommand"%>
 <%@ page import="org.iplass.gem.command.generic.refcombo.ReferenceComboCommand"%>
 <%@ page import="org.iplass.gem.command.generic.refcombo.SearchParentCommand"%>
 <%@ page import="org.iplass.gem.command.generic.reftree.SearchTreeDataCommand"%>
@@ -599,7 +599,7 @@ $(function() {
  data-searchType="<%=searchType%>"
  data-prefix="sc_"
  data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
- data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>"
+ data-getComboSettingWebapiName="<%=GetReferenceComboSettingCommand.WEBAPI_NAME %>"
  data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
  data-oid="<c:out value="<%=currentOid%>"/>"
  data-upperName="<c:out value="<%=upperName%>" />"

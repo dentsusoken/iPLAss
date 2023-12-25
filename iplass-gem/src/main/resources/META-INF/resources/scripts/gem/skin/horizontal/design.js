@@ -114,6 +114,7 @@ $(function(){
 
 	$(".massReference").massReferenceTable();
 	$(".refCombo").refCombo();
+	$(".ref-combo-sync").refComboSync();
 	$(".refComboController").refComboController();
 	$(".recursiveTreeTrigger").refRecursiveTree();
 	$(".refLinkSelect").refLinkSelect();

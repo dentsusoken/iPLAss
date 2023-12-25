@@ -40,6 +40,7 @@
  * pager
  * nameList
  * refCombo
+ * refComboSync
  * refComboController
  * refLinkSelect
  * refLinkRadio
@@ -2188,8 +2189,7 @@ $.fn.allInputCheck = function(){
 			}
 			$("<option />").attr({value:""}).text(pleaseSelectLabel).appendTo($v);
 
-			getPropertyEditor($v.getEditorWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.entityOid, $v.entityVersion, function(editor) {
-				var setting = editor.referenceComboSetting;
+			getReferenceComboSetting($v.getComboSettingWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.entityOid, $v.entityVersion, function(setting) {
 
 				//連動コンボの設定がない場合は、連動できないので表示しない
 				if (!setting || !setting.propertyName || setting.propertyName == "") return;
@@ -2200,7 +2200,7 @@ $.fn.allInputCheck = function(){
 					func = function() { $v.val($v.oid); }
 				}
 				//親コンボ生成
-				initParent($v, $v.propName, $v.oid, setting, props, false, func);
+				initParent($v, setting, $v.propName, $v.oid, props, false, func);
 
 				if ($v.oid == "") {
 					if ($v.upperOid == "") {
@@ -2225,7 +2225,7 @@ $.fn.allInputCheck = function(){
 		}
 
 		/**
-		 * リセット処理
+		 * 検索画面のリセット処理
 		 */
 		function reset($v, options, props) {
 
@@ -2242,8 +2242,7 @@ $.fn.allInputCheck = function(){
 				$(this).children("option[value!='']").remove();
 			});
 
-			getPropertyEditor($v.getEditorWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.entityOid, $v.entityVersion, function(editor) {
-				var setting = editor.referenceComboSetting;
+			getReferenceComboSetting($v.getComboSettingWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.entityOid, $v.entityVersion, function(setting) {
 
 				//連動コンボの設定がない場合は、連動できないので表示しない
 				if (!setting || !setting.propertyName || setting.propertyName == "") return;
@@ -2255,7 +2254,7 @@ $.fn.allInputCheck = function(){
 				}
 
 				//親コンボリセット
-				initParent($v, $v.propName, $v.oid, setting, props, true, func);
+				initParent($v, setting, $v.propName, $v.oid, props, true, func);
 
 				if ($v.oid == "") {
 					/*
@@ -2274,21 +2273,36 @@ $.fn.allInputCheck = function(){
 		function setup($v) {
 			//一括設定の場合、option指定できないのでattributeから取得
 			$.extend($v, {
-				propName:$v.attr("data-propName"),
+				//EntityView定義名
 				defName:$v.attr("data-defName"),
+				//EntityView View名
 				viewName:$v.attr("data-viewName"),
-				webapiName:$v.attr("data-webapiName"),
-				getEditorWebapiName:$v.attr("data-getEditorWebapiName"),
-				searchParentWebapiName:$v.attr("data-searchParentWebapiName"),
+				//EntityView プロパティ名(NestTableの場合は階層)
+				propName:$v.attr("data-propName"),
+				//EntityView Layoutタイプ
 				viewType:$v.attr("data-viewType"),
-				oid:$v.attr("data-oid"),
-				prefix:$v.attr("data-prefix"),
-				searchType:$v.attr("data-searchType"),
-				upperName:$v.attr("data-upperName"),
-				upperOid:$v.attr("data-upperOid"),
-				customStyle:$v.attr("data-customStyle"),
+				//編集画面 ルートEntityのoid
 				entityOid:$v.attr("data-entityOid"),
-				entityVersion:$v.attr("data-entityVersion")
+				//編集画面 ルートEntityのversion
+				entityVersion:$v.attr("data-entityVersion"),
+				//参照コンボ選択リスト取得WebApi
+				webapiName:$v.attr("data-webapiName"),
+				//連動コンボ設定取得WebApi
+				getComboSettingWebapiName:$v.attr("data-getComboSettingWebapiName"),
+				//上位階層選択値取得WebApi
+				searchParentWebapiName:$v.attr("data-searchParentWebapiName"),
+				//検索画面のsc指定用
+				prefix:$v.attr("data-prefix"),
+				//検索画面の検索タイプ
+				searchType:$v.attr("data-searchType"),
+				//選択値
+				oid:$v.attr("data-oid"),
+				//選択最下層のプロパティパス
+				upperName:$v.attr("data-upperName"),
+				//選択最下層の選択値
+				upperOid:$v.attr("data-upperOid"),
+				//カスタムスタイル
+				customStyle:$v.attr("data-customStyle")
 			});
 		}
 
@@ -2306,14 +2320,22 @@ $.fn.allInputCheck = function(){
 		 *   ・・・
 		 * 6.最下層の選択データ取得(5のOIDが条件)、最下層を選択状態にする
 		 * ------------------------------------------------------------------------------------------
+		 * 
+		 * @param $v 対象RefComboインスタンス
+		 * @param setting 参照コンボ設定
+		 * @param currentPath 現在のパス
+		 * @param childOid 下層の選択値
+		 * @param props コンボデータを検索する際のパラメータ生成用KEY値(階層ごとの名前を保持)
+		 * @param reset リセットか
+		 * @param callback コンボ生成後のコールバック処理
 		 */
-		function initParent($v, name, childOid, setting, props, reset, topCallback) {
-			var parentName = name + "." + setting.propertyName;
-			props.push(parentName);
+		function initParent($v, setting, currentPath, childOid, props, reset, callback) {
+			var parentPath = currentPath + "." + setting.propertyName;
+			props.push(parentPath);
 			if (childOid == "") {
 				var parentOid = "";
 				var func = null;
-				if (parentName == $v.upperName && $v.upperOid != "") {
+				if (parentPath == $v.upperName && $v.upperOid != "") {
 					parentOid = $v.upperOid;
 					func = function($parent) {
 						$parent.val(parentOid);
@@ -2321,17 +2343,17 @@ $.fn.allInputCheck = function(){
 				}
 				if (setting.parent && setting.parent.propertyName && setting.parent.propertyName != "") {
 					//更に上位がいれば先に生成
-					initParent($v, parentName, parentOid, setting.parent, props, reset, null);
+					initParent($v, setting.parent, parentPath, parentOid, props, reset, null);
 				}
 
-				createNode($v, parentName, props, reset, func);
+				createNode($v, parentPath, props, reset, func);
 			} else {
 				//子から親を検索
-				searchParent($v.searchParentWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, parentName, childOid, $v.entityOid, $v.entityVersion, function(parentEntity) {
+				searchParent($v.searchParentWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, parentPath, childOid, $v.entityOid, $v.entityVersion, function(parentEntity) {
 					var parentOid = getOid(parentEntity);
 					if (setting.parent && setting.parent.propertyName && setting.parent.propertyName != "") {
 						//更に上位がいれば先に生成
-						initParent($v, parentName, parentOid, setting.parent, props, reset, null);
+						initParent($v, setting.parent, parentPath, parentOid, props, reset, null);
 					}
 
 					var func = null;
@@ -2341,13 +2363,13 @@ $.fn.allInputCheck = function(){
 							$parent.val(parentOid);
 
 							//最下層の一個上の場合は最下層を読み込んで選択状態を設定する
-							if (topCallback && $.isFunction(topCallback)) {
+							if (callback && $.isFunction(callback)) {
 								$parent.change();
-								topCallback.call(this);
+								callback.call(this);
 							}
 						}
 					}
-					createNode($v, parentName, props, reset, func);
+					createNode($v, parentPath, props, reset, func);
 				});
 			}
 		}
@@ -2365,7 +2387,7 @@ $.fn.allInputCheck = function(){
 		/*
 		 * 親階層生成
 		 */
-		function createNode($v, name, props, reset, func) {
+		function createNode($v, name, props, reset, callback) {
 			var $parent = null;
 			if (!reset) {
 				var pleaseSelectLabel = "";
@@ -2394,16 +2416,16 @@ $.fn.allInputCheck = function(){
 				$parent = $v.parent().children("select[name='" + name + "']");
 			}
 
-			if (func && $.isFunction(func)) {
+			if (callback && $.isFunction(callback)) {
 				//親が先に読み込まれてるはず、この階層のデータを読み込む
-				loadReferenceData($v, props, function(){func.call(this, $parent);});
+				loadReferenceData($v, props, function(){callback.call(this, $parent);});
 			}
 		}
 
 		/*
 		 * 参照データ読み込み
 		 */
-		function loadReferenceData($v, props, func) {
+		function loadReferenceData($v, props, callback) {
 			var params = new Array();
 			for (var i = 0; i < props.length; i++) {
 				var val = $("select[name='" + props[i] + "']", $v.parent()).val();
@@ -2430,7 +2452,97 @@ $.fn.allInputCheck = function(){
 					$select.append("<option value='" + entity.oid + "'>" + entity.name + "</option>");
 				}
 
-				if (func && $.isFunction(func)) func.call(this);
+				if (callback && $.isFunction(callback)) callback.call(this);
+			});
+		}
+	};
+
+	/**
+	 * 参照コンボ(同期)
+	 */
+	$.fn.refComboSync = function() {
+		if (!this) return false;
+
+		return this.each(function(){
+			const $this = $(this);
+			init($this);
+		});
+
+		/*
+		 * 初期化処理
+		 */
+		function init($v) {
+			setup($v);
+			
+			const combos = $v.parent().children("select");
+			const size = combos.length;
+			const comboNames = [];
+			for (let i = 0; i < size - 1; i++) {
+				$(combos[i]).on("change", function() {
+					//自分の階層以下を初期化
+					$(this).nextAll("select").each(function() {
+						$(this).val("");
+						$(this).children("option[value!='']").remove();
+					});
+					loadReferenceData($v, comboNames, $(this).next("select"));
+				});
+
+				comboNames.push($(combos[i]).attr("name"));
+			}
+		};
+
+		/**
+		 * 設定値取得
+		 * 
+		 * @param $v 対象Selectオブジェクト
+		 */
+		function setup($v) {
+			//一括設定の場合、option指定できないのでattributeから取得
+			$.extend($v, {
+				//EntityView定義名
+				defName:$v.attr("data-defName"),
+				//EntityView View名
+				viewName:$v.attr("data-viewName"),
+				//EntityView プロパティ名(NestTableの場合は階層)
+				propName:$v.attr("data-propName"),
+				//EntityView Layoutタイプ
+				viewType:$v.attr("data-viewType"),
+				//編集画面 ルートEntityのoid
+				entityOid:$v.attr("data-entityOid"),
+				//編集画面 ルートEntityのversion
+				entityVersion:$v.attr("data-entityVersion"),
+				//参照コンボ選択リスト取得WebApi
+				webapiName:$v.attr("data-webapiName"),
+			});
+		}
+
+		/*
+		 * 参照データ読み込み
+		 * 
+		 * @param $v 対象Selectオブジェクト
+		 * @param comboNames 上位コンボ名
+		 * @param $target 変更対象Selectオブジェクト
+		 */
+		function loadReferenceData($v, comboNames, $target) {
+			const params = new Array();
+			for (let i = 0; i < comboNames.length; i++) {
+				let val = $("select[name='" + comboNames[i] + "']", $v.parent()).val();
+				if (!val) val = "";
+				params.push({key:comboNames[i], value:val});
+			}
+			if (typeof $v.entityOid !== "undefined" && typeof $v.entityVersion !== "undefined") {
+				params.push({key: "entityOid", value: $v.entityOid});
+				params.push({key: "entityVersion", value: $v.entityVersion});
+			}
+
+			refComboChange($v.webapiName, $v.defName, $v.viewName, $v.propName, params, $v.viewType, function(selName, entities) {
+				if (entities == null || entities.length == 0) return;
+
+				for (let i = 0; i < entities.length; i++) {
+					const entity = entities[i];
+					const optionData = $("<option/>").val(entity.oid).text(entity.name);
+					$target.append(optionData);
+				}
 			});
 		}
 	};

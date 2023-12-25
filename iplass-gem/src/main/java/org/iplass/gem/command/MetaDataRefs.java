@@ -69,6 +69,7 @@ import org.iplass.gem.command.generic.detail.UpdateMappedbyReferenceCommand;
 import org.iplass.gem.command.generic.detail.UpdateReferencePropertyCommand;
 import org.iplass.gem.command.generic.detail.UpdateTableOrderCommand;
 import org.iplass.gem.command.generic.refcombo.GetEditorCommand;
+import org.iplass.gem.command.generic.refcombo.GetReferenceComboSettingCommand;
 import org.iplass.gem.command.generic.refcombo.ReferenceComboCommand;
 import org.iplass.gem.command.generic.refcombo.SearchParentCommand;
 import org.iplass.gem.command.generic.reflink.GetReferenceLinkItemCommand;
@@ -146,6 +147,7 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	//自動補完
 	GetAutocompletionValueCommand.class,
 	//参照コンボ
+	GetReferenceComboSettingCommand.class,
 	GetEditorCommand.class,
 	ReferenceComboCommand.class,
 	SearchParentCommand.class,

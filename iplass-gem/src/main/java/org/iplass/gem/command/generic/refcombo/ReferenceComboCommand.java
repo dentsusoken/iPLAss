@@ -103,6 +103,10 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 		}
 
 		if (rpe != null) {
+			// NestTableの場合、Editorのプロパティ名は、参照先の名前になっているので
+			// NestTableも考慮してフルパスにする
+			rpe.setPropertyName(propName);
+
 			Map<String, List<SimpleEntity>> map = getData(rpe, request);
 
 			//map内は1件のはず
@@ -267,7 +271,7 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 			}
 		} else {
 			//選択済みの場合は下位のコンボの条件にする
-			conditions.add(new Equals(propName + ".oid", val));
+			conditions.add(new Equals(propName + "." + Entity.OID, val));
 		}
 
 		return conditions;
