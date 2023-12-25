@@ -125,6 +125,12 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	/** URLパラメータAction */
 	private List<UrlParameterActionType> urlParameterAction;
 
+	/** 動的URLパラメータ */
+	private String dynamicUrlParameter;
+
+	/** 動的URLパラメータAction */
+	private List<UrlParameterActionType> dynamicUrlParameterAction;
+
 	/** URLパラメータをコンパイルした際に生成したキー */
 	@XmlTransient
 	private String urlParameterScriptKey;
@@ -519,6 +525,39 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		this.urlParameterAction = urlParameterAction;
 	}
 
+	/**
+	 * 動的URLパラメータを取得します。
+	 * @return 動的URLパラメータ
+	 */
+	public String getDynamicUrlParameter() {
+		return dynamicUrlParameter;
+	}
+
+	/**
+	 * 動的URLパラメータを設定します。
+	 * @param dynamicUrlParameter 動的URLパラメータ
+	 */
+	public void setDynamicUrlParameter(String dynamicUrlParameter) {
+		this.dynamicUrlParameter = dynamicUrlParameter;
+	}
+
+	/**
+	 * 動的URLパラメータActionを取得します。
+	 * @return 動的URLパラメータAction
+	 */
+	public List<UrlParameterActionType> getDynamicUrlParameterAction() {
+		return dynamicUrlParameterAction;
+	}
+
+	/**
+	 * 動的URLパラメータActionを設定します。
+	 * @param dynamicUrlParameterAction 動的URLパラメータAction
+	 */
+	public void setDynamicUrlParameterAction(List<UrlParameterActionType> dynamicUrlParameterAction) {
+		this.dynamicUrlParameterAction = dynamicUrlParameterAction;
+	}
+
+	/**
 	/**
 	 * ソートアイテムを取得します。
 	 * @return ソートアイテム
@@ -915,6 +954,8 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		viewName = rpe.getViewName();
 		urlParameter = rpe.getUrlParameter();
 		urlParameterAction = rpe.getUrlParameterAction() != null ? new ArrayList<>(rpe.getUrlParameterAction()) : null;
+		dynamicUrlParameter = rpe.getDynamicUrlParameter();
+		dynamicUrlParameterAction = rpe.getDynamicUrlParameterAction() != null ? new ArrayList<>(rpe.getDynamicUrlParameterAction()) : null;
 		sortItem = sortProperty != null ? sortProperty.getId() : null;
 		sortType = rpe.getSortType();
 		editPage = rpe.getEditPage();
@@ -1028,6 +1069,8 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setUrlParameter(urlParameter);
 		editor.setUrlParameterAction(urlParameterAction != null ? new ArrayList<>(urlParameterAction) : null);
 		editor.setUrlParameterScriptKey(urlParameterScriptKey);
+		editor.setDynamicUrlParameter(dynamicUrlParameter);
+		editor.setDynamicUrlParameterAction(dynamicUrlParameterAction != null ? new ArrayList<>(dynamicUrlParameterAction) : null);
 		editor.setSortItem(sortProperty != null ? sortProperty.getName() : null);
 		editor.setSortType(sortType);
 		editor.setEditPage(editPage);

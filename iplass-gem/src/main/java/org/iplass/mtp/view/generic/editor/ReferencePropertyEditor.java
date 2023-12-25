@@ -471,6 +471,41 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	)
 	private List<UrlParameterActionType> urlParameterAction;
 
+	/** 動的URLパラメータ */
+	@MetaFieldInfo(
+			displayName="動的URLパラメータ",
+			displayNameKey="generic_editor_ReferencePropertyEditor_dynamicUrlParameterDisplayNameKey",
+			description="<b>表示タイプ:Link、NestTable</b><br>" +
+					"選択ボタン、新規ボタン押下で表示する画面に渡すパラメータを作成するためのJavascriptを設定します。<br>" +
+					"NestTableの場合、編集ページがViewの場合に有効になります。<br>" +
+					"<br>" +
+					"URLパラメータに設定した値が変数のurlParamに格納されます。<br>" +
+					"urlParamを含めてURLパラメータの文字列をreturnしてください。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_dynamicUrlParameterDescriptionKey",
+			inputType=InputType.SCRIPT,
+			mode="javascript",
+			displayOrder=616
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+	)
+	private String dynamicUrlParameter;
+
+	/** 動的URLパラメータAction */
+	@MetaFieldInfo(
+			displayName="動的URLパラメータAction",
+			displayNameKey="generic_editor_ReferencePropertyEditor_dynamicUrlParameterActionDisplayNameKey",
+			descriptionKey="generic_editor_ReferencePropertyEditor_dynamicUrlParameterActionDescriptionKey",
+			inputType=InputType.ENUM,
+			enumClass=UrlParameterActionType.class,
+			multiple = true,
+			displayOrder=617
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+	)
+	private List<UrlParameterActionType> dynamicUrlParameterAction;
+
 	/** 新規アクションコールバックスクリプト */
 	@MetaFieldInfo(
 			displayName="新規アクションコールバックスクリプト",
@@ -1033,6 +1068,38 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 */
 	public void setUrlParameterAction(List<UrlParameterActionType> urlParameterAction) {
 		this.urlParameterAction = urlParameterAction;
+	}
+
+	/**
+	 * 動的URLパラメータを取得します。
+	 * @return 動的URLパラメータ
+	 */
+	public String getDynamicUrlParameter() {
+		return dynamicUrlParameter;
+	}
+
+	/**
+	 * 動的URLパラメータを設定します。
+	 * @param dynamicUrlParameter 動的URLパラメータ
+	 */
+	public void setDynamicUrlParameter(String dynamicUrlParameter) {
+		this.dynamicUrlParameter = dynamicUrlParameter;
+	}
+
+	/**
+	 * 動的URLパラメータActionを取得します。
+	 * @return 動的URLパラメータAction
+	 */
+	public List<UrlParameterActionType> getDynamicUrlParameterAction() {
+		return dynamicUrlParameterAction;
+	}
+
+	/**
+	 * 動的URLパラメータActionを設定します。
+	 * @param dynamicUrlParameterAction 動的URLパラメータAction
+	 */
+	public void setDynamicUrlParameterAction(List<UrlParameterActionType> dynamicUrlParameterAction) {
+		this.dynamicUrlParameterAction = dynamicUrlParameterAction;
 	}
 
 	/**

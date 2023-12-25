@@ -2958,7 +2958,9 @@ $.fn.allInputCheck = function(){
 				viewAction:					$v.attr("data-viewAction"),
 				addAction:					$v.attr("data-addAction"),
 				selectUrlParam:				$v.attr("data-selectUrlParam"),
+				selectDynamicParamCallback:	$v.attr("data-selectDynamicParamCallback"),
 				insertUrlParam:				$v.attr("data-insertUrlParam"),
+				insertDynamicParamCallback:	$v.attr("data-insertDynamicParamCallback"),
 				refDefName:					$v.attr("data-refDefName"),
 				refViewName:				$v.attr("data-refViewName"),
 				refEdit:					$v.attr("data-refEdit") == "true",
@@ -2992,7 +2994,8 @@ $.fn.allInputCheck = function(){
 			$selBtn.on("click", function() {
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
-				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.selectUrlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.permitVersionedSelect, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion);
+				var selDynamicParamCallback = scriptContext[$v.selectDynamicParamCallback];
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.selectUrlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.permitVersionedSelect, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion, selDynamicParamCallback);
 			});
 
 			if ($("body.modal-body").length != 0) {
@@ -3007,7 +3010,8 @@ $.fn.allInputCheck = function(){
 			$insBtn.on("click", function() {
 				//新規コールバック
 				var insRefCallback = scriptContext[$v.insUniqueRefCallback];
-				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.insertUrlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType, $v.refSectionIndex);
+				var insDynamicParamCallback = scriptContext[$v.insertDynamicParamCallback];
+				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.insertUrlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType, $v.refSectionIndex, insDynamicParamCallback);
 			});
 
 			$hidden.on("change", function() {

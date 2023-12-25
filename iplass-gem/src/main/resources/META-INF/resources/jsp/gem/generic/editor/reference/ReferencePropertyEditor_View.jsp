@@ -218,8 +218,7 @@
 		String str = ConvertUtil.convertToString(refEntity.getValue(uniquePropName));
 		return StringUtil.escapeHtml(str);
 	}
-%>
-<%!
+
 	Integer toInteger(Object val) {
 		if (val == null) return null;
 		if (val instanceof Integer) {
@@ -234,6 +233,16 @@
 			return ((BigDecimal) val).intValue();
 		}
 		return -1; // 数値以外
+	}
+
+	boolean checkActionType(List<UrlParameterActionType> actions, UrlParameterActionType actionType) {
+		if (actions == null) {
+			//未指定の場合は、SELECTとADDはOK
+			return actionType == UrlParameterActionType.SELECT || actionType == UrlParameterActionType.ADD;
+		} else {
+			//指定されている場合は、対象かどうかをチェック
+			return actions.contains(actionType);
+		}
 	}
 %>
 <%
@@ -455,6 +464,7 @@
 					EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 					String _viewUrlParam = StringUtil.escapeJavaScript(
 							evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
+					String _dynamicParamCallback = "viewDynamicParamCallback_" + StringUtil.escapeJavaScript(propName);
 
 					String viewEditableReference = "viewEditableReference(" 
 						+ "'" + _viewAction + "'" 
@@ -463,8 +473,22 @@
 						+ ", '" + _reloadUrl + "'"
 						+ ", true"
 						+ ", '" + _viewUrlParam + "'"
+						+ ", '" + _dynamicParamCallback + "'"
 						+ ")";
 %>
+<script>
+$(function() {
+	var dynamicParamCallback = function(urlParam) {
+		<%if (checkActionType(editor.getDynamicUrlParameterAction(), UrlParameterActionType.VIEW) && StringUtil.isNotBlank(editor.getDynamicUrlParameter())) {%>
+		<%=editor.getDynamicUrlParameter()%>
+		<%} else {%>
+		return urlParam;
+		<%}%>
+	};
+	var dynamicParamCallbackKey = "<%=_dynamicParamCallback%>";
+	scriptContext[dynamicParamCallbackKey] = dynamicParamCallback;
+});
+</script>
 <a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"
  onclick="<c:out value="<%=viewEditableReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" />
@@ -589,9 +613,16 @@ $(function() {
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_View.select')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=selBtnId %>"/>" data-specVersionKey="<c:out value="<%=specVersionKey%>" />" />
 <script type="text/javascript">
 $(function() {
+	var dynamicParamCallback = function(urlParam) {
+<%if (checkActionType(editor.getDynamicUrlParameterAction(), UrlParameterActionType.SELECT) && StringUtil.isNotBlank(editor.getDynamicUrlParameter())) {%>
+<%=editor.getDynamicUrlParameter()%>
+<%} else {%>
+		return urlParam;
+<%}%>
+	};
 	$(":button[id='<%=StringUtil.escapeJavaScript(selBtnId)%>']").click(function() {
 		searchReferenceFromView("<%=StringUtil.escapeJavaScript(selectAction)%>", "<%=StringUtil.escapeJavaScript(updateRefAction)%>", "<%=StringUtil.escapeJavaScript(refDefName)%>", "<%=StringUtil.escapeJavaScript(ulId)%>", "<%=StringUtil.escapeJavaScript(propName)%>",
-				<%=pd.getMultiplicity() %>, <%=isMultiple %>, "<%=StringUtil.escapeJavaScript(selBtnUrlParam)%>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", this, <%=editor.isPermitConditionSelectAll()%>, <%=editor.isPermitVersionedSelect()%>);
+				<%=pd.getMultiplicity() %>, <%=isMultiple %>, "<%=StringUtil.escapeJavaScript(selBtnUrlParam)%>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", this, <%=editor.isPermitConditionSelectAll()%>, <%=editor.isPermitVersionedSelect()%>, dynamicParamCallback);
 	});
 });
 </script>
@@ -659,12 +690,19 @@ $(function() {
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" style="<c:out value="<%=insBtnStyle %>"/>" />
 <script type="text/javascript">
 $(function() {
+	var dynamicParamCallback = function(urlParam) {
+		<%if (checkActionType(editor.getDynamicUrlParameterAction(), UrlParameterActionType.ADD) && StringUtil.isNotBlank(editor.getDynamicUrlParameter())) {%>
+		<%=editor.getDynamicUrlParameter()%>
+		<%} else {%>
+		return urlParam;
+		<%}%>
+	};
 	$(":button[id='<%=StringUtil.escapeJavaScript(insBtnId)%>']").click(function() {
 		insertReferenceFromView("<%=StringUtil.escapeJavaScript(addAction)%>", "<%=StringUtil.escapeJavaScript(refDefName)%>", "<%=StringUtil.escapeJavaScript(ulId)%>", <%=pd.getMultiplicity() %>,
 				"<%=StringUtil.escapeJavaScript(insBtnUrlParam)%>", "<%=StringUtil.escapeJavaScript(parentOid)%>", "<%=StringUtil.escapeJavaScript(parentVersion)%>", "<%=StringUtil.escapeJavaScript(defName)%>",
 				"<%=StringUtil.escapeJavaScript(mappedBy)%>", $(":hidden[name='oid']").val(), "<%=StringUtil.escapeJavaScript(updateRefAction)%>",
 				"<%=StringUtil.escapeJavaScript(propName)%>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", "<%=StringUtil.escapeJavaScript(rootOid)%>",
-				"<%=StringUtil.escapeJavaScript(rootVersion)%>", "<%=UpdateTableOrderCommand.WEBAPI_NAME%>", "<%=orderPropName%>", <%=orderPropValue%>, <%=editor.getInsertType() == InsertType.TOP%>);
+				"<%=StringUtil.escapeJavaScript(rootVersion)%>", "<%=UpdateTableOrderCommand.WEBAPI_NAME%>", "<%=orderPropName%>", <%=orderPropValue%>, <%=editor.getInsertType() == InsertType.TOP%>, dynamicParamCallback);
 	});
 });
 </script>
