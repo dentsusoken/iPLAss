@@ -33,7 +33,7 @@ import org.iplass.mtp.web.template.TemplateUtil;
 
 @ActionMapping(name=LogoutCommand.ACTION_LOOUT,
 		clientCacheType=ClientCacheType.NO_CACHE,
-		privilaged=true,
+		privileged=true,
 		result={@Result(status="SUCCESS", type=Type.REDIRECT, value=LogoutCommand.RESULT_REDIRECT_PATH)
 })
 @CommandClass(name="gem/auth/LogoutCommand", displayName="ログアウト処理")

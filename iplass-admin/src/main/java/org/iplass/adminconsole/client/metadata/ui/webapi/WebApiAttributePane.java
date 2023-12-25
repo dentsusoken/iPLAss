@@ -62,7 +62,7 @@ public class WebApiAttributePane extends HLayout {
 	private CheckboxItem deleteMethod;
 
 	/** 特権実行（セキュリティ制約を受けない） */
-	private CheckboxItem privilagedField;
+	private CheckboxItem privilegedField;
 
 	/** 公開WebAPI */
 	private CheckboxItem publicWebAPIField;
@@ -123,8 +123,8 @@ public class WebApiAttributePane extends HLayout {
 		accessForm.setIsGroup(true);
 		accessForm.setGroupTitle("Access Policy");
 
-		privilagedField = new CheckboxItem("privilaged", "Privilege execute");
-		privilagedField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_privilExecution")));
+		privilegedField = new CheckboxItem("privileged", "Privilege execute");
+		privilegedField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_privilExecution")));
 
 		publicWebAPIField = new CheckboxItem("publicWebAPI", "Public WebAPI");
 		publicWebAPIField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_publicWebAPI")));
@@ -145,7 +145,7 @@ public class WebApiAttributePane extends HLayout {
 		stateTypeMap.put(StateType.STATELESS.toString(), StateType.STATELESS.toString());
 		stateTypeField.setValueMap(stateTypeMap);
 
-		accessForm.setItems(privilagedField, publicWebAPIField, checkXRequestedWithHeaderField,
+		accessForm.setItems(privilegedField, publicWebAPIField, checkXRequestedWithHeaderField,
 				synchronizeOnSessionField, stateTypeField);
 
 		tokenForm = new DynamicForm();
@@ -245,7 +245,7 @@ public class WebApiAttributePane extends HLayout {
 			}
 		}
 
-		privilagedField.setValue(definition.isPrivilaged());
+		privilegedField.setValue(definition.isPrivileged());
 		publicWebAPIField.setValue(definition.isPublicWebApi());
 		checkXRequestedWithHeaderField.setValue(definition.isCheckXRequestedWithHeader());
 		synchronizeOnSessionField.setValue(definition.isSynchronizeOnSession());
@@ -309,7 +309,7 @@ public class WebApiAttributePane extends HLayout {
 			i++;
 		}
 		definition.setMethods(methodType);
-		definition.setPrivilaged(SmartGWTUtil.getBooleanValue(privilagedField));
+		definition.setPrivileged(SmartGWTUtil.getBooleanValue(privilegedField));
 		definition.setPublicWebApi(SmartGWTUtil.getBooleanValue(publicWebAPIField));
 		definition.setCheckXRequestedWithHeader(SmartGWTUtil.getBooleanValue(checkXRequestedWithHeaderField));
 		definition.setSynchronizeOnSession(SmartGWTUtil.getBooleanValue(synchronizeOnSessionField));

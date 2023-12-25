@@ -34,7 +34,7 @@ import org.iplass.mtp.webapi.definition.StateType;
 	accepts=RequestType.REST_FORM,
 	methods=MethodType.POST,
 	checkXRequestedWithHeader=false,
-	privilaged=true,
+	privileged=true,
 	state=StateType.STATELESS,
 	responseType="application/json"
 )

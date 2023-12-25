@@ -40,7 +40,7 @@ import org.iplass.mtp.web.WebRequestConstants;
 @ActionMapping(name=AuthCallbackCommand.ACTION_NAME,
 	clientCacheType=ClientCacheType.NO_CACHE,
 	publicAction=true,
-	privilaged=true,
+	privileged=true,
 	paramMapping={
 			@ParamMapping(name=AuthCallbackCommand.PARAM_DEFINITION_NAME, mapFrom=ParamMapping.PATHS)
 	},

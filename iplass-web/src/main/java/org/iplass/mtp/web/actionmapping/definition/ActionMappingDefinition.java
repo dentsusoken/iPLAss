@@ -67,9 +67,9 @@ public class ActionMappingDefinition implements Definition {
 	private boolean isParts;
 
 	/** このActionMappingで処理されるCommand,Templateを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
-	private boolean isPrivilaged;
+	private boolean isPrivileged;
 	
-	/** このActionの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilagedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
+	/** このActionの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
 	private boolean isPublicAction;
 
 	/**
@@ -195,7 +195,7 @@ public class ActionMappingDefinition implements Definition {
 
 	/**
 	 * このActionの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。
-	 * isPrivilagedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。
+	 * isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。
 	 * デフォルトはfalse。
 	 * 
 	 * @param isPublicAction
@@ -348,19 +348,41 @@ public class ActionMappingDefinition implements Definition {
 	/**
 	 * @see #setPrivilaged(boolean)
 	 * @return
+	 * @deprecated {@link #isPrivileged()} を使用してください。
 	 */
+	@Deprecated
 	public boolean isPrivilaged() {
-		return isPrivilaged;
+		return isPrivileged;
 	}
 
 	/**
 	 * このActionMappingで処理されるCommand,Templateを特権（セキュリティ制約を受けない）にて処理するかどうかを設定。
 	 * デフォルトはfalse。
 	 *
-	 * @param isPrivilaged
+	 * @param isPrivileged
+	 * @deprecated {@link #setPrivileged(boolean)} を使用してください。 
 	 */
-	public void setPrivilaged(boolean isPrivilaged) {
-		this.isPrivilaged = isPrivilaged;
+	@Deprecated
+	public void setPrivilaged(boolean isPrivileged) {
+		this.isPrivileged = isPrivileged;
+	}
+
+	/**
+	 * @see #setPrivileged(boolean)
+	 * @return
+	 */
+	public boolean isPrivileged() {
+		return isPrivileged;
+	}
+
+	/**
+	 * このActionMappingで処理されるCommand,Templateを特権（セキュリティ制約を受けない）にて処理するかどうかを設定。
+	 * デフォルトはfalse。
+	 *
+	 * @param isPrivileged
+	 */
+	public void setPrivileged(boolean isPrivileged) {
+		this.isPrivileged = isPrivileged;
 	}
 
 
