@@ -4284,9 +4284,8 @@ function addNestRow_Reference(type, cell, idx) {
 		replaceDummyAttr($li, "data-propName", idx);
 		$(".refUnique", cell).refUnique();
 	} else if (type == "REFCOMBO") {
-		//TODO 連動コンボ時の初期ロードで実行されるjavascriptをどうにかする
-		cell.children("select").each(function() {
-		});
+		// 参照コンボの対応
+		$(".ref-combo-sync", cell).refComboSync();
 	}
 }
 

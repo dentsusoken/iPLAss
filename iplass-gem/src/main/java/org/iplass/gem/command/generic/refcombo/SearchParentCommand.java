@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -38,10 +38,12 @@ import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.ReferenceComboSetting;
-import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
+/**
+ * 上位階層選択値取得処理
+ */
 @WebApi(
 		name=SearchParentCommand.WEBAPI_NAME,
 		accepts=RequestType.REST_JSON,
@@ -50,7 +52,7 @@ import org.iplass.mtp.webapi.definition.MethodType;
 		results={"parent"},
 		checkXRequestedWithHeader=true
 	)
-@CommandClass(name="gem/generic/refcombo/SearchParentCommand", displayName="プロパティエディタ取得マンド")
+@CommandClass(name="gem/generic/refcombo/SearchParentCommand", displayName="上位階層選択値取得")
 public final class SearchParentCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/generic/refcombo/searchParent";
@@ -67,18 +69,22 @@ public final class SearchParentCommand implements Command {
 
 	@Override
 	public String execute(RequestContext request) {
-		//Editor取得
-		Command cmd = ci.getCommandInstance(GetEditorCommand.CMD_NAME);
+
+		//参照コンボ設定取得
+		Command cmd = ci.getCommandInstance(GetReferenceComboSettingCommand.CMD_NAME);
 		cmd.execute(request);
-		ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute("editor");
-		if (editor == null) {
+		ReferenceComboSetting setting = (ReferenceComboSetting) request.getAttribute(GetReferenceComboSettingCommand.RESULT_DATA_NAME);
+		if (setting == null) {
 			return "NOT_DEFINED_EDITOR";
 		}
 
 		String defName = request.getParam(Constants.DEF_NAME);
 		String propName = request.getParam(Constants.PROP_NAME);
-		String currentName = request.getParam("currentName");//検索対象の階層の名前
-		String oid = request.getParam("oid");//1個下の階層で選択されたEntityのOID
+
+		//検索対象の階層の名前
+		String targetPath = request.getParam("targetPath");
+		//1個下の階層で選択されたEntityのOID
+		String childOid = request.getParam("childOid");
 
 		//Entity本体の定義取得
 		EntityDefinition ed = edm.get(defName);
@@ -94,44 +100,63 @@ public final class SearchParentCommand implements Command {
 		if (!(pd instanceof ReferenceProperty)) {
 			return "NOT_REFERENCE_PROPERTY";
 		}
-
-		//参照先の定義取得
 		ReferenceProperty rp = (ReferenceProperty) pd;
-		EntityDefinition red = edm.get(rp.getObjectDefinitionName());
-		if (red == null) {
-			return "NOT_DEFINED_REFERENCE_ENITY";
-		}
-		ReferenceComboSetting setting = editor.getReferenceComboSetting();
-		searchParent(request, rp, setting, rp.getName(), currentName, oid);
 
-		return null;
+		Entity parent = searchParent(setting, targetPath, childOid, rp, rp.getName());
+		request.setAttribute("parent", parent);
+
+		return Constants.CMD_EXEC_SUCCESS;
 	}
 
-	private void searchParent(RequestContext request, ReferenceProperty crp, ReferenceComboSetting setting,
-			String childName, String currentName, String childOid) {
-		//子の親プロパティ
-		EntityDefinition ed = edm.get(crp.getObjectDefinitionName());
-		ReferenceProperty rp = (ReferenceProperty) ed.getProperty(setting.getPropertyName());
-		if (rp != null) {
-			String propName = childName + "." + rp.getName();
-			if (currentName.equals(propName)) {
-				if (childOid != null) {
-					//子階層が指定されてたら、指定の子を持つ親階層を検索
-					Query q = new Query().select(rp.getName() + "." + Entity.OID).from(crp.getObjectDefinitionName()).where(new Equals(Entity.OID, childOid));
-					Entity ret = em.searchEntity(q).getFirst();
-					if (ret != null && ret.getValue(rp.getName()) != null) {
-						//最初の項目をデフォルト選択させる
-						Entity ref = ret.getValue(rp.getName());
-						request.setAttribute("parent", ref);
-					}
+	/**
+	 * 親階層選択データ取得
+	 *
+	 * @param setting 参照コンボ設定
+	 * @param targetPath 検索対象のパス
+	 * @param childOid 子階層の選択データOID
+	 * @param currentProperty 現在(子階層)のプロパティ定義
+	 * @param currentPath 現在(子階層)のパス
+	 * @return 親階層選択データ
+	 */
+	private Entity searchParent(ReferenceComboSetting setting,
+			String targetPath, String childOid,
+			ReferenceProperty currentProperty, String currentPath) {
+
+		if (childOid == null) {
+			return null;
+		}
+
+		//子階層のEntity定義取得
+		EntityDefinition childEntityDefinition = edm.get(currentProperty.getObjectDefinitionName());
+		if (childEntityDefinition == null) {
+			return null;
+		}
+
+		//親階層プロパティ定義取得
+		ReferenceProperty parentProperty = (ReferenceProperty) childEntityDefinition.getProperty(setting.getPropertyName());
+
+		if (parentProperty != null) {
+			String parentPath = currentPath + "." + parentProperty.getName();
+			if (targetPath.equals(parentPath)) {
+				//子階層のEntityデータを検索し、その親階層のデータを取得
+				Query query = new Query()
+						.select(parentProperty.getName() + "." + Entity.OID)
+						.from(currentProperty.getObjectDefinitionName())
+						.where(new Equals(Entity.OID, childOid));
+				Entity ret = em.searchEntity(query).getFirst();
+				if (ret != null && ret.getValue(parentProperty.getName()) != null) {
+					//最初の項目をデフォルト選択させる
+					Entity ref = ret.getValue(parentProperty.getName());
+					return ref;
 				}
 			} else {
 				if (setting.getParent() != null && StringUtil.isNotBlank(setting.getParent().getPropertyName())) {
-					searchParent(request, rp, setting.getParent(), propName, currentName, childOid);
+					return searchParent(setting.getParent(), targetPath, childOid, parentProperty, parentPath);
 				}
 			}
 		}
 
+		return null;
 	}
 
 }

@@ -673,7 +673,7 @@ function _lock(webapi, defName, viewName, oid, token, func) {
 }
 
 ////////////////////////////////////////////////////////
-//連動コンボ用のJavascript
+//参照コンボ用のJavascript
 ////////////////////////////////////////////////////////
 function refComboChange(webapi, defName, viewName, propName, _params, viewType, func) {
 	var params = "{";
@@ -692,6 +692,9 @@ function refComboChange(webapi, defName, viewName, propName, _params, viewType, 
 	});
 }
 
+/**
+ @deprecated use getReferenceComboSetting
+ */
 function getPropertyEditor(webapi, defName, viewName, propName, viewType, entityOid, entityVersion, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
@@ -711,23 +714,42 @@ function getPropertyEditor(webapi, defName, viewName, propName, viewType, entity
 	});
 }
 
-function searchParent(webapi, defName, viewName, propName, viewType, currentName, oid, entityOid, entityVersion, func) {
-	var params = "{";
+function getReferenceComboSetting(webapi, defName, viewName, propName, viewType, entityOid, entityVersion, func) {
+	let params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
 	params += ",\"propName\":\"" + propName + "\"";
 	params += ",\"viewType\":\"" + viewType + "\"";
-	params += ",\"currentName\":\"" + currentName + "\"";
-	params += ",\"oid\":\"" + oid + "\"";
+	if (typeof entityOid !== "undefined" && entityOid != null) {
+		params += ",\"entityOid\":\"" + entityOid + "\"";
+	}
+	if (typeof entityVersion !== "undefined" && entityVersion != null) {
+		params += ",\"entityVersion\":\"" + entityVersion + "\"";
+	}
+	params += "}";
+	postAsync(webapi, params, function(results) {
+		const setting = results.setting;
+		if (func && $.isFunction(func)) func.call(this, setting);
+	});
+}
+
+function searchParent(webapi, defName, viewName, propName, viewType, targetPath, childOid, entityOid, entityVersion, func) {
+	let params = "{";
+	params += "\"defName\":\"" + defName + "\"";
+	params += ",\"viewName\":\"" + viewName + "\"";
+	params += ",\"propName\":\"" + propName + "\"";
+	params += ",\"viewType\":\"" + viewType + "\"";
 	if (typeof entityOid !== "undefined" && entityOid !== null) {
 		params += ",\"entityOid\":\"" + entityOid + "\"";
 	}
 	if (typeof entityVersion !== "undefined" && entityVersion !== null) {
 		params += ",\"entityVersion\":\"" + entityVersion + "\"";
 	}
+	params += ",\"targetPath\":\"" + targetPath + "\"";
+	params += ",\"childOid\":\"" + childOid + "\"";
 	params += "}";
 	postAsync(webapi, params, function(results) {
-		var parent = results.parent;
+		const parent = results.parent;
 		if (func && $.isFunction(func)) func.call(this, parent);
 	});
 }
