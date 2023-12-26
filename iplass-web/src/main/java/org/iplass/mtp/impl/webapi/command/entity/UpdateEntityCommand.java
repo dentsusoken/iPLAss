@@ -65,7 +65,7 @@ public final class UpdateEntityCommand extends AbstractEntityCommand {
 
 		UpdateOption option = null;
 		if (e instanceof GenericEntity) {
-			option = new UpdateOption();
+			option = new UpdateOption(false);
 			for (String pn: ((GenericEntity) e).getPropertyNames()) {
 				if (!pn.equals(Entity.OID)
 						&& !pn.equals(Entity.UPDATE_DATE)) {
