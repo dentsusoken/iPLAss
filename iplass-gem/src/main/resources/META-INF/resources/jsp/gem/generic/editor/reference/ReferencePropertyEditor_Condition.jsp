@@ -277,6 +277,16 @@
 		String str = ConvertUtil.convertToString(refEntity.getValue(uniquePropName));
 		return StringUtil.escapeHtml(str);
 	}
+
+	boolean checkActionType(List<UrlParameterActionType> actions, UrlParameterActionType actionType) {
+		if (actions == null) {
+			//未指定の場合は、SELECTとADDはOK
+			return actionType == UrlParameterActionType.SELECT || actionType == UrlParameterActionType.ADD;
+		} else {
+			//指定されている場合は、対象かどうかをチェック
+			return actions.contains(actionType);
+		}
+	}
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -761,6 +771,13 @@ $(function() {
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn" id="<c:out value="<%=selBtnId %>"/>" />
 <script type="text/javascript">
 $(function() {
+	var dynamicParamCallback = function(urlParam) {
+<%if (checkActionType(editor.getDynamicUrlParameterAction(), UrlParameterActionType.SELECT) && StringUtil.isNotBlank(editor.getDynamicUrlParameter())) {%>
+<%=editor.getDynamicUrlParameter()%>
+<%} else {%>
+		return urlParam;
+<%}%>
+	};
 	var params = {
 		selectAction: "<%=StringUtil.escapeJavaScript(select) %>"
 		, viewAction: "<%=StringUtil.escapeJavaScript(viewAction) %>"
@@ -782,7 +799,8 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, params.propName, params.multiplicity, <%=isMultiple%>,
-				 params.urlParam, params.refEdit, function(){}, null, params.viewName, params.permitConditionSelectAll, params.permitVersionedSelect, params.parentDefName, params.parentViewName, params.viewType);
+				 params.urlParam, params.refEdit, function(){}, null, params.viewName, params.permitConditionSelectAll, params.permitVersionedSelect,
+				 params.parentDefName, params.parentViewName, params.viewType, null, null, null, null, dynamicParamCallback);
 	});
 
 	<%-- common.js --%>
@@ -1044,12 +1062,38 @@ $(function() {
 			viewAction = contextPath + "/" + DetailViewCommand.REF_VIEW_ACTION_NAME + urlPath;
 		}
 
-		String ulId = "ul_" + propName;
+		String ulId = "ul_" + propName; 
 
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 		String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, null, UrlParameterActionType.SELECT);
 		String insBtnUrlParam = evm.getUrlParameter(rootDefName, editor, null, UrlParameterActionType.ADD);
+
+		String selDynamicParamCallback = "selDynamicParamCallback_" + StringUtil.escapeJavaScript(propName);
+		String insDynamicParamCallback = "insDynamicParamCallback_" + StringUtil.escapeJavaScript(propName);
 %>
+<script>
+$(function() {
+	var selDynamicParamCallback = function(urlParam) {
+		<%if (checkActionType(editor.getDynamicUrlParameterAction(), UrlParameterActionType.SELECT) && StringUtil.isNotBlank(editor.getDynamicUrlParameter())) {%>
+		<%=editor.getDynamicUrlParameter()%>
+		<%} else {%>
+		return urlParam;
+		<%}%>
+	}; 
+	var selDynamicParamKey = "<%=selDynamicParamCallback%>";
+	scriptContext[selDynamicParamKey] = selDynamicParamCallback;
+
+	var insDynamicParamCallback = function(urlParam) {
+		<%if (checkActionType(editor.getDynamicUrlParameterAction(), UrlParameterActionType.ADD) && StringUtil.isNotBlank(editor.getDynamicUrlParameter())) {%>
+		<%=editor.getDynamicUrlParameter()%>
+		<%} else {%>
+		return urlParam;
+		<%}%>
+	}; 
+	var insDynamicParamKey = "<%=insDynamicParamCallback%>";
+	scriptContext[insDynamicParamKey] = insDynamicParamCallback;
+});
+</script>
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
 <%
 		int length = 0;
@@ -1088,7 +1132,9 @@ $(function() {
  data-selectAction="<c:out value="<%=select %>"/>"
  data-viewAction="<c:out value="<%=viewAction %>"/>"
  data-selectUrlParam="<c:out value="<%=selBtnUrlParam %>"/>"
+ data-selectDynamicParamCallback="<c:out value="<%=selDynamicParamCallback%>"/>"
  data-insertUrlParam="<c:out value="<%=insBtnUrlParam %>"/>"
+ data-insertDynamicParamCallback="<c:out value="<%=insDynamicParamCallback%>"/>"
  data-refDefName="<c:out value="<%=rp.getObjectDefinitionName()%>"/>"
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="false"
@@ -1149,7 +1195,9 @@ $(function() {
  data-selectAction="<c:out value="<%=select %>"/>"
  data-viewAction="<c:out value="<%=viewAction %>"/>"
  data-selectUrlParam="<c:out value="<%=selBtnUrlParam %>"/>"
+ data-selectDynamicParamCallback="<c:out value="<%=selDynamicParamCallback%>"/>"
  data-insertUrlParam="<c:out value="<%=insBtnUrlParam %>"/>"
+ data-insertDynamicParamCallback="<c:out value="<%=insDynamicParamCallback%>"/>"
  data-refDefName="<c:out value="<%=rp.getObjectDefinitionName()%>"/>"
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="false"
@@ -1186,7 +1234,9 @@ $(function() {
  data-selectAction="<c:out value="<%=select %>"/>"
  data-viewAction="<c:out value="<%=viewAction %>"/>"
  data-selectUrlParam="<c:out value="<%=selBtnUrlParam %>"/>"
+ data-selectDynamicParamCallback="<c:out value="<%=selDynamicParamCallback%>"/>"
  data-insertUrlParam="<c:out value="<%=insBtnUrlParam %>"/>"
+ data-insertDynamicParamCallback="<c:out value="<%=insDynamicParamCallback%>"/>"
  data-refDefName="<c:out value="<%=rp.getObjectDefinitionName()%>"/>"
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="false"
@@ -1233,7 +1283,9 @@ $(function() {
  data-selectAction="<c:out value="<%=select %>"/>"
  data-viewAction="<c:out value="<%=viewAction %>"/>"
  data-selectUrlParam="<c:out value="<%=selBtnUrlParam %>"/>"
+ data-selectDynamicParamCallback="<c:out value="<%=selDynamicParamCallback%>"/>"
  data-insertUrlParam="<c:out value="<%=insBtnUrlParam %>"/>"
+ data-insertDynamicParamCallback="<c:out value="<%=insDynamicParamCallback%>"/>"
  data-refDefName="<c:out value="<%=rp.getObjectDefinitionName()%>"/>"
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="false"

@@ -2490,7 +2490,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
  * @param button
  * @return
  */
-function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, delCallback, entityOid, entityVersion) {
+function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, delCallback, entityOid, entityVersion, dpCallback) {
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		var $ul = $("#ul_" + _propName);
@@ -2572,8 +2572,13 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 	$("<input />").attr({type:"hidden", name:"permitConditionSelectAll", value:permitConditionSelectAll}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"permitVersionedSelect", value:permitVersionedSelect}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
-	var kv = urlParam.split("&");
-	if (urlParam.length > 0 && kv.length > 0) {
+
+	var _param = urlParam;
+	if (dpCallback) {
+		_param = dpCallback(urlParam);
+	}
+	var kv = _param.split("&");
+	if (_param.length > 0 && kv.length > 0) {
 		for (var i = 0; i < kv.length; i++) {
 			var _kv = kv[i].split("=");
 			if (_kv.length > 0) {
@@ -2707,8 +2712,9 @@ function searchReferenceForBi(webapi, selectAction, viewAction, defName, entityD
  * @param button       実行ボタンのSelector
  * @param permitConditionSelectAll  検索条件での全選択を許可
  * @param permitVersionedSelect 選択画面でバージョン検索を許可
+ * @param dpCallback   動的パラメータ生成用のコールバック
  */
-function searchReferenceFromView(selectAction, updateAction, defName, id, propName, multiplicity, multi, urlParam, reloadUrl, button, permitConditionSelectAll, permitVersionedSelect) {
+function searchReferenceFromView(selectAction, updateAction, defName, id, propName, multiplicity, multi, urlParam, reloadUrl, button, permitConditionSelectAll, permitVersionedSelect, dpCallback) {
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		//選択されたOID情報をもとに参照元Entityを更新(更新後画面が再表示される)
 		var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
@@ -2761,8 +2767,13 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 	$("<input />").attr({type:"hidden", name:"permitConditionSelectAll", value:permitConditionSelectAll}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"permitVersionedSelect", value:permitVersionedSelect}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
-	var kv = urlParam.split("&");
-	if (urlParam.length > 0 && kv.length > 0) {
+
+	var _param = urlParam;
+	if (dpCallback) {
+		_param = dpCallback(urlParam);
+	}
+	var kv = _param.split("&");
+	if (_param.length > 0 && kv.length > 0) {
 		for (var i = 0; i < kv.length; i++) {
 			var _kv = kv[i].split("=");
 			if (_kv.length > 0) {
@@ -2778,7 +2789,7 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 	$form.remove();
 }
 
-function searchUniqueReference(id, selectAction, viewAction, defName, propName, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, entityOid, entityVersion) {
+function searchUniqueReference(id, selectAction, viewAction, defName, propName, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, entityOid, entityVersion, dpCallback) {
 	var _id = id.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
@@ -2844,8 +2855,13 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 	$("<input />").attr({type:"hidden", name:"permitConditionSelectAll", value:permitConditionSelectAll}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"permitVersionedSelect", value:permitVersionedSelect}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
-	var kv = urlParam.split("&");
-	if (urlParam.length > 0 && kv.length > 0) {
+
+	var _param = urlParam;
+	if (dpCallback) {
+		_param = dpCallback(urlParam);
+	}
+	var kv = _param.split("&");
+	if (_param.length > 0 && kv.length > 0) {
 		for (var i = 0; i < kv.length; i++) {
 			var _kv = kv[i].split("=");
 			if (_kv.length > 0) {
@@ -2869,7 +2885,7 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
  * @param multiplicity
  * @return
  */
-function insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, button, delCallback, viewType, refSectionIndex, entityOid, entityVersion) {
+function insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, button, delCallback, viewType, refSectionIndex, entityOid, entityVersion, dpCallback) {
 	var isSubModal = $("body.modal-body").length != 0;
 	var target = getModalTarget(isSubModal);
 
@@ -2911,8 +2927,13 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
 		$("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
 		if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
 		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
-		var kv = urlParam.split("&");
-		if (urlParam.length > 0 && kv.length > 0) {
+
+		var _param = urlParam;
+		if (dpCallback) {
+			_param = dpCallback(urlParam);
+		}
+		var kv = _param.split("&");
+		if (_param.length > 0 && kv.length > 0) {
 			for (var i = 0; i < kv.length; i++) {
 				var _kv = kv[i].split("=");
 				if (_kv.length > 0) {
@@ -2941,11 +2962,12 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
  * @param reloadUrl     リロード用URL
  * @param entityOid
  * @param entityVersion
+ * @param dpCallback    動的URLパラメータ作成コールバック
  */
 function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam,
 		parentOid, parentVersion, parentDefName, mappedBy,
 		oid, updateAction, propName, reloadUrl, entityOid, entityVersion,
-		webapi, orderPropName, orderPropValue, shiftUp) {
+		webapi, orderPropName, orderPropValue, shiftUp, dpCallback) {
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 
 	var isMappedBy = mappedBy != null && mappedBy != "";
@@ -3000,8 +3022,13 @@ function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam,
 			$("<input />").attr({type:"hidden", name:"updateByParam", value:true}).appendTo($form);
 			$("<input />").attr({type:"hidden", name:mappedBy, value:oid}).appendTo($form);
 		}
-		var kv = urlParam.split("&");
-		if (urlParam.length > 0 && kv.length > 0) {
+
+		var _param = urlParam;
+		if (dpCallback) {
+			_param = dpCallback(urlParam);
+		}
+		var kv = _param.split("&");
+		if (_param.length > 0 && kv.length > 0) {
 			for (var i = 0; i < kv.length; i++) {
 				var _kv = kv[i].split("=");
 				if (_kv.length > 0) {
@@ -3016,7 +3043,7 @@ function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam,
 	}
 }
 
-function insertUniqueReference(id, addAction, viewAction, defName, propName, multiplicity, urlParam, parentDefName, parentViewName, refEdit, callback, button, viewType, refSectionIndex) {
+function insertUniqueReference(id, addAction, viewAction, defName, propName, multiplicity, urlParam, parentDefName, parentViewName, refEdit, callback, button, viewType, refSectionIndex, dpCallback) {
 	var isSubModal = $("body.modal-body").length != 0;
 	var target = getModalTarget(isSubModal);
 
@@ -3064,8 +3091,13 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 	$("<input />").attr({type:"hidden", name:"entityVersion", value:entityVersion}).appendTo($form);
 	if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
-	var kv = urlParam.split("&");
-	if (urlParam.length > 0 && kv.length > 0) {
+
+	var _param = urlParam;
+	if (dpCallback) {
+		_param = dpCallback(urlParam);
+	}
+	var kv = _param.split("&");
+	if (_param.length > 0 && kv.length > 0) {
 		for (var i = 0; i < kv.length; i++) {
 			var _kv = kv[i].split("=");
 			if (_kv.length > 0) {
@@ -3246,7 +3278,7 @@ function getDialogTrigger($v, option) {
 	return $dialogTrigger;
 }
 
-function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit, urlParam) {
+function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit, urlParam, dpCallbackKey) {
 
 	var isSubModal = $("body.modal-body").length != 0;
 	var target = getModalTarget(isSubModal);
@@ -3291,8 +3323,13 @@ function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit, url
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 
 	if (typeof urlParam === "undefined" || urlParam === null || urlParam === "") urlParam = "";
-	var kv = urlParam.split("&");
-	if (urlParam.length > 0 && kv.length > 0) {
+	var _param = urlParam;
+	var dpCallback = scriptContext[dpCallbackKey];
+	if (dpCallback) {
+		_param = dpCallback(urlParam);
+	}
+	var kv = _param.split("&");
+	if (_param.length > 0 && kv.length > 0) {
 		for (var i = 0; i < kv.length; i++) {
 			var _kv = kv[i].split("=");
 			if (_kv.length > 0) {
