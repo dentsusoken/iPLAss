@@ -2484,7 +2484,9 @@ $.fn.allInputCheck = function(){
 						$(this).val("");
 						$(this).children("option[value!='']").remove();
 					});
-					loadReferenceData($v, comboNames, $(this).next("select"));
+					if ($(this).val()) {
+						loadReferenceData($v, comboNames, $(this).next("select"));
+					}
 				});
 
 				comboNames.push($(combos[i]).attr("name"));
