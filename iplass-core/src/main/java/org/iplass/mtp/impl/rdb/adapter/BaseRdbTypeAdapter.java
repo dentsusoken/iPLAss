@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -43,6 +43,22 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 
 public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
+
+	/**
+	 * Column Index タイプ
+	 */
+	public static class ColumnIndexType {
+		/** 日 */
+		public static final String DATE = "DATE";
+		/** Double */
+		public static final String DOUBLE = "DBL";
+		/** 数値 */
+		public static final String NUMBER = "NUM";
+		/** 文字 */
+		public static final String STRING = "STR";
+		/** 日時 */
+		public static final String TIMESTAMP = "TS";
+	}
 
 	private static Map<Class<? extends BaseRdbTypeAdapter>, BaseRdbTypeAdapter> map;
 
@@ -79,6 +95,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 	}
 
 
+	@Override
 	public int allocateColumnCount() {
 		return 1;
 	}
@@ -111,7 +128,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 	public void appendToSqlAsRealType(Object javaTypeValue, StringBuilder context, RdbAdapter rdb) {
 		context.append(rdb.toSqlExp(toDataStore(javaTypeValue, rdb)));
 	}
-	
+
 	public abstract void setParameter(int index, Object javaTypeValue, PreparedStatement stmt, RdbAdapter rdb) throws SQLException;
 
 	public void appendToTypedCol(StringBuilder context, RdbAdapter rdb, ValueHandleLogic callback) {
@@ -222,7 +239,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public String getColOfIndex() {
-			return "TS";
+			return ColumnIndexType.TIMESTAMP;
 		}
 
 		@Override
@@ -278,12 +295,10 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 				context.append(rdb.toDateExpression(date));
 			}
 		}
-		
-		
 
 		@Override
 		public String getColOfIndex() {
-			return "DATE";
+			return ColumnIndexType.DATE;
 		}
 
 		@Override
@@ -382,7 +397,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public String getColOfIndex() {
-			return "NUM";
+			return ColumnIndexType.NUMBER;
 		}
 
 		@Override
@@ -429,7 +444,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public String getColOfIndex() {
-			return "DBL";
+			return ColumnIndexType.DOUBLE;
 		}
 
 		@Override
@@ -480,7 +495,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public String getColOfIndex() {
-			return "NUM";
+			return ColumnIndexType.NUMBER;
 		}
 
 		@Override
@@ -539,7 +554,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public String getColOfIndex() {
-			return "TS";
+			return ColumnIndexType.TIMESTAMP;
 		}
 
 		@Override
@@ -595,7 +610,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public String getColOfIndex() {
-			return "STR";
+			return ColumnIndexType.STRING;
 		}
 
 		@Override
@@ -668,7 +683,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 		@Override
 		public String getColOfIndex() {
-			return "STR";
+			return ColumnIndexType.STRING;
 		}
 
 		@Override

@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `obj_meta`;
-CREATE TABLE `obj_meta` (
+DROP TABLE IF EXISTS `OBJ_META`;
+CREATE TABLE `OBJ_META` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
   `obj_def_ver` BIGINT(10) NOT NULL,

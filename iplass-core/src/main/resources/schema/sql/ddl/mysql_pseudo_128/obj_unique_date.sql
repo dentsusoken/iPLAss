@@ -1,6 +1,6 @@
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date`;
-CREATE TABLE `obj_unique_date` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE`;
+CREATE TABLE `OBJ_UNIQUE_DATE` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -16,8 +16,8 @@ CREATE TABLE `obj_unique_date` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__1`;
-CREATE TABLE `obj_unique_date__1` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__1`;
+CREATE TABLE `OBJ_UNIQUE_DATE__1` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -33,8 +33,8 @@ CREATE TABLE `obj_unique_date__1` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__2`;
-CREATE TABLE `obj_unique_date__2` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__2`;
+CREATE TABLE `OBJ_UNIQUE_DATE__2` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -50,8 +50,8 @@ CREATE TABLE `obj_unique_date__2` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__3`;
-CREATE TABLE `obj_unique_date__3` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__3`;
+CREATE TABLE `OBJ_UNIQUE_DATE__3` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -67,8 +67,8 @@ CREATE TABLE `obj_unique_date__3` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__4`;
-CREATE TABLE `obj_unique_date__4` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__4`;
+CREATE TABLE `OBJ_UNIQUE_DATE__4` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -84,8 +84,8 @@ CREATE TABLE `obj_unique_date__4` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__5`;
-CREATE TABLE `obj_unique_date__5` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__5`;
+CREATE TABLE `OBJ_UNIQUE_DATE__5` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -101,8 +101,8 @@ CREATE TABLE `obj_unique_date__5` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__6`;
-CREATE TABLE `obj_unique_date__6` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__6`;
+CREATE TABLE `OBJ_UNIQUE_DATE__6` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -118,8 +118,8 @@ CREATE TABLE `obj_unique_date__6` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__7`;
-CREATE TABLE `obj_unique_date__7` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__7`;
+CREATE TABLE `OBJ_UNIQUE_DATE__7` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -135,8 +135,8 @@ CREATE TABLE `obj_unique_date__7` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__8`;
-CREATE TABLE `obj_unique_date__8` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__8`;
+CREATE TABLE `OBJ_UNIQUE_DATE__8` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -152,8 +152,8 @@ CREATE TABLE `obj_unique_date__8` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__9`;
-CREATE TABLE `obj_unique_date__9` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__9`;
+CREATE TABLE `OBJ_UNIQUE_DATE__9` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -169,8 +169,8 @@ CREATE TABLE `obj_unique_date__9` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__10`;
-CREATE TABLE `obj_unique_date__10` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__10`;
+CREATE TABLE `OBJ_UNIQUE_DATE__10` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -186,8 +186,8 @@ CREATE TABLE `obj_unique_date__10` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__11`;
-CREATE TABLE `obj_unique_date__11` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__11`;
+CREATE TABLE `OBJ_UNIQUE_DATE__11` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -203,8 +203,8 @@ CREATE TABLE `obj_unique_date__11` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__12`;
-CREATE TABLE `obj_unique_date__12` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__12`;
+CREATE TABLE `OBJ_UNIQUE_DATE__12` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -220,8 +220,8 @@ CREATE TABLE `obj_unique_date__12` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__13`;
-CREATE TABLE `obj_unique_date__13` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__13`;
+CREATE TABLE `OBJ_UNIQUE_DATE__13` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -237,8 +237,8 @@ CREATE TABLE `obj_unique_date__13` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__14`;
-CREATE TABLE `obj_unique_date__14` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__14`;
+CREATE TABLE `OBJ_UNIQUE_DATE__14` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -254,8 +254,8 @@ CREATE TABLE `obj_unique_date__14` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__15`;
-CREATE TABLE `obj_unique_date__15` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__15`;
+CREATE TABLE `OBJ_UNIQUE_DATE__15` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -271,8 +271,8 @@ CREATE TABLE `obj_unique_date__15` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__16`;
-CREATE TABLE `obj_unique_date__16` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__16`;
+CREATE TABLE `OBJ_UNIQUE_DATE__16` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -288,8 +288,8 @@ CREATE TABLE `obj_unique_date__16` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__17`;
-CREATE TABLE `obj_unique_date__17` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__17`;
+CREATE TABLE `OBJ_UNIQUE_DATE__17` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -305,8 +305,8 @@ CREATE TABLE `obj_unique_date__17` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__18`;
-CREATE TABLE `obj_unique_date__18` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__18`;
+CREATE TABLE `OBJ_UNIQUE_DATE__18` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -322,8 +322,8 @@ CREATE TABLE `obj_unique_date__18` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__19`;
-CREATE TABLE `obj_unique_date__19` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__19`;
+CREATE TABLE `OBJ_UNIQUE_DATE__19` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -339,8 +339,8 @@ CREATE TABLE `obj_unique_date__19` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__20`;
-CREATE TABLE `obj_unique_date__20` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__20`;
+CREATE TABLE `OBJ_UNIQUE_DATE__20` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -356,8 +356,8 @@ CREATE TABLE `obj_unique_date__20` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__21`;
-CREATE TABLE `obj_unique_date__21` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__21`;
+CREATE TABLE `OBJ_UNIQUE_DATE__21` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -373,8 +373,8 @@ CREATE TABLE `obj_unique_date__21` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__22`;
-CREATE TABLE `obj_unique_date__22` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__22`;
+CREATE TABLE `OBJ_UNIQUE_DATE__22` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -390,8 +390,8 @@ CREATE TABLE `obj_unique_date__22` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__23`;
-CREATE TABLE `obj_unique_date__23` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__23`;
+CREATE TABLE `OBJ_UNIQUE_DATE__23` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -407,8 +407,8 @@ CREATE TABLE `obj_unique_date__23` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__24`;
-CREATE TABLE `obj_unique_date__24` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__24`;
+CREATE TABLE `OBJ_UNIQUE_DATE__24` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -424,8 +424,8 @@ CREATE TABLE `obj_unique_date__24` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__25`;
-CREATE TABLE `obj_unique_date__25` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__25`;
+CREATE TABLE `OBJ_UNIQUE_DATE__25` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -441,8 +441,8 @@ CREATE TABLE `obj_unique_date__25` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__26`;
-CREATE TABLE `obj_unique_date__26` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__26`;
+CREATE TABLE `OBJ_UNIQUE_DATE__26` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -458,8 +458,8 @@ CREATE TABLE `obj_unique_date__26` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__27`;
-CREATE TABLE `obj_unique_date__27` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__27`;
+CREATE TABLE `OBJ_UNIQUE_DATE__27` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -475,8 +475,8 @@ CREATE TABLE `obj_unique_date__27` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__28`;
-CREATE TABLE `obj_unique_date__28` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__28`;
+CREATE TABLE `OBJ_UNIQUE_DATE__28` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -492,8 +492,8 @@ CREATE TABLE `obj_unique_date__28` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__29`;
-CREATE TABLE `obj_unique_date__29` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__29`;
+CREATE TABLE `OBJ_UNIQUE_DATE__29` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -509,8 +509,8 @@ CREATE TABLE `obj_unique_date__29` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__30`;
-CREATE TABLE `obj_unique_date__30` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__30`;
+CREATE TABLE `OBJ_UNIQUE_DATE__30` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -526,8 +526,8 @@ CREATE TABLE `obj_unique_date__30` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__31`;
-CREATE TABLE `obj_unique_date__31` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__31`;
+CREATE TABLE `OBJ_UNIQUE_DATE__31` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -543,8 +543,8 @@ CREATE TABLE `obj_unique_date__31` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__32`;
-CREATE TABLE `obj_unique_date__32` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__32`;
+CREATE TABLE `OBJ_UNIQUE_DATE__32` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -560,8 +560,8 @@ CREATE TABLE `obj_unique_date__32` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__33`;
-CREATE TABLE `obj_unique_date__33` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__33`;
+CREATE TABLE `OBJ_UNIQUE_DATE__33` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -577,8 +577,8 @@ CREATE TABLE `obj_unique_date__33` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__34`;
-CREATE TABLE `obj_unique_date__34` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__34`;
+CREATE TABLE `OBJ_UNIQUE_DATE__34` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -594,8 +594,8 @@ CREATE TABLE `obj_unique_date__34` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__35`;
-CREATE TABLE `obj_unique_date__35` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__35`;
+CREATE TABLE `OBJ_UNIQUE_DATE__35` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -611,8 +611,8 @@ CREATE TABLE `obj_unique_date__35` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__36`;
-CREATE TABLE `obj_unique_date__36` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__36`;
+CREATE TABLE `OBJ_UNIQUE_DATE__36` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -628,8 +628,8 @@ CREATE TABLE `obj_unique_date__36` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__37`;
-CREATE TABLE `obj_unique_date__37` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__37`;
+CREATE TABLE `OBJ_UNIQUE_DATE__37` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -645,8 +645,8 @@ CREATE TABLE `obj_unique_date__37` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__38`;
-CREATE TABLE `obj_unique_date__38` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__38`;
+CREATE TABLE `OBJ_UNIQUE_DATE__38` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -662,8 +662,8 @@ CREATE TABLE `obj_unique_date__38` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__39`;
-CREATE TABLE `obj_unique_date__39` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__39`;
+CREATE TABLE `OBJ_UNIQUE_DATE__39` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -679,8 +679,8 @@ CREATE TABLE `obj_unique_date__39` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__40`;
-CREATE TABLE `obj_unique_date__40` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__40`;
+CREATE TABLE `OBJ_UNIQUE_DATE__40` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -696,8 +696,8 @@ CREATE TABLE `obj_unique_date__40` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__41`;
-CREATE TABLE `obj_unique_date__41` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__41`;
+CREATE TABLE `OBJ_UNIQUE_DATE__41` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -713,8 +713,8 @@ CREATE TABLE `obj_unique_date__41` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__42`;
-CREATE TABLE `obj_unique_date__42` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__42`;
+CREATE TABLE `OBJ_UNIQUE_DATE__42` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -730,8 +730,8 @@ CREATE TABLE `obj_unique_date__42` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__43`;
-CREATE TABLE `obj_unique_date__43` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__43`;
+CREATE TABLE `OBJ_UNIQUE_DATE__43` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -747,8 +747,8 @@ CREATE TABLE `obj_unique_date__43` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__44`;
-CREATE TABLE `obj_unique_date__44` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__44`;
+CREATE TABLE `OBJ_UNIQUE_DATE__44` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -764,8 +764,8 @@ CREATE TABLE `obj_unique_date__44` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__45`;
-CREATE TABLE `obj_unique_date__45` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__45`;
+CREATE TABLE `OBJ_UNIQUE_DATE__45` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -781,8 +781,8 @@ CREATE TABLE `obj_unique_date__45` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__46`;
-CREATE TABLE `obj_unique_date__46` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__46`;
+CREATE TABLE `OBJ_UNIQUE_DATE__46` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -798,8 +798,8 @@ CREATE TABLE `obj_unique_date__46` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__47`;
-CREATE TABLE `obj_unique_date__47` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__47`;
+CREATE TABLE `OBJ_UNIQUE_DATE__47` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -815,8 +815,8 @@ CREATE TABLE `obj_unique_date__47` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__48`;
-CREATE TABLE `obj_unique_date__48` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__48`;
+CREATE TABLE `OBJ_UNIQUE_DATE__48` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -832,8 +832,8 @@ CREATE TABLE `obj_unique_date__48` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__49`;
-CREATE TABLE `obj_unique_date__49` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__49`;
+CREATE TABLE `OBJ_UNIQUE_DATE__49` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -849,8 +849,8 @@ CREATE TABLE `obj_unique_date__49` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__50`;
-CREATE TABLE `obj_unique_date__50` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__50`;
+CREATE TABLE `OBJ_UNIQUE_DATE__50` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -866,8 +866,8 @@ CREATE TABLE `obj_unique_date__50` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__51`;
-CREATE TABLE `obj_unique_date__51` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__51`;
+CREATE TABLE `OBJ_UNIQUE_DATE__51` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -883,8 +883,8 @@ CREATE TABLE `obj_unique_date__51` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__52`;
-CREATE TABLE `obj_unique_date__52` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__52`;
+CREATE TABLE `OBJ_UNIQUE_DATE__52` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -900,8 +900,8 @@ CREATE TABLE `obj_unique_date__52` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__53`;
-CREATE TABLE `obj_unique_date__53` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__53`;
+CREATE TABLE `OBJ_UNIQUE_DATE__53` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -917,8 +917,8 @@ CREATE TABLE `obj_unique_date__53` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__54`;
-CREATE TABLE `obj_unique_date__54` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__54`;
+CREATE TABLE `OBJ_UNIQUE_DATE__54` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -934,8 +934,8 @@ CREATE TABLE `obj_unique_date__54` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__55`;
-CREATE TABLE `obj_unique_date__55` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__55`;
+CREATE TABLE `OBJ_UNIQUE_DATE__55` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -951,8 +951,8 @@ CREATE TABLE `obj_unique_date__55` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__56`;
-CREATE TABLE `obj_unique_date__56` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__56`;
+CREATE TABLE `OBJ_UNIQUE_DATE__56` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -968,8 +968,8 @@ CREATE TABLE `obj_unique_date__56` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__57`;
-CREATE TABLE `obj_unique_date__57` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__57`;
+CREATE TABLE `OBJ_UNIQUE_DATE__57` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -985,8 +985,8 @@ CREATE TABLE `obj_unique_date__57` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__58`;
-CREATE TABLE `obj_unique_date__58` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__58`;
+CREATE TABLE `OBJ_UNIQUE_DATE__58` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1002,8 +1002,8 @@ CREATE TABLE `obj_unique_date__58` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__59`;
-CREATE TABLE `obj_unique_date__59` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__59`;
+CREATE TABLE `OBJ_UNIQUE_DATE__59` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1019,8 +1019,8 @@ CREATE TABLE `obj_unique_date__59` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__60`;
-CREATE TABLE `obj_unique_date__60` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__60`;
+CREATE TABLE `OBJ_UNIQUE_DATE__60` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1036,8 +1036,8 @@ CREATE TABLE `obj_unique_date__60` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__61`;
-CREATE TABLE `obj_unique_date__61` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__61`;
+CREATE TABLE `OBJ_UNIQUE_DATE__61` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1053,8 +1053,8 @@ CREATE TABLE `obj_unique_date__61` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__62`;
-CREATE TABLE `obj_unique_date__62` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__62`;
+CREATE TABLE `OBJ_UNIQUE_DATE__62` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1070,8 +1070,8 @@ CREATE TABLE `obj_unique_date__62` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__63`;
-CREATE TABLE `obj_unique_date__63` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__63`;
+CREATE TABLE `OBJ_UNIQUE_DATE__63` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1087,8 +1087,8 @@ CREATE TABLE `obj_unique_date__63` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__64`;
-CREATE TABLE `obj_unique_date__64` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__64`;
+CREATE TABLE `OBJ_UNIQUE_DATE__64` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1104,8 +1104,8 @@ CREATE TABLE `obj_unique_date__64` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__65`;
-CREATE TABLE `obj_unique_date__65` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__65`;
+CREATE TABLE `OBJ_UNIQUE_DATE__65` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1121,8 +1121,8 @@ CREATE TABLE `obj_unique_date__65` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__66`;
-CREATE TABLE `obj_unique_date__66` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__66`;
+CREATE TABLE `OBJ_UNIQUE_DATE__66` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1138,8 +1138,8 @@ CREATE TABLE `obj_unique_date__66` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__67`;
-CREATE TABLE `obj_unique_date__67` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__67`;
+CREATE TABLE `OBJ_UNIQUE_DATE__67` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1155,8 +1155,8 @@ CREATE TABLE `obj_unique_date__67` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__68`;
-CREATE TABLE `obj_unique_date__68` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__68`;
+CREATE TABLE `OBJ_UNIQUE_DATE__68` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1172,8 +1172,8 @@ CREATE TABLE `obj_unique_date__68` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__69`;
-CREATE TABLE `obj_unique_date__69` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__69`;
+CREATE TABLE `OBJ_UNIQUE_DATE__69` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1189,8 +1189,8 @@ CREATE TABLE `obj_unique_date__69` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__70`;
-CREATE TABLE `obj_unique_date__70` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__70`;
+CREATE TABLE `OBJ_UNIQUE_DATE__70` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1206,8 +1206,8 @@ CREATE TABLE `obj_unique_date__70` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__71`;
-CREATE TABLE `obj_unique_date__71` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__71`;
+CREATE TABLE `OBJ_UNIQUE_DATE__71` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1223,8 +1223,8 @@ CREATE TABLE `obj_unique_date__71` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__72`;
-CREATE TABLE `obj_unique_date__72` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__72`;
+CREATE TABLE `OBJ_UNIQUE_DATE__72` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1240,8 +1240,8 @@ CREATE TABLE `obj_unique_date__72` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__73`;
-CREATE TABLE `obj_unique_date__73` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__73`;
+CREATE TABLE `OBJ_UNIQUE_DATE__73` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1257,8 +1257,8 @@ CREATE TABLE `obj_unique_date__73` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__74`;
-CREATE TABLE `obj_unique_date__74` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__74`;
+CREATE TABLE `OBJ_UNIQUE_DATE__74` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1274,8 +1274,8 @@ CREATE TABLE `obj_unique_date__74` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__75`;
-CREATE TABLE `obj_unique_date__75` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__75`;
+CREATE TABLE `OBJ_UNIQUE_DATE__75` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1291,8 +1291,8 @@ CREATE TABLE `obj_unique_date__75` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__76`;
-CREATE TABLE `obj_unique_date__76` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__76`;
+CREATE TABLE `OBJ_UNIQUE_DATE__76` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1308,8 +1308,8 @@ CREATE TABLE `obj_unique_date__76` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__77`;
-CREATE TABLE `obj_unique_date__77` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__77`;
+CREATE TABLE `OBJ_UNIQUE_DATE__77` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1325,8 +1325,8 @@ CREATE TABLE `obj_unique_date__77` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__78`;
-CREATE TABLE `obj_unique_date__78` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__78`;
+CREATE TABLE `OBJ_UNIQUE_DATE__78` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1342,8 +1342,8 @@ CREATE TABLE `obj_unique_date__78` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__79`;
-CREATE TABLE `obj_unique_date__79` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__79`;
+CREATE TABLE `OBJ_UNIQUE_DATE__79` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1359,8 +1359,8 @@ CREATE TABLE `obj_unique_date__79` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__80`;
-CREATE TABLE `obj_unique_date__80` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__80`;
+CREATE TABLE `OBJ_UNIQUE_DATE__80` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1376,8 +1376,8 @@ CREATE TABLE `obj_unique_date__80` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__81`;
-CREATE TABLE `obj_unique_date__81` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__81`;
+CREATE TABLE `OBJ_UNIQUE_DATE__81` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1393,8 +1393,8 @@ CREATE TABLE `obj_unique_date__81` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__82`;
-CREATE TABLE `obj_unique_date__82` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__82`;
+CREATE TABLE `OBJ_UNIQUE_DATE__82` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1410,8 +1410,8 @@ CREATE TABLE `obj_unique_date__82` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__83`;
-CREATE TABLE `obj_unique_date__83` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__83`;
+CREATE TABLE `OBJ_UNIQUE_DATE__83` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1427,8 +1427,8 @@ CREATE TABLE `obj_unique_date__83` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__84`;
-CREATE TABLE `obj_unique_date__84` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__84`;
+CREATE TABLE `OBJ_UNIQUE_DATE__84` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1444,8 +1444,8 @@ CREATE TABLE `obj_unique_date__84` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__85`;
-CREATE TABLE `obj_unique_date__85` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__85`;
+CREATE TABLE `OBJ_UNIQUE_DATE__85` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1461,8 +1461,8 @@ CREATE TABLE `obj_unique_date__85` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__86`;
-CREATE TABLE `obj_unique_date__86` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__86`;
+CREATE TABLE `OBJ_UNIQUE_DATE__86` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1478,8 +1478,8 @@ CREATE TABLE `obj_unique_date__86` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__87`;
-CREATE TABLE `obj_unique_date__87` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__87`;
+CREATE TABLE `OBJ_UNIQUE_DATE__87` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1495,8 +1495,8 @@ CREATE TABLE `obj_unique_date__87` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__88`;
-CREATE TABLE `obj_unique_date__88` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__88`;
+CREATE TABLE `OBJ_UNIQUE_DATE__88` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1512,8 +1512,8 @@ CREATE TABLE `obj_unique_date__88` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__89`;
-CREATE TABLE `obj_unique_date__89` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__89`;
+CREATE TABLE `OBJ_UNIQUE_DATE__89` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1529,8 +1529,8 @@ CREATE TABLE `obj_unique_date__89` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__90`;
-CREATE TABLE `obj_unique_date__90` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__90`;
+CREATE TABLE `OBJ_UNIQUE_DATE__90` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1546,8 +1546,8 @@ CREATE TABLE `obj_unique_date__90` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__91`;
-CREATE TABLE `obj_unique_date__91` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__91`;
+CREATE TABLE `OBJ_UNIQUE_DATE__91` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1563,8 +1563,8 @@ CREATE TABLE `obj_unique_date__91` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__92`;
-CREATE TABLE `obj_unique_date__92` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__92`;
+CREATE TABLE `OBJ_UNIQUE_DATE__92` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1580,8 +1580,8 @@ CREATE TABLE `obj_unique_date__92` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__93`;
-CREATE TABLE `obj_unique_date__93` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__93`;
+CREATE TABLE `OBJ_UNIQUE_DATE__93` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1597,8 +1597,8 @@ CREATE TABLE `obj_unique_date__93` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__94`;
-CREATE TABLE `obj_unique_date__94` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__94`;
+CREATE TABLE `OBJ_UNIQUE_DATE__94` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1614,8 +1614,8 @@ CREATE TABLE `obj_unique_date__94` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__95`;
-CREATE TABLE `obj_unique_date__95` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__95`;
+CREATE TABLE `OBJ_UNIQUE_DATE__95` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1631,8 +1631,8 @@ CREATE TABLE `obj_unique_date__95` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__96`;
-CREATE TABLE `obj_unique_date__96` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__96`;
+CREATE TABLE `OBJ_UNIQUE_DATE__96` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1648,8 +1648,8 @@ CREATE TABLE `obj_unique_date__96` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__97`;
-CREATE TABLE `obj_unique_date__97` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__97`;
+CREATE TABLE `OBJ_UNIQUE_DATE__97` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1665,8 +1665,8 @@ CREATE TABLE `obj_unique_date__97` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__98`;
-CREATE TABLE `obj_unique_date__98` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__98`;
+CREATE TABLE `OBJ_UNIQUE_DATE__98` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1682,8 +1682,8 @@ CREATE TABLE `obj_unique_date__98` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__99`;
-CREATE TABLE `obj_unique_date__99` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__99`;
+CREATE TABLE `OBJ_UNIQUE_DATE__99` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1699,8 +1699,8 @@ CREATE TABLE `obj_unique_date__99` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__100`;
-CREATE TABLE `obj_unique_date__100` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__100`;
+CREATE TABLE `OBJ_UNIQUE_DATE__100` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1716,8 +1716,8 @@ CREATE TABLE `obj_unique_date__100` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__101`;
-CREATE TABLE `obj_unique_date__101` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__101`;
+CREATE TABLE `OBJ_UNIQUE_DATE__101` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1733,8 +1733,8 @@ CREATE TABLE `obj_unique_date__101` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__102`;
-CREATE TABLE `obj_unique_date__102` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__102`;
+CREATE TABLE `OBJ_UNIQUE_DATE__102` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1750,8 +1750,8 @@ CREATE TABLE `obj_unique_date__102` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__103`;
-CREATE TABLE `obj_unique_date__103` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__103`;
+CREATE TABLE `OBJ_UNIQUE_DATE__103` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1767,8 +1767,8 @@ CREATE TABLE `obj_unique_date__103` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__104`;
-CREATE TABLE `obj_unique_date__104` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__104`;
+CREATE TABLE `OBJ_UNIQUE_DATE__104` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1784,8 +1784,8 @@ CREATE TABLE `obj_unique_date__104` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__105`;
-CREATE TABLE `obj_unique_date__105` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__105`;
+CREATE TABLE `OBJ_UNIQUE_DATE__105` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1801,8 +1801,8 @@ CREATE TABLE `obj_unique_date__105` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__106`;
-CREATE TABLE `obj_unique_date__106` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__106`;
+CREATE TABLE `OBJ_UNIQUE_DATE__106` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1818,8 +1818,8 @@ CREATE TABLE `obj_unique_date__106` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__107`;
-CREATE TABLE `obj_unique_date__107` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__107`;
+CREATE TABLE `OBJ_UNIQUE_DATE__107` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1835,8 +1835,8 @@ CREATE TABLE `obj_unique_date__107` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__108`;
-CREATE TABLE `obj_unique_date__108` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__108`;
+CREATE TABLE `OBJ_UNIQUE_DATE__108` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1852,8 +1852,8 @@ CREATE TABLE `obj_unique_date__108` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__109`;
-CREATE TABLE `obj_unique_date__109` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__109`;
+CREATE TABLE `OBJ_UNIQUE_DATE__109` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1869,8 +1869,8 @@ CREATE TABLE `obj_unique_date__109` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__110`;
-CREATE TABLE `obj_unique_date__110` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__110`;
+CREATE TABLE `OBJ_UNIQUE_DATE__110` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1886,8 +1886,8 @@ CREATE TABLE `obj_unique_date__110` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__111`;
-CREATE TABLE `obj_unique_date__111` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__111`;
+CREATE TABLE `OBJ_UNIQUE_DATE__111` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1903,8 +1903,8 @@ CREATE TABLE `obj_unique_date__111` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__112`;
-CREATE TABLE `obj_unique_date__112` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__112`;
+CREATE TABLE `OBJ_UNIQUE_DATE__112` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1920,8 +1920,8 @@ CREATE TABLE `obj_unique_date__112` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__113`;
-CREATE TABLE `obj_unique_date__113` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__113`;
+CREATE TABLE `OBJ_UNIQUE_DATE__113` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1937,8 +1937,8 @@ CREATE TABLE `obj_unique_date__113` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__114`;
-CREATE TABLE `obj_unique_date__114` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__114`;
+CREATE TABLE `OBJ_UNIQUE_DATE__114` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1954,8 +1954,8 @@ CREATE TABLE `obj_unique_date__114` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__115`;
-CREATE TABLE `obj_unique_date__115` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__115`;
+CREATE TABLE `OBJ_UNIQUE_DATE__115` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1971,8 +1971,8 @@ CREATE TABLE `obj_unique_date__115` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__116`;
-CREATE TABLE `obj_unique_date__116` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__116`;
+CREATE TABLE `OBJ_UNIQUE_DATE__116` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1988,8 +1988,8 @@ CREATE TABLE `obj_unique_date__116` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__117`;
-CREATE TABLE `obj_unique_date__117` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__117`;
+CREATE TABLE `OBJ_UNIQUE_DATE__117` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2005,8 +2005,8 @@ CREATE TABLE `obj_unique_date__117` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__118`;
-CREATE TABLE `obj_unique_date__118` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__118`;
+CREATE TABLE `OBJ_UNIQUE_DATE__118` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2022,8 +2022,8 @@ CREATE TABLE `obj_unique_date__118` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__119`;
-CREATE TABLE `obj_unique_date__119` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__119`;
+CREATE TABLE `OBJ_UNIQUE_DATE__119` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2039,8 +2039,8 @@ CREATE TABLE `obj_unique_date__119` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__120`;
-CREATE TABLE `obj_unique_date__120` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__120`;
+CREATE TABLE `OBJ_UNIQUE_DATE__120` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2056,8 +2056,8 @@ CREATE TABLE `obj_unique_date__120` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__121`;
-CREATE TABLE `obj_unique_date__121` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__121`;
+CREATE TABLE `OBJ_UNIQUE_DATE__121` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2073,8 +2073,8 @@ CREATE TABLE `obj_unique_date__121` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__122`;
-CREATE TABLE `obj_unique_date__122` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__122`;
+CREATE TABLE `OBJ_UNIQUE_DATE__122` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2090,8 +2090,8 @@ CREATE TABLE `obj_unique_date__122` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__123`;
-CREATE TABLE `obj_unique_date__123` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__123`;
+CREATE TABLE `OBJ_UNIQUE_DATE__123` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2107,8 +2107,8 @@ CREATE TABLE `obj_unique_date__123` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__124`;
-CREATE TABLE `obj_unique_date__124` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__124`;
+CREATE TABLE `OBJ_UNIQUE_DATE__124` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2124,8 +2124,8 @@ CREATE TABLE `obj_unique_date__124` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__125`;
-CREATE TABLE `obj_unique_date__125` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__125`;
+CREATE TABLE `OBJ_UNIQUE_DATE__125` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2141,8 +2141,8 @@ CREATE TABLE `obj_unique_date__125` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__126`;
-CREATE TABLE `obj_unique_date__126` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__126`;
+CREATE TABLE `OBJ_UNIQUE_DATE__126` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2158,8 +2158,8 @@ CREATE TABLE `obj_unique_date__126` (
 
 ;
 /* drop/create OBJ_UNIQUE_DATE */
-DROP TABLE IF EXISTS `obj_unique_date__127`;
-CREATE TABLE `obj_unique_date__127` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_DATE__127`;
+CREATE TABLE `OBJ_UNIQUE_DATE__127` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,

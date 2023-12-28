@@ -1,6 +1,6 @@
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store`;
-CREATE TABLE `obj_store` (
+DROP TABLE IF EXISTS `OBJ_STORE`;
+CREATE TABLE `OBJ_STORE` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -258,8 +258,8 @@ PARTITION BY RANGE( `tenant_id` )
 
 
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__MTP`;
-CREATE TABLE `obj_store__MTP` (
+DROP TABLE IF EXISTS `OBJ_STORE__MTP`;
+CREATE TABLE `OBJ_STORE__MTP` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -517,8 +517,8 @@ PARTITION BY RANGE( `tenant_id` )
 
 
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__USER`;
-CREATE TABLE `obj_store__USER` (
+DROP TABLE IF EXISTS `OBJ_STORE__USER`;
+CREATE TABLE `OBJ_STORE__USER` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,

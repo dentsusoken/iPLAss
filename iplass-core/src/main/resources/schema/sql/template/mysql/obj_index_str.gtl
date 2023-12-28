@@ -1,6 +1,6 @@
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `mtdb`.`obj_index_str${tableNamePostfix}`;
-CREATE TABLE `mtdb`.`obj_index_str${tableNamePostfix}` (
+DROP TABLE IF EXISTS `mtdb`.`OBJ_INDEX_STR${tableNamePostfix}`;
+CREATE TABLE `mtdb`.`OBJ_INDEX_STR${tableNamePostfix}` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,

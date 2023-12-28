@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `lob_store`;
-CREATE TABLE `lob_store` (
+DROP TABLE IF EXISTS `LOB_STORE`;
+CREATE TABLE `LOB_STORE` (
   `tenant_id` INT(7) NOT NULL,
   `lob_data_id` BIGINT(16) NOT NULL,
   `cre_date` DATETIME NULL,

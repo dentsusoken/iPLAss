@@ -1,6 +1,6 @@
 /* drop/create OBJ_REF_RB */
-DROP TABLE IF EXISTS `obj_ref_rb`;
-CREATE TABLE `obj_ref_rb` (
+DROP TABLE IF EXISTS `OBJ_REF_RB`;
+CREATE TABLE `OBJ_REF_RB` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `rb_id` BIGINT(16) NULL,
   `tenant_id` INT(7) NOT NULL,
@@ -31,8 +31,8 @@ PARTITION BY RANGE( `tenant_id` )
 
 
 /* drop/create OBJ_REF_RB */
-DROP TABLE IF EXISTS `obj_ref_rb__MTP`;
-CREATE TABLE `obj_ref_rb__MTP` (
+DROP TABLE IF EXISTS `OBJ_REF_RB__MTP`;
+CREATE TABLE `OBJ_REF_RB__MTP` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `rb_id` BIGINT(16) NULL,
   `tenant_id` INT(7) NOT NULL,
@@ -63,8 +63,8 @@ PARTITION BY RANGE( `tenant_id` )
 
 
 /* drop/create OBJ_REF_RB */
-DROP TABLE IF EXISTS `obj_ref_rb__USER`;
-CREATE TABLE `obj_ref_rb__USER` (
+DROP TABLE IF EXISTS `OBJ_REF_RB__USER`;
+CREATE TABLE `OBJ_REF_RB__USER` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `rb_id` BIGINT(16) NULL,
   `tenant_id` INT(7) NOT NULL,

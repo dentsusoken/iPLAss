@@ -1,6 +1,6 @@
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num`;
-CREATE TABLE `obj_unique_num` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM`;
+CREATE TABLE `OBJ_UNIQUE_NUM` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -16,8 +16,8 @@ CREATE TABLE `obj_unique_num` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__1`;
-CREATE TABLE `obj_unique_num__1` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__1`;
+CREATE TABLE `OBJ_UNIQUE_NUM__1` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -33,8 +33,8 @@ CREATE TABLE `obj_unique_num__1` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__2`;
-CREATE TABLE `obj_unique_num__2` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__2`;
+CREATE TABLE `OBJ_UNIQUE_NUM__2` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -50,8 +50,8 @@ CREATE TABLE `obj_unique_num__2` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__3`;
-CREATE TABLE `obj_unique_num__3` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__3`;
+CREATE TABLE `OBJ_UNIQUE_NUM__3` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -67,8 +67,8 @@ CREATE TABLE `obj_unique_num__3` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__4`;
-CREATE TABLE `obj_unique_num__4` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__4`;
+CREATE TABLE `OBJ_UNIQUE_NUM__4` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -84,8 +84,8 @@ CREATE TABLE `obj_unique_num__4` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__5`;
-CREATE TABLE `obj_unique_num__5` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__5`;
+CREATE TABLE `OBJ_UNIQUE_NUM__5` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -101,8 +101,8 @@ CREATE TABLE `obj_unique_num__5` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__6`;
-CREATE TABLE `obj_unique_num__6` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__6`;
+CREATE TABLE `OBJ_UNIQUE_NUM__6` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -118,8 +118,8 @@ CREATE TABLE `obj_unique_num__6` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__7`;
-CREATE TABLE `obj_unique_num__7` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__7`;
+CREATE TABLE `OBJ_UNIQUE_NUM__7` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -135,8 +135,8 @@ CREATE TABLE `obj_unique_num__7` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__8`;
-CREATE TABLE `obj_unique_num__8` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__8`;
+CREATE TABLE `OBJ_UNIQUE_NUM__8` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -152,8 +152,8 @@ CREATE TABLE `obj_unique_num__8` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__9`;
-CREATE TABLE `obj_unique_num__9` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__9`;
+CREATE TABLE `OBJ_UNIQUE_NUM__9` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -169,8 +169,8 @@ CREATE TABLE `obj_unique_num__9` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__10`;
-CREATE TABLE `obj_unique_num__10` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__10`;
+CREATE TABLE `OBJ_UNIQUE_NUM__10` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -186,8 +186,8 @@ CREATE TABLE `obj_unique_num__10` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__11`;
-CREATE TABLE `obj_unique_num__11` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__11`;
+CREATE TABLE `OBJ_UNIQUE_NUM__11` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -203,8 +203,8 @@ CREATE TABLE `obj_unique_num__11` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__12`;
-CREATE TABLE `obj_unique_num__12` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__12`;
+CREATE TABLE `OBJ_UNIQUE_NUM__12` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -220,8 +220,8 @@ CREATE TABLE `obj_unique_num__12` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__13`;
-CREATE TABLE `obj_unique_num__13` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__13`;
+CREATE TABLE `OBJ_UNIQUE_NUM__13` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -237,8 +237,8 @@ CREATE TABLE `obj_unique_num__13` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__14`;
-CREATE TABLE `obj_unique_num__14` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__14`;
+CREATE TABLE `OBJ_UNIQUE_NUM__14` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -254,8 +254,8 @@ CREATE TABLE `obj_unique_num__14` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__15`;
-CREATE TABLE `obj_unique_num__15` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__15`;
+CREATE TABLE `OBJ_UNIQUE_NUM__15` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -271,8 +271,8 @@ CREATE TABLE `obj_unique_num__15` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__16`;
-CREATE TABLE `obj_unique_num__16` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__16`;
+CREATE TABLE `OBJ_UNIQUE_NUM__16` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -288,8 +288,8 @@ CREATE TABLE `obj_unique_num__16` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__17`;
-CREATE TABLE `obj_unique_num__17` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__17`;
+CREATE TABLE `OBJ_UNIQUE_NUM__17` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -305,8 +305,8 @@ CREATE TABLE `obj_unique_num__17` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__18`;
-CREATE TABLE `obj_unique_num__18` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__18`;
+CREATE TABLE `OBJ_UNIQUE_NUM__18` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -322,8 +322,8 @@ CREATE TABLE `obj_unique_num__18` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__19`;
-CREATE TABLE `obj_unique_num__19` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__19`;
+CREATE TABLE `OBJ_UNIQUE_NUM__19` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -339,8 +339,8 @@ CREATE TABLE `obj_unique_num__19` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__20`;
-CREATE TABLE `obj_unique_num__20` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__20`;
+CREATE TABLE `OBJ_UNIQUE_NUM__20` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -356,8 +356,8 @@ CREATE TABLE `obj_unique_num__20` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__21`;
-CREATE TABLE `obj_unique_num__21` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__21`;
+CREATE TABLE `OBJ_UNIQUE_NUM__21` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -373,8 +373,8 @@ CREATE TABLE `obj_unique_num__21` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__22`;
-CREATE TABLE `obj_unique_num__22` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__22`;
+CREATE TABLE `OBJ_UNIQUE_NUM__22` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -390,8 +390,8 @@ CREATE TABLE `obj_unique_num__22` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__23`;
-CREATE TABLE `obj_unique_num__23` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__23`;
+CREATE TABLE `OBJ_UNIQUE_NUM__23` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -407,8 +407,8 @@ CREATE TABLE `obj_unique_num__23` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__24`;
-CREATE TABLE `obj_unique_num__24` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__24`;
+CREATE TABLE `OBJ_UNIQUE_NUM__24` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -424,8 +424,8 @@ CREATE TABLE `obj_unique_num__24` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__25`;
-CREATE TABLE `obj_unique_num__25` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__25`;
+CREATE TABLE `OBJ_UNIQUE_NUM__25` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -441,8 +441,8 @@ CREATE TABLE `obj_unique_num__25` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__26`;
-CREATE TABLE `obj_unique_num__26` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__26`;
+CREATE TABLE `OBJ_UNIQUE_NUM__26` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -458,8 +458,8 @@ CREATE TABLE `obj_unique_num__26` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__27`;
-CREATE TABLE `obj_unique_num__27` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__27`;
+CREATE TABLE `OBJ_UNIQUE_NUM__27` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -475,8 +475,8 @@ CREATE TABLE `obj_unique_num__27` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__28`;
-CREATE TABLE `obj_unique_num__28` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__28`;
+CREATE TABLE `OBJ_UNIQUE_NUM__28` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -492,8 +492,8 @@ CREATE TABLE `obj_unique_num__28` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__29`;
-CREATE TABLE `obj_unique_num__29` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__29`;
+CREATE TABLE `OBJ_UNIQUE_NUM__29` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -509,8 +509,8 @@ CREATE TABLE `obj_unique_num__29` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__30`;
-CREATE TABLE `obj_unique_num__30` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__30`;
+CREATE TABLE `OBJ_UNIQUE_NUM__30` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -526,8 +526,8 @@ CREATE TABLE `obj_unique_num__30` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__31`;
-CREATE TABLE `obj_unique_num__31` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__31`;
+CREATE TABLE `OBJ_UNIQUE_NUM__31` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -543,8 +543,8 @@ CREATE TABLE `obj_unique_num__31` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__32`;
-CREATE TABLE `obj_unique_num__32` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__32`;
+CREATE TABLE `OBJ_UNIQUE_NUM__32` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -560,8 +560,8 @@ CREATE TABLE `obj_unique_num__32` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__33`;
-CREATE TABLE `obj_unique_num__33` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__33`;
+CREATE TABLE `OBJ_UNIQUE_NUM__33` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -577,8 +577,8 @@ CREATE TABLE `obj_unique_num__33` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__34`;
-CREATE TABLE `obj_unique_num__34` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__34`;
+CREATE TABLE `OBJ_UNIQUE_NUM__34` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -594,8 +594,8 @@ CREATE TABLE `obj_unique_num__34` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__35`;
-CREATE TABLE `obj_unique_num__35` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__35`;
+CREATE TABLE `OBJ_UNIQUE_NUM__35` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -611,8 +611,8 @@ CREATE TABLE `obj_unique_num__35` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__36`;
-CREATE TABLE `obj_unique_num__36` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__36`;
+CREATE TABLE `OBJ_UNIQUE_NUM__36` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -628,8 +628,8 @@ CREATE TABLE `obj_unique_num__36` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__37`;
-CREATE TABLE `obj_unique_num__37` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__37`;
+CREATE TABLE `OBJ_UNIQUE_NUM__37` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -645,8 +645,8 @@ CREATE TABLE `obj_unique_num__37` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__38`;
-CREATE TABLE `obj_unique_num__38` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__38`;
+CREATE TABLE `OBJ_UNIQUE_NUM__38` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -662,8 +662,8 @@ CREATE TABLE `obj_unique_num__38` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__39`;
-CREATE TABLE `obj_unique_num__39` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__39`;
+CREATE TABLE `OBJ_UNIQUE_NUM__39` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -679,8 +679,8 @@ CREATE TABLE `obj_unique_num__39` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__40`;
-CREATE TABLE `obj_unique_num__40` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__40`;
+CREATE TABLE `OBJ_UNIQUE_NUM__40` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -696,8 +696,8 @@ CREATE TABLE `obj_unique_num__40` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__41`;
-CREATE TABLE `obj_unique_num__41` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__41`;
+CREATE TABLE `OBJ_UNIQUE_NUM__41` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -713,8 +713,8 @@ CREATE TABLE `obj_unique_num__41` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__42`;
-CREATE TABLE `obj_unique_num__42` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__42`;
+CREATE TABLE `OBJ_UNIQUE_NUM__42` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -730,8 +730,8 @@ CREATE TABLE `obj_unique_num__42` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__43`;
-CREATE TABLE `obj_unique_num__43` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__43`;
+CREATE TABLE `OBJ_UNIQUE_NUM__43` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -747,8 +747,8 @@ CREATE TABLE `obj_unique_num__43` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__44`;
-CREATE TABLE `obj_unique_num__44` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__44`;
+CREATE TABLE `OBJ_UNIQUE_NUM__44` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -764,8 +764,8 @@ CREATE TABLE `obj_unique_num__44` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__45`;
-CREATE TABLE `obj_unique_num__45` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__45`;
+CREATE TABLE `OBJ_UNIQUE_NUM__45` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -781,8 +781,8 @@ CREATE TABLE `obj_unique_num__45` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__46`;
-CREATE TABLE `obj_unique_num__46` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__46`;
+CREATE TABLE `OBJ_UNIQUE_NUM__46` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -798,8 +798,8 @@ CREATE TABLE `obj_unique_num__46` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__47`;
-CREATE TABLE `obj_unique_num__47` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__47`;
+CREATE TABLE `OBJ_UNIQUE_NUM__47` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -815,8 +815,8 @@ CREATE TABLE `obj_unique_num__47` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__48`;
-CREATE TABLE `obj_unique_num__48` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__48`;
+CREATE TABLE `OBJ_UNIQUE_NUM__48` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -832,8 +832,8 @@ CREATE TABLE `obj_unique_num__48` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__49`;
-CREATE TABLE `obj_unique_num__49` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__49`;
+CREATE TABLE `OBJ_UNIQUE_NUM__49` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -849,8 +849,8 @@ CREATE TABLE `obj_unique_num__49` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__50`;
-CREATE TABLE `obj_unique_num__50` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__50`;
+CREATE TABLE `OBJ_UNIQUE_NUM__50` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -866,8 +866,8 @@ CREATE TABLE `obj_unique_num__50` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__51`;
-CREATE TABLE `obj_unique_num__51` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__51`;
+CREATE TABLE `OBJ_UNIQUE_NUM__51` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -883,8 +883,8 @@ CREATE TABLE `obj_unique_num__51` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__52`;
-CREATE TABLE `obj_unique_num__52` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__52`;
+CREATE TABLE `OBJ_UNIQUE_NUM__52` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -900,8 +900,8 @@ CREATE TABLE `obj_unique_num__52` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__53`;
-CREATE TABLE `obj_unique_num__53` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__53`;
+CREATE TABLE `OBJ_UNIQUE_NUM__53` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -917,8 +917,8 @@ CREATE TABLE `obj_unique_num__53` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__54`;
-CREATE TABLE `obj_unique_num__54` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__54`;
+CREATE TABLE `OBJ_UNIQUE_NUM__54` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -934,8 +934,8 @@ CREATE TABLE `obj_unique_num__54` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__55`;
-CREATE TABLE `obj_unique_num__55` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__55`;
+CREATE TABLE `OBJ_UNIQUE_NUM__55` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -951,8 +951,8 @@ CREATE TABLE `obj_unique_num__55` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__56`;
-CREATE TABLE `obj_unique_num__56` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__56`;
+CREATE TABLE `OBJ_UNIQUE_NUM__56` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -968,8 +968,8 @@ CREATE TABLE `obj_unique_num__56` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__57`;
-CREATE TABLE `obj_unique_num__57` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__57`;
+CREATE TABLE `OBJ_UNIQUE_NUM__57` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -985,8 +985,8 @@ CREATE TABLE `obj_unique_num__57` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__58`;
-CREATE TABLE `obj_unique_num__58` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__58`;
+CREATE TABLE `OBJ_UNIQUE_NUM__58` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1002,8 +1002,8 @@ CREATE TABLE `obj_unique_num__58` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__59`;
-CREATE TABLE `obj_unique_num__59` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__59`;
+CREATE TABLE `OBJ_UNIQUE_NUM__59` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1019,8 +1019,8 @@ CREATE TABLE `obj_unique_num__59` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__60`;
-CREATE TABLE `obj_unique_num__60` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__60`;
+CREATE TABLE `OBJ_UNIQUE_NUM__60` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1036,8 +1036,8 @@ CREATE TABLE `obj_unique_num__60` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__61`;
-CREATE TABLE `obj_unique_num__61` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__61`;
+CREATE TABLE `OBJ_UNIQUE_NUM__61` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1053,8 +1053,8 @@ CREATE TABLE `obj_unique_num__61` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__62`;
-CREATE TABLE `obj_unique_num__62` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__62`;
+CREATE TABLE `OBJ_UNIQUE_NUM__62` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1070,8 +1070,8 @@ CREATE TABLE `obj_unique_num__62` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__63`;
-CREATE TABLE `obj_unique_num__63` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__63`;
+CREATE TABLE `OBJ_UNIQUE_NUM__63` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1087,8 +1087,8 @@ CREATE TABLE `obj_unique_num__63` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__64`;
-CREATE TABLE `obj_unique_num__64` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__64`;
+CREATE TABLE `OBJ_UNIQUE_NUM__64` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1104,8 +1104,8 @@ CREATE TABLE `obj_unique_num__64` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__65`;
-CREATE TABLE `obj_unique_num__65` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__65`;
+CREATE TABLE `OBJ_UNIQUE_NUM__65` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1121,8 +1121,8 @@ CREATE TABLE `obj_unique_num__65` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__66`;
-CREATE TABLE `obj_unique_num__66` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__66`;
+CREATE TABLE `OBJ_UNIQUE_NUM__66` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1138,8 +1138,8 @@ CREATE TABLE `obj_unique_num__66` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__67`;
-CREATE TABLE `obj_unique_num__67` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__67`;
+CREATE TABLE `OBJ_UNIQUE_NUM__67` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1155,8 +1155,8 @@ CREATE TABLE `obj_unique_num__67` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__68`;
-CREATE TABLE `obj_unique_num__68` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__68`;
+CREATE TABLE `OBJ_UNIQUE_NUM__68` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1172,8 +1172,8 @@ CREATE TABLE `obj_unique_num__68` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__69`;
-CREATE TABLE `obj_unique_num__69` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__69`;
+CREATE TABLE `OBJ_UNIQUE_NUM__69` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1189,8 +1189,8 @@ CREATE TABLE `obj_unique_num__69` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__70`;
-CREATE TABLE `obj_unique_num__70` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__70`;
+CREATE TABLE `OBJ_UNIQUE_NUM__70` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1206,8 +1206,8 @@ CREATE TABLE `obj_unique_num__70` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__71`;
-CREATE TABLE `obj_unique_num__71` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__71`;
+CREATE TABLE `OBJ_UNIQUE_NUM__71` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1223,8 +1223,8 @@ CREATE TABLE `obj_unique_num__71` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__72`;
-CREATE TABLE `obj_unique_num__72` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__72`;
+CREATE TABLE `OBJ_UNIQUE_NUM__72` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1240,8 +1240,8 @@ CREATE TABLE `obj_unique_num__72` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__73`;
-CREATE TABLE `obj_unique_num__73` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__73`;
+CREATE TABLE `OBJ_UNIQUE_NUM__73` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1257,8 +1257,8 @@ CREATE TABLE `obj_unique_num__73` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__74`;
-CREATE TABLE `obj_unique_num__74` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__74`;
+CREATE TABLE `OBJ_UNIQUE_NUM__74` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1274,8 +1274,8 @@ CREATE TABLE `obj_unique_num__74` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__75`;
-CREATE TABLE `obj_unique_num__75` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__75`;
+CREATE TABLE `OBJ_UNIQUE_NUM__75` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1291,8 +1291,8 @@ CREATE TABLE `obj_unique_num__75` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__76`;
-CREATE TABLE `obj_unique_num__76` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__76`;
+CREATE TABLE `OBJ_UNIQUE_NUM__76` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1308,8 +1308,8 @@ CREATE TABLE `obj_unique_num__76` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__77`;
-CREATE TABLE `obj_unique_num__77` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__77`;
+CREATE TABLE `OBJ_UNIQUE_NUM__77` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1325,8 +1325,8 @@ CREATE TABLE `obj_unique_num__77` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__78`;
-CREATE TABLE `obj_unique_num__78` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__78`;
+CREATE TABLE `OBJ_UNIQUE_NUM__78` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1342,8 +1342,8 @@ CREATE TABLE `obj_unique_num__78` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__79`;
-CREATE TABLE `obj_unique_num__79` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__79`;
+CREATE TABLE `OBJ_UNIQUE_NUM__79` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1359,8 +1359,8 @@ CREATE TABLE `obj_unique_num__79` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__80`;
-CREATE TABLE `obj_unique_num__80` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__80`;
+CREATE TABLE `OBJ_UNIQUE_NUM__80` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1376,8 +1376,8 @@ CREATE TABLE `obj_unique_num__80` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__81`;
-CREATE TABLE `obj_unique_num__81` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__81`;
+CREATE TABLE `OBJ_UNIQUE_NUM__81` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1393,8 +1393,8 @@ CREATE TABLE `obj_unique_num__81` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__82`;
-CREATE TABLE `obj_unique_num__82` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__82`;
+CREATE TABLE `OBJ_UNIQUE_NUM__82` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1410,8 +1410,8 @@ CREATE TABLE `obj_unique_num__82` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__83`;
-CREATE TABLE `obj_unique_num__83` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__83`;
+CREATE TABLE `OBJ_UNIQUE_NUM__83` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1427,8 +1427,8 @@ CREATE TABLE `obj_unique_num__83` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__84`;
-CREATE TABLE `obj_unique_num__84` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__84`;
+CREATE TABLE `OBJ_UNIQUE_NUM__84` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1444,8 +1444,8 @@ CREATE TABLE `obj_unique_num__84` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__85`;
-CREATE TABLE `obj_unique_num__85` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__85`;
+CREATE TABLE `OBJ_UNIQUE_NUM__85` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1461,8 +1461,8 @@ CREATE TABLE `obj_unique_num__85` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__86`;
-CREATE TABLE `obj_unique_num__86` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__86`;
+CREATE TABLE `OBJ_UNIQUE_NUM__86` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1478,8 +1478,8 @@ CREATE TABLE `obj_unique_num__86` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__87`;
-CREATE TABLE `obj_unique_num__87` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__87`;
+CREATE TABLE `OBJ_UNIQUE_NUM__87` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1495,8 +1495,8 @@ CREATE TABLE `obj_unique_num__87` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__88`;
-CREATE TABLE `obj_unique_num__88` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__88`;
+CREATE TABLE `OBJ_UNIQUE_NUM__88` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1512,8 +1512,8 @@ CREATE TABLE `obj_unique_num__88` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__89`;
-CREATE TABLE `obj_unique_num__89` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__89`;
+CREATE TABLE `OBJ_UNIQUE_NUM__89` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1529,8 +1529,8 @@ CREATE TABLE `obj_unique_num__89` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__90`;
-CREATE TABLE `obj_unique_num__90` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__90`;
+CREATE TABLE `OBJ_UNIQUE_NUM__90` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1546,8 +1546,8 @@ CREATE TABLE `obj_unique_num__90` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__91`;
-CREATE TABLE `obj_unique_num__91` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__91`;
+CREATE TABLE `OBJ_UNIQUE_NUM__91` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1563,8 +1563,8 @@ CREATE TABLE `obj_unique_num__91` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__92`;
-CREATE TABLE `obj_unique_num__92` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__92`;
+CREATE TABLE `OBJ_UNIQUE_NUM__92` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1580,8 +1580,8 @@ CREATE TABLE `obj_unique_num__92` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__93`;
-CREATE TABLE `obj_unique_num__93` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__93`;
+CREATE TABLE `OBJ_UNIQUE_NUM__93` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1597,8 +1597,8 @@ CREATE TABLE `obj_unique_num__93` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__94`;
-CREATE TABLE `obj_unique_num__94` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__94`;
+CREATE TABLE `OBJ_UNIQUE_NUM__94` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1614,8 +1614,8 @@ CREATE TABLE `obj_unique_num__94` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__95`;
-CREATE TABLE `obj_unique_num__95` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__95`;
+CREATE TABLE `OBJ_UNIQUE_NUM__95` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1631,8 +1631,8 @@ CREATE TABLE `obj_unique_num__95` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__96`;
-CREATE TABLE `obj_unique_num__96` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__96`;
+CREATE TABLE `OBJ_UNIQUE_NUM__96` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1648,8 +1648,8 @@ CREATE TABLE `obj_unique_num__96` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__97`;
-CREATE TABLE `obj_unique_num__97` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__97`;
+CREATE TABLE `OBJ_UNIQUE_NUM__97` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1665,8 +1665,8 @@ CREATE TABLE `obj_unique_num__97` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__98`;
-CREATE TABLE `obj_unique_num__98` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__98`;
+CREATE TABLE `OBJ_UNIQUE_NUM__98` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1682,8 +1682,8 @@ CREATE TABLE `obj_unique_num__98` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__99`;
-CREATE TABLE `obj_unique_num__99` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__99`;
+CREATE TABLE `OBJ_UNIQUE_NUM__99` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1699,8 +1699,8 @@ CREATE TABLE `obj_unique_num__99` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__100`;
-CREATE TABLE `obj_unique_num__100` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__100`;
+CREATE TABLE `OBJ_UNIQUE_NUM__100` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1716,8 +1716,8 @@ CREATE TABLE `obj_unique_num__100` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__101`;
-CREATE TABLE `obj_unique_num__101` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__101`;
+CREATE TABLE `OBJ_UNIQUE_NUM__101` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1733,8 +1733,8 @@ CREATE TABLE `obj_unique_num__101` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__102`;
-CREATE TABLE `obj_unique_num__102` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__102`;
+CREATE TABLE `OBJ_UNIQUE_NUM__102` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1750,8 +1750,8 @@ CREATE TABLE `obj_unique_num__102` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__103`;
-CREATE TABLE `obj_unique_num__103` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__103`;
+CREATE TABLE `OBJ_UNIQUE_NUM__103` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1767,8 +1767,8 @@ CREATE TABLE `obj_unique_num__103` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__104`;
-CREATE TABLE `obj_unique_num__104` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__104`;
+CREATE TABLE `OBJ_UNIQUE_NUM__104` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1784,8 +1784,8 @@ CREATE TABLE `obj_unique_num__104` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__105`;
-CREATE TABLE `obj_unique_num__105` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__105`;
+CREATE TABLE `OBJ_UNIQUE_NUM__105` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1801,8 +1801,8 @@ CREATE TABLE `obj_unique_num__105` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__106`;
-CREATE TABLE `obj_unique_num__106` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__106`;
+CREATE TABLE `OBJ_UNIQUE_NUM__106` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1818,8 +1818,8 @@ CREATE TABLE `obj_unique_num__106` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__107`;
-CREATE TABLE `obj_unique_num__107` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__107`;
+CREATE TABLE `OBJ_UNIQUE_NUM__107` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1835,8 +1835,8 @@ CREATE TABLE `obj_unique_num__107` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__108`;
-CREATE TABLE `obj_unique_num__108` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__108`;
+CREATE TABLE `OBJ_UNIQUE_NUM__108` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1852,8 +1852,8 @@ CREATE TABLE `obj_unique_num__108` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__109`;
-CREATE TABLE `obj_unique_num__109` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__109`;
+CREATE TABLE `OBJ_UNIQUE_NUM__109` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1869,8 +1869,8 @@ CREATE TABLE `obj_unique_num__109` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__110`;
-CREATE TABLE `obj_unique_num__110` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__110`;
+CREATE TABLE `OBJ_UNIQUE_NUM__110` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1886,8 +1886,8 @@ CREATE TABLE `obj_unique_num__110` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__111`;
-CREATE TABLE `obj_unique_num__111` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__111`;
+CREATE TABLE `OBJ_UNIQUE_NUM__111` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1903,8 +1903,8 @@ CREATE TABLE `obj_unique_num__111` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__112`;
-CREATE TABLE `obj_unique_num__112` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__112`;
+CREATE TABLE `OBJ_UNIQUE_NUM__112` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1920,8 +1920,8 @@ CREATE TABLE `obj_unique_num__112` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__113`;
-CREATE TABLE `obj_unique_num__113` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__113`;
+CREATE TABLE `OBJ_UNIQUE_NUM__113` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1937,8 +1937,8 @@ CREATE TABLE `obj_unique_num__113` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__114`;
-CREATE TABLE `obj_unique_num__114` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__114`;
+CREATE TABLE `OBJ_UNIQUE_NUM__114` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1954,8 +1954,8 @@ CREATE TABLE `obj_unique_num__114` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__115`;
-CREATE TABLE `obj_unique_num__115` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__115`;
+CREATE TABLE `OBJ_UNIQUE_NUM__115` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1971,8 +1971,8 @@ CREATE TABLE `obj_unique_num__115` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__116`;
-CREATE TABLE `obj_unique_num__116` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__116`;
+CREATE TABLE `OBJ_UNIQUE_NUM__116` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1988,8 +1988,8 @@ CREATE TABLE `obj_unique_num__116` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__117`;
-CREATE TABLE `obj_unique_num__117` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__117`;
+CREATE TABLE `OBJ_UNIQUE_NUM__117` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2005,8 +2005,8 @@ CREATE TABLE `obj_unique_num__117` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__118`;
-CREATE TABLE `obj_unique_num__118` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__118`;
+CREATE TABLE `OBJ_UNIQUE_NUM__118` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2022,8 +2022,8 @@ CREATE TABLE `obj_unique_num__118` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__119`;
-CREATE TABLE `obj_unique_num__119` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__119`;
+CREATE TABLE `OBJ_UNIQUE_NUM__119` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2039,8 +2039,8 @@ CREATE TABLE `obj_unique_num__119` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__120`;
-CREATE TABLE `obj_unique_num__120` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__120`;
+CREATE TABLE `OBJ_UNIQUE_NUM__120` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2056,8 +2056,8 @@ CREATE TABLE `obj_unique_num__120` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__121`;
-CREATE TABLE `obj_unique_num__121` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__121`;
+CREATE TABLE `OBJ_UNIQUE_NUM__121` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2073,8 +2073,8 @@ CREATE TABLE `obj_unique_num__121` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__122`;
-CREATE TABLE `obj_unique_num__122` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__122`;
+CREATE TABLE `OBJ_UNIQUE_NUM__122` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2090,8 +2090,8 @@ CREATE TABLE `obj_unique_num__122` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__123`;
-CREATE TABLE `obj_unique_num__123` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__123`;
+CREATE TABLE `OBJ_UNIQUE_NUM__123` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2107,8 +2107,8 @@ CREATE TABLE `obj_unique_num__123` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__124`;
-CREATE TABLE `obj_unique_num__124` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__124`;
+CREATE TABLE `OBJ_UNIQUE_NUM__124` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2124,8 +2124,8 @@ CREATE TABLE `obj_unique_num__124` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__125`;
-CREATE TABLE `obj_unique_num__125` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__125`;
+CREATE TABLE `OBJ_UNIQUE_NUM__125` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2141,8 +2141,8 @@ CREATE TABLE `obj_unique_num__125` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__126`;
-CREATE TABLE `obj_unique_num__126` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__126`;
+CREATE TABLE `OBJ_UNIQUE_NUM__126` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2158,8 +2158,8 @@ CREATE TABLE `obj_unique_num__126` (
 
 ;
 /* drop/create OBJ_UNIQUE_NUM */
-DROP TABLE IF EXISTS `obj_unique_num__127`;
-CREATE TABLE `obj_unique_num__127` (
+DROP TABLE IF EXISTS `OBJ_UNIQUE_NUM__127`;
+CREATE TABLE `OBJ_UNIQUE_NUM__127` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,

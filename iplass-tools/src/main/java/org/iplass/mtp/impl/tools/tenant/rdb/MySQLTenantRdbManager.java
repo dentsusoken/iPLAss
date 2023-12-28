@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.iplass.mtp.impl.rdb.SqlExecuter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
@@ -464,4 +465,63 @@ public class MySQLTenantRdbManager extends DefaultTenantRdbManager {
 		};
 	}
 
+	@Override
+	protected String[] getTableList() {
+		return UppercaseConstants.TABLE_LIST;
+	}
+
+	@Override
+	protected boolean isStorageSpaceTable(String tableName) {
+		return UppercaseConstants.STORAGE_SPACE_TABLE.contains(tableName);
+	}
+
+	@Override
+	protected boolean isPartitionTargetTable(String tableName) {
+		// 除外対象テーブルチェック
+		return !UppercaseConstants.EXCLUDE_PARTITION_TABLE.contains(tableName);
+	}
+
+	@Override
+	protected boolean isSubPartitionTargetTable(String tableName) {
+		// 除外対象テーブルチェック
+		return !UppercaseConstants.EXCLUDE_SUB_PARTITION_TABLE.contains(tableName);
+	}
+
+	@Override
+	protected boolean isExistsTable(final String tableName, final boolean isStorageSpace) {
+		if (isStorageSpace) {
+			// StorageSpaceの場合は、動的にテーブル名が変わるので無条件で存在チェックを行う
+			return isExistsTable(tableName);
+		} else {
+			// 存在チェック対象テーブルチェック
+			if (UppercaseConstants.CHECK_EXIST_TABLE.contains(tableName)) {
+				return isExistsTable(tableName);
+			}
+		}
+
+		// 存在チェック対象以外は、true
+		return true;
+	}
+
+	/**
+	 * テナント RDB 固定値（大文字）
+	 *
+	 * <p>
+	 * {@link org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants} のテーブル定義名を大文字に変換したクラス。
+	 * </p>
+	 *
+	 * @see org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants
+	 * @author SEKIGUCHI Naoya
+	 */
+	private static final class UppercaseConstants {
+		private static final String[] TABLE_LIST = String.join(",", TenantRdbConstants.TABLE_LIST).toUpperCase().split(",");
+		private static final Set<String> STORAGE_SPACE_TABLE = TenantRdbConstants.STORAGE_SPACE_TABLE.stream()
+				.map(s -> s.toUpperCase()).collect(Collectors.toSet());
+		public static final Set<String> EXCLUDE_PARTITION_TABLE = TenantRdbConstants.EXCLUDE_PARTITION_TABLE.stream()
+				.map(s -> s.toUpperCase()).collect(Collectors.toSet());
+		public static final Set<String> EXCLUDE_SUB_PARTITION_TABLE = TenantRdbConstants.EXCLUDE_SUB_PARTITION_TABLE.stream()
+				.map(s -> s.toUpperCase()).collect(Collectors.toSet());
+		public static final Set<String> CHECK_EXIST_TABLE = TenantRdbConstants.CHECK_EXIST_TABLE.stream().map(s -> s.toUpperCase())
+				.collect(Collectors.toSet());
+	}
 }

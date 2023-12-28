@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `task_queue_hi`;
-CREATE TABLE `task_queue_hi`
+DROP TABLE IF EXISTS `TASK_QUEUE_HI`;
+CREATE TABLE `TASK_QUEUE_HI`
 (
     `tenant_id` INT(7) NOT NULL,
     `q_id` INT(7) NOT NULL,
