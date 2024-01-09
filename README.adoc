@@ -88,10 +88,10 @@ Redisアドオンモジュールです。 +
 
 ## Related repositories
 
-* https://github.com/ISID/iplass-skeleton
-* https://github.com/ISID/iplass-sample-app
-* https://github.com/ISID/iplass-sample-app-vuejs
-* https://github.com/ISID/iplass-eclipse
+* https://github.com/dentsusoken/iplass-skeleton
+* https://github.com/dentsusoken/iplass-sample-app
+* https://github.com/dentsusoken/iplass-sample-app-vuejs
+* https://github.com/dentsusoken/iplass-eclipse
 * https://github.com/iplass
 
 ## Branches
@@ -124,11 +124,11 @@ https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
 
 商用ライセンスをご希望の方は、 下記リンクよりお問い合わせください。
 
-https://www.isid.co.jp/solution/iPLAss.html
+https://www.dentsusoken.com/solution/iPLAss.html
 
 ## Work with us
 
 iPLAssを一緒に開発していただける仲間を募集中です。
 ご興味ある方は、是非下記リンクからご応募ください！
 
-https://groupcareers.isid.co.jp/pgisid/u/job.phtml?job_code=781&company_code=1[ISIDグループ キャリア採用ページ 製品・プラットフォーム開発エンジニア]
+https://www.groupcareers.dentsusoken.com/pgdentsusoken/u/job.phtml?job_code=781&company_code=1[電通総研グループ キャリア採用ページ 製品・プラットフォーム開発エンジニア]
