@@ -87,10 +87,10 @@ Supports Redis for cachestorage.
 
 ## Related repositories
 
-* https://github.com/ISID/iplass-skeleton
-* https://github.com/ISID/iplass-sample-app
-* https://github.com/ISID/iplass-sample-app-vuejs
-* https://github.com/ISID/iplass-eclipse
+* https://github.com/dentsusoken/iplass-skeleton
+* https://github.com/dentsusoken/iplass-sample-app
+* https://github.com/dentsusoken/iplass-sample-app-vuejs
+* https://github.com/dentsusoken/iplass-eclipse
 * https://github.com/iplass
 
 ## Branches
@@ -125,4 +125,4 @@ https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
 
 If you would like to get the business liscense, please contact us by the following link.
 
-https://www.isid.co.jp/solution/iPLAss.html
+https://www.dentsusoken.com/solution/iPLAss.html
