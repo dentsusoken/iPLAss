@@ -352,6 +352,10 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 	}
 
 	private String convertValue(Object val) throws IOException {
+		if (val == null) {
+			return "";
+		}
+		
 		String strVal = null;
 		if (val instanceof Timestamp) {
 			final SimpleDateFormat dateTimeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDatetimeSecFormat(), true);
