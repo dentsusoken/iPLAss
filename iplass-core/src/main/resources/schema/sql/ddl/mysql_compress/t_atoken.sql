@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `t_atoken`;
-CREATE TABLE `t_atoken` (
+DROP TABLE IF EXISTS `T_ATOKEN`;
+CREATE TABLE `T_ATOKEN` (
   `tenant_id` INT(7) NOT NULL,
   `t_type` VARCHAR(32) NOT NULL,
   `u_key` VARCHAR(128) NOT NULL,

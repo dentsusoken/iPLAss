@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `t_account`;
-CREATE TABLE `t_account` (
+DROP TABLE IF EXISTS `T_ACCOUNT`;
+CREATE TABLE `T_ACCOUNT` (
   `tenant_id` INT(7) NOT NULL,
   `account_id` VARCHAR(128) NOT NULL,
   `password` VARCHAR(128) NOT NULL,

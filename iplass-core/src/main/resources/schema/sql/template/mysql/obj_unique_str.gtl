@@ -1,6 +1,6 @@
 /* drop/create OBJ_UNIQUE_STR */
-DROP TABLE IF EXISTS `mtdb`.`obj_unique_str${tableNamePostfix}`;
-CREATE TABLE `mtdb`.`obj_unique_str${tableNamePostfix}` (
+DROP TABLE IF EXISTS `mtdb`.`OBJ_UNIQUE_STR${tableNamePostfix}`;
+CREATE TABLE `mtdb`.`OBJ_UNIQUE_STR${tableNamePostfix}` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,

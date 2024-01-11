@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `schema_ctrl`;
-CREATE TABLE `schema_ctrl` (
+DROP TABLE IF EXISTS `SCHEMA_CTRL`;
+CREATE TABLE `SCHEMA_CTRL` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
   `obj_def_ver` BIGINT(10) NULL,

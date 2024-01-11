@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `obj_blob`;
-CREATE TABLE `obj_blob` (
+DROP TABLE IF EXISTS `OBJ_BLOB`;
+CREATE TABLE `OBJ_BLOB` (
   `tenant_id` INT(7) NOT NULL,
   `lob_id` BIGINT(16) NOT NULL ,
   `lob_name` VARCHAR(256) NULL,

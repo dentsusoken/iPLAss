@@ -48,12 +48,16 @@ import org.iplass.mtp.impl.datastore.grdb.GRdbDataStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore.GRdbEntityStoreRuntime;
 import org.iplass.mtp.impl.datastore.grdb.StorageSpaceMap;
+import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjIndexTable;
+import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjRefTable;
+import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.rdb.SqlExecuter;
+import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.tools.ToolsResourceBundleUtil;
@@ -68,44 +72,56 @@ import org.iplass.mtp.util.StringUtil;
 
 public class StorageSpaceServiceImpl implements StorageSpaceService {
 
-	private static final String TBL_OBJ_STORE = "obj_store";
-	private static final String TBL_OBJ_STORE_RB = "obj_store_rb";
+	private static final String TBL_OBJ_STORE = ObjStoreTable.TABLE_NAME;
+	private static final String TBL_OBJ_STORE_RB = ObjStoreTable.TABLE_NAME_RB;
 
 	private static final String COL_TENANT_ID = "tenant_id";
 	private static final String COL_OBJ_DEF_ID = "obj_def_id";
 	private static final String COL_OBJ_ID = "obj_id";
 
+	private static final String TBL_OBJ_INDEX_DATE = ObjIndexTable.TABLE_INDEX_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.DATE;
+	private static final String TBL_OBJ_INDEX_DOUBLE = ObjIndexTable.TABLE_INDEX_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.DOUBLE;
+	private static final String TBL_OBJ_INDEX_NUMBER = ObjIndexTable.TABLE_INDEX_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.NUMBER;
+	private static final String TBL_OBJ_INDEX_STRING = ObjIndexTable.TABLE_INDEX_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.STRING;
+	private static final String TBL_OBJ_INDEX_TIMESTAMP = ObjIndexTable.TABLE_INDEX_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.TIMESTAMP;
+
+	private static final String TBL_OBJ_UNIQUE_DATE = ObjIndexTable.TABLE_UNIQUE_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.DATE;
+	private static final String TBL_OBJ_UNIQUE_DOUBLE = ObjIndexTable.TABLE_UNIQUE_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.DOUBLE;
+	private static final String TBL_OBJ_UNIQUE_NUMBER = ObjIndexTable.TABLE_UNIQUE_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.NUMBER;
+	private static final String TBL_OBJ_UNIQUE_STRING = ObjIndexTable.TABLE_UNIQUE_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.STRING;
+	private static final String TBL_OBJ_UNIQUE_TIMESTAMP = ObjIndexTable.TABLE_UNIQUE_PREFIX_NAME + BaseRdbTypeAdapter.ColumnIndexType.TIMESTAMP;
+
 	private static final String[] CLEANUP_TABLES = {
-			"obj_index_date",
-			"obj_index_dbl",
-			"obj_index_num",
-			"obj_index_str",
-			"obj_index_ts",
-			"obj_ref",
-			"obj_ref_rb",
+			TBL_OBJ_INDEX_DATE,
+			TBL_OBJ_INDEX_DOUBLE,
+			TBL_OBJ_INDEX_NUMBER,
+			TBL_OBJ_INDEX_STRING,
+			TBL_OBJ_INDEX_TIMESTAMP,
+			ObjRefTable.TABLE_NAME,
+			ObjRefTable.TABLE_NAME_RB,
 			TBL_OBJ_STORE,
 			TBL_OBJ_STORE_RB,
-			"obj_unique_date",
-			"obj_unique_dbl",
-			"obj_unique_num",
-			"obj_unique_str",
-			"obj_unique_ts"
+			TBL_OBJ_UNIQUE_DATE,
+			TBL_OBJ_UNIQUE_DOUBLE,
+			TBL_OBJ_UNIQUE_NUMBER,
+			TBL_OBJ_UNIQUE_STRING,
+			TBL_OBJ_UNIQUE_TIMESTAMP
 	};
 
 	private static final String[] INDEX_TABLES = {
-			"obj_index_date",
-			"obj_index_dbl",
-			"obj_index_num",
-			"obj_index_str",
-			"obj_index_ts"
+			TBL_OBJ_INDEX_DATE,
+			TBL_OBJ_INDEX_DOUBLE,
+			TBL_OBJ_INDEX_NUMBER,
+			TBL_OBJ_INDEX_STRING,
+			TBL_OBJ_INDEX_TIMESTAMP
 	};
 
 	private static final String[] UNIQUE_TABLES = {
-			"obj_unique_date",
-			"obj_unique_dbl",
-			"obj_unique_num",
-			"obj_unique_str",
-			"obj_unique_ts"
+			TBL_OBJ_UNIQUE_DATE,
+			TBL_OBJ_UNIQUE_DOUBLE,
+			TBL_OBJ_UNIQUE_NUMBER,
+			TBL_OBJ_UNIQUE_STRING,
+			TBL_OBJ_UNIQUE_TIMESTAMP
 	};
 
 	private StoreService storeService;

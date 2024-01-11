@@ -1,6 +1,6 @@
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str`;
-CREATE TABLE `obj_index_str` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR`;
+CREATE TABLE `OBJ_INDEX_STR` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -17,8 +17,8 @@ CREATE TABLE `obj_index_str` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__1`;
-CREATE TABLE `obj_index_str__1` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__1`;
+CREATE TABLE `OBJ_INDEX_STR__1` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -35,8 +35,8 @@ CREATE TABLE `obj_index_str__1` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__2`;
-CREATE TABLE `obj_index_str__2` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__2`;
+CREATE TABLE `OBJ_INDEX_STR__2` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -53,8 +53,8 @@ CREATE TABLE `obj_index_str__2` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__3`;
-CREATE TABLE `obj_index_str__3` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__3`;
+CREATE TABLE `OBJ_INDEX_STR__3` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -71,8 +71,8 @@ CREATE TABLE `obj_index_str__3` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__4`;
-CREATE TABLE `obj_index_str__4` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__4`;
+CREATE TABLE `OBJ_INDEX_STR__4` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -89,8 +89,8 @@ CREATE TABLE `obj_index_str__4` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__5`;
-CREATE TABLE `obj_index_str__5` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__5`;
+CREATE TABLE `OBJ_INDEX_STR__5` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -107,8 +107,8 @@ CREATE TABLE `obj_index_str__5` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__6`;
-CREATE TABLE `obj_index_str__6` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__6`;
+CREATE TABLE `OBJ_INDEX_STR__6` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -125,8 +125,8 @@ CREATE TABLE `obj_index_str__6` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__7`;
-CREATE TABLE `obj_index_str__7` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__7`;
+CREATE TABLE `OBJ_INDEX_STR__7` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -143,8 +143,8 @@ CREATE TABLE `obj_index_str__7` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__8`;
-CREATE TABLE `obj_index_str__8` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__8`;
+CREATE TABLE `OBJ_INDEX_STR__8` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -161,8 +161,8 @@ CREATE TABLE `obj_index_str__8` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__9`;
-CREATE TABLE `obj_index_str__9` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__9`;
+CREATE TABLE `OBJ_INDEX_STR__9` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -179,8 +179,8 @@ CREATE TABLE `obj_index_str__9` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__10`;
-CREATE TABLE `obj_index_str__10` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__10`;
+CREATE TABLE `OBJ_INDEX_STR__10` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -197,8 +197,8 @@ CREATE TABLE `obj_index_str__10` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__11`;
-CREATE TABLE `obj_index_str__11` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__11`;
+CREATE TABLE `OBJ_INDEX_STR__11` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -215,8 +215,8 @@ CREATE TABLE `obj_index_str__11` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__12`;
-CREATE TABLE `obj_index_str__12` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__12`;
+CREATE TABLE `OBJ_INDEX_STR__12` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -233,8 +233,8 @@ CREATE TABLE `obj_index_str__12` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__13`;
-CREATE TABLE `obj_index_str__13` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__13`;
+CREATE TABLE `OBJ_INDEX_STR__13` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -251,8 +251,8 @@ CREATE TABLE `obj_index_str__13` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__14`;
-CREATE TABLE `obj_index_str__14` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__14`;
+CREATE TABLE `OBJ_INDEX_STR__14` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -269,8 +269,8 @@ CREATE TABLE `obj_index_str__14` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__15`;
-CREATE TABLE `obj_index_str__15` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__15`;
+CREATE TABLE `OBJ_INDEX_STR__15` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -287,8 +287,8 @@ CREATE TABLE `obj_index_str__15` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__16`;
-CREATE TABLE `obj_index_str__16` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__16`;
+CREATE TABLE `OBJ_INDEX_STR__16` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -305,8 +305,8 @@ CREATE TABLE `obj_index_str__16` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__17`;
-CREATE TABLE `obj_index_str__17` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__17`;
+CREATE TABLE `OBJ_INDEX_STR__17` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -323,8 +323,8 @@ CREATE TABLE `obj_index_str__17` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__18`;
-CREATE TABLE `obj_index_str__18` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__18`;
+CREATE TABLE `OBJ_INDEX_STR__18` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -341,8 +341,8 @@ CREATE TABLE `obj_index_str__18` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__19`;
-CREATE TABLE `obj_index_str__19` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__19`;
+CREATE TABLE `OBJ_INDEX_STR__19` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -359,8 +359,8 @@ CREATE TABLE `obj_index_str__19` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__20`;
-CREATE TABLE `obj_index_str__20` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__20`;
+CREATE TABLE `OBJ_INDEX_STR__20` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -377,8 +377,8 @@ CREATE TABLE `obj_index_str__20` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__21`;
-CREATE TABLE `obj_index_str__21` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__21`;
+CREATE TABLE `OBJ_INDEX_STR__21` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -395,8 +395,8 @@ CREATE TABLE `obj_index_str__21` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__22`;
-CREATE TABLE `obj_index_str__22` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__22`;
+CREATE TABLE `OBJ_INDEX_STR__22` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -413,8 +413,8 @@ CREATE TABLE `obj_index_str__22` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__23`;
-CREATE TABLE `obj_index_str__23` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__23`;
+CREATE TABLE `OBJ_INDEX_STR__23` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -431,8 +431,8 @@ CREATE TABLE `obj_index_str__23` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__24`;
-CREATE TABLE `obj_index_str__24` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__24`;
+CREATE TABLE `OBJ_INDEX_STR__24` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -449,8 +449,8 @@ CREATE TABLE `obj_index_str__24` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__25`;
-CREATE TABLE `obj_index_str__25` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__25`;
+CREATE TABLE `OBJ_INDEX_STR__25` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -467,8 +467,8 @@ CREATE TABLE `obj_index_str__25` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__26`;
-CREATE TABLE `obj_index_str__26` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__26`;
+CREATE TABLE `OBJ_INDEX_STR__26` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -485,8 +485,8 @@ CREATE TABLE `obj_index_str__26` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__27`;
-CREATE TABLE `obj_index_str__27` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__27`;
+CREATE TABLE `OBJ_INDEX_STR__27` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -503,8 +503,8 @@ CREATE TABLE `obj_index_str__27` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__28`;
-CREATE TABLE `obj_index_str__28` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__28`;
+CREATE TABLE `OBJ_INDEX_STR__28` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -521,8 +521,8 @@ CREATE TABLE `obj_index_str__28` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__29`;
-CREATE TABLE `obj_index_str__29` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__29`;
+CREATE TABLE `OBJ_INDEX_STR__29` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -539,8 +539,8 @@ CREATE TABLE `obj_index_str__29` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__30`;
-CREATE TABLE `obj_index_str__30` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__30`;
+CREATE TABLE `OBJ_INDEX_STR__30` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -557,8 +557,8 @@ CREATE TABLE `obj_index_str__30` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__31`;
-CREATE TABLE `obj_index_str__31` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__31`;
+CREATE TABLE `OBJ_INDEX_STR__31` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -575,8 +575,8 @@ CREATE TABLE `obj_index_str__31` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__32`;
-CREATE TABLE `obj_index_str__32` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__32`;
+CREATE TABLE `OBJ_INDEX_STR__32` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -593,8 +593,8 @@ CREATE TABLE `obj_index_str__32` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__33`;
-CREATE TABLE `obj_index_str__33` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__33`;
+CREATE TABLE `OBJ_INDEX_STR__33` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -611,8 +611,8 @@ CREATE TABLE `obj_index_str__33` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__34`;
-CREATE TABLE `obj_index_str__34` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__34`;
+CREATE TABLE `OBJ_INDEX_STR__34` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -629,8 +629,8 @@ CREATE TABLE `obj_index_str__34` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__35`;
-CREATE TABLE `obj_index_str__35` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__35`;
+CREATE TABLE `OBJ_INDEX_STR__35` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -647,8 +647,8 @@ CREATE TABLE `obj_index_str__35` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__36`;
-CREATE TABLE `obj_index_str__36` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__36`;
+CREATE TABLE `OBJ_INDEX_STR__36` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -665,8 +665,8 @@ CREATE TABLE `obj_index_str__36` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__37`;
-CREATE TABLE `obj_index_str__37` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__37`;
+CREATE TABLE `OBJ_INDEX_STR__37` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -683,8 +683,8 @@ CREATE TABLE `obj_index_str__37` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__38`;
-CREATE TABLE `obj_index_str__38` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__38`;
+CREATE TABLE `OBJ_INDEX_STR__38` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -701,8 +701,8 @@ CREATE TABLE `obj_index_str__38` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__39`;
-CREATE TABLE `obj_index_str__39` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__39`;
+CREATE TABLE `OBJ_INDEX_STR__39` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -719,8 +719,8 @@ CREATE TABLE `obj_index_str__39` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__40`;
-CREATE TABLE `obj_index_str__40` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__40`;
+CREATE TABLE `OBJ_INDEX_STR__40` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -737,8 +737,8 @@ CREATE TABLE `obj_index_str__40` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__41`;
-CREATE TABLE `obj_index_str__41` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__41`;
+CREATE TABLE `OBJ_INDEX_STR__41` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -755,8 +755,8 @@ CREATE TABLE `obj_index_str__41` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__42`;
-CREATE TABLE `obj_index_str__42` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__42`;
+CREATE TABLE `OBJ_INDEX_STR__42` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -773,8 +773,8 @@ CREATE TABLE `obj_index_str__42` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__43`;
-CREATE TABLE `obj_index_str__43` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__43`;
+CREATE TABLE `OBJ_INDEX_STR__43` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -791,8 +791,8 @@ CREATE TABLE `obj_index_str__43` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__44`;
-CREATE TABLE `obj_index_str__44` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__44`;
+CREATE TABLE `OBJ_INDEX_STR__44` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -809,8 +809,8 @@ CREATE TABLE `obj_index_str__44` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__45`;
-CREATE TABLE `obj_index_str__45` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__45`;
+CREATE TABLE `OBJ_INDEX_STR__45` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -827,8 +827,8 @@ CREATE TABLE `obj_index_str__45` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__46`;
-CREATE TABLE `obj_index_str__46` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__46`;
+CREATE TABLE `OBJ_INDEX_STR__46` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -845,8 +845,8 @@ CREATE TABLE `obj_index_str__46` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__47`;
-CREATE TABLE `obj_index_str__47` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__47`;
+CREATE TABLE `OBJ_INDEX_STR__47` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -863,8 +863,8 @@ CREATE TABLE `obj_index_str__47` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__48`;
-CREATE TABLE `obj_index_str__48` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__48`;
+CREATE TABLE `OBJ_INDEX_STR__48` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -881,8 +881,8 @@ CREATE TABLE `obj_index_str__48` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__49`;
-CREATE TABLE `obj_index_str__49` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__49`;
+CREATE TABLE `OBJ_INDEX_STR__49` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -899,8 +899,8 @@ CREATE TABLE `obj_index_str__49` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__50`;
-CREATE TABLE `obj_index_str__50` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__50`;
+CREATE TABLE `OBJ_INDEX_STR__50` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -917,8 +917,8 @@ CREATE TABLE `obj_index_str__50` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__51`;
-CREATE TABLE `obj_index_str__51` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__51`;
+CREATE TABLE `OBJ_INDEX_STR__51` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -935,8 +935,8 @@ CREATE TABLE `obj_index_str__51` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__52`;
-CREATE TABLE `obj_index_str__52` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__52`;
+CREATE TABLE `OBJ_INDEX_STR__52` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -953,8 +953,8 @@ CREATE TABLE `obj_index_str__52` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__53`;
-CREATE TABLE `obj_index_str__53` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__53`;
+CREATE TABLE `OBJ_INDEX_STR__53` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -971,8 +971,8 @@ CREATE TABLE `obj_index_str__53` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__54`;
-CREATE TABLE `obj_index_str__54` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__54`;
+CREATE TABLE `OBJ_INDEX_STR__54` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -989,8 +989,8 @@ CREATE TABLE `obj_index_str__54` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__55`;
-CREATE TABLE `obj_index_str__55` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__55`;
+CREATE TABLE `OBJ_INDEX_STR__55` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1007,8 +1007,8 @@ CREATE TABLE `obj_index_str__55` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__56`;
-CREATE TABLE `obj_index_str__56` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__56`;
+CREATE TABLE `OBJ_INDEX_STR__56` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1025,8 +1025,8 @@ CREATE TABLE `obj_index_str__56` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__57`;
-CREATE TABLE `obj_index_str__57` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__57`;
+CREATE TABLE `OBJ_INDEX_STR__57` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1043,8 +1043,8 @@ CREATE TABLE `obj_index_str__57` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__58`;
-CREATE TABLE `obj_index_str__58` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__58`;
+CREATE TABLE `OBJ_INDEX_STR__58` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1061,8 +1061,8 @@ CREATE TABLE `obj_index_str__58` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__59`;
-CREATE TABLE `obj_index_str__59` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__59`;
+CREATE TABLE `OBJ_INDEX_STR__59` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1079,8 +1079,8 @@ CREATE TABLE `obj_index_str__59` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__60`;
-CREATE TABLE `obj_index_str__60` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__60`;
+CREATE TABLE `OBJ_INDEX_STR__60` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1097,8 +1097,8 @@ CREATE TABLE `obj_index_str__60` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__61`;
-CREATE TABLE `obj_index_str__61` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__61`;
+CREATE TABLE `OBJ_INDEX_STR__61` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1115,8 +1115,8 @@ CREATE TABLE `obj_index_str__61` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__62`;
-CREATE TABLE `obj_index_str__62` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__62`;
+CREATE TABLE `OBJ_INDEX_STR__62` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1133,8 +1133,8 @@ CREATE TABLE `obj_index_str__62` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__63`;
-CREATE TABLE `obj_index_str__63` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__63`;
+CREATE TABLE `OBJ_INDEX_STR__63` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1151,8 +1151,8 @@ CREATE TABLE `obj_index_str__63` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__64`;
-CREATE TABLE `obj_index_str__64` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__64`;
+CREATE TABLE `OBJ_INDEX_STR__64` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1169,8 +1169,8 @@ CREATE TABLE `obj_index_str__64` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__65`;
-CREATE TABLE `obj_index_str__65` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__65`;
+CREATE TABLE `OBJ_INDEX_STR__65` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1187,8 +1187,8 @@ CREATE TABLE `obj_index_str__65` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__66`;
-CREATE TABLE `obj_index_str__66` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__66`;
+CREATE TABLE `OBJ_INDEX_STR__66` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1205,8 +1205,8 @@ CREATE TABLE `obj_index_str__66` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__67`;
-CREATE TABLE `obj_index_str__67` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__67`;
+CREATE TABLE `OBJ_INDEX_STR__67` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1223,8 +1223,8 @@ CREATE TABLE `obj_index_str__67` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__68`;
-CREATE TABLE `obj_index_str__68` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__68`;
+CREATE TABLE `OBJ_INDEX_STR__68` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1241,8 +1241,8 @@ CREATE TABLE `obj_index_str__68` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__69`;
-CREATE TABLE `obj_index_str__69` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__69`;
+CREATE TABLE `OBJ_INDEX_STR__69` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1259,8 +1259,8 @@ CREATE TABLE `obj_index_str__69` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__70`;
-CREATE TABLE `obj_index_str__70` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__70`;
+CREATE TABLE `OBJ_INDEX_STR__70` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1277,8 +1277,8 @@ CREATE TABLE `obj_index_str__70` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__71`;
-CREATE TABLE `obj_index_str__71` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__71`;
+CREATE TABLE `OBJ_INDEX_STR__71` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1295,8 +1295,8 @@ CREATE TABLE `obj_index_str__71` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__72`;
-CREATE TABLE `obj_index_str__72` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__72`;
+CREATE TABLE `OBJ_INDEX_STR__72` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1313,8 +1313,8 @@ CREATE TABLE `obj_index_str__72` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__73`;
-CREATE TABLE `obj_index_str__73` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__73`;
+CREATE TABLE `OBJ_INDEX_STR__73` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1331,8 +1331,8 @@ CREATE TABLE `obj_index_str__73` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__74`;
-CREATE TABLE `obj_index_str__74` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__74`;
+CREATE TABLE `OBJ_INDEX_STR__74` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1349,8 +1349,8 @@ CREATE TABLE `obj_index_str__74` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__75`;
-CREATE TABLE `obj_index_str__75` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__75`;
+CREATE TABLE `OBJ_INDEX_STR__75` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1367,8 +1367,8 @@ CREATE TABLE `obj_index_str__75` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__76`;
-CREATE TABLE `obj_index_str__76` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__76`;
+CREATE TABLE `OBJ_INDEX_STR__76` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1385,8 +1385,8 @@ CREATE TABLE `obj_index_str__76` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__77`;
-CREATE TABLE `obj_index_str__77` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__77`;
+CREATE TABLE `OBJ_INDEX_STR__77` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1403,8 +1403,8 @@ CREATE TABLE `obj_index_str__77` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__78`;
-CREATE TABLE `obj_index_str__78` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__78`;
+CREATE TABLE `OBJ_INDEX_STR__78` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1421,8 +1421,8 @@ CREATE TABLE `obj_index_str__78` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__79`;
-CREATE TABLE `obj_index_str__79` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__79`;
+CREATE TABLE `OBJ_INDEX_STR__79` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1439,8 +1439,8 @@ CREATE TABLE `obj_index_str__79` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__80`;
-CREATE TABLE `obj_index_str__80` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__80`;
+CREATE TABLE `OBJ_INDEX_STR__80` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1457,8 +1457,8 @@ CREATE TABLE `obj_index_str__80` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__81`;
-CREATE TABLE `obj_index_str__81` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__81`;
+CREATE TABLE `OBJ_INDEX_STR__81` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1475,8 +1475,8 @@ CREATE TABLE `obj_index_str__81` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__82`;
-CREATE TABLE `obj_index_str__82` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__82`;
+CREATE TABLE `OBJ_INDEX_STR__82` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1493,8 +1493,8 @@ CREATE TABLE `obj_index_str__82` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__83`;
-CREATE TABLE `obj_index_str__83` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__83`;
+CREATE TABLE `OBJ_INDEX_STR__83` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1511,8 +1511,8 @@ CREATE TABLE `obj_index_str__83` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__84`;
-CREATE TABLE `obj_index_str__84` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__84`;
+CREATE TABLE `OBJ_INDEX_STR__84` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1529,8 +1529,8 @@ CREATE TABLE `obj_index_str__84` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__85`;
-CREATE TABLE `obj_index_str__85` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__85`;
+CREATE TABLE `OBJ_INDEX_STR__85` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1547,8 +1547,8 @@ CREATE TABLE `obj_index_str__85` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__86`;
-CREATE TABLE `obj_index_str__86` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__86`;
+CREATE TABLE `OBJ_INDEX_STR__86` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1565,8 +1565,8 @@ CREATE TABLE `obj_index_str__86` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__87`;
-CREATE TABLE `obj_index_str__87` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__87`;
+CREATE TABLE `OBJ_INDEX_STR__87` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1583,8 +1583,8 @@ CREATE TABLE `obj_index_str__87` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__88`;
-CREATE TABLE `obj_index_str__88` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__88`;
+CREATE TABLE `OBJ_INDEX_STR__88` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1601,8 +1601,8 @@ CREATE TABLE `obj_index_str__88` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__89`;
-CREATE TABLE `obj_index_str__89` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__89`;
+CREATE TABLE `OBJ_INDEX_STR__89` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1619,8 +1619,8 @@ CREATE TABLE `obj_index_str__89` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__90`;
-CREATE TABLE `obj_index_str__90` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__90`;
+CREATE TABLE `OBJ_INDEX_STR__90` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1637,8 +1637,8 @@ CREATE TABLE `obj_index_str__90` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__91`;
-CREATE TABLE `obj_index_str__91` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__91`;
+CREATE TABLE `OBJ_INDEX_STR__91` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1655,8 +1655,8 @@ CREATE TABLE `obj_index_str__91` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__92`;
-CREATE TABLE `obj_index_str__92` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__92`;
+CREATE TABLE `OBJ_INDEX_STR__92` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1673,8 +1673,8 @@ CREATE TABLE `obj_index_str__92` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__93`;
-CREATE TABLE `obj_index_str__93` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__93`;
+CREATE TABLE `OBJ_INDEX_STR__93` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1691,8 +1691,8 @@ CREATE TABLE `obj_index_str__93` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__94`;
-CREATE TABLE `obj_index_str__94` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__94`;
+CREATE TABLE `OBJ_INDEX_STR__94` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1709,8 +1709,8 @@ CREATE TABLE `obj_index_str__94` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__95`;
-CREATE TABLE `obj_index_str__95` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__95`;
+CREATE TABLE `OBJ_INDEX_STR__95` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1727,8 +1727,8 @@ CREATE TABLE `obj_index_str__95` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__96`;
-CREATE TABLE `obj_index_str__96` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__96`;
+CREATE TABLE `OBJ_INDEX_STR__96` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1745,8 +1745,8 @@ CREATE TABLE `obj_index_str__96` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__97`;
-CREATE TABLE `obj_index_str__97` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__97`;
+CREATE TABLE `OBJ_INDEX_STR__97` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1763,8 +1763,8 @@ CREATE TABLE `obj_index_str__97` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__98`;
-CREATE TABLE `obj_index_str__98` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__98`;
+CREATE TABLE `OBJ_INDEX_STR__98` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1781,8 +1781,8 @@ CREATE TABLE `obj_index_str__98` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__99`;
-CREATE TABLE `obj_index_str__99` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__99`;
+CREATE TABLE `OBJ_INDEX_STR__99` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1799,8 +1799,8 @@ CREATE TABLE `obj_index_str__99` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__100`;
-CREATE TABLE `obj_index_str__100` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__100`;
+CREATE TABLE `OBJ_INDEX_STR__100` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1817,8 +1817,8 @@ CREATE TABLE `obj_index_str__100` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__101`;
-CREATE TABLE `obj_index_str__101` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__101`;
+CREATE TABLE `OBJ_INDEX_STR__101` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1835,8 +1835,8 @@ CREATE TABLE `obj_index_str__101` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__102`;
-CREATE TABLE `obj_index_str__102` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__102`;
+CREATE TABLE `OBJ_INDEX_STR__102` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1853,8 +1853,8 @@ CREATE TABLE `obj_index_str__102` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__103`;
-CREATE TABLE `obj_index_str__103` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__103`;
+CREATE TABLE `OBJ_INDEX_STR__103` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1871,8 +1871,8 @@ CREATE TABLE `obj_index_str__103` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__104`;
-CREATE TABLE `obj_index_str__104` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__104`;
+CREATE TABLE `OBJ_INDEX_STR__104` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1889,8 +1889,8 @@ CREATE TABLE `obj_index_str__104` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__105`;
-CREATE TABLE `obj_index_str__105` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__105`;
+CREATE TABLE `OBJ_INDEX_STR__105` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1907,8 +1907,8 @@ CREATE TABLE `obj_index_str__105` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__106`;
-CREATE TABLE `obj_index_str__106` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__106`;
+CREATE TABLE `OBJ_INDEX_STR__106` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1925,8 +1925,8 @@ CREATE TABLE `obj_index_str__106` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__107`;
-CREATE TABLE `obj_index_str__107` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__107`;
+CREATE TABLE `OBJ_INDEX_STR__107` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1943,8 +1943,8 @@ CREATE TABLE `obj_index_str__107` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__108`;
-CREATE TABLE `obj_index_str__108` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__108`;
+CREATE TABLE `OBJ_INDEX_STR__108` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1961,8 +1961,8 @@ CREATE TABLE `obj_index_str__108` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__109`;
-CREATE TABLE `obj_index_str__109` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__109`;
+CREATE TABLE `OBJ_INDEX_STR__109` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1979,8 +1979,8 @@ CREATE TABLE `obj_index_str__109` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__110`;
-CREATE TABLE `obj_index_str__110` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__110`;
+CREATE TABLE `OBJ_INDEX_STR__110` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -1997,8 +1997,8 @@ CREATE TABLE `obj_index_str__110` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__111`;
-CREATE TABLE `obj_index_str__111` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__111`;
+CREATE TABLE `OBJ_INDEX_STR__111` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2015,8 +2015,8 @@ CREATE TABLE `obj_index_str__111` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__112`;
-CREATE TABLE `obj_index_str__112` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__112`;
+CREATE TABLE `OBJ_INDEX_STR__112` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2033,8 +2033,8 @@ CREATE TABLE `obj_index_str__112` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__113`;
-CREATE TABLE `obj_index_str__113` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__113`;
+CREATE TABLE `OBJ_INDEX_STR__113` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2051,8 +2051,8 @@ CREATE TABLE `obj_index_str__113` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__114`;
-CREATE TABLE `obj_index_str__114` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__114`;
+CREATE TABLE `OBJ_INDEX_STR__114` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2069,8 +2069,8 @@ CREATE TABLE `obj_index_str__114` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__115`;
-CREATE TABLE `obj_index_str__115` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__115`;
+CREATE TABLE `OBJ_INDEX_STR__115` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2087,8 +2087,8 @@ CREATE TABLE `obj_index_str__115` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__116`;
-CREATE TABLE `obj_index_str__116` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__116`;
+CREATE TABLE `OBJ_INDEX_STR__116` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2105,8 +2105,8 @@ CREATE TABLE `obj_index_str__116` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__117`;
-CREATE TABLE `obj_index_str__117` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__117`;
+CREATE TABLE `OBJ_INDEX_STR__117` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2123,8 +2123,8 @@ CREATE TABLE `obj_index_str__117` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__118`;
-CREATE TABLE `obj_index_str__118` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__118`;
+CREATE TABLE `OBJ_INDEX_STR__118` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2141,8 +2141,8 @@ CREATE TABLE `obj_index_str__118` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__119`;
-CREATE TABLE `obj_index_str__119` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__119`;
+CREATE TABLE `OBJ_INDEX_STR__119` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2159,8 +2159,8 @@ CREATE TABLE `obj_index_str__119` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__120`;
-CREATE TABLE `obj_index_str__120` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__120`;
+CREATE TABLE `OBJ_INDEX_STR__120` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2177,8 +2177,8 @@ CREATE TABLE `obj_index_str__120` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__121`;
-CREATE TABLE `obj_index_str__121` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__121`;
+CREATE TABLE `OBJ_INDEX_STR__121` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2195,8 +2195,8 @@ CREATE TABLE `obj_index_str__121` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__122`;
-CREATE TABLE `obj_index_str__122` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__122`;
+CREATE TABLE `OBJ_INDEX_STR__122` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2213,8 +2213,8 @@ CREATE TABLE `obj_index_str__122` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__123`;
-CREATE TABLE `obj_index_str__123` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__123`;
+CREATE TABLE `OBJ_INDEX_STR__123` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2231,8 +2231,8 @@ CREATE TABLE `obj_index_str__123` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__124`;
-CREATE TABLE `obj_index_str__124` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__124`;
+CREATE TABLE `OBJ_INDEX_STR__124` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2249,8 +2249,8 @@ CREATE TABLE `obj_index_str__124` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__125`;
-CREATE TABLE `obj_index_str__125` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__125`;
+CREATE TABLE `OBJ_INDEX_STR__125` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2267,8 +2267,8 @@ CREATE TABLE `obj_index_str__125` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__126`;
-CREATE TABLE `obj_index_str__126` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__126`;
+CREATE TABLE `OBJ_INDEX_STR__126` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,
@@ -2285,8 +2285,8 @@ CREATE TABLE `obj_index_str__126` (
 
 ;
 /* drop/create OBJ_INDEX_STR */
-DROP TABLE IF EXISTS `obj_index_str__127`;
-CREATE TABLE `obj_index_str__127` (
+DROP TABLE IF EXISTS `OBJ_INDEX_STR__127`;
+CREATE TABLE `OBJ_INDEX_STR__127` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) NOT NULL,

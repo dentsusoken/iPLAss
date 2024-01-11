@@ -1,6 +1,6 @@
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref`;
-CREATE TABLE `obj_ref` (
+DROP TABLE IF EXISTS `OBJ_REF`;
+CREATE TABLE `OBJ_REF` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -19,8 +19,8 @@ CREATE TABLE `obj_ref` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__1`;
-CREATE TABLE `obj_ref__1` (
+DROP TABLE IF EXISTS `OBJ_REF__1`;
+CREATE TABLE `OBJ_REF__1` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -39,8 +39,8 @@ CREATE TABLE `obj_ref__1` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__2`;
-CREATE TABLE `obj_ref__2` (
+DROP TABLE IF EXISTS `OBJ_REF__2`;
+CREATE TABLE `OBJ_REF__2` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -59,8 +59,8 @@ CREATE TABLE `obj_ref__2` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__3`;
-CREATE TABLE `obj_ref__3` (
+DROP TABLE IF EXISTS `OBJ_REF__3`;
+CREATE TABLE `OBJ_REF__3` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -79,8 +79,8 @@ CREATE TABLE `obj_ref__3` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__4`;
-CREATE TABLE `obj_ref__4` (
+DROP TABLE IF EXISTS `OBJ_REF__4`;
+CREATE TABLE `OBJ_REF__4` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -99,8 +99,8 @@ CREATE TABLE `obj_ref__4` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__5`;
-CREATE TABLE `obj_ref__5` (
+DROP TABLE IF EXISTS `OBJ_REF__5`;
+CREATE TABLE `OBJ_REF__5` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -119,8 +119,8 @@ CREATE TABLE `obj_ref__5` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__6`;
-CREATE TABLE `obj_ref__6` (
+DROP TABLE IF EXISTS `OBJ_REF__6`;
+CREATE TABLE `OBJ_REF__6` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -139,8 +139,8 @@ CREATE TABLE `obj_ref__6` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__7`;
-CREATE TABLE `obj_ref__7` (
+DROP TABLE IF EXISTS `OBJ_REF__7`;
+CREATE TABLE `OBJ_REF__7` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -159,8 +159,8 @@ CREATE TABLE `obj_ref__7` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__8`;
-CREATE TABLE `obj_ref__8` (
+DROP TABLE IF EXISTS `OBJ_REF__8`;
+CREATE TABLE `OBJ_REF__8` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -179,8 +179,8 @@ CREATE TABLE `obj_ref__8` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__9`;
-CREATE TABLE `obj_ref__9` (
+DROP TABLE IF EXISTS `OBJ_REF__9`;
+CREATE TABLE `OBJ_REF__9` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -199,8 +199,8 @@ CREATE TABLE `obj_ref__9` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__10`;
-CREATE TABLE `obj_ref__10` (
+DROP TABLE IF EXISTS `OBJ_REF__10`;
+CREATE TABLE `OBJ_REF__10` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -219,8 +219,8 @@ CREATE TABLE `obj_ref__10` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__11`;
-CREATE TABLE `obj_ref__11` (
+DROP TABLE IF EXISTS `OBJ_REF__11`;
+CREATE TABLE `OBJ_REF__11` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -239,8 +239,8 @@ CREATE TABLE `obj_ref__11` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__12`;
-CREATE TABLE `obj_ref__12` (
+DROP TABLE IF EXISTS `OBJ_REF__12`;
+CREATE TABLE `OBJ_REF__12` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -259,8 +259,8 @@ CREATE TABLE `obj_ref__12` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__13`;
-CREATE TABLE `obj_ref__13` (
+DROP TABLE IF EXISTS `OBJ_REF__13`;
+CREATE TABLE `OBJ_REF__13` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -279,8 +279,8 @@ CREATE TABLE `obj_ref__13` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__14`;
-CREATE TABLE `obj_ref__14` (
+DROP TABLE IF EXISTS `OBJ_REF__14`;
+CREATE TABLE `OBJ_REF__14` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -299,8 +299,8 @@ CREATE TABLE `obj_ref__14` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__15`;
-CREATE TABLE `obj_ref__15` (
+DROP TABLE IF EXISTS `OBJ_REF__15`;
+CREATE TABLE `OBJ_REF__15` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -319,8 +319,8 @@ CREATE TABLE `obj_ref__15` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__16`;
-CREATE TABLE `obj_ref__16` (
+DROP TABLE IF EXISTS `OBJ_REF__16`;
+CREATE TABLE `OBJ_REF__16` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -339,8 +339,8 @@ CREATE TABLE `obj_ref__16` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__17`;
-CREATE TABLE `obj_ref__17` (
+DROP TABLE IF EXISTS `OBJ_REF__17`;
+CREATE TABLE `OBJ_REF__17` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -359,8 +359,8 @@ CREATE TABLE `obj_ref__17` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__18`;
-CREATE TABLE `obj_ref__18` (
+DROP TABLE IF EXISTS `OBJ_REF__18`;
+CREATE TABLE `OBJ_REF__18` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -379,8 +379,8 @@ CREATE TABLE `obj_ref__18` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__19`;
-CREATE TABLE `obj_ref__19` (
+DROP TABLE IF EXISTS `OBJ_REF__19`;
+CREATE TABLE `OBJ_REF__19` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -399,8 +399,8 @@ CREATE TABLE `obj_ref__19` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__20`;
-CREATE TABLE `obj_ref__20` (
+DROP TABLE IF EXISTS `OBJ_REF__20`;
+CREATE TABLE `OBJ_REF__20` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -419,8 +419,8 @@ CREATE TABLE `obj_ref__20` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__21`;
-CREATE TABLE `obj_ref__21` (
+DROP TABLE IF EXISTS `OBJ_REF__21`;
+CREATE TABLE `OBJ_REF__21` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -439,8 +439,8 @@ CREATE TABLE `obj_ref__21` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__22`;
-CREATE TABLE `obj_ref__22` (
+DROP TABLE IF EXISTS `OBJ_REF__22`;
+CREATE TABLE `OBJ_REF__22` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -459,8 +459,8 @@ CREATE TABLE `obj_ref__22` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__23`;
-CREATE TABLE `obj_ref__23` (
+DROP TABLE IF EXISTS `OBJ_REF__23`;
+CREATE TABLE `OBJ_REF__23` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -479,8 +479,8 @@ CREATE TABLE `obj_ref__23` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__24`;
-CREATE TABLE `obj_ref__24` (
+DROP TABLE IF EXISTS `OBJ_REF__24`;
+CREATE TABLE `OBJ_REF__24` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -499,8 +499,8 @@ CREATE TABLE `obj_ref__24` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__25`;
-CREATE TABLE `obj_ref__25` (
+DROP TABLE IF EXISTS `OBJ_REF__25`;
+CREATE TABLE `OBJ_REF__25` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -519,8 +519,8 @@ CREATE TABLE `obj_ref__25` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__26`;
-CREATE TABLE `obj_ref__26` (
+DROP TABLE IF EXISTS `OBJ_REF__26`;
+CREATE TABLE `OBJ_REF__26` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -539,8 +539,8 @@ CREATE TABLE `obj_ref__26` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__27`;
-CREATE TABLE `obj_ref__27` (
+DROP TABLE IF EXISTS `OBJ_REF__27`;
+CREATE TABLE `OBJ_REF__27` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -559,8 +559,8 @@ CREATE TABLE `obj_ref__27` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__28`;
-CREATE TABLE `obj_ref__28` (
+DROP TABLE IF EXISTS `OBJ_REF__28`;
+CREATE TABLE `OBJ_REF__28` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -579,8 +579,8 @@ CREATE TABLE `obj_ref__28` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__29`;
-CREATE TABLE `obj_ref__29` (
+DROP TABLE IF EXISTS `OBJ_REF__29`;
+CREATE TABLE `OBJ_REF__29` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -599,8 +599,8 @@ CREATE TABLE `obj_ref__29` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__30`;
-CREATE TABLE `obj_ref__30` (
+DROP TABLE IF EXISTS `OBJ_REF__30`;
+CREATE TABLE `OBJ_REF__30` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -619,8 +619,8 @@ CREATE TABLE `obj_ref__30` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__31`;
-CREATE TABLE `obj_ref__31` (
+DROP TABLE IF EXISTS `OBJ_REF__31`;
+CREATE TABLE `OBJ_REF__31` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -639,8 +639,8 @@ CREATE TABLE `obj_ref__31` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__32`;
-CREATE TABLE `obj_ref__32` (
+DROP TABLE IF EXISTS `OBJ_REF__32`;
+CREATE TABLE `OBJ_REF__32` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -659,8 +659,8 @@ CREATE TABLE `obj_ref__32` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__33`;
-CREATE TABLE `obj_ref__33` (
+DROP TABLE IF EXISTS `OBJ_REF__33`;
+CREATE TABLE `OBJ_REF__33` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -679,8 +679,8 @@ CREATE TABLE `obj_ref__33` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__34`;
-CREATE TABLE `obj_ref__34` (
+DROP TABLE IF EXISTS `OBJ_REF__34`;
+CREATE TABLE `OBJ_REF__34` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -699,8 +699,8 @@ CREATE TABLE `obj_ref__34` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__35`;
-CREATE TABLE `obj_ref__35` (
+DROP TABLE IF EXISTS `OBJ_REF__35`;
+CREATE TABLE `OBJ_REF__35` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -719,8 +719,8 @@ CREATE TABLE `obj_ref__35` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__36`;
-CREATE TABLE `obj_ref__36` (
+DROP TABLE IF EXISTS `OBJ_REF__36`;
+CREATE TABLE `OBJ_REF__36` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -739,8 +739,8 @@ CREATE TABLE `obj_ref__36` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__37`;
-CREATE TABLE `obj_ref__37` (
+DROP TABLE IF EXISTS `OBJ_REF__37`;
+CREATE TABLE `OBJ_REF__37` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -759,8 +759,8 @@ CREATE TABLE `obj_ref__37` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__38`;
-CREATE TABLE `obj_ref__38` (
+DROP TABLE IF EXISTS `OBJ_REF__38`;
+CREATE TABLE `OBJ_REF__38` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -779,8 +779,8 @@ CREATE TABLE `obj_ref__38` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__39`;
-CREATE TABLE `obj_ref__39` (
+DROP TABLE IF EXISTS `OBJ_REF__39`;
+CREATE TABLE `OBJ_REF__39` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -799,8 +799,8 @@ CREATE TABLE `obj_ref__39` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__40`;
-CREATE TABLE `obj_ref__40` (
+DROP TABLE IF EXISTS `OBJ_REF__40`;
+CREATE TABLE `OBJ_REF__40` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -819,8 +819,8 @@ CREATE TABLE `obj_ref__40` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__41`;
-CREATE TABLE `obj_ref__41` (
+DROP TABLE IF EXISTS `OBJ_REF__41`;
+CREATE TABLE `OBJ_REF__41` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -839,8 +839,8 @@ CREATE TABLE `obj_ref__41` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__42`;
-CREATE TABLE `obj_ref__42` (
+DROP TABLE IF EXISTS `OBJ_REF__42`;
+CREATE TABLE `OBJ_REF__42` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -859,8 +859,8 @@ CREATE TABLE `obj_ref__42` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__43`;
-CREATE TABLE `obj_ref__43` (
+DROP TABLE IF EXISTS `OBJ_REF__43`;
+CREATE TABLE `OBJ_REF__43` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -879,8 +879,8 @@ CREATE TABLE `obj_ref__43` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__44`;
-CREATE TABLE `obj_ref__44` (
+DROP TABLE IF EXISTS `OBJ_REF__44`;
+CREATE TABLE `OBJ_REF__44` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -899,8 +899,8 @@ CREATE TABLE `obj_ref__44` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__45`;
-CREATE TABLE `obj_ref__45` (
+DROP TABLE IF EXISTS `OBJ_REF__45`;
+CREATE TABLE `OBJ_REF__45` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -919,8 +919,8 @@ CREATE TABLE `obj_ref__45` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__46`;
-CREATE TABLE `obj_ref__46` (
+DROP TABLE IF EXISTS `OBJ_REF__46`;
+CREATE TABLE `OBJ_REF__46` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -939,8 +939,8 @@ CREATE TABLE `obj_ref__46` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__47`;
-CREATE TABLE `obj_ref__47` (
+DROP TABLE IF EXISTS `OBJ_REF__47`;
+CREATE TABLE `OBJ_REF__47` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -959,8 +959,8 @@ CREATE TABLE `obj_ref__47` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__48`;
-CREATE TABLE `obj_ref__48` (
+DROP TABLE IF EXISTS `OBJ_REF__48`;
+CREATE TABLE `OBJ_REF__48` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -979,8 +979,8 @@ CREATE TABLE `obj_ref__48` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__49`;
-CREATE TABLE `obj_ref__49` (
+DROP TABLE IF EXISTS `OBJ_REF__49`;
+CREATE TABLE `OBJ_REF__49` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -999,8 +999,8 @@ CREATE TABLE `obj_ref__49` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__50`;
-CREATE TABLE `obj_ref__50` (
+DROP TABLE IF EXISTS `OBJ_REF__50`;
+CREATE TABLE `OBJ_REF__50` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1019,8 +1019,8 @@ CREATE TABLE `obj_ref__50` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__51`;
-CREATE TABLE `obj_ref__51` (
+DROP TABLE IF EXISTS `OBJ_REF__51`;
+CREATE TABLE `OBJ_REF__51` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1039,8 +1039,8 @@ CREATE TABLE `obj_ref__51` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__52`;
-CREATE TABLE `obj_ref__52` (
+DROP TABLE IF EXISTS `OBJ_REF__52`;
+CREATE TABLE `OBJ_REF__52` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1059,8 +1059,8 @@ CREATE TABLE `obj_ref__52` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__53`;
-CREATE TABLE `obj_ref__53` (
+DROP TABLE IF EXISTS `OBJ_REF__53`;
+CREATE TABLE `OBJ_REF__53` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1079,8 +1079,8 @@ CREATE TABLE `obj_ref__53` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__54`;
-CREATE TABLE `obj_ref__54` (
+DROP TABLE IF EXISTS `OBJ_REF__54`;
+CREATE TABLE `OBJ_REF__54` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1099,8 +1099,8 @@ CREATE TABLE `obj_ref__54` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__55`;
-CREATE TABLE `obj_ref__55` (
+DROP TABLE IF EXISTS `OBJ_REF__55`;
+CREATE TABLE `OBJ_REF__55` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1119,8 +1119,8 @@ CREATE TABLE `obj_ref__55` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__56`;
-CREATE TABLE `obj_ref__56` (
+DROP TABLE IF EXISTS `OBJ_REF__56`;
+CREATE TABLE `OBJ_REF__56` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1139,8 +1139,8 @@ CREATE TABLE `obj_ref__56` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__57`;
-CREATE TABLE `obj_ref__57` (
+DROP TABLE IF EXISTS `OBJ_REF__57`;
+CREATE TABLE `OBJ_REF__57` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1159,8 +1159,8 @@ CREATE TABLE `obj_ref__57` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__58`;
-CREATE TABLE `obj_ref__58` (
+DROP TABLE IF EXISTS `OBJ_REF__58`;
+CREATE TABLE `OBJ_REF__58` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1179,8 +1179,8 @@ CREATE TABLE `obj_ref__58` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__59`;
-CREATE TABLE `obj_ref__59` (
+DROP TABLE IF EXISTS `OBJ_REF__59`;
+CREATE TABLE `OBJ_REF__59` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1199,8 +1199,8 @@ CREATE TABLE `obj_ref__59` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__60`;
-CREATE TABLE `obj_ref__60` (
+DROP TABLE IF EXISTS `OBJ_REF__60`;
+CREATE TABLE `OBJ_REF__60` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1219,8 +1219,8 @@ CREATE TABLE `obj_ref__60` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__61`;
-CREATE TABLE `obj_ref__61` (
+DROP TABLE IF EXISTS `OBJ_REF__61`;
+CREATE TABLE `OBJ_REF__61` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1239,8 +1239,8 @@ CREATE TABLE `obj_ref__61` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__62`;
-CREATE TABLE `obj_ref__62` (
+DROP TABLE IF EXISTS `OBJ_REF__62`;
+CREATE TABLE `OBJ_REF__62` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1259,8 +1259,8 @@ CREATE TABLE `obj_ref__62` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__63`;
-CREATE TABLE `obj_ref__63` (
+DROP TABLE IF EXISTS `OBJ_REF__63`;
+CREATE TABLE `OBJ_REF__63` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1279,8 +1279,8 @@ CREATE TABLE `obj_ref__63` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__64`;
-CREATE TABLE `obj_ref__64` (
+DROP TABLE IF EXISTS `OBJ_REF__64`;
+CREATE TABLE `OBJ_REF__64` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1299,8 +1299,8 @@ CREATE TABLE `obj_ref__64` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__65`;
-CREATE TABLE `obj_ref__65` (
+DROP TABLE IF EXISTS `OBJ_REF__65`;
+CREATE TABLE `OBJ_REF__65` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1319,8 +1319,8 @@ CREATE TABLE `obj_ref__65` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__66`;
-CREATE TABLE `obj_ref__66` (
+DROP TABLE IF EXISTS `OBJ_REF__66`;
+CREATE TABLE `OBJ_REF__66` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1339,8 +1339,8 @@ CREATE TABLE `obj_ref__66` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__67`;
-CREATE TABLE `obj_ref__67` (
+DROP TABLE IF EXISTS `OBJ_REF__67`;
+CREATE TABLE `OBJ_REF__67` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1359,8 +1359,8 @@ CREATE TABLE `obj_ref__67` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__68`;
-CREATE TABLE `obj_ref__68` (
+DROP TABLE IF EXISTS `OBJ_REF__68`;
+CREATE TABLE `OBJ_REF__68` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1379,8 +1379,8 @@ CREATE TABLE `obj_ref__68` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__69`;
-CREATE TABLE `obj_ref__69` (
+DROP TABLE IF EXISTS `OBJ_REF__69`;
+CREATE TABLE `OBJ_REF__69` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1399,8 +1399,8 @@ CREATE TABLE `obj_ref__69` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__70`;
-CREATE TABLE `obj_ref__70` (
+DROP TABLE IF EXISTS `OBJ_REF__70`;
+CREATE TABLE `OBJ_REF__70` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1419,8 +1419,8 @@ CREATE TABLE `obj_ref__70` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__71`;
-CREATE TABLE `obj_ref__71` (
+DROP TABLE IF EXISTS `OBJ_REF__71`;
+CREATE TABLE `OBJ_REF__71` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1439,8 +1439,8 @@ CREATE TABLE `obj_ref__71` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__72`;
-CREATE TABLE `obj_ref__72` (
+DROP TABLE IF EXISTS `OBJ_REF__72`;
+CREATE TABLE `OBJ_REF__72` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1459,8 +1459,8 @@ CREATE TABLE `obj_ref__72` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__73`;
-CREATE TABLE `obj_ref__73` (
+DROP TABLE IF EXISTS `OBJ_REF__73`;
+CREATE TABLE `OBJ_REF__73` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1479,8 +1479,8 @@ CREATE TABLE `obj_ref__73` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__74`;
-CREATE TABLE `obj_ref__74` (
+DROP TABLE IF EXISTS `OBJ_REF__74`;
+CREATE TABLE `OBJ_REF__74` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1499,8 +1499,8 @@ CREATE TABLE `obj_ref__74` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__75`;
-CREATE TABLE `obj_ref__75` (
+DROP TABLE IF EXISTS `OBJ_REF__75`;
+CREATE TABLE `OBJ_REF__75` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1519,8 +1519,8 @@ CREATE TABLE `obj_ref__75` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__76`;
-CREATE TABLE `obj_ref__76` (
+DROP TABLE IF EXISTS `OBJ_REF__76`;
+CREATE TABLE `OBJ_REF__76` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1539,8 +1539,8 @@ CREATE TABLE `obj_ref__76` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__77`;
-CREATE TABLE `obj_ref__77` (
+DROP TABLE IF EXISTS `OBJ_REF__77`;
+CREATE TABLE `OBJ_REF__77` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1559,8 +1559,8 @@ CREATE TABLE `obj_ref__77` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__78`;
-CREATE TABLE `obj_ref__78` (
+DROP TABLE IF EXISTS `OBJ_REF__78`;
+CREATE TABLE `OBJ_REF__78` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1579,8 +1579,8 @@ CREATE TABLE `obj_ref__78` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__79`;
-CREATE TABLE `obj_ref__79` (
+DROP TABLE IF EXISTS `OBJ_REF__79`;
+CREATE TABLE `OBJ_REF__79` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1599,8 +1599,8 @@ CREATE TABLE `obj_ref__79` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__80`;
-CREATE TABLE `obj_ref__80` (
+DROP TABLE IF EXISTS `OBJ_REF__80`;
+CREATE TABLE `OBJ_REF__80` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1619,8 +1619,8 @@ CREATE TABLE `obj_ref__80` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__81`;
-CREATE TABLE `obj_ref__81` (
+DROP TABLE IF EXISTS `OBJ_REF__81`;
+CREATE TABLE `OBJ_REF__81` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1639,8 +1639,8 @@ CREATE TABLE `obj_ref__81` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__82`;
-CREATE TABLE `obj_ref__82` (
+DROP TABLE IF EXISTS `OBJ_REF__82`;
+CREATE TABLE `OBJ_REF__82` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1659,8 +1659,8 @@ CREATE TABLE `obj_ref__82` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__83`;
-CREATE TABLE `obj_ref__83` (
+DROP TABLE IF EXISTS `OBJ_REF__83`;
+CREATE TABLE `OBJ_REF__83` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1679,8 +1679,8 @@ CREATE TABLE `obj_ref__83` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__84`;
-CREATE TABLE `obj_ref__84` (
+DROP TABLE IF EXISTS `OBJ_REF__84`;
+CREATE TABLE `OBJ_REF__84` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1699,8 +1699,8 @@ CREATE TABLE `obj_ref__84` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__85`;
-CREATE TABLE `obj_ref__85` (
+DROP TABLE IF EXISTS `OBJ_REF__85`;
+CREATE TABLE `OBJ_REF__85` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1719,8 +1719,8 @@ CREATE TABLE `obj_ref__85` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__86`;
-CREATE TABLE `obj_ref__86` (
+DROP TABLE IF EXISTS `OBJ_REF__86`;
+CREATE TABLE `OBJ_REF__86` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1739,8 +1739,8 @@ CREATE TABLE `obj_ref__86` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__87`;
-CREATE TABLE `obj_ref__87` (
+DROP TABLE IF EXISTS `OBJ_REF__87`;
+CREATE TABLE `OBJ_REF__87` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1759,8 +1759,8 @@ CREATE TABLE `obj_ref__87` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__88`;
-CREATE TABLE `obj_ref__88` (
+DROP TABLE IF EXISTS `OBJ_REF__88`;
+CREATE TABLE `OBJ_REF__88` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1779,8 +1779,8 @@ CREATE TABLE `obj_ref__88` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__89`;
-CREATE TABLE `obj_ref__89` (
+DROP TABLE IF EXISTS `OBJ_REF__89`;
+CREATE TABLE `OBJ_REF__89` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1799,8 +1799,8 @@ CREATE TABLE `obj_ref__89` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__90`;
-CREATE TABLE `obj_ref__90` (
+DROP TABLE IF EXISTS `OBJ_REF__90`;
+CREATE TABLE `OBJ_REF__90` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1819,8 +1819,8 @@ CREATE TABLE `obj_ref__90` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__91`;
-CREATE TABLE `obj_ref__91` (
+DROP TABLE IF EXISTS `OBJ_REF__91`;
+CREATE TABLE `OBJ_REF__91` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1839,8 +1839,8 @@ CREATE TABLE `obj_ref__91` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__92`;
-CREATE TABLE `obj_ref__92` (
+DROP TABLE IF EXISTS `OBJ_REF__92`;
+CREATE TABLE `OBJ_REF__92` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1859,8 +1859,8 @@ CREATE TABLE `obj_ref__92` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__93`;
-CREATE TABLE `obj_ref__93` (
+DROP TABLE IF EXISTS `OBJ_REF__93`;
+CREATE TABLE `OBJ_REF__93` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1879,8 +1879,8 @@ CREATE TABLE `obj_ref__93` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__94`;
-CREATE TABLE `obj_ref__94` (
+DROP TABLE IF EXISTS `OBJ_REF__94`;
+CREATE TABLE `OBJ_REF__94` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1899,8 +1899,8 @@ CREATE TABLE `obj_ref__94` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__95`;
-CREATE TABLE `obj_ref__95` (
+DROP TABLE IF EXISTS `OBJ_REF__95`;
+CREATE TABLE `OBJ_REF__95` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1919,8 +1919,8 @@ CREATE TABLE `obj_ref__95` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__96`;
-CREATE TABLE `obj_ref__96` (
+DROP TABLE IF EXISTS `OBJ_REF__96`;
+CREATE TABLE `OBJ_REF__96` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1939,8 +1939,8 @@ CREATE TABLE `obj_ref__96` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__97`;
-CREATE TABLE `obj_ref__97` (
+DROP TABLE IF EXISTS `OBJ_REF__97`;
+CREATE TABLE `OBJ_REF__97` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1959,8 +1959,8 @@ CREATE TABLE `obj_ref__97` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__98`;
-CREATE TABLE `obj_ref__98` (
+DROP TABLE IF EXISTS `OBJ_REF__98`;
+CREATE TABLE `OBJ_REF__98` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1979,8 +1979,8 @@ CREATE TABLE `obj_ref__98` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__99`;
-CREATE TABLE `obj_ref__99` (
+DROP TABLE IF EXISTS `OBJ_REF__99`;
+CREATE TABLE `OBJ_REF__99` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1999,8 +1999,8 @@ CREATE TABLE `obj_ref__99` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__100`;
-CREATE TABLE `obj_ref__100` (
+DROP TABLE IF EXISTS `OBJ_REF__100`;
+CREATE TABLE `OBJ_REF__100` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2019,8 +2019,8 @@ CREATE TABLE `obj_ref__100` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__101`;
-CREATE TABLE `obj_ref__101` (
+DROP TABLE IF EXISTS `OBJ_REF__101`;
+CREATE TABLE `OBJ_REF__101` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2039,8 +2039,8 @@ CREATE TABLE `obj_ref__101` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__102`;
-CREATE TABLE `obj_ref__102` (
+DROP TABLE IF EXISTS `OBJ_REF__102`;
+CREATE TABLE `OBJ_REF__102` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2059,8 +2059,8 @@ CREATE TABLE `obj_ref__102` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__103`;
-CREATE TABLE `obj_ref__103` (
+DROP TABLE IF EXISTS `OBJ_REF__103`;
+CREATE TABLE `OBJ_REF__103` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2079,8 +2079,8 @@ CREATE TABLE `obj_ref__103` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__104`;
-CREATE TABLE `obj_ref__104` (
+DROP TABLE IF EXISTS `OBJ_REF__104`;
+CREATE TABLE `OBJ_REF__104` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2099,8 +2099,8 @@ CREATE TABLE `obj_ref__104` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__105`;
-CREATE TABLE `obj_ref__105` (
+DROP TABLE IF EXISTS `OBJ_REF__105`;
+CREATE TABLE `OBJ_REF__105` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2119,8 +2119,8 @@ CREATE TABLE `obj_ref__105` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__106`;
-CREATE TABLE `obj_ref__106` (
+DROP TABLE IF EXISTS `OBJ_REF__106`;
+CREATE TABLE `OBJ_REF__106` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2139,8 +2139,8 @@ CREATE TABLE `obj_ref__106` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__107`;
-CREATE TABLE `obj_ref__107` (
+DROP TABLE IF EXISTS `OBJ_REF__107`;
+CREATE TABLE `OBJ_REF__107` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2159,8 +2159,8 @@ CREATE TABLE `obj_ref__107` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__108`;
-CREATE TABLE `obj_ref__108` (
+DROP TABLE IF EXISTS `OBJ_REF__108`;
+CREATE TABLE `OBJ_REF__108` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2179,8 +2179,8 @@ CREATE TABLE `obj_ref__108` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__109`;
-CREATE TABLE `obj_ref__109` (
+DROP TABLE IF EXISTS `OBJ_REF__109`;
+CREATE TABLE `OBJ_REF__109` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2199,8 +2199,8 @@ CREATE TABLE `obj_ref__109` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__110`;
-CREATE TABLE `obj_ref__110` (
+DROP TABLE IF EXISTS `OBJ_REF__110`;
+CREATE TABLE `OBJ_REF__110` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2219,8 +2219,8 @@ CREATE TABLE `obj_ref__110` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__111`;
-CREATE TABLE `obj_ref__111` (
+DROP TABLE IF EXISTS `OBJ_REF__111`;
+CREATE TABLE `OBJ_REF__111` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2239,8 +2239,8 @@ CREATE TABLE `obj_ref__111` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__112`;
-CREATE TABLE `obj_ref__112` (
+DROP TABLE IF EXISTS `OBJ_REF__112`;
+CREATE TABLE `OBJ_REF__112` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2259,8 +2259,8 @@ CREATE TABLE `obj_ref__112` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__113`;
-CREATE TABLE `obj_ref__113` (
+DROP TABLE IF EXISTS `OBJ_REF__113`;
+CREATE TABLE `OBJ_REF__113` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2279,8 +2279,8 @@ CREATE TABLE `obj_ref__113` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__114`;
-CREATE TABLE `obj_ref__114` (
+DROP TABLE IF EXISTS `OBJ_REF__114`;
+CREATE TABLE `OBJ_REF__114` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2299,8 +2299,8 @@ CREATE TABLE `obj_ref__114` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__115`;
-CREATE TABLE `obj_ref__115` (
+DROP TABLE IF EXISTS `OBJ_REF__115`;
+CREATE TABLE `OBJ_REF__115` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2319,8 +2319,8 @@ CREATE TABLE `obj_ref__115` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__116`;
-CREATE TABLE `obj_ref__116` (
+DROP TABLE IF EXISTS `OBJ_REF__116`;
+CREATE TABLE `OBJ_REF__116` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2339,8 +2339,8 @@ CREATE TABLE `obj_ref__116` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__117`;
-CREATE TABLE `obj_ref__117` (
+DROP TABLE IF EXISTS `OBJ_REF__117`;
+CREATE TABLE `OBJ_REF__117` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2359,8 +2359,8 @@ CREATE TABLE `obj_ref__117` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__118`;
-CREATE TABLE `obj_ref__118` (
+DROP TABLE IF EXISTS `OBJ_REF__118`;
+CREATE TABLE `OBJ_REF__118` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2379,8 +2379,8 @@ CREATE TABLE `obj_ref__118` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__119`;
-CREATE TABLE `obj_ref__119` (
+DROP TABLE IF EXISTS `OBJ_REF__119`;
+CREATE TABLE `OBJ_REF__119` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2399,8 +2399,8 @@ CREATE TABLE `obj_ref__119` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__120`;
-CREATE TABLE `obj_ref__120` (
+DROP TABLE IF EXISTS `OBJ_REF__120`;
+CREATE TABLE `OBJ_REF__120` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2419,8 +2419,8 @@ CREATE TABLE `obj_ref__120` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__121`;
-CREATE TABLE `obj_ref__121` (
+DROP TABLE IF EXISTS `OBJ_REF__121`;
+CREATE TABLE `OBJ_REF__121` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2439,8 +2439,8 @@ CREATE TABLE `obj_ref__121` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__122`;
-CREATE TABLE `obj_ref__122` (
+DROP TABLE IF EXISTS `OBJ_REF__122`;
+CREATE TABLE `OBJ_REF__122` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2459,8 +2459,8 @@ CREATE TABLE `obj_ref__122` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__123`;
-CREATE TABLE `obj_ref__123` (
+DROP TABLE IF EXISTS `OBJ_REF__123`;
+CREATE TABLE `OBJ_REF__123` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2479,8 +2479,8 @@ CREATE TABLE `obj_ref__123` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__124`;
-CREATE TABLE `obj_ref__124` (
+DROP TABLE IF EXISTS `OBJ_REF__124`;
+CREATE TABLE `OBJ_REF__124` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2499,8 +2499,8 @@ CREATE TABLE `obj_ref__124` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__125`;
-CREATE TABLE `obj_ref__125` (
+DROP TABLE IF EXISTS `OBJ_REF__125`;
+CREATE TABLE `OBJ_REF__125` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2519,8 +2519,8 @@ CREATE TABLE `obj_ref__125` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__126`;
-CREATE TABLE `obj_ref__126` (
+DROP TABLE IF EXISTS `OBJ_REF__126`;
+CREATE TABLE `OBJ_REF__126` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2539,8 +2539,8 @@ CREATE TABLE `obj_ref__126` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__127`;
-CREATE TABLE `obj_ref__127` (
+DROP TABLE IF EXISTS `OBJ_REF__127`;
+CREATE TABLE `OBJ_REF__127` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2559,8 +2559,8 @@ CREATE TABLE `obj_ref__127` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__MTP`;
-CREATE TABLE `obj_ref__MTP` (
+DROP TABLE IF EXISTS `OBJ_REF__MTP`;
+CREATE TABLE `OBJ_REF__MTP` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -2579,8 +2579,8 @@ CREATE TABLE `obj_ref__MTP` (
 
 ;
 /* drop/create OBJ_REF */
-DROP TABLE IF EXISTS `obj_ref__USER`;
-CREATE TABLE `obj_ref__USER` (
+DROP TABLE IF EXISTS `OBJ_REF__USER`;
+CREATE TABLE `OBJ_REF__USER` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,

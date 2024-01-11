@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `counter`;
-CREATE TABLE `counter` (
+DROP TABLE IF EXISTS `COUNTER`;
+CREATE TABLE `COUNTER` (
   `tenant_id` INT(7) NOT NULL,
   `cnt_name` VARCHAR(128) NOT NULL,
   `inc_unit_key` VARCHAR(128) NOT NULL,

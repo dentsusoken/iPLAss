@@ -27,11 +27,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.mtp.impl.auth.authenticate.builtin.sql.AccountTable;
 import org.iplass.mtp.impl.datastore.StoreService;
 import org.iplass.mtp.impl.datastore.grdb.GRdbDataStore;
 import org.iplass.mtp.impl.datastore.grdb.StorageSpaceMap;
 import org.iplass.mtp.impl.rdb.SqlExecuter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
+import org.iplass.mtp.impl.tenant.rdb.TenantTable;
 import org.iplass.mtp.impl.tools.ToolsResourceBundleUtil;
 import org.iplass.mtp.impl.tools.tenant.TenantDeleteParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
@@ -42,11 +44,11 @@ import org.iplass.mtp.transaction.Transaction;
 
 public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 
-	private static final String TENANT_EXISTS_SQL = "select 1 from dual where exists(select * from t_tenant where url = ?)";
+	private static final String TENANT_EXISTS_SQL = "select 1 from dual where exists(select * from " + TenantTable.TABLE_NAME + " where url = ?)";
 
 	private static final String TENANT_SELECT_SQL = "select id, name, description, host_name, url," +
 			"yuko_date_from, yuko_date_to, cre_user, cre_date, up_user, up_date " +
-			"from t_tenant ";
+			"from " + TenantTable.TABLE_NAME + " ";
 
 	private static final String ALL_TENANT_SQL = TENANT_SELECT_SQL +
 			"order by id ";
@@ -59,9 +61,9 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 			"where url = ? " +
 			"order by id ";
 
-	private static final String DELETE_TENANT_SQL = "delete from t_tenant where id = ?";
+	private static final String DELETE_TENANT_SQL = "delete from " + TenantTable.TABLE_NAME + " where id = ?";
 
-	private static final String DELETE_ACCOUNT_SQL = "delete from t_account where tenant_id = ? ";
+	private static final String DELETE_ACCOUNT_SQL = "delete from " + AccountTable.TABLE_NAME + " where tenant_id = ? ";
 
 	private RdbAdapter adapter;
 

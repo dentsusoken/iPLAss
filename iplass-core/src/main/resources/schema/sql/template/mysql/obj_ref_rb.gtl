@@ -1,6 +1,6 @@
 /* drop/create OBJ_REF_RB */
-DROP TABLE IF EXISTS `mtdb`.`obj_ref_rb${tableNamePostfix}`;
-CREATE TABLE `mtdb`.`obj_ref_rb${tableNamePostfix}` (
+DROP TABLE IF EXISTS `mtdb`.`OBJ_REF_RB${tableNamePostfix}`;
+CREATE TABLE `mtdb`.`OBJ_REF_RB${tableNamePostfix}` (
   `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `rb_id` BIGINT(16) NULL,
   `tenant_id` INT(7) NOT NULL,

@@ -1,6 +1,6 @@
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store`;
-CREATE TABLE `obj_store` (
+DROP TABLE IF EXISTS `OBJ_STORE`;
+CREATE TABLE `OBJ_STORE` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -245,8 +245,8 @@ CREATE TABLE `obj_store` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__1`;
-CREATE TABLE `obj_store__1` (
+DROP TABLE IF EXISTS `OBJ_STORE__1`;
+CREATE TABLE `OBJ_STORE__1` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -491,8 +491,8 @@ CREATE TABLE `obj_store__1` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__2`;
-CREATE TABLE `obj_store__2` (
+DROP TABLE IF EXISTS `OBJ_STORE__2`;
+CREATE TABLE `OBJ_STORE__2` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -737,8 +737,8 @@ CREATE TABLE `obj_store__2` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__3`;
-CREATE TABLE `obj_store__3` (
+DROP TABLE IF EXISTS `OBJ_STORE__3`;
+CREATE TABLE `OBJ_STORE__3` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -983,8 +983,8 @@ CREATE TABLE `obj_store__3` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__4`;
-CREATE TABLE `obj_store__4` (
+DROP TABLE IF EXISTS `OBJ_STORE__4`;
+CREATE TABLE `OBJ_STORE__4` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -1229,8 +1229,8 @@ CREATE TABLE `obj_store__4` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__5`;
-CREATE TABLE `obj_store__5` (
+DROP TABLE IF EXISTS `OBJ_STORE__5`;
+CREATE TABLE `OBJ_STORE__5` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -1475,8 +1475,8 @@ CREATE TABLE `obj_store__5` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__6`;
-CREATE TABLE `obj_store__6` (
+DROP TABLE IF EXISTS `OBJ_STORE__6`;
+CREATE TABLE `OBJ_STORE__6` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -1721,8 +1721,8 @@ CREATE TABLE `obj_store__6` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__7`;
-CREATE TABLE `obj_store__7` (
+DROP TABLE IF EXISTS `OBJ_STORE__7`;
+CREATE TABLE `OBJ_STORE__7` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -1967,8 +1967,8 @@ CREATE TABLE `obj_store__7` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__8`;
-CREATE TABLE `obj_store__8` (
+DROP TABLE IF EXISTS `OBJ_STORE__8`;
+CREATE TABLE `OBJ_STORE__8` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -2213,8 +2213,8 @@ CREATE TABLE `obj_store__8` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__9`;
-CREATE TABLE `obj_store__9` (
+DROP TABLE IF EXISTS `OBJ_STORE__9`;
+CREATE TABLE `OBJ_STORE__9` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -2459,8 +2459,8 @@ CREATE TABLE `obj_store__9` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__10`;
-CREATE TABLE `obj_store__10` (
+DROP TABLE IF EXISTS `OBJ_STORE__10`;
+CREATE TABLE `OBJ_STORE__10` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -2705,8 +2705,8 @@ CREATE TABLE `obj_store__10` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__11`;
-CREATE TABLE `obj_store__11` (
+DROP TABLE IF EXISTS `OBJ_STORE__11`;
+CREATE TABLE `OBJ_STORE__11` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -2951,8 +2951,8 @@ CREATE TABLE `obj_store__11` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__12`;
-CREATE TABLE `obj_store__12` (
+DROP TABLE IF EXISTS `OBJ_STORE__12`;
+CREATE TABLE `OBJ_STORE__12` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -3197,8 +3197,8 @@ CREATE TABLE `obj_store__12` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__13`;
-CREATE TABLE `obj_store__13` (
+DROP TABLE IF EXISTS `OBJ_STORE__13`;
+CREATE TABLE `OBJ_STORE__13` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -3443,8 +3443,8 @@ CREATE TABLE `obj_store__13` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__14`;
-CREATE TABLE `obj_store__14` (
+DROP TABLE IF EXISTS `OBJ_STORE__14`;
+CREATE TABLE `OBJ_STORE__14` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -3689,8 +3689,8 @@ CREATE TABLE `obj_store__14` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__15`;
-CREATE TABLE `obj_store__15` (
+DROP TABLE IF EXISTS `OBJ_STORE__15`;
+CREATE TABLE `OBJ_STORE__15` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -3935,8 +3935,8 @@ CREATE TABLE `obj_store__15` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__16`;
-CREATE TABLE `obj_store__16` (
+DROP TABLE IF EXISTS `OBJ_STORE__16`;
+CREATE TABLE `OBJ_STORE__16` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -4181,8 +4181,8 @@ CREATE TABLE `obj_store__16` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__17`;
-CREATE TABLE `obj_store__17` (
+DROP TABLE IF EXISTS `OBJ_STORE__17`;
+CREATE TABLE `OBJ_STORE__17` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -4427,8 +4427,8 @@ CREATE TABLE `obj_store__17` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__18`;
-CREATE TABLE `obj_store__18` (
+DROP TABLE IF EXISTS `OBJ_STORE__18`;
+CREATE TABLE `OBJ_STORE__18` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -4673,8 +4673,8 @@ CREATE TABLE `obj_store__18` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__19`;
-CREATE TABLE `obj_store__19` (
+DROP TABLE IF EXISTS `OBJ_STORE__19`;
+CREATE TABLE `OBJ_STORE__19` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -4919,8 +4919,8 @@ CREATE TABLE `obj_store__19` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__20`;
-CREATE TABLE `obj_store__20` (
+DROP TABLE IF EXISTS `OBJ_STORE__20`;
+CREATE TABLE `OBJ_STORE__20` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -5165,8 +5165,8 @@ CREATE TABLE `obj_store__20` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__21`;
-CREATE TABLE `obj_store__21` (
+DROP TABLE IF EXISTS `OBJ_STORE__21`;
+CREATE TABLE `OBJ_STORE__21` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -5411,8 +5411,8 @@ CREATE TABLE `obj_store__21` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__22`;
-CREATE TABLE `obj_store__22` (
+DROP TABLE IF EXISTS `OBJ_STORE__22`;
+CREATE TABLE `OBJ_STORE__22` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -5657,8 +5657,8 @@ CREATE TABLE `obj_store__22` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__23`;
-CREATE TABLE `obj_store__23` (
+DROP TABLE IF EXISTS `OBJ_STORE__23`;
+CREATE TABLE `OBJ_STORE__23` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -5903,8 +5903,8 @@ CREATE TABLE `obj_store__23` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__24`;
-CREATE TABLE `obj_store__24` (
+DROP TABLE IF EXISTS `OBJ_STORE__24`;
+CREATE TABLE `OBJ_STORE__24` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -6149,8 +6149,8 @@ CREATE TABLE `obj_store__24` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__25`;
-CREATE TABLE `obj_store__25` (
+DROP TABLE IF EXISTS `OBJ_STORE__25`;
+CREATE TABLE `OBJ_STORE__25` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -6395,8 +6395,8 @@ CREATE TABLE `obj_store__25` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__26`;
-CREATE TABLE `obj_store__26` (
+DROP TABLE IF EXISTS `OBJ_STORE__26`;
+CREATE TABLE `OBJ_STORE__26` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -6641,8 +6641,8 @@ CREATE TABLE `obj_store__26` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__27`;
-CREATE TABLE `obj_store__27` (
+DROP TABLE IF EXISTS `OBJ_STORE__27`;
+CREATE TABLE `OBJ_STORE__27` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -6887,8 +6887,8 @@ CREATE TABLE `obj_store__27` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__28`;
-CREATE TABLE `obj_store__28` (
+DROP TABLE IF EXISTS `OBJ_STORE__28`;
+CREATE TABLE `OBJ_STORE__28` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -7133,8 +7133,8 @@ CREATE TABLE `obj_store__28` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__29`;
-CREATE TABLE `obj_store__29` (
+DROP TABLE IF EXISTS `OBJ_STORE__29`;
+CREATE TABLE `OBJ_STORE__29` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -7379,8 +7379,8 @@ CREATE TABLE `obj_store__29` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__30`;
-CREATE TABLE `obj_store__30` (
+DROP TABLE IF EXISTS `OBJ_STORE__30`;
+CREATE TABLE `OBJ_STORE__30` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -7625,8 +7625,8 @@ CREATE TABLE `obj_store__30` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__31`;
-CREATE TABLE `obj_store__31` (
+DROP TABLE IF EXISTS `OBJ_STORE__31`;
+CREATE TABLE `OBJ_STORE__31` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -7871,8 +7871,8 @@ CREATE TABLE `obj_store__31` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__32`;
-CREATE TABLE `obj_store__32` (
+DROP TABLE IF EXISTS `OBJ_STORE__32`;
+CREATE TABLE `OBJ_STORE__32` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -8117,8 +8117,8 @@ CREATE TABLE `obj_store__32` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__33`;
-CREATE TABLE `obj_store__33` (
+DROP TABLE IF EXISTS `OBJ_STORE__33`;
+CREATE TABLE `OBJ_STORE__33` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -8363,8 +8363,8 @@ CREATE TABLE `obj_store__33` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__34`;
-CREATE TABLE `obj_store__34` (
+DROP TABLE IF EXISTS `OBJ_STORE__34`;
+CREATE TABLE `OBJ_STORE__34` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -8609,8 +8609,8 @@ CREATE TABLE `obj_store__34` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__35`;
-CREATE TABLE `obj_store__35` (
+DROP TABLE IF EXISTS `OBJ_STORE__35`;
+CREATE TABLE `OBJ_STORE__35` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -8855,8 +8855,8 @@ CREATE TABLE `obj_store__35` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__36`;
-CREATE TABLE `obj_store__36` (
+DROP TABLE IF EXISTS `OBJ_STORE__36`;
+CREATE TABLE `OBJ_STORE__36` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -9101,8 +9101,8 @@ CREATE TABLE `obj_store__36` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__37`;
-CREATE TABLE `obj_store__37` (
+DROP TABLE IF EXISTS `OBJ_STORE__37`;
+CREATE TABLE `OBJ_STORE__37` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -9347,8 +9347,8 @@ CREATE TABLE `obj_store__37` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__38`;
-CREATE TABLE `obj_store__38` (
+DROP TABLE IF EXISTS `OBJ_STORE__38`;
+CREATE TABLE `OBJ_STORE__38` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -9593,8 +9593,8 @@ CREATE TABLE `obj_store__38` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__39`;
-CREATE TABLE `obj_store__39` (
+DROP TABLE IF EXISTS `OBJ_STORE__39`;
+CREATE TABLE `OBJ_STORE__39` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -9839,8 +9839,8 @@ CREATE TABLE `obj_store__39` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__40`;
-CREATE TABLE `obj_store__40` (
+DROP TABLE IF EXISTS `OBJ_STORE__40`;
+CREATE TABLE `OBJ_STORE__40` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -10085,8 +10085,8 @@ CREATE TABLE `obj_store__40` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__41`;
-CREATE TABLE `obj_store__41` (
+DROP TABLE IF EXISTS `OBJ_STORE__41`;
+CREATE TABLE `OBJ_STORE__41` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -10331,8 +10331,8 @@ CREATE TABLE `obj_store__41` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__42`;
-CREATE TABLE `obj_store__42` (
+DROP TABLE IF EXISTS `OBJ_STORE__42`;
+CREATE TABLE `OBJ_STORE__42` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -10577,8 +10577,8 @@ CREATE TABLE `obj_store__42` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__43`;
-CREATE TABLE `obj_store__43` (
+DROP TABLE IF EXISTS `OBJ_STORE__43`;
+CREATE TABLE `OBJ_STORE__43` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -10823,8 +10823,8 @@ CREATE TABLE `obj_store__43` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__44`;
-CREATE TABLE `obj_store__44` (
+DROP TABLE IF EXISTS `OBJ_STORE__44`;
+CREATE TABLE `OBJ_STORE__44` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -11069,8 +11069,8 @@ CREATE TABLE `obj_store__44` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__45`;
-CREATE TABLE `obj_store__45` (
+DROP TABLE IF EXISTS `OBJ_STORE__45`;
+CREATE TABLE `OBJ_STORE__45` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -11315,8 +11315,8 @@ CREATE TABLE `obj_store__45` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__46`;
-CREATE TABLE `obj_store__46` (
+DROP TABLE IF EXISTS `OBJ_STORE__46`;
+CREATE TABLE `OBJ_STORE__46` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -11561,8 +11561,8 @@ CREATE TABLE `obj_store__46` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__47`;
-CREATE TABLE `obj_store__47` (
+DROP TABLE IF EXISTS `OBJ_STORE__47`;
+CREATE TABLE `OBJ_STORE__47` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -11807,8 +11807,8 @@ CREATE TABLE `obj_store__47` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__48`;
-CREATE TABLE `obj_store__48` (
+DROP TABLE IF EXISTS `OBJ_STORE__48`;
+CREATE TABLE `OBJ_STORE__48` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -12053,8 +12053,8 @@ CREATE TABLE `obj_store__48` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__49`;
-CREATE TABLE `obj_store__49` (
+DROP TABLE IF EXISTS `OBJ_STORE__49`;
+CREATE TABLE `OBJ_STORE__49` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -12299,8 +12299,8 @@ CREATE TABLE `obj_store__49` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__50`;
-CREATE TABLE `obj_store__50` (
+DROP TABLE IF EXISTS `OBJ_STORE__50`;
+CREATE TABLE `OBJ_STORE__50` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -12545,8 +12545,8 @@ CREATE TABLE `obj_store__50` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__51`;
-CREATE TABLE `obj_store__51` (
+DROP TABLE IF EXISTS `OBJ_STORE__51`;
+CREATE TABLE `OBJ_STORE__51` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -12791,8 +12791,8 @@ CREATE TABLE `obj_store__51` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__52`;
-CREATE TABLE `obj_store__52` (
+DROP TABLE IF EXISTS `OBJ_STORE__52`;
+CREATE TABLE `OBJ_STORE__52` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -13037,8 +13037,8 @@ CREATE TABLE `obj_store__52` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__53`;
-CREATE TABLE `obj_store__53` (
+DROP TABLE IF EXISTS `OBJ_STORE__53`;
+CREATE TABLE `OBJ_STORE__53` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -13283,8 +13283,8 @@ CREATE TABLE `obj_store__53` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__54`;
-CREATE TABLE `obj_store__54` (
+DROP TABLE IF EXISTS `OBJ_STORE__54`;
+CREATE TABLE `OBJ_STORE__54` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -13529,8 +13529,8 @@ CREATE TABLE `obj_store__54` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__55`;
-CREATE TABLE `obj_store__55` (
+DROP TABLE IF EXISTS `OBJ_STORE__55`;
+CREATE TABLE `OBJ_STORE__55` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -13775,8 +13775,8 @@ CREATE TABLE `obj_store__55` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__56`;
-CREATE TABLE `obj_store__56` (
+DROP TABLE IF EXISTS `OBJ_STORE__56`;
+CREATE TABLE `OBJ_STORE__56` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -14021,8 +14021,8 @@ CREATE TABLE `obj_store__56` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__57`;
-CREATE TABLE `obj_store__57` (
+DROP TABLE IF EXISTS `OBJ_STORE__57`;
+CREATE TABLE `OBJ_STORE__57` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -14267,8 +14267,8 @@ CREATE TABLE `obj_store__57` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__58`;
-CREATE TABLE `obj_store__58` (
+DROP TABLE IF EXISTS `OBJ_STORE__58`;
+CREATE TABLE `OBJ_STORE__58` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -14513,8 +14513,8 @@ CREATE TABLE `obj_store__58` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__59`;
-CREATE TABLE `obj_store__59` (
+DROP TABLE IF EXISTS `OBJ_STORE__59`;
+CREATE TABLE `OBJ_STORE__59` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -14759,8 +14759,8 @@ CREATE TABLE `obj_store__59` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__60`;
-CREATE TABLE `obj_store__60` (
+DROP TABLE IF EXISTS `OBJ_STORE__60`;
+CREATE TABLE `OBJ_STORE__60` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -15005,8 +15005,8 @@ CREATE TABLE `obj_store__60` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__61`;
-CREATE TABLE `obj_store__61` (
+DROP TABLE IF EXISTS `OBJ_STORE__61`;
+CREATE TABLE `OBJ_STORE__61` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -15251,8 +15251,8 @@ CREATE TABLE `obj_store__61` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__62`;
-CREATE TABLE `obj_store__62` (
+DROP TABLE IF EXISTS `OBJ_STORE__62`;
+CREATE TABLE `OBJ_STORE__62` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -15497,8 +15497,8 @@ CREATE TABLE `obj_store__62` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__63`;
-CREATE TABLE `obj_store__63` (
+DROP TABLE IF EXISTS `OBJ_STORE__63`;
+CREATE TABLE `OBJ_STORE__63` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -15743,8 +15743,8 @@ CREATE TABLE `obj_store__63` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__64`;
-CREATE TABLE `obj_store__64` (
+DROP TABLE IF EXISTS `OBJ_STORE__64`;
+CREATE TABLE `OBJ_STORE__64` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -15989,8 +15989,8 @@ CREATE TABLE `obj_store__64` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__65`;
-CREATE TABLE `obj_store__65` (
+DROP TABLE IF EXISTS `OBJ_STORE__65`;
+CREATE TABLE `OBJ_STORE__65` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -16235,8 +16235,8 @@ CREATE TABLE `obj_store__65` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__66`;
-CREATE TABLE `obj_store__66` (
+DROP TABLE IF EXISTS `OBJ_STORE__66`;
+CREATE TABLE `OBJ_STORE__66` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -16481,8 +16481,8 @@ CREATE TABLE `obj_store__66` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__67`;
-CREATE TABLE `obj_store__67` (
+DROP TABLE IF EXISTS `OBJ_STORE__67`;
+CREATE TABLE `OBJ_STORE__67` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -16727,8 +16727,8 @@ CREATE TABLE `obj_store__67` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__68`;
-CREATE TABLE `obj_store__68` (
+DROP TABLE IF EXISTS `OBJ_STORE__68`;
+CREATE TABLE `OBJ_STORE__68` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -16973,8 +16973,8 @@ CREATE TABLE `obj_store__68` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__69`;
-CREATE TABLE `obj_store__69` (
+DROP TABLE IF EXISTS `OBJ_STORE__69`;
+CREATE TABLE `OBJ_STORE__69` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -17219,8 +17219,8 @@ CREATE TABLE `obj_store__69` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__70`;
-CREATE TABLE `obj_store__70` (
+DROP TABLE IF EXISTS `OBJ_STORE__70`;
+CREATE TABLE `OBJ_STORE__70` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -17465,8 +17465,8 @@ CREATE TABLE `obj_store__70` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__71`;
-CREATE TABLE `obj_store__71` (
+DROP TABLE IF EXISTS `OBJ_STORE__71`;
+CREATE TABLE `OBJ_STORE__71` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -17711,8 +17711,8 @@ CREATE TABLE `obj_store__71` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__72`;
-CREATE TABLE `obj_store__72` (
+DROP TABLE IF EXISTS `OBJ_STORE__72`;
+CREATE TABLE `OBJ_STORE__72` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -17957,8 +17957,8 @@ CREATE TABLE `obj_store__72` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__73`;
-CREATE TABLE `obj_store__73` (
+DROP TABLE IF EXISTS `OBJ_STORE__73`;
+CREATE TABLE `OBJ_STORE__73` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -18203,8 +18203,8 @@ CREATE TABLE `obj_store__73` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__74`;
-CREATE TABLE `obj_store__74` (
+DROP TABLE IF EXISTS `OBJ_STORE__74`;
+CREATE TABLE `OBJ_STORE__74` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -18449,8 +18449,8 @@ CREATE TABLE `obj_store__74` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__75`;
-CREATE TABLE `obj_store__75` (
+DROP TABLE IF EXISTS `OBJ_STORE__75`;
+CREATE TABLE `OBJ_STORE__75` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -18695,8 +18695,8 @@ CREATE TABLE `obj_store__75` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__76`;
-CREATE TABLE `obj_store__76` (
+DROP TABLE IF EXISTS `OBJ_STORE__76`;
+CREATE TABLE `OBJ_STORE__76` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -18941,8 +18941,8 @@ CREATE TABLE `obj_store__76` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__77`;
-CREATE TABLE `obj_store__77` (
+DROP TABLE IF EXISTS `OBJ_STORE__77`;
+CREATE TABLE `OBJ_STORE__77` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -19187,8 +19187,8 @@ CREATE TABLE `obj_store__77` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__78`;
-CREATE TABLE `obj_store__78` (
+DROP TABLE IF EXISTS `OBJ_STORE__78`;
+CREATE TABLE `OBJ_STORE__78` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -19433,8 +19433,8 @@ CREATE TABLE `obj_store__78` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__79`;
-CREATE TABLE `obj_store__79` (
+DROP TABLE IF EXISTS `OBJ_STORE__79`;
+CREATE TABLE `OBJ_STORE__79` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -19679,8 +19679,8 @@ CREATE TABLE `obj_store__79` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__80`;
-CREATE TABLE `obj_store__80` (
+DROP TABLE IF EXISTS `OBJ_STORE__80`;
+CREATE TABLE `OBJ_STORE__80` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -19925,8 +19925,8 @@ CREATE TABLE `obj_store__80` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__81`;
-CREATE TABLE `obj_store__81` (
+DROP TABLE IF EXISTS `OBJ_STORE__81`;
+CREATE TABLE `OBJ_STORE__81` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -20171,8 +20171,8 @@ CREATE TABLE `obj_store__81` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__82`;
-CREATE TABLE `obj_store__82` (
+DROP TABLE IF EXISTS `OBJ_STORE__82`;
+CREATE TABLE `OBJ_STORE__82` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -20417,8 +20417,8 @@ CREATE TABLE `obj_store__82` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__83`;
-CREATE TABLE `obj_store__83` (
+DROP TABLE IF EXISTS `OBJ_STORE__83`;
+CREATE TABLE `OBJ_STORE__83` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -20663,8 +20663,8 @@ CREATE TABLE `obj_store__83` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__84`;
-CREATE TABLE `obj_store__84` (
+DROP TABLE IF EXISTS `OBJ_STORE__84`;
+CREATE TABLE `OBJ_STORE__84` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -20909,8 +20909,8 @@ CREATE TABLE `obj_store__84` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__85`;
-CREATE TABLE `obj_store__85` (
+DROP TABLE IF EXISTS `OBJ_STORE__85`;
+CREATE TABLE `OBJ_STORE__85` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -21155,8 +21155,8 @@ CREATE TABLE `obj_store__85` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__86`;
-CREATE TABLE `obj_store__86` (
+DROP TABLE IF EXISTS `OBJ_STORE__86`;
+CREATE TABLE `OBJ_STORE__86` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -21401,8 +21401,8 @@ CREATE TABLE `obj_store__86` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__87`;
-CREATE TABLE `obj_store__87` (
+DROP TABLE IF EXISTS `OBJ_STORE__87`;
+CREATE TABLE `OBJ_STORE__87` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -21647,8 +21647,8 @@ CREATE TABLE `obj_store__87` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__88`;
-CREATE TABLE `obj_store__88` (
+DROP TABLE IF EXISTS `OBJ_STORE__88`;
+CREATE TABLE `OBJ_STORE__88` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -21893,8 +21893,8 @@ CREATE TABLE `obj_store__88` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__89`;
-CREATE TABLE `obj_store__89` (
+DROP TABLE IF EXISTS `OBJ_STORE__89`;
+CREATE TABLE `OBJ_STORE__89` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -22139,8 +22139,8 @@ CREATE TABLE `obj_store__89` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__90`;
-CREATE TABLE `obj_store__90` (
+DROP TABLE IF EXISTS `OBJ_STORE__90`;
+CREATE TABLE `OBJ_STORE__90` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -22385,8 +22385,8 @@ CREATE TABLE `obj_store__90` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__91`;
-CREATE TABLE `obj_store__91` (
+DROP TABLE IF EXISTS `OBJ_STORE__91`;
+CREATE TABLE `OBJ_STORE__91` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -22631,8 +22631,8 @@ CREATE TABLE `obj_store__91` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__92`;
-CREATE TABLE `obj_store__92` (
+DROP TABLE IF EXISTS `OBJ_STORE__92`;
+CREATE TABLE `OBJ_STORE__92` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -22877,8 +22877,8 @@ CREATE TABLE `obj_store__92` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__93`;
-CREATE TABLE `obj_store__93` (
+DROP TABLE IF EXISTS `OBJ_STORE__93`;
+CREATE TABLE `OBJ_STORE__93` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -23123,8 +23123,8 @@ CREATE TABLE `obj_store__93` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__94`;
-CREATE TABLE `obj_store__94` (
+DROP TABLE IF EXISTS `OBJ_STORE__94`;
+CREATE TABLE `OBJ_STORE__94` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -23369,8 +23369,8 @@ CREATE TABLE `obj_store__94` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__95`;
-CREATE TABLE `obj_store__95` (
+DROP TABLE IF EXISTS `OBJ_STORE__95`;
+CREATE TABLE `OBJ_STORE__95` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -23615,8 +23615,8 @@ CREATE TABLE `obj_store__95` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__96`;
-CREATE TABLE `obj_store__96` (
+DROP TABLE IF EXISTS `OBJ_STORE__96`;
+CREATE TABLE `OBJ_STORE__96` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -23861,8 +23861,8 @@ CREATE TABLE `obj_store__96` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__97`;
-CREATE TABLE `obj_store__97` (
+DROP TABLE IF EXISTS `OBJ_STORE__97`;
+CREATE TABLE `OBJ_STORE__97` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -24107,8 +24107,8 @@ CREATE TABLE `obj_store__97` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__98`;
-CREATE TABLE `obj_store__98` (
+DROP TABLE IF EXISTS `OBJ_STORE__98`;
+CREATE TABLE `OBJ_STORE__98` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -24353,8 +24353,8 @@ CREATE TABLE `obj_store__98` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__99`;
-CREATE TABLE `obj_store__99` (
+DROP TABLE IF EXISTS `OBJ_STORE__99`;
+CREATE TABLE `OBJ_STORE__99` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -24599,8 +24599,8 @@ CREATE TABLE `obj_store__99` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__100`;
-CREATE TABLE `obj_store__100` (
+DROP TABLE IF EXISTS `OBJ_STORE__100`;
+CREATE TABLE `OBJ_STORE__100` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -24845,8 +24845,8 @@ CREATE TABLE `obj_store__100` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__101`;
-CREATE TABLE `obj_store__101` (
+DROP TABLE IF EXISTS `OBJ_STORE__101`;
+CREATE TABLE `OBJ_STORE__101` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -25091,8 +25091,8 @@ CREATE TABLE `obj_store__101` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__102`;
-CREATE TABLE `obj_store__102` (
+DROP TABLE IF EXISTS `OBJ_STORE__102`;
+CREATE TABLE `OBJ_STORE__102` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -25337,8 +25337,8 @@ CREATE TABLE `obj_store__102` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__103`;
-CREATE TABLE `obj_store__103` (
+DROP TABLE IF EXISTS `OBJ_STORE__103`;
+CREATE TABLE `OBJ_STORE__103` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -25583,8 +25583,8 @@ CREATE TABLE `obj_store__103` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__104`;
-CREATE TABLE `obj_store__104` (
+DROP TABLE IF EXISTS `OBJ_STORE__104`;
+CREATE TABLE `OBJ_STORE__104` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -25829,8 +25829,8 @@ CREATE TABLE `obj_store__104` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__105`;
-CREATE TABLE `obj_store__105` (
+DROP TABLE IF EXISTS `OBJ_STORE__105`;
+CREATE TABLE `OBJ_STORE__105` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -26075,8 +26075,8 @@ CREATE TABLE `obj_store__105` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__106`;
-CREATE TABLE `obj_store__106` (
+DROP TABLE IF EXISTS `OBJ_STORE__106`;
+CREATE TABLE `OBJ_STORE__106` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -26321,8 +26321,8 @@ CREATE TABLE `obj_store__106` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__107`;
-CREATE TABLE `obj_store__107` (
+DROP TABLE IF EXISTS `OBJ_STORE__107`;
+CREATE TABLE `OBJ_STORE__107` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -26567,8 +26567,8 @@ CREATE TABLE `obj_store__107` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__108`;
-CREATE TABLE `obj_store__108` (
+DROP TABLE IF EXISTS `OBJ_STORE__108`;
+CREATE TABLE `OBJ_STORE__108` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -26813,8 +26813,8 @@ CREATE TABLE `obj_store__108` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__109`;
-CREATE TABLE `obj_store__109` (
+DROP TABLE IF EXISTS `OBJ_STORE__109`;
+CREATE TABLE `OBJ_STORE__109` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -27059,8 +27059,8 @@ CREATE TABLE `obj_store__109` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__110`;
-CREATE TABLE `obj_store__110` (
+DROP TABLE IF EXISTS `OBJ_STORE__110`;
+CREATE TABLE `OBJ_STORE__110` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -27305,8 +27305,8 @@ CREATE TABLE `obj_store__110` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__111`;
-CREATE TABLE `obj_store__111` (
+DROP TABLE IF EXISTS `OBJ_STORE__111`;
+CREATE TABLE `OBJ_STORE__111` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -27551,8 +27551,8 @@ CREATE TABLE `obj_store__111` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__112`;
-CREATE TABLE `obj_store__112` (
+DROP TABLE IF EXISTS `OBJ_STORE__112`;
+CREATE TABLE `OBJ_STORE__112` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -27797,8 +27797,8 @@ CREATE TABLE `obj_store__112` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__113`;
-CREATE TABLE `obj_store__113` (
+DROP TABLE IF EXISTS `OBJ_STORE__113`;
+CREATE TABLE `OBJ_STORE__113` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -28043,8 +28043,8 @@ CREATE TABLE `obj_store__113` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__114`;
-CREATE TABLE `obj_store__114` (
+DROP TABLE IF EXISTS `OBJ_STORE__114`;
+CREATE TABLE `OBJ_STORE__114` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -28289,8 +28289,8 @@ CREATE TABLE `obj_store__114` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__115`;
-CREATE TABLE `obj_store__115` (
+DROP TABLE IF EXISTS `OBJ_STORE__115`;
+CREATE TABLE `OBJ_STORE__115` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -28535,8 +28535,8 @@ CREATE TABLE `obj_store__115` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__116`;
-CREATE TABLE `obj_store__116` (
+DROP TABLE IF EXISTS `OBJ_STORE__116`;
+CREATE TABLE `OBJ_STORE__116` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -28781,8 +28781,8 @@ CREATE TABLE `obj_store__116` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__117`;
-CREATE TABLE `obj_store__117` (
+DROP TABLE IF EXISTS `OBJ_STORE__117`;
+CREATE TABLE `OBJ_STORE__117` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -29027,8 +29027,8 @@ CREATE TABLE `obj_store__117` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__118`;
-CREATE TABLE `obj_store__118` (
+DROP TABLE IF EXISTS `OBJ_STORE__118`;
+CREATE TABLE `OBJ_STORE__118` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -29273,8 +29273,8 @@ CREATE TABLE `obj_store__118` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__119`;
-CREATE TABLE `obj_store__119` (
+DROP TABLE IF EXISTS `OBJ_STORE__119`;
+CREATE TABLE `OBJ_STORE__119` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -29519,8 +29519,8 @@ CREATE TABLE `obj_store__119` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__120`;
-CREATE TABLE `obj_store__120` (
+DROP TABLE IF EXISTS `OBJ_STORE__120`;
+CREATE TABLE `OBJ_STORE__120` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -29765,8 +29765,8 @@ CREATE TABLE `obj_store__120` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__121`;
-CREATE TABLE `obj_store__121` (
+DROP TABLE IF EXISTS `OBJ_STORE__121`;
+CREATE TABLE `OBJ_STORE__121` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -30011,8 +30011,8 @@ CREATE TABLE `obj_store__121` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__122`;
-CREATE TABLE `obj_store__122` (
+DROP TABLE IF EXISTS `OBJ_STORE__122`;
+CREATE TABLE `OBJ_STORE__122` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -30257,8 +30257,8 @@ CREATE TABLE `obj_store__122` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__123`;
-CREATE TABLE `obj_store__123` (
+DROP TABLE IF EXISTS `OBJ_STORE__123`;
+CREATE TABLE `OBJ_STORE__123` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -30503,8 +30503,8 @@ CREATE TABLE `obj_store__123` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__124`;
-CREATE TABLE `obj_store__124` (
+DROP TABLE IF EXISTS `OBJ_STORE__124`;
+CREATE TABLE `OBJ_STORE__124` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -30749,8 +30749,8 @@ CREATE TABLE `obj_store__124` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__125`;
-CREATE TABLE `obj_store__125` (
+DROP TABLE IF EXISTS `OBJ_STORE__125`;
+CREATE TABLE `OBJ_STORE__125` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -30995,8 +30995,8 @@ CREATE TABLE `obj_store__125` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__126`;
-CREATE TABLE `obj_store__126` (
+DROP TABLE IF EXISTS `OBJ_STORE__126`;
+CREATE TABLE `OBJ_STORE__126` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -31241,8 +31241,8 @@ CREATE TABLE `obj_store__126` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__127`;
-CREATE TABLE `obj_store__127` (
+DROP TABLE IF EXISTS `OBJ_STORE__127`;
+CREATE TABLE `OBJ_STORE__127` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -31487,8 +31487,8 @@ CREATE TABLE `obj_store__127` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__MTP`;
-CREATE TABLE `obj_store__MTP` (
+DROP TABLE IF EXISTS `OBJ_STORE__MTP`;
+CREATE TABLE `OBJ_STORE__MTP` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -31733,8 +31733,8 @@ CREATE TABLE `obj_store__MTP` (
 
 ;
 /* drop/create OBJ_STORE */
-DROP TABLE IF EXISTS `obj_store__USER`;
-CREATE TABLE `obj_store__USER` (
+DROP TABLE IF EXISTS `OBJ_STORE__USER`;
+CREATE TABLE `OBJ_STORE__USER` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,

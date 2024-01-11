@@ -69,6 +69,7 @@ import org.iplass.mtp.impl.async.AsyncTaskService;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.EntityService;
+import org.iplass.mtp.impl.fulltextsearch.sql.CrawlLogTable;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.query.OrderBySyntax;
@@ -1071,7 +1072,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	}
 
 	private Map<String, Timestamp> getLastCrawlTimestamp(int tenantId) {
-		final String sql = "select obj_def_id, up_date from crawl_log where tenant_id=" + tenantId;
+		final String sql = "select obj_def_id, up_date from " + CrawlLogTable.TABLE_NAME + " where tenant_id=" + tenantId;
 
 		SqlExecuter<Map<String, Timestamp>> exec = new SqlExecuter<Map<String, Timestamp>>() {
 
