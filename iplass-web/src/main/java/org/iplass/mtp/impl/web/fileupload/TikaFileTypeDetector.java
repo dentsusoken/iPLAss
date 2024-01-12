@@ -24,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,11 +38,10 @@ import org.slf4j.LoggerFactory;
  * @author SEKIGUCHI Naoya
  */
 public class TikaFileTypeDetector implements FileTypeDetector {
-	/** Tikaデフォルトインスタンス */
-	private static final Tika TIKA = new Tika();
-
 	/** ロガー */
 	private Logger logger = LoggerFactory.getLogger(TikaFileTypeDetector.class);
+
+	private FileUploadTikaAdapter tikaAdapter;
 
 	@Override
 	public String detect(File file, String fileName, String type) {
@@ -57,11 +55,33 @@ public class TikaFileTypeDetector implements FileTypeDetector {
 
 	@Override
 	public String detect(InputStream input, String fileName, String type) {
+		// TODO 下位バージョン互換のロジック。下位バージョンでは、tikaAdapter を設定ないパターンもあり得る。設定することを推奨。次期バージョンで削除したい。。。
+		initTikaAdapter();
 		try {
-			return TIKA.detect(input, fileName);
+			return tikaAdapter.detect(input, fileName);
 		} catch (IOException e) {
 			logger.warn("Unable to retrieve media type.", e);
 			return type;
+		}
+	}
+
+	// TODO 次期バージョンで、設定を必須とする
+	/**
+	 * FileUploadTikaAdapter を設定する
+	 *
+	 * @param tikaAdapter FileUploadTikaAdapter
+	 */
+	public void setFileUploadTikaAdapter(FileUploadTikaAdapter tikaAdapter) {
+		this.tikaAdapter = tikaAdapter;
+	}
+
+	// TODO 下位バージョン互換のロジック。tikaAdapter の設定を必須としたら本ロジックを削除する
+	/**
+	 * FileUploadTikaAdapter を初期化する
+	 */
+	private void initTikaAdapter() {
+		if (null == tikaAdapter) {
+			tikaAdapter = new FileUploadTikaAdapterImpl.Builder().build();
 		}
 	}
 }

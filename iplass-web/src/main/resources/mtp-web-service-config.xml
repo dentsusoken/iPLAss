@@ -337,14 +337,28 @@
 		</property>
 		 -->
 
+		<!--
+		FileUpload機能用の Tika アダプタ。
+		
+		TikaFileTypeDetector、TikaMagicByteChecker でインスタンスを共有することを想定。
+		tikaConfigXml を指定しない場合は、apache tika のデフォルト設定で動作します。 
+		-->
+		<!--
+		<bean name="tikaAdapter" builder="org.iplass.mtp.impl.web.fileupload.FileUploadTikaAdapterImpl$Builder">
+			<property name="tikaConfigXml" value="tika-config.xml" />
+		</bean>
+		-->
+
 		<!-- ファイルタイプ（MIME Type・メディアタイプ）検出機能 -->
 		<!-- デフォルト。未指定の場合も以下のインスタンスが設定される -->
 		<!-- 
 		<property name="uploadFileTypeDetector" class="org.iplass.mtp.impl.web.fileupload.DefaultFileTypeDetector" />
 		-->
-		<!-- Apache Tika を利用したファイルタイプ（MIME Type・メディアタイプ）検出機能 -->
+		<!-- Apache Tika を利用したファイルタイプ（MIME Type・メディアタイプ）検出機能。bean tikaAdapter を有効化すること。 -->
 		<!--
-		<property name="uploadFileTypeDetector" class="org.iplass.mtp.impl.web.fileupload.TikaFileTypeDetector" />
+		<property name="uploadFileTypeDetector" class="org.iplass.mtp.impl.web.fileupload.TikaFileTypeDetector">
+			<property name="fileUploadTikaAdapter" ref="tikaAdapter" />
+		</property>
 		-->
 
 		<!-- MagicByteCheck実行するか -->
@@ -425,6 +439,21 @@
 				<property name="magicByte" value="504B030414000000" />
 			</property>
 		</property>
+
+		<!--
+		Apache Tika を利用した MagicByteCheck 処理。bean tikaAdapter を有効化する。
+		本チェック機能を利用する場合は、MimeType検出とMagicByteチェック処理を Tika を利用することを推奨する。
+		MimeType検出機能で tika を利用する為には property uploadFileTypeDetector を TikaFileTypeDetector に変更する。
+		-->
+		<!--
+		<property name="magicByteChecker" class="org.iplass.mtp.impl.web.fileupload.TikaMagicByteChecker" >
+			<property name="fileUploadTikaAdapter" ref="tikaAdapter" />
+			<property name="checkExtension" value="true" />
+			<property name="readMagicLength" value="65536" />
+			<property name="throwExceptionIfMimeTypeIsNull" value="false" />
+			<property name="throwExceptionIfFileCannotRead" value="false" />
+		</property>
+		-->
 
 		<!-- マルチパートリクエストのパラメータ最大数 未指定時はデフォルト値（10000）を適用 -->
 		<!-- 
