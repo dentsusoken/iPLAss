@@ -186,6 +186,10 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 	protected abstract void createIndexData(final int tenantId, String defName);
 	
 	protected String toValue(Object val) throws IOException {
+		if (val == null) {
+			return "";
+		}
+		
 		if (val instanceof Timestamp) {
 			final SimpleDateFormat dateTimeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDatetimeSecFormat(), true);
 			dateTimeFormat.setLenient(false);
