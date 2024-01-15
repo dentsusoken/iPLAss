@@ -76,7 +76,7 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 
 		if (mimeType == null) {
 			// mimeType が存在しない
-			LOG.warn("Undefined MimeType. mediaType = {}, filename = {}.", contentType, fileName);
+			LOG.warn("Undefined MimeType. contentType = {}, filename = {}.", contentType, fileName);
 
 			if (isThrowExceptionIfMimeTypeIsNull) {
 				throw new MagicByteCheckApplicationException(getCheckExceptionMessage());
@@ -189,7 +189,7 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 	 */
 	private void checkMagic(TikaMimeType mimeType, String filename, File file) {
 		if (!mimeType.hasMagic()) {
-			LOG.debug("No magic byte is defined for the MimeType. (MimeType = {})", mimeType.getName());
+			LOG.debug("No magic byte is defined for the MimeType. ( MimeType = {} )", mimeType.getName());
 			return;
 		}
 
@@ -310,7 +310,7 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 			public void performCheck(TikaMimeType mimeType, String extension, String fileName, TikaMagicByteChecker checker) {
 				// mimeType で管理している拡張子に、ファイル名の拡張子が存在するか確認
 				if (!mimeType.getExtensions().contains(extension)) {
-					LOG.error("Does not match the extension defined for the MimeType. filename = {}, extension = {}, MimeType = {}, define extensions = {}",
+					LOG.error("Does not match the extension defined for the MimeType. filename = {}, extension = {}, MimeType = {}, defined extension settings = {}",
 							fileName, extension, mimeType.getName(), mimeType.getExtensions());
 					// ファイル名の拡張子が存在しなければ、チェックエラー
 					throw new MagicByteCheckApplicationException(checker.getCheckExceptionMessage());
