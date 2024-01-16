@@ -168,7 +168,7 @@ public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter {
 		private TikaConfig getTikaConfig(String tikaConfigXml) {
 			if (StringUtil.isNotBlank(tikaConfigXml)) {
 				// ログ
-				URL resource = this.getClass().getClassLoader().getResource(tikaConfigXml);
+				URL resource = FileUploadTikaAdapterImpl.class.getResource(tikaConfigXml);
 				try {
 					return new TikaConfig(resource);
 				} catch (TikaException | IOException | SAXException e) {

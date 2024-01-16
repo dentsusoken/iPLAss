@@ -345,7 +345,7 @@
 		-->
 		<!--
 		<bean name="tikaAdapter" builder="org.iplass.mtp.impl.web.fileupload.FileUploadTikaAdapterImpl$Builder">
-			<property name="tikaConfigXml" value="tika-config.xml" />
+			<property name="tikaConfigXml" value="/tika-config.xml" />
 		</bean>
 		-->
 
