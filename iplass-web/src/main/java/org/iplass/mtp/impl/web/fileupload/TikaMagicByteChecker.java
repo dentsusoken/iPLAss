@@ -65,35 +65,6 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 	/** チェック対象ファイルを読み取ることができない場合に例外をスローするか */
 	private boolean isThrowExceptionIfFileCannotRead = false;
 
-	@Override
-	public void checkMagicByte(File tempFile, String contentType, String fileName) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Check magic bytes. Args is tempFile = {}, contentType = {}, fileName = {}.", tempFile.getAbsolutePath(), contentType, fileName);
-		}
-
-		// MimeType に対するファイルルール定義を取得
-		TikaMimeType mimeType = tikaAdapter.getMimeType(contentType);
-
-		if (mimeType == null) {
-			// mimeType が存在しない
-			LOG.warn("Undefined MimeType. contentType = {}, filename = {}.", contentType, fileName);
-
-			if (isThrowExceptionIfMimeTypeIsNull) {
-				throw new MagicByteCheckApplicationException(getCheckExceptionMessage());
-			}
-
-			return;
-		}
-
-		// 拡張子チェック
-		if (isCheckExtension) {
-			checkExtension(mimeType, fileName);
-		}
-
-		// マジックバイトチェック
-		checkMagic(mimeType, fileName, tempFile);
-	}
-
 	/**
 	 * FileUploadTikaAdapter を設定する
 	 *
@@ -166,6 +137,35 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 		this.isThrowExceptionIfFileCannotRead = isThrowExceptionIfFileCannotRead;
 	}
 
+	@Override
+	public void checkMagicByte(File tempFile, String contentType, String fileName) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Check magic bytes. Args is tempFile = {}, contentType = {}, fileName = {}.", tempFile.getAbsolutePath(), contentType, fileName);
+		}
+
+		// MimeType に対するファイルルール定義を取得
+		TikaMimeType mimeType = tikaAdapter.getMimeType(contentType);
+
+		if (mimeType == null) {
+			// mimeType が存在しない
+			LOG.warn("Undefined MimeType. contentType = {}, filename = {}.", contentType, fileName);
+
+			if (isThrowExceptionIfMimeTypeIsNull) {
+				throw new MagicByteCheckApplicationException(getCheckExceptionMessage());
+			}
+
+			return;
+		}
+
+		// 拡張子チェック
+		if (isCheckExtension) {
+			checkExtension(mimeType, fileName);
+		}
+
+		// マジックバイトチェック
+		checkMagic(mimeType, fileName, tempFile);
+	}
+
 	/**
 	 * 拡張子チェックを実施する
 	 *
@@ -188,20 +188,16 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 	 * @param file チェック対象ファイル
 	 */
 	private void checkMagic(TikaMimeType mimeType, String filename, File file) {
-		if (!mimeType.hasMagic()) {
-			LOG.debug("No magic byte is defined for the MimeType. ( MimeType = {} )", mimeType.getName());
-			return;
-		}
-
 		try {
 			byte[] magic = readMagic(file);
-			if (!mimeType.matchesMagic(magic)) {
-				// magic byte が一致しない
+			boolean isSuccess = doCheckMagic(mimeType, magic, true);
+			if (!isSuccess) {
+				// チェックが異常終了
 				LOG.error("Magic bytes did not match. ( filename = {}, MimeType = {} )", filename, mimeType.getName());
 				// ファイル名の拡張子が存在しなければ、チェックエラー
 				throw new MagicByteCheckApplicationException(getCheckExceptionMessage());
-
 			}
+
 		} catch (IOException e) {
 			// DefaultMagicByteChecker では、正常終了している。。。
 			// ファイル入出力例外。ファイルが存在しない場合
@@ -211,6 +207,50 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 				throw new MagicByteCheckApplicationException(getCheckExceptionMessage(), e);
 			}
 		}
+	}
+
+	/**
+	 * マジックバイトをチェックする。
+	 *
+	 * <p>
+	 * 引数の MimeType を利用してマジックバイトのチェックを実施する。
+	 * マジックバイトが一致しない場合は、上位の MimeType を利用して再度チェックする。
+	 * いずれかのパターンで一致する場合は、正常終了とする。
+	 * どのパターンにも一致しない場合は、異常終了とする。
+	 * MimeType全体を通して、一度もマジックバイトチェックを実施していない場合は、正常終了とする。
+	 * </p>
+	 *
+	 * @param mimeType MimeType
+	 * @param magic チェック対象のマジックバイト
+	 * @param isNeverTested チェックを実施していないか。呼び出し元で一度もチェックしていない場合 true。
+	 * @return チェック結果（true: 正常終了、 false: 異常終了）
+	 */
+	private boolean doCheckMagic(TikaMimeType mimeType, byte[] magic, boolean isNeverTested) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Check status of magic bytes. MimeType = {}, MimeType.hasMagic() = {}, isNeverTested = {}.", mimeType.getName(), mimeType.hasMagic(),
+					isNeverTested);
+		}
+
+		if (mimeType.hasMagic() && mimeType.matchesMagic(magic)) {
+			// マジックバイトチェックで正常終了
+			return true;
+		}
+
+		// hasMagic() == false の場合はテスト未実施
+		boolean thisMimeTypeIsNotTested = !mimeType.hasMagic();
+		// 呼び出し元も含め、一度もテスト（mimeType.matchesMagic）を実施していない場合、true。
+		boolean isNeverTestedCurrent = isNeverTested && thisMimeTypeIsNotTested;
+
+		// 親の MimeType を取得する
+		TikaMimeType parentMimeType = tikaAdapter.getParentMimeType(mimeType);
+		if (null != parentMimeType) {
+			LOG.info("Check with the parent MimeType. current = {}, parent = {}.", mimeType.getName(), parentMimeType.getName());
+			// 親のMimeTypeが存在すれば、親タイプでチェックを実施。
+			return doCheckMagic(parentMimeType, magic, isNeverTestedCurrent);
+		}
+
+		// 親タイプが無い場合、一度もテストを実施していなければ正常終了。一度でもテストを実施していれば異常終了。
+		return isNeverTestedCurrent;
 	}
 
 	/**

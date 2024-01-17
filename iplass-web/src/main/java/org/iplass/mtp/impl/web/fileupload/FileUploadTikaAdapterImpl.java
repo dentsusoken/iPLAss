@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.iplass.mtp.spi.ObjectBuilder;
@@ -86,6 +87,18 @@ public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter {
 		}
 
 		return null;
+	}
+
+	@Override
+	public TikaMimeType getParentMimeType(TikaMimeType type) {
+		MediaType mediaType = type instanceof TikaMimeTypeImpl
+				// TikaMimeTypeImpl であれば、保持インスタンスの MediaType を取得
+				? ((TikaMimeTypeImpl) type).mimeType.getType()
+				// TikaMimeTypeImpl でなければ、this#getMimetype(String) で取得した値を利用する
+				: ((TikaMimeTypeImpl) getMimeType(type.getName())).mimeType.getType();
+
+		MediaType superMediaType = tikaConfig.getMediaTypeRegistry().getSupertype(mediaType);
+		return null == superMediaType ? null : getMimeType(superMediaType.toString());
 	}
 
 	/**

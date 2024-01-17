@@ -51,6 +51,13 @@ public interface FileUploadTikaAdapter {
 	TikaMimeType getMimeType(String type);
 
 	/**
+	 * MimeType の親として定義されている MimeType を取得する
+	 * @param type 対象 MimeType
+	 * @return 親 MimeType
+	 */
+	TikaMimeType getParentMimeType(TikaMimeType type);
+
+	/**
 	 * Tika MimeType インターフェース
 	 */
 	public interface TikaMimeType {
