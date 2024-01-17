@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -276,7 +277,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		Set<String> addNames = new HashSet<>();
 		if (StringUtil.isNotEmpty(sortKey)) {
 			//パラメータで指定されている場合は先頭で適用
-			String key = getSortKey(red, sortKey);
+			String key = getSortKey(section, red, sortKey);
 			orderBy.add(new SortSpec(key, getSortType(sortType)));
 			addNames.add(key);
 		}
@@ -285,7 +286,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			List<SortSetting> setting = section.getSortSetting();
 			for (SortSetting ss : setting) {
 				if (ss.getSortKey() != null) {
-					String key = getSortKey(red, ss.getSortKey());
+					String key = getSortKey(section, red, ss.getSortKey());
 					if (!addNames.contains(key)) {
 						orderBy.add(key, getSortType(ss.getSortType().name()), getNullOrderingSpec(ss.getNullOrderType()));
 						addNames.add(key);
@@ -296,7 +297,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 
 		if (orderBy.getSortSpecList().isEmpty()) {
 			//ソート項目がない場合はデフォルト設定
-			orderBy.add(new SortSpec(getSortKey(red, null), getSortType(null)));
+			orderBy.add(new SortSpec(getSortKey(section, red, null), getSortType(null)));
 		}
 
 		return orderBy;
@@ -308,7 +309,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	 * @param sortKey
 	 * @return
 	 */
-	private String getSortKey(EntityDefinition ed, String sortKey) {
+	private String getSortKey(MassReferenceSection section, EntityDefinition ed, String sortKey) {
 		String ret = sortKey;
 		if (StringUtil.isBlank(ret)) {
 			ret =  Entity.OID;
@@ -319,7 +320,14 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			pd = ed.getProperty(ret);
 		}
 		if (pd instanceof ReferenceProperty) {
-			ret = ret + "." + Entity.OID;
+			NestProperty property = getLayoutNestProperty(section, sortKey);
+			// 当該項目がセクション上表示される場合は、セクション上の表示項目でソート
+			if (property != null) {
+				ret = sortKey + "." + getDisplayNestProperty(property);
+			} else {
+				// セクション上に表示されない場合は、Nameでソート
+				ret = sortKey + "." + Entity.NAME;
+			}
 		}
 		return ret;
 	}
@@ -742,6 +750,42 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		}
 
 		context.setAttribute(Constants.USER_INFO_MAP, userMap);
+	}
+
+	private NestProperty getLayoutNestProperty(MassReferenceSection section, String propName) {
+		Optional<NestProperty> property = getNestProperties(section).stream()
+				.filter(e -> propName.equals(e.getPropertyName())).findFirst();
+		if (property.isPresent()) {
+			return property.get();
+		}
+		return null;
+	}
+
+	/**
+	 * セクションのプロパティを取得します。
+	 * @return
+	 */
+	protected List<NestProperty> getNestProperties(MassReferenceSection section) {
+		List<NestProperty> properties = section.getProperties().stream()
+				.filter(e -> e instanceof NestProperty).map(e -> (NestProperty) e)
+				.collect(Collectors.toList());
+		return properties;
+	}
+	
+	/**
+	 * 参照プロパティで、セクションに表示されている項目を取得します。
+	 * @return 表示項目
+	 */
+	private String getDisplayNestProperty(NestProperty refProp) {
+		PropertyEditor editor = refProp.getEditor();
+		
+		if (editor instanceof ReferencePropertyEditor
+				&& StringUtil.isNotEmpty(((ReferencePropertyEditor) editor).getDisplayLabelItem())) {
+			return ((ReferencePropertyEditor)editor).getDisplayLabelItem();
+		} else {
+			return Entity.NAME;
+		}
+		
 	}
 
 	/**
