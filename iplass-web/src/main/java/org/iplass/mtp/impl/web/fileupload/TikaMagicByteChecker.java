@@ -25,6 +25,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
 
 import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.impl.web.fileupload.FileUploadTikaAdapter.TikaMimeType;
@@ -64,6 +66,8 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 	private boolean isThrowExceptionIfMimeTypeIsNull = false;
 	/** チェック対象ファイルを読み取ることができない場合に例外をスローするか */
 	private boolean isThrowExceptionIfFileCannotRead = false;
+	/** チェック対象のメディアタイプ（コンテンツタイプ）の置換設定 */
+	private Map<String, String> substitutionMediaType = Collections.emptyMap();
 
 	/**
 	 * FileUploadTikaAdapter を設定する
@@ -137,18 +141,43 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 		this.isThrowExceptionIfFileCannotRead = isThrowExceptionIfFileCannotRead;
 	}
 
+	/**
+	 * チェック対象のメディアタイプ（コンテンツタイプ）の置換設定
+	 *
+	 * <p>
+	 * name(key) = 対象のメディアタイプ（コンテンツタイプ）、 value = 置換後のメディアタイプ（コンテンツタイプ）。
+	 * </p>
+	 *
+	 * <p>
+	 * チェック対象のコンテンツタイプは、MimeType として定義されているとは限らない。
+	 * 個別の Detector で判別された場合、MimeType に定義されていない。
+	 * 例えば {@link org.apache.tika.parser.iwork.iwana.IWork13PackageParser$IWork13DocumentType} で定義される "application/vnd.apple.keynote.13" は MimeType 定義として存在しない。
+	 * このような MimeType は汎化した定義を取得することができないので、置換するコンテンツタイプを定義できるようにする。
+	 * </p>
+	 *
+	 * @param substitutionMediaType チェック対象のコンテンツタイプの置換設定
+	 */
+	public void setSubstitutionMediaType(Map<String, String> substitutionMediaType) {
+		this.substitutionMediaType = substitutionMediaType;
+	}
+
 	@Override
 	public void checkMagicByte(File tempFile, String contentType, String fileName) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Check magic bytes. Args is tempFile = {}, contentType = {}, fileName = {}.", tempFile.getAbsolutePath(), contentType, fileName);
+		LOG.info("Check magic bytes. Args is tempFile = {}, contentType = {}, fileName = {}.", tempFile.getAbsolutePath(), contentType, fileName);
+
+		String targetContentType = contentType;
+		if (substitutionMediaType.containsKey(contentType)) {
+			// チェック対象の contentType を置換。
+			targetContentType = substitutionMediaType.get(contentType);
+			LOG.info("\"{}\" content type is checked by substituting \"{}\".", contentType, targetContentType);
 		}
 
 		// MimeType に対するファイルルール定義を取得
-		TikaMimeType mimeType = tikaAdapter.getMimeType(contentType);
+		TikaMimeType mimeType = tikaAdapter.getMimeType(targetContentType);
 
 		if (mimeType == null) {
 			// mimeType が存在しない
-			LOG.warn("Undefined MimeType. contentType = {}, filename = {}.", contentType, fileName);
+			LOG.warn("Undefined MimeType. targetContentType = {}, filename = {}.", targetContentType, fileName);
 
 			if (isThrowExceptionIfMimeTypeIsNull) {
 				throw new MagicByteCheckApplicationException(getCheckExceptionMessage());
@@ -244,7 +273,7 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 		// 親の MimeType を取得する
 		TikaMimeType parentMimeType = tikaAdapter.getParentMimeType(mimeType);
 		if (null != parentMimeType) {
-			LOG.info("Check with the parent MimeType. current = {}, parent = {}.", mimeType.getName(), parentMimeType.getName());
+			LOG.debug("Check with the parent MimeType. current = {}, parent = {}.", mimeType.getName(), parentMimeType.getName());
 			// 親のMimeTypeが存在すれば、親タイプでチェックを実施。
 			return doCheckMagic(parentMimeType, magic, isNeverTestedCurrent);
 		}
@@ -380,14 +409,14 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 					? StringUtil.isEmpty(extension)
 							// ファイル拡張子 = 無し
 							? EMPTY_MIMETYPE_EXTENSION_AND_NO_FILE_EXTENSION
-							// ファイル拡張子 = 有り
-							: EMPTY_MIMETYPE_EXTENSION_AND_FILE_EXTENSION_EXIST
-					// MimeType拡張子定義 = 有り
-					: StringUtil.isEmpty(extension)
-							// ファイル拡張子 = 無し
-							? MIMETYPE_EXTENSION_EXIST_AND_NO_FILE_EXTENSION
-							// ファイル拡張子 = 有り
-							: MIMETYPE_EXTENSION_EXIST_AND_FILE_EXTENSION_EXIST;
+									// ファイル拡張子 = 有り
+									: EMPTY_MIMETYPE_EXTENSION_AND_FILE_EXTENSION_EXIST
+									// MimeType拡張子定義 = 有り
+									: StringUtil.isEmpty(extension)
+									// ファイル拡張子 = 無し
+									? MIMETYPE_EXTENSION_EXIST_AND_NO_FILE_EXTENSION
+											// ファイル拡張子 = 有り
+											: MIMETYPE_EXTENSION_EXIST_AND_FILE_EXTENSION_EXIST;
 		}
 	}
 

@@ -452,6 +452,9 @@
 			<property name="readMagicLength" value="65536" />
 			<property name="throwExceptionIfMimeTypeIsNull" value="false" />
 			<property name="throwExceptionIfFileCannotRead" value="false" />
+			<property name="substitutionMediaType">
+				<property name="source/MediaType" value="dest/MediaType" />
+			</property>
 		</property>
 		-->
 
