@@ -753,23 +753,12 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	}
 
 	private NestProperty getLayoutNestProperty(MassReferenceSection section, String propName) {
-		Optional<NestProperty> property = getNestProperties(section).stream()
+		Optional<NestProperty> property = section.getProperties().stream()
 				.filter(e -> propName.equals(e.getPropertyName())).findFirst();
 		if (property.isPresent()) {
 			return property.get();
 		}
 		return null;
-	}
-
-	/**
-	 * セクションのプロパティを取得します。
-	 * @return
-	 */
-	protected List<NestProperty> getNestProperties(MassReferenceSection section) {
-		List<NestProperty> properties = section.getProperties().stream()
-				.filter(e -> e instanceof NestProperty).map(e -> (NestProperty) e)
-				.collect(Collectors.toList());
-		return properties;
 	}
 	
 	/**
