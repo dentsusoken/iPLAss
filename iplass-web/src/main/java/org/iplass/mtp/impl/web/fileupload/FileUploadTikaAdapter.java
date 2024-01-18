@@ -58,6 +58,20 @@ public interface FileUploadTikaAdapter {
 	TikaMimeType getParentMimeType(TikaMimeType type);
 
 	/**
+	 * parentType の子として childType が定義されているか確認する
+	 *
+	 * <p>
+	 * ユースケース
+	 * "application/octet-stream" の MimeType の場合に、は全ての親として返却されるパターンがあるので、定義として存在しているか確認する。
+	 * </p>
+	 *
+	 * @param parentType 親として定義されているMimeType（汎化した定義）
+	 * @param childType 子として定義されているMimeType（特化した定義）
+	 * @return superType の子として childType が定義されている場合 true を返却
+	 */
+	boolean hasChild(TikaMimeType parentType, TikaMimeType childType);
+
+	/**
 	 * Tika MimeType インターフェース
 	 */
 	public interface TikaMimeType {

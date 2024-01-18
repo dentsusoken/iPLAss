@@ -52,6 +52,8 @@ import org.slf4j.LoggerFactory;
  * @author SEKIGUCHI Naoya
  */
 public class TikaMagicByteChecker implements MagicByteChecker {
+	/** mime type "application/octet-stream" */
+	private static final String APPLICATION_OCTET_STERAM = "application/octet-stream";
 	/** ロガー */
 	private static Logger LOG = LoggerFactory.getLogger(TikaMagicByteChecker.class);
 
@@ -272,9 +274,19 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 
 		// 親の MimeType を取得する
 		TikaMimeType parentMimeType = tikaAdapter.getParentMimeType(mimeType);
+
 		if (null != parentMimeType) {
+			// 親のMimeTypeが存在する
+
+			if (parentMimeType.getName().equals(APPLICATION_OCTET_STERAM) && !tikaAdapter.hasChild(parentMimeType, mimeType)) {
+				// 親 MimeType が "application/octet-stream" かつ、子 MimeTypte として定義されていない場合、
+				// MimeType として関連が無いのでチェックは実施しないで終了する。
+				// tikaAdapter.getParentMimeType の返却値として、親定義が無い場合に "application/octet-stream" が返却される為。
+				return isNeverTestedCurrent;
+			}
+
 			LOG.debug("Check with the parent MimeType. current = {}, parent = {}.", mimeType.getName(), parentMimeType.getName());
-			// 親のMimeTypeが存在すれば、親タイプでチェックを実施。
+			// 親タイプでチェックを実施。
 			return doCheckMagic(parentMimeType, magic, isNeverTestedCurrent);
 		}
 

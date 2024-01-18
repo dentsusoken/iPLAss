@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
@@ -91,14 +92,51 @@ public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter {
 
 	@Override
 	public TikaMimeType getParentMimeType(TikaMimeType type) {
-		MediaType mediaType = type instanceof TikaMimeTypeImpl
-				// TikaMimeTypeImpl であれば、保持インスタンスの MediaType を取得
-				? ((TikaMimeTypeImpl) type).mimeType.getType()
-				// TikaMimeTypeImpl でなければ、this#getMimetype(String) で取得した値を利用する
-				: ((TikaMimeTypeImpl) getMimeType(type.getName())).mimeType.getType();
+		MediaType mediaType = getMediaTypeInner(type);
 
+		// NOTE getSupertype() の仕様の注意点
+		// getSupertype() の戻り値として、親が見つからない場合 "application/octet-stream" 以外の場合は "application/octet-stream" が返却される。
+		// 実際には関連のない MimeType となることがある。
 		MediaType superMediaType = tikaConfig.getMediaTypeRegistry().getSupertype(mediaType);
 		return null == superMediaType ? null : getMimeType(superMediaType.toString());
+	}
+
+	/*
+	 *
+	 */
+	@Override
+	public boolean hasChild(TikaMimeType parentType, TikaMimeType childType) {
+		MediaType parentMediaType = getMediaTypeInner(parentType);
+		MediaType childMediaType = getMediaTypeInner(childType);
+
+		// superMediaType の子として mediaType が定義されているか確認する。
+		Set<MediaType> childs = tikaConfig.getMediaTypeRegistry().getChildTypes(parentMediaType);
+		return childs.contains(childMediaType);
+	}
+
+	/**
+	 * TikaMimeType インターフェースから、apache tika の MimeType を取得する
+	 * @param type TikaMimeType インターフェース実装クラス
+	 * @return apache tika MimeType
+	 */
+	private MimeType getMimeTypeInner(TikaMimeType type) {
+		if (type instanceof TikaMimeTypeImpl) {
+			// TikaMimeTypeImpl であれば、保持インスタンスの MediaType を取得
+			return ((TikaMimeTypeImpl) type).mimeType;
+		}
+
+		TikaMimeType t = getMimeType(type.getName());
+		return null == t ? null : ((TikaMimeTypeImpl) t).mimeType;
+	}
+
+	/**
+	 * TikaMimeType インターフェースから、apache tika の MediaType を取得する
+	 * @param type TikaMimeType インターフェース実装クラス
+	 * @return apache tika MediaType
+	 */
+	private MediaType getMediaTypeInner(TikaMimeType type) {
+		MimeType mimeType = getMimeTypeInner(type);
+		return null == mimeType ? null : mimeType.getType();
 	}
 
 	/**
