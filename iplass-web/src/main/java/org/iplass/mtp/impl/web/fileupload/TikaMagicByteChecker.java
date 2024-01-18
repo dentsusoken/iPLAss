@@ -273,15 +273,15 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 		boolean isNeverTestedCurrent = isNeverTested && thisMimeTypeIsNotTested;
 
 		// 親の MimeType を取得する
+		// NOTE: 親定義が無い場合に "application/octet-stream" が返却される。
 		TikaMimeType parentMimeType = tikaAdapter.getParentMimeType(mimeType);
 
 		if (null != parentMimeType) {
 			// 親のMimeTypeが存在する
 
 			if (parentMimeType.getName().equals(APPLICATION_OCTET_STERAM) && !tikaAdapter.hasChild(parentMimeType, mimeType)) {
-				// 親 MimeType が "application/octet-stream" かつ、子 MimeTypte として定義されていない場合、
-				// MimeType として関連が無いのでチェックは実施しないで終了する。
-				// tikaAdapter.getParentMimeType の返却値として、親定義が無い場合に "application/octet-stream" が返却される為。
+				// 親 MimeType が "application/octet-stream" かつ、子 MimeTypte として定義されていない場合（MimeType として関連が無い）、処理を終了する。
+				LOG.debug("Complete the check. MimeType \"{}\" is not defined as a child of \"{}\".", mimeType.getName(), parentMimeType.getName());
 				return isNeverTestedCurrent;
 			}
 
@@ -421,14 +421,14 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 					? StringUtil.isEmpty(extension)
 							// ファイル拡張子 = 無し
 							? EMPTY_MIMETYPE_EXTENSION_AND_NO_FILE_EXTENSION
-									// ファイル拡張子 = 有り
-									: EMPTY_MIMETYPE_EXTENSION_AND_FILE_EXTENSION_EXIST
-									// MimeType拡張子定義 = 有り
-									: StringUtil.isEmpty(extension)
-									// ファイル拡張子 = 無し
-									? MIMETYPE_EXTENSION_EXIST_AND_NO_FILE_EXTENSION
-											// ファイル拡張子 = 有り
-											: MIMETYPE_EXTENSION_EXIST_AND_FILE_EXTENSION_EXIST;
+							// ファイル拡張子 = 有り
+							: EMPTY_MIMETYPE_EXTENSION_AND_FILE_EXTENSION_EXIST
+					// MimeType拡張子定義 = 有り
+					: StringUtil.isEmpty(extension)
+							// ファイル拡張子 = 無し
+							? MIMETYPE_EXTENSION_EXIST_AND_NO_FILE_EXTENSION
+							// ファイル拡張子 = 有り
+							: MIMETYPE_EXTENSION_EXIST_AND_FILE_EXTENSION_EXIST;
 		}
 	}
 
