@@ -31,6 +31,12 @@ import java.util.List;
  * apache tika のバージョンアップ時は本インターフェースの実装クラスだけを修正することを想定している。
  * </p>
  *
+ * <p>
+ * アップロードファイルの検査の流れとして FileTypeDetector で抽出した MediaType(MimeType) を、MagicByteChecker で利用する。
+ * Tika機能を利用する場合、TikaFileTypeDetector で抽出可能な MediaType(MimeType) と、TikaMagicByteChecker で検査可能なファイル種別を同一にするため、
+ * 同一の Tika インスタンスを利用する必要がある。そのため、本インターフェース実装クラスのインスタンスを共有（bean定義）して利用する。
+ * </p>
+ *
  * @author SEKIGUCHI Naoya
  */
 public interface FileUploadTikaAdapter {

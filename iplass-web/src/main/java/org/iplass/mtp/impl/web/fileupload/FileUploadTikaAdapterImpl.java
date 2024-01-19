@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.tika.Tika;
@@ -32,8 +31,10 @@ import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
-import org.iplass.mtp.spi.ObjectBuilder;
+import org.iplass.mtp.spi.Config;
+import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceConfigrationException;
+import org.iplass.mtp.spi.ServiceInitListener;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,28 +43,43 @@ import org.xml.sax.SAXException;
 /**
  * FileUpload機能で利用する Tika 機能アダプター実装クラス
  *
- * <p>
- * FileUpload機能で利用する Tika インスタンスを共有する。
- * </p>
- *
  * @author SEKIGUCHI Naoya
  */
-public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter {
+public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter, ServiceInitListener<Service> {
 	/** ロガー */
 	private static Logger LOG = LoggerFactory.getLogger(FileUploadTikaAdapterImpl.class);
+	/** tika設定ファイルへのリソースパス */
+	private String tikaConfigXml;
 	/** tika 設定 */
 	private TikaConfig tikaConfig;
 	/** tika 本体 */
 	private Tika tika;
 
+	@Override
+	public void inited(Service service, Config config) {
+		// Tika 設定
+		this.tikaConfig = getTikaConfig(tikaConfigXml);
+		// Tika インスタンス
+		this.tika = new Tika(tikaConfig);
+	}
+
+	@Override
+	public void destroyed() {
+		tika = null;
+		tikaConfig = null;
+	}
+
 	/**
-	 * コンストラクタ
-	 * @param tikaConfig tika 設定
-	 * @param tika tika 本体
+	 * tika設定ファイルへのリソースパス
+	 *
+	 * <p>
+	 * 公式サイトでは tila-config.xml と記載されていす。
+	 * </p>
+	 *
+	 * @param tikaConfigXml tika設定ファイルへのリソースパス
 	 */
-	public FileUploadTikaAdapterImpl(TikaConfig tikaConfig, Tika tika) {
-		this.tikaConfig = tikaConfig;
-		this.tika = tika;
+	public void setTikaConfigXml(String tikaConfigXml) {
+		this.tikaConfigXml = tikaConfigXml;
 	}
 
 	@Override
@@ -101,9 +117,6 @@ public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter {
 		return null == superMediaType ? null : getMimeType(superMediaType.toString());
 	}
 
-	/*
-	 *
-	 */
 	@Override
 	public boolean hasChild(TikaMimeType parentType, TikaMimeType childType) {
 		MediaType parentMediaType = getMediaTypeInner(parentType);
@@ -137,6 +150,31 @@ public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter {
 	private MediaType getMediaTypeInner(TikaMimeType type) {
 		MimeType mimeType = getMimeTypeInner(type);
 		return null == mimeType ? null : mimeType.getType();
+	}
+
+	/**
+	 * TikaConfig を取得する
+	 *
+	 * <p>
+	 * tikaConfigXml の指定が無い場合は、デフォルト設定とる。
+	 * tikaConfigXml の指定があり、ファイルが存在しない場合は例外がスローされる。
+	 * </p>
+	 *
+	 * @param tikaConfigXml tikaConfigXml のリソースパス
+	 * @return TikaConfig インスタンス
+	 */
+	private TikaConfig getTikaConfig(String tikaConfigXml) {
+		if (StringUtil.isNotBlank(tikaConfigXml)) {
+			// ログ
+			URL resource = FileUploadTikaAdapterImpl.class.getResource(tikaConfigXml);
+			try {
+				return new TikaConfig(resource);
+			} catch (TikaException | IOException | SAXException e) {
+				throw new ServiceConfigrationException(e);
+			}
+		} else {
+			return TikaConfig.getDefaultConfig();
+		}
 	}
 
 	/**
@@ -177,58 +215,5 @@ public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter {
 		public boolean matchesMagic(byte[] magic) {
 			return mimeType.matchesMagic(magic);
 		}
-	}
-
-	/**
-	 * FileUploadTikaAdapterImpl ビルダークラス
-	 */
-	public static class Builder implements ObjectBuilder<FileUploadTikaAdapter> {
-		/**
-		 * tika-config.xml のシステムリソース位置
-		 *
-		 * @see https://tika.apache.org/
-		 * @see https://github.com/apache/any23/blob/any23-1.1/mime/src/main/resources/org/apache/any23/mime/tika-config.xml
-		 */
-		private String tikaConfigXml;
-
-		@Override
-		public void setProperties(Map<String, Object> properties) {
-			tikaConfigXml = (String) properties.get("tikaConfigXml");
-		}
-
-		@Override
-		public FileUploadTikaAdapter build() {
-			// Tika 設定
-			TikaConfig tikaConfig = getTikaConfig(tikaConfigXml);
-			// Tika インスタンス
-			Tika tika = new Tika(tikaConfig);
-			return new FileUploadTikaAdapterImpl(tikaConfig, tika);
-		}
-
-		/**
-		 * TikaConfig を取得する
-		 *
-		 * <p>
-		 * tikaConfigXml の指定が無い場合は、デフォルト設定とる。
-		 * tikaConfigXml の指定があり、ファイルが存在しない場合は例外がスローされる。
-		 * </p>
-		 *
-		 * @param tikaConfigXml tikaConfigXml のリソースパス
-		 * @return TikaConfig インスタンス
-		 */
-		private TikaConfig getTikaConfig(String tikaConfigXml) {
-			if (StringUtil.isNotBlank(tikaConfigXml)) {
-				// ログ
-				URL resource = FileUploadTikaAdapterImpl.class.getResource(tikaConfigXml);
-				try {
-					return new TikaConfig(resource);
-				} catch (TikaException | IOException | SAXException e) {
-					throw new ServiceConfigrationException(e);
-				}
-			} else {
-				return TikaConfig.getDefaultConfig();
-			}
-		}
-
 	}
 }

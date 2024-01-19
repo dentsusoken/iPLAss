@@ -344,7 +344,7 @@
 		tikaConfigXml を指定しない場合は、apache tika のデフォルト設定で動作します。 
 		-->
 		<!--
-		<bean name="tikaAdapter" builder="org.iplass.mtp.impl.web.fileupload.FileUploadTikaAdapterImpl$Builder">
+		<bean name="tikaAdapter" class="org.iplass.mtp.impl.web.fileupload.FileUploadTikaAdapterImpl">
 			<property name="tikaConfigXml" value="/tika-config.xml" />
 		</bean>
 		-->
@@ -453,7 +453,7 @@
 			<property name="throwExceptionIfMimeTypeIsNull" value="false" />
 			<property name="throwExceptionIfFileCannotRead" value="false" />
 			<property name="substitutionMediaType">
-				<property name="source/MediaType" value="dest/MediaType" />
+				<property name="application/vnd.apple.keynote.13" value="application/vnd.apple.keynote" />
 			</property>
 		</property>
 		-->
