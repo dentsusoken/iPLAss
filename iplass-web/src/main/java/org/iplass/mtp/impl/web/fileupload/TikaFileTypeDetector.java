@@ -24,7 +24,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.tika.Tika;
+import org.iplass.mtp.spi.Config;
+import org.iplass.mtp.spi.Service;
+import org.iplass.mtp.spi.ServiceInitListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +40,35 @@ import org.slf4j.LoggerFactory;
  *
  * @author SEKIGUCHI Naoya
  */
-public class TikaFileTypeDetector implements FileTypeDetector {
-	/** Tikaデフォルトインスタンス */
-	private static final Tika TIKA = new Tika();
-
+public class TikaFileTypeDetector implements FileTypeDetector, ServiceInitListener<Service> {
 	/** ロガー */
 	private Logger logger = LoggerFactory.getLogger(TikaFileTypeDetector.class);
+	/** FileUploadTikaAdapter */
+	private FileUploadTikaAdapter tikaAdapter;
+	/** Listener内でインスタンス生成を実施したか */
+	private boolean isCreateTikaAadpter = false;
+
+	@Override
+	public void inited(Service service, Config config) {
+		// TODO 下位バージョン互換のロジック。下位バージョンでは、tikaAdapter を設定ないパターンもあり得る。設定することを推奨。次期バージョンで削除したい。。。
+		if (null == tikaAdapter) {
+			// tikaAdapter が設定されていなければデフォルトインスタンスを生成する。
+			FileUploadTikaAdapterImpl adapter = new FileUploadTikaAdapterImpl();
+			adapter.inited(service, config);
+			tikaAdapter = adapter;
+			// インスタンス生成をマーク
+			isCreateTikaAadpter = true;
+		}
+	}
+
+	@Override
+	public void destroyed() {
+		// TODO 下位バージョン互換のロジック。次期バージョンで削除したい。。。
+		if (isCreateTikaAadpter) {
+			// インタンス生成していたら、本リスナ経由で破棄する。
+			((FileUploadTikaAdapterImpl) this.tikaAdapter).destroyed();
+		}
+	}
 
 	@Override
 	public String detect(File file, String fileName, String type) {
@@ -58,10 +83,20 @@ public class TikaFileTypeDetector implements FileTypeDetector {
 	@Override
 	public String detect(InputStream input, String fileName, String type) {
 		try {
-			return TIKA.detect(input, fileName);
+			return tikaAdapter.detect(input, fileName);
 		} catch (IOException e) {
 			logger.warn("Unable to retrieve media type.", e);
 			return type;
 		}
+	}
+
+	// TODO 次期バージョンで、設定を必須とする
+	/**
+	 * FileUploadTikaAdapter を設定する
+	 *
+	 * @param tikaAdapter FileUploadTikaAdapter
+	 */
+	public void setFileUploadTikaAdapter(FileUploadTikaAdapter tikaAdapter) {
+		this.tikaAdapter = tikaAdapter;
 	}
 }
