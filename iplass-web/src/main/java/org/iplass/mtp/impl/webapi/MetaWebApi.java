@@ -860,11 +860,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			results = null;
 		}
 
-		if (definition.isPrivileged()) 
-		{
-			isPrivileged = definition.isPrivileged();
-		}
-		
+		isPrivileged = definition.isPrivileged();
 		isPublicWebApi = definition.isPublicWebApi();
 		isCheckXRequestedWithHeader = definition.isCheckXRequestedWithHeader();
 

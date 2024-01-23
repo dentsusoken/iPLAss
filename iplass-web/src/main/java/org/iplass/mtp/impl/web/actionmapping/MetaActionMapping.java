@@ -311,11 +311,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		clientCacheMaxAge = definition.getClientCacheMaxAge();
 
 		isParts = definition.isParts();
-		
-		if (definition.isPrivileged()) {
-			isPrivileged = definition.isPrivileged();
-		}
-		
+		isPrivileged = definition.isPrivileged();
 		isPublicAction = definition.isPublicAction();
 
 		if (definition.getCommandConfig() != null) {

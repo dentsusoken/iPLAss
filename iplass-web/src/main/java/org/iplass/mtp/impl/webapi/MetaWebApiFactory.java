@@ -147,6 +147,9 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 			meta.setOauthScopes(webapi.oauthScopes());
 		}
 		meta.setPrivileged(webapi.privileged());
+		if (webapi.privilaged()) {
+			meta.setPrivileged(webapi.privilaged());
+		}		
 		meta.setPublicWebApi(webapi.publicWebApi());
 		meta.setCheckXRequestedWithHeader(webapi.checkXRequestedWithHeader());
 		meta.setResponseType(webapi.responseType());
