@@ -286,7 +286,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			List<SortSetting> setting = section.getSortSetting();
 			for (SortSetting ss : setting) {
 				if (ss.getSortKey() != null) {
-					String key = getSortKey(section, red, ss.getSortKey());
+					String key = getSortSettingKey(section, red, ss.getSortKey());
 					if (!addNames.contains(key)) {
 						orderBy.add(key, getSortType(ss.getSortType().name()), getNullOrderingSpec(ss.getNullOrderType()));
 						addNames.add(key);
@@ -305,11 +305,47 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 
 	/**
 	 * ソートキーを取得
+	 * @param section
 	 * @param ed
 	 * @param sortKey
 	 * @return
 	 */
 	private String getSortKey(MassReferenceSection section, EntityDefinition ed, String sortKey) {
+		String ret = sortKey;
+		if (StringUtil.isBlank(sortKey)) {
+			return Entity.OID;
+		}
+
+		NestProperty property = getLayoutNestProperty(section, sortKey);
+		// 当該項目がセクション上表示されない場合は、利用しない
+		if (property == null) {
+			return Entity.OID;
+		}
+
+		PropertyDefinition pd = ed.getProperty(ret);
+		if (pd == null) {
+			ret = Entity.OID;
+			pd = ed.getProperty(ret);
+		}
+
+		if (pd instanceof ReferenceProperty) {
+			// 当該項目がセクション上表示される場合は、セクション上の表示項目でソート
+			if (property != null) {
+				ret = sortKey + "." + getDisplayNestProperty(property);
+			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * ソート設定キーを取得
+	 * @param section
+	 * @param ed
+	 * @param sortKey
+	 * @return
+	 */
+	private String getSortSettingKey(MassReferenceSection section, EntityDefinition ed, String sortKey) {
 		String ret = sortKey;
 		if (StringUtil.isBlank(ret)) {
 			ret =  Entity.OID;
