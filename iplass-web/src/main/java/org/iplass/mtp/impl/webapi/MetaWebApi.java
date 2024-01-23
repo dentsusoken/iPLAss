@@ -806,7 +806,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setCacheControlType(cacheControlType);
 		definition.setCacheControlMaxAge(cacheControlMaxAge);
 
-		definition.setPrivilaged(isPrivileged);
 		definition.setPrivileged(isPrivileged);
 		definition.setPublicWebApi(isPublicWebApi);
 		definition.setCheckXRequestedWithHeader(isCheckXRequestedWithHeader);
@@ -864,8 +863,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		if (definition.isPrivileged()) 
 		{
 			isPrivileged = definition.isPrivileged();
-		} else {
-			isPrivileged = definition.isPrivilaged();
 		}
 		
 		isPublicWebApi = definition.isPublicWebApi();

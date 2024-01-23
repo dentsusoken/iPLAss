@@ -305,11 +305,6 @@ public class MetaActionMappingFactory implements
 		metaActionMapping.setNeedTrustedAuthenticate(actionMapping.needTrustedAuthenticate());
 		metaActionMapping.setParts(actionMapping.parts());
 		metaActionMapping.setPrivileged(actionMapping.privileged());
-		if (actionMapping.privileged()) {
-			metaActionMapping.setPrivilaged(actionMapping.privileged());
-		} else {
-			metaActionMapping.setPrivilaged(actionMapping.privilaged());
-		}
 		metaActionMapping.setPublicAction(actionMapping.publicAction());
 
 		if (actionMapping.paramMapping().length > 0) {

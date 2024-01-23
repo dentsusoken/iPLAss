@@ -314,8 +314,6 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		
 		if (definition.isPrivileged()) {
 			isPrivileged = definition.isPrivileged();
-		} else {
-			isPrivileged = definition.isPrivilaged();
 		}
 		
 		isPublicAction = definition.isPublicAction();
@@ -401,7 +399,6 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		definition.setClientCacheType(clientCacheType);
 		definition.setClientCacheMaxAge(clientCacheMaxAge);
 		definition.setParts(isParts);
-		definition.setPrivilaged(isPrivileged);
 		definition.setPrivileged(isPrivileged);
 		definition.setPublicAction(isPublicAction);
 
