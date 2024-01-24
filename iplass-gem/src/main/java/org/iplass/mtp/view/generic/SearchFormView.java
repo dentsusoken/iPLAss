@@ -204,11 +204,21 @@ public class SearchFormView extends FormView {
 			descriptionKey="generic_SearchFormView_deleteSpecificVersionDescriptionKey")
 	private boolean deleteSpecificVersion;
 
+	/** バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可 */
+	@MetaFieldInfo(
+			displayName="バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1530,
+			description="バージョン管理されていないEntityで、参照先の保存時バージョンの検索を許可します。",
+			displayNameKey="generic_SearchFormView_canVersionedReferenceSearchForNoneVersionedEntityDisplaNameKey",
+			descriptionKey="generic_SearchFormView_canVersionedReferenceSearchForNoneVersionedEntityDescriptionKey")
+	private boolean canVersionedReferenceSearchForNoneVersionedEntity;
+
 	/** 特権実行でユーザー名を表示 */
 	@MetaFieldInfo(
 			displayName="特権実行でユーザー名を表示する",
 			inputType=InputType.CHECKBOX,
-			displayOrder=1520,
+			displayOrder=1540,
 			description="ユーザー情報の参照権限が無くてもユーザー名を表示するかを指定します。",
 			displayNameKey="generic_SearchFormView_showUserNameWithPrivilegedDisplayNameKey",
 			descriptionKey="generic_SearchFormView_showUserNameWithPrivilegedDescriptionKey"
@@ -532,6 +542,23 @@ public class SearchFormView extends FormView {
 	 */
 	public void setDeleteSpecificVersion(boolean deleteSpecificVersion) {
 		this.deleteSpecificVersion = deleteSpecificVersion;
+	}
+
+	/**
+	 * バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可するかを取得します。
+	 * @return バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可するか
+	 */
+	public boolean isCanVersionedReferenceSearchForNoneVersionedEntity() {
+		return canVersionedReferenceSearchForNoneVersionedEntity;
+	}
+
+	/**
+	 * バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可するかを設定します。
+	 * @param canVersionedReferenceSearchForNoneVersionedEntity バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可するか
+	 */
+	public void setCanVersionedReferenceSearchForNoneVersionedEntity(
+			boolean canVersionedReferenceSearchForNoneVersionedEntity) {
+		this.canVersionedReferenceSearchForNoneVersionedEntity = canVersionedReferenceSearchForNoneVersionedEntity;
 	}
 
 	/**

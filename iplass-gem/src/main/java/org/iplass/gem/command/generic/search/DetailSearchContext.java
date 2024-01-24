@@ -35,6 +35,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.definition.properties.LongTextProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.Where;
@@ -311,8 +312,14 @@ public class DetailSearchContext extends SearchContextBase {
 
 	@Override
 	public boolean isVersioned() {
-		String allVer = getRequest().getParam("allVersionDtl");
-		return "1".equals(allVer);
+		if (getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
+			String allVer = getRequest().getParam(Constants.SEARCH_ALL_VERSION_DETAIL);
+			return "1".equals(allVer);
+		} else if (getForm().isCanVersionedReferenceSearchForNoneVersionedEntity()){
+			String referenceVer = getRequest().getParam(Constants.SEARCH_SAVED_VERSION_DETAIL);
+			return "1".equals(referenceVer);
+		}
+		return false;
 	}
 
 	private void initParam() {

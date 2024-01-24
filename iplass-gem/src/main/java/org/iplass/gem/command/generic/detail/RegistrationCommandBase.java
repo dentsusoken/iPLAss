@@ -130,10 +130,13 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 * @param version データのバージョン
 	 * @param defName Entity定義名
 	 * @param loadReferences ロードする参照プロパティ
+	 * @param loadVersioned バージョン検索するか
 	 * @return Entity
 	 */
-	protected Entity loadViewEntity(T context, String oid, Long version, String defName, List<String> loadReferences) {
-		return loadEntity(context, oid, version, defName, new LoadOption(loadReferences), LoadType.VIEW);
+	protected Entity loadViewEntity(T context, String oid, Long version, String defName, List<String> loadReferences, boolean loadVersioned) {
+		LoadOption option = new LoadOption(loadReferences);
+		option.setVersioned(loadVersioned);
+		return loadEntity(context, oid, version, defName, option, LoadType.VIEW);
 	}
 
 	/**
@@ -145,10 +148,13 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 * @param version データのバージョン
 	 * @param defName Entity定義名
 	 * @param loadReferences ロードする参照プロパティ
+	 * @param loadVersioned バージョン検索するか
 	 * @return Entity
 	 */
-	protected Entity loadBeforeUpdateEntity(T context, String oid, Long version, String defName, List<String> loadReferences) {
-		return loadEntity(context, oid, version, defName, new LoadOption(loadReferences), LoadType.BEFORE_UPDATE);
+	protected Entity loadBeforeUpdateEntity(T context, String oid, Long version, String defName, List<String> loadReferences, boolean loadVersioned) {
+		LoadOption option = new LoadOption(loadReferences);
+		option.setVersioned(loadVersioned);
+		return loadEntity(context, oid, version, defName, option, LoadType.BEFORE_UPDATE);
 	}
 
 	/**
@@ -256,13 +262,25 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			}
 		}
 
-		TargetVersion targetVersion = TargetVersion.CURRENT_VALID;
+		TargetVersion targetVersion = null;
 		if (context.isVersioned()) {
 			//バージョン番号更新かそのまま更新か
 			if (context.isNewVersion()) {
 				targetVersion = TargetVersion.NEW;
 			} else {
+				// バージョン指定か
+				if (context.isLoadVersioned()) {
+					targetVersion = TargetVersion.SPECIFIC;
+				} else {
+					targetVersion = TargetVersion.CURRENT_VALID;
+				}
+			}
+		} else {
+			// 保存時バージョン指定か
+			if (context.isLoadVersioned()) {
 				targetVersion = TargetVersion.SPECIFIC;
+			} else {
+				targetVersion = TargetVersion.CURRENT_VALID;
 			}
 		}
 

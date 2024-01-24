@@ -87,7 +87,10 @@ public class MetaSearchFormView extends MetaFormView {
 
 	/** 特定バージョンを削除するか */
 	private boolean deleteSpecificVersion;
-	
+
+	/** バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可 */
+	private boolean canVersionedReferenceSearchForNoneVersionedEntity;
+
 	/** 特権実行でユーザー名を表示 */
 	private boolean showUserNameWithPrivilegedValue;
 
@@ -341,6 +344,23 @@ public class MetaSearchFormView extends MetaFormView {
 	}
 
 	/**
+	 * バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可するかを取得します。
+	 * @return バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可するか
+	 */
+	public boolean isCanVersionedReferenceSearchForNoneVersionedEntity() {
+		return canVersionedReferenceSearchForNoneVersionedEntity;
+	}
+
+	/**
+	 * バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可するかを設定します。
+	 * @param canVersionedReferenceSearchForNoneVersionedEntity バージョン管理Entity以外の場合に参照先の保存時バージョンの検索を許可するか
+	 */
+	public void setCanVersionedReferenceSearchForNoneVersionedEntity(
+			boolean canVersionedReferenceSearchForNoneVersionedEntity) {
+		this.canVersionedReferenceSearchForNoneVersionedEntity = canVersionedReferenceSearchForNoneVersionedEntity;
+	}
+
+	/**
 	 * 特権実行でユーザー名を表示を取得します。
 	 * @return 特権実行でユーザー名を表示
 	 */
@@ -513,6 +533,7 @@ public class MetaSearchFormView extends MetaFormView {
 		javaScript = sForm.getJavaScript();
 		isPurge = sForm.isPurge();
 		deleteSpecificVersion = sForm.isDeleteSpecificVersion();
+		canVersionedReferenceSearchForNoneVersionedEntity = sForm.isCanVersionedReferenceSearchForNoneVersionedEntity();
 		showUserNameWithPrivilegedValue = sForm.isShowUserNameWithPrivilegedValue();
 		withoutConditionReferenceName =
 				sForm.getWithoutConditionReferenceName() == null ? null : new ArrayList<>(sForm.getWithoutConditionReferenceName());
@@ -562,6 +583,7 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setJavaScript(javaScript);
 		form.setPurge(isPurge);
 		form.setDeleteSpecificVersion(deleteSpecificVersion);
+		form.setCanVersionedReferenceSearchForNoneVersionedEntity(canVersionedReferenceSearchForNoneVersionedEntity);
 		form.setShowUserNameWithPrivilegedValue(showUserNameWithPrivilegedValue);
 		form.setWithoutConditionReferenceName(
 				withoutConditionReferenceName == null ? null : new ArrayList<>(withoutConditionReferenceName));

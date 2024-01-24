@@ -488,14 +488,44 @@ public class DetailCommandContext extends RegistrationCommandContext
 		return CopyTarget.getEnum(copyTarget);
 	}
 
-	/**
-	 * 新しいバージョンとして更新を行うかを取得します。
-	 * @return 新しいバージョンとして更新を行うか
-	 */
 	@Override
 	public boolean isNewVersion() {
 		String newVersion = getParam(Constants.NEWVERSION);
 		return newVersion != null && "true".equals(newVersion);
+	}
+
+	@Override
+	public boolean isLoadVersioned() {
+		if (isVersioned()) {
+			// 検索時に全バージョンを検索しているかを確認
+			String searchCond = getSearchCond();
+			if (StringUtil.isNotEmpty(searchCond)) {
+				for (String condition : searchCond.split("&")) {
+					if (condition.startsWith(Constants.SEARCH_ALL_VERSION + "=")
+							|| condition.startsWith(Constants.SEARCH_ALL_VERSION_DETAIL + "=")) {
+						String[] value = condition.split("=");
+						if (value.length > 1) {
+							return "1".equals(value[1]);
+						}
+					}
+				}
+			}
+		} else {
+			// 検索時に保存時データを検索しているかを確認
+			String searchCond = getSearchCond();
+			if (StringUtil.isNotEmpty(searchCond)) {
+				for (String condition : searchCond.split("&")) {
+					if (condition.startsWith(Constants.SEARCH_SAVED_VERSION + "=")
+							|| condition.startsWith(Constants.SEARCH_SAVED_VERSION_DETAIL + "=")) {
+						String[] value = condition.split("=");
+						if (value.length > 1) {
+							return "1".equals(value[1]);
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override

@@ -276,8 +276,14 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	@Override
 	public boolean isVersioned() {
-		String allVer = getRequest().getParam("allVersion");
-		return "1".equals(allVer);
+		if (getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
+			String allVer = getRequest().getParam(Constants.SEARCH_ALL_VERSION);
+			return "1".equals(allVer);
+		} else if (getForm().isCanVersionedReferenceSearchForNoneVersionedEntity()){
+			String referenceVer = getRequest().getParam(Constants.SEARCH_SAVED_VERSION);
+			return "1".equals(referenceVer);
+		}
+		return false;
 	}
 
 	@Override
@@ -419,7 +425,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 */
 	protected String getSortKey() {
 		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
-		
+
 		// 検索時のソートキー
 		if (StringUtil.isBlank(sortKey)) {
 			if (getConditionSection().isUnsorted()) {
@@ -428,13 +434,13 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			// デフォルトはOID
 			return Entity.OID;
 		}
-		
+
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		if (pd == null) {
 			//ソート項目が存在しない場合はOIDを設定
 			return Entity.OID;
 		}
-		
+
 		return sortKey;
 	}
 
@@ -491,47 +497,47 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			if (property != null) {
 				SortSetting ss = new SortSetting();
 				ss.setSortKey(sortKey);
-				
+
 				String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
 				if (StringUtil.isBlank(sortType)) {
 					ss.setSortType(ConditionSortType.DESC);
 				} else {
 					ss.setSortType(ConditionSortType.valueOf(sortType));
 				}
-				
+
 				ss.setNullOrderType(property.getNullOrderType());
-				
+
 				setting.add(ss);
 			}
 		}
-		
+
 		SearchConditionSection section = getConditionSection();
 		if (section != null && !section.getSortSetting().isEmpty()) {
 			setting.addAll(section.getSortSetting());
 		}
 		return setting;
 	}
-	
+
 	/**
 	 * 参照プロパティで、検索結果に表示されている項目を取得します。
 	 * @return 表示項目
 	 */
 	protected String getDisplayNestProperty(PropertyColumn refProp) {
 		PropertyEditor editor = refProp.getEditor();
-		
+
 		if (editor instanceof ReferencePropertyEditor
 				&& StringUtil.isNotEmpty(((ReferencePropertyEditor) editor).getDisplayLabelItem())) {
 			return ((ReferencePropertyEditor)editor).getDisplayLabelItem();
 		} else {
 			return Entity.NAME;
 		}
-		
+
 	}
-	
+
 	/**
 	 * リクエストから検索上限を取得します。検索上限が指定されていない場合は、定義またはservice-config設定から補完します。
 	 * リクエストの検索上限は、定義またはservice-config設定の上限を超えることはできません。
-	 * 
+	 *
 	 * @return
 	 */
 	protected Integer getSearchLimit() {

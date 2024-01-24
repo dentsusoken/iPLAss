@@ -889,14 +889,35 @@ $(function() {
 <%
 	}
 	if ((selectType == null || permitVersionedSelect) && ed.getVersionControlType() != VersionControlType.NONE) {
-		String allVersion = getSearchCondParam(searchCond, "allVersion");
+		String allVersion = getSearchCondParam(searchCond, Constants.SEARCH_ALL_VERSION);
 		String checked = "";
 		if ("1".equals(allVersion)) checked = "checked";
 %>
 <tr class="version-area col<%=section.getColNum()%>">
 <th>&nbsp;</th>
 <td>
-<label for="cb-version"><input type="checkbox" value="1" name="allVersion" id="cb-version" <c:out value="<%=checked %>"/>/>${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.allVerSearch")}</label>
+<label for="cb-version">
+<input type="checkbox" value="1" name="<%=Constants.SEARCH_ALL_VERSION %>" id="cb-version" <c:out value="<%=checked %>"/>/>
+${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.allVerSearch")}
+</label>
+</td>
+</tr>
+<%
+	} else if (selectType == null 
+			&& ed.getVersionControlType() == VersionControlType.NONE
+			&& view.isCanVersionedReferenceSearchForNoneVersionedEntity()) {
+	
+			String savedVersion = getSearchCondParam(searchCond, Constants.SEARCH_SAVED_VERSION);
+			String checked = "";
+			if ("1".equals(savedVersion)) checked = "checked";
+%>
+<tr class="version-area col<%=section.getColNum()%>">
+<th>&nbsp;</th>
+<td>
+<label for="cb-version">
+<input type="checkbox" value="1" name="<%=Constants.SEARCH_SAVED_VERSION%>" id="cb-version" <c:out value="<%=checked %>"/>/>
+${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.savedVerSearch")}
+</label>
 </td>
 </tr>
 <%
@@ -1274,12 +1295,31 @@ $(function() {
 </ul>
 <%
 		if ((selectType == null || permitVersionedSelect) && ed.getVersionControlType() != VersionControlType.NONE) {
-			String allVersion = getSearchCondParam(searchCond, "allVersionDtl");
+			String allVersion = getSearchCondParam(searchCond, Constants.SEARCH_ALL_VERSION_DETAIL);
 			String checked = "";
 			if ("1".equals(allVersion)) checked = "checked";
 %>
-<p><label for="cb-version-02"><input type="checkbox" value="1" name="allVersionDtl" id="cb-version-02" <c:out value="<%=checked %>"/>/>${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.allVerSearch")}</label></p>
+<p>
+<label for="cb-version-02">
+<input type="checkbox" value="1" name="<%=Constants.SEARCH_ALL_VERSION_DETAIL %>" id="cb-version-02" <c:out value="<%=checked %>"/>/>
+${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.allVerSearch")}
+</label>
+</p>
 <input type="hidden" name="specVersion" value="<c:out value="<%=specVersion%>"/>"/>
+<%
+		} else if (selectType == null 
+				&& ed.getVersionControlType() == VersionControlType.NONE
+				&& view.isCanVersionedReferenceSearchForNoneVersionedEntity()) {
+			String savedVersion = getSearchCondParam(searchCond, Constants.SEARCH_SAVED_VERSION_DETAIL);
+			String checked = "";
+			if ("1".equals(savedVersion)) checked = "checked";
+%>
+<p>
+<label for="cb-version-02">
+<input type="checkbox" value="1" name="<%=Constants.SEARCH_SAVED_VERSION_DETAIL%>" id="cb-version-02" <c:out value="<%=checked %>"/>/>
+${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.savedVerSearch")}
+</label>
+</p>
 <%
 		}
 %>

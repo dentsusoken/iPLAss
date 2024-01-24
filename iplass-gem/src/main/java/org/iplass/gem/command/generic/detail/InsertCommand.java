@@ -137,7 +137,7 @@ public final class InsertCommand extends DetailCommandBase {
 					@Override
 					public void afterCommit(Transaction t) {
 						//被参照をテーブルで追加した場合、コミット前だとロードで取得できない
-						data.setEntity(loadViewEntity(context, edited.getOid(), 0l, edited.getDefinitionName(), context.getReferencePropertyName()));
+						data.setEntity(loadViewEntity(context, edited.getOid(), 0l, edited.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
 
 						//更新成功時
 						if (data.getEntity() != null) {

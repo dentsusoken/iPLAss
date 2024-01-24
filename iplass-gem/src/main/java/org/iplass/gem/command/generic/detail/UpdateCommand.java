@@ -125,11 +125,11 @@ public final class UpdateCommand extends DetailCommandBase {
 		if (StringUtil.isNotEmpty(oid)) {
 			Entity current = null;
 			if (view.isLoadDefinedReferenceProperty()) {
-				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName());
+				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned());
 			} else {
-				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), (List<String>) null);
+				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), (List<String>) null, context.isLoadVersioned());
 			}
-			if (current == null 
+			if (current == null
 					|| !evm.hasEntityReferencePermissionDetailFormView(context.getDefinitionName(), context.getViewName(), current)) {
 				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.noPermission"));
 				return Constants.CMD_EXEC_ERROR_NODATA;
@@ -162,14 +162,14 @@ public final class UpdateCommand extends DetailCommandBase {
 						if (context.isVersioned()) {
 							if (context.isNewVersion()) {
 								//新しいバージョンで登録時はそのデータを表示
-								data.setEntity(loadViewEntity(context, oid, updatedVersion, context.getDefinitionName(), context.getReferencePropertyName()));
+								data.setEntity(loadViewEntity(context, oid, updatedVersion, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
 							} else {
 								//特定バージョンの場合だけバージョン指定でロード
 								Long version = context.getVersion();
-								data.setEntity(loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName()));
+								data.setEntity(loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
 							}
 						} else {
-							data.setEntity(loadViewEntity(context, oid, null, context.getDefinitionName(), context.getReferencePropertyName()));
+							data.setEntity(loadViewEntity(context, oid, null, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
 						}
 
 						//更新成功時

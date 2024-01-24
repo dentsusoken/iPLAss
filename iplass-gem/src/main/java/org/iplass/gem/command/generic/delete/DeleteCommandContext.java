@@ -24,6 +24,7 @@ package org.iplass.gem.command.generic.delete;
 import java.util.Collections;
 import java.util.List;
 
+import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.GenericCommandContext;
 import org.iplass.mtp.ApplicationException;
@@ -140,7 +141,7 @@ public class DeleteCommandContext extends GenericCommandContext {
 	}
 
 	private boolean isAllVersion() {
-		String allVer = getRequest().getParam("allVersion");
+		String allVer = getRequest().getParam(Constants.SEARCH_ALL_VERSION);
 		return "1".equals(allVer);
 	}
 
