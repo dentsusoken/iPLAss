@@ -632,4 +632,9 @@
 		-->
 	</service>
 
+	<service>
+		<interface>org.iplass.mtp.impl.csv.EntityCsvImportService</interface>
+		<class>org.iplass.mtp.impl.csv.EntityCsvImportService</class>
+	</service>
+
 </serviceDefinition>
