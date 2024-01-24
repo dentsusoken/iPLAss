@@ -163,7 +163,7 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 										// 検索条件で更新ではなければ、特定のバージョン指定でロード
 										Integer row = context.getRow(oid, version);
 										if (row != null) {
-											data.setSelected(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
+											data.setSelected(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null, false));
 										}
 									}
 									countUp(request);

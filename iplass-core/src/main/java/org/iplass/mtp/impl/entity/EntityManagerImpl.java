@@ -708,6 +708,7 @@ public class EntityManagerImpl implements EntityManager {
 					if (entity.getVersion() == null) {
 						throw new EntityRuntimeException("target version not specified:" + entity);
 					}
+					lop.setVersioned(true);
 					currentStore = load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), lop);
 				} else if (option.getTargetVersion() == TargetVersion.NEW) {
 					if (entity.getVersion() != null) {

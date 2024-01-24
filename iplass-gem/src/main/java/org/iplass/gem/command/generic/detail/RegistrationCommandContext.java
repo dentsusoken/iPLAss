@@ -454,7 +454,17 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	public abstract <T extends PropertyBase> List<T> getUpdateProperty();
 
-	protected abstract boolean isNewVersion();
+	/**
+	 * 新しいバージョンとして更新を行うかを取得します。
+	 * @return 新しいバージョンとして更新を行うか
+	 */
+	public abstract boolean isNewVersion();
+
+	/**
+	 * Entityデータをロードする際にバージョン指定するかを返します。
+	 * @return Entityデータをロードする際にバージョン指定するか
+	 */
+	public abstract boolean isLoadVersioned();
 
 	protected abstract boolean isPurgeCompositionedEntity();
 

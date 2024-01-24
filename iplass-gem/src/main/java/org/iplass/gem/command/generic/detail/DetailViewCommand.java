@@ -243,9 +243,9 @@ public final class DetailViewCommand extends DetailCommandBase {
 		Entity entity = null;
 		if (oid != null && oid.trim().length() > 0) {
 			if (view.isLoadDefinedReferenceProperty()) {
-				entity = loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName());
+				entity = loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned());
 			} else {
-				entity = loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null);
+				entity = loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null, context.isLoadVersioned());
 			}
 			if (entity == null) {
 				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.noPermission"));

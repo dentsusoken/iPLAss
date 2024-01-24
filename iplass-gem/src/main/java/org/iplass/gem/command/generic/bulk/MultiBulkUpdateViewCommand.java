@@ -104,7 +104,7 @@ public class MultiBulkUpdateViewCommand extends MultiBulkCommandBase {
 			if (oid != null && oid.length() > 0) {
 				for (Long targetVersion : context.getVersions(oid)) {
 					Integer targetRow = context.getRow(oid, targetVersion);
-					Entity entity = loadViewEntity(context, oid, targetVersion, context.getDefinitionName(), (List<String>) null);
+					Entity entity = loadViewEntity(context, oid, targetVersion, context.getDefinitionName(), (List<String>) null, false);
 					if (entity == null) {
 						request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.noPermission"));
 						return Constants.CMD_EXEC_ERROR_NODATA;

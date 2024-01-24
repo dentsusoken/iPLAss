@@ -167,7 +167,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 									if (!isSearchCondUpdate) {
 										Integer row = context.getRow(oid, version);
 										if (row != null) {
-											data.setSelected(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
+											data.setSelected(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null, false));
 										}
 									}
 									countUp(request);

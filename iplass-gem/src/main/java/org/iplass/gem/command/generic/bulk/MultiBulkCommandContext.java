@@ -464,12 +464,13 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		this.view = view;
 	}
 
-	/**
-	 * 新しいバージョンとして更新を行うかを取得します。
-	 * @return 新しいバージョンとして更新を行うか
-	 */
 	@Override
 	public boolean isNewVersion() {
+		return false;
+	}
+
+	@Override
+	public boolean isLoadVersioned() {
 		return false;
 	}
 

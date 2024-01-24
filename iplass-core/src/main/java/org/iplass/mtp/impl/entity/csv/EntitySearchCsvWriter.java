@@ -37,7 +37,6 @@ import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
-import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.entity.query.Limit;
@@ -168,12 +167,7 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 				.from(ed.getName());
 		query.setWhere(option.getWhere());
 		query.setOrderBy(option.getOrderBy());
-
-		if (ed.getVersionControlType() != VersionControlType.NONE) {
-			query.versioned(option.isVersioned());
-		} else {
-			query.versioned(false);
-		}
+		query.versioned(option.isVersioned());
 
 		if (option.getLimit() > 0) {
 			query.setLimit(new Limit(option.getLimit()));
