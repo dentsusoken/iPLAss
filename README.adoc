@@ -35,14 +35,14 @@ https://iplass.org/downloads/
 
 gradleでの定義例：
 
- implementation 'org.iplass:iplass-gem:3.2.14'
+ implementation 'org.iplass:iplass-gem:3.2.15'
 
 mavenでの設定例：
 
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>3.2.14</version>
+   <version>3.2.15</version>
    <type>pom</type>
  </dependency>
 
