@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright 2021 DENTSU SOKEN INC. All Rights Reserved.
  */
 
 package org.iplass.gem.command.preview;

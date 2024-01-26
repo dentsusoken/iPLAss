@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2016 DENTSU SOKEN INC. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
  * <td>&lt;input type="text" name="age" value="25"&gt;</td><td>formBean.setAge(25)</td>
  * </tr>
  * <tr>
- * <td>&lt;input type="text" name="accout.mail" value="test@test.isid.co.jp"&gt;</td><td>formBean.getAccount().setMail("test@test.isid.co.jp")</td>
+ * <td>&lt;input type="text" name="accout.mail" value="test@test.dentsusoken.com"&gt;</td><td>formBean.getAccount().setMail("test@test.dentsusoken.com")</td>
  * </tr>
  * <tr>
  * <td>&lt;input type="text" name="details[0].id" value="123"&gt;</td><td>formBean.getDetails()[0].setId("123")</td>

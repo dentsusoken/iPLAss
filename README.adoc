@@ -47,7 +47,7 @@ mavenでの設定例：
  </dependency>
 
 NOTE: JakartaEE8 (Servlet/JSP/JSTL/EL/JAX-RS/BeanValidation/CommonAnnotations/JavaMail/JAXB/JAF) のランタイムが必要です。
-https://github.com/ISID/iplass-skeleton[スケルトンプロジェクト] のbuild.gradleを参考にしてください。
+https://github.com/dentsusoken/iplass-skeleton[スケルトンプロジェクト] のbuild.gradleを参考にしてください。
 
 以下は各モジュールの説明です。
 
