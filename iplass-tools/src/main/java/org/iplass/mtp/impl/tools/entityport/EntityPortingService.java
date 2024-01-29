@@ -72,6 +72,7 @@ public class EntityPortingService implements Service {
 	private int uploadableCsvDownloadLoadSize;
 
 	/** UserエンティティのInsert時にパスワード指定を可能にするか */
+	@Deprecated
 	private Boolean canCreateUserWithSpecificPassword;
 
 	private SyntaxService syntaxService;
