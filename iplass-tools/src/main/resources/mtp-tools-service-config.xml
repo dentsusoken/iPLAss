@@ -60,11 +60,6 @@
 		<!--
 		<property name="uploadableCsvDownloadLoadSize" value="1" />
 		-->
-
-		<!-- UserエンティティのInsert時にパスワード指定を許可するか -->
-		<!--
-		<property name="canCreateUserWithSpecificPassword" value="false" />
-		-->
 	</service>
 
 	<service>

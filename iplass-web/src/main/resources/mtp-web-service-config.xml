@@ -714,4 +714,13 @@
 		-->
 	</service>
 
+	<service>
+		<interface>org.iplass.mtp.impl.csv.EntityCsvImportService</interface>
+		<class>org.iplass.mtp.impl.csv.EntityCsvImportService</class>
+		<!-- UserエンティティのInsert時にパスワード指定を許可するか -->
+		<!--
+		<property name="canCreateUserWithSpecificPassword" value="false" />
+		-->
+	</service>
+
 </serviceDefinition>
