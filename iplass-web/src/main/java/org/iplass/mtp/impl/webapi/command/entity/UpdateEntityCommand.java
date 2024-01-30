@@ -123,7 +123,7 @@ public final class UpdateEntityCommand extends AbstractEntityCommand {
 	private void setUpdateOptionWithParam(RequestContext request, UpdateOption option) {
 		EntityWebApiService service = ServiceRegistry.getRegistry().getService(EntityWebApiService.class);
 
-		if (service.isPermitEntityCrudApiOptionRole()) {
+		if (service.isPermitRolesToSpecifyOptions()) {
 			String withValidation = request.getParam(PARAM_PUT_WITH_VALIDATION);
 			if (StringUtil.isNotBlank(withValidation)) {
 				option.setWithValidation(Boolean.parseBoolean(withValidation));
