@@ -20,7 +20,10 @@
 
 package org.iplass.mtp.impl.webapi;
 
+import java.util.List;
+
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
@@ -69,6 +72,9 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 
 	private boolean throwSearchResultLimitExceededException;
 
+	/** EntityCRUD API 制御オプション許可ロール */
+	private List<String> permitRolesToSpecifyOptions;
+
 	public boolean isThrowSearchResultLimitExceededException() {
 		return throwSearchResultLimitExceededException;
 	}
@@ -102,6 +108,27 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		return csvTimeFormat;
 	}
 
+	/**
+	 * EntityCRUD APIで制御オプションが許可されたロールか
+	 * @return 許可されたロールの場合true
+	 */
+	public boolean isPermitRolesToSpecifyOptions() {
+		AuthContext auth = AuthContext.getCurrentContext();
+		if (auth.getUser().isAdmin()) {
+			// adminなら許可
+			return true;
+		}
+
+		if (permitRolesToSpecifyOptions != null && !permitRolesToSpecifyOptions.isEmpty()) {
+			for (String role : permitRolesToSpecifyOptions) {
+				if (auth.userInRole(role)) {
+					//指定ロールなら許可
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	@Override
 	public void destroy() {
 	}
@@ -126,6 +153,8 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		loadWithMappedByReference = config.getValue("loadWithMappedByReference", Boolean.TYPE, Boolean.FALSE);
 
 		throwSearchResultLimitExceededException = config.getValue("throwSearchResultLimitExceededException", Boolean.TYPE, Boolean.FALSE);
+
+		permitRolesToSpecifyOptions = config.getValues("permitRolesToSpecifyOptions");
 	}
 
 	public static String getFixedPath() {
