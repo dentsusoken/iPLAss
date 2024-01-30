@@ -75,7 +75,7 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	private boolean throwSearchResultLimitExceededException;
 
 	/** EntityCRUD API 制御オプション許可ロール */
-	private List<String> permitEntityCrudApiOptionsRoles;
+	private List<String> permitRolesToSpecifyOptions;
 
 	public boolean isEnableNativeHint() {
 		return enableNativeHint;
@@ -118,15 +118,15 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	 * EntityCRUD APIで制御オプションが許可されたロールか
 	 * @return 許可されたロールの場合true
 	 */
-	public boolean isPermitEntityCrudApiOptionRole() {
+	public boolean isPermitRolesToSpecifyOptions() {
 		AuthContext auth = AuthContext.getCurrentContext();
 		if (auth.getUser().isAdmin()) {
 			// adminなら許可
 			return true;
 		}
 
-		if (permitEntityCrudApiOptionsRoles != null && !permitEntityCrudApiOptionsRoles.isEmpty()) {
-			for (String role : permitEntityCrudApiOptionsRoles) {
+		if (permitRolesToSpecifyOptions != null && !permitRolesToSpecifyOptions.isEmpty()) {
+			for (String role : permitRolesToSpecifyOptions) {
 				if (auth.userInRole(role)) {
 					//指定ロールなら許可
 					return true;
@@ -162,7 +162,7 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 
 		throwSearchResultLimitExceededException = config.getValue("throwSearchResultLimitExceededException", Boolean.TYPE, Boolean.FALSE);
 
-		permitEntityCrudApiOptionsRoles = config.getValues("permitEntityCrudApiOptionsRoles");
+		permitRolesToSpecifyOptions = config.getValues("permitRolesToSpecifyOptions");
 	}
 
 	public static String getFixedPath() {

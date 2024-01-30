@@ -146,7 +146,7 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 	private void setInsertOptionWithParam(RequestContext request, InsertOption option) {
 		EntityWebApiService service = ServiceRegistry.getRegistry().getService(EntityWebApiService.class);
 
-		if (service.isPermitEntityCrudApiOptionRole()) {
+		if (service.isPermitRolesToSpecifyOptions()) {
 			String withValidation = request.getParam(PARAM_POST_WITH_VALIDATION);
 			if (StringUtil.isNotBlank(withValidation)) {
 				option.setWithValidation(Boolean.parseBoolean(withValidation));
@@ -263,7 +263,7 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 	private void setImportOptionWithParam(RequestContext request, EntityCsvImportOption option) {
 		EntityWebApiService service = ServiceRegistry.getRegistry().getService(EntityWebApiService.class);
 
-		if (service.isPermitEntityCrudApiOptionRole()) {
+		if (service.isPermitRolesToSpecifyOptions()) {
 			String truncate = request.getParam(PARAM_UPLOAD_TRUNCATE);
 			if (StringUtil.isNotBlank(truncate)) {
 				option.setTruncate(Boolean.parseBoolean(truncate));
