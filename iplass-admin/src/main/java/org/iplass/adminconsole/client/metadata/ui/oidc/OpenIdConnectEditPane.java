@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright 2022 DENTSU SOKEN INC. All Rights Reserved.
  */
 
 package org.iplass.adminconsole.client.metadata.ui.oidc;

@@ -2633,7 +2633,7 @@ ${tenant.displayName}に「${user.name}」様のユーザー登録が行われ�
 =====================================================================
 
 送信元：株式会社 電通国際情報サービス
-COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESERVED.</content>
+COPYRIGHT 2011 DENTSU SOKEN INC. ALL RIGHTS RESERVED.</content>
         </message>
         <htmlMessage>
             <content></content>
@@ -2671,7 +2671,7 @@ tenant(api.tenant.Tenant)、user(api.auth.User)、newPassword(String)</descripti
 =====================================================================
 
 送信元：株式会社 電通国際情報サービス
-COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESERVED.</content>
+COPYRIGHT 2011 DENTSU SOKEN INC. ALL RIGHTS RESERVED.</content>
         </message>
         <htmlMessage>
             <content></content>
@@ -2707,7 +2707,7 @@ tenant(api.tenant.Tenant)、user(api.auth.User)、newPassword(String)</descripti
 =====================================================================
 
 送信元：株式会社 電通国際情報サービス
-COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESERVED.</content>
+COPYRIGHT 2011 DENTSU SOKEN INC. ALL RIGHTS RESERVED.</content>
         </message>
         <htmlMessage>
             <content></content>

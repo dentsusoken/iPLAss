@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright 2013 DENTSU SOKEN INC. All Rights Reserved.
  */
 
 package org.iplass.mtp.batch;
