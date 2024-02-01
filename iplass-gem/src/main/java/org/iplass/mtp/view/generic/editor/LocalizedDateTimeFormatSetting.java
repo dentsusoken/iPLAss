@@ -28,7 +28,7 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 
 /**
  * 日付・時間型のフォーマットの多言語設定のプロパティ
- * @author ISID Shojima
+ * @author DENTSU SOKEN Shojima
  */
 public class LocalizedDateTimeFormatSetting implements Refrectable {
 

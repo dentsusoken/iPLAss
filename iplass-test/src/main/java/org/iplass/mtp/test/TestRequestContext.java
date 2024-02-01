@@ -432,14 +432,14 @@ public class TestRequestContext implements RequestContext {
 			Session s = ss.getSession(create);
 			if (s != null) {
 				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-				session = (SimpleSessionContext) s.getAttribute("jp.co.isid.mtp.sessionContext." + tenantId);
+				session = (SimpleSessionContext) s.getAttribute("com.dentsusoken.mtp.sessionContext." + tenantId);
 
 				if (session == null) {
 					synchronized (s.getSessionMutexObject()) {
-						session = (SimpleSessionContext) s.getAttribute("jp.co.isid.mtp.sessionContext." + tenantId);
+						session = (SimpleSessionContext) s.getAttribute("com.dentsusoken.mtp.sessionContext." + tenantId);
 						if (session == null) {
 							session = new SimpleSessionContext();
-							s.setAttribute("jp.co.isid.mtp.sessionContext." + tenantId, session);
+							s.setAttribute("com.dentsusoken.mtp.sessionContext." + tenantId, session);
 						}
 					}
 				}

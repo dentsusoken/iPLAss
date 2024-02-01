@@ -25,7 +25,7 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 
 /**
 * 日付・時間型のフォーマットの多言語設定情報のプロパティのメタデータ
-* @author ISID Shojima
+* @author DENTSU SOKEN Shojima
 */
 public class MetaLocalizedDateTimeFormatSetting implements MetaData {
 

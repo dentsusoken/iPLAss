@@ -26,7 +26,7 @@ import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
 
 /**
 * 日付・時間型のフォーマットのプロパティのメタデータ
-* @author ISID Shojima
+* @author DENTSU SOKEN Shojima
 */
 public class MetaDateTimeFormatSetting implements MetaData {
 
