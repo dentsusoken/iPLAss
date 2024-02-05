@@ -113,7 +113,7 @@ ext {
 		'com.github.librepdf:openpdf': '1.3.33',
 
 		// FIXME version is miliestone
-		'org.apache.commons:commons-fileupload2-jakarta': '2.0.0-M1',
+		'org.apache.commons:commons-fileupload2-jakarta-servlet5': '2.0.0-M2',
 		'io.jsonwebtoken:jjwt-api': '0.11.5',
 		'io.jsonwebtoken:jjwt-impl': '0.11.5',
 		'io.jsonwebtoken:jjwt-jackson': '0.11.5',
