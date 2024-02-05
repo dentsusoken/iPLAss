@@ -1,10 +1,13 @@
 ext {
-	gwtVersion = "2.10.0"
+	//gwtVersion = "2.10.0"
 }
 
 configurations {
 	wjRuntime
-	
+
+	gwt
+	gwtSdk
+
 	compileOnly.extendsFrom(jeecoreapis)
 	compileOnly.extendsFrom(jeewebapis)
 	runtimeOnly.extendsFrom(wjRuntime)
@@ -27,6 +30,10 @@ dependencies {
 		include 'smartgwt/**'
 	}
 
-	runtimeOnly "org.gwtproject:gwt-servlet:${gwtVersion}"
+	// gwt.gwtVersion を指定すれば設定される依存関係を個別設定
+	gwtSdk sharedLib('org.gwtproject:gwt-dev')
+	gwtSdk sharedLib('org.gwtproject:gwt-user')
+	runtimeOnly sharedLib('org.gwtproject:gwt-servlet')
+	gwt sharedLib('org.gwtproject:gwt-codeserver')
 
 }

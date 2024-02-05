@@ -57,7 +57,7 @@ def buildSrcGwtTrans = layout.buildDirectory.dir('src/gwt-trans')
 
 gwt {
 	src = files(buildSrcGwt)
-	gwtVersion = this.gwtVersion
+	//gwtVersion = this.gwtVersion
 	modules 'org.iplass.adminconsole.AdminConsole'
 	minHeapSize = '512M'
 	maxHeapSize = '2048M'
