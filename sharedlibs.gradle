@@ -79,7 +79,15 @@ ext {
 		'org.bouncycastle:bcmail-jdk15on': '1.69',
 		
 		'org.jgroups:jgroups': '4.2.16.Final',
-		
+
+		// gwt
+		// https://github.com/jiakuan/gwt-gradle-plugin
+		// https://github.com/jiakuan/gwt-gradle-plugin/blob/main/src/main/java/org/docstr/gradle/plugins/gwt/GwtBasePlugin.java
+		'org.gwtproject:gwt-dev': '2.10.0',
+		'org.gwtproject:gwt-user': '2.10.0',
+		'org.gwtproject:gwt-servlet': '2.10.0',
+		'org.gwtproject:gwt-codeserver': '2.10.0',
+
 		'org.infinispan:infinispan-core': '9.4.24.Final',
 		
 		'io.lettuce:lettuce-core': '6.2.5.RELEASE',
