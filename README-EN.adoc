@@ -46,7 +46,7 @@ example when using  maven：
  </dependency>
 
 NOTE: JakartaEE8 (Servlet/JSP/JSTL/EL/JAX-RS/BeanValidation/CommonAnnotations/JavaMail/JAXB/JAF) Runtime environment is required.
-Please refer to the build.gradle file from https://github.com/ISID/iplass-skeleton[skeleton-proect].
+Please refer to the build.gradle file from https://github.com/dentsusoken/iplass-skeleton[skeleton-proect].
 
 The modules are explained and listed below.
 

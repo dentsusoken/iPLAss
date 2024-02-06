@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 DENTSU SOKEN INC. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -28,7 +28,7 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 
 /**
  * 日付・時間型のフォーマットの多言語設定のプロパティ
- * @author ISID Shojima
+ * @author DENTSU SOKEN Shojima
  */
 public class LocalizedDateTimeFormatSetting implements Refrectable {
 

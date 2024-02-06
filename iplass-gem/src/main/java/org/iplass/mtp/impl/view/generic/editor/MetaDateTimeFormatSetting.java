@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 DENTSU SOKEN INC. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -26,7 +26,7 @@ import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
 
 /**
 * 日付・時間型のフォーマットのプロパティのメタデータ
-* @author ISID Shojima
+* @author DENTSU SOKEN Shojima
 */
 public class MetaDateTimeFormatSetting implements MetaData {
 

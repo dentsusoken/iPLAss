@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2016 DENTSU SOKEN INC. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -432,14 +432,14 @@ public class TestRequestContext implements RequestContext {
 			Session s = ss.getSession(create);
 			if (s != null) {
 				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-				session = (SimpleSessionContext) s.getAttribute("jp.co.isid.mtp.sessionContext." + tenantId);
+				session = (SimpleSessionContext) s.getAttribute("org.iplass.mtp.sessionContext." + tenantId);
 
 				if (session == null) {
 					synchronized (s.getSessionMutexObject()) {
-						session = (SimpleSessionContext) s.getAttribute("jp.co.isid.mtp.sessionContext." + tenantId);
+						session = (SimpleSessionContext) s.getAttribute("org.iplass.mtp.sessionContext." + tenantId);
 						if (session == null) {
 							session = new SimpleSessionContext();
-							s.setAttribute("jp.co.isid.mtp.sessionContext." + tenantId, session);
+							s.setAttribute("org.iplass.mtp.sessionContext." + tenantId, session);
 						}
 					}
 				}
