@@ -109,6 +109,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private String restXmlParameterName = null;
 
 	/** このWebAPIで処理されるCommandを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
+	private Boolean isPrivilaged;
 	private boolean isPrivileged = false;
 
 	/** このWebAPIの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
@@ -251,14 +252,17 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	/** @deprecated {@link #isPrivileged()} を使用してください。 */
 	@Deprecated
-	public boolean isPrivilaged() {
-		return isPrivileged;
+	public Boolean isPrivilaged() {
+		return isPrivilaged;
 	}
 
 	/** @deprecated {@link #setPrivileged(boolean)} を使用してください。 */
 	@Deprecated
-	public void setPrivilaged(boolean isPrivileged) {
-		this.isPrivileged = isPrivileged;
+	public void setPrivilaged(Boolean isPrivileged) {
+		if(isPrivileged) {
+			this.isPrivileged = isPrivileged;
+		}
+		this.isPrivilaged = null;
 	}
 
 	public boolean isPrivileged() {
