@@ -77,6 +77,11 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	protected EntityDefinitionManager definitionManager;
 	protected UtilityClassDefinitionManager ucdm;
 
+	/** Load時に最新データを強制的に取得するか（下位互換対応） */
+	@Deprecated
+	private final boolean loadLatestVersionedEntity
+		= Boolean.parseBoolean(System.getProperty("mtp.entity.update.targetSpecific.loadLatestVersionedEntity"));
+
 	/** 変換時に発生したエラー情報 */
 	private List<ValidateError> errors;
 
@@ -108,6 +113,15 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		this.entityManager = entityLoader;
 		this.definitionManager = definitionLoader;
 		this.ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+	}
+
+	/**
+	 * Load時に最新データを強制的に取得するかを返します。（下位互換対応）
+	 * @return Load時に最新データを強制的に取得するか
+	 */
+	@Deprecated
+	protected boolean isLoadLatestVersionedEntity() {
+		return loadLatestVersionedEntity;
 	}
 
 	protected Entity newEntity() {

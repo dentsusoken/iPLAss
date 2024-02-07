@@ -128,6 +128,11 @@ public class EntityManagerImpl implements EntityManager {
 
 	private static Logger logger = LoggerFactory.getLogger(EntityManagerImpl.class);
 
+	/** Load時に最新データを強制的に取得するか（下位互換対応） */
+	@Deprecated
+	private final boolean loadLatestVersionedEntity
+		= Boolean.parseBoolean(System.getProperty("mtp.entity.update.targetSpecific.loadLatestVersionedEntity"));
+
 	private EntityService ehService;
 	private SessionService sessionService;
 	private FulltextSearchService fulltextSearchService;
@@ -708,7 +713,10 @@ public class EntityManagerImpl implements EntityManager {
 					if (entity.getVersion() == null) {
 						throw new EntityRuntimeException("target version not specified:" + entity);
 					}
-					lop.setVersioned(true);
+					// 明示的に最新バージョンを取得しない場合は、保存時データをロード(下位互換対応)
+					if (!loadLatestVersionedEntity) {
+						lop.setVersioned(true);
+					}
 					currentStore = load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), lop);
 				} else if (option.getTargetVersion() == TargetVersion.NEW) {
 					if (entity.getVersion() != null) {
