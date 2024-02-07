@@ -224,7 +224,12 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 	/** @deprecated {@link #isPrivileged()} を使用してください。 */
 	@Deprecated
-	public Boolean isPrivilaged() {
+	public boolean isPrivilaged() {
+		return isPrivileged;
+	}
+
+	@Deprecated
+	public Boolean getPrivilaged() {
 		return isPrivilaged;
 	}
 

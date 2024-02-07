@@ -252,7 +252,12 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	/** @deprecated {@link #isPrivileged()} を使用してください。 */
 	@Deprecated
-	public Boolean isPrivilaged() {
+	public boolean isPrivilaged() {
+		return isPrivileged;
+	}
+
+	@Deprecated
+	public Boolean getPrivilaged() {
 		return isPrivilaged;
 	}
 
