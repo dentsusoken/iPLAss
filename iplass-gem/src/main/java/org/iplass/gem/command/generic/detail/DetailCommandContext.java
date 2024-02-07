@@ -497,6 +497,10 @@ public class DetailCommandContext extends RegistrationCommandContext
 	@Override
 	public boolean isLoadVersioned() {
 		if (isVersioned()) {
+			// バージョンロードが無効かをチェック（下位互換対応）
+			if (isLoadLatestVersionedEntity()) {
+				return false;
+			}
 			// 検索時に全バージョンを検索しているかを確認
 			String searchCond = getSearchCond();
 			if (StringUtil.isNotEmpty(searchCond)) {

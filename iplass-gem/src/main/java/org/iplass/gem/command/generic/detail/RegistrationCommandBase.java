@@ -268,11 +268,17 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			if (context.isNewVersion()) {
 				targetVersion = TargetVersion.NEW;
 			} else {
-				// バージョン指定か
-				if (context.isLoadVersioned()) {
+				// 強制的に最新バージョンを指定するかをチェック（下位互換対応）
+				if (context.isLoadLatestVersionedEntity()) {
+					// 旧型式のSPECIFICを指定
 					targetVersion = TargetVersion.SPECIFIC;
 				} else {
-					targetVersion = TargetVersion.CURRENT_VALID;
+					// バージョン指定か
+					if (context.isLoadVersioned()) {
+						targetVersion = TargetVersion.SPECIFIC;
+					} else {
+						targetVersion = TargetVersion.CURRENT_VALID;
+					}
 				}
 			}
 		} else {
