@@ -1,5 +1,6 @@
+// https://github.com/jiakuan/gwt-gradle-plugin/issues/75
 plugins {
-  id "org.docstr.gwt" version "1.1.22"
+  id "org.docstr.gwt" version "1.1.30"
 }
 
 apply from: 'libs.gradle'
@@ -52,17 +53,18 @@ processResources {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
+def buildSrcGwt = layout.buildDirectory.dir('src/gwt')
+def buildSrcGwtTrans = layout.buildDirectory.dir('src/gwt-trans')
+
 gwt {
-	src = files("${buildDir}/src/gwt")
+	src = files(buildSrcGwt)
 	gwtVersion = this.gwtVersion
 	modules 'org.iplass.adminconsole.AdminConsole'
 	minHeapSize = '512M'
 	maxHeapSize = '2048M'
 	logLevel = 'INFO'
 	sourceLevel = 'auto'
-	compiler {
-		strict = true;
-	}
+	compiler.strict = true
 }
 
 jar {
@@ -71,7 +73,7 @@ jar {
 	includeEmptyDirs = false;
 
 	// META-INF配下にgwtコンパイル結果をコピー
-	into('META-INF/resources/admin/mtpadmin') { from("${buildDir}/gwt/out/mtpadmin") }
+	into('META-INF/resources/admin/mtpadmin') { from(layout.buildDirectory.dir('gwt/out/mtpadmin')) }
 
 }
 
@@ -87,8 +89,8 @@ task processGwtResources(type: Sync) {
 		exclude 'META-INF/**'
 		exclude 'gwtupload/server/**'
 	}
-	from ("${buildDir}/src/gwt-trans")
-	into "${buildDir}/src/gwt"
+	from buildSrcGwtTrans
+	into buildSrcGwt
 }
 tasks.compileGwt.dependsOn processGwtResources
 
@@ -495,20 +497,20 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/treeview/TreeViewItem.java'
 	}
 
-	into "${buildDir}/src/gwt-trans/org/iplass/adminconsole/trans/org/iplass"
+	into "${file(buildSrcGwtTrans)}/org/iplass/adminconsole/trans/org/iplass"
 }
 
 task copyStaticResources(type: Sync) {
 	dependsOn('processResources')
 
 	//静的リソースをコピー
-	from 'build/resources/main/'
+	from layout.buildDirectory.dir('resources/main')
 	//jar内のwebjarsフォルダ配下をコピー
 	from (configurations.wjRuntime.collect {it.isDirectory() ? it : zipTree(it)}) {
 		exclude 'META-INF/maven/'
 		exclude 'META-INF/MANIFEST.MF'
 	}
-	into 'build/tmp/staticresources'
+	into layout.buildDirectory.dir('tmp/staticresources')
 	includeEmptyDirs = false
 }
 
@@ -518,7 +520,7 @@ task archiveStaticResources(type: Zip) {
 	archiveAppendix = 'staticresources'
 
 	//META-INF/resourcesをZIP圧縮
-	from ('build/tmp/staticresources/META-INF/resources') {
+	from (layout.buildDirectory.dir('tmp/staticresources/META-INF/resources')) {
 		exclude 'jsp'
 	}
 }

@@ -1,17 +1,6 @@
-buildscript {
-	repositories {
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
-	dependencies {
-		classpath "com.github.node-gradle:gradle-node-plugin:2.2.4"
-	}
-}
-
 // sassのコンパイルにgradle-node-pluginを使用
 plugins {
-	id "com.github.node-gradle.node" version "2.2.4"
+  id("com.github.node-gradle.node") version "7.0.1"
 }
 
 apply from: 'libs.gradle'
@@ -32,8 +21,8 @@ node {
 	//npm version
 	npmVersion = '6.7.0'
 
-	workDir = file("${project.buildDir}/nodejs")
-	npmWorkDir = file("${project.buildDir}/npm")
+	workDir = layout.buildDirectory.dir('nodejs')
+	npmWorkDir = layout.buildDirectory.dir('npm')
 }
 
 task buildSass(type: NpmTask) {
@@ -55,13 +44,13 @@ task copyStaticResources(type: Sync) {
 	dependsOn('processResources')
 
 	//静的リソースをコピー
-	from 'build/resources/main/'
+	from layout.buildDirectory.dir('resources/main/')
 	//jar内のwebjarsフォルダ配下をコピー
 	from (configurations.wjRuntime.collect {it.isDirectory() ? it : zipTree(it)}) {
 		exclude 'META-INF/maven/'
 		exclude 'META-INF/MANIFEST.MF'
 	}
-	into 'build/tmp/staticresources'
+	into layout.buildDirectory.dir('tmp/staticresources')
 	includeEmptyDirs = false
 }
 
@@ -71,7 +60,7 @@ task archiveStaticResources(type: Zip) {
 	archiveAppendix = 'staticresources'
 
 	//META-INF/resourcesをZIP圧縮
-	from ('build/tmp/staticresources/META-INF/resources') {
+	from (layout.buildDirectory.dir('tmp/staticresources/META-INF/resources')) {
 		exclude 'jsp'
 	}
 }
@@ -97,10 +86,10 @@ task compileJsp(dependsOn: ["compileJava",':iplass-core:jar',':iplass-web:jar'])
 				pathelement(path: sourceSets.main.output.classesDirs.asPath)
 			}
 		}
-		def outDir = "${buildDir}/deploy/gem/classes"
+
 		ant."${taskName}"(
 				uriRoot: "src/main/resources",
-				outputDir: outDir,
+				outputDir: file(layout.buildDirectory.dir('deploy/gem/classes')),
 				javaencoding: "utf-8",
 				compilersourcevm: javaVersion,
 				compilertargetvm: javaVersion,
