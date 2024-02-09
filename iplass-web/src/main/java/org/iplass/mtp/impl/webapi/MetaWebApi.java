@@ -35,6 +35,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Variant;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.mtp.command.CommandRuntimeException;
@@ -75,7 +77,6 @@ import org.iplass.mtp.webapi.definition.WebApiParamMapDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<WebApiDefinition> {
 	private static final long serialVersionUID = 2590900624234333139L;
 
@@ -109,8 +110,9 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private String restXmlParameterName = null;
 
 	/** このWebAPIで処理されるCommandを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
-	private Boolean isPrivilaged;
-	private boolean isPrivileged = false;
+	@XmlElement
+	private Boolean privilaged;
+	private boolean privileged = false;
 
 	/** このWebAPIの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
 	private boolean isPublicWebApi;
@@ -252,30 +254,30 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	/** @deprecated {@link #isPrivileged()} を使用してください。 */
 	@Deprecated
+	@XmlTransient
 	public boolean isPrivilaged() {
-		return isPrivileged;
-	}
-
-	@Deprecated
-	public Boolean getPrivilaged() {
-		return isPrivilaged;
+		return isPrivileged();
 	}
 
 	/** @deprecated {@link #setPrivileged(boolean)} を使用してください。 */
 	@Deprecated
-	public void setPrivilaged(Boolean isPrivileged) {
-		if(isPrivileged) {
-			this.isPrivileged = isPrivileged;
-		}
-		this.isPrivilaged = null;
+	public void setPrivilaged(boolean isPrivilaged) {
+		setPrivileged(isPrivilaged);
 	}
 
 	public boolean isPrivileged() {
-		return isPrivileged;
+		if (privilaged != null) {
+			//古い属性の方が有効
+			return privilaged;
+		}
+		//新しい属性の方が有効
+		return privileged;
 	}
-
+ 
 	public void setPrivileged(boolean isPrivileged) {
-		this.isPrivileged = isPrivileged;
+		//保存時に古い属性をnullにセットするようにする
+		this.privileged = isPrivileged;
+		privilaged = null;
 	}
 
 	public boolean isPublicWebApi() {
@@ -815,7 +817,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setCacheControlType(cacheControlType);
 		definition.setCacheControlMaxAge(cacheControlMaxAge);
 
-		definition.setPrivileged(isPrivileged);
+		definition.setPrivileged(isPrivileged());
 		definition.setPublicWebApi(isPublicWebApi);
 		definition.setCheckXRequestedWithHeader(isCheckXRequestedWithHeader);
 
@@ -869,7 +871,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			results = null;
 		}
 
-		isPrivileged = definition.isPrivileged();
+		privileged = definition.isPrivileged();
 		isPublicWebApi = definition.isPublicWebApi();
 		isCheckXRequestedWithHeader = definition.isCheckXRequestedWithHeader();
 
