@@ -13,8 +13,10 @@ allprojects {
 
 	group "org.iplass"
 
-	sourceCompatibility = javaVersion
-	targetCompatibility = javaVersion
+	java {
+		sourceCompatibility = javaVersion
+		targetCompatibility = javaVersion
+	}
 
 	repositories {
 		mavenCentral()
@@ -70,11 +72,14 @@ subprojects { subproject ->
 		}
 	}
 
-	task allDeps(type: DependencyReportTask) {}
+	def buildJavadocSourceLangDir = layout.buildDirectory.dir("docSrc/${javadocLang}")
+	def buildJavadocLangDir = java.docsDir.dir("javadoc/${javadocLang}")
 
+	task allDeps(type: DependencyReportTask) {}
+	
 	task copyJavadocJava(type: Copy) {
 		from sourceSets['main'].allJava
-		into "${buildDir}/docSrc/${javadocLang}"
+		into buildJavadocSourceLangDir
 
 		filteringCharset 'UTF-8'
 		filter { String line ->
@@ -86,7 +91,7 @@ subprojects { subproject ->
 
 	task processJavadocJava(dependsOn: copyJavadocJava) {
 		doLast {
-			def docSrcs = fileTree("${buildDir}/docSrc/${javadocLang}")
+			def docSrcs = fileTree(buildJavadocSourceLangDir)
 			docSrcs.each {
 				def reader = Files.newBufferedReader(Paths.get(it.getCanonicalPath()), StandardCharsets.UTF_8)
 				def template = new groovy.text.StreamingTemplateEngine().createTemplate(reader)
@@ -105,8 +110,8 @@ subprojects { subproject ->
 	}
 
 	task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
-		source "${buildDir}/docSrc/${javadocLang}"
-		destinationDir file("${docsDir}/javadoc/${javadocLang}")
+		source buildJavadocSourceLangDir
+		destinationDir file(buildJavadocLangDir)
 
 		options.encoding = 'UTF-8'
 		options.docEncoding = 'UTF-8'
@@ -145,12 +150,15 @@ javadoc {
 	failOnError = false
 }
 
+def rootBuildJavadocSourceLangDir = layout.buildDirectory.dir("docSrc/${javadocLang}")
+def rootBuildJavadocLangDir = java.docsDir.dir("javadoc/${javadocLang}").get().getAsFile()
+
 task copyJavadocJava(type: Copy) {
 	from project(':iplass-core').sourceSets['main'].allJava
 	from project(':iplass-web').sourceSets['main'].allJava
 	from project(':iplass-gem').sourceSets['main'].allJava
 	from project(':iplass-test').sourceSets['main'].allJava
-	into "${buildDir}/docSrc/${javadocLang}"
+	into rootBuildJavadocSourceLangDir
 	exclude 'META-INF/**'
 	exclude 'org/iplass/adminconsole/**'
 	exclude 'org/iplass/gem/**'
@@ -166,7 +174,7 @@ task copyJavadocJava(type: Copy) {
 
 task processJavadocJava(dependsOn: copyJavadocJava) {
 	doLast {
-		def docSrcs = fileTree("${buildDir}/docSrc/${javadocLang}")
+		def docSrcs = fileTree(rootBuildJavadocSourceLangDir)
 		docSrcs.each {
 			def reader = Files.newBufferedReader(Paths.get(it.getCanonicalPath()), StandardCharsets.UTF_8)
 			def template = new groovy.text.StreamingTemplateEngine().createTemplate(reader)
@@ -185,10 +193,9 @@ task processJavadocJava(dependsOn: copyJavadocJava) {
 }
 
 task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
-	source "${buildDir}/docSrc/${javadocLang}"
+	source rootBuildJavadocSourceLangDir
 	exclude('**/impl/**')
-
-	destinationDir file("${docsDir}/javadoc/${javadocLang}")
+	destinationDir file(rootBuildJavadocLangDir)
 
 	classpath += project(':iplass-core').sourceSets['main'].compileClasspath
 	classpath += project(':iplass-web').sourceSets['main'].compileClasspath
@@ -247,10 +254,11 @@ if (project.hasProperty('releaseBranch')) {
 		]
 
 		git {
-			requireBranch = project.property('releaseBranch')
-			pushToRemote = 'origin'
-			pushToBranchPrefix = ''
-			commitVersionFileOnly = false
+			requireBranch.set(project.property('releaseBranch'))
+			pushToRemote.set('origin')
+			pushToBranchPrefix.set('')
+			commitVersionFileOnly.set(false)
+			signTag.set(false)
 		}
 	}
 }
