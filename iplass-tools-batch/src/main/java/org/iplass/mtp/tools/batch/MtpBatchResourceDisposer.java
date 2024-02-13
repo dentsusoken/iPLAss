@@ -21,7 +21,6 @@ package org.iplass.mtp.tools.batch;
 
 import java.util.Optional;
 
-import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,9 +74,7 @@ public class MtpBatchResourceDisposer {
 	 */
 	public static void disposeResource() {
 		LOG.info("Destroy all services.");
-		// 全サービス破棄。全サービス破棄に先立ち、TenantContextService 破棄する
-		// （TenantContext で管理している TenantResource 実装クラスが Service クラスに依存している可能性がある為）
-		ServiceRegistry.getRegistry().getService(TenantContextService.class).destroy();
+		// 全サービス破棄。
 		ServiceRegistry.getRegistry().destroyAllService();
 	}
 }
