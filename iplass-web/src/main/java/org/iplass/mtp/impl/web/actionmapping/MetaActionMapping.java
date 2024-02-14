@@ -32,6 +32,8 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
@@ -99,9 +101,11 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 	private boolean isParts;
 
 	/** このActionMappingで処理されるCommand,Templateを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
-	private boolean isPrivilaged = false;
+	@XmlElement
+	private Boolean privilaged;
+	private boolean privileged = false;
 
-	/** このActionの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilagedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
+	/** このActionの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
 	private boolean isPublicAction;
 
 	/** このActionMappingが呼び出されたときに実行するCommand。未指定可（Commandは実行せずテンプレートを表示）。 */
@@ -221,12 +225,32 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		this.isPublicAction = isPublicAction;
 	}
 
+	/** @deprecated {@link #isPrivileged()} を使用してください。 */
+	@Deprecated
+	@XmlTransient
 	public boolean isPrivilaged() {
-		return isPrivilaged;
+		return isPrivileged();
 	}
 
+	/** @deprecated {@link #setPrivileged(boolean)} を使用してください。 */
+	@Deprecated
 	public void setPrivilaged(boolean isPrivilaged) {
-		this.isPrivilaged = isPrivilaged;
+		setPrivileged(isPrivilaged);
+	}
+
+	public boolean isPrivileged() {
+		if (privilaged != null) {
+			//古い属性の方が有効
+			return privilaged;
+		}
+		//新しい属性の方が有効
+		return privileged;
+	}
+ 
+	public void setPrivileged(boolean isPrivileged) {
+		//保存時に古い属性をnullにセットするようにする
+		this.privileged = isPrivileged;
+		privilaged = null;
 	}
 
 	public ParamMap[] getParamMap() {
@@ -299,7 +323,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		clientCacheMaxAge = definition.getClientCacheMaxAge();
 
 		isParts = definition.isParts();
-		isPrivilaged = definition.isPrivilaged();
+		privileged = definition.isPrivileged();
 		isPublicAction = definition.isPublicAction();
 
 		if (definition.getCommandConfig() != null) {
@@ -383,7 +407,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		definition.setClientCacheType(clientCacheType);
 		definition.setClientCacheMaxAge(clientCacheMaxAge);
 		definition.setParts(isParts);
-		definition.setPrivilaged(isPrivilaged);
+		definition.setPrivileged(isPrivileged());
 		definition.setPublicAction(isPublicAction);
 
 		if (command != null) {

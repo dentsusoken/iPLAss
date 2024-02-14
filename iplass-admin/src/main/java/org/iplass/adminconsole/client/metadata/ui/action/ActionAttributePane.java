@@ -59,7 +59,7 @@ public class ActionAttributePane extends HLayout {
 	/** 部品（直接呼び出し不可） */
 	private CheckboxItem partsField;
 	/** 特権実行（セキュリティ制約を受けない） */
-	private CheckboxItem privilagedField;
+	private CheckboxItem privilegedField;
 	/** 公開Action */
 	private CheckboxItem publicActionField;
 	/** sessionにて同期を行うか否か */
@@ -121,9 +121,9 @@ public class ActionAttributePane extends HLayout {
 		partsField.setShowTitle(false);
 		partsField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_errDirectAccess")));
 
-		privilagedField = new CheckboxItem("privilaged", "privilege execute");
-		privilagedField.setShowTitle(false);
-		privilagedField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_privilExecution")));
+		privilegedField = new CheckboxItem("privileged", "privilege execute");
+		privilegedField.setShowTitle(false);
+		privilegedField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_privilExecution")));
 
 		publicActionField = new CheckboxItem("publicActionField", "public action");
 		publicActionField.setShowTitle(false);
@@ -137,7 +137,7 @@ public class ActionAttributePane extends HLayout {
 		needTrustedAuthenticateField.setShowTitle(false);
 		needTrustedAuthenticateField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_needTrustedAuthenticate")));
 
-		accessForm.setItems(partsField, privilagedField, publicActionField, synchronizeOnSessionField, needTrustedAuthenticateField);
+		accessForm.setItems(partsField, privilegedField, publicActionField, synchronizeOnSessionField, needTrustedAuthenticateField);
 
 
 		tokenForm = new DynamicForm();
@@ -249,7 +249,7 @@ public class ActionAttributePane extends HLayout {
 		}
 
 		partsField.setValue(definition.isParts());
-		privilagedField.setValue(definition.isPrivilaged());
+		privilegedField.setValue(definition.isPrivileged());
 		publicActionField.setValue(definition.isPublicAction());
 		synchronizeOnSessionField.setValue(definition.isSynchronizeOnSession());
 		needTrustedAuthenticateField.setValue(definition.isNeedTrustedAuthenticate());
@@ -308,7 +308,7 @@ public class ActionAttributePane extends HLayout {
 		definition.setAllowMethod(methodType);
 
 		definition.setParts(SmartGWTUtil.getBooleanValue(partsField));
-		definition.setPrivilaged(SmartGWTUtil.getBooleanValue(privilagedField));
+		definition.setPrivileged(SmartGWTUtil.getBooleanValue(privilegedField));
 		definition.setPublicAction(SmartGWTUtil.getBooleanValue(publicActionField));
 		definition.setSynchronizeOnSession(SmartGWTUtil.getBooleanValue(synchronizeOnSessionField));
 		definition.setNeedTrustedAuthenticate(SmartGWTUtil.getBooleanValue(needTrustedAuthenticateField));

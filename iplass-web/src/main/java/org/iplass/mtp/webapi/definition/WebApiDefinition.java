@@ -55,9 +55,9 @@ public class WebApiDefinition implements Definition {
 	private WebApiParamMapDefinition[] webApiParamMap;
 
 	/** このWebApiで処理されるCommandを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
-	private boolean isPrivilaged;
+	private boolean isPrivileged;
 
-	/** このWebApiの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilagedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
+	/** このWebApiの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
 	private boolean isPublicWebApi;
 
 	/** XMLHttpRequestがセットされていることを確認するか。 */
@@ -420,7 +420,7 @@ public class WebApiDefinition implements Definition {
 
 	/**
 	 * このWebApiの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定します。
-	 * isPrivilagedとの違いは、Entityの操作などにおいては、セキュリティ制約を受けます。
+	 * isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受けます。
 	 * デフォルトはfalseです。
 	 *
 	 * @param isPublicWebApi
@@ -432,17 +432,37 @@ public class WebApiDefinition implements Definition {
 	/**
 	 *
 	 * @return
+	 * @deprecated {@link #isPrivileged()} を使用してください。
 	 */
+	@Deprecated
 	public boolean isPrivilaged() {
-		return isPrivilaged;
+		return isPrivileged;
 	}
 
 	/**
 	 *
-	 * @param isPrivilaged
+	 * @param isPrivileged
+	 * @deprecated {@link #setPrivileged(boolean)} を使用してください。 
 	 */
-	public void setPrivilaged(boolean isPrivilaged) {
-		this.isPrivilaged = isPrivilaged;
+	@Deprecated
+	public void setPrivilaged(boolean isPrivileged) {
+		this.isPrivileged = isPrivileged;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public boolean isPrivileged() {
+		return isPrivileged;
+	}
+
+	/**
+	 *
+	 * @param isPrivileged
+	 */
+	public void setPrivileged(boolean isPrivileged) {
+		this.isPrivileged = isPrivileged;
 	}
 
 	/**

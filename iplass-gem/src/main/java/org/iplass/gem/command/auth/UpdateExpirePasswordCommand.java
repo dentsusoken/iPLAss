@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 @ActionMapping(name=UpdateExpirePasswordCommand.ACTION_UPDATE_EXP_PASSWORD,
 		allowMethod=HttpMethodType.POST,
 		clientCacheType=ClientCacheType.NO_CACHE,
-		privilaged=true,
+		privileged=true,
 		command=@CommandConfig("cmd.checkLoginToken=true"),
 		result={
 			@Result(status="SUCCESS", type=Type.REDIRECT, value="mtp.auth.redirectPath"),

@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 	accepts=RequestType.REST_FORM,
 	methods=MethodType.POST,
 	checkXRequestedWithHeader=false,
-	privilaged=true,
+	privileged=true,
 	state=StateType.STATELESS,
 	responseType="application/json"
 )

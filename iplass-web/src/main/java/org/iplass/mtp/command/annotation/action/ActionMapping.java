@@ -111,12 +111,23 @@ public @interface ActionMapping {
 	 * publicActionとの違いは、Entity権限など、すべての権限が許可された状態で実行されます。
 	 * 
 	 * @return
+	 * @deprecated {@link #privileged()} を使用してください。
 	 */
+	@Deprecated
 	boolean privilaged() default false;
+	
+	/**
+	 * このActionMappingで処理されるCommand,Templateを特権（セキュリティ制約を受けない）にて処理するかどうかを設定します。
+	 * デフォルトはfalseです。
+	 * publicActionとの違いは、Entity権限など、すべての権限が許可された状態で実行されます。
+	 * 
+	 * @return
+	 */
+	boolean privileged() default false;
 
 	/**
 	 * このActionの呼び出しをAction権限設定によらず呼び出し可能にする場合は、trueを設定します。
-	 * isPrivilagedとの違いは、Entityの操作などAction権限以外の権限がチェックされる状況においては、
+	 * isPrivilegedとの違いは、Entityの操作などAction権限以外の権限がチェックされる状況においては、
 	 * セキュリティ制約を受けます。
 	 * デフォルトはfalseです。
 	 * 

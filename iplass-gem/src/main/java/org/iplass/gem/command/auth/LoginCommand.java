@@ -57,13 +57,13 @@ import org.slf4j.LoggerFactory;
 @ActionMappings({
 	@ActionMapping(name=LoginCommand.ACTION_VIEW_LOGIN,
 			clientCacheType=ClientCacheType.NO_CACHE,
-			privilaged=true,
+			privileged=true,
 			command={},
 			result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_LOGIN)),
 	@ActionMapping(name=LoginCommand.ACTION_LOGIN,
 			allowMethod=HttpMethodType.POST,
 			clientCacheType=ClientCacheType.NO_CACHE,
-			privilaged=true,
+			privileged=true,
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.REDIRECT, value="mtp.auth.redirectPath"),
 				@Result(status=LoginCommand.CMD_EXEC_EXPIRE, type=Type.TEMPLATE, value=Constants.TEMPLATE_PASSWORD_EXPIRE),
