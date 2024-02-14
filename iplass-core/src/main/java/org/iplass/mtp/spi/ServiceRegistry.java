@@ -202,18 +202,23 @@ public class ServiceRegistry {
 	@SuppressWarnings("unchecked")
 	public <T extends Service> T getService(String serviceName, boolean createIfNone) {
 		ServiceEntry se = services.get(serviceName);
-		if (se == null && createIfNone) {
-			// ServiceEntry が存在せず、インスタンスを新規に作成する（true == createIfNone）場合
-			try {
-				se = createService(serviceName, new ArrayList<String>());
-			} catch (ServiceConfigrationException e) {
-				throw e;
-			} catch (RuntimeException e) {
-				throw new ServiceConfigrationException("can not initialize service:" + serviceName, e);
-			}
+
+		if (null != se) {
+			return (T) se.service;
 		}
 
-		return (T) se.service;
+		if (!createIfNone) {
+			return null;
+		}
+
+		try {
+			se = createService(serviceName, new ArrayList<String>());
+			return (T) se.service;
+		} catch (ServiceConfigrationException e) {
+			throw e;
+		} catch (RuntimeException e) {
+			throw new ServiceConfigrationException("can not initialize service:" + serviceName, e);
+		}
 	}
 
 	/**
