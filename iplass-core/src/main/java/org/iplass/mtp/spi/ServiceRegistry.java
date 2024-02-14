@@ -160,7 +160,7 @@ public class ServiceRegistry {
 	 * @return サービスインスタンス
 	 */
 	public <T extends Service> T getService(Class<T> serviceClass) {
-		return this.<T> getService(serviceClass.getName());
+		return this.<T> getService(serviceClass.getName(), true);
 	}
 
 	/**
@@ -169,19 +169,8 @@ public class ServiceRegistry {
 	 * @param serviceName サービス名
 	 * @return サービスインスタンス
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Service> T getService(String serviceName) {
-		ServiceEntry se = services.get(serviceName);
-		if (se == null) {
-			try {
-				se = createService(serviceName, new ArrayList<String>());
-			} catch(ServiceConfigrationException e) {
-				throw e;
-			} catch(RuntimeException e) {
-				throw new ServiceConfigrationException("can not initialize service:" + serviceName, e);
-			}
-		}
-		return (T) se.service;
+		return this.<T>getService(serviceName, true);
 	}
 
 	/**
@@ -212,13 +201,19 @@ public class ServiceRegistry {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Service> T getService(String serviceName, boolean createIfNone) {
-		if (createIfNone) {
-			// 新規に作成する必要がある場合は、既存のメソッドを実行する
-			return getService(serviceName);
+		ServiceEntry se = services.get(serviceName);
+		if (se == null && createIfNone) {
+			// ServiceEntry が存在せず、インスタンスを新規に作成する（true == createIfNone）場合
+			try {
+				se = createService(serviceName, new ArrayList<String>());
+			} catch (ServiceConfigrationException e) {
+				throw e;
+			} catch (RuntimeException e) {
+				throw new ServiceConfigrationException("can not initialize service:" + serviceName, e);
+			}
 		}
-		// 新規に作成しない場合は、サービスエントリのみ確認する
-		ServiceEntry entry = services.get(serviceName);
-		return entry == null ? null : (T) entry.service;
+
+		return (T) se.service;
 	}
 
 	/**
