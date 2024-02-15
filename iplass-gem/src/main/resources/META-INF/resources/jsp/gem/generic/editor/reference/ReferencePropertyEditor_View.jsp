@@ -283,6 +283,7 @@
 
 	//refSectionIndexがnullではなければ、参照セクション内でネストされています。
 	Integer refSectionIndex = (Integer)request.getAttribute(Constants.REF_SECTION_INDEX);
+	String _refSectionIndex = refSectionIndex != null ? refSectionIndex.toString() : "";
 
 	//Property情報取得
 	boolean isMappedby = pd.getMappedBy() != null;
@@ -530,7 +531,7 @@ $(function() {
 						+ ", '" + StringUtil.escapeJavaScript(viewName) + "'"
 						+ ", '" + StringUtil.escapeJavaScript(propName) + "'"
 						+ ", 'detail'"
-						+ ", '" + refSectionIndex + "'"
+						+ ", '" + _refSectionIndex + "'"
 						+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
 						+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 						+ ")";
@@ -555,7 +556,7 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(viewName) + "'"
 					+ ", '" + StringUtil.escapeJavaScript(propName) + "'"
 					+ ", 'detail'"
-					+ ", '" + refSectionIndex + "'"
+					+ ", '" + _refSectionIndex + "'"
 					+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
 					+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 					+ ")";
@@ -653,7 +654,7 @@ $(function() {
  data-viewAction="<c:out value="<%=viewAction%>"/>"
  data-refDefName="<c:out value="<%=refDefName%>"/>"
  data-refEdit="<c:out value="<%=refEdit%>"/>"
- data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-refSectionIndex="<%=_refSectionIndex%>"
  data-updateRefAction="<c:out value="<%=updateRefAction%>"/>"
  data-reloadUrl="<c:out value="<%=reloadUrl%>"/>"
  data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
@@ -756,7 +757,7 @@ $(function() {
 				+ ", '" + StringUtil.escapeJavaScript(viewName) + "'"
 				+ ", '" + StringUtil.escapeJavaScript(propName) + "'"
 				+ ", 'detail'"
-				+ ", '" + refSectionIndex + "'"
+				+ ", '" + _refSectionIndex + "'"
 				+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
 				+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 				+ ")";
