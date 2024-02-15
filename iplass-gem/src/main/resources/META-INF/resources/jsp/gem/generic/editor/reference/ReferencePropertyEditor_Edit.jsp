@@ -471,6 +471,7 @@
 
 	//refSectionIndexがnullではなければ、参照セクション内でネストされています。
 	Integer refSectionIndex = (Integer)request.getAttribute(Constants.REF_SECTION_INDEX);
+	String _refSectionIndex = refSectionIndex != null ? refSectionIndex.toString() : "";
 
 	//Action定義取得
 	String _viewName = editor.getViewName() != null ? editor.getViewName() : "";
@@ -572,7 +573,7 @@ function <%=toggleInsBtnFunc%>() {
 					+ ", '" + viewName + "'"
 					+ ", '" + propName + "'"
 					+ ", '" + viewType + "'"
-					+ ", '" + refSectionIndex + "'"
+					+ ", '" + _refSectionIndex + "'"
 					+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
 					+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'" 
 					+ ")";
@@ -680,7 +681,7 @@ $(function() {
 		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
 		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
-		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
+		, refSectionIndex: "<%=_refSectionIndex%>"
 	}
 	var $selBtn = $(":button[id='<%=StringUtil.escapeJavaScript(selBtnId) %>']");
 	for (key in params) {
@@ -739,7 +740,7 @@ $(function() {
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
-		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
+		, refSectionIndex: "<%=_refSectionIndex%>"
 		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
 		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, refEdit: <%=refEdit %>
@@ -1061,7 +1062,7 @@ function <%=toggleInsBtnFunc%>() {
 					+ ", '" + viewName + "'"
 					+ ", '" + propName + "'"
 					+ ", '" + viewType + "'"
-					+ ", '" + refSectionIndex + "'"
+					+ ", '" + _refSectionIndex + "'"
 					+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
 					+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'" 
 					+ ")";
@@ -1141,7 +1142,7 @@ function <%=toggleInsBtnFunc%>() {
  data-refEdit="<c:out value="<%=refEdit%>"/>"
  data-selCallbackKey="<c:out value="<%=selCallbackKey%>"/>"
  data-delCallbackKey="<c:out value="<%=delCallbackKey%>"/>"
- data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-refSectionIndex="<%=_refSectionIndex%>"
  data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
  data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
  />
@@ -1203,7 +1204,7 @@ $(function() {
 		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
-		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
+		, refSectionIndex: "<%=_refSectionIndex%>"
 		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
 		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, refEdit: <%=refEdit %>
@@ -1353,7 +1354,7 @@ $(function() {
  data-multiplicity="<%=multiplicity%>"
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
- data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-refSectionIndex="<%=_refSectionIndex%>"
  data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
  data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
 >
@@ -1392,7 +1393,7 @@ $(function() {
 				+ ", '" + viewName + "'"
 				+ ", '" + propName + "'"
 				+ ", '" + viewType + "'"
-				+ ", '" + refSectionIndex + "'"
+				+ ", '" + _refSectionIndex + "'"
 				+ ", '" + StringUtil.escapeJavaScript(rootOid) + "'"
 				+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'" 
 				+ ")";
@@ -1452,7 +1453,7 @@ $(function() {
  data-multiplicity="<%=multiplicity%>"
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
- data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-refSectionIndex="<%=_refSectionIndex%>"
  data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
  data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
 >

@@ -62,8 +62,9 @@
 	if (viewType == null) viewType = "";
 
 	String refSectionIndex = request.getParameter(Constants.REF_SECTION_INDEX);
-	refSectionIndex = StringUtil.escapeHtml(refSectionIndex);
-	if (refSectionIndex == null) refSectionIndex = "";
+	if (StringUtil.isEmpty(refSectionIndex)) {
+		refSectionIndex = "";
+	}
 
 	//コマンドから
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
