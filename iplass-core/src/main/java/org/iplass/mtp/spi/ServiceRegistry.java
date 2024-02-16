@@ -205,6 +205,7 @@ public class ServiceRegistry {
 		if (se == null) {
 
 			if (!createIfNone) {
+				logger.debug("Service: {} not created. Because the parameter 'createIfNone' is false.", serviceName);
 				return null;
 			}
 
