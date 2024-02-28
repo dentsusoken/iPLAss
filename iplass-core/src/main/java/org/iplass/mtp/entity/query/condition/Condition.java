@@ -22,6 +22,7 @@ package org.iplass.mtp.entity.query.condition;
 
 import org.iplass.mtp.entity.query.ASTNode;
 import org.iplass.mtp.entity.query.QueryException;
+import org.iplass.mtp.impl.parser.ParseContext;
 import org.iplass.mtp.impl.parser.ParseException;
 import org.iplass.mtp.impl.query.QueryServiceHolder;
 import org.iplass.mtp.impl.query.condition.expr.OrSyntax;
@@ -37,6 +38,11 @@ public abstract class Condition implements ASTNode {
 	private static final long serialVersionUID = 7777497275666525341L;
 
 	public static Condition newCondition(String condition) {
+		ParseContext str = new ParseContext(condition);
+		str.consumeChars(ParseContext.WHITE_SPACES);
+		if (str.isEnd()) {
+			return null;
+		}
 		try {
 			return QueryServiceHolder.getInstance().getQueryParser().parse(condition, OrSyntax.class);
 		} catch (ParseException e) {
