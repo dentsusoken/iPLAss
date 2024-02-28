@@ -23,11 +23,11 @@ package org.iplass.mtp.impl.query.prepared;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import org.apache.poi.util.StringUtil;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.impl.core.ExecuteContext;
-import org.iplass.mtp.impl.query.prepared.PreparedQueryBinding;
 import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
@@ -96,7 +96,11 @@ public class PreparedQueryTemplate {
 	 * @return
 	 */
 	public Condition condition(PreparedQueryBinding binding) {
-		return Condition.newCondition(doBind(binding));
+		String templateResult = doBind(binding);
+		if (StringUtil.isBlank(templateResult)) {
+			return null;
+		}
+		return Condition.newCondition(templateResult);
 	}
 	
 	/**
