@@ -44,8 +44,8 @@ ext {
 		'org.apache.lucene:lucene-highlighter': '8.11.2',
 		
 		//tika(依存関係多いので明示的に指定する)
-		'org.apache.tika:tika-core': '1.26',
-		'org.apache.tika:tika-parsers': '1.26',
+		'org.apache.tika:tika-core': '1.28.5',
+		'org.apache.tika:tika-parsers': '1.28.5',
 		'org.apache.commons:commons-compress': '1.21',
 		'org.apache.pdfbox:jempbox': '1.8.16',
 		'org.apache.pdfbox:pdfbox': '2.0.24',
