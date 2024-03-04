@@ -39,6 +39,8 @@ dependencies {
 		transitive = false
 	}
 	runtimeOnly sharedLib('org.ccil.cowan.tagsoup:tagsoup')
+	// tika の依存関係。org.tallison:metadata-extractor は fork プロジェクトなので、バージョンアップ時にグループが変わらないか注意
+	runtimeOnly sharedLib('org.tallison:metadata-extractor')
 
 	runtimeOnly sharedLib('org.apache.poi:poi')
 	runtimeOnly sharedLib('org.apache.poi:poi-scratchpad')
