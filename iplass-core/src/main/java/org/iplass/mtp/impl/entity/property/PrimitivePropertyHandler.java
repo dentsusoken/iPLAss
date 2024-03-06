@@ -52,7 +52,7 @@ public class PrimitivePropertyHandler extends PropertyHandler {
 
 	@Override
 	public Object[] newArrayInstance(int size, EntityContext ec) {
-		return (Object[]) Array.newInstance(getMetaData().getType().storeType(), size);
+		return (Object[]) Array.newInstance(getMetaData().getType().getEnumType().getJavaType(), size);
 	}
 
 }
