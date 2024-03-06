@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -25,18 +25,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
-import jakarta.servlet.http.HttpSession;
-
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.impl.web.WebRequestContext;
 import org.iplass.mtp.impl.web.actionmapping.VariableParameterValueMap;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpSession;
+
 public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
-	
+
 	private RequestContext requestContext;
 	private boolean isMultipart;
 	private boolean needCheckParamMap;
@@ -44,7 +44,8 @@ public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
 	public JspTemplateHttpServletRequest(HttpServletRequest request, RequestContext requestContext) {
 		super(request);
 		this.requestContext = requestContext;
-		isMultipart = ServletFileUpload.isMultipartContent(request);
+		// TODO util クラスを作った方が良いかも
+		isMultipart = JakartaServletFileUpload.isMultipartContent(request);
 		if (requestContext instanceof WebRequestContext) {
 			if (((WebRequestContext) requestContext).getValueMap() instanceof VariableParameterValueMap) {
 				needCheckParamMap = ((VariableParameterValueMap) ((WebRequestContext) requestContext).getValueMap()).hasParamMapDefs();
@@ -60,10 +61,10 @@ public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
 				value = requestContext.getParam(name);
 			}
 		}
-		
+
 		return value;
 	}
-	
+
 	@Override
 	public String[] getParameterValues(String name) {
 		String[] values = super.getParameterValues(name);
@@ -74,7 +75,7 @@ public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
 		}
 		return values;
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Map<String, String[]> getParameterMap() {
@@ -99,7 +100,7 @@ public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
 			for (Map.Entry<String, String[]> e: superMap.entrySet()) {
 				retMap.put(e.getKey(), e.getValue());
 			}
-			
+
 			return retMap;
 		} else {
 			if (!needCheckParamMap) {
@@ -148,7 +149,7 @@ public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
 		if (session == null) {
 			return null;
 		}
-		
+
 		if (requestContext != null) {
 			return new JspTemplateHttpSession(session, requestContext.getSession());
 		} else {
