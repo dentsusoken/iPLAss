@@ -51,6 +51,8 @@ ext {
 		'org.apache.pdfbox:pdfbox': '2.0.24',
 		'org.apache.pdfbox:pdfbox-tools': '2.0.24',
 		'org.ccil.cowan.tagsoup:tagsoup': '1.2.1',
+		// tika の依存関係。pptx 解析に必要。org.tallison:metadata-extractor は fork プロジェクトなので、バージョンアップ時にグループが変わらないか注意
+		'org.tallison:metadata-extractor': '2.17.1.0',
 		
 		'org.apache.poi:poi': '5.2.3',
 		'org.apache.poi:poi-scratchpad': '5.2.3',
