@@ -83,10 +83,10 @@ ext {
 		// gwt
 		// https://github.com/jiakuan/gwt-gradle-plugin
 		// https://github.com/jiakuan/gwt-gradle-plugin/blob/main/src/main/java/org/docstr/gradle/plugins/gwt/GwtBasePlugin.java
-		'org.gwtproject:gwt-dev': '2.10.0',
-		'org.gwtproject:gwt-user': '2.10.0',
-		'org.gwtproject:gwt-servlet': '2.10.0',
-		'org.gwtproject:gwt-codeserver': '2.10.0',
+		'org.gwtproject:gwt-dev': '2.11.0',
+		'org.gwtproject:gwt-user': '2.11.0',
+		'org.gwtproject:gwt-servlet-jakarta': '2.11.0',
+		'org.gwtproject:gwt-codeserver': '2.11.0',
 
 		'org.infinispan:infinispan-core': '9.4.24.Final',
 		
