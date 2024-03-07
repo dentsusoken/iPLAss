@@ -33,7 +33,7 @@ dependencies {
 	// gwt.gwtVersion を指定すれば設定される依存関係を個別設定
 	gwtSdk sharedLib('org.gwtproject:gwt-dev')
 	gwtSdk sharedLib('org.gwtproject:gwt-user')
-	runtimeOnly sharedLib('org.gwtproject:gwt-servlet')
+	runtimeOnly sharedLib('org.gwtproject:gwt-servlet-jakarta')
 	gwt sharedLib('org.gwtproject:gwt-codeserver')
 
 }
