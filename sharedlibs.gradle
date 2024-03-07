@@ -173,8 +173,7 @@ dependencies {
 	implementation platform(sharedLib('org.codehaus.groovy:groovy-bom'))
 	implementation platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
 	
-	
-	//provided JavaEE(JakartaEE)8 apis
+	//provided JavaEE(JakartaEE)9 apis
 	//java mail
 	jeecoreapis sharedLib('jakarta.mail:jakarta.mail-api')
 	//Bean validation
@@ -188,7 +187,7 @@ dependencies {
 	jeecoreapis sharedLib('jakarta.xml.bind:jakarta.xml.bind-api')
 	
 	
-	//provided JavaEE(JakartaEE)8 web apis
+	//provided JavaEE(JakartaEE)9 web apis
 	//Servlet
 	jeewebapis sharedLib('jakarta.servlet:jakarta.servlet-api')
 	//JSP
@@ -206,8 +205,12 @@ dependencies {
 	//Common Annotations for the Java Platform
 	jeewebapis sharedLib('jakarta.annotation:jakarta.annotation-api')
 	
-	
-	//JavaEE(JakartaEE)8 runtime for tomcat9
+
+	//JavaEE(JakartaEE)9 runtime for tomcat10.0
+
+	// jackson management
+	jeeruntime4tomcat platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
+
 	//jstl runtime
 	jeeruntime4tomcat sharedLib('org.glassfish.web:jakarta.servlet.jsp.jstl')
 	//java mail runtime
@@ -223,7 +226,7 @@ dependencies {
 	jeeruntime4tomcat 'org.glassfish.jersey.media:jersey-media-json-jackson'
 	jeeruntime4tomcat 'org.glassfish.jersey.media:jersey-media-multipart'
 	jeeruntime4tomcat 'org.glassfish.jersey.inject:jersey-hk2'
-	jeeruntime4tomcat 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider'
+	jeeruntime4tomcat 'com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider'
 
 	//JAXB runtime for java11
 	jeeruntime4tomcat sharedLib('jakarta.xml.bind:jakarta.xml.bind-api')
