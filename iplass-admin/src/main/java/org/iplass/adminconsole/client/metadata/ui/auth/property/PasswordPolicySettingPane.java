@@ -274,7 +274,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 
 	@Override
 	public boolean validate() {
-		return form.validate();
+		return form.validate() && passwordGenerationForm.validate();
 	}
 
 	@Override
