@@ -873,22 +873,40 @@ public class CsvUploadService implements Service {
 				if (ed.getVersionControlType() != VersionControlType.NONE) {
 					// バージョン管理している
 					if (keyValueMap.containsKey(uniqueKeyValue)) {
-						execType = ExecType.UPDATE_NEW;
+						// 既にOIDは登録済の状態
+
+						// UniqueKeyで指定している可能性があるので登録済のOIDをセット
 						entity.setOid(keyValueMap.get(uniqueKeyValue));
+
+						if (entity.getVersion() != null) {
+							Query q = onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion());
+							int count = em.count(q);
+							if (count > 0) {
+								// 登録済バージョンが存在する場合は対象バージョンを更新
+								execType = ExecType.UPDATE_SPECIFIC;
+							} else {
+								// 指定バージョンデータがない場合はエラー
+								throw new ApplicationException(resourceString("impl.csv.CsvUploadService.alreadyDeleted"));
+							}
+						} else {
+							// バージョン未指定の場合は新しいバージョンとして追加
+							execType = ExecType.UPDATE_NEW;
+						}
 					} else {
 						if (entity.getVersion() != null) {
 							Query q = onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion());
 							int count = em.count(q);
 							if (count > 0) {
+								// 登録済バージョンが存在する場合は対象バージョンを更新
 								execType = ExecType.UPDATE_SPECIFIC;
 							} else {
 								SearchResult<Entity> searchResult
 									= em.searchEntity(noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue), new SearchOption().countTotal());
 								if (searchResult.getTotalCount() > 0) {
-									execType = ExecType.UPDATE_NEW;
-									//UniqueKeyで検索している可能性があるので登録済のOIDをセット
-									entity.setOid(searchResult.getFirst().getOid());
+									// 指定OIDデータが登録済で、指定バージョンデータがない場合はエラー
+									throw new ApplicationException(resourceString("impl.csv.CsvUploadService.alreadyDeleted"));
 								} else {
+									// 指定OID、バージョンが存在しないのでInsert
 									execType = ExecType.INSERT;
 								}
 							}
@@ -896,10 +914,12 @@ public class CsvUploadService implements Service {
 							SearchResult<Entity> searchResult
 								= em.searchEntity(noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue), new SearchOption().countTotal());
 							if (searchResult.getTotalCount() > 0) {
+								// バージョン未指定の場合は新しいバージョンとして追加
 								execType = ExecType.UPDATE_NEW;
 								//UniqueKeyで検索している可能性があるので登録済のOIDをセット
 								entity.setOid(searchResult.getFirst().getOid());
 							} else {
+								// 指定OIDデータが存在しないのでInsert
 								execType = ExecType.INSERT;
 							}
 						}
@@ -909,10 +929,12 @@ public class CsvUploadService implements Service {
 					SearchResult<Entity> searchResult
 						= em.searchEntity(noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue), new SearchOption().countTotal());
 					if (searchResult.getTotalCount() > 0) {
+						// 指定OIDデータが存在するので更新
 						execType = ExecType.UPDATE_VALID;
 						//UniqueKeyで検索している可能性があるので登録済のOIDをセット
 						entity.setOid(searchResult.getFirst().getOid());
 					} else {
+						// 指定OIDデータが存在しないのでInsert
 						execType = ExecType.INSERT;
 					}
 				}
