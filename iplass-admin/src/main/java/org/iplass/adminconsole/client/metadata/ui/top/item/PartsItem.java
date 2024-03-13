@@ -67,6 +67,9 @@ public abstract class PartsItem extends AbstractWindow {
 
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
+				//上位のControlにイベントを発生させない
+				event.cancel();
+
 				onOpen();
 			}
 		});
