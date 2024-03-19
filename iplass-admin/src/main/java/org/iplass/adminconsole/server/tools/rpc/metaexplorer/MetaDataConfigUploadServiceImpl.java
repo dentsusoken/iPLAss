@@ -35,10 +35,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.upload.AdminUploadAction;
+import org.iplass.adminconsole.server.base.io.upload.MultipartRequestParameter;
+import org.iplass.adminconsole.server.base.io.upload.UploadActionException;
 import org.iplass.adminconsole.server.base.io.upload.UploadResponseInfo;
 import org.iplass.adminconsole.server.base.io.upload.UploadRuntimeException;
 import org.iplass.adminconsole.server.base.io.upload.UploadUtil;
@@ -55,8 +56,6 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import gwtupload.server.exceptions.UploadActionException;
-
 @SuppressWarnings("serial")
 public class MetaDataConfigUploadServiceImpl extends AdminUploadAction {
 
@@ -67,7 +66,7 @@ public class MetaDataConfigUploadServiceImpl extends AdminUploadAction {
 	 */
 	@Override
 	public String executeAction(final HttpServletRequest request,
-			final List<FileItem> sessionFiles) throws UploadActionException {
+			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException {
 
 		final MetaDataConfigUploadResponseInfo result = new MetaDataConfigUploadResponseInfo();
 		final HashMap<String,Object> args = new HashMap<String,Object>();
@@ -76,7 +75,7 @@ public class MetaDataConfigUploadServiceImpl extends AdminUploadAction {
 			//リクエスト情報の取得
 			readRequest(request, sessionFiles, args);
 
-		    //リクエスト情報の検証
+			//リクエスト情報の検証
 			validateRequest(args);
 
 			//テナントIDの取得
@@ -126,21 +125,21 @@ public class MetaDataConfigUploadServiceImpl extends AdminUploadAction {
 		}
 
 		//ResultをJSON形式に変換
-	    try {
+		try {
 			return UploadUtil.toJsonResponse(result);
 		} catch (UploadRuntimeException e) {
 			throw new UploadActionException(e);
 		}
 	}
 
-	private void readRequest(final HttpServletRequest request, List<FileItem> sessionFiles, HashMap<String,Object> args) {
+	private void readRequest(final HttpServletRequest request, List<MultipartRequestParameter> sessionFiles, HashMap<String, Object> args) {
 
 		//リクエスト情報の取得
 		try {
-			for (FileItem item : sessionFiles) {
+			for (MultipartRequestParameter item : sessionFiles) {
 				if (item.isFormField()) {
-			    	//File以外のもの
-			        args.put(item.getFieldName(), UploadUtil.getValueAsString(item));
+					//File以外のもの
+					args.put(item.getFieldName(), UploadUtil.getValueAsString(item));
 				} else {
 					//Fileの場合、tempに書きだし
 					args.put(ConfigUploadProperty.UPLOAD_FILE_NAME, FilenameUtils.getName(item.getName()));
@@ -187,8 +186,8 @@ public class MetaDataConfigUploadServiceImpl extends AdminUploadAction {
 		SAXParserFactory f = SAXParserFactory.newInstance();
 		f.setNamespaceAware(true);
 		f.setValidating(false);
-	    f = new SecureSAXParserFactory(f);
-	    try {
+		f = new SecureSAXParserFactory(f);
+		try {
 			return new SAXSource(f.newSAXParser().getXMLReader(), new InputSource(is));
 		} catch (SAXException | ParserConfigurationException e) {
 			throw new JAXBException(e);

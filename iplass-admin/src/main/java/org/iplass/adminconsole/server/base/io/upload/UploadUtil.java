@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.TimeZone;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
@@ -47,7 +46,7 @@ public class UploadUtil {
 
 	private UploadUtil(){};
 
-	public static File writeFileToTemporary(final FileItem fileItem, final File contextTempDir) {
+	public static File writeFileToTemporary(final MultipartRequestParameter fileItem, final File contextTempDir) {
 
 		String fileName = FilenameUtils.getName(fileItem.getName());
 
@@ -66,9 +65,9 @@ public class UploadUtil {
 
 			//書き込み
 			try (
-				FileOutputStream fos = new FileOutputStream(tempFile);
-				InputStream is = fileItem.getInputStream();
-			) {
+					FileOutputStream fos = new FileOutputStream(tempFile);
+					InputStream is = fileItem.getInputStream();
+					) {
 				Streams.copy(is, fos, true);
 			}
 		} catch (IOException e) {
@@ -88,9 +87,10 @@ public class UploadUtil {
 		return tempDir;
 	}
 
-	public static String getValueAsString(final FileItem fileItem) {
+	public static String getValueAsString(final MultipartRequestParameter fileItem) {
 
 		try (InputStream is = fileItem.getInputStream()){
+			// TODO リテラル UTF-8
 			return Streams.asString(is, "UTF-8");
 		} catch (IOException e) {
 			throw new UploadRuntimeException(rs("upload.UploadUtil.errReadParam"), e);

@@ -36,7 +36,6 @@ import org.iplass.adminconsole.shared.tools.dto.langexplorer.OutputMode;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Hidden;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -47,8 +46,6 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
-
-import gwtupload.client.IUploadStatus.Status;
 
 /**
  * LangCsvファイルをアップロードするダイアログ
@@ -103,15 +100,12 @@ public class LangCsvUploadDialog extends AbstractWindow {
 			uploader.debugUploader("onStart");
 			startUpload();
 		});
-		uploader.addOnStatusChangedHandler((result) -> {
-			uploader.debugUploader("onStatusChanged");
-		});
 		uploader.addOnFinishUploadHandler((result) -> {
 			uploader.debugUploader("onFinish");
-			if (uploader.getStatus() == Status.SUCCESS) {
-				showResult(uploader.getMessage());
+			if (uploader.getLastUploadState().isSuccess()) {
+				showResult(uploader.getLastUploadState().getData());
 			} else {
-				errorUpload(uploader.getErrorMessage());
+				errorUpload(uploader.getLastUploadState().getErrorMessage());
 			}
 
 			//Hidden項目の削除
@@ -140,6 +134,7 @@ public class LangCsvUploadDialog extends AbstractWindow {
 		});
 		cancel = new IButton("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
@@ -194,19 +189,15 @@ public class LangCsvUploadDialog extends AbstractWindow {
 		messageTabSet.setTabTitleProgress();
 	}
 
-	private void showResult(String message) {
+	private void showResult(JSONValue message) {
 		showResponse(message);
 
 		disableComponent(false);
 		messageTabSet.setTabTitleNormal();
 	}
 
-	private void showResponse(String json) {
-		GWT.log("ImportEntity Response:" + json);
-		if (json == null) {
-			return;
-		}
-		JSONValue rootValue = JSONParser.parseStrict(json);
+	private void showResponse(JSONValue rootValue) {
+		GWT.log("ImportEntity Response:" + rootValue);
 		if (rootValue == null) {
 			return;
 		}
@@ -228,11 +219,11 @@ public class LangCsvUploadDialog extends AbstractWindow {
 		}
 	}
 	private String getStatusMessage(String status) {
-		if ("SUCCESS".equals(status)) {
+		if (UploadProperty.Status.SUCCESS.name().equals(status)) {
 			return getResourceString("importSuccessful");
-		} else if ("WARN".equals(status)) {
+		} else if (UploadProperty.Status.WARN.name().equals(status)) {
 			return getResourceString("importWarning");
-		} else if ("ERROR".equals(status)) {
+		} else if (UploadProperty.Status.ERROR.name().equals(status)) {
 			return getResourceString("importErr");
 		} else {
 			return getResourceString("couldNotRetImportResult");
@@ -258,7 +249,7 @@ public class LangCsvUploadDialog extends AbstractWindow {
 	}
 
 	private boolean isStatusSuccess(String status) {
-		return "SUCCESS".equals(status);
+		return UploadProperty.Status.SUCCESS.name().equals(status);
 	}
 	private String snipQuote(String value) {
 		if (value.startsWith("\"") && value.endsWith("\"")) {

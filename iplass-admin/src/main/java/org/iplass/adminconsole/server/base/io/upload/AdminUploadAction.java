@@ -20,77 +20,191 @@
 
 package org.iplass.adminconsole.server.base.io.upload;
 
-import static gwtupload.shared.UConsts.*;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.HashMap;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.iplass.adminconsole.server.base.service.AdminConsoleService;
+import org.iplass.adminconsole.shared.base.io.AdminUploadConstant;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.spi.ServiceRegistry;
-
-import gwtupload.server.AbstractUploadListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * gwt-uploadのUploadActionで解決できない問題を解決する。
+ * Adminファイルアップロード操作サーブレット
  *
- * <ul>
- * <li>
- * commons-fileupload の ServletFileUpload インスタンスに、最大ファイル数（fileCountMax）を設定する。
- * </li>
- * </ul>
+ * <p>
+ * ファイルアップロードのマルチパートリクエストを受け付けるサーブレット。
+ * 本クラスを継承したクラスは、	{@link #executeAction(HttpServletRequest, List)} を実装し、JSON文字列を返却する。
+ * </p>
  *
+ * <p>
+ * 本サーブレットのレスポンスは <code>application/json</code> で返却する。
+ * 処理が正常終了した場合、正常時レスポンスを返却する。例外シーケンスに入った場合は、異常終了時レスポンスを返却する。
+ * </p>
  *
+ * <p>
+ * 正常時レスポンスイメージ
+ * <pre>
+ * {
+ *   "isSuccess": true,
+ *   "data": アプリ定義JSON
+ * }
+ * <pre>
+ * <p>
+ *
+ * <p>
+ * 異常終了時レスポンスイメージ
+ * <pre>
+ * {
+ *   "isSuccess": false,
+ *   "data": { "errorMessage": "エラーメッセージ" }
+ * }
+ * </pre>
+ * </p>
+ *
+ * <p>
+ * NOTE: ライブラリ gwtupload を利用していたが、利用しない形式に変更
+ * </p>
+ *
+ * @see org.iplass.adminconsole.shared.base.io.AdminUploadConstant
  * @author SEKIGUCHI Naoya
  */
-public abstract class AdminUploadAction extends UploadActionWithoutSession {
-
+public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
+	/** serialVersionUID */
 	private static final long serialVersionUID = -5553465242497700877L;
 
-	/** 最大パラメータ(ファイル）数 */
-	protected long maxParameterCount;
-
+	/** ロガー */
+	private Logger logger = LoggerFactory.getLogger(AdminUploadAction.class);
+	/** contextTempDir */
 	private File contextTempDir;
-
-	private AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
+	/** マルチパートリクエストの最大パラメータ数 */
+	private long maxParameterCount;
+	/** ファイルアップロードを許容する最大サイズ */
+	private long maxFileSize;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 
+		contextTempDir = (File) config.getServletContext().getAttribute("javax.servlet.context.tempdir");
+
 		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
 		// マルチパートリクエストの最大パラメータ数を設定する。
 		maxParameterCount = webFront.getMaxMultipartParameterCount();
 
-		contextTempDir = (File)config.getServletContext().getAttribute("javax.servlet.context.tempdir");
-
 		//サイズ制限についてパラメータで指定されていない場合、Serviceの設定値をセット
-		if (getInitParameter("maxSize") == null) {
-			maxSize = acs.getMaxUploadFileSize();
-		}
-		if (getInitParameter("maxFileSize") == null) {
-			maxFileSize = acs.getMaxUploadFileSize();
+		AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
+
+		// initParameter で設定されていない場合、AdminConsoleService の値を設定する
+		String maxSizeString = getInitParameter("maxSize");
+		maxSize = null == maxSizeString ? acs.getMaxUploadFileSize() : maxSize;
+
+		String maxFileSizeString = getInitParameter("maxFileSize");
+		maxFileSize = null == maxFileSizeString ? acs.getMaxUploadFileSize() : Long.valueOf(maxFileSizeString);
+
+		// parameterParser の設定
+		configureParameterParser(getParameterParser());
+	}
+
+	/**
+	 * 個別のファイルアップロード処理
+	 *
+	 * @param request HttpServletRequest
+	 * @param parameterItem リクエストパラメータ
+	 * @return アプリ実行結果JSON文字列
+	 * @throws UploadActionException アップロード操作例外
+	 */
+	abstract public String executeAction(final HttpServletRequest request, final List<MultipartRequestParameter> parameterItem) throws UploadActionException;
+
+	@Override
+	protected final void doMultipartPost(HttpServletRequest req, HttpServletResponse resp, List<MultipartRequestParameter> files) {
+		HttpSession session = req.getSession(false);
+		String sessionId = null != session ? session.getId() : null;
+		String logPrefix = "ADMIN UPLOAD (" + getClass().getSimpleName() + ", sessionId = " + sessionId + ")";
+		try {
+			logger.info("{} START.", logPrefix);
+			// アップロードされたファイル情報のログ出力
+			files.stream().filter(f -> !f.isFormField())
+			.forEach(f -> logger.info("{} FILE INFO. file = {}, content-type = {}, size = {}.", logPrefix, f.getName(), f.getContentType(), f.getSize()));
+
+			String resultJson = executeAction(req, files);
+
+			writeResponse(resp, resultJson, HttpServletResponse.SC_OK);
+
+			logger.info("{} FINISH.", logPrefix);
+
+		} catch (Exception e) {
+			logger.error("{} ERROR.", logPrefix, e);
+			// json = {"errorMessage": "エラーメッセージ"}
+			String errorResultJson = "{" + jsonKeyString(AdminUploadConstant.ResponseKey.ERROR_MESSAGE, e.getMessage()) + "}";
+			writeResponse(resp, errorResultJson, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	/**
-	 * @return contextTempDir
+	 * レスポンス書き込み
+	 *
+	 * @param resp HttpServletResponse
+	 * @param resultJson 実行結果JSON文字列
+	 * @param status HttpStatusコード
 	 */
-	protected File getContextTempDir() {
-		return contextTempDir;
+	private void writeResponse(HttpServletResponse resp, String resultJson, int status) {
+		resp.setStatus(status);
+		resp.addHeader("Cache-Control", "no-cache");
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
+		boolean isSuccess = HttpServletResponse.SC_OK == status;
+		// json = { "isSuccess": booleanValue, "response": resultJson }
+		// isSuccess の booleanValue は 成功している場合：true, 失敗している場合：false
+		String json = "{" + jsonKeyValue(AdminUploadConstant.ResponseKey.IS_SUCCESS, isSuccess) + ","
+				+ jsonKeyValue(AdminUploadConstant.ResponseKey.DATA, resultJson) + "}";
+		try (PrintWriter writer = resp.getWriter()) {
+			writer.write(json);
+			writer.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
+	/**
+	 * JSON文字列（キー、文字列）を作成する
+	 *
+	 * @param k キー
+	 * @param s 文字列
+	 * @return JSON文字列
+	 */
+	private String jsonKeyString(String k, String s) {
+		// "k": "s" を返却
+		return "\"" + k + "\":\"" + s + "\"";
+	}
+
+	/**
+	 * JSON文字列（キー、オブジェクト）を作成する
+	 *
+	 * @param k キー
+	 * @param o オブジェクト
+	 * @return JSON文字列
+	 */
+	private String jsonKeyValue(String k, Object o) {
+		// "k": o を返却
+		return "\"" + k + "\":" + o;
+	}
+
+	// FIXME このメソッドはユーティリティ
 	protected final byte[] convertFileToByte(File file) {
 		byte[] bytes = null;
 		FileInputStream is = null;
@@ -98,7 +212,7 @@ public abstract class AdminUploadAction extends UploadActionWithoutSession {
 		try {
 			is = new FileInputStream(file);
 			channel = is.getChannel();
-			ByteBuffer buffer = ByteBuffer.allocate((int)channel.size());
+			ByteBuffer buffer = ByteBuffer.allocate((int) channel.size());
 			channel.read(buffer);
 			buffer.clear();
 			bytes = new byte[buffer.capacity()];
@@ -125,43 +239,28 @@ public abstract class AdminUploadAction extends UploadActionWithoutSession {
 		return bytes;
 	}
 
-	@Override
-	protected FileItemFactory getFileItemFactory(long requestSize) {
-		return new AdminFileItemFactory();
-	}
-
-	@Override
-	protected ServletFileUpload getServletFileUpload(FileItemFactory factory, AbstractUploadListener listener) {
-		ServletFileUpload uploader = super.getServletFileUpload(factory, listener);
-		// EDIT - fileCountMax を設定する
-		uploader.setFileCountMax(maxParameterCount);
-
-		return uploader;
+	/**
+	 * @return contextTempDir
+	 */
+	protected File getContextTempDir() {
+		return contextTempDir;
 	}
 
 	/**
-	 * <p>FileItem生成用クラス</p>
-	 *
-	 * <p>
-	 * 標準の gwtupload.server.UploadServlet#DefaultFileItemFactory では、
-	 * 無条件でfieldNameにカウントが付いてしまうため、対応。
-	 * </p>
+	 * パラメーターパーサーを設定する
+	 * @param <T> MultipartRequestParameterParser派生クラス
+	 * @param parameterParser インスタンス
+	 * @see #createParameterParser()
 	 */
-	public static class AdminFileItemFactory extends DiskFileItemFactory {
-		private HashMap<String, Integer> map = new HashMap<String, Integer>();
+	protected <T extends MultipartRequestParameterParser> void configureParameterParser(T parameterParser) {
+		// スーパークラスで生成しているインスタンスの為、CommonsFileuploadMultipartRequestParameterParser にキャスト
+		CommonsFileuploadMultipartRequestParameterParser parser = (CommonsFileuploadMultipartRequestParameterParser) parameterParser;
 
-		@Override
-		public FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) {
-			Integer cont = map.get(fieldName) != null ? (map.get(fieldName) + 1) : 0;
-			map.put(fieldName, cont);
+		parser.setSizeMax(maxSize);
+		parser.setFileSizeMax(maxFileSize);
+		parser.setFileCountMax(maxParameterCount);
 
-			// 複数の場合のみ、後ろにCountを付加
-			if (cont > 0 || fieldName.contains(MULTI_SUFFIX)) {
-				fieldName = fieldName.replace(MULTI_SUFFIX, "") + "-" + cont;
-			}
-
-			return super.createItem(fieldName, contentType, isFormField, fileName);
-		}
+		// TODO 現状では設定していない
+		parser.setTemporaryDirectory(contextTempDir);
 	}
-
 }

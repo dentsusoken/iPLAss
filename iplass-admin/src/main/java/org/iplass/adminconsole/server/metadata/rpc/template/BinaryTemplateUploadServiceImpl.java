@@ -29,10 +29,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.upload.AdminUploadAction;
+import org.iplass.adminconsole.server.base.io.upload.MultipartRequestParameter;
+import org.iplass.adminconsole.server.base.io.upload.UploadActionException;
 import org.iplass.adminconsole.server.base.io.upload.UploadResponseInfo;
 import org.iplass.adminconsole.server.base.io.upload.UploadRuntimeException;
 import org.iplass.adminconsole.server.base.io.upload.UploadUtil;
@@ -53,8 +54,6 @@ import org.iplass.mtp.web.template.definition.TemplateDefinitionModifyResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gwtupload.server.exceptions.UploadActionException;
-
 public class BinaryTemplateUploadServiceImpl extends AdminUploadAction {
 
 	private static final long serialVersionUID = -7027772304952943415L;
@@ -66,7 +65,7 @@ public class BinaryTemplateUploadServiceImpl extends AdminUploadAction {
 	 */
 	@Override
 	public String executeAction(final HttpServletRequest request,
-			final List<FileItem> sessionFiles) throws UploadActionException, MetaVersionCheckException {
+			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException, MetaVersionCheckException {
 
 		final BinaryTemplateUploadResponseInfo result = new BinaryTemplateUploadResponseInfo();
 		final HashMap<String,Object> args = new HashMap<String,Object>();
@@ -74,7 +73,7 @@ public class BinaryTemplateUploadServiceImpl extends AdminUploadAction {
 			//リクエスト情報の取得
 			readRequest(request, sessionFiles, args);
 
-		    //リクエスト情報の検証
+			//リクエスト情報の検証
 			validateRequest(args);
 
 			//テナントIDの取得
@@ -131,23 +130,23 @@ public class BinaryTemplateUploadServiceImpl extends AdminUploadAction {
 		}
 
 		//ResultをJSON形式に変換
-	    try {
+		try {
 			return UploadUtil.toJsonResponse(result);
 		} catch (UploadRuntimeException e) {
 			throw new UploadActionException(e);
 		}
 	}
 
-	private void readRequest(final HttpServletRequest request, List<FileItem> sessionFiles, HashMap<String,Object> args) {
+	private void readRequest(final HttpServletRequest request, List<MultipartRequestParameter> sessionFiles, HashMap<String, Object> args) {
 
 		//リクエスト情報の取得
 		try {
 
 			Map<String, LocaleInfo> localeMap = new LinkedHashMap<String, LocaleInfo>();
 
-			for (FileItem item : sessionFiles) {
+			for (MultipartRequestParameter item : sessionFiles) {
 				if (item.isFormField()) {
-			    	//File以外のもの
+					//File以外のもの
 					String[] names = splitLocaleFieldName(item.getFieldName());
 					String fieldName = names[0];
 					if (names[1] != null) {
@@ -166,7 +165,7 @@ public class BinaryTemplateUploadServiceImpl extends AdminUploadAction {
 					} else {
 						//通常データ
 						String strValue = UploadUtil.getValueAsString(item);
-				        args.put(item.getFieldName(), strValue);
+						args.put(item.getFieldName(), strValue);
 					}
 
 				} else {
@@ -221,9 +220,9 @@ public class BinaryTemplateUploadServiceImpl extends AdminUploadAction {
 		if (args.get(BinaryTemplateUploadProperty.DEF_NAME) == null) {
 			throw new UploadRuntimeException(resourceString("canNotGetUpdateTarget"));
 		}
-//		if (args.get(BinaryTemplateUploadProperty.UPLOAD_FILE) == null) {
-//			throw new UploadRuntimeException(getRS("canNotGetImportFile"));
-//		}
+		//		if (args.get(BinaryTemplateUploadProperty.UPLOAD_FILE) == null) {
+		//			throw new UploadRuntimeException(getRS("canNotGetImportFile"));
+		//		}
 	}
 
 	private String[] splitLocaleFieldName(String fieldName) {

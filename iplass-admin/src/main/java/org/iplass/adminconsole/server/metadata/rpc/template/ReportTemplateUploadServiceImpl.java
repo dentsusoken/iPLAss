@@ -29,10 +29,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.upload.AdminUploadAction;
+import org.iplass.adminconsole.server.base.io.upload.MultipartRequestParameter;
+import org.iplass.adminconsole.server.base.io.upload.UploadActionException;
 import org.iplass.adminconsole.server.base.io.upload.UploadResponseInfo;
 import org.iplass.adminconsole.server.base.io.upload.UploadRuntimeException;
 import org.iplass.adminconsole.server.base.io.upload.UploadUtil;
@@ -58,8 +59,6 @@ import org.iplass.mtp.web.template.report.definition.ReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gwtupload.server.exceptions.UploadActionException;
-
 @SuppressWarnings("serial")
 public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 
@@ -67,12 +66,12 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.
 	 * HttpServletRequest, java.util.List)
 	 */
 	@Override
-	public String executeAction(final HttpServletRequest request, final List<FileItem> sessionFiles)
+	public String executeAction(final HttpServletRequest request, final List<MultipartRequestParameter> sessionFiles)
 			throws UploadActionException {
 
 		final ReportTemplateUploadResponseInfo result = new ReportTemplateUploadResponseInfo();
@@ -95,27 +94,27 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			DefinitionModifyResult ret = AuthUtil.authCheckAndInvoke(getServletContext(), request, null, tenantId,
 					new AuthUtil.Callable<DefinitionModifyResult>() {
 
-						@Override
-						public DefinitionModifyResult call() {
+				@Override
+				public DefinitionModifyResult call() {
 
-							DefinitionModifyResult result = null;
-							try {
-								// バージョンの最新チェック
-								MetaDataVersionCheckUtil.versionCheck(checkVersion, ReportTemplateDefinition.class, defName,
-										currentVersion);
+					DefinitionModifyResult result = null;
+					try {
+						// バージョンの最新チェック
+						MetaDataVersionCheckUtil.versionCheck(checkVersion, ReportTemplateDefinition.class, defName,
+								currentVersion);
 
-								// Definition生成
-								ReportTemplateDefinition definition = convertDefinition(args);
+						// Definition生成
+						ReportTemplateDefinition definition = convertDefinition(args);
 
-								// 更新
-								result = update(definition);
-							} catch (Throwable e) {
-								logger.error(e.getMessage(), e);
-								result = new DefinitionModifyResult(false, e.getMessage());
-							}
-							return result;
-						}
-					});
+						// 更新
+						result = update(definition);
+					} catch (Throwable e) {
+						logger.error(e.getMessage(), e);
+						result = new DefinitionModifyResult(false, e.getMessage());
+					}
+					return result;
+				}
+			});
 
 			// ステータスの書き込み
 			if (ret.isSuccess()) {
@@ -148,14 +147,14 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 		}
 	}
 
-	private void readRequest(final HttpServletRequest request, List<FileItem> sessionFiles,
+	private void readRequest(final HttpServletRequest request, List<MultipartRequestParameter> sessionFiles,
 			HashMap<String, Object> args) {
 
 		// リクエスト情報の取得
 		try {
 			Map<String, LocaleInfo> localeMap = new LinkedHashMap<String, LocaleInfo>();
 
-			for (FileItem item : sessionFiles) {
+			for (MultipartRequestParameter item : sessionFiles) {
 				if (item.isFormField()) {
 					// File以外のもの
 					String[] names = splitLocaleFieldName(item.getFieldName());

@@ -34,9 +34,6 @@
 	<inherits name="com.smartclient.theme.tahoe.Tahoe"/>
 	-->
 
-	<!-- for gwt-upload -->
-	<inherits name="gwtupload.GWTUpload" />
-
 	<!-- for ace -->
 	<inherits name="org.iplass.gwt.ace.GwtAce" />
 

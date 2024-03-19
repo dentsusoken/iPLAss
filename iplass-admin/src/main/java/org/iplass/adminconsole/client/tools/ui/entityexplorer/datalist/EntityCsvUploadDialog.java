@@ -34,13 +34,13 @@ import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.UniquePropertyDS;
 import org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist.EntityCsvDownloadDialog.ENCODE;
+import org.iplass.adminconsole.shared.base.dto.io.upload.UploadProperty;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Label;
@@ -60,8 +60,6 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-import gwtupload.client.IUploadStatus.Status;
-
 /**
  * EntityImportダイアログ
  */
@@ -76,9 +74,9 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		SmartGWTUtil.showAnimationFullScreen(new AnimationFullScreenCallback() {
 			@Override
 			public void execute(boolean earlyFinish) {
-              animateOutline.hide();
-              EntityCsvUploadDialog dialog = new EntityCsvUploadDialog(definition, width, height);
-              dialog.show();
+				animateOutline.hide();
+				EntityCsvUploadDialog dialog = new EntityCsvUploadDialog(definition, width, height);
+				dialog.show();
 			}
 		});
 	}
@@ -167,17 +165,13 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 				uploader.debugUploader("onStart");
 				startExecute();
 			});
-			uploader.addOnStatusChangedHandler((result) -> {
-				uploader.debugUploader("onStatusChanged");
-			});
 			uploader.addOnFinishUploadHandler((result) -> {
 				uploader.debugUploader("onFinish");
-				if (uploader.getStatus() == Status.SUCCESS) {
-					showResult(uploader.getMessage());
+				if (uploader.getLastUploadState().isSuccess()) {
+					showResult(uploader.getLastUploadState().getData());
 				} else {
-					showResultError(uploader.getErrorMessage());
+					showResultError(uploader.getLastUploadState().getErrorMessage());
 				}
-
 				//Hidden項目の削除
 				uploader.removeHidden();
 			});
@@ -421,47 +415,47 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			messageTabSet.setTabTitleProgress();
 		}
 
-		private void showResult(String message) {
+		private void showResult(JSONValue message) {
 			showResponse(message);
 
 			disableComponent(false);
 			messageTabSet.setTabTitleNormal();
 		}
-		
+
 		private void doCheckListener(final AdminSingleUploader uploader) {
 
 			//EntityにUserまたはPermission系が含まれていてListener実行しない場合は確認
-				if (!SmartGWTUtil.getBooleanValue(chkNotifyListenersField)) {
-					if ("mtp.auth.User".equals(defName)) {
-						SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_userListenerConfirm"), new BooleanCallback() {
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									doUpload(uploader);
-								}
+			if (!SmartGWTUtil.getBooleanValue(chkNotifyListenersField)) {
+				if ("mtp.auth.User".equals(defName)) {
+					SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_userListenerConfirm"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								doUpload(uploader);
 							}
-						});
-						return;
-					} else if (Arrays.asList(
-							"mtp.auth.ActionPermission", 
-							"mtp.auth.CubePermission", 
-							"mtp.auth.EntityPermission", 
-							"mtp.auth.UserTaskPermission", 
-							"mtp.auth.WebApiPermission", 
-							"mtp.auth.WorkflowPermission").contains(defName)) {
-						SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_permissionListenerConfirm"), new BooleanCallback() {
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									doUpload(uploader);
-								}
+						}
+					});
+					return;
+				} else if (Arrays.asList(
+						"mtp.auth.ActionPermission",
+						"mtp.auth.CubePermission",
+						"mtp.auth.EntityPermission",
+						"mtp.auth.UserTaskPermission",
+						"mtp.auth.WebApiPermission",
+						"mtp.auth.WorkflowPermission").contains(defName)) {
+					SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_permissionListenerConfirm"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								doUpload(uploader);
 							}
-						});
-						return;
-					}
+						}
+					});
+					return;
 				}
-				
-				doUpload(uploader);
+			}
+
+			doUpload(uploader);
 		}
 
 		private void doUpload(final AdminSingleUploader uploader) {
@@ -527,12 +521,8 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			btnCancel.setDisabled(disabled);
 		}
 
-		private void showResponse(String json) {
-			GWT.log("ImportEntity Response:" + json);
-			if (json == null) {
-				return;
-			}
-			JSONValue rootValue = JSONParser.parseStrict(json);
+		private void showResponse(JSONValue rootValue) {
+			GWT.log("ImportEntity Response:" + rootValue);
 			if (rootValue == null) {
 				return;
 			}
@@ -559,11 +549,11 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		}
 
 		private String getStatusMessage(String status) {
-			if ("SUCCESS".equals(status)) {
+			if (UploadProperty.Status.SUCCESS.name().equals(status)) {
 				return rs("ui_tools_entityexplorer_EntityCsvUploadDialog_importSuccessful");
-			} else if ("WARN".equals(status)) {
+			} else if (UploadProperty.Status.WARN.name().equals(status)) {
 				return rs("ui_tools_entityexplorer_EntityCsvUploadDialog_importWarning");
-			} else if ("ERROR".equals(status)) {
+			} else if (UploadProperty.Status.ERROR.name().equals(status)) {
 				return rs("ui_tools_entityexplorer_EntityCsvUploadDialog_importErr");
 			} else {
 				return rs("ui_tools_entityexplorer_EntityCsvUploadDialog_couldNotRetImportResult");
@@ -571,7 +561,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		}
 
 		private boolean isStatusSuccess(String status) {
-			return "SUCCESS".equals(status);
+			return UploadProperty.Status.SUCCESS.name().equals(status);
 		}
 
 		private List<String> getMessageInfo(JSONValue root) {

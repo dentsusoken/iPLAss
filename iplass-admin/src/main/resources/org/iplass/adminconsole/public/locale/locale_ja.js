@@ -1,4 +1,5 @@
 var LocaleInfo = {};
+LocaleInfo.base_io_upload_AdminSingleUploader_message_invalidFileExtension = "ファイル拡張子が異なります。<br/>以下の拡張子のみ対応しています。：<br/>{0}";
 LocaleInfo.common_AdminAsyncCallback_failedMessage = "サーバとの接続でエラーが発生しました。<br/>原因：";
 LocaleInfo.datasource_PropertyListRecord_name = "名前";
 LocaleInfo.datasource_PropertyListRecord_dispName = "表示名";

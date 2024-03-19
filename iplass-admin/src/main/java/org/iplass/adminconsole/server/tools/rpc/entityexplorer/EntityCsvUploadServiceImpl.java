@@ -32,13 +32,15 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItem;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.upload.AdminUploadAction;
+import org.iplass.adminconsole.server.base.io.upload.MultipartRequestParameter;
+import org.iplass.adminconsole.server.base.io.upload.UploadActionException;
 import org.iplass.adminconsole.server.base.io.upload.UploadRuntimeException;
 import org.iplass.adminconsole.server.base.io.upload.UploadUtil;
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.tools.rpc.entityexplorer.exception.EntityCsvFatalException;
+import org.iplass.adminconsole.shared.base.dto.io.upload.UploadProperty;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
@@ -54,8 +56,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gwtupload.server.exceptions.UploadActionException;
-
 @SuppressWarnings("serial")
 public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 
@@ -66,7 +66,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 	 */
 	@Override
 	public String executeAction(final HttpServletRequest request,
-			final List<FileItem> sessionFiles) throws UploadActionException {
+			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException {
 
 		final EntityImportResponseInfo result = new EntityImportResponseInfo();
 		final HashMap<String,Object> args = new HashMap<>();
@@ -75,7 +75,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 			//リクエスト情報の取得
 			readRequest(request, sessionFiles, args);
 
-		    //リクエスト情報の検証
+			//リクエスト情報の検証
 			validateRequest(args);
 
 			//テナントID
@@ -86,8 +86,8 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 				@Override
 				public EntityDataImportResult call() {
 
-				    //リクエスト->EntityDataImportCondition
-				    EntityDataImportCondition cond = new EntityDataImportCondition();
+					//リクエスト->EntityDataImportCondition
+					EntityDataImportCondition cond = new EntityDataImportCondition();
 					cond.setTruncate(args.containsKey("chkTruncate"));
 					cond.setBulkUpdate(args.containsKey("chkBulkUpdate"));
 					if (args.containsKey("commitLimit")) {
@@ -168,22 +168,22 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 			}
 		}
 
-	    try {
+		try {
 			return createJsonResponseInfo(result);
 		} catch (IOException e) {
 			throw new UploadActionException(e);
 		}
 	}
 
-	private void readRequest(final HttpServletRequest request, List<FileItem> sessionFiles, HashMap<String,Object> args) {
+	private void readRequest(final HttpServletRequest request, List<MultipartRequestParameter> sessionFiles, HashMap<String, Object> args) {
 
 		//セッションからファイルを取得
 		File tempFile = null;
 		try {
-			for (FileItem item : sessionFiles) {
+			for (MultipartRequestParameter item : sessionFiles) {
 				if (item.isFormField()) {
-			    	//File以外のもの
-			        args.put(item.getFieldName(), UploadUtil.getValueAsString(item));
+					//File以外のもの
+					args.put(item.getFieldName(), UploadUtil.getValueAsString(item));
 				} else {
 					tempFile = UploadUtil.writeFileToTemporary(item, getContextTempDir());
 					args.put("targetFile", tempFile);
@@ -254,7 +254,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		private long errorCount = 0;
 
 		public EntityImportResponseInfo() {
-			setStatus("INIT");
+			setStatus(UploadProperty.Status.INIT.name());
 			put("messages", new ArrayList<String>());
 		}
 
@@ -267,12 +267,12 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		}
 
 		public void setStatusError() {
-			setStatus("ERROR");
+			setStatus(UploadProperty.Status.ERROR.name());
 		}
 
 		public void setStatusSuccess() {
-			if (!"ERROR".equals(getStatus()) && !"WARN".equals(getStatus())) {
-				setStatus("SUCCESS");
+			if (!UploadProperty.Status.ERROR.name().equals(getStatus()) && !UploadProperty.Status.WARN.name().equals(getStatus())) {
+				setStatus(UploadProperty.Status.SUCCESS.name());
 			}
 		}
 

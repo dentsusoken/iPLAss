@@ -27,6 +27,7 @@ import java.util.Map;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.upload.UploadResultInfo;
 import org.iplass.adminconsole.client.base.io.upload.UploadSubmitCompleteHandler;
+import org.iplass.adminconsole.client.base.io.upload.XsrfProtectedMultipartForm;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -51,11 +52,9 @@ import org.iplass.mtp.web.staticresource.definition.EntryPathTranslatorDefinitio
 import org.iplass.mtp.web.staticresource.definition.MimeTypeMappingDefinition;
 import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinition;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Hidden;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
@@ -88,7 +87,7 @@ public class StaticResourceEditPane extends MetaDataMainEditPane {
 	private StaticResourceMultiLanguagePane multilingualPane;
 
 	/** フォーム */
-	private FormPanel form;
+	private XsrfProtectedMultipartForm form;
 	private FlowPanel paramPanel;
 
 	private AsyncCallback<AdminDefinitionModifyResult> callback;
@@ -137,15 +136,13 @@ public class StaticResourceEditPane extends MetaDataMainEditPane {
 		setMainSections(commonSection, staticResourceSection, multilingualSection);
 
 		// 入力部分
-		form = new FormPanel();
+		form = new XsrfProtectedMultipartForm();
 		form.setVisible(false); // formは非表示でOK
 		form.setHeight("5px");
-		form.setAction(GWT.getModuleBaseURL() + StaticResourceUploadProperty.ACTION_URL);
-		form.setMethod(FormPanel.METHOD_POST);
-		form.setEncoding(FormPanel.ENCODING_MULTIPART);
+		form.setService(StaticResourceUploadProperty.ACTION_URL);
 		form.addSubmitCompleteHandler(new StaticResourceDefinitionSubmitCompleteHandler());
 		paramPanel = new FlowPanel();
-		form.add(paramPanel);
+		form.insertAfter(paramPanel);
 
 		//全体配置
 		addMember(headerPane);

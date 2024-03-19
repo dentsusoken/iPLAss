@@ -80,8 +80,6 @@ ext {
 		
 		'org.jgroups:jgroups': '4.2.16.Final',
 		
-		'com.googlecode.gwtupload:gwtupload': '1.0.3',
-		
 		'org.infinispan:infinispan-core': '9.4.24.Final',
 		
 		'io.lettuce:lettuce-core': '6.2.5.RELEASE',
