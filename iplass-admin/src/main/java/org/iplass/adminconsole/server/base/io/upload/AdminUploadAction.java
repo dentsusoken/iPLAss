@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.service.AdminConsoleService;
 import org.iplass.adminconsole.shared.base.io.AdminUploadConstant;
 import org.iplass.mtp.impl.web.WebFrontendService;
@@ -146,10 +147,19 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 
 			logger.info("{} FINISH.", logPrefix);
 
-		} catch (Exception e) {
+		} catch (UploadActionException | UploadRuntimeException e) {
 			logger.error("{} ERROR.", logPrefix, e);
 			// json = {"errorMessage": "エラーメッセージ"}
+			// UploadActionException, UploadRuntimeException は例外メッセージを返却する。
 			String errorResultJson = "{" + jsonKeyString(AdminUploadConstant.ResponseKey.ERROR_MESSAGE, e.getMessage()) + "}";
+			writeResponse(resp, errorResultJson, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+		} catch (RuntimeException e) {
+			logger.error("{} ERROR.", logPrefix, e);
+			// Runtime 系はシステムエラーメッセージを返却する。
+			// json = {"errorMessage": システムエラーメッセージ}
+			String message = AdminResourceBundleUtil.resourceString("upload.AdminUploadAction.systemErr");
+			String errorResultJson = "{" + jsonKeyString(AdminUploadConstant.ResponseKey.ERROR_MESSAGE, message) + "}";
 			writeResponse(resp, errorResultJson, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
