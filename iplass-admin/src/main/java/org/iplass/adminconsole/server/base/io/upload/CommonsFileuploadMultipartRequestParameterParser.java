@@ -20,7 +20,9 @@
 package org.iplass.adminconsole.server.base.io.upload;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +72,8 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 	private int sizeThreshold = DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD;
 	/** 一時ファイルディレクトリ */
 	private File temporaryDirectory = null;
+	/** デフォルト文字コード */
+	private String defaultCharset = null;
 
 	/**
 	 * 最大リクエストサイズを設定する
@@ -134,6 +138,14 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 		this.temporaryDirectory = temporaryDirectory;
 	}
 
+	/**
+	 * デフォルト文字コードを設定する
+	 * @param defaultCharset デフォルト文字コード
+	 */
+	public void setDefaultCharset(Charset defaultCharset) {
+		this.defaultCharset = defaultCharset.name();
+	}
+
 	@Override
 	public List<MultipartRequestParameter> parse(HttpServletRequest req) {
 		try {
@@ -166,16 +178,53 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 	 * @return FileItemFactory インスタンス
 	 */
 	protected FileItemFactory getFileItemFactory() {
-		DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
+		AdminFileItemFactory fileItemFactory = new AdminFileItemFactory();
 		fileItemFactory.setSizeThreshold(sizeThreshold);
 		if (null != temporaryDirectory) {
 			fileItemFactory.setRepository(temporaryDirectory);
 		}
+		if (null != defaultCharset) {
+			fileItemFactory.setDefaultCharset(defaultCharset);
+		}
 		return fileItemFactory;
 	}
 
+	/**
+	 * MultipartRequestParameter リストに変換する
+	 * @param fileItemList CommonsFileupload FileItem リスト
+	 * @return MultipartRequestParameter リスト
+	 */
 	protected List<MultipartRequestParameter> convert(List<FileItem> fileItemList) {
 		return fileItemList.stream().map(i -> new CommonsFileuploadMultipartRequestParameter(i)).collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	/**
+	 * <p>FileItem生成用クラス</p>
+	 *
+	 * <p>
+	 * 複数の同一パラメータの場合に、パラメータ名末尾にパラメータ番号を付与する。
+	 * </p>
+	 *
+	 * <p>
+	 * 機能再作成前に実装していた FileItemFactory を移植
+	 * </p>
+	 */
+	public static class AdminFileItemFactory extends DiskFileItemFactory {
+		public static final String MULTI_SUFFIX = "[]";
+		private HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+		@Override
+		public FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) {
+			Integer cont = map.get(fieldName) != null ? (map.get(fieldName) + 1) : 0;
+			map.put(fieldName, cont);
+
+			// 複数の場合のみ、後ろにCountを付加
+			if (cont > 0 || fieldName.contains(MULTI_SUFFIX)) {
+				fieldName = fieldName.replace(MULTI_SUFFIX, "") + "-" + cont;
+			}
+
+			return super.createItem(fieldName, contentType, isFormField, fileName);
+		}
 	}
 
 }

@@ -69,7 +69,6 @@ class CommonsFileuploadMultipartRequestParameter implements MultipartRequestPara
 
 	@Override
 	public String getString() {
-		//
 		return delegate.getString();
 	}
 

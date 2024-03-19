@@ -134,12 +134,19 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 	protected final void doMultipartPost(HttpServletRequest req, HttpServletResponse resp, List<MultipartRequestParameter> files) {
 		HttpSession session = req.getSession(false);
 		String sessionId = null != session ? session.getId() : null;
-		String logPrefix = "ADMIN UPLOAD (" + getClass().getSimpleName() + ", sessionId = " + sessionId + ")";
+		String logPrefix = "ADMIN-UPLOAD (" + getClass().getSimpleName() + ", sessionId = " + sessionId + ")";
 		try {
 			logger.info("{} START.", logPrefix);
 			// アップロードされたファイル情報のログ出力
 			files.stream().filter(f -> !f.isFormField())
-			.forEach(f -> logger.info("{} FILE INFO. file = {}, content-type = {}, size = {}.", logPrefix, f.getName(), f.getContentType(), f.getSize()));
+					.forEach(f -> logger.info("{} FILE INFO. fieldName = {},  file = {}, content-type = {}, size = {}.",
+							logPrefix, f.getFieldName(), f.getName(), f.getContentType(), f.getSize()));
+			if (logger.isDebugEnabled()) {
+				// フォーム入力値パラメータ情報のログ出力
+				files.stream().filter(f -> f.isFormField())
+						.forEach(f -> logger.debug("{} FORM FIELD INFO. fieldName = {}, content-type = {}, size = {}.",
+								logPrefix, f.getFieldName(), f.getContentType(), f.getSize()));
+			}
 
 			String resultJson = executeAction(req, files);
 
@@ -214,7 +221,7 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 		return "\"" + k + "\":" + o;
 	}
 
-	// FIXME このメソッドはユーティリティ
+	// TODO このメソッドはユーティリティ。
 	protected final byte[] convertFileToByte(File file) {
 		byte[] bytes = null;
 		FileInputStream is = null;
@@ -269,8 +276,5 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 		parser.setSizeMax(maxSize);
 		parser.setFileSizeMax(maxFileSize);
 		parser.setFileCountMax(maxParameterCount);
-
-		// TODO 現状では設定していない
-		parser.setTemporaryDirectory(contextTempDir);
 	}
 }
