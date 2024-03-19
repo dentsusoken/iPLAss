@@ -68,6 +68,8 @@ public class XsrfProtectedMultipartForm extends Composite {
 	private Hidden xsrfTokenWidget = new Hidden(XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY);
 	/** XSRFトークン削除 submit complete HandlerRegistration */
 	private HandlerRegistration xsrfTokenRemoveSubmitCompleteHandlerRegistration;
+	/** submit キャンセル時　XSRFトークン削除 submit HandlerRegistration */
+	private HandlerRegistration xsrfTokenRemoveSubmitHandlerRegistration;
 
 	/**
 	 * デフォルトコンストラクタ
@@ -96,6 +98,7 @@ public class XsrfProtectedMultipartForm extends Composite {
 		super.onUnload();
 		// イベント破棄
 		xsrfTokenRemoveSubmitCompleteHandlerRegistration.removeHandler();
+		removeXsrfTokenRemoveSubmitHandlerRegistration();
 	}
 
 	/**
@@ -178,12 +181,21 @@ public class XsrfProtectedMultipartForm extends Composite {
 	 * submit を実行する。
 	 */
 	public void submit() {
-		// token 値を設定
-		xsrfTokenWidget.setValue(AdminXsrfTokenHolder.token().getToken());
-
+		// イベントが存在していれば削除（残らないはずだが、想定外動作を考慮）
+		removeXsrfTokenRemoveSubmitHandlerRegistration();
 		// 想定外例外でトークンが残っていることを考慮し、先に削除する
 		remove(xsrfTokenWidget);
+
+		// イベントがキャンセルされていた場合にトークンフィールドを削除。最後のイベント発火となるように毎回登録・削除する
+		xsrfTokenRemoveSubmitHandlerRegistration = addSubmitHandler(event -> {
+			if (event.isCanceled()) {
+				remove(xsrfTokenWidget);
+			}
+			removeXsrfTokenRemoveSubmitHandlerRegistration();
+		});
+
 		// XsrfToken を追加
+		xsrfTokenWidget.setValue(AdminXsrfTokenHolder.token().getToken());
 		insertAfter(xsrfTokenWidget);
 		formPanel.submit();
 	}
@@ -204,5 +216,12 @@ public class XsrfProtectedMultipartForm extends Composite {
 	 */
 	public HandlerRegistration addSubmitCompleteHandler(SubmitCompleteHandler handler) {
 		return formPanel.addSubmitCompleteHandler(handler);
+	}
+
+	private void removeXsrfTokenRemoveSubmitHandlerRegistration() {
+		if (null != xsrfTokenRemoveSubmitHandlerRegistration) {
+			xsrfTokenRemoveSubmitHandlerRegistration.removeHandler();
+			xsrfTokenRemoveSubmitHandlerRegistration = null;
+		}
 	}
 }

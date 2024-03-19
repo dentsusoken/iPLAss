@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Widget;
@@ -171,7 +172,7 @@ public class AdminSingleUploader extends Composite {
 	}
 
 	/**
-	 * Hidden ウィジェットを追加する
+	 * ウィジェットを追加する
 	 *
 	 * @param widget 追加対象ウィジェット
 	 */
@@ -180,22 +181,29 @@ public class AdminSingleUploader extends Composite {
 	}
 
 	/**
-	 * 追加した Hidden ノードを削除する
+	 * 追加した Hidden ウィジェットを削除する
 	 */
 	public void removeHidden() {
 		removeAll(w -> w instanceof Hidden);
 	}
 
 	/**
+	 * 追加した全ウィジェットを削除する
+	 */
+	public void removeAll() {
+		removeAll(w -> true);
+	}
+
+	/**
 	 * 追加されたウィジェットを全て削除する
 	 *
-	 * @param ignoreFn 対象外とするウィジェットを判定するファンクション
+	 * @param targetFn 対象とするウィジェットを判定するファンクション
 	 */
-	private void removeAll(Function<Widget, Boolean> ignoreFn) {
+	private void removeAll(Function<Widget, Boolean> targetFn) {
 		// NOTE: forEach ループしながら remove すると index がずれる為、全て削除できない。削除対象をリストアップ後に全削除する。
 		List<Widget> removeTarget = new ArrayList<>();
 		addWidgetPanel.forEach(w -> {
-			if (!ignoreFn.apply(w)) {
+			if (targetFn.apply(w)) {
 				removeTarget.add(w);
 			}
 		});
@@ -241,7 +249,16 @@ public class AdminSingleUploader extends Composite {
 	 * @return HandlerRegistration
 	 */
 	public HandlerRegistration addOnStartUploadHandler(final SubmitHandler handler) {
-		return multipartFormPanel.addSubmitHandler(handler);
+		// FIXME キャンセルされていたら強制的に実行しないのは問題。個別機能でもキャンセルは想定すべき。
+		return multipartFormPanel.addSubmitHandler(new SubmitHandler() {
+			@Override
+			public void onSubmit(SubmitEvent event) {
+				if (!event.isCanceled()) {
+					// イベントがキャンセルされていなければハンドラ処理を実行する
+					handler.onSubmit(event);
+				}
+			}
+		});
 	}
 
 	/**
