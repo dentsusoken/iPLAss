@@ -149,15 +149,15 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 
 		} catch (UploadActionException | UploadRuntimeException e) {
 			logger.error("{} ERROR.", logPrefix, e);
-			// json = {"errorMessage": "エラーメッセージ"}
 			// UploadActionException, UploadRuntimeException は例外メッセージを返却する。
+			// json = {"errorMessage": "例外メッセージ"}
 			String errorResultJson = "{" + jsonKeyString(AdminUploadConstant.ResponseKey.ERROR_MESSAGE, e.getMessage()) + "}";
 			writeResponse(resp, errorResultJson, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
 		} catch (RuntimeException e) {
 			logger.error("{} ERROR.", logPrefix, e);
 			// Runtime 系はシステムエラーメッセージを返却する。
-			// json = {"errorMessage": システムエラーメッセージ}
+			// json = {"errorMessage": "システムエラーメッセージ"}
 			String message = AdminResourceBundleUtil.resourceString("upload.AdminUploadAction.systemErr");
 			String errorResultJson = "{" + jsonKeyString(AdminUploadConstant.ResponseKey.ERROR_MESSAGE, message) + "}";
 			writeResponse(resp, errorResultJson, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
