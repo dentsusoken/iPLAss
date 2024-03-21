@@ -267,7 +267,7 @@ public class LangCsvUploadDialog extends AbstractWindow {
 		return AdminClientMessageUtil.getString(RESOURCE_PREFIX + key);
 	}
 	private void errorUpload(String message) {
-		messageTabSet.setErrorMessage(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangCsvUploadDialog_uploadingErr"));
+		messageTabSet.setErrorMessage(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangCsvUploadDialog_importErr"));
 
 		disableComponent(false);
 		messageTabSet.setTabTitleNormal();
