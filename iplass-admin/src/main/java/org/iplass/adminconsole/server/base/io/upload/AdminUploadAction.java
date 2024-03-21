@@ -28,6 +28,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -42,6 +44,7 @@ import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Adminファイルアップロード操作サーブレット
@@ -86,7 +89,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 	/** serialVersionUID */
 	private static final long serialVersionUID = -5553465242497700877L;
-
+	/** 例外メッセージに含まれるクラス名パターン。最後の ": " は {@link java.lang.Throwable#toString()} を参照 */
+	private static final Pattern EXCEPTION_MESSAGE_CLASS_PATTERN = Pattern.compile("^([a-zA-Z0-9\\.\\$]*: )");
 	/** ロガー */
 	private Logger logger = LoggerFactory.getLogger(AdminUploadAction.class);
 	/** contextTempDir */
@@ -139,13 +143,13 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 			logger.info("{} START.", logPrefix);
 			// アップロードされたファイル情報のログ出力
 			files.stream().filter(f -> !f.isFormField())
-					.forEach(f -> logger.info("{} FILE INFO. fieldName = {},  file = {}, content-type = {}, size = {}.",
-							logPrefix, f.getFieldName(), f.getName(), f.getContentType(), f.getSize()));
+			.forEach(f -> logger.info("{} FILE INFO. fieldName = {},  file = {}, content-type = {}, size = {}.",
+					logPrefix, f.getFieldName(), f.getName(), f.getContentType(), f.getSize()));
 			if (logger.isDebugEnabled()) {
 				// フォーム入力値パラメータ情報のログ出力
 				files.stream().filter(f -> f.isFormField())
-						.forEach(f -> logger.debug("{} FORM FIELD INFO. fieldName = {}, content-type = {}, size = {}.",
-								logPrefix, f.getFieldName(), f.getContentType(), f.getSize()));
+				.forEach(f -> logger.debug("{} FORM FIELD INFO. fieldName = {}, content-type = {}, size = {}.",
+						logPrefix, f.getFieldName(), f.getContentType(), f.getSize()));
 			}
 
 			String resultJson = executeAction(req, files);
@@ -158,7 +162,16 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 			logger.error("{} ERROR.", logPrefix, e);
 			// UploadActionException, UploadRuntimeException は例外メッセージを返却する。
 			// json = {"errorMessage": "例外メッセージ"}
-			String errorResultJson = "{" + jsonKeyString(AdminUploadConstant.ResponseKey.ERROR_MESSAGE, e.getMessage()) + "}";
+			String message = e.getMessage();
+
+			// メッセージにクラス名が含まれている場合は消す。
+			Matcher classMatcher = EXCEPTION_MESSAGE_CLASS_PATTERN.matcher(message);
+			if (classMatcher.find()) {
+				String group = classMatcher.group(1);
+				message = message.substring(group.length());
+			}
+
+			String errorResultJson = "{" + jsonKeyString(AdminUploadConstant.ResponseKey.ERROR_MESSAGE, message) + "}";
 			writeResponse(resp, errorResultJson, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
 		} catch (RuntimeException e) {
