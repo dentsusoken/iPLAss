@@ -162,8 +162,12 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			final AdminSingleUploader uploader = new AdminSingleUploader(UPLOAD_SERVICE);
 			uploader.setValidExtensions("csv");
 			uploader.addOnStartUploadHandler((result) -> {
-				uploader.debugUploader("onStart");
-				startExecute();
+				if (!result.isCanceled()) {
+					uploader.debugUploader("onStart");
+					startExecute();
+				} else {
+					uploader.removeHidden();
+				}
 			});
 			uploader.addOnFinishUploadHandler((result) -> {
 				uploader.debugUploader("onFinish");

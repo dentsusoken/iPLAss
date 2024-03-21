@@ -27,6 +27,7 @@ import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
 import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -60,8 +61,15 @@ import com.google.gwt.user.client.ui.Widget;
  * @author SEKIGUCHI Naoya
  */
 public class XsrfProtectedMultipartForm extends Composite {
+	/** class 属性名*/
+	private static final String CLASS_ATTRIBUTE_NAME = "class";
+	/** action 属性名 */
+	private static final String ACTION_ATTRIBUTE_NAME = "action";
+
 	/** FormPanel */
 	private FormPanel formPanel = new FormPanel();
+	/** サービスURL */
+	private String service = null;
 	/** 子ウィジェット管理パネル */
 	private FlowPanel childWidgetPanel = new FlowPanel();
 	/** XsrfToken ウィジェット */
@@ -84,8 +92,8 @@ public class XsrfProtectedMultipartForm extends Composite {
 		formPanel.getElement().setAttribute("accept-charset", StandardCharsets.UTF_8.name());
 		// submit 完了時イベント
 		xsrfTokenRemoveSubmitCompleteHandlerRegistration = formPanel.addSubmitCompleteHandler(event -> {
-			// トークンを削除
 			remove(xsrfTokenWidget);
+			removeActionAttribute();
 		});
 
 		formPanel.add(childWidgetPanel);
@@ -111,7 +119,7 @@ public class XsrfProtectedMultipartForm extends Composite {
 	 * @param service サーバーサービス名
 	 */
 	public void setService(String service) {
-		formPanel.setAction(GWT.getModuleBaseURL() + service);
+		this.service = service;
 	}
 
 	/**
@@ -120,7 +128,7 @@ public class XsrfProtectedMultipartForm extends Composite {
 	 * @return サーバーサービス名
 	 */
 	public String getService() {
-		return formPanel.getAction().substring(GWT.getModuleBaseURL().length());
+		return service;
 	}
 
 	/**
@@ -139,10 +147,12 @@ public class XsrfProtectedMultipartForm extends Composite {
 			classValue.append(' ').append(attr);
 		}
 		if (0 < classValue.length()) {
-			formPanel.getElement().setAttribute("class", classValue.toString());
+			// 先頭ブランクを削除
+			classValue.deleteCharAt(0);
+			formPanel.getElement().setAttribute(CLASS_ATTRIBUTE_NAME, classValue.toString());
 
-		} else if (formPanel.getElement().hasAttribute("class")) {
-			formPanel.getElement().removeAttribute("class");
+		} else if (formPanel.getElement().hasAttribute(CLASS_ATTRIBUTE_NAME)) {
+			formPanel.getElement().removeAttribute(CLASS_ATTRIBUTE_NAME);
 
 		}
 	}
@@ -190,6 +200,7 @@ public class XsrfProtectedMultipartForm extends Composite {
 		xsrfTokenRemoveSubmitHandlerRegistration = addSubmitHandler(event -> {
 			if (event.isCanceled()) {
 				remove(xsrfTokenWidget);
+				removeActionAttribute();
 			}
 			removeXsrfTokenRemoveSubmitHandlerRegistration();
 		});
@@ -197,6 +208,8 @@ public class XsrfProtectedMultipartForm extends Composite {
 		// XsrfToken を追加
 		xsrfTokenWidget.setValue(AdminXsrfTokenHolder.token().getToken());
 		insertAfter(xsrfTokenWidget);
+		// action 属性を設定
+		formPanel.setAction(GWT.getModuleBaseURL() + service);
 		formPanel.submit();
 	}
 
@@ -218,10 +231,23 @@ public class XsrfProtectedMultipartForm extends Composite {
 		return formPanel.addSubmitCompleteHandler(handler);
 	}
 
+	/**
+	 * トークン削除ハンドラを削除する
+	 */
 	private void removeXsrfTokenRemoveSubmitHandlerRegistration() {
 		if (null != xsrfTokenRemoveSubmitHandlerRegistration) {
 			xsrfTokenRemoveSubmitHandlerRegistration.removeHandler();
 			xsrfTokenRemoveSubmitHandlerRegistration = null;
+		}
+	}
+
+	/**
+	 * action 属性が設定されていたら削除する
+	 */
+	private void removeActionAttribute() {
+		Element element = formPanel.getElement();
+		if (element.hasAttribute(ACTION_ATTRIBUTE_NAME)) {
+			element.removeAttribute(ACTION_ATTRIBUTE_NAME);
 		}
 	}
 }

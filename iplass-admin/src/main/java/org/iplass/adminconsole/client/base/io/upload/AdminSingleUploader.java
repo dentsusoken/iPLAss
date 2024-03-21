@@ -35,7 +35,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Widget;
@@ -249,16 +248,7 @@ public class AdminSingleUploader extends Composite {
 	 * @return HandlerRegistration
 	 */
 	public HandlerRegistration addOnStartUploadHandler(final SubmitHandler handler) {
-		// FIXME キャンセルされていたら強制的に実行しないのは問題。個別機能でもキャンセルは想定すべき。
-		return multipartFormPanel.addSubmitHandler(new SubmitHandler() {
-			@Override
-			public void onSubmit(SubmitEvent event) {
-				if (!event.isCanceled()) {
-					// イベントがキャンセルされていなければハンドラ処理を実行する
-					handler.onSubmit(event);
-				}
-			}
-		});
+		return multipartFormPanel.addSubmitHandler(handler);
 	}
 
 	/**

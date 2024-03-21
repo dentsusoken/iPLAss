@@ -97,8 +97,12 @@ public class LangCsvUploadDialog extends AbstractWindow {
 		final AdminSingleUploader uploader = new AdminSingleUploader(UPLOAD_SERVICE);
 		uploader.setValidExtensions("csv");
 		uploader.addOnStartUploadHandler((result) -> {
-			uploader.debugUploader("onStart");
-			startUpload();
+			if (!result.isCanceled()) {
+				uploader.debugUploader("onStart");
+				startUpload();
+			} else {
+				uploader.removeHidden();
+			}
 		});
 		uploader.addOnFinishUploadHandler((result) -> {
 			uploader.debugUploader("onFinish");
