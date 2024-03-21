@@ -164,11 +164,15 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 			// json = {"errorMessage": "例外メッセージ"}
 			String message = e.getMessage();
 
-			// メッセージにクラス名が含まれている場合は消す。
 			Matcher classMatcher = EXCEPTION_MESSAGE_CLASS_PATTERN.matcher(message);
 			if (classMatcher.find()) {
+				// メッセージにクラス名が含まれている場合は消す
 				String group = classMatcher.group(1);
 				message = message.substring(group.length());
+
+			} else if (isMessageEqualException(e, message)) {
+				// エラーメッセージが例外クラス名と同一の場合は、システムエラーメッセージを設定する
+				message = AdminResourceBundleUtil.resourceString("upload.AdminUploadAction.systemErr");
 			}
 
 			String errorResultJson = "{" + jsonKeyString(AdminUploadConstant.ResponseKey.ERROR_MESSAGE, message) + "}";
@@ -289,5 +293,31 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 		parser.setSizeMax(maxSize);
 		parser.setFileSizeMax(maxFileSize);
 		parser.setFileCountMax(maxParameterCount);
+	}
+
+	/**
+	 * 例外クラス名と例外メッセージが同一であるか判断する
+	 *
+	 * <p>
+	 * 例外クラスは原因例外をさかのぼって確認する。
+	 * </p>
+	 *
+	 * @param e 例外クラス
+	 * @param message 例外メッセージ
+	 * @return 例外クラス名と例外メッセージが同一である場合 true
+	 */
+	private boolean isMessageEqualException(Throwable e, String message) {
+		// メッセージとクラスが同一かチェック
+		if (e.getClass().getName().equals(message)) {
+			return true;
+		}
+
+		if (null == e.getCause()) {
+			// 原因例外がない場合は異なると判断する
+			return false;
+		}
+
+		// 原因例外を設定し再帰呼び出し
+		return isMessageEqualException(e.getCause(), message);
 	}
 }
