@@ -975,6 +975,7 @@ LocaleInfo.ui_metadata_staticresource_ScriptingEntryPathEditPane_displayDialogEd
 LocaleInfo.ui_metadata_staticresource_ScriptingEntryPathEditPane_scriptHint = "<ul><li>request: RequestContext</li><li>em : EntityManager</li><li>edm : EntityDefinitionManager</li><li>auth : AuthContext</li></ul>";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_overwriteConfirmMsg = "編集中のバージョンよりも新しいバージョンのMetaDataが保存されています。<br />上書きしてもよろしいですか？";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_failedUpdateMetaDataMsg = "保存に失敗しました。<br/>原因：";
+LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_completion = "完了";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_saveStaticResourceComp = "静的リソースの保存が完了しました。";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_saveConfirm = "保存確認";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_saveStaticResourceComment = "静的リソースを保存します。よろしいですか？";
