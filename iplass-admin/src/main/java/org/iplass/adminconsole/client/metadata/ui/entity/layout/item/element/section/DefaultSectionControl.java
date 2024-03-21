@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.BulkDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.DetailDropLayout;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewItemDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyControl;
@@ -52,12 +54,14 @@ import com.smartgwt.client.widgets.Canvas;
 public class DefaultSectionControl extends ItemControl implements SectionControl {
 
 	/** 内部のレイアウト */
-	private DetailDropLayout layout = null;
+	private EntityViewItemDropLayout layout = null;
 
 	private EntityDefinition ed;
 
 	/** SectionWindowController */
 	private SectionController sectionController = GWT.create(SectionController.class);
+
+	private static final String BG_COLOR = "#DDFFFF";
 
 	/**
 	 * コンストラクタ
@@ -67,29 +71,19 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 	private DefaultSectionControl(final String defName, FieldReferenceType triggerType, String title, int colNum) {
 		super(defName, triggerType);
 
-		String bgColor = "#DDFFFF";
-
-
 		if (title != null && !title.isEmpty()) {
 			setTitle(title);
 		} else {
 			setTitle("Default Section");
 		}
-		setBackgroundColor(bgColor);
+		setBackgroundColor(BG_COLOR);
 		setDragType(EntityViewDragPane.DRAG_TYPE_SECTION);
 		setAutoSize(true);
 		setBorder("1px solid navy");
 
 		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
 
-		layout = new DetailDropLayout(colNum, defName);
-		layout.setDropTypes(
-				EntityViewDragPane.DRAG_TYPE_SECTION,
-				EntityViewDragPane.DRAG_TYPE_PROPERTY,
-				EntityViewDragPane.DRAG_TYPE_ELEMENT);
-		layout.setCanDropComponents(true);
-		layout.setPadding(5);
-		layout.setBackgroundColor(bgColor);
+		layout = createDropLayout(triggerType, defName, colNum);
 
 		addItem(layout);
 
@@ -108,8 +102,8 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 
 				if (section.getColNum() == layout.getColNum()) return;
 
-				DetailDropLayout old = layout;
-				layout = new DetailDropLayout(section.getColNum(), defName);
+				EntityViewItemDropLayout old = layout;
+				layout = createDropLayout(triggerType, defName, section.getColNum());
 				layout.setEntityDefinition(ed);
 
 				//カラム変更前のレイアウトからメンバー取得
@@ -134,6 +128,25 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 				addItem(layout);
 			}
 		});
+	}
+
+	private EntityViewItemDropLayout createDropLayout(FieldReferenceType triggerType, final String defName, int colNum) {
+		EntityViewItemDropLayout layout = null;
+		if (FieldReferenceType.BULK.equals(triggerType)) {
+			layout = new BulkDropLayout(colNum, defName);
+		} else {
+			layout = new DetailDropLayout(colNum, defName);
+		}
+		
+		layout.setDropTypes(
+				EntityViewDragPane.DRAG_TYPE_SECTION,
+				EntityViewDragPane.DRAG_TYPE_PROPERTY,
+				EntityViewDragPane.DRAG_TYPE_ELEMENT);
+		layout.setCanDropComponents(true);
+		layout.setPadding(5);
+		layout.setBackgroundColor(BG_COLOR);
+
+		return layout;
 	}
 
 	/**

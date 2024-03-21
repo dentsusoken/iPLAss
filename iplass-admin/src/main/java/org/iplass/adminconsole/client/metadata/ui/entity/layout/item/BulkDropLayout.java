@@ -22,7 +22,6 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.MultiColumnDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyControl;
@@ -46,7 +45,7 @@ import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-public class BulkDropLayout extends MultiColumnDropLayout {
+public class BulkDropLayout extends EntityViewItemDropLayout {
 
 	private String defName;
 
@@ -71,6 +70,7 @@ public class BulkDropLayout extends MultiColumnDropLayout {
 		this.defName = defName;
 	}
 
+	@Override
 	public void setEntityDefinition(EntityDefinition ed) {
 		this.ed = ed;
 	}
