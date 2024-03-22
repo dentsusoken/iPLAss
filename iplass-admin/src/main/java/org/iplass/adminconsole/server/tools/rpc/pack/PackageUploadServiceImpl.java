@@ -51,9 +51,6 @@ public class PackageUploadServiceImpl extends AdminUploadAction {
 
 	private PackageService service = ServiceRegistry.getRegistry().getService(PackageService.class);
 
-	/* (非 Javadoc)
-	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.HttpServletRequest, java.util.List)
-	 */
 	@Override
 	public String executeAction(final HttpServletRequest request,
 			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException {

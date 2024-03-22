@@ -71,9 +71,6 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 	/** CSVの固定ヘッダ(デフォルト言語) */
 	private static final String FIXED_HEADER_DEFAULT_LANG = "defaultLang";
 
-	/* (非 Javadoc)
-	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.HttpServletRequest, java.util.List)
-	 */
 	@Override
 	public String executeAction(final HttpServletRequest request,
 			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException {

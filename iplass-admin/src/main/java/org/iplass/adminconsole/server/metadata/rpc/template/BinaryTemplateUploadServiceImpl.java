@@ -60,9 +60,6 @@ public class BinaryTemplateUploadServiceImpl extends AdminUploadAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(BinaryTemplateUploadServiceImpl.class);
 
-	/* (非 Javadoc)
-	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.HttpServletRequest, java.util.List)
-	 */
 	@Override
 	public String executeAction(final HttpServletRequest request,
 			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException, MetaVersionCheckException {
