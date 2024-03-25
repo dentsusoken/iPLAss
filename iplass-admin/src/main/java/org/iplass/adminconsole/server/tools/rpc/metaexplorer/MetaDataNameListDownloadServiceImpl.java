@@ -29,8 +29,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;

@@ -21,8 +21,8 @@ package org.iplass.mtp.impl.metadata.binary.jaxb;
 
 import java.io.InputStream;
 
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.iplass.mtp.definition.binary.ArchiveBinaryDefinition;
 

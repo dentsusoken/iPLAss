@@ -23,9 +23,9 @@ package org.iplass.mtp.impl.view.treeview;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;

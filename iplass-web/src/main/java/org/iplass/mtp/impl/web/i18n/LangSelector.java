@@ -23,7 +23,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;

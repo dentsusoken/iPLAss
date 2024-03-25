@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.auth.authenticate.builtin.policy;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.auth.policy.AccountNotificationListener;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;

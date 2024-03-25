@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.mail.template;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 

@@ -22,8 +22,8 @@ package org.iplass.mtp.impl.web.template;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.servlet.ServletException;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.i18n.I18nUtil;

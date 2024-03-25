@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.async.AsyncTaskManager;

@@ -37,7 +37,7 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;

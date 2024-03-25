@@ -21,8 +21,8 @@ package org.iplass.mtp.impl.command.beanmapper.el;
 
 import java.lang.reflect.Array;
 
-import javax.el.ELContext;
-import javax.el.TypeConverter;
+import jakarta.el.ELContext;
+import jakarta.el.TypeConverter;
 
 public class ArrayTypeConverter extends TypeConverter {
 

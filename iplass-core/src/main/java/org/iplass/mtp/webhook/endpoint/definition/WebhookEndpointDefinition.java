@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.webhook.endpoint.definition;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.iplass.mtp.definition.Definition;
 

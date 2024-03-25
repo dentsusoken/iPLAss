@@ -21,7 +21,7 @@ package org.iplass.mtp.impl.auth.oauth;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.auth.oauth.definition.OIDCClaimScopeDefinition;
 import org.iplass.mtp.auth.oauth.definition.ScopeDefinition;

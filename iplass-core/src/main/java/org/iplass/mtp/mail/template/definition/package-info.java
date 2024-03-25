@@ -18,10 +18,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@javax.xml.bind.annotation.XmlSchema(
+@jakarta.xml.bind.annotation.XmlSchema(
 	namespace="http://mtp.iplass.org/xml/definition/mail",
 	xmlns={
-		@javax.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/mail", prefix="def-mail")
+		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/mail", prefix="def-mail")
 	}
 )
 package org.iplass.mtp.mail.template.definition;

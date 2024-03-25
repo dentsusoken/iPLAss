@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.iplass.mtp.command.RequestContextWrapper;
 import org.iplass.mtp.impl.session.Session;

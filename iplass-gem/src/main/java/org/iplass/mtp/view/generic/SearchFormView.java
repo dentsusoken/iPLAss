@@ -22,8 +22,8 @@ package org.iplass.mtp.view.generic;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;

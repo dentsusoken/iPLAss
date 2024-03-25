@@ -1,4 +1,4 @@
-package javax.xml.bind.annotation.adapters;
+package jakarta.xml.bind.annotation.adapters;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

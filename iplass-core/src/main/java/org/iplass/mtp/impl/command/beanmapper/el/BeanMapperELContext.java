@@ -23,14 +23,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.IdentityHashMap;
 
-import javax.el.BeanNameELResolver;
-import javax.el.BeanNameResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.PropertyNotWritableException;
-import javax.el.VariableMapper;
+import jakarta.el.BeanNameELResolver;
+import jakarta.el.BeanNameResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.VariableMapper;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;

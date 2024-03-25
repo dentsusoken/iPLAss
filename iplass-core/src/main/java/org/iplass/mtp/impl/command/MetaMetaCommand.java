@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.command;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.definition.CommandDefinition;

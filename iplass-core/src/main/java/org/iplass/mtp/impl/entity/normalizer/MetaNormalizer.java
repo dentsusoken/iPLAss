@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.entity.normalizer;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;

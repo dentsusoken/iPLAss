@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.BinaryReference;

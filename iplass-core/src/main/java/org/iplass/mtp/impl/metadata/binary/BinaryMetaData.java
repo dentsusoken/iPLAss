@@ -24,8 +24,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.iplass.mtp.definition.binary.BinaryDefinition;
 import org.iplass.mtp.impl.metadata.binary.jaxb.BinaryMetaDataXmlAdapter;

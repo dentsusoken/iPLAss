@@ -23,9 +23,9 @@ package org.iplass.adminconsole.server.metadata.rpc.entity;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.MediaType;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 
 import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;

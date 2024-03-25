@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.view.treeview;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.view.treeview.EntityTreeViewItem;
 import org.iplass.mtp.view.treeview.ReferenceTreeViewItem;

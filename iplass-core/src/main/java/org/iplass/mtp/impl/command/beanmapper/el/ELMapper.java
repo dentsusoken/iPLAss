@@ -23,11 +23,11 @@ import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.ValueExpression;
 
 import org.iplass.mtp.command.beanmapper.MappingError;
 import org.iplass.mtp.command.beanmapper.MappingResult;

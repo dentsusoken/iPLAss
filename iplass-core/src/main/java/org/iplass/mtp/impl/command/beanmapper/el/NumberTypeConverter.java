@@ -23,8 +23,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormatSymbols;
 
-import javax.el.ELContext;
-import javax.el.TypeConverter;
+import jakarta.el.ELContext;
+import jakarta.el.TypeConverter;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 

@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.metadata.refs;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.MetaAuthenticationPolicy;
 import org.iplass.mtp.impl.command.MetaInterceptorClass;

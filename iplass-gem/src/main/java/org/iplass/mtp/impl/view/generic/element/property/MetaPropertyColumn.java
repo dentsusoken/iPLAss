@@ -20,8 +20,8 @@
 
 package org.iplass.mtp.impl.view.generic.element.property;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;

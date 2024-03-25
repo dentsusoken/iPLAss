@@ -23,7 +23,7 @@ package org.iplass.mtp.view.treeview;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;

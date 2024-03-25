@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 class BeanInfo {
 	private static SoftConcurrentHashMap<Class<?>, BeanInfo> biMap = new SoftConcurrentHashMap<>(256);

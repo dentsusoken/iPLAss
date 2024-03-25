@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.builtin.web;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;

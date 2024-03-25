@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;

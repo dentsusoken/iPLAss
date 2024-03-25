@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.view.top.parts;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;

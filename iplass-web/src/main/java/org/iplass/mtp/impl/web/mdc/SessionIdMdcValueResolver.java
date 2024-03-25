@@ -19,8 +19,8 @@
  */
 package org.iplass.mtp.impl.web.mdc;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * MDC値として利用するセッションIDを解決する

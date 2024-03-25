@@ -21,7 +21,7 @@ package org.iplass.mtp.impl.validation.bean;
 
 import java.util.Locale;
 
-import javax.validation.MessageInterpolator;
+import jakarta.validation.MessageInterpolator;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;

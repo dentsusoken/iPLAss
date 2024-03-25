@@ -1,4 +1,4 @@
-package javax.xml.bind.annotation.adapters;
+package jakarta.xml.bind.annotation.adapters;
 
 //XmlAdapter representation for GWT
 public abstract class XmlAdapter<ValueType,BoundType> {

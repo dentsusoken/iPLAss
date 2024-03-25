@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.view.top.parts;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;

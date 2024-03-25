@@ -20,8 +20,8 @@
 
 package org.iplass.mtp.impl.auth.authenticate.token.web;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenClientStore;
 import org.iplass.mtp.impl.web.WebRequestStack;

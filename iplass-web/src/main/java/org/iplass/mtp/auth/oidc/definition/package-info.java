@@ -18,10 +18,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@javax.xml.bind.annotation.XmlSchema(
+@jakarta.xml.bind.annotation.XmlSchema(
 	namespace="http://mtp.iplass.org/xml/definition/auth/oidc",
 	xmlns={
-		@javax.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/auth/oidc", prefix="def-oidc")
+		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/auth/oidc", prefix="def-oidc")
 	}
 )
 package org.iplass.mtp.auth.oidc.definition;

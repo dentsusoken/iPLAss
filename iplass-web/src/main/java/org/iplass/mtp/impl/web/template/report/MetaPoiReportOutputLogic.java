@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.web.template.report;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.iplass.mtp.command.RequestContext;

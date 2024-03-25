@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.impl.entity.EntityContext;

@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.view.generic.editor;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  *

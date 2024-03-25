@@ -26,8 +26,8 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.impl.datastore.MetaPropertyStore;

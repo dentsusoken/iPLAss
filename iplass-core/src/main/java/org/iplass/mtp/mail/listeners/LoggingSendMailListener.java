@@ -22,8 +22,8 @@ package org.iplass.mtp.mail.listeners;
 
 import java.util.List;
 
-import javax.activation.DataHandler;
-import javax.mail.internet.InternetAddress;
+import jakarta.activation.DataHandler;
+import jakarta.mail.internet.InternetAddress;
 
 import org.iplass.mtp.mail.InlineContent;
 import org.iplass.mtp.mail.Mail;

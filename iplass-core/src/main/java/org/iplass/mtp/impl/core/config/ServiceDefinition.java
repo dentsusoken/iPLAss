@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.core.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

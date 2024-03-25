@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.view.generic.element.section;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntime;

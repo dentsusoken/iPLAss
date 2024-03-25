@@ -32,7 +32,7 @@ import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.commons.fileupload.util.Streams;
 import org.iplass.mtp.ManagerLocator;
@@ -58,7 +58,7 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 
 			File tempDir = null;
 			if (webFront.getTempFileDir() == null) {
-				tempDir = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+				tempDir = (File) servletContext.getAttribute("jakarta.servlet.context.tempdir");
 			} else {
 				tempDir = new File(webFront.getTempFileDir());
 			}

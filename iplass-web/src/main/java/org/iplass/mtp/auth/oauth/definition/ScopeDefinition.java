@@ -22,7 +22,7 @@ package org.iplass.mtp.auth.oauth.definition;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 

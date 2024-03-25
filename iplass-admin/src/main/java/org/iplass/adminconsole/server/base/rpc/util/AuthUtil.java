@@ -20,9 +20,9 @@
 
 package org.iplass.adminconsole.server.base.rpc.util;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.shared.base.dto.AdminUncaughtException;

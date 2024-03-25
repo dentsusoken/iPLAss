@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.mail;
 
-import javax.activation.DataHandler;
+import jakarta.activation.DataHandler;
 
 public class InlineContent {
 

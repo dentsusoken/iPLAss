@@ -24,7 +24,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;

@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.view.top.parts;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * 画面表示パーツ

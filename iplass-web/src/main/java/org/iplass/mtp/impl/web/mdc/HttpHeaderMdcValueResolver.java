@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.web.mdc;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class HttpHeaderMdcValueResolver implements MdcValueResolver {
 

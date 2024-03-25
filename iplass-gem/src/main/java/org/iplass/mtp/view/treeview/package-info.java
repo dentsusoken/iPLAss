@@ -18,10 +18,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@javax.xml.bind.annotation.XmlSchema(
+@jakarta.xml.bind.annotation.XmlSchema(
 	namespace="http://mtp.iplass.org/xml/definition/view/treeview",
 	xmlns={
-		@javax.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/view/treeview", prefix="def-vtree")
+		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/view/treeview", prefix="def-vtree")
 	}
 )
 package org.iplass.mtp.view.treeview;

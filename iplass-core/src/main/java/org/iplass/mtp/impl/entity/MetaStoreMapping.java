@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.entity;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.entity.definition.StoreDefinition;
 import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;

@@ -28,7 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.Command;

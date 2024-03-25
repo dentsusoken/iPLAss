@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;

@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.beanvalidation;
 
-import javax.validation.Validator;
+import jakarta.validation.Validator;
 
 import org.iplass.mtp.impl.validation.ValidationService;
 import org.iplass.mtp.spi.ServiceRegistry;

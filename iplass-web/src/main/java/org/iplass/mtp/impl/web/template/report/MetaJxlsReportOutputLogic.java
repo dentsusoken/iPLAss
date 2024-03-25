@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.web.template.report;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;

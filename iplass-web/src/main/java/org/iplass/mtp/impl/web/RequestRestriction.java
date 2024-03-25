@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;

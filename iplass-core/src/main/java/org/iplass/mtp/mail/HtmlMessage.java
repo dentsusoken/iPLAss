@@ -23,7 +23,7 @@ package org.iplass.mtp.mail;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.activation.DataHandler;
+import jakarta.activation.DataHandler;
 
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.impl.mail.BinaryReferenceDataSource;

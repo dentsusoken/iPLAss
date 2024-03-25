@@ -22,8 +22,8 @@ package org.iplass.mtp.impl.auth.authenticate.preexternal;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.Credential;

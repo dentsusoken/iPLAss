@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.view.generic.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.auth.AuthContextHolder;

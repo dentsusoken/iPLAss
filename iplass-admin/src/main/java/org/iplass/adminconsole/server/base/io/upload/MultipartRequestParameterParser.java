@@ -21,7 +21,7 @@ package org.iplass.adminconsole.server.base.io.upload;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * マルチパートリクエスト パラメータ解析機能

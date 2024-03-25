@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.WebUtil;

@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;

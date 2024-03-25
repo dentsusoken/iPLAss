@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.web.mdc;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class UuidMdcValueResolver implements MdcValueResolver {
 	

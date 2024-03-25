@@ -23,9 +23,9 @@ import java.beans.FeatureDescriptor;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.PropertyNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.entity.EntityContext;

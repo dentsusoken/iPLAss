@@ -287,7 +287,7 @@
 		<!--
 		<property name="loginUrlSelector" class="org.iplass.gem.GemLoginUrlSelector" />
 		-->
-		<!-- テンポラリファイル格納パス 未指定時は「javax.servlet.context.tempdir」を使用 -->
+		<!-- テンポラリファイル格納パス 未指定時は「jakarta.servlet.context.tempdir」を使用 -->
 		<!--
 		<property name="tempFileDir" value="/tmp" />
 		-->

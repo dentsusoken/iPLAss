@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import org.apache.poi.util.IOUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
@@ -109,7 +109,7 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 
-		contextTempDir = (File) config.getServletContext().getAttribute("javax.servlet.context.tempdir");
+		contextTempDir = (File) config.getServletContext().getAttribute("jakarta.servlet.context.tempdir");
 
 		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
 		// マルチパートリクエストの最大パラメータ数を設定する。

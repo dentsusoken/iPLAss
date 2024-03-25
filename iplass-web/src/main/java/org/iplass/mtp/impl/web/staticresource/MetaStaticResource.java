@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.MimetypesFileTypeMap;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.activation.MimetypesFileTypeMap;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.iplass.mtp.definition.binary.ArchiveBinaryDefinition;
 import org.iplass.mtp.definition.binary.BinaryDefinition;

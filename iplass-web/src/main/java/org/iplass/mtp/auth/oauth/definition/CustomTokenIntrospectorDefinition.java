@@ -21,7 +21,7 @@ package org.iplass.mtp.auth.oauth.definition;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.auth.oauth.definition.introspectors.JavaClassCustomTokenIntrospectorDefinition;
 import org.iplass.mtp.auth.oauth.definition.introspectors.ScriptingCustomTokenIntrospectorDefinition;

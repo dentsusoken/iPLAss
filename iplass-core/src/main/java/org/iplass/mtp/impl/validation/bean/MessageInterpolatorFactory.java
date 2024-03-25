@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.validation.bean;
 
-import javax.validation.MessageInterpolator;
+import jakarta.validation.MessageInterpolator;
 
 public interface MessageInterpolatorFactory {
 	

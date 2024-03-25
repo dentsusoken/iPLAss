@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.view.top.parts;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.view.top.parts.ActionParts;
 import org.iplass.mtp.view.top.parts.SeparatorParts;

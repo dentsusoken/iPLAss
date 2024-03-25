@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.view.treeview;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * ツリービューにEntityを表示するための定義情報

@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.webapi.interceptors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;

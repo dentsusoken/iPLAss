@@ -22,10 +22,10 @@ package org.iplass.mtp.impl.validation.bean;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.validation.Configuration;
-import javax.validation.MessageInterpolator;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.Configuration;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 

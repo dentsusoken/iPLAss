@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.web.template.groovy;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javax.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotFoundException;
 
 import org.iplass.mtp.command.beanmapper.MappingError;
 import org.iplass.mtp.command.beanmapper.MappingException;

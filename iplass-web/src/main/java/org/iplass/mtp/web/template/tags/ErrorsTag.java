@@ -22,11 +22,11 @@ package org.iplass.mtp.web.template.tags;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.TryCatchFinally;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
+import jakarta.servlet.jsp.tagext.TryCatchFinally;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.beanmapper.MappingError;
