@@ -91,6 +91,10 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 	private static final long serialVersionUID = -5553465242497700877L;
 	/** 例外メッセージに含まれるクラス名パターン。最後の ": " は {@link java.lang.Throwable#toString()} を参照 */
 	private static final Pattern EXCEPTION_MESSAGE_CLASS_PATTERN = Pattern.compile("^([a-zA-Z0-9\\.\\$]*: )");
+	/** 改行コードパターン */
+	private static final Pattern RETURN_CODE_PATTERN = Pattern.compile("\n|\r");
+	/** 改行コード変換後 */
+	private static final String RETURN_CODE_REPLACED = "";
 	/** ロガー */
 	private Logger logger = LoggerFactory.getLogger(AdminUploadAction.class);
 	/** contextTempDir */
@@ -144,7 +148,7 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 			// アップロードされたファイル情報のログ出力
 			files.stream().filter(f -> !f.isFormField())
 			.forEach(f -> logger.info("{} FILE INFO. fieldName = {},  file = {}, content-type = {}, size = {}.",
-					logPrefix, f.getFieldName(), f.getName(), f.getContentType(), f.getSize()));
+					logPrefix, f.getFieldName(), removeReturnCode(f.getName()), f.getContentType(), f.getSize()));
 			if (logger.isDebugEnabled()) {
 				// フォーム入力値パラメータ情報のログ出力
 				files.stream().filter(f -> f.isFormField())
@@ -319,5 +323,15 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 
 		// 原因例外を設定し再帰呼び出し
 		return isMessageEqualException(e.getCause(), message);
+	}
+
+	/**
+	 * 改行コードを削除する
+	 * @param target 対象文字列
+	 * @return 改行コード削除後の文字列
+	 */
+	private String removeReturnCode(String target) {
+		Matcher m = RETURN_CODE_PATTERN.matcher(target);
+		return m.replaceAll(RETURN_CODE_REPLACED);
 	}
 }
