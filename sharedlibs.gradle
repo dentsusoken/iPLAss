@@ -147,8 +147,8 @@ ext {
 		'org.webjars:font-awesome': '5.13.1',
 		
 		//for jsp compilation
-		'org.apache.tomcat:tomcat-jasper': '9.0.37',
-		'org.glassfish.web:jakarta.servlet.jsp.jstl': '1.2.6'
+		'org.apache.tomcat:tomcat-jasper': '10.0.27',
+		'org.glassfish.web:jakarta.servlet.jsp.jstl': '2.0.0'
 		
 	]
 	
