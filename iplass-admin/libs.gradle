@@ -17,6 +17,9 @@ dependencies {
 	//supercsv
 	implementation sharedLib('net.sf.supercsv:super-csv')
 
+	// commons-lang
+	implementation sharedLib('org.apache.commons:commons-lang3')
+
 	// commons-io
 	implementation sharedLib('commons-io:commons-io')
 	
@@ -34,9 +37,13 @@ dependencies {
 	}
 
 	// gwt.gwtVersion を指定すれば設定される依存関係を個別設定
-	gwtSdk sharedLib('org.gwtproject:gwt-dev')
+	gwtSdk(sharedLib('org.gwtproject:gwt-dev')) {
+	  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
+	}
 	gwtSdk sharedLib('org.gwtproject:gwt-user')
-	runtimeOnly sharedLib('org.gwtproject:gwt-servlet-jakarta')
-	gwt sharedLib('org.gwtproject:gwt-codeserver')
+	implementation sharedLib('org.gwtproject:gwt-servlet-jakarta')
+	gwt(sharedLib('org.gwtproject:gwt-codeserver')) {
+	  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
+	}
 
 }
