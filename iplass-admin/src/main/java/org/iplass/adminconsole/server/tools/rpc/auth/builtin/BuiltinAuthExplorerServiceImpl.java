@@ -44,7 +44,7 @@ import org.iplass.mtp.impl.tools.auth.builtin.cond.UserSpecificCondition;
 import org.iplass.mtp.impl.tools.auth.builtin.cond.UserSpecificCondition.SpecificType;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 
 public class BuiltinAuthExplorerServiceImpl extends XsrfProtectedServiceServlet implements BuiltinAuthExplorerService {
 

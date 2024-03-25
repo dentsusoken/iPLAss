@@ -50,7 +50,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.util.StringUtil;
 
-import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 
 public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implements PackageRpcService {
 

@@ -55,7 +55,7 @@ import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 
 public class MetaDataExplorerServiceImpl extends XsrfProtectedServiceServlet implements MetaDataExplorerService {
 

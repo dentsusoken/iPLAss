@@ -144,7 +144,7 @@ import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinitionManag
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 
 public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements MetaDataService {
 

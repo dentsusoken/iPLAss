@@ -21,7 +21,7 @@ package org.iplass.adminconsole.server.base.rpc.screen;
 
 import org.iplass.adminconsole.shared.base.rpc.screen.ScreenModuleService;
 
-import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 
 /**
  * 画面モジュール用Service実装
