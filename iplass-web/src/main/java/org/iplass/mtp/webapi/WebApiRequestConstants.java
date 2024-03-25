@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.webapi;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.RequestInfo;

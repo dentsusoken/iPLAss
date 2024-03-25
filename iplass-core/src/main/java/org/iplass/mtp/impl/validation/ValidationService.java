@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.validation;
 
-import javax.validation.Validator;
+import jakarta.validation.Validator;
 
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.BinarySizeValidation;

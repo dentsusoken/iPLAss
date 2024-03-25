@@ -21,9 +21,9 @@ package org.iplass.mtp.web.template.tags;
 
 import java.util.regex.Pattern;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.TryCatchFinally;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.tagext.TryCatchFinally;
 
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.Permission;

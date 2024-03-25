@@ -21,7 +21,7 @@ package org.iplass.mtp.web.staticresource.definition;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({JavaClassEntryPathTranslatorDefinition.class,
 	PrefixEntryPathTranslatorDefinition.class,

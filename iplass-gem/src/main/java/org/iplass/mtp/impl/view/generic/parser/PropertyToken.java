@@ -22,9 +22,9 @@ package org.iplass.mtp.impl.view.generic.parser;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.entity.Entity;

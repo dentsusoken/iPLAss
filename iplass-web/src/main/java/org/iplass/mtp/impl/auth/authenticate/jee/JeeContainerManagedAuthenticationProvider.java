@@ -22,8 +22,8 @@ package org.iplass.mtp.impl.auth.authenticate.jee;
 import java.security.Principal;
 import java.util.ArrayList;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.Credential;

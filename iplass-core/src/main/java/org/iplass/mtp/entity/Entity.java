@@ -22,7 +22,7 @@ package org.iplass.mtp.entity;
 
 import java.sql.Timestamp;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.iplass.mtp.impl.entity.jaxb.EntityXmlAdapter;
 

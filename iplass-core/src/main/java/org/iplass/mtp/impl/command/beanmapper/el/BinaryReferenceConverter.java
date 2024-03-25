@@ -19,8 +19,8 @@
  */
 package org.iplass.mtp.impl.command.beanmapper.el;
 
-import javax.el.ELContext;
-import javax.el.TypeConverter;
+import jakarta.el.ELContext;
+import jakarta.el.TypeConverter;
 
 import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.entity.BinaryReference;

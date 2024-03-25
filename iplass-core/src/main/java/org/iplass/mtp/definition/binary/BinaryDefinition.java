@@ -22,7 +22,7 @@ package org.iplass.mtp.definition.binary;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.iplass.mtp.impl.metadata.binary.jaxb.BinaryDefinitionXmlAdapter;
 

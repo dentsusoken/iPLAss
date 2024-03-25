@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.view.menu;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entity表示用メニューアイテム定義

@@ -20,8 +20,8 @@
 
 package org.iplass.mtp.impl.datastore.grdb;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 import org.iplass.mtp.entity.definition.StoreDefinition;
 import org.iplass.mtp.impl.datastore.EntityStoreRuntime;

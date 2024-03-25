@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.auth.authenticate.builtin.web;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;

@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.metadata.refs.web;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.auth.authenticate.oidc.MetaOpenIdConnect;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization;

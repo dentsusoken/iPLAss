@@ -20,8 +20,8 @@
 
 package org.iplass.mtp.view.generic.element;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.mtp.view.generic.Jsp;

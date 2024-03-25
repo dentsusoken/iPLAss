@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.command.definition;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class JavaClassCommandDefinition extends CommandDefinition {

@@ -22,8 +22,8 @@ package org.iplass.mtp.view.generic.parser;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.PageContext;
 
 public interface Token {
 	void printOut(PageContext page) throws ServletException, IOException;

@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.web.actionmapping.cache;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.actionmapping.WebInvocationImpl;

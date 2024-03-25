@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.entity.l10n;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.InsertOption;

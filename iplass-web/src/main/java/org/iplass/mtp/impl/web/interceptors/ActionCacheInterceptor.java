@@ -23,8 +23,8 @@ package org.iplass.mtp.impl.web.interceptors;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;

@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.entity.jaxb;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;

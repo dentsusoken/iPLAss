@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.command.async.definition;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.iplass.mtp.async.AsyncTaskManager;
 import org.iplass.mtp.async.AsyncTaskOption;

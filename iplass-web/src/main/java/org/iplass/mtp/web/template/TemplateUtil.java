@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.PageContext;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
@@ -85,7 +85,7 @@ public class TemplateUtil {
 	 * <p>テナントコンテキストパスを返します。</p>
 	 *
 	 * <ul>
-	 * <li>通常は「{@link javax.servlet.http.HttpServletRequest#getContextPath() HttpServletRequest#getContextPath()} + テナントメタ#テナントURL」を返します。
+	 * <li>通常は「{@link jakarta.servlet.http.HttpServletRequest#getContextPath() HttpServletRequest#getContextPath()} + テナントメタ#テナントURL」を返します。
 	 * <li>テナントURLが「/」の場合は、最後に「/」は付与しません。
 	 * <li>テナントメタに「リクエストパス構築用テナントURL」を指定している場合はその値を返します。
 	 * <li>「リクエストパス構築用テナントURL」が「/」の場合は空を返します。

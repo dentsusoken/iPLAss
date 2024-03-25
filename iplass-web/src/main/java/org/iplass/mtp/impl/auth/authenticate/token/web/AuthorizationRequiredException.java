@@ -19,8 +19,8 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.token.web;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 public class AuthorizationRequiredException extends WebApplicationException {
 	private static final long serialVersionUID = 2602027263698869909L;
