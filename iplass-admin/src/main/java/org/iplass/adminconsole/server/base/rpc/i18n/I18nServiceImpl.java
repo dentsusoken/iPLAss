@@ -31,7 +31,7 @@ import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 
-import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 
 public class I18nServiceImpl extends XsrfProtectedServiceServlet implements I18nService {
 

@@ -38,13 +38,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.client.rpc.XsrfToken;
-import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 
 /**
  * XsrfProtected Servlet（Multipart リクエスト用）
  *
  * <p>
- * {@link com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet#validateXsrfToken(com.google.gwt.user.client.rpc.RpcToken, java.lang.reflect.Method)} を利用しトークン検証を実施するサーブレット。
+ * {@link com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet#validateXsrfToken(com.google.gwt.user.client.rpc.RpcToken, java.lang.reflect.Method)} を利用しトークン検証を実施するサーブレット。
  * XsrfProtectedServiceServlet では GWT RPC が強制されるので、service メソッドをオーバーライドし Multipart リクエストのみ受け付け可能な形としている。
  * </p>
  *
