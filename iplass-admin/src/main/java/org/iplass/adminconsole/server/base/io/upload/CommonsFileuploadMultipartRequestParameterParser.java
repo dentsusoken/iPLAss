@@ -22,17 +22,17 @@ package org.iplass.adminconsole.server.base.io.upload;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.fileupload2.core.DiskFileItemFactory;
+import org.apache.commons.fileupload2.core.FileItem;
+import org.apache.commons.fileupload2.core.FileItemFactory;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
+
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 /**
  * Comons Fileupload 用マルチパートリクエストパラメータ解析機能
@@ -69,7 +69,7 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 	private long fileCountMax = FILE_COUNT_MAX;
 
 	/** ファイルサイズ閾値 */
-	private int sizeThreshold = DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD;
+	private int sizeThreshold = DiskFileItemFactory.DEFAULT_THRESHOLD;
 	/** 一時ファイルディレクトリ */
 	private File temporaryDirectory = null;
 	/** デフォルト文字コード */
@@ -151,7 +151,7 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 		try {
 			// NOTE ServletFileUpload はリクエスト単位で作成する
 			// cf. https://commons.apache.org/proper/commons-fileupload/using
-			ServletFileUpload servletFileUpload = getServletFileUpload(getFileItemFactory());
+			JakartaServletFileUpload servletFileUpload = getServletFileUpload(getFileItemFactory());
 			List<FileItem> fileItemList = servletFileUpload.parseRequest(req);
 			return convert(fileItemList);
 
@@ -165,8 +165,8 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 	 * @param fileItemFactory FileItemFactoryインスタンス
 	 * @return ServletFileUpload インスタンス
 	 */
-	protected ServletFileUpload getServletFileUpload(FileItemFactory fileItemFactory) {
-		ServletFileUpload servletFileUpload = new ServletFileUpload(fileItemFactory);
+	protected JakartaServletFileUpload getServletFileUpload(FileItemFactory fileItemFactory) {
+		JakartaServletFileUpload servletFileUpload = new JakartaServletFileUpload(fileItemFactory);
 		servletFileUpload.setSizeMax(sizeMax);
 		servletFileUpload.setFileSizeMax(fileSizeMax);
 		servletFileUpload.setFileCountMax(fileCountMax);
@@ -178,15 +178,16 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 	 * @return FileItemFactory インスタンス
 	 */
 	protected FileItemFactory getFileItemFactory() {
-		AdminFileItemFactory fileItemFactory = new AdminFileItemFactory();
-		fileItemFactory.setSizeThreshold(sizeThreshold);
+		// FIXME 一時的な対応
+		DiskFileItemFactory.Builder builder = DiskFileItemFactory.builder();
+		builder.setBufferSize(sizeThreshold);
 		if (null != temporaryDirectory) {
-			fileItemFactory.setRepository(temporaryDirectory);
+			builder.setPath(temporaryDirectory.toPath());
 		}
 		if (null != defaultCharset) {
-			fileItemFactory.setDefaultCharset(defaultCharset);
+			builder.setCharset(defaultCharset);
 		}
-		return fileItemFactory;
+		return builder.get();
 	}
 
 	/**
@@ -198,33 +199,34 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 		return fileItemList.stream().map(i -> new CommonsFileuploadMultipartRequestParameter(i)).collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	/**
-	 * <p>FileItem生成用クラス</p>
-	 *
-	 * <p>
-	 * 複数の同一パラメータの場合に、パラメータ名末尾にパラメータ番号を付与する。
-	 * </p>
-	 *
-	 * <p>
-	 * 機能再作成前に実装していた FileItemFactory を移植
-	 * </p>
-	 */
-	public static class AdminFileItemFactory extends DiskFileItemFactory {
-		public static final String MULTI_SUFFIX = "[]";
-		private HashMap<String, Integer> map = new HashMap<String, Integer>();
-
-		@Override
-		public FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) {
-			Integer cont = map.get(fieldName) != null ? (map.get(fieldName) + 1) : 0;
-			map.put(fieldName, cont);
-
-			// 複数の場合のみ、後ろにCountを付加
-			if (cont > 0 || fieldName.contains(MULTI_SUFFIX)) {
-				fieldName = fieldName.replace(MULTI_SUFFIX, "") + "-" + cont;
-			}
-
-			return super.createItem(fieldName, contentType, isFormField, fileName);
-		}
-	}
+	// FIXME 構成が変わっているので対応方法を検討する必要がある
+	//	/**
+	//	 * <p>FileItem生成用クラス</p>
+	//	 *
+	//	 * <p>
+	//	 * 複数の同一パラメータの場合に、パラメータ名末尾にパラメータ番号を付与する。
+	//	 * </p>
+	//	 *
+	//	 * <p>
+	//	 * 機能再作成前に実装していた FileItemFactory を移植
+	//	 * </p>
+	//	 */
+	//	public static class AdminFileItemFactory extends DiskFileItemFactory {
+	//		public static final String MULTI_SUFFIX = "[]";
+	//		private HashMap<String, Integer> map = new HashMap<String, Integer>();
+	//
+	//		@Override
+	//		public FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) {
+	//			Integer cont = map.get(fieldName) != null ? (map.get(fieldName) + 1) : 0;
+	//			map.put(fieldName, cont);
+	//
+	//			// 複数の場合のみ、後ろにCountを付加
+	//			if (cont > 0 || fieldName.contains(MULTI_SUFFIX)) {
+	//				fieldName = fieldName.replace(MULTI_SUFFIX, "") + "-" + cont;
+	//			}
+	//
+	//			return super.createItem(fieldName, contentType, isFormField, fileName);
+	//		}
+	//	}
 
 }

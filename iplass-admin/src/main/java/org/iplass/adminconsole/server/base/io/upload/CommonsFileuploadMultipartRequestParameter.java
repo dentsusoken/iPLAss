@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload2.core.FileItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CommonsFileupload FileItem 用 マルチパートリクエストパラメータ
@@ -35,6 +37,8 @@ import org.apache.commons.fileupload.FileItem;
  * @author SEKIGUCHI Naoya
  */
 class CommonsFileuploadMultipartRequestParameter implements MultipartRequestParameter {
+	/** logger */
+	private Logger logger = LoggerFactory.getLogger(CommonsFileuploadMultipartRequestParameter.class);
 	/** FileItem インスタンス */
 	private FileItem delegate;
 
@@ -85,6 +89,10 @@ class CommonsFileuploadMultipartRequestParameter implements MultipartRequestPara
 
 	@Override
 	public void dispose() {
-		delegate.delete();
+		try {
+			delegate.delete();
+		} catch (IOException e) {
+			logger.error("failed FileItem#delete.", e);
+		}
 	}
 }
