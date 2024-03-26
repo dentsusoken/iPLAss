@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.apache.commons.fileupload2.core.FileItemInput;
 import org.apache.commons.fileupload2.core.FileItemInputIterator;
-import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.impl.web.ParameterValueMap;
