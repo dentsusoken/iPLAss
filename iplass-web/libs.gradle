@@ -44,7 +44,7 @@ dependencies {
 		transitive = false
 	}
 
-	implementation sharedLib('org.apache.commons:commons-fileupload2-jakarta-servlet5')
+	implementation sharedLib('org.apache.commons:commons-fileupload2-jakarta-servlet6')
 
 	//Java JWT
 	implementation sharedLib('io.jsonwebtoken:jjwt-api')

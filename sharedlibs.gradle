@@ -1,44 +1,51 @@
 ext {
 	//for version management
 	sharedLibs = [
-		// JakartaEE9 apis
-		// https://projects.eclipse.org/releases/jakarta-ee-9
+		// Jakarta 10 apis
+		// https://projects.eclipse.org/releases/jakarta-10
 
 		// https://projects.eclipse.org/projects/ee4j.mail
-		'jakarta.mail:jakarta.mail-api': '2.0.1',
+		'jakarta.mail:jakarta.mail-api': '2.1.3',
 		// https://projects.eclipse.org/projects/ee4j.validation
 		'jakarta.validation:jakarta.validation-api': '3.0.2',
 		// https://projects.eclipse.org/projects/ee4j.el
-		'jakarta.el:jakarta.el-api': '4.0.0',
+		// NOTE 5.0.1 が存在しているが、実装がない
+		'jakarta.el:jakarta.el-api': '5.0.0',
 		// https://projects.eclipse.org/projects/ee4j.jaf
-		'jakarta.activation:jakarta.activation-api': '2.0.1',
+		'jakarta.activation:jakarta.activation-api': '2.1.3',
+		// https://jakarta.ee/specifications/xml-binding/
+		// https://jakarta.ee/specifications/xml-binding/4.0/
 		// https://projects.eclipse.org/projects/ee4j.jaxb
-		'jakarta.xml.bind:jakarta.xml.bind-api': '3.0.1',
+		'jakarta.xml.bind:jakarta.xml.bind-api': '4.0.2',
 
 		// https://projects.eclipse.org/projects/ee4j.servlet
-		'jakarta.servlet:jakarta.servlet-api': '5.0.0',
+		'jakarta.servlet:jakarta.servlet-api': '6.0.0',
 		// https://projects.eclipse.org/projects/ee4j.jsp
-		'jakarta.servlet.jsp:jakarta.servlet.jsp-api': '3.0.0',
+		'jakarta.servlet.jsp:jakarta.servlet.jsp-api': '3.1.1',
 		// https://projects.eclipse.org/projects/ee4j.jstl
-		'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api': '2.0.0',
+		'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api': '3.0.0',
 		// https://projects.eclipse.org/projects/ee4j.rest
-		'jakarta.ws.rs:jakarta.ws.rs-api': '3.0.0',
+		'jakarta.ws.rs:jakarta.ws.rs-api': '3.1.0', // TODO jakartaee 10 では  4.0.0 とあるが、リリースされていない。
 		// https://projects.eclipse.org/projects/ee4j.ca
-		'jakarta.annotation:jakarta.annotation-api': '2.0.0',
+		'jakarta.annotation:jakarta.annotation-api': '2.1.1',
 		
-		// JakartaEE9 runtimes
-		// https://jakartaee.github.io/mail-api/
-		'com.sun.mail:jakarta.mail': '2.0.1',
-		// https://hibernate.org/validator/releases/7.0/
-		'org.hibernate.validator:hibernate-validator': '7.0.5.Final',
-		// ?
-		'org.glassfish:jakarta.el': '4.0.2',
-		// https://jakarta.ee/specifications/activation/
-		'com.sun.activation:jakarta.activation': '2.0.0',
-		// ?
-		'org.glassfish.jaxb:jaxb-runtime': '3.0.2',
+		// Jakarta 10 runtimes
+		// https://eclipse-ee4j.github.io/angus-mail/
+		'org.eclipse.angus:angus-mail': '2.0.3',
+		// https://hibernate.org/validator/releases/8.0/
+		'org.hibernate.validator:hibernate-validator': '8.0.1.Final',
+		// https://jakarta.ee/specifications/expression-language/5.0/
+		// https://github.com/eclipse-ee4j/expressly
+		// https://projects.eclipse.org/projects/ee4j.expressly
+		// NOTE: incubating
+		'org.glassfish.expressly:expressly': '5.0.0',
+		// https://eclipse-ee4j.github.io/angus-activation/
+		'org.eclipse.angus:angus-activation': '2.0.2',
+		// https://eclipse-ee4j.github.io/jaxb-ri/
+		// NOTE: 公式には、 `com.sun.xml.bind:jaxb-impl` となっている。実体は org.glassfish.jaxb 。
+		'org.glassfish.jaxb:jaxb-runtime': '4.0.5',
 		// https://eclipse-ee4j.github.io/jersey/
-		'org.glassfish.jersey:jersey-bom': '3.0.11',//by bom
+		'org.glassfish.jersey:jersey-bom': '3.1.5',//by bom
 
 		//3rd party libs
 		//apache commons
@@ -113,7 +120,7 @@ ext {
 		'com.github.librepdf:openpdf': '1.3.33',
 
 		// FIXME version is miliestone
-		'org.apache.commons:commons-fileupload2-jakarta-servlet5': '2.0.0-M2',
+		'org.apache.commons:commons-fileupload2-jakarta-servlet6': '2.0.0-M2',
 		'io.jsonwebtoken:jjwt-api': '0.11.5',
 		'io.jsonwebtoken:jjwt-impl': '0.11.5',
 		'io.jsonwebtoken:jjwt-jackson': '0.11.5',
@@ -147,8 +154,8 @@ ext {
 		'org.webjars:font-awesome': '5.13.1',
 		
 		//for jsp compilation
-		'org.apache.tomcat:tomcat-jasper': '10.0.27',
-		'org.glassfish.web:jakarta.servlet.jsp.jstl': '2.0.0'
+		'org.apache.tomcat:tomcat-jasper': '10.1.19',
+		'org.glassfish.web:jakarta.servlet.jsp.jstl': '3.0.1'
 		
 	]
 	
@@ -212,13 +219,14 @@ dependencies {
 	jeeruntime4tomcat platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
 
 	//jstl runtime
+	jeeruntime4tomcat sharedLib('jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api')
 	jeeruntime4tomcat sharedLib('org.glassfish.web:jakarta.servlet.jsp.jstl')
 	//java mail runtime
-	jeeruntime4tomcat sharedLib('com.sun.mail:jakarta.mail')
+	jeeruntime4tomcat sharedLib('org.eclipse.angus:angus-mail')
 	//Bean validation runtime
 	jeeruntime4tomcat sharedLib('org.hibernate.validator:hibernate-validator')
 	//EL runtime
-	jeeruntime4tomcat sharedLib('org.glassfish:jakarta.el')
+	jeeruntime4tomcat sharedLib('org.glassfish.expressly:expressly')
 
 	//JAX-RS runtime
 	jeeruntime4tomcat platform(sharedLib('org.glassfish.jersey:jersey-bom'))
@@ -233,7 +241,7 @@ dependencies {
 	jeeruntime4tomcat sharedLib('org.glassfish.jaxb:jaxb-runtime')
 
 	//JAF runtime for java11
-	jeeruntime4tomcat sharedLib('com.sun.activation:jakarta.activation')
+	jeeruntime4tomcat sharedLib('org.eclipse.angus:angus-activation')
 	
 }
 
