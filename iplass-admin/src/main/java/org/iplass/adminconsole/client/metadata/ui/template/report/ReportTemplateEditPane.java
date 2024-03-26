@@ -27,6 +27,7 @@ import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
 import org.iplass.adminconsole.client.base.io.upload.UploadResultInfo;
 import org.iplass.adminconsole.client.base.io.upload.UploadSubmitCompleteHandler;
+import org.iplass.adminconsole.client.base.io.upload.XsrfProtectedMultipartForm;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
@@ -59,7 +60,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.Hidden;
@@ -76,7 +76,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 	private final MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
-	private FormPanel form;
+	private XsrfProtectedMultipartForm form;
 	private FlowPanel paramPanel;
 
 	private DynamicForm reportTypeForm;
@@ -99,7 +99,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private TextItem poiPasswordAttributeNameField;
 	/** Poiレポート出力ロジック部分 */
 	private PoiReportOutLogicPane reportOutPane;
-	
+
 	/** JXLS PasswordAttributeName */
 	private DynamicForm jxlsPasswordAttributeNameForm;
 	private TextItem jxlsPasswordAttributeNameField;
@@ -117,7 +117,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private StaticTextItem txtDownloadFileName;
 
 	private AsyncCallback<AdminDefinitionModifyResult> callback;
-	
+
 	/** 変更前のReportTypeの値を保持  */
 	private String beforeReportType;
 
@@ -149,7 +149,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 					removeSpecificMember(beforeReportType);
 					addMembers(poiPasswordAttributeNameForm, reportOutPane);
 					beforeReportType = PoiReportType.class.getName();
-					
+
 				} else if (JasperReportType.class.getName().equals(reportType)) {
 					//Jasper利用の場合
 					reportOutPane.deleteAll();
@@ -158,7 +158,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 					removeSpecificMember(beforeReportType);
 					addMembers(jasperAttributeForm, jasperParamMapPane);
 					beforeReportType = JasperReportType.class.getName();
-					
+
 				} else if (JxlsReportType.class.getName().equals(reportType)) {
 					//JXLS利用の場合
 					jasperParamMapPane.deleteAll();
@@ -166,7 +166,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 					removeSpecificMember(beforeReportType);
 					addMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
 					beforeReportType = JxlsReportType.class.getName();
-					
+
 				}
 			}
 		});
@@ -202,34 +202,33 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		downloadForm.setItems(txtDownloadFileName, downloadSpace, downloadFilebtn);
 
 		//入力部分
-		form = new FormPanel();
+		form = new XsrfProtectedMultipartForm();
 		form.setVisible(false); // formは非表示でOK
 		form.setHeight("5px");
-		form.setAction(GWT.getModuleBaseURL() + ReportTemplateUploadProperty.ACTION_URL);
-		form.setMethod("post");
-		form.setEncoding("multipart/form-data");
+		form.setService(ReportTemplateUploadProperty.ACTION_URL);
 
 		paramPanel = new FlowPanel();
-		form.add(paramPanel);
+		form.insertAfter(paramPanel);
 
 		form.addSubmitHandler(new SubmitHandler() {
 			@Override
 			public void onSubmit(SubmitEvent event) {
-				GWT.log("submit start. url=" + form.getAction());
+				//				GWT.log("submit start. url=" + form.getAction());
+				GWT.log("submit start. url=" + form.getService());
 			}
 		});
 		form.addSubmitCompleteHandler(new ReportTemplateDefinitionSubmitCompleteHandler());
 
 		//JasperAttributeForm
 		jasperAttributeForm = new MtpForm();
-		
+
 		jasperDataSourceAttributeNameField = new MtpTextItem();
 		jasperDataSourceAttributeNameField.setTitle("DataSource AttributeName");
 		jasperPasswordAttributeNameField = new MtpTextItem();
 		jasperPasswordAttributeNameField.setTitle("Password AttributeName");
-		
+
 		jasperAttributeForm.setItems(jasperDataSourceAttributeNameField, jasperPasswordAttributeNameField);
-		
+
 		//Jasper ParamMap部分
 		jasperParamMapPane = new JasperReportParamMapGridPane();
 
@@ -237,18 +236,18 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		poiPasswordAttributeNameForm = new MtpForm();
 		poiPasswordAttributeNameField = new MtpTextItem("poiPasswordAttributeName", "Password AttributeName");
 		poiPasswordAttributeNameForm.setItems(poiPasswordAttributeNameField);
-		
+
 		//Poiレポート出力ロジック部分
 		reportOutPane = new PoiReportOutLogicPane();
-		
+
 		/** JXLS PasswordAttributeName */
 		jxlsPasswordAttributeNameForm = new MtpForm();
 		jxlsPasswordAttributeNameField = new MtpTextItem("jxlsPasswordAttributeName", "Password AttributeName");
 		jxlsPasswordAttributeNameForm.setItems(jxlsPasswordAttributeNameField);
-		
+
 		/** JXLS ContextParamMap */
 		jxlsContextParamMapPane = new JxlsReportParamMapGridPane();
-		
+
 		/** JXLS ReportOutputLogic */
 		jxlsReportOutputLogicPane = new JxlsReportOutLogicPane();
 
@@ -262,7 +261,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		//レポートタイプ取得
 		getReportType();
 	}
-	
+
 	//画面上に表示されているCanvasをremove
 	public void removeSpecificMember(String beforeReportType) {
 		if (beforeReportType != null) {
@@ -340,18 +339,18 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 			//PasswordAttributeName
 			jxlsTemplate.setPasswordAttributeName(SmartGWTUtil.getStringValue(jxlsPasswordAttributeNameField, true));
-			
+
 			//JXLS用出力設定
 			jxlsTemplate = jxlsReportOutputLogicPane.getEditDefinition(jxlsTemplate);
-			
+
 			//ContextParamMapping
 			jxlsTemplate.setParamMap(jxlsContextParamMapPane.getParamMap());
-			
+
 			repTemplate.setReportType(jxlsTemplate);
 		}
 
 		return repTemplate;
-	} 
+	}
 
 	@Override
 	public boolean validate() {
@@ -416,7 +415,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private void addReportTypeParameter(ReportType type) {
 		addReportTypeParameter(type, "");
 	}
-	
+
 	private void addReportTypeParameter(ReportType type, String prefix) {
 
 		if (type != null) {
@@ -483,7 +482,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_LOGIC_VALUE, ((GroovyReportOutputLogicDefinition) repoOutputLogicDef).getScript());
 					}
 				}
-				
+
 				ReportParamMapDefinition[] paramMap = jxlsRepo.getParamMap();
 				int i =0;
 				if (paramMap != null) {
@@ -494,9 +493,9 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 						i++;
 					}
 				}
-				
+
 				addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_CNT, Integer.toString(i));
-				
+
 				if (!SmartGWTUtil.isEmpty(jxlsRepo.getPasswordAttributeName())) {
 					addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PASSWORD_ATTRIBUTE_NAME, jxlsRepo.getPasswordAttributeName());
 				}
@@ -580,22 +579,20 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 	private void setTemplateDownloadAction(final String templateName, final String lang) {
 
-		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler =
-			new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-				@Override
-				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					PostDownloadFrame frame = new PostDownloadFrame();
-					frame.setAction(GWT.getModuleBaseURL() + ReportTemplateDownloadProperty.ACTION_URL)
+		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler = new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+			@Override
+			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+				PostDownloadFrame frame = new PostDownloadFrame();
+				frame.setAction(GWT.getModuleBaseURL() + ReportTemplateDownloadProperty.ACTION_URL)
 						.addParameter(ReportTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
 						.addParameter(ReportTemplateDownloadProperty.DEFINITION_NAME, templateName)
 						.addParameter("dummy", String.valueOf(System.currentTimeMillis()));
-					if (!SmartGWTUtil.isEmpty(lang)) {
-						frame.addParameter(ReportTemplateDownloadProperty.LANG, lang);
-					}
-					frame.execute();
+				if (!SmartGWTUtil.isEmpty(lang)) {
+					frame.addParameter(ReportTemplateDownloadProperty.LANG, lang);
 				}
-			};
+				frame.execute();
+			}
+		};
 		downloadFilebtn.addClickHandler(handler);
 	}
 

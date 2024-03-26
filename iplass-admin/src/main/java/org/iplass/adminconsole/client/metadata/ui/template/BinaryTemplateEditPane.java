@@ -28,6 +28,7 @@ import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
 import org.iplass.adminconsole.client.base.io.upload.UploadResultInfo;
 import org.iplass.adminconsole.client.base.io.upload.UploadSubmitCompleteHandler;
+import org.iplass.adminconsole.client.base.io.upload.XsrfProtectedMultipartForm;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.template.TemplateMultiLanguagePane.LocalizedBinaryDefinitionInfo;
@@ -43,7 +44,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Hidden;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ImageStyle;
@@ -61,7 +61,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasEditLocalizedBinaryDefinition {
 
 	/** フォーム */
-	private FormPanel form;
+	private XsrfProtectedMultipartForm form;
 	private FlowPanel paramPanel;
 
 	/** バイナリファイル */
@@ -130,15 +130,14 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 		previewComposit.addMember(previewContents);
 
 		// 入力部分
-		form = new FormPanel();
+		form = new XsrfProtectedMultipartForm();
 		form.setVisible(false); // formは非表示でOK
 		form.setHeight("5px");
-		form.setAction(GWT.getModuleBaseURL() + BinaryTemplateUploadProperty.ACTION_URL);
-		form.setMethod("post");
-		form.setEncoding("multipart/form-data");
+		form.setService(BinaryTemplateUploadProperty.ACTION_URL);
 		form.addSubmitCompleteHandler(new BinaryTemplateDefinitionSubmitCompleteHandler());
 		paramPanel = new FlowPanel();
-		form.add(paramPanel);
+		//		form.add(paramPanel);
+		form.insertAfter(paramPanel);
 
 		// 配置
 		addMember(form);
@@ -254,23 +253,23 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 	private void setTemplateDownloadAction(final String templateName, final String lang) {
 		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler =
-			new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+				new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
-				@Override
-				public void onClick(ClickEvent event) {
-					PostDownloadFrame frame = new PostDownloadFrame();
-					frame.setAction(GWT.getModuleBaseURL() + BinaryTemplateDownloadProperty.ACTION_URL)
-						.addParameter(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
-						.addParameter(BinaryTemplateDownloadProperty.DEFINITION_NAME, templateName)
-						.addParameter(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.ATTACHMENT.name())
-						.addParameter("dummy", String.valueOf(System.currentTimeMillis()));
-					if (!SmartGWTUtil.isEmpty(lang)) {
-						frame.addParameter(BinaryTemplateDownloadProperty.LANG, lang);
-					}
-					frame.execute();
+			@Override
+			public void onClick(ClickEvent event) {
+				PostDownloadFrame frame = new PostDownloadFrame();
+				frame.setAction(GWT.getModuleBaseURL() + BinaryTemplateDownloadProperty.ACTION_URL)
+				.addParameter(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
+				.addParameter(BinaryTemplateDownloadProperty.DEFINITION_NAME, templateName)
+				.addParameter(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.ATTACHMENT.name())
+				.addParameter("dummy", String.valueOf(System.currentTimeMillis()));
+				if (!SmartGWTUtil.isEmpty(lang)) {
+					frame.addParameter(BinaryTemplateDownloadProperty.LANG, lang);
 				}
+				frame.execute();
+			}
 
-			};
+		};
 		downloadFilebtn.addClickHandler(handler);
 	}
 

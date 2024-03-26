@@ -29,10 +29,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.upload.AdminUploadAction;
+import org.iplass.adminconsole.server.base.io.upload.MultipartRequestParameter;
+import org.iplass.adminconsole.server.base.io.upload.UploadActionException;
 import org.iplass.adminconsole.server.base.io.upload.UploadResponseInfo;
 import org.iplass.adminconsole.server.base.io.upload.UploadRuntimeException;
 import org.iplass.adminconsole.server.base.io.upload.UploadUtil;
@@ -61,8 +62,6 @@ import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinitionMana
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gwtupload.server.exceptions.UploadActionException;
-
 public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 
 	private static final long serialVersionUID = -4091333600499277716L;
@@ -70,7 +69,7 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 	private static final Logger logger = LoggerFactory.getLogger(StaticResourceUploadServiceImpl.class);
 
 	@Override
-	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) throws UploadActionException {
+	public String executeAction(HttpServletRequest request, List<MultipartRequestParameter> sessionFiles) throws UploadActionException {
 		final StaticResourceUploadResponseInfo result = new StaticResourceUploadResponseInfo();
 		final HashMap<String, Object> args = new HashMap<String, Object>();
 
@@ -78,7 +77,7 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 			//リクエスト情報の取得
 			readRequest(request, sessionFiles, args);
 
-		    //リクエスト情報の検証
+			//リクエスト情報の検証
 			validateRequest(args);
 
 			//テナントIDの取得
@@ -135,23 +134,23 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 		}
 
 		//ResultをJSON形式に変換
-	    try {
+		try {
 			return UploadUtil.toJsonResponse(result);
 		} catch (UploadRuntimeException e) {
 			throw new UploadActionException(e);
 		}
 	}
 
-	private void readRequest(final HttpServletRequest request, List<FileItem> sessionFiles, HashMap<String, Object> args) {
+	private void readRequest(final HttpServletRequest request, List<MultipartRequestParameter> sessionFiles, HashMap<String, Object> args) {
 		//リクエスト情報の取得
 		try {
 			List<LocaleDisplayNameInfo> displayNameList = new ArrayList<LocaleDisplayNameInfo>();
 			List<MimeInfo> mimeList = new ArrayList<MimeInfo>();
 			Map<String, LocaleInfo> localeMap = new LinkedHashMap<String, LocaleInfo>();
 
-			for (FileItem item : sessionFiles) {
+			for (MultipartRequestParameter item : sessionFiles) {
 				if (item.isFormField()) {
-			    	//File以外のもの
+					//File以外のもの
 					String[] names = splitLocaleFieldName(item.getFieldName());
 					String fieldName = names[0];
 					if (names[1] != null) {
@@ -174,16 +173,16 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 						//通常データ
 						if (fieldName.startsWith(StaticResourceUploadProperty.MIME_TYPE_MAPPING_PREFIX)) {
 							mimeList.add(new MimeInfo(
-								fieldName.substring(StaticResourceUploadProperty.MIME_TYPE_MAPPING_PREFIX.length()),
-								UploadUtil.getValueAsString(item)));
+									fieldName.substring(StaticResourceUploadProperty.MIME_TYPE_MAPPING_PREFIX.length()),
+									UploadUtil.getValueAsString(item)));
 						} else if (fieldName.startsWith(StaticResourceUploadProperty.DISPLAY_NAME_LOCALE_PREFIX)) {
 							displayNameList.add(new LocaleDisplayNameInfo(
-								fieldName.substring(StaticResourceUploadProperty.DISPLAY_NAME_LOCALE_PREFIX.length()),
-								UploadUtil.getValueAsString(item)));
+									fieldName.substring(StaticResourceUploadProperty.DISPLAY_NAME_LOCALE_PREFIX.length()),
+									UploadUtil.getValueAsString(item)));
 						} else {
 							//通常データ
 							String strValue = UploadUtil.getValueAsString(item);
-					        args.put(item.getFieldName(), strValue);
+							args.put(item.getFieldName(), strValue);
 						}
 					}
 				} else {

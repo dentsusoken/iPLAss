@@ -1,4 +1,5 @@
 var LocaleInfo = {};
+LocaleInfo.base_io_upload_AdminSingleUploader_message_invalidFileExtension = "File extensions are different.<br/>Only the following extensions are supported. :<br/>{0}";
 LocaleInfo.common_AdminAsyncCallback_failedMessage = "An error has occurred in connection with the server.<br/>Cause:";
 LocaleInfo.datasource_PropertyListRecord_name = "Name";
 LocaleInfo.datasource_PropertyListRecord_dispName = "Display Name";
@@ -974,6 +975,7 @@ LocaleInfo.ui_metadata_staticresource_ScriptingEntryPathEditPane_displayDialogEd
 LocaleInfo.ui_metadata_staticresource_ScriptingEntryPathEditPane_scriptHint = "<ul><li>request: RequestContext</li><li>em : EntityManager</li><li>edm : EntityDefinitionManager</li><li>auth : AuthContext</li></ul>";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_overwriteConfirmMsg = "MetaData of the new version has been saved than the version being edited.<br />Do you want to overwrite it?";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_failedUpdateMetaDataMsg = "Failed to save MetaData. <br/>Cause:";
+LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_completion = "Completion";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_saveStaticResourceComp = "Saving StaticResource has been completed.";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_saveConfirm = "The save confirmation";
 LocaleInfo.ui_metadata_staticresource_StaticResourceEditPane_saveStaticResourceComment = "Save the StaticResource. Would you like?";

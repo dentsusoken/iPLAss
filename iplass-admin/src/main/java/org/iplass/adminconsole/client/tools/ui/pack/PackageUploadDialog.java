@@ -33,6 +33,7 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.tools.dto.pack.PackageUploadProperty;
 
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Hidden;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -47,8 +48,6 @@ import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
-
-import gwtupload.client.IUploadStatus.Status;
 
 /**
  * Packageファイルをアップロードするダイアログ
@@ -105,18 +104,19 @@ public class PackageUploadDialog extends AbstractWindow {
 		final AdminSingleUploader uploader = new AdminSingleUploader(UPLOAD_SERVICE);
 		uploader.setValidExtensions("zip");
 		uploader.addOnStartUploadHandler((result) -> {
-			uploader.debugUploader("onStart");
-			startUpload();
-		});
-		uploader.addOnStatusChangedHandler((result) -> {
-			uploader.debugUploader("onStatusChanged");
+			if (!result.isCanceled()) {
+				uploader.debugUploader("onStart");
+				startUpload();
+			} else {
+				uploader.removeHidden();
+			}
 		});
 		uploader.addOnFinishUploadHandler((result) -> {
 			uploader.debugUploader("onFinish");
-			if (uploader.getStatus() == Status.SUCCESS) {
-				finishUpload(uploader.getMessage());
+			if (uploader.getLastUploadState().isSuccess()) {
+				finishUpload(uploader.getLastUploadState().getData());
 			} else {
-				errorUpload(uploader.getErrorMessage());
+				errorUpload(uploader.getLastUploadState().getErrorMessage());
 			}
 
 			//Hidden項目の削除
@@ -131,7 +131,7 @@ public class PackageUploadDialog extends AbstractWindow {
 		nameField.setHint(AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_notSpeIsFileName"));
 
 		final TextAreaItem descriptionField = new TextAreaItem("description", "Comment");
-//		descriptionField.setWidth("100%");
+		//		descriptionField.setWidth("100%");
 		descriptionField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 		descriptionField.setHeight(100);
 
@@ -175,6 +175,7 @@ public class PackageUploadDialog extends AbstractWindow {
 		});
 		cancel = new IButton("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
@@ -225,7 +226,7 @@ public class PackageUploadDialog extends AbstractWindow {
 		messageTabSet.setTabTitleProgress();
 	}
 
-	private void finishUpload(String message) {
+	private void finishUpload(JSONValue message) {
 		//JSON->Result
 		final PackageUploadResultInfo result = new PackageUploadResultInfo(message);
 
@@ -277,7 +278,7 @@ public class PackageUploadDialog extends AbstractWindow {
 
 		String fileOid;
 
-		public PackageUploadResultInfo(String json) {
+		public PackageUploadResultInfo(JSONValue json) {
 			super(json);
 
 			fileOid = getFileUploadFileOid();

@@ -14,9 +14,7 @@ dependencies {
 	//supercsv
 	implementation sharedLib('net.sf.supercsv:super-csv')
 
-	implementation (sharedLib('com.googlecode.gwtupload:gwtupload'))
-	
-	// commons-fileupload - gwtupload で参照しているライブラリが古い為、明示的に指定する
+	// commons-fileupload
 	implementation sharedLib('commons-fileupload:commons-fileupload')
 	
 	//jackson

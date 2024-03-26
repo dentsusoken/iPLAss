@@ -33,10 +33,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.upload.AdminUploadAction;
+import org.iplass.adminconsole.server.base.io.upload.MultipartRequestParameter;
+import org.iplass.adminconsole.server.base.io.upload.UploadActionException;
 import org.iplass.adminconsole.server.base.io.upload.UploadResponseInfo;
 import org.iplass.adminconsole.server.base.io.upload.UploadRuntimeException;
 import org.iplass.adminconsole.server.base.io.upload.UploadUtil;
@@ -58,8 +59,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gwtupload.server.exceptions.UploadActionException;
-
 @SuppressWarnings("serial")
 public class LangCsvUploadServiceImpl extends AdminUploadAction {
 
@@ -72,12 +71,9 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 	/** CSVの固定ヘッダ(デフォルト言語) */
 	private static final String FIXED_HEADER_DEFAULT_LANG = "defaultLang";
 
-	/* (非 Javadoc)
-	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.HttpServletRequest, java.util.List)
-	 */
 	@Override
 	public String executeAction(final HttpServletRequest request,
-			final List<FileItem> sessionFiles) throws UploadActionException {
+			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException {
 
 		final LangCsvUploadResponseInfo result = new LangCsvUploadResponseInfo();
 		final HashMap<String,Object> args = new HashMap<String,Object>();
@@ -86,7 +82,7 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 			//リクエスト情報の取得
 			readRequest(request, sessionFiles, args);
 
-		    //リクエスト情報の検証
+			//リクエスト情報の検証
 			validateRequest(args);
 
 			//テナントIDの取得
@@ -129,7 +125,7 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 		}
 
 		//ResultをJSON形式に変換
-	    try {
+		try {
 			return UploadUtil.toJsonResponse(result);
 		} catch (UploadRuntimeException e) {
 			throw new UploadActionException(e);
@@ -142,14 +138,14 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 	 * @param sessionFiles
 	 * @return
 	 */
-	private void readRequest(final HttpServletRequest request, List<FileItem> sessionFiles, HashMap<String,Object> args) {
+	private void readRequest(final HttpServletRequest request, List<MultipartRequestParameter> sessionFiles, HashMap<String, Object> args) {
 
 		//リクエスト情報の取得
 		try {
-			for (FileItem item : sessionFiles) {
+			for (MultipartRequestParameter item : sessionFiles) {
 				if (item.isFormField()) {
-			    	//File以外のもの
-			        args.put(item.getFieldName(), UploadUtil.getValueAsString(item));
+					//File以外のもの
+					args.put(item.getFieldName(), UploadUtil.getValueAsString(item));
 				} else {
 					//Fileの場合、tempに書きだし
 					args.put(UploadProperty.UPLOAD_FILE_NAME, FilenameUtils.getName(item.getName()));

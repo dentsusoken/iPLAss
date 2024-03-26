@@ -32,6 +32,7 @@ import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
 import org.iplass.adminconsole.shared.base.dto.io.upload.UploadProperty;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.ConfigUploadProperty;
 
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Hidden;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
@@ -41,8 +42,6 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
-
-import gwtupload.client.IUploadStatus.Status;
 
 /**
  * MetaData XMLファイルをアップロードするダイアログ
@@ -94,18 +93,19 @@ public class MetaDataXMLUploadDialog extends AbstractWindow {
 		final AdminSingleUploader uploader = new AdminSingleUploader(UPLOAD_SERVICE);
 		uploader.setValidExtensions("xml");
 		uploader.addOnStartUploadHandler((result) -> {
-			uploader.debugUploader("onStart");
-			startUpload();
-		});
-		uploader.addOnStatusChangedHandler((result) -> {
-			uploader.debugUploader("onStatusChanged");
+			if (!result.isCanceled()) {
+				uploader.debugUploader("onStart");
+				startUpload();
+			} else {
+				uploader.removeHidden();
+			}
 		});
 		uploader.addOnFinishUploadHandler((result) -> {
 			uploader.debugUploader("onFinish");
-			if (uploader.getStatus() == Status.SUCCESS) {
-				finishUpload(uploader.getMessage());
+			if (uploader.getLastUploadState().isSuccess()) {
+				finishUpload(uploader.getLastUploadState().getData());
 			} else {
-				errorUpload(uploader.getErrorMessage());
+				errorUpload(uploader.getLastUploadState().getErrorMessage());
 			}
 
 			//Hidden項目の削除
@@ -132,6 +132,7 @@ public class MetaDataXMLUploadDialog extends AbstractWindow {
 		});
 		cancel = new IButton("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
@@ -180,7 +181,7 @@ public class MetaDataXMLUploadDialog extends AbstractWindow {
 		messageTabSet.setTabTitleProgress();
 	}
 
-	private void finishUpload(String message) {
+	private void finishUpload(JSONValue message) {
 		//JSON->Result
 		XMLUploadResultInfo result = new XMLUploadResultInfo(message);
 
@@ -226,7 +227,7 @@ public class MetaDataXMLUploadDialog extends AbstractWindow {
 
 		String fileOid;
 
-		public XMLUploadResultInfo(String json) {
+		public XMLUploadResultInfo(JSONValue json) {
 			super(json);
 
 			fileOid = getFileUploadFileOid();

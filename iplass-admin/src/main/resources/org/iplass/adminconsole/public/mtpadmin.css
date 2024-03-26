@@ -73,6 +73,18 @@
 	font-weight:bold;
 }
 
+/* File Uploader */
+.adminSingleUploader .gwt-FileUpload {
+	cursor: pointer;
+    font-size: 10px;
+    min-height: 15px;
+}
+
+/* org.iplass.adminconsole.client.base.io.upload.UploadFileItem FileUpload Widget */
+.adminUploadFileItem.gwt-FileUpload {
+	cursor: pointer;
+	font-size: 12px;	
+}
 
 /**
 --------------------------
