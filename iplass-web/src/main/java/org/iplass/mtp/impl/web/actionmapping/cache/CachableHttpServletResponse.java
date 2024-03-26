@@ -27,16 +27,16 @@ import java.io.PrintWriter;
 import java.util.Formatter;
 import java.util.Locale;
 
+import org.iplass.mtp.impl.web.actionmapping.cache.Header.OpeType;
+import org.iplass.mtp.impl.web.actionmapping.cache.Header.ValType;
+import org.iplass.mtp.impl.web.actionmapping.cache.blocks.BinaryContentBlock;
+import org.iplass.mtp.impl.web.actionmapping.cache.blocks.TextContentBlock;
+
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
-
-import org.iplass.mtp.impl.web.actionmapping.cache.Header.OpeType;
-import org.iplass.mtp.impl.web.actionmapping.cache.Header.ValType;
-import org.iplass.mtp.impl.web.actionmapping.cache.blocks.BinaryContentBlock;
-import org.iplass.mtp.impl.web.actionmapping.cache.blocks.TextContentBlock;
 
 public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 
@@ -70,12 +70,12 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 
 	public void setCurrentContentCache(ContentCache cc) {
 		this.currentContentCache = cc;
-//		RequestStack.getCurrent().setAttribute(CONTENT_CACHE_NAME, cc);
+		//		RequestStack.getCurrent().setAttribute(CONTENT_CACHE_NAME, cc);
 	}
 
 	public ContentCache getCurrentContentCache() {
 		return currentContentCache;
-//		return (ContentCache) RequestStack.getCurrent().getAttribute(CONTENT_CACHE_NAME);
+		//		return (ContentCache) RequestStack.getCurrent().getAttribute(CONTENT_CACHE_NAME);
 	}
 
 	public void flushToContentCache() throws IOException {
@@ -145,22 +145,22 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		return super.encodeRedirectURL(url);
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public String encodeRedirectUrl(String url) {
-		return super.encodeRedirectUrl(url);
-	}
+	//	@SuppressWarnings("deprecation")
+	//	@Override
+	//	public String encodeRedirectUrl(String url) {
+	//		return super.encodeRedirectUrl(url);
+	//	}
 
 	@Override
 	public String encodeURL(String url) {
 		return super.encodeURL(url);
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public String encodeUrl(String url) {
-		return super.encodeUrl(url);
-	}
+	//	@SuppressWarnings("deprecation")
+	//	@Override
+	//	public String encodeUrl(String url) {
+	//		return super.encodeUrl(url);
+	//	}
 
 	@Override
 	public void sendError(int sc, String msg) throws IOException {
@@ -204,15 +204,15 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void setStatus(int sc, String sm) {
-		super.setStatus(sc, sm);
-		if (doCache) {
-			getCurrentContentCache().setHttpStatus(sc);
-//			contentCache.setHttpStatusMessage(sm);//setStatus(int sc, String sm)は非推奨なので、smは保存しない
-		}
-	}
+	//	@SuppressWarnings("deprecation")
+	//	@Override
+	//	public void setStatus(int sc, String sm) {
+	//		super.setStatus(sc, sm);
+	//		if (doCache) {
+	//			getCurrentContentCache().setHttpStatus(sc);
+	////			contentCache.setHttpStatusMessage(sm);//setStatus(int sc, String sm)は非推奨なので、smは保存しない
+	//		}
+	//	}
 
 	@Override
 	public void setStatus(int sc) {
@@ -396,10 +396,10 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		}
 
 
-	    @Override
-	    public void flush() {
+		@Override
+		public void flush() {
 			actual.flush();
-	    }
+		}
 
 
 		@Override
