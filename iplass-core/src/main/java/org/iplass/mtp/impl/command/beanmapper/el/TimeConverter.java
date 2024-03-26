@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,26 +23,26 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 
-import jakarta.el.ELContext;
-import jakarta.el.TypeConverter;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.i18n.LocaleFormat;
 import org.iplass.mtp.util.DateUtil;
 
+import jakarta.el.ELContext;
+import jakarta.el.TypeConverter;
+
 public class TimeConverter extends TypeConverter {
-	
+
 	@Override
-	public Object convertToType(ELContext context, Object obj, Class<?> targetType) {
+	public <T> T convertToType(ELContext context, Object obj, Class<T> targetType) {
 		if (Time.class == targetType) {
 			if (obj instanceof String) {
 				context.setPropertyResolved(true);
-				return conv(obj);
+				return (T) conv(obj);
 			}
 		}
 		return null;
 	}
-	
+
 	private Time toTime(String exp, DateFormat sdf) {
 		try {
 			sdf.setLenient(false);
@@ -51,25 +51,25 @@ public class TimeConverter extends TypeConverter {
 		}
 		return null;
 	}
-	
+
 	private Time conv(Object obj) {
 		if (obj instanceof String) {
 			String exp = ((String) obj).trim();
 			if ("".equals(exp)) {
 				return null;
 			}
-			
+
 			//try some pattern
 			Time t = null;
 			try {
 				t = Time.valueOf(exp);
 			} catch (Exception e) {
 			}
-			
+
 			if (t == null) {
 				ExecuteContext ec = ExecuteContext.getCurrentContext();
 				LocaleFormat lf = ec.getLocaleFormat();
-				
+
 				t = toTime(exp, DateUtil.getSimpleDateFormat(lf.getServerTimeFormat(), false));
 				if (t == null) {
 					t = toTime(exp, DateUtil.getTimeInstance(DateFormat.MEDIUM, false));
@@ -90,11 +90,11 @@ public class TimeConverter extends TypeConverter {
 					t = toTime(exp, DateUtil.getSimpleDateFormat(lf.getExcelTimeFormat(), true));
 				}
 			}
-			
+
 			if (t == null) {
 				throw new IllegalArgumentException("Can't convert to Time:" + obj);
 			}
-			
+
 			return t;
 		}
 		return null;
