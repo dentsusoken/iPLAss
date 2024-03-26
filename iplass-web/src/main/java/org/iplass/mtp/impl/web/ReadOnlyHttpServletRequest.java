@@ -27,6 +27,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.web.actionmapping.RequestInfo;
+
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ReadListener;
@@ -41,9 +44,6 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
-
-import org.iplass.mtp.impl.core.ExecuteContext;
-import org.iplass.mtp.web.actionmapping.RequestInfo;
 
 public class ReadOnlyHttpServletRequest extends HttpServletRequestWrapper implements RequestInfo {
 
@@ -105,11 +105,6 @@ public class ReadOnlyHttpServletRequest extends HttpServletRequestWrapper implem
 	}
 
 	@Override
-	public boolean isRequestedSessionIdFromUrl() {
-		throw new UnsupportedOperationException("Unsupported operation on ReadOnlyHttpServletRequest");
-	}
-
-	@Override
 	public boolean isRequestedSessionIdValid() {
 		throw new UnsupportedOperationException("Unsupported operation on ReadOnlyHttpServletRequest");
 	}
@@ -167,11 +162,6 @@ public class ReadOnlyHttpServletRequest extends HttpServletRequestWrapper implem
 			//Do not handle content type not specified
 			return new BufferedReader(new InputStreamReader(new NullServletInputStream()));
 		}
-	}
-
-	@Override
-	public String getRealPath(String path) {
-		throw new UnsupportedOperationException("Unsupported operation on ReadOnlyHttpServletRequest");
 	}
 
 	@Override
