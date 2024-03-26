@@ -35,6 +35,7 @@ import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
+import org.iplass.mtp.entity.TargetVersion;
 import org.iplass.mtp.entity.csv.MultipleFormat;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
@@ -375,7 +376,7 @@ public class SearchConditionSection extends Section {
 
 	/** CSVアップロード時のトランザクション制御設定 */
 	@MetaFieldInfo(
-			displayName="CSVアップロード時のトランザクション制御設定 ",
+			displayName="CSVアップロード時のトランザクション制御設定",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=CsvUploadTransactionType.class,
@@ -384,6 +385,28 @@ public class SearchConditionSection extends Section {
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey"
 	)
 	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;;
+
+	/** バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersion */
+	@MetaFieldInfo(
+			displayName="バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersion",
+			inputType=InputType.ENUM,
+			enumClass=TargetVersion.class,
+			fixedEnumValue = {"CURRENT_VALID", "SPECIFIC"},
+			displayOrder=2063,
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTargetVersionForNoneVersionedEntityDisplaNameKey",
+			descriptionKey="generic_element_section_SearchConditionSection_csvUploadTargetVersionForNoneVersionedEntityDescriptionKey"
+	)
+	private TargetVersion csvUploadTargetVersionForNoneVersionedEntity;
+
+	/** バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可 */
+	@MetaFieldInfo(
+			displayName="バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2065,
+			displayNameKey="generic_element_section_SearchConditionSection_canCsvUploadTargetVersionSelectForNoneVersionedEntityDisplaNameKey",
+			descriptionKey="generic_element_section_SearchConditionSection_canCsvUploadTargetVersionSelectForNoneVersionedEntityDescriptionKey"
+	)
+	private boolean canCsvUploadTargetVersionSelectForNoneVersionedEntity;
 
 	/** カスタムCSVアップロード処理クラス名 */
 	@MetaFieldInfo(
@@ -621,6 +644,38 @@ public class SearchConditionSection extends Section {
 
 	public void setCsvUploadTransactionType(CsvUploadTransactionType csvUploadTransactionType) {
 		this.csvUploadTransactionType = csvUploadTransactionType;
+	}
+
+	/**
+	 * CSVアップロード更新データTargetVersionを取得します。
+	 * @return CSVアップロード更新データTargetVersion
+	 */
+	public TargetVersion getCsvUploadTargetVersionForNoneVersionedEntity() {
+		return csvUploadTargetVersionForNoneVersionedEntity;
+	}
+
+	/**
+	 * CSVアップロード更新データTargetVersionを設定します。
+	 * @param csvUploadTargetVersionForNoneVersionedEntity CSVアップロード更新データTargetVersion
+	 */
+	public void setCsvUploadTargetVersionForNoneVersionedEntity(TargetVersion csvUploadTargetVersionForNoneVersionedEntity) {
+		this.csvUploadTargetVersionForNoneVersionedEntity = csvUploadTargetVersionForNoneVersionedEntity;
+	}
+
+	/**
+	 * CSVアップロード画面でTargetVersionの指定を許可するかを取得します。
+	 * @return CSVアップロード画面でTargetVersionの指定を許可するか
+	 */
+	public boolean isCanCsvUploadTargetVersionSelectForNoneVersionedEntity() {
+		return canCsvUploadTargetVersionSelectForNoneVersionedEntity;
+	}
+
+	/**
+	 * CSVアップロード画面でTargetVersionの指定を許可するかを設定します。
+	 * @param canCsvUploadTargetVersionSelectForNoneVersionedEntity CSVアップロード画面でTargetVersionの指定を許可するか
+	 */
+	public void setCanCsvUploadTargetVersionSelectForNoneVersionedEntity(boolean canCsvUploadTargetVersionSelectForNoneVersionedEntity) {
+		this.canCsvUploadTargetVersionSelectForNoneVersionedEntity = canCsvUploadTargetVersionSelectForNoneVersionedEntity;
 	}
 
 	public MultipleFormat getCsvMultipleFormat() {

@@ -1590,7 +1590,7 @@ p.nav-login-01 {
   padding: 10px 20px;
   vertical-align: top; }
 
-.csvupload_csvfile, .csvupload_uniquekey {
+.csvupload_csvfile, .csvupload_uniquekey, .csvupload-update-target {
   display: block;
   float: left;
   margin-bottom: 15px;
@@ -1632,7 +1632,7 @@ p.nav-login-01 {
 .csvupload_csvfile li {
   float: left; }
 
-.csvupload_uniquekey li {
+.csvupload_uniquekey li, .csvupload-update-target li {
   float: left;
   font-size: 1rem;
   margin-right: 15px;

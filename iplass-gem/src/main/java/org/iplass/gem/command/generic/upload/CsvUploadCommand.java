@@ -40,7 +40,10 @@ import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
+import org.iplass.mtp.entity.TargetVersion;
 import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.entity.definition.VersionControlType;
+import org.iplass.mtp.impl.csv.CsvUploadOption;
 import org.iplass.mtp.impl.csv.CsvUploadService;
 import org.iplass.mtp.impl.csv.CsvUploadStatus;
 import org.iplass.mtp.impl.csv.TransactionType;
@@ -93,6 +96,7 @@ public final class CsvUploadCommand extends DetailCommandBase {
 		DetailCommandContext context = getContext(request);
 
 		String uniqueKey = request.getParam("uniqueKey");
+		String updateTargetVersion = request.getParam("updateTargetVersion");
 		UploadFileHandle file = request.getParamAsFile("filePath");
 
 		EntityDefinition ed = context.getEntityDefinition();
@@ -110,6 +114,7 @@ public final class CsvUploadCommand extends DetailCommandBase {
 
 		request.setAttribute(Constants.ENTITY_DEFINITION, ed);
 		request.setAttribute("detailFormView", context.getView());
+		request.setAttribute("searchFormView", searchFormView);
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
 		request.setAttribute("requiredProperties", CsvUploadUtil.getRequiredProperties(ed));
 		request.setAttribute("customColumnNameMap", getCustomColumnNameMap(ed, searchFormView));
@@ -122,6 +127,18 @@ public final class CsvUploadCommand extends DetailCommandBase {
 		Set<String> insertProperties = searchFormView.getCondSection().getCsvUploadInsertPropertiesSet();
 		Set<String> updateProperties = searchFormView.getCondSection().getCsvUploadUpdatePropertiesSet();
 		CsvUploadTransactionType csvUploadTransactionType = searchFormView.getCondSection().getCsvUploadTransactionType();
+		TargetVersion targetVersion = null;
+		if (ed.getVersionControlType() == VersionControlType.NONE) {
+			// バージョン管理対象外のEntityの場合
+			if (searchFormView.getCondSection().isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
+				// 画面から指定
+				targetVersion = StringUtil.isNotEmpty(updateTargetVersion)
+						&& updateTargetVersion.equals(TargetVersion.SPECIFIC.name()) ? TargetVersion.SPECIFIC : TargetVersion.CURRENT_VALID;
+			} else {
+				// 設定されていたら指定
+				targetVersion = searchFormView.getCondSection().getCsvUploadTargetVersionForNoneVersionedEntity();
+			}
+		}
 
 		CsvUploadService service = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
 
@@ -134,9 +151,21 @@ public final class CsvUploadCommand extends DetailCommandBase {
 			// 非同期アップロード(パラメータとしてView名を設定)
 
 			try (InputStream is = file.getInputStream()){
-				service.asyncUpload(is, file.getFileName(), defName, viewName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
-						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), searchFormView.isDeleteSpecificVersion(),
-						searchFormView.getCondSection().getCsvUploadInterrupterName());
+				CsvUploadOption option = new CsvUploadOption()
+						.uniqueKey(uniqueKey)
+						.denyInsert(isDenyInsert)
+						.denyUpdate(isDenyUpdate)
+						.denyDelete(isDenyDelete)
+						.insertProperties(insertProperties)
+						.updateProperties(updateProperties)
+						.transactionType(toTransactionType(csvUploadTransactionType))
+						.commitLimit(commitLimit)
+						.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+						.deleteSpecificVersion(searchFormView.isDeleteSpecificVersion())
+						.updateTargetVersionForNoneVersionedEntity(targetVersion)
+						.interrupterClassName(searchFormView.getCondSection().getCsvUploadInterrupterName());
+
+				service.asyncUpload(is, file.getFileName(), defName, viewName, option);
 
 				return Constants.CMD_EXEC_SUCCESS_ASYNC;
 
@@ -180,9 +209,21 @@ public final class CsvUploadCommand extends DetailCommandBase {
 			}
 
 			try (InputStream is = file.getInputStream()){
-				CsvUploadStatus result = service.upload(is, defName, uniqueKey, isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
-						toTransactionType(csvUploadTransactionType), commitLimit, gcs.isCsvDownloadReferenceVersion(), searchFormView.isDeleteSpecificVersion(),
-						searchFormView.getCondSection().getCsvUploadInterrupterName());
+				CsvUploadOption option = new CsvUploadOption()
+						.uniqueKey(uniqueKey)
+						.denyInsert(isDenyInsert)
+						.denyUpdate(isDenyUpdate)
+						.denyDelete(isDenyDelete)
+						.insertProperties(insertProperties)
+						.updateProperties(updateProperties)
+						.transactionType(toTransactionType(csvUploadTransactionType))
+						.commitLimit(commitLimit)
+						.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+						.deleteSpecificVersion(searchFormView.isDeleteSpecificVersion())
+						.updateTargetVersionForNoneVersionedEntity(targetVersion)
+						.interrupterClassName(searchFormView.getCondSection().getCsvUploadInterrupterName());
+
+				CsvUploadStatus result = service.upload(is, defName, option);
 
 				request.setAttribute(Constants.MESSAGE, result.getMessage() != null ? StringUtil.escapeHtml(result.getMessage()).replace("\n", "<br/>") : null);
 				request.setAttribute("insertCount", result.getInsertCount());

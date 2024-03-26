@@ -105,6 +105,9 @@ public class CsvUploadService implements Service {
 	/** CSVアップロードエラー表示件数上限値 */
 	private int showErrorLimitCount;
 
+	/** CSVアップロードのバージョン管理Entity以外の場合の更新時のデフォルトTargetVersion */
+	private TargetVersion defaultUpdateTargetVersionForNoneVersionedEntity;
+
 	/** CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
 	private boolean mustOrderByWithLimit;
 
@@ -125,6 +128,7 @@ public class CsvUploadService implements Service {
 		edm = ManagerLocator.manager(EntityDefinitionManager.class);
 
 		showErrorLimitCount = config.getValue("showErrorLimitCount", Integer.class, 100);
+		defaultUpdateTargetVersionForNoneVersionedEntity = config.getValue("defaultUpdateTargetVersionForNoneVersionedEntity", TargetVersion.class, TargetVersion.CURRENT_VALID);
 		mustOrderByWithLimit = config.getValue("mustOrderByWithLimit", Boolean.class, false);
 	}
 
@@ -194,18 +198,25 @@ public class CsvUploadService implements Service {
 	/**
 	 * Csvファイルをアップロードします。
 	 *
+	 * @deprecated use {@link #upload(InputStream, String, CsvUploadOption)}
 	 */
 	@Deprecated
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
-		return upload(is, defName, uniqueKey, false, false, false, null, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
+		return upload(is, defName, uniqueKey,
+				false, false, false,
+				null, null,
+				transactionType, commitLimit,
+				withReferenceVersion, deleteSpecificVersion);
 	}
 
 	/**
 	 * Csvファイルをアップロードします。
 	 *
+	 * @deprecated use {@link #upload(InputStream, String, CsvUploadOption)}
 	 */
+	@Deprecated
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
 			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
 			final Set<String> insertProperties, final Set<String> updateProperties,
@@ -221,7 +232,9 @@ public class CsvUploadService implements Service {
 	/**
 	 * Csvファイルをアップロードします。
 	 *
+	 * @deprecated use {@link #upload(InputStream, String, CsvUploadOption)}
 	 */
+	@Deprecated
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
 			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
 			final Set<String> insertProperties, final Set<String> updateProperties,
@@ -229,13 +242,38 @@ public class CsvUploadService implements Service {
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion,
 			final String interrupterClassName) {
 
+		CsvUploadOption option = new CsvUploadOption()
+				.uniqueKey(uniqueKey)
+				.denyInsert(isDenyInsert)
+				.denyUpdate(isDenyUpdate)
+				.denyDelete(isDenyDelete)
+				.insertProperties(insertProperties)
+				.updateProperties(updateProperties)
+				.transactionType(transactionType)
+				.commitLimit(commitLimit)
+				.withReferenceVersion(withReferenceVersion)
+				.deleteSpecificVersion(deleteSpecificVersion)
+				.interrupterClassName(interrupterClassName);
+
+		return upload(is, defName, option);
+	}
+
+	/**
+	 * Csvファイルをアップロードします。
+	 *
+	 * @param アップロードファイル
+	 * @param defName Entity定義名
+	 * @param option オプション
+	 */
+	public CsvUploadStatus upload(final InputStream is, final String defName, final CsvUploadOption option) {
+
 		final CsvUploadStatus result = new CsvUploadStatus();
 		final EntityDefinition ed  = edm.get(defName);
 
-		final CsvUploadInterrupter interrupter = createInterrupter(interrupterClassName);
+		final CsvUploadInterrupter interrupter = createInterrupter(option.getInterrupterClassName());
 
 		try (EntityCsvReader reader = new EntityCsvReader(ed, is, ENCODE)){
-			reader.withReferenceVersion(withReferenceVersion);
+			reader.withReferenceVersion(option.isWithReferenceVersion());
 			reader.setCustomColumnNameMap(getCustomColumnNameMap(ed, interrupter));
 
 			Transaction.with(Propagation.SUPPORTS, t -> {
@@ -257,19 +295,22 @@ public class CsvUploadService implements Service {
 					final ImportFunction func = new ImportFunction(em)
 							.ed(ed)
 							.iterator(iterator)
-							.isDenyInsert(isDenyInsert)
-							.isDenyUpdate(isDenyUpdate)
-							.isDenyDelete(isDenyDelete)
-							.insertProperties(insertProperties)
-							.updateProperties(updateProperties)
-							.transactionType(transactionType)
-							.commitLimit(commitLimit)
+							.isDenyInsert(option.isDenyInsert())
+							.isDenyUpdate(option.isDenyUpdate())
+							.isDenyDelete(option.isDenyDelete())
+							.insertProperties(option.getInsertProperties())
+							.updateProperties(option.getUpdateProperties())
+							.transactionType(option.getTransactionType())
+							.commitLimit(option.getCommitLimit())
 							.useCtrl(useCtrl)
-							.uniqueKey(uniqueKey)
+							.uniqueKey(option.getUniqueKey())
 							.properties(properties)
 							.updatableProperties(updatableProperties)
 							.keyValueMap(keyValueMap)
-							.deleteSpecificVersion(deleteSpecificVersion)
+							.deleteSpecificVersion(option.isDeleteSpecificVersion())
+							.updateTargetVersionForNoneVersionedEntity(
+									option.getUpdateTargetVersionForNoneVersionedEntity() != null ?
+											option.getUpdateTargetVersionForNoneVersionedEntity() : defaultUpdateTargetVersionForNoneVersionedEntity)
 							.interrupter(interrupter);
 
 					ApplicationException ex = null;
@@ -393,17 +434,26 @@ public class CsvUploadService implements Service {
 
 	/**
 	 * Csvファイルを非同期でアップロードします。
+	 *
+	 * @deprecated use {@link #asyncUpload(InputStream, String, String, String, CsvUploadOption)}
 	 */
 	@Deprecated
 	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
-		asyncUpload(is, fileName, defName, parameter, uniqueKey, false, false, false, null, null, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
+		asyncUpload(is, fileName, defName, parameter, uniqueKey,
+				false, false, false,
+				null, null,
+				transactionType, commitLimit,
+				withReferenceVersion, deleteSpecificVersion);
 	}
 
 	/**
 	 * Csvファイルを非同期でアップロードします。
+	 *
+	 * @deprecated use {@link #asyncUpload(InputStream, String, String, String, CsvUploadOption)}
 	 */
+	@Deprecated
 	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
 			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
 			final Set<String> insertProperties, final Set<String> updateProperties,
@@ -419,12 +469,42 @@ public class CsvUploadService implements Service {
 
 	/**
 	 * Csvファイルを非同期でアップロードします。
+	 *
+	 * @deprecated use {@link #asyncUpload(InputStream, String, String, String, CsvUploadOption)}
 	 */
+	@Deprecated
 	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
 			final boolean isDenyInsert, final boolean isDenyUpdate, final boolean isDenyDelete,
 			final Set<String> insertProperties, final Set<String> updateProperties,
 			final TransactionType transactionType, final int commitLimit,
 			final boolean withReferenceVersion, final boolean deleteSpecificVersion, String interrupterClassName) {
+
+		CsvUploadOption option = new CsvUploadOption()
+				.uniqueKey(uniqueKey)
+				.denyInsert(isDenyInsert)
+				.denyUpdate(isDenyUpdate)
+				.denyDelete(isDenyDelete)
+				.insertProperties(insertProperties)
+				.updateProperties(updateProperties)
+				.transactionType(transactionType)
+				.commitLimit(commitLimit)
+				.withReferenceVersion(withReferenceVersion)
+				.deleteSpecificVersion(deleteSpecificVersion)
+				.interrupterClassName(interrupterClassName);
+
+		asyncUpload(is, fileName, defName, parameter, option);
+	}
+
+	/**
+	 * Csvファイルを非同期でアップロードします。
+	 *
+	 * @param アップロードファイル
+	 * @param アップロードファイル名
+	 * @param defName Entity定義名
+	 * @param parameter タスクのパラメータ(起動側での判断用)
+	 * @param option オプション
+	 */
+	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final CsvUploadOption option) {
 
 		// 非同期で実行するので、リクエスト処理完了時にアップロードファイルは削除されるため
 		// 一時ファイルとしてコピーしておく
@@ -437,25 +517,15 @@ public class CsvUploadService implements Service {
 				DateUtil.getCurrentTimestamp().getTime(),
 				defName,
 				parameter,
-				uniqueKey,
-				isDenyInsert,
-				isDenyUpdate,
-				isDenyDelete,
-				insertProperties,
-				updateProperties,
-				transactionType,
-				commitLimit,
-				withReferenceVersion,
-				deleteSpecificVersion,
-				interrupterClassName);
+				option);
 
-		AsyncTaskOption option = new AsyncTaskOption();
-		option.setExceptionHandlingMode(ExceptionHandlingMode.ABORT);
-		option.setGroupingKey(AuthContext.getCurrentContext().getUser().getOid());
-		option.setQueue(CSV_UPLOAD_QUEUE);
-		option.setReturnResult(true);
+		AsyncTaskOption taskOption = new AsyncTaskOption();
+		taskOption.setExceptionHandlingMode(ExceptionHandlingMode.ABORT);
+		taskOption.setGroupingKey(AuthContext.getCurrentContext().getUser().getOid());
+		taskOption.setQueue(CSV_UPLOAD_QUEUE);
+		taskOption.setReturnResult(true);
 
-		ManagerLocator.manager(AsyncTaskManager.class).execute(option, task);
+		ManagerLocator.manager(AsyncTaskManager.class).execute(taskOption, task);
 
 	}
 
@@ -572,6 +642,7 @@ public class CsvUploadService implements Service {
 		private Set<String> updatableProperties;
 		private Map<Object, String> keyValueMap;
 		private boolean deleteSpecificVersion;
+		private TargetVersion updateTargetVersionForNoneVersionedEntity;
 
 		private CsvUploadInterrupter interrupter = new CsvUploadInterrupter() {};
 
@@ -639,6 +710,10 @@ public class CsvUploadService implements Service {
 		}
 		public ImportFunction deleteSpecificVersion(boolean deleteSpecificVersion) {
 			this.deleteSpecificVersion = deleteSpecificVersion;
+			return this;
+		}
+		public ImportFunction updateTargetVersionForNoneVersionedEntity(TargetVersion updateTargetVersionForNoneVersionedEntity) {
+			this.updateTargetVersionForNoneVersionedEntity = updateTargetVersionForNoneVersionedEntity;
 			return this;
 		}
 		public ImportFunction interrupter(CsvUploadInterrupter interrupter) {
@@ -930,7 +1005,17 @@ public class CsvUploadService implements Service {
 						= em.searchEntity(noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue), new SearchOption().countTotal());
 					if (searchResult.getTotalCount() > 0) {
 						// 指定OIDデータが存在するので更新
-						execType = ExecType.UPDATE_VALID;
+
+						// 明示的に指定されている場合は、保存時バージョンを対象
+						if (updateTargetVersionForNoneVersionedEntity == TargetVersion.SPECIFIC) {
+							execType = ExecType.UPDATE_SPECIFIC;
+
+							//SPECIFICの場合、version必須のためセット
+							entity.setVersion(0L);
+						} else {
+							execType = ExecType.UPDATE_VALID;
+						}
+
 						//UniqueKeyで検索している可能性があるので登録済のOIDをセット
 						entity.setOid(searchResult.getFirst().getOid());
 					} else {

@@ -90,7 +90,7 @@
 		float: left;
 	}
 }
-.csvupload_uniquekey {
+.csvupload_uniquekey, .csvupload-update-target {
 	@extend %extend_gsc_3;
 	li {
 		float: left;

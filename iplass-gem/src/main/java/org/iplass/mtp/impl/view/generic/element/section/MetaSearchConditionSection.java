@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.iplass.mtp.entity.TargetVersion;
 import org.iplass.mtp.entity.csv.MultipleFormat;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.impl.entity.EntityContext;
@@ -107,6 +108,12 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	/** CSVアップロード時のトランザクション制御設定 */
 	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;
+
+	/** バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersion */
+	private TargetVersion csvUploadTargetVersionForNoneVersionedEntity;
+
+	/** バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可 */
+	private boolean canCsvUploadTargetVersionSelectForNoneVersionedEntity;
 
 	/** カスタムCSVアップロード処理クラス名 */
 	private String csvUploadInterrupterName;
@@ -268,6 +275,38 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	public void setCsvUploadTransactionType(CsvUploadTransactionType csvUploadTransactionType) {
 		this.csvUploadTransactionType = csvUploadTransactionType;
+	}
+
+	/**
+	 * バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersionを取得します。
+	 * @return バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersion
+	 */
+	public TargetVersion getCsvUploadTargetVersionForNoneVersionedEntity() {
+		return csvUploadTargetVersionForNoneVersionedEntity;
+	}
+
+	/**
+	 * バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersionを設定します。
+	 * @param csvUploadTargetVersionForNoneVersionedEntity バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersion
+	 */
+	public void setCsvUploadTargetVersionForNoneVersionedEntity(TargetVersion csvUploadTargetVersionForNoneVersionedEntity) {
+		this.csvUploadTargetVersionForNoneVersionedEntity = csvUploadTargetVersionForNoneVersionedEntity;
+	}
+
+	/**
+	 * バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可するかを取得します。
+	 * @return バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可するか
+	 */
+	public boolean isCanCsvUploadTargetVersionSelectForNoneVersionedEntity() {
+		return canCsvUploadTargetVersionSelectForNoneVersionedEntity;
+	}
+
+	/**
+	 * バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可するかを設定します。
+	 * @param canCsvUploadTargetVersionSelectForNoneVersionedEntity バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可するか
+	 */
+	public void setCanCsvUploadTargetVersionSelectForNoneVersionedEntity(boolean canCsvUploadTargetVersionSelectForNoneVersionedEntity) {
+		this.canCsvUploadTargetVersionSelectForNoneVersionedEntity = canCsvUploadTargetVersionSelectForNoneVersionedEntity;
 	}
 
 	/**
@@ -721,6 +760,8 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.hideCsvdownloadDialog = section.isHideCsvdownloadDialog();
 		this.specifyCharacterCode = section.getSpecifyCharacterCode();
 		this.csvUploadTransactionType = section.getCsvUploadTransactionType();
+		this.csvUploadTargetVersionForNoneVersionedEntity = section.getCsvUploadTargetVersionForNoneVersionedEntity();
+		this.canCsvUploadTargetVersionSelectForNoneVersionedEntity = section.isCanCsvUploadTargetVersionSelectForNoneVersionedEntity();
 		this.csvUploadInterrupterName = section.getCsvUploadInterrupterName();
 		this.csvdownloadMaxCount = section.getCsvdownloadMaxCount();
 		this.uploadableCsvdownloadLoadAtOnce = section.isUploadableCsvdownloadLoadAtOnce();
@@ -793,6 +834,8 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setHideCsvdownloadDialog(this.hideCsvdownloadDialog);
 		section.setSpecifyCharacterCode(this.specifyCharacterCode);
 		section.setCsvUploadTransactionType(this.csvUploadTransactionType);
+		section.setCsvUploadTargetVersionForNoneVersionedEntity(this.csvUploadTargetVersionForNoneVersionedEntity);
+		section.setCanCsvUploadTargetVersionSelectForNoneVersionedEntity(this.canCsvUploadTargetVersionSelectForNoneVersionedEntity);
 		section.setCsvUploadInterrupterName(this.csvUploadInterrupterName);
 		section.setCsvdownloadMaxCount(this.csvdownloadMaxCount);
 		section.setUploadableCsvdownloadLoadAtOnce(this.uploadableCsvdownloadLoadAtOnce);

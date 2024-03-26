@@ -1560,6 +1560,11 @@ div.recursiveTree {
   .csvupload_uniquekey input {
     margin-right: 5px; }
 
+.csvupload-update-target {
+  margin-bottom: 15px; }
+  .csvupload-update-target li {
+    float: left; }
+
 .generic_search_csvuploadresult .operation-bar {
   margin-top: 15px; }
 
