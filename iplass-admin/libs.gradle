@@ -24,7 +24,7 @@ dependencies {
 	implementation sharedLib('commons-io:commons-io')
 	
 	// commons-fileupload
-	implementation sharedLib('org.apache.commons:commons-fileupload2-jakarta-servlet5')
+	implementation sharedLib('org.apache.commons:commons-fileupload2-jakarta-servlet6')
 	
 	//jackson
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
@@ -39,11 +39,13 @@ dependencies {
 	// gwt.gwtVersion を指定すれば設定される依存関係を個別設定
 	gwtSdk(sharedLib('org.gwtproject:gwt-dev')) {
 	  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
+	  exclude group: 'org.eclipse.jetty'
 	}
 	gwtSdk sharedLib('org.gwtproject:gwt-user')
 	implementation sharedLib('org.gwtproject:gwt-servlet-jakarta')
 	gwt(sharedLib('org.gwtproject:gwt-codeserver')) {
 	  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
+	  exclude group: 'org.eclipse.jetty'
 	}
 
 }
