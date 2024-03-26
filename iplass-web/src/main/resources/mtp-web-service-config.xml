@@ -707,6 +707,13 @@
 		<property name="showErrorLimitCount" value="100"/>
 		-->
 		<!--
+		 CSVアップロードのバージョン管理Entity以外の場合の更新時のデフォルトTargetVersion。
+		 デフォルトはCURRENT_VALID。  
+		-->
+		<!--
+		<property name="defaultUpdateTargetVersionForNoneVersionedEntity" value="SPECIFIC"/>
+		-->
+		<!--
 		 CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するか。
 		 SQLServerの場合はtrueを指定すること。  
 		-->

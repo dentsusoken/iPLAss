@@ -46,7 +46,7 @@ public class EntityCsvImportTask implements Callable<EntityCsvImportResult>, Exc
 
 	private static final long serialVersionUID = 8823049367792641192L;
 
-	private static Logger logger = LoggerFactory.getLogger(CsvUploadTask.class);
+	private static Logger logger = LoggerFactory.getLogger(EntityCsvImportTask.class);
 
 	/** Uploadされたファイルの物理Path */
 	private String filePath;

@@ -101,6 +101,11 @@ public @interface MetaFieldInfo {
 	Class<?> enumClass() default Object.class;
 
 	/**
+	 * Enumクラス(固定)の特定の値のみ利用する場合に使用する。
+	 */
+	String[] fixedEnumValue() default {};
+
+	/**
 	 * フィールドの説明
 	 */
 	String description() default "";

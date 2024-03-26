@@ -25,12 +25,15 @@
 <%@ page import="org.iplass.mtp.async.TaskStatus"%>
 <%@ page import="org.iplass.mtp.auth.AuthContext" %>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
+<%@ page import="org.iplass.mtp.entity.TargetVersion"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.IndexType" %>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition" %>
+<%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView" %>
+<%@ page import="org.iplass.mtp.view.generic.SearchFormView"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailFormViewData" %>
 <%@ page import="org.iplass.gem.command.generic.search.SearchViewCommand"%>
@@ -92,6 +95,7 @@
 
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
 	DetailFormView form = (DetailFormView) request.getAttribute("detailFormView");
+	SearchFormView searchFormView = (SearchFormView) request.getAttribute("searchFormView");
 
 	String defName = ed.getName();
 	String viewName = form.getName();
@@ -264,6 +268,21 @@ $(function(){
 <%	} %>
 </ul>
 
+<%
+	// バージョン管理対象外のEntityの場合の更新時の対象バージョンの選択
+	if (ed.getVersionControlType() == VersionControlType.NONE
+			&& searchFormView != null && searchFormView.getCondSection().isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
+		String selected = searchFormView.getCondSection().getCsvUploadTargetVersionForNoneVersionedEntity() == TargetVersion.SPECIFIC ? "checked" : "";
+%>
+<h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.selectUpdateTargetVersion")}</h3>
+<ul class="csvupload-update-target clear">
+<li><label>
+<input name="updateTargetVersion" type="checkbox" value="<%=TargetVersion.SPECIFIC%>" <%=selected%> />${m:rs("mtp-gem-messages", "generic.csvUpload.updateTargetVersionSpecific")}
+</label></li>
+</ul>
+<%
+	}
+%>
 <span class="uploading" style="display:none;"><img src="${m:esc(skinImagePath)}/loading.gif" alt="" />　${m:rs("mtp-gem-messages", "generic.csvUpload.uploding")}</span>
 
 <div class="operation-bar operation-bar_top">
@@ -289,6 +308,14 @@ ${m:outputToken('FORM_XHTML', true)}
 <li class="desc7">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription7")}</li>
 <li class="desc8"><%= GemResourceBundleUtil.resourceString("generic.csvUpload.uploadDescription8", getRequiredPropertyNames(requiredProperties, customColumnNameMap)) %></li>
 <li class="desc9">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription9")}</li>
+<%
+	if (ed.getVersionControlType() == VersionControlType.NONE
+			&& searchFormView != null && searchFormView.getCondSection().isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
+%>
+<li class="desc10">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription10")}</li>
+<%
+	}
+%>
 </ul>
 </div>
 

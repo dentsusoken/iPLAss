@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.iplass.mtp.SystemException;
@@ -62,36 +61,8 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 	/** タスクのパラメータ(起動側での判断用) */
 	private String parameter;
 
-	/** UniqueKeyプロパティ名 */
-	private String uniqueKey;
-
-	/** CSVアップロードで登録を許可しない */
-	private boolean isDenyInsert;
-
-	/** CSVアップロードで更新を許可しない */
-	private boolean isDenyUpdate;
-
-	/** CSVアップロードで削除を許可しない */
-	private boolean isDenyDelete;
-
-	/** CSVアップロード登録項目 */
-	private Set<String> insertProperties;
-
-	/** CSVアップロード更新項目 */
-	private Set<String> updateProperties;
-
-	/** トランザクション方法 */
-	private TransactionType transactionType;
-	/** トランザクション分割時のCommit単位 */
-	private int commitLimit;
-
-	private boolean withReferenceVersion;
-
-	/** 特定バージョンを削除するか */
-	private boolean deleteSpecificVersion;
-
-	/** CsvUploadInterrupterクラス名 */
-	private String interrupterClassName;
+	/** オプション */
+	private CsvUploadOption option;
 
 	/**
 	 * コンストラクタ
@@ -110,6 +81,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 	 * @param commitLimit トランザクション分割時のCommit単位
 	 * @param withReferenceVersion 参照値にバージョンが含まれているか
 	 * @param deleteSpecificVersion 特定バージョンを削除するか
+	 * @param updateTargetVersionForNoneVersionedEntity CSVアップロードのバージョン管理Entity以外の場合の更新時のデフォルトTargetVersion
 	 * @param interrupterClassName CsvUploadInterrupterクラス名
 	 */
 	public CsvUploadTask(
@@ -118,17 +90,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 			long uploadDateTime,
 			String defName,
 			String parameter,
-			String uniqueKey,
-			boolean isDenyInsert,
-			boolean isDenyUpdate,
-			boolean isDenyDelete,
-			Set<String> insertProperties,
-			Set<String> updateProperties,
-			TransactionType transactionType,
-			int commitLimit,
-			boolean withReferenceVersion,
-			boolean deleteSpecificVersion,
-			String interrupterClassName) {
+			CsvUploadOption option) {
 		super();
 
 		this.filePath = filePath;
@@ -136,17 +98,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		this.uploadDateTime = uploadDateTime;
 		this.defName = defName;
 		this.parameter = parameter;
-		this.uniqueKey = uniqueKey;
-		this.isDenyInsert = isDenyInsert;
-		this.isDenyUpdate = isDenyUpdate;
-		this.isDenyDelete = isDenyDelete;
-		this.insertProperties = insertProperties;
-		this.updateProperties = updateProperties;
-		this.transactionType = transactionType;
-		this.commitLimit = commitLimit;
-		this.withReferenceVersion = withReferenceVersion;
-		this.deleteSpecificVersion = deleteSpecificVersion;
-		this.interrupterClassName = interrupterClassName;
+		this.option = option;
 	}
 
 	public String getFilePath() {
@@ -169,16 +121,8 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		return parameter;
 	}
 
-	public int getCsvUploadCommitCnt() {
-		return commitLimit;
-	}
-
-	public TransactionType getCsvUploadTransactionType() {
-		return transactionType;
-	}
-
-	public String getUniqueKey() {
-		return uniqueKey;
+	public CsvUploadOption getCsvUploadOption() {
+		return option;
 	}
 
 	@Override
@@ -199,7 +143,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		CsvUploadService service = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
 
 		try (InputStream is = new FileInputStream(filePath)) {
-			service.validate(is, defName, withReferenceVersion, interrupterClassName);
+			service.validate(is, defName, option.isWithReferenceVersion(), option.getInterrupterClassName());
 		} catch (FileNotFoundException e) {
 			throw new SystemException(e);
 		} catch (EntityCsvException e) {
@@ -217,12 +161,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		}
 
 		try (InputStream is = new FileInputStream(filePath)){
-			CsvUploadStatus result = service.upload(is, defName, uniqueKey,
-					isDenyInsert, isDenyUpdate, isDenyDelete,
-					insertProperties, updateProperties,
-					transactionType, commitLimit,
-					withReferenceVersion, deleteSpecificVersion,
-					interrupterClassName);
+			CsvUploadStatus result = service.upload(is, defName, option);
 			return result;
 		} catch (FileNotFoundException e) {
 			throw new SystemException(e);

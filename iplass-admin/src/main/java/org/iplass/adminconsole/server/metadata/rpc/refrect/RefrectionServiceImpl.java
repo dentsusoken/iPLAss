@@ -347,11 +347,21 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 						&& annotation.enumClass().isEnum()) {
 					info.setEnumClassName(annotation.enumClass().getName());
 					List<Serializable> enumValues = new ArrayList<>();
+
+					List<String> fixedEnumValues = null;
+					if (annotation.fixedEnumValue().length > 0) {
+						fixedEnumValues = Arrays.asList(annotation.fixedEnumValue());
+					}
+
 					for (Object constants : annotation.enumClass().getEnumConstants()) {
 						// Deprecatedなメソッドは選択させない
 						try {
 							if (!annotation.enumClass().getField(constants.toString())
 									.isAnnotationPresent(Deprecated.class)) {
+								// 固定値が指定されている場合は、それのみ指定
+								if (fixedEnumValues != null && !fixedEnumValues.contains(constants.toString())) {
+									continue;
+								}
 								enumValues.add((Serializable) constants);
 							}
 						} catch (SecurityException e) {

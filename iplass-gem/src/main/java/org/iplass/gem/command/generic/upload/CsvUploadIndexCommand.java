@@ -76,19 +76,21 @@ public final class CsvUploadIndexCommand extends DetailCommandBase {
 		DetailCommandContext context = getContext(request);
 		EntityDefinition ed = context.getEntityDefinition();
 
+		EntityView view = context.getEntityView();
+		SearchFormView searchFormView = FormViewUtil.getSearchFormView(ed, view, context.getViewName());
+
 		request.setAttribute(Constants.ENTITY_DEFINITION, ed);
 		request.setAttribute("detailFormView", context.getView());
+		request.setAttribute("searchFormView", searchFormView);
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
 		request.setAttribute("requiredProperties", CsvUploadUtil.getRequiredProperties(ed));
-		request.setAttribute("customColumnNameMap", getCustomColumnNameMap(context));
+		request.setAttribute("customColumnNameMap", getCustomColumnNameMap(context, searchFormView));
 
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 
-	private Map<String, String> getCustomColumnNameMap(DetailCommandContext context) {
+	private Map<String, String> getCustomColumnNameMap(DetailCommandContext context, SearchFormView searchFormView) {
 
-		EntityView view = context.getEntityView();
-		SearchFormView searchFormView = FormViewUtil.getSearchFormView(context.getEntityDefinition(), view, context.getViewName());
 		if (searchFormView != null) {
 			if (StringUtil.isNotEmpty(searchFormView.getCondSection().getCsvUploadInterrupterName())) {
 				UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);

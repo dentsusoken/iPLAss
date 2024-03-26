@@ -34,12 +34,12 @@ import org.iplass.mtp.command.annotation.webapi.RestXml;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.InsertOption;
+import org.iplass.mtp.impl.csv.CsvUploadOption;
 import org.iplass.mtp.impl.csv.CsvUploadService;
 import org.iplass.mtp.impl.csv.CsvUploadStatus;
 import org.iplass.mtp.impl.csv.EntityCsvImportOption;
 import org.iplass.mtp.impl.csv.EntityCsvImportResult;
 import org.iplass.mtp.impl.csv.EntityCsvImportService;
-import org.iplass.mtp.impl.csv.TransactionType;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.csv.EntityCsvException;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
@@ -207,7 +207,9 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 			} else {
 				// 非同期アップロード(トランザクション分割なし)
 				try (InputStream is = file.getInputStream()) {
-					service.asyncUpload(is, file.getFileName(), defName, null, uniqueKey, false, false, false, null, null, TransactionType.ONCE, 0, true, true);
+					CsvUploadOption uploadOption = new CsvUploadOption()
+							.uniqueKey(uniqueKey);
+					service.asyncUpload(is, file.getFileName(), defName, null, uploadOption);
 				} catch (IOException e) {
 					throw new SystemException(e);
 				}
@@ -239,7 +241,9 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 
 				// 同期アップロード(トランザクション分割なし)
 				try (InputStream is = file.getInputStream()) {
-					CsvUploadStatus result = service.upload(is, defName, uniqueKey, false, false, false, null, null, TransactionType.ONCE, 0, true, true);
+					CsvUploadOption uploadOption = new CsvUploadOption()
+							.uniqueKey(uniqueKey);
+					CsvUploadStatus result = service.upload(is, defName, uploadOption);
 					if (result.getStatus() != TaskStatus.COMPLETED) {
 						throw new EntityCsvException(result.getCode(), result.getMessage());
 					}

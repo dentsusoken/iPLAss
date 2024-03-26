@@ -150,6 +150,7 @@ task copyGwtTransSrc(type: Sync) {
 		//include 'mtp/entity/GenericEntity.java'
 		include 'mtp/entity/SearchResult.java'
 		include 'mtp/entity/SelectValue.java'
+		include 'mtp/entity/TargetVersion.java'
 
 		include 'mtp/entity/csv/MultipleFormat.java'
 
