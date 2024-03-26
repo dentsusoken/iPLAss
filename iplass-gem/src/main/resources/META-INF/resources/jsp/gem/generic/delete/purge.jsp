@@ -22,7 +22,7 @@
 <%@page import="org.iplass.mtp.ManagerLocator"%>
 <%@page import="org.iplass.mtp.entity.permission.EntityPermission"%>
 <%@page import="org.iplass.mtp.auth.AuthContext"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
