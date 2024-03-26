@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
