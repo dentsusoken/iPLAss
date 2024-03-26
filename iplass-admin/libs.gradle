@@ -33,7 +33,7 @@ dependencies {
 
 	//smart gwt has no public maven repository
 	compileOnly fileTree(rootProject.ext.localLibDir) {
-		include 'smartgwt/**'
+		include 'smartgwt/**/*.jar'
 	}
 
 	// gwt.gwtVersion を指定すれば設定される依存関係を個別設定
