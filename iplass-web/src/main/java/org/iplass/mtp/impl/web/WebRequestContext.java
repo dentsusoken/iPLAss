@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.SessionContext;
 import org.iplass.mtp.command.UploadFileHandle;
