@@ -218,8 +218,9 @@ dependencies {
 	// jackson management
 	jeeruntime4tomcat platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
 
-	//jstl runtime
+	//jstl api
 	jeeruntime4tomcat sharedLib('jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api')
+	//jstl runtime
 	jeeruntime4tomcat sharedLib('org.glassfish.web:jakarta.servlet.jsp.jstl')
 	//java mail runtime
 	jeeruntime4tomcat sharedLib('org.eclipse.angus:angus-mail')
