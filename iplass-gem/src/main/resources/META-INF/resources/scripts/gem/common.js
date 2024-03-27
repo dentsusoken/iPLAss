@@ -696,6 +696,14 @@ function resetNormalCondition() {
  * 詳細検索 行追加
  */
 function addDetailCondition() {
+	var maxOfDetailSearchItems = document.getElementById("maxOfDetailSearchItems");
+
+	if (maxOfDetailSearchItems != null && !isNaN(maxOfDetailSearchItems.value)) {
+		if($(".data-deep-search tbody").children("tr").length >= maxOfDetailSearchItems.value) {
+			return;
+		}
+	}
+
 	countUp("id_detailConditionCount", function(count) {
 		var $table = $(".data-deep-search tbody");
 		var $srcRow = $table.children("tr:first");

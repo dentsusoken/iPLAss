@@ -119,6 +119,9 @@
 		<!-- 検索画面で表示する検索結果の件数 -->
 		<property name="searchResultDispRowCount" value="10"/>
 
+		<!-- 詳細検索における検索項目の上限数 -->
+		<property name="maxOfDetailSearchItems" value="100"/>
+
 		<!-- 検索処理のインターバル、無期限(0)/指定ミリ秒(1以上) -->
 		<property name="searchInterval" value="60000"/>
 
