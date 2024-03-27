@@ -20,12 +20,12 @@
 
 package org.iplass.adminconsole.server.base.io.upload;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.util.IOUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.service.AdminConsoleService;
 import org.iplass.adminconsole.shared.base.io.AdminUploadConstant;
@@ -244,37 +245,11 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 
 	// TODO このメソッドはユーティリティ。
 	protected final byte[] convertFileToByte(File file) {
-		byte[] bytes = null;
-		FileInputStream is = null;
-		FileChannel channel = null;
-		try {
-			is = new FileInputStream(file);
-			channel = is.getChannel();
-			ByteBuffer buffer = ByteBuffer.allocate((int) channel.size());
-			channel.read(buffer);
-			buffer.clear();
-			bytes = new byte[buffer.capacity()];
-			buffer.get(bytes);
+		try (InputStream input = new BufferedInputStream(new FileInputStream(file))) {
+			return IOUtils.toByteArray(input);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-		} finally {
-			if (channel != null) {
-				try {
-					channel.close();
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
 		}
-
-		return bytes;
 	}
 
 	/**
