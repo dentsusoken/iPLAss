@@ -95,11 +95,23 @@ public class AdminUploadActionResponseParser {
 	 */
 	private static String extractJsonString(String eventResult) {
 		// content-type: application/json を指定しているが、以下のような形式になってしまう。そのため、テキストの json 部分を抽出
-		// e.getResults() = <pre style="word-wrap: break-word; white-space: pre-wrap;">${JSON文字列}</pre>
-		Document resultDocument = XMLParser.parse(eventResult);
+		// Firefox, Edge
+		//   e.getResults() = <pre style="word-wrap: break-word; white-space: pre-wrap;">${JSON文字列}</pre>
+		// Chrome
+		//   e.getResults() = <pre>${JSON文字列}</pre><div></div>
+
+		// ルートノードを response とする。
+		String parseTarget = "<response>" + eventResult + "</response>";
+		Document parsedDocument = XMLParser.parse(parseTarget);
 
 		// JSON文字列を抽出する
-		return resultDocument.getFirstChild().getFirstChild().getNodeValue();
+		return parsedDocument
+				// <response>
+				.getFirstChild()
+				// <pre>
+				.getFirstChild()
+				// #text
+				.getFirstChild().getNodeValue();
 	}
 
 }
