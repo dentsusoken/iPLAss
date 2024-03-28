@@ -5,9 +5,6 @@ ext {
 configurations {
 	wjRuntime
 
-	gwt
-	gwtSdk
-
 	compileOnly.extendsFrom(jeecoreapis)
 	compileOnly.extendsFrom(jeewebapis)
 	runtimeOnly.extendsFrom(wjRuntime)
@@ -36,16 +33,29 @@ dependencies {
 		include 'smartgwt/**/*.jar'
 	}
 
-	// gwt.gwtVersion を指定すれば設定される依存関係を個別設定
-	gwtSdk(sharedLib('org.gwtproject:gwt-dev')) {
-	  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
-	  exclude group: 'org.eclipse.jetty'
-	}
-	gwtSdk sharedLib('org.gwtproject:gwt-user')
-	implementation sharedLib('org.gwtproject:gwt-servlet-jakarta')
-	gwt(sharedLib('org.gwtproject:gwt-codeserver')) {
-	  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
-	  exclude group: 'org.eclipse.jetty'
-	}
+}
 
+// FIXME gwt plugin が gwt-servlet-jakarta に対応するまで以下のような設定を実施する
+afterEvaluate {
+	configurations {
+		gwt
+		gwtSdk
+	}
+	dependencies {
+		// gwt.gwtVersion を指定すれば設定される依存関係を個別設定
+		gwtSdk(sharedLib('org.gwtproject:gwt-dev')) {
+		  // java.xml パッケージを含む xml-apis ライブラリを推移依存するため除外
+		  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
+		  // NOTE: apache-jsp 関連のライブラリを推移依存する。害が無いので除外しないが不要ではある。
+		  //exclude group: 'org.eclipse.jetty'
+		}
+		gwtSdk sharedLib('org.gwtproject:gwt-user')
+		implementation sharedLib('org.gwtproject:gwt-servlet-jakarta')
+		gwt(sharedLib('org.gwtproject:gwt-codeserver')) {
+		  // java.xml パッケージを含む xml-apis ライブラリを推移依存するため除外
+		  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
+		  // NOTE: apache-jsp 関連のライブラリを推移依存する。害が無いので除外しないが不要ではある。
+		  //exclude group: 'org.eclipse.jetty'
+		}
+	}
 }
