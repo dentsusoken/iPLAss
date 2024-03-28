@@ -1,6 +1,8 @@
 configurations {
 	wjRuntime
 	jasper
+	jasper.extendsFrom jakartaImplJSP
+	jasper.extendsFrom jakartaImplJstl
 
 	compileOnly.extendsFrom(jeecoreapis)
 	compileOnly.extendsFrom(jeewebapis)
@@ -49,7 +51,5 @@ dependencies {
 	//css
 	wjRuntime sharedLib('org.webjars:font-awesome')
 
-	//jsp
-	jasper sharedLib('org.apache.tomcat:tomcat-jasper')
-	jasper sharedLib('org.glassfish.web:jakarta.servlet.jsp.jstl')
+	//jsp ⇒ configurations.jasper
 }
