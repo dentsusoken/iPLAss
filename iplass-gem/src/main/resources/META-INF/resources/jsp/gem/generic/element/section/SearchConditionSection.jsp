@@ -64,6 +64,7 @@
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
+<%@ page import="org.iplass.gem.GemConfigService"%>
 <%@ page import="org.iplass.mtp.spi.ServiceRegistry"%>
 <%@ page import="org.iplass.mtp.impl.entity.property.PropertyService"%>
 
@@ -251,6 +252,10 @@
 		}
 		return map;
 	}
+	int getMaxOfDetailSearchItems() {
+		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		return service.getMaxOfDetailSearchItems();
+	}
 %>
 <%
 	//searchCondによる通常検索条件の復元はSearchResultSection側で行っている。
@@ -386,6 +391,9 @@
 	boolean showDetail = !section.isHideDetailCondition();
 	//定型検索表示
 	boolean showFixed = !section.isHideFixedCondition() && filters.size() > 0;
+
+	//詳細検索における検索項目の上限数
+	int maxOfDetailSearchItems = getMaxOfDetailSearchItems();
 
 	//検索結果件数表示
 	boolean showCount = !view.getResultSection().isHideCount();
@@ -1045,6 +1053,9 @@ ${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.saved
 			} catch (NumberFormatException e) {
 			}
 		}
+		if (dtlCndCount > maxOfDetailSearchItems) {
+			dtlCndCount = maxOfDetailSearchItems;
+		}
 		String searchCondSearchType = getSearchCondParam(searchCond, "searchType");
 
 		StringBuilder propTypes = new StringBuilder();
@@ -1158,6 +1169,7 @@ $(function() {
 <div class="data-deep-search tab-panel" style="display: none;">
 <form name="detailForm" method="POST">
 <input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>"/>
+<input type="hidden" id="maxOfDetailSearchItems" value="<c:out value="<%=maxOfDetailSearchItems%>"/>"/>
 <table class="tbl-search-01">
 <thead>
 <tr>

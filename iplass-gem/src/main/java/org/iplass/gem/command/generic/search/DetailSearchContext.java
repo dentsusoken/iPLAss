@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.search.condition.PropertySearchCondition;
@@ -372,6 +373,12 @@ public class DetailSearchContext extends SearchContextBase {
 		if (details == null) {
 			details = new ArrayList<SearchConditionDetail>();
 			int count = getCondtionCount();
+			GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+			
+			if (count > service.getMaxOfDetailSearchItems()) {
+				count = service.getMaxOfDetailSearchItems();
+			}
+			
 			for (int i = 0; i < count; i++) {
 				SearchConditionDetail detail = getDetailCondition(i);
 				details.add(detail);

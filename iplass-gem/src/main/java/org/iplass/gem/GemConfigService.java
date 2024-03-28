@@ -93,6 +93,9 @@ public class GemConfigService implements Service {
 	/** 検索画面で表示する検索結果の件数*/
 	private int searchResultDispRowCount;
 
+	/** 詳細検索における検索項目の上限数 */
+	private int maxOfDetailSearchItems;
+
 	/** 検索処理のインターバル */
 	private int searchInterval;
 
@@ -198,6 +201,8 @@ public class GemConfigService implements Service {
 		showSeachCondResetButton = Boolean.valueOf(config.getValue("showSeachCondResetButton"));
 
 		searchResultDispRowCount = config.getValue("searchResultDispRowCount", Integer.class, 10);
+
+		maxOfDetailSearchItems = config.getValue("maxOfDetailSearchItems", Integer.class, 100);
 
 		searchInterval = config.getValue("searchInterval", Integer.class, 1000);
 
@@ -403,6 +408,14 @@ public class GemConfigService implements Service {
 	 */
 	public int getSearchResultDispRowCount() {
 		return searchResultDispRowCount;
+	}
+
+	/**
+	 * 詳細検索における検索項目の上限数を取得します。
+	 * @return 詳細検索における検索項目の上限数
+	 */
+	public int getMaxOfDetailSearchItems() {
+		return maxOfDetailSearchItems;
 	}
 
 	/**
