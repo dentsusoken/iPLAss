@@ -1053,6 +1053,9 @@ ${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.saved
 			} catch (NumberFormatException e) {
 			}
 		}
+		if (dtlCndCount > maxOfDetailSearchItems) {
+			dtlCndCount = maxOfDetailSearchItems;
+		}
 		String searchCondSearchType = getSearchCondParam(searchCond, "searchType");
 
 		StringBuilder propTypes = new StringBuilder();
