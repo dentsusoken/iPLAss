@@ -373,11 +373,6 @@ public class DetailSearchContext extends SearchContextBase {
 		if (details == null) {
 			details = new ArrayList<SearchConditionDetail>();
 			int count = getCondtionCount();
-			GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
-			
-			if (count > service.getMaxOfDetailSearchItems()) {
-				count = service.getMaxOfDetailSearchItems();
-			}
 			
 			for (int i = 0; i < count; i++) {
 				SearchConditionDetail detail = getDetailCondition(i);
@@ -392,6 +387,12 @@ public class DetailSearchContext extends SearchContextBase {
 	 */
 	private int getCondtionCount() {
 		Integer count = getRequest().getParamAsInt(Constants.DETAIL_COND_COUNT);
+		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		
+		if (count > service.getMaxOfDetailSearchItems()) {
+			count = service.getMaxOfDetailSearchItems();
+		}
+		
 		return count == null ? 0 : count;
 	}
 

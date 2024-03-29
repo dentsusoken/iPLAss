@@ -696,10 +696,9 @@ function resetNormalCondition() {
  * 詳細検索 行追加
  */
 function addDetailCondition() {
-	var maxOfDetailSearchItems = document.getElementById("maxOfDetailSearchItems");
-
-	if (maxOfDetailSearchItems != null && !isNaN(maxOfDetailSearchItems.value)) {
-		if($(".data-deep-search tbody").children("tr").length >= maxOfDetailSearchItems.value) {
+	if (!isNaN($("#maxOfDetailSearchItems").attr("value"))) {
+		if($(".data-deep-search tbody").children("tr").length >= $("#maxOfDetailSearchItems").attr("value")) {
+			alert("検索条件の上限数に達したので、これ以上は追加できません。");
 			return;
 		}
 	}
