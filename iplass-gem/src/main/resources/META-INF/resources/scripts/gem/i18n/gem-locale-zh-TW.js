@@ -28,6 +28,7 @@ scriptContext.gem.locale.common.numFormatErrorMsg = "請輸入數值 {0}。";
 scriptContext.gem.locale.common.dateFormatErrorMsg = "請輸入正確的日期 {0}。 ({1})";
 scriptContext.gem.locale.common.timeFormatErrorMsg = "請輸入正確的時間 {0}。 ({1})";
 scriptContext.gem.locale.common.timestampFormatErrorMsg = "請輸入正確的日期或​​時間 {0}。 ({1})";
+scriptContext.gem.locale.common.maxOfDetailSearchItemsWarningMsg = "搜尋條件已達到最大數量，無法再新增。";
 
 scriptContext.gem.locale.apendCategory("binary");
 scriptContext.gem.locale.binary.deleteLink = "刪除";

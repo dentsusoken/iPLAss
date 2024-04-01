@@ -696,6 +696,15 @@ function resetNormalCondition() {
  * 詳細検索 行追加
  */
 function addDetailCondition() {
+	var maxOfDetailSearchItems = $("#maxOfDetailSearchItems").val() 
+	
+	if (!isNaN(maxOfDetailSearchItems)) {
+		if($(".data-deep-search tbody").children("tr").length >= maxOfDetailSearchItems) {
+			alert(scriptContext.gem.locale.common.maxOfDetailSearchItemsWarningMsg);
+			return;
+		}
+	}
+
 	countUp("id_detailConditionCount", function(count) {
 		var $table = $(".data-deep-search tbody");
 		var $srcRow = $table.children("tr:first");
