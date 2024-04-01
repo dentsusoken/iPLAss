@@ -28,6 +28,7 @@ scriptContext.gem.locale.common.numFormatErrorMsg = "โปรดป้อนห
 scriptContext.gem.locale.common.dateFormatErrorMsg = "โปรดป้อนวันที่ {0} ให้ถูกต้อง ({1})";
 scriptContext.gem.locale.common.timeFormatErrorMsg = "โปรดป้อนเวลา {0} ให้ถูกต้อง ({1})";
 scriptContext.gem.locale.common.timestampFormatErrorMsg = "โปรดป้อนวันที่หรือเวลา {0} ให้ถูกต้อง ({1})";
+scriptContext.gem.locale.common.maxOfDetailSearchItemsWarningMsg = "เงื่อนไขการค้นหาถึงจำนวนสูงสุดแล้ว จึงไม่สามารถเพิ่มได้อีก";
 
 scriptContext.gem.locale.apendCategory("binary");
 scriptContext.gem.locale.binary.deleteLink = "ลบ";

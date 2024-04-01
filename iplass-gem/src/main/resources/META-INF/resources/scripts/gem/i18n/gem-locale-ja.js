@@ -28,6 +28,7 @@ scriptContext.gem.locale.common.numFormatErrorMsg = "{0}は数値を入力して
 scriptContext.gem.locale.common.dateFormatErrorMsg = "{0}は日付を正しく入力してください。({1})";
 scriptContext.gem.locale.common.timeFormatErrorMsg = "{0}は時間を正しく入力してください。({1})";
 scriptContext.gem.locale.common.timestampFormatErrorMsg = "{0}は日付もしくは時間を正しく入力してください。({1})";
+scriptContext.gem.locale.common.maxOfDetailSearchItemsWarningMsg = "検索条件の上限数に達したので、これ以上は追加できません。";
 
 scriptContext.gem.locale.apendCategory("binary");
 scriptContext.gem.locale.binary.deleteLink = "削除";

@@ -28,6 +28,7 @@ scriptContext.gem.locale.common.numFormatErrorMsg = "Please enter a number {0}."
 scriptContext.gem.locale.common.dateFormatErrorMsg = "Please enter the date {0} correctly. ({1})";
 scriptContext.gem.locale.common.timeFormatErrorMsg = "Please enter the time {0} correctly. ({1})";
 scriptContext.gem.locale.common.timestampFormatErrorMsg = "Please enter the date or time {0} correctly. ({1})";
+scriptContext.gem.locale.common.maxOfDetailSearchItemsWarningMsg = "The maximum number of search conditions has been reached, so no more can be added.";
 
 scriptContext.gem.locale.apendCategory("binary");
 scriptContext.gem.locale.binary.deleteLink = "Delete";
