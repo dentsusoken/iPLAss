@@ -23,7 +23,6 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.MultiColumnDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyControl;
@@ -53,7 +52,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
  * ビュー編集用レイアウト
  * @author lis3wg
  */
-public class DetailDropLayout extends MultiColumnDropLayout {
+public class DetailDropLayout extends EntityViewItemDropLayout {
 
 	private String defName;
 
@@ -78,6 +77,7 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 		this.defName = defName;
 	}
 
+	@Override
 	public void setEntityDefinition(EntityDefinition ed) {
 		this.ed = ed;
 	}
