@@ -779,10 +779,10 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 									|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 								columnName = columnStr + columnIndex;
 								columnIndex++;
-								//							} else {
-								//								RHCMetaPropertyStore metaPropertyStore = (RHCMetaPropertyStore) metaProperty.getEntityStoreProperty();
-								//								String[] columnNames = metaPropertyStore.getColumnNames();
-								//								columnName = columnNames[0];
+//							} else {
+//								RHCMetaPropertyStore metaPropertyStore = (RHCMetaPropertyStore) metaProperty.getEntityStoreProperty();
+//								String[] columnNames = metaPropertyStore.getColumnNames();
+//								columnName = columnNames[0];
 							}
 							if ("OBJ_ID".equals(columnName) || "OBJ_VER".equals(columnName)) {
 								columnName = "OPT_" + columnName;
@@ -818,10 +818,10 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 										|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 									columnName = columnStr + columnIndex;
 									columnIndex++;
-									//								} else {
-									//									RHCMetaPropertyStore metaPropertyStore = (RHCMetaPropertyStore) metaProperty.getEntityStoreProperty();
-									//									String[] columnNames = metaPropertyStore.getColumnNames();
-									//									columnName = columnNames[0];
+//								} else {
+//									RHCMetaPropertyStore metaPropertyStore = (RHCMetaPropertyStore) metaProperty.getEntityStoreProperty();
+//									String[] columnNames = metaPropertyStore.getColumnNames();
+//									columnName = columnNames[0];
 								}
 								if ("OBJ_ID".equals(columnName) || "OBJ_VER".equals(columnName)) {
 									columnName = "OPT_" + columnName;
