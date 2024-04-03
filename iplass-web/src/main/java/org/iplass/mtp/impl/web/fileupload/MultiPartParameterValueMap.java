@@ -99,8 +99,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 
 		tempFiles = new ArrayList<UploadFileHandleImpl>();
 
-		// TODO generics は何を指定？
-		JakartaServletFileUpload upload = new JakartaServletFileUpload();
+		JakartaServletFileUpload<?, ?> upload = new JakartaServletFileUpload<>();
 		// Parse the request
 		try {
 			FileItemInputIterator iter = upload.getItemIterator(req);
