@@ -128,7 +128,7 @@ ext {
 		'org.jxls:jxls': '2.14.0',
 		'org.jxls:jxls-poi': '2.14.0',
 		
-		'org.codehaus.groovy:groovy-bom': '3.0.12',//by bom
+		'org.codehaus.groovy:groovy-bom': '3.0.21',//by bom
 		
 		'com.fasterxml.jackson:jackson-bom': '2.15.2',//by bom
 		
