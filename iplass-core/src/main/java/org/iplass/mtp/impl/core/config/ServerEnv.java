@@ -128,7 +128,7 @@ public class ServerEnv {
 			}
 
 			if (list.isEmpty()) {
-				// NOTE NetworkInterface から情報を取得できない場合は、ローカルホストを取得する。JDK 21 で取得できないケースがありそう。
+				// FIX JDK21 NetworkInterface から情報を取得できない場合は、ローカルホストを設定する。
 				try {
 					addHostNameAndAddress(list, InetAddress.getLocalHost());
 					addHostNameAndAddress(list, InetAddress.getLoopbackAddress());
