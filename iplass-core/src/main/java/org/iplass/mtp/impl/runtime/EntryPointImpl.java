@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2019 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -32,17 +32,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EntryPointImpl implements EntryPoint {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(EntryPointImpl.class);
-	
+
 	private static volatile EntryPointImpl instance;
-	
+
 	private ServiceRegistry serviceRegistry;
-	
+
 	public static boolean isInited() {
 		return instance != null;
 	}
-	
+
 	public static EntryPointImpl getInstance() {
 		return instance;
 	}
@@ -52,21 +52,25 @@ public class EntryPointImpl implements EntryPoint {
 			if (instance != null) {
 				throw new AlreadyInitializedException("EntryPoint already initialized");
 			}
-			
+
 			try {
 				if (!BootstrapProps.init(customProps)) {
 					logger.warn("BootstrapProps already initialized, so can not apply customProps:" + customProps);
 				}
 				instance = new EntryPointImpl();
-				
+
+			} catch (Throwable e) {
+				logger.error("A fatal error occurred while starting the application.", e);
+				throw e;
+
 			} finally {
 				ExecuteContext.finContext();
 			}
-			
+
 			return instance;
 		}
 	}
-	
+
 	private EntryPointImpl() {
 		serviceRegistry = ServiceRegistry.getRegistry();
 	}
