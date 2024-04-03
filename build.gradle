@@ -20,10 +20,6 @@ allprojects {
 
 	repositories {
 		mavenCentral()
-		maven {
-			//for jasper reports
-			url 'https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/'
-		}
 	}
 	
 	javadoc {
