@@ -151,8 +151,9 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 		try {
 			// NOTE ServletFileUpload はリクエスト単位で作成する
 			// cf. https://commons.apache.org/proper/commons-fileupload/using
-			JakartaServletFileUpload servletFileUpload = getServletFileUpload(getFileItemFactory());
-			List<FileItem> fileItemList = servletFileUpload.parseRequest(req);
+			JakartaServletFileUpload<?, ?> servletFileUpload = getServletFileUpload(getFileItemFactory());
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			List<FileItem<?>> fileItemList = (List) servletFileUpload.parseRequest(req);
 			return convert(fileItemList);
 
 		} catch (FileUploadException e) {
@@ -165,8 +166,8 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 	 * @param fileItemFactory FileItemFactoryインスタンス
 	 * @return ServletFileUpload インスタンス
 	 */
-	protected JakartaServletFileUpload getServletFileUpload(FileItemFactory fileItemFactory) {
-		JakartaServletFileUpload servletFileUpload = new JakartaServletFileUpload(fileItemFactory);
+	protected JakartaServletFileUpload<?, ?> getServletFileUpload(FileItemFactory<?> fileItemFactory) {
+		JakartaServletFileUpload<?, ?> servletFileUpload = new JakartaServletFileUpload<>(fileItemFactory);
 		servletFileUpload.setSizeMax(sizeMax);
 		servletFileUpload.setFileSizeMax(fileSizeMax);
 		servletFileUpload.setFileCountMax(fileCountMax);
@@ -177,7 +178,7 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 	 * FileItemFactory インスタンスを取得する
 	 * @return FileItemFactory インスタンス
 	 */
-	protected FileItemFactory getFileItemFactory() {
+	protected FileItemFactory<?> getFileItemFactory() {
 		// FIXME 一時的な対応
 		DiskFileItemFactory.Builder builder = DiskFileItemFactory.builder();
 		builder.setBufferSize(sizeThreshold);
@@ -195,7 +196,7 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 	 * @param fileItemList CommonsFileupload FileItem リスト
 	 * @return MultipartRequestParameter リスト
 	 */
-	protected List<MultipartRequestParameter> convert(List<FileItem> fileItemList) {
+	protected List<MultipartRequestParameter> convert(List<FileItem<?>> fileItemList) {
 		return fileItemList.stream().map(i -> new CommonsFileuploadMultipartRequestParameter(i)).collect(Collectors.toCollection(ArrayList::new));
 	}
 

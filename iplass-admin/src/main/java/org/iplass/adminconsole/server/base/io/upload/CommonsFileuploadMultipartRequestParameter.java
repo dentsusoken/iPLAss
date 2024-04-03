@@ -40,9 +40,13 @@ class CommonsFileuploadMultipartRequestParameter implements MultipartRequestPara
 	/** logger */
 	private Logger logger = LoggerFactory.getLogger(CommonsFileuploadMultipartRequestParameter.class);
 	/** FileItem インスタンス */
-	private FileItem delegate;
+	private FileItem<?> delegate;
 
-	public CommonsFileuploadMultipartRequestParameter(FileItem fileItem) {
+	/**
+	 * コンストラクタ
+	 * @param fileItem FileItem インスタンス
+	 */
+	public CommonsFileuploadMultipartRequestParameter(FileItem<?> fileItem) {
 		this.delegate = fileItem;
 	}
 
