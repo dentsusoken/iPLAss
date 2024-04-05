@@ -636,7 +636,10 @@
 		<!-- OfficeDocument(OOXML形式)用Parser。tikaのOOXMLParserを利用して解析する -->
 		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryOOXMLParser" />
 		<!-- OfficeDocument(2003以前の形式)用Parser。tikaのOfficeParserを利用して解析する -->
-		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryOfficeParser" />
+		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryOfficeParser">
+			<!-- RTFファイルの解析例外は処理継続する -->
+			<property name="continuableExceptions" value="org.apache.poi.poifs.filesystem.NotOLE2FileException" />
+		</property>
 		<!-- HTML用Parser。tikaのHtmlParserを利用して解析する -->
 		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryHtmlParser" />
 		<!-- PlainText用Parser。tikaのTXTParserを利用して解析する -->

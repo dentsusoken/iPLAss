@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -22,6 +22,9 @@ package org.iplass.mtp.impl.fulltextsearch.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.tika.exception.TikaException;
@@ -44,6 +47,8 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractBinaryReferenceParser.class);
 
+	/** 処理継続可能な例外クラス */
+	private List<String> continuableExceptions = Collections.emptyList();
 	private Set<MediaType> supportTypes;
 
 	public AbstractBinaryReferenceParser() {
@@ -87,8 +92,8 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 			} catch (TikaException e) {
 				throw new BinaryReferenceParseException("Exception occured on index creating process.", e);
 			} catch (Throwable e) {
-				//タイプに一致するParserで必要なClassがなかった場合は、BinaryReferenceParseExceptionをthrow
-				if (e instanceof NoClassDefFoundError) {
+				//タイプに一致するParserで必要なClassがなかったもしくは、処理継続可能な例外クラスに設定されていた場合、BinaryReferenceParseExceptionをthrow
+				if (e instanceof NoClassDefFoundError || continuableExceptions.contains(e.getClass().getName())) {
 					throw new BinaryReferenceParseException("Exception occured on index creating process.", e);
 				} else {
 					throw e;
@@ -108,6 +113,24 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 		} catch (IOException e) {
 			throw new FulltextSearchRuntimeException("Exception occured on index creating process.", e);
 		}
+	}
+
+	/**
+	 * 処理継続可能な例外クラス名を設定する
+	 *
+	 * <p>
+	 * バイナリ情報をパースする際に例外が発生しても、処理継続したい場合に設定する。
+	 * 設定値にはパース時に発生する例外の完全修飾クラス名を設定する。
+	 * </p>
+	 *
+	 * <p>
+	 * 例外クラスがプライベートである可能性を考慮し、クラス名を設定値とする。
+	 * </p>
+	 *
+	 * @param continuableExceptions 処理継続可能な例外クラス名
+	 */
+	public void setContinuableExceptions(String[] continuableExceptions) {
+		this.continuableExceptions = Arrays.asList(continuableExceptions);
 	}
 
 	protected Set<MediaType> getCustomSupportTypes() {
