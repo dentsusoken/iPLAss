@@ -653,16 +653,6 @@
 		<!-- 全てのバイナリファイルを対象に、nameとtypeのみ返す -->
 		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryNameTypeParser" />
 
-		<!-- 
-		  バイナリパース時の想定外例外でインデックス作成処理を継続する例外の定義。複数設定可能。
-		  value 属性に存在する例外の完全修飾クラス名を設定する。
-		-->
-		<!-- バイナリパース時の想定外例外でインデックス作成処理を継続する例外 設定例 -->
-		<!--
-		<property name="exceptionsBinaryParsingThatContinueIndexing" value="org.apache.poi.poifs.filesystem.NotOLE2FileException" />
-		<property name="exceptionsBinaryParsingThatContinueIndexing" value="org.apache.poi.hssf.OldExcelFormatException" />
-		-->
-
 		<!-- solr利用 -->
 		<!--
 		<class>org.iplass.mtp.impl.fulltextsearch.FulltextSearchSolrService</class>
