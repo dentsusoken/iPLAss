@@ -119,7 +119,7 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 	 * 処理継続可能な例外クラス名を設定する
 	 *
 	 * <p>
-	 * バイナリ情報をパースする際に例外が発生しても、処理継続したい場合に設定する。
+	 * バイナリ情報をパースする際に、例外が発生しても処理継続したい例外クラス名を設定する。
 	 * 設定値にはパース時に発生する例外の完全修飾クラス名を設定する。
 	 * </p>
 	 *
