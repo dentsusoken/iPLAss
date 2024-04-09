@@ -133,6 +133,15 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 		this.continuableExceptions = Arrays.asList(continuableExceptions);
 	}
 
+	/**
+	 * 処理継続可能な例外クラス名を取得する
+	 *
+	 * @return 処理継続可能な例外クラス名
+	 */
+	public String[] getContinuableExceptions() {
+		return continuableExceptions.toArray(new String[continuableExceptions.size()]);
+	}
+
 	protected Set<MediaType> getCustomSupportTypes() {
 		return null;
 	}
