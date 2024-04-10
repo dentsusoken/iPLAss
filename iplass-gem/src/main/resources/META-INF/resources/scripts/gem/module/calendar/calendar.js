@@ -356,6 +356,11 @@
 			 */
 			function addButton(element, ulClassName, calendarType, startDate, endDate, now) {
 				var calDefs = scriptContext.calendarDefs[options.calendarName];
+				calDefs = calDefs.filter(function(def){return def.allowNoEntryOfRecords == "false"});
+
+				if (calDefs.length < 1) {
+					return;
+				}
 
 				var add = $("<span />").appendTo(element).addClass("add");
 				var link = $("<a />").appendTo(add).attr("href", "javascript:void(0)");
@@ -394,6 +399,7 @@
 			var isSubModal = $("body.modal-body").length != 0;
 			var target = getModalTarget(isSubModal);
 			var form = $("<form />").attr({method:"POST", action:viewAction, target:target}).appendTo("body");
+
 			$("<input />").attr({type:"hidden", name:"version", value:data.version}).appendTo(form);
 			$("<input />").attr({type:"hidden", name:"refEdit", value:true}).appendTo(form);
 			if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo(form);

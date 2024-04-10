@@ -352,6 +352,7 @@ public class CalendarGrid extends MtpTreeGrid {
 				item.setPropertyName(Entity.CREATE_DATE);//TODO デフォルトはどうする？
 				item.setLimit(1000);
 				item.setDisplayTime(false);
+				item.setAllowNoEntryOfRecords(false);
 				addTargetNode = new CalendarNode(item, "cube_blue.png");
 			}
 
@@ -431,6 +432,8 @@ public class CalendarGrid extends MtpTreeGrid {
 		private SelectItem viewActionField;
 		/** 追加アクション名 */
 		private SelectItem addActionField;
+		/** カレンダー上にレコードの新規登録を拒否するか */
+		private CheckboxItem allowNoEntryOfRecordsField;
 		/** ビュー名 */
 		private TextItem viewNameField;
 
@@ -567,6 +570,12 @@ public class CalendarGrid extends MtpTreeGrid {
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speAddDataAction"));
 			items.add(addActionField);
 
+			allowNoEntryOfRecordsField = new CheckboxItem("allowNoEntryOfRecords", "allow no entry of records");
+			allowNoEntryOfRecordsField.setWidth("100%");
+			SmartGWTUtil.addHoverToFormItem(allowNoEntryOfRecordsField,
+					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_allowNoEntryOfRecordsOnCalendar"));
+			items.add(allowNoEntryOfRecordsField);
+
 			viewNameField = new MtpTextItem("viewName", "Entity View");
 			SmartGWTUtil.addHoverToFormItem(viewNameField,
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speDisplayDetailAndAddViewName"));
@@ -608,6 +617,7 @@ public class CalendarGrid extends MtpTreeGrid {
 						String addAction = SmartGWTUtil.getStringValue(addActionField);
 						if ("#default".equals(addAction)) addAction = null;
 						item.setAddAction(addAction);
+						item.setAllowNoEntryOfRecords(SmartGWTUtil.getBooleanValue(allowNoEntryOfRecordsField));
 						item.setViewName(SmartGWTUtil.getStringValue(viewNameField));
 
 						destroy();
@@ -647,6 +657,7 @@ public class CalendarGrid extends MtpTreeGrid {
 			String addAction = item.getAddAction();
 			if (addAction == null || addAction.isEmpty()) addAction = "#default";
 			addActionField.setValue(addAction);
+			allowNoEntryOfRecordsField.setValue(item.getAllowNoEntryOfRecords() != null ? item.getAllowNoEntryOfRecords() : false);
 			viewNameField.setValue(item.getViewName());
 
 

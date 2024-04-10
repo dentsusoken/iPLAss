@@ -67,6 +67,9 @@ public class EntityCalendarItem implements Serializable {
 	/** 追加アクション名 */
 	private String addAction;
 
+	/** レコードの新規登録を拒否するか */
+	private Boolean allowNoEntryOfRecords;
+
 	/** ビュー名 */
 	private String viewName;
 
@@ -208,6 +211,22 @@ public class EntityCalendarItem implements Serializable {
 	 */
 	public void setAddAction(String addAction) {
 		this.addAction = addAction;
+	}
+
+	/**
+	 * レコードの新規登録を拒否するかを取得
+	 * @return レコードの新規登録を拒否するか
+	 */
+	public Boolean getAllowNoEntryOfRecords() {
+		return allowNoEntryOfRecords;
+	}
+
+	/**
+	 * レコードの新規登録を拒否するかを設定
+	 * @param allowNoEntryOfRecords レコードの新規登録を拒否するか
+	 */
+	public void setAllowNoEntryOfRecords(Boolean allowNoEntryOfRecords) {
+		this.allowNoEntryOfRecords = allowNoEntryOfRecords;
 	}
 
 	/**

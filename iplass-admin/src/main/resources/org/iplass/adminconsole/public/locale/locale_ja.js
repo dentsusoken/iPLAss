@@ -282,6 +282,7 @@ LocaleInfo.ui_metadata_calendar_CalendarGrid_speEntityItemCalendarPeriodEnd = "�
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speCommonFilterCond = "共通のフィルタ条件(Where条件)を指定します。<br/>PreparedQueryとしてバインドされている変数が利用可能です。";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speUpperLimit = "期間内に表示する件数の上限を設定します。<br/>未指定の場合デフォルトの上限(1000件)が適用されます。";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_displayTimeOnCalendar = "カレンダー上に時間を表示するかを設定します。";
+LocaleInfo.ui_metadata_calendar_CalendarGrid_allowNoEntryOfRecordsOnCalendar = "カレンダー上にレコードの新規登録を拒否するかを設定します。";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speDisplayDetailAction = "カレンダーから詳細画面を表示するときに使用するアクションを指定します。<br/>未指定の場合デフォルトのアクションが使用されます。";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speAddDataAction = "カレンダーからデータを追加するときに使用するアクションを指定します。<br/>未指定の場合デフォルトのアクションが使用されます。";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speDisplayDetailAndAddViewName = "詳細表示・追加時に使用するビュー名を指定します。<br/>未指定の場合デフォルトのビューが使用されます。";

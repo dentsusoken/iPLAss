@@ -282,6 +282,7 @@ LocaleInfo.ui_metadata_calendar_CalendarGrid_speEntityItemCalendarPeriodEnd = "S
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speCommonFilterCond = "Specify to the filter condition of common (Where condition). <br/>Variables that are bound as PreparedQuery are available.";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speUpperLimit = "Set an upper limit on the number of documents to be displayed in the period.<br/>The default limit (1000) will be applied if not specified.";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_displayTimeOnCalendar = "Set whether to display the time on the calendar.";
+LocaleInfo.ui_metadata_calendar_CalendarGrid_allowNoEntryOfRecordsOnCalendar = "Set whether to allow entry of records on the calendar.";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speDisplayDetailAction = "Specify the action to be used when you want to view details from the calendar screen.<br/>The default action is used if not specified.";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speAddDataAction = "Specify the action to be used when you want to add data from the calendar.<br/>The default action is used if not specified.";
 LocaleInfo.ui_metadata_calendar_CalendarGrid_speDisplayDetailAndAddViewName = "Specify the view name to use for the detail listing, adding at the time.<br/The default view is used if not specified.";

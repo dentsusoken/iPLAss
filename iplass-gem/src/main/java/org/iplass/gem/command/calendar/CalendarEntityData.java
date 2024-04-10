@@ -49,6 +49,9 @@ public class CalendarEntityData {
 	/** 表示用のアクション */
 	private String viewAction;
 
+	/** レコードの新規登録を拒否するか */
+	private boolean allowNoEntryOfRecords;
+
 	/** ビュー名 */
 	private String viewName;
 
@@ -66,6 +69,7 @@ public class CalendarEntityData {
 		this.time = time;
 		this.dispTime = item.getDisplayTime();
 		this.viewAction = item.getViewAction();
+		this.allowNoEntryOfRecords = item.getAllowNoEntryOfRecords();
 		this.viewName = item.getViewName();
 	}
 
@@ -179,6 +183,22 @@ public class CalendarEntityData {
 	 */
 	public void setViewAction(String viewAction) {
 		this.viewAction = viewAction;
+	}
+
+	/**
+	 * レコードの新規登録を拒否するかを取得します。
+	 * @return レコードの新規登録を拒否するか
+	 */
+	public boolean allowNoEntryOfRecords() {
+	    return allowNoEntryOfRecords;
+	}
+
+	/**
+	 * レコードの新規登録を拒否するかを設定します。
+	 * @param allowNoEntryOfRecords レコードの新規登録を拒否するか
+	 */
+	public void setAllowNoEntryOfRecords(boolean allowNoEntryOfRecords) {
+	    this.allowNoEntryOfRecords = allowNoEntryOfRecords;
 	}
 
 	/**
