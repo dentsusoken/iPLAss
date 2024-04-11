@@ -195,6 +195,8 @@ public final class GetCalendarCommand implements Command {
 				}
 
 				//データ検索対象Entityに対して、参照権限が設定されているかチェック
+				//参照権限チェックが入れないと、複数カレンダーアイテムに対して、参照権限ない対象まで権限エラーExceptionで処理が中断され、
+				//後続参照権限ある対象のデータが取得できなくなる。
 				AuthContextHolder user = AuthContextHolder.getAuthContext();
 				EntityPermission rerPerm = new EntityPermission(item.getDefinitionName(), EntityPermission.Action.REFERENCE);
 				if (user.checkPermission(rerPerm)) {
