@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 import org.apache.commons.text.StrTokenizer;
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.auth.NoPermissionException;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -51,6 +52,7 @@ import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.properties.DateProperty;
 import org.iplass.mtp.entity.definition.properties.DateTimeProperty;
 import org.iplass.mtp.entity.definition.properties.TimeProperty;
+import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.SortSpec;
@@ -72,6 +74,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
+import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.DateUtil;
@@ -191,10 +194,17 @@ public final class GetCalendarCommand implements Command {
 					continue;
 				}
 
-				if (item.getCalendarSearchType() == CalendarSearchType.DATE) {
-					searchDate(from, to, calendarList, item, calendarType, entityFilter, calendarName);
-				} else if (item.getCalendarSearchType() == CalendarSearchType.PERIOD) {
-					searchPeriod(from, to, calendarList, item, calendarType, entityFilter, calendarName);
+				//データ検索対象Entityに対して、参照権限が設定されているかチェック
+				//参照権限チェックが入れないと、複数カレンダーアイテムに対して、参照権限ない対象まで権限エラーExceptionで処理が中断され、
+				//後続参照権限ある対象のデータが取得できなくなる。
+				AuthContextHolder user = AuthContextHolder.getAuthContext();
+				EntityPermission rerPerm = new EntityPermission(item.getDefinitionName(), EntityPermission.Action.REFERENCE);
+				if (user.checkPermission(rerPerm)) {
+					if (item.getCalendarSearchType() == CalendarSearchType.DATE) {
+						searchDate(from, to, calendarList, item, calendarType, entityFilter, calendarName);
+					} else if (item.getCalendarSearchType() == CalendarSearchType.PERIOD) {
+						searchPeriod(from, to, calendarList, item, calendarType, entityFilter, calendarName);
+					}
 				}
 			}
 		}

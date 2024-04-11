@@ -71,6 +71,9 @@ public class MetaEntityCalendarItem implements MetaData {
 	/** 追加アクション名 */
 	private String addAction;
 
+	/** レコードの新規登録を許可するか */
+	private Boolean allowNewRecordRegistration;
+
 	/** ビュー名 */
 	private String viewName;
 
@@ -247,6 +250,22 @@ public class MetaEntityCalendarItem implements MetaData {
 	}
 
 	/**
+	 * レコードの新規登録を許可するかを取得します。
+	 * @return レコードの新規登録を許可するか
+	 */
+	public Boolean getAllowNewRecordRegistration() {
+		return allowNewRecordRegistration;
+	}
+
+	/**
+	 * レコードの新規登録を許可するかを設定します。
+	 * @param allowNewRecordRegistration レコードの新規登録を許可するか
+	 */
+	public void setAllowNewRecordRegistration(Boolean allowNewRecordRegistration) {
+		this.allowNewRecordRegistration = allowNewRecordRegistration;
+	}
+
+	/**
 	 * 検索上限を取得します。
 	 * @return 検索上限
 	 */
@@ -320,6 +339,7 @@ public class MetaEntityCalendarItem implements MetaData {
 		this.calendarSearchType = item.getCalendarSearchType();
 		this.viewAction = item.getViewAction();
 		this.addAction = item.getAddAction();
+		this.allowNewRecordRegistration = item.getAllowNewRecordRegistration();
 		this.viewName = item.getViewName();
 		this.displayTime = item.getDisplayTime();
 		this.limit = item.getLimit();
@@ -365,6 +385,7 @@ public class MetaEntityCalendarItem implements MetaData {
 		item.setCalendarSearchType(calendarSearchType);
 		item.setViewAction(viewAction);
 		item.setAddAction(addAction);
+		item.setAllowNewRecordRegistration(allowNewRecordRegistration);
 		item.setViewName(viewName);
 		item.setDisplayTime(displayTime);
 		item.setLimit(limit);
