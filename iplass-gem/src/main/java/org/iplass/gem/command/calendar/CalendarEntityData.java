@@ -49,8 +49,8 @@ public class CalendarEntityData {
 	/** 表示用のアクション */
 	private String viewAction;
 
-	/** レコードの新規登録を拒否するか */
-	private boolean allowNoEntryOfRecords;
+	/** レコードの新規登録を許可するか */
+	private boolean allowNewRecordRegistration;
 
 	/** ビュー名 */
 	private String viewName;
@@ -69,7 +69,7 @@ public class CalendarEntityData {
 		this.time = time;
 		this.dispTime = item.getDisplayTime();
 		this.viewAction = item.getViewAction();
-		this.allowNoEntryOfRecords = item.getAllowNoEntryOfRecords();
+		this.allowNewRecordRegistration = item.getAllowNewRecordRegistration();
 		this.viewName = item.getViewName();
 	}
 
@@ -186,19 +186,19 @@ public class CalendarEntityData {
 	}
 
 	/**
-	 * レコードの新規登録を拒否するかを取得します。
-	 * @return レコードの新規登録を拒否するか
+	 * レコードの新規登録を許可するかを取得します。
+	 * @return レコードの新規登録を許可するか
 	 */
-	public boolean allowNoEntryOfRecords() {
-	    return allowNoEntryOfRecords;
+	public boolean getAllowNewRecordRegistration() {
+	    return allowNewRecordRegistration;
 	}
 
 	/**
-	 * レコードの新規登録を拒否するかを設定します。
-	 * @param allowNoEntryOfRecords レコードの新規登録を拒否するか
+	 * レコードの新規登録を許可するかを設定します。
+	 * @param allowNewRecordRegistration レコードの新規登録を許可するか
 	 */
-	public void setAllowNoEntryOfRecords(boolean allowNoEntryOfRecords) {
-	    this.allowNoEntryOfRecords = allowNoEntryOfRecords;
+	public void setAllowNewRecordRegistration(boolean allowNewRecordRegistration) {
+	    this.allowNewRecordRegistration = allowNewRecordRegistration;
 	}
 
 	/**

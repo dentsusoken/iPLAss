@@ -356,7 +356,7 @@
 			 */
 			function addButton(element, ulClassName, calendarType, startDate, endDate, now) {
 				var calDefs = scriptContext.calendarDefs[options.calendarName];
-				calDefs = calDefs.filter(function(def){return def.allowNoEntryOfRecords == "false"});
+				calDefs = calDefs.filter((def) => def.allowNewRecordRegistration == "true");
 
 				if (calDefs.length < 1) {
 					return;

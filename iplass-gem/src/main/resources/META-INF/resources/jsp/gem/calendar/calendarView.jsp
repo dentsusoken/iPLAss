@@ -98,10 +98,10 @@ for (int i = 0; i <  calendarItems.size(); i++) {
 		EntityDefinition ed = edm.get(defName);
 		String dispName = TemplateUtil.getMultilingualString(ed.getDisplayName(), ed.getLocalizedDisplayNameList());
 		String addAction = item.getAddAction() != null ? item.getAddAction() : AddCalendarCommand.ACTION_NANE;
-		String allowNoEntryOfRecords = item.getAllowNoEntryOfRecords() != null ? String.valueOf(item.getAllowNoEntryOfRecords()) : "false";
+		String allowNewRecordRegistration = item.getAllowNewRecordRegistration() != null ? String.valueOf(item.getAllowNewRecordRegistration()) : "true";
 		String viewName = item.getViewName() != null ? item.getViewName() : "";
 %>
-		calDefs[<%=i%>] = {"defName":"<%=defName %>", "dispName":"<%=dispName%>", "addAction":"<%=addAction %>", "allowNoEntryOfRecords":"<%=allowNoEntryOfRecords %>", "viewName":"<%=viewName %>"};
+		calDefs[<%=i%>] = {"defName":"<%=defName %>", "dispName":"<%=dispName%>", "addAction":"<%=addAction %>", "allowNewRecordRegistration":"<%=allowNewRecordRegistration %>", "viewName":"<%=viewName %>"};
 <%
 	}
 }
