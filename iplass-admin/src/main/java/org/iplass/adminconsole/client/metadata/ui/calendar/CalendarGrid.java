@@ -432,7 +432,7 @@ public class CalendarGrid extends MtpTreeGrid {
 		private SelectItem viewActionField;
 		/** 追加アクション名 */
 		private SelectItem addActionField;
-		/** カレンダー上にレコードの新規登録を許可するか */
+		/** レコードの新規登録を許可するか */
 		private CheckboxItem allowNewRecordRegistrationField;
 		/** ビュー名 */
 		private TextItem viewNameField;
