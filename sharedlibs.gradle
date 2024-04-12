@@ -78,14 +78,14 @@ ext {
 		// Jakarta JSP - tomcat bundled
 		// apache tomcat bundled
 		// for jsp compilation
-		'org.apache.tomcat:tomcat-jasper': '10.1.19',
+		'org.apache.tomcat:tomcat-jasper': '10.1.20',
 
 		// Jakarta jstl
 		'org.glassfish.web:jakarta.servlet.jsp.jstl': '3.0.1',
 
 		// Jakarta rest
 		// https://eclipse-ee4j.github.io/jersey/
-		'org.glassfish.jersey:jersey-bom': '3.1.5',//by bom
+		'org.glassfish.jersey:jersey-bom': '3.1.6',//by bom
 
 		// Jakarta Annotations
 		// apache tomcat bundled
@@ -143,7 +143,7 @@ ext {
 		'ch.qos.logback:logback-classic': '1.2.13',
 		'net.logstash.logback:logstash-logback-encoder': '7.0.1',
 		
-		'org.bouncycastle:bcjmail-jdk18on': '1.76',
+		'org.bouncycastle:bcjmail-jdk18on': '1.78',
 		
 		'org.jgroups:jgroups': '4.2.16.Final',
 
