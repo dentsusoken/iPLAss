@@ -41,7 +41,7 @@ ext {
 
 		// Jakarta rest
 		// https://projects.eclipse.org/projects/ee4j.rest
-		'jakarta.ws.rs:jakarta.ws.rs-api': '3.1.0', // TODO jakartaee 10 では  4.0.0 とあるが、リリースされていない。
+		'jakarta.ws.rs:jakarta.ws.rs-api': '3.1.0',
 
 		// Jakarta Annotations
 		// https://projects.eclipse.org/projects/ee4j.ca
