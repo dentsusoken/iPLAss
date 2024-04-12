@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -46,6 +46,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
@@ -63,6 +64,7 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 	public EntityDeserializer() {
 		super(Entity.class);
 	}
+
 	public EntityDeserializer(Class<?> vc) {
 		super(vc);
 	}
@@ -74,9 +76,9 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 	public EntityDeserializer(StdDeserializer<?> src) {
 		super(src);
 	}
-	
+
 	private Object getValue(EntityContext ec, EntityHandler eh, PropertyHandler ph, JsonNode node, DeserializationContext ctxt) throws IOException {
-		
+
 		if (node.isNull()) {
 			return null;
 		}
@@ -90,7 +92,7 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 				pdType = PropertyDefinitionType.STRING;
 			}
 		}
-		
+
 		switch (pdType) {
 		case AUTONUMBER:
 		case LONGTEXT:
@@ -109,12 +111,12 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 		case DATE:
 			//yyyy-MM-dd
 			String dateStr = node.asText();
-//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//TODO ThradLocalCache?
+			//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//TODO ThradLocalCache?
 			SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyy-MM-dd", false);
 			try {
 				return new java.sql.Date(sdf.parse(dateStr).getTime());
 			} catch (ParseException e) {
-				throw ctxt.mappingException("cant parse to Date. date:" + dateStr);
+				throw JsonMappingException.from(ctxt, "cant parse to Date. date:" + dateStr);
 			}
 		case DATETIME:
 			//timestamp (long)
@@ -123,12 +125,12 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 		case TIME:
 			//HH:mm:ss
 			String timeStr = node.asText();
-//			SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");//TODO ThradLocalCache?
+			//			SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");//TODO ThradLocalCache?
 			SimpleDateFormat sdfTime = DateUtil.getSimpleDateFormat("HH:mm:ss", false);
 			try {
 				return sdfTime.parse(timeStr);
 			} catch (ParseException e) {
-				throw ctxt.mappingException("cant parse to Date. date:" + timeStr);
+				throw JsonMappingException.from(ctxt, "cant parse to Date. date:" + timeStr);
 			}
 		case DECIMAL:
 			String decStr = node.asText();
@@ -152,11 +154,11 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 			return null;
 		}
 	}
-	
+
 	private Entity toEntity(EntityContext ec, EntityHandler eh, JsonNode node, DeserializationContext ctxt) throws IOException {
 		GenericEntity entity = (GenericEntity) eh.newInstance();
 		HashMap<String, Object> props = new HashMap<>();
-		
+
 		for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
 			Map.Entry<String, JsonNode> e = it.next();
 			PropertyHandler ph = eh.getProperty(e.getKey(), ec);
@@ -173,7 +175,7 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 					} else {
 						Object propVal = null;
 						Object[] arrayVal = null;
-						
+
 						if (value.isArray()) {
 							if (ph.getMetaData().getMultiplicity() == 1) {
 								if (value.size() > 0) {
@@ -203,7 +205,7 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 				}
 			}
 		}
-		
+
 		entity.applyProperties(props);
 		return entity;
 	}
@@ -220,7 +222,7 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 		}
 		EntityHandler eh = ec.getHandlerByName(defName);
 		if (eh == null) {
-			throw ctxt.mappingException("cant find Entity Defs... definitionName:" + defName);
+			throw JsonMappingException.from(ctxt, "cant find Entity Defs... definitionName:" + defName);
 		}
 		return toEntity(ec, eh, buf, ctxt);
 	}
