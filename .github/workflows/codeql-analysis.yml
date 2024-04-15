@@ -52,6 +52,8 @@ jobs:
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
+      env:
+        JAVA_HOME: "JAVA_HOME_21_${RUNNER_ARCH}"
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
