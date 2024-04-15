@@ -309,6 +309,3 @@ dependencies {
 	// jackson management
 	jeeruntime4tomcat platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
 }
-
-
-

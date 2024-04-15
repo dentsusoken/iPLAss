@@ -57,6 +57,7 @@ def buildSrcGwtTrans = layout.buildDirectory.dir('src/gwt-trans')
 
 gwt {
 	src = files(buildSrcGwt)
+	// TODO gwt plugin jakarta-servlet 版に対応していないので、バージョンを指定し依存関係を設定しない
 	//gwtVersion = this.gwtVersion
 	modules 'org.iplass.adminconsole.AdminConsole'
 	minHeapSize = '512M'
