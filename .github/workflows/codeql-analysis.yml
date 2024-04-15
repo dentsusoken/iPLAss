@@ -53,7 +53,7 @@ jobs:
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
       env:
-        JAVA_HOME: "JAVA_HOME_21_${RUNNER_ARCH}"
+        JAVA_HOME: "${JAVA_HOME_21_${{ runner.arch }}}"
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
