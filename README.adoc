@@ -97,7 +97,12 @@ Redisアドオンモジュールです。 +
 ## Branches
 
 ### master
-現在の最新のバージョン3.2.xのソースはmasterブランチです。
+現在の開発中のバージョン4.0.xのソースはmasterブランチです。
+
+NOTE: Java21 / JakartaEE10ベースです
+
+### 3.2.x
+現在の最新の安定版3.2.xのソースは3.2.xブランチです。
 
 NOTE: (Java8 | Java11 | Java17) / JakartaEE8(JavaEE8)ベースです
 
