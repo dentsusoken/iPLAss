@@ -96,9 +96,14 @@ Supports Redis for cachestorage.
 ## Branches
 
 ### master
-The master branch contains the source code of the latest stable version, which is regarded as version 3.2.x.
+The master branch contains the source code of the development version, which is regarded as version 4.0.x.
 
-NOTE: It is (Java8 | Java11 | Java17) / JakartaEE8(JavaEE8) based.
+NOTE: It is Java21 / JakartaEE10 based.
+
+### 3.2.x
+3.2.x branch contains the source code of the current stable version.
+
+NOTE: It is (Java8 | Java11) / JakartaEE8(JavaEE8) based.
 
 ### 3.1.x
 3.1.x branch contains the source code of the previous stable version.
