@@ -656,14 +656,6 @@
 		<!-- 全てのバイナリファイルを対象に、nameとtypeのみ返す -->
 		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryNameTypeParser" />
 
-		<!-- solr利用 -->
-		<!--
-		<class>org.iplass.mtp.impl.fulltextsearch.FulltextSearchSolrService</class>
-		<property name="solrUrl" value="http://ADDRESS:PORT/solr/coreName/" />
-		<property name="highlightPreTag" value="&lt;b style=&quot;background:aquamarine&quot;&gt;" />
-		<property name="highlightPostTag" value="&lt;/b&gt;" />
-		 -->
-
 		<!-- lucene利用 -->
 		<class>org.iplass.mtp.impl.fulltextsearch.lucene.LuceneFulltextSearchService</class>
 		<property name="defaultOperator" value="AND" />

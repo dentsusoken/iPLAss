@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,40 +23,40 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.IdentityHashMap;
 
-import javax.el.BeanNameELResolver;
-import javax.el.BeanNameResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.PropertyNotWritableException;
-import javax.el.VariableMapper;
-
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
+import jakarta.el.BeanNameELResolver;
+import jakarta.el.BeanNameResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.VariableMapper;
+
 public class BeanMapperELContext extends ELContext {
 	static final String ROOT_NAME = "R";
-	
+
 	private ELResolver elResolver;
 	private Object bean;
 	private ELMapper elMapper;
-	
+
 	private IdentityHashMap<Object, PropertyRef> propertyRefs;
-	
+
 	public BeanMapperELContext(Object bean, ELMapper elMapper) {
 		this.bean = bean;
 		this.elMapper = elMapper;
 		putContext(BeanMapperELContext.class, this);
 	}
-	
+
 	PropertyRef getPropertyRef(Object propValue) {
 		if (propertyRefs == null) {
 			return null;
 		}
 		return propertyRefs.get(propValue);
 	}
-	
+
 	void setPropertyRef(Object bean, PropertyInfo propertyInfo, Object propValue) {
 		switch (propertyInfo.getTypeKind()) {
 		case ARRAY:
@@ -71,7 +71,7 @@ public class BeanMapperELContext extends ELContext {
 			break;
 		}
 	}
-	
+
 	void setPropertyRef(Object bean, ReferencePropertyHandler rph, Object propValue) {
 		if (rph.getMetaData().getMultiplicity() != 1) {
 			if (propertyRefs == null) {
@@ -80,7 +80,7 @@ public class BeanMapperELContext extends ELContext {
 			propertyRefs.put(propValue, new PropertyRef(bean, rph));
 		}
 	}
-	
+
 	void replacePropertyRef(Object oldPropValue, Object newPropValue) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (propertyRefs == null) {
 			return;
@@ -101,7 +101,7 @@ public class BeanMapperELContext extends ELContext {
 			((Entity) propertyRef.getBean()).setValue(propertyRef.getPropertyName(), newPropValue);
 		}
 	}
-	
+
 	public Object getBean() {
 		return bean;
 	}
@@ -114,7 +114,7 @@ public class BeanMapperELContext extends ELContext {
 	public ELResolver getELResolver() {
 		if (elResolver == null) {
 			CompositeELResolver resolver = new CompositeELResolver();
-			
+
 			//type converter
 			resolver.add(new BinaryReferenceConverter());
 			resolver.add(new SelectValueConverter());
@@ -122,7 +122,7 @@ public class BeanMapperELContext extends ELContext {
 			resolver.add(new TimeConverter());
 			resolver.add(new TimestampConverter());
 			resolver.add(new ArrayTypeConverter());
-			
+
 			resolver.add(new BeanNameELResolver(new LocalBeanNameResolver()));
 			resolver.add(new ExtendedMapELResolver());
 			resolver.add(new ExtendedListELResolver());
@@ -142,7 +142,7 @@ public class BeanMapperELContext extends ELContext {
 	public VariableMapper getVariableMapper() {
 		return null;
 	}
-	
+
 	private class LocalBeanNameResolver extends BeanNameResolver {
 		@Override
 		public boolean isNameResolved(String beanName) {
@@ -173,8 +173,8 @@ public class BeanMapperELContext extends ELContext {
 	}
 
 	@Override
-	public Object convertToType(Object obj, Class<?> targetType) {
-		
+	public <T> T convertToType(Object obj, Class<T> targetType) {
+
 		//trim and toNull
 		//targetTypeがStringの場合はここで変換しても意味ないので
 		if (obj instanceof String && targetType != String.class) {
@@ -187,9 +187,9 @@ public class BeanMapperELContext extends ELContext {
 				}
 			}
 		}
-		
+
 		return super.convertToType(obj, targetType);
 	}
-	
+
 
 }

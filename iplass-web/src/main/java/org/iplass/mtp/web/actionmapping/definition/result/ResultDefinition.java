@@ -22,7 +22,7 @@ package org.iplass.mtp.web.actionmapping.definition.result;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 

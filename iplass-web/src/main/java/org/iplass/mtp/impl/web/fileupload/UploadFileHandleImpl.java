@@ -32,9 +32,7 @@ import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import javax.servlet.ServletContext;
-
-import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.IOUtils;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.command.UploadFileSizeOverException;
@@ -45,6 +43,8 @@ import org.iplass.mtp.impl.web.WebProcessRuntimeException;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletContext;
 
 
 public class UploadFileHandleImpl implements UploadFileHandle {
@@ -58,7 +58,7 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 
 			File tempDir = null;
 			if (webFront.getTempFileDir() == null) {
-				tempDir = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+				tempDir = (File) servletContext.getAttribute("jakarta.servlet.context.tempdir");
 			} else {
 				tempDir = new File(webFront.getTempFileDir());
 			}
@@ -73,7 +73,8 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 					try (FileOutputStream fos = new FileOutputStream(tempFile)) {
 						//TODO ここでサイズオーバーの場合ぶった切るか？後続のウイルスチェックするため、一旦全部読み込みか？
 						//後者の実装としとく。
-						size = Streams.copy(is, fos, true);
+						// Streams.copy(is, fos, true);
+						size = IOUtils.copyLarge(is, fos);
 					}
 
 					// tempFileのウィルスチェック

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,26 +23,26 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 
-import javax.el.ELContext;
-import javax.el.TypeConverter;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.i18n.LocaleFormat;
 import org.iplass.mtp.util.DateUtil;
 
+import jakarta.el.ELContext;
+import jakarta.el.TypeConverter;
+
 public class SqlDateConverter extends TypeConverter {
-	
+
 	@Override
-	public Object convertToType(ELContext context, Object obj, Class<?> targetType) {
+	public <T> T convertToType(ELContext context, Object obj, Class<T> targetType) {
 		if (Date.class == targetType) {
 			if (obj instanceof String) {
 				context.setPropertyResolved(true);
-				return conv(obj);
+				return (T) conv(obj);
 			}
 		}
 		return null;
 	}
-	
+
 	private Date toDate(String exp, DateFormat sdf) {
 		try {
 			sdf.setLenient(false);
@@ -51,17 +51,17 @@ public class SqlDateConverter extends TypeConverter {
 		}
 		return null;
 	}
-	
+
 	Date conv(Object obj) {
 		if (obj instanceof String) {
 			String exp = ((String) obj).trim();
 			if ("".equals(exp)) {
 				return null;
 			}
-			
+
 			ExecuteContext ec = ExecuteContext.getCurrentContext();
 			LocaleFormat lf = ec.getLocaleFormat();
-			
+
 			//try some pattern
 			Date d = toDate(exp, DateUtil.getSimpleDateFormat(lf.getServerDateFormat(), false));
 			if (d == null) {
@@ -79,11 +79,11 @@ public class SqlDateConverter extends TypeConverter {
 			if (d == null) {
 				d = toDate(exp, DateUtil.getSimpleDateFormat(lf.getExcelDateFormat(), false));
 			}
-			
+
 			if (d == null) {
 				throw new IllegalArgumentException("Can't convert to Date:" + obj);
 			}
-			
+
 			return d;
 		}
 		return null;

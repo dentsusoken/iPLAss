@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.CreateSearchResultUtil;

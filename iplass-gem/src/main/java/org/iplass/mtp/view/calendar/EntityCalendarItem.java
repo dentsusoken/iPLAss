@@ -22,8 +22,8 @@ package org.iplass.mtp.view.calendar;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * カレンダーに表示するEntityの設定

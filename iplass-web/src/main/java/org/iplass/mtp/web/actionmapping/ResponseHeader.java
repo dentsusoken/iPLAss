@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.web.actionmapping;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.web.WebRequestConstants;

@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.webapi.rest;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 
 import org.iplass.mtp.impl.webapi.jackson.ObjectMapperProvider;
 import org.iplass.mtp.impl.webapi.jaxb.JAXBContextProvider;

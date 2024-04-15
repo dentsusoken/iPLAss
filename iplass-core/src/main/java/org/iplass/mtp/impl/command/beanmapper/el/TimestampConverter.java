@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -28,25 +28,25 @@ import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.el.ELContext;
-import javax.el.TypeConverter;
-
 import org.apache.commons.lang3.time.DateUtils;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.i18n.LocaleFormat;
 import org.iplass.mtp.util.DateUtil;
 
+import jakarta.el.ELContext;
+import jakarta.el.TypeConverter;
+
 public class TimestampConverter extends TypeConverter {
-	
+
 	private SqlDateConverter dateConverter;
-	
+
 	public TimestampConverter() {
 		super();
 		dateConverter = new SqlDateConverter();
 	}
-	
+
 	@Override
-	public Object convertToType(ELContext context, Object obj, Class<?> targetType) {
+	public <T> T convertToType(ELContext context, Object obj, Class<T> targetType) {
 		if (Timestamp.class == targetType) {
 			if (obj instanceof String) {
 				context.setPropertyResolved(true);
@@ -54,19 +54,19 @@ public class TimestampConverter extends TypeConverter {
 				if (ts == null) {
 					return null;
 				} else {
-					return new Timestamp(ts.getTime());
+					return (T) new Timestamp(ts.getTime());
 				}
 			}
 		}
 		if (Date.class == targetType) {
 			if (obj instanceof String) {
 				context.setPropertyResolved(true);
-				return conv(obj);
+				return (T) conv(obj);
 			}
 		}
 		return null;
 	}
-	
+
 	private Date toTs(String exp, DateFormat sdf) {
 		try {
 			sdf.setLenient(false);
@@ -82,7 +82,7 @@ public class TimestampConverter extends TypeConverter {
 			if ("".equals(exp)) {
 				return null;
 			}
-			
+
 			//try some pattern
 			Date t = null;
 			try {
@@ -101,11 +101,11 @@ public class TimestampConverter extends TypeConverter {
 			if (t == null) {
 				t = toTs(exp, new SimpleDateFormat("yyyyMMdd'T'HHmmssZ"));
 			}
-			
+
 			if (t == null) {
 				ExecuteContext ec = ExecuteContext.getCurrentContext();
 				LocaleFormat lf = ec.getLocaleFormat();
-				
+
 				t = toTs(exp, DateUtil.getSimpleDateFormat(lf.getServerDateTimeFormat(), true));
 				if (t == null) {
 					t = toTs(exp, DateUtil.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, true));
@@ -131,7 +131,7 @@ public class TimestampConverter extends TypeConverter {
 				if (t == null) {
 					t = toTs(exp, DateUtil.getSimpleDateFormat(lf.getExcelDateFormat() + " " + lf.getExcelTimeFormat(), true));
 				}
-				
+
 				//try parse as Date
 				if (t == null) {
 					Date dt = dateConverter.conv(exp);
@@ -141,14 +141,14 @@ public class TimestampConverter extends TypeConverter {
 					}
 				}
 			}
-			
+
 			if (t == null) {
 				throw new IllegalArgumentException("Can't convert to Timestamp:" + obj);
 			}
-			
+
 			return t;
 		}
-		
+
 		return null;
 	}
 }

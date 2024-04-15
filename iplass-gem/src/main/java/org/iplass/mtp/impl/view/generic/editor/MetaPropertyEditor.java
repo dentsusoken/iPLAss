@@ -20,8 +20,8 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.impl.core.ExecuteContext;

@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.webapi.jackson;
 
-import javax.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.ContextResolver;
 
 import org.iplass.mtp.spi.ServiceRegistry;
 

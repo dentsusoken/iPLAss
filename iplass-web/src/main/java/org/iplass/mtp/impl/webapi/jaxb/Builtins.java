@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.webapi.jaxb;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.webapi.WebApiParameterMap;
 import org.iplass.mtp.impl.webapi.WebApiResponse;

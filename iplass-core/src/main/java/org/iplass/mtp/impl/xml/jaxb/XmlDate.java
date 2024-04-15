@@ -23,8 +23,8 @@ package org.iplass.mtp.impl.xml.jaxb;
 import java.sql.Date;
 import java.util.GregorianCalendar;
 
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 

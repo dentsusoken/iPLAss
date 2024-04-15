@@ -18,10 +18,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@javax.xml.bind.annotation.XmlSchema(
+@jakarta.xml.bind.annotation.XmlSchema(
 	namespace="http://mtp.iplass.org/xml/definition/auth",
 	xmlns={
-		@javax.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/auth", prefix="def-auth")
+		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/auth", prefix="def-auth")
 	}
 )
 package org.iplass.mtp.auth.policy.definition.listeners;

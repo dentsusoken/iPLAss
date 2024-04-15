@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor;
 import org.iplass.mtp.view.generic.editor.BinaryPropertyEditor;

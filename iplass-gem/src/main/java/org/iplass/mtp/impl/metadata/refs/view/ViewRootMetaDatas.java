@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.metadata.refs.view;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.tenant.gem.MetaTenantGemInfo;
 import org.iplass.mtp.impl.view.calendar.MetaCalendar;

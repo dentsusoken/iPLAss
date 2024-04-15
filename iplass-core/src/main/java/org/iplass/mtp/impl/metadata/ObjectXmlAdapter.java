@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.metadata;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class ObjectXmlAdapter<ValueType, BoundType> extends XmlAdapter<ValueType, BoundType> {
 

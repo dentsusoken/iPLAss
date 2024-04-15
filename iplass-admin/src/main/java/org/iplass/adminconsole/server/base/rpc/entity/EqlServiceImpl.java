@@ -36,7 +36,7 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 
 /**
  * Eql用Service実装クラス

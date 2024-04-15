@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.BinaryReference;

@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.xml.jaxb;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * 日付関連プロパティのマッピングをカスタマイズ。

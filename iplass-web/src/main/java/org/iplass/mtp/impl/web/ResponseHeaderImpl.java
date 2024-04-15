@@ -20,8 +20,8 @@
 
 package org.iplass.mtp.impl.web;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.actionmapping.ResponseHeader;

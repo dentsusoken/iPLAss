@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.view.generic.element;
 
-import javax.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * 表示タイプ

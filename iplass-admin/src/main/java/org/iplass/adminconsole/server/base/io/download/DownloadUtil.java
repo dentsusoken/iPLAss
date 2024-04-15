@@ -22,8 +22,8 @@ package org.iplass.adminconsole.server.base.io.download;
 
 import java.io.UnsupportedEncodingException;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.MediaType;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 
 import org.iplass.adminconsole.shared.base.dto.io.download.DownloadProperty.ENCODE;
 import org.iplass.mtp.util.StringUtil;

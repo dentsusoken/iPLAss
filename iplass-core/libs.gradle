@@ -1,5 +1,7 @@
 configurations {
 	compileOnly.extendsFrom(jeecoreapis)
+	
+	implementation.extendsFrom jakartaImplValidation
 }
 
 dependencies {
@@ -68,11 +70,10 @@ dependencies {
 	//jackson
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
-	//hibernate validator
-	implementation sharedLib('org.hibernate.validator:hibernate-validator')
+	//hibernate validator ⇒ jakartaImplValidation
 	
 	//Bouncy Castle S/MIME API
-	implementation sharedLib('org.bouncycastle:bcmail-jdk15on')
+	implementation sharedLib('org.bouncycastle:bcjmail-jdk18on')
 	
 	//JGroups
 	implementation sharedLib('org.jgroups:jgroups')

@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.auth.oauth;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.oauth.definition.SubjectIdentifierTypeDefinition;

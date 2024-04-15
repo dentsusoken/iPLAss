@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-@javax.xml.bind.annotation.XmlSchema(
+@jakarta.xml.bind.annotation.XmlSchema(
 	namespace="http://mtp.iplass.org/xml/webapi",
 	xmlns={
-		@javax.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/webapi", prefix="webapi"),
-		@javax.xml.bind.annotation.XmlNs(namespaceURI="http://jaxb.dev.java.net/array", prefix="array")
+		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/webapi", prefix="webapi"),
+		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://jaxb.dev.java.net/array", prefix="array")
 	}
 )
 package org.iplass.mtp.impl.webapi;

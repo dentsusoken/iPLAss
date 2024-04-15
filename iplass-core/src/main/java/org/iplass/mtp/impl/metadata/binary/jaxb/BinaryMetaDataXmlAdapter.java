@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.metadata.binary.jaxb;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.iplass.mtp.impl.metadata.binary.BinaryMetaData;
 

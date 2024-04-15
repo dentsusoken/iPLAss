@@ -25,10 +25,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.TimeZone;
 
-import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -68,7 +69,7 @@ public class UploadUtil {
 					FileOutputStream fos = new FileOutputStream(tempFile);
 					InputStream is = fileItem.getInputStream();
 					) {
-				Streams.copy(is, fos, true);
+				IOUtils.copy(is, fos);
 			}
 		} catch (IOException e) {
 			throw new UploadRuntimeException(rs("upload.UploadUtil.errReadFile"), e);
@@ -91,7 +92,7 @@ public class UploadUtil {
 
 		try (InputStream is = fileItem.getInputStream()){
 			// TODO リテラル UTF-8
-			return Streams.asString(is, "UTF-8");
+			return fileItem.getString(StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			throw new UploadRuntimeException(rs("upload.UploadUtil.errReadParam"), e);
 		}

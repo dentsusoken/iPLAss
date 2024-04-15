@@ -20,8 +20,8 @@
 
 package org.iplass.mtp.prefs;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.definition.Definition;
 

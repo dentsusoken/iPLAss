@@ -22,8 +22,8 @@ package org.iplass.mtp.command.definition.config;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.transaction.Propagation;
 import org.iplass.mtp.transaction.RollbackException;

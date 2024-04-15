@@ -21,6 +21,7 @@
 package org.iplass.mtp.impl.web.fileupload;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,14 +29,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.fileupload2.core.FileItemInput;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.impl.web.ParameterValueMap;
 import org.iplass.mtp.impl.web.RequestParameterCountLimitException;
@@ -44,6 +41,9 @@ import org.iplass.mtp.impl.web.WebProcessRuntimeException;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 public class MultiPartParameterValueMap implements ParameterValueMap {
@@ -99,10 +99,10 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 
 		tempFiles = new ArrayList<UploadFileHandleImpl>();
 
-		ServletFileUpload upload = new ServletFileUpload();
+		JakartaServletFileUpload<?, ?> upload = new JakartaServletFileUpload<>();
 		// Parse the request
 		try {
-			FileItemIterator iter = upload.getItemIterator(req);
+			FileItemInputIterator iter = upload.getItemIterator(req);
 			long parameterCount = 0L;
 			while (iter.hasNext()) {
 				if (parameterCount == maxParameterCount) {
@@ -111,10 +111,12 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 							"Multipart request parameters exceeds the limit. limit: " + maxParameterCount);
 				}
 
-				FileItemStream item = iter.next();
+				FileItemInput item = iter.next();
 				String name = item.getFieldName();
 				if (item.isFormField()) {
-					String value = Streams.asString(item.openStream());
+					// TODO charset
+					String value = IOUtils.toString(item.getInputStream(), StandardCharsets.UTF_8);
+
 					Object oldValue = valueMap.get(name);
 					if (oldValue == null) {
 						valueMap.put(name, new String[]{value});
@@ -128,7 +130,8 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 						throw new WebProcessRuntimeException(name + " is alerady used as file upload field name.");
 					}
 				} else {
-					UploadFileHandleImpl value = UploadFileHandleImpl.toUploadFileHandle(item.openStream(), item.getName(), item.getContentType(), servletContext, maxFileSize);
+					UploadFileHandleImpl value = UploadFileHandleImpl.toUploadFileHandle(item.getInputStream(), item.getName(), item.getContentType(),
+							servletContext, maxFileSize);
 					if (value != null) {
 						tempFiles.add(value);
 						Object oldValue = valueMap.get(name);
@@ -148,7 +151,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 				// パラメータ数インクリメント
 				parameterCount += 1L;
 			}
-		} catch (FileUploadException | IOException e) {
+		} catch (IOException e) {
 			cleanTempResource();
 			throw new WebProcessRuntimeException(e);
 		} catch (RuntimeException | Error e) {

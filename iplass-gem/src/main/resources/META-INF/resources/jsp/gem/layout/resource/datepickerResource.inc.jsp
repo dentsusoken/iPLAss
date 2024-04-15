@@ -19,7 +19,7 @@
  --%>
 <%@page import="org.iplass.mtp.util.StringUtil"%>
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="c" uri="jakarta.tags.core"%>
 <%@taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@page import="org.iplass.gem.GemConfigService"%>
 <%@page import="org.iplass.mtp.spi.ServiceRegistry"%>

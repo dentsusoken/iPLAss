@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.web;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.tenant.Tenant;

@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.webapi.jaxb;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
 import org.iplass.mtp.command.async.definition.AsyncCommandDefinition;

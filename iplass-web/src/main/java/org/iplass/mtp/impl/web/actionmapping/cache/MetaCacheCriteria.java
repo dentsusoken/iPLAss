@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.web.actionmapping.cache;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.metadata.MetaData;

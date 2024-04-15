@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.web.actionmapping;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;

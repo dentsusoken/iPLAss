@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.i18n.I18nUtil;
