@@ -291,23 +291,6 @@ public class MetaDataContext {
 	private void doStore(final String path, final RootMetaData metaData, final MetaDataConfig config, final boolean doAutoReload, final boolean doReloadAfterCommit) {
 
 		Transaction.required(transaction -> {
-
-				transaction.addTransactionListener(new TransactionListener() {
-					@Override
-					public void afterCommit(Transaction t) {
-						//Commit完了後にリロード
-						if (doAutoReload && doReloadAfterCommit) {
-							doAfterStoreProccess(path);
-						}
-						//listenerはdoAutoReloadフラグによらず必ず呼び出す
-						if (listenerList.size() > 0) {
-							for (MetaDataContextListener l: listenerList) {
-								l.created(path);
-							}
-						}
-					}
-				});
-
 				MetaDataConfig storeConfig = config;
 				if (storeConfig == null) {
 					storeConfig = new MetaDataConfig(false, false, false, false);
@@ -325,6 +308,22 @@ public class MetaDataContext {
 					//登録完了後にリロード
 					doAfterStoreProccess(path);
 				}
+
+				transaction.addTransactionListener(new TransactionListener() {
+					@Override
+					public void afterCommit(Transaction t) {
+						//Commit完了後にリロード
+						if (doAutoReload && doReloadAfterCommit) {
+							doAfterStoreProccess(path);
+						}
+						//listenerはdoAutoReloadフラグによらず必ず呼び出す
+						if (listenerList.size() > 0) {
+							for (MetaDataContextListener l: listenerList) {
+								l.created(path);
+							}
+						}
+					}
+				});
 
 				return null;
 		});
@@ -406,23 +405,6 @@ public class MetaDataContext {
 		}
 
 		Transaction.required(transaction -> {
-
-				transaction.addTransactionListener(new TransactionListener() {
-					@Override
-					public void afterCommit(Transaction t) {
-						//Commit完了後にリロード
-						if (doAutoReload && doReloadAfterCommit) {
-							doAfterUpdateProccess(path, current, pathBefore);
-						}
-						//listenerはdoAutoReloadフラグによらず必ず呼び出す
-						if (listenerList.size() > 0) {
-							for (MetaDataContextListener l: listenerList) {
-								l.updated(path, pathBefore);
-							}
-						}
-					}
-				});
-
 				MetaDataEntry toStore = current.copy();
 				toStore.setMetaData(metaData);
 				toStore.setPath(path);
@@ -442,6 +424,21 @@ public class MetaDataContext {
 					doAfterUpdateProccess(path, current, pathBefore);
 				}
 
+				transaction.addTransactionListener(new TransactionListener() {
+					@Override
+					public void afterCommit(Transaction t) {
+						//Commit完了後にリロード
+						if (doAutoReload && doReloadAfterCommit) {
+							doAfterUpdateProccess(path, current, pathBefore);
+						}
+						//listenerはdoAutoReloadフラグによらず必ず呼び出す
+						if (listenerList.size() > 0) {
+							for (MetaDataContextListener l: listenerList) {
+								l.updated(path, pathBefore);
+							}
+						}
+					}
+				});
 		});
 
 	}
@@ -551,6 +548,14 @@ public class MetaDataContext {
 		final MetaDataEntry current = repository.load(tenantId, path, true);
 
 		Transaction.required(transaction -> {
+				if (current != null && current.getRepositryType() != RepositoryType.SHARED) {
+					repository.remove(tenantId, path);
+				}
+
+				if (doAutoReload && !doReloadAfterCommit) {
+					//更新完了後にリロード
+					doAfterRemoveProccess(path, current);
+				}
 
 				transaction.addTransactionListener(new TransactionListener() {
 					@Override
@@ -567,16 +572,6 @@ public class MetaDataContext {
 						}
 					}
 				});
-
-				if (current != null && current.getRepositryType() != RepositoryType.SHARED) {
-					repository.remove(tenantId, path);
-				}
-
-				if (doAutoReload && !doReloadAfterCommit) {
-					//更新完了後にリロード
-					doAfterRemoveProccess(path, current);
-				}
-
 		});
 	}
 
