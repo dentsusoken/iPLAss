@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2013 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -22,17 +22,13 @@ package org.iplass.mtp.impl.infinispan.cluster.channel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.infinispan.distexec.DefaultExecutorService;
-import org.infinispan.distexec.DistributedExecutorService;
 import org.iplass.mtp.impl.cluster.ClusterService;
 import org.iplass.mtp.impl.cluster.Message;
 import org.iplass.mtp.impl.cluster.channel.MessageChannel;
@@ -48,7 +44,7 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 	private static Logger logger = LoggerFactory.getLogger(InfinispanMessageChannel.class);
 	private static Logger fatalLog = LoggerFactory.getLogger("mtp.fatal.cluster");
 
-	private DistributedExecutorService ds;
+	//	private DistributedExecutorService ds;
 	private InfinispanService is;
 	private MessageReceiver receiver;
 
@@ -69,7 +65,7 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 	@Override
 	public void inited(ClusterService service, Config config) {
 		is = config.getDependentService(InfinispanService.class);
-		ds = new DefaultExecutorService(is.getDefaultCache());
+		//		ds = new DefaultExecutorService(is.getDefaultCache());
 
 		if (!sync) {
 			final BlockingQueue<Message> newQueue = new LinkedBlockingQueue<>();
@@ -115,8 +111,9 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 
 	@Override
 	public void destroyed() {
-		ds.shutdown();
-		ds = null;
+
+		//		ds.shutdown();
+		//		ds = null;
 		if (ats != null) {
 			ats.shutdownNow();
 		}
@@ -153,14 +150,21 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 			logger.debug("send message over infinispan. message=" + Arrays.toString(message));
 		}
 
-		List<CompletableFuture<Void>> res = ds.submitEverywhere(new InfinispanMessageTask(message, is.getCacheManager().getAddress()));
-		for (Future<Void> f: res) {
-			try {
-				f.get();
-			} catch (Exception e) {
-				fatalLog.error("send message failed.error=" + e + ", message=" + Arrays.toString(message), e);
-			}
+		CompletableFuture<Void> f = is.getCacheManager().executor().allNodeSubmission()
+				.submit(new InfinispanMessageTask(message, is.getCacheManager().getAddress()));
+		try {
+			f.get();
+		} catch (Exception e) {
+			fatalLog.error("send message failed.error=" + e + ", message=" + Arrays.toString(message), e);
 		}
+		//		List<CompletableFuture<Void>> res = ds.submitEverywhere(new InfinispanMessageTask(message, is.getCacheManager().getAddress()));
+		//		for (Future<Void> f: res) {
+		//			try {
+		//				f.get();
+		//			} catch (Exception e) {
+		//				fatalLog.error("send message failed.error=" + e + ", message=" + Arrays.toString(message), e);
+		//			}
+		//		}
 	}
 
 }

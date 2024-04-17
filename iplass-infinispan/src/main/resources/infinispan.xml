@@ -12,7 +12,7 @@
         <transport stack="jgroups-udb"/>
         <distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="___defaultcache">
             <transaction mode="NONE"/>
-        	<store-as-binary keys="true" values="false"/>
+<!--        	<store-as-binary keys="true" values="false"/>-->
             <memory>
                 <object/>
             </memory>
@@ -35,21 +35,21 @@
         </local-cache>
         <replicated-cache mode="SYNC" remote-timeout="60000" name="replication">
             <transaction mode="NONE"/>
-        	<store-as-binary keys="true" values="false"/>
+<!--        	<store-as-binary keys="true" values="false"/>-->
             <memory>
                 <object/>
             </memory>
         </replicated-cache>
         <invalidation-cache mode="SYNC" remote-timeout="60000" name="invalidation">
             <transaction mode="NONE"/>
-        	<store-as-binary keys="true" values="false"/>
+<!--        	<store-as-binary keys="true" values="false"/>-->
             <memory>
                 <object/>
             </memory>
         </invalidation-cache>
         <distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="distribution">
             <transaction mode="NONE"/>
-        	<store-as-binary keys="true" values="false"/>
+<!--        	<store-as-binary keys="true" values="false"/>-->
             <memory>
                 <object/>
             </memory>

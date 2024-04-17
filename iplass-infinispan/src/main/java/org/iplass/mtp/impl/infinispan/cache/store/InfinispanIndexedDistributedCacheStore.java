@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2013 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,52 +27,63 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.infinispan.Cache;
-import org.infinispan.distexec.DefaultExecutorService;
-import org.infinispan.distexec.DistributedCallable;
-import org.infinispan.distexec.DistributedExecutorService;
+import org.infinispan.util.function.SerializableRunnable;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.cache.CacheService;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory.TransactionLocalCacheStore;
+import org.iplass.mtp.impl.infinispan.InfinispanService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InfinispanIndexedDistributedCacheStore extends
-		InfinispanIndexedCacheStore {
+InfinispanIndexedCacheStore {
 
 	private static Logger logger = LoggerFactory.getLogger(InfinispanIndexedDistributedCacheStore.class);
 
-	private final DistributedExecutorService distExec;
+	//	private final DistributedExecutorService distExec;
 
 	public InfinispanIndexedDistributedCacheStore(CacheStore wrapped,
 			Cache<IndexKey, IndexEntry> indexStore, int indexSize,
 			int indexRemoveRetryCount, long indexRemoveRetryIntervalNanos) {
 		super(wrapped, indexStore, indexSize, indexRemoveRetryCount,
 				indexRemoveRetryIntervalNanos, false);
-		distExec = new DefaultExecutorService(indexStore, Executors.newCachedThreadPool());
+		//		distExec = new DefaultExecutorService(indexStore, Executors.newCachedThreadPool());
 	}
 
 	@Override
 	public void removeAll() {
 
-		List<CompletableFuture<Void>> ret = distExec.submitEverywhere(new RemoveAllTask(wrapped.getNamespace()));
-		for (Future<Void> f: ret) {
-			try {
-				f.get();
-			} catch (InterruptedException e) {
-				fatalLogger.error("cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace=" + wrapped.getNamespace(), e);
-			} catch (ExecutionException e) {
-				fatalLogger.error("cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace=" + wrapped.getNamespace(), e.getCause());
-			}
+		CompletableFuture<Void> f = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().executor().allNodeSubmission()
+				.submit(new RemoveAllTask(wrapped.getNamespace()));
+		try {
+			f.get();
+		} catch (InterruptedException e) {
+			fatalLogger.error(
+					"cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace=" + wrapped.getNamespace(), e);
+		} catch (ExecutionException e) {
+			fatalLogger.error(
+					"cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace=" + wrapped.getNamespace(),
+					e.getCause());
 		}
+
+		//		List<CompletableFuture<Void>> ret = distExec.submitEverywhere(new RemoveAllTask(wrapped.getNamespace()));
+		//		for (Future<Void> f: ret) {
+		//			try {
+		//				f.get();
+		//			} catch (InterruptedException e) {
+		//				fatalLogger.error("cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace=" + wrapped.getNamespace(), e);
+		//			} catch (ExecutionException e) {
+		//				fatalLogger.error("cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace=" + wrapped.getNamespace(), e.getCause());
+		//			}
+		//		}
 	}
 
+	// FIXME 以下のメソッドがコールされている形跡がない
 	@Override
 	protected void mainteIndex(CacheEntry oldEntry, CacheEntry newEntry) {
 		if (logger.isTraceEnabled()) {
@@ -124,20 +135,33 @@ public class InfinispanIndexedDistributedCacheStore extends
 			if (addIndexList != null) {
 				keySet.addAll(addIndexList);
 			}
-			List<CompletableFuture<Void>> ret = distExec.submitEverywhere(task, keySet.toArray(new IndexKey[keySet.size()]));
-			for (Future<Void> f: ret) {
-				try {
-					f.get();
-				} catch (InterruptedException e) {
-					fatalLogger.error("cant mainte index cause remote execution interrupted. maybe cache index is inconsistent state... oldEntry=" + oldEntry + ", newEntry=" + newEntry, e);
-				} catch (ExecutionException e) {
-					fatalLogger.error("cant mainte index cause remote execution exceptioned. maybe cache index is inconsistent state... oldEntry=" + oldEntry + ", newEntry=" + newEntry, e.getCause());
-				}
+
+			task = new MainteIndexTask(oldRef, newRef, removeIndexList, addIndexList, indexRemoveTryCount, indexRemoveRetryIntervalNanos,
+					keySet);
+			CompletableFuture<Void> f = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().executor().allNodeSubmission()
+					.submit(task);
+			try {
+				f.get();
+			} catch (InterruptedException e) {
+				fatalLogger.error("cant mainte index cause remote execution interrupted. maybe cache index is inconsistent state... oldEntry=" + oldEntry + ", newEntry=" + newEntry, e);
+			} catch (ExecutionException e) {
+				fatalLogger.error("cant mainte index cause remote execution exceptioned. maybe cache index is inconsistent state... oldEntry=" + oldEntry + ", newEntry=" + newEntry, e.getCause());
 			}
+
+			//			List<CompletableFuture<Void>> ret = distExec.submitEverywhere(task, keySet.toArray(new IndexKey[keySet.size()]));
+			//			for (Future<Void> f: ret) {
+			//				try {
+			//					f.get();
+			//				} catch (InterruptedException e) {
+			//					fatalLogger.error("cant mainte index cause remote execution interrupted. maybe cache index is inconsistent state... oldEntry=" + oldEntry + ", newEntry=" + newEntry, e);
+			//				} catch (ExecutionException e) {
+			//					fatalLogger.error("cant mainte index cause remote execution exceptioned. maybe cache index is inconsistent state... oldEntry=" + oldEntry + ", newEntry=" + newEntry, e.getCause());
+			//				}
+			//			}
 		}
 	}
 
-	public static class RemoveAllTask implements DistributedCallable<Object, CacheEntry, Void>, Serializable {
+	public static class RemoveAllTask implements SerializableRunnable {
 		private static final long serialVersionUID = -7335308264912546719L;
 
 		private final String namespace;
@@ -147,8 +171,9 @@ public class InfinispanIndexedDistributedCacheStore extends
 			this.namespace = namespace;
 		}
 
-		@Override
+		//		@Override
 		public Void call() throws Exception {
+			LoggerFactory.getLogger(RemoveAllTask.class).debug("RemoveAllTask");
 			CacheStore store = ServiceRegistry.getRegistry().getService(CacheService.class).getCache(namespace, false);
 			if (store != null) {
 				InfinispanIndexedDistributedCacheStore infiniStore = null;
@@ -169,14 +194,24 @@ public class InfinispanIndexedDistributedCacheStore extends
 			return null;
 		}
 
-		@Override
+		//		@Override
 		public void setEnvironment(Cache<Object, CacheEntry> cache,
 				Set<Object> inputKeys) {
 		}
 
+		@Override
+		public void run() {
+			try {
+				call();
+			} catch (Exception e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
+		}
+
 	}
 
-	public static class MainteIndexTask implements DistributedCallable<IndexKey, IndexEntry, Void>, Serializable {
+	public static class MainteIndexTask implements Serializable, SerializableRunnable {
 		private static final long serialVersionUID = 663386283917160542L;
 
 		private int indexRemoveTryCount;
@@ -201,8 +236,16 @@ public class InfinispanIndexedDistributedCacheStore extends
 			this.indexRemoveRetryIntervalNanos = indexRemoveRetryIntervalNanos;
 		}
 
-		@Override
+		public MainteIndexTask(CacheEntryRef oldRef, CacheEntryRef newRef,
+				List<IndexKey> removeIndexList, List<IndexKey> addIndexList, int indexRemoveTryCount, long indexRemoveRetryIntervalNanos,
+				Set<IndexKey> inputKeys) {
+			this(oldRef, newRef, removeIndexList, addIndexList, indexRemoveTryCount, indexRemoveRetryIntervalNanos);
+			this.inputKeys = inputKeys;
+		}
+
+		//		@Override
 		public Void call() throws Exception {
+			LoggerFactory.getLogger(MainteIndexTask.class).debug("mainteIndexTask:old=" + oldRef + ", new=" + newRef + ", keys=" + inputKeys);
 			if (logger.isTraceEnabled()) {
 				logger.trace("mainteIndexTask:old=" + oldRef + ", new=" + newRef + ", keys=" + inputKeys);
 			}
@@ -223,11 +266,23 @@ public class InfinispanIndexedDistributedCacheStore extends
 			return null;
 		}
 
-		@Override
+		//		@Override
 		public void setEnvironment(Cache<IndexKey, IndexEntry> cache,
 				Set<IndexKey> inputKeys) {
 			this.cache = cache;
 			this.inputKeys = inputKeys;
+		}
+
+		@Override
+		public void run() {
+			this.cache = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getCache();
+
+			try {
+				call();
+			} catch (Exception e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
 		}
 
 	}
