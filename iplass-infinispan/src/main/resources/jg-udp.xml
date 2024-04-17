@@ -1,9 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="urn:org:jgroups"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups-4.2.xsd">
+   <!--
+   NOTE
+   bind_port="${jgroups.udp.bind_port:54300}" を消した 
+    -->
    <UDP mcast_addr="${jgroups.udp.mcast_addr:228.6.7.8}"
         mcast_port="${jgroups.udp.mcast_port:46655}"
-        bind_port="${jgroups.udp.bind_port:54300}"
         port_range="100"
         ucast_send_buf_size="1m"
         mcast_send_buf_size="1m"

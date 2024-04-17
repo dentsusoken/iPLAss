@@ -80,7 +80,8 @@ ext {
 		
 		'org.jgroups:jgroups': '4.2.16.Final',
 		
-		'org.infinispan:infinispan-core': '9.4.24.Final',
+		'org.infinispan:infinispan-core': '10.0.1.Final',
+		//'org.infinispan:infinispan-core': '9.4.24.Final',
 		
 		'io.lettuce:lettuce-core': '6.2.5.RELEASE',
 		

@@ -23,7 +23,6 @@ package org.iplass.mtp.impl.infinispan.cluster.channel;
 import java.util.Set;
 
 import org.infinispan.Cache;
-import org.infinispan.remoting.transport.Address;
 import org.infinispan.util.function.SerializableRunnable;
 import org.iplass.mtp.impl.cluster.ClusterService;
 import org.iplass.mtp.impl.cluster.Message;
@@ -35,11 +34,11 @@ class InfinispanMessageTask implements SerializableRunnable {
 	private static final long serialVersionUID = 2336468041075113029L;
 
 	private Message[] msg;
-	private Address fromAddress;
+	private String fromAddress;
 
 	private transient boolean isRemoteCall;
 
-	InfinispanMessageTask(Message[] msg, Address fromAddress) {
+	InfinispanMessageTask(Message[] msg, String fromAddress) {
 		this.msg = msg;
 		this.fromAddress = fromAddress;
 	}
@@ -59,7 +58,7 @@ class InfinispanMessageTask implements SerializableRunnable {
 
 	//	@Override
 	public void setEnvironment(Cache<Object, Object> cache, Set<Object> inputKeys) {
-		if (cache.getCacheManager().getAddress().equals(fromAddress)) {
+		if (cache.getCacheManager().getAddress().toString().equals(fromAddress)) {
 			isRemoteCall = false;
 		} else {
 			isRemoteCall = true;
@@ -69,7 +68,7 @@ class InfinispanMessageTask implements SerializableRunnable {
 	@Override
 	public void run() {
 		try {
-			isRemoteCall = !ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getAddress().equals(fromAddress);
+			isRemoteCall = !ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getAddress().toString().equals(fromAddress);
 			call();
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック

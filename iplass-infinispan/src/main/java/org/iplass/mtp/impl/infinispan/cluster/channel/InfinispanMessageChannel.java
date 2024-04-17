@@ -151,7 +151,7 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 		}
 
 		CompletableFuture<Void> f = is.getCacheManager().executor().allNodeSubmission()
-				.submit(new InfinispanMessageTask(message, is.getCacheManager().getAddress()));
+				.submit(new InfinispanMessageTask(message, is.getCacheManager().getAddress().toString()));
 		try {
 			f.get();
 		} catch (Exception e) {
