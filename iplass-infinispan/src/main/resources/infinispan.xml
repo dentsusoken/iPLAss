@@ -9,14 +9,13 @@
 
     <threads/>
     <cache-container default-cache="___defaultcache">
-        <transport cluster="iPLAssCluster" stack="jgroups-udb"/>
+        <transport cluster="iPLAssInfinispanCluster" stack="jgroups-udb"/>
         <serialization marshaller="org.infinispan.commons.marshall.JavaSerializationMarshaller">
             <white-list>
-                <class>org.iplass.mtp.impl.cache.store.CacheEntry</class>
-                <class>org.iplass.mtp.impl.infinispan.cluster.channel.InfinispanMessageTask</class>
+            	<!-- TODO この設定は後から変更できるように -->
                 <class>[Ljava.lang.Object;</class>
-                <class>org.iplass.mtp.impl.cluster.Message</class>
-                <class>[Lorg.iplass.mtp.impl.cluster.Message;</class>
+                <regex>^org\.iplass\.mtp\.impl\.(cluster|cache\.store|infinispan)\..*$</regex>
+                <regex>^\[Lorg\.iplass\.mtp\.impl\.(cluster|cache\.store|infinispan)\..*;$</regex>
             </white-list>
         </serialization>
         <jmx duplicate-domains="true"/>
