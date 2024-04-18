@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -34,6 +33,8 @@ import org.iplass.mtp.impl.cluster.Message;
 import org.iplass.mtp.impl.cluster.channel.MessageChannel;
 import org.iplass.mtp.impl.cluster.channel.MessageReceiver;
 import org.iplass.mtp.impl.infinispan.InfinispanService;
+import org.iplass.mtp.impl.infinispan.task.InfinispanTaskExecutor;
+import org.iplass.mtp.impl.infinispan.task.InfinispanTaskState;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;
 import org.slf4j.Logger;
@@ -150,12 +151,11 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 			logger.debug("send message over infinispan. message=" + Arrays.toString(message));
 		}
 
-		CompletableFuture<Void> f = is.getCacheManager().executor().allNodeSubmission()
-				.submit(new InfinispanMessageTask(message, is.getCacheManager().getAddress().toString()));
+		InfinispanTaskState state = InfinispanTaskExecutor.submitRemoteNode(new InfinispanMessageTask(message));
 		try {
-			f.get();
+			state.getFuture().get();
 		} catch (Exception e) {
-			fatalLog.error("send message failed.error=" + e + ", message=" + Arrays.toString(message), e);
+			fatalLog.error("send message failed. requestId={}, error={}, message={}.", state.getRequestId(), e.toString(), message, e);
 		}
 		//		List<CompletableFuture<Void>> res = ds.submitEverywhere(new InfinispanMessageTask(message, is.getCacheManager().getAddress()));
 		//		for (Future<Void> f: res) {

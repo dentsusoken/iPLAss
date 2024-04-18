@@ -20,60 +20,27 @@
 
 package org.iplass.mtp.impl.infinispan.cluster.channel;
 
-import java.util.Set;
-
-import org.infinispan.Cache;
-import org.infinispan.util.function.SerializableRunnable;
 import org.iplass.mtp.impl.cluster.ClusterService;
 import org.iplass.mtp.impl.cluster.Message;
 import org.iplass.mtp.impl.cluster.channel.MessageChannel;
-import org.iplass.mtp.impl.infinispan.InfinispanService;
+import org.iplass.mtp.impl.infinispan.task.InfinispanSerializableTask;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-class InfinispanMessageTask implements SerializableRunnable {
+class InfinispanMessageTask implements InfinispanSerializableTask {
 	private static final long serialVersionUID = 2336468041075113029L;
 
 	private Message[] msg;
-	private String fromAddress;
 
-	private transient boolean isRemoteCall;
-
-	InfinispanMessageTask(Message[] msg, String fromAddress) {
+	InfinispanMessageTask(Message[] msg) {
 		this.msg = msg;
-		this.fromAddress = fromAddress;
-	}
-
-
-	//	@Override
-	public Void call() throws Exception {
-		if (isRemoteCall) {
-			ClusterService cs = ServiceRegistry.getRegistry().getService(ClusterService.class);
-			MessageChannel mc = cs.getMessageChannel();
-			if (mc instanceof InfinispanMessageChannel) {
-				((InfinispanMessageChannel) mc).receiveMessage(msg);
-			}
-		}
-		return null;
-	}
-
-	//	@Override
-	public void setEnvironment(Cache<Object, Object> cache, Set<Object> inputKeys) {
-		if (cache.getCacheManager().getAddress().toString().equals(fromAddress)) {
-			isRemoteCall = false;
-		} else {
-			isRemoteCall = true;
-		}
 	}
 
 	@Override
 	public void run() {
-		try {
-			isRemoteCall = !ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getAddress().toString().equals(fromAddress);
-			call();
-		} catch (Exception e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
+		ClusterService cs = ServiceRegistry.getRegistry().getService(ClusterService.class);
+		MessageChannel mc = cs.getMessageChannel();
+		if (mc instanceof InfinispanMessageChannel) {
+			((InfinispanMessageChannel) mc).receiveMessage(msg);
 		}
 	}
-
 }
