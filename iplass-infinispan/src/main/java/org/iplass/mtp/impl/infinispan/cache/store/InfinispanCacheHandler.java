@@ -20,10 +20,10 @@
 
 package org.iplass.mtp.impl.infinispan.cache.store;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +32,6 @@ import java.util.concurrent.ExecutorService;
 
 import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.util.function.SerializableRunnable;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheHandler;
 import org.iplass.mtp.impl.cache.store.CacheHandlerTask;
@@ -41,6 +40,9 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.infinispan.InfinispanService;
+import org.iplass.mtp.impl.infinispan.task.InfinispanSerializableTask;
+import org.iplass.mtp.impl.infinispan.task.InfinispanTaskExecutor;
+import org.iplass.mtp.impl.infinispan.task.InfinispanTaskState;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +52,11 @@ public class InfinispanCacheHandler implements CacheHandler {
 	private static Logger logger = LoggerFactory.getLogger(InfinispanCacheHandler.class);
 
 	//	private DistributedExecutorService ds;
+	private String cacheName;
 
 	public InfinispanCacheHandler(Cache<?, ?> c, ExecutorService es) {
 		//		ds = new DefaultExecutorService(c, es);
+		this.cacheName = c.getName();
 	}
 
 	// FIXME 利用箇所が不明
@@ -61,24 +65,25 @@ public class InfinispanCacheHandler implements CacheHandler {
 	public final <K, V, R> List<CompletableFuture<R>> executeParallel(
 			CacheHandlerTask<K, V, R> task, K... inputKeys) {
 
-		List<CompletableFuture<Void>> result = new ArrayList<>();
 		EmbeddedCacheManager cacheManager = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager();
 
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		if (inputKeys == null || inputKeys.length == 0) {
-			result.add(cacheManager.executor().allNodeSubmission().submit(new Task<>(task, ec.getClientTenantId(), ec.getCurrentTimestamp())));
-			//			return ds.submitEverywhere(new Task<>(task, ec.getClientTenantId(), ec.getCurrentTimestamp()));
-		} else {
-			result.add(cacheManager.executor().allNodeSubmission()
-					.submit(new Task<>(task, ec.getClientTenantId(), ec.getCurrentTimestamp(), new HashSet<>(Arrays.asList(inputKeys)))));
-			//			return ds.submitEverywhere(new Task<>(task, ec.getClientTenantId(), ec.getCurrentTimestamp()), inputKeys);
-		}
+		Set<K> inputKeySet = inputKeys == null || inputKeys.length == 0 ? Collections.emptySet() : new HashSet<>(Arrays.asList(inputKeys));
+		Task<K, V, R> submitTask = new Task<K, V, R>(task, ec.getClientTenantId(), ec.getCurrentTimestamp(), cacheName, inputKeySet);
+		InfinispanTaskState state = InfinispanTaskExecutor.submitAllNode(submitTask);
 
-		return (List) result;
+		List<CompletableFuture<R>> result = new ArrayList<>(1);
+		// TODO CompletableFuture<Void> が強制される
+		result.add((CompletableFuture<R>) state.getFuture());
+
+		return result;
 	}
 
-	public static class Task<K, V, R> implements Serializable, SerializableRunnable {
+	// FIXME 実装見直しが必要
+	public static class Task<K, V, R> implements InfinispanSerializableTask {
 		private static final long serialVersionUID = -4514954103680453534L;
+
+		private String cacheName;
 
 		private CacheHandlerTask<K, V, R> cht;
 
@@ -87,18 +92,14 @@ public class InfinispanCacheHandler implements CacheHandler {
 		private Timestamp currentTimestamp;
 
 		// FIXME serializable 必須
-		private Set<Object> inputKeys;
+		private Set<K> inputKeys;
 
 		private transient TenantContext tc;
 
-		public Task(CacheHandlerTask<K, V, R> cht, int tenantId, Timestamp currentTimestamp) {
+		public Task(CacheHandlerTask<K, V, R> cht, int tenantId, Timestamp currentTimestamp, String cacheName, Set<K> inputKeys) {
 			this.cht = cht;
 			this.tenantId = tenantId;
 			this.currentTimestamp = currentTimestamp;
-		}
-
-		public Task(CacheHandlerTask<K, V, R> cht, int tenantId, Timestamp currentTimestamp, Set<Object> inputKeys) {
-			this(cht, tenantId, currentTimestamp);
 			this.inputKeys = inputKeys;
 		}
 		//		@Override
@@ -165,16 +166,16 @@ public class InfinispanCacheHandler implements CacheHandler {
 		}
 
 		@Override
-		public void run() {
+		public void runNode() {
 			ExecuteContext.executeAs(getTenantContext(), new Executable<Void>() {
-				@SuppressWarnings("unchecked")
 				@Override
 				public Void execute() {
-					Cache<Object, CacheEntry> cache = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getCache();
+					Cache<Object, CacheEntry> cache = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getCache(cacheName);
 					if (currentTimestamp != null) {
 						ExecuteContext.getCurrentContext().setCurrentTimestamp(currentTimestamp);
 					}
-					cht.setContext(new InfinispanCacheContext<K, V>(cache), (Set<K>) inputKeys);
+					cht.setContext(new InfinispanCacheContext<K, V>(cache), inputKeys);
+
 					return null;
 				}
 			});

@@ -39,7 +39,7 @@ class InfinispanRemoteOnlySerializableTask implements InfinispanManagedSerializa
 	}
 
 	@Override
-	public void run() {
+	public void runNode() {
 		String fromNode = getFromNode();
 		String requestId = getRequestId();
 		LOG.info("Request {} accepted from node {}.", requestId, fromNode);

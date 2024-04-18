@@ -31,13 +31,14 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public class InfinispanTaskExecutor {
-	public static InfinispanTaskState submitAll(InfinispanSerializableTask task) {
+	public static InfinispanTaskState submitAllNode(InfinispanSerializableTask task) {
 		return doSubmit(task, t -> t);
 	}
 
 	public static InfinispanTaskState submitRemoteNode(InfinispanSerializableTask task) {
 		return doSubmit(task, t -> new InfinispanRemoteOnlySerializableTask(t));
 	}
+
 
 	private static String generateRequestId() {
 		// TODO リクエストID見直し
@@ -55,4 +56,5 @@ public class InfinispanTaskExecutor {
 
 		return new InfinispanTaskState(managedTask.getRequestId(), future);
 	}
+
 }

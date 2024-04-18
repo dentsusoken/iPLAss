@@ -25,4 +25,10 @@ import org.infinispan.util.function.SerializableRunnable;
  *
  */
 public interface InfinispanSerializableTask extends SerializableRunnable {
+	@Override
+	default void run() {
+		runNode();
+	}
+
+	void runNode();
 }

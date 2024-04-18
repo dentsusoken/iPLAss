@@ -58,7 +58,7 @@ InfinispanIndexedCacheStore {
 	@Override
 	public void removeAll() {
 
-		InfinispanTaskState state = InfinispanTaskExecutor.submitAll(new RemoveAllTask(wrapped.getNamespace()));
+		InfinispanTaskState state = InfinispanTaskExecutor.submitAllNode(new RemoveAllTask(wrapped.getNamespace()));
 		try {
 			state.getFuture().get();
 		} catch (InterruptedException e) {
@@ -135,7 +135,7 @@ InfinispanIndexedCacheStore {
 
 			MainteIndexTask task = new MainteIndexTask(indexStore.getName(), oldRef, newRef, removeIndexList, addIndexList, indexRemoveTryCount,
 					indexRemoveRetryIntervalNanos, keySet);
-			InfinispanTaskState state = InfinispanTaskExecutor.submitAll(task);
+			InfinispanTaskState state = InfinispanTaskExecutor.submitAllNode(task);
 			try {
 				state.getFuture().get();
 			} catch (InterruptedException e) {
@@ -167,7 +167,7 @@ InfinispanIndexedCacheStore {
 		}
 
 		@Override
-		public void run() {
+		public void runNode() {
 			LoggerFactory.getLogger(RemoveAllTask.class).debug("RemoveAllTask");
 			CacheStore store = ServiceRegistry.getRegistry().getService(CacheService.class).getCache(namespace, false);
 			if (store != null) {
@@ -207,6 +207,7 @@ InfinispanIndexedCacheStore {
 
 		public MainteIndexTask(String cacheName, CacheEntryRef oldRef, CacheEntryRef newRef, List<IndexKey> removeIndexList, List<IndexKey> addIndexList,
 				int indexRemoveTryCount, long indexRemoveRetryIntervalNanos, Set<IndexKey> inputKeys) {
+			this.cacheName = cacheName;
 			this.oldRef = oldRef;
 			this.newRef = newRef;
 			this.removeIndexList = removeIndexList;
@@ -218,7 +219,7 @@ InfinispanIndexedCacheStore {
 
 
 		@Override
-		public void run() {
+		public void runNode() {
 			Cache<IndexKey, IndexEntry> cache = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getCache(cacheName);
 			if (logger.isTraceEnabled()) {
 				logger.trace("mainteIndexTask:old=" + oldRef + ", new=" + newRef + ", keys=" + inputKeys);

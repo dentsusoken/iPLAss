@@ -36,7 +36,7 @@ class InfinispanMessageTask implements InfinispanSerializableTask {
 	}
 
 	@Override
-	public void run() {
+	public void runNode() {
 		ClusterService cs = ServiceRegistry.getRegistry().getService(ClusterService.class);
 		MessageChannel mc = cs.getMessageChannel();
 		if (mc instanceof InfinispanMessageChannel) {
