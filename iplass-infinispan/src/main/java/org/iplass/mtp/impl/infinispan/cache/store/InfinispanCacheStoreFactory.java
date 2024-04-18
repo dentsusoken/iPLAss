@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2013 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -51,7 +51,6 @@ import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
 import org.iplass.mtp.impl.cache.store.TimeToLiveCalculator;
 import org.iplass.mtp.impl.cache.store.event.CacheCreateEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
-import org.iplass.mtp.impl.cache.store.event.CacheEventType;
 import org.iplass.mtp.impl.cache.store.event.CacheInvalidateEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheRemoveEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheUpdateEvent;
@@ -253,7 +252,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			if (timeToLiveCalculator != null) {
 				timeToLiveCalculator.set(entry);
 			}
-			
+
 			if (clean) {
 				if (entry.getTimeToLive() == null) {
 					cache.putForExternalRead(entry.getKey(), entry);
@@ -276,7 +275,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			if (timeToLiveCalculator != null) {
 				timeToLiveCalculator.set(entry);
 			}
-			
+
 			if (entry.getTimeToLive() == null) {
 				return cache.putIfAbsent(entry.getKey(), entry);
 			} else {
@@ -289,18 +288,18 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			//ttlはmappingFunction実行しないと決められないので、有効期限チェックはgetのタイミングとする
 			return cache.computeIfAbsent(key, new MappingFunctionWithTTL(mappingFunction, timeToLiveCalculator));
 		}
-		
+
 		static class MappingFunctionWithTTL implements SerializableFunction<Object, CacheEntry> {
 			private static final long serialVersionUID = 6304426240300516685L;
 
 			Function<Object, CacheEntry> mappingFunction;
 			TimeToLiveCalculator timeToLiveCalculator;
-			
+
 			MappingFunctionWithTTL(Function<Object, CacheEntry> mappingFunction, TimeToLiveCalculator timeToLiveCalculator) {
 				this.mappingFunction = mappingFunction;
 				this.timeToLiveCalculator = timeToLiveCalculator;
 			}
-			
+
 			@Override
 			public CacheEntry apply(Object k) {
 				CacheEntry e = mappingFunction.apply(k);
@@ -309,7 +308,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 				}
 				return e;
 			}
-			
+
 		}
 
 		@Override
@@ -323,12 +322,12 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 
 			BiFunction<Object, CacheEntry, CacheEntry> remappingFunction;
 			TimeToLiveCalculator timeToLiveCalculator;
-			
+
 			RemappingFunctionWithTTL(BiFunction<Object, CacheEntry, CacheEntry> remappingFunction, TimeToLiveCalculator timeToLiveCalculator) {
 				this.remappingFunction = remappingFunction;
 				this.timeToLiveCalculator = timeToLiveCalculator;
 			}
-			
+
 			@Override
 			public CacheEntry apply(Object k, CacheEntry v) {
 				CacheEntry e = remappingFunction.apply(k, v);
@@ -337,7 +336,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 				}
 				return e;
 			}
-			
+
 		}
 
 		static boolean isStillAliveOrNull(CacheEntry e) {
@@ -457,42 +456,42 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 		}
 	}
 
-	private static ThreadLocal<InfinispanCacheContextHolder> holder = new ThreadLocal<>();
-
-	private static InfinispanCacheContextHolder newHolder() {
-		InfinispanCacheContextHolder current = holder.get();
-		InfinispanCacheContextHolder toRet = new InfinispanCacheContextHolder();
-		if (current != null) {
-			toRet.prevStack = current;
-		}
-		holder.set(toRet);
-		return toRet;
-	}
-
-	private static InfinispanCacheContextHolder currentHolder() {
-		return holder.get();
-	}
-
-	private static void endHolder() {
-		InfinispanCacheContextHolder current = holder.get();
-		if (current != null) {// nullの場合がある。infinispanのバグ？PassivateされてるやつがActivateされるとき、modifyでpreがいきなりfalseで来る
-			if (current.prevStack != null) {
-				holder.set(current.prevStack);
-			} else {
-				holder.set(null);
-			}
-		}
-	}
-
-	private static class InfinispanCacheContextHolder {
-		CacheEventType type;
-		CacheEntry preValue;
-		InfinispanCacheContextHolder prevStack;
-	}
+	//	private static ThreadLocal<InfinispanCacheContextHolder> holder = new ThreadLocal<>();
+	//
+	//	private static InfinispanCacheContextHolder newHolder() {
+	//		InfinispanCacheContextHolder current = holder.get();
+	//		InfinispanCacheContextHolder toRet = new InfinispanCacheContextHolder();
+	//		if (current != null) {
+	//			toRet.prevStack = current;
+	//		}
+	//		holder.set(toRet);
+	//		return toRet;
+	//	}
+	//
+	//	private static InfinispanCacheContextHolder currentHolder() {
+	//		return holder.get();
+	//	}
+	//
+	//	private static void endHolder() {
+	//		InfinispanCacheContextHolder current = holder.get();
+	//		if (current != null) {// nullの場合がある。infinispanのバグ？PassivateされてるやつがActivateされるとき、modifyでpreがいきなりfalseで来る
+	//			if (current.prevStack != null) {
+	//				holder.set(current.prevStack);
+	//			} else {
+	//				holder.set(null);
+	//			}
+	//		}
+	//	}
+	//
+	//	private static class InfinispanCacheContextHolder {
+	//		CacheEventType type;
+	//		CacheEntry preValue;
+	//		InfinispanCacheContextHolder prevStack;
+	//	}
 
 	@Listener
 	public static class InfinispanCacheListener {
-
+		private static Logger LOG = LoggerFactory.getLogger(InfinispanCacheListener.class);
 		private List<CacheEventListener> listeners;
 
 		public InfinispanCacheListener(List<CacheEventListener> listeners) {
@@ -501,154 +500,223 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 
 		@CacheEntryCreated
 		public void created(CacheEntryCreatedEvent<Object, CacheEntry> event) {
+			LOG.debug("call created {}. key={}, pre={}, commandRetried={}, originLocal={}, currentState={}", event.getClass().getSimpleName(),
+					event.getKey(), event.isPre(), event.isCommandRetried(), event.isOriginLocal(), event.isCurrentState());
+			LOG.debug("value = {}.", event.getValue());
+
 			if (event.isPre()) {
-				InfinispanCacheContextHolder h = newHolder();
-				h.type = CacheEventType.CREATE;
-			} else {
-				try {
-					if (listeners.size() > 0) {
-						InfinispanCacheContextHolder h = currentHolder();
-						switch (h.type) {
-						case CREATE:
-							CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
-							for (CacheEventListener l : listeners) {
-								l.created(cce);
-							}
-							break;
-						default:
-							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
-						}
-					}
-				} finally {
-					endHolder();
+				return;
+			}
+			if (listeners.size() > 0) {
+				CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
+				for (CacheEventListener l : listeners) {
+					l.created(cce);
 				}
 			}
+
+			//			if (event.isPre()) {
+			//				InfinispanCacheContextHolder h = newHolder();
+			//				h.type = CacheEventType.CREATE;
+			//			} else {
+			//				LOG.info("created");
+			//				try {
+			//					if (listeners.size() > 0) {
+			//						InfinispanCacheContextHolder h = currentHolder();
+			//						switch (h.type) {
+			//						case CREATE:
+			//							CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
+			//							for (CacheEventListener l : listeners) {
+			//								l.created(cce);
+			//							}
+			//							break;
+			//						default:
+			//							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
+			//						}
+			//					}
+			//				} finally {
+			//					endHolder();
+			//				}
+			//			}
 		}
 
 		@CacheEntryModified
 		public void modified(CacheEntryModifiedEvent<Object, CacheEntry> event) {
 
-//			if (logger.isDebugEnabled()) {
-//				logger.debug("modify event:" + event);
-//			}
+			LOG.debug("call created {}. key={}, pre={}, commandRetried={}, originLocal={}, currentState={}", event.getClass().getSimpleName(),
+					event.getKey(), event.isPre(), event.isCommandRetried(), event.isOriginLocal(), event.isCurrentState());
+			LOG.debug("value = {}.", event.getValue());
 
 			if (event.isPre()) {
-				InfinispanCacheContextHolder h = newHolder();
-				if (event.getValue() == null) {
-					h.type = CacheEventType.CREATE;
-				} else {
-					h.type = CacheEventType.UPDATE;
-					h.preValue = event.getValue();
-				}
-			} else {
-				try {
-					if (listeners.size() > 0) {
-						InfinispanCacheContextHolder h = currentHolder();
-						switch (h.type) {
-						case CREATE:
-							CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
-							for (CacheEventListener l : listeners) {
-								l.created(cce);
-							}
-							break;
-						case UPDATE:
-							CacheUpdateEvent cue = new CacheUpdateEvent(h.preValue, event.getValue());
-							for (CacheEventListener l : listeners) {
-								l.updated(cue);
-							}
-							break;
-						default:
-							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
-						}
-					}
-				} finally {
-					endHolder();
-				}
+				return;
 			}
+
+			if (listeners.size() > 0) {
+				if (event.isCreated()) {
+					CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
+					for (CacheEventListener l : listeners) {
+						l.created(cce);
+					}
+				} else {
+					CacheEntry oldValue = null;
+					if (event instanceof CacheEntryRemovedEvent) {
+						oldValue = ((CacheEntryRemovedEvent<Object, CacheEntry>) event).getOldValue();
+					}
+					CacheUpdateEvent cue = new CacheUpdateEvent(oldValue, event.getValue());
+					for (CacheEventListener l : listeners) {
+						l.updated(cue);
+					}
+				}
+
+			}
+
+			//			if (event.isPre()) {
+			//				InfinispanCacheContextHolder h = newHolder();
+			//				if (event.getValue() == null) {
+			//					h.type = CacheEventType.CREATE;
+			//				} else {
+			//					h.type = CacheEventType.UPDATE;
+			//					h.preValue = event.getValue();
+			//				}
+			//			} else {
+			//				try {
+			//					if (listeners.size() > 0) {
+			//						InfinispanCacheContextHolder h = currentHolder();
+			//						switch (h.type) {
+			//						case CREATE:
+			//							CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
+			//							for (CacheEventListener l : listeners) {
+			//								l.created(cce);
+			//							}
+			//							break;
+			//						case UPDATE:
+			//							CacheUpdateEvent cue = new CacheUpdateEvent(h.preValue, event.getValue());
+			//							for (CacheEventListener l : listeners) {
+			//								l.updated(cue);
+			//							}
+			//							break;
+			//						default:
+			//							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
+			//						}
+			//					}
+			//				} finally {
+			//					endHolder();
+			//				}
+			//			}
 		}
 
 		@CacheEntryRemoved
 		public void removed(CacheEntryRemovedEvent<Object, CacheEntry> event) {
-//			if (logger.isDebugEnabled()) {
-//				logger.debug("remove event:" + event);
-//			}
+			//			if (logger.isDebugEnabled()) {
+			//				logger.debug("remove event:" + event);
+			//			}
+
+			LOG.debug("call removed {}. key={}, pre={}, commandRetried={}, originLocal={}, currentState={}", event.getClass().getSimpleName(),
+					event.getKey(), event.isPre(), event.isCommandRetried(), event.isOriginLocal(), event.isCurrentState());
+			LOG.debug("value = {}.", event.getValue());
+			LOG.debug("oldValue = {}.", event.getOldValue());
 
 			if (event.isPre()) {
-				InfinispanCacheContextHolder h = newHolder();
-				h.type = CacheEventType.REMOVE;
-				h.preValue = event.getValue();
-			} else {
-				try {
-					if (listeners.size() > 0) {
-						InfinispanCacheContextHolder h = currentHolder();
-						switch (h.type) {
-						case REMOVE:
-							CacheRemoveEvent cre = new CacheRemoveEvent(h.preValue);
-							for (CacheEventListener l : listeners) {
-								l.removed(cre);
-							}
-							break;
-						case INVALIDATE:
-							// なぜかInvalidateのafterがremovedに、、、infinispanバグ？
-							CacheInvalidateEvent cie = new CacheInvalidateEvent(h.preValue);
-							for (CacheEventListener l : listeners) {
-								l.invalidated(cie);
-							}
-							break;
-						default:
-							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
-						}
-					}
-				} finally {
-					endHolder();
+				return;
+			}
+
+			if (listeners.size() > 0) {
+				CacheRemoveEvent cre = new CacheRemoveEvent(event.getOldValue());
+				for (CacheEventListener l : listeners) {
+					l.removed(cre);
 				}
 			}
+
+			//			if (event.isPre()) {
+			//				InfinispanCacheContextHolder h = newHolder();
+			//				h.type = CacheEventType.REMOVE;
+			//				h.preValue = event.getValue();
+			//			} else {
+			//				try {
+			//					if (listeners.size() > 0) {
+			//						InfinispanCacheContextHolder h = currentHolder();
+			//						switch (h.type) {
+			//						case REMOVE:
+			//							CacheRemoveEvent cre = new CacheRemoveEvent(h.preValue);
+			//							for (CacheEventListener l : listeners) {
+			//								l.removed(cre);
+			//							}
+			//							break;
+			//						case INVALIDATE:
+			//							// なぜかInvalidateのafterがremovedに、、、infinispanバグ？
+			//							CacheInvalidateEvent cie = new CacheInvalidateEvent(h.preValue);
+			//							for (CacheEventListener l : listeners) {
+			//								l.invalidated(cie);
+			//							}
+			//							break;
+			//						default:
+			//							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
+			//						}
+			//					}
+			//				} finally {
+			//					endHolder();
+			//				}
+			//			}
 		}
 
 		@CacheEntryInvalidated
 		public void invalidated(CacheEntryInvalidatedEvent<Object, CacheEntry> event) {
-//			if (logger.isDebugEnabled()) {
-//				logger.debug("invalidate event:" + event);
-//			}
+			//			if (logger.isDebugEnabled()) {
+			//				logger.debug("invalidate event:" + event);
+			//			}
+
+			// TODO 動作未確認
+			LOG.debug("call removed {}. key={}, pre={}, originLocal={}, currentState={}", event.getClass().getSimpleName(),
+					event.getKey(), event.isPre(), event.isOriginLocal(), event.isCurrentState());
+			LOG.debug("value = {}.", event.getValue());
 
 			if (event.isPre()) {
-				InfinispanCacheContextHolder h = newHolder();
-				h.type = CacheEventType.INVALIDATE;
-				h.preValue = event.getValue();
-			} else {
-				// 呼ばれない？？？
-				try {
-					if (listeners.size() > 0) {
-						InfinispanCacheContextHolder h = currentHolder();
-						switch (h.type) {
-						case INVALIDATE:
-							CacheInvalidateEvent cie = new CacheInvalidateEvent(h.preValue);
-							for (CacheEventListener l : listeners) {
-								l.invalidated(cie);
-							}
-							break;
-						default:
-							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
-						}
-					}
-				} finally {
-					endHolder();
+				return;
+			}
+
+			if (listeners.size() > 0) {
+				CacheInvalidateEvent cie = new CacheInvalidateEvent(event.getValue());
+				for (CacheEventListener l : listeners) {
+					l.invalidated(cie);
 				}
 			}
+			//			if (event.isPre()) {
+			//				InfinispanCacheContextHolder h = newHolder();
+			//				h.type = CacheEventType.INVALIDATE;
+			//				h.preValue = event.getValue();
+			//			} else {
+			//				// 呼ばれない？？？
+			//				try {
+			//					if (listeners.size() > 0) {
+			//						InfinispanCacheContextHolder h = currentHolder();
+			//						switch (h.type) {
+			//						case INVALIDATE:
+			//							CacheInvalidateEvent cie = new CacheInvalidateEvent(h.preValue);
+			//							for (CacheEventListener l : listeners) {
+			//								l.invalidated(cie);
+			//							}
+			//							break;
+			//						default:
+			//							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
+			//						}
+			//					}
+			//				} finally {
+			//					endHolder();
+			//				}
+			//			}
 		}
 
-//		@CacheEntryRemoved
-//		@CacheEntryActivated
-//		@CacheEntryCreated
-//		@CacheEntryLoaded
-//		@CacheEntryPassivated
-//		@CacheEntryVisited
-//		public void otherEvented(CacheEntryEvent<Object, CacheEntry> event) {
-//			if (logger.isDebugEnabled()) {
-//				logger.debug("event:" + event);
-//			}
-//
-//		}
+		//		@CacheEntryRemoved
+		//		@CacheEntryActivated
+		//		@CacheEntryCreated
+		//		@CacheEntryLoaded
+		//		@CacheEntryPassivated
+		//		@CacheEntryVisited
+		//		public void otherEvented(CacheEntryEvent<Object, CacheEntry> event) {
+		//			if (logger.isDebugEnabled()) {
+		//				logger.debug("event:" + event);
+		//			}
+		//
+		//		}
 	}
 
 	@Override
