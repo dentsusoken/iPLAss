@@ -1,7 +1,7 @@
 dependencies {
 	implementation (sharedLib('org.infinispan:infinispan-core')) {
-		exclude(group: 'log4j')//use log4j-over-slf4j
+		// jgroups のバージョンが低いので、個別に依存設定する
+		exclude(group: 'org.jgroups')
 	}
-	runtimeOnly sharedLib('org.slf4j:log4j-over-slf4j')
-
+	runtimeOnly sharedLib('org.jgroups:jgroups')
 }
