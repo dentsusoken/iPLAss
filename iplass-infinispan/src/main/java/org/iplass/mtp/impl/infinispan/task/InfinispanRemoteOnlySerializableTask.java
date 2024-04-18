@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 class InfinispanRemoteOnlySerializableTask implements InfinispanManagedSerializableTask {
 	private static final long serialVersionUID = 2352076303611416994L;
 
-	private transient Logger logger = LoggerFactory.getLogger(InfinispanRemoteOnlySerializableTask.class);
+	private static Logger LOG = LoggerFactory.getLogger(InfinispanRemoteOnlySerializableTask.class);
 
 	private InfinispanManagedSerializableTask task;
 
@@ -42,7 +42,7 @@ class InfinispanRemoteOnlySerializableTask implements InfinispanManagedSerializa
 	public void run() {
 		String fromNode = getFromNode();
 		String requestId = getRequestId();
-		logger.info("Request {} accepted from node {}.", requestId, fromNode);
+		LOG.info("Request {} accepted from node {}.", requestId, fromNode);
 
 		String executionNode = InfinispanUtil.getExecutionNode();
 		boolean isRemoteNodeRequest = !StringUtil.equals(executionNode, fromNode);
@@ -50,7 +50,7 @@ class InfinispanRemoteOnlySerializableTask implements InfinispanManagedSerializa
 			task.run();
 
 		} else {
-			logger.info("Request {} is not executed from node {} because it is the same node.", requestId, fromNode);
+			LOG.info("Request {} is not executed from node {} because it is the same node.", requestId, fromNode);
 		}
 	}
 

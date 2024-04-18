@@ -29,7 +29,7 @@ class InfinispanManagedSerializableTaskImpl implements InfinispanManagedSerializ
 
 	private static final long serialVersionUID = 5114700800142336149L;
 
-	private transient Logger logger = LoggerFactory.getLogger(InfinispanManagedSerializableTaskImpl.class);
+	private static Logger LOG = LoggerFactory.getLogger(InfinispanManagedSerializableTaskImpl.class);
 
 	private InfinispanSerializableTask task;
 	private String requestId;
@@ -43,11 +43,11 @@ class InfinispanManagedSerializableTaskImpl implements InfinispanManagedSerializ
 
 	@Override
 	public void run() {
-		logger.info("Execute request {} from node {}.", requestId, fromNode);
+		LOG.info("Execute request {} from node {}.", requestId, fromNode);
 		try {
 			task.run();
 		} finally {
-			logger.info("Execution of request {} from remote node {} is finished.", requestId, fromNode);
+			LOG.info("Execution of request {} from remote node {} is finished.", requestId, fromNode);
 		}
 	}
 
