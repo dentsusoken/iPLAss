@@ -43,11 +43,13 @@ class InfinispanManagedSerializableTaskImpl implements InfinispanManagedSerializ
 
 	@Override
 	public void run() {
-		LOG.info("Execute request {} from node {}.", requestId, fromNode);
+		LOG.info("Execute request {}({}) from node {}. task = {}.", task.getClass().getSimpleName(), requestId, fromNode);
 		try {
 			task.run();
-		} finally {
-			LOG.info("Execution of request {} from remote node {} is finished.", requestId, fromNode);
+			LOG.info("Execution of request {}({}) from remote node {} is finished.", task.getClass().getSimpleName(), requestId, fromNode);
+		} catch (RuntimeException e) {
+			LOG.error("Execution of request {}({}) from remote node {} failed.", task.getClass().getSimpleName(), requestId, fromNode, e);
+			throw e;
 		}
 	}
 

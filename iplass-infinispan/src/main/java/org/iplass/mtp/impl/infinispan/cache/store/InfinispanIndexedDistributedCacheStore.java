@@ -20,22 +20,22 @@
 
 package org.iplass.mtp.impl.infinispan.cache.store;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.infinispan.Cache;
-import org.infinispan.util.function.SerializableRunnable;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.cache.CacheService;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory.TransactionLocalCacheStore;
 import org.iplass.mtp.impl.infinispan.InfinispanService;
+import org.iplass.mtp.impl.infinispan.task.InfinispanSerializableTask;
+import org.iplass.mtp.impl.infinispan.task.InfinispanTaskExecutor;
+import org.iplass.mtp.impl.infinispan.task.InfinispanTaskState;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,10 +58,9 @@ InfinispanIndexedCacheStore {
 	@Override
 	public void removeAll() {
 
-		CompletableFuture<Void> f = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().executor().allNodeSubmission()
-				.submit(new RemoveAllTask(wrapped.getNamespace()));
+		InfinispanTaskState state = InfinispanTaskExecutor.submitAll(new RemoveAllTask(wrapped.getNamespace()));
 		try {
-			f.get();
+			state.getFuture().get();
 		} catch (InterruptedException e) {
 			fatalLogger.error(
 					"cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace=" + wrapped.getNamespace(), e);
@@ -83,7 +82,6 @@ InfinispanIndexedCacheStore {
 		//		}
 	}
 
-	// FIXME 以下のメソッドがコールされている形跡がない
 	@Override
 	protected void mainteIndex(CacheEntry oldEntry, CacheEntry newEntry) {
 		if (logger.isTraceEnabled()) {
@@ -127,7 +125,6 @@ InfinispanIndexedCacheStore {
 		}
 
 		if (oldRef != null || newRef != null) {
-			MainteIndexTask task = new MainteIndexTask(oldRef, newRef, removeIndexList, addIndexList, indexRemoveTryCount, indexRemoveRetryIntervalNanos);
 			Set<IndexKey> keySet = new HashSet<>();
 			if (removeIndexList != null) {
 				keySet.addAll(removeIndexList);
@@ -136,12 +133,11 @@ InfinispanIndexedCacheStore {
 				keySet.addAll(addIndexList);
 			}
 
-			task = new MainteIndexTask(oldRef, newRef, removeIndexList, addIndexList, indexRemoveTryCount, indexRemoveRetryIntervalNanos,
-					keySet);
-			CompletableFuture<Void> f = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().executor().allNodeSubmission()
-					.submit(task);
+			MainteIndexTask task = new MainteIndexTask(indexStore.getName(), oldRef, newRef, removeIndexList, addIndexList, indexRemoveTryCount,
+					indexRemoveRetryIntervalNanos, keySet);
+			InfinispanTaskState state = InfinispanTaskExecutor.submitAll(task);
 			try {
-				f.get();
+				state.getFuture().get();
 			} catch (InterruptedException e) {
 				fatalLogger.error("cant mainte index cause remote execution interrupted. maybe cache index is inconsistent state... oldEntry=" + oldEntry + ", newEntry=" + newEntry, e);
 			} catch (ExecutionException e) {
@@ -161,18 +157,17 @@ InfinispanIndexedCacheStore {
 		}
 	}
 
-	public static class RemoveAllTask implements SerializableRunnable {
+	public static class RemoveAllTask implements InfinispanSerializableTask {
 		private static final long serialVersionUID = -7335308264912546719L;
 
 		private final String namespace;
 
 		public RemoveAllTask(String namespace) {
-			super();
 			this.namespace = namespace;
 		}
 
-		//		@Override
-		public Void call() throws Exception {
+		@Override
+		public void run() {
 			LoggerFactory.getLogger(RemoveAllTask.class).debug("RemoveAllTask");
 			CacheStore store = ServiceRegistry.getRegistry().getService(CacheService.class).getCache(namespace, false);
 			if (store != null) {
@@ -191,31 +186,13 @@ InfinispanIndexedCacheStore {
 				infiniStore.removeAllLocal();
 
 			}
-			return null;
 		}
-
-		//		@Override
-		public void setEnvironment(Cache<Object, CacheEntry> cache,
-				Set<Object> inputKeys) {
-		}
-
-		@Override
-		public void run() {
-			try {
-				call();
-			} catch (Exception e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			}
-		}
-
 	}
 
-	public static class MainteIndexTask implements Serializable, SerializableRunnable {
+	public static class MainteIndexTask implements InfinispanSerializableTask {
 		private static final long serialVersionUID = 663386283917160542L;
 
-		private int indexRemoveTryCount;
-		private long indexRemoveRetryIntervalNanos;
+		private String cacheName;
 
 		private CacheEntryRef oldRef;
 		private CacheEntryRef newRef;
@@ -223,29 +200,26 @@ InfinispanIndexedCacheStore {
 		private List<IndexKey> removeIndexList;
 		private List<IndexKey> addIndexList;
 
-		private transient Set<IndexKey> inputKeys;
-		private transient Cache<IndexKey, IndexEntry> cache;
+		private int indexRemoveTryCount;
+		private long indexRemoveRetryIntervalNanos;
 
-		public MainteIndexTask(CacheEntryRef oldRef, CacheEntryRef newRef,
-				List<IndexKey> removeIndexList, List<IndexKey> addIndexList, int indexRemoveTryCount, long indexRemoveRetryIntervalNanos) {
+		private Set<IndexKey> inputKeys;
+
+		public MainteIndexTask(String cacheName, CacheEntryRef oldRef, CacheEntryRef newRef, List<IndexKey> removeIndexList, List<IndexKey> addIndexList,
+				int indexRemoveTryCount, long indexRemoveRetryIntervalNanos, Set<IndexKey> inputKeys) {
 			this.oldRef = oldRef;
 			this.newRef = newRef;
 			this.removeIndexList = removeIndexList;
 			this.addIndexList = addIndexList;
 			this.indexRemoveTryCount = indexRemoveTryCount;
 			this.indexRemoveRetryIntervalNanos = indexRemoveRetryIntervalNanos;
-		}
-
-		public MainteIndexTask(CacheEntryRef oldRef, CacheEntryRef newRef,
-				List<IndexKey> removeIndexList, List<IndexKey> addIndexList, int indexRemoveTryCount, long indexRemoveRetryIntervalNanos,
-				Set<IndexKey> inputKeys) {
-			this(oldRef, newRef, removeIndexList, addIndexList, indexRemoveTryCount, indexRemoveRetryIntervalNanos);
 			this.inputKeys = inputKeys;
 		}
 
-		//		@Override
-		public Void call() throws Exception {
-			LoggerFactory.getLogger(MainteIndexTask.class).debug("mainteIndexTask:old=" + oldRef + ", new=" + newRef + ", keys=" + inputKeys);
+
+		@Override
+		public void run() {
+			Cache<IndexKey, IndexEntry> cache = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getCache(cacheName);
 			if (logger.isTraceEnabled()) {
 				logger.trace("mainteIndexTask:old=" + oldRef + ", new=" + newRef + ", keys=" + inputKeys);
 			}
@@ -263,28 +237,7 @@ InfinispanIndexedCacheStore {
 					}
 				}
 			}
-			return null;
 		}
-
-		//		@Override
-		public void setEnvironment(Cache<IndexKey, IndexEntry> cache,
-				Set<IndexKey> inputKeys) {
-			this.cache = cache;
-			this.inputKeys = inputKeys;
-		}
-
-		@Override
-		public void run() {
-			this.cache = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getCache();
-
-			try {
-				call();
-			} catch (Exception e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			}
-		}
-
 	}
 
 }
