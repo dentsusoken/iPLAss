@@ -100,6 +100,7 @@ public class InfinispanCacheHandler implements CacheHandler {
 			this.cht = cht;
 			this.tenantId = tenantId;
 			this.currentTimestamp = currentTimestamp;
+			this.cacheName = cacheName;
 			this.inputKeys = inputKeys;
 		}
 		//		@Override
@@ -174,6 +175,7 @@ public class InfinispanCacheHandler implements CacheHandler {
 					if (currentTimestamp != null) {
 						ExecuteContext.getCurrentContext().setCurrentTimestamp(currentTimestamp);
 					}
+					// FIXME ここで指定しているCacheContext が serialize できずにエラーになってしまう。InfinispanCacheContext の内部はデータも含めて serializable でなければいけない。context の指定方法を見直す必要がある
 					cht.setContext(new InfinispanCacheContext<K, V>(cache), inputKeys);
 
 					return null;
