@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Function;
@@ -272,6 +273,10 @@ public class EntityImport extends MtpCuiBase {
 				for(String message : messageSummary) {
 					logInfo(message);
 				}
+
+				//Listener実行のチェック
+				doCheckListenerWarning(param);
+
 				logInfo("-----------------------------------------------------------");
 				logInfo("");
 
@@ -318,6 +323,30 @@ public class EntityImport extends MtpCuiBase {
 
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
+	}
+
+	/**
+	 * Listener実行のチェックを行います。
+	 */
+	public void doCheckListenerWarning(EntityImportParameter param) {
+
+		String defName = param.getEntityName();
+		EntityDataImportCondition condition = param.getEntityImportCondition();
+		
+		//EntityにUserまたはPermission系が含まれていてListener実行しない場合はWARNログを出力する。
+		if (execMode.equals(ExecMode.SILENT) && !condition.isNotifyListeners()) {
+			if ("mtp.auth.User".equals(defName)) {
+				logWarn(rs("EntityImport.Silent.notExecuteUserListenerWarn"));
+			} else if (Arrays.asList(
+					"mtp.auth.ActionPermission",
+					"mtp.auth.CubePermission",
+					"mtp.auth.EntityPermission",
+					"mtp.auth.UserTaskPermission",
+					"mtp.auth.WebApiPermission",
+					"mtp.auth.WorkflowPermission").contains(defName)) {
+				logWarn(rs("EntityImport.Silent.notExecutePermListenerWarn"));
+			}
+		}
 	}
 
 	/**
