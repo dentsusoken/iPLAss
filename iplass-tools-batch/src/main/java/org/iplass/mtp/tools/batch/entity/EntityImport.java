@@ -350,6 +350,37 @@ public class EntityImport extends MtpCuiBase {
 	}
 
 	/**
+	 * Wizardインポート確認メッセージをセットする。
+	 */
+	public String setConfirmImportEntityMsg(EntityImportParameter param) {
+
+		String defName = param.getEntityName();
+		EntityDataImportCondition condition = param.getEntityImportCondition();
+		String confirmImportEntityMsg = "";
+		
+		//EntityにUserまたはPermission系が含まれていてListener実行しない場合は確認
+		if (!condition.isNotifyListeners()) {
+			if ("mtp.auth.User".equals(defName)) {
+				confirmImportEntityMsg = rs("EntityImport.Wizard.notExecuteUserListenerWarn");
+			} else if (Arrays.asList(
+					"mtp.auth.ActionPermission",
+					"mtp.auth.CubePermission",
+					"mtp.auth.EntityPermission",
+					"mtp.auth.UserTaskPermission",
+					"mtp.auth.WebApiPermission",
+					"mtp.auth.WorkflowPermission").contains(defName)) {
+				confirmImportEntityMsg = rs("EntityImport.Wizard.notExecutePermListenerWarn");
+			} else {
+				confirmImportEntityMsg = rs("EntityImport.Wizard.confirmImportEntityMsg");
+			}
+		} else {
+			confirmImportEntityMsg = rs("EntityImport.Wizard.confirmImportEntityMsg");
+		}
+		
+		return confirmImportEntityMsg;
+	}
+
+	/**
 	 * タスクを実行します。
 	 */
 	private <T> T executeTask(EntityImportParameter param, Supplier<T> task) {
@@ -665,7 +696,10 @@ public class EntityImport extends MtpCuiBase {
 				//実行情報出力
 				logArguments(param);
 
-				boolean isExecute = readConsoleBoolean(rs("EntityImport.Wizard.confirmImportEntityMsg"), false);
+				//Wizardインポート確認メッセージをセットする
+				String confirmImportEntityMsg = setConfirmImportEntityMsg(param);
+				
+				boolean isExecute = readConsoleBoolean(confirmImportEntityMsg, false);
 				if (isExecute) {
 					validExecute = true;
 				} else {
