@@ -46,7 +46,11 @@ import org.iplass.mtp.entity.query.value.aggregate.StdDevSamp;
 import org.iplass.mtp.entity.query.value.aggregate.Sum;
 import org.iplass.mtp.entity.query.value.aggregate.VarPop;
 import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
+import org.iplass.mtp.impl.entity.property.PropertyService;
+import org.iplass.mtp.impl.entity.property.PropertyType;
 import org.iplass.mtp.impl.i18n.I18nService;
+import org.iplass.mtp.impl.properties.basic.TimeType;
+import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.HintPlace;
 import org.iplass.mtp.impl.rdb.adapter.MultiInsertContext;
 import org.iplass.mtp.impl.rdb.adapter.MultiTableUpdateMethod;
@@ -82,6 +86,9 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 //	private static final long DATE_MAX = 253402268399999L;//9999-12-31 23:59:59.999
 
 	//FIXME AWS RedShiftでサポートされる関数が微妙に異なる。。特に日付関数系。どちらかというとOracleに近い
+
+	private static PostgreSQLTimeRdbTypeAdapter postgreSQLTimeRdbTypeAdapter =
+			new PostgreSQLTimeRdbTypeAdapter(ServiceRegistry.getRegistry().getService(PropertyService.class).getPropertyType(java.sql.Time.class));
 
 	private static final String[] optimizerHintBracket = {"/*+", "*/"};
 	private static final String DATE_MIN = "-47120101000000000";
@@ -802,4 +809,23 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 		return sb.toString();
 	}
+
+	@Override
+	public BaseRdbTypeAdapter getRdbTypeAdapter(Object value) {
+		if (value instanceof Time) {
+			return postgreSQLTimeRdbTypeAdapter;
+		} else {
+			return super.getRdbTypeAdapter(value);
+		}
+	}
+
+	@Override
+	public BaseRdbTypeAdapter getRdbTypeAdapter(PropertyType propType) {
+		if (propType instanceof TimeType) {
+			return postgreSQLTimeRdbTypeAdapter;
+		} else {
+			return super.getRdbTypeAdapter(propType);
+		}
+	}
+
 }
