@@ -387,13 +387,13 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 							@Override
 							public void execute(Boolean value) {
 								if (value) {
-									doCheckListener(uploader);
+									doCheckListener(uploader, definition);
 								}
 							}
 						});
 
 					} else {
-						doCheckListener(uploader);
+						doCheckListener(uploader, definition);
 					}
 				}
 			});
@@ -426,7 +426,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			messageTabSet.setTabTitleNormal();
 		}
 
-		private void doCheckListener(final AdminSingleUploader uploader) {
+		private void doCheckListener(final AdminSingleUploader uploader, EntityDefinition definition) {
 
 			//EntityにUserまたはPermission系が含まれていてListener実行しない場合は確認
 			if (!SmartGWTUtil.getBooleanValue(chkNotifyListenersField)) {
@@ -448,6 +448,16 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 						"mtp.auth.WebApiPermission",
 						"mtp.auth.WorkflowPermission").contains(defName)) {
 					SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_permissionListenerConfirm"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								doUpload(uploader);
+							}
+						}
+					});
+					return;
+				} else if (SmartGWTUtil.isNotEmpty(definition.getEventListenerList())) {
+					SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_listenerConfirm"), new BooleanCallback() {
 						@Override
 						public void execute(Boolean value) {
 							if (value) {

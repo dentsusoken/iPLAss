@@ -61,6 +61,7 @@ import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.transaction.Transaction;
+import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -273,10 +274,6 @@ public class EntityImport extends MtpCuiBase {
 				for(String message : messageSummary) {
 					logInfo(message);
 				}
-
-				//Listener実行のチェック
-				doCheckListenerWarning(param);
-
 				logInfo("-----------------------------------------------------------");
 				logInfo("");
 
@@ -326,17 +323,17 @@ public class EntityImport extends MtpCuiBase {
 	}
 
 	/**
-	 * Listener実行のチェックを行います。
+	 * SILENT実行時にListener実行のチェックを行います。
 	 */
-	public void doCheckListenerWarning(EntityImportParameter param) {
+	private void doCheckListenerWarnOfSilent(EntityImportParameter param, EntityDefinition ed) {
 
 		String defName = param.getEntityName();
 		EntityDataImportCondition condition = param.getEntityImportCondition();
 		
-		//EntityにUserまたはPermission系が含まれていてListener実行しない場合はWARNログを出力する。
-		if (execMode.equals(ExecMode.SILENT) && !condition.isNotifyListeners()) {
+		if (!condition.isNotifyListeners()) {
 			if ("mtp.auth.User".equals(defName)) {
 				logWarn(rs("EntityImport.Silent.notExecuteUserListenerWarn"));
+				logInfo("");
 			} else if (Arrays.asList(
 					"mtp.auth.ActionPermission",
 					"mtp.auth.CubePermission",
@@ -345,23 +342,24 @@ public class EntityImport extends MtpCuiBase {
 					"mtp.auth.WebApiPermission",
 					"mtp.auth.WorkflowPermission").contains(defName)) {
 				logWarn(rs("EntityImport.Silent.notExecutePermListenerWarn"));
+				logInfo("");
+			} else if (CollectionUtil.isNotEmpty(ed.getEventListenerList())) {
+				logWarn(rs("EntityImport.Silent.notExecuteListenerWarn"));
+				logInfo("");
 			}
 		}
 	}
 
 	/**
-	 * Wizardインポート確認メッセージをセットする。
+	 * WIZARD実行時にListener実行のチェックを行います。
 	 */
-	public String setConfirmImportEntityMsg(EntityImportParameter param) {
+	private boolean doCheckListenerWarnOfWizard(EntityImportParameter param, EntityDataImportCondition condition, EntityDefinition ed) {
 
 		String defName = param.getEntityName();
-		EntityDataImportCondition condition = param.getEntityImportCondition();
-		String confirmImportEntityMsg = "";
 		
-		//EntityにUserまたはPermission系が含まれていてListener実行しない場合は確認
 		if (!condition.isNotifyListeners()) {
 			if ("mtp.auth.User".equals(defName)) {
-				confirmImportEntityMsg = rs("EntityImport.Wizard.notExecuteUserListenerWarn");
+				return readConsoleBoolean(rs("EntityImport.Wizard.notExecuteUserListenerWarn"), false);
 			} else if (Arrays.asList(
 					"mtp.auth.ActionPermission",
 					"mtp.auth.CubePermission",
@@ -369,15 +367,13 @@ public class EntityImport extends MtpCuiBase {
 					"mtp.auth.UserTaskPermission",
 					"mtp.auth.WebApiPermission",
 					"mtp.auth.WorkflowPermission").contains(defName)) {
-				confirmImportEntityMsg = rs("EntityImport.Wizard.notExecutePermListenerWarn");
-			} else {
-				confirmImportEntityMsg = rs("EntityImport.Wizard.confirmImportEntityMsg");
+				return readConsoleBoolean(rs("EntityImport.Wizard.notExecutePermListenerWarn"), false);
+			} else if (CollectionUtil.isNotEmpty(ed.getEventListenerList())) {
+				return readConsoleBoolean(rs("EntityImport.Wizard.notExecuteListenerWarn"), false);
 			}
-		} else {
-			confirmImportEntityMsg = rs("EntityImport.Wizard.confirmImportEntityMsg");
 		}
 		
-		return confirmImportEntityMsg;
+		return true;
 	}
 
 	/**
@@ -539,7 +535,7 @@ public class EntityImport extends MtpCuiBase {
 					param.setEntityName(inputEntityName);
 
 					//存在チェック
-					EntityDefinition ed = edm.get(inputEntityName);
+					ed = edm.get(inputEntityName);
 					if (ed == null) {
 						logWarn(rs("EntityImport.notExistsEntityMsg", inputEntityName));
 						continue;
@@ -614,14 +610,20 @@ public class EntityImport extends MtpCuiBase {
 			boolean isIgnoreNotExistsProperty = readConsoleBoolean(rs("PackageImport.Wizard.confirmIgnoreNotExistsPropertyMsg"), condition.isIgnoreNotExistsProperty());
 			condition.setIgnoreNotExistsProperty(isIgnoreNotExistsProperty);
 
-			//Listner実行
-			if (isBulkUpdate) {
-				condition.setNotifyListeners(false);
-			} else {
-				boolean isNotifyListner = readConsoleBoolean(rs("PackageImport.Wizard.confirmNotifyListenerMsg"), condition.isNotifyListeners());
-				condition.setNotifyListeners(isNotifyListner);
-			}
-
+			//Listener実行
+			boolean validListener = false;
+			do {
+				if (isBulkUpdate) {
+					condition.setNotifyListeners(false);
+					validListener = true;
+				} else {
+					boolean isNotifyListener = readConsoleBoolean(rs("PackageImport.Wizard.confirmNotifyListenerMsg"), condition.isNotifyListeners());
+					condition.setNotifyListeners(isNotifyListener);
+					
+					validListener = doCheckListenerWarnOfWizard(param, condition, ed);
+				}
+			} while(validListener == false);
+			
 			//更新不可項目の更新
 			boolean isUpdateDisupdatableProperty = readConsoleBoolean(rs("PackageImport.Wizard.confirmUpdateDisupdatablePropertyMsg"), condition.isUpdateDisupdatableProperty());
 			condition.setUpdateDisupdatableProperty(isUpdateDisupdatableProperty);
@@ -696,10 +698,7 @@ public class EntityImport extends MtpCuiBase {
 				//実行情報出力
 				logArguments(param);
 
-				//Wizardインポート確認メッセージをセットする
-				String confirmImportEntityMsg = setConfirmImportEntityMsg(param);
-				
-				boolean isExecute = readConsoleBoolean(confirmImportEntityMsg, false);
+				boolean isExecute = readConsoleBoolean(rs("EntityImport.Wizard.confirmImportEntityMsg"), false);
 				if (isExecute) {
 					validExecute = true;
 				} else {
@@ -1043,6 +1042,9 @@ public class EntityImport extends MtpCuiBase {
 
 			//実行情報出力
 			logArguments(param);
+
+			//Listener実行のチェック
+			doCheckListenerWarnOfSilent(param, ed);
 
 			//Import処理実行
 			return executeTask(param, (paramA) -> {
