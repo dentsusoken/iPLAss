@@ -1315,6 +1315,7 @@ LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_startImportConf = "イ�
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_userTruncateConfirm = "Userデータを全件削除します。よろしいですか？";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_userListenerConfirm = "UserのListenerを実行しない場合、アカウント情報に連携されませんがよろしいですか？";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_permissionListenerConfirm = "権限系のListenerを実行しない場合、権限キャッシュ情報がクリアされませんがよろしいですか？";
+LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_listenerConfirm = "対象のEntityにListenerが定義されていますが、Listenerが実行されません。よろしいですか？";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_errorImport = "インポート中にエラーが発生しました。";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_importSuccessful = "インポートが正常に終了しました。";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_importWarning = "インポートで警告が発生しています。";

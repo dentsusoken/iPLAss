@@ -1315,6 +1315,7 @@ LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_startImportConf = "Star
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_userTruncateConfirm = "Delete all User data. Would you like?";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_userListenerConfirm = "If you don't execute User Listener, it is not linked to account information. Would you like?";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_permissionListenerConfirm = "If you don't execute Permission Listener, permission cache information is not cleared. Would you like?";
+LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_listenerConfirm = "Listeners are defined for the target entity, but the Listener does not execute. Would you like?";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_errorImport = "An error occurred during the import.";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_importSuccessful = "Import was successful.";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_importWarning = "Warning has occurred in the import.";

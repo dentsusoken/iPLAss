@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Function;
@@ -60,6 +61,7 @@ import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.transaction.Transaction;
+import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -305,7 +307,7 @@ public class EntityImport extends MtpCuiBase {
 		logInfo("\tentity data force update :" + condition.isFourceUpdate());
 		logInfo("\tentity data error skip :" + condition.isErrorSkip());
 		logInfo("\tentity ignore not exists property :" + condition.isIgnoreNotExistsProperty());
-		logInfo("\tentity execute listner :" + condition.isNotifyListeners());
+		logInfo("\tentity execute listener :" + condition.isNotifyListeners());
 		logInfo("\tentity update disupdatable property :" + condition.isUpdateDisupdatableProperty());
 		logInfo("\tentity insert audit property specification :" + condition.isInsertEnableAuditPropertySpecification());
 		logInfo("\tentity execute validation :" + condition.isWithValidation());
@@ -318,6 +320,60 @@ public class EntityImport extends MtpCuiBase {
 
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
+	}
+
+	/**
+	 * SILENT実行時にListener実行のチェックを行います。
+	 */
+	private void doCheckListenerWarnOfSilent(EntityImportParameter param, EntityDefinition ed) {
+
+		String defName = param.getEntityName();
+		EntityDataImportCondition condition = param.getEntityImportCondition();
+		
+		if (!condition.isNotifyListeners()) {
+			if ("mtp.auth.User".equals(defName)) {
+				logWarn(rs("EntityImport.Silent.notExecuteUserListenerWarn"));
+				logInfo("");
+			} else if (Arrays.asList(
+					"mtp.auth.ActionPermission",
+					"mtp.auth.CubePermission",
+					"mtp.auth.EntityPermission",
+					"mtp.auth.UserTaskPermission",
+					"mtp.auth.WebApiPermission",
+					"mtp.auth.WorkflowPermission").contains(defName)) {
+				logWarn(rs("EntityImport.Silent.notExecutePermListenerWarn"));
+				logInfo("");
+			} else if (CollectionUtil.isNotEmpty(ed.getEventListenerList())) {
+				logWarn(rs("EntityImport.Silent.notExecuteListenerWarn"));
+				logInfo("");
+			}
+		}
+	}
+
+	/**
+	 * WIZARD実行時にListener実行のチェックを行います。
+	 */
+	private boolean doCheckListenerWarnOfWizard(EntityImportParameter param, EntityDataImportCondition condition, EntityDefinition ed) {
+
+		String defName = param.getEntityName();
+		
+		if (!condition.isNotifyListeners()) {
+			if ("mtp.auth.User".equals(defName)) {
+				return readConsoleBoolean(rs("EntityImport.Wizard.notExecuteUserListenerWarn"), false);
+			} else if (Arrays.asList(
+					"mtp.auth.ActionPermission",
+					"mtp.auth.CubePermission",
+					"mtp.auth.EntityPermission",
+					"mtp.auth.UserTaskPermission",
+					"mtp.auth.WebApiPermission",
+					"mtp.auth.WorkflowPermission").contains(defName)) {
+				return readConsoleBoolean(rs("EntityImport.Wizard.notExecutePermListenerWarn"), false);
+			} else if (CollectionUtil.isNotEmpty(ed.getEventListenerList())) {
+				return readConsoleBoolean(rs("EntityImport.Wizard.notExecuteListenerWarn"), false);
+			}
+		}
+		
+		return true;
 	}
 
 	/**
@@ -479,7 +535,7 @@ public class EntityImport extends MtpCuiBase {
 					param.setEntityName(inputEntityName);
 
 					//存在チェック
-					EntityDefinition ed = edm.get(inputEntityName);
+					ed = edm.get(inputEntityName);
 					if (ed == null) {
 						logWarn(rs("EntityImport.notExistsEntityMsg", inputEntityName));
 						continue;
@@ -554,14 +610,20 @@ public class EntityImport extends MtpCuiBase {
 			boolean isIgnoreNotExistsProperty = readConsoleBoolean(rs("PackageImport.Wizard.confirmIgnoreNotExistsPropertyMsg"), condition.isIgnoreNotExistsProperty());
 			condition.setIgnoreNotExistsProperty(isIgnoreNotExistsProperty);
 
-			//Listner実行
-			if (isBulkUpdate) {
-				condition.setNotifyListeners(false);
-			} else {
-				boolean isNotifyListner = readConsoleBoolean(rs("PackageImport.Wizard.confirmNotifyListenerMsg"), condition.isNotifyListeners());
-				condition.setNotifyListeners(isNotifyListner);
-			}
-
+			//Listener実行
+			boolean validListener = false;
+			do {
+				if (isBulkUpdate) {
+					condition.setNotifyListeners(false);
+					validListener = true;
+				} else {
+					boolean isNotifyListener = readConsoleBoolean(rs("PackageImport.Wizard.confirmNotifyListenerMsg"), condition.isNotifyListeners());
+					condition.setNotifyListeners(isNotifyListener);
+					
+					validListener = doCheckListenerWarnOfWizard(param, condition, ed);
+				}
+			} while(validListener == false);
+			
 			//更新不可項目の更新
 			boolean isUpdateDisupdatableProperty = readConsoleBoolean(rs("PackageImport.Wizard.confirmUpdateDisupdatablePropertyMsg"), condition.isUpdateDisupdatableProperty());
 			condition.setUpdateDisupdatableProperty(isUpdateDisupdatableProperty);
@@ -811,7 +873,7 @@ public class EntityImport extends MtpCuiBase {
 			condition.setIgnoreNotExistsProperty(Boolean.valueOf(ignoreInvalidProperty));
 		}
 
-		//Listner実行
+		//Listener実行
 		if (condition.isBulkUpdate()) {
 			condition.setNotifyListeners(false);
 		} else {
@@ -980,6 +1042,9 @@ public class EntityImport extends MtpCuiBase {
 
 			//実行情報出力
 			logArguments(param);
+
+			//Listener実行のチェック
+			doCheckListenerWarnOfSilent(param, ed);
 
 			//Import処理実行
 			return executeTask(param, (paramA) -> {
