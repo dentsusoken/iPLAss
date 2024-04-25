@@ -307,7 +307,7 @@ public class EntityImport extends MtpCuiBase {
 		logInfo("\tentity data force update :" + condition.isFourceUpdate());
 		logInfo("\tentity data error skip :" + condition.isErrorSkip());
 		logInfo("\tentity ignore not exists property :" + condition.isIgnoreNotExistsProperty());
-		logInfo("\tentity execute listner :" + condition.isNotifyListeners());
+		logInfo("\tentity execute listener :" + condition.isNotifyListeners());
 		logInfo("\tentity update disupdatable property :" + condition.isUpdateDisupdatableProperty());
 		logInfo("\tentity insert audit property specification :" + condition.isInsertEnableAuditPropertySpecification());
 		logInfo("\tentity execute validation :" + condition.isWithValidation());
@@ -873,7 +873,7 @@ public class EntityImport extends MtpCuiBase {
 			condition.setIgnoreNotExistsProperty(Boolean.valueOf(ignoreInvalidProperty));
 		}
 
-		//Listner実行
+		//Listener実行
 		if (condition.isBulkUpdate()) {
 			condition.setNotifyListeners(false);
 		} else {
