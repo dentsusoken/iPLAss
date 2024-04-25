@@ -54,7 +54,11 @@ import org.iplass.mtp.entity.query.value.aggregate.Sum;
 import org.iplass.mtp.entity.query.value.aggregate.VarPop;
 import org.iplass.mtp.entity.query.value.aggregate.VarSamp;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;
+import org.iplass.mtp.impl.entity.property.PropertyService;
+import org.iplass.mtp.impl.entity.property.PropertyType;
 import org.iplass.mtp.impl.i18n.I18nService;
+import org.iplass.mtp.impl.properties.basic.TimeType;
+import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.HintPlace;
 import org.iplass.mtp.impl.rdb.adapter.MultiInsertContext;
 import org.iplass.mtp.impl.rdb.adapter.MultiTableUpdateMethod;
@@ -87,6 +91,9 @@ import org.iplass.mtp.spi.ServiceRegistry;
 public class MysqlRdbAdaptor extends RdbAdapter {
 //	private static final long DATE_MIN = -30609824400000L;//1000-01-01 00:00:00.000
 //	private static final long DATE_MAX = 253402268399999L;//9999-12-31 23:59:59.999
+
+	private static MysqlTimeRdbTypeAdapter mysqlTimeRdbTypeAdapter =
+			new MysqlTimeRdbTypeAdapter(ServiceRegistry.getRegistry().getService(PropertyService.class).getPropertyType(java.sql.Time.class));
 
 	private static final String DATE_MIN = "10000101000000000";
 	private static final String DATE_MAX = "99991231235959999";
@@ -974,4 +981,21 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		return false;
 	}
 
+	@Override
+	public BaseRdbTypeAdapter getRdbTypeAdapter(Object value) {
+		if (value instanceof Time) {
+			return mysqlTimeRdbTypeAdapter;
+		} else {
+			return super.getRdbTypeAdapter(value);
+		}
+	}
+
+	@Override
+	public BaseRdbTypeAdapter getRdbTypeAdapter(PropertyType propType) {
+		if (propType instanceof TimeType) {
+			return mysqlTimeRdbTypeAdapter;
+		} else {
+			return super.getRdbTypeAdapter(propType);
+		}
+	}
 }
