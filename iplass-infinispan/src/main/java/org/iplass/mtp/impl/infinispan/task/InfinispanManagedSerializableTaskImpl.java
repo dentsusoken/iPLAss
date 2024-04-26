@@ -29,7 +29,7 @@ class InfinispanManagedSerializableTaskImpl implements InfinispanManagedSerializ
 
 	private static final long serialVersionUID = 5114700800142336149L;
 
-	private static Logger LOG = LoggerFactory.getLogger(InfinispanManagedSerializableTaskImpl.class);
+	private static transient Logger LOG = LoggerFactory.getLogger(InfinispanManagedSerializableTaskImpl.class);
 
 	private InfinispanSerializableTask task;
 	private String requestId;
@@ -47,9 +47,9 @@ class InfinispanManagedSerializableTaskImpl implements InfinispanManagedSerializ
 		try {
 			task.run();
 			LOG.info("Execution of request {}({}) from remote node {} is finished.", task.getClass().getSimpleName(), requestId, fromNode);
-		} catch (RuntimeException e) {
+		} catch (Throwable e) {
+			// NOTE ここで例外をリスローすると非同期処理の終了が通知されなくなる。そのため、例外をリスローせずログ出力し終了する。
 			LOG.error("Execution of request {}({}) from remote node {} failed.", task.getClass().getSimpleName(), requestId, fromNode, e);
-			throw e;
 		}
 	}
 

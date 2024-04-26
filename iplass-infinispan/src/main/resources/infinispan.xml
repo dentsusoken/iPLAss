@@ -14,7 +14,7 @@
             <white-list>
             	<!-- TODO この設定は後から変更できるように -->
                 <class>java.lang.invoke.SerializedLambda</class>
-                <regex>^(\[L|)java\.(lang|util)\..*(;|)$</regex>
+                <regex>^(\[L|)java\.(lang|util|sql)\..*(;|)$</regex>
                 <regex>^(\[L|)org\.iplass\.mtp\.impl\.(cluster|cache\.store|infinispan)\..*(;|)$</regex>
             </white-list>
         </serialization>
