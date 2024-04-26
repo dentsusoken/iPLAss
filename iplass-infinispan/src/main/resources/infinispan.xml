@@ -30,7 +30,7 @@
             <transaction mode="NONE"/>
             <expiration max-idle="6000000"/>
             <persistence passivation="true">
-                <file-store fetch-state="true" purge="true" path="${java.io.tmpdir}"/>
+                <file-store fetch-state="true" purge="true" path="${java.io.tmpdir}/cubedata"/>
             </persistence>
             <memory>
                 <object size="128"/>
