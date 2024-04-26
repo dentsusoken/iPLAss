@@ -19,6 +19,7 @@
  */
 package org.iplass.mtp.impl.infinispan.task;
 
+import org.iplass.mtp.impl.infinispan.InfinispanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +44,14 @@ class InfinispanManagedSerializableTaskImpl implements InfinispanManagedSerializ
 
 	@Override
 	public void runNode() {
-		LOG.info("Execute request {}({}) from node {}.", task.getClass().getSimpleName(), requestId, fromNode);
+		String executionNode = InfinispanUtil.getExecutionNode();
+		LOG.info("{} executes the request {}({}) from {}.", executionNode, task.getClass().getSimpleName(), requestId, fromNode);
 		try {
 			task.run();
-			LOG.info("Execution of request {}({}) from remote node {} is finished.", task.getClass().getSimpleName(), requestId, fromNode);
+			LOG.info("{} completed request {}({}) from {}.", executionNode, task.getClass().getSimpleName(), requestId, fromNode);
 		} catch (Throwable e) {
 			// NOTE ここで例外をリスローすると非同期処理の終了が通知されなくなる。そのため、例外をリスローせずログ出力し終了する。
-			LOG.error("Execution of request {}({}) from remote node {} failed.", task.getClass().getSimpleName(), requestId, fromNode, e);
+			LOG.error("{} failed to request {}({}) from {}.", executionNode, task.getClass().getSimpleName(), requestId, fromNode, e);
 		}
 	}
 

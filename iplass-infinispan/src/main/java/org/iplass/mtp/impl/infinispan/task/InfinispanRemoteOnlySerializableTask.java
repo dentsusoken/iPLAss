@@ -42,9 +42,10 @@ class InfinispanRemoteOnlySerializableTask implements InfinispanManagedSerializa
 	public void runNode() {
 		String fromNode = getFromNode();
 		String requestId = getRequestId();
-		LOG.info("Request {} accepted from node {}.", requestId, fromNode);
-
 		String executionNode = InfinispanUtil.getExecutionNode();
+
+		LOG.info("{} accepted the request {} from {}.", executionNode, requestId, fromNode);
+
 		boolean isRemoteNodeRequest = !StringUtil.equals(executionNode, fromNode);
 		if (isRemoteNodeRequest) {
 			task.run();
