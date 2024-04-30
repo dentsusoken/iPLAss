@@ -25,6 +25,8 @@
 		<!-- cubeのキャッシュ -->
 		<property name="cubeStatus" class="org.iplass.mtp.impl.infinispan.cache.store.InfinispanCacheStoreFactory">
 			<property name="createOnStartup" value="true" />
+			<!-- TODO キャッシュこれでいいか確認 -->
+			<property name="cacheConfigrationName" value="___defaultcache" />
 		</property>
 		<property name="cubeFactData" class="org.iplass.mtp.impl.infinispan.cache.store.InfinispanCacheStoreFactory">
 			<property name="createOnStartup" value="true" />

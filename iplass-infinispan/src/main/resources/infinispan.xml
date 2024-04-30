@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <infinispan
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="urn:infinispan:config:10.0 https://infinispan.org/schemas/infinispan-config-10.0.xsd"
-      xmlns="urn:infinispan:config:10.0">
+      xsi:schemaLocation="urn:infinispan:config:10.1 https://infinispan.org/schemas/infinispan-config-10.1.xsd"
+      xmlns="urn:infinispan:config:10.1">
     <jgroups>
         <stack-file name="jgroups-udb" path="jg-udp.xml"/>
     </jgroups>
@@ -10,6 +10,7 @@
     <threads/>
     <cache-container default-cache="___defaultcache">
         <transport cluster="iPLAssInfinispanCluster" stack="jgroups-udb"/>
+        <!-- バージョン 10.0 対応 -->
         <serialization marshaller="org.infinispan.commons.marshall.JavaSerializationMarshaller">
             <white-list>
             	<!-- TODO この設定は後から変更できるように -->
@@ -30,7 +31,12 @@
             <transaction mode="NONE"/>
             <expiration max-idle="6000000"/>
             <persistence passivation="true">
-                <file-store fetch-state="true" purge="true" path="${java.io.tmpdir}/cubedata"/>
+            	<!-- バージョン 10.0 へ上げた際、以下だと、 D:\temp-0, D:\temp-1 .... D:\temp-30 とディレクトリが作成される -->
+                <!-- <file-store fetch-state="true" purge="true" path="${java.io.tmpdir}"/> --> 
+            	<!-- バージョン 10.0 対応。バージョン 10.1 へ上げた際、「ISPN000558: The store location '${java.io.tmpdir}/cubedata/0' is not a child of the global persistent location '${EXECUTION_PATH}'」。ファイル位置は実行ディレクトリ以下にする必要がある。 -->
+                <!-- <file-store fetch-state="true" purge="true" path="${java.io.tmpdir}/cubedata"/>  -->
+                <!-- バージョン 10.1 対応 -->
+                <file-store fetch-state="true" purge="true" path="./infinispan/cubedata"/> 
             </persistence>
             <memory>
                 <object size="128"/>
