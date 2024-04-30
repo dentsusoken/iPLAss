@@ -80,7 +80,8 @@ ext {
 		
 		'org.jgroups:jgroups': '4.2.16.Final',
 		
-		'org.infinispan:infinispan-core': '11.0.19.Final',
+		'org.infinispan:infinispan-core': '12.0.2.Final',
+		//'org.infinispan:infinispan-core': '11.0.19.Final',
 		//'org.infinispan:infinispan-core': '10.1.9.Final',
 		//'org.infinispan:infinispan-core': '10.0.1.Final',
 		//'org.infinispan:infinispan-core': '9.4.24.Final',

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <infinispan
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="urn:infinispan:config:11.0 https://infinispan.org/schemas/infinispan-config-11.0.xsd"
-      xmlns="urn:infinispan:config:11.0">
+      xsi:schemaLocation="urn:infinispan:config:12.0 https://infinispan.org/schemas/infinispan-config-12.0.xsd"
+      xmlns="urn:infinispan:config:12.0">
     <jgroups>
         <stack-file name="jgroups-udb" path="jg-udp.xml"/>
     </jgroups>
@@ -12,12 +12,13 @@
         <transport cluster="iPLAssInfinispanCluster" stack="jgroups-udb"/>
         <!-- バージョン 10.0 対応 -->
         <serialization marshaller="org.infinispan.commons.marshall.JavaSerializationMarshaller">
-            <white-list>
+	        <!-- バージョン 12.0 対応 -->
+            <allow-list>
             	<!-- TODO この設定は後から変更できるように -->
                 <class>java.lang.invoke.SerializedLambda</class>
                 <regex>^(\[L|)java\.(lang|util|sql)\..*(;|)$</regex>
                 <regex>^(\[L|)org\.iplass\.mtp\.impl\.(cluster|cache\.store|infinispan)\..*(;|)$</regex>
-            </white-list>
+            </allow-list>
         </serialization>
         <distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="___defaultcache">
             <transaction mode="NONE"/>
