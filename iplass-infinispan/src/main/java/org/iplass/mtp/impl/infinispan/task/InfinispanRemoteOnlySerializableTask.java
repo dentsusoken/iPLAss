@@ -51,7 +51,7 @@ class InfinispanRemoteOnlySerializableTask implements InfinispanManagedSerializa
 			task.run();
 
 		} else {
-			LOG.info("Request {} is not executed from node {} because it is the same node.", requestId, fromNode);
+			LOG.info("Request {} is not executed from {}, because it is the same node.", requestId, fromNode);
 		}
 	}
 
