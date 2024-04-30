@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <infinispan
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="urn:infinispan:config:10.1 https://infinispan.org/schemas/infinispan-config-10.1.xsd"
-      xmlns="urn:infinispan:config:10.1">
+      xsi:schemaLocation="urn:infinispan:config:11.0 https://infinispan.org/schemas/infinispan-config-11.0.xsd"
+      xmlns="urn:infinispan:config:11.0">
     <jgroups>
         <stack-file name="jgroups-udb" path="jg-udp.xml"/>
     </jgroups>
@@ -19,7 +19,6 @@
                 <regex>^(\[L|)org\.iplass\.mtp\.impl\.(cluster|cache\.store|infinispan)\..*(;|)$</regex>
             </white-list>
         </serialization>
-        <jmx duplicate-domains="true"/>
         <distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="___defaultcache">
             <transaction mode="NONE"/>
 <!--        	<store-as-binary keys="true" values="false"/>-->
@@ -38,36 +37,26 @@
                 <!-- バージョン 10.1 対応 -->
                 <file-store fetch-state="true" purge="true" path="./infinispan/cubedata"/> 
             </persistence>
-            <memory>
-                <object size="128"/>
-            </memory>
+            <memory max-count="128" />
         </distributed-cache>
         <local-cache name="local">
             <transaction mode="NONE"/>
-            <memory>
-                <object/>
-            </memory>
+            <memory />
         </local-cache>
         <replicated-cache mode="SYNC" remote-timeout="60000" name="replication">
             <transaction mode="NONE"/>
 <!--        	<store-as-binary keys="true" values="false"/>-->
-            <memory>
-                <object/>
-            </memory>
+            <memory />
         </replicated-cache>
         <invalidation-cache mode="SYNC" remote-timeout="60000" name="invalidation">
             <transaction mode="NONE"/>
 <!--        	<store-as-binary keys="true" values="false"/>-->
-            <memory>
-                <object/>
-            </memory>
+            <memory />
         </invalidation-cache>
         <distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="distribution">
             <transaction mode="NONE"/>
 <!--        	<store-as-binary keys="true" values="false"/>-->
-            <memory>
-                <object/>
-            </memory>
+            <memory />
         </distributed-cache>
     </cache-container>
 </infinispan>
