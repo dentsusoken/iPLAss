@@ -146,7 +146,7 @@ ext {
 		
 		'org.bouncycastle:bcjmail-jdk18on': '1.78',
 		
-		'org.jgroups:jgroups': '4.2.16.Final',
+		'org.jgroups:jgroups': '5.3.6.Final',
 
 		// gwt
 		// https://github.com/jiakuan/gwt-gradle-plugin
