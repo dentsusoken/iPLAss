@@ -67,8 +67,8 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 	private static Logger logger = LoggerFactory.getLogger(InfinispanCacheStoreFactory.class);
 
 	private static final String INDEX_STORE_POSTFIX = "._index";
-	// TODO infinispan 10.1 で infinispan.xml の /cache-container@default-cache 属性がきかなくなっている為、機能としてデフォルト設定を利用する形に変更。
-	/** cache の infinispan 設定名。infinispan.xml の '/cache-container' 内参照 */
+	// TODO infinispan 10.1 で infinispan.xml の '/infinispan/cache-container@default-cache' 属性がきかなくなっている為、機能としてデフォルト設定を利用する形に変更。
+	/** cache の infinispan 設定名。infinispan.xml の '/infinispan/cache-container' 内参照 */
 	private static final String DEFAULT_CACHE_CONFIGURATION_NAME = "___defaultcache";
 	// TODO 別にする可能性があるので、定義名を分けておく。
 	/** index cache の infinispan 設定名。 */
