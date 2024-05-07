@@ -1,5 +1,7 @@
 configurations {
 	compileOnly.extendsFrom(jeecoreapis)
+
+	runtimeOnly.extendsFrom jakartaImplEL
 }
 
 dependencies {
