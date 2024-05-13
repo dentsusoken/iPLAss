@@ -55,6 +55,7 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CanvasItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.ColorPickerItem;
 import com.smartgwt.client.widgets.form.fields.DateItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
@@ -172,7 +173,9 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 			createScriptForm(form, type, false, null);
 		} else if (TenantColType.GROOVYTEMPLATE.equals(type)) {
 			createGroovyTemplateForm(form, type, name);
-		}
+ 		} else if (TenantColType.COLORSCHEME.equals(type)) {
+			createColorSchemeForm(name, title, form);
+ 		}
 
 		// 編集可否設定
 		boolean canEdit = record.getAttributeAsBoolean("canEdit");
@@ -451,6 +454,32 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	protected void createColorSchemeForm(String name, String title, DynamicForm form) {
+		setHeight(240);
+		
+		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
+		List<String> valueList = (List<String>) JSOHelper
+				.convertToJava((JavaScriptObject) record.getAttributeAsObject("value"));
+		LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
+		setMap.putAll(valueMap);
+
+		TextItem[] items = new TextItem[setMap.size()];
+		valueFields = new TextItem[setMap.size()];
+		int cnt = 0;
+		for (Map.Entry<String, String> e : setMap.entrySet()) {
+			ColorPickerItem colorPickerItem = new ColorPickerItem();
+			colorPickerItem.setWidth("100%");
+			colorPickerItem.setTitle(e.getValue());
+			colorPickerItem.setName(e.getKey());
+			colorPickerItem.setValue(valueList.get(cnt));
+			items[cnt] = colorPickerItem;
+			valueFields[cnt] = colorPickerItem;
+			cnt++;
+		}
+		form.setItems(items);
+	}
+
 	/**
 	 * 保存処理
 	 */
@@ -477,6 +506,8 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 			setIntegerValue();
 		} else if (TenantColType.SCRIPT.equals(type) || TenantColType.GROOVYTEMPLATE.equals(type)) {
 			setScriptOrGroovyTemplateValue();
+		} else if (TenantColType.COLORSCHEME.equals(type)) {
+			setColorSchemeValue();
 		} else {
 			setElseTypeValue();
 		}
@@ -558,6 +589,17 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 		@SuppressWarnings("unchecked")
 		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 		record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
+	}
+	
+	protected void setColorSchemeValue() {
+		List<String> valueList = new ArrayList<String>();
+		for (FormItem item : valueFields) {
+			if (item.getValue() != null) {
+				valueList.add((String) item.getValue());
+			}
+		}
+		record.setAttribute("value", valueList);
+		record.setAttribute("displayValue", "");
 	}
 
 	/**
