@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.11.0//EN"
+	"https://www.gwtproject.org/doctype/2.11.0/gwt-module.dtd">
+<module>
+	
+	<!-- 
+	  PathImpl で javax.validation.Path を参照している。実行時に当該クラスロード時に java.lang.NoClassDefFoundError が発生する。
+	  JakartaEE10 対応時に javax.validation を含むパッケージは jakarta.validation に変更されており、Error が発生するクラスは存在していない為、除外する。
+	 -->
+	<extend-configuration-property name="rpc.blacklist" value="com.google.gwt.validation.client.impl.PathImpl" />
+
+</module>
