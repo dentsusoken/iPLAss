@@ -1,58 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <infinispan
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="urn:infinispan:config:9.4 https://infinispan.org/schemas/infinispan-config-9.4.xsd"
-      xmlns="urn:infinispan:config:9.4">
-    <jgroups>
-        <stack-file name="jgroups-udb" path="jg-udp.xml"/>
-    </jgroups>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:infinispan:config:15.0 https://infinispan.org/schemas/infinispan-config-15.0.xsd"
+	xmlns="urn:infinispan:config:15.0">
 
-    <threads/>
-    <cache-container default-cache="___defaultcache">
-        <transport stack="jgroups-udb"/>
-        <distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="___defaultcache">
-            <transaction mode="NONE"/>
-        	<store-as-binary keys="true" values="false"/>
-            <memory>
-                <object/>
-            </memory>
-        </distributed-cache>
-        <distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="cubedata">
-            <transaction mode="NONE"/>
-            <expiration max-idle="6000000"/>
-            <persistence passivation="true">
-                <file-store fetch-state="true" purge="true" path="${java.io.tmpdir}"/>
-            </persistence>
-            <memory>
-                <object size="128"/>
-            </memory>
-        </distributed-cache>
-        <local-cache name="local">
-            <transaction mode="NONE"/>
-            <memory>
-                <object/>
-            </memory>
-        </local-cache>
-        <replicated-cache mode="SYNC" remote-timeout="60000" name="replication">
-            <transaction mode="NONE"/>
-        	<store-as-binary keys="true" values="false"/>
-            <memory>
-                <object/>
-            </memory>
-        </replicated-cache>
-        <invalidation-cache mode="SYNC" remote-timeout="60000" name="invalidation">
-            <transaction mode="NONE"/>
-        	<store-as-binary keys="true" values="false"/>
-            <memory>
-                <object/>
-            </memory>
-        </invalidation-cache>
-        <distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="distribution">
-            <transaction mode="NONE"/>
-        	<store-as-binary keys="true" values="false"/>
-            <memory>
-                <object/>
-            </memory>
-        </distributed-cache>
-    </cache-container>
+	<jgroups>
+		<stack-file name="jgroups-udb" path="default-configs/default-jgroups-udp.xml" />
+	</jgroups>
+
+	<threads />
+
+	<cache-container default-cache="___defaultcache">
+		<transport cluster="iPLAssInfinispanCluster" stack="jgroups-udb" />
+		<serialization marshaller="org.infinispan.commons.marshall.JavaSerializationMarshaller">
+			<allow-list>
+				<regex>^(\[L|)java\.(lang|util|sql)\..*(;|)$</regex>
+				<regex>^(\[L|)org\.iplass\.mtp\.(impl\.cluster|impl\.cache\.store|impl\.infinispan)\..*(;|)$</regex>
+				<regex>^(\[L|).*\.[a-zA-Z0-9_]+(Exception|Error)(;|)$</regex>
+			</allow-list>
+		</serialization>
+		<distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="___defaultcache">
+			<transaction mode="NONE" />
+			<memory />
+		</distributed-cache>
+		<distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="cubedata">
+			<transaction mode="NONE" />
+			<expiration max-idle="6000000" />
+			<persistence passivation="true">
+				<file-store purge="true" path="${java.io.tmpdir}/iplass/infinispan/cubedatadir" />
+			</persistence>
+			<memory max-count="128" />
+			<state-transfer await-initial-transfer="false" />
+		</distributed-cache>
+		<local-cache name="local">
+			<transaction mode="NONE" />
+			<memory />
+		</local-cache>
+		<replicated-cache mode="SYNC" remote-timeout="60000" name="replication">
+			<transaction mode="NONE" />
+			<memory />
+		</replicated-cache>
+		<invalidation-cache mode="SYNC" remote-timeout="60000" name="invalidation">
+			<transaction mode="NONE" />
+			<memory />
+		</invalidation-cache>
+		<distributed-cache owners="2" segments="32" mode="SYNC" remote-timeout="60000" name="distribution">
+			<transaction mode="NONE" />
+			<memory />
+		</distributed-cache>
+	</cache-container>
 </infinispan>
