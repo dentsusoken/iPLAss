@@ -2,7 +2,7 @@
 <!DOCTYPE metaDataList>
 <metaDataList>
 <contextPath name="/commandClass">
-<metaDataEntry overwritable="false" sharable="false" dataSharable="false" permissionSharable="false">
+<metaDataEntry name="/commandClass/testsample/command/TestSearchGroovyCommand" overwritable="false" sharable="false" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaMetaScriptingCommand" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <id>2b91ecca-f50a-46c1-9d4d-71bb3c7eb8af</id>
         <name>testsample/command/TestSearchGroovyCommand</name>
@@ -24,7 +24,7 @@ request.utilClassRes = TestUtil.staticMethedCall();
 </metaDataEntry>
 </contextPath>
 <contextPath name="/utilityClass">
-<metaDataEntry overwritable="false" sharable="false" dataSharable="false" permissionSharable="false">
+<metaDataEntry name="/utilityClass/testsample/TestUtil" overwritable="false" sharable="false" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaUtilityClass" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <id>2bf94091-6785-40b2-9fc9-b7f7cd6ed95a</id>
         <name>testsample.TestUtil</name>

@@ -6,7 +6,17 @@ dependencies {
 	api project(':iplass-core')
 	api project(':iplass-web')
 }
+
 sourceSets {
-	demo
+	demo {
+		compileClasspath = main.output + configurations.compileClasspath + configurations.demoCompileClasspath
+		runtimeClasspath = output + compileClasspath + configurations.runtimeClasspath + configurations.demoRuntimeClasspath
+	}
 }
 
+configurations {
+	// for demo
+	demoRuntimeOnly.extendsFrom jakartaImplXMLBinding
+	demoRuntimeOnly.extendsFrom jakartaImplEL
+	demoRuntimeOnly.extendsFrom jakartaImplRest
+}
