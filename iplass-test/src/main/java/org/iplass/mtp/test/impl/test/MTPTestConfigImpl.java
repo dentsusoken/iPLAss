@@ -25,6 +25,9 @@ package org.iplass.mtp.test.impl.test;
  * @author SEKIGUCHI Naoya
  */
 public class MTPTestConfigImpl implements MTPTestConfig {
+	/** コンフィグレイヤー */
+	private Object layer;
+
 	/** 設定ファイル名 */
 	private String configFileName;
 	/** テナント名 */
@@ -39,6 +42,14 @@ public class MTPTestConfigImpl implements MTPTestConfig {
 	private Boolean isRollbackTransaction;
 	/** &#64;NoAuth が付与されているか */
 	private Boolean isNoAuth;
+
+	/**
+	 * コンストラクタ
+	 * @param layer テスト設定を取得したレイヤー情報（ファイル、クラス、メソッドのいずれか）
+	 */
+	public MTPTestConfigImpl(Object layer) {
+		this.layer = layer;
+	}
 
 	@Override
 	public String getConfigFileName() {
@@ -129,5 +140,43 @@ public class MTPTestConfigImpl implements MTPTestConfig {
 	 */
 	public void setGroovy(Boolean isGroovy) {
 		this.isGroovy = isGroovy;
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder()
+				.append("{")
+				.append("\"configValue\": {")
+				.append(stringValue("configFileName", getConfigFileName())).append(", ")
+				.append(stringValue("tenantName", getTenantName())).append(", ")
+				.append(stringValue("userId", getUserId())).append(", ")
+				.append(stringValue("isRollbackTransaction", isRollbackTransaction())).append(", ")
+				.append(stringValue("isNoAuth", isNoAuth())).append(", ")
+				.append(stringValue("isGroovy", isGroovy()))
+				.append("},")
+				.append("\"layerValue\": {")
+				.append(stringValue("layer", layer.toString())).append(", ")
+				.append(stringValue("configFileName", configFileName)).append(", ")
+				.append(stringValue("tenantName", tenantName)).append(", ")
+				.append(stringValue("userId", userId)).append(", ")
+				.append(stringValue("isRollbackTransaction", isRollbackTransaction)).append(", ")
+				.append(stringValue("isNoAuth", isNoAuth)).append(", ")
+				.append(stringValue("isGroovy", isGroovy))
+				.append("}")
+				.append("}")
+				.toString();
+	}
+
+	private <T> String stringValue(String key, T value) {
+		StringBuilder s = new StringBuilder("\"").append(key).append("\": ");
+		if (null == value) {
+			s.append(value);
+		} else if (value instanceof String) {
+			s.append("\"").append(value).append("\"");
+		} else {
+			s.append(value);
+		}
+
+		return s.toString();
 	}
 }

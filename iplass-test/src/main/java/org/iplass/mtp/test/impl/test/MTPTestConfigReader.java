@@ -127,20 +127,27 @@ public class MTPTestConfigReader {
 	}
 
 	/**
-	 * テスト設定ファイル、テストクラスの設定を読み取る
+	 * テスト設定ファイルを読み取る
+	 *
+	 * @return テスト設定ファイルの設定情報
+	 */
+	public static MTPTestConfig read() {
+		return createFromFile();
+	}
+
+	/**
+	 * クラス設定を読み取る
 	 *
 	 * <p>
-	 * 設定ファイル、クラスに設定されている設定を読み取る。
-	 * 設定情報は合成され、MTPTestConfig の getter から取得した値が利用する値となる。
+	 * 設定情報は親設定と合成され、MTPTestConfig の getter から取得した値が利用する値となる。
 	 * </p>
 	 *
-	 * @param testClass テスト対象クラス
-	 * @return テスト設定ファイル、テストクラスを合成した設定情報
+	 * @param testClass 対象クラス
+	 * @param parent メソッド設定が存在しない場合の親設定
+	 * @return 親設定とメソッド設定を合成した設定情報
 	 */
-	public static MTPTestConfig read(Class<?> testClass) {
-		MTPTestConfig fileConfig = createFromFile(testClass);
-		MTPTestConfig classConfig = createFromClassOrMethod(testClass, fileConfig);
-		return classConfig;
+	public static MTPTestConfig read(Class<?> testClass, MTPTestConfig parent) {
+		return createFromClassOrMethod(testClass, parent);
 	}
 
 	/**
@@ -150,13 +157,12 @@ public class MTPTestConfigReader {
 	 * 設定情報は親設定と合成され、MTPTestConfig の getter から取得した値が利用する値となる。
 	 * </p>
 	 *
-	 * @param method 対象メソッド
+	 * @param testMethod 対象メソッド
 	 * @param parent メソッド設定が存在しない場合の親設定
 	 * @return 親設定とメソッド設定を合成した設定情報
 	 */
-	public static MTPTestConfig read(Method method, MTPTestConfig parent) {
-		MTPTestConfig methodConfig = createFromClassOrMethod(method, parent);
-		return methodConfig;
+	public static MTPTestConfig read(Method testMethod, MTPTestConfig parent) {
+		return createFromClassOrMethod(testMethod, parent);
 	}
 
 	/**
@@ -169,7 +175,7 @@ public class MTPTestConfigReader {
 	 * @param testClass テスト対象クラス
 	 * @return テスト設定
 	 */
-	private static MTPTestConfig createFromFile(Class<?> testClass) {
+	private static MTPTestConfig createFromFile() {
 		String propPath = System.getProperty(TEST_CONFIG_FILE_NAME_SYSTEM_PROPERTY_NAME);
 		if (propPath == null) {
 			propPath = DEFAULT_TEST_CONFIG_FILE_NAME;
@@ -180,7 +186,7 @@ public class MTPTestConfigReader {
 			Properties prop = new Properties();
 			prop.load(r);
 
-			MTPTestConfigImpl config = new MTPTestConfigImpl();
+			MTPTestConfigImpl config = new MTPTestConfigImpl("FILE");
 
 			// config 初期化
 			// ログイン無し： true
@@ -199,8 +205,7 @@ public class MTPTestConfigReader {
 			setValueIfNotEmpty((String) prop.get(PROP_PASSWORD), v -> config.setPassword(v));
 			setValueIfNotEmpty((String) prop.get(PROP_ROLLBACK_TRANSACTION), v -> config.setRollbackTransaction(Boolean.valueOf(v)));
 
-			// テストクラスが groovy であるか判別
-			config.setGroovy(isTestClassGroovy(testClass));
+			// NOTE: 設定を読み込んだ時点では不明なので、groovy 判別は実施しない
 
 			return config;
 
@@ -217,7 +222,8 @@ public class MTPTestConfigReader {
 	 * @return テスト設定
 	 */
 	private static <T extends AnnotatedElement> MTPTestConfig createFromClassOrMethod(T classOrMethod, MTPTestConfig parent) {
-		MTPTestConfigImpl config = null == parent ? new MTPTestConfigImpl() : new MTPTestConfigComposit(parent);
+		MTPTestConfigImpl config = null == parent ? new MTPTestConfigImpl(classOrMethod) : new MTPTestConfigComposit(classOrMethod, parent);
+		boolean isClass = classOrMethod instanceof Class;
 
 		String configFileName = getAnnotationValue(classOrMethod, ConfigFile.class, a -> a.value());
 		String tenantName = getAnnotationValue(classOrMethod, TenantName.class, a -> a.value());
@@ -241,7 +247,8 @@ public class MTPTestConfigReader {
 			config.setNoAuth(isNoAuth);
 		}
 
-		// NOTE groovy 判定はファイルで設定されているため何もしない
+		// 実行しているクラスが groovy クラスかを判別する
+		config.setGroovy(isTestClassGroovy(isClass ? (Class<?>) classOrMethod : ((Method) classOrMethod).getDeclaringClass()));
 
 		return config;
 	}

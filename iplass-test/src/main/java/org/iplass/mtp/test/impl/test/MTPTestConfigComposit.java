@@ -35,9 +35,11 @@ public class MTPTestConfigComposit extends MTPTestConfigImpl {
 
 	/**
 	 * コンストラクタ
+	 * @param layer テスト設定を取得したレイヤー情報（ファイル、クラス、メソッドのいずれか）
 	 * @param parent 親設定項目
 	 */
-	public MTPTestConfigComposit(MTPTestConfig parent) {
+	public MTPTestConfigComposit(Object layer, MTPTestConfig parent) {
+		super(layer);
 		this.parent = parent;
 	}
 

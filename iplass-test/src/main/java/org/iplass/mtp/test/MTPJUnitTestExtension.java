@@ -20,11 +20,14 @@
 package org.iplass.mtp.test;
 
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import org.iplass.mtp.test.impl.test.MTPTestConfig;
 import org.iplass.mtp.test.impl.test.MTPTestConfigReader;
 import org.iplass.mtp.test.impl.test.MTPTestInvoker;
 import org.iplass.mtp.test.impl.test.MTPTestInvokerDecorator;
+import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
@@ -40,7 +43,7 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
  * </p>
  * <dl>
  * <dt>プロパティファイルによる指定</dt><dd>テスト全体にわたり設定が適用されます</dd>
- * <dt>クラスレベルアノテーションによる指定</dt><dd>当該クラスに限り設定が適用されます</dd>
+ * <dt>クラスレベルアノテーションによる指定</dt><dd>当該クラスに限り設定が適用されます。ネストクラスに同一設定が存在した場合は、ネストクラスの設定が優先されます。</dd>
  * <dt>メソッドレベルアノテーションによる指定</dt><dd>当該メソッドに限り設定が適用されます</dd>
  * </dl>
  * <p>
@@ -113,21 +116,32 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
  * {@literal @}TenantName("testDemo1")
  * {@literal @}AuthUser(userId="testuser", password="testtest")
  * {@literal @}ExtendWith( MTPJUnitTestExtension.class )
- * public class SampleJavaTest {
+ * class SampleJavaTest {
  *   {@literal @}org.junit.jupiter.api.Test
- *   public void testHogeHoge() throws IOException {
+ *   public void testDemo1Tenant() throws IOException {
  *     //do test...
  *     :
  *     :
  *   }
  *
- *   {@literal @}org.junit.jupiter.api.Test
  *   {@literal @}TenantName("testDemo2")
  *   {@literal @}AuthUser(userId="test2", password="testtest")
- *   public void testHogeHoge() throws IOException {
- *     //do test as tenant:testDemo2 user:test2 ...
- *     :
- *     :
+ *   {@literal @}Nested
+ *   class NestTest {
+ *     {@literal @}org.junit.jupiter.api.Test
+ *     public void testDemo2Tenant() throws IOException {
+ *       //do test as tenant:testDemo2 user:test2 ...
+ *       :
+ *       :
+ *     }
+ *
+ *     {@literal @}NoAuthUser
+ *     {@literal @}org.junit.jupiter.api.Test
+ *     public void testDemo2TenantNoAuth() throws IOException {
+ *       //do test as tenant:testDemo2 no auth ...
+ *       :
+ *       :
+ *     }
  *   }
  *
  *   :
@@ -140,30 +154,54 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
  * 詳しくはそれぞれのテストクラスのサンプル実装を参照下さい。
  * </p>
  *
+ * <p>
+ * Extension はテストファイル単位で作成される。本クラスでは、設定をテストファイル単位でスタックに格納し、テスト実行時に利用する。
+ * </p>
+ *
  * @author N.Sekiguchi
  */
-public class MTPJUnitTestExtension implements InvocationInterceptor, BeforeAllCallback {
-	/** */
-	private MTPTestConfig fileAndClassConfig;
+public class MTPJUnitTestExtension implements BeforeAllCallback, AfterAllCallback, InvocationInterceptor {
+	/** 設定スタック */
+	private Deque<MTPTestConfig> configStack = new ArrayDeque<MTPTestConfig>();
+
+	public MTPJUnitTestExtension() {
+		// 設定ファイルの情報を読み込み、スタックに格納
+		configStack.push(MTPTestConfigReader.read());
+	}
+
+	@Override
+	public void beforeAll(ExtensionContext context) throws Exception {
+		// テストクラスの @BeforeAll アノテーションメソッドの前に実行される。テストクラスに @BeforeAll が無くても実行される。
+
+		// スタックの最終位置を取得
+		MTPTestConfig parent = configStack.peek();
+		// クラス設定情報をスタックに格納
+		configStack.push(MTPTestConfigReader.read(context.getTestClass().get(), parent));
+	}
+
+	@Override
+	public void afterAll(ExtensionContext context) throws Exception {
+		// テストクラスの @AfterAll アノテーションメソッドの後に実行される。テストクラスに @AfterAll が無くても実行される。
+
+		// スタックからポップ
+		configStack.pop();
+	}
 
 	@Override
 	public void interceptTestMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
 			throws Throwable {
+		// テストメソッド実行前に実行される
 
-		MTPTestConfig methodconConfig = MTPTestConfigReader.read(invocationContext.getExecutable(), fileAndClassConfig);
+		// メソッド設定を読み取る
+		MTPTestConfig parent = configStack.peek();
+		MTPTestConfig testConfig = MTPTestConfigReader.read(invocationContext.getExecutable(), parent);
 
-		MTPTestInvoker<Void> test = MTPTestInvokerDecorator.decorate(config -> {
+		MTPTestInvoker<Void> decoratedInvoker = MTPTestInvokerDecorator.decorate(config -> {
 			invocation.proceed();
 			return null;
 		});
 
 		// テスト実行
-		test.invoke(methodconConfig);
-	}
-
-	@Override
-	public void beforeAll(ExtensionContext context) throws Exception {
-		Class<?> testClass = context.getTestClass().get();
-		fileAndClassConfig = MTPTestConfigReader.read(testClass);
+		decoratedInvoker.invoke(testConfig);
 	}
 }
