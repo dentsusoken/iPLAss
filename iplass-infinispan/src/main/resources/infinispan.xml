@@ -15,7 +15,7 @@
 		<serialization marshaller="org.infinispan.commons.marshall.JavaSerializationMarshaller">
 			<allow-list>
 				<regex>^(\[L|)java\.(lang|util|sql)\..*(;|)$</regex>
-				<regex>^(\[L|)org\.iplass\.mtp\.(impl\.cluster|impl\.cache\.store|impl\.infinispan)\..*(;|)$</regex>
+				<regex>^(\[L|)org\.iplass\.mtp\..*(;|)$</regex>
 				<regex>^(\[L|).*\.[a-zA-Z0-9_]+(Exception|Error)(;|)$</regex>
 			</allow-list>
 		</serialization>
