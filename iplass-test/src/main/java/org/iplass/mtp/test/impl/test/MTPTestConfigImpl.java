@@ -167,6 +167,17 @@ public class MTPTestConfigImpl implements MTPTestConfig {
 				.toString();
 	}
 
+	/**
+	 * toString 用文字列を生成する
+	 *
+	 * <p>
+	 * <code>"key": "value"</code> のような値を返却する。 value が null の場合は <code>"key": null</code> を返却する。
+	 * </p>
+	 * @param <T> valueデータ型
+	 * @param key キー
+	 * @param value 値
+	 * @return 連結文字列
+	 */
 	private <T> String stringValue(String key, T value) {
 		StringBuilder s = new StringBuilder("\"").append(key).append("\": ");
 		if (null == value) {
