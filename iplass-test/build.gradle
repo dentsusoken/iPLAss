@@ -10,7 +10,7 @@ dependencies {
 sourceSets {
 	demo {
 		compileClasspath = main.output + configurations.compileClasspath + configurations.demoCompileClasspath
-		runtimeClasspath = output + compileClasspath + configurations.runtimeClasspath + configurations.demoRuntimeClasspath
+		runtimeClasspath = output + configurations.runtimeClasspath + configurations.demoRuntimeClasspath
 	}
 }
 
