@@ -294,6 +294,11 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 			LinkedHashMap<String, String> selectItem) {
 		return createRecord(name, category, TenantColType.SELECTCOMBO, selectItem);
 	}
+	
+	protected ListGridRecord createColorSchemeRecord(String name, TenantCategory category,
+			LinkedHashMap<String, String> selectItem) {
+		return createRecord(name, category, TenantColType.COLORSCHEME, selectItem);
+	}
 
 	private ListGridRecord createRecord(String name, TenantCategory category, TenantColType colType,
 			LinkedHashMap<String, String> selectItem) {
@@ -409,6 +414,7 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 				dispValue = getMultiSelectDispValue(selectItem, (List<String>) value);
 			} else if (colType == TenantColType.SCRIPT || colType == TenantColType.GROOVYTEMPLATE) {
 				dispValue = getStatusDispValue((value == null ? "" : value.toString()));
+			} else if (colType == TenantColType.COLORSCHEME) {		
 			} else {
 				dispValue = value;
 			}
@@ -477,6 +483,10 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 		case SELECTCOMBO:
 			// 現時点で未使用
 			return record.getAttributeAsString(valueKey);
+		case COLORSCHEME:
+			Object valueColor = record.getAttributeAsObject(valueKey);
+			List<String> listValueColor = (List<String>) JSOHelper.convertToJava((JavaScriptObject) valueColor);
+			return listValueColor;
 		default:
 			return record.getAttributeAsString(valueKey);
 		}
