@@ -21,18 +21,69 @@ package org.iplass.mtp.impl.infinispan.task;
 
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.util.function.SerializableFunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * infinispan メンバーノード実行用管理タスクインターフェース
+ * infinispan メンバーノード実行用管理タスク
  *
  * <p>
- * infinispan を利用してメンバーノードへ処理を依頼する処理インターフェース。
+ * infinispan への要求は本クラスに変換して実行する。
+ * </p>
+ *
+ * <p>
+ * タスク実行中に上位へ例外をスローすると処理を infinispan で継続することができなくなってしまう。
+ * そのため、正常終了の場合も、異常終了の場合も結果を返却する。
  * </p>
  *
  * @param <T> 処理結果データ型
  * @author SEKIGUCHI Naoya
  */
-interface InfinispanManagedTask<T> extends SerializableFunction<EmbeddedCacheManager, InfinispanManagedTaskResult<T>> {
+class InfinispanManagedTask<T> implements SerializableFunction<EmbeddedCacheManager, InfinispanManagedTaskResult<T>> {
+	/** serialVersionUID */
+	private static final long serialVersionUID = 1829338323561254174L;
+
+	/** ロガー */
+	private static transient Logger LOG = LoggerFactory.getLogger(InfinispanManagedTask.class);
+
+	/** 実タスク */
+	private InfinispanSerializableTask<T> task;
+	/** 要求ID */
+	private String requestId;
+	/** 要求ノード */
+	private String requestNode;
+	/** タスク名 */
+	private String taskName;
+
+	/**
+	 * コンストラクタ
+	 * @param task タスク
+	 * @param requestId 要求ID
+	 * @param requestNode 要求ノード
+	 */
+	public InfinispanManagedTask(InfinispanSerializableTask<T> task, String requestId, String requestNode) {
+		this.task = task;
+		this.requestId = requestId;
+		this.requestNode = requestNode;
+		this.taskName = task.getTaskName();
+	}
+
+	@Override
+	public InfinispanManagedTaskResult<T> apply(EmbeddedCacheManager t) {
+		String executionNode = InfinispanUtil.getExecutionNode();
+		LOG.debug("{} executes the request {}({}) from {}.", executionNode, taskName, requestId, requestNode);
+		try {
+			T result = task.call();
+			LOG.debug("{} completed request {}({}) from {}.", executionNode, taskName, requestId, requestNode);
+			return InfinispanManagedTaskResult.create(result);
+
+		} catch (Throwable e) {
+			// NOTE ここで例外をリスローすると非同期処理の終了が通知されなくなる。そのため、Error, Runtime系を含めて例外をリスローせずログ出力し終了する。
+			LOG.error("{} failed to request {}({}) from {}.", executionNode, taskName, requestId, requestNode, e);
+			return InfinispanManagedTaskResult.create(e);
+		}
+	}
+
 	/**
 	 * 要求IDを取得する
 	 *
@@ -42,18 +93,25 @@ interface InfinispanManagedTask<T> extends SerializableFunction<EmbeddedCacheMan
 	 *
 	 * @return 要求ID
 	 */
-	String getRequestId();
+	public String getRequestId() {
+		return requestId;
+	}
 
 	/**
 	 * 処理を要求したノード名を取得する
 	 * @return 処理を要求したノード名
 	 */
-	String getRequestNode();
+	public String getRequestNode() {
+		return requestNode;
+	}
 
 	/**
 	 * 処理名を取得する
 	 *
 	 * @return 処理名
 	 */
-	String getTaskName();
+	public String getTaskName() {
+		return taskName;
+	}
+
 }

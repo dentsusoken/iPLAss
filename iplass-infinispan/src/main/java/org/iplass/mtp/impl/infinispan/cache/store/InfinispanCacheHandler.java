@@ -38,7 +38,6 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.infinispan.InfinispanService;
-import org.iplass.mtp.impl.infinispan.task.InfinispanNamedTask;
 import org.iplass.mtp.impl.infinispan.task.InfinispanSerializableTask;
 import org.iplass.mtp.impl.infinispan.task.InfinispanTaskExecutor;
 import org.iplass.mtp.impl.infinispan.task.InfinispanTaskState;
@@ -90,7 +89,7 @@ public class InfinispanCacheHandler implements CacheHandler {
 	 * @param <V> キャッシュ値データ型
 	 * @param <R> 返却値データ型
 	 */
-	public static class CacheHandlerTaskInfinispanAdapter<K, V, R> implements InfinispanSerializableTask<R>, InfinispanNamedTask {
+	public static class CacheHandlerTaskInfinispanAdapter<K, V, R> implements InfinispanSerializableTask<R> {
 		/** serialVersionUID */
 		private static final long serialVersionUID = -4277615798099119604L;
 		/** パラレル実行タスク */
@@ -124,7 +123,7 @@ public class InfinispanCacheHandler implements CacheHandler {
 		}
 
 		@Override
-		public R callByNode() {
+		public R call() {
 			return ExecuteContext.executeAs(getTenantContext(), new Executable<R>() {
 				@Override
 				public R execute() {

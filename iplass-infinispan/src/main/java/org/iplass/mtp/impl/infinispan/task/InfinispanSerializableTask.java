@@ -32,16 +32,11 @@ import org.infinispan.util.function.SerializableCallable;
  * @author SEKIGUCHI Naoya
  */
 public interface InfinispanSerializableTask<T> extends SerializableCallable<T> {
-	@Override
-	default T call() throws Exception {
-		return callByNode();
-	}
-
 	/**
-	 * ノードで実行する処理
-	 *
-	 * @return 実行結果
-	 * @throws Exception 実行例外
+	 * タスク名を取得する
+	 * @return タスク名
 	 */
-	T callByNode() throws Exception;
+	default String getTaskName() {
+		return getClass().getSimpleName();
+	}
 }

@@ -188,7 +188,7 @@ public class InfinispanTaskExecutor {
 			var executor = cacheManager.executor().filterTargets(t -> t == node);
 			var keyList = cacheKeysPerNode.get(node);
 			var task = taskFactory.apply(keyList);
-			InfinispanManagedTask<T> managedTask = new InfinispanManagedTaskImpl<T>(task, requestId, requestNode);
+			var managedTask = new InfinispanManagedTask<T>(task, requestId, requestNode);
 
 			LOG.debug("Submit task {}({}) to {}, keyList={}.", managedTask.getTaskName(), requestId, node, keyList);
 			taskFuture.put(node, submitInner(executor, managedTask, taskResultParNode));
@@ -266,7 +266,7 @@ public class InfinispanTaskExecutor {
 	private static <T> InfinispanTaskState<T> doSubmitOnce(RequestPattern pattern, InfinispanSerializableTask<T> task) {
 		String requestId = generateRequestId();
 		String requestNode = InfinispanUtil.getExecutionNode();
-		InfinispanManagedTask<T> managedTask = new InfinispanManagedTaskImpl<T>(task, requestId, requestNode);
+		var managedTask = new InfinispanManagedTask<T>(task, requestId, requestNode);
 
 		final Map<Address, InfinispanManagedTaskResult<T>> resultMap = new ConcurrentHashMap<>();
 

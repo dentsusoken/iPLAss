@@ -153,7 +153,7 @@ public class InfinispanIndexedDistributedCacheStore extends InfinispanIndexedCac
 		}
 
 		@Override
-		public Void callByNode() {
+		public Void call() {
 			LoggerFactory.getLogger(RemoveAllTask.class).debug("RemoveAllTask");
 			CacheStore store = ServiceRegistry.getRegistry().getService(CacheService.class).getCache(namespace, false);
 			if (store != null) {
@@ -211,7 +211,7 @@ public class InfinispanIndexedDistributedCacheStore extends InfinispanIndexedCac
 
 
 		@Override
-		public Void callByNode() {
+		public Void call() {
 			Cache<IndexKey, IndexEntry> cache = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getCache(cacheName);
 			if (logger.isTraceEnabled()) {
 				logger.trace("mainteIndexTask:old={}, new={}, keys={}", oldRef, newRef, inputKeys);
