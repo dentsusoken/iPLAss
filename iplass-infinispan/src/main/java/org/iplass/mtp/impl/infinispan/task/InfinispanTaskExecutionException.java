@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class InfinispanTaskExecutionException extends ExecutionException {
 	/** serialVersionUID */
-	private static final long serialVersionUID = -787176186835607613L;
+	private static final long serialVersionUID = 2876658647461582867L;
 
 	/**
 	 * コンストラクタ
@@ -38,4 +38,12 @@ public class InfinispanTaskExecutionException extends ExecutionException {
 		super(message);
 	}
 
+	/**
+	 * コンストラクタ
+	 * @param message メッセージ
+	 * @param cause 原因例外
+	 */
+	public InfinispanTaskExecutionException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

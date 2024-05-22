@@ -120,7 +120,7 @@ public class InfinispanTaskFuture<T> implements Future<T> {
 
 		if (!taskResult.isSuccess()) {
 			// 異常パターン
-			throw new ExecutionException("An exception occurred during execution of node '" + node.toString() + "'.", taskResult.getCause());
+			throw new InfinispanTaskExecutionException("An exception occurred during execution of node '" + node.toString() + "'.", taskResult.getCause());
 		}
 
 		// 正常パターン
