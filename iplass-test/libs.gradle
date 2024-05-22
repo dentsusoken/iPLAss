@@ -6,5 +6,5 @@ dependencies {
 	api sharedLib('junit:junit')
 
 	//groovy
-	implementation 'org.codehaus.groovy:groovy'
+	implementation 'org.apache.groovy:groovy'
 }

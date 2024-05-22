@@ -51,8 +51,8 @@ dependencies {
 	runtimeOnly sharedLib('org.apache.poi:poi-ooxml')
 
 	//groovy
-	implementation 'org.codehaus.groovy:groovy'
-	implementation 'org.codehaus.groovy:groovy-templates'
+	implementation 'org.apache.groovy:groovy'
+	implementation 'org.apache.groovy:groovy-templates'
 
 	//supercsv
 	implementation sharedLib('net.sf.supercsv:super-csv')

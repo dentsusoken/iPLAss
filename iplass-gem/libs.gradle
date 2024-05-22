@@ -25,7 +25,7 @@ configurations {
 
 dependencies {
 	implementation sharedLib('org.apache.commons:commons-text')
-	implementation 'org.codehaus.groovy:groovy'
+	implementation 'org.apache.groovy:groovy'
 
 	//jackson
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
