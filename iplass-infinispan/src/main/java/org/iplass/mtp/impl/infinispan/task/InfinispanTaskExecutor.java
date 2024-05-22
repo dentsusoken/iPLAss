@@ -235,7 +235,6 @@ public class InfinispanTaskExecutor {
 	 * @return 要求ID
 	 */
 	private static String generateRequestId() {
-		// TODO 確認
 		String id = UUID.randomUUID().toString();
 		return HYPHEN_PATTERN.matcher(id).replaceAll(HYPHEN_REPLACED).toUpperCase();
 	}
