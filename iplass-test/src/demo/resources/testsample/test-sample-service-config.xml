@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!DOCTYPE serviceDefinition>
 <serviceDefinition>
-	<inherits>/mtp-service-config-oracle.xml</inherits>
+	<inherits>/mtp-web-service-config.xml</inherits>
+	<inherits>/mtp-core-service-config-oracle.xml</inherits>
 	<!-- If use mysql, inherits mtp-service-config-mysql.xml for convenience. -->
 	<!--
-	<inherits>/mtp-service-config-mysql.xml</inherits>
+	<inherits>/mtp-core-service-config-mysql.xml</inherits>
 	-->
 
 	<!-- Rdb Connection Settings -->

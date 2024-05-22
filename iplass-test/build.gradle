@@ -6,7 +6,14 @@ dependencies {
 	api project(':iplass-core')
 	api project(':iplass-web')
 }
+
 sourceSets {
-	demo
+	demo {
+		compileClasspath = main.output + configurations.compileClasspath + configurations.demoCompileClasspath
+		runtimeClasspath = output + configurations.runtimeClasspath + configurations.demoRuntimeClasspath
+	}
 }
 
+configurations {
+	demoRuntimeOnly.extendsFrom(jeeruntime4tomcat)
+}
