@@ -42,22 +42,25 @@ import org.infinispan.remoting.transport.Address;
 public class InfinispanTaskFuture<T> implements Future<T> {
 	/** 親 Future */
 	private Future<Void> parent;
-	/** 実行対象ノード */
-	private Address node;
 	/** ノード毎実行結果 */
 	private Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode;
+	/** 実行対象ノード */
+	private Address node;
+	/** 要求ID */
+	private String requestId;
 
 	/**
 	 * コンストラクタ
 	 *
 	 * @param parent 本処理実行時のFuture
-	 * @param node 処理を実行したノード
 	 * @param taskResultParNode ノード毎実行結果
+	 * @param node 処理を実行したノード
 	 */
-	public InfinispanTaskFuture(Future<Void> parent, Address node, Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode) {
+	public InfinispanTaskFuture(Future<Void> parent, Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode, Address node, String requestId) {
 		this.parent = parent;
-		this.node = node;
 		this.taskResultParNode = taskResultParNode;
+		this.node = node;
+		this.requestId = requestId;
 	}
 
 	@Override
@@ -98,6 +101,14 @@ public class InfinispanTaskFuture<T> implements Future<T> {
 	}
 
 	/**
+	 * 要求IDを取得する
+	 * @return 要求ID
+	 */
+	public String getRequestId() {
+		return requestId;
+	}
+
+	/**
 	 * 実行結果を取得する
 	 *
 	 * <p>
@@ -115,12 +126,14 @@ public class InfinispanTaskFuture<T> implements Future<T> {
 
 		if (null == taskResult) {
 			// 実行結果が存在しない場合は、何らかの原因で結果が取得できなかった
-			throw new InfinispanTaskExecutionException("The execution result for node '" + node.toString() + "' does not exist.");
+			throw new InfinispanTaskExecutionException(
+					"The execution result for node '" + node.toString() + "', requestId '" + requestId + "' does not exist.");
 		}
 
 		if (!taskResult.isSuccess()) {
 			// 異常パターン
-			throw new InfinispanTaskExecutionException("An exception occurred during execution of node '" + node.toString() + "'.", taskResult.getCause());
+			throw new InfinispanTaskExecutionException(
+					"An exception occurred during execution of node '" + node.toString() + "', requestId '" + requestId + "'.", taskResult.getCause());
 		}
 
 		// 正常パターン

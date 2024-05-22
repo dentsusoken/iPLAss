@@ -21,8 +21,11 @@ package org.iplass.mtp.impl.infinispan.task;
 
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.util.function.SerializableFunction;
+import org.iplass.mtp.impl.core.Executable;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 /**
  * infinispan メンバーノード実行用管理タスク
@@ -70,18 +73,22 @@ class InfinispanManagedTask<T> implements SerializableFunction<EmbeddedCacheMana
 
 	@Override
 	public InfinispanManagedTaskResult<T> apply(EmbeddedCacheManager t) {
-		String executionNode = InfinispanUtil.getExecutionNode();
-		LOG.debug("{} executes the request {}({}) from {}.", executionNode, taskName, requestId, requestNode);
-		try {
-			T result = task.call();
-			LOG.debug("{} completed request {}({}) from {}.", executionNode, taskName, requestId, requestNode);
-			return InfinispanManagedTaskResult.create(result);
+		// requestId をトレースIDとして設定し、処理を実行する
+		return executeAs(requestId, () -> {
+			String executionNode = InfinispanUtil.getExecutionNode();
 
-		} catch (Throwable e) {
-			// NOTE ここで例外をリスローすると非同期処理の終了が通知されなくなる。そのため、Error, Runtime系を含めて例外をリスローせずログ出力し終了する。
-			LOG.error("{} failed to request {}({}) from {}.", executionNode, taskName, requestId, requestNode, e);
-			return InfinispanManagedTaskResult.create(e);
-		}
+			LOG.debug("{} executes the request {}({}) from {}.", executionNode, taskName, requestId, requestNode);
+			try {
+				T result = task.call();
+				LOG.debug("{} completed request {}({}) from {}.", executionNode, taskName, requestId, requestNode);
+				return InfinispanManagedTaskResult.create(result);
+
+			} catch (Throwable e) {
+				// NOTE ここで例外をリスローすると非同期処理の終了が通知されなくなる。そのため、Error, Runtime系を含めて例外をリスローせずログ出力し終了する。
+				LOG.error("{} failed to request {}({}) from {}.", executionNode, taskName, requestId, requestNode, e);
+				return InfinispanManagedTaskResult.create(e);
+			}
+		});
 	}
 
 	/**
@@ -114,4 +121,38 @@ class InfinispanManagedTask<T> implements SerializableFunction<EmbeddedCacheMana
 		return taskName;
 	}
 
+	/**
+	 * ExecuteContext を設定し処理を実行する
+	 *
+	 * <p>
+	 * ExecuteContext は現在コンテキストを利用する。
+	 * コンテキストに対してトレースIDを設定する。
+	 * </p>
+	 *
+	 * @param <R> 実行結果データ型
+	 * @param traceId トレースID
+	 * @param executable 実行する処理
+	 * @return 実行結果
+	 */
+	private <R> R executeAs(String traceId, Executable<R> executable) {
+		var context = ExecuteContext.getCurrentContext();
+		var tenantContext = context.getTenantContext();
+
+		return ExecuteContext.executeAs(tenantContext, () -> {
+			var currentContext = ExecuteContext.getCurrentContext();
+			// 元のトレースIDを退避
+			var prevTraceId = MDC.get(ExecuteContext.MDC_TRACE_ID);
+			// トレースIDを設定
+			currentContext.mdcPut(ExecuteContext.MDC_TRACE_ID, traceId);
+
+			try {
+				return executable.execute();
+
+			} finally {
+				// トレースIDを復元
+				currentContext.mdcPut(ExecuteContext.MDC_TRACE_ID, prevTraceId);
+			}
+
+		});
+	}
 }

@@ -189,7 +189,7 @@ public class InfinispanTaskExecutor {
 		final List<Future<T>> resultFuture = new ArrayList<>(taskFuture.size());
 
 		// 実行結果を収集する
-		taskFuture.keySet().forEach(node -> resultFuture.add(new InfinispanTaskFuture<>(taskFuture.get(node), node, taskResultParNode)));
+		taskFuture.keySet().forEach(node -> resultFuture.add(new InfinispanTaskFuture<>(taskFuture.get(node), taskResultParNode, node, requestId)));
 
 		return new InfinispanTaskState<T>(requestId, resultFuture);
 	}
@@ -271,7 +271,7 @@ public class InfinispanTaskExecutor {
 
 		List<Future<T>> resultFuture = new ArrayList<>();
 		// ノード毎に Future を作成する。親 future は全て同一。
-		executionNodeList.forEach(node -> resultFuture.add(new InfinispanTaskFuture<>(future, node, resultMap)));
+		executionNodeList.forEach(node -> resultFuture.add(new InfinispanTaskFuture<>(future, resultMap, node, requestId)));
 
 		return new InfinispanTaskState<T>(requestId, resultFuture);
 	}
