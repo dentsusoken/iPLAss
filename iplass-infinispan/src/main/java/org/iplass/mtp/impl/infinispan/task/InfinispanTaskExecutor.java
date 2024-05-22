@@ -312,7 +312,7 @@ public class InfinispanTaskExecutor {
 		}
 		ClusterExecutor executor = getCacheManager().executor().filterTargets(a -> executionNodeList.contains(a));
 
-		LOG.debug("Submit task {}({}) to {}.", managedTask.getTaskName(), managedTask.getRequestId(), pattern);
+		LOG.debug("Submit task {}({}) to {}.", managedTask.getTaskName(), managedTask.getRequestId(), executionNodeList);
 
 		Future<Void> future = submitInner(executor, managedTask, resultMap);
 
