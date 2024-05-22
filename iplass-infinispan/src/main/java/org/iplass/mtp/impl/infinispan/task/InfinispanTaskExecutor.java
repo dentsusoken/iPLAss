@@ -178,13 +178,10 @@ public class InfinispanTaskExecutor {
 		// 実行ノード毎のタスク実行結果。Infinispan の実行結果を格納する。
 		final Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode = new ConcurrentHashMap<>();
 		// 実行ノード毎に呼び出し元へ返却用の Future を管理する。
-		final Map<Address, Future<Void>> taskFuture = new ConcurrentHashMap<>();
+		final Map<Address, Future<Void>> taskFuture = new HashMap<>();
 
 		// 各ノードへ実行依頼をかける
-		// parallelStream を利用し並列実行する
-		cacheKeysPerNode.keySet().parallelStream().forEach(node -> {
-			// 並列実行ポイント
-
+		cacheKeysPerNode.keySet().forEach(node -> {
 			var executor = cacheManager.executor().filterTargets(t -> t == node);
 			var keyList = cacheKeysPerNode.get(node);
 			var task = taskFactory.apply(keyList);
@@ -195,26 +192,12 @@ public class InfinispanTaskExecutor {
 		});
 
 		// 実行ノード毎に呼び出し元へ返却用の Future を管理する。
-		final Map<Address, Future<T>> resultFuture = new ConcurrentHashMap<>();
+		final List<Future<T>> resultFuture = new ArrayList<>(taskFuture.size());
 
 		// 実行結果を収集する
-		taskFuture.keySet().parallelStream().forEach(node -> {
-			// 並列実行ポイント
+		taskFuture.keySet().forEach(node -> resultFuture.add(InfinispanTaskFutureFactory.create(taskFuture.get(node), node, taskResultParNode)));
 
-			var future = taskFuture.get(node);
-			try {
-				// 実行を待ち、結果を格納する
-				future.get();
-				var taskResult = taskResultParNode.get(node);
-				resultFuture.put(node, InfinispanTaskFutureFactory.create(future, node, taskResult));
-
-			} catch (InterruptedException | ExecutionException e) {
-				// 例外発生時は呼び出し元へエスカレーション
-				resultFuture.put(node, InfinispanTaskFutureFactory.create(future, node, e));
-			}
-		});
-
-		return new InfinispanTaskState<T>(requestId, new ArrayList<>(resultFuture.values()));
+		return new InfinispanTaskState<T>(requestId, resultFuture);
 	}
 
 
@@ -234,15 +217,15 @@ public class InfinispanTaskExecutor {
 	private static <K> Map<Address, List<K>> screeningCacheKeys(Cache<?, ?> cache, List<K> cacheKeys) {
 		Map<Address, List<K>> result = new HashMap<Address, List<K>>();
 		LocalizedCacheTopology cacheTopology = cache.getAdvancedCache().getDistributionManager().getCacheTopology();
-		for (K param : cacheKeys) {
-			var distributionInfo = cacheTopology.getDistribution(param);
+		for (K cacheKey : cacheKeys) {
+			var distributionInfo = cacheTopology.getDistribution(cacheKey);
 			var primaryNode = distributionInfo.writeOwners().get(0);
 			var distParams = result.get(primaryNode);
 			if (null == distParams) {
 				distParams = new ArrayList<>();
 				result.put(primaryNode, distParams);
 			}
-			distParams.add(param);
+			distParams.add(cacheKey);
 		}
 
 		return result;
@@ -263,16 +246,28 @@ public class InfinispanTaskExecutor {
 		return HYPHEN_PATTERN.matcher(id).replaceAll(HYPHEN_REPLACED).toUpperCase();
 	}
 
-	private static <T> InfinispanTaskState<T> doSubmitOnce(RequestPattern pattern, InfinispanSerializableTask<T> task) {
+	/**
+	 * タスク要求する
+	 *
+	 * <p>
+	 * 1回のリクエストで複数ノードへリクエストを行う。
+	 * </p>
+	 *
+	 * @param <T> 実行結果データ型
+	 * @param pattern リクエストパターン
+	 * @param task 実行対象のタスク
+	 * @return タスク実行状態
+	 */
+	private static <T> InfinispanTaskState<T> doSubmitOnceSync(RequestPattern pattern, InfinispanSerializableTask<T> task) {
 		String requestId = generateRequestId();
 		String requestNode = InfinispanUtil.getExecutionNode();
 		var managedTask = new InfinispanManagedTask<T>(task, requestId, requestNode);
 
 		final Map<Address, InfinispanManagedTaskResult<T>> resultMap = new ConcurrentHashMap<>();
 
-		ClusterExecutor executor2 = pattern.getExecuter(getCacheManager());
+		ClusterExecutor executor = pattern.getExecuter(getCacheManager());
 		LOG.debug("Submit task {}({}) to {}.", managedTask.getTaskName(), managedTask.getRequestId(), pattern);
-		Future<Void> future = submitInner(executor2, managedTask, resultMap);
+		Future<Void> future = submitInner(executor, managedTask, resultMap);
 
 		List<Future<T>> resultFuture = new ArrayList<>();
 
@@ -290,6 +285,43 @@ public class InfinispanTaskExecutor {
 		return new InfinispanTaskState<T>(requestId, resultFuture);
 	}
 
+	/**
+	 * タスク要求する
+	 *
+	 * <p>
+	 * 1回のリクエストで複数ノードへリクエストを行う。
+	 * </p>
+	 *
+	 * @param <T> 実行結果データ型
+	 * @param pattern リクエストパターン
+	 * @param task 実行対象のタスク
+	 * @return タスク実行状態
+	 */
+	private static <T> InfinispanTaskState<T> doSubmitOnce(RequestPattern pattern, InfinispanSerializableTask<T> task) {
+		String requestId = generateRequestId();
+		String requestNode = InfinispanUtil.getExecutionNode();
+		var managedTask = new InfinispanManagedTask<T>(task, requestId, requestNode);
+
+		final Map<Address, InfinispanManagedTaskResult<T>> resultMap = new ConcurrentHashMap<>();
+
+		// 実行するノードを決定する
+		List<Address> executionNodeList = new ArrayList<>(getCacheManager().getMembers());
+		if (RequestPattern.REMOTE == pattern) {
+			// リモートであれば自身を削除
+			executionNodeList.removeIf(a -> a == getCacheManager().getAddress());
+		}
+		ClusterExecutor executor = getCacheManager().executor().filterTargets(a -> executionNodeList.contains(a));
+
+		LOG.debug("Submit task {}({}) to {}.", managedTask.getTaskName(), managedTask.getRequestId(), pattern);
+
+		Future<Void> future = submitInner(executor, managedTask, resultMap);
+
+		List<Future<T>> resultFuture = new ArrayList<>();
+		// 親 future は全て同一
+		executionNodeList.forEach(address -> resultFuture.add(InfinispanTaskFutureFactory.create(future, address, resultMap)));
+
+		return new InfinispanTaskState<T>(requestId, resultFuture);
+	}
 
 	/**
 	 * タスク要求する

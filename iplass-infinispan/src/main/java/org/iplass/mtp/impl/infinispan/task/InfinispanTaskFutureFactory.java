@@ -19,6 +19,7 @@
  */
 package org.iplass.mtp.impl.infinispan.task;
 
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -70,6 +71,97 @@ class InfinispanTaskFutureFactory {
 	 */
 	public static <T> InfinispanTaskFuture<T> create(Future<Void> parent, Address address, Throwable cause) {
 		return new FailureFuture<T>(parent, address, cause);
+	}
+
+	/**
+	 * Future インスタンスを生成する
+	 *
+	 * <p>
+	 * 作成時点では結果が格納されていないが、parent が完了すれば結果を返却可能な状態となる。
+	 * </p>
+	 *
+	 * @param <T> 実行結果データ型
+	 * @param parent 本処理実行時のFuture
+	 * @param address 処理を実行したノード
+	 * @param taskResultParNode ノード毎実行結果
+	 * @return 失敗 Future インスタンス
+	 */
+	public static <T> InfinispanTaskFuture<T> create(Future<Void> parent, Address address,
+			Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode) {
+		return new DelegatedFuture<T>(parent, address, taskResultParNode);
+	}
+
+	private static class DelegatedFuture<T> implements InfinispanTaskFuture<T> {
+		private Future<Void> parent;
+		private Address node;
+		private Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode;
+
+		public DelegatedFuture(Future<Void> parent, Address node, Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode) {
+			this.parent = parent;
+			this.node = node;
+			this.taskResultParNode = taskResultParNode;
+		}
+
+		@Override
+		public boolean cancel(boolean mayInterruptIfRunning) {
+			return parent.cancel(mayInterruptIfRunning);
+		}
+
+		@Override
+		public boolean isCancelled() {
+			return parent.isCancelled();
+		}
+
+		@Override
+		public boolean isDone() {
+			return parent.isDone();
+		}
+
+		@Override
+		public T get() throws InterruptedException, ExecutionException {
+			parent.get();
+
+			return getNodeValue();
+		}
+
+		@Override
+		public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+			parent.get(timeout, unit);
+
+			return getNodeValue();
+		}
+
+		@Override
+		public String getNode() {
+			return node.toString();
+		}
+
+		private T getNodeValue() throws InterruptedException, ExecutionException {
+			// parent が完了していれば、taskResultParNode 変数には node の実行結果が格納されている
+			InfinispanManagedTaskResult<T> taskResult = taskResultParNode.get(node);
+
+			if (null == taskResult) {
+				throw new InfinispanTaskExecutionException("The execution result for node " + node.toString() + " does not exist.");
+			}
+
+			if (!taskResult.isSuccess()) {
+				// 異常パターン
+				if (taskResult.getCause() instanceof InterruptedException) {
+					// InterruptedException であればそのままリスロー
+					throw (InterruptedException) taskResult.getCause();
+
+				} else if (taskResult.getCause() instanceof ExecutionException) {
+					// ExecutionException であればそのままリスロー
+					throw (ExecutionException) taskResult.getCause();
+				}
+
+				// 上記以外であれば、ExecutionException をスロー
+				throw new ExecutionException(taskResult.getCause());
+			}
+
+			// 正常パターン
+			return taskResult.getResult();
+		}
 	}
 
 	/**
