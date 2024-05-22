@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -48,10 +47,7 @@ import org.slf4j.LoggerFactory;
  *
  * <p>
  * Infinispan メンバーノードへタスク実行を行うユーティリティクラス。
- * 本クラスに定義されている公開のメソッドは Future を含む情報を返却するが、結果の返却タイミングは全てのノードで処理の完了後となる（実行した時点で同期する）。
- *
- * 本来であれば各非同期処理毎に結果を戻すべきだが、infinispan の非同期処理で値を返却する為には、各ノードの実行結果を本機能で収集する必要がある。
- * 収集を行うために、機能内でノードの実行を待機する。
+ * 本クラスに定義されている公開のメソッドは Future を含む情報を返却する。
  * </p>
  *
  * @see org.infinispan.manager.ClusterExecutor#submitConsumer(org.infinispan.util.function.SerializableFunction, org.infinispan.util.function.TriConsumer)
@@ -74,25 +70,23 @@ public class InfinispanTaskExecutor {
 		/** 全メンバーノード */
 		ALL {
 			@Override
-			ClusterExecutor getExecuter(EmbeddedCacheManager cacheManager) {
-				return cacheManager.executor().allNodeSubmission();
+			List<Address> getTargetNode(EmbeddedCacheManager cacheManager) {
+				return cacheManager.getMembers();
 			}
 		},
 		/** 自ノード以外のメンバーノード */
 		REMOTE {
 			@Override
-			ClusterExecutor getExecuter(EmbeddedCacheManager cacheManager) {
+			List<Address> getTargetNode(EmbeddedCacheManager cacheManager) {
 				var myself = cacheManager.getAddress();
-				return cacheManager.executor().filterTargets(t -> t != myself);
+				var members = new ArrayList<>(cacheManager.getMembers());
+				// 自ノードを削除
+				members.removeIf(m -> m == myself);
+				return members;
 			}
 		};
 
-		/**
-		 * ClusterExecutor を取得する
-		 * @param cacheManager キャッシュマネージャー
-		 * @return ClusterExecutor
-		 */
-		abstract ClusterExecutor getExecuter(EmbeddedCacheManager cacheManager);
+		abstract List<Address> getTargetNode(EmbeddedCacheManager cacheManager);
 	}
 
 	/**
@@ -195,7 +189,7 @@ public class InfinispanTaskExecutor {
 		final List<Future<T>> resultFuture = new ArrayList<>(taskFuture.size());
 
 		// 実行結果を収集する
-		taskFuture.keySet().forEach(node -> resultFuture.add(InfinispanTaskFutureFactory.create(taskFuture.get(node), node, taskResultParNode)));
+		taskFuture.keySet().forEach(node -> resultFuture.add(new InfinispanTaskFuture<>(taskFuture.get(node), node, taskResultParNode)));
 
 		return new InfinispanTaskState<T>(requestId, resultFuture);
 	}
@@ -251,45 +245,7 @@ public class InfinispanTaskExecutor {
 	 *
 	 * <p>
 	 * 1回のリクエストで複数ノードへリクエストを行う。
-	 * </p>
-	 *
-	 * @param <T> 実行結果データ型
-	 * @param pattern リクエストパターン
-	 * @param task 実行対象のタスク
-	 * @return タスク実行状態
-	 */
-	private static <T> InfinispanTaskState<T> doSubmitOnceSync(RequestPattern pattern, InfinispanSerializableTask<T> task) {
-		String requestId = generateRequestId();
-		String requestNode = InfinispanUtil.getExecutionNode();
-		var managedTask = new InfinispanManagedTask<T>(task, requestId, requestNode);
-
-		final Map<Address, InfinispanManagedTaskResult<T>> resultMap = new ConcurrentHashMap<>();
-
-		ClusterExecutor executor = pattern.getExecuter(getCacheManager());
-		LOG.debug("Submit task {}({}) to {}.", managedTask.getTaskName(), managedTask.getRequestId(), pattern);
-		Future<Void> future = submitInner(executor, managedTask, resultMap);
-
-		List<Future<T>> resultFuture = new ArrayList<>();
-
-		try {
-			// 非同期処理待ち合わせ
-			future.get();
-			// 1つの Future を実行されたノード毎の Future に分解する
-			resultMap.forEach((address, result) -> resultFuture.add(InfinispanTaskFutureFactory.create(future, address, result)));
-
-		} catch (InterruptedException | ExecutionException e) {
-			// 例外発生時は呼び出し元へエスカレーション
-			resultFuture.add(InfinispanTaskFutureFactory.create(future, getCacheManager().getAddress(), e));
-		}
-
-		return new InfinispanTaskState<T>(requestId, resultFuture);
-	}
-
-	/**
-	 * タスク要求する
-	 *
-	 * <p>
-	 * 1回のリクエストで複数ノードへリクエストを行う。
+	 * InfinispanTaskState 内の Future はノード毎に作成するが、親 Future は同一。
 	 * </p>
 	 *
 	 * @param <T> 実行結果データ型
@@ -304,27 +260,25 @@ public class InfinispanTaskExecutor {
 
 		final Map<Address, InfinispanManagedTaskResult<T>> resultMap = new ConcurrentHashMap<>();
 
-		// 実行するノードを決定する
-		List<Address> executionNodeList = new ArrayList<>(getCacheManager().getMembers());
-		if (RequestPattern.REMOTE == pattern) {
-			// リモートであれば自身を削除
-			executionNodeList.removeIf(a -> a == getCacheManager().getAddress());
-		}
+		// 実行ノードを決定
+		List<Address> executionNodeList = pattern.getTargetNode(getCacheManager());
 		ClusterExecutor executor = getCacheManager().executor().filterTargets(a -> executionNodeList.contains(a));
 
 		LOG.debug("Submit task {}({}) to {}.", managedTask.getTaskName(), managedTask.getRequestId(), executionNodeList);
 
+		// 実行要求
 		Future<Void> future = submitInner(executor, managedTask, resultMap);
 
 		List<Future<T>> resultFuture = new ArrayList<>();
-		// 親 future は全て同一
-		executionNodeList.forEach(address -> resultFuture.add(InfinispanTaskFutureFactory.create(future, address, resultMap)));
+		// ノード毎に Future を作成する。親 future は全て同一。
+		executionNodeList.forEach(node -> resultFuture.add(new InfinispanTaskFuture<>(future, node, resultMap)));
 
 		return new InfinispanTaskState<T>(requestId, resultFuture);
 	}
 
 	/**
 	 * タスク要求する
+	 *
 	 * @param <T> 実行結果データ型
 	 * @param executor ノードへ実行を要求する ClusterExecutor インスタンス
 	 * @param managedTask 実行対象のタスク
@@ -339,7 +293,7 @@ public class InfinispanTaskExecutor {
 				resultMap.put(address, InfinispanManagedTaskResult.create(cause));
 
 			} else {
-				// コマンド処理内で終了
+				// InfinispanManagedTask 内で終了
 				resultMap.put(address, result);
 			}
 		});
