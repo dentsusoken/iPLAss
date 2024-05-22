@@ -3,7 +3,7 @@
 <serviceDefinition>
 	<inherits>/mtp-web-service-config.xml</inherits>
 	<inherits>/mtp-core-service-config-oracle.xml</inherits>
-	<!-- If use mysql, inherits mtp-service-config-mysql.xml for convenience. -->
+	<!-- If use mysql, inherits mtp-core-service-config-mysql.xml for convenience. -->
 	<!--
 	<inherits>/mtp-core-service-config-mysql.xml</inherits>
 	-->
