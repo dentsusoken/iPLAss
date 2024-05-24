@@ -1650,6 +1650,8 @@ div.recursiveTree {
       border: none !important;
       padding-top: 0 !important;
       padding-bottom: 0 !important; }
+  .tbl-section .data-label {
+    overflow-wrap: break-word; }
 
 .tbl-reference {
   border: 1px solid #d5d5d5;
@@ -1683,6 +1685,10 @@ div.recursiveTree {
     display: none; }
   .tbl-reference tbody tr:last-child .orderCol .order-icon.down-icon {
     display: none; }
+
+.list-add {
+  overflow: auto;
+  overflow-wrap: break-word; }
 
 /*--------
  お知らせ
