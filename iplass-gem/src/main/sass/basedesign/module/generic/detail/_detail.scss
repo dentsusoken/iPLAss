@@ -114,6 +114,9 @@
 			padding-bottom: 0 !important;
 		}
 	}
+	.data-label {
+		overflow-wrap: break-word;
+	}
 }
 //nesttable
 .tbl-reference {
@@ -164,4 +167,8 @@
 			display: none;
 		}
 	}
+}
+.list-add {
+	overflow: auto;
+	overflow-wrap: break-word;
 }
