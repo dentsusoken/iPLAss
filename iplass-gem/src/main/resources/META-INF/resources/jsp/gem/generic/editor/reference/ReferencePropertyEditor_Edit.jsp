@@ -682,6 +682,7 @@ $(function() {
 		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refSectionIndex: "<%=_refSectionIndex%>"
+		, customStyle: "<%=StringUtil.escapeJavaScript(customStyle)%>"
 	}
 	var $selBtn = $(":button[id='<%=StringUtil.escapeJavaScript(selBtnId) %>']");
 	for (key in params) {
@@ -690,7 +691,8 @@ $(function() {
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, $(this).attr("data-propName"), params.multiplicity, <%=isMultiple %>,
 				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.permitVersionedSelect, 
-				 params.parentDefName, params.parentViewName, params.viewType, params.refSectionIndex, delCallback, params.entityOid, params.entityVersion, dynamicParamCallback);
+				 params.parentDefName, params.parentViewName, params.viewType, params.refSectionIndex, delCallback, params.entityOid, params.entityVersion,
+				 dynamicParamCallback, params.customStyle);
 	});
 
 });
@@ -745,6 +747,7 @@ $(function() {
 		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
+		, customStyle: "<%=StringUtil.escapeJavaScript(customStyle)%>"
 	}
 	var $insBtn = $(":button[id='<%=StringUtil.escapeJavaScript(insBtnId) %>']");
 	for (key in params) {
@@ -753,7 +756,7 @@ $(function() {
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
 				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, 
-				 params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex, params.entityOid, params.entityVersion, dynamicParamCallback);
+				 params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex, params.entityOid, params.entityVersion, dynamicParamCallback, params.customStyle);
 	});
 
 });
@@ -1209,6 +1212,7 @@ $(function() {
 		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
+		, customStyle: "<%=StringUtil.escapeJavaScript(customStyle) %>"
 	}
 	var $insBtn = $(":button[id='<%=StringUtil.escapeJavaScript(insBtnId)%>']");
 	for (key in params) {
@@ -1217,7 +1221,7 @@ $(function() {
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
 				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, 
-				 params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex, params.entityOid, params.entityVersion, dynamicParamCallback);
+				 params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex, params.entityOid, params.entityVersion, dynamicParamCallback, params.customStyle);
 	});
 
 });
@@ -1357,6 +1361,7 @@ $(function() {
  data-refSectionIndex="<%=_refSectionIndex%>"
  data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
  data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
+ data-customStyle="<c:out value="<%=StringUtil.escapeJavaScript(customStyle)%>"/>"
 >
 <span class="unique-key">
 <%
@@ -1400,7 +1405,7 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
   onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
@@ -1456,6 +1461,7 @@ $(function() {
  data-refSectionIndex="<%=_refSectionIndex%>"
  data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
  data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
+ data-customStyle="<c:out value="<%=StringUtil.escapeJavaScript(customStyle)%>"/>"
 >
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />
@@ -1477,7 +1483,7 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk"></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
 <%
 
 		if (!hideDeleteButton && updatable) {
@@ -1504,6 +1510,7 @@ $(function() {
 				+ ", 'id_count_" + StringUtil.escapeJavaScript(propName) + "'"
 				+ ", " + toggleAddBtnFunc
 				+ ", " + toggleAddBtnFunc
+				+ ", '" + StringUtil.escapeJavaScript(customStyle) + "'"
 				+ ")";
 %>
 <script type="text/javascript">
