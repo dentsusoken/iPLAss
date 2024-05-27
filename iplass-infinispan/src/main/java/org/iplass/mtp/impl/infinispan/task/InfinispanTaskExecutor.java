@@ -99,12 +99,38 @@ public class InfinispanTaskExecutor {
 
 	/**
 	 * 全メンバーノードに対してタスクを実行する
+	 *
+	 * @see #submitAll(InfinispanSerializableTask, String)
 	 * @param <T> 実行結果データ型
 	 * @param task タスク
 	 * @return タスク実行状態
 	 */
 	public static <T> InfinispanTaskState<T> submitAll(InfinispanSerializableTask<T> task) {
-		return doSubmitOnce(RequestPattern.ALL, task);
+		return submitAll(task, MDC.get(ExecuteContext.MDC_TRACE_ID));
+	}
+
+	/**
+	 * 全メンバーノードに対してタスクを実行する
+	 *
+	 * @param <T> 実行結果データ型
+	 * @param task タスク
+	 * @param mdcTraceId MDC設定値 traceId の値
+	 * @return タスク実行状態
+	 */
+	public static <T> InfinispanTaskState<T> submitAll(InfinispanSerializableTask<T> task, String mdcTraceId) {
+		return doSubmitOnce(RequestPattern.ALL, task, mdcTraceId);
+	}
+
+	/**
+	 * 自ノード以外のメンバーノードに対してタスクを実行する
+	 *
+	 * @see #submitRemote(InfinispanSerializableTask, String)
+	 * @param <T> 実行結果データ型
+	 * @param task タスク
+	 * @return タスク実行状態
+	 */
+	public static <T> InfinispanTaskState<T> submitRemote(InfinispanSerializableTask<T> task) {
+		return submitRemote(task, MDC.get(ExecuteContext.MDC_TRACE_ID));
 	}
 
 	/**
@@ -116,9 +142,10 @@ public class InfinispanTaskExecutor {
 	 *
 	 * @param <T> 実行結果データ型
 	 * @param task タスク
+	 * @param mdcTraceId MDC設定値 traceId の値
 	 * @return タスク実行状態
 	 */
-	public static <T> InfinispanTaskState<T> submitRemote(InfinispanSerializableTask<T> task) {
+	public static <T> InfinispanTaskState<T> submitRemote(InfinispanSerializableTask<T> task, String mdcTraceId) {
 		var members = getCacheManager().getMembers();
 		if (1 == members.size() && members.contains(getCacheManager().getAddress())) {
 			// メンバーノードが自身１つのみの場合、リクエストを実行せず終了する。
@@ -126,7 +153,7 @@ public class InfinispanTaskExecutor {
 			return new InfinispanTaskState<T>(EMPTY_REQUEST_ID, Collections.emptyList());
 		}
 
-		return doSubmitOnce(RequestPattern.REMOTE, task);
+		return doSubmitOnce(RequestPattern.REMOTE, task, mdcTraceId);
 	}
 
 	/**
@@ -137,6 +164,21 @@ public class InfinispanTaskExecutor {
 	 */
 	@FunctionalInterface
 	public static interface TaskFactory<T, K> extends Function<List<K>, InfinispanSerializableTask<T>> {
+	}
+
+	/**
+	 * キャッシュキーのオーナーノードでタスクを実行する
+	 *
+	 * @see #submitByCacheKeyOwner(TaskFactory, String, List, String)
+	 * @param <T> 実行結果データ型
+	 * @param <K> キャッシュキーデータ型
+	 * @param taskFactory タスク生成機能。引数には、ノード毎に選別したキャッシュキーが設定される。
+	 * @param cacheName キャッシュ名
+	 * @param cacheKeys キャッシュキーリスト
+	 * @return タスク実行状態
+	 */
+	public static <T, K> InfinispanTaskState<T> submitByCacheKeyOwner(TaskFactory<T, K> taskFactory, String cacheName, List<K> cacheKeys) {
+		return submitByCacheKeyOwner(taskFactory, cacheName, cacheKeys, MDC.get(ExecuteContext.MDC_TRACE_ID));
 	}
 
 	/**
@@ -162,9 +204,11 @@ public class InfinispanTaskExecutor {
 	 * @param taskFactory タスク生成機能。引数には、ノード毎に選別したキャッシュキーが設定される。
 	 * @param cacheName キャッシュ名
 	 * @param cacheKeys キャッシュキーリスト
+	 * @param mdcTraceId MDC設定値 traceId の値
 	 * @return タスク実行状態
 	 */
-	public static <T, K> InfinispanTaskState<T> submitByCacheKeyOwner(TaskFactory<T, K> taskFactory, String cacheName, List<K> cacheKeys) {
+	public static <T, K> InfinispanTaskState<T> submitByCacheKeyOwner(TaskFactory<T, K> taskFactory, String cacheName, List<K> cacheKeys,
+			String mdcTraceId) {
 		EmbeddedCacheManager cacheManager = getCacheManager();
 
 		Map<Address, List<K>> cacheKeysPerNode = screeningCacheKeys(cacheManager.getCache(cacheName), cacheKeys);
@@ -181,7 +225,7 @@ public class InfinispanTaskExecutor {
 			var executor = cacheManager.executor().filterTargets(t -> t == node);
 			var keyList = cacheKeysPerNode.get(node);
 			var task = taskFactory.apply(keyList);
-			var managedTask = new InfinispanManagedTask<T>(task, requestNode, requestId, MDC.get(ExecuteContext.MDC_TRACE_ID));
+			var managedTask = new InfinispanManagedTask<T>(task, requestNode, requestId, mdcTraceId);
 
 			LOG.debug("Submit task {}({}) to {}, keyList={}.", managedTask.getTaskName(), requestId, node, keyList);
 			taskFuture.put(node, submitInner(executor, managedTask, taskResultParNode));
@@ -252,12 +296,13 @@ public class InfinispanTaskExecutor {
 	 * @param <T> 実行結果データ型
 	 * @param pattern リクエストパターン
 	 * @param task 実行対象のタスク
+	 * @param mdcTraceId MDC設定値 traceId の値
 	 * @return タスク実行状態
 	 */
-	private static <T> InfinispanTaskState<T> doSubmitOnce(RequestPattern pattern, InfinispanSerializableTask<T> task) {
+	private static <T> InfinispanTaskState<T> doSubmitOnce(RequestPattern pattern, InfinispanSerializableTask<T> task, String mdcTraceId) {
 		String requestId = generateInfinispanRequestId();
 		String requestNode = InfinispanUtil.getExecutionNode();
-		var managedTask = new InfinispanManagedTask<T>(task, requestNode, requestId, MDC.get(ExecuteContext.MDC_TRACE_ID));
+		var managedTask = new InfinispanManagedTask<T>(task, requestNode, requestId, mdcTraceId);
 
 		final Map<Address, InfinispanManagedTaskResult<T>> resultMap = new ConcurrentHashMap<>();
 

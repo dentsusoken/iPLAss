@@ -22,6 +22,9 @@ package org.iplass.mtp.impl.infinispan.cluster.channel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -32,12 +35,14 @@ import org.iplass.mtp.impl.cluster.ClusterService;
 import org.iplass.mtp.impl.cluster.Message;
 import org.iplass.mtp.impl.cluster.channel.MessageChannel;
 import org.iplass.mtp.impl.cluster.channel.MessageReceiver;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.infinispan.task.InfinispanTaskExecutor;
 import org.iplass.mtp.impl.infinispan.task.InfinispanTaskState;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class InfinispanMessageChannel implements MessageChannel, ServiceInitListener<ClusterService> {
 
@@ -48,7 +53,7 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 
 	private boolean sync;
 
-	private BlockingQueue<Message> msgQueue;
+	private BlockingQueue<InternalMessage> msgQueue;
 	private ExecutorService ats;
 
 
@@ -63,28 +68,28 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 	@Override
 	public void inited(ClusterService service, Config config) {
 		if (!sync) {
-			final BlockingQueue<Message> newQueue = new LinkedBlockingQueue<>();
+			final BlockingQueue<InternalMessage> newQueue = new LinkedBlockingQueue<>();
 			msgQueue = newQueue;
 			//TODO 設定可能に
 			ats = Executors.newSingleThreadExecutor();
 			ats.submit(new Callable<Void>() {
 				@Override
 				public Void call() {
-					ArrayList<Message> msgList = new ArrayList<>(32);
+					ArrayList<InternalMessage> msgList = new ArrayList<>(32);
 					while (true) {
 						try {
-							for (Message msg = newQueue.poll(); msgList.size() < 32 && msg != null; msg = newQueue.poll()) {
+							for (InternalMessage msg = newQueue.poll(); msgList.size() < 32 && msg != null; msg = newQueue.poll()) {
 								msgList.add(msg);
 							}
 							if (msgList.size() != 0) {
-								Message[] msgArray = msgList.toArray(new Message[msgList.size()]);
+								InternalMessage[] msgArray = msgList.toArray(new InternalMessage[msgList.size()]);
 								msgList.clear();
 								//リトライとかは、Infinispan側に任せる。
 								doSendMessage(msgArray);
 							}
 
 							//次のメッセージがくるまでブロック
-							Message msg = newQueue.take();
+							InternalMessage msg = newQueue.take();
 							msgList.add(msg);
 
 						} catch (RuntimeException | Error e) {
@@ -132,27 +137,87 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 	@Override
 	public void sendMessage(final Message message) {
 		if (sync) {
-			doSendMessage(new Message[]{message});
+			InternalMessage sendMessage = new InternalMessage(message, MDC.get(ExecuteContext.MDC_TRACE_ID));
+			doSendMessage(new InternalMessage[] { sendMessage });
 		} else {
-			if (!msgQueue.offer(message)) {
+			if (!msgQueue.offer(new InternalMessage(message, MDC.get(ExecuteContext.MDC_TRACE_ID)))) {
 				fatalLog.error("send message failed. cause cant put to messageQueue. message=" + message);
 			};
 		}
 	}
 
-	private void doSendMessage(Message[] message) {
+	private void doSendMessage(InternalMessage[] message) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("send message over infinispan. message=" + Arrays.toString(message));
 		}
 
-		InfinispanTaskState<Void> state = InfinispanTaskExecutor.submitRemote(new InfinispanMessageTask(message));
-		state.getFuture().forEach(f -> {
-			try {
-				f.get();
-			} catch (Exception e) {
-				fatalLog.error("send message failed.error={}, message={}", e.toString(), Arrays.toString(message), e);
+		Map<String, List<Message>> mdcTraceIdGroup = new HashMap<>();
+		for (InternalMessage m : message) {
+			List<Message> group = mdcTraceIdGroup.get(m.getMdcTraceId());
+			if (null == group) {
+				group = new ArrayList<Message>();
+				mdcTraceIdGroup.put(m.getMdcTraceId(), group);
 			}
-		});
+			group.add(m.getMessage());
+		}
+
+		for (Map.Entry<String, List<Message>> entry : mdcTraceIdGroup.entrySet()) {
+			Message[] messageArray = entry.getValue().toArray(new Message[entry.getValue().size()]);
+			String mdcTraceId = entry.getKey();
+			InfinispanTaskState<Void> state = InfinispanTaskExecutor.submitRemote(new InfinispanMessageTask(messageArray), mdcTraceId);
+			state.getFuture().forEach(f -> {
+				try {
+					f.get();
+				} catch (Exception e) {
+					fatalLog.error("send message failed.error={}, message={}", e.toString(), Arrays.toString(message), e);
+				}
+			});
+		}
 	}
 
+	/**
+	 * 内部メッセージ管理クラス
+	 *
+	 * <p>
+	 * キューで管理される情報。
+	 * 非同期でメッセージ送信する可能性もある為、アクターから渡されたメッセージと、送信時スレッドに紐づく情報を管理する。
+	 * </p>
+	 */
+	private static class InternalMessage {
+		/** メッセージ */
+		private Message message;
+		/** ログ MDC traceId の値 */
+		private String mdcTraceId;
+
+		/**
+		 * コンストラクタ
+		 * @param message メッセージ
+		 * @param mdcTraceId ログ MDC traceId の値
+		 */
+		private InternalMessage(Message message, String mdcTraceId) {
+			this.message = message;
+			this.mdcTraceId = mdcTraceId;
+		}
+
+		/**
+		 * メッセージを取得する
+		 * @return メッセージ
+		 */
+		public Message getMessage() {
+			return message;
+		}
+
+		/**
+		 * ログ MDC traceId の値を取得する
+		 * @return ログ MDC traceId の値
+		 */
+		public String getMdcTraceId() {
+			return mdcTraceId;
+		}
+
+		@Override
+		public String toString() {
+			return "InternalMessage [message=" + message.toString() + ", mdcTraceId=" + mdcTraceId + "]";
+		}
+	}
 }
