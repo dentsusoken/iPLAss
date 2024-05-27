@@ -47,7 +47,7 @@ public class InfinispanTaskFuture<T> implements Future<T> {
 	/** 実行対象ノード */
 	private Address node;
 	/** 要求ID */
-	private String requestId;
+	private String infinispanRequestId;
 
 	/**
 	 * コンストラクタ
@@ -55,12 +55,13 @@ public class InfinispanTaskFuture<T> implements Future<T> {
 	 * @param parent 本処理実行時のFuture
 	 * @param taskResultParNode ノード毎実行結果
 	 * @param node 処理を実行したノード
+	 * @param infinispanRequestId Infinispan要求ID
 	 */
-	public InfinispanTaskFuture(Future<Void> parent, Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode, Address node, String requestId) {
+	public InfinispanTaskFuture(Future<Void> parent, Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode, Address node, String infinispanRequestId) {
 		this.parent = parent;
 		this.taskResultParNode = taskResultParNode;
 		this.node = node;
-		this.requestId = requestId;
+		this.infinispanRequestId = infinispanRequestId;
 	}
 
 	@Override
@@ -101,11 +102,11 @@ public class InfinispanTaskFuture<T> implements Future<T> {
 	}
 
 	/**
-	 * 要求IDを取得する
+	 * Infinispan要求IDを取得する
 	 * @return 要求ID
 	 */
-	public String getRequestId() {
-		return requestId;
+	public String getInfinispanRequestId() {
+		return infinispanRequestId;
 	}
 
 	/**
@@ -127,13 +128,13 @@ public class InfinispanTaskFuture<T> implements Future<T> {
 		if (null == taskResult) {
 			// 実行結果が存在しない場合は、何らかの原因で結果が取得できなかった
 			throw new InfinispanTaskExecutionException(
-					"The execution result for node '" + node.toString() + "', requestId '" + requestId + "' does not exist.");
+					"The execution result for node '" + node.toString() + "', requestId '" + infinispanRequestId + "' does not exist.");
 		}
 
 		if (!taskResult.isSuccess()) {
 			// 異常パターン
 			throw new InfinispanTaskExecutionException(
-					"An exception occurred during execution of node '" + node.toString() + "', requestId '" + requestId + "'.", taskResult.getCause());
+					"An exception occurred during execution of node '" + node.toString() + "', requestId '" + infinispanRequestId + "'.", taskResult.getCause());
 		}
 
 		// 正常パターン

@@ -33,27 +33,27 @@ import java.util.concurrent.Future;
  * @param <T> 実行結果データ型
  */
 public class InfinispanTaskState<T> {
-	/** 要求ID */
-	private String requestId;
+	/** Infinispan要求ID */
+	private String infinispanRequestId;
 	/** タスク実行時の Future インスタンスリスト */
 	private List<Future<T>> futureList;
 
 	/**
 	 * コンストラクタ
-	 * @param requestId 要求ID
+	 * @param infinispanRequestId Infinispan要求ID
 	 * @param futureList タスク実行時の Future インスタンスリスト
 	 */
-	public InfinispanTaskState(String requestId, List<Future<T>> futureList) {
-		this.requestId = requestId;
+	public InfinispanTaskState(String infinispanRequestId, List<Future<T>> futureList) {
+		this.infinispanRequestId = infinispanRequestId;
 		this.futureList = futureList;
 	}
 
 	/**
-	 * 要求IDを取得する
-	 * @return 要求ID
+	 * Infinispan要求IDを取得する
+	 * @return Infinispan要求ID
 	 */
-	public String getRequestId() {
-		return requestId;
+	public String getInfinispanRequestId() {
+		return infinispanRequestId;
 	}
 
 	/**

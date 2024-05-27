@@ -23,6 +23,7 @@ import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.util.function.SerializableFunction;
 import org.iplass.mtp.impl.core.Executable;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.infinispan.InfinispanConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -39,6 +40,11 @@ import org.slf4j.MDC;
  * そのため、正常終了の場合も、異常終了の場合も結果を返却する。
  * </p>
  *
+ * <p>
+ * 本クラスで保持している infinispanRequestId は Infinispan を利用した非同期処理の要求単位で発行される一意なIDである。
+ * 実行時に MDC キー "infinispanRequestId" として設定している。
+ * </p>
+ *
  * @param <T> 処理結果データ型
  * @author SEKIGUCHI Naoya
  */
@@ -51,48 +57,53 @@ class InfinispanManagedTask<T> implements SerializableFunction<EmbeddedCacheMana
 
 	/** 実タスク */
 	private InfinispanSerializableTask<T> task;
-	/** 要求ID */
-	private String requestId;
 	/** 要求ノード */
 	private String requestNode;
+	/** Infinispan要求ID */
+	private String infinispanRequestId;
+	/** MDC用トレースID */
+	private String traceId;
 	/** タスク名 */
 	private String taskName;
 
 	/**
 	 * コンストラクタ
 	 * @param task タスク
-	 * @param requestId 要求ID
 	 * @param requestNode 要求ノード
+	 * @param infinispanRequestId Infinispan要求ID
+	 * @param traceId タスク要求時に設定されているトレースID。タスク要求先に転送し、同一値を設定する。
 	 */
-	public InfinispanManagedTask(InfinispanSerializableTask<T> task, String requestId, String requestNode) {
+	public InfinispanManagedTask(InfinispanSerializableTask<T> task, String requestNode, String infinispanRequestId, String traceId) {
 		this.task = task;
-		this.requestId = requestId;
 		this.requestNode = requestNode;
+		this.infinispanRequestId = infinispanRequestId;
+		this.traceId = traceId;
+
 		this.taskName = task.getTaskName();
 	}
 
 	@Override
 	public InfinispanManagedTaskResult<T> apply(EmbeddedCacheManager t) {
-		// requestId をトレースIDとして設定し、処理を実行する
-		return executeAs(requestId, () -> {
+		// コンテキストを設定し、処理を実行する
+		return executeAs(() -> {
 			String executionNode = InfinispanUtil.getExecutionNode();
 
-			LOG.debug("{} executes the request {}({}) from {}.", executionNode, taskName, requestId, requestNode);
+			LOG.debug("{} executes the request {}({}) from {}.", executionNode, taskName, infinispanRequestId, requestNode);
 			try {
 				T result = task.call();
-				LOG.debug("{} completed request {}({}) from {}.", executionNode, taskName, requestId, requestNode);
+				LOG.debug("{} completed request {}({}) from {}.", executionNode, taskName, infinispanRequestId, requestNode);
 				return InfinispanManagedTaskResult.create(result);
 
 			} catch (Throwable e) {
 				// NOTE ここで例外をリスローすると非同期処理の終了が通知されなくなる。そのため、Error, Runtime系を含めて例外をリスローせずログ出力し終了する。
-				LOG.error("{} failed to request {}({}) from {}.", executionNode, taskName, requestId, requestNode, e);
+				LOG.error("{} failed to request {}({}) from {}.", executionNode, taskName, infinispanRequestId, requestNode, e);
 				return InfinispanManagedTaskResult.create(e);
 			}
 		});
 	}
 
 	/**
-	 * 要求IDを取得する
+	 * Infinispan 要求IDを取得する
 	 *
 	 * <p>
 	 * infinispan へ処理を要求する際に、処理を識別するための一意なID
@@ -100,8 +111,8 @@ class InfinispanManagedTask<T> implements SerializableFunction<EmbeddedCacheMana
 	 *
 	 * @return 要求ID
 	 */
-	public String getRequestId() {
-		return requestId;
+	public String getInfinispanRequestId() {
+		return infinispanRequestId;
 	}
 
 	/**
@@ -130,11 +141,10 @@ class InfinispanManagedTask<T> implements SerializableFunction<EmbeddedCacheMana
 	 * </p>
 	 *
 	 * @param <R> 実行結果データ型
-	 * @param traceId トレースID
 	 * @param executable 実行する処理
 	 * @return 実行結果
 	 */
-	private <R> R executeAs(String traceId, Executable<R> executable) {
+	private <R> R executeAs(Executable<R> executable) {
 		var context = ExecuteContext.getCurrentContext();
 		var tenantContext = context.getTenantContext();
 
@@ -144,6 +154,8 @@ class InfinispanManagedTask<T> implements SerializableFunction<EmbeddedCacheMana
 			var prevTraceId = MDC.get(ExecuteContext.MDC_TRACE_ID);
 			// トレースIDを設定
 			currentContext.mdcPut(ExecuteContext.MDC_TRACE_ID, traceId);
+			// リクエストIDを設定
+			currentContext.mdcPut(InfinispanConstants.LogMDC.REQUEST_ID, infinispanRequestId);
 
 			try {
 				return executable.execute();
@@ -151,6 +163,7 @@ class InfinispanManagedTask<T> implements SerializableFunction<EmbeddedCacheMana
 			} finally {
 				// トレースIDを復元
 				currentContext.mdcPut(ExecuteContext.MDC_TRACE_ID, prevTraceId);
+				currentContext.mdcPut(InfinispanConstants.LogMDC.REQUEST_ID, null);
 			}
 
 		});

@@ -36,10 +36,12 @@ import org.infinispan.distribution.LocalizedCacheTopology;
 import org.infinispan.manager.ClusterExecutor;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.remoting.transport.Address;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.infinispan.InfinispanService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 
 /**
@@ -119,8 +121,8 @@ public class InfinispanTaskExecutor {
 	public static <T> InfinispanTaskState<T> submitRemote(InfinispanSerializableTask<T> task) {
 		var members = getCacheManager().getMembers();
 		if (1 == members.size() && members.contains(getCacheManager().getAddress())) {
-			// メンバーノードが自身１つのみかつ、それが自分自身の場合、リクエストを実行せず終了する。
-			LOG.warn("Nothing is done because only a self-node exists. task = {}", task.getClass().getSimpleName());
+			// メンバーノードが自身１つのみの場合、リクエストを実行せず終了する。
+			LOG.debug("Nothing is done because only a self-node exists. task = {}", task.getTaskName());
 			return new InfinispanTaskState<T>(EMPTY_REQUEST_ID, Collections.emptyList());
 		}
 
@@ -167,7 +169,7 @@ public class InfinispanTaskExecutor {
 
 		Map<Address, List<K>> cacheKeysPerNode = screeningCacheKeys(cacheManager.getCache(cacheName), cacheKeys);
 
-		String requestId = generateRequestId();
+		String requestId = generateInfinispanRequestId();
 		String requestNode = InfinispanUtil.getExecutionNode();
 		// 実行ノード毎のタスク実行結果。Infinispan の実行結果を格納する。
 		final Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode = new ConcurrentHashMap<>();
@@ -179,7 +181,7 @@ public class InfinispanTaskExecutor {
 			var executor = cacheManager.executor().filterTargets(t -> t == node);
 			var keyList = cacheKeysPerNode.get(node);
 			var task = taskFactory.apply(keyList);
-			var managedTask = new InfinispanManagedTask<T>(task, requestId, requestNode);
+			var managedTask = new InfinispanManagedTask<T>(task, requestNode, requestId, MDC.get(ExecuteContext.MDC_TRACE_ID));
 
 			LOG.debug("Submit task {}({}) to {}, keyList={}.", managedTask.getTaskName(), requestId, node, keyList);
 			taskFuture.put(node, submitInner(executor, managedTask, taskResultParNode));
@@ -226,7 +228,7 @@ public class InfinispanTaskExecutor {
 	}
 
 	/**
-	 * 要求IDを生成する
+	 * Infinispan要求IDを生成する
 	 *
 	 * <p>
 	 * 要求IDはUUIDよりハイフンを除き、大文字変換した値。
@@ -234,7 +236,7 @@ public class InfinispanTaskExecutor {
 	 *
 	 * @return 要求ID
 	 */
-	private static String generateRequestId() {
+	private static String generateInfinispanRequestId() {
 		String id = UUID.randomUUID().toString();
 		return HYPHEN_PATTERN.matcher(id).replaceAll(HYPHEN_REPLACED).toUpperCase();
 	}
@@ -253,9 +255,9 @@ public class InfinispanTaskExecutor {
 	 * @return タスク実行状態
 	 */
 	private static <T> InfinispanTaskState<T> doSubmitOnce(RequestPattern pattern, InfinispanSerializableTask<T> task) {
-		String requestId = generateRequestId();
+		String requestId = generateInfinispanRequestId();
 		String requestNode = InfinispanUtil.getExecutionNode();
-		var managedTask = new InfinispanManagedTask<T>(task, requestId, requestNode);
+		var managedTask = new InfinispanManagedTask<T>(task, requestNode, requestId, MDC.get(ExecuteContext.MDC_TRACE_ID));
 
 		final Map<Address, InfinispanManagedTaskResult<T>> resultMap = new ConcurrentHashMap<>();
 
@@ -263,7 +265,7 @@ public class InfinispanTaskExecutor {
 		List<Address> executionNodeList = pattern.getTargetNode(getCacheManager());
 		ClusterExecutor executor = getCacheManager().executor().filterTargets(a -> executionNodeList.contains(a));
 
-		LOG.debug("Submit task {}({}) to {}.", managedTask.getTaskName(), managedTask.getRequestId(), executionNodeList);
+		LOG.debug("Submit task {}({}) to {}.", managedTask.getTaskName(), managedTask.getInfinispanRequestId(), executionNodeList);
 
 		// 実行要求
 		Future<Void> future = submitInner(executor, managedTask, resultMap);
