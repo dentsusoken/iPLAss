@@ -151,6 +151,7 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 			logger.debug("send message over infinispan. message=" + Arrays.toString(message));
 		}
 
+		// MDCトレースID単位でグルーピング
 		Map<String, List<Message>> mdcTraceIdGroup = new HashMap<>();
 		for (InternalMessage m : message) {
 			List<Message> group = mdcTraceIdGroup.get(m.getMdcTraceId());
@@ -161,6 +162,7 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 			group.add(m.getMessage());
 		}
 
+		// MDCトレースID単位でリクエスト実行
 		for (Map.Entry<String, List<Message>> entry : mdcTraceIdGroup.entrySet()) {
 			Message[] messageArray = entry.getValue().toArray(new Message[entry.getValue().size()]);
 			String mdcTraceId = entry.getKey();
