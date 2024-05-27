@@ -3086,7 +3086,8 @@ $.fn.allInputCheck = function(){
 				selUniqueRefCallback:		$v.attr("data-selUniqueRefCallback"),
 				insUniqueRefCallback:		$v.attr("data-insUniqueRefCallback"),
 				entityOid:					$v.attr("data-entityOid"),
-				entityVersion:				$v.attr("data-entityVersion")
+				entityVersion:				$v.attr("data-entityVersion"),
+				customStyle:				$v.attr("data-customStyle")
 			};
 			$.extend($v, params);
 
@@ -3109,7 +3110,7 @@ $.fn.allInputCheck = function(){
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
 				var selDynamicParamCallback = scriptContext[$v.selectDynamicParamCallback];
-				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.selectUrlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.permitVersionedSelect, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion, selDynamicParamCallback);
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.selectUrlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.permitVersionedSelect, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion, selDynamicParamCallback, $v.customStyle);
 			});
 
 			if ($("body.modal-body").length != 0) {
@@ -3125,7 +3126,7 @@ $.fn.allInputCheck = function(){
 				//新規コールバック
 				var insRefCallback = scriptContext[$v.insUniqueRefCallback];
 				var insDynamicParamCallback = scriptContext[$v.insertDynamicParamCallback];
-				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.insertUrlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType, $v.refSectionIndex, insDynamicParamCallback);
+				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.insertUrlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType, $v.refSectionIndex, insDynamicParamCallback, $v.customStyle);
 			});
 
 			$hidden.on("change", function() {

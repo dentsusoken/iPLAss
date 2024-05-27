@@ -792,6 +792,7 @@ $(function() {
 		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=Constants.VIEW_TYPE_SEARCH %>"
+		, customStyle: "<%=StringUtil.escapeJavaScript(customStyle)%>"
 	}
 	var $selBtn = $(":button[id='<%=StringUtil.escapeJavaScript(selBtnId)%>']");
 	for (key in params) {
@@ -800,7 +801,7 @@ $(function() {
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, params.propName, params.multiplicity, <%=isMultiple%>,
 				 params.urlParam, params.refEdit, function(){}, null, params.viewName, params.permitConditionSelectAll, params.permitVersionedSelect,
-				 params.parentDefName, params.parentViewName, params.viewType, null, null, null, null, dynamicParamCallback);
+				 params.parentDefName, params.parentViewName, params.viewType, null, null, null, null, dynamicParamCallback, params.customStyle);
 	});
 
 	<%-- common.js --%>
@@ -1141,13 +1142,14 @@ $(function() {
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
  data-permitVersionedSelect="false"
  data-multiplicity="-1"
+ data-customStyle="<c:out value="<%=StringUtil.escapeJavaScript(customStyle)%>"/>"
 >
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>"
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>"/></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
@@ -1204,13 +1206,14 @@ $(function() {
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
  data-permitVersionedSelect="false"
  data-multiplicity="-1"
+ data-customStyle="<c:out value="<%=StringUtil.escapeJavaScript(customStyle)%>"/>"
 >
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>"
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
@@ -1243,13 +1246,14 @@ $(function() {
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
  data-permitVersionedSelect="false"
  data-multiplicity="-1"
+ data-customStyle="<c:out value="<%=StringUtil.escapeJavaScript(customStyle)%>"/>"
 >
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName%>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" ></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
 <%
 			if (isMultiple) {
 				String deleteItem = "deleteItem(" 
@@ -1292,13 +1296,14 @@ $(function() {
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
  data-permitVersionedSelect="false"
  data-multiplicity="-1"
+ data-customStyle="<c:out value="<%=StringUtil.escapeJavaScript(customStyle)%>"/>"
 >
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk"></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 </span>
 <input type="hidden"/>
