@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.infinispan.Cache;
@@ -56,7 +55,7 @@ public class InfinispanCacheHandler implements CacheHandler {
 
 	private String cacheName;
 
-	public InfinispanCacheHandler(Cache<?, ?> c, ExecutorService es) {
+	public InfinispanCacheHandler(Cache<?, ?> c) {
 		this.cacheName = c.getName();
 	}
 

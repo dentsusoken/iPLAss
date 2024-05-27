@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.infinispan.cache.store;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -70,8 +68,6 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 	private int indexRemoveRetryCount = 10;
 	private long indexRemoveRetryInterval = 100;// ms
 	private String indexCacheConfigrationName = DEFAULT_INDEX_CACHE_CONFIGURATION_NAME;
-
-	private ExecutorService forCacheHandlerExecutorService;
 
 	// TODO カスタムコンフィグの方法。namespacepatternの場合は必要となるかも
 
@@ -145,12 +141,6 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			cm.stop();
 			cm = null;
 		}
-		synchronized (this) {
-			if (forCacheHandlerExecutorService != null) {
-				forCacheHandlerExecutorService.shutdown();
-				forCacheHandlerExecutorService = null;
-			}
-		}
 	}
 
 	@Override
@@ -204,12 +194,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 
 	@Override
 	public CacheHandler createCacheHandler(CacheStore store) {
-		synchronized (this) {
-			if (forCacheHandlerExecutorService == null) {
-				forCacheHandlerExecutorService = Executors.newCachedThreadPool();
-			}
-		}
-		return new InfinispanCacheHandler(((InfinispanCacheStore) store).cache, forCacheHandlerExecutorService);
+		return new InfinispanCacheHandler(((InfinispanCacheStore) store).cache);
 	}
 
 	public static class InfinispanCacheStore implements CacheStore {
