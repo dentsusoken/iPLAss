@@ -156,7 +156,7 @@ ext {
 		'org.gwtproject:gwt-servlet-jakarta': '2.11.0',
 		'org.gwtproject:gwt-codeserver': '2.11.0',
 
-		'org.infinispan:infinispan-core': '9.4.24.Final',
+		'org.infinispan:infinispan-core': '15.0.4.Final',
 		
 		'io.lettuce:lettuce-core': '6.2.5.RELEASE',
 		
@@ -260,7 +260,6 @@ configurations {
 	jeeruntime4tomcat.extendsFrom jakartaImplJstl
 	jeeruntime4tomcat.extendsFrom jakartaImplMail
 	jeeruntime4tomcat.extendsFrom jakartaImplValidation
-	jeeruntime4tomcat.extendsFrom jakartaImplEL
 	jeeruntime4tomcat.extendsFrom jakartaImplRest
 	jeeruntime4tomcat.extendsFrom jakartaApiXMLBinding
 	jeeruntime4tomcat.extendsFrom jakartaImplXMLBinding

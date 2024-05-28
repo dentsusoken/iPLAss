@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2013 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.infinispan.cache.store;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -32,15 +30,6 @@ import java.util.function.Function;
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.notifications.Listener;
-import org.infinispan.notifications.cachelistener.annotation.CacheEntryCreated;
-import org.infinispan.notifications.cachelistener.annotation.CacheEntryInvalidated;
-import org.infinispan.notifications.cachelistener.annotation.CacheEntryModified;
-import org.infinispan.notifications.cachelistener.annotation.CacheEntryRemoved;
-import org.infinispan.notifications.cachelistener.event.CacheEntryCreatedEvent;
-import org.infinispan.notifications.cachelistener.event.CacheEntryInvalidatedEvent;
-import org.infinispan.notifications.cachelistener.event.CacheEntryModifiedEvent;
-import org.infinispan.notifications.cachelistener.event.CacheEntryRemovedEvent;
 import org.infinispan.util.function.SerializableBiFunction;
 import org.infinispan.util.function.SerializableFunction;
 import org.iplass.mtp.impl.cache.CacheService;
@@ -49,12 +38,7 @@ import org.iplass.mtp.impl.cache.store.CacheHandler;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
 import org.iplass.mtp.impl.cache.store.TimeToLiveCalculator;
-import org.iplass.mtp.impl.cache.store.event.CacheCreateEvent;
 import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
-import org.iplass.mtp.impl.cache.store.event.CacheEventType;
-import org.iplass.mtp.impl.cache.store.event.CacheInvalidateEvent;
-import org.iplass.mtp.impl.cache.store.event.CacheRemoveEvent;
-import org.iplass.mtp.impl.cache.store.event.CacheUpdateEvent;
 import org.iplass.mtp.impl.infinispan.InfinispanService;
 import org.iplass.mtp.impl.infinispan.cache.store.InfinispanIndexedCacheStore.IndexEntry;
 import org.iplass.mtp.impl.infinispan.cache.store.InfinispanIndexedCacheStore.IndexKey;
@@ -68,18 +52,22 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 	private static Logger logger = LoggerFactory.getLogger(InfinispanCacheStoreFactory.class);
 
 	private static final String INDEX_STORE_POSTFIX = "._index";
+	// NOTE infinispan 10.1 で infinispan.xml の '/infinispan/cache-container@default-cache' 属性がきかなくなっている為、機能としてデフォルト設定を利用する形に変更。
+	/** cache の infinispan 設定名。infinispan.xml の '/infinispan/cache-container' 内参照 */
+	private static final String DEFAULT_CACHE_CONFIGURATION_NAME = "___defaultcache";
+	// TODO 別にする可能性があるので、定義名を分けておく。
+	/** index cache の infinispan 設定名。 */
+	private static final String DEFAULT_INDEX_CACHE_CONFIGURATION_NAME = DEFAULT_CACHE_CONFIGURATION_NAME;
 
 	private EmbeddedCacheManager cm;
 	private boolean createOnStartup = false;
 	private CacheStore sharedInstance;
-	private String cacheConfigrationName;
+	private String cacheConfigrationName = DEFAULT_CACHE_CONFIGURATION_NAME;
 	private TimeToLiveCalculator timeToLiveCalculator;
 
 	private int indexRemoveRetryCount = 10;
 	private long indexRemoveRetryInterval = 100;// ms
-	private String indexCacheConfigrationName;
-
-	private ExecutorService forCacheHandlerExecutorService;
+	private String indexCacheConfigrationName = DEFAULT_INDEX_CACHE_CONFIGURATION_NAME;
 
 	// TODO カスタムコンフィグの方法。namespacepatternの場合は必要となるかも
 
@@ -153,12 +141,6 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			cm.stop();
 			cm = null;
 		}
-		synchronized (this) {
-			if (forCacheHandlerExecutorService != null) {
-				forCacheHandlerExecutorService.shutdown();
-				forCacheHandlerExecutorService = null;
-			}
-		}
 	}
 
 	@Override
@@ -212,12 +194,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 
 	@Override
 	public CacheHandler createCacheHandler(CacheStore store) {
-		synchronized (this) {
-			if (forCacheHandlerExecutorService == null) {
-				forCacheHandlerExecutorService = Executors.newCachedThreadPool();
-			}
-		}
-		return new InfinispanCacheHandler(((InfinispanCacheStore) store).cache, forCacheHandlerExecutorService);
+		return new InfinispanCacheHandler(((InfinispanCacheStore) store).cache);
 	}
 
 	public static class InfinispanCacheStore implements CacheStore {
@@ -235,7 +212,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			}
 			cache = factory.cm.getCache(namespace);
 			cache.addListener(new InfinispanCacheListener(listeners));
-			timeToLiveCalculator= factory.getTimeToLiveCalculator();
+			timeToLiveCalculator = factory.getTimeToLiveCalculator();
 		}
 
 		@Override
@@ -253,7 +230,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			if (timeToLiveCalculator != null) {
 				timeToLiveCalculator.set(entry);
 			}
-			
+
 			if (clean) {
 				if (entry.getTimeToLive() == null) {
 					cache.putForExternalRead(entry.getKey(), entry);
@@ -276,7 +253,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			if (timeToLiveCalculator != null) {
 				timeToLiveCalculator.set(entry);
 			}
-			
+
 			if (entry.getTimeToLive() == null) {
 				return cache.putIfAbsent(entry.getKey(), entry);
 			} else {
@@ -289,18 +266,18 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			//ttlはmappingFunction実行しないと決められないので、有効期限チェックはgetのタイミングとする
 			return cache.computeIfAbsent(key, new MappingFunctionWithTTL(mappingFunction, timeToLiveCalculator));
 		}
-		
+
 		static class MappingFunctionWithTTL implements SerializableFunction<Object, CacheEntry> {
 			private static final long serialVersionUID = 6304426240300516685L;
 
 			Function<Object, CacheEntry> mappingFunction;
 			TimeToLiveCalculator timeToLiveCalculator;
-			
+
 			MappingFunctionWithTTL(Function<Object, CacheEntry> mappingFunction, TimeToLiveCalculator timeToLiveCalculator) {
 				this.mappingFunction = mappingFunction;
 				this.timeToLiveCalculator = timeToLiveCalculator;
 			}
-			
+
 			@Override
 			public CacheEntry apply(Object k) {
 				CacheEntry e = mappingFunction.apply(k);
@@ -309,7 +286,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 				}
 				return e;
 			}
-			
+
 		}
 
 		@Override
@@ -323,12 +300,12 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 
 			BiFunction<Object, CacheEntry, CacheEntry> remappingFunction;
 			TimeToLiveCalculator timeToLiveCalculator;
-			
+
 			RemappingFunctionWithTTL(BiFunction<Object, CacheEntry, CacheEntry> remappingFunction, TimeToLiveCalculator timeToLiveCalculator) {
 				this.remappingFunction = remappingFunction;
 				this.timeToLiveCalculator = timeToLiveCalculator;
 			}
-			
+
 			@Override
 			public CacheEntry apply(Object k, CacheEntry v) {
 				CacheEntry e = remappingFunction.apply(k, v);
@@ -337,7 +314,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 				}
 				return e;
 			}
-			
+
 		}
 
 		static boolean isStillAliveOrNull(CacheEntry e) {
@@ -455,200 +432,6 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 		protected Cache<Object, CacheEntry> getCache() {
 			return cache;
 		}
-	}
-
-	private static ThreadLocal<InfinispanCacheContextHolder> holder = new ThreadLocal<>();
-
-	private static InfinispanCacheContextHolder newHolder() {
-		InfinispanCacheContextHolder current = holder.get();
-		InfinispanCacheContextHolder toRet = new InfinispanCacheContextHolder();
-		if (current != null) {
-			toRet.prevStack = current;
-		}
-		holder.set(toRet);
-		return toRet;
-	}
-
-	private static InfinispanCacheContextHolder currentHolder() {
-		return holder.get();
-	}
-
-	private static void endHolder() {
-		InfinispanCacheContextHolder current = holder.get();
-		if (current != null) {// nullの場合がある。infinispanのバグ？PassivateされてるやつがActivateされるとき、modifyでpreがいきなりfalseで来る
-			if (current.prevStack != null) {
-				holder.set(current.prevStack);
-			} else {
-				holder.set(null);
-			}
-		}
-	}
-
-	private static class InfinispanCacheContextHolder {
-		CacheEventType type;
-		CacheEntry preValue;
-		InfinispanCacheContextHolder prevStack;
-	}
-
-	@Listener
-	public static class InfinispanCacheListener {
-
-		private List<CacheEventListener> listeners;
-
-		public InfinispanCacheListener(List<CacheEventListener> listeners) {
-			this.listeners = listeners;
-		}
-
-		@CacheEntryCreated
-		public void created(CacheEntryCreatedEvent<Object, CacheEntry> event) {
-			if (event.isPre()) {
-				InfinispanCacheContextHolder h = newHolder();
-				h.type = CacheEventType.CREATE;
-			} else {
-				try {
-					if (listeners.size() > 0) {
-						InfinispanCacheContextHolder h = currentHolder();
-						switch (h.type) {
-						case CREATE:
-							CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
-							for (CacheEventListener l : listeners) {
-								l.created(cce);
-							}
-							break;
-						default:
-							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
-						}
-					}
-				} finally {
-					endHolder();
-				}
-			}
-		}
-
-		@CacheEntryModified
-		public void modified(CacheEntryModifiedEvent<Object, CacheEntry> event) {
-
-//			if (logger.isDebugEnabled()) {
-//				logger.debug("modify event:" + event);
-//			}
-
-			if (event.isPre()) {
-				InfinispanCacheContextHolder h = newHolder();
-				if (event.getValue() == null) {
-					h.type = CacheEventType.CREATE;
-				} else {
-					h.type = CacheEventType.UPDATE;
-					h.preValue = event.getValue();
-				}
-			} else {
-				try {
-					if (listeners.size() > 0) {
-						InfinispanCacheContextHolder h = currentHolder();
-						switch (h.type) {
-						case CREATE:
-							CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
-							for (CacheEventListener l : listeners) {
-								l.created(cce);
-							}
-							break;
-						case UPDATE:
-							CacheUpdateEvent cue = new CacheUpdateEvent(h.preValue, event.getValue());
-							for (CacheEventListener l : listeners) {
-								l.updated(cue);
-							}
-							break;
-						default:
-							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
-						}
-					}
-				} finally {
-					endHolder();
-				}
-			}
-		}
-
-		@CacheEntryRemoved
-		public void removed(CacheEntryRemovedEvent<Object, CacheEntry> event) {
-//			if (logger.isDebugEnabled()) {
-//				logger.debug("remove event:" + event);
-//			}
-
-			if (event.isPre()) {
-				InfinispanCacheContextHolder h = newHolder();
-				h.type = CacheEventType.REMOVE;
-				h.preValue = event.getValue();
-			} else {
-				try {
-					if (listeners.size() > 0) {
-						InfinispanCacheContextHolder h = currentHolder();
-						switch (h.type) {
-						case REMOVE:
-							CacheRemoveEvent cre = new CacheRemoveEvent(h.preValue);
-							for (CacheEventListener l : listeners) {
-								l.removed(cre);
-							}
-							break;
-						case INVALIDATE:
-							// なぜかInvalidateのafterがremovedに、、、infinispanバグ？
-							CacheInvalidateEvent cie = new CacheInvalidateEvent(h.preValue);
-							for (CacheEventListener l : listeners) {
-								l.invalidated(cie);
-							}
-							break;
-						default:
-							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
-						}
-					}
-				} finally {
-					endHolder();
-				}
-			}
-		}
-
-		@CacheEntryInvalidated
-		public void invalidated(CacheEntryInvalidatedEvent<Object, CacheEntry> event) {
-//			if (logger.isDebugEnabled()) {
-//				logger.debug("invalidate event:" + event);
-//			}
-
-			if (event.isPre()) {
-				InfinispanCacheContextHolder h = newHolder();
-				h.type = CacheEventType.INVALIDATE;
-				h.preValue = event.getValue();
-			} else {
-				// 呼ばれない？？？
-				try {
-					if (listeners.size() > 0) {
-						InfinispanCacheContextHolder h = currentHolder();
-						switch (h.type) {
-						case INVALIDATE:
-							CacheInvalidateEvent cie = new CacheInvalidateEvent(h.preValue);
-							for (CacheEventListener l : listeners) {
-								l.invalidated(cie);
-							}
-							break;
-						default:
-							throw new IllegalStateException("preEvent afterEvent missmatch.preType:" + h.type + ", event:" + event);
-						}
-					}
-				} finally {
-					endHolder();
-				}
-			}
-		}
-
-//		@CacheEntryRemoved
-//		@CacheEntryActivated
-//		@CacheEntryCreated
-//		@CacheEntryLoaded
-//		@CacheEntryPassivated
-//		@CacheEntryVisited
-//		public void otherEvented(CacheEntryEvent<Object, CacheEntry> event) {
-//			if (logger.isDebugEnabled()) {
-//				logger.debug("event:" + event);
-//			}
-//
-//		}
 	}
 
 	@Override

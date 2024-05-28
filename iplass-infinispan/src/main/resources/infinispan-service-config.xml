@@ -7,7 +7,13 @@
 	 -->
 	<service>
 		<interface>org.iplass.mtp.impl.infinispan.InfinispanService</interface>
-			<property name="configurationFile" value="infinispan.xml" />
+		<property name="configurationFile" value="infinispan.xml" />
+		
+		<!-- キャッシュキー、キャッシュデータに独自クラスを追加する場合はクラスを設定する。class, regex ともに複数指定可能。 -->
+		<!-- 
+		<property name="infinispan.serialization.allowList.class" value="package.path.Class" />
+		<property name="infinispan.serialization.allowList.regex" value="^(\[L|)package\.path\..*(;|)$" />
+		 -->
 	</service>
 
 	<service>
