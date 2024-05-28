@@ -260,6 +260,7 @@ configurations {
 	jeeruntime4tomcat.extendsFrom jakartaImplJstl
 	jeeruntime4tomcat.extendsFrom jakartaImplMail
 	jeeruntime4tomcat.extendsFrom jakartaImplValidation
+	jeeruntime4tomcat.extendsFrom jakartaImplEL
 	jeeruntime4tomcat.extendsFrom jakartaImplRest
 	jeeruntime4tomcat.extendsFrom jakartaApiXMLBinding
 	jeeruntime4tomcat.extendsFrom jakartaImplXMLBinding
