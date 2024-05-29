@@ -171,8 +171,7 @@ ext {
 		
 		'com.ibm.icu:icu4j': '69.1',
 		
-		
-		'junit:junit': '4.13.1',
+		'org.junit:junit-bom': '5.10.2',
 		
 		//webjars(admin)
 		'org.webjars.npm:ace-builds': '1.12.3',
