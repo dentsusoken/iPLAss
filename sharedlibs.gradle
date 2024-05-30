@@ -129,7 +129,7 @@ ext {
 		'org.jxls:jxls': '2.14.0',
 		'org.jxls:jxls-poi': '2.14.0',
 		
-		'org.codehaus.groovy:groovy-bom': '3.0.21',//by bom
+		'org.apache.groovy:groovy-bom': '4.0.21', //by bom
 		
 		'com.fasterxml.jackson:jackson-bom': '2.15.2',//by bom
 		
@@ -268,7 +268,7 @@ configurations {
 
 dependencies {
 	// all dependencies
-	implementation platform(sharedLib('org.codehaus.groovy:groovy-bom'))
+	implementation platform(sharedLib('org.apache.groovy:groovy-bom'))
 	implementation platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
 	
 	// jakarta api definition

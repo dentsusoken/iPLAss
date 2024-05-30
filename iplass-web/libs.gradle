@@ -4,7 +4,7 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.codehaus.groovy:groovy'
+	implementation 'org.apache.groovy:groovy'
 	implementation sharedLib('org.apache.httpcomponents:httpclient')
 
 	implementation sharedLib('net.logstash.logback:logstash-logback-encoder')

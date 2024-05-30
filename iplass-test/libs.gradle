@@ -8,5 +8,5 @@ dependencies {
 	api 'org.junit.vintage:junit-vintage-engine'
 
 	//groovy
-	implementation 'org.codehaus.groovy:groovy'
+	implementation 'org.apache.groovy:groovy'
 }
