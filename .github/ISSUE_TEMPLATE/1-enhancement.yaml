@@ -14,8 +14,8 @@ body:
   - type: textarea
     id: task
     attributes:
-      label: 実施事項
+      label: 実施事項（任意）
       description: |
         想定される作業内容を簡潔に記載してください。
     validations:
-      required: true
+      required: false
