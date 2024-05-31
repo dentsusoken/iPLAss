@@ -1,0 +1,21 @@
+name: ✨ 機能拡張・新機能追加
+description: 機能拡張や新機能追加に関するIssueはこちらから作成してください。
+labels: [enhancement]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 概要
+      description: |
+        提案する機能拡張や新機能の概要を記載してください。
+        提案に至った背景や目的があれば併せて記載してください。
+    validations:
+      required: true
+  - type: textarea
+    id: task
+    attributes:
+      label: 実施事項
+      description: |
+        想定される作業内容を簡潔に記載してください。
+    validations:
+      required: true

@@ -1,0 +1,20 @@
+name: 🐞 バグ報告
+description: バグ報告に関するIssueはこちらから作成してください。
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 概要
+      description: |
+        バグの概要を記載してください。
+        本来期待される動作と実際の動作がわかるように記載してください。見た目の不具合の場合は、スクリーンショットを貼り付けるとよいです。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 再現手順
+      description: バグを再現する手順を記載してください。
+    validations:
+      required: true
