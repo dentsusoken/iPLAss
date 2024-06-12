@@ -2304,7 +2304,7 @@ LocaleInfo.generic_element_property_validation_ValidatorBase_validateNormalDispl
 LocaleInfo.generic_element_property_validation_ValidatorBase_validateNormalDescriptionKey = "Perform input check in normal search.";
 LocaleInfo.generic_element_property_validation_ValidatorBase_validateDetailDisplaNameKey = "Validation in detail search";
 LocaleInfo.generic_element_property_validation_ValidatorBase_validateDetailDescriptionKey = "Perform input check in detail search.";
-LocaleInfo.DisplayNSection_titleDisplayNameKey = "Title";
+LocaleInfo.generic_element_section_Section_titleDisplayNameKey = "Title";
 LocaleInfo.generic_element_section_Section_titleDescriptionKey = "Set the title of the section.";
 LocaleInfo.generic_element_section_Section_localizedTitleListDisplayNameKey = "Multilingual Settings";
 LocaleInfo.generic_element_section_Section_idDisplayNameKey = "id";
