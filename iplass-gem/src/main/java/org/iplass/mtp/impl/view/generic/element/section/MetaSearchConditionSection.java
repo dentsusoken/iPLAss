@@ -61,12 +61,6 @@ public class MetaSearchConditionSection extends MetaSection {
 		return new MetaSearchConditionSection();
 	}
 
-	/** id */
-	private String id;
-
-	/** クラス名 */
-	private String style;
-
 	/** 詳細条件の表示件数 */
 	private int conditionDispCount;
 
@@ -180,38 +174,6 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	/** スクリプトのキー(内部用) */
 	private String scriptKey;
-
-	/**
-	 * idを取得します。
-	 * @return id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * idを設定します。
-	 * @param id id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * クラス名を取得します。
-	 * @return クラス名
-	 */
-	public String getStyle() {
-		return style;
-	}
-
-	/**
-	 * クラス名を設定します。
-	 * @param style クラス名
-	 */
-	public void setStyle(String style) {
-		this.style = style;
-	}
 
 	public Integer getCsvdownloadMaxCount() {
 		return csvdownloadMaxCount;
@@ -718,8 +680,6 @@ public class MetaSearchConditionSection extends MetaSection {
 
 		SearchConditionSection section = (SearchConditionSection) element;
 
-		this.id = section.getId();
-		this.style = section.getStyle();
 		this.conditionDispCount = section.getConditionDispCount();
 		this.colNum = section.getColNum();
 		this.unsorted = section.isUnsorted();
@@ -798,8 +758,6 @@ public class MetaSearchConditionSection extends MetaSection {
 
 		section.setScriptKey(scriptKey);
 
-		section.setId(id);
-		section.setStyle(style);
 		section.setConditionDispCount(this.conditionDispCount);
 		section.setColNum(this.colNum);
 		section.setUnsorted(unsorted);

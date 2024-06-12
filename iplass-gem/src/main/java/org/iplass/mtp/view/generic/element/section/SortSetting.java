@@ -20,14 +20,14 @@
 
 package org.iplass.mtp.view.generic.element.section;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.mtp.view.generic.NullOrderType;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.ConditionSortType;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * ソート条件設定
@@ -67,7 +67,7 @@ public class SortSetting implements Refrectable {
 	/** null項目のソート順 */
 	@MetaFieldInfo(
 			displayName="null項目のソート順",
-			displayNameKey="generic_element_section_SortSetting_nullOrderTypeDisplaNameKey",
+			displayNameKey="generic_element_section_SortSetting_nullOrderTypeDisplayNameKey",
 			inputType=InputType.ENUM,
 			enumClass=NullOrderType.class,
 			description="null項目のソート順を指定します。<br>" +

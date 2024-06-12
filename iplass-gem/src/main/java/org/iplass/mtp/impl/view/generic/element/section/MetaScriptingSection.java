@@ -20,13 +20,8 @@
 
 package org.iplass.mtp.impl.view.generic.element.section;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
-import org.iplass.mtp.impl.i18n.I18nUtil;
-import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
@@ -52,15 +47,6 @@ public class MetaScriptingSection extends MetaSection {
 	/** スクリプト */
 	private String script;
 
-	/** タイトル */
-	private String title;
-
-	/** id */
-	private String id;
-
-	/** クラス名 */
-	private String style;
-
 	/** リンクを表示するか */
 	private boolean showLink;
 
@@ -72,9 +58,6 @@ public class MetaScriptingSection extends MetaSection {
 
 	/** テンプレートのキー */
 	private String key;
-
-	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** セクション内に配置した場合に枠線を表示 */
 	private boolean dispBorderInSection;
@@ -93,54 +76,6 @@ public class MetaScriptingSection extends MetaSection {
 	 */
 	public void setScript(String script) {
 		this.script = script;
-	}
-
-	/**
-	 * タイトルを取得します。
-	 * @return タイトル
-	 */
-	public String getTitle() {
-	    return title;
-	}
-
-	/**
-	 * タイトルを設定します。
-	 * @param title タイトル
-	 */
-	public void setTitle(String title) {
-	    this.title = title;
-	}
-
-	/**
-	 * idを取得します。
-	 * @return id
-	 */
-	public String getId() {
-	    return id;
-	}
-
-	/**
-	 * idを設定します。
-	 * @param id id
-	 */
-	public void setId(String id) {
-	    this.id = id;
-	}
-
-	/**
-	 * クラス名を取得します。
-	 * @return クラス名
-	 */
-	public String getStyle() {
-		return style;
-	}
-
-	/**
-	 * クラス名を設定します。
-	 * @param style クラス名
-	 */
-	public void setStyle(String style) {
-		this.style = style;
 	}
 
 	/**
@@ -192,22 +127,6 @@ public class MetaScriptingSection extends MetaSection {
 	}
 
 	/**
-	 * 多言語設定情報を取得します。
-	 * @return リスト
-	 */
-	public List<MetaLocalizedString> getLocalizedTitleList() {
-		return localizedTitleList;
-	}
-
-	/**
-	 * 多言語設定情報を設定します。
-	 * @param リスト
-	 */
-	public void setLocalizedTitleList(List<MetaLocalizedString> localizedTitleList) {
-		this.localizedTitleList = localizedTitleList;
-	}
-
-	/**
 	 * セクション内に配置した場合に枠線を表示を取得します。
 	 * @return セクション内に配置した場合に枠線を表示
 	 */
@@ -234,16 +153,10 @@ public class MetaScriptingSection extends MetaSection {
 
 		ScriptingSection script = (ScriptingSection) element;
 		this.script = script.getScript();
-		title = script.getTitle();
-		id = script.getId();
-		this.style = script.getStyle();
 		this.showLink = script.isShowLink();
 		this.hideDetail = script.isHideDetail();
 		this.hideView = script.isHideView();
 		this.dispBorderInSection = script.isDispBorderInSection();
-
-		// 言語毎の文字情報設定
-		localizedTitleList = I18nUtil.toMeta(script.getLocalizedTitleList());
 	}
 
 	@Override
@@ -253,14 +166,10 @@ public class MetaScriptingSection extends MetaSection {
 
 		script.setScript(this.script);
 		script.setKey(key);
-		script.setTitle(title);
-		script.setId(id);
-		script.setStyle(style);
 		script.setShowLink(showLink);
 		script.setHideDetail(hideDetail);
 		script.setHideView(hideView);
 		script.setDispBorderInSection(dispBorderInSection);
-		script.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 
 		return script;
 	}

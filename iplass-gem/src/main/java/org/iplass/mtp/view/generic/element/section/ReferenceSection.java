@@ -26,7 +26,6 @@ import java.util.List;
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
-import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.HasNestProperty;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
@@ -64,7 +63,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** 詳細編集非表示設定 */
 	@MetaFieldInfo(
 			displayName="詳細編集非表示設定",
-			displayNameKey="generic_element_section_ReferenceSection_hideDetailDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_hideDetailDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=200,
 			description="詳細編集で非表示にするかを設定します。",
@@ -75,7 +74,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** 詳細表示非表示設定 */
 	@MetaFieldInfo(
 			displayName="詳細表示非表示設定",
-			displayNameKey="generic_element_section_ReferenceSection_hideViewDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_hideViewDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=210,
 			description="詳細表示で非表示にするかを設定します。",
@@ -86,55 +85,21 @@ public class ReferenceSection extends Section implements HasNestProperty {
 
 
 
-	/** タイトル */
+	/** セクション内に配置した場合に枠線を表示 */
 	@MetaFieldInfo(
-			displayName="タイトル",
-			displayNameKey="generic_element_section_ReferenceSection_titleDisplaNameKey",
-			description="セクションのタイトルを設定します。",
-			descriptionKey="generic_element_section_ReferenceSection_titleDescriptionKey",
-			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedTitleList",
-			displayOrder=300
-	)
-	@MultiLang()
-	private String title;
-
-	/** 多言語設定情報 */
-	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_element_section_ReferenceSection_localizedTitleListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=310
-	)
-	private List<LocalizedStringDefinition> localizedTitleList;
-
-	/** クラス名 */
-	@MetaFieldInfo(
-			displayName="クラス名",
-			displayNameKey="generic_element_section_ReferenceSection_styleDisplaNameKey",
-			displayOrder=320,
-			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
-			descriptionKey="generic_element_section_ReferenceSection_styleDescriptionKey"
-	)
-	private String style;
-
-
-
-
-	/** id */
-	@MetaFieldInfo(
-			displayName="id",
-			displayNameKey="generic_element_section_ReferenceSection_idDisplaNameKey",
+			displayName="セクション内に配置した場合に枠線を表示",
+			displayNameKey="generic_element_section_ReferenceSection_dispBorderInSectionDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			description="セクション内に配置した場合に枠線を表示するかを指定します。",
 			displayOrder=400,
-			description="画面上で一意となるIDを設定してください。",
-			descriptionKey="generic_element_section_ReferenceSection_idDescriptionKey"
+			descriptionKey="generic_element_section_ReferenceSection_dispBorderInSectionDescriptionKey"
 	)
-	private String id;
+	private boolean dispBorderInSection = defaultDispBorderInSection;
 
 	/** セクションの展開可否 */
 	@MetaFieldInfo(
 			displayName="初期表示時に展開",
-			displayNameKey="generic_element_section_ReferenceSection_expandableDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_expandableDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=410,
 			description="セクションを初期展開するかを指定します。",
@@ -145,7 +110,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** リンクを表示するか */
 	@MetaFieldInfo(
 			displayName="リンクを表示するか",
-			displayNameKey="generic_element_section_ReferenceSection_showLinkDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_showLinkDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=420,
 			description="詳細画面でのページ内リンクを表示するかを指定します。",
@@ -159,7 +124,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** 列数 */
 	@MetaFieldInfo(
 			displayName="列数",
-			displayNameKey="generic_element_section_ReferenceSection_colNumDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_colNumDisplayNameKey",
 			inputType=InputType.NUMBER,
 			rangeCheck=true,
 			minRange=1,
@@ -175,7 +140,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 
 	/** 表示プロパティ */
 	@MetaFieldInfo(displayName="参照型の表示プロパティ",
-			displayNameKey="generic_element_section_ReferenceSection_propertiesDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_propertiesDisplayNameKey",
 			inputType=InputType.REFERENCE,
 			referenceClass=NestProperty.class,
 			multiple=true,
@@ -189,7 +154,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** 表示順プロパティ */
 	@MetaFieldInfo(
 			displayName="表示順プロパティ",
-			displayNameKey="generic_element_section_ReferenceSection_orderPropNameDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_orderPropNameDisplayNameKey",
 			description="データの表示順序を示すプロパティを指定します。<br>" +
 					"<b>参照プロパティの多重度が1<b><br>" +
 					"使用しません。<br>" +
@@ -204,7 +169,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** データのインデックス */
 	@MetaFieldInfo(
 			displayName="データのインデックス",
-			displayNameKey="generic_element_section_ReferenceSection_indexDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_indexDisplayNameKey",
 			inputType=InputType.NUMBER,
 			rangeCheck=true,
 			minRange=0,
@@ -225,7 +190,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** 更新時に強制的に更新処理を行う */
 	@MetaFieldInfo(
 			displayName="更新時に強制的に更新処理を行う",
-			displayNameKey="generic_element_section_ReferenceSection_forceUpadteDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_forceUpadteDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=3000,
 			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
@@ -239,7 +204,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** 上部のコンテンツ */
 	@MetaFieldInfo(
 			displayName="上部のコンテンツ",
-			displayNameKey="generic_element_section_ReferenceSection_upperContentsDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_upperContentsDisplayNameKey",
 			displayOrder=4000,
 			description="セクションの上部に表示するコンテンツを設定します。<br>" +
 					"コンテンツの内容にHTMLタグを利用することも可能です。",
@@ -252,7 +217,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	/** 下部のコンテンツ */
 	@MetaFieldInfo(
 			displayName="下部のコンテンツ",
-			displayNameKey="generic_element_section_ReferenceSection_lowerContentsDisplaNameKey",
+			displayNameKey="generic_element_section_ReferenceSection_lowerContentsDisplayNameKey",
 			description="セクションの下部に表示するコンテンツを設定します。<br>" +
 					"コンテンツの内容にHTMLタグを利用することも可能です。",
 			descriptionKey="generic_element_section_ReferenceSection_lowerContentsDescriptionKey",
@@ -261,17 +226,6 @@ public class ReferenceSection extends Section implements HasNestProperty {
 			displayOrder=4010
 	)
 	private String lowerContents;
-
-	/** セクション内に配置した場合に枠線を表示 */
-	@MetaFieldInfo(
-			displayName="セクション内に配置した場合に枠線を表示",
-			displayNameKey="generic_element_section_ReferenceSection_dispBorderInSectionDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="セクション内に配置した場合に枠線を表示するかを指定します。",
-			displayOrder=410,
-			descriptionKey="generic_element_section_ReferenceSection_dispBorderInSectionDescriptionKey"
-	)
-	private boolean dispBorderInSection = defaultDispBorderInSection;
 
 	/** 上下コンテンツスクリプトのキー(内部用) */
 	private String contentScriptKey;
@@ -309,103 +263,6 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	}
 
 	/**
-	 * タイトルを取得します。
-	 * @return タイトル
-	 */
-	public String getTitle() {
-	    return title;
-	}
-
-	/**
-	 * タイトルを設定します。
-	 * @param title タイトル
-	 */
-	public void setTitle(String title) {
-	    this.title = title;
-	}
-
-	/**
-	 * セクションの展開可否を取得します。
-	 * @return セクションの展開可否
-	 */
-	public boolean isExpandable() {
-	    return expandable;
-	}
-
-	/**
-	 * セクションの展開可否を設定します。
-	 * @param expandable セクションの展開可否
-	 */
-	public void setExpandable(boolean expandable) {
-	    this.expandable = expandable;
-	}
-
-	/**
-	 * idを取得します。
-	 * @return id
-	 */
-	public String getId() {
-	    return id;
-	}
-
-	/**
-	 * idを設定します。
-	 * @param id id
-	 */
-	public void setId(String id) {
-	    this.id = id;
-	}
-
-	/**
-	 * クラス名を取得します。
-	 * @return クラス名
-	 */
-	public String getStyle() {
-	    return style;
-	}
-
-	/**
-	 * クラス名を設定します。
-	 * @param style クラス名
-	 */
-	public void setStyle(String style) {
-	    this.style = style;
-	}
-
-	/**
-	 * 列数を取得します。
-	 * @return 列数
-	 */
-	public int getColNum() {
-		return colNum;
-	}
-
-	/**
-	 * 列数を設定します。
-	 * @param colNum 列数
-	 */
-	public void setColNum(int colNum) {
-		this.colNum = colNum;
-	}
-
-	/**
-	 * リンクを表示するかを取得します。
-	 * @return リンクを表示するか
-	 */
-	@Override
-	public boolean isShowLink() {
-	    return showLink;
-	}
-
-	/**
-	 * リンクを表示するかを設定します。
-	 * @param showLink リンクを表示するか
-	 */
-	public void setShowLink(boolean showLink) {
-	    this.showLink = showLink;
-	}
-
-	/**
 	 * 詳細編集非表示設定を取得します。
 	 * @return 詳細編集非表示設定
 	 */
@@ -435,6 +292,128 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void setHideView(boolean hideView) {
 	    this.hideView = hideView;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を取得します。
+	 * @return セクション内に配置した場合に枠線を表示
+	 */
+	public boolean isDispBorderInSection() {
+		return dispBorderInSection;
+	}
+
+	/**
+	 * セクション内に配置した場合に枠線を表示を設定します。
+	 * @param dispBorderInSection セクション内に配置した場合に枠線を表示
+	 */
+	public void setDispBorderInSection(boolean dispBorderInSection) {
+		this.dispBorderInSection = dispBorderInSection;
+	}
+
+	/**
+	 * セクションの展開可否を取得します。
+	 * @return セクションの展開可否
+	 */
+	public boolean isExpandable() {
+	    return expandable;
+	}
+
+	/**
+	 * セクションの展開可否を設定します。
+	 * @param expandable セクションの展開可否
+	 */
+	public void setExpandable(boolean expandable) {
+	    this.expandable = expandable;
+	}
+
+	/**
+	 * リンクを表示するかを取得します。
+	 * @return リンクを表示するか
+	 */
+	@Override
+	public boolean isShowLink() {
+	    return showLink;
+	}
+
+	/**
+	 * リンクを表示するかを設定します。
+	 * @param showLink リンクを表示するか
+	 */
+	public void setShowLink(boolean showLink) {
+	    this.showLink = showLink;
+	}
+
+	/**
+	 * 列数を取得します。
+	 * @return 列数
+	 */
+	public int getColNum() {
+		return colNum;
+	}
+
+	/**
+	 * 列数を設定します。
+	 * @param colNum 列数
+	 */
+	public void setColNum(int colNum) {
+		this.colNum = colNum;
+	}
+
+	/**
+	 * 表示プロパティを取得します。
+	 * @return 表示プロパティ
+	 */
+	public List<NestProperty> getProperties() {
+		if (properties == null) properties = new ArrayList<>();
+	    return properties;
+	}
+
+	/**
+	 * 表示プロパティを設定します。
+	 * @param properties 表示プロパティ
+	 */
+	public void setProperties(List<NestProperty> properties) {
+	    this.properties = properties;
+	}
+
+	/**
+	 * 表示プロパティを追加します。
+	 * @param property 表示プロパティ
+	 */
+	public void addProperty(NestProperty property) {
+		getProperties().add(property);
+	}
+
+	/**
+	 * 表示順プロパティを取得します。
+	 * @return 表示順プロパティ
+	 */
+	public String getOrderPropName() {
+	    return orderPropName;
+	}
+
+	/**
+	 * 表示順プロパティを設定します。
+	 * @param orderPropName 表示順プロパティ
+	 */
+	public void setOrderPropName(String orderPropName) {
+	    this.orderPropName = orderPropName;
+	}
+
+	/**
+	 * データのインデックスを取得します。
+	 * @return データのインデックス
+	 */
+	public int getIndex() {
+	    return index;
+	}
+
+	/**
+	 * データのインデックスを設定します。
+	 * @param index データのインデックス
+	 */
+	public void setIndex(int index) {
+	    this.index = index;
 	}
 
 	/**
@@ -483,107 +462,6 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void setLowerContents(String lowerContents) {
 	    this.lowerContents = lowerContents;
-	}
-
-	/**
-	 * 表示プロパティを取得します。
-	 * @return 表示プロパティ
-	 */
-	public List<NestProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<>();
-	    return properties;
-	}
-
-	/**
-	 * 表示プロパティを設定します。
-	 * @param properties 表示プロパティ
-	 */
-	public void setProperties(List<NestProperty> properties) {
-	    this.properties = properties;
-	}
-
-	/**
-	 * 表示プロパティを追加します。
-	 * @param property 表示プロパティ
-	 */
-	public void addProperty(NestProperty property) {
-		getProperties().add(property);
-	}
-
-	/**
-	 * 多言語設定情報を取得します。
-	 * @return リスト
-	 */
-	public List<LocalizedStringDefinition> getLocalizedTitleList() {
-		return localizedTitleList;
-	}
-
-	/**
-	 * 多言語設定情報を設定します。
-	 * @param リスト
-	 */
-	public void setLocalizedTitleList(List<LocalizedStringDefinition> localizedTitleList) {
-		this.localizedTitleList = localizedTitleList;
-	}
-
-	/**
-	 * 多言語設定情報を追加します。
-	 * @param 多言語設定情報
-	 */
-	public void addLocalizedTitleList(LocalizedStringDefinition localizedTitle) {
-		if (localizedTitleList == null) {
-			localizedTitleList = new ArrayList<>();
-		}
-
-		localizedTitleList.add(localizedTitle);
-	}
-
-	/**
-	 * 表示順プロパティを取得します。
-	 * @return 表示順プロパティ
-	 */
-	public String getOrderPropName() {
-	    return orderPropName;
-	}
-
-	/**
-	 * 表示順プロパティを設定します。
-	 * @param orderPropName 表示順プロパティ
-	 */
-	public void setOrderPropName(String orderPropName) {
-	    this.orderPropName = orderPropName;
-	}
-
-	/**
-	 * データのインデックスを取得します。
-	 * @return データのインデックス
-	 */
-	public int getIndex() {
-	    return index;
-	}
-
-	/**
-	 * データのインデックスを設定します。
-	 * @param index データのインデックス
-	 */
-	public void setIndex(int index) {
-	    this.index = index;
-	}
-
-	/**
-	 * セクション内に配置した場合に枠線を表示を取得します。
-	 * @return セクション内に配置した場合に枠線を表示
-	 */
-	public boolean isDispBorderInSection() {
-		return dispBorderInSection;
-	}
-
-	/**
-	 * セクション内に配置した場合に枠線を表示を設定します。
-	 * @param dispBorderInSection セクション内に配置した場合に枠線を表示
-	 */
-	public void setDispBorderInSection(boolean dispBorderInSection) {
-		this.dispBorderInSection = dispBorderInSection;
 	}
 
 	/**
