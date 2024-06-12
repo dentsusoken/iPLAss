@@ -20,8 +20,11 @@
 
 package org.iplass.mtp.impl.view.generic.element.section;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.iplass.mtp.impl.i18n.I18nUtil;
+import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
@@ -32,8 +35,11 @@ import org.iplass.mtp.view.generic.element.section.ReferenceSection;
 import org.iplass.mtp.view.generic.element.section.ScriptingSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.section.Section;
 import org.iplass.mtp.view.generic.element.section.TemplateSection;
 import org.iplass.mtp.view.generic.element.section.VersionSection;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * セクションのメタデータ
@@ -68,14 +74,105 @@ public abstract class MetaSection extends MetaElement {
 		return null;
 	}
 
+	/** タイトル */
+	private String title;
+
+	/** 多言語設定情報 */
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
+
+	/** id */
+	private String id;
+
+	/** クラス名 */
+	private String style;
+
+	/**
+	 * タイトルを取得します。
+	 * @return タイトル
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * タイトルを設定します。
+	 * @param title タイトル
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * 多言語設定情報を取得します。
+	 * @return リスト
+	 */
+	public List<MetaLocalizedString> getLocalizedTitleList() {
+		return localizedTitleList;
+	}
+
+	/**
+	 * 多言語設定情報を設定します。
+	 * @param リスト
+	 */
+	public void setLocalizedTitleList(List<MetaLocalizedString> localizedTitleList) {
+		this.localizedTitleList = localizedTitleList;
+	}
+
+	/**
+	 * idを取得します。
+	 * @return id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * idを設定します。
+	 * @param id id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * クラス名を取得します。
+	 * @return クラス名
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * クラス名を設定します。
+	 * @param style クラス名
+	 */
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
 	@Override
 	protected void fillFrom(Element element, String definitionId) {
 		super.fillFrom(element, definitionId);
+
+		Section section = (Section) element;
+		this.title = section.getTitle();
+		this.id = section.getId();
+		this.style = section.getStyle();
+
+		// 言語毎の文字情報設定
+		localizedTitleList = I18nUtil.toMeta(section.getLocalizedTitleList());
 	}
 
 	@Override
 	protected void fillTo(Element element, String definitionId) {
 		super.fillTo(element, definitionId);
+
+		Section section = (Section) element;
+		section.setTitle(this.title);
+		section.setId(this.id);
+		section.setStyle(this.style);
+
+		section.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 	}
 
 	@Override

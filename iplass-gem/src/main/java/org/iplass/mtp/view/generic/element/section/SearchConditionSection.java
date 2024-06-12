@@ -27,10 +27,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.adminconsole.view.annotation.InputType;
@@ -42,6 +38,10 @@ import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.element.Element;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlType;
+
 /**
  * 検索条件を保持するセクション
  * @author lis3wg
@@ -50,7 +50,7 @@ import org.iplass.mtp.view.generic.element.Element;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/SearchConditionSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-@IgnoreField({"dispFlag", "displayScript"})
+@IgnoreField({"dispFlag", "displayScript", "title"})
 public class SearchConditionSection extends Section {
 
 	/** 検索条件のソートタイプ */
@@ -81,7 +81,7 @@ public class SearchConditionSection extends Section {
 	/** 列数 */
 	@MetaFieldInfo(
 			displayName="列数",
-			displayNameKey="generic_element_section_SearchConditionSection_colNumDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_colNumDisplayNameKey",
 			inputType=InputType.NUMBER,
 			rangeCheck=true,
 			minRange=1,
@@ -95,7 +95,7 @@ public class SearchConditionSection extends Section {
 	/** 詳細条件の表示件数 */
 	@MetaFieldInfo(
 			displayName="詳細条件の表示件数",
-			displayNameKey="generic_element_section_SearchConditionSection_conditionDispCountDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_conditionDispCountDisplayNameKey",
 			inputType=InputType.NUMBER,
 			rangeCheck=true,
 			minRange=1,
@@ -109,7 +109,7 @@ public class SearchConditionSection extends Section {
 	/** 詳細検索非表示設定 */
 	@MetaFieldInfo(
 			displayName="詳細検索非表示設定",
-			displayNameKey="generic_element_section_SearchConditionSection_hideDetailConditionDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_hideDetailConditionDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=220,
 			description="詳細検索を非表示にするかを設定します。",
@@ -120,7 +120,7 @@ public class SearchConditionSection extends Section {
 	/** 定型検索非表示設定 */
 	@MetaFieldInfo(
 			displayName="定型検索非表示設定",
-			displayNameKey="generic_element_section_SearchConditionSection_hideFixedConditionDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_hideFixedConditionDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=230,
 			description="定型検索を非表示にするかを設定します。",
@@ -128,30 +128,10 @@ public class SearchConditionSection extends Section {
 	)
 	private boolean hideFixedCondition;
 
-	/** クラス名 */
-	@MetaFieldInfo(
-			displayName="クラス名",
-			displayNameKey="generic_element_section_SearchConditionSection_styleDisplayNameKey",
-			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
-			descriptionKey="generic_element_section_SearchConditionSection_styleDescriptionKey",
-			displayOrder=320
-	)
-	private String style;
-
-	/** id */
-	@MetaFieldInfo(
-			displayName="id",
-			displayNameKey="generic_element_section_SearchConditionSection_idDisplayNameKey",
-			displayOrder=400,
-			description="画面上で一意となるIDを設定してください。",
-			descriptionKey="generic_element_section_SearchConditionSection_idDescriptionKey"
-	)
-	private String id;
-
 	/** CSVダウンロードボタン非表示設定 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロードボタン非表示設定 ",
-			displayNameKey="generic_element_section_SearchConditionSection_hideCsvdownloadDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_hideCsvdownloadDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1000,
 			description="CSVダウンロードボタンを非表示にするかを設定します。",
@@ -162,7 +142,7 @@ public class SearchConditionSection extends Section {
 	/** CSVダウンロードダイアログ非表示設定 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロードダイアログ非表示設定 ",
-			displayNameKey="generic_element_section_SearchConditionSection_hideCsvdownloadDialogDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_hideCsvdownloadDialogDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1010,
 			description="CSVダウンロード時に全項目出力するかを選択するダイアログを非表示にするかを設定します。",
@@ -173,7 +153,7 @@ public class SearchConditionSection extends Section {
 	/** CSVダウンロード時oid非出力設定 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロード時oid非出力設定 ",
-			displayNameKey="generic_element_section_SearchConditionSection_nonOutputOidDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_nonOutputOidDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1020,
 			description="CSVダウンロード時oidを出力しないかを設定します。",
@@ -184,7 +164,7 @@ public class SearchConditionSection extends Section {
 	/** CSVダウンロード時BinaryReference非出力設定 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロード時BinaryReference非出力設定 ",
-			displayNameKey="generic_element_section_SearchConditionSection_nonOutputBinaryRefDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_nonOutputBinaryRefDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1030,
 			description="CSVダウンロード時BinaryReferenceのnameを出力しないかを設定します。",
@@ -195,7 +175,7 @@ public class SearchConditionSection extends Section {
 	/** CSVダウンロード時Reference非出力設定 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロード時Reference非出力設定 ",
-			displayNameKey="generic_element_section_SearchConditionSection_nonOutputReferenceDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_nonOutputReferenceDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1040,
 			description="CSVダウンロード時Referenceを出力しないかを設定します。",
@@ -206,7 +186,7 @@ public class SearchConditionSection extends Section {
 	/** CSVダウンロード時表示名非出力設定 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロード時表示名非出力設定 ",
-			displayNameKey="generic_element_section_SearchConditionSection_nonOutputDisplayNameDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_nonOutputDisplayNameDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1045,
 			description="Upload形式のCSVダウンロード時表示名を出力しないかを設定します。",
@@ -241,7 +221,7 @@ public class SearchConditionSection extends Section {
 	/** CSVダウンロード件数の上限値 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロード件数の上限値",
-			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplayNameKey",
 			inputType=InputType.NUMBER,
 			displayOrder=1070,
 			description="CSVダウンロード件数の上限値を設定します。",
@@ -252,7 +232,7 @@ public class SearchConditionSection extends Section {
 	/** Upload形式のCSVダウンロード時に一括でロードする */
 	@MetaFieldInfo(
 			displayName="Upload形式のCSVダウンロード時に一括でロードする ",
-			displayNameKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadAtOnceDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadAtOnceDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1073,
 			description="Upload形式のCSVダウンロードで、多重度複数の参照を含む場合に一括でロードをするかを設定します。",
@@ -263,7 +243,7 @@ public class SearchConditionSection extends Section {
 	/** Upload形式のCSVダウンロード時のロード単位 */
 	@MetaFieldInfo(
 			displayName="Upload形式のCSVダウンロード時のロード単位",
-			displayNameKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDisplayNameKey",
 			inputType=InputType.NUMBER,
 			displayOrder=1075,
 			description="Upload形式のCSVダウンロードで、多重度複数の参照を含む場合に一度にロードする件数を設定します。",
@@ -274,7 +254,7 @@ public class SearchConditionSection extends Section {
 	/** CSVダウンロード項目 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロード項目",
-			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplayNameKey",
 			inputType=InputType.TEXT_AREA,
 			displayOrder=1080,
 			description="CSV出力対象の項目を指定します。",
@@ -285,7 +265,7 @@ public class SearchConditionSection extends Section {
 	/** Upload形式のCSVダウンロード項目 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロード項目(Upload形式)",
-			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadUploadablePropertiesDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadUploadablePropertiesDisplayNameKey",
 			inputType=InputType.TEXT_AREA,
 			displayOrder=1085,
 			description="Upload形式のCSV出力対象の項目を指定します。",
@@ -296,7 +276,7 @@ public class SearchConditionSection extends Section {
 	/** CSVファイル名Format */
 	@MetaFieldInfo(
 			displayName="CSVファイル名Format",
-			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplayNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovy_script",
 			displayOrder=1090,
@@ -310,7 +290,7 @@ public class SearchConditionSection extends Section {
 	/** CSVアップロードボタン非表示設定 */
 	@MetaFieldInfo(
 			displayName="CSVアップロードボタン非表示設定 ",
-			displayNameKey="generic_element_section_SearchConditionSection_hideCsvUploadDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_hideCsvUploadDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=2000,
 			description="CSVアップロードボタンを非表示にするかを設定します。",
@@ -377,7 +357,7 @@ public class SearchConditionSection extends Section {
 	/** CSVアップロード時のトランザクション制御設定 */
 	@MetaFieldInfo(
 			displayName="CSVアップロード時のトランザクション制御設定",
-			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDisplayNameKey",
 			inputType=InputType.ENUM,
 			enumClass=CsvUploadTransactionType.class,
 			displayOrder=2060,
@@ -393,7 +373,7 @@ public class SearchConditionSection extends Section {
 			enumClass=TargetVersion.class,
 			fixedEnumValue = {"CURRENT_VALID", "SPECIFIC"},
 			displayOrder=2063,
-			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTargetVersionForNoneVersionedEntityDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTargetVersionForNoneVersionedEntityDisplayNameKey",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadTargetVersionForNoneVersionedEntityDescriptionKey"
 	)
 	private TargetVersion csvUploadTargetVersionForNoneVersionedEntity;
@@ -403,7 +383,7 @@ public class SearchConditionSection extends Section {
 			displayName="バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可",
 			inputType=InputType.CHECKBOX,
 			displayOrder=2065,
-			displayNameKey="generic_element_section_SearchConditionSection_canCsvUploadTargetVersionSelectForNoneVersionedEntityDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_canCsvUploadTargetVersionSelectForNoneVersionedEntityDisplayNameKey",
 			descriptionKey="generic_element_section_SearchConditionSection_canCsvUploadTargetVersionSelectForNoneVersionedEntityDescriptionKey"
 	)
 	private boolean canCsvUploadTargetVersionSelectForNoneVersionedEntity;
@@ -411,7 +391,7 @@ public class SearchConditionSection extends Section {
 	/** カスタムCSVアップロード処理クラス名 */
 	@MetaFieldInfo(
 			displayName="カスタムCSVアップロード処理クラス名",
-			displayNameKey="generic_element_section_SearchConditionSection_csvUploadInterrupterNameDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadInterrupterNameDisplayNameKey",
 			displayOrder=2070,
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadInterrupterNameDescriptionKey"
 	)
@@ -421,7 +401,7 @@ public class SearchConditionSection extends Section {
 	/** 重複行をまとめるか */
 	@MetaFieldInfo(
 			displayName="重複行をまとめるか",
-			displayNameKey="generic_element_section_SearchConditionSection_distinctDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_distinctDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=3000,
 			description="重複行をまとめるかを設定します。",
@@ -432,7 +412,7 @@ public class SearchConditionSection extends Section {
 	/** デフォルト検索条件 */
 	@MetaFieldInfo(
 			displayName="検索時デフォルトフィルター条件",
-			displayNameKey="generic_element_section_SearchConditionSection_defaultConditionDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_defaultConditionDisplayNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovytemplate",
 			displayOrder=3010,
@@ -459,7 +439,7 @@ public class SearchConditionSection extends Section {
 	/** デフォルト検索条件をフィルタ定義と一緒に利用するか */
 	@MetaFieldInfo(
 			displayName="デフォルト検索条件をフィルタ定義と一緒に利用するか ",
-			displayNameKey="generic_element_section_SearchConditionSection_useDefaultConditionWithFilterDefinitionDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_useDefaultConditionWithFilterDefinitionDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=3030,
 			description="フィルタ定義を使う検索(定型、検索結果一覧パーツ、検索結果一覧ウィジェット)で、フィルタ定義と一緒にデフォルトフィルタ条件を使うかを設定します。<br>"
@@ -472,7 +452,7 @@ public class SearchConditionSection extends Section {
 	/** デフォルトプロパティ条件設定スクリプト */
 	@MetaFieldInfo(
 			displayName="デフォルトプロパティ条件設定スクリプト",
-			displayNameKey="generic_element_section_SearchConditionSection_defaultPropertyConditionScriptDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_defaultPropertyConditionScriptDisplayNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovy_script",
 			displayOrder=3040,
@@ -505,7 +485,7 @@ public class SearchConditionSection extends Section {
 	/** 検索時にソートしないか */
 	@MetaFieldInfo(
 			displayName="検索時にソートしないか",
-			displayNameKey="generic_element_section_SearchConditionSection_unsortedDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_unsortedDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=3060,
 			description="検索時にソートしないかを設定します。<br>" +
@@ -516,7 +496,7 @@ public class SearchConditionSection extends Section {
 
 	@MetaFieldInfo(
 			displayName="全文検索時にソートするか",
-			displayNameKey="generic_element_section_SearchConditionSection_fulltextSearchSortedDisplaNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_fulltextSearchSortedDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=3070,
 			description="全文検索時にソートするかを設定します。<br>" +
@@ -535,181 +515,6 @@ public class SearchConditionSection extends Section {
 	}
 
 
-	public boolean isHideCsvdownloadDialog() {
-		return hideCsvdownloadDialog;
-	}
-
-
-	public void setHideCsvdownloadDialog(boolean hideCsvdownloadDialog) {
-		this.hideCsvdownloadDialog = hideCsvdownloadDialog;
-	}
-
-	public boolean isNonOutputOid() {
-		return nonOutputOid;
-	}
-
-	public void setNonOutputOid(boolean nonOutputOid) {
-		this.nonOutputOid = nonOutputOid;
-	}
-
-	public boolean isNonOutputBinaryRef() {
-		return nonOutputBinaryRef;
-	}
-
-	public void setNonOutputBinaryRef(boolean nonOutputBinaryRef) {
-		this.nonOutputBinaryRef = nonOutputBinaryRef;
-	}
-
-	public boolean isNonOutputReference() {
-		return nonOutputReference;
-	}
-
-	public void setNonOutputReference(boolean nonOutputReference) {
-		this.nonOutputReference = nonOutputReference;
-	}
-
-	public boolean isNonOutputDisplayName() {
-		return nonOutputDisplayName;
-	}
-
-	public void setNonOutputDisplayName(boolean nonOutputDisplayName) {
-		this.nonOutputDisplayName = nonOutputDisplayName;
-	}
-
-	public boolean isHideCsvUpload() {
-		return hideCsvUpload;
-	}
-
-	public void setHideCsvUpload(boolean hideCsvUpload) {
-		this.hideCsvUpload = hideCsvUpload;
-	}
-
-	public boolean isCsvUploadDenyInsert() {
-		return csvUploadDenyInsert;
-	}
-
-	public void setCsvUploadDenyInsert(boolean csvUploadDenyInsert) {
-		this.csvUploadDenyInsert = csvUploadDenyInsert;
-	}
-
-	public boolean isCsvUploadDenyUpdate() {
-		return csvUploadDenyUpdate;
-	}
-
-	public void setCsvUploadDenyUpdate(boolean csvUploadDenyUpdate) {
-		this.csvUploadDenyUpdate = csvUploadDenyUpdate;
-	}
-
-	public boolean isCsvUploadDenyDelete() {
-		return csvUploadDenyDelete;
-	}
-
-	public void setCsvUploadDenyDelete(boolean csvUploadDenyDelete) {
-		this.csvUploadDenyDelete = csvUploadDenyDelete;
-	}
-
-	public String getCsvUploadInsertProperties() {
-	    return csvUploadInsertProperties;
-	}
-
-	public Set<String> getCsvUploadInsertPropertiesSet() {
-		if(csvUploadInsertProperties == null) {
-			return null;
-		}
-		return splitCommaString(csvUploadInsertProperties);
-	}
-
-	public void setCsvUploadInsertProperties(String csvUploadInsertProperties) {
-	    this.csvUploadInsertProperties = csvUploadInsertProperties;
-	}
-
-	public String getCsvUploadUpdateProperties() {
-	    return csvUploadUpdateProperties;
-	}
-
-	public Set<String> getCsvUploadUpdatePropertiesSet() {
-		if(csvUploadUpdateProperties == null) {
-			return null;
-		}
-		return splitCommaString(csvUploadUpdateProperties);
-	}
-
-	public void setCsvUploadUpdateProperties(String csvUploadUpdateProperties) {
-	    this.csvUploadUpdateProperties = csvUploadUpdateProperties;
-	}
-
-	public CsvUploadTransactionType getCsvUploadTransactionType() {
-		return csvUploadTransactionType;
-	}
-
-	public void setCsvUploadTransactionType(CsvUploadTransactionType csvUploadTransactionType) {
-		this.csvUploadTransactionType = csvUploadTransactionType;
-	}
-
-	/**
-	 * CSVアップロード更新データTargetVersionを取得します。
-	 * @return CSVアップロード更新データTargetVersion
-	 */
-	public TargetVersion getCsvUploadTargetVersionForNoneVersionedEntity() {
-		return csvUploadTargetVersionForNoneVersionedEntity;
-	}
-
-	/**
-	 * CSVアップロード更新データTargetVersionを設定します。
-	 * @param csvUploadTargetVersionForNoneVersionedEntity CSVアップロード更新データTargetVersion
-	 */
-	public void setCsvUploadTargetVersionForNoneVersionedEntity(TargetVersion csvUploadTargetVersionForNoneVersionedEntity) {
-		this.csvUploadTargetVersionForNoneVersionedEntity = csvUploadTargetVersionForNoneVersionedEntity;
-	}
-
-	/**
-	 * CSVアップロード画面でTargetVersionの指定を許可するかを取得します。
-	 * @return CSVアップロード画面でTargetVersionの指定を許可するか
-	 */
-	public boolean isCanCsvUploadTargetVersionSelectForNoneVersionedEntity() {
-		return canCsvUploadTargetVersionSelectForNoneVersionedEntity;
-	}
-
-	/**
-	 * CSVアップロード画面でTargetVersionの指定を許可するかを設定します。
-	 * @param canCsvUploadTargetVersionSelectForNoneVersionedEntity CSVアップロード画面でTargetVersionの指定を許可するか
-	 */
-	public void setCanCsvUploadTargetVersionSelectForNoneVersionedEntity(boolean canCsvUploadTargetVersionSelectForNoneVersionedEntity) {
-		this.canCsvUploadTargetVersionSelectForNoneVersionedEntity = canCsvUploadTargetVersionSelectForNoneVersionedEntity;
-	}
-
-	public MultipleFormat getCsvMultipleFormat() {
-		return csvMultipleFormat;
-	}
-
-	public void setCsvMultipleFormat(MultipleFormat csvMultipleFormat) {
-		this.csvMultipleFormat = csvMultipleFormat;
-	}
-
-	public CsvDownloadSpecifyCharacterCode getSpecifyCharacterCode() {
-		return specifyCharacterCode;
-	}
-
-	public void setSpecifyCharacterCode(CsvDownloadSpecifyCharacterCode specifyCharacterCode) {
-		this.specifyCharacterCode = specifyCharacterCode;
-	}
-
-	/**
-	 * カスタムCSVアップロード処理クラス名を取得します。
-	 * @return カスタムCSVアップロード処理クラス名
-	 */
-	public String getCsvUploadInterrupterName() {
-		return csvUploadInterrupterName;
-	}
-
-	/**
-	 * カスタムCSVアップロード処理クラス名を設定します。
-	 * @param csvUploadInterrupterName カスタムCSVアップロード処理クラス名
-	 */
-	public void setCsvUploadInterrupterName(String csvUploadInterrupterName) {
-		this.csvUploadInterrupterName = csvUploadInterrupterName;
-	}
-
 	/**
 	 * 要素を取得します。
 	 * @return 要素
@@ -719,6 +524,7 @@ public class SearchConditionSection extends Section {
 	    return elements;
 	}
 
+
 	/**
 	 * 要素を設定します。
 	 * @param elements 要素
@@ -727,37 +533,15 @@ public class SearchConditionSection extends Section {
 	    this.elements = elements;
 	}
 
-	/**
-	 * 検索時にソートしないかを取得します。
-	 * @return 検索時にソートしないか
-	 */
-	public boolean isUnsorted() {
-		return unsorted;
-	}
 
 	/**
-	 * 検索時にソートしないかを設定します。
-	 * @param unsorted 検索時にソートしないか
+	 * 要素を追加します。
+	 * @param val プロパティ情報
 	 */
-	public void setUnsorted(boolean unsorted) {
-		this.unsorted = unsorted;
+	public void addElement(Element val) {
+		getElements().add(val);
 	}
 
-	/**
-	 * 全文検索時にソートするかを取得します。
-	 * @return 全文検索時にソートするか
-	 */
-	public boolean isFulltextSearchSorted() {
-		return fulltextSearchSorted;
-	}
-
-	/**
-	 * 全文検索時にソートするかを設定します。
-	 * @param fulltextSearchSorted 全文検索時にソートするか
-	 */
-	public void setFulltextSearchSorted(boolean fulltextSearchSorted) {
-		this.fulltextSearchSorted = fulltextSearchSorted;
-	}
 
 	/**
 	 * 列数を取得します。
@@ -789,22 +573,6 @@ public class SearchConditionSection extends Section {
 	 */
 	public void setConditionDispCount(int conditionDispCount) {
 		this.conditionDispCount = conditionDispCount;
-	}
-
-	/**
-	 * 重複行をまとめるかを取得します。
-	 * @return 重複行をまとめるか
-	 */
-	public boolean isDistinct() {
-	    return distinct;
-	}
-
-	/**
-	 * 重複行をまとめるかを設定します。
-	 * @param distinct 重複行をまとめるか
-	 */
-	public void setDistinct(boolean distinct) {
-	    this.distinct = distinct;
 	}
 
 	/**
@@ -840,38 +608,6 @@ public class SearchConditionSection extends Section {
 	}
 
 	/**
-	 * クラス名を取得します。
-	 * @return クラス名
-	 */
-	public String getStyle() {
-		return style;
-	}
-
-	/**
-	 * クラス名を設定します。
-	 * @param style クラス名
-	 */
-	public void setStyle(String style) {
-		this.style = style;
-	}
-
-	/**
-	 * idを取得します。
-	 * @return id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * idを設定します。
-	 * @param id id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
 	 * CSVダウンロードボタン非表示設定を取得します。
 	 * @return CSVダウンロードボタン非表示設定
 	 */
@@ -887,6 +623,76 @@ public class SearchConditionSection extends Section {
 		this.hideCsvdownload = hideCsvdownload;
 	}
 
+	public boolean isHideCsvdownloadDialog() {
+		return hideCsvdownloadDialog;
+	}
+
+
+	public void setHideCsvdownloadDialog(boolean hideCsvdownloadDialog) {
+		this.hideCsvdownloadDialog = hideCsvdownloadDialog;
+	}
+
+
+	public boolean isNonOutputOid() {
+		return nonOutputOid;
+	}
+
+
+	public void setNonOutputOid(boolean nonOutputOid) {
+		this.nonOutputOid = nonOutputOid;
+	}
+
+
+	public boolean isNonOutputBinaryRef() {
+		return nonOutputBinaryRef;
+	}
+
+
+	public void setNonOutputBinaryRef(boolean nonOutputBinaryRef) {
+		this.nonOutputBinaryRef = nonOutputBinaryRef;
+	}
+
+
+	public boolean isNonOutputReference() {
+		return nonOutputReference;
+	}
+
+
+	public void setNonOutputReference(boolean nonOutputReference) {
+		this.nonOutputReference = nonOutputReference;
+	}
+
+
+	public boolean isNonOutputDisplayName() {
+		return nonOutputDisplayName;
+	}
+
+
+	public void setNonOutputDisplayName(boolean nonOutputDisplayName) {
+		this.nonOutputDisplayName = nonOutputDisplayName;
+	}
+
+
+	public MultipleFormat getCsvMultipleFormat() {
+		return csvMultipleFormat;
+	}
+
+
+	public void setCsvMultipleFormat(MultipleFormat csvMultipleFormat) {
+		this.csvMultipleFormat = csvMultipleFormat;
+	}
+
+
+	public CsvDownloadSpecifyCharacterCode getSpecifyCharacterCode() {
+		return specifyCharacterCode;
+	}
+
+
+	public void setSpecifyCharacterCode(CsvDownloadSpecifyCharacterCode specifyCharacterCode) {
+		this.specifyCharacterCode = specifyCharacterCode;
+	}
+
+
 	/**
 	 * CSVダウンロードの上限件数を取得します。
 	 * @return CSVダウンロードの上限件数
@@ -894,6 +700,7 @@ public class SearchConditionSection extends Section {
 	public Integer getCsvdownloadMaxCount() {
 		return csvdownloadMaxCount;
 	}
+
 
 	/**
 	 * CSVダウンロードの上限件数を設定します。
@@ -903,6 +710,7 @@ public class SearchConditionSection extends Section {
 		this.csvdownloadMaxCount = csvdownloadMaxCount;
 	}
 
+
 	/**
 	 * Upload形式のCSVダウンロード時に一括でロードするかを取得します。
 	 * @return Upload形式のCSVダウンロード時に一括でロードするか
@@ -910,6 +718,7 @@ public class SearchConditionSection extends Section {
 	public boolean isUploadableCsvdownloadLoadAtOnce() {
 		return uploadableCsvdownloadLoadAtOnce;
 	}
+
 
 	/**
 	 * Upload形式のCSVダウンロード時に一括でロードするかを設定します。
@@ -919,6 +728,7 @@ public class SearchConditionSection extends Section {
 		this.uploadableCsvdownloadLoadAtOnce = uploadableCsvdownloadLoadAtOnce;
 	}
 
+
 	/**
 	 * Upload形式のCSVダウンロード時のロード単位を取得します。
 	 * @return Upload形式のCSVダウンロード時のロード単位
@@ -926,6 +736,7 @@ public class SearchConditionSection extends Section {
 	public Integer getUploadableCsvdownloadLoadSize() {
 		return uploadableCsvdownloadLoadSize;
 	}
+
 
 	/**
 	 * Upload形式のCSVダウンロード時のロード単位を設定します。
@@ -935,6 +746,7 @@ public class SearchConditionSection extends Section {
 		this.uploadableCsvdownloadLoadSize = uploadableCsvdownloadLoadSize;
 	}
 
+
 	/**
 	 * CSVダウンロード項目を取得します。
 	 * @return CSVダウンロード項目
@@ -942,6 +754,7 @@ public class SearchConditionSection extends Section {
 	public String getCsvdownloadProperties() {
 	    return csvdownloadProperties;
 	}
+
 
 	/**
 	 * CSVダウンロード項目をSet形式で取得します。
@@ -954,6 +767,7 @@ public class SearchConditionSection extends Section {
 		return splitCommaString(csvdownloadProperties);
 	}
 
+
 	/**
 	 * CSVダウンロード項目を設定します。
 	 * @param csvdownloadProperties CSVダウンロード項目
@@ -962,6 +776,7 @@ public class SearchConditionSection extends Section {
 	    this.csvdownloadProperties = csvdownloadProperties;
 	}
 
+
 	/**
 	 * Upload形式のCSVダウンロード項目を取得します。
 	 * @return Upload形式のCSVダウンロード項目
@@ -969,6 +784,7 @@ public class SearchConditionSection extends Section {
 	public String getCsvdownloadUploadableProperties() {
 	    return csvdownloadUploadableProperties;
 	}
+
 
 	/**
 	 * Upload形式のCSVダウンロード項目をSet形式で取得します。
@@ -981,6 +797,7 @@ public class SearchConditionSection extends Section {
 		return splitCommaString(csvdownloadUploadableProperties);
 	}
 
+
 	/**
 	 * Upload形式のCSVダウンロード項目を設定します。
 	 * @param csvdownloadUploadableProperties Upload形式のCSVダウンロード項目
@@ -988,6 +805,7 @@ public class SearchConditionSection extends Section {
 	public void setCsvdownloadUploadableProperties(String csvdownloadUploadableProperties) {
 	    this.csvdownloadUploadableProperties = csvdownloadUploadableProperties;
 	}
+
 
 	/**
 	 * CSVファイル名Format(GroovyTemplate)を取得します。
@@ -998,6 +816,7 @@ public class SearchConditionSection extends Section {
 		return csvdownloadFileNameFormat;
 	}
 
+
 	/**
 	 * CSVファイル名Format(GroovyTemplate)を設定します。
 	 * @param csvdownloadFileNameFormat CSVファイル名Format(GroovyTemplate)
@@ -1005,6 +824,165 @@ public class SearchConditionSection extends Section {
 	public void setCsvdownloadFileNameFormat(String csvdownloadFileNameFormat) {
 		this.csvdownloadFileNameFormat = csvdownloadFileNameFormat;
 	}
+
+
+	public boolean isHideCsvUpload() {
+		return hideCsvUpload;
+	}
+
+
+	public void setHideCsvUpload(boolean hideCsvUpload) {
+		this.hideCsvUpload = hideCsvUpload;
+	}
+
+
+	public boolean isCsvUploadDenyInsert() {
+		return csvUploadDenyInsert;
+	}
+
+
+	public void setCsvUploadDenyInsert(boolean csvUploadDenyInsert) {
+		this.csvUploadDenyInsert = csvUploadDenyInsert;
+	}
+
+
+	public boolean isCsvUploadDenyUpdate() {
+		return csvUploadDenyUpdate;
+	}
+
+
+	public void setCsvUploadDenyUpdate(boolean csvUploadDenyUpdate) {
+		this.csvUploadDenyUpdate = csvUploadDenyUpdate;
+	}
+
+
+	public boolean isCsvUploadDenyDelete() {
+		return csvUploadDenyDelete;
+	}
+
+
+	public void setCsvUploadDenyDelete(boolean csvUploadDenyDelete) {
+		this.csvUploadDenyDelete = csvUploadDenyDelete;
+	}
+
+
+	public String getCsvUploadInsertProperties() {
+	    return csvUploadInsertProperties;
+	}
+
+
+	public Set<String> getCsvUploadInsertPropertiesSet() {
+		if(csvUploadInsertProperties == null) {
+			return null;
+		}
+		return splitCommaString(csvUploadInsertProperties);
+	}
+
+
+	public void setCsvUploadInsertProperties(String csvUploadInsertProperties) {
+	    this.csvUploadInsertProperties = csvUploadInsertProperties;
+	}
+
+
+	public String getCsvUploadUpdateProperties() {
+	    return csvUploadUpdateProperties;
+	}
+
+
+	public Set<String> getCsvUploadUpdatePropertiesSet() {
+		if(csvUploadUpdateProperties == null) {
+			return null;
+		}
+		return splitCommaString(csvUploadUpdateProperties);
+	}
+
+
+	public void setCsvUploadUpdateProperties(String csvUploadUpdateProperties) {
+	    this.csvUploadUpdateProperties = csvUploadUpdateProperties;
+	}
+
+
+	public CsvUploadTransactionType getCsvUploadTransactionType() {
+		return csvUploadTransactionType;
+	}
+
+
+	public void setCsvUploadTransactionType(CsvUploadTransactionType csvUploadTransactionType) {
+		this.csvUploadTransactionType = csvUploadTransactionType;
+	}
+
+
+	/**
+	 * CSVアップロード更新データTargetVersionを取得します。
+	 * @return CSVアップロード更新データTargetVersion
+	 */
+	public TargetVersion getCsvUploadTargetVersionForNoneVersionedEntity() {
+		return csvUploadTargetVersionForNoneVersionedEntity;
+	}
+
+
+	/**
+	 * CSVアップロード更新データTargetVersionを設定します。
+	 * @param csvUploadTargetVersionForNoneVersionedEntity CSVアップロード更新データTargetVersion
+	 */
+	public void setCsvUploadTargetVersionForNoneVersionedEntity(TargetVersion csvUploadTargetVersionForNoneVersionedEntity) {
+		this.csvUploadTargetVersionForNoneVersionedEntity = csvUploadTargetVersionForNoneVersionedEntity;
+	}
+
+
+	/**
+	 * CSVアップロード画面でTargetVersionの指定を許可するかを取得します。
+	 * @return CSVアップロード画面でTargetVersionの指定を許可するか
+	 */
+	public boolean isCanCsvUploadTargetVersionSelectForNoneVersionedEntity() {
+		return canCsvUploadTargetVersionSelectForNoneVersionedEntity;
+	}
+
+
+	/**
+	 * CSVアップロード画面でTargetVersionの指定を許可するかを設定します。
+	 * @param canCsvUploadTargetVersionSelectForNoneVersionedEntity CSVアップロード画面でTargetVersionの指定を許可するか
+	 */
+	public void setCanCsvUploadTargetVersionSelectForNoneVersionedEntity(boolean canCsvUploadTargetVersionSelectForNoneVersionedEntity) {
+		this.canCsvUploadTargetVersionSelectForNoneVersionedEntity = canCsvUploadTargetVersionSelectForNoneVersionedEntity;
+	}
+
+
+	/**
+	 * カスタムCSVアップロード処理クラス名を取得します。
+	 * @return カスタムCSVアップロード処理クラス名
+	 */
+	public String getCsvUploadInterrupterName() {
+		return csvUploadInterrupterName;
+	}
+
+
+	/**
+	 * カスタムCSVアップロード処理クラス名を設定します。
+	 * @param csvUploadInterrupterName カスタムCSVアップロード処理クラス名
+	 */
+	public void setCsvUploadInterrupterName(String csvUploadInterrupterName) {
+		this.csvUploadInterrupterName = csvUploadInterrupterName;
+	}
+
+
+	/**
+	 * 重複行をまとめるかを取得します。
+	 * @return 重複行をまとめるか
+	 */
+	public boolean isDistinct() {
+	    return distinct;
+	}
+
+
+	/**
+	 * 重複行をまとめるかを設定します。
+	 * @param distinct 重複行をまとめるか
+	 */
+	public void setDistinct(boolean distinct) {
+	    this.distinct = distinct;
+	}
+
 
 	/**
 	 * デフォルト検索条件を取得します。
@@ -1014,6 +992,7 @@ public class SearchConditionSection extends Section {
 	    return defaultCondition;
 	}
 
+
 	/**
 	 * デフォルト検索条件を設定します。
 	 * @param defaultFilter デフォルト検索条件
@@ -1022,63 +1001,6 @@ public class SearchConditionSection extends Section {
 	    this.defaultCondition = defaultFilter;
 	}
 
-	/**
-	 * デフォルト検索条件をフィルタ定義と一緒に利用するかを取得します。
-	 * @return デフォルト検索条件をフィルタ定義と一緒に利用するか
-	 */
-	public boolean isUseDefaultConditionWithFilterDefinition() {
-	    return useDefaultConditionWithFilterDefinition;
-	}
-
-	/**
-	 * デフォルト検索条件をフィルタ定義と一緒に利用するかを設定します。
-	 * @param useDefaultConditionWithFilterDefinition デフォルト検索条件をフィルタ定義と一緒に利用するか
-	 */
-	public void setUseDefaultConditionWithFilterDefinition(boolean useDefaultConditionWithFilterDefinition) {
-	    this.useDefaultConditionWithFilterDefinition = useDefaultConditionWithFilterDefinition;
-	}
-
-	/**
-	 * デフォルトプロパティ条件設定スクリプトを取得します。
-	 * @return デフォルトプロパティ条件設定スクリプト
-	 */
-	public String getDefaultPropertyConditionScript() {
-	    return defaultPropertyConditionScript;
-	}
-
-	/**
-	 * デフォルトプロパティ条件設定スクリプトを設定します。
-	 * @param defaultPropertyConditionScript デフォルトプロパティ条件設定スクリプト
-	 */
-	public void setDefaultPropertyConditionScript(String defaultPropertyConditionScript) {
-	    this.defaultPropertyConditionScript = defaultPropertyConditionScript;
-	}
-
-	public List<SortSetting> getSortSetting() {
-		if (sortSetting == null) sortSetting = new ArrayList<>();
-		return sortSetting;
-	}
-
-	public void setSortSetting(List<SortSetting> sortSetting) {
-		this.sortSetting = sortSetting;
-	}
-
-	/**
-	 * 要素を追加します。
-	 * @param val プロパティ情報
-	 */
-	public void addElement(Element val) {
-		getElements().add(val);
-	}
-
-	public void addSortSetting(SortSetting setting) {
-		getSortSetting().add(setting);
-	}
-
-	@Override
-	public boolean isShowLink() {
-		return false;
-	}
 
 	/**
 	 * フィルタ設定を取得します。
@@ -1089,6 +1011,7 @@ public class SearchConditionSection extends Section {
 	    return filterSetting;
 	}
 
+
 	/**
 	 * フィルタ設定を設定します。
 	 * @param filterSetting フィルタ設定
@@ -1097,8 +1020,103 @@ public class SearchConditionSection extends Section {
 	    this.filterSetting = filterSetting;
 	}
 
+
 	public void addFilterSetting(FilterSetting setting) {
 		getFilterSetting().add(setting);
+	}
+
+
+	/**
+	 * デフォルト検索条件をフィルタ定義と一緒に利用するかを取得します。
+	 * @return デフォルト検索条件をフィルタ定義と一緒に利用するか
+	 */
+	public boolean isUseDefaultConditionWithFilterDefinition() {
+	    return useDefaultConditionWithFilterDefinition;
+	}
+
+
+	/**
+	 * デフォルト検索条件をフィルタ定義と一緒に利用するかを設定します。
+	 * @param useDefaultConditionWithFilterDefinition デフォルト検索条件をフィルタ定義と一緒に利用するか
+	 */
+	public void setUseDefaultConditionWithFilterDefinition(boolean useDefaultConditionWithFilterDefinition) {
+	    this.useDefaultConditionWithFilterDefinition = useDefaultConditionWithFilterDefinition;
+	}
+
+
+	/**
+	 * デフォルトプロパティ条件設定スクリプトを取得します。
+	 * @return デフォルトプロパティ条件設定スクリプト
+	 */
+	public String getDefaultPropertyConditionScript() {
+	    return defaultPropertyConditionScript;
+	}
+
+
+	/**
+	 * デフォルトプロパティ条件設定スクリプトを設定します。
+	 * @param defaultPropertyConditionScript デフォルトプロパティ条件設定スクリプト
+	 */
+	public void setDefaultPropertyConditionScript(String defaultPropertyConditionScript) {
+	    this.defaultPropertyConditionScript = defaultPropertyConditionScript;
+	}
+
+
+	public List<SortSetting> getSortSetting() {
+		if (sortSetting == null) sortSetting = new ArrayList<>();
+		return sortSetting;
+	}
+
+
+	public void setSortSetting(List<SortSetting> sortSetting) {
+		this.sortSetting = sortSetting;
+	}
+
+
+	public void addSortSetting(SortSetting setting) {
+		getSortSetting().add(setting);
+	}
+
+
+	/**
+	 * 検索時にソートしないかを取得します。
+	 * @return 検索時にソートしないか
+	 */
+	public boolean isUnsorted() {
+		return unsorted;
+	}
+
+
+	/**
+	 * 検索時にソートしないかを設定します。
+	 * @param unsorted 検索時にソートしないか
+	 */
+	public void setUnsorted(boolean unsorted) {
+		this.unsorted = unsorted;
+	}
+
+
+	/**
+	 * 全文検索時にソートするかを取得します。
+	 * @return 全文検索時にソートするか
+	 */
+	public boolean isFulltextSearchSorted() {
+		return fulltextSearchSorted;
+	}
+
+
+	/**
+	 * 全文検索時にソートするかを設定します。
+	 * @param fulltextSearchSorted 全文検索時にソートするか
+	 */
+	public void setFulltextSearchSorted(boolean fulltextSearchSorted) {
+		this.fulltextSearchSorted = fulltextSearchSorted;
+	}
+
+
+	@Override
+	public boolean isShowLink() {
+		return false;
 	}
 
 	/**

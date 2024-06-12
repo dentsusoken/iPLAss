@@ -29,8 +29,6 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.i18n.I18nUtil;
-import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
@@ -81,20 +79,8 @@ public class MetaDefaultSection extends MetaSection {
 		return new MetaDefaultSection();
 	}
 
-	/** タイトル */
-	private String title;
-
-	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
-
 	/** セクションの展開可否 */
 	private boolean expandable;
-
-	/** id */
-	private String id;
-
-	/** クラス名 */
-	private String style;
 
 	/** 列数 */
 	private int colNum;
@@ -127,22 +113,6 @@ public class MetaDefaultSection extends MetaSection {
 	private String contentScriptKey;
 
 	/**
-	 * タイトルを取得します。
-	 * @return タイトル
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * タイトルを設定します。
-	 * @param title タイトル
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
 	 * セクションの展開可否を取得します。
 	 * @return セクションの展開可否
 	 */
@@ -156,38 +126,6 @@ public class MetaDefaultSection extends MetaSection {
 	 */
 	public void setExpandable(boolean expandable) {
 		this.expandable = expandable;
-	}
-
-	/**
-	 * idを取得します。
-	 * @return id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * idを設定します。
-	 * @param id id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * クラス名を取得します。
-	 * @return クラス名
-	 */
-	public String getStyle() {
-		return style;
-	}
-
-	/**
-	 * クラス名を設定します。
-	 * @param style クラス名
-	 */
-	public void setStyle(String style) {
-		this.style = style;
 	}
 
 	/**
@@ -328,22 +266,6 @@ public class MetaDefaultSection extends MetaSection {
 		this.elements.add(element);
 	}
 
-	/**
-	 * 多言語設定情報を取得します。
-	 * @return リスト
-	 */
-	public List<MetaLocalizedString> getLocalizedTitleList() {
-		return localizedTitleList;
-	}
-
-	/**
-	 * 多言語設定情報を設定します。
-	 * @param リスト
-	 */
-	public void setLocalizedTitleList(List<MetaLocalizedString> localizedTitleList) {
-		this.localizedTitleList = localizedTitleList;
-	}
-
 	@Override
 	public MetaDefaultSection copy() {
 		return ObjectUtil.deepCopy(this);
@@ -354,10 +276,7 @@ public class MetaDefaultSection extends MetaSection {
 		super.fillFrom(element, definitionId);
 
 		DefaultSection section = (DefaultSection) element;
-		this.title = section.getTitle();
 		this.expandable = section.isExpandable();
-		this.id = section.getId();
-		this.style = section.getStyle();
 		this.colNum = section.getColNum();
 		this.showLink = section.isShowLink();
 		this.hideDetail = section.isHideDetail();
@@ -378,9 +297,6 @@ public class MetaDefaultSection extends MetaSection {
 				if (mElem != null) this.addElement(mElem);
 			}
 		}
-
-		// 言語毎の文字情報設定
-		localizedTitleList = I18nUtil.toMeta(section.getLocalizedTitleList());
 	}
 
 	/**
@@ -436,9 +352,6 @@ public class MetaDefaultSection extends MetaSection {
 		section.setContentScriptKey(contentScriptKey);
 
 		section.setExpandable(this.expandable);
-		section.setTitle(this.title);
-		section.setId(this.id);
-		section.setStyle(this.style);
 		section.setColNum(this.colNum);
 		section.setShowLink(this.showLink);
 		section.setHideDetail(hideDetail);
@@ -460,8 +373,6 @@ public class MetaDefaultSection extends MetaSection {
 				}
 			}
 		}
-
-		section.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 
 		return section;
 	}

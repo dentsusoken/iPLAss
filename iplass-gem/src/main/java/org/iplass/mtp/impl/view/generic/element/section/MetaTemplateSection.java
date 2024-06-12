@@ -20,11 +20,6 @@
 
 package org.iplass.mtp.impl.view.generic.element.section;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.iplass.mtp.impl.i18n.I18nUtil;
-import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.section.TemplateSection;
@@ -45,15 +40,6 @@ public class MetaTemplateSection extends MetaSection {
 	/** テンプレート名 */
 	private String templateName;
 
-	/** タイトル */
-	private String title;
-
-	/** id */
-	private String id;
-
-	/** クラス名 */
-	private String style;
-
 	/** リンクを表示するか */
 	private boolean showLink;
 
@@ -62,9 +48,6 @@ public class MetaTemplateSection extends MetaSection {
 
 	/** 詳細表示非表示設定 */
 	private boolean hideView;
-
-	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
 
 	/** セクション内に配置した場合に枠線を表示 */
 	private boolean dispBorderInSection;
@@ -83,54 +66,6 @@ public class MetaTemplateSection extends MetaSection {
 	 */
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
-	}
-
-	/**
-	 * タイトルを取得します。
-	 * @return タイトル
-	 */
-	public String getTitle() {
-	    return title;
-	}
-
-	/**
-	 * タイトルを設定します。
-	 * @param title タイトル
-	 */
-	public void setTitle(String title) {
-	    this.title = title;
-	}
-
-	/**
-	 * idを取得します。
-	 * @return id
-	 */
-	public String getId() {
-	    return id;
-	}
-
-	/**
-	 * idを設定します。
-	 * @param id id
-	 */
-	public void setId(String id) {
-	    this.id = id;
-	}
-
-	/**
-	 * クラス名を取得します。
-	 * @return クラス名
-	 */
-	public String getStyle() {
-		return style;
-	}
-
-	/**
-	 * クラス名を設定します。
-	 * @param style クラス名
-	 */
-	public void setStyle(String style) {
-		this.style = style;
 	}
 
 	/**
@@ -182,22 +117,6 @@ public class MetaTemplateSection extends MetaSection {
 	}
 
 	/**
-	 * 多言語設定情報を取得します。
-	 * @return リスト
-	 */
-	public List<MetaLocalizedString> getLocalizedTitleList() {
-		return localizedTitleList;
-	}
-
-	/**
-	 * 多言語設定情報を設定します。
-	 * @param リスト
-	 */
-	public void setLocalizedTitleList(List<MetaLocalizedString> localizedTitleList) {
-		this.localizedTitleList = localizedTitleList;
-	}
-
-	/**
 	 * セクション内に配置した場合に枠線を表示を取得します。
 	 * @return セクション内に配置した場合に枠線を表示
 	 */
@@ -224,16 +143,10 @@ public class MetaTemplateSection extends MetaSection {
 
 		TemplateSection section = (TemplateSection) element;
 		this.templateName = section.getTemplateName();
-		title = section.getTitle();
-		id = section.getId();
-		this.style = section.getStyle();
 		this.showLink = section.isShowLink();
 		this.hideDetail = section.isHideDetail();
 		this.hideView = section.isHideView();
 		this.dispBorderInSection = section.isDispBorderInSection();
-
-		// 言語毎の文字情報設定
-		localizedTitleList = I18nUtil.toMeta(section.getLocalizedTitleList());
 	}
 
 	@Override
@@ -242,14 +155,10 @@ public class MetaTemplateSection extends MetaSection {
 		super.fillTo(section, definitionId);
 
 		section.setTemplateName(templateName);
-		section.setTitle(title);
-		section.setId(id);
-		section.setStyle(style);
 		section.setShowLink(showLink);
 		section.setHideDetail(hideDetail);
 		section.setHideView(hideView);
 		section.setDispBorderInSection(dispBorderInSection);
-		section.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 
 		return section;
 	}

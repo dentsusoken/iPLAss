@@ -31,8 +31,6 @@ import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
-import org.iplass.mtp.impl.i18n.I18nUtil;
-import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
@@ -59,20 +57,8 @@ public class MetaMassReferenceSection extends MetaSection {
 	/** プロパティID */
 	private String propertyId;
 
-	/** タイトル */
-	private String title;
-
-	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
-
 	/** セクションの展開可否 */
 	private boolean expandable;
-
-	/** id */
-	private String id;
-
-	/** クラス名 */
-	private String style;
 
 	/** リンクを表示するか */
 	private boolean showLink;
@@ -169,22 +155,6 @@ public class MetaMassReferenceSection extends MetaSection {
 	}
 
 	/**
-	 * タイトルを取得します。
-	 * @return タイトル
-	 */
-	public String getTitle() {
-	    return title;
-	}
-
-	/**
-	 * タイトルを設定します。
-	 * @param title タイトル
-	 */
-	public void setTitle(String title) {
-	    this.title = title;
-	}
-
-	/**
 	 * セクションの展開可否を取得します。
 	 * @return セクションの展開可否
 	 */
@@ -198,38 +168,6 @@ public class MetaMassReferenceSection extends MetaSection {
 	 */
 	public void setExpandable(boolean expandable) {
 	    this.expandable = expandable;
-	}
-
-	/**
-	 * idを取得します。
-	 * @return id
-	 */
-	public String getId() {
-	    return id;
-	}
-
-	/**
-	 * idを設定します。
-	 * @param id id
-	 */
-	public void setId(String id) {
-	    this.id = id;
-	}
-
-	/**
-	 * クラス名を取得します。
-	 * @return クラス名
-	 */
-	public String getStyle() {
-	    return style;
-	}
-
-	/**
-	 * クラス名を設定します。
-	 * @param style クラス名
-	 */
-	public void setStyle(String style) {
-	    this.style = style;
 	}
 
 	/**
@@ -630,22 +568,6 @@ public class MetaMassReferenceSection extends MetaSection {
 	    this.filterConditionScript = filterConditionScript;
 	}
 
-	/**
-	 * 多言語設定情報を取得します。
-	 * @return 多言語設定情報
-	 */
-	public List<MetaLocalizedString> getLocalizedTitleList() {
-	    return localizedTitleList;
-	}
-
-	/**
-	 * 多言語設定情報を設定します。
-	 * @param localizedTitleList 多言語設定情報
-	 */
-	public void setLocalizedTitleList(List<MetaLocalizedString> localizedTitleList) {
-	    this.localizedTitleList = localizedTitleList;
-	}
-
 	public void addNestProperty(MetaNestProperty property) {
 		getNestProperties().add(property);
 	}
@@ -679,10 +601,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		EntityHandler referenceEntity = mappedBy.getParent();
 
 		propertyId = property.getId();
-		title = section.getTitle();
 		expandable = section.isExpandable();
-		id = section.getId();
-		style = section.getStyle();
 		showLink = section.isShowLink();
 		upperContents = section.getUpperContents();
 		lowerContents = section.getLowerContents();
@@ -720,9 +639,6 @@ public class MetaMassReferenceSection extends MetaSection {
 				addSortSetting(meta);
 			}
 		}
-
-		// 言語毎の文字情報設定
-		localizedTitleList = I18nUtil.toMeta(section.getLocalizedTitleList());
 	}
 
 	@Override
@@ -752,10 +668,7 @@ public class MetaMassReferenceSection extends MetaSection {
 
 		section.setDefintionName(referenceEntity.getMetaData().getName());
 		section.setPropertyName(rp.getName());
-		section.setTitle(title);
 		section.setExpandable(expandable);
-		section.setId(id);
-		section.setStyle(style);
 		section.setShowLink(showLink);
 		section.setUpperContents(upperContents);
 		section.setLowerContents(lowerContents);
@@ -796,7 +709,6 @@ public class MetaMassReferenceSection extends MetaSection {
 			}
 		}
 
-		section.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 		return section;
 	}
 
