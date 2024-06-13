@@ -101,8 +101,7 @@ ext {
 		'commons-beanutils:commons-beanutils': '1.9.4',
 		'commons-codec:commons-codec': '1.15',
 		
-		'org.apache.httpcomponents:httpclient': '4.5.13',
-		'org.apache.httpcomponents:httpmime': '4.5.13',
+		'org.apache.httpcomponents.client5:httpclient5': '5.3.1',
 		
 		//lucene
 		'org.apache.lucene:lucene-queryparser': '8.11.2',
