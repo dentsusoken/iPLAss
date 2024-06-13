@@ -21,8 +21,8 @@ dependencies {
 		exclude(group: 'org.apache.lucene', module: 'lucene-queries')
 		exclude(group: 'org.apache.lucene', module: 'lucene-sandbox')
 	}
-	implementation sharedLib('org.apache.lucene:lucene-analyzers-kuromoji')
-	runtimeOnly sharedLib('org.apache.lucene:lucene-analyzers-smartcn')
+	implementation sharedLib('org.apache.lucene:lucene-analysis-kuromoji')
+	runtimeOnly sharedLib('org.apache.lucene:lucene-analysis-smartcn')
 	runtimeOnly sharedLib('org.apache.lucene:lucene-backward-codecs')
 	runtimeOnly(sharedLib('org.apache.lucene:lucene-highlighter')) {
 		//TODO 必要？？
