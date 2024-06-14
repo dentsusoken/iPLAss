@@ -40,10 +40,6 @@ dependencies {
 	// openpdf (for use JasperReports) 
 	runtimeOnly sharedLib('com.github.librepdf:openpdf')
 
-	api(sharedLib('net.sf.jasperreports:jasperreports')) {
-		transitive = false
-	}
-
 	implementation sharedLib('org.apache.commons:commons-fileupload2-jakarta-servlet6')
 
 	//Java JWT
