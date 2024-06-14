@@ -160,7 +160,7 @@ ext {
 		
 		'io.lettuce:lettuce-core': '6.2.5.RELEASE',
 		
-		'net.sf.jasperreports:jasperreports': '6.20.6',
+		'net.sf.jasperreports:jasperreports': '6.21.3',
 		'com.github.librepdf:openpdf': '1.3.33',
 
 		// FIXME version is miliestone
