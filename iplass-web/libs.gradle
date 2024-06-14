@@ -17,6 +17,8 @@ dependencies {
 	implementation(sharedLib('org.apache.tika:tika-parsers')) {
 		transitive = false
 	}
+	
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
 	//apache POI
 	api sharedLib('org.apache.poi:poi')
