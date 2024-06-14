@@ -111,16 +111,20 @@ ext {
 		'org.apache.lucene:lucene-backward-codecs': '8.11.2',
 		'org.apache.lucene:lucene-highlighter': '8.11.2',
 		
-		//tika(依存関係多いので明示的に指定する)
-		'org.apache.tika:tika-core': '1.28.5',
-		'org.apache.tika:tika-parsers': '1.28.5',
-		'org.apache.commons:commons-compress': '1.26.0',
-		'org.apache.pdfbox:jempbox': '1.8.16',
-		'org.apache.pdfbox:pdfbox': '2.0.24',
-		'org.apache.pdfbox:pdfbox-tools': '2.0.24',
-		'org.ccil.cowan.tagsoup:tagsoup': '1.2.1',
-		// tika の依存関係。pptx 解析に必要。org.tallison:metadata-extractor は fork プロジェクトなので、バージョンアップ時にグループが変わらないか注意
-		'org.tallison:metadata-extractor': '2.17.1.0',
+		//tika
+		'org.apache.tika:tika-core': '2.9.2',
+		'org.apache.tika:tika-parser-html-module': '2.9.2',
+		'org.apache.tika:tika-parser-xml-module': '2.9.2',
+		'org.apache.tika:tika-parser-microsoft-module': '2.9.2',
+		'org.apache.tika:tika-parser-pdf-module': '2.9.2',
+		// TODO 削除候補
+//		'org.apache.commons:commons-compress': '1.26.0',
+//		'org.apache.pdfbox:jempbox': '1.8.16',
+//		'org.apache.pdfbox:pdfbox': '2.0.24',
+//		'org.apache.pdfbox:pdfbox-tools': '2.0.24',
+//		'org.ccil.cowan.tagsoup:tagsoup': '1.2.1',
+//		// tika の依存関係。pptx 解析に必要。org.tallison:metadata-extractor は fork プロジェクトなので、バージョンアップ時にグループが変わらないか注意
+//		'org.tallison:metadata-extractor': '2.17.1.0',
 		
 		'org.apache.poi:poi': '5.2.3',
 		'org.apache.poi:poi-scratchpad': '5.2.3',

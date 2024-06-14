@@ -33,22 +33,30 @@ dependencies {
 
 	//tika(依存関係多いので明示的に指定する)
 	implementation(sharedLib('org.apache.tika:tika-core'))
-	implementation(sharedLib('org.apache.tika:tika-parsers')) {
-		transitive = false
+	implementation(sharedLib('org.apache.tika:tika-parser-html-module'))
+	implementation(sharedLib('org.apache.tika:tika-parser-xml-module')) {
+		// xml api の参照を外す為
+		exclude(group: 'xerces', module: 'xercesImpl')
 	}
-	runtimeOnly(sharedLib('org.apache.commons:commons-compress'))
-	runtimeOnly(sharedLib('org.apache.pdfbox:jempbox'))
-	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox'))
-	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox-tools')) {
-		transitive = false
+	implementation(sharedLib('org.apache.tika:tika-parser-microsoft-module')) {
+		// xml api の参照を外す為
+		exclude(group: 'org.apache.tika', module: 'tika-parser-xml-module')
 	}
-	runtimeOnly sharedLib('org.ccil.cowan.tagsoup:tagsoup')
-	// tika の依存関係。pptx 解析に必要。org.tallison:metadata-extractor は fork プロジェクトなので、バージョンアップ時にグループが変わらないか注意
-	runtimeOnly sharedLib('org.tallison:metadata-extractor')
-
-	runtimeOnly sharedLib('org.apache.poi:poi')
-	runtimeOnly sharedLib('org.apache.poi:poi-scratchpad')
-	runtimeOnly sharedLib('org.apache.poi:poi-ooxml')
+	implementation(sharedLib('org.apache.tika:tika-parser-pdf-module'))
+	
+//	runtimeOnly(sharedLib('org.apache.commons:commons-compress'))
+//	runtimeOnly(sharedLib('org.apache.pdfbox:jempbox'))
+//	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox'))
+//	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox-tools')) {
+//		transitive = false
+//	}
+//	runtimeOnly sharedLib('org.ccil.cowan.tagsoup:tagsoup')
+//	// tika の依存関係。pptx 解析に必要。org.tallison:metadata-extractor は fork プロジェクトなので、バージョンアップ時にグループが変わらないか注意
+//	runtimeOnly sharedLib('org.tallison:metadata-extractor')
+//
+//	runtimeOnly sharedLib('org.apache.poi:poi')
+//	runtimeOnly sharedLib('org.apache.poi:poi-scratchpad')
+//	runtimeOnly sharedLib('org.apache.poi:poi-ooxml')
 
 	//groovy
 	implementation 'org.apache.groovy:groovy'
