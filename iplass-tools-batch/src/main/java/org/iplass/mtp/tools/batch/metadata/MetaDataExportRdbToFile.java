@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.tools.batch.metadata;
 
-import static org.iplass.mtp.tools.batch.metadata.MetaDataExportParameter.*;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,39 +48,30 @@ import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataRepository;
 import org.iplass.mtp.impl.metadata.MetaDataStore;
 import org.iplass.mtp.impl.metadata.composite.CompositeMetaDataStore;
+import org.iplass.mtp.impl.metadata.composite.MetaDataStorePathMapping;
 import org.iplass.mtp.impl.metadata.rdb.RdbMetaDataStore;
 import org.iplass.mtp.impl.metadata.xmlfile.VersioningXmlFileMetaDataStore;
 import org.iplass.mtp.impl.metadata.xmlfile.XmlFileMetaDataStore;
 import org.iplass.mtp.impl.tenant.TenantService;
-import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
-import org.iplass.mtp.impl.tools.metaport.XMLEntryInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * RDB管理のメタデータをローカルへ格納する
+ * RDB管理のメタデータをローカルファイルへ格納する
  *
  * <p>機能概要</p>
  * <ul>
- * <li>{@link org.iplass.mtp.tools.batch.metadata.MetaDataExport} を利用して、メタデータを抽出する。</li>
- * <li>抽出したメタデータが RDB 管理されている場合、ローカルに XML Metadata として保存する</li>
+ * <li>RDB管理しているメタデータを、メタデータ単位に個別のローカルファイルへ保存する</li>
+ * <li>初期移行の場合は、RDB管理しているメタデータすべてが対象となる</li>
+ * <li>初期移行ではない場合は、Service-Configの設定で、RDB管理しているメタデータが対象となる</li>
  * </ul>
- *
- * <p>備考<p>
- * <ul>
- * <li>{@link org.iplass.mtp.tools.batch.metadata.MetaDataExport} のメタデータ抽出ファイルは一時ファイルです。</li>
- * <li>MetaDataExport 機能を利用し、またその機能のパラメータだけで設定情報が足りるため専用のパラメータクラスは用意しない。</li>
- * </ul>
- * <p>
- *
- * 抽出したメタデータのうち RDB 管理されているものだけを、ローカルストアに XML Metadata として保存する。
- * </p>
  *
  * <p>実行方法</p>
  * <ul>
@@ -123,7 +112,7 @@ import org.slf4j.LoggerFactory;
  * <pre>
  * java
  *   -Dmtp.config=/path/to/service-config/mtp-service-config.xml
- *   org.iplass.mtp.tools.batch.metadata.MetaDataExportFromRdbToXml WIZARD
+ *   org.iplass.mtp.tools.batch.metadata.MetaDataExportRdbToFile WIZARD
  * </pre>
  *
  * <p>プロパティ利用の実行例</p>
@@ -131,19 +120,33 @@ import org.slf4j.LoggerFactory;
  * java
  *   -Dmtp.config=/path/to/service-config/mtp-service-config.xml
  *   -Dmeta.config=/path/to/config/config.properties
- *   org.iplass.mtp.tools.batch.metadata.MetaDataExportFromRdbToXml SILENT
+ *   org.iplass.mtp.tools.batch.metadata.MetaDataExportRdbToFile SILENT
  * </pre>
  */
-public class MetaDataExportFromRdbToXml extends MtpCuiBase {
+public class MetaDataExportRdbToFile extends MtpCuiBase {
+	/**
+	 * Silentモード用 プロパティファイルのキー
+	 */
+	private static final class PropertyKeys {
+		/** テナントURL */
+		public static final String TENANT_URL = "tenantUrl";
+		/** テナントID */
+		public static final String TENANT_ID = "tenantId";
+		/** 初期移行フラグ */
+		public static final String INITIAL_CONVERT = "initialConvert";
+		/** メタデータ 対象Path、複数ある場合はカンマ区切り、未指定の場合は全て */
+		public static final String META_SOURCE = "meta.source";
+	}
+
 	/** ロガー */
-	private static Logger LOGGER = LoggerFactory.getLogger(MetaDataExportFromRdbToXml.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(MetaDataExportRdbToFile.class);
 	/** メタデータリポジトリハンドラ */
 	private MetaDataRepositoryeHadler handler;
 
 	/**
 	 * デフォルトコンストラクタ
 	 */
-	public MetaDataExportFromRdbToXml() {
+	public MetaDataExportRdbToFile() {
 		handler = getMetaDataRepositoryeHadler();
 	}
 
@@ -170,7 +173,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 				}
 			}
 
-			MetaDataExportFromRdbToXml instance = new MetaDataExportFromRdbToXml();
+			MetaDataExportRdbToFile instance = new MetaDataExportRdbToFile();
 			isSuccess = instance.execute(mode);
 
 		} finally {
@@ -182,20 +185,20 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 
 	/**
 	 * 処理エントリポイント
+	 *
 	 * @param execMode 実行モード
 	 * @return 実行結果（true: 正常終了、false: 異常終了）
 	 */
 	public boolean execute(ExecMode execMode) {
 		return executeTask(null, unused -> {
-			File tempMetadataFile = null;
-			try {
+			return Transaction.required(t -> {
 				switchLog(false, true);
 
 				if (null == execMode) {
-					throw new NullPointerException(rs("MetaDataExportFromRdbToXml.incorrecArg.execMode"));
+					throw new NullPointerException(rs("MetaDataExportRdbToFile.incorrecArg.execMode"));
 				}
 
-				MetaDataExportParameter parameter = null;
+				MetaDataExportRdbToFileParameter parameter = null;
 				if (execMode == ExecMode.WIZARD) {
 					switchLog(true, false);
 					parameter = new WizardParamterFactory(this).create(handler);
@@ -206,55 +209,31 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 
 				}
 
-				tempMetadataFile = parameter.getExportDir();
+				TenantContext context = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(parameter.getTenantId());
 
-				executeMetaDataExport(parameter);
-				executeExportXmlMetadata(parameter);
+				final MetaDataExportRdbToFileParameter finalParameter = parameter;
 
-				logInfo(rs("MetaDataExportFromRdbToXml.finishLog", handler.getFileStoreAbsolutePath()));
-
-				return true;
-
-			} finally {
-				// ファイルが存在したら削除
-				if (null != tempMetadataFile && tempMetadataFile.exists()) {
-					tempMetadataFile.delete();
-				}
-			}
+				return ExecuteContext.executeAs(context, () -> {
+					exportRdbToFile(finalParameter);
+					logInfo(rs("MetaDataExportRdbToFile.finishLog", handler.getFileStoreAbsolutePath()));
+					return true;
+				});
+			});
 		});
 	}
 
-
 	/**
-	 * tools-batch MetaDataExport を利用して、メタデータファイルを抽出する
+	 * Rdbからメタデータファイルを抽出し、ファイルへ保存する。
 	 * @param parameter プログラムパラメータ
 	 */
-	public void executeMetaDataExport(MetaDataExportParameter parameter) {
-		// 実行パラメータ作成済みなので、コンストラクタの引数は無し
-		MetaDataExport metadataExport = new MetaDataExport();
-		boolean success = metadataExport.exportMeta(parameter);
-		if (!success) {
-			throw new RuntimeException(rs("MetaDataExportFromRdbToXml.failMetaDataExport"));
-		}
-	}
-
-	/**
-	 * 抽出したメタデータファイルから、RDB管理のメタデータをXMLファイルに保存する
-	 * @param parameter プログラムパラメータ
-	 */
-	public void executeExportXmlMetadata(MetaDataExportParameter parameter) {
-		File metadataFile = Paths.get(parameter.getExportDirName(), parameter.getFileName() + ".xml").toFile();
-		Map<String, MetaDataEntry> metadata = readMetadataFile(metadataFile);
-
-		for (Map.Entry<String, MetaDataEntry> e : metadata.entrySet()) {
-			MetaDataEntry metaDataEntry = e.getValue();
-			if (metaDataEntry != null) {
-				MetaDataStore store = handler.getTenantLocalStore().resolveStore(metaDataEntry.getPath());
-
-				// RDB管理しているファイルを、XMLへ出力。既にローカル管理されているファイルは何もしない
-				if (store instanceof RdbMetaDataStore) {
-					handler.store(parameter.getTenantId(), metaDataEntry);
-				}
+	public void exportRdbToFile(MetaDataExportRdbToFileParameter parameter) {
+		for (String path : parameter.getExportMetaDataPathList()) {
+			MetaDataEntry entry = handler.getRdbMetaDataStore().load(parameter.getTenantId(), path);
+			if (null == entry) {
+				logWarn(rs("MetaDataExportRdbToFile.notFoundMetaLog", path));
+			} else {
+				logDebug("store metadata: " + path + ".");
+				handler.store(parameter.getTenantId(), entry);
 			}
 		}
 	}
@@ -262,22 +241,6 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 	@Override
 	protected Logger loggingLogger() {
 		return LOGGER;
-	}
-
-	/**
-	 * {@link #executeMetaDataExport()} で作成したメタデータファイルを読み取る
-	 * @param file メタデータファイルパス
-	 * @return メタデータエントリ情報
-	 */
-	private Map<String, MetaDataEntry> readMetadataFile(File file) {
-		try (InputStream input = new BufferedInputStream(new FileInputStream(file))) {
-			MetaDataPortingService service = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
-			XMLEntryInfo xmlEntryInfo = service.getXMLMetaDataEntryInfo(input);
-			return xmlEntryInfo.getPathEntryMap();
-
-		} catch (IOException e) {
-			throw new RuntimeException(rs("MetaDataExportFromRdbToXml.failReadMetadataFile", file.getAbsolutePath()), e);
-		}
 	}
 
 	/**
@@ -290,7 +253,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		MetaDataStore tenantLocalStore = metadataRepository.getTenantLocalStore();
 
 		if (!(tenantLocalStore instanceof CompositeMetaDataStore)) {
-			throw new RuntimeException(rs("MetaDataExportFromRdbToXml.incorrectServiceConfig.tenantLocalStoreProperty"));
+			throw new RuntimeException(rs("MetaDataExportRdbToFile.incorrectServiceConfig.tenantLocalStoreProperty"));
 		}
 
 		CompositeMetaDataStore casted = (CompositeMetaDataStore) tenantLocalStore;
@@ -305,9 +268,8 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 			return new VersioningXmlFileMetaDataStoreHandler(this, casted, versioningXmlStore);
 		}
 
-		throw new RuntimeException(rs("MetaDataExportFromRdbToXml.incorrectServiceConfig.storeProperty"));
+		throw new RuntimeException(rs("MetaDataExportRdbToFile.incorrectServiceConfig.storeProperty"));
 	}
-
 
 	/**
 	 * MetaDataRepositoryeHadler 操作インターフェース
@@ -318,6 +280,20 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		 * @return テナントローカルストア
 		 */
 		CompositeMetaDataStore getTenantLocalStore();
+
+		/**
+		 * RdbMetaDataStore を取得する
+		 * @return RdbStore RdbMetaDataStoreインスタンス
+		 */
+		RdbMetaDataStore getRdbMetaDataStore();
+
+		/**
+		 * メタデータを CompositeMetaDataStore に格納する際、当該パスは RdbMetaDataStore に格納されるかを判定する。
+		 *
+		 * @param path 格納パス
+		 * @return 判定結果（true: RdbMetaDataStore に格納される）
+		 */
+		boolean isRdbMetaDataStore(String path);
 
 		/**
 		 * 設定を検証する
@@ -363,17 +339,34 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 	private static abstract class AbstractRepositoryHandler implements MetaDataRepositoryeHadler {
 		/** テナントローカストア */
 		private CompositeMetaDataStore tenantLocalStore;
+		/** テナントローカストアに設定されているRDBメタデータストア */
+		private RdbMetaDataStore rdbMetaDataStore;
 		/** 実行中インスタンス */
-		private MetaDataExportFromRdbToXml instance;
+		private MetaDataExportRdbToFile instance;
+
+		/** パスマッピング先がRdbMetaDataStore であるかの判定情報マップ */
+		private Map<String, Boolean> pathMappingIsRdbMetaDataStore;
+		/** デフォルトストアが RdbMetaDataStore であるか */
+		private boolean isDefaultRdbMetaDataStore;
 
 		/**
 		 * コンストラクタ
 		 * @param instance 実行中インスタンス
 		 * @param tenantLocalStore テナントローカルストア
 		 */
-		public AbstractRepositoryHandler(MetaDataExportFromRdbToXml instance, CompositeMetaDataStore tenantLocalStore) {
+		public AbstractRepositoryHandler(MetaDataExportRdbToFile instance, CompositeMetaDataStore tenantLocalStore) {
 			this.instance = instance;
 			this.tenantLocalStore = tenantLocalStore;
+			this.rdbMetaDataStore = tenantLocalStore.getStore(RdbMetaDataStore.class);
+
+			pathMappingIsRdbMetaDataStore = new HashMap<>();
+			for (MetaDataStorePathMapping mapping : tenantLocalStore.getPathMapping()) {
+				// mapping 情報の store が RdbMetaDataStore であれば、value に true を設定
+				pathMappingIsRdbMetaDataStore.put(mapping.getPathPrefix(), RdbMetaDataStore.class.getName().equals(mapping.getStore()));
+			}
+
+			// デフォルトストアが、RdbMetaDataStore である場合、true を設定
+			isDefaultRdbMetaDataStore = RdbMetaDataStore.class.getName().equals(tenantLocalStore.getDefaultStoreClass());
 		}
 
 		@Override
@@ -381,11 +374,27 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 			return tenantLocalStore;
 		}
 
+		@Override
+		public RdbMetaDataStore getRdbMetaDataStore() {
+			return rdbMetaDataStore;
+		}
+
+		@Override
+		public boolean isRdbMetaDataStore(String path) {
+			for (Map.Entry<String, Boolean> entry : pathMappingIsRdbMetaDataStore.entrySet()) {
+				if (path.startsWith(entry.getKey())) {
+					return entry.getValue();
+				}
+			}
+
+			return isDefaultRdbMetaDataStore;
+		}
+
 		/**
-		 * 実行中 MetaDataExportFromRdbToXml インスタンスを取得する
+		 * 実行中 MetaDataExportRdbToFile インスタンスを取得する
 		 * @return インスタンス
 		 */
-		protected MetaDataExportFromRdbToXml getInstance() {
+		protected MetaDataExportRdbToFile getInstance() {
 			return this.instance;
 		}
 
@@ -409,7 +418,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		 * @param tenantLocalStore テナントローカルストア
 		 * @param store ローカル保存用MetadataStore
 		 */
-		public XmlFileMetaDataStoreHandler(MetaDataExportFromRdbToXml instance, CompositeMetaDataStore tenantLocalStore, XmlFileMetaDataStore store) {
+		public XmlFileMetaDataStoreHandler(MetaDataExportRdbToFile instance, CompositeMetaDataStore tenantLocalStore, XmlFileMetaDataStore store) {
 			super(instance, tenantLocalStore);
 			this.store = store;
 		}
@@ -435,7 +444,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		private String validateInner(int tenantId) {
 			// XmlFileMetaDataStore に設定されているテナントIDと、プログラムパラメータのテナントIDが同一チェック
 			if (store.getLocalTenantId() != tenantId) {
-				return getInstance().rs("MetaDataExportFromRdbToXml.incorrecConfig.tenantId", store.getLocalTenantId(), tenantId);
+				return getInstance().rs("MetaDataExportRdbToFile.incorrecConfig.tenantId", store.getLocalTenantId(), tenantId);
 			}
 
 			// エラーなしの場合は null 返却
@@ -466,7 +475,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		 * @param tenantLocalStore テナントローカルストア
 		 * @param store ローカル保存用MetadataStore
 		 */
-		public VersioningXmlFileMetaDataStoreHandler(MetaDataExportFromRdbToXml instance, CompositeMetaDataStore tenantLocalStore,
+		public VersioningXmlFileMetaDataStoreHandler(MetaDataExportRdbToFile instance, CompositeMetaDataStore tenantLocalStore,
 				VersioningXmlFileMetaDataStore store) {
 			super(instance, tenantLocalStore);
 			this.store = store;
@@ -492,7 +501,6 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		}
 	}
 
-
 	/**
 	 * 抽象パラメータ生成機能
 	 *
@@ -502,7 +510,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 	 */
 	private static abstract class AbstractParameterFactory {
 		/** 実行中インスタンス */
-		protected MetaDataExportFromRdbToXml instance;
+		protected MetaDataExportRdbToFile instance;
 		/** テナントサービス */
 		protected TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
 		/** テナントコンテキストサービス */
@@ -512,7 +520,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		 * コンストラクタ
 		 * @param instance 実行中インスタンス
 		 */
-		public AbstractParameterFactory(MetaDataExportFromRdbToXml instance) {
+		public AbstractParameterFactory(MetaDataExportRdbToFile instance) {
 			this.instance = instance;
 		}
 
@@ -521,26 +529,18 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		 * @param handler MetaDataRepositoryeHadler
 		 * @return パラメータ
 		 */
-		public abstract MetaDataExportParameter create(MetaDataRepositoryeHadler handler);
+		public abstract MetaDataExportRdbToFileParameter create(MetaDataRepositoryeHadler handler);
 
 		/**
 		 * MetaDataExport情報を出力します。
 		 */
-		protected void logArguments(final MetaDataExportParameter param, MetaDataRepositoryeHadler handler) {
+		protected void logArguments(final MetaDataExportRdbToFileParameter param, MetaDataRepositoryeHadler handler) {
 			instance.logInfo("-----------------------------------------------------------");
 			instance.logInfo("+ Execute Argument");
 			instance.logInfo("  tenant name :" + param.getTenantName());
-			String metaTarget = null;
-			if (param.isExportAllMetaData()) {
-				metaTarget = "ALL";
-				if (param.isExportTenantMetaData()) {
-					metaTarget += "(include Tenant)";
-				} else {
-					metaTarget += "(exclude Tenant)";
-				}
-			} else {
-				metaTarget = param.getExportMetaDataPathStr();
-			}
+			String metaTarget = param.isInitaialConvert() ? "Initial (include Tenant)"
+					: param.isExportAllMetaData() ? "RDB ALL" : param.getExportMetaDataPath();
+
 			metaTarget += "(" + param.getExportMetaDataPathList().size() + ")";
 
 			instance.logInfo("  metadata target :" + metaTarget);
@@ -550,82 +550,111 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 			instance.logInfo("");
 		}
 
-		// TODO MetaDataExport と同一ロジック
 		/**
-		 * Export対象のメタデータパスを設定します。
+		 * RDB管理しているメタデータのパスを全て取得する。
+		 *
+		 * <p>
+		 * 情報抽出には RdbMetaDataStore を利用する。
+		 * </p>
+		 *
+		 * @param param プログラムパラメータ
+		 * @return メタデータパス
+		 */
+		protected List<String> getRdbManagedMetaDataPathList(final MetaDataExportRdbToFileParameter param) {
+			RdbMetaDataStore rdbStore = instance.handler.getRdbMetaDataStore();
+			// RDBより抽出
+			List<MetaDataEntryInfo> rdbAllMeta = rdbStore.definitionList(param.getTenantId(), "/");
+			return rdbAllMeta.stream()
+					// 共有メタデータは除外
+					.filter(m -> RepositoryType.SHARED != m.getRepositryType())
+					.map(m -> m.getPath())
+					.sorted()
+					.collect(Collectors.toList());
+		}
+
+		/**
+		 * RDB管理しているメタデータパスを取得する。
+		 *
+		 * <p>
+		 * Service-Config にしたがったRDB管理対象のメタデータを抽出する。
+		 * </p>
+		 *
+		 * @param param プログラムパラメータ
+		 * @return メタデータパス
+		 */
+		protected List<String> getMetaDataPathList(MetaDataExportRdbToFileParameter param) {
+			// MetaDataContext より抽出
+			List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList("/");
+			return allMeta.stream()
+					// 共有メタデータは除外
+					.filter(m -> RepositoryType.SHARED != m.getRepositryType())
+					// RdbMetaDataStore に格納するメタデータのみ
+					.filter(m -> instance.handler.isRdbMetaDataStore(m.getPath()))
+					.map(m -> m.getPath())
+					.sorted()
+					.collect(Collectors.toList());
+		}
+
+		/**
+		 * 設定されたパスにしたがってメタデータを取得する。
+		 *
+		 * <p>
+		 * Service-Config にしたがったRDB管理対象のメタデータのうち、指定されたパスに一致するメタデータを抽出する。
+		 * </p>
+		 *
 		 * @param param パラメータ
 		 */
-		protected List<String> getMetaDataPathList(final MetaDataExportParameter param) {
-			MetaDataPortingService mdps = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
+		protected List<String> getMetaDataPathListByPath(final MetaDataExportRdbToFileParameter param) {
 
-			List<String> paths = new ArrayList<>();
-			if (param.isExportAllMetaData()) {
-				List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList("/");
-				for (MetaDataEntryInfo info : allMeta) {
-					if (param.isExportLocalMetaDataOnly() && info.getRepositryType() == RepositoryType.SHARED) {
-						continue;
-					}
-					if (!param.isExportTenantMetaData() && mdps.isTenantMeta(info.getPath())) {
-						continue;
-					}
-					paths.add(info.getPath());
+			Set<String> directPathSet = new HashSet<>(); //重複を避けるためSetに保持
+			String[] pathStrArray = param.getExportMetaDataPath().split(",");
+
+			for (String pathStr : pathStrArray) {
+				//,,などの阻止
+				if (StringUtil.isEmpty(pathStr)) {
+					continue;
 				}
 
-			} else {
-				//個別指定
+				if (pathStr.endsWith("*")) {
+					//アスタリスク指定
+					List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList(pathStr.substring(0, pathStr.length() - 1));
+					allMeta.stream()
+					// 共有メタデータは除外
+					.filter(m -> RepositoryType.SHARED != m.getRepositryType())
+					// RdbMetaDataStore に格納するメタデータのみ
+					.filter(m -> instance.handler.isRdbMetaDataStore(m.getPath()))
+					.forEach(m -> directPathSet.add(m.getPath()));
 
-				Set<String> directPathSet = new HashSet<>(); //重複を避けるためSetに保持
-				String[] pathStrArray = param.getExportMetaDataPathStr().split(",");
+				} else {
+					//直接指定
+					MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(pathStr);
 
-				for (String pathStr : pathStrArray) {
-					//,,などの阻止
-					if (StringUtil.isEmpty(pathStr)) {
+					if (entry == null) {
+						// エンティティ無し
+						instance.logWarn(instance.rs("MetaDataExportRdbToFile.notFoundMetaLog", pathStr));
+						continue;
+
+					} else if (entry.getRepositryType() == RepositoryType.SHARED && instance.handler.isRdbMetaDataStore(entry.getPath())) {
+						// 対象外
+						instance.logWarn(instance.rs("MetaDataExportRdbToFile.notCoveredLog", pathStr));
 						continue;
 					}
 
-					if (pathStr.endsWith("*")) {
-						//アスタリスク指定
-						List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList(pathStr.substring(0, pathStr.length() - 1));
-						for (MetaDataEntryInfo info : allMeta) {
-							if (param.isExportLocalMetaDataOnly() && info.getRepositryType() == RepositoryType.SHARED) {
-								continue;
-							}
-							directPathSet.add(info.getPath());
-						}
-
-					} else {
-						//直接指定
-						MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(pathStr);
-						if (entry != null) {
-							if (param.isExportLocalMetaDataOnly() && entry.getRepositryType() == RepositoryType.SHARED) {
-								instance.logWarn(instance.rs("MetaDataExportFromRdbToXml.excludeNotLocalMetaLog", pathStr));
-								continue;
-							}
-							directPathSet.add(entry.getPath());
-						} else {
-							instance.logWarn(instance.rs("MetaDataExportFromRdbToXml.notFoundMetaLog", pathStr));
-							continue;
-						}
-					}
+					directPathSet.add(entry.getPath());
 				}
-				paths.addAll(directPathSet);
 			}
 
-			//ソートして返す
-			return paths.stream().sorted().collect(Collectors.toList());
+			return directPathSet.stream().sorted().collect(Collectors.toList());
 		}
 
 		/**
 		 * Export対象のメタデータパスを出力します。
 		 * @param param パラメータ
 		 */
-		protected void showMetaDataPathList(final MetaDataExportParameter param) {
-
+		protected void showMetaDataPathList(final MetaDataExportRdbToFileParameter param) {
 			instance.logInfo("-----------------------------------------------------------");
 			instance.logInfo("+ MetaData List");
-			for (String path : param.getExportMetaDataPathList()) {
-				instance.logInfo(path);
-			}
+			param.getExportMetaDataPathList().stream().forEach(path -> instance.logInfo(path));
 			instance.logInfo("-----------------------------------------------------------");
 		}
 
@@ -643,50 +672,49 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		 * コンストラクタ
 		 * @param instance
 		 */
-		public WizardParamterFactory(MetaDataExportFromRdbToXml instance) {
+		public WizardParamterFactory(MetaDataExportRdbToFile instance) {
 			super(instance);
 		}
 
 		@Override
-		public MetaDataExportParameter create(MetaDataRepositoryeHadler handler) {
+		public MetaDataExportRdbToFileParameter create(MetaDataRepositoryeHadler handler) {
 			//テナントURL
 			Tenant tenant = readTenantRequire(handler);
-			MetaDataExportParameter param = new MetaDataExportParameter(tenant.getId(), tenant.getName());
-
+			MetaDataExportRdbToFileParameter param = new MetaDataExportRdbToFileParameter();
+			param.setTenantId(tenant.getId());
+			param.setTenantName(tenant.getName());
 
 			TenantContext tc = tcs.getTenantContext(param.getTenantId());
-			// 一時ディレクトリを設定
-			param.setExportDir(getTempDir(MetaDataExportFromRdbToXml.class.getSimpleName()));
-			param.setExportDirName(param.getExportDir().getAbsolutePath());
 
 			return ExecuteContext.executeAs(tc, () -> {
 				ExecuteContext.getCurrentContext().setLanguage(instance.getLanguage());
 
-				boolean isExportLocalOnly = instance.readConsoleBoolean(
-						instance.rs("MetaDataExportFromRdbToXml.Wizard.confirmTargetLocalMetaMsg"), param.isExportLocalMetaDataOnly());
-				param.setExportLocalMetaDataOnly(isExportLocalOnly);
+				boolean isInitialConvert = instance.readConsoleBoolean(instance.rs("MetaDataExportRdbToFile.Wizard.confirmInitialConvertMsg"),
+						param.isInitaialConvert());
+				param.setInitaialConvert(isInitialConvert);
 
-				boolean isExportAllMeta = instance.readConsoleBoolean(
-						instance.rs("MetaDataExportFromRdbToXml.Wizard.confirmExportAllMetaMsg"), param.isExportAllMetaData());
-				param.setExportAllMetaData(isExportAllMeta);
-
-				if (isExportAllMeta) {
-					//全メタデータ出力
-
-					//テナントを含めるかを確認
-					boolean isExportTenantMetaData = instance.readConsoleBoolean(instance.rs("MetaDataExportFromRdbToXml.Wizard.confirmIncludeTenantMetaMsg"),
-							param.isExportTenantMetaData());
-					param.setExportTenantMetaData(isExportTenantMetaData);
+				if (isInitialConvert) {
+					// 初期移行
+					param.setExportMetaDataPathList(getRdbManagedMetaDataPathList(param));
 
 				} else {
-					//個別指定
-					String exportMetaDataPathStr = readSpecifiedMetaDataPathRequire();
+					boolean isExportAllMeta = instance.readConsoleBoolean(
+							instance.rs("MetaDataExportRdbToFile.Wizard.confirmExportAllMetaMsg"), param.isExportAllMetaData());
+					param.setExportAllMetaData(isExportAllMeta);
 
-					param.setExportMetaDataPathStr(exportMetaDataPathStr);
+					if (isExportAllMeta) {
+						// 全メタデータ対象
+						param.setExportMetaDataPathList(getMetaDataPathList(param));
+
+					} else {
+						//個別指定メタデータ
+						String exportMetaDataPath = readSpecifiedMetaDataPathRequire();
+
+						param.setExportMetaDataPath(exportMetaDataPath);
+						//Pathの取得
+						param.setExportMetaDataPathList(getMetaDataPathListByPath(param));
+					}
 				}
-
-				//Pathの取得
-				param.setExportMetaDataPathList(getMetaDataPathList(param));
 
 				showMetaDataPathList(param);
 
@@ -694,12 +722,12 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 					//実行情報出力
 					logArguments(param, handler);
 
-					if (instance.readConsoleBoolean(instance.rs("MetaDataExportFromRdbToXml.Wizard.confirmExecuteMsg"), false)) {
+					if (instance.readConsoleBoolean(instance.rs("MetaDataExportRdbToFile.Wizard.confirmExecuteMsg"), false)) {
 						break;
 					}
 
 					//defaultがfalseなので念のため再度確認
-					if (instance.readConsoleBoolean(instance.rs("MetaDataExportFromRdbToXml.Wizard.confirmRetryMsg"), true)) {
+					if (instance.readConsoleBoolean(instance.rs("MetaDataExportRdbToFile.Wizard.confirmRetryMsg"), true)) {
 						//再度実行
 						return create(handler);
 					}
@@ -767,10 +795,10 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		 */
 		private String readSpecifiedMetaDataPathRequire() {
 			return readRequire(() -> {
-				String value = instance.readConsole(instance.rs("MetaDataExportFromRdbToXml.Wizard.inputMetaPathMsg"));
+				String value = instance.readConsole(instance.rs("MetaDataExportRdbToFile.Wizard.inputMetaPathMsg"));
 				if (StringUtil.isEmpty(value)) {
 					//未指定なのでContinue
-					instance.logWarn(instance.rs("MetaDataExportFromRdbToXml.Wizard.requiredMetaPathMsg"));
+					instance.logWarn(instance.rs("MetaDataExportRdbToFile.Wizard.requiredMetaPathMsg"));
 					instance.logInfo("");
 					return null;
 				}
@@ -798,20 +826,6 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 				}
 			}
 		}
-
-		/**
-		 * 一時ディレクトリを作成する
-		 * @param prefix 一時ディレクトリprefix
-		 * @return 一時ディレクトリ
-		 */
-		private File getTempDir(String prefix) {
-			try {
-				return Files.createTempDirectory(prefix).toFile();
-			} catch (IOException e) {
-				throw new RuntimeException(instance.rs("MetaDataExportFromRdbToXml.failCreateTempDir"), e);
-			}
-		}
-
 	}
 
 	/**
@@ -826,16 +840,16 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 		 * コンストラクタ
 		 * @param instance 実行中インスタンス
 		 */
-		public SilentParameterFactory(MetaDataExportFromRdbToXml instance) {
+		public SilentParameterFactory(MetaDataExportRdbToFile instance) {
 			super(instance);
 		}
 
 		@Override
-		public MetaDataExportParameter create(MetaDataRepositoryeHadler handler) {
+		public MetaDataExportRdbToFileParameter create(MetaDataRepositoryeHadler handler) {
 			//プロパティファイルの取得
 			String configFileName = System.getProperty(MetaDataExport.KEY_CONFIG_FILE);
 			if (StringUtil.isEmpty(configFileName)) {
-				throw new RuntimeException(instance.rs("MetaDataExportFromRdbToXml.Silent.requiredConfigFileMsg", MetaDataExport.KEY_CONFIG_FILE));
+				throw new RuntimeException(instance.rs("MetaDataExportRdbToFile.Silent.requiredConfigFileMsg", MetaDataExport.KEY_CONFIG_FILE));
 			}
 
 			//プロパティの取得
@@ -851,7 +865,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 			Tenant tenant = null;
 			//プロパティから取得
 			//ID
-			String propTenantId = prop.getProperty(PROP_TENANT_ID);
+			String propTenantId = prop.getProperty(PropertyKeys.TENANT_ID);
 			if (StringUtil.isNotEmpty(propTenantId)) {
 				tenant = ts.getTenant(Integer.parseInt(propTenantId));
 				if (tenant == null) {
@@ -860,7 +874,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 			}
 			if (tenant == null) {
 				//URL
-				String propTenantUrl = prop.getProperty(PROP_TENANT_URL);
+				String propTenantUrl = prop.getProperty(PropertyKeys.TENANT_URL);
 				if (StringUtil.isNotEmpty(propTenantUrl)) {
 					if (!propTenantUrl.startsWith("/")) {
 						propTenantUrl = "/" + propTenantUrl;
@@ -872,51 +886,43 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 				}
 			}
 			if (tenant == null) {
-				throw new RuntimeException(instance.rs("Common.requiredMsg", PROP_TENANT_ID + " or " + PROP_TENANT_URL));
+				throw new RuntimeException(instance.rs("Common.requiredMsg", PropertyKeys.TENANT_ID + " or " + PropertyKeys.TENANT_URL));
 			}
 
 			instance.logInfo("target tenant:[" + tenant.getId() + "]" + tenant.getName());
 			// 検証
 			handler.validateIfErrorThrow(tenant.getId());
 
-			MetaDataExportParameter param = new MetaDataExportParameter(tenant.getId(), tenant.getName());
+			MetaDataExportRdbToFileParameter param = new MetaDataExportRdbToFileParameter();
+			param.setTenantId(tenant.getId());
+			param.setTenantName(tenant.getName());
 
 			TenantContext tc = tcs.getTenantContext(param.getTenantId());
 			return ExecuteContext.executeAs(tc, () -> {
 				ExecuteContext.getCurrentContext().setLanguage(instance.getLanguage());
 
-				String exportDirName = prop.getProperty(PROP_EXPORT_DIR);
-				if (StringUtil.isNotEmpty(exportDirName)) {
-					param.setExportDirName(exportDirName);
-				}
-				File exportDir = new File(param.getExportDirName());
-				param.setExportDir(exportDir);
-
-				String fileName = prop.getProperty(PROP_FILE_NAME);
-				if (StringUtil.isNotEmpty(fileName)) {
-					param.setFileName(fileName);
+				String initialConvert = prop.getProperty(PropertyKeys.INITIAL_CONVERT);
+				if (StringUtil.isNotEmpty(initialConvert)) {
+					param.setInitaialConvert(Boolean.valueOf(initialConvert));
 				}
 
-				String localOnly = prop.getProperty(PROP_META_LOCAL_ONLY);
-				if (StringUtil.isNotEmpty(localOnly)) {
-					param.setExportLocalMetaDataOnly(Boolean.valueOf(localOnly));
-				}
+				String source = prop.getProperty(PropertyKeys.META_SOURCE);
 
-				String source = prop.getProperty(PROP_META_SOURCE);
-				if (StringUtil.isEmpty(source)) {
-					//全対象
+				if (param.isInitaialConvert()) {
+					// 初期移行
+					param.setExportMetaDataPathList(getRdbManagedMetaDataPathList(param));
+
+				} else if (StringUtil.isEmpty(source)) {
+					// 全対象
 					param.setExportAllMetaData(true);
-
-					String excludeTenant = prop.getProperty(PROP_META_EXCLUDE_TENANT);
-					if (StringUtil.isNotEmpty(excludeTenant)) {
-						param.setExportTenantMetaData(!Boolean.valueOf(excludeTenant));
-					}
+					param.setExportMetaDataPathList(getMetaDataPathList(param));
 
 				} else {
+					// 対象指定
 					param.setExportAllMetaData(false);
-					param.setExportMetaDataPathStr(source);
+					param.setExportMetaDataPath(source);
+					param.setExportMetaDataPathList(getMetaDataPathListByPath(param));
 				}
-				param.setExportMetaDataPathList(getMetaDataPathList(param));
 
 				//実行情報出力
 				logArguments(param, handler);
@@ -951,7 +957,7 @@ public class MetaDataExportFromRdbToXml extends MtpCuiBase {
 				}
 			}
 
-			throw new FileNotFoundException(instance.rs("MetaDataExportFromRdbToXml.fileResourceNotFound", file));
+			throw new FileNotFoundException(instance.rs("MetaDataExportRdbToFile.fileResourceNotFound", file));
 		}
 	}
 }

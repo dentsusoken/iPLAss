@@ -14,14 +14,14 @@
 export EXEC_MODE=WIZARD
 
 # if silent mode, metadata export config file name (please set your meta-exp-config file)
-export META_CONFIG=./../conf/meta-exp-config.properties
+export META_CONFIG=./../conf/meta-exp-rdb-to-file-config.properties
 
 # ----------------------------------------------------
 # app settings
 # ----------------------------------------------------
 
 # APP Class
-export EXEC_APP=org.iplass.mtp.tools.batch.metadata.MetaDataExportFromRdbToXml
+export EXEC_APP=org.iplass.mtp.tools.batch.metadata.MetaDataExportRdbToFile
 
 # App Arguments
 export APP_ARGS="${EXEC_MODE}"

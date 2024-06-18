@@ -17,14 +17,14 @@ REM Execute Mode (WIZARD or SILENT)
 set EXEC_MODE=WIZARD
 
 REM if silent mode, metadata export config file name (please set your meta-exp-config file)
-set META_CONFIG=./../conf/meta-exp-config.properties
+set META_CONFIG=./../conf/meta-exp-rdb-to-file-config.properties
 
 REM ----------------------------------------------------
 REM app settings
 REM ----------------------------------------------------
 
 REM APP class
-set EXEC_APP=org.iplass.mtp.tools.batch.metadata.MetaDataExportFromRdbToXml
+set EXEC_APP=org.iplass.mtp.tools.batch.metadata.MetaDataExportRdbToFile
 
 REM App Arguments
 set APP_ARGS=%EXEC_MODE%
