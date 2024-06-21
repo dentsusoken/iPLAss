@@ -98,12 +98,6 @@ import org.slf4j.LoggerFactory;
  * <li>{@link org.iplass.mtp.impl.metadata.composite.CompositeMetaDataStore}#store には、{@link org.iplass.mtp.impl.metadata.xmlfile.XmlFileMetaDataStore} または {@link org.iplass.mtp.impl.metadata.xmlfile.VersioningXmlFileMetaDataStore} を設定する</li>
  * </ol>
  * </li>
- * <li>
- * meta.config で指定するプロパティファイルには以下の指定が必要<br>
- * - テナントID（ tenantId ）<br>
- * - 出力先ディレクトリ（ exportDir ）<br>
- * - ファイル名（ fileName ）
- * </li>
  * </ul>
  * </li>
  * </ul>
@@ -119,7 +113,7 @@ import org.slf4j.LoggerFactory;
  * <pre>
  * java
  *   -Dmtp.config=/path/to/service-config/mtp-service-config.xml
- *   -Dmeta.config=/path/to/config/config.properties
+ *   -Dmeta.config=/path/to/config/meta-exp-rdb-to-file-config.properties
  *   org.iplass.mtp.tools.batch.metadata.MetaDataExportRdbToFile SILENT
  * </pre>
  */
@@ -141,13 +135,13 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 	/** ロガー */
 	private static Logger LOGGER = LoggerFactory.getLogger(MetaDataExportRdbToFile.class);
 	/** メタデータリポジトリハンドラ */
-	private MetaDataRepositoryeHadler handler;
+	private AbstractRepositoryHandler handler;
 
 	/**
 	 * デフォルトコンストラクタ
 	 */
 	public MetaDataExportRdbToFile() {
-		handler = getMetaDataRepositoryeHadler();
+		handler = getMetaDataRepositoryHandler();
 	}
 
 	/**
@@ -195,13 +189,13 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 				switchLog(false, true);
 
 				if (null == execMode) {
-					throw new NullPointerException(rs("MetaDataExportRdbToFile.incorrecArg.execMode"));
+					throw new NullPointerException(rs("MetaDataExportRdbToFile.incorrectArg.execMode"));
 				}
 
 				MetaDataExportRdbToFileParameter parameter = null;
 				if (execMode == ExecMode.WIZARD) {
 					switchLog(true, false);
-					parameter = new WizardParamterFactory(this).create(handler);
+					parameter = new WizardParameterFactory(this).create(handler);
 					switchLog(false, true);
 
 				} else if (execMode == ExecMode.SILENT) {
@@ -244,11 +238,11 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 	}
 
 	/**
-	 * MetaDataRepositoryeHadler 操作インスタンスを取得する
+	 * AbstractRepositoryHandler 操作インスタンスを取得する
 	 *
-	 * @return MetaDataRepositoryeHadler 操作インスタンス
+	 * @return AbstractRepositoryHandler 操作インスタンス
 	 */
-	private MetaDataRepositoryeHadler getMetaDataRepositoryeHadler() {
+	private AbstractRepositoryHandler getMetaDataRepositoryHandler() {
 		MetaDataRepository metadataRepository = ServiceRegistry.getRegistry().getService(MetaDataRepository.class);
 		MetaDataStore tenantLocalStore = metadataRepository.getTenantLocalStore();
 
@@ -272,73 +266,9 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 	}
 
 	/**
-	 * MetaDataRepositoryeHadler 操作インターフェース
+	 * 抽象 MetaDataRepository 操作ハンドラ
 	 */
-	private static interface MetaDataRepositoryeHadler {
-		/**
-		 * MetaDataRepositoryeHadler に設定されているテナントローカルストアを取得する
-		 * @return テナントローカルストア
-		 */
-		CompositeMetaDataStore getTenantLocalStore();
-
-		/**
-		 * RdbMetaDataStore を取得する
-		 * @return RdbStore RdbMetaDataStoreインスタンス
-		 */
-		RdbMetaDataStore getRdbMetaDataStore();
-
-		/**
-		 * メタデータを CompositeMetaDataStore に格納する際、当該パスは RdbMetaDataStore に格納されるかを判定する。
-		 *
-		 * @param path 格納パス
-		 * @return 判定結果（true: RdbMetaDataStore に格納される）
-		 */
-		boolean isRdbMetaDataStore(String path);
-
-		/**
-		 * 設定を検証する
-		 * @param tenantId プログラムパラメータ
-		 * @return バリデーション結果（true: 正常終了、 false: 異常終了）
-		 */
-		boolean validate(int tenantId);
-
-		/**
-		 * 設定を検証する
-		 *
-		 * <p>
-		 * 設定に問題がある場合、例外をスローする
-		 * </p>
-		 *
-		 * @param tenantId プログラムパラメータ
-		 */
-		void validateIfErrorThrow(int tenantId);
-
-		/**
-		 * メタデータを保存する
-		 * @param tenantId テナントID
-		 * @param metaDataEntry メタデータエントリ
-		 */
-		void store(int tenantId, MetaDataEntry metaDataEntry);
-
-		/**
-		 * XMLファイル格納先パスを取得します
-		 * @return XMLファイル格納先パス
-		 */
-		String getFileStorePath();
-
-		/**
-		 * XMLファイル格納先絶対パスを取得します
-		 * @return XMLファイル格納先絶対パス
-		 */
-		String getFileStoreAbsolutePath();
-	}
-
-	/**
-	 * 抽象ハンドラ
-	 */
-	private static abstract class AbstractRepositoryHandler implements MetaDataRepositoryeHadler {
-		/** テナントローカストア */
-		private CompositeMetaDataStore tenantLocalStore;
+	private static abstract class AbstractRepositoryHandler {
 		/** テナントローカストアに設定されているRDBメタデータストア */
 		private RdbMetaDataStore rdbMetaDataStore;
 		/** 実行中インスタンス */
@@ -355,8 +285,8 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 		 * @param tenantLocalStore テナントローカルストア
 		 */
 		public AbstractRepositoryHandler(MetaDataExportRdbToFile instance, CompositeMetaDataStore tenantLocalStore) {
+			// tenantLocalStore は必要があれば保持する
 			this.instance = instance;
-			this.tenantLocalStore = tenantLocalStore;
 			this.rdbMetaDataStore = tenantLocalStore.getStore(RdbMetaDataStore.class);
 
 			pathMappingIsRdbMetaDataStore = new HashMap<>();
@@ -369,17 +299,20 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 			isDefaultRdbMetaDataStore = RdbMetaDataStore.class.getName().equals(tenantLocalStore.getDefaultStoreClass());
 		}
 
-		@Override
-		public CompositeMetaDataStore getTenantLocalStore() {
-			return tenantLocalStore;
-		}
-
-		@Override
+		/**
+		 * RdbMetaDataStore を取得する
+		 * @return RdbStore RdbMetaDataStoreインスタンス
+		 */
 		public RdbMetaDataStore getRdbMetaDataStore() {
 			return rdbMetaDataStore;
 		}
 
-		@Override
+		/**
+		 * メタデータを CompositeMetaDataStore に格納する際、当該パスは RdbMetaDataStore に格納されるかを判定する。
+		 *
+		 * @param path 格納パス
+		 * @return 判定結果（true: RdbMetaDataStore に格納される）
+		 */
 		public boolean isRdbMetaDataStore(String path) {
 			for (Map.Entry<String, Boolean> entry : pathMappingIsRdbMetaDataStore.entrySet()) {
 				if (path.startsWith(entry.getKey())) {
@@ -391,6 +324,45 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 		}
 
 		/**
+		 * 設定を検証する
+		 * @param tenantId プログラムパラメータ
+		 * @return バリデーション結果（true: 正常終了、 false: 異常終了）
+		 */
+		public abstract boolean validate(int tenantId);
+
+		/**
+		 * 設定を検証する
+		 *
+		 * <p>
+		 * 設定に問題がある場合、例外をスローする
+		 * </p>
+		 *
+		 * @param tenantId プログラムパラメータ
+		 */
+		public abstract void validateIfErrorThrow(int tenantId);
+
+		/**
+		 * メタデータを保存する
+		 * @param tenantId テナントID
+		 * @param metaDataEntry メタデータエントリ
+		 */
+		public abstract void store(int tenantId, MetaDataEntry metaDataEntry);
+
+		/**
+		 * XMLファイル格納先パスを取得します
+		 * @return XMLファイル格納先パス
+		 */
+		public abstract String getFileStorePath();
+
+		/**
+		 * XMLファイル格納先絶対パスを取得します
+		 * @return XMLファイル格納先絶対パス
+		 */
+		public String getFileStoreAbsolutePath() {
+			return new File(getFileStorePath()).getAbsolutePath();
+		}
+
+		/**
 		 * 実行中 MetaDataExportRdbToFile インスタンスを取得する
 		 * @return インスタンス
 		 */
@@ -398,15 +370,10 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 			return this.instance;
 		}
 
-		@Override
-		public String getFileStoreAbsolutePath() {
-			return new File(getFileStorePath()).getAbsolutePath();
-		}
-
 	}
 
 	/**
-	 * XmlFileMetaDataStore を利用する MetaDataRepositoryeHadler
+	 * XmlFileMetaDataStore を利用する RepositoryHandler
 	 */
 	private static class XmlFileMetaDataStoreHandler extends AbstractRepositoryHandler {
 		/** ローカル保存用MetadataStore */
@@ -444,7 +411,7 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 		private String validateInner(int tenantId) {
 			// XmlFileMetaDataStore に設定されているテナントIDと、プログラムパラメータのテナントIDが同一チェック
 			if (store.getLocalTenantId() != tenantId) {
-				return getInstance().rs("MetaDataExportRdbToFile.incorrecConfig.tenantId", store.getLocalTenantId(), tenantId);
+				return getInstance().rs("MetaDataExportRdbToFile.incorrectConfig.tenantId", store.getLocalTenantId(), tenantId);
 			}
 
 			// エラーなしの場合は null 返却
@@ -463,7 +430,7 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 	}
 
 	/**
-	 * VersioningXmlFileMetaDataStore を利用する MetaDataRepositoryeHadler
+	 * VersioningXmlFileMetaDataStore を利用する RepositoryHandler
 	 */
 	private static class VersioningXmlFileMetaDataStoreHandler extends AbstractRepositoryHandler {
 		/** ローカル保存用MetadataStore */
@@ -526,15 +493,15 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 
 		/**
 		 * パラメータを生成する
-		 * @param handler MetaDataRepositoryeHadler
+		 * @param handler AbstractRepositoryHandler
 		 * @return パラメータ
 		 */
-		public abstract MetaDataExportRdbToFileParameter create(MetaDataRepositoryeHadler handler);
+		public abstract MetaDataExportRdbToFileParameter create(AbstractRepositoryHandler handler);
 
 		/**
 		 * MetaDataExport情報を出力します。
 		 */
-		protected void logArguments(final MetaDataExportRdbToFileParameter param, MetaDataRepositoryeHadler handler) {
+		protected void logArguments(final MetaDataExportRdbToFileParameter param, AbstractRepositoryHandler handler) {
 			instance.logInfo("-----------------------------------------------------------");
 			instance.logInfo("+ Execute Argument");
 			instance.logInfo("  tenant name :" + param.getTenantName());
@@ -667,17 +634,17 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 	 * 標準入力よりパラメータを生成する。
 	 * </p>
 	 */
-	private static class WizardParamterFactory extends AbstractParameterFactory {
+	private static class WizardParameterFactory extends AbstractParameterFactory {
 		/**
 		 * コンストラクタ
 		 * @param instance
 		 */
-		public WizardParamterFactory(MetaDataExportRdbToFile instance) {
+		public WizardParameterFactory(MetaDataExportRdbToFile instance) {
 			super(instance);
 		}
 
 		@Override
-		public MetaDataExportRdbToFileParameter create(MetaDataRepositoryeHadler handler) {
+		public MetaDataExportRdbToFileParameter create(AbstractRepositoryHandler handler) {
 			//テナントURL
 			Tenant tenant = readTenantRequire(handler);
 			MetaDataExportRdbToFileParameter param = new MetaDataExportRdbToFileParameter();
@@ -745,10 +712,10 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 		 * 正しい入力が行われるまで処理を継続する。
 		 * </p>
 		 *
-		 * @param handler MetaDataRepositoryeHadler
+		 * @param handler AbstractRepositoryHandler
 		 * @return テナント情報
 		 */
-		private Tenant readTenantRequire(MetaDataRepositoryeHadler handler) {
+		private Tenant readTenantRequire(AbstractRepositoryHandler handler) {
 			return readRequire(() -> {
 				String tenantUrl = instance.readConsole(instance.rs("Common.inputTenantUrlMsg"));
 
@@ -845,7 +812,7 @@ public class MetaDataExportRdbToFile extends MtpCuiBase {
 		}
 
 		@Override
-		public MetaDataExportRdbToFileParameter create(MetaDataRepositoryeHadler handler) {
+		public MetaDataExportRdbToFileParameter create(AbstractRepositoryHandler handler) {
 			//プロパティファイルの取得
 			String configFileName = System.getProperty(MetaDataExport.KEY_CONFIG_FILE);
 			if (StringUtil.isEmpty(configFileName)) {
