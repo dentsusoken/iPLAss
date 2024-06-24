@@ -24,7 +24,10 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.iplass.mtp.impl.cache.CacheService;
 import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.spi.ServiceRegistry;
 
 /**
  * ローレベルのキャッシュ機能を実装するキャッシュストアのインタフェース。
@@ -33,13 +36,56 @@ import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
  *
  */
 public interface CacheStore {
-
+	
 	public String getNamespace();
 
 	public CacheStoreFactory getFactory();
 	
 	public int getSize();
 	
+	/**
+	 * 自動リロードするキャッシュエントリをputする。
+	 * まだkeyに紐づいたエントリがない場合にreloadFunctionによって取得されたエントリをputする。
+	 * 既にkeyに紐づいたエントリがある場合はそのエントリを返却する。
+	 * 
+	 * reloadFunctionが返却するキャッシュエントリのtimeToLiveの時間経過後reloadFunctionを利用してCacheEntryを再取得する。
+	 * リロードは非同期で実行され、リロード完了するまでの間は古いCacheEntryを返す。
+	 * 
+	 * デフォルト実装では、JVMローカルでのみリロードされる。
+	 * リロード対象のキャッシュエントリが他の更新系メソッド（put, remove, replace）により更新された場合、リロードはキャンセルされる。
+	 * 
+	 * @param key キャッシュエントリのキー
+	 * @param reloadFunction キャッシュエントリが存在しない場合、リロード時に呼び出される関数。初回のロード時はapplyの引数CacheEntryはnullが渡される。また、リロード時はreloadFunctionは非同期にユーザ未特定で特権状態で実行される。
+	 * @return 初回ロード、もしくはリロードされたキャッシュエントリ
+	 */
+	public default CacheEntry computeIfAbsentWithAutoReload(Object key, BiFunction<Object, CacheEntry, CacheEntry> reloadFunction) {
+		CacheEntry[] newEntry = new CacheEntry[1];
+		Long[] ttl = new Long[1];
+		CacheEntry computed = computeIfAbsent(key, k -> {
+			
+			newEntry[0] = reloadFunction.apply(k, null);
+			
+			ttl[0] = newEntry[0].getTimeToLive();
+			if (ttl[0] == null || ttl[0].longValue() <= 0L) {
+				throw new IllegalArgumentException("computeIfAbsentWithAutoReload() must specify TTL on CacheEntry.");
+			}
+			
+			//entryのttlを無期限に設定し、ttlによりinvalidateされないように
+			newEntry[0].setTimeToLive(-1L);
+			return newEntry[0];
+		});
+		
+		if (computed == newEntry[0]) {
+			//自身がputした場合のみリロードをスケジュールする
+			CacheService cacheService = ServiceRegistry.getRegistry().getService(CacheService.class);
+			cacheService.schedule(ttl[0],
+					new AutoReloader(ExecuteContext.getCurrentContext().getClientTenantId(),
+							getNamespace(), computed, ttl[0], reloadFunction));
+		}
+		
+		return computed;
+	}
+
 	/**
 	 * ConcurrentMapが提供するcomputeIfAbsentと同等の機能性を提供するメソッド。
 	 * デフォルト実装ではmappingFunctionが複数回呼び出される可能性はある。

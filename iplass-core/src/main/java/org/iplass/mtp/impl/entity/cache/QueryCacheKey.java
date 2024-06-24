@@ -25,17 +25,20 @@ import org.iplass.mtp.entity.query.Query;
 class QueryCacheKey {
 	final boolean returnStructuredEntity;
 	final Query query;
+	final boolean countOnly;
 	private final int hash;
 	
-	public QueryCacheKey(Query query, boolean returnStructuredEntity) {
+	public QueryCacheKey(Query query, boolean returnStructuredEntity, boolean countOnly) {
 		this.query = query;
 		this.returnStructuredEntity = returnStructuredEntity;
+		this.countOnly = countOnly;
 		hash = genHash();
 	}
 
 	private int genHash() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (countOnly ? 1231 : 1237);
 		result = prime * result + ((query == null) ? 0 : query.hashCode());
 		result = prime * result + (returnStructuredEntity ? 1231 : 1237);
 		return result;
@@ -55,12 +58,14 @@ class QueryCacheKey {
 		if (getClass() != obj.getClass())
 			return false;
 		QueryCacheKey other = (QueryCacheKey) obj;
-		if (returnStructuredEntity != other.returnStructuredEntity)
+		if (countOnly != other.countOnly)
 			return false;
 		if (query == null) {
 			if (other.query != null)
 				return false;
 		} else if (!query.equals(other.query))
+			return false;
+		if (returnStructuredEntity != other.returnStructuredEntity)
 			return false;
 		return true;
 	}

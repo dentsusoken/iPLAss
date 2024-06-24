@@ -137,7 +137,7 @@ class TransactionLocalQueryCacheInterceptor extends EntityInterceptorAdapter {
 			CacheStore store = null;
 			if (hasCacheTransactionHint(q) && (store = getCache(true)) != null) {
 				Predicate<?> callback = invocation.getPredicate();
-				CacheEntry ce = store.get(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity()));
+				CacheEntry ce = store.get(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity(), false));
 				if (ce == null
 						|| ce.getValue() == null
 						|| !((QueryCache) ce.getValue()).canIterate(invocation.getType())) {
@@ -149,7 +149,7 @@ class TransactionLocalQueryCacheInterceptor extends EntityInterceptorAdapter {
 					queryCacheInterceptor.query(invocation);
 					QueryCache qc = new QueryCache(list.size(), list, invocation.getType());
 					q = q.copy();
-					ce = new CacheEntry(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity()), qc, (Object) getUsedEntityDefs(q));
+					ce = new CacheEntry(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity(), false), qc, (Object) getUsedEntityDefs(q));
 					store.put(ce, true);
 				} else {
 					if (logger.isTraceEnabled()) {
@@ -170,14 +170,14 @@ class TransactionLocalQueryCacheInterceptor extends EntityInterceptorAdapter {
 		Query q = invocation.getQuery();
 		CacheStore store = null;
 		if (hasCacheTransactionHint(q) && (store = getCache(true)) != null) {
-			CacheEntry ce = store.get(new QueryCacheKey(q, false));
+			CacheEntry ce = store.get(new QueryCacheKey(q, false, false));
 			if (ce == null
 					|| ce.getValue() == null
 					|| ((QueryCache) ce.getValue()).getCount() == null) {
 				int ret = queryCacheInterceptor.count(invocation);
 				QueryCache qc = new QueryCache(ret, null, invocation.getType());
 				q = q.copy();
-				ce = new CacheEntry(new QueryCacheKey(q, false), qc, (Object) getUsedEntityDefs(q));
+				ce = new CacheEntry(new QueryCacheKey(q, false, false), qc, (Object) getUsedEntityDefs(q));
 				store.put(ce, true);
 			} else {
 				if (logger.isTraceEnabled()) {
