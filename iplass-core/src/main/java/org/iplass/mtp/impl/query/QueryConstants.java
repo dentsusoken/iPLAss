@@ -142,6 +142,8 @@ public interface QueryConstants {
 	public static final String HINT_CACHE = "CACHE";
 	public static final String HINT_CACHE_TRANSACTION_LOCAL = "TRANSACTION";
 	public static final String HINT_CACHE_GLOBAL = "GLOBAL";
+	public static final String HINT_CACHE_GLOBAL_KEEP = "KEEP";
+	public static final String HINT_CACHE_GLOBAL_RELOAD = "RELOAD";
 	public static final String HINT_FETCH_SIZE = "FETCH_SIZE";
 	public static final String HINT_TIMEOUT = "TIMEOUT";
 	public static final String HINT_SUPPRESS_WARNINGS = "SUPPRESS_WARNINGS";

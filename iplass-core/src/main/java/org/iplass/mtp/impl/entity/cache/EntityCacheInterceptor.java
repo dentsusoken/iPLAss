@@ -47,6 +47,7 @@ import org.iplass.mtp.entity.interceptor.EntityValidateInvocation;
  */
 public class EntityCacheInterceptor extends EntityInterceptorAdapter {
 	public static final String QUERY_CACHE_NAMESPACE_PREFIX = "mtp.entity.queryCache/";
+	public static final String KEEP_QUERY_CACHE_NAMESPACE_PREFIX = "mtp.entity.keepQueryCache/";
 	public static final String LOCAL_QUERY_CACHE_NAMESPACE = "mtp.entity.transactionLocalQueryCache";
 	public static final String LOCAL_LOAD_CACHE_NAMESPACE = "mtp.entity.transactionLocalCache";
 

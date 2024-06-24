@@ -829,6 +829,23 @@
 			</property>
 		</property>
 
+		<!-- Query(Keep, Reload)キャッシュ -->
+		<property name="query" class="org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory">
+			<property name="namespacePattern" value="mtp[.]entity[.]keepQueryCache/.*" />
+			<property name="backendStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+				<property name="fineGrainedLock" value="true" />
+				<property name="indexConfig" class="org.iplass.mtp.impl.cache.store.builtin.FineGrainedLockIndexConfig">
+					<property name="shardSize" value="16" />
+					<property name="fair" value="true" />
+				</property>
+				
+				<!-- 12時間有効 -->
+				<property name="timeToLive" value="43200000" />
+				<!-- 最大128 -->
+				<property name="size" value="128" />
+			</property>
+		</property>
+
 		<!-- CachableAuthTokenStore キャッシュ -->
 		<property name="cachableAuthTokenStore" class="org.iplass.mtp.impl.cache.store.builtin.SyncServerCacheStoreFactory">
 			<property name="namespacePattern" value="mtp[.]auth[.]cachableAuthTokenStore/.*" />

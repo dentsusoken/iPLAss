@@ -146,31 +146,46 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 			}
 			str.consumeChars(1);
 			str.consumeChars(ParseContext.WHITE_SPACES);
+			
 			if (str.equalsNextToken(HINT_CACHE_TRANSACTION_LOCAL, ParseContext.TOKEN_DELIMITERS)) {
 				//transaction local指定
 				ch.setScope(CacheScope.TRANSACTION);
 				str.consumeChars(HINT_CACHE_TRANSACTION_LOCAL.length());
 				str.consumeChars(ParseContext.WHITE_SPACES);
-				if (str.peekChar() != RIGHT_PAREN_CHAR) {
-					throw new ParseException(new EvalError(") expected.", this, str));
-				}
-				str.consumeChars(1);
+			} else if (str.equalsNextToken(HINT_CACHE_GLOBAL_KEEP, ParseContext.TOKEN_DELIMITERS)) {
+				//global keep指定
+				ch.setScope(CacheScope.GLOBAL_KEEP);
+				str.consumeChars(HINT_CACHE_GLOBAL_KEEP.length());
 				str.consumeChars(ParseContext.WHITE_SPACES);
-				return ch;
+				if (str.peekChar() == COMMA_CHAR) {
+					str.consumeChars(1);
+					str.consumeChars(ParseContext.WHITE_SPACES);
+					setTtl(str, ch);
+				}
+			} else if (str.equalsNextToken(HINT_CACHE_GLOBAL_RELOAD, ParseContext.TOKEN_DELIMITERS)) {
+				// global reload指定
+				ch.setScope(CacheScope.GLOBAL_RELOAD);
+				str.consumeChars(HINT_CACHE_GLOBAL_RELOAD.length());
+				str.consumeChars(ParseContext.WHITE_SPACES);
+				if (str.peekChar() == COMMA_CHAR) {
+					str.consumeChars(1);
+					str.consumeChars(ParseContext.WHITE_SPACES);
+					setTtl(str, ch);
+				}
+				if (ch.getTTL() <= 0) {
+					throw new ParseException(new EvalError("CacheHint(GLOBAL_RELOAD) requires TTL value. Ex: cache(reload, 300)", this, str));
+				}
 			} else {
-				//ttl指定
-				String ttlStr = str.nextToken(RIGHT_PAREN_DELS);
-				if (ttlStr != null) {
-					try {
-						ch.setTTL(Integer.parseInt(ttlStr.trim()));
-					} catch(NumberFormatException e) {
-						throw new ParseException(new EvalError("invalid TTL(or TRANSACTION scope) value.", this, str));
-					}
-				}
-				str.consumeChars(1);
-				str.consumeChars(ParseContext.WHITE_SPACES);
-				return ch;
+				//global指定
+				setTtl(str, ch);
 			}
+			
+			if (str.peekChar() != RIGHT_PAREN_CHAR) {
+				throw new ParseException(new EvalError(") expected.", this, str));
+			}
+			str.consumeChars(1);
+			str.consumeChars(ParseContext.WHITE_SPACES);
+			return ch;
 		case HINT_FETCH_SIZE:
 			FetchSizeHint fsh = new FetchSizeHint();
 			str.consumeChars(ParseContext.WHITE_SPACES);
@@ -214,6 +229,17 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 		default:
 			str.setCurrentIndex(currentIndex);
 			throw new ParseException(new EvalError("hint clause(INDEX/NO_INDEX/NATIVE/BIND/CACHE/FETCH_SIZE/TIMEOUT/SUPPRESS_WARNINGS/READ_ONLY) expected.", this, str));
+		}
+	}
+
+	private void setTtl(ParseContext str, CacheHint ch) throws ParseException {
+		String ttlStr = str.nextToken(RIGHT_PAREN_DELS);
+		if (ttlStr != null) {
+			try {
+				ch.setTTL(Integer.parseInt(ttlStr.trim()));
+			} catch(NumberFormatException e) {
+				throw new ParseException(new EvalError("invalid TTL(or TRANSACTION/KEEP/RELOAD scope) value on cache hint.", this, str));
+			}
 		}
 	}
 }

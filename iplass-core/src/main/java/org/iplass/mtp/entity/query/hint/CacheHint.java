@@ -27,7 +27,7 @@ import org.iplass.mtp.entity.query.ASTTransformer;
  * キャッシュのスコープ、キャッシュの有効期間（秒）を指定可能です。<br>
  * CahceScopeがTRANSACTIONの場合は、同一トランザクション内のみ当該キャッシュが有効です。
  * CahceScopeがGLOBAL（デフォルト）の場合は、共有キャッシュとなります。
- * CahceScope.GLOBALの場合は、有効期間（秒）を指定することが可能です。
+ * CahceScope.GLOBAL、CahceScope.GLOBAL_KEEP、CahceScope.GLOBAL_RELOADの場合は、有効期間（秒）を指定することが可能です。
  * 有効期間（秒）未指定の場合は無期限（デフォルトは無期限に設定。ただし、バックエンドで利用しているCacheStoreの設定で有効期限を設定している場合は、その限り）となります。
  * CacheScope.GLOBAL利用する際は、Entity定義にてqueryCacheを有効化した上で、EQLのヒント句をつける必要があります。<br>
  * EQLでの記述例： <br>
@@ -36,6 +36,8 @@ import org.iplass.mtp.entity.query.ASTTransformer;
  * select /*+ cache(transaction) &#42;/ a, b from SampleEntity where c.x='hoge' and a=1 and b=15<br>
  * や、<br>
  * select /*+ cache(60) &#42;/ a, b from SampleEntity where c.x='hoge' and a=1 and b=15<br>
+ * select /*+ cache(keep, 60) &#42;/ a, b from SampleEntity where c.x='hoge' and a=1 and b=15<br>
+ * select /*+ cache(reload, 60) &#42;/ a, b from SampleEntity where c.x='hoge' and a=1 and b=15<br>
  * 
  * @author K.Higuchi
  *
@@ -43,9 +45,30 @@ import org.iplass.mtp.entity.query.ASTTransformer;
 public class CacheHint extends EQLHint {
 	private static final long serialVersionUID = -2368342891687154508L;
 	
+	/**
+	 * キャッシュのスコープを表す列挙型です。
+	 */
 	public enum CacheScope {
+		/**
+		 * 同一トランザクション内でのみキャッシュを保持します
+		 */
 		TRANSACTION,
-		GLOBAL
+		/**
+		 * 共有キャッシュとしてキャッシュを保持します。
+		 * キャッシュしてるEntityデータに更新があった場合、キャッシュは破棄されます。
+		 */
+		GLOBAL,
+		/**
+		 * 共有キャッシュとしてキャッシュを保持します。
+		 * キャッシュしてるEntityデータに更新があった場合でもキャッシュは（更新前の状態で）保持されます。
+		 */
+		GLOBAL_KEEP,
+		/**
+		 * 共有キャッシュとしてキャッシュを保持します。
+		 * キャッシュしてるEntityデータに更新があった場合でもキャッシュは（更新前の状態で）保持されます。
+		 * 有効期間（秒）を指定し、その期間経過後に同一EQLにてキャッシュを自動的にリロードします。
+		 */
+		GLOBAL_RELOAD
 	}
 
 	private CacheScope scope = CacheScope.GLOBAL;
@@ -127,11 +150,29 @@ public class CacheHint extends EQLHint {
 
 	@Override
 	public String toString() {
-		if (scope == CacheScope.TRANSACTION) {
-			return "cache(transaction)";
-		}
-		if (ttl > 0) {
-			return "cache(" + ttl + ")";
+		if (scope != null) {
+			switch (scope) {
+			case TRANSACTION:
+				return "cache(transaction)";
+			case GLOBAL:
+				if (ttl > 0) {
+					return "cache(" + ttl + ")";
+				} else {
+					return "cache";
+				}
+			case GLOBAL_KEEP:
+				if (ttl > 0) {
+					return "cache(keep, " + ttl + ")";
+				} else {
+					return "cache(keep)";
+				}
+			case GLOBAL_RELOAD:
+				if (ttl > 0) {
+					return "cache(reload, " + ttl + ")";
+				} else {
+					return "cache(reload)";
+				}
+			}
 		}
 		return "cache";
 	}
