@@ -33,10 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.text.StrTokenizer;
+import org.apache.commons.text.StringTokenizer;
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
-import org.iplass.mtp.auth.NoPermissionException;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -638,7 +637,7 @@ public final class GetCalendarCommand implements Command {
 				filter =new Paren(new Not(new Like(property, (String) value, Like.MatchPattern.PARTIAL)));
 				break;
 			case IN:
-				StrTokenizer st = StrTokenizer.getCSVInstance((String) value);
+				StringTokenizer st = StringTokenizer.getCSVInstance((String) value);
 				String[] values = st.getTokenArray();
 				Object[] ret = new Object[values.length];
 				for (int i = 0; i < values.length; i++) {

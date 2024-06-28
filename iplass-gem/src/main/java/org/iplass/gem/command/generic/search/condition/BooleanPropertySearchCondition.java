@@ -20,7 +20,7 @@
 
 package org.iplass.gem.command.generic.search.condition;
 
-import org.apache.commons.text.StrTokenizer;
+import org.apache.commons.text.StringTokenizer;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.search.SearchConditionDetail;
@@ -54,7 +54,7 @@ public class BooleanPropertySearchCondition extends PropertySearchCondition {
 				|| Constants.NULL.equals(detail.getPredicate())) {
 			return null;
 		} else if (Constants.IN.equals(detail.getPredicate())) {
-			StrTokenizer st = StrTokenizer.getCSVInstance(detail.getValue());
+			StringTokenizer st = StringTokenizer.getCSVInstance(detail.getValue());
 			String[] values = st.getTokenArray();
 			Boolean[] ret = new Boolean[values.length];
 			for (int i = 0; i < values.length; i++) {
