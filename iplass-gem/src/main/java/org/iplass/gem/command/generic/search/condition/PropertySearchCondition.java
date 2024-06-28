@@ -23,7 +23,7 @@ package org.iplass.gem.command.generic.search.condition;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.text.StrTokenizer;
+import org.apache.commons.text.StringTokenizer;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.search.SearchConditionDetail;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -163,7 +163,7 @@ public abstract class PropertySearchCondition {
 				|| Constants.NULL.equals(detail.getPredicate())) {
 			return null;
 		} else if (Constants.IN.equals(detail.getPredicate())) {
-			StrTokenizer st = StrTokenizer.getCSVInstance(detail.getValue());
+			StringTokenizer st = StringTokenizer.getCSVInstance(detail.getValue());
 			String[] values = st.getTokenArray();
 			String[] ret = new String[values.length];
 			for (int i = 0; i < values.length; i++) {

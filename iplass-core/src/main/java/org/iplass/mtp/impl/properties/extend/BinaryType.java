@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.properties.extend;
 
 import java.util.List;
 
-import org.apache.commons.text.StrTokenizer;
+import org.apache.commons.text.StringTokenizer;
 import org.apache.commons.text.StringEscapeUtils;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
@@ -250,7 +250,7 @@ public class BinaryType extends ComplexWrapperType {
 				stringExpression = stringExpression.substring(0, tIndex);
 			}
 			
-			StrTokenizer st = StrTokenizer.getCSVInstance(stringExpression);
+			StringTokenizer st = StringTokenizer.getCSVInstance(stringExpression);
 			List<String> line = null;
 			line = st.getTokenList();
 			if (line != null) {
