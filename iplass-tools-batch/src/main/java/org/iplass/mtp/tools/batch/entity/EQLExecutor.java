@@ -32,8 +32,8 @@ import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tools.entity.EntityToolService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -205,7 +205,7 @@ public class EQLExecutor extends MtpCuiBase {
 			}
 			break;
 		case SHOW_SEARCH_RESULT:
-			OutputStream out = new CloseShieldOutputStream(System.out);
+			OutputStream out = CloseShieldOutputStream.wrap(System.out);
 			if (StringUtil.isBlank(userId)) {
 				count = entityToolService.executeEQLWithAuth(out, System.getProperty("file.encoding"), eql, isSearchAllVersion);
 			} else {
