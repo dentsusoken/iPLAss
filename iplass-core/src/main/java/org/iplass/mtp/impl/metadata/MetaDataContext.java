@@ -33,6 +33,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.iplass.mtp.impl.cache.CacheController;
 import org.iplass.mtp.impl.cache.CacheService;
 import org.iplass.mtp.impl.cache.LoadingAdapter;
+import org.iplass.mtp.impl.cluster.ClusterEventListener;
+import org.iplass.mtp.impl.cluster.ClusterService;
+import org.iplass.mtp.impl.cluster.Message;
 import org.iplass.mtp.impl.core.Executable;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
@@ -48,15 +51,17 @@ import org.slf4j.LoggerFactory;
 public class MetaDataContext {
 	private static final Logger logger = LoggerFactory.getLogger(MetaDataContext.class);
 
-	//TODO EntityのメタデータキャッシュはL1Cacheが良くヒットするが、画面系のメタデータはL1Cacheがほとんど使われない。キャッシュのコンテキストを分けるか？
-
-	//FIXME メタデータのキャッシュの正確なクリア処理の実装
-
 	public static final String METADATA_CACHE_NAMESPACE = "mtp.metadata.metaData";
-//	public static final String METADATA_LIST_CACHE_NAMESPACE = "mtp.metadata.metaDataList";
 	public static final String METADATA_DEF_LIST_CACHE_NAMESPACE = "mtp.metadata.metaDataDefList";
 
+	private static final String CLUSTER_EVENT_NAME_METADATA_CONTEXT_EVENT = "mtp.metadata.ce/";
+	private static final String CLUSTER_MESSAGE_TYPE = "t";
+	private static final String CLUSTER_MESSAGE_PATH = "p";
+	private static final String CLUSTER_MESSAGE_PATH_BEFORE = "pb";
 
+	private static final String CLUSTER_MESSAGE_TYPE_CREATED = "c";
+	private static final String CLUSTER_MESSAGE_TYPE_UPDATED = "u";
+	private static final String CLUSTER_MESSAGE_TYPE_REMOVED = "r";
 	/**
 	 * MetaDataContext取得用ユーティリティメソッド。
 	 */
@@ -74,6 +79,9 @@ public class MetaDataContext {
 
 	/** MetaDataの変更通知Listner */
 	private final CopyOnWriteArrayList<MetaDataContextListener> listenerList;
+	
+	private final String clusterEventName;
+	private final ClusterEventListener cel;
 
 	public MetaDataContext(int tenantId) {
 		this.tenantId = tenantId;
@@ -87,6 +95,51 @@ public class MetaDataContext {
 //		listCache = new CacheController<String, MetaDataListCacheEntry>(cs.getCache(METADATA_LIST_CACHE_NAMESPACE + "/" + tenantId), false, 0, new MetaDataListCacheLogic(), false);
 		defListCache = new CacheController<String, MetaDataDefinitionCacheEntry>(cs.getCache(METADATA_DEF_LIST_CACHE_NAMESPACE + "/" + tenantId), false, 0, new MetaDataDefinitionCacheLogic(), false, true);
 		listenerList = new CopyOnWriteArrayList<MetaDataContextListener>();
+		
+		clusterEventName = CLUSTER_EVENT_NAME_METADATA_CONTEXT_EVENT + tenantId;
+		cel = new ClusterEventListener() {
+			@Override
+			public void onMessage(Message message) {
+				String type = message.getParameter(CLUSTER_MESSAGE_TYPE);
+				String path = message.getParameter(CLUSTER_MESSAGE_PATH);
+				String pathBefore = message.getParameter(CLUSTER_MESSAGE_PATH_BEFORE);
+				switch (type) {
+				case CLUSTER_MESSAGE_TYPE_CREATED:
+					if (listenerList.size() > 0) {
+						for (MetaDataContextListener l: listenerList) {
+							l.created(path);
+						}
+					}
+					break;
+				case CLUSTER_MESSAGE_TYPE_UPDATED:
+					if (listenerList.size() > 0) {
+						for (MetaDataContextListener l: listenerList) {
+							l.updated(path, pathBefore);
+						}
+					}
+					break;
+				case CLUSTER_MESSAGE_TYPE_REMOVED:
+					if (listenerList.size() > 0) {
+						for (MetaDataContextListener l: listenerList) {
+							l.removed(path);
+						}
+					}
+					break;
+				}
+			}
+		};
+		
+		ServiceRegistry.getRegistry().getService(ClusterService.class).registerListener(new String[]{clusterEventName}, cel);
+	}
+
+	private void sendClusterEvent(String type, String path, String pathBefore) {
+		Message msg = new Message(clusterEventName);
+		msg.addParameter(CLUSTER_MESSAGE_TYPE, type);
+		msg.addParameter(CLUSTER_MESSAGE_PATH, path);
+		if (pathBefore != null) {
+			msg.addParameter(CLUSTER_MESSAGE_PATH_BEFORE, pathBefore);
+		}
+		ServiceRegistry.getRegistry().getService(ClusterService.class).sendMessage(msg);
 	}
 
 	/**
@@ -322,6 +375,7 @@ public class MetaDataContext {
 								l.created(path);
 							}
 						}
+						sendClusterEvent(CLUSTER_MESSAGE_TYPE_CREATED, path, null);
 					}
 				});
 
@@ -437,6 +491,7 @@ public class MetaDataContext {
 								l.updated(path, pathBefore);
 							}
 						}
+						sendClusterEvent(CLUSTER_MESSAGE_TYPE_UPDATED, path, pathBefore);
 					}
 				});
 		});
@@ -570,6 +625,7 @@ public class MetaDataContext {
 								l.removed(path);
 							}
 						}
+						sendClusterEvent(CLUSTER_MESSAGE_TYPE_REMOVED, path, null);
 					}
 				});
 		});
@@ -646,6 +702,7 @@ public class MetaDataContext {
 									l.updated(meta.getPath(), null);
 								}
 							}
+							sendClusterEvent(CLUSTER_MESSAGE_TYPE_UPDATED, meta.getPath(), null);
 						}
 					});
 				}
@@ -859,11 +916,12 @@ public class MetaDataContext {
 	}
 
 	/**
-	 * <p>キャッシュを無効にします。</p>
+	 * <p>MetaDataConextを無効化します。</p>
 	 */
 	public void invalidate() {
 		cache.invalidateCacheStore();
 		defListCache.invalidateCacheStore();
+		ServiceRegistry.getRegistry().getService(ClusterService.class).removeListener(new String[]{clusterEventName}, cel);
 	}
 
 	/**
