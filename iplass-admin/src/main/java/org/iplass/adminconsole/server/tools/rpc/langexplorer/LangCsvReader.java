@@ -61,7 +61,11 @@ public class LangCsvReader implements Iterable<Map<String, Object>>, Closeable {
 		//BOM対応
 		InputStream is = inputStream;
 		if (!(inputStream instanceof BOMInputStream)) {
-			is = new BOMInputStream(inputStream, false);
+			try {
+				is = BOMInputStream.builder().setInputStream(inputStream).setInclude(false).get();
+			} catch (IOException e) {
+				throw new EntityDataPortingRuntimeException(e);
+			}
 		}
 
 		//CsvMapReaderの生成
