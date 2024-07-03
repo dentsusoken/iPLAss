@@ -813,7 +813,7 @@ public class CsvUploadService implements Service {
 
 			List<ValidateError> errors = new ArrayList<>();
 
-			errors.addAll(interrupter.beforeRegist(readCount, entity, ed, CsvRegistrationType.DELETE));
+			errors.addAll(interrupter.beforeRegister(readCount, entity, ed, CsvRegistrationType.DELETE));
 
 			if (CollectionUtil.isEmpty(errors)) {
 				try {
@@ -822,7 +822,7 @@ public class CsvUploadService implements Service {
 					errors.addAll(e.getValidateResults());
 				}
 			}
-			errors.addAll(interrupter.afterRegist(readCount, entity, ed, CsvRegistrationType.DELETE));
+			errors.addAll(interrupter.afterRegister(readCount, entity, ed, CsvRegistrationType.DELETE));
 
 			if (CollectionUtil.isNotEmpty(errors)) {
 				throw new EntityValidationException("valiation error.", errors);
@@ -871,7 +871,7 @@ public class CsvUploadService implements Service {
 
 				interrupter.dataMapping(readCount, entity, ed, CsvRegistrationType.INSERT);
 
-				errors.addAll(interrupter.beforeRegist(readCount, entity, ed, CsvRegistrationType.INSERT));
+				errors.addAll(interrupter.beforeRegister(readCount, entity, ed, CsvRegistrationType.INSERT));
 
 				if (CollectionUtil.isEmpty(errors)) {
 					try {
@@ -889,7 +889,7 @@ public class CsvUploadService implements Service {
 					}
 				}
 
-				errors.addAll(interrupter.afterRegist(readCount, entity, ed, CsvRegistrationType.INSERT));
+				errors.addAll(interrupter.afterRegister(readCount, entity, ed, CsvRegistrationType.INSERT));
 
 				if (CollectionUtil.isNotEmpty(errors)) {
 					throw new EntityValidationException("valiation error.", errors);
@@ -906,7 +906,7 @@ public class CsvUploadService implements Service {
 
 				interrupter.dataMapping(readCount, entity, ed, CsvRegistrationType.UPDATE);
 
-				errors.addAll(interrupter.beforeRegist(readCount, entity, ed, CsvRegistrationType.UPDATE));
+				errors.addAll(interrupter.beforeRegister(readCount, entity, ed, CsvRegistrationType.UPDATE));
 
 				if (CollectionUtil.isEmpty(errors)) {
 					try {
@@ -924,7 +924,7 @@ public class CsvUploadService implements Service {
 					}
 				}
 
-				errors.addAll(interrupter.afterRegist(readCount, entity, ed, CsvRegistrationType.UPDATE));
+				errors.addAll(interrupter.afterRegister(readCount, entity, ed, CsvRegistrationType.UPDATE));
 
 				if (CollectionUtil.isNotEmpty(errors)) {
 					throw new EntityValidationException("valiation error.", errors);
