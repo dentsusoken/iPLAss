@@ -50,8 +50,7 @@ public interface CsvUploadInterrupter {
 	}
 
 	/**
-	 * プロパティ名に対する出力CSV列名のマッピング定義を返します。
-	 * keyをプロパティ名、valueを出力CSV列名として定義します。
+	 * プロパティ名に対する出力CSV列名のマッピング定義を返します。 keyをプロパティ名、valueを出力CSV列名として定義します。
 	 * nullを返す場合は、Entity定義から決定します。
 	 *
 	 * @param definition Entity定義
@@ -64,37 +63,40 @@ public interface CsvUploadInterrupter {
 	/**
 	 * CSVデータから登録用のデータをマッピングします。
 	 *
-	 * @param row 行
-	 * @param entity CSVデータ
-	 * @param definition Entity定義
+	 * @param row              行
+	 * @param entity           CSVデータ
+	 * @param definition       Entity定義
 	 * @param registrationType 登録処理の種類
 	 */
-	default public void dataMapping(int row, Entity entity, EntityDefinition definition, CsvRegistrationType registrationType) {
+	default public void dataMapping(int row, Entity entity, EntityDefinition definition,
+			CsvRegistrationType registrationType) {
 	}
 
 	/**
 	 * 登録前処理を行います。
 	 *
-	 * @param row 行
-	 * @param entity 登録用のデータ
-	 * @param definition Entity定義
+	 * @param row              行
+	 * @param entity           登録用のデータ
+	 * @param definition       Entity定義
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
-	default public List<ValidateError> beforeRegist(int row, Entity entity, EntityDefinition definition, CsvRegistrationType registrationType) {
+	default public List<ValidateError> beforeRegister(int row, Entity entity, EntityDefinition definition,
+			CsvRegistrationType registrationType) {
 		return Collections.emptyList();
 	}
 
 	/**
 	 * 登録後処理を行います。
 	 *
-	 * @param row 行
-	 * @param entity 登録用のデータ
-	 * @param definition Entity定義
+	 * @param row              行
+	 * @param entity           登録用のデータ
+	 * @param definition       Entity定義
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
-	default public List<ValidateError> afterRegist(int row, Entity entity, EntityDefinition definition, CsvRegistrationType registrationType) {
+	default public List<ValidateError> afterRegister(int row, Entity entity, EntityDefinition definition,
+			CsvRegistrationType registrationType) {
 		return Collections.emptyList();
 	}
 
