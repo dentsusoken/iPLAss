@@ -34,6 +34,7 @@ import org.iplass.mtp.view.generic.RegistrationInterrupter.RegistrationType;
 
 /**
  * カスタム登録処理ハンドラ
+ * 
  * @author lis3wg
  * @author Y.Ishida
  */
@@ -47,20 +48,21 @@ public class RegistrationInterrupterHandler {
 
 	/**
 	 * コンストラクタ
-	 * @param request リクエスト
-	 * @param context 詳細画面Context
+	 * 
+	 * @param request     リクエスト
+	 * @param context     詳細画面Context
 	 * @param interrupter 登録処理クラス
 	 */
-	public RegistrationInterrupterHandler(RequestContext request,
-			RegistrationCommandContext context, RegistrationInterrupter interrupter) {
+	public RegistrationInterrupterHandler(RequestContext request, RegistrationCommandContext context,
+			RegistrationInterrupter interrupter) {
 		this.request = request;
 		this.context = context;
 		this.interrupter = interrupter;
 	}
 
-
 	/**
 	 * 登録用のデータにリクエストのデータをマッピングします。
+	 * 
 	 * @param entity 登録用のデータ
 	 */
 	public void dataMapping(Entity entity) {
@@ -69,6 +71,7 @@ public class RegistrationInterrupterHandler {
 
 	/**
 	 * 更新対象のプロパティを取得します。
+	 * 
 	 * @param updatePropNames 汎用登録処理で指定された更新対象プロパティ
 	 * @return 更新対象プロパティ
 	 */
@@ -77,11 +80,12 @@ public class RegistrationInterrupterHandler {
 		if (!interrupter.isSpecifyAllProperties()) {
 			propertyList.addAll(updatePropNames);
 		}
-		if (interrupter.getAdditionalProperties() != null
-				&& interrupter.getAdditionalProperties().length > 0) {
+		if (interrupter.getAdditionalProperties() != null && interrupter.getAdditionalProperties().length > 0) {
 			for (String propertyName : interrupter.getAdditionalProperties()) {
 				PropertyDefinition pd = context.getProperty(propertyName);
-				if (pd != null && !propertyList.contains(propertyName)) propertyList.add(propertyName);
+				if (pd != null && !propertyList.contains(propertyName)) {
+					propertyList.add(propertyName);
+				}
 			}
 		}
 		return propertyList.toArray(new String[propertyList.size()]);
@@ -89,32 +93,39 @@ public class RegistrationInterrupterHandler {
 
 	/**
 	 * 登録前処理を行います。
-	 * @param entity 登録用のデータ
+	 * 
+	 * @param entity           登録用のデータ
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
-	public List<ValidateError> beforeRegist(Entity entity, RegistrationType registrationType) {
-		List<ValidateError> ret = interrupter.beforeRegist(
-				entity, request, context.getEntityDefinition(), context.getView(), registrationType);
-		if (ret == null) ret = Collections.emptyList();
+	public List<ValidateError> beforeRegister(Entity entity, RegistrationType registrationType) {
+		List<ValidateError> ret = interrupter.beforeRegister(entity, request, context.getEntityDefinition(),
+				context.getView(), registrationType);
+		if (ret == null) {
+			ret = Collections.emptyList();
+		}
 		return ret;
 	}
 
 	/**
 	 * 登録後処理を行います。
-	 * @param entity 登録用のデータ
+	 * 
+	 * @param entity           登録用のデータ
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
-	public List<ValidateError> afterRegist(Entity entity, RegistrationType registType) {
-		List<ValidateError> ret = interrupter.afterRegist(
-				entity, request, context.getEntityDefinition(), context.getView(), registType);
-		if (ret == null) ret = Collections.emptyList();
+	public List<ValidateError> afterRegister(Entity entity, RegistrationType registType) {
+		List<ValidateError> ret = interrupter.afterRegister(entity, request, context.getEntityDefinition(),
+				context.getView(), registType);
+		if (ret == null) {
+			ret = Collections.emptyList();
+		}
 		return ret;
 	}
-	
+
 	/**
 	 * NestTableの更新オプションを取得します。
+	 * 
 	 * @param ed              Entity定義
 	 * @param refPropertyName 参照プロパティ名
 	 * @return NestTableの更新オプション
@@ -124,7 +135,7 @@ public class RegistrationInterrupterHandler {
 
 		option.setSpecifyAllProperties(interrupter.isSpecifyAllProperties());
 
-		// 更新対象のプロパティが指定された場合	
+		// 更新対象のプロパティが指定された場合
 		if (interrupter.getAdditionalProperties() != null && interrupter.getAdditionalProperties().length > 0) {
 			for (String addtionalProperty : interrupter.getAdditionalProperties()) {
 				if (addtionalProperty.equals(refPropertyName)) {
@@ -138,7 +149,7 @@ public class RegistrationInterrupterHandler {
 				}
 			}
 		}
-		
+
 		return option;
 	}
 }
