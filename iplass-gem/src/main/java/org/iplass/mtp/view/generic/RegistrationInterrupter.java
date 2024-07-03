@@ -30,6 +30,7 @@ import org.iplass.mtp.entity.definition.EntityDefinition;
 
 /**
  * 汎用登録処理にカスタムで登録処理を行わせるインターフェース
+ *
  * @author lis3wg
  */
 public interface RegistrationInterrupter {
@@ -47,20 +48,20 @@ public interface RegistrationInterrupter {
 	/**
 	 * 登録用のデータにリクエストのデータをマッピングします。
 	 *
-	 * @param entity 登録用のデータ
-	 * @param request リクエスト
+	 * @param entity     登録用のデータ
+	 * @param request    リクエスト
 	 * @param definition Entity定義
-	 * @param view 画面定義
+	 * @param view       画面定義
 	 */
 	default public void dataMapping(Entity entity, RequestContext request, EntityDefinition definition, FormView view) {
 	}
 
 	/**
-	 * {@link #getAdditionalProperties()} で全てのプロパティを対象にするかを判断します。
-	 * デフォルトはfalseです。
+	 * {@link #getAdditionalProperties()} で全てのプロパティを対象にするかを判断します。 デフォルトはfalseです。
 	 *
 	 * @return trueの場合、{@link #getAdditionalProperties()} の戻り値のプロパティのみを更新対象<BR>
-	 *         falseの場合、汎用登録処理が自動で設定した更新対象に、{@link #getAdditionalProperties()} の戻り値のプロパティを追加
+	 *         falseの場合、汎用登録処理が自動で設定した更新対象に、{@link #getAdditionalProperties()}
+	 *         の戻り値のプロパティを追加
 	 */
 	default public boolean isSpecifyAllProperties() {
 		return false;
@@ -68,10 +69,10 @@ public interface RegistrationInterrupter {
 
 	/**
 	 * <p>
-	 * 更新対象のプロパティを取得します。
-	 * 更新対象のプロパティは {@link #isSpecifyAllProperties()} により対象範囲が変わります。
+	 * 更新対象のプロパティを取得します。 更新対象のプロパティは {@link #isSpecifyAllProperties()}
+	 * により対象範囲が変わります。
 	 * </p>
-	 * 
+	 *
 	 * <ul>
 	 * <li>trueの場合、このメソッドの戻り値のプロパティのみを更新対象にする</li>
 	 * <li>falseの場合、汎用登録処理が自動で設定した更新対象に、このメソッドの戻り値のプロパティを追加する</li>
@@ -80,36 +81,74 @@ public interface RegistrationInterrupter {
 	 * @return 更新対象プロパティ
 	 */
 	default public String[] getAdditionalProperties() {
-		return new String[]{};
+		return new String[] {};
 	}
 
 	/**
 	 * 登録前処理を行います。
-	 * 
-	 * @param entity 登録用のデータ
-	 * @param request リクエスト
-	 * @param definition Entity定義
-	 * @param view 画面定義
+	 *
+	 * @param entity           登録用のデータ
+	 * @param request          リクエスト
+	 * @param definition       Entity定義
+	 * @param view             画面定義
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
-	default public List<ValidateError> beforeRegist(Entity entity, RequestContext request,
+	default public List<ValidateError> beforeRegister(Entity entity, RequestContext request,
 			EntityDefinition definition, FormView view, RegistrationType registrationType) {
+		return beforeRegist(entity, request, definition, view, registrationType);
+	}
+
+	/**
+	 * 登録前処理を行います。
+	 *
+	 * @param entity           登録用のデータ
+	 * @param request          リクエスト
+	 * @param definition       Entity定義
+	 * @param view             画面定義
+	 * @param registrationType 登録処理の種類
+	 * @return 入力エラーリスト
+	 *
+	 * @deprecated use
+	 *             {@link #beforeRegister(Entity, RequestContext, EntityDefinition, FormView, RegistrationType)}
+	 */
+	@Deprecated
+	default public List<ValidateError> beforeRegist(Entity entity, RequestContext request, EntityDefinition definition,
+			FormView view, RegistrationType registrationType) {
 		return Collections.emptyList();
 	}
 
 	/**
 	 * 登録後処理を行います。
-	 * 
-	 * @param entity 登録用のデータ
-	 * @param request リクエスト
-	 * @param definition Entity定義
-	 * @param view 画面定義
+	 *
+	 * @param entity           登録用のデータ
+	 * @param request          リクエスト
+	 * @param definition       Entity定義
+	 * @param view             画面定義
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
-	default public List<ValidateError> afterRegist(Entity entity, RequestContext request,
-			EntityDefinition definition, FormView view, RegistrationType registType) {
+	default public List<ValidateError> afterRegister(Entity entity, RequestContext request, EntityDefinition definition,
+			FormView view, RegistrationType registType) {
+		return afterRegist(entity, request, definition, view, registType);
+	}
+
+	/**
+	 * 登録後処理を行います。
+	 *
+	 * @param entity           登録用のデータ
+	 * @param request          リクエスト
+	 * @param definition       Entity定義
+	 * @param view             画面定義
+	 * @param registrationType 登録処理の種類
+	 * @return 入力エラーリスト
+	 *
+	 * @deprecated use
+	 *             {@link #afterRegister(Entity, RequestContext, EntityDefinition, FormView, RegistrationType)}
+	 */
+	@Deprecated
+	default public List<ValidateError> afterRegist(Entity entity, RequestContext request, EntityDefinition definition,
+			FormView view, RegistrationType registType) {
 		return Collections.emptyList();
 	}
 

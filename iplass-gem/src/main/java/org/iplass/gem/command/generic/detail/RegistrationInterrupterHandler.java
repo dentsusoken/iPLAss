@@ -93,8 +93,8 @@ public class RegistrationInterrupterHandler {
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
-	public List<ValidateError> beforeRegist(Entity entity, RegistrationType registrationType) {
-		List<ValidateError> ret = interrupter.beforeRegist(
+	public List<ValidateError> beforeRegister(Entity entity, RegistrationType registrationType) {
+		List<ValidateError> ret = interrupter.beforeRegister(
 				entity, request, context.getEntityDefinition(), context.getView(), registrationType);
 		if (ret == null) ret = Collections.emptyList();
 		return ret;
@@ -106,13 +106,13 @@ public class RegistrationInterrupterHandler {
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
-	public List<ValidateError> afterRegist(Entity entity, RegistrationType registType) {
-		List<ValidateError> ret = interrupter.afterRegist(
+	public List<ValidateError> afterRegister(Entity entity, RegistrationType registType) {
+		List<ValidateError> ret = interrupter.afterRegister(
 				entity, request, context.getEntityDefinition(), context.getView(), registType);
 		if (ret == null) ret = Collections.emptyList();
 		return ret;
 	}
-	
+
 	/**
 	 * NestTableの更新オプションを取得します。
 	 * @param ed              Entity定義
@@ -124,7 +124,7 @@ public class RegistrationInterrupterHandler {
 
 		option.setSpecifyAllProperties(interrupter.isSpecifyAllProperties());
 
-		// 更新対象のプロパティが指定された場合	
+		// 更新対象のプロパティが指定された場合
 		if (interrupter.getAdditionalProperties() != null && interrupter.getAdditionalProperties().length > 0) {
 			for (String addtionalProperty : interrupter.getAdditionalProperties()) {
 				if (addtionalProperty.equals(refPropertyName)) {
@@ -138,7 +138,7 @@ public class RegistrationInterrupterHandler {
 				}
 			}
 		}
-		
+
 		return option;
 	}
 }

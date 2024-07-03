@@ -198,7 +198,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			errors.addAll(beforeRegistRefEntity(context, entity, loadEntity));
 
 			//カスタム登録前処理
-			errors.addAll(context.getRegistrationInterrupterHandler().beforeRegist(entity, RegistrationType.UPDATE));
+			errors.addAll(context.getRegistrationInterrupterHandler().beforeRegister(entity, RegistrationType.UPDATE));
 
 			//本データの更新
 			errors.addAll(update(context, entity));
@@ -207,7 +207,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			errors.addAll(afterRegistRefEntity(context, entity, loadEntity));
 
 			//カスタム登録後処理
-			errors.addAll(context.getRegistrationInterrupterHandler().afterRegist(entity, RegistrationType.UPDATE));
+			errors.addAll(context.getRegistrationInterrupterHandler().afterRegister(entity, RegistrationType.UPDATE));
 
 			if (errors.isEmpty()) {
 				ret.setResultType(ResultType.SUCCESS);
@@ -341,7 +341,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			errors.addAll(beforeRegistRefEntity(context, entity, null));
 
 			//カスタム登録前処理
-			errors.addAll(context.getRegistrationInterrupterHandler().beforeRegist(entity, RegistrationType.INSERT));
+			errors.addAll(context.getRegistrationInterrupterHandler().beforeRegister(entity, RegistrationType.INSERT));
 
 			//本データの追加
 			errors.addAll(insert(context, entity));
@@ -350,7 +350,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			errors.addAll(afterRegistRefEntity(context, entity, loadUpdateEntity(context, entity, new LoadOption(true, false))));
 
 			//カスタム登録後処理
-			errors.addAll(context.getRegistrationInterrupterHandler().afterRegist(entity, RegistrationType.INSERT));
+			errors.addAll(context.getRegistrationInterrupterHandler().afterRegister(entity, RegistrationType.INSERT));
 
 			if (errors.isEmpty()) {
 				ret.setResultType(ResultType.SUCCESS);
