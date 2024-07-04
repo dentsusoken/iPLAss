@@ -19,8 +19,6 @@ dependencies {
 	implementation sharedLib('org.apache.lucene:lucene-queryparser')
 	implementation sharedLib('org.apache.lucene:lucene-analysis-kuromoji')
 	runtimeOnly sharedLib('org.apache.lucene:lucene-backward-codecs')
-	// migration 9.1: Lucene Core now depends on java.logging (JUL) module (LUCENE-10342)
-	runtimeOnly sharedLib('org.slf4j:jul-to-slf4j')
 
 	//tika(依存関係多いので明示的に指定する)
 	implementation(sharedLib('org.apache.tika:tika-core'))
