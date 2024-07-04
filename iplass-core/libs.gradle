@@ -16,20 +16,11 @@ dependencies {
 	implementation sharedLib('org.apache.httpcomponents:httpclient')
 	
 	//lucene
-	implementation(sharedLib('org.apache.lucene:lucene-queryparser')) {
-		//TODO 必要？？
-		exclude(group: 'org.apache.lucene', module: 'lucene-queries')
-		exclude(group: 'org.apache.lucene', module: 'lucene-sandbox')
-	}
-	implementation sharedLib('org.apache.lucene:lucene-analyzers-kuromoji')
-	runtimeOnly sharedLib('org.apache.lucene:lucene-analyzers-smartcn')
+	implementation sharedLib('org.apache.lucene:lucene-queryparser')
+	implementation sharedLib('org.apache.lucene:lucene-analysis-kuromoji')
 	runtimeOnly sharedLib('org.apache.lucene:lucene-backward-codecs')
-	runtimeOnly(sharedLib('org.apache.lucene:lucene-highlighter')) {
-		//TODO 必要？？
-		exclude(group: 'org.apache.lucene', module: 'lucene-join')
-		exclude(group: 'org.apache.lucene', module: 'lucene-queries')
-		exclude(group: 'org.apache.lucene', module: 'lucene-memory')
-	}
+	// migration 9.1: Lucene Core now depends on java.logging (JUL) module (LUCENE-10342)
+	runtimeOnly sharedLib('org.slf4j:jul-to-slf4j')
 
 	//tika(依存関係多いので明示的に指定する)
 	implementation(sharedLib('org.apache.tika:tika-core'))

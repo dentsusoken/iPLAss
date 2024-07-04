@@ -42,6 +42,7 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -84,6 +85,9 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * FulltextSearchService ( for lucene )
+ */
 public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 
 	private static Logger logger = LoggerFactory.getLogger(LuceneFulltextSearchService.class);
@@ -93,16 +97,16 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 
 	private long searcherAutoRefreshTimeMinutes = -1;
 	private Timer timer;
-	
+
 	private IndexWriterSetting indexWriterSetting;
-	
+
 	private String directory;
 	private Class<?> luceneFSDirectoryClass;
-	private int maxChunkSizeMB;
-	
+	private long maxChunkSizeMB;
+
 	private ConcurrentHashMap<Integer, LuceneFulltextSearchContext> contexts;
-	
-	
+
+
 	IndexDir newIndexDir(int tenantId, String defId) {
 		EntityService entityService = ServiceRegistry.getRegistry().getService(EntityService.class);
 		EntityHandler eh = entityService.getRuntimeById(defId);
@@ -110,7 +114,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 			logger.debug("defId:" + defId + " not foud or disable crawl.");
 			return null;
 		}
-		
+
 		Path dirPath = Paths.get(directory, String.valueOf(tenantId), defId);
 		if (!Files.exists(dirPath)) {
 			logger.debug(dirPath.toString() + " not exists.so create new directory");
@@ -126,7 +130,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 			} else {
 				dir = FSDirectory.open(dirPath);
 			}
-			
+
 			return new SimpleIndexDir(tenantId, defId, dir, searcherAutoRefreshTimeMinutes, timer);
 		} catch (Exception e) {
 			if (dir != null) {
@@ -139,12 +143,12 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 			throw new FulltextSearchRuntimeException("Failed to initialize the Lucene index directory:" + tenantId + "/" + defId, e);
 		}
 	}
-	
+
 	private boolean existsDir(int tenantId, String defId) {
 		Path dirPath = Paths.get(directory, String.valueOf(tenantId), defId);
 		return Files.exists(dirPath);
 	}
-	
+
 	@Override
 	public void initTenantContext(TenantContext tenantContext) {
 		if (isUseFulltextSearch()) {
@@ -177,10 +181,10 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 	@Override
 	public void init(Config config) {
 		super.init(config);
-		
+
 		if (isUseFulltextSearch()) {
 			contexts = new ConcurrentHashMap<>();
-			
+
 			directory = config.getValue("directory");
 			if (directory == null) {
 				throw new NullPointerException("directory is null");
@@ -196,22 +200,22 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 					throw new ServiceConfigrationException(className + " is not sub class of FSDirectory");
 				}
 			}
-			maxChunkSizeMB = config.getValue("luceneFSDirectoryMaxChunkSizeMB", Integer.TYPE, MMapDirectory.DEFAULT_MAX_CHUNK_SIZE);
-			
+			maxChunkSizeMB = config.getValue("luceneFSDirectoryMaxChunkSizeMB", Long.TYPE, MMapDirectory.DEFAULT_MAX_CHUNK_SIZE);
+
 			searcherAutoRefreshTimeMinutes = config.getValue("searcherAutoRefreshTimeMinutes", Long.TYPE, -1L);
 			if (searcherAutoRefreshTimeMinutes > 0) {
 				timer = new Timer("Searcher refresh timer", true);
 			}
-			
+
 			indexWriterSetting = config.getValue("indexWriterSetting", IndexWriterSetting.class, new IndexWriterSetting());
-			
+
 			analyzerSetting = config.getValue("analyzerSetting", AnalyzerSetting.class);
 			if (analyzerSetting == null) {
 				analyzerSetting = new JapaneseAnalyzerSetting();
 				analyzerSetting.inited(this, config);
 			}
 		}
-		
+
 		defaultOperator = config.getValue("defaultOperator", Operator.class);
 	}
 
@@ -416,14 +420,14 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 
 		return isIndexed[0];
 	}
-	
+
 	private Field toField(String fieldName, Object val) throws IOException {
 		return new TextField(fieldName, toValue(val), Field.Store.NO);
 	}
-	
+
 	@Override
 	protected List<IndexedEntity> fulltextSearchImpl(Integer tenantId, EntityHandler eh, String fulltext, int limit) {
-		
+
 		if (eh == null || StringUtil.isEmpty(fulltext)) {
 			return Collections.emptyList();
 		}
@@ -437,7 +441,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 		String[] fields = eh.getMetaData().getCrawlPropertyId().toArray(new String[eh.getMetaData().getCrawlPropertyId().size()]);
 		MultiFieldQueryParser qp = new MultiFieldQueryParser(fields, analyzerSetting.getAnalyzer(tenantId, eh.getMetaData().getName()));
 		qp.setDefaultOperator(defaultOperator);
-		
+
 		IndexSearcher searcher = null;
 		try {
 			searcher = dir.getSearcherManager().acquire();
@@ -456,8 +460,9 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 			ScoreDoc[] hits = docs.scoreDocs;
 
 			List<IndexedEntity> result = new ArrayList<>(hits.length);
+			StoredFields storedFields = searcher.storedFields();
 			for (ScoreDoc hit : hits) {
-				Document doc = searcher.doc(hit.doc);
+				Document doc = storedFields.document(hit.doc);
 				String oid = doc.get("OBJ_ID");
 
 				result.add(new IndexedEntity(eh.getMetaData().getName(), oid, hit.score));
@@ -498,9 +503,9 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 					}
 				}
 			}
-			
+
 		}
-		
+
 		// CrawlLogのデータを削除
 		removeAllCrawlLog();
 

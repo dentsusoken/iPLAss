@@ -105,11 +105,9 @@ ext {
 		'org.apache.httpcomponents:httpmime': '4.5.13',
 		
 		//lucene
-		'org.apache.lucene:lucene-queryparser': '8.11.2',
-		'org.apache.lucene:lucene-analyzers-kuromoji': '8.11.2',
-		'org.apache.lucene:lucene-analyzers-smartcn': '8.11.2',
-		'org.apache.lucene:lucene-backward-codecs': '8.11.2',
-		'org.apache.lucene:lucene-highlighter': '8.11.2',
+		'org.apache.lucene:lucene-queryparser': '9.11.1',
+		'org.apache.lucene:lucene-analysis-kuromoji': '9.11.1',
+		'org.apache.lucene:lucene-backward-codecs': '9.11.1',
 		
 		//tika(依存関係多いので明示的に指定する)
 		'org.apache.tika:tika-core': '1.28.5',
@@ -139,6 +137,7 @@ ext {
 		
 		'org.slf4j:slf4j-api': '2.0.13',
 		'org.slf4j:jcl-over-slf4j': '2.0.13',
+		'org.slf4j:jul-to-slf4j': '2.0.13',
 		'org.slf4j:log4j-over-slf4j': '2.0.13',
 		'org.apache.logging.log4j:log4j-to-slf4j': '2.23.1',
 		'ch.qos.logback:logback-classic': '1.5.6',
