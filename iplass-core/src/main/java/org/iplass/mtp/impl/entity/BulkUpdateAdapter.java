@@ -182,11 +182,11 @@ class BulkUpdateAdapter implements BulkUpdatable {
 			
 			switch (forInternalUse.actualBulkUpdateEntity.getMethod()) {
 			case INSERT:
-				eh.nomalizeInternal(forInternalUse.getEntity(), null, ec);
+				eh.normalizeInternal(forInternalUse.getEntity(), null, ec);
 				eh.preprocessInsertDirect(forInternalUse.getEntity(), ec, complexWrapperTypePropList);
 				break;
 			case UPDATE:
-				eh.nomalizeInternal(forInternalUse.getEntity(), op == null ? null: op.getUpdateProperties(), ec);
+				eh.normalizeInternal(forInternalUse.getEntity(), op == null ? null: op.getUpdateProperties(), ec);
 				eh.preprocessUpdateDirect(forInternalUse.getEntity(), op, ec, complexWrapperTypePropList, true);
 				break;
 			case DELETE:
@@ -195,7 +195,7 @@ class BulkUpdateAdapter implements BulkUpdatable {
 				break;
 			case MERGE:
 				//厳密にinsert/update判断できないのですべてのpropertyにnormalize実施、
-				eh.nomalizeInternal(forInternalUse.getEntity(), null, ec);
+				eh.normalizeInternal(forInternalUse.getEntity(), null, ec);
 				if (forInternalUse.getEntity().getOid() == null) {
 					//insert
 					eh.preprocessInsertDirect(forInternalUse.getEntity(), ec, complexWrapperTypePropList);

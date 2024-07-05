@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 DENTSU SOKEN INC. All Rights Reserved.
+ * Copyright (C) 2024 DENTSU SOKEN INC. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -17,32 +17,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package org.iplass.mtp.entity.interceptor;
 
+import java.util.List;
 
-/**
- * Interceptor実装クラスで判断可能な、Entityの操作の種類。
- * 
- * @see EntityInvocation
- * @author K.Higuchi
- */
-public enum InvocationType {
-	COUNT,
-	DELETE_ALL,
-	DELETE,
-	INSERT,
-	LOAD,
-	SEARCH,
-	SEARCH_ENTITY,
-	UPDATE_ALL,
-	UPDATE,
-	BULK_UPDATE,
-	VALIDATE,
-	GET_RECYCLE_BIN,
-	PURGE,
-	RESTORE,
-	LOCK_BY_USER,
-	UNLOCK_BY_USER,
-	NORMALIZE
+import org.iplass.mtp.entity.Entity;
+
+public interface EntityNormalizeInvocation extends EntityInvocation<Void> {
+
+	public Entity getEntity();
+
+	public void setEntity(Entity entity);
+
+	public List<String> getNormalizePropertyList();
+
+	public void setNormalizePropertyList(List<String> normalizePropertyList);
+
 }

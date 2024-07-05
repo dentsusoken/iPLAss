@@ -338,4 +338,14 @@ public class AdminEntityManager implements EntityManager {
 		return em.fulltextSearchEntity(keyword, option);
 	}
 
+	@Override
+	public void normalize(Entity entity) {
+		em.normalize(entity);
+	}
+
+	@Override
+	public void normalize(Entity entity, List<String> properties) {
+		em.normalize(entity, properties);
+	}
+
 }

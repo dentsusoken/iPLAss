@@ -72,6 +72,9 @@ public class EntityInterceptorAdapter implements EntityInterceptor {
 			return lockByUser((EntityLockByUserInvocation) invocation);
 		case UNLOCK_BY_USER:
 			return unlockByUser((EntityUnlockByUserInvocation) invocation);
+		case NORMALIZE:
+			normalize((EntityNormalizeInvocation) invocation);
+			return null;
 		default:
 			throw new IllegalArgumentException("not support method");
 		}
@@ -201,12 +204,17 @@ public class EntityInterceptorAdapter implements EntityInterceptor {
 	public Entity restore(EntityRestoreInvocation invocation) {
 		return invocation.proceed();
 	}
-	
+
 	public boolean lockByUser(EntityLockByUserInvocation invocation) {
 		return invocation.proceed();
 	}
-	
+
 	public boolean unlockByUser(EntityUnlockByUserInvocation invocation) {
 		return invocation.proceed();
 	}
+
+	public void normalize(EntityNormalizeInvocation invocation) {
+		invocation.proceed();
+	}
+
 }

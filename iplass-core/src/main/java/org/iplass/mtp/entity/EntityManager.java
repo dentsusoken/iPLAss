@@ -58,6 +58,7 @@ public interface EntityManager extends Manager {
 
 	/**
 	 * 指定のEntityの検証を行います。
+	 * 検証の前に、プロパティの値は正規化されます。
 	 *
 	 * @param entity 検証対象のEntity
 	 * @return 検証結果
@@ -66,12 +67,28 @@ public interface EntityManager extends Manager {
 
 	/**
 	 * 指定のEntityの指定のプロパティの検証を行います。
+	 * 検証の前に、プロパティの値は正規化されます。
 	 *
 	 * @param entity 検証対象のEntity
 	 * @param properties 検証対象のプロパティ名のリスト
 	 * @return 検証結果
 	 */
 	public ValidateResult validate(Entity entity, List<String> properties);
+
+	/**
+	 * 指定のEntityのプロパティの値を正規化します。
+	 * 
+	 * @param entity 正規化対象のEntity
+	 */
+	public void normalize(Entity entity);
+	
+	/**
+	 * 指定のEntityの指定のプロパティの値を正規化します。
+	 * 
+	 * @param entity  正規化対象のEntity
+	 * @param properties 正規化対象のプロパティ名のリスト
+	 */
+	public void normalize(Entity entity, List<String> properties);
 
 	/**
 	 * 指定の条件で検索します。

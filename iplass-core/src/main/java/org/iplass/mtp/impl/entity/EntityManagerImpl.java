@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.impl.entity;
 
+import static org.iplass.mtp.impl.util.CoreResourceBundleUtil.resourceString;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,6 +97,7 @@ import org.iplass.mtp.impl.entity.interceptor.EntityGetRecycleBinInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityInsertInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityLoadInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityLockByUserInvocationImpl;
+import org.iplass.mtp.impl.entity.interceptor.EntityNormalizeInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityPurgeInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityQueryInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityRestoreInvocationImpl;
@@ -112,7 +115,6 @@ import org.iplass.mtp.impl.lob.LobHandler;
 import org.iplass.mtp.impl.properties.extend.BinaryType;
 import org.iplass.mtp.impl.session.SessionService;
 import org.iplass.mtp.impl.transaction.TransactionService;
-import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Propagation;
 import org.iplass.mtp.transaction.Transaction;
@@ -199,10 +201,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException |Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -227,10 +226,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -267,10 +263,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -295,10 +288,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -425,10 +415,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -479,10 +466,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -533,10 +517,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		} finally {
@@ -595,10 +576,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		} finally {
@@ -651,6 +629,9 @@ public class EntityManagerImpl implements EntityManager {
 				if (validateResult.hasError()) {
 					throw new EntityValidationException("valiation error.", validateResult.getErrors());
 				}
+			} else {
+				//normalizeのみ実施
+				new EntityNormalizeInvocationImpl(entity, null, ehService.getInterceptors(), handler).proceed();
 			}
 
 			//追加
@@ -662,10 +643,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -697,6 +675,9 @@ public class EntityManagerImpl implements EntityManager {
 				if (validateResult.hasError()) {
 					throw new EntityValidationException("valiation error.", validateResult.getErrors());
 				}
+			} else {
+				//normalizeのみ実施
+				new EntityNormalizeInvocationImpl(entity, option.getUpdateProperties(), ehService.getInterceptors(), handler).proceed();
 			}
 
 			//更新項目が現在値と同値の場合は更新しない
@@ -749,10 +730,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -939,10 +917,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -969,10 +944,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -990,10 +962,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1002,6 +971,28 @@ public class EntityManagerImpl implements EntityManager {
 	@Override
 	public ValidateResult validate(Entity entity) {
 		return validate(entity, null);
+	}
+
+	@Override
+	public void normalize(Entity entity) {
+		normalize(entity, null);
+	}
+
+	@Override
+	public void normalize(Entity entity, List<String> properties) {
+		try {
+			if (entity.getDefinitionName() == null) {
+				throw new EntityRuntimeException("no definitionName");
+			}
+			EntityHandler handler = getEntityHandler(entity.getDefinitionName());
+			new EntityNormalizeInvocationImpl(entity, properties, ehService.getInterceptors(), handler).proceed();
+		} catch (ApplicationException e) {
+			//アプリケーション例外は自動的にsetRollbackOnly()はしない
+			throw e;
+		} catch (RuntimeException | Error e) {
+			setRollbackOnly();
+			throw e;
+		}
 	}
 
 	@Override
@@ -1028,15 +1019,11 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
 	}
-
 
 	@Override
 	public BinaryReference createBinaryReference(String name, String type,
@@ -1079,10 +1066,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1132,10 +1116,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1157,10 +1138,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1182,10 +1160,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1200,10 +1175,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1224,10 +1196,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1241,10 +1210,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1258,10 +1224,7 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1275,10 +1238,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1298,10 +1258,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1333,10 +1290,7 @@ public class EntityManagerImpl implements EntityManager {
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -1640,17 +1594,10 @@ public class EntityManagerImpl implements EntityManager {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
 			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			throw e;
-		} catch (Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
-	}
-
-	private static String resourceString(String key, Object... arguments) {
-		return CoreResourceBundleUtil.resourceString(key, arguments);
 	}
 
 }

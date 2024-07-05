@@ -632,11 +632,6 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		ExecuteContext mtfContext = ExecuteContext.getCurrentContext();
 		EntityContext entityContext = EntityContext.getCurrentContext();
-		
-		//validationされない場合、このタイミングでnormalize
-		if (!option.isWithValidation()) {
-			nomalizeInternal(entity, null, entityContext);
-		}
 
 		Entity copyEntity = ((GenericEntity) entity).copy();
 
@@ -770,10 +765,15 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		}
 	}
 
-	void nomalizeInternal(Entity entity, List<String> targetProperties, EntityContext entityContext) {
+	public void normalize(Entity entity, List<String> targetProperties) {
+		checkState();
+		normalizeInternal(entity, targetProperties, EntityContext.getCurrentContext());
+	}
+
+	void normalizeInternal(Entity entity, List<String> targetProperties, EntityContext entityContext) {
 		EntityHandler superHandler = getSuperDataModelHandler(entityContext);
 		if (superHandler != null) {
-			superHandler.nomalizeInternal(entity, targetProperties, entityContext);
+			superHandler.normalizeInternal(entity, targetProperties, entityContext);
 		}
 
 		if (propertyHandlers != null) {
@@ -786,7 +786,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 			}
 		}
 	}
-	
+
 	void preprocessInsertDirect(Entity entity,  EntityContext entityContext, List<PropertyHandler> complexWrapperTypePropList) {
 		//AutoNumberTypeが、name,oidに利用されている場合、このタイミングで採番
 		String oid = entity.getOid();
@@ -1004,11 +1004,6 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		//5.メタデータの定義に従い、データを保存。
 		//6.オブジェクトIDをリターン
 		
-		//validationされない場合、このタイミングでnormalize
-		if (!option.isWithValidation()) {
-			nomalizeInternal(entity, option.getUpdateProperties(), entityContext);
-		}
-
 		//更新可能項目かどうかチェック
 		for (String propName: option.getUpdateProperties()) {
 			PropertyHandler ph = getProperty(propName, entityContext);
