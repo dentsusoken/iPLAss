@@ -83,6 +83,23 @@ public interface CsvUploadInterrupter {
 	 */
 	default public List<ValidateError> beforeRegister(int row, Entity entity, EntityDefinition definition,
 			CsvRegistrationType registrationType) {
+		return beforeRegist(row, entity, definition, registrationType);
+	}
+
+	/**
+	 * 登録前処理を行います。
+	 *
+	 * @param row              行
+	 * @param entity           登録用のデータ
+	 * @param definition       Entity定義
+	 * @param registrationType 登録処理の種類
+	 * @return 入力エラーリスト
+	 *
+	 * @deprecated use {@link #beforeRegister(int, Entity, EntityDefinition, CsvRegistrationType)}
+	 */
+	@Deprecated
+	default public List<ValidateError> beforeRegist(int row, Entity entity, EntityDefinition definition,
+			CsvRegistrationType registrationType) {
 		return Collections.emptyList();
 	}
 
@@ -96,6 +113,23 @@ public interface CsvUploadInterrupter {
 	 * @return 入力エラーリスト
 	 */
 	default public List<ValidateError> afterRegister(int row, Entity entity, EntityDefinition definition,
+			CsvRegistrationType registrationType) {
+		return afterRegist(row, entity, definition, registrationType);
+	}
+
+	/**
+	 * 登録後処理を行います。
+	 *
+	 * @param row              行
+	 * @param entity           登録用のデータ
+	 * @param definition       Entity定義
+	 * @param registrationType 登録処理の種類
+	 * @return 入力エラーリスト
+	 *
+	 * @deprecated use {@link #afterRegister(int, Entity, EntityDefinition, CsvRegistrationType)}
+	 */
+	@Deprecated
+	default public List<ValidateError> afterRegist(int row, Entity entity, EntityDefinition definition,
 			CsvRegistrationType registrationType) {
 		return Collections.emptyList();
 	}
