@@ -1490,6 +1490,8 @@ $.fn.allInputCheck = function(){
 							if ($pager) {
 								$pager.setPage($v.offset, list.length, count);
 							}
+
+							$(".fixHeight").fixHeight();
 						});
 					}
 				}
