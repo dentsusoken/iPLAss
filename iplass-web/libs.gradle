@@ -31,7 +31,7 @@ dependencies {
 		transitive = false
 	}
 	implementation(sharedLib('org.jxls:jxls-poi')) {
-		// org.jxls:jxls に含まれる古い logback-core を除外するために追加
+		// org.jxls:jxls に含まれる古い logback-core を除外する為、除外する
 		exclude group: 'org.jxls', module: 'jxls'
 	}
 
