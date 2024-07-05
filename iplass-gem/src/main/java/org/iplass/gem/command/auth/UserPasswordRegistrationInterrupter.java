@@ -35,7 +35,8 @@ import org.iplass.mtp.view.generic.RegistrationInterrupter;
 public class UserPasswordRegistrationInterrupter implements RegistrationInterrupter {
 
 	@Override
-	public List<ValidateError> beforeRegister(Entity entity, RequestContext request, EntityDefinition definition,
+	@Deprecated
+	public List<ValidateError> beforeRegist(Entity entity, RequestContext request, EntityDefinition definition,
 			FormView view, RegistrationType registrationType) {
 
 		if (StringUtil.isNotEmpty(request.getParam(AuthCommandConstants.PARAM_PASSWORD))) {

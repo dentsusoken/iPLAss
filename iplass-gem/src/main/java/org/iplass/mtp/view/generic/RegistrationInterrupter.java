@@ -30,7 +30,7 @@ import org.iplass.mtp.entity.definition.EntityDefinition;
 
 /**
  * 汎用登録処理にカスタムで登録処理を行わせるインターフェース
- * 
+ *
  * @author lis3wg
  */
 public interface RegistrationInterrupter {
@@ -96,6 +96,24 @@ public interface RegistrationInterrupter {
 	 */
 	default public List<ValidateError> beforeRegister(Entity entity, RequestContext request,
 			EntityDefinition definition, FormView view, RegistrationType registrationType) {
+		return beforeRegist(entity, request, definition, view, registrationType);
+	}
+
+	/**
+	 * 登録前処理を行います。
+	 *
+	 * @param entity           登録用のデータ
+	 * @param request          リクエスト
+	 * @param definition       Entity定義
+	 * @param view             画面定義
+	 * @param registrationType 登録処理の種類
+	 * @return 入力エラーリスト
+	 *
+	 * @deprecated use {@link #beforeRegister(Entity, RequestContext, EntityDefinition, FormView, RegistrationType)}
+	 */
+	@Deprecated
+	default public List<ValidateError> beforeRegist(Entity entity, RequestContext request,
+			EntityDefinition definition, FormView view, RegistrationType registrationType) {
 		return Collections.emptyList();
 	}
 
@@ -110,6 +128,24 @@ public interface RegistrationInterrupter {
 	 * @return 入力エラーリスト
 	 */
 	default public List<ValidateError> afterRegister(Entity entity, RequestContext request, EntityDefinition definition,
+			FormView view, RegistrationType registType) {
+		return afterRegist(entity, request, definition, view, registType);
+	}
+
+	/**
+	 * 登録後処理を行います。
+	 *
+	 * @param entity           登録用のデータ
+	 * @param request          リクエスト
+	 * @param definition       Entity定義
+	 * @param view             画面定義
+	 * @param registrationType 登録処理の種類
+	 * @return 入力エラーリスト
+	 *
+	 * @deprecated use {@link #afterRegister(Entity, RequestContext, EntityDefinition, FormView, RegistrationType)}
+	 */
+	@Deprecated
+	default public List<ValidateError> afterRegist(Entity entity, RequestContext request, EntityDefinition definition,
 			FormView view, RegistrationType registType) {
 		return Collections.emptyList();
 	}
