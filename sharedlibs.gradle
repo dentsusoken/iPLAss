@@ -297,6 +297,7 @@ dependencies {
 	}
 	jakartaImplRest platform(sharedLib('org.glassfish.jersey:jersey-bom'))
 	jakartaImplRest 'org.glassfish.jersey.containers:jersey-container-servlet'
+	jakartaImplRest 'org.glassfish.jersey.media:jersey-media-jaxb'
 	jakartaImplRest 'org.glassfish.jersey.media:jersey-media-json-jackson'
 	jakartaImplRest 'org.glassfish.jersey.media:jersey-media-multipart'
 	jakartaImplRest 'org.glassfish.jersey.inject:jersey-hk2'
