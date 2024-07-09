@@ -30,6 +30,7 @@ import jakarta.servlet.ServletContextListener;
 import org.iplass.mtp.impl.async.rdb.RdbQueueService;
 import org.iplass.mtp.impl.cache.store.builtin.CacheEntryCleaner;
 import org.iplass.mtp.impl.core.config.BootstrapProps;
+import org.iplass.mtp.impl.logging.LoggingService;
 import org.iplass.mtp.runtime.EntryPoint;
 import org.iplass.mtp.runtime.EntryPointBuilder;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -117,6 +118,9 @@ public class ApplicationInitializer implements ServletContextListener {
 			if (sr.exists(RdbQueueService.class)) {
 				RdbQueueService qs = sr.getService(RdbQueueService.class);
 			}
+
+			// init LoggingService
+			sr.getService(LoggingService.class);
 
 		} catch (Throwable t) {
 			logger.error("A fatal problem occurred during context initialization.", t);

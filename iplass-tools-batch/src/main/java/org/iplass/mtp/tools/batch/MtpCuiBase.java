@@ -35,6 +35,7 @@ import javax.sql.DataSource;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.config.BootstrapProps;
+import org.iplass.mtp.impl.logging.LoggingService;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
@@ -76,6 +77,9 @@ public abstract class MtpCuiBase {
 	private ResourceBundle resourceBundle;
 
 	public MtpCuiBase() {
+		// init LoggingService
+		ServiceRegistry.getRegistry().getService(LoggingService.class);
+
 		setupLanguage();
 	}
 
@@ -250,7 +254,7 @@ public abstract class MtpCuiBase {
 
 	/**
 	 * ログ出力モードを切り替えます。
-	 * 
+	 *
 	 * @param console コンソール出力
 	 * @param logging ロギング出力
 	 */

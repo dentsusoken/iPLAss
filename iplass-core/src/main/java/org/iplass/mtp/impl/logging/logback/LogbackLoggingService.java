@@ -23,14 +23,23 @@ package org.iplass.mtp.impl.logging.logback;
 import org.iplass.mtp.impl.logging.LogCondition;
 import org.iplass.mtp.impl.logging.LoggingService;
 import org.iplass.mtp.spi.Config;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import ch.qos.logback.classic.Level;
 
 public class LogbackLoggingService extends LoggingService {
-	
+
 	@Override
 	public void init(Config config) {
 		super.init(config);
+
+		// TODO logback 用のサービスに設定して良いか
+
+		// jul ロギングハンドラを削除
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		// jul ログを slf4j へブリッジ
+		SLF4JBridgeHandler.install();
+
 	}
 
 	@Override
@@ -43,7 +52,7 @@ public class LogbackLoggingService extends LoggingService {
 		if (logCondition.getLevel() != null) {
 			return Level.toLevel(logCondition.getLevel());
 		}
-		
+
 		return false;
 	}
 

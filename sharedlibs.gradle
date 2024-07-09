@@ -136,6 +136,7 @@ ext {
 		'com.github.ben-manes.caffeine:caffeine': '2.9.3',
 		
 		'org.slf4j:slf4j-api': '2.0.13',
+		'org.slf4j:jul-to-slf4j': '2.0.13',
 		'org.slf4j:jcl-over-slf4j': '2.0.13',
 		'org.slf4j:log4j-over-slf4j': '2.0.13',
 		'org.apache.logging.log4j:log4j-to-slf4j': '2.23.1',
