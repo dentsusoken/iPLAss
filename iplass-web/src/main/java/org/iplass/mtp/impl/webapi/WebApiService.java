@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.poi.util.StringUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
@@ -34,6 +33,7 @@ import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiDefinitionManager;
 
@@ -98,7 +98,7 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		String acceptMimeTypesPatternInBinaryApi = config.getValue("acceptMimeTypesPatternInBinaryApi");
 		this.acceptMimeTypesPatternInBinaryApi = StringUtil.isNotBlank(acceptMimeTypesPatternInBinaryApi)
 				? Pattern.compile(acceptMimeTypesPatternInBinaryApi)
-				: null;
+						: null;
 	}
 
 	public boolean isEnableDefinitionApi() {

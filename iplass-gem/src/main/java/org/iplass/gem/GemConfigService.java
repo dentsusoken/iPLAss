@@ -29,11 +29,11 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.poi.util.StringUtil;
 import org.iplass.gem.AutoGenerateSetting.DisplayPosition;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
+import org.iplass.mtp.util.StringUtil;
 
 /**
  * gem固有の設定など
