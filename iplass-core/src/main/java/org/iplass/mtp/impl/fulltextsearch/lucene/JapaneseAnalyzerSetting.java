@@ -21,16 +21,20 @@
 package org.iplass.mtp.impl.fulltextsearch.lucene;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.StopwordAnalyzerBase;
+import org.apache.lucene.analysis.WordlistLoader;
 import org.apache.lucene.analysis.ja.JapaneseAnalyzer;
 import org.apache.lucene.analysis.ja.JapaneseTokenizer;
 import org.apache.lucene.analysis.ja.JapaneseTokenizer.Mode;
@@ -41,6 +45,9 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 日本語分析設定
+ */
 public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 	private static Logger logger = LoggerFactory.getLogger(JapaneseAnalyzerSetting.class);
 
@@ -49,7 +56,7 @@ public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 	private String userDictionary;
 	private String stopwords;
 	private String stoptags;
-	
+
 	private Analyzer analyzer;
 
 	public String getClassName() {
@@ -96,13 +103,13 @@ public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 	public Analyzer getAnalyzer(int tenantId, String entityDefName) {
 		return analyzer;
 	}
-	
+
 	@Override
 	public void inited(LuceneFulltextSearchService service, Config config) {
 		if (service.isUseFulltextSearch()) {
 			try {
 				Class<?> clazz = Class.forName(className);
-				
+
 				if (JapaneseAnalyzer.class.isAssignableFrom(clazz)) {
 					UserDictionary userDict = createUserDictionary();
 					CharArraySet sw = JapaneseAnalyzerSettingInternalAnalyzer.createStopwords(stopwords);
@@ -117,17 +124,17 @@ public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 						}
 					}
 				}
-				
+
 				if (analyzer == null) {
 					analyzer = (Analyzer) clazz.getConstructor().newInstance();
 				}
-				
+
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
 				throw new FulltextSearchRuntimeException("can not instantiate Analyzer class: " + className, e1);
 			}
 		}
 	}
-	
+
 	private UserDictionary createUserDictionary() {
 		if (userDictionary == null) {
 			return null;
@@ -146,18 +153,24 @@ public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 			analyzer.close();
 		}
 	}
-	
+
 	private static abstract class JapaneseAnalyzerSettingInternalAnalyzer extends StopwordAnalyzerBase {
 		//このインスタンス自体がnewされることはない。
 		//CharArraySetのインスタンスを作るため（StopwordAnalyzerBase.loadStopwordSet()を呼び出す）のみに存在
+
+		/** CharArraySet 初期サイズ */
+		private static final int CHAR_ARRAY_SET_INITIAL_CAPACITY = 16;
+		/** リソース読み取り時コメント行 */
+		private static final String WORDS_COMMENT = "#";
 
 		public static CharArraySet createStopwords(String stopwords) {
 			if (StringUtil.isEmpty(stopwords)) {
 				return JapaneseAnalyzer.getDefaultStopSet();
 			}
 
-			try {
-				return StopwordAnalyzerBase.loadStopwordSet(true, JapaneseAnalyzerSettingInternalAnalyzer.class, stopwords, "#");
+			try(InputStream input = JapaneseAnalyzerSettingInternalAnalyzer.class.getResourceAsStream(stopwords);
+					Reader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+				return WordlistLoader.getWordSet(reader, WORDS_COMMENT, new CharArraySet(CHAR_ARRAY_SET_INITIAL_CAPACITY, true));
 			} catch (IOException e) {
 				logger.warn("Unable to load stopword set : " + stopwords + ",  So use default one.");
 			}
@@ -169,8 +182,9 @@ public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 				return JapaneseAnalyzer.getDefaultStopTags();
 			}
 
-			try {
-				final CharArraySet tagset = StopwordAnalyzerBase.loadStopwordSet(false, JapaneseAnalyzerSettingInternalAnalyzer.class, stoptags, "#");
+			try (InputStream input = JapaneseAnalyzerSettingInternalAnalyzer.class.getResourceAsStream(stoptags);
+					Reader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+				final CharArraySet tagset = WordlistLoader.getWordSet(reader, WORDS_COMMENT, new CharArraySet(CHAR_ARRAY_SET_INITIAL_CAPACITY, false));
 				Set<String> tags = new HashSet<>();
 				for (Object element : tagset) {
 					char chars[] = (char[]) element;
