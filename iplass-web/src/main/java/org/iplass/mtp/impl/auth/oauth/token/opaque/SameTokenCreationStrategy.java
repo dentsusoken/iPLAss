@@ -142,13 +142,23 @@ public class SameTokenCreationStrategy implements TokenCreationStrategy {
 						}
 					}
 					
+					logger.debug("===== - check variable 1. needRefreshToken = {}, retTokenMement.getRefreshToken() = {}", needRefreshToken, retTokenMement.getRefreshToken());
+					
 					if (needRefreshToken && retTokenMement.getRefreshToken() == null) {
 						retTokenMement.setRefreshToken(handler.refreshTokenHandler().authTokenStore().getBySeries(tenantId, handler.refreshTokenHandler().getType(), retToken.getSeries()));
 					}
 					
+					logger.debug("===== -- check variable 2. retTokenMement.getRefreshToken() = {}", retTokenMement.getRefreshToken());
+					
 					if (needRefreshToken) {
+						
+						long currentTimeMillis = System.currentTimeMillis();
+						
+						logger.debug("===== --- check variable 3. retTokenMement.getRefreshToken() = {}, ((RefreshTokenMement) retTokenMement.getRefreshToken().getDetails()).getExpires() = {}, currentTimeMillis = {}", 
+								retTokenMement.getRefreshToken(), ((RefreshTokenMement) retTokenMement.getRefreshToken().getDetails()).getExpires(), currentTimeMillis);
+						
 						if (retTokenMement.getRefreshToken() == null
-								|| ((RefreshTokenMement) retTokenMement.getRefreshToken().getDetails()).getExpires() <= System.currentTimeMillis()) {
+								|| ((RefreshTokenMement) retTokenMement.getRefreshToken().getDetails()).getExpires() <= currentTimeMillis) {
 							handler.refreshTokenHandler().authTokenStore().deleteBySeries(tenantId, handler.refreshTokenHandler().getType(), retToken.getSeries());
 							AuthToken refreshToken = handler.refreshTokenHandler().newAuthToken(retToken.getOwnerId(), retToken.getPolicyName(), new RefreshTokenInfo(client.getMetaData().getName()));
 							handler.refreshTokenHandler().authTokenStore().create(refreshToken);
