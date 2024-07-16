@@ -63,15 +63,13 @@ public class WebApiParameterDeserializer extends JsonDeserializer<WebApiParamete
 			jp.nextToken();
 			if (NAME_PROPERTY_NAME.equals(propName)) {
 				String name = jp.getText();
-				// TODO dead code. name is not null. null or empty.
-				if (name == null) {
+				if (JsonToken.VALUE_NULL == jp.currentToken()) {
 					throw JsonMappingException.from(ctxt, "name is null.");
 				}
 				param.setName(name);
 			} else if (VALUE_TYPE_PROPERTY_NAME.equals(propName)) {
 				String valType = jp.getText();
-				// TODO dead code. valType is not null. null or empty?
-				if (valType == null) {
+				if (JsonToken.VALUE_NULL == jp.currentToken()) {
 					throw JsonMappingException.from(ctxt, "valueType is null.");
 				}
 				param.setValueType(valType);
