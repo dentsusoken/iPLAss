@@ -34,7 +34,7 @@ dependencies {
 		exclude group: 'org.apache.tika', module: 'tika-parser-zip-commons'
 		// bcjmail を利用するため除外
 		exclude group: 'org.bouncycastle', module: 'bcmail-jdk18on'
-		// poi はライブラリ管理しているため runtime で明示的に指定する
+		// poi はライブラリ管理しているため runtime で明示的に指定するので除外
 		exclude group: 'org.apache.poi', module: 'poi'
 		exclude group: 'org.apache.poi', module: 'poi-scratchpad'
 		exclude group: 'org.apache.poi', module: 'poi-ooxml'
@@ -42,7 +42,7 @@ dependencies {
 	implementation(sharedLib('org.apache.tika:tika-parser-pdf-module')) {
 		// bcjmail を利用するため除外
 		exclude group: 'org.bouncycastle', module: 'bcmail-jdk18on'
-		// 参照バージョンが古い。Jakarta EE 8
+		// 参照バージョンが古い為除外。(Jakarta EE 8)
 		exclude group: 'org.glassfish.jaxb', module: 'jaxb-runtime'
 	}
 	runtimeOnly(sharedLib('org.apache.tika:tika-parser-zip-commons')) {
@@ -54,14 +54,6 @@ dependencies {
 	runtimeOnly sharedLib('org.apache.poi:poi')
 	runtimeOnly sharedLib('org.apache.poi:poi-scratchpad')
 	runtimeOnly sharedLib('org.apache.poi:poi-ooxml')
-//	runtimeOnly(sharedLib('org.apache.pdfbox:jempbox'))
-//	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox'))
-//	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox-tools')) {
-//		transitive = false
-//	}
-//	runtimeOnly sharedLib('org.ccil.cowan.tagsoup:tagsoup')
-//	// tika の依存関係。pptx 解析に必要。org.tallison:metadata-extractor は fork プロジェクトなので、バージョンアップ時にグループが変わらないか注意
-//	runtimeOnly sharedLib('org.tallison:metadata-extractor')
 
 	//groovy
 	implementation 'org.apache.groovy:groovy'

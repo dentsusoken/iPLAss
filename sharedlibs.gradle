@@ -116,7 +116,7 @@ ext {
 		'org.apache.tika:tika-parser-microsoft-module': '2.9.2',
 		'org.apache.tika:tika-parser-pdf-module': '2.9.2',
 		'org.apache.tika:tika-parser-zip-commons': '2.9.2',
-		// commons-compress は tika に関連した競合ライブ理の為、個別定義しバージョンを管理
+		// commons-compress は tika に関連した競合ライブラリの為、個別定義しバージョンを管理
 		'org.apache.commons:commons-compress': '1.26.2',
 		
 		'org.apache.poi:poi': '5.3.0',
