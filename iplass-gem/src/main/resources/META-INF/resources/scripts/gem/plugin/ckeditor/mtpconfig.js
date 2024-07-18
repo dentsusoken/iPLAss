@@ -5,6 +5,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 CKEDITOR.editorConfig = function( config )
 {
+	config.versionCheck = false;
 	config.language = scriptContext.locale.defaultLocale;
 	//config.skin = 'office2003';
 	config.uiColor = '';
