@@ -410,9 +410,12 @@ $(function() {
 					});
 
 					$(elem).attr("id", "id_<%=escapedPropName%>" + count);
-					$(elem).ckeditor(
-						function() {}, { allowedContent:<%=allowedContent%> }
-					);
+					<%if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) {%>
+					var opt = <%=editor.getRichtextEditorOption()%>;
+					<%} else {%>
+					var opt = { allowedContent:<%=allowedContent%> };
+					<%}%>
+					$(elem).ckeditor(function() {}, opt);
 					<%=toggleAddBtnFunc%>();
 				}
 <%
