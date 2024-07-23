@@ -1,26 +1,26 @@
 /*
  * Copyright (C) 2020 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 package org.iplass.mtp.impl.web.template.report;
 
-import java.io.IOException;
-import java.util.List;
+import java.io.OutputStream;
+import java.util.Map;
 
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -31,25 +31,34 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
-import org.jxls.area.Area;
-import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.JxlsTemplateFillerBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
-import org.jxls.common.Context;
-import org.jxls.formula.StandardFormulaProcessor;
-import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.PoiTransformer;
 
+/**
+ * Jxls 帳票出力ロジック（Groovy）メターデータ
+ */
 public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 
 	private static final long serialVersionUID = -2510252715491801950L;
-	
+
+	/** groovy script */
 	private String script;
-	
+
+	/**
+	 * groovy script を取得する
+	 * @return groovy script
+	 */
 	public String getScript() {
 		return script;
 	}
 
+	/**
+	 * groovy script を設定する
+	 * @param script groovy script
+	 */
 	public void setScript(String script) {
 		this.script = script;
 	}
@@ -79,7 +88,10 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 	public JxlsReportOutputLogicRuntime createRuntime(MetaReportType reportType) {
 		return new GroovyJxlsReportOutputLogicRuntime(reportType);
 	}
-	
+
+	/**
+	 * Jxls 帳票出力ロジック（Groovy）ランタイム
+	 */
 	public class GroovyJxlsReportOutputLogicRuntime extends JxlsReportOutputLogicRuntime {
 
 		private static final String SCRIPT_PREFIX = "GroovyJxlsReportOutputLogicRuntime_script";
@@ -87,6 +99,10 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 		private Script compiledScript;
 		private ScriptEngine scriptEngine;
 
+		/**
+		 * コンストラクタ
+		 * @param reportType MetaJxlsReportType
+		 */
 		public GroovyJxlsReportOutputLogicRuntime(MetaReportType reportType) {
 
 			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
@@ -94,86 +110,112 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 
 			if (script != null) {
 				String scriptName = null;
-				MetaJxlsReportType jxlsTemp = (MetaJxlsReportType)reportType;
+				MetaJxlsReportType jxlsTemp = (MetaJxlsReportType) reportType;
 				if (jxlsTemp.getReportOutputLogic() != null) {
 					scriptName = SCRIPT_PREFIX + "_" + reportType.getOutputFileType() + "_" + GroovyTemplateCompiler.randomName();
 				}
-				
 
 				compiledScript = scriptEngine.createScript(script, scriptName);
 			}
 		}
-		
-		private Object callScript(Transformer transformer, Context context) {
+
+		private Object callScript(JxlsTemplateFillerBuilder<?> builder, Map<String, Object> reportData, OutputStream out) {
 			ScriptContext sc = scriptEngine.newScriptContext();
-			sc.setAttribute("transformer", transformer);
-			sc.setAttribute("context", context);
-			
-			//JxlsHelper対応メソッドのバインド
+			// AdminConsole の Groovy Script 実装部分で Hint にバインドパラメータが記載されている為、変更した場合は修正が必要。
+			// locale_xx.js の LocaleInfo.ui_metadata_template_report_JxlsReportOutLogicListGrid_scriptHint
+			sc.setAttribute("builder", builder);
+			sc.setAttribute("reportData", reportData);
+			sc.setAttribute("out", out);
+
+			// テンプレート出力のヘルパーメソッドのバインド
+			// deprecated メソッド
 			sc.setAttribute("processTemplateAtCell", new MethodClosure(this, "processTemplateAtCell"));
 			sc.setAttribute("processGridTemplate", new MethodClosure(this, "processGridTemplate"));
 			sc.setAttribute("processGridTemplateAtCell", new MethodClosure(this, "processGridTemplateAtCell"));
-			
+
 			return compiledScript.eval(sc);
 		}
 
 		@Override
-		public void outputReport(Transformer transformer, Context context) {
-			callScript(transformer, context);
+		public void outputReport(JxlsTemplateFillerBuilder<?> builder, Map<String, Object> reportData, OutputStream out) {
+			callScript(builder, reportData, out);
 		}
-		
-		
-		public void processTemplateAtCell(Transformer transformer, Context context, String targetCell) throws IOException {
-			AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
-			areaBuilder.setTransformer(transformer);
-			List<Area> xlsAreaList = areaBuilder.build();
-			if (xlsAreaList.isEmpty()) {
-				throw new IllegalStateException("No XlsArea were detected for this processing");
-			}
-			Area firstArea = xlsAreaList.get(0);
-			CellRef targetCellRef = new CellRef(targetCell);
-			firstArea.applyAt(targetCellRef, context);
-			firstArea.setFormulaProcessor(new StandardFormulaProcessor());
-			firstArea.processFormulas();
-			String sourceSheetName = firstArea.getStartCellRef().getSheetName();
-			if (!sourceSheetName.equalsIgnoreCase(targetCellRef.getSheetName())) {
-					transformer.deleteSheet(sourceSheetName);
-			}
-			transformer.write();
+
+		/**
+		 * @see org.iplass.mtp.web.template.report.JxlsReportOutputLogic#processTemplateAtCell(JxlsTemplateFillerBuilder, Map, OutputStream, String)
+		 */
+		@SuppressWarnings("javadoc")
+		@Deprecated
+		public void processTemplateAtCell(JxlsTemplateFillerBuilder<?> builder, Map<String, Object> reportData, OutputStream out, String targetCell) {
+			final var cellRef = new CellRef(targetCell);
+			// シート名の変更
+			builder
+					.withPreWriteAction((transformer, ctx) -> {
+						if (transformer instanceof PoiTransformer poiTransformer) {
+							var book = poiTransformer.getWorkbook();
+
+							if (cellRef.getSheetName() != null && cellRef.getSheetName().length() > 0) {
+								book.setSheetName(0, cellRef.getSheetName());
+							}
+						}
+					})
+					.build()
+					.fill(reportData, () -> out);
 		}
-		
-		public void processGridTemplate(Transformer transformer, Context context, String objectProps) throws IOException {
-			AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
-			areaBuilder.setTransformer(transformer);
-			List<Area> xlsAreaList = areaBuilder.build();
-			for (Area xlsArea : xlsAreaList) {
-				GridCommand gridCommand = (GridCommand) xlsArea.getCommandDataList().get(0).getCommand();
-				gridCommand.setProps(objectProps);
-				xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
-				xlsArea.applyAt(new CellRef(xlsArea.getStartCellRef().getCellName()), context);
-				xlsArea.processFormulas();
-			}
-			transformer.write();
+
+		/**
+		 * @see org.iplass.mtp.web.template.report.JxlsReportOutputLogic#processGridTemplate(JxlsTemplateFillerBuilder, Map, OutputStream, String)
+		 */
+		@SuppressWarnings("javadoc")
+		@Deprecated
+		public void processGridTemplate(JxlsTemplateFillerBuilder<?> builder, Map<String, Object> reportData, OutputStream out, String objectProps) {
+			builder
+					// grid コマンドの props に設定
+					.withAreaBuilder((transformer, clearTemplateCells) -> {
+						var areaList = new XlsCommentAreaBuilder().build(transformer, clearTemplateCells);
+						for (var area : areaList) {
+							for (var commandData : area.getCommandDataList()) {
+								if (commandData.getCommand() instanceof GridCommand gridCommand) {
+									gridCommand.setProps(objectProps);
+								}
+							}
+						}
+						return areaList;
+					})
+					.build()
+					.fill(reportData, () -> out);
 		}
-		
-		public void processGridTemplateAtCell(Transformer transformer, Context context,
-				String objectProps, String targetCell) throws IOException {
-			AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
-			areaBuilder.setTransformer(transformer);
-			List<Area> xlsAreaList = areaBuilder.build();
-			Area firstArea = xlsAreaList.get(0);
-			CellRef targetCellRef = new CellRef(targetCell);
-			GridCommand gridCommand = (GridCommand) firstArea.getCommandDataList().get(0).getCommand();
-			gridCommand.setProps(objectProps);
-			firstArea.applyAt(targetCellRef, context);
-			firstArea.setFormulaProcessor(new StandardFormulaProcessor());
-			firstArea.processFormulas();
-			String sourceSheetName = firstArea.getStartCellRef().getSheetName();
-			if (!sourceSheetName.equalsIgnoreCase(targetCellRef.getSheetName())) {
-				transformer.deleteSheet(sourceSheetName);
-			}
-			transformer.write();
+
+		/**
+		 * @see org.iplass.mtp.web.template.report.JxlsReportOutputLogic#processGridTemplateAtCell(JxlsTemplateFillerBuilder, Map, OutputStream, String, String)
+		 */
+		@SuppressWarnings("javadoc")
+		@Deprecated
+		public void processGridTemplateAtCell(JxlsTemplateFillerBuilder<?> builder, Map<String, Object> reportData, OutputStream out, String objectProps,
+				String targetCell) {
+			final var cellRef = new CellRef(targetCell);
+			builder
+					// grid コマンドの props に設定
+					.withAreaBuilder((transformer, clearTemplateCells) -> {
+						var areaList = new XlsCommentAreaBuilder().build(transformer, clearTemplateCells);
+
+						GridCommand gridCommand = (GridCommand) areaList.get(0).getCommandDataList().get(0).getCommand();
+						gridCommand.setProps(objectProps);
+
+						return areaList;
+					})
+					// シート名の変更
+					.withPreWriteAction((transformer, ctx) -> {
+						if (transformer instanceof PoiTransformer poiTransformer) {
+							var book = poiTransformer.getWorkbook();
+
+							if (cellRef.getSheetName() != null && cellRef.getSheetName().length() > 0) {
+								book.setSheetName(0, cellRef.getSheetName());
+							}
+						}
+					})
+					.build()
+					.fill(reportData, () -> out);
 		}
-		
 	}
 }

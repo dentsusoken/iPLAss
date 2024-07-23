@@ -23,17 +23,8 @@ dependencies {
 	api sharedLib('org.apache.poi:poi-ooxml')
 	
 	//JXLS
-	implementation(sharedLib('org.jxls:jxls')) {
-		// 古いバージョンの logback-core が含まれる為、除外する
-		exclude group: 'ch.qos.logback', module: 'logback-core'
-	}
-	api(sharedLib('org.jxls:jxls')) {
-		transitive = false
-	}
-	implementation(sharedLib('org.jxls:jxls-poi')) {
-		// org.jxls:jxls に含まれる古い logback-core を除外する為、除外する
-		exclude group: 'org.jxls', module: 'jxls'
-	}
+	api sharedLib('org.jxls:jxls')
+	implementation sharedLib('org.jxls:jxls-poi')
 
 	//jasper reports
 	implementation(sharedLib('net.sf.jasperreports:jasperreports')) {
