@@ -142,6 +142,7 @@ javadoc {
 	classpath += files(project(':iplass-web').sourceSets['main'].allJava.srcDirs)
 	classpath += project(':iplass-gem').sourceSets['main'].compileClasspath
 	classpath += project(':iplass-test').sourceSets['main'].compileClasspath
+	classpath += files(project(':iplass-test').sourceSets['main'].allJava.srcDirs)
 
 	failOnError = false
 }
@@ -199,6 +200,7 @@ task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
 	classpath += project(':iplass-gem').sourceSets['main'].compileClasspath
 	classpath += project(':iplass-test').sourceSets['main'].compileClasspath
 	classpath += project(':iplass-admin').sourceSets['main'].compileClasspath
+	classpath += files(project(':iplass-test').sourceSets['main'].allJava.srcDirs)
 
 	options.encoding = 'UTF-8'
 	options.docEncoding = 'UTF-8'
