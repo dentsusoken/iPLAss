@@ -33,16 +33,41 @@ dependencies {
 	api sharedLib('org.jxls:jxls')
 	implementation sharedLib('org.jxls:jxls-poi')
 
-	// jasperreports
-	api(sharedLib('net.sf.jasperreports:jasperreports')) {
-		// define minimum dependency
-		exclude(group: 'org.eclipse.jdt', module: 'ecj')
-		exclude(group: 'org.jfree', module: 'jcommon')
-		exclude(group: 'org.jfree', module: 'jfreechart')
-		// 新しいバージョンを個別指定する
-		exclude(group: 'com.github.librepdf', module: 'openpdf')
+	//jasper reports
+	api (sharedLib('net.sf.jasperreports:jasperreports')) {
+		// batik-dom を個別管理する為、依存しているライブラリも個別管理する
+		exclude group: 'org.apache.xmlgraphics', module: 'batik-anim'
+		exclude group: 'org.apache.xmlgraphics', module: 'batik-bridge'
+		exclude group: 'org.apache.xmlgraphics', module: 'batik-dom'
+		exclude group: 'org.apache.xmlgraphics', module: 'batik-svg-dom'
 	}
-	// openpdf (for use JasperReports) 
+	implementation (sharedLib('net.sf.jasperreports:jasperreports-excel-poi')) {
+		// batik-dom を個別管理する為、依存しているライブラリも個別管理する
+		exclude group: 'net.sf.jasperreports', module: 'jasperreports'
+	}
+	implementation (sharedLib('net.sf.jasperreports:jasperreports-pdf')) { 
+		// batik-dom を個別管理する為、依存しているライブラリも個別管理する
+		exclude group: 'net.sf.jasperreports', module: 'jasperreports'
+		// openpdf は必要な修正が含まれているバージョンを利用する
+		exclude group: 'com.github.librepdf', module: 'openpdf'
+	}
+	// batik ( for use jasperrreports )
+	runtimeOnly ('org.apache.xmlgraphics:batik-anim:1.17') {
+		exclude group: 'org.apache.xmlgraphics', module: 'batik-dom'
+		exclude group: 'org.apache.xmlgraphics', module: 'batik-svg-dom'
+	}
+	runtimeOnly ('org.apache.xmlgraphics:batik-bridge:1.17') {
+		exclude group: 'org.apache.xmlgraphics', module: 'batik-dom'
+		exclude group: 'org.apache.xmlgraphics', module: 'batik-svg-dom'
+	}
+	runtimeOnly ('org.apache.xmlgraphics:batik-svg-dom:1.17') {
+		exclude group: 'org.apache.xmlgraphics', module: 'batik-dom'
+	}
+	runtimeOnly ('org.apache.xmlgraphics:batik-dom:1.17') {
+		// xml-apis を除外する
+		exclude group: 'xml-apis', module: 'xml-apis'
+	}
+	// openpdf (for use jasperreports-pdf) 
 	runtimeOnly sharedLib('com.github.librepdf:openpdf')
 
 	implementation sharedLib('org.apache.commons:commons-fileupload2-jakarta-servlet6')

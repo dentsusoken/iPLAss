@@ -22,7 +22,6 @@ package org.iplass.mtp.impl.report;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -51,14 +50,14 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import net.sf.jasperreports.pdf.JRPdfExporter;
+import net.sf.jasperreports.pdf.SimplePdfExporterConfiguration;
+import net.sf.jasperreports.poi.export.JRXlsExporter;
 
 
 public class JasperReportingEngine implements ReportingEngine{
@@ -169,7 +168,7 @@ public class JasperReportingEngine implements ReportingEngine{
 		//Input
 		SimpleExporterInput input = SimpleExporterInput.getInstance(jrList);
 		//Output
-		SimpleOutputStreamExporterOutput output = new SimpleOutputStreamExporterOutput((OutputStream)context.getResponse().getOutputStream());
+		SimpleOutputStreamExporterOutput output = new SimpleOutputStreamExporterOutput(context.getResponse().getOutputStream());
 
 		//出力形式毎に処理実施
 		JRAbstractExporter<?, ?, ?, ?> exporter = null;
@@ -228,8 +227,9 @@ public class JasperReportingEngine implements ReportingEngine{
 	 * supportFilesを取得します。
 	 * @return supportFiles
 	 */
+	@Override
 	public String[] getSupportFiles() {
-	    return supportFiles;
+		return supportFiles;
 	}
 
 	/**
@@ -237,7 +237,7 @@ public class JasperReportingEngine implements ReportingEngine{
 	 * @param supportFiles supportFiles
 	 */
 	public void setSupportFiles(String[] supportFiles) {
-	    this.supportFiles = supportFiles;
+		this.supportFiles = supportFiles;
 	}
 
 	@Override
