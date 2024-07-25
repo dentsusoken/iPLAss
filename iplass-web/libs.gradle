@@ -35,20 +35,17 @@ dependencies {
 		exclude group: 'org.jxls', module: 'jxls'
 	}
 
-	//jasper reports
-	implementation(sharedLib('net.sf.jasperreports:jasperreports')) {
-		//define minimum dependency
+	// jasperreports
+	api(sharedLib('net.sf.jasperreports:jasperreports')) {
+		// define minimum dependency
 		exclude(group: 'org.eclipse.jdt', module: 'ecj')
 		exclude(group: 'org.jfree', module: 'jcommon')
 		exclude(group: 'org.jfree', module: 'jfreechart')
+		// 新しいバージョンを個別指定する
 		exclude(group: 'com.github.librepdf', module: 'openpdf')
 	}
 	// openpdf (for use JasperReports) 
 	runtimeOnly sharedLib('com.github.librepdf:openpdf')
-
-	api(sharedLib('net.sf.jasperreports:jasperreports')) {
-		transitive = false
-	}
 
 	implementation sharedLib('org.apache.commons:commons-fileupload2-jakarta-servlet6')
 
