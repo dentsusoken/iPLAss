@@ -79,7 +79,7 @@ public class JxlsReportingEngine implements ReportingEngine {
 			}
 
 			if (paramMap[i].isConvertEntityToMap()) {
-				//GenericEntityのインスタンスとそのリストは、Map形式に変換してContextにPut
+				// GenericEntityのインスタンスとそのリストは、Map形式に変換して reportData にPut
 				if (val instanceof GenericEntity) {
 					reportData.put(paramMap[i].getName(), ((GenericEntity) val).toMap());
 				} else if (val instanceof List<?>) {
