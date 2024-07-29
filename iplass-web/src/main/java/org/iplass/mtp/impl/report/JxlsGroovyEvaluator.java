@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2020 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -30,25 +30,28 @@ import org.jxls.expression.ExpressionEvaluator;
 
 /**
  * JXLSの式評価をGroovyベースで実行する為のクラス
- * 
+ *
  * @author Y.Ishida
  *
  */
 public class JxlsGroovyEvaluator implements ExpressionEvaluator {
-	
+
+	private String expression;
 	private JxlsCompiledScriptCacheStore cacheStore;
 	private ScriptEngine se;
-	
-	public JxlsGroovyEvaluator(JxlsCompiledScriptCacheStore cacheStore) {
+
+	public JxlsGroovyEvaluator(String expression, JxlsCompiledScriptCacheStore cacheStore) {
+		this.expression = expression;
+
 		this.cacheStore = cacheStore;
 		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
 		se = tc.getScriptEngine();
 	}
-		
+
 	@Override
 	public Object evaluate(String expression, Map<String, Object> context) {
 		Script script = cacheStore.getScript(expression);
-		
+
 		ScriptContext scriptContext = se.newScriptContext();
 		if (context != null) {
 			setAttribute(scriptContext, context);
@@ -64,13 +67,13 @@ public class JxlsGroovyEvaluator implements ExpressionEvaluator {
 
 	@Override
 	public Object evaluate(Map<String, Object> context) {
-		return null;
+		return evaluate(expression, context);
 	}
 
 	@Override
 	public String getExpression() {
-		return null;
+		return expression;
 	}
-	
+
 
 }
