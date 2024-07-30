@@ -34,14 +34,14 @@ See https://github.com/adobe-type-tools/cmap-resources
     <title>PDF.js viewer</title>
 
     <!-- This snippet is used in production (included from viewer.html) -->
-    <link rel="resource" type="application/l10n" href="${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/web/locale/locale.json">
-    <script src="${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/build/pdf.mjs" type="module"></script>
+    <link rel="resource" type="application/l10n" href="${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/web/locale/locale.json">
+    <script src="${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/build/pdf.mjs" type="module"></script>
 
-    <link rel="stylesheet" href="${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/web/viewer.css">
+    <link rel="stylesheet" href="${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/web/viewer.css">
 
     <script type="module">
-    import {PDFViewerApplicationOptions} from "${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/web/viewer.mjs";
-    PDFViewerApplicationOptions.set("workerSrc", "${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/build/pdf.worker.mjs");
+    import {PDFViewerApplicationOptions} from "${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/web/viewer.mjs";
+    PDFViewerApplicationOptions.set("workerSrc", "${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/build/pdf.worker.mjs");
     </script>
   </head>
 
