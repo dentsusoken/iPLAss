@@ -34,14 +34,14 @@ See https://github.com/adobe-type-tools/cmap-resources
     <title>PDF.js viewer</title>
 
     <!-- This snippet is used in production (included from viewer.html) -->
-    <link rel="resource" type="application/l10n" href="${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/web/locale/locale.json">
-    <script src="${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/build/pdf.mjs" type="module"></script>
+    <link rel="resource" type="application/l10n" href="${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/web/locale/locale.json">
+    <script src="${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/build/pdf.mjs" type="module"></script>
 
-    <link rel="stylesheet" href="${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/web/viewer.css">
+    <link rel="stylesheet" href="${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/web/viewer.css">
 
     <script type="module">
-    import {PDFViewerApplicationOptions} from "${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/web/viewer.mjs";
-    PDFViewerApplicationOptions.set("workerSrc", "${m:esc(staticContentPath)}/webjars/pdf-js/4.2.67/build/pdf.worker.mjs");
+    import {PDFViewerApplicationOptions} from "${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/web/viewer.mjs";
+    PDFViewerApplicationOptions.set("workerSrc", "${m:esc(staticContentPath)}/webjars/pdf-js/4.4.168/build/pdf.worker.mjs");
     </script>
   </head>
 
@@ -454,8 +454,8 @@ See https://github.com/adobe-type-tools/cmap-resources
             <button id="documentPropertiesClose" class="dialogButton"><span data-l10n-id="pdfjs-document-properties-close-button">Close</span></button>
           </div>
         </dialog>
-        <dialog id="altTextDialog" aria-labelledby="dialogLabel" aria-describedby="dialogDescription">
-          <div id="altTextContainer">
+        <dialog class="dialog altText" id="altTextDialog" aria-labelledby="dialogLabel" aria-describedby="dialogDescription">
+          <div id="altTextContainer" class="mainContainer">
             <div id="overallDescription">
               <span id="dialogLabel" data-l10n-id="pdfjs-editor-alt-text-dialog-label" class="title">Choose an option</span>
               <span id="dialogDescription" data-l10n-id="pdfjs-editor-alt-text-dialog-description">
@@ -492,8 +492,8 @@ See https://github.com/adobe-type-tools/cmap-resources
               </div>
             </div>
             <div id="buttons">
-              <button id="altTextCancel" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-cancel-button">Cancel</span></button>
-              <button id="altTextSave" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-save-button">Save</span></button>
+              <button id="altTextCancel" class="secondaryButton" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-cancel-button">Cancel</span></button>
+              <button id="altTextSave" class="primaryButton" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-save-button">Save</span></button>
             </div>
           </div>
         </dialog>

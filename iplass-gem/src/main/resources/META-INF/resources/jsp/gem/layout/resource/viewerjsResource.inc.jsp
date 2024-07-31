@@ -20,5 +20,5 @@
 
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
 
-<link rel="stylesheet" href="${staticContentPath}/webjars/viewerjs/1.9.0/dist/viewer.min.css?cv=${apiVersion}" />
-<script src="${staticContentPath}/webjars/viewerjs/1.9.0/dist/viewer.min.js?cv=${apiVersion}"></script>
+<link rel="stylesheet" href="${staticContentPath}/webjars/viewerjs/1.11.1/dist/viewer.min.css?cv=${apiVersion}" />
+<script src="${staticContentPath}/webjars/viewerjs/1.11.1/dist/viewer.min.js?cv=${apiVersion}"></script>
