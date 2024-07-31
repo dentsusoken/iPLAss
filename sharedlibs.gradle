@@ -78,15 +78,14 @@ ext {
 		// Jakarta JSP - tomcat bundled
 		// apache tomcat bundled
 		// for jsp compilation
-		'org.apache.tomcat:tomcat-jasper': '10.1.20',
+		'org.apache.tomcat:tomcat-jasper': '10.1.26',
 
 		// Jakarta jstl
 		'org.glassfish.web:jakarta.servlet.jsp.jstl': '3.0.1',
 
-		// TODO 3.1.6 が最新。jackson が推移依存でバージョンアップされてしまい、インターフェースに影響があるので後で対応する。
 		// Jakarta rest
 		// https://eclipse-ee4j.github.io/jersey/
-		'org.glassfish.jersey:jersey-bom': '3.1.5',//by bom
+		'org.glassfish.jersey:jersey-bom': '3.1.7',//by bom
 
 		// Jakarta Annotations
 		// apache tomcat bundled
@@ -141,7 +140,7 @@ ext {
 		'ch.qos.logback:logback-classic': '1.5.6',
 		'net.logstash.logback:logstash-logback-encoder': '7.4',
 		
-		'org.bouncycastle:bcjmail-jdk18on': '1.78',
+		'org.bouncycastle:bcjmail-jdk18on': '1.78.1',
 		
 		'org.jgroups:jgroups': '5.3.6.Final',
 
