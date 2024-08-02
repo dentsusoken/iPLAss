@@ -86,7 +86,7 @@
 %>
 
 <%
-	String scVersion = "13.0p_2022-11-05.js";				//SmartGWT変更時に設定
+	String scVersion = "14.0d_2024-07-22.js";				//SmartGWT変更時に設定
 
 	String scVersionParam = toHexString(scVersion.getBytes());
 
@@ -158,7 +158,7 @@ window.imgDir = '${rsPath}images/';
 <script src="${rsPath}mtpadmin.nocache.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 
 <%
-	String aceVersion = "1.12.3";
+	String aceVersion = "1.35.3";
 
 	//switch ace source mode, [src-min-noconflict, src-noconflict, src-min, src]
 	//String aceSrcMode = "src-min-noconflict";
@@ -191,6 +191,7 @@ window.imgDir = '${rsPath}images/';
 <script src="${acePath}mode-sql.js" charset="utf-8"></script>
 <script src="${acePath}mode-text.js" charset="utf-8"></script>
 <script src="${acePath}mode-typescript.js" charset="utf-8"></script>
+<script src="${acePath}mode-vue.js" charset="utf-8"></script>
 <script src="${acePath}mode-xml.js" charset="utf-8"></script>
 
 <%-- Ace snippets files --%>
@@ -204,6 +205,7 @@ window.imgDir = '${rsPath}images/';
 <script src="${acePath}snippets/sql.js" charset="utf-8"></script>
 <script src="${acePath}snippets/text.js" charset="utf-8"></script>
 <script src="${acePath}snippets/typescript.js" charset="utf-8"></script>
+<script src="${acePath}snippets/vue.js" charset="utf-8"></script>
 <script src="${acePath}snippets/xml.js" charset="utf-8"></script>
 </head>
 <body>

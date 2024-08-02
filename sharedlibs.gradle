@@ -170,7 +170,7 @@ ext {
 		'org.junit:junit-bom': '5.10.2',
 		
 		//webjars(admin)
-		'org.webjars.npm:ace-builds': '1.12.3',
+		'org.webjars.npm:ace-builds': '1.35.3',
 		
 		//webjars(gem)
 		'org.webjars:jquery': '3.7.1',

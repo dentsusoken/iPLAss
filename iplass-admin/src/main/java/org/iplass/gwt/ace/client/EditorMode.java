@@ -38,6 +38,8 @@ public enum EditorMode {
 	SQL("sql", "Sql"),
 	/** Text. */
 	TEXT("text", "Text"),
+	/** Vue.js. */
+	VUEJS("vue", "Vue.js"),
 	/** TypeScript. */
 	TYPESCRIPT("typescript", "TypeScript"),
 	/** XML. */

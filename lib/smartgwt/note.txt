@@ -2,7 +2,7 @@ place client library that has no public maven repository here
 
 current client library
 ---
-https://smartclient.com/builds/SmartGWT/13.0p/LGPL/
+https://smartclient.com/builds/SmartGWT/14.0d/LGPL/
 
 smartgwt-skins.jar
 smartgwt.jar
