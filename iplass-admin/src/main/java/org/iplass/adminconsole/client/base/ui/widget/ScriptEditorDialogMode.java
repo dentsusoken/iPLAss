@@ -31,7 +31,7 @@ public enum ScriptEditorDialogMode {
 	,JSP(EditorMode.JSP, "Jsp")
 	,SQL(EditorMode.SQL, "Sql")
 	,TEXT(EditorMode.TEXT, "Text")
-	,VUEJS(EditorMode.VUEJS, "Vue.js")
+	,VUE(EditorMode.VUE, "Vue.js")
 	,TYPESCRIPT(EditorMode.TYPESCRIPT, "TypeScript")
 	,XML(EditorMode.XML, "Xml")
 	;
