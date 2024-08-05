@@ -40,6 +40,8 @@ public enum EditorMode {
 	TEXT("text", "Text"),
 	/** TypeScript. */
 	TYPESCRIPT("typescript", "TypeScript"),
+	/** Vue.js. */
+	VUE("vue", "Vue.js"),
 	/** XML. */
 	XML("xml", "Xml")
 	;
