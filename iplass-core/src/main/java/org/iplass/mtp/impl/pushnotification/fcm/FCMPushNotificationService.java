@@ -254,8 +254,8 @@ public class FCMPushNotificationService extends PushNotificationService {
 		post.setHeader("Content-Type", "application/json");
 		post.setEntity(new StringEntity(jsonMsg, StandardCharsets.UTF_8));
 
-		try {
-			return client.execute(post, response -> {
+		return client.execute(post, response -> {
+			try {
 				final int status = response.getCode();
 
 				if (401 == status) {
@@ -287,12 +287,12 @@ public class FCMPushNotificationService extends PushNotificationService {
 				}
 
 				resHandler.handle(response);
-
 				return status;
-			});
-		} finally {
-			post.reset();
-		}
+
+			} finally {
+				EntityUtils.consume(response.getEntity());
+			}
+		});
 	}
 
 	private String toJson(PushNotification notification) {

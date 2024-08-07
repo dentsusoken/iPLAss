@@ -27,6 +27,7 @@ import java.util.function.Predicate;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,11 +95,16 @@ public class SimpleHttpInvoker {
 			exponentialBackoff.execute(() -> {
 				try {
 					httpClient.execute(request, resp -> {
+						HttpEntity entity = resp.getEntity();
 
-						response.status = resp.getCode();
-						response.content = null == resp.getEntity() ? null : EntityUtils.toString(resp.getEntity(), contentEncoding);
+						try {
+							response.status = resp.getCode();
+							response.content = null == entity ? null : EntityUtils.toString(entity, contentEncoding);
+							return null;
 
-						return resp;
+						} finally {
+							EntityUtils.consume(entity);
+						}
 					});
 
 				} catch (IOException e) {

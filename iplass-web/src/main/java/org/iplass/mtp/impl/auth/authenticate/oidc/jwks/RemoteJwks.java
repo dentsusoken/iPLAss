@@ -75,17 +75,19 @@ public class RemoteJwks extends Jwks {
 			String content = null;
 			HttpGet get = new HttpGet(jwksEndpoint);
 
-			try {
-				content = client.execute(get, res -> {
+			content = client.execute(get, res -> {
+				HttpEntity entity = null;
+				try {
 					if (res.getCode() != 200) {
 						throw new IllegalStateException("http response error: " + res.getVersion().format() + " " + res.getCode() + " " + res.getReasonPhrase());
 					}
-					HttpEntity entity = res.getEntity();
+					entity = res.getEntity();
 					return EntityUtils.toString(entity);
-				});
-			} finally {
-				get.reset();
-			}
+
+				} finally {
+					EntityUtils.consume(entity);
+				}
+			});
 
 			JwksHolder newJwks = new JwksHolder();
 			newJwks.jwks = toJwksMap(content);

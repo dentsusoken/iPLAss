@@ -99,14 +99,15 @@ public class OPEndpoint {
 			}
 
 			post.setEntity(new UrlEncodedFormEntity(nvps));
-			try {
-				content = client.execute(post, res -> {
-					HttpEntity entity = res.getEntity();
+			content = client.execute(post, res -> {
+				HttpEntity entity = res.getEntity();
+				try {
 					return EntityUtils.toString(entity);
-				});
-			} finally {
-				post.reset();
-			}
+
+				} finally {
+					EntityUtils.consume(entity);
+				}
+			});
 
 			return opService.getObjectMapper().readValue(content, new TypeReference<Map<String, Object>>() {});
 		} catch (IOException e) {
@@ -126,23 +127,19 @@ public class OPEndpoint {
 			HttpGet get = new HttpGet(userInfoEndpointUrl);
 			get.setHeader("Authorization", tokenType+ " " + accessToken);
 
-			try {
-				return opService.getHttpClient().execute(get, res -> {
-					HttpEntity entity = res.getEntity();
-					String content = EntityUtils.toString(entity);
+			return opService.getHttpClient().execute(get, res -> {
+				HttpEntity entity = res.getEntity();
 
-					if (res.getCode() != HttpStatus.SC_OK) {
-						logger.warn("can't get user's profile caluse http status=" + res.getCode() + " " + res.getReasonPhrase() + " content=" + content);
-						return null;
-					}
+				try {
+					String content = EntityUtils.toString(entity);
 
 					return opService.getObjectMapper().readValue(content, new TypeReference<Map<String, Object>>() {
 					});
-				});
 
-			} finally {
-				get.reset();
-			}
+				} finally {
+					EntityUtils.consume(entity);
+				}
+			});
 
 		} catch (IOException e) {
 			throw new OIDCRuntimeException(e);
