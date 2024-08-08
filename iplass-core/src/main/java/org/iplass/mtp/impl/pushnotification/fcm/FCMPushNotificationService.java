@@ -313,12 +313,7 @@ public class FCMPushNotificationService extends PushNotificationService {
 			retryAfter[0] = parseRetryAfter(res);
 			HttpEntity entity = res.getEntity();
 			if (entity != null) {
-				try {
-					content[0] = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-				} catch (ParseException e) {
-					// FIXME 修正する
-					e.printStackTrace();
-				}
+				content[0] = EntityUtils.toString(entity, StandardCharsets.UTF_8);
 			}
 		});
 
