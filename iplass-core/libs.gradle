@@ -14,7 +14,9 @@ dependencies {
 
 	//apache http clients
 	implementation sharedLib('org.apache.httpcomponents.client5:httpclient5')
-	
+	implementation sharedLib('org.apache.httpcomponents.core5:httpcore5')
+	implementation sharedLib('org.apache.httpcomponents.core5:httpcore5-h2')
+
 	//lucene
 	implementation sharedLib('org.apache.lucene:lucene-queryparser')
 	implementation sharedLib('org.apache.lucene:lucene-analysis-kuromoji')
@@ -85,5 +87,9 @@ dependencies {
 	
 	//icu4j
 	implementation sharedLib('com.ibm.icu:icu4j')
+	
+	testImplementation platform('org.junit:junit-bom:5.10.3')
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation 'org.junit.vintage:junit-vintage-engine'
 	
 }
