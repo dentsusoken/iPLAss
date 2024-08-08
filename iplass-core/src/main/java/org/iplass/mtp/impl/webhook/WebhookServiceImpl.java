@@ -292,9 +292,7 @@ implements WebhookService {
 					}
 				}
 				// headerのauthorizationでの認証情報
-				if (webhook.getEndpoint().getHeaderAuthorizationType() == null) {
-
-				} else {
+				if (webhook.getEndpoint().getHeaderAuthorizationType() != null) {
 					String scheme = "";
 					String authContent = "";
 					if (WebhookAuthenticationType.BEARER.equals(webhook.getEndpoint().getHeaderAuthorizationType())) {
@@ -326,7 +324,6 @@ implements WebhookService {
 				}
 			}
 
-			// TODO webhook 送信が失敗した場合はログが出て終了となるが、WebhookException などスローしなくて良いか
 			WebhookResponse webhookResponse = doSendWebhookRequest(httpRequest);
 			if (null != webhookResponse) {
 				if (webhook.getResponseHandler() == null) {// 設定しないなら必ずデフォルトに通します

@@ -31,7 +31,6 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
@@ -100,13 +99,7 @@ public class OPEndpoint {
 
 			post.setEntity(new UrlEncodedFormEntity(nvps));
 			content = client.execute(post, res -> {
-				HttpEntity entity = res.getEntity();
-				try {
-					return EntityUtils.toString(entity);
-
-				} finally {
-					EntityUtils.consume(entity);
-				}
+				return EntityUtils.toString(res.getEntity());
 			});
 
 			return opService.getObjectMapper().readValue(content, new TypeReference<Map<String, Object>>() {});

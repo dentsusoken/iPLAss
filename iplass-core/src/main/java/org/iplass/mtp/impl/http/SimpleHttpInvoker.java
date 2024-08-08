@@ -96,15 +96,9 @@ public class SimpleHttpInvoker {
 				try {
 					httpClient.execute(request, resp -> {
 						HttpEntity entity = resp.getEntity();
-
-						try {
-							response.status = resp.getCode();
-							response.content = null == entity ? null : EntityUtils.toString(entity, contentEncoding);
-							return null;
-
-						} finally {
-							EntityUtils.consume(entity);
-						}
+						response.status = resp.getCode();
+						response.content = null == entity ? null : EntityUtils.toString(entity, contentEncoding);
+						return null;
 					});
 
 				} catch (IOException e) {
