@@ -255,38 +255,43 @@ public class FCMPushNotificationService extends PushNotificationService {
 		post.setEntity(new StringEntity(jsonMsg, StandardCharsets.UTF_8));
 
 		return client.execute(post, response -> {
-			final int status = response.getCode();
+			try {
+				final int status = response.getCode();
 
-			if (401 == status) {
-				//認証エラー
-				throw new PushNotificationException("can not auth.");
-			}
-
-			if (status == 400) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("{} {} {}", response.getVersion(), response.getCode(), response.getReasonPhrase());
-					if (response.getHeaders() != null) {
-						for (Header h : response.getHeaders()) {
-							logger.debug(h.toString());
-						}
-					}
-					if (response instanceof ClassicHttpResponse cres) {
-						if (cres.getEntity() != null) {
-							logger.debug(EntityUtils.toString(cres.getEntity(), StandardCharsets.UTF_8));
-						}
-					}
+				if (401 == status) {
+					//認証エラー
+					throw new PushNotificationException("can not auth.");
 				}
-				//無効な JSON
-				throw new PushNotificationException("invalid json message:" + jsonMsg);
-			}
 
-			if (!(status >= 500 && status < 600) && status != 200) {
-				//unknown status
-				throw new PushNotificationException("FCM return unknown status:" + status);
-			}
+				if (status == 400) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("{} {} {}", response.getVersion(), response.getCode(), response.getReasonPhrase());
+						if (response.getHeaders() != null) {
+							for (Header h : response.getHeaders()) {
+								logger.debug(h.toString());
+							}
+						}
+						if (response instanceof ClassicHttpResponse cres) {
+							if (cres.getEntity() != null) {
+								logger.debug(EntityUtils.toString(cres.getEntity(), StandardCharsets.UTF_8));
+							}
+						}
+					}
+					//無効な JSON
+					throw new PushNotificationException("invalid json message:" + jsonMsg);
+				}
 
-			resHandler.handle(response);
-			return status;
+				if (!(status >= 500 && status < 600) && status != 200) {
+					//unknown status
+					throw new PushNotificationException("FCM return unknown status:" + status);
+				}
+
+				resHandler.handle(response);
+				return status;
+
+			} finally {
+				EntityUtils.consume(response.getEntity());
+			}
 		});
 	}
 
@@ -308,7 +313,12 @@ public class FCMPushNotificationService extends PushNotificationService {
 			retryAfter[0] = parseRetryAfter(res);
 			HttpEntity entity = res.getEntity();
 			if (entity != null) {
-				content[0] = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+				try {
+					content[0] = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+				} catch (ParseException e) {
+					// FIXME 修正する
+					e.printStackTrace();
+				}
 			}
 		});
 

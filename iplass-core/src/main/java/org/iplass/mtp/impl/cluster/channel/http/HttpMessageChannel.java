@@ -41,6 +41,7 @@ import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.iplass.mtp.impl.async.AsyncTaskService;
 import org.iplass.mtp.impl.cluster.ClusterService;
@@ -324,7 +325,11 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 			post.setEntity(new UrlEncodedFormEntity(params, contentEncoding));//TODO 設定？？
 
 			return getHttpClient().execute(post, (response) -> {
-				return response.getCode();
+				try {
+					return response.getCode();
+				} finally {
+					EntityUtils.consume(response.getEntity());
+				}
 			});
 
 		} catch (IOException e) {
