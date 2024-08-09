@@ -427,9 +427,9 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return
 	 */
 	private NestProperty getLayoutNestProperty(PropertyColumn property, String propName) {
-		int dotIndex = propName.indexOf(".");
+		int dotIndex = propName.indexOf(property.getPropertyName() + ".");
 		if (dotIndex > -1) {
-			return getLayoutNestProperty(property, propName.substring(0, dotIndex));
+			return getLayoutNestProperty(property, propName.substring(dotIndex + property.getPropertyName().length() + 1));
 		}
 
 		if (property.getEditor() == null || !(property.getEditor() instanceof ReferencePropertyEditor)
