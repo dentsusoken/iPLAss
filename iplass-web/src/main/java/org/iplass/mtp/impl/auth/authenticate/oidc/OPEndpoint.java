@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2022 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,18 +26,15 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.ParseException;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.iplass.mtp.auth.oidc.definition.ClientAuthenticationType;
 import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
 import org.iplass.mtp.impl.auth.oauth.util.OAuthEndpointConstants;
@@ -46,26 +43,46 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+/**
+ * OPEndpoint
+ */
 public class OPEndpoint {
 	private static Logger logger = LoggerFactory.getLogger(OPEndpoint.class);
-	
+
 	private String tokenEndpointUrl;
 	private String userInfoEndpointUrl;
 	private OpenIdConnectService opService;
-	
+
+	/**
+	 * コンストラクタ
+	 * @param tokenEndpointUrl
+	 * @param userInfoEndpointUrl
+	 * @param opService
+	 */
 	public OPEndpoint(String tokenEndpointUrl, String userInfoEndpointUrl, OpenIdConnectService opService) {
 		this.tokenEndpointUrl = tokenEndpointUrl;
 		this.userInfoEndpointUrl = userInfoEndpointUrl;
 		this.opService = opService;
 	}
-	
+
+	/**
+	 * token を取得する
+	 *
+	 * @param clientAuthenticationType
+	 * @param clientId
+	 * @param clientSecret
+	 * @param code
+	 * @param redirectUri
+	 * @param codeVerifier
+	 * @return token
+	 */
 	public Map<String, Object> token(ClientAuthenticationType clientAuthenticationType, String clientId, String clientSecret, String code, String redirectUri, String codeVerifier) {
 		try {
 			String content = null;
 			HttpClient client = opService.getHttpClient();
 			HttpPost post = new HttpPost(tokenEndpointUrl);
 			List<NameValuePair> nvps = new ArrayList<>();
-			
+
 			if (clientAuthenticationType == ClientAuthenticationType.CLIENT_SECRET_BASIC) {
 				post.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes("UTF-8")));
 			} else {
@@ -78,46 +95,53 @@ public class OPEndpoint {
 			if (codeVerifier != null) {
 				nvps.add(new BasicNameValuePair(OAuthEndpointConstants.PARAM_CODE_VERIFIER, codeVerifier));
 			}
-			
+
 			post.setEntity(new UrlEncodedFormEntity(nvps));
-			HttpResponse res = client.execute(post);
-			try {
+			content = client.execute(post, res -> {
 				HttpEntity entity = res.getEntity();
-				content = EntityUtils.toString(entity);
-			} finally {
-				post.releaseConnection();
-			}
+				try {
+					return EntityUtils.toString(entity);
+
+				} finally {
+					EntityUtils.consume(entity);
+				}
+			});
+
 			return opService.getObjectMapper().readValue(content, new TypeReference<Map<String, Object>>() {});
-		} catch (ParseException | IOException e) {
+		} catch (IOException e) {
 			throw new OIDCRuntimeException(e);
 		}
 	}
-	
+
+	/**
+	 * user profile を取得する
+	 * @param tokenType
+	 * @param accessToken
+	 * @return userInfo
+	 */
 	public Map<String, Object> userInfo(String tokenType, String accessToken) {
 		//get user profile
 		try {
 			HttpGet get = new HttpGet(userInfoEndpointUrl);
 			get.setHeader("Authorization", tokenType+ " " + accessToken);
-			
-			HttpResponse res = opService.getHttpClient().execute(get);
-			try {
+
+			return opService.getHttpClient().execute(get, res -> {
 				HttpEntity entity = res.getEntity();
-				StatusLine sl = res.getStatusLine();
-				String content = EntityUtils.toString(entity);
-				
-				if (sl.getStatusCode() != HttpStatus.SC_OK) {
-					logger.warn("can't get user's profile caluse http status=" + sl.getStatusCode() + " " + sl.getReasonPhrase() + " content=" + content);
-					return null;
+
+				try {
+					String content = EntityUtils.toString(entity);
+
+					return opService.getObjectMapper().readValue(content, new TypeReference<Map<String, Object>>() {
+					});
+
+				} finally {
+					EntityUtils.consume(entity);
 				}
-				
-				Map<String, Object> ret = opService.getObjectMapper().readValue(content, new TypeReference<Map<String, Object>>() {});
-				return ret;
-			} finally {
-				get.releaseConnection();
-			}
-		} catch (ParseException | IOException e) {
+			});
+
+		} catch (IOException e) {
 			throw new OIDCRuntimeException(e);
 		}
 	}
-	
+
 }
