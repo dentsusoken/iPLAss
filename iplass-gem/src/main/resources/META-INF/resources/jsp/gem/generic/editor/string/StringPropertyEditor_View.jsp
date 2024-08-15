@@ -125,16 +125,15 @@
 <textarea name="<c:out value="<%=propName%>"/>" rows="5" cols="30" style="<c:out value="<%=customStyle %>"/>"><c:out value="<%=str %>"/></textarea>
 <%
 			}
-		}
 %>
 </span>
 <%
-		if (request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
-			request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
+			if (request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
+				request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
 %>
 <%@include file="../../../layout/resource/ckeditorResource.inc.jsp" %>
 <%
-		}
+			}
 %>
 <script type="text/javascript">
 $(function() {
@@ -144,7 +143,7 @@ $(function() {
 		extraPlugins: "autogrow",
 		autoGrow_onStartup: true,
 		on: {
-<% 		if (editor.isHideRichtextEditorToolBar()) { %>
+<% 			if (editor.isHideRichtextEditorToolBar()) { %>
 			instanceReady: function (evt) {
 				<%-- 全体border、ツールバーを非表示 --%>
 				var containerId = evt.editor.container.$.id;
@@ -153,17 +152,17 @@ $(function() {
 				$("#" + editorId + "_top").hide();
 				$("#" + editorId + "_bottom").hide();
 			},
-<%		} %>
+<%			} %>
 			contentDom: function (event) {
 				var editor = event.editor;
-<% 		if (editor.isHideRichtextEditorToolBar()) { %>
+<% 			if (editor.isHideRichtextEditorToolBar()) { %>
 				<%-- ツールバーを表示しない場合は、bodyのmargin削除 --%>
 				var body = editor.document.getBody();
 				body.setStyles({
 				    margin: 0,
 				});
-<%		} %>
-<%		if (editor.isAllowRichTextEditorLinkAction()) { %>
+<%			} %>
+<%			if (editor.isAllowRichTextEditorLinkAction()) { %>
 				<%-- Link制御 --%>
 				var editable = editor.editable();
 				editable.attachListener( editable, 'click', function( evt ) {
@@ -173,16 +172,16 @@ $(function() {
 						window.open(link.getAttribute('href'), target);
 					}
 				}, null, null, 15 );
-<% 		} %>
+<% 			} %>
 			},
 		},
 	};
 	
-<%		if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) { %>
+<%			if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) { %>
 	var custom = <%=editor.getRichtextEditorOption()%>;
-<%		} else { %>
+<%			} else { %>
 	var custom = {}; 
-<%		} %>
+<%			} %>
 	var option = $.extend(true, {}, defaults, custom);
 
 	$("textarea[name='<%=StringUtil.escapeJavaScript(propName)%>']").ckeditor(
@@ -191,6 +190,7 @@ $(function() {
 });
 </script>
 <%
+		}
 	} else if (editor.getDisplayType() == StringDisplayType.SELECT) {
 		
 		if (isMultiple) {
