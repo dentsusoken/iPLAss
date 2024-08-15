@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2022 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,22 +26,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdConnectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * RemoteJwks
+ */
 public class RemoteJwks extends Jwks {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(RemoteJwks.class);
-	
+
 	private String jwksEndpoint;
 	private volatile JwksHolder jwks;
 
+	/**
+	 * コンストラクタ
+	 * @param jwksEndpoint
+	 * @param service
+	 */
 	public RemoteJwks(String jwksEndpoint, OpenIdConnectService service) {
 		super(service);
 		this.jwksEndpoint = jwksEndpoint;
@@ -61,22 +68,27 @@ public class RemoteJwks extends Jwks {
 		}
 		return ret;
 	}
-	
+
 	private void refreshJwks() {
 		HttpClient client = service.getHttpClient();
 		try {
 			String content = null;
 			HttpGet get = new HttpGet(jwksEndpoint);
-			HttpResponse res = client.execute(get);
-			try {
-				if (res.getStatusLine().getStatusCode() != 200) {
-					throw new IllegalStateException("http response error:" + res.getStatusLine().toString());
+
+			content = client.execute(get, res -> {
+				HttpEntity entity = null;
+				try {
+					if (res.getCode() != 200) {
+						throw new IllegalStateException("http response error: " + res.getVersion().format() + " " + res.getCode() + " " + res.getReasonPhrase());
+					}
+					entity = res.getEntity();
+					return EntityUtils.toString(entity);
+
+				} finally {
+					EntityUtils.consume(entity);
 				}
-				HttpEntity entity = res.getEntity();
-				content = EntityUtils.toString(entity);
-			} finally {
-				get.releaseConnection();
-			}
+			});
+
 			JwksHolder newJwks = new JwksHolder();
 			newJwks.jwks = toJwksMap(content);
 			if (service.getJwksCacheLifetimeMinutes() >= 0) {
@@ -87,7 +99,7 @@ public class RemoteJwks extends Jwks {
 			logger.error("can not get jwks from endpoint:" + jwksEndpoint + " may be retry after a while...", e);
 		}
 	}
-	
+
 	private Map<String, Map<String, Object>> getJwksMap() {
 		JwksHolder jwksref = jwks;
 		if (jwksref == null || (jwksref.ttl != -1 && jwksref.ttl < System.currentTimeMillis())) {
@@ -95,7 +107,7 @@ public class RemoteJwks extends Jwks {
 		}
 		return jwksref.jwks;
 	}
-	
+
 	private Map<String, Object> getJwk(String kid) {
 		Map<String, Map<String, Object>> jwksMap = getJwksMap();
 		if (jwksMap == null) {
@@ -104,7 +116,7 @@ public class RemoteJwks extends Jwks {
 			return jwksMap.get(kid);
 		}
 	}
-	
+
 	@Override
 	public List<String> kidList() {
 		ArrayList<String> ret = new ArrayList<>();
@@ -118,13 +130,13 @@ public class RemoteJwks extends Jwks {
 				}
 			}
 		}
-		
+
 		map.forEach((k, v) -> {
 			ret.add((String) v.get(JWK_PARAM_KID));
 		});
 		return ret;
 	}
-	
+
 	class JwksHolder {
 		Map<String, Map<String, Object>> jwks;
 		long ttl = -1L;

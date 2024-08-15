@@ -20,6 +20,7 @@
 package org.iplass.mtp.impl.pushnotification.fcm;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,15 +28,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.DateUtils;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.utils.DateUtils;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.iplass.mtp.impl.http.ExponentialBackoff;
 import org.iplass.mtp.impl.http.HttpClientConfig;
 import org.iplass.mtp.impl.pushnotification.PushNotificationService;
@@ -49,10 +51,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+/**
+ * Firebase Cloud Messaging(FMC) プッシュ通知サービス
+ */
 public class FCMPushNotificationService extends PushNotificationService {
 	private static Logger logger = LoggerFactory.getLogger(FCMPushNotificationService.class);
 
@@ -83,16 +89,16 @@ public class FCMPushNotificationService extends PushNotificationService {
 			enableRetry = Boolean.valueOf(config.getValue("enableRetry"));
 		}
 		if (enableRetry) {
-			exponentialBackoff = (org.iplass.mtp.impl.http.ExponentialBackoff) config.getBean("exponentialBackoff");
+			exponentialBackoff = config.getValue("exponentialBackoff", ExponentialBackoff.class);
 			if (exponentialBackoff == null) {
-				exponentialBackoff = new org.iplass.mtp.impl.http.ExponentialBackoff();
+				exponentialBackoff = new ExponentialBackoff();
 			}
 		} else {
-			exponentialBackoff = org.iplass.mtp.impl.http.ExponentialBackoff.NO_RETRY;
+			exponentialBackoff = ExponentialBackoff.NO_RETRY;
 		}
 
-		registrationIdHandler = (RegistrationIdHandler) config.getBean("registrationIdHandler");
-		httpClientConfig = (HttpClientConfig) config.getBean("httpClientConfig");
+		registrationIdHandler = config.getValue("registrationIdHandler", RegistrationIdHandler.class);
+		httpClientConfig = config.getValue("httpClientConfig", HttpClientConfig.class);
 		if (httpClientConfig == null) {
 			httpClientConfig = new HttpClientConfig();
 			httpClientConfig.inited(this, config);
@@ -232,59 +238,70 @@ public class FCMPushNotificationService extends PushNotificationService {
 	}
 
 	interface ResHandler {
-		void handle(HttpResponse res) throws IOException;
+		void handle(ClassicHttpResponse res) throws ParseException, IOException;
 	}
 
 	private int sendMsg(PushNotification notification, ResHandler resHandler) throws ParseException, IOException {
-		String jsonMsg = null;
-		try {
-			jsonMsg = jsonMapper.writeValueAsString(toMessageMap(notification));
-		} catch (IOException e) {
-			throw new PushNotificationException("can not serialize to json", e);
-		}
+		// jsonMsg is final
+		final String jsonMsg = toJson(notification);
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("call FCM whith message:" + jsonMsg);
 		}
 
-		int status = -1;
 		HttpClient client = httpClientConfig.getInstance();
 		HttpPost post = new HttpPost(endpoint);
 		post.setHeader("Authorization", "key=" + authorizationKey);
 		post.setHeader("Content-Type", "application/json");
-		post.setEntity(new StringEntity(jsonMsg, "UTF-8"));
+		post.setEntity(new StringEntity(jsonMsg, StandardCharsets.UTF_8));
 
-		try {
-			HttpResponse res = client.execute(post);
-			status = res.getStatusLine().getStatusCode();
-			if (status == 401) {
-				//認証エラー
-				throw new PushNotificationException("can not auth.");
-			}
-			if (status == 400) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(res.getStatusLine().toString());
-					if (res.getAllHeaders() != null) {
-						for (Header h: res.getAllHeaders()) {
-							logger.debug(h.toString());
+		return client.execute(post, response -> {
+			try {
+				final int status = response.getCode();
+
+				if (401 == status) {
+					//認証エラー
+					throw new PushNotificationException("can not auth.");
+				}
+
+				if (status == 400) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("{} {} {}", response.getVersion(), response.getCode(), response.getReasonPhrase());
+						if (response.getHeaders() != null) {
+							for (Header h : response.getHeaders()) {
+								logger.debug(h.toString());
+							}
+						}
+						if (response instanceof ClassicHttpResponse cres) {
+							if (cres.getEntity() != null) {
+								logger.debug(EntityUtils.toString(cres.getEntity(), StandardCharsets.UTF_8));
+							}
 						}
 					}
-					if (res.getEntity() != null) {
-						logger.debug(EntityUtils.toString(res.getEntity(), "UTF-8"));
-					}
+					//無効な JSON
+					throw new PushNotificationException("invalid json message:" + jsonMsg);
 				}
-				//無効な JSON
-				throw new PushNotificationException("invalid json message:" + jsonMsg);
-			}
-			if (!(status >=500 && status < 600) && status != 200) {
-				//unknown status
-				throw new PushNotificationException("FCM return unknown status:" + status);
-			}
 
-			resHandler.handle(res);
-			return status;
-		} finally {
-			post.releaseConnection();
+				if (!(status >= 500 && status < 600) && status != 200) {
+					//unknown status
+					throw new PushNotificationException("FCM return unknown status:" + status);
+				}
+
+				resHandler.handle(response);
+				return status;
+
+			} finally {
+				EntityUtils.consume(response.getEntity());
+			}
+		});
+	}
+
+	private String toJson(PushNotification notification) {
+		try {
+			return jsonMapper.writeValueAsString(toMessageMap(notification));
+		} catch (JsonProcessingException e) {
+			// Note: writeValueAsString は 2.1 で IOException の throws が削除されている
+			throw new PushNotificationException("can not serialize to json", e);
 		}
 	}
 
@@ -297,7 +314,7 @@ public class FCMPushNotificationService extends PushNotificationService {
 			retryAfter[0] = parseRetryAfter(res);
 			HttpEntity entity = res.getEntity();
 			if (entity != null) {
-				content[0] = EntityUtils.toString(entity, "UTF-8");
+				content[0] = EntityUtils.toString(entity, StandardCharsets.UTF_8);
 			}
 		});
 
@@ -319,7 +336,7 @@ public class FCMPushNotificationService extends PushNotificationService {
 			rt = handleResult(cmap, null);
 		} else {
 			//direct message
-			rt = handleResult((Map<String, Object>) ((List<Map<String, Object>>) cmap.get(FCMConstants.RESULTS)).get(0), notification.getToList().get(0));
+			rt = handleResult(((List<Map<String, Object>>) cmap.get(FCMConstants.RESULTS)).get(0), notification.getToList().get(0));
 		}
 
 		switch (rt) {
@@ -367,7 +384,7 @@ public class FCMPushNotificationService extends PushNotificationService {
 			retryAfter[0] = parseRetryAfter(res);
 			HttpEntity entity = res.getEntity();
 			if (entity != null) {
-				content[0] = EntityUtils.toString(entity, "UTF-8");
+				content[0] = EntityUtils.toString(entity, StandardCharsets.UTF_8);
 			}
 		});
 

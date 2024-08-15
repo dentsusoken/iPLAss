@@ -13,8 +13,10 @@ dependencies {
 	implementation sharedLib('commons-codec:commons-codec')
 
 	//apache http clients
-	implementation sharedLib('org.apache.httpcomponents:httpclient')
-	
+	implementation sharedLib('org.apache.httpcomponents.client5:httpclient5')
+	implementation sharedLib('org.apache.httpcomponents.core5:httpcore5')
+	implementation sharedLib('org.apache.httpcomponents.core5:httpcore5-h2')
+
 	//lucene
 	implementation sharedLib('org.apache.lucene:lucene-queryparser')
 	implementation sharedLib('org.apache.lucene:lucene-analysis-kuromoji')

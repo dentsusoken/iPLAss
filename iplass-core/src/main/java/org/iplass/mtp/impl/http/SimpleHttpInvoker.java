@@ -19,23 +19,35 @@
  */
 package org.iplass.mtp.impl.http;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.AbstractExecutionAwareRequest;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Simple Http リクエスト実行機能
+ */
 public class SimpleHttpInvoker {
 	private static Logger logger = LoggerFactory.getLogger(SimpleHttpInvoker.class);
-	
+
 	private CloseableHttpClient httpClient;
 	private ExponentialBackoff exponentialBackoff;
-	
+	/** レスポンス文字コード */
+	private Charset contentEncoding = StandardCharsets.UTF_8;
+
+	/**
+	 * コンストラクタ
+	 * @param httpClient httpClient
+	 * @param exponentialBackoff ExponentialBackoff
+	 */
 	public SimpleHttpInvoker(CloseableHttpClient httpClient, ExponentialBackoff exponentialBackoff) {
 		this.httpClient = httpClient;
 		if (exponentialBackoff == null) {
@@ -44,48 +56,79 @@ public class SimpleHttpInvoker {
 			this.exponentialBackoff = exponentialBackoff;
 		}
 	}
-	
+
 	private final boolean noRetry(final Response res) {
 		return true;
 	}
-	
+
+	/**
+	 * リクエストを実行する
+	 *
+	 * <p>
+	 * 実行に失敗したら、失敗レスポンスを返却する
+	 * </p>
+	 *
+	 * @param request Httpリクエスト
+	 * @return リクエスト実行結果
+	 */
 	public Response call(HttpUriRequest request) {
 		return call(request, this::noRetry);
 	}
-	
+
+	/**
+	 * リクエストを実行する
+	 *
+	 * <p>
+	 * 実行に成功するか、リトライ停止条件に達するまでリクエストを実行する。
+	 * リトライ閾値に達し実行に失敗している場合は、失敗レスポンスを返却する
+	 * </p>
+	 *
+	 * @param request Httpリクエスト
+	 * @param stopRetryCondition リトライ停止条件
+	 * @return リクエスト実行結果
+	 */
 	public Response call(HttpUriRequest request, Predicate<Response> stopRetryCondition) {
 		Response response = new Response();
-		
+
 		long start = System.currentTimeMillis();
 		try {
 			exponentialBackoff.execute(() -> {
-				try (CloseableHttpResponse res = httpClient.execute(request)) {
-					response.status = res.getStatusLine().getStatusCode();
-					HttpEntity entity = res.getEntity();
-					if (entity == null) {
-						response.content = null;
-					} else {
-						response.content = EntityUtils.toString(entity, "UTF-8");
+				try {
+					httpClient.execute(request, resp -> {
+						HttpEntity entity = resp.getEntity();
+
+						try {
+							response.status = resp.getCode();
+							response.content = null == entity ? null : EntityUtils.toString(entity, contentEncoding);
+							return null;
+
+						} finally {
+							EntityUtils.consume(entity);
+						}
+					});
+
+				} catch (IOException e) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("error while http call: {}", request.toString(), e);
 					}
-				} catch (Exception e) {
+
 					if (response.exception != null) {
 						e.addSuppressed(response.exception);
 					}
+
 					response.exception = e;
 					response.status = 0;
 					response.content = null;
-					if (logger.isDebugEnabled()) {
-						logger.debug("error while http call:" + request.toString(), e);
-					}
+
 				} finally {
-					if (request instanceof AbstractExecutionAwareRequest) {
-						((AbstractExecutionAwareRequest) request).reset();
+					if (request instanceof HttpUriRequestBase httpUriRequestBase) {
+						httpUriRequestBase.reset();
 					}
 				}
-				
+
 				return stopRetryCondition.test(response);
 			});
-			
+
 		} catch (InterruptedException e) {
 			if (response.exception != null) {
 				e.addSuppressed(response.exception);
@@ -94,17 +137,23 @@ public class SimpleHttpInvoker {
 			response.status = 0;
 			response.content = null;
 		}
-		
+
 		if (logger.isDebugEnabled()) {
-			logger.debug("call external web resource: " + request + " " + (System.currentTimeMillis() - start) + "ms");
+			logger.debug("call external web resource: {} {}ms", request, (System.currentTimeMillis() - start));
 		}
-		
+
 		return response;
 	}
-	
+
+	/**
+	 * レスポンスインスタンス
+	 */
 	public static class Response {
+		/** コンテンツ */
 		public String content;
+		/** http status */
 		public int status;
+		/** 失敗時の例外 */
 		public Exception exception;
 	}
 
