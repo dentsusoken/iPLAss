@@ -235,11 +235,15 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					if (property != null) {
 						if (property.getPropertyName().equals(sortKey)) {
 							sortKey = sortKey + "." + getDisplayNestProperty(property);
-						} else if (!existNestProperty(property, sortKey)) {
-							// プロパティ名とキーに差分がある、かつネスト項目ある場合は、ネスト項目の存在確認、ネストがなければNameでソート
-							sortKey = property.getPropertyName() + "." + Entity.NAME;
 						} else {
-							sortKey = sortKey + "." + Entity.NAME;
+							// ネストの存在チェック
+							NestProperty np = getLayoutNestProperty(property, sortKey);
+							if (np != null) {
+								sortKey = sortKey + "." + getDisplayNestProperty(np);
+							} else {
+								// 画面上に表示されない場合は、Nameでソート
+								sortKey = sortKey + "." + Entity.NAME;
+							}
 						}
 					} else {
 						// 画面上に表示されない場合は、Nameでソート
@@ -266,11 +270,24 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 						if (pd instanceof ReferenceProperty) {
 							if (property.getPropertyName().equals(sortKey)) {
 								sortKey = sortKey + "." + getDisplayNestProperty(property);
-							} else if (!existNestProperty(property, sortKey)) {
-								// プロパティ名とキーに差分がある、かつネスト項目ある場合は、ネスト項目の存在確認、ネストがなければNameでソート
-								sortKey = property.getPropertyName() + "." + Entity.NAME;
 							} else {
-								sortKey = sortKey + "." + Entity.NAME;
+								// ネストの存在チェック
+								NestProperty np = getLayoutNestProperty(property, sortKey);
+								if (np != null) {
+									sortKey = sortKey + "." + getDisplayNestProperty(np);
+								} else {
+									// 未設定の項目
+									sortKey = Entity.NAME;
+								}
+							}
+						} else {
+							if (!property.getPropertyName().equals(sortKey)) {
+								// ネストの存在チェック
+								NestProperty np = getLayoutNestProperty(property, sortKey);
+								if (np == null) {
+									// 未設定の項目
+									sortKey = Entity.NAME;
+								}
 							}
 						}
 						NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
@@ -427,77 +444,38 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return
 	 */
 	private NestProperty getLayoutNestProperty(PropertyColumn property, String propName) {
-		int dotIndex = propName.indexOf(property.getPropertyName() + ".");
-		if (dotIndex > -1) {
-			return getLayoutNestProperty(property, propName.substring(dotIndex + property.getPropertyName().length() + 1));
+		if (property.getEditor() != null && !(property.getEditor() instanceof ReferencePropertyEditor)) {
+			return null;
 		}
+	
+		// 親階層以降のプロパティ名で再帰検索
+		String subPropName = propName.substring(property.getPropertyName().length() + 1);
+		return getSubProperty(subPropName, (ReferencePropertyEditor) property.getEditor());
+	}
 
-		if (property.getEditor() == null || !(property.getEditor() instanceof ReferencePropertyEditor)
-				|| ((ReferencePropertyEditor) property.getEditor()).getNestProperties().isEmpty()) {
+	private NestProperty getSubProperty(String propertyName, ReferencePropertyEditor editor) {
+		if (editor.getNestProperties().isEmpty()) {
 			return null;
 		}
 
-		ReferencePropertyEditor rp = (ReferencePropertyEditor) property.getEditor();
-		Optional<NestProperty> np = rp.getNestProperties().stream()
-				.filter(e -> propName.equals(e.getPropertyName())).findFirst();
-		if (np.isPresent()) {
-			return np.get();
-		}
-		return null;
-	}
-	
-	/**
-	 * プロパティに指定の名前のNestPropertyが存在するか
-	 * @param property プロパティ
-	 * @param checkName チェック対象の名前
-	 * @return 存在する場合true
-	 */
-	private boolean existNestProperty(PropertyColumn property, String checkName) {
-		if (property.getEditor() != null && property.getEditor() instanceof ReferencePropertyEditor) {
-			return false;
-		}
-	
-		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
-		if (editor.getNestProperties().isEmpty()) {
-			return false;
-		}
-	
-		NestProperty np = getLayoutNestProperty(property, checkName);
-		if (np == null) {
-			return false;
-		}
-	
-		int dotIndex = checkName.indexOf(".");
-		String subPropName = checkName.substring(dotIndex + 1);
-		NestProperty subProp = getSubProperty(subPropName, np);
-	
-		return subProp != null;
-	}
-
-	private NestProperty getSubProperty(String propertyName, NestProperty nestProperty) {
-		ReferencePropertyEditor rpe = (ReferencePropertyEditor) nestProperty.getEditor();
-	
 		int dotIndex = propertyName.indexOf(".");
 		if (dotIndex > -1) {
 			// 子階層を再帰呼び出し
 			String topPropName = propertyName.substring(0, dotIndex);
 			String subPropName = propertyName.substring(dotIndex + 1);
-	
-			Optional<NestProperty> opt = rpe.getNestProperties().stream()
+
+			Optional<NestProperty> opt = editor.getNestProperties().stream()
 					.filter(np -> np.getPropertyName().equals(topPropName)).findFirst();
 			if (!opt.isPresent()) return null;
-	
+
 			NestProperty subProp = opt.get();
-			if (subProp.getEditor() instanceof ReferencePropertyEditor
-					&& !((ReferencePropertyEditor) subProp.getEditor()).getNestProperties().isEmpty()) {
-				return getSubProperty(subPropName, opt.get());
+			if (subProp.getEditor() instanceof ReferencePropertyEditor) {
+				return getSubProperty(subPropName, (ReferencePropertyEditor) subProp.getEditor());
 			}
-	
-			return null;
 		}
-	
+
 		// 一致するNestPropetyを取得
-		Optional<NestProperty> opt = rpe.getNestProperties().stream().filter(np -> np.getPropertyName().equals(propertyName)).findFirst();
+		Optional<NestProperty> opt = editor.getNestProperties().stream().filter(np -> np.getPropertyName().equals(propertyName)).findFirst();
 		return opt.orElse(null);
 	}
 
@@ -636,18 +614,36 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 参照プロパティで、検索結果に表示されている項目を取得します。
+	 * @param refProp 参照プロパティ
 	 * @return 表示項目
 	 */
 	protected String getDisplayNestProperty(PropertyColumn refProp) {
 		PropertyEditor editor = refProp.getEditor();
+		return getNestPropertyDisplayName(editor);
+	}
 
+	/**
+	 * ネストプロパティで、検索結果に表示されている項目を取得します。
+	 * @param nestProp
+	 * @return
+	 */
+	private String getDisplayNestProperty(NestProperty nestProp) {
+		PropertyEditor editor = nestProp.getEditor();
+		return getNestPropertyDisplayName(editor);
+	}
+
+	/**
+	 * 参照項目の表示ラベルを取得
+	 * @param editor
+	 * @return
+	 */
+	private String getNestPropertyDisplayName(PropertyEditor editor) {
 		if (editor instanceof ReferencePropertyEditor
 				&& StringUtil.isNotEmpty(((ReferencePropertyEditor) editor).getDisplayLabelItem())) {
 			return ((ReferencePropertyEditor)editor).getDisplayLabelItem();
 		} else {
 			return Entity.NAME;
 		}
-
 	}
 
 	/**
