@@ -76,6 +76,14 @@
 			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
 		}
 	}
+	
+	// RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するか
+	String additionalStyle = "";
+	if ((editor.getDisplayType() == SelectDisplayType.CHECKBOX || editor.getDisplayType() == SelectDisplayType.RADIO) &&
+			editor.isItemDirectionInline()) {
+		additionalStyle = "display: inline-grid;";
+	}
+
 
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
@@ -93,7 +101,7 @@
 		}
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.CHECKBOX.name()%>" />
-<ul class="list-check-01">
+<ul class="list-check-01" style="<c:out value="<%=additionalStyle%>"/>">
 <%
 		for (EditorValue param : editor.getValues()) {
 			String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, param, selectValueList);
@@ -163,7 +171,7 @@ $(function() {
 		}
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.RADIO.name()%>" />
-<ul class="list-radio-01" data-itemName="<c:out value="<%=propName %>"/>">
+<ul class="list-radio-01" style="<c:out value="<%=additionalStyle%>"/>" data-itemName="<c:out value="<%=propName %>"/>">
 <%
 		String defaultChecked = " checked";
 		for (EditorValue param : editor.getValues()) {

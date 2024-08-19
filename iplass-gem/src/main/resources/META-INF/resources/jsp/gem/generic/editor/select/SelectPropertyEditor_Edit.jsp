@@ -166,8 +166,15 @@
 			//チェックボックスorラジオボタン
 			String cls = "list-radio-01";
 			if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) cls = "list-check-01";
+			
+			// RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するか
+			String additionalStyle = "";
+			if (editor.getDisplayType() != SelectDisplayType.SELECT &&
+					editor.isItemDirectionInline()) {
+				additionalStyle = "display: inline-grid;";
+			}
 %>
-<ul class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
+<ul class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=additionalStyle%>"/>" data-itemName="<c:out value="<%=propName %>"/>">
 <%
 			for (EditorValue tmp : editor.getValues()) {
 				String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, tmp, selectValueList);
