@@ -622,17 +622,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	}
 
 	/**
-	 * 参照プロパティで、検索結果に表示されている項目を取得します。
-	 * @param refProp 参照プロパティ
-	 * @return 表示項目
-	 */
-	@Deprecated
-	protected String getDisplayNestProperty(PropertyColumn refProp) {
-		PropertyEditor editor = refProp.getEditor();
-		return getReferencePropertyDisplayName(editor);
-	}
-
-	/**
 	 * 参照項目の表示ラベルを取得
 	 * @param editor
 	 * @return
