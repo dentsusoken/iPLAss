@@ -777,14 +777,20 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			// 参照の先の項目を取得
 			NestProperty subProp = opt.get();
 			if (subProp.getEditor() instanceof ReferencePropertyEditor) {
-				return getSubProperty(subPropName, ((ReferencePropertyEditor) subProp.getEditor()).getNestProperties());
+				return findLayoutNestPropertyRecursive(subPropName, ((ReferencePropertyEditor) subProp.getEditor()).getNestProperties());
 			}
 		}
 		
 		return null;
 	}
 
-	private NestProperty getSubProperty(String propName, List<NestProperty> properties) {
+	/**
+	 * プロパティ名に一致するネストプロパティを再帰的に検索し取得する
+	 * @param propertyName プロパティ名
+	 * @param editor 参照プロパティエディタ
+	 * @return ネストプロパティ
+	 */
+	private NestProperty findLayoutNestPropertyRecursive(String propName, List<NestProperty> properties) {
 		if (properties == null || properties.isEmpty()) {
 			return null;
 		}
@@ -801,7 +807,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 
 			NestProperty subProp = opt.get();
 			if (subProp.getEditor() instanceof ReferencePropertyEditor) {
-				return getSubProperty(subPropName, ((ReferencePropertyEditor) subProp.getEditor()).getNestProperties());
+				return findLayoutNestPropertyRecursive(subPropName, ((ReferencePropertyEditor) subProp.getEditor()).getNestProperties());
 			}
 		}
 
