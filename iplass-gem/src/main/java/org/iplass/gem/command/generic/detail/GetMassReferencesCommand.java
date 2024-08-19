@@ -322,28 +322,14 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			return Entity.OID;
 		}
 
-		PropertyDefinition pd = ed.getProperty(property.getPropertyName());
+		PropertyDefinition pd = getPropertyDefinition(ed, sortKey);
 		if (pd == null) {
 			ret = Entity.OID;
 			pd = ed.getProperty(ret);
 		}
 
 		if (pd instanceof ReferenceProperty) {
-			// 当該項目がセクション上表示される場合は、セクション上の表示項目でソート
-			if (property.getPropertyName().equals(sortKey)) {
-				ret = sortKey + "." + getDisplayNestProperty(property);
-			} else if (property.getEditor() != null && property.getEditor() instanceof ReferencePropertyEditor
-				&& !((ReferencePropertyEditor) property.getEditor()).getNestProperties().isEmpty()) {
-				// キーに差分がある、かつネスト項目ある場合は、ネスト項目の存在確認
-				int dotIndex = sortKey.indexOf(".");
-				String subPropName = sortKey.substring(dotIndex + 1);
-				NestProperty subProp = getSubProperty(subPropName, property);
-				if (subProp == null) {
-					ret = sortKey + "." + Entity.NAME;
-				}
-			} else {
-				ret = sortKey + "." + Entity.NAME;
-			}
+			ret = sortKey + "." + getDisplayNestProperty(property);
 		}
 
 		return ret;
@@ -770,19 +756,66 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	}
 
 	private NestProperty getLayoutNestProperty(MassReferenceSection section, String propName) {
-		int dotIndex = propName.indexOf(".");
-		if (dotIndex > -1) {
-			return getLayoutNestProperty(section, propName.substring(0, dotIndex));
-		}
-
+		// 直下に指定されているかチェック
 		Optional<NestProperty> property = section.getProperties().stream()
 				.filter(e -> propName.equals(e.getPropertyName())).findFirst();
 		if (property.isPresent()) {
 			return property.get();
 		}
+
+		// プロパティ名で一致する列がない場合、参照の各階層をチェック
+		int dotIndex = propName.indexOf(".");
+		if (dotIndex > -1) {
+			String topPropName = propName.substring(0, dotIndex);
+			String subPropName = propName.substring(dotIndex + 1);
+
+			// セクション直下を取得
+			Optional<NestProperty> opt = section.getProperties().stream()
+					.filter(np -> np.getPropertyName().equals(topPropName)).findFirst();
+			if (!opt.isPresent()) return null;
+
+			// 参照の先の項目を取得
+			NestProperty subProp = opt.get();
+			if (subProp.getEditor() instanceof ReferencePropertyEditor) {
+				return findLayoutNestPropertyRecursive(subPropName, ((ReferencePropertyEditor) subProp.getEditor()).getNestProperties());
+			}
+		}
+		
 		return null;
 	}
-	
+
+	/**
+	 * プロパティ名に一致するネストプロパティを再帰的に検索し取得する
+	 * @param propertyName プロパティ名
+	 * @param editor 参照プロパティエディタ
+	 * @return ネストプロパティ
+	 */
+	private NestProperty findLayoutNestPropertyRecursive(String propName, List<NestProperty> properties) {
+		if (properties == null || properties.isEmpty()) {
+			return null;
+		}
+
+		int dotIndex = propName.indexOf(".");
+		if (dotIndex > -1) {
+			// 子階層を再帰呼び出し
+			String topPropName = propName.substring(0, dotIndex);
+			String subPropName = propName.substring(dotIndex + 1);
+
+			Optional<NestProperty> opt = properties.stream()
+					.filter(np -> np.getPropertyName().equals(topPropName)).findFirst();
+			if (!opt.isPresent()) return null;
+
+			NestProperty subProp = opt.get();
+			if (subProp.getEditor() instanceof ReferencePropertyEditor) {
+				return findLayoutNestPropertyRecursive(subPropName, ((ReferencePropertyEditor) subProp.getEditor()).getNestProperties());
+			}
+		}
+
+		// 一致するNestPropetyを取得
+		Optional<NestProperty> opt = properties.stream().filter(np -> np.getPropertyName().equals(propName)).findFirst();
+		return opt.orElse(null);
+	}
+
 	/**
 	 * 参照プロパティで、セクションに表示されている項目を取得します。
 	 * @return 表示項目
@@ -799,31 +832,23 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		
 	}
 
-	private NestProperty getSubProperty(String propertyName, NestProperty nestProperty) {
-		ReferencePropertyEditor rpe = (ReferencePropertyEditor) nestProperty.getEditor();
-	
-		int dotIndex = propertyName.indexOf(".");
-		if (dotIndex > -1) {
-			// 子階層を再帰呼び出し
-			String topPropName = propertyName.substring(0, dotIndex);
-			String subPropName = propertyName.substring(dotIndex + 1);
-	
-			Optional<NestProperty> opt = rpe.getNestProperties().stream()
-					.filter(np -> np.getPropertyName().equals(topPropName)).findFirst();
-			if (!opt.isPresent()) return null;
-	
-			NestProperty subProp = opt.get();
-			if (subProp.getEditor() instanceof ReferencePropertyEditor
-					&& !((ReferencePropertyEditor) subProp.getEditor()).getNestProperties().isEmpty()) {
-				return getSubProperty(subPropName, opt.get());
+	private PropertyDefinition getPropertyDefinition(EntityDefinition definition, String propName) {
+		int firstDotIndex = propName.indexOf('.');
+		if (firstDotIndex > 0) {
+			String topPropName = propName.substring(0, firstDotIndex);
+			String subPropName = propName.substring(firstDotIndex + 1);
+			PropertyDefinition topProperty = definition.getProperty(topPropName);
+			if (topProperty instanceof ReferenceProperty) {
+				EntityDefinition red = getReferenceEntityDefinition((ReferenceProperty) topProperty);
+				if (red != null) {
+					PropertyDefinition pd = getPropertyDefinition(red, subPropName);
+					return pd;
+				}
 			}
-	
-			return null;
+		} else {
+			return definition.getProperty(propName);
 		}
-	
-		// 一致するNestPropetyを取得
-		Optional<NestProperty> opt = rpe.getNestProperties().stream().filter(np -> np.getPropertyName().equals(propertyName)).findFirst();
-		return opt.orElse(null);
+		return null;
 	}
 
 	/**
