@@ -32,10 +32,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.gem.command.generic.search.ResponseUtil;
@@ -86,6 +82,10 @@ import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebApi(
 		name=GetMassReferencesCommand.WEBAPI_NAME,
@@ -286,7 +286,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			List<SortSetting> setting = section.getSortSetting();
 			for (SortSetting ss : setting) {
 				if (ss.getSortKey() != null) {
-					String key = getSortSettingKey(section, red, ss.getSortKey());
+					String key = getSortKey(section, red, ss.getSortKey());
 					if (!addNames.contains(key)) {
 						orderBy.add(key, getSortType(ss.getSortType().name()), getNullOrderingSpec(ss.getNullOrderType()));
 						addNames.add(key);
@@ -322,49 +322,16 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			return Entity.OID;
 		}
 
-		PropertyDefinition pd = ed.getProperty(ret);
+		PropertyDefinition pd = getPropertyDefinition(ed, sortKey);
 		if (pd == null) {
 			ret = Entity.OID;
 			pd = ed.getProperty(ret);
 		}
 
 		if (pd instanceof ReferenceProperty) {
-			// 当該項目がセクション上表示される場合は、セクション上の表示項目でソート
-			if (property != null) {
-				ret = sortKey + "." + getDisplayNestProperty(property);
-			}
+			ret = sortKey + "." + getDisplayNestProperty(property);
 		}
 
-		return ret;
-	}
-
-	/**
-	 * ソート設定キーを取得
-	 * @param section
-	 * @param ed
-	 * @param sortKey
-	 * @return
-	 */
-	private String getSortSettingKey(MassReferenceSection section, EntityDefinition ed, String sortKey) {
-		String ret = sortKey;
-		if (StringUtil.isBlank(ret)) {
-			ret =  Entity.OID;
-		}
-		PropertyDefinition pd = ed.getProperty(ret);
-		if (pd == null) {
-			ret = Entity.OID;
-			pd = ed.getProperty(ret);
-		}
-		if (pd instanceof ReferenceProperty) {
-			NestProperty property = getLayoutNestProperty(section, sortKey);
-			// 当該項目がセクション上表示される場合は、セクション上の表示項目でソート
-			if (property != null) {
-				ret = sortKey + "." + getDisplayNestProperty(property);
-			} else {
-				// セクション上に表示されない場合は、Nameでソート
-				ret = sortKey + "." + Entity.NAME;
-			}
-		}
 		return ret;
 	}
 
@@ -789,14 +756,66 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	}
 
 	private NestProperty getLayoutNestProperty(MassReferenceSection section, String propName) {
+		// 直下に指定されているかチェック
 		Optional<NestProperty> property = section.getProperties().stream()
 				.filter(e -> propName.equals(e.getPropertyName())).findFirst();
 		if (property.isPresent()) {
 			return property.get();
 		}
+
+		// プロパティ名で一致する列がない場合、参照の各階層をチェック
+		int dotIndex = propName.indexOf(".");
+		if (dotIndex > -1) {
+			String topPropName = propName.substring(0, dotIndex);
+			String subPropName = propName.substring(dotIndex + 1);
+
+			// セクション直下を取得
+			Optional<NestProperty> opt = section.getProperties().stream()
+					.filter(np -> np.getPropertyName().equals(topPropName)).findFirst();
+			if (!opt.isPresent()) return null;
+
+			// 参照の先の項目を取得
+			NestProperty subProp = opt.get();
+			if (subProp.getEditor() instanceof ReferencePropertyEditor) {
+				return findLayoutNestPropertyRecursive(subPropName, ((ReferencePropertyEditor) subProp.getEditor()).getNestProperties());
+			}
+		}
+		
 		return null;
 	}
-	
+
+	/**
+	 * プロパティ名に一致するネストプロパティを再帰的に検索し取得する
+	 * @param propertyName プロパティ名
+	 * @param editor 参照プロパティエディタ
+	 * @return ネストプロパティ
+	 */
+	private NestProperty findLayoutNestPropertyRecursive(String propName, List<NestProperty> properties) {
+		if (properties == null || properties.isEmpty()) {
+			return null;
+		}
+
+		int dotIndex = propName.indexOf(".");
+		if (dotIndex > -1) {
+			// 子階層を再帰呼び出し
+			String topPropName = propName.substring(0, dotIndex);
+			String subPropName = propName.substring(dotIndex + 1);
+
+			Optional<NestProperty> opt = properties.stream()
+					.filter(np -> np.getPropertyName().equals(topPropName)).findFirst();
+			if (!opt.isPresent()) return null;
+
+			NestProperty subProp = opt.get();
+			if (subProp.getEditor() instanceof ReferencePropertyEditor) {
+				return findLayoutNestPropertyRecursive(subPropName, ((ReferencePropertyEditor) subProp.getEditor()).getNestProperties());
+			}
+		}
+
+		// 一致するNestPropetyを取得
+		Optional<NestProperty> opt = properties.stream().filter(np -> np.getPropertyName().equals(propName)).findFirst();
+		return opt.orElse(null);
+	}
+
 	/**
 	 * 参照プロパティで、セクションに表示されている項目を取得します。
 	 * @return 表示項目
@@ -811,6 +830,25 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			return Entity.NAME;
 		}
 		
+	}
+
+	private PropertyDefinition getPropertyDefinition(EntityDefinition definition, String propName) {
+		int firstDotIndex = propName.indexOf('.');
+		if (firstDotIndex > 0) {
+			String topPropName = propName.substring(0, firstDotIndex);
+			String subPropName = propName.substring(firstDotIndex + 1);
+			PropertyDefinition topProperty = definition.getProperty(topPropName);
+			if (topProperty instanceof ReferenceProperty) {
+				EntityDefinition red = getReferenceEntityDefinition((ReferenceProperty) topProperty);
+				if (red != null) {
+					PropertyDefinition pd = getPropertyDefinition(red, subPropName);
+					return pd;
+				}
+			}
+		} else {
+			return definition.getProperty(propName);
+		}
+		return null;
 	}
 
 	/**
