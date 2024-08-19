@@ -233,7 +233,19 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					PropertyColumn property = getLayoutPropertyColumn(sortKey);
 					// 当該項目が画面上表示される場合は、画面上の表示項目でソート
 					if (property != null) {
-						sortKey = sortKey + "." + getDisplayNestProperty(property);
+						if (property.getPropertyName().equals(sortKey)) {
+							// ソートキーが直接D&Dされた列の場合
+							sortKey = sortKey + "." + getReferencePropertyDisplayName(property.getEditor());
+						} else {
+							// ネストの存在チェック
+							NestProperty np = getLayoutNestProperty(property, sortKey);
+							if (np != null) {
+								sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
+							} else {
+								// 画面上に表示されない場合は、Nameでソート
+								sortKey = sortKey + "." + Entity.NAME;
+							}
+						}
 					} else {
 						// 画面上に表示されない場合は、Nameでソート
 						sortKey = sortKey + "." + Entity.NAME;
@@ -257,7 +269,28 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 						PropertyDefinition pd = getPropertyDefinition(sortKey);
 						// 参照プロパティの場合、画面上の表示項目でソート
 						if (pd instanceof ReferenceProperty) {
-							sortKey = sortKey + "." + getDisplayNestProperty(property);
+							if (property.getPropertyName().equals(sortKey)) {
+								// ソートキーが直接D&Dされた列の場合
+								sortKey = sortKey + "." + getReferencePropertyDisplayName(property.getEditor());
+							} else {
+								// ネストの存在チェック
+								NestProperty np = getLayoutNestProperty(property, sortKey);
+								if (np != null) {
+									sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
+								} else {
+									// 未設定の項目
+									sortKey = Entity.OID;
+								}
+							}
+						} else {
+							if (!property.getPropertyName().equals(sortKey)) {
+								// ソートキーが直接D&Dされた列以外の場合、ネストの存在チェック
+								NestProperty np = getLayoutNestProperty(property, sortKey);
+								if (np == null) {
+									// 未設定の項目
+									sortKey = Entity.OID;
+								}
+							}
 						}
 						NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
 						orderBy = new OrderBy();
@@ -268,6 +301,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		}
 		return orderBy;
 	}
+
 	@Override
 	public Limit getLimit() {
 		Limit limit = new Limit(getSearchLimit(), getOffset());
@@ -395,7 +429,62 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		if (property.isPresent()) {
 			return property.get();
 		}
+
+		// プロパティ名で一致する列がない場合、参照の各階層を下からチェック
+		int dotIndex = propName.lastIndexOf(".");
+		if (dotIndex > -1) {
+			return getLayoutPropertyColumn(propName.substring(0, dotIndex));
+		}
+
 		return null;
+	}
+
+	/**
+	 * プロパティからNestPropertyを取得
+	 * @param property
+	 * @param propName
+	 * @return
+	 */
+	private NestProperty getLayoutNestProperty(PropertyColumn property, String propName) {
+		if (property.getEditor() != null && !(property.getEditor() instanceof ReferencePropertyEditor)) {
+			return null;
+		}
+	
+		// 親階層以降のプロパティ名で再帰検索
+		String subPropName = propName.substring(property.getPropertyName().length() + 1);
+		return findLayoutNestPropertyRecursive(subPropName, (ReferencePropertyEditor) property.getEditor());
+	}
+
+	/**
+	 * プロパティ名に一致するネストプロパティを再帰的に検索し取得する
+	 * @param propertyName プロパティ名
+	 * @param editor 参照プロパティエディタ
+	 * @return ネストプロパティ
+	 */
+	private NestProperty findLayoutNestPropertyRecursive(String propertyName, ReferencePropertyEditor editor) {
+		if (editor.getNestProperties().isEmpty()) {
+			return null;
+		}
+
+		int dotIndex = propertyName.indexOf(".");
+		if (dotIndex > -1) {
+			// 子階層を再帰呼び出し
+			String topPropName = propertyName.substring(0, dotIndex);
+			String subPropName = propertyName.substring(dotIndex + 1);
+
+			Optional<NestProperty> opt = editor.getNestProperties().stream()
+					.filter(np -> np.getPropertyName().equals(topPropName)).findFirst();
+			if (!opt.isPresent()) return null;
+
+			NestProperty subProp = opt.get();
+			if (subProp.getEditor() instanceof ReferencePropertyEditor) {
+				return findLayoutNestPropertyRecursive(subPropName, (ReferencePropertyEditor) subProp.getEditor());
+			}
+		}
+
+		// 一致するNestPropetyを取得
+		Optional<NestProperty> opt = editor.getNestProperties().stream().filter(np -> np.getPropertyName().equals(propertyName)).findFirst();
+		return opt.orElse(null);
 	}
 
 	/**
@@ -418,6 +507,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	protected String getViewName() {
 		return request.getParam(Constants.VIEW_NAME);
 	}
+
 	/**
 	 * リクエストからソートキーを取得します。
 	 * ソートキーが指定されていない場合は、検索画面のデフォルトソートキーを取得します。
@@ -495,19 +585,32 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			PropertyColumn property = getLayoutPropertyColumn(sortKey);
 			// SearchResultに定義されているPropertyのみ許可
 			if (property != null) {
-				SortSetting ss = new SortSetting();
-				ss.setSortKey(sortKey);
-
-				String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
-				if (StringUtil.isBlank(sortType)) {
-					ss.setSortType(ConditionSortType.DESC);
+				SortSetting ss = null;
+				if (property.getPropertyName().equals(sortKey)) {
+					// ソートキーが直接D&Dされた列の場合
+					ss = new SortSetting();
+					ss.setSortKey(sortKey);
 				} else {
-					ss.setSortType(ConditionSortType.valueOf(sortType));
+					// ネストの存在確認
+					NestProperty np = getLayoutNestProperty(property, sortKey);
+					if (np != null) {
+						ss = new SortSetting();
+						ss.setSortKey(sortKey);
+					}
 				}
-
-				ss.setNullOrderType(property.getNullOrderType());
-
-				setting.add(ss);
+				
+				if (ss != null) {
+					String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
+					if (StringUtil.isBlank(sortType)) {
+						ss.setSortType(ConditionSortType.DESC);
+					} else {
+						ss.setSortType(ConditionSortType.valueOf(sortType));
+					}
+	
+					ss.setNullOrderType(property.getNullOrderType());
+	
+					setting.add(ss);
+				}
 			}
 		}
 
@@ -520,18 +623,27 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 参照プロパティで、検索結果に表示されている項目を取得します。
+	 * @param refProp 参照プロパティ
 	 * @return 表示項目
 	 */
+	@Deprecated
 	protected String getDisplayNestProperty(PropertyColumn refProp) {
 		PropertyEditor editor = refProp.getEditor();
+		return getReferencePropertyDisplayName(editor);
+	}
 
+	/**
+	 * 参照項目の表示ラベルを取得
+	 * @param editor
+	 * @return
+	 */
+	protected String getReferencePropertyDisplayName(PropertyEditor editor) {
 		if (editor instanceof ReferencePropertyEditor
 				&& StringUtil.isNotEmpty(((ReferencePropertyEditor) editor).getDisplayLabelItem())) {
 			return ((ReferencePropertyEditor)editor).getDisplayLabelItem();
 		} else {
 			return Entity.NAME;
 		}
-
 	}
 
 	/**
