@@ -88,8 +88,8 @@ implements WebhookService {
 	private static final String WEBHOOK_HMAC_TOKEN_DEFAULT_NAME = "X-IPLASS-HMAC";
 	private static Logger logger = LoggerFactory.getLogger(WebhookServiceImpl.class);
 
-	/** Webhook のエンコーディング */
-	private Charset webhookContentEncoding = StandardCharsets.UTF_8;
+	/** Webhook コンテンツ文字コード */
+	private Charset webhookContentCharset = StandardCharsets.UTF_8;
 
 	/**
 	 * type map
@@ -258,8 +258,8 @@ implements WebhookService {
 			// payload
 			if (isEnclosingRequest(httpRequest)) {
 				if (webhook.getPayloadContent() != null && !webhook.getPayloadContent().replaceAll("\\s", "").isEmpty()) {
-					ContentType contentType = ContentType.create(webhook.getContentType());
-					StringEntity se = new StringEntity(webhook.getPayloadContent(), contentType, webhookContentEncoding.displayName(), false);
+					ContentType contentType = ContentType.create(webhook.getContentType()).withCharset(webhookContentCharset);
+					StringEntity se = new StringEntity(webhook.getPayloadContent(), contentType);
 					httpRequest.setEntity(se);
 				}
 			} else {

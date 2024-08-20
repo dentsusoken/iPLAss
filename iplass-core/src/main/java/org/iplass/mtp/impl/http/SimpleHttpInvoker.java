@@ -41,7 +41,7 @@ public class SimpleHttpInvoker {
 	private CloseableHttpClient httpClient;
 	private ExponentialBackoff exponentialBackoff;
 	/** レスポンス文字コード */
-	private Charset contentEncoding = StandardCharsets.UTF_8;
+	private Charset contentCharset = StandardCharsets.UTF_8;
 
 	/**
 	 * コンストラクタ
@@ -99,7 +99,7 @@ public class SimpleHttpInvoker {
 
 						try {
 							response.status = resp.getCode();
-							response.content = null == entity ? null : EntityUtils.toString(entity, contentEncoding);
+							response.content = null == entity ? null : EntityUtils.toString(entity, contentCharset);
 							return null;
 
 						} finally {
