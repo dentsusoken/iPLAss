@@ -108,7 +108,8 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 	private Timer timer = new Timer("httpMessageChannelRetryTimer", true);
 	private AsyncTaskService asyncTaskService;
 
-	private Charset contentEncoding = StandardCharsets.UTF_8;
+	//TODO 設定？？
+	private Charset contentCharset = StandardCharsets.UTF_8;
 
 	/**
 	 * @return HttpClient
@@ -322,7 +323,7 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 					params.add(new BasicNameValuePair(e.getKey(), e.getValue()));
 				}
 			}
-			post.setEntity(new UrlEncodedFormEntity(params, contentEncoding));//TODO 設定？？
+			post.setEntity(new UrlEncodedFormEntity(params, contentCharset));
 
 			return getHttpClient().execute(post, (response) -> {
 				try {
