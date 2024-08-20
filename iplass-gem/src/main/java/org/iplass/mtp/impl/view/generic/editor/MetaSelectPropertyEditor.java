@@ -67,8 +67,8 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
 	
-	/** RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するか */
-	private boolean itemDirectionInline;
+	/** RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
+	private boolean itemDirectionColumn;
 
 	/**
 	 * 表示タイプを取得します。
@@ -158,19 +158,19 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 	}
 	
 	/**
-	 * RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するかを取得します。
-	 * @return 表示内容をカンマ表示するか
+	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを取得します。
+	 * @return RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
 	 */
-	public boolean isItemDirectionInline() {
-		return itemDirectionInline;
+	public boolean isItemDirectionColumn() {
+		return itemDirectionColumn;
 	}
 
 	/**
-	 * RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するかを設定します。
-	 * @param itemDirectionInline RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するか
+	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。
+	 * @param itemDirectionColumn RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
 	 */
-	public void setItemDirectionInline(boolean itemDirectionInline) {
-		this.itemDirectionInline = itemDirectionInline;
+	public void setItemDirectionColumn(boolean itemDirectionColumn) {
+		this.itemDirectionColumn = itemDirectionColumn;
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 		displayType = pe.getDisplayType();
 		values = pe.getValues();
 		sortCsvOutputValue = pe.isSortCsvOutputValue();
-		itemDirectionInline = pe.isItemDirectionInline();
+		itemDirectionColumn = pe.isItemDirectionColumn();
 		insertWithLabelValue = pe.isInsertWithLabelValue();
 		updateWithLabelValue = pe.isUpdateWithLabelValue();
 	}
@@ -199,7 +199,7 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setDisplayType(displayType);
 		editor.setValues(values);
 		editor.setSortCsvOutputValue(sortCsvOutputValue);
-		editor.setItemDirectionInline(itemDirectionInline);
+		editor.setItemDirectionColumn(itemDirectionColumn);
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);
 		return editor;

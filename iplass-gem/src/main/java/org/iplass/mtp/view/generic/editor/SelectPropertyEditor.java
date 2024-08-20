@@ -144,19 +144,19 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	)
 	private boolean updateWithLabelValue = false;
 	
-	/** RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するか */
+	/** RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
 	@MetaFieldInfo(
-			displayName="RADIO、CHECKBOX形式の場合にアイテムを横に並べる",
-			displayNameKey="generic_editor_SelectPropertyEditor_itemDirectionInlineDisplayNameKey",
+			displayName="RADIO、CHECKBOX形式の場合にアイテムを縦に並べる",
+			displayNameKey="generic_editor_SelectPropertyEditor_itemDirectionColumnDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=220,
-			description="RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するかを設定します。",
-			descriptionKey="generic_editor_SelectPropertyEditor_itemDirectionInlineDescriptionKey"
+			description="RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。",
+			descriptionKey="generic_editor_SelectPropertyEditor_itemDirectionColumnDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
-	private boolean itemDirectionInline;
+	private boolean itemDirectionColumn;
 
 	/**
 	 * デフォルトコンストラクタ
@@ -280,19 +280,19 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	}
 	
 	/**
-	 * RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するかを取得します。
-	 * @return 表示内容をカンマ表示するか
+	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを取得します。
+	 * @return RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
 	 */
-	public boolean isItemDirectionInline() {
-		return itemDirectionInline;
+	public boolean isItemDirectionColumn() {
+		return itemDirectionColumn;
 	}
 
 	/**
-	 * RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するかを設定します。
-	 * @param itemDirectionInline RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するか
+	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。
+	 * @param itemDirectionColumn RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
 	 */
-	public void setItemDirectionInline(boolean itemDirectionInline) {
-		this.itemDirectionInline = itemDirectionInline;
+	public void setItemDirectionColumn(boolean itemDirectionColumn) {
+		this.itemDirectionColumn = itemDirectionColumn;
 	}
 
 }

@@ -77,11 +77,11 @@
 		}
 	}
 	
-	// RADIO、CHECKBOX形式の場合のアイテムを横に並べるような表示するか
+	// RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
 	String additionalStyle = "";
 	if ((editor.getDisplayType() == SelectDisplayType.CHECKBOX || editor.getDisplayType() == SelectDisplayType.RADIO) &&
-			editor.isItemDirectionInline()) {
-		additionalStyle = "display: inline-grid;";
+			editor.isItemDirectionColumn()) {
+		additionalStyle = "display: block;";
 	}
 
 
@@ -101,13 +101,13 @@
 		}
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.CHECKBOX.name()%>" />
-<ul class="list-check-01" style="<c:out value="<%=additionalStyle%>"/>">
+<ul class="list-check-01">
 <%
 		for (EditorValue param : editor.getValues()) {
 			String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, param, selectValueList);
 			String checked = valueList.contains(param.getValue()) ? " checked" : "";
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
+<li style="<c:out value="<%=additionalStyle%>"/>"><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=param.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
 </label></li>
 <%
@@ -171,7 +171,7 @@ $(function() {
 		}
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.RADIO.name()%>" />
-<ul class="list-radio-01" style="<c:out value="<%=additionalStyle%>"/>" data-itemName="<c:out value="<%=propName %>"/>">
+<ul class="list-radio-01" data-itemName="<c:out value="<%=propName %>"/>">
 <%
 		String defaultChecked = " checked";
 		for (EditorValue param : editor.getValues()) {
@@ -183,7 +183,7 @@ $(function() {
 				defaultChecked = "";
 			}
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
+<li style="<c:out value="<%=additionalStyle%>"/>"><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=param.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
 </label></li>
 <%
