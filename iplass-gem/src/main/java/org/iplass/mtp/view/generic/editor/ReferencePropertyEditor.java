@@ -252,6 +252,20 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
 	)
 	private boolean editableReference;
+	
+	/** CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
+	@MetaFieldInfo(
+			displayName="CHECKBOX形式の場合にアイテムを縦に並べる",
+			displayNameKey="generic_editor_ReferencePropertyEditor_itemDirectionColumnDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=340,
+			description="CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_itemDirectionColumnDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
+	private boolean itemDirectionColumn;
 
 
 
@@ -1486,6 +1500,22 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 */
 	public void setUrlParameterScriptKey(String urlParameterScriptKey) {
 	    this.urlParameterScriptKey = urlParameterScriptKey;
+	}
+	
+	/**
+	 * CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを取得します。
+	 * @return CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
+	 */
+	public boolean isItemDirectionColumn() {
+		return itemDirectionColumn;
+	}
+
+	/**
+	 * CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。
+	 * @param itemDirectionColumn CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
+	 */
+	public void setItemDirectionColumn(boolean itemDirectionColumn) {
+		this.itemDirectionColumn = itemDirectionColumn;
 	}
 
 }

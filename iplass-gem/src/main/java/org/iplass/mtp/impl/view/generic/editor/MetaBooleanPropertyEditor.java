@@ -73,6 +73,9 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
+	
+	/** RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
+	private boolean itemDirectionColumn;
 
 	/**
 	 * 表示タイプを取得します。
@@ -189,6 +192,22 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
 		this.updateWithLabelValue = updateWithLabelValue;
 	}
+	
+	/**
+	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを取得します。
+	 * @return RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
+	 */
+	public boolean isItemDirectionColumn() {
+		return itemDirectionColumn;
+	}
+
+	/**
+	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。
+	 * @param itemDirectionColumn RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
+	 */
+	public void setItemDirectionColumn(boolean itemDirectionColumn) {
+		this.itemDirectionColumn = itemDirectionColumn;
+	}
 
 	@Override
 	public MetaBooleanPropertyEditor copy() {
@@ -209,6 +228,7 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
+		itemDirectionColumn = e.isItemDirectionColumn();
 	}
 
 	@Override
@@ -222,6 +242,7 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setLocalizedFalseLabelList(I18nUtil.toDef(localizedFalseLabelList));
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);
+		editor.setItemDirectionColumn(itemDirectionColumn);
 		return editor;
 	}
 

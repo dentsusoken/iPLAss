@@ -76,11 +76,6 @@
 			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
 		}
 	}
-	
-	// RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
-	Boolean isItemDirectionColumn = (editor.getDisplayType() == SelectDisplayType.CHECKBOX || editor.getDisplayType() == SelectDisplayType.RADIO) &&
-			editor.isItemDirectionColumn();
-
 
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
@@ -104,7 +99,7 @@
 			String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, param, selectValueList);
 			String checked = valueList.contains(param.getValue()) ? " checked" : "";
 %>
-<li <c:if test="<%=isItemDirectionColumn %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=param.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
 </label></li>
 <%
@@ -180,7 +175,7 @@ $(function() {
 				defaultChecked = "";
 			}
 %>
-<li <c:if test="<%=isItemDirectionColumn %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=param.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
 </label></li>
 <%

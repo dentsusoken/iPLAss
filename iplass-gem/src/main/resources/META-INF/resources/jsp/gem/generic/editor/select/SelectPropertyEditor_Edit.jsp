@@ -166,10 +166,6 @@
 			//チェックボックスorラジオボタン
 			String cls = "list-radio-01";
 			if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) cls = "list-check-01";
-			
-			// RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
-			Boolean isItemDirectionColumn = (editor.getDisplayType() == SelectDisplayType.CHECKBOX || editor.getDisplayType() == SelectDisplayType.RADIO) &&
-			editor.isItemDirectionColumn();
 %>
 <ul class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
 <%
@@ -177,7 +173,7 @@
 				String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, tmp, selectValueList);
 				String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
 %>
-<li <c:if test="<%=isItemDirectionColumn %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <%
 				String checked = values.contains(tmp.getValue()) ? " checked" : "";
 				if (isMultiple) {

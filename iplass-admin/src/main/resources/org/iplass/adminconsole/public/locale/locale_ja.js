@@ -1824,6 +1824,8 @@ LocaleInfo.generic_editor_BooleanPropertyEditor_falseLabelDisplaNameKey = "偽�
 LocaleInfo.generic_editor_BooleanPropertyEditor_falseLabelDescriptionKey = "偽の選択肢に表示するラベルを設定します。";
 LocaleInfo.generic_editor_BooleanPropertyEditor_defaultValueDisplaNameKey = "初期値";
 LocaleInfo.generic_editor_BooleanPropertyEditor_defaultValueDescriptionKey = "新規登録時の初期値を設定します。true/falseまたは1/0を指定してください。";
+LocaleInfo.generic_editor_BooleanPropertyEditor_itemDirectionColumnDisplayNameKey = "RADIO、CHECKBOX形式の場合、アイテムを縦に並べる";
+LocaleInfo.generic_editor_BooleanPropertyEditor_itemDirectionColumnDescriptionKey = "RADIO、CHECKBOX形式の場合、アイテムを縦に並べるかを指定します。";
 LocaleInfo.generic_editor_DatePropertyEditor_defaultValueDisplaNameKey = "初期値";
 LocaleInfo.generic_editor_DatePropertyEditor_defaultValueDescriptionKey = "新規登録時の初期値を設定します。yyyyMMdd形式か予約語を指定してください。";
 LocaleInfo.generic_editor_DatePropertyEditor_hideButtonPanelDisplaNameKey = "現在日付設定ボタンを非表示";
@@ -2072,6 +2074,8 @@ LocaleInfo.generic_editor_ReferencePropertyEditor_displayLabelItemDisplaNameKey 
 LocaleInfo.generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey = "<b>表示タイプ:Link、Select、Checkbox、RefCombo、Tree、Label、Unique</b><br>表示ラベルとして扱うプロパティを指定します。<br>検索画面と詳細画面の定義では、StringProperty以外のプロパティを指定すると、画面表示時にエラーになります。";
 LocaleInfo.generic_editor_ReferencePropertyEditor_uniqueItemDisplaNameKey = "ユニークキープロパティ";
 LocaleInfo.generic_editor_ReferencePropertyEditor_uniqueItemDescriptionKey = "<b>表示タイプ:UniqueKey</b><br>参照エンティティを検索するためのユニークキープロパティを指定します。<br>検索画面と詳細画面の定義では、ユニークキー以外のプロパティを指定すると、画面表示時にエラーになります。";
+LocaleInfo.generic_editor_ReferencePropertyEditor_itemDirectionColumnDisplayNameKey = "CHECKBOX形式の場合、アイテムを縦に並べる";
+LocaleInfo.generic_editor_ReferencePropertyEditor_itemDirectionColumnDescriptionKey = "CHECKBOX形式の場合、アイテムを縦に並べるかを指定します。";
 LocaleInfo.generic_editor_ReferenceRecursiveTreeSetting_rootConditionDisplaNameKey = "最上位階層の検索条件";
 LocaleInfo.generic_editor_ReferenceRecursiveTreeSetting_rootConditionDescriptionKey = "<b>表示タイプ:Tree</b><br>ツリーの初期表示時に検索する最上位階層のデータの検索条件を設定します。<br>未指定の場合全データが最上位階層に表示されます。";
 LocaleInfo.generic_editor_ReferenceRecursiveTreeSetting_childPropertyNameDisplaNameKey = "子階層のプロパティ名";

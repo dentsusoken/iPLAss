@@ -502,7 +502,7 @@ $(function() {
 			if (oids.contains(ref.getOid())) checked = " checked";
 			String displayPropLabel = getDisplayPropLabel(editor, ref);
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=displayPropLabel %>" />">
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=displayPropLabel %>" />">
 <input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=ref.getOid() %>"/>" <%=checked %>/><c:out value="<%=displayPropLabel %>" />
 </label></li>
 <%

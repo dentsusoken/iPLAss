@@ -964,7 +964,7 @@ $(function() {
 <%
 			for (Entity refEntity : entityList) {
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>">
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>">
 <%
 				String checked = oid.contains(refEntity.getOid()) ? " checked" : "";
 				String _value = refEntity.getOid() + "_" + refEntity.getVersion();
@@ -991,7 +991,7 @@ $(function() {
 <%
 			for (Entity refEntity : entityList) {
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>">
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>">
 <%
 				String checked = oid.contains(refEntity.getOid()) ? " checked" : "";
 				String _value = refEntity.getOid() + "_" + refEntity.getVersion();

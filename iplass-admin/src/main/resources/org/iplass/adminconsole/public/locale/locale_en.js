@@ -1824,6 +1824,8 @@ LocaleInfo.generic_editor_BooleanPropertyEditor_falseLabelDisplaNameKey = "The d
 LocaleInfo.generic_editor_BooleanPropertyEditor_falseLabelDescriptionKey = "Set the label to be displayed  on the choice of false.";
 LocaleInfo.generic_editor_BooleanPropertyEditor_defaultValueDisplaNameKey = "Initial value";
 LocaleInfo.generic_editor_BooleanPropertyEditor_defaultValueDescriptionKey = "Set the initial value of the Create New. Please specify 1/0 or true/false.";
+LocaleInfo.generic_editor_BooleanPropertyEditor_itemDirectionColumnDisplayNameKey = "Display items vertically when in RADIO or CHECKBOX type";
+LocaleInfo.generic_editor_BooleanPropertyEditor_itemDirectionColumnDescriptionKey = "Specifies whether to display items vertically when in RADIO or CHECKBOX type.";
 LocaleInfo.generic_editor_DatePropertyEditor_defaultValueDisplaNameKey = "Initial value";
 LocaleInfo.generic_editor_DatePropertyEditor_defaultValueDescriptionKey = "Set the initial value of the Create New. Please specify the reserved word or yyyyMMdd format.";
 LocaleInfo.generic_editor_DatePropertyEditor_hideButtonPanelDisplaNameKey = "Hide current date setting button";
@@ -2072,6 +2074,8 @@ LocaleInfo.generic_editor_ReferencePropertyEditor_displayLabelItemDisplaNameKey 
 LocaleInfo.generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey = "<b>Display Type: Link,Select,Checkbox,RefCombo,Tree,Label,Unique</b><br>Specify the property that used as display label.<br>The definition of search screen and detail screen, if you specify a property other than string property, it is an error on the screen display.";
 LocaleInfo.generic_editor_ReferencePropertyEditor_uniqueItemDisplaNameKey = "Unique Key Property";
 LocaleInfo.generic_editor_ReferencePropertyEditor_uniqueItemDescriptionKey = "<b>Display Type: Unique Key</b><br>Specify the unique key property that used to search reference entity.<br>The definition of search screen and detail screen, if you specify a property other than unique key property, it is an error on the screen display.";
+LocaleInfo.generic_editor_ReferencePropertyEditor_itemDirectionColumnDisplayNameKey = "Display items vertically when in CHECKBOX type";
+LocaleInfo.generic_editor_ReferencePropertyEditor_itemDirectionColumnDescriptionKey = "Specifies whether to display items vertically when in CHECKBOX type.";
 LocaleInfo.generic_editor_ReferenceRecursiveTreeSetting_rootConditionDisplaNameKey = "Search condition of top-level hierarchy";
 LocaleInfo.generic_editor_ReferenceRecursiveTreeSetting_rootConditionDescriptionKey = "<b> Display type: Tree </ b> <br>Set the search condition for the data of the top-level hierarchy to be searched during the initial display of the tree. <br>If not specified all the data is displayed in the top-level hierarchy.";
 LocaleInfo.generic_editor_ReferenceRecursiveTreeSetting_childPropertyNameDisplaNameKey = "PropertyName of the child hierarchy";
