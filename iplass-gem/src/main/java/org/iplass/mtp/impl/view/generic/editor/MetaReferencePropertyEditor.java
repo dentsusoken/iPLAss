@@ -196,6 +196,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
+	
+	/** CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
+	private boolean itemDirectionColumn;
 
 	/**
 	 * 表示タイプを取得します。
@@ -890,6 +893,22 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
 		this.updateWithLabelValue = updateWithLabelValue;
 	}
+	
+	/**
+	 * CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを取得します。
+	 * @return CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
+	 */
+	public boolean isItemDirectionColumn() {
+		return itemDirectionColumn;
+	}
+
+	/**
+	 * CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。
+	 * @param itemDirectionColumn CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
+	 */
+	public void setItemDirectionColumn(boolean itemDirectionColumn) {
+		this.itemDirectionColumn = itemDirectionColumn;
+	}
 
 	@Override
 	public void applyConfig(PropertyEditor editor) {
@@ -1002,6 +1021,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		}
 		insertWithLabelValue = rpe.isInsertWithLabelValue();
 		updateWithLabelValue = rpe.isUpdateWithLabelValue();
+		itemDirectionColumn = rpe.isItemDirectionColumn();
 
 	}
 
@@ -1106,6 +1126,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		}
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);
+		editor.setItemDirectionColumn(itemDirectionColumn);
 		return editor;
 	}
 

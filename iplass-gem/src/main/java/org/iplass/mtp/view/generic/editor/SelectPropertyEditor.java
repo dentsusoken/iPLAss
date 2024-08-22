@@ -143,6 +143,20 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
 	private boolean updateWithLabelValue = false;
+	
+	/** RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
+	@MetaFieldInfo(
+			displayName="RADIO、CHECKBOX形式の場合にアイテムを縦に並べる",
+			displayNameKey="generic_editor_SelectPropertyEditor_itemDirectionColumnDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=220,
+			description="RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。",
+			descriptionKey="generic_editor_SelectPropertyEditor_itemDirectionColumnDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
+	private boolean itemDirectionColumn;
 
 	/**
 	 * デフォルトコンストラクタ
@@ -263,6 +277,22 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	@Override
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+	}
+	
+	/**
+	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを取得します。
+	 * @return RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
+	 */
+	public boolean isItemDirectionColumn() {
+		return itemDirectionColumn;
+	}
+
+	/**
+	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。
+	 * @param itemDirectionColumn RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
+	 */
+	public void setItemDirectionColumn(boolean itemDirectionColumn) {
+		this.itemDirectionColumn = itemDirectionColumn;
 	}
 
 }

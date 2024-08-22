@@ -99,7 +99,7 @@
 			String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, param, selectValueList);
 			String checked = valueList.contains(param.getValue()) ? " checked" : "";
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=param.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
 </label></li>
 <%
@@ -175,7 +175,7 @@ $(function() {
 				defaultChecked = "";
 			}
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=param.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
 </label></li>
 <%

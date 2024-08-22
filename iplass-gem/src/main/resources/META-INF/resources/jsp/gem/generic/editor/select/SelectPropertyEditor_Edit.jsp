@@ -173,7 +173,7 @@
 				String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, tmp, selectValueList);
 				String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <%
 				String checked = values.contains(tmp.getValue()) ? " checked" : "";
 				if (isMultiple) {

@@ -171,12 +171,12 @@ $(function() {
 			}
 %>
 <ul class="list-radio-01">
-<li>
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>>
 <label for="select-radio-<c:out value="<%=propName %>"/>01" style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=trueLabel %>"/>" >
 <input id="select-radio-<c:out value="<%=propName %>"/>01" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="true" <%=checked1 %>><c:out value="<%=trueLabel %>"/>
 </label>
 </li>
-<li>
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>>
 <label for="select-radio-<c:out value="<%=propName %>"/>02" style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=falseLabel %>"/>" >
 <input id="select-radio-<c:out value="<%=propName %>"/>02" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="false"<%=checked2 %>><c:out value="<%=falseLabel %>"/>
 </label>
