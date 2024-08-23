@@ -3990,6 +3990,9 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 					});
 				});
 			}
+
+			//列追加時の個別処理
+			callNestRow_ColumnCallback(orgPropName, $td, idx);
 		});
 
 		//追加された行のラジオボタン開閉制御
@@ -4003,6 +4006,46 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 }
 
 /**
+ * ネストされた参照型の入力テーブルに行が追加されたときに各列(Editor)での個別処理を追加
+ * @param rootPropertyName ルートの参照プロパティ名
+ * @param referencePropetyName 参照先プロパティ名
+ * @param callback 個別処理。引数として、td、indexを渡す
+ */
+function addNestRow_ColumnCallback(rootPropertyName, referencePropetyName, callback) {
+	if (!scriptContext.gem["nest_column_callback"]) {
+		scriptContext.gem["nest_column_callback"] = new Array();
+	}
+	if (!scriptContext.gem.nest_column_callback[rootPropertyName]) {
+		scriptContext.gem.nest_column_callback[rootPropertyName] = new Map();
+	}
+	
+	scriptContext.gem.nest_column_callback[rootPropertyName].set(referencePropetyName, callback);
+}
+
+/**
+ * ネストされた参照型の入力テーブルに行が追加されたときに各列での個別処理を実行
+ * @param rootPropertyName ルートの参照プロパティ名
+ * @param $td 追加された列 
+ * @param index 行番号
+ */
+function callNestRow_ColumnCallback(rootPropertyName, $td, index) {
+	// ルートの参照プロパティ名
+	const referencePropetyName = $td.attr("data-propName");
+
+	if (referencePropetyName && scriptContext.gem["nest_column_callback"]) {
+		if (scriptContext.gem.nest_column_callback[rootPropertyName]) {
+			const callbackMap = scriptContext.gem.nest_column_callback[rootPropertyName];
+			if (callbackMap.get(referencePropetyName)) {
+				const callback = callbackMap.get(referencePropetyName);
+				if (callback && $.isFunction(callback)) {
+					callback.call(this, $td, index);
+				} 
+			}
+		}
+	}
+}
+
+/**
  * ネストされた参照型の入力テーブルに文字列型の入力欄追加
  * @param cell
  * @param idx
@@ -4012,7 +4055,6 @@ function addNestRow_String(type, cell, idx) {
 	if (type == "RICHTEXT") {
 		var $text = $(cell).children("textarea");
 		$text.attr("id", "id_" + $text.attr("name"));
-		$text.ckeditor();
 	}
 }
 

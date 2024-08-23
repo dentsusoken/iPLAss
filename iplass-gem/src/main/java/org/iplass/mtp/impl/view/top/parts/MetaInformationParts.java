@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -45,9 +43,12 @@ import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange;
+import org.iplass.mtp.view.generic.editor.StringPropertyEditor.RichTextLibrary;
 import org.iplass.mtp.view.top.parts.InformationParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.web.template.TemplateUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * お知らせ一覧パーツ
@@ -102,6 +103,9 @@ public class MetaInformationParts extends MetaActionParts {
 
 	/** リッチテキストエディタの利用 */
 	private boolean useRichtextEditor;
+
+	/** RichTextライブラリ */
+	private RichTextLibrary richTextLibrary;
 
 	/** リッチテキストエディタで表示モードの場合、リンク動作許可 */
 	private boolean allowRichTextEditorLinkAction;
@@ -324,6 +328,24 @@ public class MetaInformationParts extends MetaActionParts {
 	}
 
 	/**
+	 * RichTextライブラリを取得します。
+	 *
+	 * @return RichTextライブラリ
+	 */
+	public RichTextLibrary getRichTextLibrary() {
+		return richTextLibrary;
+	}
+
+	/**
+	 * RichTextライブラリを設定します。
+	 *
+	 * @param richTextLibrary RichTextライブラリ
+	 */
+	public void setRichTextLibrary(RichTextLibrary richTextLibrary) {
+		this.richTextLibrary = richTextLibrary;
+	}
+
+	/**
 	 * リッチテキストエディタで表示モードの場合、リンク動作許可を取得します。
 	 *
 	 * @return RickTextで表示モードの場合、リンク動作許可
@@ -393,6 +415,7 @@ public class MetaInformationParts extends MetaActionParts {
 		passwordWarnMarkStyleClass = definition.getPasswordWarnMarkStyleClass();
 		availableHtmlTag = definition.isEnableHtmlTag();
 		useRichtextEditor = definition.isUseRichtextEditor();
+		richTextLibrary = definition.getRichTextLibrary();
 		allowRichTextEditorLinkAction = definition.isAllowRichTextEditorLinkAction();
 		richtextEditorOption = definition.getRichtextEditorOption();
 		detailCustomStyle = definition.getDetailCustomStyle();
@@ -416,6 +439,7 @@ public class MetaInformationParts extends MetaActionParts {
 		parts.setPasswordWarnMarkStyleClass(passwordWarnMarkStyleClass);
 		parts.setEnableHtmlTag(availableHtmlTag);
 		parts.setUseRichtextEditor(useRichtextEditor);
+		parts.setRichTextLibrary(richTextLibrary);
 		parts.setAllowRichTextEditorLinkAction(allowRichTextEditorLinkAction);
 		parts.setRichtextEditorOption(richtextEditorOption);
 		parts.setDetailCustomStyle(detailCustomStyle);

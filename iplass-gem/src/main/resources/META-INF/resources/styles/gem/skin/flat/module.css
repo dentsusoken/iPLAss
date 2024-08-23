@@ -540,7 +540,7 @@ button.dialog-csvdl-btn {
   .tbl-error + p {
     font-size: 1rem; }
 
-/* jquery plugins */
+/* plugins */
 .ui-accordion .ui-widget-content .ui-state-active, .ui-accordion .ui-widget-content .ui-state-active.ui-state-hover, .ui-accordion .ui-widget-header .ui-state-active, .ui-accordion .ui-widget-header .ui-state-active.ui-state-hover, .ui-accordion .ui-state-active {
   border: 1px solid #4c7607;
   color: #000;
@@ -882,6 +882,14 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
         color: #ffb900; }
   .lyt-shortcut-01 ul.jqtree-tree > li {
     padding-left: 47px; }
+
+.gem-quill-container.gem-quill-read-only.gem-quill-disable-toolbar {
+  border: none; }
+  .gem-quill-container.gem-quill-read-only.gem-quill-disable-toolbar .ql-editor {
+    padding: 0; }
+
+.gem-quill-container.gem-quill-editable .ql-editor {
+  height: 200px; }
 
 /*--------------------------*/
 /* topview */

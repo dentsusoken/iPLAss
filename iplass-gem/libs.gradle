@@ -47,6 +47,7 @@ dependencies {
 	wjRuntime sharedLib('org.webjars.npm:mediaelement')
 
 	wjRuntime sharedLib('org.webjars.npm:jquery-ui')
+	wjRuntime sharedLib('org.webjars.npm:quill')
 
 	//css
 	wjRuntime sharedLib('org.webjars:font-awesome')

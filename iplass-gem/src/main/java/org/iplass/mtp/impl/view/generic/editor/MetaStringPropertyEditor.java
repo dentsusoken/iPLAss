@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.properties.ExpressionProperty;
@@ -41,7 +39,10 @@ import org.iplass.mtp.view.generic.editor.EditorValue;
 import org.iplass.mtp.view.generic.editor.LongTextPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
+import org.iplass.mtp.view.generic.editor.StringPropertyEditor.RichTextLibrary;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor.StringDisplayType;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * 文字列型プロパティエディタのメタデータ
@@ -62,6 +63,9 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 
 	/** 表示タイプ */
 	private StringDisplayType displayType;
+
+	/** RichTextライブラリ */
+	private RichTextLibrary richTextLibrary;
 
 	/** RichText表示タグ許可設定 */
 	private boolean allowedContent = false;
@@ -113,6 +117,24 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	 */
 	public void setDisplayType(StringDisplayType displayType) {
 		this.displayType = displayType;
+	}
+
+	/**
+	 * RichTextライブラリを取得します。
+	 *
+	 * @return RichTextライブラリ
+	 */
+	public RichTextLibrary getRichTextLibrary() {
+		return richTextLibrary;
+	}
+
+	/**
+	 * RichTextライブラリを設定します。
+	 *
+	 * @param richTextLibrary RichTextライブラリ
+	 */
+	public void setRichTextLibrary(RichTextLibrary richTextLibrary) {
+		this.richTextLibrary = richTextLibrary;
 	}
 
 	/**
@@ -220,7 +242,9 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @return セレクトボックスの値
 	 */
 	public List<EditorValue> getValues() {
-		if (this.values == null) this.values = new ArrayList<>();
+		if (this.values == null) {
+			this.values = new ArrayList<>();
+		}
 		return values;
 	}
 
@@ -307,6 +331,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 
 		StringPropertyEditor e = (StringPropertyEditor) editor;
 		displayType = e.getDisplayType();
+		richTextLibrary = e.getRichTextLibrary();
 		allowedContent = e.isAllowedContent();
 		allowRichTextEditorLinkAction = e.isAllowRichTextEditorLinkAction();
 
@@ -334,6 +359,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 
 		StringPropertyEditor e = (StringPropertyEditor) editor;
 		displayType = e.getDisplayType();
+		richTextLibrary = e.getRichTextLibrary();
 		allowedContent = e.isAllowedContent();
 		allowRichTextEditorLinkAction = e.isAllowRichTextEditorLinkAction();
 
@@ -361,6 +387,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		super.fillTo(editor);
 
 		editor.setDisplayType(displayType);
+		editor.setRichTextLibrary(richTextLibrary);
 		editor.setAllowedContent(allowedContent);
 		editor.setAllowRichTextEditorLinkAction(allowRichTextEditorLinkAction);
 
@@ -386,6 +413,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		super.fillTo(editor);
 
 		e.setDisplayType(displayType);
+		e.setRichTextLibrary(richTextLibrary);
 		e.setAllowedContent(allowedContent);
 		e.setAllowRichTextEditorLinkAction(allowRichTextEditorLinkAction);
 

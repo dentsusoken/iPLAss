@@ -41,6 +41,7 @@ import org.iplass.gem.command.calendar.ref.CalendarFilterCommand;
 import org.iplass.gem.command.calendar.ref.GetCalendarFilterCommand;
 import org.iplass.gem.command.fulltext.FullTextSearchCommand;
 import org.iplass.gem.command.fulltext.FullTextSearchViewCommand;
+import org.iplass.gem.command.generic.GenericMetaDataRefs;
 import org.iplass.gem.command.generic.bulk.BulkUpdateAllCommand;
 import org.iplass.gem.command.generic.bulk.BulkUpdateListCommand;
 import org.iplass.gem.command.generic.bulk.BulkUpdateViewCommand;
@@ -116,6 +117,8 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	GetCalendarCommand.class,
 	GetCalendarWidgetCommand.class,
 	GetCalendarFilterCommand.class,
+	//汎用全般
+	GenericMetaDataRefs.class,
 	//汎用削除
 	DeleteAllCommand.class,
 	DeleteCommand.class,

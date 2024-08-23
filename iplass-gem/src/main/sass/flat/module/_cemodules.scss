@@ -16,10 +16,11 @@
 
 @import "error/error";
 
-/* jquery plugins */
+/* plugins */
 @import "plugins/jqueryui";
 @import "plugins/jqgrid";
 @import "plugins/jqtree";
+@import "../../basedesign/module/plugins/quill";
 
 /*--------------------------*/
 /* topview */

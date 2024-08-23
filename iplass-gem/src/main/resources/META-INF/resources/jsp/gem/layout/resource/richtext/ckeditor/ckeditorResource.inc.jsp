@@ -18,12 +18,10 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 
-<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
-<%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
 
-<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/ckeditor/4.22.1/full/ckeditor.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
-<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/ckeditor/4.22.1/full/adapters/jquery.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
+<script type="text/javascript" src="${staticContentPath}/webjars/ckeditor/4.22.1/full/ckeditor.js?cv=${apiVersion}"></script>
+<script type="text/javascript" src="${staticContentPath}/webjars/ckeditor/4.22.1/full/adapters/jquery.js?cv=${apiVersion}"></script>
 <script type="text/javascript">
-CKEDITOR.config.customConfig = "${m:esc(staticContentPath)}/scripts/gem/plugin/ckeditor/mtpconfig.js?cv=<%=TemplateUtil.getAPIVersion()%>";
+CKEDITOR.config.customConfig = "${staticContentPath}/scripts/gem/plugin/ckeditor/mtpconfig.js?cv=${apiVersion}";
 </script>
