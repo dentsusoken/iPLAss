@@ -157,6 +157,20 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
 	private boolean itemDirectionColumn;
+	
+	/** SELECT形式の場合、「未設定」を検索条件として指定可能か */
+	@MetaFieldInfo(
+			displayName="SELECT形式の場合、「未設定」を検索条件として指定可能か",
+			displayNameKey="generic_editor_SelectPropertyEditor_isNullSearchEnabledDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=230,
+			description="SELECT形式の場合、「未設定」を検索条件として指定可能かを設定します。",
+			descriptionKey="generic_editor_SelectPropertyEditor_isNullSearchEnabledDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private boolean isNullSearchEnabled;
 
 	/**
 	 * デフォルトコンストラクタ
@@ -293,6 +307,22 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	 */
 	public void setItemDirectionColumn(boolean itemDirectionColumn) {
 		this.itemDirectionColumn = itemDirectionColumn;
+	}
+	
+	/**
+	 * SELECT形式の場合、「未設定」を検索条件として指定可能かを取得します。
+	 * @return SELECT形式の場合、「未設定」を検索条件として指定可能か
+	 */
+	public boolean isIsNullSearchEnabled() {
+		return isNullSearchEnabled;
+	}
+
+	/**
+	 * SELECT形式の場合、「未設定」を検索条件として指定可能かを設定します。
+	 * @param isNullSearchEnabled SELECT形式の場合、「未設定」を検索条件として指定可能か
+	 */
+	public void setIsNullSearchEnabled(boolean isNullSearchEnabled) {
+		this.isNullSearchEnabled = isNullSearchEnabled;
 	}
 
 }

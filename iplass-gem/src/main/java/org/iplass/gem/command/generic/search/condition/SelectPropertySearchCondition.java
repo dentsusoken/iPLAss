@@ -33,6 +33,7 @@ import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.In;
+import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.tenant.TenantI18nInfo;
 import org.iplass.mtp.view.generic.editor.EditorValue;
@@ -74,7 +75,17 @@ public class SelectPropertySearchCondition extends PropertySearchCondition {
 							conditions.add(new In(getPropertyName(), valueList.toArray()));
 						}
 					}
-				} else {
+				}
+				// SELECT形式の場合、「is null」を検索条件として指定可能か
+				else if (SelectDisplayType.SELECT == editor.getDisplayType()) {
+					SelectValue sv = (SelectValue) value;
+					if (editor.isIsNullSearchEnabled() && Constants.ISNULL.equals(sv.getValue())) {
+						conditions.add(new IsNull(getPropertyName()));
+					} else {
+						conditions.add(new Equals(getPropertyName(), sv.getValue()));
+					}
+				}
+				else {
 					SelectValue sv = (SelectValue) value;
 					conditions.add(new Equals(getPropertyName(), sv.getValue()));
 				}

@@ -226,6 +226,20 @@ $(function() {
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>">
 <option value=""><%= pleaseSelectLabel %></option>
 <%
+		
+		// SELECT形式の場合、「未設定」を検索条件として指定可能か
+		if (editor.isIsNullSearchEnabled()) {
+			String isNullLabel = GemResourceBundleUtil.resourceString("generic.editor.select.SelectPropertyEditor_Condition.isNullDisplayName");
+			String isNullValue = GemResourceBundleUtil.resourceString("generic.editor.select.SelectPropertyEditor_Condition.isNullValue");
+			String selected = "";
+			if (isNullValue.equals(value)) selected = " selected";
+%>
+<option value="<c:out value="<%=isNullValue %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=isNullLabel %>" /></option>
+<%
+		}
+%>
+
+<%
 		for (EditorValue param : editor.getValues()) {
 			String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, param, selectValueList);
 			String optStyle = param.getStyle() != null ? param.getStyle() : "";
