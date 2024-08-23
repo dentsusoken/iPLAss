@@ -192,6 +192,8 @@ ext {
 
 		'org.webjars.npm:jquery-ui': '1.13.3',
 
+		'org.webjars.npm:quill': '2.0.2',
+
 		'org.webjars:font-awesome': '5.13.1',
 	]
 	

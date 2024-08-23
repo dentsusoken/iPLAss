@@ -1,0 +1,18 @@
+// Quill Editorカスタマイズ
+
+.gem-quill-container {
+	&.gem-quill-read-only {
+		&.gem-quill-disable-toolbar {
+			border: none;
+
+			.ql-editor {
+				padding: 0;
+			}
+		}
+	}
+	&.gem-quill-editable {
+		.ql-editor {
+			height: 200px;
+		}
+	}
+}

@@ -108,70 +108,29 @@
 		} else {
 			wrapContent = "<span class='data-label'>" + content + "</span>";
 		}
+
+		request.setAttribute(Constants.EDITOR_RICHTEXT_LIBRARY, parts.getRichTextLibrary());
+		request.setAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT, enableHtmlTag);
+		request.setAttribute(Constants.EDITOR_RICHTEXT_HIDE_TOOL_BAR, true);
+		request.setAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_LINK_ACTION, parts.isAllowRichTextEditorLinkAction());
+		request.setAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION, parts.getRichtextEditorOption());
+		request.setAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME, "infomation_content");
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>">
-<textarea name="infomation_content" rows="5" cols="30" ><c:out value="<%=wrapContent %>"/></textarea>
+<textarea name="infomation_content" id="id_infomation_content" rows="5" cols="30" ><c:out value="<%=wrapContent %>"/></textarea>
 </span>
-<%
-		if (request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
-			request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
-%>
-<%@include file="../layout/resource/ckeditorResource.inc.jsp" %>
-<%
-		}
-%>
-<script type="text/javascript">
-$(function() {
-	var defaults = {
-			readOnly:true,
-			allowedContent: <%=enableHtmlTag%>,
-			extraPlugins: "autogrow",
-			autoGrow_onStartup: true,
-			on: {
-				instanceReady: function (event) {
-					<%-- 全体border、ツールバーを非表示 --%>
-					var containerId = event.editor.container.$.id;
-					var editorId = event.editor.id;
-					$("#" + containerId).css("border", "none");
-					$("#" + editorId + "_top").hide();
-					$("#" + editorId + "_bottom").hide();
-				},
-				contentDom: function (event) {
-					var editor = event.editor;
-					<%-- bodyのmargin削除 --%>
-					var body = editor.document.getBody();
-					body.setStyles({
-					    margin: 0,
-					});
-<%		if (parts.isAllowRichTextEditorLinkAction()) { %>
-					<%-- Link制御 --%>
-					var editable = editor.editable();
-					editable.attachListener( editable, 'click', function( evt ) {
-						var link = new CKEDITOR.dom.elementPath( evt.data.getTarget(), this ).contains('a');
-						if ( link && evt.data.$.which == 1 && link.isReadOnly() ) {
-							var target = link.getAttribute('target') ? link.getAttribute( 'target' ) : '_self';
-							window.open(link.getAttribute('href'), target);
-						}
-					}, null, null, 15 );
-<%		} %>
-				},
-			},
-		};
 
-<%		if (StringUtil.isNotBlank(parts.getRichtextEditorOption())) { %>
-	var custom = <%=parts.getRichtextEditorOption()%>;
-<%		} else { %>
-	var custom = {}; 
-<%		} %>
-	var option = $.extend(true, {}, defaults, custom);
-
-	$("textarea[name='infomation_content']").ckeditor(
-		function() {}, option
-	);
-});
-</script>
+<%@include file="../layout/resource/richtextEditorResource.inc.jsp" %>
+<jsp:include page="../generic/editor/string/richtext/RichtextEditor_View.jsp" />
 
 <%
+		request.removeAttribute(Constants.EDITOR_RICHTEXT_LIBRARY);
+		request.removeAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT);
+		request.removeAttribute(Constants.EDITOR_RICHTEXT_HIDE_TOOL_BAR);
+		request.removeAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_LINK_ACTION);
+		request.removeAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION);
+		request.removeAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME);
+
 	} else {
 		if(!content.isEmpty()){
 			if (!enableHtmlTag) {

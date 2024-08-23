@@ -173,6 +173,11 @@
 		<property name="binaryUploadAcceptMimeTypesPattern" value="^(image/.*|application/pdf|text/csv)$" />
 		-->
 
+		<!-- デフォルトのRichTextライブラリ、QUILL(デフォルト) または CKEDITOR を指定 -->
+		<!-- 
+		<property name="richTextLibrary" value="CKEDITOR" />
+		-->
+
 		<!-- 汎用画面、メニュー用のイメージカラー設定 -->
 		<property name="imageColors">
 			<property name="colorName" value="blue" />

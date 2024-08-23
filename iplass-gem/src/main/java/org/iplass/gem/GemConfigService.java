@@ -34,6 +34,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.generic.editor.StringPropertyEditor.RichTextLibrary;
 
 /**
  * gem固有の設定など
@@ -132,6 +133,9 @@ public class GemConfigService implements Service {
 	/** エンティティをコピーする際にLobデータをシャッローコピーするか */
 	private boolean shallowCopyLobData;
 
+	/** デフォルトのRichTextライブラリ */
+	private RichTextLibrary richTextLibrary;
+
 	/** Binaryダウンロード時のログ出力設定 */
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
 
@@ -229,6 +233,13 @@ public class GemConfigService implements Service {
 		bulkUpdateAllCommandBatchSize = config.getValue("bulkUpdateAllCommandBatchSize", Integer.class, 100);
 
 		shallowCopyLobData = config.getValue("shallowCopyLobData", Boolean.class, false);
+
+		if (config.getValue("richTextLibrary") != null) {
+			String strRichTextLibrary = config.getValue("richTextLibrary");
+			richTextLibrary = RichTextLibrary.valueOf(strRichTextLibrary);
+		} else {
+			richTextLibrary = RichTextLibrary.QUILL;
+		}
 
 		skins = config.getValues("skins", Skin.class);
 		themes = config.getValues("themes", Theme.class);
@@ -567,6 +578,14 @@ public class GemConfigService implements Service {
 	 */
 	public boolean isShallowCopyLobData() {
 		return shallowCopyLobData;
+	}
+
+	/**
+	 * デフォルトのRichTextライブラリを取得します。
+	 * @return デフォルトのRichTextライブラリ
+	 */
+	public RichTextLibrary getRichTextLibrary() {
+		return richTextLibrary;
 	}
 
 	/**
