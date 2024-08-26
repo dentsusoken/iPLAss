@@ -23,6 +23,7 @@ package org.iplass.gem.command.generic.search.condition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.search.SearchConditionDetail;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.entity.Entity;
@@ -33,6 +34,7 @@ import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.In;
+import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
@@ -60,8 +62,13 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 			StringPropertyEditor sp = (StringPropertyEditor) editor;
 			if ((sp.getDisplayType() != null && sp.getDisplayType() == StringDisplayType.SELECT)
 					|| sp.isSearchExactMatchCondition()) {
-				//選択時または完全一致有無にチェック時はEquals
-				conditions.add(new Equals(getPropertyName(), getValue()));
+				// 「値なし」を検索条件の選択肢に追加するか
+				if (sp.isIsNullSearchEnabled() && Constants.ISNULL_VALUE.equals(getValue())) {
+					conditions.add(new IsNull(getPropertyName()));
+				} else {
+					//選択時または完全一致有無にチェック時はEquals
+					conditions.add(new Equals(getPropertyName(), getValue()));
+				}
 			} else {
 				//like検索
 				//conditions.add(new Like(getPropertyName(), "%" + StringUtil.escapeEqlForLike(getValue().toString()) + "%"));

@@ -158,13 +158,13 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	)
 	private boolean itemDirectionColumn;
 	
-	/** SELECT形式の場合、「未設定」を検索条件として指定可能か */
+	/** 「値なし」を検索条件の選択肢に追加するか */
 	@MetaFieldInfo(
-			displayName="SELECT形式の場合、「未設定」を検索条件として指定可能か",
+			displayName="「値なし」を検索条件の選択肢に追加するか",
 			displayNameKey="generic_editor_SelectPropertyEditor_isNullSearchEnabledDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=230,
-			description="SELECT形式の場合、「未設定」を検索条件として指定可能かを設定します。",
+			description="「値なしを検索条件の選択肢に追加するかを指定します。値なしが選択された場合、IS NULLを検索条件として指定します。",
 			descriptionKey="generic_editor_SelectPropertyEditor_isNullSearchEnabledDescriptionKey"
 	)
 	@EntityViewField(
@@ -310,16 +310,16 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	}
 	
 	/**
-	 * SELECT形式の場合、「未設定」を検索条件として指定可能かを取得します。
-	 * @return SELECT形式の場合、「未設定」を検索条件として指定可能か
+	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
+	 * @return 「値なし」を検索条件の選択肢に追加するか
 	 */
 	public boolean isIsNullSearchEnabled() {
 		return isNullSearchEnabled;
 	}
 
 	/**
-	 * SELECT形式の場合、「未設定」を検索条件として指定可能かを設定します。
-	 * @param isNullSearchEnabled SELECT形式の場合、「未設定」を検索条件として指定可能か
+	 * 「値なし」を検索条件の選択肢に追加するかを設定します。
+	 * @param isNullSearchEnabled 「値なし」を検索条件の選択肢に追加するか
 	 */
 	public void setIsNullSearchEnabled(boolean isNullSearchEnabled) {
 		this.isNullSearchEnabled = isNullSearchEnabled;

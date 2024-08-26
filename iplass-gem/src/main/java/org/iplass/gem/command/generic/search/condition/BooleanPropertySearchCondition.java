@@ -20,11 +20,17 @@
 
 package org.iplass.gem.command.generic.search.condition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.text.StringTokenizer;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.search.SearchConditionDetail;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.condition.predicate.Equals;
+import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -46,6 +52,20 @@ public class BooleanPropertySearchCondition extends PropertySearchCondition {
 	public BooleanPropertySearchCondition(PropertyDefinition definition,
 			PropertyEditor editor, Object value, String parent) {
 		super(definition, editor, value, parent);
+	}
+	
+	@Override
+	public List<Condition> convertNormalCondition() {
+		List<Condition> conditions = new ArrayList<>();
+		String value = (String)getValue();
+		BooleanPropertyEditor editor = (BooleanPropertyEditor) getEditor();
+		// 「値なし」を検索条件の選択肢に追加するか
+		if (editor.isIsNullSearchEnabled() && Constants.ISNULL_VALUE.equals(value)) {
+			conditions.add(new IsNull(getPropertyName()));
+		} else {
+			conditions.add(new Equals(getPropertyName(), string2Boolean(value)));
+		}
+		return conditions;
 	}
 
 	@Override

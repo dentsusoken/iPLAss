@@ -153,7 +153,8 @@ public class Constants {
 	public static final String NULL = "Null";
 	public static final String IN = "In";
 	public static final String RANGE = "Range";
-	public static final String ISNULL = "isNull";
+
+	public static final String ISNULL_VALUE = "isNull";
 
 	//Editor用パラメータ
 	public static final String EDITOR_STYLE = "style";

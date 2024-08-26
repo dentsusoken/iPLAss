@@ -199,6 +199,10 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	
 	/** CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
 	private boolean itemDirectionColumn;
+	
+	/** 「値なし」を検索条件の選択肢に追加するか */
+	private boolean isNullSearchEnabled;
+
 
 	/**
 	 * 表示タイプを取得します。
@@ -909,6 +913,22 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	public void setItemDirectionColumn(boolean itemDirectionColumn) {
 		this.itemDirectionColumn = itemDirectionColumn;
 	}
+	
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
+	 * @return 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public boolean isIsNullSearchEnabled() {
+		return isNullSearchEnabled;
+	}
+
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを設定します。
+	 * @param isNullSearchEnabled 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public void setIsNullSearchEnabled(boolean isNullSearchEnabled) {
+		this.isNullSearchEnabled = isNullSearchEnabled;
+	}
 
 	@Override
 	public void applyConfig(PropertyEditor editor) {
@@ -1022,6 +1042,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		insertWithLabelValue = rpe.isInsertWithLabelValue();
 		updateWithLabelValue = rpe.isUpdateWithLabelValue();
 		itemDirectionColumn = rpe.isItemDirectionColumn();
+		isNullSearchEnabled = rpe.isIsNullSearchEnabled();
 
 	}
 
@@ -1127,6 +1148,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);
 		editor.setItemDirectionColumn(itemDirectionColumn);
+		editor.setIsNullSearchEnabled(isNullSearchEnabled);
 		return editor;
 	}
 

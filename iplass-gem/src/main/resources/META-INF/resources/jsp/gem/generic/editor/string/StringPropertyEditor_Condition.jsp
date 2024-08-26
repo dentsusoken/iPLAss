@@ -95,6 +95,18 @@
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>">
 <option value=""><%= pleaseSelectLabel %></option>
 <%
+		
+				// 「値なし」を検索条件の選択肢に追加するか
+				if (editor.isIsNullSearchEnabled()) {
+					String isNullLabel = GemResourceBundleUtil.resourceString("generic.editor.select.SelectPropertyEditor_Condition.isNullDisplayName");
+					String isNullValue = Constants.ISNULL_VALUE;
+					String selected = isNullValue.equals(value) ? " selected" : "";
+%>
+<option value="<c:out value="<%=isNullValue %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=isNullLabel %>" /></option>
+<%
+				}
+%>
+<%
 				for (EditorValue tmp : editor.getValues()) {
 					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
 					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";

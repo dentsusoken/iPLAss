@@ -70,7 +70,7 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
 	private boolean itemDirectionColumn;
 	
-	/** SELECT形式の場合、「未設定」を検索条件として指定可能か */
+	/** 「値なし」を検索条件の選択肢に追加するか */
 	private boolean isNullSearchEnabled;
 
 	/**
@@ -177,16 +177,16 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 	}
 	
 	/**
-	 * SELECT形式の場合、「未設定」を検索条件として指定可能かを取得します。
-	 * @return SELECT形式の場合、「未設定」を検索条件として指定可能か
+	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
+	 * @return 「値なし」を検索条件の選択肢に追加するか
 	 */
 	public boolean isIsNullSearchEnabled() {
 		return isNullSearchEnabled;
 	}
 
 	/**
-	 * SELECT形式の場合、「未設定」を検索条件として指定可能かを設定します。
-	 * @param isNullSearchEnabled SELECT形式の場合、「未設定」を検索条件として指定可能か
+	 * 「値なし」を検索条件の選択肢に追加するかを設定します。
+	 * @param isNullSearchEnabled 「値なし」を検索条件の選択肢に追加するか
 	 */
 	public void setIsNullSearchEnabled(boolean isNullSearchEnabled) {
 		this.isNullSearchEnabled = isNullSearchEnabled;

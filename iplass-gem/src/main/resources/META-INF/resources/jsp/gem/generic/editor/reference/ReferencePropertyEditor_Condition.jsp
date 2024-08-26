@@ -343,6 +343,14 @@
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/reference/ReferencePropertyAutocompletion.jsp");
 	}
+	
+	// 「値なし」を検索条件の選択肢に追加するか
+	String isNullLabel = "";
+	String isNullValue = "";
+	if(editor.isIsNullSearchEnabled()) {
+		isNullLabel = GemResourceBundleUtil.resourceString("generic.editor.select.SelectPropertyEditor_Condition.isNullDisplayName");
+		isNullValue = Constants.ISNULL_VALUE;
+	}
 
 	//検索条件
 	if (editor.getDisplayType() == ReferenceDisplayType.SELECT) {
@@ -403,6 +411,15 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 >
 <option value=""><%= pleaseSelectLabel %></option>
 <%
+			// 「値なし」を検索条件の選択肢に追加するか
+			if (editor.isIsNullSearchEnabled()) {
+				String selected = isNullValue.equals(value) ? " selected" : "";
+%>
+<option value="<c:out value="<%=isNullValue %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=isNullLabel %>" /></option>
+<%
+			}
+%>
+<%
 			for (Entity ref : entityList) {
 				String selected = "";
 				if (value.equals(ref.getOid())) selected = " selected";
@@ -418,6 +435,16 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 %>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>">
 <option value=""><%= pleaseSelectLabel %></option>
+
+<%
+			// 「値なし」を検索条件の選択肢に追加するか
+			if (editor.isIsNullSearchEnabled()) {
+				String selected = isNullValue.equals(value) ? " selected" : "";
+%>
+<option value="<c:out value="<%=isNullValue %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=isNullLabel %>" /></option>
+<%
+			}
+%>
 <%
 			for (Entity ref : entityList) {
 				String selected = "";
@@ -504,6 +531,18 @@ $(function() {
 %>
 <li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=displayPropLabel %>" />">
 <input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=ref.getOid() %>"/>" <%=checked %>/><c:out value="<%=displayPropLabel %>" />
+</label></li>
+<%
+		}
+%>
+<%
+		
+		// 「値なし」を検索条件の選択肢に追加するか
+		if (editor.isIsNullSearchEnabled()) {
+			String checked = oids.contains(isNullValue) ? " checked" : "";
+%>
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=isNullLabel %>" />">
+<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=isNullValue %>"/>" <%=checked %>/><c:out value="<%=isNullLabel %>" />
 </label></li>
 <%
 		}
