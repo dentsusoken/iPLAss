@@ -170,6 +170,7 @@ public class Constants {
 	public static final String EDITOR_SELECT_VALUE_LIST = "selectValueList";
 	public static final String EDITOR_LOCAL_VALUE_LIST = "localValueList";
 
+	// DatePicker制御用
 	public static final String EDITOR_PICKER_PROP_NAME = "_propName";
 	public static final String EDITOR_PICKER_PROP_VALUE = "_propValue";
 	public static final String EDITOR_PICKER_DEFAULT_VALUE = "_defaultValue";
@@ -178,6 +179,16 @@ public class Constants {
 	public static final String EDITOR_PICKER_DEFAULT_SEC = "defaultSec";
 	public static final String EDITOR_PICKER_DEFAULT_MSEC = "defaultMsec";
 
+	// RichText制御用
+	public static final String EDITOR_RICHTEXT_DEFAULT_LIBRARY = "richTextDefaultLibrary";
+	public static final String EDITOR_RICHTEXT_LIBRARY = "richTextLibrary";
+	public static final String EDITOR_RICHTEXT_ALLOWED_CONTENT = "richTextAllowedContent";
+	public static final String EDITOR_RICHTEXT_HIDE_TOOL_BAR = "richTextHideToolBar";
+	public static final String EDITOR_RICHTEXT_ALLOWED_LINK_ACTION = "richTextAllowedLinkAction";
+	public static final String EDITOR_RICHTEXT_EDITOR_OPTION = "richTextEditorOption";
+	public static final String EDITOR_RICHTEXT_TARGET_NAME = "richTextTargetName";
+
+	// Reference制御用
 	public static final String EDITOR_REF_RELOAD_URL = "reloadUrl";
 	public static final String EDITOR_REF_MAPPEDBY = "mappedBy";
 	public static final String EDITOR_REF_ENTITY_VALUE_MAP = "entityValueMap";
@@ -379,6 +390,9 @@ public class Constants {
 	public static final String TEMPLATE_BULK_MULTI_EDIT="gem/generic/bulk/edit";
 	public static final String TEMPLATE_SEARCH = "gem/generic/search/search";
 	public static final String TEMPLATE_CSV_UPLOAD = "gem/generic/upload/csvUpload";
+
+	public static final String TEMPLATE_EDITOR_RICHTEXT_CKEDITOR = "gem/generic/editor/richtext/ckeditor/resource";
+	public static final String TEMPLATE_EDITOR_RICHTEXT_QUILL = "gem/generic/editor/richtext/quill/resource";
 
 	// LayoutAction
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";

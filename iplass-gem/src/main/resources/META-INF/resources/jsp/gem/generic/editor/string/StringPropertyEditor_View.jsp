@@ -121,75 +121,31 @@
 				}
 			} else {
 				String str = propValue instanceof String ? (String) propValue : "";
+				String textId = "id_" + propName;
 %>
-<textarea name="<c:out value="<%=propName%>"/>" rows="5" cols="30" style="<c:out value="<%=customStyle %>"/>"><c:out value="<%=str %>"/></textarea>
+<textarea name="<c:out value="<%=propName%>"/>" rows="5" cols="30" style="<c:out value="<%=customStyle %>"/>" id="<c:out value="<%=textId %>"/>"><c:out value="<%=str %>"/></textarea>
 <%
 			}
+
+			request.setAttribute(Constants.EDITOR_RICHTEXT_LIBRARY, editor.getRichTextLibrary());
+			request.setAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT, editor.isAllowedContent());
+			request.setAttribute(Constants.EDITOR_RICHTEXT_HIDE_TOOL_BAR, editor.isHideRichtextEditorToolBar());
+			request.setAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_LINK_ACTION, editor.isAllowRichTextEditorLinkAction());
+			request.setAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION, editor.getRichtextEditorOption());
+			request.setAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME, propName);
 %>
 </span>
-<%
-			if (request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
-				request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
-%>
-<%@include file="../../../layout/resource/ckeditorResource.inc.jsp" %>
-<%
-			}
-%>
-<script type="text/javascript">
-$(function() {
-	var defaults = {
-		readOnly:true,
-		allowedContent: <%=editor.isAllowedContent()%>,
-		extraPlugins: "autogrow",
-		autoGrow_onStartup: true,
-		on: {
-<% 			if (editor.isHideRichtextEditorToolBar()) { %>
-			instanceReady: function (evt) {
-				<%-- 全体border、ツールバーを非表示 --%>
-				var containerId = evt.editor.container.$.id;
-				var editorId = evt.editor.id;
-				$("#" + containerId).css("border", "none");
-				$("#" + editorId + "_top").hide();
-				$("#" + editorId + "_bottom").hide();
-			},
-<%			} %>
-			contentDom: function (event) {
-				var editor = event.editor;
-<% 			if (editor.isHideRichtextEditorToolBar()) { %>
-				<%-- ツールバーを表示しない場合は、bodyのmargin削除 --%>
-				var body = editor.document.getBody();
-				body.setStyles({
-				    margin: 0,
-				});
-<%			} %>
-<%			if (editor.isAllowRichTextEditorLinkAction()) { %>
-				<%-- Link制御 --%>
-				var editable = editor.editable();
-				editable.attachListener( editable, 'click', function( evt ) {
-					var link = new CKEDITOR.dom.elementPath( evt.data.getTarget(), this ).contains('a');
-					if ( link && evt.data.$.which == 1 && link.isReadOnly() ) {
-						var target = link.getAttribute('target') ? link.getAttribute( 'target' ) : '_self';
-						window.open(link.getAttribute('href'), target);
-					}
-				}, null, null, 15 );
-<% 			} %>
-			},
-		},
-	};
-	
-<%			if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) { %>
-	var custom = <%=editor.getRichtextEditorOption()%>;
-<%			} else { %>
-	var custom = {}; 
-<%			} %>
-	var option = $.extend(true, {}, defaults, custom);
 
-	$("textarea[name='<%=StringUtil.escapeJavaScript(propName)%>']").ckeditor(
-		function() {}, option
-	);
-});
-</script>
+<%@include file="../../../layout/resource/richtextEditorResource.inc.jsp" %>
+<jsp:include page="richtext/RichtextEditor_View.jsp" />
+
 <%
+			request.removeAttribute(Constants.EDITOR_RICHTEXT_LIBRARY);
+			request.removeAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT);
+			request.removeAttribute(Constants.EDITOR_RICHTEXT_HIDE_TOOL_BAR);
+			request.removeAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_LINK_ACTION);
+			request.removeAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION);
+			request.removeAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME);
 		}
 	} else if (editor.getDisplayType() == StringDisplayType.SELECT) {
 		

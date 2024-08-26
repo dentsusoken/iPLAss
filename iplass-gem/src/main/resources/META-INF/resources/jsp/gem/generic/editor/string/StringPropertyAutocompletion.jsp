@@ -79,22 +79,11 @@ renderDetailAutoCompletionLabelType(value, multiplicity, propName,
 $("[name='" + propName + "']").val(value);
 <%
 	} else if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
-		if (multiplicity == 1) {
+		request.setAttribute(Constants.EDITOR_RICHTEXT_LIBRARY, editor.getRichTextLibrary());
 %>
-CKEDITOR.instances[propName].setData(value);
+<jsp:include page="richtext/RichtextEditor_Autocompletion.jsp" />
 <%
-		} else {
-			//フィールドあるか、戻り値のサイズ、クリックして追加
-%>
-for (var i = 0; i < value.length; i++) {
-	if ($("[name='" + propName + "']:eq(" + i + ")").length == 0) {
-		$("#id_addBtn_" + propName).click();
-	}
-	var id = $("[name='" + propName + "']:eq(" + i + ")").attr("id");
-	CKEDITOR.instances[id].setData(value[i]);
-}
-<%
-		}
+		request.removeAttribute(Constants.EDITOR_RICHTEXT_LIBRARY);
 	} else if (editor.getDisplayType() == StringDisplayType.HIDDEN) {
 %>
 renderDetailAutoCompletionHiddenType(value, multiplicity, propName);

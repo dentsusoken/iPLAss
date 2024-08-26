@@ -854,6 +854,14 @@ ul.jqtree-tree {
   background: #efefef !important;
   background: linear-gradient(#f8f8f8 0, #efefef 100%) !important; }
 
+.gem-quill-container.gem-quill-read-only.gem-quill-disable-toolbar {
+  border: none; }
+  .gem-quill-container.gem-quill-read-only.gem-quill-disable-toolbar .ql-editor {
+    padding: 0; }
+
+.gem-quill-container.gem-quill-editable .ql-editor {
+  height: 200px; }
+
 /*--------
  パーツ
 --------*/

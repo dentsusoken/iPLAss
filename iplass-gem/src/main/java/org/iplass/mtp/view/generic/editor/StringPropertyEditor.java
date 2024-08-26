@@ -23,12 +23,6 @@ package org.iplass.mtp.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
@@ -37,6 +31,12 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * 文字列型プロパティエディタ
@@ -63,6 +63,13 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 		@XmlEnumValue("Select")SELECT,
 		@XmlEnumValue("Label")LABEL,
 		@XmlEnumValue("Hidden")HIDDEN
+	}
+
+	/** RichTextライブラリ */
+	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	public enum RichTextLibrary {
+		@XmlEnumValue("Quill")QUILL,
+		@XmlEnumValue("CKEditor")CKEDITOR
 	}
 
 	/** 表示タイプ */
@@ -200,12 +207,57 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 	)
 	private boolean isNullSearchEnabled;
 
+	/** RichTextライブラリ */
+	@MetaFieldInfo(displayName="RichTextライブラリ",
+			displayNameKey="generic_editor_StringPropertyEditor_richTextLibraryDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=RichTextLibrary.class,
+			displayOrder=145,
+			description="RichText選択時のみ有効となります。RichTextライブラリを選択します。",
+			descriptionKey="generic_editor_StringPropertyEditor_richTextLibraryDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private RichTextLibrary richTextLibrary;
+
+	/** RickTextで表示モードの場合、ツールバーなどを表示しないか */
+	@MetaFieldInfo(
+			displayName="RickTextで表示モードの場合、ツールバーなどを表示しないか",
+			displayNameKey="generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=150,
+			description="RickTextで表示モードの場合、ツールバーなどを表示しないかを設定します。",
+			descriptionKey="generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean hideRichtextEditorToolBar = true;
+
+	/** リッチテキストエディタオプション */
+	@MetaFieldInfo(
+			displayName="リッチテキストエディタオプション",
+			displayNameKey="generic_editor_StringPropertyEditor_richtextEditorOptionDisplaNameKey",
+			inputType=InputType.SCRIPT,
+			displayOrder=155,
+			mode="javascript",
+			description="リッチテキストエディタを生成する際のオプションを指定します。<br>"
+					+ "指定可能なオプションについては CKEDITOR config を参照してください。",
+			descriptionKey="generic_editor_StringPropertyEditor_richtextEditorOptionDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String richtextEditorOption;
+
+
 	/** RichText表示タグ許可設定 */
 	@MetaFieldInfo(
 			displayName="RichText表示時にタグを許可",
 			displayNameKey="generic_editor_StringPropertyEditor_allowedContentDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=150,
+			displayOrder=160,
 			description="RichText選択時のみ有効となります。<br>チェック時は「ソース」ボタンクリックにてスクリプトも表示されるようになります。",
 			descriptionKey="generic_editor_StringPropertyEditor_allowedContentDescriptionKey"
 	)
@@ -219,44 +271,14 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayName="RichText表示時にリンク動作を許可",
 			displayNameKey="generic_editor_StringPropertyEditor_allowRichTextEditorLinkActionDisplayNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=152,
+			displayOrder=165,
 			description="RichText選択時のみ有効となります。リッチテキストエディタで許可されていないリンク動作を利用できるようにします。",
 			descriptionKey="generic_editor_StringPropertyEditor_allowRichTextEditorLinkActionDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
-	private boolean allowRichTextEditorLinkAction;
-
-	/** RickTextで表示モードの場合、ツールバーなどを表示しないか */
-	@MetaFieldInfo(
-			displayName="RickTextで表示モードの場合、ツールバーなどを表示しないか",
-			displayNameKey="generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=155,
-			description="RickTextで表示モードの場合、ツールバーなどを表示しないかを設定します。",
-			descriptionKey="generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private boolean hideRichtextEditorToolBar;
-
-	/** リッチテキストエディタオプション */
-	@MetaFieldInfo(
-			displayName="リッチテキストエディタオプション",
-			displayNameKey="generic_editor_StringPropertyEditor_richtextEditorOptionDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			displayOrder=160,
-			mode="javascript",
-			description="リッチテキストエディタを生成する際のオプションを指定します。<br>"
-					+ "指定可能なオプションについては CKEDITOR config を参照してください。",
-			descriptionKey="generic_editor_StringPropertyEditor_richtextEditorOptionDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private String richtextEditorOption;
+	private boolean allowRichTextEditorLinkAction = true;
 
 	/** Label形式の場合の登録制御 */
 	@MetaFieldInfo(
@@ -379,7 +401,9 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 	 * @return 選択値
 	 */
 	public List<EditorValue> getValues() {
-		if (this.values == null) this.values = new ArrayList<>();
+		if (this.values == null) {
+			this.values = new ArrayList<>();
+		}
 		return values;
 	}
 
@@ -415,6 +439,24 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 	 */
 	public void setSearchExactMatchCondition(boolean searchExactMatchCondition) {
 		this.searchExactMatchCondition = searchExactMatchCondition;
+	}
+
+	/**
+	 * RichTextライブラリを取得します。
+	 *
+	 * @return RichTextライブラリ
+	 */
+	public RichTextLibrary getRichTextLibrary() {
+		return richTextLibrary;
+	}
+
+	/**
+	 * RichTextライブラリを設定します。
+	 *
+	 * @param richTextLibrary RichTextライブラリ
+	 */
+	public void setRichTextLibrary(RichTextLibrary richTextLibrary) {
+		this.richTextLibrary = richTextLibrary;
 	}
 
 	/**

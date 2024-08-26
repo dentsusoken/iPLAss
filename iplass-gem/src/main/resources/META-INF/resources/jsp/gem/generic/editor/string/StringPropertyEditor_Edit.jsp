@@ -97,6 +97,7 @@
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
 	Integer colNum = (Integer) request.getAttribute(Constants.COL_NUM);
+
 	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
 	Boolean nestDummyRow = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST_DUMMY_ROW);
 
@@ -280,14 +281,16 @@ $(function() {
 				String dummyRowId = "id_li_" + propName + "Dummmy";
 				String selector = null;
 				String toggleAddBtnFunc = "toggleAddBtn_" + escapedPropName;
-				if (editor.getDisplayType() == StringDisplayType.RICHTEXT && request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
-					request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
+				if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
+					request.setAttribute(Constants.EDITOR_RICHTEXT_LIBRARY, editor.getRichTextLibrary());
 %>
-<%@include file="../../../layout/resource/ckeditorResource.inc.jsp" %>
+<%@include file="../../../layout/resource/richtextEditorResource.inc.jsp" %>
 <%
 				}
 %>
 <ul id="<c:out value="<%=ulId %>"/>" class="mb05">
+
+<% 				// ダミー行出力 %>
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add" style="display: none;">
 <%
 				if (editor.getDisplayType() == StringDisplayType.TEXT) {
@@ -321,6 +324,7 @@ $(function() {
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 </li>
 <%
+				// 既存値出力
 				String[] array = propValue instanceof String[] ? (String[]) propValue : null;
 				int length = 0;
 				if (array != null) {
@@ -347,19 +351,6 @@ $(function() {
 							String textId = "id_" + propName + i;
 %>
 <textarea name="<c:out value="<%=propName %>"/>" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30" id="<c:out value="<%=textId %>"/>"><c:out value="<%=str %>"/></textarea>
-<script type="text/javascript">
-$(function() {
-<%if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) {%>
-	var opt = <%=editor.getRichtextEditorOption()%>;
-<%} else {%>
-	var opt = { allowedContent:<%=allowedContent%> };
-<%}%>
-	$("textarea[name='<%=escapedPropName%>']").ckeditor(
-		function() {}, opt
-	);
-});
-</script>
-
 <%
 						} else if (editor.getDisplayType() == StringDisplayType.PASSWORD) {
 							//パスワード
@@ -370,28 +361,65 @@ $(function() {
 						}
 %>
 <%
+						// 削除ボタン
 						if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
 %>
- <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="delete_<%=escapedPropName + i %>('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" 
+    onclick="delete_<%=escapedPropName + i %>('<%=StringUtil.escapeJavaScript(liId)%>')" />
+
 <script type="text/javascript">
 function delete_<%=escapedPropName + i%>(liId) {
-	if (CKEDITOR.instances.id_<%=escapedPropName + i%>) CKEDITOR.instances.id_<%=escapedPropName + i%>.destroy();
+	deleteRichtextItem_<%=escapedPropName%>("id_<%=escapedPropName + i%>");
 	deleteItem(liId, <%=toggleAddBtnFunc%>);
 }
 </script>
 <%
 						} else {
 %>
- <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc%>)" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" 
+    onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc%>)" />
 <%
 						}
 %>
 </li>
 <%
 					}
+					if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
+						request.setAttribute(Constants.EDITOR_RICHTEXT_LIBRARY, editor.getRichTextLibrary());
+						request.setAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT, allowedContent);
+						request.setAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION, editor.getRichtextEditorOption());
+						request.setAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME, propName);
+%>
+<jsp:include page="richtext/RichtextEditor_Edit.jsp" />
+
+<%
+						request.removeAttribute(Constants.EDITOR_RICHTEXT_LIBRARY);
+						request.removeAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT);
+						request.removeAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION);
+						request.removeAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME);
+					}
 				}
 %>
 </ul>
+
+<%
+				if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
+					request.setAttribute(Constants.EDITOR_RICHTEXT_LIBRARY, editor.getRichTextLibrary());
+					request.setAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT, allowedContent);
+					request.setAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION, editor.getRichtextEditorOption());
+					request.setAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME, propName);
+
+					// 削除処理、追加処理を定義
+%>
+<jsp:include page="richtext/RichtextEditor_Delete.jsp" />
+<jsp:include page="richtext/RichtextEditor_Add.jsp" />
+<% 
+					request.removeAttribute(Constants.EDITOR_RICHTEXT_LIBRARY);
+					request.removeAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT);
+					request.removeAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION);
+					request.setAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME, propName);
+				}
+%>
 <script type="text/javascript">
 $(function() {
 	$("#id_addBtn_<%=escapedPropName%>").on("click", function() {
@@ -405,17 +433,14 @@ $(function() {
 					var $delBtn = $(elem).next();
 					$delBtn.off("click");
 					$delBtn.on("click", function() {
-						if (CKEDITOR.instances["id_<%=escapedPropName%>" + count]) CKEDITOR.instances["id_<%=escapedPropName%>" + count].destroy();
+						deleteRichtextItem_<%=escapedPropName%>("id_<%=escapedPropName%>" + count);
 						deleteItem($(this).parent().attr("id"), <%=toggleAddBtnFunc%>);
 					});
 
 					$(elem).attr("id", "id_<%=escapedPropName%>" + count);
-<%					if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) { %>
-					var opt = <%=editor.getRichtextEditorOption()%>;
-<%					} else { %>
-					var opt = { allowedContent:<%=allowedContent%> };
-<%					} %>
-					$(elem).ckeditor(function() {}, opt);
+
+					addRichtextItem_<%=escapedPropName%>("id_<%=escapedPropName%>" + count);
+
 					<%=toggleAddBtnFunc%>();
 				}
 <%
@@ -461,28 +486,40 @@ function <%=toggleAddBtnFunc%>(){
 <%
 				} else if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
 					//リッチテキスト
+					request.setAttribute(Constants.EDITOR_RICHTEXT_LIBRARY, editor.getRichTextLibrary());
+
+					String textId = "id_" + propName;
 %>
-<textarea name="<c:out value="<%=propName%>"/>" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30" ><c:out value="<%=str %>"/></textarea>
+<textarea name="<c:out value="<%=propName%>"/>" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=textId %>"/>" rows="5" cols="30" ><c:out value="<%=str %>"/></textarea>
+<%@include file="../../../layout/resource/richtextEditorResource.inc.jsp" %>
+
 <%
-					if (request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
-						request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
+					if (nestDummyRow == null || !nestDummyRow) {
+						// NestTableダミー行は適用しない＆追加(コピー)時は追加処理側から適用
+
+						request.setAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT, allowedContent);
+						request.setAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION, editor.getRichtextEditorOption());
+						request.setAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME, propName);
 %>
-<%@include file="../../../layout/resource/ckeditorResource.inc.jsp" %>
+<jsp:include page="richtext/RichtextEditor_Edit.jsp" />
+<%
+					} else {
+						// NestTableダミー行の場合は、追加時の適用処理を設定
+
+						request.setAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT, allowedContent);
+						request.setAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION, editor.getRichtextEditorOption());
+						// NestTableではEditorのプロパティ名にIndexが付くため、プロパティ定義から設定
+						request.setAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME, pd.getName());
+%>
+<jsp:include page="richtext/RichtextEditor_NestTable.jsp" />
 <%
 					}
-%>
-<script type="text/javascript">
-$(function() {
-<%					if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) {%>
-	var opt = <%=editor.getRichtextEditorOption()%>;
-<%					} else {%>
-	var opt = { allowedContent:<%=allowedContent%> };
-<%					}%>
-	$("textarea[name='<%=escapedPropName%>']").ckeditor(
-		function() {}, opt
-	);
-});
-</script><%
+
+					request.removeAttribute(Constants.EDITOR_RICHTEXT_LIBRARY);
+					request.removeAttribute(Constants.EDITOR_RICHTEXT_ALLOWED_CONTENT);
+					request.removeAttribute(Constants.EDITOR_RICHTEXT_EDITOR_OPTION);
+					request.removeAttribute(Constants.EDITOR_RICHTEXT_TARGET_NAME);
+
 				} else if (editor.getDisplayType() == StringDisplayType.PASSWORD) {
 					//パスワード
 %>

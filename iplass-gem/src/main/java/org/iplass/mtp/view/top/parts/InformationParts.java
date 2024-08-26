@@ -26,6 +26,7 @@ import java.util.List;
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange;
+import org.iplass.mtp.view.generic.editor.StringPropertyEditor.RichTextLibrary;
 
 /**
  * お知らせ一覧パーツ
@@ -66,6 +67,9 @@ public class InformationParts extends ActionParts {
 
 	/** リッチテキストエディタの利用 */
 	private boolean useRichtextEditor;
+
+	/** RichTextライブラリ */
+	private RichTextLibrary richTextLibrary;
 
 	/** リッチテキストエディタで表示モードの場合、リンク動作許可 */
 	private boolean allowRichTextEditorLinkAction;
@@ -300,6 +304,24 @@ public class InformationParts extends ActionParts {
 	 */
 	public void setUseRichtextEditor(boolean useRichtextEditor) {
 		this.useRichtextEditor = useRichtextEditor;
+	}
+
+	/**
+	 * RichTextライブラリを取得します。
+	 *
+	 * @return RichTextライブラリ
+	 */
+	public RichTextLibrary getRichTextLibrary() {
+		return richTextLibrary;
+	}
+
+	/**
+	 * RichTextライブラリを設定します。
+	 *
+	 * @param richTextLibrary RichTextライブラリ
+	 */
+	public void setRichTextLibrary(RichTextLibrary richTextLibrary) {
+		this.richTextLibrary = richTextLibrary;
 	}
 
 	/**
