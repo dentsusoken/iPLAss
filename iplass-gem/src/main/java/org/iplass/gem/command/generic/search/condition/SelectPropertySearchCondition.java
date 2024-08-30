@@ -77,23 +77,22 @@ public class SelectPropertySearchCondition extends PropertySearchCondition {
 							}
 						} else if (array.length > 1) {
 							List<String> valueList = new ArrayList<>();
-							// 「値なし」を検索条件の選択肢に追加するか
-							if (editor.isIsNullSearchEnabled() &&
-									Arrays.stream(array).anyMatch(item -> Constants.ISNULL_VALUE.equals(item.getValue()))) {
-								array = Arrays.stream(array)
-							            .filter(item -> !Constants.ISNULL_VALUE.equals(item.getValue()))
-							            .toArray(SelectValue[]::new);
-								for (SelectValue tmp : array) {
+							Boolean isIsNullSearchEnabled = Boolean.FALSE;
+							for (SelectValue tmp : array) {
+								// 「値なし」を検索条件の選択肢に追加するか
+								if(editor.isIsNullSearchEnabled() &&
+										Constants.ISNULL_VALUE.equals(tmp.getValue())) {
+									isIsNullSearchEnabled = Boolean.TRUE;
+								} else {
 									valueList.add(tmp.getValue());
 								}
+							}
+							if(isIsNullSearchEnabled) {
+								// 「値なし」を検索条件の選択肢に追加するの場合、「is null」を追加する
 								conditions.add(new Paren(new Or(
 										new IsNull(getPropertyName()),
 										new In(getPropertyName(), valueList.toArray()))));
-							}
-							else {
-								for (SelectValue tmp : array) {
-									valueList.add(tmp.getValue());
-								}
+							} else {
 								conditions.add(new In(getPropertyName(), valueList.toArray()));
 							}
 						}

@@ -31,6 +31,7 @@ import org.iplass.gem.command.generic.search.SearchConditionDetail;
 import org.iplass.gem.command.generic.search.SearchConditionValidationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -113,23 +114,22 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 						
 					} else if (list.length > 1) {
 						List<String> oidList = new ArrayList<>();
-						// 「値なし」を検索条件の選択肢に追加するか
-						if (editor.isIsNullSearchEnabled() &&
-								Arrays.stream(list).anyMatch(item -> Constants.ISNULL_VALUE.equals(item.getOid()))) {
-							list = Arrays.stream(list)
-						            .filter(item -> !Constants.ISNULL_VALUE.equals(item.getOid()))
-						            .toArray(Entity[]::new);
-							for (Entity tmp : list) {
+						Boolean isIsNullSearchEnabled = Boolean.FALSE;
+						for (Entity tmp : list) {
+							// 「値なし」を検索条件の選択肢に追加するか
+							if(editor.isIsNullSearchEnabled() &&
+									Constants.ISNULL_VALUE.equals(tmp.getOid())) {
+								isIsNullSearchEnabled = Boolean.TRUE;
+							} else {
 								oidList.add(tmp.getOid());
 							}
+						}
+						if(isIsNullSearchEnabled) {
+							// 「値なし」を検索条件の選択肢に追加するの場合、「is null」を追加する
 							conditions.add(new Paren(new Or(
 									new IsNull(getPropertyName() + "." + Entity.OID),
 									new In(getPropertyName() + "." + Entity.OID, oidList.toArray()))));
-						}
-						else {
-							for (Entity tmp : list) {
-								oidList.add(tmp.getOid());
-							}
+						} else {
 							conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
 						}
 					}
