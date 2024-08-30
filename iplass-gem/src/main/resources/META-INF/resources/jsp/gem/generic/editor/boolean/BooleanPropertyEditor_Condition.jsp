@@ -112,14 +112,6 @@
 				defaultCheckValue = "false";
 			}
 		}
-		
-		// 「値なし」を検索条件の選択肢に追加するか
-		String isNullLabel = "";
-		String isNullValue = "";
-		if(editor.isIsNullSearchEnabled()) {
-			isNullLabel = GemResourceBundleUtil.resourceString("generic.editor.select.SelectPropertyEditor_Condition.isNullDisplayName");
-			isNullValue = Constants.ISNULL_VALUE;
-		}
 
 		if (editor.getDisplayType() == BooleanDisplayType.SELECT) {
 			String pleaseSelectLabel = "";
@@ -133,9 +125,9 @@
 		
 		// 「値なし」を検索条件の選択肢に追加するか
 		if (editor.isIsNullSearchEnabled()) {
-			String selected = isNullValue.equals(value) ? " selected" : "";
+			String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
 %>
-<option value="<c:out value="<%=isNullValue %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=isNullLabel %>" /></option>
+<option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
 <%
 		}
 %>
@@ -201,11 +193,11 @@ $(function() {
 </li>
 <%
 		if (editor.isIsNullSearchEnabled() && BooleanDisplayType.RADIO == editor.getDisplayType() ) {
-			String checked = isNullValue.equals(value) ? " checked" : "";
+			String checked = Constants.ISNULL_VALUE.equals(value) ? " checked" : "";
 %>
 <li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>>
-<label for="select-radio-<c:out value="<%=propName %>"/>03" style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=isNullLabel %>"/>" >
-<input id="select-radio-<c:out value="<%=propName %>"/>03" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="<c:out value="<%=isNullValue %>"/>"<%=checked %>><c:out value="<%=isNullLabel %>"/>
+<label for="select-radio-<c:out value="<%=propName %>"/>03" style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.common.isNullDisplayName')}" >
+<input id="select-radio-<c:out value="<%=propName %>"/>03" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>"<%=checked %>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}
 </label>
 </li>
 <%

@@ -199,7 +199,7 @@ public class StringPropertyEditor extends PrimitivePropertyEditor implements Lab
 			displayNameKey="generic_editor_StringPropertyEditor_isNullSearchEnabledDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=145,	
-			description="「値なしを検索条件の選択肢に追加するかを指定します。値なしが選択された場合、IS NULLを検索条件として指定します。",
+			description="「値なし」を検索条件の選択肢に追加するかを指定します。値なしが選択された場合、IS NULLを検索条件として指定します。",
 			descriptionKey="generic_editor_StringPropertyEditor_isNullSearchEnabledDescriptionKey"
 	)
 	@EntityViewField(

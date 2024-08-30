@@ -343,14 +343,6 @@
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/reference/ReferencePropertyAutocompletion.jsp");
 	}
-	
-	// 「値なし」を検索条件の選択肢に追加するか
-	String isNullLabel = "";
-	String isNullValue = "";
-	if(editor.isIsNullSearchEnabled()) {
-		isNullLabel = GemResourceBundleUtil.resourceString("generic.editor.select.SelectPropertyEditor_Condition.isNullDisplayName");
-		isNullValue = Constants.ISNULL_VALUE;
-	}
 
 	//検索条件
 	if (editor.getDisplayType() == ReferenceDisplayType.SELECT) {
@@ -413,9 +405,9 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 <%
 			// 「値なし」を検索条件の選択肢に追加するか
 			if (editor.isIsNullSearchEnabled()) {
-				String selected = isNullValue.equals(value) ? " selected" : "";
+				String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
 %>
-<option value="<c:out value="<%=isNullValue %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=isNullLabel %>" /></option>
+<option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
 <%
 			}
 %>
@@ -439,9 +431,9 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 <%
 			// 「値なし」を検索条件の選択肢に追加するか
 			if (editor.isIsNullSearchEnabled()) {
-				String selected = isNullValue.equals(value) ? " selected" : "";
+				String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
 %>
-<option value="<c:out value="<%=isNullValue %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=isNullLabel %>" /></option>
+<option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
 <%
 			}
 %>
@@ -539,10 +531,10 @@ $(function() {
 		
 		// 「値なし」を検索条件の選択肢に追加するか
 		if (editor.isIsNullSearchEnabled()) {
-			String checked = oids.contains(isNullValue) ? " checked" : "";
+			String checked = oids.contains(Constants.ISNULL_VALUE) ? " checked" : "";
 %>
-<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=isNullLabel %>" />">
-<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=isNullValue %>"/>" <%=checked %>/><c:out value="<%=isNullLabel %>" />
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.common.isNullDisplayName')}">
+<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <%=checked %>/>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}
 </label></li>
 <%
 		}

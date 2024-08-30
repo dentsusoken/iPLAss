@@ -273,7 +273,7 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 			displayNameKey="generic_editor_ReferencePropertyEditor_isNullSearchEnabledDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=350,
-			description="「値なしを検索条件の選択肢に追加するかを指定します。値なしが選択された場合、IS NULLを検索条件として指定します。",
+			description="「値なし」を検索条件の選択肢に追加するかを指定します。値なしが選択された場合、IS NULLを検索条件として指定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_isNullSearchEnabledDescriptionKey"
 	)
 	@EntityViewField(

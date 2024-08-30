@@ -19,6 +19,7 @@
  --%>
 
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@ page import="java.util.List" %>
@@ -98,11 +99,9 @@
 		
 				// 「値なし」を検索条件の選択肢に追加するか
 				if (editor.isIsNullSearchEnabled()) {
-					String isNullLabel = GemResourceBundleUtil.resourceString("generic.editor.select.SelectPropertyEditor_Condition.isNullDisplayName");
-					String isNullValue = Constants.ISNULL_VALUE;
-					String selected = isNullValue.equals(value) ? " selected" : "";
+					String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
 %>
-<option value="<c:out value="<%=isNullValue %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=isNullLabel %>" /></option>
+<option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
 <%
 				}
 %>
