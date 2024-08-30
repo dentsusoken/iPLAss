@@ -113,26 +113,37 @@
 		<depend>org.iplass.mtp.impl.session.SessionService</depend>
 		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
 		<depend>org.iplass.mtp.impl.auth.log.AuthLoggerService</depend>
-		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAuthenticationProvider">
- 			<property name="updatable" value="true" />
- 			<property name="providerName" value="default" />
 
- 			<!-- if load custom reference property at login, set userEntityResolver.eagerLoadReferenceProperty -->
- 			<!--
- 			<property name="userEntityResolver" class="org.iplass.mtp.impl.auth.authenticate.DefaultUserEntityResolver">
-	 			<property name="eagerLoadReferenceProperty" value="rank" />
-	 			<property name="eagerLoadReferenceProperty" value="groups" />
-	 			<property name="eagerLoadReferenceProperty" value="yourCustomReference" />
- 			</property>
- 			 -->
+		<bean name="defaultBuiltinAuthenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAuthenticationProvider">
+				<property name="updatable" value="true" />
+				<property name="providerName" value="default" />
 
-			<property name="passwordHashSettings">
-				<property name="version" value="1" />
-				<property name="passwordHashAlgorithm" value="SHA-256" />
-				<property name="systemSalt" value="iPLAssSystemSalt" />
-				<property name="stretchCount" value="1000" />
-			</property>
-		</property>
+				<!-- if load custom reference property at login, set userEntityResolver.eagerLoadReferenceProperty -->
+				<!--
+	 			<property name="userEntityResolver" class="org.iplass.mtp.impl.auth.authenticate.DefaultUserEntityResolver">
+		 			<property name="eagerLoadReferenceProperty" value="rank" />
+		 			<property name="eagerLoadReferenceProperty" value="groups" />
+		 			<property name="eagerLoadReferenceProperty" value="yourCustomReference" />
+	 			</property>
+	 			 -->
+
+				<property name="passwordHashSettings">
+					<property name="version" value="1" />
+					<property name="passwordHashAlgorithm" value="SHA-256" />
+					<property name="systemSalt" value="iPLAssSystemSalt" />
+					<property name="stretchCount" value="1000" />
+				</property>
+				<property name="passwordHashSettings" class="org.iplass.mtp.impl.auth.authenticate.builtin.Argon2PasswordHashSetting">
+					<property name="version" value="2" />
+					<!-- TODO change salt for each environment for better security measure-->
+					<property name="systemSalt" value="iPLAss#a617d5c1-3f37-4345-a98c-b53b45aff801" />
+					<property name="parallelism" value="1" />
+					<property name="memorySizeKB" value="19456" />
+					<property name="iterations" value="2" />
+				</property>
+		</bean>
+
+		<property name="authenticationProvider" ref="defaultBuiltinAuthenticationProvider" />
 
 		<property name="authorizationProvider" class="org.iplass.mtp.impl.auth.authorize.builtin.BuiltinAuthorizationProvider">
 			<property name="grantAllPermissionsToAdmin" value="true" />

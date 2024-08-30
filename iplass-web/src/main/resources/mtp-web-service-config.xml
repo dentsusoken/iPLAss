@@ -76,34 +76,18 @@
 	<!-- 認証関連 -->
 	<service>
 		<interface>org.iplass.mtp.impl.auth.AuthService</interface>
+
+		<bean name="defaultBuiltinAuthenticationProvider">
+			<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.builtin.web.IdPasswordAutoLoginHandler" />
+		</bean>
+
 		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.rememberme.RememberMeTokenAuthenticationProvider"  inherit="false">
 			<property name="deleteTokenOnFailure" value="true" />
 			<property name="clientStore" class="org.iplass.mtp.impl.auth.authenticate.token.web.AuthTokenCookieStore">
 				<property name="cookieName" value="iprmtkn" />
 			</property>
 
-			<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAuthenticationProvider">
-	 			<property name="updatable" value="true" />
-	 			<property name="providerName" value="default" />
-
-	 			<!-- if load custom reference property at login, set userEntityResolver.eagerLoadReferenceProperty -->
-	 			<!--
-	 			<property name="userEntityResolver" class="org.iplass.mtp.impl.auth.authenticate.DefaultUserEntityResolver">
-		 			<property name="eagerLoadReferenceProperty" value="rank" />
-		 			<property name="eagerLoadReferenceProperty" value="groups" />
-		 			<property name="eagerLoadReferenceProperty" value="yourCustomReference" />
-	 			</property>
-	 			 -->
-
-				<property name="passwordHashSettings">
-					<property name="version" value="1" />
-					<property name="passwordHashAlgorithm" value="SHA-256" />
-					<property name="systemSalt" value="iPLAssSystemSalt" />
-					<property name="stretchCount" value="1000" />
-				</property>
-				
-				<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.builtin.web.IdPasswordAutoLoginHandler" />
-			</property>
+			<property name="authenticationProvider" ref="defaultBuiltinAuthenticationProvider" />
 		</property>
 
 		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.oidc.OIDCAuthenticationProvider" inherit="false">
