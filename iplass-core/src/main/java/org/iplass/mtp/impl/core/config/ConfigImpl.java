@@ -437,7 +437,8 @@ public class ConfigImpl implements Config {
 					}
 				}
 			} catch (RuntimeException e) {
-				throw new ServiceConfigrationException("cant set property value:" + propName + " to " + bean,  e);
+				throw new ServiceConfigrationException("cant set property value:" + propName + "(" + val.type + ") to " + bean,  e);
+				
 			}
 		}
 	}
@@ -738,10 +739,6 @@ public class ConfigImpl implements Config {
 	}
 	
 	public void notifyInited(Service service) {
-		for (Instance i: beanMap.values()) {
-			inited(service, i);
-		}
-		
 		for (Instance i: propMap.values()) {
 			inited(service, i);
 		}
@@ -769,9 +766,6 @@ public class ConfigImpl implements Config {
 	
 	public void notifyDestroyed() {
 		for (Instance i: propMap.values()) {
-			destroyed(i);
-		}
-		for (Instance i: beanMap.values()) {
 			destroyed(i);
 		}
 	}

@@ -215,8 +215,6 @@ public class NameValue {
 			//ref定義を優先
 			merged.ref = ref;
 		} else {
-			merged.ref = superNameValue.ref;
-			
 			if (className != null) {
 				merged.className = className;
 			} else {
