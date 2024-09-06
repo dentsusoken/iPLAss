@@ -273,9 +273,10 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 				return mappingFunction.apply(k);
 			});
 			
-			if (computed[0] && entry != null) {
-				sendByKeyEvent(entry);
-			}
+			//通知は値がnullではない状態から変更された場合に限定する
+			//if (computed[0] && entry != null) {
+				//sendByKeyEvent(entry);
+			//}
 			return entry;
 		}
 
@@ -287,8 +288,8 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 				return remappingFunction.apply(k, v);
 			});
 			
-			if (entry != old[0]) {
-				//通知は値が変更された場合に限定する
+			if (entry != old[0] && !noClusterEventOnPut && old[0] != null) {
+				//通知は値がnullではない状態から変更された場合に限定する
 				sendByKeyEvent((entry != null)? entry: old[0]);
 			}
 			return entry;
