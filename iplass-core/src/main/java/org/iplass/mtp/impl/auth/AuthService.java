@@ -504,18 +504,14 @@ public class AuthService implements Service {
 	@Override
 	public void init(Config config) {
 
-		userSessionStore = (UserSessionStore) config.getBean("userSessionStore");
-		if (userSessionStore == null) {
-			userSessionStore = new DefaultUserSessionStore();
-			userSessionStore.inited(this, config);
-		}
+		userSessionStore = config.getValueWithSupplier("userSessionStore", UserSessionStore.class, () -> new DefaultUserSessionStore());
 
-		List<?> authenticationProviderList = config.getBeans("authenticationProvider");
+		List<?> authenticationProviderList = config.getValues("authenticationProvider", AuthenticationProvider.class);
 		if (authenticationProviderList != null) {
 			authenticationProviders = authenticationProviderList.toArray(new AuthenticationProvider[authenticationProviderList.size() + 1]);
 			//プログラム内部からの利用用途のAuthenticationProvider
 			InternalAuthenticationProvider internal = new InternalAuthenticationProvider();
-			internal.inited(this, config);
+			config.addServiceInitListener(internal);
 			authenticationProviders[authenticationProviders.length - 1] = internal;
 		}
 
@@ -525,7 +521,7 @@ public class AuthService implements Service {
 		}
 		allAmm = new LoggingAccountManagementModule(ammr.stripOrThis());
 
-		authorizationProvider = (AuthorizationProvider) config.getBean("authorizationProvider");
+		authorizationProvider = config.getValue("authorizationProvider", AuthorizationProvider.class);
 		authPolicyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
 	}
 

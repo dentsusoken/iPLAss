@@ -48,26 +48,10 @@ public class PerEntityAnalyzerSetting implements AnalyzerSetting {
 
 	@Override
 	public void inited(LuceneFulltextSearchService service, Config config) {
-		if (defaultSetting != null) {
-			defaultSetting.inited(service, config);
-		}
-		if (settingsPerEntity != null) {
-			for (AnalyzerSetting as: settingsPerEntity.values()) {
-				as.inited(service, config);
-			}
-		}
 	}
 
 	@Override
 	public void destroyed() {
-		if (defaultSetting != null) {
-			defaultSetting.destroyed();
-		}
-		if (settingsPerEntity != null) {
-			for (AnalyzerSetting as: settingsPerEntity.values()) {
-				as.destroyed();
-			}
-		}
 	}
 
 	@Override

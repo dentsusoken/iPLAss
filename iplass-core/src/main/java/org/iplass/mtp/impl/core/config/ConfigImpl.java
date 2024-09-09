@@ -44,6 +44,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.iplass.mtp.spi.Config;
@@ -87,9 +88,11 @@ public class ConfigImpl implements Config {
 		boolean inited;
 		
 		Map<String, Instance> beanMap;
+		List<ServiceInitListener<Service>> internalCreatedListeners;
 		
-		Instance(Map<String, Instance> beanMap) {
+		Instance(Map<String, Instance> beanMap, List<ServiceInitListener<Service>> internalCreatedListeners) {
 			this.beanMap = beanMap;
+			this.internalCreatedListeners = internalCreatedListeners;
 		}
 		
 		void add(NameValue nv) {
@@ -99,6 +102,7 @@ public class ConfigImpl implements Config {
 			nvl.add(nv);
 		}
 		
+		@SuppressWarnings("unchecked")
 		private Object toInstance(NameValue nv) {
 			if (nv.isNull()) {
 				return null;
@@ -124,16 +128,18 @@ public class ConfigImpl implements Config {
 					builder.setClassName(nv.getClassName());
 				}
 				if (nv.getArg() != null) {
-					@SuppressWarnings("unchecked")
 					HashMap<String, Object> argMap = (HashMap<String, Object>) toBean(HashMap.class, nv.getArg(), null);
 					builder.setArgs(argMap);
 				}
 				if (nv.getProperty() != null) {
-					@SuppressWarnings("unchecked")
 					HashMap<String, Object> propMap = (HashMap<String, Object>) toBean(HashMap.class, nv.getProperty(), null);
 					builder.setProperties(propMap);
 				}
-				return builder.build();
+				Object ret = builder.build();
+				if (ret instanceof ServiceInitListener) {
+					internalCreatedListeners.add((ServiceInitListener<Service>) ret);
+				}
+				return ret;
 			}
 			
 			if (nv.getClassName() == null) {
@@ -244,14 +250,18 @@ public class ConfigImpl implements Config {
 			}
 		}
 		
+		@SuppressWarnings("unchecked")
 		private Object toBean(Class<?> type, NameValue[] props, NameValue[] args) {
 			try {
 				Object bean = newIns(type, args);
 				if (props != null) {
-					LinkedHashMap<String, Instance> nvMap = toNameValueMap(props, beanMap);
+					LinkedHashMap<String, Instance> nvMap = toNameValueMap(props, beanMap, internalCreatedListeners);
 					for (Map.Entry<String, Instance> e: nvMap.entrySet()) {
 						setProperty(bean, e.getKey(), e.getValue());
 					}
+				}
+				if (bean instanceof ServiceInitListener) {
+					internalCreatedListeners.add((ServiceInitListener<Service>) bean);
 				}
 				return bean;
 			} catch (NoSuchMethodException e) {
@@ -332,7 +342,7 @@ public class ConfigImpl implements Config {
 			if (args == null) {
 				return type.newInstance();
 			} else {
-				LinkedHashMap<String, Instance> argMap = toNameValueMap(args, beanMap);
+				LinkedHashMap<String, Instance> argMap = toNameValueMap(args, beanMap, internalCreatedListeners);
 				ArrayList<Constructor<?>> targets = new ArrayList<>();
 				for (Constructor<?> c: type.getConstructors()) {
 					if (argMap.size() == c.getParameterCount()) {
@@ -444,15 +454,20 @@ public class ConfigImpl implements Config {
 	}
 
 	private String serviceName;
+	private List<ServiceInitListener<Service>> internalCreatedListeners;
 	private LinkedHashMap<String, Instance> beanMap;
 	private LinkedHashMap<String, Instance> propMap;
 	private Map<String, Service> dependentServices;
 	private List<String> dependentServiceNames;
 
+	private boolean initedPhase;
+	private List<ServiceInitListener<Service>> additionalListeners;
+
 	public ConfigImpl(String serviceName, NameValue[] nameValues, NameValue[] beanNameValues) {
 		this.serviceName = serviceName;
-		beanMap = toNameValueMap(beanNameValues, null);
-		propMap = toNameValueMap(nameValues, beanMap);
+		internalCreatedListeners = new ArrayList<>();
+		beanMap = toNameValueMap(beanNameValues, null, internalCreatedListeners);
+		propMap = toNameValueMap(nameValues, beanMap, internalCreatedListeners);
 	}
 	
 	public String getServiceName() {
@@ -488,7 +503,7 @@ public class ConfigImpl implements Config {
 		return (T) dependentServices.get(serviceName);
 	}
 	
-	private static LinkedHashMap<String, Instance> toNameValueMap(NameValue[] nameValues, Map<String, Instance> sharedMap) {
+	private static LinkedHashMap<String, Instance> toNameValueMap(NameValue[] nameValues, Map<String, Instance> sharedMap, List<ServiceInitListener<Service>> internalCreatedListeners) {
 		LinkedHashMap<String, Instance> nvm = new LinkedHashMap<>();
 		if (sharedMap == null) {
 			sharedMap = nvm;
@@ -497,7 +512,7 @@ public class ConfigImpl implements Config {
 			for (NameValue nv: nameValues) {
 				Instance val = nvm.get(nv.getName());
 				if (val == null) {
-					val = new Instance(sharedMap);
+					val = new Instance(sharedMap, internalCreatedListeners);
 					nvm.put(nv.getName(), val);
 				}
 				val.add(nv);
@@ -703,6 +718,7 @@ public class ConfigImpl implements Config {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getValue(String name, Class<T> type, T defaultValue) {
 		T ret = getValue(name, type);
@@ -710,12 +726,33 @@ public class ConfigImpl implements Config {
 			if (logger.isDebugEnabled()) {
 				logger.debug(name + "(type:" + type.getName() + ") undefined. so use defaultValue:" + defaultValue);
 			}
+			if (defaultValue instanceof ServiceInitListener) {
+				internalCreatedListeners.add((ServiceInitListener<Service>) defaultValue);
+			}
 			return defaultValue;
 		} else {
 			return ret;
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getValueWithSupplier(String name, Class<T> type, Supplier<T> defaultValueSupplier) {
+		T ret = getValue(name, type);
+		if (ret == null) {
+			ret = defaultValueSupplier.get();
+			if (logger.isDebugEnabled()) {
+				logger.debug(name + "(type:" + type.getName() + ") undefined. so use defaultValue:" + ret);
+			}
+			if (ret instanceof ServiceInitListener) {
+				internalCreatedListeners.add((ServiceInitListener<Service>) ret);
+			}
+
+		}
+		return ret;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> List<T> getValues(String name, Class<T> type, List<T> defaultValues) {
 		List<T> ret = getValues(name, type);
@@ -723,11 +760,37 @@ public class ConfigImpl implements Config {
 			if (logger.isDebugEnabled()) {
 				logger.debug(name + "(type:" + type.getName() + ") undefined. so use defaultValue:" + defaultValues);
 			}
-
+			if (defaultValues != null) {
+				for (T dv : defaultValues) {
+					if (dv instanceof ServiceInitListener) {
+						internalCreatedListeners.add((ServiceInitListener<Service>) dv);
+					}
+				}
+			}
 			return defaultValues;
 		} else {
 			return ret;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> List<T> getValuesWithSupplier(String name, Class<T> type, Supplier<List<T>> defaultValueSupplier) {
+		List<T> ret = getValues(name, type);
+		if (ret == null) {
+			ret = defaultValueSupplier.get();
+			if (logger.isDebugEnabled()) {
+				logger.debug(name + "(type:" + type.getName() + ") undefined. so use defaultValue:" + ret);
+			}
+			if (ret != null) {
+				for (T dv : ret) {
+					if (dv instanceof ServiceInitListener) {
+						internalCreatedListeners.add((ServiceInitListener<Service>) dv);
+					}
+				}
+			}
+		}
+		return ret;
 	}
 
 	public Object getBean(String name) {
@@ -739,52 +802,53 @@ public class ConfigImpl implements Config {
 	}
 	
 	public void notifyInited(Service service) {
+		for (Instance i: beanMap.values()) {
+			i.init(null);
+		}
+		
 		for (Instance i: propMap.values()) {
-			inited(service, i);
+			i.init(null);
+		}
+		
+		initedPhase = true;
+		additionalListeners = new ArrayList<>();
+		
+		for (ServiceInitListener<Service> l : internalCreatedListeners) {
+			((ServiceInitListener<Service>) l).inited(service, this);
+		}
+		
+		while (additionalListeners.size() > 0) {
+			List<ServiceInitListener<Service>> forInited = additionalListeners;
+			additionalListeners = new ArrayList<>();
+			for (ServiceInitListener<Service> l : forInited) {
+				l.inited(service, this);
+			}
+			internalCreatedListeners.addAll(forInited);
+		}
+		
+	}
+
+	public void notifyDestroyed() {
+		for (ServiceInitListener<Service> l : internalCreatedListeners) {
+			((ServiceInitListener<Service>) l).destroyed();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void inited(Service service, Instance i) {
-		i.init(null);
-		if (i.instance instanceof ServiceInitListener) {
-			((ServiceInitListener<Service>) i.instance).inited(service, this);
-		} else if (i.instance instanceof List<?>) {
-			for (Object lp: (List<?>) i.instance) {
-				if (lp instanceof ServiceInitListener) {
-					((ServiceInitListener<Service>) lp).inited(service, this);
-				}
-			}
-		} else if (i.instance instanceof Map<?,?>) {
-			for (Object mp: ((Map<?,?>) i.instance).values()) {
-				if (mp instanceof ServiceInitListener) {
-					((ServiceInitListener<Service>) mp).inited(service, this);
-				}
-			}
-		}
-	}
-	
-	public void notifyDestroyed() {
-		for (Instance i: propMap.values()) {
-			destroyed(i);
+	@Override
+	public <T extends Service> void addServiceInitListener(ServiceInitListener<T> listener) {
+		if (initedPhase) {
+			additionalListeners.add((ServiceInitListener<Service>) listener);
+		} else {
+			internalCreatedListeners.add((ServiceInitListener<Service>) listener);
 		}
 	}
 
-	private void destroyed(Instance i) {
-		if (i.instance instanceof ServiceInitListener) {
-			((ServiceInitListener<?>) i.instance).destroyed();
-		} else if (i.instance instanceof List<?>) {
-			for (Object lp: (List<?>) i.instance) {
-				if (lp instanceof ServiceInitListener) {
-					((ServiceInitListener<?>) lp).destroyed();
-				}
-			}
-		} else if (i.instance instanceof Map<?,?>) {
-			for (Object mp: ((Map<?,?>) i.instance).values()) {
-				if (mp instanceof ServiceInitListener) {
-					((ServiceInitListener<?>) mp).destroyed();
-				}
-			}
+	@Override
+	public <T extends Service> void removeServiceInitListener(ServiceInitListener<T> listener) {
+		internalCreatedListeners.remove(listener);
+		if (additionalListeners != null) {
+			additionalListeners.remove(listener);
 		}
 	}
 

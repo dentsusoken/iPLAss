@@ -45,7 +45,6 @@ public class OpenIdConnectService extends AbstractTypedMetaDataService<MetaOpenI
 	public static final String OIDC_PATH = "/oidc/";
 	/** メタデータデフォルト名 */
 	public static final String DEFAULT_NAME = "DEFAULT";
-	private boolean isCreateHttpClientConfig = false;
 
 	/**
 	 * type map
@@ -129,21 +128,13 @@ public class OpenIdConnectService extends AbstractTypedMetaDataService<MetaOpenI
 		jwksCacheLifetimeMinutes = config.getValue("jwksCacheLifetimeMinutes", Integer.TYPE, 6 * 60);//6時間
 		clientSecretType = config.getValue("clientSecretType", String.class, ClientSecretHandler.TYPE_OIDC_CLIENT_SECRET);
 
-		httpClientConfig = config.getValue("httpClientConfig", HttpClientConfig.class);
-		if (httpClientConfig == null) {
-			httpClientConfig = new HttpClientConfig();
-			httpClientConfig.inited(this, config);
-			isCreateHttpClientConfig = true;
-		}
+		httpClientConfig = config.getValueWithSupplier("httpClientConfig", HttpClientConfig.class, () -> new HttpClientConfig());
 		objectMapper = new ObjectMapper();
 		clientSecretHandler = (ClientSecretHandler) ServiceRegistry.getRegistry().getService(AuthTokenService.class).getHandler(clientSecretType);
 	}
 
 	@Override
 	public void destroy() {
-		if (isCreateHttpClientConfig) {
-			httpClientConfig.destroyed();
-		}
 	}
 
 	/**

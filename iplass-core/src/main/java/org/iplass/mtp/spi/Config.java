@@ -21,6 +21,7 @@ package org.iplass.mtp.spi;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Service初期化時の設定をあらわすインタフェースです。
@@ -82,7 +83,7 @@ public interface Config {
 	 * @return
 	 */
 	public List<String> getValues(String name);
-	
+
 	/**
 	 * 設定ファイルに定義されている設定項目（Service直下のproperty）に定義される値を指定のtypeとして取得します。
 	 * typeは、プリミティブ型、Map、JavaBeans形式のクラスを指定可能です。
@@ -92,10 +93,14 @@ public interface Config {
 	 * @return
 	 */
 	public <T> T getValue(String name, Class<T> type);
+
 	/**
 	 * 設定ファイルに定義されている設定項目（Service直下のproperty）に定義される値を指定のtypeとして取得します。
 	 * typeは、プリミティブ型、Map、JavaBeans形式のクラスを指定可能です。
 	 * もし、nameで指定される設定項目が存在しない場合は、defaultValueを返却します。
+	 * 
+	 * defaultValueがServiceInitListenerをimplementsしていて、且つdefaultValueが値として適用された場合、
+	 * ServiceInitListenerを介してinited()/destrpyed()が通知されます。
 	 * 
 	 * @param name
 	 * @param type
@@ -103,7 +108,23 @@ public interface Config {
 	 * @return
 	 */
 	public <T> T getValue(String name, Class<T> type, T defaultValue);
-	
+
+	/**
+	 * 設定ファイルに定義されている設定（Service直下のproperty）に定義される値を指定のtypeとして取得します。
+	 * typeは、プリミティブ型、Map、JavaBeans形式のクラスを指定可能です。
+	 * もし、nameで指定される設定項目が存在しない場合は、defaultValueSupplierを利用してdefaultValueを生成します。
+	 * 
+	 * defaultValueSupplierが生成するインスタンスがServiceInitListenerをimplementsしていた場合、
+	 * ServiceInitListenerを介してinited()/destrpyed()が通知されます。
+	 * 
+	 * @param <T>
+	 * @param name
+	 * @param type
+	 * @param defaultValueSupplier defaultValueを生成するSupplier
+	 * @return
+	 */
+	public <T> T getValueWithSupplier(String name, Class<T> type, Supplier<T> defaultValueSupplier);
+
 	/**
 	 * 設定ファイルに定義されている設定項目（Service直下のproperty）に定義される値を指定のtypeのListとして取得します。
 	 * typeは、プリミティブ型、Map、JavaBeans形式のクラスを指定可能です。
@@ -113,11 +134,14 @@ public interface Config {
 	 * @return
 	 */
 	public <T> List<T> getValues(String name, Class<T> type);
-	
+
 	/**
 	 * 設定ファイルに定義されている設定項目（Service直下のproperty）に定義される値を指定のtypeのListとして取得します。
 	 * typeは、プリミティブ型、Map、JavaBeans形式のクラスを指定可能です。
 	 * もし、nameで指定される設定項目が存在しない場合は、defaultValueを返却します。
+	 * 
+	 * defaultValuesのList内のインスタンスがServiceInitListenerをimplementsしていて、且つdefaultValuesが値として適用された場合、
+	 * ServiceInitListenerを介してinited()/destrpyed()が通知されます。
 	 * 
 	 * @param name
 	 * @param type
@@ -125,6 +149,38 @@ public interface Config {
 	 * @return
 	 */
 	public <T> List<T> getValues(String name, Class<T> type, List<T> defaultValues);
+
+	/**
+	 * 設定ファイルに定義されている設定項目（Service直下のproperty）に定義される値を指定のtypeのListとして取得します。
+	 * typeは、プリミティブ型、Map、JavaBeans形式のクラスを指定可能です。
+	 * もし、nameで指定される設定項目が存在しない場合は、defaultValueSupplierを利用してdefaultValuesを生成します。
+	 * 
+	 * defaultValueSupplierが生成するList内の個別のインスタンスがServiceInitListenerをimplementsしていた場合、
+	 * ServiceInitListenerを介してinited()/destrpyed()が通知されます。
+	 * 
+	 * @param <T>
+	 * @param name
+	 * @param type
+	 * @param defaultValueSupplier defaultValuesを生成するSupplier
+	 * @return
+	 */
+	public <T> List<T> getValuesWithSupplier(String name, Class<T> type, Supplier<List<T>> defaultValueSupplier);
+
+	/**
+	 * 明示的にServiceInitListenerを追加します。
+	 * 
+	 * @param <T>
+	 * @param listener
+	 */
+	public <T extends Service> void addServiceInitListener(ServiceInitListener<T> listener);
+	
+	/**
+	 * 明示的にServiceInitListenerを削除します。
+	 * 
+	 * @param <T>
+	 * @param listener
+	 */
+	public <T extends Service> void removeServiceInitListener(ServiceInitListener<T> listener);
 
 	/**
 	 * 設定項目の型が不定の設定項目（Service直下のproperty）を取得します。

@@ -59,10 +59,6 @@ public class CompositeMetaDataStore implements MetaDataStore {
 			throw new ServiceConfigrationException("CompositeMetaDataStore must be set 'store' property.");
 		}
 
-		for (MetaDataStore sil : store) {
-			sil.inited(service, config);
-		}
-
 		if(defaultStoreClass == null) {
 			throw new ServiceConfigrationException("CompositeMetaDataStore must be set 'defaultStoreClassName' property.");
 		}

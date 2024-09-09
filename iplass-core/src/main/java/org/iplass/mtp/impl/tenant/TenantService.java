@@ -42,11 +42,7 @@ public class TenantService implements Service {
 	
 	@Override
 	public void init(Config config) {
-		store = config.getValue("store", TenantStore.class);
-		if (store == null) {
-			store = new RdbTenantStore();
-			store.inited(this, config);
-		}
+		store = config.getValueWithSupplier("store", TenantStore.class, () -> new RdbTenantStore());
 	}
 
 	@Override

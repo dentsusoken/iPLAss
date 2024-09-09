@@ -209,11 +209,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 
 			indexWriterSetting = config.getValue("indexWriterSetting", IndexWriterSetting.class, new IndexWriterSetting());
 
-			analyzerSetting = config.getValue("analyzerSetting", AnalyzerSetting.class);
-			if (analyzerSetting == null) {
-				analyzerSetting = new JapaneseAnalyzerSetting();
-				analyzerSetting.inited(this, config);
-			}
+			analyzerSetting = config.getValueWithSupplier("analyzerSetting", AnalyzerSetting.class, () -> new JapaneseAnalyzerSetting());
 		}
 
 		defaultOperator = config.getValue("defaultOperator", Operator.class);

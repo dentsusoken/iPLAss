@@ -64,7 +64,7 @@ public class AuthLoggerService implements Service {
 		}
 		if (defaultLogger == null) {
 			defaultLogger = new Slf4jAuthLogger();
-			defaultLogger.inited(this, config);
+			config.addServiceInitListener(defaultLogger);
 		}
 	}
 

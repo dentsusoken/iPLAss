@@ -49,20 +49,10 @@ public class AddableMultiLobStore implements LobStore {
 
 	@Override
 	public void inited(LobStoreService service, Config config) {
-		if (lobStore != null) {
-			for (LobStore ls: lobStore) {
-				ls.inited(service, config);
-			}
-		}
 	}
 
 	@Override
 	public void destroyed() {
-		if (lobStore != null) {
-			for (LobStore ls: lobStore) {
-				ls.destroyed();
-			}
-		}
 	}
 
 	@Override

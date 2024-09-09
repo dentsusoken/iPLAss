@@ -72,7 +72,6 @@ public class RemoteOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 	private HttpClientConfig httpClientConfig;
 	private ExponentialBackoff exponentialBackoff;
 	private boolean reloadUser;
-	private boolean isCreateHttpClientConfig = false;
 
 	private WebApiObjectMapperService objectMapperService;
 	private SimpleHttpInvoker httpInvoker;
@@ -297,18 +296,14 @@ public class RemoteOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 
 		if (httpClientConfig == null) {
 			httpClientConfig = new HttpClientConfig();
-			isCreateHttpClientConfig = true;
+			config.addServiceInitListener(httpClientConfig);
 		}
-		httpClientConfig.inited(service, config);
 
-		httpInvoker = new SimpleHttpInvoker(httpClientConfig.getInstance(), exponentialBackoff);
+		httpInvoker = new SimpleHttpInvoker(httpClientConfig, exponentialBackoff);
 	}
 
 	@Override
 	public void destroyed() {
-		if (isCreateHttpClientConfig) {
-			httpClientConfig.destroyed();
-		}
 		httpInvoker = null;
 	}
 

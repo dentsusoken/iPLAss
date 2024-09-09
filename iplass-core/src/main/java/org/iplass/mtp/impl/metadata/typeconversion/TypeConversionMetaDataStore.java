@@ -54,12 +54,10 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 
 	@Override
 	public void inited(MetaDataRepository service, Config config) {
-		store.inited(service, config);
 	}
 
 	@Override
 	public void destroyed() {
-		store.destroyed();
 	}
 
 	@Override

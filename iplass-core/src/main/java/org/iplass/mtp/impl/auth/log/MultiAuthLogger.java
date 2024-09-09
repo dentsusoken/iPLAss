@@ -39,20 +39,10 @@ public class MultiAuthLogger extends AuthLoggerBase {
 
 	@Override
 	public void inited(AuthLoggerService service, Config config) {
-		if (logger != null) {
-			for (AuthLogger l: logger) {
-				l.inited(service, config);
-			}
-		}
 	}
 
 	@Override
 	public void destroyed() {
-		if (logger != null) {
-			for (AuthLogger l: logger) {
-				l.destroyed();
-			}
-		}
 	}
 
 	@Override

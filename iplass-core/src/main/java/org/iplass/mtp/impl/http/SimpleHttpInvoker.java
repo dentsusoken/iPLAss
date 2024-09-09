@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.slf4j.Logger;
@@ -38,18 +37,18 @@ import org.slf4j.LoggerFactory;
 public class SimpleHttpInvoker {
 	private static Logger logger = LoggerFactory.getLogger(SimpleHttpInvoker.class);
 
-	private CloseableHttpClient httpClient;
+	private HttpClientConfig httpClientConfig;
 	private ExponentialBackoff exponentialBackoff;
 	/** レスポンス文字コード */
 	private Charset contentCharset = StandardCharsets.UTF_8;
 
 	/**
 	 * コンストラクタ
-	 * @param httpClient httpClient
+	 * @param httpClient httpClientConfig
 	 * @param exponentialBackoff ExponentialBackoff
 	 */
-	public SimpleHttpInvoker(CloseableHttpClient httpClient, ExponentialBackoff exponentialBackoff) {
-		this.httpClient = httpClient;
+	public SimpleHttpInvoker(HttpClientConfig httpClientConfig, ExponentialBackoff exponentialBackoff) {
+		this.httpClientConfig = httpClientConfig;
 		if (exponentialBackoff == null) {
 			this.exponentialBackoff = ExponentialBackoff.NO_RETRY;
 		} else {
@@ -94,7 +93,7 @@ public class SimpleHttpInvoker {
 		try {
 			exponentialBackoff.execute(() -> {
 				try {
-					httpClient.execute(request, resp -> {
+					httpClientConfig.getInstance().execute(request, resp -> {
 						HttpEntity entity = resp.getEntity();
 
 						try {

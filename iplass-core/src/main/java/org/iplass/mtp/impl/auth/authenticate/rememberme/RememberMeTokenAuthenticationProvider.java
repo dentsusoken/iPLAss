@@ -127,7 +127,6 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 
 	@Override
 	public void inited(AuthService service, Config config) {
-		authenticationProvider.inited(service, config);
 		if (trustedAuthValidator != null) {
 			trustedAuthValidator.inited(service, this);
 		}
@@ -142,7 +141,6 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 
 	@Override
 	public void destroyed() {
-		authenticationProvider.destroyed();
 	}
 
 	@Override
