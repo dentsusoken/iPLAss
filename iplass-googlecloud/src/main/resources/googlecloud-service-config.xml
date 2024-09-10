@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<!-- example of GoogleCloudSettings -->
+	<service>
+		<interface>org.iplass.mtp.impl.googlecloud.GoogleCloudSettings</interface>
+		<class>org.iplass.mtp.impl.googlecloud.GoogleCloudSettings</class>
+
+		<!-- set credentials factory -->
+		<property name="credentialsFactory" class="org.iplass.mtp.impl.googlecloud.ServiceAccountSecretKeyGoogleCredentialsFactory">
+			<property name="serviceAccountSecretKeyFilePath" value="/path/to/firebase-adminsdk.json" />
+			<property name="scope" value="https://www.googleapis.com/auth/firebase.messaging" />
+			<!--
+			<property name="proxyHost" value="proxy.domain" />
+			<property name="proxyPort" value="8080" />
+			-->
+		</property>
+	</service>
+	
+	<!-- example of org.iplass.mtp.impl.pushnotification.fcmv1.PushNotificationService  -->
+	<service>
+		<interface>org.iplass.mtp.impl.pushnotification.PushNotificationService</interface>
+
+		<class>org.iplass.mtp.impl.pushnotification.fcmv1.PushNotificationService</class>
+		<property name="projectId" value="[set Google Project Id]" />
+		<property name="compressRequest" value="true" />
+		<property name="apiRequestValidateOnly" value="false" />
+		<property name="enableRetry" value="true" />
+		<property name="exponentialBackoff" class="org.iplass.mtp.impl.http.ExponentialBackoff" />
+		<property name="defaultRetryAfterSeconds" value="60" />
+		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig">
+			<!-- 必要に応じて設定する -->
+			<!--
+			<property name="proxyHost" value="[set proxyHost if needed]" />
+			<property name="proxyPort" value="[set proxyPort if needed]" />
+			<property name="connectionTimeout" value="30000" />
+			<property name="soTimeout" value="30000" />
+			<property name="poolingMaxTotal" value="[set poolingMaxTotal if needed]" />
+			<property name="poolingDefaultMaxPerRoute" value="[set poolingDefaultMaxPerRoute if needed]" />
+			<property name="poolingTimeToLive" value="[set poolingTimeToLive if needed]" />
+			-->
+		</property>
+		<!-- RegistrationTokenHandler 実装クラス。 -->
+		<!--
+		<property name="registrationTokenHandler" class="[set class of implements org.iplass.mtp.pushnotification.fcmv1.RegistrationTokenHandler]" />
+		-->
+		<!-- PushNotificationListener 実装クラス。複数設定可能 -->
+		<!-- 
+		<property name="listener" class="[set class of implements org.iplass.mtp.pushnotification.PushNotificationListener]" />
+		-->
+	</service>
+</serviceDefinition>

@@ -168,6 +168,9 @@ ext {
 		
 		'com.ibm.icu:icu4j': '75.1',
 		
+		// google
+		'com.google.auth:google-auth-library-oauth2-http': '1.24.1',
+		
 		'org.junit:junit-bom': '5.10.2',
 		
 		//webjars(admin)
