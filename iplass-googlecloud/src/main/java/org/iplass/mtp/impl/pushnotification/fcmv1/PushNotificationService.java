@@ -244,8 +244,8 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		exponentialBackoff = enableRetry
 				// 再実行が有効
 				? config.getValue("exponentialBackoff", ExponentialBackoff.class, new ExponentialBackoff())
-				// 再実行が無効
-				: ExponentialBackoff.NO_RETRY;
+						// 再実行が無効
+						: ExponentialBackoff.NO_RETRY;
 		defaultRetryAfterSeconds = config.getValue("defaultRetryAfterSeconds", Long.class, DEFAULT_RETRY_AFTER_SECONDS).longValue();
 		registrationTokenHandler = config.getValue("registrationTokenHandler", RegistrationTokenHandler.class, new EmptyRegistrationTokenHandler());
 		httpClientConfig = config.getValueWithSupplier("httpClientConfig", HttpClientConfig.class, () -> new HttpClientConfig());
@@ -580,7 +580,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		if (PushNotificationTargetType.TOKEN == responseDetail.getTarget().getType()
 				&& PushNotificationStatus.FAIL_DEVICE_UNREGISTERED == responseDetail.getStatus()) {
 			// DEVICE_UNREGISTERED の場合に、未登録を通知する。
-			registrationTokenHandler.unregistered(responseDetail.getTarget().getId());
+			registrationTokenHandler.unregistered(responseDetail.getTarget());
 		}
 
 	}

@@ -19,6 +19,7 @@
  */
 package org.iplass.mtp.impl.pushnotification.fcmv1;
 
+import org.iplass.mtp.pushnotification.fcmv1.PushNotificationTarget;
 import org.iplass.mtp.pushnotification.fcmv1.RegistrationTokenHandler;
 
 /**
@@ -32,7 +33,7 @@ import org.iplass.mtp.pushnotification.fcmv1.RegistrationTokenHandler;
  */
 class EmptyRegistrationTokenHandler implements RegistrationTokenHandler {
 	@Override
-	public void unregistered(String token) {
-		//NOP
+	public void unregistered(PushNotificationTarget target) {
+		// NOP
 	}
 }

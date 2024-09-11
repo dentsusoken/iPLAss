@@ -36,5 +36,5 @@ public interface RegistrationTokenHandler {
 	 * デバイストークン未登録の場合に実行する処理
 	 * @param token 未登録トークン
 	 */
-	void unregistered(String token);
+	void unregistered(PushNotificationTarget target);
 }
