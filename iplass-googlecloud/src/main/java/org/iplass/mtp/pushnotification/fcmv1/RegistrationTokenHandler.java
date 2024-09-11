@@ -34,7 +34,7 @@ package org.iplass.mtp.pushnotification.fcmv1;
 public interface RegistrationTokenHandler {
 	/**
 	 * デバイストークン未登録の場合に実行する処理
-	 * @param token 未登録トークン
+	 * @param target 未登録トークン情報
 	 */
 	void unregistered(PushNotificationTarget target);
 }
