@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!DOCTYPE serviceDefinition>
 <serviceDefinition>
+	<!-- FCM HTTP v1 API を利用するための設定-->
 	<!-- example of GoogleCloudSettings -->
 	<service>
 		<interface>org.iplass.mtp.impl.googlecloud.GoogleCloudSettings</interface>
@@ -26,7 +27,16 @@
 		<property name="compressRequest" value="true" />
 		<property name="apiRequestValidateOnly" value="false" />
 		<property name="enableRetry" value="true" />
-		<property name="exponentialBackoff" class="org.iplass.mtp.impl.http.ExponentialBackoff" />
+		<property name="exponentialBackoff" class="org.iplass.mtp.impl.http.ExponentialBackoff">
+			<!-- 必要に応じて設定する -->
+			<!--
+			<property name="retryIntervalMillis" value="500" />
+			<property name="randomizationFactor" value="0.5" />
+			<property name="multiplier" value="1.5" />
+			<property name="maxIntervalMillis" value="60000" />
+			<property name="maxElapsedTimeMillis" value="300000" />
+			-->
+		</property>
 		<property name="defaultRetryAfterSeconds" value="60" />
 		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig">
 			<!-- 必要に応じて設定する -->
