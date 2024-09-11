@@ -32,8 +32,6 @@ import java.util.Map;
  *
  */
 public class PushNotification {
-	/** toの宛先タイプ */
-	private TargetType targetType;
 	//target
 	private String to;
 	private List<String> toList;
@@ -49,22 +47,6 @@ public class PushNotification {
 
 	/** Push通知汎用メッセージ */
 	private Map<String, Object> message;
-
-	/**
-	 * toの宛先タイプを取得する
-	 * @return toの宛先タイプ
-	 */
-	public TargetType getTargetType() {
-		return targetType;
-	}
-
-	/**
-	 * toの宛先タイプを設定する
-	 * @param targetType toの宛先タイプ
-	 */
-	public void setTargetType(TargetType targetType) {
-		this.targetType = targetType;
-	}
 
 	/**
 	 * 送信先をセット/追加する。<br>

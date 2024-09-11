@@ -54,11 +54,11 @@ import org.iplass.mtp.pushnotification.NotificationPayload;
 import org.iplass.mtp.pushnotification.PushNotification;
 import org.iplass.mtp.pushnotification.PushNotificationException;
 import org.iplass.mtp.pushnotification.PushNotificationResult;
-import org.iplass.mtp.pushnotification.TargetType;
 import org.iplass.mtp.pushnotification.fcm.RegistrationIdHandler;
 import org.iplass.mtp.pushnotification.fcmv1.PushNotificationResponseDetail;
 import org.iplass.mtp.pushnotification.fcmv1.PushNotificationStatus;
 import org.iplass.mtp.pushnotification.fcmv1.PushNotificationTarget;
+import org.iplass.mtp.pushnotification.fcmv1.PushNotificationTargetType;
 import org.iplass.mtp.pushnotification.fcmv1.RegistrationTokenHandler;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceConfigrationException;
@@ -88,14 +88,16 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
  * Push通知を行う際の PushNotification は次のように設定されることを想定している。
  * </p>
  * <ol>
- * <li>{@link PushNotification#setMessage(Map)} に メッセージリソースの仕様 の通りに情報を設定する。宛先を含める。</li>
+ * <li>{@link org.iplass.mtp.pushnotification.PushNotification#setMessage(Map)} に メッセージリソースの仕様 の通りに情報を設定する。宛先を含める。</li>
  * <li>
- * {@link PushNotification#setMessage(Map)} に メッセージリソースの仕様 の通りに情報が設定する。<br>
- * 宛先を含まない場合、{@link PushNotification#setTargetType(TargetType)} で宛先タイプの指定、{@link PushNotification#addTo(String)} で必要な宛先情報を追加する。
+ * {@link org.iplass.mtp.pushnotification.PushNotification#setMessage(Map)} に メッセージリソースの仕様 の通りに情報が設定する。<br>
+ * 宛先を含まない場合、{@link org.iplass.mtp.pushnotification.PushNotification#addTo(String)} で必要な宛先情報を追加する。<br>
+ * 宛先には、宛先タイプを意味するプレフィックスを指定する必要がある。プレフィックスは {@link org.iplass.mtp.pushnotification.fcmv1.PushNotificationTargetType#getPrefixedValue(String)} を利用して付与する。
  * </li>
  * <li>
- * {@link PushNotification#setMessage(Map)} を利用しない場合、その他のメソッドに通知に関する情報を設定する。<br>
- * その際、{@link PushNotification#setTargetType(TargetType)} で宛先タイプの指定、{@link PushNotification#addTo(String)} で必要な宛先情報を追加する。
+ * {@link org.iplass.mtp.pushnotification.PushNotification#setMessage(Map)} を利用しない場合、その他のメソッドに通知に関する情報を設定する。<br>
+ * その際、{@link org.iplass.mtp.pushnotification.PushNotification#addTo(String)} で必要な宛先情報を追加する。<br>
+ * 宛先には、宛先タイプを意味するプレフィックスを指定する必要がある。プレフィックスは {@link org.iplass.mtp.pushnotification.fcmv1.PushNotificationTargetType#getPrefixedValue(String)} を利用して付与する。
  * </li>
  * </ol>
  *
@@ -301,17 +303,17 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 		if (null != target) {
 			// message に target 指定されていても無視する
-			message.remove(target.getType().getV1ApiFieldName());
+			message.remove(target.getType().getFieldName());
 			// 無視される宛先の情報をログ出力
 			logger.warn("A destination({}:{}) was set but is ignored, because it is the destination set for the message.", target.getType(), target.getId());
 		}
 
 		List<PushNotificationResponseDetail> responseDetailList = new ArrayList<PushNotificationResponseDetail>();
-		for (String to : notification.getToList()) {
+		for (String prefixedTo : notification.getToList()) {
 			Map<String, Object> messageClone = new HashMap<>(message);
-			messageClone.put(notification.getTargetType().getV1ApiFieldName(), to);
+			PushNotificationTarget toTarget = PushNotificationTarget.create(prefixedTo);
+			messageClone.put(toTarget.getType().getFieldName(), toTarget.getId());
 
-			PushNotificationTarget toTarget = new PushNotificationTarget(notification.getTargetType(), to);
 			PushNotificationResponseDetail responseDetail = pushApi.request(toTarget, messageClone);
 			responseDetailList.add(responseDetail);
 		}
@@ -335,8 +337,8 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		PushNotificationTarget target = getTarget(message);
 		if (null == target) {
 			// 宛先指定なし
-			throw new PushNotificationException("Notification target information is not set. Please set " + TargetType.TOKEN.getV1ApiFieldName() + " or "
-					+ TargetType.TOPIC.getV1ApiFieldName() + " or " + TargetType.CONDITION.getV1ApiFieldName() + ".");
+			throw new PushNotificationException("Notification target information is not set. Please set " + PushNotificationTargetType.TOKEN.getFieldName() + " or "
+					+ PushNotificationTargetType.TOPIC.getFieldName() + " or " + PushNotificationTargetType.CONDITION.getFieldName() + ".");
 		}
 		List<PushNotificationResponseDetail> responseDetailList = new ArrayList<PushNotificationResponseDetail>();
 		PushNotificationResponseDetail responseDetail = pushApi.request(target, message);
@@ -575,7 +577,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 	 * @param responseDetail
 	 */
 	protected void postProcessOfReequestPushApi(PushNotificationResponseDetail responseDetail) {
-		if (TargetType.TOKEN == responseDetail.getTarget().getType()
+		if (PushNotificationTargetType.TOKEN == responseDetail.getTarget().getType()
 				&& PushNotificationStatus.FAIL_DEVICE_UNREGISTERED == responseDetail.getStatus()) {
 			// DEVICE_UNREGISTERED の場合に、未登録を通知する。
 			registrationTokenHandler.unregistered(responseDetail.getTarget().getId());
@@ -589,8 +591,8 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 	 * @return 宛先情報
 	 */
 	private PushNotificationTarget getTarget(Map<String, Object> message) {
-		for (TargetType type : TargetType.values()) {
-			String v = (String) message.get(type.getV1ApiFieldName());
+		for (PushNotificationTargetType type : PushNotificationTargetType.values()) {
+			String v = (String) message.get(type.getFieldName());
 			if (null != v) {
 				return new PushNotificationTarget(type, v);
 			}

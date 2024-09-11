@@ -19,7 +19,8 @@
  */
 package org.iplass.mtp.pushnotification.fcmv1;
 
-import org.iplass.mtp.pushnotification.TargetType;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * FCM v1 API 用 Push 通知対象
@@ -28,7 +29,7 @@ import org.iplass.mtp.pushnotification.TargetType;
  */
 public class PushNotificationTarget {
 	/** 対象タイプ */
-	private TargetType type;
+	private PushNotificationTargetType type;
 	/** 対象識別子 */
 	private String id;
 
@@ -37,7 +38,7 @@ public class PushNotificationTarget {
 	 * @param type 対象タイプ
 	 * @param id 対象識別子
 	 */
-	public PushNotificationTarget(TargetType type, String id) {
+	public PushNotificationTarget(PushNotificationTargetType type, String id) {
 		this.type = type;
 		this.id = id;
 	}
@@ -46,7 +47,7 @@ public class PushNotificationTarget {
 	 * 対象タイプを取得します
 	 * @return type 対象タイプ
 	 */
-	public TargetType getType() {
+	public PushNotificationTargetType getType() {
 		return type;
 	}
 
@@ -61,5 +62,28 @@ public class PushNotificationTarget {
 	@Override
 	public String toString() {
 		return PushNotificationTarget.class.getSimpleName() + "{type=" + type + ", id=" + id + "}";
+	}
+
+	/** トークン、トピック、条件のいずれかのプレフィックス付き宛先のパターン */
+	private static final Pattern ANY_PREFIXED_VALUE_PATTERN = Pattern
+			.compile("^("
+					+ PushNotificationTargetType.TOKEN.getFieldName() + "|"
+					+ PushNotificationTargetType.TOPIC.getFieldName() + "|"
+					+ PushNotificationTargetType.CONDITION.getFieldName() + "):(.*)");
+
+	/**
+	 * 通知対象インスタンスを作成する
+	 * @param anyPrefixedValue トークン、トピック、条件のいずれかのプレフィックス付き宛先
+	 * @return 通知対象
+	 */
+	public static PushNotificationTarget create(String anyPrefixedValue) {
+		Matcher matcher = ANY_PREFIXED_VALUE_PATTERN.matcher(anyPrefixedValue);
+		if (!matcher.find()) {
+			throw new IllegalArgumentException("The target specified does not match the pattern. (target = " + anyPrefixedValue + ")");
+		}
+
+		String prefixIsFieldName = matcher.group(1);
+		String target = matcher.group(2);
+		return new PushNotificationTarget(PushNotificationTargetType.getTargetType(prefixIsFieldName), target);
 	}
 }
