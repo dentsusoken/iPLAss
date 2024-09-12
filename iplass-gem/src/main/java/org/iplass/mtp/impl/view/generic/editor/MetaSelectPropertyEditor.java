@@ -69,6 +69,9 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 	
 	/** RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
 	private boolean itemDirectionColumn;
+	
+	/** 「値なし」を検索条件の選択肢に追加するか */
+	private boolean isNullSearchEnabled;
 
 	/**
 	 * 表示タイプを取得します。
@@ -172,6 +175,22 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 	public void setItemDirectionColumn(boolean itemDirectionColumn) {
 		this.itemDirectionColumn = itemDirectionColumn;
 	}
+	
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
+	 * @return 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public boolean isIsNullSearchEnabled() {
+		return isNullSearchEnabled;
+	}
+
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを設定します。
+	 * @param isNullSearchEnabled 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public void setIsNullSearchEnabled(boolean isNullSearchEnabled) {
+		this.isNullSearchEnabled = isNullSearchEnabled;
+	}
 
 	@Override
 	public MetaSelectPropertyEditor copy() {
@@ -187,6 +206,7 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 		values = pe.getValues();
 		sortCsvOutputValue = pe.isSortCsvOutputValue();
 		itemDirectionColumn = pe.isItemDirectionColumn();
+		isNullSearchEnabled = pe.isIsNullSearchEnabled();
 		insertWithLabelValue = pe.isInsertWithLabelValue();
 		updateWithLabelValue = pe.isUpdateWithLabelValue();
 	}
@@ -200,6 +220,7 @@ public class MetaSelectPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setValues(values);
 		editor.setSortCsvOutputValue(sortCsvOutputValue);
 		editor.setItemDirectionColumn(itemDirectionColumn);
+		editor.setIsNullSearchEnabled(isNullSearchEnabled);
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);
 		return editor;

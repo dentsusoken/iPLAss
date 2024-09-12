@@ -19,6 +19,7 @@
  --%>
 
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@ page import="java.util.List" %>
@@ -94,6 +95,16 @@
 %>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>">
 <option value=""><%= pleaseSelectLabel %></option>
+<%
+		
+				// 「値なし」を検索条件の選択肢に追加するか
+				if (editor.isIsNullSearchEnabled()) {
+					String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
+%>
+<option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
+<%
+				}
+%>
 <%
 				for (EditorValue tmp : editor.getValues()) {
 					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);

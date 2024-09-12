@@ -373,13 +373,9 @@ public class NormalSearchContext extends SearchContextBase {
 		} else {
 			String value = getRequest().getParam(conditionPrefix + propName);
 			if (value == null || value.trim().length() == 0) return null;
-
-			if (p instanceof BooleanProperty) {
-				ret = Boolean.parseBoolean(value);
-			} else {
-				//文字とかそのまま検索できるプロパティは変換しない
-				ret = value;
-			}
+			
+			//文字とかそのまま検索できるプロパティは変換しない
+			ret = value;
 		}
 		return ret;
 	}

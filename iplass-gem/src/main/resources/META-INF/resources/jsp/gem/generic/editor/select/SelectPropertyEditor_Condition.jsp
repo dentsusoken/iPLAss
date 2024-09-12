@@ -81,7 +81,8 @@
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/select/SelectPropertyAutocompletion.jsp");
 	}
-
+	
+	
 	if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) {
 		List<String> valueList = new ArrayList<String>();
 		if (_propValue == null || _propValue.length == 0) {
@@ -101,6 +102,17 @@
 %>
 <li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=param.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
+</label></li>
+<%
+		}
+%>
+
+<%
+		if (editor.isIsNullSearchEnabled()) {
+			String checked = valueList.contains(Constants.ISNULL_VALUE) ? " checked" : "";
+%>
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.common.isNullDisplayName')}">
+<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=checked %>"/> />${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}
 </label></li>
 <%
 		}
@@ -181,6 +193,18 @@ $(function() {
 <%
 		}
 %>
+
+<%
+		if (editor.isIsNullSearchEnabled()) {
+			String checked = Constants.ISNULL_VALUE.equals(value) ? " checked" : "";
+%>
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.common.isNullDisplayName')}">
+<input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=checked %>"/> />${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}
+</label></li>
+<%
+		}
+%>
+
 <li class="unspecified-option" style="<c:out value="<%=unspecifiedOptionStyleContent %>" />">
 <label style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.select.SelectPropertyEditor_Condition.unspecified')}">
 <input type="radio" name="<c:out value="<%=propName %>"/>" value="" <c:out value="<%=defaultChecked %>"/> />${m:rs("mtp-gem-messages", "generic.editor.select.SelectPropertyEditor_Condition.unspecified")}
@@ -225,6 +249,17 @@ $(function() {
 <input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.SELECT.name()%>" />
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>">
 <option value=""><%= pleaseSelectLabel %></option>
+<%
+		
+		// 「値なし」を検索条件の選択肢に追加するか
+		if (editor.isIsNullSearchEnabled()) {
+			String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
+%>
+<option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
+<%
+		}
+%>
+
 <%
 		for (EditorValue param : editor.getValues()) {
 			String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, param, selectValueList);

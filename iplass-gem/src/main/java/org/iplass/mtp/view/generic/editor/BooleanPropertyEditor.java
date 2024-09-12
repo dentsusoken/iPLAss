@@ -182,6 +182,20 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor implements La
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
 	private boolean itemDirectionColumn;
+	
+	/** 「値なし」を検索条件の選択肢に追加するか */
+	@MetaFieldInfo(
+			displayName="「値なし」を検索条件の選択肢に追加するか",
+			displayNameKey="generic_editor_BooleanPropertyEditor_isNullSearchEnabledDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=230,
+			description="「値なし」を検索条件の選択肢に追加するかを指定します。値なしが選択された場合、IS NULLを検索条件として指定します。",
+			descriptionKey="generic_editor_BooleanPropertyEditor_isNullSearchEnabledDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private boolean isNullSearchEnabled;
 
 	/**
 	 * コンストラクタ
@@ -352,5 +366,21 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor implements La
 	 */
 	public void setItemDirectionColumn(boolean itemDirectionColumn) {
 		this.itemDirectionColumn = itemDirectionColumn;
+	}
+	
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
+	 * @return 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public boolean isIsNullSearchEnabled() {
+		return isNullSearchEnabled;
+	}
+
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを設定します。
+	 * @param isNullSearchEnabled 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public void setIsNullSearchEnabled(boolean isNullSearchEnabled) {
+		this.isNullSearchEnabled = isNullSearchEnabled;
 	}
 }

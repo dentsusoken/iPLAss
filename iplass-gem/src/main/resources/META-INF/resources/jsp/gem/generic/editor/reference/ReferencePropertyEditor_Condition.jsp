@@ -403,6 +403,15 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 >
 <option value=""><%= pleaseSelectLabel %></option>
 <%
+			// 「値なし」を検索条件の選択肢に追加するか
+			if (editor.isIsNullSearchEnabled()) {
+				String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
+%>
+<option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
+<%
+			}
+%>
+<%
 			for (Entity ref : entityList) {
 				String selected = "";
 				if (value.equals(ref.getOid())) selected = " selected";
@@ -418,6 +427,16 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 %>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>">
 <option value=""><%= pleaseSelectLabel %></option>
+
+<%
+			// 「値なし」を検索条件の選択肢に追加するか
+			if (editor.isIsNullSearchEnabled()) {
+				String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
+%>
+<option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
+<%
+			}
+%>
 <%
 			for (Entity ref : entityList) {
 				String selected = "";
@@ -504,6 +523,18 @@ $(function() {
 %>
 <li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=displayPropLabel %>" />">
 <input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=ref.getOid() %>"/>" <%=checked %>/><c:out value="<%=displayPropLabel %>" />
+</label></li>
+<%
+		}
+%>
+<%
+		
+		// 「値なし」を検索条件の選択肢に追加するか
+		if (editor.isIsNullSearchEnabled()) {
+			String checked = oids.contains(Constants.ISNULL_VALUE) ? " checked" : "";
+%>
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.common.isNullDisplayName')}">
+<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <%=checked %>/>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}
 </label></li>
 <%
 		}

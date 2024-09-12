@@ -102,6 +102,9 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
+	
+	/** 「値なし」を検索条件の選択肢に追加するか */
+	private boolean isNullSearchEnabled;
 
 	/**
 	 * 表示タイプを取得します。
@@ -324,6 +327,22 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
 		this.updateWithLabelValue = updateWithLabelValue;
 	}
+	
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
+	 * @return 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public boolean isIsNullSearchEnabled() {
+		return isNullSearchEnabled;
+	}
+
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを設定します。
+	 * @param isNullSearchEnabled 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public void setIsNullSearchEnabled(boolean isNullSearchEnabled) {
+		this.isNullSearchEnabled = isNullSearchEnabled;
+	}
 
 	@Override
 	public void applyConfig(PropertyEditor editor) {
@@ -351,6 +370,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		richtextEditorOption = e.getRichtextEditorOption();
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
+		isNullSearchEnabled = e.isIsNullSearchEnabled();
 	}
 
 	@Override
@@ -379,6 +399,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		richtextEditorOption = e.getRichtextEditorOption();
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
+		isNullSearchEnabled = e.isIsNullSearchEnabled();
 	}
 
 	@Override
@@ -404,6 +425,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setRichtextEditorOption(richtextEditorOption);
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);
+		editor.setIsNullSearchEnabled(isNullSearchEnabled);
 		return editor;
 	}
 
@@ -432,6 +454,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		e.setRichtextEditorOption(richtextEditorOption);
 		e.setInsertWithLabelValue(insertWithLabelValue);
 		e.setUpdateWithLabelValue(updateWithLabelValue);
+		e.setIsNullSearchEnabled(isNullSearchEnabled);
 	}
 
 	@Override

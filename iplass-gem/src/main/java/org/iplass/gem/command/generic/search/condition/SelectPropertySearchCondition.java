@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.search.condition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.text.StringTokenizer;
@@ -31,8 +32,11 @@ import org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.condition.expr.Or;
+import org.iplass.mtp.entity.query.condition.expr.Paren;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.In;
+import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.tenant.TenantI18nInfo;
 import org.iplass.mtp.view.generic.editor.EditorValue;
@@ -65,16 +69,46 @@ public class SelectPropertySearchCondition extends PropertySearchCondition {
 					SelectValue[] array = (SelectValue[]) value;
 					if (array != null) {
 						if (array.length == 1) {
-							conditions.add(new Equals(getPropertyName(), array[0].getValue()));
+							// 「値なし」を検索条件の選択肢に追加するか
+							if (editor.isIsNullSearchEnabled() && Constants.ISNULL_VALUE.equals(array[0].getValue())) {
+								conditions.add(new IsNull(getPropertyName()));
+							} else {
+								conditions.add(new Equals(getPropertyName(), array[0].getValue()));
+							}
 						} else if (array.length > 1) {
 							List<String> valueList = new ArrayList<>();
+							Boolean isIsNullSearchEnabled = Boolean.FALSE;
 							for (SelectValue tmp : array) {
-								valueList.add(tmp.getValue());
+								// 「値なし」を検索条件の選択肢に追加するか
+								if(editor.isIsNullSearchEnabled() &&
+										Constants.ISNULL_VALUE.equals(tmp.getValue())) {
+									isIsNullSearchEnabled = Boolean.TRUE;
+								} else {
+									valueList.add(tmp.getValue());
+								}
 							}
-							conditions.add(new In(getPropertyName(), valueList.toArray()));
+							if(isIsNullSearchEnabled) {
+								// 「値なし」を検索条件の選択肢に追加するの場合、「is null」を追加する
+								conditions.add(new Paren(new Or(
+										new IsNull(getPropertyName()),
+										new In(getPropertyName(), valueList.toArray()))));
+							} else {
+								conditions.add(new In(getPropertyName(), valueList.toArray()));
+							}
 						}
 					}
-				} else {
+				}
+				else if (SelectDisplayType.SELECT == editor.getDisplayType() ||
+						SelectDisplayType.RADIO == editor.getDisplayType()) {
+					SelectValue sv = (SelectValue) value;
+					// 「値なし」を検索条件の選択肢に追加するか
+					if (editor.isIsNullSearchEnabled() && Constants.ISNULL_VALUE.equals(sv.getValue())) {
+						conditions.add(new IsNull(getPropertyName()));
+					} else {
+						conditions.add(new Equals(getPropertyName(), sv.getValue()));
+					}
+				}
+				else {
 					SelectValue sv = (SelectValue) value;
 					conditions.add(new Equals(getPropertyName(), sv.getValue()));
 				}

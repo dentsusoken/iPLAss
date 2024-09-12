@@ -76,6 +76,9 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 	
 	/** RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
 	private boolean itemDirectionColumn;
+	
+	/** 「値なし」を検索条件の選択肢に追加するか */
+	private boolean isNullSearchEnabled;
 
 	/**
 	 * 表示タイプを取得します。
@@ -208,6 +211,22 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 	public void setItemDirectionColumn(boolean itemDirectionColumn) {
 		this.itemDirectionColumn = itemDirectionColumn;
 	}
+	
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
+	 * @return 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public boolean isIsNullSearchEnabled() {
+		return isNullSearchEnabled;
+	}
+
+	/**
+	 * 「値なし」を検索条件の選択肢に追加するかを設定します。
+	 * @param isNullSearchEnabled 「値なし」を検索条件の選択肢に追加するか
+	 */
+	public void setIsNullSearchEnabled(boolean isNullSearchEnabled) {
+		this.isNullSearchEnabled = isNullSearchEnabled;
+	}
 
 	@Override
 	public MetaBooleanPropertyEditor copy() {
@@ -229,6 +248,7 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
 		itemDirectionColumn = e.isItemDirectionColumn();
+		isNullSearchEnabled = e.isIsNullSearchEnabled();
 	}
 
 	@Override
@@ -243,6 +263,7 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);
 		editor.setItemDirectionColumn(itemDirectionColumn);
+		editor.setIsNullSearchEnabled(isNullSearchEnabled);
 		return editor;
 	}
 

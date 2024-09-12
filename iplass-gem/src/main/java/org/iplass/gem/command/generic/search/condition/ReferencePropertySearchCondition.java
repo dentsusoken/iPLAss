@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.search.condition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.iplass.gem.GemConfigService;
@@ -30,12 +31,14 @@ import org.iplass.gem.command.generic.search.SearchConditionDetail;
 import org.iplass.gem.command.generic.search.SearchConditionValidationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.Not;
+import org.iplass.mtp.entity.query.condition.expr.Or;
 import org.iplass.mtp.entity.query.condition.expr.Paren;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.Greater;
@@ -91,19 +94,44 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 				//選択型はOIDで一致検索
 				Entity entity = (Entity) value;
 				if (entity.getOid() != null && !entity.getOid().isEmpty()) {
-					conditions.add(new Equals(getPropertyName() + "." + Entity.OID, entity.getOid()));
+					// 「値なし」を検索条件の選択肢に追加するか
+					if (editor.isIsNullSearchEnabled() && Constants.ISNULL_VALUE.equals(entity.getOid())) {
+						conditions.add(new IsNull(getPropertyName() + "." + Entity.OID));
+					} else {
+						conditions.add(new Equals(getPropertyName() + "." + Entity.OID, entity.getOid()));
+					}
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX) {
 				Entity[] list = (Entity[]) value;
 				if (list != null) {
 					if (list.length == 1) {
-						conditions.add(new Equals(getPropertyName() + "." + Entity.OID, list[0].getOid()));
+						// 「値なし」を検索条件の選択肢に追加するか
+						if (editor.isIsNullSearchEnabled() && Constants.ISNULL_VALUE.equals(list[0].getOid())) {
+							conditions.add(new IsNull(getPropertyName() + "." + Entity.OID));
+						} else {
+							conditions.add(new Equals(getPropertyName() + "." + Entity.OID, list[0].getOid()));
+						}
+						
 					} else if (list.length > 1) {
 						List<String> oidList = new ArrayList<>();
+						Boolean isIsNullSearchEnabled = Boolean.FALSE;
 						for (Entity tmp : list) {
-							oidList.add(tmp.getOid());
+							// 「値なし」を検索条件の選択肢に追加するか
+							if(editor.isIsNullSearchEnabled() &&
+									Constants.ISNULL_VALUE.equals(tmp.getOid())) {
+								isIsNullSearchEnabled = Boolean.TRUE;
+							} else {
+								oidList.add(tmp.getOid());
+							}
 						}
-						conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
+						if(isIsNullSearchEnabled) {
+							// 「値なし」を検索条件の選択肢に追加するの場合、「is null」を追加する
+							conditions.add(new Paren(new Or(
+									new IsNull(getPropertyName() + "." + Entity.OID),
+									new In(getPropertyName() + "." + Entity.OID, oidList.toArray()))));
+						} else {
+							conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
+						}
 					}
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.REFCOMBO) {

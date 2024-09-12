@@ -121,6 +121,16 @@
 %>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>" size="1">
 <option value="" <%=checked3 %>><%=pleaseSelectLabel %></option>
+<%
+		
+		// 「値なし」を検索条件の選択肢に追加するか
+		if (editor.isIsNullSearchEnabled()) {
+			String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
+%>
+<option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
+<%
+		}
+%>
 <option value="true" <%=checked1 %>><c:out value="<%=trueLabel %>"/></option>
 <option value="false" <%=checked2 %>><c:out value="<%=falseLabel %>"/></option>
 </select>
@@ -181,9 +191,21 @@ $(function() {
 <input id="select-radio-<c:out value="<%=propName %>"/>02" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="false"<%=checked2 %>><c:out value="<%=falseLabel %>"/>
 </label>
 </li>
+<%
+		if (editor.isIsNullSearchEnabled() && BooleanDisplayType.RADIO == editor.getDisplayType() ) {
+			String checked = Constants.ISNULL_VALUE.equals(value) ? " checked" : "";
+%>
+<li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>>
+<label for="select-radio-<c:out value="<%=propName %>"/>03" style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.common.isNullDisplayName')}" >
+<input id="select-radio-<c:out value="<%=propName %>"/>03" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>"<%=checked %>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}
+</label>
+</li>
+<%
+		}
+%>
 <li class="unspecified-option" style="<c:out value="<%=unspecifiedOptionStyleContent %>" />">
-<label for="select-radio-<c:out value="<%=propName %>"/>03" style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.boolean.BooleanPropertyEditor_Condition.unspecified')}" >
-<input id="select-radio-<c:out value="<%=propName %>"/>03" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="" <%=checked3 %>>${m:rs("mtp-gem-messages", "generic.editor.boolean.BooleanPropertyEditor_Condition.unspecified")}
+<label for="select-radio-<c:out value="<%=propName %>"/>04" style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.boolean.BooleanPropertyEditor_Condition.unspecified')}" >
+<input id="select-radio-<c:out value="<%=propName %>"/>04" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="" <%=checked3 %>>${m:rs("mtp-gem-messages", "generic.editor.boolean.BooleanPropertyEditor_Condition.unspecified")}
 </label>
 </li>
 </ul>
