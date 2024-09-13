@@ -54,8 +54,8 @@ import org.iplass.mtp.pushnotification.NotificationPayload;
 import org.iplass.mtp.pushnotification.PushNotification;
 import org.iplass.mtp.pushnotification.PushNotificationException;
 import org.iplass.mtp.pushnotification.PushNotificationResult;
-import org.iplass.mtp.pushnotification.fcm.RegistrationIdHandler;
 import org.iplass.mtp.pushnotification.fcmv1.PushNotificationResponseDetail;
+import org.iplass.mtp.pushnotification.fcmv1.PushNotificationResultDetailKey;
 import org.iplass.mtp.pushnotification.fcmv1.PushNotificationStatus;
 import org.iplass.mtp.pushnotification.fcmv1.PushNotificationTarget;
 import org.iplass.mtp.pushnotification.fcmv1.PushNotificationTargetType;
@@ -101,11 +101,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
  * </li>
  * </ol>
  *
- * <p>
- * V1 API ではレスポンスに新しいデバイストークンが返却されることが無くなったので、
- * {@link RegistrationIdHandler#refreshRegistrationId(String, String)} を実行できない。
- * </p>
- *
  * <ul>
  * <li><a href="https://firebase.google.com/docs/cloud-messaging">FCM サービス概要</a></li>
  * <li><a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages/send">FCM 送信 API仕様</a></li>
@@ -119,9 +114,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
  * @author SEKIGUCHI Naoya
  */
 public class PushNotificationService extends org.iplass.mtp.impl.pushnotification.PushNotificationService {
-	/** レスポンス詳細キー：詳細リスト */
-	public static final String RESPONSE_DETAILS_KEY_DETAIL_LIST = "responseDetailList";
-
 	/** サービスエンドポイント：接頭辞 */
 	private static final String SERVICE_ENDPOINT_PREFIX = "https://fcm.googleapis.com/v1/projects/";
 	/** サービスエンドポイント：接尾辞 */
@@ -319,7 +311,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		}
 
 		Map<String, Object> detail = new HashMap<String, Object>();
-		detail.put(RESPONSE_DETAILS_KEY_DETAIL_LIST, responseDetailList);
+		detail.put(PushNotificationResultDetailKey.DETAIL_LIST, responseDetailList);
 		// 失敗数が 0 であれば全て成功と判定する
 		boolean isSuccessAll = responseDetailList.stream().filter(r -> PushNotificationStatus.SUCCESS != r.getStatus()).count() == 0;
 		return new PushNotificationResult(isSuccessAll, detail);
@@ -345,7 +337,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		responseDetailList.add(responseDetail);
 
 		Map<String, Object> detail = new HashMap<String, Object>();
-		detail.put(RESPONSE_DETAILS_KEY_DETAIL_LIST, responseDetailList);
+		detail.put(PushNotificationResultDetailKey.DETAIL_LIST, responseDetailList);
 		// 失敗数が 0 であれば全て成功と判定する
 		boolean isSuccessAll = responseDetailList.stream().filter(r -> PushNotificationStatus.SUCCESS != r.getStatus()).count() == 0;
 		return new PushNotificationResult(isSuccessAll, detail);
@@ -398,9 +390,9 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 			});
 
 			// リトライ回数を設定したインスタンスを返却
-			return PushNotificationResponseDetail.Builder.of(result[0])
-					.setRetryCount(retryCount[0])
-					.build();
+			PushNotificationResponseDetailImpl detail = new PushNotificationResponseDetailImpl(result[0]);
+			detail.setRetryCount(retryCount[0]);
+			return detail;
 
 		} catch (InterruptedException e) {
 			throw new PushNotificationException("FCM v1 API call thread is Interrupted.", e);
@@ -455,19 +447,19 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 		} catch (ConnectionRequestTimeoutException | SocketTimeoutException e) {
 			// 通信タイムアウト関連
-			return PushNotificationResponseDetail.Builder.fail(PushNotificationStatus.FAIL_TIMEOUT)
-					.setErrorMessage(e.getMessage())
-					.setCause(e)
-					.setTarget(target)
-					.build();
+			PushNotificationResponseDetailImpl timeoutDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.FAIL_TIMEOUT);
+			timeoutDetail.setErrorMessage(e.getMessage());
+			timeoutDetail.setCause(e);
+			timeoutDetail.setTarget(target);
+			return timeoutDetail;
 
 		} catch (IOException e) {
 			// その他のIO例外
-			return PushNotificationResponseDetail.Builder.fail(PushNotificationStatus.FAIL)
-					.setErrorMessage(e.getMessage())
-					.setCause(e)
-					.setTarget(target)
-					.build();
+			PushNotificationResponseDetailImpl failDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.FAIL);
+			failDetail.setErrorMessage(e.getMessage());
+			failDetail.setCause(e);
+			failDetail.setTarget(target);
+			return failDetail;
 		}
 	}
 
@@ -490,11 +482,11 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 		if (HttpStatus.SC_OK == code) {
 			// 正常レスポンス
-			return PushNotificationResponseDetail.Builder.success()
-					.setTarget(target)
-					.setResponse(response)
-					.setMessageId((String) contentsMap.get(Keys.Success.NAME))
-					.build();
+			PushNotificationResponseDetailImpl successDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.SUCCESS);
+			successDetail.setTarget(target);
+			successDetail.setResponse(response);
+			successDetail.setMessageId((String) contentsMap.get(Keys.Success.NAME));
+			return successDetail;
 		}
 
 		// エラーレスポンス
@@ -520,11 +512,11 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		Object error = contentsMap.get(Keys.Fail.ERROR);
 		if (error instanceof String) {
 			// "error" キーの値が文字列の場合
-			return PushNotificationResponseDetail.Builder.fail(PushNotificationStatus.FAIL)
-					.setTarget(target)
-					.setResponse(response)
-					.setErrorMessage((String) error)
-					.build();
+			PushNotificationResponseDetailImpl failDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.FAIL);
+			failDetail.setTarget(target);
+			failDetail.setResponse(response);
+			failDetail.setErrorMessage((String) error);
+			return failDetail;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -533,12 +525,12 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 		if (retryableStatusSet.contains(code)) {
 			// 再試行可能な HttpStatus の場合
-			return PushNotificationResponseDetail.Builder.fail(PushNotificationStatus.FAIL_RETRYABLE)
-					.setTarget(target)
-					.setResponse(response)
-					.setErrorMessage(errorMessage)
-					.setRetryAfterSeconds(retryAfterSeconds)
-					.build();
+			PushNotificationResponseDetailImpl retryableDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.FAIL_RETRYABLE);
+			retryableDetail.setTarget(target);
+			retryableDetail.setResponse(response);
+			retryableDetail.setErrorMessage(errorMessage);
+			retryableDetail.setRetryAfterSeconds(retryAfterSeconds);
+			return retryableDetail;
 		}
 
 		// 再試行可能ではない場合、デバイスが未登録か判断し、status を決定
@@ -560,11 +552,11 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 			}
 		}
 
-		return PushNotificationResponseDetail.Builder.fail(status)
-				.setTarget(target)
-				.setResponse(response)
-				.setErrorMessage(errorMessage)
-				.build();
+		PushNotificationResponseDetailImpl failOrDeviceUnregisteredDetail = new PushNotificationResponseDetailImpl(status);
+		failOrDeviceUnregisteredDetail.setTarget(target);
+		failOrDeviceUnregisteredDetail.setResponse(response);
+		failOrDeviceUnregisteredDetail.setErrorMessage(errorMessage);
+		return failOrDeviceUnregisteredDetail;
 	}
 
 	/**

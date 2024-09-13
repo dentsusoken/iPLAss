@@ -20,7 +20,7 @@
 package org.iplass.mtp.pushnotification.fcmv1;
 
 /**
- * FCM V1 API 用 Push 通知レスポンス詳細
+ * FCM V1 API 用 Push 通知レスポンス詳細公開インターフェース
  *
  * <p>
  * FCM へ Push 通知の要求した結果の詳細情報です。
@@ -29,174 +29,25 @@ package org.iplass.mtp.pushnotification.fcmv1;
  *
  * @author SEKIGUCHI Naoya
  */
-public class PushNotificationResponseDetail {
-	/** 実行状態 */
-	private PushNotificationStatus status;
-	/** 通知対象 */
-	private PushNotificationTarget target;
-	/** レスポンス本体 */
-	private String response;
-	/**
-	 * 送信されたメッセージの識別子。正常時のみ設定される。
-	 * <p>
-	 * projects/&ast;/messages/&#x7b;message_id&#x7d; 形式
-	 * </p>
-	 */
-	private String messageId;
-	/** リトライ間隔（秒） */
-	private long retryAfterSeconds;
-	/** リトライ回数 */
-	private int retryCount;
-	/** エラーメッセージ */
-	private String errorMessage;
-	/** 原因例外 */
-	private Throwable cause;
-
-	/**
-	 * デフォルトコンストラクタ
-	 */
-	PushNotificationResponseDetail(PushNotificationStatus status) {
-		this.status = status;
-	}
-
-	/**
-	 * FCM V1 API 用 Push 通知レスポンス詳細ビルダー
-	 */
-	public static class Builder {
-		private PushNotificationResponseDetail instance;
-
-		Builder(PushNotificationResponseDetail instance) {
-			this.instance = instance;
-		}
-
-		/**
-		 * 成功インスタンスを生成する
-		 * @return ビルダーインスタンス
-		 */
-		public static Builder success() {
-			return new Builder(new PushNotificationResponseDetail(PushNotificationStatus.SUCCESS));
-		}
-
-		/**
-		 * 失敗インスタンスを生成する
-		 * @param status 失敗ステータス
-		 * @return ビルダーインスタンス
-		 */
-		public static Builder fail(PushNotificationStatus status) {
-			return new Builder(new PushNotificationResponseDetail(status));
-		}
-
-		/**
-		 * インスタンスの再設定
-		 * @param detail 詳細
-		 * @return ビルダーインスタンス
-		 */
-		public static Builder of(PushNotificationResponseDetail detail) {
-			return new Builder(detail);
-		}
-
-		/**
-		 * 通知対象を設定する
-		 * @param target 通知対象
-		 * @return ビルダーインスタンス
-		 */
-		public Builder setTarget(PushNotificationTarget target) {
-			instance.target = target;
-			return this;
-		}
-
-		/**
-		 * レスポンス本体を設定する
-		 * @param response レスポンス本体
-		 * @return ビルダーインスタンス
-		 */
-		public Builder setResponse(String response) {
-			instance.response = response;
-			return this;
-		}
-
-		/**
-		 * メッセージの識別子を設定する
-		 * @param messageId メッセージの識別子
-		 * @return ビルダーインスタンス
-		 */
-		public Builder setMessageId(String messageId) {
-			instance.messageId = messageId;
-			return this;
-		}
-
-		/**
-		 * 再実行間隔（秒）を設定する
-		 * @param retryAfterSeconds 再実行間隔（秒）
-		 * @return ビルダーインスタンス
-		 */
-		public Builder setRetryAfterSeconds(long retryAfterSeconds) {
-			instance.retryAfterSeconds = retryAfterSeconds;
-			return this;
-		}
-
-		/**
-		 * リトライ回数を設定する
-		 * @param retryCount リトライ回数
-		 * @return ビルダーインスタンス
-		 */
-		public Builder setRetryCount(int retryCount) {
-			instance.retryCount = retryCount;
-			return this;
-		}
-
-		/**
-		 * エラーメッセージを設定する
-		 * @param errorMessage エラーメッセージ
-		 * @return ビルダーインスタンス
-		 */
-		public Builder setErrorMessage(String errorMessage) {
-			instance.errorMessage = errorMessage;
-			return this;
-		}
-
-		/**
-		 * 例外を設定する
-		 * @param cause 例外
-		 * @return ビルダーインスタンス
-		 */
-		public Builder setCause(Throwable cause) {
-			instance.cause = cause;
-			return this;
-		}
-
-		/**
-		 * インスタンスを返却する
-		 * @return インスタンス
-		 */
-		public PushNotificationResponseDetail build() {
-			return instance;
-		}
-	}
+public interface PushNotificationResponseDetail {
 
 	/**
 	 * ステータスを取得する
 	 * @return ステータス
 	 */
-	public PushNotificationStatus getStatus() {
-		return status;
-	}
+	PushNotificationStatus getStatus();
 
 	/**
 	 * 通知対象を取得する
 	 * @return target 通知対象
 	 */
-	public PushNotificationTarget getTarget() {
-		return target;
-	}
+	PushNotificationTarget getTarget();
 
 	/**
 	 * レスポンス本体を取得する
 	 * @return レスポンス本体
 	 */
-	public String getResponse() {
-		return response;
-	}
+	String getResponse();
 
 	/**
 	 * 送信されたメッセージの識別子を取得する。正常時のみ設定される。
@@ -205,59 +56,30 @@ public class PushNotificationResponseDetail {
 	 * </p>
 	 * @return メッセージの識別子
 	 */
-	public String getMessageId() {
-		return messageId;
-	}
+	String getMessageId();
 
 	/**
 	 * 再実行間隔（秒）を取得する。リトライ可能な場合のみ設定される。
 	 * @return 再実行間隔
 	 */
-	public long getRetryAfterSeconds() {
-		return retryAfterSeconds;
-	}
+	long getRetryAfterSeconds();
 
 	/**
 	 * リトライ回数を取得する。
 	 * @return リトライ回数
 	 */
-	public int getRetryCount() {
-		return retryCount;
-	}
+	int getRetryCount();
 
 	/**
 	 * エラーメッセージを取得する。エラー終了時のみ設定される。
 	 * @return エラーメッセージ
 	 */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+	String getErrorMessage();
 
 	/**
 	 * 例外を取得します。通信実行に際して例外が発生した場合に設定される。
 	 * @return 例外
 	 */
-	public Throwable getCause() {
-		return cause;
-	}
+	Throwable getCause();
 
-	@Override
-	public String toString() {
-		return new StringBuilder(this.getClass().getSimpleName())
-				.append("{")
-				.append("status=").append(status)
-				.append(toStringValue("target", target))
-				.append(toStringValue("response", response))
-				.append(toStringValue("messageId", messageId))
-				.append(toStringValue("retryAfterSeconds", retryAfterSeconds))
-				.append(toStringValue("retryCount", retryCount))
-				.append(toStringValue("errorMessage", errorMessage))
-				.append(toStringValue("cause", cause))
-				.append("}")
-				.toString();
-	}
-
-	private String toStringValue(String key, Object value) {
-		return null == value ? "" : ", " + key + "=" + value;
-	}
 }
