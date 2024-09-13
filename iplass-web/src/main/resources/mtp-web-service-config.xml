@@ -80,21 +80,17 @@
 		<bean name="defaultBuiltinAuthenticationProvider">
 			<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.builtin.web.IdPasswordAutoLoginHandler" />
 		</bean>
-
-		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.rememberme.RememberMeTokenAuthenticationProvider"  inherit="false">
+		<bean name="defaultBuiltinAuthenticationProviderWithRememberMeToken" class="org.iplass.mtp.impl.auth.authenticate.rememberme.RememberMeTokenAuthenticationProvider">
 			<property name="deleteTokenOnFailure" value="true" />
 			<property name="clientStore" class="org.iplass.mtp.impl.auth.authenticate.token.web.AuthTokenCookieStore">
 				<property name="cookieName" value="iprmtkn" />
 			</property>
-
 			<property name="authenticationProvider" ref="defaultBuiltinAuthenticationProvider" />
-		</property>
-
-		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.oidc.OIDCAuthenticationProvider" inherit="false">
- 			<property name="providerName" value="oidc" />
-		</property>
-
-		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.oauth.AccessTokenAuthenticationProvider" inherit="false">
+		</bean>
+		<bean name="oidcAuthenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.oidc.OIDCAuthenticationProvider">
+			<property name="providerName" value="oidc" />
+		</bean>
+		<bean name="accessTokenAuthenticationProvider" class="org.iplass.mtp.impl.auth.oauth.AccessTokenAuthenticationProvider">
 			<property name="providerName" value="oauthAccessToken" />
 			<property name="credentialTypeForTrust" value="org.iplass.mtp.auth.login.IdPasswordCredential" />
 			<property name="accountHandleClassForTrust" value="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccountHandle" />
@@ -103,24 +99,28 @@
 				<property name="rejectAmbiguousRequest" value="true" />
 			</property>
 			
- 			<!-- if load custom reference property at login, set userEntityResolver.eagerLoadReferenceProperty -->
- 			<!--
+			<!-- if load custom reference property at login, set userEntityResolver.eagerLoadReferenceProperty -->
+			<!--
  			<property name="userEntityResolver" class="org.iplass.mtp.impl.auth.authenticate.DefaultUserEntityResolver">
 	 			<property name="eagerLoadReferenceProperty" value="rank" />
 	 			<property name="eagerLoadReferenceProperty" value="groups" />
 	 			<property name="eagerLoadReferenceProperty" value="yourCustomReference" />
  			</property>
  			 -->
-		</property>
-
-		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.simpletoken.SimpleAuthTokenAuthenticationProvider" inherit="false">
+		</bean>
+		<bean name="simpleAuthTokenAuthenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.simpletoken.SimpleAuthTokenAuthenticationProvider">
 			<property name="providerName" value="simpleAuthToken" />
 			<property name="credentialTypeForTrust" value="org.iplass.mtp.auth.login.IdPasswordCredential" />
 			<property name="accountHandleClassForTrust" value="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccountHandle" />
 			<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.token.web.BearerTokenAutoLoginHandler">
 				<property name="authTokenType" value="SAT" />
 			</property>
-		</property>
+		</bean>
+
+		<property name="authenticationProvider" ref="defaultBuiltinAuthenticationProviderWithRememberMeToken" />
+		<property name="authenticationProvider" ref="oidcAuthenticationProvider" />
+		<property name="authenticationProvider" ref="accessTokenAuthenticationProvider" />
+		<property name="authenticationProvider" ref="simpleAuthTokenAuthenticationProvider" />
 
 		<property name="authorizationProvider" class="org.iplass.mtp.impl.auth.authorize.builtin.BuiltinAuthorizationProvider">
 			<property name="authorizationContextHandler" class="org.iplass.mtp.impl.auth.authorize.builtin.action.ActionAuthContextHandler" additional="true" />
@@ -466,6 +466,13 @@
 		<interface>org.iplass.mtp.impl.command.InterceptorService</interface>
 		<class>org.iplass.mtp.impl.command.InterceptorService</class>
 
+		<bean name="webApiLoggingInterceptor" class="org.iplass.mtp.impl.webapi.interceptors.LoggingInterceptor">
+			<!-- Set custom configuration if needed. -->
+			<!-- 
+			<property name="logParamName" value="defName" />
+			 -->
+		</bean>
+
 		<property name="web" class="org.iplass.mtp.impl.command.interceptors.LoggingInterceptor" />
 		<property name="web" class="org.iplass.mtp.impl.command.interceptors.TransactionInterceptor" />
 		<property name="web" class="org.iplass.mtp.impl.web.interceptors.TokenInterceptor" />
@@ -473,7 +480,7 @@
 		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.InitialInterceptor" />
 		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.AuthInterceptor" />
 		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.OAuthScopeInterceptor" />
-		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.LoggingInterceptor" />
+		<property name="webApi" ref="webApiLoggingInterceptor" />
 		<property name="webApi" class="org.iplass.mtp.impl.command.interceptors.TransactionInterceptor" />
 		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.TokenInterceptor" />
 	</service>
@@ -666,20 +673,24 @@
 	</service>
 	<service>
 		<interface>org.iplass.mtp.impl.web.actionmapping.ActionMappingService</interface>
-		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.InitialInterceptor" />
-		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.AuthInterceptor" />
-		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.ExceptionInterceptor">
+		
+		<bean name="exceptionInterceptor" class="org.iplass.mtp.impl.web.interceptors.ExceptionInterceptor">
 			<property name="noHande" value="org.iplass.mtp.auth.NeedTrustedAuthenticationException" />
 			<property name="noHande" value="org.iplass.mtp.impl.web.RequestBodyTooLargeException" />
 			<property name="eliminate" value="org.apache.catalina.connector.ClientAbortException" />
 			<property name="eliminate" value="org.iplass.mtp.impl.web.WebProcessRuntimeException:org.apache.catalina.connector.ClientAbortException" />
-		</property>
-		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.LoggingInterceptor">
+		</bean>
+		<bean name="loggingInterceptor" class="org.iplass.mtp.impl.web.interceptors.LoggingInterceptor">
 			<property name="partsTrace" value="true" />
 			<property name="paramName" value="defName" />
 			<property name="noStackTrace" value="org.apache.catalina.connector.ClientAbortException" />
 			<property name="noStackTrace" value="org.iplass.mtp.impl.web.WebProcessRuntimeException:org.apache.catalina.connector.ClientAbortException" />
-		</property>
+		</bean>
+		
+		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.InitialInterceptor" />
+		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.AuthInterceptor" />
+		<property name="interceptor" ref="exceptionInterceptor" />
+		<property name="interceptor" ref="loggingInterceptor" />
 		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.ActionCacheInterceptor" />
 	</service>
 
