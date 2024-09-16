@@ -107,10 +107,10 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
  * <li><a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages">メッセージリソースの仕様</a></li>
  * <li><a href="https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode">エラーコードの仕様</a></li>
  * <li><a href="https://firebase.google.com/docs/reference/fcm/rest/v1/FcmError">FcmError 仕様</a></li>
- * <li><a href="https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode">FCM エラーコード</a></li>
  * <li><a href="https://firebase.google.com/docs/reference/fcm/rest/v1/ApnsError">ApnsError 仕様</a></li>
  * </ul>
  *
+ * @see org.iplass.mtp.pushnotification.fcmv1.PushNotificationResultDetailKey
  * @author SEKIGUCHI Naoya
  */
 public class PushNotificationService extends org.iplass.mtp.impl.pushnotification.PushNotificationService {
@@ -303,7 +303,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		List<PushNotificationResponseDetail> responseDetailList = new ArrayList<PushNotificationResponseDetail>();
 		for (String prefixedTo : notification.getToList()) {
 			Map<String, Object> messageClone = new HashMap<>(message);
-			PushNotificationTarget toTarget = PushNotificationTarget.create(prefixedTo);
+			PushNotificationTarget toTarget = PushNotificationTargetImpl.create(prefixedTo);
 			messageClone.put(toTarget.getType().getFieldName(), toTarget.getId());
 
 			PushNotificationResponseDetail responseDetail = pushApi.request(toTarget, messageClone);
@@ -586,7 +586,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		for (PushNotificationTargetType type : PushNotificationTargetType.values()) {
 			String v = (String) message.get(type.getFieldName());
 			if (null != v) {
-				return new PushNotificationTarget(type, v);
+				return new PushNotificationTargetImpl(type, v);
 			}
 		}
 

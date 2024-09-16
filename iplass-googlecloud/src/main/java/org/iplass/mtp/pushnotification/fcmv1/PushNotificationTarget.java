@@ -19,71 +19,23 @@
  */
 package org.iplass.mtp.pushnotification.fcmv1;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
- * FCM v1 API 用 Push 通知対象
+ * FCM v1 API 用 Push 通知対象インターフェース
  *
  * @author SEKIGUCHI Naoya
  */
-public class PushNotificationTarget {
-	/** 対象タイプ */
-	private PushNotificationTargetType type;
-	/** 対象識別子 */
-	private String id;
-
-	/**
-	 * コンストラクタ
-	 * @param type 対象タイプ
-	 * @param id 対象識別子
-	 */
-	public PushNotificationTarget(PushNotificationTargetType type, String id) {
-		this.type = type;
-		this.id = id;
-	}
+public interface PushNotificationTarget {
 
 	/**
 	 * 対象タイプを取得します
 	 * @return type 対象タイプ
 	 */
-	public PushNotificationTargetType getType() {
-		return type;
-	}
+	PushNotificationTargetType getType();
 
 	/**
 	 * 対象識別子を取得します
 	 * @return id 対象識別子
 	 */
-	public String getId() {
-		return id;
-	}
+	String getId();
 
-	@Override
-	public String toString() {
-		return PushNotificationTarget.class.getSimpleName() + "{type=" + type + ", id=" + id + "}";
-	}
-
-	/** トークン、トピック、条件のいずれかのプレフィックス付き宛先のパターン */
-	private static final Pattern ANY_PREFIXED_VALUE_PATTERN = Pattern
-			.compile("^("
-					+ PushNotificationTargetType.TOKEN.getFieldName() + "|"
-					+ PushNotificationTargetType.TOPIC.getFieldName() + "|"
-					+ PushNotificationTargetType.CONDITION.getFieldName() + "):(.*)");
-
-	/**
-	 * 通知対象インスタンスを作成する
-	 * @param anyPrefixedValue トークン、トピック、条件のいずれかのプレフィックス付き宛先
-	 * @return 通知対象
-	 */
-	public static PushNotificationTarget create(String anyPrefixedValue) {
-		Matcher matcher = ANY_PREFIXED_VALUE_PATTERN.matcher(anyPrefixedValue);
-		if (!matcher.find()) {
-			throw new IllegalArgumentException("The target specified does not match the pattern. (target = " + anyPrefixedValue + ")");
-		}
-
-		String prefixIsFieldName = matcher.group(1);
-		String target = matcher.group(2);
-		return new PushNotificationTarget(PushNotificationTargetType.getTargetType(prefixIsFieldName), target);
-	}
 }
