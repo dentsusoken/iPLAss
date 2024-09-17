@@ -303,7 +303,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		List<PushNotificationResponseDetail> responseDetailList = new ArrayList<PushNotificationResponseDetail>();
 		for (String prefixedTo : notification.getToList()) {
 			Map<String, Object> messageClone = new HashMap<>(message);
-			PushNotificationTarget toTarget = PushNotificationTargetImpl.create(prefixedTo);
+			PushNotificationTarget toTarget = PushNotificationTarget.create(prefixedTo);
 			messageClone.put(toTarget.getType().getFieldName(), toTarget.getTarget());
 
 			PushNotificationResponseDetail responseDetail = pushApi.request(toTarget, messageClone);
@@ -390,7 +390,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 			});
 
 			// リトライ回数を設定したインスタンスを返却
-			PushNotificationResponseDetailImpl detail = new PushNotificationResponseDetailImpl(result[0]);
+			PushNotificationResponseDetail detail = result[0];
 			detail.setRetryCount(retryCount[0]);
 			return detail;
 
@@ -447,7 +447,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 		} catch (ConnectionRequestTimeoutException | SocketTimeoutException e) {
 			// 通信タイムアウト関連
-			PushNotificationResponseDetailImpl timeoutDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.FAIL_TIMEOUT);
+			PushNotificationResponseDetail timeoutDetail = new PushNotificationResponseDetail(PushNotificationStatus.FAIL_TIMEOUT);
 			timeoutDetail.setErrorMessage(e.getMessage());
 			timeoutDetail.setCause(e);
 			timeoutDetail.setTarget(target);
@@ -455,7 +455,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 		} catch (IOException e) {
 			// その他のIO例外
-			PushNotificationResponseDetailImpl failDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.FAIL);
+			PushNotificationResponseDetail failDetail = new PushNotificationResponseDetail(PushNotificationStatus.FAIL);
 			failDetail.setErrorMessage(e.getMessage());
 			failDetail.setCause(e);
 			failDetail.setTarget(target);
@@ -482,7 +482,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 		if (HttpStatus.SC_OK == code) {
 			// 正常レスポンス
-			PushNotificationResponseDetailImpl successDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.SUCCESS);
+			PushNotificationResponseDetail successDetail = new PushNotificationResponseDetail(PushNotificationStatus.SUCCESS);
 			successDetail.setTarget(target);
 			successDetail.setResponse(response);
 			successDetail.setMessageId((String) contentsMap.get(Keys.Success.NAME));
@@ -512,7 +512,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		Object error = contentsMap.get(Keys.Fail.ERROR);
 		if (error instanceof String) {
 			// "error" キーの値が文字列の場合
-			PushNotificationResponseDetailImpl failDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.FAIL);
+			PushNotificationResponseDetail failDetail = new PushNotificationResponseDetail(PushNotificationStatus.FAIL);
 			failDetail.setTarget(target);
 			failDetail.setResponse(response);
 			failDetail.setErrorMessage((String) error);
@@ -525,7 +525,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 		if (retryableStatusSet.contains(code)) {
 			// 再試行可能な HttpStatus の場合
-			PushNotificationResponseDetailImpl retryableDetail = new PushNotificationResponseDetailImpl(PushNotificationStatus.FAIL_RETRYABLE);
+			PushNotificationResponseDetail retryableDetail = new PushNotificationResponseDetail(PushNotificationStatus.FAIL_RETRYABLE);
 			retryableDetail.setTarget(target);
 			retryableDetail.setResponse(response);
 			retryableDetail.setErrorMessage(errorMessage);
@@ -552,7 +552,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 			}
 		}
 
-		PushNotificationResponseDetailImpl failOrDeviceUnregisteredDetail = new PushNotificationResponseDetailImpl(status);
+		PushNotificationResponseDetail failOrDeviceUnregisteredDetail = new PushNotificationResponseDetail(status);
 		failOrDeviceUnregisteredDetail.setTarget(target);
 		failOrDeviceUnregisteredDetail.setResponse(response);
 		failOrDeviceUnregisteredDetail.setErrorMessage(errorMessage);
@@ -574,7 +574,6 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 			// DEVICE_UNREGISTERED の場合に、未登録を通知する。
 			registrationTokenHandler.unregistered(responseDetail.getTarget());
 		}
-
 	}
 
 	/**
@@ -586,7 +585,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		for (PushNotificationTargetType type : PushNotificationTargetType.values()) {
 			String v = (String) message.get(type.getFieldName());
 			if (null != v) {
-				return new PushNotificationTargetImpl(type, v);
+				return new PushNotificationTarget(type, v);
 			}
 		}
 
@@ -603,7 +602,6 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 	 * それ以外の場合は、実行可能日時と判定し、現在日時との差分の秒を返却する。
 	 * retryAfter が設定されていない場合、defaultSeconds を返却する。
 	 * </p>
-	 *
 	 *
 	 * @param retryAfter "retry-after" ヘッダー値
 	 * @param defaultSeconds デフォルト秒数
