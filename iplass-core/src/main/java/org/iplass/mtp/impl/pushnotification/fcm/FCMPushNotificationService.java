@@ -53,6 +53,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+@Deprecated
 public class FCMPushNotificationService extends PushNotificationService {
 	private static Logger logger = LoggerFactory.getLogger(FCMPushNotificationService.class);
 
