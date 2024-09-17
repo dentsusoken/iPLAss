@@ -297,14 +297,14 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 			// message に target 指定されていても無視する
 			message.remove(target.getType().getFieldName());
 			// 無視される宛先の情報をログ出力
-			logger.warn("A destination({}:{}) was set but is ignored, because it is the destination set for the message.", target.getType(), target.getId());
+			logger.warn("A destination({}:{}) was set but is ignored, because it is the destination set for the message.", target.getType(), target.getTarget());
 		}
 
 		List<PushNotificationResponseDetail> responseDetailList = new ArrayList<PushNotificationResponseDetail>();
 		for (String prefixedTo : notification.getToList()) {
 			Map<String, Object> messageClone = new HashMap<>(message);
 			PushNotificationTarget toTarget = PushNotificationTargetImpl.create(prefixedTo);
-			messageClone.put(toTarget.getType().getFieldName(), toTarget.getId());
+			messageClone.put(toTarget.getType().getFieldName(), toTarget.getTarget());
 
 			PushNotificationResponseDetail responseDetail = pushApi.request(toTarget, messageClone);
 			responseDetailList.add(responseDetail);
@@ -383,7 +383,7 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 					// リトライ可能なエラーだが、最大経過時間を過ぎるので中断する。
 					logger.warn("Retryable error, but aborted because the maximum elapsed time has passed. target = {}:{}.",
-							responseDetail.getTarget().getType(), responseDetail.getTarget().getId());
+							responseDetail.getTarget().getType(), responseDetail.getTarget().getTarget());
 				}
 
 				return true;

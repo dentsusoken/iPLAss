@@ -34,21 +34,21 @@ public class PushNotificationTargetImpl implements PushNotificationTarget {
 	/** 対象タイプ */
 	private PushNotificationTargetType type;
 	/** 対象識別子 */
-	private String id;
+	private String target;
 
 	/**
 	 * コンストラクタ
 	 * @param type 対象タイプ
-	 * @param id 対象識別子
+	 * @param target 通知対象
 	 */
-	public PushNotificationTargetImpl(PushNotificationTargetType type, String id) {
+	public PushNotificationTargetImpl(PushNotificationTargetType type, String target) {
 		this.type = type;
-		this.id = id;
+		this.target = target;
 	}
 
 	/**
 	 * 対象タイプを取得します
-	 * @return type 対象タイプ
+	 * @return 対象タイプ
 	 */
 	@Override
 	public PushNotificationTargetType getType() {
@@ -56,17 +56,17 @@ public class PushNotificationTargetImpl implements PushNotificationTarget {
 	}
 
 	/**
-	 * 対象識別子を取得します
-	 * @return id 対象識別子
+	 * 通知対象を取得します
+	 * @return 通知対象
 	 */
 	@Override
-	public String getId() {
-		return id;
+	public String getTarget() {
+		return target;
 	}
 
 	@Override
 	public String toString() {
-		return PushNotificationTargetImpl.class.getSimpleName() + "{type=" + type + ", id=" + id + "}";
+		return PushNotificationTargetImpl.class.getSimpleName() + "{type=" + type + ", id=" + target + "}";
 	}
 
 	/** トークン、トピック、条件のいずれかのプレフィックス付き宛先のパターン */

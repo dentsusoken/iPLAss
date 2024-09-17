@@ -28,14 +28,14 @@ public interface PushNotificationTarget {
 
 	/**
 	 * 対象タイプを取得します
-	 * @return type 対象タイプ
+	 * @return 対象タイプ
 	 */
 	PushNotificationTargetType getType();
 
 	/**
-	 * 対象識別子を取得します
-	 * @return id 対象識別子
+	 * 通知対象を取得します
+	 * @return 通知対象
 	 */
-	String getId();
+	String getTarget();
 
 }
