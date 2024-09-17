@@ -374,5 +374,9 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 		}
 
 	}
+	
+	public void writeFooter(String csvDownloadFooter) {
+		writer.writeFooter(csvDownloadFooter);
+	}
 
 }

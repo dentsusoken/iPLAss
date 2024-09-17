@@ -56,7 +56,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * <p>QueryのCsvファイル出力クラス</p>
+ * <p>
+ * QueryのCsvファイル出力クラス
+ * </p>
  */
 public class QueryCsvWriter implements AutoCloseable {
 
@@ -94,7 +96,7 @@ public class QueryCsvWriter implements AutoCloseable {
 
 	public int write() throws IOException {
 
-		//Header出力
+		// Header出力
 		writeHeader();
 
 		// CSV レコードを出力
@@ -145,7 +147,7 @@ public class QueryCsvWriter implements AutoCloseable {
 		IntStream.range(0, values.length).forEach(i -> {
 			Object value = values[i];
 			if (value != null && value.getClass().isArray()) {
-				Object[] array = (Object[])value;
+				Object[] array = (Object[]) value;
 				List<String> valueList = new ArrayList<>();
 				for (int j = 0; j < array.length; j++) {
 					if (array[j] != null) {
@@ -178,7 +180,7 @@ public class QueryCsvWriter implements AutoCloseable {
 			return;
 		}
 
-		//BOM対応
+		// BOM対応
 		if ("UTF-8".equalsIgnoreCase(option.getCharset())) {
 			try {
 				writer.write(BOM);
@@ -223,33 +225,33 @@ public class QueryCsvWriter implements AutoCloseable {
 		}
 
 		if (value instanceof BigDecimal) {
-			BigDecimal bd = (BigDecimal)value;
+			BigDecimal bd = (BigDecimal) value;
 			return bd.toPlainString();
 		} else if (value instanceof Double) {
-			BigDecimal bd = BigDecimal.valueOf((Double)value);
+			BigDecimal bd = BigDecimal.valueOf((Double) value);
 			return bd.toPlainString();
 		} else if (value instanceof Float) {
-			BigDecimal bd = BigDecimal.valueOf((Float)value);
+			BigDecimal bd = BigDecimal.valueOf((Float) value);
 			return bd.toPlainString();
 		} else if (value instanceof Boolean) {
-			Boolean b = (Boolean)value;
+			Boolean b = (Boolean) value;
 			return b.booleanValue() ? "1" : "0";
 		} else if (value instanceof SelectValue) {
-			SelectValue sv = (SelectValue)value;
+			SelectValue sv = (SelectValue) value;
 			return sv.getValue();
 		} else if (value instanceof BinaryReference) {
-			BinaryReference br = (BinaryReference)value;
+			BinaryReference br = (BinaryReference) value;
 			Map<String, String> valueMap = new LinkedHashMap<>();
 			valueMap.put("lobid", String.valueOf((br.getLobId())));
 			valueMap.put("name", br.getName());
 			valueMap.put("type", br.getType());
 			return toJsonString(valueMap);
 		} else if (value instanceof java.sql.Date) {
-			return DateUtil.getSimpleDateFormat(getDateFormat(), false).format((java.sql.Date)value);
+			return DateUtil.getSimpleDateFormat(getDateFormat(), false).format((java.sql.Date) value);
 		} else if (value instanceof Timestamp) {
-			return DateUtil.getSimpleDateFormat(getDateTimeFormat(), false).format((Timestamp)value);
+			return DateUtil.getSimpleDateFormat(getDateTimeFormat(), false).format((Timestamp) value);
 		} else if (value instanceof Time) {
-			return DateUtil.getSimpleDateFormat(getTimeFormat(), false).format((Time)value);
+			return DateUtil.getSimpleDateFormat(getTimeFormat(), false).format((Time) value);
 		} else {
 			return value.toString();
 		}
@@ -259,8 +261,9 @@ public class QueryCsvWriter implements AutoCloseable {
 
 		if (mapper == null) {
 			mapper = new ObjectMapper();
-			//for backward compatibility
-			mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
+			// for backward compatibility
+			mapper.configOverride(java.sql.Date.class)
+					.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
 		}
 		try (StringWriter writer = new StringWriter()) {
 			mapper.writeValue(writer, value);
@@ -354,6 +357,15 @@ public class QueryCsvWriter implements AutoCloseable {
 		}
 		return timeFormat;
 
+	}
+
+	public void writeFooter(String csvDownloadFooter) {
+		try {
+			writer.write(csvDownloadFooter);
+		} catch (IOException e) {
+			throw new EntityCsvException(e);
+		}
+		newLine();
 	}
 
 }
