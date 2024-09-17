@@ -58,7 +58,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Firebase Cloud Messaging(FMC) プッシュ通知サービス
+ *
+ * @deprecated 本機能は FCM Legacy API に対応した機能となります。FCM HTTP v1 API を利用するサービス {@link org.iplass.mtp.impl.pushnotification.fcmv1.PushNotificationService} への移行を推奨します。
  */
+@Deprecated
 public class FCMPushNotificationService extends PushNotificationService {
 	private static Logger logger = LoggerFactory.getLogger(FCMPushNotificationService.class);
 

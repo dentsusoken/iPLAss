@@ -1,0 +1,5 @@
+apply from: 'libs.gradle'
+
+dependencies {
+	implementation project(':iplass-core')
+}

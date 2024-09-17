@@ -1,0 +1,13 @@
+dependencies {
+	// for FCM
+	implementation sharedLib('com.google.auth:google-auth-library-oauth2-http')
+
+	// apache http clients
+	implementation sharedLib('org.apache.httpcomponents.client5:httpclient5')
+	implementation sharedLib('org.apache.httpcomponents.core5:httpcore5')
+	implementation sharedLib('org.apache.httpcomponents.core5:httpcore5-h2')
+	
+	// jackson
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations'
+}
