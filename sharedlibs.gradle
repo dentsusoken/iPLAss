@@ -94,6 +94,8 @@ ext {
 		
 		'com.ibm.icu:icu4j': '69.1',
 		
+		// google
+		'com.google.auth:google-auth-library-oauth2-http': '1.24.1',
 		
 		'junit:junit': '4.13.1',
 		
@@ -197,6 +199,7 @@ dependencies {
 	jeeruntime4tomcat 'org.glassfish.jersey.media:jersey-media-json-jackson'
 	jeeruntime4tomcat 'org.glassfish.jersey.media:jersey-media-multipart'
 	jeeruntime4tomcat 'org.glassfish.jersey.inject:jersey-hk2'
+	jeeruntime4tomcat platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
 	jeeruntime4tomcat 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider'
 
 	//JAXB runtime for java11
