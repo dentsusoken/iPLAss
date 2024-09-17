@@ -114,6 +114,8 @@ subprojects { subproject ->
 		options.memberLevel = 'PACKAGE'
 		options.jFlags "-Duser.language=${javadocLang}"
 
+		classpath += project.sourceSets['main'].compileClasspath
+
 		// https://issues.gradle.org/browse/GRADLE-1228
 		if (System.properties['http.proxyHost'] != null ) {
 			options.jFlags(

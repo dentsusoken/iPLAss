@@ -304,11 +304,7 @@ dependencies {
 	jakartaImplRest 'org.glassfish.jersey.media:jersey-media-json-jackson'
 	jakartaImplRest 'org.glassfish.jersey.media:jersey-media-multipart'
 	jakartaImplRest 'org.glassfish.jersey.inject:jersey-hk2'
+	jakartaImplRest platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
 	jakartaImplRest 'com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider'
 	//jakartaImplAnnotations
-
-
-	// Jakarta EE 10 runtime for tomcat10.1
-	// jackson management
-	jeeruntime4tomcat platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
 }
