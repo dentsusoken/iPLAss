@@ -71,6 +71,8 @@ import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ExpressionProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.SortSpec;
+import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.entity.csv.EntityCsvException;
@@ -139,7 +141,7 @@ public class CsvUploadService implements Service {
 
 	/**
 	 * CSVアップロードエラー表示件数の上限値を取得します。
-	 * 
+	 *
 	 * @return CSVアップロードエラー表示件数上限値
 	 */
 	public int getShowErrorLimitCount() {
@@ -148,7 +150,7 @@ public class CsvUploadService implements Service {
 
 	/**
 	 * CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するかを取得します。 SQLServerでのダウロード処理用のフラグです。
-	 * 
+	 *
 	 * @return CSVダウンロード時にLimitが指定されている場合にOrderByを必ず指定するか
 	 */
 	public boolean isMustOrderByWithLimit() {
@@ -949,64 +951,41 @@ public class CsvUploadService implements Service {
 			} else {
 				if (ed.getVersionControlType() != VersionControlType.NONE) {
 					// バージョン管理している
-					if (keyValueMap.containsKey(uniqueKeyValue)) {
-						// 既にOIDは登録済の状態
 
-						// UniqueKeyで指定している可能性があるので登録済のOIDをセット
+					if (keyValueMap.containsKey(uniqueKeyValue)) {
+						// 既にOIDはCSVの前行までに登録、更新済の状態
+
+						// UniqueKeyで指定している場合、またはINSERT時のOID採番値で置き換え(INSERT時はCSVのOIDとは異なる値で登録される)
 						entity.setOid(keyValueMap.get(uniqueKeyValue));
 
-						if (entity.getVersion() != null) {
-							Query q = onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion());
-							int count = em.count(q);
-							if (count > 0) {
-								// 登録済バージョンが存在する場合は対象バージョンを更新
-								execType = ExecType.UPDATE_SPECIFIC;
-							} else {
-								// 指定バージョンデータがない場合はエラー
-								throw new ApplicationException(
-										resourceString("impl.csv.CsvUploadService.alreadyDeleted"));
-							}
+						// UniqueKeyを登録されているOIDにスイッチ
+						uniqueKey = Entity.OID;
+						uniqueKeyValue = entity.getOid();
+					}
+
+					if (entity.getVersion() != null) {
+						// 全バージョン含めて登録済のバージョンデータを検索
+						Query versionedQuery = onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue,
+								entity.getVersion());
+						SearchResult<Entity> versionedResult = em.searchEntity(versionedQuery,
+								new SearchOption().countTotal());
+						if (versionedResult.getTotalCount() > 0) {
+							// 指定バージョンが存在する場合は対象バージョンを更新
+							execType = ExecType.UPDATE_SPECIFIC;
+
+							// UniqueKeyで検索している可能性があるので登録済のOIDをセット
+							entity.setOid(versionedResult.getFirst().getOid());
 						} else {
-							// バージョン未指定の場合は新しいバージョンとして追加
-							execType = ExecType.UPDATE_NEW;
+							// OIDの登録状態で実行タイプを決定
+							execType = versionedExecType(ed, uniqueKey, uniqueKeyValue, entity);
 						}
 					} else {
-						if (entity.getVersion() != null) {
-							Query q = onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, entity.getVersion());
-							int count = em.count(q);
-							if (count > 0) {
-								// 登録済バージョンが存在する場合は対象バージョンを更新
-								execType = ExecType.UPDATE_SPECIFIC;
-							} else {
-								SearchResult<Entity> searchResult = em.searchEntity(
-										noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue),
-										new SearchOption().countTotal());
-								if (searchResult.getTotalCount() > 0) {
-									// 指定OIDデータが登録済で、指定バージョンデータがない場合はエラー
-									throw new ApplicationException(
-											resourceString("impl.csv.CsvUploadService.alreadyDeleted"));
-								} else {
-									// 指定OID、バージョンが存在しないのでInsert
-									execType = ExecType.INSERT;
-								}
-							}
-						} else {
-							SearchResult<Entity> searchResult = em.searchEntity(
-									noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue),
-									new SearchOption().countTotal());
-							if (searchResult.getTotalCount() > 0) {
-								// バージョン未指定の場合は新しいバージョンとして追加
-								execType = ExecType.UPDATE_NEW;
-								// UniqueKeyで検索している可能性があるので登録済のOIDをセット
-								entity.setOid(searchResult.getFirst().getOid());
-							} else {
-								// 指定OIDデータが存在しないのでInsert
-								execType = ExecType.INSERT;
-							}
-						}
+						// OIDの登録状態で実行タイプを決定
+						execType = versionedExecType(ed, uniqueKey, uniqueKeyValue, entity);
 					}
 				} else {
 					// バージョン管理していない
+
 					SearchResult<Entity> searchResult = em.searchEntity(
 							noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue), new SearchOption().countTotal());
 					if (searchResult.getTotalCount() > 0) {
@@ -1034,14 +1013,60 @@ public class CsvUploadService implements Service {
 			return execType;
 		}
 
+		private ExecType versionedExecType(EntityDefinition ed, String uniqueKey, Object uniqueKeyValue,
+				Entity entity) {
+
+			ExecType execType = null;
+
+			// 有効データに登録済OIDが存在するか検索
+			Query validQuery = noVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue);
+			SearchResult<Entity> validResult = em.searchEntity(validQuery, new SearchOption().countTotal());
+			if (validResult.getTotalCount() > 0) {
+				// 有効データに登録済OIDデータが存在する場合は、新しいバージョンとして追加
+				execType = ExecType.UPDATE_NEW;
+
+				// バージョン元として有効データを指定するためバージョンをクリア
+				entity.setVersion(null);
+
+				// UniqueKeyで検索している可能性があるので登録済のOIDをセット
+				entity.setOid(validResult.getFirst().getOid());
+			} else {
+				// 有効データに登録済OIDデータが存在しない場合は、全バージョン含めて登録済OIDデータを検索
+				Query versionedOidQuery = onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, null);
+				SearchResult<Entity> versionedOidResult = em.searchEntity(versionedOidQuery,
+						new SearchOption().countTotal());
+				if (versionedOidResult.getTotalCount() > 0) {
+					// 全バージョンに登録済OIDデータが存在する場合は、新しいバージョンとして追加
+					execType = ExecType.UPDATE_NEW;
+
+					// バージョン元として登録済データのMAXバージョンを指定
+					entity.setVersion(versionedOidResult.getFirst().getVersion());
+
+					// UniqueKeyで検索している可能性があるので登録済のOIDをセット
+					entity.setOid(versionedOidResult.getFirst().getOid());
+
+				} else {
+					// 登録済OIDデータが存在しない場合は、新規追加
+					execType = ExecType.INSERT;
+				}
+			}
+
+			return execType;
+		}
+
 		private Query noVersionQuery(String defName, String uniqueKey, Object uniqueKeyValue) {
 			return new Query().select(Entity.OID).from(defName).where(new Equals(uniqueKey, uniqueKeyValue));
 		}
 
 		private Query onVersionQuery(String defName, String uniqueKey, Object uniqueKeyValue, Long version) {
-			return new Query().select(Entity.OID).from(ed.getName())
-					.where(new And(new Equals(uniqueKey, uniqueKeyValue), new Equals(Entity.VERSION, version)))
-					.versioned(true);
+			Query query = new Query().select(Entity.OID, Entity.VERSION).from(defName)
+					.order(new SortSpec(Entity.VERSION, SortType.DESC)).versioned(true);
+			if (version != null) {
+				query.where(new And(new Equals(uniqueKey, uniqueKeyValue), new Equals(Entity.VERSION, version)));
+			} else {
+				query.where(new Equals(uniqueKey, uniqueKeyValue));
+			}
+			return query;
 		}
 
 		private UpdateOption updateOption(ExecType execType) {
