@@ -62,6 +62,9 @@ public class InformationParts extends ActionParts {
 	/** パスワード警告マークスタイルクラス */
 	private String passwordWarnMarkStyleClass;
 
+	/** データの多言語化有無 */
+	private boolean enableDataLocalization;
+
 	/** HTML出力可否 */
 	private boolean enableHtmlTag;
 
@@ -133,7 +136,7 @@ public class InformationParts extends ActionParts {
 	 * @return アイコンタグ
 	 */
 	public String getIconTag() {
-	    return iconTag;
+		return iconTag;
 	}
 
 	/**
@@ -141,7 +144,7 @@ public class InformationParts extends ActionParts {
 	 * @param iconTag アイコンタグ
 	 */
 	public void setIconTag(String iconTag) {
-	    this.iconTag = iconTag;
+		this.iconTag = iconTag;
 	}
 
 	/**
@@ -275,6 +278,22 @@ public class InformationParts extends ActionParts {
 	}
 
 	/**
+	 * データの多言語化有無を取得します。
+	 * @return データの多言語化有無
+	 */
+	public boolean isEnableDataLocalization() {
+		return enableDataLocalization;
+	}
+
+	/**
+	 * データの多言語化有無を設定します。
+	 * @param enableDataLocalization データの多言語化有無
+	*/
+	public void setEnableDataLocalization(boolean enableDataLocalization) {
+		this.enableDataLocalization = enableDataLocalization;
+	}
+
+	/**
 	 * HTML出力可否を取得します。
 	 * @return HTML出力可否
 	 */
@@ -379,7 +398,7 @@ public class InformationParts extends ActionParts {
 	 * @return 一覧の表示件数
 	 */
 	public Integer getNumberOfDisplay() {
-	    return numberOfDisplay;
+		return numberOfDisplay;
 	}
 
 	/**
@@ -387,7 +406,7 @@ public class InformationParts extends ActionParts {
 	 * @param numberOfDisplay 一覧の表示件数
 	 */
 	public void setNumberOfDisplay(Integer numberOfDisplay) {
-	    this.numberOfDisplay = numberOfDisplay;
+		this.numberOfDisplay = numberOfDisplay;
 	}
 
 }

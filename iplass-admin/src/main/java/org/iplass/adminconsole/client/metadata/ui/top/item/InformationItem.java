@@ -101,6 +101,7 @@ public class InformationItem extends PartsItem {
 
 		private SelectItem dispRangeField;
 		private IntegerItem numberOfDisplayField;
+		private CheckboxItem chkEnableDataLocalization;
 		private CheckboxItem chkEnableHtmlTag;
 		private CheckboxItem chkUseRichtextEditor;
 		private SelectItem richTextLibraryField;
@@ -154,6 +155,9 @@ public class InformationItem extends PartsItem {
 			numberOfDisplayField.setWidth("100%");
 			SmartGWTUtil.addHoverToFormItem(numberOfDisplayField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_numberOfDisplay"));
 
+			chkEnableDataLocalization = new CheckboxItem();
+			chkEnableDataLocalization.setTitle("Enable Data Localization");
+
 			chkEnableHtmlTag = new CheckboxItem();
 			chkEnableHtmlTag.setTitle("Enable Html Tag");
 			chkUseRichtextEditor = new CheckboxItem();
@@ -202,7 +206,7 @@ public class InformationItem extends PartsItem {
 			txaDetailCustomStyle.setHeight(100);
 			SmartGWTUtil.setReadOnlyTextArea(txaDetailCustomStyle);
 
-			infoListForm.setItems(dispRangeField, numberOfDisplayField, chkEnableHtmlTag,
+			infoListForm.setItems(dispRangeField, numberOfDisplayField, chkEnableDataLocalization, chkEnableHtmlTag,
 					chkUseRichtextEditor, richTextLibraryField, txaRichtextEditorOption, chkAllowRichTextEditorLinkAction,
 					btnEditEetailCustomStyle, txaDetailCustomStyle);
 
@@ -275,6 +279,7 @@ public class InformationItem extends PartsItem {
 							parts.setPasswordWarnMarkStyleClass(SmartGWTUtil.getStringValue(passwordWarnMarkStyleField));
 						}
 						parts.setNumberOfDisplay(SmartGWTUtil.getIntegerValue(numberOfDisplayField));
+						parts.setEnableDataLocalization(SmartGWTUtil.getBooleanValue(chkEnableDataLocalization));
 						parts.setEnableHtmlTag(SmartGWTUtil.getBooleanValue(chkEnableHtmlTag));
 						parts.setUseRichtextEditor(SmartGWTUtil.getBooleanValue(chkUseRichtextEditor));
 						if (richTextLibraryField.getValue() != null && !richTextLibraryField.getValueAsString().isEmpty()) {
@@ -355,6 +360,7 @@ public class InformationItem extends PartsItem {
 				dispRangeField.setValue("");
 			}
 
+			chkEnableDataLocalization.setValue(parts.isEnableDataLocalization());
 			chkEnableHtmlTag.setValue(parts.isEnableHtmlTag());
 			chkUseRichtextEditor.setValue(parts.isUseRichtextEditor());
 			if (parts.getRichTextLibrary() != null) {

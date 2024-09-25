@@ -80,18 +80,20 @@ public final class InformationViewCommand implements Command {
 		String oid = request.getParam(Constants.OID);
 		Long version = request.getParamAsLong(Constants.VERSION);
 
+		//パーツ
+		InformationParts infoParts = tvdm.getRequestTopViewParts(InformationParts.class);
+
 		//検索
 		Entity entity = null;
 		if (oid != null) {
-			entity = em.load(oid, version ,InformationListCommand.INFORMATION_ENTITY, new LoadOption(false, false));
+			entity = em.load(oid, version ,InformationListCommand.INFORMATION_ENTITY, getLoadOption(infoParts));
 		}
+
 		if (entity == null) {
 			request.setAttribute(Constants.MESSAGE, GemResourceBundleUtil.resourceString("information.view.noPermission"));
 			return Constants.CMD_EXEC_ERROR_NODATA;
 		}
 
-		//パーツ
-		InformationParts infoParts = tvdm.getRequestTopViewParts(InformationParts.class);
 		if (infoParts == null) {
 			request.setAttribute(Constants.MESSAGE, GemResourceBundleUtil.resourceString("information.view.viewErr"));
 			return Constants.CMD_EXEC_ERROR_VIEW;
@@ -110,6 +112,14 @@ public final class InformationViewCommand implements Command {
 		request.setAttribute(Constants.INFO_DETAIL_CUSTOM_STYLE, customStyle);
 
 		return Constants.CMD_EXEC_SUCCESS;
+	}
+
+	private LoadOption getLoadOption(InformationParts infoParts) {
+		LoadOption option = new LoadOption(false, false);
+
+		return infoParts != null && infoParts.isEnableDataLocalization()
+				? option.localized()
+				: option;
 	}
 
 }

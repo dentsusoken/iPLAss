@@ -22,6 +22,7 @@ package org.iplass.gem.command.information;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
@@ -83,17 +84,19 @@ public final class InformationListCommand implements Command {
 
 	@Override
 	public String execute(RequestContext request) {
-		//お知らせ情報Entity検索
-		searchInfo(request);
+		//対象のInformationParts取得
+		InformationParts infoParts = (InformationParts)request.getAttribute(Constants.INFO_SETTING);
 
+		//お知らせ情報Entity検索
+		searchInfo(request, infoParts);
 
 		//パスワード期限チェック
-		checkPasswordAge(request);
+		checkPasswordAge(request, infoParts);
 
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 
-	private void searchInfo(RequestContext request) {
+	private void searchInfo(RequestContext request, InformationParts infoParts) {
 		Timestamp value = em.getCurrentTimestamp();
 
 		And a = new And();
@@ -104,15 +107,13 @@ public final class InformationListCommand implements Command {
 		 .from(INFORMATION_ENTITY)
 		 .where(a)
 		 .order(new SortSpec(Entity.START_DATE, SortType.DESC),
-				 new SortSpec(Entity.OID, SortType.DESC));
+				 new SortSpec(Entity.OID, SortType.DESC))
+		 .localized(infoParts == null ? false : infoParts.isEnableDataLocalization());
 
 		request.setAttribute(Constants.DATA, em.searchEntity(q).getList());
 	}
 
-	private void checkPasswordAge(RequestContext request) {
-		//対象のInformationParts取得
-		InformationParts infoParts = (InformationParts)request.getAttribute(Constants.INFO_SETTING);
-
+	private void checkPasswordAge(RequestContext request, InformationParts infoParts) {
 		if (infoParts == null || !infoParts.isShowWarningPasswordAge()) {
 			return;
 		}

@@ -98,6 +98,9 @@ public class MetaInformationParts extends MetaActionParts {
 	/** パスワード警告マークスタイルクラス */
 	private String passwordWarnMarkStyleClass;
 
+	/** データの多言語化有無 */
+	private boolean enableDataLocalization;
+
 	/** HTML出力可否 */
 	private boolean availableHtmlTag = false;
 
@@ -156,7 +159,7 @@ public class MetaInformationParts extends MetaActionParts {
 	 * @return アイコンタグ
 	 */
 	public String getIconTag() {
-	    return iconTag;
+		return iconTag;
 	}
 
 	/**
@@ -164,7 +167,7 @@ public class MetaInformationParts extends MetaActionParts {
 	 * @param iconTag アイコンタグ
 	 */
 	public void setIconTag(String iconTag) {
-	    this.iconTag = iconTag;
+		this.iconTag = iconTag;
 	}
 
 	/**
@@ -280,6 +283,22 @@ public class MetaInformationParts extends MetaActionParts {
 	}
 
 	/**
+	 * データの多言語化有無を取得します。
+	 * @return データの多言語化有無
+	 */
+	public boolean isEnableDataLocalization() {
+		return enableDataLocalization;
+	}
+
+	/**
+	 * データの多言語化有無を設定します。
+	 * @param enableDataLocalization データの多言語化有無
+	*/
+	public void setEnableDataLocalization(boolean enableDataLocalization) {
+		this.enableDataLocalization = enableDataLocalization;
+	}
+
+	/**
 	 * HTML出力可否を取得します。
 	 * @return HTML出力可否
 	 */
@@ -300,7 +319,7 @@ public class MetaInformationParts extends MetaActionParts {
 	 * @return 一覧の表示件数
 	 */
 	public Integer getNumberOfDisplay() {
-	    return numberOfDisplay;
+		return numberOfDisplay;
 	}
 
 	/**
@@ -308,7 +327,7 @@ public class MetaInformationParts extends MetaActionParts {
 	 * @param numberOfDisplay 一覧の表示件数
 	 */
 	public void setNumberOfDisplay(Integer numberOfDisplay) {
-	    this.numberOfDisplay = numberOfDisplay;
+		this.numberOfDisplay = numberOfDisplay;
 	}
 
 	/**
@@ -413,6 +432,7 @@ public class MetaInformationParts extends MetaActionParts {
 		localizedPasswordWarningMessageList = I18nUtil.toMeta(definition.getLocalizedPasswordWarningMessageList());
 		passwordWarnAreaStyleClass = definition.getPasswordWarnAreaStyleClass();
 		passwordWarnMarkStyleClass = definition.getPasswordWarnMarkStyleClass();
+		enableDataLocalization = definition.isEnableDataLocalization();
 		availableHtmlTag = definition.isEnableHtmlTag();
 		useRichtextEditor = definition.isUseRichtextEditor();
 		richTextLibrary = definition.getRichTextLibrary();
@@ -437,6 +457,7 @@ public class MetaInformationParts extends MetaActionParts {
 		parts.setLocalizedPasswordWarningMessageList(I18nUtil.toDef(localizedPasswordWarningMessageList));
 		parts.setPasswordWarnAreaStyleClass(passwordWarnAreaStyleClass);
 		parts.setPasswordWarnMarkStyleClass(passwordWarnMarkStyleClass);
+		parts.setEnableDataLocalization(enableDataLocalization);
 		parts.setEnableHtmlTag(availableHtmlTag);
 		parts.setUseRichtextEditor(useRichtextEditor);
 		parts.setRichTextLibrary(richTextLibrary);
