@@ -348,7 +348,7 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 
 			//更新可能なデータ範囲か？
-			checkLimitCondition(eh, inv.getEntity(), perm, user, eh.isVersioned() && TargetVersion.SPECIFIC == inv.getUpdateOption().getTargetVersion());
+			checkLimitCondition(eh, inv.getEntity(), perm, user, eh.isVersioned() && TargetVersion.CURRENT_VALID != inv.getUpdateOption().getTargetVersion());
 
 			//項目レベルでのチェック
 			UpdateOption updateOption = invocation.getUpdateOption();
