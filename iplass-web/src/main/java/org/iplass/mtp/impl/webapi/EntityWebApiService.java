@@ -152,7 +152,7 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		csvDateTimeFormat = config.getValue("csvDateTimeFormat", String.class, null);
 		csvDateFormat = config.getValue("csvDateFormat", String.class, null);
 		csvTimeFormat = config.getValue("csvTimeFormat", String.class, null);
-		csvDownloadFooter = config.getValue("csvDownloadFooter", String.class, null);
+		csvDownloadFooter = config.getValue("csvDownloadFooter", String.class, "");
 		
 		listWithMappedByReference = config.getValue("listWithMappedByReference", Boolean.TYPE, Boolean.FALSE).booleanValue();
 		

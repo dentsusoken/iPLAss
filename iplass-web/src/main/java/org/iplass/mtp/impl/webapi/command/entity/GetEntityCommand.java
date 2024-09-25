@@ -82,7 +82,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private static final Logger logger = LoggerFactory.getLogger(GetEntityCommand.class);
 
 	public static final String PARAM_QUERY = "query";
-	public static final String CSV_DOWNLOAD_WITH_FOOTER = "csvDownloadWithFooter";
+	public static final String FOOTER = "footer";
 	public static final String PARAM_TABLE_MODE = "tabular";
 	public static final String PARAM_COUNT_TOTAL = "countTotal";
 	public static final String PARAM_FILTER = "filter";
@@ -253,7 +253,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			option.setTimeSecFormat(entityWebApiService.getCsvTimeFormat());
 			try (QueryCsvWriter writer = new QueryCsvWriter(out, query, option)) {
 				writer.write();
-				if (request.getParam(CSV_DOWNLOAD_WITH_FOOTER, Boolean.class, false)) {
+				if (request.getParam(FOOTER, Boolean.class, false)) {
 					writer.writeFooter(entityWebApiService.getCsvDownloadFooter());
 				}
 
@@ -279,7 +279,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(),
 					option)) {
 				writer.write();
-				if (request.getParam(CSV_DOWNLOAD_WITH_FOOTER, Boolean.class, false)) {
+				if (request.getParam(FOOTER, Boolean.class, false)) {
 					writer.writeFooter(entityWebApiService.getCsvDownloadFooter());
 				}
 			}
