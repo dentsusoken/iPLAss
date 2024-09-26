@@ -559,5 +559,13 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 		return timeFormat;
 
 	}
+	
+	public void writeFooter(String csvDownloadFooter) {
+		try {
+			writer.write(csvDownloadFooter);
+		} catch (IOException e) {
+			throw new EntityCsvException(e);
+		}
+	}
 
 }

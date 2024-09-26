@@ -73,19 +73,16 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebApi(name="mtp/entity/GET",
-		accepts={RequestType.REST_FORM},
-		methods={MethodType.GET},
-		results={GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT, GetEntityCommand.RESULT_ENTITY,
-				GetEntityCommand.RESULT_CSV, GetEntityCommand.RESULT_JSON, GetEntityCommand.RESULT_XML},
-		responseType="application/json, application/xml, text/csv;charset=utf-8",
-		supportBearerToken = true,
-		overwritable=false)
-@CommandClass(name="mtp/entity/GetEntityCommand", displayName="Entity Query/Load Web API", overwritable=false)
+@WebApi(name = "mtp/entity/GET", accepts = { RequestType.REST_FORM }, methods = { MethodType.GET }, results = {
+		GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT, GetEntityCommand.RESULT_ENTITY,
+		GetEntityCommand.RESULT_CSV, GetEntityCommand.RESULT_JSON,
+		GetEntityCommand.RESULT_XML }, responseType = "application/json, application/xml, text/csv;charset=utf-8", supportBearerToken = true, overwritable = false)
+@CommandClass(name = "mtp/entity/GetEntityCommand", displayName = "Entity Query/Load Web API", overwritable = false)
 public final class GetEntityCommand extends AbstractEntityCommand {
 	private static final Logger logger = LoggerFactory.getLogger(GetEntityCommand.class);
 
 	public static final String PARAM_QUERY = "query";
+	public static final String FOOTER = "footer";
 	public static final String PARAM_TABLE_MODE = "tabular";
 	public static final String PARAM_COUNT_TOTAL = "countTotal";
 	public static final String PARAM_FILTER = "filter";
@@ -98,12 +95,8 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	public static final String RESULT_JSON = "json";
 	public static final String RESULT_XML = "xml";
 
-
 	private enum ResType {
-		CSV,
-		JSON,
-		XML,
-		OTHER
+		CSV, JSON, XML, OTHER
 	}
 
 	private final JAXBContext context;
@@ -134,7 +127,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		Element element = doc.getDocumentElement();
 		NamedNodeMap namedNodeMap = element.getAttributes();
 
-		for(int i=0;i<namedNodeMap.getLength();i++) {
+		for (int i = 0; i < namedNodeMap.getLength(); i++) {
 			String[] str = namedNodeMap.item(i).getNodeName().split(":");
 			nameSpaceMap.put(str[1], namedNodeMap.item(i).getNodeValue());
 		}
@@ -155,7 +148,8 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private void list(String entityDef, RequestContext request) {
 		ResType resType = resType(request);
 		boolean withMappedBy = withMappedByReference(request,
-				resType == ResType.CSV ? entityWebApiService.isCsvListWithMappedByReference(): entityWebApiService.isListWithMappedByReference());
+				resType == ResType.CSV ? entityWebApiService.isCsvListWithMappedByReference()
+						: entityWebApiService.isListWithMappedByReference());
 		Query query = new Query().selectAll(entityDef, false, true, false, withMappedBy);
 		String filter = request.getParam(PARAM_FILTER);
 		if (filter != null) {
@@ -165,7 +159,8 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		queryImpl(query, request, false, resType, withMappedBy);
 	}
 
-	private void queryImpl(Query query, RequestContext request, boolean byQuery, ResType resType, boolean withMappedBy) {
+	private void queryImpl(Query query, RequestContext request, boolean byQuery, ResType resType,
+			boolean withMappedBy) {
 
 		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 
@@ -175,7 +170,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 				public boolean visit(HintComment hintComment) {
 					if (hintComment.getHintList() != null) {
 						List<Hint> checked = new ArrayList<>();
-						for (Hint h: hintComment.getHintList()) {
+						for (Hint h : hintComment.getHintList()) {
 							if (h instanceof NativeHint) {
 								logger.warn("Native Hint is disable at Entity Web API, so remove hint: " + h);
 							} else {
@@ -235,10 +230,10 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 
 		SearchResult<?> res = em.searchEntity(query, option);
 
-		if (entityWebApiService.isThrowSearchResultLimitExceededException()
-				&& noLimit
+		if (entityWebApiService.isThrowSearchResultLimitExceededException() && noLimit
 				&& res.getTotalCount() > entityWebApiService.getMaxLimit()) {
-			throw new SearchResultLimitExceededException(resourceString("impl.webapi.command.entity.GetEntityCommand.limitExceeded"));
+			throw new SearchResultLimitExceededException(
+					resourceString("impl.webapi.command.entity.GetEntityCommand.limitExceeded"));
 		}
 
 		request.setAttribute(RESULT_ENTITY_LIST, res.getList());
@@ -258,7 +253,12 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			option.setTimeSecFormat(entityWebApiService.getCsvTimeFormat());
 			try (QueryCsvWriter writer = new QueryCsvWriter(out, query, option)) {
 				writer.write();
+				if (request.getParam(FOOTER, Boolean.class, false)) {
+					writer.writeFooter(entityWebApiService.getCsvDownloadFooter());
+				}
+
 			}
+
 		};
 		request.setAttribute(RESULT_CSV, stream);
 	}
@@ -267,19 +267,21 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 
 		CsvUploadService csvUploadService = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
 
-		//TODO EntitySearchCsvWriter使う場合、queryのselect項目利用できず再度EntitySearchCsvWriterで項目選択させる必要あり、、
+		// TODO
+		// EntitySearchCsvWriter使う場合、queryのselect項目利用できず再度EntitySearchCsvWriterで項目選択させる必要あり、、
 		StreamingOutput stream = out -> {
 
-			EntityWriteOption option = new EntityWriteOption()
-					.where(query.getWhere())
-					.orderBy(query.getOrderBy())
+			EntityWriteOption option = new EntityWriteOption().where(query.getWhere()).orderBy(query.getOrderBy())
 					.dateFormat(entityWebApiService.getCsvDateFormat())
 					.datetimeSecFormat(entityWebApiService.getCsvDateTimeFormat())
-					.timeSecFormat(entityWebApiService.getCsvTimeFormat())
-					.withMappedByReference(withMappedBy)
+					.timeSecFormat(entityWebApiService.getCsvTimeFormat()).withMappedByReference(withMappedBy)
 					.mustOrderByWithLimit(csvUploadService.isMustOrderByWithLimit());
-			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(), option)) {
+			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(),
+					option)) {
 				writer.write();
+				if (request.getParam(FOOTER, Boolean.class, false)) {
+					writer.writeFooter(entityWebApiService.getCsvDownloadFooter());
+				}
 			}
 		};
 		request.setAttribute(RESULT_CSV, stream);
@@ -296,11 +298,12 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		request.setAttribute(RESULT_JSON, stream);
 	}
 
-	private void queryXml(Query query, RequestContext request,  boolean countTotal) {
+	private void queryXml(Query query, RequestContext request, boolean countTotal) {
 
 		StreamingOutput stream = out -> {
 
-			try (QueryXmlWriter writer = new QueryXmlWriter(out, query, countTotal, context, nameSpaceMap, new DateXmlAdapter())) {
+			try (QueryXmlWriter writer = new QueryXmlWriter(out, query, countTotal, context, nameSpaceMap,
+					new DateXmlAdapter())) {
 				writer.write();
 			}
 		};
@@ -308,7 +311,8 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	}
 
 	private ResType resType(RequestContext request) {
-		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
+		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST))
+				.getHeader("Accept");
 		if (accept != null) {
 			if (accept.startsWith("application/json")) {
 				return ResType.JSON;

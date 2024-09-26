@@ -64,6 +64,7 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	private String csvDateTimeFormat;
 	private String csvDateFormat;
 	private String csvTimeFormat;
+	private String csvDownloadFooter;
 	
 	private boolean enableNativeHint;
 
@@ -113,6 +114,10 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	public String getCsvTimeFormat() {
 		return csvTimeFormat;
 	}
+	
+	public String getCsvDownloadFooter() {
+		return csvDownloadFooter;
+	}
 
 	/**
 	 * EntityCRUD APIで制御オプションが許可されたロールか
@@ -147,6 +152,7 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		csvDateTimeFormat = config.getValue("csvDateTimeFormat", String.class, null);
 		csvDateFormat = config.getValue("csvDateFormat", String.class, null);
 		csvTimeFormat = config.getValue("csvTimeFormat", String.class, null);
+		csvDownloadFooter = config.getValue("csvDownloadFooter", String.class, "");
 		
 		listWithMappedByReference = config.getValue("listWithMappedByReference", Boolean.TYPE, Boolean.FALSE).booleanValue();
 		
