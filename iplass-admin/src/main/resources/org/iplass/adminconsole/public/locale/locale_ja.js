@@ -1111,6 +1111,7 @@ LocaleInfo.ui_metadata_top_item_InformationItem_titleEachLang = "言語毎のタ
 LocaleInfo.ui_metadata_top_item_InformationItem_iconTagComment = "Fontawsomeによるアイコン用のタグを設定できます。";
 LocaleInfo.ui_metadata_top_item_InformationItem_partsTimeDispRange = "一覧上の時間部分の表示範囲を指定します。";
 LocaleInfo.ui_metadata_top_item_InformationItem_numberOfDisplay = "スクロール表示になる件数を指定します。<br/>未指定の場合はスクロール表示になりません。";
+LocaleInfo.ui_metadata_top_item_InformationItem_dataLocalization = "お知らせ情報を検索する際に、多言語化されたデータを取得するかを指定します。<br/>この設定は、お知らせ情報Entityのデータが多言語化されている場合のみ有効です。";
 LocaleInfo.ui_metadata_top_item_InformationItem_richTextLibrary = "リッチテキストエディタを利用する場合に、リッチテキストエディタとして利用するライブラリを指定します。";
 LocaleInfo.ui_metadata_top_item_InformationItem_showPasswordWarn = "パスワード有効期間に対する警告メッセージを表示します。";
 LocaleInfo.ui_metadata_top_item_InformationItem_specifyPasswordWarnremainDay = "警告対象とするパスワード有効期間残日数を指定します。";

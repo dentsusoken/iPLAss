@@ -157,6 +157,7 @@ public class InformationItem extends PartsItem {
 
 			chkEnableDataLocalization = new CheckboxItem();
 			chkEnableDataLocalization.setTitle("Enable Data Localization");
+			SmartGWTUtil.addHoverToFormItem(chkEnableDataLocalization, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_dataLocalization"));
 
 			chkEnableHtmlTag = new CheckboxItem();
 			chkEnableHtmlTag.setTitle("Enable Html Tag");
