@@ -1112,6 +1112,7 @@ LocaleInfo.ui_metadata_top_item_InformationItem_iconTagComment = "Can set tags f
 LocaleInfo.ui_metadata_top_item_InformationItem_partsTimeDispRange = "Specify the display range of parts time on the list.";
 LocaleInfo.ui_metadata_top_item_InformationItem_numberOfDisplay = "Specify the number to become a scrolling display.<br/>Not a scroll display in the case of unspecified.";
 LocaleInfo.ui_metadata_top_item_InformationItem_richTextLibrary = "Specify the library to be used as a rich text editor, if a rich text editor is used.";
+LocaleInfo.ui_metadata_top_item_InformationItem_dataLocalization = "Specify whether to display the localized data in the list. <br/>This setting is only valid if data localization of the Information Notice Entity is enabled.";
 LocaleInfo.ui_metadata_top_item_InformationItem_showPasswordWarn = "Show warning message of the password expiration date.";
 LocaleInfo.ui_metadata_top_item_InformationItem_specifyPasswordWarnremainDay = "Specify warning target  password expiration date remaining days.";
 LocaleInfo.ui_metadata_top_item_InformationItem_specifyCustomWarnMessage = "Specify if want to customize the warning message.";
