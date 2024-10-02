@@ -65,13 +65,13 @@ public class SearchConditionSection extends Section {
 		CSV, EXCEL, SPECIFY
 	}
 
-	/** CSVダウンロード時の文字コード指定 */
+	/** ダウンロード時の文字コード指定 */
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum CsvDownloadSpecifyCharacterCode {
 		NONE, SPECIFY, NOT_SPECIFY
 	}
 
-	/** CSVアップロード時のトランザクション制御設定 */
+	/** アップロード時のトランザクション制御設定 */
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum CsvUploadTransactionType {
 		ONCE, DIVISION
@@ -146,154 +146,154 @@ public class SearchConditionSection extends Section {
 	)
 	private FileSupportType fileSupportType;
 
-	/** CSVダウンロードボタン非表示設定 */
+	/** ダウンロードボタン非表示設定 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロードボタン非表示設定 ",
+			displayName="ダウンロードボタン非表示設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_hideCsvdownloadDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1005,
-			description="CSVダウンロードボタンを非表示にするかを設定します。",
+			description="ダウンロードボタンを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_hideCsvdownloadDescriptionKey"
 	)
 	private boolean hideCsvdownload;
 
-	/** CSVダウンロードダイアログ非表示設定 */
+	/** ダウンロードダイアログ非表示設定 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロードダイアログ非表示設定 ",
+			displayName="ダウンロードダイアログ非表示設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_hideCsvdownloadDialogDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1010,
-			description="CSVダウンロード時に全項目出力するかを選択するダイアログを非表示にするかを設定します。",
+			description="ダウンロード時に全項目出力するかを選択するダイアログを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_hideCsvdownloadDialogDescriptionKey"
 	)
 	private boolean hideCsvdownloadDialog;
 
-	/** CSVダウンロード時oid非出力設定 */
+	/** ダウンロード時oid非出力設定 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロード時oid非出力設定 ",
+			displayName="ダウンロード時oid非出力設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_nonOutputOidDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1020,
-			description="CSVダウンロード時oidを出力しないかを設定します。",
+			description="ダウンロード時oidを出力しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_nonOutputOidDescriptionKey"
 	)
 	private boolean nonOutputOid;
 
-	/** CSVダウンロード時BinaryReference非出力設定 */
+	/** ダウンロード時BinaryReference非出力設定 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロード時BinaryReference非出力設定 ",
+			displayName="ダウンロード時BinaryReference非出力設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_nonOutputBinaryRefDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1030,
-			description="CSVダウンロード時BinaryReferenceのnameを出力しないかを設定します。",
+			description="ダウンロード時BinaryReferenceのnameを出力しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_nonOutputBinaryRefDescriptionKey"
 	)
 	private boolean nonOutputBinaryRef;
 
-	/** CSVダウンロード時Reference非出力設定 */
+	/** ダウンロード時Reference非出力設定 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロード時Reference非出力設定 ",
+			displayName="ダウンロード時Reference非出力設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_nonOutputReferenceDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1040,
-			description="CSVダウンロード時Referenceを出力しないかを設定します。",
+			description="ダウンロード時Referenceを出力しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_nonOutputReferenceDescriptionKey"
 	)
 	private boolean nonOutputReference;
 
-	/** CSVダウンロード時表示名非出力設定 */
+	/** ダウンロード時表示名非出力設定 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロード時表示名非出力設定 ",
+			displayName="ダウンロード時表示名非出力設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_nonOutputDisplayNameDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1045,
-			description="Upload形式のCSVダウンロード時表示名を出力しないかを設定します。",
+			description="Upload形式のダウンロード時表示名を出力しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_nonOutputDisplayNameDescriptionKey"
 	)
 	private boolean nonOutputDisplayName;
 
-	/** 多重度プロパティのCSV出力フォーマット */
+	/** 多重度プロパティの出力フォーマット */
 	@MetaFieldInfo(
-			displayName="多重度プロパティのCSV出力フォーマット",
+			displayName="多重度プロパティの出力フォーマット",
 			displayNameKey="generic_element_section_SearchConditionSection_csvMultipleFormatNameKey",
 			inputType=InputType.ENUM,
 			enumClass=MultipleFormat.class,
 			displayOrder=1050,
-			description="CSVの多重度プロパティの出力形式を指定します。Referenceは対象外です。",
+			description="多重度プロパティの出力形式を指定します。Referenceは対象外です。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvMultipleFormatDescriptionKey"
 	)
 	private MultipleFormat csvMultipleFormat = MultipleFormat.EACH_COLUMN;
 
-	/** CSVダウンロード時文字コード指定を可能にする */
+	/** ダウンロード時文字コード指定を可能にする */
 	@MetaFieldInfo(
-			displayName="CSVダウンロード時文字コードを指定可能にする ",
+			displayName="ダウンロード時文字コードを指定可能にする ",
 			displayNameKey="generic_element_section_SearchConditionSection_specifyCharacterCodeNameKey",
 			inputType=InputType.ENUM,
 			enumClass=CsvDownloadSpecifyCharacterCode.class,
 			displayOrder=1060,
-			description="CSVダウンロード時に文字コードを指定可能かを設定します。",
+			description="ダウンロード時に文字コードを指定可能かを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_specifyCharacterCodeDescriptionKey"
 	)
 	private CsvDownloadSpecifyCharacterCode specifyCharacterCode = CsvDownloadSpecifyCharacterCode.NONE;
 
-	/** CSVダウンロード件数の上限値 */
+	/** ダウンロード件数の上限値 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロード件数の上限値",
+			displayName="ダウンロード件数の上限値",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplayNameKey",
 			inputType=InputType.NUMBER,
 			displayOrder=1070,
-			description="CSVダウンロード件数の上限値を設定します。",
+			description="ダウンロード件数の上限値を設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDescriptionKey"
 	)
 	private Integer csvdownloadMaxCount;
 
-	/** Upload形式のCSVダウンロード時に一括でロードする */
+	/** Upload形式のダウンロード時に一括でロードする */
 	@MetaFieldInfo(
-			displayName="Upload形式のCSVダウンロード時に一括でロードする ",
+			displayName="Upload形式のダウンロード時に一括でロードする ",
 			displayNameKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadAtOnceDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1073,
-			description="Upload形式のCSVダウンロードで、多重度複数の参照を含む場合に一括でロードをするかを設定します。",
+			description="Upload形式のダウンロードで、多重度複数の参照を含む場合に一括でロードをするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadAtOnceDescriptionKey"
 	)
 	private boolean uploadableCsvdownloadLoadAtOnce;
 
-	/** Upload形式のCSVダウンロード時のロード単位 */
+	/** Upload形式のダウンロード時のロード単位 */
 	@MetaFieldInfo(
-			displayName="Upload形式のCSVダウンロード時のロード単位",
+			displayName="Upload形式のダウンロード時のロード単位",
 			displayNameKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDisplayNameKey",
 			inputType=InputType.NUMBER,
 			displayOrder=1075,
-			description="Upload形式のCSVダウンロードで、多重度複数の参照を含む場合に一度にロードする件数を設定します。",
+			description="Upload形式のダウンロードで、多重度複数の参照を含む場合に一度にロードする件数を設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_uploadableCsvdownloadLoadSizeDescriptionKey"
 	)
 	private Integer uploadableCsvdownloadLoadSize;
 
-	/** CSVダウンロード項目 */
+	/** ダウンロード項目 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロード項目",
+			displayName="ダウンロード項目",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplayNameKey",
 			inputType=InputType.TEXT_AREA,
 			displayOrder=1080,
-			description="CSV出力対象の項目を指定します。",
+			description="出力対象の項目を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDescriptionKey"
 	)
 	private String csvdownloadProperties;
 
-	/** Upload形式のCSVダウンロード項目 */
+	/** Upload形式のダウンロード項目 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロード項目(Upload形式)",
+			displayName="ダウンロード項目(Upload形式)",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadUploadablePropertiesDisplayNameKey",
 			inputType=InputType.TEXT_AREA,
 			displayOrder=1085,
-			description="Upload形式のCSV出力対象の項目を指定します。",
+			description="Upload形式の出力対象の項目を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadUploadablePropertiesDescriptionKey"
 	)
 	private String csvdownloadUploadableProperties;
 
-	/** CSVファイル名Format */
+	/** ファイル名Format */
 	@MetaFieldInfo(
-			displayName="CSVファイル名Format",
+			displayName="ファイル名Format",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplayNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovy_script",
@@ -305,88 +305,88 @@ public class SearchConditionSection extends Section {
 
 
 
-	/** CSVアップロードボタン非表示設定 */
+	/** アップロードボタン非表示設定 */
 	@MetaFieldInfo(
-			displayName="CSVアップロードボタン非表示設定 ",
+			displayName="アップロードボタン非表示設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_hideCsvUploadDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=2000,
-			description="CSVアップロードボタンを非表示にするかを設定します。",
+			description="アップロードボタンを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_hideCsvUploadDescriptionKey"
 	)
 	private boolean hideCsvUpload;
 
-	/** CSVアップロードで登録を許可しない */
+	/** アップロードで登録を許可しない */
 	@MetaFieldInfo(
-			displayName="CSVアップロードで登録を許可しない",
+			displayName="アップロードで登録を許可しない",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadDenyInsertNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=2010,
-			description="CSVアップロードで登録を許可しないかを設定します。",
+			description="アップロードで登録を許可しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadDenyInsertDescriptionKey"
 	)
 	private boolean csvUploadDenyInsert;
 
-	/** CSVアップロードで更新を許可しない */
+	/** アップロードで更新を許可しない */
 	@MetaFieldInfo(
-			displayName="CSVアップロードで更新を許可しない",
+			displayName="アップロードで更新を許可しない",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadDenyUpdateNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=2020,
-			description="CSVアップロードで更新を許可しないかを設定します。",
+			description="アップロードで更新を許可しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadDenyUpdateDescriptionKey"
 	)
 	private boolean csvUploadDenyUpdate;
 
 
-	/** CSVアップロードで削除を許可しない */
+	/** アップロードで削除を許可しない */
 	@MetaFieldInfo(
-			displayName="CSVアップロードで削除を許可しない",
+			displayName="アップロードで削除を許可しない",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadDenyDeleteNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=2030,
-			description="CSVアップロードで削除を許可しないかを設定します。",
+			description="アップロードで削除を許可しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadDenyDeleteDescriptionKey"
 	)
 	private boolean csvUploadDenyDelete;
 
-	/** CSVアップロード登録項目 */
+	/** アップロード登録項目 */
 	@MetaFieldInfo(
-			displayName="CSVアップロード登録項目",
+			displayName="アップロード登録項目",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadInsertPropertiesDisplayNameKey",
 			inputType=InputType.TEXT_AREA,
 			displayOrder=2040,
-			description="CSVアップロードで登録する対象の項目を指定します。",
+			description="アップロードで登録する対象の項目を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadInsertPropertiesDescriptionKey"
 	)
 	private String csvUploadInsertProperties;
 
-	/** CSVアップロード更新項目 */
+	/** アップロード更新項目 */
 	@MetaFieldInfo(
-			displayName="CSVアップロード更新項目",
+			displayName="アップロード更新項目",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadUpdatePropertiesDisplayNameKey",
 			inputType=InputType.TEXT_AREA,
 			displayOrder=2050,
-			description="CSVアップロードで更新する対象の項目を指定します。",
+			description="アップロードで更新する対象の項目を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadUpdatePropertiesDescriptionKey"
 	)
 	private String csvUploadUpdateProperties;
 
-	/** CSVアップロード時のトランザクション制御設定 */
+	/** アップロード時のトランザクション制御設定 */
 	@MetaFieldInfo(
-			displayName="CSVアップロード時のトランザクション制御設定",
+			displayName="アップロード時のトランザクション制御設定",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDisplayNameKey",
 			inputType=InputType.ENUM,
 			enumClass=CsvUploadTransactionType.class,
 			displayOrder=2060,
-			description="CSVアップロードボタンを非表示にするかを設定します。",
+			description="アップロードボタンを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey"
 	)
 	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;
 
-	/** バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersion */
+	/** バージョン管理Entity以外の場合のアップロード更新データTargetVersion */
 	@MetaFieldInfo(
-			displayName="バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersion",
+			displayName="バージョン管理Entity以外の場合のアップロード更新データTargetVersion",
 			inputType=InputType.ENUM,
 			enumClass=TargetVersion.class,
 			fixedEnumValue = {"CURRENT_VALID", "SPECIFIC"},
@@ -396,9 +396,9 @@ public class SearchConditionSection extends Section {
 	)
 	private TargetVersion csvUploadTargetVersionForNoneVersionedEntity;
 
-	/** バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可 */
+	/** バージョン管理Entity以外の場合にアップロード画面でTargetVersionの指定を許可 */
 	@MetaFieldInfo(
-			displayName="バージョン管理Entity以外の場合にCSVアップロード画面でTargetVersionの指定を許可",
+			displayName="バージョン管理Entity以外の場合にアップロード画面でTargetVersionの指定を許可",
 			inputType=InputType.CHECKBOX,
 			displayOrder=2065,
 			displayNameKey="generic_element_section_SearchConditionSection_canCsvUploadTargetVersionSelectForNoneVersionedEntityDisplayNameKey",
@@ -406,9 +406,9 @@ public class SearchConditionSection extends Section {
 	)
 	private boolean canCsvUploadTargetVersionSelectForNoneVersionedEntity;
 
-	/** カスタムCSVアップロード処理クラス名 */
+	/** カスタムアップロード処理クラス名 */
 	@MetaFieldInfo(
-			displayName="カスタムCSVアップロード処理クラス名",
+			displayName="カスタムアップロード処理クラス名",
 			displayNameKey="generic_element_section_SearchConditionSection_csvUploadInterrupterNameDisplayNameKey",
 			displayOrder=2070,
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadInterrupterNameDescriptionKey"
@@ -644,16 +644,16 @@ public class SearchConditionSection extends Section {
 	}
 
 	/**
-	 * CSVダウンロードボタン非表示設定を取得します。
-	 * @return CSVダウンロードボタン非表示設定
+	 * ダウンロードボタン非表示設定を取得します。
+	 * @return ダウンロードボタン非表示設定
 	 */
 	public boolean isHideCsvdownload() {
 		return hideCsvdownload;
 	}
 
 	/**
-	 * CSVダウンロードボタン非表示設定を設定します。
-	 * @param hideCsvdownload CSVダウンロードボタン非表示設定
+	 * ダウンロードボタン非表示設定を設定します。
+	 * @param hideCsvdownload ダウンロードボタン非表示設定
 	 */
 	public void setHideCsvdownload(boolean hideCsvdownload) {
 		this.hideCsvdownload = hideCsvdownload;
@@ -730,8 +730,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVダウンロードの上限件数を取得します。
-	 * @return CSVダウンロードの上限件数
+	 * ダウンロードの上限件数を取得します。
+	 * @return ダウンロードの上限件数
 	 */
 	public Integer getCsvdownloadMaxCount() {
 		return csvdownloadMaxCount;
@@ -739,8 +739,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVダウンロードの上限件数を設定します。
-	 * @param csvdownloadMaxCount CSVダウンロードの上限件数
+	 * ダウンロードの上限件数を設定します。
+	 * @param csvdownloadMaxCount ダウンロードの上限件数
 	 */
 	public void setCsvdownloadMaxCount(Integer csvdownloadMaxCount) {
 		this.csvdownloadMaxCount = csvdownloadMaxCount;
@@ -748,8 +748,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * Upload形式のCSVダウンロード時に一括でロードするかを取得します。
-	 * @return Upload形式のCSVダウンロード時に一括でロードするか
+	 * Upload形式のダウンロード時に一括でロードするかを取得します。
+	 * @return Upload形式のダウンロード時に一括でロードするか
 	 */
 	public boolean isUploadableCsvdownloadLoadAtOnce() {
 		return uploadableCsvdownloadLoadAtOnce;
@@ -757,8 +757,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * Upload形式のCSVダウンロード時に一括でロードするかを設定します。
-	 * @param uploadableCsvdownloadLoadAtOnce Upload形式のCSVダウンロード時に一括でロードするか
+	 * Upload形式のダウンロード時に一括でロードするかを設定します。
+	 * @param uploadableCsvdownloadLoadAtOnce Upload形式のダウンロード時に一括でロードするか
 	 */
 	public void setUploadableCsvdownloadLoadAtOnce(boolean uploadableCsvdownloadLoadAtOnce) {
 		this.uploadableCsvdownloadLoadAtOnce = uploadableCsvdownloadLoadAtOnce;
@@ -766,8 +766,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * Upload形式のCSVダウンロード時のロード単位を取得します。
-	 * @return Upload形式のCSVダウンロード時のロード単位
+	 * Upload形式のダウンロード時のロード単位を取得します。
+	 * @return Upload形式のダウンロード時のロード単位
 	 */
 	public Integer getUploadableCsvdownloadLoadSize() {
 		return uploadableCsvdownloadLoadSize;
@@ -775,8 +775,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * Upload形式のCSVダウンロード時のロード単位を設定します。
-	 * @param uploadableCsvdownloadLoadSize Upload形式のCSVダウンロード時のロード単位
+	 * Upload形式のダウンロード時のロード単位を設定します。
+	 * @param uploadableCsvdownloadLoadSize Upload形式のダウンロード時のロード単位
 	 */
 	public void setUploadableCsvdownloadLoadSize(Integer uploadableCsvdownloadLoadSize) {
 		this.uploadableCsvdownloadLoadSize = uploadableCsvdownloadLoadSize;
@@ -784,8 +784,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVダウンロード項目を取得します。
-	 * @return CSVダウンロード項目
+	 * ダウンロード項目を取得します。
+	 * @return ダウンロード項目
 	 */
 	public String getCsvdownloadProperties() {
 	    return csvdownloadProperties;
@@ -793,8 +793,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVダウンロード項目をSet形式で取得します。
-	 * @return CSVダウンロード項目
+	 * ダウンロード項目をSet形式で取得します。
+	 * @return ダウンロード項目
 	 */
 	public Set<String> getCsvdownloadPropertiesSet() {
 		if(csvdownloadProperties == null) {
@@ -805,8 +805,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVダウンロード項目を設定します。
-	 * @param csvdownloadProperties CSVダウンロード項目
+	 * ダウンロード項目を設定します。
+	 * @param csvdownloadProperties ダウンロード項目
 	 */
 	public void setCsvdownloadProperties(String csvdownloadProperties) {
 	    this.csvdownloadProperties = csvdownloadProperties;
@@ -814,8 +814,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * Upload形式のCSVダウンロード項目を取得します。
-	 * @return Upload形式のCSVダウンロード項目
+	 * Upload形式のダウンロード項目を取得します。
+	 * @return Upload形式のダウンロード項目
 	 */
 	public String getCsvdownloadUploadableProperties() {
 	    return csvdownloadUploadableProperties;
@@ -823,8 +823,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * Upload形式のCSVダウンロード項目をSet形式で取得します。
-	 * @return Upload形式のCSVダウンロード項目
+	 * Upload形式のダウンロード項目をSet形式で取得します。
+	 * @return Upload形式のダウンロード項目
 	 */
 	public Set<String> getCsvdownloadUploadablePropertiesSet() {
 		if(csvdownloadUploadableProperties == null) {
@@ -835,8 +835,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * Upload形式のCSVダウンロード項目を設定します。
-	 * @param csvdownloadUploadableProperties Upload形式のCSVダウンロード項目
+	 * Upload形式のダウンロード項目を設定します。
+	 * @param csvdownloadUploadableProperties Upload形式のダウンロード項目
 	 */
 	public void setCsvdownloadUploadableProperties(String csvdownloadUploadableProperties) {
 	    this.csvdownloadUploadableProperties = csvdownloadUploadableProperties;
@@ -844,9 +844,9 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVファイル名Format(GroovyTemplate)を取得します。
+	 * ファイル名Format(GroovyTemplate)を取得します。
 	 *
-	 * @return CSVファイル名Format(GroovyTemplate)
+	 * @return ファイル名Format(GroovyTemplate)
 	 */
 	public String getCsvdownloadFileNameFormat() {
 		return csvdownloadFileNameFormat;
@@ -854,8 +854,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVファイル名Format(GroovyTemplate)を設定します。
-	 * @param csvdownloadFileNameFormat CSVファイル名Format(GroovyTemplate)
+	 * ファイル名Format(GroovyTemplate)を設定します。
+	 * @param csvdownloadFileNameFormat ファイル名Format(GroovyTemplate)
 	 */
 	public void setCsvdownloadFileNameFormat(String csvdownloadFileNameFormat) {
 		this.csvdownloadFileNameFormat = csvdownloadFileNameFormat;
@@ -949,8 +949,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVアップロード更新データTargetVersionを取得します。
-	 * @return CSVアップロード更新データTargetVersion
+	 * アップロード更新データTargetVersionを取得します。
+	 * @return アップロード更新データTargetVersion
 	 */
 	public TargetVersion getCsvUploadTargetVersionForNoneVersionedEntity() {
 		return csvUploadTargetVersionForNoneVersionedEntity;
@@ -958,8 +958,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVアップロード更新データTargetVersionを設定します。
-	 * @param csvUploadTargetVersionForNoneVersionedEntity CSVアップロード更新データTargetVersion
+	 * アップロード更新データTargetVersionを設定します。
+	 * @param csvUploadTargetVersionForNoneVersionedEntity アップロード更新データTargetVersion
 	 */
 	public void setCsvUploadTargetVersionForNoneVersionedEntity(TargetVersion csvUploadTargetVersionForNoneVersionedEntity) {
 		this.csvUploadTargetVersionForNoneVersionedEntity = csvUploadTargetVersionForNoneVersionedEntity;
@@ -967,8 +967,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVアップロード画面でTargetVersionの指定を許可するかを取得します。
-	 * @return CSVアップロード画面でTargetVersionの指定を許可するか
+	 * アップロード画面でTargetVersionの指定を許可するかを取得します。
+	 * @return アップロード画面でTargetVersionの指定を許可するか
 	 */
 	public boolean isCanCsvUploadTargetVersionSelectForNoneVersionedEntity() {
 		return canCsvUploadTargetVersionSelectForNoneVersionedEntity;
@@ -976,8 +976,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * CSVアップロード画面でTargetVersionの指定を許可するかを設定します。
-	 * @param canCsvUploadTargetVersionSelectForNoneVersionedEntity CSVアップロード画面でTargetVersionの指定を許可するか
+	 * アップロード画面でTargetVersionの指定を許可するかを設定します。
+	 * @param canCsvUploadTargetVersionSelectForNoneVersionedEntity アップロード画面でTargetVersionの指定を許可するか
 	 */
 	public void setCanCsvUploadTargetVersionSelectForNoneVersionedEntity(boolean canCsvUploadTargetVersionSelectForNoneVersionedEntity) {
 		this.canCsvUploadTargetVersionSelectForNoneVersionedEntity = canCsvUploadTargetVersionSelectForNoneVersionedEntity;
@@ -985,8 +985,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * カスタムCSVアップロード処理クラス名を取得します。
-	 * @return カスタムCSVアップロード処理クラス名
+	 * カスタムアップロード処理クラス名を取得します。
+	 * @return カスタムアップロード処理クラス名
 	 */
 	public String getCsvUploadInterrupterName() {
 		return csvUploadInterrupterName;
@@ -994,8 +994,8 @@ public class SearchConditionSection extends Section {
 
 
 	/**
-	 * カスタムCSVアップロード処理クラス名を設定します。
-	 * @param csvUploadInterrupterName カスタムCSVアップロード処理クラス名
+	 * カスタムアップロード処理クラス名を設定します。
+	 * @param csvUploadInterrupterName カスタムアップロード処理クラス名
 	 */
 	public void setCsvUploadInterrupterName(String csvUploadInterrupterName) {
 		this.csvUploadInterrupterName = csvUploadInterrupterName;
