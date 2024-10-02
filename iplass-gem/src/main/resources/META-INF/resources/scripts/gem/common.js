@@ -145,7 +145,7 @@ function oidCellFormatter(cellvalue, options, rowObject) {
 }
 
 /**
-* CSVダウンロード実行
+* ファイルダウンロード実行
 * @param searchType 検索タイプ(normal、detail、fixed)
 * @param formName search condition form name
 * @param action 実行Action
@@ -158,7 +158,7 @@ function oidCellFormatter(cellvalue, options, rowObject) {
 * @param isOutputCodeValue ダイアログ表示時、Upload形式以外の場合に「コード値でダウンロードする」か
 * @param fileSupportType ダイアログ表示時、ファイル形式
 */
-function csvDownload(searchType, formName, action, target, interval, isForUpload, characterCode, isNoDispName, isOutputResult, isOutputCodeValue, fileSupportType) {
+function fileDownload(searchType, formName, action, target, interval, isForUpload, characterCode, isNoDispName, isOutputResult, isOutputCodeValue, fileSupportType) {
 	var $form = $("<form method='POST' />").attr({action:contextPath + action}).appendTo("body");
 	$("<input />").attr({type:"hidden", name:"defName", value:$(":hidden[name='defName']").val()}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"searchType", value:searchType}).appendTo($form);

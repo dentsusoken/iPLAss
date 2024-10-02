@@ -500,16 +500,16 @@ function onclick_detailReset() {
 <%
 	}
 %>
-function onclick_normalCsvDownload(target) {
-	doCsvDownload('normal', target);
+function onclick_normalFileDownload(target) {
+	doFileDownload('normal', target);
 }
-function onclick_detailCsvDownload(target) {
-	doCsvDownload('detail', target);
+function onclick_detailFileDownload(target) {
+	doFileDownload('detail', target);
 }
-function onclick_fixedCsvDownload(target) {
-	doCsvDownload('fixed', target);
+function onclick_fixedFileDownload(target) {
+	doFileDownload('fixed', target);
 }
-function doCsvDownload(searchType, target) {
+function doFileDownload(searchType, target) {
 	if (!validation(searchType)) return;
 
 	$(".chagne-condition").hide();
@@ -522,7 +522,7 @@ function doCsvDownload(searchType, target) {
 	searchValidate("<%=StringUtil.escapeJavaScript(validate)%>", searchType, searchType + 'Form', function() {
 		$(".searching").hide();
 		<%-- common.js --%>
-		csvDownload(searchType, searchType + "Form", "<%=StringUtil.escapeJavaScript(download)%>", $(target), <%=csvDownloadInterval%>);
+		fileDownload(searchType, searchType + "Form", "<%=StringUtil.escapeJavaScript(download)%>", $(target), <%=csvDownloadInterval%>);
 	}, function() {
 		$(".searching").hide();
 	});
@@ -530,7 +530,7 @@ function doCsvDownload(searchType, target) {
 	} else {
 %>
 	<%-- common.js --%>
-	csvDownload(searchType, searchType + "Form", "<%=StringUtil.escapeJavaScript(download)%>", $(target), <%=csvDownloadInterval%>);
+	fileDownload(searchType, searchType + "Form", "<%=StringUtil.escapeJavaScript(download)%>", $(target), <%=csvDownloadInterval%>);
 <%
 	}
 %>
@@ -942,11 +942,11 @@ ${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.saved
 		//編集等でデータを選択する場合は、CSVダウンロードボタン非表示
 		if (section.isHideCsvdownloadDialog()) {
 %>
-<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" onclick="onclick_normalCsvDownload(this)"/>
+<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" onclick="onclick_normalFileDownload(this)"/>
 <%
 		} else {
 %>
-<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" id="csv-download" />
+<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" id="file-download" />
 <%
 		}
 	}
@@ -1347,11 +1347,11 @@ ${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.saved
 			//編集等でデータを選択する場合は、CSVダウンロードボタン非表示
 			if (section.isHideCsvdownloadDialog()) {
 %>
-<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" onclick="onclick_detailCsvDownload(this)"/>
+<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" onclick="onclick_detailFileDownload(this)"/>
 <%
 			} else {
 %>
-<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" id="detail-csv-download" />
+<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" id="detail-file-download" />
 <%
 			}
 		}
@@ -1434,11 +1434,11 @@ $(function() {
 			//編集等でデータを選択する場合は、CSVダウンロードボタン非表示
 			if (section.isHideCsvdownloadDialog()) {
 %>
-<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" onclick="onclick_fixedCsvDownload(this)"/>
+<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" onclick="onclick_fixedFileDownload(this)"/>
 <%
 			} else {
 %>
-<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" id="fixed-csv-download" />
+<input type="button" class="btn-csv-01 gr-btn gr-size-02" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" id="fixed-file-download" />
 <%
 			}
 		}
@@ -1456,30 +1456,31 @@ $(function() {
 	if (!section.isHideCsvdownload()) {
 		if (!section.isHideCsvdownloadDialog()) {
 %>
-<%-- CsvDownloadダイアログ --%>
-<jsp:include page="SearchConditionSection_CsvDownloadDialog.jsp" />
+<%-- FileDownloadダイアログ --%>
+<jsp:include page="SearchConditionSection_EntityFileDownloadDialog.jsp" />
 
 <script type="text/javascript">
-function applyCsvDownloadDialog(searchType, buttonId) {
-	<%-- SearchConditionSection_CsvDownloadDialog.jsp --%>
+function applyFileDownloadDialog(searchType, buttonId) {
+	<%-- SearchConditionSection_EntityFileDownloadDialog.jsp --%>
 	showFileDownloadDialog(searchType, buttonId, "<%=StringUtil.escapeJavaScript(validate)%>", function(searchType, forUpload, characterCode, noDispName, outputResult, downloadCodeValue, fileSupportType){
-		csvDownload(searchType, searchType + "Form", "<%=StringUtil.escapeJavaScript(download)%>", this, <%=csvDownloadInterval%>, forUpload, characterCode, noDispName, outputResult, downloadCodeValue, fileSupportType);
+		<%-- common.js --%>
+		fileDownload(searchType, searchType + "Form", "<%=StringUtil.escapeJavaScript(download)%>", this, <%=csvDownloadInterval%>, forUpload, characterCode, noDispName, outputResult, downloadCodeValue, fileSupportType);
 	});
 }
 
 $(function() {
 	$("#dialog:ui-dialog").dialog("destroy");
 
-	applyCsvDownloadDialog("normal","csv-download");
+	applyFileDownloadDialog("normal","file-download");
 <%
 			if (showDetail) {
 %>
-	applyCsvDownloadDialog("detail", "detail-csv-download");
+	applyFileDownloadDialog("detail", "detail-file-download");
 <%
 			}
 			if (showFixed) {
 %>
-	applyCsvDownloadDialog("fixed", "fixed-csv-download");
+	applyFileDownloadDialog("fixed", "fixed-file-download");
 <%
 			}
 %>

@@ -36,7 +36,7 @@
 	SearchConditionSection section = view.getCondSection();
 	FileSupportType fileSupportType = data.getFileSupportType();
 %>
-<div id="csv-download-dialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" style="display:none;">
+<div id="file-download-dialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" style="display:none;">
 <%
 	if (fileSupportType == FileSupportType.SPECIFY) {
 %>
@@ -134,11 +134,11 @@ function checkOutputResult() {
 }
 %>
 function showFileDownloadDialog(searchType, buttonId, validate, callback) {
-	var dialog = $("#csv-download-dialog");
+	var dialog = $("#file-download-dialog");
 	dialog.dialog({
 		resizable: false,
 		autoOpen: false,
-		height: 230,
+		height: 250,
 		width: 360,
 		modal: true,
 		buttons: [
