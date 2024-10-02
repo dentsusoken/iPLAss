@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.iplass.mtp.impl.lob.Lob;
 import org.iplass.mtp.impl.lob.LobDao;
+import org.iplass.mtp.impl.lob.LobStoreService;
 import org.iplass.mtp.impl.lob.lobstore.LobStore;
 import org.iplass.mtp.impl.rdb.adapter.QuerySqlHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
@@ -160,7 +161,7 @@ public class BlobSearchSql extends QuerySqlHandler {
 		return sb.toString();
 	}
 
-	public Lob toBinaryData(ResultSet rs, LobStore lobStore, LobDao dao, boolean manageLobSizeOnRdb) throws SQLException {
+	public Lob toBinaryData(ResultSet rs, LobStore lobStore, LobStoreService lobStoreService) throws SQLException {
 		return new Lob(
 				rs.getInt(ObjBlobTable.TENANT_ID),
 				rs.getLong(ObjBlobTable.LOB_ID),
@@ -174,8 +175,7 @@ public class BlobSearchSql extends QuerySqlHandler {
 				rs.getString(ObjBlobTable.LOB_STAT),
 				rs.getLong(ObjBlobTable.LOB_DATA_ID),
 				lobStore,
-				dao,
-				manageLobSizeOnRdb);
+				lobStoreService);
 	}
 
 	/**

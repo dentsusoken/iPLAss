@@ -54,7 +54,6 @@ public class Lob {
 	static final long IS_NEW = -1;
 	static final long IS_NOT_INIT = -2;
 
-
 	private int tenantId;
 	private long lobId;
 	private String name;
@@ -73,11 +72,11 @@ public class Lob {
 
 	private LobStore lobStore;
 
-	private LobDao dao;
+	private LobStoreService service;
 	private boolean updateSize;
-	 
+ 
 	public Lob(int tenantId, long lobId, String name, String type,
-			String definitionId, String propertyId, String oid, Long version, String sessionId, String status, long lobDataId, LobStore lobStore, LobDao dao, boolean updateSize) {
+			String definitionId, String propertyId, String oid, Long version, String sessionId, String status, long lobDataId, LobStore lobStore, LobStoreService service) {
 		this.tenantId = tenantId;
 		this.lobId = lobId;
 		this.name = name;
@@ -90,12 +89,12 @@ public class Lob {
 		this.status = status;
 		this.lobDataId = lobDataId;
 		this.lobStore = lobStore;
-		this.dao = dao;
+		this.service = service;
 		if (lobStore instanceof RdbLobStore) {
 			//RdbLobStore側の処理で一括で保存する
 			this.updateSize = false;
 		} else {
-			this.updateSize = updateSize;
+			this.updateSize = service.isManageLobSizeOnRdb();
 		}
 	}
 
@@ -103,8 +102,8 @@ public class Lob {
 		return updateSize;
 	}
 
-	public LobDao getDao() {
-		return dao;
+	public LobStoreService getService() {
+		return service;
 	}
 
 	public LobStore getLobStore() {
@@ -120,7 +119,7 @@ public class Lob {
 
 	public InputStream getBinaryInputStream() {
 		if (getLobData() != null) {
-			return getLobData().getBinaryInputStream();
+			return service.getAbandonedStreamDetector().registerOrNot(getLobData().getBinaryInputStream());
 		} else {
 			return null;
 		}
@@ -138,9 +137,9 @@ public class Lob {
 		}
 		
 		if (updateSize) {
-			os = new SizeUpdateOutputStream(os, tenantId, lobData, dao);
+			os = new SizeUpdateOutputStream(os, tenantId, lobData, service.getLobDao());
 		}
-		return os;
+		return service.getAbandonedStreamDetector().registerOrNot(os);
 	}
 	
 	private void allocateLobData(Long size) {
@@ -148,26 +147,26 @@ public class Lob {
 			//新規にLobDataをロケート
 			prevLobDataId = lobDataId;
 			lobDataId = lobId;
-			if (!dao.updateLobDataId(tenantId, lobId, prevLobDataId, lobDataId)) {
+			if (!service.getLobDao().updateLobDataId(tenantId, lobId, prevLobDataId, lobDataId)) {
 				throw new EntityConcurrentUpdateException(resourceString("impl.lob.Lob.cantUpdate"));
 			}
 			//参照カウント用のレコード追加
-			dao.initLobData(tenantId, lobDataId, size);
+			service.getLobDao().initLobData(tenantId, lobDataId, size);
 
 			lobData = lobStore.create(tenantId, lobDataId);
 		} else if (prevLobDataId == IS_NOT_INIT) {
 			//更新用に新しいLobDataをロケート
 			prevLobDataId = lobDataId;
-			lobDataId = dao.nextLobDataId(tenantId);
-			if (!dao.updateLobDataId(tenantId, lobId, prevLobDataId, lobDataId)) {
+			lobDataId = service.getLobDao().nextLobDataId(tenantId);
+			if (!service.getLobDao().updateLobDataId(tenantId, lobId, prevLobDataId, lobDataId)) {
 				throw new EntityConcurrentUpdateException(resourceString("impl.lob.Lob.cantUpdate"));
 			}
 
 			//すげ変える前のLobDataの参照カウントの更新
-			dao.refCountUp(tenantId, prevLobDataId, -1);
+			service.getLobDao().refCountUp(tenantId, prevLobDataId, -1);
 
 			//新しい参照カウント用のレコード追加
-			dao.initLobData(tenantId, lobDataId, size);
+			service.getLobDao().initLobData(tenantId, lobDataId, size);
 
 			lobData = lobStore.create(tenantId, lobDataId);
 		}

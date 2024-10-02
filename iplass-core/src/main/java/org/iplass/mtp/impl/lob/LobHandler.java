@@ -61,14 +61,13 @@ public class LobHandler {
 		EntityService ehService = sr.getService(EntityService.class);
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 		LobStoreService lobStoreService = sr.getService(LobStoreService.class);
-		LobDao dao = lobStoreService.getLobDao();
 
 		handlerMap = new HashMap<String, LobHandler>();
 		Map<String, LobStore> lobStoreMap = lobStoreService.getLobStoreMap();
 		for (Map.Entry<String, LobStore> e: lobStoreMap.entrySet()) {
-			handlerMap.put(e.getKey(), new LobHandler(e.getValue(), dao, sessionService, ehService, em, lobStoreService.isManageLobSizeOnRdb()));
+			handlerMap.put(e.getKey(), new LobHandler(e.getValue(), lobStoreService, sessionService, ehService, em));
 		}
-		defaultLobHandler = new LobHandler(lobStoreService.getDefaultLobStore(), dao, sessionService, ehService, em, lobStoreService.isManageLobSizeOnRdb());
+		defaultLobHandler = new LobHandler(lobStoreService.getDefaultLobStore(), lobStoreService, sessionService, ehService, em);
 	}
 
 	public static LobHandler getInstance(String lobStoreName) {
@@ -84,20 +83,20 @@ public class LobHandler {
 	}
 
 	private LobStore lobStore;
+	private LobStoreService lobStoreService;
 	private LobDao dao;
 	private SessionService sessionService;
 	private EntityService ehService;
 	private EntityManager em;
-	private boolean manageLobSizeOnRdb;
 
 
-	public LobHandler(LobStore lobStore, LobDao dao, SessionService sessionService, EntityService ehService, EntityManager em, boolean manageLobSizeOnRdb) {
+	public LobHandler(LobStore lobStore, LobStoreService lobStoreService, SessionService sessionService, EntityService ehService, EntityManager em) {
 		this.lobStore = lobStore;
-		this.dao = dao;
+		this.lobStoreService = lobStoreService;
+		this.dao = lobStoreService.getLobDao();
 		this.sessionService = sessionService;
 		this.ehService = ehService;
 		this.em = em;
-		this.manageLobSizeOnRdb = manageLobSizeOnRdb;
 	}
 
 	public boolean canAccess(Lob lob) {
@@ -156,7 +155,7 @@ public class LobHandler {
 			return null;
 		}
 
-		Lob copy = new Lob(src.getTenantId(), -1, src.getName(), src.getType(), defId, propId, oid, version, null, Lob.STATE_VALID, src.getLobDataId(), lobStore, dao, manageLobSizeOnRdb);
+		Lob copy = new Lob(src.getTenantId(), -1, src.getName(), src.getType(), defId, propId, oid, version, null, Lob.STATE_VALID, src.getLobDataId(), lobStore, lobStoreService);
 		copy = dao.create(copy, lobStore);
 		//参照カウントアップ
 		if (!dao.refCountUp(copy.getTenantId(), copy.getLobDataId(), 1)) {

@@ -44,9 +44,25 @@ public class LobStoreService implements Service {
 	private int cleanCommitLimit = 100;
 
 	private LobDao lobDao;
+	private AbandonedStreamDetector abandonedStreamDetector;
 
 	/** LobのサイズをDB(lob_store)で管理するかを指定します */
 	private boolean manageLobSizeOnRdb = true;
+
+	private boolean detectAbandonedStream;
+	private boolean logAbandoned;
+
+	public boolean isDetectAbandonedStream() {
+		return detectAbandonedStream;
+	}
+
+	public boolean isLogAbandoned() {
+		return logAbandoned;
+	}
+
+	public AbandonedStreamDetector getAbandonedStreamDetector() {
+		return abandonedStreamDetector;
+	}
 
 	public LobDao getLobDao() {
 		return lobDao;
@@ -86,6 +102,10 @@ public class LobStoreService implements Service {
 
 	@Override
 	public void init(Config config) {
+		detectAbandonedStream = config.getValue("detectAbandonedStream", Boolean.TYPE, Boolean.FALSE);
+		logAbandoned = config.getValue("logAbandoned", Boolean.TYPE, Boolean.FALSE);
+		abandonedStreamDetector = new AbandonedStreamDetector(detectAbandonedStream, logAbandoned);
+
 		if (config.getValue(DEFAULT_LOB_STORE_CONFIG_NAME) != null) {
 			defaultLobStoreName = config.getValue(DEFAULT_LOB_STORE_CONFIG_NAME);
 		}
@@ -117,7 +137,7 @@ public class LobStoreService implements Service {
 		}
 		lobDao.init(config.getDependentService(RdbAdapterService.class).getRdbAdapter(),
 				config.getDependentService(CounterService.OID_COUNTER_SERVICE_NAME),
-				manageLobSizeOnRdb);
+				this);
 	}
 
 	@Override

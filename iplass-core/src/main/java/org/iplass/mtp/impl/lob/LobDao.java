@@ -52,7 +52,7 @@ public class LobDao {
 
 	private RdbAdapter rdb;
 	private CounterService counterService;
-	private boolean manageLobSizeOnRdb;
+	private LobStoreService lobStoreService;
 
 	private BlobInsertSql blobInsertSql;
 	private BlobSearchSql searchSql;
@@ -69,10 +69,10 @@ public class LobDao {
 	public LobDao() {
 	}
 
-	public void init(RdbAdapter rdb, CounterService counterService, boolean manageLobSizeOnRdb) {
+	public void init(RdbAdapter rdb, CounterService counterService, LobStoreService lobStoreService) {
 		this.rdb = rdb;
 		this.counterService = counterService;
-		this.manageLobSizeOnRdb = manageLobSizeOnRdb;
+		this.lobStoreService = lobStoreService;
 		blobInsertSql = rdb.getUpdateSqlCreator(BlobInsertSql.class);
 		searchSql = rdb.getQuerySqlCreator(BlobSearchSql.class);
 		deleteSql = rdb.getUpdateSqlCreator(BlobDeleteSql.class);
@@ -119,7 +119,7 @@ public class LobDao {
 		} else {
 			status = Lob.STATE_VALID;
 		}
-		Lob bin = new Lob(tenantId, lobId, name, type, defId, propId, oid, version, sessionId, status, lobDataId, lobStore, this, manageLobSizeOnRdb);
+		Lob bin = new Lob(tenantId, lobId, name, type, defId, propId, oid, version, sessionId, status, lobDataId, lobStore, lobStoreService);
 		return bin;
 	}
 
@@ -145,7 +145,7 @@ public class LobDao {
 				ResultSet rs = getStatement().executeQuery(searchSql.toSql(rdb, tenantId, lobId, sessionId,defId, propId, oid, version, withLock));
 				Lob bin = null;
 				if (rs.next()) {
-					bin = searchSql.toBinaryData(rs, lobStore, LobDao.this, manageLobSizeOnRdb);
+					bin = searchSql.toBinaryData(rs, lobStore, lobStoreService);
 				}
 				rs.close();
 				return bin;
@@ -165,7 +165,7 @@ public class LobDao {
 				ArrayList<Lob> res = new ArrayList<Lob>();
 
 				while (rs.next()) {
-					Lob bin = searchSql.toBinaryData(rs, lobStore, LobDao.this, manageLobSizeOnRdb);
+					Lob bin = searchSql.toBinaryData(rs, lobStore, lobStoreService);
 					res.add(bin);
 				}
 				rs.close();

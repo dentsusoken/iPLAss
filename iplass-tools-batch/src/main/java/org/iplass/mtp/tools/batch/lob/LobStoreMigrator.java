@@ -18,7 +18,6 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.core.config.ConfigImpl;
 import org.iplass.mtp.impl.lob.Lob;
-import org.iplass.mtp.impl.lob.LobDao;
 import org.iplass.mtp.impl.lob.LobStoreService;
 import org.iplass.mtp.impl.lob.lobstore.LobData;
 import org.iplass.mtp.impl.lob.lobstore.LobStore;
@@ -133,7 +132,6 @@ public class LobStoreMigrator extends MtpSilentBatch {
 						LobStore lobStore = MigrateMode.F2R.equals(migrateMode) ? fileLobStore : rdbLobStore;
 
 						RdbAdapter rdb = sr.getService(RdbAdapterService.class).getRdbAdapter();
-						LobDao dao = lobStoreService.getLobDao();
 
 						SqlExecuter<Void> exec = new SqlExecuter<Void>() {
 							@Override
@@ -143,7 +141,7 @@ public class LobStoreMigrator extends MtpSilentBatch {
 
 								try (ResultSet rs = getStatement().executeQuery(sql)) {
 									while (rs.next()) {
-										Lob lob = sqlCreator.toBinaryData(rs, lobStore, dao, lobStoreService.isManageLobSizeOnRdb());
+										Lob lob = sqlCreator.toBinaryData(rs, lobStore, lobStoreService);
 
 										if ((MigrateTarget.BINARY.equals(migrateTarget) && LongTextType.LOB_NAME.equals(lob.getName())) ||
 												(MigrateTarget.LONGTEXT.equals(migrateTarget) && !LongTextType.LOB_NAME.equals(lob.getName()))) {
