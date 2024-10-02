@@ -43,7 +43,7 @@ import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.value.ValueExpression;
-import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
+import org.iplass.mtp.impl.entity.fileport.QueryCsvWriteOption;
 import org.iplass.mtp.impl.webapi.command.Constants;
 import org.iplass.mtp.impl.webapi.jaxb.JaxbListValue;
 import org.iplass.mtp.impl.xml.jaxb.DateXmlAdapter;
@@ -61,7 +61,7 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 	private static final Logger logger = LoggerFactory.getLogger(QueryXmlWriter.class);
 
 	private final Query query;
-	private final QueryWriteOption option;
+	private final QueryCsvWriteOption option;
 	private final EntityManager em;
 	private final boolean isCountTotal;
 	
@@ -72,10 +72,10 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 
 	public QueryXmlWriter(OutputStream out, Query query, boolean isCountTotal, JAXBContext context, 
 			Map<String, String> nameSpaceMap ,DateXmlAdapter dateAdapter) throws IOException {
-		this(out, query, isCountTotal, new QueryWriteOption(), context, nameSpaceMap, dateAdapter);
+		this(out, query, isCountTotal, new QueryCsvWriteOption(), context, nameSpaceMap, dateAdapter);
 	}
 
-	public QueryXmlWriter(OutputStream out, Query query, boolean isCountTotal, QueryWriteOption option,
+	public QueryXmlWriter(OutputStream out, Query query, boolean isCountTotal, QueryCsvWriteOption option,
 			JAXBContext context, Map<String, String> nameSpaceList ,DateXmlAdapter dateAdapter) throws IOException {
 		this.query = query;
 		this.isCountTotal = isCountTotal;

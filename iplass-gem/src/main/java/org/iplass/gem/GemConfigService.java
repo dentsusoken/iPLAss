@@ -35,6 +35,7 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor.RichTextLibrary;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection.FileSupportType;
 
 /**
  * gem固有の設定など
@@ -47,6 +48,9 @@ public class GemConfigService implements Service {
 
 	/** 詳細表示画面で数値プロパティの値をカンマでフォーマットするか */
 	private boolean formatNumberWithComma;
+
+	/** デフォルトのEntityデータファイルの形式 */
+	private FileSupportType fileSupportType;
 
 	/** CSVダウンロード件数上限 */
 	private int csvDownloadMaxCount;
@@ -174,6 +178,8 @@ public class GemConfigService implements Service {
 		imageColors = config.getValues("imageColors", ImageColorSetting.class);
 		loadWithReference = Boolean.valueOf(config.getValue("loadWithReference"));
 		formatNumberWithComma = Boolean.valueOf(config.getValue("formatNumberWithComma"));
+
+		fileSupportType = config.getValue("fileSupportType", FileSupportType.class, FileSupportType.CSV);
 		csvDownloadMaxCount = config.getValue("csvDownloadMaxCount", Integer.class, 65535);
 		uploadableCsvDownloadLoadSize = config.getValue("uploadableCsvDownloadLoadSize", Integer.class, 1);
 		csvDownloadCharacterCode = config.getValues("csvDownloadCharacterCode");
@@ -297,6 +303,14 @@ public class GemConfigService implements Service {
 	 */
 	public boolean isFormatNumberWithComma() {
 		return formatNumberWithComma;
+	}
+
+	/**
+	 * デフォルトのEntityデータファイルの形式を取得します。
+	 * @return デフォルトのEntityデータファイルの形式
+	 */
+	public FileSupportType getFileSupportType() {
+		return fileSupportType;
 	}
 
 	/**

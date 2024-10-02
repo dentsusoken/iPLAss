@@ -59,6 +59,12 @@ public class SearchConditionSection extends Section {
 		ASC,DESC;
 	}
 
+	/** Entityデータのサポートファイルタイプ */
+	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	public enum FileSupportType {
+		CSV, EXCEL, SPECIFY
+	}
+
 	/** CSVダウンロード時の文字コード指定 */
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum CsvDownloadSpecifyCharacterCode {
@@ -128,12 +134,24 @@ public class SearchConditionSection extends Section {
 	)
 	private boolean hideFixedCondition;
 
+	/** Entityデータのファイルタイプ */
+	@MetaFieldInfo(
+			displayName="Entityデータのファイルタイプ",
+			displayNameKey="generic_element_section_SearchConditionSection_fileSupportTypeDisplayNameKey",
+			inputType=InputType.ENUM,
+			enumClass=FileSupportType.class,
+			displayOrder=1000,
+			description="ダウンロード、アップロードで許可するファイルタイプを指定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_fileSupportTypeDescriptionKey"
+	)
+	private FileSupportType fileSupportType;
+
 	/** CSVダウンロードボタン非表示設定 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロードボタン非表示設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_hideCsvdownloadDisplayNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=1000,
+			displayOrder=1005,
 			description="CSVダウンロードボタンを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_hideCsvdownloadDescriptionKey"
 	)
@@ -364,7 +382,7 @@ public class SearchConditionSection extends Section {
 			description="CSVアップロードボタンを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey"
 	)
-	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;;
+	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;
 
 	/** バージョン管理Entity以外の場合のCSVアップロード更新データTargetVersion */
 	@MetaFieldInfo(
@@ -520,7 +538,9 @@ public class SearchConditionSection extends Section {
 	 * @return 要素
 	 */
 	public List<Element> getElements() {
-		if (elements == null) elements = new ArrayList<>();
+		if (elements == null) {
+			elements = new ArrayList<>();
+		}
 	    return elements;
 	}
 
@@ -605,6 +625,22 @@ public class SearchConditionSection extends Section {
 	 */
 	public void setHideFixedCondition(boolean hideFixedCondition) {
 		this.hideFixedCondition = hideFixedCondition;
+	}
+
+	/**
+	 * Entityデータのファイルタイプを取得します。
+	 * @return Entityデータのファイルタイプ
+	 */
+	public FileSupportType getFileSupportType() {
+		return fileSupportType;
+	}
+
+	/**
+	 * Entityデータのファイルタイプを設定します。
+	 * @param fileSupportType Entityデータのファイルタイプ
+	 */
+	public void setFileSupportType(FileSupportType fileSupportType) {
+		this.fileSupportType = fileSupportType;
 	}
 
 	/**
@@ -1007,7 +1043,9 @@ public class SearchConditionSection extends Section {
 	 * @return フィルタ設定
 	 */
 	public List<FilterSetting> getFilterSetting() {
-		if (filterSetting == null) filterSetting = new ArrayList<>();
+		if (filterSetting == null) {
+			filterSetting = new ArrayList<>();
+		}
 	    return filterSetting;
 	}
 
@@ -1063,7 +1101,9 @@ public class SearchConditionSection extends Section {
 
 
 	public List<SortSetting> getSortSetting() {
-		if (sortSetting == null) sortSetting = new ArrayList<>();
+		if (sortSetting == null) {
+			sortSetting = new ArrayList<>();
+		}
 		return sortSetting;
 	}
 

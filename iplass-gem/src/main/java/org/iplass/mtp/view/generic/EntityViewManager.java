@@ -23,11 +23,6 @@ package org.iplass.mtp.view.generic;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.mtp.definition.DefinitionModifyResult;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.entity.Entity;
@@ -37,6 +32,11 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
 import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * 画面定義を管理するクラスのインターフェース。
@@ -134,8 +134,21 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 * @param defaultName デフォルトファイル名
 	 * @param csvVariableMap TemplateBind引数
 	 * @return CSVファイル名
+	 * @deprecated {@link #getEntityDownloadFileName(String, String, String, Map)} を利用してください。
 	 */
+	@Deprecated
 	public String getCsvDownloadFileName(String definitionName, String viewName, String defaultName, Map<String, Object> csvVariableMap);
+
+	/**
+	 * 画面定義に設定されたダウンロードファイル名Formatを使ってファイル名を返します。
+	 *
+	 * @param definitionName Entity定義名
+	 * @param viewName view名
+	 * @param defaultName デフォルトファイル名
+	 * @param fileNameVariableMap TemplateBind引数
+	 * @return ファイル名
+	 */
+	public String getEntityDownloadFileName(String definitionName, String viewName, String defaultName, Map<String, Object> fileNameVariableMap);
 
 	/**
 	 * 検索条件セクション用のデフォルト検索条件を取得します。

@@ -868,7 +868,7 @@
 		</property>
 		<property name="queue" class="org.iplass.mtp.impl.async.rdb.QueueConfig">
 			<property name="id" value="1" />
-			<property name="name" value="csvupload" />
+			<property name="name" value="entityupload" />
 			<property name="worker" class="org.iplass.mtp.impl.async.rdb.WorkerConfig">
 				<property name="pollingInterval" value="60000" />
 			</property>

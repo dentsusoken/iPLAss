@@ -23,6 +23,7 @@
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="org.iplass.mtp.view.generic.element.section.SearchConditionSection"%>
+<%@ page import="org.iplass.mtp.view.generic.element.section.SearchConditionSection.FileSupportType"%>
 <%@ page import="org.iplass.mtp.view.generic.SearchFormView"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchFormViewData"%>
@@ -33,8 +34,19 @@
 	SearchFormViewData data = (SearchFormViewData) request.getAttribute(Constants.DATA);
 	SearchFormView view = data.getView();
 	SearchConditionSection section = view.getCondSection();
+	FileSupportType fileSupportType = data.getFileSupportType();
 %>
 <div id="csv-download-dialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" style="display:none;">
+<%
+	if (fileSupportType == FileSupportType.SPECIFY) {
+%>
+	<fieldset>
+		<label><input name="fileSupportType" type="radio" value="<%=FileSupportType.CSV%>" checked />CSV</label>
+		<label><input name="fileSupportType" type="radio" value="<%=FileSupportType.EXCEL%>" />EXCEL</label>
+	</fieldset>
+<%
+	}
+%>
 	<fieldset class="fs-checkbox" id="fsForUpload">
 		<input type="checkbox" name="forUpload" id="forUpload" value="1"  onchange="checkForUpload()"/>
 		<label for="forUpload">${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.forUpload")}</label>
@@ -121,7 +133,7 @@ function checkOutputResult() {
 <%
 }
 %>
-function showCsvDownloadDialog(searchType, buttonId, validate, callback) {
+function showFileDownloadDialog(searchType, buttonId, validate, callback) {
 	var dialog = $("#csv-download-dialog");
 	dialog.dialog({
 		resizable: false,
@@ -146,10 +158,14 @@ function showCsvDownloadDialog(searchType, buttonId, validate, callback) {
 						<%if (StringUtil.isNotBlank(section.getCsvdownloadProperties())) {%>
 						outputResult = $("#outputResult").is(':checked');
 						<%}%>
+						var fileSupportType = null;
+						<%if (fileSupportType == FileSupportType.SPECIFY) {%>
+						fileSupportType = $('input:radio[name="fileSupportType"]:checked', dialog).val();
+						<%}%>
 
 						var id = $("#trigger", dialog).val();
 						var $target = $("#"+id);
-						callback.call($target, execType, forUpload, characterCode, noDispName, outputResult, downloadCodeValue);
+						callback.call($target, execType, forUpload, characterCode, noDispName, outputResult, downloadCodeValue, fileSupportType);
 
 						$(this).dialog("close");
 				}

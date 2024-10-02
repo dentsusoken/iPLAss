@@ -33,7 +33,7 @@ import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdateEntity.UpdateMethod;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
-import org.iplass.mtp.impl.entity.csv.EntityCsvReader;
+import org.iplass.mtp.impl.entity.fileport.EntityCsvReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +110,7 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 	/**
 	 * 制御フラグ、マージ(追加更新)を示す値。
 	 */
-	public static final String CTRL_MERGE = EntityCsvReader.CTRL_MERGE;;
+	public static final String CTRL_MERGE = EntityCsvReader.CTRL_MERGE;
 
 
 	private String definitionName;

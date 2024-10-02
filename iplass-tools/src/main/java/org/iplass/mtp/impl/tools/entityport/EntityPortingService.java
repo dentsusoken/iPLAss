@@ -36,12 +36,12 @@ import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
-import org.iplass.mtp.impl.csv.CsvUploadService;
-import org.iplass.mtp.impl.csv.EntityCsvImportOption;
-import org.iplass.mtp.impl.csv.EntityCsvImportResult;
-import org.iplass.mtp.impl.csv.EntityCsvImportService;
-import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
-import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
+import org.iplass.mtp.impl.entity.fileport.EntityCsvWriteOption;
+import org.iplass.mtp.impl.entity.fileport.EntitySearchCsvWriter;
+import org.iplass.mtp.impl.fileport.CsvUploadService;
+import org.iplass.mtp.impl.fileport.EntityCsvImportOption;
+import org.iplass.mtp.impl.fileport.EntityCsvImportResult;
+import org.iplass.mtp.impl.fileport.EntityCsvImportService;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.parser.ParseContext;
 import org.iplass.mtp.impl.parser.ParseException;
@@ -159,7 +159,7 @@ public class EntityPortingService implements Service {
 		CsvUploadService csvUploadService = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
 
 		//Writer生成
-		EntityWriteOption option = new EntityWriteOption()
+		EntityCsvWriteOption option = new EntityCsvWriteOption()
 				.withReferenceVersion(true)
 				.withBinary(true)
 				.exportBinaryDataDir(exportBinaryDataDir)

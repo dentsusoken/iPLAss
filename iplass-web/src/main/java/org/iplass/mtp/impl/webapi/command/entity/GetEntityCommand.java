@@ -48,11 +48,11 @@ import org.iplass.mtp.entity.query.QueryVisitorSupport;
 import org.iplass.mtp.entity.query.hint.Hint;
 import org.iplass.mtp.entity.query.hint.HintComment;
 import org.iplass.mtp.entity.query.hint.NativeHint;
-import org.iplass.mtp.impl.csv.CsvUploadService;
-import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
-import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
-import org.iplass.mtp.impl.entity.csv.QueryCsvWriter;
-import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
+import org.iplass.mtp.impl.entity.fileport.EntityCsvWriteOption;
+import org.iplass.mtp.impl.entity.fileport.EntitySearchCsvWriter;
+import org.iplass.mtp.impl.entity.fileport.QueryCsvWriteOption;
+import org.iplass.mtp.impl.entity.fileport.QueryCsvWriter;
+import org.iplass.mtp.impl.fileport.CsvUploadService;
 import org.iplass.mtp.impl.webapi.WebApiResponse;
 import org.iplass.mtp.impl.webapi.jackson.WebApiObjectMapperService;
 import org.iplass.mtp.impl.webapi.jaxb.WebApiJaxbService;
@@ -247,7 +247,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 
 		StreamingOutput stream = out -> {
 
-			QueryWriteOption option = new QueryWriteOption();
+			QueryCsvWriteOption option = new QueryCsvWriteOption();
 			option.setDateFormat(entityWebApiService.getCsvDateFormat());
 			option.setDatetimeSecFormat(entityWebApiService.getCsvDateTimeFormat());
 			option.setTimeSecFormat(entityWebApiService.getCsvTimeFormat());
@@ -271,7 +271,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		// EntitySearchCsvWriter使う場合、queryのselect項目利用できず再度EntitySearchCsvWriterで項目選択させる必要あり、、
 		StreamingOutput stream = out -> {
 
-			EntityWriteOption option = new EntityWriteOption().where(query.getWhere()).orderBy(query.getOrderBy())
+			EntityCsvWriteOption option = new EntityCsvWriteOption().where(query.getWhere()).orderBy(query.getOrderBy())
 					.dateFormat(entityWebApiService.getCsvDateFormat())
 					.datetimeSecFormat(entityWebApiService.getCsvDateTimeFormat())
 					.timeSecFormat(entityWebApiService.getCsvTimeFormat()).withMappedByReference(withMappedBy)

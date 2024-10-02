@@ -31,7 +31,7 @@ import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.value.ValueExpression;
-import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
+import org.iplass.mtp.impl.entity.fileport.QueryCsvWriteOption;
 import org.iplass.mtp.impl.webapi.command.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 	private static final Logger logger = LoggerFactory.getLogger(QueryJsonWriter.class);
 
 	private final Query query;
-	private final QueryWriteOption option;
+	private final QueryCsvWriteOption option;
 	private final EntityManager em;
 	private final boolean isCountTotal;
 	
@@ -54,10 +54,10 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 	
 	public QueryJsonWriter(OutputStream out, Query query, boolean isCountTotal, ObjectMapper mapper,
 			JsonFactory jsonFactory) throws IOException {
-		this(out, query, isCountTotal, new QueryWriteOption(), mapper, jsonFactory);
+		this(out, query, isCountTotal, new QueryCsvWriteOption(), mapper, jsonFactory);
 	}
 
-	public QueryJsonWriter(OutputStream out, Query query, boolean isCountTotal, QueryWriteOption option,
+	public QueryJsonWriter(OutputStream out, Query query, boolean isCountTotal, QueryCsvWriteOption option,
 			ObjectMapper mapper, JsonFactory jsonFactory) throws IOException {
 		this.query = query;
 		this.option = option;

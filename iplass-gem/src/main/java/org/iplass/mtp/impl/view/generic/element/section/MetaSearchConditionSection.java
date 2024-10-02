@@ -46,6 +46,7 @@ import org.iplass.mtp.view.generic.element.section.FilterSetting;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvDownloadSpecifyCharacterCode;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvUploadTransactionType;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection.FileSupportType;
 import org.iplass.mtp.view.generic.element.section.SortSetting;
 
 /**
@@ -81,6 +82,9 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	/** 定型検索非表示設定 */
 	private boolean hideFixedCondition;
+
+	/** Entityデータのファイルタイプ */
+	private FileSupportType fileSupportType;
 
 	/** CSVアップロードボタン非表示設定 */
 	private boolean hideCsvUpload;
@@ -285,6 +289,22 @@ public class MetaSearchConditionSection extends MetaSection {
 	 */
 	public void setCsvUploadInterrupterName(String csvUploadInterrupterName) {
 		this.csvUploadInterrupterName = csvUploadInterrupterName;
+	}
+
+	/**
+	 * Entityデータのファイルタイプを取得します。
+	 * @return Entityデータのファイルタイプ
+	 */
+	public FileSupportType getFileSupportType() {
+		return fileSupportType;
+	}
+
+	/**
+	 * Entityデータのファイルタイプを設定します。
+	 * @param fileSupportType Entityデータのファイルタイプ
+	 */
+	public void setFileSupportType(FileSupportType fileSupportType) {
+		this.fileSupportType = fileSupportType;
 	}
 
 	public boolean isHideCsvUpload() {
@@ -612,7 +632,9 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @return フィルタ設定
 	 */
 	public List<MetaFilterSetting> getFilterSetting() {
-		if (filterSetting == null) filterSetting = new ArrayList<>();
+		if (filterSetting == null) {
+			filterSetting = new ArrayList<>();
+		}
 	    return filterSetting;
 	}
 
@@ -633,7 +655,9 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @return 要素
 	 */
 	public List<MetaElement> getElements() {
-		if (elements == null) elements = new ArrayList<>();
+		if (elements == null) {
+			elements = new ArrayList<>();
+		}
 	    return elements;
 	}
 
@@ -646,7 +670,9 @@ public class MetaSearchConditionSection extends MetaSection {
 	}
 
 	public List<MetaSortSetting> getSortSetting() {
-		if (sortSetting == null) sortSetting = new ArrayList<>();
+		if (sortSetting == null) {
+			sortSetting = new ArrayList<>();
+		}
 		return sortSetting;
 	}
 
@@ -711,6 +737,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.nonOutputReference = section.isNonOutputReference();
 		this.nonOutputBinaryRef = section.isNonOutputBinaryRef();
 		this.nonOutputDisplayName = section.isNonOutputDisplayName();
+		this.fileSupportType = section.getFileSupportType();
 		this.hideCsvUpload = section.isHideCsvUpload();
 		this.csvUploadDenyInsert = section.isCsvUploadDenyInsert();
 		this.csvUploadDenyUpdate = section.isCsvUploadDenyUpdate();
@@ -783,6 +810,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setNonOutputReference(this.nonOutputReference);
 		section.setNonOutputBinaryRef(this.nonOutputBinaryRef);
 		section.setNonOutputDisplayName(this.nonOutputDisplayName);
+		section.setFileSupportType(this.fileSupportType);
 		section.setHideCsvUpload(this.hideCsvUpload);
 		section.setCsvUploadDenyInsert(this.csvUploadDenyInsert);
 		section.setCsvUploadDenyUpdate(this.csvUploadDenyUpdate);

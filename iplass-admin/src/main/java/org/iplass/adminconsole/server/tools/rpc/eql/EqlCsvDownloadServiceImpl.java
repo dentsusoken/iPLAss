@@ -34,7 +34,7 @@ import org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingSer
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.QueryException;
-import org.iplass.mtp.impl.entity.csv.QueryCsvWriter;
+import org.iplass.mtp.impl.entity.fileport.QueryCsvWriter;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

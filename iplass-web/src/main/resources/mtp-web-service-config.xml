@@ -697,8 +697,31 @@
 	</service>
 
 	<service>
-		<interface>org.iplass.mtp.impl.csv.CsvUploadService</interface>
-		<class>org.iplass.mtp.impl.csv.CsvUploadService</class>
+		<interface>org.iplass.mtp.impl.fileport.EntityFileUploadService</interface>
+		<class>org.iplass.mtp.impl.fileport.EntityFileUploadService</class>
+		<!-- アップロードエラー表示件数上限値 (-1は無制限)  -->
+		<!--
+		<property name="showErrorLimitCount" value="100"/>
+		-->
+		<!--
+		 アップロードのバージョン管理Entity以外の場合の更新時のデフォルトTargetVersion。
+		 デフォルトはCURRENT_VALID。  
+		-->
+		<!--
+		<property name="defaultUpdateTargetVersionForNoneVersionedEntity" value="SPECIFIC"/>
+		-->
+		<!--
+		 ダウンロード時にLimitが指定されている場合にOrderByを必ず指定するか。
+		 SQLServerの場合はtrueを指定すること。  
+		-->
+		<!--
+		<property name="mustOrderByWithLimit" value="false"/>
+		-->
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.fileport.CsvUploadService</interface>
+		<class>org.iplass.mtp.impl.fileport.CsvUploadService</class>
 		<!-- CSVアップロードエラー表示件数上限値 (-1は無制限)  -->
 		<!--
 		<property name="showErrorLimitCount" value="100"/>
@@ -720,8 +743,8 @@
 	</service>
 
 	<service>
-		<interface>org.iplass.mtp.impl.csv.EntityCsvImportService</interface>
-		<class>org.iplass.mtp.impl.csv.EntityCsvImportService</class>
+		<interface>org.iplass.mtp.impl.fileport.EntityCsvImportService</interface>
+		<class>org.iplass.mtp.impl.fileport.EntityCsvImportService</class>
 		<!-- UserエンティティのInsert時にパスワード指定を許可するか -->
 		<!--
 		<property name="canCreateUserWithSpecificPassword" value="false" />

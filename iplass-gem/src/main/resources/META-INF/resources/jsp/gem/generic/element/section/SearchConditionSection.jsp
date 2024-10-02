@@ -57,7 +57,7 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.gem.command.generic.delete.TrashCommand"%>
-<%@ page import="org.iplass.gem.command.generic.search.CsvDownloadCommand"%>
+<%@ page import="org.iplass.gem.command.generic.search.EntityFileDownloadCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchFormViewData"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchValidateCommand"%>
@@ -370,7 +370,7 @@
 	if (StringUtil.isNotBlank(view.getDownloadActionName())) {
 		download = "/" + view.getDownloadActionName();
 	} else {
-		download = "/" + CsvDownloadCommand.ACTION_NAME;
+		download = "/" + EntityFileDownloadCommand.ACTION_NAME;
 	}
 
 	//ごみ箱アクション
@@ -1462,8 +1462,8 @@ $(function() {
 <script type="text/javascript">
 function applyCsvDownloadDialog(searchType, buttonId) {
 	<%-- SearchConditionSection_CsvDownloadDialog.jsp --%>
-	showCsvDownloadDialog(searchType, buttonId, "<%=StringUtil.escapeJavaScript(validate)%>", function(searchType, forUpload, characterCode, noDispName, outputResult, downloadCodeValue){
-		csvDownload(searchType, searchType + "Form", "<%=StringUtil.escapeJavaScript(download)%>", this, <%=csvDownloadInterval%>, forUpload, characterCode, noDispName, outputResult, downloadCodeValue);
+	showFileDownloadDialog(searchType, buttonId, "<%=StringUtil.escapeJavaScript(validate)%>", function(searchType, forUpload, characterCode, noDispName, outputResult, downloadCodeValue, fileSupportType){
+		csvDownload(searchType, searchType + "Form", "<%=StringUtil.escapeJavaScript(download)%>", this, <%=csvDownloadInterval%>, forUpload, characterCode, noDispName, outputResult, downloadCodeValue, fileSupportType);
 	});
 }
 
@@ -1495,6 +1495,6 @@ $(function() {
 <input type="hidden" name="formName" value="<c:out value="<%=_searchType%>"/>Form">
 <input type="hidden" name="<%=Constants.SEARCH_SORTKEY %>" value="">
 <input type="hidden" name="<%=Constants.SEARCH_SORTTYPE %>" value="">
-<input type="hidden" name="<%=Constants.CSV_IS_FOR_UPLOAD %>" value="">
+<input type="hidden" name="<%=Constants.FILE_IS_FOR_UPLOAD %>" value="">
 </div><!--box-search-01-->
 </div><!--tab-wrap-->

@@ -40,11 +40,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.ViewUtil;
@@ -122,6 +117,11 @@ import org.iplass.mtp.view.generic.element.section.Section;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * 画面定義を管理するクラス。
@@ -267,7 +267,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				//JoinPropertyEditorからネスとされたPropertyEditorを探します。
 				if (property.getEditor() instanceof JoinPropertyEditor) {
 					PropertyEditor editor = getEditor(currentPropName, property.getEditor());
-					if (editor == null) continue;
+					if (editor == null) {
+						continue;
+					}
 					if (subPropName == null) {
 						return editor;
 					} else {
@@ -295,7 +297,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	private PropertyEditor getEditor(String defName, OutputType outputType, MassReferenceSection section, final String currentPropName, final String subPropName, final Entity entity) {
-		if (subPropName == null) return null;
+		if (subPropName == null) {
+			return null;
+		}
 
 		if (!isDisplayElement(defName, section.getElementRuntimeId(), outputType, entity)) {
 			return null;
@@ -328,7 +332,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			// 子階層Entityのプロパティ
 			SearchConditionSection section = form.getCondSection();
 			for (Element element : section.getElements()) {
-				if (!(element instanceof PropertyItem)) continue;
+				if (!(element instanceof PropertyItem)) {
+					continue;
+				}
 
 				if (!isDisplayElement(defName, element.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)) {
 					continue;
@@ -347,7 +353,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		SearchConditionSection section = form.getCondSection();
 		for (Element element : section.getElements()) {
-			if (!(element instanceof PropertyItem)) continue;
+			if (!(element instanceof PropertyItem)) {
+				continue;
+			}
 
 			if (!isDisplayElement(defName, element.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)) {
 				continue;
@@ -408,7 +416,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			// JoinPropertyEditorからネスとされたPropertyEditorを探します。
 			if (property.getEditor() instanceof JoinPropertyEditor) {
 				PropertyEditor nestEditor = getEditor(currentPropName, property.getEditor());
-				if (nestEditor == null) continue;
+				if (nestEditor == null) {
+					continue;
+				}
 				if (subPropName == null) {
 					return nestEditor;
 				} else {
@@ -428,7 +438,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			// 子階層Entityのプロパティ
 			SearchResultSection section = form.getResultSection();
 			for (Element element : section.getElements()) {
-				if (!(element instanceof PropertyColumn)) continue;
+				if (!(element instanceof PropertyColumn)) {
+					continue;
+				}
 				PropertyColumn property = (PropertyColumn) element;
 				if (property.getPropertyName().equals(propName)
 						&& EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
@@ -443,7 +455,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		SearchResultSection section = form.getResultSection();
 		for (Element element : section.getElements()) {
-			if (!(element instanceof PropertyColumn)) continue;
+			if (!(element instanceof PropertyColumn)) {
+				continue;
+			}
 			PropertyColumn property = (PropertyColumn) element;
 			if (property.getPropertyName().equals(currentPropName)
 					&& EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
@@ -474,14 +488,18 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		SearchResultSection section = form.getResultSection();
 		for (Element element : section.getElements()) {
-			if (!(element instanceof PropertyColumn)) continue;
+			if (!(element instanceof PropertyColumn)) {
+				continue;
+			}
 
 			if (!isDisplayElement(defName, element.getElementRuntimeId(), OutputType.BULK, null)) {
 				continue;
 			}
 
 			PropertyColumn property = (PropertyColumn) element;
-			if (property.getBulkUpdateEditor() == null) continue;
+			if (property.getBulkUpdateEditor() == null) {
+				continue;
+			}
 			if (property.getPropertyName().equals(currentPropName)) {
 				if (subPropName == null) {
 					property.getBulkUpdateEditor().setPropertyName(property.getPropertyName());
@@ -493,7 +511,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			//JoinPropertyEditorからネストされたPropertyEditorを探します。
 			if (property.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
 				PropertyEditor editor = getEditor(currentPropName, property.getBulkUpdateEditor());
-				if (editor == null) continue;
+				if (editor == null) {
+					continue;
+				}
 				if (subPropName == null) {
 					return editor;
 				} else {
@@ -543,10 +563,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	@Override
 	public void executeTemplate(String name, String templateName, HttpServletRequest req,
 			HttpServletResponse res, ServletContext application, PageContext page) {
-		if (name == null || templateName == null) return;
+		if (name == null || templateName == null) {
+			return;
+		}
 
 		EntityViewRuntime entityView = service.getRuntimeByName(name);
-		if (entityView == null) return;
+		if (entityView == null) {
+			return;
+		}
 
 		//DynamicScriptをapiからimplに移すと、戻り値がapiからimplの逆参照となってしまう。
 		//→戻り値ではなくDynamicScriptをメソッド内で実行する。
@@ -657,7 +681,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
+	@Deprecated
 	public String getCsvDownloadFileName(String definitionName, String viewName, String defaultName, Map<String, Object> csvVariableMap) {
+		return getEntityDownloadFileName(definitionName, viewName, defaultName, csvVariableMap);
+	}
+
+	@Override
+	public String getEntityDownloadFileName(String definitionName, String viewName, String defaultName, Map<String, Object> fileNameVariableMap) {
 		String fileName = defaultName;
 		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
 		if (entityView != null) {
@@ -680,7 +710,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			}
 
 			if (searchView != null) {
-				fileName = searchView.getCsvDownloadFileName(defaultName, csvVariableMap).replace("/", "_").replace(" ", "_");
+				fileName = searchView.getCsvDownloadFileName(defaultName, fileNameVariableMap).replace("/", "_").replace(" ", "_");
 			}
 		} else {
 			//View未定義はdefaultName
@@ -708,13 +738,19 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	 *
 	 */
 	private Condition getEntityViewCondition(String name, Element element, String prefixKey) {
-		if (name == null || element == null) return null;
+		if (name == null || element == null) {
+			return null;
+		}
 
 		EntityViewRuntime entityView = service.getRuntimeByName(name);
-		if (entityView == null) return null;
+		if (entityView == null) {
+			return null;
+		}
 
 		PreparedQuery query = entityView.getQuery(prefixKey + element.getElementRuntimeId());
-		if (query == null) return null;
+		if (query == null) {
+			return null;
+		}
 
 		Map<String, Object> bindings = new HashMap<>();
 		bindings.put(REQUEST_BINDING_NAME, RequestContextBinding.newRequestContextBinding());
@@ -823,10 +859,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	@Override
 	public String getUrlParameter(String definitionName, ReferencePropertyEditor editor, Entity entity, UrlParameterActionType actionType) {
-		if (definitionName == null || editor == null || editor.getUrlParameterScriptKey() == null || actionType == null) return "";
+		if (definitionName == null || editor == null || editor.getUrlParameterScriptKey() == null || actionType == null) {
+			return "";
+		}
 
 		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
-		if (entityView == null) return "";
+		if (entityView == null) {
+			return "";
+		}
 
 		//ActionTypeの検証
 		List<UrlParameterActionType> actions = editor.getUrlParameterAction();
@@ -877,10 +917,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	@Override
 	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue, Entity entity) {
 		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
-		if (entityView == null) return null;
+		if (entityView == null) {
+			return null;
+		}
 
 		AutocompletionSettingRuntime autocompletionSetting = entityView.getAutocompletionSetting(autocompletionKey);
-		if (autocompletionSetting == null) return null;
+		if (autocompletionSetting == null) {
+			return null;
+		}
 
 		PropertyEditor editor = null;
 		if (referenceSectionIndex != null) {
@@ -1009,8 +1053,9 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			}
 		} else {
 			// カンマでフォーマットしない場合はフォーマットがない場合に数値のみのフォーマットを適用
-			if (format == null)
+			if (format == null) {
 				format = "#.###";
+			}
 			df.applyPattern(format);
 			return df;
 		}
