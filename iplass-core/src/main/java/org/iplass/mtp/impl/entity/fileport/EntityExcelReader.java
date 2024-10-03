@@ -94,6 +94,10 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 		}
 
 		Row headerRow = sheet.getRow(0);
+		if (headerRow == null) {
+			throw new EntityCsvException("CE2000", rs("impl.csv.EntityCsvReader.emptyFile"));
+		}
+
 		int lastCell = headerRow.getLastCellNum();
 		if (lastCell < 1) {
 			throw new EntityCsvException("CE2000", rs("impl.csv.EntityCsvReader.emptyFile"));
@@ -121,8 +125,8 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 
 		// 空行が含まれていた場合は終了
 		if (currentRow == null) {
-            return null;
-        }
+			return null;
+		}
 
 		// セル数がヘッダー数より多い場合はヘッダー数まで取得
 		int lastCell = currentRow.getLastCellNum();
