@@ -52,6 +52,7 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 
 	private InputStream inputStream;
 
+	private Workbook workbook;
 	private Sheet sheet;
 
 	private int rowIndex = 1;
@@ -67,20 +68,19 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 
 	@Override
 	public void close() throws Exception {
-		if (inputStream != null) {
+		if (workbook != null) {
 			try {
-				inputStream.close();
+				workbook.close();
 			} catch (IOException e) {
 				logger.warn("fail to close EntityExcelReader resource. check whether resource is leak or not.", e);
 			}
-			inputStream = null;
+			workbook = null;
 		}
 	}
 
 	@Override
 	protected List<String> readHeader() {
 
-		Workbook workbook = null;
 		try {
 			workbook = WorkbookFactory.create(inputStream);
 		} catch (EncryptedDocumentException | IOException e) {
