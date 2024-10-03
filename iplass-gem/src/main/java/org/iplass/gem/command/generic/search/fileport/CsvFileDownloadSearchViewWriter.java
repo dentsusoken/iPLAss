@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.iplass.gem.command.generic.search.EntityFileDownloadSearchContext;
@@ -67,6 +68,21 @@ public class CsvFileDownloadSearchViewWriter extends EntityFileDownloadSearchVie
 	@Override
 	protected void writeHeaderColumn(int columnIndex, String text) {
 		writeText(text);
+	}
+
+	@Override
+	protected String valueToUnSplitMultipleValueString(Object value) {
+		String strValue = valueToString(value);
+		if (StringUtil.isNotEmpty(strValue)) {
+			// 連結して出力するためエスケープ
+			String outText = StringEscapeUtils.escapeCsv(strValue);
+			// 値にダブルクォーテーションが含まれる場合は、最後に２重にエスケープされるので戻す
+			if (strValue.contains("\"")) {
+				outText = outText.replaceAll(Pattern.quote("\"\""), "\"");
+			}
+			return outText;
+		}
+		return strValue;
 	}
 
 	@Override

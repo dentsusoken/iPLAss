@@ -34,10 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.generic.search.EntityFileDownloadSearchContext.FileColumn;
 import org.iplass.mtp.ManagerLocator;
@@ -140,6 +138,14 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
      * @param value 値
      */
 	protected abstract void writeValueColumn(int columnIndex, FileColumn fileColumn, Object value);
+
+	/**
+     * 多重度複数値を纏めて出力する際の個々の文字列値を返します。
+     * 各値はカンマで連結します。
+     *
+     * @param value 値
+     */
+	protected abstract String valueToUnSplitMultipleValueString(Object value);
 
 	/**
 	 * 次の列へ移動します。
@@ -619,14 +625,9 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 					continue;
 				}
 
-				String strValue = writer.valueToString(values[i]);
+				String strValue = writer.valueToUnSplitMultipleValueString(values[i]);
 				if (StringUtil.isNotEmpty(strValue)) {
-					String outText = StringEscapeUtils.escapeCsv(strValue);
-					//値にダブルクォーテーションが含まれる場合は、最後に２重にエスケープされるので戻す
-					if (strValue.contains("\"")) {
-						outText = outText.replaceAll(Pattern.quote("\"\""), "\"");
-					}
-					sb.append(outText);
+					sb.append(strValue);
 				}
 			}
 			writer.writeValueColumn(columnIndex, fileColumn, sb.toString());

@@ -141,6 +141,12 @@ public class ExcelFileDownloadSearchViewWriter extends EntityFileDownloadSearchV
 	}
 
 	@Override
+	protected String valueToUnSplitMultipleValueString(Object value) {
+		// Excelの場合は特にエスケープ処理は不要
+		return valueToString(value);
+	}
+
+	@Override
 	protected void nextColumn() {
 	}
 
