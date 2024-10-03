@@ -33,8 +33,8 @@ import org.iplass.gem.command.generic.search.SearchQueryInterrupterHandler;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.impl.entity.fileport.EntityCsvWriteOption;
-import org.iplass.mtp.impl.entity.fileport.EntitySearchCsvWriter;
 import org.iplass.mtp.impl.entity.fileport.EntityCsvWriteOption.SearchQueryCsvContext;
+import org.iplass.mtp.impl.entity.fileport.EntitySearchCsvWriter;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
 import org.iplass.mtp.view.generic.editor.SelectPropertyEditor;
@@ -94,7 +94,7 @@ public class CsvFileDownloadUploadableWriter extends EntityFileDownloadUploadabl
 				.loadOnceOfHasMultipleReferenceEntity(loadOnceOfHasMultipleReferenceEntity)
 				.loadSizeOfHasMultipleReferenceEntity(loadSizeOfHasMultipleReferenceEntity)
 				.versioned(context.isVersioned())
-				.mustOrderByWithLimit(cus.isMustOrderByWithLimit())
+				.mustOrderByWithLimit(efus.isMustOrderByWithLimit())
 				.columnName(property -> context.getColumnName(property))
 				.multipleColumnName((property, index) -> context.getMultipleColumnName(property, index))
 				.sortSelectValue(property -> {

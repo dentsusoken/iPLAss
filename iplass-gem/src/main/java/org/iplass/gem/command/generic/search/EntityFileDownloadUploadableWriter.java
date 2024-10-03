@@ -21,7 +21,7 @@
 package org.iplass.gem.command.generic.search;
 
 import org.iplass.gem.GemConfigService;
-import org.iplass.mtp.impl.fileport.CsvUploadService;
+import org.iplass.mtp.impl.fileport.EntityFileUploadService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.ResultStreamWriter;
 
@@ -33,13 +33,13 @@ public abstract class EntityFileDownloadUploadableWriter implements ResultStream
 	protected final EntityFileDownloadSearchContext context;
 
 	protected final GemConfigService gcs;
-	protected final CsvUploadService cus;
+	protected final EntityFileUploadService efus;
 
 	public EntityFileDownloadUploadableWriter(final EntityFileDownloadSearchContext context) {
 		this.context = context;
 
 		gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
-		cus = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
+		efus = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class);
 	}
 
 }

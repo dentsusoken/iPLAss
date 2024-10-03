@@ -32,9 +32,9 @@ import org.iplass.gem.command.generic.search.EntityFileDownloadUploadableWriter;
 import org.iplass.gem.command.generic.search.SearchQueryInterrupterHandler;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
+import org.iplass.mtp.impl.entity.fileport.EntityCsvWriteOption.SearchQueryCsvContext;
 import org.iplass.mtp.impl.entity.fileport.EntityExcelWriteOption;
 import org.iplass.mtp.impl.entity.fileport.EntitySearchExcelWriter;
-import org.iplass.mtp.impl.entity.fileport.EntityCsvWriteOption.SearchQueryCsvContext;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
 import org.iplass.mtp.view.generic.editor.SelectPropertyEditor;
@@ -91,7 +91,7 @@ public class ExcelFileDownloadUploadableWriter extends EntityFileDownloadUploada
 				.loadOnceOfHasMultipleReferenceEntity(loadOnceOfHasMultipleReferenceEntity)
 				.loadSizeOfHasMultipleReferenceEntity(loadSizeOfHasMultipleReferenceEntity)
 				.versioned(context.isVersioned())
-				.mustOrderByWithLimit(cus.isMustOrderByWithLimit())
+				.mustOrderByWithLimit(efus.isMustOrderByWithLimit())
 				.columnName(property -> context.getColumnName(property))
 				.multipleColumnName((property, index) -> context.getMultipleColumnName(property, index))
 				.sortSelectValue(property -> {
