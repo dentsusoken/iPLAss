@@ -23,9 +23,6 @@ package org.iplass.mtp.view.generic.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.InputType;
@@ -53,6 +50,9 @@ import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyElement;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
 /**
  * 詳細表示で表示可能な仮想プロパティ
  * @author lis3wg
@@ -63,7 +63,7 @@ import org.iplass.mtp.view.generic.element.property.PropertyElement;
 	@Jsp(path="/jsp/gem/generic/element/VirtualProperty.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
 @FieldOrder(manual=true)
-public class VirtualPropertyItem extends Element implements PropertyElement, CsvItem {
+public class VirtualPropertyItem extends Element implements PropertyElement, FileItem {
 
 	private static final long serialVersionUID = 8040377351280643403L;
 
@@ -286,10 +286,6 @@ public class VirtualPropertyItem extends Element implements PropertyElement, Csv
 	)
 	private AutocompletionSetting autocompletionSetting;
 
-	/**
-	 * プロパティ名を取得します。
-	 * @return プロパティ名
-	 */
 	@Override
 	public String getPropertyName() {
 	    return propertyName;
@@ -303,10 +299,6 @@ public class VirtualPropertyItem extends Element implements PropertyElement, Csv
 	    this.propertyName = propertyName;
 	}
 
-	/**
-	 * 画面表示時のラベルを取得します。
-	 * @return 画面表示時のラベル
-	 */
 	@Override
 	public String getDisplayLabel() {
 	    return displayLabel;
@@ -320,10 +312,6 @@ public class VirtualPropertyItem extends Element implements PropertyElement, Csv
 	    this.displayLabel = displayLabel;
 	}
 
-	/**
-	 * 多言語設定情報を取得します。
-	 * @return 多言語設定情報
-	 */
 	@Override
 	public List<LocalizedStringDefinition> getLocalizedDisplayLabelList() {
 	    return localizedDisplayLabelList;
@@ -465,10 +453,6 @@ public class VirtualPropertyItem extends Element implements PropertyElement, Csv
 	    this.requiredDisplayType = requiredDisplayType;
 	}
 
-	/**
-	 * プロパティエディタを取得します。
-	 * @return プロパティエディタ
-	 */
 	@Override
 	public PropertyEditor getEditor() {
 	    return editor;
@@ -519,7 +503,9 @@ public class VirtualPropertyItem extends Element implements PropertyElement, Csv
 	 * @param localizedDisplayLabelList 多言語設定情報
 	 */
 	public void addLocalizedDisplayLabel(LocalizedStringDefinition localizedDisplayLabel) {
-		if (this.localizedDisplayLabelList == null) this.localizedDisplayLabelList = new ArrayList<>();
+		if (this.localizedDisplayLabelList == null) {
+			this.localizedDisplayLabelList = new ArrayList<>();
+		}
 	    this.localizedDisplayLabelList.add(localizedDisplayLabel);
 	}
 
@@ -528,7 +514,9 @@ public class VirtualPropertyItem extends Element implements PropertyElement, Csv
 	 * @param localizedDescriptionList 説明の多言語設定情報
 	 */
 	public void addLocalizedDescription(LocalizedStringDefinition localizedDescription) {
-		if (this.localizedDescriptionList == null) this.localizedDescriptionList = new ArrayList<>();
+		if (this.localizedDescriptionList == null) {
+			this.localizedDescriptionList = new ArrayList<>();
+		}
 	    this.localizedDescriptionList.add(localizedDescription);
 	}
 
@@ -537,14 +525,12 @@ public class VirtualPropertyItem extends Element implements PropertyElement, Csv
 	 * @param localizedTooltipList ツールチップの多言語設定情報
 	 */
 	public void addLocalizedTooltip(LocalizedStringDefinition localizedTooltip) {
-		if (this.localizedTooltipList == null) this.localizedTooltipList = new ArrayList<>();
+		if (this.localizedTooltipList == null) {
+			this.localizedTooltipList = new ArrayList<>();
+		}
 	    this.localizedTooltipList.add(localizedTooltip);
 	}
 
-	/**
-	 * CSVに出力するかを取得します。
-	 * @return CSVに出力するか
-	 */
 	@Override
 	public boolean isOutputCsv() {
 		return outputCsv;

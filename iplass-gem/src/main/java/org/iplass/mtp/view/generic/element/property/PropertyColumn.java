@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.view.generic.element.property;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
@@ -34,8 +31,11 @@ import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
-import org.iplass.mtp.view.generic.element.CsvItem;
+import org.iplass.mtp.view.generic.element.FileItem;
 import org.iplass.mtp.view.generic.element.SortItem;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * 検索結果一覧用のプロパティ情報
@@ -45,7 +45,7 @@ import org.iplass.mtp.view.generic.element.SortItem;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/property/PropertyColumn.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class PropertyColumn extends PropertyBase implements CsvItem, SortItem {
+public class PropertyColumn extends PropertyBase implements FileItem, SortItem {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -98567336076608090L;
@@ -203,10 +203,6 @@ public class PropertyColumn extends PropertyBase implements CsvItem, SortItem {
 		this.nullOrderType = nullOrderType;
 	}
 
-	/**
-	 * CSVに出力するかを取得します。
-	 * @return CSVに出力するか
-	 */
 	@Override
 	public boolean isOutputCsv() {
 		return outputCsv;

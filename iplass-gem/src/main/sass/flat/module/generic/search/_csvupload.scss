@@ -90,7 +90,7 @@
 		float: left;
 	}
 }
-.csvupload_uniquekey, .csvupload-update-target {
+.csvupload_uniquekey, .csvupload-update-target, .csvupload_fileSupportType {
 	@extend %extend_gsc_3;
 	li {
 		float: left;

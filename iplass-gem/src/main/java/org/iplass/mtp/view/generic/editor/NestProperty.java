@@ -33,14 +33,14 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.common.AutocompletionSetting;
-import org.iplass.mtp.view.generic.element.CsvItem;
+import org.iplass.mtp.view.generic.element.FileItem;
 import org.iplass.mtp.view.generic.element.SortItem;
 
 /**
  * 参照型でテーブル表示等の場合に表示する参照先のプロパティ定義
  * @author lis3wg
  */
-public class NestProperty implements Refrectable, CsvItem, SortItem {
+public class NestProperty implements Refrectable, FileItem, SortItem {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -7849466975195960549L;
@@ -319,10 +319,6 @@ public class NestProperty implements Refrectable, CsvItem, SortItem {
 	public NestProperty() {
 	}
 
-	/**
-	 * プロパティ名を取得します。
-	 * @return プロパティ名
-	 */
 	@Override
 	public String getPropertyName() {
 		return propertyName;
@@ -336,10 +332,6 @@ public class NestProperty implements Refrectable, CsvItem, SortItem {
 		this.propertyName = propertyName;
 	}
 
-	/**
-	 * 表示名を取得します。
-	 * @return 表示名
-	 */
 	@Override
 	public String getDisplayLabel() {
 		return displayLabel;
@@ -513,10 +505,6 @@ public class NestProperty implements Refrectable, CsvItem, SortItem {
 		this.sortable = sortable;
 	}
 
-	/**
-	 * CSVに出力するかを取得します。
-	 * @return CSVに出力するか
-	 */
 	@Override
 	public boolean isOutputCsv() {
 		return outputCsv;
@@ -530,10 +518,6 @@ public class NestProperty implements Refrectable, CsvItem, SortItem {
 		this.outputCsv = outputCsv;
 	}
 
-	/**
-	 * プロパティエディタを取得します。
-	 * @return プロパティエディタ
-	 */
 	@Override
 	public PropertyEditor getEditor() {
 		return editor;
@@ -563,10 +547,6 @@ public class NestProperty implements Refrectable, CsvItem, SortItem {
 		this.autocompletionSetting = autocompletionSetting;
 	}
 
-	/**
-	 * 多言語設定情報を取得します。
-	 * @return リスト
-	 */
 	@Override
 	public List<LocalizedStringDefinition> getLocalizedDisplayLabelList() {
 		return localizedDisplayLabelList;

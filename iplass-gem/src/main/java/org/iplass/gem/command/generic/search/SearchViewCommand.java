@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ManagerLocator;
@@ -39,6 +40,7 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterManager;
@@ -49,6 +51,7 @@ import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection.FileSupportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,6 +131,15 @@ public final class SearchViewCommand implements Command {
 			data.setFilters(entityFilter.getItems());
 		}
 
+		// ダウンロードファイルの種類
+		FileSupportType fileSupportType = view.getCondSection().getFileSupportType();
+		// 未指定の場合は、GemConfigServiceから取得
+		if (fileSupportType == null) {
+			GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+			fileSupportType = gemConfigService.getFileSupportType();
+		}
+		data.setFileSupportType(fileSupportType);
+
 		//デフォルト検索条件の生成(searchCondのあるなしにかかわらず作成。リセット用)
 
 		//画面定義の検索条件の項目名でリクエストパラメータがあればsearchCondにする
@@ -167,7 +179,9 @@ public final class SearchViewCommand implements Command {
 
 	private void applyNormalSearchCond(RequestContext request, Map<String, Object> defaultSearchCond, List<PropertyItem> properties) {
 		for (PropertyItem property : properties) {
-			if (property.isBlank()) continue;
+			if (property.isBlank()) {
+				continue;
+			}
 
 			String[] val = request.getParams(Constants.SEARCH_COND_PREFIX + property.getPropertyName());
 			if (val != null && val.length > 0) {
@@ -214,7 +228,9 @@ public final class SearchViewCommand implements Command {
 				}
 			}
 		}
-		if (count == null) count = condCount;
+		if (count == null) {
+			count = condCount;
+		}
 
 		for (int i = 0; i < count; i++) {
 			String nmKey = Constants.DETAIL_COND_PROP_NM + i;

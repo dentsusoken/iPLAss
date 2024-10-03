@@ -57,8 +57,8 @@ import org.iplass.mtp.impl.auth.authenticate.internal.InternalCredential;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.entity.csv.QueryCsvWriter;
-import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
+import org.iplass.mtp.impl.entity.fileport.QueryCsvWriteOption;
+import org.iplass.mtp.impl.entity.fileport.QueryCsvWriter;
 import org.iplass.mtp.impl.tools.ToolsResourceBundleUtil;
 import org.iplass.mtp.impl.tools.entity.UpdateAllValue.UpdateAllValueType;
 import org.iplass.mtp.impl.util.ConvertUtil;
@@ -156,7 +156,7 @@ public class EntityToolService implements Service {
 			query.setVersioned(true);
 		}
 
-		try (QueryCsvWriter writer = new QueryCsvWriter(out, query, new QueryWriteOption().charset(charset))) {
+		try (QueryCsvWriter writer = new QueryCsvWriter(out, query, new QueryCsvWriteOption().charset(charset))) {
 			return writer.write();
 		} catch (IOException e) {
 			throw new EntityToolRuntimeException(getRS("errorOutputSearchResult"), e);

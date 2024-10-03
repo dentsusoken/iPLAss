@@ -77,8 +77,8 @@ import org.iplass.gem.command.generic.reflink.GetReferenceLinkItemCommand;
 import org.iplass.gem.command.generic.reftree.SearchTreeDataCommand;
 import org.iplass.gem.command.generic.refunique.GetReferenceUniqueItemCommand;
 import org.iplass.gem.command.generic.search.CountCommand;
-import org.iplass.gem.command.generic.search.CsvDownloadCommand;
 import org.iplass.gem.command.generic.search.DetailSearchCommand;
+import org.iplass.gem.command.generic.search.EntityFileDownloadCommand;
 import org.iplass.gem.command.generic.search.FixedSearchCommand;
 import org.iplass.gem.command.generic.search.NormalSearchCommand;
 import org.iplass.gem.command.generic.search.SearchCommand;
@@ -87,10 +87,10 @@ import org.iplass.gem.command.generic.search.SearchNameListCommand;
 import org.iplass.gem.command.generic.search.SearchSelectListCommand;
 import org.iplass.gem.command.generic.search.SearchValidateCommand;
 import org.iplass.gem.command.generic.search.SearchViewCommand;
-import org.iplass.gem.command.generic.upload.CsvSampleDownloadCommand;
-import org.iplass.gem.command.generic.upload.CsvUploadCommand;
-import org.iplass.gem.command.generic.upload.CsvUploadIndexCommand;
-import org.iplass.gem.command.generic.upload.CsvUploadStatusCommand;
+import org.iplass.gem.command.generic.upload.EntityFileSampleDownloadCommand;
+import org.iplass.gem.command.generic.upload.EntityFileUploadCommand;
+import org.iplass.gem.command.generic.upload.EntityFileUploadIndexCommand;
+import org.iplass.gem.command.generic.upload.EntityFileUploadStatusCommand;
 import org.iplass.gem.command.information.InformationListCommand;
 import org.iplass.gem.command.information.InformationViewCommand;
 import org.iplass.gem.command.language.SelectLanguageCommand;
@@ -174,11 +174,11 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	SearchListCommand.class,
 	SearchNameListCommand.class,
 	SearchSelectListCommand.class,
-	CsvDownloadCommand.class,
-	CsvUploadIndexCommand.class,
-	CsvUploadCommand.class,
-	CsvUploadStatusCommand.class,
-	CsvSampleDownloadCommand.class,
+	EntityFileDownloadCommand.class,
+	EntityFileUploadIndexCommand.class,
+	EntityFileUploadCommand.class,
+	EntityFileUploadStatusCommand.class,
+	EntityFileSampleDownloadCommand.class,
 	//ツリー
 	GetTreeViewDefinitionCommand.class,
 	GetTreeViewGridDataCommand.class,

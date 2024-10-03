@@ -35,7 +35,7 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchFormViewData"%>
-<%@ page import="org.iplass.gem.command.generic.upload.CsvUploadIndexCommand"%>
+<%@ page import="org.iplass.gem.command.generic.upload.EntityFileUploadIndexCommand"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%
@@ -67,7 +67,7 @@
 	if (StringUtil.isNotBlank(view.getViewUploadActionName())) {
 		csvUpload = view.getViewUploadActionName() + urlPath;
 	} else {
-		csvUpload = CsvUploadIndexCommand.ACTION_NAME + urlPath;
+		csvUpload = EntityFileUploadIndexCommand.ACTION_NAME + urlPath;
 	}
 
 	//表示名

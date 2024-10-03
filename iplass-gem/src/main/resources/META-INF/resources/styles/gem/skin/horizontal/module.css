@@ -1449,7 +1449,7 @@ div.recursiveTree {
   display: block;
   margin-bottom: 5px; }
 
-#csv-download-dialog fieldset {
+#file-download-dialog fieldset {
   text-align: left;
   padding-bottom: 5px; }
 
@@ -1560,12 +1560,12 @@ div.recursiveTree {
   .csvupload_csvfile li {
     float: left; }
 
-.csvupload_uniquekey {
+.csvupload_uniquekey, .csvupload_fileSupportType {
   margin-bottom: 15px; }
-  .csvupload_uniquekey li {
+  .csvupload_uniquekey li, .csvupload_fileSupportType li {
     float: left;
     margin-right: 10px; }
-  .csvupload_uniquekey input {
+  .csvupload_uniquekey input, .csvupload_fileSupportType input {
     margin-right: 5px; }
 
 .csvupload-update-target {

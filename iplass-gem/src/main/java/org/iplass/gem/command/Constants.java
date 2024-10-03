@@ -126,13 +126,21 @@ public class Constants {
 	//一括更新されたデータの件数
 	public static final String BULK_UPDATED_COUNT = "bulkUpdatedCnt";
 
-	/** CSVダウンロード時の文字コード */
+	//CSVダウンロード時の文字コード
 	public static final String CSV_CHARACTER_CODE = "characterCode";
-	public static final String CSV_FILE_DOWNLOAD_TOKEN = "fileDownloadToken";
-	public static final String CSV_IS_OUTPUT_CODE_VALUE = "isOutputCodeValue";
-	public static final String CSV_IS_FOR_UPLOAD = "isForUpload";
-	public static final String CSV_IS_NO_DISP_NAME = "isNoDispName";
-	public static final String CSV_IS_OUTPUT_RESULT = "isOutputResult";
+
+	/** サポートファイル形式 */
+	public static final String FILE_SUPPORT_TYPE = "fileSupportType";
+	/** ダウンロード完了判定用TOKEN */
+	public static final String FILE_DOWNLOAD_TOKEN = "fileDownloadToken";
+	/** コード値を出力するか */
+	public static final String FILE_IS_OUTPUT_CODE_VALUE = "isOutputCodeValue";
+	/** アップロード形式か */
+	public static final String FILE_IS_FOR_UPLOAD = "isForUpload";
+	/** 表示名を出力しないか */
+	public static final String FILE_IS_NO_DISP_NAME = "isNoDispName";
+	/** 検索結果を出力するか */
+	public static final String FILE_IS_OUTPUT_RESULT = "isOutputResult";
 
 	public static final String AND = "And";
 	public static final String OR = "Or";
@@ -356,8 +364,8 @@ public class Constants {
 	public static final String CMD_RSLT_JSP_DIALOG = "/jsp/gem/layout/dialog.jsp";
 	public static final String CMD_RSLT_JSP_FULLTEXT_SEARCH = "/jsp/gem/fulltext/search.jsp";
 	public static final String CMD_RSLT_JSP_BACK_PATH = "/jsp/gem/generic/backPath.jsp";
-	public static final String CMD_RSLT_JSP_CSV_UPLOAD_RESULT = "/jsp/gem/generic/upload/csvUploadResult.jsp";
-	public static final String CMD_RSLT_JSP_CSV_UPLOAD = "/jsp/gem/generic/upload/csvUpload.jsp";
+	public static final String CMD_RSLT_JSP_FILE_UPLOAD_RESULT = "/jsp/gem/generic/upload/fileUploadResult.jsp";
+	public static final String CMD_RSLT_JSP_FILE_UPLOAD = "/jsp/gem/generic/upload/fileUpload.jsp";
 	public static final String CMD_RSLT_JSP_LOGIN = "/jsp/gem/auth/Login.jsp";
 	public static final String CMD_RSLT_JSP_REAUTH = "/jsp/gem/auth/ReAuth.jsp";
 	public static final String CMD_RSLT_JSP_UPDATE_PASSWORD = "/jsp/gem/auth/Password.jsp";
@@ -389,7 +397,7 @@ public class Constants {
 	public static final String TEMPLATE_BULK_EDIT="gem/generic/bulk/bulkEdit";
 	public static final String TEMPLATE_BULK_MULTI_EDIT="gem/generic/bulk/edit";
 	public static final String TEMPLATE_SEARCH = "gem/generic/search/search";
-	public static final String TEMPLATE_CSV_UPLOAD = "gem/generic/upload/csvUpload";
+	public static final String TEMPLATE_FILE_UPLOAD = "gem/generic/upload/fileUpload";
 
 	public static final String TEMPLATE_EDITOR_RICHTEXT_CKEDITOR = "gem/generic/editor/richtext/ckeditor/resource";
 	public static final String TEMPLATE_EDITOR_RICHTEXT_QUILL = "gem/generic/editor/richtext/quill/resource";

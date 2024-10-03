@@ -64,6 +64,10 @@ dependencies {
 	//supercsv
 	implementation sharedLib('net.sf.supercsv:super-csv')
 
+	//apache POI
+	api sharedLib('org.apache.poi:poi')
+	api sharedLib('org.apache.poi:poi-ooxml')
+
 	// caffeine
 	implementation sharedLib('com.github.ben-manes.caffeine:caffeine')
 

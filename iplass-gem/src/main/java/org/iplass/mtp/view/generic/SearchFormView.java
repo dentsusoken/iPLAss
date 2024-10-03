@@ -22,15 +22,15 @@ package org.iplass.mtp.view.generic;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.view.generic.element.section.Section;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * 検索画面用のFormレイアウト情報
@@ -89,24 +89,24 @@ public class SearchFormView extends FormView {
 	)
 	private String searchWebapiName;
 
-	/** CSVダウンロードアクション名 */
+	/** ダウンロードアクション名 */
 	@MetaFieldInfo(
-			displayName="CSVダウンロードアクション名",
+			displayName="ダウンロードアクション名",
 			displayNameKey="generic_SearchFormView_downloadActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
 			displayOrder=510,
-			description="CSVダウンロードボタンクリックで実行されるアクションを設定します。",
+			description="ダウンロードボタンクリックで実行されるアクションを設定します。",
 			descriptionKey="generic_SearchFormView_downloadActionNameDescriptionKey"
 	)
 	private String downloadActionName;
 
-	/** CSVアップロード画面表示アクション名 */
+	/** アップロード画面表示アクション名 */
 	@MetaFieldInfo(
-			displayName="CSVアップロード画面表示アクション名",
+			displayName="アップロード画面表示アクション名",
 			displayNameKey="generic_SearchFormView_viewUploadActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
 			displayOrder=520,
-			description="CSVアップロードボタンクリックで実行されるアクションを設定します。",
+			description="アップロードボタンクリックで実行されるアクションを設定します。",
 			descriptionKey="generic_SearchFormView_viewUploadActionNameDescriptionKey"
 	)
 	private String viewUploadActionName;
@@ -247,13 +247,13 @@ public class SearchFormView extends FormView {
 	)
 	private String interrupterName;
 
-	/** EQLカスタム処理クラスをCSVダウンロードで利用するか */
+	/** EQLカスタム処理クラスをダウンロードで利用するか */
 	@MetaFieldInfo(
-			displayName="EQLカスタム処理クラスをCSVダウンロードで利用するか",
+			displayName="EQLカスタム処理クラスをダウンロードで利用するか",
 			displayNameKey="generic_SearchFormView_useInterrupterForCsvDownloadDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=1620,
-			description="EQLカスタム処理クラスをCSVダウンロードで利用するかを指定します。",
+			description="EQLカスタム処理クラスをダウンロードで利用するかを指定します。",
 			descriptionKey="generic_SearchFormView_useInterrupterForCsvDownloadDescriptionKey"
 	)
 	private boolean useInterrupterForCsvDownload;

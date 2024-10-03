@@ -81,6 +81,9 @@
 		<property name="loadWithReference" value="false" />
 		<property name="formatNumberWithComma" value="true" />
 
+		<!-- Entityデータのサポートファイルタイプ。CSV, EXCEL, SPECIFY -->
+		<property name="fileSupportType" value="CSV" />
+
 		<!-- CSVダウンロード件数上限値 -->
 		<property name="csvDownloadMaxCount" value="65535" />
 
