@@ -421,6 +421,7 @@
 				<property name="magicByte" value="504b030414000808" />
 				<property name="magicByte" value="504B03040A000000" />
 				<property name="magicByte" value="504B030414000000" />
+				<property name="magicByte" value="504b03042d000800" />
 			</property>
 		</property>
 
