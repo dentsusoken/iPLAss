@@ -89,7 +89,7 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 		sheet = workbook.getSheetAt(0);
 
 		int lastRow = sheet.getLastRowNum();
-		if (lastRow < 2) {
+		if (lastRow < 1) {
 			throw new EntityCsvException("CE2000", rs("impl.csv.EntityCsvReader.emptyFile"));
 		}
 
@@ -119,6 +119,11 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 
 		Row currentRow = sheet.getRow(rowIndex);
 
+		// 空行が含まれていた場合は終了
+		if (currentRow == null) {
+            return null;
+        }
+
 		// セル数がヘッダー数より多い場合はヘッダー数まで取得
 		int lastCell = currentRow.getLastCellNum();
 		int maxCellNum = lastCell > header().size() ? header().size() : lastCell;
@@ -130,8 +135,13 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 			currentLine.add(cellValue);
 		}
 
-		rowIndex++;
-		return currentLine;
+		// 空行が含まれていた場合は終了
+		if (currentLine.stream().anyMatch(value -> StringUtil.isNotEmpty(value))) {
+			rowIndex++;
+			return currentLine;
+		}
+
+		return null;
 	}
 
 	/**
