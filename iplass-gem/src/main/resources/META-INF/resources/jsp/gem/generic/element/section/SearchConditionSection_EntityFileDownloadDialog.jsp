@@ -76,7 +76,8 @@
 	</fieldset>
 <%
 	}
-	if (ViewUtil.isEntityViewCsvDownloadSpecifyCharacterCode(section.getSpecifyCharacterCode())){
+	if (fileSupportType != FileSupportType.EXCEL 
+			&& ViewUtil.isEntityViewCsvDownloadSpecifyCharacterCode(section.getSpecifyCharacterCode())){
 %>
 	<fieldset>
 		<select name="characterCode" id="characterCode">
