@@ -35,6 +35,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
@@ -209,7 +210,12 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 			CellFormat cellFormat = CellFormat.getInstance(cell.getCellStyle().getDataFormatString());
 			return cellFormat.apply(cell).text;
 		}
-		// 日付じゃない場合は数値を返す。
+		// セルタイプがNUMERICで、Booleanの0、1が、0.0、1.0になるので対応
+		if (propertyDefinition != null && propertyDefinition.getType() == PropertyDefinitionType.BOOLEAN) {
+			return ConvertUtil.convertToString((int)cell.getNumericCellValue());
+		}
+
+		// 上記以外は数値を返す
 		return ConvertUtil.convertToString(cell.getNumericCellValue());
 	}
 
