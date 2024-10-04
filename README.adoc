@@ -35,18 +35,18 @@ https://iplass.org/downloads/
 
 gradleでの定義例：
 
- implementation 'org.iplass:iplass-gem:3.2.23'
+ implementation 'org.iplass:iplass-gem:4.0.0'
 
 mavenでの設定例：
 
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>3.2.23</version>
+   <version>4.0.0</version>
    <type>pom</type>
  </dependency>
 
-NOTE: JakartaEE8 (Servlet/JSP/JSTL/EL/JAX-RS/BeanValidation/CommonAnnotations/JavaMail/JAXB/JAF) のランタイムが必要です。
+NOTE: JakartaEE10 (Servlet/JSP/JSTL/EL/JAX-RS/BeanValidation/CommonAnnotations/JavaMail/JAXB/JAF) のランタイムが必要です。
 https://github.com/dentsusoken/iplass-skeleton[スケルトンプロジェクト] のbuild.gradleを参考にしてください。
 
 以下は各モジュールの説明です。
@@ -86,28 +86,32 @@ infinispanアドオンモジュールです。 +
 Redisアドオンモジュールです。 +
 キャッシュストアとしてRedisを利用することを可能にします。
 
+### iplass-googlecloud
+Google Cloudのサービスを利用する際のアドオンモジュールです。 +
+FCM経由でプッシュ通知を送信可能です。
+
 ## Related repositories
 
 * https://github.com/dentsusoken/iplass-skeleton
 * https://github.com/dentsusoken/iplass-sample-app
 * https://github.com/dentsusoken/iplass-sample-app-vuejs
-* https://github.com/dentsusoken/iplass-eclipse
+* https://github.com/dentsusoken/iplass-gradle-plugin
 * https://github.com/iplass
 
 ## Branches
 
 ### master
-現在の開発中のバージョン4.0.xのソースはmasterブランチです。
+現在の最新のバージョン4.0.xのソースはmasterブランチです。
 
 NOTE: Java21 / JakartaEE10ベースです
 
 ### 3.2.x
-現在の最新の安定版3.2.xのソースは3.2.xブランチです。
+以前の最新の安定版3.2.xのソースは3.2.xブランチです。
 
 NOTE: (Java8 | Java11 | Java17) / JakartaEE8(JavaEE8)ベースです
 
 ### 3.1.x
-以前の安定版3.1.xのソースは3.1.xブランチです。
+過去の安定版3.1.xのソースは3.1.xブランチです。
 
 NOTE: (Java8 | Java11) / JakartaEE8(JavaEE8)ベースです
 
