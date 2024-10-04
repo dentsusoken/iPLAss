@@ -34,18 +34,18 @@ Also, jar is published at Maven Central with groupId : org.iplass.
 
 example when using gradle：
 
- implementation 'org.iplass:iplass-gem:3.2.23'
+ implementation 'org.iplass:iplass-gem:4.0.0'
 
 example when using  maven：
 
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>3.2.23</version>
+   <version>4.0.0</version>
    <type>pom</type>
  </dependency>
 
-NOTE: JakartaEE8 (Servlet/JSP/JSTL/EL/JAX-RS/BeanValidation/CommonAnnotations/JavaMail/JAXB/JAF) Runtime environment is required.
+NOTE: JakartaEE10 (Servlet/JSP/JSTL/EL/JAX-RS/BeanValidation/CommonAnnotations/JavaMail/JAXB/JAF) Runtime environment is required.
 Please refer to the build.gradle file from https://github.com/dentsusoken/iplass-skeleton[skeleton-proect].
 
 The modules are explained and listed below.
@@ -85,28 +85,32 @@ The module supports infinispan to achieve cachestorage and the communication bet
 Redis addon module. +
 Supports Redis for cachestorage.
 
+### iplass-googlecloud
+An addon module for using Google Cloud services. +
+Push notifications can be sent via FCM.
+
 ## Related repositories
 
 * https://github.com/dentsusoken/iplass-skeleton
 * https://github.com/dentsusoken/iplass-sample-app
 * https://github.com/dentsusoken/iplass-sample-app-vuejs
-* https://github.com/dentsusoken/iplass-eclipse
+* https://github.com/dentsusoken/iplass-gradle-plugin
 * https://github.com/iplass
 
 ## Branches
 
 ### master
-The master branch contains the source code of the development version, which is regarded as version 4.0.x.
+The master branch contains the source code of the latest stable version, which is regarded as version 4.0.x.
 
 NOTE: It is Java21 / JakartaEE10 based.
 
 ### 3.2.x
-3.2.x branch contains the source code of the current stable version.
+3.2.x branch contains the source code of the previous stable version.
 
 NOTE: It is (Java8 | Java11) / JakartaEE8(JavaEE8) based.
 
 ### 3.1.x
-3.1.x branch contains the source code of the previous stable version.
+3.1.x branch contains the source code of the old stable version.
 
 NOTE: It is (Java8 | Java11) / JakartaEE8(JavaEE8) based.
 
