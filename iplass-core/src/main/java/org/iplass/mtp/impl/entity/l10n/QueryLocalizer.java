@@ -187,7 +187,8 @@ class QueryLocalizer extends ASTTransformerSupport {
 				eh.getMetaData().getDataLocalizationStrategy() instanceof MetaEachInstanceDataLocalizationStrategy) {
 			MetaEachInstanceDataLocalizationStrategy st = (MetaEachInstanceDataLocalizationStrategy) eh.getMetaData().getDataLocalizationStrategy();
 			Condition l10nCond = l10nCond(userLang, st, null);
-			if (q.getWhere() == null) {
+			if (q.getWhere() == null || q.getWhere().getCondition() == null) {
+				//gemの汎用操作画面経由だと、Where内のconditionがnullになることがある
 				q.where(l10nCond);
 			} else {
 				q.where(new And(q.getWhere().getCondition(), l10nCond));
