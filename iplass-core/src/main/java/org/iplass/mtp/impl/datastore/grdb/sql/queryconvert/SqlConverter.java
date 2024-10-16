@@ -291,6 +291,7 @@ public class SqlConverter extends QueryVisitorSupport {
 		}
 	}
 
+	@Override
 	public boolean visit(Literal literal) {
 		push(literal);
 		try {
@@ -866,9 +867,21 @@ public class SqlConverter extends QueryVisitorSupport {
 								context.append(" AND ");
 							}
 						}
+						context.append("(");
 						colExp(context.getCurrentSb(), propName, cols.get(i), false);
 						context.append(op);
 						valueConvert(val, col.getSingleColumnRdbTypeAdapter(), false);
+						if (isAny) {
+							context.append(" AND ");
+						} else {
+							context.append(" OR ");
+						}
+						colExp(context.getCurrentSb(), propName, cols.get(i), false);
+						if (isAny) {
+							context.append(" IS NOT NULL)");
+						} else {
+							context.append(" IS NULL)");
+						}
 					}
 				}
 				context.append(")");
@@ -1129,11 +1142,15 @@ public class SqlConverter extends QueryVisitorSupport {
 						if (i != 0) {
 							context.append(" OR ");
 						}
+						context.append("(");
 						colExp(context.getCurrentSb(), propName, cols.get(i), false);
 						context.append(" BETWEEN ");
 						valueConvert(betweenExpression.getFrom(), col.getSingleColumnRdbTypeAdapter(), false);
 						context.append(" AND ");
 						valueConvert(betweenExpression.getTo(), col.getSingleColumnRdbTypeAdapter(), false);
+						context.append(" AND ");
+						colExp(context.getCurrentSb(), propName, cols.get(i), false);
+						context.append(" IS NOT NULL)");
 					}
 					context.append(")");
 				} else {
@@ -1232,6 +1249,7 @@ public class SqlConverter extends QueryVisitorSupport {
 								context.append(" OR ");
 							}
 							
+							context.append("(");
 							if (in.getSubQuery() != null) {
 								//subquery
 								colExp(context.getCurrentSb(), propName, cols.get(i), false);
@@ -1276,8 +1294,10 @@ public class SqlConverter extends QueryVisitorSupport {
 								if (enableInPart) {
 									context.append(")");
 								}
-
 							}
+							context.append(" AND ");
+							colExp(context.getCurrentSb(), propName, cols.get(i), false);
+							context.append(" IS NOT NULL)");
 						}
 						context.append(")");
 					} else {
@@ -1658,6 +1678,7 @@ public class SqlConverter extends QueryVisitorSupport {
 						if (i != 0) {
 							context.append(" OR ");
 						}
+						context.append("(");
 						if (like.getCaseType() == CaseType.CS) {
 							colExp(context.getCurrentSb(), propName, cols.get(i), false);
 							context.append(" LIKE ");
@@ -1673,6 +1694,9 @@ public class SqlConverter extends QueryVisitorSupport {
 							forLike(like.getPatternAsLiteral(), like.getCaseType());
 							context.append(" ").append(rdbAdaptor.escape());
 						}
+						context.append(" AND ");
+						colExp(context.getCurrentSb(), propName, cols.get(i), false);
+						context.append(" IS NOT NULL)");
 					}
 					context.append(")");
 				} else {
