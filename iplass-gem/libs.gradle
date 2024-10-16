@@ -12,7 +12,7 @@ configurations {
 	all*.exclude group: 'org.webjars.bower', module: 'jquery'
 	all*.exclude group: 'org.webjars.bowergithub.jquery', module: 'jquery-dist'
 	
-	// jquery-uiはorg.webjars.bowergithub.jquery:jquery-uiを利用。
+	// jquery-uiはorg.webjars.npm:jquery-uiを利用。
 	// org.webjars:jquery-uiは除外(org.webjars:jQuery-Timepicker-Addonで参照)
 	all*.exclude group: 'org.webjars', module: 'jquery-ui'
 
@@ -44,7 +44,7 @@ dependencies {
 	wjRuntime sharedLib('org.webjars.bower:fullcalendar')
 	wjRuntime sharedLib('org.webjars.bower:mediaelement')
 
-	wjRuntime sharedLib('org.webjars.bowergithub.jquery:jquery-ui')
+	wjRuntime sharedLib('org.webjars.npm:jquery-ui')
 
 	//css
 	wjRuntime sharedLib('org.webjars:font-awesome')
