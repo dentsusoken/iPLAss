@@ -57,9 +57,9 @@ dType="/gem";
 scriptContext.locale.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownPleaseSelectLabel()%>;
 </script>
 
-<script src="${staticContentPath}/webjars/jquery/3.5.1/jquery.min.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/webjars/jquery/3.7.1/jquery.min.js?cv=${apiVersion}"></script>
 <script>$.uiBackCompat = false;</script>
-<script src="${staticContentPath}/webjars/jquery-ui/dist/jquery-ui.min.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/webjars/jquery-ui/1.13.3/dist/jquery-ui.min.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/functions.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/common.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/webapi.js?cv=${apiVersion}"></script>
@@ -67,6 +67,6 @@ scriptContext.locale.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownP
 <script src="${staticContentPath}/webjars/momentjs/2.29.4/min/moment-with-locales.min.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/font-awesome/5.13.1/js/all.min.js?cv=${apiVersion}"></script>
 
-<link rel="stylesheet" href="${staticContentPath}/webjars/jquery-ui/dist/themes/base/jquery-ui.min.css?cv=${apiVersion}" />
+<link rel="stylesheet" href="${staticContentPath}/webjars/jquery-ui/1.13.3/dist/themes/base/jquery-ui.min.css?cv=${apiVersion}" />
 
 <%@include file="./datepickerResource.inc.jsp" %> 
