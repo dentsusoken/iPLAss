@@ -30,11 +30,13 @@
 %>
 <script type="text/javascript">
 function addRichtextItem_<%=StringUtil.escapeJavaScript(targetName)%>(targetId) {
+	const defaults = { allowedContent:<%=allowedContent%> };
 <%	if (StringUtil.isNotBlank(editorOption)) {%>
-	var opt = <%=editorOption%>;
+	const custom = <%=editorOption%>;
 <%	} else {%>
-	var opt = { allowedContent:<%=allowedContent%> };
+	const custom = {};
 <%	}%>
-	$("#" + targetId).ckeditor(function() {}, opt);
+	const option = $.extend(true, {}, defaults, custom);
+	$("#" + targetId).ckeditor(function() {}, option);
 }
 </script>
