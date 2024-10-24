@@ -38,12 +38,14 @@ addNestRow_ColumnCallback("<%=StringUtil.escapeJavaScript(nestPropName) %>", "<%
 			const $textArea = $td.children("textarea");
 			const editorId = $textArea.attr("id");
 
+			const defaults = { allowedContent:<%=allowedContent%> };
 <%	if (StringUtil.isNotBlank(editorOption)) {%>
-			const opt = <%=editorOption%>;
+			const custom = <%=editorOption%>;
 <%	} else {%>
-			const opt = { allowedContent:<%=allowedContent%> };
+			const custom = {};
 <%	}%>
-			$("#" + editorId).ckeditor(function() {}, opt);
+			const option = $.extend(true, {}, defaults, custom);
+			$("#" + editorId).ckeditor(function() {}, option);
 		}
 );
 </script>

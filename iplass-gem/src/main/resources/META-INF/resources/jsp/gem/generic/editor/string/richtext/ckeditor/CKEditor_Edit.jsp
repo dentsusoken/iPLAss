@@ -30,13 +30,15 @@
 %>
 <script type="text/javascript">
 $(function() {
-<%	if (StringUtil.isNotBlank(editorOption)) { %>
-	var opt = <%=editorOption%>;
-<%	} else { %>
-	var opt = { allowedContent:<%=allowedContent%> };
-<%	} %>
+	const defaults = { allowedContent:<%=allowedContent%> };
+<%	if (StringUtil.isNotBlank(editorOption)) {%>
+	const custom = <%=editorOption%>;
+<%	} else {%>
+	const custom = {};
+<%	}%>
+	const option = $.extend(true, {}, defaults, custom);
 	$("textarea[name='<%=StringUtil.escapeJavaScript(targetName)%>']").ckeditor(
-		function() {}, opt
+		function() {}, option
 	);
 });
 </script>
