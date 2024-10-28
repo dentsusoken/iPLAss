@@ -1884,12 +1884,12 @@ function uploadFile(file, token) {
 				$messageArea.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
 			}
 
-            afterSend();
+			afterSend();
 		},
 		fail: function(e, data) {//ファイル単位で発生
 			errorCount++;
 			$messageArea.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
-		    afterSend();
+			afterSend();
 		}
 	});
 
@@ -1906,7 +1906,7 @@ function uploadFile(file, token) {
 			return false;
 		}
 
-        // file非表示
+		// file非表示
 		const $_file = $("#" + es(fileId));//plugin内でcloneされ、$fileが別物になる
 		$_file.hide();
 
