@@ -1821,22 +1821,28 @@ function convertFromLocaleDatetimeString(str, inFormat) {
 ////////////////////////////////////////////////////////
 
 function uploadFile(file, token) {
-	var $file = $(file);
+	const $file = $(file);
 
-	var fileId = $file.attr("id");
-	var viewName = $file.attr("data-vname");
-	var defName = $file.attr("data-dname");
-	var propName = $file.attr("data-pname");
-	var max = $file.attr("data-multiplicity") - 0;
-	var displayType = $file.attr("data-displayType");
-	var fileCount = 0;
-	var completeCount = 0
+	const fileId = $file.attr("id");
+	const viewName = $file.attr("data-vname");
+	const defName = $file.attr("data-dname");
+	const propName = $file.attr("data-pname");
+	const max = $file.attr("data-multiplicity") - 0;
+	const displayType = $file.attr("data-displayType");
 
-	var $img = $("#img_" + es(propName));
-	var $span = $("#em_" + es(propName)).text("");
-	$span.hide();
+	// アップロードするファイル数
+	let fileCount = 0;
+	// 成功したファイル数
+	let completeCount = 0
+	// 失敗したファイル数
+	let errorCount = 0;
 
-	var option = {};
+	const $loading = $("#img_" + es(propName));
+	const $messageArea = $("#em_" + es(propName)).text("");
+
+	$messageArea.hide();
+
+	const option = {};
 	if (typeof token !== "undefined" && token != null && token != "") {
 		option.formData = { "_t": token, "viewName": viewName, "defName": defName, "propName": propName };
 	}
@@ -1845,69 +1851,84 @@ function uploadFile(file, token) {
 		dataType: "xml",
 		dropZone: $file.parent(),
 		change: function(e, data) {//ファイル選択後に1回
-			return preSend(e, data);
+			return beforeSend(e, data);
 		},
 		drop: function(e, data) {//ファイル選択後に1回
-			return preSend(e, data);
+			return beforeSend(e, data);
 		},
 		done: function(e, data) {//ファイル単位で発生
-			var $_file = $("#" + es(fileId));//plugin内でcloneされ、$fileが別物になる
+			const $_file = $("#" + es(fileId));//plugin内でcloneされ、$fileが別物になる
 			completeCount++;
 
 			if (data.result != null) {
-				var result = $(data.result).find("Result").text();
+				const result = $(data.result).find("Result").text();
 				if (result == null || result == "") {
-					$span.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
+					$messageArea.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
 				} else {
-					var error = $(data.result).find("error").text();
+					const error = $(data.result).find("error").text();
 					if (error == null || error == "") {
-						var lobId = $(data.result).find("lobId").text();
-						var binaryName = $(data.result).find("name").text();
-						var type = $(data.result).find("type").text();
+						const lobId = $(data.result).find("lobId").text();
+						const binaryName = $(data.result).find("name").text();
+						const type = $(data.result).find("type").text();
 
-						var count = $_file.attr("data-binCount") - 0;
+						const count = $_file.attr("data-binCount") - 0;
 						addBinaryGroup(propName, count, fileId, binaryName, type, lobId, displayType, null, true);
 						$_file.attr("data-binCount", count);
 
 						$("[name='" + es(propName) + "']:eq(0)").trigger("change", {});
 					} else {
-						$span.text(error).show();
+						$messageArea.text(error).show();
 					}
 				}
 			} else {
-				$span.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
+				$messageArea.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
 			}
 
-			//全て完了(成功or失敗)してから入力欄コントロール
-			if (fileCount === completeCount) {
-				$img.hide();
-
-				var uploaded = $("#ul_" + es(propName)).children("li").length;
-				if (uploaded < max) {
-					// file表示
-					$_file.show();
-				}
-			}
+			afterSend();
+		},
+		fail: function(e, data) {//ファイル単位で発生
+			errorCount++;
+			$messageArea.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
+			afterSend();
 		}
 	});
 
-	// change,dropから呼ばれる
-	function preSend(e, data) {
+	// 送信前処理
+	function beforeSend(e, data) {
 		fileCount = data.files.length;
 		completeCount = 0;
+		errorCount = 0;
 
-		var uploaded = $("#ul_" + es(propName)).children("li").length;
+		const uploadedCount = $("#ul_" + es(propName)).children("li").length;
 
-		if (fileCount + uploaded > max) {
+		if (fileCount + uploadedCount > max) {
 			alert(messageFormat(scriptContext.gem.locale.binary.filesLimitOver, max));
 			return false;
 		}
 
-		var $_file = $("#" + es(fileId));//plugin内でcloneされ、$fileが別物になる
+		// file非表示
+		const $_file = $("#" + es(fileId));//plugin内でcloneされ、$fileが別物になる
 		$_file.hide();
-		$span.text("").hide();
-		$img.show();
+
+		// メッセージエリア初期化、ローディング表示
+		$messageArea.text("").hide();
+		$loading.show();
 		return true;
+	}
+
+	// 送信後処理
+	function afterSend() {
+		// 全て完了(成功or失敗)してから入力欄コントロール
+		if (fileCount === (completeCount + errorCount)) {
+			$loading.hide();
+
+			const uploadedCount = $("#ul_" + es(propName)).children("li").length;
+			if (uploadedCount < max) {
+				// file表示
+				const $_file = $("#" + es(fileId));//plugin内でcloneされ、$fileが別物になる
+				$_file.show();
+			}
+		}
 	}
 
 	$file.fileupload(option);
