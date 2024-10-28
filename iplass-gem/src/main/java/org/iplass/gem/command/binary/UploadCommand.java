@@ -67,27 +67,27 @@ public final class UploadCommand implements Command {
 	@Override
 	public String execute(RequestContext request) {
 
-		//自前でトークンチェック、なければスルー
-		String token = request.getParam(TokenStore.TOKEN_PARAM_NAME);
-		if (StringUtil.isNotBlank(token)) {
-			TokenStore ts = TokenStore.getTokenStore(request.getSession());
-			if (ts == null || !ts.isValid(token, false)) {
-				request.setAttribute(Constants.CMD_RSLT_STREAM, new ResultXmlWriter(resourceString("command.binary.UploadCommand.failedMsg")));
-
-				return Constants.CMD_EXEC_FAILURE;
-			}
-		}
-
-		// プロパティエディタを取得する情報をリクエストから取得
-		String defName = request.getParam(Constants.DEF_NAME);
-		String viewName = request.getParam(Constants.VIEW_NAME);
-		String propName = request.getParam(Constants.PROP_NAME);
-
-		// プロパティエディタを取得
-		BinaryPropertyEditorRuntime editorRuntime = FormViewRuntimeUtil.getPropertyEditorRuntime(defName, viewName, propName,
-				BinaryPropertyEditorRuntime.class);
-
 		try {
+			// 自前でトークンチェック、なければスルー
+			String token = request.getParam(TokenStore.TOKEN_PARAM_NAME);
+			if (StringUtil.isNotBlank(token)) {
+				TokenStore ts = TokenStore.getTokenStore(request.getSession());
+				if (ts == null || !ts.isValid(token, false)) {
+					request.setAttribute(Constants.CMD_RSLT_STREAM, new ResultXmlWriter(resourceString("command.binary.UploadCommand.failedMsg")));
+
+					return Constants.CMD_EXEC_FAILURE;
+				}
+			}
+
+			// プロパティエディタを取得する情報をリクエストから取得
+			String defName = request.getParam(Constants.DEF_NAME);
+			String viewName = request.getParam(Constants.VIEW_NAME);
+			String propName = request.getParam(Constants.PROP_NAME);
+
+			// プロパティエディタを取得
+			BinaryPropertyEditorRuntime editorRuntime = FormViewRuntimeUtil.getPropertyEditorRuntime(defName, viewName, propName,
+					BinaryPropertyEditorRuntime.class);
+
 			UploadFileHandle file = request.getParamAsFile("filePath");
 			request.setAttribute("contentType", "application/xml");
 
