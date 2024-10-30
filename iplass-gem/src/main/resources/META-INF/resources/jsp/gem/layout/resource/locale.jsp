@@ -18,9 +18,10 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
-<%@ page import="org.iplass.mtp.util.StringUtil" %>
-<%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
+<%@taglib prefix="c" uri="jakarta.tags.core"%>
+<%@page import="org.iplass.mtp.util.StringUtil"%>
+<%@page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%
 	String serverDateFormat = TemplateUtil.getLocaleFormat().getServerDateFormat();
 	if (StringUtil.isEmpty(serverDateFormat)) {
@@ -93,6 +94,13 @@ scriptContext.locale.inputTimeMinFormat = "<%=inputTimeMinFormat%>";
 scriptContext.locale.inputTimeSecFormat = "<%=inputTimeSecFormat%>";
 </script>
 <script src="${staticContentPath}/scripts/gem/i18n/gem-locale.js?cv=${apiVersion}"></script>
+<%-- en以外の場合はenをデフォルトとして利用 --%>
+<c:if test="${language != 'en'}" >
+<script src="${staticContentPath}/scripts/gem/i18n/gem-locale-en.js?cv=${apiVersion}"></script>
+</c:if>
 <script src="${staticContentPath}/scripts/gem/i18n/gem-locale-${language}.js?cv=${apiVersion}"></script>
 <%-- For compatibility before 3.0.12  --%>
+<c:if test="${language != 'en'}" >
+<script src="${staticContentPath}/scripts/gem/i18n/gem-locale-migration-en.js?cv=${apiVersion}"></script>
+</c:if>
 <script src="${staticContentPath}/scripts/gem/i18n/gem-locale-migration-${language}.js?cv=${apiVersion}"></script>
