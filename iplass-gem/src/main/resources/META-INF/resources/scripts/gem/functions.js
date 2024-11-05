@@ -1690,6 +1690,16 @@ $.fn.allInputCheck = function(){
 				nextFunc: null,
 				searchFunc: null,
 				pagingInputErrorFunc: null,
+				hasPreviewFunc: function(offset, length, count, limit, notCount) {
+					return notCount
+						? offset > 0
+						: offset > 0 && count > 0
+				},
+				hasNextFunc: function(offset, length, count, limit, notCount) {
+					return notCount
+						? hasNext = limit <= length
+						: hasNext = limit < (count - offset)
+				},
 				previousLabel: scriptContext.gem.locale.pager.previous,
 				nextLabel: scriptContext.gem.locale.pager.next
 		};
@@ -1884,14 +1894,10 @@ $.fn.allInputCheck = function(){
 					var hasPreview;
 					var hasNext;
 					var notCount = typeof count === "undefined" || count == null;
-					if (notCount) {
-						hasPreview = offset > 0;
-						hasNext = limit == length;
-					} else {
-						hasPreview = offset > 0 && count > 0;
-						hasNext= limit < (count - offset);
-						if (tail > count) { tail = count; }
-					}
+
+					hasPreview = options.hasPreviewFunc(offset, length, count, limit, notCount);
+					hasNext = options.hasNextFunc(offset, length, count, limit, notCount);
+					if (!notCount && tail > count) { tail = count; }
 
 					if (!options.showNoPage && !hasPreview && !hasNext) {
 						$v.hide();
@@ -2109,6 +2115,9 @@ $.fn.allInputCheck = function(){
 					offset += limit;
 					search();
 				},
+				hasNextFunc: function(offset, length, count, limit, notCount) {
+					return length > limit;
+				},
 				previousLabel: prevLabel,
 				nextLabel: nextLabel
 			});
@@ -2129,8 +2138,12 @@ $.fn.allInputCheck = function(){
 			search();
 
 			function search() {
-				searchNameList(webapiName, defName, viewName, filterName, offset, function(count, list) {
-					$pager.setPage(offset, list.length, count);
+				searchNameList(webapiName, defName, viewName, filterName, offset, function(list) {
+					$pager.setPage(offset, list.length, null);
+					// listのサイズを表示件数設定に従い補正
+					if (list.length > limit) {
+						list = list.slice(0, limit);
+					}
 
 					//一覧にリンク再作成
 					$linkList.children().remove();

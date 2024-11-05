@@ -393,6 +393,9 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 		nextFunc: function() {
 			offset += limit;
 			search();
+		},
+		hasNextFunc: function(offset, length, count, limit, notCount) {
+			return length > limit;
 		}
 	});
 
@@ -423,8 +426,12 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 
 		var sortKey = $table.attr("data-sortKey");
 		var sortType = $table.attr("data-sortType");
-		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(entityListParts.defName)}", "${m:escJs(entityListParts.viewName)}", "${m:escJs(entityListParts.filterName)}", offset, sortKey, sortType, "<%=searchAsync%>", function(count, list) {
-			$pager.setPage(offset, list.length, count);
+		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(entityListParts.defName)}", "${m:escJs(entityListParts.viewName)}", "${m:escJs(entityListParts.filterName)}", offset, sortKey, sortType, "<%=searchAsync%>", function(list) {
+			$pager.setPage(offset, list.length, null);
+			// listのサイズを表示件数設定に従い補正
+			if (list.length > limit) {
+				list = list.slice(0, limit);
+			}
 
 			if (searchAsync) {
 				// 検索後にボタン行を表示する
