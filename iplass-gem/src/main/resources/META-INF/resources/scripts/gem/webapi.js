@@ -371,9 +371,8 @@ function searchEntityList(webapi, defName, viewName, filterName, offset, sortKey
 	params += "}";
 
 	postAsync(webapi, params, function(results){
-		var count = results.count;
 		var list = results.htmlData;
-		if (func && $.isFunction(func)) func.call(this, count, list);
+		if (func && $.isFunction(func)) func.call(this, list);
 	}, searchAsync == "true" ? true : false);
 }
 
@@ -385,9 +384,8 @@ function searchNameList(webapi, defName, viewName, filterName, offset, func) {
 	params += ",\"offset\":\"" + offset + "\"";
 	params += "}";
 	postAsync(webapi, params, function(results){
-		var count = results.count;
 		var list = results.list;
-		if (func && $.isFunction(func)) func.call(this, count, list);
+		if (func && $.isFunction(func)) func.call(this, list);
 	});
 }
 

@@ -44,16 +44,16 @@ import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
-	name=SearchListCommand.WEBAPI_NAME,
-	displayName="Entity一覧検索(パーツ)",
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	results={SearchListCommand.RESULT_PARAM_COUNT, SearchListCommand.RESULT_PARAM_HTML_DATA},
-	checkXRequestedWithHeader=true
+		name = SearchListCommand.WEBAPI_NAME,
+		displayName = "Entity一覧検索(パーツ)",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { SearchListCommand.RESULT_PARAM_HTML_DATA },
+		checkXRequestedWithHeader = true
 )
-@Template(name="gem/generic/search/list", displayName="検索結果パーツ", path="/jsp/gem/generic/search/list.jsp")
-@CommandClass(name="gem/generic/search/SearchListCommand", displayName="Entity一覧検索(パーツ)")
+@Template(name = "gem/generic/search/list", displayName = "検索結果パーツ", path = "/jsp/gem/generic/search/list.jsp")
+@CommandClass(name = "gem/generic/search/SearchListCommand", displayName = "Entity一覧検索(パーツ)")
 public final class SearchListCommand extends SearchListPartsCommandBase {
 
 	public static final String WEBAPI_NAME = "gem/generic/search/list";
@@ -81,12 +81,8 @@ public final class SearchListCommand extends SearchListPartsCommandBase {
 		context.setFilter(efm.get(context.getDefName()));
 
 		Query query = toQuery(context);
-
-		int count = count(context, query.copy());
-		request.setAttribute(RESULT_PARAM_COUNT, count);
-
 		query.setOrderBy(context.getOrderBy());
-		query.setLimit(context.getLimit());
+		query.setLimit(getLimitForPaging(context));
 
 		SearchResult<Entity> result = search(context, query);
 
