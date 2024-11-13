@@ -20,10 +20,10 @@
 
 package org.iplass.mtp.webapi.definition;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.command.definition.config.CommandConfig;
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class WebApiDefinition implements Definition {
@@ -84,7 +84,7 @@ public class WebApiDefinition implements Definition {
 	private String restJsonParameterName;
 
 	/**
-	 * REST JSON受付時のパラメータタイプ（クラスパス）
+	 * REST JSON受付時のパラメータタイプ（クラス名）
 	 */
 	private String restJsonParameterType;
 
@@ -92,6 +92,11 @@ public class WebApiDefinition implements Definition {
 	 * REST XML受付時のパラメータ名
 	 */
 	private String restXmlParameterName;
+
+	/**
+	 * REST XML受付時のパラメータタイプ（クラス名）
+	 */
+	private String restXmlParameterType;
 
 	/** Tokenチェックの実行設定。
 	 * 未指定可(Tokenチェックは実行されない)。
@@ -268,6 +273,14 @@ public class WebApiDefinition implements Definition {
 		this.restXmlParameterName = restXmlParameterName;
 	}
 
+	public String getRestXmlParameterType() {
+		return restXmlParameterType;
+	}
+
+	public void setRestXmlParameterType(String restXmlParameterType) {
+		this.restXmlParameterType = restXmlParameterType;
+	}
+
 	public RequestType[] getAccepts() {
 		return accepts;
 	}
@@ -287,6 +300,7 @@ public class WebApiDefinition implements Definition {
 	/**
 	 * @return name
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -295,6 +309,7 @@ public class WebApiDefinition implements Definition {
 	 * @param name
 	 *            セットする name
 	 */
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -302,6 +317,7 @@ public class WebApiDefinition implements Definition {
 	/**
 	 * @return displayName
 	 */
+	@Override
 	public String getDisplayName() {
 		return displayName;
 	}
@@ -310,6 +326,7 @@ public class WebApiDefinition implements Definition {
 	 * @param displayName
 	 *            セットする displayName
 	 */
+	@Override
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
@@ -317,6 +334,7 @@ public class WebApiDefinition implements Definition {
 	/**
 	 * @return description
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}
@@ -325,6 +343,7 @@ public class WebApiDefinition implements Definition {
 	 * @param description
 	 *            セットする description
 	 */
+	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}
