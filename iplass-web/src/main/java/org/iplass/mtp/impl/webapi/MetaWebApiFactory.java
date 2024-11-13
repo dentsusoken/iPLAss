@@ -86,8 +86,10 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 
 		if (webapi.restXml() == null) {
 			meta.setRestXmlParameterName(null);
+			meta.setRestXmlParameterType(void.class);
 		} else {
 			meta.setRestXmlParameterName(webapi.restXml().parameterName());
+			meta.setRestXmlParameterType(webapi.restXml().parameterType());
 		}
 
 		if (!DEFAULT.equals(webapi.displayName())) {

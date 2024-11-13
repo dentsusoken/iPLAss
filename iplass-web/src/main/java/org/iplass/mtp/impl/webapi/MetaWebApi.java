@@ -29,15 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.HttpMethod;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.Variant;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.mtp.command.CommandRuntimeException;
 import org.iplass.mtp.command.RequestContext;
@@ -77,6 +68,15 @@ import org.iplass.mtp.webapi.definition.WebApiParamMapDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Variant;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+
 public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<WebApiDefinition> {
 	private static final long serialVersionUID = 2590900624234333139L;
 
@@ -108,6 +108,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private String restJsonParameterName = null;
 	private Class<?> restJsonParameterType = void.class;
 	private String restXmlParameterName = null;
+	private Class<?> restXmlParameterType = void.class;
 
 	/** このWebAPIで処理されるCommandを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
 	@XmlElement
@@ -361,6 +362,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	public void setRestXmlParameterName(String restXmlParameterName) {
 		this.restXmlParameterName = restXmlParameterName;
+	}
+
+	public Class<?> getRestXmlParameterType() {
+		return restXmlParameterType;
+	}
+
+	public void setRestXmlParameterType(Class<?> restXmlParameterType) {
+		this.restXmlParameterType = restXmlParameterType;
 	}
 
 	public CacheControlType getCacheControlType() {
@@ -832,6 +841,10 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			definition.setRestJsonParameterType(restJsonParameterType.getName());
 		}
 
+		if (!(restXmlParameterType == null || restXmlParameterType == void.class)) {
+			definition.setRestXmlParameterType(restXmlParameterType.getName());
+		}
+
 		if (tokenCheck != null) {
 			definition.setTokenCheck(tokenCheck.currentConfig());
 		}
@@ -920,6 +933,16 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			}
 		} catch (ClassNotFoundException e) {
 			throw new CommandRuntimeException(definition.getRestJsonParameterType() + " class not found.", e);
+		}
+		
+		try {
+			if (definition.getRestXmlParameterType() != null) {
+				restXmlParameterType = Class.forName(definition.getRestXmlParameterType());
+			} else {
+				restXmlParameterType = null;
+			}
+		} catch (ClassNotFoundException e) {
+			throw new CommandRuntimeException(definition.getRestXmlParameterType() + " class not found.", e);
 		}
 
 		if (definition.getTokenCheck() != null) {

@@ -32,6 +32,7 @@ public class RestXmlParamPane extends HLayout {
 
 	private DynamicForm form;
 	private TextItem paramName;
+	private TextItem paramType;
 
 	public RestXmlParamPane() {
 
@@ -54,8 +55,10 @@ public class RestXmlParamPane extends HLayout {
 
 		paramName = new TextItem("paramName", "Parameter Name");
 		paramName.setWidth(500);
+		paramType = new TextItem("paramType", "Parameter Type");
+		paramType.setWidth(500);
 
-		form.setItems(paramName);
+		form.setItems(paramName, paramType);
 
 		addMember(caption);
 		addMember(form);
@@ -71,6 +74,9 @@ public class RestXmlParamPane extends HLayout {
 		if (paramName.getValue() != null) {
 			definition.setRestXmlParameterName(paramName.getValue().toString());
 		}
+		if (paramType.getValue() != null) {
+			definition.setRestXmlParameterType(paramType.getValue().toString());
+		}
 		return definition;
 	}
 
@@ -81,6 +87,7 @@ public class RestXmlParamPane extends HLayout {
 	 */
 	public void setDefinition(WebApiDefinition definition) {
 		paramName.setValue(definition.getRestXmlParameterName());
+		paramType.setValue(definition.getRestXmlParameterType());
 	}
 
 }

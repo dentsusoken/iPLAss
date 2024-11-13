@@ -24,12 +24,44 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
+
+import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.impl.session.SessionService;
+import org.iplass.mtp.impl.web.LimitRequestBodyHttpServletRequest;
+import org.iplass.mtp.impl.web.RequestPath;
+import org.iplass.mtp.impl.web.WebRequestStack;
+import org.iplass.mtp.impl.web.WebUtil;
+import org.iplass.mtp.impl.webapi.MetaWebApi;
+import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
+import org.iplass.mtp.impl.webapi.WebApiParameter;
+import org.iplass.mtp.impl.webapi.WebApiParameterMap;
+import org.iplass.mtp.impl.webapi.WebApiResponse;
+import org.iplass.mtp.impl.webapi.jackson.WebApiObjectMapperService;
+import org.iplass.mtp.impl.webapi.jaxb.WebApiJaxbService;
+import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.webapi.WebApiRequestConstants;
+import org.iplass.mtp.webapi.WebApiRuntimeException;
+import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
+import org.iplass.mtp.webapi.definition.StateType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,36 +87,6 @@ import jakarta.ws.rs.core.StreamingOutput;
 import jakarta.ws.rs.core.Variant;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.sax.SAXSource;
-
-import org.iplass.mtp.command.RequestContext;
-import org.iplass.mtp.impl.session.SessionService;
-import org.iplass.mtp.impl.web.LimitRequestBodyHttpServletRequest;
-import org.iplass.mtp.impl.web.RequestPath;
-import org.iplass.mtp.impl.web.WebRequestStack;
-import org.iplass.mtp.impl.web.WebUtil;
-import org.iplass.mtp.impl.webapi.MetaWebApi;
-import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
-import org.iplass.mtp.impl.webapi.WebApiParameter;
-import org.iplass.mtp.impl.webapi.WebApiParameterMap;
-import org.iplass.mtp.impl.webapi.WebApiResponse;
-import org.iplass.mtp.impl.webapi.jackson.WebApiObjectMapperService;
-import org.iplass.mtp.impl.webapi.jaxb.WebApiJaxbService;
-import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.util.StringUtil;
-import org.iplass.mtp.webapi.WebApiRequestConstants;
-import org.iplass.mtp.webapi.WebApiRuntimeException;
-import org.iplass.mtp.webapi.definition.RequestType;
-import org.iplass.mtp.webapi.definition.MethodType;
-import org.iplass.mtp.webapi.definition.StateType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Path("/")
 public class RestCommandInvoker {
@@ -399,14 +401,24 @@ public class RestCommandInvoker {
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@PathParam("apiName") String apiName, Reader reader) {
 		
-		return process(apiName, HttpMethod.PUT, servletContext, coreRequest, request, response, (stack, runtime) -> {
-			RestRequestContext rs = (RestRequestContext) stack.getRequestContext();
-			rs.setRequestType(RequestType.REST_JSON);
-			checkValidRequest(stack, runtime);
-			setJsonParameter(stack, runtime, request, reader);
-			
-			return executeCommand(stack, runtime);
-		});
+		try {
+			return process(apiName, HttpMethod.PUT, servletContext, coreRequest, request, response, (stack, runtime) -> {
+				RestRequestContext rs = (RestRequestContext) stack.getRequestContext();
+				rs.setRequestType(RequestType.REST_JSON);
+				checkValidRequest(stack, runtime);
+				setJsonParameter(stack, runtime, request, reader);
+
+				return executeCommand(stack, runtime);
+			});
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					logger.debug("can not close request's Reader, may be client disconnected:" + e, e);
+				}
+			}
+		}
 	}
 	
 	@PUT
@@ -417,14 +429,24 @@ public class RestCommandInvoker {
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@PathParam("apiName") String apiName, Reader reader) {
 
-		return process(apiName, HttpMethod.PUT, servletContext, coreRequest, request, response, (stack, runtime) -> {
-			RestRequestContext rs = (RestRequestContext) stack.getRequestContext();
-			rs.setRequestType(RequestType.REST_XML);
-			checkValidRequest(stack, runtime);
-			setXmlParameter(stack, runtime, request, reader);
-			
-			return executeCommand(stack, runtime);
-		});
+		try {
+			return process(apiName, HttpMethod.PUT, servletContext, coreRequest, request, response, (stack, runtime) -> {
+				RestRequestContext rs = (RestRequestContext) stack.getRequestContext();
+				rs.setRequestType(RequestType.REST_XML);
+				checkValidRequest(stack, runtime);
+				setXmlParameter(stack, runtime, request, reader);
+
+				return executeCommand(stack, runtime);
+			});
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					logger.debug("can not close request's Reader, may be client disconnected:" + e, e);
+				}
+			}
+		}
 	}
 
 	@POST
@@ -473,14 +495,24 @@ public class RestCommandInvoker {
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@PathParam("apiName") String apiName, Reader reader) {
 
-		return process(apiName, HttpMethod.POST, servletContext, coreRequest, request, response, (stack, runtime) -> {
-			RestRequestContext rs = (RestRequestContext) stack.getRequestContext();
-			rs.setRequestType(RequestType.REST_JSON);
-			checkValidRequest(stack, runtime);
-			setJsonParameter(stack, runtime, request, reader);
-			
-			return executeCommand(stack, runtime);
-		});
+		try {
+			return process(apiName, HttpMethod.POST, servletContext, coreRequest, request, response, (stack, runtime) -> {
+				RestRequestContext rs = (RestRequestContext) stack.getRequestContext();
+				rs.setRequestType(RequestType.REST_JSON);
+				checkValidRequest(stack, runtime);
+				setJsonParameter(stack, runtime, request, reader);
+
+				return executeCommand(stack, runtime);
+			});
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					logger.debug("can not close request's Reader, may be client disconnected:" + e, e);
+				}
+			}
+		}
 	}
 
 	@POST
@@ -491,14 +523,24 @@ public class RestCommandInvoker {
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@PathParam("apiName") String apiName, Reader reader) {
 
-		return process(apiName, HttpMethod.POST, servletContext, coreRequest, request, response, (stack, runtime) -> {
-			RestRequestContext rs = (RestRequestContext) stack.getRequestContext();
-			rs.setRequestType(RequestType.REST_XML);
-			checkValidRequest(stack, runtime);
-			setXmlParameter(stack, runtime, request, reader);
-			
-			return executeCommand(stack, runtime);
-		});
+		try {
+			return process(apiName, HttpMethod.POST, servletContext, coreRequest, request, response, (stack, runtime) -> {
+				RestRequestContext rs = (RestRequestContext) stack.getRequestContext();
+				rs.setRequestType(RequestType.REST_XML);
+				checkValidRequest(stack, runtime);
+				setXmlParameter(stack, runtime, request, reader);
+
+				return executeCommand(stack, runtime);
+			});
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					logger.debug("can not close request's Reader, may be client disconnected:" + e, e);
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -512,22 +554,33 @@ public class RestCommandInvoker {
 				ObjectMapper mapper = omservice.getObjectMapper();
 				Object o = null;
 				Class<?> type = runtime.getMetaData().getRestJsonParameterType();
-				if (type == null || type == void.class) {
-					//ParameterTypeが指定されていなかったとき、LinkedHashMapやListに格納する。
-					type = Object.class;
-				}
-				if (MethodType.GET == methodType || MethodType.DELETE == methodType) {
-					String paramStr = request.getParameter(paramName);
-					if (paramStr != null) {
-						o = mapper.readValue(paramStr, type);
+				if (type == Reader.class) {
+					if (MethodType.GET == methodType || MethodType.DELETE == methodType) {
+						String paramStr = request.getParameter(paramName);
+						if (paramStr != null) {
+							o = new StringReader(paramStr);
+						}
+					} else {
+						o = reader;
 					}
 				} else {
-					o = mapper.readValue(reader, type);
-				}
-				
-				//WebApiParameterMap -> Map
-				if (o instanceof WebApiParameterMap) {
-					o = toMap((WebApiParameterMap) o);
+					if (type == null || type == void.class) {
+						//ParameterTypeが指定されていなかったとき、LinkedHashMapやListに格納する。
+						type = Object.class;
+					}
+					if (MethodType.GET == methodType || MethodType.DELETE == methodType) {
+						String paramStr = request.getParameter(paramName);
+						if (paramStr != null) {
+							o = mapper.readValue(paramStr, type);
+						}
+					} else {
+						o = mapper.readValue(reader, type);
+					}
+
+					//WebApiParameterMap -> Map
+					if (o instanceof WebApiParameterMap) {
+						o = toMap((WebApiParameterMap) o);
+					}
 				}
 				
 				//paramという名前で、Mapの場合は、ParamMapとして扱う。
@@ -559,27 +612,49 @@ public class RestCommandInvoker {
 			String paramName = runtime.getMetaData().getRestXmlParameterName();
 			if (paramName != null) {
 				Object o;
-				if (MethodType.GET == methodType
-						|| MethodType.DELETE == methodType) {
-					String param = request.getParameter(paramName);
-
-					if (StringUtil.isEmpty(param)) {
-						o = null;
+				Class<?> type = runtime.getMetaData().getRestXmlParameterType();
+				if (type == Reader.class) {
+					if (MethodType.GET == methodType || MethodType.DELETE == methodType) {
+						String paramStr = request.getParameter(paramName);
+						if (paramStr == null) {
+							o = null;
+						} else {
+							o = new StringReader(paramStr);
+						}
 					} else {
-						InputStream bais = new ByteArrayInputStream(param.getBytes());
-						JAXBContext jaxb = jbservice.getJAXBContext();
-						o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(bais)));
+						o = reader;
 					}
 				} else {
-					JAXBContext jaxb = jbservice.getJAXBContext();
-					o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(reader)));
+					if (MethodType.GET == methodType
+							|| MethodType.DELETE == methodType) {
+						String param = request.getParameter(paramName);
+
+						if (StringUtil.isEmpty(param)) {
+							o = null;
+						} else {
+							InputStream bais = new ByteArrayInputStream(param.getBytes());
+							JAXBContext jaxb = jbservice.getJAXBContext();
+							if (type == null || type == void.class) {
+								o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(bais)));
+							} else {
+								o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(bais)), type);
+							}
+						}
+					} else {
+						JAXBContext jaxb = jbservice.getJAXBContext();
+						if (type == null || type == void.class) {
+							o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(reader)));
+						} else {
+							o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(reader)), type);
+						}
+					}
+
+					//WebApiParameterMap -> Map
+					if (o instanceof WebApiParameterMap) {
+						o = toMap((WebApiParameterMap) o);
+					}
 				}
-				
-				//WebApiParameterMap -> Map
-				if (o instanceof WebApiParameterMap) {
-					o = toMap((WebApiParameterMap) o);
-				}
-				
+
 				//paramという名前で、Mapの場合は、ParamMapとして扱う。
 				if (paramName.equals(WebApiRequestConstants.DEFAULT_PARAM_NAME) && o instanceof Map) {
 					context.setValueMap(new MapParameterValueMap((Map<String, Object>) o));

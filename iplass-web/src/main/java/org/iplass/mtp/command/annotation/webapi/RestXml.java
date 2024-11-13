@@ -22,4 +22,5 @@ package org.iplass.mtp.command.annotation.webapi;
 
 public @interface RestXml {
 	String parameterName();
+	Class<?> parameterType() default void.class;
 }
