@@ -20,10 +20,10 @@
 
 package org.iplass.mtp.webapi.definition;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import org.iplass.mtp.command.definition.config.CommandConfig;
 import org.iplass.mtp.definition.Definition;
-
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class WebApiDefinition implements Definition {
@@ -36,7 +36,7 @@ public class WebApiDefinition implements Definition {
 	private String name;
 	private String displayName;
 	private String description;
-	
+
 	/**
 	 * WebAPIキャッシュ指定。
 	 * 未指定の場合はキャッシュをしない。
@@ -89,6 +89,11 @@ public class WebApiDefinition implements Definition {
 	private String restJsonParameterType;
 
 	/**
+	 * REST JSON 受付可能な Conetnt-Type
+	 */
+	private String[] restJsonAcceptableConetntTypes;
+
+	/**
 	 * REST XML受付時のパラメータ名
 	 */
 	private String restXmlParameterName;
@@ -97,6 +102,11 @@ public class WebApiDefinition implements Definition {
 	 * REST XML受付時のパラメータタイプ（クラス名）
 	 */
 	private String restXmlParameterType;
+
+	/**
+	 * REST XML 受付可能な Conetnt-Type
+	 */
+	private String[] restXmlAcceptableConetntTypes;
 
 	/** Tokenチェックの実行設定。
 	 * 未指定可(Tokenチェックは実行されない)。
@@ -117,7 +127,7 @@ public class WebApiDefinition implements Definition {
 	private StateType state = StateType.STATEFUL;
 
 	private boolean supportBearerToken;
-	
+
 	private String[] oauthScopes;
 
 	private String[] allowRequestContentTypes;
@@ -133,7 +143,7 @@ public class WebApiDefinition implements Definition {
 	 * multipart/form-data時のアップロードファイルの最大サイズ。-1の場合は無制限。
 	 * １つのファイルに対する最大サイズなので、複数のファイルの合計サイズを制限したい場合は、
 	 * maxRequestBodySizeを設定します。
-	 * 
+	 *
 	 * @param maxFileSize
 	 */
 	public void setMaxFileSize(Long maxFileSize) {
@@ -146,7 +156,7 @@ public class WebApiDefinition implements Definition {
 
 	/**
 	 * リクエストボディの最大サイズ。-1の場合は無制限。
-	 * 
+	 *
 	 * @param maxRequestBodySize
 	 */
 	public void setMaxRequestBodySize(Long maxRequestBodySize) {
@@ -164,13 +174,13 @@ public class WebApiDefinition implements Definition {
 	 * accepts指定によりJSON形式の処理が有効化されている場合において、
 	 * allowRequestContentTypesに"application/json"が含まれない場合は、
 	 * JSON形式によるリクエストは処理されません。
-	 * 
+	 *
 	 * @param allowRequestContentTypes
 	 */
 	public void setAllowRequestContentTypes(String[] allowRequestContentTypes) {
 		this.allowRequestContentTypes = allowRequestContentTypes;
 	}
-	
+
 	public String[] getOauthScopes() {
 		return oauthScopes;
 	}
@@ -178,7 +188,7 @@ public class WebApiDefinition implements Definition {
 	public void setOauthScopes(String[] oauthScopes) {
 		this.oauthScopes = oauthScopes;
 	}
-	
+
 	public boolean isSupportBearerToken() {
 		return supportBearerToken;
 	}
@@ -265,6 +275,22 @@ public class WebApiDefinition implements Definition {
 		this.restJsonParameterName = restJsonParameterName;
 	}
 
+	/**
+	 * REST JSON として受付可能な Content-Type を取得します。
+	 * @return Content-Type 配列
+	 */
+	public String[] getRestJsonAcceptableContentTypes() {
+		return restJsonAcceptableConetntTypes;
+	}
+
+	/**
+	 * REST JSON として受付可能な Content-Type を設定します。
+	 * @param acceptableContentTypes Content-Type 配列
+	 */
+	public void setRestJsonAcceptableContentTypes(String[] acceptableContentTypes) {
+		this.restJsonAcceptableConetntTypes = acceptableContentTypes;
+	}
+
 	public String getRestXmlParameterName() {
 		return restXmlParameterName;
 	}
@@ -279,6 +305,22 @@ public class WebApiDefinition implements Definition {
 
 	public void setRestXmlParameterType(String restXmlParameterType) {
 		this.restXmlParameterType = restXmlParameterType;
+	}
+
+	/**
+	 * REST XML として受付可能な Content-Type を取得します。
+	 * @return Content-Type 配列
+	 */
+	public String[] getRestXmlAcceptableContentTypes() {
+		return restXmlAcceptableConetntTypes;
+	}
+
+	/**
+	 * REST XML として受付可能な Content-Type を設定します。
+	 * @param acceptableContentTypes Content-Type 配列
+	 */
+	public void setRestXmlAcceptableContentTypes(String[] acceptableContentTypes) {
+		this.restXmlAcceptableConetntTypes = acceptableContentTypes;
 	}
 
 	public RequestType[] getAccepts() {
@@ -360,7 +402,7 @@ public class WebApiDefinition implements Definition {
 	 * WebAPIキャッシュ指定（Cache-Controlヘッダの制御）。
 	 * 未指定の場合はキャッシュをしない。
 	 * ブラウザ種別によらず、キャッシュを有効化するためには、合わせてCacheControlMaxAgeの設定も必要。
-	 * 
+	 *
 	 * @see #setCacheControlMaxAge(long)
 	 * @param cacheControlType
 	 */
@@ -381,7 +423,7 @@ public class WebApiDefinition implements Definition {
 	 * WebAPIキャッシュのmax-age（秒）を指定。
 	 * デフォルト値は-1でこの場合はmax-ageは未指定となる。<br>
 	 * <b>注意：max-age未指定の場合、FF、Chromeでは実際はキャッシュが利用されない</b>
-	 * 
+	 *
 	 * @param cacheControlMaxAge
 	 */
 	public void setCacheControlMaxAge(long cacheControlMaxAge) {
@@ -461,7 +503,7 @@ public class WebApiDefinition implements Definition {
 	/**
 	 *
 	 * @param isPrivileged
-	 * @deprecated {@link #setPrivileged(boolean)} を使用してください。 
+	 * @deprecated {@link #setPrivileged(boolean)} を使用してください。
 	 */
 	@Deprecated
 	public void setPrivilaged(boolean isPrivileged) {

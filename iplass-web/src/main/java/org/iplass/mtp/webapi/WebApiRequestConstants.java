@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -24,8 +24,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.RequestInfo;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 public interface WebApiRequestConstants {
 
@@ -46,23 +46,42 @@ public interface WebApiRequestConstants {
 
 	/** ResponseHeaderのインスタンス。Command内でレスポンスにCokkie、Headerをセットしたい場合利用。 */
 	public static final String RESPONSE_HEADER = WebRequestConstants.RESPONSE_HEADER;
-	
+
 	/** HTTPヘッダ（リクエストの）が格納されているMapのインスタンス。*/
 	public static final String HTTP_HEADER = WebRequestConstants.HTTP_HEADER;
-	
+
 	/** attribute経由でパラメータMapを取得する際のattribute名。取得できるインスタンスは、RequestContext#getParamMap()と同じ。 */
 	public static final String PARAM = WebRequestConstants.PARAM;
-	
+
 	/** このリクエストが呼び出された際のHttpServletReqeustを取得する際のattribute名。取得されるインスタンスは、implements {@link HttpServletRequest}, {@link RequestInfo}の形。情報参照系のメソッドのみ利用可能。利用可能なメソッドは、{@link RequestInfo}に定義されているメソッド。 */
 	public static final String SERVLET_REQUEST = WebRequestConstants.SERVLET_REQUEST;
-	
+
 	/** REST FORM, SOAP WSDLで利用するデフォルトのパラメータ名です。 */
 	public static final String DEFAULT_PARAM_NAME = WebRequestConstants.PARAM;
 
 	/** このリクエストがwebApi経由の呼び出しか否かを判断するフラグ（Boolean）を取得する際のattribute名 */
 	public static final String WEB_API = "webApi";
-	
+
 	/** WebApi名以降のサブパス文字列を取得する際のattribute名 */
 	public static final String SUB_PATH = WebRequestConstants.SUB_PATH;
 
+	/**
+	 * WebApi 呼び出しを行った際、REST_OTHERS で処理を受け付けた際、
+	 * リクエストボディを取得する為のattribute名です。
+	 * 取得するインスタンスは java.io.InputStream です。
+	 *
+	 * @see org.iplass.mtp.webapi.definition.RequestType#REST_OTHERS
+	 */
+	public static final String REQUEST_BODY = "requestBody";
+
+	/**
+	 * WebApi 呼び出しを行った際、REST_OTHERS で処理を受け付けた際、
+	 * リクエストボディの文字コードを取得する為のattribute名です。
+	 * 取得するインスタンスは String です。
+	 *
+	 * <p>
+	 * HttpServletRequest#getCharacterEncoding() で取得される文字コードを格納します。
+	 * </p>
+	 */
+	public static final String REQUEST_CHARACTER_ENCODING = "requestCharacterEncoding";
 }

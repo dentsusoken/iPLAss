@@ -20,6 +20,8 @@
 
 package org.iplass.adminconsole.client.metadata.ui.webapi;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 
 import com.smartgwt.client.types.Alignment;
@@ -28,12 +30,24 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 
+/**
+ * REST XML パラメータ設定パネル
+ *
+ * <p>
+ * REST XML のチェックボックスを設定すると表示されるパネルです。
+ * </p>
+ */
 public class RestXmlParamPane extends HLayout {
 
 	private DynamicForm form;
 	private TextItem paramName;
 	private TextItem paramType;
+	/** 受付可能なContent-Type */
+	private TextItem acceptableContentTypes;
 
+	/**
+	 * コンストラクタ
+	 */
 	public RestXmlParamPane() {
 
 		Label caption = new Label("REST XML Parameter :");
@@ -57,8 +71,12 @@ public class RestXmlParamPane extends HLayout {
 		paramName.setWidth(500);
 		paramType = new TextItem("paramType", "Parameter Type");
 		paramType.setWidth(500);
+		acceptableContentTypes = new TextItem("acceptableContentTypes", "Acceptable Conetnt Type");
+		acceptableContentTypes.setWidth(500);
+		acceptableContentTypes.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_RestXmlParamPane_acceptableContentTypes_tooltip")));
 
-		form.setItems(paramName, paramType);
+		form.setItems(paramName, paramType, acceptableContentTypes);
 
 		addMember(caption);
 		addMember(form);
@@ -67,6 +85,7 @@ public class RestXmlParamPane extends HLayout {
 	/**
 	 * 編集されたWebAPIDefinition情報を返します。
 	 *
+	 * @param definition WebAPI定義情報
 	 * @return 編集WebAPIDefinition情報
 	 */
 	public WebApiDefinition getEditDefinition(WebApiDefinition definition) {
@@ -76,6 +95,9 @@ public class RestXmlParamPane extends HLayout {
 		}
 		if (paramType.getValue() != null) {
 			definition.setRestXmlParameterType(paramType.getValue().toString());
+		}
+		if (acceptableContentTypes.getValue() != null) {
+			definition.setRestXmlAcceptableContentTypes(SmartGWTUtil.convertStringToArray(acceptableContentTypes.getValue().toString(), ","));
 		}
 		return definition;
 	}
@@ -88,6 +110,7 @@ public class RestXmlParamPane extends HLayout {
 	public void setDefinition(WebApiDefinition definition) {
 		paramName.setValue(definition.getRestXmlParameterName());
 		paramType.setValue(definition.getRestXmlParameterType());
+		acceptableContentTypes.setValue(String.join(",", definition.getRestXmlAcceptableContentTypes()));
 	}
 
 }
