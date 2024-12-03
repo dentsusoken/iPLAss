@@ -57,15 +57,15 @@ import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class TemplateMultiLanguagePane  extends VLayout {
+public class TemplateMultiLanguagePane extends VLayout {
 
 	private LanguageGrid grid;
 
 	public TemplateMultiLanguagePane() {
-		grid = new LanguageGrid();
+		grid = createLanguageGrid();
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				editLanguage((ListGridRecord)event.getRecord());
+				editLanguage((ListGridRecord) event.getRecord());
 			}
 		});
 
@@ -93,6 +93,10 @@ public class TemplateMultiLanguagePane  extends VLayout {
 
 		addMember(grid);
 		addMember(buttonPane);
+	}
+
+	protected LanguageGrid createLanguageGrid() {
+		return new LanguageGrid();
 	}
 
 	public void setEnableLanguages(LinkedHashMap<String, String> enableLang) {
@@ -148,7 +152,7 @@ public class TemplateMultiLanguagePane  extends VLayout {
 		grid.removeRecord(record);
 	}
 
-	private enum FIELD_NAME {
+	protected enum FIELD_NAME {
 		STORED_LANG_KEY,
 		LANG_KEY,
 		LANG_DISPLAY_NAME,
@@ -156,25 +160,25 @@ public class TemplateMultiLanguagePane  extends VLayout {
 		UPLOAD_FILE
 	}
 
-	private static class LanguageGrid extends ListGrid {
+	protected static class LanguageGrid extends ListGrid {
 
-		private LinkedHashMap<String, String> enableLang;
+		protected LinkedHashMap<String, String> enableLang;
 
-		private TemplateType type;
-		private String templateDefName;
+		protected TemplateType type;
+		protected String templateDefName;
 
 		public LanguageGrid() {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(false);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(false); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
@@ -199,61 +203,61 @@ public class TemplateMultiLanguagePane  extends VLayout {
 			this.templateDefName = definition.getName();
 
 			switch (type) {
-				case HTML:
-					HtmlTemplateDefinition htd = (HtmlTemplateDefinition)definition;
-					initString(htd.getLocalizedSourceList());
-					break;
-				case GROOVY:
-					GroovyTemplateDefinition gtd = (GroovyTemplateDefinition)definition;
-					initString(gtd.getLocalizedSourceList());
-					break;
-				case JSP:
-					JspTemplateDefinition jtd = (JspTemplateDefinition)definition;
-					initString(jtd.getLocalizedPathList());
-					break;
-				case BINARY:
-					BinaryTemplateDefinition btd = (BinaryTemplateDefinition)definition;
-					initBinary(btd.getLocalizedBinaryList());
-					break;
-				case REPORT:
-					ReportTemplateDefinition rtd = (ReportTemplateDefinition)definition;
-					initReport(rtd.getLocalizedReportList());
-					break;
-				default:
+			case HTML:
+				HtmlTemplateDefinition htd = (HtmlTemplateDefinition) definition;
+				initString(htd.getLocalizedSourceList());
+				break;
+			case GROOVY:
+				GroovyTemplateDefinition gtd = (GroovyTemplateDefinition) definition;
+				initString(gtd.getLocalizedSourceList());
+				break;
+			case JSP:
+				JspTemplateDefinition jtd = (JspTemplateDefinition) definition;
+				initString(jtd.getLocalizedPathList());
+				break;
+			case BINARY:
+				BinaryTemplateDefinition btd = (BinaryTemplateDefinition) definition;
+				initBinary(btd.getLocalizedBinaryList());
+				break;
+			case REPORT:
+				ReportTemplateDefinition rtd = (ReportTemplateDefinition) definition;
+				initReport(rtd.getLocalizedReportList());
+				break;
+			default:
 			}
 		}
 
 		public TemplateDefinition getEditDefinition(TemplateDefinition definition) {
 
 			switch (type) {
-				case HTML:
-					List<LocalizedStringDefinition> htdList = getStringDefinitionList();
-					HtmlTemplateDefinition htd = (HtmlTemplateDefinition)definition;
-					htd.setLocalizedSourceList(htdList);
-					break;
-				case GROOVY:
-					List<LocalizedStringDefinition> gtdList = getStringDefinitionList();
-					GroovyTemplateDefinition gtd = (GroovyTemplateDefinition)definition;
-					gtd.setLocalizedSourceList(gtdList);
-					break;
-				case JSP:
-					List<LocalizedStringDefinition> jtdList = getStringDefinitionList();
-					JspTemplateDefinition jtd = (JspTemplateDefinition)definition;
-					jtd.setLocalizedPathList(jtdList);
-					break;
-				case BINARY:
-					//BinaryはDefinitionにしないでLocalizedBinaryDefinitionInfoとして渡す
-					//List<LocalizedBinaryDefinition> btdList = getBinaryDefinitionList();
-					//BinaryTemplateDefinition btd = (BinaryTemplateDefinition)definition;
-					//btd.setLocalizedBinaryList(btdList);
-					break;
-				case REPORT:
-					//ReportはDefinitionにしないでLocalizedReportDefinitionInfoとして渡す
-					//List<LocalizedReportDefinition> rtdList = getReportDefinitionList();
-					//ReportTemplateDefinition rtd = (ReportTemplateDefinition)definition;
-					//rtd.setLocalizedReportList(rtdList);
-					break;
-				default:
+			case HTML:
+				List<LocalizedStringDefinition> htdList = getStringDefinitionList();
+				HtmlTemplateDefinition htd = (HtmlTemplateDefinition) definition;
+				htd.setLocalizedSourceList(htdList);
+				break;
+			case GROOVY:
+				List<LocalizedStringDefinition> gtdList = getStringDefinitionList();
+				GroovyTemplateDefinition gtd = (GroovyTemplateDefinition) definition;
+				gtd.setLocalizedSourceList(gtdList);
+				break;
+			case JSP:
+				List<LocalizedStringDefinition> jtdList = getStringDefinitionList();
+				JspTemplateDefinition jtd = (JspTemplateDefinition) definition;
+				jtd.setLocalizedPathList(jtdList);
+				break;
+			case BINARY:
+				//BinaryはDefinitionにしないでLocalizedBinaryDefinitionInfoとして渡す
+				//List<LocalizedBinaryDefinition> btdList = getBinaryDefinitionList();
+				//BinaryTemplateDefinition btd = (BinaryTemplateDefinition)definition;
+				//btd.setLocalizedBinaryList(btdList);
+				break;
+			case REPORT:
+				//ReportはDefinitionにしないでLocalizedReportDefinitionInfoとして渡す
+				//List<LocalizedReportDefinition> rtdList = getReportDefinitionList();
+				//ReportTemplateDefinition rtd = (ReportTemplateDefinition)definition;
+				//rtd.setLocalizedReportList(rtdList);
+				break;
+			default:
 			}
 
 			return definition;
@@ -266,9 +270,9 @@ public class TemplateMultiLanguagePane  extends VLayout {
 
 			List<LocalizedBinaryDefinitionInfo> list = new ArrayList<LocalizedBinaryDefinitionInfo>();
 			for (ListGridRecord record : getRecords()) {
-				WrappedListGridRecord wrapped = (WrappedListGridRecord)record;
+				WrappedListGridRecord wrapped = (WrappedListGridRecord) record;
 
-				LocalizedBinaryDefinition definition = (LocalizedBinaryDefinition)wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+				LocalizedBinaryDefinition definition = (LocalizedBinaryDefinition) wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 				UploadFileItem fileItem = wrapped.getUploadFileItem();
 				String storedLocaleName = wrapped.getStoredLocaleName();
 
@@ -288,9 +292,9 @@ public class TemplateMultiLanguagePane  extends VLayout {
 
 			List<LocalizedReportDefinitionInfo> list = new ArrayList<LocalizedReportDefinitionInfo>();
 			for (ListGridRecord record : getRecords()) {
-				WrappedListGridRecord wrapped = (WrappedListGridRecord)record;
+				WrappedListGridRecord wrapped = (WrappedListGridRecord) record;
 
-				LocalizedReportDefinition definition = (LocalizedReportDefinition)wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+				LocalizedReportDefinition definition = (LocalizedReportDefinition) wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 				UploadFileItem fileItem = wrapped.getUploadFileItem();
 				String storedLocaleName = wrapped.getStoredLocaleName();
 
@@ -309,61 +313,61 @@ public class TemplateMultiLanguagePane  extends VLayout {
 
 		public void editRecord(final ListGridRecord record) {
 
-			final WrappedListGridRecord wrapped = (WrappedListGridRecord)record;
+			final WrappedListGridRecord wrapped = (WrappedListGridRecord) record;
 
 			TemplateMultiLanguageEditDialog dialog = new TemplateMultiLanguageEditDialog(enableLang);
 
 			switch (type) {
-				case HTML:
-					LocalizedStringDefinition htdLocal = null;
-					if (wrapped != null) {
-						htdLocal = (LocalizedStringDefinition)wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
-					} else {
-						htdLocal = new LocalizedStringDefinition();
-					}
-					dialog.setDefinition(type, htdLocal);
-					break;
-				case GROOVY:
-					LocalizedStringDefinition gtdLocal = null;
-					if (wrapped != null) {
-						gtdLocal = (LocalizedStringDefinition)wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
-					} else {
-						gtdLocal = new LocalizedStringDefinition();
-					}
-					dialog.setDefinition(type, gtdLocal);
-					break;
-				case JSP:
-					LocalizedStringDefinition jtdLocal = null;
-					if (wrapped != null) {
-						jtdLocal = (LocalizedStringDefinition)wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
-					} else {
-						jtdLocal = new LocalizedStringDefinition();
-					}
-					dialog.setDefinition(type, jtdLocal);
-					break;
-				case BINARY:
-					LocalizedBinaryDefinition btdLocal = null;
-					UploadFileItem btdFileItem = null;
-					if (wrapped != null) {
-						btdLocal = (LocalizedBinaryDefinition)wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
-						btdFileItem = wrapped.getUploadFileItem();
-					} else {
-						btdLocal = new LocalizedBinaryDefinition();
-					}
-					dialog.setDefinition(type, btdLocal, templateDefName, btdFileItem);
-					break;
-				case REPORT:
-					LocalizedReportDefinition rtdLocal = null;
-					UploadFileItem rtdFileItem = null;
-					if (wrapped != null) {
-						rtdLocal = (LocalizedReportDefinition)wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
-						rtdFileItem = wrapped.getUploadFileItem();
-					} else {
-						rtdLocal = new LocalizedReportDefinition();
-					}
-					dialog.setDefinition(type, rtdLocal, templateDefName, rtdFileItem);
-					break;
-				default:
+			case HTML:
+				LocalizedStringDefinition htdLocal = null;
+				if (wrapped != null) {
+					htdLocal = (LocalizedStringDefinition) wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+				} else {
+					htdLocal = new LocalizedStringDefinition();
+				}
+				dialog.setDefinition(type, htdLocal);
+				break;
+			case GROOVY:
+				LocalizedStringDefinition gtdLocal = null;
+				if (wrapped != null) {
+					gtdLocal = (LocalizedStringDefinition) wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+				} else {
+					gtdLocal = new LocalizedStringDefinition();
+				}
+				dialog.setDefinition(type, gtdLocal);
+				break;
+			case JSP:
+				LocalizedStringDefinition jtdLocal = null;
+				if (wrapped != null) {
+					jtdLocal = (LocalizedStringDefinition) wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+				} else {
+					jtdLocal = new LocalizedStringDefinition();
+				}
+				dialog.setDefinition(type, jtdLocal);
+				break;
+			case BINARY:
+				LocalizedBinaryDefinition btdLocal = null;
+				UploadFileItem btdFileItem = null;
+				if (wrapped != null) {
+					btdLocal = (LocalizedBinaryDefinition) wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+					btdFileItem = wrapped.getUploadFileItem();
+				} else {
+					btdLocal = new LocalizedBinaryDefinition();
+				}
+				dialog.setDefinition(type, btdLocal, templateDefName, btdFileItem);
+				break;
+			case REPORT:
+				LocalizedReportDefinition rtdLocal = null;
+				UploadFileItem rtdFileItem = null;
+				if (wrapped != null) {
+					rtdLocal = (LocalizedReportDefinition) wrapped.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+					rtdFileItem = wrapped.getUploadFileItem();
+				} else {
+					rtdLocal = new LocalizedReportDefinition();
+				}
+				dialog.setDefinition(type, rtdLocal, templateDefName, rtdFileItem);
+				break;
+			default:
 			}
 
 			final TemplateMultiLanguageEditDialog viewDialog = dialog;
@@ -373,25 +377,25 @@ public class TemplateMultiLanguagePane  extends VLayout {
 				@Override
 				public void onDataChanged(DataChangedEvent event) {
 
-					TemplateDataChangedEvent tEvent = (TemplateDataChangedEvent)event;
+					TemplateDataChangedEvent tEvent = (TemplateDataChangedEvent) event;
 					switch (type) {
-						case HTML:
-						case GROOVY:
-						case JSP:
-							LocalizedStringDefinition stringParam = tEvent.getValueObject(LocalizedStringDefinition.class);
-							updateRecord(wrapped, stringParam);
-							break;
-						case BINARY:
-							LocalizedBinaryDefinition binaryDef = tEvent.getValueObject(LocalizedBinaryDefinition.class);
-							UploadFileItem binaryFile = tEvent.getUploadFileItem();
-							updateRecord(wrapped, binaryDef, binaryFile);
-							break;
-						case REPORT:
-							LocalizedReportDefinition reportDef = tEvent.getValueObject(LocalizedReportDefinition.class);
-							UploadFileItem reportFile = tEvent.getUploadFileItem();
-							updateRecord(wrapped, reportDef, reportFile);
-							break;
-						default:
+					case HTML:
+					case GROOVY:
+					case JSP:
+						LocalizedStringDefinition stringParam = tEvent.getValueObject(LocalizedStringDefinition.class);
+						updateRecord(wrapped, stringParam);
+						break;
+					case BINARY:
+						LocalizedBinaryDefinition binaryDef = tEvent.getValueObject(LocalizedBinaryDefinition.class);
+						UploadFileItem binaryFile = tEvent.getUploadFileItem();
+						updateRecord(wrapped, binaryDef, binaryFile);
+						break;
+					case REPORT:
+						LocalizedReportDefinition reportDef = tEvent.getValueObject(LocalizedReportDefinition.class);
+						UploadFileItem reportFile = tEvent.getUploadFileItem();
+						updateRecord(wrapped, reportDef, reportFile);
+						break;
+					default:
 					}
 				}
 			});
@@ -446,13 +450,13 @@ public class TemplateMultiLanguagePane  extends VLayout {
 		public List<String> getSelectedLocaleList() {
 			List<String> localeList = new ArrayList<String>();
 			for (ListGridRecord record : getRecords()) {
-				WrappedListGridRecord wrap = (WrappedListGridRecord)record;
+				WrappedListGridRecord wrap = (WrappedListGridRecord) record;
 				localeList.add(wrap.getLocaleName());
 			}
 			return localeList;
 		}
 
-		private void initString(List<LocalizedStringDefinition> definitionList) {
+		protected void initString(List<LocalizedStringDefinition> definitionList) {
 			if (definitionList != null && definitionList.size() > 0) {
 				ListGridRecord[] temp = new ListGridRecord[definitionList.size()];
 
@@ -461,13 +465,13 @@ public class TemplateMultiLanguagePane  extends VLayout {
 					WrappedListGridRecord newRecord = createStringRecord(definition, null);
 					newRecord.setStoredLocaleName(definition.getLocaleName());
 					temp[cnt] = newRecord;
-					cnt ++;
+					cnt++;
 				}
 				setData(temp);
 			}
 		}
 
-		private void initBinary(List<LocalizedBinaryDefinition> definitionList) {
+		protected void initBinary(List<LocalizedBinaryDefinition> definitionList) {
 			if (definitionList != null && definitionList.size() > 0) {
 				ListGridRecord[] temp = new ListGridRecord[definitionList.size()];
 
@@ -476,14 +480,14 @@ public class TemplateMultiLanguagePane  extends VLayout {
 					WrappedListGridRecord newRecord = createBinaryRecord(definition, null);
 					newRecord.setStoredLocaleName(definition.getLocaleName());
 					temp[cnt] = newRecord;
-					cnt ++;
+					cnt++;
 
 				}
 				setData(temp);
 			}
 		}
 
-		private void initReport(List<LocalizedReportDefinition> definitionList) {
+		protected void initReport(List<LocalizedReportDefinition> definitionList) {
 			if (definitionList != null && definitionList.size() > 0) {
 				ListGridRecord[] temp = new ListGridRecord[definitionList.size()];
 
@@ -492,7 +496,7 @@ public class TemplateMultiLanguagePane  extends VLayout {
 					WrappedListGridRecord newRecord = createReportRecord(definition, null);
 					newRecord.setStoredLocaleName(definition.getLocaleName());
 					temp[cnt] = newRecord;
-					cnt ++;
+					cnt++;
 
 				}
 				setData(temp);
@@ -535,11 +539,11 @@ public class TemplateMultiLanguagePane  extends VLayout {
 			return record;
 		}
 
-		private List<LocalizedStringDefinition> getStringDefinitionList() {
+		protected List<LocalizedStringDefinition> getStringDefinitionList() {
 
 			List<LocalizedStringDefinition> list = new ArrayList<LocalizedStringDefinition>();
 			for (ListGridRecord record : getRecords()) {
-				list.add((LocalizedStringDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+				list.add((LocalizedStringDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 			}
 			if (list.isEmpty()) {
 				return null;
@@ -547,33 +551,33 @@ public class TemplateMultiLanguagePane  extends VLayout {
 			return list;
 		}
 
-//		private List<LocalizedBinaryDefinition> getBinaryDefinitionList() {
-//
-//			List<LocalizedBinaryDefinition> list = new ArrayList<LocalizedBinaryDefinition>();
-//			for (ListGridRecord record : getRecords()) {
-//				list.add((LocalizedBinaryDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
-//			}
-//			if (list.isEmpty()) {
-//				return null;
-//			}
-//			return list;
-//		}
-//
-//		private List<LocalizedReportDefinition> getReportDefinitionList() {
-//
-//			List<LocalizedReportDefinition> list = new ArrayList<LocalizedReportDefinition>();
-//			for (ListGridRecord record : getRecords()) {
-//				list.add((LocalizedReportDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
-//			}
-//			if (list.isEmpty()) {
-//				return null;
-//			}
-//			return list;
-//		}
+		//		private List<LocalizedBinaryDefinition> getBinaryDefinitionList() {
+		//
+		//			List<LocalizedBinaryDefinition> list = new ArrayList<LocalizedBinaryDefinition>();
+		//			for (ListGridRecord record : getRecords()) {
+		//				list.add((LocalizedBinaryDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+		//			}
+		//			if (list.isEmpty()) {
+		//				return null;
+		//			}
+		//			return list;
+		//		}
+		//
+		//		private List<LocalizedReportDefinition> getReportDefinitionList() {
+		//
+		//			List<LocalizedReportDefinition> list = new ArrayList<LocalizedReportDefinition>();
+		//			for (ListGridRecord record : getRecords()) {
+		//				list.add((LocalizedReportDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+		//			}
+		//			if (list.isEmpty()) {
+		//				return null;
+		//			}
+		//			return list;
+		//		}
 
 	}
 
-	private static class WrappedListGridRecord extends ListGridRecord {
+	protected static class WrappedListGridRecord extends ListGridRecord {
 
 		private UploadFileItem fileItem;
 
