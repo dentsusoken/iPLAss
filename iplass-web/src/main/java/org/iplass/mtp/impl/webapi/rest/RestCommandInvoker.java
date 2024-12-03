@@ -283,6 +283,28 @@ public class RestCommandInvoker {
 		return allowOrigin;
 	}
 
+	/**
+	 * リクエストタイプを決定する
+	 *
+	 * <p>
+	 * 本メソッドを利用してリクエストタイプを決定するメソッドは GET, DELETE です。
+	 * 基本的な考え方として、GET, DELETE メソッドはリクエスト本文が無い想定とします。
+	 * （厳密には DELETE メソッドについては、リクエスト本文を指定可能ではあるが扱わない仕様とする）
+	 * </p>
+	 *
+	 * <p>
+	 * リクエストタイプは以下の順序で決定します。
+	 * </p>
+	 * <ol>
+	 * <li>Content-Typeの指定がある場合は、Content-Type に一致するリクエストとする（REST_FORM をのぞく）</li>
+	 * <li>Content-Typeの指定がない、もしくは想定していないContent-Typeの場合は、WebAPI定義の唯一に設定されているリクエストとする</li>
+	 * <li>以上で決定できない倍 REST_FORM のリクエストとする</li>
+	 * </ol>
+	 *
+	 * @param request HttpServletRequest
+	 * @param runtime WebApiRuntime
+	 * @return リクエストタイプ
+	 */
 	private RequestType decideRequestType(HttpServletRequest request, WebApiRuntime runtime) {
 		RequestType type = null;
 		String contentType = request.getContentType();
@@ -293,8 +315,6 @@ public class RestCommandInvoker {
 					type = RequestType.REST_JSON;
 				} else if (mt.getSubtype().equals(MediaType.APPLICATION_XML_TYPE.getSubtype())) {
 					type = RequestType.REST_XML;
-				} else if (mt.getSubtype().equals(MediaType.APPLICATION_FORM_URLENCODED_TYPE.getSubtype())) {
-					type = RequestType.REST_FORM;
 				}
 			}
 		}
@@ -308,15 +328,16 @@ public class RestCommandInvoker {
 		}
 
 		if (type == null) {
-			// TODO リクエストタイプが決定できない場合、メタデータの Accepts が 1 つだけならばそのリクエストとして扱うという実装は正しいのか？
+			// リクエストタイプが決定できない場合、メタデータの Accepts が 1 つだけならばそのリクエストとして扱う
+			// 2つ以上のリクエストタイプを許可している場合は、リクエスト時にConetnt-Typeを指定する必要があり、ここでは決定しない。
 			if (runtime.getMetaData().getAccepts() != null && runtime.getMetaData().getAccepts().length == 1) {
 				type = runtime.getMetaData().getAccepts()[0];
 			}
 		}
 
 		if (type == null) {
-			// 最後まで未指定の場合は、その他のリクエストとして受け付ける
-			type = RequestType.REST_OTHERS;
+			// 最後まで未指定の場合は、REST_FORM リクエストとして受け付ける
+			type = RequestType.REST_FORM;
 		}
 		return type;
 	}
