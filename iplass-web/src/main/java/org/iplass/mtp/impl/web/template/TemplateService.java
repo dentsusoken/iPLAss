@@ -20,6 +20,10 @@
 
 package org.iplass.mtp.impl.web.template;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
@@ -27,17 +31,24 @@ import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
 import org.iplass.mtp.impl.web.template.MetaTemplate.TemplateRuntime;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
+import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinitionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class TemplateService extends AbstractTypedMetaDataService<MetaTemplate, TemplateRuntime>
+		implements Service {
+	private static Logger logger = LoggerFactory.getLogger(TemplateService.class);
 
-public class TemplateService extends AbstractTypedMetaDataService<MetaTemplate, TemplateRuntime> implements Service {
 	public static final String TEMPLATE_META_PATH = "/template/";
+	private Map<Class<? extends TemplateDefinition>, Class<? extends MetaTemplate>> metaTemplateClassMap;
 
 	public static class TypeMap extends DefinitionMetaDataTypeMap<TemplateDefinition, MetaTemplate> {
 		public TypeMap() {
 			super(getFixedPath(), MetaTemplate.class, TemplateDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<TemplateDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
@@ -47,7 +58,40 @@ public class TemplateService extends AbstractTypedMetaDataService<MetaTemplate, 
 	public void destroy() {
 	}
 
+	@SuppressWarnings("unchecked")
 	public void init(Config config) {
+		metaTemplateClassMap = new HashMap<>();
+
+		// configからDefinitionとMetaTemplateのMapを作成
+		Map<String, String> classPathMap = config.getValue("templateClassMap", Map.class);
+		if (classPathMap == null) {
+			logger.debug("No template classes config found.");
+			return;
+		}
+
+		for (Entry<String, String> defMetaEntry : classPathMap.entrySet()) {
+			try {
+				// Definition
+				Class<?> defClass = Class.forName(defMetaEntry.getKey());
+				if (!TemplateDefinition.class.isAssignableFrom(defClass)) {
+					throw new ClassCastException("Incompatible class: " + defMetaEntry.getKey() + " is not a subclass of TemplateDefinition.");
+				}
+				// Meta
+				Class<?> tempClass = Class.forName(defMetaEntry.getValue());
+				if (!MetaTemplate.class.isAssignableFrom(tempClass)) {
+					throw new ClassCastException("Incompatible class: " + defMetaEntry.getValue() + " is not a subclass of MetaTemplate.");
+				}
+
+				metaTemplateClassMap.put((Class<TemplateDefinition>) defClass, (Class<MetaTemplate>) tempClass);
+
+			} catch (ClassNotFoundException | ClassCastException e) {
+				throw new ServiceConfigrationException("templateClass: Failed to get class entries from the service config.", e);
+			}
+		}
+	}
+
+	public Class<? extends MetaTemplate> getMetaTemplateClassByDef(TemplateDefinition definition) {
+		return metaTemplateClassMap.get(definition.getClass());
 	}
 
 	public static String getFixedPath() {

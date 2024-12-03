@@ -39,6 +39,18 @@
 		</property>
  	</service>
 
+	<!-- Template Service configuration -->
+	<service>
+		<interface>org.iplass.mtp.impl.web.template.TemplateService</interface>
+		<property name="templateClassMap"  additional="true">
+			<property name="org.iplass.mtp.web.template.definition.GroovyTemplateDefinition" value="org.iplass.mtp.impl.web.template.MetaGroovyTemplate" />
+			<property name="org.iplass.mtp.web.template.definition.HtmlTemplateDefinition" value="org.iplass.mtp.impl.web.template.MetaHtmlTemplate" />
+			<property name="org.iplass.mtp.web.template.definition.JspTemplateDefinition" value="org.iplass.mtp.impl.web.template.MetaJspTemplate" />
+			<property name="org.iplass.mtp.web.template.definition.BinaryTemplateDefinition" value="org.iplass.mtp.impl.web.template.MetaBinaryTemplate" />
+			<property name="org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition" value="org.iplass.mtp.impl.web.template.report.MetaReportTemplate" />
+		</property>
+	</service>
+
 	<!-- Definition Service -->
 	<service>
 		<interface>org.iplass.mtp.impl.definition.DefinitionService</interface>
