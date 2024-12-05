@@ -297,7 +297,7 @@ public class RestCommandInvoker {
 	 * <ol>
 	 * <li>Content-Typeの指定がある場合は、Content-Type に一致するリクエストとする（REST_FORM をのぞく）</li>
 	 * <li>Content-Typeの指定がない、もしくは想定していないContent-Typeの場合は、WebAPI定義の唯一に設定されているリクエストとする</li>
-	 * <li>以上で決定できない倍 REST_FORM のリクエストとする</li>
+	 * <li>以上で決定できない場合 REST_FORM のリクエストとする</li>
 	 * </ol>
 	 *
 	 * @param request HttpServletRequest
