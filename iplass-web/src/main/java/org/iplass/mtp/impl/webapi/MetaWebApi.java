@@ -630,7 +630,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		}
 
 		public List<WebApiRuntime> getIndividualRuntime() {
-			List<WebApiRuntime> rl = new ArrayList<>(4);
+			List<WebApiRuntime> rl = new ArrayList<>(MethodType.values().length);
 			for (MethodType mt: MethodType.values()) {
 				WebApiRuntime r = service.getRuntimeByName(parentName + "/" + mt.toString());
 				if (r != null) {
@@ -793,14 +793,44 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			}
 		}
 
+		/**
+		 * リクエストタイプを確認する
+		 *
+		 * <p>
+		 * 実行したリクエストが許可されているリクエストタイプであるか確認します。
+		 * 許可されていないリクエストタイプの場合は、UNSUPPORTED_MEDIA_TYPE(415)の例外をスローします。
+		 * </p>
+		 *
+		 * <p>
+		 * 例外がスローされるパターンは以下のパターンです。
+		 * </p>
+		 * <ul>
+		 * <li>許可リクエストタイプが設定されている： 許可リクエストタイプに、実行されたリクエストのリクエストタイプが含まれていない</li>
+		 * <li>
+		 * 許可リクエストタイプが設定されていない： 実行されたリクエストのリクエストタイプが REST_OTHERS の場合<br>
+		 * ※REST_OTHERS は、許可する content-type の範囲が広いので、明示的に設定された場合のみ許可する。
+		 * </li>
+		 * </ul>
+		 *
+		 *
+		 *
+		 * @param requestAcceptType 実行されたリクエストのリクエストタイプ
+		 * @param request HttpServletRequest
+		 */
 		public void checkRequestType(RequestType requestAcceptType, HttpServletRequest request) {
-			if (accepts != null) {
+			if (accepts != null && accepts.length >= 1) {
+				// 許可リクエストタイプが設定されている
 				for (RequestType a: accepts) {
 					if (a == requestAcceptType) {
 						return;
 					}
 				}
+
+			} else if (RequestType.REST_OTHERS != requestAcceptType) {
+				// 許可リクエストタイプが設定されていないかつ、リクエストタイプが REST_OTHERS ではない
+				return;
 			}
+
 			throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE);
 		}
 
