@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -57,7 +57,7 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 	}
 
 	Map<String, AnnotateMetaDataEntry> toMetaData(WebApi webapi, Class<Object> annotatedClass) {
-		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
+		Map<String, AnnotateMetaDataEntry> map = new HashMap<>();
 		MetaWebApi meta = new MetaWebApi();
 		meta.setName(webapi.name());
 
@@ -79,17 +79,21 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 		if (webapi.restJson() == null) {
 			meta.setRestJsonParameterName(null);
 			meta.setRestJsonParameterType(void.class);
+			meta.setRestJsonAcceptableContentTypes(null);
 		} else {
 			meta.setRestJsonParameterName(webapi.restJson().parameterName());
 			meta.setRestJsonParameterType(webapi.restJson().parameterType());
+			meta.setRestJsonAcceptableContentTypes(webapi.restJson().acceptableContentTypes());
 		}
 
 		if (webapi.restXml() == null) {
 			meta.setRestXmlParameterName(null);
 			meta.setRestXmlParameterType(void.class);
+			meta.setRestXmlAcceptableContentTypes(null);
 		} else {
 			meta.setRestXmlParameterName(webapi.restXml().parameterName());
 			meta.setRestXmlParameterType(webapi.restXml().parameterType());
+			meta.setRestXmlAcceptableContentTypes(webapi.restXml().acceptableContentTypes());
 		}
 
 		if (!DEFAULT.equals(webapi.displayName())) {
@@ -113,17 +117,17 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 
 		if (webapi.cacheControlType() != null) {
 			switch (webapi.cacheControlType()) {
-				case CACHE:
-					meta.setCacheControlType(CacheControlType.CACHE);
-					break;
-				case NO_CACHE:
-					meta.setCacheControlType(CacheControlType.NO_CACHE);
-					break;
-				case CACHE_PUBLIC:
-					meta.setCacheControlType(CacheControlType.CACHE_PUBLIC);
-					break;
-				default:
-					break;
+			case CACHE:
+				meta.setCacheControlType(CacheControlType.CACHE);
+				break;
+			case NO_CACHE:
+				meta.setCacheControlType(CacheControlType.NO_CACHE);
+				break;
+			case CACHE_PUBLIC:
+				meta.setCacheControlType(CacheControlType.CACHE_PUBLIC);
+				break;
+			default:
+				break;
 			}
 		}
 		meta.setCacheControlMaxAge(webapi.cacheControlMaxAge());
@@ -151,7 +155,7 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 		meta.setPrivileged(webapi.privileged());
 		if (webapi.privilaged()) {
 			meta.setPrivileged(webapi.privilaged());
-		}		
+		}
 		meta.setPublicWebApi(webapi.publicWebApi());
 		meta.setCheckXRequestedWithHeader(webapi.checkXRequestedWithHeader());
 		meta.setResponseType(webapi.responseType());

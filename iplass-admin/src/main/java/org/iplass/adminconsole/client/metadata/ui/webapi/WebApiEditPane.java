@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.metadata.ui.webapi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
@@ -383,12 +384,20 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 						definition = webApiParamMapPane.getEditDefinition(definition);
 						definition = requestTypeGridPane.getEditDefinition(definition);
 						definition = resultPane.getEditDefinition(definition);
-						if (jsonParamPane != null) {
+
+						List<RequestType> checkedRequestType = Arrays.asList(definition.getAccepts());
+						boolean isCheckedRestJson = checkedRequestType.contains(RequestType.REST_JSON);
+						boolean isCheckedRestXml = checkedRequestType.contains(RequestType.REST_XML);
+
+						if (isCheckedRestJson && jsonParamPane != null) {
+							// REST_JSON にチェック有り、jsonParamPane がnullでない場合
 							definition = jsonParamPane.getEditDefinition(definition);
 						}
-						if (xmlParamPane != null) {
+						if (isCheckedRestXml && xmlParamPane != null) {
+							// REST_XML にチェック有り、jsonParamPane がnullでない場合
 							definition = xmlParamPane.getEditDefinition(definition);
 						}
+
 						definition = responseTypePane.getEditDefinition(definition);
 						updateWebAPI(definition, true);
 					}

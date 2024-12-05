@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -28,18 +28,18 @@ import org.iplass.mtp.impl.web.WebRequestContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
-import org.iplass.mtp.webapi.definition.RequestType;
-import org.iplass.mtp.webapi.definition.MethodType;;
+import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;;
 
 public class RestRequestContext extends WebRequestContext {
 	static final String WEB_API_RUNTIME_NAME = "mtp.restRequestContext.webApiRuntime";;
 	static final String MAX_BODY_SIZE = "mtp.restRequestContext.maxBodySize";;
-	
+
 	private RequestType requestType;
 	private MethodType methodType;
 	private Request rsRequest;
 	private boolean supportBearerToken;
-	
+
 	public RestRequestContext(ServletContext servletContext, HttpServletRequest req, Request rsRequest, boolean supportBearerToken) {
 		super(servletContext, req);
 		this.rsRequest = rsRequest;
@@ -56,32 +56,35 @@ public class RestRequestContext extends WebRequestContext {
 		case HttpMethod.PUT:
 			methodType = MethodType.PUT;
 			break;
+		case HttpMethod.PATCH:
+			methodType = MethodType.PATCH;
+			break;
 		default:
 			break;
 		}
 		this.supportBearerToken = supportBearerToken;
 	}
-	
+
 	public void setRequestType(RequestType requestType) {
 		this.requestType = requestType;
 	}
-	
+
 	public boolean supportBearerToken() {
 		return supportBearerToken;
 	}
-	
+
 	public Request rsRequest() {
 		return rsRequest;
 	}
-	
+
 	public MethodType methodType() {
 		return methodType;
 	}
-	
+
 	public RequestType requestType() {
 		return requestType;
 	}
-	
+
 	@Override
 	public Object getAttribute(String name) {
 		switch (name) {
@@ -102,7 +105,7 @@ public class RestRequestContext extends WebRequestContext {
 				return null;
 			}
 			return stack.getRequestPath().getTargetSubPath(apiName, true);
-			
+
 		default:
 			return super.getAttribute(name);
 		}

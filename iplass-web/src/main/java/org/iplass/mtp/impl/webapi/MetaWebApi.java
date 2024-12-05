@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -24,10 +24,22 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Variant;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.mtp.command.CommandRuntimeException;
@@ -68,15 +80,13 @@ import org.iplass.mtp.webapi.definition.WebApiParamMapDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.HttpMethod;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.Variant;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-
+/**
+ * WebAPI メタデータ
+ *
+ * @see org.iplass.mtp.command.annotation.webapi.WebApi
+ * @see org.iplass.mtp.command.annotation.webapi.RestJson
+ * @see org.iplass.mtp.command.annotation.webapi.RestXml
+ */
 public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<WebApiDefinition> {
 	private static final long serialVersionUID = 2590900624234333139L;
 
@@ -105,10 +115,16 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private CacheControlType cacheControlType;
 	private long cacheControlMaxAge = -1;
 
+	// RestJson パラメータ
 	private String restJsonParameterName = null;
 	private Class<?> restJsonParameterType = void.class;
+	/**  REST JSON として受け付け可能 ContentType */
+	private String[] restJsonAcceptableContentTypes = null;
+	// RestXml パラメータ
 	private String restXmlParameterName = null;
 	private Class<?> restXmlParameterType = void.class;
+	/** REST XML として受け付け可能 ContentType */
+	private String[] restXmlAcceptableContentTypes = null;
 
 	/** このWebAPIで処理されるCommandを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
 	@XmlElement
@@ -274,7 +290,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		//新しい属性の方が有効
 		return privileged;
 	}
- 
+
 	public void setPrivileged(boolean isPrivileged) {
 		//保存時に古い属性をnullにセットするようにする
 		this.privileged = isPrivileged;
@@ -356,6 +372,22 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		this.restJsonParameterType = restJsonParameterType;
 	}
 
+	/**
+	 * REST JSON として受付可能な Conteent-Type を取得します
+	 * @return Content-Type 配列
+	 */
+	public String[] getRestJsonAcceptableContentTypes() {
+		return restJsonAcceptableContentTypes;
+	}
+
+	/**
+	 * REST JSON として受付可能な Conteent-Type を設定します
+	 * @param acceptableContentTypes Content-Type 配列
+	 */
+	public void setRestJsonAcceptableContentTypes(String[] acceptableContentTypes) {
+		this.restJsonAcceptableContentTypes = acceptableContentTypes;
+	}
+
 	public String getRestXmlParameterName() {
 		return restXmlParameterName;
 	}
@@ -370,6 +402,22 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	public void setRestXmlParameterType(Class<?> restXmlParameterType) {
 		this.restXmlParameterType = restXmlParameterType;
+	}
+
+	/**
+	 * REST XML として受付可能な Content-Type を取得します
+	 * @return Content-Type 配列
+	 */
+	public String[] getRestXmlAcceptableContentTypes() {
+		return restXmlAcceptableContentTypes;
+	}
+
+	/**
+	 * REST XML として受付可能な Content-Type を設定します
+	 * @param acceptableContentTypes Content-Type 配列
+	 */
+	public void setRestXmlAcceptableContentTypes(String[] acceptableContentTypes) {
+		this.restXmlAcceptableContentTypes = acceptableContentTypes;
 	}
 
 	public CacheControlType getCacheControlType() {
@@ -403,6 +451,11 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 		private RequestRestriction requestRestrictionRuntime;
 		private String corsAllowString;
+
+		/** restJsonAcceptableContentType を Set で保持する */
+		private Set<String> restJsonAcceptableContentTypeSet;
+		/** restXmlAcceptableContentType を Set で保持する */
+		private Set<String> restXmlAcceptableContentTypeSet;
 
 		public WebApiRuntime() {
 
@@ -503,6 +556,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				corsAllowString = corsAllowString();
 
 
+				restJsonAcceptableContentTypeSet = restJsonAcceptableContentTypes != null
+						? new HashSet<>(Arrays.asList(restJsonAcceptableContentTypes))
+						: Collections.emptySet();
+
+				restXmlAcceptableContentTypeSet = restXmlAcceptableContentTypes != null
+						? new HashSet<>(Arrays.asList(restXmlAcceptableContentTypes))
+						: Collections.emptySet();
+
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
@@ -524,6 +585,9 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				case HttpMethod.DELETE:
 					sb.append(HttpMethod.DELETE).append(", ");
 					break;
+				case HttpMethod.PATCH:
+					sb.append(HttpMethod.PATCH).append(", ");
+					break;
 				case WILDCARD:
 					// GET
 					sb.append(HttpMethod.GET).append(", ");
@@ -533,9 +597,11 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 					sb.append(HttpMethod.PUT).append(", ");
 					// DELETE
 					sb.append(HttpMethod.DELETE).append(", ");
+					// PATCH
+					sb.append(HttpMethod.PATCH).append(", ");
 					break;
 				default:
-					// HEAD, PATCH, TRACE, CONNECT は設定しない
+					// HEAD, TRACE, CONNECT は設定しない
 					// OPTIONS は最後に無条件設定する
 					break;
 				}
@@ -564,7 +630,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		}
 
 		public List<WebApiRuntime> getIndividualRuntime() {
-			List<WebApiRuntime> rl = new ArrayList<MetaWebApi.WebApiRuntime>(4);
+			List<WebApiRuntime> rl = new ArrayList<>(MethodType.values().length);
 			for (MethodType mt: MethodType.values()) {
 				WebApiRuntime r = service.getRuntimeByName(parentName + "/" + mt.toString());
 				if (r != null) {
@@ -727,14 +793,44 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			}
 		}
 
+		/**
+		 * リクエストタイプを確認する
+		 *
+		 * <p>
+		 * 実行したリクエストが許可されているリクエストタイプであるか確認します。
+		 * 許可されていないリクエストタイプの場合は、UNSUPPORTED_MEDIA_TYPE(415)の例外をスローします。
+		 * </p>
+		 *
+		 * <p>
+		 * 例外がスローされるパターンは以下のパターンです。
+		 * </p>
+		 * <ul>
+		 * <li>許可リクエストタイプが設定されている： 許可リクエストタイプに、実行されたリクエストのリクエストタイプが含まれていない</li>
+		 * <li>
+		 * 許可リクエストタイプが設定されていない： 実行されたリクエストのリクエストタイプが REST_OTHERS の場合<br>
+		 * ※REST_OTHERS は、許可する content-type の範囲が広いので、明示的に設定された場合のみ許可する。
+		 * </li>
+		 * </ul>
+		 *
+		 *
+		 *
+		 * @param requestAcceptType 実行されたリクエストのリクエストタイプ
+		 * @param request HttpServletRequest
+		 */
 		public void checkRequestType(RequestType requestAcceptType, HttpServletRequest request) {
-			if (accepts != null) {
+			if (accepts != null && accepts.length >= 1) {
+				// 許可リクエストタイプが設定されている
 				for (RequestType a: accepts) {
 					if (a == requestAcceptType) {
 						return;
 					}
 				}
+
+			} else if (RequestType.REST_OTHERS != requestAcceptType) {
+				// 許可リクエストタイプが設定されていないかつ、リクエストタイプが REST_OTHERS ではない
+				return;
 			}
+
 			throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE);
 		}
 
@@ -789,6 +885,23 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			return false;
 		}
 
+		/**
+		 * REST JSON として受け付け可能な Content-Type か判定します
+		 * @param contentType content-type
+		 * @return 受け付け可能な場合は true を返却する
+		 */
+		public boolean isAcceptableRestJson(String contentType) {
+			return restJsonAcceptableContentTypeSet.contains(contentType);
+		}
+
+		/**
+		 * REST XML として受け付け可能な Content-Type か判定します
+		 * @param contentType content-type
+		 * @return 受け付け可能な場合は true を返却する
+		 */
+		public boolean isAcceptableRestXml(String contentType) {
+			return restXmlAcceptableContentTypeSet.contains(contentType);
+		}
 	}
 
 	// Meta → Definition
@@ -843,6 +956,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 		if (!(restXmlParameterType == null || restXmlParameterType == void.class)) {
 			definition.setRestXmlParameterType(restXmlParameterType.getName());
+		}
+
+		if (restJsonAcceptableContentTypes != null) {
+			definition.setRestJsonAcceptableContentTypes(Arrays.copyOf(restJsonAcceptableContentTypes, restJsonAcceptableContentTypes.length));
+		}
+
+		if (restXmlAcceptableContentTypes != null) {
+			definition.setRestXmlAcceptableContentTypes(Arrays.copyOf(restXmlAcceptableContentTypes, restXmlAcceptableContentTypes.length));
 		}
 
 		if (tokenCheck != null) {
@@ -934,7 +1055,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		} catch (ClassNotFoundException e) {
 			throw new CommandRuntimeException(definition.getRestJsonParameterType() + " class not found.", e);
 		}
-		
+
 		try {
 			if (definition.getRestXmlParameterType() != null) {
 				restXmlParameterType = Class.forName(definition.getRestXmlParameterType());
@@ -944,6 +1065,18 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		} catch (ClassNotFoundException e) {
 			throw new CommandRuntimeException(definition.getRestXmlParameterType() + " class not found.", e);
 		}
+
+		restJsonAcceptableContentTypes = definition.getRestJsonAcceptableContentTypes() != null
+				// null ではない場合
+				? Arrays.copyOf(definition.getRestJsonAcceptableContentTypes(), definition.getRestJsonAcceptableContentTypes().length)
+						// null の場合
+						: null;
+
+		restXmlAcceptableContentTypes = definition.getRestXmlAcceptableContentTypes() != null
+				// null ではない場合
+				? Arrays.copyOf(definition.getRestXmlAcceptableContentTypes(), definition.getRestXmlAcceptableContentTypes().length)
+						// null の場合
+						: null;
 
 		if (definition.getTokenCheck() != null) {
 			tokenCheck = new MetaWebApiTokenCheck();

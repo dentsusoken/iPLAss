@@ -60,6 +60,8 @@ public class WebApiAttributePane extends HLayout {
 	private CheckboxItem putMethod;
 	/** メソッド種別（DELETE) */
 	private CheckboxItem deleteMethod;
+	/** メソッド種別（PATCH) */
+	private CheckboxItem patchMethod;
 
 	/** 特権実行（セキュリティ制約を受けない） */
 	private CheckboxItem privilegedField;
@@ -111,8 +113,10 @@ public class WebApiAttributePane extends HLayout {
 		putMethod.setShowTitle(false);
 		deleteMethod = new CheckboxItem("delete", "DELETE");
 		deleteMethod.setShowTitle(false);
+		patchMethod = new CheckboxItem("patch", "PATCH");
+		patchMethod.setShowTitle(false);
 
-		methodForm.setItems(getMethod, postMethod, putMethod, deleteMethod);
+		methodForm.setItems(getMethod, postMethod, putMethod, deleteMethod, patchMethod);
 
 
 		accessForm = new DynamicForm();
@@ -140,7 +144,7 @@ public class WebApiAttributePane extends HLayout {
 		stateTypeField.setWidth(150);
 		stateTypeField.setStartRow(true);
 
-		LinkedHashMap<String, String> stateTypeMap = new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> stateTypeMap = new LinkedHashMap<>();
 		stateTypeMap.put(StateType.STATEFUL.toString(), StateType.STATEFUL.toString());
 		stateTypeMap.put(StateType.STATELESS.toString(), StateType.STATELESS.toString());
 		stateTypeField.setValueMap(stateTypeMap);
@@ -160,7 +164,7 @@ public class WebApiAttributePane extends HLayout {
 		tokenCheckField.setWidth(150);
 		tokenCheckField.setStartRow(true);
 
-		LinkedHashMap<String, String> tokenCheckMap = new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> tokenCheckMap = new LinkedHashMap<>();
 		tokenCheckMap.put(Boolean.FALSE.toString(), "Not Check");
 		tokenCheckMap.put(Boolean.TRUE.toString(), "Check");
 		tokenCheckField.setValueMap(tokenCheckMap);
@@ -196,7 +200,7 @@ public class WebApiAttributePane extends HLayout {
 		cacheControlTypeField = new SelectItem("cacheControlType", "Cache Control");
 		cacheControlTypeField.setWidth(150);
 
-		LinkedHashMap<String, String> casheTypeMap = new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> casheTypeMap = new LinkedHashMap<>();
 		casheTypeMap.put(CacheControlType.CACHE.name(), "Cache");
 		casheTypeMap.put(CacheControlType.CACHE_PUBLIC.name(), "Cache Public");
 		casheTypeMap.put(CacheControlType.NO_CACHE.name(), "Not Cache");
@@ -227,6 +231,7 @@ public class WebApiAttributePane extends HLayout {
 		postMethod.setValue(false);
 		putMethod.setValue(false);
 		deleteMethod.setValue(false);
+		patchMethod.setValue(false);
 
 		if (definition.getMethods() != null) {
 			for (MethodType at : definition.getMethods()) {
@@ -241,6 +246,9 @@ public class WebApiAttributePane extends HLayout {
 				}
 				if (at.equals(MethodType.DELETE)) {
 					deleteMethod.setValue(true);
+				}
+				if (at.equals(MethodType.PATCH)) {
+					patchMethod.setValue(true);
 				}
 			}
 		}
@@ -288,7 +296,7 @@ public class WebApiAttributePane extends HLayout {
 	 */
 	public WebApiDefinition getEditDefinition(WebApiDefinition definition) {
 
-		List<MethodType> methodTypeList = new ArrayList<MethodType>();
+		List<MethodType> methodTypeList = new ArrayList<>();
 		if (getMethod.getValue() != null && (Boolean)getMethod.getValue()) {
 			methodTypeList.add(MethodType.GET);
 		}
@@ -300,6 +308,9 @@ public class WebApiAttributePane extends HLayout {
 		}
 		if (deleteMethod.getValue() != null && (Boolean)deleteMethod.getValue()) {
 			methodTypeList.add(MethodType.DELETE);
+		}
+		if (patchMethod.getValue() != null && (Boolean) patchMethod.getValue()) {
+			methodTypeList.add(MethodType.PATCH);
 		}
 
 		MethodType[] methodType = new MethodType[methodTypeList.size()];
