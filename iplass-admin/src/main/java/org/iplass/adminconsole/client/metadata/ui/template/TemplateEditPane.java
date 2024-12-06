@@ -45,6 +45,7 @@ import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.definition.DefinitionEntry;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
@@ -58,30 +59,31 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class TemplateEditPane extends MetaDataMainEditPane {
 
 	private final MetaDataServiceAsync service = MetaDataServiceFactory.get();
+	private final TemplateEditPaneController controller = GWT.create(TemplateEditPaneController.class);
 
 	/** ヘッダ部分 */
-	private MetaCommonHeaderPane headerPane;
+	protected MetaCommonHeaderPane headerPane;
 	/** Definition共通属性部分 */
-	private MetaCommonAttributeSection<TemplateDefinition> commonSection;
+	protected MetaCommonAttributeSection<TemplateDefinition> commonSection;
 
 	/** Template共通属性部分 */
-	private TemplateAttributePane attributePane;
+	protected TemplateAttributePane attributePane;
 
 	/** 個別属性部分 */
-	private VLayout templateTypeMainPane;
-	private TemplateTypeEditPane typeEditPane;
+	protected VLayout templateTypeMainPane;
+	protected TemplateTypeEditPane typeEditPane;
 
 	/** 多言語設定部分 */
-	private TemplateMultiLanguagePane multilingualPane;
+	protected TemplateMultiLanguagePane multilingualPane;
 
 	/** 編集対象 */
-	private TemplateDefinition curDefinition;
+	protected TemplateDefinition curDefinition;
 
 	/** 編集対象ID */
-	private String curDefinitionId;
+	protected String curDefinitionId;
 
 	/** 編集対象バージョン */
-	private int curVersion;
+	protected int curVersion;
 
 	public TemplateEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
@@ -163,7 +165,7 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 			@Override
 			public void onSuccess(DefinitionEntry result) {
 				//画面に反映
-				setDefinition((TemplateDefinition)result.getDefinition());
+				setDefinition((TemplateDefinition) result.getDefinition());
 
 				//登録済のバージョン情報を保持
 				curVersion = result.getDefinitionInfo().getVersion();
@@ -250,6 +252,7 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 
 		boolean updateRpc = !typeEditPane.isFileUpload();
 
+		controller.beforeUpdate(updateRpc, definition);
 		if (updateRpc) {
 			//通常のRPCでの更新
 			SmartGWTUtil.showSaveProgress();
@@ -271,87 +274,87 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 				SmartGWTUtil.showSaveProgress();
 
 				List<LocalizedBinaryDefinitionInfo> localeList = multilingualPane.getEditBinaryDefinitionList();
-				((BinaryTemplateEditPane)typeEditPane).updateBinaryTemplate(definition, localeList,
+				((BinaryTemplateEditPane) typeEditPane).updateBinaryTemplate(definition, localeList,
 						curVersion, checkVersion, new MetaDataUpdateCallback() {
 
-					/**
-					 * Binaryはメッセージのハンドリングが特殊なため独自実装する
-					 */
-					@Override
-					protected void doSuccess(AdminDefinitionModifyResult result) {
-						if (result.isSuccess()) {
-							super.doSuccess(result);
-						} else {
-							if (result.getMessage() != null && result.getMessage().contains("Does not match the latest version.")) {
-								SC.ask(getRS("overwriteConfirmMsg"), new BooleanCallback() {
+							/**
+							 * Binaryはメッセージのハンドリングが特殊なため独自実装する
+							 */
+							@Override
+							protected void doSuccess(AdminDefinitionModifyResult result) {
+								if (result.isSuccess()) {
+									super.doSuccess(result);
+								} else {
+									if (result.getMessage() != null && result.getMessage().contains("Does not match the latest version.")) {
+										SC.ask(getRS("overwriteConfirmMsg"), new BooleanCallback() {
 
-									@Override
-									public void execute(Boolean value) {
+											@Override
+											public void execute(Boolean value) {
 
-										if (value) {
-											overwriteUpdate();
-										}
+												if (value) {
+													overwriteUpdate();
+												}
+											}
+										});
+									} else {
+										SC.warn(getRS("failedUpdateMetaDataMsg") + result.getMessage());
 									}
-								});
-							} else {
-								SC.warn(getRS("failedUpdateMetaDataMsg") + result.getMessage());
+								}
 							}
-						}
-					}
 
-					@Override
-					protected void overwriteUpdate() {
-						updateTemplate(definition, false);
-					}
+							@Override
+							protected void overwriteUpdate() {
+								updateTemplate(definition, false);
+							}
 
-					@Override
-					protected void afterUpdate(AdminDefinitionModifyResult result) {
-						updateComplete(definition);
-					}
-				});
+							@Override
+							protected void afterUpdate(AdminDefinitionModifyResult result) {
+								updateComplete(definition);
+							}
+						});
 
-			} else if(TemplateType.REPORT.equals(type)){
+			} else if (TemplateType.REPORT.equals(type)) {
 				SmartGWTUtil.showSaveProgress();
 
 				List<LocalizedReportDefinitionInfo> localeList = multilingualPane.getEditReportDefinitionList();
-				((ReportTemplateEditPane)typeEditPane).updateReportTemplate(definition, localeList,
+				((ReportTemplateEditPane) typeEditPane).updateReportTemplate(definition, localeList,
 						curVersion, checkVersion, new MetaDataUpdateCallback() {
 
-					/**
-					 * Reportはメッセージのハンドリングが特殊なため独自実装する
-					 */
-					@Override
-					protected void doSuccess(AdminDefinitionModifyResult result) {
-						if (result.isSuccess()) {
-							super.doSuccess(result);
-						} else {
-							if (result.getMessage() != null && result.getMessage().contains("Does not match the latest version.")) {
-								SC.ask(getRS("overwriteConfirmMsg"), new BooleanCallback() {
+							/**
+							 * Reportはメッセージのハンドリングが特殊なため独自実装する
+							 */
+							@Override
+							protected void doSuccess(AdminDefinitionModifyResult result) {
+								if (result.isSuccess()) {
+									super.doSuccess(result);
+								} else {
+									if (result.getMessage() != null && result.getMessage().contains("Does not match the latest version.")) {
+										SC.ask(getRS("overwriteConfirmMsg"), new BooleanCallback() {
 
-									@Override
-									public void execute(Boolean value) {
+											@Override
+											public void execute(Boolean value) {
 
-										if (value) {
-											overwriteUpdate();
-										}
+												if (value) {
+													overwriteUpdate();
+												}
+											}
+										});
+									} else {
+										SC.warn(getRS("failedUpdateMetaDataMsg") + result.getMessage());
 									}
-								});
-							} else {
-								SC.warn(getRS("failedUpdateMetaDataMsg") + result.getMessage());
+								}
 							}
-						}
-					}
 
-					@Override
-					protected void overwriteUpdate() {
-						updateTemplate(definition, false);
-					}
+							@Override
+							protected void overwriteUpdate() {
+								updateTemplate(definition, false);
+							}
 
-					@Override
-					protected void afterUpdate(AdminDefinitionModifyResult result) {
-						updateComplete(definition);
-					}
-				});
+							@Override
+							protected void afterUpdate(AdminDefinitionModifyResult result) {
+								updateComplete(definition);
+							}
+						});
 			}
 		}
 	}
@@ -384,7 +387,7 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 		});
 	}
 
-	private String getRS(String key) {
+	protected String getRS(String key) {
 		return AdminClientMessageUtil.getString("ui_metadata_template_TemplateEditPane_" + key);
 	}
 
@@ -410,46 +413,44 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 			SC.ask(getRS("saveConfirm"),
 					getRS("saveTemplateComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						TemplateType type = attributePane.selectedType();
-						TemplateDefinition definition = TemplateType.typeOfDefinition(type);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								TemplateType type = attributePane.selectedType();
+								TemplateDefinition definition = TemplateType.typeOfDefinition(type);
 
-						definition = commonSection.getEditDefinition(definition);
-						definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-						definition = attributePane.getEditDefinition(definition);
-						definition = typeEditPane.getEditDefinition(definition);
-						definition = multilingualPane.getEditDefinition(definition);
+								definition = commonSection.getEditDefinition(definition);
+								definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
+								definition = attributePane.getEditDefinition(definition);
+								definition = typeEditPane.getEditDefinition(definition);
+								definition = multilingualPane.getEditDefinition(definition);
 
-						updateTemplate(definition, true);
-					}
-				}
-			});
+								updateTemplate(definition, true);
+							}
+						}
+					});
 		}
 	}
 
 	/**
 	 * キャンセルボタンイベント
 	 */
-	private final class CancelClickHandler implements ClickHandler {
+	protected final class CancelClickHandler implements ClickHandler {
 
 		@Override
 		public void onClick(ClickEvent event) {
 
 			SC.ask(getRS("cancelConfirm"),
-					getRS("cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					getRS("cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
-
 
 }
