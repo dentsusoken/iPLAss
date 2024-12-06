@@ -45,6 +45,7 @@ import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.definition.DefinitionEntry;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
@@ -58,6 +59,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class TemplateEditPane extends MetaDataMainEditPane {
 
 	private final MetaDataServiceAsync service = MetaDataServiceFactory.get();
+	private final TemplateEditPaneController controller = GWT.create(TemplateEditPaneController.class);
 
 	/** ヘッダ部分 */
 	protected MetaCommonHeaderPane headerPane;
@@ -121,7 +123,7 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 		SectionStackSection templateSection = createSection("Template Attribute", attributePane, templateTypeMainPane);
 
 		//多言語編集部分
-		multilingualPane = createTemplateMultiLanguagePane();
+		multilingualPane = new TemplateMultiLanguagePane();
 
 		//Section設定
 		SectionStackSection multilingualSection = createSection("Multilingual Attribute", false, multilingualPane);
@@ -134,10 +136,6 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 
 		//利用可能言語取得
 		getEnableLanguage();
-	}
-
-	protected TemplateMultiLanguagePane createTemplateMultiLanguagePane() {
-		return new TemplateMultiLanguagePane();
 	}
 
 	private void getEnableLanguage() {
@@ -244,14 +242,6 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 	}
 
 	/**
-	 * 更新前処理。デフォルトでは何もしない
-	 * 
-	 * @param definition 更新対象
-	 */
-	protected void beforeUpdate(boolean updateRpc, final TemplateDefinition definition) {
-	}
-
-	/**
 	 * 更新処理
 	 *
 	 * @param definition 更新対象
@@ -262,7 +252,7 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 
 		boolean updateRpc = !typeEditPane.isFileUpload();
 
-		beforeUpdate(updateRpc, definition);
+		controller.beforeUpdate(updateRpc, definition);
 		if (updateRpc) {
 			//通常のRPCでの更新
 			SmartGWTUtil.showSaveProgress();

@@ -102,6 +102,15 @@
 		<when-type-is class="org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryGenerator"/>
 	</replace-with>
 
+	<!-- switch template edit control -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.template.TemplateEditPaneControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.template.TemplateEditPaneController"/>
+	</replace-with>
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.template.TemplateMultiLanguagePaneControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.template.TemplateMultiLanguagePaneController"/>
+	</replace-with>
+
+
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.iplass.adminconsole.client.AdminConsole'/>
 

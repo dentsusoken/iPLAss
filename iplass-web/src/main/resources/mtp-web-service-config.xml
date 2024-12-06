@@ -42,7 +42,8 @@
 	<!-- Template Service configuration -->
 	<service>
 		<interface>org.iplass.mtp.impl.web.template.TemplateService</interface>
-		<property name="templateClassMap"  additional="true">
+		<class>org.iplass.mtp.impl.web.template.TemplateService</class>
+		<property name="templateClassMap" additional="true">
 			<property name="org.iplass.mtp.web.template.definition.GroovyTemplateDefinition" value="org.iplass.mtp.impl.web.template.MetaGroovyTemplate" />
 			<property name="org.iplass.mtp.web.template.definition.HtmlTemplateDefinition" value="org.iplass.mtp.impl.web.template.MetaHtmlTemplate" />
 			<property name="org.iplass.mtp.web.template.definition.JspTemplateDefinition" value="org.iplass.mtp.impl.web.template.MetaJspTemplate" />
@@ -674,10 +675,6 @@
 		</property>
 	</service>
 
-	<service final="true">
-		<interface>org.iplass.mtp.impl.web.template.TemplateService</interface>
-		<class>org.iplass.mtp.impl.web.template.TemplateService</class>
-	</service>
 	<service final="true">
 		<interface>org.iplass.mtp.impl.web.staticresource.StaticResourceService</interface>
 		<class>org.iplass.mtp.impl.web.staticresource.StaticResourceService</class>

@@ -77,12 +77,12 @@ public class TemplateService extends AbstractTypedMetaDataService<MetaTemplate, 
 					throw new ClassCastException("Incompatible class: " + defMetaEntry.getKey() + " is not a subclass of TemplateDefinition.");
 				}
 				// Meta
-				Class<?> tempClass = Class.forName(defMetaEntry.getValue());
-				if (!MetaTemplate.class.isAssignableFrom(tempClass)) {
+				Class<?> metaClass = Class.forName(defMetaEntry.getValue());
+				if (!MetaTemplate.class.isAssignableFrom(metaClass)) {
 					throw new ClassCastException("Incompatible class: " + defMetaEntry.getValue() + " is not a subclass of MetaTemplate.");
 				}
 
-				metaTemplateClassMap.put((Class<TemplateDefinition>) defClass, (Class<MetaTemplate>) tempClass);
+				metaTemplateClassMap.put((Class<TemplateDefinition>) defClass, (Class<MetaTemplate>) metaClass);
 
 			} catch (ClassNotFoundException | ClassCastException e) {
 				throw new ServiceConfigrationException("templateClass: Failed to get class entries from the service config.", e);

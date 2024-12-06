@@ -48,13 +48,4 @@ public class LocalizedStringDefinition implements Serializable, Cloneable {
 		this.stringValue = stringValue;
 	}
 
-	public Object clone() {
-		// Object#clone()はGWTでサポートされていないため、自前でcloneする
-		LocalizedStringDefinition clone = new LocalizedStringDefinition();
-
-		clone.setLocaleName(localeName);
-		clone.setStringValue(stringValue);
-
-		return clone;
-	}
 }
