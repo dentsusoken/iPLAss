@@ -35,6 +35,8 @@ import org.iplass.mtp.web.template.definition.LocalizedBinaryDefinition;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -44,21 +46,21 @@ public class TemplateMultiLanguageEditDialog extends MtpDialog {
 	private static final String TITLE = "Multilingual Template Setting";
 
 	/** 言語選択 */
-	private DynamicForm langSelectForm;
-	private SelectItem langSelectItem;
+	protected DynamicForm langSelectForm;
+	protected SelectItem langSelectItem;
 
 	/** タイプ別属性 */
-	private VLayout templateTypeMainPane;
-	private TemplateTypeEditPane typeEditPane;
+	protected VLayout templateTypeMainPane;
+	protected TemplateTypeEditPane typeEditPane;
 
 	/** データ変更ハンドラ */
-	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
+	protected List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
 	/** LocalizedDefinitionは共通のクラスがないのでそれぞれで定義 */
-	private TemplateType type;
-	private LocalizedStringDefinition curStringDefinition;
-	private LocalizedBinaryDefinition curBinaryDefinition;
-	private LocalizedReportDefinition curReportDefinition;
+	protected TemplateType type;
+	protected LocalizedStringDefinition curStringDefinition;
+	protected LocalizedBinaryDefinition curBinaryDefinition;
+	protected LocalizedReportDefinition curReportDefinition;
 
 	public TemplateMultiLanguageEditDialog(LinkedHashMap<String, String> enableLang) {
 
@@ -80,41 +82,7 @@ public class TemplateMultiLanguageEditDialog extends MtpDialog {
 		container.addMember(templateTypeMainPane);
 
 		IButton save = new IButton("OK");
-		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-
-				boolean validate = langSelectForm.validate() & typeEditPane.validate();
-				if (!validate) {
-					return;
-				}
-
-				switch (type) {
-					case HTML:
-					case JSP:
-					case GROOVY:
-						LocalizedStringDefinition stringDefinition = curStringDefinition;
-						stringDefinition.setLocaleName(langSelectItem.getValueAsString());
-						((HasEditLocalizedStringDefinition)typeEditPane).getEditLocalizedStringDefinition(stringDefinition);
-						fireDataChanged(stringDefinition);
-						break;
-					case BINARY:
-						LocalizedBinaryDefinition binaryDefinition = curBinaryDefinition;
-						binaryDefinition.setLocaleName(langSelectItem.getValueAsString());
-						((HasEditLocalizedBinaryDefinition)typeEditPane).getEditLocalizedBinaryDefinition(binaryDefinition);
-						UploadFileItem binaryFile = ((HasEditLocalizedBinaryDefinition)typeEditPane).getEditUploadFileItem();
-						fireDataChanged(binaryDefinition, binaryFile);
-						break;
-					case REPORT:
-						LocalizedReportDefinition reportDefinition = curReportDefinition;
-						reportDefinition.setLocaleName(langSelectItem.getValueAsString());
-						((HasEditLocalizedReportDefinition)typeEditPane).getEditLocalizedReportDefinition(reportDefinition);
-						UploadFileItem reportFile = ((HasEditLocalizedReportDefinition)typeEditPane).getEditUploadFileItem();
-						fireDataChanged(reportDefinition, reportFile);
-						break;
-				}
-				destroy();
-			}
-		});
+		save.addClickHandler(createOkClickHandler());
 
 		IButton cancel = new IButton("Cancel");
 		cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
@@ -124,6 +92,50 @@ public class TemplateMultiLanguageEditDialog extends MtpDialog {
 		});
 
 		footer.setMembers(save, cancel);
+	}
+
+	/**
+	 * Okボタン用のClickHandlerを生成する。
+	 * @return ClickHandler
+	 */
+	protected ClickHandler createOkClickHandler() {
+		return new ClickHandler() {
+			public void onClick(ClickEvent event) {
+
+				boolean validate = langSelectForm.validate() & typeEditPane.validate();
+				if (!validate) {
+					return;
+				}
+
+				switch (type) {
+				case HTML:
+				case JSP:
+				case GROOVY:
+					LocalizedStringDefinition stringDefinition = curStringDefinition;
+					stringDefinition.setLocaleName(langSelectItem.getValueAsString());
+					((HasEditLocalizedStringDefinition) typeEditPane).getEditLocalizedStringDefinition(stringDefinition);
+					fireDataChanged(stringDefinition);
+					break;
+				case BINARY:
+					LocalizedBinaryDefinition binaryDefinition = curBinaryDefinition;
+					binaryDefinition.setLocaleName(langSelectItem.getValueAsString());
+					((HasEditLocalizedBinaryDefinition) typeEditPane).getEditLocalizedBinaryDefinition(binaryDefinition);
+					UploadFileItem binaryFile = ((HasEditLocalizedBinaryDefinition) typeEditPane).getEditUploadFileItem();
+					fireDataChanged(binaryDefinition, binaryFile);
+					break;
+				case REPORT:
+					LocalizedReportDefinition reportDefinition = curReportDefinition;
+					reportDefinition.setLocaleName(langSelectItem.getValueAsString());
+					((HasEditLocalizedReportDefinition) typeEditPane).getEditLocalizedReportDefinition(reportDefinition);
+					UploadFileItem reportFile = ((HasEditLocalizedReportDefinition) typeEditPane).getEditUploadFileItem();
+					fireDataChanged(reportDefinition, reportFile);
+					break;
+				default:
+					break;
+				}
+				destroy();
+			}
+		};
 	}
 
 	public void setDefinition(TemplateType type, LocalizedStringDefinition definition) {
@@ -138,7 +150,7 @@ public class TemplateMultiLanguageEditDialog extends MtpDialog {
 		fitSize();
 
 		templateTypeMainPane.addMember(typeEditPane);
-		((HasEditLocalizedStringDefinition)typeEditPane).setLocalizedStringDefinition(definition);
+		((HasEditLocalizedStringDefinition) typeEditPane).setLocalizedStringDefinition(definition);
 
 		if (definition != null) {
 			langSelectItem.setValue(definition.getLocaleName());
@@ -157,7 +169,7 @@ public class TemplateMultiLanguageEditDialog extends MtpDialog {
 		fitSize();
 
 		templateTypeMainPane.addMember(typeEditPane);
-		((HasEditLocalizedBinaryDefinition)typeEditPane).setLocalizedBinaryDefinition(definition, templateDefName, fileItem);
+		((HasEditLocalizedBinaryDefinition) typeEditPane).setLocalizedBinaryDefinition(definition, templateDefName, fileItem);
 
 		if (definition != null) {
 			langSelectItem.setValue(definition.getLocaleName());
@@ -176,7 +188,7 @@ public class TemplateMultiLanguageEditDialog extends MtpDialog {
 		fitSize();
 
 		templateTypeMainPane.addMember(typeEditPane);
-		((HasEditLocalizedReportDefinition)typeEditPane).setLocalizedReportDefinition(definition, templateDefName, fileItem);
+		((HasEditLocalizedReportDefinition) typeEditPane).setLocalizedReportDefinition(definition, templateDefName, fileItem);
 
 		if (definition != null) {
 			langSelectItem.setValue(definition.getLocaleName());
@@ -215,7 +227,7 @@ public class TemplateMultiLanguageEditDialog extends MtpDialog {
 	/**
 	 * データ変更通知処理
 	 */
-	private void fireDataChanged(LocalizedStringDefinition definition) {
+	protected void fireDataChanged(LocalizedStringDefinition definition) {
 		TemplateDataChangedEvent event = new TemplateDataChangedEvent();
 		event.setValueObject(definition);
 		for (DataChangedHandler handler : handlers) {
@@ -226,7 +238,7 @@ public class TemplateMultiLanguageEditDialog extends MtpDialog {
 	/**
 	 * データ変更通知処理
 	 */
-	private void fireDataChanged(LocalizedBinaryDefinition definition, UploadFileItem fileItem) {
+	protected void fireDataChanged(LocalizedBinaryDefinition definition, UploadFileItem fileItem) {
 		TemplateDataChangedEvent event = new TemplateDataChangedEvent();
 		event.setValueObject(definition);
 		event.setUploadFileItem(fileItem);
@@ -238,7 +250,7 @@ public class TemplateMultiLanguageEditDialog extends MtpDialog {
 	/**
 	 * データ変更通知処理
 	 */
-	private void fireDataChanged(LocalizedReportDefinition definition, UploadFileItem fileItem) {
+	protected void fireDataChanged(LocalizedReportDefinition definition, UploadFileItem fileItem) {
 		TemplateDataChangedEvent event = new TemplateDataChangedEvent();
 		event.setValueObject(definition);
 		event.setUploadFileItem(fileItem);

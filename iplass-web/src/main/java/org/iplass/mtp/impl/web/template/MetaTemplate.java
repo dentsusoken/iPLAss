@@ -21,6 +21,7 @@
 package org.iplass.mtp.impl.web.template;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import jakarta.servlet.ServletException;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
@@ -37,15 +38,9 @@ import org.iplass.mtp.impl.web.actionmapping.MetaActionMapping.ActionMappingRunt
 import org.iplass.mtp.impl.web.template.report.MetaReportTemplate;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
-import org.iplass.mtp.web.template.definition.BinaryTemplateDefinition;
-import org.iplass.mtp.web.template.definition.GroovyTemplateDefinition;
-import org.iplass.mtp.web.template.definition.HtmlTemplateDefinition;
-import org.iplass.mtp.web.template.definition.JspTemplateDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
-import org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition;
 
-
-@XmlSeeAlso({MetaGroovyTemplate.class, MetaHtmlTemplate.class, MetaJspTemplate.class, MetaBinaryTemplate.class, MetaReportTemplate.class})
+@XmlSeeAlso({ MetaGroovyTemplate.class, MetaHtmlTemplate.class, MetaJspTemplate.class, MetaBinaryTemplate.class, MetaReportTemplate.class })
 public abstract class MetaTemplate extends BaseRootMetaData implements DefinableMetaData<TemplateDefinition> {
 
 	/** LayoutAction内で実行するTemplateのattribute名 */
@@ -107,18 +102,20 @@ public abstract class MetaTemplate extends BaseRootMetaData implements Definable
 
 	//Definition → Meta インスタンス
 	public static MetaTemplate createInstance(TemplateDefinition definition) {
-		if (definition instanceof GroovyTemplateDefinition) {
-			return new MetaGroovyTemplate();
-		} else if (definition instanceof HtmlTemplateDefinition) {
-			return new MetaHtmlTemplate();
-		} else if (definition instanceof JspTemplateDefinition) {
-			return new MetaJspTemplate();
-		} else if (definition instanceof BinaryTemplateDefinition) {
-			return new MetaBinaryTemplate();
-		} else if (definition instanceof ReportTemplateDefinition) {
-			return new MetaReportTemplate();
+		TemplateService service = ServiceRegistry.getRegistry().getService(TemplateService.class);
+
+		// Definitionに対応するMetaTemplateクラスを取得
+		Class<? extends MetaTemplate> metaTemplateClass = service.getMetaTemplateClassByDef(definition);
+		if (metaTemplateClass == null) {
+			return null;
 		}
-		return null;
+
+		try {
+			return metaTemplateClass.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			throw new TemplateRuntimeException(e);
+		}
 	}
 
 	//Definition → Meta
@@ -185,8 +182,8 @@ public abstract class MetaTemplate extends BaseRootMetaData implements Definable
 			ActionMappingRuntime layout = null;
 
 			//Resultで指定されているLayoutAction情報を取得
-			String resultLayoutActionName = (String)requestStack.getAttribute(LAYOUT_ACTION_NAME);
-			String resultLayoutActionId = (String)requestStack.getAttribute(LAYOUT_ACTION_ID);
+			String resultLayoutActionName = (String) requestStack.getAttribute(LAYOUT_ACTION_NAME);
+			String resultLayoutActionId = (String) requestStack.getAttribute(LAYOUT_ACTION_ID);
 
 			if (resultLayoutActionName != null || (layoutResolveByName && StringUtil.isNotEmpty(layoutName))) {
 				ActionMappingService ams = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
