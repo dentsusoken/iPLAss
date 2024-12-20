@@ -27,9 +27,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -37,6 +38,7 @@ import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.AdminConsoleService;
 import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogConditionInfo;
 import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogFile;
+import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogFileCondition;
 import org.iplass.adminconsole.shared.tools.rpc.logexplorer.LogExplorerService;
 import org.iplass.mtp.MtpException;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -45,11 +47,15 @@ import org.iplass.mtp.impl.logging.LoggingContext;
 import org.iplass.mtp.impl.logging.LoggingService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.DateUtil;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
+
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
 
 public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implements LogExplorerService {
 
@@ -79,20 +85,22 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * ログファイル名を返します。
 	 *
 	 * @param tenantId テナントID
+	 * @param logFileCondition ログファイル検索条件
 	 */
 	@Override
-	public List<LogFile> getLogfileNames(int tenantId) {
+	public List<LogFile> getLogfileNames(int tenantId, LogFileCondition logFileCondition) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<LogFile>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<LogFile>>() {
 
-			@Override
-			public List<LogFile> call() {
-				return searchLogFile();
-			}
-		});
+					@Override
+					public List<LogFile> call() {
+						return searchLogFile(logFileCondition);
+					}
+				});
 	}
 
-	private List<LogFile> searchLogFile() {
+	private List<LogFile> searchLogFile(final LogFileCondition logFileCondition) {
 		//ログの取得不可チェック
 		if (!acs.isLogDownloadEnabled()) {
 			logger.debug("LogService is disabled.");
@@ -101,25 +109,49 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 		List<String> logHomes = acs.getTenantLogHomes(initLogHome);
 		List<String> filters = acs.getTenantLogFileFilters();
+		List<Pattern> filterPatterns = filters.stream().map(Pattern::compile).collect(Collectors.toList());
 
 		List<LogFile> logFiles = new ArrayList<>();
 
 		DateFormat dateFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDatetimeSecFormat(), true);
 		for (String logHome : logHomes) {
-			logFiles.addAll(searchLogFile(logHome, filters, dateFormat));
+			logFiles.addAll(searchLogFile(logHome, filterPatterns, dateFormat));
 		}
 
 		if (logFiles.isEmpty()) {
-			logger.debug("log file is not found. log home=" + ToStringBuilder.reflectionToString(logHomes.toArray(new String[]{}), ToStringStyle.SIMPLE_STYLE));
+			logger.debug("log file is not found. log home="
+					+ ToStringBuilder.reflectionToString(logHomes.toArray(new String[] {}), ToStringStyle.SIMPLE_STYLE));
 		} else {
-			Collections.sort(logFiles, new Comparator<LogFile>() {
-				@Override
-				public int compare(LogFile o1, LogFile o2) {
-					return o1.getFileName().compareTo(o2.getFileName());
-				}
-			});
-		}
+			// 画面上のFilter条件を適用
+			try {
+				final Pattern fileNamePattern = StringUtil.isNotEmpty(logFileCondition.getFileName())
+						? Pattern.compile(logFileCondition.getFileName())
+						: null;
+				final Pattern lastModifiedPattern = StringUtil.isNotEmpty(logFileCondition.getLastModified())
+						? Pattern.compile(logFileCondition.getLastModified())
+						: null;
 
+				logFiles = logFiles.stream()
+						.filter(logFile -> {
+							if (fileNamePattern != null) {
+								Matcher matcher = fileNamePattern.matcher(logFile.getFileName());
+								return matcher.find();
+							}
+							return true;
+						}).filter(logFile -> {
+							if (lastModifiedPattern != null) {
+								Matcher matcher = lastModifiedPattern.matcher(logFile.getLastModified());
+								return matcher.find();
+							}
+							return true;
+						}).sorted(Comparator.comparing((LogFile logFile) -> logFile.getFileName()))
+						.collect(Collectors.toList());
+			} catch (PatternSyntaxException e) {
+				logger.warn("log file filter pattern is invalid. LogFileCondition=" + logFileCondition.getFileName() + ",LastModifiedCondition="
+						+ logFileCondition.getLastModified());
+				return Collections.emptyList();
+			}
+		}
 		return logFiles;
 	}
 
@@ -127,11 +159,11 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * <p>ファイル検索</p>
 	 *
 	 * @param home RootとなるHOMEパス
-	 * @param fileFilters ファイルに対するFilter
+	 * @param filterPatterns ファイルに対するFilter
 	 * @param dateFormat 最終更新日時変換用Format
 	 * @return
 	 */
-	private List<LogFile> searchLogFile(String home, List<String> fileFilters, DateFormat dateFormat) {
+	private List<LogFile> searchLogFile(String home, List<Pattern> filterPatterns, DateFormat dateFormat) {
 
 		if (home.contains("/*/")) {
 			//*を含む場合は、パスを分解。固定部分の抽出
@@ -143,29 +175,28 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 				if (path.isEmpty()) {
 					continue;
 				}
-				if (path.equals("*")){
+				if (path.equals("*")) {
 					break;
 				}
 				rootPath += path + "/";
 			}
-			return searchDynamicLogFile(rootPath, homePaths, index, rootPath, fileFilters, dateFormat);
+			return searchDynamicLogFile(rootPath, homePaths, index, rootPath, filterPatterns, dateFormat);
 		} else {
 			//*が含まれない場合は単純に検索(こっちのほうが無駄な処理はない)
-			return searchStaticLogFile(home, home, fileFilters, dateFormat);
+			return searchStaticLogFile(home, home, filterPatterns, dateFormat);
 		}
 	}
-
 
 	/**
 	 * <p>固定ルートファイル検索</p>
 	 *
 	 * @param home RootとなるHOMEパス
 	 * @param path 検索対象パス
-	 * @param fileFilters ファイル名に対するFilter
+	 * @param filterPatterns ファイル名に対するFilter
 	 * @param dateFormat 最終更新日時変換用Format
 	 * @return
 	 */
-	private List<LogFile> searchStaticLogFile(String home, String path, List<String> fileFilters, DateFormat dateFormat) {
+	private List<LogFile> searchStaticLogFile(String home, String path, List<Pattern> filterPatterns, DateFormat dateFormat) {
 
 		List<LogFile> dirList = new ArrayList<>();
 		List<LogFile> fileList = new ArrayList<>();
@@ -175,13 +206,13 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 			File[] logs = logsDir.listFiles();
 			for (File f : logs) {
 				if (f.isDirectory()) {
-					dirList.addAll(searchStaticLogFile(home, f.getPath(), fileFilters, dateFormat));
+					dirList.addAll(searchStaticLogFile(home, f.getPath(), filterPatterns, dateFormat));
 				} else {
 					String checkName = getFileName(home, f);
-					if (fileFilters != null) {
+					if (!filterPatterns.isEmpty()) {
 						// Filterチェック
-						for (String filter : fileFilters) {
-							if (checkName.matches(filter)) {
+						for (Pattern filter : filterPatterns) {
+							if (filter.matcher(checkName).matches()) {
 								LogFile info = new LogFile();
 								info.setPath(f.getPath());
 								info.setFileName(checkName);
@@ -220,11 +251,12 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param homePaths HOMEを/で区切ったパス
 	 * @param index     現在のindex
 	 * @param path      検索対象パス
-	 * @param fileFilters ファイル名に対するFilter
+	 * @param filterPatterns ファイル名に対するFilter
 	 * @param dateFormat 最終更新日時変換用Format
 	 * @return
 	 */
-	private List<LogFile> searchDynamicLogFile(String fixedPath, String[] homePaths, int index, String path, List<String> fileFilters, DateFormat dateFormat) {
+	private List<LogFile> searchDynamicLogFile(String fixedPath, String[] homePaths, int index, String path, List<Pattern> filterPatterns,
+			DateFormat dateFormat) {
 
 		List<LogFile> dirList = new ArrayList<>();
 		List<LogFile> fileList = new ArrayList<>();
@@ -243,16 +275,16 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 							}
 						}
 					}
-					dirList.addAll(searchDynamicLogFile(fixedPath, homePaths, index+1, f.getPath(), fileFilters, dateFormat));
+					dirList.addAll(searchDynamicLogFile(fixedPath, homePaths, index + 1, f.getPath(), filterPatterns, dateFormat));
 				} else {
 					if (index < homePaths.length) {
 						//階層として、対象外
 						continue;
 					}
-					if (fileFilters != null) {
+					if (!filterPatterns.isEmpty()) {
 						// Filterチェック
-						for (String filter : fileFilters) {
-							if (f.getName().matches(filter)) {
+						for (Pattern filter : filterPatterns) {
+							if (filter.matcher(f.getName()).matches()) {
 								LogFile info = new LogFile();
 								info.setPath(f.getPath());
 								//info.setFileName(f.getName());
@@ -304,16 +336,17 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	@Override
 	public List<LogConditionInfo> getLogConditions(int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<LogConditionInfo>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<LogConditionInfo>>() {
 
-			@Override
-			public List<LogConditionInfo> call() {
-				ExecuteContext ec = ExecuteContext.getCurrentContext();
-				LoggingContext lc = ls.getLoggingContext(ec.getTenantContext());
-				List<LogCondition> conditions = lc.list();
-				return convertFrom(conditions);
-			};
-		});
+					@Override
+					public List<LogConditionInfo> call() {
+						ExecuteContext ec = ExecuteContext.getCurrentContext();
+						LoggingContext lc = ls.getLoggingContext(ec.getTenantContext());
+						List<LogCondition> conditions = lc.list();
+						return convertFrom(conditions);
+					}
+				});
 	}
 
 	private List<LogConditionInfo> convertFrom(List<LogCondition> conditions) {
@@ -335,27 +368,28 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	@Override
 	public String applyLogConditions(int tenantId, List<LogConditionInfo> logConditions) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<String>() {
 
-			@Override
-			public String call() {
-				List<LogCondition> conditions = null;
-				if (logConditions != null) {
-					conditions = convertTo(logConditions);
-				}
+					@Override
+					public String call() {
+						List<LogCondition> conditions = null;
+						if (logConditions != null) {
+							conditions = convertTo(logConditions);
+						}
 
-				try {
-					ExecuteContext ec = ExecuteContext.getCurrentContext();
-					LoggingContext lc = ls.getLoggingContext(ec.getTenantContext());
-					lc.apply(conditions);
-				} catch (MtpException e) {
-					return e.getMessage();
-				}
+						try {
+							ExecuteContext ec = ExecuteContext.getCurrentContext();
+							LoggingContext lc = ls.getLoggingContext(ec.getTenantContext());
+							lc.apply(conditions);
+						} catch (MtpException e) {
+							return e.getMessage();
+						}
 
-				return null;
-			}
+						return null;
+					}
 
-		});
+				});
 
 	}
 
