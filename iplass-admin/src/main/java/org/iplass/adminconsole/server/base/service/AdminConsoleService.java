@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.server.base.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -143,7 +144,7 @@ public class AdminConsoleService implements Service {
 	public List<String> getTenantLogFileFilters() {
 		List<String> filters = getLogDownloadConfig().getFileFilter();
 		if (filters == null || filters.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		return filters.stream().map(filter -> {

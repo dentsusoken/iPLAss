@@ -22,16 +22,19 @@ package org.iplass.adminconsole.client.tools.data.logexplorer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogFile;
+import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogFileCondition;
 import org.iplass.adminconsole.shared.tools.rpc.logexplorer.LogExplorerServiceAsync;
 import org.iplass.adminconsole.shared.tools.rpc.logexplorer.LogExplorerServiceFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.data.Criteria;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;
@@ -43,11 +46,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 public class LogFileDS extends AbstractAdminDataSource {
 
 	public enum FIELD_NAME {
-		PATH,
-		LAST_MODIFIED,
-		SIZE,
-		FULL_PATH,
-		VALUE_OBJECT
+		PATH, LAST_MODIFIED, SIZE, FULL_PATH, VALUE_OBJECT
 	}
 
 	public static LogFileDS getInstance() {
@@ -57,30 +56,38 @@ public class LogFileDS extends AbstractAdminDataSource {
 	private LogFileDS() {
 
 		//実際にはUI側でListGridFieldを利用して定義しているため、ダミーで作成
-		//(１つは定義していないとエラーになるので作成)
+		//Filterを表示可能にする場合、ここで作成されているDataSourceFieldから入力TextBoxの型を推察される
+		//下記２つをFilter対象にするため、TextFieldとして定義
 		DataSourceField pathField = new DataSourceTextField(FIELD_NAME.PATH.name(), "Path");
-		setFields(pathField);
+		DataSourceField lastModifiedField = new DataSourceTextField(FIELD_NAME.LAST_MODIFIED.name(), "Last Modified");
+		setFields(pathField, lastModifiedField);
 	}
 
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request,
 			final DSResponse response) {
 
-//		SortSpecifier sorts[] = request.getSortBy();
-//		if (sorts != null) {
-//			com.google.gwt.core.shared.GWT.log("sort conditions:" + sorts.length);
-//			for (SortSpecifier sort : sorts) {
-//				com.google.gwt.core.shared.GWT.log("item:" + sort.getField() + ", condition:" + sort.getSortDirection());
-//			}
-//		}
+		// 画面入力条件の取得
+		LogFileCondition logFileCondition = new LogFileCondition();
+		Criteria filter = request.getCriteria();
+		if (filter != null) {
+			Map<?, ?> criteriaMap = filter.getValues();
+			for (Object key : criteriaMap.keySet()) {
+				if (key.equals(FIELD_NAME.PATH.name())) {
+					logFileCondition.setFileName((String) criteriaMap.get(key));
+				} else if (key.equals(FIELD_NAME.LAST_MODIFIED.name())) {
+					logFileCondition.setLastModified((String) criteriaMap.get(key));
+				}
+			}
+		}
 
 		LogExplorerServiceAsync service = LogExplorerServiceFactory.get();
-		service.getLogfileNames(TenantInfoHolder.getId(), new AsyncCallback<List<LogFile>>() {
+		service.getLogfileNames(TenantInfoHolder.getId(), logFileCondition, new AsyncCallback<List<LogFile>>() {
 
 			@Override
 			public void onSuccess(List<LogFile> result) {
 				List<ListGridRecord> records = createRecord(result);
-				response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 			}
