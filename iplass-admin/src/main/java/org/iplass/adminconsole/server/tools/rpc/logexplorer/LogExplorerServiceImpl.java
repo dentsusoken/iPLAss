@@ -106,7 +106,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 		DateFormat dateFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDatetimeSecFormat(), true);
 		for (String logHome : logHomes) {
-			logFiles.addAll(searchLogFile(logHome, filters, dateFormat));
+			logFiles.addAll(searchLogFile(logHome, filters, dateFormat, logHomes.size() > 1));
 		}
 
 		if (logFiles.isEmpty()) {
@@ -129,9 +129,10 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param home RootとなるHOMEパス
 	 * @param fileFilters ファイルに対するFilter
 	 * @param dateFormat 最終更新日時変換用Format
+	 * @param multiHomes ログホームが複数設定されているか
 	 * @return
 	 */
-	private List<LogFile> searchLogFile(String home, List<String> fileFilters, DateFormat dateFormat) {
+	private List<LogFile> searchLogFile(String home, List<String> fileFilters, DateFormat dateFormat, boolean multiHomes) {
 
 		if (home.contains("/*/")) {
 			//*を含む場合は、パスを分解。固定部分の抽出
@@ -148,10 +149,10 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 				}
 				rootPath += path + "/";
 			}
-			return searchDynamicLogFile(rootPath, homePaths, index, rootPath, fileFilters, dateFormat);
+			return searchDynamicLogFile(rootPath, homePaths, index, rootPath, fileFilters, dateFormat, multiHomes);
 		} else {
 			//*が含まれない場合は単純に検索(こっちのほうが無駄な処理はない)
-			return searchStaticLogFile(home, home, fileFilters, dateFormat);
+			return searchStaticLogFile(home, home, fileFilters, dateFormat, multiHomes);
 		}
 	}
 
@@ -163,9 +164,10 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param path 検索対象パス
 	 * @param fileFilters ファイル名に対するFilter
 	 * @param dateFormat 最終更新日時変換用Format
+	 * @param multiHomes ログホームが複数設定されているか
 	 * @return
 	 */
-	private List<LogFile> searchStaticLogFile(String home, String path, List<String> fileFilters, DateFormat dateFormat) {
+	private List<LogFile> searchStaticLogFile(String home, String path, List<String> fileFilters, DateFormat dateFormat, boolean multiHomes) {
 
 		List<LogFile> dirList = new ArrayList<>();
 		List<LogFile> fileList = new ArrayList<>();
@@ -175,9 +177,9 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 			File[] logs = logsDir.listFiles();
 			for (File f : logs) {
 				if (f.isDirectory()) {
-					dirList.addAll(searchStaticLogFile(home, f.getPath(), fileFilters, dateFormat));
+					dirList.addAll(searchStaticLogFile(home, f.getPath(), fileFilters, dateFormat, multiHomes));
 				} else {
-					String checkName = getFileName(home, f);
+					String checkName = getFileName(home, f, multiHomes);
 					if (fileFilters != null) {
 						// Filterチェック
 						for (String filter : fileFilters) {
@@ -222,9 +224,10 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param path      検索対象パス
 	 * @param fileFilters ファイル名に対するFilter
 	 * @param dateFormat 最終更新日時変換用Format
+	 * @param multiHomes ログホームが複数設定されているか
 	 * @return
 	 */
-	private List<LogFile> searchDynamicLogFile(String fixedPath, String[] homePaths, int index, String path, List<String> fileFilters, DateFormat dateFormat) {
+	private List<LogFile> searchDynamicLogFile(String fixedPath, String[] homePaths, int index, String path, List<String> fileFilters, DateFormat dateFormat, boolean multiHomes) {
 
 		List<LogFile> dirList = new ArrayList<>();
 		List<LogFile> fileList = new ArrayList<>();
@@ -243,7 +246,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 							}
 						}
 					}
-					dirList.addAll(searchDynamicLogFile(fixedPath, homePaths, index+1, f.getPath(), fileFilters, dateFormat));
+					dirList.addAll(searchDynamicLogFile(fixedPath, homePaths, index+1, f.getPath(), fileFilters, dateFormat, multiHomes));
 				} else {
 					if (index < homePaths.length) {
 						//階層として、対象外
@@ -256,7 +259,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 								LogFile info = new LogFile();
 								info.setPath(f.getPath());
 								//info.setFileName(f.getName());
-								info.setFileName(getFileName(fixedPath, f));
+								info.setFileName(getFileName(fixedPath, f, multiHomes));
 								info.setLastModified(dateFormat.format(new Timestamp(f.lastModified())));
 								info.setSize(f.length());
 								fileList.add(info);
@@ -266,7 +269,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 					} else {
 						LogFile info = new LogFile();
 						info.setPath(f.getPath());
-						info.setFileName(getFileName(fixedPath, f));
+						info.setFileName(getFileName(fixedPath, f, multiHomes));
 						info.setLastModified(dateFormat.format(new Timestamp(f.lastModified())));
 						info.setSize(f.length());
 						fileList.add(info);
@@ -290,12 +293,15 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 *
 	 * @param hidePrefixPath 除外するパス
 	 * @param file ログファイル
-	 * @return
+	 * @param multiHomes ログホームが複数設定されているか
+	 * @return ファイル名
 	 */
-	private String getFileName(String hidePrefixPath, File file) {
-		//Fileのpathからhomeを除去
+	private String getFileName(String hidePrefixPath, File file, boolean multiHomes) {
+
 		String path = file.getPath().replaceAll("\\\\", "/");
-		if (path.startsWith(hidePrefixPath)) {
+
+		// ログホームが複数の場合、パスからホームを除去しない
+		if (!multiHomes && path.startsWith(hidePrefixPath)) {
 			return path.substring(hidePrefixPath.length());
 		}
 		return path;
