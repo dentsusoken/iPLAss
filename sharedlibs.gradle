@@ -155,7 +155,7 @@ ext {
 
 		'org.infinispan:infinispan-core': '15.0.4.Final',
 		
-		'io.lettuce:lettuce-core': '6.3.2.RELEASE',
+		'io.lettuce:lettuce-core': '6.5.2.RELEASE',
 		
 		'net.sf.jasperreports:jasperreports': '6.21.3',
 		'com.github.librepdf:openpdf': '2.0.2',
