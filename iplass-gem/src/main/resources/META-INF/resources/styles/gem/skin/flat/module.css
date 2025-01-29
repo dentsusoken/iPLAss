@@ -95,7 +95,34 @@ input[type=button], input[type=submit], input[type=reset] {
   transition: background 300ms;
   cursor: pointer; }
 
-.pseudo-checkbox, .pseudo-radio {
+  /*  --------------------------------------------------------*/
+.pseudo-checkbox {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  height: 14px;
+  width: 14px;
+  box-sizing: border-box;
+  border: 1px solid #aaa;
+  border-radius: 15%;
+  cursor: pointer;
+  margin-right: 5px;
+  text-align: center;
+   }
+.pseudo-checkbox::after {
+  content: '';
+  display: block;
+  position: absolute;
+  transform: scale(0);
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: url(../../../../images/gem/skin/flat/icon-checkbox-white.png) center center no-repeat;}
+  
+  /*  --------------------------------------------------------*/
+.pseudo-radio {
   display: inline-block;
   vertical-align: middle;
   position: relative;
@@ -108,7 +135,7 @@ input[type=button], input[type=submit], input[type=reset] {
   cursor: pointer;
   margin-right: 5px; }
 
-.pseudo-checkbox::after, .pseudo-radio::after {
+.pseudo-radio::after {
   content: '';
   display: block;
   position: absolute;
@@ -157,13 +184,17 @@ input[type=reset]:hover {
 .pseudo-checkbox:hover {
   border-color: #115d85; }
 
+ /* -------------------------------------------------- */
 .pseudo-checkbox.checked {
-  border-color: #115d85; }
+  border-color: #0075ff; 
+  }
 
 .pseudo-checkbox.checked::after {
-  opacity: 1;
-  transform: scale(1); }
-
+  opacity: 1; 
+  transform: scale(1); 
+  background-color: #0075ff;
+  }
+/* -------------------------------------------------- */
 .pseudo-radio + input[type='radio'] {
   display: none; }
 
@@ -176,13 +207,6 @@ input[type=reset]:hover {
 .pseudo-radio.checked::after {
   opacity: 1;
   transform: scale(1); }
-
-.pseudo-checkbox::after {
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  background: url(../../../../images/gem/skin/flat/icon-checkbox.png) center center no-repeat; }
 
 .pseudo-radio::after {
   height: 60%;
