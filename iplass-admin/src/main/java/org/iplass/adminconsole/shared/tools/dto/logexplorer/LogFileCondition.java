@@ -28,11 +28,32 @@ public class LogFileCondition implements Serializable {
 
 	private static final long serialVersionUID = 2459207754956721755L;
 
+	/** Limit件数 */
+	private int limit;
+
 	/** ログファイル名(表示用)条件（正規表現） */
 	private String fileName;
 
 	/** 最終更新日時条件（正規表現） */
 	private String lastModified;
+
+	/**
+	 * Limit件数を返します。
+	 *
+	 * @return Limit件数
+	 */
+	public int getLimit() {
+		return limit;
+	}
+
+	/**
+	 * Limit件数を設定します。
+	 *
+	 * @param limit Limit件数
+	 */
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
 
 	/**
 	 * ログファイル名(表示用)条件（正規表現）を返します。

@@ -49,6 +49,8 @@ public class LogFileDS extends AbstractAdminDataSource {
 		PATH, LAST_MODIFIED, SIZE, FULL_PATH, VALUE_OBJECT
 	}
 
+	public static final String LIMIT = "limit";
+
 	public static LogFileDS getInstance() {
 		return new LogFileDS();
 	}
@@ -69,14 +71,16 @@ public class LogFileDS extends AbstractAdminDataSource {
 
 		// 画面入力条件の取得
 		LogFileCondition logFileCondition = new LogFileCondition();
-		Criteria filter = request.getCriteria();
-		if (filter != null) {
-			Map<?, ?> criteriaMap = filter.getValues();
+		Criteria criteria = request.getCriteria();
+		if (criteria != null) {
+			Map<?, ?> criteriaMap = criteria.getValues();
 			for (Object key : criteriaMap.keySet()) {
 				if (key.equals(FIELD_NAME.PATH.name())) {
 					logFileCondition.setFileName((String) criteriaMap.get(key));
 				} else if (key.equals(FIELD_NAME.LAST_MODIFIED.name())) {
 					logFileCondition.setLastModified((String) criteriaMap.get(key));
+				} else if (key.equals(LIMIT)) {
+					logFileCondition.setLimit((Integer) criteriaMap.get(key));
 				}
 			}
 		}

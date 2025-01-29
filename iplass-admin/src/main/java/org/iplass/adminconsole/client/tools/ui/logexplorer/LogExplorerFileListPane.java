@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.tools.ui.logexplorer;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
@@ -42,6 +43,7 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
@@ -58,6 +60,19 @@ public class LogExplorerFileListPane extends VLayout {
 
 	private static final String REFRESH_ICON = "[SKIN]/actions/refresh.png";
 	private static final String EXPORT_ICON = "[SKINIMG]/actions/download.png";
+
+	/** Limit選択用Map */
+	private static LinkedHashMap<Integer, String> limitValueMap;
+	static {
+		limitValueMap = new LinkedHashMap<Integer, String>();
+		limitValueMap.put(-1, "-1");
+		limitValueMap.put(50, "50");
+		limitValueMap.put(100, "100");
+		limitValueMap.put(200, "200");
+		limitValueMap.put(500, "500");
+	}
+
+	private ComboBoxItem limitItem;
 
 	private ListGrid grid;
 
@@ -83,6 +98,13 @@ public class LogExplorerFileListPane extends VLayout {
 		toolStrip.addMember(lblTitle);
 
 		toolStrip.addFill();
+
+		limitItem = new ComboBoxItem();
+		limitItem.setTitle("Limit");
+		limitItem.setValueMap(limitValueMap);
+		// limitItem.setValidators(new IsIntegerValidator());
+		limitItem.setValue(100);
+		toolStrip.addFormItem(limitItem);
 
 		final ToolStripButton refreshButton = new ToolStripButton();
 		refreshButton.setIcon(REFRESH_ICON);
@@ -176,6 +198,13 @@ public class LogExplorerFileListPane extends VLayout {
 		// サーバーにリクエストが飛ぶように一意の条件を付与
 		Criteria condition = new Criteria("dummy", String.valueOf(System.currentTimeMillis()));
 
+		// Limit指定。未指定または文字列など変換不可の場合は-1
+		if (limitItem.getValueAsInteger() == null) {
+			limitItem.setValue(-1);
+		}
+		condition.addCriteria(LogFileDS.LIMIT, limitItem.getValueAsInteger());
+
+		// 画面上でのフィルタ条件
 		if (filter != null) {
 			Map<?, ?> criteriaMap = filter.getValues();
 			for (Object key : criteriaMap.keySet()) {
