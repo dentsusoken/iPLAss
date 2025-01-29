@@ -95,7 +95,6 @@ input[type=button], input[type=submit], input[type=reset] {
   transition: background 300ms;
   cursor: pointer; }
 
-  /*  --------------------------------------------------------*/
 .pseudo-checkbox {
   display: inline-block;
   vertical-align: middle;
@@ -121,7 +120,6 @@ input[type=button], input[type=submit], input[type=reset] {
   left: 0;
   background: url(../../../../images/gem/skin/flat/icon-checkbox-white.png) center center no-repeat;}
   
-  /*  --------------------------------------------------------*/
 .pseudo-radio {
   display: inline-block;
   vertical-align: middle;
@@ -184,7 +182,6 @@ input[type=reset]:hover {
 .pseudo-checkbox:hover {
   border-color: #115d85; }
 
- /* -------------------------------------------------- */
 .pseudo-checkbox.checked {
   border-color: #0075ff; 
   }
@@ -194,7 +191,7 @@ input[type=reset]:hover {
   transform: scale(1); 
   background-color: #0075ff;
   }
-/* -------------------------------------------------- */
+
 .pseudo-radio + input[type='radio'] {
   display: none; }
 
