@@ -96,19 +96,13 @@ input[type=button], input[type=submit], input[type=reset] {
   cursor: pointer; }
   
 .pseudo-checkbox {
-  display: inline-block;
-  vertical-align: middle;
-  position: relative;
-  height: 22px;
-  width: 22px;
-  box-sizing: border-box;
-  border: 2px solid #aaa;
   border-radius: 20%;
-  transition: border 300ms;
-  cursor: pointer;
-  margin-right: 5px; }
+ }
+ .pseudo-radio {
+  border-radius: 50%;
+ }
   
-.pseudo-radio {
+.pseudo-checkbox, .pseudo-radio {
   display: inline-block;
   vertical-align: middle;
   position: relative;
@@ -116,7 +110,6 @@ input[type=button], input[type=submit], input[type=reset] {
   width: 22px;
   box-sizing: border-box;
   border: 2px solid #aaa;
-  border-radius: 50%;
   transition: border 300ms;
   cursor: pointer;
   margin-right: 5px; }
