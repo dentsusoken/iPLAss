@@ -94,7 +94,14 @@ input[type=button], input[type=submit], input[type=reset] {
   color: #115d85;
   transition: background 300ms;
   cursor: pointer; }
-
+  
+.pseudo-checkbox {
+  border-radius: 20%;
+ }
+ .pseudo-radio {
+  border-radius: 50%;
+ }
+  
 .pseudo-checkbox, .pseudo-radio {
   display: inline-block;
   vertical-align: middle;
@@ -103,7 +110,6 @@ input[type=button], input[type=submit], input[type=reset] {
   width: 22px;
   box-sizing: border-box;
   border: 2px solid #aaa;
-  border-radius: 50%;
   transition: border 300ms;
   cursor: pointer;
   margin-right: 5px; }
