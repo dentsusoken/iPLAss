@@ -54,13 +54,11 @@ public class StringUtil {
 		APOS_ESCAPE = Collections.unmodifiableMap(initMap);
 	}
 
-	private static final CharSequenceTranslator ESCAPE_HTML4_SP =
-			new AggregateTranslator(
-				new LookupTranslator(EntityArrays.BASIC_ESCAPE),
-				new LookupTranslator(APOS_ESCAPE),
-				new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE),
-				new LookupTranslator(EntityArrays.HTML40_EXTENDED_ESCAPE)
-			);
+	private static final CharSequenceTranslator ESCAPE_HTML4_SP = new AggregateTranslator(
+			new LookupTranslator(EntityArrays.BASIC_ESCAPE),
+			new LookupTranslator(APOS_ESCAPE),
+			new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE),
+			new LookupTranslator(EntityArrays.HTML40_EXTENDED_ESCAPE));
 
 	/**
 	 * 文字列中に、'があった場合、''とエスケープする。
@@ -93,9 +91,9 @@ public class StringUtil {
 		char current = 0;
 		for (int i = 0; i < str.length(); i++) {
 			current = str.charAt(i);
-		
+
 			switch (current) {
-		//	case '\'':
+			//	case '\'':
 			case '%':
 			case '_':
 			case '\\':
@@ -160,6 +158,7 @@ public class StringUtil {
 		}
 		return StringEscapeUtils.escapeXml10(str);
 	}
+
 	/**
 	 * XML1.1仕様に基づくエスケープ処理をする。
 	 *
@@ -183,9 +182,11 @@ public class StringUtil {
 		}
 		return StringEscapeUtils.escapeXml11(str);
 	}
+
 	public static String unescapeXml(String str) {
 		return StringEscapeUtils.unescapeXml(str);
 	}
+
 	/**
 	 * HTML4.0レベルで定義されるエンティティ、および'を&#039;に変換するエスケープ処理をする。
 	 *
@@ -195,6 +196,7 @@ public class StringUtil {
 	public static String escapeHtml(String str) {
 		return ESCAPE_HTML4_SP.translate(str);
 	}
+
 	/**
 	 * HTML4.0レベルで定義されるエンティティ、および'を&#039;に変換するエスケープ処理をする。
 	 *
@@ -208,8 +210,28 @@ public class StringUtil {
 		}
 		return ESCAPE_HTML4_SP.translate(str);
 	}
+
 	public static String unescapeHtml(String str) {
 		return StringEscapeUtils.unescapeHtml4(str);
+	}
+
+	/**
+	 * JSON仕様（RFC4627）に基づくエスケープ処理をする。
+	 * 
+	 * @param str
+	 * @param emptyIfNull strがnullの場合、空文字で返却するか否か
+	 * @return エスケープされた文字列
+	 */
+	public static String escapeJson(String str, boolean emptyIfNull) {
+		if (emptyIfNull && str == null) {
+			return "";
+		}
+
+		return StringEscapeUtils.escapeJson(str);
+	}
+
+	public static String unescapeJson(String str) {
+		return StringEscapeUtils.unescapeJson(str);
 	}
 
 	/**
@@ -226,15 +248,19 @@ public class StringUtil {
 	public static boolean isEmpty(String str) {
 		return StringUtils.isEmpty(str);
 	}
+
 	public static boolean isNotEmpty(String str) {
 		return StringUtils.isNotEmpty(str);
 	}
+
 	public static boolean isBlank(String str) {
 		return StringUtils.isBlank(str);
 	}
+
 	public static boolean isNotBlank(String str) {
 		return StringUtils.isNotBlank(str);
 	}
+
 	public static String deleteWhitespace(String str) {
 		return StringUtils.deleteWhitespace(str);
 	}
