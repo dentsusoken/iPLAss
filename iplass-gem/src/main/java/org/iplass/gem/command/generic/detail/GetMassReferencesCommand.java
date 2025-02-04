@@ -277,7 +277,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		Set<String> addNames = new HashSet<>();
 		if (StringUtil.isNotEmpty(sortKey)) {
 			//パラメータで指定されている場合は先頭で適用
-			String key = getSortKey(section, red, sortKey);
+			String key = getSortKey(section, red, sortKey, true);
 			orderBy.add(new SortSpec(key, getSortType(sortType)));
 			addNames.add(key);
 		}
@@ -286,7 +286,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			List<SortSetting> setting = section.getSortSetting();
 			for (SortSetting ss : setting) {
 				if (ss.getSortKey() != null) {
-					String key = getSortKey(section, red, ss.getSortKey());
+					String key = getSortKey(section, red, ss.getSortKey(), false);
 					if (!addNames.contains(key)) {
 						orderBy.add(key, getSortType(ss.getSortType().name()), getNullOrderingSpec(ss.getNullOrderType()));
 						addNames.add(key);
@@ -297,7 +297,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 
 		if (orderBy.getSortSpecList().isEmpty()) {
 			//ソート項目がない場合はデフォルト設定
-			orderBy.add(new SortSpec(getSortKey(section, red, null), getSortType(null)));
+			orderBy.add(new SortSpec(getSortKey(section, red, null, false), getSortType(null)));
 		}
 
 		return orderBy;
@@ -308,9 +308,10 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	 * @param section
 	 * @param ed
 	 * @param sortKey
+	 * @param isRequestParam
 	 * @return
 	 */
-	private String getSortKey(MassReferenceSection section, EntityDefinition ed, String sortKey) {
+	private String getSortKey(MassReferenceSection section, EntityDefinition ed, String sortKey, boolean isRequestParam) {
 		String ret = sortKey;
 		if (StringUtil.isBlank(sortKey)) {
 			return Entity.OID;
@@ -318,7 +319,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 
 		NestProperty property = getLayoutNestProperty(section, sortKey);
 		// 当該項目がセクション上表示されない場合は、利用しない
-		if (property == null) {
+		if (isRequestParam && property == null) {
 			return Entity.OID;
 		}
 
@@ -821,9 +822,9 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	 * @return 表示項目
 	 */
 	private String getDisplayNestProperty(NestProperty refProp) {
-		PropertyEditor editor = refProp.getEditor();
+		PropertyEditor editor = refProp != null ? refProp.getEditor() : null;
 		
-		if (editor instanceof ReferencePropertyEditor
+		if (editor != null && editor instanceof ReferencePropertyEditor
 				&& StringUtil.isNotEmpty(((ReferencePropertyEditor) editor).getDisplayLabelItem())) {
 			return ((ReferencePropertyEditor)editor).getDisplayLabelItem();
 		} else {
