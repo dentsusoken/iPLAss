@@ -119,7 +119,6 @@ public final class InsertCommand extends DetailCommandBase {
 		super();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public String execute(RequestContext request) {
 		final DetailCommandContext context = getContext(request);
@@ -139,33 +138,6 @@ public final class InsertCommand extends DetailCommandBase {
 		data.setView(context.getView());
 		EditResult ret = null;
 
-		Field properties = null;
-		HashMap<String, Object> propertiesMap = null;
-		try {
-			properties = edited.getClass().getDeclaredField("properties");
-			properties.setAccessible(true);
-			if (propertiesMap instanceof HashMap<?, ?>) {
-				propertiesMap = (HashMap<String, Object>) properties.get(edited);
-			}
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.InsertCommand.inputErr"));
-			return Constants.CMD_EXEC_ERROR_VIEW;
-		}
-		if (propertiesMap != null) {
-			List<PropertyDefinition> list = data.getEntityDefinition().getPropertyList();
-			for (PropertyDefinition property : list) {
-				if (property instanceof SelectProperty) {
-					Object[] selectValue = (Object[]) propertiesMap.get(property.getName());
-					if (selectValue == null)
-						continue;
-					if (selectValue.length > property.getMultiplicity()) {
-						request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.InsertCommand.inputErr"));
-						return Constants.CMD_EXEC_ERROR_VIEW;
-					}
-				}
-			}
-		}
-
 		if (context.hasErrors()) {
 			context.rollbackEntity(edited);
 			data.setEntity(edited);
@@ -174,34 +146,39 @@ public final class InsertCommand extends DetailCommandBase {
 			ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
 			ret.setMessage(resourceString("command.generic.detail.InsertCommand.inputErr"));
 		} else {
-			ret = insertEntity(context, edited);
-			if (ret.getResultType() == ResultType.SUCCESS) {
-				//entityのoidをセット。transactionコミット前にoidを取得したい場合があるので。
-				request.setAttribute(Constants.OID, edited.getOid());
+			ret = validatePropertyMaxMultiple(request, edited, data);
+			if (ret != null && ret.getResultType() == ResultType.ERROR) {
+				data.setEntity(edited);
+			} else {
+				ret = insertEntity(context, edited);
+				if (ret.getResultType() == ResultType.SUCCESS) {
+					//entityのoidをセット。transactionコミット前にoidを取得したい場合があるので。
+					request.setAttribute(Constants.OID, edited.getOid());
 
-				Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
-				transaction.addTransactionListener(new TransactionListener() {
-					@Override
-					public void afterCommit(Transaction t) {
-						//被参照をテーブルで追加した場合、コミット前だとロードで取得できない
-						data.setEntity(loadViewEntity(context, edited.getOid(), 0l, edited.getDefinitionName(), context.getReferencePropertyName(),
-								context.isLoadVersioned()));
+					Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
+					transaction.addTransactionListener(new TransactionListener() {
+						@Override
+						public void afterCommit(Transaction t) {
+							//被参照をテーブルで追加した場合、コミット前だとロードで取得できない
+							data.setEntity(loadViewEntity(context, edited.getOid(), 0l, edited.getDefinitionName(), context.getReferencePropertyName(),
+									context.isLoadVersioned()));
 
-						//更新成功時
-						if (data.getEntity() != null) {
-							//UserPropertyEditor用のマップ作製
-							setUserInfoMap(context, data.getEntity(), false);
+							//更新成功時
+							if (data.getEntity() != null) {
+								//UserPropertyEditor用のマップ作製
+								setUserInfoMap(context, data.getEntity(), false);
 
-							//Handler実行
-							if (context instanceof ShowDetailViewEventHandler) {
-								((ShowDetailViewEventHandler) context).fireShowDetailViewEvent(data);
+								//Handler実行
+								if (context instanceof ShowDetailViewEventHandler) {
+									((ShowDetailViewEventHandler) context).fireShowDetailViewEvent(data);
+								}
 							}
 						}
-					}
-				});
-			} else {
-				context.rollbackEntity(edited);
-				data.setEntity(edited);
+					});
+				} else {
+					context.rollbackEntity(edited);
+					data.setEntity(edited);
+				}
 			}
 		}
 
@@ -222,7 +199,8 @@ public final class InsertCommand extends DetailCommandBase {
 		}
 
 		//権限チェック
-		AuthContext auth = AuthContext.getCurrentContext();
+		AuthContext auth = AuthContext
+				.getCurrentContext();
 		data.setCanCreate(auth.checkPermission(new EntityPermission(context.getDefinitionName(), EntityPermission.Action.CREATE)));
 		data.setCanUpdate(auth.checkPermission(new EntityPermission(context.getDefinitionName(), EntityPermission.Action.UPDATE)));
 		data.setCanDelete(auth.checkPermission(new EntityPermission(context.getDefinitionName(), EntityPermission.Action.DELETE)));
@@ -253,4 +231,46 @@ public final class InsertCommand extends DetailCommandBase {
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
+
+	@SuppressWarnings("unchecked")
+	private EditResult validatePropertyMaxMultiple(RequestContext request, Entity edited, DetailFormViewData data) {
+		EditResult ret = new EditResult();
+		Field properties = null;
+		HashMap<String, Object> propertiesMap = null;
+		try {
+			properties = edited.getClass().getDeclaredField("properties");
+			properties.setAccessible(true);
+			propertiesMap = (HashMap<String, Object>) properties.get(edited);
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			ret.setResultType(ResultType.ERROR);
+			ret.setMessage(resourceString("command.generic.detail.InsertCommand.inputErr"));
+			return ret;
+		}
+
+		if (propertiesMap != null) {
+			List<PropertyDefinition> list = data.getEntityDefinition().getPropertyList();
+			for (PropertyDefinition property : list) {
+				if (property instanceof SelectProperty) {
+					Object[] selectValue = (Object[]) propertiesMap.get(property.getName());
+					if (selectValue == null)
+						continue;
+					if (selectValue.length > property.getMultiplicity()) {
+						ret.setResultType(ResultType.ERROR);
+						ValidateError error = new ValidateError();
+						error.setPropertyDisplayName(property.getDisplayName());
+						error.setPropertyName(property.getName());
+						List<String> errorlist = new ArrayList<String>();
+						errorlist.add(
+								resourceString("command.generic.detail.InsertCommand.selectPropertymaxMultiple.error", property.getMultiplicity()));
+						error.setErrorMessages(errorlist);
+						ValidateError[] errors = new ValidateError[] { error };
+						ret.setErrors(errors);
+						ret.setMessage(resourceString("command.generic.detail.InsertCommand.inputErr"));
+					}
+				}
+			}
+		}
+		return ret;
+	}
+
 }

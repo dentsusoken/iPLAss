@@ -20,8 +20,10 @@
 
 package org.iplass.gem.command.generic.detail;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.iplass.gem.command.Constants;
@@ -41,6 +43,8 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionListener;
@@ -53,46 +57,66 @@ import org.iplass.mtp.view.generic.DetailFormView;
  * @author lis3wg
  */
 @ActionMappings({
-	@ActionMapping(name=UpdateCommand.UPDATE_ACTION_NAME,
-		displayName="更新",
-		paramMapping={
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
-		},
-		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
-			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-		},
-		tokenCheck=@TokenCheck
-	),
-	@ActionMapping(name=UpdateCommand.REF_UPDATE_ACTION_NAME,
-		displayName="参照更新",
-		paramMapping={
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
-		},
-		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMPLETED),
-			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
-			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-		},
-		tokenCheck=@TokenCheck
-	)
+		@ActionMapping(
+				name = UpdateCommand.UPDATE_ACTION_NAME,
+				displayName = "更新",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
+				},
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
+						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_EDIT),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_TOKEN,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_NODATA,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
+				},
+				tokenCheck = @TokenCheck
+		),
+		@ActionMapping(
+				name = UpdateCommand.REF_UPDATE_ACTION_NAME,
+				displayName = "参照更新",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
+				},
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_COMPLETED),
+						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_EDIT),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_TOKEN,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_NODATA,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+				},
+				tokenCheck = @TokenCheck
+		)
 })
-@CommandClass(name="gem/generic/detail/UpdateCommand", displayName="更新")
+@CommandClass(name = "gem/generic/detail/UpdateCommand", displayName = "更新")
 public final class UpdateCommand extends DetailCommandBase {
 
 	public static final String UPDATE_ACTION_NAME = "gem/generic/detail/update";
@@ -125,7 +149,8 @@ public final class UpdateCommand extends DetailCommandBase {
 		if (StringUtil.isNotEmpty(oid)) {
 			Entity current = null;
 			if (view.isLoadDefinedReferenceProperty()) {
-				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned());
+				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(),
+						context.isLoadVersioned());
 			} else {
 				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), (List<String>) null, context.isLoadVersioned());
 			}
@@ -150,48 +175,56 @@ public final class UpdateCommand extends DetailCommandBase {
 			ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
 			ret.setMessage(resourceString("command.generic.detail.UpdateCommand.inputErr"));
 		} else {
-			// 更新
-			ret = updateEntity(context, edited);
-			final Long updatedVersion = edited.getVersion();
-			if (ret.getResultType() == ResultType.SUCCESS && oid != null) {
-				Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
-				transaction.addTransactionListener(new TransactionListener() {
-					@Override
-					public void afterCommit(Transaction t) {
-						//被参照をテーブルで追加した場合、コミット前だとロードで取得できない
-						if (context.isVersioned()) {
-							if (context.isNewVersion()) {
-								//新しいバージョンで登録時はそのデータを表示
-								data.setEntity(loadViewEntity(context, oid, updatedVersion, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
+			ret = validatePropertyMaxMultiple(request, edited, data);
+			if (ret != null && ret.getResultType() == ResultType.ERROR) {
+				data.setEntity(edited);
+			} else {
+				// 更新
+				ret = updateEntity(context, edited);
+				final Long updatedVersion = edited.getVersion();
+				if (ret.getResultType() == ResultType.SUCCESS && oid != null) {
+					Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
+					transaction.addTransactionListener(new TransactionListener() {
+						@Override
+						public void afterCommit(Transaction t) {
+							//被参照をテーブルで追加した場合、コミット前だとロードで取得できない
+							if (context.isVersioned()) {
+								if (context.isNewVersion()) {
+									//新しいバージョンで登録時はそのデータを表示
+									data.setEntity(loadViewEntity(context, oid, updatedVersion, context.getDefinitionName(),
+											context.getReferencePropertyName(), context.isLoadVersioned()));
+								} else {
+									//特定バージョンの場合だけバージョン指定でロード
+									Long version = context.getVersion();
+									data.setEntity(
+											loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(),
+													context.isLoadVersioned()));
+								}
 							} else {
-								//特定バージョンの場合だけバージョン指定でロード
-								Long version = context.getVersion();
-								data.setEntity(loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
+								data.setEntity(loadViewEntity(context, oid, null, context.getDefinitionName(), context.getReferencePropertyName(),
+										context.isLoadVersioned()));
 							}
-						} else {
-							data.setEntity(loadViewEntity(context, oid, null, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
-						}
 
-						//更新成功時
-						if (data.getEntity() != null) {
-							//UserPropertyEditor用のマップ作製
-							setUserInfoMap(context, data.getEntity(), false);
+							//更新成功時
+							if (data.getEntity() != null) {
+								//UserPropertyEditor用のマップ作製
+								setUserInfoMap(context, data.getEntity(), false);
 
-							//Handler実行
-							if (data.getEntity().getOid() != null) {
-								if (context instanceof ShowDetailViewEventHandler) {
-									((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
+								//Handler実行
+								if (data.getEntity().getOid() != null) {
+									if (context instanceof ShowDetailViewEventHandler) {
+										((ShowDetailViewEventHandler) context).fireShowDetailViewEvent(data);
+									}
 								}
 							}
 						}
-					}
-				});
-			} else {
-				context.rollbackEntity(edited);
-				data.setEntity(edited);
+					});
+				} else {
+					context.rollbackEntity(edited);
+					data.setEntity(edited);
+				}
 			}
 		}
-
 		data.setExecType(Constants.EXEC_TYPE_UPDATE);
 
 		String retKey = Constants.CMD_EXEC_SUCCESS;
@@ -220,11 +253,11 @@ public final class UpdateCommand extends DetailCommandBase {
 			//Handler実行
 			if (retKey == Constants.CMD_EXEC_SUCCESS) {
 				if (context instanceof ShowDetailViewEventHandler) {
-					((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
+					((ShowDetailViewEventHandler) context).fireShowDetailViewEvent(data);
 				}
-			} else if (retKey == Constants.CMD_EXEC_ERROR){
+			} else if (retKey == Constants.CMD_EXEC_ERROR) {
 				if (context instanceof ShowEditViewEventHandler) {
-					((ShowEditViewEventHandler)context).fireShowEditViewEvent(data);
+					((ShowEditViewEventHandler) context).fireShowEditViewEvent(data);
 				}
 			}
 		}
@@ -237,5 +270,46 @@ public final class UpdateCommand extends DetailCommandBase {
 
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
+	}
+
+	@SuppressWarnings("unchecked")
+	private EditResult validatePropertyMaxMultiple(RequestContext request, Entity edited, DetailFormViewData data) {
+		EditResult ret = new EditResult();
+		Field properties = null;
+		HashMap<String, Object> propertiesMap = null;
+		try {
+			properties = edited.getClass().getDeclaredField("properties");
+			properties.setAccessible(true);
+			propertiesMap = (HashMap<String, Object>) properties.get(edited);
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			ret.setResultType(ResultType.ERROR);
+			ret.setMessage(resourceString("command.generic.detail.InsertCommand.inputErr"));
+			return ret;
+		}
+
+		if (propertiesMap != null) {
+			List<PropertyDefinition> list = data.getEntityDefinition().getPropertyList();
+			for (PropertyDefinition property : list) {
+				if (property instanceof SelectProperty) {
+					Object[] selectValue = (Object[]) propertiesMap.get(property.getName());
+					if (selectValue == null)
+						continue;
+					if (selectValue.length > property.getMultiplicity()) {
+						ret.setResultType(ResultType.ERROR);
+						ValidateError error = new ValidateError();
+						error.setPropertyDisplayName(property.getDisplayName());
+						error.setPropertyName(property.getName());
+						List<String> errorlist = new ArrayList<String>();
+						errorlist.add(
+								resourceString("command.generic.detail.InsertCommand.selectPropertymaxMultiple.error", property.getMultiplicity()));
+						error.setErrorMessages(errorlist);
+						ValidateError[] errors = new ValidateError[] { error };
+						ret.setErrors(errors);
+						ret.setMessage(resourceString("command.generic.detail.InsertCommand.inputErr"));
+					}
+				}
+			}
+		}
+		return ret;
 	}
 }
