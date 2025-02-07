@@ -19,13 +19,18 @@
  */
 package org.iplass.mtp.impl.datastore.grdb.strategy.bulkupdate;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.impl.datastore.grdb.GRdbPropertyStoreRuntime;
 import org.iplass.mtp.impl.datastore.grdb.strategy.bulkupdate.sql.IndexBulkDeleteSql;
 import org.iplass.mtp.impl.datastore.grdb.strategy.bulkupdate.sql.ObjStoreBulkDeleteSql;
@@ -41,7 +46,9 @@ class BulkDeleteHandler {
 	BulkDeleteContext objStoreDelete;
 	BulkDeleteContext objRefDeleteByOid;
 	Map<IndexTableKey, BulkDeleteContext> objIndexDelete;
-	
+	Map<IndexTableKey, BulkDeleteContext> versionedObjUniqueIndexDelete;
+	Set<String> versionedUniqueInexedOids;
+
 	BulkDeleteHandler(BulkUpdateState state) throws SQLException {
 		
 		objStoreDelete = ObjStoreBulkDeleteSql.deleteByOid(state.eh, state.con, state.rdb);
@@ -61,14 +68,28 @@ class BulkDeleteHandler {
 		}
 		for (PrimitivePropertyHandler pph: indexes) {
 			GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) pph.getStoreSpecProperty();
-			if (objIndexDelete == null) {
-				objIndexDelete = new HashMap<>();
-			}
 			IndexTableKey ikey = new IndexTableKey(pph.getMetaData().getIndexType(), colDef.getSingleColumnRdbTypeAdapter().getColOfIndex());
-			BulkDeleteContext bdc = objIndexDelete.get(ikey);
-			if (bdc == null) {
-				bdc = IndexBulkDeleteSql.deleteByOidVersion(colDef.asList().get(0), state.con, state.rdb);
-				objIndexDelete.put(ikey, bdc);
+			if (ikey.indexType != IndexType.NON_UNIQUE && state.eh.isVersioned()) {
+				if (versionedObjUniqueIndexDelete == null) {
+					versionedObjUniqueIndexDelete = new HashMap<>();
+				}
+				if (versionedUniqueInexedOids == null) {
+					versionedUniqueInexedOids = new HashSet<>();
+				}
+				BulkDeleteContext bdc = versionedObjUniqueIndexDelete.get(ikey);
+				if (bdc == null) {
+					bdc = IndexBulkDeleteSql.deleteByOidVersion(colDef.asList().get(0), state.con, state.rdb);
+					versionedObjUniqueIndexDelete.put(ikey, bdc);
+				}
+			} else {
+				if (objIndexDelete == null) {
+					objIndexDelete = new HashMap<>();
+				}
+				BulkDeleteContext bdc = objIndexDelete.get(ikey);
+				if (bdc == null) {
+					bdc = IndexBulkDeleteSql.deleteByOidVersion(colDef.asList().get(0), state.con, state.rdb);
+					objIndexDelete.put(ikey, bdc);
+				}
 			}
 		}
 	}
@@ -78,8 +99,14 @@ class BulkDeleteHandler {
 		Long ver = entity.getVersion();
 
 		ObjStoreBulkDeleteSql.addValueForDeleteByOid(objStoreDelete, state.tenantId, state.eh, oid, ver);
+		//外部ユニークIndex且つバージョン管理
+		if (versionedUniqueInexedOids != null) {
+			versionedUniqueInexedOids.add(oid);
+		}
 		if (objStoreDelete.getCurrentSize() >= state.rdb.getBatchSize()) {
 			objStoreDelete.execute();
+			//versionedUniqueIndexの削除
+			deleteVersionedObjUniqueIndex(state);
 		}
 		
 		//参照
@@ -102,7 +129,7 @@ class BulkDeleteHandler {
 	}
 
 	
-	public void flushAll() throws SQLException {
+	public void flushAll(BulkUpdateState state) throws SQLException {
 		if (objStoreDelete != null) {
 			if (objStoreDelete.getCurrentSize() > 0) {
 				objStoreDelete.execute();
@@ -118,6 +145,45 @@ class BulkDeleteHandler {
 				if (ent.getValue().getCurrentSize() > 0) {
 					ent.getValue().execute();
 				}
+			}
+		}
+		
+		//versionedUniqueIndexの削除
+		deleteVersionedObjUniqueIndex(state);
+	}
+
+	private void deleteVersionedObjUniqueIndex(BulkUpdateState state) throws SQLException {
+		if (versionedObjUniqueIndexDelete != null) {
+			if (versionedUniqueInexedOids.size() > 0) {
+
+				//存在チェック
+				Set<String> existsOids = new HashSet<>();
+				try (Statement stmt = state.con.createStatement()) {
+					ResultSet rs = stmt.executeQuery(IndexBulkDeleteSql.countByOidSql(state.tenantId, state.eh, versionedUniqueInexedOids, state.rdb));
+					while (rs.next()) {
+						existsOids.add(rs.getString(1));
+					}
+				}
+
+				//存在しないものを削除
+				for (String oid : versionedUniqueInexedOids) {
+					if (!existsOids.contains(oid)) {
+						for (Map.Entry<IndexTableKey, BulkDeleteContext> ent : versionedObjUniqueIndexDelete.entrySet()) {
+							IndexBulkDeleteSql.addValueForDeleteByOidVersion(ent.getValue(), state.tenantId, state.eh, ent.getKey().indexType, oid, null);
+							if (ent.getValue().getCurrentSize() >= state.rdb.getBatchSize()) {
+								ent.getValue().execute();
+							}
+						}
+					}
+				}
+
+				for (Map.Entry<IndexTableKey, BulkDeleteContext> ent : versionedObjUniqueIndexDelete.entrySet()) {
+					if (ent.getValue().getCurrentSize() > 0) {
+						ent.getValue().execute();
+					}
+				}
+
+				versionedUniqueInexedOids.clear();
 			}
 		}
 	}
@@ -139,6 +205,15 @@ class BulkDeleteHandler {
 		}
 		if (objIndexDelete != null) {
 			for (Map.Entry<IndexTableKey, BulkDeleteContext> ent: objIndexDelete.entrySet()) {
+				try {
+					ent.getValue().close();
+				} catch (SQLException e) {
+					logger.error("fail to BulkDeleteHandler close. maybe resource leak.", e);
+				}
+			}
+		}
+		if (versionedObjUniqueIndexDelete != null) {
+			for (Map.Entry<IndexTableKey, BulkDeleteContext> ent : versionedObjUniqueIndexDelete.entrySet()) {
 				try {
 					ent.getValue().close();
 				} catch (SQLException e) {

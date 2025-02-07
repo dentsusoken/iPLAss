@@ -24,10 +24,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.iplass.mtp.entity.definition.IndexType;
+import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore.GRdbEntityStoreRuntime;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore.GRdbPropertyStoreHandler;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjIndexTable;
+import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.bulk.BulkDeleteContext;
@@ -118,5 +121,26 @@ public class IndexBulkDeleteSql {
 			values.add(version);
 		}
 		bdc.add(values);
+	}
+
+	public static String countByOidSql(int tenantId, EntityHandler eh, Set<String> oids, RdbAdapter rdbAdaptor) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT " + ObjStoreTable.OBJ_ID + ",COUNT(*) FROM ");
+		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE());
+		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=").append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdbAdaptor.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" AND " + ObjStoreTable.OBJ_ID + " IN (");
+		boolean first = true;
+		for (String oid : oids) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append(",");
+			}
+			sb.append("'").append(rdbAdaptor.sanitize(oid)).append("'");
+		}
+		sb.append(") AND " + ObjStoreTable.PG_NO + "=0 GROUP BY " + ObjStoreTable.OBJ_ID);
+
+		return sb.toString();
 	}
 }

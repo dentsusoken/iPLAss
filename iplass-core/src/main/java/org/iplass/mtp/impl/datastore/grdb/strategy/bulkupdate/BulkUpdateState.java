@@ -164,10 +164,11 @@ public class BulkUpdateState implements AutoCloseable {
 			update.flushAll();
 		}
 		if (delete != null) {
-			delete.flushAll();
+			delete.flushAll(this);
 		}
 	}
 	
+	@Override
 	public void close() {
 		if (search != null) {
 			try {
@@ -208,20 +209,26 @@ public class BulkUpdateState implements AutoCloseable {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			OidVer other = (OidVer) obj;
 			if (oid == null) {
-				if (other.oid != null)
+				if (other.oid != null) {
 					return false;
-			} else if (!oid.equals(other.oid))
+				}
+			} else if (!oid.equals(other.oid)) {
 				return false;
-			if (ver != other.ver)
+			}
+			if (ver != other.ver) {
 				return false;
+			}
 			return true;
 		}
 	}
