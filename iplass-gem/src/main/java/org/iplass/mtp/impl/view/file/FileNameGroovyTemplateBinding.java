@@ -38,27 +38,27 @@ public class FileNameGroovyTemplateBinding extends GroovyTemplateBinding {
 	/**
 	 *
 	 * @param out Writer
-	 * @param fileName ${fileName}にマッピングされる値
+	 * @param csvName ${csvName}にマッピングされる値
 	 */
-	public FileNameGroovyTemplateBinding(Writer out, String fileName) {
+	public FileNameGroovyTemplateBinding(Writer out, String csvName) {
 		super(out);
 
-		setupFileBinding(fileName);
+		setupFileBinding(csvName);
 	}
 
 	/**
 	 *
 	 * @param out Writer
-	 * @param fileName ${fileName}にマッピングされる値
+	 * @param csvName ${csvName}にマッピングされる値
 	 * @param customBindings 個別のBind変数定義
 	 */
-	public FileNameGroovyTemplateBinding(Writer out, String fileName, Map<String, Object> customBindings) {
+	public FileNameGroovyTemplateBinding(Writer out, String csvName, Map<String, Object> customBindings) {
 		super(out, customBindings);
 
-		setupFileBinding(fileName);
+		setupFileBinding(csvName);
 	}
 
-	private void setupFileBinding(String fileName) {
+	private void setupFileBinding(String csvName) {
 
 		ExecuteContext ex = ExecuteContext.getCurrentContext();
 		Timestamp date = ex.getCurrentTimestamp();//同一トランザクション内の時間を一緒にするため
@@ -77,7 +77,7 @@ public class FileNameGroovyTemplateBinding extends GroovyTemplateBinding {
 		f.applyPattern("ss");
 		setVariable("ss", f.format(date));
 
-		setVariable("fileName", fileName);
+		setVariable("csvName", csvName);
 	}
 
 }
