@@ -214,4 +214,16 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 
 		return sb.toString();
 	}
+
+	public String countByOidWithoutTargetVersion(int tenantId, EntityHandler eh, String oid, Long version, RdbAdapter rdb) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT COUNT(*) FROM ");
+		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE());
+		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=").append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" AND " + ObjStoreTable.OBJ_ID + "='").append(rdb.sanitize(oid)).append("'");
+		sb.append(" AND " + ObjStoreTable.OBJ_VER + "!=").append(version);
+		sb.append(" AND " + ObjStoreTable.PG_NO + "=0");
+		return sb.toString();
+	}
 }

@@ -24,8 +24,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.IndexType;
@@ -55,6 +57,7 @@ class BulkInsertHandler {
 
 	Map<IndexTableKey, BulkInsertContext> objIndexInsert;
 	List<PrimitivePropertyHandler> indexes;
+	Map<IndexTableKey, Set<String>> versionedUniqueInexedOidsMap;
 
 	Statement searchExtIndex;
 
@@ -108,6 +111,16 @@ class BulkInsertHandler {
 				bic = IndexBulkInsertSql.insert(colDef.asList().get(0), state.con, state.rdb);
 				objIndexInsert.put(ikey, bic);
 			}
+			if (ikey.indexType != IndexType.NON_UNIQUE && state.eh.isVersioned()) {
+				if (versionedUniqueInexedOidsMap == null) {
+					versionedUniqueInexedOidsMap = new HashMap<>();
+				}
+				Set<String> versionedUniqueInexedOids = versionedUniqueInexedOidsMap.get(ikey);
+				if (versionedUniqueInexedOids == null) {
+					versionedUniqueInexedOids = new HashSet<>();
+					versionedUniqueInexedOidsMap.put(ikey, versionedUniqueInexedOids);
+				}
+			}
 		}
 	}
 
@@ -159,19 +172,26 @@ class BulkInsertHandler {
 
 				Object val = e.getValue(pph.getName());
 				boolean needAdd = true;
+				Set<String> versionedUniqueInexedOids = null;
 				if (ikey.indexType != IndexType.NON_UNIQUE) {
 					//valueがnullでもinsrt（nullもUNIQUE項目として判断するため）
 					//バージョン管理上で、ユニークIndexの変更はできない
 					//すでに登録されている場合はinsertしない
 					if (state.eh.isVersioned()) {
-						if (searchExtIndex == null) {
-							searchExtIndex = state.con.createStatement();
-						}
-						try (ResultSet rs = searchExtIndex.executeQuery(IndexBulkInsertSql.searchByOid(state.tenantId, colDef, oid, state.rdb))) {
-							if (rs.next()) {
-								needAdd = false;
+						versionedUniqueInexedOids = versionedUniqueInexedOidsMap.get(ikey);
+						if (versionedUniqueInexedOids.contains(oid)) {
+							needAdd = false;
+						} else {
+							if (searchExtIndex == null) {
+								searchExtIndex = state.con.createStatement();
+							}
+							try (ResultSet rs = searchExtIndex.executeQuery(IndexBulkInsertSql.searchByOid(state.tenantId, colDef, oid, state.rdb))) {
+								if (rs.next()) {
+									needAdd = false;
+								}
 							}
 						}
+
 					}
 					if (ikey.indexType == IndexType.UNIQUE_WITHOUT_NULL && val == null) {
 						needAdd = false;
@@ -180,10 +200,16 @@ class BulkInsertHandler {
 
 				if (needAdd) {
 					IndexBulkInsertSql.addValueForInsert(bic, state.tenantId, colDef, oid, ver, val);
+					if (versionedUniqueInexedOids != null) {
+						versionedUniqueInexedOids.add(oid);
+					}
 				}
 
 				if (bic.getCurrentSize() >= state.rdb.getBatchSize()) {
 					bic.execute();
+					if (versionedUniqueInexedOids != null) {
+						versionedUniqueInexedOids.clear();
+					}
 				}
 			}
 		}
@@ -205,6 +231,11 @@ class BulkInsertHandler {
 			for (Map.Entry<IndexTableKey, BulkInsertContext> e: objIndexInsert.entrySet()) {
 				if (e.getValue().getCurrentSize() > 0) {
 					e.getValue().execute();
+				}
+			}
+			if (versionedUniqueInexedOidsMap != null) {
+				for (Map.Entry<IndexTableKey, Set<String>> e : versionedUniqueInexedOidsMap.entrySet()) {
+					e.getValue().clear();
 				}
 			}
 		}

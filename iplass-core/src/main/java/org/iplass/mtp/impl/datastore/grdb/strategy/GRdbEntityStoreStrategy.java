@@ -36,6 +36,7 @@ import java.util.Set;
 
 import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.DeleteOption;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityConcurrentUpdateException;
 import org.iplass.mtp.entity.EntityRuntimeException;
@@ -208,6 +209,33 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 		return exec.execute(rdb, true);
 	}
 
+	private boolean isKeepUniqueIndexTable(final EntityContext context, final Entity model, final EntityHandler handler,
+			final DeleteOption option, Statement stmt) throws SQLException {
+		if (!handler.isVersioned()) {
+			return false;
+		}
+		if (option.getTargetVersion() != DeleteTargetVersion.SPECIFIC) {
+			return false;
+		}
+
+		for (PropertyHandler ph : handler.getDeclaredPropertyList()) {
+			if (ph.getStoreSpecProperty() instanceof GRdbPropertyStoreRuntime) {
+				GRdbPropertyStoreRuntime psh = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
+				if (psh.getPropertyRuntime().isIndexed() && psh.isExternalIndex()) {
+					if (IndexType.NON_UNIQUE != psh.getPropertyRuntime().getMetaData().getIndexType()) {
+						try (ResultSet rs = stmt.executeQuery(
+								delSql.countByOidWithoutTargetVersion(context.getTenantId(handler), handler, model.getOid(), model.getVersion(), rdb))) {
+							rs.next();
+							return rs.getInt(1) > 0;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
 	@Override
 	public void delete(final EntityContext context, final Entity model, final EntityHandler handler,
 			final DeleteOption option) {
@@ -223,6 +251,9 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				if (count < 1) {
 					throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 				}
+				
+				//version管理されていて、バージョン指定の削除で、且つ別バージョンのレコードが存在する場合はUniqueIndexTableのデータは残す
+				boolean isKeepUniqueIndexTable = isKeepUniqueIndexTable(context, model, handler, option, getStatement());
 
 				//pageNo > 0あるなら削除
 				if (((GRdbEntityStoreRuntime) handler.getEntityStoreRuntime()).getCurrentMaxPage() > 0) {
@@ -257,8 +288,10 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				for (String table: delTalbeIndex) {
 					getStatement().addBatch(indexDelSql.toSqlDelByOid(tenantId, handler, table, IndexType.NON_UNIQUE, model.getOid(), model.getVersion(), rdb));
 				}
-				for (String table: delTalbeUnique) {
-					getStatement().addBatch(indexDelSql.toSqlDelByOid(tenantId, handler, table, IndexType.UNIQUE, model.getOid(), model.getVersion(), rdb));
+				if (!isKeepUniqueIndexTable) {
+					for (String table : delTalbeUnique) {
+						getStatement().addBatch(indexDelSql.toSqlDelByOid(tenantId, handler, table, IndexType.UNIQUE, model.getOid(), model.getVersion(), rdb));
+					}
 				}
 
 				//メタデータ判断してオブジェクト参照プロパティを持っているときのみ削除
