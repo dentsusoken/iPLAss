@@ -39,13 +39,15 @@
 <%@page import="org.iplass.mtp.util.StringUtil"%>
 <%@page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@page import="org.iplass.gem.command.Constants"%>
+<%@page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 
 <%
 	SelectPropertyEditor editor = (SelectPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
-
+    int maxMultiple = pd.getMultiplicity();
+    String mulError = GemResourceBundleUtil.resourceString("command.generic.detail.InsertCommand.selectPropertymaxMultiple.error", maxMultiple);
 	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof SelectProperty)) {
 		//定義がSelectPropertyか、Expression(resultType=Select)でなければ表示不可
@@ -116,6 +118,8 @@
 <jsp:include page="ErrorMessage.jsp">
 	<jsp:param value="<%=propName %>" name="propName" />
 </jsp:include>
+<div id="multipleInfo" data-mul="<c:out value="<%= maxMultiple %>"/>"></div> 
+<div id="error-message" style="color: red; display: none;"><%= mulError %></div> 
 <%
 	} else if (OutputType.VIEW == type) {
 		//詳細表示

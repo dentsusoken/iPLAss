@@ -33,9 +33,17 @@
 <%@ page import="org.iplass.gem.command.generic.detail.InsertCommand"%>
 <%@ page import="org.iplass.gem.command.generic.detail.UpdateCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchViewCommand"%>
+<%@ page import="org.iplass.gem.command.generic.search.SearchViewCommand"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
+<%@ page import="org.iplass.mtp.entity.GenericEntity"%>
+<%@ page import="org.iplass.mtp.entity.SelectValue"%>
+<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
+<%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
+<%@ page import="java.util.Set"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
 <%
 	String newversion = request.getParameter(Constants.NEWVERSION);
 	String backPath = request.getParameter(Constants.BACK_PATH);
@@ -47,8 +55,7 @@
 	//コマンドから
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
-	String message = (String) request.getAttribute(Constants.MESSAGE);
-
+	String message = (String) request.getAttribute(Constants.MESSAGE);	
 	OutputType type = OutputType.EDIT;
 	String contextPath = TemplateUtil.getTenantContextPath();
 	DetailFormView form = data.getView();
@@ -201,7 +208,6 @@ function onclick_insert(action, target, hidden) {
 	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.detail.saveMsg')}")) {
 		return;
 	}
-
 	if (!validation()) return;
 
 	button_onclick(action, hidden);
@@ -244,6 +250,35 @@ function cancel() {
 function validation() {
 	<%-- common.js --%>
 	var ret = editValidate();
+	<%
+	boolean unMultiplieValidate = false;
+	
+	String errorMsg = "";
+	GenericEntity entity = (GenericEntity)data.getEntity();
+		if(entity!=null){
+		Set<String> propertyNames = entity.getPropertyNames();
+		for (String propertyName : propertyNames){
+			if(entity.getValue(propertyName) instanceof SelectValue[] ) {
+				SelectValue[] selectValuePro = (SelectValue[])entity.getValue(propertyName);
+				EntityDefinition entityDefinition = (EntityDefinition)data.getEntityDefinition();
+				PropertyDefinition propertyDefinition = entityDefinition.getProperty(propertyName);
+				
+				if(selectValuePro.length > propertyDefinition.getMultiplicity()) {
+					unMultiplieValidate = true;
+					errorMsg = GemResourceBundleUtil.resourceString("command.generic.detail.InsertCommand.selectPropertymaxMultiple.error", propertyDefinition.getMultiplicity());
+					break;
+				}
+			}
+		}
+	}
+	%>
+	var unsuccess = <%= unMultiplieValidate %>; 
+    var errorMessage = "<%= errorMsg %>"; 
+	if (unsuccess) {
+		alert(errorMessage);
+		ret = false;
+	}
+	
 	var message = !ret ? "${m:rs('mtp-gem-messages', 'command.generic.detail.DetailCommandBase.inputErr')}" : "";
 	$(".detail_edit > .page-error").text(message);
 	return ret;
