@@ -52,56 +52,42 @@ import org.iplass.mtp.view.generic.DetailFormView;
  * @author lis3wg
  */
 @ActionMappings({
-		@ActionMapping(
-				name = InsertCommand.INSERT_ACTION_NAME,
-				displayName = "追加",
-				paramMapping = {
-						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
-						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
-						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2"),
-				},
-				result = {
-						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
-						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_EDIT),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_TOKEN,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_VIEW,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
-				},
-				tokenCheck = @TokenCheck
-		),
-		@ActionMapping(
-				name = InsertCommand.REF_INSERT_ACTION_NAME,
-				displayName = "参照追加",
-				paramMapping = {
-						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
-						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
-						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2"),
-				},
-				result = {
-						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_COMPLETED),
-						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_EDIT),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_TOKEN,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_VIEW,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
-				},
-				tokenCheck = @TokenCheck
-		)
+	@ActionMapping(name=InsertCommand.INSERT_ACTION_NAME,
+		displayName="追加",
+		paramMapping={
+			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
+			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
+			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2"),
+		},
+		result={
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
+			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
+		},
+		tokenCheck=@TokenCheck
+	),
+	@ActionMapping(name=InsertCommand.REF_INSERT_ACTION_NAME,
+		displayName="参照追加",
+		paramMapping={
+			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
+			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
+			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2"),
+		},
+		result={
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMPLETED),
+			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
+			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
+		},
+		tokenCheck=@TokenCheck
+	)
 })
-@CommandClass(name = "gem/generic/detail/InsertCommand", displayName = "追加")
+@CommandClass(name="gem/generic/detail/InsertCommand", displayName="追加")
 public final class InsertCommand extends DetailCommandBase {
 
 	public static final String INSERT_ACTION_NAME = "gem/generic/detail/insert";
@@ -151,8 +137,7 @@ public final class InsertCommand extends DetailCommandBase {
 					@Override
 					public void afterCommit(Transaction t) {
 						//被参照をテーブルで追加した場合、コミット前だとロードで取得できない
-						data.setEntity(loadViewEntity(context, edited.getOid(), 0l, edited.getDefinitionName(), context.getReferencePropertyName(),
-								context.isLoadVersioned()));
+						data.setEntity(loadViewEntity(context, edited.getOid(), 0l, edited.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
 
 						//更新成功時
 						if (data.getEntity() != null) {
@@ -161,7 +146,7 @@ public final class InsertCommand extends DetailCommandBase {
 
 							//Handler実行
 							if (context instanceof ShowDetailViewEventHandler) {
-								((ShowDetailViewEventHandler) context).fireShowDetailViewEvent(data);
+								((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
 							}
 						}
 					}
@@ -202,11 +187,11 @@ public final class InsertCommand extends DetailCommandBase {
 			//Handler実行
 			if (retKey == Constants.CMD_EXEC_SUCCESS) {
 				if (context instanceof ShowDetailViewEventHandler) {
-					((ShowDetailViewEventHandler) context).fireShowDetailViewEvent(data);
+					((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
 				}
-			} else if (retKey == Constants.CMD_EXEC_ERROR) {
+			} else if (retKey == Constants.CMD_EXEC_ERROR){
 				if (context instanceof ShowEditViewEventHandler) {
-					((ShowEditViewEventHandler) context).fireShowEditViewEvent(data);
+					((ShowEditViewEventHandler)context).fireShowEditViewEvent(data);
 				}
 			}
 		}

@@ -53,66 +53,46 @@ import org.iplass.mtp.view.generic.DetailFormView;
  * @author lis3wg
  */
 @ActionMappings({
-		@ActionMapping(
-				name = UpdateCommand.UPDATE_ACTION_NAME,
-				displayName = "更新",
-				paramMapping = {
-						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
-						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
-						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
-				},
-				result = {
-						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
-						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_EDIT),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_TOKEN,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_VIEW,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_NODATA,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
-				},
-				tokenCheck = @TokenCheck
-		),
-		@ActionMapping(
-				name = UpdateCommand.REF_UPDATE_ACTION_NAME,
-				displayName = "参照更新",
-				paramMapping = {
-						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
-						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
-						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
-				},
-				result = {
-						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_COMPLETED),
-						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_EDIT),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_TOKEN,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_VIEW,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
-						@Result(
-								status = Constants.CMD_EXEC_ERROR_NODATA,
-								type = Type.TEMPLATE,
-								value = Constants.TEMPLATE_COMMON_ERROR,
-								layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
-				},
-				tokenCheck = @TokenCheck
-		)
+	@ActionMapping(name=UpdateCommand.UPDATE_ACTION_NAME,
+		displayName="更新",
+		paramMapping={
+			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
+			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
+			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
+		},
+		result={
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
+			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
+		},
+		tokenCheck=@TokenCheck
+	),
+	@ActionMapping(name=UpdateCommand.REF_UPDATE_ACTION_NAME,
+		displayName="参照更新",
+		paramMapping={
+			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
+			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
+			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
+		},
+		result={
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMPLETED),
+			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
+			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
+					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
+		},
+		tokenCheck=@TokenCheck
+	)
 })
-@CommandClass(name = "gem/generic/detail/UpdateCommand", displayName = "更新")
+@CommandClass(name="gem/generic/detail/UpdateCommand", displayName="更新")
 public final class UpdateCommand extends DetailCommandBase {
 
 	public static final String UPDATE_ACTION_NAME = "gem/generic/detail/update";
@@ -145,8 +125,7 @@ public final class UpdateCommand extends DetailCommandBase {
 		if (StringUtil.isNotEmpty(oid)) {
 			Entity current = null;
 			if (view.isLoadDefinedReferenceProperty()) {
-				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(),
-						context.isLoadVersioned());
+				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned());
 			} else {
 				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), (List<String>) null, context.isLoadVersioned());
 			}
@@ -183,17 +162,14 @@ public final class UpdateCommand extends DetailCommandBase {
 						if (context.isVersioned()) {
 							if (context.isNewVersion()) {
 								//新しいバージョンで登録時はそのデータを表示
-								data.setEntity(loadViewEntity(context, oid, updatedVersion, context.getDefinitionName(),
-										context.getReferencePropertyName(), context.isLoadVersioned()));
+								data.setEntity(loadViewEntity(context, oid, updatedVersion, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
 							} else {
 								//特定バージョンの場合だけバージョン指定でロード
 								Long version = context.getVersion();
-								data.setEntity(loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(),
-										context.isLoadVersioned()));
+								data.setEntity(loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
 							}
 						} else {
-							data.setEntity(loadViewEntity(context, oid, null, context.getDefinitionName(), context.getReferencePropertyName(),
-									context.isLoadVersioned()));
+							data.setEntity(loadViewEntity(context, oid, null, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned()));
 						}
 
 						//更新成功時
@@ -204,7 +180,7 @@ public final class UpdateCommand extends DetailCommandBase {
 							//Handler実行
 							if (data.getEntity().getOid() != null) {
 								if (context instanceof ShowDetailViewEventHandler) {
-									((ShowDetailViewEventHandler) context).fireShowDetailViewEvent(data);
+									((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
 								}
 							}
 						}
@@ -244,11 +220,11 @@ public final class UpdateCommand extends DetailCommandBase {
 			//Handler実行
 			if (retKey == Constants.CMD_EXEC_SUCCESS) {
 				if (context instanceof ShowDetailViewEventHandler) {
-					((ShowDetailViewEventHandler) context).fireShowDetailViewEvent(data);
+					((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
 				}
-			} else if (retKey == Constants.CMD_EXEC_ERROR) {
+			} else if (retKey == Constants.CMD_EXEC_ERROR){
 				if (context instanceof ShowEditViewEventHandler) {
-					((ShowEditViewEventHandler) context).fireShowEditViewEvent(data);
+					((ShowEditViewEventHandler)context).fireShowEditViewEvent(data);
 				}
 			}
 		}
