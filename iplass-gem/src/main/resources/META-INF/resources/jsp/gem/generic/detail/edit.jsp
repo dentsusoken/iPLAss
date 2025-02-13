@@ -276,6 +276,7 @@ function validation() {
 	    	if (checkedCount>jsMap[key]) {
 	    		alert(errorMsg)
 	    		ret = false;
+	    		break;
 	    	}
 	    }
 	}
