@@ -54,11 +54,12 @@
 	//コマンドから
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
-	String message = (String) request.getAttribute(Constants.MESSAGE);	
+	String message = (String) request.getAttribute(Constants.MESSAGE);
+
 	OutputType type = OutputType.EDIT;
 	String contextPath = TemplateUtil.getTenantContextPath();
 	DetailFormView form = data.getView();
-	
+
 	String errorMsg = GemResourceBundleUtil.resourceString("command.generic.detail.InsertCommand.exceedMaximumSelection.error");
 	EntityDefinition entityDefinition = (EntityDefinition)data.getEntityDefinition();
 	Map<String,Integer> map = new HashMap<String,Integer>();
@@ -68,7 +69,7 @@
 			map.put(proDefinition.getName(), proDefinition.getMultiplicity());
 		}
 	}
-    
+
 	String defName = data.getEntityDefinition().getName();
 	String viewName = form.getName();
 
@@ -217,6 +218,7 @@ function onclick_insert(action, target, hidden) {
 	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.detail.saveMsg')}")) {
 		return;
 	}
+
 	if (!validation()) return;
 
 	button_onclick(action, hidden);
