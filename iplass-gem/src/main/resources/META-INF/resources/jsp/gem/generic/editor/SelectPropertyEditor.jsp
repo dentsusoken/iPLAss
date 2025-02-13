@@ -46,6 +46,7 @@
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
+
     int maxMultiple = pd.getMultiplicity();
     String mulError = GemResourceBundleUtil.resourceString("command.generic.detail.InsertCommand.selectPropertymaxMultiple.error", maxMultiple);
 	String propName = editor.getPropertyName();
