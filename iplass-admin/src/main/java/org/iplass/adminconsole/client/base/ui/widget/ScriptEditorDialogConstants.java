@@ -40,7 +40,7 @@ public interface ScriptEditorDialogConstants {
 
 	public static final String ENTITY_LISTING_VIEW_NAME = "EntityListing.ViewName";
 
-	public static final String ENTITY_LISTING_CSV_NAME = "EntityListing.CsvFileName";
+	public static final String ENTITY_LISTING_FILE_NAME = "EntityListing.FileName";
 
 	public static final String AGGREGATION_CSV_NAME = "Aggregation.CsvFileName";
 

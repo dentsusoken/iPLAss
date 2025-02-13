@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 DENTSU SOKEN INC. All Rights Reserved.
+ * Copyright (C) 2025 DENTSU SOKEN INC. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.impl.view.csv;
+package org.iplass.mtp.impl.view.file;
 
 import java.io.Writer;
 import java.sql.Timestamp;
@@ -31,19 +31,19 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.util.DateUtil;
 
 /**
- * CSVダウンロード時のファイル名用GroovyTemplateBinding
+ * ダウンロード時のファイル名用GroovyTemplateBinding
  */
-public class CsvFileNameGroovyTemplateBinding extends GroovyTemplateBinding {
+public class FileNameGroovyTemplateBinding extends GroovyTemplateBinding {
 
 	/**
 	 *
 	 * @param out Writer
 	 * @param csvName ${csvName}にマッピングされる値
 	 */
-	public CsvFileNameGroovyTemplateBinding(Writer out, String csvName) {
+	public FileNameGroovyTemplateBinding(Writer out, String csvName) {
 		super(out);
 
-		setupCsvBinding(csvName);
+		setupFileBinding(csvName);
 	}
 
 	/**
@@ -52,13 +52,13 @@ public class CsvFileNameGroovyTemplateBinding extends GroovyTemplateBinding {
 	 * @param csvName ${csvName}にマッピングされる値
 	 * @param customBindings 個別のBind変数定義
 	 */
-	public CsvFileNameGroovyTemplateBinding(Writer out, String csvName, Map<String, Object> customBindings) {
+	public FileNameGroovyTemplateBinding(Writer out, String csvName, Map<String, Object> customBindings) {
 		super(out, customBindings);
 
-		setupCsvBinding(csvName);
+		setupFileBinding(csvName);
 	}
 
-	private void setupCsvBinding(String csvName) {
+	private void setupFileBinding(String csvName) {
 
 		ExecuteContext ex = ExecuteContext.getCurrentContext();
 		Timestamp date = ex.getCurrentTimestamp();//同一トランザクション内の時間を一緒にするため

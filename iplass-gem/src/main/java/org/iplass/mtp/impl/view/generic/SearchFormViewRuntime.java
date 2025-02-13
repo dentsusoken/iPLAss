@@ -39,7 +39,7 @@ import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
-import org.iplass.mtp.impl.view.csv.CsvFileNameGroovyTemplateBinding;
+import org.iplass.mtp.impl.view.file.FileNameGroovyTemplateBinding;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSearchConditionSection;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSection;
 import org.iplass.mtp.impl.view.generic.element.section.SectionRuntime;
@@ -81,7 +81,7 @@ public class SearchFormViewRuntime extends FormViewRuntime {
 			MetaSearchConditionSection condSection = null;
 			for (MetaSection section : form.getSections()) {
 				if (section instanceof MetaSearchConditionSection) {
-					condSection = (MetaSearchConditionSection)section;
+					condSection = (MetaSearchConditionSection) section;
 					break;
 				}
 			}
@@ -140,7 +140,7 @@ public class SearchFormViewRuntime extends FormViewRuntime {
 		} else {
 			StringWriter sw = new StringWriter();
 			try {
-				compiledCsvFileNameScript.doTemplate(new CsvFileNameGroovyTemplateBinding(sw, defaultName, csvVariableMap));
+				compiledCsvFileNameScript.doTemplate(new FileNameGroovyTemplateBinding(sw, defaultName, csvVariableMap));
 			} catch (IOException e) {
 				//発生しえないが、、
 				throw new RuntimeException(e);
@@ -160,7 +160,7 @@ public class SearchFormViewRuntime extends FormViewRuntime {
 		if (dynamicCondMap == null) {
 			return null;
 		}
-		for (Map.Entry<String, Object> e: dynamicCondMap.entrySet()) {
+		for (Map.Entry<String, Object> e : dynamicCondMap.entrySet()) {
 			dynamicCondMap.put(e.getKey(), toArray(e.getValue()));
 		}
 		return dynamicCondMap;
@@ -168,7 +168,7 @@ public class SearchFormViewRuntime extends FormViewRuntime {
 
 	private Object toArray(Object value) {
 		if (value != null && !value.getClass().isArray()) {
-			Object[] array = (Object[])Array.newInstance(value.getClass(), 1);
+			Object[] array = (Object[]) Array.newInstance(value.getClass(), 1);
 			array[0] = value;
 			return array;
 		}
