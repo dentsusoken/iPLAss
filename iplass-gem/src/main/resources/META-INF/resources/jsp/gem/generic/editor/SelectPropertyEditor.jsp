@@ -40,7 +40,6 @@
 <%@page import="org.iplass.mtp.util.StringUtil"%>
 <%@page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@page import="org.iplass.gem.command.Constants"%>
-<%@page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 
 <%
 	SelectPropertyEditor editor = (SelectPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
