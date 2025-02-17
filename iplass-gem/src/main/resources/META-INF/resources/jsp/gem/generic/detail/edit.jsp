@@ -36,13 +36,6 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
-<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
-<%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
-<%@ page import="org.iplass.mtp.entity.definition.properties.SelectProperty"%>
-
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="java.util.HashMap"%>
 <%
 	String newversion = request.getParameter(Constants.NEWVERSION);
 	String backPath = request.getParameter(Constants.BACK_PATH);
@@ -59,16 +52,6 @@
 	OutputType type = OutputType.EDIT;
 	String contextPath = TemplateUtil.getTenantContextPath();
 	DetailFormView form = data.getView();
-
-	String errorMsg = GemResourceBundleUtil.resourceString("command.generic.detail.InsertCommand.exceedMaximumSelection.error");
-	EntityDefinition entityDefinition = (EntityDefinition)data.getEntityDefinition();
-	Map<String,Integer> map = new HashMap<String,Integer>();
-	List<PropertyDefinition> propertyDefinitionList = entityDefinition.getPropertyList();
-	for (PropertyDefinition proDefinition : propertyDefinitionList){
-		if(!proDefinition.isInherited() && proDefinition instanceof SelectProperty){
-			map.put(proDefinition.getName(), proDefinition.getMultiplicity());
-		}
-	}
 
 	String defName = data.getEntityDefinition().getName();
 	String viewName = form.getName();
@@ -261,26 +244,6 @@ function cancel() {
 function validation() {
 	<%-- common.js --%>
 	var ret = editValidate();
-	var errorMsg = "<%= errorMsg %>"
-	var jsMap = {
-	        <% 
-	            for (Map.Entry<String,Integer> entry : map.entrySet()) {
-	                out.print("\"" + entry.getKey() + "\": \"" + entry.getValue() + "\",");
-	            }
-	        %>
-	    };
-	for (var key in jsMap) {
-	    if (jsMap.hasOwnProperty(key)) {
-	    	
-	    	var checkedCount = $("#id_td_"+key+" input[type='checkbox']:checked").length;
-	    	if (checkedCount>jsMap[key]) {
-	    		alert(errorMsg)
-	    		ret = false;
-	    		break;
-	    	}
-	    }
-	}
-	
 	var message = !ret ? "${m:rs('mtp-gem-messages', 'command.generic.detail.DetailCommandBase.inputErr')}" : "";
 	$(".detail_edit > .page-error").text(message);
 	return ret;
