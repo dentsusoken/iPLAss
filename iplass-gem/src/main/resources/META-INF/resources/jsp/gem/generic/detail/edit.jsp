@@ -321,8 +321,8 @@ $(function(){
 				|| !ViewUtil.dispElement(section)) {
 			continue;
 		}
-
 		request.setAttribute(Constants.ELEMENT, section);
+
 		String path = EntityViewUtil.getJspPath(section, ViewConst.DESIGN_TYPE_GEM);
 		if (path != null) {
 %>
