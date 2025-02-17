@@ -19,6 +19,7 @@
  --%>
 
 <%@taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@page import="java.util.ArrayList"%>
@@ -47,8 +48,6 @@
 
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 
-    int maxMultiple = pd.getMultiplicity();
-    String mulError = GemResourceBundleUtil.resourceString("command.generic.detail.InsertCommand.selectPropertymaxMultiple.error", maxMultiple);
 	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof SelectProperty)) {
 		//定義がSelectPropertyか、Expression(resultType=Select)でなければ表示不可
@@ -119,8 +118,9 @@
 <jsp:include page="ErrorMessage.jsp">
 	<jsp:param value="<%=propName %>" name="propName" />
 </jsp:include>
-<div id="multipleInfo" data-mul="<c:out value="<%= maxMultiple %>"/>"></div> 
-<div id="error-message" style="color: red; display: none;"><%= mulError %></div> 
+<div id="multipleInfo" data-mul="<c:out value="<%= pd.getMultiplicity() %>"/>"></div> 
+<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
+<div id="error-message" style="color: red; display: none;">${m:rsp("mtp-gem-messages","command.generic.detail.InsertCommand.selectPropertymaxMultiple.error",multiplicity)}</div>
 <%
 	} else if (OutputType.VIEW == type) {
 		//詳細表示
