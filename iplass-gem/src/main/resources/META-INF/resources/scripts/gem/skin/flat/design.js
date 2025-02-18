@@ -517,37 +517,16 @@ function createPseudoObject() {
  * @returns
  */
 function onClickPseudoCheckbox() {
-    var $this = $(this);
-    if ($this.next().is(":disabled")) {
-        return false;
-    }
-
-    var $group = $this.closest("td"); 
-    var maxChecked = parseInt($group.find("#multipleInfo").attr("data-mul"), 10); 
-    var $errorMsg = $group.find("#error-message"); 
-
-    var $checkboxes = $group.find(".pseudo-checkbox.checked"); 
-    var checkedCount = $checkboxes.length;
-
-    if ($this.is(".checked")) {
-        $this.removeClass("checked").next("input").prop("checked", false).trigger("change");
-        checkedCount--;
-    } else {
-        if (checkedCount >= maxChecked) {
-            $errorMsg.show(); // 制限を超えた場合にエラーメッセージを表示する
-        } else {
-            $errorMsg.hide(); // 条件が満たされた場合、現在のグループのエラーを非表示にする。
-        }
-        $this.addClass("checked").next("input").prop("checked", true).trigger("change");
-        checkedCount++;
-    }
-
-    // 選択数が最大選択数以下の場合、エラー表示を非表示にする。
-    if (checkedCount <= maxChecked) {
-        $errorMsg.hide();
-    }
-
-    return false;
+	var $this = $(this);
+	if ($this.next().is(":disabled")) {
+		return false;
+	}
+	if ($this.is(".checked")) {
+		$this.removeClass("checked").next("input").prop("checked", false).trigger("change");
+	} else {
+		$this.addClass("checked").next("input").prop("checked", true).trigger("change");
+	}
+	return false;
 }
 
 /**

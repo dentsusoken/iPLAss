@@ -2101,6 +2101,9 @@ input[type=button].del-btn {
 
 span.error {
   color: #f00; }
+div.error-message{
+  color: #f00;
+  display: none; }
 
 a + .binaryDelete {
   margin-left: 10px; }

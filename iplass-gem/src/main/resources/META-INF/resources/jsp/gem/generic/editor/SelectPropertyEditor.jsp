@@ -117,9 +117,6 @@
 <jsp:include page="ErrorMessage.jsp">
 	<jsp:param value="<%=propName %>" name="propName" />
 </jsp:include>
-<div id="multipleInfo" data-mul="<c:out value="<%= pd.getMultiplicity() %>"/>"></div> 
-<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
-<div id="error-message" style="color: red; display: none;">${m:rsp("mtp-gem-messages","command.generic.detail.InsertCommand.selectPropertymaxMultiple.error",multiplicity)}</div>
 <%
 	} else if (OutputType.VIEW == type) {
 		//詳細表示

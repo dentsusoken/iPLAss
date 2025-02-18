@@ -200,17 +200,42 @@
 </ul>
 <script>
 $(function() {
+  
+    $("td.section-data").each(function() {
+    	var $td = $(this);
+    	var maxSelection = parseInt($td.find(".multipleInfo").attr("data-mul"), 10);
+    	var $errorMsg = $td.closest("tr").find(".error-message");
+        var checkboxName = $td.find("input[type='checkbox']").attr("name");
+        $td.on("change", "input[type='checkbox']",function() {
+            var checkedCount = $td.find("input[name='" + checkboxName + "']:checked").length;
+            if (checkedCount > maxSelection) {
+                $errorMsg.show();
+            } else {
+            	$errorMsg.hide();
+            }
+        });
+    });
 //	common.js
 	addEditValidator(function() {
-        var checkedCount = $("#id_td_<c:out value="<%=propName%>"/> input[type='checkbox']:checked").length;
-			if (checkedCount > <%=pd.getMultiplicity()%>) {
-				alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
-				return false;
-			}
-		return true;
+		var isValid = true;
+        $("td.section-data").each(function() {
+            var $td = $(this);
+            var maxSelection = parseInt($td.find(".multipleInfo").attr("data-mul"), 10);
+            var checkboxName = $td.find("input[type='checkbox']").attr("name");
+            var checkedCount = $td.find("input[name='" + checkboxName + "']:checked").length;
+            if (checkedCount > maxSelection) {
+                alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
+                isValid = false;
+            }
+        });
+
+        return isValid;
 	});
 }); 
 </script>
+<div class="multipleInfo" data-mul="<c:out value="<%= pd.getMultiplicity() %>"/>"></div>
+<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
+<div class="error-message">${m:rsp("mtp-gem-messages","command.generic.detail.InsertCommand.selectPropertymaxMultiple.error",multiplicity)}</div>
 <%
 		}
 	} else {
