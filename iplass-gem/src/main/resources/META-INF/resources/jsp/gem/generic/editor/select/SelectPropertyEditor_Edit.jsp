@@ -200,34 +200,34 @@
 </ul>
 <script>
 $(function() {
-    $("input[type='checkbox']").on("change", function() {
-        var $checkbox = $(this);  
-        var $td = $checkbox.closest("td");  
-        var maxSelection = parseInt($td.find(".multipleInfo").attr("data-mul"), 10);  
-        var $errorMsg = $td.find(".error"); 
-        var checkboxName = $checkbox.attr("name");  
+	$("input[type='checkbox']").on("change", function() {
+		var $checkbox = $(this);
+		var $td = $checkbox.closest("td");
+		var maxSelection = parseInt($td.find(".multipleInfo").attr("data-mul"), 10);
+		var $errorMsg = $td.find(".error");
+		var checkboxName = $checkbox.attr("name");
 
-        var checkedCount = $td.find("input[name='" + checkboxName + "']:checked").length;
-        if (checkedCount > maxSelection) {
-            $errorMsg.show();  
-        } else {
-            $errorMsg.hide(); 
-        }
-    });
-// common.js
-    	addEditValidator(function() {
-    		var checkedCount = $("#id_td_<c:out value="<%=propName%>"/> input[type='checkbox']:checked").length;
-    		if (checkedCount > <%=pd.getMultiplicity()%>) {
-    			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
-    			return false;
-    		}
-    	return true;
-    	});
-}); 
+		var checkedCount = $td.find("input[name='" + checkboxName + "']:checked").length;
+		if (checkedCount > maxSelection) {
+			$errorMsg.show();
+			} else {
+				$errorMsg.hide();
+				}
+		});
+	<%-- common.js --%>
+	addEditValidator(function() {
+		var checkedCount = $("#id_td_<c:out value="<%=propName%>"/> input[type='checkbox']:checked").length;
+		if (checkedCount > <%=pd.getMultiplicity()%>) {
+			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
+			return false;
+			}
+		return true;
+		});
+	});
 </script>
 <div class="multipleInfo" data-mul="<c:out value="<%= pd.getMultiplicity() %>"/>"></div>
 <c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
-<p class="error"><span class="error" style="display: none;">${m:rsp("mtp-gem-messages","command.generic.detail.InsertCommand.selectPropertymaxMultiple.error",multiplicity)}</span></p>
+<p class="error" style="display: none;><span class="error">${m:rsp("mtp-gem-messages","command.generic.detail.InsertCommand.selectPropertymaxMultiple.error",multiplicity)}</span></p>
 <%
 		}
 	} else {
