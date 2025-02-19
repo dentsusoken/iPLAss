@@ -165,10 +165,13 @@
 		} else if (editor.getDisplayType() == SelectDisplayType.CHECKBOX
 				|| editor.getDisplayType() == SelectDisplayType.RADIO) {
 			//チェックボックスorラジオボタン
+
+			String ulId = "ul_" + propName;
+			
 			String cls = "list-radio-01";
 			if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) cls = "list-check-01";
 %>
-<ul class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
+<ul id="<c:out value="<%=ulId %>"/>" class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
 <%
 			for (EditorValue tmp : editor.getValues()) {
 				String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, tmp, selectValueList);
@@ -197,37 +200,37 @@
 <%
 			}
 %>
+<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
+<p class="error-multiplicity" style="display: none;">
+<span class="error">${m:rsp("mtp-gem-messages","command.generic.detail.InsertCommand.selectPropertymaxMultiple.error",multiplicity)}</span>
+</p>
 </ul>
 <script>
 $(function() {
-	$("input[type='checkbox']").on("change", function() {
-		var $checkbox = $(this);
-		var $td = $checkbox.closest("td");
-		var maxSelection = parseInt($td.find(".multipleInfo").attr("data-mul"), 10);
-		var $errorMsg = $td.find(".error");
-		var checkboxName = $checkbox.attr("name");
+	const $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
+	const $errorMsg = $(".error-multiplicity", $ul); 
+	
+	$(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']", $ul).on("change", function() {
 
-		var checkedCount = $td.find("input[name='" + checkboxName + "']:checked").length;
-		if (checkedCount > maxSelection) {
-			$errorMsg.show();
-			} else {
-				$errorMsg.hide();
-				}
-		});
+		const checkedCount = $(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']:checked", $ul).length;
+		if (checkedCount > <%=pd.getMultiplicity()%>) {
+			$errorMsg.show();  
+		} else {
+			$errorMsg.hide(); 
+		}
+	});
+
 	<%-- common.js --%>
 	addEditValidator(function() {
-		var checkedCount = $("#id_td_<c:out value="<%=propName%>"/> input[type='checkbox']:checked").length;
+		const checkedCount = $(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']:checked", $ul).length;
 		if (checkedCount > <%=pd.getMultiplicity()%>) {
 			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
 			return false;
-			}
+		}
 		return true;
-		});
 	});
+}); 
 </script>
-<div class="multipleInfo" data-mul="<c:out value="<%= pd.getMultiplicity() %>"/>"></div>
-<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
-<p class="error" style="display: none;><span class="error">${m:rsp("mtp-gem-messages","command.generic.detail.InsertCommand.selectPropertymaxMultiple.error",multiplicity)}</span></p>
 <%
 		}
 	} else {
