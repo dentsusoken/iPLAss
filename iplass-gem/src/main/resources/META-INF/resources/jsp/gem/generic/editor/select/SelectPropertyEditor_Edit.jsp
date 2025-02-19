@@ -202,7 +202,7 @@
 %>
 <c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
 <p class="error-multiplicity" style="display: none;">
-<span class="error">${m:rsp("mtp-gem-messages","command.generic.detail.InsertCommand.selectPropertymaxMultiple.error",multiplicity)}</span>
+<span class="error">${m:rsp("mtp-gem-messages","generic.editor.select.SelectPropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
 </p>
 </ul>
 <script>
