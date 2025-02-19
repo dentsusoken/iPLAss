@@ -19,6 +19,7 @@
  --%>
 
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
@@ -164,10 +165,13 @@
 		} else if (editor.getDisplayType() == SelectDisplayType.CHECKBOX
 				|| editor.getDisplayType() == SelectDisplayType.RADIO) {
 			//チェックボックスorラジオボタン
+
+			String ulId = "ul_" + propName;
+			
 			String cls = "list-radio-01";
 			if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) cls = "list-check-01";
 %>
-<ul class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
+<ul id="<c:out value="<%=ulId %>"/>" class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
 <%
 			for (EditorValue tmp : editor.getValues()) {
 				String label = EntityViewUtil.getSelectPropertyLabel(localeValueList, tmp, selectValueList);
@@ -196,7 +200,37 @@
 <%
 			}
 %>
+<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
+<p class="error-multiplicity" style="display: none;">
+<span class="error">${m:rsp("mtp-gem-messages","generic.editor.select.SelectPropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
+</p>
 </ul>
+<script>
+$(function() {
+	const $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
+	const $errorMsg = $(".error-multiplicity", $ul); 
+	
+	$(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']", $ul).on("change", function() {
+
+		const checkedCount = $(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']:checked", $ul).length;
+		if (checkedCount > <%=pd.getMultiplicity()%>) {
+			$errorMsg.show();  
+		} else {
+			$errorMsg.hide(); 
+		}
+	});
+
+	<%-- common.js --%>
+	addEditValidator(function() {
+		const checkedCount = $(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']:checked", $ul).length;
+		if (checkedCount > <%=pd.getMultiplicity()%>) {
+			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
+			return false;
+		}
+		return true;
+	});
+}); 
+</script>
 <%
 		}
 	} else {
