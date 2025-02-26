@@ -79,8 +79,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	/** Load時に最新データを強制的に取得するか（下位互換対応） */
 	@Deprecated
-	private final boolean loadLatestVersionedEntity
-		= Boolean.parseBoolean(System.getProperty("mtp.entity.update.targetSpecific.loadLatestVersionedEntity"));
+	private final boolean loadLatestVersionedEntity = Boolean
+			.parseBoolean(System.getProperty("mtp.entity.update.targetSpecific.loadLatestVersionedEntity"));
 
 	/** 変換時に発生したエラー情報 */
 	private List<ValidateError> errors;
@@ -146,7 +146,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	protected Object getPropValue(PropertyDefinition p, String paramPrefix) {
 		Object value = null;
 		boolean isMultiple = p.getMultiplicity() != 1;
-		String name = paramPrefix +  p.getName();
+		String name = paramPrefix + p.getName();
 		if (p instanceof BinaryProperty) {
 			value = isMultiple ? getBinaryReferenceValues(name) : getBinaryReferenceValue(name);
 		} else if (p instanceof BooleanProperty) {
@@ -262,10 +262,13 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 			ret = param != null ? Boolean.parseBoolean(param) : null;
 
 			//チェックボックス未チェック時はNullになるがfalseに置き換える
-			if (ret == null && type == BooleanDisplayType.CHECKBOX) ret = false;
+			if (ret == null && type == BooleanDisplayType.CHECKBOX) {
+				ret = false;
+			}
 		}
 		return ret;
 	}
+
 	protected Boolean[] getBooleanValues(String name, int multiplicity) {
 		String _type = getParam(name + "Type");
 		BooleanDisplayType type = StringUtil.isNotEmpty(_type) ? BooleanDisplayType.valueOf(_type) : null;
@@ -290,13 +293,15 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 			for (int i = 0; i < multiplicity; i++) {
 				String param = getParam(name + i);
 				Boolean b = param != null ? Boolean.parseBoolean(param) : null;
-				if (b == null && type == BooleanDisplayType.CHECKBOX) b = false;
+				if (b == null && type == BooleanDisplayType.CHECKBOX) {
+					b = false;
+				}
 				list.add(b);
 			}
 			//データが１つでも存在する場合のみ配列化
 			boolean hasValue = list.stream().anyMatch(value -> value != null);
 			if (hasValue) {
-				ret = list.toArray(new Boolean[]{});
+				ret = list.toArray(new Boolean[] {});
 			}
 		}
 		return ret != null && ret.length > 0 ? ret : null;
@@ -314,13 +319,13 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		String param = getParam(name);
 		String lang = I18nUtil.getLanguageIfUseMultilingual();
 		if (StringUtil.isNotBlank(param)) {
-			if(selectProperty == null) {
+			if (selectProperty == null) {
 				return new SelectValue(param);
 			}
 			SelectValue selectValue = selectProperty.getLocalizedSelectValue(param, lang);
 			return selectValue == null
-				? new SelectValue(param)
-				: selectValue;
+					? new SelectValue(param)
+					: selectValue;
 		}
 
 		return null;
@@ -336,14 +341,14 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 							return null;
 						}
 
-						if(selectProperty == null) {
+						if (selectProperty == null) {
 							return new SelectValue(param);
 						}
 
 						SelectValue selectValue = selectProperty.getLocalizedSelectValue(param, lang);
 						return selectValue == null
-							? new SelectValue(param)
-							: selectValue;
+								? new SelectValue(param)
+								: selectValue;
 					})
 					.toArray(SelectValue[]::new);
 			return ret.length > 0 ? ret : null;
@@ -400,7 +405,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		if (interrupter == null) {
 			//何もしないデフォルトInterrupter生成
 			getLogger().debug("set defaul registration interrupter.");
-			interrupter = new RegistrationInterrupter(){};
+			interrupter = new RegistrationInterrupter() {
+			};
 		}
 		return interrupter;
 	}
@@ -433,7 +439,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		if (interrupter == null) {
 			//何もしないデフォルトInterrupter生成
 			getLogger().debug("set defaul load entity interrupter.");
-			interrupter = new LoadEntityInterrupter() {};
+			interrupter = new LoadEntityInterrupter() {
+			};
 		}
 		return interrupter;
 	}
@@ -508,7 +515,9 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	@Override
 	public List<ValidateError> getErrors() {
-		if (errors == null) errors = new ArrayList<>();
+		if (errors == null) {
+			errors = new ArrayList<>();
+		}
 		return errors;
 	}
 
