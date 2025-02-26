@@ -44,6 +44,7 @@ import org.iplass.gem.command.generic.detail.RegistrationPropertyBaseHandler;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityKey;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.ValidateError;
@@ -229,26 +230,24 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		//→件数取れないため通常の参照扱いで処理が終わる
 		Long count = getLongValue(prefix + p.getName() + "_count");
 		if (p.getMultiplicity() == 1) {
-			Entity entity = null;
+			List<Entity> list = null;
 			if (count == null) {
 				String key = getParam(prefix + p.getName());
-				entity = getRefEntity(rp.getObjectDefinitionName(), key);
+				list = getRefEntities(rp.getObjectDefinitionName(), new String[] { key });
 			} else {
-				List<Entity> list = getRefTableValues(rp, defName, count, prefix);
-				if (list.size() > 0) {
-					entity = list.get(0);
-				}
+				list = getRefTableValues(rp, defName, count, prefix);
 			}
-			return entity;
+			if (list.size() > 0) {
+				return list.get(0);
+			} else {
+				return null;
+			}
 		} else {
 			List<Entity> list = null;
 			if (count == null) {
 				String[] params = getParams(prefix + p.getName());
 				if (params != null) {
-					list = Arrays.stream(params)
-							.map(key -> getRefEntity(rp.getObjectDefinitionName(), key))
-							.filter(value -> value != null)
-							.collect(Collectors.toList());
+					list = getRefEntities(rp.getObjectDefinitionName(), params);
 				}
 			} else {
 				//参照型で参照先のデータを作成・編集するケース
@@ -271,38 +270,61 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		}
 	}
 
-	private Entity getRefEntity(String definitionName, String key) {
-		Entity entity = null;
-		String oid = null;
-		Long version = null;
-		if (key != null) {
-			int lastIndex = key.lastIndexOf("_");
+	/**
+	 * NestTable以外の参照先編集データを返します。
+	 *
+	 * @param definitionName 参照先Entity定義名
+	 * @param keyParameters oidとversionのパラメータ情報
+	 * @return 編集データ
+	 */
+	private List<Entity> getRefEntities(String definitionName, String[] keyParameters) {
 
-			if (lastIndex < 0) {
-				oid = key;
-			} else {
-				oid = key.substring(0, lastIndex);
-				version = CommandUtil.getLong(key.substring(lastIndex + 1));
-			}
-		}
-		if (StringUtil.isNotBlank(oid)) {
-			//バリデーションエラー時に消えないようにデータ読み込み
-			//gemの設定により、参照を合わせて読み込むか切り替える
+		List<EntityKey> keys = Arrays.stream(keyParameters)
+				.map(key -> {
+					int lastIndex = key.lastIndexOf("_");
+					String oid = null;
+					Long version = null;
+					if (lastIndex < 0) {
+						oid = key;
+					} else {
+						oid = key.substring(0, lastIndex);
+						version = CommandUtil.getLong(key.substring(lastIndex + 1));
+					}
+					return new EntityKey(oid, version);
+				})
+				.collect(Collectors.toList());
+
+		List<Entity> entities = null;
+		if (gemConfig.isMustLoadWithReference()) {
+			// 参照Entityをロードし直す
 			if (gemConfig.isLoadWithReference()) {
-				entity = entityManager.load(oid, version, definitionName);
+				entities = entityManager.batchLoad(keys, definitionName);
 			} else {
-				entity = entityManager.load(oid, version, definitionName, new LoadOption(false, false));
+				entities = entityManager.batchLoad(keys, definitionName, new LoadOption(false, false));
 			}
+		} else {
+			// 参照Entityをロードし直さない
+			final EntityDefinition referenceEntityDefinition = definitionManager.get(definitionName);
+			entities = keys.stream()
+					.map(key -> {
+						Entity entity = newEntity(referenceEntityDefinition);
+						entity.setOid(key.getOid());
+						entity.setVersion(key.getVersion());
+						return entity;
+					})
+					.collect(Collectors.toList());
 		}
-		return entity;
+		return entities;
 	}
 
 	/**
-	 * リクエストパラメータからテーブルの参照型データの値を取得します。
-	 * @param p プロパティ定義
-	 * @param defName 参照型のEntity定義名
-	 * @param count 参照データの最大件数
-	 * @return 参照データのリスト
+	 * NestTableの編集データを返します。
+	 *
+	 * @param p 対象ReferenceProperty定義
+	 * @param defName 参照先Entity定義名
+	 * @param count 件数
+	 * @param prefix 参照型のプロパティのリクエストパラメータに設定されているプレフィックス
+	 * @return NestTableの編集データ
 	 */
 	private List<Entity> getRefTableValues(ReferenceProperty p, String defName, Long count, String prefix) {
 		final List<Entity> list = new ArrayList<>();

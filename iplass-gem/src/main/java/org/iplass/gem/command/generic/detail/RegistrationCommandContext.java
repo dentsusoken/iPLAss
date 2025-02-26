@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command.generic.detail;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
@@ -124,23 +126,35 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		return loadLatestVersionedEntity;
 	}
 
+	/**
+	 * MappingClassを考慮したEntityインスタンスを返します。
+	 *
+	 * @return Entityインスタンス
+	 */
 	protected Entity newEntity() {
-		Entity res = null;
+		return newEntity(entityDefinition);
+	}
+
+	/**
+	 * MappingClassを考慮したEntityインスタンスを返します。
+	 *
+	 * @param entityDefinition Entity定義
+	 * @return Entityインスタンス
+	 */
+	protected Entity newEntity(EntityDefinition entityDefinition) {
+		Entity entity = null;
 		if (entityDefinition.getMapping() != null && entityDefinition.getMapping().getMappingModelClass() != null) {
 			try {
-				res = (Entity) Class.forName(entityDefinition.getMapping().getMappingModelClass()).newInstance();
-			} catch (InstantiationException e) {
-				throw new EntityRuntimeException(e);
-			} catch (IllegalAccessException e) {
-				throw new EntityRuntimeException(e);
-			} catch (ClassNotFoundException e) {
+				entity = (Entity) Class.forName(entityDefinition.getMapping().getMappingModelClass()).getDeclaredConstructor().newInstance();
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+					| ClassNotFoundException e) {
 				throw new EntityRuntimeException(e);
 			}
 		} else {
-			res = new GenericEntity();
+			entity = new GenericEntity();
 		}
-		res.setDefinitionName(entityDefinition.getName());
-		return res;
+		entity.setDefinitionName(entityDefinition.getName());
+		return entity;
 	}
 
 	protected Object getPropValue(PropertyDefinition p, String paramPrefix) {
