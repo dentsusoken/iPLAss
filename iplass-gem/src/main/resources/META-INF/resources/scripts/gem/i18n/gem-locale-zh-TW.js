@@ -25,6 +25,7 @@ scriptContext.gem.locale.common.numcheckMsg = "請輸入數值。";
 scriptContext.gem.locale.common.pleaseSelect = "請選擇";
 scriptContext.gem.locale.common.requiredMsg = "請輸入{0}。";
 scriptContext.gem.locale.common.numFormatErrorMsg = "請輸入數值 {0}。";
+scriptContext.gem.locale.common.stringFormatErrorMsg = "請輸符合条件的文字列 {0}。";
 scriptContext.gem.locale.common.dateFormatErrorMsg = "請輸入正確的日期 {0}。 ({1})";
 scriptContext.gem.locale.common.timeFormatErrorMsg = "請輸入正確的時間 {0}。 ({1})";
 scriptContext.gem.locale.common.timestampFormatErrorMsg = "請輸入正確的日期或​​時間 {0}。 ({1})";

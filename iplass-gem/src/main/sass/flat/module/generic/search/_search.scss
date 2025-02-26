@@ -134,6 +134,11 @@
 			width: 45%; //数値範囲検索の場合は長さを半分にする
 		}
 	}
+	.string-range {
+		input.inpbr {
+			width: 45%; //数値範囲検索の場合は長さを半分にする
+		}
+	}
 	input[type=text] {
 		font-size: 1rem;
 		padding: 2px 5px;

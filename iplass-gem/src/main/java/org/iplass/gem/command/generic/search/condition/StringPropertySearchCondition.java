@@ -32,9 +32,12 @@ import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.SubQuery;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
+import org.iplass.mtp.entity.query.condition.predicate.Between;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
+import org.iplass.mtp.entity.query.condition.predicate.GreaterEqual;
 import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.entity.query.condition.predicate.IsNull;
+import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
@@ -70,9 +73,36 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 					conditions.add(new Equals(getPropertyName(), getValue()));
 				}
 			} else {
-				//like検索
-				//conditions.add(new Like(getPropertyName(), "%" + StringUtil.escapeEqlForLike(getValue().toString()) + "%"));
-				conditions.add(new Like(getPropertyName(), getValue().toString(), Like.MatchPattern.PARTIAL));
+				String[] values = (String[]) getValue();
+				if (sp.isSearchInRange()) {
+					//範囲検索
+					// From-To検索
+					// 2番目、3番目を利用
+					String from = null;
+					String to = null;
+					if (values.length > 1 && values[1] != null) {
+						from = values[1];
+					}
+					if (values.length > 2 && values[2] != null) {
+						to = values[2];
+					}
+					if (from != null && to != null) {
+						conditions.add(new Between(getPropertyName(), from, to));
+					} else if (from != null && to == null) {
+						conditions.add(new GreaterEqual(getPropertyName(), from));
+					} else if (from == null && to != null) {
+						conditions.add(new LesserEqual(getPropertyName(), to));
+					}
+				} else {
+					// like検索
+					// 1番目を利用
+					//conditions.add(new Like(getPropertyName(), "%" + StringUtil.escapeEqlForLike(getValue().toString()) + "%"));
+					if (values.length > 0 && values[0] != null) {
+						String strValue = values[0];
+						//複数の場合は部分一致
+						conditions.add(new Like(getPropertyName(), strValue.toString(), Like.MatchPattern.PARTIAL));
+					}
+				}
 			}
 		} else if (editor instanceof UserPropertyEditor) {
 			//入力された内容(名前)でoid取得

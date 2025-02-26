@@ -36,6 +36,13 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
+
+<%!
+	String format(String valueStr, StringPropertyEditor editor) {
+	//todo: String範囲検索の引数条件によって、バリデーションとフォーマットを処理する。
+		return valueStr;
+	}
+%>
 <%
 	StringPropertyEditor editor = (StringPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 
@@ -82,7 +89,9 @@
 				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
 			}
 		}
-
+		Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
+		if (!editor.isSearchInRange()) {
+			// 単一検索
 		if (pd instanceof StringProperty
 				|| (pd instanceof ExpressionProperty
 						&& ((ExpressionProperty)pd).getResultType() == PropertyDefinitionType.STRING)) {
@@ -143,7 +152,6 @@ $(function() {
 </script>
 <%
 			} else if (editor.getDisplayType() == StringDisplayType.LABEL) {
-				Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 				String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 				strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
 				String labelstr = StringUtil.escapeXml10(strDefault, true);
@@ -186,7 +194,6 @@ $(function() {
 			}
 		} else {
 			if (editor.getDisplayType() == StringDisplayType.LABEL) {
-				Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 				String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 				strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
 				String labelstr = StringUtil.escapeXml10(strDefault, true);
@@ -229,6 +236,130 @@ $(function() {
 </script>
 <%
 		}
+	}else
+	{
+					// 範囲検索
+			String dispStyleFrom = editor.isHideSearchConditionFrom() ? "display: none;" : "";
+
+			String strDefaultFrom = "";
+			if (defaultValue != null && defaultValue.length > 0) {
+				strDefaultFrom = defaultValue[0];
+			}
+			if (editor.getDisplayType() == StringDisplayType.LABEL) {
+				String[] _strDefaultFrom = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "From");
+				strDefaultFrom = _strDefaultFrom != null && _strDefaultFrom.length > 0 ? _strDefaultFrom[0] : strDefaultFrom;
+				String formatValue = format(strDefaultFrom, editor);
+%>
+<span class="string-range" style="<c:out value="<%=dispStyleFrom + customStyle%>"/>">
+<span class="data-label"><c:out value="<%=formatValue %>"/></span>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>From" value="<c:out value="<%=strDefaultFrom %>"/>" />
+</span>
+<%
+			} else {
+				String inputValueFrom = "";
+				if (propValue != null && propValue.length > 0) {
+					inputValueFrom = propValue[0];
+				}
+%>
+<span class="string-range" style="<c:out value="<%=dispStyleFrom%>"/>">
+<input type="text" class="form-size-04 inpbr " style="<c:out value="<%=customStyle%>"/>" 
+	value="<%=inputValueFrom %>" name="<c:out value="<%=propName %>"/>From" />
+<!--  
+	TODO(必要なバリデーションとデータフォマードなど)
+	onblur="numcheck(this, true)" -->
+</span>
+<%
+			}
+
+			if ((!editor.isHideSearchConditionFrom() && !editor.isHideSearchConditionTo())
+					|| !editor.isHideSearchConditionRangeSymbol()) {
+%>
+<span class="range-symbol">&nbsp;${m:rs('mtp-gem-messages', 'generic.editor.common.rangeSymbol')}&nbsp;</span>
+<%
+			}
+
+			String dispStyleTo = editor.isHideSearchConditionTo() ? "display: none;" : "";
+
+			String strDefaultTo = "";
+			if (defaultValue != null && defaultValue.length > 1) {
+				strDefaultTo = defaultValue[1];
+			}
+			if (editor.getDisplayType() == StringDisplayType.LABEL) {
+				String[] _strDefaultTo = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
+				strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
+				String formatValue = format(strDefaultTo, editor);
+%>
+<span class="string-range" style="<c:out value="<%=dispStyleTo + customStyle%>"/>">
+<span class="data-label"><c:out value="<%=formatValue %>"/></span>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
+</span>
+<%
+			} else {
+				String inputValueTo = "";
+				if (propValue != null && propValue.length > 1) {
+					inputValueTo = propValue[1];
+				}
+%>
+<span class="string-range" style="<c:out value="<%=dispStyleTo%>"/>">
+<input type="text" class="form-size-04 inpbr " style="<c:out value="<%=customStyle%>"/>" 
+	value="<%=inputValueTo %>" name="<c:out value="<%=propName %>"/>To" />
+<!--  
+	TODO(必要なバリデーションとデータフォマードなど)
+	onblur="numcheck(this, true)" -->
+</span>
+<%
+			}
+%>
+<script type="text/javascript">
+$(function() {
+	<%-- common.js --%>
+	addNormalConditionItemResetHandler(function(){
+		var $from = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>From") + "']");
+		$from.val("<%=strDefaultFrom %>");
+		var $to = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']");
+		$to.val("<%=strDefaultTo %>");
+
+		var $parent = $from.closest(".property-data");
+		$from.removeClass("validate-error");
+		$to.removeClass("validate-error");
+		$(".format-error", $parent).remove();
+	});
+<%
+			if (required) {
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var valFrom = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>From") + "']").val();
+		var valTo = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val();
+		if ((typeof valFrom === "undefined" || valFrom == null || valFrom == "") 
+				&& (typeof valTo === "undefined" || valTo == null || valTo == "")) {
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+
+		return true;
+	});
+<%
+			}
+
+			//フォーマットチェック
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var valFrom = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>From") + "']").val();
+		var valTo = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val();
+		//数字かどうかバリデーション　isNaN()　一旦保留
+		if ((typeof valFrom !== "undefined" && valFrom !== null && valFrom !== "" && isNaN(valFrom)) 
+				|| (typeof valTo !== "undefined" && valTo != null && valTo !== "" && isNaN(valTo))) {
+			alert(scriptContext.gem.locale.common.stringFormatErrorMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+		return true;
+	});
+});
+</script>
+<%
+	}
 	} else {
 		//HIDDEN
 %>
