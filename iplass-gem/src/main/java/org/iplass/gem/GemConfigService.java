@@ -43,7 +43,10 @@ import org.iplass.mtp.view.generic.element.section.SearchConditionSection.FileSu
  */
 public class GemConfigService implements Service {
 
-	/** リクエストのパラメータを基に参照データをロードする際、参照プロパティも合わせてロードするか */
+	/** リクエストのパラメータをもとに参照データを更新する際に、参照データをロードしなおすか。*/
+	private boolean mustLoadWithReference;
+
+	/** リクエストのパラメータを基に参照データを更新する際に、参照エンティティの参照プロパティも合わせてロードするか */
 	private boolean loadWithReference;
 
 	/** 詳細表示画面で数値プロパティの値をカンマでフォーマットするか */
@@ -176,8 +179,9 @@ public class GemConfigService implements Service {
 				: null;
 
 		imageColors = config.getValues("imageColors", ImageColorSetting.class);
-		loadWithReference = Boolean.valueOf(config.getValue("loadWithReference"));
-		formatNumberWithComma = Boolean.valueOf(config.getValue("formatNumberWithComma"));
+		mustLoadWithReference = config.getValue("mustLoadWithReference", Boolean.class, true);
+		loadWithReference = config.getValue("loadWithReference", Boolean.class, false);
+		formatNumberWithComma = config.getValue("formatNumberWithComma", Boolean.class, false);
 
 		fileSupportType = config.getValue("fileSupportType", FileSupportType.class, FileSupportType.CSV);
 		csvDownloadMaxCount = config.getValue("csvDownloadMaxCount", Integer.class, 65535);
@@ -263,8 +267,7 @@ public class GemConfigService implements Service {
 						Entity.CREATE_DATE,
 						Entity.UPDATE_BY,
 						Entity.UPDATE_DATE,
-						Entity.LOCKED_BY
-						));
+						Entity.LOCKED_BY));
 				String systemPropertiesStr = config.getValue("autoGenerateSystemProperties");
 				String[] inputArray = systemPropertiesStr.split(",");
 				String[] validArray = Arrays.stream(inputArray)
@@ -290,8 +293,16 @@ public class GemConfigService implements Service {
 	}
 
 	/**
-	 * リクエストのパラメータを基に参照データをロードする際、参照プロパティも合わせてロードするかを取得します。
-	 * @return リクエストのパラメータを基に参照データをロードする際、参照プロパティも合わせてロードするか
+	 * リクエストのパラメータをもとに参照データを更新する際に、参照データをロードしなおすかを取得します。
+	 * @return リクエストのパラメータをもとに参照データを更新する際に、参照データをロードしなおすか
+	 */
+	public boolean isMustLoadWithReference() {
+		return mustLoadWithReference;
+	}
+
+	/**
+	 * リクエストのパラメータを基に参照データを更新する際に、参照エンティティの参照プロパティも合わせてロードするかを取得します。
+	 * @return リクエストのパラメータを基に参照データを更新する際に、参照エンティティの参照プロパティも合わせてロードするか
 	 */
 	public boolean isLoadWithReference() {
 		return loadWithReference;

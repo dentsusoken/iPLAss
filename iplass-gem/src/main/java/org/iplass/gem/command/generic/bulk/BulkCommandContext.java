@@ -43,6 +43,7 @@ import org.iplass.gem.command.generic.detail.RegistrationPropertyBaseHandler;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityKey;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.ValidateError;
@@ -199,7 +200,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		}
 		String targetRow = rowParam.substring(0, rowParam.indexOf("_"));
 		String targetParam = rowParam.substring(rowParam.indexOf("_") + 1);
-		String[] params = new String[] { targetRow, targetParam };
+		String[] params = { targetRow, targetParam };
 		return params;
 	}
 
@@ -219,7 +220,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	private boolean hasDifferentPropertyValue(String propName) {
 		Set<String> oids = getOids();
 		for (String oid : oids) {
-			for (Long version: getVersions(oid)) {
+			for (Long version : getVersions(oid)) {
 				List<Object> propValues = bulkCommandParams.stream()
 						.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
 						.map(p -> p.getValue(propName))
@@ -264,24 +265,24 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		//→件数取れないため通常の参照扱いで処理が終わる
 		Long count = getLongValue(prefix + p.getName() + "_count");
 		if (p.getMultiplicity() == 1) {
-			Entity entity = null;
+			List<Entity> list = null;
 			if (count == null) {
 				String key = getParam(prefix + p.getName());
-				entity = getRefEntity(rp.getObjectDefinitionName(), key);
+				list = getRefEntities(rp.getObjectDefinitionName(), new String[] { key });
 			} else {
-				List<Entity> list = getRefTableValues(rp, defName, count, prefix);
-				if (list.size() > 0) entity = list.get(0);
+				list = getRefTableValues(rp, defName, count, prefix);
 			}
-			return entity;
+			if (list.size() > 0) {
+				return list.get(0);
+			} else {
+				return null;
+			}
 		} else {
 			List<Entity> list = null;
 			if (count == null) {
 				String[] params = getParams(prefix + p.getName());
 				if (params != null) {
-					list = Arrays.stream(params)
-							.map(key -> getRefEntity(rp.getObjectDefinitionName(), key))
-							.filter(value -> value != null)
-							.collect(Collectors.toList());
+					list = getRefEntities(rp.getObjectDefinitionName(), params);
 				}
 			} else {
 				//参照型で参照先のデータを作成・編集するケース
@@ -304,38 +305,61 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		}
 	}
 
-	private Entity getRefEntity(String definitionName, String key) {
-		Entity entity = null;
-		String oid = null;
-		Long version = null;
-		if (key != null) {
-			int lastIndex = key.lastIndexOf("_");
+	/**
+	 * NestTable以外の参照先編集データを返します。
+	 *
+	 * @param definitionName 参照先Entity定義名
+	 * @param keyParameters oidとversionのパラメータ情報
+	 * @return 編集データ
+	 */
+	private List<Entity> getRefEntities(String definitionName, String[] keyParameters) {
 
-			if (lastIndex < 0) {
-				oid = key;
-			} else {
-				oid = key.substring(0, lastIndex);
-				version = CommandUtil.getLong(key.substring(lastIndex + 1));
-			}
-		}
-		if (StringUtil.isNotBlank(oid)) {
-			//バリデーションエラー時に消えないようにデータ読み込み
-			//gemの設定により、参照を合わせて読み込むか切り替える
+		List<EntityKey> keys = Arrays.stream(keyParameters)
+				.map(key -> {
+					int lastIndex = key.lastIndexOf("_");
+					String oid = null;
+					Long version = null;
+					if (lastIndex < 0) {
+						oid = key;
+					} else {
+						oid = key.substring(0, lastIndex);
+						version = CommandUtil.getLong(key.substring(lastIndex + 1));
+					}
+					return new EntityKey(oid, version);
+				})
+				.collect(Collectors.toList());
+
+		List<Entity> entities = null;
+		if (gemConfig.isMustLoadWithReference()) {
+			// 参照Entityをロードし直す
 			if (gemConfig.isLoadWithReference()) {
-				entity = entityManager.load(oid, version, definitionName);
+				entities = entityManager.batchLoad(keys, definitionName);
 			} else {
-				entity = entityManager.load(oid, version, definitionName, new LoadOption(false, false));
+				entities = entityManager.batchLoad(keys, definitionName, new LoadOption(false, false));
 			}
+		} else {
+			// 参照Entityをロードし直さない
+			final EntityDefinition referenceEntityDefinition = definitionManager.get(definitionName);
+			entities = keys.stream()
+					.map(key -> {
+						Entity entity = newEntity(referenceEntityDefinition);
+						entity.setOid(key.getOid());
+						entity.setVersion(key.getVersion());
+						return entity;
+					})
+					.collect(Collectors.toList());
 		}
-		return entity;
+		return entities;
 	}
 
 	/**
-	 * リクエストパラメータからテーブルの参照型データの値を取得します。
-	 * @param p プロパティ定義
-	 * @param defName 参照型のEntity定義名
-	 * @param count 参照データの最大件数
-	 * @return 参照データのリスト
+	 * NestTableの編集データを返します。
+	 *
+	 * @param p 対象ReferenceProperty定義
+	 * @param defName 参照先Entity定義名
+	 * @param count 件数
+	 * @param prefix 参照型のプロパティのリクエストパラメータに設定されているプレフィックス
+	 * @return NestTableの編集データ
 	 */
 	private List<Entity> getRefTableValues(ReferenceProperty p, String defName, Long count, String prefix) {
 		final List<Entity> list = new ArrayList<>();
@@ -388,7 +412,9 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyColumn property) {
 		// ネストテーブルはプロパティ単位で登録可否決定
-		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) return;
+		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) {
+			return;
+		}
 
 		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getBulkUpdateEditor();
 
@@ -404,7 +430,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			target = list;
 		}
 
-		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), getRegistrationPropertyBaseHandler());
+		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(),
+				getRegistrationPropertyBaseHandler());
 		if (handler != null) {
 			handler.setForceUpdate(editor.isForceUpadte());
 			getReferenceRegistHandlers().add(handler);
@@ -420,9 +447,13 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		for (PropertyDefinition pd : getPropertyList()) {
 			if (pd.getMultiplicity() != 1) {
 				Object[] obj = entity.getValue(pd.getName());
-				if (obj != null && obj.length > 0) return false;
+				if (obj != null && obj.length > 0) {
+					return false;
+				}
 			} else {
-				if (entity.getValue(pd.getName()) != null) return false;
+				if (entity.getValue(pd.getName()) != null) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -526,7 +557,9 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			PropertyDefinition pd = getProperty(property.getPropertyName());
 			if (pd instanceof ReferenceProperty) {
 				String mappedBy = ((ReferenceProperty) pd).getMappedBy();
-				if (StringUtil.isBlank(mappedBy)) continue;
+				if (StringUtil.isBlank(mappedBy)) {
+					continue;
+				}
 
 				if (property.getBulkUpdateEditor() instanceof ReferencePropertyEditor) {
 					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getBulkUpdateEditor();
@@ -614,14 +647,14 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	}
 
 	public Entity createEntity(String oid, Long version, Timestamp updateDate) {
-		Entity entity = createEntityInternal("" , null);
+		Entity entity = createEntityInternal("", null);
 		entity.setOid(oid);
 		entity.setUpdateDate(updateDate);
-//		if (isVersioned()) {
+		//		if (isVersioned()) {
 		// バージョン管理にかかわらず、セットする問題ないかな..
 		entity.setVersion(version);
-//		}
-//		setVirtualPropertyValue(entity);
+		//		}
+		//		setVirtualPropertyValue(entity);
 		getRegistrationInterrupterHandler().dataMapping(entity);
 		validate(entity);
 		return entity;
@@ -631,7 +664,9 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		Entity entity = newEntity();
 		for (PropertyColumn pc : getProperty()) {
 			PropertyDefinition p = getProperty(pc.getPropertyName());
-			if (p == null || skipProps.contains(p.getName())) continue;
+			if (p == null || skipProps.contains(p.getName())) {
+				continue;
+			}
 			Object value = getPropValue(p, paramPrefix);
 			entity.setValue(p.getName(), value);
 			if (errorPrefix != null) {
@@ -639,8 +674,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				// Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix + p.getName();
 				getErrors().stream()
-					.filter(error -> error.getPropertyName().equals(name))
-					.forEach(error -> error.setPropertyName(errorName));
+						.filter(error -> error.getPropertyName().equals(name))
+						.forEach(error -> error.setPropertyName(errorName));
 			}
 		}
 		return entity;
@@ -667,7 +702,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				Entity[] ary = null;
 				if (val != null) {
 					if (val instanceof Entity) {
-						ary = new Entity[] {(Entity) val};
+						ary = new Entity[] { (Entity) val };
 					} else if (val instanceof Entity[]) {
 						ary = (Entity[]) val;
 					}
@@ -795,7 +830,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	private void setValidateErrorMessage(RangePropertyEditor editor, String fromName, String errorPrefix, String resourceStringKey) {
 		String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
-		if (StringUtil.isBlank(errorMessage )) {
+		if (StringUtil.isBlank(errorMessage)) {
 			errorMessage = resourceString(resourceStringKey);
 		}
 		ValidateError e = new ValidateError();
@@ -812,7 +847,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PropertyColumn> getProperty() {
-//		String execType = getExecType();
+		//		String execType = getExecType();
 		List<PropertyColumn> propList = new ArrayList<>();
 		String updatePropName = getBulkUpdatePropName();
 		if (StringUtil.isEmpty(updatePropName)) {
@@ -843,7 +878,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 					dummy.setPropertyName(de.getToPropertyName());
 					dummy.setBulkUpdateEditor(de.getEditor());
 					propList.add(dummy);
-				//組み合わせで使うプロパティを通常のプロパティ扱いに
+					//組み合わせで使うプロパティを通常のプロパティ扱いに
 				} else if (pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
 					JoinPropertyEditor je = (JoinPropertyEditor) pc.getBulkUpdateEditor();
 					for (NestProperty nest : je.getProperties()) {
@@ -853,7 +888,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 						dummy.setBulkUpdateEditor(nest.getEditor());
 						propList.add(dummy);
 					}
-				//組み合わせで使うプロパティを通常のプロパティ扱いに
+					//組み合わせで使うプロパティを通常のプロパティ扱いに
 				} else if (pc.getBulkUpdateEditor() instanceof NumericRangePropertyEditor) {
 					NumericRangePropertyEditor de = (NumericRangePropertyEditor) pc.getBulkUpdateEditor();
 					PropertyColumn dummy = new PropertyColumn();
@@ -989,7 +1024,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		if (interrupter == null) {
 			// 何もしないデフォルトInterrupter生成
 			getLogger().debug("set default bulk update operation interrupter.");
-			interrupter = new BulkOperationInterrupter() {};
+			interrupter = new BulkOperationInterrupter() {
+			};
 		}
 		return interrupter;
 	}
