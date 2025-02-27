@@ -391,8 +391,6 @@ public class NormalSearchContext extends SearchContextBase {
 			//文字とかそのまま検索できるプロパティは変換しない
 			ret = ((str[0] == null || str[0].trim().length() == 0) && (str[1] == null || str[1].trim().length() == 0)
 					&& (str[2] == null || str[2].trim().length() == 0)) ? null : str;
-			//			String value = getRequest().getParam(conditionPrefix + propName);
-			//			if (value == null || value.trim().length() == 0) return null;
 		}
 		return ret;
 	}
@@ -715,7 +713,6 @@ public class NormalSearchContext extends SearchContextBase {
 
 		return null;
 	}
-
 
 	private Object getSelectValue(String propName) {
 		Object ret = null;
