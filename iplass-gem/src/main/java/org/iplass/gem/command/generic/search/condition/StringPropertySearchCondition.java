@@ -86,11 +86,11 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 					if (values.length > 2 && values[2] != null) {
 						to = values[2];
 					}
-					if (from != null && to != null) {
+					if (from != null && !("").equals(from) && to != null && !("").equals(to)) {
 						conditions.add(new Between(getPropertyName(), from, to));
-					} else if (from != null && to == null) {
+					} else if ((from != null && !("").equals(from)) && (to == null || ("").equals(to))) {
 						conditions.add(new GreaterEqual(getPropertyName(), from));
-					} else if (from == null && to != null) {
+					} else if ((from == null || ("").equals(from)) && (to != null && !("").equals(to))) {
 						conditions.add(new LesserEqual(getPropertyName(), to));
 					}
 				} else {
