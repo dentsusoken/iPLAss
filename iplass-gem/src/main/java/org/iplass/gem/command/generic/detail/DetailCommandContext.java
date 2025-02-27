@@ -66,6 +66,7 @@ import org.iplass.mtp.impl.view.generic.DetailFormViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntimeUtil;
 import org.iplass.mtp.impl.view.generic.editor.MetaBinaryPropertyEditor.BinaryPropertyEditorRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
@@ -698,7 +699,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 					list = getRefTableValues(rp, defName, count, prefix);
 				}
 			}
-			if (list.size() > 0) {
+			if (CollectionUtil.isNotEmpty(list)) {
 				return list.get(0);
 			} else {
 				return null;
@@ -719,7 +720,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 				}
 			}
 
-			if (list != null && !list.isEmpty()) {
+			if (CollectionUtil.isNotEmpty(list)) {
 				//マッピングクラスの配列を生成する
 				EntityDefinition ed = getEntityDefinition();
 				setEntityDefinition(definitionManager.get(defName));
@@ -745,6 +746,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 	private List<Entity> getRefEntities(String definitionName, String[] keyParameters) {
 
 		List<EntityKey> keys = Arrays.stream(keyParameters)
+				.filter(key -> StringUtil.isNotEmpty(key))
 				.map(key -> {
 					int lastIndex = key.lastIndexOf("_");
 					String oid = null;
@@ -760,24 +762,26 @@ public class DetailCommandContext extends RegistrationCommandContext
 				.collect(Collectors.toList());
 
 		List<Entity> entities = null;
-		if (gemConfig.isMustLoadWithReference()) {
-			// 参照Entityをロードし直す
-			if (gemConfig.isLoadWithReference()) {
-				entities = entityManager.batchLoad(keys, definitionName);
+		if (!keys.isEmpty()) {
+			if (gemConfig.isMustLoadWithReference()) {
+				// 参照Entityをロードし直す
+				if (gemConfig.isLoadWithReference()) {
+					entities = entityManager.batchLoad(keys, definitionName);
+				} else {
+					entities = entityManager.batchLoad(keys, definitionName, new LoadOption(false, false));
+				}
 			} else {
-				entities = entityManager.batchLoad(keys, definitionName, new LoadOption(false, false));
+				// 参照Entityをロードし直さない
+				final EntityDefinition referenceEntityDefinition = definitionManager.get(definitionName);
+				entities = keys.stream()
+						.map(key -> {
+							Entity entity = newEntity(referenceEntityDefinition);
+							entity.setOid(key.getOid());
+							entity.setVersion(key.getVersion());
+							return entity;
+						})
+						.collect(Collectors.toList());
 			}
-		} else {
-			// 参照Entityをロードし直さない
-			final EntityDefinition referenceEntityDefinition = definitionManager.get(definitionName);
-			entities = keys.stream()
-					.map(key -> {
-						Entity entity = newEntity(referenceEntityDefinition);
-						entity.setOid(key.getOid());
-						entity.setVersion(key.getVersion());
-						return entity;
-					})
-					.collect(Collectors.toList());
 		}
 		return entities;
 	}
