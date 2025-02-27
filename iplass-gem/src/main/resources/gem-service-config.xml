@@ -78,7 +78,13 @@
 	<service>
 		<interface>org.iplass.gem.GemConfigService</interface>
 		<class>org.iplass.gem.GemConfigService</class>
+
+		<!-- リクエストのパラメータをもとに参照データを更新する際に、参照データをロードしなおすか -->
+		<property name="mustLoadWithReference" value="true" />
+
+		<!-- リクエストのパラメータを基に参照データを更新する際に、参照エンティティの参照プロパティも合わせてロードするか -->
 		<property name="loadWithReference" value="false" />
+
 		<property name="formatNumberWithComma" value="true" />
 
 		<!-- Entityデータのサポートファイルタイプ。CSV, EXCEL, SPECIFY -->
