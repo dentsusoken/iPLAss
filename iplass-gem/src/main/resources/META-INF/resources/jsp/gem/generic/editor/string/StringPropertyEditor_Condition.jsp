@@ -37,12 +37,6 @@
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
 
-<%!
-	String format(String valueStr, StringPropertyEditor editor) {
-	//todo: String範囲検索の引数条件によって、バリデーションとフォーマットを処理する。
-		return valueStr;
-	}
-%>
 <%
 	StringPropertyEditor editor = (StringPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 
@@ -238,7 +232,7 @@ $(function() {
 		}
 	}else
 	{
-					// 範囲検索
+			// 範囲検索
 			String dispStyleFrom = editor.isHideSearchConditionFrom() ? "display: none;" : "";
 
 			String strDefaultFrom = "";
@@ -248,10 +242,9 @@ $(function() {
 			if (editor.getDisplayType() == StringDisplayType.LABEL) {
 				String[] _strDefaultFrom = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "From");
 				strDefaultFrom = _strDefaultFrom != null && _strDefaultFrom.length > 0 ? _strDefaultFrom[0] : strDefaultFrom;
-				String formatValue = format(strDefaultFrom, editor);
 %>
 <span class="string-range" style="<c:out value="<%=dispStyleFrom + customStyle%>"/>">
-<span class="data-label"><c:out value="<%=formatValue %>"/></span>
+<span class="data-label"><c:out value="<%=strDefaultFrom %>"/></span>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>From" value="<c:out value="<%=strDefaultFrom %>"/>" />
 </span>
 <%
@@ -287,10 +280,9 @@ $(function() {
 			if (editor.getDisplayType() == StringDisplayType.LABEL) {
 				String[] _strDefaultTo = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
 				strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
-				String formatValue = format(strDefaultTo, editor);
 %>
 <span class="string-range" style="<c:out value="<%=dispStyleTo + customStyle%>"/>">
-<span class="data-label"><c:out value="<%=formatValue %>"/></span>
+<span class="data-label"><c:out value="<%=strDefaultTo %>"/></span>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
 </span>
 <%
@@ -341,21 +333,8 @@ $(function() {
 	});
 <%
 			}
-
-			//フォーマットチェック
 %>
-	<%-- common.js --%>
-	addNormalValidator(function() {
-		var valFrom = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>From") + "']").val();
-		var valTo = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val();
-		//数字かどうかバリデーション　isNaN()　一旦保留
-		if ((typeof valFrom !== "undefined" && valFrom !== null && valFrom !== "" && isNaN(valFrom)) 
-				|| (typeof valTo !== "undefined" && valTo != null && valTo !== "" && isNaN(valTo))) {
-			alert(scriptContext.gem.locale.common.stringFormatErrorMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
-			return false;
-		}
-		return true;
-	});
+
 });
 </script>
 <%
