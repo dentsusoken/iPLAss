@@ -51,6 +51,7 @@ import org.iplass.mtp.entity.definition.properties.FloatProperty;
 import org.iplass.mtp.entity.definition.properties.IntegerProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
+import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.definition.properties.TimeProperty;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
@@ -381,7 +382,7 @@ public class NormalSearchContext extends SearchContextBase {
 			lng[1] = getRequest().getParamAsLong(conditionPrefix + propName + "From");
 			lng[2] = getRequest().getParamAsLong(conditionPrefix + propName + "To");
 			ret = (lng[0] == null && lng[1] == null && lng[2] == null) ? null : lng;
-		} else {
+		} else if (p instanceof StringProperty) {
 			// 単一検索、範囲検索の判断ができないため3つ取得する
 			// StringPropertySearchConditionで判定
 			String[] str = new String[3];

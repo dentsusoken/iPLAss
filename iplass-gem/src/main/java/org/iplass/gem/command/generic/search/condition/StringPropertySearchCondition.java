@@ -39,6 +39,7 @@ import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor.StringDisplayType;
@@ -86,11 +87,11 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 					if (values.length > 2 && values[2] != null) {
 						to = values[2];
 					}
-					if (from != null && !("").equals(from) && to != null && !("").equals(to)) {
+					if (StringUtil.isNotEmpty(from) && StringUtil.isNotEmpty(to)) {
 						conditions.add(new Between(getPropertyName(), from, to));
-					} else if ((from != null && !("").equals(from)) && (to == null || ("").equals(to))) {
+					} else if (StringUtil.isNotEmpty(from) && StringUtil.isEmpty(to)) {
 						conditions.add(new GreaterEqual(getPropertyName(), from));
-					} else if ((from == null || ("").equals(from)) && (to != null && !("").equals(to))) {
+					} else if (StringUtil.isEmpty(from) && StringUtil.isNotEmpty(to)) {
 						conditions.add(new LesserEqual(getPropertyName(), to));
 					}
 				} else {

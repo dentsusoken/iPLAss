@@ -20,12 +20,13 @@
 
 package org.iplass.mtp.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
+import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * 文字列型プロパティエディタ<br>
@@ -34,9 +35,10 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/StringPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
-	@Jsp(path="/jsp/gem/aggregation/unit/editor/StringPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
+		@Jsp(path = "/jsp/gem/generic/editor/StringPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
+		@Jsp(path = "/jsp/gem/aggregation/unit/editor/StringPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
 })
+@IgnoreField({ "searchInRange", "hideSearchConditionFrom", "hideSearchConditionTo", "hideSearchConditionRangeSymbol" })
 public class LongTextPropertyEditor extends StringPropertyEditor {
 
 	/** シリアルバージョンUID */
