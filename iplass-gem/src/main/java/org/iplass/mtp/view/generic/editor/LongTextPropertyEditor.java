@@ -38,7 +38,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 		@Jsp(path = "/jsp/gem/generic/editor/StringPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
 		@Jsp(path = "/jsp/gem/aggregation/unit/editor/StringPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
 })
-@IgnoreField({ "searchInRange", "hideSearchConditionFrom", "hideSearchConditionTo", "hideSearchConditionRangeSymbol" })
+@IgnoreField({ "searchInRange", "hideSearchConditionFrom", "hideSearchConditionTo", "hideSearchConditionRangeSymbol", "searchExactMatchCondition" })
 public class LongTextPropertyEditor extends StringPropertyEditor {
 
 	/** シリアルバージョンUID */
