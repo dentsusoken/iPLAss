@@ -150,7 +150,7 @@ public abstract class PropertySearchCondition {
 				if (conditionValue.getClass().isArray()) {
 					array = (Object[]) conditionValue;
 				} else {
-					array = new Object[]{ conditionValue };
+					array = new Object[] { conditionValue };
 				}
 				conditions.add(new In(detail.getPropertyName(), array));
 			}
@@ -194,7 +194,8 @@ public abstract class PropertySearchCondition {
 	}
 
 	public boolean checkDetailParameter(PropertyItem property) {
-		if (!(getValue() instanceof SearchConditionDetail)) return false;
+		if (!(getValue() instanceof SearchConditionDetail))
+			return false;
 		return true;
 	}
 
@@ -203,7 +204,7 @@ public abstract class PropertySearchCondition {
 	 * @return プロパティ定義
 	 */
 	public PropertyDefinition getDefinition() {
-	    return definition;
+		return definition;
 	}
 
 	/**
@@ -211,7 +212,7 @@ public abstract class PropertySearchCondition {
 	 * @param definition プロパティ定義
 	 */
 	public void setDefinition(PropertyDefinition definition) {
-	    this.definition = definition;
+		this.definition = definition;
 	}
 
 	/**
@@ -219,7 +220,7 @@ public abstract class PropertySearchCondition {
 	 * @return プロパティエディタ
 	 */
 	public PropertyEditor getEditor() {
-	    return editor;
+		return editor;
 	}
 
 	/**
@@ -227,7 +228,7 @@ public abstract class PropertySearchCondition {
 	 * @param editor プロパティエディタ
 	 */
 	public void setEditor(PropertyEditor editor) {
-	    this.editor = editor;
+		this.editor = editor;
 	}
 
 	/**
@@ -235,7 +236,7 @@ public abstract class PropertySearchCondition {
 	 * @return 検索用の値
 	 */
 	public Object getValue() {
-	    return value;
+		return value;
 	}
 
 	/**
@@ -243,7 +244,7 @@ public abstract class PropertySearchCondition {
 	 * @param value 検索用の値
 	 */
 	public void setValue(Object value) {
-	    this.value = value;
+		this.value = value;
 	}
 
 	/**
@@ -267,29 +268,29 @@ public abstract class PropertySearchCondition {
 		} else if (definition instanceof BooleanProperty) {
 			return new BooleanPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof DateProperty) {
-			if(editor instanceof DateRangePropertyEditor) {
+			if (editor instanceof DateRangePropertyEditor) {
 				return new DateRangePropertySearchCondition(definition, editor, value, parent);
 			}
 			return new DatePropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof DateTimeProperty) {
-			if(editor instanceof DateRangePropertyEditor) {
+			if (editor instanceof DateRangePropertyEditor) {
 				return new DateRangePropertySearchCondition(definition, editor, value, parent);
 			}
 			return new TimestampPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof DecimalProperty) {
-			if(editor instanceof NumericRangePropertyEditor) {
+			if (editor instanceof NumericRangePropertyEditor) {
 				return new NumericRangePropertySearchCondition(definition, editor, value, parent);
 			}
 			return new DecimalPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof ExpressionProperty) {
 			return new ExpressionPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof FloatProperty) {
-			if(editor instanceof NumericRangePropertyEditor) {
+			if (editor instanceof NumericRangePropertyEditor) {
 				return new NumericRangePropertySearchCondition(definition, editor, value, parent);
 			}
 			return new FloatPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof IntegerProperty) {
-			if(editor instanceof NumericRangePropertyEditor) {
+			if (editor instanceof NumericRangePropertyEditor) {
 				return new NumericRangePropertySearchCondition(definition, editor, value, parent);
 			}
 			return new IntegerPropertySearchCondition(definition, editor, value, parent);
@@ -302,7 +303,7 @@ public abstract class PropertySearchCondition {
 		} else if (definition instanceof StringProperty) {
 			return new StringPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof TimeProperty) {
-			if(editor instanceof DateRangePropertyEditor) {
+			if (editor instanceof DateRangePropertyEditor) {
 				return new DateRangePropertySearchCondition(definition, editor, value, parent);
 			}
 			return new TimePropertySearchCondition(definition, editor, value, parent);

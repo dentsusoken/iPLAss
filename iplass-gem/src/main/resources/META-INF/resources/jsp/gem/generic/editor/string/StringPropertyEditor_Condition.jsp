@@ -36,6 +36,7 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
+
 <%
 	StringPropertyEditor editor = (StringPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 
@@ -82,39 +83,40 @@
 				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
 			}
 		}
-
+		Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 		if (pd instanceof StringProperty
 				|| (pd instanceof ExpressionProperty
 						&& ((ExpressionProperty)pd).getResultType() == PropertyDefinitionType.STRING)) {
-			//String型のみ、LongTextは検索条件に含めない
-			if (editor.getDisplayType() == StringDisplayType.SELECT) {
-				String pleaseSelectLabel = "";
-				if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
-					pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.string.StringPropertyEditor_Condition.pleaseSelect");
-				}
+			if (!editor.isSearchInRange()) {
+				// 単一検索
+				//String型のみ、LongTextは検索条件に含めない
+				if (editor.getDisplayType() == StringDisplayType.SELECT) {
+					String pleaseSelectLabel = "";
+					if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
+						pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.string.StringPropertyEditor_Condition.pleaseSelect");
+					}
 %>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>">
 <option value=""><%= pleaseSelectLabel %></option>
 <%
-		
-				// 「値なし」を検索条件の選択肢に追加するか
-				if (editor.isIsNullSearchEnabled()) {
-					String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
+					// 「値なし」を検索条件の選択肢に追加するか
+					if (editor.isIsNullSearchEnabled()) {
+						String selected = Constants.ISNULL_VALUE.equals(value) ? " selected" : "";
 %>
 <option value="<c:out value="<%=Constants.ISNULL_VALUE %>"/>" <c:out value="<%=selected %>"/>>${m:rs("mtp-gem-messages", "generic.editor.common.isNullDisplayName")}</option>
 <%
-				}
+					}
 %>
 <%
-				for (EditorValue tmp : editor.getValues()) {
-					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
-					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
-					String selected = "";
-					if (value.equals(tmp.getValue())) selected = " selected";
+					for (EditorValue tmp : editor.getValues()) {
+						String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
+						String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
+						String selected = "";
+						if (value.equals(tmp.getValue())) selected = " selected";
 %>
 <option class="<c:out value="<%=optStyle %>"/>" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
 <%
-				}
+					}
 %>
 </select>
 
@@ -125,7 +127,7 @@ $(function() {
 		$("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(strDefault) %>");
 	});
 <%
-				if (required) {
+					if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -137,24 +139,23 @@ $(function() {
 		return true;
 	});
 <%
-				}
+					}
 %>
 });
 </script>
 <%
-			} else if (editor.getDisplayType() == StringDisplayType.LABEL) {
-				Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
-				String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
-				strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
-				String labelstr = StringUtil.escapeXml10(strDefault, true);
-				labelstr = labelstr.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
+				} else if (editor.getDisplayType() == StringDisplayType.LABEL) {
+					String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+					strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
+					String labelstr = StringUtil.escapeXml10(strDefault, true);
+					labelstr = labelstr.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
 %>
 <span style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=labelstr %>"/>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
 </span>
 <%
-			} else {
+				} else {
 				//SELECT以外
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" />
@@ -166,12 +167,111 @@ $(function() {
 		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(strDefault) %>");
 	});
 <%
-				if (required) {
+					if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
 		var val = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
 		if (typeof val === "undefined" || val == null || val == "") {
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+		return true;
+	});
+<%
+					}
+%>
+});
+</script>
+<%
+				}
+			} else {
+				// 範囲検索
+				String dispStyleFrom = editor.isHideSearchConditionFrom() ? "display: none;" : "";
+
+				String strDefaultFrom = "";
+				if (defaultValue != null && defaultValue.length > 0) {
+					strDefaultFrom = defaultValue[0];
+				}
+				if (editor.getDisplayType() == StringDisplayType.LABEL) {
+					String[] _strDefaultFrom = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "From");
+					strDefaultFrom = _strDefaultFrom != null && _strDefaultFrom.length > 0 ? _strDefaultFrom[0] : strDefaultFrom;
+%>
+<span class="string-range" style="<c:out value="<%=dispStyleFrom + customStyle%>"/>">
+<span class="data-label"><c:out value="<%=strDefaultFrom %>"/></span>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>From" value="<c:out value="<%=strDefaultFrom %>"/>" />
+</span>
+<%
+				} else {
+					String inputValueFrom = "";
+					if (propValue != null && propValue.length > 0) {
+						inputValueFrom = propValue[0];
+					}
+%>
+<span class="string-range" style="<c:out value="<%=dispStyleFrom%>"/>">
+<input type="text" class="form-size-04 inpbr " style="<c:out value="<%=customStyle%>"/>"
+	value="<%=inputValueFrom %>" name="<c:out value="<%=propName %>"/>From" />
+</span>
+<%
+				}
+				if ((!editor.isHideSearchConditionFrom() && !editor.isHideSearchConditionTo())
+						|| !editor.isHideSearchConditionRangeSymbol()) {
+%>
+<span class="range-symbol">&nbsp;${m:rs('mtp-gem-messages', 'generic.editor.common.rangeSymbol')}&nbsp;</span>
+<%
+				}
+
+				String dispStyleTo = editor.isHideSearchConditionTo() ? "display: none;" : "";
+
+				String strDefaultTo = "";
+				if (defaultValue != null && defaultValue.length > 1) {
+					strDefaultTo = defaultValue[1];
+				}
+				if (editor.getDisplayType() == StringDisplayType.LABEL) {
+					String[] _strDefaultTo = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
+					strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
+%>
+<span class="string-range" style="<c:out value="<%=dispStyleTo + customStyle%>"/>">
+<span class="data-label"><c:out value="<%=strDefaultTo %>"/></span>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
+</span>
+<%
+				} else {
+					String inputValueTo = "";
+					if (propValue != null && propValue.length > 1) {
+						inputValueTo = propValue[1];
+					}
+%>
+<span class="string-range" style="<c:out value="<%=dispStyleTo%>"/>">
+<input type="text" class="form-size-04 inpbr " style="<c:out value="<%=customStyle%>"/>" 
+	value="<%=inputValueTo %>" name="<c:out value="<%=propName %>"/>To" />
+</span>
+<%
+				}
+%>
+<script type="text/javascript">
+$(function() {
+	<%-- common.js --%>
+	addNormalConditionItemResetHandler(function(){
+		var $from = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>From") + "']");
+		$from.val("<%=strDefaultFrom %>");
+		var $to = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']");
+		$to.val("<%=strDefaultTo %>");
+
+		var $parent = $from.closest(".property-data");
+		$from.removeClass("validate-error");
+		$to.removeClass("validate-error");
+		$(".format-error", $parent).remove();
+	});
+<%
+				if (required) {
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var valFrom = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>From") + "']").val();
+		var valTo = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val();
+		if ((typeof valFrom === "undefined" || valFrom == null || valFrom == "") 
+				&& (typeof valTo === "undefined" || valTo == null || valTo == "")) {
 			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
@@ -186,7 +286,6 @@ $(function() {
 			}
 		} else {
 			if (editor.getDisplayType() == StringDisplayType.LABEL) {
-				Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 				String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 				strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
 				String labelstr = StringUtil.escapeXml10(strDefault, true);

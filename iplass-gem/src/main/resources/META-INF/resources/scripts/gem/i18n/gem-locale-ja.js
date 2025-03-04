@@ -25,6 +25,7 @@ scriptContext.gem.locale.common.numcheckMsg = "数値を入力してください
 scriptContext.gem.locale.common.pleaseSelect = "選択してください";
 scriptContext.gem.locale.common.requiredMsg = "{0}を入力してください。";
 scriptContext.gem.locale.common.numFormatErrorMsg = "{0}は数値を入力してください。";
+scriptContext.gem.locale.common.stringFormatErrorMsg = "{0}は条件に合う文字列を入力してください。 "
 scriptContext.gem.locale.common.dateFormatErrorMsg = "{0}は日付を正しく入力してください。({1})";
 scriptContext.gem.locale.common.timeFormatErrorMsg = "{0}は時間を正しく入力してください。({1})";
 scriptContext.gem.locale.common.timestampFormatErrorMsg = "{0}は日付もしくは時間を正しく入力してください。({1})";

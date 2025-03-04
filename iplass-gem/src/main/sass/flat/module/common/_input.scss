@@ -39,13 +39,20 @@
 	box-sizing: border-box;
 	border: 2px solid $color_silver_chalice_approx;
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-	border-radius: 50%;
+	//border-radius: 50%;
 	//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
 	transition: border 300ms;
 	cursor: pointer;
 	margin-right: 5px;
 }
-
+//.pseudo-checkbox, .pseudo-radio
+%extend_ci_2_1 {
+	border-radius: 20%;
+}
+//.pseudo-checkbox, .pseudo-radio
+%extend_ci_2_2 {
+	border-radius: 50%;
+}
 //original selectors
 //.pseudo-checkbox::after, .pseudo-radio::after
 %extend_ci_3 {
@@ -111,6 +118,7 @@ input[type=reset] {
 }
 .pseudo-checkbox {
 	@extend %extend_ci_2;
+	@extend %extend_ci_2_1;
 	+ input[type='checkbox'] {
 		display: none;
 	}
@@ -128,6 +136,7 @@ input[type=reset] {
 }
 .pseudo-radio {
 	@extend %extend_ci_2;
+	@extend %extend_ci_2_2;
 	+ input[type='radio'] {
 		display: none;
 	}
