@@ -94,14 +94,7 @@ input[type=button], input[type=submit], input[type=reset] {
   color: #115d85;
   transition: background 300ms;
   cursor: pointer; }
-  
-.pseudo-checkbox {
-  border-radius: 20%;
- }
- .pseudo-radio {
-  border-radius: 50%;
- }
-  
+
 .pseudo-checkbox, .pseudo-radio {
   display: inline-block;
   vertical-align: middle;
@@ -113,6 +106,12 @@ input[type=button], input[type=submit], input[type=reset] {
   transition: border 300ms;
   cursor: pointer;
   margin-right: 5px; }
+
+.pseudo-checkbox {
+  border-radius: 20%; }
+
+.pseudo-radio {
+  border-radius: 50%; }
 
 .pseudo-checkbox::after, .pseudo-radio::after {
   content: '';
@@ -1503,6 +1502,8 @@ p.nav-login-01 {
     .tbl-search-01 input.form-size-04 {
       width: 100%; }
   .tbl-search-01 .numeric-range input.inpbr {
+    width: 45%; }
+  .tbl-search-01 .string-range input.inpbr {
     width: 45%; }
   .tbl-search-01 input[type=text] {
     font-size: 1rem;

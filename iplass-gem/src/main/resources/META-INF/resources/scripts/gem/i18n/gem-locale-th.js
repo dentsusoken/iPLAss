@@ -25,6 +25,7 @@ scriptContext.gem.locale.common.numcheckMsg = "กรุณาระบุตั
 scriptContext.gem.locale.common.pleaseSelect = "กรุณาเลือก";
 scriptContext.gem.locale.common.requiredMsg = "กรุณาใส่ {0}";
 scriptContext.gem.locale.common.numFormatErrorMsg = "โปรดป้อนหมายเลข {0}";
+scriptContext.gem.locale.common.stringFormatErrorMsg = "กรุณาป้อนสตริงที่ตรงกับเงื่อนไข {0}";
 scriptContext.gem.locale.common.dateFormatErrorMsg = "โปรดป้อนวันที่ {0} ให้ถูกต้อง ({1})";
 scriptContext.gem.locale.common.timeFormatErrorMsg = "โปรดป้อนเวลา {0} ให้ถูกต้อง ({1})";
 scriptContext.gem.locale.common.timestampFormatErrorMsg = "โปรดป้อนวันที่หรือเวลา {0} ให้ถูกต้อง ({1})";

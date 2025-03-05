@@ -48,7 +48,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * 文字列型プロパティエディタのメタデータ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaLongTextPropertyEditor.class})
+@XmlSeeAlso({ MetaLongTextPropertyEditor.class })
 public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 
 	/** シリアルバージョンUID */
@@ -91,6 +91,18 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** 検索条件完全一致設定有無 */
 	private boolean searchExactMatchCondition;
 
+	/** 範囲で検索するか */
+	private boolean searchInRange;
+
+	/** 検索条件From非表示設定 */
+	private boolean hideSearchConditionFrom;
+
+	/** 検索条件To非表示設定 */
+	private boolean hideSearchConditionTo;
+
+	/** 検索条件範囲記号非表示設定 */
+	private boolean hideSearchConditionRangeSymbol;
+
 	/** RickTextで表示モードの場合、ツールバーなどを表示しないか */
 	private boolean hideRichtextEditorToolBar;
 
@@ -102,7 +114,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
-	
+
 	/** 「値なし」を検索条件の選択肢に追加するか */
 	private boolean isNullSearchEnabled;
 
@@ -259,6 +271,70 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		this.values = values;
 	}
 
+	/**
+	 * 範囲で検索するかを取得します。
+	 * @return 範囲で検索するか
+	 */
+	public boolean isSearchInRange() {
+		return searchInRange;
+	}
+
+	/**
+	 * 範囲で検索するかを設定します。
+	 * @param searchInRange 範囲で検索するか
+	 */
+	public void setSearchInRange(boolean searchInRange) {
+		this.searchInRange = searchInRange;
+	}
+
+	/**
+	 * 検索条件From非表示設定を取得します。
+	 * @return 検索条件From非表示設定
+	 */
+	public boolean isHideSearchConditionFrom() {
+		return hideSearchConditionFrom;
+	}
+
+	/**
+	 * 検索条件From非表示設定を設定します。
+	 * @param hideSearchConditionFrom 検索条件From非表示設定
+	 */
+	public void setHideSearchConditionFrom(boolean hideSearchConditionFrom) {
+		this.hideSearchConditionFrom = hideSearchConditionFrom;
+	}
+
+	/**
+	 * 検索条件To非表示設定を取得します。
+	 * @return 検索条件To非表示設定
+	 */
+	public boolean isHideSearchConditionTo() {
+		return hideSearchConditionTo;
+	}
+
+	/**
+	 * 検索条件To非表示設定を設定します。
+	 * @param hideSearchConditionTo 検索条件To非表示設定
+	 */
+	public void setHideSearchConditionTo(boolean hideSearchConditionTo) {
+		this.hideSearchConditionTo = hideSearchConditionTo;
+	}
+
+	/**
+	 * 検索条件範囲記号非表示設定を取得します。
+	 * @return 検索条件範囲記号非表示設定
+	 */
+	public boolean isHideSearchConditionRangeSymbol() {
+		return hideSearchConditionRangeSymbol;
+	}
+
+	/**
+	 * 検索条件範囲記号非表示設定を設定します。
+	 * @param hideSearchConditionRangeSymbol 検索条件範囲記号非表示設定
+	 */
+	public void setHideSearchConditionRangeSymbol(boolean hideSearchConditionRangeSymbol) {
+		this.hideSearchConditionRangeSymbol = hideSearchConditionRangeSymbol;
+	}
+
 	public boolean isSearchExactMatchCondition() {
 		return searchExactMatchCondition;
 	}
@@ -281,7 +357,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @return リッチテキストエディタオプション
 	 */
 	public String getRichtextEditorOption() {
-	    return richtextEditorOption;
+		return richtextEditorOption;
 	}
 
 	/**
@@ -289,7 +365,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @param richtextEditorOption リッチテキストエディタオプション
 	 */
 	public void setRichtextEditorOption(String richtextEditorOption) {
-	    this.richtextEditorOption = richtextEditorOption;
+		this.richtextEditorOption = richtextEditorOption;
 	}
 
 	/**
@@ -327,7 +403,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
 		this.updateWithLabelValue = updateWithLabelValue;
 	}
-	
+
 	/**
 	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
 	 * @return 「値なし」を検索条件の選択肢に追加するか
@@ -371,6 +447,10 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
 		isNullSearchEnabled = e.isIsNullSearchEnabled();
+		searchInRange = e.isSearchInRange();
+		hideSearchConditionFrom = e.isHideSearchConditionFrom();
+		hideSearchConditionTo = e.isHideSearchConditionTo();
+		hideSearchConditionRangeSymbol = e.isHideSearchConditionRangeSymbol();
 	}
 
 	@Override
@@ -400,6 +480,10 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
 		isNullSearchEnabled = e.isIsNullSearchEnabled();
+		searchInRange = e.isSearchInRange();
+		hideSearchConditionFrom = e.isHideSearchConditionFrom();
+		hideSearchConditionTo = e.isHideSearchConditionTo();
+		hideSearchConditionRangeSymbol = e.isHideSearchConditionRangeSymbol();
 	}
 
 	@Override
@@ -426,6 +510,10 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setInsertWithLabelValue(insertWithLabelValue);
 		editor.setUpdateWithLabelValue(updateWithLabelValue);
 		editor.setIsNullSearchEnabled(isNullSearchEnabled);
+		editor.setSearchInRange(searchInRange);
+		editor.setHideSearchConditionFrom(hideSearchConditionFrom);
+		editor.setHideSearchConditionTo(hideSearchConditionTo);
+		editor.setHideSearchConditionRangeSymbol(hideSearchConditionRangeSymbol);
 		return editor;
 	}
 
@@ -455,6 +543,10 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		e.setInsertWithLabelValue(insertWithLabelValue);
 		e.setUpdateWithLabelValue(updateWithLabelValue);
 		e.setIsNullSearchEnabled(isNullSearchEnabled);
+		e.setSearchInRange(searchInRange);
+		e.setHideSearchConditionFrom(hideSearchConditionFrom);
+		e.setHideSearchConditionTo(hideSearchConditionTo);
+		e.setHideSearchConditionRangeSymbol(hideSearchConditionRangeSymbol);
 	}
 
 	@Override
@@ -476,7 +568,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 					return true;
 				}
 				if (pd instanceof ExpressionProperty) {
-					ExpressionProperty ep = (ExpressionProperty)pd;
+					ExpressionProperty ep = (ExpressionProperty) pd;
 					if (ep.getResultType() == PropertyDefinitionType.STRING) {
 						return true;
 					}
