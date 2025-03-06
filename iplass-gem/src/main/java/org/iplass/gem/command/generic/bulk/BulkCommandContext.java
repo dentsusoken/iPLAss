@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -461,8 +462,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		};
 	}
 
-	public Set<String> getOids() {
-		return bulkCommandParams.stream().map(p -> p.getOid()).collect(Collectors.toSet());
+	public LinkedHashSet<String> getOids() {
+		return bulkCommandParams.stream()
+				.map(p -> p.getOid())
+				.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	/**
@@ -623,11 +626,11 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		Entity entity = createEntityInternal("", null);
 		entity.setOid(oid);
 		entity.setUpdateDate(updateDate);
-//		if (isVersioned()) {
+		//		if (isVersioned()) {
 		// バージョン管理にかかわらず、セットする問題ないかな..
 		entity.setVersion(version);
-//		}
-//		setVirtualPropertyValue(entity);
+		//		}
+		//		setVirtualPropertyValue(entity);
 		getRegistrationInterrupterHandler().dataMapping(entity);
 		validate(entity);
 		return entity;
@@ -646,8 +649,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				// Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix + p.getName();
 				getErrors().stream()
-					.filter(error -> error.getPropertyName().equals(name))
-					.forEach(error -> error.setPropertyName(errorName));
+						.filter(error -> error.getPropertyName().equals(name))
+						.forEach(error -> error.setPropertyName(errorName));
 			}
 		}
 		return entity;
@@ -819,7 +822,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PropertyColumn> getProperty() {
-//		String execType = getExecType();
+		//		String execType = getExecType();
 		List<PropertyColumn> propList = new ArrayList<>();
 		String updatePropName = getBulkUpdatePropName();
 		if (StringUtil.isEmpty(updatePropName)) {
@@ -850,7 +853,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 					dummy.setPropertyName(de.getToPropertyName());
 					dummy.setBulkUpdateEditor(de.getEditor());
 					propList.add(dummy);
-				//組み合わせで使うプロパティを通常のプロパティ扱いに
+					//組み合わせで使うプロパティを通常のプロパティ扱いに
 				} else if (pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
 					JoinPropertyEditor je = (JoinPropertyEditor) pc.getBulkUpdateEditor();
 					for (NestProperty nest : je.getProperties()) {
@@ -860,7 +863,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 						dummy.setBulkUpdateEditor(nest.getEditor());
 						propList.add(dummy);
 					}
-				//組み合わせで使うプロパティを通常のプロパティ扱いに
+					//組み合わせで使うプロパティを通常のプロパティ扱いに
 				} else if (pc.getBulkUpdateEditor() instanceof NumericRangePropertyEditor) {
 					NumericRangePropertyEditor de = (NumericRangePropertyEditor) pc.getBulkUpdateEditor();
 					PropertyColumn dummy = new PropertyColumn();
