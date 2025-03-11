@@ -42,9 +42,9 @@ public interface ScriptEditorDialogConstants {
 
 	public static final String ENTITY_LISTING_FILE_NAME = "EntityListing.FileName";
 
-	public static final String AGGREGATION_CSV_NAME = "Aggregation.CsvFileName";
+	public static final String AGGREGATION_FILE_NAME = "Aggregation.FileName";
 
-	public static final String AGGREGATION_RAWDATA_CSV_NAME = "Aggregation.RawDataCsvFileName";
+	public static final String AGGREGATION_RAWDATA_FILE_NAME = "Aggregation.RawDataFileName";
 
 	public static final String MENU_ITEM_CUSTOMIZE_SCRIPT_NAME = "MenuItem.CustomizeScript";
 
