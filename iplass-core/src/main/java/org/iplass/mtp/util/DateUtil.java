@@ -198,7 +198,7 @@ public class DateUtil {
 	 * @return 現在日時
 	 */
 	public static ZonedDateTime getCurrentZonedDateTime() {
-		var tenantZoneId = ExecuteContext.getCurrentContext().getTimeZone().toZoneId();
+		ZoneId tenantZoneId = ExecuteContext.getCurrentContext().getTimeZone().toZoneId();
 		return getCurrentZonedDateTime(tenantZoneId);
 	}
 
