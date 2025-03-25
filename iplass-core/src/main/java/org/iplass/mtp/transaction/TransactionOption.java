@@ -34,7 +34,7 @@ package org.iplass.mtp.transaction;
  * <td>readOnly</td><td>false</td><td>このトランザクションをreadOnlyとしてマークします。</td>
  * </tr>
  * <tr>
- * <td>rollbackWhenException</td><td>true</td><td>トランザクション処理中に例外が発生した場合、トランザクションをロールバック（呼び出し元コードとトランザクションを共有する場合は、setRollbackOnly）します。</td>
+ * <td>rollbackWhenException</td><td>true</td><td>トランザクション処理中に例外が発生した場合、トランザクションをロールバックします。ただし呼び出し元コードとトランザクションを共有する場合（既にトランザクションが開始されている中で、Propagation.REQUIRED、SUPPORTSで呼び出された場合）はトランザクションは呼び出し元で制御され、このブロック内ではロールバックされません。</td>
  * </tr>
  * <tr>
  * <td>throwExceptionIfSetRollbackOnly</td><td>false</td><td>trueに設定された場合、トランザクションが当該トランザクション処理用に新規作成され、かつ処理中にsetRoobackOnlyされた場合、かつ明示的に例外がスローされなかった場合、{@link RollbackException}をスローします。</td>
