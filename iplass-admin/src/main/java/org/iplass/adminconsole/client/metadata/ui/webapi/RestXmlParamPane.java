@@ -110,7 +110,8 @@ public class RestXmlParamPane extends HLayout {
 	public void setDefinition(WebApiDefinition definition) {
 		paramName.setValue(definition.getRestXmlParameterName());
 		paramType.setValue(definition.getRestXmlParameterType());
-		acceptableContentTypes.setValue(String.join(",", definition.getRestXmlAcceptableContentTypes()));
+		if (null != definition.getRestXmlAcceptableContentTypes()) {
+			acceptableContentTypes.setValue(String.join(",", definition.getRestXmlAcceptableContentTypes()));
+		}
 	}
-
 }

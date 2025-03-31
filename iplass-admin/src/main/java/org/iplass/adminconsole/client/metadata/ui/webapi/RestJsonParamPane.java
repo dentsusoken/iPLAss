@@ -110,7 +110,8 @@ public class RestJsonParamPane extends HLayout {
 	public void setDefinition(WebApiDefinition definition) {
 		paramName.setValue(definition.getRestJsonParameterName());
 		paramType.setValue(definition.getRestJsonParameterType());
-		acceptableContentTypes.setValue(String.join(",", definition.getRestJsonAcceptableContentTypes()));
+		if (null != definition.getRestJsonAcceptableContentTypes()) {
+			acceptableContentTypes.setValue(String.join(",", definition.getRestJsonAcceptableContentTypes()));
+		}
 	}
-
 }
