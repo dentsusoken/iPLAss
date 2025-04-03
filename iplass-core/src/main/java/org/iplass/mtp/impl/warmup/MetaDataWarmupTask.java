@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.poi.util.StringUtil;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.warmup.WarmupTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
