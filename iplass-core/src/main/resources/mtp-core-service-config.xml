@@ -1160,4 +1160,57 @@
 		</property>
 	</service>
 
+	<!-- 内部処理用 非同期スレッド -->
+	<service name="internalAsyncTaskService">
+		<interface>org.iplass.mtp.impl.async.AsyncTaskService</interface>
+		<class>org.iplass.mtp.impl.async.internal.InternalSingleThreadAsyncTaskService</class>
+	</service>
+
+	<!-- ウォームアップ -->
+	<service>
+		<interface>org.iplass.mtp.impl.warmup.WarmupService</interface>
+		<class>org.iplass.mtp.impl.warmup.WarmupService</class>
+
+		<!--
+			statusFile には、ウォームアップ状態を表すファイルパスを設定します。指定されたファイルパスによって、以下の２ファイルを作成する。
+			statusFile の設定値が "/path/to/warmup_status" の場合。
+			
+			正常終了時
+				/path/to/warmup_status （ファイルには、complete が記載されている）
+				/path/to/warmup_status.complete （空ファイル）
+
+			異常終了時
+				/path/to/warmup_status （ファイルには、failed が記載されている）
+				/path/to/warmup_status.failed （空ファイル）
+		-->
+		<!--
+		<property name="statusFile" value="/path/to/warmup_status" />
+		-->
+
+		<!--
+			taskMap は Map 形式でプロパティを設定してください。
+				name = ウォームアップタスク名
+				value = org.iplass.mtp.warmup.WarmupTask の実装クラス
+		-->
+		<property name="taskMap">
+			<!-- defaultMetaDataWarmupTask はメタデータウォームアップのデフォルト定義 -->
+			<property name="defaultMetaDataWarmupTask" class="org.iplass.mtp.impl.warmup.MetaDataWarmupTask">
+				<property name="metadataPathList" value="/entity/mtp/*" />
+				<property name="metadataPathList" value="/message/mtp/*" />
+				<property name="metadataPathList" value="/authNPolicy/*" />
+			</property>
+		</property>
+
+		<!--
+			tenantTaskMap には Map 形式でプロパティを設定してください。
+				name = テナントID。"*" は全テナントIDを表す。カンマ区切りで複数指定可能。
+				value = taskMap プロパティで設定したウォームアップタスク名。カンマ区切りで複数指定可能。
+		-->
+		<!--
+		<property name="tenantTaskMap">
+			<property name="1,2" value="taskA,taskB" />
+			<property name="*" value="allTenantTask" />
+		</property>
+		-->
+	</service>
 </serviceDefinition>
