@@ -552,6 +552,7 @@ LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_viewName = "View名";
 LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_failed = "失敗";
 LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_enterViewName = "View名を入力してください。";
 LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_failedReadScreenInfo = "画面情報の読込に失敗しました。";
+LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_viewNameErr = "名前には英数字、ハイフン、アンダースコア、ピリオドのみ利用することができます。";
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_propCheckThrought = "プロパティチェックスルーされた";
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_title = "タイトル";
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_colNum = "列数";

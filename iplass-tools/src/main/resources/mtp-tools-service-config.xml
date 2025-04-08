@@ -48,6 +48,7 @@
 		<depend>org.iplass.mtp.impl.core.TenantContextService</depend>
 		<depend>org.iplass.mtp.impl.entity.EntityService</depend>
 		<depend>org.iplass.mtp.impl.auth.AuthService</depend>
+		<depend>org.iplass.mtp.impl.tools.validator.DefinitionNameCheckService</depend>
 
 		<property name="importHandler" class="org.iplass.mtp.impl.tools.metaport.MetaDataImportHandlerImpl" />
 	</service>
@@ -91,6 +92,16 @@
 
 	<service>
 		<interface>org.iplass.mtp.impl.tools.clean.RecycleBinCleanService</interface>
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.validator.DefinitionNameCheckService</interface>
+		<class>org.iplass.mtp.impl.tools.validator.DefinitionNameCheckServiceImpl</class>
+		<property name="validators">
+			<property name="org.iplass.mtp.impl.web.actionmapping.MetaActionMapping" class="org.iplass.mtp.impl.tools.validator.PathSlashNamePeriodValidator"/>
+			<property name="org.iplass.mtp.impl.entity.MetaEntity" class="org.iplass.mtp.impl.tools.validator.EntityValidator"/>
+			<property name="org.iplass.mtp.impl.view.generic.MetaEntityView" class="org.iplass.mtp.impl.tools.validator.EntityViewValidator"/>
+		</property>
 	</service>
 
 </serviceDefinition>

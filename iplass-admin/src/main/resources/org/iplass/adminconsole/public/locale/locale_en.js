@@ -552,6 +552,7 @@ LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_viewName = "View Name";
 LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_failed = "Failed";
 LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_enterViewName = "Please enter the View name.";
 LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_failedReadScreenInfo = "Failed to read the screen information.";
+LocaleInfo.ui_metadata_entity_layout_CreateViewDialog_viewNameErr = "The name can be used alphanumeric and hyphen and underscore and period.";
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_propCheckThrought = "Property check was through";
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_title = "Title";
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_colNum = "Number of Columns";
