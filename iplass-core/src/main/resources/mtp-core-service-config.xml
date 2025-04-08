@@ -1172,7 +1172,7 @@
 		<class>org.iplass.mtp.impl.warmup.WarmupService</class>
 
 		<!--
-			statusFile には、ウォームアップ状態を表すファイルパスを設定します。指定されたファイルパスによって、以下の２ファイルを作成する。
+			statusFile には、ウォームアップ状態を表すファイルパスを設定します。指定されたファイルパスによって、以下の２ファイルを作成します。
 			statusFile の設定値が "/path/to/warmup_status" の場合。
 			
 			正常終了時
