@@ -19,6 +19,8 @@
  */
 package org.iplass.mtp.impl.async.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,7 +39,10 @@ import org.iplass.mtp.spi.Config;
  * @author SEKIGUCHI Naoya
  */
 public class InternalSingleThreadAsyncTaskService extends AsyncTaskService {
+	/** ExecutorService */
 	private ExecutorService executor;
+	/** 実行タスクのFuture */
+	private List<Future<?>> futureList = new ArrayList<>();
 
 	@Override
 	public void init(Config config) {
@@ -46,6 +51,9 @@ public class InternalSingleThreadAsyncTaskService extends AsyncTaskService {
 
 	@Override
 	public void destroy() {
+		// 未完了でキャンセルされていないタスクをキャンセル
+		futureList.stream().filter(f -> !f.isDone() && !f.isCancelled()).forEach(f -> f.cancel(true));
+
 		if (null != executor) {
 			executor.close();
 		}
@@ -53,7 +61,12 @@ public class InternalSingleThreadAsyncTaskService extends AsyncTaskService {
 
 	@Override
 	public <V> Future<V> execute(Callable<V> task) {
-		return executor.submit(task);
+		// 完了したタスクのFutureを削除
+		removeDoneFuture();
+		// 新規タスクを実行
+		var future = executor.submit(task);
+		futureList.add(future);
+		return future;
 	}
 
 	@Override
@@ -64,5 +77,21 @@ public class InternalSingleThreadAsyncTaskService extends AsyncTaskService {
 	@Override
 	public <V> AsyncTaskFuture<V> getResult(long taskId, String queueName) {
 		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	/**
+	 * 完了したタスクのFutureを削除する
+	 */
+	private void removeDoneFuture() {
+		List<Future<?>> doneFutureList = new ArrayList<>();
+		for (var future : futureList) {
+			if (future.isDone()) {
+				doneFutureList.add(future);
+			}
+		}
+
+		if (!doneFutureList.isEmpty()) {
+			futureList.removeAll(doneFutureList);
+		}
 	}
 }

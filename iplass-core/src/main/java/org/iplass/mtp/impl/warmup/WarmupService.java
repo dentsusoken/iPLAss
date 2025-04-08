@@ -212,7 +212,11 @@ public class WarmupService implements Service {
 				taskNameList = new ArrayList<>();
 				tenantTaskNameListMap.put(tenantId, taskNameList);
 			}
-			taskNameList.add(taskName);
+
+			if (!taskNameList.contains(taskName)) {
+				// taskNameList にタスク名が存在しなければ追加（ * で追加されるタスクと、個別指定タスクの重複を考慮 ）
+				taskNameList.add(taskName);
+			}
 		}
 	}
 

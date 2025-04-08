@@ -65,8 +65,8 @@ public class WarmupStatusServlet extends HttpServlet {
 
 		// 非同期でウォームアップする
 		AsyncTaskService asyncTaskService = ServiceRegistry.getRegistry().getService(InternalAsyncTaskServiceConstant.SERVICE_NAME);
-		var warmupTask = new WarmupTaskExecutor(waitOnWarmup);
-		asyncTaskService.execute(warmupTask);
+		var warmupTaskExecutor = new WarmupTaskExecutor(waitOnWarmup);
+		asyncTaskService.execute(warmupTaskExecutor);
 	}
 
 	@Override
@@ -158,13 +158,20 @@ public class WarmupStatusServlet extends HttpServlet {
 			for (int tenantId : tenantIdList) {
 				// テナント毎にウォームアップ処理を実行
 
-				if (warmupService.notExistsTenantWarmup(tenantId)) {
-					// ウォームアップ処理が存在しなければ、テナントをスキップ
-					logger.debug("No warmup task is configured for tenant {}.", tenantId);
-					continue;
+				// スレッド状態判定
+				if (Thread.currentThread().isInterrupted()) {
+					// スレッドが中断された場合、ウォームアップ処理を終了する
+					logger.debug("Warmup task interrupted.");
+					break;
 				}
 
 				try {
+					if (warmupService.notExistsTenantWarmup(tenantId)) {
+						// ウォームアップ処理が存在しなければ、テナントをスキップ
+						logger.debug("No warmup task is configured for tenant {}.", tenantId);
+						continue;
+					}
+
 					logger.debug("Tenant {} warmup start.", tenantId);
 
 					EntryPoint.getInstance().withTenant(tenantId).run(() -> {
