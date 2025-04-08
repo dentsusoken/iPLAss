@@ -154,6 +154,7 @@ TemplateUtil.includeTemplate("gem/layout/header", pageContext);
 
 ${m:outputToken('FORM_XHTML', true)}
 </form>
+<%@include file="./webAuthn.inc.jsp"%>
 </div><!-- main -->
 </div><!-- content -->
 

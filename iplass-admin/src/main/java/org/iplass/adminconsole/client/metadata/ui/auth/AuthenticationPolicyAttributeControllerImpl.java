@@ -31,6 +31,7 @@ import org.iplass.adminconsole.client.metadata.ui.auth.property.AuthenticationPr
 import org.iplass.adminconsole.client.metadata.ui.auth.property.OpenIdConnectPolicySettingPane;
 import org.iplass.adminconsole.client.metadata.ui.auth.property.PasswordPolicySettingPane;
 import org.iplass.adminconsole.client.metadata.ui.auth.property.RememberMePolicySettingPane;
+import org.iplass.adminconsole.client.metadata.ui.auth.property.WebAuthnPolicySettingPane;
 
 public class AuthenticationPolicyAttributeControllerImpl implements AuthenticationPolicyAttributeController {
 
@@ -46,6 +47,7 @@ public class AuthenticationPolicyAttributeControllerImpl implements Authenticati
 		settingPaneList.add(new AccountNotificationListenerSettingPane());
 		settingPaneList.add(new AuthenticationProviderSettingPane());
 		settingPaneList.add(new OpenIdConnectPolicySettingPane());
+		settingPaneList.add(new WebAuthnPolicySettingPane());
 
 		return settingPaneList;
 	}

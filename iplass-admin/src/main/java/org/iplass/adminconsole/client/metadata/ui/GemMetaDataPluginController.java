@@ -48,6 +48,7 @@ import org.iplass.adminconsole.client.metadata.ui.top.TopViewPlugin;
 import org.iplass.adminconsole.client.metadata.ui.treeview.TreeViewPlugin;
 import org.iplass.adminconsole.client.metadata.ui.utilityclass.UtilityClassPlugin;
 import org.iplass.adminconsole.client.metadata.ui.webapi.WebApiPlugin;
+import org.iplass.adminconsole.client.metadata.ui.webauthn.WebAuthnPlugin;
 import org.iplass.adminconsole.client.metadata.ui.webhook.WebhookTemplatePlugin;
 import org.iplass.adminconsole.client.metadata.ui.webhook.webhookEndpoint.WebhookEndpointDefinitionPlugin;
 
@@ -65,6 +66,7 @@ public class GemMetaDataPluginController implements MetaDataPluginController {
 		plugins.add(new PrefsPlugin());
 
 		plugins.add(new AuthenticationPolicyPlugin());
+		plugins.add(new WebAuthnPlugin());
 		plugins.add(new OpenIdConnectPlugin());
 		plugins.add(new OAuthAuthorizationPlugin());
 		plugins.add(new OAuthClientPlugin());

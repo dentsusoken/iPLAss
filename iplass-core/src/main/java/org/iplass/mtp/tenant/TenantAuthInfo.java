@@ -35,6 +35,8 @@ public class TenantAuthInfo extends TenantConfig {
 
 	/** Remember Me 利用有無*/
 	private boolean useRememberMe;
+	private boolean useWebAuthn;
+	private String webAuthnDefinitonName;
 
 	private List<String> userAdminRoles;
 
@@ -82,38 +84,90 @@ public class TenantAuthInfo extends TenantConfig {
 		this.useRememberMe = useRememberMe;
 	}
 
+	/**
+	 * WebAuthn（PassKey）を利用するか否かを取得します。
+	 * @return
+	 */
+	public boolean isUseWebAuthn() {
+		return useWebAuthn;
+	}
+
+	/**
+	 * WebAuthn（PassKey）を利用するか否かを設定します。
+	 * @param useWebAuthn
+	 */
+	public void setUseWebAuthn(boolean useWebAuthn) {
+		this.useWebAuthn = useWebAuthn;
+	}
+
+	/**
+	 * WebAuthnの定義名を取得します。
+	 * @return
+	 */
+	public String getWebAuthnDefinitonName() {
+		return webAuthnDefinitonName;
+	}
+
+	/**
+	 * WebAuthnの定義名を設定します。
+	 * @param webAuthnDefinitonName
+	 */
+	public void setWebAuthnDefinitonName(String webAuthnDefinitonName) {
+		this.webAuthnDefinitonName = webAuthnDefinitonName;
+	}
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (useRememberMe ? 1231 : 1237);
-		result = prime * result
-				+ ((userAdminRoles == null) ? 0 : userAdminRoles.hashCode());
+		result = prime * result + (useWebAuthn ? 1231 : 1237);
+		result = prime * result + ((userAdminRoles == null) ? 0 : userAdminRoles.hashCode());
+		result = prime * result + ((webAuthnDefinitonName == null) ? 0 : webAuthnDefinitonName.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		TenantAuthInfo other = (TenantAuthInfo) obj;
-		if (useRememberMe != other.useRememberMe)
+		if (useRememberMe != other.useRememberMe) {
 			return false;
+		}
+		if (useWebAuthn != other.useWebAuthn) {
+			return false;
+		}
 		if (userAdminRoles == null) {
-			if (other.userAdminRoles != null)
+			if (other.userAdminRoles != null) {
 				return false;
-		} else if (!userAdminRoles.equals(other.userAdminRoles))
+			}
+		} else if (!userAdminRoles.equals(other.userAdminRoles)) {
 			return false;
+		}
+		if (webAuthnDefinitonName == null) {
+			if (other.webAuthnDefinitonName != null) {
+				return false;
+			}
+		} else if (!webAuthnDefinitonName.equals(other.webAuthnDefinitonName)) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return "TenantAuthInfo [useRememberMe=" + useRememberMe
+				+ ", useWebAuthn=" + useWebAuthn
+				+ ", webAuthnDefinitonName=" + webAuthnDefinitonName
 				+ ", userAdminRoles=" + userAdminRoles + "]";
 	}
 

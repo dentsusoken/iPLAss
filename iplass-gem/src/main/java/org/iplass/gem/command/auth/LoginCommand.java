@@ -48,6 +48,7 @@ import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.TenantAuthInfo;
 import org.iplass.mtp.tenant.web.TenantWebInfo;
 import org.iplass.mtp.transaction.Transaction;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.definition.HttpMethodType;
 import org.iplass.mtp.web.template.TemplateUtil;
@@ -170,21 +171,8 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 	}
 
 	static void setRedirectPathAfterLogin(RequestContext request, String redirectPath) {
-		if (checkRedirectPath(redirectPath)) {
-			//ログイン後画面として設定されている画面へ遷移
-			request.setAttribute(RESULT_REDIRECT_PATH, redirectPath);
-		} else {
-			//トップ画面へ遷移
-			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
-//			String menuUrl = tenant.getTenantDisplayInfo().getMenuUrl();
-			String menuUrl = (tenant.getTenantConfig(TenantWebInfo.class) != null ?
-					tenant.getTenantConfig(TenantWebInfo.class).getHomeUrl() : null);
-			if (menuUrl != null && menuUrl.length() != 0) {
-				request.setAttribute(RESULT_REDIRECT_PATH, TemplateUtil.getTenantContextPath() + menuUrl);
-			} else {
-				request.setAttribute(RESULT_REDIRECT_PATH, TemplateUtil.getTenantContextPath() + "/gem/");
-			}
-		}
+		String validPath = getValidRedirectPath(redirectPath);
+		request.setAttribute(RESULT_REDIRECT_PATH, validPath);
 	}
 
 	static String handleCredentialExpiredException(RequestContext request, String id, String token, Credential secondaryCredential, String redirectPath, boolean rememberMe, CredentialExpiredException e) {
@@ -223,6 +211,27 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * 有効なリダイレクトパスを返却する
+	 * 
+	 * @param redirectPath リダイレクトパス
+	 * @return 有効なリダイレクトパス
+	 */
+	public static String getValidRedirectPath(String redirectPath) {
+		if (checkRedirectPath(redirectPath)) {
+			return redirectPath;
+		} else {
+			// トップ画面へ遷移
+			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+			String homeUrl = (tenant.getTenantConfig(TenantWebInfo.class) != null
+					? tenant.getTenantConfig(TenantWebInfo.class).getHomeUrl()
+					: null);
+
+			return StringUtil.isNotEmpty(homeUrl) ? TemplateUtil.getTenantContextPath() + homeUrl
+					: TemplateUtil.getTenantContextPath() + "/gem/";
+		}
 	}
 
 	private static String resourceString(String key, Object... arguments) {

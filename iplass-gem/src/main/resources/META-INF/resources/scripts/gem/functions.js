@@ -1163,7 +1163,7 @@ $.fn.allInputCheck = function(){
 		if ("setSelectionRange" in item) {
 			item.focus();
 			item.setSelectionRange(pos, pos);
-		} else if (item.createTextRange) {
+		} else if ("createTextRange" in item) {
 			//旧FireFox、Chrome
 			var range = item.createTextRange();
 			range.collapse(true);

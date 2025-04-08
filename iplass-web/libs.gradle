@@ -44,4 +44,8 @@ dependencies {
 	implementation sharedLib('io.jsonwebtoken:jjwt-api')
 	runtimeOnly sharedLib('io.jsonwebtoken:jjwt-impl')
 	runtimeOnly sharedLib('io.jsonwebtoken:jjwt-jackson')
+	
+	implementation sharedLib('com.webauthn4j:webauthn4j-core')
+	implementation sharedLib('com.webauthn4j:webauthn4j-metadata')
+	
 }

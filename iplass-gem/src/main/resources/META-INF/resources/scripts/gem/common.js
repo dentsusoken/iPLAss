@@ -5430,3 +5430,26 @@ function renderDetailAutoCompletionHiddenType(value, multiplicity, propName, hid
 		}
 	}
 }
+
+/**
+ * decode base64url to arrayBuffer
+ */
+function base64UrlDecode(base64url) {
+	let input = base64url.replace(/-/g, "+").replace(/_/g, "/");
+	let diff = input.length % 4;
+	if (diff) {
+		input += "=".repeat(4 - diff);
+	}
+	return Uint8Array.from(atob(input), c => c.charCodeAt(0)).buffer;
+}
+
+/**
+ * encode arrayBuffer to base64url string
+ */
+function base64UrlEncode(arrayBuffer) {
+	if (!arrayBuffer || arrayBuffer.length == 0) {
+		return undefined;
+	}
+	return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+}
+

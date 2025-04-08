@@ -293,6 +293,12 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/auth/oidc/definition/ResponseMode.java'
 		include 'mtp/auth/oidc/definition/ClientAuthenticationType.java'
 
+		include 'mtp/auth/webauthn/definition/WebAuthnDefinition.java'
+		include 'mtp/auth/webauthn/definition/UserVerificationRequirement.java'
+		include 'mtp/auth/webauthn/definition/ResidentKeyRequirement.java'
+		include 'mtp/auth/webauthn/definition/AuthenticatorAttachment.java'
+		include 'mtp/auth/webauthn/definition/AttestationConveyancePreference.java'
+
 		include 'mtp/web/actionmapping/definition/ActionMappingDefinition.java'
 		include 'mtp/web/actionmapping/definition/ActionMappingDefinitionModifyResult.java'
 		include 'mtp/web/actionmapping/definition/ClientCacheType.java'
