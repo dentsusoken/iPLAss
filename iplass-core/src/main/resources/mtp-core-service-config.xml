@@ -1190,7 +1190,7 @@
 		<!--
 			taskMap は Map 形式でプロパティを設定してください。
 				name = ウォームアップタスク名
-				value = org.iplass.mtp.warmup.WarmupTask の実装クラス
+				value = org.iplass.mtp.impl.warmup.WarmupTask の実装クラス
 		-->
 		<property name="taskMap">
 			<!-- defaultMetaDataWarmupTask はメタデータウォームアップのデフォルト定義 -->

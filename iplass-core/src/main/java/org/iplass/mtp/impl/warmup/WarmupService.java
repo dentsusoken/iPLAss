@@ -35,7 +35,6 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
-import org.iplass.mtp.warmup.WarmupTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
