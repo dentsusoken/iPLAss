@@ -65,7 +65,7 @@ public class WarmupStatusServlet extends HttpServlet {
 
 		// 非同期でウォームアップする
 		AsyncTaskService asyncTaskService = ServiceRegistry.getRegistry().getService(InternalAsyncTaskServiceConstant.SERVICE_NAME);
-		var warmupTask = new WarmupTask(waitOnWarmup);
+		var warmupTask = new WarmupTaskExecutor(waitOnWarmup);
 		asyncTaskService.execute(warmupTask);
 	}
 
@@ -101,14 +101,14 @@ public class WarmupStatusServlet extends HttpServlet {
 	}
 
 	/**
-	 * ウォームアップタスク
+	 * ウォームアップタスク実行
 	 * <p>
 	 * サーブレットの初期化処理で非同期実行されるウォームアップ処理のエントリポイントです。
 	 * </p>
 	 */
-	private static class WarmupTask implements Callable<Void> {
+	private static class WarmupTaskExecutor implements Callable<Void> {
 		/** ロガー */
-		private Logger logger = LoggerFactory.getLogger(WarmupTask.class);
+		private Logger logger = LoggerFactory.getLogger(WarmupTaskExecutor.class);
 		/** ウォームアップ処理待ち時間（秒） */
 		private long waitOnWarmup;
 
@@ -116,7 +116,7 @@ public class WarmupStatusServlet extends HttpServlet {
 		 * コンストラクタ
 		 * @param waitOnWarmup ウォームアップ処理待ち時間（秒）
 		 */
-		public WarmupTask(long waitOnWarmup) {
+		public WarmupTaskExecutor(long waitOnWarmup) {
 			this.waitOnWarmup = waitOnWarmup;
 		}
 
