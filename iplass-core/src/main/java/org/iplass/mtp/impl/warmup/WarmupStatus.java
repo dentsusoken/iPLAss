@@ -24,23 +24,12 @@ package org.iplass.mtp.impl.warmup;
  * <p>
  * ウォームアップ状態を表す列挙型です。
  * ウォームアップ状態は、{@link org.iplass.mtp.impl.warmup.WarmupService} で管理されます。
- * 状態は次のように遷移します。
  * </p>
- *
- * <h3>状態遷移</h3>
- * <pre>
- * NOT_PROCESSING
- *   |
- *   +--> PROCESSING
- *          |
- *          +--> COMPLETE
- *          |
- *          +--> FAILED
- * </pre>
  *
  * @author SEKIGUCHI Naoya
  */
 public enum WarmupStatus {
+
 	/** 処理されていない */
 	NOT_PROCESSING(0, "not_processing"),
 	/** 処理中 */
@@ -48,7 +37,12 @@ public enum WarmupStatus {
 	/** 完了（正常終了） */
 	COMPLETE(2, "complete"),
 	/** 完了（失敗） */
-	FAILED(2, "failed");
+	FAILED(2, "failed"),
+	/** 完了（無効） */
+	DISABLED(2, "disabled");
+
+	/** 最終ステータスを表す weight の値 */
+	private static final int FINAL_STATUS_WEIGHT = 2;
 
 	/** 重み */
 	private int weight;
@@ -89,5 +83,13 @@ public enum WarmupStatus {
 		}
 
 		return this.weight < nextStatus.weight;
+	}
+
+	/**
+	 * 当該ステータスが最終ステータスか判定する
+	 * @return 最終ステータスの場合は true を返却する。
+	 */
+	public boolean isFinalStatus() {
+		return FINAL_STATUS_WEIGHT == weight;
 	}
 }

@@ -49,6 +49,19 @@ import org.slf4j.LoggerFactory;
  * ウォームアップ処理・状態は {@link org.iplass.mtp.impl.warmup.WarmupService} によって管理されます。
  * </p>
  *
+ * <h3>状態遷移</h3>
+ * <pre>
+ * NOT_PROCESSING
+ *   |
+ *   +--> PROCESSING
+ *   |      |
+ *   |      +--> COMPLETE
+ *   |      |
+ *   |      +--> FAILED
+ *   |
+ *   +---------> DISABLED
+ * </pre>
+ *
  * @author SEKIGUCHI Naoya
  */
 public class WarmupStatusServlet extends HttpServlet {
@@ -63,10 +76,17 @@ public class WarmupStatusServlet extends HttpServlet {
 		String configWaitOnWarmup =  config.getInitParameter("waitOnWarmup");
 		long waitOnWarmup = StringUtil.isNotEmpty(configWaitOnWarmup) ? Long.valueOf(configWaitOnWarmup) : DEFAULT_WAIT_ON_WARMUP;
 
-		// 非同期でウォームアップする
-		AsyncTaskService asyncTaskService = ServiceRegistry.getRegistry().getService(InternalAsyncTaskServiceConstant.SERVICE_NAME);
-		var warmupTaskExecutor = new WarmupTaskExecutor(waitOnWarmup);
-		asyncTaskService.execute(warmupTaskExecutor);
+		var warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
+		if (warmupService.isEnabled()) {
+			// ウォームアップが有効な場合、非同期でウォームアップする
+			AsyncTaskService asyncTaskService = ServiceRegistry.getRegistry().getService(InternalAsyncTaskServiceConstant.SERVICE_NAME);
+			var warmupTaskExecutor = new WarmupTaskExecutor(waitOnWarmup);
+			asyncTaskService.execute(warmupTaskExecutor);
+
+		} else {
+			// ウォームアップが無効な場合、処理無しで終了する。
+			warmupService.changeStatus(WarmupStatus.DISABLED);
+		}
 	}
 
 	@Override
@@ -94,6 +114,8 @@ public class WarmupStatusServlet extends HttpServlet {
 			return HttpServletResponse.SC_OK;
 		case FAILED:
 			return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+		case DISABLED:
+			return HttpServletResponse.SC_NOT_FOUND;
 		default:
 			// null を想定
 			return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;

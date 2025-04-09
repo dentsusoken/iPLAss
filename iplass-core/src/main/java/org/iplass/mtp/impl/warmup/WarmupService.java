@@ -52,6 +52,8 @@ public class WarmupService implements Service {
 	private Logger logger = LoggerFactory.getLogger(WarmupService.class);
 
 	// service-config 設定値
+	private Boolean enabled;
+	/** ステータスファイルパス */
 	private String statusFile;
 
 	/** ウォームアップタスク */
@@ -69,6 +71,7 @@ public class WarmupService implements Service {
 		// tenantTaskMap key = カンマ区切りのテナントID、 value = カンマ区切りのタスク名
 		Map<String, String> tenantTaskMap = config.getValue("tenantTaskMap", Map.class, Collections.emptyMap());
 
+		this.enabled = config.getValue("enabled", Boolean.class, Boolean.FALSE);
 		this.statusFile = config.getValue("statusFile", null);
 
 		// タスク初期化
@@ -114,8 +117,11 @@ public class WarmupService implements Service {
 
 		// ステータスファイルが存在していたら削除
 		deleteFile(statusFile);
-		deleteFile(getStatusFile(WarmupStatus.COMPLETE));
-		deleteFile(getStatusFile(WarmupStatus.FAILED));
+		for (var status : WarmupStatus.values()) {
+			if (status.isFinalStatus()) {
+				deleteFile(getStatusFile(status));
+			}
+		}
 
 		this.taskMap = taskMap;
 		this.tenantTaskNameListMap = tenantTaskNameListMap;
@@ -130,9 +136,20 @@ public class WarmupService implements Service {
 		} finally {
 			// ステータスファイルを削除
 			deleteFile(getStatusFile());
-			deleteFile(getStatusFile(WarmupStatus.COMPLETE));
-			deleteFile(getStatusFile(WarmupStatus.FAILED));
+			for (var status : WarmupStatus.values()) {
+				if (status.isFinalStatus()) {
+					deleteFile(getStatusFile(status));
+				}
+			}
 		}
+	}
+
+	/**
+	 * ウォームアップが有効かを取得する。
+	 * @return ウォームアップが有効な場合 true を返却する。
+	 */
+	public boolean isEnabled() {
+		return enabled == Boolean.TRUE;
 	}
 
 	/**
@@ -150,22 +167,22 @@ public class WarmupService implements Service {
 	 * 詳細は {@link org.iplass.mtp.impl.warmup.WarmupStatus} を確認してください。
 	 * </p>
 	 * <p>
-	 * ウォームアップ状態が COMPLETE または FAILED に変更された場合、ステータスファイルを出力します。
+	 * ウォームアップ状態が COMPLETE, FAILED, DISABLED に変更された場合、ステータスファイルを出力します。
 	 * </p>
 	 *
-	 * @param status 状態
+	 * @param nextStatus 変更する状態
 	 */
-	public void changeStatus(WarmupStatus status) {
-		if (this.status.canChange(status)) {
-			logger.debug("Warmup status changed from {} to {}.", this.status, status);
-			this.status = status;
+	public void changeStatus(WarmupStatus nextStatus) {
+		if (this.status.canChange(nextStatus)) {
+			logger.debug("Warmup status changed from {} to {}.", this.status, nextStatus);
+			this.status = nextStatus;
 
-			if (status == WarmupStatus.COMPLETE || status == WarmupStatus.FAILED) {
-				// ステータスファイルを作成
-				createStatusFile(status);
+			if (nextStatus.isFinalStatus()) {
+				// 最終ステータスの場合、ファイルを作成
+				createStatusFile(nextStatus);
 			}
 		} else {
-			logger.warn("Cannot change warmup status from {} to {}.", this.status, status);
+			logger.warn("Cannot change warmup status from {} to {}.", this.status, nextStatus);
 		}
 	}
 
@@ -183,8 +200,16 @@ public class WarmupService implements Service {
 	 * <p>
 	 * テナント毎に定義されているウォームアップ処理を実行します。
 	 * </p>
+	 * <p>
+	 * enabled が false の場合は、ウォームアップ処理を実行しません。
+	 * </p>
 	 */
 	public void warmup() {
+		if (!isEnabled()) {
+			logger.debug("Warmup is disabled.");
+			return;
+		}
+
 		var tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
 		var taskNameList = tenantTaskNameListMap.get(tenantId);
 
@@ -259,7 +284,7 @@ public class WarmupService implements Service {
 	 * 拡張子に状態が付与されたステータスファイルを取得します。
 	 * <p>
 	 * 返却するファイルは service-config で設定したステータスファイルに状態を付与したファイルです。
-	 * 例えば、/path/to/file が設定されていた場合、 /path/to/file.complete や /path/to/file.failed が返却されます。
+	 * 例えば、/path/to/file が設定されていた場合、 /path/to/file.complete や /path/to/file.failed などが返却されます。
 	 * </p>
 	 *
 	 * @param status ウォームアップ状態
@@ -279,6 +304,7 @@ public class WarmupService implements Service {
 	private void createStatusFile(WarmupStatus status) {
 		var statusFile = getStatusFile();
 		if (null == statusFile) {
+			// ステータスファイルの設定がない場合は作成しない。
 			return;
 		}
 
@@ -287,7 +313,7 @@ public class WarmupService implements Service {
 			file.write(status.getStatus());
 			file.flush();
 
-			// /path/to/file.(complete|failed) を作成
+			// /path/to/file.(complete|failed|disabled) を作成
 			getStatusFile(status).createNewFile();
 
 		} catch (Exception e) {

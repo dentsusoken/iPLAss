@@ -1171,10 +1171,14 @@
 		<interface>org.iplass.mtp.impl.warmup.WarmupService</interface>
 		<class>org.iplass.mtp.impl.warmup.WarmupService</class>
 
+		<!-- enabled が true に設定されている場合に、ウォームアップ処理が実行されます。未指定の場合は false が設定されます。 -->
+		<!--
+		<property name="enabled" value="true" />
+		-->
 		<!--
 			statusFile には、ウォームアップ状態を表すファイルパスを設定します。指定されたファイルパスによって、以下の２ファイルを作成します。
 			statusFile の設定値が "/path/to/warmup_status" の場合。
-			
+
 			正常終了時
 				/path/to/warmup_status （ファイルには、complete が記載されている）
 				/path/to/warmup_status.complete （空ファイル）
@@ -1182,6 +1186,10 @@
 			異常終了時
 				/path/to/warmup_status （ファイルには、failed が記載されている）
 				/path/to/warmup_status.failed （空ファイル）
+
+			無効（enabled プロパティが未指定もしくは false が設定されている場合）
+				/path/to/warmup_status （ファイルには、disabled が記載されている）
+				/path/to/warmup_status.disabled （空ファイル）
 		-->
 		<!--
 		<property name="statusFile" value="/path/to/warmup_status" />
