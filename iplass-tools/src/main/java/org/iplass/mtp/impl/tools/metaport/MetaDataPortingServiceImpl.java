@@ -28,14 +28,17 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.sax.SAXSource;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
@@ -61,7 +64,6 @@ import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataJAXBService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
-import org.iplass.mtp.impl.metadata.xmlfile.XmlFileMetaDataStore;
 import org.iplass.mtp.impl.metadata.xmlresource.ContextPath;
 import org.iplass.mtp.impl.metadata.xmlresource.MetaDataEntryList;
 import org.iplass.mtp.impl.metadata.xmlresource.XmlResourceMetaDataEntryThinWrapper;
@@ -73,6 +75,8 @@ import org.iplass.mtp.impl.tenant.MetaTenant.MetaTenantHandler;
 import org.iplass.mtp.impl.tenant.MetaTenantService;
 import org.iplass.mtp.impl.tools.ToolsResourceBundleUtil;
 import org.iplass.mtp.impl.tools.metaport.MetaDataImportStatus.ImportAction;
+import org.iplass.mtp.impl.tools.validator.DefinitionNameCheckService;
+import org.iplass.mtp.impl.tools.validator.DefinitionNameCheckValidator;
 import org.iplass.mtp.impl.view.filter.EntityFilterService;
 import org.iplass.mtp.impl.view.generic.EntityViewService;
 import org.iplass.mtp.impl.webapi.EntityWebApiService;
@@ -101,6 +105,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 	private MetaDataJAXBService jaxbService;
 	private MetaTenantService metaTenantService;
 	private TenantContextService tContextService;
+	private DefinitionNameCheckService definitionNameCheckService;
 	private MetaDataImportHandler importHandler;
 
 	@Override
@@ -109,8 +114,9 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 		jaxbService = config.getDependentService(MetaDataJAXBService.class);
 		metaTenantService = config.getDependentService(MetaTenantService.class);
 		tContextService = config.getDependentService(TenantContextService.class);
+		definitionNameCheckService = config.getDependentService(DefinitionNameCheckService.class);
 
-		importHandler = (MetaDataImportHandler)config.getBean("importHandler");
+		importHandler = (MetaDataImportHandler) config.getBean("importHandler");
 	}
 
 	@Override
@@ -136,7 +142,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 			writeHeader(writer);
 
 			String beforeContextPath = "";
-			boolean isWriteContext = false;	//有効なEntityがない場合の時用
+			boolean isWriteContext = false; //有効なEntityがない場合の時用
 			for (String path : paths) {
 				MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
 				if (entry == null) {
@@ -199,7 +205,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 	}
 
 	@Override
-	public void writeHistory(PrintWriter writer, String definitionId, String[] versions){
+	public void writeHistory(PrintWriter writer, String definitionId, String[] versions) {
 		writeHistory(writer, definitionId, versions, new MetaDataWriteLoggingCallback());
 
 	}
@@ -218,7 +224,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 			writeHeader(writer);
 
 			String beforeContextPath = "";
-			boolean isWriteContext = false;	//有効なEntityがない場合の時用
+			boolean isWriteContext = false; //有効なEntityがない場合の時用
 			for (String temp : versions) {
 
 				int version = Integer.parseInt(temp);
@@ -295,6 +301,13 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 					if (entry == null) {
 						throw new MetaDataPortingRuntimeException(getRS("canNotGetMeta", path));
 					}
+
+					// 定義名チェック
+					Optional<String> optDefNameCheck = this.checkMetaDataDefinitionName(entry);
+					if (optDefNameCheck.isPresent()) {
+						throw new MetaDataPortingRuntimeException(optDefNameCheck.get());
+					}
+
 					entryList.add(entry);
 				}
 			} catch (Exception e) {
@@ -538,8 +551,8 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 		SAXParserFactory f = SAXParserFactory.newInstance();
 		f.setNamespaceAware(true);
 		f.setValidating(false);
-	    f = new SecureSAXParserFactory(f);
-	    try {
+		f = new SecureSAXParserFactory(f);
+		try {
 			return new SAXSource(f.newSAXParser().getXMLReader(), new InputSource(is));
 		} catch (SAXException | ParserConfigurationException e) {
 			throw new JAXBException(e);
@@ -570,7 +583,8 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 		return filterInfo;
 	}
 
-	private MetaDataImportResult doImportMetaData(XMLEntryInfo entryInfo, final List<MetaDataEntry> entryList, final MetaDataImportResult result, final Tenant importTenant) {
+	private MetaDataImportResult doImportMetaData(XMLEntryInfo entryInfo, final List<MetaDataEntry> entryList, final MetaDataImportResult result,
+			final Tenant importTenant) {
 
 		String curPath = null;
 		//対象メタデータのステータスをチェックして、順番を振り分ける
@@ -657,7 +671,6 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 				}
 			}
 
-
 			if (!combiIdList.isEmpty()) {
 				//コンビデータが含まれている場合は、normalList、individualListから抜き出す(先に更新するため)
 				for (String combiId : combiIdList) {
@@ -678,13 +691,13 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 		//通常の更新処理
 		if (!result.isError()) {
-			doImportNormalMetaData(removeList, normalCombiList, new ArrayList<>(normalList.values()) ,
+			doImportNormalMetaData(removeList, normalCombiList, new ArrayList<>(normalList.values()),
 					importTenant, needTenantReload, needMetaContextReload, result);
 		}
 
 		//特殊の更新処理
 		if (!result.isError()) {
-			doImportIndividualMetaData(individualCombiList, new ArrayList<>(individualList.values()) ,result);
+			doImportIndividualMetaData(individualCombiList, new ArrayList<>(individualList.values()), result);
 		}
 
 		return result;
@@ -692,8 +705,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 	private void doImportNormalMetaData(final List<ImportMetaDataInfo> removeList,
 			final List<ImportMetaDataInfo> normalCombiList, final List<ImportMetaDataInfo> normalList,
-			final Tenant importTenant
-			, final boolean needTenantReload, final boolean needMetaContextReload, final MetaDataImportResult result) {
+			final Tenant importTenant, final boolean needTenantReload, final boolean needMetaContextReload, final MetaDataImportResult result) {
 
 		if (removeList.isEmpty() && normalList.isEmpty()) {
 			return;
@@ -709,7 +721,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 			@Override
 			public void updated(String path, String pathBefore) {
-				logger.debug("metadata context updated. path=" + path +" pathBefore=" + pathBefore);
+				logger.debug("metadata context updated. path=" + path + " pathBefore=" + pathBefore);
 			}
 
 			@Override
@@ -728,65 +740,64 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 			//削除と通常のインポート処理はまとめて１トランザクションで行う
 			Transaction.requiresNew(t -> {
 
-					//個別にリロードするかの判定
-					boolean doAutoReload = (!needTenantReload && !needMetaContextReload);
+				//個別にリロードするかの判定
+				boolean doAutoReload = (!needTenantReload && !needMetaContextReload);
 
-					MetaDataContext.getContext().addMetaDataContextListener(listener);
+				MetaDataContext.getContext().addMetaDataContextListener(listener);
 
-					//削除から開始
-					for (ImportMetaDataInfo info : removeList) {
-						try {
-							importHandler.removeMetaData(info.path, info.metaData, doAutoReload);
+				//削除から開始
+				for (ImportMetaDataInfo info : removeList) {
+					try {
+						importHandler.removeMetaData(info.path, info.metaData, doAutoReload);
 
-							logger.debug("metadata removed. path=" + info.path);
-							result.addMessages(getRS("removeMeta", info.path));
-						} catch (Exception e) {
-							errorForImportMetaDataEntry(info.path, e, result);
-							return null;
-						}
+						logger.debug("metadata removed. path=" + info.path);
+						result.addMessages(getRS("removeMeta", info.path));
+					} catch (Exception e) {
+						errorForImportMetaDataEntry(info.path, e, result);
+						return null;
 					}
+				}
 
-					//登録処理(Combi)
-					for (ImportMetaDataInfo info : normalCombiList) {
-						try {
-							doImportNormalMetaData(info, importTenant, doAutoReload, result);
-						} catch (Exception e) {
-							errorForImportMetaDataEntry(info.path, e, result);
-							return null;
-						}
+				//登録処理(Combi)
+				for (ImportMetaDataInfo info : normalCombiList) {
+					try {
+						doImportNormalMetaData(info, importTenant, doAutoReload, result);
+					} catch (Exception e) {
+						errorForImportMetaDataEntry(info.path, e, result);
+						return null;
 					}
+				}
 
-					//登録処理(通常)
-					for (ImportMetaDataInfo info : normalList) {
-						try {
-							doImportNormalMetaData(info, importTenant, doAutoReload, result);
-						} catch (Exception e) {
-							errorForImportMetaDataEntry(info.path, e, result);
-							return null;
-						}
+				//登録処理(通常)
+				for (ImportMetaDataInfo info : normalList) {
+					try {
+						doImportNormalMetaData(info, importTenant, doAutoReload, result);
+					} catch (Exception e) {
+						errorForImportMetaDataEntry(info.path, e, result);
+						return null;
 					}
+				}
 
-					return null;
+				return null;
 			});
 
 			//リロード処理(別トランザクションで実行)
 			Transaction.requiresNew(t -> {
-					if (needTenantReload) {
-						tContextService.reloadTenantContext(ExecuteContext.getCurrentContext().getTenantContext().getTenantId(), false);
-						logger.debug("reload tenant context. trigger is metadata import.");
-						result.addMessages(getRS("reloadTenantContext"));
-					} else if (needMetaContextReload) {
-						MetaDataContext.getContext().clearAllCache();
-						logger.debug("clear metadata context. trigger is metadata import.");
-						result.addMessages(getRS("clearAllMetaDataContext"));
-					} else {
-						//それ以外の場合は個別に反映される
-						logger.debug("update metadata context only target. trigger is metadata import.");
-						result.addMessages(getRS("updateMetaDataContext"));
-					}
+				if (needTenantReload) {
+					tContextService.reloadTenantContext(ExecuteContext.getCurrentContext().getTenantContext().getTenantId(), false);
+					logger.debug("reload tenant context. trigger is metadata import.");
+					result.addMessages(getRS("reloadTenantContext"));
+				} else if (needMetaContextReload) {
+					MetaDataContext.getContext().clearAllCache();
+					logger.debug("clear metadata context. trigger is metadata import.");
+					result.addMessages(getRS("clearAllMetaDataContext"));
+				} else {
+					//それ以外の場合は個別に反映される
+					logger.debug("update metadata context only target. trigger is metadata import.");
+					result.addMessages(getRS("updateMetaDataContext"));
+				}
 
 			});
-
 
 		} finally {
 			MetaDataContext.getContext().removeMetaDataContextListener(listener);
@@ -846,7 +857,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 		Transaction.requiresNew(t -> {
 			final ExecuteContext current = ExecuteContext.getCurrentContext();
 			TenantContext tenantContext = tContextService.getTenantContext(ExecuteContext.getCurrentContext().getCurrentTenant().getId());
-			ExecuteContext.executeAs(tenantContext, ()->{
+			ExecuteContext.executeAs(tenantContext, () -> {
 				ExecuteContext.getCurrentContext().setLanguage(current.getLanguage());
 
 				//特殊メタデータについては個別にリロードする
@@ -946,7 +957,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 		if (path.endsWith(checkName)) {
 			contextPath = path.substring(0, path.length() - checkName.length() - 1);
 		} else if (path.endsWith(name)) {
-				contextPath = path.substring(0, path.length() - name.length() - 1);
+			contextPath = path.substring(0, path.length() - name.length() - 1);
 		} else {
 			contextPath = path;
 		}
@@ -960,7 +971,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 	private XMLEntryInfo parse(MetaDataEntryList metaList) {
 		XMLEntryInfo entryInfo = new XMLEntryInfo();
 		if (metaList.getContextPath() != null) {
-			for (ContextPath context: metaList.getContextPath()) {
+			for (ContextPath context : metaList.getContextPath()) {
 				parseContextPath(entryInfo, context, "", context.getName());
 			}
 		}
@@ -969,13 +980,13 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 	private void parseContextPath(XMLEntryInfo entryInfo, ContextPath context, String prefixPath, String rootPath) {
 		if (context.getContextPath() != null) {
-			for (ContextPath child: context.getContextPath()) {
+			for (ContextPath child : context.getContextPath()) {
 				parseContextPath(entryInfo, child, prefixPath + context.getName() + "/", rootPath);
 			}
 		}
 
 		if (context.getEntry() != null) {
-			for (XmlResourceMetaDataEntryThinWrapper xmlEntry: context.getEntry()) {
+			for (XmlResourceMetaDataEntryThinWrapper xmlEntry : context.getEntry()) {
 
 				if (xmlEntry.getMetaData() == null) {
 					//現在存在しないMetaDataが指定されたなどして、MetaDataが読めていない可能性。
@@ -994,7 +1005,8 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 					path = convertPath(prefixPath + context.getName() + "/" + xmlEntry.getMetaData().getName());
 				}
 
-				MetaDataEntry entry = new MetaDataEntry(path, xmlEntry.getMetaData(), State.VALID, 0, xmlEntry.isOverwritable(), xmlEntry.isSharable(), xmlEntry.isDataSharable(), xmlEntry.isPermissionSharable());
+				MetaDataEntry entry = new MetaDataEntry(path, xmlEntry.getMetaData(), State.VALID, 0, xmlEntry.isOverwritable(), xmlEntry.isSharable(),
+						xmlEntry.isDataSharable(), xmlEntry.isPermissionSharable());
 
 				entryInfo.putPathEntry(path, entry);
 				if (StringUtil.isEmpty(entry.getMetaData().getId())) {
@@ -1015,7 +1027,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 				|| path.startsWith(EntityFilterService.META_PATH)
 				|| path.startsWith(EntityWebApiService.META_PATH)
 				|| path.startsWith(GroovyScriptService.UTILITY_CLASS_META_PATH)) {
-			return path.replace(".","/");
+			return path.replace(".", "/");
 		}
 		return path;
 	}
@@ -1028,11 +1040,21 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 		return ToolsResourceBundleUtil.resourceString("metaport." + suffix, arguments);
 	}
 
+	private Optional<String> checkMetaDataDefinitionName(MetaDataEntry entry) {
+		RootMetaData metaData = entry.getMetaData();
+		if (Objects.isNull(metaData)) {
+			return Optional.empty();
+		}
+
+		DefinitionNameCheckValidator<RootMetaData> validator = this.definitionNameCheckService.getValidator(metaData.getClass());
+		return validator.validate(metaData);
+	}
+
 	private class ImportMetaDataInfo {
 		String path;
 		RootMetaData metaData;
-		MetaDataEntry entry;	/* 削除の場合は未設定 */
-		MetaDataImportStatus status;	/* 削除の場合は未設定 */
+		MetaDataEntry entry; /* 削除の場合は未設定 */
+		MetaDataImportStatus status; /* 削除の場合は未設定 */
 
 		public ImportMetaDataInfo(String path, RootMetaData metaData) {
 			this.path = path;
@@ -1064,12 +1086,12 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 	@Override
 	public void patchEntityData(final PatchEntityDataParameter param) {
-		ConfigImpl newConfig = new ConfigImpl("forPatchNew", new NameValue[] {new NameValue("filePath", param.getNewMetaDataFilePath())}, null);
+		ConfigImpl newConfig = new ConfigImpl("forPatchNew", new NameValue[] { new NameValue("filePath", param.getNewMetaDataFilePath()) }, null);
 		newConfig.addDependentService(MetaDataJAXBService.class.getName(), jaxbService);
 		XmlResourceMetaDataStore newRepo = new XmlResourceMetaDataStore();
 		newRepo.inited(null, newConfig);
 
-		ConfigImpl oldConfig = new ConfigImpl("forPatchOld", new NameValue[] {new NameValue("filePath", param.getOldMetaDataFilePath())}, null);
+		ConfigImpl oldConfig = new ConfigImpl("forPatchOld", new NameValue[] { new NameValue("filePath", param.getOldMetaDataFilePath()) }, null);
 		oldConfig.addDependentService(MetaDataJAXBService.class.getName(), jaxbService);
 		XmlResourceMetaDataStore oldRepo = new XmlResourceMetaDataStore();
 		oldRepo.inited(null, oldConfig);
@@ -1086,7 +1108,8 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 						StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
 						DataStore srds = storeService.getDataStore();
 						EntityContext ec = EntityContext.getCurrentContext();
-						srds.getApplyMetaDataStrategy().patchData(newMetaEntity, oldMetaEntity, ec, EntityContext.getCurrentContext().getLocalTenantId());
+						srds.getApplyMetaDataStrategy().patchData(newMetaEntity, oldMetaEntity, ec,
+								EntityContext.getCurrentContext().getLocalTenantId());
 					}
 				});
 			}
@@ -1113,8 +1136,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 	@Override
 	public void patchEntityDataWithUserAuth(final PatchEntityDataParameter param, String userId, String password) {
 		try {
-			authService.login(StringUtil.isNotEmpty(password) ?
-					new IdPasswordCredential(userId, password) : new InternalCredential(userId));
+			authService.login(StringUtil.isNotEmpty(password) ? new IdPasswordCredential(userId, password) : new InternalCredential(userId));
 			authService.doSecuredAction(AuthContextHolder.getAuthContext(), () -> {
 				patchEntityData(param);
 				return null;
