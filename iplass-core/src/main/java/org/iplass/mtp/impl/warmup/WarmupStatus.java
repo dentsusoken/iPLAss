@@ -41,10 +41,7 @@ public enum WarmupStatus {
 	/** 完了（無効） */
 	DISABLED(2, "disabled");
 
-	/** 最終ステータスを表す weight の値 */
-	private static final int FINAL_STATUS_WEIGHT = 2;
-
-	/** 重み */
+	/** 重み weight == 2 は最終ステータスを表す */
 	private int weight;
 	/** ステータス名 */
 	private String status;
@@ -83,13 +80,5 @@ public enum WarmupStatus {
 		}
 
 		return this.weight < nextStatus.weight;
-	}
-
-	/**
-	 * 当該ステータスが最終ステータスか判定する
-	 * @return 最終ステータスの場合は true を返却する。
-	 */
-	public boolean isFinalStatus() {
-		return FINAL_STATUS_WEIGHT == weight;
 	}
 }

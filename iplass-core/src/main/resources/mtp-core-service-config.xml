@@ -1186,10 +1186,6 @@
 			異常終了時
 				/path/to/warmup_status （ファイルには、failed が記載されている）
 				/path/to/warmup_status.failed （空ファイル）
-
-			無効（enabled プロパティが未指定もしくは false が設定されている場合）
-				/path/to/warmup_status （ファイルには、disabled が記載されている）
-				/path/to/warmup_status.disabled （空ファイル）
 		-->
 		<!--
 		<property name="statusFile" value="/path/to/warmup_status" />

@@ -36,7 +36,6 @@ import org.iplass.mtp.impl.warmup.WarmupService;
 import org.iplass.mtp.impl.warmup.WarmupStatus;
 import org.iplass.mtp.runtime.EntryPoint;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,9 +196,7 @@ public class WarmupStatusServlet extends HttpServlet {
 					logger.debug("Tenant {} warmup start.", tenantId);
 
 					EntryPoint.getInstance().withTenant(tenantId).run(() -> {
-						Transaction.readOnly(t -> {
-							warmupService.warmup();
-						});
+						warmupService.warmup();
 					});
 
 					logger.debug("Tenant {} warmup finish.", tenantId);

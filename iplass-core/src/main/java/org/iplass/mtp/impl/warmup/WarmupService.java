@@ -61,7 +61,7 @@ public class WarmupService implements Service {
 	/** テナント毎のウォームアップタスク名*/
 	private Map<Integer, List<String>> tenantTaskNameListMap;
 	/** ウォームアップ状態 */
-	private WarmupStatus status = WarmupStatus.NOT_PROCESSING;
+	private volatile WarmupStatus status = WarmupStatus.NOT_PROCESSING;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -117,11 +117,7 @@ public class WarmupService implements Service {
 
 		// ステータスファイルが存在していたら削除
 		deleteFile(statusFile);
-		for (var status : WarmupStatus.values()) {
-			if (status.isFinalStatus()) {
-				deleteFile(getStatusFile(status));
-			}
-		}
+		Stream.of(WarmupStatus.values()).forEach(s -> deleteFile(getStatusFile(s)));
 
 		this.taskMap = taskMap;
 		this.tenantTaskNameListMap = tenantTaskNameListMap;
@@ -136,11 +132,7 @@ public class WarmupService implements Service {
 		} finally {
 			// ステータスファイルを削除
 			deleteFile(getStatusFile());
-			for (var status : WarmupStatus.values()) {
-				if (status.isFinalStatus()) {
-					deleteFile(getStatusFile(status));
-				}
-			}
+			Stream.of(WarmupStatus.values()).forEach(s -> deleteFile(getStatusFile(s)));
 		}
 	}
 
@@ -167,18 +159,18 @@ public class WarmupService implements Service {
 	 * 詳細は {@link org.iplass.mtp.impl.warmup.WarmupStatus} を確認してください。
 	 * </p>
 	 * <p>
-	 * ウォームアップ状態が COMPLETE, FAILED, DISABLED に変更された場合、ステータスファイルを出力します。
+	 * ウォームアップ状態が COMPLETE, FAILED に変更された場合、ステータスファイルを出力します。
 	 * </p>
 	 *
 	 * @param nextStatus 変更する状態
 	 */
-	public void changeStatus(WarmupStatus nextStatus) {
+	public synchronized void changeStatus(WarmupStatus nextStatus) {
 		if (this.status.canChange(nextStatus)) {
 			logger.debug("Warmup status changed from {} to {}.", this.status, nextStatus);
 			this.status = nextStatus;
 
-			if (nextStatus.isFinalStatus()) {
-				// 最終ステータスの場合、ファイルを作成
+			if (WarmupStatus.COMPLETE == nextStatus || WarmupStatus.FAILED == nextStatus) {
+				// 最終ステータスの場合、ファイルを作成（DISABLED は作らない）
 				createStatusFile(nextStatus);
 			}
 		} else {
@@ -313,7 +305,7 @@ public class WarmupService implements Service {
 			file.write(status.getStatus());
 			file.flush();
 
-			// /path/to/file.(complete|failed|disabled) を作成
+			// /path/to/file.(complete|failed) を作成
 			getStatusFile(status).createNewFile();
 
 		} catch (Exception e) {
