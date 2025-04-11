@@ -29,8 +29,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.iplass.mtp.impl.async.AsyncTaskService;
-import org.iplass.mtp.impl.async.internal.InternalAsyncTaskServiceConstant;
 import org.iplass.mtp.impl.tenant.TenantService;
 import org.iplass.mtp.impl.warmup.WarmupService;
 import org.iplass.mtp.impl.warmup.WarmupStatus;
@@ -78,9 +76,8 @@ public class WarmupStatusServlet extends HttpServlet {
 		var warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
 		if (warmupService.isEnabled()) {
 			// ウォームアップが有効な場合、非同期でウォームアップする
-			AsyncTaskService asyncTaskService = ServiceRegistry.getRegistry().getService(InternalAsyncTaskServiceConstant.SERVICE_NAME);
 			var warmupTaskExecutor = new WarmupTaskExecutor(waitOnWarmup);
-			asyncTaskService.execute(warmupTaskExecutor);
+			warmupService.execute(warmupTaskExecutor);
 
 		} else {
 			// ウォームアップが無効な場合、処理無しで終了する。

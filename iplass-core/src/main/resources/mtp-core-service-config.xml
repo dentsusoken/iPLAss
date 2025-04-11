@@ -1160,13 +1160,7 @@
 		</property>
 	</service>
 
-	<!-- 内部処理用 非同期スレッド -->
-	<service name="internalAsyncTaskService">
-		<interface>org.iplass.mtp.impl.async.AsyncTaskService</interface>
-		<class>org.iplass.mtp.impl.async.internal.InternalSingleThreadAsyncTaskService</class>
-	</service>
-
-	<!-- ウォームアップ -->
+	<!-- ウォームアップ --> 
 	<service>
 		<interface>org.iplass.mtp.impl.warmup.WarmupService</interface>
 		<class>org.iplass.mtp.impl.warmup.WarmupService</class>

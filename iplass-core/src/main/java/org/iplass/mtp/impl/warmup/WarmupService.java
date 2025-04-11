@@ -27,6 +27,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -62,6 +66,9 @@ public class WarmupService implements Service {
 	private Map<Integer, List<String>> tenantTaskNameListMap;
 	/** ウォームアップ状態 */
 	private volatile WarmupStatus status = WarmupStatus.NOT_PROCESSING;
+
+	/** 非同期タスク実行 */
+	private InternalSingleThreadAsyncTaskExecutor asyncTaskExecutor;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -121,6 +128,11 @@ public class WarmupService implements Service {
 
 		this.taskMap = taskMap;
 		this.tenantTaskNameListMap = tenantTaskNameListMap;
+
+		// 非同期タスク処理
+		asyncTaskExecutor = new InternalSingleThreadAsyncTaskExecutor();
+		// インスタンス初期化
+		asyncTaskExecutor.init(config);
 	}
 
 	@Override
@@ -133,6 +145,10 @@ public class WarmupService implements Service {
 			// ステータスファイルを削除
 			deleteFile(getStatusFile());
 			Stream.of(WarmupStatus.values()).forEach(s -> deleteFile(getStatusFile(s)));
+			// インスタンス破棄
+			if (null != asyncTaskExecutor) {
+				asyncTaskExecutor.destroy();
+			}
 		}
 	}
 
@@ -214,6 +230,17 @@ public class WarmupService implements Service {
 			var task = taskMap.get(taskName);
 			task.warmup();
 		}
+	}
+
+	/**
+	 * 非同期タスクを実行する
+	 * @param <V> 返却データ型
+	 * @param task 非同期タスク
+	 * @return 非同期タスクの実行結果
+	 */
+	public <V> Future<V> execute(Callable<V> task) {
+		// asyncTaskExecutor メソッドに移譲
+		return asyncTaskExecutor.execute(task);
 	}
 
 	/**
@@ -310,6 +337,77 @@ public class WarmupService implements Service {
 
 		} catch (Exception e) {
 			logger.error("Failed to create status file.", e);
+		}
+	}
+
+	/**
+	 * 内部利用 単一スレッド用の非同期タスク実行
+	 * <p>
+	 * テナントが未確定な状態で利用する非同期処理です。
+	 * </p>
+	 */
+	private static class InternalSingleThreadAsyncTaskExecutor {
+		/** ExecutorService */
+		private ExecutorService executor;
+		/** 実行タスクのFuture */
+		private List<Future<?>> futureList = new ArrayList<>();
+
+		/**
+		 * 初期化ライフサイクルメソッド
+		 * <p>
+		 * 本メソッドを実行することで、インスタンスを利用することができます。
+		 * </p>
+		 *
+		 * @param config 設定情報
+		 */
+		public void init(Config config) {
+			executor = Executors.newSingleThreadExecutor();
+		}
+
+		/**
+		 * 破棄ライフサイクルメソッド
+		 * <p>
+		 * アプリケーション終了時に、本メソッドを実行しリソースを開放します。
+		 * </p>
+		 */
+		public void destroy() {
+			// 未完了でキャンセルされていないタスクをキャンセル
+			futureList.stream().filter(f -> !f.isDone() && !f.isCancelled()).forEach(f -> f.cancel(true));
+
+			if (null != executor) {
+				executor.close();
+			}
+		}
+
+		/**
+		 * 非同期タスクを実行する
+		 * @param <V> 返却データ型
+		 * @param task 非同期タスク
+		 * @return 非同期タスクの実行結果（Future）
+		 */
+		public <V> Future<V> execute(Callable<V> task) {
+			// 完了したタスクのFutureを削除
+			removeDoneFuture();
+			// 新規タスクを実行
+			var future = executor.submit(task);
+			futureList.add(future);
+			return future;
+		}
+
+		/**
+		 * 完了したタスクのFutureを削除する
+		 */
+		private void removeDoneFuture() {
+			List<Future<?>> doneFutureList = new ArrayList<>();
+			for (var future : futureList) {
+				if (future.isDone()) {
+					doneFutureList.add(future);
+				}
+			}
+
+			if (!doneFutureList.isEmpty()) {
+				futureList.removeAll(doneFutureList);
+			}
 		}
 	}
 }
