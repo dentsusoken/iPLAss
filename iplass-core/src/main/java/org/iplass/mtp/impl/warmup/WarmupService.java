@@ -62,6 +62,8 @@ public class WarmupService implements Service {
 
 	/** ウォームアップタスク */
 	private Map<String, WarmupTask> taskMap;
+	/** アプリケーションのウォームアップタスク名 */
+	private List<String> applicationTaskNameList;
 	/** テナント毎のウォームアップタスク名*/
 	private Map<Integer, List<String>> tenantTaskNameListMap;
 	/** ウォームアップ状態 */
@@ -69,12 +71,16 @@ public class WarmupService implements Service {
 
 	/** 非同期タスク実行 */
 	private InternalSingleThreadAsyncTaskExecutor asyncTaskExecutor;
+	/** ウォームアップコンテキスト */
+	private ThreadLocal<WarmupContext> warmupContext = new ThreadLocal<>();
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
 		// taskMap key = タスク名、 value = WarmupTask 実装インスタンス
 		Map<String, WarmupTask> taskMap = config.getValue("taskMap", Map.class, Collections.emptyMap());
+		// applicationTask = カンマ区切りのタスク名
+		String applicationTask = config.getValue("applicationTask", String.class, "");
 		// tenantTaskMap key = カンマ区切りのテナントID、 value = カンマ区切りのタスク名
 		Map<String, String> tenantTaskMap = config.getValue("tenantTaskMap", Map.class, Collections.emptyMap());
 
@@ -83,6 +89,25 @@ public class WarmupService implements Service {
 
 		// タスク初期化
 		taskMap.values().forEach(WarmupTask::init);
+
+		// アプリケーションのウォームアップタスク名を設定
+		// カンマ区切りのタスク名を分割
+		var applicationTaskNames = Stream.of(applicationTask.split(","))
+				.filter(t -> StringUtil.isNotEmpty(t))
+				.map(t -> t.trim())
+				.toList();
+
+		applicationTaskNameList = new ArrayList<>();
+		for (String taskName : applicationTaskNames) {
+			if (!taskMap.containsKey(taskName)) {
+				// tenantTaskMap に設定されたタスク名が、taskMap に存在しない場合は警告を出力しスキップ
+				logger.warn("The taskMap is set to the non-existent task name \"{}\". Please check tenantTaskMap.", taskName);
+				continue;
+			}
+
+			// タスクを追加
+			applicationTaskNameList.add(taskName);
+		}
 
 		// 全テナントID
 		var tenantService = ServiceRegistry.getRegistry().getService(TenantService.class);
@@ -195,6 +220,29 @@ public class WarmupService implements Service {
 	}
 
 	/**
+	 * ウォームアップコンテキストを取得する。
+	 * <p>
+	 * 処理を実行しているスレッド内でのみ有効なコンテキストです。
+	 * ウォームアップが完了したら、コンテキストをクリアしてください。
+	 * クリア用のメソッドとして {@link #clearWarmupContext()} を用意しています。
+	 * </p>
+	 * @return ウォームアップコンテキスト
+	 */
+	public WarmupContext getWarmupContext() {
+		if (warmupContext.get() == null) {
+			warmupContext.set(new WarmupContext());
+		}
+		return warmupContext.get();
+	}
+
+	/**
+	 * ウォームアップコンテキストをクリアする。
+	 */
+	public void clearWarmupContext() {
+		warmupContext.remove();
+	}
+
+	/**
 	 * 指定されたテナントIDのウォームアップ処理が存在しないことを確認する。
 	 * @param tenantId テナントID
 	 * @return ウォームアップ処理が存在しない場合 true を返却する。
@@ -204,7 +252,29 @@ public class WarmupService implements Service {
 	}
 
 	/**
-	 * ウォームアップ処理を実行する。
+	 * アプリケーションのウォームアップ処理を実行する。
+	 * <p>
+	 * アプリケーションに定義されているウォームアップ処理を実行します。
+	 * </p>
+	 * <p>
+	 * enabled が false の場合は、ウォームアップ処理を実行しません。
+	 * </p>
+	 */
+	public void warmupApplication() {
+		if (!isEnabled()) {
+			logger.debug("Warmup is disabled.");
+			return;
+		}
+
+		for (String taskName : applicationTaskNameList) {
+			logger.debug("Start the application warmup task \"{}\".", taskName);
+			var task = taskMap.get(taskName);
+			task.warmup();
+		}
+	}
+
+	/**
+	 * テナントのウォームアップ処理を実行する。
 	 * <p>
 	 * テナント毎に定義されているウォームアップ処理を実行します。
 	 * </p>
@@ -212,7 +282,7 @@ public class WarmupService implements Service {
 	 * enabled が false の場合は、ウォームアップ処理を実行しません。
 	 * </p>
 	 */
-	public void warmup() {
+	public void warmupTenant() {
 		if (!isEnabled()) {
 			logger.debug("Warmup is disabled.");
 			return;
@@ -226,7 +296,7 @@ public class WarmupService implements Service {
 		}
 
 		for (String taskName : taskNameList) {
-			logger.debug("Start the warmup task \"{}\".", taskName);
+			logger.debug("Start the tenant warmup task \"{}\".", taskName);
 			var task = taskMap.get(taskName);
 			task.warmup();
 		}

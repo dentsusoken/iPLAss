@@ -76,7 +76,7 @@ public class WarmupStatusServlet extends HttpServlet {
 		var warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
 		if (warmupService.isEnabled()) {
 			// ウォームアップが有効な場合、非同期でウォームアップする
-			var warmupTaskExecutor = new WarmupTaskExecutor(waitOnWarmup);
+			var warmupTaskExecutor = createWarmupTaskExecutor(waitOnWarmup);
 			warmupService.execute(warmupTaskExecutor);
 
 		} else {
@@ -93,6 +93,15 @@ public class WarmupStatusServlet extends HttpServlet {
 		int httpStatus = getHttpStatus(status);
 		response.getWriter().write(status.getStatus());
 		response.setStatus(httpStatus);
+	}
+
+	/**
+	 * ウォームアップタスク実行インスタンスを生成します。
+	 * @param waitOnWarmup ウォームアップ処理待ち時間（秒）
+	 * @return ウォームアップタスク実行インスタンス
+	 */
+	protected WarmupTaskExecutor createWarmupTaskExecutor(long waitOnWarmup) {
+		return new WarmupTaskExecutor(waitOnWarmup);
 	}
 
 	/**
@@ -124,7 +133,7 @@ public class WarmupStatusServlet extends HttpServlet {
 	 * サーブレットの初期化処理で非同期実行されるウォームアップ処理のエントリポイントです。
 	 * </p>
 	 */
-	private static class WarmupTaskExecutor implements Callable<Void> {
+	protected static class WarmupTaskExecutor implements Callable<Void> {
 		/** ロガー */
 		private Logger logger = LoggerFactory.getLogger(WarmupTaskExecutor.class);
 		/** ウォームアップ処理待ち時間（秒） */
@@ -172,6 +181,19 @@ public class WarmupStatusServlet extends HttpServlet {
 			warmupService.changeStatus(WarmupStatus.PROCESSING);
 
 			boolean isError = false;
+
+			try {
+				logger.debug("Application warmup start.");
+
+				warmupService.warmupApplication();
+
+				logger.debug("Application warmup finish.");
+
+			} catch (RuntimeException e) {
+				logger.error("Application warmup failed.", e);
+				isError = true;
+			}
+
 			var tenantIdList = tenantService.getAllTenantIdList();
 			for (int tenantId : tenantIdList) {
 				// テナント毎にウォームアップ処理を実行
@@ -193,7 +215,7 @@ public class WarmupStatusServlet extends HttpServlet {
 					logger.debug("Tenant {} warmup start.", tenantId);
 
 					EntryPoint.getInstance().withTenant(tenantId).run(() -> {
-						warmupService.warmup();
+						warmupService.warmupTenant();
 					});
 
 					logger.debug("Tenant {} warmup finish.", tenantId);
