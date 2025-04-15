@@ -32,10 +32,12 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
+import org.iplass.mtp.impl.metadata.validation.DefinitionNameCheckValidator;
+import org.iplass.mtp.impl.metadata.validation.EntityDeinitionNameCheckValidator;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.view.generic.ViewControlSetting;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.FormView;
+import org.iplass.mtp.view.generic.ViewControlSetting;
 
 /**
  * 画面定義
@@ -76,7 +78,8 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 	 * @return レイアウト情報
 	 */
 	public List<MetaFormView> getViews() {
-		if (this.views == null) this.views = new ArrayList<MetaFormView>();
+		if (this.views == null)
+			this.views = new ArrayList<MetaFormView>();
 		return views;
 	}
 
@@ -97,7 +100,8 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 	}
 
 	public List<MetaViewControlSetting> getViewControlSettings() {
-		if (this.viewControlSettings == null) this.viewControlSettings = new ArrayList<>();
+		if (this.viewControlSettings == null)
+			this.viewControlSettings = new ArrayList<>();
 		return viewControlSettings;
 	}
 
@@ -190,5 +194,15 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 			}
 		}
 		return entityView;
+	}
+
+	@Override
+	public String pathPrefix() {
+		return EntityViewService.ENTITY_META_PATH;
+	}
+
+	@Override
+	public Class<? extends DefinitionNameCheckValidator> definitionNameCheckValidatorClass() {
+		return EntityDeinitionNameCheckValidator.class;
 	}
 }

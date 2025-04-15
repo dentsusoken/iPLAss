@@ -44,6 +44,8 @@ import org.iplass.mtp.impl.entity.property.MetaReferenceProperty;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
+import org.iplass.mtp.impl.metadata.validation.DefinitionNameCheckValidator;
+import org.iplass.mtp.impl.metadata.validation.EntityDeinitionNameCheckValidator;
 import org.iplass.mtp.impl.properties.basic.BasicType;
 import org.iplass.mtp.impl.properties.extend.AutoNumberType;
 import org.iplass.mtp.impl.properties.extend.SelectType;
@@ -51,7 +53,6 @@ import org.iplass.mtp.impl.util.KeyGenerator;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.validation.MetaValidation;
 import org.iplass.mtp.impl.validation.MetaValidationNotNull;
-
 
 public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<EntityDefinition> {
 	private static final long serialVersionUID = 6349144477923315083L;
@@ -61,7 +62,6 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 	//TODO Resourceのバージョンアップの場合、patchツールにて、全テナントを更新。ただし、共有テナントがある場合、共有テナントで当該MetaDataをカスタマイズしていた場合、共有テナントのみ更新
 	//TODO 共有テナントのMetaDataのローカルへの反映は、各テナントの判断（でよいか？運用が手間かも。。。やっぱり自動かな。。。結局、各テナントに反映しなかったら、共通ロジックで落ちるかもだから。）
 	//TODO 現行のものはカスタマイズ前のMetaData持ってないので、その場合の考慮もする
-
 
 	/** oidとして使用するPropertyの定義名。未指定の場合は、自動生成されるIDが使用される */
 	private List<String> oidPropertyId;
@@ -182,7 +182,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 			return null;
 		}
 
-		for (MetaProperty p: declaredPropertyList) {
+		for (MetaProperty p : declaredPropertyList) {
 			if (propName.equals(p.getName())) {
 				return p;
 			}
@@ -196,7 +196,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 			return null;
 		}
 
-		for (MetaProperty p: declaredPropertyList) {
+		for (MetaProperty p : declaredPropertyList) {
 			if (propId.equals(p.getId())) {
 				return p;
 			}
@@ -220,7 +220,6 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 		this.mapping = mapping;
 	}
 
-
 	public MetaEntityStore getEntityStoreDefinition() {
 		return entityStoreDefinition;
 	}
@@ -237,13 +236,13 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 		this.storeMapping = storeMapping;
 	}
 
-//	public String getDataStoreType() {
-//		return dataStoreType;
-//	}
-//
-//	public void setDataStoreType(String dataStoreType) {
-//		this.dataStoreType = dataStoreType;
-//	}
+	//	public String getDataStoreType() {
+	//		return dataStoreType;
+	//	}
+	//
+	//	public void setDataStoreType(String dataStoreType) {
+	//		this.dataStoreType = dataStoreType;
+	//	}
 
 	public void applyConfig(EntityDefinition definition, EntityContext context, KeyGenerator keyGene) {
 
@@ -278,7 +277,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 
 		List<MetaProperty> newDeclaredPropertyList = new ArrayList<MetaProperty>();
 		if (definition.getPropertyList() != null) {
-			for (PropertyDefinition pDef: definition.getPropertyList()) {
+			for (PropertyDefinition pDef : definition.getPropertyList()) {
 				if (!pDef.isInherited()) {
 					MetaProperty pMeta = getDeclaredProperty(pDef.getName());
 
@@ -299,7 +298,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 
 		if (definition.getEventListenerList() != null) {
 			eventListenerList = new ArrayList<MetaEventListener>();
-			for (EventListenerDefinition ed: definition.getEventListenerList()) {
+			for (EventListenerDefinition ed : definition.getEventListenerList()) {
 				//TODO instanceofの判断してしまっている
 				if (ed instanceof ScriptingEventListenerDefinition) {
 					MetaScriptingEventListener ms = new MetaScriptingEventListener();
@@ -326,7 +325,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 		List<MetaProperty> superPropertyList = null;
 		if (!EntityHandler.ROOT_ENTITY_ID.equals(getId())) {
 			EntityHandler thisHandler = context.getHandlerById(getId());
-			if (thisHandler != null) {	//Create時はnullの可能性あり
+			if (thisHandler != null) { //Create時はnullの可能性あり
 				EntityHandler superEntityHandler = thisHandler.getSuperDataModelHandler(context);
 				if (superEntityHandler != null) {
 					MetaEntity superEntity = superEntityHandler.getMetaData();
@@ -334,7 +333,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 				}
 			} else {
 				EntityHandler superEntityHandler;
-					superEntityHandler = context.getHandlerById(inheritedEntityMetaDataId);
+				superEntityHandler = context.getHandlerById(inheritedEntityMetaDataId);
 				if (superEntityHandler != null) {
 					MetaEntity superEntity = superEntityHandler.getMetaData();
 					superPropertyList = superEntity.declaredPropertyList;
@@ -348,7 +347,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 				throw new EntityRuntimeException("oidProperty not found:" + definition.getOidPropertyName());
 			}
 			oidPropertyId = new ArrayList<String>();
-			for (String oidPropName: definition.getOidPropertyName()) {
+			for (String oidPropName : definition.getOidPropertyName()) {
 				boolean match = false;
 				match = validateOidProperty(declaredPropertyList, oidPropName);
 				if (!match && superPropertyList != null) {
@@ -384,7 +383,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 				throw new EntityRuntimeException("crawlProperty not found:" + definition.getCrawlPropertyName());
 			}
 			crawlPropertyId = new ArrayList<String>();
-			for (String crawlPropName: definition.getCrawlPropertyName()) {
+			for (String crawlPropName : definition.getCrawlPropertyName()) {
 				boolean match = false;
 				match = validateCrawlProperty(declaredPropertyList, crawlPropName);
 				if (!match && superPropertyList != null) {
@@ -421,7 +420,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 	private boolean validateOidProperty(List<MetaProperty> properties, String oidPropName) {
 		boolean match = false;
 		if (properties != null) {
-			for (MetaProperty p: properties) {
+			for (MetaProperty p : properties) {
 				if (p.getName().equals(oidPropName)) {
 					if (p instanceof MetaPrimitiveProperty) {
 						MetaPrimitiveProperty pp = (MetaPrimitiveProperty) p;
@@ -452,7 +451,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 	private boolean validateNameProperty(List<MetaProperty> properties, String namePropName) {
 		boolean match = false;
 		if (properties != null) {
-			for (MetaProperty p: properties) {
+			for (MetaProperty p : properties) {
 				if (p.getName().equals(namePropName)) {
 					if (p instanceof MetaPrimitiveProperty) {
 						MetaPrimitiveProperty pp = (MetaPrimitiveProperty) p;
@@ -480,7 +479,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 	private boolean validateCrawlProperty(List<MetaProperty> properties, String crawlPropName) {
 		boolean match = false;
 		if (properties != null) {
-			for (MetaProperty p: properties) {
+			for (MetaProperty p : properties) {
 				if (p.getName().equals(crawlPropName)) {
 					crawlPropertyId.add(p.getId());
 					match = true;
@@ -500,7 +499,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 			return false;
 		}
 		boolean isNotNullDef = false;
-		for (MetaValidation mv: pp.getValidations()) {
+		for (MetaValidation mv : pp.getValidations()) {
 			if (mv instanceof MetaValidationNotNull) {
 				isNotNullDef = true;
 				break;
@@ -535,20 +534,20 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 			}
 			superEntity = superEntityHandler.getMetaData().currentConfig(context);
 			superPropertyList = superEntityHandler.getMetaData().declaredPropertyList;
-//			if (!superEntity.getName().equals(EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME)) {
-				def.setInheritedDefinition(superEntity.getName());
-//			}
+			//			if (!superEntity.getName().equals(EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME)) {
+			def.setInheritedDefinition(superEntity.getName());
+			//			}
 		}
 
 		List<PropertyDefinition> propertyDefList = new ArrayList<PropertyDefinition>();
 		if (superEntity != null) {
-			for (PropertyDefinition pd: superEntity.getPropertyList()) {
+			for (PropertyDefinition pd : superEntity.getPropertyList()) {
 				pd.setInherited(true);
 				propertyDefList.add(pd);
 			}
 		}
 		if (declaredPropertyList != null) {
-			for (MetaProperty pMeta: declaredPropertyList) {
+			for (MetaProperty pMeta : declaredPropertyList) {
 				PropertyDefinition pDef = pMeta.currentConfig(context);
 				if (pDef != null) {
 					propertyDefList.add(pDef);
@@ -558,7 +557,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 		def.setPropertyList(propertyDefList);
 
 		if (eventListenerList != null) {
-			for (MetaEventListener me: eventListenerList) {
+			for (MetaEventListener me : eventListenerList) {
 				def.addEventListener(me.currentConfig());
 			}
 		}
@@ -567,10 +566,10 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 
 		if (oidPropertyId != null) {
 			ArrayList<String> oidNames = new ArrayList<String>();
-			for (String oidPropId: oidPropertyId) {
+			for (String oidPropId : oidPropertyId) {
 				boolean match = false;
 				if (declaredPropertyList != null) {
-					for (MetaProperty pMeta: declaredPropertyList) {
+					for (MetaProperty pMeta : declaredPropertyList) {
 						if (pMeta.getId().equals(oidPropId)) {
 							oidNames.add(pMeta.getName());
 							match = true;
@@ -579,7 +578,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 					}
 				}
 				if (!match && superPropertyList != null) {
-					for (MetaProperty pMeta: superPropertyList) {
+					for (MetaProperty pMeta : superPropertyList) {
 						if (pMeta.getId().equals(oidPropId)) {
 							oidNames.add(pMeta.getName());
 							match = true;
@@ -595,7 +594,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 		if (namePropertyId != null) {
 			boolean match = false;
 			if (declaredPropertyList != null) {
-				for (MetaProperty pMeta: declaredPropertyList) {
+				for (MetaProperty pMeta : declaredPropertyList) {
 					if (pMeta.getId().equals(namePropertyId)) {
 						def.setNamePropertyName(pMeta.getName());
 						match = true;
@@ -604,7 +603,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 				}
 			}
 			if (!match && superPropertyList != null) {
-				for (MetaProperty pMeta: superPropertyList) {
+				for (MetaProperty pMeta : superPropertyList) {
 					if (pMeta.getId().equals(namePropertyId)) {
 						def.setNamePropertyName(pMeta.getName());
 						match = true;
@@ -616,10 +615,10 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 
 		if (crawlPropertyId != null) {
 			ArrayList<String> crawlNames = new ArrayList<String>();
-			for (String crawlPropId: crawlPropertyId) {
+			for (String crawlPropId : crawlPropertyId) {
 				boolean match = false;
 				if (declaredPropertyList != null) {
-					for (MetaProperty pMeta: declaredPropertyList) {
+					for (MetaProperty pMeta : declaredPropertyList) {
 						if (pMeta.getId().equals(crawlPropId)) {
 							crawlNames.add(pMeta.getName());
 							match = true;
@@ -628,7 +627,7 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 					}
 				}
 				if (!match && superPropertyList != null) {
-					for (MetaProperty pMeta: superPropertyList) {
+					for (MetaProperty pMeta : superPropertyList) {
 						if (pMeta.getId().equals(crawlPropId)) {
 							crawlNames.add(pMeta.getName());
 							match = true;
@@ -681,16 +680,19 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 						: dataLocalizationStrategy.hashCode());
 		result = prime
 				* result
-				+ ((declaredPropertyList == null) ? 0 : declaredPropertyList
-						.hashCode());
+				+ ((declaredPropertyList == null) ? 0
+						: declaredPropertyList
+								.hashCode());
 		result = prime
 				* result
-				+ ((entityStoreDefinition == null) ? 0 : entityStoreDefinition
-						.hashCode());
+				+ ((entityStoreDefinition == null) ? 0
+						: entityStoreDefinition
+								.hashCode());
 		result = prime
 				* result
-				+ ((eventListenerList == null) ? 0 : eventListenerList
-						.hashCode());
+				+ ((eventListenerList == null) ? 0
+						: eventListenerList
+								.hashCode());
 		result = prime
 				* result
 				+ ((inheritedEntityMetaDataId == null) ? 0
@@ -705,8 +707,9 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 				+ ((storeMapping == null) ? 0 : storeMapping.hashCode());
 		result = prime
 				* result
-				+ ((versionControlType == null) ? 0 : versionControlType
-						.hashCode());
+				+ ((versionControlType == null) ? 0
+						: versionControlType
+								.hashCode());
 		return result;
 	}
 
@@ -806,5 +809,15 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 	public EntityDefinition currentConfig() {
 		EntityContext ec = EntityContext.getCurrentContext();
 		return currentConfig(ec);
+	}
+
+	@Override
+	public String pathPrefix() {
+		return EntityService.ENTITY_META_PATH;
+	}
+
+	@Override
+	public Class<? extends DefinitionNameCheckValidator> definitionNameCheckValidatorClass() {
+		return EntityDeinitionNameCheckValidator.class;
 	}
 }

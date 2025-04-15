@@ -23,6 +23,8 @@ package org.iplass.mtp.impl.metadata;
 import java.util.List;
 
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
+import org.iplass.mtp.impl.metadata.validation.DefinitionNameCheckValidator;
+import org.iplass.mtp.impl.metadata.validation.NoCheckValidator;
 
 /**
  * メタデータをあらわすインタフェース。
@@ -109,4 +111,23 @@ public interface RootMetaData extends MetaData {
 
 	public RootMetaData copy();
 
+	/**
+	 * メタデータパスプレフィックスを返す。
+	 * TODO コンパイルエラー回避のため一旦default
+	 * 
+	 * @return メタデータパスプレフィックス
+	 */
+	public default String pathPrefix() {
+		return null;
+	}
+
+	/**
+	 * メタデータ定義名チェックValidatorクラスを返す。
+	 * TODO コンパイルエラー回避のため一旦default
+	 * 
+	 * @return メタデータ定義名チェックValidatorクラス
+	 */
+	public default Class<? extends DefinitionNameCheckValidator> definitionNameCheckValidatorClass() {
+		return NoCheckValidator.class;
+	}
 }

@@ -29,6 +29,7 @@ import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.mtp.view.generic.EntityView;
 
@@ -37,6 +38,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 
 /**
  * View追加用ダイアログ
@@ -70,6 +72,12 @@ public class CreateViewDialog extends MtpDialog {
 		form = new MtpForm();
 		form.setAutoFocus(true);
 		form.setItems(nameItem);
+
+		//名前のPolicyをカスタマイズ
+		RegExpValidator nameRegExpValidator = new RegExpValidator();
+		nameRegExpValidator.setExpression(MetaDataConstants.NAME_REG_EXP_PATH_PERIOD);
+		nameRegExpValidator.setErrorMessage(AdminClientMessageUtil.getString("ui_metadata_entity_layout_CreateViewDialog_nameErr"));
+		nameItem.setValidators(nameRegExpValidator);
 
 		container.addMember(form);
 
@@ -138,4 +146,3 @@ public class CreateViewDialog extends MtpDialog {
 		this.okClickHandler = handler;
 	}
 }
-

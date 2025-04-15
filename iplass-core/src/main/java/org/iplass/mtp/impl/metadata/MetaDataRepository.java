@@ -20,17 +20,23 @@
 
 package org.iplass.mtp.impl.metadata;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType;
+import org.iplass.mtp.impl.metadata.validation.DefinitionNameCheckValidator;
+import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
+import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class MetaDataRepository implements Service {
 
@@ -38,7 +44,7 @@ public class MetaDataRepository implements Service {
 
 	private MetaDataStore tenantLocalStore;
 	private List<MetaDataStore> sharedStore;//indexが0に近い方が優先
-	
+
 	public MetaDataStore getTenantLocalStore() {
 		return tenantLocalStore;
 	}
@@ -58,9 +64,9 @@ public class MetaDataRepository implements Service {
 			for (int i = 0; i < sharedStore.size(); i++) {
 				ent = sharedStore.get(i).loadById(tenantId, id);
 				if (ent != null && ent.isSharable()) {
-					if(ent.isOverwritable()){
+					if (ent.isOverwritable()) {
 						ent.setRepositryType(RepositoryType.TENANT_LOCAL);
-					}else{
+					} else {
 						ent.setRepositryType(RepositoryType.SHARED);
 					}
 					return ent;
@@ -81,9 +87,9 @@ public class MetaDataRepository implements Service {
 			for (int i = 0; i < sharedStore.size(); i++) {
 				ent = sharedStore.get(i).loadById(tenantId, id, version);
 				if (ent != null && ent.isSharable()) {
-					if(ent.isOverwritable()){
+					if (ent.isOverwritable()) {
 						ent.setRepositryType(RepositoryType.TENANT_LOCAL);
-					}else{
+					} else {
 						ent.setRepositryType(RepositoryType.SHARED);
 					}
 					return ent;
@@ -101,10 +107,10 @@ public class MetaDataRepository implements Service {
 				List<MetaDataEntryInfo> list = sharedStore.get(i).definitionList(tenantId, prefixPath, withInvalid);
 				for (MetaDataEntryInfo definition : list) {
 					if (definition.isSharable()) {
-						if(definition.isOverwritable()){
+						if (definition.isOverwritable()) {
 							//TODO RepositoryTypeの制御はMetaDataContext側にまとめる形にする
 							definition.setRepositryType(RepositoryType.TENANT_LOCAL);
-						}else{
+						} else {
 							definition.setRepositryType(RepositoryType.SHARED);
 						}
 						map.put(definition.getPath(), definition);
@@ -121,7 +127,7 @@ public class MetaDataRepository implements Service {
 		List<MetaDataEntryInfo> res = new ArrayList<MetaDataEntryInfo>(map.values());
 
 		return res;
-		
+
 	}
 
 	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withShared)
@@ -158,9 +164,9 @@ public class MetaDataRepository implements Service {
 					if (ent.getMetaData() == null) {
 						throw new SystemException(tenantId + "'s " + path + " MetaData is Incompatible or not defined.");
 					}
-					if(ent.isOverwritable()){
+					if (ent.isOverwritable()) {
 						ent.setRepositryType(RepositoryType.TENANT_LOCAL);
-					}else{
+					} else {
 						ent.setRepositryType(RepositoryType.SHARED);
 					}
 					return ent;
@@ -185,9 +191,9 @@ public class MetaDataRepository implements Service {
 					if (ent.getMetaData() == null) {
 						throw new SystemException(tenantId + "'s " + path + " MetaData is Incompatible or not defined.");
 					}
-					if(ent.isOverwritable()){
+					if (ent.isOverwritable()) {
 						ent.setRepositryType(RepositoryType.TENANT_LOCAL);
-					}else{
+					} else {
 						ent.setRepositryType(RepositoryType.SHARED);
 					}
 					return ent;
@@ -198,13 +204,15 @@ public class MetaDataRepository implements Service {
 	}
 
 	public void store(int tenantId, MetaDataEntry metaDataEntry)
-		throws MetaDataRuntimeException {
+			throws MetaDataRuntimeException {
+		this.validateDefinitionName(metaDataEntry);
 		tenantLocalStore.store(tenantId, metaDataEntry);
 		logger.info("store MetaData:" + metaDataEntry.getPath());
 	}
 
 	public void update(int tenantId, MetaDataEntry metaDataEntry)
 			throws MetaDataRuntimeException {
+		this.validateDefinitionName(metaDataEntry);
 		tenantLocalStore.update(tenantId, metaDataEntry);
 
 		logger.info("update MetaData:" + metaDataEntry.getPath());
@@ -219,7 +227,6 @@ public class MetaDataRepository implements Service {
 		tenantLocalStore.updateConfigById(tenantId, id, config);
 		logger.info("update MetaData config of id:" + id);
 	}
-
 
 	public List<Integer> getTenantIdsOf(String metaDataId) {
 		return tenantLocalStore.getTenantIdsOf(metaDataId);
@@ -236,4 +243,53 @@ public class MetaDataRepository implements Service {
 		return list;
 	}
 
+	private void validateDefinitionName(MetaDataEntry metaDataEntry) throws MetaDataRuntimeException {
+		if (Objects.isNull(metaDataEntry)) {
+			return;
+		}
+
+		RootMetaData metaData = metaDataEntry.getMetaData();
+		if (Objects.isNull(metaData)) {
+			return;
+		}
+
+		// パスチェック
+		if (!this.checkPath(metaDataEntry.getPath(), metaData.pathPrefix())) {
+			throw new MetaDataRuntimeException(CoreResourceBundleUtil.resourceString("impl.metadata.validator.regularExpression.invalidPath"));
+		}
+
+		// 定義名チェック
+		Optional<String> optError = this.checkDefinitionName(metaData.getName(), metaData.definitionNameCheckValidatorClass());
+		if (optError.isPresent()) {
+			throw new MetaDataRuntimeException(optError.get());
+		}
+	}
+
+	private boolean checkPath(String path, String prefix) {
+		// 必須チェックではないのでチェックに必要な情報がなかったらチェックしない（チェックOK）
+		if (StringUtil.isEmpty(path) || StringUtil.isEmpty(prefix)) {
+			return true;
+		}
+
+		return path.startsWith(prefix);
+	}
+
+	private Optional<String> checkDefinitionName(String definitionName, Class<? extends DefinitionNameCheckValidator> validatorType) {
+		// 必須チェックではないのでチェックに必要な情報がなかったらチェックしない（チェックOK）
+		if (StringUtil.isEmpty(definitionName) || Objects.isNull(validatorType)) {
+			return Optional.empty();
+		}
+
+		DefinitionNameCheckValidator validator;
+		try {
+			validator = validatorType.getConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			// ここでのエラーはプログラムバグ
+			logger.error(e.getMessage(), e);
+			throw new ApplicationException(e);
+		}
+
+		return validator.validate(definitionName);
+	}
 }

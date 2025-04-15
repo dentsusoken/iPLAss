@@ -45,6 +45,8 @@ import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
+import org.iplass.mtp.impl.metadata.validation.DefinitionNameCheckValidator;
+import org.iplass.mtp.impl.metadata.validation.PathSlashNamePeriodCheckValidator;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.web.ParameterValueMap;
 import org.iplass.mtp.impl.web.RequestPath.PathType;
@@ -208,7 +210,6 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		this.synchronizeOnSession = synchronizeOnSession;
 	}
 
-
 	public MetaCacheCriteria getCacheCriteria() {
 		return cacheCriteria;
 	}
@@ -246,7 +247,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		//新しい属性の方が有効
 		return privileged;
 	}
- 
+
 	public void setPrivileged(boolean isPrivileged) {
 		//保存時に古い属性をnullにセットするようにする
 		this.privileged = isPrivileged;
@@ -382,7 +383,6 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 		needTrustedAuthenticate = definition.isNeedTrustedAuthenticate();
 
-
 		if (definition.getAllowRequestContentTypes() != null) {
 			allowRequestContentTypes = new String[definition.getAllowRequestContentTypes().length];
 			System.arraycopy(definition.getAllowRequestContentTypes(), 0, allowRequestContentTypes, 0, allowRequestContentTypes.length);
@@ -463,6 +463,16 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		return definition;
 	}
 
+	@Override
+	public String pathPrefix() {
+		return ActionMappingService.ACTION_MAPPING_META_PATH;
+	}
+
+	@Override
+	public Class<? extends DefinitionNameCheckValidator> definitionNameCheckValidatorClass() {
+		return PathSlashNamePeriodCheckValidator.class;
+	}
+
 	public class ActionMappingRuntime extends BaseMetaDataRuntime {
 
 		private CommandRuntime cmd;
@@ -514,7 +524,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 				if (paramMap != null) {
 					paramMapRuntimes = new HashMap<>();
-					for (ParamMap p: paramMap) {
+					for (ParamMap p : paramMap) {
 						ParamMapRuntime pmr = p.createRuntime();
 						List<ParamMapRuntime> pmrList = paramMapRuntimes.get(p.getName());
 						if (pmrList == null) {
@@ -547,7 +557,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 						}
 						if (allowMethod != null && allowMethod.length > 0) {
 							ArrayList<String> aml = new ArrayList<>(allowMethod.length);
-							for (HttpMethodType hmt: allowMethod) {
+							for (HttpMethodType hmt : allowMethod) {
 								aml.add(hmt.toString());
 							}
 							requestRestrictionRuntime.setAllowMethods(aml);
@@ -580,7 +590,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 		private String allowString() {
 			StringBuilder sb = new StringBuilder();
-			for (String m: requestRestrictionRuntime.getAllowMethods()) {
+			for (String m : requestRestrictionRuntime.getAllowMethods()) {
 				switch (m) {
 				case GET:
 					sb.append(GET).append(", ").append(HEAD).append(", ");
@@ -662,10 +672,10 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 			Enumeration<String> reqHeaderEnum = req.getRequest().getHeaderNames();
 
-			while( reqHeaderEnum.hasMoreElements() ) {
+			while (reqHeaderEnum.hasMoreElements()) {
 				String headerName = reqHeaderEnum.nextElement();
 				buffer.append(CRLF).append(headerName).append(": ")
-				.append(req.getRequest().getHeader(headerName));
+						.append(req.getRequest().getHeader(headerName));
 			}
 
 			buffer.append(CRLF);
@@ -776,7 +786,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				}
 			}
 
-			WebInvocationImpl invoke =  new WebInvocationImpl(reqInterceptors, cmdInterceptors, cmd, requestContext, req, this);
+			WebInvocationImpl invoke = new WebInvocationImpl(reqInterceptors, cmdInterceptors, cmd, requestContext, req, this);
 
 			if (isSynchronizeOnSession()) {
 				synchronized (requestContext.getSession()) {
