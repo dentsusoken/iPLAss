@@ -42,6 +42,7 @@ public class Constants {
 	public static final String VERSION = "version";
 	public static final String TIMESTAMP = "timestamp";
 	public static final String NEWVERSION = "newversion";
+	public static final String VERSION_SPECIFIED = "versionSpecified";
 	public static final String MESSAGE = "message";
 	public static final String ERROR_PROP = "errorProperty";
 	public static final String DATA = "data";

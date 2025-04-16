@@ -48,6 +48,7 @@
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
+	boolean isVersionSpecified = Boolean.TRUE.equals(request.getAttribute(Constants.VERSION_SPECIFIED));
 
 	OutputType type = OutputType.EDIT;
 	String contextPath = TemplateUtil.getTenantContextPath();
@@ -232,6 +233,9 @@ function cancel() {
 <%	if (!moveToSearchList) {
 		//一覧に戻らない場合
 %>
+		<% if (moveToView && isVersionSpecified) { %>
+		<%=Constants.VERSION_SPECIFIED%>:$(":hidden[name='versionSpecified']").val(),
+		<% } %>
 		<%=Constants.VERSION%>:$(":hidden[name='version']").val(),
 		<%=Constants.BACK_PATH%>:$(":hidden[name='backPath']").val(),
 <%	}
@@ -297,6 +301,11 @@ $(function(){
 	if (version != null) {
 %>
 <input type="hidden" name="<%=Constants.VERSION%>" value="<c:out value="<%=version%>"/>" />
+<%
+	}
+	if (isVersionSpecified) {
+%>
+<input type="hidden" name="<%=Constants.VERSION_SPECIFIED%>" value="true" />
 <%
 	}
 %>

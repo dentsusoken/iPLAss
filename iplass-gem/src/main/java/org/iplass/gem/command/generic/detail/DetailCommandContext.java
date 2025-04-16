@@ -518,6 +518,10 @@ public class DetailCommandContext extends RegistrationCommandContext
 					}
 				}
 			}
+			// 詳細画面の「別バージョンを参照」で参照されたか確認
+			if (isVersionSpecified()) {
+				return true;
+			}
 		} else {
 			// 検索時に保存時データを検索しているかを確認
 			String searchCond = getSearchCond();
@@ -534,6 +538,15 @@ public class DetailCommandContext extends RegistrationCommandContext
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 詳細画面の「別バージョンを参照」で指定されたバージョンのEntityデータをロードするかを取得します。
+	 * @return
+	 */
+	public boolean isVersionSpecified() {
+		String versionSpecified = getParam(Constants.VERSION_SPECIFIED);
+		return versionSpecified != null && "true".equals(versionSpecified);
 	}
 
 	@Override

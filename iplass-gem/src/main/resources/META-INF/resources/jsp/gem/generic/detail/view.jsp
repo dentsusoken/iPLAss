@@ -55,6 +55,7 @@
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
+	boolean isVersionSpecified = Boolean.TRUE.equals(request.getAttribute(Constants.VERSION_SPECIFIED));
 
 	OutputType type = OutputType.VIEW;
 	String contextPath = TemplateUtil.getTenantContextPath();
@@ -259,6 +260,11 @@ function dataUnlock() {
 	if (version != null) {
 %>
 <input type="hidden" name="<%=Constants.VERSION%>" value="<c:out value="<%=version%>"/>" />
+<%	
+  }
+	if (isVersionSpecified) {
+%>
+<input type="hidden" name="<%=Constants.VERSION_SPECIFIED%>" value="true" />
 <%
 	}
 %>
