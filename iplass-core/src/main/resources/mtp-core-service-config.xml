@@ -1200,6 +1200,14 @@
 		</property>
 
 		<!--
+			applicationTask には taskMap プロパティで設定したウォームアップタスク名を指定してください。
+			カンマ区切りで複数指定可能です。
+		-->
+		<!--
+		<property name="applicationTask" value="app1Task, app2Task" />
+		-->
+
+		<!--
 			tenantTaskMap には Map 形式でプロパティを設定してください。
 				name = テナントID。"*" は全テナントIDを表す。カンマ区切りで複数指定可能。
 				value = taskMap プロパティで設定したウォームアップタスク名。カンマ区切りで複数指定可能。
