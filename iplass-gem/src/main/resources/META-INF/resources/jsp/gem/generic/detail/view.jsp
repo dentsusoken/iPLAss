@@ -55,7 +55,7 @@
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
-	boolean isVersionSpecified = request.getAttribute(Constants.VERSION_SPECIFIED) == Boolean.TRUE;
+	boolean isVersionSpecified = Boolean.TRUE.equals(request.getAttribute(Constants.VERSION_SPECIFIED));
 
 	OutputType type = OutputType.VIEW;
 	String contextPath = TemplateUtil.getTenantContextPath();
