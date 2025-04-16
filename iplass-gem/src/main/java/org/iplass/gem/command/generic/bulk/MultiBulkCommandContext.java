@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -353,7 +354,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			String checkPrefix = (errorPrefix != null ? errorPrefix : paramPrefix);
 			boolean hasError = getErrors().stream()
 					.filter(error -> error.getPropertyName().startsWith(checkPrefix))
-					.findFirst().isPresent();
+					.findFirst()
+					.isPresent();
 
 			//エラーがなくて、何もデータが入ってないものは破棄する
 			if (hasError || !isEmpty(entity)) {
@@ -463,8 +465,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		};
 	}
 
-	public Set<String> getOids() {
-		return bulkCommandParams.stream().map(p -> p.getOid()).collect(Collectors.toSet());
+	public LinkedHashSet<String> getOids() {
+		return bulkCommandParams.stream()
+				.map(p -> p.getOid())
+				.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	/**
@@ -830,7 +834,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @param entity
 	 */
 	private List<PropertyItem> createBlankPropList(Entity entity) {
-		return (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
+		return (getProperty().stream()
+				.filter(pi -> entity.getValue(pi.getPropertyName()) == null)
 				.collect(Collectors.toList()));
 	}
 
