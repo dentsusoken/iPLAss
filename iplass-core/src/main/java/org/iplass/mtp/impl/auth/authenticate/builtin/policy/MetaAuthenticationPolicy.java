@@ -85,6 +85,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 	private MetaRememberMePolicy rememberMePolicy;
 	private List<String> authenticationProvider;
 	private List<String> openIdConnectDefinition;
+	private List<String> webAuthnDefinition;
 
 	/** ユーザー作成時、パスワード更新時にその情報を受け取る為のListener */
 	private List<MetaAccountNotificationListener> notificationListener;
@@ -147,6 +148,14 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		this.openIdConnectDefinition = openIdConnectDefinition;
 	}
 
+	public List<String> getWebAuthnDefinition() {
+		return webAuthnDefinition;
+	}
+
+	public void setWebAuthnDefinition(List<String> webAuthnDefinition) {
+		this.webAuthnDefinition = webAuthnDefinition;
+	}
+
 	@Override
 	public AuthenticationPolicyRuntime createRuntime(MetaDataConfig metaDataConfig) {
 		return new AuthenticationPolicyRuntime();
@@ -157,6 +166,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		return ObjectUtil.deepCopy(this);
 	}
 
+	@Override
 	public void applyConfig(AuthenticationPolicyDefinition def) {
 		name = def.getName();
 		description = def.getDescription();
@@ -205,8 +215,15 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		} else {
 			openIdConnectDefinition = null;
 		}
+		
+		if (def.getWebAuthnDefinition() != null) {
+			webAuthnDefinition = new ArrayList<String>(def.getWebAuthnDefinition());
+		} else {
+			webAuthnDefinition = null;
+		}
 	}
 
+	@Override
 	public AuthenticationPolicyDefinition currentConfig() {
 		AuthenticationPolicyDefinition def = new AuthenticationPolicyDefinition();
 		def.setName(name);
@@ -240,6 +257,10 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 
 		if (openIdConnectDefinition != null) {
 			def.setOpenIdConnectDefinition(new ArrayList<>(openIdConnectDefinition));
+		}
+
+		if (webAuthnDefinition != null) {
+			def.setWebAuthnDefinition(new ArrayList<>(webAuthnDefinition));
 		}
 
 		return def;
@@ -467,6 +488,15 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 
 		}
 
+		public boolean updateLastLoginOn(BuiltinAccount account) {
+			if (isRecordLastLoginDate()) {
+				long currentTime = System.currentTimeMillis();//ExecuteContext#currentTimestampは利用しない（プレビュー機能によって日付変更出来ないように）
+				account.setLastLoginOn(new Timestamp(currentTime));
+				return true;
+			}
+			return false;
+		}
+
 		public void checkPasswordUpdatePolicy(IdPasswordCredential newIdPass, BuiltinAccount account) {
 			//固有のポリシー
 			checkPasswordPattern(newIdPass.getPassword(), account.getAccountId());
@@ -584,12 +614,12 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 			}
 		}
 
-		public String makePassword() {
-			return makeRandomString(passwordPolicy.getRandomPasswordLength(), randomPasswordIncludeSigns != null, randomPasswordIncludeSigns, randomPasswordExcludeChars);
-		}
-
 		public boolean isResetPasswordWithSpecificPassword() {
 			return passwordPolicy.isResetPasswordWithSpecificPassword();
+		}
+
+		public String makePassword() {
+			return makeRandomString(passwordPolicy.getRandomPasswordLength(), randomPasswordIncludeSigns != null, randomPasswordIncludeSigns, randomPasswordExcludeChars);
 		}
 
 		private String makeRandomString(int length, boolean isSign, char[] sign, char[] excludedChar) {

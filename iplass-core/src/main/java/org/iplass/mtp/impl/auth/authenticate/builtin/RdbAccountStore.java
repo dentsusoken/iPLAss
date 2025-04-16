@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.mtp.auth.login.CredentialUpdateException;
+import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
 import org.iplass.mtp.impl.auth.authenticate.builtin.sql.AccountControlSQL;
 import org.iplass.mtp.impl.auth.authenticate.builtin.sql.AccountSelectSQL;
 import org.iplass.mtp.impl.auth.authenticate.builtin.sql.PasswordHistorySelectSQL;
@@ -51,7 +52,7 @@ public class RdbAccountStore implements AccountStore {
 	private RdbAdapter rdb;
 
 	@Override
-	public void inited(BuiltinAuthenticationProvider provider, Config config) {
+	public void inited(AuthenticationProvider provider, Config config) {
 		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
 		accountSelect = rdb.getQuerySqlCreator(AccountSelectSQL.class);
 		accountControl = rdb.getUpdateSqlCreator(AccountControlSQL.class);

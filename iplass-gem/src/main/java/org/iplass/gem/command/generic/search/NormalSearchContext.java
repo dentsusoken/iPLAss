@@ -392,6 +392,13 @@ public class NormalSearchContext extends SearchContextBase {
 			//文字とかそのまま検索できるプロパティは変換しない
 			ret = ((str[0] == null || str[0].trim().length() == 0) && (str[1] == null || str[1].trim().length() == 0)
 					&& (str[2] == null || str[2].trim().length() == 0)) ? null : str;
+		} else {
+			String value = getRequest().getParam(conditionPrefix + propName);
+			if (value == null || value.trim().length() == 0)
+				return null;
+
+			//Boolean、AutoNumberとかそのまま検索できるプロパティは変換しない
+			ret = value;
 		}
 		return ret;
 	}
@@ -473,6 +480,17 @@ public class NormalSearchContext extends SearchContextBase {
 			// 範囲検索
 			ret[1] = getRequest().getParam(propName + "From");
 			ret[2] = getRequest().getParam(propName + "To");
+			if (StringUtil.isBlank(ret[0]) && StringUtil.isBlank(ret[1]) && StringUtil.isBlank(ret[2])) {
+				return null;
+			}
+			return ret;
+		} else if (ep.getResultType() == PropertyDefinitionType.STRING) {
+			// 単一検索、範囲検索の判断ができないため3つ取得する
+			String[] ret = new String[3];
+			ret[0] = getRequest().getParam(propName);
+			ret[1] = getRequest().getParam(propName + "From");
+			ret[2] = getRequest().getParam(propName + "To");
+			//文字とかそのまま検索できるプロパティは変換しない
 			if (StringUtil.isBlank(ret[0]) && StringUtil.isBlank(ret[1]) && StringUtil.isBlank(ret[2])) {
 				return null;
 			}

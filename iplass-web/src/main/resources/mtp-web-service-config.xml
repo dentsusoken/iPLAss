@@ -12,6 +12,7 @@
 		<property name="org.iplass.mtp.auth.oauth.definition.OAuthClientDefinitionManager" value="org.iplass.mtp.impl.auth.oauth.OAuthClientDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.auth.oauth.definition.OAuthResourceServerDefinitionManager" value="org.iplass.mtp.impl.auth.oauth.OAuthResourceServerDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.auth.oidc.definition.OpenIdConnectDefinitionManager" value="org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdConnectDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.auth.webauthn.definition.WebAuthnDefinitionManager" value="org.iplass.mtp.impl.auth.authenticate.webauthn.WebAuthnDefinitionManagerImpl" />
 	</service>
 
 	<!-- MetaData JAXB configuration -->
@@ -26,6 +27,7 @@
 		<property name="annotatedClass" value="org.iplass.mtp.impl.webapi.command.MetaDataRefs" additional="true" />
 		<property name="annotatedClass" value="org.iplass.mtp.impl.auth.oauth.command.MetaDataRefs" additional="true" />
 		<property name="annotatedClass" value="org.iplass.mtp.impl.auth.authenticate.oidc.command.MetaDataRefs" additional="true" />
+		<property name="annotatedClass" value="org.iplass.mtp.impl.auth.authenticate.webauthn.command.MetaDataRefs" additional="true" />
 		<property name="resourcePath" value="/mtp-web-metadata.xml" additional="true" />
 
 		<!-- shared MetaData config -->
@@ -64,6 +66,7 @@
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.oauth.OAuthClientService$TypeMap" additional="true" />
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.oauth.OAuthResourceServerService$TypeMap" additional="true" />
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdConnectService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.auth.authenticate.webauthn.WebAuthnService$TypeMap" additional="true" />
 	</service>
 
 	<!-- Tenant関連 -->
@@ -129,11 +132,22 @@
 				<property name="authTokenType" value="SAT" />
 			</property>
 		</bean>
+		<bean name="webAuthnAuthenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.webauthn.WebAuthnAuthenticationProvider">
+			<property name="providerName" value="webAuthn" />
+		</bean>
+		<bean name="webAuthnAuthenticationProviderWithRememberMeToken" class="org.iplass.mtp.impl.auth.authenticate.rememberme.RememberMeTokenAuthenticationProvider">
+			<property name="deleteTokenOnFailure" value="true" />
+			<property name="clientStore" class="org.iplass.mtp.impl.auth.authenticate.token.web.AuthTokenCookieStore">
+				<property name="cookieName" value="iprmtkn" />
+			</property>
+			<property name="authenticationProvider" ref="webAuthnAuthenticationProvider" />
+		</bean>
 
 		<property name="authenticationProvider" ref="defaultBuiltinAuthenticationProviderWithRememberMeToken" />
 		<property name="authenticationProvider" ref="oidcAuthenticationProvider" />
 		<property name="authenticationProvider" ref="accessTokenAuthenticationProvider" />
 		<property name="authenticationProvider" ref="simpleAuthTokenAuthenticationProvider" />
+		<property name="authenticationProvider" ref="webAuthnAuthenticationProviderWithRememberMeToken" />
 
 		<property name="authorizationProvider" class="org.iplass.mtp.impl.auth.authorize.builtin.BuiltinAuthorizationProvider">
 			<property name="authorizationContextHandler" class="org.iplass.mtp.impl.auth.authorize.builtin.action.ActionAuthContextHandler" additional="true" />
@@ -179,6 +193,12 @@
 		<property name="handler" class="org.iplass.mtp.impl.auth.authenticate.oidc.ClientSecretHandler" additional="true" >
 			<property name="type" value="OIDCCS" />
 			<property name="store" value="default" />
+		</property>
+		<property name="handler" class="org.iplass.mtp.impl.auth.authenticate.webauthn.store.CredentialRecordHandler" additional="true" >
+			<property name="type" value="WAC" />
+			<property name="store" value="default" />
+			<property name="hashAlgorithm" value="SHA-512" />
+			<property name="seriesMaxLength" value="256" />
 		</property>
 	</service>
 	<service>
@@ -256,6 +276,35 @@
 			<property name="poolingTimeToLive" value="[set poolingTimeToLive if needed]" />
 		</property>
 		 -->
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.auth.authenticate.webauthn.WebAuthnService</interface>
+		<property name="signatureAlgorithms" value="EdDSA" />
+		<property name="signatureAlgorithms" value="ES512" />
+		<property name="signatureAlgorithms" value="ES384" />
+		<property name="signatureAlgorithms" value="ES256" />
+		<property name="signatureAlgorithms" value="RS512" />
+		<property name="signatureAlgorithms" value="RS384" />
+		<property name="signatureAlgorithms" value="RS256" />
+		<!-- 
+		<property name="signatureAlgorithms" value="RS1" />
+		 -->
+		<property name="optionsTimeoutMinutes" value="5" />
+		
+		<property name="userHandleSupplier" class="org.iplass.mtp.impl.auth.authenticate.webauthn.userhandle.HashingUserHandleSupplier">
+			<property name="algorithm" value="SHA-256" />
+			<!-- TODO change salt for each environment for better security measure-->
+			<property name="salt" value="iPLAss#3137a783-6141-44d3-b908-81861c0a3ff5" />
+		</property>
+		
+		<property name="metadataStatementRepository" class="org.iplass.mtp.impl.auth.authenticate.webauthn.CacheableMetadataStatementRepository">
+			<!-- configure metadataBLOBFilePath and individualMetadataStatementFilePath if needed -->
+			<!-- 
+			<property name="metadataBLOBFilePath" value="[path/to/metadataBLOBFile]" />
+			<property name="individualMetadataStatementFilePath" value="[path/to/individualMetadataStatementFilePath1]" />
+			<property name="individualMetadataStatementFilePath" value="[path/to/individualMetadataStatementFilePath2]" />
+			 -->
+		</property>
 	</service>
 
 	<!-- Web関連 -->
@@ -643,6 +692,14 @@
 
 	<service>
 		<interface>org.iplass.mtp.impl.cache.CacheService</interface>
+
+		<!-- WebAuthn FIDO Metadata Statementのキャッシュ -->
+		<property name="metadataStatementStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			<property name="namespace" value="mtp.auth.webauthn.metadataStatementStore" />
+			<!-- 24時間有効 -->
+			<property name="timeToLive" value="86400000" />
+			<property name="evictionInterval" value="3600000" />
+		</property>
 		
 		<!-- OAuth AuthorizationCodeのキャッシュ -->
 		<!-- TODO 本番利用時はRedisCacheStoreFactoryなど利用するように設定変更が必要 -->

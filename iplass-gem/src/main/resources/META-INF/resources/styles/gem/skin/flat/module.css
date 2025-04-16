@@ -1079,10 +1079,10 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
     float: none;
     margin-left: auto;
     margin-right: auto;
-    height: 84px;
-    width: 84px;
+    height: 40px;
+    width: 316px;
     background: #01b0c0;
-    border-radius: 42px;
+    border-radius: 20px;
     font-size: 1.07143rem;
     color: #fff;
     outline: none;
@@ -1127,6 +1127,8 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
 p.nav-login-01 {
   margin-top: 20px;
   text-align: center; }
+  p.nav-login-01 span {
+    font-size: 1rem; }
 
 .last-login-title {
   margin-right: 10px; }

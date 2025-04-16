@@ -111,7 +111,8 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 	}
 
 	private PropertySearchCondition createSearchCondition(ExpressionSearchConditionType type, Object value) {
-		if (value == null) return null;
+		if (value == null)
+			return null;
 
 		PropertyEditor editor = ((ExpressionPropertyEditor) getEditor()).getEditor();
 		//SelectProperty以外DefinitionをcastしてないのでとりあえずExpressionを渡しても問題はないはず
@@ -147,8 +148,9 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 		PropertyEditor editor = ((ExpressionPropertyEditor) getEditor()).getEditor();
 		if (type == ExpressionSearchConditionType.BOOLEAN) {
 			String value = (String) getValue();
-			if (value == null || value.trim().length() == 0) return null;
-			return Boolean.parseBoolean((String) getValue());
+			if (value == null || value.trim().length() == 0)
+				return null;
+			return value;
 		} else if (type == ExpressionSearchConditionType.DATE) {
 			String[] value = (String[]) getValue();
 			//2番目(From)、3番目(To)を利用
@@ -160,7 +162,7 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 			if (value.length > 2 && value[2] != null) {
 				to = ConvertUtil.convertToDate(Date.class, value[2], TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
 			}
-			return (from == null && to == null) ? null : new Date[]{from, to};
+			return (from == null && to == null) ? null : new Date[] { from, to };
 		} else if (type == ExpressionSearchConditionType.DATETIME) {
 			String[] value = (String[]) getValue();
 			//2番目(From)、3番目(To)を利用
@@ -172,7 +174,7 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 			if (value.length > 2 && value[2] != null) {
 				to = ConvertUtil.convertToDate(Timestamp.class, value[2], TemplateUtil.getLocaleFormat().getServerDateTimeFormat(), false);
 			}
-			return (from == null && to == null) ? null : new Timestamp[]{from, to};
+			return (from == null && to == null) ? null : new Timestamp[] { from, to };
 		} else if (type == ExpressionSearchConditionType.DECIMAL) {
 			String[] value = (String[]) getValue();
 			DecimalPropertyEditor dpe = (DecimalPropertyEditor) editor;
@@ -183,7 +185,7 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 				if (value.length > 0 && value[0] != null) {
 					single = ConvertUtil.convertFromString(BigDecimal.class, value[0]);
 				}
-				return single == null ? null : new BigDecimal[]{single};
+				return single == null ? null : new BigDecimal[] { single };
 			} else {
 				// 範囲検索
 				// 2番目(From)、3番目(To)を利用
@@ -196,7 +198,7 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 					to = ConvertUtil.convertFromString(BigDecimal.class, value[2]);
 				}
 				// 長さ3の配列で返す
-				return (from == null && to == null) ? null : new BigDecimal[]{null, from, to};
+				return (from == null && to == null) ? null : new BigDecimal[] { null, from, to };
 			}
 		} else if (type == ExpressionSearchConditionType.FLOAT) {
 			String[] value = (String[]) getValue();
@@ -208,7 +210,7 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 				if (value.length > 0 && value[0] != null) {
 					single = ConvertUtil.convertFromString(Double.class, value[0]);
 				}
-				return single == null ? null : new Double[]{single};
+				return single == null ? null : new Double[] { single };
 			} else {
 				// 範囲検索
 				// 2番目(From)、3番目(To)を利用
@@ -221,7 +223,7 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 					to = ConvertUtil.convertFromString(Double.class, value[2]);
 				}
 				// 長さ3の配列で返す
-				return (from == null && to == null) ? null : new Double[]{null, from, to};
+				return (from == null && to == null) ? null : new Double[] { null, from, to };
 			}
 		} else if (type == ExpressionSearchConditionType.INTEGER) {
 			String[] value = (String[]) getValue();
@@ -233,7 +235,7 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 				if (value.length > 0 && value[0] != null) {
 					single = ConvertUtil.convertFromString(Long.class, value[0]);
 				}
-				return single == null ? null : new Long[]{single};
+				return single == null ? null : new Long[] { single };
 			} else {
 				// 範囲検索
 				// 2番目(From)、3番目(To)を利用
@@ -246,11 +248,12 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 					to = ConvertUtil.convertFromString(Long.class, value[2]);
 				}
 				// 長さ3の配列で返す
-				return (from == null && to == null) ? null : new Long[]{null, from, to};
+				return (from == null && to == null) ? null : new Long[] { null, from, to };
 			}
 		} else if (type == ExpressionSearchConditionType.SELECT) {
 			String[] value = (String[]) getValue();
-			if (value == null || value.length == 0) return null;
+			if (value == null || value.length == 0)
+				return null;
 			SelectPropertyEditor se = (SelectPropertyEditor) editor;
 			if (se.getDisplayType() == SelectDisplayType.CHECKBOX
 					|| se.getDisplayType() == SelectDisplayType.HIDDEN) {
@@ -267,9 +270,32 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 				}
 			}
 		} else if (type == ExpressionSearchConditionType.STRING) {
-			String value = (String) getValue();
-			if (value == null || value.trim().length() == 0) return null;
-			return value;
+			String[] value = (String[]) getValue();
+			StringPropertyEditor spe = (StringPropertyEditor) editor;
+			if (!spe.isSearchInRange()) {
+				// 単一検索
+				// 1番目を利用
+				String single = null;
+				if (value.length > 0 && value[0] != null) {
+					single = value[0];
+				}
+				return (single == null || single.trim().length() == 0) ? null : new String[] { single };
+			} else {
+				// 範囲検索
+				// 2番目(From)、3番目(To)を利用
+				String from = null;
+				String to = null;
+				if (value.length > 1 && value[1] != null) {
+					from = value[1];
+				}
+				if (value.length > 2 && value[2] != null) {
+					to = value[2];
+				}
+				// 長さ3の配列で返す
+				return ((from == null || from.trim().length() == 0) && (to == null || to.trim().length() == 0)) ? null
+						: new String[] { null, from, to };
+			}
+
 		} else if (type == ExpressionSearchConditionType.TIME) {
 			String[] value = (String[]) getValue();
 			//2番目(From)、3番目(To)を利用
@@ -281,22 +307,13 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 			if (value.length > 2 && value[2] != null) {
 				to = ConvertUtil.convertToDate(Time.class, value[2], TemplateUtil.getLocaleFormat().getServerTimeFormat(), false);
 			}
-			return (from == null && to == null) ? null : new Time[]{from, to};
+			return (from == null && to == null) ? null : new Time[] { from, to };
 		}
 		return null;
 	}
 
-	enum ExpressionSearchConditionType{
-		BOOLEAN,
-		DATE,
-		DATETIME,
-		DECIMAL,
-		EXPRESSION,
-		FLOAT,
-		INTEGER,
-		SELECT,
-		STRING,
-		TIME;
+	enum ExpressionSearchConditionType {
+		BOOLEAN, DATE, DATETIME, DECIMAL, EXPRESSION, FLOAT, INTEGER, SELECT, STRING, TIME;
 
 		public static ExpressionSearchConditionType createSearchCondition(
 				ExpressionProperty ep, PropertyEditor editor) {

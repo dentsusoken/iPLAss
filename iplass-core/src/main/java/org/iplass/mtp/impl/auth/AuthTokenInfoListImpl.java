@@ -63,6 +63,25 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 	}
 
 	@Override
+	public List<AuthTokenInfo> getList(String type) {
+		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		String userUniqueKey = userContext.getAccount().getUnmodifiableUniqueKey();
+
+		List<AuthTokenInfo> atiList = new ArrayList<>();
+		AuthTokenHandler ah = tokenService.getHandler(type);
+		if (ah != null && ah.isVisible()) {
+			List<AuthToken> sList = ah.authTokenStore().getByOwner(tenantId, type, userUniqueKey);
+			if (sList != null) {
+				for (AuthToken at : sList) {
+					atiList.add(ah.toAuthTokenInfo(at));
+				}
+			}
+		}
+
+		return atiList;
+	}
+
+	@Override
 	public AuthTokenInfo get(String type, String key) {
 		AuthTokenHandler handler = tokenService.getHandler(type);
 		if (handler == null) {
@@ -74,6 +93,11 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 		
 		AuthToken t = handler.authTokenStore().getBySeries(
 				ExecuteContext.getCurrentContext().getClientTenantId(), type, key);
+
+		String userUniqueKey = userContext.getAccount().getUnmodifiableUniqueKey();
+		if (t == null || !t.getOwnerId().equals(userUniqueKey)) {
+			return null;
+		}
 		return handler.toAuthTokenInfo(t);
 	}
 	
@@ -81,7 +105,8 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 	public void remove(String type) {
 		AuthTokenHandler handler = tokenService.getHandler(type);
 		if (handler != null && handler.isVisible()) {
-			handler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), type, ExecuteContext.getCurrentContext().getClientId());
+			String userUniqueKey = userContext.getAccount().getUnmodifiableUniqueKey();
+			handler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), type, userUniqueKey);
 		}
 	}
 

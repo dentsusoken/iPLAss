@@ -126,6 +126,10 @@ TemplateUtil.includeTemplate("gem/layout/header", pageContext);
 <%}%>
 
 </form>
+<%
+pageContext.setAttribute("isReAuth", true);
+%>
+<%@include file="./webAuthn.inc.jsp"%>
 </div><!-- main -->
 </div><!-- content -->
 

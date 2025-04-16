@@ -23,11 +23,12 @@ package org.iplass.mtp.impl.auth.authenticate.builtin;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
 import org.iplass.mtp.spi.Config;
 
 public interface AccountStore {
 	
-	public void inited(BuiltinAuthenticationProvider provider, Config config);
+	public void inited(AuthenticationProvider provider, Config config);
 
 	public void updateAccountLoginStatus(BuiltinAccount account);
 

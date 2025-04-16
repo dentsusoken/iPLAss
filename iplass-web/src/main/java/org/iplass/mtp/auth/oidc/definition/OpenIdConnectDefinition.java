@@ -74,7 +74,9 @@ public class OpenIdConnectDefinition implements Definition {
 
 	public void setBackUrlAfterConnect(String backUrlAfterConnect) {
 		this.backUrlAfterConnect = backUrlAfterConnect;
-	}	public String getIssuer() {
+	}
+
+	public String getIssuer() {
 		return issuer;
 	}
 

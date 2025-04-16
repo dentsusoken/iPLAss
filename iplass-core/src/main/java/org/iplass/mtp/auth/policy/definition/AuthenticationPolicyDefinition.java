@@ -22,11 +22,11 @@ package org.iplass.mtp.auth.policy.definition;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * 認証方式のポリシー定義。
@@ -52,22 +52,27 @@ public class AuthenticationPolicyDefinition implements Definition {
 	private RememberMePolicyDefinition rememberMePolicy;
 	private List<String> authenticationProvider;
 	private List<String> openIdConnectDefinition;
+	private List<String> webAuthnDefinition;
 	
 	/** ユーザー作成時、パスワード更新時にその情報を受け取る為のListener */
 	private List<AccountNotificationListenerDefinition> notificationListener;
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	@Override
 	public String getDisplayName() {
 		return displayName;
 	}
 
+	@Override
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
@@ -81,10 +86,12 @@ public class AuthenticationPolicyDefinition implements Definition {
 		this.localizedDisplayNameList = localizedDisplayNameList;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}
 
+	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -197,5 +204,13 @@ public class AuthenticationPolicyDefinition implements Definition {
 
 	public void setOpenIdConnectDefinition(List<String> openIdConnectDefinition) {
 		this.openIdConnectDefinition = openIdConnectDefinition;
+	}
+
+	public List<String> getWebAuthnDefinition() {
+		return webAuthnDefinition;
+	}
+
+	public void setWebAuthnDefinition(List<String> webAuthnDefinition) {
+		this.webAuthnDefinition = webAuthnDefinition;
 	}
 }

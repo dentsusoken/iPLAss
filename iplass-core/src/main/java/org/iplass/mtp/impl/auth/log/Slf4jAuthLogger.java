@@ -122,6 +122,9 @@ public class Slf4jAuthLogger extends AuthLoggerBase {
 	 * @return ログ引数
 	 */
 	protected StructuredArgument argId(Credential credential) {
+		if (credential.getId() == null) {
+			return StructuredArguments.value(LogKey.ID, "unknown:" + credential.getClass().getSimpleName());
+		}
 		return StructuredArguments.value(LogKey.ID, credential.getId());
 	}
 

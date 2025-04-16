@@ -154,9 +154,20 @@ public class SecureRandomGenerator {
 		SecureRandom rand = randoms.poll();
 		if (rand == null) {
 			rand = createSecureRandom();
-        }
+		}
 		int randInt = rand.nextInt(bound);
 		randoms.add(rand);
 		return randInt;
+	}
+
+	public byte[] randomBytes(int length) {
+		SecureRandom rand = randoms.poll();
+		if (rand == null) {
+			rand = createSecureRandom();
+		}
+		byte[] bytes = new byte[length];
+		rand.nextBytes(bytes);
+		randoms.add(rand);
+		return bytes;
 	}
 }

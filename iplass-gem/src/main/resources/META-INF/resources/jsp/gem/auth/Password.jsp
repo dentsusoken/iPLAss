@@ -165,6 +165,10 @@ if (!"true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 </div>
 <p class="mb30"><input type="submit" value=${m:rs("mtp-gem-messages", "auth.Password.save")} class="gr-btn" /></p>
 </form>
+
+<%@include file="./webAuthnManage.inc.jsp" %>
+
+
 <%
 	if (user != null && setting != null) {
 		EntityDefinition ed = edm.get(defName);

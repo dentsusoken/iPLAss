@@ -115,6 +115,8 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 		category = TenantCategory.AUTHSETTING;
 		selectList = getBoolList(getRS("toUse"), getRS("doseNotUse"));
 		createBoolRecord("useRememberMe", category, selectList);
+		createBoolRecord("useWebAuthn", category, getBoolList(getRS("toUse"), getRS("doseNotUse")));
+		createRecord("webAuthnDefinitonName", category, TenantColType.STRING);
 		createRecord("userAdminRoles", category, TenantColType.STRING);
 		selectList = getBoolList(getRS("passResetAllow"), getRS("passResetDoseNotAllow"));
 	}
@@ -190,10 +192,15 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 
 		if ("useRememberMe".equals(name)) {
 			tenantAuthInfo.setUseRememberMe(record.getAttributeAsBoolean(valueKey));
+		} else if ("useWebAuthn".equals(name)) {
+			tenantAuthInfo.setUseWebAuthn(record.getAttributeAsBoolean(valueKey));
+		} else if ("webAuthnDefinitonName".equals(name)) {
+			tenantAuthInfo.setWebAuthnDefinitonName(record.getAttributeAsString(valueKey));
 		} else if ("userAdminRoles".equals(name)) {
 			List<String> adminRoles = SmartGWTUtil.convertStringToList(record.getAttributeAsString(valueKey), ",");
-			if (adminRoles != null && adminRoles.isEmpty())
+			if (adminRoles != null && adminRoles.isEmpty()) {
 				adminRoles = null;
+			}
 			tenantAuthInfo.setUserAdminRoles(adminRoles);
 		} else {
 			applied = false;
@@ -345,6 +352,8 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 		}
 
 		setRecordValue("useRememberMe", auth.isUseRememberMe(), valueKey, dispKey);
+		setRecordValue("useWebAuthn", auth.isUseWebAuthn(), valueKey, dispKey);
+		setRecordValue("webAuthnDefinitonName", auth.getWebAuthnDefinitonName(), valueKey, dispKey);
 		setRecordValue("userAdminRoles", SmartGWTUtil.convertListToString(auth.getUserAdminRoles(), ","), valueKey,
 				dispKey);
 	}
