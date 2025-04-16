@@ -101,7 +101,7 @@ public class WarmupService implements Service {
 		for (String taskName : applicationTaskNames) {
 			if (!taskMap.containsKey(taskName)) {
 				// tenantTaskMap に設定されたタスク名が、taskMap に存在しない場合は警告を出力しスキップ
-				logger.warn("The taskMap is set to the non-existent task name \"{}\". Please check tenantTaskMap.", taskName);
+				logger.warn("The taskMap is set to the non-existent task name \"{}\". Please check applicationTask.", taskName);
 				continue;
 			}
 
