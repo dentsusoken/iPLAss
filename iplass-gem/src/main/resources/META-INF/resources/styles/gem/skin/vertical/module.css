@@ -377,6 +377,9 @@ ul.list-check-01 li {
   ul.list-check-01 li label {
     display: inline-block; }
 
+textarea.width-constraint {
+  max-width: calc(100% - 8px); }
+
 .modal-overlay {
   position: absolute;
   left: 0;

@@ -301,7 +301,7 @@ $(function() {
 					//テキストエリア
 					selector = "textarea";
 %>
-<textarea class="form-size-05 inpbr" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30"></textarea>
+<textarea class="form-size-05 inpbr width-constraint" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30"></textarea>
 <%
 				} else if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
 					//リッチテキスト
@@ -340,7 +340,7 @@ $(function() {
 						} else if (editor.getDisplayType() == StringDisplayType.TEXTAREA) {
 							//テキストエリア
 %>
-<textarea name="<c:out value="<%=propName %>"/>" class="form-size-05 inpbr" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30"><c:out value="<%=str %>"/></textarea>
+<textarea name="<c:out value="<%=propName %>"/>" class="form-size-05 inpbr width-constraint" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30"><c:out value="<%=str %>"/></textarea>
 <%
 						} else if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
 							//リッチテキスト
@@ -457,7 +457,7 @@ function <%=toggleAddBtnFunc%>(){
 				} else if (editor.getDisplayType() == StringDisplayType.TEXTAREA) {
 					//テキストエリア
 %>
-<textarea name="<c:out value="<%=propName%>"/>" rows="5" cols="30" class="form-size-05 inpbr" style="<c:out value="<%=customStyle%>"/>"><c:out value="<%=str %>"/></textarea>
+<textarea name="<c:out value="<%=propName%>"/>" rows="5" cols="30" class="form-size-05 inpbr width-constraint" style="<c:out value="<%=customStyle%>"/>"><c:out value="<%=str %>"/></textarea>
 <%
 				} else if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
 					//リッチテキスト

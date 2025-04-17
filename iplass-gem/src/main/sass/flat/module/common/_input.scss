@@ -225,3 +225,6 @@ input {
 .timeselect-field select {
 	width: auto !important;
 }
+textarea.width-constraint {
+	max-width: 100%;
+}
