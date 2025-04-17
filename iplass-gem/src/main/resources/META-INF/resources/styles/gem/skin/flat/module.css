@@ -250,6 +250,9 @@ input.timepicker {
 .timeselect-field select {
   width: auto !important; }
 
+textarea.width-constraint {
+  max-width: 100%; }
+
 .tp {
   vertical-align: middle;
   position: relative;
