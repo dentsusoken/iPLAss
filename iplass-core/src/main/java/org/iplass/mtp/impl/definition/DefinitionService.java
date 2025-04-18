@@ -22,6 +22,8 @@ package org.iplass.mtp.impl.definition;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.TypedDefinitionManager;
@@ -61,7 +63,7 @@ public class DefinitionService implements Service {
 		contextNode = new MetaDataContextNode("root");
 
 		if (config.getNames() != null) {
-			for (String typeMapClass: config.getValues("typeMap")) {
+			for (String typeMapClass : config.getValues("typeMap")) {
 				try {
 					DefinitionMetaDataTypeMap typeMap = (DefinitionMetaDataTypeMap) Class.forName(typeMapClass).newInstance();
 					defMap.put(typeMap.defType, typeMap);
@@ -89,7 +91,7 @@ public class DefinitionService implements Service {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * MetaDataのパスからDefinitionの型、Definitionのプレフィックスパス以降の相対パスを取得。
 	 * 
@@ -101,10 +103,10 @@ public class DefinitionService implements Service {
 		if (typeMap == null) {
 			return null;
 		}
-		
+
 		return new DefinitionPath(typeMap.defType, path.substring(typeMap.pathPrefix.length()));
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	private <D extends Definition> DefinitionMetaDataTypeMap getByDef(Class<D> defType) {
 		DefinitionMetaDataTypeMap ret = defMap.get(defType);
@@ -170,7 +172,6 @@ public class DefinitionService implements Service {
 		return td.toPath(defName);
 	}
 
-
 	@SuppressWarnings("unchecked")
 	public <D extends Definition, M extends RootMetaData> Class<D> getDefinitionType(Class<M> metaType) {
 		return (Class<D>) getByMeta(metaType).defType;
@@ -191,6 +192,31 @@ public class DefinitionService implements Service {
 	public String getDefinitionName(String path) {
 		//Definitionクラスが未指定の場合は、Pathの先頭からチェックして返す
 		return contextNode.toName(path);
+	}
+
+	/**
+	 * メタデータ定義名チェック
+	 * 
+	 * @param <M> メタデータの型
+	 * @param metaType メタデータのクラス
+	 * @param path パス
+	 * @param defName 定義名
+	 * @return チェックエラーメッセージ
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public <M extends RootMetaData> Optional<String> validateDefinitionName(Class<M> metaType, String path, String defName) {
+		if (Objects.isNull(metaType)) {
+			return Optional.empty();
+		}
+
+		// メタデータ定義Map取得
+		DefinitionMetaDataTypeMap typeMap = getByMeta(metaType);
+		if (Objects.isNull(typeMap)) {
+			return Optional.empty();
+
+		}
+
+		return typeMap.validateDefinitionName(path, defName);
 	}
 
 	private static class MetaDataContextNode<D extends Definition> {
