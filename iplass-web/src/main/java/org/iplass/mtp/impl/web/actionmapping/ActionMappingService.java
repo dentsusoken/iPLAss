@@ -26,6 +26,8 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.validation.DefinitionNameCheckValidator;
+import org.iplass.mtp.impl.definition.validation.PathSlashNamePeriodCheckValidator;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.web.actionmapping.MetaActionMapping.ActionMappingRuntime;
 import org.iplass.mtp.spi.Config;
@@ -33,7 +35,6 @@ import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinitionManager;
 import org.iplass.mtp.web.interceptor.RequestInterceptor;
-
 
 public class ActionMappingService extends AbstractTypedMetaDataService<MetaActionMapping, ActionMappingRuntime> implements Service {
 
@@ -49,9 +50,15 @@ public class ActionMappingService extends AbstractTypedMetaDataService<MetaActio
 		public TypeMap() {
 			super(getFixedPath(), MetaActionMapping.class, ActionMappingDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<ActionMappingDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(ActionMappingDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameCheckValidator createDefinitionNameCheckValidator() {
+			return new PathSlashNamePeriodCheckValidator();
 		}
 	}
 
@@ -81,7 +88,7 @@ public class ActionMappingService extends AbstractTypedMetaDataService<MetaActio
 		if (context.exists(ACTION_MAPPING_META_PATH, name)) {
 			return context.getMetaDataHandler(ActionMappingRuntime.class, ACTION_MAPPING_META_PATH + name);
 		}
-		
+
 		String path = name;
 		int index = -1;
 		while ((index = path.lastIndexOf("/")) >= 0) {
@@ -104,7 +111,7 @@ public class ActionMappingService extends AbstractTypedMetaDataService<MetaActio
 				&& welcomeActionNameList != null
 				&& (name.length() == 0 || name.endsWith("/"))) {
 			MetaDataContext context = MetaDataContext.getContext();
-			for (String wa: welcomeActionNameList) {
+			for (String wa : welcomeActionNameList) {
 				String waPath = name + wa;
 				if (context.exists(ACTION_MAPPING_META_PATH, waPath)) {
 					actionMapping = context.getMetaDataHandler(ActionMappingRuntime.class, ACTION_MAPPING_META_PATH + waPath);

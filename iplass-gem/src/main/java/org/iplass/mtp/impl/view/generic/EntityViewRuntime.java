@@ -24,19 +24,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
+import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
+import org.iplass.mtp.util.StringUtil;
 
 /**
  * 画面定義のランタイム
  * @author lis3wg
  */
 public class EntityViewRuntime extends BaseMetaDataRuntime {
+
+	// View名の正規表現(英数字、ハイフン、アンダーバー、ピリオドのみ可で先頭にハイフン、ピリオドは除き、末尾にピリオドは除く)
+	private static final Pattern VIEW_NAME_PATTERN = Pattern.compile("^[0-9a-zA-Z_][0-9a-zA-Z_-]*(\\.[0-9a-zA-Z_-]+)*$");
 
 	/** メタデータ */
 	protected MetaEntityView metaData;
@@ -68,7 +76,15 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 			this.metaData = metaData;
 			if (metaData.getViews().size() > 0) {
 				for (MetaFormView view : metaData.getViews()) {
+					this.validateViewName(view.getName(), true);
 					this.addFormView(view.createRuntime(this));
+				}
+			}
+
+			// Viewの管理設定
+			if (CollectionUtils.isNotEmpty(metaData.getViewControlSettings())) {
+				for (MetaViewControlSetting viewControllSetting : metaData.getViewControlSettings()) {
+					this.validateViewName(viewControllSetting.getName(), false);
 				}
 			}
 		} catch (RuntimeException e) {
@@ -76,17 +92,38 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 		}
 	}
 
+	private void validateViewName(String viewName, boolean viewCheck) {
+		if (StringUtil.isEmpty(viewName)) {
+			return;
+		}
+
+		// View名整合性チェック
+		if (VIEW_NAME_PATTERN.matcher(viewName).matches()) {
+			return;
+		}
+
+		// チェックエラー
+		setIllegalStateException(
+				new MetaDataRuntimeException(GemResourceBundleUtil.resourceString(this.getErrorMessageKey(viewCheck), viewName)));
+	}
+
+	private String getErrorMessageKey(boolean viewCheck) {
+		return viewCheck ? "view.generic.EntityViewRuntime.definitionValidationErr" : "view.generic.EntityViewRuntime.settingValidationErr";
+	}
+
 	/**
 	 * レイアウト情報のランタイムを追加
 	 * @param formView レイアウト情報
 	 */
 	private void addFormView(FormViewRuntime formView) {
-		if (this.formViews == null) this.formViews = new ArrayList<>();
+		if (this.formViews == null)
+			this.formViews = new ArrayList<>();
 		this.formViews.add(formView);
 	}
 
 	public List<FormViewRuntime> getFormViews() {
-		if (this.formViews == null) this.formViews = new ArrayList<>();
+		if (this.formViews == null)
+			this.formViews = new ArrayList<>();
 		return formViews;
 	}
 
@@ -97,7 +134,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 */
 	public void addTemplate(String key, GroovyTemplate template) {
 		checkState();
-		if (templates == null) templates = new HashMap<>();
+		if (templates == null)
+			templates = new HashMap<>();
 		templates.put(key, template);
 	}
 
@@ -122,7 +160,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 */
 	public void addQuery(String key, PreparedQuery query) {
 		checkState();
-		if (queries == null) queries = new HashMap<>();
+		if (queries == null)
+			queries = new HashMap<>();
 		queries.put(key, query);
 	}
 
@@ -154,7 +193,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param customStyleMap カスタムスタイルの格納されたマップ
 	 */
 	public void addCustomStyle(String key, Map<String, GroovyTemplate> customStyleMap) {
-		if (customStylesMap == null) customStylesMap = new HashMap<>();
+		if (customStylesMap == null)
+			customStylesMap = new HashMap<>();
 		customStylesMap.put(key, customStyleMap);
 	}
 
@@ -174,7 +214,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param handler エレメントハンドラ
 	 */
 	public void addElement(ElementRuntime element) {
-		if (elementMap == null) elementMap = new HashMap<>();
+		if (elementMap == null)
+			elementMap = new HashMap<>();
 		if (element.getMetaData().getElementRuntimeId() != null) {
 			elementMap.put(element.getMetaData().getElementRuntimeId(), element);
 		}
@@ -186,7 +227,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @return エレメントハンドラ
 	 */
 	public ElementRuntime getElement(String elementRuntimeId) {
-		if (elementMap == null) return null;
+		if (elementMap == null)
+			return null;
 		return elementMap.get(elementRuntimeId);
 	}
 
@@ -195,7 +237,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param handler
 	 */
 	public void addButton(ButtonRuntime button) {
-		if (buttonMap == null) buttonMap = new HashMap<>();
+		if (buttonMap == null)
+			buttonMap = new HashMap<>();
 		if (button.getMetaData().getCustomDisplayTypeScriptKey() != null) {
 			buttonMap.put(button.getMetaData().getCustomDisplayTypeScriptKey(), button);
 		}
@@ -207,7 +250,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @return
 	 */
 	public ButtonRuntime getButton(String key) {
-		if (buttonMap == null) return null;
+		if (buttonMap == null)
+			return null;
 		return buttonMap.get(key);
 	}
 
@@ -216,7 +260,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param handler
 	 */
 	public void addAutocompletionSetting(AutocompletionSettingRuntime setting) {
-		if (autocompletionSettingMap == null) autocompletionSettingMap = new HashMap<>();
+		if (autocompletionSettingMap == null)
+			autocompletionSettingMap = new HashMap<>();
 		if (setting.getMetaData().getRuntimeKey() != null) {
 			autocompletionSettingMap.put(setting.getMetaData().getRuntimeKey(), setting);
 		}

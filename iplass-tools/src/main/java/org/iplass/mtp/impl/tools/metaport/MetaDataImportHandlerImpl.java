@@ -20,14 +20,18 @@
 
 package org.iplass.mtp.impl.tools.metaport;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.iplass.mtp.impl.definition.DefinitionService;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
+import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.tenant.MetaTenantService;
 import org.iplass.mtp.impl.util.KeyGenerator;
@@ -41,10 +45,12 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 	private static Logger auditLogger = LoggerFactory.getLogger("mtp.audit.porting.metadata");
 
 	private EntityService ehService;
+	private DefinitionService definitionService;
 
 	@Override
 	public void inited(MetaDataPortingService service, Config config) {
 		ehService = config.getDependentService(EntityService.class);
+		definitionService = config.getDependentService(DefinitionService.class);
 	}
 
 	@Override
@@ -56,14 +62,18 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 
 		auditLogger.info("store metadata," + importMeta.getClass().getName() + ",path:" + path);
 
+		// 定義名チェック
+		this.validateDefinitionName(path, importMeta);
+
 		if (StringUtil.isEmpty(importMeta.getId())) {
 			importMeta.setId((new KeyGenerator()).generateId());
 		}
 
 		if (importMeta instanceof MetaEntity) {
-			storeMetaEntity(path, (MetaEntity)importMeta, entry, doAutoReload);
+			storeMetaEntity(path, (MetaEntity) importMeta, entry, doAutoReload);
 		} else {
-			MetaDataConfig config = new MetaDataConfig(entry.isSharable(), entry.isOverwritable(), entry.isDataSharable(), entry.isPermissionSharable());
+			MetaDataConfig config = new MetaDataConfig(entry.isSharable(), entry.isOverwritable(), entry.isDataSharable(),
+					entry.isPermissionSharable());
 			MetaDataContext.getContext().store(path, importMeta, config, doAutoReload);
 		}
 	}
@@ -79,10 +89,14 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 
 		auditLogger.info("update metadata," + importMeta.getClass().getName() + ",path:" + path);
 
+		// 定義名チェック
+		this.validateDefinitionName(path, importMeta);
+
 		if (importMeta instanceof MetaEntity) {
-			updateMetaEntity(path, (MetaEntity)importMeta, entry, doAutoReload);
+			updateMetaEntity(path, (MetaEntity) importMeta, entry, doAutoReload);
 		} else {
-			MetaDataConfig config = new MetaDataConfig(entry.isSharable(), entry.isOverwritable(), entry.isDataSharable(), entry.isPermissionSharable());
+			MetaDataConfig config = new MetaDataConfig(entry.isSharable(), entry.isOverwritable(), entry.isDataSharable(),
+					entry.isPermissionSharable());
 			MetaDataContext.getContext().update(path, importMeta, config, doAutoReload);
 		}
 	}
@@ -95,11 +109,22 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 
 		final Future<String> result = ehService.updateDataModelSchema(newEntity, config);
 		try {
-			result.get();	//Thread block
+			result.get(); //Thread block
 		} catch (ExecutionException e) {
 			throw new MetaDataPortingRuntimeException("exception occured during entity definition update:" + e.getCause().getMessage(), e);
 		} catch (InterruptedException e) {
 			throw new MetaDataPortingRuntimeException("execution interrrupted during entity definition update:" + e.getMessage(), e);
+		}
+	}
+
+	private void validateDefinitionName(String path, RootMetaData importMeta) throws MetaDataRuntimeException {
+		if (StringUtil.isEmpty(path) || Objects.isNull(importMeta)) {
+			return;
+		}
+
+		Optional<String> errorMessage = definitionService.validateDefinitionName(importMeta.getClass(), path, importMeta.getName());
+		if (errorMessage.isPresent()) {
+			throw new MetaDataRuntimeException(errorMessage.get());
 		}
 	}
 
@@ -109,7 +134,7 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 		auditLogger.info("remove metadata," + removeMeta.getClass().getName() + ",path:" + path);
 
 		if (removeMeta instanceof MetaEntity) {
-			removeMetaEntity(path, (MetaEntity)removeMeta, doAutoReload);
+			removeMetaEntity(path, (MetaEntity) removeMeta, doAutoReload);
 		} else {
 			MetaDataContext.getContext().remove(path, doAutoReload);
 		}
@@ -120,7 +145,7 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 
 		final Future<String> result = ehService.removeDataModelSchema(removeEntity);
 		try {
-			result.get();	//Thread block
+			result.get(); //Thread block
 		} catch (ExecutionException e) {
 			throw new MetaDataPortingRuntimeException("exception occured during entity definition remove:" + e.getCause().getMessage(), e);
 		} catch (InterruptedException e) {
@@ -132,6 +157,5 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 	public boolean isTenantMeta(String path) {
 		return path.startsWith(MetaTenantService.TENANT_META_PATH);
 	}
-
 
 }
