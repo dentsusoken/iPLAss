@@ -59,4 +59,21 @@
 		<url-pattern>/checkStatus</url-pattern>
 	</servlet-mapping>
 
+	<!-- for web app warmup -->
+	<servlet>
+		<description></description>
+		<display-name>WarmupStatusServlet</display-name>
+		<servlet-name>WarmupStatusServlet</servlet-name>
+		<servlet-class>org.iplass.mtp.impl.web.WarmupStatusServlet</servlet-class>
+		<init-param>
+			<param-name>waitOnWarmup</param-name>
+			<param-value>1</param-value>
+		</init-param>
+		<load-on-startup>200</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WarmupStatusServlet</servlet-name>
+		<url-pattern>/warmupStatus</url-pattern>
+	</servlet-mapping>
+
 </web-fragment>
