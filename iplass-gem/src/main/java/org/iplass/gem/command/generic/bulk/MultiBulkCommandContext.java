@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -197,7 +198,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	private boolean hasDifferentPropertyValue(String propName) {
 		Set<String> oids = getOids();
 		for (String oid : oids) {
-			for (Long version: getVersions(oid)) {
+			for (Long version : getVersions(oid)) {
 				List<Object> propValues = bulkCommandParams.stream()
 						.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
 						.map(p -> p.getValue(propName))
@@ -235,7 +236,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 				entity = getRefEntity(rp.getObjectDefinitionName(), key);
 			} else {
 				List<Entity> list = getRefTableValues(rp, defName, count, prefix);
-				if (list.size() > 0) entity = list.get(0);
+				if (list.size() > 0)
+					entity = list.get(0);
 			}
 			return entity;
 		} else {
@@ -353,7 +355,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 
 	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyItem property) {
 		// ネストテーブルはプロパティ単位で登録可否決定
-		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) return;
+		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler()))
+			return;
 
 		// カスタム登録処理によるNestTableの更新制御
 		ReferenceRegistOption option = getRegistrationInterrupterHandler().getNestTableRegistOption(red, p.getName());
@@ -378,7 +381,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			target = list;
 		}
 
-		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), getRegistrationPropertyBaseHandler(), option);
+		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(),
+				getRegistrationPropertyBaseHandler(), option);
 		if (handler != null) {
 			handler.setForceUpdate(editor.isForceUpadte());
 			getReferenceRegistHandlers().add(handler);
@@ -394,9 +398,11 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		for (PropertyDefinition pd : getPropertyList()) {
 			if (pd.getMultiplicity() != 1) {
 				Object[] obj = entity.getValue(pd.getName());
-				if (obj != null && obj.length > 0) return false;
+				if (obj != null && obj.length > 0)
+					return false;
 			} else {
-				if (entity.getValue(pd.getName()) != null) return false;
+				if (entity.getValue(pd.getName()) != null)
+					return false;
 			}
 		}
 		return true;
@@ -428,8 +434,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		};
 	}
 
-	public Set<String> getOids() {
-		return bulkCommandParams.stream().map(p -> p.getOid()).collect(Collectors.toSet());
+	public LinkedHashSet<String> getOids() {
+		return bulkCommandParams.stream()
+				.map(p -> p.getOid())
+				.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	/**
@@ -500,7 +508,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			PropertyDefinition pd = getProperty(property.getPropertyName());
 			if (pd instanceof ReferenceProperty) {
 				String mappedBy = ((ReferenceProperty) pd).getMappedBy();
-				if (StringUtil.isBlank(mappedBy)) continue;
+				if (StringUtil.isBlank(mappedBy))
+					continue;
 
 				if (property.getEditor() instanceof ReferencePropertyEditor) {
 					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
@@ -578,14 +587,14 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @return 空のプロパティは更新しないので、更新するプロパティが1件もない場合、nullを返します。
 	 */
 	public Entity createEntity(String oid, Long version, Timestamp updateDate) {
-		Entity entity = createEntityInternal("" , null);
+		Entity entity = createEntityInternal("", null);
 		entity.setOid(oid);
 		entity.setUpdateDate(updateDate);
-//		if (isVersioned()) {
+		//		if (isVersioned()) {
 		// バージョン管理にかかわらず、セットする問題ないかな..
 		entity.setVersion(version);
-//		}
-//		setVirtualPropertyValue(entity);
+		//		}
+		//		setVirtualPropertyValue(entity);
 		getRegistrationInterrupterHandler().dataMapping(entity);
 		validate(entity);
 
@@ -604,7 +613,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	private Entity createEntityInternal(String paramPrefix, String errorPrefix) {
 		Entity entity = newEntity();
 		for (PropertyDefinition p : getPropertyList()) {
-			if (skipProps.contains(p.getName())) continue;
+			if (skipProps.contains(p.getName()))
+				continue;
 			Object value = getPropValue(p, paramPrefix);
 			entity.setValue(p.getName(), value);
 			if (errorPrefix != null) {
@@ -612,8 +622,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 				// Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix + p.getName();
 				getErrors().stream()
-					.filter(error -> error.getPropertyName().equals(name))
-					.forEach(error -> error.setPropertyName(errorName));
+						.filter(error -> error.getPropertyName().equals(name))
+						.forEach(error -> error.setPropertyName(errorName));
 			}
 		}
 		return entity;
@@ -641,7 +651,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 				Entity[] ary = null;
 				if (val != null) {
 					if (val instanceof Entity) {
-						ary = new Entity[] {(Entity) val};
+						ary = new Entity[] { (Entity) val };
 					} else if (val instanceof Entity[]) {
 						ary = (Entity[]) val;
 					}
@@ -769,7 +779,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 */
 	private void setValidateErrorMessage(RangePropertyEditor editor, String fromName, String errorPrefix, String resourceStringKey) {
 		String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
-		if (StringUtil.isBlank(errorMessage )) {
+		if (StringUtil.isBlank(errorMessage)) {
 			errorMessage = resourceString(resourceStringKey);
 		}
 		ValidateError e = new ValidateError();
@@ -777,7 +787,6 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		e.addErrorMessage(errorMessage);
 		getErrors().add(e);
 	}
-
 
 	/**
 	 * ブランクの項目は未入力と見なし、更新しないので、一括更新可能なプロパティリストから外す。
@@ -792,8 +801,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @param entity
 	 */
 	private List<PropertyItem> createBlankPropList(Entity entity) {
-			return (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
-					.collect(Collectors.toList()));
+		return (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
+				.collect(Collectors.toList()));
 	}
 
 	/**
@@ -974,7 +983,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		if (interrupter == null) {
 			// 何もしないデフォルトInterrupter生成
 			getLogger().debug("set default bulk operation interrupter.");
-			interrupter = new BulkOperationInterrupter() { };
+			interrupter = new BulkOperationInterrupter() {
+			};
 		}
 		return interrupter;
 	}
