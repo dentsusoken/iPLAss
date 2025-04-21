@@ -30,8 +30,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.iplass.mtp.impl.tenant.TenantService;
+import org.iplass.mtp.impl.warmup.WarmupContext;
 import org.iplass.mtp.impl.warmup.WarmupService;
 import org.iplass.mtp.impl.warmup.WarmupStatus;
+import org.iplass.mtp.impl.web.warmup.WarmupContextConstant;
 import org.iplass.mtp.runtime.EntryPoint;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
@@ -101,7 +103,7 @@ public class WarmupStatusServlet extends HttpServlet {
 	 * @return ウォームアップタスク実行インスタンス
 	 */
 	protected WarmupTaskExecutor createWarmupTaskExecutor(long waitOnWarmup) {
-		return new WarmupTaskExecutor(waitOnWarmup);
+		return new WarmupTaskExecutor(waitOnWarmup, getServletConfig());
 	}
 
 	/**
@@ -138,12 +140,15 @@ public class WarmupStatusServlet extends HttpServlet {
 		private Logger logger = LoggerFactory.getLogger(WarmupTaskExecutor.class);
 		/** ウォームアップ処理待ち時間（秒） */
 		private long waitOnWarmup;
+		/** サーブレットコンフィグ */
+		private ServletConfig servletConfig;
 
 		/**
 		 * コンストラクタ
 		 * @param waitOnWarmup ウォームアップ処理待ち時間（秒）
+		 * @param servletConfig サーブレットコンフィグ
 		 */
-		public WarmupTaskExecutor(long waitOnWarmup) {
+		public WarmupTaskExecutor(long waitOnWarmup, ServletConfig servletConfig) {
 			this.waitOnWarmup = waitOnWarmup;
 		}
 
@@ -185,7 +190,8 @@ public class WarmupStatusServlet extends HttpServlet {
 			try {
 				logger.debug("Application warmup start.");
 
-				warmupService.warmupApplication();
+				var warmupContext = createWarmupContext();
+				warmupService.warmupApplication(warmupContext);
 
 				logger.debug("Application warmup finish.");
 
@@ -215,7 +221,9 @@ public class WarmupStatusServlet extends HttpServlet {
 					logger.debug("Tenant {} warmup start.", tenantId);
 
 					EntryPoint.getInstance().withTenant(tenantId).run(() -> {
-						warmupService.warmupTenant();
+						// NOTE: コンテキストはテナント単位で作成する
+						var warmupContext = createWarmupContext();
+						warmupService.warmupTenant(warmupContext);
 					});
 
 					logger.debug("Tenant {} warmup finish.", tenantId);
@@ -252,6 +260,16 @@ public class WarmupStatusServlet extends HttpServlet {
 
 			long endTime = System.currentTimeMillis();
 			return endTime - startTime;
+		}
+
+		/**
+		 * ウォームアップコンテキストを生成します。
+		 * @return ウォームアップコンテキスト
+		 */
+		private WarmupContext createWarmupContext() {
+			var warmupContext = new WarmupContext();
+			warmupContext.set(WarmupContextConstant.SERVLET_CONFIG, servletConfig);
+			return warmupContext;
 		}
 	}
 }

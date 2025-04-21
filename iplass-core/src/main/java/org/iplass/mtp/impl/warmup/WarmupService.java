@@ -71,21 +71,25 @@ public class WarmupService implements Service {
 
 	/** 非同期タスク実行 */
 	private InternalSingleThreadAsyncTaskExecutor asyncTaskExecutor;
-	/** ウォームアップコンテキスト */
-	private ThreadLocal<WarmupContext> warmupContext = new ThreadLocal<>();
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
+		this.enabled = config.getValue("enabled", Boolean.class, Boolean.FALSE);
+
+		if (!enabled) {
+			logger.debug("warmup is disabled.");
+			return;
+		}
+
+		this.statusFile = config.getValue("statusFile", null);
+
 		// taskMap key = タスク名、 value = WarmupTask 実装インスタンス
 		Map<String, WarmupTask> taskMap = config.getValue("taskMap", Map.class, Collections.emptyMap());
 		// applicationTask = カンマ区切りのタスク名
 		String applicationTask = config.getValue("applicationTask", String.class, "");
 		// tenantTaskMap key = カンマ区切りのテナントID、 value = カンマ区切りのタスク名
 		Map<String, String> tenantTaskMap = config.getValue("tenantTaskMap", Map.class, Collections.emptyMap());
-
-		this.enabled = config.getValue("enabled", Boolean.class, Boolean.FALSE);
-		this.statusFile = config.getValue("statusFile", null);
 
 		// タスク初期化
 		taskMap.values().forEach(WarmupTask::init);
@@ -163,8 +167,10 @@ public class WarmupService implements Service {
 	@Override
 	public void destroy() {
 		try {
-			// タスク破棄
-			taskMap.values().forEach(WarmupTask::destroy);
+			if (null != taskMap) {
+				// タスク破棄
+				taskMap.values().forEach(WarmupTask::destroy);
+			}
 
 		} finally {
 			// ステータスファイルを削除
@@ -220,29 +226,6 @@ public class WarmupService implements Service {
 	}
 
 	/**
-	 * ウォームアップコンテキストを取得する。
-	 * <p>
-	 * 処理を実行しているスレッド内でのみ有効なコンテキストです。
-	 * ウォームアップが完了したら、コンテキストをクリアしてください。
-	 * クリア用のメソッドとして {@link #clearWarmupContext()} を用意しています。
-	 * </p>
-	 * @return ウォームアップコンテキスト
-	 */
-	public WarmupContext getWarmupContext() {
-		if (warmupContext.get() == null) {
-			warmupContext.set(new WarmupContext());
-		}
-		return warmupContext.get();
-	}
-
-	/**
-	 * ウォームアップコンテキストをクリアする。
-	 */
-	public void clearWarmupContext() {
-		warmupContext.remove();
-	}
-
-	/**
 	 * 指定されたテナントIDのウォームアップ処理が存在しないことを確認する。
 	 * @param tenantId テナントID
 	 * @return ウォームアップ処理が存在しない場合 true を返却する。
@@ -259,8 +242,9 @@ public class WarmupService implements Service {
 	 * <p>
 	 * enabled が false の場合は、ウォームアップ処理を実行しません。
 	 * </p>
+	 * @param context ウォームアップコンテキスト
 	 */
-	public void warmupApplication() {
+	public void warmupApplication(WarmupContext context) {
 		if (!isEnabled()) {
 			logger.debug("Warmup is disabled.");
 			return;
@@ -269,7 +253,7 @@ public class WarmupService implements Service {
 		for (String taskName : applicationTaskNameList) {
 			logger.debug("Start the application warmup task \"{}\".", taskName);
 			var task = taskMap.get(taskName);
-			task.warmup();
+			task.warmup(context);
 		}
 	}
 
@@ -281,8 +265,9 @@ public class WarmupService implements Service {
 	 * <p>
 	 * enabled が false の場合は、ウォームアップ処理を実行しません。
 	 * </p>
+	 * @param context ウォームアップコンテキスト
 	 */
-	public void warmupTenant() {
+	public void warmupTenant(WarmupContext context) {
 		if (!isEnabled()) {
 			logger.debug("Warmup is disabled.");
 			return;
@@ -298,7 +283,7 @@ public class WarmupService implements Service {
 		for (String taskName : taskNameList) {
 			logger.debug("Start the tenant warmup task \"{}\".", taskName);
 			var task = taskMap.get(taskName);
-			task.warmup();
+			task.warmup(context);
 		}
 	}
 
@@ -309,6 +294,11 @@ public class WarmupService implements Service {
 	 * @return 非同期タスクの実行結果
 	 */
 	public <V> Future<V> execute(Callable<V> task) {
+		if (!isEnabled()) {
+			logger.debug("Warmup is disabled.");
+			return null;
+		}
+
 		// asyncTaskExecutor メソッドに移譲
 		return asyncTaskExecutor.execute(task);
 	}

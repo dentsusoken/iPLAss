@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * メタデータウォームアップタスク
  * <p>
- * 事前にメタデータを読み込みキャッシュしておくタスクです。
+ * テナント単位に事前にメタデータを読み込みキャッシュしておくタスクです。
  * 設定されたメタデータパスに応じてメタデータを読み込みます。
  * </p>
  *
@@ -83,14 +83,14 @@ public class MetaDataWarmupTask implements WarmupTask {
 	}
 
 	@Override
-	public void warmup() {
-		var context = MetaDataContext.getContext();
+	public void warmup(WarmupContext context) {
+		var metadataContext = MetaDataContext.getContext();
 
 		for (String metadataPathPrefix : metadataPathPrefixList) {
-			loadMetadataPrefix(context, metadataPathPrefix);
+			loadMetadataPrefix(metadataContext, metadataPathPrefix);
 		}
 
-		loadMetadataList(context, metadataPathExactMatchList);
+		loadMetadataList(metadataContext, metadataPathExactMatchList);
 	}
 
 	/**

@@ -17,33 +17,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.warmup;
+package org.iplass.mtp.impl.web.warmup;
 
 /**
- * ウォームアップタスクインターフェース
+ * ウォームアップコンテキスト定数
  * <p>
- * WarmupService にタスクを設定することで、アプリケーション起動時にタスクを実行することができます。
- * 初期化処理が必要な場合は init メソッド、終了処理が必要な場合は destroy メソッドをオーバーライドしてください。
+ * {@link org.iplass.mtp.impl.warmup.WarmupContext} で使用する定数を定義します。
  * </p>
  *
  * @author SEKIGUCHI Naoya
  */
-public interface WarmupTask {
-	/**
-	 * タスクの初期化処理を実行します
-	 */
-	default void init() {
-	}
+public class WarmupContextConstant {
+	/** ServletConfig */
+	public static final String SERVLET_CONFIG = "servletConfig";
 
 	/**
-	 * タスクの終了処理を実行します
+	 * プライベートコンストラクタ
 	 */
-	default void destroy() {
+	private WarmupContextConstant() {
 	}
-
-	/**
-	 * タスクのウォームアップ処理を実行します。
-	 * @param context ウォームアップコンテキスト
-	 */
-	void warmup(WarmupContext context);
 }
