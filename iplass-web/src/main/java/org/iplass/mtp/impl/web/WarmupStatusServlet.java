@@ -150,6 +150,7 @@ public class WarmupStatusServlet extends HttpServlet {
 		 */
 		public WarmupTaskExecutor(long waitOnWarmup, ServletConfig servletConfig) {
 			this.waitOnWarmup = waitOnWarmup;
+			this.servletConfig = servletConfig;
 		}
 
 		@Override
