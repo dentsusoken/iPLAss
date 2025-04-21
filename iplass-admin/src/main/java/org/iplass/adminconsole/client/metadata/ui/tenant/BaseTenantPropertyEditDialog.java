@@ -456,7 +456,7 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 
 	@SuppressWarnings("unchecked")
 	protected void createColorSchemeForm(String name, String title, DynamicForm form) {
-		setHeight(240);
+		setHeight(370);
 		
 		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 		List<String> valueList = (List<String>) JSOHelper
