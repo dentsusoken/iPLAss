@@ -239,6 +239,16 @@ public class WarmupStatusServlet extends HttpServlet {
 		}
 
 		/**
+		 * ウォームアップコンテキストを生成します。
+		 * @return ウォームアップコンテキスト
+		 */
+		protected WarmupContext createWarmupContext() {
+			var warmupContext = new WarmupContext();
+			warmupContext.set(WebWarmupContextConstant.SERVLET_CONFIG, servletConfig);
+			return warmupContext;
+		}
+
+		/**
 		 * 指定秒数スリープします。
 		 * @param seconds スリープ秒数
 		 * @throws InterruptedException
@@ -261,16 +271,6 @@ public class WarmupStatusServlet extends HttpServlet {
 
 			long endTime = System.currentTimeMillis();
 			return endTime - startTime;
-		}
-
-		/**
-		 * ウォームアップコンテキストを生成します。
-		 * @return ウォームアップコンテキスト
-		 */
-		private WarmupContext createWarmupContext() {
-			var warmupContext = new WarmupContext();
-			warmupContext.set(WebWarmupContextConstant.SERVLET_CONFIG, servletConfig);
-			return warmupContext;
 		}
 	}
 }
