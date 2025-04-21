@@ -20,20 +20,20 @@
 package org.iplass.mtp.impl.web.warmup;
 
 /**
- * ウォームアップコンテキスト定数
+ * webプロジェクト用ウォームアップコンテキスト定数
  * <p>
  * {@link org.iplass.mtp.impl.warmup.WarmupContext} で使用する定数を定義します。
  * </p>
  *
  * @author SEKIGUCHI Naoya
  */
-public class WarmupContextConstant {
+public class WebWarmupContextConstant {
 	/** ServletConfig */
 	public static final String SERVLET_CONFIG = "servletConfig";
 
 	/**
 	 * プライベートコンストラクタ
 	 */
-	private WarmupContextConstant() {
+	private WebWarmupContextConstant() {
 	}
 }

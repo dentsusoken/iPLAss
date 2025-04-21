@@ -33,7 +33,7 @@ import org.iplass.mtp.impl.tenant.TenantService;
 import org.iplass.mtp.impl.warmup.WarmupContext;
 import org.iplass.mtp.impl.warmup.WarmupService;
 import org.iplass.mtp.impl.warmup.WarmupStatus;
-import org.iplass.mtp.impl.web.warmup.WarmupContextConstant;
+import org.iplass.mtp.impl.web.warmup.WebWarmupContextConstant;
 import org.iplass.mtp.runtime.EntryPoint;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
@@ -268,7 +268,7 @@ public class WarmupStatusServlet extends HttpServlet {
 		 */
 		private WarmupContext createWarmupContext() {
 			var warmupContext = new WarmupContext();
-			warmupContext.set(WarmupContextConstant.SERVLET_CONFIG, servletConfig);
+			warmupContext.set(WebWarmupContextConstant.SERVLET_CONFIG, servletConfig);
 			return warmupContext;
 		}
 	}
