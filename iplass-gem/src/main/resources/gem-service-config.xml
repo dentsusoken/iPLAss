@@ -353,4 +353,24 @@
 		<interface>org.iplass.mtp.impl.view.top.TopViewDefinitionService</interface>
 		<class>org.iplass.mtp.impl.view.top.TopViewDefinitionService</class>
 	</service>
+	
+	<!-- ウォームアップ -->
+	<service>
+		<interface>org.iplass.mtp.impl.warmup.WarmupService</interface>
+
+		<!--
+			taskMap は Map 形式でプロパティを設定してください。
+				name = ウォームアップタスク名
+				value = org.iplass.mtp.impl.warmup.WarmupTask の実装クラス
+		-->
+		<property name="taskMap">
+			<!-- defaultMetaDataWarmupTask はメタデータウォームアップのデフォルト定義。core プロジェクトの定義に追加 -->
+			<property name="defaultMetaDataWarmupTask" class="org.iplass.mtp.impl.warmup.MetaDataWarmupTask">
+				<property name="metadataPathList" value="/action/gem/*" additional="true" />
+				<property name="metadataPathList" value="/commandClass/gem/*" additional="true" />
+				<property name="metadataPathList" value="/template/gem/*" additional="true" />
+				<property name="metadataPathList" value="/webapi/gem/*" additional="true" />
+			</property>
+		</property>
+	</service>
 </serviceDefinition>
