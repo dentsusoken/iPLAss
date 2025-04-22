@@ -20,7 +20,9 @@
 package org.iplass.mtp.impl.warmup;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +33,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -96,10 +100,10 @@ public class WarmupService implements Service {
 
 		// アプリケーションのウォームアップタスク名を設定
 		// カンマ区切りのタスク名を分割
-		var applicationTaskNames = Stream.of(applicationTask.split(","))
+		List<String> applicationTaskNames = Stream.of(applicationTask.split(","))
 				.filter(t -> StringUtil.isNotEmpty(t))
 				.map(t -> t.trim())
-				.toList();
+				.collect(Collectors.toList());
 
 		applicationTaskNameList = new ArrayList<>();
 		for (String taskName : applicationTaskNames) {
@@ -114,8 +118,8 @@ public class WarmupService implements Service {
 		}
 
 		// 全テナントID
-		var tenantService = ServiceRegistry.getRegistry().getService(TenantService.class);
-		var allTenantIdList = tenantService.getAllTenantIdList();
+		TenantService tenantService = ServiceRegistry.getRegistry().getService(TenantService.class);
+		List<Integer> allTenantIdList = tenantService.getAllTenantIdList();
 
 		Map<Integer, List<String>> tenantTaskNameListMap = new HashMap<>();
 		for (Map.Entry<String, String> entry : tenantTaskMap.entrySet()) {
@@ -127,13 +131,13 @@ public class WarmupService implements Service {
 					: Stream.of(commaSeparatedTenantId.split(","))
 					.filter(i -> StringUtil.isNotEmpty(i))
 					.map(i -> Integer.parseInt(i.trim()))
-					.toList();
+					.collect(Collectors.toList());
 
 			// カンマ区切りのタスク名を分割
-			var taskNames = Stream.of(commaSeparatedTaskName.split(","))
+			List<String> taskNames = Stream.of(commaSeparatedTaskName.split(","))
 					.filter(t -> StringUtil.isNotEmpty(t))
 					.map(t -> t.trim())
-					.toList();
+					.collect(Collectors.toList());
 
 			for (String taskName : taskNames) {
 				if (!taskMap.containsKey(taskName)) {
@@ -148,7 +152,7 @@ public class WarmupService implements Service {
 		}
 
 		// ステータスファイルの上位ディレクトリを作成
-		var statusFile = getStatusFile();
+		File statusFile = getStatusFile();
 		createParentDirectory(statusFile);
 
 		// ステータスファイルが存在していたら削除
@@ -252,7 +256,7 @@ public class WarmupService implements Service {
 
 		for (String taskName : applicationTaskNameList) {
 			logger.debug("Start the application warmup task \"{}\".", taskName);
-			var task = taskMap.get(taskName);
+			WarmupTask task = taskMap.get(taskName);
 			task.warmup(context);
 		}
 	}
@@ -273,8 +277,8 @@ public class WarmupService implements Service {
 			return;
 		}
 
-		var tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
-		var taskNameList = tenantTaskNameListMap.get(tenantId);
+		int tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
+		List<String> taskNameList = tenantTaskNameListMap.get(tenantId);
 
 		if (taskNameList == null) {
 			return;
@@ -282,7 +286,7 @@ public class WarmupService implements Service {
 
 		for (String taskName : taskNameList) {
 			logger.debug("Start the tenant warmup task \"{}\".", taskName);
-			var task = taskMap.get(taskName);
+			WarmupTask task = taskMap.get(taskName);
 			task.warmup(context);
 		}
 	}
@@ -311,7 +315,7 @@ public class WarmupService implements Service {
 	 */
 	private void addTaskNameEachTenant(Map<Integer, List<String>> tenantTaskNameListMap, String taskName, List<Integer> tenantIdList) {
 		for (int tenantId : tenantIdList) {
-			var taskNameList = tenantTaskNameListMap.get(tenantId);
+			List<String> taskNameList = tenantTaskNameListMap.get(tenantId);
 			if (taskNameList == null) {
 				taskNameList = new ArrayList<>();
 				tenantTaskNameListMap.put(tenantId, taskNameList);
@@ -330,7 +334,7 @@ public class WarmupService implements Service {
 	 */
 	private void createParentDirectory(File file) {
 		if (null != file) {
-			var parent = file.getParentFile();
+			File parent = file.getParentFile();
 			parent.mkdirs();
 		}
 	}
@@ -381,13 +385,13 @@ public class WarmupService implements Service {
 	 * @param status ウォームアップ状態
 	 */
 	private void createStatusFile(WarmupStatus status) {
-		var statusFile = getStatusFile();
+		File statusFile = getStatusFile();
 		if (null == statusFile) {
 			// ステータスファイルの設定がない場合は作成しない。
 			return;
 		}
 
-		try (var file = new FileWriter(statusFile, StandardCharsets.UTF_8)) {
+		try (Writer file = new OutputStreamWriter(new FileOutputStream(statusFile), StandardCharsets.UTF_8)) {
 			// /path/to/file に complete|failed を書き込む
 			file.write(status.getStatus());
 			file.flush();
@@ -435,7 +439,24 @@ public class WarmupService implements Service {
 			futureList.stream().filter(f -> !f.isDone() && !f.isCancelled()).forEach(f -> f.cancel(true));
 
 			if (null != executor) {
-				executor.close();
+				boolean terminated = executor.isTerminated();
+				if (!terminated) {
+					executor.shutdown();
+					boolean interrupted = false;
+					while (!terminated) {
+						try {
+							terminated = executor.awaitTermination(1L, TimeUnit.DAYS);
+						} catch (InterruptedException e) {
+							if (!interrupted) {
+								executor.shutdownNow();
+								interrupted = true;
+							}
+						}
+					}
+					if (interrupted) {
+						Thread.currentThread().interrupt();
+					}
+				}
 			}
 		}
 
@@ -449,7 +470,7 @@ public class WarmupService implements Service {
 			// 完了したタスクのFutureを削除
 			removeDoneFuture();
 			// 新規タスクを実行
-			var future = executor.submit(task);
+			Future<V> future = executor.submit(task);
 			futureList.add(future);
 			return future;
 		}
@@ -459,7 +480,7 @@ public class WarmupService implements Service {
 		 */
 		private void removeDoneFuture() {
 			List<Future<?>> doneFutureList = new ArrayList<>();
-			for (var future : futureList) {
+			for (Future<?> future : futureList) {
 				if (future.isDone()) {
 					doneFutureList.add(future);
 				}

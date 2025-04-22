@@ -21,6 +21,7 @@ package org.iplass.mtp.impl.warmup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.iplass.mtp.impl.metadata.MetaDataContext;
@@ -84,7 +85,7 @@ public class MetaDataWarmupTask implements WarmupTask {
 
 	@Override
 	public void warmup(WarmupContext context) {
-		var metadataContext = MetaDataContext.getContext();
+		MetaDataContext metadataContext = MetaDataContext.getContext();
 
 		for (String metadataPathPrefix : metadataPathPrefixList) {
 			loadMetadataPrefix(metadataContext, metadataPathPrefix);
@@ -122,7 +123,7 @@ public class MetaDataWarmupTask implements WarmupTask {
 		}
 
 		// メタデータルートパスが指定されているか確認
-		var matcher = METADATA_ROOT_PATH_PATTERN.matcher(metadataPath);
+		Matcher matcher = METADATA_ROOT_PATH_PATTERN.matcher(metadataPath);
 		return matcher.matches();
 	}
 
@@ -132,7 +133,7 @@ public class MetaDataWarmupTask implements WarmupTask {
 	 * @param metadataPathPrefix メタデータパス
 	 */
 	private void loadMetadataPrefix(MetaDataContext context, String metadataPathPrefix) {
-		var searchMetadataPathList = context.pathList(metadataPathPrefix);
+		List<String> searchMetadataPathList = context.pathList(metadataPathPrefix);
 		if (null == searchMetadataPathList || searchMetadataPathList.isEmpty()) {
 			logger.warn("No metadata matching \"{}\" exists.", metadataPathPrefix);
 			return;

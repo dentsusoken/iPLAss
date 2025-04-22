@@ -20,14 +20,14 @@
 package org.iplass.mtp.impl.web;
 
 import java.io.IOException;
-import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Callable;
 
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.iplass.mtp.impl.tenant.TenantService;
 import org.iplass.mtp.impl.warmup.WarmupContext;
@@ -75,10 +75,10 @@ public class WarmupStatusServlet extends HttpServlet {
 		String configWaitOnWarmup =  config.getInitParameter("waitOnWarmup");
 		long waitOnWarmup = StringUtil.isNotEmpty(configWaitOnWarmup) ? Long.valueOf(configWaitOnWarmup) : DEFAULT_WAIT_ON_WARMUP;
 
-		var warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
+		WarmupService warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
 		if (warmupService.isEnabled()) {
 			// ウォームアップが有効な場合、非同期でウォームアップする
-			var warmupTaskExecutor = createWarmupTaskExecutor(waitOnWarmup);
+			WarmupTaskExecutor warmupTaskExecutor = createWarmupTaskExecutor(waitOnWarmup);
 			warmupService.execute(warmupTaskExecutor);
 
 		} else {
@@ -89,8 +89,8 @@ public class WarmupStatusServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		var warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
-		var status = warmupService.getStatus();
+		WarmupService warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
+		WarmupStatus status = warmupService.getStatus();
 
 		int httpStatus = getHttpStatus(status);
 		response.getWriter().write(status.getStatus());
@@ -182,8 +182,8 @@ public class WarmupStatusServlet extends HttpServlet {
 		 * </p>
 		 */
 		private void startWarmup() {
-			var tenantService = ServiceRegistry.getRegistry().getService(TenantService.class);
-			var warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
+			TenantService tenantService = ServiceRegistry.getRegistry().getService(TenantService.class);
+			WarmupService warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
 			warmupService.changeStatus(WarmupStatus.PROCESSING);
 
 			boolean isError = false;
@@ -191,7 +191,7 @@ public class WarmupStatusServlet extends HttpServlet {
 			try {
 				logger.debug("Application warmup start.");
 
-				var warmupContext = createWarmupContext();
+				WarmupContext warmupContext = createWarmupContext();
 				warmupService.warmupApplication(warmupContext);
 
 				logger.debug("Application warmup finish.");
@@ -201,7 +201,7 @@ public class WarmupStatusServlet extends HttpServlet {
 				isError = true;
 			}
 
-			var tenantIdList = tenantService.getAllTenantIdList();
+			List<Integer> tenantIdList = tenantService.getAllTenantIdList();
 			for (int tenantId : tenantIdList) {
 				// テナント毎にウォームアップ処理を実行
 
@@ -223,7 +223,7 @@ public class WarmupStatusServlet extends HttpServlet {
 
 					EntryPoint.getInstance().withTenant(tenantId).run(() -> {
 						// NOTE: コンテキストはテナント単位で作成する
-						var warmupContext = createWarmupContext();
+						WarmupContext warmupContext = createWarmupContext();
 						warmupService.warmupTenant(warmupContext);
 					});
 
@@ -243,7 +243,7 @@ public class WarmupStatusServlet extends HttpServlet {
 		 * @return ウォームアップコンテキスト
 		 */
 		protected WarmupContext createWarmupContext() {
-			var warmupContext = new WarmupContext();
+			WarmupContext warmupContext = new WarmupContext();
 			warmupContext.set(WebWarmupContextConstant.SERVLET_CONFIG, servletConfig);
 			return warmupContext;
 		}
@@ -255,7 +255,7 @@ public class WarmupStatusServlet extends HttpServlet {
 		 */
 		private void sleep(long seconds) throws InterruptedException {
 			if (seconds > 0) {
-				Thread.sleep(Duration.ofSeconds(seconds));
+				Thread.sleep(seconds * 1_000L);
 			}
 		}
 
