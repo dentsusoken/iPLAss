@@ -273,7 +273,7 @@
 		<!-- static contents -->
 		<property name="excludePath" value="(/errorhtml/.*)|(/images/.*)|(/scripts/.*)|(/styles/.*)|(/favicon.ico)|(/webjars/.*)" />
 		<!-- servlet implementation -->
-		<property name="excludePath" value="(/checkStatus)|(/cmcs)" />
+		<property name="excludePath" value="(/checkStatus)|(/warmupStatus)|(/cmcs)" />
 
 		<!-- WebAPI(REST)のpathの定義 -->
 		<property name="restPath" value="/api/" />
