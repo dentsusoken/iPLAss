@@ -664,7 +664,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 		if (showUpDownBtn) {
 %>
 <td class="orderCol">
-<input type="hidden" name="tableOrderIndex[<%=Constants.EDITOR_REF_NEST_DUMMY_ROW_INDEX%>]" >
+<input type="hidden" name="tableOrderIndex.<c:out value="<%=propName%>"/>[<%=Constants.EDITOR_REF_NEST_DUMMY_ROW_INDEX%>]" >
 <span class="order-icon up-icon"><i class="fas fa-caret-up"></i></span>
 <span class="order-icon down-icon"><i class="fas fa-caret-down"></i></span>
 </td>
@@ -887,7 +887,7 @@ $(function() {
 					+ ")";
 %>
 <td class="orderCol">
-<input type="hidden" name="tableOrderIndex[<%=i%>]" value="<%=i%>">
+<input type="hidden" name="tableOrderIndex.<c:out value="<%=propName%>"/>[<%=i%>]" value="<%=i%>">
 <span class="order-icon up-icon"><i class="fas fa-caret-up"
  onclick="<c:out value="<%=shiftUp %>"/>"></i></span>
 <span class="order-icon down-icon"><i class="fas fa-caret-down"

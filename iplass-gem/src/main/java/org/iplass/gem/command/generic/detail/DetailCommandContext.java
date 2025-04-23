@@ -792,7 +792,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 				entity.setDefinitionName(defName);
 				entity.setValue(Constants.REF_INDEX, list.size());
 
-				Long orderIndex = getLongValue("tableOrderIndex[" + i + "]");
+				Long orderIndex = getLongValue("tableOrderIndex." + p.getName() + "[" + i + "]");
 				if (orderIndex != null) {
 					entity.setValue(Constants.REF_TABLE_ORDER_INDEX, orderIndex);
 				}
