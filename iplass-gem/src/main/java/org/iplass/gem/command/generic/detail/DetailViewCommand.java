@@ -64,111 +64,135 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @ActionMappings({
-	@ActionMapping(name=DetailViewCommand.VIEW_ACTION_NAME,
-		displayName="詳細表示",
-		paramMapping={
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==2"),
-			@ParamMapping(name=Constants.OID, mapFrom="${1}", condition="subPath.length==2"),
-			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==3"),
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==3"),
-			@ParamMapping(name=Constants.OID, mapFrom="${2}", condition="subPath.length==3")
-		},
-		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;"),
-		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-		}
-	),
-	@ActionMapping(name=DetailViewCommand.REF_VIEW_ACTION_NAME,
-		displayName="参照詳細表示",
-		paramMapping={
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==2"),
-			@ParamMapping(name=Constants.OID, mapFrom="${1}", condition="subPath.length==2"),
-			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==3"),
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==3"),
-			@ParamMapping(name=Constants.OID, mapFrom="${2}", condition="subPath.length==3")
-		},
-		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;"),
-		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-		}
-	),
-	@ActionMapping(name=DetailViewCommand.DETAIL_ACTION_NAME,
-		displayName="詳細編集",
-		paramMapping={
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
-		},
-		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=true;"),
-		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR_VALIDATE, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-		}
-	),
-	@ActionMapping(name=DetailViewCommand.REF_DETAIL_ACTION_NAME,
-		displayName="参照詳細編集",
-		paramMapping={
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
-		},
-		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=true;"),
-		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-		}
-	)
+		@ActionMapping(
+				name = DetailViewCommand.VIEW_ACTION_NAME,
+				displayName = "詳細表示",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.OID, mapFrom = "${1}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==3"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==3"),
+						@ParamMapping(name = Constants.OID, mapFrom = "${2}", condition = "subPath.length==3")
+				},
+				command = @CommandConfig(commandClass = DetailViewCommand.class, value = "cmd.detail=false;"),
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
+						@Result(status = Constants.CMD_EXEC_ERROR_LOCK, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_NODATA,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
+				}
+		),
+		@ActionMapping(
+				name = DetailViewCommand.REF_VIEW_ACTION_NAME,
+				displayName = "参照詳細表示",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.OID, mapFrom = "${1}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==3"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==3"),
+						@ParamMapping(name = Constants.OID, mapFrom = "${2}", condition = "subPath.length==3")
+				},
+				command = @CommandConfig(commandClass = DetailViewCommand.class, value = "cmd.detail=false;"),
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_VIEW),
+						@Result(status = Constants.CMD_EXEC_ERROR_LOCK, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_VIEW),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_NODATA,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+				}
+		),
+		@ActionMapping(
+				name = DetailViewCommand.DETAIL_ACTION_NAME,
+				displayName = "詳細編集",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
+				},
+				command = @CommandConfig(commandClass = DetailViewCommand.class, value = "cmd.detail=true;"),
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_EDIT),
+						@Result(status = Constants.CMD_EXEC_ERROR_LOCK, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
+						@Result(status = Constants.CMD_EXEC_ERROR_VALIDATE, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_NODATA,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
+				}
+		),
+		@ActionMapping(
+				name = DetailViewCommand.REF_DETAIL_ACTION_NAME,
+				displayName = "参照詳細編集",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
+				},
+				command = @CommandConfig(commandClass = DetailViewCommand.class, value = "cmd.detail=true;"),
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_EDIT),
+						@Result(status = Constants.CMD_EXEC_ERROR_LOCK, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_VIEW),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_NODATA,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+				}
+		)
 })
-@CommandClass(name="gem/generic/detail/DetailViewCommand", displayName="詳細表示")
+@CommandClass(name = "gem/generic/detail/DetailViewCommand", displayName = "詳細表示")
 @Templates({
-	@Template(
-			name=Constants.TEMPLATE_VIEW,
-			path=Constants.CMD_RSLT_JSP_VIEW,
-			layoutActionName=Constants.LAYOUT_NORMAL_ACTION
-	),
-	@Template(
-			name=Constants.TEMPLATE_REF_VIEW,
-			path=Constants.CMD_RSLT_JSP_REF_VIEW,
-			layoutActionName=Constants.LAYOUT_POPOUT_ACTION
-	),
-	@Template(
-			name=Constants.TEMPLATE_EDIT,
-			path=Constants.CMD_RSLT_JSP_EDIT,
-			layoutActionName=Constants.LAYOUT_NORMAL_ACTION
-	),
-	@Template(
-			name=Constants.TEMPLATE_REF_EDIT,
-			path=Constants.CMD_RSLT_JSP_REF_EDIT,
-			layoutActionName=Constants.LAYOUT_POPOUT_ACTION
-	),
-	@Template(
-			name=Constants.TEMPLATE_COMPLETED,
-			path=Constants.CMD_RSLT_JSP_COMPLETED,
-			contentType="text/html; charset=utf-8"
-	)
+		@Template(
+				name = Constants.TEMPLATE_VIEW,
+				path = Constants.CMD_RSLT_JSP_VIEW,
+				layoutActionName = Constants.LAYOUT_NORMAL_ACTION
+		),
+		@Template(
+				name = Constants.TEMPLATE_REF_VIEW,
+				path = Constants.CMD_RSLT_JSP_REF_VIEW,
+				layoutActionName = Constants.LAYOUT_POPOUT_ACTION
+		),
+		@Template(
+				name = Constants.TEMPLATE_EDIT,
+				path = Constants.CMD_RSLT_JSP_EDIT,
+				layoutActionName = Constants.LAYOUT_NORMAL_ACTION
+		),
+		@Template(
+				name = Constants.TEMPLATE_REF_EDIT,
+				path = Constants.CMD_RSLT_JSP_REF_EDIT,
+				layoutActionName = Constants.LAYOUT_POPOUT_ACTION
+		),
+		@Template(
+				name = Constants.TEMPLATE_COMPLETED,
+				path = Constants.CMD_RSLT_JSP_COMPLETED,
+				contentType = "text/html; charset=utf-8"
+		)
 })
 public final class DetailViewCommand extends DetailCommandBase {
 
@@ -190,8 +214,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 				Entity.OID, Entity.VERSION,
 				Entity.CREATE_BY, Entity.CREATE_DATE,
 				Entity.UPDATE_BY, Entity.UPDATE_DATE,
-				Entity.LOCKED_BY
-				));
+				Entity.LOCKED_BY));
 	}
 
 	/** ActionMappingDefinitionManager */
@@ -227,7 +250,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 		String oid = context.getOid();
 		Long version = context.getVersion();
 		String searchCond = context.getSearchCond();
-		if(oid == null || oid.length() == 0) {
+		if (oid == null || oid.length() == 0) {
 			// SearchCommandからのChainの可能性があるので、Attributeから取得する
 			oid = (String) request.getAttribute(Constants.OID);
 		}
@@ -368,16 +391,17 @@ public final class DetailViewCommand extends DetailCommandBase {
 
 		if (isDetail()) {
 			if (context instanceof ShowEditViewEventHandler) {
-				((ShowEditViewEventHandler)context).fireShowEditViewEvent(data);
+				((ShowEditViewEventHandler) context).fireShowEditViewEvent(data);
 			}
 		} else {
 			if (context instanceof ShowDetailViewEventHandler) {
-				((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
+				((ShowDetailViewEventHandler) context).fireShowDetailViewEvent(data);
 			}
 		}
 
 		request.setAttribute(Constants.DATA, data);
 		request.setAttribute(Constants.SEARCH_COND, searchCond);
+		request.setAttribute(Constants.VERSION_SPECIFIED, context.isVersionSpecified());
 		return ret;
 	}
 
@@ -387,7 +411,8 @@ public final class DetailViewCommand extends DetailCommandBase {
 	 * @param entity Entity
 	 */
 	protected void initCopyProperty(DetailCommandContext context, Entity entity) {
-		if (entity == null) return;
+		if (entity == null)
+			return;
 
 		for (PropertyDefinition pd : context.getPropertyList()) {
 			if (EXCLUDED_COPY_PROPERTIES.contains(pd.getName())) {
@@ -408,7 +433,8 @@ public final class DetailViewCommand extends DetailCommandBase {
 				if (pd.getMultiplicity() == 1) {
 					BinaryReference br = entity.getValue(pd.getName());
 					// データをSHALLOWコピーするか判断
-					if (br != null) value = context.isShallowCopyLobData() ? shallowCopyBinary(br) : copyBinary(br);
+					if (br != null)
+						value = context.isShallowCopyLobData() ? shallowCopyBinary(br) : copyBinary(br);
 				} else {
 					BinaryReference[] br = entity.getValue(pd.getName());
 					if (br != null && br.length > 0) {
@@ -424,9 +450,11 @@ public final class DetailViewCommand extends DetailCommandBase {
 			}
 		}
 	}
+
 	private BinaryReference copyBinary(BinaryReference br) {
 		return em.createBinaryReference(br.getName(), br.getType(), em.getInputStream(br));
 	}
+
 	private BinaryReference shallowCopyBinary(BinaryReference br) {
 		return br.copy();
 	}
