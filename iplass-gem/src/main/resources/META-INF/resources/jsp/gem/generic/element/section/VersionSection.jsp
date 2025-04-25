@@ -90,6 +90,8 @@ $(function() {
 							$(":hidden[name='version']").val(version);
 							var urlPath = "<%=StringUtil.escapeJavaScript(urlPath)%>" + "/" + oid;
 							var $form = $("#detailForm");
+							// 特定バージョンの詳細画面であることを示すフラグを設定
+							$form.append("<input type='hidden' name='<%=Constants.VERSION_SPECIFIED%>' value='true' />");
 							$form.attr("action", contextPath + "/<%=DetailViewCommand.VIEW_ACTION_NAME%>" + urlPath);
 							$form.submit();
 						});

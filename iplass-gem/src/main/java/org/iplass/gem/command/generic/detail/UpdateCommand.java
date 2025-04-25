@@ -231,6 +231,7 @@ public final class UpdateCommand extends DetailCommandBase {
 
 		request.setAttribute(Constants.DATA, data);
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
+		request.setAttribute(Constants.VERSION_SPECIFIED, context.isVersionSpecified());
 
 		return retKey;
 	}
