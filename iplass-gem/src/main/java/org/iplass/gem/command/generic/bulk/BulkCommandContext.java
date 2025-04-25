@@ -375,7 +375,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			//データあり
 			String paramPrefix = prefix + p.getName() + "[" + Integer.toString(i) + "].";
 			String errorPrefix = (i != list.size() ? prefix + p.getName() + "[" + Integer.toString(list.size()) + "]." : null);
-			Entity entity = createEntityInternal(paramPrefix, errorPrefix);
+			Entity entity = createEntityRef(paramPrefix, errorPrefix);
 
 			//入力エラー時に再Loadされないようにフラグ設定
 			entity.setValue(Constants.REF_RELOAD, Boolean.FALSE);
@@ -396,7 +396,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				entity.setDefinitionName(defName);
 				entity.setValue(Constants.REF_INDEX, list.size());
 
-				Long orderIndex = getLongValue("tableOrderIndex[" + i + "]");
+				Long orderIndex = getLongValue("tableOrderIndex." + p.getName() + "[" + i + "]");
 				if (orderIndex != null) {
 					entity.setValue(Constants.REF_TABLE_ORDER_INDEX, orderIndex);
 				}
@@ -413,6 +413,26 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		}
 
 		return list;
+	}
+
+	private Entity createEntityRef(String paramPrefix, String errorPrefix) {
+		Entity entity = newEntity();
+		for (PropertyDefinition p : getPropertyList()) {
+			if (skipProps.contains(p.getName())) {
+				continue;
+			}
+			Object value = getPropValue(p, paramPrefix);
+			entity.setValue(p.getName(), value);
+			if (errorPrefix != null) {
+				String name = paramPrefix + p.getName();
+				// Entity生成時にエラーが発生していないかチェックして置き換え
+				String errorName = errorPrefix + p.getName();
+				getErrors().stream()
+						.filter(error -> error.getPropertyName().equals(name))
+						.forEach(error -> error.setPropertyName(errorName));
+			}
+		}
+		return entity;
 	}
 
 	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyColumn property) {
