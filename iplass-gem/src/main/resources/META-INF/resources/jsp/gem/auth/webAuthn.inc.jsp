@@ -18,6 +18,7 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 
+<%@page import="org.iplass.mtp.util.StringUtil" %>
 <%@page import="org.iplass.gem.command.auth.LoginCommand"%>
 <%@page import="org.iplass.mtp.impl.auth.authenticate.webauthn.command.ReAuthenticationCommand"%>
 <%@page import="org.iplass.mtp.impl.auth.authenticate.webauthn.command.AuthenticationCommand"%>
@@ -30,12 +31,18 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%
-boolean isWebAuthnEnabled = ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseWebAuthn();
+TenantAuthInfo tenantAuthInfo = ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class);
+boolean isWebAuthnEnabled = tenantAuthInfo.isUseWebAuthn();
 boolean isReAuth = pageContext.getAttribute("isReAuth") != null;
 if (isWebAuthnEnabled) {
 	String redirectPath = LoginCommand.getValidRedirectPath((String) request.getAttribute(WebRequestConstants.REDIRECT_PATH));
 	String loginLabelKey = isReAuth ? "auth.webAuthn.passkeyReAuth" : "auth.webAuthn.passkeyLogin";
 	pageContext.setAttribute("loginLabelKey", loginLabelKey);
+	
+	String webapiDefinitionName = StringUtil.isEmpty(tenantAuthInfo.getWebAuthnDefinitonName()) ? "" : "/" + tenantAuthInfo.getWebAuthnDefinitonName();
+	String authOptionsWebApi = AuthenticationOptionsCommand.WEBAPI_NAME + webapiDefinitionName;
+	String authWebApi        = AuthenticationCommand.WEBAPI_NAME + webapiDefinitionName;
+	String reAuthWebApi      = ReAuthenticationCommand.WEBAPI_NAME + webapiDefinitionName;
 %>
 <div id="webauthnLoginSection">
 	<p class="nav-login-01">
@@ -50,7 +57,7 @@ if (isWebAuthnEnabled) {
 		} else {
 			document.getElementById('webauthnLogin').addEventListener('click', async () => {
 				try {
-					const optionsJson = await fetch('${m:tcPath()}/api/<%=AuthenticationOptionsCommand.WEBAPI_NAME%>', {
+					const optionsJson = await fetch('${m:tcPath()}/api/<%= authOptionsWebApi %>', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
@@ -93,7 +100,7 @@ if (isWebAuthnEnabled) {
 						}
 					}
 
-					let apiPath = '${m:tcPath()}/api/<%=isReAuth? ReAuthenticationCommand.WEBAPI_NAME: AuthenticationCommand.WEBAPI_NAME%>';
+					let apiPath = '${m:tcPath()}/api/<%= isReAuth ? reAuthWebApi : authWebApi %>';
 					const remMe = document.getElementById('rememberMe');
 					if (remMe != null && remMe.checked) {
 						apiPath += '?rememberMe=true';
