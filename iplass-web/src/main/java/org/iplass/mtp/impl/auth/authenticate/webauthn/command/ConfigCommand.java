@@ -93,6 +93,6 @@ public class ConfigCommand implements Command {
 	 * @return WebAuthn 定義名
 	 */
 	public String getWebAuthnDefinitionName(TenantAuthInfo tenantAuthInfo) {
-		return tenantAuthInfo.getWebAuthnDefinitonName();
+		return tenantAuthInfo.getWebAuthnDefinitionName();
 	}
 }

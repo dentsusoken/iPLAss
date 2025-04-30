@@ -116,7 +116,7 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 		selectList = getBoolList(getRS("toUse"), getRS("doseNotUse"));
 		createBoolRecord("useRememberMe", category, selectList);
 		createBoolRecord("useWebAuthn", category, getBoolList(getRS("toUse"), getRS("doseNotUse")));
-		createRecord("webAuthnDefinitonName", category, TenantColType.STRING);
+		createRecord("webAuthnDefinitionName", category, TenantColType.STRING);
 		createRecord("userAdminRoles", category, TenantColType.STRING);
 		selectList = getBoolList(getRS("passResetAllow"), getRS("passResetDoseNotAllow"));
 	}
@@ -194,8 +194,8 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 			tenantAuthInfo.setUseRememberMe(record.getAttributeAsBoolean(valueKey));
 		} else if ("useWebAuthn".equals(name)) {
 			tenantAuthInfo.setUseWebAuthn(record.getAttributeAsBoolean(valueKey));
-		} else if ("webAuthnDefinitonName".equals(name)) {
-			tenantAuthInfo.setWebAuthnDefinitonName(record.getAttributeAsString(valueKey));
+		} else if ("webAuthnDefinitionName".equals(name)) {
+			tenantAuthInfo.setWebAuthnDefinitionName(record.getAttributeAsString(valueKey));
 		} else if ("userAdminRoles".equals(name)) {
 			List<String> adminRoles = SmartGWTUtil.convertStringToList(record.getAttributeAsString(valueKey), ",");
 			if (adminRoles != null && adminRoles.isEmpty()) {
@@ -301,7 +301,7 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 			LinkedHashMap<String, String> selectItem) {
 		return createRecord(name, category, TenantColType.SELECTCOMBO, selectItem);
 	}
-	
+
 	protected ListGridRecord createColorSchemeRecord(String name, TenantCategory category,
 			LinkedHashMap<String, String> selectItem) {
 		return createRecord(name, category, TenantColType.COLORSCHEME, selectItem);
@@ -353,7 +353,7 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 
 		setRecordValue("useRememberMe", auth.isUseRememberMe(), valueKey, dispKey);
 		setRecordValue("useWebAuthn", auth.isUseWebAuthn(), valueKey, dispKey);
-		setRecordValue("webAuthnDefinitonName", auth.getWebAuthnDefinitonName(), valueKey, dispKey);
+		setRecordValue("webAuthnDefinitionName", auth.getWebAuthnDefinitionName(), valueKey, dispKey);
 		setRecordValue("userAdminRoles", SmartGWTUtil.convertListToString(auth.getUserAdminRoles(), ","), valueKey,
 				dispKey);
 	}
@@ -423,7 +423,7 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 				dispValue = getMultiSelectDispValue(selectItem, (List<String>) value);
 			} else if (colType == TenantColType.SCRIPT || colType == TenantColType.GROOVYTEMPLATE) {
 				dispValue = getStatusDispValue((value == null ? "" : value.toString()));
-			} else if (colType == TenantColType.COLORSCHEME) {		
+			} else if (colType == TenantColType.COLORSCHEME) {
 			} else {
 				dispValue = value;
 			}

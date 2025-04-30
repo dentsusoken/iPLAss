@@ -38,7 +38,7 @@ List<String> waList = AuthContextHolder.getAuthContext().getPolicy().getMetaData
 boolean isWebAuthnEnabled = tenantAuthInfo.isUseWebAuthn() && waList != null && waList.size() > 0;
 
 if (isWebAuthnEnabled) {
-	String webapiDefinitionName = StringUtil.isEmpty(tenantAuthInfo.getWebAuthnDefinitonName()) ? "" : "/" + tenantAuthInfo.getWebAuthnDefinitonName();
+	String webapiDefinitionName = StringUtil.isEmpty(tenantAuthInfo.getWebAuthnDefinitionName()) ? "" : "/" + tenantAuthInfo.getWebAuthnDefinitionName();
 	String regOptionsWebApi = RegistrationOptionsCommand.WEBAPI_NAME + webapiDefinitionName;
 	String regWebApi        = RegistrationCommand.WEBAPI_NAME + webapiDefinitionName;
 %>

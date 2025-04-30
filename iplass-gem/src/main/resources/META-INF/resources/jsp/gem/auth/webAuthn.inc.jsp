@@ -39,7 +39,7 @@ if (isWebAuthnEnabled) {
 	String loginLabelKey = isReAuth ? "auth.webAuthn.passkeyReAuth" : "auth.webAuthn.passkeyLogin";
 	pageContext.setAttribute("loginLabelKey", loginLabelKey);
 	
-	String webapiDefinitionName = StringUtil.isEmpty(tenantAuthInfo.getWebAuthnDefinitonName()) ? "" : "/" + tenantAuthInfo.getWebAuthnDefinitonName();
+	String webapiDefinitionName = StringUtil.isEmpty(tenantAuthInfo.getWebAuthnDefinitionName()) ? "" : "/" + tenantAuthInfo.getWebAuthnDefinitionName();
 	String authOptionsWebApi = AuthenticationOptionsCommand.WEBAPI_NAME + webapiDefinitionName;
 	String authWebApi        = AuthenticationCommand.WEBAPI_NAME + webapiDefinitionName;
 	String reAuthWebApi      = ReAuthenticationCommand.WEBAPI_NAME + webapiDefinitionName;
