@@ -28,8 +28,7 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 		AuthenticationCommand.class,
 		ReAuthenticationCommand.class,
 		KeyListCommand.class,
-		DeregistrationCommand.class,
-		ConfigCommand.class
+		DeregistrationCommand.class
 })
 public class MetaDataRefs {
 }
