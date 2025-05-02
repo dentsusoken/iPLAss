@@ -406,9 +406,10 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 //		if (ph == null || ph.getMetaData().getMultiplicity() != 1) return;
 		//検索画面が多重度1でないプロパティを扱えるのでチェックを変更
 		//ただし、詳細画面は変わらず扱えないため、JSP側ではじく
-		if (ph == null) return;
+		//if (ph == null) return;
+		//仮想プロパティを利用できるようにするためチェックを変更
 
-		propertyId = ph.getId();
+		propertyId = (ph != null) ? ph.getId() : property.getPropertyName();
 		displayLabel = property.getDisplayLabel();
 		description = property.getDescription();
 		tooltip = property.getTooltip();
@@ -432,7 +433,7 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 			((NumericRangePropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData().getName());
 		} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) property.getEditor();
-			if (ph instanceof ReferencePropertyHandler) {
+			if (ph != null && ph instanceof ReferencePropertyHandler) {
 				// 参照先Entity名をセット
 				ReferencePropertyHandler rph = (ReferencePropertyHandler) ph;
 				String objName = rph.getReferenceEntityHandler(ctx).getMetaData().getName();
@@ -484,10 +485,12 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 //		if (ph == null || ph.getMetaData().getMultiplicity() != 1) return null;
 		//検索画面が多重度1でないプロパティを扱えるのでチェックを変更
 		//ただし、詳細画面は変わらず扱えないため、JSP側ではじく
-		if (ph == null) return null;
+		//if (ph == null) return null;
+		//仮想プロパティを利用できるようにするためチェックを変更
 
 		NestProperty property = new NestProperty();
-		property.setPropertyName(ph.getName());
+		String propertyName = (ph != null) ? ph.getName() : propertyId;
+		property.setPropertyName(propertyName);
 		property.setDisplayLabel(displayLabel);
 		property.setDescription(description);
 		property.setTooltip(tooltip);
@@ -501,7 +504,7 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		property.setSortable(sortable);
 		property.setOutputCsv(outputCsv);
 		if (editor != null) {
-			property.setEditor(editor.currentConfig(ph.getName()));
+			property.setEditor(editor.currentConfig(propertyName));
 		}
 
 		if (autocompletionSetting != null) {
