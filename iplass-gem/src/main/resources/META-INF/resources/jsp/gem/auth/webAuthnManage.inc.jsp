@@ -18,6 +18,7 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 <%@page import="java.util.List"%>
+<%@page import="org.iplass.mtp.util.StringUtil" %>
 <%@page import="org.iplass.mtp.impl.auth.AuthContextHolder"%>
 <%@page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@page import="org.iplass.mtp.impl.auth.authenticate.webauthn.command.RegistrationOptionsCommand"%>
@@ -35,9 +36,13 @@
 TenantAuthInfo tenantAuthInfo = ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class);
 List<String> waList = AuthContextHolder.getAuthContext().getPolicy().getMetaData().getWebAuthnDefinition();
 boolean isWebAuthnEnabled = tenantAuthInfo.isUseWebAuthn() && waList != null && waList.size() > 0;
+
+if (isWebAuthnEnabled) {
+	String webapiDefinitionName = StringUtil.isEmpty(tenantAuthInfo.getWebAuthnDefinitionName()) ? "" : "/" + tenantAuthInfo.getWebAuthnDefinitionName();
+	String regOptionsWebApi = RegistrationOptionsCommand.WEBAPI_NAME + webapiDefinitionName;
+	String regWebApi        = RegistrationCommand.WEBAPI_NAME + webapiDefinitionName;
 %>
 
-<%if (isWebAuthnEnabled) {%>
 
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.webAuthnManage.passkeyManage")}</h3>
 <p id="noWebAuthnRegister" class="mb30"><span class="success">${m:rs("mtp-gem-messages", "auth.webAuthnManage.noPasskeySupport")}</span></p>
@@ -56,7 +61,7 @@ boolean isWebAuthnEnabled = tenantAuthInfo.isUseWebAuthn() && waList != null && 
 $(function() {
 
 	function register() {
-		webapiJson("<%=RegistrationOptionsCommand.WEBAPI_NAME%>" ,{
+		webapiJson("<%= regOptionsWebApi %>" ,{
 			type: "POST",
 			cache: false,
 			data: '{}',
@@ -97,7 +102,7 @@ $(function() {
 							}
 						}
 						
-						webapiJson("<%=RegistrationCommand.WEBAPI_NAME%>" ,{
+						webapiJson("<%= regWebApi %>" ,{
 							type: "POST",
 							cache: false,
 							data: JSON.stringify(credentialData),
