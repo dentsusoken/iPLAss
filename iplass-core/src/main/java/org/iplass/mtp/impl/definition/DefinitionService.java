@@ -22,6 +22,8 @@ package org.iplass.mtp.impl.definition;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.TypedDefinitionManager;
@@ -191,6 +193,82 @@ public class DefinitionService implements Service {
 	public String getDefinitionName(String path) {
 		//Definitionクラスが未指定の場合は、Pathの先頭からチェックして返す
 		return contextNode.toName(path);
+	}
+
+	/**
+	 * メタデータ定義名チェック
+	 * 
+	 * @param <M> メタデータの型
+	 * @param metaType メタデータのクラス
+	 * @param path パス
+	 * @param defName 定義名
+	 * @return チェックエラーメッセージ
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public <M extends RootMetaData> Optional<String> checkDefinitionName(Class<M> metaType, String path, String defName) {
+		if (Objects.isNull(metaType)) {
+			return Optional.empty();
+		}
+
+		// メタデータ定義Map取得
+		DefinitionMetaDataTypeMap typeMap = getByMeta(metaType);
+		if (Objects.isNull(typeMap)) {
+			return Optional.empty();
+
+		}
+
+		return typeMap.checkDefinitionName(path, defName);
+	}
+
+	/**
+	 * メタデータ定義名チェック（パスチェックは実施しない）
+	 * 
+	 * @param <M> メタデータの型
+	 * @param metaType メタデータのクラス
+	 * @param defName 定義名
+	 * @return チェックエラーメッセージ
+	 */
+	public <M extends RootMetaData> Optional<String> checkDefinitionNameWithoutPath(Class<M> metaType, String defName) {
+		return this.checkDefinitionName(metaType, null, defName);
+	}
+
+	/**
+	 * メタデータ定義名チェック
+	 * 
+	 * 
+	 * @param <D> 定義の型
+	 * @param defType 定義のクラス
+	 * @param path パス
+	 * @param defName 定義名
+	 * @return チェックエラーメッセージ
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public <D extends Definition> Optional<String> checkDefinitionNameByType(Class<D> defType, String path, String defName) {
+		if (Objects.isNull(defType)) {
+			return Optional.empty();
+		}
+
+		// メタデータ定義Map取得
+		DefinitionMetaDataTypeMap typeMap = getByDef(defType);
+		if (Objects.isNull(typeMap)) {
+			return Optional.empty();
+
+		}
+
+		return typeMap.checkDefinitionName(null, defName);
+	}
+
+	/**
+	 * メタデータ定義名チェック（パスチェックは実施しない）
+	 * 
+	 * 
+	 * @param <D> 定義の型
+	 * @param defType 定義のクラス
+	 * @param defName 定義名
+	 * @return チェックエラーメッセージ
+	 */
+	public <D extends Definition> Optional<String> checkDefinitionNameByTypeWithoutPath(Class<D> defType, String defName) {
+		return this.checkDefinitionNameByType(defType, null, defName);
 	}
 
 	private static class MetaDataContextNode<D extends Definition> {

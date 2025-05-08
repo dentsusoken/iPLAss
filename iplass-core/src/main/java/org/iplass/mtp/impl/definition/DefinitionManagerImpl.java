@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.definition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.DefinitionEntry;
@@ -36,13 +37,13 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
+import org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType;
+import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataIllegalStateException;
 import org.iplass.mtp.impl.metadata.MetaDataRepository;
 import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.metadata.RootMetaData;
-import org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType;
-import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class DefinitionManagerImpl implements DefinitionManager {
@@ -259,6 +260,13 @@ public class DefinitionManagerImpl implements DefinitionManager {
 		MetaDataEntry current = metaContext.getMetaDataEntry(oldPath);
 		if (current == null) {
 			throw new MetaDataRuntimeException(oldDefinitionName + "of " + type.getName() + " not found");
+		}
+
+		// TODO AdminConsoleからリネームする場合、AbstractTypedMetaDataServiceやAbstractTypedDefinitionManagerは経由していない
+		// パスはnewPathが自動生成されるので、ここでのパスチェックは不要
+		Optional<String> checkResult = defService.checkDefinitionNameByTypeWithoutPath(type, newDefinitionName);
+		if (checkResult.isPresent()) {
+			throw new MetaDataRuntimeException(checkResult.get());
 		}
 
 		RootMetaData renamed = current.getMetaData().copy();

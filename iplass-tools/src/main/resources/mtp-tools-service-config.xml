@@ -48,6 +48,7 @@
 		<depend>org.iplass.mtp.impl.core.TenantContextService</depend>
 		<depend>org.iplass.mtp.impl.entity.EntityService</depend>
 		<depend>org.iplass.mtp.impl.auth.AuthService</depend>
+		<depend>org.iplass.mtp.impl.definition.DefinitionService</depend>
 
 		<property name="importHandler" class="org.iplass.mtp.impl.tools.metaport.MetaDataImportHandlerImpl" />
 	</service>
