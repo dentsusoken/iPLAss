@@ -378,6 +378,8 @@ public final class DetailViewCommand extends DetailCommandBase {
 
 		request.setAttribute(Constants.DATA, data);
 		request.setAttribute(Constants.SEARCH_COND, searchCond);
+		request.setAttribute(Constants.VERSION_SPECIFIED, context.isVersionSpecified());
+
 		return ret;
 	}
 
