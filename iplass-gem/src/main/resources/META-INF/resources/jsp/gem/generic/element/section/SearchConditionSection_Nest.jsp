@@ -32,9 +32,12 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.RangePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.element.property.PropertyItem"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
+<%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%!
 String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searchCond, String key, String expect, String retStr) {
 	if (StringUtil.isNotBlank(searchCond)) return "";
@@ -46,6 +49,17 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 	if (expect.equals(value)) return retStr;
 	return "";
 }
+
+	PropertyDefinition getNestTablePropertyDefinition(NestProperty np, EntityDefinition ed) {
+		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
+		if (pd == null) {
+			throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.element.section.SearchConditionSectionNest.editorExceptionMessage")
+					+ ":propertyName=[" + np.getPropertyName() + "]");
+
+		}
+		
+		return pd;
+	}
 %>
 <%
 	ReferenceProperty rp = (ReferenceProperty) request.getAttribute(Constants.EDITOR_REF_NEST_PROPERTY);
@@ -105,7 +119,7 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 	if (showNest || editor.isUseNestConditionWithProperty()) {
 		for (NestProperty np : editor.getNestProperties()) {
 			String npName = propName + "." + np.getPropertyName();
-			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
+			PropertyDefinition pd = getNestTablePropertyDefinition(np, ed);
 			if (pd instanceof ReferenceProperty
 					&& np.getEditor() instanceof ReferencePropertyEditor
 					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties().isEmpty()) {
