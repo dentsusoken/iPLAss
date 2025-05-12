@@ -73,8 +73,8 @@ import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
-import org.iplass.mtp.view.generic.element.FileItem;
 import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
+import org.iplass.mtp.view.generic.element.property.PropertyElement;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
 import org.iplass.mtp.view.generic.element.section.ReferenceSection;
 import org.iplass.mtp.view.generic.parser.Token;
@@ -520,8 +520,12 @@ public class EntityViewUtil {
 			return propertyDefinition;
 		}
 
-		// なければ仮想プロパティなのでプロパティ定義に変換する
-		return getVirtualPropertyDefinition(nestProperty);
+		// プロパティ定義がない場合、仮想プロパティならプロパティ定義に変換する
+		if (nestProperty.isVirtual()) {
+			return getVirtualPropertyDefinition(nestProperty);
+		}
+
+		return null;
 	}
 
 	/**
@@ -596,7 +600,7 @@ public class EntityViewUtil {
 		return ret;
 	}
 
-	private static PropertyDefinition getVirtualPropertyDefinition(FileItem property) {
+	private static PropertyDefinition getVirtualPropertyDefinition(PropertyElement property) {
 		PropertyDefinition definition = null;
 		if (property.getEditor() instanceof BooleanPropertyEditor) {
 			BooleanProperty prop = new BooleanProperty(property.getPropertyName());

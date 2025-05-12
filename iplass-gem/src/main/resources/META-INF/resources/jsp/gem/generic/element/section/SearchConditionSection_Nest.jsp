@@ -49,17 +49,6 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 	if (expect.equals(value)) return retStr;
 	return "";
 }
-
-	PropertyDefinition getNestTablePropertyDefinition(NestProperty np, EntityDefinition ed) {
-		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
-		if (pd == null) {
-			throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.element.section.SearchConditionSectionNest.editorExceptionMessage")
-					+ ":propertyName=[" + np.getPropertyName() + "]");
-
-		}
-		
-		return pd;
-	}
 %>
 <%
 	ReferenceProperty rp = (ReferenceProperty) request.getAttribute(Constants.EDITOR_REF_NEST_PROPERTY);
@@ -119,7 +108,9 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 	if (showNest || editor.isUseNestConditionWithProperty()) {
 		for (NestProperty np : editor.getNestProperties()) {
 			String npName = propName + "." + np.getPropertyName();
-			PropertyDefinition pd = getNestTablePropertyDefinition(np, ed);
+			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
+			// 仮想プロパティは詳細検索条件に含めない
+			if (pd == null) continue;
 			if (pd instanceof ReferenceProperty
 					&& np.getEditor() instanceof ReferencePropertyEditor
 					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties().isEmpty()) {

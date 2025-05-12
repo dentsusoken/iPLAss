@@ -45,17 +45,6 @@
 		if (property.getEditor() == null) return false;
 		return true;
 	}
-
-	PropertyDefinition getNestTablePropertyDefinition(NestProperty np, EntityDefinition ed) {
-		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
-		if (pd == null) {
-			throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.editor.reference.ReferencePropertyEditor_ConditionNest.editorExceptionMessage")
-					+ ":propertyName=[" + np.getPropertyName() + "]");
-
-		}
-		
-		return pd;
-	}
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_REF_NEST_EDITOR);
@@ -187,8 +176,8 @@ $(function() {
 	if (showNest || useNestCondition) {
 		int i = 0;
 		for (NestProperty np : editor.getNestProperties()) {
-			PropertyDefinition _pd = getNestTablePropertyDefinition(np, ed);
-			if (isDispProperty(np)) {
+			PropertyDefinition _pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
+			if (_pd != null && isDispProperty(np)) {
 				String nestPropStyle = StringUtil.isNotBlank(nestStyle) ? nestStyle + "_cond" + i : "";
 				String displayLabel = TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList());
 				if (displayLabel == null) displayLabel = _pd.getDisplayName();

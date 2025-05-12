@@ -227,7 +227,12 @@
 			//出力対象
 
 			String propName = property.getPropertyName();
-			PropertyDefinition pd = red.getProperty(propName);
+			PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(property, red);
+			if (pd == null) {
+				//利用できないプロパティは除く
+				continue;
+			}
+			
 			if (pd.getMultiplicity() != 1) {
 				//参照セクションには多重度1しかおかせない
 				continue;
@@ -273,7 +278,11 @@
 <tr class="col">
 <%
 		String propName = property.getPropertyName();
-		PropertyDefinition pd = red.getProperty(propName);
+		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(property, red);
+		if (pd == null) {
+			//利用できないプロパティは除く
+			continue;
+		}
 
 		property.getEditor().setPropertyName(section.getPropertyName() + "[" + dataIndex + "]." + propName);
 
@@ -399,7 +408,11 @@
 <%
 	for (NestProperty property : hiddenList) {
 		String propName = property.getPropertyName();
-		PropertyDefinition pd = red.getProperty(propName);
+		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(property, red);
+		if (pd == null) {
+			//利用できないプロパティは除く
+			continue;
+		}
 		property.getEditor().setPropertyName(section.getPropertyName() + "[" + dataIndex + "]." + propName);
 
 		String path =  EntityViewUtil.getJspPath(property.getEditor(), ViewConst.DESIGN_TYPE_GEM);

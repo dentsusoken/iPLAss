@@ -22,13 +22,16 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
+<%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.NestProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -36,6 +39,17 @@
 	boolean isDispProperty(NestProperty property) {
 		if (property.getEditor() == null) return false;
 		return true;
+	}
+	
+	PropertyDefinition getNestTablePropertyDefinition(NestProperty np, EntityDefinition ed) {
+		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
+		if (pd == null) {
+			throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSectionNest.editorExceptionMessage")
+					+ ":propertyName=[" + np.getPropertyName() + "]");
+
+		}
+		
+		return pd;
 	}
 %>
 <%
@@ -48,7 +62,7 @@
 	EntityDefinition red = edm.get(rp.getObjectDefinitionName());
 	int colCount = 0;
 	for (NestProperty np : editor.getNestProperties()) {
-		PropertyDefinition pd = red.getProperty(np.getPropertyName());
+		PropertyDefinition pd = getNestTablePropertyDefinition(np, red);
 		if (isDispProperty(np)) {
 			String nestStyle = StringUtil.isNotBlank(style) ? style + "_col" + colCount++ : "";
 			if (pd instanceof ReferenceProperty
