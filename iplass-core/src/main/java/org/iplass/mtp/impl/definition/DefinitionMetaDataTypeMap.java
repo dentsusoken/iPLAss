@@ -19,14 +19,9 @@
  */
 package org.iplass.mtp.impl.definition;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.metadata.RootMetaData;
-import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
-import org.iplass.mtp.util.StringUtil;
 
 public abstract class DefinitionMetaDataTypeMap<D extends Definition, M extends RootMetaData> {
 	protected String pathPrefix;
@@ -39,7 +34,7 @@ public abstract class DefinitionMetaDataTypeMap<D extends Definition, M extends 
 		this.pathPrefix = pathPrefix;
 		this.metaType = metaType;
 		this.defType = defType;
-		this.definitionNameChecker = this.createDefinitionNameChecker();
+		this.definitionNameChecker = this.createDefinitionNameChecker(pathPrefix);
 //		this.replaceDot = replaceDot;
 	}
 
@@ -63,41 +58,23 @@ public abstract class DefinitionMetaDataTypeMap<D extends Definition, M extends 
 	}
 
 	/**
+	 * メタデータ定義名Checkerを返却
+	 * 
+	 * @return メタデータ定義名Checker
+	 */
+	public DefinitionNameChecker getDefinitionNameChecker() {
+		return this.definitionNameChecker;
+	}
+
+	/**
 	 * メタデータ定義名Checker生成
 	 * TODO コンパイルエラー回避のため一旦abstractメソッドにしない
 	 * TODO 全体的にメタデータ定義名の制限を確認して、パスがスラッシュで名前にピリオド許可してるものがほとんどだったらabstractにしない
 	 * 
+	 * @param fixedPathPrefix パスプレフィックス
 	 * @return メタデータ定義名Checker
 	 */
-	protected DefinitionNameChecker createDefinitionNameChecker() {
-		return DefinitionNameChecker.getDefaultDefinitionNameChecker();
-	}
-
-	/**
-	 * メタデータ定義名チェック
-	 * 
-	 * <p>
-	 * 以下のチェックをする
-	 * <ul>
-	 * <li>メタデータのパスがメタデータ定義のパスに一致するかどうか</li>
-	 * <li>メタデータ定義名に指定できない文字列が含まれていないかどうか</li>
-	 * </ul>
-	 * </p>
-	 * 
-	 * @param defName メタデータ定義名
-	 * @return エラーメッセージ（チェックエラーの場合）
-	 */
-	public Optional<String> checkDefinitionName(String path, String defName) {
-		// パスチェック
-		if (StringUtil.isNotEmpty(path) && !path.startsWith(this.pathPrefix)) {
-			return Optional.of(CoreResourceBundleUtil.resourceString("impl.definition.DefinitionService.invalidPath"));
-		}
-
-		if (Objects.isNull(this.definitionNameChecker) || StringUtil.isEmpty(defName)) {
-			return Optional.empty();
-		}
-
-		// メタデータ定義名チェック
-		return this.definitionNameChecker.check(defName);
+	protected DefinitionNameChecker createDefinitionNameChecker(String fixedPathPrefix) {
+		return DefinitionNameChecker.getDefaultDefinitionNameChecker(fixedPathPrefix);
 	}
 }

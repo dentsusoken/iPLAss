@@ -21,7 +21,6 @@
 package org.iplass.mtp.impl.definition;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
@@ -91,10 +90,10 @@ public abstract class AbstractTypedMetaDataService<M extends RootMetaData, R ext
 		DefinitionService definitionService = DefinitionService.getInstance();
 		Class<M> metaDataType = getMetaDataType();
 
-		// メタデータ定義名チェック TODO ここではパスはDefinitionServiceから取得してるためパスチェックは不要
-		Optional<String> checkResult = definitionService.checkDefinitionNameWithoutPath(metaDataType, meta.getName());
-		if (checkResult.isPresent()) {
-			throw new MetaDataRuntimeException(checkResult.get());
+		// メタデータ定義名チェック
+		DefinitionNameCheckResult checkResult = definitionService.checkDefinitionNameByMeta(metaDataType, meta.getName());
+		if (checkResult.hasError()) {
+			throw new MetaDataRuntimeException(checkResult.getErrorMessage());
 		}
 	}
 

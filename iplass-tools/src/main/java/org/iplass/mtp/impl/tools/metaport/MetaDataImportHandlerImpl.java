@@ -21,10 +21,10 @@
 package org.iplass.mtp.impl.tools.metaport;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.iplass.mtp.impl.definition.DefinitionNameCheckResult;
 import org.iplass.mtp.impl.definition.DefinitionService;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
@@ -120,9 +120,16 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 			return;
 		}
 
-		Optional<String> errorMessage = definitionService.checkDefinitionName(importMeta.getClass(), path, importMeta.getName());
-		if (errorMessage.isPresent()) {
-			throw new MetaDataRuntimeException(errorMessage.get());
+		// パスチェック
+		DefinitionNameCheckResult pathCheckResult = definitionService.checkPathPrefixByMeta(importMeta.getClass(), path);
+		if (pathCheckResult.hasError()) {
+			throw new MetaDataRuntimeException(pathCheckResult.getErrorMessage());
+		}
+
+		// メタデータ定義名チェック
+		DefinitionNameCheckResult defCheckResult = definitionService.checkDefinitionNameByMeta(importMeta.getClass(), importMeta.getName());
+		if (defCheckResult.hasError()) {
+			throw new MetaDataRuntimeException(defCheckResult.getErrorMessage());
 		}
 	}
 

@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.TypedDefinitionManager;
@@ -196,79 +195,103 @@ public class DefinitionService implements Service {
 	}
 
 	/**
-	 * メタデータ定義名チェック
+	 * パスチェック（メタデータ定義から）
 	 * 
-	 * @param <M> メタデータの型
-	 * @param metaType メタデータのクラス
-	 * @param path パス
-	 * @param defName 定義名
-	 * @return チェックエラーメッセージ
+	 * @param <D> メタデータ定義の型
+	 * @param defType メタデータ定義タイプ
+	 * @param path メタデータパス
+	 * @return パスチェック結果
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public <M extends RootMetaData> Optional<String> checkDefinitionName(Class<M> metaType, String path, String defName) {
-		if (Objects.isNull(metaType)) {
-			return Optional.empty();
-		}
-
-		// メタデータ定義Map取得
-		DefinitionMetaDataTypeMap typeMap = getByMeta(metaType);
-		if (Objects.isNull(typeMap)) {
-			return Optional.empty();
-
-		}
-
-		return typeMap.checkDefinitionName(path, defName);
-	}
-
-	/**
-	 * メタデータ定義名チェック（パスチェックは実施しない）
-	 * 
-	 * @param <M> メタデータの型
-	 * @param metaType メタデータのクラス
-	 * @param defName 定義名
-	 * @return チェックエラーメッセージ
-	 */
-	public <M extends RootMetaData> Optional<String> checkDefinitionNameWithoutPath(Class<M> metaType, String defName) {
-		return this.checkDefinitionName(metaType, null, defName);
-	}
-
-	/**
-	 * メタデータ定義名チェック
-	 * 
-	 * 
-	 * @param <D> 定義の型
-	 * @param defType 定義のクラス
-	 * @param path パス
-	 * @param defName 定義名
-	 * @return チェックエラーメッセージ
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public <D extends Definition> Optional<String> checkDefinitionNameByType(Class<D> defType, String path, String defName) {
+	@SuppressWarnings({ "rawtypes" })
+	public <D extends Definition> DefinitionNameCheckResult checkPathPrefix(Class<D> defType, String path) {
 		if (Objects.isNull(defType)) {
-			return Optional.empty();
+			return DefinitionNameCheckResult.createSuccessResult();
 		}
 
-		// メタデータ定義Map取得
-		DefinitionMetaDataTypeMap typeMap = getByDef(defType);
-		if (Objects.isNull(typeMap)) {
-			return Optional.empty();
-
-		}
-
-		return typeMap.checkDefinitionName(null, defName);
+		DefinitionMetaDataTypeMap typeMap = this.getByDef(defType);
+		return this.checkPathPrefixInternal(typeMap, path);
 	}
 
 	/**
-	 * メタデータ定義名チェック（パスチェックは実施しない）
+	 * パスチェック（メタデータから）
 	 * 
-	 * 
-	 * @param <D> 定義の型
-	 * @param defType 定義のクラス
-	 * @param defName 定義名
-	 * @return チェックエラーメッセージ
+	 * @param <M> メタデータの型
+	 * @param metaType メタデータタイプ
+	 * @param path メタデータパス
+	 * @return パスチェック結果
 	 */
-	public <D extends Definition> Optional<String> checkDefinitionNameByTypeWithoutPath(Class<D> defType, String defName) {
-		return this.checkDefinitionNameByType(defType, null, defName);
+	@SuppressWarnings({ "rawtypes" })
+	public <M extends RootMetaData> DefinitionNameCheckResult checkPathPrefixByMeta(Class<M> metaType, String path) {
+		if (Objects.isNull(metaType)) {
+			return DefinitionNameCheckResult.createSuccessResult();
+		}
+
+		DefinitionMetaDataTypeMap typeMap = this.getByMeta(metaType);
+		return this.checkPathPrefixInternal(typeMap, path);
+	}
+
+	@SuppressWarnings("rawtypes")
+	private DefinitionNameCheckResult checkPathPrefixInternal(DefinitionMetaDataTypeMap typeMap, String path) {
+		if (Objects.isNull(typeMap)) {
+			return DefinitionNameCheckResult.createSuccessResult();
+		}
+
+		DefinitionNameChecker checker = typeMap.getDefinitionNameChecker();
+		if (Objects.isNull(checker)) {
+			return DefinitionNameCheckResult.createSuccessResult();
+		}
+
+		return checker.checkPathPrefix(path);
+	}
+
+	/**
+	 * メタデータ定義名チェック（メタデータ定義から）
+	 * 
+	 * @param <D> メタデータ定義の型
+	 * @param defType メタデータ定義タイプ
+	 * @param defName メタデータ定義名
+	 * @return メタデータ定義名チェック結果
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public <D extends Definition> DefinitionNameCheckResult checkDefinitionName(Class<D> defType, String defName) {
+		if (Objects.isNull(defType)) {
+			return DefinitionNameCheckResult.createSuccessResult();
+		}
+
+		DefinitionMetaDataTypeMap typeMap = this.getByDef(defType);
+		return this.checkDefinitionNameInternal(typeMap, defName);
+	}
+
+	/**
+	 * メタデータ定義名チェック（メタデータから）
+	 * 
+	 * @param <M> メタデータの型
+	 * @param metaType メタデータタイプ
+	 * @param メタデータ定義名
+	 * @return メタデータ定義名チェック結果
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public <M extends RootMetaData> DefinitionNameCheckResult checkDefinitionNameByMeta(Class<M> metaType, String defName) {
+		if (Objects.isNull(metaType)) {
+			return DefinitionNameCheckResult.createSuccessResult();
+		}
+
+		DefinitionMetaDataTypeMap typeMap = this.getByMeta(metaType);
+		return this.checkDefinitionNameInternal(typeMap, defName);
+	}
+
+	@SuppressWarnings("rawtypes")
+	private DefinitionNameCheckResult checkDefinitionNameInternal(DefinitionMetaDataTypeMap typeMap, String defName) {
+		if (Objects.isNull(typeMap)) {
+			return DefinitionNameCheckResult.createSuccessResult();
+		}
+
+		DefinitionNameChecker checker = typeMap.getDefinitionNameChecker();
+		if (Objects.isNull(checker)) {
+			return DefinitionNameCheckResult.createSuccessResult();
+		}
+
+		return checker.checkDefinitionName(defName);
 	}
 
 	private static class MetaDataContextNode<D extends Definition> {
