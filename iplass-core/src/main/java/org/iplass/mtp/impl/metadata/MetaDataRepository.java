@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.metadata;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType;
@@ -38,7 +39,7 @@ public class MetaDataRepository implements Service {
 
 	private MetaDataStore tenantLocalStore;
 	private List<MetaDataStore> sharedStore;//indexが0に近い方が優先
-	
+
 	public MetaDataStore getTenantLocalStore() {
 		return tenantLocalStore;
 	}
@@ -93,8 +94,30 @@ public class MetaDataRepository implements Service {
 		return null;
 	}
 
+	/**
+	 * 指定されたメタデータパスのメタデータ定義情報を取得する。
+	 * <p>
+	 * withInvalid が false の場合：<br>
+	 * 取得するメタデータは全て有効です。MetaDataEntryInfo はメタデータパスでユニークです。<br>
+	 * <br>
+	 * withInvalid が true の場合：<br>
+	 * 取得するメタデータには無効なメタデータを含みます。MetaDataEntryInfo は同一メタデータパスの情報を含むことがあります。<br>
+	 * 同一メタデータパスの情報を含むケースとして、同一メタデータパスで定義・削除を繰り返した場合、同一メタデータパスのメタデータID違いのレコードが作成されます。<br>
+	 * この場合、返却するデータには、同一メタデータパス、メタデータID違いの定義済みの有効なメタデータ、削除された無効なメタデータ全てを含みます。
+	 * </p>
+	 *
+	 * @param tenantId テナントID
+	 * @param prefixPath メタデータプレフィックスパス
+	 * @param withShared 共有ストアを含むかどうか
+	 * @param withInvalid 無効データを含むかどうか
+	 * @return メタデータ定義情報リスト
+	 */
 	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withShared, boolean withInvalid) {
-		HashMap<String, MetaDataEntryInfo> map = new HashMap<String, MetaDataEntryInfo>();
+		// NOTE: 集約キーについて
+		// 有効なメタデータの検索時の集約キーはメタデータパス。メタデータパスでユニークとなる。
+		// 無効なメタデータの検索時の集約キーはメタデータID。メタデータを同一パスで作成・削除を繰り返した場合に、同一パス・ID違いの無効データも抽出する為。
+		Function<MetaDataEntryInfo, String> getKeyFn = withInvalid ? MetaDataEntryInfo::getId : MetaDataEntryInfo::getPath;
+		HashMap<String, MetaDataEntryInfo> map = new HashMap<>();
 		//indexが0の方が優先、local定義が一番優先
 		if (sharedStore != null && withShared) {
 			for (int i = sharedStore.size() - 1; i > -1; i--) {
@@ -107,21 +130,21 @@ public class MetaDataRepository implements Service {
 						}else{
 							definition.setRepositryType(RepositoryType.SHARED);
 						}
-						map.put(definition.getPath(), definition);
+						map.put(getKeyFn.apply(definition), definition);
 					}
 				}
 			}
 		}
+		// 同一集約キーの定義が存在した場合、テナントローカルストアの定義を優先する
 		List<MetaDataEntryInfo> list = tenantLocalStore.definitionList(tenantId, prefixPath, withInvalid);
 		for (MetaDataEntryInfo definition : list) {
 			definition.setRepositryType(RepositoryType.TENANT_LOCAL);
-			map.put(definition.getPath(), definition);
+			map.put(getKeyFn.apply(definition), definition);
 		}
 
-		List<MetaDataEntryInfo> res = new ArrayList<MetaDataEntryInfo>(map.values());
+		List<MetaDataEntryInfo> res = new ArrayList<>(map.values());
 
 		return res;
-		
 	}
 
 	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withShared)
@@ -198,7 +221,7 @@ public class MetaDataRepository implements Service {
 	}
 
 	public void store(int tenantId, MetaDataEntry metaDataEntry)
-		throws MetaDataRuntimeException {
+			throws MetaDataRuntimeException {
 		tenantLocalStore.store(tenantId, metaDataEntry);
 		logger.info("store MetaData:" + metaDataEntry.getPath());
 	}
