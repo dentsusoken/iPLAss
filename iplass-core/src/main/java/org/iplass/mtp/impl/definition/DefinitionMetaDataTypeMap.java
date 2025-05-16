@@ -27,12 +27,14 @@ public abstract class DefinitionMetaDataTypeMap<D extends Definition, M extends 
 	protected String pathPrefix;
 	protected Class<M> metaType;
 	protected Class<D> defType;
+	private DefinitionNameChecker definitionNameChecker;
 //	boolean replaceDot;
 
 	protected DefinitionMetaDataTypeMap(String pathPrefix, Class<M> metaType, Class<D> defType) {
 		this.pathPrefix = pathPrefix;
 		this.metaType = metaType;
 		this.defType = defType;
+		this.definitionNameChecker = this.createDefinitionNameChecker(pathPrefix);
 //		this.replaceDot = replaceDot;
 	}
 
@@ -53,5 +55,26 @@ public abstract class DefinitionMetaDataTypeMap<D extends Definition, M extends 
 	}
 	public String typeName() {
 		return defType.getSimpleName();
+	}
+
+	/**
+	 * メタデータ定義名Checkerを返却
+	 * 
+	 * @return メタデータ定義名Checker
+	 */
+	public DefinitionNameChecker getDefinitionNameChecker() {
+		return this.definitionNameChecker;
+	}
+
+	/**
+	 * メタデータ定義名Checker生成
+	 * TODO コンパイルエラー回避のため一旦abstractメソッドにしない
+	 * TODO 全体的にメタデータ定義名の制限を確認して、パスがスラッシュで名前にピリオド許可してるものがほとんどだったらabstractにしない
+	 * 
+	 * @param fixedPathPrefix パスプレフィックス
+	 * @return メタデータ定義名Checker
+	 */
+	protected DefinitionNameChecker createDefinitionNameChecker(String fixedPathPrefix) {
+		return DefinitionNameChecker.getDefaultDefinitionNameChecker(fixedPathPrefix);
 	}
 }
