@@ -1933,6 +1933,8 @@ LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatDisplaNam
 LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeDescriptionKey = "多言語設定の日付/時刻のフォーマットを設定する。";
 LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatLocaleDisplaNameKey = "日付/時刻のロケール設定";
 LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatDescriptionKey = "多言語設定の日付/時刻のロケールを設定する。";
+LocaleInfo.generic_editor_NestProperty_virtualDisplayNameKey = "仮想プロパティ";
+LocaleInfo.generic_editor_NestProperty_virtualDescriptionKey = "このプロパティを仮想プロパティとして扱います。<br/>この設定はプロパティ名に任意の名前を直接入力した場合に有効になります。";
 LocaleInfo.generic_editor_NestProperty_propertyNameDisplaNameKey = "プロパティ名";
 LocaleInfo.generic_editor_NestProperty_propertyNameDescriptionKey = "参照型のプロパティ名を指定してください。";
 LocaleInfo.generic_editor_NestProperty_DisplaNameKey = "表示ラベル";

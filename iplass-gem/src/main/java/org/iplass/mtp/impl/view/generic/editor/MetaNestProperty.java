@@ -50,6 +50,9 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -5324754433567181221L;
 
+	/** 仮想プロパティか */
+	private boolean virtual;
+
 	/** プロパティID */
 	private String propertyId;
 
@@ -103,6 +106,24 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 
 	/** 自動補完設定 */
 	private MetaAutocompletionSetting autocompletionSetting;
+
+	/**
+	 * 仮想プロパティかを取得します。
+	 *
+	 * @return sortable
+	 */
+	public boolean isVirtual() {
+		return virtual;
+	}
+
+	/**
+	 * 仮想プロパティかを設定します。
+	 *
+	 * @param virtual 仮想プロパティか
+	 */
+	public void setVirtual(boolean virtual) {
+		this.virtual = virtual;
+	}
 
 	/**
 	 * プロパティIDを取得します。
@@ -406,9 +427,14 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 //		if (ph == null || ph.getMetaData().getMultiplicity() != 1) return;
 		//検索画面が多重度1でないプロパティを扱えるのでチェックを変更
 		//ただし、詳細画面は変わらず扱えないため、JSP側ではじく
-		if (ph == null) return;
+		//if (ph == null) return;
+		//仮想プロパティを利用できるようにするためチェックを変更
+		if (ph == null && !property.isVirtual()) {
+			return;
+		}
 
-		propertyId = ph.getId();
+		virtual = this.isVirtual(property.isVirtual(), ph);
+		propertyId = (ph != null) ? ph.getId() : property.getPropertyName();
 		displayLabel = property.getDisplayLabel();
 		description = property.getDescription();
 		tooltip = property.getTooltip();
@@ -419,7 +445,8 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		requiredDisplayType = property.getRequiredDisplayType();
 		requiredNormal = property.isRequiredNormal();
 		requiredDetail = property.isRequiredDetail();
-		sortable = property.isSortable();
+		// 仮想プロパティはソート不可
+		sortable = virtual ? false : property.isSortable();
 		outputCsv = property.isOutputCsv();
 
 		MetaPropertyEditor editor = MetaPropertyEditor.createInstance(property.getEditor());
@@ -432,7 +459,7 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 			((NumericRangePropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData().getName());
 		} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) property.getEditor();
-			if (ph instanceof ReferencePropertyHandler) {
+			if (ph != null && ph instanceof ReferencePropertyHandler) {
 				// 参照先Entity名をセット
 				ReferencePropertyHandler rph = (ReferencePropertyHandler) ph;
 				String objName = rph.getReferenceEntityHandler(ctx).getMetaData().getName();
@@ -484,10 +511,17 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 //		if (ph == null || ph.getMetaData().getMultiplicity() != 1) return null;
 		//検索画面が多重度1でないプロパティを扱えるのでチェックを変更
 		//ただし、詳細画面は変わらず扱えないため、JSP側ではじく
-		if (ph == null) return null;
+		//if (ph == null) return null;
+		//仮想プロパティを利用できるようにするためチェックを変更
+		if (ph == null && !virtual) {
+			return null;
+		}
 
+		boolean virtualProperty = this.isVirtual(virtual, ph);
 		NestProperty property = new NestProperty();
-		property.setPropertyName(ph.getName());
+		String propertyName = (ph != null) ? ph.getName() : propertyId;
+		property.setVirtual(virtualProperty);
+		property.setPropertyName(propertyName);
 		property.setDisplayLabel(displayLabel);
 		property.setDescription(description);
 		property.setTooltip(tooltip);
@@ -498,10 +532,11 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		property.setRequiredDisplayType(requiredDisplayType);
 		property.setRequiredNormal(requiredNormal);
 		property.setRequiredDetail(requiredDetail);
-		property.setSortable(sortable);
+		// 仮想プロパティはソート不可
+		property.setSortable(virtualProperty ? false : sortable);
 		property.setOutputCsv(outputCsv);
 		if (editor != null) {
-			property.setEditor(editor.currentConfig(ph.getName()));
+			property.setEditor(editor.currentConfig(propertyName));
 		}
 
 		if (autocompletionSetting != null) {
@@ -515,6 +550,16 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		property.setLocalizedTooltipList(I18nUtil.toDef(localizedTooltipList));
 
 		return property;
+	}
+
+	private boolean isVirtual(boolean virtual, PropertyHandler ph) {
+		// 存在するプロパティの場合は仮想プロパティにしない
+		if (ph != null) {
+			return false;
+		}
+
+		return virtual;
+
 	}
 
 	@Override

@@ -32,9 +32,12 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.RangePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.element.property.PropertyItem"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
+<%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%!
 String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searchCond, String key, String expect, String retStr) {
 	if (StringUtil.isNotBlank(searchCond)) return "";
@@ -106,6 +109,8 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 		for (NestProperty np : editor.getNestProperties()) {
 			String npName = propName + "." + np.getPropertyName();
 			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
+			// 仮想プロパティは詳細検索条件に含めない
+			if (pd == null) continue;
 			if (pd instanceof ReferenceProperty
 					&& np.getEditor() instanceof ReferencePropertyEditor
 					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties().isEmpty()) {

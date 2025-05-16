@@ -35,9 +35,11 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.ViewConst"%>
+<%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%!
 	boolean isDispProperty(NestProperty property) {
 		if (property.getEditor() == null) return false;
@@ -174,8 +176,8 @@ $(function() {
 	if (showNest || useNestCondition) {
 		int i = 0;
 		for (NestProperty np : editor.getNestProperties()) {
-			PropertyDefinition _pd = ed.getProperty(np.getPropertyName());
-			if (isDispProperty(np)) {
+			PropertyDefinition _pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
+			if (_pd != null && isDispProperty(np)) {
 				String nestPropStyle = StringUtil.isNotBlank(nestStyle) ? nestStyle + "_cond" + i : "";
 				String displayLabel = TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList());
 				if (displayLabel == null) displayLabel = _pd.getDisplayName();
