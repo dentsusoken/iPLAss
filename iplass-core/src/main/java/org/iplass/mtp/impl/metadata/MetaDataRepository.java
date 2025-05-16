@@ -97,8 +97,13 @@ public class MetaDataRepository implements Service {
 	/**
 	 * 指定されたメタデータパスのメタデータ定義情報を取得する。
 	 * <p>
-	 * withInvalid が false の場合： 有効なメタデータを検索。集約キーはメタデータパス。<br>
-	 * withInvalid が true の場合： 無効なメタデータを含み検索。集約キーはメタデータID（同一パスで定義・削除を繰り返すことを想定）。<br>
+	 * withInvalid が false の場合：<br>
+	 * 有効なメタデータを検索。集約キーはメタデータパス。メタデータパスでユニークとなる。<br>
+	 * <br>
+	 * withInvalid が true の場合：<br>
+	 * 無効なメタデータを含み検索。集約キーはメタデータID。<br>
+	 * 同一メタデータパスで定義・削除を繰り返した場合、複数の同一メタデータパスの有効・無効なメタデータを取得する必要がある。<br>
+	 * そのためメタデータパスでユニークにはならないので、メタデータIDを利用する。<br>
 	 * </p>
 	 *
 	 * @param tenantId テナントID
@@ -108,8 +113,8 @@ public class MetaDataRepository implements Service {
 	 * @return メタデータ定義情報リスト
 	 */
 	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withShared, boolean withInvalid) {
-		// 集約キーは、無効データの場合はID, 有効データの場合はパスとする。
-		Function<MetaDataEntryInfo, String> summaryFn = withInvalid ? MetaDataEntryInfo::getId : MetaDataEntryInfo::getPath;
+		// 集約キーは、無効データの場合はID, 有効データの場合はパスとする。詳細は doclet の注意を確認。
+		Function<MetaDataEntryInfo, String> getKeyFn = withInvalid ? MetaDataEntryInfo::getId : MetaDataEntryInfo::getPath;
 		HashMap<String, MetaDataEntryInfo> map = new HashMap<>();
 		//indexが0の方が優先、local定義が一番優先
 		if (sharedStore != null && withShared) {
@@ -123,21 +128,21 @@ public class MetaDataRepository implements Service {
 						}else{
 							definition.setRepositryType(RepositoryType.SHARED);
 						}
-						map.put(summaryFn.apply(definition), definition);
+						map.put(getKeyFn.apply(definition), definition);
 					}
 				}
 			}
 		}
+		// 同一集約キーの定義が存在した場合、テナントローカルストアの定義を優先する
 		List<MetaDataEntryInfo> list = tenantLocalStore.definitionList(tenantId, prefixPath, withInvalid);
 		for (MetaDataEntryInfo definition : list) {
 			definition.setRepositryType(RepositoryType.TENANT_LOCAL);
-			map.put(summaryFn.apply(definition), definition);
+			map.put(getKeyFn.apply(definition), definition);
 		}
 
 		List<MetaDataEntryInfo> res = new ArrayList<>(map.values());
 
 		return res;
-
 	}
 
 	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withShared)
