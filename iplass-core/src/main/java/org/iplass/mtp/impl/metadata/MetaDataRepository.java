@@ -98,12 +98,11 @@ public class MetaDataRepository implements Service {
 	 * 指定されたメタデータパスのメタデータ定義情報を取得する。
 	 * <p>
 	 * withInvalid が false の場合：<br>
-	 * 有効なメタデータを検索。集約キーはメタデータパス。メタデータパスでユニークとなる。<br>
+	 * 取得するメタデータは全て有効です。MetaDataEntryInfo はメタデータパスでユニークです。<br>
 	 * <br>
 	 * withInvalid が true の場合：<br>
-	 * 無効なメタデータを含み検索。集約キーはメタデータID。<br>
-	 * 同一メタデータパスで定義・削除を繰り返した場合、複数の同一メタデータパスの有効・無効なメタデータを取得する必要がある。<br>
-	 * そのためメタデータパスでユニークにはならないので、メタデータIDを利用する。<br>
+	 * 取得するメタデータには無効なメタデータを含みます。MetaDataEntryInfo は同一メタデータパスの情報を含むことがあります。<br>
+	 * （同一メタデータパスで定義・削除を繰り返した場合、メタデータID違いの同一メタデータパスの有効・無効なメタデータが含まれます。）
 	 * </p>
 	 *
 	 * @param tenantId テナントID
@@ -113,7 +112,9 @@ public class MetaDataRepository implements Service {
 	 * @return メタデータ定義情報リスト
 	 */
 	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withShared, boolean withInvalid) {
-		// 集約キーは、無効データの場合はID, 有効データの場合はパスとする。詳細は doclet の注意を確認。
+		// NOTE: 集約キーについて
+		// 有効なメタデータの検索時の集約キーはメタデータパス。メタデータパスでユニークとなる。
+		// 無効なメタデータの検索時の集約キーはメタデータID。メタデータを同一パスで作成・削除を繰り返した場合に、同一パス・ID違いの無効データも抽出する為。
 		Function<MetaDataEntryInfo, String> getKeyFn = withInvalid ? MetaDataEntryInfo::getId : MetaDataEntryInfo::getPath;
 		HashMap<String, MetaDataEntryInfo> map = new HashMap<>();
 		//indexが0の方が優先、local定義が一番優先
