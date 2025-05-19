@@ -27,6 +27,7 @@
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.NestProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType"%>
@@ -106,6 +107,8 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 		for (NestProperty np : editor.getNestProperties()) {
 			String npName = propName + "." + np.getPropertyName();
 			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
+			// 仮想プロパティは詳細検索条件に含めない
+			if (EntityViewUtil.isVirtualNestProperty(np, pd)) continue;
 			if (pd instanceof ReferenceProperty
 					&& np.getEditor() instanceof ReferencePropertyEditor
 					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties().isEmpty()) {

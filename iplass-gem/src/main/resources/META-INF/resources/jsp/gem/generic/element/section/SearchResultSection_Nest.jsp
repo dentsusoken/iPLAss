@@ -29,6 +29,7 @@
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.NestProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -36,6 +37,10 @@
 	boolean isDispProperty(NestProperty property) {
 		if (property.getEditor() == null) return false;
 		return true;
+	}
+
+	boolean isVirtualNestProperty(NestProperty np, EntityDefinition ed) {
+		return EntityViewUtil.isVirtualNestProperty(np, ed.getProperty(np.getPropertyName()));
 	}
 %>
 <%
@@ -48,7 +53,7 @@
 	EntityDefinition red = edm.get(rp.getObjectDefinitionName());
 	int colCount = 0;
 	for (NestProperty np : editor.getNestProperties()) {
-		PropertyDefinition pd = red.getProperty(np.getPropertyName());
+		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, red);
 		if (isDispProperty(np)) {
 			String nestStyle = StringUtil.isNotBlank(style) ? style + "_col" + colCount++ : "";
 			if (pd instanceof ReferenceProperty
@@ -78,7 +83,7 @@
 					align = ", align:'" + np.getTextAlign().name().toLowerCase() + "'";
 				}
 				String sortable = "sortable:true";
-				if (!np.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
+				if (!np.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd) || isVirtualNestProperty(np, red)) {
 					sortable = "sortable:false";
 				}
 				String hidden = ", hidden:false";
