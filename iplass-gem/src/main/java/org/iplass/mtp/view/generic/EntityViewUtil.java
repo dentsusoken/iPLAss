@@ -539,17 +539,6 @@ public class EntityViewUtil {
 	 * ネストテーブルのプロパティが仮想プロパティかどうか
 	 * 
 	 * @param nestProperty ネストプロパティ
-	 * @param entityDefinition Entity定義
-	 * @return ネストテーブルのプロパティが仮想プロパティかどうか
-	 */
-	public static boolean isVirtualNestProperty(NestProperty nestProperty, EntityDefinition entityDefinition) {
-		return isVirtualNestProperty(nestProperty, entityDefinition.getProperty(nestProperty.getPropertyName()));
-	}
-
-	/**
-	 * ネストテーブルのプロパティが仮想プロパティかどうか
-	 * 
-	 * @param nestProperty ネストプロパティ
 	 * @param propertyDefinition プロパティ定義
 	 * @return ネストテーブルのプロパティが仮想プロパティかどうか
 	 */

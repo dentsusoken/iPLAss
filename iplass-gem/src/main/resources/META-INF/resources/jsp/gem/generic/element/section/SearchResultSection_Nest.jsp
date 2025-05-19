@@ -39,13 +39,8 @@
 		return true;
 	}
 
-	boolean isSortable(NestProperty np, PropertyDefinition pd, EntityDefinition ed) {
-		// 仮想プロパティはソート不可
-		if (EntityViewUtil.isVirtualNestProperty(np, ed)) {
-			return false;
-		}
-		
-		return np.isSortable() && ViewUtil.getEntityViewHelper().isSortable(pd);
+	boolean isVirtualNestProperty(NestProperty np, EntityDefinition ed) {
+		return EntityViewUtil.isVirtualNestProperty(np, ed.getProperty(np.getPropertyName()));
 	}
 %>
 <%
@@ -88,7 +83,7 @@
 					align = ", align:'" + np.getTextAlign().name().toLowerCase() + "'";
 				}
 				String sortable = "sortable:true";
-				if (!isSortable(np, pd, red)) {
+				if (!np.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd) || isVirtualNestProperty(np, red)) {
 					sortable = "sortable:false";
 				}
 				String hidden = ", hidden:false";
