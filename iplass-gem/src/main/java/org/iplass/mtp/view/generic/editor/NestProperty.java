@@ -36,14 +36,13 @@ import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.element.FileItem;
 import org.iplass.mtp.view.generic.element.SortItem;
-import org.iplass.mtp.view.generic.element.property.PropertyElement;
 
 /**
  * 参照型でテーブル表示等の場合に表示する参照先のプロパティ定義
  * @author lis3wg
  */
 @FieldOrder(manual = true)
-public class NestProperty implements Refrectable, FileItem, SortItem, PropertyElement {
+public class NestProperty implements Refrectable, FileItem, SortItem {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -7849466975195960549L;

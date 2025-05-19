@@ -191,7 +191,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 						addReferenceProperty(props, dispInfo, (ReferenceProperty) rpd, np, null, outputType);
 					} else {
 						// 検索するプロパティには仮想プロパティは含めない
-						if (rpd != null && !props.contains(np.getPropertyName())) {
+						if (!EntityViewUtil.isVirtualNestProperty(np, rpd) && !props.contains(np.getPropertyName())) {
 							props.add(np.getPropertyName());
 							if (np.getEditor() instanceof RangePropertyEditor) {
 								RangePropertyEditor rpe = (RangePropertyEditor) np.getEditor();
@@ -546,10 +546,6 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	 * @return
 	 */
 	private boolean isDispProperty(PropertyDefinition pd, NestProperty property, OutputType outputType) {
-		if (pd == null) {
-			return false;
-		}
-
 		if (property.getEditor() == null) return false;
 		if (OutputType.EDIT == outputType) {
 			if (property.isHideDetail()) return false;
@@ -650,7 +646,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 					addReferenceProperty(select, dispInfo, (ReferenceProperty) rpd, _np, name, outputType);
 				} else {
 					// 検索するプロパティには仮想プロパティは含めない
-					if (rpd != null && !select.contains(name + "." + _np.getPropertyName())) {
+					if (!EntityViewUtil.isVirtualNestProperty(_np, rpd) && !select.contains(name + "." + _np.getPropertyName())) {
 						select.add(name + "." + _np.getPropertyName());
 						if (_np.getEditor() instanceof RangePropertyEditor) {
 							RangePropertyEditor rpe = (RangePropertyEditor) _np.getEditor();

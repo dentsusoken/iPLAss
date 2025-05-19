@@ -110,7 +110,7 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 	/**
 	 * 仮想プロパティかを取得します。
 	 *
-	 * @return sortable
+	 * @return 仮想プロパティか
 	 */
 	public boolean isVirtual() {
 		return virtual;
@@ -433,8 +433,8 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 			return;
 		}
 
-		virtual = this.isVirtual(property.isVirtual(), ph);
-		propertyId = (ph != null) ? ph.getId() : property.getPropertyName();
+		virtual = property.isVirtual();
+		propertyId = virtual ? property.getPropertyName() : ph.getId();
 		displayLabel = property.getDisplayLabel();
 		description = property.getDescription();
 		tooltip = property.getTooltip();
@@ -445,8 +445,7 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		requiredDisplayType = property.getRequiredDisplayType();
 		requiredNormal = property.isRequiredNormal();
 		requiredDetail = property.isRequiredDetail();
-		// 仮想プロパティはソート不可
-		sortable = virtual ? false : property.isSortable();
+		sortable = property.isSortable();
 		outputCsv = property.isOutputCsv();
 
 		MetaPropertyEditor editor = MetaPropertyEditor.createInstance(property.getEditor());
@@ -517,10 +516,9 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 			return null;
 		}
 
-		boolean virtualProperty = this.isVirtual(virtual, ph);
 		NestProperty property = new NestProperty();
-		String propertyName = (ph != null) ? ph.getName() : propertyId;
-		property.setVirtual(virtualProperty);
+		String propertyName = virtual ? propertyId : ph.getName();
+		property.setVirtual(virtual);
 		property.setPropertyName(propertyName);
 		property.setDisplayLabel(displayLabel);
 		property.setDescription(description);
@@ -532,8 +530,7 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		property.setRequiredDisplayType(requiredDisplayType);
 		property.setRequiredNormal(requiredNormal);
 		property.setRequiredDetail(requiredDetail);
-		// 仮想プロパティはソート不可
-		property.setSortable(virtualProperty ? false : sortable);
+		property.setSortable(sortable);
 		property.setOutputCsv(outputCsv);
 		if (editor != null) {
 			property.setEditor(editor.currentConfig(propertyName));
@@ -550,16 +547,6 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		property.setLocalizedTooltipList(I18nUtil.toDef(localizedTooltipList));
 
 		return property;
-	}
-
-	private boolean isVirtual(boolean virtual, PropertyHandler ph) {
-		// 存在するプロパティの場合は仮想プロパティにしない
-		if (ph != null) {
-			return false;
-		}
-
-		return virtual;
-
 	}
 
 	@Override

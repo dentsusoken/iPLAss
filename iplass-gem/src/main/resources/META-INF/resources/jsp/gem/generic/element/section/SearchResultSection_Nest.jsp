@@ -22,9 +22,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@ page import="org.iplass.gem.command.Constants"%>
-<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
-<%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
@@ -40,16 +38,14 @@
 		if (property.getEditor() == null) return false;
 		return true;
 	}
-	
-	PropertyDefinition getNestTablePropertyDefinition(NestProperty np, EntityDefinition ed) {
-		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
-		if (pd == null) {
-			throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSectionNest.editorExceptionMessage")
-					+ ":propertyName=[" + np.getPropertyName() + "]");
 
+	boolean isSortable(NestProperty np, PropertyDefinition pd, EntityDefinition ed) {
+		// 仮想プロパティはソート不可
+		if (EntityViewUtil.isVirtualNestProperty(np, ed)) {
+			return false;
 		}
 		
-		return pd;
+		return np.isSortable() && ViewUtil.getEntityViewHelper().isSortable(pd);
 	}
 %>
 <%
@@ -62,7 +58,7 @@
 	EntityDefinition red = edm.get(rp.getObjectDefinitionName());
 	int colCount = 0;
 	for (NestProperty np : editor.getNestProperties()) {
-		PropertyDefinition pd = getNestTablePropertyDefinition(np, red);
+		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, red);
 		if (isDispProperty(np)) {
 			String nestStyle = StringUtil.isNotBlank(style) ? style + "_col" + colCount++ : "";
 			if (pd instanceof ReferenceProperty
@@ -92,7 +88,7 @@
 					align = ", align:'" + np.getTextAlign().name().toLowerCase() + "'";
 				}
 				String sortable = "sortable:true";
-				if (!np.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
+				if (!isSortable(np, pd, red)) {
 					sortable = "sortable:false";
 				}
 				String hidden = ", hidden:false";

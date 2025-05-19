@@ -146,7 +146,7 @@
 		for (NestProperty np : editor.getNestProperties()) {
 			String key = editor.getPropertyName() + "." + np.getPropertyName();
 			PropertyDefinition _pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
-			if (_pd != null && isDispProperty(_pd, np)) {
+			if (isDispProperty(_pd, np)) {
 				PropertyEditor npEditor = np.getEditor();
 				if (!npEditor.isHide() 
 						&& Entity.NAME.equals(np.getPropertyName())) {

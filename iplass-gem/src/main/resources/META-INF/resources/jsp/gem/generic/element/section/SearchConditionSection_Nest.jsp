@@ -27,17 +27,15 @@
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.NestProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.RangePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.element.property.PropertyItem"%>
-<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
-<%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
-<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%!
 String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searchCond, String key, String expect, String retStr) {
 	if (StringUtil.isNotBlank(searchCond)) return "";
@@ -110,7 +108,7 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 			String npName = propName + "." + np.getPropertyName();
 			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
 			// 仮想プロパティは詳細検索条件に含めない
-			if (pd == null) continue;
+			if (EntityViewUtil.isVirtualNestProperty(np, pd)) continue;
 			if (pd instanceof ReferenceProperty
 					&& np.getEditor() instanceof ReferencePropertyEditor
 					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties().isEmpty()) {

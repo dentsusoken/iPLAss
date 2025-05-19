@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.entity.Entity;
@@ -522,10 +524,37 @@ public class EntityViewUtil {
 
 		// プロパティ定義がない場合、仮想プロパティならプロパティ定義に変換する
 		if (nestProperty.isVirtual()) {
-			return getVirtualPropertyDefinition(nestProperty);
+			propertyDefinition = getVirtualPropertyDefinition(nestProperty);
+			if (propertyDefinition == null) {
+				// 変換できない場合は仮想プロパティに利用できないエディタを設定してるのでエラーにする
+				throw new ApplicationException(
+						GemResourceBundleUtil.resourceString("view.generic.EntityViewUtil.nestTableEditorErr", nestProperty.getPropertyName()));
+			}
 		}
 
-		return null;
+		return propertyDefinition;
+	}
+
+	/**
+	 * ネストテーブルのプロパティが仮想プロパティかどうか
+	 * 
+	 * @param nestProperty ネストプロパティ
+	 * @param entityDefinition Entity定義
+	 * @return ネストテーブルのプロパティが仮想プロパティかどうか
+	 */
+	public static boolean isVirtualNestProperty(NestProperty nestProperty, EntityDefinition entityDefinition) {
+		return isVirtualNestProperty(nestProperty, entityDefinition.getProperty(nestProperty.getPropertyName()));
+	}
+
+	/**
+	 * ネストテーブルのプロパティが仮想プロパティかどうか
+	 * 
+	 * @param nestProperty ネストプロパティ
+	 * @param propertyDefinition プロパティ定義
+	 * @return ネストテーブルのプロパティが仮想プロパティかどうか
+	 */
+	public static boolean isVirtualNestProperty(NestProperty nestProperty, PropertyDefinition propertyDefinition) {
+		return nestProperty.isVirtual() && (propertyDefinition == null);
 	}
 
 	/**

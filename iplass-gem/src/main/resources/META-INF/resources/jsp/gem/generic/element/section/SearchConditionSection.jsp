@@ -54,7 +54,6 @@
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.SearchFormView"%>
 <%@ page import="org.iplass.mtp.view.generic.ViewConst"%>
-<%@ page import="org.iplass.mtp.ApplicationException"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.gem.command.generic.delete.TrashCommand"%>
@@ -110,7 +109,7 @@
 
 			for (NestProperty np : editor.getNestProperties()) {
 				String npName = propName + "." + np.getPropertyName();
-				PropertyDefinition pd = getNestTablePropertyDefinition(np, ed);
+				PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
 				if (np.getEditor() instanceof ReferencePropertyEditor) {
 				    createReferencePropTypesMap((ReferencePropertyEditor) np.getEditor(), npName, (ReferenceProperty) pd, propTypeMap);
 				} else {
@@ -256,17 +255,6 @@
 	int getMaxOfDetailSearchItems() {
 		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 		return service.getMaxOfDetailSearchItems();
-	}
-	
-	PropertyDefinition getNestTablePropertyDefinition(NestProperty np, EntityDefinition ed) {
-		PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
-		if (pd == null) {
-			throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.element.section.SearchConditionSection.editorExceptionMessage")
-					+ ":propertyName=[" + np.getPropertyName() + "]");
-
-		}
-		
-		return pd;
 	}
 %>
 <%

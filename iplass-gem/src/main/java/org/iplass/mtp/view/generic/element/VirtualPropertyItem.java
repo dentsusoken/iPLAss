@@ -23,6 +23,9 @@ package org.iplass.mtp.view.generic.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.InputType;
@@ -48,10 +51,6 @@ import org.iplass.mtp.view.generic.editor.TemplatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
-import org.iplass.mtp.view.generic.element.property.PropertyElement;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * 詳細表示で表示可能な仮想プロパティ
@@ -63,7 +62,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 	@Jsp(path="/jsp/gem/generic/element/VirtualProperty.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
 @FieldOrder(manual=true)
-public class VirtualPropertyItem extends Element implements PropertyElement, FileItem {
+public class VirtualPropertyItem extends Element implements FileItem {
 
 	private static final long serialVersionUID = 8040377351280643403L;
 
