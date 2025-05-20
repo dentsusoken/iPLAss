@@ -36,13 +36,13 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
+import org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType;
+import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataIllegalStateException;
 import org.iplass.mtp.impl.metadata.MetaDataRepository;
 import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.metadata.RootMetaData;
-import org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType;
-import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class DefinitionManagerImpl implements DefinitionManager {
@@ -259,6 +259,12 @@ public class DefinitionManagerImpl implements DefinitionManager {
 		MetaDataEntry current = metaContext.getMetaDataEntry(oldPath);
 		if (current == null) {
 			throw new MetaDataRuntimeException(oldDefinitionName + "of " + type.getName() + " not found");
+		}
+
+		// メタデータ定義名チェック
+		DefinitionNameCheckResult checkResult = defService.checkDefinitionName(type, newDefinitionName);
+		if (checkResult.hasError()) {
+			throw new MetaDataRuntimeException(checkResult.getErrorMessage());
 		}
 
 		RootMetaData renamed = current.getMetaData().copy();
