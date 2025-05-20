@@ -58,8 +58,8 @@ public class EntityViewService extends AbstractTypedMetaDataService<MetaEntityVi
 		}
 
 		@Override
-		protected DefinitionNameChecker createDefinitionNameChecker(String fixedPathPrefix) {
-			return new EntityDefinitionNameChecker(fixedPathPrefix);
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return new EntityDefinitionNameChecker();
 		}
 	}
 

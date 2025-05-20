@@ -13,7 +13,7 @@ import org.iplass.mtp.impl.definition.DefinitionNameChecker;
  */
 public class EntityDefinitionNameChecker extends DefinitionNameChecker {
 
-	public EntityDefinitionNameChecker(String pathPrefix) {
-		super(pathPrefix, "^[a-zA-Z_][0-9a-zA-Z_]*(\\.[a-zA-Z_][0-9a-zA-Z_]*)*$", "impl.entity.EntityDefinitionNameChecker.invalidPattern");
+	public EntityDefinitionNameChecker() {
+		super("^[a-zA-Z_][0-9a-zA-Z_]*(\\.[a-zA-Z_][0-9a-zA-Z_]*)*$", "impl.entity.EntityDefinitionNameChecker.invalidPattern");
 	}
 }

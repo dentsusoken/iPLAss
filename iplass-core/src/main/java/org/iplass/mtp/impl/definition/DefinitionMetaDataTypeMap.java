@@ -34,7 +34,7 @@ public abstract class DefinitionMetaDataTypeMap<D extends Definition, M extends 
 		this.pathPrefix = pathPrefix;
 		this.metaType = metaType;
 		this.defType = defType;
-		this.definitionNameChecker = this.createDefinitionNameChecker(pathPrefix);
+		this.definitionNameChecker = this.createDefinitionNameChecker();
 //		this.replaceDot = replaceDot;
 	}
 
@@ -71,10 +71,9 @@ public abstract class DefinitionMetaDataTypeMap<D extends Definition, M extends 
 	 * TODO コンパイルエラー回避のため一旦abstractメソッドにしない
 	 * TODO 全体的にメタデータ定義名の制限を確認して、パスがスラッシュで名前にピリオド許可してるものがほとんどだったらabstractにしない
 	 * 
-	 * @param fixedPathPrefix パスプレフィックス
 	 * @return メタデータ定義名Checker
 	 */
-	protected DefinitionNameChecker createDefinitionNameChecker(String fixedPathPrefix) {
-		return DefinitionNameChecker.getDefaultDefinitionNameChecker(fixedPathPrefix);
+	protected DefinitionNameChecker createDefinitionNameChecker() {
+		return DefinitionNameChecker.getDefaultDefinitionNameChecker();
 	}
 }

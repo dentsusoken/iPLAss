@@ -22,15 +22,16 @@ package org.iplass.mtp.impl.definition;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.metadata.RootMetaData;
+import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.util.StringUtil;
 
 /**
  * MetaDataをDefinitionとしてapiに公開するためのService。
@@ -195,24 +196,6 @@ public class DefinitionService implements Service {
 	}
 
 	/**
-	 * パスチェック（メタデータ定義から）
-	 * 
-	 * @param <D> メタデータ定義の型
-	 * @param defType メタデータ定義タイプ
-	 * @param path メタデータパス
-	 * @return パスチェック結果
-	 */
-	@SuppressWarnings({ "rawtypes" })
-	public <D extends Definition> DefinitionNameCheckResult checkPathPrefix(Class<D> defType, String path) {
-		if (Objects.isNull(defType)) {
-			return DefinitionNameCheckResult.createSuccessResult();
-		}
-
-		DefinitionMetaDataTypeMap typeMap = this.getByDef(defType);
-		return this.checkPathPrefixInternal(typeMap, path);
-	}
-
-	/**
 	 * パスチェック（メタデータから）
 	 * 
 	 * @param <M> メタデータの型
@@ -222,26 +205,13 @@ public class DefinitionService implements Service {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public <M extends RootMetaData> DefinitionNameCheckResult checkPathPrefixByMeta(Class<M> metaType, String path) {
-		if (Objects.isNull(metaType)) {
-			return DefinitionNameCheckResult.createSuccessResult();
-		}
-
 		DefinitionMetaDataTypeMap typeMap = this.getByMeta(metaType);
-		return this.checkPathPrefixInternal(typeMap, path);
-	}
-
-	@SuppressWarnings("rawtypes")
-	private DefinitionNameCheckResult checkPathPrefixInternal(DefinitionMetaDataTypeMap typeMap, String path) {
-		if (Objects.isNull(typeMap)) {
-			return DefinitionNameCheckResult.createSuccessResult();
+		if (StringUtil.isNotEmpty(path) && !path.startsWith(typeMap.pathPrefix)) {
+			return DefinitionNameCheckResult
+					.createErrorResult(CoreResourceBundleUtil.resourceString("impl.definition.DefinitionService.invalidPath"));
 		}
 
-		DefinitionNameChecker checker = typeMap.getDefinitionNameChecker();
-		if (Objects.isNull(checker)) {
-			return DefinitionNameCheckResult.createSuccessResult();
-		}
-
-		return checker.checkPathPrefix(path);
+		return DefinitionNameCheckResult.createSuccessResult();
 	}
 
 	/**
@@ -254,12 +224,8 @@ public class DefinitionService implements Service {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public <D extends Definition> DefinitionNameCheckResult checkDefinitionName(Class<D> defType, String defName) {
-		if (Objects.isNull(defType)) {
-			return DefinitionNameCheckResult.createSuccessResult();
-		}
-
 		DefinitionMetaDataTypeMap typeMap = this.getByDef(defType);
-		return this.checkDefinitionNameInternal(typeMap, defName);
+		return typeMap.getDefinitionNameChecker().check(defName);
 	}
 
 	/**
@@ -272,26 +238,8 @@ public class DefinitionService implements Service {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public <M extends RootMetaData> DefinitionNameCheckResult checkDefinitionNameByMeta(Class<M> metaType, String defName) {
-		if (Objects.isNull(metaType)) {
-			return DefinitionNameCheckResult.createSuccessResult();
-		}
-
 		DefinitionMetaDataTypeMap typeMap = this.getByMeta(metaType);
-		return this.checkDefinitionNameInternal(typeMap, defName);
-	}
-
-	@SuppressWarnings("rawtypes")
-	private DefinitionNameCheckResult checkDefinitionNameInternal(DefinitionMetaDataTypeMap typeMap, String defName) {
-		if (Objects.isNull(typeMap)) {
-			return DefinitionNameCheckResult.createSuccessResult();
-		}
-
-		DefinitionNameChecker checker = typeMap.getDefinitionNameChecker();
-		if (Objects.isNull(checker)) {
-			return DefinitionNameCheckResult.createSuccessResult();
-		}
-
-		return checker.checkDefinitionName(defName);
+		return typeMap.getDefinitionNameChecker().check(defName);
 	}
 
 	private static class MetaDataContextNode<D extends Definition> {

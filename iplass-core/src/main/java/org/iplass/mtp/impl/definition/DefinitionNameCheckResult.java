@@ -17,7 +17,7 @@ public class DefinitionNameCheckResult {
 	 * 
 	 * @return エラーなしのメタデータ定義名チェック結果
 	 */
-	public static DefinitionNameCheckResult createSuccessResult() {
+	static DefinitionNameCheckResult createSuccessResult() {
 		return new DefinitionNameCheckResult();
 	}
 
@@ -27,7 +27,7 @@ public class DefinitionNameCheckResult {
 	 * @param errorMessage エラーメッセージ
 	 * @return エラーありのメタデータ定義名チェック結果
 	 */
-	public static DefinitionNameCheckResult createErrorResult(String errorMessage) {
+	static DefinitionNameCheckResult createErrorResult(String errorMessage) {
 		return new DefinitionNameCheckResult(errorMessage);
 	}
 
