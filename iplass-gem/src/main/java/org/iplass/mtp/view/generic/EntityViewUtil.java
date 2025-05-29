@@ -536,17 +536,6 @@ public class EntityViewUtil {
 	}
 
 	/**
-	 * ネストテーブルのプロパティが仮想プロパティかどうか
-	 * 
-	 * @param nestProperty ネストプロパティ
-	 * @param propertyDefinition プロパティ定義
-	 * @return ネストテーブルのプロパティが仮想プロパティかどうか
-	 */
-	public static boolean isVirtualNestProperty(NestProperty nestProperty, PropertyDefinition propertyDefinition) {
-		return nestProperty.isVirtual() && (propertyDefinition == null);
-	}
-
-	/**
 	 * Editorに定義されたカスタムスタイル(表示、入力)を取得
 	 *
 	 * @param definitionName  Entity定義名

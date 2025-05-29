@@ -223,7 +223,7 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 					Object _value = nest.getValue(np.getPropertyName());
 					if (_value != null) {
 						PropertyDefinition definition = ed.getProperty(np.getPropertyName());
-						if (EntityViewUtil.isVirtualNestProperty(np, definition)) {
+						if (np.isVirtual()) {
 							// 仮想プロパティは、検索条件から除く
 							continue;
 						}

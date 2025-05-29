@@ -108,7 +108,7 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 			String npName = propName + "." + np.getPropertyName();
 			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
 			// 仮想プロパティは詳細検索条件に含めない
-			if (EntityViewUtil.isVirtualNestProperty(np, pd)) continue;
+			if (np.isVirtual()) continue;
 			if (pd instanceof ReferenceProperty
 					&& np.getEditor() instanceof ReferencePropertyEditor
 					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties().isEmpty()) {

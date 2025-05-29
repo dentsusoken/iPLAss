@@ -38,10 +38,6 @@
 		if (property.getEditor() == null) return false;
 		return true;
 	}
-
-	boolean isVirtualNestProperty(NestProperty np, EntityDefinition ed) {
-		return EntityViewUtil.isVirtualNestProperty(np, ed.getProperty(np.getPropertyName()));
-	}
 %>
 <%
 	String propName = (String) request.getAttribute(Constants.EDITOR_REF_NEST_PROP_NAME);
@@ -83,7 +79,7 @@
 					align = ", align:'" + np.getTextAlign().name().toLowerCase() + "'";
 				}
 				String sortable = "sortable:true";
-				if (!np.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd) || isVirtualNestProperty(np, red)) {
+				if (!np.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd) || np.isVirtual()) {
 					sortable = "sortable:false";
 				}
 				String hidden = ", hidden:false";
