@@ -657,7 +657,7 @@ public class NormalSearchContext extends SearchContextBase {
 			EntityDefinition ed = getReferenceEntityDefinition(rp);
 			Entity nest = null;
 			for (NestProperty np : editor.getNestProperties()) {
-				PropertyDefinition pd = ed.getProperty(np.getPropertyName());
+				PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
 				Object value = getConditionValue(pd, propName + "." + pd.getName());
 				if (value != null) {
 					if (nest == null)

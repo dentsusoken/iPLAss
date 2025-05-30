@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.entity.Entity;
@@ -74,6 +76,7 @@ import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
+import org.iplass.mtp.view.generic.element.property.PropertyElement;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
 import org.iplass.mtp.view.generic.element.section.ReferenceSection;
 import org.iplass.mtp.view.generic.parser.Token;
@@ -502,48 +505,34 @@ public class EntityViewUtil {
 	 * @return
 	 */
 	public static PropertyDefinition getPropertyDefinition(VirtualPropertyItem property) {
-		PropertyDefinition definition = null;
-		if (property.getEditor() instanceof BooleanPropertyEditor) {
-			BooleanProperty prop = new BooleanProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof DatePropertyEditor) {
-			DateProperty prop = new DateProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof TimePropertyEditor) {
-			TimeProperty prop = new TimeProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof TimestampPropertyEditor) {
-			DateTimeProperty prop = new DateTimeProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof DecimalPropertyEditor) {
-			DecimalProperty prop = new DecimalProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof IntegerPropertyEditor) {
-			IntegerProperty prop = new IntegerProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof FloatPropertyEditor) {
-			FloatProperty prop = new FloatProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof SelectPropertyEditor) {
-			SelectProperty prop = new SelectProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof StringPropertyEditor) {
-			StringProperty prop = new StringProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof TemplatePropertyEditor) {
-			//Template利用の場合はPropertyDefinitionの型を想定できないのでStringで生成
-			StringProperty prop = new StringProperty(property.getPropertyName());
-			definition = prop;
-		} else if (property.getEditor() instanceof UserPropertyEditor) {
-			StringProperty prop = new StringProperty(property.getPropertyName());
-			definition = prop;
+		return getVirtualPropertyDefinition(property);
+	}
+
+	/**
+	 * ネストテーブルプロパティのプロパティ定義を取得
+	 * 
+	 * @param nestProperty ネストプロパティ
+	 * @param entityDefinition ネストテーブルのEntity定義
+	 * @return プロパティ定義
+	 */
+	public static PropertyDefinition getNestTablePropertyDefinition(NestProperty nestProperty, EntityDefinition entityDefinition) {
+		// プロパティ定義があればそれを使う
+		PropertyDefinition propertyDefinition = entityDefinition.getProperty(nestProperty.getPropertyName());
+		if (propertyDefinition != null) {
+			return propertyDefinition;
 		}
 
-		definition.setDisplayName(property.getDisplayLabel());
-		definition.setLocalizedDisplayNameList(property.getLocalizedDisplayLabelList());
-		definition.setMultiplicity(1);
-		definition.setUpdatable(true);
-		return definition;
+		// プロパティ定義がない場合、仮想プロパティならプロパティ定義に変換する
+		if (nestProperty.isVirtual()) {
+			propertyDefinition = getVirtualPropertyDefinition(nestProperty);
+			if (propertyDefinition == null) {
+				// 変換できない場合は仮想プロパティに利用できないエディタを設定してるのでエラーにする
+				throw new ApplicationException(
+						GemResourceBundleUtil.resourceString("view.generic.EntityViewUtil.nestTableEditorErr", nestProperty.getPropertyName()));
+			}
+		}
+
+		return propertyDefinition;
 	}
 
 	/**
@@ -616,6 +605,56 @@ public class EntityViewUtil {
 				.sorted(Comparator.comparing(SortInfo::getSortValue, Comparator.nullsLast(Comparator.naturalOrder())))
 				.map(s -> s.getEntity()).collect(Collectors.toList());
 		return ret;
+	}
+
+	private static PropertyDefinition getVirtualPropertyDefinition(PropertyElement property) {
+		PropertyDefinition definition = null;
+		if (property.getEditor() instanceof BooleanPropertyEditor) {
+			BooleanProperty prop = new BooleanProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof DatePropertyEditor) {
+			DateProperty prop = new DateProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof TimePropertyEditor) {
+			TimeProperty prop = new TimeProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof TimestampPropertyEditor) {
+			DateTimeProperty prop = new DateTimeProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof DecimalPropertyEditor) {
+			DecimalProperty prop = new DecimalProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof IntegerPropertyEditor) {
+			IntegerProperty prop = new IntegerProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof FloatPropertyEditor) {
+			FloatProperty prop = new FloatProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof SelectPropertyEditor) {
+			SelectProperty prop = new SelectProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof StringPropertyEditor) {
+			StringProperty prop = new StringProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof TemplatePropertyEditor) {
+			//Template利用の場合はPropertyDefinitionの型を想定できないのでStringで生成
+			StringProperty prop = new StringProperty(property.getPropertyName());
+			definition = prop;
+		} else if (property.getEditor() instanceof UserPropertyEditor) {
+			StringProperty prop = new StringProperty(property.getPropertyName());
+			definition = prop;
+		}
+
+		// 仮想プロパティで利用できないエディタが設定されてる場合は変換対象外
+		if (definition == null) {
+			return null;
+		}
+
+		definition.setDisplayName(property.getDisplayLabel());
+		definition.setLocalizedDisplayNameList(property.getLocalizedDisplayLabelList());
+		definition.setMultiplicity(1);
+		definition.setUpdatable(true);
+		return definition;
 	}
 
 	private static class SortInfo {
