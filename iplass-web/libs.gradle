@@ -4,6 +4,13 @@ configurations {
 }
 
 dependencies {
+	// dependency management
+	constraints {
+		api(sharedLib('commons-beanutils:commons-beanutils')) {
+			because 'this library is used in jxls, jasperreports.'
+		}
+	}
+
 	implementation 'org.apache.groovy:groovy'
 	//apache http clients
 	implementation sharedLib('org.apache.httpcomponents.client5:httpclient5')
