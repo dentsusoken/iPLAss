@@ -810,6 +810,15 @@ function addEditValidator(validatorFunc) {
  * @returns {Boolean} true:OK
  */
 function editValidate() {
+	return editValidateById("detailForm");
+}
+
+/**
+ * 編集画面Validate処理
+ * @param attrId ID属性
+ * @returns {Boolean} true:OK
+ */
+function editValidateById(attrId) {
 	var ret = true;
 
 	//Editor独自のチェック
@@ -825,7 +834,7 @@ function editValidate() {
 	}
 
 	//Inputのtype、patternによるチェック(StringPropertyEditor)
-	if (!$("#detailForm")[0].checkValidity()) {
+	if (!$("#" + attrId)[0].checkValidity()) {
     	ret = false;
   	}
 	return ret;
