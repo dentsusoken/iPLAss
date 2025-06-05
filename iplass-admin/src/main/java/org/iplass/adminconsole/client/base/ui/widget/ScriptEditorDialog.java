@@ -74,7 +74,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 	private IButton cancel;
 
 	/** 表示されているエディター画面の設定 */
-	private ScriptEditorDialogSetting dialogSetting = new ScriptEditorDialogSetting();
+	private final ScriptEditorDialogSetting dialogSetting = new ScriptEditorDialogSetting();
 
 	private boolean test = false;
 
