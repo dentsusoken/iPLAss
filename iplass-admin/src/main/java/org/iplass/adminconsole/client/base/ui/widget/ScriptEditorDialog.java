@@ -60,7 +60,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ScriptEditorDialog extends AbstractWindow {
 
-    private static final Logger logger = Logger.getLogger(ScriptEditorDialog.class.getName());
+	private static final Logger logger = Logger.getLogger(ScriptEditorDialog.class.getName());
 
 	private static final String THEME_COOKIE_NAME = "iplass.editor.theme";
 
@@ -73,6 +73,8 @@ public class ScriptEditorDialog extends AbstractWindow {
 	private IButton ok;
 	private IButton cancel;
 
+	/** 表示されているエディター画面の設定 */
+	private ScriptEditorDialogSetting dialogSetting = new ScriptEditorDialogSetting();
 
 	private boolean test = false;
 
@@ -145,6 +147,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 			public void onChanged(ChangedEvent event) {
 				ScriptEditorDialogMode mode = ScriptEditorDialogMode.valueOf(SmartGWTUtil.getStringValue(modeField));
 				editorPane.setMode(mode);
+				dialogSetting.setMode(mode);
 			}
 		});
 
@@ -162,6 +165,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 			public void onChanged(ChangedEvent event) {
 				EditorTheme theme = EditorTheme.valueOf(SmartGWTUtil.getStringValue(themeField));
 				editorPane.setTheme(theme);
+				dialogSetting.setTheme(theme);
 
 				//save cookie
 				SmartGWTUtil.setCookie(THEME_COOKIE_NAME, theme.name());
@@ -219,6 +223,8 @@ public class ScriptEditorDialog extends AbstractWindow {
 		ok.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				// NOTE onSaveDialogSetting は後から追加した機能なので onSave メソッドと分けているが、本来は同時が望ましい。
+				handler.onSaveDialogSetting(dialogSetting);
 				handler.onSave(getText());
 				destroy();
 			}
@@ -241,6 +247,10 @@ public class ScriptEditorDialog extends AbstractWindow {
 		addItem(mainPane);
 		addItem(SmartGWTUtil.separator());
 		addItem(footer);
+
+		// 初期設定を保持
+		dialogSetting.setMode(condition.getInitEditorMode());
+		dialogSetting.setTheme(condition.getInitEditorTheme());
 	}
 
 	/**
