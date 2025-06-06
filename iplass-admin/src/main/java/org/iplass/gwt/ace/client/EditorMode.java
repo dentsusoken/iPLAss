@@ -32,6 +32,8 @@ public enum EditorMode {
 	JAVA("java", "Java"),
 	/** Javascript. */
 	JAVASCRIPT("javascript", "JavaScript"),
+	/** JSON. */
+	JSON("json", "JSON"),
 	/** JSP. */
 	JSP("jsp", "Jsp"),
 	/** SQL. */
@@ -43,7 +45,9 @@ public enum EditorMode {
 	/** Vue.js. */
 	VUE("vue", "Vue.js"),
 	/** XML. */
-	XML("xml", "Xml")
+	XML("xml", "Xml"),
+	/** YAML. */
+	YAML("yaml", "YAML")
 	;
 
 	private final String modeName;

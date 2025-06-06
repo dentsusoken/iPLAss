@@ -187,12 +187,14 @@ window.imgDir = '${rsPath}images/';
 <script src="${acePath}mode-html.js" charset="utf-8"></script>
 <script src="${acePath}mode-java.js" charset="utf-8"></script>
 <script src="${acePath}mode-javascript.js" charset="utf-8"></script>
+<script src="${acePath}mode-json.js" charset="utf-8"></script>
 <script src="${acePath}mode-jsp.js" charset="utf-8"></script>
 <script src="${acePath}mode-sql.js" charset="utf-8"></script>
 <script src="${acePath}mode-text.js" charset="utf-8"></script>
 <script src="${acePath}mode-typescript.js" charset="utf-8"></script>
 <script src="${acePath}mode-vue.js" charset="utf-8"></script>
 <script src="${acePath}mode-xml.js" charset="utf-8"></script>
+<script src="${acePath}mode-yaml.js" charset="utf-8"></script>
 
 <%-- Ace snippets files --%>
 <script src="${acePath}ext-language_tools.js" charset="utf-8"></script>
@@ -201,12 +203,14 @@ window.imgDir = '${rsPath}images/';
 <script src="${acePath}snippets/html.js" charset="utf-8"></script>
 <script src="${acePath}snippets/java.js" charset="utf-8"></script>
 <script src="${acePath}snippets/javascript.js" charset="utf-8"></script>
+<script src="${acePath}snippets/json.js" charset="utf-8"></script>
 <script src="${acePath}snippets/jsp.js" charset="utf-8"></script>
 <script src="${acePath}snippets/sql.js" charset="utf-8"></script>
 <script src="${acePath}snippets/text.js" charset="utf-8"></script>
 <script src="${acePath}snippets/typescript.js" charset="utf-8"></script>
 <script src="${acePath}snippets/vue.js" charset="utf-8"></script>
 <script src="${acePath}snippets/xml.js" charset="utf-8"></script>
+<script src="${acePath}snippets/yaml.js" charset="utf-8"></script>
 </head>
 <body>
 	<iframe src="javascript:''" id="__gwt_historyFrame" style="position:absolute;width:0;height:0;border:0"></iframe>

@@ -23,18 +23,32 @@ package org.iplass.adminconsole.client.base.ui.widget;
 import org.iplass.gwt.ace.client.EditorMode;
 
 public enum ScriptEditorDialogMode {
-	CSS(EditorMode.CSS, "Css")
-	,GROOVY_SCRIPT(EditorMode.GROOVY, "Groovy Script")
-	,HTML(EditorMode.HTML, "Html")
-	,JAVA(EditorMode.JAVA, "Java")
-	,JAVASCRIPT(EditorMode.JAVASCRIPT, "JavaScript")
-	,JSP(EditorMode.JSP, "Jsp")
-	,SQL(EditorMode.SQL, "Sql")
-	,TEXT(EditorMode.TEXT, "Text")
-	,TYPESCRIPT(EditorMode.TYPESCRIPT, "TypeScript")
-	,VUE(EditorMode.VUE, "Vue.js")
-	,XML(EditorMode.XML, "Xml")
-	;
+	/** CSS */
+	CSS(EditorMode.CSS, "Css"),
+	/** Groovy Script */
+	GROOVY_SCRIPT(EditorMode.GROOVY, "Groovy Script"),
+	/** HTML */
+	HTML(EditorMode.HTML, "Html"),
+	/** Java */
+	JAVA(EditorMode.JAVA, "Java"),
+	/** JavaScript */
+	JAVASCRIPT(EditorMode.JAVASCRIPT, "JavaScript"),
+	/** JSON */
+	JSON(EditorMode.JSON, "JSON"),
+	/** Jsp */
+	JSP(EditorMode.JSP, "Jsp"),
+	/** Sql */
+	SQL(EditorMode.SQL, "Sql"),
+	/** Text */
+	TEXT(EditorMode.TEXT, "Text"),
+	/** TypeScript */
+	TYPESCRIPT(EditorMode.TYPESCRIPT, "TypeScript"),
+	/** Vue.js */
+	VUE(EditorMode.VUE, "Vue.js"),
+	/** Xml */
+	XML(EditorMode.XML, "Xml"),
+	/** YAML */
+	YAML(EditorMode.YAML, "YAML");
 
 	private final EditorMode aceMode;
 	private final String text;
