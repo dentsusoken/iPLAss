@@ -134,4 +134,4 @@ https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
 
 If you would like to get the business liscense, please contact us by the following link.
 
-https://www.dentsusoken.com/solution/iPLAss.html
+https://itsol.dentsusoken.com/iplass/
