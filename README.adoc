@@ -136,7 +136,7 @@ https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
 
 商用ライセンスをご希望の方は、 下記リンクよりお問い合わせください。
 
-https://www.dentsusoken.com/solution/iPLAss.html
+https://itsol.dentsusoken.com/iplass/
 
 ## Work with us
 
