@@ -20,11 +20,17 @@
 
 package org.iplass.mtp.impl.fileport;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import org.iplass.mtp.entity.TargetVersion;
 
-public class EntityFileUploadOption {
+public class EntityFileUploadOption implements Serializable {
+
+	/**
+	 * シリアルバージョンUID
+	 */
+	private static final long serialVersionUID = 3380545639349852699L;
 
 	/** ファイル種類 */
 	private EntityFileType entityFileType = EntityFileType.CSV;
@@ -64,7 +70,6 @@ public class EntityFileUploadOption {
 
 	/** CsvUploadInterrupterクラス名 */
 	private String interrupterClassName;
-
 
 	/**
 	 * ファイル種類を返します。
