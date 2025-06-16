@@ -26,6 +26,8 @@ import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.token.AuthTokenInfo;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthToken;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenHandler;
+import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
+import org.iplass.mtp.spi.Config;
 
 /**
  * データベースでwebhookのパスワードや、トークンを管理するシークレットサービス
@@ -40,6 +42,12 @@ public class WebhookAuthTokenHandler extends AuthTokenHandler{
 	public static final String HMAC_AUTHENTICATION_TYPE = "WHHM";
 	public static final String CUSTOM_AUTHENTICATION_TYPE = "WHCT";
 	public static final String TYPE_WEBHOOK_AUTHTOKEN_HANDLER="WEBHOOKATH";
+
+	@Override
+	public void inited(AuthTokenService service, Config config) {
+		super.inited(service, config);
+		setVisible(false);
+	}
 
 	@Override
 	public AuthTokenInfo toAuthTokenInfo(AuthToken authToken) {
