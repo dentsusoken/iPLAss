@@ -220,13 +220,14 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 			if (rp != null) {
 				EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(rp.getObjectDefinitionName());
 				for (NestProperty np : editor.getNestProperties()) {
+					// 仮想プロパティは、検索条件から除く
+					if (np.isVirtual()) {
+						continue;
+					}
+
 					Object _value = nest.getValue(np.getPropertyName());
 					if (_value != null) {
 						PropertyDefinition definition = ed.getProperty(np.getPropertyName());
-						if (np.isVirtual()) {
-							// 仮想プロパティは、検索条件から除く
-							continue;
-						}
 						PropertySearchCondition nestPropertyCondition =
 							PropertySearchCondition.newInstance(definition, np.getEditor(), _value, getPropertyName());
 						conditions.addAll(nestPropertyCondition.convertNormalCondition());

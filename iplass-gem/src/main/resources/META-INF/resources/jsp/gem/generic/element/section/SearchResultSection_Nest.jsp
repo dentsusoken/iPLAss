@@ -79,7 +79,7 @@
 					align = ", align:'" + np.getTextAlign().name().toLowerCase() + "'";
 				}
 				String sortable = "sortable:true";
-				if (!np.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd) || np.isVirtual()) {
+				if (np.isVirtual() || !np.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
 					sortable = "sortable:false";
 				}
 				String hidden = ", hidden:false";

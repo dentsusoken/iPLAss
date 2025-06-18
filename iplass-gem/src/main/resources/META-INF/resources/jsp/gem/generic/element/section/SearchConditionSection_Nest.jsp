@@ -105,10 +105,11 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 	//ネストを表示
 	if (showNest || editor.isUseNestConditionWithProperty()) {
 		for (NestProperty np : editor.getNestProperties()) {
-			String npName = propName + "." + np.getPropertyName();
-			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
 			// 仮想プロパティは詳細検索条件に含めない
 			if (np.isVirtual()) continue;
+			
+			String npName = propName + "." + np.getPropertyName();
+			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
 			if (pd instanceof ReferenceProperty
 					&& np.getEditor() instanceof ReferencePropertyEditor
 					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties().isEmpty()) {
