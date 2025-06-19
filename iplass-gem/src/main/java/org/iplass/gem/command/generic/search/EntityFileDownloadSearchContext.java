@@ -459,7 +459,7 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 						continue;
 					}
 
-					PropertyDefinition rpd = red.getProperty(nestProperty.getPropertyName());
+					PropertyDefinition rpd = EntityViewUtil.getNestTablePropertyDefinition(nestProperty, red);
 					if (rpd != null) {
 						if (Entity.OID.equals(nestProperty.getPropertyName())) {
 							//OIDは出力可否をチェック

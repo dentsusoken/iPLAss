@@ -694,6 +694,11 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			if (nest != null && nest.length > 0) {
 				EntityDefinition red = getReferenceEntityDefinition((ReferenceProperty) pd);
 				for (NestProperty np : nest) {
+					// 仮想プロパティは検索項目に含めない
+					if (np.isVirtual()) {
+						continue;
+					}
+
 					PropertyDefinition rpd = red.getProperty(np.getPropertyName());
 					if (rpd != null
 							&&!Entity.OID.equals(np.getPropertyName())

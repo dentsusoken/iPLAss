@@ -389,7 +389,7 @@ $(function() {
 
 		int colNum = 0;
 		for (NestProperty nProp : editor.getNestProperties()) {
-			PropertyDefinition refPd = refEd.getProperty(nProp.getPropertyName());
+			PropertyDefinition refPd = EntityViewUtil.getNestTablePropertyDefinition(nProp, refEd);
 			if (refPd.getMultiplicity() != 1) {
 				throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.editor.reference.ReferencePropertyEditor_Table.exceptionMessage")
 						+ ":propertyName=[" + refPd.getName() + "]");
@@ -579,7 +579,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 		request.setAttribute(Constants.EXEC_TYPE, Constants.EXEC_TYPE_INSERT);
 
 		for (NestProperty nProp : editor.getNestProperties()) {
-			PropertyDefinition refPd = refEd.getProperty(nProp.getPropertyName());
+			PropertyDefinition refPd = EntityViewUtil.getNestTablePropertyDefinition(nProp, refEd);
 			if (refPd.getMultiplicity() != 1) {
 				throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.editor.reference.ReferencePropertyEditor_Table.exceptionMessage")
 						+ ":propertyName=[" + refPd.getName() + "]");
@@ -722,7 +722,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			colNum = 0;
 			idxPropName = propName + "[" + i + "]";
 			for (NestProperty nProp : editor.getNestProperties()) {
-				PropertyDefinition refPd = refEd.getProperty(nProp.getPropertyName());
+				PropertyDefinition refPd = EntityViewUtil.getNestTablePropertyDefinition(nProp, refEd);
 				if (refPd.getMultiplicity() != 1) {
 					throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.editor.reference.ReferencePropertyEditor_Table.exceptionMessage")
 							+ ":propertyName=[" + refPd.getName() + "]");
@@ -973,7 +973,7 @@ $(function() {
 <%
 		int colNum = 0;
 		for (NestProperty nProp : editor.getNestProperties()) {
-			PropertyDefinition refPd = refEd.getProperty(nProp.getPropertyName());
+			PropertyDefinition refPd = EntityViewUtil.getNestTablePropertyDefinition(nProp, refEd);
 			if (refPd.getMultiplicity() != 1) {
 				throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.editor.reference.ReferencePropertyEditor_Table.exceptionMessage")
 						+ ":propertyName=[" + refPd.getName() + "]");
@@ -1068,7 +1068,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <%
 			colNum = 0;
 			for (NestProperty nProp : editor.getNestProperties()) {
-				PropertyDefinition refPd = refEd.getProperty(nProp.getPropertyName());
+				PropertyDefinition refPd = EntityViewUtil.getNestTablePropertyDefinition(nProp, refEd);
 				if (refPd.getMultiplicity() != 1) {
 					throw new ApplicationException(GemResourceBundleUtil.resourceString("generic.editor.reference.ReferencePropertyEditor_Table.exceptionMessage")
 							+ ":propertyName=[" + refPd.getName() + "]");
