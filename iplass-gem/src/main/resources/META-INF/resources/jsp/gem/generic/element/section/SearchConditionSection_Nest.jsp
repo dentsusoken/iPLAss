@@ -27,7 +27,6 @@
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
-<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.NestProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType"%>
