@@ -3325,26 +3325,32 @@ function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit, url
 
 	document.scriptContext["editReferenceCallback"] = function(entity) {
 		edited = true;
-		if ($("body.modal-body").length != 0) {
-			//FIXME このパターンはどれか不明？参照ダイアログでNestTableを利用している場合か？
-
-			//refEdit,modalTarget→ダイアログ表示時のパラメータを再利用
-			submitForm(reloadUrl, {
-				"defName":$(":hidden[name='defName']").val(),
-				"oid":$(":hidden[name='oid']").val(),
-				"refEdit":editable,
-				"modalTarget":modalTarget
-				});
-			closeModalDialog();
-
+		
+		var func = document.scriptContext["customEditReferenceCallback"];
+		if (func && $.isFunction(func)) {
+			func.call(this, entity);
 		} else {
-			var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + encodeURIComponent(oid), target:target}).appendTo("body");
-			$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
-			$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
-			if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+			if ($("body.modal-body").length != 0) {
+				//FIXME このパターンはどれか不明？参照ダイアログでNestTableを利用している場合か？
 
-			$form.submit();
-			$form.remove();
+				//refEdit,modalTarget→ダイアログ表示時のパラメータを再利用
+				submitForm(reloadUrl, {
+					"defName":$(":hidden[name='defName']").val(),
+					"oid":$(":hidden[name='oid']").val(),
+					"refEdit":editable,
+					"modalTarget":modalTarget
+					});
+				closeModalDialog();
+
+			} else {
+				var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + encodeURIComponent(oid), target:target}).appendTo("body");
+				$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
+				$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
+				if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+
+				$form.submit();
+				$form.remove();
+			}
 		}
 	};
 
