@@ -36,7 +36,7 @@ public class TenantAuthInfo extends TenantConfig {
 	/** Remember Me 利用有無*/
 	private boolean useRememberMe;
 	private boolean useWebAuthn;
-	private String webAuthnDefinitonName;
+	private String webAuthnDefinitionName;
 
 	private List<String> userAdminRoles;
 
@@ -104,16 +104,16 @@ public class TenantAuthInfo extends TenantConfig {
 	 * WebAuthnの定義名を取得します。
 	 * @return
 	 */
-	public String getWebAuthnDefinitonName() {
-		return webAuthnDefinitonName;
+	public String getWebAuthnDefinitionName() {
+		return webAuthnDefinitionName;
 	}
 
 	/**
 	 * WebAuthnの定義名を設定します。
-	 * @param webAuthnDefinitonName
+	 * @param webAuthnDefinitionName
 	 */
-	public void setWebAuthnDefinitonName(String webAuthnDefinitonName) {
-		this.webAuthnDefinitonName = webAuthnDefinitonName;
+	public void setWebAuthnDefinitionName(String webAuthnDefinitionName) {
+		this.webAuthnDefinitionName = webAuthnDefinitionName;
 	}
 
 
@@ -124,7 +124,7 @@ public class TenantAuthInfo extends TenantConfig {
 		result = prime * result + (useRememberMe ? 1231 : 1237);
 		result = prime * result + (useWebAuthn ? 1231 : 1237);
 		result = prime * result + ((userAdminRoles == null) ? 0 : userAdminRoles.hashCode());
-		result = prime * result + ((webAuthnDefinitonName == null) ? 0 : webAuthnDefinitonName.hashCode());
+		result = prime * result + ((webAuthnDefinitionName == null) ? 0 : webAuthnDefinitionName.hashCode());
 		return result;
 	}
 
@@ -153,11 +153,11 @@ public class TenantAuthInfo extends TenantConfig {
 		} else if (!userAdminRoles.equals(other.userAdminRoles)) {
 			return false;
 		}
-		if (webAuthnDefinitonName == null) {
-			if (other.webAuthnDefinitonName != null) {
+		if (webAuthnDefinitionName == null) {
+			if (other.webAuthnDefinitionName != null) {
 				return false;
 			}
-		} else if (!webAuthnDefinitonName.equals(other.webAuthnDefinitonName)) {
+		} else if (!webAuthnDefinitionName.equals(other.webAuthnDefinitionName)) {
 			return false;
 		}
 		return true;
@@ -167,7 +167,7 @@ public class TenantAuthInfo extends TenantConfig {
 	public String toString() {
 		return "TenantAuthInfo [useRememberMe=" + useRememberMe
 				+ ", useWebAuthn=" + useWebAuthn
-				+ ", webAuthnDefinitonName=" + webAuthnDefinitonName
+				+ ", webAuthnDefinitionName=" + webAuthnDefinitionName
 				+ ", userAdminRoles=" + userAdminRoles + "]";
 	}
 

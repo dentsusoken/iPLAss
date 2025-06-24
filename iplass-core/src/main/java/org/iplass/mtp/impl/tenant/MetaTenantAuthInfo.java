@@ -43,7 +43,7 @@ public class MetaTenantAuthInfo extends MetaTenantConfig<TenantAuthInfo> {
 	/** Remember Me 利用有無*/
 	private boolean useRememberMe;
 	private boolean useWebAuthn;
-	private String webAuthnDefinitonName;
+	private String webAuthnDefinitionName;
 
 	private List<String> userAdminRoles;
 
@@ -88,12 +88,12 @@ public class MetaTenantAuthInfo extends MetaTenantConfig<TenantAuthInfo> {
 		this.useWebAuthn = useWebAuthn;
 	}
 
-	public String getWebAuthnDefinitonName() {
-		return webAuthnDefinitonName;
+	public String getWebAuthnDefinitionName() {
+		return webAuthnDefinitionName;
 	}
 
-	public void setWebAuthnDefinitonName(String webAuthnDefinitonName) {
-		this.webAuthnDefinitonName = webAuthnDefinitonName;
+	public void setWebAuthnDefinitionName(String webAuthnDefinitionName) {
+		this.webAuthnDefinitionName = webAuthnDefinitionName;
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class MetaTenantAuthInfo extends MetaTenantConfig<TenantAuthInfo> {
 	public void applyConfig(TenantAuthInfo definition) {
 		setUseRememberMe(definition.isUseRememberMe());
 		setUseWebAuthn(definition.isUseWebAuthn());
-		setWebAuthnDefinitonName(definition.getWebAuthnDefinitonName());
+		setWebAuthnDefinitionName(definition.getWebAuthnDefinitionName());
 		if (definition.getUserAdminRoles() != null) {
 			setUserAdminRoles(new ArrayList<>(definition.getUserAdminRoles()));
 		} else {
@@ -118,7 +118,7 @@ public class MetaTenantAuthInfo extends MetaTenantConfig<TenantAuthInfo> {
 		TenantAuthInfo definition = new TenantAuthInfo();
 		definition.setUseRememberMe(useRememberMe);
 		definition.setUseWebAuthn(useWebAuthn);
-		definition.setWebAuthnDefinitonName(webAuthnDefinitonName);
+		definition.setWebAuthnDefinitionName(webAuthnDefinitionName);
 		if (userAdminRoles != null) {
 			definition.setUserAdminRoles(new ArrayList<>(userAdminRoles));
 		}

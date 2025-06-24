@@ -1,6 +1,7 @@
 lang: link:./README-EN.adoc[English] | link:./README.adoc[日本語]
+
 [link=https://iplass.org/]
-image::https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66-11e8-8e86-2a13b0609ea5.png[iPLAss]
+image:https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66-11e8-8e86-2a13b0609ea5.png[iPLAss]
 
 [.lead]
 エンタープライズクラスのシステム開発における生産性向上を主目的とした、javaベースのローコード開発プラットフォームです。
@@ -8,6 +9,8 @@ image::https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66
 * https://iplass.org/[iPLAss Website]
 * https://iplass.org/intro/[Getting Started]
 * https://iplass.org/docs/[Document]
+
+image::https://deepwiki.com/badge.svg[Ask DeepWiki,link=https://deepwiki.com/dentsusoken/iPLAss]
 
 ## Docker
 
@@ -35,14 +38,14 @@ https://iplass.org/downloads/
 
 gradleでの定義例：
 
- implementation 'org.iplass:iplass-gem:4.0.7'
+ implementation 'org.iplass:iplass-gem:4.0.8'
 
 mavenでの設定例：
 
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>4.0.7</version>
+   <version>4.0.8</version>
    <type>pom</type>
  </dependency>
 
@@ -133,7 +136,7 @@ https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
 
 商用ライセンスをご希望の方は、 下記リンクよりお問い合わせください。
 
-https://www.dentsusoken.com/solution/iPLAss.html
+https://itsol.dentsusoken.com/iplass/
 
 ## Work with us
 
