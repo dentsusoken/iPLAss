@@ -174,7 +174,7 @@ $(function() {
 	if (showNest || useNestCondition) {
 		int i = 0;
 		for (NestProperty np : editor.getNestProperties()) {
-			PropertyDefinition _pd = ed.getProperty(np.getPropertyName());
+			PropertyDefinition _pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
 			if (isDispProperty(np)) {
 				String nestPropStyle = StringUtil.isNotBlank(nestStyle) ? nestStyle + "_cond" + i : "";
 				String displayLabel = TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList());

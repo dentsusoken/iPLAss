@@ -1933,6 +1933,8 @@ LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatDisplaNam
 LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeDescriptionKey = "Set date / time format for multilingual settings.";
 LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatLocaleDisplaNameKey = "Date / Time Locale Setting";
 LocaleInfo.generic_editor_LocalizedDateTimeFormatSetting_dateTimeFormatDescriptionKey = "Set date / time locale for multilingual settings.";
+LocaleInfo.generic_editor_NestProperty_virtualDisplayNameKey = "Virtual property";
+LocaleInfo.generic_editor_NestProperty_virtualDescriptionKey = "Treat this property as a virtual property.";
 LocaleInfo.generic_editor_NestProperty_propertyNameDisplaNameKey = "Property name";
 LocaleInfo.generic_editor_NestProperty_propertyNameDescriptionKey = "Please specify the property name of a reference type.";
 LocaleInfo.generic_editor_NestProperty_DisplaNameKey = "Display Label";

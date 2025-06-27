@@ -21,7 +21,6 @@
 package org.iplass.gem.command.generic.search.condition;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.iplass.gem.GemConfigService;
@@ -31,7 +30,6 @@ import org.iplass.gem.command.generic.search.SearchConditionDetail;
 import org.iplass.gem.command.generic.search.SearchConditionValidationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -52,6 +50,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
@@ -221,6 +220,11 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 			if (rp != null) {
 				EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(rp.getObjectDefinitionName());
 				for (NestProperty np : editor.getNestProperties()) {
+					// 仮想プロパティは、検索条件から除く
+					if (np.isVirtual()) {
+						continue;
+					}
+
 					Object _value = nest.getValue(np.getPropertyName());
 					if (_value != null) {
 						PropertyDefinition definition = ed.getProperty(np.getPropertyName());
@@ -445,7 +449,7 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 				//子要素のエラーメッセージはここで作成する
 				EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(rp.getObjectDefinitionName());
 				for (NestProperty np : editor.getNestProperties()) {
-					PropertyDefinition definition = ed.getProperty(np.getPropertyName());
+					PropertyDefinition definition = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
 					String displayLabel = TemplateUtil.getMultilingualString(np.getDisplayLabel(),
 							np.getLocalizedDisplayLabelList(), definition.getDisplayName(), definition.getLocalizedDisplayNameList());
 					Object _value = nest != null ? nest.getValue(np.getPropertyName()) : null;

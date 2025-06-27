@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.annotation.MultiLang;
+import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.Refrectable;
@@ -40,10 +41,24 @@ import org.iplass.mtp.view.generic.element.SortItem;
  * 参照型でテーブル表示等の場合に表示する参照先のプロパティ定義
  * @author lis3wg
  */
+@FieldOrder(manual = true)
 public class NestProperty implements Refrectable, FileItem, SortItem {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -7849466975195960549L;
+
+	/** 仮想プロパティか */
+	@MetaFieldInfo(
+			displayName = "仮想プロパティ",
+			displayNameKey = "generic_editor_NestProperty_virtualDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 50,
+			descriptionKey = "generic_editor_NestProperty_virtualDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes = { FieldReferenceType.ALL }
+	)
+	private boolean virtual;
 
 	/** プロパティ名 */
 	@MetaFieldInfo(
@@ -317,6 +332,24 @@ public class NestProperty implements Refrectable, FileItem, SortItem {
 	 * コンストラクタ
 	 */
 	public NestProperty() {
+	}
+
+	/**
+	 * 仮想プロパティかを取得します。
+	 *
+	 * @return sortable
+	 */
+	public boolean isVirtual() {
+		return virtual;
+	}
+
+	/**
+	 * 仮想プロパティかを設定します。
+	 *
+	 * @param virtual 仮想プロパティか
+	 */
+	public void setVirtual(boolean virtual) {
+		this.virtual = virtual;
 	}
 
 	@Override
