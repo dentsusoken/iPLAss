@@ -109,7 +109,7 @@
 
 			for (NestProperty np : editor.getNestProperties()) {
 				String npName = propName + "." + np.getPropertyName();
-				PropertyDefinition pd = ed.getProperty(np.getPropertyName());
+				PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
 				if (np.getEditor() instanceof ReferencePropertyEditor) {
 				    createReferencePropTypesMap((ReferencePropertyEditor) np.getEditor(), npName, (ReferenceProperty) pd, propTypeMap);
 				} else {

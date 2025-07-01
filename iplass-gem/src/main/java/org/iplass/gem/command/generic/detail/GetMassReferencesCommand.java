@@ -32,6 +32,10 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.gem.command.generic.search.ResponseUtil;
@@ -82,10 +86,6 @@ import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
-
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @WebApi(
 		name=GetMassReferencesCommand.WEBAPI_NAME,
@@ -190,7 +190,8 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 					if (rpd instanceof ReferenceProperty) {
 						addReferenceProperty(props, dispInfo, (ReferenceProperty) rpd, np, null, outputType);
 					} else {
-						if (!props.contains(np.getPropertyName())) {
+						// 検索するプロパティには仮想プロパティは含めない
+						if (!np.isVirtual() && !props.contains(np.getPropertyName())) {
 							props.add(np.getPropertyName());
 							if (np.getEditor() instanceof RangePropertyEditor) {
 								RangePropertyEditor rpe = (RangePropertyEditor) np.getEditor();
@@ -459,7 +460,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			eval.put("orgOid", entity.getOid());
 			eval.put("orgVersion", entity.getVersion().toString());
 			for (NestProperty property : props) {
-				final PropertyDefinition pd = ed.getProperty(property.getPropertyName());
+				final PropertyDefinition pd = EntityViewUtil.getNestTablePropertyDefinition(property, ed);
 				if (isDispProperty(pd, property, outputType)) {
 					final PropertyEditor editor = property.getEditor();
 					String path = EntityViewUtil.getJspPath(editor, ViewConst.DESIGN_TYPE_GEM);
@@ -644,7 +645,8 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 				if (rpd instanceof ReferenceProperty) {
 					addReferenceProperty(select, dispInfo, (ReferenceProperty) rpd, _np, name, outputType);
 				} else {
-					if (!select.contains(name + "." + _np.getPropertyName())) {
+					// 検索するプロパティには仮想プロパティは含めない
+					if (!_np.isVirtual() && !select.contains(name + "." + _np.getPropertyName())) {
 						select.add(name + "." + _np.getPropertyName());
 						if (_np.getEditor() instanceof RangePropertyEditor) {
 							RangePropertyEditor rpe = (RangePropertyEditor) _np.getEditor();

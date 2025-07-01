@@ -19,6 +19,9 @@
  */
 package org.iplass.mtp.view.generic.element.property;
 
+import java.util.List;
+
+import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
 /**
@@ -37,5 +40,17 @@ public interface PropertyElement {
 	 * @return プロパティエディタ
 	 */
 	public PropertyEditor getEditor();
+
+	/**
+	 * 表示ラベルを取得します。
+	 * @return 表示時のラベル
+	 */
+	public String getDisplayLabel();
+
+	/**
+	 * 表示ラベルの多言語設定情報を取得します。
+	 * @return 表示ラベルの多言語設定情報
+	 */
+	public List<LocalizedStringDefinition> getLocalizedDisplayLabelList();
 
 }

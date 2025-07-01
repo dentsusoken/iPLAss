@@ -285,6 +285,11 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 		List<String> updateProperties = new ArrayList<>();
 		for (NestProperty nProp : nestProperties) {
 			if (nProp.isHideDetail()) continue;//編集時非表示の場合は対象外
+			if (nProp.isVirtual()) {
+				// 仮想プロパティは対象外
+				continue;
+
+			}
 			if (nProp.getEditor() instanceof JoinPropertyEditor) {
 				//組み合わせで使うプロパティをチェック
 				updateProperties.addAll(checkJoinProperty(ed, (JoinPropertyEditor) nProp.getEditor()));

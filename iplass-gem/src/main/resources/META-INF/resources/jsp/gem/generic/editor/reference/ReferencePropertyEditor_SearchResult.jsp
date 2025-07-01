@@ -145,7 +145,7 @@
 		EntityDefinition ed = edm.get(rp.getObjectDefinitionName());
 		for (NestProperty np : editor.getNestProperties()) {
 			String key = editor.getPropertyName() + "." + np.getPropertyName();
-			PropertyDefinition _pd = ed.getProperty(np.getPropertyName());
+			PropertyDefinition _pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
 			if (isDispProperty(_pd, np)) {
 				PropertyEditor npEditor = np.getEditor();
 				if (!npEditor.isHide() 
