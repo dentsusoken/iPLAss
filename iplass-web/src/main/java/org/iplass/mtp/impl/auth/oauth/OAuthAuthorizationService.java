@@ -33,6 +33,7 @@ import org.iplass.mtp.impl.auth.oauth.jwt.JwtProcessor;
 import org.iplass.mtp.impl.auth.oauth.token.OAuthAccessTokenStore;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -49,6 +50,11 @@ public class OAuthAuthorizationService extends AbstractTypedMetaDataService<Meta
 		@Override
 		public TypedDefinitionManager<OAuthAuthorizationDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(OAuthAuthorizationDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 	

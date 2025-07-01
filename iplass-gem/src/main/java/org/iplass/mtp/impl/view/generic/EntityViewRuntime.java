@@ -99,7 +99,7 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 			return;
 		}
 
-		this.checkDefinitionName(view.getName(), "view.generic.EntityViewRuntime.viewCheckErr");
+		this.checkViewName(view.getName(), "view.generic.EntityViewRuntime.viewCheckErr");
 	}
 
 	private void checkViewControlSettingName(MetaViewControlSetting viewControlSetting) throws MetaDataRuntimeException {
@@ -107,21 +107,21 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 			return;
 		}
 
-		this.checkDefinitionName(viewControlSetting.getName(), "view.generic.EntityViewRuntime.settingCheckErr");
+		this.checkViewName(viewControlSetting.getName(), "view.generic.EntityViewRuntime.settingCheckErr");
 	}
 
-	private void checkDefinitionName(String defName, String messageKey) throws MetaDataRuntimeException {
-		if (StringUtil.isEmpty(defName)) {
+	private void checkViewName(String viewName, String messageKey) throws MetaDataRuntimeException {
+		if (StringUtil.isEmpty(viewName)) {
 			return;
 		}
 
 		// View名整合性チェック
-		if (VIEW_NAME_PATTERN.matcher(defName).matches()) {
+		if (VIEW_NAME_PATTERN.matcher(viewName).matches()) {
 			return;
 		}
 
 		// チェックエラー
-		throw new MetaDataRuntimeException(GemResourceBundleUtil.resourceString(messageKey, defName));
+		throw new MetaDataRuntimeException(GemResourceBundleUtil.resourceString(messageKey, viewName));
 	}
 
 	/**

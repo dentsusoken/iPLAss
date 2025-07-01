@@ -54,6 +54,7 @@ import org.iplass.mtp.async.AsyncTaskManager;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.http.HttpClientConfig;
 import org.iplass.mtp.impl.webhook.endpoint.MetaWebhookEndpoint.WebhookEndpointRuntime;
 import org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointService;
@@ -105,6 +106,11 @@ implements WebhookService {
 		@Override
 		public TypedDefinitionManager<WebhookTemplateDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(WebhookTemplateDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 

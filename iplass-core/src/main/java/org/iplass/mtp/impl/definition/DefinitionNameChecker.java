@@ -25,6 +25,9 @@ public class DefinitionNameChecker {
 	private static final String DEFAULT_PATTERN = "^[0-9a-zA-Z_][0-9a-zA-Z_-]*(/[0-9a-zA-Z_-]+)*(\\.[0-9a-zA-Z_-]+)*$";
 	private static final String DEFAULT_MESSAGE_KEY = "impl.definition.DefinitionNameChecker.invalidPattern";
 
+	private static final String PATH_SLASH_PATTERN = "^[0-9a-zA-Z_][0-9a-zA-Z_-]*(/[0-9a-zA-Z_-]+)*$";
+	private static final String PATH_SLASH_MESSAGE_KEY = "impl.definition.DefinitionNameChecker.NamePathSlash.invalidPattern";
+
 	private Pattern definitionNamePattern;
 	private String messageKey;
 
@@ -39,6 +42,19 @@ public class DefinitionNameChecker {
 	 */
 	public static DefinitionNameChecker getDefaultDefinitionNameChecker() {
 		return new DefinitionNameChecker(DEFAULT_PATTERN, DEFAULT_MESSAGE_KEY);
+	}
+
+	/**
+	 * パスに【/】許可（名前に【.】は許可しない）する定義名Checkerを返却
+	 * 
+	 * <p>
+	 * メタデータ定義名が「パスにスラッシュを利用、名前にピリオド含めない」になってるかチェックするChecker
+	 * </p>
+	 * 
+	 * @return パスに【/】許可（名前に【.】は許可しない）する定義名Checker
+	 */
+	public static DefinitionNameChecker getPathSlashDefinitionNameChecker() {
+		return new DefinitionNameChecker(PATH_SLASH_PATTERN, PATH_SLASH_MESSAGE_KEY);
 	}
 
 	/**
@@ -72,6 +88,10 @@ public class DefinitionNameChecker {
 		}
 
 		return DefinitionNameCheckResult.createSuccessResult();
+	}
+
+	protected String getMessageKey() {
+		return this.messageKey;
 	}
 
 	/**

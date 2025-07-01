@@ -68,8 +68,11 @@ public abstract class DefinitionMetaDataTypeMap<D extends Definition, M extends 
 
 	/**
 	 * メタデータ定義名Checker生成
-	 * TODO コンパイルエラー回避のため一旦abstractメソッドにしない
-	 * TODO 全体的にメタデータ定義名の制限を確認して、パスがスラッシュで名前にピリオド許可してるものがほとんどだったらabstractにしない
+	 * 
+	 * <p>
+	 * デフォルトはメタデータ定義名が「パスにスラッシュを利用、名前にピリオド含む」になってるかチェックするChecker<br/>
+	 * デフォルト以外のCheckerを利用する場合はオーバーライドする
+	 * </p>
 	 * 
 	 * @return メタデータ定義名Checker
 	 */

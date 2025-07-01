@@ -691,7 +691,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 		// 正常終了してる場合は、RuntimeのcheckStatus結果を追加する
 		if (!result.isError()) {
-			this.addCheckStatusResult(result, entryList);
+			this.addCheckStatusResult(result, entryList, needTenantReload);
 		}
 
 		return result;
@@ -936,36 +936,49 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 	 * 
 	 * @param result インポート結果
 	 * @param entryList インポートしたメタデータ
+	 * @param needTenantReload テナントコンテキストのリロードが必要かどうか
 	 */
-	private void addCheckStatusResult(final MetaDataImportResult result, final List<MetaDataEntry> entryList) {
+	private void addCheckStatusResult(final MetaDataImportResult result, final List<MetaDataEntry> entryList, boolean needTenantReload) {
 		if (CollectionUtils.isEmpty(entryList)) {
 			return;
 		}
 
 		List<String> errorPathList = Transaction.requiresNew(t -> {
-			return entryList.stream().filter(entry -> {
-				String path = entry.getPath();
-				if (StringUtil.isEmpty(path)) {
-					return false;
-				}
+			// テナントコンテキストリロードしてる場合は新たにTenantContext生成してMetaDataContext取得する必要あり
+			TenantContext tenantContext = null;
+			if (needTenantReload) {
+				int currentTenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				tenantContext = tContextService.getTenantContext(currentTenantId);
+			} else {
+				tenantContext = ExecuteContext.getCurrentContext().getTenantContext();
+			}
 
-				try {
-					MetaDataContext.getContext().checkState(entry.getPath());
-					return false;
-				} catch (MetaDataIllegalStateException e) {
-					return true;
-				}
-			}).map(MetaDataEntry::getPath).toList();
+			List<String> errorMessageList = ExecuteContext.executeAs(tenantContext, () -> {
+				return entryList.stream().filter(entry -> {
+					String path = entry.getPath();
+					if (StringUtil.isEmpty(path)) {
+						return false;
+					}
+
+					try {
+						MetaDataContext.getContext().checkState(path);
+						return false;
+					} catch (MetaDataIllegalStateException e) {
+						return true;
+					}
+				}).map(MetaDataEntry::getPath).toList();
+			});
+
+			return errorMessageList;
 		});
 
 		if (CollectionUtils.isEmpty(errorPathList)) {
 			return;
 		}
 
-		// TODO メッセージにする
 		result.addMessages("-----------------------------------------");
-		result.addMessages("以下インポートしたメタデータに不整合が発生している可能性があります。");
-		result.addMessages("詳しくはStatusCheckで確認してください。");
+		result.addMessages(ToolsResourceBundleUtil.resourceString("metaport.statusCheckInconsistencyWarning"));
+		result.addMessages(ToolsResourceBundleUtil.resourceString("metaport.statusCheckInstruction"));
 
 		errorPathList.forEach(path -> {
 			result.addMessages(String.format("[%1$s]", path));

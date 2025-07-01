@@ -185,7 +185,8 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 	}
 
 	private String doCreate(final MetaEntity newMeta, final MetaDataConfig config, final EntityContext context, boolean doAutoReload) {
-		// メタデータ定義名チェック TODO Entityはメタデータ登録時にcreateMetaDataメソッドが呼ばれないので個別にチェックする
+		// メタデータ定義名チェック
+		// Entityはメタデータ登録時にcreateMetaDataメソッドが呼ばれないので個別にチェックする
 		this.checkDefinitionName(newMeta);
 
 		//TODO 同名のメタデータ存在チェック、設定値の妥当性の検証など
@@ -462,8 +463,8 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 
 	public Future<String> updateDataModelSchema(final MetaEntity newMeta, final MetaDataConfig config) {
 		// メタデータ定義名チェック
-		// TODO Entityはメタデータ更新時にupdateMetaDataメソッドが呼ばれないので個別にチェックする
-		// TODO 更新時はEntityRuntimeExceptionスローしないとAdminConsole側でエラーハンドリングができない
+		// Entityはメタデータ更新時にupdateMetaDataメソッドが呼ばれないので個別にチェックする
+		// 更新時はEntityRuntimeExceptionスローしないとAdminConsole側でエラーハンドリングができない
 		try {
 			this.checkDefinitionName(newMeta);
 		} catch (MetaDataRuntimeException e) {

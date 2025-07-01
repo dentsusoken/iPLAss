@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+
 import org.apache.commons.codec.binary.Base64;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
@@ -31,6 +32,7 @@ import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.definition.DefinitionService;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
@@ -57,6 +59,11 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 		@Override
 		public TypedDefinitionManager<WebhookEndpointDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(WebhookEndpointDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 
