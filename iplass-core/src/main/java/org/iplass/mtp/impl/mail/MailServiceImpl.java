@@ -51,6 +51,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.mail.smime.SmimeHandler;
 import org.iplass.mtp.impl.mail.template.MetaMailTemplate;
 import org.iplass.mtp.impl.mail.template.MetaMailTemplate.MailTemplateRuntime;
@@ -98,6 +99,11 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		@Override
 		public TypedDefinitionManager<MailTemplateDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(MailTemplateDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 

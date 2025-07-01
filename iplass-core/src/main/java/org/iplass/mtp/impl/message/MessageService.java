@@ -32,6 +32,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.message.MetaMessageCategory.MetaMessageCategoryHandler;
 import org.iplass.mtp.message.MessageCategory;
 import org.iplass.mtp.message.MessageManager;
@@ -57,6 +58,11 @@ public class MessageService extends AbstractTypedMetaDataService<MetaMessageCate
 		@Override
 		public TypedDefinitionManager<MessageCategory> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(MessageManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 
