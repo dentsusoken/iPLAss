@@ -21,6 +21,7 @@ package org.iplass.adminconsole.server.base.io.upload;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.fileupload2.core.FileItem;
@@ -77,13 +78,21 @@ class CommonsFileuploadMultipartRequestParameter implements MultipartRequestPara
 
 	@Override
 	public String getString() {
-		return delegate.getString();
+		try {
+			return delegate.getString();
+		} catch (IOException e) {
+			throw new UncheckedIOException("Failed to get string from FileItem.", e);
+		}
 	}
 
 	@Override
 	public String getString(Charset charset) {
 		// org.apache.commons.fileupload.disk.DiskFileItem#getString(String charset) を参照
-		return new String(delegate.get(), charset);
+		try {
+			return new String(delegate.get(), charset);
+		} catch (IOException e) {
+			throw new UncheckedIOException("Failed to get string from FileItem with charset.", e);
+		}
 	}
 
 	@Override
