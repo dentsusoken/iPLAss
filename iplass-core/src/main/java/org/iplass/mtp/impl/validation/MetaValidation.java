@@ -99,10 +99,20 @@ public abstract class MetaValidation implements MetaData {
 		this.localizedErrorMessageList = localizedErrorMessageList;
 	}
 
+	/**
+	 * 検証の実行をスキップするためのスクリプトを取得します。
+	 * 
+	 * @return スクリプト
+	 */
 	public String getValidationSkipScript() {
 		return validationSkipScript;
 	}
 
+	/**
+	 * 検証の実行をスキップするスクリプトを設定します。
+	 * 
+	 * @param validationSkipScript スクリプト
+	 */
 	public void setValidationSkipScript(String validationSkipScript) {
 		this.validationSkipScript = validationSkipScript;
 	}

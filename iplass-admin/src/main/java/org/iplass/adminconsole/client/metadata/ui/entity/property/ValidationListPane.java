@@ -445,9 +445,9 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			record.setMessageDisplayInfo("");
 		}
 		if (record.getValidationSkipScript() != null) {
-			record.settValidationSkipScriptDisplayInfo("Set");
+			record.setValidationSkipScriptDisplayInfo("Set");
 		} else {
-			record.settValidationSkipScriptDisplayInfo("Not Set");
+			record.setValidationSkipScriptDisplayInfo("Not Set");
 		}
 	}
 

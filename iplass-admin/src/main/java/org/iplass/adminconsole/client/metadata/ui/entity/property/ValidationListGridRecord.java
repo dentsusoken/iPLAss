@@ -242,11 +242,11 @@ public class ValidationListGridRecord extends ListGridRecord {
 		setAttribute(VALIDATION_SKIP_SCRIPT, value);
 	}
 
-	public String gettValidationSkipScriptDisplayInfo() {
+	public String getValidationSkipScriptDisplayInfo() {
 		return getAttribute(VALIDATION_SKIP_SCRIPT_DISP_INFO);
 	}
 
-	public void settValidationSkipScriptDisplayInfo(String value) {
+	public void setValidationSkipScriptDisplayInfo(String value) {
 		setAttribute(VALIDATION_SKIP_SCRIPT_DISP_INFO, value);
 	}
 }
