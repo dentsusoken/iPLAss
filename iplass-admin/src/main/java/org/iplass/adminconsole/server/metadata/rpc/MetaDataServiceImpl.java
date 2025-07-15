@@ -55,6 +55,7 @@ import org.iplass.adminconsole.shared.tools.dto.queueexplorer.TaskForceDeleteRes
 import org.iplass.adminconsole.shared.tools.dto.queueexplorer.TaskLoadResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.queueexplorer.TaskSearchResultInfo;
 import org.iplass.gem.GemConfigService;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.async.AsyncTaskFuture;
 import org.iplass.mtp.async.AsyncTaskInfo;
@@ -1535,7 +1536,8 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 					if (existDefinition == null) {
 						auditLogger.logMetadata(MetaDataAction.CREATE, WebApiDefinition.class.getName(), "name:" + definition.getName());
-						ewdm.create(definition);
+						DefinitionModifyResult result = ewdm.create(definition);
+						checkResult(result);
 					} else {
 
 						// バージョンの最新チェック、2件目以降でチェックに該当した場合それまでも全件ロールバック
@@ -1547,13 +1549,20 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 								|| existDefinition.isUpdate() != definition.isUpdate()
 								|| existDefinition.isDelete() != definition.isDelete()) {
 							auditLogger.logMetadata(MetaDataAction.UPDATE, WebApiDefinition.class.getName(), "name:" + definition.getName());
-							ewdm.update(definition);
+							DefinitionModifyResult result = ewdm.update(definition);
+							checkResult(result);
 						}
 					}
 				}
 				return true;
 			}
 		});
+	}
+
+	private void checkResult(DefinitionModifyResult result) {
+		if (!result.isSuccess()) {
+			throw new ApplicationException(result.getMessage());
+		}
 	}
 
 

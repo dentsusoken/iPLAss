@@ -25,6 +25,7 @@ import java.util.List;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataRuntime;
+import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.util.KeyGenerator;
 
@@ -34,12 +35,17 @@ public abstract class AbstractTypedMetaDataService<M extends RootMetaData, R ext
 
 	@Override
 	public void createMetaData(M meta) {
+		// メタデータ定義名チェック
+		this.checkDefinitionName(meta);
+
 		meta.setId(generator.generateId());
 		MetaDataContext.getContext().store(DefinitionService.getInstance().getPathByMeta(getMetaDataType(), meta.getName()), meta);
 	}
 
 	@Override
 	public void updateMetaData(M meta) {
+		// メタデータ定義名チェック
+		this.checkDefinitionName(meta);
 		MetaDataContext.getContext().update(DefinitionService.getInstance().getPathByMeta(getMetaDataType(), meta.getName()), meta);
 	}
 
@@ -78,6 +84,17 @@ public abstract class AbstractTypedMetaDataService<M extends RootMetaData, R ext
 	@Override
 	public List<MetaDataEntryInfo> list(String path) {
 		return MetaDataContext.getContext().definitionList(DefinitionService.getInstance().getPathByMeta(getMetaDataType(), path));
+	}
+
+	protected void checkDefinitionName(M meta) throws MetaDataRuntimeException {
+		DefinitionService definitionService = DefinitionService.getInstance();
+		Class<M> metaDataType = getMetaDataType();
+
+		// メタデータ定義名チェック
+		DefinitionNameCheckResult checkResult = definitionService.checkDefinitionNameByMeta(metaDataType, meta.getName());
+		if (checkResult.hasError()) {
+			throw new MetaDataRuntimeException(checkResult.getErrorMessage());
+		}
 	}
 
 	private String getFixedPath() {
