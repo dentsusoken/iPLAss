@@ -36,6 +36,8 @@ public interface ScriptEditorDialogConstants {
 
 	public static final String ENTITY_VALIDATION = "Entity.Validation";
 
+	public static final String ENTITY_VALIDATION_SKIP_SCRIPT = "Entity.ValidationSkipScriptItem";
+
 	public static final String ENTITY_NORMALIZER = "Entity.Normalizer";
 
 	public static final String MENU_ITEM_CUSTOMIZE_SCRIPT_NAME = "MenuItem.CustomizeScript";

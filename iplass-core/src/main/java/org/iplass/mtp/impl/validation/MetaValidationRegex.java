@@ -31,7 +31,6 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
-
 public class MetaValidationRegex extends MetaValidation {
 	private static final long serialVersionUID = 8178209126020452120L;
 
@@ -52,22 +51,24 @@ public class MetaValidationRegex extends MetaValidation {
 
 	@Override
 	public ValidationHandler createRuntime(MetaEntity entity, MetaProperty property) {
-		return new ValidationHandler(this) {
-			
+		return new ValidationHandler(this, entity, property) {
+
 			private Pattern compiledPattern;
-			
-			
+
 			@Override
 			public void init() {
 				compiledPattern = Pattern.compile(pattern);
 			}
-			
+
 			@Override
 			public boolean validate(Object value, ValidationContext context) {
+				if (validateSkipCheck(value, context)) {
+					return true;
+				}
 				if (value == null) {
 					return true;
 				}
-				
+
 				String checkVal = null;
 				if (value instanceof Number) {
 					checkVal = value.toString();
@@ -76,14 +77,14 @@ public class MetaValidationRegex extends MetaValidation {
 				} else {
 					throw new EntityRuntimeException("not support type:" + value.getClass());
 				}
-				
+
 				return compiledPattern.matcher(checkVal).matches();
-				
+
 			}
-			
-//			public MetaData getMetaData() {
-//				return MetaValidationRegex.this;
-//			}
+
+			//			public MetaData getMetaData() {
+			//				return MetaValidationRegex.this;
+			//			}
 		};
 	}
 
@@ -101,7 +102,6 @@ public class MetaValidationRegex extends MetaValidation {
 		RegexValidation def = (RegexValidation) definition;
 		pattern = def.getPattern();
 	}
-	
 
 	@Override
 	public int hashCode() {
@@ -128,5 +128,4 @@ public class MetaValidationRegex extends MetaValidation {
 		return true;
 	}
 
-	
 }

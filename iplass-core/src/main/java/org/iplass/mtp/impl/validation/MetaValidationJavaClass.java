@@ -53,7 +53,6 @@ public class MetaValidationJavaClass extends MetaValidation {
 		this.asArray = asArray;
 	}
 
-
 	@Override
 	public void applyConfig(ValidationDefinition definition) {
 		fillFrom(definition);
@@ -114,7 +113,7 @@ public class MetaValidationJavaClass extends MetaValidation {
 		private PropertyValidator validator;
 
 		ValidationHandlerJavaClass(MetaEntity entity, MetaProperty property) {
-			super(MetaValidationJavaClass.this);
+			super(MetaValidationJavaClass.this, entity, property);
 
 			try {
 				validator = (PropertyValidator) Class.forName(className).newInstance();
@@ -140,6 +139,9 @@ public class MetaValidationJavaClass extends MetaValidation {
 
 		@Override
 		public boolean validate(Object value, ValidationContext context) {
+			if (validateSkipCheck(value, context)) {
+				return true;
+			}
 			return validator.validate(value, context);
 		}
 

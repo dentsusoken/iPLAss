@@ -32,6 +32,9 @@ import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
@@ -39,17 +42,20 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.message.MessageItemDS;
+import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord.ValidationType;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.message.MessageCategory;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.FormItemIcon;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
@@ -61,7 +67,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ValidationEditDialog extends MtpDialog {
 
-	private static final int BASE_HEIGHT = 200;
+	private static final int BASE_HEIGHT = 330;
 
 	private static final int MESSAGE_HEIGHT = 120;
 
@@ -74,6 +80,8 @@ public class ValidationEditDialog extends MtpDialog {
 	private Map<ValidationType, ValidationAttributePane> mapTypePanes;
 
 	private ValidationMessagePane messagePane;
+
+	private TextAreaItem validationSkipScriptItem;
 
 	private boolean isReadOnly = false;
 	private boolean canSelectNotNull = true;
@@ -131,8 +139,43 @@ public class ValidationEditDialog extends MtpDialog {
 		descriptionField.setHeight(60);
 		descriptionField.setColSpan(2);
 
+		ButtonItem editScript = new ButtonItem("editScript", "Edit");
+		editScript.setWidth(100);
+		editScript.setStartRow(false);
+		editScript.setColSpan(3);
+		editScript.setAlign(Alignment.RIGHT);
+		editScript.setPrompt(rs("ui_metadata_entity_ValidationEditDialog_displayDialogEditScript"));
+		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+			@Override
+			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
+						SmartGWTUtil.getStringValue(validationSkipScriptItem),
+						ScriptEditorDialogConstants.ENTITY_VALIDATION_SKIP_SCRIPT,
+						null,
+						rs("ui_metadata_entity_ValidationEditDialog_scriptHint"),
+						new ScriptEditorDialogHandler() {
+
+							@Override
+							public void onSave(String text) {
+								validationSkipScriptItem.setValue(text);
+							}
+
+							@Override
+							public void onCancel() {
+							}
+						});
+			}
+		});
+
+		validationSkipScriptItem = new MtpTextAreaItem();
+		validationSkipScriptItem.setColSpan(2);
+		validationSkipScriptItem.setTitle("Validation Skip Script");
+		validationSkipScriptItem.setHeight(100);
+		SmartGWTUtil.setReadOnlyTextArea(validationSkipScriptItem);
+
 		final DynamicForm form = new MtpForm();
-		form.setItems(selType, descriptionField);
+		form.setItems(selType, descriptionField, editScript, validationSkipScriptItem);
 
 		container.addMember(form);
 
@@ -194,6 +237,7 @@ public class ValidationEditDialog extends MtpDialog {
 
 		selType.setValue(record.getValType());
 		descriptionField.setValue(record.getDescription());
+		validationSkipScriptItem.setValue(record.getValidationSkipScript());
 
 		messagePane.setDefinition(record);
 	}
@@ -210,8 +254,7 @@ public class ValidationEditDialog extends MtpDialog {
 		}
 
 		if (selType.getValue() != null) {
-			ValidationType validationType
-					= ValidationType.valueOf(SmartGWTUtil.getStringValue(selType));
+			ValidationType validationType = ValidationType.valueOf(SmartGWTUtil.getStringValue(selType));
 
 			typePane = mapTypePanes.get(validationType);
 			if (typePane != null) {
@@ -227,6 +270,7 @@ public class ValidationEditDialog extends MtpDialog {
 
 		record.setValType(SmartGWTUtil.getStringValue(selType, true));
 		record.setDescription(SmartGWTUtil.getStringValue(descriptionField, true));
+		record.setValidationSkipScript(SmartGWTUtil.getStringValue(validationSkipScriptItem, true));
 
 		if (typePane != null) {
 			typePane.getEditDefinition(record);
@@ -239,7 +283,7 @@ public class ValidationEditDialog extends MtpDialog {
 		handler.onSaved(record);
 	}
 
-	private static class ValidationMessagePane extends VLayout implements EditablePane<ValidationListGridRecord>{
+	private static class ValidationMessagePane extends VLayout implements EditablePane<ValidationListGridRecord> {
 
 		private MetaDataLangTextItem errorMessageItem;
 
@@ -259,24 +303,29 @@ public class ValidationEditDialog extends MtpDialog {
 			String tableStyle = "style=\"border: thin gray solid;padding:5px;white-space:nowrap;\"";
 			FormItemIcon hintIcon = SmartGWTUtil.getHintIcon(
 					"<br/>"
-					+ "<div>"
-					+ "<p><b>" + rs("ui_metadata_entity_PropertyListGrid_messageDef") + "</b></p>"
-					+ "<div " + contentsStyle + ">"
-					+ "<p>" + rs("ui_metadata_entity_PropertyListGrid_directMessageComment") + "</p>"
-					+ "<p>" + rs("ui_metadata_entity_PropertyListGrid_exampleFormat") + "</p>"
-					+ "</div></div>"
-					+ "<div>"
-					+ "<p><b>" + rs("ui_metadata_entity_PropertyListGrid_availBindVariable") + "</b></p>"
-					+ "<div " + contentsStyle + ">"
-					+ "<table style=\"border-collapse:collapse;\">"
-					+ "<tr><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_format") + "</th><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_outputContent") + "</th></tr>"
-					+ "<tr><td " + tableStyle + ">name</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_propName") + "</td></tr>"
-					+ "<tr><td " + tableStyle + ">entityName</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_entityName") + "</td></tr>"
-					+ "<tr><td " + tableStyle + ">min</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMin") + "</td></tr>"
-					+ "<tr><td " + tableStyle + ">max</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax") + "</td></tr>"
-					+ "<tr><td " + tableStyle + ">reference</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_referenceTypeExists") + "</td></tr>"
-					+ "</table></div></div>"
-					);
+							+ "<div>"
+							+ "<p><b>" + rs("ui_metadata_entity_PropertyListGrid_messageDef") + "</b></p>"
+							+ "<div " + contentsStyle + ">"
+							+ "<p>" + rs("ui_metadata_entity_PropertyListGrid_directMessageComment") + "</p>"
+							+ "<p>" + rs("ui_metadata_entity_PropertyListGrid_exampleFormat") + "</p>"
+							+ "</div></div>"
+							+ "<div>"
+							+ "<p><b>" + rs("ui_metadata_entity_PropertyListGrid_availBindVariable") + "</b></p>"
+							+ "<div " + contentsStyle + ">"
+							+ "<table style=\"border-collapse:collapse;\">"
+							+ "<tr><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_format") + "</th><th " + tableStyle + ">"
+							+ rs("ui_metadata_entity_PropertyListGrid_outputContent") + "</th></tr>"
+							+ "<tr><td " + tableStyle + ">name</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_propName")
+							+ "</td></tr>"
+							+ "<tr><td " + tableStyle + ">entityName</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_entityName")
+							+ "</td></tr>"
+							+ "<tr><td " + tableStyle + ">min</td><td " + tableStyle + ">"
+							+ rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMin") + "</td></tr>"
+							+ "<tr><td " + tableStyle + ">max</td><td " + tableStyle + ">"
+							+ rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax") + "</td></tr>"
+							+ "<tr><td " + tableStyle + ">reference</td><td " + tableStyle + ">"
+							+ rs("ui_metadata_entity_PropertyListGrid_referenceTypeExists") + "</td></tr>"
+							+ "</table></div></div>");
 			errorMessageItem = new MetaDataLangTextItem(hintIcon);
 			errorMessageItem.setTitle("Message (Direct)");
 			errorMessageItem.setColSpan(3);
@@ -318,7 +367,8 @@ public class ValidationEditDialog extends MtpDialog {
 		public void setDefinition(ValidationListGridRecord record) {
 
 			errorMessageItem.setValue(record.getErrorMessage());
-			errorMessageItem.setLocalizedList((List<LocalizedStringDefinition>) JSOHelper.convertToJava((JavaScriptObject) record.getErrorMessageMultiLang()));
+			errorMessageItem
+					.setLocalizedList((List<LocalizedStringDefinition>) JSOHelper.convertToJava((JavaScriptObject) record.getErrorMessageMultiLang()));
 			messageCategoryItem.setValue(record.getMessageCategory());
 			messageIdItem.setValue(record.getMessageId());
 			errorCodeItem.setValue(record.getErrorCode());
@@ -374,9 +424,9 @@ public class ValidationEditDialog extends MtpDialog {
 				messageIdItem.setOptionDataSource(MessageItemDS.getInstance(category));
 			}
 		}
+	}
 
-		private String rs(String key) {
-			return AdminClientMessageUtil.getString(key);
-		}
+	private static String rs(String key) {
+		return AdminClientMessageUtil.getString(key);
 	}
 }
