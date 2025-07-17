@@ -56,11 +56,20 @@ public abstract class ValidationHandler /* implements MetaDataRuntime */ {
 
 	protected MetaProperty property;
 
+	private Script compiledValidationSkipScript;
+	private ScriptEngine validationSkipScriptEngine;
+
 	public ValidationHandler(MetaValidation metaData, MetaEntity entity, MetaProperty property) {
 		this.metaData = metaData;
 		this.entity = entity;
 		this.property = property;
 		init();
+
+		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+		validationSkipScriptEngine = tc.getScriptEngine();
+		String scriptName = VALIDATION_SKIP_SCRIPT + "_" + entity.getId() + "_" + property.getId() + "_" + metaData.getMessageId();
+		compiledValidationSkipScript = validationSkipScriptEngine.createScript(metaData.getValidationSkipScript(), scriptName);
+
 	}
 
 	public String getErrorMessage() {
@@ -142,17 +151,12 @@ public abstract class ValidationHandler /* implements MetaDataRuntime */ {
 	}
 
 	private boolean validationSkipScript(MetaEntity entity, MetaProperty property, Object value, ValidationContext context) {
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
-		ScriptEngine scriptEngine = tc.getScriptEngine();
-
-		String scriptName = VALIDATION_SKIP_SCRIPT + "_" + entity.getId() + "_" + property.getId() + "_" + metaData.getMessageId();
-		Script compiledScript = scriptEngine.createScript(metaData.getValidationSkipScript(), scriptName);
-		ScriptContext sc = scriptEngine.newScriptContext();
+		ScriptContext sc = validationSkipScriptEngine.newScriptContext();
 		sc.setAttribute(ENTITY_BINDING_NAME, context.getEntity());
 		sc.setAttribute(PROPERTY_NAME_BINDING_NAME, context.getPropertyName());
 		sc.setAttribute(VALUE_BINDING_NAME, value);
 		sc.setAttribute(CONTEXT_BINDING_NAME, context);
-		Boolean retVal = (Boolean) compiledScript.eval(sc);
+		Boolean retVal = (Boolean) compiledValidationSkipScript.eval(sc);
 		if (retVal == null) {
 			return false;
 		}

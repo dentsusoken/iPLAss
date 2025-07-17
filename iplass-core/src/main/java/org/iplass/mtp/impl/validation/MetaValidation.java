@@ -169,6 +169,8 @@ public abstract class MetaValidation implements MetaData {
 				+ ((messageCategory == null) ? 0 : messageCategory.hashCode());
 		result = prime * result
 				+ ((messageId == null) ? 0 : messageId.hashCode());
+		result = prime * result
+				+ ((validationSkipScript == null) ? 0 : validationSkipScript.hashCode());
 		return result;
 	}
 
@@ -210,6 +212,11 @@ public abstract class MetaValidation implements MetaData {
 			if (other.messageId != null)
 				return false;
 		} else if (!messageId.equals(other.messageId))
+			return false;
+		if (validationSkipScript == null) {
+			if (other.validationSkipScript != null)
+				return false;
+		} else if (!validationSkipScript.equals(other.validationSkipScript))
 			return false;
 		return true;
 	}
