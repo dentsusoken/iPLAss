@@ -65,10 +65,12 @@ public abstract class ValidationHandler /* implements MetaDataRuntime */ {
 		this.property = property;
 		init();
 
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
-		validationSkipScriptEngine = tc.getScriptEngine();
-		String scriptName = VALIDATION_SKIP_SCRIPT + "_" + entity.getId() + "_" + property.getId() + "_" + metaData.getMessageId();
-		compiledValidationSkipScript = validationSkipScriptEngine.createScript(metaData.getValidationSkipScript(), scriptName);
+		if (metaData.getValidationSkipScript() != null) {
+			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			validationSkipScriptEngine = tc.getScriptEngine();
+			String scriptName = VALIDATION_SKIP_SCRIPT + "_" + entity.getId() + "_" + property.getId() + "_" + metaData.getMessageId();
+			compiledValidationSkipScript = validationSkipScriptEngine.createScript(metaData.getValidationSkipScript(), scriptName);
+		}
 
 	}
 
