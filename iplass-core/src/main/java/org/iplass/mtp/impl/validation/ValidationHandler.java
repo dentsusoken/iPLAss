@@ -24,24 +24,54 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.iplass.mtp.entity.ValidationContext;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.core.TenantContext;
+import org.iplass.mtp.impl.entity.MetaEntity;
+import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.message.MessageService;
 import org.iplass.mtp.impl.message.MetaMessageCategory.MetaMessageCategoryHandler;
 import org.iplass.mtp.impl.message.MetaMessageItem;
+import org.iplass.mtp.impl.script.Script;
+import org.iplass.mtp.impl.script.ScriptContext;
+import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-public abstract class ValidationHandler /*implements MetaDataRuntime*/ {
+public abstract class ValidationHandler /* implements MetaDataRuntime */ {
 
 	static final Pattern namePattern = Pattern.compile("${name}", Pattern.LITERAL);
 	static final Pattern entityNamePattern = Pattern.compile("${entityName}", Pattern.LITERAL);
 
+	static final String ENTITY_BINDING_NAME = "entity";
+	static final String PROPERTY_NAME_BINDING_NAME = "propertyName";
+	static final String VALUE_BINDING_NAME = "value";
+	static final String CONTEXT_BINDING_NAME = "context";
+
+	static final String VALIDATION_SKIP_SCRIPT = "ValidationSkipScript";
 
 	protected MetaValidation metaData;
 
-	public ValidationHandler(MetaValidation metaData) {
+	protected MetaEntity entity;
+
+	protected MetaProperty property;
+
+	private Script compiledValidationSkipScript;
+	private ScriptEngine validationSkipScriptEngine;
+
+	public ValidationHandler(MetaValidation metaData, MetaEntity entity, MetaProperty property) {
 		this.metaData = metaData;
+		this.entity = entity;
+		this.property = property;
 		init();
+
+		if (metaData.getValidationSkipScript() != null) {
+			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			validationSkipScriptEngine = tc.getScriptEngine();
+			String scriptName = VALIDATION_SKIP_SCRIPT + "_" + entity.getId() + "_" + property.getId() + "_" + metaData.getMessageId();
+			compiledValidationSkipScript = validationSkipScriptEngine.createScript(metaData.getValidationSkipScript(), scriptName);
+		}
+
 	}
 
 	public String getErrorMessage() {
@@ -53,10 +83,23 @@ public abstract class ValidationHandler /*implements MetaDataRuntime*/ {
 
 	public abstract boolean validate(Object value, ValidationContext context);
 
+	public boolean validateSkipCheck(Object value, ValidationContext context) {
+		if (metaData.getValidationSkipScript() != null && validationSkipScript(entity, property, value, context)) {
+			// Validationスキップスクリプトが設定されている場合は、スクリプトでスキップを行う
+			return true;
+		}
+
+		return false;
+	}
+
 	public boolean validateArray(Object[] values, ValidationContext context) {
+		if (validateSkipCheck(values, context)) {
+			// Validationスキップスクリプトが設定されている場合は、スクリプトでスキップを行う
+			return true;
+		}
 		boolean res = true;
 		if (values != null) {
-			for (Object v: values) {
+			for (Object v : values) {
 				res &= validate(v, context);
 				if (res == false) {
 					break;
@@ -84,7 +127,7 @@ public abstract class ValidationHandler /*implements MetaDataRuntime*/ {
 				}
 			}
 		}
-		
+
 		msg = I18nUtil.stringMeta(msg, localizedMsg);
 
 		//${name},${entityName}を置換
@@ -107,6 +150,19 @@ public abstract class ValidationHandler /*implements MetaDataRuntime*/ {
 		} else {
 			return code;
 		}
+	}
+
+	private boolean validationSkipScript(MetaEntity entity, MetaProperty property, Object value, ValidationContext context) {
+		ScriptContext sc = validationSkipScriptEngine.newScriptContext();
+		sc.setAttribute(ENTITY_BINDING_NAME, context.getEntity());
+		sc.setAttribute(PROPERTY_NAME_BINDING_NAME, context.getPropertyName());
+		sc.setAttribute(VALUE_BINDING_NAME, value);
+		sc.setAttribute(CONTEXT_BINDING_NAME, context);
+		Boolean retVal = (Boolean) compiledValidationSkipScript.eval(sc);
+		if (retVal == null) {
+			return false;
+		}
+		return retVal.booleanValue();
 	}
 
 }

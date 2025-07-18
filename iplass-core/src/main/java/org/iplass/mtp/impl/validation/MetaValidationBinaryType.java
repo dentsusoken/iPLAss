@@ -32,7 +32,6 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
-
 public class MetaValidationBinaryType extends MetaValidation {
 	private static final long serialVersionUID = 4585473131357405434L;
 
@@ -41,9 +40,11 @@ public class MetaValidationBinaryType extends MetaValidation {
 	public String getAcceptMimeTypesPattern() {
 		return acceptMimeTypesPattern;
 	}
+
 	public void setAcceptMimeTypesPattern(String acceptMimeTypesPattern) {
 		this.acceptMimeTypesPattern = acceptMimeTypesPattern;
 	}
+
 	@Override
 	public MetaValidationBinaryType copy() {
 		return ObjectUtil.deepCopy(this);
@@ -51,7 +52,7 @@ public class MetaValidationBinaryType extends MetaValidation {
 
 	@Override
 	public ValidationHandler createRuntime(MetaEntity entity, MetaProperty property) {
-		return new ValidationHandler(this) {
+		return new ValidationHandler(this, entity, property) {
 			private Pattern compiledPattern;
 
 			@Override
@@ -61,6 +62,9 @@ public class MetaValidationBinaryType extends MetaValidation {
 
 			@Override
 			public boolean validate(Object value, ValidationContext context) {
+				if (validateSkipCheck(value, context)) {
+					return true;
+				}
 				if (value == null) {
 					return true;
 				}
@@ -99,6 +103,7 @@ public class MetaValidationBinaryType extends MetaValidation {
 						: acceptMimeTypesPattern.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

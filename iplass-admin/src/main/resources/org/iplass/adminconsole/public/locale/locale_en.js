@@ -495,6 +495,8 @@ LocaleInfo.ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax = "Value that 
 LocaleInfo.ui_metadata_entity_PropertyListGrid_referenceTypeExists = "Reference data value of the Exists type";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_name = "Name";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_globalSelectValueComment = "When Local Value is defined, the value selected by Global Value is cleared. ";
+LocaleInfo.ui_metadata_entity_ValidationEditDialog_displayDialogEditScript = "<div style=\"white-space: nowrap;\">Display a dialog to edit the script.</div>";
+LocaleInfo.ui_metadata_entity_ValidationEditDialog_scriptHint = "<p>The script should be implemented to return a flag indicating whether to skip the validation.</p><p>The following variables are bound.</p><ul><li>entity: Entity</li><li>propertyName : Property Name</li><li>value : Property Value</li><li>context : ValidationContext</li></ul>";
 LocaleInfo.ui_metadata_entity_AutoNumberValueListDialog_description = "The already registered KEY value can not be changed or deleted.<br/>Only values can be changed.";
 LocaleInfo.ui_metadata_entity_AutoNumberValueListDialog_selectTarget = "Please select the target.";
 LocaleInfo.ui_metadata_entity_AutoNumberValueListDialog_resetCounterCaution = "Reset the counter. Would you like?";
