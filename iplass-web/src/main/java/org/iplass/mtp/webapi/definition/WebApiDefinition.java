@@ -135,6 +135,15 @@ public class WebApiDefinition implements Definition {
 	private Long maxRequestBodySize;
 	private Long maxFileSize;
 
+	/** スタブレスポンスを返却するか */
+	private boolean returnStubResponse;
+	/** スタブレスポンス "status" の値 */
+	private String stubResponseStatusValue;
+	/** スタブレスポンスの JSON Value */
+	private String stubResponseJsonValue;
+	/** OpenAPI 定義 */
+	private String openApi;
+
 	public Long getMaxFileSize() {
 		return maxFileSize;
 	}
@@ -540,5 +549,69 @@ public class WebApiDefinition implements Definition {
 	 */
 	public void setCheckXRequestedWithHeader(boolean isCheckXRequestedWithHeader) {
 		this.isCheckXRequestedWithHeader = isCheckXRequestedWithHeader;
+	}
+
+	/**
+	 * スタブレスポンスを返却するかを取得します。
+	 * @return スタブレスポンスを返却する場合は true を返却
+	 */
+	public boolean isReturnStubResponse() {
+		return returnStubResponse;
+	}
+
+	/**
+	 * スタブレスポンスを返却するかを設定します。
+	 * @param returnStubResponse スタブレスポンスを返却する場合は true を設定
+	 */
+	public void setReturnStubResponse(boolean returnStubResponse) {
+		this.returnStubResponse = returnStubResponse;
+	}
+
+	/**
+	 * スタブレスポンスの "status" の値を取得します。
+	 * @return スタブレスポンスの "status" の値
+	 */
+	public String getStubResponseStatusValue() {
+		return stubResponseStatusValue;
+	}
+
+	/**
+	 * スタブレスポンスの "status" の値を設定します。
+	 * @param stubResponseStatusValue スタブレスポンスの "status" の値
+	 */
+	public void setStubResponseStatusValue(String stubResponseStatusValue) {
+		this.stubResponseStatusValue = stubResponseStatusValue;
+	}
+
+	/**
+	 * スタブレスポンスのJSON値を取得します。
+	 * @return スタブレスポンスのJSON値
+	 */
+	public String getStubResponseJsonValue() {
+		return stubResponseJsonValue;
+	}
+
+	/**
+	 * スタブレスポンスのJSON値を設定します。
+	 * @param stubResponseJsonValue スタブレスポンスのJSON値
+	 */
+	public void setStubResponseJsonValue(String stubResponseJsonValue) {
+		this.stubResponseJsonValue = stubResponseJsonValue;
+	}
+
+	/**
+	 * OpenAPI定義を取得します。
+	 * @return OpenAPI定義
+	 */
+	public String getOpenApi() {
+		return openApi;
+	}
+
+	/**
+	 * OpenAPI定義を設定します。
+	 * @param openApi OpenAPI定義
+	 */
+	public void setOpenApi(String openApi) {
+		this.openApi = openApi;
 	}
 }
