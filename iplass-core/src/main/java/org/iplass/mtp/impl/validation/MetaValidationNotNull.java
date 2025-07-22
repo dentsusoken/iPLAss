@@ -34,9 +34,9 @@ public class MetaValidationNotNull extends MetaValidation {
 	@Override
 	public MetaValidationNotNull copy() {
 		return ObjectUtil.deepCopy(this);
-//		ValidationNotNull copy = new ValidationNotNull();
-//		copyTo(copy);
-//		return copy;
+		//		ValidationNotNull copy = new ValidationNotNull();
+		//		copyTo(copy);
+		//		return copy;
 	}
 
 	@Override
@@ -49,10 +49,13 @@ public class MetaValidationNotNull extends MetaValidation {
 	@Override
 	public ValidationHandler createRuntime(MetaEntity entity, MetaProperty property) {
 
-		return new ValidationHandler(this) {
+		return new ValidationHandler(this, entity, property) {
 
 			@Override
 			public boolean validate(Object value, ValidationContext context) {
+				if (validateSkipCheck(value, context)) {
+					return true;
+				}
 				if (value == null) {
 					return false;
 				}
@@ -62,7 +65,7 @@ public class MetaValidationNotNull extends MetaValidation {
 					}
 				}
 				if (value instanceof Object[]) {
-					if (((Object[])value).length == 0) {
+					if (((Object[]) value).length == 0) {
 						return false;
 					}
 				}
@@ -80,9 +83,9 @@ public class MetaValidationNotNull extends MetaValidation {
 				return super.validateArray(values, context);
 			}
 
-//			public MetaData getMetaData() {
-//				return MetaValidationNotNull.this;
-//			}
+			//			public MetaData getMetaData() {
+			//				return MetaValidationNotNull.this;
+			//			}
 
 		};
 	}
@@ -91,6 +94,5 @@ public class MetaValidationNotNull extends MetaValidation {
 	public void applyConfig(ValidationDefinition definition) {
 		fillFrom(definition);
 	}
-
 
 }

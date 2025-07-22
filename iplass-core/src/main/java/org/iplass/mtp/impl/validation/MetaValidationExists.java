@@ -79,10 +79,13 @@ public class MetaValidationExists extends MetaValidation {
 	@Override
 	public ValidationHandler createRuntime(final MetaEntity entity, final MetaProperty property) {
 
-		return new ValidationHandler(this) {
+		return new ValidationHandler(this, entity, property) {
 
 			@Override
 			public boolean validate(Object value, ValidationContext context) {
+				if (validateSkipCheck(value, context)) {
+					return true;
+				}
 				if (value == null) {
 					return true;
 				}
@@ -96,7 +99,7 @@ public class MetaValidationExists extends MetaValidation {
 			public boolean validateArray(Object[] values, ValidationContext context) {
 				boolean res = true;
 				if (values != null) {
-					for (Object v: values) {
+					for (Object v : values) {
 						//指定されているデータ分チェック
 						res &= validate(v, context);
 					}
@@ -114,7 +117,7 @@ public class MetaValidationExists extends MetaValidation {
 					if (msg.contains(REFERENCE_BIND_NAME)) {
 						//エラーデータの取得
 						@SuppressWarnings("unchecked")
-						List<Entity> errors = (List<Entity>)context.getAttribute(ERROR_DATA_CONTEXT);
+						List<Entity> errors = (List<Entity>) context.getAttribute(ERROR_DATA_CONTEXT);
 						if (errors != null) {
 							StringBuilder strValue = new StringBuilder();
 							for (int i = 0; i < errors.size(); i++) {
@@ -137,7 +140,7 @@ public class MetaValidationExists extends MetaValidation {
 			}
 
 			private boolean checkExists(Entity entity, ValidationContext context) {
-				MetaReferenceProperty rp = ((MetaReferenceProperty)property);
+				MetaReferenceProperty rp = ((MetaReferenceProperty) property);
 				if (StringUtil.isNotEmpty(rp.getMappedByPropertyMetaDataId())) {
 					//被参照は対象外
 					return true;
@@ -164,7 +167,7 @@ public class MetaValidationExists extends MetaValidation {
 					if (em.count(query) <= 0) {
 						//エラーデータを保持
 						@SuppressWarnings("unchecked")
-						List<Entity> errors = (List<Entity>)context.getAttribute(ERROR_DATA_CONTEXT);
+						List<Entity> errors = (List<Entity>) context.getAttribute(ERROR_DATA_CONTEXT);
 						if (errors == null) {
 							errors = new ArrayList<>();
 							context.setAttribute(ERROR_DATA_CONTEXT, errors);

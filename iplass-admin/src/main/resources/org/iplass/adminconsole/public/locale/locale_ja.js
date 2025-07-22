@@ -493,6 +493,8 @@ LocaleInfo.ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax = "Length、Ra
 LocaleInfo.ui_metadata_entity_PropertyListGrid_referenceTypeExists = "Existsタイプの場合の参照先データ値";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_name = "名前";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_globalSelectValueComment = "Local Valueが定義されている場合は、Global Valueで選択した値はクリアされます。";
+LocaleInfo.ui_metadata_entity_ValidationEditDialog_displayDialogEditScript = "<div style=\"white-space: nowrap;\">スクリプトの編集ダイアログを表示します。</div>";
+LocaleInfo.ui_metadata_entity_ValidationEditDialog_scriptHint = "<p>Validationをスキップするかどうかのフラグを返却するように実装します。</p><p>以下の変数がバインドされます。</p><ul><li>entity: Entity</li><li>propertyName : プロパティ名</li><li>value : プロパティ値</li><li>context : ValidationContext</li></ul>";
 LocaleInfo.ui_metadata_entity_AutoNumberValueListDialog_description = "既に登録済みのKEY値は変更、削除できません。<br/>値の変更のみ可能です。";
 LocaleInfo.ui_metadata_entity_AutoNumberValueListDialog_selectTarget = "対象のデータを選択してください。";
 LocaleInfo.ui_metadata_entity_AutoNumberValueListDialog_resetCounterCaution = "カウンタをリセットします。よろしいですか？";
