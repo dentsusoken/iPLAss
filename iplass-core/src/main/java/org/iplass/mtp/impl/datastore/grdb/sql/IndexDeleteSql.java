@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore;
-import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore.GRdbEntityStoreRuntime;
+import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore.GRdbPropertyStoreHandler;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjIndexTable;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;

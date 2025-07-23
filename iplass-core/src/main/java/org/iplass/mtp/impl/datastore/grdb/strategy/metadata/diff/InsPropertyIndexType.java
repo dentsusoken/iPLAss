@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.iplass.mtp.entity.definition.IndexType;
+import org.iplass.mtp.impl.datastore.grdb.GRdbDataStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.sql.IndexDeleteSql;
@@ -38,10 +39,12 @@ public class InsPropertyIndexType extends Diff {
 
 	private MetaPrimitiveProperty nextProperty;
 	private MetaEntity nextEntity;
+	private GRdbDataStore dataStore;
 
-	public InsPropertyIndexType(MetaPrimitiveProperty nextProperty, MetaEntity nextEntity) {
+	public InsPropertyIndexType(MetaPrimitiveProperty nextProperty, MetaEntity nextEntity, GRdbDataStore dataStore) {
 		this.nextProperty = nextProperty;
 		this.nextEntity = nextEntity;
+		this.dataStore = dataStore;
 	}
 
 	@Override
@@ -52,12 +55,19 @@ public class InsPropertyIndexType extends Diff {
 				MetaGRdbPropertyStore propStore = (MetaGRdbPropertyStore) nextProperty.getEntityStoreProperty();
 				if(propStore.isExternalIndex()) {
 					BaseRdbTypeAdapter typeMapping = (BaseRdbTypeAdapter) rdb.getRdbTypeAdapter(nextProperty.getType());
+
+					String tableNamePostfixRuntime = dataStore.getTableNamePostfix(nextEntity.getName(),
+							((MetaGRdbEntityStore) nextEntity.getEntityStoreDefinition()).getTableNamePostfix());
+
 					//もし、このカラムが再利用カラムだったら、insertIndexするまえにdeleteIndex
 					//カラム数を拡張された場合は再利用カラムかどうか判断つかないので、一律事前に削除
 					IndexDeleteSql delSql = rdb.getUpdateSqlCreator(IndexDeleteSql.class);
-					stmt.addBatch(delSql.deleteByColName(tenantId, nextEntity.getId(), ((MetaGRdbEntityStore) nextEntity.getEntityStoreDefinition()).getTableNamePostfix(), propStore.getPageNo(), propStore.getColumnName(), typeMapping, nextProperty.getIndexType(), rdb));
+
+					stmt.addBatch(delSql.deleteByColName(tenantId, nextEntity.getId(), tableNamePostfixRuntime, propStore.getPageNo(),
+							propStore.getColumnName(), typeMapping, nextProperty.getIndexType(), rdb));
 					IndexInsertSql insSql = rdb.getUpdateSqlCreator(IndexInsertSql.class);
-					stmt.addBatch(insSql.insertAll(tenantId, nextEntity.getId(), ((MetaGRdbEntityStore) nextEntity.getEntityStoreDefinition()).getTableNamePostfix(), propStore.getPageNo(), propStore.getColumnName(), nextProperty.getIndexType(), typeMapping, rdb));
+					stmt.addBatch(insSql.insertAll(tenantId, nextEntity.getId(), tableNamePostfixRuntime, propStore.getPageNo(),
+							propStore.getColumnName(), nextProperty.getIndexType(), typeMapping, rdb));
 
 					stmt.executeBatch();
 				}

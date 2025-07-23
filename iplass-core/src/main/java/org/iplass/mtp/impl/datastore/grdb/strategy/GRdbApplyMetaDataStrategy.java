@@ -177,10 +177,7 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 	@Override
 	public boolean modify(final MetaEntity newOne, final MetaEntity previous, final EntityContext context, final int[] targetTenantIds) {
 
-		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context,
-				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) previous.getStoreMapping()),
-				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) newOne.getStoreMapping()), rdb,
-				dataStore.isForceRegenerateTableNamePostfix());
+		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context, dataStore, rdb);
 		updateDiff.modifyMetaData();
 
 		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
@@ -207,9 +204,7 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 	@Override
 	public void patchData(MetaEntity newOne, MetaEntity previous,
 			EntityContext context, final int targetTenantId) {
-		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context,
-				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) previous.getStoreMapping()),
-				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) newOne.getStoreMapping()), rdb);
+		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context, dataStore, rdb);
 		if (updateDiff.needDataModify()) {
 			updateDiff.modifyMetaData();
 			SqlExecuter<Void> exec = new SqlExecuter<Void>() {
@@ -277,6 +272,8 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 				target.setEntityStoreDefinition(colResolver.getMetaStore());
 				int newPageNo = colResolver.getMetaStore().currentMaxPage();
 
+				String tableNamePostfixRuntime = dataStore.getTableNamePostfix(target.getName(), colResolver.getMetaStore().getTableNamePostfix());
+
 				for (int tenantId: targetTenantIds) {
 					ObjStoreMaintenanceSql sc = rdb.getUpdateSqlCreator(ObjStoreMaintenanceSql.class);
 
@@ -293,15 +290,15 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 					case NO_SUPPORT:
 						//pageNo=0から更新
 						List<ColCopy> ccl = colResolver.getColContext().getColCopyList(0);
-						getStatement().executeUpdate(sc.updateCol(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), 0, ccl, colResolver.getMetaStore().getTableNamePostfix(), rdb));
-						getStatement().executeUpdate(sc.updateColRB(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), 0, ccl, colResolver.getMetaStore().getTableNamePostfix(), rdb));
+						getStatement().executeUpdate(sc.updateCol(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
+						getStatement().executeUpdate(sc.updateColRB(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
 
 						for (int i = 1; i <= newPageNo; i++) {
 							//pageNo=1以降更新
 							ccl = colResolver.getColContext().getColCopyList(i);
 							if (ccl != null) {
-								getStatement().executeUpdate(sc.updateCol(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), i, ccl, colResolver.getMetaStore().getTableNamePostfix(), rdb));
-								getStatement().executeUpdate(sc.updateColRB(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), i, ccl, colResolver.getMetaStore().getTableNamePostfix(), rdb));
+								getStatement().executeUpdate(sc.updateCol(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
+								getStatement().executeUpdate(sc.updateColRB(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
 							}
 						}
 						break;
@@ -311,8 +308,8 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 						for (int i = 0; i <= newPageNo; i++) {
 							ccls[i] = colResolver.getColContext().getColCopyList(i);
 						}
-						getStatement().executeUpdate(sc.updateColDirectJoin(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), ccls, colResolver.getMetaStore().getTableNamePostfix(), rdb));
-						getStatement().executeUpdate(sc.updateColDirectJoinRB(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), ccls, colResolver.getMetaStore().getTableNamePostfix(), rdb));
+						getStatement().executeUpdate(sc.updateColDirectJoin(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), ccls, tableNamePostfixRuntime, rdb));
+						getStatement().executeUpdate(sc.updateColDirectJoinRB(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), ccls, tableNamePostfixRuntime, rdb));
 						break;
 					default:
 						break;
@@ -320,8 +317,8 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 
 					//不要ページ削除
 					if (newPageNo < currentPageNo) {
-						getStatement().executeUpdate(sc.deletePage(tenantId, target.getId(), newPageNo + 1, currentPageNo, colResolver.getMetaStore().getTableNamePostfix(), rdb));
-						getStatement().executeUpdate(sc.deletePageRB(tenantId, target.getId(), newPageNo + 1, currentPageNo, colResolver.getMetaStore().getTableNamePostfix(), rdb));
+						getStatement().executeUpdate(sc.deletePage(tenantId, target.getId(), newPageNo + 1, currentPageNo, tableNamePostfixRuntime, rdb));
+						getStatement().executeUpdate(sc.deletePageRB(tenantId, target.getId(), newPageNo + 1, currentPageNo, tableNamePostfixRuntime, rdb));
 					}
 				}
 

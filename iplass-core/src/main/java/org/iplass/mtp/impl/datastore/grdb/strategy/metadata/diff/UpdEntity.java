@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.iplass.mtp.impl.datastore.grdb.GRdbDataStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore;
 import org.iplass.mtp.impl.datastore.grdb.StorageSpaceMap;
 import org.iplass.mtp.impl.datastore.grdb.sql.ObjStoreMaintenanceSql;
@@ -46,6 +47,8 @@ import org.slf4j.LoggerFactory;
 public class UpdEntity extends Diff {
 
 	private static Logger logger = LoggerFactory.getLogger(UpdEntity.class);
+
+	private GRdbDataStore dataStore;
 
 	private MetaEntity previousEntity;
 	private MetaEntity nextEntity;
@@ -71,15 +74,15 @@ public class UpdEntity extends Diff {
 		}
 	}
 
-	public UpdEntity(MetaEntity previousEntity, MetaEntity nextEntity, EntityContext context, StorageSpaceMap previousStorage,
-			StorageSpaceMap nextStorage, RdbAdapter rdb, boolean forceRegenerateTableNamePostfix) {
+	public UpdEntity(MetaEntity previousEntity, MetaEntity nextEntity, EntityContext context, GRdbDataStore dataStore, RdbAdapter rdb) {
+		this.dataStore = dataStore;
 		this.previousEntity = previousEntity;
 		this.nextEntity = nextEntity;
 		this.context = context;
-		this.storage = nextStorage;
-		this.previousStorage = previousStorage;
+		this.storage = dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) nextEntity.getStoreMapping());
+		this.previousStorage = dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) previousEntity.getStoreMapping());
 		this.colResolver = new ColResolver(previousEntity, (MetaSchemalessRdbStoreMapping) nextEntity.getStoreMapping(), storage, rdb);
-		this.forceRegenerateTableNamePostfix = forceRegenerateTableNamePostfix;
+		this.forceRegenerateTableNamePostfix = dataStore.isForceRegenerateTableNamePostfix();
 
 		propertyList = new ArrayList<Diff>();
 		List<MetaProperty> nextPropList = getEmptyListIfNull(nextEntity.getDeclaredPropertyList());
@@ -107,18 +110,13 @@ public class UpdEntity extends Diff {
 		}
 	}
 
-	public UpdEntity(MetaEntity previousEntity, MetaEntity nextEntity, EntityContext context, StorageSpaceMap previousStorage,
-			StorageSpaceMap nextStorage, RdbAdapter rdb) {
-		this(previousEntity, nextEntity, context, previousStorage, nextStorage, rdb, false);
-	}
-
 	private void addDel(MetaProperty del) {
 		DelProperty delP = new DelProperty(del);
 		propertyList.add(delP);
 	}
 	private void addIns(MetaProperty ins) {
 		if (ins instanceof MetaPrimitiveProperty) {
-			InsProperty insP = new InsProperty((MetaPrimitiveProperty) ins, nextEntity, colResolver);
+			InsProperty insP = new InsProperty((MetaPrimitiveProperty) ins, nextEntity, colResolver, dataStore);
 			propertyList.add(insP);
 		} else if (ins instanceof MetaReferenceProperty) {
 			InsReference insR = new InsReference((MetaReferenceProperty) ins, nextEntity, colResolver);
@@ -134,7 +132,7 @@ public class UpdEntity extends Diff {
 			}
 
 			if (pre instanceof MetaPrimitiveProperty) {
-				UpdProperty updP = new UpdProperty((MetaPrimitiveProperty) pre, (MetaPrimitiveProperty) next, nextEntity, colResolver);
+				UpdProperty updP = new UpdProperty((MetaPrimitiveProperty) pre, (MetaPrimitiveProperty) next, nextEntity, colResolver, dataStore);
 				propertyList.add(updP);
 			} else {
 				UpdReference updP = new UpdReference((MetaReferenceProperty) pre, (MetaReferenceProperty) next, nextEntity);
@@ -169,9 +167,8 @@ public class UpdEntity extends Diff {
 		if (needDataModify()) {
 
 			ObjStoreMaintenanceSql sc =rdb.getUpdateSqlCreator(ObjStoreMaintenanceSql.class);
-
 			MetaGRdbEntityStore storeDef = (MetaGRdbEntityStore) nextEntity.getEntityStoreDefinition();
-
+			String tableNamePostfixRuntime = dataStore.getTableNamePostfix(nextEntity.getName(), storeDef.getTableNamePostfix());
 
 			switch (rdb.getMultiTableUpdateMethod()) {
 			case INLINE_VIEW:
@@ -179,8 +176,8 @@ public class UpdEntity extends Diff {
 			case NO_SUPPORT:
 				//まずはpageNo=0を更新
 				List<ColCopy> ccl = colResolver.getColContext().getColCopyList(0);
-				stmt.executeUpdate(sc.updateCol(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, ccl, storeDef.getTableNamePostfix(), rdb));
-				stmt.executeUpdate(sc.updateColRB(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, ccl, storeDef.getTableNamePostfix(), rdb));
+				stmt.executeUpdate(sc.updateCol(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
+				stmt.executeUpdate(sc.updateColRB(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
 
 				//pageNoが増えた場合、新規pageをinsert
 				int prePageNo = ((MetaGRdbEntityStore) previousEntity.getEntityStoreDefinition()).currentMaxPage();
@@ -188,8 +185,8 @@ public class UpdEntity extends Diff {
 
 				if (nextPageNo > prePageNo) {
 					for (int i = prePageNo + 1; i <= nextPageNo; i++) {
-						stmt.executeUpdate(sc.insertNewPage(tenantId, nextEntity.getId(), i, storeDef.getTableNamePostfix(), rdb));
-						stmt.executeUpdate(sc.insertNewPageRB(tenantId, nextEntity.getId(), i, storeDef.getTableNamePostfix(), rdb));
+						stmt.executeUpdate(sc.insertNewPage(tenantId, nextEntity.getId(), i, tableNamePostfixRuntime, rdb));
+						stmt.executeUpdate(sc.insertNewPageRB(tenantId, nextEntity.getId(), i, tableNamePostfixRuntime, rdb));
 					}
 				}
 
@@ -197,15 +194,15 @@ public class UpdEntity extends Diff {
 				for (int i = 1; i <= nextPageNo; i++) {
 					ccl = colResolver.getColContext().getColCopyList(i);
 					if (ccl != null) {
-						stmt.executeUpdate(sc.updateCol(tenantId, nextEntity.getId(), storeDef.getVersion(), i, ccl, storeDef.getTableNamePostfix(), rdb));
-						stmt.executeUpdate(sc.updateColRB(tenantId, nextEntity.getId(), storeDef.getVersion(), i, ccl, storeDef.getTableNamePostfix(), rdb));
+						stmt.executeUpdate(sc.updateCol(tenantId, nextEntity.getId(), storeDef.getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
+						stmt.executeUpdate(sc.updateColRB(tenantId, nextEntity.getId(), storeDef.getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
 					}
 				}
 				break;
 			case DIRECT_JOIN:
 				//まずはpageNo=0を更新（レコードロックのみ行う）
-				stmt.executeUpdate(sc.updateCol(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, null, storeDef.getTableNamePostfix(), rdb));
-				stmt.executeUpdate(sc.updateColRB(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, null, storeDef.getTableNamePostfix(), rdb));
+				stmt.executeUpdate(sc.updateCol(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, null, tableNamePostfixRuntime, rdb));
+				stmt.executeUpdate(sc.updateColRB(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, null, tableNamePostfixRuntime, rdb));
 
 				//pageNoが増えた場合、新規pageをinsert
 				prePageNo = ((MetaGRdbEntityStore) previousEntity.getEntityStoreDefinition()).currentMaxPage();
@@ -213,8 +210,8 @@ public class UpdEntity extends Diff {
 
 				if (nextPageNo > prePageNo) {
 					for (int i = prePageNo + 1; i <= nextPageNo; i++) {
-						stmt.executeUpdate(sc.insertNewPage(tenantId, nextEntity.getId(), i, storeDef.getTableNamePostfix(), rdb));
-						stmt.executeUpdate(sc.insertNewPageRB(tenantId, nextEntity.getId(), i, storeDef.getTableNamePostfix(), rdb));
+						stmt.executeUpdate(sc.insertNewPage(tenantId, nextEntity.getId(), i, tableNamePostfixRuntime, rdb));
+						stmt.executeUpdate(sc.insertNewPageRB(tenantId, nextEntity.getId(), i, tableNamePostfixRuntime, rdb));
 					}
 				}
 
@@ -224,8 +221,8 @@ public class UpdEntity extends Diff {
 				for (int i = 0; i <= nextPageNo; i++) {
 					ccls[i] = colResolver.getColContext().getColCopyList(i);
 				}
-				stmt.executeUpdate(sc.updateColDirectJoin(tenantId, nextEntity.getId(), storeDef.getVersion(), ccls, storeDef.getTableNamePostfix(), rdb));
-				stmt.executeUpdate(sc.updateColDirectJoinRB(tenantId, nextEntity.getId(), storeDef.getVersion(), ccls, storeDef.getTableNamePostfix(), rdb));
+				stmt.executeUpdate(sc.updateColDirectJoin(tenantId, nextEntity.getId(), storeDef.getVersion(), ccls, tableNamePostfixRuntime, rdb));
+				stmt.executeUpdate(sc.updateColDirectJoinRB(tenantId, nextEntity.getId(), storeDef.getVersion(), ccls, tableNamePostfixRuntime, rdb));
 				break;
 			default:
 				break;

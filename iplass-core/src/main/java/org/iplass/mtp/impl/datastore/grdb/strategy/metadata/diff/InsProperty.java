@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.iplass.mtp.entity.definition.IndexType;
+import org.iplass.mtp.impl.datastore.grdb.GRdbDataStore;
 import org.iplass.mtp.impl.datastore.grdb.strategy.metadata.ColResolver;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaPrimitiveProperty;
@@ -39,7 +40,7 @@ public class InsProperty extends Diff {
 	private ColResolver colResolver;
 	private MetaEntity entity;
 
-	public InsProperty(MetaPrimitiveProperty insertProperty, MetaEntity entity, ColResolver colResolver) {
+	public InsProperty(MetaPrimitiveProperty insertProperty, MetaEntity entity, ColResolver colResolver, GRdbDataStore dataStore) {
 		this.insertProperty = insertProperty;
 		this.colResolver = colResolver;
 		this.entity = entity;
@@ -47,7 +48,7 @@ public class InsProperty extends Diff {
 		if (insertProperty.getIndexType() != null
 				&& insertProperty.getIndexType() != IndexType.NON_INDEXED
 				&& !insertProperty.getType().isVirtual()) {
-			insPropertyIndexType = new InsPropertyIndexType(insertProperty, entity);
+			insPropertyIndexType = new InsPropertyIndexType(insertProperty, entity, dataStore);
 		}
 	}
 
