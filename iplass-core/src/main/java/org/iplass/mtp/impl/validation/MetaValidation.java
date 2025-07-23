@@ -34,9 +34,9 @@ import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 
 
-@XmlSeeAlso({MetaValidationNotNull.class, MetaValidationRange.class, MetaValidationLength.class,
-	MetaValidationRegex.class, MetaValidationScripting.class, MetaValidationJavaClass.class,
-	MetaValidationBinarySize.class, MetaValidationBinaryType.class, MetaValidationExists.class})
+@XmlSeeAlso({ MetaValidationNotNull.class, MetaValidationRange.class, MetaValidationLength.class,
+		MetaValidationRegex.class, MetaValidationScripting.class, MetaValidationJavaClass.class,
+		MetaValidationBinarySize.class, MetaValidationBinaryType.class, MetaValidationExists.class })
 public abstract class MetaValidation implements MetaData {
 	private static final long serialVersionUID = -5030970640762393766L;
 
@@ -49,6 +49,8 @@ public abstract class MetaValidation implements MetaData {
 	private String messageId;
 
 	private List<MetaLocalizedString> localizedErrorMessageList = new ArrayList<>();
+
+	private String validationSkipScript;
 
 	public String getDescription() {
 		return description;
@@ -98,6 +100,24 @@ public abstract class MetaValidation implements MetaData {
 		this.localizedErrorMessageList = localizedErrorMessageList;
 	}
 
+	/**
+	 * 検証の実行をスキップするためのスクリプトを取得します。
+	 * 
+	 * @return スクリプト
+	 */
+	public String getValidationSkipScript() {
+		return validationSkipScript;
+	}
+
+	/**
+	 * 検証の実行をスキップするスクリプトを設定します。
+	 * 
+	 * @param validationSkipScript スクリプト
+	 */
+	public void setValidationSkipScript(String validationSkipScript) {
+		this.validationSkipScript = validationSkipScript;
+	}
+
 	protected void fillTo(ValidationDefinition definition) {
 		definition.setDescription(description);
 		definition.setErrorMessage(errorMessage);
@@ -105,11 +125,12 @@ public abstract class MetaValidation implements MetaData {
 		definition.setMessageCategory(messageCategory);
 		definition.setMessageId(messageId);
 		definition.setLocalizedErrorMessageList(I18nUtil.toDef(localizedErrorMessageList));
+		definition.setValidationSkipScript(validationSkipScript);
 	}
 
-//	protected void copyTo(MetaValidation copy) {
-//		copy.setErrorMessage(errorMessage);
-//	}
+	//	protected void copyTo(MetaValidation copy) {
+	//		copy.setErrorMessage(errorMessage);
+	//	}
 
 	protected void fillFrom(ValidationDefinition definition) {
 		description = definition.getDescription();
@@ -118,6 +139,7 @@ public abstract class MetaValidation implements MetaData {
 		messageCategory = definition.getMessageCategory();
 		messageId = definition.getMessageId();
 		localizedErrorMessageList = I18nUtil.toMeta(definition.getLocalizedErrorMessageList());
+		validationSkipScript = definition.getValidationSkipScript();
 	}
 
 	public abstract void applyConfig(ValidationDefinition definition);
@@ -141,12 +163,15 @@ public abstract class MetaValidation implements MetaData {
 				+ ((errorMessage == null) ? 0 : errorMessage.hashCode());
 		result = prime
 				* result
-				+ ((localizedErrorMessageList == null) ? 0 : localizedErrorMessageList
-						.hashCode());
+				+ ((localizedErrorMessageList == null) ? 0
+						: localizedErrorMessageList
+								.hashCode());
 		result = prime * result
 				+ ((messageCategory == null) ? 0 : messageCategory.hashCode());
 		result = prime * result
 				+ ((messageId == null) ? 0 : messageId.hashCode());
+		result = prime * result
+				+ ((validationSkipScript == null) ? 0 : validationSkipScript.hashCode());
 		return result;
 	}
 
@@ -163,7 +188,7 @@ public abstract class MetaValidation implements MetaData {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
-				return false;
+			return false;
 		if (errorCode == null) {
 			if (other.errorCode != null)
 				return false;
@@ -188,6 +213,11 @@ public abstract class MetaValidation implements MetaData {
 			if (other.messageId != null)
 				return false;
 		} else if (!messageId.equals(other.messageId))
+			return false;
+		if (validationSkipScript == null) {
+			if (other.validationSkipScript != null)
+				return false;
+		} else if (!validationSkipScript.equals(other.validationSkipScript))
 			return false;
 		return true;
 	}

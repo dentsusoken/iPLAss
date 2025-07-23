@@ -32,7 +32,6 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
-
 public class MetaValidationRange extends MetaValidation {
 	private static final long serialVersionUID = -4575600888354853812L;
 
@@ -79,22 +78,22 @@ public class MetaValidationRange extends MetaValidation {
 	@Override
 	public MetaValidationRange copy() {
 		return ObjectUtil.deepCopy(this);
-		
-//		ValidationRange copy = new ValidationRange();
-//		copyTo(copy);
-//		copy.max = max;
-//		copy.min = min;
-//		copy.maxValueExcluded = maxValueExcluded;
-//		copy.minValueExcluded = minValueExcluded;
-//		copy.nullEnabled = nullEnabled;
-//		
-//		return copy;
+
+		//		ValidationRange copy = new ValidationRange();
+		//		copyTo(copy);
+		//		copy.max = max;
+		//		copy.min = min;
+		//		copy.maxValueExcluded = maxValueExcluded;
+		//		copy.minValueExcluded = minValueExcluded;
+		//		copy.nullEnabled = nullEnabled;
+		//		
+		//		return copy;
 	}
 
 	@Override
 	public ValidationHandler createRuntime(MetaEntity entity, MetaProperty property) {
-		return new ValidationHandler(this) {
-			
+		return new ValidationHandler(this, entity, property) {
+
 			private boolean isMaxSpecify;
 			private boolean isMinSpecify;
 			private long maxLong;
@@ -103,7 +102,7 @@ public class MetaValidationRange extends MetaValidation {
 			private double minDouble;
 			private BigDecimal maxBigDecimal;
 			private BigDecimal minBigDecimal;
-			
+
 			@Override
 			public void init() {
 				if (max != null && max.length() != 0) {
@@ -124,7 +123,7 @@ public class MetaValidationRange extends MetaValidation {
 				}
 
 			}
-			
+
 			@Override
 			public String generateErrorMessage(Object value,
 					ValidationContext context, String propertyDisplayName,
@@ -141,34 +140,37 @@ public class MetaValidationRange extends MetaValidation {
 				}
 				return msg;
 			}
-			
+
 			@Override
 			public boolean validate(Object value, ValidationContext context) {
+				if (validateSkipCheck(value, context)) {
+					return true;
+				}
 				if (value == null) {
 					return true;
 				}
-				
+
 				if (value instanceof Long) {
 					return checkLong((Long) value);
 				}
-				
+
 				if (value instanceof Double) {
 					return checkDouble((Double) value);
 				}
-				
+
 				if (value instanceof BigDecimal) {
 					return checkBigDecimal((BigDecimal) value);
 				}
-				
+
 				//TODO 実装！
-				
+
 				throw new EntityRuntimeException("not support type:" + value.getClass());
 			}
-			
+
 			private boolean checkDouble(Double value) {
-				
+
 				double dVal = value.doubleValue();
-				
+
 				if (isMaxSpecify) {
 					if (maxValueExcluded) {
 						if (dVal >= maxDouble) {
@@ -180,7 +182,7 @@ public class MetaValidationRange extends MetaValidation {
 						}
 					}
 				}
-				
+
 				if (isMinSpecify) {
 					if (minValueExcluded) {
 						if (dVal <= minDouble) {
@@ -192,13 +194,13 @@ public class MetaValidationRange extends MetaValidation {
 						}
 					}
 				}
-				
+
 				return true;
 			}
 
 			private boolean checkLong(Long value) {
 				long lVal = value.longValue();
-				
+
 				if (isMaxSpecify) {
 					if (maxValueExcluded) {
 						if (lVal >= maxLong) {
@@ -210,7 +212,7 @@ public class MetaValidationRange extends MetaValidation {
 						}
 					}
 				}
-				
+
 				if (isMinSpecify) {
 					if (minValueExcluded) {
 						if (lVal <= minLong) {
@@ -222,12 +224,12 @@ public class MetaValidationRange extends MetaValidation {
 						}
 					}
 				}
-				
+
 				return true;
 			}
 
 			private boolean checkBigDecimal(BigDecimal value) {
-				
+
 				if (isMaxSpecify) {
 					if (maxValueExcluded) {
 						if (value.compareTo(maxBigDecimal) >= 0) {
@@ -239,7 +241,7 @@ public class MetaValidationRange extends MetaValidation {
 						}
 					}
 				}
-				
+
 				if (isMinSpecify) {
 					if (minValueExcluded) {
 						if (value.compareTo(minBigDecimal) <= 0) {
@@ -251,14 +253,14 @@ public class MetaValidationRange extends MetaValidation {
 						}
 					}
 				}
-				
+
 				return true;
 			}
 
-//			public MetaData getMetaData() {
-//				return MetaValidationRange.this;
-//			}
-			
+			//			public MetaData getMetaData() {
+			//				return MetaValidationRange.this;
+			//			}
+
 		};
 	}
 
@@ -283,7 +285,6 @@ public class MetaValidationRange extends MetaValidation {
 		minValueExcluded = def.isMinValueExcluded();
 	}
 
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -320,5 +321,5 @@ public class MetaValidationRange extends MetaValidation {
 			return false;
 		return true;
 	}
-	
+
 }

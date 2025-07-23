@@ -46,22 +46,17 @@ import org.supercsv.cellprocessor.ConvertNullTo;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.exception.SuperCsvException;
 
-
 public class EntityPropertyCsvWriter extends AdminCsvWriter {
 
-	private static final String[] HEADER_KEY = new String[]{"entityName","entityDispName","oidPropName"
-			,"itemName","itemDispName","dataType","numOfChara","multiple","required","updatable","indexType"
-			,"reference","referenceRelationship","referenced","sort"
-			,"selectValueDefName", "selectValue"
-			,"expression"
-			,"numOfDecimalPlaces","roundMode"
-			,"startValue","numOfDigits","format","typeNumbering"
-			,"validationError"};
+	private static final String[] HEADER_KEY = new String[] { "entityName", "entityDispName", "oidPropName", "itemName", "itemDispName", "dataType",
+			"numOfChara", "multiple", "required", "updatable", "indexType", "reference", "referenceRelationship", "referenced", "sort",
+			"selectValueDefName", "selectValue", "expression", "numOfDecimalPlaces", "roundMode", "startValue", "numOfDigits", "format",
+			"typeNumbering", "validationError" };
 
-	private String [] header;
+	private String[] header;
 	private CellProcessor[] processors;
 
-	public EntityPropertyCsvWriter(OutputStream out, String encode) throws IOException{
+	public EntityPropertyCsvWriter(OutputStream out, String encode) throws IOException {
 		super(out, encode);
 
 		createCellHeader();
@@ -144,7 +139,7 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 	private int setReferenceInfo(Map<String, Object> recordMap, PropertyDefinition property, int col) {
 
 		if (property instanceof ReferenceProperty) {
-			ReferenceProperty reference = (ReferenceProperty)property;
+			ReferenceProperty reference = (ReferenceProperty) property;
 			recordMap.put(header[++col], reference.getObjectDefinitionName());
 			recordMap.put(header[++col], getReferenceType(reference));
 			recordMap.put(header[++col], reference.getMappedBy());
@@ -162,7 +157,7 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 	private int setSelectInfo(Map<String, Object> recordMap, PropertyDefinition property, int col) {
 
 		if (property instanceof SelectProperty) {
-			SelectProperty select = (SelectProperty)property;
+			SelectProperty select = (SelectProperty) property;
 
 			recordMap.put(header[++col], (select.getSelectValueDefinitionName() != null ? select.getSelectValueDefinitionName() : ""));
 
@@ -188,7 +183,7 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 	private int setExpressionInfo(Map<String, Object> recordMap, PropertyDefinition property, int col) {
 
 		if (property instanceof ExpressionProperty) {
-			ExpressionProperty expression = (ExpressionProperty)property;
+			ExpressionProperty expression = (ExpressionProperty) property;
 			recordMap.put(header[++col], expression.getExpression());
 		} else {
 			recordMap.put(header[++col], "");
@@ -199,7 +194,7 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 	private int setDecimalInfo(Map<String, Object> recordMap, PropertyDefinition property, int col) {
 
 		if (property instanceof DecimalProperty) {
-			DecimalProperty decimal = (DecimalProperty)property;
+			DecimalProperty decimal = (DecimalProperty) property;
 			recordMap.put(header[++col], decimal.getScale());
 			recordMap.put(header[++col], decimal.getRoundingMode().name());
 		} else {
@@ -212,7 +207,7 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 	private int setAutoNumberInfo(Map<String, Object> recordMap, PropertyDefinition property, int col) {
 
 		if (property instanceof AutoNumberProperty) {
-			AutoNumberProperty autoNumber = (AutoNumberProperty)property;
+			AutoNumberProperty autoNumber = (AutoNumberProperty) property;
 			recordMap.put(header[++col], autoNumber.getStartsWith());
 			recordMap.put(header[++col], autoNumber.getFixedNumberOfDigits());
 			recordMap.put(header[++col], autoNumber.getFormatScript());
@@ -226,7 +221,6 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 		return col;
 	}
 
-
 	private int setValidationInfo(Map<String, Object> recordMap, PropertyDefinition property, int col) {
 
 		if (property.getValidations() != null) {
@@ -236,7 +230,13 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 				if (validation.getErrorCode() != null) {
 					builder.append("(" + validation.getErrorCode() + ")");
 				}
-				builder.append(validation.getErrorMessage() + ",");
+				builder.append(validation.getErrorMessage());
+				if (validation.getValidationSkipScript() != null) {
+					builder.append("(ValidationSkipScript:Set)");
+				} else {
+					builder.append("(ValidationSkipScript:Not Set)");
+				}
+				builder.append(",");
 			}
 			if (builder.length() > 0) {
 				builder.deleteCharAt(builder.length() - 1);
@@ -252,14 +252,14 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 		if (property.getValidations() != null) {
 			for (ValidationDefinition validation : property.getValidations()) {
 				if (validation instanceof LengthValidation) {
-					LengthValidation length = (LengthValidation)validation;
+					LengthValidation length = (LengthValidation) validation;
 					return length.getMin() + "-" + length.getMax()
-						+ (length.isCheckBytes() ? "byte" : "");
+							+ (length.isCheckBytes() ? "byte" : "");
 				} else if (validation instanceof RangeValidation) {
-					RangeValidation range = (RangeValidation)validation;
+					RangeValidation range = (RangeValidation) validation;
 					return (range.isMinValueExcluded() ? "" : range.getMin())
-						+ "-"
-						+ (range.isMaxValueExcluded() ? "" : range.getMax());
+							+ "-"
+							+ (range.isMaxValueExcluded() ? "" : range.getMax());
 				}
 			}
 		}
