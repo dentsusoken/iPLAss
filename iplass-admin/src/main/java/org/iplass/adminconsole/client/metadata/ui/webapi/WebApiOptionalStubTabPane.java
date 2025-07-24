@@ -52,7 +52,7 @@ public class WebApiOptionalStubTabPane extends VLayout {
 	/** スタブレスポンス "status" の値フィールド */
 	private TextItem stubResponseStatusValueField;
 	/** スタブレスポンスフィールド */
-	private TextAreaItem stubResposeJsonValueField;
+	private TextAreaItem stubResponseJsonValueField;
 
 	/**
 	 * コンストラクタ
@@ -73,13 +73,13 @@ public class WebApiOptionalStubTabPane extends VLayout {
 		SmartGWTUtil.addHoverToFormItem(stubResponseStatusValueField,
 				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOptionalStubTabPane_stubResponseStatusValueField_hoverMessage"));
 
-		stubResposeJsonValueField = new TextAreaItem("stubResposeJsonValueField", "Stub Response JSON Value");
-		stubResposeJsonValueField.setWidth("100%");
-		stubResposeJsonValueField.setHeight(150);
-		stubResposeJsonValueField.setColSpan(2);
-		SmartGWTUtil.addHoverToFormItem(stubResposeJsonValueField,
-				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOptionalStubTabPane_stubResposeJsonValueField_hoverMessage"));
-		SmartGWTUtil.setReadOnlyTextArea(stubResposeJsonValueField);
+		stubResponseJsonValueField = new TextAreaItem("stubResponseJsonValueField", "Stub Response JSON Value");
+		stubResponseJsonValueField.setWidth("100%");
+		stubResponseJsonValueField.setHeight(150);
+		stubResponseJsonValueField.setColSpan(2);
+		SmartGWTUtil.addHoverToFormItem(stubResponseJsonValueField,
+				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOptionalStubTabPane_stubResponseJsonValueField_hoverMessage"));
+		SmartGWTUtil.setReadOnlyTextArea(stubResponseJsonValueField);
 
 		SpacerItem stubResposeValueEditButtonSpacer = new SpacerItem();
 		ButtonItem stubResposeValueEditButton = new ButtonItem("stubResponseStatusCodeEditButton", "Edit");
@@ -90,7 +90,7 @@ public class WebApiOptionalStubTabPane extends VLayout {
 		form = new DynamicForm();
 		form.setColWidths(150, 300, "*");
 		form.setNumCols(3);
-		form.setItems(returnStubResponseField, stubResponseStatusValueField, stubResposeJsonValueField, stubResposeValueEditButtonSpacer,
+		form.setItems(returnStubResponseField, stubResponseStatusValueField, stubResponseJsonValueField, stubResposeValueEditButtonSpacer,
 				stubResposeValueEditButton);
 		addMember(form);
 	}
@@ -102,7 +102,7 @@ public class WebApiOptionalStubTabPane extends VLayout {
 	public void setDefinition(WebApiDefinition definition) {
 		returnStubResponseField.setValue(definition.isReturnStubResponse());
 		stubResponseStatusValueField.setValue(definition.getStubResponseStatusValue());
-		stubResposeJsonValueField.setValue(definition.getStubResponseJsonValue());
+		stubResponseJsonValueField.setValue(definition.getStubResponseJsonValue());
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class WebApiOptionalStubTabPane extends VLayout {
 	public WebApiDefinition getDefinition(WebApiDefinition definition) {
 		definition.setReturnStubResponse(SmartGWTUtil.getBooleanValue(returnStubResponseField));
 		definition.setStubResponseStatusValue(SmartGWTUtil.getStringValue(stubResponseStatusValueField));
-		definition.setStubResponseJsonValue(SmartGWTUtil.getStringValue(stubResposeJsonValueField));
+		definition.setStubResponseJsonValue(SmartGWTUtil.getStringValue(stubResponseJsonValueField));
 
 		return definition;
 	}
@@ -124,15 +124,15 @@ public class WebApiOptionalStubTabPane extends VLayout {
 	 */
 	private void onClickStubResposeValueEditButton(ClickEvent event) {
 		MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.JSON,
-				SmartGWTUtil.getStringValue(stubResposeJsonValueField),
+				SmartGWTUtil.getStringValue(stubResponseJsonValueField),
 				"Stub Respose JSON Value",
-				"ui_metadata_webapi_WebApiOptionalStubTabPane_stubResposeJsonValueField_editorHint",
+				"ui_metadata_webapi_WebApiOptionalStubTabPane_stubResponseJsonValueField_editorHint",
 				null,
 				new ScriptEditorDialogHandler() {
 
 			@Override
 			public void onSave(String text) {
-				stubResposeJsonValueField.setValue(text);
+				stubResponseJsonValueField.setValue(text);
 			}
 
 			@Override
