@@ -60,9 +60,21 @@ public class OpenApiComponentSchemaFactoryAssigner implements OpenApiComponentSc
 	@SuppressWarnings("rawtypes")
 	protected List<OpenApiComponentSchemaFactory> createFactoryList() {
 		var classFactory = new OpenApiComponentClassSchemaFactory();
+		classFactory.setClassSchemaGenerator(createClassSchemaGenerator());
 		var entityDefinitionFactory = new OpenApiComponentEntityDefinitionSchemaFactory();
 		entityDefinitionFactory.setClassSchemaFactory(classFactory);
 
 		return List.of(entityDefinitionFactory, classFactory);
+	}
+
+	/**
+	 * クラススキーマ生成機能を作成します。
+	 * <p>
+	 * デフォルトインスタンスとして、 VictoolsClassSchemaGenerator を生成します。
+	 * </p>
+	 * @return クラススキーマ生成機能
+	 */
+	protected ClassSchemaGenerator createClassSchemaGenerator() {
+		return new VictoolsClassSchemaGenerator();
 	}
 }

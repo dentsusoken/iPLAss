@@ -47,7 +47,7 @@ public class OpenApiComponentClassSchemaFactory implements OpenApiComponentSchem
 	/** ログ */
 	private Logger logger = LoggerFactory.getLogger(OpenApiComponentClassSchemaFactory.class);
 	/** JSON Schema ジェネレータ */
-	private ClassSchemaGenerator schemaGenerator = createClassSchemaGenerator();
+	private ClassSchemaGenerator schemaGenerator;
 
 	@Override
 	public boolean isTarget(Object object) {
@@ -84,6 +84,14 @@ public class OpenApiComponentClassSchemaFactory implements OpenApiComponentSchem
 		components.addSchemas(name, schema);
 
 		return ref;
+	}
+
+	/**
+	 * クラススキーマ生成機能を設定します。
+	 * @param schemaGenerator クラススキーマ生成機能
+	 */
+	public void setClassSchemaGenerator(ClassSchemaGenerator schemaGenerator) {
+		this.schemaGenerator = schemaGenerator;
 	}
 
 	/**
@@ -136,14 +144,6 @@ public class OpenApiComponentClassSchemaFactory implements OpenApiComponentSchem
 			throw new RuntimeException("Failed to create ObjectSchema for class: " + clazz.getName(), e);
 		}
 
-	}
-
-	/**
-	 * クラススキーマ生成機能を作成します。
-	 * @return クラススキーマ生成機能
-	 */
-	protected ClassSchemaGenerator createClassSchemaGenerator() {
-		return new VictoolsClassSchemaGenerator();
 	}
 
 	/**
