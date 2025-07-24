@@ -70,7 +70,7 @@ public class EntityWebApiUpdateOpenApiConverter extends AbstractEntityWebApiOpen
 				.required(Boolean.FALSE)
 				.schema(new StringSchema()._enum(List.of("CURRENT_VALID", "SPECIFIC", "NEW")));
 		entityOidVersionOperation.addParametersItem(targetVersion);
-		getEntityOidVersionPathItem(openApi, entityDefinition).get(entityOidVersionOperation);
+		getEntityOidVersionPathItem(openApi, entityDefinition).setPut(entityOidVersionOperation);
 	}
 
 	private Operation createOperation(OpenAPI openApi, EntityDefinition entityDefinition, String description) {

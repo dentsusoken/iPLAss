@@ -65,6 +65,7 @@ public class WebApiOpenApiOpenApiConverter implements WebApiOpenApiConverter {
 		} else {
 			var orgPathItem = context.getPathItem();
 			var pathItem = new PathItem();
+			// メソッドに一致するオペレーションをコピーする
 			switch (context.getTargetMethod()) {
 			case GET:
 				pathItem.get(context.getPathItem().getGet());
@@ -73,13 +74,13 @@ public class WebApiOpenApiOpenApiConverter implements WebApiOpenApiConverter {
 				pathItem.post(context.getPathItem().getPost());
 				break;
 			case PUT:
-				pathItem.put(context.getPathItem().getPost());
+				pathItem.put(context.getPathItem().getPut());
 				break;
 			case DELETE:
-				pathItem.delete(context.getPathItem().getPost());
+				pathItem.delete(context.getPathItem().getDelete());
 				break;
 			case PATCH:
-				pathItem.patch(context.getPathItem().getPost());
+				pathItem.patch(context.getPathItem().getPatch());
 				break;
 			default:
 				throw new IllegalArgumentException("Unsupported method type: " + context.getTargetMethod());

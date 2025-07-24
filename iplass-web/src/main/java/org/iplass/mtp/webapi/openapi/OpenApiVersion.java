@@ -35,7 +35,7 @@ public enum OpenApiVersion {
 	private String defaultVersion;
 
 	/**
-	 * コンストラクタs
+	 * コンストラクタ
 	 * @param seriesVersion シリーズバージョン
 	 * @param defaultVersion デフォルトバージョン
 	 */
