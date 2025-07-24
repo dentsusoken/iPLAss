@@ -59,8 +59,8 @@ public class WebApiTokenCheckOpenApiOperationConverter implements WebApiOpenApiC
 		var parmeters = context.getPathItem().getParameters();
 		if (null != parmeters) {
 			for (Parameter param : parmeters) {
-				boolean isHeader = param.getName().toLowerCase().equals(LOWER_HEADER) && param.getIn().equals("header");
-				boolean isQuery = param.getName().toLowerCase().equals(LOWER_QUERY) && param.getIn().equals("query");
+				boolean isHeader = LOWER_HEADER.equals(param.getName().toLowerCase()) && "header".equals(param.getIn());
+				boolean isQuery = LOWER_QUERY.equals(param.getName().toLowerCase()) && "query".equals(param.getIn());
 
 				if (isHeader || isQuery) {
 					var tokenCheck = context.getWebApiDefinition().getTokenCheck();

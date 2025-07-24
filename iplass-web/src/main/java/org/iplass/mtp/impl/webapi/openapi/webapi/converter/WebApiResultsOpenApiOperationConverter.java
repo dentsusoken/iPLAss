@@ -107,7 +107,7 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 
 		var propList = new ArrayList<String>();
 		for (var mediaType : content.values()) {
-			if (null != mediaType.getSchema().getProperties() && !mediaType.getSchema().getProperties().isEmpty()) {
+			if (null != mediaType.getSchema() && null != mediaType.getSchema().getProperties() && !mediaType.getSchema().getProperties().isEmpty()) {
 				propList.addAll(mediaType.getSchema().getProperties().keySet());
 			}
 		}

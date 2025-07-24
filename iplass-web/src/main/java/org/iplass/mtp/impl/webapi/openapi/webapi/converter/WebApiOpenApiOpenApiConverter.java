@@ -133,6 +133,11 @@ public class WebApiOpenApiOpenApiConverter implements WebApiOpenApiConverter {
 	 */
 	@SuppressWarnings("rawtypes")
 	private void copyRefSchema(OpenAPI from, OpenAPI to, Schema schema, WebApiOpenApiConvertContext context) {
+		if (null == schema) {
+			// スキーマがnullの場合は何もしない
+			return;
+		}
+
 		if (StringUtil.isNotEmpty(schema.get$ref())) {
 			// スキーマに参照が設定されている場合
 

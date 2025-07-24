@@ -89,7 +89,7 @@ public class WebApiRestTypeRestJsonOpenApiOperationConverter extends AbstractWeb
 
 		var content = getRequestBodyContent(operation.getOperation());
 
-		if (null == content || content.keySet().stream().noneMatch(k -> null != k && k.toLowerCase().equals(APPLICATION_JSON))) {
+		if (null == content || content.keySet().stream().noneMatch(k -> null != k && APPLICATION_JSON.equals(k.toLowerCase()))) {
 			return CheckNext.CONTINUE;
 		}
 

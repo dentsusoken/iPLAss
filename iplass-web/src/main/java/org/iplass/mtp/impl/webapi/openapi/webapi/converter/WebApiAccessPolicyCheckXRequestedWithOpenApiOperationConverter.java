@@ -49,7 +49,7 @@ public class WebApiAccessPolicyCheckXRequestedWithOpenApiOperationConverter impl
 		var parameters = context.getPathItem().getParameters();
 		if (null != parameters) {
 			for (var parameter : parameters) {
-				if (parameter.getName().toLowerCase().equals(LOWER_HEADER) && parameter.getIn().equals("header")) {
+				if (LOWER_HEADER.equals(parameter.getName().toLowerCase()) && "header".equals(parameter.getIn())) {
 					// 1つでも見つかればチェックオン
 					context.getWebApiDefinition().setCheckXRequestedWithHeader(true);
 					return;
