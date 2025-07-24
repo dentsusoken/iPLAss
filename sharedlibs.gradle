@@ -201,6 +201,14 @@ ext {
 		'org.webjars.npm:quill': '2.0.2',
 
 		'org.webjars:font-awesome': '5.13.1',
+
+		// swagger (https://github.com/swagger-api/swagger-core)
+		'io.swagger.core.v3:swagger-models-jakarta' : '2.2.34',
+		'io.swagger.core.v3:swagger-core-jakarta'   : '2.2.34',
+	
+		// json schema gen (https://github.com/victools/jsonschema-generator)
+		'com.github.victools:jsonschema-generator': '4.38.0',
+		'com.github.victools:jsonschema-module-jackson': '4.38.0',
 	]
 	
 	sharedLib = { String name ->

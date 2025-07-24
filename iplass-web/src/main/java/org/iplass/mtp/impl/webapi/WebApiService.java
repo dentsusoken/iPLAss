@@ -37,6 +37,12 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiDefinitionManager;
 
+/**
+ * WebAPIサービス
+ * <p>
+ * WebAPIメタデータの管理、WebAPIの振る舞いを管理するサービスです。
+ * </p>
+ */
 public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebApiRuntime> implements Service {
 
 	// TODO マッピングしているCommandの更新・削除イベントを監視し、関連するActionMappingのキャッシュをクリア
@@ -61,6 +67,10 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 
 	private boolean enableDefinitionApi;
 	private boolean enableBinaryApi;
+	/** スタブレスポンスを有効にするか */
+	private boolean enableStubResponse;
+	/** スタブレスポンスコマンド名 */
+	private String stubResponseCommandName;
 	private boolean writeEncodedFilenameInBinaryApi;
 	private String unescapeFilenameCharacterInBinaryApi;
 	/** バイナリファイルアップロード時に受け入れ可能な MIME Type 正規表現パターン */
@@ -91,6 +101,9 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		cors = config.getValue("cors", CorsConfig.class);
 		enableDefinitionApi = config.getValue("enableDefinitionApi", Boolean.class, Boolean.FALSE);
 		enableBinaryApi = config.getValue("enableBinaryApi", Boolean.class, Boolean.FALSE);
+		enableStubResponse = config.getValue("enableStubResponse", Boolean.class, Boolean.FALSE).booleanValue();
+		// スタブレスポンスコマンド。未設定の場合は org.iplass.mtp.impl.webapi.command.stub.StubResponseCommand#NAME の値を指定する。
+		stubResponseCommandName = config.getValue("stubResponseCommandName", String.class, "mtp/webapi/StubResponseCommand");
 		writeEncodedFilenameInBinaryApi = config.getValue("writeEncodedFilenameInBinaryApi", Boolean.class,
 				Boolean.FALSE);
 		unescapeFilenameCharacterInBinaryApi = config.getValue("unescapeFilenameCharacterInBinaryApi");
@@ -107,6 +120,22 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 
 	public boolean isEnableBinaryApi() {
 		return enableBinaryApi;
+	}
+
+	/**
+	 * スタブレスポンスを有効にするか
+	 * @return スタブレスポンスを有効な場合は true を返却
+	 */
+	public boolean isEnableStubResponse() {
+		return enableStubResponse;
+	}
+
+	/**
+	 * スタブレスポンスコマンド名を取得する
+	 * @return スタブレスポンスコマンド名
+	 */
+	public String getStubResponseCommandName() {
+		return stubResponseCommandName;
 	}
 
 	public boolean isWriteEncodedFilenameInBinaryApi() {

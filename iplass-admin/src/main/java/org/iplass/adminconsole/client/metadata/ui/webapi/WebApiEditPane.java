@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package org.iplass.adminconsole.client.metadata.ui.webapi;
 
 import java.util.ArrayList;
@@ -106,6 +105,9 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 
 	ResponseTypePane responseTypePane;
 
+	/** オプション属性領域 */
+	private WebApiOptionalAttributePane optionalAttributePane;
+
 	public WebApiEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
 
@@ -190,7 +192,10 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 			}
 		}.setTarget(webApiSection.getLayout());
 
-		setMainSections(commonSection, webApiSection);
+		optionalAttributePane = new WebApiOptionalAttributePane();
+		MetaDataSectionStackSection openApiSection = createSection("Optional Attribute", false, optionalAttributePane);
+
+		setMainSections(commonSection, webApiSection, openApiSection);
 
 		//全体配置
 		addMember(headerPane);
@@ -298,6 +303,9 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		commandConfigPane.setConfig(curDefinition.getCommandConfig());
 		webApiParamMapPane.setWebApiParamMap(curDefinition.getWebApiParamMap());
 		resultPane.setResults(curDefinition.getResults());
+
+		// オプション属性値を画面に反映
+		optionalAttributePane.setDefinition(curDefinition);
 	}
 
 	/**
@@ -384,6 +392,8 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 						definition = webApiParamMapPane.getEditDefinition(definition);
 						definition = requestTypeGridPane.getEditDefinition(definition);
 						definition = resultPane.getEditDefinition(definition);
+						// オプション属性値をWebAPI定義に反映
+						definition = optionalAttributePane.getDefinition(definition);
 
 						List<RequestType> checkedRequestType = Arrays.asList(definition.getAccepts());
 						boolean isCheckedRestJson = checkedRequestType.contains(RequestType.REST_JSON);

@@ -1269,6 +1269,13 @@ LocaleInfo.ui_metadata_webapi_WebAPIEditPane_saveConfirm = "The save confirmatio
 LocaleInfo.ui_metadata_webapi_WebAPIEditPane_saveConfirmComment = "Save the WebApi. Would you like?";
 LocaleInfo.ui_metadata_webapi_WebAPIEditPane_cancelConfirm = "Cancellation confirmation";
 LocaleInfo.ui_metadata_webapi_WebAPIEditPane_cancelConfirmComment = "The edits will be discarded if you are editing, are you sure?";
+LocaleInfo.ui_metadata_webapi_WebApiOptionalStubTabPane_returnStubResponseField_hoverMessage = "Returns a stub response without executing the WebAPI command.<br>To return a stub response, you need to set the enableStubResponse property of WebApiService to true.";
+LocaleInfo.ui_metadata_webapi_WebApiOptionalStubTabPane_stubResponseStatusValueField_hoverMessage = "Sets the value of the status key in the WebAPI stub response. This value is the return value of the command class. If not specified, SUCCESS is set.<br>This is enabled when Return Stub Response is checked.";
+LocaleInfo.ui_metadata_webapi_WebApiOptionalStubTabPane_stubResposeJsonValueField_hoverMessage = "Set the WebAPI stub response. This is enabled when Return Stub Response is checked.";
+LocaleInfo.ui_metadata_webapi_WebApiOptionalStubTabPane_stubResposeJsonValueField_editorHint = "Please configure in JSON Object format.<br>This will be set in the response when the key specified in WebAPI Results - Attribute Name matches the property key in JSON Object.<br>This will be enabled when Return Stub Response is checked.";
+LocaleInfo.ui_metadata_webapi_WebApiOptionalOpenApiTabPane_openApiVersionField_hoverMessage = "Specify the version of the OpenAPI specification to be described.";
+LocaleInfo.ui_metadata_webapi_WebApiOptionalOpenApiTabPane_openApiField_hoverMessage = "Describe the OpenAPI specification. Describe the specification that matches the OpenAPI Version.";
+LocaleInfo.ui_metadata_webapi_WebApiOptionalOpenApiTabPane_openApiField_editorHint = "Please write in either YAML or JSON format. Please set the Highlight according to the format you have written.<br>Please write the specifications that match the OpenAPI Version.<br>When outputting with OpenAPI(Swagger)Support tools, the contents of paths and components will be merged.";
 LocaleInfo.ui_metadata_webapi_WebAPIParamMapEditDialog_dispEditDialogCondition = "<div style=\"white-space: nowrap;\">Display the Edit dialog condition.</div>";
 LocaleInfo.ui_metadata_webapi_WebAPIParamMapEditDialog_conditionHint = "By specifying the condition, it is possible to specify the condition to execute parameter mapping.<br>The condition can be described with groovyScript, and the following variables are bound and available for judgment.<br><ul><li>subPath: A String array obtained by dividing a subpath below the webApi by /</li><li>fullPath: A String array obtained by dividing the full path including webApi by /</li><li>paramMap: Request parameter Map</li></ul></p><p>For example, if you have a ParamMap definition like</p><table border=1><tr><th>name</th><th>mapFrom</th><th>condition</th></tr><tr><td>defName</td><td>${0}</td><td>subPath.length==1</td></tr><tr><td>viewName</td><td>${0}</td><td>subPath.length==2</td></tr><tr><td>defName</td><td>${1}</td><td>subPath.length==2</td></tr></table><p>The request path for webApi1 is<ul><li>If it was webApi1/hoge, defName=hoge</li><li>If it was webApi1/hoge/fuga, viewName=hoge, defName=fuga</li></ul></p>";
 LocaleInfo.ui_metadata_webapi_WebAPIParamMapGridPane_webApiPathParamComment1 = "<li>If receive a parameter as the path of webApi, defined $ {n}, $ {paths}, {n} (old format) is required.</li>";
@@ -1523,6 +1530,9 @@ LocaleInfo.ui_tools_metaexplorer_StatusErrorListPane_errCheckSett = "The followi
 LocaleInfo.ui_tools_metaexplorer_StatusErrorListPane_errMessage = "Error message:";
 LocaleInfo.ui_tools_metaexplorer_StatusErrorListPane_failed = "Failed";
 LocaleInfo.ui_tools_metaexplorer_StatusErrorListPane_failedToCheckStatusMetaData = "Failed to check status of MetaData.";
+LocaleInfo.ui_tools_openapisupport_OpenApiSupportImportDialog_selectImportFile = "Please select the import file.";
+LocaleInfo.ui_tools_openapisupport_OpenApiSupportMainPane_selectExportData = "Please select at least one WebAPI or Entity CRUD API.";
+LocaleInfo.ui_tools_openapisupport_OpenApiSupportPlugin_startMenuLabel = "Start OpenApi(Swagger)Support.";
 LocaleInfo.ui_tools_pack_CreateOperation_selectMetaDataIncludePackage = "Please select the MetaData to be included in the Package.";
 LocaleInfo.ui_tools_pack_CreateOperation_selectEntityDataIncludePackage = "Please select the Entity(data) to be included in the Package.";
 LocaleInfo.ui_tools_pack_CreateOperation_setPackageInfo = "Set the Package information, please run the [Create Package].";

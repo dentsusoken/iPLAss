@@ -190,6 +190,17 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 		meta.setAccessControlAllowCredentials(webapi.accessControlAllowCredentials());
 		meta.setNeedTrustedAuthenticate(webapi.needTrustedAuthenticate());
 
+		// OpenAPI 関連の設定値
+		if (StringUtil.isNotEmpty(webapi.openApiVersion())) {
+			meta.setOpenApiVersion(webapi.openApiVersion());
+		}
+		if (StringUtil.isNotEmpty(webapi.openApiFileType())) {
+			meta.setOpenApiFileType(webapi.openApiFileType());
+		}
+		if (StringUtil.isNotEmpty(webapi.openApi())) {
+			meta.setOpenApi(webapi.openApi());
+		}
+
 		map.put(path, new AnnotateMetaDataEntry(meta, webapi.overwritable(), webapi.permissionSharable()));
 		return map;
 	}

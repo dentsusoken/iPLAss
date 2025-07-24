@@ -135,6 +135,19 @@ public class WebApiDefinition implements Definition {
 	private Long maxRequestBodySize;
 	private Long maxFileSize;
 
+	/** スタブレスポンスを返却するか */
+	private boolean returnStubResponse;
+	/** スタブレスポンス "status" の値 */
+	private String stubResponseStatusValue;
+	/** スタブレスポンスの JSON Value */
+	private String stubResponseJsonValue;
+	/** OpenAPI バージョン */
+	private String openApiVersion;
+	/** OpenAPI ファイルタイプ */
+	private String openApiFileType;
+	/** OpenAPI 定義 */
+	private String openApi;
+
 	public Long getMaxFileSize() {
 		return maxFileSize;
 	}
@@ -540,5 +553,109 @@ public class WebApiDefinition implements Definition {
 	 */
 	public void setCheckXRequestedWithHeader(boolean isCheckXRequestedWithHeader) {
 		this.isCheckXRequestedWithHeader = isCheckXRequestedWithHeader;
+	}
+
+	/**
+	 * スタブレスポンスを返却するかを取得します。
+	 * @return スタブレスポンスを返却する場合は true を返却
+	 */
+	public boolean isReturnStubResponse() {
+		return returnStubResponse;
+	}
+
+	/**
+	 * スタブレスポンスを返却するかを設定します。
+	 * @param returnStubResponse スタブレスポンスを返却する場合は true を設定
+	 */
+	public void setReturnStubResponse(boolean returnStubResponse) {
+		this.returnStubResponse = returnStubResponse;
+	}
+
+	/**
+	 * スタブレスポンスの "status" の値を取得します。
+	 * @return スタブレスポンスの "status" の値
+	 */
+	public String getStubResponseStatusValue() {
+		return stubResponseStatusValue;
+	}
+
+	/**
+	 * スタブレスポンスの "status" の値を設定します。
+	 * @param stubResponseStatusValue スタブレスポンスの "status" の値
+	 */
+	public void setStubResponseStatusValue(String stubResponseStatusValue) {
+		this.stubResponseStatusValue = stubResponseStatusValue;
+	}
+
+	/**
+	 * スタブレスポンスのJSON値を取得します。
+	 * @return スタブレスポンスのJSON値
+	 */
+	public String getStubResponseJsonValue() {
+		return stubResponseJsonValue;
+	}
+
+	/**
+	 * スタブレスポンスのJSON値を設定します。
+	 * @param stubResponseJsonValue スタブレスポンスのJSON値
+	 */
+	public void setStubResponseJsonValue(String stubResponseJsonValue) {
+		this.stubResponseJsonValue = stubResponseJsonValue;
+	}
+
+	/**
+	 * OpenAPIのバージョンを取得します。
+	 * @return OpenAPIのバージョン
+	 */
+	public String getOpenApiVersion() {
+		return openApiVersion;
+	}
+
+	/**
+	 * OpenAPIのバージョンを設定します。
+	 * <p>
+	 * 3.0, 3.1 などマイナーバージョンまで記載します。
+	 * OpenAPI バージョンに記載できる内容は {@link org.iplass.mtp.webapi.openapi.OpenApiVersion} を参照してください。
+	 * </p>
+	 * @param openApiVersion OpenAPIのバージョン
+	 */
+	public void setOpenApiVersion(String openApiVersion) {
+		this.openApiVersion = openApiVersion;
+	}
+
+	/**
+	 * OpenAPIのファイルタイプを取得します。
+	 * @return OpenAPIのファイルタイプ
+	 */
+	public String getOpenApiFileType() {
+		return openApiFileType;
+	}
+
+	/**
+	 * OpenAPIのファイルタイプを設定します。
+	 * <p>
+	 * OpenAPI のフォーマットは、JSON または YAML です。
+	 * 設定できる内容は、 {@link org.iplass.mtp.webapi.openapi.OpenApiFileType} を参照してください。
+	 * </p>
+	 * @param openApiFileType OpenAPIのファイルタイプ
+	 */
+	public void setOpenApiFileType(String openApiFileType) {
+		this.openApiFileType = openApiFileType;
+	}
+
+	/**
+	 * OpenAPI定義を取得します。
+	 * @return OpenAPI定義
+	 */
+	public String getOpenApi() {
+		return openApi;
+	}
+
+	/**
+	 * OpenAPI定義を設定します。
+	 * @param openApi OpenAPI定義
+	 */
+	public void setOpenApi(String openApi) {
+		this.openApi = openApi;
 	}
 }
