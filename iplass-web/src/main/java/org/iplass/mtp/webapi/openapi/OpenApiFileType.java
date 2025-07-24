@@ -97,6 +97,11 @@ public enum OpenApiFileType {
 	 * @return 対応する OpenApiFileType
 	 */
 	public static OpenApiFileType fromExtension(String fileName) {
+		// ファイル名に拡張子が存在するか確認
+		if (fileName == null || !fileName.contains(".")) {
+			throw new IllegalArgumentException("File name must contain an extension: " + fileName);
+		}
+
 		String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 		for (OpenApiFileType type : OpenApiFileType.values()) {
 			if (type.getExtensionList().contains(extension)) {

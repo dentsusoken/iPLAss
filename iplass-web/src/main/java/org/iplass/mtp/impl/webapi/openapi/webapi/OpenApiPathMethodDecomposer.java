@@ -60,12 +60,12 @@ public class OpenApiPathMethodDecomposer {
 	 */
 	public List<OpenApiProcessUnit> decompose(OpenAPI openApi, String path, PathItem pathItem) {
 		// OpenAPI path から WebAPI path を作成する
-		var idx = path.indexOf("/{");
-		var webApiBasePath = idx < 0
+		var parameterStartIndex = path.indexOf("/{");
+		var webApiBasePath = parameterStartIndex < 0
 				// "{" が見つからない場合、/path/to/openapi のような形式。先頭のスラッシュを除去し、そのまま利用する。( 例： /path/to/openapi -> path/to/openapi )
 				? path.substring(1)
 						// "{" が見つかった場合、/path/to/openapi/{parameter} のような形式。先頭のスラッシュとパラメーター部を除去する。 ( 例: /path/to/openapi/{parameter} -> path/to/openapi )
-						: path.substring(1, idx);
+						: path.substring(1, parameterStartIndex);
 
 		// WebAPI 定義が存在するかチェックする
 		var wdm = ManagerLocator.manager(WebApiDefinitionManager.class);

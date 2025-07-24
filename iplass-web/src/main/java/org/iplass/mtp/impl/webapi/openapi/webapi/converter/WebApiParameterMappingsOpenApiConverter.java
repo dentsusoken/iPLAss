@@ -43,13 +43,13 @@ public class WebApiParameterMappingsOpenApiConverter implements WebApiOpenApiCon
 	public void convertWebApi(WebApiOpenApiConvertContext context) {
 		var path = context.getOpenApiPath();
 
-		var x = path.indexOf("{");
-		if (0 > x) {
+		var parameterStartIndex = path.indexOf("{");
+		if (0 > parameterStartIndex) {
 			// パラメータが存在しない場合は終了
 			return;
 		}
 
-		var pathExcludeParam = path.substring(1, x - 1);
+		var pathExcludeParam = path.substring(1, parameterStartIndex - 1);
 		var pathOnlyLen = pathExcludeParam.split("/").length;
 
 		// 先頭の "/" を除き、split する
