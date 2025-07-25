@@ -53,6 +53,7 @@ public class GRdbDataStore extends RdbDataStore {
 
 	private List<StorageSpaceMap> storageSpace;
 	private boolean enableWindowFunctionEmulation;
+	private Map<String, String> overwriteTableNamePostfixMap;
 
 	private Integer stringTypeLengthOnQuery;
 
@@ -62,12 +63,44 @@ public class GRdbDataStore extends RdbDataStore {
 	public GRdbDataStore() {
 	}
 
+	public Map<String, String> getOverwriteTableNamePostfixMap() {
+		return overwriteTableNamePostfixMap;
+	}
+
+	public void setOverwriteTableNamePostfixMap(Map<String, String> overwriteTableNamePostfixMap) {
+		this.overwriteTableNamePostfixMap = overwriteTableNamePostfixMap;
+	}
+
+	/**
+	 * エンティティ定義名に対応するテーブル名接尾辞を取得する。
+	 * overwriteTableNamePostfixMap に当該エンティティ定義のものが設定されている場合は、メタデータから取得した接尾辞を上書きする。
+	 * 
+	 * @param entityDefinitionName エンティティ定義名
+	 * @param tableNamePostfixFromMeta Entityメタデータから取得したテーブル名接尾辞
+	 * @return テーブル名接尾辞
+	 */
+	public String getTableNamePostfix(String entityDefinitionName, String tableNamePostfixFromMeta) {
+		if (overwriteTableNamePostfixMap != null) {
+			if (overwriteTableNamePostfixMap.containsKey(entityDefinitionName)) {
+				String postfix = overwriteTableNamePostfixMap.get(entityDefinitionName);
+				if (postfix != null) {
+					return postfix;
+				} else {
+					// null の場合は、接尾辞を設定しない
+					return null;
+				}
+			}
+		}
+		return tableNamePostfixFromMeta;
+	}
+
 	public Map<String, StorageSpaceMap> getStorageSpaceMap() {
 		return storageSpaceMap;
 	}
 	public List<StorageSpaceMap> getStorageSpace() {
 		return storageSpace;
 	}
+
 	public void setStorageSpace(List<StorageSpaceMap> storageSpace) {
 		this.storageSpace = storageSpace;
 	}

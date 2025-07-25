@@ -63,9 +63,11 @@ public interface EntityStoreStrategy extends StoreStrategy {
 	 * データは全て物理削除します。
 	 * </p>
 	 *
+	 * @deprecated 現状使っていないので将来的に削除。purgeByIdを利用
 	 * @param context
 	 * @param handler
 	 */
+	@Deprecated
 	public void clean(EntityContext context, EntityHandler handler);
 
 	/**

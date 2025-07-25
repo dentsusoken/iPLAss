@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.datastore.grdb.strategy.metadata.diff;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.iplass.mtp.impl.datastore.grdb.GRdbDataStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbMultiplePropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
@@ -39,12 +40,14 @@ public class UpdPropertyIndexType extends Diff {
 	private MetaPrimitiveProperty previousProperty;
 	private MetaPrimitiveProperty nextProperty;
 	private MetaEntity nextEntity;
+	private GRdbDataStore dataStore;
 
 	public UpdPropertyIndexType(MetaPrimitiveProperty previousProperty,
-			MetaPrimitiveProperty nextProperty, MetaEntity nextEntity) {
+			MetaPrimitiveProperty nextProperty, MetaEntity nextEntity, GRdbDataStore dataStore) {
 		this.previousProperty = previousProperty;
 		this.nextProperty = nextProperty;
 		this.nextEntity = nextEntity;
+		this.dataStore = dataStore;
 	}
 
 	@Override
@@ -53,13 +56,17 @@ public class UpdPropertyIndexType extends Diff {
 		if (needDataModify()) {
 			boolean doExecute = false;
 
+			String tableNamePostfixRuntime = dataStore.getTableNamePostfix(nextEntity.getName(),
+					((MetaGRdbEntityStore) nextEntity.getEntityStoreDefinition()).getTableNamePostfix());
+
 			//previousのIndexの削除
 			//今までの状態でIndexが残っている可能性もあるので、旧のIndexTypeにかかわらず削除は実施
 			if (previousProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore) {
 				MetaGRdbPropertyStore propStore = (MetaGRdbPropertyStore) previousProperty.getEntityStoreProperty();
 				if(propStore.isExternalIndex()) {
 					IndexDeleteSql delSql = rdb.getUpdateSqlCreator(IndexDeleteSql.class);
-					stmt.addBatch(delSql.deleteByColName(tenantId, nextEntity.getId(), ((MetaGRdbEntityStore) nextEntity.getEntityStoreDefinition()).getTableNamePostfix(), propStore.getPageNo(), propStore.getColumnName(), rdb.getRdbTypeAdapter(previousProperty.getType()), previousProperty.getIndexType(), rdb));
+					stmt.addBatch(delSql.deleteByColName(tenantId, nextEntity.getId(), tableNamePostfixRuntime, propStore.getPageNo(),
+							propStore.getColumnName(), rdb.getRdbTypeAdapter(previousProperty.getType()), previousProperty.getIndexType(), rdb));
 					doExecute = true;
 				}
 			}
@@ -72,9 +79,11 @@ public class UpdPropertyIndexType extends Diff {
 					//もし、このカラムが再利用カラムだったら、insertIndexするまえにdeleteIndex
 					//カラム数を拡張された場合は再利用カラムかどうか判断つかないので、一律事前に削除
 					IndexDeleteSql delSql = rdb.getUpdateSqlCreator(IndexDeleteSql.class);
-					stmt.addBatch(delSql.deleteByColName(tenantId, nextEntity.getId(), ((MetaGRdbEntityStore) nextEntity.getEntityStoreDefinition()).getTableNamePostfix(), propStore.getPageNo(), propStore.getColumnName(), typeMapping, nextProperty.getIndexType(), rdb));
+					stmt.addBatch(delSql.deleteByColName(tenantId, nextEntity.getId(), tableNamePostfixRuntime, propStore.getPageNo(),
+							propStore.getColumnName(), typeMapping, nextProperty.getIndexType(), rdb));
 					IndexInsertSql insSql = rdb.getUpdateSqlCreator(IndexInsertSql.class);
-					stmt.addBatch(insSql.insertAll(tenantId, nextEntity.getId(), ((MetaGRdbEntityStore) nextEntity.getEntityStoreDefinition()).getTableNamePostfix(), propStore.getPageNo(), propStore.getColumnName(), nextProperty.getIndexType(), typeMapping, rdb));
+					stmt.addBatch(insSql.insertAll(tenantId, nextEntity.getId(), tableNamePostfixRuntime, propStore.getPageNo(),
+							propStore.getColumnName(), nextProperty.getIndexType(), typeMapping, rdb));
 					doExecute = true;
 				}
 			}

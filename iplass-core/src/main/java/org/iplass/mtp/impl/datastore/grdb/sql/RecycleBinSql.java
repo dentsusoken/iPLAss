@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.iplass.mtp.impl.datastore.grdb.GRdbPropertyStoreRuntime;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore;
-import org.iplass.mtp.impl.datastore.grdb.StorageSpaceMap;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore.GRdbEntityStoreRuntime;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore.GRdbPropertyStoreHandler;
+import org.iplass.mtp.impl.datastore.grdb.StorageSpaceMap;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjRefTable;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;
 import org.iplass.mtp.impl.entity.EntityContext;

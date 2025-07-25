@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.iplass.mtp.entity.definition.IndexType;
+import org.iplass.mtp.impl.datastore.grdb.GRdbDataStore;
 import org.iplass.mtp.impl.datastore.grdb.strategy.metadata.ColResolver;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaPrimitiveProperty;
@@ -40,7 +41,8 @@ public class UpdProperty extends Diff {
 	private ColResolver colResolver;
 	private MetaEntity nextEntity;
 	
-	public UpdProperty(MetaPrimitiveProperty previousProperty, MetaPrimitiveProperty nextProperty, MetaEntity nextEntity, ColResolver colResolver) {
+	public UpdProperty(MetaPrimitiveProperty previousProperty, MetaPrimitiveProperty nextProperty, MetaEntity nextEntity, ColResolver colResolver,
+			GRdbDataStore dataStore) {
 		this.previousProperty = previousProperty;
 		this.nextProperty = nextProperty;
 		this.colResolver = colResolver;
@@ -48,7 +50,7 @@ public class UpdProperty extends Diff {
 		
 		if ((previousProperty.getIndexType() != null &&	previousProperty.getIndexType() != IndexType.NON_INDEXED)
 				|| (nextProperty.getIndexType() != null && nextProperty.getIndexType() != IndexType.NON_INDEXED)) {
-			updPropertyIndexType = new UpdPropertyIndexType(previousProperty, nextProperty, nextEntity);
+			updPropertyIndexType = new UpdPropertyIndexType(previousProperty, nextProperty, nextEntity, dataStore);
 		}
 	}
 	

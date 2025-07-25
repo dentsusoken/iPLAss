@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.impl.datastore.grdb;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.entity.definition.StoreDefinition;
 import org.iplass.mtp.impl.datastore.EntityStoreRuntime;
 import org.iplass.mtp.impl.datastore.MetaEntityStore;
@@ -32,6 +29,9 @@ import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.util.ObjectUtil;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -319,7 +319,7 @@ public class MetaGRdbEntityStore extends MetaEntityStore {
 
 	@Override
 	public GRdbEntityStoreRuntime createRuntime(EntityHandler eh) {
-		return new GRdbEntityStoreRuntime();
+		return new GRdbEntityStoreRuntime(eh);
 	}
 
 	public class GRdbEntityStoreRuntime extends EntityStoreRuntime {
@@ -330,13 +330,19 @@ public class MetaGRdbEntityStore extends MetaEntityStore {
 		private String objRefRb = ObjRefTable.TABLE_NAME_RB;
 		
 		private int currentMaxPage;
+		private String entityDefinitionName;
+		private GRdbDataStore dataStore;
 
-		GRdbEntityStoreRuntime() {
-			if (tableNamePostfix != null) {
-				objStore = objStore + "__" + tableNamePostfix;
-				objStoreRb = objStoreRb + "__" + tableNamePostfix;
-				objRef = objRef + "__" + tableNamePostfix;
-				objRefRb = objRefRb + "__" + tableNamePostfix;
+		GRdbEntityStoreRuntime(EntityHandler eh) {
+			dataStore = (GRdbDataStore) eh.getDataStore();
+			entityDefinitionName = eh.getMetaData().getName();
+			String tableNamePostfixRuntime = dataStore.getTableNamePostfix(entityDefinitionName, tableNamePostfix);
+			
+			if (tableNamePostfixRuntime != null) {
+				objStore = objStore + "__" + tableNamePostfixRuntime;
+				objStoreRb = objStoreRb + "__" + tableNamePostfixRuntime;
+				objRef = objRef + "__" + tableNamePostfixRuntime;
+				objRefRb = objRefRb + "__" + tableNamePostfixRuntime;
 			}
 			currentMaxPage = currentMaxPage();
 		}
@@ -360,11 +366,13 @@ public class MetaGRdbEntityStore extends MetaEntityStore {
 		}
 
 		public String OBJ_INDEX(String colTypePostFix) {
-			return makeIndexTableName(colTypePostFix, tableNamePostfix);
+			String tableNamePostfixRuntime = dataStore.getTableNamePostfix(entityDefinitionName, tableNamePostfix);
+			return makeIndexTableName(colTypePostFix, tableNamePostfixRuntime);
 		}
 
 		public String OBJ_UNIQUE(String colTypePostFix) {
-			return makeUniqueIndexTableName(colTypePostFix, tableNamePostfix);
+			String tableNamePostfixRuntime = dataStore.getTableNamePostfix(entityDefinitionName, tableNamePostfix);
+			return makeUniqueIndexTableName(colTypePostFix, tableNamePostfixRuntime);
 		}
 
 		public String OBJ_REF() {

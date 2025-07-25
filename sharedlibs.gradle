@@ -92,11 +92,11 @@ ext {
 
 		//3rd party libs
 		//apache commons
-		'org.apache.commons:commons-lang3': '3.14.0',
+		'org.apache.commons:commons-lang3': '3.18.0',
 		'org.apache.commons:commons-text': '1.12.0',
 		'org.apache.commons:commons-collections4': '4.4',
 		'org.apache.commons:commons-pool2': '2.12.0',
-		'commons-io:commons-io': '2.16.1',
+		'commons-io:commons-io': '2.19.0',
 		'commons-beanutils:commons-beanutils': '1.11.0',
 		'commons-codec:commons-codec': '1.17.0',
 		
@@ -155,13 +155,13 @@ ext {
 
 		'org.infinispan:infinispan-core': '15.0.4.Final',
 		
-		'io.lettuce:lettuce-core': '6.5.2.RELEASE',
+		'io.lettuce:lettuce-core': '6.7.1.RELEASE',
 		
 		'net.sf.jasperreports:jasperreports': '6.21.3',
 		'com.github.librepdf:openpdf': '2.0.2',
 
-		// FIXME version is miliestone
-		'org.apache.commons:commons-fileupload2-jakarta-servlet6': '2.0.0-M2',
+		// FIXME Milestone version used. Delete this comment when you change to the release version.
+		'org.apache.commons:commons-fileupload2-jakarta-servlet6': '2.0.0-M4',
 		'io.jsonwebtoken:jjwt-api': '0.11.5',
 		'io.jsonwebtoken:jjwt-impl': '0.11.5',
 		'io.jsonwebtoken:jjwt-jackson': '0.11.5',

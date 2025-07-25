@@ -34,7 +34,6 @@ import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-
 public class MetaValidationLength extends MetaValidation {
 
 	private static final long serialVersionUID = -8535627564419203213L;
@@ -91,7 +90,7 @@ public class MetaValidationLength extends MetaValidation {
 	public ValidationHandler createRuntime(MetaEntity entity, MetaProperty property) {
 
 		final String charset = ServiceRegistry.getRegistry().getService(StoreService.class).getCharset();
-		return new ValidationHandler(this) {
+		return new ValidationHandler(this, entity, property) {
 
 			@Override
 			public String generateErrorMessage(Object value,
@@ -116,6 +115,9 @@ public class MetaValidationLength extends MetaValidation {
 
 			@Override
 			public boolean validate(Object value, ValidationContext context) {
+				if (validateSkipCheck(value, context)) {
+					return true;
+				}
 				if (value == null) {
 					return true;
 				}
@@ -158,9 +160,9 @@ public class MetaValidationLength extends MetaValidation {
 				throw new EntityRuntimeException("not support type:" + value.getClass());
 			}
 
-//			public MetaData getMetaData() {
-//				return MetaValidationLength.this;
-//			}
+			//			public MetaData getMetaData() {
+			//				return MetaValidationLength.this;
+			//			}
 		};
 	}
 

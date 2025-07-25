@@ -85,7 +85,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 		validationGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				startValidationEdit(false, (ValidationListGridRecord)event.getRecord());
+				startValidationEdit(false, (ValidationListGridRecord) event.getRecord());
 			}
 		});
 
@@ -135,18 +135,18 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			for (ValidationDefinition vd : record.getValidationList()) {
 				ValidationListGridRecord validateRecord = new ValidationListGridRecord();
 				if (vd instanceof RangeValidation) {
-					RangeValidation raVd = (RangeValidation)vd;
+					RangeValidation raVd = (RangeValidation) vd;
 					validateRecord.setValType(ValidationType.RANGE.name());
 					validateRecord.setMax(raVd.getMax());
 					validateRecord.setMin(raVd.getMin());
 					validateRecord.setMaxValueExcluded(raVd.isMaxValueExcluded());
 					validateRecord.setMinValueExcluded(raVd.isMinValueExcluded());
 				} else if (vd instanceof RegexValidation) {
-					RegexValidation reVd = (RegexValidation)vd;
+					RegexValidation reVd = (RegexValidation) vd;
 					validateRecord.setValType(ValidationType.REGEX.name());
 					validateRecord.setPtrn(reVd.getPattern());
 				} else if (vd instanceof LengthValidation) {
-					LengthValidation leVd = (LengthValidation)vd;
+					LengthValidation leVd = (LengthValidation) vd;
 					validateRecord.setValType(ValidationType.LENGTH.name());
 					if (leVd.getMax() != null) {
 						validateRecord.setMax(String.valueOf(leVd.getMax()));
@@ -157,12 +157,12 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 					validateRecord.setByteLengthCheck(leVd.isCheckBytes());
 					validateRecord.setSurrogatePairAsOneChar(leVd.isSurrogatePairAsOneChar());
 				} else if (vd instanceof ScriptingValidation) {
-					ScriptingValidation sVd = (ScriptingValidation)vd;
+					ScriptingValidation sVd = (ScriptingValidation) vd;
 					validateRecord.setValType(ValidationType.SCRIPT.name());
 					validateRecord.setScripting(sVd.getScript());
 					validateRecord.setAsArray(sVd.isAsArray());
 				} else if (vd instanceof JavaClassValidation) {
-					JavaClassValidation javaVd = (JavaClassValidation)vd;
+					JavaClassValidation javaVd = (JavaClassValidation) vd;
 					validateRecord.setValType(ValidationType.JAVA_CLASS.name());
 					validateRecord.setJavaClassName(javaVd.getClassName());
 					validateRecord.setAsArray(javaVd.isAsArray());
@@ -176,11 +176,11 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 					//NotNullValidation nVd = (NotNullValidation)vd;
 					validateRecord.setValType(ValidationType.NOTNULL.name());
 				} else if (vd instanceof BinaryTypeValidation) {
-					BinaryTypeValidation btVd = (BinaryTypeValidation)vd;
+					BinaryTypeValidation btVd = (BinaryTypeValidation) vd;
 					validateRecord.setValType(ValidationType.BINARYTYPE.name());
 					validateRecord.setPtrn(btVd.getAcceptMimeTypesPattern());
 				} else if (vd instanceof BinarySizeValidation) {
-					BinarySizeValidation bsVd = (BinarySizeValidation)vd;
+					BinarySizeValidation bsVd = (BinarySizeValidation) vd;
 					validateRecord.setValType(ValidationType.BINARYSIZE.name());
 					if (bsVd.getMax() != null) {
 						validateRecord.setMax(String.valueOf(bsVd.getMax()));
@@ -199,6 +199,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 				validateRecord.setMessageCategory(vd.getMessageCategory());
 				validateRecord.setMessageId(vd.getMessageId());
 				validateRecord.setDescription(vd.getDescription());
+				validateRecord.setValidationSkipScript(vd.getValidationSkipScript());
 
 				//一覧に表示する情報の設定
 				setValidationRecordDisplayInfo(validateRecord);
@@ -218,7 +219,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 
 		List<ValidationDefinition> vdList = new ArrayList<>();
 		for (ListGridRecord valRecord : validationGrid.getRecords()) {
-			ValidationListGridRecord vRecord = (ValidationListGridRecord)valRecord;
+			ValidationListGridRecord vRecord = (ValidationListGridRecord) valRecord;
 			ValidationType valType = ValidationType.valueOf(vRecord.getValType());
 			ValidationDefinition validation = null;
 			if (ValidationType.RANGE.equals(valType)) {
@@ -229,25 +230,25 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 				validation = new RegexValidation(vRecord.getPtrn(),
 						vRecord.getErrorMessage(), vRecord.getErrorCode());
 			} else if (ValidationType.LENGTH.equals(valType)) {
-				Integer min = vRecord.getMin() != null ? Integer.valueOf(vRecord.getMin()) : null ;
-				Integer max = vRecord.getMax() != null ? Integer.valueOf(vRecord.getMax()) : null ;
+				Integer min = vRecord.getMin() != null ? Integer.valueOf(vRecord.getMin()) : null;
+				Integer max = vRecord.getMax() != null ? Integer.valueOf(vRecord.getMax()) : null;
 				validation = new LengthValidation(min, max,
 						vRecord.getErrorMessage(), vRecord.getErrorCode());
-				((LengthValidation)validation).setCheckBytes(vRecord.isByteLengthCheck());
-				((LengthValidation)validation).setSurrogatePairAsOneChar(vRecord.isSurrogatePairAsOneChar());
+				((LengthValidation) validation).setCheckBytes(vRecord.isByteLengthCheck());
+				((LengthValidation) validation).setSurrogatePairAsOneChar(vRecord.isSurrogatePairAsOneChar());
 			} else if (ValidationType.SCRIPT.equals(valType)) {
 				validation = new ScriptingValidation(vRecord.getScripting(),
 						vRecord.getErrorMessage(), vRecord.getErrorCode());
-				((ScriptingValidation)validation).setAsArray(vRecord.isAsArray());
+				((ScriptingValidation) validation).setAsArray(vRecord.isAsArray());
 			} else if (ValidationType.JAVA_CLASS.equals(valType)) {
 				validation = new JavaClassValidation(vRecord.getJavaClassName(),
 						vRecord.getErrorMessage(), vRecord.getErrorCode());
-				((JavaClassValidation)validation).setAsArray(vRecord.isAsArray());
+				((JavaClassValidation) validation).setAsArray(vRecord.isAsArray());
 			} else if (ValidationType.NOTNULL.equals(valType)) {
 				validation = new NotNullValidation();
 			} else if (ValidationType.BINARYSIZE.equals(valType)) {
-				Long min = vRecord.getMin() != null ? Long.valueOf(vRecord.getMin()) : null ;
-				Long max = vRecord.getMax() != null ? Long.valueOf(vRecord.getMax()) : null ;
+				Long min = vRecord.getMin() != null ? Long.valueOf(vRecord.getMin()) : null;
+				Long max = vRecord.getMax() != null ? Long.valueOf(vRecord.getMax()) : null;
 				validation = new BinarySizeValidation(min, max,
 						vRecord.getErrorMessage(), vRecord.getErrorCode());
 			} else if (ValidationType.BINARYTYPE.equals(valType)) {
@@ -260,11 +261,13 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			}
 			if (validation != null) {
 				validation.setErrorMessage(vRecord.getErrorMessage());
-				validation.setLocalizedErrorMessageList((List<LocalizedStringDefinition>) JSOHelper.convertToJava((JavaScriptObject) vRecord.getErrorMessageMultiLang()));
+				validation.setLocalizedErrorMessageList(
+						(List<LocalizedStringDefinition>) JSOHelper.convertToJava((JavaScriptObject) vRecord.getErrorMessageMultiLang()));
 				validation.setErrorCode(vRecord.getErrorCode());
 				validation.setMessageCategory(vRecord.getMessageCategory());
 				validation.setMessageId(vRecord.getMessageId());
 				validation.setDescription(vRecord.getDescription());
+				validation.setValidationSkipScript(vRecord.getValidationSkipScript());
 				vdList.add(validation);
 			}
 		}
@@ -295,6 +298,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			validator.setMessageCategory("mtp/validation");
 			validator.setMessageId("NotNull");
 			validator.setDescription(null);
+			validator.setValidationSkipScript(null);
 
 			//一覧に表示する情報の設定
 			setValidationRecordDisplayInfo(validator);
@@ -320,7 +324,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 		boolean isExistNotNull = false;
 		ListGridRecord[] records = validationGrid.getRecords();
 		for (ListGridRecord record : records) {
-			ValidationListGridRecord validation = (ValidationListGridRecord)record;
+			ValidationListGridRecord validation = (ValidationListGridRecord) record;
 			if (ValidationType.NOTNULL.equals(ValidationType.valueOf(validation.getValType()))) {
 				isExistNotNull = true;
 				break;
@@ -357,8 +361,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 	}
 
 	private void setValidationRecordDisplayInfo(ValidationListGridRecord record) {
-		ValidationType validationType
-				= ValidationType.valueOf(record.getValType());
+		ValidationType validationType = ValidationType.valueOf(record.getValType());
 		if (ValidationType.RANGE.equals(validationType)) {
 			String purpus = "";
 			if (record.getMin() != null) {
@@ -441,6 +444,11 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 		} else {
 			record.setMessageDisplayInfo("");
 		}
+		if (record.getValidationSkipScript() != null) {
+			record.setValidationSkipScriptDisplayInfo("Set");
+		} else {
+			record.setValidationSkipScriptDisplayInfo("Not Set");
+		}
 	}
 
 	private static class ValidationGrid extends ListGrid {
@@ -468,7 +476,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 
 			setOverflow(Overflow.VISIBLE);
 			setBodyOverflow(Overflow.VISIBLE);
-			setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+			setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
 			ListGridField validationField = new ListGridField(ValidationListGridRecord.VALTYPE, "Type");
 			validationField.setWidth(100);
@@ -477,7 +485,9 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			ListGridField errorMsgField = new ListGridField(ValidationListGridRecord.MSG_DISP_INFO, "Message");
 			ListGridField errorCodeField = new ListGridField(ValidationListGridRecord.ERRORCODE, "Code");
 			errorCodeField.setWidth(60);
-			setFields(validationField, gpField, errorMsgField, errorCodeField);
+			ListGridField validationSkipScriptField = new ListGridField(ValidationListGridRecord.VALIDATION_SKIP_SCRIPT_DISP_INFO, "Skip Setting");
+			validationSkipScriptField.setWidth(70);
+			setFields(validationField, gpField, errorMsgField, errorCodeField, validationSkipScriptField);
 		}
 
 	}
