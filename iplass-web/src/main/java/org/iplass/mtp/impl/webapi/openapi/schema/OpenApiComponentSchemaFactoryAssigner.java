@@ -59,10 +59,17 @@ public class OpenApiComponentSchemaFactoryAssigner implements OpenApiComponentSc
 	 */
 	@SuppressWarnings("rawtypes")
 	protected List<OpenApiComponentSchemaFactory> createFactoryList() {
+		var schemaGenerator = createClassSchemaGenerator();
 		var classFactory = new OpenApiComponentClassSchemaFactory();
-		classFactory.setClassSchemaGenerator(createClassSchemaGenerator());
+		classFactory.setClassSchemaGenerator(schemaGenerator);
+
+		var entityPropertyJsonSchemaResolver = createEntityPropertyDefinitionJsonSchemaResolver();
 		var entityDefinitionFactory = new OpenApiComponentEntityDefinitionSchemaFactory();
 		entityDefinitionFactory.setClassSchemaFactory(classFactory);
+		entityDefinitionFactory.setEntityPropertyDefinitionJsonSchemaResolver(entityPropertyJsonSchemaResolver);
+
+		// OpenApiSchemaFactory を設定する。設定するインスタンスは、EntityDefinition のスキーマを解決することができるインスタンス
+		entityPropertyJsonSchemaResolver.setOpenApiSchemaFactory(entityDefinitionFactory);
 
 		return List.of(entityDefinitionFactory, classFactory);
 	}
@@ -76,5 +83,13 @@ public class OpenApiComponentSchemaFactoryAssigner implements OpenApiComponentSc
 	 */
 	protected ClassSchemaGenerator createClassSchemaGenerator() {
 		return new VictoolsClassSchemaGenerator();
+	}
+
+	/**
+	 * エンティティプロパティ定義のJSONスキーマ解決クラスを作成します。
+	 * @return エンティティプロパティ定義のJSONスキーマ解決クラス
+	 */
+	protected EntityPropertyDefinitionJsonSchemaResolver createEntityPropertyDefinitionJsonSchemaResolver() {
+		return new EntityPropertyDefinitionJsonSchemaResolver();
 	}
 }

@@ -37,7 +37,7 @@ public class OpenApiComponentEntityDefinitionSchemaFactory implements OpenApiCom
 	/** ログ */
 	private Logger logger = LoggerFactory.getLogger(OpenApiComponentEntityDefinitionSchemaFactory.class);
 	/** エンティティ定義プロパティのJSONスキーマ解決クラス */
-	private EntityPropertyDefinitionJsonSchemaResolver entityPropertyResolver = createEntityPropertyDefinitionJsonSchemaResolver();
+	private EntityPropertyDefinitionJsonSchemaResolver entityPropertyResolver;
 	/** クラス定義からスキーマを生成するクラス */
 	private OpenApiComponentSchemaFactory<Class<?>> schemaFactory;
 
@@ -90,10 +90,12 @@ public class OpenApiComponentEntityDefinitionSchemaFactory implements OpenApiCom
 		this.schemaFactory = schemaFactory;
 	}
 
-	protected EntityPropertyDefinitionJsonSchemaResolver createEntityPropertyDefinitionJsonSchemaResolver() {
-		var instance = new EntityPropertyDefinitionJsonSchemaResolver();
-		instance.setOpenApiSchemaFactory(this);
-		return instance;
+	/**
+	 * エンティティ定義プロパティのJSONスキーマ解決クラスを設定します。
+	 * @param entityPropertyResolver エンティティ定義プロパティのJSONスキーマ解決クラス
+	 */
+	public void setEntityPropertyDefinitionJsonSchemaResolver(EntityPropertyDefinitionJsonSchemaResolver entityPropertyResolver) {
+		this.entityPropertyResolver = entityPropertyResolver;
 	}
 
 	/**
