@@ -26,6 +26,7 @@ import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefini
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.properties.extend.select.MetaSelectValue.SelectValueRuntime;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -41,6 +42,11 @@ public class SelectValueService extends AbstractTypedMetaDataService<MetaSelectV
 		@Override
 		public TypedDefinitionManager<SelectValueDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(SelectValueDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 

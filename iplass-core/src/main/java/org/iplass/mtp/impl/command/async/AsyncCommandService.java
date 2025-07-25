@@ -27,6 +27,7 @@ import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.command.async.MetaAsyncCommand.AsyncCommandRuntime;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
@@ -40,6 +41,11 @@ public class AsyncCommandService extends AbstractTypedMetaDataService<MetaAsyncC
 		@Override
 		public TypedDefinitionManager<AsyncCommandDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(AsyncCommandDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 

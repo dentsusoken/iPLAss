@@ -27,6 +27,7 @@ import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.MetaAuthenticationPolicy.AuthenticationPolicyRuntime;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -42,6 +43,11 @@ public class AuthenticationPolicyService extends AbstractTypedMetaDataService<Me
 		@Override
 		public TypedDefinitionManager<AuthenticationPolicyDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(AuthenticationPolicyDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 

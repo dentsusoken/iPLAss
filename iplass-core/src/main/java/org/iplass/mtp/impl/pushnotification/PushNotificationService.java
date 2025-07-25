@@ -26,6 +26,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.pushnotification.template.MetaPushNotificationTemplate;
 import org.iplass.mtp.impl.pushnotification.template.MetaPushNotificationTemplate.PushNotificationTemplateRuntime;
 import org.iplass.mtp.pushnotification.PushNotification;
@@ -52,6 +53,11 @@ public class PushNotificationService extends AbstractTypedMetaDataService<MetaPu
 		@Override
 		public TypedDefinitionManager<PushNotificationTemplateDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(PushNotificationTemplateDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 
