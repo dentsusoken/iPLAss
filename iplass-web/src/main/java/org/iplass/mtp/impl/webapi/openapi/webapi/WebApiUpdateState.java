@@ -20,10 +20,10 @@
 package org.iplass.mtp.impl.webapi.openapi.webapi;
 
 /**
- * WebAPI 更新結果
+ * WebAPI 更新状態
  * @author SEKIGUCHI Naoya
  */
-public enum WebApiUpdateResult {
+public enum WebApiUpdateState {
 	/** 成功 */
 	SUCCESS,
 	/** 失敗 */

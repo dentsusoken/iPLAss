@@ -52,14 +52,14 @@ public class OpenApiMappedWebApiUpdater {
 		for (var webApiMapInfo : webApiMapInfoList) {
 			try {
 				var updateResult = doUpdate(webApiMapInfo);
-				var updateState = updateResult != null ? updateResult.isSuccess() ? WebApiUpdateResult.SUCCESS : WebApiUpdateResult.FAILED
-						: WebApiUpdateResult.NOT_PROCESS;
+				var updateState = updateResult != null ? updateResult.isSuccess() ? WebApiUpdateState.SUCCESS : WebApiUpdateState.FAILED
+						: WebApiUpdateState.NOT_PROCESS;
 				result.add(new WebApiUpdateInfo(webApiMapInfo, updateState));
 
 			} catch (RuntimeException e) {
 				logger.warn("Failed to update WebAPI. OpenAPI path = {}, definitionName = {}.",
 						webApiMapInfo.getOpenApiPath(), webApiMapInfo.getWebApiDefinition().getName(), e);
-				var errorResult = new WebApiUpdateInfo(webApiMapInfo, WebApiUpdateResult.FAILED);
+				var errorResult = new WebApiUpdateInfo(webApiMapInfo, WebApiUpdateState.FAILED);
 				result.add(errorResult);
 			}
 		}
@@ -94,14 +94,14 @@ public class OpenApiMappedWebApiUpdater {
 		/** WebAPIマッピング情報 */
 		private WebApiMapInfo mapInfo;
 		/** WebAPI更新結果 */
-		private WebApiUpdateResult updateResult;
+		private WebApiUpdateState updateResult;
 
 		/**
 		 * コンストラクタ
 		 * @param mapInfo WebAPIマッピング情報
 		 * @param updateResult WebAPI更新結果
 		 */
-		public WebApiUpdateInfo(WebApiMapInfo mapInfo, WebApiUpdateResult updateResult) {
+		public WebApiUpdateInfo(WebApiMapInfo mapInfo, WebApiUpdateState updateResult) {
 			this.mapInfo = mapInfo;
 			this.updateResult = updateResult;
 		}
@@ -118,7 +118,7 @@ public class OpenApiMappedWebApiUpdater {
 		 * WebAPI更新結果を取得します。
 		 * @return WebAPI更新結果
 		 */
-		public WebApiUpdateResult getUpdateResult() {
+		public WebApiUpdateState getUpdateResult() {
 			return updateResult;
 		}
 	}
