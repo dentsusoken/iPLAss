@@ -143,6 +143,43 @@ public @interface WebApi {
 	String responseType() default "";
 
 	/**
+	 * スタブレスポンスを返却するかどうか。
+	 * <p>
+	 * true を設定するとスタブレスポンスを返却します。デフォルトの設定値は false です。<br>
+	 * スタブレスポンスを返却する場合は、{@link #stubResponseStatusValue()} と {@link #stubResponseJsonValue()} を設定してください。
+	 * </p>
+	 * <h3>注意事項</h3>
+	 * <p>
+	 * プロパティに true を設定すると、常にスタブレスポンスを返却することになります。<br>
+	 * スタブレスポンスは、WebAPIの実装を行わずに、WebAPIの仕様を確認するために利用されます。<br>
+	 * そのため、本プロパティは通常は false に設定されていることを想定しています。<br>
+	 * </p>
+	 * @return スタブレスポンスを返却するか。
+	 */
+	boolean returnStubResponse() default false;
+
+	/**
+	 * スタブレスポンスの "status" の値。
+	 * <p>
+	 * スタブレスポンスを返却する場合の "status" キーの値を設定します。<br>
+	 * 未指定の場合は、"SUCCESS" が設定されます。
+	 * </p>
+	 * @return スタブレスポンスの "status" の値
+	 */
+	String stubResponseStatusValue() default "";
+
+	/**
+	 * スタブレスポンスの JSON Value。
+	 * <p>
+	 * スタブレスポンスを返却する場合の JSON Value を設定します。<br>
+	 * ここに設定する値は、JSON Object の形式で指定してください。<br>
+	 * JSON Object のキーが、{@link #results()} に指定されているキーと一致する場合に、値がレスポンスに設定されます。
+	 * </p>
+	 * @return スタブレスポンスの JSON Value
+	 */
+	String stubResponseJsonValue() default "";
+
+	/**
 	 * OpenAPI バージョン
 	 * <p>
 	 * 設定可能な値は {@link org.iplass.mtp.webapi.openapi.OpenApiVersion} で定義されている seriesVersion の値です（3.0, 3.1 など）。

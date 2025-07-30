@@ -190,6 +190,15 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 		meta.setAccessControlAllowCredentials(webapi.accessControlAllowCredentials());
 		meta.setNeedTrustedAuthenticate(webapi.needTrustedAuthenticate());
 
+		// スタブ関連の設定
+		meta.setReturnStubResponse(webapi.returnStubResponse());
+		if (StringUtil.isNotEmpty(webapi.stubResponseStatusValue())) {
+			meta.setStubResponseStatusValue(webapi.stubResponseStatusValue());
+		}
+		if (StringUtil.isNotEmpty(webapi.stubResponseJsonValue())) {
+			meta.setStubResponseJsonValue(webapi.stubResponseJsonValue());
+		}
+
 		// OpenAPI 関連の設定値
 		if (StringUtil.isNotEmpty(webapi.openApiVersion())) {
 			meta.setOpenApiVersion(webapi.openApiVersion());
