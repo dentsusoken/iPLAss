@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.webapi;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ClassUtil;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.definition.WebApiResultAttribute;
 
 /**
@@ -126,7 +127,7 @@ public class MetaWebApiResultAttribute implements MetaData {
 		 */
 		public WebApiResultAttributeRuntime(MetaWebApiResultAttribute meta) {
 			this.meta = meta;
-			if (meta.dataType != null) {
+			if (StringUtil.isNotEmpty(meta.dataType)) {
 				this.dataType = ClassUtil.forName(meta.dataType);
 			}
 		}
