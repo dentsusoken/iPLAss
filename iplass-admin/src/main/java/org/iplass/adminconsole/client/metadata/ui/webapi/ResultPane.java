@@ -23,27 +23,25 @@ package org.iplass.adminconsole.client.metadata.ui.webapi;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.adminconsole.client.base.event.DataChangedEvent;
-import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
+import org.iplass.mtp.webapi.definition.WebApiResultAttribute;
 
 import com.smartgwt.client.types.AutoFitWidthApproach;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
-import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ResultPane extends VLayout {
 
-	private String RESULT = "result";
+	static final String RESULT = "result";
+	static final String DATA_TYPE = "dataType";
 
 	private ResultGrid grid;
 
@@ -55,25 +53,13 @@ public class ResultPane extends VLayout {
 		caption.setHeight(21);
 
 		grid = new ResultGrid();
-		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
-			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				editMap((ListGridRecord)event.getRecord());
-			}
-		});
+		grid.addRecordDoubleClickHandler(this::onDoubleClickRecord);
 
 		IButton addMap = new IButton("Add");
-		addMap.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				addMap();
-			}
-		});
+		addMap.addClickHandler(this::onClickAddButton);
 
 		IButton delMap = new IButton("Remove");
-		delMap.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				deleteMap();
-			}
-		});
+		delMap.addClickHandler(this::onClickRemoveButton);
 
 		HLayout mapButtonPane = new HLayout(5);
 		mapButtonPane.setMargin(5);
@@ -83,17 +69,6 @@ public class ResultPane extends VLayout {
 		addMember(caption);
 		addMember(grid);
 		addMember(mapButtonPane);
-	}
-
-	public void setResults(String[] results) {
-		grid.setData(new ListGridRecord[]{});
-		if (results != null) {
-			List<ListGridRecord> records = new ArrayList<ListGridRecord>();
-			for (String result : results) {
-				records.add(createRecord(result, null));
-			}
-			grid.setData(records.toArray(new ListGridRecord[]{}));
-		}
 	}
 
 	/**
@@ -107,65 +82,120 @@ public class ResultPane extends VLayout {
 	}
 
 	/**
+	 * WebApiDefinition の情報を、本設定画面へ反映します。
+	 * @param definition WebApiDefinition
+	 */
+	@SuppressWarnings("deprecation")
+	public void setDefinition(WebApiDefinition definition) {
+		List<ListGridRecord> records = new ArrayList<>();
+		if (null != definition.getResponseResults() && 0 < definition.getResponseResults().length) {
+			for (WebApiResultAttribute attribute : definition.getResponseResults()) {
+				ListGridRecord listGridrecord = new ListGridRecord();
+				listGridrecord.setAttribute(RESULT, attribute.getName());
+				listGridrecord.setAttribute(DATA_TYPE, attribute.getDataType());
+
+				records.add(listGridrecord);
+			}
+		}
+
+		// TODO 互換性維持のため設定を反映。results を削除した場合は、以下の if ブロックも削除する。
+		if (null != definition.getResults() && 0 < definition.getResults().length) {
+			for (String name : definition.getResults()) {
+				boolean isNotContainsName = records.stream().map(r -> r.getAttributeAsString(RESULT)).filter(n -> n.equals(name)).findAny().isEmpty();
+				if (isNotContainsName) {
+					ListGridRecord listGridrecord = new ListGridRecord();
+					listGridrecord.setAttribute(RESULT, name);
+					// name のみ設定。dataType は設定しない。
+					records.add(listGridrecord);
+				}
+			}
+		}
+
+		grid.setData(records.toArray(new ListGridRecord[records.size()]));
+	}
+
+	/**
 	 * 編集されたWebAPIDefinition情報を返します。
 	 *
+	 * @param definition 編集前のWebAPIDefinition情報
 	 * @return 編集WebAPIDefinition情報
 	 */
 	public WebApiDefinition getEditDefinition(WebApiDefinition definition) {
-
 		ListGridRecord[] records = grid.getRecords();
 		if (records == null || records.length == 0) {
 			return definition;
 		}
 
-		String[] results = new String[records.length];
-		int i = 0;
-		for (ListGridRecord record : records) {
-			results[i] = record.getAttribute(RESULT);
-			i++;
+		// WebApiDefinitionのresponseResultsを設定
+		WebApiResultAttribute[] responseResults = new WebApiResultAttribute[records.length];
+		for (int i = 0; i < records.length; i++) {
+			ListGridRecord rec = records[i];
+			WebApiResultAttribute attribute = new WebApiResultAttribute();
+			attribute.setName(rec.getAttribute(RESULT));
+			attribute.setDataType(rec.getAttribute(DATA_TYPE));
+
+			responseResults[i] = attribute;
+		}
+		definition.setResponseResults(responseResults);
+
+		// TODO 互換性維持のため results にも設定を保存する。大きなバージョンアップのタイミングで削除する予定。
+		String[] results = new String[responseResults.length];
+		for (int i = 0; i < responseResults.length; i++) {
+			results[i] = responseResults[i].getName();
 		}
 		definition.setResults(results);
+
 		return definition;
 	}
 
+	/**
+	 * レコードのダブルクリック時処理
+	 * @param event レコードのダブルクリックイベント
+	 */
+	private void onDoubleClickRecord(RecordDoubleClickEvent event) {
+		final ListGridRecord gridRecord = event.getRecord();
+		String name = gridRecord.getAttributeAsString(RESULT);
+		String dataType = gridRecord.getAttributeAsString(DATA_TYPE);
 
-	private ListGridRecord createRecord(String result, ListGridRecord record) {
-		if (record == null) {
-			record = new ListGridRecord();
-		}
-		record.setAttribute(RESULT, result);
-		return record;
-	}
+		ResultEditDialog.DialogValue value = new ResultEditDialog.DialogValue(name, dataType);
 
-	private void addMap() {
-		editMap(null);
-	}
-
-	private void editMap(final ListGridRecord record) {
-		final ResultEditDialog dialog = new ResultEditDialog();
-		dialog.addDataChangeHandler(new DataChangedHandler() {
-
-			@Override
-			public void onDataChanged(DataChangedEvent event) {
-				String result = event.getValueObject(String.class);
-				ListGridRecord newRecord = createRecord(result, record);
-				if (record != null) {
-					grid.updateData(newRecord);
-				} else {
-					//追加
-					grid.addData(newRecord);
-				}
-				grid.refreshFields();
-			}
+		ResultEditDialog dialog = new ResultEditDialog();
+		dialog.addDataChangeHandler(dataChangeEvent -> {
+			ResultEditDialog.DialogValue result = dataChangeEvent.getValueObject(ResultEditDialog.DialogValue.class);
+			gridRecord.setAttribute(RESULT, result.getName());
+			gridRecord.setAttribute(DATA_TYPE, result.getDataType());
+			// 既存レコードを更新
+			grid.updateData(gridRecord);
+			grid.refreshFields();
 		});
-
-		if (record != null) {
-			dialog.setResult((String)record.getAttributeAsObject(RESULT));
-		}
+		dialog.setDialogValue(value);
 		dialog.show();
 	}
 
-	private void deleteMap() {
+	/**
+	 * Add ボタン押下時処理
+	 * @param event クリックイベント
+	 */
+	private void onClickAddButton(ClickEvent event) {
+		ResultEditDialog dialog = new ResultEditDialog();
+		dialog.addDataChangeHandler(dataChangeEvent -> {
+			ResultEditDialog.DialogValue result = dataChangeEvent.getValueObject(ResultEditDialog.DialogValue.class);
+
+			ListGridRecord gridRecord = new ListGridRecord();
+			gridRecord.setAttribute(RESULT, result.getName());
+			gridRecord.setAttribute(DATA_TYPE, result.getDataType());
+			// レコードを新規追加
+			grid.addData(gridRecord);
+			grid.refreshFields();
+		});
+		dialog.show();
+	}
+
+	/**
+	 * Remove ボタン押下時処理
+	 * @param event クリックイベント
+	 */
+	private void onClickRemoveButton(ClickEvent event) {
 		grid.removeSelectedData();
 	}
 
@@ -187,8 +217,12 @@ public class ResultPane extends VLayout {
 			setOverflow(Overflow.VISIBLE);
 
 			ListGridField nameField = new ListGridField(RESULT, "Attribute Name");
+			nameField.setRequired(Boolean.TRUE);
 
-			setFields(nameField);
+			ListGridField dataTypeField = new ListGridField(DATA_TYPE, "Data Type");
+			dataTypeField.setRequired(Boolean.FALSE);
+
+			setFields(nameField, dataTypeField);
 		}
 	}
 }

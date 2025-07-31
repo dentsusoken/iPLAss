@@ -146,7 +146,21 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 			meta.setMaxFileSize(webapi.maxFileSize());
 		}
 
+		// TODO results は非推奨です。responseResults を利用してください。大きなバージョンアップで削除する予定です。
 		meta.setResults(webapi.results());
+
+		// responseResults の設定
+		if (null != webapi.responseResults()) {
+			var responseResults = new MetaWebApiResultAttribute[webapi.responseResults().length];
+			for (int i = 0, len = webapi.responseResults().length; i < len; i++) {
+				MetaWebApiResultAttribute attribute = new MetaWebApiResultAttribute();
+				attribute.setName(webapi.responseResults()[i].name());
+				attribute.setDataType(webapi.responseResults()[i].dataType());
+				responseResults[i] = attribute;
+			}
+			meta.setResponseResults(responseResults);
+		}
+
 		meta.setState(webapi.state());
 		meta.setSupportBearerToken(webapi.supportBearerToken());
 		if (webapi.oauthScopes() != null && webapi.oauthScopes().length > 0) {

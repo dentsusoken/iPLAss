@@ -65,8 +65,15 @@ public class WebApiDefinition implements Definition {
 
 	/**
 	 * Commandの実行結果と、表示処理の対応の定義。
+	 * @deprecated {@link #responseResults} を使用してください。本設定項目は、{@link WebApiResultAttribute}の配列を設定するように変更されました。本フィールドは大きなバージョンアップで削除する予定です。
 	 */
+	@Deprecated
 	private String[] results;
+
+	/**
+	 * WebAPIレスポンスの結果の属性
+	 */
+	private WebApiResultAttribute[] responseResults;
 
 	/**
 	 * WebApiの受付種別。
@@ -475,7 +482,9 @@ public class WebApiDefinition implements Definition {
 
 	/**
 	 * @return result
+	 * @deprecated {@link #getResponseResults()} を使用してください。本メソッドは大きなバージョンアップで削除する予定です。
 	 */
+	@Deprecated
 	public String[] getResults() {
 		return results;
 	}
@@ -483,9 +492,27 @@ public class WebApiDefinition implements Definition {
 	/**
 	 * @param result
 	 *            セットする result
+	 * @deprecated {@link #setResponseResults(WebApiResultAttribute[])} を使用してください。本メソッドは大きなバージョンアップで削除する予定です。
 	 */
+	@Deprecated
 	public void setResults(String[] results) {
 		this.results = results;
+	}
+
+	/**
+	 * WebApiレスポンスの結果の属性を取得します。
+	 * @return WebApiレスポンスの結果の属性
+	 */
+	public WebApiResultAttribute[] getResponseResults() {
+		return responseResults;
+	}
+
+	/**
+	 * WebApiレスポンスの結果の属性を設定します。
+	 * @param responseResults WebApiレスポンスの結果の属性
+	 */
+	public void setResponseResults(WebApiResultAttribute[] responseResults) {
+		this.responseResults = responseResults;
 	}
 
 	public boolean isPublicWebApi() {

@@ -122,7 +122,17 @@ public @interface WebApi {
 	boolean supportBearerToken() default false;
 	String[] oauthScopes() default{};
 
+	/**
+	 * @deprecated {@link #responseResults()} を利用してください。本メソッドは大きなバージョンアップの際に削除する予定です。
+	 */
+	@Deprecated
 	String[] results() default {WebApiRequestConstants.DEFAULT_RESULT};
+
+	/**
+	 * WebAPIの結果に関する属性を設定します。
+	 * @return WebAPIの結果に関する属性
+	 */
+	WebApiResultAttribute[] responseResults() default { @WebApiResultAttribute(name = WebApiRequestConstants.DEFAULT_RESULT) };
 
 	RestJson restJson() default @RestJson(parameterName="");
 	RestXml restXml() default @RestXml(parameterName="");

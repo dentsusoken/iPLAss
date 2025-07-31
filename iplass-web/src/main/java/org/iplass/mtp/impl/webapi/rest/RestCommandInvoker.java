@@ -73,6 +73,7 @@ import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.webapi.MetaWebApi;
 import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
+import org.iplass.mtp.impl.webapi.MetaWebApiResultAttribute.WebApiResultAttributeRuntime;
 import org.iplass.mtp.impl.webapi.WebApiParameter;
 import org.iplass.mtp.impl.webapi.WebApiParameterMap;
 import org.iplass.mtp.impl.webapi.WebApiResponse;
@@ -149,14 +150,14 @@ public class RestCommandInvoker {
 		}
 
 		Object onlyOneRes = null;
-		if (runtime.getMetaData().getResults() != null) {
-			for (String name : runtime.getMetaData().getResults()) {
-				Object val = stack.getRequestContext().getAttribute(name);
-				if (val != null) {
-					result.addResult(name, val);
-				}
+		for (WebApiResultAttributeRuntime attributeRuntime : runtime.getResponseResults()) {
+			String attributeName = attributeRuntime.getName();
+			Object val = stack.getRequestContext().getAttribute(attributeName);
+			if (val != null) {
+				result.addResult(attributeName, val);
 			}
 		}
+
 		if (result.getResults() != null && result.getResults().size() == 1) {
 			onlyOneRes = result.getResults().values().iterator().next();
 		}

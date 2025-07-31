@@ -69,6 +69,7 @@ import org.iplass.mtp.impl.web.WebRequestContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.fileupload.MultiPartParameterValueMap;
 import org.iplass.mtp.impl.webapi.MetaWebApiParamMap.WebApiParamMapRuntime;
+import org.iplass.mtp.impl.webapi.MetaWebApiResultAttribute.WebApiResultAttributeRuntime;
 import org.iplass.mtp.impl.webapi.jackson.WebApiObjectMapperService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
@@ -79,6 +80,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiParamMapDefinition;
+import org.iplass.mtp.webapi.definition.WebApiResultAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +108,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	/** WebからのパラメータのCommand実行時のParameter名のマップの定義 */
 	private MetaWebApiParamMap[] webApiParamMap;
 
+	/**
+	 * @deprecated {@link #responseResults} を使用してください。本フィールドは大きなバージョンアップで削除する予定です。
+	 */
+	@Deprecated
 	private String[] results;
+
+	/** 結果属性メタデータ */
+	private MetaWebApiResultAttribute[] responseResults;
 
 	private RequestType[] accepts;
 	private MethodType[] methods;
@@ -346,14 +355,39 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		this.webApiParamMap = webApiParamMap;
 	}
 
+	/**
+	 * @deprecated {@link #setResponseResults(MetaWebApiResultAttribute[])} を利用してください。本メソッドは大きなバージョンアップで削除する予定です。<br>
+	 * 本設定値は {@link MetaWebApiResultAttribute#setName(String)} の値に代替されます。
+	 */
+	@Deprecated
 	public void setResults(String[] results) {
 		this.results = results;
 	}
 
+	/**
+	 * @deprecated {@link #getResponseResults()} を利用してください。本メソッドは大きなバージョンアップで削除する予定です。<br>
+	 * 本設定値は {@link MetaWebApiResultAttribute#getName()} の値に代替されます。
+	 */
+	@Deprecated
 	public String[] getResults() {
 		return this.results;
 	}
 
+	/**
+	 * 結果属性メタデータを設定します。
+	 * @param responseResults 結果属性メタデータの配列
+	 */
+	public void setResponseResults(MetaWebApiResultAttribute[] responseResults) {
+		this.responseResults = responseResults;
+	}
+
+	/**
+	 * 結果属性メタデータを取得します。
+	 * @return 結果属性メタデータの配列
+	 */
+	public MetaWebApiResultAttribute[] getResponseResults() {
+		return this.responseResults;
+	}
 
 	public RequestType[] getAccepts() {
 		return accepts;
@@ -575,6 +609,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		private Set<String> restJsonAcceptableContentTypeSet;
 		/** restXmlAcceptableContentType を Set で保持する */
 		private Set<String> restXmlAcceptableContentTypeSet;
+		/** 結果属性ランタイム */
+		private WebApiResultAttributeRuntime[] responseResultsRuntime;
 
 		/** スタブレスポンスのステータス値 */
 		private String stubResponseStatusValue;;
@@ -690,6 +726,32 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 						? new HashSet<>(Arrays.asList(restXmlAcceptableContentTypes))
 								: Collections.emptySet();
 
+
+				// responseResults 設定
+				List<WebApiResultAttributeRuntime> responseResultsRuntimeList = new ArrayList<>();
+				if (responseResults != null && responseResults.length > 0) {
+					for (int i = 0; i < responseResults.length; i++) {
+						responseResultsRuntimeList.add(responseResults[i].createRuntime());
+					}
+				}
+
+				// TODO 下位バージョン互換性の為のロジックです。results を削除した場合、以下の if ブロックは削除してください。
+				if (results != null && results.length > 0) {
+					// results に値が設定されている場合、responseResults の name に一致しないキーが存在すれば、キーの内容をマージする。
+					for (int i = 0; i < results.length; i++) {
+						// responseResultsRuntimeList に同一の属性名を持つかを確認する
+						var attributeName = results[i];
+						var isNotContainsName = responseResultsRuntimeList.stream().filter(r -> r.getName().equals(attributeName)).findAny().isEmpty();
+						if (isNotContainsName) {
+							// 属性名が存在しない場合は、Runtime を作成し追加する
+							var attribute = new MetaWebApiResultAttribute();
+							attribute.setName(attributeName);
+							responseResultsRuntimeList.add(attribute.createRuntime());
+						}
+					}
+				}
+
+				responseResultsRuntime = responseResultsRuntimeList.toArray(WebApiResultAttributeRuntime[]::new);
 
 				// スタブ判定
 				if (webApiService.isEnableStubResponse() && MetaWebApi.this.returnStubResponse) {
@@ -1056,6 +1118,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		}
 
 		/**
+		 * 結果属性ランタイムを取得します。
+		 * @return 結果属性ランタイム
+		 */
+		public WebApiResultAttributeRuntime[] getResponseResults() {
+			return this.responseResultsRuntime;
+		}
+
+		/**
 		 * スタブレスポンスのステータス値を取得します。
 		 * <p>
 		 * メタデータ解析時に設定値が存在しない場合は、デフォルト値を設定済みです。
@@ -1119,8 +1189,17 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setPublicWebApi(isPublicWebApi);
 		definition.setCheckXRequestedWithHeader(isCheckXRequestedWithHeader);
 
+		// TODO results は非推奨項目となりました。大きなバージョンアップで削除する予定です。
 		if (results != null) {
 			definition.setResults(Arrays.copyOf(results, results.length));
+		}
+
+		if (responseResults != null) {
+			WebApiResultAttribute[] definitionResponseResults = new WebApiResultAttribute[responseResults.length];
+			for (int i = 0; i < responseResults.length; i++) {
+				definitionResponseResults[i] = responseResults[i].currentConfig();
+			}
+			definition.setResponseResults(definitionResponseResults);
 		}
 
 		definition.setRestJsonParameterName(restJsonParameterName);
@@ -1183,10 +1262,22 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		displayName = definition.getDisplayName();
 		description = definition.getDescription();
 
+		// TODO results は非推奨項目となりました。大きなバージョンアップで削除する予定です。
 		if (definition.getResults() != null) {
 			results = Arrays.copyOf(definition.getResults(), definition.getResults().length);
 		} else {
 			results = null;
+		}
+
+		this.responseResults = null;
+		if (definition.getResponseResults() != null) {
+			MetaWebApiResultAttribute[] responseResults = new MetaWebApiResultAttribute[definition.getResponseResults().length];
+			for (int i = 0; i < definition.getResponseResults().length; i++) {
+				MetaWebApiResultAttribute attribute = new MetaWebApiResultAttribute();
+				attribute.applyConfig(definition.getResponseResults()[i]);
+				responseResults[i] = attribute;
+			}
+			this.responseResults = responseResults;
 		}
 
 		privileged = definition.isPrivileged();

@@ -302,7 +302,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 
 		commandConfigPane.setConfig(curDefinition.getCommandConfig());
 		webApiParamMapPane.setWebApiParamMap(curDefinition.getWebApiParamMap());
-		resultPane.setResults(curDefinition.getResults());
+		resultPane.setDefinition(curDefinition);
 
 		// オプション属性値を画面に反映
 		optionalAttributePane.setDefinition(curDefinition);
