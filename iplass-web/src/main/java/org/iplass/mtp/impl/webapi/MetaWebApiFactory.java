@@ -146,7 +146,21 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 			meta.setMaxFileSize(webapi.maxFileSize());
 		}
 
+		// TODO results は非推奨です。responseResults を利用してください。大きなバージョンアップで削除する予定です。
 		meta.setResults(webapi.results());
+
+		// responseResults の設定
+		if (null != webapi.responseResults()) {
+			var responseResults = new MetaWebApiResultAttribute[webapi.responseResults().length];
+			for (int i = 0, len = webapi.responseResults().length; i < len; i++) {
+				MetaWebApiResultAttribute attribute = new MetaWebApiResultAttribute();
+				attribute.setName(webapi.responseResults()[i].name());
+				attribute.setDataType(webapi.responseResults()[i].dataType());
+				responseResults[i] = attribute;
+			}
+			meta.setResponseResults(responseResults);
+		}
+
 		meta.setState(webapi.state());
 		meta.setSupportBearerToken(webapi.supportBearerToken());
 		if (webapi.oauthScopes() != null && webapi.oauthScopes().length > 0) {
@@ -189,6 +203,26 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 		}
 		meta.setAccessControlAllowCredentials(webapi.accessControlAllowCredentials());
 		meta.setNeedTrustedAuthenticate(webapi.needTrustedAuthenticate());
+
+		// スタブ関連の設定
+		meta.setReturnStubResponse(webapi.returnStubResponse());
+		if (StringUtil.isNotEmpty(webapi.stubResponseStatusValue())) {
+			meta.setStubResponseStatusValue(webapi.stubResponseStatusValue());
+		}
+		if (StringUtil.isNotEmpty(webapi.stubResponseJsonValue())) {
+			meta.setStubResponseJsonValue(webapi.stubResponseJsonValue());
+		}
+
+		// OpenAPI 関連の設定値
+		if (StringUtil.isNotEmpty(webapi.openApiVersion())) {
+			meta.setOpenApiVersion(webapi.openApiVersion());
+		}
+		if (StringUtil.isNotEmpty(webapi.openApiFileType())) {
+			meta.setOpenApiFileType(webapi.openApiFileType());
+		}
+		if (StringUtil.isNotEmpty(webapi.openApi())) {
+			meta.setOpenApi(webapi.openApi());
+		}
 
 		map.put(path, new AnnotateMetaDataEntry(meta, webapi.overwritable(), webapi.permissionSharable()));
 		return map;
