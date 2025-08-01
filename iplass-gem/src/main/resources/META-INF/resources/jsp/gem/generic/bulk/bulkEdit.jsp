@@ -83,7 +83,9 @@
 	String getPropertyDisplayValue(PropertyDefinition p, Object propValue, PropertyEditor editor) {
 		String dispValue = "";
 		boolean isMultiple = p.getMultiplicity() != 1;
-		if (isMultiple) {
+		if (propValue == null) {
+			return "";
+		} else if (isMultiple) {
 			Object[] values = (Object[]) propValue;
 			String[] tmp = new String[values.length];
 			for (int i = 0; i < values.length; i++) {
