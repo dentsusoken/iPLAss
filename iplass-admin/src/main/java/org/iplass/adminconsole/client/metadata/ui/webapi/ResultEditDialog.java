@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
@@ -57,15 +58,19 @@ public class ResultEditDialog extends MtpDialog {
 	 */
 	public ResultEditDialog() {
 
-		setHeight(180);
+		setHeight(170);
 		setTitle("Result setting");
 		centerInPage();
 
 		nameField = new MtpTextItem("result", "Attribute name");
 		SmartGWTUtil.setRequired(nameField);
+		SmartGWTUtil.addHoverToFormItem(nameField, AdminClientMessageUtil.getString("ui_metadata_webapi_ResultEditDialog_nameField_hoverPrompt"));
 
 		dataTypeField = new ComboBoxItem("dataType", "Data Type");
 		dataTypeField.setValueMap(getDataTypeFieldValueMap());
+		dataTypeField.setWidth("100%");
+		SmartGWTUtil.addHoverToFormItem(dataTypeField,
+				AdminClientMessageUtil.getString("ui_metadata_webapi_ResultEditDialog_dataTypeField_hoverPrompt"));
 
 		final DynamicForm form = new MtpForm();
 		form.setItems(nameField, dataTypeField);
@@ -118,9 +123,9 @@ public class ResultEditDialog extends MtpDialog {
 
 	private Map<String, String> getDataTypeFieldValueMap() {
 		Map<String, String> valueMap = new HashMap<>();
-		valueMap.put("java.lang.String", "String");
-		valueMap.put("java.lang.Long", "Number");
-		valueMap.put("java.lang.Boolean", "Boolean");
+		valueMap.put("java.lang.String", "java.lang.String");
+		valueMap.put("java.lang.Long", "java.lang.Long");
+		valueMap.put("java.lang.Boolean", "java.lang.Boolean");
 		return valueMap;
 	}
 

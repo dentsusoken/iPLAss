@@ -38,6 +38,9 @@ import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+/**
+ * WebAPIメタデータ 結果設定入力領域
+ */
 public class ResultPane extends VLayout {
 
 	static final String RESULT = "result";
@@ -45,6 +48,9 @@ public class ResultPane extends VLayout {
 
 	private ResultGrid grid;
 
+	/**
+	 * コンストラクタ
+	 */
 	public ResultPane() {
 		setMargin(5);
 		setAutoHeight();
@@ -120,6 +126,7 @@ public class ResultPane extends VLayout {
 	 * @param definition 編集前のWebAPIDefinition情報
 	 * @return 編集WebAPIDefinition情報
 	 */
+	@SuppressWarnings("deprecation")
 	public WebApiDefinition getEditDefinition(WebApiDefinition definition) {
 		ListGridRecord[] records = grid.getRecords();
 		if (records == null || records.length == 0) {
