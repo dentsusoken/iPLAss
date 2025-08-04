@@ -737,7 +737,10 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 				// TODO 下位バージョン互換性の為のロジックです。results を削除した場合、以下の if ブロックは削除してください。
 				if (results != null && results.length > 0) {
-					logger.debug("WebApi {}, we recommend changing the setting from results to responseResults.", getName());
+					if (responseResults == null || responseResults.length == 0) {
+						// results に設定があり、responseResults に何も設定が無い場合にログ出力する
+						logger.debug("WebApi {}, we recommend changing the setting from results to responseResults.", getName());
+					}
 
 					// results に値が設定されている場合、responseResults の name に一致しないキーが存在すれば、キーの内容をマージする。
 					for (int i = 0; i < results.length; i++) {
