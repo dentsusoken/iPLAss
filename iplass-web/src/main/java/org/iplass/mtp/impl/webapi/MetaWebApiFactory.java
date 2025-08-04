@@ -31,7 +31,10 @@ import org.iplass.mtp.impl.command.MetaCommandFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.CacheControlType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Object> {
@@ -39,6 +42,9 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 	public static final String PATH_PREFIX = WebApiService.WEB_API_META_PATH;
 
 	private MetaCommandFactory commandFactory = new MetaCommandFactory();
+
+	/** ロガー */
+	private Logger logger = LoggerFactory.getLogger(MetaWebApiFactory.class);
 
 	@Override
 	public Class<Object> getAnnotatedClass() {
@@ -159,6 +165,33 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 				responseResults[i] = attribute;
 			}
 			meta.setResponseResults(responseResults);
+		}
+
+		// TODO デフォルト値の判定は、results が削除されたら不要となる
+		// results, responseResults のデフォルト判定
+		boolean isDefaultResults = null != webapi.results() && 1 == webapi.results().length
+				&& WebApiRequestConstants.DEFAULT_RESULT.equals(webapi.results()[0]);
+		boolean isDefaultResponseResults = null != webapi.responseResults() && 1 == webapi.responseResults().length
+				&& WebApiRequestConstants.DEFAULT_RESULT.equals(webapi.responseResults()[0].name())
+				&& StringUtil.isEmpty(webapi.responseResults()[0].dataType());
+
+		if (!isDefaultResults && isDefaultResponseResults) {
+			// results がデフォルトではない、responseResults がデフォルトの場合、
+			// responseResults のデフォルト値を削除する。
+			meta.setResponseResults(new MetaWebApiResultAttribute[0]);
+			logger.debug(
+					"annotatedClass {}: The default value for 'responseResults()' has been deleted, because 'results()' has been specified. We recommend using 'responseResults()'.",
+					annotatedClass.getName());
+
+		} else if (isDefaultResults && !isDefaultResponseResults) {
+			// results がデフォルト、responseResults がデフォルトではない場合、
+			// results のデフォルト値を削除する。
+			meta.setResults(new String[0]);
+			logger.debug("annotatedClass {}: The default value for 'results()' has been deleted, because 'responseResults()' has been specified.",
+					annotatedClass.getName());
+
+//		} else {
+//			// どちらもデフォルト値ではない、もしくは両方ともデフォルト値の場合はそのまま利用する。
 		}
 
 		meta.setState(webapi.state());
