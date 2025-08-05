@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.HttpMethod;
@@ -611,6 +612,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		private Set<String> restXmlAcceptableContentTypeSet;
 		/** 結果属性ランタイム */
 		private WebApiResultAttributeRuntime[] responseResultsRuntime;
+		/** 結果属性名、ランタイムマップ */
+		private Map<String, WebApiResultAttributeRuntime> responseResultsNameRuntimeMap;
 
 		/** スタブレスポンスのステータス値 */
 		private String stubResponseStatusValue;;
@@ -757,6 +760,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				}
 
 				responseResultsRuntime = responseResultsRuntimeList.toArray(WebApiResultAttributeRuntime[]::new);
+				responseResultsNameRuntimeMap = responseResultsRuntimeList.stream().collect(Collectors.toMap(r -> r.getName(), r -> r));
 
 				// スタブ判定
 				if (webApiService.isEnableStubResponse() && MetaWebApi.this.returnStubResponse) {
@@ -1128,6 +1132,15 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		 */
 		public WebApiResultAttributeRuntime[] getResponseResults() {
 			return this.responseResultsRuntime;
+		}
+
+		/**
+		 * 指定した名前の結果属性ランタイムが存在するか確認します。
+		 * @param name 結果属性の名前
+		 * @return 指定した名前の結果属性ランタイムが存在する場合は true、それ以外は false
+		 */
+		public boolean containsResponseResult(String name) {
+			return responseResultsNameRuntimeMap.containsKey(name);
 		}
 
 		/**

@@ -105,7 +105,7 @@ public class EntityWebApiUpdateOpenApiConverter extends AbstractEntityWebApiOpen
 		.addParametersItem(checkLockedByUser);
 
 		var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-		var componentsSchemaRef = service.getSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
+		var componentsSchemaRef = service.getReusableSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
 
 		// requestBody
 		var requestBodySchema = new ObjectSchema().$ref(componentsSchemaRef);

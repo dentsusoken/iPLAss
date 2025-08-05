@@ -19,11 +19,15 @@
  */
 package org.iplass.mtp.impl.webapi.openapi.webapi.converter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 
+import org.iplass.mtp.impl.webapi.WebApiService;
+import org.iplass.mtp.impl.webapi.openapi.OpenApiService;
+import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiJsonSchemaType;
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiOpenApiConvertContext.OperationContext;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.ArrayUtil;
+import org.iplass.mtp.webapi.definition.WebApiResultAttribute;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -56,17 +60,35 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 		// 全 Operation の response に対して results を追加する。
 
 		var content = initResponseContent(operation.getOperation());
+
+		var openApiService = ServiceRegistry.getRegistry().getService(OpenApiService.class);
+		// webapi runtime を取得
+		var runtime = ServiceRegistry.getRegistry().getService(WebApiService.class).getRuntimeByName(context.getWebApiDefinition().getName());
+
 		for (var key : content.keySet()) {
 			var schema = new ObjectSchema();
 
-			if (ArrayUtil.isNotEmpty(context.getWebApiDefinition().getResults())) {
-				// results に設定されている場合
-				for (var result : context.getWebApiDefinition().getResults()) {
-					// result が定義されている場合はプロパティを追加する。スキーマの定義はわからないため、StringSchema とする。
-					schema.addProperty(result, new StringSchema());
+			var jsonSchemaType = OpenApiJsonSchemaType.fromContentType(key, OpenApiJsonSchemaType.JSON);
+			if (ArrayUtil.isNotEmpty(runtime.getResponseResults())) {
+				// responseResults に設定されている場合
+				for (var result : runtime.getResponseResults()) {
+					if (null != result.getDataType()) {
+						// dataType の設定あり
+						if (openApiService.getStandardClassSchemaResolver().canResolve(result.getDataType())) {
+							var resultSchema = openApiService.getStandardClassSchemaResolver().resolve(result.getDataType(), jsonSchemaType);
+							schema.addProperty(result.getName(), resultSchema);
+						} else {
+							var ref = openApiService.getReusableSchemaFactory().addReusableSchema(result.getDataType(), context.getOpenApi(),
+									jsonSchemaType);
+							schema.addProperty(result.getName(), new ObjectSchema().$ref(ref));
+						}
+					} else {
+						// dataType の設定なし。スキーマの定義はわからないため、StringSchema とする。
+						schema.addProperty(result.getName(), new StringSchema());
+					}
 				}
 
-				if (!ArrayUtil.contains(context.getWebApiDefinition().getResults(), "status")) {
+				if (!runtime.containsResponseResult("status")) {
 					// status が定義されていない場合は追加する
 					schema.addProperty("status", new StringSchema());
 				}
@@ -91,13 +113,15 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void setWebApiDefaultValue(WebApiOpenApiConvertContext context) {
-		// results を初期化する
+		// results, responseResults を初期化する
 		context.getWebApiDefinition().setResults(new String[0]);
+		context.getWebApiDefinition().setResponseResults(new WebApiResultAttribute[0]);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("deprecation")
 	@Override
 	protected CheckNext convertWebApiOperation(OperationContext operation, WebApiOpenApiConvertContext context) {
 		var content = getResponseContent(operation.getOperation());
@@ -105,22 +129,30 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 			return CheckNext.CONTINUE;
 		}
 
-		var propList = new ArrayList<String>();
+		var nameResultMap = new HashMap<String, WebApiResultAttribute>();
+		for (var result : context.getWebApiDefinition().getResponseResults()) {
+			nameResultMap.put(result.getName(), result);
+		}
+
 		for (var mediaType : content.values()) {
 			if (null != mediaType.getSchema() && null != mediaType.getSchema().getProperties() && !mediaType.getSchema().getProperties().isEmpty()) {
-				propList.addAll(mediaType.getSchema().getProperties().keySet());
+				for (var prop : mediaType.getSchema().getProperties().keySet()) {
+					var name = (String) prop;
+					if (nameResultMap.containsKey(name)) {
+						// 既存のプロパティはスキップする
+						continue;
+					}
+					var attr = new WebApiResultAttribute();
+					attr.setName(name);
+					// NOTE キー名は復元する。データタイプは復元しない
+					nameResultMap.put(name, attr);
+				}
 			}
 		}
 
-		// ※注意：$ref は考慮しない
-		// 既存プロパティとジョイン
-		if (null != context.getWebApiDefinition().getResults()) {
-			propList.addAll(Arrays.asList(context.getWebApiDefinition().getResults()));
-		}
-		// distinct
-		var newResults = propList.stream().distinct().toArray(String[]::new);
 		// 新しい値を設定
-		context.getWebApiDefinition().setResults(newResults);
+		context.getWebApiDefinition().setResults(nameResultMap.keySet().stream().toArray(String[]::new));
+		context.getWebApiDefinition().setResponseResults(nameResultMap.values().stream().toArray(WebApiResultAttribute[]::new));
 
 		return CheckNext.CONTINUE;
 	}

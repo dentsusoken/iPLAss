@@ -30,10 +30,10 @@ import io.swagger.v3.oas.models.OpenAPI;
  * </p>
  * @author SEKIGUCHI Naoya
  */
-public class OpenApiComponentSchemaFactoryAssigner implements OpenApiComponentSchemaFactory<Object> {
+public class OpenApiComponentReusableSchemaFactoryAssigner implements OpenApiComponentReusableSchemaFactory<Object> {
 	/** OpenAPIスキーマ生成クラスリスト */
 	@SuppressWarnings("rawtypes")
-	private List<OpenApiComponentSchemaFactory> factoryList = createFactoryList();
+	private List<OpenApiComponentReusableSchemaFactory> factoryList = createFactoryList();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -58,13 +58,13 @@ public class OpenApiComponentSchemaFactoryAssigner implements OpenApiComponentSc
 	 * @return ファクトリクラスのリスト
 	 */
 	@SuppressWarnings("rawtypes")
-	protected List<OpenApiComponentSchemaFactory> createFactoryList() {
+	protected List<OpenApiComponentReusableSchemaFactory> createFactoryList() {
 		var schemaGenerator = createClassSchemaGenerator();
-		var classFactory = new OpenApiComponentClassSchemaFactory();
+		var classFactory = new OpenApiComponentClassReusableSchemaFactory();
 		classFactory.setClassSchemaGenerator(schemaGenerator);
 
 		var entityPropertyJsonSchemaResolver = createEntityPropertyDefinitionJsonSchemaResolver();
-		var entityDefinitionFactory = new OpenApiComponentEntityDefinitionSchemaFactory();
+		var entityDefinitionFactory = new OpenApiComponentEntityDefinitionReusableSchemaFactory();
 		entityDefinitionFactory.setClassSchemaFactory(classFactory);
 		entityDefinitionFactory.setEntityPropertyDefinitionJsonSchemaResolver(entityPropertyJsonSchemaResolver);
 

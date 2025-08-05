@@ -19,26 +19,28 @@
  */
 package org.iplass.mtp.impl.webapi.openapi.schema;
 
-import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.media.Schema;
 
 /**
- * OpenAPI の components/schemas に再利用可能なスキーマを追加するファクトリインターフェース。
- * @param <T> スキーマを生成するオブジェクトの型
+ * OpenAPI用 標準クラスのスキーマを解決するインターフェース
+ * <p>
+ * エンティティのプロパティとして設定されうるクラスの解決を目的とします。
+ * </p>
  * @author SEKIGUCHI Naoya
  */
-public interface OpenApiComponentSchemaFactory<T> {
-	/** 再利用可能なスキーマの接頭辞 */
-	String REUSABLE_SCHEMA_PREFIX = "#/components/schemas/";
+public interface OpenApiStandardClassSchemaResolver {
+	/**
+	 * 指定されたクラスが解決可能かどうかを確認します。
+	 * @param clazz クラス
+	 * @return 解決可能な場合はtrue、そうでない場合はfalse
+	 */
+	boolean canResolve(Class<?> clazz);
 
 	/**
-	 * OpenAPI の components/schemas に再利用可能なスキーマを追加します。
-	 * <p>
-	 * スキーマは、指定されたオブジェクトから生成されます。
-	 * </p>
-	 * @param object スキーマを生成するオブジェクト
-	 * @param openApi OpenAPI オブジェクト
+	 * 指定されたクラスのスキーマを解決します。
+	 * @param clazz クラス
 	 * @param schemaType スキーマのタイプ（JSON, XML, FORMなど）
-	 * @return スキーマの参照文字列
+	 * @return スキーマ
 	 */
-	String addReusableSchema(T object, OpenAPI openApi, OpenApiJsonSchemaType schemaType);
+	Schema<?> resolve(Class<?> clazz, OpenApiJsonSchemaType schemaType);
 }

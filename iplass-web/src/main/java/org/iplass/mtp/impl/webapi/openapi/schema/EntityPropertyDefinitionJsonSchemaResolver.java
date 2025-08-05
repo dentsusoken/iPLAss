@@ -26,15 +26,13 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.properties.ExpressionProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
-import org.iplass.mtp.entity.definition.properties.SelectProperty;
+import org.iplass.mtp.impl.webapi.openapi.OpenApiService;
+import org.iplass.mtp.spi.ServiceRegistry;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.DateSchema;
 import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 
 /**
  * エンティティプロパティ定義のJSONスキーマ解決クラス
@@ -42,7 +40,7 @@ import io.swagger.v3.oas.models.media.StringSchema;
  */
 public class EntityPropertyDefinitionJsonSchemaResolver {
 	/** エンティティ定義からスキーマを生成する機能 */
-	private OpenApiComponentSchemaFactory<EntityDefinition> factory;
+	private OpenApiComponentReusableSchemaFactory<EntityDefinition> factory;
 
 	/**
 	 * プロパティ定義からスキーマ定義に変換する
@@ -54,36 +52,7 @@ public class EntityPropertyDefinitionJsonSchemaResolver {
 	 */
 	public Schema<?> convertSchema(PropertyDefinitionType type, PropertyDefinition propDef, OpenAPI openApi, OpenApiJsonSchemaType schemaType) {
 		return switch (type) {
-		case AUTONUMBER -> new StringSchema();
-		case BINARY -> new IntegerSchema();
-		case BOOLEAN -> new BooleanSchema();
-		case DATE -> {
-			// DATE: Content-Type によって異なる。
-			yield switch (schemaType) {
-			// JSON = yyyy-MM-dd
-			case JSON -> new DateSchema();
-			// XML = yyyy-MM-dd+09:00
-			case XML -> new StringSchema().description("Date and time in the format yyyy-MM-dd+09:00.");
-			// FORM = yyyyMMdd
-			case FORM -> new StringSchema().description("Date and time in the format yyyyMMdd.");
-			};
-		}
-		case DATETIME -> {
-			// DATETIME: Content-Type によって異なる。
-			yield switch (schemaType) {
-			// JSON = Integer(unix timestamp)
-			case JSON ->  new IntegerSchema().description("Unix timestamp in milliseconds.");
-			// XML = yyyy-MM-dd'T'HH:mm:ss.000000000+09:00
-			case XML -> new StringSchema().description("ISO 8601 date-time format with timezone offset.");
-			// FORM = yyyyMMddHHmmss
-			case FORM -> new StringSchema().description("Date and time in the format yyyyMMddHHmmss.");
-			};
-		}
-		case DECIMAL -> new IntegerSchema();
 		case EXPRESSION -> convertSchema(((ExpressionProperty) propDef).getResultType(), propDef, openApi, schemaType);
-		case FLOAT -> new IntegerSchema();
-		case INTEGER -> new IntegerSchema();
-		case LONGTEXT -> new StringSchema();
 		case REFERENCE -> {
 			ReferenceProperty refPropDef = (ReferenceProperty) propDef;
 			var referenceEntityDefinitionName = refPropDef.getObjectDefinitionName();
@@ -96,23 +65,21 @@ public class EntityPropertyDefinitionJsonSchemaResolver {
 			yield new ObjectSchema().$ref(ref);
 		}
 		case SELECT -> {
-			var selectPropDef = (SelectProperty) propDef;
-			var schema = new StringSchema();
-			var enumValueList = selectPropDef.getSelectValueList().stream().map(s -> s.getValue()).toList();
-			schema.setEnum(enumValueList);
-			yield schema;
+			var schemaResolver = ServiceRegistry.getRegistry().getService(OpenApiService.class).getStandardClassSchemaResolver();
+			yield schemaResolver.resolve(type.getJavaType(), schemaType);
 		}
-		case STRING -> new StringSchema();
-		// TIME: Content-Type によって異なる。
-		case TIME -> {
-			yield switch (schemaType) {
-			// JSON = HH:mm:ss
-			case JSON -> new StringSchema().format("time");
-			// XML = HH:mm:ss+09:00
-			case XML -> new StringSchema().description("Time in the format HH:mm:ss+09:00.");
-			// FORM = HH:mm:ss
-			case FORM -> new StringSchema().description("Time in the format HH:mm:ss.");
-			};
+		case BINARY -> new IntegerSchema();
+		case
+		// string
+		AUTONUMBER, LONGTEXT, STRING,
+		// boolean
+		BOOLEAN,
+		// 数値,
+		DECIMAL, FLOAT, INTEGER,
+		// 日付
+		DATE, DATETIME, TIME -> {
+			var schemaResolver = ServiceRegistry.getRegistry().getService(OpenApiService.class).getStandardClassSchemaResolver();
+			yield schemaResolver.resolve(type.getJavaType(), schemaType);
 		}
 		};
 	}
@@ -121,7 +88,7 @@ public class EntityPropertyDefinitionJsonSchemaResolver {
 	 * エンティティ定義からスキーマを生成する機能を設定する
 	 * @param factory エンティティ定義からスキーマを生成する機能
 	 */
-	public void setOpenApiSchemaFactory(OpenApiComponentSchemaFactory<EntityDefinition> factory) {
+	public void setOpenApiSchemaFactory(OpenApiComponentReusableSchemaFactory<EntityDefinition> factory) {
 		this.factory = factory;
 	}
 }

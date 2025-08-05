@@ -96,7 +96,7 @@ public class EntityWebApiQueryOpenApiConverter extends AbstractEntityWebApiOpenA
 			}
 
 			var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-			var componentsSchemaRef = service.getSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
+			var componentsSchemaRef = service.getReusableSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
 			listPropertyItems.addOneOfItem(new ObjectSchema().$ref(componentsSchemaRef));
 		}
 
@@ -115,7 +115,7 @@ public class EntityWebApiQueryOpenApiConverter extends AbstractEntityWebApiOpenA
 		.addParametersItem(footer);
 
 		var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-		var componentsSchemaRef = service.getSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
+		var componentsSchemaRef = service.getReusableSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
 
 		// responses
 		var listSchema = new ObjectSchema()

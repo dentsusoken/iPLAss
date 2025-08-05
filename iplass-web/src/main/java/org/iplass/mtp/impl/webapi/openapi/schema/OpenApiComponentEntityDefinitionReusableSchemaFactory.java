@@ -33,13 +33,13 @@ import io.swagger.v3.oas.models.media.ObjectSchema;
  * OpenAPI の components/schemas に再利用可能なエンティティ定義スキーマを追加するファクトリクラス
  * @author SEKIGUCHI Naoya
  */
-public class OpenApiComponentEntityDefinitionSchemaFactory implements OpenApiComponentSchemaFactory<EntityDefinition>, OpenApiComponentTarget {
+public class OpenApiComponentEntityDefinitionReusableSchemaFactory implements OpenApiComponentReusableSchemaFactory<EntityDefinition>, OpenApiComponentTarget {
 	/** ログ */
-	private Logger logger = LoggerFactory.getLogger(OpenApiComponentEntityDefinitionSchemaFactory.class);
+	private Logger logger = LoggerFactory.getLogger(OpenApiComponentEntityDefinitionReusableSchemaFactory.class);
 	/** エンティティ定義プロパティのJSONスキーマ解決クラス */
 	private EntityPropertyDefinitionJsonSchemaResolver entityPropertyResolver;
 	/** クラス定義からスキーマを生成するクラス */
-	private OpenApiComponentSchemaFactory<Class<?>> schemaFactory;
+	private OpenApiComponentReusableSchemaFactory<Class<?>> schemaFactory;
 
 	@Override
 	public boolean isTarget(Object object) {
@@ -86,7 +86,7 @@ public class OpenApiComponentEntityDefinitionSchemaFactory implements OpenApiCom
 	 * クラス定義からスキーマを生成するファクトリを設定します。
 	 * @param schemaFactory クラス定義からスキーマを生成するファクトリ
 	 */
-	public void setClassSchemaFactory(OpenApiComponentSchemaFactory<Class<?>> schemaFactory) {
+	public void setClassSchemaFactory(OpenApiComponentReusableSchemaFactory<Class<?>> schemaFactory) {
 		this.schemaFactory = schemaFactory;
 	}
 

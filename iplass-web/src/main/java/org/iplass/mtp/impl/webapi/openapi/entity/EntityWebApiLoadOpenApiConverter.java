@@ -75,7 +75,7 @@ public class EntityWebApiLoadOpenApiConverter extends AbstractEntityWebApiOpenAp
 		operation.addParametersItem(withMappedByReference);
 
 		var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-		var componentsSchemaRef = service.getSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
+		var componentsSchemaRef = service.getReusableSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
 
 		// responses
 		var okSchema = new ObjectSchema()

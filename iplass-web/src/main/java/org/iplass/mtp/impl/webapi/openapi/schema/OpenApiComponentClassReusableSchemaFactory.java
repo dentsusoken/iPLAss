@@ -21,7 +21,6 @@ package org.iplass.mtp.impl.webapi.openapi.schema;
 
 import java.util.Map;
 
-import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.impl.webapi.openapi.OpenApiService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
@@ -34,18 +33,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 
 /**
  * OpenAPI の components/schemas に再利用可能なクラススキーマを追加するファクトリクラス
  * @author SEKIGUCHI Naoya
  */
-public class OpenApiComponentClassSchemaFactory implements OpenApiComponentSchemaFactory<Class<?>>, OpenApiComponentTarget {
+public class OpenApiComponentClassReusableSchemaFactory implements OpenApiComponentReusableSchemaFactory<Class<?>>, OpenApiComponentTarget {
 	/** ログ */
-	private Logger logger = LoggerFactory.getLogger(OpenApiComponentClassSchemaFactory.class);
+	private Logger logger = LoggerFactory.getLogger(OpenApiComponentClassReusableSchemaFactory.class);
 	/** JSON Schema ジェネレータ */
 	private ClassSchemaGenerator schemaGenerator;
 
@@ -116,22 +113,23 @@ public class OpenApiComponentClassSchemaFactory implements OpenApiComponentSchem
 			openApiSchema.setProperties(jsonSchema.getProperties());
 			openApiSchema.setTitle(schemaType.name() + " Class Schema " + clazz.getSimpleName());
 
+			var standardClassSchemaResolver = ServiceRegistry.getRegistry().getService(OpenApiService.class).getStandardClassSchemaResolver();
 			@SuppressWarnings("rawtypes")
 			Map<String, Schema> props = openApiSchema.getProperties();
 			var parser = new PropertyDescriptorParser(clazz);
 			props.forEach((k, v) -> {
-				if (StringUtil.isNotEmpty(v.get$ref())) {
-					// $ref が設定されている場合は、オブジェクトと判断。
+				var isContainsObject = null != v.getTypes() && v.getTypes().contains("object");
+				var isTypeObject = "object".equals(v.getType());
+				var isNotEmptyRef = StringUtil.isNotEmpty(v.get$ref());
+				if (isContainsObject || isTypeObject || isNotEmptyRef) {
+					// type が object の場合は、標準データ型を判定
 					var propType = parser.getPropertyDesctiptor(k).getPropertyType();
-					if (propType == PropertyDefinitionType.DATETIME.getJavaType()) {
-						// DATETIME は Unix タイムスタンプに変換
-						props.put(k, new IntegerSchema().description("Unix timestamp in milliseconds"));
-
-					} else if (propType == PropertyDefinitionType.TIME.getJavaType()) {
-						// TIME は HH:mm:ss フォーマットの文字列に変換
-						props.put(k, new StringSchema().description("format is HH:mm:ss"));
+					if (standardClassSchemaResolver.canResolve(propType)) {
+						// 解決可能な場合は、スキーマを解決して設定
+						props.put(k, standardClassSchemaResolver.resolve(propType, schemaType));
 
 					} else {
+						// 解決できない場合は、再利用可能なスキーマとして追加
 						var refName = addReusableSchema(propType, openApi, schemaType);
 						v.set$ref(refName);
 					}

@@ -30,8 +30,10 @@ import java.util.List;
 import org.iplass.mtp.impl.util.RequestPathUtil;
 import org.iplass.mtp.impl.webapi.openapi.entity.EntityWebApiOpenApiEntry;
 import org.iplass.mtp.impl.webapi.openapi.entity.EntityWebApiOpenApiMapper;
-import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentSchemaFactory;
-import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentSchemaFactoryAssigner;
+import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentReusableSchemaFactory;
+import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentReusableSchemaFactoryAssigner;
+import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiStandardClassSchemaResolver;
+import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiStandardClassSchemaResolverImpl;
 import org.iplass.mtp.impl.webapi.openapi.webapi.OpenApiMappedWebApiUpdater;
 import org.iplass.mtp.impl.webapi.openapi.webapi.WebApiOpenApiMapper;
 import org.iplass.mtp.spi.Config;
@@ -55,10 +57,12 @@ public class OpenApiService implements Service {
 	private EntityWebApiOpenApiMapper entityWebApiMapper;
 	/** WebAPI マッパー */
 	private WebApiOpenApiMapper webApiMapper;
-	/** OpenAPI Component スキーマ生成クラス */
-	private OpenApiComponentSchemaFactory<? super Object> schemaFactory;
 	/** WebAPI 更新機能 */
 	private OpenApiMappedWebApiUpdater webApiUpdater;
+	/** OpenAPI Component スキーマ生成クラス */
+	private OpenApiComponentReusableSchemaFactory<? super Object> reusableSchemaFactory;
+	/** OpenAPI 標準クラススキーマ解決クラス */
+	private OpenApiStandardClassSchemaResolver standardSchemaResolver;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -67,10 +71,12 @@ public class OpenApiService implements Service {
 		this.entityWebApiMapper = config.getValueWithSupplier("entityWebApiMapper", EntityWebApiOpenApiMapper.class,
 				() -> createDefaultEntityWebApiOpenApiMapper());
 		this.webApiMapper = config.getValueWithSupplier("webApiMapper", WebApiOpenApiMapper.class, () -> createDefaultWebApiOpenApiMapper());
-		this.schemaFactory = config.getValueWithSupplier("schemaFactory", OpenApiComponentSchemaFactory.class,
-				() -> createDefaultOpenApiComponentSchemaFactory());
 		this.webApiUpdater = config.getValueWithSupplier("webApiUpdater", OpenApiMappedWebApiUpdater.class,
 				() -> createDefaultOpenApiMappedWebApiUpdater());
+		this.reusableSchemaFactory = config.getValueWithSupplier("reusableSchemaFactory", OpenApiComponentReusableSchemaFactory.class,
+				() -> createDefaultOpenApiComponentSchemaFactory());
+		this.standardSchemaResolver = config.getValueWithSupplier("standardSchemaResolver", OpenApiStandardClassSchemaResolver.class,
+				() -> createDefaultOpenApiClassSchemaResolver());
 	}
 
 	@Override
@@ -135,8 +141,12 @@ public class OpenApiService implements Service {
 	 * OpenAPI スキーマ生成機能を取得する。
 	 * @return OpenAPIスキーマ生成機能
 	 */
-	public OpenApiComponentSchemaFactory<? super Object> getSchemaFactory() {
-		return schemaFactory;
+	public OpenApiComponentReusableSchemaFactory<? super Object> getReusableSchemaFactory() {
+		return reusableSchemaFactory;
+	}
+
+	public OpenApiStandardClassSchemaResolver getStandardClassSchemaResolver() {
+		return standardSchemaResolver;
 	}
 
 	/**
@@ -183,7 +193,11 @@ public class OpenApiService implements Service {
 	 * デフォルトの OpenApiComponentSchemaFactory を生成します。
 	 * @return OpenApiComponentSchemaFactory インスタンス
 	 */
-	protected OpenApiComponentSchemaFactory<?> createDefaultOpenApiComponentSchemaFactory() {
-		return new OpenApiComponentSchemaFactoryAssigner();
+	protected OpenApiComponentReusableSchemaFactory<?> createDefaultOpenApiComponentSchemaFactory() {
+		return new OpenApiComponentReusableSchemaFactoryAssigner();
+	}
+
+	protected OpenApiStandardClassSchemaResolver createDefaultOpenApiClassSchemaResolver() {
+		return new OpenApiStandardClassSchemaResolverImpl();
 	}
 }

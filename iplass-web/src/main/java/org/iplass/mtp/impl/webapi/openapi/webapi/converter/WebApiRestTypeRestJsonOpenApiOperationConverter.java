@@ -108,7 +108,7 @@ public class WebApiRestTypeRestJsonOpenApiOperationConverter extends AbstractWeb
 		if (StringUtil.isNotEmpty(def.getRestJsonParameterType())) {
 			var clazz = ClassUtil.forName(def.getRestJsonParameterType());
 			var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-			var ref = service.getSchemaFactory().addReusableSchema(clazz, context.getOpenApi(), OpenApiJsonSchemaType.JSON);
+			var ref = service.getReusableSchemaFactory().addReusableSchema(clazz, context.getOpenApi(), OpenApiJsonSchemaType.JSON);
 			objectSchema.set$ref(ref);
 		}
 

@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.webapi.openapi.webapi.converter;
 import java.util.function.Consumer;
 
 import org.iplass.mtp.impl.webapi.openapi.OpenApiService;
-import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentSchemaFactory;
+import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentReusableSchemaFactory;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
@@ -141,7 +141,7 @@ public class WebApiOpenApiOpenApiConverter implements WebApiOpenApiConverter {
 		if (StringUtil.isNotEmpty(schema.get$ref())) {
 			// スキーマに参照が設定されている場合
 
-			var schemaKey = schema.get$ref().substring(OpenApiComponentSchemaFactory.REUSABLE_SCHEMA_PREFIX.length());
+			var schemaKey = schema.get$ref().substring(OpenApiComponentReusableSchemaFactory.REUSABLE_SCHEMA_PREFIX.length());
 
 			// コピー先の componentns にインスタンス設定
 			if (null == to.getComponents()) {
