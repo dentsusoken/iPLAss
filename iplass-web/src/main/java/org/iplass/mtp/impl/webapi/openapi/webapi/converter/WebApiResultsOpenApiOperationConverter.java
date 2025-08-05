@@ -69,7 +69,7 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 			var schema = new ObjectSchema();
 
 			var jsonSchemaType = OpenApiJsonSchemaType.fromContentType(key, OpenApiJsonSchemaType.JSON);
-			if (ArrayUtil.isNotEmpty(runtime.getResponseResults())) {
+			if (null != runtime && ArrayUtil.isNotEmpty(runtime.getResponseResults())) {
 				// responseResults に設定されている場合
 				for (var result : runtime.getResponseResults()) {
 					if (null != result.getDataType()) {
@@ -94,7 +94,7 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 				}
 
 			} else {
-				// results が設定されていない場合はデフォルトのプロパティを設定する
+				// runtime 無し、もしくは results が設定されていない場合はデフォルトのプロパティを設定する
 				var components = getComponents(context.getOpenApi());
 				var schemas = components.getSchemas();
 				if (null == schemas || !schemas.containsKey(DEFAULT_SCHEMA_NAME)) {
@@ -135,6 +135,7 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 		}
 
 		for (var mediaType : content.values()) {
+			// メディアタイプに設定されている最上位スキーマのプロパティのキーをWebApiに反映する
 			if (null != mediaType.getSchema() && null != mediaType.getSchema().getProperties() && !mediaType.getSchema().getProperties().isEmpty()) {
 				for (var prop : mediaType.getSchema().getProperties().keySet()) {
 					var name = (String) prop;
@@ -143,8 +144,8 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 						continue;
 					}
 					var attr = new WebApiResultAttribute();
+					// キー名を反映する
 					attr.setName(name);
-					// NOTE キー名は復元する。データタイプは復元しない
 					nameResultMap.put(name, attr);
 				}
 			}
