@@ -67,10 +67,17 @@ public class OpenApiStandardClassSchemaResolverImpl implements OpenApiStandardCl
 		map.put(String.class, schemaType -> new StringSchema());
 		// bool
 		map.put(Boolean.class, schemaType -> new BooleanSchema());
+		map.put(boolean.class, schemaType -> new BooleanSchema());
 		// 数値
+		map.put(Integer.class, schemaType -> new IntegerSchema());
+		map.put(int.class, schemaType -> new IntegerSchema());
 		map.put(Double.class, schemaType -> new IntegerSchema());
-		map.put(BigDecimal.class, schemaType -> new IntegerSchema());
+		map.put(double.class, schemaType -> new IntegerSchema());
 		map.put(Long.class, schemaType -> new IntegerSchema());
+		map.put(long.class, schemaType -> new IntegerSchema());
+		map.put(Float.class, schemaType -> new IntegerSchema());
+		map.put(float.class, schemaType -> new IntegerSchema());
+		map.put(BigDecimal.class, schemaType -> new IntegerSchema());
 		// 日付
 		map.put(java.sql.Date.class, this::resolveDateSchema);
 		map.put(java.sql.Timestamp.class, this::resolveTimestampSchema);

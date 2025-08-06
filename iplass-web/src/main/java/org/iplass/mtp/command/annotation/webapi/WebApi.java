@@ -125,7 +125,7 @@ public @interface WebApi {
 	/**
 	 * @deprecated {@link #responseResults()} を利用してください。本メソッドは大きなバージョンアップの際に削除する予定です。
 	 */
-	@Deprecated
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	String[] results() default {WebApiRequestConstants.DEFAULT_RESULT};
 
 	/**

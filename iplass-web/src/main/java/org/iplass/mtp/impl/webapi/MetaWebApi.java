@@ -112,7 +112,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	/**
 	 * @deprecated {@link #responseResults} を使用してください。本フィールドは大きなバージョンアップで削除する予定です。
 	 */
-	@Deprecated
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	private String[] results;
 
 	/** 結果属性メタデータ */
@@ -360,7 +360,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	 * @deprecated {@link #setResponseResults(MetaWebApiResultAttribute[])} を利用してください。本メソッドは大きなバージョンアップで削除する予定です。<br>
 	 * 本設定値は {@link MetaWebApiResultAttribute#setName(String)} の値に代替されます。
 	 */
-	@Deprecated
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	public void setResults(String[] results) {
 		this.results = results;
 	}
@@ -369,7 +369,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	 * @deprecated {@link #getResponseResults()} を利用してください。本メソッドは大きなバージョンアップで削除する予定です。<br>
 	 * 本設定値は {@link MetaWebApiResultAttribute#getName()} の値に代替されます。
 	 */
-	@Deprecated
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	public String[] getResults() {
 		return this.results;
 	}
@@ -1128,6 +1128,9 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 		/**
 		 * 結果属性ランタイムを取得します。
+		 * <p>
+		 * 本返却値が null になることはありません。
+		 * </p>
 		 * @return 結果属性ランタイム
 		 */
 		public WebApiResultAttributeRuntime[] getResponseResults() {

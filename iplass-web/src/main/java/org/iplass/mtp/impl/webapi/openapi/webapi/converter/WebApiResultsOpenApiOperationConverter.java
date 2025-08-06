@@ -113,7 +113,7 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	@Override
 	protected void setWebApiDefaultValue(WebApiOpenApiConvertContext context) {
 		// results, responseResults を初期化する
@@ -121,11 +121,11 @@ public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenAp
 		context.getWebApiDefinition().setResponseResults(new WebApiResultAttribute[0]);
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	@Override
 	protected CheckNext convertWebApiOperation(OperationContext operation, WebApiOpenApiConvertContext context) {
 		var content = getResponseContent(operation.getOperation());
-		if (null == content) {
+		if (null == content || null == content.values()) {
 			return CheckNext.CONTINUE;
 		}
 

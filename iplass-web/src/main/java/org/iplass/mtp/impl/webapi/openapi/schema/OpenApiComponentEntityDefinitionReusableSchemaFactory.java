@@ -112,8 +112,10 @@ public class OpenApiComponentEntityDefinitionReusableSchemaFactory implements Op
 		// エンティティ定義プロパティリストからスキーマを作成する
 		for (var prop : entityDefinition.getPropertyList()) {
 			var propSchema = entityPropertyResolver.convertSchema(prop.getType(), prop, openApi, schemaType);
-			logger.debug("Property to JsonSchema. class = {}, property = {}, jsonSchema = {}", entityDefinition.getName(), prop.getName(),
-					propSchema);
+			if (logger.isTraceEnabled()) {
+				logger.trace("Entity Property to JsonSchema. entity={}, property={}, jsonSchema={}", entityDefinition.getName(), prop.getName(),
+						propSchema);
+			}
 			schema.addProperty(prop.getName(), propSchema);
 		}
 

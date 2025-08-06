@@ -69,18 +69,14 @@ public class WebApiPathParameterDecomposer {
 	 * @return 解決されたOpenAPIパスのリスト
 	 */
 	public List<String> decompose(WebApiDefinition webApiDef, OpenAPI openApi) {
-		var paramMap = webApiDef.getWebApiParamMap();
-		boolean isNotExistParamMap = null == paramMap || 0 == paramMap.length;
+		var accessor = parseParameter(webApiDef);
 
-		if (isNotExistParamMap) {
-			var defaultPath = getOpenApiPath(webApiDef);
+		if (0 == accessor.getParamCount()) {
 			// パラメーターマップが存在しない場合は、デフォルトのパスを設定
+			var defaultPath = getOpenApiPath(webApiDef);
 			openApi.path(defaultPath, new PathItem());
 			return List.of(defaultPath);
 		}
-
-		//
-		var accessor = parseParameter(webApiDef);
 
 		var resolvePathList = resolvePath(accessor, webApiDef, openApi);
 
@@ -96,29 +92,31 @@ public class WebApiPathParameterDecomposer {
 	private ParseParameterAccessor parseParameter(WebApiDefinition webApiDef) {
 		var removeMethodNameDefinitionName = removeMethodName(webApiDef.getName());
 		var splittedNameLength = removeMethodNameDefinitionName.split("/").length;
-		var manager = new ParseParameterAccessor();
-		for (var param : webApiDef.getWebApiParamMap()) {
-			var mapFrom = param.getMapFrom();
-			var isLegacy = mapFrom.startsWith("{");
+		var accessor = new ParseParameterAccessor();
+		if (null != webApiDef.getWebApiParamMap()) {
+			for (var param : webApiDef.getWebApiParamMap()) {
+				var mapFrom = param.getMapFrom();
+				var isLegacy = mapFrom.startsWith("{");
 
-			var mapFromMatcher = isLegacy ? MAP_FROM_LEGACY_PATTERN.matcher(mapFrom) : MAP_FROM_PATTERN.matcher(mapFrom);
+				var mapFromMatcher = isLegacy ? MAP_FROM_LEGACY_PATTERN.matcher(mapFrom) : MAP_FROM_PATTERN.matcher(mapFrom);
 
-			// NOTE mapFromMatcher.find() が false の場合は、数値以外のパターン（${paths} など）なので無視する。
-			if (mapFromMatcher.find()) {
-				var num = Integer.parseInt(mapFromMatcher.group(1));
-				// パラメータの位置を決定する
-				// name = path/to/name の前提で、
-				// 通常の場合は num をそのまま利用
-				// mapFrom = ${0} の場合、 num を 0 として利用
-				// legacy の場合は num の位置を調整。WebAPI定義名を "/" で分割した要素数を引く。
-				// mapFrom = {4} の場合、4(mapFrom の値) - 3(WebAPI定義名を "/" で分割した要素数) で 1 になる。
-				num = isLegacy ? num - splittedNameLength : num;
+				// NOTE mapFromMatcher.find() が false の場合は、数値以外のパターン（${paths} など）なので無視する。
+				if (mapFromMatcher.find()) {
+					var num = Integer.parseInt(mapFromMatcher.group(1));
+					// パラメータの位置を決定する
+					// name = path/to/name の前提で、
+					// 通常の場合は num をそのまま利用
+					// mapFrom = ${0} の場合、 num を 0 として利用
+					// legacy の場合は num の位置を調整。WebAPI定義名を "/" で分割した要素数を引く。
+					// mapFrom = {4} の場合、4(mapFrom の値) - 3(WebAPI定義名を "/" で分割した要素数) で 1 になる。
+					num = isLegacy ? num - splittedNameLength : num;
 
-				manager.add(new ParseParameter(num, param));
+					accessor.add(new ParseParameter(num, param));
+				}
 			}
 		}
 
-		return manager;
+		return accessor;
 	}
 
 	/**
@@ -193,6 +191,14 @@ public class WebApiPathParameterDecomposer {
 		private List<ParseParameter> paramList = new ArrayList<>();
 		/** パラメーターのパス位置の最大 */
 		private int maxIdx = -1;
+
+		/**
+		 * パラメータ数を取得する
+		 * @return パラメータ数
+		 */
+		public int getParamCount() {
+			return paramList.size();
+		}
 
 		/**
 		 * パラメーター解析結果を追加します。
@@ -273,9 +279,6 @@ public class WebApiPathParameterDecomposer {
 		private String name;
 		/** パラメーター条件 */
 		private String condition;
-		/** WebAPI パラメーター定義 */
-		@SuppressWarnings("unused")
-		private WebApiParamMapDefinition def;
 
 		/** OpenAPI 用パラメーターインスタンス */
 		private Parameter parameter;
@@ -289,7 +292,6 @@ public class WebApiPathParameterDecomposer {
 			this.idx = idx;
 			this.name = def.getName();
 			this.condition = def.getCondition();
-			this.def = def;
 
 			this.parameter = new PathParameter().name(def.getName()).schema(new StringSchema());
 		}

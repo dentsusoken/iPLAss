@@ -67,7 +67,7 @@ public class WebApiDefinition implements Definition {
 	 * Commandの実行結果と、表示処理の対応の定義。
 	 * @deprecated {@link #responseResults} を使用してください。本設定項目は、{@link WebApiResultAttribute}の配列を設定するように変更されました。本フィールドは大きなバージョンアップで削除する予定です。
 	 */
-	@Deprecated
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	private String[] results;
 
 	/**
@@ -484,7 +484,7 @@ public class WebApiDefinition implements Definition {
 	 * @return result
 	 * @deprecated {@link #getResponseResults()} を使用してください。本メソッドは大きなバージョンアップで削除する予定です。
 	 */
-	@Deprecated
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	public String[] getResults() {
 		return results;
 	}
@@ -494,7 +494,7 @@ public class WebApiDefinition implements Definition {
 	 *            セットする result
 	 * @deprecated {@link #setResponseResults(WebApiResultAttribute[])} を使用してください。本メソッドは大きなバージョンアップで削除する予定です。
 	 */
-	@Deprecated
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	public void setResults(String[] results) {
 		this.results = results;
 	}
