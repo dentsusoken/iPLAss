@@ -27,6 +27,8 @@ import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
+import org.iplass.mtp.impl.entity.EntityDefinitionNameChecker;
 import org.iplass.mtp.impl.webapi.MetaEntityWebApi.EntityWebApiHandler;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -57,6 +59,11 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		@Override
 		public String toDefName(String path) {
 			return path.substring(pathPrefix.length()).replace("/", ".");
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return new EntityDefinitionNameChecker();
 		}
 	}
 

@@ -20,14 +20,18 @@
 
 package org.iplass.mtp.impl.tools.metaport;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.iplass.mtp.impl.definition.DefinitionNameCheckResult;
+import org.iplass.mtp.impl.definition.DefinitionService;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
+import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.tenant.MetaTenantService;
 import org.iplass.mtp.impl.util.KeyGenerator;
@@ -41,10 +45,12 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 	private static Logger auditLogger = LoggerFactory.getLogger("mtp.audit.porting.metadata");
 
 	private EntityService ehService;
+	private DefinitionService definitionService;
 
 	@Override
 	public void inited(MetaDataPortingService service, Config config) {
 		ehService = config.getDependentService(EntityService.class);
+		definitionService = config.getDependentService(DefinitionService.class);
 	}
 
 	@Override
@@ -55,6 +61,9 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 	public void storeMetaData(String path, RootMetaData importMeta, MetaDataEntry entry, boolean doAutoReload) {
 
 		auditLogger.info("store metadata," + importMeta.getClass().getName() + ",path:" + path);
+
+		// メタデータ定義名チェック TODO Entity以外はこのメソッド内でMetaDataContext呼び出してしまってるためチェック処理の追加が必要
+		this.checkDefinitionName(path, importMeta);
 
 		if (StringUtil.isEmpty(importMeta.getId())) {
 			importMeta.setId((new KeyGenerator()).generateId());
@@ -79,6 +88,9 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 
 		auditLogger.info("update metadata," + importMeta.getClass().getName() + ",path:" + path);
 
+		// メタデータ定義名チェック TODO Entity以外はこのメソッド内でMetaDataContext呼び出してしまってるためチェック処理の追加が必要
+		this.checkDefinitionName(path, importMeta);
+
 		if (importMeta instanceof MetaEntity) {
 			updateMetaEntity(path, (MetaEntity)importMeta, entry, doAutoReload);
 		} else {
@@ -100,6 +112,24 @@ public class MetaDataImportHandlerImpl implements MetaDataImportHandler {
 			throw new MetaDataPortingRuntimeException("exception occured during entity definition update:" + e.getCause().getMessage(), e);
 		} catch (InterruptedException e) {
 			throw new MetaDataPortingRuntimeException("execution interrrupted during entity definition update:" + e.getMessage(), e);
+		}
+	}
+
+	private void checkDefinitionName(String path, RootMetaData importMeta) throws MetaDataRuntimeException {
+		if (StringUtil.isEmpty(path) || Objects.isNull(importMeta)) {
+			return;
+		}
+
+		// パスチェック
+		DefinitionNameCheckResult pathCheckResult = definitionService.checkPathPrefixByMeta(importMeta.getClass(), path);
+		if (pathCheckResult.hasError()) {
+			throw new MetaDataRuntimeException(pathCheckResult.getErrorMessage());
+		}
+
+		// メタデータ定義名チェック
+		DefinitionNameCheckResult defCheckResult = definitionService.checkDefinitionNameByMeta(importMeta.getClass(), importMeta.getName());
+		if (defCheckResult.hasError()) {
+			throw new MetaDataRuntimeException(defCheckResult.getErrorMessage());
 		}
 	}
 

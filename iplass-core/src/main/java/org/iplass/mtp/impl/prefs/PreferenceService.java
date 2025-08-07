@@ -24,6 +24,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.prefs.MetaPreference.PreferenceRuntime;
 import org.iplass.mtp.prefs.Preference;
 import org.iplass.mtp.prefs.PreferenceManager;
@@ -40,6 +41,11 @@ public class PreferenceService extends AbstractTypedMetaDataService<MetaPreferen
 		@Override
 		public TypedDefinitionManager<Preference> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(PreferenceManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 

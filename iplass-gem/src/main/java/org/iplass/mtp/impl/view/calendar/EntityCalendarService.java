@@ -24,6 +24,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.view.calendar.MetaCalendar.CalendarHandler;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -46,6 +47,11 @@ public class EntityCalendarService extends AbstractTypedMetaDataService<MetaCale
 		@Override
 		public TypedDefinitionManager<EntityCalendar> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(EntityCalendarManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 
