@@ -140,7 +140,7 @@ public class OpenApiService implements Service {
 	/**
 	 * OpenAPI スキーマ生成機能を取得する。
 	 * <p>
-	 * 本機能は {@link OpenApiStandardClassSchemaResolver} で解決できない複雑なクラス構造のスキーマを再利用可能な形式で OpenAPI に定義します。
+	 * 本機能は EntityDefinition や複雑なクラス構成から再利用可能な形式で OpenAPI のスキーマを定義します。
 	 * </p>
 	 * @return OpenAPIスキーマ生成機能
 	 */
