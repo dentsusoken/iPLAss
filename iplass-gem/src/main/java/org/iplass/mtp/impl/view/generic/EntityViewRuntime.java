@@ -25,18 +25,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.entity.query.PreparedQuery;
+import org.iplass.mtp.impl.definition.DefinitionNameCheckResult;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
-import org.iplass.mtp.util.StringUtil;
 
 /**
  * 画面定義のランタイム
@@ -44,8 +44,8 @@ import org.iplass.mtp.util.StringUtil;
  */
 public class EntityViewRuntime extends BaseMetaDataRuntime {
 
-	// View名の正規表現(英数字、ハイフン、アンダーバー、ピリオドのみ可で先頭にハイフン、ピリオドは除き、末尾にピリオドは除く)
-	private static final Pattern VIEW_NAME_PATTERN = Pattern.compile("^[0-9a-zA-Z_][0-9a-zA-Z_-]*(\\.[0-9a-zA-Z_-]+)*$");
+	// View名Checker
+	private static final ViewNameChecker VIEW_NAME_CHECKER = new ViewNameChecker();
 
 	/** メタデータ */
 	protected MetaEntityView metaData;
@@ -99,7 +99,7 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 			return;
 		}
 
-		this.checkViewName(view.getName(), "view.generic.EntityViewRuntime.viewCheckErr");
+		this.checkViewName(VIEW_NAME_CHECKER.checkViewName(view.getName()));
 	}
 
 	private void checkViewControlSettingName(MetaViewControlSetting viewControlSetting) throws MetaDataRuntimeException {
@@ -107,21 +107,14 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 			return;
 		}
 
-		this.checkViewName(viewControlSetting.getName(), "view.generic.EntityViewRuntime.settingCheckErr");
+		this.checkViewName(VIEW_NAME_CHECKER.checkSettingViewName(viewControlSetting.getName()));
 	}
 
-	private void checkViewName(String viewName, String messageKey) throws MetaDataRuntimeException {
-		if (StringUtil.isEmpty(viewName)) {
-			return;
-		}
-
-		// View名整合性チェック
-		if (VIEW_NAME_PATTERN.matcher(viewName).matches()) {
-			return;
-		}
-
+	private void checkViewName(DefinitionNameCheckResult result) throws MetaDataRuntimeException {
 		// チェックエラー
-		throw new MetaDataRuntimeException(GemResourceBundleUtil.resourceString(messageKey, viewName));
+		if (result.hasError()) {
+			throw new MetaDataRuntimeException(result.getErrorMessage());
+		}
 	}
 
 	/**
@@ -280,5 +273,31 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 			return null;
 		}
 		return autocompletionSettingMap.get(key);
+	}
+
+	/**
+	 * View名Checkerクラス
+	 */
+	private static class ViewNameChecker extends DefinitionNameChecker {
+		private String messageKey = null;
+
+		private ViewNameChecker() {
+			super("^[0-9a-zA-Z_][0-9a-zA-Z_-]*(\\.[0-9a-zA-Z_-]+)*$", null);
+		}
+
+		private DefinitionNameCheckResult checkViewName(String viewName) {
+			this.messageKey = "view.generic.EntityViewRuntime.viewCheckErr";
+			return super.check(viewName);
+		}
+
+		private DefinitionNameCheckResult checkSettingViewName(String viewName) {
+			this.messageKey = "view.generic.EntityViewRuntime.settingCheckErr";
+			return super.check(viewName);
+		}
+
+		@Override
+		protected String getErrorMessage(String viewName) {
+			return GemResourceBundleUtil.resourceString(this.messageKey, viewName);
+		}
 	}
 }
