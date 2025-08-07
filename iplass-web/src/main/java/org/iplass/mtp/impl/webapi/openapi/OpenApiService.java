@@ -139,12 +139,22 @@ public class OpenApiService implements Service {
 
 	/**
 	 * OpenAPI スキーマ生成機能を取得する。
+	 * <p>
+	 * 本機能は {@link OpenApiStandardClassSchemaResolver} で解決できない複雑なクラス構造のスキーマを再利用可能な形式で OpenAPI に定義します。
+	 * </p>
 	 * @return OpenAPIスキーマ生成機能
 	 */
 	public OpenApiComponentReusableSchemaFactory<? super Object> getReusableSchemaFactory() {
 		return reusableSchemaFactory;
 	}
 
+	/**
+	 * OpenAPI 標準クラススキーマ解決機能を取得します。
+	 * <p>
+	 * 本機能は String, Long, Boolean 等の単純なデータ型をスキーマに変換します。
+	 * </p>
+	 * @return OpenAPI 標準クラススキーマ解決機能
+	 */
 	public OpenApiStandardClassSchemaResolver getStandardClassSchemaResolver() {
 		return standardSchemaResolver;
 	}
@@ -197,6 +207,10 @@ public class OpenApiService implements Service {
 		return new OpenApiComponentReusableSchemaFactoryAssigner();
 	}
 
+	/**
+	 * デフォルトの OpenApiStandardClassSchemaResolver を生成します。
+	 * @return OpenApiStandardClassSchemaResolver インスタンス
+	 */
 	protected OpenApiStandardClassSchemaResolver createDefaultOpenApiClassSchemaResolver() {
 		return new OpenApiStandardClassSchemaResolverImpl();
 	}

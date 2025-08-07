@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * OpenAPI でマッピングした WebAPI の更新クラス
  * <p>
- * {@link org.iplass.mtp.impl.webapi.openapi.webapi.WebApiOpenApiMapper#mapWebApi(io.swagger.v3.oas.models.OpenAPI)} で OpenAPI から WebAPI にマッピングされた結果をもとに、
+ * {@link org.iplass.mtp.impl.webapi.openapi.webapi.WebApiOpenApiMapper#mapWebApi(io.swagger.v3.oas.models.OpenAPI, org.iplass.mtp.webapi.openapi.OpenApiFileType, org.iplass.mtp.webapi.openapi.OpenApiVersion)} で OpenAPI から WebAPI にマッピングされた結果をもとに、
  * WebAPI 定義を更新するクラスです。
  * </p>
  * @author SEKIGUCHI Naoya
