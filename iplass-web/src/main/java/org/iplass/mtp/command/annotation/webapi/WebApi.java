@@ -183,7 +183,7 @@ public @interface WebApi {
 	 * <p>
 	 * スタブレスポンスを返却する場合の JSON Value を設定します。<br>
 	 * ここに設定する値は、JSON Object の形式で指定してください。<br>
-	 * JSON Object のキーが、{@link #results()} に指定されているキーと一致する場合に、値がレスポンスに設定されます。
+	 * JSON Object のキーが、{@link #results()} もしくは {@link #responseResults()} に指定されている {@link org.iplass.mtp.command.annotation.webapi.WebApiResultAttribute#name()} と一致する場合に、値がレスポンスに設定されます。
 	 * </p>
 	 * @return スタブレスポンスの JSON Value
 	 */
