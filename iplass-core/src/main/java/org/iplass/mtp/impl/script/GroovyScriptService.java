@@ -83,8 +83,7 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 
 		@Override
 		protected DefinitionNameChecker createDefinitionNameChecker() {
-			return new DefinitionNameChecker(NAME_CHECK_PATTERN, NAME_CHECK_MESSAGE) {
-			};
+			return new DefinitionNameChecker(NAME_CHECK_PATTERN, NAME_CHECK_MESSAGE);
 		}
 	}
 

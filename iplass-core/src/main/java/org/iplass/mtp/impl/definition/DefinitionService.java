@@ -233,7 +233,7 @@ public class DefinitionService implements Service {
 	 * 
 	 * @param <M> メタデータの型
 	 * @param metaType メタデータタイプ
-	 * @param メタデータ定義名
+	 * @param defName メタデータ定義名
 	 * @return メタデータ定義名チェック結果
 	 */
 	@SuppressWarnings({ "rawtypes" })
