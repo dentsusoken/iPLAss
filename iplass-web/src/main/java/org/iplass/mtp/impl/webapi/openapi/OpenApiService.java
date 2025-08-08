@@ -64,19 +64,26 @@ public class OpenApiService implements Service {
 	/** OpenAPI 標準クラススキーマ解決クラス */
 	private OpenApiStandardClassSchemaResolver standardSchemaResolver;
 
+	/** エクスポート時の info.title の値 */
+	private String infoTitleOfExport;
+	/** エクスポート時の info.version の値 */
+	private String infoVersionOfExport;
+	/** エクスポート時の info.description の値 */
+	private String infoDescriptionOfExport;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
-		this.openApiResolver = config.getValueWithSupplier("openApiResolver", OpenApiResolver.class, () -> createDefaultOpenApiResolver());
-		this.entityWebApiMapper = config.getValueWithSupplier("entityWebApiMapper", EntityWebApiOpenApiMapper.class,
-				() -> createDefaultEntityWebApiOpenApiMapper());
-		this.webApiMapper = config.getValueWithSupplier("webApiMapper", WebApiOpenApiMapper.class, () -> createDefaultWebApiOpenApiMapper());
-		this.webApiUpdater = config.getValueWithSupplier("webApiUpdater", OpenApiMappedWebApiUpdater.class,
-				() -> createDefaultOpenApiMappedWebApiUpdater());
-		this.reusableSchemaFactory = config.getValueWithSupplier("reusableSchemaFactory", OpenApiComponentReusableSchemaFactory.class,
-				() -> createDefaultOpenApiComponentSchemaFactory());
-		this.standardSchemaResolver = config.getValueWithSupplier("standardSchemaResolver", OpenApiStandardClassSchemaResolver.class,
-				() -> createDefaultOpenApiClassSchemaResolver());
+		this.openApiResolver = createDefaultOpenApiResolver();
+		this.entityWebApiMapper = createDefaultEntityWebApiOpenApiMapper();
+		this.webApiMapper = createDefaultWebApiOpenApiMapper();
+		this.webApiUpdater = createDefaultOpenApiMappedWebApiUpdater();
+		this.reusableSchemaFactory = (OpenApiComponentReusableSchemaFactory<? super Object>) createDefaultOpenApiComponentSchemaFactory();
+		this.standardSchemaResolver = createDefaultOpenApiClassSchemaResolver();
+
+		this.infoTitleOfExport = config.getValue("infoTitleOfExport");
+		this.infoVersionOfExport = config.getValue("infoVersionOfExport");
+		this.infoDescriptionOfExport = config.getValue("infoDescriptionOfExport");
 	}
 
 	@Override
@@ -97,9 +104,9 @@ public class OpenApiService implements Service {
 		var openApi = new OpenAPI(openApiResolver.getOpenApiSpecVersion(version));
 		openApi.openapi(version.getDefaultVersion());
 		openApi.info(new Info()
-				.title("iPLAss WebAPI, EntityCRUDApi OpenAPI Spec")
-				.version("1.0.0")
-				.description("iPLAss WebAPI and EntityCRUDApi OpenAPI Specification"));
+				.title(infoTitleOfExport)
+				.version(infoVersionOfExport)
+				.description(infoDescriptionOfExport));
 		openApi.addServersItem(new Server().url(RequestPathUtil.getWebApiRoot()));
 
 		webApiMapper.mapOpenApi(webApiList, openApi, fileType, version);

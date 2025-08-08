@@ -828,6 +828,10 @@
 	<service>
 		<interface>org.iplass.mtp.impl.webapi.openapi.OpenApiService</interface>
 		<class>org.iplass.mtp.impl.webapi.openapi.OpenApiService</class>
+
+		<property name="infoTitleOfExport" value="iPLAss WebAPI, EntityCRUDApi OpenAPI Spec" />
+		<property name="infoVersionOfExport" value="1.0.0" />
+		<property name="infoDescriptionOfExport" value="iPLAss WebAPI and EntityCRUDApi OpenAPI Specification" />
 	</service>
 
 </serviceDefinition>
