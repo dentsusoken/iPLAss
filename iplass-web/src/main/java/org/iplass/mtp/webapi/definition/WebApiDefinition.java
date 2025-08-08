@@ -65,8 +65,16 @@ public class WebApiDefinition implements Definition {
 
 	/**
 	 * Commandの実行結果と、表示処理の対応の定義。
+	 * @deprecated {@link #responseResults} を使用してください。本設定項目は、{@link WebApiResultAttribute}の配列を設定するように変更されました。本フィールドは大きなバージョンアップで削除する予定です。
 	 */
+	// since = "4.0.11", forRemoval = true
+	@Deprecated
 	private String[] results;
+
+	/**
+	 * WebAPIレスポンスの結果の属性
+	 */
+	private WebApiResultAttribute[] responseResults;
 
 	/**
 	 * WebApiの受付種別。
@@ -134,6 +142,19 @@ public class WebApiDefinition implements Definition {
 
 	private Long maxRequestBodySize;
 	private Long maxFileSize;
+
+	/** スタブレスポンスを返却するか */
+	private boolean returnStubResponse;
+	/** スタブレスポンス "status" の値 */
+	private String stubResponseStatusValue;
+	/** スタブレスポンスの JSON Value */
+	private String stubResponseJsonValue;
+	/** OpenAPI バージョン */
+	private String openApiVersion;
+	/** OpenAPI ファイルタイプ */
+	private String openApiFileType;
+	/** OpenAPI 定義 */
+	private String openApi;
 
 	public Long getMaxFileSize() {
 		return maxFileSize;
@@ -462,7 +483,10 @@ public class WebApiDefinition implements Definition {
 
 	/**
 	 * @return result
+	 * @deprecated {@link #getResponseResults()} を使用してください。本メソッドは大きなバージョンアップで削除する予定です。
 	 */
+	// since = "4.0.11", forRemoval = true
+	@Deprecated
 	public String[] getResults() {
 		return results;
 	}
@@ -470,9 +494,28 @@ public class WebApiDefinition implements Definition {
 	/**
 	 * @param result
 	 *            セットする result
+	 * @deprecated {@link #setResponseResults(WebApiResultAttribute[])} を使用してください。本メソッドは大きなバージョンアップで削除する予定です。
 	 */
+	// since = "4.0.11", forRemoval = true
+	@Deprecated
 	public void setResults(String[] results) {
 		this.results = results;
+	}
+
+	/**
+	 * WebApiレスポンスの結果の属性を取得します。
+	 * @return WebApiレスポンスの結果の属性
+	 */
+	public WebApiResultAttribute[] getResponseResults() {
+		return responseResults;
+	}
+
+	/**
+	 * WebApiレスポンスの結果の属性を設定します。
+	 * @param responseResults WebApiレスポンスの結果の属性
+	 */
+	public void setResponseResults(WebApiResultAttribute[] responseResults) {
+		this.responseResults = responseResults;
 	}
 
 	public boolean isPublicWebApi() {
@@ -540,5 +583,109 @@ public class WebApiDefinition implements Definition {
 	 */
 	public void setCheckXRequestedWithHeader(boolean isCheckXRequestedWithHeader) {
 		this.isCheckXRequestedWithHeader = isCheckXRequestedWithHeader;
+	}
+
+	/**
+	 * スタブレスポンスを返却するかを取得します。
+	 * @return スタブレスポンスを返却する場合は true を返却
+	 */
+	public boolean isReturnStubResponse() {
+		return returnStubResponse;
+	}
+
+	/**
+	 * スタブレスポンスを返却するかを設定します。
+	 * @param returnStubResponse スタブレスポンスを返却する場合は true を設定
+	 */
+	public void setReturnStubResponse(boolean returnStubResponse) {
+		this.returnStubResponse = returnStubResponse;
+	}
+
+	/**
+	 * スタブレスポンスの "status" の値を取得します。
+	 * @return スタブレスポンスの "status" の値
+	 */
+	public String getStubResponseStatusValue() {
+		return stubResponseStatusValue;
+	}
+
+	/**
+	 * スタブレスポンスの "status" の値を設定します。
+	 * @param stubResponseStatusValue スタブレスポンスの "status" の値
+	 */
+	public void setStubResponseStatusValue(String stubResponseStatusValue) {
+		this.stubResponseStatusValue = stubResponseStatusValue;
+	}
+
+	/**
+	 * スタブレスポンスのJSON値を取得します。
+	 * @return スタブレスポンスのJSON値
+	 */
+	public String getStubResponseJsonValue() {
+		return stubResponseJsonValue;
+	}
+
+	/**
+	 * スタブレスポンスのJSON値を設定します。
+	 * @param stubResponseJsonValue スタブレスポンスのJSON値
+	 */
+	public void setStubResponseJsonValue(String stubResponseJsonValue) {
+		this.stubResponseJsonValue = stubResponseJsonValue;
+	}
+
+	/**
+	 * OpenAPIのバージョンを取得します。
+	 * @return OpenAPIのバージョン
+	 */
+	public String getOpenApiVersion() {
+		return openApiVersion;
+	}
+
+	/**
+	 * OpenAPIのバージョンを設定します。
+	 * <p>
+	 * 3.0, 3.1 などマイナーバージョンまで記載します。
+	 * OpenAPI バージョンに記載できる内容は {@link org.iplass.mtp.webapi.openapi.OpenApiVersion} を参照してください。
+	 * </p>
+	 * @param openApiVersion OpenAPIのバージョン
+	 */
+	public void setOpenApiVersion(String openApiVersion) {
+		this.openApiVersion = openApiVersion;
+	}
+
+	/**
+	 * OpenAPIのファイルタイプを取得します。
+	 * @return OpenAPIのファイルタイプ
+	 */
+	public String getOpenApiFileType() {
+		return openApiFileType;
+	}
+
+	/**
+	 * OpenAPIのファイルタイプを設定します。
+	 * <p>
+	 * OpenAPI のフォーマットは、JSON または YAML です。
+	 * 設定できる内容は、 {@link org.iplass.mtp.webapi.openapi.OpenApiFileType} を参照してください。
+	 * </p>
+	 * @param openApiFileType OpenAPIのファイルタイプ
+	 */
+	public void setOpenApiFileType(String openApiFileType) {
+		this.openApiFileType = openApiFileType;
+	}
+
+	/**
+	 * OpenAPI定義を取得します。
+	 * @return OpenAPI定義
+	 */
+	public String getOpenApi() {
+		return openApi;
+	}
+
+	/**
+	 * OpenAPI定義を設定します。
+	 * @param openApi OpenAPI定義
+	 */
+	public void setOpenApi(String openApi) {
+		this.openApi = openApi;
 	}
 }

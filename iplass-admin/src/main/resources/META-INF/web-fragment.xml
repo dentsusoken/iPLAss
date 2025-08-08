@@ -354,4 +354,31 @@
 		<url-pattern>/admin/mtpadmin/service/staticresourcedownload</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>adminOpenApiSupportExportService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.openapisupport.OpenApiSupportExportService</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminOpenApiSupportExportService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/exportopenapi</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>openApiSupportImportService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.openapisupport.OpenApiSupportImportService</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>openApiSupportImportService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/importopenapi</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>openApiSupportService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.openapisupport.OpenApiSupportServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>openApiSupportService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/openapi</url-pattern>
+	</servlet-mapping>
+
 </web-fragment>
