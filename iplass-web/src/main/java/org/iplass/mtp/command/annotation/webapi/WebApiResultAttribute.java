@@ -45,6 +45,6 @@ public @interface WebApiResultAttribute {
 	 * </p>
 	 * @return レスポンスデータ型
 	 */
-	String dataType() default "";
+	Class<?> dataType() default Void.class;
 
 }

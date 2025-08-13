@@ -161,7 +161,8 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 			for (int i = 0, len = webapi.responseResults().length; i < len; i++) {
 				MetaWebApiResultAttribute attribute = new MetaWebApiResultAttribute();
 				attribute.setName(webapi.responseResults()[i].name());
-				attribute.setDataType(webapi.responseResults()[i].dataType());
+				var dataTypeString = webapi.responseResults()[i].dataType() != Void.class ? webapi.responseResults()[i].dataType().getName() : null;
+				attribute.setDataType(dataTypeString);
 				responseResults[i] = attribute;
 			}
 			meta.setResponseResults(responseResults);
@@ -173,7 +174,7 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 				&& WebApiRequestConstants.DEFAULT_RESULT.equals(webapi.results()[0]);
 		boolean isDefaultResponseResults = null != webapi.responseResults() && 1 == webapi.responseResults().length
 				&& WebApiRequestConstants.DEFAULT_RESULT.equals(webapi.responseResults()[0].name())
-				&& StringUtil.isEmpty(webapi.responseResults()[0].dataType());
+				&& Void.class == webapi.responseResults()[0].dataType();
 
 		if (!isDefaultResults && isDefaultResponseResults) {
 			// results がデフォルトではない、responseResults がデフォルトの場合、
@@ -239,9 +240,6 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 
 		// スタブ関連の設定
 		meta.setReturnStubResponse(webapi.returnStubResponse());
-		if (StringUtil.isNotEmpty(webapi.stubResponseStatusValue())) {
-			meta.setStubResponseStatusValue(webapi.stubResponseStatusValue());
-		}
 		if (StringUtil.isNotEmpty(webapi.stubResponseJsonValue())) {
 			meta.setStubResponseJsonValue(webapi.stubResponseJsonValue());
 		}

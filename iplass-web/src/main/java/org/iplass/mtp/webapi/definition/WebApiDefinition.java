@@ -145,8 +145,6 @@ public class WebApiDefinition implements Definition {
 
 	/** スタブレスポンスを返却するか */
 	private boolean returnStubResponse;
-	/** スタブレスポンス "status" の値 */
-	private String stubResponseStatusValue;
 	/** スタブレスポンスの JSON Value */
 	private String stubResponseJsonValue;
 	/** OpenAPI バージョン */
@@ -602,22 +600,6 @@ public class WebApiDefinition implements Definition {
 	}
 
 	/**
-	 * スタブレスポンスの "status" の値を取得します。
-	 * @return スタブレスポンスの "status" の値
-	 */
-	public String getStubResponseStatusValue() {
-		return stubResponseStatusValue;
-	}
-
-	/**
-	 * スタブレスポンスの "status" の値を設定します。
-	 * @param stubResponseStatusValue スタブレスポンスの "status" の値
-	 */
-	public void setStubResponseStatusValue(String stubResponseStatusValue) {
-		this.stubResponseStatusValue = stubResponseStatusValue;
-	}
-
-	/**
 	 * スタブレスポンスのJSON値を取得します。
 	 * @return スタブレスポンスのJSON値
 	 */
@@ -645,7 +627,7 @@ public class WebApiDefinition implements Definition {
 	 * OpenAPIのバージョンを設定します。
 	 * <p>
 	 * 3.0, 3.1 などマイナーバージョンまで記載します。
-	 * OpenAPI バージョンに記載できる内容は {@link org.iplass.mtp.webapi.openapi.OpenApiVersion} を参照してください。
+	 * OpenAPI バージョンに記載できる内容は {@link org.iplass.mtp.webapi.definition.openapi.OpenApiVersion} を参照してください。
 	 * </p>
 	 * @param openApiVersion OpenAPIのバージョン
 	 */
@@ -665,7 +647,7 @@ public class WebApiDefinition implements Definition {
 	 * OpenAPIのファイルタイプを設定します。
 	 * <p>
 	 * OpenAPI のフォーマットは、JSON または YAML です。
-	 * 設定できる内容は、 {@link org.iplass.mtp.webapi.openapi.OpenApiFileType} を参照してください。
+	 * 設定できる内容は、 {@link org.iplass.mtp.webapi.definition.openapi.OpenApiFileType} を参照してください。
 	 * </p>
 	 * @param openApiFileType OpenAPIのファイルタイプ
 	 */

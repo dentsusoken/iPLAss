@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
-import org.iplass.mtp.webapi.openapi.OpenApiFileType;
-import org.iplass.mtp.webapi.openapi.OpenApiVersion;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiFileType;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiVersion;
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.IButton;

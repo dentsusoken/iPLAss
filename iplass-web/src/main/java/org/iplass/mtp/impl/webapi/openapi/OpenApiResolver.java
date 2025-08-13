@@ -19,8 +19,8 @@
  */
 package org.iplass.mtp.impl.webapi.openapi;
 
-import org.iplass.mtp.webapi.openapi.OpenApiFileType;
-import org.iplass.mtp.webapi.openapi.OpenApiVersion;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiFileType;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiVersion;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;

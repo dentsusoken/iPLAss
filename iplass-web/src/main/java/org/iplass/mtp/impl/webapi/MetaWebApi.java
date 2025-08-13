@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.HttpMethod;
@@ -71,9 +72,10 @@ import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.fileupload.MultiPartParameterValueMap;
 import org.iplass.mtp.impl.webapi.MetaWebApiParamMap.WebApiParamMapRuntime;
 import org.iplass.mtp.impl.webapi.MetaWebApiResultAttribute.WebApiResultAttributeRuntime;
-import org.iplass.mtp.impl.webapi.jackson.WebApiObjectMapperService;
+import org.iplass.mtp.impl.webapi.command.stub.StubResponseCommand;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.WebApiRuntimeException;
 import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
@@ -172,8 +174,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	/** スタブレスポンスを返却するか */
 	private boolean returnStubResponse;
-	/** スタブレスポンスの "status" の値 */
-	private String stubResponseStatusValue;
 	/** スタブレスポンスの JSON Value */
 	private String stubResponseJsonValue;
 	/** OpenAPI バージョン */
@@ -503,22 +503,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	}
 
 	/**
-	 * スタブレスポンスの "status" の値を取得します。
-	 * @return スタブレスポンスの "status" の値
-	 */
-	public String getStubResponseStatusValue() {
-		return stubResponseStatusValue;
-	}
-
-	/**
-	 * スタブレスポンスの "status" の値を設定します。
-	 * @param stubResponseStatusValue スタブレスポンスの "status" の値
-	 */
-	public void setStubResponseStatusValue(String stubResponseStatusValue) {
-		this.stubResponseStatusValue = stubResponseStatusValue;
-	}
-
-	/**
 	 * スタブレスポンスのJSON値を取得します。
 	 * @return スタブレスポンスのJSON値
 	 */
@@ -546,7 +530,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	 * OpenAPIのバージョンを設定します。
 	 * <p>
 	 * 3.0, 3.1 などマイナーバージョンまで記載します。
-	 * OpenAPI バージョンに記載できる内容は {@link org.iplass.mtp.webapi.openapi.OpenApiVersion} を参照してください。
+	 * OpenAPI バージョンに記載できる内容は {@link org.iplass.mtp.webapi.definition.openapi.OpenApiVersion} を参照してください。
 	 * </p>
 	 * @param openApiVersion OpenAPIのバージョン
 	 */
@@ -566,7 +550,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	 * OpenAPIのファイルタイプを設定します。
 	 * <p>
 	 * OpenAPI のフォーマットは、JSON または YAML です。
-	 * 設定できる内容は、 {@link org.iplass.mtp.webapi.openapi.OpenApiFileType} を参照してください。
+	 * 設定できる内容は、 {@link org.iplass.mtp.webapi.definition.openapi.OpenApiFileType} を参照してください。
 	 * </p>
 	 * @param openApiFileType OpenAPIのファイルタイプ
 	 */
@@ -614,11 +598,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		private WebApiResultAttributeRuntime[] responseResultsRuntime;
 		/** 結果属性名、ランタイムマップ */
 		private Map<String, WebApiResultAttributeRuntime> responseResultsNameRuntimeMap;
-
-		/** スタブレスポンスのステータス値 */
-		private String stubResponseStatusValue;;
-		/** スタブレスポンスのJSONMap */
-		private Map<String, Object> stubResponseJsonMap;
 
 		@SuppressWarnings("unchecked")
 		public WebApiRuntime() {
@@ -764,29 +743,35 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 				// スタブ判定
 				if (webApiService.isEnableStubResponse() && MetaWebApi.this.returnStubResponse) {
-					var objectMapper = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class).getObjectMapper();
+					// スタブの場合の処理
+
+					// スタブレスポンスを返却するログ出力
+					logger.debug("WebApi {} is stub response.", getName());
+
+					// スタブの場合は、Runtime 上の以下の値を置き換える
+					// - cmd
+					// - responseResultsRuntime
+					// - responseResultsNameRuntimeMap
 
 					var config = new SingleCommandConfig();
-					// WebApiService に設定されている stubResponseCommandName を取得
-					config.setCommandName(webApiService.getStubResponseCommandName());
+					// スタブレスポンス返却コマンド名を設定
+					config.setCommandName(StubResponseCommand.NAME);
 					var stubCommand = MetaCommand.createInstance(config);
 					stubCommand.applyConfig(config);
 					this.cmd = stubCommand.createRuntime();
 
-					// ステータス値は設定されていない場合は、デフォルト値を設定
-					this.stubResponseStatusValue = StringUtil.isEmpty(MetaWebApi.this.stubResponseStatusValue) ? "SUCCESS"
-							: MetaWebApi.this.stubResponseStatusValue;
-					try {
-						this.stubResponseJsonMap = Collections.emptyMap();
-						if (StringUtil.isNotEmpty(getStubResponseJsonValue())) {
-							// レスポンスの JSON が設定されている場合は、ObjectMapper で Map に変換する
-							this.stubResponseJsonMap = objectMapper.readValue(getStubResponseJsonValue(), Map.class);
-						}
+					var metaAttribute = new MetaWebApiResultAttribute();
+					metaAttribute.setName(WebApiRequestConstants.DEFAULT_RESULT);
 
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
+					this.responseResultsRuntime = new WebApiResultAttributeRuntime[] { new WebApiResultAttributeRuntime(metaAttribute) };
+					this.responseResultsNameRuntimeMap = Stream.of(this.responseResultsRuntime).collect(Collectors.toMap(r -> r.getName(), r -> r));
+
+				} else if (!webApiService.isEnableStubResponse() && MetaWebApi.this.returnStubResponse) {
+					// WebApiService#isEnableStubResponse() は false だが、MetaWebApi#returnStubResponse が true の場合は、意図せずスタブモードで動作しようとしている
+					logger.warn("WebApi {} is set to return stub response, but stub response is disabled in WebApiService. "
+							+ "Please check the service-config of WebApiService or metadata.", getName());
 				}
+
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
@@ -1145,30 +1130,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		public boolean containsResponseResult(String name) {
 			return responseResultsNameRuntimeMap.containsKey(name);
 		}
-
-		/**
-		 * スタブレスポンスのステータス値を取得します。
-		 * <p>
-		 * メタデータ解析時に設定値が存在しない場合は、デフォルト値を設定済みです。
-		 * そのため、本メソッドの返却値は常に null にはなりません。
-		 * </p>
-		 * @return スタブレスポンスのステータス値
-		 */
-		public String getStubResponseStatusValue() {
-			return stubResponseStatusValue;
-		}
-
-		/**
-		 * スタブレスポンスのJSONMapを取得します。
-		 * <p>
-		 * メタデータの JSON 文字列を解析し、Map インスタンスへ変換済みです。
-		 * 設定されていない場合は、Collections#emptyMap() を設定してあります。
-		 * </p>
-		 * @return スタブレスポンスのJSONMap
-		 */
-		public Map<String, Object> getStubResponseJsonMap() {
-			return stubResponseJsonMap;
-		}
 	}
 
 	// Meta → Definition
@@ -1266,7 +1227,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setMaxFileSize(maxFileSize);
 
 		definition.setReturnStubResponse(returnStubResponse);
-		definition.setStubResponseStatusValue(stubResponseStatusValue);
 		definition.setStubResponseJsonValue(stubResponseJsonValue);
 
 		definition.setOpenApiVersion(openApiVersion);
@@ -1405,7 +1365,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		maxFileSize = definition.getMaxFileSize();
 
 		returnStubResponse = definition.isReturnStubResponse();
-		stubResponseStatusValue = definition.getStubResponseStatusValue();
 		stubResponseJsonValue = definition.getStubResponseJsonValue();
 
 		openApiVersion = definition.getOpenApiVersion();

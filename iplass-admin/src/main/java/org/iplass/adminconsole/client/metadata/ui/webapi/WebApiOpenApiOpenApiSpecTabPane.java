@@ -29,7 +29,7 @@ import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogSetting;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
-import org.iplass.mtp.webapi.openapi.OpenApiVersion;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiVersion;
 
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -41,10 +41,10 @@ import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
- * オプション属性 OpenAPI タブ用の入力領域
+ * OpenAPI OpenAPI Spec. タブ用の入力領域
  * @author SEKIGUCHI Naoya
  */
-public class WebApiOptionalOpenApiTabPane extends VLayout {
+public class WebApiOpenApiOpenApiSpecTabPane extends VLayout {
 	/** 入力フォーム */
 	private DynamicForm form;
 	/** OpenAPI バージョンフィールド */
@@ -57,7 +57,7 @@ public class WebApiOptionalOpenApiTabPane extends VLayout {
 	/**
 	 * コンストラクタ
 	 */
-	public WebApiOptionalOpenApiTabPane() {
+	public WebApiOpenApiOpenApiSpecTabPane() {
 		setMargin(5);
 		setAutoHeight();
 		setWidth100();
@@ -67,7 +67,7 @@ public class WebApiOptionalOpenApiTabPane extends VLayout {
 		openApiVersionField.setValueMap(createVersionValueMap());
 		openApiVersionField.setDefaultValue(OpenApiVersion.V31.getSeriesVersion());
 		SmartGWTUtil.addHoverToFormItem(openApiVersionField,
-				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOptionalOpenApiTabPane_openApiVersionField_hoverMessage"));
+				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOpenApiOpenApiSpecTabPane_openApiVersionField_hoverMessage"));
 
 		openApiField = new TextAreaItem("openApiField", "OpenAPI Spec");
 		openApiField.setWidth("100%");
@@ -75,7 +75,7 @@ public class WebApiOptionalOpenApiTabPane extends VLayout {
 		openApiField.setColSpan(2);
 		SmartGWTUtil.setReadOnlyTextArea(openApiField);
 		SmartGWTUtil.addHoverToFormItem(openApiField,
-				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOptionalOpenApiTabPane_openApiField_hoverMessage"));
+				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOpenApiOpenApiSpecTabPane_openApiField_hoverMessage"));
 
 		SpacerItem openApiEditButtonSpacer = new SpacerItem();
 		ButtonItem openApiEditButton = new ButtonItem("openApiEditButton", "Edit");
@@ -127,7 +127,7 @@ public class WebApiOptionalOpenApiTabPane extends VLayout {
 		MetaDataUtil.showScriptEditDialog(mode,
 				SmartGWTUtil.getStringValue(openApiField),
 				"OpenAPI Specification",
-				"ui_metadata_webapi_WebApiOptionalOpenApiTabPane_openApiField_editorHint",
+				"ui_metadata_webapi_WebApiOpenApiOpenApiSpecTabPane_openApiField_editorHint",
 				null,
 				new ScriptEditorDialogHandler() {
 

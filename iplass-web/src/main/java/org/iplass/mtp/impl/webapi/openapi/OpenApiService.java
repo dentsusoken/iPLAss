@@ -39,8 +39,8 @@ import org.iplass.mtp.impl.webapi.openapi.webapi.WebApiOpenApiMapper;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
-import org.iplass.mtp.webapi.openapi.OpenApiFileType;
-import org.iplass.mtp.webapi.openapi.OpenApiVersion;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiFileType;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiVersion;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

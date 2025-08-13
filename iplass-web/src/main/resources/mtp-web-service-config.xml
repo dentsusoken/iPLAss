@@ -576,10 +576,6 @@
 		<property name="enableBinaryApi" value="false" />
 		<!-- スタブレスポンスを有効にする場合は enableStubResponse プロパティに true を設定する -->
 		<property name="enableStubResponse" value="false" />
-		<!-- スタブレスポンスを返却するコマンド名を設定する -->
-		<!--
-		<property name="stubResponseCommandName" value="mtp/webapi/StubResponseCommand" />
-		-->
 		<property name="writeEncodedFilenameInBinaryApi" value="false" />
 		<property name="unescapeFilenameCharacterInBinaryApi" value="-._~" />
 

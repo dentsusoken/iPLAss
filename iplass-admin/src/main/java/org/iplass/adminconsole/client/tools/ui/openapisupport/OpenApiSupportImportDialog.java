@@ -28,7 +28,7 @@ import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
 import org.iplass.adminconsole.shared.base.dto.io.upload.UploadProperty;
 import org.iplass.adminconsole.shared.tools.rpc.openapisupport.OpenApiSupportRpcConstant;
-import org.iplass.mtp.webapi.openapi.OpenApiFileType;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiFileType;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;

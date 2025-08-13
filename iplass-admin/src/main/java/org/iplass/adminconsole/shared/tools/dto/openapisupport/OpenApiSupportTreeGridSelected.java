@@ -61,7 +61,7 @@ public class OpenApiSupportTreeGridSelected {
 	 * Entity CRUD API選択リストを取得します。
 	 * <p>
 	 * キーに Entity 定義名、値に権限のリストが保持されています。
-	 * 権限は、{@link org.iplass.mtp.webapi.openapi.EntityWebApiType} の文字列が設定されます。
+	 * 権限は、{@link org.iplass.mtp.impl.webapi.openapi.entity.EntityWebApiType} の文字列が設定されます。
 	 * </p>
 	 * @return entityCRUDApiList
 	 */
@@ -72,7 +72,7 @@ public class OpenApiSupportTreeGridSelected {
 	/**
 	 * Entity CRUD API選択リストにEntity CRUD APIを追加します。
 	 * <p>
-	 * 設定する権限は、{@link org.iplass.mtp.webapi.openapi.EntityWebApiType} の文字列を参照してください。
+	 * 設定する権限は、{@link org.iplass.mtp.impl.webapi.openapi.entity.EntityWebApiType} の文字列を参照してください。
 	 * </p>
 	 * @param definitionName エンティティ定義名
 	 * @param auth 権限

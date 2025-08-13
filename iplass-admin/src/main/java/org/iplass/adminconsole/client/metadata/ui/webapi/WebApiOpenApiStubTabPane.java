@@ -28,7 +28,7 @@ import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
-import org.iplass.mtp.webapi.openapi.OpenApiVersion;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiVersion;
 
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -36,28 +36,25 @@ import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
- * オプション属性スタブタブ用の入力領域
+ * OpenAPI スタブタブ用の入力領域
  * @author SEKIGUCHI Naoya
  */
-public class WebApiOptionalStubTabPane extends VLayout {
+public class WebApiOpenApiStubTabPane extends VLayout {
 	/** 入力フォーム */
 	private DynamicForm form;
 	/** 公開WebAPI */
 	private CheckboxItem returnStubResponseField;
-	/** スタブレスポンス "status" の値フィールド */
-	private TextItem stubResponseStatusValueField;
 	/** スタブレスポンスフィールド */
 	private TextAreaItem stubResponseJsonValueField;
 
 	/**
 	 * コンストラクタ
 	 */
-	public WebApiOptionalStubTabPane() {
+	public WebApiOpenApiStubTabPane() {
 		setMargin(5);
 		setAutoHeight();
 		setWidth100();
@@ -66,19 +63,14 @@ public class WebApiOptionalStubTabPane extends VLayout {
 		returnStubResponseField = new CheckboxItem("returnStubResponseField", "Return Stub Response");
 		returnStubResponseField.setWidth("100%");
 		SmartGWTUtil.addHoverToFormItem(returnStubResponseField,
-				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOptionalStubTabPane_returnStubResponseField_hoverMessage"));
-
-		stubResponseStatusValueField = new TextItem("stubResponseStatusValueField", "Stub Response Staus Value");
-		stubResponseStatusValueField.setWidth("100%");
-		SmartGWTUtil.addHoverToFormItem(stubResponseStatusValueField,
-				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOptionalStubTabPane_stubResponseStatusValueField_hoverMessage"));
+				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOpenApiStubTabPane_returnStubResponseField_hoverMessage"));
 
 		stubResponseJsonValueField = new TextAreaItem("stubResponseJsonValueField", "Stub Response JSON Value");
 		stubResponseJsonValueField.setWidth("100%");
 		stubResponseJsonValueField.setHeight(150);
 		stubResponseJsonValueField.setColSpan(2);
 		SmartGWTUtil.addHoverToFormItem(stubResponseJsonValueField,
-				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOptionalStubTabPane_stubResponseJsonValueField_hoverMessage"));
+				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOpenApiStubTabPane_stubResponseJsonValueField_hoverMessage"));
 		SmartGWTUtil.setReadOnlyTextArea(stubResponseJsonValueField);
 
 		SpacerItem stubResposeValueEditButtonSpacer = new SpacerItem();
@@ -90,7 +82,7 @@ public class WebApiOptionalStubTabPane extends VLayout {
 		form = new DynamicForm();
 		form.setColWidths(150, 300, "*");
 		form.setNumCols(3);
-		form.setItems(returnStubResponseField, stubResponseStatusValueField, stubResponseJsonValueField, stubResposeValueEditButtonSpacer,
+		form.setItems(returnStubResponseField, stubResponseJsonValueField, stubResposeValueEditButtonSpacer,
 				stubResposeValueEditButton);
 		addMember(form);
 	}
@@ -101,7 +93,6 @@ public class WebApiOptionalStubTabPane extends VLayout {
 	 */
 	public void setDefinition(WebApiDefinition definition) {
 		returnStubResponseField.setValue(definition.isReturnStubResponse());
-		stubResponseStatusValueField.setValue(definition.getStubResponseStatusValue());
 		stubResponseJsonValueField.setValue(definition.getStubResponseJsonValue());
 	}
 
@@ -112,7 +103,6 @@ public class WebApiOptionalStubTabPane extends VLayout {
 	 */
 	public WebApiDefinition getDefinition(WebApiDefinition definition) {
 		definition.setReturnStubResponse(SmartGWTUtil.getBooleanValue(returnStubResponseField));
-		definition.setStubResponseStatusValue(SmartGWTUtil.getStringValue(stubResponseStatusValueField));
 		definition.setStubResponseJsonValue(SmartGWTUtil.getStringValue(stubResponseJsonValueField));
 
 		return definition;
@@ -126,7 +116,7 @@ public class WebApiOptionalStubTabPane extends VLayout {
 		MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.JSON,
 				SmartGWTUtil.getStringValue(stubResponseJsonValueField),
 				"Stub Respose JSON Value",
-				"ui_metadata_webapi_WebApiOptionalStubTabPane_stubResponseJsonValueField_editorHint",
+				"ui_metadata_webapi_WebApiOpenApiStubTabPane_stubResponseJsonValueField_editorHint",
 				null,
 				new ScriptEditorDialogHandler() {
 

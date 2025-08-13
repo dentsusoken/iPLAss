@@ -19,6 +19,8 @@
  */
 package org.iplass.mtp.impl.webapi.command.stub;
 
+import jakarta.ws.rs.core.Response;
+
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -32,6 +34,10 @@ import org.slf4j.LoggerFactory;
  * WebAPI スタブレスポンスを返却するコマンド
  * <p>
  * WebAPI 定義でスタブレスポンスを返却する {@link org.iplass.mtp.webapi.definition.WebApiDefinition#isReturnStubResponse()} が true の場合に実行されます。
+ * </p>
+ * <p>
+ * ResponseBuilder を利用して、JSON レスポンスを返却します。
+ * スタブ動作の場合は、ResponseResults のキー名が {@link org.iplass.mtp.webapi.WebApiRequestConstants#DEFAULT_RESULT} になります。
  * </p>
  * @author SEKIGUCHI Naoya
  */
@@ -60,12 +66,10 @@ public class StubResponseCommand implements Command {
 		var service = ServiceRegistry.getRegistry().getService(WebApiService.class);
 		var runtime = service.getRuntimeByName(name);
 
-		// レスポンスを属性に設定する
-		for (var entry : runtime.getStubResponseJsonMap().entrySet()) {
-			request.setAttribute(entry.getKey(), entry.getValue());
-		}
-
+		// FIXME application/json が固定化される。
 		// ステータスコードを設定する
-		return runtime.getStubResponseStatusValue();
+		var responseBuilder = Response.status(200).type("application/json").entity(runtime.getMetaData().getStubResponseJsonValue());
+		request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, responseBuilder);
+		return "SUCCESS";
 	}
 }

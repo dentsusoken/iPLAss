@@ -26,7 +26,6 @@ import org.iplass.mtp.impl.webapi.command.entity.GetEntityCommand;
 import org.iplass.mtp.impl.webapi.openapi.OpenApiService;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiJsonSchemaType;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.webapi.openapi.EntityWebApiType;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;

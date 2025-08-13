@@ -41,8 +41,8 @@ import org.iplass.adminconsole.shared.tools.rpc.openapisupport.OpenApiSupportRpc
 import org.iplass.mtp.impl.webapi.openapi.OpenApiImportResult;
 import org.iplass.mtp.impl.webapi.openapi.OpenApiService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.webapi.openapi.OpenApiFileType;
-import org.iplass.mtp.webapi.openapi.OpenApiVersion;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiFileType;
+import org.iplass.mtp.webapi.definition.openapi.OpenApiVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -156,7 +156,7 @@ public @interface WebApi {
 	 * スタブレスポンスを返却するかどうか。
 	 * <p>
 	 * true を設定するとスタブレスポンスを返却します。デフォルトの設定値は false です。<br>
-	 * スタブレスポンスを返却する場合は、{@link #stubResponseStatusValue()} と {@link #stubResponseJsonValue()} を設定してください。
+	 * スタブレスポンスを返却する場合は、{@link #stubResponseJsonValue()} を設定してください。
 	 * </p>
 	 * <h3>注意事項</h3>
 	 * <p>
@@ -167,16 +167,6 @@ public @interface WebApi {
 	 * @return スタブレスポンスを返却するか。
 	 */
 	boolean returnStubResponse() default false;
-
-	/**
-	 * スタブレスポンスの "status" の値。
-	 * <p>
-	 * スタブレスポンスを返却する場合の "status" キーの値を設定します。<br>
-	 * 未指定の場合は、"SUCCESS" が設定されます。
-	 * </p>
-	 * @return スタブレスポンスの "status" の値
-	 */
-	String stubResponseStatusValue() default "";
 
 	/**
 	 * スタブレスポンスの JSON Value。
@@ -192,7 +182,7 @@ public @interface WebApi {
 	/**
 	 * OpenAPI バージョン
 	 * <p>
-	 * 設定可能な値は {@link org.iplass.mtp.webapi.openapi.OpenApiVersion} で定義されている seriesVersion の値です（3.0, 3.1 など）。
+	 * 設定可能な値は {@link org.iplass.mtp.webapi.definition.openapi.OpenApiVersion} で定義されている seriesVersion の値です（3.0, 3.1 など）。
 	 * </p>
 	 * @return OpenAPI バージョン
 	 */
@@ -201,7 +191,7 @@ public @interface WebApi {
 	/**
 	 * OpenAPI ファイルタイプ
 	 * <p>
-	 * 設定可能な値は {@link org.iplass.mtp.webapi.openapi.OpenApiFileType} で定義されている列挙値の文字列です（JSON, YAML など）。
+	 * 設定可能な値は {@link org.iplass.mtp.webapi.definition.openapi.OpenApiFileType} で定義されている列挙値の文字列です（JSON, YAML など）。
 	 * </p>
 	 * @return OpenAPI バージョン
 	 */

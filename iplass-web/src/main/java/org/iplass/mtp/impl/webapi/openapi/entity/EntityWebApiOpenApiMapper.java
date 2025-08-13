@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
-import org.iplass.mtp.webapi.openapi.EntityWebApiType;
 
 import io.swagger.v3.oas.models.OpenAPI;
 

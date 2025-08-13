@@ -21,7 +21,6 @@ package org.iplass.mtp.impl.webapi.openapi.entity;
 
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.impl.webapi.command.entity.DeleteEntityCommand;
-import org.iplass.mtp.webapi.openapi.EntityWebApiType;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;

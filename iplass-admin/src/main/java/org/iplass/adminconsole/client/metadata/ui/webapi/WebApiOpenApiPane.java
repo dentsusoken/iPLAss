@@ -26,15 +26,15 @@ import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 
 /**
- * WebAPIメタデータのオプション属性用の入力領域
+ * WebAPIメタデータのOpenAPI用の入力領域
  * <p>
- * WebAPIのオプション属性を設定する為の入力領域です。
- * オプション情報はそれぞれタブでグループ化され、タブごとに意味のある単位で入力領域を用意します。
+ * WebAPIの OpenAPI に関するオプション属性を設定する為の入力領域です。
+ * 情報はそれぞれタブでグループ化され、タブごとに意味のある単位で入力領域を用意します。
  * </p>
  *
  * @author SEKIGUCHI Naoya
  */
-public class WebApiOptionalAttributePane extends VLayout {
+public class WebApiOpenApiPane extends VLayout {
 	/** タブ */
 	private TabSet tabset;
 	/** スタブタブ */
@@ -43,14 +43,14 @@ public class WebApiOptionalAttributePane extends VLayout {
 	private Tab openApiTab;
 
 	/** スタブタブ用画面 */
-	private WebApiOptionalStubTabPane stubPane;
+	private WebApiOpenApiStubTabPane stubPane;
 	/** OpenAPIタブ用画面 */
-	private WebApiOptionalOpenApiTabPane openApiPane;
+	private WebApiOpenApiOpenApiSpecTabPane openApiPane;
 
 	/**
 	 * コンストラクタ
 	 */
-	public WebApiOptionalAttributePane() {
+	public WebApiOpenApiPane() {
 		setMargin(5);
 		setHeight100();
 		setWidth100();
@@ -60,14 +60,14 @@ public class WebApiOptionalAttributePane extends VLayout {
 		tabset.setWidth100();
 		tabset.setHeight100();
 
-		stubPane = new WebApiOptionalStubTabPane();
-		openApiPane = new WebApiOptionalOpenApiTabPane();
+		stubPane = new WebApiOpenApiStubTabPane();
+		openApiPane = new WebApiOpenApiOpenApiSpecTabPane();
 
 		stubTab = new Tab("Stub");
 		stubTab.setPane(stubPane);
 		tabset.addTab(stubTab);
 
-		openApiTab = new Tab("OpenAPI");
+		openApiTab = new Tab("OpenAPI Spec.");
 		openApiTab.setPane(openApiPane);
 		tabset.addTab(openApiTab);
 

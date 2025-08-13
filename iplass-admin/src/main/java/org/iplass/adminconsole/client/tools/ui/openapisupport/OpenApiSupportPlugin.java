@@ -34,7 +34,7 @@ import com.smartgwt.client.widgets.menu.MenuItem;
 public class OpenApiSupportPlugin extends DefaultAdminPlugin {
 
 	/** ノード表示名 */
-	private static final String NODE_NAME = "OpenApi(Swagger)Support";
+	private static final String NODE_NAME = "OpenApiSupport";
 
 	/** ノードタイプ  */
 	private static final String NODE_TYPE = "OpenApiSupport";
@@ -100,10 +100,6 @@ public class OpenApiSupportPlugin extends DefaultAdminPlugin {
 			mainPane = new OpenApiSupportMainPane(this);
 		}
 
-		// NOTE タブ名に括弧が含まれる場合、タブクローズ時にエラーになる為、アンダーバーに置換する。
-		// （onFocus にタブIDを指定したメソッドが用意されており、 () が存在することでメソッドコールになってしまうと考えられる）
-		String nodeNameExcludeBrackets = NODE_NAME.replaceAll("[\\(\\)]", "_");
-
-		workspace.addTab(nodeNameExcludeBrackets, NODE_ICON, nodeNameExcludeBrackets, mainPane);
+		workspace.addTab(NODE_NAME, NODE_ICON, NODE_NAME, mainPane);
 	}
 }

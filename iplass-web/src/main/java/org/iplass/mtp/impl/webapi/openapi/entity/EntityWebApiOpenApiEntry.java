@@ -21,8 +21,6 @@ package org.iplass.mtp.impl.webapi.openapi.entity;
 
 import java.util.List;
 
-import org.iplass.mtp.webapi.openapi.EntityWebApiType;
-
 /**
  * OpenAPI に記載する EntityWebAPI のエントリ
  * <p>

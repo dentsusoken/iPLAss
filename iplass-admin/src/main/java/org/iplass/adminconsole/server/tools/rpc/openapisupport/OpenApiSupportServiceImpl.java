@@ -29,10 +29,10 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.DefinitionSummary;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
+import org.iplass.mtp.impl.webapi.openapi.entity.EntityWebApiType;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager;
 import org.iplass.mtp.webapi.definition.WebApiDefinitionManager;
-import org.iplass.mtp.webapi.openapi.EntityWebApiType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

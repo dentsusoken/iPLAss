@@ -105,8 +105,8 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 
 	ResponseTypePane responseTypePane;
 
-	/** オプション属性領域 */
-	private WebApiOptionalAttributePane optionalAttributePane;
+	/** OpenAPI領域 */
+	private WebApiOpenApiPane openApiPane;
 
 	public WebApiEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
@@ -192,8 +192,8 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 			}
 		}.setTarget(webApiSection.getLayout());
 
-		optionalAttributePane = new WebApiOptionalAttributePane();
-		MetaDataSectionStackSection openApiSection = createSection("Optional Attribute", false, optionalAttributePane);
+		openApiPane = new WebApiOpenApiPane();
+		MetaDataSectionStackSection openApiSection = createSection("OpenAPI", false, openApiPane);
 
 		setMainSections(commonSection, webApiSection, openApiSection);
 
@@ -304,8 +304,8 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		webApiParamMapPane.setWebApiParamMap(curDefinition.getWebApiParamMap());
 		resultPane.setDefinition(curDefinition);
 
-		// オプション属性値を画面に反映
-		optionalAttributePane.setDefinition(curDefinition);
+		// OpenAPI属性値を画面に反映
+		openApiPane.setDefinition(curDefinition);
 	}
 
 	/**
@@ -392,8 +392,8 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 						definition = webApiParamMapPane.getEditDefinition(definition);
 						definition = requestTypeGridPane.getEditDefinition(definition);
 						definition = resultPane.getEditDefinition(definition);
-						// オプション属性値をWebAPI定義に反映
-						definition = optionalAttributePane.getDefinition(definition);
+						// OpenAPI属性値をWebAPI定義に反映
+						definition = openApiPane.getDefinition(definition);
 
 						List<RequestType> checkedRequestType = Arrays.asList(definition.getAccepts());
 						boolean isCheckedRestJson = checkedRequestType.contains(RequestType.REST_JSON);
