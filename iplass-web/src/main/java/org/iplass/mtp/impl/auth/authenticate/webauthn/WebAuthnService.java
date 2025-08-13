@@ -30,6 +30,7 @@ import org.iplass.mtp.impl.auth.authenticate.webauthn.MetaWebAuthn.WebAuthnRunti
 import org.iplass.mtp.impl.auth.authenticate.webauthn.userhandle.UserHandleSupplier;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.util.random.SecureRandomGenerator;
 import org.iplass.mtp.impl.util.random.SecureRandomService;
@@ -64,6 +65,11 @@ public class WebAuthnService extends AbstractTypedMetaDataService<MetaWebAuthn, 
 		@Override
 		public TypedDefinitionManager<WebAuthnDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(WebAuthnDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 
