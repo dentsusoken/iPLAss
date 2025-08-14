@@ -71,6 +71,7 @@ import org.iplass.mtp.impl.tools.entityport.EntityDataExportCondition;
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportCondition;
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportResult;
 import org.iplass.mtp.impl.tools.entityport.EntityPortingService;
+import org.iplass.mtp.impl.tools.metaport.MetaDataCheckResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataImportResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
 import org.iplass.mtp.impl.tools.metaport.MetaDataTagEntity;
@@ -1096,6 +1097,59 @@ public class PackageService implements Service {
 			}
 		} finally {
 			toolLogger.info("finish package entity import. {target:{}, entity:{}, result:{}}", packName, path,
+					(result == null ? "failed" : result.isError() ? "failed" : "success"));
+		}
+	}
+
+	/**
+	 * <p>Packageのメタデータの整合性チェックを行います。</p>
+	 *
+	 * @param packOid PackageエンティティOID
+	 */
+	public MetaDataCheckResult checkPackageMetaData(final String packOid) {
+		Entity packEntity = null;
+		try {
+			// 対象ファイルの取得
+			packEntity = loadWithCheckExist(packOid);
+		} catch (PackageRuntimeException e) {
+			// Entityが取得できないのでOIDをログ出力する
+			toolLogger.info("start package metadata check. {target:{}}", packOid);
+			toolLogger.info("finish package metadata check. {target:{}, result:{}}", packOid, "failed");
+			throw e;
+		}
+
+		File archive = getPackageArchiveFile(packEntity);
+		return checkPackageMetaData(archive, packEntity.getName());
+	}
+
+	/**
+	 * <p>Packageのメタデータの整合性チェックを行います。</p>
+	 *
+	 * @param archive Packageファイル
+	 * @param packName Package名
+	 */
+	private MetaDataCheckResult checkPackageMetaData(final File archive, final String packName) {
+		toolLogger.info("start package metadata check. {target:{}}", packName);
+		auditLogger.info("check package metadata," + packName);
+
+		//メタデータ定義ファイルの取得
+		MetaDataCheckResult result = null;
+		try (ZipFile zf = new ZipFile(archive)) {
+			ZipEntry ze = zf.getEntry(META_DATA_FILE_NAME);
+
+			try (InputStream is = zf.getInputStream(ze)) {
+				//ファイルに含まれるMetaData情報を取得
+				XMLEntryInfo entryInfo = metaService.getXMLMetaDataEntryInfo(is);
+
+				//インポート処理の実行
+				result = metaService.checkMetaData(packName, entryInfo);
+
+				return result;
+			}
+		} catch (IOException e) {
+			throw new PackageRuntimeException("failed to read metadata configure. packName=" + packName, e);
+		} finally {
+			toolLogger.info("finish package metadata import. {target:{}, result:{}}", packName,
 					(result == null ? "failed" : result.isError() ? "failed" : "success"));
 		}
 	}

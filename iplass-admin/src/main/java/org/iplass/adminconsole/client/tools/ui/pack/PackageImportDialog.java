@@ -35,6 +35,7 @@ import org.iplass.adminconsole.client.tools.ui.metaexplorer.MetaDataImportTenant
 import org.iplass.adminconsole.client.tools.ui.metaexplorer.MetaDataImportTenantPane.TenantSelectActionCallback;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataImportResultInfo;
+import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataCheckResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataImportResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.pack.PackageEntryInfo;
 import org.iplass.adminconsole.shared.tools.dto.pack.PackageImportCondition;
@@ -389,7 +390,41 @@ public class PackageImportDialog extends AbstractWindow {
 		}
 
 		private void doExecuteImport(final Tenant importTenant) {
-			SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_startImportConf"), new BooleanCallback() {
+			// Package内にメタデータがなかったらメタデータチェックせずにインポート開始
+			if (SmartGWTUtil.isEmpty(packageInfo.getMetaDataPaths())) {
+				doExecuteImport(importTenant, rs("ui_tools_pack_PackageImportDialog_startImportConf"));
+				return;
+			}
+
+			SmartGWTUtil.showProgress();
+			service.checkPackageMetaData(TenantInfoHolder.getId(), fileOid, new AsyncCallback<MetaDataCheckResultInfo>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					SmartGWTUtil.hideProgress();
+
+					GWT.log(caught.toString(), caught);
+					SC.warn(rs("ui_tools_pack_PackageImportDialog_failedToImportMetaData") + caught.getMessage());
+				}
+
+				@Override
+				public void onSuccess(MetaDataCheckResultInfo result) {
+					SmartGWTUtil.hideProgress();
+
+					// エラーの場合はインポート終了する
+					if (result.isError()) {
+						SC.warn(result.getMessage());
+						return;
+					}
+
+					doExecuteImport(importTenant, createConfirmMessage(result));
+				}
+
+			});
+		}
+
+		private void doExecuteImport(final Tenant importTenant, final String message) {
+			SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), message, new BooleanCallback() {
 
 				@Override
 				public void execute(Boolean value) {
@@ -413,6 +448,24 @@ public class PackageImportDialog extends AbstractWindow {
 
 				}
 			});
+		}
+
+		private String createConfirmMessage(MetaDataCheckResultInfo result) {
+			if (result.isWarn()) {
+				return rs("ui_tools_pack_PackageImportDialog_startImportConfWithWarn", result.getMessage(),
+						pathListToString(result.getMetaDataPaths()));
+			}
+
+			// 警告でない場合は固定メッセージ
+			return rs("ui_tools_pack_PackageImportDialog_startImportConf");
+		}
+
+		private String pathListToString(List<String> pathList) {
+			if (pathList == null || pathList.size() == 0) {
+				return "";
+			}
+
+			return String.join("</br>", pathList);
 		}
 
 		private void importMetaData(Tenant importTenant) {
@@ -1032,8 +1085,8 @@ public class PackageImportDialog extends AbstractWindow {
 		}
 	}
 
-	private String rs(String key) {
-		return AdminClientMessageUtil.getString(key);
+	private String rs(String key, Object... args) {
+		return AdminClientMessageUtil.getString(key, args);
 	}
 
 }

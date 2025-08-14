@@ -40,6 +40,7 @@ import org.iplass.adminconsole.server.base.service.AdminEntityManager;
 import org.iplass.adminconsole.server.metadata.rpc.MetaDataTreeBuilder;
 import org.iplass.adminconsole.shared.metadata.dto.MetaTreeNode;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.ImportMetaDataStatus;
+import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataCheckResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataExplorerRuntimeException;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataImportResultInfo;
 import org.iplass.mtp.entity.BinaryReference;
@@ -60,6 +61,7 @@ import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.metadata.MetaDataStore;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.tenant.MetaTenant;
+import org.iplass.mtp.impl.tools.metaport.MetaDataCheckResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataImportResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataImportStatus;
 import org.iplass.mtp.impl.tools.metaport.MetaDataPortingRuntimeException;
@@ -381,6 +383,41 @@ public class MetaDataPortingLogic {
 				throw new MetaDataExplorerRuntimeException(resourceString("canNotAnalysisMetaData", tagEntity.getOid()), e);
 			}
 		}
+	}
+
+	/**
+	 * インポートデータに対するメタデータ整合性をチェックします。
+	 * 
+	 * @param tagOid インポート対象OID
+	 * @param pathList インポート対象メタデータパス
+	 * @return チェック結果
+	 */
+	public MetaDataCheckResultInfo checkMetaData(final String tagOid, final List<String> pathList) {
+		// インポート対象のメタデータファイル取得
+		TagEntryInfo entryInfo = null;
+		try {
+			entryInfo = getTagMetaDataEntry(tagOid);
+		} catch (Exception e) {
+			TransactionUtil.setRollback();
+
+			logger.error("meta data check failed.", e);
+
+			MetaDataCheckResultInfo result = new MetaDataCheckResultInfo(true);
+			result.setMessage(resourceString("errImportTargetGet", e.getMessage()));
+
+			return result;
+		}
+
+		// メタデータ整合性チェック
+		MetaDataCheckResult metaResult = metaService.checkMetaData(entryInfo.getTagName(), entryInfo.getEntryInfo(), pathList);
+
+		// MetaDataCheckResult -> MetaDataCheckResultInfo
+		MetaDataCheckResultInfo result = new MetaDataCheckResultInfo(metaResult.isError());
+		result.setWarn(metaResult.isWarn());
+		result.setMessage(metaResult.getMessage());
+		result.setMetaDataPaths(metaResult.getMetaDataPaths());
+
+		return result;
 	}
 
 	private List<MetaDataEntryInfo> convertMetaDataEntryInfo(XMLEntryInfo entryInfo) throws MetaDataRuntimeException {
