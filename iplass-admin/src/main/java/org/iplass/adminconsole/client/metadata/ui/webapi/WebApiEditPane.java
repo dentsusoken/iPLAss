@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package org.iplass.adminconsole.client.metadata.ui.webapi;
 
 import java.util.ArrayList;
@@ -106,8 +105,23 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 
 	ResponseTypePane responseTypePane;
 
+	/** OpenAPI領域 */
+	private WebApiOpenApiPane openApiPane;
+
+	/** WebAPI設定アクセサ */
+	private WebApiConfigurationAccessor configAccessor;
+
 	public WebApiEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
+
+		// WebApi設定アクセサ
+		configAccessor = new WebApiConfigurationAccessor();
+		// Response Type の取得用
+		configAccessor.setResponseTypeSupplier(() -> {
+			var def = new WebApiDefinition();
+			responseTypePane.getEditDefinition(def);
+			return def.getResponseType();
+		});
 
 		//レイアウト設定
 		setWidth100();
@@ -190,7 +204,10 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 			}
 		}.setTarget(webApiSection.getLayout());
 
-		setMainSections(commonSection, webApiSection);
+		openApiPane = new WebApiOpenApiPane(configAccessor);
+		MetaDataSectionStackSection openApiSection = createSection("OpenAPI", false, openApiPane);
+
+		setMainSections(commonSection, webApiSection, openApiSection);
 
 		//全体配置
 		addMember(headerPane);
@@ -297,7 +314,10 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 
 		commandConfigPane.setConfig(curDefinition.getCommandConfig());
 		webApiParamMapPane.setWebApiParamMap(curDefinition.getWebApiParamMap());
-		resultPane.setResults(curDefinition.getResults());
+		resultPane.setDefinition(curDefinition);
+
+		// OpenAPI属性値を画面に反映
+		openApiPane.setDefinition(curDefinition);
 	}
 
 	/**
@@ -384,6 +404,8 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 						definition = webApiParamMapPane.getEditDefinition(definition);
 						definition = requestTypeGridPane.getEditDefinition(definition);
 						definition = resultPane.getEditDefinition(definition);
+						// OpenAPI属性値をWebAPI定義に反映
+						definition = openApiPane.getDefinition(definition);
 
 						List<RequestType> checkedRequestType = Arrays.asList(definition.getAccepts());
 						boolean isCheckedRestJson = checkedRequestType.contains(RequestType.REST_JSON);

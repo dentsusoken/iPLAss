@@ -574,6 +574,8 @@
 		<interface>org.iplass.mtp.impl.webapi.WebApiService</interface>
 		<property name="enableDefinitionApi" value="false" />
 		<property name="enableBinaryApi" value="false" />
+		<!-- スタブレスポンスを有効にする場合は enableStubResponse プロパティに true を設定する -->
+		<property name="enableStubResponse" value="false" />
 		<property name="writeEncodedFilenameInBinaryApi" value="false" />
 		<property name="unescapeFilenameCharacterInBinaryApi" value="-._~" />
 
@@ -816,6 +818,16 @@
 		<!--
 		<property name="canCreateUserWithSpecificPassword" value="false" />
 		-->
+	</service>
+	
+	<!-- OpenAPI service -->
+	<service>
+		<interface>org.iplass.mtp.impl.webapi.openapi.OpenApiService</interface>
+		<class>org.iplass.mtp.impl.webapi.openapi.OpenApiService</class>
+
+		<property name="infoTitleOfExport" value="iPLAss WebAPI, EntityCRUDApi OpenAPI Spec" />
+		<property name="infoVersionOfExport" value="1.0.0" />
+		<property name="infoDescriptionOfExport" value="iPLAss WebAPI and EntityCRUDApi OpenAPI Specification" />
 	</service>
 
 </serviceDefinition>
