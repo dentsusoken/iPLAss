@@ -26,7 +26,7 @@ import io.swagger.v3.oas.models.parameters.HeaderParameter;
  * OpenAPI仕様とWebAPI定義の変換クラス(check X-Requested-Withヘッダ)
  * @author SEKIGUCHI Naoya
  */
-public class WebApiAccessPolicyCheckXRequestedWithOpenApiOperationConverter implements WebApiOpenApiConverter {
+public class WebApiAccessPolicyCheckXRequestedWithOpenApiConverter implements WebApiOpenApiConverter {
 	private static final String HEADER = "X-Requested-With";
 	private static final String LOWER_HEADER = HEADER.toLowerCase();
 

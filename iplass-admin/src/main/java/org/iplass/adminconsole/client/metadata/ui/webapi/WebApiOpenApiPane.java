@@ -47,10 +47,16 @@ public class WebApiOpenApiPane extends VLayout {
 	/** OpenAPIタブ用画面 */
 	private WebApiOpenApiOpenApiSpecTabPane openApiPane;
 
+	/** WebAPI設定アクセサ */
+	private WebApiConfigurationAccessor configAccessor;
+
 	/**
 	 * コンストラクタ
+	 * @param configAccessor WebAPI設定アクセサ
 	 */
-	public WebApiOpenApiPane() {
+	public WebApiOpenApiPane(WebApiConfigurationAccessor configAccessor) {
+		this.configAccessor = configAccessor;
+
 		setMargin(5);
 		setHeight100();
 		setWidth100();
@@ -60,7 +66,7 @@ public class WebApiOpenApiPane extends VLayout {
 		tabset.setWidth100();
 		tabset.setHeight100();
 
-		stubPane = new WebApiOpenApiStubTabPane();
+		stubPane = new WebApiOpenApiStubTabPane(this.configAccessor);
 		openApiPane = new WebApiOpenApiOpenApiSpecTabPane();
 
 		stubTab = new Tab("Stub");

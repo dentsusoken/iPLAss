@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.iplass.mtp.impl.webapi.openapi.OpenApiService;
-import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiAccessPolicyCheckXRequestedWithOpenApiOperationConverter;
+import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiAccessPolicyCheckXRequestedWithOpenApiConverter;
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiCacheControlOpenApiOperationConverter;
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiCorsAccessControlAllowCredentialsOpenApiOperationConverter;
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiCorsAccessControlAllowOriginOpenApiOperationConverter;
@@ -37,10 +37,11 @@ import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiOpenApiConvertC
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiOpenApiConverter;
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiOpenApiOpenApiConverter;
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiParameterMappingsOpenApiConverter;
+import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiResponseResultsOpenApiOperationConverter;
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiResponseTypeOpenApiOperationConverter;
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiRestTypeRestJsonOpenApiOperationConverter;
-import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiResultsOpenApiOperationConverter;
-import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiTokenCheckOpenApiOperationConverter;
+import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiStubContentsOperationConverter;
+import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiTokenCheckOpenApiConverter;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
@@ -156,29 +157,31 @@ public class WebApiOpenApiMapper {
 	protected List<WebApiOpenApiConverter> createConverterList() {
 		var list = new ArrayList<>(List.of(
 				//
-				new WebApiMethodOpenApiConverter(),
-				//
-				new WebApiAccessPolicyCheckXRequestedWithOpenApiOperationConverter(),
-				//
-				new WebApiTokenCheckOpenApiOperationConverter(),
-				//
 				new WebApiCacheControlOpenApiOperationConverter(),
-				//
-				new WebApiCorsAccessControlAllowOriginOpenApiOperationConverter(),
 				//
 				new WebApiCorsAccessControlAllowCredentialsOpenApiOperationConverter(),
 				//
+				new WebApiCorsAccessControlAllowOriginOpenApiOperationConverter(),
+				//
+				new WebApiMethodOpenApiConverter(),
+				//
 				new WebApiOAuthSupportBearerTokenOpenApiOperationConverter(),
 				//
-				new WebApiRestTypeRestJsonOpenApiOperationConverter(),
-				//
-				new WebApiResponseTypeOpenApiOperationConverter(),
-				//
-				new WebApiResultsOpenApiOperationConverter(),
+				new WebApiOpenApiOpenApiConverter(),
 				//
 				new WebApiParameterMappingsOpenApiConverter(),
 				//
-				new WebApiOpenApiOpenApiConverter()));
+				new WebApiResponseResultsOpenApiOperationConverter(),
+				//
+				new WebApiResponseTypeOpenApiOperationConverter(),
+				//
+				new WebApiRestTypeRestJsonOpenApiOperationConverter(),
+				//
+				new WebApiAccessPolicyCheckXRequestedWithOpenApiConverter(),
+				//
+				new WebApiStubContentsOperationConverter(),
+				//
+				new WebApiTokenCheckOpenApiConverter()));
 		list.sort((m1, m2) -> m1.getOrder() - m2.getOrder());
 		return list;
 	}

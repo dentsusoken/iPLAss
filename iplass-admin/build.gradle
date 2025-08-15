@@ -361,6 +361,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/webapi/definition/WebApiDefinitionModifyResult.java'
 		include 'mtp/webapi/definition/WebApiParamMapDefinition.java'
 		include 'mtp/webapi/definition/WebApiResultAttribute.java'
+		include 'mtp/webapi/definition/WebApiStubContent.java'
 		include 'mtp/webapi/definition/WebApiTokenCheck.java'
 
 		include 'mtp/webapi/definition/openapi/OpenApiFileType.java'

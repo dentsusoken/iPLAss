@@ -145,8 +145,10 @@ public class WebApiDefinition implements Definition {
 
 	/** スタブレスポンスを返却するか */
 	private boolean returnStubResponse;
-	/** スタブレスポンスの JSON Value */
-	private String stubResponseJsonValue;
+	/** スタブデフォルトコンテンツ */
+	private String stubDefaultConetnt;
+	/** スタブコンテンツ */
+	private WebApiStubContent[] stubContents;
 	/** OpenAPI バージョン */
 	private String openApiVersion;
 	/** OpenAPI ファイルタイプ */
@@ -600,19 +602,41 @@ public class WebApiDefinition implements Definition {
 	}
 
 	/**
-	 * スタブレスポンスのJSON値を取得します。
-	 * @return スタブレスポンスのJSON値
+	 * スタブデフォルトコンテンツを取得します。
+	 * <p>
+	 * {@link #getStubContents()} に対応するコンテンツが設定されていない場合のデフォルト返却値です。
+	 * </p>
+	 * @return スタブデフォルトコンテンツ
 	 */
-	public String getStubResponseJsonValue() {
-		return stubResponseJsonValue;
+	public String getStubDefaultContent() {
+		return stubDefaultConetnt;
 	}
 
 	/**
-	 * スタブレスポンスのJSON値を設定します。
-	 * @param stubResponseJsonValue スタブレスポンスのJSON値
+	 * スタブデフォルトコンテンツを設定します。
+	 * <p>
+	 * {@link #getStubContents()} に対応するコンテンツが設定されていない場合のデフォルト返却値です。
+	 * </p>
+	 * @param stubDefaultConetnt スタブデフォルトコンテンツ
 	 */
-	public void setStubResponseJsonValue(String stubResponseJsonValue) {
-		this.stubResponseJsonValue = stubResponseJsonValue;
+	public void setStubDefaultContent(String stubDefaultConetnt) {
+		this.stubDefaultConetnt = stubDefaultConetnt;
+	}
+
+	/**
+	 * スタブコンテンツを取得します。
+	 * @return スタブコンテンツ配列
+	 */
+	public WebApiStubContent[] getStubContents() {
+		return stubContents;
+	}
+
+	/**
+	 * スタブコンテンツを設定します。
+	 * @param stubContents スタブコンテンツ配列
+	 */
+	public void setStubContents(WebApiStubContent[] stubContents) {
+		this.stubContents = stubContents;
 	}
 
 	/**

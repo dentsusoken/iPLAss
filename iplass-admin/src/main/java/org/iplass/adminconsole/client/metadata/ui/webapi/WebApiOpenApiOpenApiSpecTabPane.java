@@ -84,7 +84,7 @@ public class WebApiOpenApiOpenApiSpecTabPane extends VLayout {
 		openApiEditButton.addClickHandler(this::onClickOpenApiEditButton);
 
 		form = new DynamicForm();
-		form.setColWidths(150, 300, "*");
+		form.setColWidths(120, 300, "*");
 		form.setNumCols(3);
 		form.setItems(openApiVersionField, openApiField, openApiEditButtonSpacer, openApiEditButton);
 		addMember(form);
@@ -113,6 +113,15 @@ public class WebApiOpenApiOpenApiSpecTabPane extends VLayout {
 		return definition;
 	}
 
+	@Override
+	public void destroy() {
+		form = null;
+		openApiVersionField = null;
+		openApiField = null;
+		openApiFileType = null;
+
+		super.destroy();
+	}
 	/**
 	 * OpenAPIの編集ボタンがクリックされたときの処理を行います。
 	 * @param event クリックイベント

@@ -38,7 +38,7 @@ import io.swagger.v3.oas.models.media.StringSchema;
  * OpenAPI仕様とWebAPI定義の変換クラス(Results)
  * @author SEKIGUCHI Naoya
  */
-public class WebApiResultsOpenApiOperationConverter extends AbstractWebApiOpenApiOperationConverter {
+public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebApiOpenApiOperationConverter {
 	/** components/schemas に設定するデフォルトスキーマ名 */
 	private static final String DEFAULT_SCHEMA_NAME = "webApiDefaultResults";
 	/** object schema の $ref 設定値 */

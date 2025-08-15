@@ -113,7 +113,7 @@ public class MetaWebApiResultAttribute implements MetaData {
 	}
 
 	/**
-	 * WebAPI 結果属性のランタイムインスタンス
+	 * WebAPI 結果属性のランタイム
 	 */
 	public static class WebApiResultAttributeRuntime {
 		/** メタデータ */

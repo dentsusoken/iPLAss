@@ -30,6 +30,7 @@ import org.iplass.mtp.impl.command.MetaCommand;
 import org.iplass.mtp.impl.command.MetaCommandFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
+import org.iplass.mtp.util.ArrayUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.CacheControlType;
@@ -240,8 +241,20 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 
 		// スタブ関連の設定
 		meta.setReturnStubResponse(webapi.returnStubResponse());
-		if (StringUtil.isNotEmpty(webapi.stubResponseJsonValue())) {
-			meta.setStubResponseJsonValue(webapi.stubResponseJsonValue());
+		if (StringUtil.isNotEmpty(webapi.stubDefaultContent())) {
+			meta.setStubDefaultContent(webapi.stubDefaultContent());
+		}
+		if (ArrayUtil.isNotEmpty(webapi.stubContents())) {
+			MetaWebApiStubContent[] stubContents = new MetaWebApiStubContent[webapi.stubContents().length];
+			for (int i = 0; i < webapi.stubContents().length; i++) {
+				var stubContent = webapi.stubContents()[i];
+				MetaWebApiStubContent metaStubContent = new MetaWebApiStubContent();
+				metaStubContent.setContentType(stubContent.contentType());
+				metaStubContent.setLabel(stubContent.label());
+				metaStubContent.setContent(stubContent.content());
+				stubContents[i] = metaStubContent;
+			}
+			meta.setStubContents(stubContents);
 		}
 
 		// OpenAPI 関連の設定値

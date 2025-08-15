@@ -31,7 +31,7 @@ import io.swagger.v3.oas.models.parameters.QueryParameter;
  * OpenAPI仕様とWebAPI定義の変換クラス(Token Check)
  * @author SEKIGUCHI Naoya
  */
-public class WebApiTokenCheckOpenApiOperationConverter implements WebApiOpenApiConverter {
+public class WebApiTokenCheckOpenApiConverter implements WebApiOpenApiConverter {
 	private static final String HEADER = TokenStore.TOKEN_HEADER_NAME;
 	private static final String LOWER_HEADER = HEADER.toLowerCase();
 

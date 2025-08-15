@@ -28,7 +28,7 @@ import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 
 /**
- * OpenAPI仕様とWebAPI定義の変換を Operation 単位に行う抽象クラス
+ * OpenAPI仕様とWebAPI定義の変換を Operation(HTTPメソッド) 単位に行う抽象クラス
  * @author SEKIGUCHI Naoya
  */
 public abstract class AbstractWebApiOpenApiOperationConverter implements WebApiOpenApiConverter {

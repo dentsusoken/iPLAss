@@ -156,7 +156,7 @@ public @interface WebApi {
 	 * スタブレスポンスを返却するかどうか。
 	 * <p>
 	 * true を設定するとスタブレスポンスを返却します。デフォルトの設定値は false です。<br>
-	 * スタブレスポンスを返却する場合は、{@link #stubResponseJsonValue()} を設定してください。
+	 * スタブレスポンスを返却する場合は、{@link #stubDefaultContent()} / {@link #stubContents()} を設定してください。
 	 * </p>
 	 * <h3>注意事項</h3>
 	 * <p>
@@ -169,15 +169,26 @@ public @interface WebApi {
 	boolean returnStubResponse() default false;
 
 	/**
-	 * スタブレスポンスの JSON Value。
+	 * スタブデフォルトコンテンツ。
 	 * <p>
-	 * スタブレスポンスを返却する場合の JSON Value を設定します。<br>
-	 * ここに設定する値は、JSON Object の形式で指定してください。<br>
-	 * JSON Object のキーが、{@link #results()} もしくは {@link #responseResults()} に指定されている {@link org.iplass.mtp.command.annotation.webapi.WebApiResultAttribute#name()} と一致する場合に、値がレスポンスに設定されます。
+	 * スタブレスポンスのデフォルト値を設定します。レスポンスには本設定値がそのまま指定されます。<br>
+	 * ここに設定する値は、{@link #responseType()} で指定された content-type に対応する値を設定してください。<br>
 	 * </p>
-	 * @return スタブレスポンスの JSON Value
+	 * <p>
+	 * {@link #stubContents()} でコンテンツタイプに対応する値を取得できない場合のデフォルト値として動作します。
+	 * </p>
+	 * @return スタブデフォルトコンテンツ
 	 */
-	String stubResponseJsonValue() default "";
+	String stubDefaultContent() default "";
+
+	/**
+	 * スタブコンテンツ。
+	 * <p>
+	 * スタブレスポンスを返却する場合に、コンテンツタイプに応じたスタブレスポンスを設定します。<br>
+	 * </p>
+	 * @return スタブコンテンツ
+	 */
+	WebApiStubContent[] stubContents() default {};
 
 	/**
 	 * OpenAPI バージョン

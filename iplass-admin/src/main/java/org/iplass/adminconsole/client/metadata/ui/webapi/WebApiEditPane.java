@@ -108,8 +108,20 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 	/** OpenAPI領域 */
 	private WebApiOpenApiPane openApiPane;
 
+	/** WebAPI設定アクセサ */
+	private WebApiConfigurationAccessor configAccessor;
+
 	public WebApiEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
+
+		// WebApi設定アクセサ
+		configAccessor = new WebApiConfigurationAccessor();
+		// Response Type の取得用
+		configAccessor.setResponseTypeSupplier(() -> {
+			var def = new WebApiDefinition();
+			responseTypePane.getEditDefinition(def);
+			return def.getResponseType();
+		});
 
 		//レイアウト設定
 		setWidth100();
@@ -192,7 +204,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 			}
 		}.setTarget(webApiSection.getLayout());
 
-		openApiPane = new WebApiOpenApiPane();
+		openApiPane = new WebApiOpenApiPane(configAccessor);
 		MetaDataSectionStackSection openApiSection = createSection("OpenAPI", false, openApiPane);
 
 		setMainSections(commonSection, webApiSection, openApiSection);
