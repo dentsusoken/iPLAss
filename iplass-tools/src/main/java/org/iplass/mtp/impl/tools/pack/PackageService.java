@@ -1149,7 +1149,7 @@ public class PackageService implements Service {
 		} catch (IOException e) {
 			throw new PackageRuntimeException("failed to read metadata configure. packName=" + packName, e);
 		} finally {
-			toolLogger.info("finish package metadata import. {target:{}, result:{}}", packName,
+			toolLogger.info("finish package metadata check. {target:{}, result:{}}", packName,
 					(result == null ? "failed" : result.isError() ? "failed" : "success"));
 		}
 	}

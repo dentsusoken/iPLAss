@@ -60,7 +60,7 @@ public class MetaDataCheckResultInfo implements Serializable {
 	}
 
 	/**
-	 * チェック結果メッセージをを取得します
+	 * チェック結果メッセージを取得します
 	 * 
 	 * @return チェック結果メッセージ
 	 */
