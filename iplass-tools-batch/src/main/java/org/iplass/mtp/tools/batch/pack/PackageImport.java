@@ -4,23 +4,7 @@
 
 package org.iplass.mtp.tools.batch.pack;
 
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_BULK_UPDATE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_COMMIT_LIMIT;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_ERROR_SKIP;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_FORCE_UPDATE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_IGNORE_INVALID_PROPERTY;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_ID;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_PW;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_NOTIFY_LISTENER;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_PREFIX_OID;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_TRUNCATE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_UPDATE_DISUPDATABLE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_WITH_VALIDATION;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_IMPORT_FILE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_SAVE_PACKAGE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,6 +32,7 @@ import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.tenant.TenantService;
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportCondition;
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportResult;
+import org.iplass.mtp.impl.tools.metaport.MetaDataCheckResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataImportResult;
 import org.iplass.mtp.impl.tools.pack.PackageEntity;
 import org.iplass.mtp.impl.tools.pack.PackageInfo;
@@ -56,8 +41,8 @@ import org.iplass.mtp.impl.tools.pack.PackageService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -378,8 +363,18 @@ public class PackageImport extends MtpCuiBase {
 
 				MetaDataImportResult metaResult = null;
 				if (param.isSavePackage() && oid != null) {
+					// メタデータ整合性チェック
+					if (!checkMetaData(ps.checkPackageMetaData(oid))) {
+						return false;
+					}
+
 					metaResult = ps.importPackageMetaData(oid, param.getImportTenant());
 				} else {
+					// メタデータ整合性チェック
+					if (!checkMetaData(ps.checkPackageMetaData(param.getImportFile(), param.getPackageName()))) {
+						return false;
+					}
+
 					metaResult = ps.importPackageMetaData(param.getImportFile(), param.getPackageName(), param.getImportTenant());
 				}
 
@@ -418,6 +413,30 @@ public class PackageImport extends MtpCuiBase {
 
 				messageSummary.add(logMessage);
 			}
+			return true;
+		}
+
+		private boolean checkMetaData(MetaDataCheckResult checkResult) {
+			if (checkResult.isError()) {
+				if (StringUtil.isNotEmpty(checkResult.getMessage())) {
+					logError(checkResult.getMessage());
+					logInfo("");
+				}
+
+				logError(rs("Common.errorMsg"));
+				return false;
+			}
+
+			if (checkResult.isWarn()) {
+				// 誤ってimport続行してしまわないようにデフォルトはfalse
+				String confirmMessage = checkResult.createMessage(System.lineSeparator()) + System.lineSeparator() + rs("Common.continueMsg");
+				boolean confirmContinue = readConsoleBoolean(confirmMessage, false);
+				if (!confirmContinue) {
+					logWarn(rs("PackageImport.stopImportPackageLog", param.getImportFilePath()));
+					return false;
+				}
+			}
+
 			return true;
 		}
 	}

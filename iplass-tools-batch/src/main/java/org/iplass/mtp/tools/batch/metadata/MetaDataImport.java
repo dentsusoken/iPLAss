@@ -4,9 +4,7 @@
 
 package org.iplass.mtp.tools.batch.metadata;
 
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_IMPORT_FILE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,14 +26,15 @@ import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tenant.MetaTenant;
 import org.iplass.mtp.impl.tenant.TenantService;
+import org.iplass.mtp.impl.tools.metaport.MetaDataCheckResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataImportResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
 import org.iplass.mtp.impl.tools.metaport.XMLEntryInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.pack.PackageExport;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.CollectionUtil;
@@ -186,6 +185,29 @@ public class MetaDataImport extends MtpCuiBase {
 					try (InputStream is = new FileInputStream(param.getImportFile())) {
 						//ファイルに含まれるMetaData情報を取得
 						XMLEntryInfo entryInfo = mdps.getXMLMetaDataEntryInfo(is);
+
+						// メタデータ整合性チェック
+						MetaDataCheckResult checkResult = mdps.checkMetaData(param.getImportFile().getName(), entryInfo);
+						if (checkResult.isError()) {
+							if (StringUtil.isNotEmpty(checkResult.getMessage())) {
+								logError(checkResult.getMessage());
+								logInfo("");
+							}
+
+							logError(rs("Common.errorMsg"));
+							return false;
+						}
+
+						if (checkResult.isWarn()) {
+							// 誤ってimport続行してしまわないようにデフォルトはfalse
+							String confirmMessage = checkResult.createMessage(System.lineSeparator()) + System.lineSeparator()
+									+ rs("Common.continueMsg");
+							boolean confirmContinue = readConsoleBoolean(confirmMessage, false);
+							if (!confirmContinue) {
+								logWarn(rs("MetaDataImport.stopImportMetaLog"));
+								return false;
+							}
+						}
 
 						//インポート処理の実行
 						MetaDataImportResult result = mdps.importMetaData(param.getImportFile().getName(), entryInfo, param.getImportTenant());

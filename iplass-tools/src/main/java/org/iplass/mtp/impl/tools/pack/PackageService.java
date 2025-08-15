@@ -1128,7 +1128,7 @@ public class PackageService implements Service {
 	 * @param archive Packageファイル
 	 * @param packName Package名
 	 */
-	private MetaDataCheckResult checkPackageMetaData(final File archive, final String packName) {
+	public MetaDataCheckResult checkPackageMetaData(final File archive, final String packName) {
 		toolLogger.info("start package metadata check. {target:{}}", packName);
 		auditLogger.info("check package metadata," + packName);
 
@@ -1138,10 +1138,10 @@ public class PackageService implements Service {
 			ZipEntry ze = zf.getEntry(META_DATA_FILE_NAME);
 
 			try (InputStream is = zf.getInputStream(ze)) {
-				//ファイルに含まれるMetaData情報を取得
+				// ファイルに含まれるMetaData情報を取得
 				XMLEntryInfo entryInfo = metaService.getXMLMetaDataEntryInfo(is);
 
-				//インポート処理の実行
+				// メタデータ整合性チェック
 				result = metaService.checkMetaData(packName, entryInfo);
 
 				return result;

@@ -1204,10 +1204,10 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 					// 同一プロパティ名でIDが異なってたら警告とする
 					for (MetaProperty importProperty : importPropertyList) {
-						boolean check = storedPropertyList.stream()
+						boolean warn = storedPropertyList.stream()
 								.anyMatch(storedProperty -> Objects.equals(importProperty.getName(), storedProperty.getName()) &&
 										!Objects.equals(importProperty.getId(), storedProperty.getId()));
-						if (check) {
+						if (warn) {
 							result.addMetaDataPaths(entry.getPath());
 							result.setResultStatus(MetaDataCheckResult.ResultStatus.Warn);
 							break;

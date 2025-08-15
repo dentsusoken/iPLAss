@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.mtp.util.CollectionUtil;
+import org.iplass.mtp.util.StringUtil;
+
 /**
  * MetaData整合性チェック結果
  */
@@ -107,5 +110,27 @@ public class MetaDataCheckResult implements Serializable {
 	 */
 	public void clearMetaDataPaths() {
 		metaDataPaths = null;
+	}
+
+	/**
+	 * 出力メッセージを生成
+	 * 
+	 * @param separator 区切り文字
+	 * @return 出力メッセージ
+	 */
+	public String createMessage(String separator) {
+		if (StringUtil.isEmpty(this.message)) {
+			return "";
+		}
+
+		StringBuilder sb = new StringBuilder(this.message);
+		if (CollectionUtil.isEmpty(this.metaDataPaths)) {
+			return sb.toString();
+		}
+
+		sb.append(separator);
+		sb.append(String.join(separator, this.metaDataPaths));
+
+		return sb.toString();
 	}
 }
