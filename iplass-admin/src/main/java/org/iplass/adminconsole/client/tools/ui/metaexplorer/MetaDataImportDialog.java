@@ -705,7 +705,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 	}
 
 	private String pathListToString(List<String> pathList) {
-		if (pathList == null || pathList.size() == 0) {
+		if (SmartGWTUtil.isEmpty(pathList)) {
 			return "";
 		}
 

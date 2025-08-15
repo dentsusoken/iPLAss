@@ -4,7 +4,23 @@
 
 package org.iplass.mtp.tools.batch.pack;
 
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_BULK_UPDATE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_COMMIT_LIMIT;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_ERROR_SKIP;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_FORCE_UPDATE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_IGNORE_INVALID_PROPERTY;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_ID;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_PW;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_NOTIFY_LISTENER;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_PREFIX_OID;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_TRUNCATE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_UPDATE_DISUPDATABLE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_WITH_VALIDATION;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_IMPORT_FILE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_SAVE_PACKAGE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
 
 import java.io.File;
 import java.io.FileInputStream;
