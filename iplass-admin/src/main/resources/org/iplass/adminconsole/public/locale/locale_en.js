@@ -1476,6 +1476,7 @@ LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_failedToCheckStatusMetaDat
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_importComp = "Import is complete.";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_errCheckSett = "The following error or warning has occurred. ";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_messageLabel = "Detail Message:";
+LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_startImportConfWithWarn = "{0}</br>{1}</br></br>Start import. Would you like?";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportTenantPane_tenantPropertySelect = "Import the tenant data. Please select the property you want to import.<br/>[Basic information] can not be selected. In addition, excluded the [e-mail settings] and [Tenant to build the request path URL] and [Preview date display function] in the initial selection.";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportTenantPane_property = "Property";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportTenantPane_curValue = "Current Value";
@@ -1573,6 +1574,7 @@ LocaleInfo.ui_tools_pack_PackageImportDialog_preOidComment1 = "*6: If import oth
 LocaleInfo.ui_tools_pack_PackageImportDialog_preOidComment2 = "*7: Please coincide OID prefix, when you divide and import entity data with reference-related.";
 LocaleInfo.ui_tools_pack_PackageImportDialog_useCtrlComment1 = "*8: You can specify the following code possible \"add , update, delete \" is by adding a \"_useCtrl\" at the beginning of the header line. <br/>( \"I\": insert , \"U\": update , \"D\": delete , \"M\": merge)";
 LocaleInfo.ui_tools_pack_PackageImportDialog_runAsynchronously = "Run Package capture process with asynchronously. (Not Released)";
+LocaleInfo.ui_tools_pack_PackageImportDialog_startImportConfWithWarn = "{0}</br>{1}</br></br>Start import. Would you like?";
 LocaleInfo.ui_tools_pack_PackageListPane_createPackageFromTenant = "Create a Package from the tenant.";
 LocaleInfo.ui_tools_pack_PackageListPane_importExternalPackage = "Import to tenant from an external Package.<br/>Upload after the Package file, perform the Import.";
 LocaleInfo.ui_tools_pack_PackageListPane_reflectTenantPackage = "Reflect on the tenant the Package of registered<br/>Can also be started by double-clicking the list.";
