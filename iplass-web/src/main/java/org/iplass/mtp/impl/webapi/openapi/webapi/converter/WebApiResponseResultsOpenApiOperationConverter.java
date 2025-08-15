@@ -19,14 +19,17 @@
  */
 package org.iplass.mtp.impl.webapi.openapi.webapi.converter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import org.iplass.mtp.impl.webapi.WebApiService;
+import org.iplass.mtp.impl.util.ClassUtil;
 import org.iplass.mtp.impl.webapi.openapi.OpenApiService;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiJsonSchemaType;
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiOpenApiConvertContext.OperationContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.ArrayUtil;
+import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiResultAttribute;
 
 import io.swagger.v3.oas.models.Components;
@@ -62,23 +65,29 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 		var content = initResponseContent(operation.getOperation());
 
 		var openApiService = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-		// webapi runtime を取得
-		var runtime = ServiceRegistry.getRegistry().getService(WebApiService.class).getRuntimeByName(context.getWebApiDefinition().getName());
+		// メタデータ設定値ベースで設定する
+		var definition = context.getWebApiDefinition();
+		var responseResults = mergeResponseResults(definition);
+		var isNotEmptyResponseResults = !responseResults.isEmpty();
+		var isNotContensStatusKey = responseResults.stream()
+				.filter(r -> r.getName().equals("status")).findFirst().isEmpty();
 
 		for (var key : content.keySet()) {
 			var schema = new ObjectSchema();
 
 			var jsonSchemaType = OpenApiJsonSchemaType.fromContentType(key, OpenApiJsonSchemaType.JSON);
-			if (null != runtime && ArrayUtil.isNotEmpty(runtime.getResponseResults())) {
+
+			if (isNotEmptyResponseResults) {
 				// responseResults に設定されている場合
-				for (var result : runtime.getResponseResults()) {
+				for (var result : responseResults) {
 					if (null != result.getDataType()) {
 						// dataType の設定あり
-						if (openApiService.getStandardClassSchemaResolver().canResolve(result.getDataType())) {
-							var resultSchema = openApiService.getStandardClassSchemaResolver().resolve(result.getDataType(), jsonSchemaType);
+						Class<?> dataTypeClass = ClassUtil.forName(result.getDataType());
+						if (openApiService.getStandardClassSchemaResolver().canResolve(dataTypeClass)) {
+							var resultSchema = openApiService.getStandardClassSchemaResolver().resolve(dataTypeClass, jsonSchemaType);
 							schema.addProperty(result.getName(), resultSchema);
 						} else {
-							var ref = openApiService.getReusableSchemaFactory().addReusableSchema(result.getDataType(), context.getOpenApi(),
+							var ref = openApiService.getReusableSchemaFactory().addReusableSchema(dataTypeClass, context.getOpenApi(),
 									jsonSchemaType);
 							schema.addProperty(result.getName(), new ObjectSchema().$ref(ref));
 						}
@@ -88,7 +97,7 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 					}
 				}
 
-				if (!runtime.containsResponseResult("status")) {
+				if (isNotContensStatusKey) {
 					// status が定義されていない場合は追加する
 					schema.addProperty("status", new StringSchema());
 				}
@@ -158,6 +167,11 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 		return CheckNext.CONTINUE;
 	}
 
+	/**
+	 * OpenAPIのComponentsを取得します。
+	 * @param openApi OpenAPIインスタンス
+	 * @return Componentsインスタンス
+	 */
 	private Components getComponents(OpenAPI openApi) {
 		var components = openApi.getComponents();
 		if (null == components) {
@@ -166,5 +180,28 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 		}
 
 		return components;
+	}
+
+	private List<WebApiResultAttribute> mergeResponseResults(WebApiDefinition def) {
+		List<WebApiResultAttribute> responseResults = new ArrayList<>();
+		if (ArrayUtil.isNotEmpty(def.getResponseResults())) {
+			for (var result : def.getResponseResults()) {
+				responseResults.add(result);
+			}
+		}
+
+		if (ArrayUtil.isNotEmpty(def.getResults())) {
+			// results が設定されている場合は、WebApiResultAttribute に変換して追加する
+			for (var resultName : def.getResults()) {
+				if (responseResults.stream().filter(r -> r.getName().equals(resultName)).findFirst().isEmpty()) {
+					// 同一キーの値が存在しない場合は、responseResults に追加する
+					var result = new WebApiResultAttribute();
+					result.setName(resultName);
+					responseResults.add(result);
+				}
+			}
+		}
+
+		return responseResults;
 	}
 }

@@ -64,28 +64,31 @@ public class WebApiStubContentsOperationConverter extends AbstractWebApiOpenApiO
 		var service = ServiceRegistry.getRegistry(). getService(OpenApiService.class);
 		var jsonMapper = service.getOpenApiResolver().getObjectMapper(OpenApiFileType.JSON, context.getVersion());
 
-		var okResponse = getOkResponse(operation.getOperation());
-		for (var entry : okResponse.getContent().entrySet()) {
-			var contentType = entry.getKey();
-			var examples = entry.getValue().getExamples();
+		var okContent = getResponseContent(operation.getOperation());
+		if (null != okContent) {
+			for (var entry : okContent.entrySet()) {
+				var contentType = entry.getKey();
+				var examples = entry.getValue().getExamples();
 
-			if (null != examples) {
-				for (var exampleEntry : examples.entrySet()) {
-					var label = exampleEntry.getKey();
-					var contentObject = exampleEntry.getValue().getValue();
+				if (null != examples) {
+					for (var exampleEntry : examples.entrySet()) {
+						var label = exampleEntry.getKey();
+						var contentObject = exampleEntry.getValue().getValue();
 
-					var content = getStubContent(contentObject, jsonMapper);
+						var content = getStubContent(contentObject, jsonMapper);
 
-					if (StringUtil.isNotEmpty(content)) {
-						var stubContent = new WebApiStubContent();
-						stubContent.setContentType(contentType);
-						stubContent.setLabel(label);
-						stubContent.setContent(content);
+						if (StringUtil.isNotEmpty(content)) {
+							var stubContent = new WebApiStubContent();
+							stubContent.setContentType(contentType);
+							stubContent.setLabel(label);
+							stubContent.setContent(content);
 
-						if (!containsStubContent(context.getWebApiDefinition().getStubContents(), stubContent)) {
-							// 同一スタブが含まれていない場合は追加する
-							var newStubContents = ArrayUtil.add(context.getWebApiDefinition().getStubContents(), stubContent, WebApiStubContent[]::new);
-							context.getWebApiDefinition().setStubContents(newStubContents);
+							if (!containsStubContent(context.getWebApiDefinition().getStubContents(), stubContent)) {
+								// 同一スタブが含まれていない場合は追加する
+								var newStubContents = ArrayUtil.add(context.getWebApiDefinition().getStubContents(), stubContent,
+										WebApiStubContent[]::new);
+								context.getWebApiDefinition().setStubContents(newStubContents);
+							}
 						}
 					}
 				}
