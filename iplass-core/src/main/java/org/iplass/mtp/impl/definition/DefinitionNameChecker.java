@@ -28,6 +28,8 @@ public class DefinitionNameChecker {
 	private static final String PATH_SLASH_PATTERN = "^[0-9a-zA-Z_][0-9a-zA-Z_-]*(/[0-9a-zA-Z_-]+)*$";
 	private static final String PATH_SLASH_MESSAGE_KEY = "impl.definition.DefinitionNameChecker.NamePathSlash.invalidPattern";
 
+	public static final String PATH_PERIOD_PATTERN = "^[0-9a-zA-Z_][0-9a-zA-Z_-]*(\\.[0-9a-zA-Z_-]+)*$";
+
 	private Pattern definitionNamePattern;
 	private String messageKey;
 
@@ -84,10 +86,10 @@ public class DefinitionNameChecker {
 	 */
 	public DefinitionNameCheckResult check(String definitionName) {
 		if (StringUtil.isNotEmpty(definitionName) && !this.definitionNamePattern.matcher(definitionName).matches()) {
-			return DefinitionNameCheckResult.createErrorResult(this.getErrorMessage(definitionName));
+			return new DefinitionNameCheckResult(true, this.getErrorMessage(definitionName));
 		}
 
-		return DefinitionNameCheckResult.createSuccessResult();
+		return new DefinitionNameCheckResult(false, null);
 	}
 
 	protected String getMessageKey() {

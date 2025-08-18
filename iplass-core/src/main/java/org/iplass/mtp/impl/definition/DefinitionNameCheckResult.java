@@ -13,30 +13,13 @@ public class DefinitionNameCheckResult {
 	private String errorMessage;
 
 	/**
-	 * エラーなしのメタデータ定義名チェック結果を生成
+	 * コンストラクター
 	 * 
-	 * @return エラーなしのメタデータ定義名チェック結果
-	 */
-	static DefinitionNameCheckResult createSuccessResult() {
-		return new DefinitionNameCheckResult();
-	}
-
-	/**
-	 * エラーありのメタデータ定義名チェック結果を生成
-	 * 
+	 * @param error エラーかどうか
 	 * @param errorMessage エラーメッセージ
-	 * @return エラーありのメタデータ定義名チェック結果
 	 */
-	static DefinitionNameCheckResult createErrorResult(String errorMessage) {
-		return new DefinitionNameCheckResult(errorMessage);
-	}
-
-	private DefinitionNameCheckResult() {
-		this.error = false;
-	}
-
-	private DefinitionNameCheckResult(String errorMessage) {
-		this.error = true;
+	DefinitionNameCheckResult(boolean error, String errorMessage) {
+		this.error = error;
 		this.errorMessage = errorMessage;
 	}
 

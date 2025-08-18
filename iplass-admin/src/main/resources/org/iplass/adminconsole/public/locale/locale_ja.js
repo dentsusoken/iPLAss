@@ -367,7 +367,7 @@ LocaleInfo.ui_metadata_common_StatusErrorPane_errComment = "以下のエラー�
 LocaleInfo.ui_metadata_common_MetaDataHistoryDialog_label = "※太字が現在開いているバージョンとなります。<br/>※XMLやアノテーションで定義したデータは履歴表示されません。";
 LocaleInfo.ui_metadata_common_MetaDataUpdateCallback_overwriteConfirmMsg = "編集中のバージョンよりも新しいバージョンのMetaDataが保存されています。<br />上書きしてもよろしいですか？";
 LocaleInfo.ui_metadata_common_MetaDataUpdateCallback_failedUpdateMetaDataMsg = "保存に失敗しました。<br/>原因：";
-LocaleInfo.ui_metadata_entity_CreateEntityDialog_nameErr = "名前には英数字、アンダースコアのみ利用することができます。\n先頭は英字のみ利用することができます。\nパスにはピリオドを利用します。";
+LocaleInfo.ui_metadata_entity_CreateEntityDialog_nameErr = "名前には英数字、アンダースコアのみ利用することができます。\n先頭は英字、アンダースコアのみ利用することができます。\nパスにはピリオドを利用します。";
 LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment1 = "<font color=\"red\">※保存されているEntity定義から生成します。編集中の場合は先に保存してください。</font>";
 LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment2 = "<font color=\"red\">※参照Entityに対してもMapping指定する場合は、参照先EntityのMappingを先に指定してください。</font>";
 LocaleInfo.ui_metadata_entity_DecimalAttributePane_divPrecisionIncrement = "※小数点第5位以下を使用する場合はMySQLのシステム変数\"div_precision_increment\"を設定してください。";

@@ -61,10 +61,6 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 	private static final String TRANSACTION_FLAG_KEY = "mtp.script.invalidateTenantContext";
 
 	public static class TypeMap extends DefinitionMetaDataTypeMap<UtilityClassDefinition, MetaUtilityClass> {
-		private static final String NAME_CHECK_PATTERN = "^[0-9a-zA-Z_][0-9a-zA-Z_-]*(\\.[0-9a-zA-Z_-]+)*$";
-
-		private static final String NAME_CHECK_MESSAGE = "impl.definition.DefinitionNameChecker.NamePathPeriod.invalidPattern";
-
 		public TypeMap() {
 			super(getFixedPath(), MetaUtilityClass.class, UtilityClassDefinition.class);
 		}
@@ -83,7 +79,8 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 
 		@Override
 		protected DefinitionNameChecker createDefinitionNameChecker() {
-			return new DefinitionNameChecker(NAME_CHECK_PATTERN, NAME_CHECK_MESSAGE);
+			return new DefinitionNameChecker(DefinitionNameChecker.PATH_PERIOD_PATTERN,
+					"impl.definition.DefinitionNameChecker.NamePathPeriod.invalidPattern");
 		}
 	}
 

@@ -207,11 +207,10 @@ public class DefinitionService implements Service {
 	public <M extends RootMetaData> DefinitionNameCheckResult checkPathPrefixByMeta(Class<M> metaType, String path) {
 		DefinitionMetaDataTypeMap typeMap = this.getByMeta(metaType);
 		if (StringUtil.isNotEmpty(path) && !path.startsWith(typeMap.pathPrefix)) {
-			return DefinitionNameCheckResult
-					.createErrorResult(CoreResourceBundleUtil.resourceString("impl.definition.DefinitionService.invalidPath"));
+			return new DefinitionNameCheckResult(true, CoreResourceBundleUtil.resourceString("impl.definition.DefinitionService.invalidPath"));
 		}
 
-		return DefinitionNameCheckResult.createSuccessResult();
+		return new DefinitionNameCheckResult(false, null);
 	}
 
 	/**

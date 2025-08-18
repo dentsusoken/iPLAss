@@ -367,7 +367,7 @@ LocaleInfo.ui_metadata_common_StatusErrorPane_errComment = "The following error 
 LocaleInfo.ui_metadata_common_MetaDataHistoryDialog_label = "<font color='red'>Note:It becomes the bold version is currently open.<br/>Data defined in XML and annotations are not history display.</font>";
 LocaleInfo.ui_metadata_common_MetaDataUpdateCallback_overwriteConfirmMsg = "MetaData of the new version has been saved than the version being edited.<br />Do you want to overwrite it?";
 LocaleInfo.ui_metadata_common_MetaDataUpdateCallback_failedUpdateMetaDataMsg = "Failed to save MetaData. <br/>Cause:";
-LocaleInfo.ui_metadata_entity_CreateEntityDialog_nameErr = "The name can be used alphanumeric and underscore.\nThe first character can be used alphabets only.\nThe path will use the period.";
+LocaleInfo.ui_metadata_entity_CreateEntityDialog_nameErr = "The name can be used alphanumeric and underscore.\nThe first character can be used alphabets and underscore only.\nThe path will use the period.";
 LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment1 = "<font color=\"red\">Note:Generated from the definition Entity that has been saved.Please save in advance If being edited.</font>";
 LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment2 = "<font color=\"red\">Note:If you specify a Mapping against also reference Entity, please specify in advance  the destination of the Entity Mapping referenced.";
 LocaleInfo.ui_metadata_entity_DecimalAttributePane_divPrecisionIncrement = "Note:Use the MySQL system variable \"div_precision_increment\" to use below the 5th decimal place.";

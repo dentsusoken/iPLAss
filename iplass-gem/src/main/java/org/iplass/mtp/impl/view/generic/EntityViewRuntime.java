@@ -282,7 +282,7 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 		private String messageKey = null;
 
 		private ViewNameChecker() {
-			super("^[0-9a-zA-Z_][0-9a-zA-Z_-]*(\\.[0-9a-zA-Z_-]+)*$", null);
+			super(DefinitionNameChecker.PATH_PERIOD_PATTERN, null);
 		}
 
 		private DefinitionNameCheckResult checkViewName(String viewName) {
