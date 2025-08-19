@@ -19,22 +19,15 @@
  */
 package org.iplass.mtp.impl.webapi.command.stub;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Variant;
 
-import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.net.WWWFormCodec;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
-import org.iplass.mtp.impl.util.random.SecureRandomService;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
 import org.iplass.mtp.impl.webapi.MetaWebApiStubContent.WebApiStubContentRuntime;
@@ -50,10 +43,13 @@ import org.slf4j.LoggerFactory;
 /**
  * WebAPI スタブレスポンスを返却するコマンド
  * <p>
+ * 本コマンドは開発で利用することを想定しています。
+ * </p>
+ * <p>
  * WebAPI 設定で {@link org.iplass.mtp.webapi.definition.WebApiDefinition#isReturnStubResponse()} が true の場合に設定されるコマンドです。<br>
  * リクエストの Accepts ヘッダー、{@link org.iplass.mtp.webapi.definition.WebApiDefinition#getResponseType()} によってコンテンツタイプを決定します。<br>
  * 決定されたコンテンツタイプに対応するスタブコンテンツ（ {@link org.iplass.mtp.webapi.definition.WebApiDefinition#getStubContents()} ）から決定します。<br>
- * コンテンツタイプに対応するスタブコンテンツが複数ある場合は、リクエストのクエリー文字列 label に一致するものを、無ければランダムに選択されます。<br>
+ * コンテンツタイプに対応するスタブコンテンツが複数ある場合は、リクエストのクエリー文字列 mtp_stub_label に一致するものを、無ければランダムに選択されます。<br>
  * コンテンツタイプに対応するスタブコンテンツが存在しない場合は、{@link org.iplass.mtp.webapi.definition.WebApiDefinition#getStubDefaultContent()} を返却します。<br>
  * この場合、コンテンツタイプと一致するレスポンスが返却されない可能性があるのでご注意ください。<br>
  * （例えば、WebAPIに複数のレスポンスタイプが設定されている状態で、デフォルトコンテンツに JSON 文字列を設定しており、accepts ヘッダーに application/xml を指定している場合）
@@ -64,12 +60,18 @@ import org.slf4j.LoggerFactory;
  * </p>
  * @author SEKIGUCHI Naoya
  */
-@CommandClass(name = StubResponseCommand.NAME, displayName = "Return stub response for Web API.", overwritable = false)
+@CommandClass(
+		name = StubResponseCommand.NAME,
+		displayName = "Return stub response for Web API.",
+		description = "Returns a stable response. This command is intended for use in development.",
+		overwritable = false)
 public class StubResponseCommand implements Command {
 	/** コマンド名 */
 	public static final String NAME = "mtp/webapi/StubResponseCommand";
 	/** ロガー */
 	private Logger logger = LoggerFactory.getLogger(StubResponseCommand.class);
+	/** ランダムインスタンス */
+	private Random random = createRaundom();
 
 	@Override
 	public String execute(RequestContext request) {
@@ -89,8 +91,8 @@ public class StubResponseCommand implements Command {
 		var runtime = service.getRuntimeByName(name);
 		var variant = selectVariant(runtime);
 
-		// クエリ文字列から label を取得
-		var label = getQueryString("label");
+		// クエリ文字列からラベル文字列 mtp_stub_label を取得
+		var label = request.getParam("mtp_stub_label");
 		// コンテンツタイプに対応するスタブコンテンツリスト
 		var stubContentList = runtime.getStubContentList(variant.getMediaType().toString());
 		// 返却するコンテンツを決定
@@ -105,6 +107,20 @@ public class StubResponseCommand implements Command {
 		request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, responseBuilder);
 
 		return "SUCCESS";
+	}
+
+	/**
+	 * ランダムインスタンスを生成する
+	 * <p>
+	 * 返却する Random インスタンスは開発用に返却するスタブレスポンスを決定する為に利用されます。
+	 * </p>
+	 * <p>
+	 * スレッドセーフなインスタンスを返却してください。
+	 * </p>
+	 * @return ランダムインスタンス
+	 */
+	protected Random createRaundom() {
+		return new Random();
 	}
 
 	/**
@@ -143,22 +159,8 @@ public class StubResponseCommand implements Command {
 		}
 
 		// ラベル設定が無いもしくはラベルに該当するスタブコンテンツが見つからない場合は、ランダム選択した値を返却
-		var service = ServiceRegistry.getRegistry().getService(SecureRandomService.class);
-		// TODO secureRuntime をリクエスト毎に作成している。。。
-		var rnd = service.createGenerator().randomInt(stubContentList.size());
-		return stubContentList.get(rnd).getMetaData().getContent();
-	}
-
-	/**
-	 * リクエストのクエリ文字列から指定されたキーの値を取得する。
-	 * @param key クエリ文字列のキー
-	 * @return 指定されたキーの値。存在しない場合は null を返す。
-	 */
-	private String getQueryString(String key) {
-		var queryStringMap = convertQueryStringMap(WebRequestStack.getCurrent().getRequest().getQueryString());
-		var valueList = queryStringMap.get(key);
-
-		return valueList != null && !valueList.isEmpty() ? valueList.get(0) : null;
+		var randomInt = random.nextInt(stubContentList.size());
+		return stubContentList.get(randomInt).getMetaData().getContent();
 	}
 
 	/**
@@ -181,35 +183,4 @@ public class StubResponseCommand implements Command {
 		}
 		return selected;
 	}
-
-	/**
-	 * クエリ文字列を Map 変換する
-	 * @param queryString リクエストのクエリ文字列
-	 * @return クエリ文字列の Map 変換結果
-	 */
-	private Map<String, List<String>> convertQueryStringMap(String queryString) {
-		if (null == queryString || queryString.isEmpty()) {
-			return Collections.emptyMap();
-		}
-
-		List<NameValuePair> parsed = WWWFormCodec.parse(queryString, StandardCharsets.UTF_8);
-
-		Map<String, List<String>> result = new HashMap<>();
-		for (NameValuePair pair : parsed) {
-			List<String> values = result.get(pair.getName());
-			if (values == null) {
-				values = new ArrayList<>();
-				result.put(pair.getName(), values);
-			}
-			values.add(pair.getValue());
-		}
-
-		// 変更不可
-		Map<String, List<String>> unmodifyResult = new HashMap<>();
-		for (Map.Entry<String, List<String>> entry : result.entrySet()) {
-			unmodifyResult.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
-		}
-		return Collections.unmodifiableMap(unmodifyResult);
-	}
-
 }
