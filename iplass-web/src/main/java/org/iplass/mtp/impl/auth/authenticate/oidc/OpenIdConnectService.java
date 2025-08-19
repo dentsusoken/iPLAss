@@ -29,6 +29,7 @@ import org.iplass.mtp.impl.auth.authenticate.oidc.MetaOpenIdConnect.OpenIdConnec
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.http.HttpClientConfig;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.spi.Config;
@@ -59,6 +60,11 @@ public class OpenIdConnectService extends AbstractTypedMetaDataService<MetaOpenI
 		@Override
 		public TypedDefinitionManager<OpenIdConnectDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(OpenIdConnectDefinitionManager.class);
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
 		}
 	}
 

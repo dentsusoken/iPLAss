@@ -35,6 +35,7 @@ import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.script.MetaUtilityClass.UtilityClassRuntime;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -74,6 +75,12 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 		@Override
 		public String toDefName(String path) {
 			return path.substring(pathPrefix.length()).replace("/", ".");
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return new DefinitionNameChecker(DefinitionNameChecker.PATH_PERIOD_PATTERN,
+					"impl.definition.DefinitionNameChecker.NamePathPeriod.invalidPattern");
 		}
 	}
 
