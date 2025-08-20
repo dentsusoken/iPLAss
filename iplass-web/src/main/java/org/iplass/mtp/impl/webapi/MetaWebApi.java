@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.HttpMethod;
@@ -44,6 +46,7 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.mtp.command.CommandRuntimeException;
 import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.command.definition.config.SingleCommandConfig;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
 import org.iplass.mtp.impl.command.InterceptorService;
 import org.iplass.mtp.impl.command.MetaCommand;
@@ -68,8 +71,12 @@ import org.iplass.mtp.impl.web.WebRequestContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.fileupload.MultiPartParameterValueMap;
 import org.iplass.mtp.impl.webapi.MetaWebApiParamMap.WebApiParamMapRuntime;
+import org.iplass.mtp.impl.webapi.MetaWebApiResultAttribute.WebApiResultAttributeRuntime;
+import org.iplass.mtp.impl.webapi.MetaWebApiStubContent.WebApiStubContentRuntime;
+import org.iplass.mtp.impl.webapi.command.stub.StubResponseCommand;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.WebApiRuntimeException;
 import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
@@ -77,6 +84,8 @@ import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiParamMapDefinition;
+import org.iplass.mtp.webapi.definition.WebApiResultAttribute;
+import org.iplass.mtp.webapi.definition.WebApiStubContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +113,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	/** WebからのパラメータのCommand実行時のParameter名のマップの定義 */
 	private MetaWebApiParamMap[] webApiParamMap;
 
+	/**
+	 * @deprecated {@link #responseResults} を使用してください。本フィールドは大きなバージョンアップで削除する予定です。
+	 */
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	private String[] results;
+
+	/** 結果属性メタデータ */
+	private MetaWebApiResultAttribute[] responseResults;
 
 	private RequestType[] accepts;
 	private MethodType[] methods;
@@ -157,6 +173,19 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	private Long maxRequestBodySize;
 	private Long maxFileSize;
+
+	/** スタブレスポンスを返却するか */
+	private boolean returnStubResponse;
+	/** スタブデフォルトコンテンツ */
+	private String stubDefaultContent;
+	/** スタブコンテンツ */
+	private MetaWebApiStubContent[] stubContents;
+	/** OpenAPI バージョン */
+	private String openApiVersion;
+	/** OpenAPI ファイルタイプ */
+	private String openApiFileType;
+	/** OpenAPI 定義 */
+	private String openApi;
 
 	public Long getMaxFileSize() {
 		return maxFileSize;
@@ -331,14 +360,39 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		this.webApiParamMap = webApiParamMap;
 	}
 
+	/**
+	 * @deprecated {@link #setResponseResults(MetaWebApiResultAttribute[])} を利用してください。本メソッドは大きなバージョンアップで削除する予定です。<br>
+	 * 本設定値は {@link MetaWebApiResultAttribute#setName(String)} の値に代替されます。
+	 */
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	public void setResults(String[] results) {
 		this.results = results;
 	}
 
+	/**
+	 * @deprecated {@link #getResponseResults()} を利用してください。本メソッドは大きなバージョンアップで削除する予定です。<br>
+	 * 本設定値は {@link MetaWebApiResultAttribute#getName()} の値に代替されます。
+	 */
+	@Deprecated(since = "4.0.11", forRemoval = true)
 	public String[] getResults() {
 		return this.results;
 	}
 
+	/**
+	 * 結果属性メタデータを設定します。
+	 * @param responseResults 結果属性メタデータの配列
+	 */
+	public void setResponseResults(MetaWebApiResultAttribute[] responseResults) {
+		this.responseResults = responseResults;
+	}
+
+	/**
+	 * 結果属性メタデータを取得します。
+	 * @return 結果属性メタデータの配列
+	 */
+	public MetaWebApiResultAttribute[] getResponseResults() {
+		return this.responseResults;
+	}
 
 	public RequestType[] getAccepts() {
 		return accepts;
@@ -436,6 +490,116 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		this.cacheControlMaxAge = cacheControlMaxAge;
 	}
 
+	/**
+	 * スタブレスポンスを返却するかを取得します。
+	 * @return スタブレスポンスを返却する場合は true を返却
+	 */
+	public boolean isReturnStubResponse() {
+		return returnStubResponse;
+	}
+
+	/**
+	 * スタブレスポンスを返却するかを設定します。
+	 * @param returnStubResponse スタブレスポンスを返却する場合は true を設定
+	 */
+	public void setReturnStubResponse(boolean returnStubResponse) {
+		this.returnStubResponse = returnStubResponse;
+	}
+
+	/**
+	 * スタブデフォルトコンテンツを取得します。
+	 * <p>
+	 * {@link #getStubContents()} に対応するコンテンツが設定されていない場合のデフォルト返却値です。
+	 * </p>
+	 * @return スタブデフォルトコンテンツ
+	 */
+	public String getStubDefaultContent() {
+		return stubDefaultContent;
+	}
+
+	/**
+	 * スタブデフォルトコンテンツを設定します。
+	 * <p>
+	 * {@link #getStubContents()} に対応するコンテンツが設定されていない場合のデフォルト返却値です。
+	 * </p>
+	 * @param stubDefaultContent スタブデフォルトコンテンツ
+	 */
+	public void setStubDefaultContent(String stubDefaultContent) {
+		this.stubDefaultContent = stubDefaultContent;
+	}
+
+	/**
+	 * スタブコンテンツを取得します。
+	 * @return スタブコンテンツ配列
+	 */
+	public MetaWebApiStubContent[] getStubContents() {
+		return stubContents;
+	}
+
+	/**
+	 * スタブコンテンツを設定します。
+	 * @param stubContents スタブコンテンツ配列
+	 */
+	public void setStubContents(MetaWebApiStubContent[] stubContents) {
+		this.stubContents = stubContents;
+	}
+
+	/**
+	 * OpenAPIのバージョンを取得します。
+	 * @return OpenAPIのバージョン
+	 */
+	public String getOpenApiVersion() {
+		return openApiVersion;
+	}
+
+	/**
+	 * OpenAPIのバージョンを設定します。
+	 * <p>
+	 * 3.0, 3.1 などマイナーバージョンまで記載します。
+	 * OpenAPI バージョンに記載できる内容は {@link org.iplass.mtp.webapi.definition.openapi.OpenApiVersion} を参照してください。
+	 * </p>
+	 * @param openApiVersion OpenAPIのバージョン
+	 */
+	public void setOpenApiVersion(String openApiVersion) {
+		this.openApiVersion = openApiVersion;
+	}
+
+	/**
+	 * OpenAPIのファイルタイプを取得します。
+	 * @return OpenAPIのファイルタイプ
+	 */
+	public String getOpenApiFileType() {
+		return openApiFileType;
+	}
+
+	/**
+	 * OpenAPIのファイルタイプを設定します。
+	 * <p>
+	 * OpenAPI のフォーマットは、JSON または YAML です。
+	 * 設定できる内容は、 {@link org.iplass.mtp.webapi.definition.openapi.OpenApiFileType} を参照してください。
+	 * </p>
+	 * @param openApiFileType OpenAPIのファイルタイプ
+	 */
+	public void setOpenApiFileType(String openApiFileType) {
+		this.openApiFileType = openApiFileType;
+	}
+
+	/**
+	 * OpenAPI定義を取得します。
+	 * @return OpenAPI定義
+	 */
+	public String getOpenApi() {
+		return openApi;
+	}
+
+	/**
+	 * OpenAPI定義を設定します。
+	 * @param openApi OpenAPI定義
+	 */
+	public void setOpenApi(String openApi) {
+		this.openApi = openApi;
+	}
+
 	public class WebApiRuntime extends BaseMetaDataRuntime {
 		private CommandRuntime cmd;
 		private HashMap<String, List<WebApiParamMapRuntime>> webApiParamMapRuntimes;
@@ -456,8 +620,16 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		private Set<String> restJsonAcceptableContentTypeSet;
 		/** restXmlAcceptableContentType を Set で保持する */
 		private Set<String> restXmlAcceptableContentTypeSet;
+		/** 結果属性ランタイム */
+		private WebApiResultAttributeRuntime[] responseResultsRuntime;
+		/** 結果属性名、ランタイムマップ */
+		private Map<String, WebApiResultAttributeRuntime> responseResultsNameRuntimeMap;
+
+		/** スタブコンテンツマップ。キーはコンテンツタイプ。 */
+		private Map<String, List<WebApiStubContentRuntime>> stubContentsMap;
 
 		public WebApiRuntime() {
+			var webApiService = ServiceRegistry.getRegistry().getService(WebApiService.class);
 
 			try {
 				if (command != null) {
@@ -558,11 +730,90 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 				restJsonAcceptableContentTypeSet = restJsonAcceptableContentTypes != null
 						? new HashSet<>(Arrays.asList(restJsonAcceptableContentTypes))
-						: Collections.emptySet();
+								: Collections.emptySet();
 
 				restXmlAcceptableContentTypeSet = restXmlAcceptableContentTypes != null
 						? new HashSet<>(Arrays.asList(restXmlAcceptableContentTypes))
-						: Collections.emptySet();
+								: Collections.emptySet();
+
+
+				// responseResults 設定
+				List<WebApiResultAttributeRuntime> responseResultsRuntimeList = new ArrayList<>();
+				if (responseResults != null && responseResults.length > 0) {
+					for (int i = 0; i < responseResults.length; i++) {
+						responseResultsRuntimeList.add(responseResults[i].createRuntime());
+					}
+				}
+
+				// TODO 下位バージョン互換性の為のロジックです。results を削除した場合、以下の if ブロックは削除してください。
+				if (results != null && results.length > 0) {
+					if (responseResults == null || responseResults.length == 0) {
+						// results に設定があり、responseResults に何も設定が無い場合にログ出力する
+						logger.debug("WebApi {}, we recommend changing the setting from results to responseResults.", getName());
+					}
+
+					// results に値が設定されている場合、responseResults の name に一致しないキーが存在すれば、キーの内容をマージする。
+					for (int i = 0; i < results.length; i++) {
+						// responseResultsRuntimeList に同一の属性名を持つかを確認する
+						var attributeName = results[i];
+						var isNotContainsName = responseResultsRuntimeList.stream().filter(r -> r.getName().equals(attributeName)).findAny().isEmpty();
+						if (isNotContainsName) {
+							// 属性名が存在しない場合は、Runtime を作成し追加する
+							var attribute = new MetaWebApiResultAttribute();
+							attribute.setName(attributeName);
+							responseResultsRuntimeList.add(attribute.createRuntime());
+						}
+					}
+				}
+
+				responseResultsRuntime = responseResultsRuntimeList.toArray(WebApiResultAttributeRuntime[]::new);
+				responseResultsNameRuntimeMap = responseResultsRuntimeList.stream().collect(Collectors.toMap(r -> r.getName(), r -> r));
+
+				// スタブコンテンツ
+				stubContentsMap = Collections.emptyMap();
+				if (stubContents != null && stubContents.length > 0) {
+					// スタブコンテンツが設定されている場合は、スタブコンテンツをマップに変換する
+					stubContentsMap = new HashMap<>();
+					for (MetaWebApiStubContent stubContent : stubContents) {
+						List<WebApiStubContentRuntime> stubContentList = stubContentsMap.get(stubContent.getContentType());
+						if (null == stubContentList) {
+							stubContentList = new ArrayList<>();
+							stubContentsMap.put(stubContent.getContentType(), stubContentList);
+						}
+						stubContentList.add(stubContent.createRuntime());
+					}
+				}
+
+				// スタブ判定
+				if (webApiService.isEnableStubResponse() && MetaWebApi.this.returnStubResponse) {
+					// スタブの場合の処理
+
+					// スタブレスポンスを返却するログ出力
+					logger.debug("WebApi {} is stub response.", getName());
+
+					// スタブの場合は、Runtime 上の以下の値を置き換える
+					// - cmd
+					// - responseResultsRuntime
+					// - responseResultsNameRuntimeMap
+
+					var config = new SingleCommandConfig();
+					// スタブレスポンス返却コマンド名を設定
+					config.setCommandName(StubResponseCommand.NAME);
+					var stubCommand = MetaCommand.createInstance(config);
+					stubCommand.applyConfig(config);
+					this.cmd = stubCommand.createRuntime();
+
+					// スタブレスポンスの結果属性を設定
+					var metaAttribute = new MetaWebApiResultAttribute();
+					metaAttribute.setName(WebApiRequestConstants.DEFAULT_RESULT);
+					this.responseResultsRuntime = new WebApiResultAttributeRuntime[] { new WebApiResultAttributeRuntime(metaAttribute) };
+					this.responseResultsNameRuntimeMap = Stream.of(this.responseResultsRuntime).collect(Collectors.toMap(r -> r.getName(), r -> r));
+
+				} else if (!webApiService.isEnableStubResponse() && MetaWebApi.this.returnStubResponse) {
+					// WebApiService#isEnableStubResponse() は false だが、MetaWebApi#returnStubResponse が true の場合は、意図せずスタブモードで動作しようとしている
+					logger.warn("WebApi {} is set to return stub response, but stub response is disabled in WebApiService. "
+							+ "Please check the service-config of WebApiService or metadata.", getName());
+				}
 
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
@@ -902,6 +1153,43 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		public boolean isAcceptableRestXml(String contentType) {
 			return restXmlAcceptableContentTypeSet.contains(contentType);
 		}
+
+		/**
+		 * 結果属性ランタイムを取得します。
+		 * <p>
+		 * 本返却値が null になることはありません。
+		 * </p>
+		 * @return 結果属性ランタイム
+		 */
+		public WebApiResultAttributeRuntime[] getResponseResults() {
+			return this.responseResultsRuntime;
+		}
+
+		/**
+		 * 指定した名前の結果属性ランタイムが存在するか確認します。
+		 * @param name 結果属性の名前
+		 * @return 指定した名前の結果属性ランタイムが存在する場合は true、それ以外は false
+		 */
+		public boolean containsResponseResult(String name) {
+			return responseResultsNameRuntimeMap.containsKey(name);
+		}
+
+		/**
+		 * スタブコンテンツリストを取得する。
+		 * <p>
+		 * 引数で指定されたコンテンツタイプに対応するスタブンコンテンツリストを取得します。
+		 * 対応するコンテンツリストが存在しない場合は、空リストを返却します。
+		 * </p>
+		 * @param contentType コンテンツタイプ
+		 * @return スタブコンテンツリスト
+		 */
+		public List<WebApiStubContentRuntime> getStubContentList(String contentType) {
+			List<WebApiStubContentRuntime> stubContentList = stubContentsMap.get(contentType);
+			if (stubContentList == null) {
+				return Collections.emptyList();
+			}
+			return stubContentList;
+		}
 	}
 
 	// Meta → Definition
@@ -943,8 +1231,17 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setPublicWebApi(isPublicWebApi);
 		definition.setCheckXRequestedWithHeader(isCheckXRequestedWithHeader);
 
+		// TODO results は非推奨項目となりました。大きなバージョンアップで削除する予定です。
 		if (results != null) {
 			definition.setResults(Arrays.copyOf(results, results.length));
+		}
+
+		if (responseResults != null) {
+			WebApiResultAttribute[] definitionResponseResults = new WebApiResultAttribute[responseResults.length];
+			for (int i = 0; i < responseResults.length; i++) {
+				definitionResponseResults[i] = responseResults[i].currentConfig();
+			}
+			definition.setResponseResults(definitionResponseResults);
 		}
 
 		definition.setRestJsonParameterName(restJsonParameterName);
@@ -989,6 +1286,15 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setMaxRequestBodySize(maxRequestBodySize);
 		definition.setMaxFileSize(maxFileSize);
 
+		definition.setReturnStubResponse(returnStubResponse);
+		definition.setStubDefaultContent(stubDefaultContent);
+		var defStubContents = null != stubContents ? Stream.of(stubContents).map(c -> c.currentConfig()).toArray(WebApiStubContent[]::new) : null;
+		definition.setStubContents(defStubContents);
+
+		definition.setOpenApiVersion(openApiVersion);
+		definition.setOpenApiFileType(openApiFileType);
+		definition.setOpenApi(openApi);
+
 		return definition;
 	}
 
@@ -999,10 +1305,22 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		displayName = definition.getDisplayName();
 		description = definition.getDescription();
 
+		// TODO results は非推奨項目となりました。大きなバージョンアップで削除する予定です。
 		if (definition.getResults() != null) {
 			results = Arrays.copyOf(definition.getResults(), definition.getResults().length);
 		} else {
 			results = null;
+		}
+
+		this.responseResults = null;
+		if (definition.getResponseResults() != null) {
+			MetaWebApiResultAttribute[] responseResults = new MetaWebApiResultAttribute[definition.getResponseResults().length];
+			for (int i = 0; i < definition.getResponseResults().length; i++) {
+				MetaWebApiResultAttribute attribute = new MetaWebApiResultAttribute();
+				attribute.applyConfig(definition.getResponseResults()[i]);
+				responseResults[i] = attribute;
+			}
+			this.responseResults = responseResults;
 		}
 
 		privileged = definition.isPrivileged();
@@ -1107,5 +1425,23 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 		maxRequestBodySize = definition.getMaxRequestBodySize();
 		maxFileSize = definition.getMaxFileSize();
+
+		returnStubResponse = definition.isReturnStubResponse();
+		stubDefaultContent = definition.getStubDefaultContent();
+		stubContents = null;
+		if (definition.getStubContents() != null) {
+			var stubContents = new MetaWebApiStubContent[definition.getStubContents().length];
+			for (int i = 0; i < definition.getStubContents().length; i++) {
+				var content = new MetaWebApiStubContent();
+				content.applyConfig(definition.getStubContents()[i]);
+				stubContents[i] = content;
+			}
+			this.stubContents = stubContents;
+		}
+
+		openApiVersion = definition.getOpenApiVersion();
+		openApiFileType = definition.getOpenApiFileType();
+		openApi = definition.getOpenApi();
+
 	}
 }
