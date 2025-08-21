@@ -33,8 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;
@@ -86,6 +84,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMetaData<OpenIdConnectDefinition> {
 	private static final long serialVersionUID = -4429152263057997180L;
@@ -413,7 +413,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 					throw new NullPointerException("clientAuthenticationType must specified");
 				}
 				if (subjectNameClaim == null) {
-					new NullPointerException("subjectNameClaim must specified");
+					throw new NullPointerException("subjectNameClaim must specified");
 				}
 				
 				if (backUrlAfterAuth != null) {
