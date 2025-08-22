@@ -25,12 +25,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.RequestContextWrapper;
@@ -51,6 +45,12 @@ import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType
 import org.iplass.mtp.web.actionmapping.permission.ActionPermission;
 import org.iplass.mtp.web.actionmapping.permission.RequestContextActionParameter;
 import org.iplass.mtp.web.template.TemplateUtil;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 public class WebUtil {
 //	private static final String TENANT_CONTEXT_PATH = "tenantContextPath";
@@ -157,7 +157,7 @@ public class WebUtil {
 			if (tmpl != null) {
 				tmpl.handle(src);
 			} else {
-				new WebProcessRuntimeException("template:" + templateName + " not defined.");
+				throw new WebProcessRuntimeException("template:" + templateName + " not defined.");
 			}
 		} finally {
 			src.finallyProcess();
@@ -207,7 +207,7 @@ public class WebUtil {
 		ActionMappingService amService = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
 		ActionMappingRuntime am = amService.getByPathHierarchy(actionName);
 		if (am == null) {
-			new WebProcessRuntimeException("path:" + actionName + " not defined.");
+			throw new WebProcessRuntimeException("path:" + actionName + " not defined.");
 		}
 
 		if (!am.getMetaData().isPublicAction()
