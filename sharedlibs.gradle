@@ -141,7 +141,7 @@ ext {
 		'ch.qos.logback:logback-classic': '1.5.18',
 		'net.logstash.logback:logstash-logback-encoder': '8.1',
 		
-		'org.bouncycastle:bcjmail-jdk18on': '1.78.1',
+		'org.bouncycastle:bcjmail-jdk18on': '1.81',
 		
 		'org.jgroups:jgroups': '5.3.6.Final',
 
