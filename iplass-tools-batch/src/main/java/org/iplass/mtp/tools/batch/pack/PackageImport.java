@@ -4,23 +4,7 @@
 
 package org.iplass.mtp.tools.batch.pack;
 
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_BULK_UPDATE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_COMMIT_LIMIT;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_ERROR_SKIP;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_FORCE_UPDATE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_IGNORE_INVALID_PROPERTY;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_ID;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_PW;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_NOTIFY_LISTENER;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_PREFIX_OID;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_TRUNCATE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_UPDATE_DISUPDATABLE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_WITH_VALIDATION;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_IMPORT_FILE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_SAVE_PACKAGE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,6 +43,7 @@ import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.metadata.MetaDataImportParameter;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -270,6 +255,7 @@ public class PackageImport extends MtpCuiBase {
 		PackageInfo packInfo = param.getPackInfo();
 
 		if (CollectionUtil.isNotEmpty(packInfo.getMetaDataPaths())) {
+			logInfo("\toutput check result confirm :" + param.isOutputCheckResultConfirm());
 			logInfo("\tmetadata count :" + packInfo.getMetaDataPaths().size());
 		} else {
 			logInfo("\tmetadata count :" + "0");
@@ -444,12 +430,18 @@ public class PackageImport extends MtpCuiBase {
 			}
 
 			if (checkResult.isWarn()) {
-				// 誤ってimport続行してしまわないようにデフォルトはfalse
-				String confirmMessage = checkResult.createMessage(System.lineSeparator()) + System.lineSeparator() + rs("Common.continueMsg");
-				boolean confirmContinue = readConsoleBoolean(confirmMessage, false);
-				if (!confirmContinue) {
-					logWarn(rs("PackageImport.stopImportPackageLog", param.getImportFilePath()));
-					return false;
+				if (param.isOutputCheckResultConfirm()) {
+					// 処理続行確認メッセージ出力する場合
+					String confirmMessage = checkResult.createMessage(System.lineSeparator()) + System.lineSeparator() + rs("Common.continueMsg");
+					// 誤ってimport続行してしまわないようにデフォルトはfalse
+					boolean confirmContinue = readConsoleBoolean(confirmMessage, false);
+					if (!confirmContinue) {
+						logWarn(rs("PackageImport.stopImportPackageLog", param.getImportFilePath()));
+						return false;
+					}
+				} else {
+					// 処理続行確認メッセージ出力しない場合はログ出力（警告）のみ
+					logWarn(checkResult.createMessage(System.lineSeparator()));
 				}
 			}
 
@@ -704,6 +696,11 @@ public class PackageImport extends MtpCuiBase {
 				}
 
 			} while(validFile == false);
+
+			// メタデータが含まれる場合
+			if (CollectionUtil.isNotEmpty(param.getPackInfo().getMetaDataPaths())) {
+				param.setOutputCheckResultConfirm(true);
+			}
 
 			//Entityが含まれる場合は、Import条件を作成
 			if (CollectionUtil.isNotEmpty(packInfo.getEntityPaths())) {
@@ -967,6 +964,15 @@ public class PackageImport extends MtpCuiBase {
 			} catch (PackageRuntimeException e) {
 				logError(rs("PackageImport.errorAnalysisFileMsg", e.getMessage()));
 				return false;
+			}
+
+			// メタデータが含まれる場合
+			if (CollectionUtil.isNotEmpty(param.getPackInfo().getMetaDataPaths())) {
+				// Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか
+				String outputCheckResultConfirm = prop.getProperty(MetaDataImportParameter.PROP_MEAT_OUTPUT_CHECK_RESULT_CONFIRM);
+				if (StringUtil.isNotEmpty(outputCheckResultConfirm)) {
+					param.setOutputCheckResultConfirm(Boolean.valueOf(outputCheckResultConfirm));
+				}
 			}
 
 			//Entityが含まれる場合は、Import条件を作成

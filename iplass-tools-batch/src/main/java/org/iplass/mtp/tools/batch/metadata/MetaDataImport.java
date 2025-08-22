@@ -4,9 +4,7 @@
 
 package org.iplass.mtp.tools.batch.metadata;
 
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_IMPORT_FILE;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -201,13 +199,19 @@ public class MetaDataImport extends MtpCuiBase {
 						}
 
 						if (checkResult.isWarn()) {
-							// 誤ってimport続行してしまわないようにデフォルトはfalse
-							String confirmMessage = checkResult.createMessage(System.lineSeparator()) + System.lineSeparator()
-									+ rs("Common.continueMsg");
-							boolean confirmContinue = readConsoleBoolean(confirmMessage, false);
-							if (!confirmContinue) {
-								logWarn(rs("MetaDataImport.stopImportMetaLog"));
-								return false;
+							if (param.isOutputCheckResultConfirm()) {
+								// 処理続行確認メッセージ出力する場合
+								String confirmMessage = checkResult.createMessage(System.lineSeparator()) + System.lineSeparator()
+										+ rs("Common.continueMsg");
+								// 誤ってimport続行してしまわないようにデフォルトはfalse
+								boolean confirmContinue = readConsoleBoolean(confirmMessage, false);
+								if (!confirmContinue) {
+									logWarn(rs("MetaDataImport.stopImportMetaLog"));
+									return false;
+								}
+							} else {
+								// 処理続行確認メッセージ出力しない場合はログ出力（警告）のみ
+								logWarn(checkResult.createMessage(System.lineSeparator()));
 							}
 						}
 
@@ -257,6 +261,7 @@ public class MetaDataImport extends MtpCuiBase {
 		logInfo("■Execute Argument");
 		logInfo("\ttenant name :" + param.getTenantName());
 		logInfo("\timport file :" + param.getImportFilePath());
+		logInfo("\toutput check result confirm :" + param.isOutputCheckResultConfirm());
 
 		if (CollectionUtil.isNotEmpty(param.getMetaDataPaths())) {
 			logInfo("\tmetadata count :" + param.getMetaDataPaths().size());
@@ -313,6 +318,8 @@ public class MetaDataImport extends MtpCuiBase {
 		}
 
 		MetaDataImportParameter param = new MetaDataImportParameter(tenant.getId(), tenant.getName());
+		// Wizard形式の場合、プロパティチェックは常に実行する
+		param.setOutputCheckResultConfirm(true);
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
 		return ExecuteContext.executeAs(tc, ()->{
@@ -517,6 +524,12 @@ public class MetaDataImport extends MtpCuiBase {
 				logWarn(rs("MetaDataImport.includeWarnTenantMetaMsg"));
 			}
 			param.setImportFile(file);
+
+			// Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか
+			String outputCheckResultConfirm = prop.getProperty(MetaDataImportParameter.PROP_MEAT_OUTPUT_CHECK_RESULT_CONFIRM);
+			if (StringUtil.isNotEmpty(outputCheckResultConfirm)) {
+				param.setOutputCheckResultConfirm(Boolean.valueOf(outputCheckResultConfirm));
+			}
 
 			//実行情報出力
 			logArguments(param);
