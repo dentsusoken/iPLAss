@@ -99,7 +99,7 @@ public class MetaDataCheckResult implements Serializable {
 	 */
 	public void addMetaDataPaths(String metaDataPath) {
 		if (metaDataPaths == null) {
-			metaDataPaths = new ArrayList<String>();
+			metaDataPaths = new ArrayList<>();
 		}
 
 		metaDataPaths.add(metaDataPath);
