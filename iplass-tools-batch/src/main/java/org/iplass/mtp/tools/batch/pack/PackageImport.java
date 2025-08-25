@@ -59,7 +59,6 @@ import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
-import org.iplass.mtp.tools.batch.metadata.MetaDataImportParameter;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -985,7 +984,7 @@ public class PackageImport extends MtpCuiBase {
 			// メタデータが含まれる場合
 			if (CollectionUtil.isNotEmpty(param.getPackInfo().getMetaDataPaths())) {
 				// Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか
-				String outputCheckResultConfirm = prop.getProperty(MetaDataImportParameter.PROP_MEAT_OUTPUT_CHECK_RESULT_CONFIRM);
+				String outputCheckResultConfirm = prop.getProperty(PackageImportParameter.PROP_META_OUTPUT_CHECK_RESULT_CONFIRM);
 				if (StringUtil.isNotEmpty(outputCheckResultConfirm)) {
 					param.setOutputCheckResultConfirm(Boolean.valueOf(outputCheckResultConfirm));
 				}

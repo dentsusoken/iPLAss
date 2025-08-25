@@ -20,7 +20,7 @@ public class MetaDataImportParameter {
 	public static final String PROP_IMPORT_FILE = "importFile";
 
 	/** Silentモード Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか */
-	public static final String PROP_MEAT_OUTPUT_CHECK_RESULT_CONFIRM = "meta.outputCheckResultConfirm";
+	public static final String PROP_META_OUTPUT_CHECK_RESULT_CONFIRM = "meta.outputCheckResultConfirm";
 
 	// テナントID
 	private int tenantId;

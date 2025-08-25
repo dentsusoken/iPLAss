@@ -528,7 +528,7 @@ public class MetaDataImport extends MtpCuiBase {
 			param.setImportFile(file);
 
 			// Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか
-			String outputCheckResultConfirm = prop.getProperty(MetaDataImportParameter.PROP_MEAT_OUTPUT_CHECK_RESULT_CONFIRM);
+			String outputCheckResultConfirm = prop.getProperty(MetaDataImportParameter.PROP_META_OUTPUT_CHECK_RESULT_CONFIRM);
 			if (StringUtil.isNotEmpty(outputCheckResultConfirm)) {
 				param.setOutputCheckResultConfirm(Boolean.valueOf(outputCheckResultConfirm));
 			}
