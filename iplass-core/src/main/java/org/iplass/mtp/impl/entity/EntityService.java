@@ -48,6 +48,7 @@ import org.iplass.mtp.impl.datastore.strategy.ApplyMetaDataStrategy;
 import org.iplass.mtp.impl.datastore.strategy.EntityStoreStrategy;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.entity.versioning.NonVersionController;
 import org.iplass.mtp.impl.entity.versioning.NumberbaseVersionController;
@@ -95,6 +96,11 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 		@Override
 		public String toDefName(String path) {
 			return path.substring(pathPrefix.length()).replace("/", ".");
+		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return new EntityDefinitionNameChecker();
 		}
 	}
 
@@ -179,6 +185,9 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 	}
 
 	private String doCreate(final MetaEntity newMeta, final MetaDataConfig config, final EntityContext context, boolean doAutoReload) {
+		// メタデータ定義名チェック
+		// Entityはメタデータ登録時にcreateMetaDataメソッドが呼ばれないので個別にチェックする
+		this.checkDefinitionName(newMeta);
 
 		//TODO 同名のメタデータ存在チェック、設定値の妥当性の検証など
 
@@ -453,6 +462,14 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 	}
 
 	public Future<String> updateDataModelSchema(final MetaEntity newMeta, final MetaDataConfig config) {
+		// メタデータ定義名チェック
+		// Entityはメタデータ更新時にupdateMetaDataメソッドが呼ばれないので個別にチェックする
+		// 更新時はEntityRuntimeExceptionスローしないとAdminConsole側でエラーハンドリングができない
+		try {
+			this.checkDefinitionName(newMeta);
+		} catch (MetaDataRuntimeException e) {
+			throw new EntityRuntimeException(e.getMessage(), e);
+		}
 
 		//非同期でスキーマ変更する。
 		//TODO 同名のメタデータ存在チェック、設定値の妥当性の検証など

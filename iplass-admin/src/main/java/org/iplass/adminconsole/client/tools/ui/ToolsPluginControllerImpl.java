@@ -30,6 +30,7 @@ import org.iplass.adminconsole.client.tools.ui.eql.EqlWorksheetPlugin;
 import org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerPlugin;
 import org.iplass.adminconsole.client.tools.ui.logexplorer.LogExplorerPlugin;
 import org.iplass.adminconsole.client.tools.ui.metaexplorer.MetaDataExplorerPlugin;
+import org.iplass.adminconsole.client.tools.ui.openapisupport.OpenApiSupportPlugin;
 import org.iplass.adminconsole.client.tools.ui.pack.PackagePlugin;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionExplorerPlugin;
 import org.iplass.adminconsole.client.tools.ui.queueexplorer.QueueExplorerPlugin;
@@ -39,7 +40,7 @@ public class ToolsPluginControllerImpl implements ToolsPluginController {
 	@Override
 	public List<AdminPlugin> plugins() {
 
-		List<AdminPlugin> plugins = new ArrayList<AdminPlugin>();
+		List<AdminPlugin> plugins = new ArrayList<>();
 
 		plugins.add(new EqlWorksheetPlugin());
 		plugins.add(new EntityExplorerPlugin());
@@ -50,6 +51,7 @@ public class ToolsPluginControllerImpl implements ToolsPluginController {
 		plugins.add(new QueueExplorerPlugin());
 		plugins.add(new LangExplorerPlugin());
 		plugins.add(new LogExplorerPlugin());
+		plugins.add(new OpenApiSupportPlugin());
 
 		return plugins;
 	}

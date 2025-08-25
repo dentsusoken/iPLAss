@@ -4,7 +4,9 @@
 
 package org.iplass.mtp.tools.batch.metadata;
 
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_IMPORT_FILE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
 
 import java.io.File;
 import java.io.FileInputStream;

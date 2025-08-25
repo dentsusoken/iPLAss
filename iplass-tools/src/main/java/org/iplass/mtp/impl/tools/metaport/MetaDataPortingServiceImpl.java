@@ -39,6 +39,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.impl.auth.AuthContextHolder;
@@ -62,6 +63,7 @@ import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
+import org.iplass.mtp.impl.metadata.MetaDataIllegalStateException;
 import org.iplass.mtp.impl.metadata.MetaDataJAXBService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.metadata.xmlresource.ContextPath;
@@ -689,6 +691,11 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 			doImportIndividualMetaData(individualCombiList, new ArrayList<>(individualList.values()) ,result);
 		}
 
+		// 正常終了してる場合は、RuntimeのcheckStatus結果を追加する
+		if (!result.isError()) {
+			this.addCheckStatusResult(result, entryList, needTenantReload);
+		}
+
 		return result;
 	}
 
@@ -918,6 +925,66 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 			result.addMessages(msgStack);
 			result.addMessages("-----------------------------------------");
 		}
+	}
+
+	/**
+	 * 
+	 * <p>
+	 * メタデータ新規作成や定義名変更した場合、別トランザクションで
+	 * {@link org.iplass.mtp.impl.metadata.MetaDataContext#checkState(String) checkState}を実行しないと</br>
+	 * MetaDataRuntimeが見つからないエラーが返ってきてしまって、実際はcheckStatusエラーではないのcheckStatusエラーになってしまう</br>
+	 * なので、新規トランザクションでcheckStatusを実行する
+	 * </p>
+	 * 
+	 * @param result インポート結果
+	 * @param entryList インポートしたメタデータ
+	 * @param needTenantReload テナントコンテキストのリロードが必要かどうか
+	 */
+	private void addCheckStatusResult(final MetaDataImportResult result, final List<MetaDataEntry> entryList, boolean needTenantReload) {
+		if (CollectionUtils.isEmpty(entryList)) {
+			return;
+		}
+
+		List<String> errorPathList = Transaction.requiresNew(t -> {
+			// テナントコンテキストリロードしてる場合は新たにTenantContext生成してMetaDataContext取得する必要あり
+			TenantContext tenantContext = null;
+			if (needTenantReload) {
+				int currentTenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				tenantContext = tContextService.getTenantContext(currentTenantId);
+			} else {
+				tenantContext = ExecuteContext.getCurrentContext().getTenantContext();
+			}
+
+			List<String> errorMessageList = ExecuteContext.executeAs(tenantContext, () -> {
+				return entryList.stream().filter(entry -> {
+					String path = entry.getPath();
+					if (StringUtil.isEmpty(path)) {
+						return false;
+					}
+
+					try {
+						MetaDataContext.getContext().checkState(path);
+						return false;
+					} catch (MetaDataIllegalStateException e) {
+						return true;
+					}
+				}).map(MetaDataEntry::getPath).toList();
+			});
+
+			return errorMessageList;
+		});
+
+		if (CollectionUtils.isEmpty(errorPathList)) {
+			return;
+		}
+
+		result.addMessages("-----------------------------------------");
+		result.addMessages(ToolsResourceBundleUtil.resourceString("metaport.statusCheckInconsistencyWarning"));
+		result.addMessages(ToolsResourceBundleUtil.resourceString("metaport.statusCheckInstruction"));
+
+		errorPathList.forEach(path -> {
+			result.addMessages(String.format("[%1$s]", path));
+		});
 	}
 
 	private void writeHeader(PrintWriter writer) {

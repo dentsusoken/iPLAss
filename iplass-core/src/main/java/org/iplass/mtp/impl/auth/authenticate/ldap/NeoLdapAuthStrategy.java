@@ -340,7 +340,6 @@ class NeoLdapAuthStrategy implements LdapAuthStrategy {
 	public AccountHandle login(Credential credential) {
 		if (!(credential instanceof IdPasswordCredential)) {
 			return null;
-//			throw new SystemException("LdapAuthenticationProvider supports only IdPasswordCredential");
 		}
 		final IdPasswordCredential idPass = (IdPasswordCredential) credential;
 		
@@ -356,6 +355,9 @@ class NeoLdapAuthStrategy implements LdapAuthStrategy {
 				forSearch = initContext();
 				String filter = searchFilterStr(idPass);
 				userAttributes = searchUserByFilter(filter, forSearch);
+				if (userAttributes == null) {
+					return null;
+				}
 				userDn = (String) userAttributes.get(DN_ATTRIBUTE_NAME);
 			} else {
 				userDn = userDnStr(idPass);
@@ -405,7 +407,9 @@ class NeoLdapAuthStrategy implements LdapAuthStrategy {
 						throw new NamingException("Can't search user attributes, maybe userDN is wrong or has no permission:userDN=" + userDn);
 					}
 				}
-				
+			}
+
+			if (p.isGetUser() && userAttributes != null) {
 				account.getAttributeMap().putAll(userAttributes);
 				if (p.getUniqueKeyAttribute() != null) {
 					account.setUnmodifiableUniqueKey(ConvertUtil.convert(String.class, userAttributes.get(p.getUniqueKeyAttribute())));

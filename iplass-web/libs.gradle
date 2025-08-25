@@ -54,5 +54,12 @@ dependencies {
 	
 	implementation sharedLib('com.webauthn4j:webauthn4j-core')
 	implementation sharedLib('com.webauthn4j:webauthn4j-metadata')
-	
+
+	// swagger(support OpenAPI)
+	implementation sharedLib('io.swagger.core.v3:swagger-models-jakarta')
+	implementation sharedLib('io.swagger.core.v3:swagger-core-jakarta')
+
+	// victools (convert JavaCode to JSON Schema) 
+	implementation sharedLib('com.github.victools:jsonschema-generator')
+	implementation sharedLib('com.github.victools:jsonschema-module-jackson')
 }

@@ -29,6 +29,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
 import org.iplass.mtp.spi.Config;
@@ -37,6 +38,12 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiDefinitionManager;
 
+/**
+ * WebAPIサービス
+ * <p>
+ * WebAPIメタデータの管理、WebAPIの振る舞いを管理するサービスです。
+ * </p>
+ */
 public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebApiRuntime> implements Service {
 
 	// TODO マッピングしているCommandの更新・削除イベントを監視し、関連するActionMappingのキャッシュをクリア
@@ -52,6 +59,11 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		public TypedDefinitionManager<WebApiDefinition> typedDefinitionManager() {
 			return ManagerLocator.getInstance().getManager(WebApiDefinitionManager.class);
 		}
+
+		@Override
+		protected DefinitionNameChecker createDefinitionNameChecker() {
+			return DefinitionNameChecker.getPathSlashDefinitionNameChecker();
+		}
 	}
 
 	private Map<Class<? extends Throwable>, Integer> statusMap;
@@ -61,6 +73,8 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 
 	private boolean enableDefinitionApi;
 	private boolean enableBinaryApi;
+	/** スタブレスポンスを有効にするか */
+	private boolean enableStubResponse;
 	private boolean writeEncodedFilenameInBinaryApi;
 	private String unescapeFilenameCharacterInBinaryApi;
 	/** バイナリファイルアップロード時に受け入れ可能な MIME Type 正規表現パターン */
@@ -91,6 +105,7 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		cors = config.getValue("cors", CorsConfig.class);
 		enableDefinitionApi = config.getValue("enableDefinitionApi", Boolean.class, Boolean.FALSE);
 		enableBinaryApi = config.getValue("enableBinaryApi", Boolean.class, Boolean.FALSE);
+		enableStubResponse = config.getValue("enableStubResponse", Boolean.class, Boolean.FALSE).booleanValue();
 		writeEncodedFilenameInBinaryApi = config.getValue("writeEncodedFilenameInBinaryApi", Boolean.class,
 				Boolean.FALSE);
 		unescapeFilenameCharacterInBinaryApi = config.getValue("unescapeFilenameCharacterInBinaryApi");
@@ -107,6 +122,14 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 
 	public boolean isEnableBinaryApi() {
 		return enableBinaryApi;
+	}
+
+	/**
+	 * スタブレスポンスを有効にするか
+	 * @return スタブレスポンスを有効な場合は true を返却
+	 */
+	public boolean isEnableStubResponse() {
+		return enableStubResponse;
 	}
 
 	public boolean isWriteEncodedFilenameInBinaryApi() {

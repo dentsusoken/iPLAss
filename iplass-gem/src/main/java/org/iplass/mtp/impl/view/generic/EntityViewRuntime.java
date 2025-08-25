@@ -24,9 +24,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.entity.query.PreparedQuery;
+import org.iplass.mtp.impl.definition.DefinitionNameCheckResult;
+import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
+import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
@@ -37,6 +43,9 @@ import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
  * @author lis3wg
  */
 public class EntityViewRuntime extends BaseMetaDataRuntime {
+
+	// View名Checker
+	private static final ViewNameChecker VIEW_NAME_CHECKER = new ViewNameChecker();
 
 	/** メタデータ */
 	protected MetaEntityView metaData;
@@ -68,11 +77,43 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 			this.metaData = metaData;
 			if (metaData.getViews().size() > 0) {
 				for (MetaFormView view : metaData.getViews()) {
+					// View名整合性チェック
+					this.checkViewName(view);
 					this.addFormView(view.createRuntime(this));
+				}
+			}
+
+			// View管理設定のView名整合性チェック
+			if (CollectionUtils.isNotEmpty(metaData.getViewControlSettings())) {
+				for (MetaViewControlSetting viewControlSetting : metaData.getViewControlSettings()) {
+					this.checkViewControlSettingName(viewControlSetting);
 				}
 			}
 		} catch (RuntimeException e) {
 			setIllegalStateException(e);
+		}
+	}
+
+	private void checkViewName(MetaFormView view) throws MetaDataRuntimeException {
+		if (Objects.isNull(view)) {
+			return;
+		}
+
+		this.checkViewName(VIEW_NAME_CHECKER.checkViewName(view.getName()));
+	}
+
+	private void checkViewControlSettingName(MetaViewControlSetting viewControlSetting) throws MetaDataRuntimeException {
+		if (Objects.isNull(viewControlSetting)) {
+			return;
+		}
+
+		this.checkViewName(VIEW_NAME_CHECKER.checkSettingViewName(viewControlSetting.getName()));
+	}
+
+	private void checkViewName(DefinitionNameCheckResult result) throws MetaDataRuntimeException {
+		// チェックエラー
+		if (result.hasError()) {
+			throw new MetaDataRuntimeException(result.getErrorMessage());
 		}
 	}
 
@@ -232,5 +273,31 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 			return null;
 		}
 		return autocompletionSettingMap.get(key);
+	}
+
+	/**
+	 * View名Checkerクラス
+	 */
+	private static class ViewNameChecker extends DefinitionNameChecker {
+		private String messageKey = null;
+
+		private ViewNameChecker() {
+			super(DefinitionNameChecker.PATH_PERIOD_PATTERN, null);
+		}
+
+		private DefinitionNameCheckResult checkViewName(String viewName) {
+			this.messageKey = "view.generic.EntityViewRuntime.viewCheckErr";
+			return super.check(viewName);
+		}
+
+		private DefinitionNameCheckResult checkSettingViewName(String viewName) {
+			this.messageKey = "view.generic.EntityViewRuntime.settingCheckErr";
+			return super.check(viewName);
+		}
+
+		@Override
+		protected String getErrorMessage(String viewName) {
+			return GemResourceBundleUtil.resourceString(this.messageKey, viewName);
+		}
 	}
 }

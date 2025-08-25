@@ -96,9 +96,9 @@ ext {
 		'org.apache.commons:commons-text': '1.12.0',
 		'org.apache.commons:commons-collections4': '4.4',
 		'org.apache.commons:commons-pool2': '2.12.0',
-		'commons-io:commons-io': '2.19.0',
+		'commons-io:commons-io': '2.20.0',
 		'commons-beanutils:commons-beanutils': '1.11.0',
-		'commons-codec:commons-codec': '1.17.0',
+		'commons-codec:commons-codec': '1.19.0',
 		
 		'org.apache.httpcomponents.client5:httpclient5': '5.3.1',
 		'org.apache.httpcomponents.core5:httpcore5': '5.2.5',
@@ -119,9 +119,9 @@ ext {
 		// commons-compress は tika に関連した競合ライブラリの為、個別定義しバージョンを管理
 		'org.apache.commons:commons-compress': '1.26.2',
 		
-		'org.apache.poi:poi': '5.3.0',
-		'org.apache.poi:poi-scratchpad': '5.3.0',
-		'org.apache.poi:poi-ooxml': '5.3.0',
+		'org.apache.poi:poi': '5.4.1',
+		'org.apache.poi:poi-scratchpad': '5.4.1',
+		'org.apache.poi:poi-ooxml': '5.4.1',
 		
 		'org.jxls:jxls': '3.0.0',
 		'org.jxls:jxls-poi': '3.0.0',
@@ -141,7 +141,7 @@ ext {
 		'ch.qos.logback:logback-classic': '1.5.18',
 		'net.logstash.logback:logstash-logback-encoder': '8.1',
 		
-		'org.bouncycastle:bcjmail-jdk18on': '1.78.1',
+		'org.bouncycastle:bcjmail-jdk18on': '1.81',
 		
 		'org.jgroups:jgroups': '5.3.6.Final',
 
@@ -201,6 +201,14 @@ ext {
 		'org.webjars.npm:quill': '2.0.2',
 
 		'org.webjars:font-awesome': '5.13.1',
+
+		// swagger (https://github.com/swagger-api/swagger-core)
+		'io.swagger.core.v3:swagger-models-jakarta' : '2.2.34',
+		'io.swagger.core.v3:swagger-core-jakarta'   : '2.2.34',
+	
+		// json schema gen (https://github.com/victools/jsonschema-generator)
+		'com.github.victools:jsonschema-generator': '4.38.0',
+		'com.github.victools:jsonschema-module-jackson': '4.38.0',
 	]
 	
 	sharedLib = { String name ->

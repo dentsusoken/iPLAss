@@ -26,10 +26,12 @@ import java.util.Map;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.metadata.RootMetaData;
+import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.util.StringUtil;
 
 /**
  * MetaDataをDefinitionとしてapiに公開するためのService。
@@ -191,6 +193,52 @@ public class DefinitionService implements Service {
 	public String getDefinitionName(String path) {
 		//Definitionクラスが未指定の場合は、Pathの先頭からチェックして返す
 		return contextNode.toName(path);
+	}
+
+	/**
+	 * パスチェック（メタデータから）
+	 * 
+	 * @param <M> メタデータの型
+	 * @param metaType メタデータタイプ
+	 * @param path メタデータパス
+	 * @return パスチェック結果
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public <M extends RootMetaData> DefinitionNameCheckResult checkPathPrefixByMeta(Class<M> metaType, String path) {
+		DefinitionMetaDataTypeMap typeMap = this.getByMeta(metaType);
+		if (StringUtil.isNotEmpty(path) && !path.startsWith(typeMap.pathPrefix)) {
+			return new DefinitionNameCheckResult(true, CoreResourceBundleUtil.resourceString("impl.definition.DefinitionService.invalidPath"));
+		}
+
+		return new DefinitionNameCheckResult(false, null);
+	}
+
+	/**
+	 * メタデータ定義名チェック（メタデータ定義から）
+	 * 
+	 * @param <D> メタデータ定義の型
+	 * @param defType メタデータ定義タイプ
+	 * @param defName メタデータ定義名
+	 * @return メタデータ定義名チェック結果
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public <D extends Definition> DefinitionNameCheckResult checkDefinitionName(Class<D> defType, String defName) {
+		DefinitionMetaDataTypeMap typeMap = this.getByDef(defType);
+		return typeMap.getDefinitionNameChecker().check(defName);
+	}
+
+	/**
+	 * メタデータ定義名チェック（メタデータから）
+	 * 
+	 * @param <M> メタデータの型
+	 * @param metaType メタデータタイプ
+	 * @param defName メタデータ定義名
+	 * @return メタデータ定義名チェック結果
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public <M extends RootMetaData> DefinitionNameCheckResult checkDefinitionNameByMeta(Class<M> metaType, String defName) {
+		DefinitionMetaDataTypeMap typeMap = this.getByMeta(metaType);
+		return typeMap.getDefinitionNameChecker().check(defName);
 	}
 
 	private static class MetaDataContextNode<D extends Definition> {

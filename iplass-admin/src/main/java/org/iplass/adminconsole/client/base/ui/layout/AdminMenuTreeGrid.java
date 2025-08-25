@@ -293,4 +293,11 @@ public abstract class AdminMenuTreeGrid extends MtpTreeGrid implements ContentSt
 		}
 	};
 
+	/**
+	 * <p>メニュー数を返します。</p>
+	 * @return メニュー数
+	 */
+	public int getMenuCount() {
+		return model.getAllNodes().length;
+	}
 }
