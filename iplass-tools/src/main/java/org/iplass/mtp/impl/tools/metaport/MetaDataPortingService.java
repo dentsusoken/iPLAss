@@ -110,4 +110,27 @@ public interface MetaDataPortingService extends Service {
 	 * @param param EntityDataパッチパラメータ
 	 */
 	void patchEntityDataWithUserAuth(PatchEntityDataParameter param, String userId, String password);
+
+	/**
+	 * <p>MetaDataEntryのメタデータ整合性チェックを行います(選択Pathのみ)。</p>
+	 * <p>
+	 * MetaDataExplorerで利用しています。
+	 * </p>
+	 *
+	 * @param targetName インポート対象の名前(Package名、XMLファイル名、Tag名)
+	 * @param entryInfo 取り込み対象が含まれたMetaData情報
+	 * @param selectedPaths 取り込み対象のList
+	 */
+	MetaDataCheckResult checkMetaData(String targetName, XMLEntryInfo entryInfo, final List<String> selectedPaths);
+
+	/**
+	 * <p>MetaDataEntryのメタデータ整合性チェックを行います(全件)。</p>
+	 * <p>
+	 * Packageで利用しています。
+	 * </p>
+	 *
+	 * @param targetName インポート対象の名前(Package名、XMLファイル名、Tag名)
+	 * @param entryInfo 取り込み対象が含まれたMetaData情報
+	 */
+	MetaDataCheckResult checkMetaData(String targetName, XMLEntryInfo entryInfo);
 }
