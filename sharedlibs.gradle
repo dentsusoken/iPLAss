@@ -110,14 +110,14 @@ ext {
 		'org.apache.lucene:lucene-backward-codecs': '9.11.1',
 		
 		//tika
-		'org.apache.tika:tika-core': '2.9.2',
-		'org.apache.tika:tika-parser-html-module': '2.9.2',
-		'org.apache.tika:tika-parser-xml-module': '2.9.2',
-		'org.apache.tika:tika-parser-microsoft-module': '2.9.2',
-		'org.apache.tika:tika-parser-pdf-module': '2.9.2',
-		'org.apache.tika:tika-parser-zip-commons': '2.9.2',
+		'org.apache.tika:tika-core': '3.2.2',
+		'org.apache.tika:tika-parser-html-module': '3.2.2',
+		'org.apache.tika:tika-parser-xml-module': '3.2.2',
+		'org.apache.tika:tika-parser-microsoft-module': '3.2.2',
+		'org.apache.tika:tika-parser-pdf-module': '3.2.2',
+		'org.apache.tika:tika-parser-text-module': '3.2.2',
 		// commons-compress は tika に関連した競合ライブラリの為、個別定義しバージョンを管理
-		'org.apache.commons:commons-compress': '1.26.2',
+		'org.apache.commons:commons-compress': '1.28.0',
 		
 		'org.apache.poi:poi': '5.4.1',
 		'org.apache.poi:poi-scratchpad': '5.4.1',

@@ -23,10 +23,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
 
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceInitListener;
+import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +41,10 @@ import org.slf4j.LoggerFactory;
  * Apache Tika を利用してファイル名およびファイルのマジックバイトを確認、正確なMIME Type（メディアタイプ）を判別する。
  * </p>
  *
+ * <p>
+ * 検出したメディアタイプを置換する場合は、置換用メディアタイプマップ {@link #setSubstitutionMediaType(Map)} を設定する。
+ * </p>
+ *
  * @author SEKIGUCHI Naoya
  */
 public class TikaFileTypeDetector implements FileTypeDetector, ServiceInitListener<Service> {
@@ -45,9 +52,14 @@ public class TikaFileTypeDetector implements FileTypeDetector, ServiceInitListen
 	private Logger logger = LoggerFactory.getLogger(TikaFileTypeDetector.class);
 	/** FileUploadTikaAdapter */
 	private FileUploadTikaAdapter tikaAdapter;
+	/** 置換用メディアタイプマップ */
+	private Map<String, String> substitutionMediaType;
 
 	@Override
 	public void inited(Service service, Config config) {
+		if (null == substitutionMediaType) {
+			substitutionMediaType = Collections.emptyMap();
+		}
 	}
 
 	@Override
@@ -67,7 +79,12 @@ public class TikaFileTypeDetector implements FileTypeDetector, ServiceInitListen
 	@Override
 	public String detect(InputStream input, String fileName, String type) {
 		try {
-			return tikaAdapter.detect(input, fileName);
+			// 検出メディアタイプ
+			String mediaType = tikaAdapter.detect(input, fileName);
+			// 置換後メディアタイプ
+			String substituted = substitutionMediaType.get(mediaType);
+			// 置換後メディアタイプが空でなければ置換後メディアタイプを、そうでなければ検出メディアタイプを返す
+			return StringUtil.isNotEmpty(substituted) ? substituted : mediaType;
 		} catch (IOException e) {
 			logger.warn("Unable to retrieve media type.", e);
 			return type;
@@ -81,5 +98,16 @@ public class TikaFileTypeDetector implements FileTypeDetector, ServiceInitListen
 	 */
 	public void setFileUploadTikaAdapter(FileUploadTikaAdapter tikaAdapter) {
 		this.tikaAdapter = tikaAdapter;
+	}
+
+	/**
+	 * 置換用メディアタイプマップを設定する
+	 * <p>
+	 * key: 検出メディアタイプ、value: 置換後メディアタイプ を設定する。
+	 * </p>
+	 * @param substitutionMediaType 置換用メディアタイプマップ
+	 */
+	public void setSubstitutionMediaType(Map<String, String> substitutionMediaType) {
+		this.substitutionMediaType = substitutionMediaType;
 	}
 }
