@@ -400,10 +400,16 @@
 		<!-- 
 		<property name="uploadFileTypeDetector" class="org.iplass.mtp.impl.web.fileupload.DefaultFileTypeDetector" />
 		-->
-		<!-- Apache Tika を利用したファイルタイプ（MIME Type・メディアタイプ）検出機能。bean tikaAdapter を有効化すること。 -->
+		<!-- 
+		Apache Tika を利用したファイルタイプ（MIME Type・メディアタイプ）検出機能。bean tikaAdapter を有効化すること。
+		検出したメディアタイプを置き換える場合は、 substitutionMediaType に name = 置換元、 value = 置換先 のメディアタイプを設定する。
+		-->
 		<!--
 		<property name="uploadFileTypeDetector" class="org.iplass.mtp.impl.web.fileupload.TikaFileTypeDetector">
 			<property name="fileUploadTikaAdapter" ref="tikaAdapter" />
+			<property name="substitutionMediaType">
+				<property name="fromMediaType" value="toMediaType" /> 
+			</property>
 		</property>
 		-->
 
