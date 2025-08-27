@@ -240,7 +240,7 @@
 		if (editor.getDisplayType() == StringDisplayType.TEXT) {
 			//テキスト
 			if (editor.getMaxlength() > 0) {
-				maxlength = "maxlength=" + editor.getMaxlength();
+				maxlength = "maxlength=\"" + editor.getMaxlength() + "\"";
 			}
 			if (StringUtil.isNotEmpty(editor.getInputType())) {
 				inputType = editor.getInputType();
