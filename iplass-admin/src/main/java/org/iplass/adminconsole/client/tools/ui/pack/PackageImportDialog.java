@@ -465,7 +465,7 @@ public class PackageImportDialog extends AbstractWindow {
 				return "";
 			}
 
-			return String.join("</br>", pathList);
+			return String.join("<br/>", pathList);
 		}
 
 		private void importMetaData(Tenant importTenant) {

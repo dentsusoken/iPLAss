@@ -1208,7 +1208,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 				// 対象メタデータ取得（エラーが発生した時点で処理終了する）
 				MetaDataEntry entry = filterEntryInfo.getPathEntry(path);
 				if (entry == null) {
-					result.setResultStatus(MetaDataCheckResult.ResultStatus.Error);
+					result.setResultStatus(ResultStatus.Error);
 					result.setMessage(getRS("canNotGetMeta", path));
 					break;
 				}
@@ -1276,7 +1276,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 										!Objects.equals(importProperty.getId(), storedProperty.getId()));
 						if (warn) {
 							result.addMetaDataPaths(entry.getPath());
-							result.setResultStatus(MetaDataCheckResult.ResultStatus.Warn);
+							result.setResultStatus(ResultStatus.Warn);
 							break;
 						}
 					}
@@ -1291,14 +1291,14 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 			toolLogger.error(e.getMessage(), e);
 
 			result.clearMetaDataPaths();
-			result.setResultStatus(MetaDataCheckResult.ResultStatus.Error);
+			result.setResultStatus(ResultStatus.Error);
 			result.setMessage(e.getMessage());
 		} catch (Exception e) {
 			// 想定外のエラーの場合は固定のエラーメッセージ
 			toolLogger.error(e.getMessage(), e);
 
 			result.clearMetaDataPaths();
-			result.setResultStatus(MetaDataCheckResult.ResultStatus.Error);
+			result.setResultStatus(ResultStatus.Error);
 			result.setMessage(getRS("errorCheckMetaData"));
 		}
 

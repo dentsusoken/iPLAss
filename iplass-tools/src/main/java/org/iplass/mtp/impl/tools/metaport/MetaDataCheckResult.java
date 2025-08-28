@@ -18,16 +18,21 @@ public class MetaDataCheckResult implements Serializable {
 
 	private static final long serialVersionUID = -4000661299012819750L;
 
-	public enum ResultStatus {
-		Success, Error, Warn
-	}
-
 	/** チェック結果ステータス */
 	private ResultStatus resultStatus = ResultStatus.Success;
 	/** チェック結果メッセージ */
 	private String message = null;
 	/** チェック結果メタデータパス */
 	private List<String> metaDataPaths = null;
+
+	/**
+	 * チェック結果ステータスを返却します
+	 * 
+	 * @return チェック結果ステータスを
+	 */
+	public ResultStatus getResultStatus() {
+		return resultStatus;
+	}
 
 	/**
 	 * チェック結果ステータスを設定します

@@ -1488,7 +1488,7 @@ LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_failedToCheckStatusMetaDat
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_importComp = "インポートが完了しました。";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_errCheckSett = "以下のエラー・警告が発生しています。";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_messageLabel = "Detail Message:";
-LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_startImportConfWithWarn = "{0}</br>{1}</br></br>インポートを開始してもよろしいですか？";
+LocaleInfo.ui_tools_metaexplorer_MetaDataImportDialog_startImportConfWithWarn = "{0}<br/>{1}<br/><br/>インポートを開始してもよろしいですか？";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportTenantPane_tenantPropertySelect = "テナントデータが含まれています。インポートするプロパティを選択してください。<br/>[基本情報]は選択できません。また初期選択では[メール設定]と[リクエストパス構築用テナントURL]、[日付プレビュー表示機能]を除外しています。";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportTenantPane_property = "プロパティ";
 LocaleInfo.ui_tools_metaexplorer_MetaDataImportTenantPane_curValue = "現在値";
@@ -1589,7 +1589,7 @@ LocaleInfo.ui_tools_pack_PackageImportDialog_preOidComment1 = "※6 別サーバ
 LocaleInfo.ui_tools_pack_PackageImportDialog_preOidComment2 = "※7 参照関係のあるEntityデータを分割してインポートする場合は、OID Prefixを一致させてください。";
 LocaleInfo.ui_tools_pack_PackageImportDialog_useCtrlComment1 = "※8 ヘッダ行の先頭に\"_useCtrl\"を追加することで「追加、更新、削除」が可能な次のコードを指定できます。<br/>(\"I\":インサート、\"U\":アップデート、\"D\":削除、\"M\":マージ)";
 LocaleInfo.ui_tools_pack_PackageImportDialog_runAsynchronously = "Package取り込み処理を非同期で実行する（Not Released）";
-LocaleInfo.ui_tools_pack_PackageImportDialog_startImportConfWithWarn = "{0}</br>{1}</br></br>インポートを開始してもよろしいですか？";
+LocaleInfo.ui_tools_pack_PackageImportDialog_startImportConfWithWarn = "{0}<br/>{1}<br/><br/>インポートを開始してもよろしいですか？";
 LocaleInfo.ui_tools_pack_PackageListPane_createPackageFromTenant = "テナントからPackageを作成します。";
 LocaleInfo.ui_tools_pack_PackageListPane_importExternalPackage = "外部Packageをテナントに取り込みます。<br/>PackageファイルをUpload後、Importを実施します。";
 LocaleInfo.ui_tools_pack_PackageListPane_reflectTenantPackage = "登録済のPackageをテナントに反映します<br/>一覧のダブルクリックでも起動できます。";

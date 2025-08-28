@@ -7,6 +7,8 @@ package org.iplass.adminconsole.shared.tools.dto.metaexplorer;
 import java.io.Serializable;
 import java.util.List;
 
+import org.iplass.mtp.impl.tools.metaport.ResultStatus;
+
 /**
  * メタデータチェック結果
  */
@@ -14,10 +16,8 @@ public class MetaDataCheckResultInfo implements Serializable {
 
 	private static final long serialVersionUID = 2689277971210264992L;
 
-	/** エラーかどうか */
-	private boolean isError = false;
-	/** 警告かどうか */
-	private boolean isWarn = false;
+	/** チェック結果ステータス */
+	private ResultStatus resultStatus = ResultStatus.Success;
 	/** チェック結果メッセージ */
 	private String message = null;
 	/** チェック結果メタデータパス */
@@ -25,11 +25,11 @@ public class MetaDataCheckResultInfo implements Serializable {
 
 	public MetaDataCheckResultInfo() {
 		// デフォルトコンストラクターがないとAdminConsoleのコンパイルでエラーになるので
-		this(false);
+		this(ResultStatus.Success);
 	}
 
-	public MetaDataCheckResultInfo(boolean isError) {
-		this.isError = isError;
+	public MetaDataCheckResultInfo(ResultStatus resultStatus) {
+		this.resultStatus = resultStatus;
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class MetaDataCheckResultInfo implements Serializable {
 	 * @return エラーかどうか
 	 */
 	public boolean isError() {
-		return isError;
+		return resultStatus == ResultStatus.Error;
 	}
 
 	/**
@@ -47,16 +47,7 @@ public class MetaDataCheckResultInfo implements Serializable {
 	 * @return 警告かどうか
 	 */
 	public boolean isWarn() {
-		return isWarn;
-	}
-
-	/**
-	 * 警告かどうかを設定します
-	 * 
-	 * @param isWarn 警告かどうか
-	 */
-	public void setWarn(boolean isWarn) {
-		this.isWarn = isWarn;
+		return resultStatus == ResultStatus.Warn;
 	}
 
 	/**

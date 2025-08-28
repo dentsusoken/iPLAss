@@ -709,7 +709,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 			return "";
 		}
 
-		return String.join("</br>", pathList);
+		return String.join("<br/>", pathList);
 	}
 
 	@Override

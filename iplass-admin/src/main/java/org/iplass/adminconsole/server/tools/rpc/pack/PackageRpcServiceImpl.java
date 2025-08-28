@@ -257,8 +257,7 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 						MetaDataCheckResult metaResult = service.checkPackageMetaData(packOid);
 
 						// MetaDataCheckResult -> MetaDataCheckResultInfo
-						MetaDataCheckResultInfo result = new MetaDataCheckResultInfo(metaResult.isError());
-						result.setWarn(metaResult.isWarn());
+						MetaDataCheckResultInfo result = new MetaDataCheckResultInfo(metaResult.getResultStatus());
 						result.setMessage(metaResult.getMessage());
 						result.setMetaDataPaths(metaResult.getMetaDataPaths());
 

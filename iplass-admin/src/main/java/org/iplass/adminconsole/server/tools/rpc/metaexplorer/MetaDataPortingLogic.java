@@ -67,6 +67,7 @@ import org.iplass.mtp.impl.tools.metaport.MetaDataImportStatus;
 import org.iplass.mtp.impl.tools.metaport.MetaDataPortingRuntimeException;
 import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
 import org.iplass.mtp.impl.tools.metaport.MetaDataTagEntity;
+import org.iplass.mtp.impl.tools.metaport.ResultStatus;
 import org.iplass.mtp.impl.tools.metaport.XMLEntryInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
@@ -402,7 +403,7 @@ public class MetaDataPortingLogic {
 
 			logger.error("meta data check failed.", e);
 
-			MetaDataCheckResultInfo result = new MetaDataCheckResultInfo(true);
+			MetaDataCheckResultInfo result = new MetaDataCheckResultInfo(ResultStatus.Error);
 			result.setMessage(resourceString("errImportTargetGet", e.getMessage()));
 
 			return result;
@@ -412,8 +413,7 @@ public class MetaDataPortingLogic {
 		MetaDataCheckResult metaResult = metaService.checkMetaData(entryInfo.getTagName(), entryInfo.getEntryInfo(), pathList);
 
 		// MetaDataCheckResult -> MetaDataCheckResultInfo
-		MetaDataCheckResultInfo result = new MetaDataCheckResultInfo(metaResult.isError());
-		result.setWarn(metaResult.isWarn());
+		MetaDataCheckResultInfo result = new MetaDataCheckResultInfo(metaResult.getResultStatus());
 		result.setMessage(metaResult.getMessage());
 		result.setMetaDataPaths(metaResult.getMetaDataPaths());
 
