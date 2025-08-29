@@ -155,11 +155,13 @@ public interface EntityExplorerServiceAsync {
 	 * @param tenantId テナントID
 	 * @param defName 検索対象Entity定義名
 	 * @param whereClause 検索条件
+	 * @param deleteSpecificVersion Entityがバージョン管理されている場合に、検索条件に該当するバージョンのデータのみを削除するか
 	 * @param isNotifyListeners Listner通知を行うか
 	 * @param commitLimit Commit単位
 	 * @param callback  Callbackクラス
 	 */
-	void deleteAll(int tenantId, String defName, String whereClause, boolean isNotifyListeners, int commitLimit, AsyncCallback<EntityDataDeleteResultInfo> callback);
+	void deleteAll(int tenantId, String defName, String whereClause, boolean deleteSpecificVersion, boolean isNotifyListeners, int commitLimit,
+			AsyncCallback<EntityDataDeleteResultInfo> callback);
 
 	/**
 	 * <p>OIDに該当するデータを一括で削除します。</p>
@@ -171,7 +173,22 @@ public interface EntityExplorerServiceAsync {
 	 * @param commitLimit Commit単位
 	 * @param callback  Callbackクラス
 	 */
-	void deleteAllByOid(int tenantId, String defName, List<String> oids, boolean isNotifyListeners, int commitLimit, AsyncCallback<EntityDataDeleteResultInfo> callback);
+	void deleteAllByOid(int tenantId, String defName, List<String> oids, boolean isNotifyListeners, int commitLimit,
+			AsyncCallback<EntityDataDeleteResultInfo> callback);
+
+	/**
+	 * <p>指定されたEntityデータを一括で削除します。<br/>
+	 * Entityがバージョン管理されている場合は、指定されたバージョンのデータのみ削除されます。</p>
+	 *
+	 * @param tenantId テナントID
+	 * @param defName 検索対象Entity定義名
+	 * @param targets 削除対象のEntityデータのリスト
+	 * @param isNotifyListeners Listner通知を行うか
+	 * @param commitLimit Commit単位
+	 * @param callback  Callbackクラス
+	 */
+	void deleteAllByEntityData(int tenantId, String defName, List<Entity> targets, boolean isNotifyListeners, int commitLimit,
+			AsyncCallback<EntityDataDeleteResultInfo> callback);
 
 	/**
 	 * <p>Where条件に該当するデータ件数を返します。</p>
@@ -180,9 +197,11 @@ public interface EntityExplorerServiceAsync {
 	 * @param tenantId テナントID
 	 * @param defName 検索対象Entity定義名
 	 * @param whereClause 検索条件
+	 * @param searchAllVersion 全バージョン検索するか
 	 * @param callback  Callbackクラス
 	 */
-	void getConditionDataCount(int tenantId, String defName, String whereClause, AsyncCallback<EntityDataCountResultInfo> callback);
+	void getConditionDataCount(int tenantId, String defName, String whereClause, boolean searchAllVersion,
+			AsyncCallback<EntityDataCountResultInfo> callback);
 
 	void getDefragEntityList(int tenantId, boolean isGetDataCount, AsyncCallback<List<DefragEntityInfo>> callback);
 

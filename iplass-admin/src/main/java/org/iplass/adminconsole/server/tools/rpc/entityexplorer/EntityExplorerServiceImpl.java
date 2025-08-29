@@ -779,18 +779,20 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	}
 
 	@Override
-	public EntityDataDeleteResultInfo deleteAll(final int tenantId, final String defName, final String whereClause, final boolean isNotifyListeners, final int commitLimit) {
+	public EntityDataDeleteResultInfo deleteAll(final int tenantId, final String defName, final String whereClause, final boolean deleteSpecificVersion,
+			final boolean isNotifyListeners, final int commitLimit) {
 		EntityToolService entityService = ServiceRegistry.getRegistry().getService(EntityToolService.class);
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataDeleteResultInfo>() {
 			@Override
 			public EntityDataDeleteResultInfo call() {
-				return entityService.deleteAll(tenantId, defName, whereClause, isNotifyListeners, commitLimit);
+				return entityService.deleteAll(tenantId, defName, whereClause, deleteSpecificVersion, isNotifyListeners, commitLimit);
 			}
 		});
 	}
 
 	@Override
-	public EntityDataDeleteResultInfo deleteAllByOid(final int tenantId, final String defName, final List<String> oids, final boolean isNotifyListeners, final int commitLimit) {
+	public EntityDataDeleteResultInfo deleteAllByOid(final int tenantId, final String defName, final List<String> oids, final boolean isNotifyListeners,
+			final int commitLimit) {
 		EntityToolService entityService = ServiceRegistry.getRegistry().getService(EntityToolService.class);
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataDeleteResultInfo>() {
 			@Override
@@ -801,7 +803,22 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	}
 
 	@Override
-	public EntityDataCountResultInfo getConditionDataCount(final int tenantId, final String defName, final String whereClause) {
+	public EntityDataDeleteResultInfo deleteAllByEntityData(final int tenantId, final String defName, final List<Entity> targets,
+			final boolean isNotifyListeners, final int commitLimit) {
+		EntityToolService entityService = ServiceRegistry.getRegistry()
+				.getService(EntityToolService.class);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityDataDeleteResultInfo>() {
+					@Override
+					public EntityDataDeleteResultInfo call() {
+						return entityService.deleteAllByEntityData(tenantId, defName, targets, isNotifyListeners, commitLimit);
+					}
+				});
+	}
+
+	@Override
+	public EntityDataCountResultInfo getConditionDataCount(final int tenantId, final String defName, final String whereClause,
+			final boolean searchAllVersion) {
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataCountResultInfo>() {
 
 			@Override
@@ -810,7 +827,13 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 				final EntityDataCountResultInfo result = new EntityDataCountResultInfo();
 
 				try {
-					Query cond = new Query().select(Entity.OID).from(defName);
+					Object[] selectValues = searchAllVersion
+							? new Object[] { Entity.OID, Entity.VERSION }
+							: new Object[] { Entity.OID };
+
+					Query cond = new Query().select(selectValues)
+							.from(defName)
+							.versioned(searchAllVersion);
 					int allCount = em.count(cond);
 
 					int targetCount = 0;

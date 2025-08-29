@@ -21,7 +21,9 @@
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
@@ -712,13 +714,6 @@ public class EntityDataListPane extends VLayout {
 //				return;
 //			}
 
-			//選択OIDの取得
-			ListGridRecord[] records = grid.getSelectedRecords();
-			List<String> oids = new ArrayList<>(records.length);
-			for (ListGridRecord record : records) {
-				oids.add(record.getAttribute("oid"));
-			}
-
 			//検索時の検索条件を取得
 			Criteria gridCriteria = getCurrentCriteria();
 			String gridWhere = "";
@@ -726,8 +721,17 @@ public class EntityDataListPane extends VLayout {
 				gridWhere = gridCriteria.getAttribute(EntitySearchResultDS.WHERE_CRITERIA);
 			}
 
+			//選択データの取得
+			List<Entity> targetEntities = Arrays.stream(grid.getSelectedRecords())
+					.map(r -> (Entity) r.getAttributeAsObject(EntitySearchResultDS.ENTITY_ATTRIBUTE_NAME))
+					.collect(Collectors.toList());
+
 			//ダイアログ表示
-			EntityDataDeleteDialog dialog = new EntityDataDeleteDialog(ds.getDefinition().getName(), oids, gridWhere);
+			EntityDataDeleteDialog dialog = new EntityDataDeleteDialog(ds.getDefinition()
+					.getName(),
+					targetEntities,
+					gridWhere,
+					criteriaPane.isSearchAllVersion());
 			dialog.show();
 		}
 	}
@@ -1317,7 +1321,7 @@ public class EntityDataListPane extends VLayout {
 		}
 
 		private void showDeleteAllDialog() {
-			EntityDataDeleteDialog dialog = new EntityDataDeleteDialog(curDefinition.getName(), null, getWhere());
+			EntityDataDeleteDialog dialog = new EntityDataDeleteDialog(curDefinition.getName(), null, getWhere(), isSearchAllVersion());
 			dialog.show();
 		}
 	}
