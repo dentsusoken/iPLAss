@@ -49,6 +49,8 @@ public class PackageImportParameter {
 	public static final String PROP_ENTITY_COMMIT_LIMIT = "entity.commitLimit";
 	/** Silentモード Packageを保存するか */
 	public static final String PROP_SAVE_PACKAGE = "savePackage";
+	/** Silentモード Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか */
+	public static final String PROP_META_OUTPUT_CHECK_RESULT_CONFIRM = "meta.outputCheckResultConfirm";
 
 	// テナントID
 	private int tenantId;
@@ -70,6 +72,9 @@ public class PackageImportParameter {
 
 	//Packageを保存するか
 	private boolean savePackage = true;
+
+	// Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか
+	private boolean outputCheckResultConfirm;
 
 	//Importファイル(内部用)
 	private File importFile;
@@ -160,6 +165,14 @@ public class PackageImportParameter {
 
 	public void setPackInfo(PackageInfo packInfo) {
 		this.packInfo = packInfo;
+	}
+
+	public boolean isOutputCheckResultConfirm() {
+		return this.outputCheckResultConfirm;
+	}
+
+	public void setOutputCheckResultConfirm(boolean outputCheckResultConfirm) {
+		this.outputCheckResultConfirm = outputCheckResultConfirm;
 	}
 
 	public EntityDataImportCondition getEntityImportCondition() {
