@@ -228,7 +228,8 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 	private void checkDataCount(final EntityUpdateAllCondition cond) {
 		EntityExplorerServiceAsync service =  EntityExplorerServiceFactory.get();
-		service.getConditionDataCount(TenantInfoHolder.getId(), cond.getDefinitionName(), cond.getWhere(), new AsyncCallback<EntityDataCountResultInfo>() {
+		service.getConditionDataCount(TenantInfoHolder.getId(), cond.getDefinitionName(), cond.getWhere(), false,
+				new AsyncCallback<EntityDataCountResultInfo>() {
 
 			@Override
 			public void onSuccess(EntityDataCountResultInfo result) {
