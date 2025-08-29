@@ -139,7 +139,7 @@
 			String size = isMultiple ? "5" : "1";
 			String cls = isMultiple ? "form-size-12 inpbr" : "form-size-02 inpbr";
 			String multiple = isMultiple ? " multiple" : "";
-            String ulId = "ul_" + propName;
+			String ulId = "ul_" + propName;
 			
 %>
 <ul id="<c:out value="<%=ulId %>"/>">
@@ -177,7 +177,7 @@ $(function() {
     $("select[name='<%=propName %>']").on("change", function() {
         const selectedCount = $(this).find("option:selected").length;
 
-        if (<%=pd.getMultiplicity()%> != 1 && selectedCount > <%=pd.getMultiplicity()%>) {
+        if (selectedCount > <%=pd.getMultiplicity()%>) {
         	$errorMsg.show();  
 		} else {
 			$errorMsg.hide(); 
@@ -199,9 +199,7 @@ $(function() {
 		} else if (editor.getDisplayType() == SelectDisplayType.CHECKBOX
 				|| editor.getDisplayType() == SelectDisplayType.RADIO) {
 			//チェックボックスorラジオボタン
-
 			String ulId = "ul_" + propName;
-			
 			String cls = "list-radio-01";
 			if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) cls = "list-check-01";
 %>

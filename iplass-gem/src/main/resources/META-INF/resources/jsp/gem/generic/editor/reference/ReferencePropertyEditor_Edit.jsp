@@ -768,7 +768,7 @@ $(function() {
 		//リスト
 		PropertyEditor upperEditor = null;
 		String upperType = null;
-        String ulId = "ul_" + propName;
+		String ulId = "ul_" + propName;
 
 		if (editor.getLinkProperty() != null) {
 			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), nestPropertyName, rootEntity);

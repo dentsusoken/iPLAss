@@ -147,7 +147,7 @@
 		if (isMultiple) {
 			//複数
 			String[] array = propValue instanceof String[] ? (String[]) propValue : null;
-            String ulId = "ul_" + propName;
+			String ulId = "ul_" + propName;
 
 			if (updatable) {
 				List<String> values = new ArrayList<String>();
@@ -179,7 +179,7 @@ $(function() {
     $("select[name='<%=propName %>']").on("change", function() {
         const selectedCount = $(this).find("option:selected").length;
 
-        if (<%=pd.getMultiplicity()%> != 1 && selectedCount > <%=pd.getMultiplicity()%>) {
+        if (selectedCount > <%=pd.getMultiplicity()%>) {
         	$errorMsg.show();  
 		} else {
 			$errorMsg.hide(); 
