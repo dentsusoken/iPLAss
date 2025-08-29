@@ -264,6 +264,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/impl/tools/entity/EntityUpdateAllResultInfo.java'
 		include 'mtp/impl/tools/entity/EntityUpdateAllCondition.java'
 		include 'mtp/impl/tools/entity/UpdateAllValue.java'
+		include 'mtp/impl/tools/metaport/ResultStatus.java'
 	}
 
 	from ('../iplass-web/src/main/java/org/iplass') {

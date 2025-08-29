@@ -19,6 +19,9 @@ public class MetaDataImportParameter {
 	/** Silentモード パッケージファイル */
 	public static final String PROP_IMPORT_FILE = "importFile";
 
+	/** Silentモード Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか */
+	public static final String PROP_META_OUTPUT_CHECK_RESULT_CONFIRM = "meta.outputCheckResultConfirm";
+
 	// テナントID
 	private int tenantId;
 
@@ -27,6 +30,9 @@ public class MetaDataImportParameter {
 
 	//Importファイルパス
 	private String importFilePath;
+
+	// Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか
+	private boolean outputCheckResultConfirm;
 
 	//Importファイル(内部用)
 	private File importFile;
@@ -67,6 +73,14 @@ public class MetaDataImportParameter {
 
 	public void setImportFilePath(String importFilePath) {
 		this.importFilePath = importFilePath;
+	}
+
+	public boolean isOutputCheckResultConfirm() {
+		return this.outputCheckResultConfirm;
+	}
+
+	public void setOutputCheckResultConfirm(boolean outputCheckResultConfirm) {
+		this.outputCheckResultConfirm = outputCheckResultConfirm;
 	}
 
 	public File getImportFile() {

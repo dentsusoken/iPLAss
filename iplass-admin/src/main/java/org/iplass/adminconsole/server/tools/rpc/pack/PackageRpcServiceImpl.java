@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataImportResultInfo;
+import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataCheckResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataImportResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.pack.PackageCreateInfo;
 import org.iplass.adminconsole.shared.tools.dto.pack.PackageCreateResultInfo;
@@ -40,6 +41,7 @@ import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportCondition;
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportResult;
+import org.iplass.mtp.impl.tools.metaport.MetaDataCheckResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataImportResult;
 import org.iplass.mtp.impl.tools.pack.PackageCreateCondition;
 import org.iplass.mtp.impl.tools.pack.PackageCreateResult;
@@ -243,6 +245,27 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 			}
 
 		});
+	}
+
+	@Override
+	public MetaDataCheckResultInfo checkPackageMetaData(final int tenantId, final String packOid) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<MetaDataCheckResultInfo>() {
+
+					@Override
+					public MetaDataCheckResultInfo call() {
+						MetaDataCheckResult metaResult = service.checkPackageMetaData(packOid);
+
+						// MetaDataCheckResult -> MetaDataCheckResultInfo
+						MetaDataCheckResultInfo result = new MetaDataCheckResultInfo(metaResult.getResultStatus());
+						result.setMessage(metaResult.getMessage());
+						result.setMetaDataPaths(metaResult.getMetaDataPaths());
+
+						return result;
+
+					}
+				});
+
 	}
 
 }
