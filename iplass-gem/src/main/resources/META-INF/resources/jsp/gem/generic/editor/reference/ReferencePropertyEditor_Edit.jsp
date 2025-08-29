@@ -885,7 +885,7 @@ $(function() {
 </select>
 <c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
 <p class="error-multiplicity" style="display: none;">
-<span class="error">${m:rsp("mtp-gem-messages","generic.editor.select.SelectPropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
+<span class="error">${m:rsp("mtp-gem-messages","generic.editor.reference.ReferencePropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
 </p>
 </ul>
 <script>
@@ -1049,7 +1049,7 @@ $(function() {
 %>
 <c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
 <p class="error-multiplicity" style="display: none;">
-<span class="error">${m:rsp("mtp-gem-messages","generic.editor.select.SelectPropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
+<span class="error">${m:rsp("mtp-gem-messages","generic.editor.reference.ReferencePropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
 </p>
 </ul>
 <script>
