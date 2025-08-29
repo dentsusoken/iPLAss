@@ -23,6 +23,7 @@ package org.iplass.adminconsole.shared.tools.rpc.pack;
 import java.util.List;
 
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataImportResultInfo;
+import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataCheckResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataImportResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.pack.PackageCreateInfo;
 import org.iplass.adminconsole.shared.tools.dto.pack.PackageCreateResultInfo;
@@ -88,5 +89,14 @@ public interface PackageRpcServiceAsync {
 	void importPackageMetaData(final int tenantId, final String packOid, final Tenant importTenant, AsyncCallback<MetaDataImportResultInfo> callback);
 
 	void importPackageEntityData(final int tenantId, final String packOid, final String path, final PackageImportCondition condition, AsyncCallback<EntityDataImportResultInfo> callback);
+
+	/**
+	 * メタデータ整合性チェックを行います。
+	 * 
+	 * @param tenantId テナントID
+	 * @param oid 対象PackageのOID
+	 * @param callback MetaDataCheckResultInfo（チェック結果）
+	 */
+	void checkPackageMetaData(final int tenantId, final String packOid, AsyncCallback<MetaDataCheckResultInfo> callback);
 
 }
