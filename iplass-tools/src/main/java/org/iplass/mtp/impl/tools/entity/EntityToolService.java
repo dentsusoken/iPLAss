@@ -36,6 +36,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.DeleteOption;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.LoadOption;
@@ -284,7 +285,8 @@ public class EntityToolService implements Service {
 		return edm.get(defName);
 	}
 	
-	public EntityDataDeleteResultInfo deleteAll(final int tenantId, final String defName, final String whereClause, final boolean isNotifyListeners, final int commitLimit) {
+	public EntityDataDeleteResultInfo deleteAll(final int tenantId, final String defName, final String whereClause, final boolean deleteSpecificVersion,
+			final boolean isNotifyListeners, final int commitLimit) {
 		return new Callable<EntityDataDeleteResultInfo>() {
 			
 			int allCount = 0;
@@ -346,7 +348,13 @@ public class EntityToolService implements Service {
 					} else {
 						//１件ずつ削除
 						//全件検索（削除するので1度に全件のOIDをとらないとNG）
-						Query query = new Query().select(Entity.OID).from(defName);
+						Object[] selectValues = deleteSpecificVersion
+								? new Object[] { Entity.OID, Entity.VERSION }
+								: new Object[] { Entity.OID };
+						Query query = new Query().select(selectValues)
+								.from(defName)
+								.versioned(deleteSpecificVersion);
+
 						if (StringUtil.isNotEmpty(execCond)) {
 							query.where(execCond);
 							result.addMessages("Delete Condition : " + execCond);
@@ -362,7 +370,7 @@ public class EntityToolService implements Service {
 								entities.add(entity);
 								if (commitLimit != -1) {
 									if (entities.size() == commitLimit) {
-										int count = deleteData(defName, entities, isNotifyListeners);
+										int count = deleteData(defName, entities, deleteSpecificVersion, isNotifyListeners);
 										allCount += count;
 										result.addMessages(count + " data is deleted and comitted.");
 										entities.clear();
@@ -373,7 +381,7 @@ public class EntityToolService implements Service {
 						});
 
 						if (entities.size() > 0) {
-							int count = deleteData(defName, entities, isNotifyListeners);
+							int count = deleteData(defName, entities, deleteSpecificVersion, isNotifyListeners);
 							allCount += count;
 							result.addMessages(count + " data is deleted and comitted.");
 						}
@@ -396,7 +404,8 @@ public class EntityToolService implements Service {
 		}.call();
 	}
 	
-	public EntityDataDeleteResultInfo deleteAllByOid(final int tenantId, final String defName, final List<String> oids, final boolean isNotifyListeners, final int commitLimit) {
+	public EntityDataDeleteResultInfo deleteAllByOid(final int tenantId, final String defName, final List<String> oids, final boolean isNotifyListeners,
+			final int commitLimit) {
 		return new Callable<EntityDataDeleteResultInfo>() {
 			int allCount = 0;
 
@@ -426,7 +435,7 @@ public class EntityToolService implements Service {
 							entities.add(entity);
 							if (commitLimit != -1) {
 								if (entities.size() == commitLimit) {
-									int count = deleteData(defName, entities, isNotifyListeners);
+									int count = deleteData(defName, entities, false, isNotifyListeners);
 									allCount += count;
 									result.addMessages(count + " data is deleted and comitted.");
 									entities.clear();
@@ -436,7 +445,7 @@ public class EntityToolService implements Service {
 					}
 
 					if (entities.size() > 0) {
-						int count = deleteData(defName, entities, isNotifyListeners);
+						int count = deleteData(defName, entities, false, isNotifyListeners);
 						allCount += count;
 						result.addMessages(count + " data is deleted and comitted.");
 					}
@@ -458,6 +467,73 @@ public class EntityToolService implements Service {
 			}
 		}.call();
 	}
+
+	public EntityDataDeleteResultInfo deleteAllByEntityData(final int tenantId, final String defName, final List<Entity> targets,
+			final boolean isNotifyListeners, final int commitLimit) {
+		return new Callable<EntityDataDeleteResultInfo>() {
+			int allCount = 0;
+
+			@Override
+			public EntityDataDeleteResultInfo call() {
+
+				final EntityDataDeleteResultInfo result = new EntityDataDeleteResultInfo();
+
+				try {
+					final List<Entity> entities = new ArrayList<>();
+
+					boolean isUserEntity = false;
+					String execUserOid = null;
+					if (USER_ENTITY.equals(defName)) {
+						isUserEntity = true;
+						ExecuteContext executeContext = ExecuteContext.getCurrentContext();
+						execUserOid = executeContext.getClientId();
+					}
+
+					for (Entity entity : targets) {
+						// バージョン含めて存在チェック
+						boolean isNotExists = em.load(entity.getOid(), entity.getVersion(), defName, new LoadOption(false, false)) == null;
+						// 存在しないデータやバージョン番号が空のデータは削除しない
+						// Userエンティティの場合、実行ユーザーは削除しない
+						if (isNotExists
+								|| entity.getVersion() == null
+								|| isUserEntity && entity.getOid()
+										.equals(execUserOid)) {
+							continue;
+						}
+
+						entities.add(entity);
+						if (commitLimit != -1 && entities.size() == commitLimit) {
+							// バージョン指定で削除
+							int count = deleteData(defName, entities, true, isNotifyListeners);
+							allCount += count;
+							result.addMessages(count + " data is deleted and comitted.");
+							entities.clear();
+						}
+					}
+
+					if (entities.size() > 0) {
+						// バージョン指定で削除
+						int count = deleteData(defName, entities, true, isNotifyListeners);
+						allCount += count;
+						result.addMessages(count + " data is deleted and comitted.");
+					}
+
+					result.setError(false);
+					result.addMessages("Result : SUCCESS");
+					result.addMessages("Delete Count : " + allCount);
+					return result;
+				} catch (Throwable e) {
+					logger.error(e.getMessage(), e);
+					result.setError(true);
+					result.addMessages("Result : FAILURE");
+					result.addMessages("Cause : " + (e.getMessage() != null ? e.getMessage()
+							: e.getClass()
+									.getName()));
+					return result;
+				}
+			}
+		}.call();
+	}
 	
 	/**
 	 * Entityデータの削除（1トランザクション分）
@@ -465,9 +541,11 @@ public class EntityToolService implements Service {
 	 * @param defName Entity定義名
 	 * @param entities 削除対象Entity
 	 * @param isNotifyListeners Listenerを実行するか
+	 * @param deleteSpecificVersion Entityがバージョン管理されている場合に、entitiesで指定されたバージョンのデータのみ削除するか
 	 * @return 削除件数
 	 */
-	private int deleteData(final String defName, final List<Entity> entities, final boolean isNotifyListeners) {
+	private int deleteData(final String defName, final List<Entity> entities, final boolean deleteSpecificVersion,
+			final boolean isNotifyListeners) {
 
 		return Transaction.requiresNew(new Function<Transaction, Integer>() {
 
@@ -482,6 +560,7 @@ public class EntityToolService implements Service {
 					option.setPurge(true);
 					option.setCheckLockedByUser(false);
 					option.setNotifyListeners(isNotifyListeners);
+					option.setTargetVersion(deleteSpecificVersion ? DeleteTargetVersion.SPECIFIC : DeleteTargetVersion.ALL);
 
 					for (Entity entity : entities) {
 						em.delete(entity, option);

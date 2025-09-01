@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
@@ -31,6 +32,7 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataCountResultInfo;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceAsync;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceFactory;
+import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.tools.entity.EntityDataDeleteResultInfo;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -53,10 +55,11 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 	private static final String USER_ENTITY = "mtp.auth.User";
 
 	private static final String OPERATION_VALUE_ALL_DELETE = "01";
-	private static final String OPERATION_VALUE_OID_DELETE = "02";
+	private static final String OPERATION_VALUE_SELECTION_DELETE = "02";
 
 	private String defName;
-	private List<String> oids;
+	private List<Entity> targets;
+	private boolean deleteSpecificVersion;
 
 	private RadioGroupItem operationField;
 	private TextAreaItem whereField;
@@ -68,9 +71,10 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 
 	private MessageTabSet messageTabSet;
 
-	public EntityDataDeleteDialog(final String defName, final List<String> oids, final String whereClause) {
+	public EntityDataDeleteDialog(final String defName, final List<Entity> targets, final String whereClause, final boolean deleteSpecificVersion) {
 		this.defName = defName;
-		this.oids = oids;
+		this.targets = targets;
+		this.deleteSpecificVersion = deleteSpecificVersion;
 
 		setWidth(700);
 		setMinWidth(500);
@@ -96,9 +100,10 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 
 		LinkedHashMap<String, String> opeValues = new LinkedHashMap<String, String>();
 		opeValues.put(OPERATION_VALUE_ALL_DELETE, "delete all records by delete condition.");
-		if (oids != null && oids.size() > 0) {
-			opeValues.put(OPERATION_VALUE_OID_DELETE, "delete selected records. " + "<b><font color=\"red\">" + oids.size() + "</font></b> records selected.");
-			operationField.setValue(OPERATION_VALUE_OID_DELETE);
+		if (targets != null && targets.size() > 0) {
+			opeValues.put(OPERATION_VALUE_SELECTION_DELETE,
+					"delete selected records. " + "<b><font color=\"red\">" + targets.size() + "</font></b> records selected.");
+			operationField.setValue(OPERATION_VALUE_SELECTION_DELETE);
 		} else {
 			operationField.setValue(OPERATION_VALUE_ALL_DELETE);
 		}
@@ -141,6 +146,7 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 		//------------------------
 		delete = new IButton("Delete");
 		delete.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 //				if (oids.size() == 0 && !SmartGWTUtil.getBooleanValue(chkAllDeleteField)) {
 //					SC.warn("データが選択されていません。<br/>データを選択するか全件削除を選択してください。");
@@ -161,6 +167,7 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 
 		cancel = new IButton("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
@@ -236,13 +243,12 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 
 		EntityExplorerServiceAsync service =  EntityExplorerServiceFactory.get();
 		if (OPERATION_VALUE_ALL_DELETE.equals(SmartGWTUtil.getStringValue(operationField))) {
-			//条件指定削除
+			// 条件指定削除
 
 			//条件に該当するデータ件数のチェック
 			checkDataCount();
 		} else {
-			//OID指定削除
-
+			// 対象指定削除
 			boolean isNotifyListeners = SmartGWTUtil.getBooleanValue(chkNotifyListenersField);
 
 			int commitLimit = -1;
@@ -250,25 +256,47 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 				commitLimit = Integer.parseInt(SmartGWTUtil.getStringValue(commitLimitField));
 			}
 
-			//oid指定削除
-			service.deleteAllByOid(TenantInfoHolder.getId(), defName, oids, isNotifyListeners, commitLimit, new AsyncCallback<EntityDataDeleteResultInfo>() {
-				@Override
-				public void onSuccess(EntityDataDeleteResultInfo result) {
-					deleteComplete(result);
-				}
+			if (deleteSpecificVersion) {
+				// 指定されたデータをそのまま削除
+				service.deleteAllByEntityData(TenantInfoHolder.getId(), defName, targets, isNotifyListeners, commitLimit,
+						new AsyncCallback<EntityDataDeleteResultInfo>() {
+							@Override
+							public void onSuccess(EntityDataDeleteResultInfo result) {
+								deleteComplete(result);
+							}
 
-				@Override
-				public void onFailure(Throwable caught) {
-					deleteError(caught);
-				}
-			});
+							@Override
+							public void onFailure(Throwable caught) {
+								deleteError(caught);
+							}
+						});
+			} else {
+				//oid指定で全バージョンのデータを削除
+				List<String> oids = targets.stream()
+						.map(Entity::getOid)
+						.collect(Collectors.toList());
+
+				service.deleteAllByOid(TenantInfoHolder.getId(), defName, oids, isNotifyListeners, commitLimit,
+						new AsyncCallback<EntityDataDeleteResultInfo>() {
+							@Override
+							public void onSuccess(EntityDataDeleteResultInfo result) {
+								deleteComplete(result);
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+								deleteError(caught);
+							}
+						});
+			}
 		}
 	}
 
 	private void checkDataCount() {
 		EntityExplorerServiceAsync service =  EntityExplorerServiceFactory.get();
 		final String whereClause = SmartGWTUtil.getStringValue(whereField);
-		service.getConditionDataCount(TenantInfoHolder.getId(), defName, whereClause, new AsyncCallback<EntityDataCountResultInfo>() {
+		service.getConditionDataCount(TenantInfoHolder.getId(), defName, whereClause, deleteSpecificVersion,
+				new AsyncCallback<EntityDataCountResultInfo>() {
 
 			@Override
 			public void onSuccess(EntityDataCountResultInfo result) {
@@ -331,7 +359,8 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 			commitLimit = Integer.parseInt(SmartGWTUtil.getStringValue(commitLimitField));
 		}
 
-		service.deleteAll(TenantInfoHolder.getId(), defName, whereClause, isNotifyListeners, commitLimit, new AsyncCallback<EntityDataDeleteResultInfo>() {
+		service.deleteAll(TenantInfoHolder.getId(), defName, whereClause, deleteSpecificVersion, isNotifyListeners, commitLimit,
+				new AsyncCallback<EntityDataDeleteResultInfo>() {
 
 			@Override
 			public void onSuccess(EntityDataDeleteResultInfo result) {
