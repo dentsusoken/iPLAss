@@ -176,7 +176,7 @@ $(function() {
 	const $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
 	const $errorMsg = $(".error-multiplicity", $ul); 
 
-    $("select[name='<%=propName %>']").on("change", function() {
+	$("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").on("change", function() {
         const selectedCount = $(this).find("option:selected").length;
 
         if (selectedCount > <%=pd.getMultiplicity()%>) {
