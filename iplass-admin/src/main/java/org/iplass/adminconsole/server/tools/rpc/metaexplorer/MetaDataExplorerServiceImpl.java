@@ -38,6 +38,7 @@ import org.iplass.adminconsole.shared.tools.dto.metaexplorer.DeleteResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.ImportFileInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.ImportMetaDataStatus;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.Message;
+import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataCheckResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataImportResultInfo;
 import org.iplass.adminconsole.shared.tools.rpc.metaexplorer.MetaDataExplorerService;
 import org.iplass.mtp.ApplicationException;
@@ -294,6 +295,19 @@ public class MetaDataExplorerServiceImpl extends XsrfProtectedServiceServlet imp
 		});
 	}
 
+	@Override
+	public MetaDataCheckResultInfo checkMetaData(final int tenantId, final String tagOid, final List<String> pathList) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<MetaDataCheckResultInfo>() {
+
+					@Override
+					public MetaDataCheckResultInfo call() {
+
+						MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
+						return logic.checkMetaData(tagOid, pathList);
+					}
+				});
+	}
 
 	/**
 	 * MetaDataEntryを削除します。

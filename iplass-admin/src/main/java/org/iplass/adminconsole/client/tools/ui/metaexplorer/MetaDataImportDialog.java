@@ -38,6 +38,7 @@ import org.iplass.adminconsole.client.tools.ui.metaexplorer.MetaDataImportTenant
 import org.iplass.adminconsole.shared.metadata.dto.MetaTreeNode;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.ImportFileInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.ImportMetaDataStatus;
+import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataCheckResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataImportResultInfo;
 import org.iplass.adminconsole.shared.tools.rpc.metaexplorer.MetaDataExplorerServiceAsync;
 import org.iplass.adminconsole.shared.tools.rpc.metaexplorer.MetaDataExplorerServiceFactory;
@@ -627,47 +628,88 @@ public class MetaDataImportDialog extends AbstractWindow {
 
 	private void doExecuteImport(final List<String> selectPaths, final Tenant importTenant) {
 
-		SC.ask(getResourceString("confirm"), getResourceString("startImportConf"), new BooleanCallback() {
+		SmartGWTUtil.showProgress();
+		service.checkMetaData(TenantInfoHolder.getId(), fileOid, selectPaths, new AsyncCallback<MetaDataCheckResultInfo>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				SmartGWTUtil.hideProgress();
+
+				GWT.log(caught.toString(), caught);
+				SC.warn(getResourceString("failedToImportMetaDataCause") + caught.getMessage());
+			}
 
 			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					SmartGWTUtil.showProgress();
+			public void onSuccess(final MetaDataCheckResultInfo result) {
+				SmartGWTUtil.hideProgress();
 
-					service.importMetaData(TenantInfoHolder.getId(), fileOid, selectPaths, importTenant, new AsyncCallback<MetaDataImportResultInfo>() {
-
-						@Override
-						public void onFailure(Throwable caught) {
-							SmartGWTUtil.hideProgress();
-
-							GWT.log(caught.toString(), caught);
-							SC.warn(getResourceString("failedToImportMetaDataCause") + caught.getMessage());
-						}
-
-						@Override
-						public void onSuccess(final MetaDataImportResultInfo result) {
-							SmartGWTUtil.hideProgress();
-
-							if (result.isError()) {
-								String cause = "";
-								if (result.getMessages() != null && result.getMessages().size() > 0) {
-									cause = getResourceString("MetaDataImportDialog_cause") + result.getMessages().get(0);
-								}
-								SC.warn(getResourceString("failedToImportMetaData") + cause, new BooleanCallback() {
-
-									@Override
-									public void execute(Boolean value) {
-										showResultDialog(result);
-									}
-								});
-							} else {
-								showResultDialog(result);
-							}
-						}
-					});
+				// エラーの場合はインポート終了する
+				if (result.isError()) {
+					SC.warn(result.getMessage());
+					return;
 				}
+
+				String confirmMessage = createConfirmMessage(result);
+				SC.ask(getResourceString("confirm"), confirmMessage, new BooleanCallback() {
+
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							SmartGWTUtil.showProgress();
+
+							service.importMetaData(TenantInfoHolder.getId(), fileOid, selectPaths, importTenant,
+									new AsyncCallback<MetaDataImportResultInfo>() {
+
+										@Override
+										public void onFailure(Throwable caught) {
+											SmartGWTUtil.hideProgress();
+
+											GWT.log(caught.toString(), caught);
+											SC.warn(getResourceString("failedToImportMetaDataCause") + caught.getMessage());
+										}
+
+										@Override
+										public void onSuccess(final MetaDataImportResultInfo result) {
+											SmartGWTUtil.hideProgress();
+
+											if (result.isError()) {
+												String cause = "";
+												if (result.getMessages() != null && result.getMessages().size() > 0) {
+													cause = getResourceString("MetaDataImportDialog_cause") + result.getMessages().get(0);
+												}
+												SC.warn(getResourceString("failedToImportMetaData") + cause, new BooleanCallback() {
+
+													@Override
+													public void execute(Boolean value) {
+														showResultDialog(result);
+													}
+												});
+											} else {
+												showResultDialog(result);
+											}
+										}
+									});
+						}
+					}
+				});
 			}
 		});
+	}
+
+	private String createConfirmMessage(MetaDataCheckResultInfo result) {
+		if (result.isWarn()) {
+			return getResourceString("startImportConfWithWarn", result.getMessage(), pathListToString(result.getMetaDataPaths()));
+		}
+
+		// 警告でない場合は固定メッセージ
+		return getResourceString("startImportConf");
+	}
+
+	private String pathListToString(List<String> pathList) {
+		if (SmartGWTUtil.isEmpty(pathList)) {
+			return "";
+		}
+
+		return String.join("<br/>", pathList);
 	}
 
 	@Override
@@ -1096,8 +1138,8 @@ public class MetaDataImportDialog extends AbstractWindow {
 		return message;
 	}
 
-	private String getResourceString(String key) {
-		return AdminClientMessageUtil.getString(RESOURCE_PREFIX + key);
+	private String getResourceString(String key, Object... args) {
+		return AdminClientMessageUtil.getString(RESOURCE_PREFIX + key, args);
 	}
 
 }

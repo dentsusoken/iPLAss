@@ -28,14 +28,15 @@ import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tenant.MetaTenant;
 import org.iplass.mtp.impl.tenant.TenantService;
+import org.iplass.mtp.impl.tools.metaport.MetaDataCheckResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataImportResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
 import org.iplass.mtp.impl.tools.metaport.XMLEntryInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.pack.PackageExport;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.CollectionUtil;
@@ -187,6 +188,35 @@ public class MetaDataImport extends MtpCuiBase {
 						//ファイルに含まれるMetaData情報を取得
 						XMLEntryInfo entryInfo = mdps.getXMLMetaDataEntryInfo(is);
 
+						// メタデータ整合性チェック
+						MetaDataCheckResult checkResult = mdps.checkMetaData(param.getImportFile().getName(), entryInfo);
+						if (checkResult.isError()) {
+							if (StringUtil.isNotEmpty(checkResult.getMessage())) {
+								logError(checkResult.getMessage());
+								logInfo("");
+							}
+
+							logError(rs("Common.errorMsg"));
+							return false;
+						}
+
+						if (checkResult.isWarn()) {
+							if (param.isOutputCheckResultConfirm()) {
+								// 処理続行確認メッセージ出力する場合
+								String confirmMessage = checkResult.createMessage(System.lineSeparator()) + System.lineSeparator()
+										+ rs("Common.continueMsg");
+								// 誤ってimport続行してしまわないようにデフォルトはfalse
+								boolean confirmContinue = readConsoleBoolean(confirmMessage, false);
+								if (!confirmContinue) {
+									logWarn(rs("MetaDataImport.stopImportMetaLog"));
+									return false;
+								}
+							} else {
+								// 処理続行確認メッセージ出力しない場合はログ出力（警告）のみ
+								logWarn(checkResult.createMessage(System.lineSeparator()));
+							}
+						}
+
 						//インポート処理の実行
 						MetaDataImportResult result = mdps.importMetaData(param.getImportFile().getName(), entryInfo, param.getImportTenant());
 
@@ -233,6 +263,7 @@ public class MetaDataImport extends MtpCuiBase {
 		logInfo("■Execute Argument");
 		logInfo("\ttenant name :" + param.getTenantName());
 		logInfo("\timport file :" + param.getImportFilePath());
+		logInfo("\toutput check result confirm :" + param.isOutputCheckResultConfirm());
 
 		if (CollectionUtil.isNotEmpty(param.getMetaDataPaths())) {
 			logInfo("\tmetadata count :" + param.getMetaDataPaths().size());
@@ -289,6 +320,8 @@ public class MetaDataImport extends MtpCuiBase {
 		}
 
 		MetaDataImportParameter param = new MetaDataImportParameter(tenant.getId(), tenant.getName());
+		// Wizard形式の場合、プロパティチェックは常に実行する
+		param.setOutputCheckResultConfirm(true);
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
 		return ExecuteContext.executeAs(tc, ()->{
@@ -493,6 +526,12 @@ public class MetaDataImport extends MtpCuiBase {
 				logWarn(rs("MetaDataImport.includeWarnTenantMetaMsg"));
 			}
 			param.setImportFile(file);
+
+			// Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか
+			String outputCheckResultConfirm = prop.getProperty(MetaDataImportParameter.PROP_META_OUTPUT_CHECK_RESULT_CONFIRM);
+			if (StringUtil.isNotEmpty(outputCheckResultConfirm)) {
+				param.setOutputCheckResultConfirm(Boolean.valueOf(outputCheckResultConfirm));
+			}
 
 			//実行情報出力
 			logArguments(param);

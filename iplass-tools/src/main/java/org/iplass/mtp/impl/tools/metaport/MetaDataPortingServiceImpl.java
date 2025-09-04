@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -55,6 +56,7 @@ import org.iplass.mtp.impl.datastore.StoreService;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
+import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataContextListener;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
@@ -1191,4 +1193,115 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 		}
 	}
 
+	@Override
+	public MetaDataCheckResult checkMetaData(String targetName, XMLEntryInfo entryInfo, final List<String> selectedPaths) {
+		toolLogger.info("start metadata check. {target:{}}", targetName);
+
+		MetaDataCheckResult result = new MetaDataCheckResult();
+		try {
+			// XMLEntryを選択Pathで絞り込み
+			XMLEntryInfo filterEntryInfo = filterSelectedPaths(entryInfo, selectedPaths);
+
+			// Listに変換
+			List<MetaDataEntry> entryList = new ArrayList<>();
+			for (String path : selectedPaths) {
+				// 対象メタデータ取得（エラーが発生した時点で処理終了する）
+				MetaDataEntry entry = filterEntryInfo.getPathEntry(path);
+				if (entry == null) {
+					result.setResultStatus(ResultStatus.Error);
+					result.setMessage(getRS("canNotGetMeta", path));
+					break;
+				}
+
+				entryList.add(entry);
+			}
+
+			if (result.isError()) {
+				return result;
+			}
+
+			return checkMetaData(entryList, result);
+		} finally {
+			toolLogger.info("finish metadata check. {target:{}, result:{}}", targetName, (result.isError() ? "failed" : "success"));
+		}
+	}
+
+	@Override
+	public MetaDataCheckResult checkMetaData(String targetName, XMLEntryInfo entryInfo) {
+		toolLogger.info("start metadata check. {target:{}}", targetName);
+
+		MetaDataCheckResult result = new MetaDataCheckResult();
+		try {
+			// Listに変換
+			List<MetaDataEntry> entryList = new ArrayList<>(entryInfo.getPathEntryMap().values());
+
+			return checkMetaData(entryList, result);
+		} finally {
+			toolLogger.info("finish metadata check. {target:{}, result:{}}", targetName, (result.isError() ? "failed" : "success"));
+		}
+	}
+
+	private MetaDataCheckResult checkMetaData(List<MetaDataEntry> entryList, MetaDataCheckResult result) {
+		if (result.isError()) {
+			return result;
+		}
+
+		try {
+			for (MetaDataEntry entry : entryList) {
+				RootMetaData importMeta = entry.getMetaData();
+				// チェック対象はEntityのみ
+				if (importMeta instanceof MetaEntity) {
+					String importId = importMeta.getId();
+
+					MetaDataEntry storedEntry = null;
+					if (StringUtil.isNotEmpty(importId)) {
+						storedEntry = MetaDataContext.getContext().getMetaDataEntryById(importId);
+					}
+
+					// メタデータが取得できない場合（新規登録の場合）はスキップ
+					if (storedEntry == null) {
+						continue;
+					}
+
+					MetaEntity importEntityMeta = (MetaEntity) importMeta;
+					List<MetaProperty> importPropertyList = importEntityMeta.getDeclaredPropertyList();
+
+					MetaEntity storedEntityMeta = (MetaEntity) storedEntry.getMetaData();
+					List<MetaProperty> storedPropertyList = storedEntityMeta.getDeclaredPropertyList();
+
+					// 同一プロパティ名でIDが異なってたら警告とする
+					for (MetaProperty importProperty : importPropertyList) {
+						boolean warn = storedPropertyList.stream()
+								.anyMatch(storedProperty -> Objects.equals(importProperty.getName(), storedProperty.getName()) &&
+										!Objects.equals(importProperty.getId(), storedProperty.getId()));
+						if (warn) {
+							result.addMetaDataPaths(entry.getPath());
+							result.setResultStatus(ResultStatus.Warn);
+							break;
+						}
+					}
+				}
+			}
+
+			// 警告があったらメッセージセット
+			if (result.isWarn()) {
+				result.setMessage(getRS("entityPropertyCheck"));
+			}
+		} catch (MetaDataPortingRuntimeException e) {
+			toolLogger.error(e.getMessage(), e);
+
+			result.clearMetaDataPaths();
+			result.setResultStatus(ResultStatus.Error);
+			result.setMessage(e.getMessage());
+		} catch (Exception e) {
+			// 想定外のエラーの場合は固定のエラーメッセージ
+			toolLogger.error(e.getMessage(), e);
+
+			result.clearMetaDataPaths();
+			result.setResultStatus(ResultStatus.Error);
+			result.setMessage(getRS("errorCheckMetaData"));
+		}
+
+		return result;
+	}
 }
