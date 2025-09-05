@@ -376,12 +376,12 @@ public class EntityManagerImpl implements EntityManager {
 		int keySize = keys.size();
 		for (int i = 0; i < keySize; i++) {
 			EntityKey key = keys.get(i);
-			keyIndexMap.put(key.getOid() + "_" + toVersionSrting(key.getVersion()), i);
+			keyIndexMap.put(generateEntityKey(key.getOid(), key.getVersion()), i);
 		}
 
 		entities.sort((entity1, entity2) -> {
-			String key1 = entity1.getOid() + "_" + toVersionSrting(entity1.getVersion());
-			String key2 = entity2.getOid() + "_" + toVersionSrting(entity2.getVersion());
+			String key1 = generateEntityKey(entity1.getOid(), entity1.getVersion());
+			String key2 = generateEntityKey(entity2.getOid(), entity2.getVersion());
 
 			int index1 = keyIndexMap.getOrDefault(key1, -1);
 			int index2 = keyIndexMap.getOrDefault(key2, -1);
@@ -389,12 +389,8 @@ public class EntityManagerImpl implements EntityManager {
 		});
 	}
 
-	private String toVersionSrting(Long version) {
-		if (version == null) {
-			return "0";
-		}
-
-		return version.toString();
+	private String generateEntityKey(String oid, Long version) {
+		return oid + "_" + (version == null ? "0" : version.toString());
 	}
 
 	@Override
