@@ -372,25 +372,22 @@ public class EntityManagerImpl implements EntityManager {
 			return;
 		}
 
-		Map<String, Integer> keyIndexMap = new HashMap<>();
+		Map<EntityKey, Integer> keyIndexMap = new HashMap<>();
 		int keySize = keys.size();
 		for (int i = 0; i < keySize; i++) {
-			EntityKey key = keys.get(i);
-			keyIndexMap.put(generateEntityKey(key.getOid(), key.getVersion()), i);
+			keyIndexMap.put(keys.get(i), i);
 		}
 
 		entities.sort((entity1, entity2) -> {
-			String key1 = generateEntityKey(entity1.getOid(), entity1.getVersion());
-			String key2 = generateEntityKey(entity2.getOid(), entity2.getVersion());
-
-			int index1 = keyIndexMap.getOrDefault(key1, keySize);
-			int index2 = keyIndexMap.getOrDefault(key2, keySize);
+			int index1 = getKeyIndex(keyIndexMap, entity1, keySize);
+			int index2 = getKeyIndex(keyIndexMap, entity2, keySize);
 			return index1 - index2;
 		});
 	}
 
-	private String generateEntityKey(String oid, Long version) {
-		return oid + "_" + (version == null ? "0" : version.toString());
+	private int getKeyIndex(Map<EntityKey, Integer> keyIndexMap, Entity entity, int defaultValue) {
+		EntityKey key = new EntityKey(entity.getOid(), entity.getVersion());
+		return keyIndexMap.getOrDefault(key, defaultValue);
 	}
 
 	@Override
