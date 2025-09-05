@@ -383,8 +383,8 @@ public class EntityManagerImpl implements EntityManager {
 			String key1 = generateEntityKey(entity1.getOid(), entity1.getVersion());
 			String key2 = generateEntityKey(entity2.getOid(), entity2.getVersion());
 
-			int index1 = keyIndexMap.getOrDefault(key1, -1);
-			int index2 = keyIndexMap.getOrDefault(key2, -1);
+			int index1 = keyIndexMap.getOrDefault(key1, keySize);
+			int index2 = keyIndexMap.getOrDefault(key2, keySize);
 			return index1 - index2;
 		});
 	}
