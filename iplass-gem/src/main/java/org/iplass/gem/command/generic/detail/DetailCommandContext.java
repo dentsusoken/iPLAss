@@ -25,14 +25,14 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.CommandUtil;
@@ -809,18 +809,29 @@ public class DetailCommandContext extends RegistrationCommandContext
 			return;
 		}
 
+		Map<String, Integer> keyIndexMap = new HashMap<>();
+		int keySize = keys.size();
+		for (int i = 0; i < keySize; i++) {
+			EntityKey key = keys.get(i);
+			keyIndexMap.put(key.getOid() + "_" + toVersionSrting(key.getVersion()), i);
+		}
+
 		entities.sort((entity1, entity2) -> {
-			int index1 = getKeyIndex(keys, entity1);
-			int index2 = getKeyIndex(keys, entity2);
+			String key1 = entity1.getOid() + "_" + toVersionSrting(entity1.getVersion());
+			String key2 = entity2.getOid() + "_" + toVersionSrting(entity2.getVersion());
+
+			int index1 = keyIndexMap.getOrDefault(key1, -1);
+			int index2 = keyIndexMap.getOrDefault(key2, -1);
 			return index1 - index2;
 		});
 	}
 
-	private int getKeyIndex(List<EntityKey> keys, Entity entity) {
-		return IntStream.range(0, keys.size()).filter(index -> {
-			EntityKey key = keys.get(index);
-			return (Objects.equals(key.getOid(), entity.getOid()) && Objects.equals(key.getVersion(), entity.getVersion()));
-		}).findFirst().orElse(-1);
+	private String toVersionSrting(Long version) {
+		if (version == null) {
+			return "0";
+		}
+
+		return version.toString();
 	}
 
 	/**
