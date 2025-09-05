@@ -30,9 +30,11 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.CommandUtil;
@@ -341,6 +343,9 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				} else {
 					entities = entityManager.batchLoad(keys, definitionName, new LoadOption(false, false));
 				}
+
+				// 画面で表示されてる順に並び替える
+				sortRefEntities(keys, entities);
 			} else {
 				// 参照Entityをロードし直さない
 				final EntityDefinition referenceEntityDefinition = definitionManager.get(definitionName);
@@ -355,6 +360,25 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			}
 		}
 		return entities;
+	}
+
+	private void sortRefEntities(List<EntityKey> keys, List<Entity> entities) {
+		if (CollectionUtil.isEmpty(keys) || CollectionUtil.isEmpty(entities)) {
+			return;
+		}
+
+		entities.sort((entity1, entity2) -> {
+			int index1 = getKeyIndex(keys, entity1);
+			int index2 = getKeyIndex(keys, entity2);
+			return index1 - index2;
+		});
+	}
+
+	private int getKeyIndex(List<EntityKey> keys, Entity entity) {
+		return IntStream.range(0, keys.size()).filter(index -> {
+			EntityKey key = keys.get(index);
+			return (Objects.equals(key.getOid(), entity.getOid()) && Objects.equals(key.getVersion(), entity.getVersion()));
+		}).findFirst().orElse(-1);
 	}
 
 	/**
