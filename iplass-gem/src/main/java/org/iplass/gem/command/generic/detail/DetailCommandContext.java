@@ -25,10 +25,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -785,9 +783,6 @@ public class DetailCommandContext extends RegistrationCommandContext
 				} else {
 					entities = entityManager.batchLoad(keys, definitionName, new LoadOption(false, false));
 				}
-
-				// 画面で表示されてる順に並び替える
-				sortRefEntities(keys, entities);
 			} else {
 				// 参照Entityをロードし直さない
 				final EntityDefinition referenceEntityDefinition = definitionManager.get(definitionName);
@@ -802,36 +797,6 @@ public class DetailCommandContext extends RegistrationCommandContext
 			}
 		}
 		return entities;
-	}
-
-	private void sortRefEntities(List<EntityKey> keys, List<Entity> entities) {
-		if (CollectionUtil.isEmpty(keys) || CollectionUtil.isEmpty(entities)) {
-			return;
-		}
-
-		Map<String, Integer> keyIndexMap = new HashMap<>();
-		int keySize = keys.size();
-		for (int i = 0; i < keySize; i++) {
-			EntityKey key = keys.get(i);
-			keyIndexMap.put(key.getOid() + "_" + toVersionSrting(key.getVersion()), i);
-		}
-
-		entities.sort((entity1, entity2) -> {
-			String key1 = entity1.getOid() + "_" + toVersionSrting(entity1.getVersion());
-			String key2 = entity2.getOid() + "_" + toVersionSrting(entity2.getVersion());
-
-			int index1 = keyIndexMap.getOrDefault(key1, -1);
-			int index2 = keyIndexMap.getOrDefault(key2, -1);
-			return index1 - index2;
-		});
-	}
-
-	private String toVersionSrting(Long version) {
-		if (version == null) {
-			return "0";
-		}
-
-		return version.toString();
 	}
 
 	/**

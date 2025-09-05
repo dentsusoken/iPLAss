@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.entity;
 
-import static org.iplass.mtp.impl.util.CoreResourceBundleUtil.resourceString;
+import static org.iplass.mtp.impl.util.CoreResourceBundleUtil.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -360,7 +361,40 @@ public class EntityManagerImpl implements EntityManager {
 		searchOption.setNotifyListeners(loadOption.isNotifyListeners());
 		searchOption.setReturnStructuredEntity(true);
 
-		return searchEntity(query, searchOption).getList();
+		List<Entity> results = searchEntity(query, searchOption).getList();
+		sortEntityKey(keys, results);
+
+		return results;
+	}
+
+	private void sortEntityKey(List<EntityKey> keys, List<Entity> entities) {
+		if (CollectionUtil.isEmpty(keys) || CollectionUtil.isEmpty(entities)) {
+			return;
+		}
+
+		Map<String, Integer> keyIndexMap = new HashMap<>();
+		int keySize = keys.size();
+		for (int i = 0; i < keySize; i++) {
+			EntityKey key = keys.get(i);
+			keyIndexMap.put(key.getOid() + "_" + toVersionSrting(key.getVersion()), i);
+		}
+
+		entities.sort((entity1, entity2) -> {
+			String key1 = entity1.getOid() + "_" + toVersionSrting(entity1.getVersion());
+			String key2 = entity2.getOid() + "_" + toVersionSrting(entity2.getVersion());
+
+			int index1 = keyIndexMap.getOrDefault(key1, -1);
+			int index2 = keyIndexMap.getOrDefault(key2, -1);
+			return index1 - index2;
+		});
+	}
+
+	private String toVersionSrting(Long version) {
+		if (version == null) {
+			return "0";
+		}
+
+		return version.toString();
 	}
 
 	@Override
