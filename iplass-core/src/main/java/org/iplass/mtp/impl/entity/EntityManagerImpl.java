@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.entity;
 
-import static org.iplass.mtp.impl.util.CoreResourceBundleUtil.*;
+import static org.iplass.mtp.impl.util.CoreResourceBundleUtil.resourceString;
 
 import java.io.File;
 import java.io.IOException;
