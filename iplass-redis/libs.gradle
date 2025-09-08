@@ -1,17 +1,18 @@
 dependencies {
 	// dependency management
+	def becauseComment = 'Fix vulnerabilities in the Netty library used in Lettuce 6.8.1.RELEASE.'
 	constraints {
 		implementation(sharedLib('io.netty:netty-common')) {
-			because 'This version is used by lettuce.'
+			because becauseComment
 		}
 		implementation(sharedLib('io.netty:netty-handler')) {
-			because 'This version is used by lettuce.'
+			because becauseComment
 		}
 		implementation(sharedLib('io.netty:netty-transport')) {
-			because 'This version is used by lettuce.'
+			because becauseComment
 		}
 		implementation(sharedLib('io.netty:netty-resolver-dns')) {
-			because 'This version is used by lettuce.'
+			because becauseComment
 		}
 	}
 
