@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -360,7 +361,33 @@ public class EntityManagerImpl implements EntityManager {
 		searchOption.setNotifyListeners(loadOption.isNotifyListeners());
 		searchOption.setReturnStructuredEntity(true);
 
-		return searchEntity(query, searchOption).getList();
+		List<Entity> results = searchEntity(query, searchOption).getList();
+		sortEntityKey(keys, results);
+
+		return results;
+	}
+
+	private void sortEntityKey(List<EntityKey> keys, List<Entity> entities) {
+		if (CollectionUtil.isEmpty(keys) || CollectionUtil.isEmpty(entities)) {
+			return;
+		}
+
+		Map<EntityKey, Integer> keyIndexMap = new HashMap<>();
+		int keySize = keys.size();
+		for (int i = 0; i < keySize; i++) {
+			keyIndexMap.put(keys.get(i), i);
+		}
+
+		entities.sort((entity1, entity2) -> {
+			int index1 = getKeyIndex(keyIndexMap, entity1, keySize);
+			int index2 = getKeyIndex(keyIndexMap, entity2, keySize);
+			return index1 - index2;
+		});
+	}
+
+	private int getKeyIndex(Map<EntityKey, Integer> keyIndexMap, Entity entity, int defaultValue) {
+		EntityKey key = new EntityKey(entity.getOid(), entity.getVersion());
+		return keyIndexMap.getOrDefault(key, defaultValue);
 	}
 
 	@Override
