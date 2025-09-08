@@ -1,4 +1,20 @@
 dependencies {
+	// dependency management
+	constraints {
+		implementation(sharedLib('io.netty:netty-common')) {
+			because 'This version is used by lettuce.'
+		}
+		implementation(sharedLib('io.netty:netty-handler')) {
+			because 'This version is used by lettuce.'
+		}
+		implementation(sharedLib('io.netty:netty-transport')) {
+			because 'This version is used by lettuce.'
+		}
+		implementation(sharedLib('io.netty:netty-resolver-dns')) {
+			because 'This version is used by lettuce.'
+		}
+	}
+
 	implementation sharedLib('org.apache.commons:commons-lang3')
 	implementation sharedLib('io.lettuce:lettuce-core')
 	implementation sharedLib('org.apache.commons:commons-pool2')
