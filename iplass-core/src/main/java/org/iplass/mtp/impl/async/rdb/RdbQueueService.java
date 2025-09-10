@@ -21,6 +21,8 @@
 package org.iplass.mtp.impl.async.rdb;
 
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,7 +96,7 @@ public class RdbQueueService implements Service {
 		queueMap = new HashMap<>();
 		queueIdMap = new HashMap<>();
 		if (queue != null) {
-			for (QueueConfig qc: queue) {
+			for (QueueConfig qc : queue) {
 				Queue q = new Queue(qc, taskIdCounter, taskIdCounterForGroup, rdb, workerFactory);
 				queueMap.put(q.getName(), q);
 				queueIdMap.put(qc.getId(), q);
@@ -121,7 +123,7 @@ public class RdbQueueService implements Service {
 				});
 			}
 
-			for (Queue q: queueMap.values()) {
+			for (Queue q : queueMap.values()) {
 				q.startWorker();
 			}
 
@@ -136,12 +138,12 @@ public class RdbQueueService implements Service {
 	public void destroy() {
 		if (useQueue && queueMap != null) {
 			logger.info("stopping queue worker...");
-			for (Map.Entry<String, Queue> e: queueMap.entrySet()) {
+			for (Map.Entry<String, Queue> e : queueMap.entrySet()) {
 				e.getValue().stopWorker();
 				logger.debug("stopped worker of queue:" + e.getValue().getName());
 			}
 			logger.info("stopping queue worker...done.");
-//			queueMap = null;
+			//			queueMap = null;
 		}
 	}
 
@@ -182,7 +184,8 @@ public class RdbQueueService implements Service {
 
 	public void deleteHistoryByDate(Timestamp date, boolean isDirectTenant) {
 		if (date == null) {
-			date = new Timestamp(System.currentTimeMillis() - historyHoldDay * 24 * 60 * 60 * 1000);
+			Instant instant = Instant.now().minus(historyHoldDay, ChronoUnit.DAYS);
+			date = Timestamp.from(instant);
 		}
 
 		new TaskDao(rdb).deleteHistoryByDate(date, isDirectTenant);
@@ -191,11 +194,10 @@ public class RdbQueueService implements Service {
 	public void moveNoGetResultTaskToHistory() {
 
 		if (queueMap != null) {
-			for (Queue e: queueMap.values()) {
+			for (Queue e : queueMap.values()) {
 				e.moveNoGetResultTaskToHistory();
 			}
 		}
 	}
-
 
 }
