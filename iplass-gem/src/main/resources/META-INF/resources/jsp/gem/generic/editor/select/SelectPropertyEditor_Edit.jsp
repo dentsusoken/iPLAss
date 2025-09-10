@@ -139,8 +139,11 @@
 			String size = isMultiple ? "5" : "1";
 			String cls = isMultiple ? "form-size-12 inpbr" : "form-size-02 inpbr";
 			String multiple = isMultiple ? " multiple" : "";
+			String ulId = "ul_" + propName;
+			
 %>
-<select name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" size="<c:out value="<%=size %>"/>" <c:out value="<%=multiple %>"/>>
+<ul id="<c:out value="<%=ulId %>"/>">
+<select name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" size="<c:out value="<%=size %>"/>" <c:out value="<%=multiple %>"/> >
 <%
 			if (!isMultiple){
 				String pleaseSelectLabel = "";
@@ -156,18 +159,47 @@
 				String selected = values.contains(tmp.getValue()) ? " selected" : "";
 				String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
 %>
-<option class="<c:out value="<%=optStyle %>"/>" title="<c:out value="<%=label%>"/>"  value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
+<option class="<c:out value="<%=optStyle %>"/>" title="<c:out value="<%=label%>"/>" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
 <%
 			}
 %>
 </select>
+<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
+<p class="error-multiplicity" style="display: none;">
+<span class="error">${m:rsp("mtp-gem-messages","generic.editor.select.SelectPropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
+</p>
+</ul>
+<script>
+$(function() {
+	const $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
+	const $errorMsg = $(".error-multiplicity", $ul); 
+
+	$("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").on("change", function() {
+        const selectedCount = $(this).find("option:selected").length;
+
+        if (selectedCount > <%=pd.getMultiplicity()%>) {
+        	$errorMsg.show();  
+		} else {
+			$errorMsg.hide(); 
+		}
+    });
+    
+	<%-- common.js --%>
+	addEditValidator(function() {
+		const selectedCount = $("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "'] option:selected", $ul).length;
+		if (selectedCount > <%=pd.getMultiplicity()%>) {
+			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
+			return false;
+		}
+		return true;
+	});
+});
+</script>
 <%
 		} else if (editor.getDisplayType() == SelectDisplayType.CHECKBOX
 				|| editor.getDisplayType() == SelectDisplayType.RADIO) {
 			//チェックボックスorラジオボタン
-
 			String ulId = "ul_" + propName;
-			
 			String cls = "list-radio-01";
 			if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) cls = "list-check-01";
 %>

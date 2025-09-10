@@ -768,6 +768,8 @@ $(function() {
 		//リスト
 		PropertyEditor upperEditor = null;
 		String upperType = null;
+		String ulId = "ul_" + propName;
+
 		if (editor.getLinkProperty() != null) {
 			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), nestPropertyName, rootEntity);
 			upperType = getLinkUpperType(upperEditor);
@@ -859,6 +861,7 @@ $(function() {
 <%
 		} else {
 %>
+<ul id="<c:out value="<%=ulId %>"/>">
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" 
  style="<c:out value="<%=customStyle%>"/>" size="<c:out value="<%=size %>"/>" <c:out value="<%=multiple %>"/>>
 <%
@@ -880,11 +883,44 @@ $(function() {
 		}
 %>
 </select>
+<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
+<p class="error-multiplicity" style="display: none;">
+<span class="error">${m:rsp("mtp-gem-messages","generic.editor.reference.ReferencePropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
+</p>
+</ul>
+<script>
+$(function() {
+	const $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
+	const $errorMsg = $(".error-multiplicity", $ul); 
+
+	$("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").on("change", function() {
+        const selectedCount = $(this).find("option:selected").length;
+
+        if (<%=pd.getMultiplicity()%> > 1 && selectedCount > <%=pd.getMultiplicity()%>) {
+        	$errorMsg.show();  
+		} else {
+			$errorMsg.hide(); 
+		}
+    });
+    
+	<%-- common.js --%>
+	addEditValidator(function() {
+		const selectedCount = $("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "'] option:selected", $ul).length;
+		if (<%=pd.getMultiplicity()%> > 1 && selectedCount > <%=pd.getMultiplicity()%>) {
+			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
+			return false;
+		}
+		return true;
+	});
+});
+</script>
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX && updatable && !isMappedby) {
 		//チェックボックス
 		PropertyEditor upperEditor = null;
 		String upperType = null;
+		String ulId = "ul_" + propName;
+
 		if (editor.getLinkProperty() != null) {
 			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), nestPropertyName, rootEntity);
 			upperType = getLinkUpperType(upperEditor);
@@ -987,7 +1023,7 @@ $(function() {
 <%
 		} else {
 %>
-<ul class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
+<ul id="<c:out value="<%=ulId %>"/>" class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
 <%
 			for (Entity refEntity : entityList) {
 %>
@@ -1011,7 +1047,37 @@ $(function() {
 			}
 		}
 %>
+<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
+<p class="error-multiplicity" style="display: none;">
+<span class="error">${m:rsp("mtp-gem-messages","generic.editor.reference.ReferencePropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
+</p>
 </ul>
+<script>
+$(function() {
+	const $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
+	const $errorMsg = $(".error-multiplicity", $ul); 
+	
+	$(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']", $ul).on("change", function() {
+
+		const checkedCount = $(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']:checked", $ul).length;
+		if (<%=pd.getMultiplicity()%> > 1 && checkedCount > <%=pd.getMultiplicity()%>) {
+			$errorMsg.show();  
+		} else {
+			$errorMsg.hide(); 
+		}
+	});
+
+	<%-- common.js --%>
+	addEditValidator(function() {
+		const checkedCount = $(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']:checked", $ul).length;
+		if (<%=pd.getMultiplicity()%> > 1 && checkedCount > <%=pd.getMultiplicity()%>) {
+			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
+			return false;
+		}
+		return true;
+	});
+}); 
+</script>
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.TREE && updatable && !isMappedby) {
 		//ツリー(基本はリンクと同じ、選択ダイアログを変える)

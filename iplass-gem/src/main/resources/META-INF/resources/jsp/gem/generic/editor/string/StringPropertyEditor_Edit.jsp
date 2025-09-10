@@ -147,10 +147,13 @@
 		if (isMultiple) {
 			//複数
 			String[] array = propValue instanceof String[] ? (String[]) propValue : null;
+			String ulId = "ul_" + propName;
+
 			if (updatable) {
 				List<String> values = new ArrayList<String>();
 				if (array != null && array.length > 0) values.addAll(Arrays.asList(array));
 %>
+<ul id="<c:out value="<%=ulId %>"/>">
 <select name="<c:out value="<%=propName %>"/>" size="6" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" multiple>
 <%
 				for (EditorValue tmp : editor.getValues()) {
@@ -163,6 +166,37 @@
 				}
 %>
 </select>
+<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
+<p class="error-multiplicity" style="display: none;">
+<span class="error">${m:rsp("mtp-gem-messages","generic.editor.string.StringPropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
+</p>
+</ul>
+<script>
+$(function() {
+	const $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
+	const $errorMsg = $(".error-multiplicity", $ul); 
+
+	$("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").on("change", function() {
+        const selectedCount = $(this).find("option:selected").length;
+
+        if (selectedCount > <%=pd.getMultiplicity()%>) {
+        	$errorMsg.show();  
+		} else {
+			$errorMsg.hide(); 
+		}
+    });
+    
+	<%-- common.js --%>
+	addEditValidator(function() {
+		const selectedCount = $("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "'] option:selected", $ul).length;
+		if (selectedCount > <%=pd.getMultiplicity()%>) {
+			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
+			return false;
+		}
+		return true;
+	});
+});
+</script>
 <%
 			} else {
 				//更新不可
