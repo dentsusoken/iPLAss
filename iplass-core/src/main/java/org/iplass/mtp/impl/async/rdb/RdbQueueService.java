@@ -184,8 +184,8 @@ public class RdbQueueService implements Service {
 
 	public void deleteHistoryByDate(Timestamp date, boolean isDirectTenant) {
 		if (date == null) {
-			Instant instant = Instant.now().minus(historyHoldDay, ChronoUnit.DAYS);
-			date = Timestamp.from(instant);
+			Instant cutoffInstant = Instant.now().minus(historyHoldDay, ChronoUnit.DAYS);
+			date = Timestamp.from(cutoffInstant);
 		}
 
 		new TaskDao(rdb).deleteHistoryByDate(date, isDirectTenant);
