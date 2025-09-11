@@ -155,8 +155,13 @@ ext {
 
 		'org.infinispan:infinispan-core': '15.0.4.Final',
 		
-		'io.lettuce:lettuce-core': '6.7.1.RELEASE',
-		
+		'io.lettuce:lettuce-core': '6.8.1.RELEASE',
+		// lettuce 推移依存している netty ライブラリのバージョンを固定
+		'io.netty:netty-common': '4.1.126.Final',
+		'io.netty:netty-handler': '4.1.126.Final',
+		'io.netty:netty-transport': '4.1.126.Final',
+		'io.netty:netty-resolver-dns': '4.1.126.Final',
+
 		'net.sf.jasperreports:jasperreports': '6.21.3',
 		'com.github.librepdf:openpdf': '2.0.2',
 
