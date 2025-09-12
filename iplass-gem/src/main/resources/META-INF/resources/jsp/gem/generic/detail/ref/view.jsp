@@ -288,6 +288,7 @@ function dataUnlock() {
 <div class="operation-bar operation-bar_bottom">
 <jsp:include page="viewButton.inc.jsp" />
 </div><!--operation-bar-->
+${m:outputToken('FORM_XHTML', true)}
 </form>
 </div>
 
