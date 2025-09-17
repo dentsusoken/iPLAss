@@ -48,6 +48,7 @@ import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.tenant.TenantService;
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportCondition;
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportResult;
+import org.iplass.mtp.impl.tools.metaport.MetaDataCheckResult;
 import org.iplass.mtp.impl.tools.metaport.MetaDataImportResult;
 import org.iplass.mtp.impl.tools.pack.PackageEntity;
 import org.iplass.mtp.impl.tools.pack.PackageInfo;
@@ -56,8 +57,8 @@ import org.iplass.mtp.impl.tools.pack.PackageService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -269,6 +270,7 @@ public class PackageImport extends MtpCuiBase {
 		PackageInfo packInfo = param.getPackInfo();
 
 		if (CollectionUtil.isNotEmpty(packInfo.getMetaDataPaths())) {
+			logInfo("\toutput check result confirm :" + param.isOutputCheckResultConfirm());
 			logInfo("\tmetadata count :" + packInfo.getMetaDataPaths().size());
 		} else {
 			logInfo("\tmetadata count :" + "0");
@@ -378,8 +380,18 @@ public class PackageImport extends MtpCuiBase {
 
 				MetaDataImportResult metaResult = null;
 				if (param.isSavePackage() && oid != null) {
+					// メタデータ整合性チェック
+					if (!checkMetaData(ps.checkPackageMetaData(oid))) {
+						return false;
+					}
+
 					metaResult = ps.importPackageMetaData(oid, param.getImportTenant());
 				} else {
+					// メタデータ整合性チェック
+					if (!checkMetaData(ps.checkPackageMetaData(param.getImportFile(), param.getPackageName()))) {
+						return false;
+					}
+
 					metaResult = ps.importPackageMetaData(param.getImportFile(), param.getPackageName(), param.getImportTenant());
 				}
 
@@ -418,6 +430,36 @@ public class PackageImport extends MtpCuiBase {
 
 				messageSummary.add(logMessage);
 			}
+			return true;
+		}
+
+		private boolean checkMetaData(MetaDataCheckResult checkResult) {
+			if (checkResult.isError()) {
+				if (StringUtil.isNotEmpty(checkResult.getMessage())) {
+					logError(checkResult.getMessage());
+					logInfo("");
+				}
+
+				logError(rs("Common.errorMsg"));
+				return false;
+			}
+
+			if (checkResult.isWarn()) {
+				if (param.isOutputCheckResultConfirm()) {
+					// 処理続行確認メッセージ出力する場合
+					String confirmMessage = checkResult.createMessage(System.lineSeparator()) + System.lineSeparator() + rs("Common.continueMsg");
+					// 誤ってimport続行してしまわないようにデフォルトはfalse
+					boolean confirmContinue = readConsoleBoolean(confirmMessage, false);
+					if (!confirmContinue) {
+						logWarn(rs("PackageImport.stopImportPackageLog", param.getImportFilePath()));
+						return false;
+					}
+				} else {
+					// 処理続行確認メッセージ出力しない場合はログ出力（警告）のみ
+					logWarn(checkResult.createMessage(System.lineSeparator()));
+				}
+			}
+
 			return true;
 		}
 	}
@@ -669,6 +711,11 @@ public class PackageImport extends MtpCuiBase {
 				}
 
 			} while(validFile == false);
+
+			// メタデータが含まれる場合
+			if (CollectionUtil.isNotEmpty(param.getPackInfo().getMetaDataPaths())) {
+				param.setOutputCheckResultConfirm(true);
+			}
 
 			//Entityが含まれる場合は、Import条件を作成
 			if (CollectionUtil.isNotEmpty(packInfo.getEntityPaths())) {
@@ -932,6 +979,15 @@ public class PackageImport extends MtpCuiBase {
 			} catch (PackageRuntimeException e) {
 				logError(rs("PackageImport.errorAnalysisFileMsg", e.getMessage()));
 				return false;
+			}
+
+			// メタデータが含まれる場合
+			if (CollectionUtil.isNotEmpty(param.getPackInfo().getMetaDataPaths())) {
+				// Entityメタデータのプロパティ整合性チェック時の確認メッセージを出すかどうか
+				String outputCheckResultConfirm = prop.getProperty(PackageImportParameter.PROP_META_OUTPUT_CHECK_RESULT_CONFIRM);
+				if (StringUtil.isNotEmpty(outputCheckResultConfirm)) {
+					param.setOutputCheckResultConfirm(Boolean.valueOf(outputCheckResultConfirm));
+				}
 			}
 
 			//Entityが含まれる場合は、Import条件を作成

@@ -27,6 +27,7 @@ import org.iplass.adminconsole.shared.metadata.dto.MetaTreeNode;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.DeleteResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.ImportFileInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.ImportMetaDataStatus;
+import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataCheckResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.MetaDataImportResultInfo;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.tenant.Tenant;
@@ -62,4 +63,6 @@ public interface MetaDataExplorerServiceAsync {
 	void removeTag(final int tenantId, final List<String> tagList, AsyncCallback<Void> callback);
 
 	void deleteMetaData(final int tenantId, final List<String> pathList, AsyncCallback<DeleteResultInfo> callback);
+
+	void checkMetaData(final int tenantId, final String tagOid, final List<String> pathList, AsyncCallback<MetaDataCheckResultInfo> callback);
 }
