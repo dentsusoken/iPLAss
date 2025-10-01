@@ -46,10 +46,8 @@ import org.iplass.mtp.entity.query.QueryException;
 import org.iplass.mtp.entity.query.SubQuery;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
-import org.iplass.mtp.entity.query.condition.expr.Or;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.In;
-import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.entity.query.hint.FetchSizeHint;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.aggregate.Max;
@@ -87,12 +85,12 @@ public class NumberbaseVersionController implements VersionController {
 				}
 				if (target.parent == null) {
 					//topレベルのクエリとの結合と判断し、.を付与
-					return new EntityField("." + entityField.getPropertyName());
+					return new EntityField("." + entityField.getPropertyName(), entityField.getArrayIndex());
 				} else {
-					return new EntityField(entityField.getPropertyName());
+					return new EntityField(entityField.getPropertyName(), entityField.getArrayIndex());
 				}
 			} else {
-				return new EntityField("." + entityField.getPropertyName());
+				return new EntityField("." + entityField.getPropertyName(), entityField.getArrayIndex());
 			}
 		}
 

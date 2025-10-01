@@ -98,6 +98,13 @@ public class ArrayValue extends PrimaryValue {
 		this.values = values;
 	}
 
+	public void add(ValueExpression v) {
+		if (values == null) {
+			values = new ArrayList<ValueExpression>();
+		}
+		values.add(v);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

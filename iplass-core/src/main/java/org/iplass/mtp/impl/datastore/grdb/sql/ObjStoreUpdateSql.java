@@ -34,12 +34,13 @@ import org.iplass.mtp.entity.query.QueryVisitorSupport;
 import org.iplass.mtp.entity.query.SubQuery;
 import org.iplass.mtp.entity.query.hint.IndexHint;
 import org.iplass.mtp.entity.query.value.ValueExpression;
+import org.iplass.mtp.entity.query.value.primary.ArrayValue;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.datastore.grdb.GRdbPropertyStoreRuntime;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore;
-import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore.GRdbEntityStoreRuntime;
+import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore.GRdbPropertyStoreHandler;
 import org.iplass.mtp.impl.datastore.grdb.sql.queryconvert.SqlConverter;
 import org.iplass.mtp.impl.datastore.grdb.sql.queryconvert.SqlQueryContext;
@@ -340,6 +341,19 @@ public class ObjStoreUpdateSql extends UpdateSqlHandler {
 				ValueExpression val = uv.getValue();
 
 				List<GRdbPropertyStoreHandler> cols = col.asList();
+				if (val instanceof ArrayValue && !col.isMulti()) {
+					throw new QueryException("property is not multi-value, but array value specified. property=" + pHandler.getName());
+				}
+
+				//arrayIndex指定されている場合は、対応するカラムのみ更新
+				if (col.isMulti() && uv.getPropertyName().getArrayIndex() != EntityField.ARRAY_INDEX_UNSPECIFIED) {
+					if (uv.getPropertyName().getArrayIndex() < 0 || uv.getPropertyName().getArrayIndex() >= cols.size()) {
+						throw new QueryException(
+								"array index out of range. property=" + pHandler.getName() + ", index=" + uv.getPropertyName().getArrayIndex());
+					}
+					cols = cols.get(uv.getPropertyName().getArrayIndex()).asList();
+				}
+
 				for (int i = 0; i < cols.size(); i++) {
 					GRdbPropertyStoreHandler tcol = cols.get(i);
 					String valueStr = null;
@@ -357,10 +371,19 @@ public class ObjStoreUpdateSql extends UpdateSqlHandler {
 						sb.append(tcol.getMetaData().getColumnName());
 						sb.append("=");
 
-						if (valueStr == null) {
-							valueStr = valueExp(val, eh, tcol, pageNo, rdbAdaptor, context);
+						if (val instanceof ArrayValue) {
+							List<ValueExpression> vals = ((ArrayValue) val).getValues();
+							ValueExpression valInArray = null;
+							if (vals != null && vals.size() > i) {
+								valInArray = vals.get(i);
+							}
+							sb.append(valueExp(valInArray, eh, tcol, pageNo, rdbAdaptor, context));
+						} else {
+							if (valueStr == null) {
+								valueStr = valueExp(val, eh, tcol, pageNo, rdbAdaptor, context);
+							}
+							sb.append(valueStr);
 						}
-						sb.append(valueStr);
 					}
 
 					//index col
@@ -770,6 +793,13 @@ public class ObjStoreUpdateSql extends UpdateSqlHandler {
 			}
 			GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
 			List<GRdbPropertyStoreHandler> cols = col.asList();
+			//arrayIndexっ指定されている場合はそのカラムのみに限定
+			if (col.isMulti() && entityField.getArrayIndex() != EntityField.ARRAY_INDEX_UNSPECIFIED) {
+				if (entityField.getArrayIndex() < 0 || entityField.getArrayIndex() >= cols.size()) {
+					throw new QueryException("array index out of range. " + entityField.getPropertyName() + "[" + entityField.getArrayIndex() + "]");
+				}
+				cols = cols.get(entityField.getArrayIndex()).asList();
+			}
 			for (GRdbPropertyStoreHandler c: cols) {
 				if (c.getMetaData().getPageNo() != myPageNo) {
 					if (otherPn == null) {

@@ -127,7 +127,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	}
 
 	public ASTNode visit(EntityField entityField) {
-		return new EntityField(entityField.getPropertyName());
+		return new EntityField(entityField.getPropertyName(), entityField.getArrayIndex());
 	}
 
 	public ASTNode visit(ParenValue parenthesizedValue) {

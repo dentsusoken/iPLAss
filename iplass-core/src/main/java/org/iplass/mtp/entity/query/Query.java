@@ -131,7 +131,8 @@ import org.iplass.mtp.util.StringUtil;
  * &lt;aggregate&gt; ::= {AVG | MAX | MEDIAN | MIN | MODE | SUM | STDDEV_POP | STDDEV_SAMP | VAR_POP | VAR_SAMP}(&lt;value expression&gt;) | COUNT([DISTINCT] [&lt;value expression&gt;]) | LISTAGG([DISTINCT] &lt;value expression&gt;[,&lt;string literal&gt;]) [WITHIN GROUP(ORDER BY &lt;sort spec&gt; {,&lt;sort spec&gt;}*)]<br>
  * &lt;array value&gt; ::= "ARRAY[" &lt;value expression&gt; {,&lt;value expression&gt;}* "]"<br>
  * &lt;case&gt; ::= CASE WHEN &lt;condition&gt; THEN &lt;value expression&gt; {WHEN &lt;condition&gt; THEN &lt;value expression&gt;}* [ELSE &lt;value expression&gt;] END<br>
- * &lt;entity field&gt; ::= &lt;property name&gt; | &lt;reference&gt;.&lt;property name&gt; | &lt;correlated entity field&gt;<br>
+ * &lt;entity field&gt; ::= &lt;property name&gt; [&lt;array index&gt;] | &lt;reference&gt;.&lt;property name&gt; [&lt;array index&gt;] | &lt;correlated entity field&gt;<br>
+ * &lt;array index&gt; ::= "[" 添え字 "]"<br>
  * &lt;reference&gt; ::= &lt;reference name&gt;{.&lt;reference name&gt;}*<br>
  * &lt;function&gt; ::= &lt;function name&gt;() | &lt;function name&gt;(&lt;value expression&gt;{,&lt;value expression&gt;}*)<br>
  * &lt;function name&gt; ::= REPLACE | UPPER | LOWER | CONCAT | SUBSTR | INSTR | CHAR_LENGTH | MOD | SQRT | POWER | ABS | CEIL | FLOOR | ROUND | TRUNCATE | SIN | COS | TAN | ASIN | ACOS | ATAN | ATAN2 | YEAR | MONTH | DAY | HOUR | MINUTE | SECOND | DATE_ADD | DATE_DIFF | CURRENT_DATE | CURRENT_TIME | CURRENT_DATETIME | LOCALTIME<br>

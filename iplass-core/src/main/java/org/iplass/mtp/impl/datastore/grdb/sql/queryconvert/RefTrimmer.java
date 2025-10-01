@@ -35,7 +35,7 @@ class RefTrimmer extends ASTTransformerSupport {
 	@Override
 	public ASTNode visit(EntityField entityField) {
 		if (entityField.getPropertyName().startsWith(ref)) {
-			return new EntityField(entityField.getPropertyName().substring(ref.length()));
+			return new EntityField(entityField.getPropertyName().substring(ref.length()), entityField.getArrayIndex());
 		} else {
 			return entityField;
 		}

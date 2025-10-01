@@ -26,8 +26,9 @@ import org.iplass.mtp.impl.parser.ParseContext;
 import org.iplass.mtp.impl.parser.ParseException;
 import org.iplass.mtp.impl.parser.Syntax;
 import org.iplass.mtp.impl.parser.SyntaxContext;
+import org.iplass.mtp.impl.query.QueryConstants;
 
-public class EntityFieldSyntax implements Syntax<EntityField> {
+public class EntityFieldSyntax implements Syntax<EntityField>, QueryConstants {
 
 	public void init(SyntaxContext context) {
 	}
@@ -41,8 +42,29 @@ public class EntityFieldSyntax implements Syntax<EntityField> {
 			throw new ParseException(new EvalError("entity property(reference) name expected.", this, str));
 		}
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
-		return new EntityField(fieldName);
+		if (str.startsWith(LEFT_BRACKET)) {
+			str.consumeChars(LEFT_BRACKET.length());
+			str.consumeChars(ParseContext.WHITE_SPACES);
+			String indexStr = str.nextToken(ParseContext.TOKEN_DELIMITERS);
+			if (indexStr == null) {
+				throw new ParseException(new EvalError("array index expected.", this, str));
+			}
+			int indexValue;
+			try {
+				indexValue = Integer.parseInt(indexStr);
+			} catch (NumberFormatException e) {
+				throw new ParseException(new EvalError("array index must be integer.", this, str));
+			}
+			str.consumeChars(ParseContext.WHITE_SPACES);
+			if (!str.startsWith(RIGHT_BRACKET)) {
+				throw new ParseException(new EvalError("] expected.", this, str));
+			}
+			str.consumeChars(RIGHT_BRACKET.length());
+			str.consumeChars(ParseContext.WHITE_SPACES);
+			return new EntityField(fieldName, indexValue);
+		} else {
+			return new EntityField(fieldName);
+		}
 	}
 
 }

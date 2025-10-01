@@ -34,6 +34,7 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.impl.datastore.RdbBaseValueTypeResolver;
 import org.iplass.mtp.impl.datastore.grdb.GRdbPropertyStoreRuntime;
+import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore.GRdbPropertyStoreHandler;
 import org.iplass.mtp.impl.datastore.strategy.SearchResultIterator;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
@@ -92,6 +93,15 @@ public class GRdbSearchResultIterator implements SearchResultIterator {
 			} else {
 				PropertyHandler ph = dataModelHandler.getPropertyCascade(((EntityField) v).getPropertyName(), context);
 				col.colDef = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
+				if (col.colDef.isMulti() && ((EntityField) v).getArrayIndex() != EntityField.ARRAY_INDEX_UNSPECIFIED) {
+					int arrayIndex = ((EntityField) v).getArrayIndex();
+					List<GRdbPropertyStoreHandler> handlers = col.colDef.asList();
+					if (arrayIndex < 0 || arrayIndex >= handlers.size()) {
+						throw new EntityRuntimeException(
+								"Array index " + arrayIndex + " is out of range. Property=" + ((EntityField) v).getPropertyName());
+					}
+					col.colDef = handlers.get(arrayIndex);
+				}
 				res += col.colDef.getColCount();
 			}
 			

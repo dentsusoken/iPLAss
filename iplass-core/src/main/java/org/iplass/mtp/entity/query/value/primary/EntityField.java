@@ -34,7 +34,10 @@ import org.iplass.mtp.entity.query.value.ValueExpressionVisitor;
 public class EntityField extends PrimaryValue {
 	private static final long serialVersionUID = -1271662342712631753L;
 
+	public static final int ARRAY_INDEX_UNSPECIFIED = -1;
+
 	private String propertyName;
+	private int arrayIndex = ARRAY_INDEX_UNSPECIFIED;
 	
 	public EntityField() {
 	}
@@ -42,6 +45,12 @@ public class EntityField extends PrimaryValue {
 	public EntityField(String propertyName) {
 		this.propertyName = propertyName;
 		checkValidPropertyName();
+	}
+
+	public EntityField(String propertyName, int arrayIndex) {
+		this.propertyName = propertyName;
+		checkValidPropertyName();
+		this.arrayIndex = arrayIndex;
 	}
 	
 	private void checkValidPropertyName() {
@@ -77,9 +86,21 @@ public class EntityField extends PrimaryValue {
 		checkValidPropertyName();
 	}
 
+	public int getArrayIndex() {
+		return arrayIndex;
+	}
+
+	public void setArrayIndex(int arrayIndex) {
+		this.arrayIndex = arrayIndex;
+	}
+
 	@Override
 	public String toString() {
-		return propertyName;
+		if (arrayIndex != ARRAY_INDEX_UNSPECIFIED) {
+			return propertyName + "[" + arrayIndex + "]";
+		} else {
+			return propertyName;
+		}
 	}
 
 	public void accept(ValueExpressionVisitor visitor) {
@@ -101,13 +122,13 @@ public class EntityField extends PrimaryValue {
 		}
 		return 0;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((propertyName == null) ? 0 : propertyName.hashCode());
+		result = prime * result + arrayIndex;
+		result = prime * result + ((propertyName == null) ? 0 : propertyName.hashCode());
 		return result;
 	}
 
@@ -120,6 +141,8 @@ public class EntityField extends PrimaryValue {
 		if (getClass() != obj.getClass())
 			return false;
 		EntityField other = (EntityField) obj;
+		if (arrayIndex != other.arrayIndex)
+			return false;
 		if (propertyName == null) {
 			if (other.propertyName != null)
 				return false;

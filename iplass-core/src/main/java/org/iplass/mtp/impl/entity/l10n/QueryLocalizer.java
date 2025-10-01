@@ -131,7 +131,7 @@ class QueryLocalizer extends ASTTransformerSupport {
 		}
 		
 		if (l10nPropName == null) {
-			return new EntityField(entityField.getPropertyName());
+			return new EntityField(entityField.getPropertyName(), entityField.getArrayIndex());
 		} else {
 			if (unnestCount > 0) {
 				StringBuilder sb = new StringBuilder();
@@ -139,9 +139,9 @@ class QueryLocalizer extends ASTTransformerSupport {
 					sb.append('.');
 				}
 				sb.append(l10nPropName);
-				return new EntityField(sb.toString());
+				return new EntityField(sb.toString(), entityField.getArrayIndex());
 			} else {
-				return new EntityField(l10nPropName);
+				return new EntityField(l10nPropName, entityField.getArrayIndex());
 			}
 		}
 	}

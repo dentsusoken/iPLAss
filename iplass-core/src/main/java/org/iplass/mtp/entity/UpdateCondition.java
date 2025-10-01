@@ -27,6 +27,8 @@ import org.iplass.mtp.entity.query.QueryException;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.value.ValueExpression;
+import org.iplass.mtp.entity.query.value.primary.ArrayValue;
+import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.parser.ParseException;
 import org.iplass.mtp.impl.query.QueryConstants;
@@ -119,6 +121,21 @@ public class UpdateCondition {
 			values = new ArrayList<>();
 		}
 		values.add(new UpdateValue(entityField, value));
+		return this;
+	}
+
+	/**
+	 * 指定のEntity属性（EntityField）を指定の値表現（ValueExpression）で更新するようにセット。
+	 * 
+	 * @param propertyName
+	 * @param value
+	 * @return
+	 */
+	public UpdateCondition value(EntityField propertyName, ValueExpression value) {
+		if (values == null) {
+			values = new ArrayList<>();
+		}
+		values.add(new UpdateValue(propertyName, value));
 		return this;
 	}
 
@@ -218,7 +235,7 @@ public class UpdateCondition {
 	 */
 	public static class UpdateValue {
 
-		private String entityField;
+		private EntityField propertyName;
 		private ValueExpression value;
 
 		public UpdateValue() {
@@ -232,9 +249,19 @@ public class UpdateCondition {
 		 * @param value 更新値
 		 */
 		public UpdateValue(String entityField, Object value) {
-			this.entityField = entityField;
+			this.propertyName = new EntityField(entityField);
 			if (value instanceof ValueExpression) {
 				this.value = (ValueExpression) value;
+			} else if (value instanceof Object[]) {
+				ArrayValue arrayValue = new ArrayValue();
+				for (Object v : (Object[]) value) {
+					if (v instanceof ValueExpression) {
+						arrayValue.add((ValueExpression) v);
+					} else {
+						arrayValue.add(new Literal(v));
+					}
+				}
+				this.value = arrayValue;
 			} else {
 				this.value = new Literal(value);
 			}
@@ -248,16 +275,63 @@ public class UpdateCondition {
 		 * @param value 更新値を表すValueExpression
 		 */
 		public UpdateValue(String entityField, ValueExpression value) {
-			this.entityField = entityField;
+			this.propertyName = new EntityField(entityField);
 			this.value = value;
 		}
 
+		/**
+		 * コンストラクタ。
+		 * 指定のEntity属性を指定の値表現（ValueExpression）で更新するように指定。
+		 *
+		 * @param propertyName 更新対象のEntity属性を表すEntityField
+		 * @param value 更新値を表すValueExpression
+		 */
+		public UpdateValue(EntityField propertyName, ValueExpression value) {
+			this.propertyName = propertyName;
+			this.value = value;
+		}
+
+		/**
+		 * 更新対象のEntity属性名を取得。
+		 *
+		 * @return
+		 */
 		public String getEntityField() {
-			return entityField;
+			if (propertyName == null) {
+				return null;
+			}
+			return propertyName.getPropertyName();
 		}
+
+		/**
+		 * 更新対象のEntity属性名をセット。
+		 * @param entityField
+		 */
 		public void setEntityField(String entityField) {
-			this.entityField = entityField;
+			if (this.propertyName == null) {
+				this.propertyName = new EntityField();
+			}
+			this.propertyName.setPropertyName(entityField);
 		}
+
+		/**
+		 * 更新対象のEntity属性を表すEntityFieldを取得。
+		 * 
+		 * @return
+		 */
+		public EntityField getPropertyName() {
+			return propertyName;
+		}
+
+		/**
+		 * 更新対象のEntity属性を表すEntityFieldをセット。
+		 * 
+		 * @param propertyName
+		 */
+		public void setPropertyName(EntityField propertyName) {
+			this.propertyName = propertyName;
+		}
+
 		public ValueExpression getValue() {
 			return value;
 		}
@@ -267,7 +341,9 @@ public class UpdateCondition {
 
 		public UpdateValue copy() {
 			UpdateValue copy = new UpdateValue();
-			copy.entityField = entityField;
+			if (propertyName != null) {
+				copy.propertyName = (EntityField) propertyName.copy();
+			}
 			if (value != null) {
 				copy.value = (ValueExpression) value.copy();
 			}
@@ -305,7 +381,7 @@ public class UpdateCondition {
 					sb.append(",");
 				}
 				UpdateValue uv = values.get(i);
-				sb.append(uv.entityField).append("=").append(uv.value);
+				sb.append(uv.propertyName).append("=").append(uv.value);
 			}
 		}
 		if (where != null) {
