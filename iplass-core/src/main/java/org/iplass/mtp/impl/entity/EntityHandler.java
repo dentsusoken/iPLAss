@@ -56,6 +56,8 @@ import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.definition.properties.ReferenceType;
 import org.iplass.mtp.entity.interceptor.InvocationType;
+import org.iplass.mtp.entity.query.AsOf;
+import org.iplass.mtp.entity.query.AsOf.AsOfSpec;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.SortSpec;
@@ -1479,7 +1481,8 @@ public class EntityHandler extends BaseMetaDataRuntime {
 						&& (rp.getMetaData().getMappedByPropertyMetaDataId() == null
 							|| option.isWithMappedByReference())) {
 					//check reference valid
-					if (rp.getReferenceEntityHandler(entityContext) != null) {
+					EntityHandler refEh = rp.getReferenceEntityHandler(entityContext);
+					if (refEh != null) {
 						if (rp.getMetaData().getMultiplicity() != 1) {
 							refList.add((ReferencePropertyHandler) p);
 						} else {
@@ -1487,6 +1490,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 							select.add(rp.getName() + "." + Entity.OID);
 							select.add(rp.getName() + "." + Entity.NAME);
 							select.add(rp.getName() + "." + Entity.VERSION);
+
+							//versioned=trueの場合、参照先もバージョン管理されている場合は、保存時点で取得する
+							if (option != null && option.isVersioned() && refEh.isVersioned()) {
+								searchCond.refer(rp.getName(), new AsOf(AsOfSpec.UPDATE_TIME));
+							}
 						}
 					}
 				}
@@ -1589,6 +1597,8 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		}
 		if (refEH.isVersioned() && versioned) {
 			searchCond.versioned();
+			//versioned=trueの場合、参照先もバージョン管理されている場合は、保存時点で取得する
+			searchCond.refer(refProp.getName(), new AsOf(AsOfSpec.UPDATE_TIME));
 		}
 
 		final ArrayList<Entity> refList = new ArrayList<>();

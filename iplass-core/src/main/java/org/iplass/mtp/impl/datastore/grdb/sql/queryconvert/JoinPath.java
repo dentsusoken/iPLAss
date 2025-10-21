@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.query.AsOf.AsOfSpec;
 import org.iplass.mtp.impl.datastore.grdb.GRdbPropertyStoreRuntime;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbEntityStore.GRdbEntityStoreRuntime;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore.GRdbPropertyStoreHandler;
@@ -68,6 +69,7 @@ public class JoinPath {
 
 	private String additionalCondition;
 	private List<BindValue> bindVariables;
+	private AsOfSpec asOfSpec;
 
 	JoinPath parent;
 	ArrayList<JoinPath> children;
@@ -262,9 +264,10 @@ public class JoinPath {
 		}
 	}
 
-	public void setAdditionalCondition(String additionalCondition, List<BindValue> bindVariables) {
+	public void setAdditionalCondition(String additionalCondition, List<BindValue> bindVariables, AsOfSpec asOfSpec) {
 		this.additionalCondition = additionalCondition;
 		this.bindVariables = bindVariables;
+		this.asOfSpec = asOfSpec;
 	}
 
 	public List<BindValue> getOrderedBindVariables() {
@@ -403,7 +406,7 @@ public class JoinPath {
 				sb.append(".OBJ_ID");
 				//オブジェクトversion
 				//version
-				if (isRoot || joinWithVersionCol || isMappedBy) {
+				if (isRoot || joinWithVersionCol || isMappedBy || asOfSpec == AsOfSpec.UPDATE_TIME) {
 					sb.append(" AND ");
 					appendRefTablePrefix(this, sb);
 					if (isMappedBy) {
