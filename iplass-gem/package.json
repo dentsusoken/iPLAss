@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "sass:build": "npm install & gulp build",
-    "sass:rebuild": "npm install & npm rebuild node-sass & gulp build",
-    "sass:buildImageColor": "npm install & gulp buildImageColor"
+    "sass:build": "npm ci & gulp build",
+    "sass:rebuild": "npm ci & npm rebuild node-sass & gulp build",
+    "sass:buildImageColor": "npm ci & gulp buildImageColor"
   },
   "author": "",
   "license": "ISC",
