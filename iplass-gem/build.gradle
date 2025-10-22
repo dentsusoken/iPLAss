@@ -23,6 +23,7 @@ node {
 
 	workDir = layout.buildDirectory.dir('nodejs')
 	npmWorkDir = layout.buildDirectory.dir('npm')
+    npmInstallCommand = 'ci'
 }
 
 task buildSass(type: NpmTask) {
