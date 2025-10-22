@@ -45,6 +45,9 @@ public abstract class MetaTopViewParts implements MetaData {
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 329805942769537467L;
 
+	/** パーツID */
+	private String partsId;
+
 	/**
 	 * インスタンスを生成します。
 	 * @param parts TOP画面パーツ
@@ -71,10 +74,37 @@ public abstract class MetaTopViewParts implements MetaData {
 	}
 
 	/**
+	 * パーツIDを設定します
+	 * @param partsId パーツID
+	 */
+	public void setPartsId(String partsId) {
+		this.partsId = partsId;
+	}
+
+	/**
+	 * パーツIDを取得します
+	 * @return パーツID
+	 */
+	public String getPartsId() {
+		return partsId;
+	}
+
+	/**
+	 * パーツIDを生成するかどうか
+	 * <p>パーツIDを生成する場合はオーバーライドする</p>
+	 * 
+	 * @return パーツIDを生成するかどうか
+	 */
+	public boolean generatePartsId() {
+		return false;
+	}
+
+	/**
 	 * 定義の内容を自身に設定します。
 	 * @param parts 定義
 	 */
 	protected void fillFrom(TopViewParts parts) {
+		partsId = parts.getPartsId();
 	}
 
 	/**
@@ -88,6 +118,7 @@ public abstract class MetaTopViewParts implements MetaData {
 	 * @param parts 定義
 	 */
 	protected void fillTo(TopViewParts parts) {
+		parts.setPartsId(partsId);
 	}
 
 	/**
