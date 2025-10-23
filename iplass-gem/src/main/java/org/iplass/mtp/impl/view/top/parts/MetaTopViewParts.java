@@ -91,9 +91,11 @@ public abstract class MetaTopViewParts implements MetaData {
 
 	/**
 	 * パーツIDを生成するかどうか
-	 * <p>パーツIDを生成する場合はオーバーライドする</p>
-	 * 
-	 * @return パーツIDを生成するかどうか
+	 * <p>
+	 * デフォルトでは {@code false} を返します。サブクラスでパーツIDを自動生成したい場合はこのメソッドをオーバーライドして {@code true} を返してください。
+	 * パーツIDを自動生成する必要がない場合は、オーバーライド不要です。
+	 * </p>
+	 * @return パーツIDを自動生成する場合は {@code true}、それ以外は {@code false}
 	 */
 	public boolean generatePartsId() {
 		return false;
