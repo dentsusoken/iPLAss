@@ -159,7 +159,7 @@ public class CommandUtil {
 	public static Time getTime6ColonSeparated(String value) {
 		Long date = null;
 		try {
-			date = getDateTime(value, FORMAT_TIME8);
+			date = getDateTime(value, FORMAT_TIME_COLON_SEPARATED);
 		} catch (ParseException e) {
 			throw new ApplicationException(resourceString("command.CommandUtil.parseTimeErr") + "[" + value + "]");
 		}
