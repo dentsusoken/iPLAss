@@ -45,7 +45,7 @@ public class CommandUtil {
 	/** 文字列から時間変換を行う際のフォーマット */
 	public static final String FORMAT_TIME = "HHmmssSSS";
 	public static final String FORMAT_TIME6 = "HHmmss";
-	public static final String FORMAT_TIME_COLON_SEPARATED = "HH:mm:ss";
+	public static final String FORMAT_TIME6_COLON_SEPARATED = "HH:mm:ss";
 
 	/**
 	 * 文字列からInteger型の値を取得します。
@@ -159,7 +159,7 @@ public class CommandUtil {
 	public static Time getTime6ColonSeparated(String value) {
 		Long date = null;
 		try {
-			date = getDateTime(value, FORMAT_TIME_COLON_SEPARATED);
+			date = getDateTime(value, FORMAT_TIME6_COLON_SEPARATED);
 		} catch (ParseException e) {
 			throw new ApplicationException(resourceString("command.CommandUtil.parseTimeErr") + "[" + value + "]");
 		}
