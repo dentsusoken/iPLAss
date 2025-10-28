@@ -159,6 +159,9 @@
 		<!-- プルダウンの「選択してください」を表示するか -->
 		<property name="showPulldownPleaseSelectLabel" value="true" />
 
+		<!-- binaryファイルアップロード非同期 -->
+		<property name="binaryUploadAsync" value="true" />
+
 		<!-- DatePickerのデフォルトオプション -->
 		<property name="datePickerDefaultOption" value="changeMonth:true,changeYear:true,yearRange:&quot;c-10:c+10&quot;" />
 

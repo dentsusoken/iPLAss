@@ -125,6 +125,9 @@ public class GemConfigService implements Service {
 	/** プルダウンの「選択してください」を表示するか */
 	private boolean showPulldownPleaseSelectLabel;
 
+	/** binaryファイルアップロード非同期 */
+	private boolean binaryUploadAsync;
+
 	/** DatePickerのデフォルトオプション */
 	private String datePickerDefaultOption;
 
@@ -233,6 +236,8 @@ public class GemConfigService implements Service {
 		useDisplayLabelItemInCsvDownload = config.getValue("useDisplayLabelItemInCsvDownload", Boolean.class, false);
 
 		showPulldownPleaseSelectLabel = config.getValue("showPulldownPleaseSelectLabel", Boolean.class, true);
+
+		binaryUploadAsync = config.getValue("binaryUploadAsync", Boolean.class, false);
 
 		datePickerDefaultOption = config.getValue("datePickerDefaultOption", String.class, null);
 
@@ -508,6 +513,15 @@ public class GemConfigService implements Service {
 	 */
 	public boolean isShowPulldownPleaseSelectLabel() {
 		return showPulldownPleaseSelectLabel;
+	}
+
+	/**
+	 * binaryファイルアップロードを非同期で行うかを取得します。
+	 * 
+	 * @return binaryファイルアップロードを非同期で行うか
+	 */
+	public boolean isBinaryUploadAsync() {
+		return binaryUploadAsync;
 	}
 
 	/**

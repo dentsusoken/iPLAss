@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command.binary;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Stack;
@@ -100,11 +101,29 @@ public final class UploadCommand implements Command {
 			}
 
 			if (file != null && file.getSize() > 0) {
+				GemConfigService service = ServiceRegistry.getRegistry()
+						.getService(GemConfigService.class);
+
 				BinaryReference br = file.toBinaryReference();
 				ResultXmlWriter xml = new ResultXmlWriter(br.getName(), br.getType(), br.getLobId());
-				request.setAttribute(Constants.CMD_RSLT_STREAM, xml);
 
-				return Constants.CMD_EXEC_SUCCESS;
+				if (service.isBinaryUploadAsync()) {
+					// === 非同期モード ===
+					request.setAttribute(Constants.CMD_RSLT_STREAM, xml);
+					return Constants.CMD_EXEC_SUCCESS;
+				} else {
+					// === 同期モード ===
+					try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+						xml.write(out); // write() 内部で os=out に設定され、XML 出力が行われる
+						out.flush();
+						request.setAttribute(Constants.CMD_RSLT_STREAM, out.toByteArray());
+						return Constants.CMD_EXEC_SUCCESS;
+					} catch (IOException e) {
+						e.printStackTrace();
+						request.setAttribute(Constants.CMD_RSLT_STREAM, new ResultXmlWriter(e.getMessage()));
+						return Constants.CMD_EXEC_ERROR;
+					}
+				}
 			}
 		} catch (RuntimeException e) {
 			Transaction t = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
