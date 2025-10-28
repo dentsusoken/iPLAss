@@ -160,7 +160,7 @@
 		<property name="showPulldownPleaseSelectLabel" value="true" />
 
 		<!-- binaryファイルアップロード非同期 -->
-		<property name="binaryUploadAsync" value="true" />
+		<property name="binaryUploadAsync" value="false" />
 
 		<!-- DatePickerのデフォルトオプション -->
 		<property name="datePickerDefaultOption" value="changeMonth:true,changeYear:true,yearRange:&quot;c-10:c+10&quot;" />
