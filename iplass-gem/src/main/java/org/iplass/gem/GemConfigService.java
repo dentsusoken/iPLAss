@@ -237,7 +237,7 @@ public class GemConfigService implements Service {
 
 		showPulldownPleaseSelectLabel = config.getValue("showPulldownPleaseSelectLabel", Boolean.class, true);
 
-		binaryUploadAsync = config.getValue("binaryUploadAsync", Boolean.class, false);
+		binaryUploadAsync = config.getValue("binaryUploadAsync", Boolean.class, true);
 
 		datePickerDefaultOption = config.getValue("datePickerDefaultOption", String.class, null);
 
