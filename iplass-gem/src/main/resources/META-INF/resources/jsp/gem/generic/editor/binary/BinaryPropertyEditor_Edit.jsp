@@ -166,7 +166,7 @@
 <input type="file" id="<c:out value="<%=fileId %>"/>" name="filePath" value="${m:rs('mtp-gem-messages', 'generic.editor.binary.BinaryPropertyEditor_Edit.upload')}"
  style="<c:out value="<%=style %>"/>" class="<c:out value="<%=cls %>"/>" data-pname="<c:out value="<%=propName %>"/>" data-displayType="<c:out value="<%=displayType%>"/>"
  data-binCount="<c:out value="<%=length %>" />" data-uploadUrl="<c:out value="<%=upload %>" />" data-downloadUrl="<c:out value="<%=download %>" />" data-binaryUploadAsync="<%= binaryUploadAsync %>"
- data-refUrl="<c:out value="<%=ref %>" />"data-pdfviewerUrl="<c:out value="<%=pdfviewer %>" />" data-usePdfjs="<%=editor.isUsePdfjs()%>"
+ data-refUrl="<c:out value="<%=ref %>" />" data-pdfviewerUrl="<c:out value="<%=pdfviewer %>" />" data-usePdfjs="<%=editor.isUsePdfjs()%>"
  data-imgviewerUrl="<c:out value="<%=imgviewer %>" />" data-useImageViewer="<%=editor.isUseImageViewer()%>"
  data-showImageRotateButton="<%=editor.isShowImageRotateButton() %>"  data-openNewTab="<%=editor.isOpenNewTab() %>"
  data-multiplicity="<c:out value="<%=pd.getMultiplicity() %>" />" data-binWidth="<c:out value="<%=editor.getWidth() %>" />"
