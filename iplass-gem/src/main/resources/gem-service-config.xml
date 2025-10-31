@@ -159,7 +159,7 @@
 		<!-- プルダウンの「選択してください」を表示するか -->
 		<property name="showPulldownPleaseSelectLabel" value="true" />
 
-		<!-- binaryファイルアップロード非同期 -->
+		<!-- binaryファイルアップロード非同期設定 -->
 		<property name="binaryUploadAsync" value="true" />
 
 		<!-- DatePickerのデフォルトオプション -->
