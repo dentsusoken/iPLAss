@@ -1859,6 +1859,8 @@ function uploadFile(file, token) {
 		url: $file.attr("data-uploadUrl"),
 		dataType: "xml",
 		dropZone: $file.parent(),
+		//順次アップロード設定を追加（同期実行）
+		sequentialUploads: $file.attr("data-binaryUploadAsync") === "false",
 		change: function(e, data) {//ファイル選択後に1回
 			return beforeSend(e, data);
 		},

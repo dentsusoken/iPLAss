@@ -29,6 +29,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.query.ASTNode;
+import org.iplass.mtp.entity.query.AsOf.AsOfSpec;
 import org.iplass.mtp.entity.query.From;
 import org.iplass.mtp.entity.query.GroupBy;
 import org.iplass.mtp.entity.query.Having;
@@ -2283,8 +2284,10 @@ public class SqlConverter extends QueryVisitorSupport {
 						((QueryBindValue) b).clause = Clause.REFER;
 					}
 				}
-	
-				mainContext.getJoinPath().getJoinPath(refPropName.getPropertyName()).setAdditionalCondition(referContext.getCurrentSb().toString(), referBindVarialbes);
+
+				AsOfSpec asOfSpec = refer.getAsOf() == null ? null : refer.getAsOf().getSpec();
+				mainContext.getJoinPath().getJoinPath(refPropName.getPropertyName()).setAdditionalCondition(referContext.getCurrentSb().toString(),
+						referBindVarialbes, asOfSpec);
 				if (mainContext.getIndexTable() == null) {
 					mainContext.setIndexTable(referContext.getIndexTable());
 				}
