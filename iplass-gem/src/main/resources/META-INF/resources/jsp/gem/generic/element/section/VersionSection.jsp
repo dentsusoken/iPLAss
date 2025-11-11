@@ -34,7 +34,6 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
-<%@ page import="org.iplass.gem.command.ViewUtil.SectionStyleResult"%>
 
 <%
 	Element element = (Element) request.getAttribute(Constants.ELEMENT);
@@ -62,15 +61,19 @@
 		id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 	}
 
-	String baseClassName = "version-section";
-	SectionStyleResult styleResult = ViewUtil.buildSectionStyle(section, baseClassName);
+	String style = "";
+	if (StringUtil.isNotBlank(section.getStyle())) {
+		style = section.getStyle();
+	}
+
+	String styleAttr = ViewUtil.buildSectionHeightStyle(section);
 	
 	String title = GemResourceBundleUtil.resourceString("generic.element.section.VersionSection.anotherVer");
 	if (StringUtil.isNotBlank(section.getTitle())) {
 		title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
 	}
 %>
-<div <%= id %> class="<%= styleResult.getClassName() %>" style="<%= styleResult.getStyle() %>">
+<div <%=id %> class="version-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
 <script type="text/javascript">
 $(function() {
 	$("div.other-version").off("click");

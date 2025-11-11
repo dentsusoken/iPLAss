@@ -60,7 +60,6 @@
 <%@page import="org.iplass.mtp.view.generic.element.section.ReferenceSection" %>
 <%@page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
-<%@ page import="org.iplass.gem.command.ViewUtil.SectionStyleResult"%>
 <%!
 	LoadEntityInterrupterHandler getLoadEntityInterrupterHandler(EntityManager em, EntityDefinitionManager edm, EntityViewManager evm) {
 		DetailCommandContext context = new DetailCommandContext(TemplateUtil.getRequestContext(), em, edm);//ここでこれを作るのはちょっと微妙だが・・・
@@ -199,9 +198,13 @@
 		id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 	}
 
-	String baseClassName = "reference-section";
+	String style = "";
+	if (StringUtil.isNotBlank(section.getStyle())) {
+		style = section.getStyle();
+	}
+
+	String styleAttr = ViewUtil.buildSectionHeightStyle(section);
 	
-	SectionStyleResult styleResult = ViewUtil.buildSectionStyle(section, baseClassName);
 	String disclosure = "";
 	String disclosureStyle = "";
 	if (!section.isExpandable()) {
@@ -244,7 +247,7 @@
 
 %>
 
-<div <%= id %> class="<%= styleResult.getClassName() %>" style="<%= styleResult.getStyle() %>">
+<div <%=id %> class="reference-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>

@@ -29,7 +29,6 @@
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
-<%@ page import="org.iplass.gem.command.ViewUtil.SectionStyleResult"%>
 
 <%
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
@@ -43,12 +42,14 @@
 	String id = "";
 	if (section.getId() != null) id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 
-	String baseClassName = "scripting-section";
+	String style = "";
+	if (StringUtil.isNotBlank(section.getStyle())) {
+		style = section.getStyle();
+	}
 	
-	SectionStyleResult styleResult = ViewUtil.buildSectionStyle(section, baseClassName);
-	
+	String styleAttr = ViewUtil.buildSectionHeightStyle(section);
 %>
-<div <%= id %> class="<%= styleResult.getClassName() %>" style="<%= styleResult.getStyle() %>">
+<div <%=id %> class="scripting-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
 <%
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	evm.executeTemplate(ed.getName(), section.getKey(), request, response, application, pageContext);

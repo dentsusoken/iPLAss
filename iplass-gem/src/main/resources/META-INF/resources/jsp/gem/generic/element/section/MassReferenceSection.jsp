@@ -43,7 +43,6 @@
 <%@ page import="org.iplass.gem.command.generic.detail.UpdateMappedbyReferenceCommand"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
-<%@ page import="org.iplass.gem.command.ViewUtil.SectionStyleResult"%>
 <%
 	Element element = (Element) request.getAttribute(Constants.ELEMENT);
 	Object value = request.getAttribute(Constants.ENTITY_DATA);
@@ -70,11 +69,13 @@
 		id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 	}
 
-	String baseClassName = "mass-reference-section";
-	
-	SectionStyleResult styleResult = ViewUtil.buildSectionStyle(section, baseClassName);
-	
+	String style = "";
+	if (StringUtil.isNotBlank(section.getStyle())) {
+		style = section.getStyle();
+	}
 
+	String styleAttr = ViewUtil.buildSectionHeightStyle(section);
+	
 	String disclosure = "";
 	String disclosureStyle = "";
 	if (!section.isExpandable()) {
@@ -161,7 +162,8 @@
 
 	//非同期で参照先のEntityを被参照のOIDで検索する
 %>
-<div <%= id %> class="<%= styleResult.getClassName() %>" style="<%= styleResult.getStyle() %>">
+
+<div <%=id %> class="mass-reference-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>

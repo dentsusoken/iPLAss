@@ -17,17 +17,6 @@ public abstract class AdjustableHeightSection extends Section {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -6145648008070643845L;
 
-//	/** セクション高さ調整可否設定 */
-//	@MetaFieldInfo(
-//			displayName = "セクション高さ調整可否設定",
-//			displayNameKey = "generic_element_section_Section_adjustableHeightDisplayNameKey",
-//			inputType = InputType.CHECKBOX,
-//			displayOrder = 340,
-//			description = "セクションの高さをユーザーが調整できるかどうかを設定します。",
-//			descriptionKey = "generic_element_section_Section_adjustableHeightDescriptionKey"
-//	)
-//	private boolean adjustableHeight;
-
 	/** セクション高さ設定（px） */
 	@MetaFieldInfo(
 			displayName = "セクション高さ設定（px）",
@@ -38,14 +27,6 @@ public abstract class AdjustableHeightSection extends Section {
 			descriptionKey = "generic_element_section_Section_sectionHeightDescriptionKey"
 	)
 	private int sectionHeight;
-
-//	public boolean isAdjustableHeight() {
-//		return adjustableHeight;
-//	}
-//
-//	public void setAdjustableHeight(boolean adjustableHeight) {
-//		this.adjustableHeight = adjustableHeight;
-//	}
 	
 	public int getSectionHeight() {
 		return sectionHeight;

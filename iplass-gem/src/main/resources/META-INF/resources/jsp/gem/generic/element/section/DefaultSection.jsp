@@ -33,7 +33,6 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
-<%@ page import="org.iplass.gem.command.ViewUtil.SectionStyleResult"%>
 <%!
 	boolean checkDispElement(OutputType type, Element elem) {
 		boolean dispElement = true;
@@ -120,11 +119,14 @@
 	if (StringUtil.isNotBlank(section.getId())) {
 		id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 	}
-	
-	String baseClassName = "default-section";
-	
-	SectionStyleResult styleResult = ViewUtil.buildSectionStyle(section, baseClassName);
 
+	String style = "";
+	if (StringUtil.isNotBlank(section.getStyle())) {
+		style = section.getStyle();
+	}
+
+	String styleAttr = ViewUtil.buildSectionHeightStyle(section);
+	
 	String disclosure = "";
 	String disclosureStyle = "";
 	if (!section.isExpandable()) {
@@ -181,7 +183,7 @@
 	//カスタムスタイル用のSectionKEYをセット
 	request.setAttribute(Constants.SECTION_SCRIPT_KEY, section.getStyleScriptKey());
 %>
-<div <%= id %> class="<%= styleResult.getClassName() %>" style="<%= styleResult.getStyle() %>">
+<div <%=id %> class="default-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 
 <h3><span><c:out value="<%=title %>"/></span></h3>

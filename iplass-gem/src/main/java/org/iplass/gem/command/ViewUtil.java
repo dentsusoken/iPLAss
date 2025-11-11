@@ -595,59 +595,19 @@ public class ViewUtil {
 	}
 
 	/**
-	 * セクションの className と style を共通的に生成します。
-	 *
-	 * @param section 対象セクション
-	 * @param baseClassName 基本クラス名（例: "default-section" や "mass-reference-section"）
-	 * @return 生成結果（className と style）
+	 * section の style 属性を生成します（style="" の有無を含む）
+	 * @param section ScriptingSection のインスタンス
+	 * @return sectionHeight が 0 より大きい場合は、style="height:xxxpx; overflow-y:auto;" を返し、
+	 *         それ以外の場合は空文字を返します。
 	 */
-	public static SectionStyleResult buildSectionStyle(AdjustableHeightSection section, String baseClassName) {
-//		boolean adjustableHeight = section.isAdjustableHeight();
-		int sectionHeight = section.getSectionHeight();
-
-		String style = "";
-		String className = baseClassName;
-
-		if (StringUtil.isNotBlank(section.getStyle())) {
-			String s = section.getStyle()
-					.trim();
-
-			// クラス名形式（コロン・セミコロン・波括弧を含まない）
-			if (s.matches("^[a-zA-Z0-9_-]+$")) {
-				className += " " + s;
-			} else {
-				// インラインスタイルとみなす
-				style = s;
-			}
+	public static String buildSectionHeightStyle(AdjustableHeightSection section) {
+		if (section == null || section.getSectionHeight() <= 0) {
+			return "";
 		}
-
-		// 高さ指定が有効な場合にstyleに反映
-		if (sectionHeight > 0) {
-			if (!style.endsWith(";") && style.length() > 0) {
-				style += "; ";
-			}
-			style += "height:" + sectionHeight + "px; overflow-y:auto;";
+		String sectionHeightStyle = "height:" + section.getSectionHeight() + "px; overflow-y:auto;";
+		if (StringUtil.isNotBlank(sectionHeightStyle)) {
+			return " style=\"" + sectionHeightStyle + "\"";
 		}
-
-		return new SectionStyleResult(className, style);
-	}
-
-	/** 共通返却用 DTO */
-	public static class SectionStyleResult {
-		private final String className;
-		private final String style;
-
-		public SectionStyleResult(String className, String style) {
-			this.className = className;
-			this.style = style;
-		}
-
-		public String getClassName() {
-			return className;
-		}
-
-		public String getStyle() {
-			return style;
-		}
+		return "";
 	}
 }
