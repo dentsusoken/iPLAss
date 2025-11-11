@@ -45,9 +45,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * セクションのメタデータ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaTemplateSection.class, MetaDefaultSection.class, MetaScriptingSection.class,
-	MetaVersionSection.class, MetaSearchConditionSection.class, MetaSearchResultSection.class,
-	MetaReferenceSection.class, MetaMassReferenceSection.class})
+@XmlSeeAlso({ MetaAdjustableHeightSection.class, MetaSearchResultSection.class })
 public abstract class MetaSection extends MetaElement {
 
 	/** シリアルバージョンUID */

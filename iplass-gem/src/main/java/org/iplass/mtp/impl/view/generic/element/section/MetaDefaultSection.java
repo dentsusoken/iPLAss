@@ -60,7 +60,7 @@ import org.iplass.mtp.view.generic.element.section.Section;
  * 標準セクションのメタデータ
  * @author lis3wg
  */
-public class MetaDefaultSection extends MetaSection {
+public class MetaDefaultSection extends MetaAdjustableHeightSection {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 6368546528151431462L;

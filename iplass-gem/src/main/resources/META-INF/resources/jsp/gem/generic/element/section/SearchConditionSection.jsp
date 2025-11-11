@@ -67,6 +67,7 @@
 <%@ page import="org.iplass.gem.GemConfigService"%>
 <%@ page import="org.iplass.mtp.spi.ServiceRegistry"%>
 <%@ page import="org.iplass.mtp.impl.entity.property.PropertyService"%>
+<%@ page import="org.iplass.gem.command.ViewUtil.SectionStyleResult"%>
 
 
 <%!
@@ -416,12 +417,12 @@
 		id = "id=\"" + StringUtil.escapeHtml(section.getId()) + "\"";
 	}
 
-	String secStyle = "";
-	if (StringUtil.isNotBlank(section.getStyle())) {
-		secStyle = section.getStyle();
-	}
+	String baseClassName = "tab-wrap search-condition-section";
+	
+	SectionStyleResult styleResult = ViewUtil.buildSectionStyle(section, baseClassName);
+
 %>
-<div <%=id %> class="tab-wrap search-condition-section <c:out value="<%=secStyle %>"/>">
+<div <%= id %> class="<%= styleResult.getClassName() %>" style="<%= styleResult.getStyle() %>">
 <script type="text/javascript">
 function validation(searchType) {
 	<%-- common.js --%>

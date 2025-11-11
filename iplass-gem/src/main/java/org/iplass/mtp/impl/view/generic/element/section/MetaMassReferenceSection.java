@@ -46,7 +46,7 @@ import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 import org.iplass.mtp.view.generic.element.section.MassReferenceSection.MassReferenceEditType;
 import org.iplass.mtp.view.generic.element.section.SortSetting;
 
-public class MetaMassReferenceSection extends MetaSection {
+public class MetaMassReferenceSection extends MetaAdjustableHeightSection {
 
 	private static final long serialVersionUID = -2758207829852210618L;
 

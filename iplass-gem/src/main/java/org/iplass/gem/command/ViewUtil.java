@@ -57,6 +57,7 @@ import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.Element.EditDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
+import org.iplass.mtp.view.generic.element.section.AdjustableHeightSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvDownloadSpecifyCharacterCode;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.view.top.TopViewDefinition;
@@ -591,5 +592,62 @@ public class ViewUtil {
 			settingInfo.setDatetimeLocale(dtfInfo.getDatetimeLocale());
 		}
 		return settingInfo;
+	}
+
+	/**
+	 * セクションの className と style を共通的に生成します。
+	 *
+	 * @param section 対象セクション
+	 * @param baseClassName 基本クラス名（例: "default-section" や "mass-reference-section"）
+	 * @return 生成結果（className と style）
+	 */
+	public static SectionStyleResult buildSectionStyle(AdjustableHeightSection section, String baseClassName) {
+//		boolean adjustableHeight = section.isAdjustableHeight();
+		int sectionHeight = section.getSectionHeight();
+
+		String style = "";
+		String className = baseClassName;
+
+		if (StringUtil.isNotBlank(section.getStyle())) {
+			String s = section.getStyle()
+					.trim();
+
+			// クラス名形式（コロン・セミコロン・波括弧を含まない）
+			if (s.matches("^[a-zA-Z0-9_-]+$")) {
+				className += " " + s;
+			} else {
+				// インラインスタイルとみなす
+				style = s;
+			}
+		}
+
+		// 高さ指定が有効な場合にstyleに反映
+		if (sectionHeight > 0) {
+			if (!style.endsWith(";") && style.length() > 0) {
+				style += "; ";
+			}
+			style += "height:" + sectionHeight + "px; overflow-y:auto;";
+		}
+
+		return new SectionStyleResult(className, style);
+	}
+
+	/** 共通返却用 DTO */
+	public static class SectionStyleResult {
+		private final String className;
+		private final String style;
+
+		public SectionStyleResult(String className, String style) {
+			this.className = className;
+			this.style = style;
+		}
+
+		public String getClassName() {
+			return className;
+		}
+
+		public String getStyle() {
+			return style;
+		}
 	}
 }

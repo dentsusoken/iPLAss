@@ -28,7 +28,7 @@ import org.iplass.mtp.view.generic.element.section.VersionSection;
  * 別バージョン表示用セクション
  * @author lis3wg
  */
-public class MetaVersionSection extends MetaSection {
+public class MetaVersionSection extends MetaAdjustableHeightSection {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -180720387357540824L;

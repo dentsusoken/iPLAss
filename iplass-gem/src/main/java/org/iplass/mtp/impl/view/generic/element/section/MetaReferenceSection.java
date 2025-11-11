@@ -50,7 +50,7 @@ import org.iplass.mtp.view.generic.element.section.ReferenceSection;
  *
  * @author lis3wg
  */
-public class MetaReferenceSection extends MetaSection {
+public class MetaReferenceSection extends MetaAdjustableHeightSection {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -3690001980373138857L;

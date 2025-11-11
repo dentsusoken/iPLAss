@@ -35,7 +35,7 @@ import org.iplass.mtp.view.generic.element.section.ScriptingSection;
  * スクリプトセクションのメタデータ
  * @author lis3wg
  */
-public class MetaScriptingSection extends MetaSection {
+public class MetaScriptingSection extends MetaAdjustableHeightSection {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -8540919663557511912L;

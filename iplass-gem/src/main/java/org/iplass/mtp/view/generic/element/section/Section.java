@@ -39,8 +39,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({TemplateSection.class, DefaultSection.class, ScriptingSection.class, VersionSection.class,
-	SearchConditionSection.class, SearchResultSection.class, ReferenceSection.class, MassReferenceSection.class})
+@XmlSeeAlso({ AdjustableHeightSection.class, SearchResultSection.class })
 @FieldOrder(manual=true)
 public abstract class Section extends Element {
 

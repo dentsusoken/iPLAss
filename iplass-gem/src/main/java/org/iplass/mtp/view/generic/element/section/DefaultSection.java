@@ -42,7 +42,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/DefaultSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class DefaultSection extends Section {
+public class DefaultSection extends AdjustableHeightSection {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 8895232754105370651L;
