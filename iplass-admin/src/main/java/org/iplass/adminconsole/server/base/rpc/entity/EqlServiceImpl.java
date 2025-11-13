@@ -134,15 +134,15 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 					return result;
 				}
 				long endSearchTime = System.nanoTime();
-				if (callback.getStartFetchTtime() < 0) {
+				if (callback.getStartFetchTime() < 0) {
 					//該当データなし
 					result.addLogMessage(rs("tools.eql.EqlServiceImpl.runQueryTime") + ((double) (endSearchTime - startSearchTime)) / 1000000 + "ms");
 					result.addLogMessage(rs("tools.eql.EqlServiceImpl.runFetchTime") + "0ms");
 				} else {
 					result.addLogMessage(rs("tools.eql.EqlServiceImpl.runQueryTime")
-							+ ((double) (callback.getStartFetchTtime() - startSearchTime)) / 1000000 + "ms");
+							+ ((double) (callback.getStartFetchTime() - startSearchTime)) / 1000000 + "ms");
 					result.addLogMessage(
-							rs("tools.eql.EqlServiceImpl.runFetchTime") + ((double) (endSearchTime - callback.getStartFetchTtime())) / 1000000 + "ms");
+							rs("tools.eql.EqlServiceImpl.runFetchTime") + ((double) (endSearchTime - callback.getStartFetchTime())) / 1000000 + "ms");
 				}
 
 				//クライアントに返すためValueExpressionをStringに変換

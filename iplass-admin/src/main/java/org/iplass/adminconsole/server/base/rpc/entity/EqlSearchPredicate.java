@@ -59,7 +59,7 @@ public class EqlSearchPredicate implements Predicate<Object[]> {
 	private Predicate<String[]> strCallback;
 
 	/** 検索結果のフェッチ開始時間 */
-	private long startFetchTtime = -1;
+	private long startFetchTime = -1;
 
 	public EqlSearchPredicate() {
 		strRecords = new ArrayList<String[]>();
@@ -71,8 +71,8 @@ public class EqlSearchPredicate implements Predicate<Object[]> {
 
 	@Override
 	public boolean test(Object[] record) {
-		if (startFetchTtime < 0) {
-			startFetchTtime = System.nanoTime();
+		if (startFetchTime < 0) {
+			startFetchTime = System.nanoTime();
 		}
 		String[] strRecord = new String[record.length];
 		for (int i = 0; i < record.length; i++) {
@@ -113,8 +113,8 @@ public class EqlSearchPredicate implements Predicate<Object[]> {
 	 * 
 	 * @return フェッチ開始時間
 	 */
-	public long getStartFetchTtime() {
-		return startFetchTtime;
+	public long getStartFetchTime() {
+		return startFetchTime;
 	}
 
 	protected String convertValue(Object value) {
