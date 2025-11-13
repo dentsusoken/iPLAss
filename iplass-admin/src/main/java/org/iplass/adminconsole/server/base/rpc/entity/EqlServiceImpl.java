@@ -113,7 +113,7 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 
 				//検索結果をObjectからString形式に変換するCallbackを生成(GWTのSerialize対応)
 				EqlSearchPredicate callback = new EqlSearchPredicate();
-				long start = System.nanoTime();
+				long startSearchTime = System.nanoTime();
 				try {
 					em.search(query, callback);
 				} catch (QueryException e) {
@@ -133,7 +133,17 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 					result.setError(true);
 					return result;
 				}
-				result.addLogMessage(rs("tools.eql.EqlServiceImpl.runTime") + ((double)(System.nanoTime() - start)) / 1000000 + "ms");
+				long endSearchTime = System.nanoTime();
+				if (callback.getStartFetchTime() < 0) {
+					//該当データなし
+					result.addLogMessage(rs("tools.eql.EqlServiceImpl.runQueryTime") + ((double) (endSearchTime - startSearchTime)) / 1000000 + "ms");
+					result.addLogMessage(rs("tools.eql.EqlServiceImpl.runFetchTime") + "0ms");
+				} else {
+					result.addLogMessage(rs("tools.eql.EqlServiceImpl.runQueryTime")
+							+ ((double) (callback.getStartFetchTime() - startSearchTime)) / 1000000 + "ms");
+					result.addLogMessage(
+							rs("tools.eql.EqlServiceImpl.runFetchTime") + ((double) (endSearchTime - callback.getStartFetchTime())) / 1000000 + "ms");
+				}
 
 				//クライアントに返すためValueExpressionをStringに変換
 				List<ValueExpression> colValues = query.getSelect().getSelectValues();

@@ -58,6 +58,9 @@ public class EqlSearchPredicate implements Predicate<Object[]> {
 	/** Stringに変換された値を利用するCallback */
 	private Predicate<String[]> strCallback;
 
+	/** 検索結果のフェッチ開始時間 */
+	private long startFetchTime = -1;
+
 	public EqlSearchPredicate() {
 		strRecords = new ArrayList<String[]>();
 	}
@@ -68,6 +71,9 @@ public class EqlSearchPredicate implements Predicate<Object[]> {
 
 	@Override
 	public boolean test(Object[] record) {
+		if (startFetchTime < 0) {
+			startFetchTime = System.nanoTime();
+		}
 		String[] strRecord = new String[record.length];
 		for (int i = 0; i < record.length; i++) {
 			//Stringに変換
@@ -99,6 +105,16 @@ public class EqlSearchPredicate implements Predicate<Object[]> {
 
 	public int getLimitSize() {
 		return MAX_LIMIT;
+	}
+
+	/**
+	 * 検索結果のフェッチ開始時間を返します。
+	 * 該当データがない場合は、-1を返します。
+	 * 
+	 * @return フェッチ開始時間
+	 */
+	public long getStartFetchTime() {
+		return startFetchTime;
 	}
 
 	protected String convertValue(Object value) {
