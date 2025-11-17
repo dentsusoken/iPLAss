@@ -115,6 +115,8 @@
 	EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+	
+	String styleAttr = ViewUtil.buildHeightStyleAttr(setting.getMaxHeight());
 
 	User user = (User) em.load(auth.getUser().getOid(), auth.getUser().getVersion(), User.DEFINITION_NAME);
 %>
@@ -143,7 +145,7 @@ if (!"true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 %>
 <form method="POST" action="${m:tcPath()}/<%=UpdatePasswordCommand.ACTION_DO_UPDATE_PASSWORD%>">
 <div class="formArchive">
-<div>
+<div <%=styleAttr%>>
 <table class="tbl-maintenance tbl-section mb10">
 <tbody><tr>
 <th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.curPass")}</th>
@@ -203,7 +205,7 @@ if ("true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 }
 %>
 <div class="formArchive">
-<div>
+<div <%=styleAttr%>>
 <table class="tbl-maintenance tbl-section">
 <tbody>
 <%

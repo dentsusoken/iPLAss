@@ -39,7 +39,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/TemplateSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class TemplateSection extends AdjustableHeightSection {
+public class TemplateSection extends Section {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 2395869879339480230L;

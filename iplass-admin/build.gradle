@@ -468,7 +468,6 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/generic/element/section/SearchConditionSection.java'
 		include 'mtp/view/generic/element/section/SearchResultSection.java'
 		include 'mtp/view/generic/element/section/Section.java'
-		include 'mtp/view/generic/element/section/AdjustableHeightSection.java'
 		include 'mtp/view/generic/element/section/SortSetting.java'
 		include 'mtp/view/generic/element/section/TemplateSection.java'
 		include 'mtp/view/generic/element/section/VersionSection.java'

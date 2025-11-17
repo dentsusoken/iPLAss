@@ -36,6 +36,7 @@
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.auth.UpdatePasswordCommand"%>
+<%@page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
 	String displayFormat(Timestamp time, DateFormat format) {
@@ -50,6 +51,9 @@
 <%
 	//設定情報取得
 	InformationParts parts = (InformationParts) request.getAttribute(Constants.INFO_SETTING);
+
+	//パーツの高さスタイル属性
+	String styleAttr = ViewUtil.buildHeightStyleAttr(parts.getMaxHeight());
 
 	//お知らせデータ取得
 	@SuppressWarnings("unchecked") List<Entity> data = (List<Entity>) request.getAttribute(Constants.DATA);
@@ -135,7 +139,7 @@ function changePassword() {
 <%
 	}
 %>
-<div class="info-block mb20">
+<div class="info-block mb20" <%=styleAttr%>>
 <table class="tbl-information-list flat-block-top">
 <%
 	if (data != null && !data.isEmpty()) {

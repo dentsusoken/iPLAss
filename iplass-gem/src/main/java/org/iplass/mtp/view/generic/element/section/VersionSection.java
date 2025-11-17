@@ -33,7 +33,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/VersionSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class VersionSection extends AdjustableHeightSection {
+public class VersionSection extends Section {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 7818629993792184485L;

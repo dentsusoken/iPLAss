@@ -57,7 +57,6 @@ import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.Element.EditDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
-import org.iplass.mtp.view.generic.element.section.AdjustableHeightSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvDownloadSpecifyCharacterCode;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.view.top.TopViewDefinition;
@@ -595,18 +594,14 @@ public class ViewUtil {
 	}
 
 	/**
-	 * section の style 属性を生成します（style="" の有無を含む）
-	 * @param section ScriptingSection のインスタンス
-	 * @return sectionHeight が 0 より大きい場合は、style="height:xxxpx; overflow-y:auto;" を返し、
-	 *         それ以外の場合は空文字を返します。
+	 * SectionやPartsなどに共通して使用できる高さ指定のstyle属性を生成します。
+	 * 
+	 * @param height 高さ(px単位)。nullまたは0以下の場合は空文字を返します。
+	 * @return style="height:xxxpx; overflow-y:auto;" または 空文字
 	 */
-	public static String buildSectionHeightStyle(AdjustableHeightSection section) {
-		if (section == null || section.getSectionHeight() <= 0) {
-			return "";
-		}
-		String sectionHeightStyle = "height:" + section.getSectionHeight() + "px; overflow-y:auto;";
-		if (StringUtil.isNotBlank(sectionHeightStyle)) {
-			return " style=\"" + sectionHeightStyle + "\"";
+	public static String buildHeightStyleAttr(Integer height) {
+		if (height != null && height > 0) {
+			return " style=\"max-height:" + height + "px; overflow-y:auto;\"";
 		}
 		return "";
 	}

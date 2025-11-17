@@ -43,6 +43,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 
 /**
  *
@@ -89,6 +90,7 @@ public class UserMaintenanceItem extends PartsItem {
 
 		private static final String USER_DEFINITION_NAME = "mtp.auth.User";
 		private SelectItem viewField;
+		private TextItem maxHeightField;
 
 		/**
 		 * コンストラクタ
@@ -96,7 +98,7 @@ public class UserMaintenanceItem extends PartsItem {
 		public UserMaintenanceItemSettingDialog() {
 
 			setTitle("User Maintenance");
-			setHeight(130);
+			setHeight(200);
 			centerInPage();
 
 			final DynamicForm form = new MtpForm();
@@ -107,7 +109,10 @@ public class UserMaintenanceItem extends PartsItem {
 			viewField.setValue(parts.getViewName());
 			getViewList(USER_DEFINITION_NAME);
 
-			form.setItems(viewField);
+			maxHeightField = new TextItem("maxHeight", "Max Height");
+			maxHeightField.setValue(parts.getMaxHeight());
+
+			form.setItems(viewField, maxHeightField);
 
 			container.addMember(form);
 
@@ -118,6 +123,7 @@ public class UserMaintenanceItem extends PartsItem {
 					if (form.validate()){
 						//入力情報をパーツに
 						parts.setViewName(SmartGWTUtil.getStringValue(viewField));
+						parts.setMaxHeight(SmartGWTUtil.getIntegerValue(maxHeightField));
 						destroy();
 					}
 				}

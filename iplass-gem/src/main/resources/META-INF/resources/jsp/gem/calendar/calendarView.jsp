@@ -39,6 +39,7 @@
 <%@ page import="org.iplass.gem.command.Constants"%>
 
 <%
+String styleAttr = request.getParameter("styleAttr");
 
 Boolean isTop = (Boolean) request.getAttribute("isTop");
 if (isTop == null) isTop = false;
@@ -135,4 +136,4 @@ if (!isTop) {
 <%
 }
 %>
-<div id ="<%=calendarName%>" class="flat-block-top"></div>
+<div id ="<%=calendarName%>" class="flat-block-top" <%=styleAttr%>></div>

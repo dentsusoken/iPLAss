@@ -28,7 +28,7 @@ import org.iplass.mtp.view.generic.element.section.TemplateSection;
  * テンプレートセクションのメタデータ
  * @author lis3wg
  */
-public class MetaTemplateSection extends MetaAdjustableHeightSection {
+public class MetaTemplateSection extends MetaSection {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 3587801590097006196L;

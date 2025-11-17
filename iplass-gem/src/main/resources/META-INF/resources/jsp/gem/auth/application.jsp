@@ -49,6 +49,7 @@
 <%@page import="org.iplass.gem.command.auth.GenerateAuthTokenCommand"%>
 <%@page import="org.iplass.mtp.auth.login.token.SimpleAuthTokenCredential"%>
 <%@page import="org.iplass.mtp.auth.login.token.SimpleAuthTokenInfo"%>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
 	TopViewDefinitionManager tvdm = ManagerLocator.manager(TopViewDefinitionManager.class);
@@ -65,9 +66,10 @@
 
 	String title = null;
 	boolean usePersonalAccessToken = false;
+	ApplicationMaintenanceParts amp = null;
 	for (TopViewParts parts : topView.getParts()) {
 		if (parts instanceof ApplicationMaintenanceParts) {
-			ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts)parts;
+			amp = (ApplicationMaintenanceParts)parts;
 			title = I18nUtil.stringDef(amp.getTitle(), amp.getLocalizedTitleList());
 			if (title == null) {
 				title = GemResourceBundleUtil.resourceString("layout.header.appMaintenance");
@@ -77,6 +79,8 @@
 		}
 	}
 
+	String styleAttr = ViewUtil.buildHeightStyleAttr(amp.getMaxHeight());
+	
 	List<AccessTokenInfo> applications = new ArrayList<>();
 	List<RememberMeTokenInfo> validRememberMeTokens  = new ArrayList<>();
 	List<SimpleAuthTokenInfo> simpleAuthTokens = new ArrayList<>();
@@ -108,7 +112,7 @@
 
 <div class="auth-application">
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.authApplication")}</h3>
-<div class="detailForm">
+<div class="detailForm" <%= styleAttr %>>
 <%
 	if (applications.isEmpty()) {
 %>
@@ -230,7 +234,7 @@
 </div>
 
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.rememberMe")}</h3>
-<div class="detailForm">
+<div class="detailForm" <%= styleAttr %>>
 <%
 	if (validRememberMeTokens.isEmpty()) {
 %>
@@ -276,7 +280,7 @@ ${m:esc(m:fmt(info.expiryDate , 'yyyy/MM/dd HH:mm:ss'))}
 	if (usePersonalAccessToken) {
 %>
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.simpleAuthToken")}</h3>
-<div class="detailForm">
+<div class="detailForm" <%= styleAttr %>>
 <%
 	if (simpleAuthTokens.isEmpty()) {
 %>

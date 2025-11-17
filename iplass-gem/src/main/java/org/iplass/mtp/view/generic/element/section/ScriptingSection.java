@@ -39,7 +39,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/ScriptingSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class ScriptingSection extends AdjustableHeightSection {
+public class ScriptingSection extends Section {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -8977266385152999890L;

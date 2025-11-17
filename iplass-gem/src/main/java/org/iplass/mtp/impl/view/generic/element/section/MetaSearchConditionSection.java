@@ -53,7 +53,7 @@ import org.iplass.mtp.view.generic.element.section.SortSetting;
  * 検索条件セクションのメタデータ
  * @author lis3wg
  */
-public class MetaSearchConditionSection extends MetaAdjustableHeightSection {
+public class MetaSearchConditionSection extends MetaSection {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -9083146736532796083L;

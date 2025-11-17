@@ -39,7 +39,7 @@ import org.iplass.mtp.view.generic.editor.NestProperty;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/ReferenceSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class ReferenceSection extends AdjustableHeightSection implements HasNestProperty {
+public class ReferenceSection extends Section implements HasNestProperty {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -5340250243884655144L;

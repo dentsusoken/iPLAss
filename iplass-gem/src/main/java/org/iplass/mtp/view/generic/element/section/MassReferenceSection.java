@@ -42,7 +42,7 @@ import jakarta.xml.bind.annotation.XmlType;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/MassReferenceSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class MassReferenceSection extends AdjustableHeightSection implements HasNestProperty {
+public class MassReferenceSection extends Section implements HasNestProperty {
 
 	private static final long serialVersionUID = -5068125265820445100L;
 

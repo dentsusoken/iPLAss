@@ -51,7 +51,7 @@ import jakarta.xml.bind.annotation.XmlType;
 	@Jsp(path="/jsp/gem/generic/element/section/SearchConditionSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
 @IgnoreField({"dispFlag", "displayScript", "title"})
-public class SearchConditionSection extends AdjustableHeightSection {
+public class SearchConditionSection extends Section {
 
 	/** 検索条件のソートタイプ */
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")

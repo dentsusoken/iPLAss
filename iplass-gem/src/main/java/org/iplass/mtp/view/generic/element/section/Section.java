@@ -39,7 +39,8 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({ AdjustableHeightSection.class, SearchResultSection.class })
+@XmlSeeAlso({ TemplateSection.class, DefaultSection.class, ScriptingSection.class, VersionSection.class,
+		SearchConditionSection.class, ReferenceSection.class, MassReferenceSection.class, SearchResultSection.class })
 @FieldOrder(manual=true)
 public abstract class Section extends Element {
 
@@ -87,6 +88,17 @@ public abstract class Section extends Element {
 			descriptionKey="generic_element_section_Section_idDescriptionKey"
 	)
 	private String id;
+
+	/** セクション高さ設定（px） */
+	@MetaFieldInfo(
+			displayName = "セクション高さ設定（px）",
+			displayNameKey = "generic_element_section_Section_sectionHeightDisplayNameKey",
+			inputType = InputType.NUMBER,
+			displayOrder = 350,
+			description = "セクションの高さをピクセル単位で指定します。",
+			descriptionKey = "generic_element_section_Section_sectionHeightDescriptionKey"
+	)
+	private int sectionHeight;
 
 	/**
 	 * タイトルを取得します。
@@ -162,6 +174,22 @@ public abstract class Section extends Element {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	/**
+	 * セクション高さ設定（px）を取得します。
+	 * @return セクション高さ設定（px）
+	 */
+	public int getSectionHeight() {
+		return sectionHeight;
+	}
+
+	/**
+	 * セクション高さ設定（px）を設定します。
+	 * @param sectionHeight セクション高さ設定（px）
+	 */
+	public void setSectionHeight(int sectionHeight) {
+		this.sectionHeight = sectionHeight;
 	}
 
 	public abstract boolean isShowLink();
