@@ -47,7 +47,7 @@
 		style = section.getStyle();
 	}
 	
-	String styleAttr = ViewUtil.buildSectionHeightStyle(section);
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
 %>
 <div <%=id %> class="scripting-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
 <%

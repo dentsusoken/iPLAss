@@ -66,7 +66,7 @@
 		style = section.getStyle();
 	}
 
-	String styleAttr = ViewUtil.buildSectionHeightStyle(section);
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
 	
 	String title = GemResourceBundleUtil.resourceString("generic.element.section.VersionSection.anotherVer");
 	if (StringUtil.isNotBlank(section.getTitle())) {

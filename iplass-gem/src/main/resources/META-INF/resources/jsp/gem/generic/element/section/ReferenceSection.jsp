@@ -203,7 +203,7 @@
 		style = section.getStyle();
 	}
 
-	String styleAttr = ViewUtil.buildSectionHeightStyle(section);
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
 	
 	String disclosure = "";
 	String disclosureStyle = "";
