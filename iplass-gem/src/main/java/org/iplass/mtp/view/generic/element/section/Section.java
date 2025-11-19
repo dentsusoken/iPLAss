@@ -98,7 +98,7 @@ public abstract class Section extends Element {
 			description = "セクションの高さをピクセル単位で指定します。",
 			descriptionKey = "generic_element_section_Section_sectionHeightDescriptionKey"
 	)
-	private int sectionHeight;
+	private Integer sectionHeight;
 
 	/**
 	 * タイトルを取得します。
@@ -180,7 +180,7 @@ public abstract class Section extends Element {
 	 * セクション高さ設定（px）を取得します。
 	 * @return セクション高さ設定（px）
 	 */
-	public int getSectionHeight() {
+	public Integer getSectionHeight() {
 		return sectionHeight;
 	}
 
@@ -188,7 +188,7 @@ public abstract class Section extends Element {
 	 * セクション高さ設定（px）を設定します。
 	 * @param sectionHeight セクション高さ設定（px）
 	 */
-	public void setSectionHeight(int sectionHeight) {
+	public void setSectionHeight(Integer sectionHeight) {
 		this.sectionHeight = sectionHeight;
 	}
 

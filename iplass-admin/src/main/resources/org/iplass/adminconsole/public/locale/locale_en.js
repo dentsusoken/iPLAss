@@ -1138,6 +1138,7 @@ LocaleInfo.ui_metadata_top_item_InformationItem_warnMessageDispAreaIcon = "Speci
 LocaleInfo.ui_metadata_top_item_PreviewDatePartsItem_usePreviewDate = "Specify whether to use the preview date setting.<br/>This enables only when the [Preview date funtion] setting of the tenant is ON.";
 LocaleInfo.ui_metadata_top_item_ScriptItem_scriptHint = "<p>Execute the script written in GroovyTemplate on the Top screen. You can write HTML and Javascript.</p><p>The following variables and methods are bound.</p><ul><li>request: request</li><li>session: session</li><li>include(String path): Include jsp in the specified path.</li><li>includeTemplate(String templateName): Include the specified template.</li><li>renderContent(): Render the content.</li></ul>";
 LocaleInfo.ui_metadata_top_item_TopViewContentParts_styleDescriptionKey = "Specify the class name of the style sheet. Please, separated by a space if want to specify more than one.";
+LocaleInfo.ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey = "Specifies the maximum height of the content area.If the content exceeds the specified height, a scrollbar will appear.If not specified, no height limit will be applied."
 LocaleInfo.ui_metadata_top_item_TreeViewItem_iconTagComment = "Can set tags for icons by Fontawesome.";
 LocaleInfo.ui_metadata_top_item_UserMaintenanceItem_failed = "Failed";
 LocaleInfo.ui_metadata_top_item_UserMaintenanceItem_failedGetScreenInfo = "Failed to get the screen information.<br/> Cause:";

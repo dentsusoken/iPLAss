@@ -87,7 +87,7 @@ public abstract class MetaSection extends MetaElement {
 	private String style;
 
 	/** セクション高さ設定（px） */
-	private int sectionHeight;
+	private Integer sectionHeight;
 
 	/**
 	 * タイトルを取得します。
@@ -157,7 +157,7 @@ public abstract class MetaSection extends MetaElement {
 	 * セクション高さ設定（px）を取得します。
 	 * @return セクション高さ設定（px）
 	 */
-	public int getSectionHeight() {
+	public Integer getSectionHeight() {
 		return sectionHeight;
 	}
 
@@ -165,7 +165,7 @@ public abstract class MetaSection extends MetaElement {
 	 * セクション高さ設定（px）を設定します。
 	 * @param sectionHeight セクション高さ設定（px）
 	 */
-	public void setSectionHeight(int sectionHeight) {
+	public void setSectionHeight(Integer sectionHeight) {
 		this.sectionHeight = sectionHeight;
 	}
 
