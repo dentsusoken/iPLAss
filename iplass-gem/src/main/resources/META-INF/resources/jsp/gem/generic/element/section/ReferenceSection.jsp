@@ -247,11 +247,11 @@
 
 %>
 
-<div <%=id %> class="reference-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
+<div <%=id %> class="reference-section <c:out value="<%=style %>"/>" >
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
-<div style="<c:out value="<%=disclosureStyle %>"/>">
+<div <%= styleAttr %> style="<c:out value="<%=disclosureStyle %>"/>">
 <%
 	if (StringUtil.isNotBlank(section.getUpperContents())) {
 		String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);

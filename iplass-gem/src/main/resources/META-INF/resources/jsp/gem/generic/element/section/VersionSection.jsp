@@ -73,7 +73,7 @@
 		title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
 	}
 %>
-<div <%=id %> class="version-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
+<div <%=id %> class="version-section <c:out value="<%=style %>"/>" >
 <script type="text/javascript">
 $(function() {
 	$("div.other-version").off("click");
@@ -114,7 +114,7 @@ $(function() {
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
 
-<div class="version-block" style="display:none;">
+<div <%= styleAttr %> class="version-block" style="display:none;">
 <table class="tbl-version">
 <tr>
 <td>

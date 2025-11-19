@@ -183,12 +183,12 @@
 	//カスタムスタイル用のSectionKEYをセット
 	request.setAttribute(Constants.SECTION_SCRIPT_KEY, section.getStyleScriptKey());
 %>
-<div <%=id %> class="default-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
+<div <%=id %> class="default-section <c:out value="<%=style %>"/>" >
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
-<div style="<c:out value="<%=disclosureStyle %>"/>">
+<div <%= styleAttr %> style="<c:out value="<%=disclosureStyle %>"/>">
 <%
 	if (StringUtil.isNotBlank(section.getUpperContents())) {
 		evm.executeTemplate(defName, section.getContentScriptKey() + "_UpperContent", request, response, application, pageContext);
