@@ -79,7 +79,7 @@
 		}
 	}
 
-	String styleAttr = ViewUtil.buildHeightStyleAttr(amp.getMaxHeight());
+	String styleAttr = amp != null ? ViewUtil.buildHeightStyleAttr(amp.getMaxHeight()) : "";
 	
 	List<AccessTokenInfo> applications = new ArrayList<>();
 	List<RememberMeTokenInfo> validRememberMeTokens  = new ArrayList<>();

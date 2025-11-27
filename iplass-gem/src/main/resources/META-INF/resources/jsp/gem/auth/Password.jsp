@@ -116,7 +116,7 @@
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 	
-	String styleAttr = ViewUtil.buildHeightStyleAttr(setting.getMaxHeight());
+	String styleAttr = setting != null ? ViewUtil.buildHeightStyleAttr(setting.getMaxHeight()) : "";
 
 	User user = (User) em.load(auth.getUser().getOid(), auth.getUser().getVersion(), User.DEFINITION_NAME);
 %>

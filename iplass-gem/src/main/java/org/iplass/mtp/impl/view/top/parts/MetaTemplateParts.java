@@ -228,7 +228,7 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 			// コンテナを出力
 			String wrapperStart = "<div class='mtop-template-container'";
 			if (maxHeight != null && maxHeight > 0) {
-				wrapperStart += " style='max-height:" + maxHeight + "px; overflow:auto;'";
+				wrapperStart += " style='max-height:" + maxHeight.intValue() + "px; overflow:auto;'";
 			}
 			wrapperStart += ">";
 			page.getOut()

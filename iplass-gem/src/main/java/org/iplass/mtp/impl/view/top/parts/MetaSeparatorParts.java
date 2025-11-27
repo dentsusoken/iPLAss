@@ -180,7 +180,7 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 
 			Writer writer = page.getOut();
 			if (maxHeight != null && maxHeight.intValue() > 0) {
-				writer.write("<div class=\"" + separatorClass + "\" style=\"max-height:" + maxHeight + "px; overflow:auto;\">\n");
+				writer.write("<div class=\"" + separatorClass + "\" style=\"max-height:" + maxHeight.intValue() + "px; overflow:auto;\">\n");
 			} else {
 				writer.write("<div class=\"" + separatorClass + "\">\n");
 			}

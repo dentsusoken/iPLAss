@@ -23,7 +23,7 @@ public class SeparatorItemSettingDialog extends MtpDialog {
 	 */
 	public SeparatorItemSettingDialog(TopViewContentParts parts) {
 
-		setTitle("Last Login");
+		setTitle("Separator");
 		setHeight(180);
 		centerInPage();
 

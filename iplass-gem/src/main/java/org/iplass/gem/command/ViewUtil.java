@@ -597,11 +597,11 @@ public class ViewUtil {
 	 * SectionやPartsなどに共通して使用できる高さ指定のstyle属性を生成します。
 	 * 
 	 * @param height 高さ(px単位)。nullまたは0以下の場合は空文字を返します。
-	 * @return style="height:xxxpx; overflow-y:auto;" または 空文字
+	 * @return style="max-height:xxxpx; overflow-y:auto;" または 空文字
 	 */
 	public static String buildHeightStyleAttr(Integer height) {
 		if (height != null && height > 0) {
-			return " style=\"max-height:" + height + "px; overflow-y:auto;\"";
+			return " style=\"max-height:" + height.intValue() + "px; overflow-y:auto;\"";
 		}
 		return "";
 	}

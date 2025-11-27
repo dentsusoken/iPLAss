@@ -229,7 +229,7 @@ public class MetaGroovyTemplate extends MetaTemplate {
 			super(page != null ? page.getOut() : res.getWriter());
 			if (maxHeight != null && maxHeight.intValue() > 0) {
 				page.getOut()
-						.write("<div style=\"max-height:" + maxHeight + "px; overflow:auto;\">");
+						.write("<div style=\"max-height:" + maxHeight.intValue() + "px; overflow:auto;\">");
 			} else {
 				page.getOut()
 						.write("<div>");
