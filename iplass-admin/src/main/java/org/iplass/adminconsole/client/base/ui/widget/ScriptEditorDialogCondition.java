@@ -28,6 +28,8 @@ public class ScriptEditorDialogCondition implements ScriptEditorDialogConstants 
 
 	private EditorTheme initEditorTheme;
 
+	private Integer maxHeight;
+
 	private String value;
 
 	private boolean readOnly;
@@ -69,6 +71,14 @@ public class ScriptEditorDialogCondition implements ScriptEditorDialogConstants 
 
 	public void setInitEditorTheme(EditorTheme initEditorTheme) {
 		this.initEditorTheme = initEditorTheme;
+	}
+
+	public Integer getMaxHeight() {
+		return maxHeight;
+	}
+
+	public void setMaxHeight(Integer maxHeight) {
+		this.maxHeight = maxHeight;
 	}
 
 	public String getValue() {

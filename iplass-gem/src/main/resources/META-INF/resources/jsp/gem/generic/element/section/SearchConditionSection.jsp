@@ -420,6 +420,8 @@
 	if (StringUtil.isNotBlank(section.getStyle())) {
 		secStyle = section.getStyle();
 	}
+	Integer height = section.getSectionHeight();
+	String styleAttr = ViewUtil.buildHeightStyleAttr(height);
 %>
 <div <%=id %> class="tab-wrap search-condition-section <c:out value="<%=secStyle %>"/>">
 <script type="text/javascript">
@@ -684,7 +686,7 @@ $(function() {
 </div><!--tabList-search-01-->
 
 <div class="box-search-01">
-<div class="data-search tab-panel" style="display: none;">
+<div class="data-search tab-panel" <%= styleAttr %> style="display: none;">
 <form name="normalForm" method="POST">
 <input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>"/>
 <input type="text" style="display: none;" />
@@ -1166,7 +1168,8 @@ $(function() {
 });
 </script>
 
-<div class="data-deep-search tab-panel" style="display: none;">
+<div class="data-deep-search tab-panel" <%= styleAttr %> style="display:none;">
+
 <form name="detailForm" method="POST">
 <input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>"/>
 <input type="hidden" id="maxOfDetailSearchItems" value="<c:out value="<%=maxOfDetailSearchItems%>"/>"/>
@@ -1398,7 +1401,7 @@ $(function() {
 			showFilters.add(setting.getFilterName());
 		}
 %>
-<div class="data-fixed-search tab-panel" style="display: none;">
+<div class="data-fixed-search tab-panel" <%= styleAttr %> style="display: none;">
 <form name="fixedForm" method="POST">
 <input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>"/>
 <table class="tbl-search-01">

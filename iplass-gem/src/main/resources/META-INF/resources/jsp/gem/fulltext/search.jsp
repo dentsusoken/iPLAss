@@ -124,6 +124,8 @@
 			}
 		}
 	}
+	
+	String styleAttr = ViewUtil.buildHeightStyleAttr(fulltextSearchViewParts.getMaxHeight());
 %>
 
 <h2 class="hgroup-01">
@@ -132,7 +134,7 @@
 	</span>
 	${m:rs("mtp-gem-messages", "fulltext.search.srchrslt")}
 </h2>
-<div class="fulltext-search-inner">
+<div class="fulltext-search-inner" <%=styleAttr%>>
 <div class="fulltext-search-block flat-block-top">
 	<form method="POST" action="" id="fulltextSearchForm">
 		<select class="form-size inpbr" id="entity" name="searchDefName" multiple>

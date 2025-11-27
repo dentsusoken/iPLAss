@@ -76,6 +76,7 @@ public class MetaUserMaintenanceParts extends MetaTopViewParts {
 	public void applyConfig(TopViewParts parts) {
 		UserMaintenanceParts ump = (UserMaintenanceParts) parts;
 
+		fillFrom(parts);
 		viewName = ump.getViewName();
 	}
 
@@ -83,6 +84,7 @@ public class MetaUserMaintenanceParts extends MetaTopViewParts {
 	public TopViewParts currentConfig() {
 		UserMaintenanceParts parts = new UserMaintenanceParts();
 
+		fillTo(parts);
 		parts.setViewName(viewName);
 
 		return parts;

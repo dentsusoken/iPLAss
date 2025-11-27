@@ -74,6 +74,7 @@ public class CalendarItem extends PartsItem {
 
 		private TextItem iconTagField;
 		private TextItem styleField;
+		private TextItem maxHeightField;
 
 		/**
 		 * コンストラクタ
@@ -95,7 +96,15 @@ public class CalendarItem extends PartsItem {
 			styleField.setValue(parts.getStyle());
 			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
-			form.setItems(iconTagField, styleField);
+			maxHeightField = new MtpTextItem("maxHeight", "Max Height");
+			if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
+				maxHeightField.setValue(parts.getMaxHeight()
+						.toString());
+			}
+			SmartGWTUtil.addHoverToFormItem(maxHeightField,
+					AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
+
+			form.setItems(iconTagField, styleField, maxHeightField);
 
 			container.addMember(form);
 
@@ -107,6 +116,7 @@ public class CalendarItem extends PartsItem {
 						//入力情報をパーツに
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
 						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
+						parts.setMaxHeight(SmartGWTUtil.getIntegerValue(maxHeightField));
 						destroy();
 					}
 				}

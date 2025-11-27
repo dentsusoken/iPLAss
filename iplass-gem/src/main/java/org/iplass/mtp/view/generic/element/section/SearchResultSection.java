@@ -98,6 +98,7 @@ public class SearchResultSection extends Section {
 			rangeCheck=true,
 			minRange=0,
 			displayOrder=205,
+			deprecated = true,
 			description="検索結果の高さを指定します。<br>" +
 						"0を指定した場合、高さを自動とします。",
 			descriptionKey="generic_element_section_SearchResultSection_dispHeightDescriptionKey"
