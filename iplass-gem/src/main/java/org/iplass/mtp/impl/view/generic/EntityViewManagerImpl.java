@@ -579,7 +579,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		GroovyTemplate template = entityView.getTemplate(templateName);
 		if (template != null) {
 			try {
-				template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(WebUtil.getRequestContext(), req, res, application, page));
+				template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(WebUtil.getRequestContext(), req, res, application, page, null));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

@@ -26,12 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.top.TopViewHandler;
@@ -39,6 +33,12 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.top.parts.SeparatorParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * 2分割パーツ
@@ -164,6 +164,8 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 			String separatorClass = null;
 			String separatorLeftClass = null;
 			String separatorRightClass = null;
+			Integer maxHeight = this.getMetaData()
+					.getMaxHeight();
 
 			String designType = (String) req.getAttribute(ViewConst.DESIGN_TYPE);
 			if (ViewConst.DESIGN_TYPE_GEM.equals(designType)) {
@@ -177,7 +179,11 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 
 
 			Writer writer = page.getOut();
-			writer.write("<div class=\"" + separatorClass + "\">\n");
+			if (maxHeight != null && maxHeight.intValue() > 0) {
+				writer.write("<div class=\"" + separatorClass + "\" style=\"max-height:" + maxHeight + "px; overflow:auto;\">\n");
+			} else {
+				writer.write("<div class=\"" + separatorClass + "\">\n");
+			}
 
 			writer.write("<div class=\"" + separatorLeftClass + "\">\n");
 			if (leftParts != null) {

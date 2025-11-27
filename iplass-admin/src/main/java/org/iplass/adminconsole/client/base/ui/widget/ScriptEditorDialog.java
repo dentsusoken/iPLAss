@@ -51,6 +51,7 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.StaticTextItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -63,9 +64,11 @@ public class ScriptEditorDialog extends AbstractWindow {
 	private static final Logger logger = Logger.getLogger(ScriptEditorDialog.class.getName());
 
 	private static final String THEME_COOKIE_NAME = "iplass.editor.theme";
+	private static final String MAX_HEIGHT_COOKIE_NAME = "iplass.editor.height";
 
 	private SelectItem modeField;
 	private SelectItem themeField;
+	private TextItem maxHeightField;
 
 	private EditorPane editorPane;
 	private HintPane hintPane;
@@ -129,8 +132,8 @@ public class ScriptEditorDialog extends AbstractWindow {
 		DynamicForm optionForm = new DynamicForm();
 		optionForm.setHeight(30);
 		optionForm.setWidth100();
-		optionForm.setNumCols(6);
-		optionForm.setColWidths(70, 130, 70, 130, 50, "*");
+		optionForm.setNumCols(8);
+		optionForm.setColWidths(70, 130, 70, 130, 90, 130, 30, "*");
 		header.addMember(optionForm);
 
 		LinkedHashMap<String, String> modeMap = new LinkedHashMap<>();
@@ -171,12 +174,29 @@ public class ScriptEditorDialog extends AbstractWindow {
 				SmartGWTUtil.setCookie(THEME_COOKIE_NAME, theme.name());
 			}
 		});
+
+		maxHeightField = new TextItem();
+		maxHeightField.setTitle("MaxHeight");
+		maxHeightField.setWidth(130);
+		if (condition.getMaxHeight() != null && condition.getMaxHeight() > 0) {
+			maxHeightField.setValue(condition.getMaxHeight()
+					.toString());
+		}
+		maxHeightField.addChangedHandler(new ChangedHandler() {
+			@Override
+			public void onChanged(ChangedEvent event) {
+				Integer value = SmartGWTUtil.getIntegerValue(maxHeightField);
+				dialogSetting.setMaxHeight(value);
+
+				SmartGWTUtil.setCookie(MAX_HEIGHT_COOKIE_NAME, String.valueOf(value));
+			}
+		});
+
 		StaticTextItem tipsField = new StaticTextItem();
 		tipsField.setShowTitle(false);
 		tipsField.setValue("[Ctrl]+[Space] shows snippets.");
 
-
-		optionForm.setItems(modeField, themeField, new SpacerItem(), tipsField);
+		optionForm.setItems(modeField, themeField, maxHeightField, new SpacerItem(), tipsField);
 
 		modeField.setValue(condition.getInitEditorMode().name());
 		if (condition.getInitEditorTheme() == null) {
@@ -197,6 +217,22 @@ public class ScriptEditorDialog extends AbstractWindow {
 			condition.setInitEditorTheme(theme);
 		}
 		themeField.setValue(condition.getInitEditorTheme().name());
+
+		if (condition.getMaxHeight() == null) {
+			Integer maxHeight = null;
+
+			// check cookie
+			String cookieHeightStr = SmartGWTUtil.getCookie(MAX_HEIGHT_COOKIE_NAME);
+			if (!SmartGWTUtil.isEmpty(cookieHeightStr)) {
+				try {
+					maxHeight = Integer.valueOf(cookieHeightStr);
+				} catch (Exception e) {
+					// 古い Cookie や形式が不正な場合は無視
+				}
+			}
+			condition.setMaxHeight(maxHeight);
+		}
+		maxHeightField.setValue(condition.getMaxHeight());
 
 		HLayout mainPane = new HLayout();
 		mainPane.setMargin(10);

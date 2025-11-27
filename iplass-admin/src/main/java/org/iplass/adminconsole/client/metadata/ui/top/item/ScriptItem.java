@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.top.item;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogSetting;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.view.top.parts.ScriptParts;
 
@@ -56,6 +57,14 @@ public class ScriptItem extends PartsItem {
 				"ui_metadata_top_item_ScriptItem_scriptHint",
 				null,
 				new ScriptEditorDialogHandler() {
+					@Override
+					public void onSaveDialogSetting(ScriptEditorDialogSetting dialogSetting) {
+						// maxHeight を取得する
+						Integer maxHeight = dialogSetting.getMaxHeight();
+
+						// ScriptParts に保存する
+						ScriptItem.this.parts.setMaxHeight(maxHeight);
+					}
 
 					@Override
 					public void onSave(String text) {

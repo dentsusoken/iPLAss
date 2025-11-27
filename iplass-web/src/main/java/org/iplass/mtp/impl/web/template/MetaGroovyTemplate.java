@@ -27,12 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.RequestContextWrapper;
@@ -54,6 +48,11 @@ import org.iplass.mtp.web.template.definition.GroovyTemplateDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 
 import groovy.lang.MissingPropertyException;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 
 public class MetaGroovyTemplate extends MetaTemplate {
@@ -226,8 +225,15 @@ public class MetaGroovyTemplate extends MetaTemplate {
 		private PageContext page;
 
 		public WebGroovyTemplateBinding(RequestContext reqCon, HttpServletRequest req,
-				HttpServletResponse res, ServletContext application, PageContext page) throws IOException {
+				HttpServletResponse res, ServletContext application, PageContext page, Integer maxHeight) throws IOException {
 			super(page != null ? page.getOut() : res.getWriter());
+			if (maxHeight != null && maxHeight.intValue() > 0) {
+				page.getOut()
+						.write("<div style=\"max-height:" + maxHeight + "px; overflow:auto;\">");
+			} else {
+				page.getOut()
+						.write("<div>");
+			}
 			this.reqCon = reqCon;
 			this.req = req;
 			this.res = res;
@@ -250,7 +256,7 @@ public class MetaGroovyTemplate extends MetaTemplate {
 
 		public WebGroovyTemplateBinding(WebRequestStack requestStack) throws IOException {
 			this(requestStack.getRequestContext(), requestStack.getRequest(), requestStack.getResponse(),
-					requestStack.getServletContext(), requestStack.getPageContext());
+					requestStack.getServletContext(), requestStack.getPageContext(), null);
 		}
 
 		@Override
@@ -306,6 +312,11 @@ public class MetaGroovyTemplate extends MetaTemplate {
 
 		public void renderContent() throws IOException, ServletException {
 			WebUtil.renderContent(req, res, application, page);
+		}
+
+		public void closeWrapper() throws IOException {
+			page.getOut()
+					.write("</div>");
 		}
 
 	}

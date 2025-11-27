@@ -25,9 +25,11 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
@@ -37,6 +39,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 
 /**
  *
@@ -93,13 +96,14 @@ public class TemplateItem extends PartsItem {
 
 		private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
+		private TextItem maxHeightField;
 		/**
 		 * コンストラクタ
 		 */
 		public TemplateItemSettingDialog(String path) {
 
 			setTitle("Template");
-			setHeight(130);
+			setHeight(180);
 			centerInPage();
 
 			final DynamicForm form = new MtpForm();
@@ -109,7 +113,15 @@ public class TemplateItem extends PartsItem {
 			SmartGWTUtil.setRequired(templateField);
 			templateField.setValue(path);
 
-			form.setItems(templateField);
+			maxHeightField = new MtpTextItem("maxHeight", "MaxHeight");
+			if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
+				maxHeightField.setValue(parts.getMaxHeight()
+						.toString());
+			}
+			SmartGWTUtil.addHoverToFormItem(maxHeightField,
+					AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
+
+			form.setItems(templateField, maxHeightField);
 
 			container.addMember(form);
 
@@ -119,6 +131,7 @@ public class TemplateItem extends PartsItem {
 				public void onClick(ClickEvent event) {
 					if (form.validate()){
 						parts.setTemplatePath(SmartGWTUtil.getStringValue(templateField));
+						parts.setMaxHeight(SmartGWTUtil.getIntegerValue(maxHeightField));
 						fireDataChanged();
 						destroy();
 					}

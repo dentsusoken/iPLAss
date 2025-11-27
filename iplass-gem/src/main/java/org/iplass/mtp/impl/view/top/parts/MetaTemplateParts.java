@@ -22,13 +22,6 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.top.TopViewHandler;
@@ -39,6 +32,13 @@ import org.iplass.mtp.view.top.parts.LastLoginParts;
 import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.view.top.parts.TreeViewParts;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * テンプレート系のパーツ
@@ -91,12 +91,14 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		TemplateParts t = (TemplateParts) parts;
+		fillFrom(t);
 		templatePath = t.getTemplatePath();
 	}
 
 	@Override
 	public TopViewParts currentConfig() {
 		TemplateParts parts = new TemplateParts();
+		fillTo(parts);
 		parts.setTemplatePath(templatePath);
 		return parts;
 	}
@@ -184,7 +186,8 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 			if (isParts()) {
 				String path = getTemplatePathForParts(req);
 				if (path != null) {
-					WebUtil.includeTemplate(path, req, res, application, page);
+					includeTemplateWithWrapper(path, this.getMetaData()
+							.getMaxHeight(), req, res, application, page);
 				}
 			}
 		}
@@ -195,9 +198,48 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 			if (isWidget()) {
 				String path = getTemplatePathForWidget(req);
 				if (path != null) {
-					WebUtil.includeTemplate(path, req, res, application, page);
+					includeTemplateWithWrapper(path, this.getMetaData().getMaxHeight(), req, res, application, page);
 				}
 			}
+		}
+
+		/**
+		 * 共通テンプレート出力処理
+		 */
+		private void includeTemplateWithWrapper(String path, Integer maxHeight,
+				HttpServletRequest req,
+				HttpServletResponse res,
+				ServletContext application,
+				PageContext page) throws IOException, ServletException {
+			// CSS を出力、1 回だけ
+			Boolean cssInjected = (Boolean) req.getAttribute("_mtop_template_css_injected");
+			if (cssInjected == null || !cssInjected) {
+				page.getOut()
+						.write("<style>" +
+								".mtop-template-container {" +
+								"display: block;" +
+								"width: 100%;" +
+								"box-sizing: border-box;" +
+								"}" +
+								"</style>");
+				req.setAttribute("_mtop_template_css_injected", true);
+			}
+
+			// コンテナを出力
+			String wrapperStart = "<div class='mtop-template-container'";
+			if (maxHeight != null && maxHeight > 0) {
+				wrapperStart += " style='max-height:" + maxHeight + "px; overflow:auto;'";
+			}
+			wrapperStart += ">";
+			page.getOut()
+					.write(wrapperStart);
+
+			// 実際のテンプレートを include
+			WebUtil.includeTemplate(path, req, res, application, page);
+
+			// コンテナ閉じ
+			page.getOut()
+					.write("</div>");
 		}
 	}
 }

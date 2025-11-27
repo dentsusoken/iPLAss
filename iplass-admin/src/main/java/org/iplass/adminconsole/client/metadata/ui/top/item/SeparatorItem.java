@@ -80,7 +80,7 @@ public class SeparatorItem extends PartsItem {
 
 	@Override
 	protected void onOpen() {
-		TopViewContentItemSettingDialog dialog = new TopViewContentItemSettingDialog(parts);
+		SeparatorItemSettingDialog dialog = new SeparatorItemSettingDialog(parts);
 		dialog.setTitle("Separator");
 		dialog.show();
 	}

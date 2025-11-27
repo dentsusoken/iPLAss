@@ -31,6 +31,8 @@ public class ScriptEditorDialogSetting {
 	private ScriptEditorDialogMode mode;
 	/** エディターテーマ */
 	private EditorTheme theme;
+	/** 最大高さ */
+	private Integer maxHeight;
 
 	/**
 	 * ダイアログモードを設定します。
@@ -62,5 +64,21 @@ public class ScriptEditorDialogSetting {
 	 */
 	public EditorTheme getTheme() {
 		return theme;
+	}
+
+	/**
+	 * 最大高さを設定します。
+	 * @param maxHeight 最大高さ
+	 */
+	public void setMaxHeight(Integer maxHeight) {
+		this.maxHeight = maxHeight;
+	}
+
+	/**
+	 * 最大高さを取得します。
+	 * @return 最大高さ
+	 */
+	public Integer getMaxHeight() {
+		return maxHeight;
 	}
 }
