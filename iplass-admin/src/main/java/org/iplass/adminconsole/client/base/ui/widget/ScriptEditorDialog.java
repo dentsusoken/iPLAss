@@ -64,7 +64,6 @@ public class ScriptEditorDialog extends AbstractWindow {
 	private static final Logger logger = Logger.getLogger(ScriptEditorDialog.class.getName());
 
 	private static final String THEME_COOKIE_NAME = "iplass.editor.theme";
-	private static final String MAX_HEIGHT_COOKIE_NAME = "iplass.editor.height";
 
 	private SelectItem modeField;
 	private SelectItem themeField;
@@ -188,7 +187,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 				Integer value = SmartGWTUtil.getIntegerValue(maxHeightField);
 				dialogSetting.setMaxHeight(value);
 
-				SmartGWTUtil.setCookie(MAX_HEIGHT_COOKIE_NAME, String.valueOf(value));
+				condition.setMaxHeight(value);
 			}
 		});
 
@@ -217,22 +216,13 @@ public class ScriptEditorDialog extends AbstractWindow {
 			condition.setInitEditorTheme(theme);
 		}
 		themeField.setValue(condition.getInitEditorTheme().name());
-
-		if (condition.getMaxHeight() == null) {
-			Integer maxHeight = null;
-
-			// check cookie
-			String cookieHeightStr = SmartGWTUtil.getCookie(MAX_HEIGHT_COOKIE_NAME);
-			if (!SmartGWTUtil.isEmpty(cookieHeightStr)) {
-				try {
-					maxHeight = Integer.valueOf(cookieHeightStr);
-				} catch (Exception e) {
-					// 古い Cookie や形式が不正な場合は無視
-				}
-			}
-			condition.setMaxHeight(maxHeight);
+		
+		Integer height = condition.getMaxHeight();
+		if (height != null) {
+			maxHeightField.setValue(height);
+			condition.setMaxHeight(height);
 		}
-		maxHeightField.setValue(condition.getMaxHeight());
+
 
 		HLayout mainPane = new HLayout();
 		mainPane.setMargin(10);

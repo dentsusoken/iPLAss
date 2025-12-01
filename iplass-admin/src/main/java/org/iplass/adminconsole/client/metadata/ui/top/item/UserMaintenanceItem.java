@@ -28,6 +28,7 @@ import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -109,7 +110,7 @@ public class UserMaintenanceItem extends PartsItem {
 			viewField.setValue(parts.getViewName());
 			getViewList(USER_DEFINITION_NAME);
 
-			maxHeightField = new TextItem("maxHeight", "Max Height");
+			maxHeightField = new MtpTextItem("maxHeight", "Max Height");
 			maxHeightField.setValue(parts.getMaxHeight());
 
 			form.setItems(viewField, maxHeightField);

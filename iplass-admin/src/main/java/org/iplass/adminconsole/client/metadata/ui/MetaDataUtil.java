@@ -92,4 +92,14 @@ public final class MetaDataUtil {
 		window.show();
 	}
 
+	/**
+	 * スクリプト編集ダイアログを表示します。（オーバーロード）
+	 * @param cond
+	 * @param handler
+	 */
+	public static final void showScriptEditDialog(final ScriptEditorDialogCondition cond,
+			final ScriptEditorDialogHandler handler) {
+		ScriptEditorDialog window = new ScriptEditorDialog(cond, handler);
+		window.show();
+	}
 }

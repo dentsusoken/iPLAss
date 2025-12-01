@@ -24,8 +24,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
@@ -118,7 +120,15 @@ public class FulltextSearchViewItem extends PartsItem {
 				isShowUserNameWithPrivilegedValue.setValue(parts.isShowUserNameWithPrivilegedValue());
 			}
 
-			form.setItems(isDispSearchWindow, isShowUserNameWithPrivilegedValue);
+			MtpTextItem maxHeightField = new MtpTextItem("maxHeight", "Max Height");
+			if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
+				maxHeightField.setValue(parts.getMaxHeight()
+						.toString());
+			}
+			SmartGWTUtil.addHoverToFormItem(maxHeightField,
+					AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
+
+			form.setItems(isDispSearchWindow, isShowUserNameWithPrivilegedValue, maxHeightField);
 
 			container.addMember(form);
 
@@ -157,6 +167,9 @@ public class FulltextSearchViewItem extends PartsItem {
 
 					FormItem showUserName = form.getField("showUserName");
 					parts.setShowUserNameWithPrivilegedValue(SmartGWTUtil.getBooleanValue(showUserName));
+
+					Integer maxHeight = SmartGWTUtil.getIntegerValue(form.getField("maxHeight"));
+					parts.setMaxHeight(maxHeight);
 
 					destroy();
 				}

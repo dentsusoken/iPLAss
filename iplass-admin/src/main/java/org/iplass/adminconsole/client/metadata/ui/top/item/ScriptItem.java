@@ -51,29 +51,38 @@ public class ScriptItem extends PartsItem {
 
 	@Override
 	protected void onOpen() {
-		MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.JSP,
-				ScriptItem.this.parts.getScript(),
-				ScriptEditorDialogCondition.TOPVIEW_SCRIPT_ITEM,
-				"ui_metadata_top_item_ScriptItem_scriptHint",
-				null,
-				new ScriptEditorDialogHandler() {
-					@Override
-					public void onSaveDialogSetting(ScriptEditorDialogSetting dialogSetting) {
-						// maxHeight を取得する
-						Integer maxHeight = dialogSetting.getMaxHeight();
+		
+		    // ScriptParts 内の値（script / maxHeight）をダイアログに引き継ぐために Condition を明示的に生成する
+		    ScriptEditorDialogCondition cond = new ScriptEditorDialogCondition();
+		    cond.setInitEditorMode(ScriptEditorDialogMode.JSP);                // エディタモード（JSP）を初期設定
+		    cond.setValue(this.parts.getScript());                             // ScriptParts に保存済みのスクリプトを設定
+		    cond.setPropertyKey(ScriptEditorDialogCondition.TOPVIEW_SCRIPT_ITEM); // ダイアログタイトル用のキー
+		    cond.setHintKey("ui_metadata_top_item_ScriptItem_scriptHint");     // ヒントメッセージのキー
+		    cond.setHintMessage(null);                                         // 直接メッセージは未指定
 
-						// ScriptParts に保存する
-						ScriptItem.this.parts.setMaxHeight(maxHeight);
-					}
+			// ScriptParts に保存されている maxHeight をダイアログへ受け渡す
+		    cond.setMaxHeight(this.parts.getMaxHeight());
 
-					@Override
-					public void onSave(String text) {
-						ScriptItem.this.parts.setScript(text);
-					}
-					@Override
-					public void onCancel() {
-					}
-				});
-	}
+		    // ScriptEditorDialogCondition を直接渡す新しい呼び出し形式
+		    MetaDataUtil.showScriptEditDialog(cond, new ScriptEditorDialogHandler() {
+
+				@Override
+				public void onSaveDialogSetting(ScriptEditorDialogSetting dialogSetting) {
+					// maxHeight を取得する
+					Integer maxHeight = dialogSetting.getMaxHeight();
+
+					// ScriptParts に保存する
+					ScriptItem.this.parts.setMaxHeight(maxHeight);
+				}
+
+				@Override
+				public void onSave(String text) {
+					ScriptItem.this.parts.setScript(text);
+				}
+				@Override
+				public void onCancel() {
+				}
+			});
+		}
 
 }
