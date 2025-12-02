@@ -22,12 +22,6 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.metadata.MetaData;
@@ -40,6 +34,12 @@ import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.web.template.MetaGroovyTemplate;
 import org.iplass.mtp.view.top.parts.ScriptParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * スクリプトパーツ
@@ -153,11 +153,12 @@ public class MetaScriptParts extends MetaTopViewParts {
 				ServletContext application, PageContext page)
 				throws IOException, ServletException {
 			try {
-				Integer maxHeight = meta.getMaxHeight();
-				MetaGroovyTemplate.WebGroovyTemplateBinding bind = new MetaGroovyTemplate.WebGroovyTemplateBinding(WebUtil.getRequestContext(), req,
-						res, application, page, maxHeight);
-				template.doTemplate(bind);
-				bind.closeWrapper();
+				page.getOut()
+						.write("<div style=\"max-height:" + meta.getMaxHeight()
+								.intValue() + "px; overflow:auto;\">\n");
+				template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(WebUtil.getRequestContext(), req, res, application, page));
+				page.getOut()
+						.write("</div>\n");
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -168,11 +169,12 @@ public class MetaScriptParts extends MetaTopViewParts {
 				HttpServletResponse res, ServletContext application,
 				PageContext page) throws IOException, ServletException {
 			try {
-				Integer maxHeight = meta.getMaxHeight();
-				MetaGroovyTemplate.WebGroovyTemplateBinding bind = new MetaGroovyTemplate.WebGroovyTemplateBinding(WebUtil.getRequestContext(), req,
-						res, application, page, maxHeight);
-				template.doTemplate(bind);
-				bind.closeWrapper();
+				page.getOut()
+						.write("<div style=\"max-height:" + meta.getMaxHeight()
+								.intValue() + "px; overflow:auto;\">\n");
+				template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(WebUtil.getRequestContext(), req, res, application, page));
+				page.getOut()
+						.write("</div>\n");
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

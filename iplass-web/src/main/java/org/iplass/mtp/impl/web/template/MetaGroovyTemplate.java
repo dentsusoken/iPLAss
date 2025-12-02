@@ -225,15 +225,8 @@ public class MetaGroovyTemplate extends MetaTemplate {
 		private PageContext page;
 
 		public WebGroovyTemplateBinding(RequestContext reqCon, HttpServletRequest req,
-				HttpServletResponse res, ServletContext application, PageContext page, Integer maxHeight) throws IOException {
+				HttpServletResponse res, ServletContext application, PageContext page) throws IOException {
 			super(page != null ? page.getOut() : res.getWriter());
-			if (maxHeight != null && maxHeight.intValue() > 0) {
-				page.getOut()
-						.write("<div style=\"max-height:" + maxHeight.intValue() + "px; overflow:auto;\">");
-			} else {
-				page.getOut()
-						.write("<div>");
-			}
 			this.reqCon = reqCon;
 			this.req = req;
 			this.res = res;
@@ -256,7 +249,7 @@ public class MetaGroovyTemplate extends MetaTemplate {
 
 		public WebGroovyTemplateBinding(WebRequestStack requestStack) throws IOException {
 			this(requestStack.getRequestContext(), requestStack.getRequest(), requestStack.getResponse(),
-					requestStack.getServletContext(), requestStack.getPageContext(), null);
+					requestStack.getServletContext(), requestStack.getPageContext());
 		}
 
 		@Override
@@ -312,11 +305,6 @@ public class MetaGroovyTemplate extends MetaTemplate {
 
 		public void renderContent() throws IOException, ServletException {
 			WebUtil.renderContent(req, res, application, page);
-		}
-
-		public void closeWrapper() throws IOException {
-			page.getOut()
-					.write("</div>");
 		}
 
 	}
