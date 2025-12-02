@@ -6,6 +6,8 @@
 }
 
 .auth-application {
+	  display: block;
+	  width: 100%;
 	.detailForm {
 		> div {
 			@extend %extend_gdd_1;

@@ -110,9 +110,9 @@
 <c:out value="<%= title %>"/>
 </h2>
 
-<div class="auth-application">
+<div class="auth-application" <%= styleAttr%>>
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.authApplication")}</h3>
-<div class="detailForm" <%= styleAttr %>>
+<div class="detailForm">
 <%
 	if (applications.isEmpty()) {
 %>
@@ -234,7 +234,7 @@
 </div>
 
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.rememberMe")}</h3>
-<div class="detailForm" <%= styleAttr %>>
+<div class="detailForm">
 <%
 	if (validRememberMeTokens.isEmpty()) {
 %>
@@ -280,7 +280,7 @@ ${m:esc(m:fmt(info.expiryDate , 'yyyy/MM/dd HH:mm:ss'))}
 	if (usePersonalAccessToken) {
 %>
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.simpleAuthToken")}</h3>
-<div class="detailForm" <%= styleAttr %>>
+<div class="detailForm">
 <%
 	if (simpleAuthTokens.isEmpty()) {
 %>
