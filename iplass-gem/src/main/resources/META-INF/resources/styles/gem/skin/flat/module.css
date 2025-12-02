@@ -1164,6 +1164,10 @@ p.nav-login-01 {
   float: left;
   width: 100%; }
 
+.auth-application {
+  display: block;
+  width: 100%; }
+
 #generateAuthTokenDialog {
   padding-top: 1em;
   text-align: left; }
