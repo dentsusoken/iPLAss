@@ -145,7 +145,7 @@ if (!"true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 %>
 <form method="POST" action="${m:tcPath()}/<%=UpdatePasswordCommand.ACTION_DO_UPDATE_PASSWORD%>">
 <div class="formArchive">
-<div <%=styleAttr%>>
+<div>
 <table class="tbl-maintenance tbl-section mb10">
 <tbody><tr>
 <th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.curPass")}</th>
