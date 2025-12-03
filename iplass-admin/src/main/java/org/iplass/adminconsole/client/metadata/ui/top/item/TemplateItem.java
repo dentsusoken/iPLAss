@@ -113,7 +113,7 @@ public class TemplateItem extends PartsItem {
 			SmartGWTUtil.setRequired(templateField);
 			templateField.setValue(path);
 
-			maxHeightField = new MtpTextItem("maxHeight", "MaxHeight");
+			maxHeightField = new MtpTextItem("maxHeight", "Max Height");
 			if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
 				maxHeightField.setValue(parts.getMaxHeight()
 						.toString());

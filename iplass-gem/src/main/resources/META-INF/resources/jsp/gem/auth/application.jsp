@@ -49,7 +49,6 @@
 <%@page import="org.iplass.gem.command.auth.GenerateAuthTokenCommand"%>
 <%@page import="org.iplass.mtp.auth.login.token.SimpleAuthTokenCredential"%>
 <%@page import="org.iplass.mtp.auth.login.token.SimpleAuthTokenInfo"%>
-<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
 	TopViewDefinitionManager tvdm = ManagerLocator.manager(TopViewDefinitionManager.class);
@@ -66,10 +65,9 @@
 
 	String title = null;
 	boolean usePersonalAccessToken = false;
-	ApplicationMaintenanceParts amp = null;
 	for (TopViewParts parts : topView.getParts()) {
 		if (parts instanceof ApplicationMaintenanceParts) {
-			amp = (ApplicationMaintenanceParts)parts;
+			ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts)parts;
 			title = I18nUtil.stringDef(amp.getTitle(), amp.getLocalizedTitleList());
 			if (title == null) {
 				title = GemResourceBundleUtil.resourceString("layout.header.appMaintenance");
@@ -79,8 +77,6 @@
 		}
 	}
 
-	String styleAttr = amp != null ? ViewUtil.buildHeightStyleAttr(amp.getMaxHeight()) : "";
-	
 	List<AccessTokenInfo> applications = new ArrayList<>();
 	List<RememberMeTokenInfo> validRememberMeTokens  = new ArrayList<>();
 	List<SimpleAuthTokenInfo> simpleAuthTokens = new ArrayList<>();
@@ -110,7 +106,7 @@
 <c:out value="<%= title %>"/>
 </h2>
 
-<div class="auth-application" <%= styleAttr%>>
+<div class="auth-application">
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.authApplication")}</h3>
 <div class="detailForm">
 <%

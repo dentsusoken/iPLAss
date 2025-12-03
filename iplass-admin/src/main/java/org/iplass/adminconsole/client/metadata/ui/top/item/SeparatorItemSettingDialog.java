@@ -34,7 +34,7 @@ public class SeparatorItemSettingDialog extends MtpDialog {
 		styleField.setValue(parts.getStyle());
 		SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
-		maxHeightField = new MtpTextItem("maxHeight", "MaxHeight");
+		maxHeightField = new MtpTextItem("maxHeight", "Max Height");
 		if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
 			maxHeightField.setValue(parts.getMaxHeight()
 					.toString());

@@ -117,7 +117,6 @@ public class MetaApplicationMaintenanceParts extends MetaTopViewParts {
 	public void applyConfig(TopViewParts parts) {
 		ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts) parts;
 
-		fillFrom(amp);
 		title = amp.getTitle();
 		usePersonalAccessToken = amp.isUsePersonalAccessToken();
 		localizedTitleList = I18nUtil.toMeta(amp.getLocalizedTitleList());
@@ -127,7 +126,6 @@ public class MetaApplicationMaintenanceParts extends MetaTopViewParts {
 	public TopViewParts currentConfig() {
 		ApplicationMaintenanceParts parts = new ApplicationMaintenanceParts();
 
-		fillTo(parts);
 		parts.setTitle(title);
 		parts.setUsePersonalAccessToken(usePersonalAccessToken);
 		parts.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));

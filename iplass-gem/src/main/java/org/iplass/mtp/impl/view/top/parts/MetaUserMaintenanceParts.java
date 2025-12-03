@@ -22,17 +22,17 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 public class MetaUserMaintenanceParts extends MetaTopViewParts {
 
@@ -76,7 +76,6 @@ public class MetaUserMaintenanceParts extends MetaTopViewParts {
 	public void applyConfig(TopViewParts parts) {
 		UserMaintenanceParts ump = (UserMaintenanceParts) parts;
 
-		fillFrom(parts);
 		viewName = ump.getViewName();
 	}
 
@@ -84,7 +83,6 @@ public class MetaUserMaintenanceParts extends MetaTopViewParts {
 	public TopViewParts currentConfig() {
 		UserMaintenanceParts parts = new UserMaintenanceParts();
 
-		fillTo(parts);
 		parts.setViewName(viewName);
 
 		return parts;

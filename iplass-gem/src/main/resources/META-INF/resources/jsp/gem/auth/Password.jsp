@@ -115,8 +115,6 @@
 	EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-	
-	String styleAttr = setting != null ? ViewUtil.buildHeightStyleAttr(setting.getMaxHeight()) : "";
 
 	User user = (User) em.load(auth.getUser().getOid(), auth.getUser().getVersion(), User.DEFINITION_NAME);
 %>
@@ -205,7 +203,7 @@ if ("true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 }
 %>
 <div class="formArchive">
-<div <%=styleAttr%>>
+<div>
 <table class="tbl-maintenance tbl-section">
 <tbody>
 <%

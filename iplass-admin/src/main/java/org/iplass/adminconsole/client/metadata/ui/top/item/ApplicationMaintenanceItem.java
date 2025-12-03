@@ -25,7 +25,6 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
-import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
@@ -35,7 +34,6 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 
 public class ApplicationMaintenanceItem extends PartsItem {
 
@@ -76,7 +74,6 @@ public class ApplicationMaintenanceItem extends PartsItem {
 
 		private MetaDataLangTextItem txtTitle;
 		private CheckboxItem usePersonalAccessTokenField;
-		private TextItem maxHeightField;
 
 		/**
 		 * コンストラクタ
@@ -100,15 +97,7 @@ public class ApplicationMaintenanceItem extends PartsItem {
 			SmartGWTUtil.addHoverToFormItem(usePersonalAccessTokenField,
 					AdminClientMessageUtil.getString("ui_metadata_top_item_ApplicationMaintenanceItem_usePersonalAccessToken"));
 
-			maxHeightField = new MtpTextItem("maxHeight", "Max Height");
-			if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
-				maxHeightField.setValue(parts.getMaxHeight()
-						.toString());
-			}
-			SmartGWTUtil.addHoverToFormItem(maxHeightField,
-					AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
-
-			form.setItems(txtTitle, usePersonalAccessTokenField, maxHeightField);
+			form.setItems(txtTitle, usePersonalAccessTokenField);
 
 			container.addMember(form);
 
@@ -121,7 +110,6 @@ public class ApplicationMaintenanceItem extends PartsItem {
 						parts.setTitle(SmartGWTUtil.getStringValue(txtTitle));
 						parts.setLocalizedTitleList(txtTitle.getLocalizedList());
 						parts.setUsePersonalAccessToken(SmartGWTUtil.getBooleanValue(usePersonalAccessTokenField));
-						parts.setMaxHeight(SmartGWTUtil.getIntegerValue(maxHeightField));
 						destroy();
 					}
 				}

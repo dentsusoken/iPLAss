@@ -97,7 +97,6 @@ public class MetaFulltextSearchViewParts extends MetaTopViewParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		FulltextSearchViewParts fsvp = (FulltextSearchViewParts) parts;
-		super.fillFrom(fsvp);
 
 		viewNames = fsvp.getViewNames();
 		dispEntities = fsvp.getDispEntities();
@@ -108,7 +107,6 @@ public class MetaFulltextSearchViewParts extends MetaTopViewParts {
 	@Override
 	public TopViewParts currentConfig() {
 		FulltextSearchViewParts parts = new FulltextSearchViewParts();
-		super.fillTo(parts);
 
 		parts.setViewNames(viewNames);
 		parts.setDispEntities(dispEntities);

@@ -420,8 +420,7 @@
 	if (StringUtil.isNotBlank(section.getStyle())) {
 		secStyle = section.getStyle();
 	}
-	Integer height = section.getSectionHeight();
-	String styleAttr = ViewUtil.buildHeightStyleAttr(height);
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
 %>
 <div <%=id %> class="tab-wrap search-condition-section <c:out value="<%=secStyle %>"/>">
 <script type="text/javascript">

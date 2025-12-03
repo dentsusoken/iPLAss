@@ -181,6 +181,8 @@ public class ScriptEditorDialog extends AbstractWindow {
 			maxHeightField.setValue(condition.getMaxHeight()
 					.toString());
 		}
+		SmartGWTUtil.addHoverToFormItem(maxHeightField,
+				AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
 		maxHeightField.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
