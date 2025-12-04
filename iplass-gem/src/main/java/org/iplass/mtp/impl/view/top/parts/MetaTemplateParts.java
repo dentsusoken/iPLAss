@@ -225,21 +225,17 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 				req.setAttribute("_mtop_template_css_injected", true);
 			}
 
-			// コンテナを出力
-			String wrapperStart = "<div class='mtop-template-container'";
+			// maxHeight が設定されており、かつ正の値の場合にのみコンテナでラップにする。
 			if (maxHeight != null && maxHeight > 0) {
-				wrapperStart += " style='max-height:" + maxHeight.intValue() + "px; overflow:auto;'";
+				String wrapperStart = "<div class='mtop-template-container' style='max-height:" + maxHeight.intValue() + "px; overflow-y:auto;'>";
+				page.getOut()
+						.write(wrapperStart);
+				WebUtil.includeTemplate(path, req, res, application, page);
+				page.getOut()
+						.write("</div>");
+			} else {
+				WebUtil.includeTemplate(path, req, res, application, page);
 			}
-			wrapperStart += ">";
-			page.getOut()
-					.write(wrapperStart);
-
-			// 実際のテンプレートを include
-			WebUtil.includeTemplate(path, req, res, application, page);
-
-			// コンテナ閉じ
-			page.getOut()
-					.write("</div>");
 		}
 	}
 }

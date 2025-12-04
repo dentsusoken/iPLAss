@@ -1167,7 +1167,7 @@ $(function() {
 });
 </script>
 
-<div class="data-deep-search tab-panel" <%= styleAttr %> style="display:none;">
+<div class="data-deep-search tab-panel" <%= styleAttr %> style="display: none;">
 
 <form name="detailForm" method="POST">
 <input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>"/>

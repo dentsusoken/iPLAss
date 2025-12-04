@@ -153,21 +153,22 @@ public class MetaScriptParts extends MetaTopViewParts {
 				ServletContext application, PageContext page)
 				throws IOException, ServletException {
 			try {
+
 				Integer mh = meta.getMaxHeight();
-				if (mh != null) {
+
+				if (mh != null && mh.intValue() > 0) {
 					page.getOut()
-							.write("<div style=\"max-height:" + mh.intValue() + "px; overflow:auto;\">\n");
+							.write("<div style=\"max-height:" + mh.intValue() + "px;overflow-y:auto;\">\n");
+					template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
+							WebUtil.getRequestContext(), req, res, application, page));
+					page.getOut()
+							.write("</div>\n");
 				} else {
 					// maxHeight 未設定の場合、height 指定なし
-					page.getOut()
-							.write("<div>\n");
+					template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
+							WebUtil.getRequestContext(), req, res, application, page));
 				}
 
-				template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
-						WebUtil.getRequestContext(), req, res, application, page));
-
-				page.getOut()
-						.write("</div>\n");
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -179,20 +180,19 @@ public class MetaScriptParts extends MetaTopViewParts {
 				PageContext page) throws IOException, ServletException {
 			try {
 				Integer mh = meta.getMaxHeight();
-				if (mh != null) {
+
+				if (mh != null && mh.intValue() > 0) {
 					page.getOut()
-							.write("<div style=\"max-height:" + mh.intValue() + "px; overflow:auto;\">\n");
+							.write("<div style=\"max-height:" + mh.intValue() + "px;overflow-y:auto;\">\n");
+					template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
+							WebUtil.getRequestContext(), req, res, application, page));
+					page.getOut()
+							.write("</div>\n");
 				} else {
 					// maxHeight 未設定の場合、height 指定なし
-					page.getOut()
-							.write("<div>\n");
+					template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
+							WebUtil.getRequestContext(), req, res, application, page));
 				}
-
-				template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
-						WebUtil.getRequestContext(), req, res, application, page));
-
-				page.getOut()
-						.write("</div>\n");
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
