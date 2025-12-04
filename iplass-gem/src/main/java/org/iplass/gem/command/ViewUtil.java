@@ -600,7 +600,7 @@ public class ViewUtil {
 	 * @return style="max-height:xxxpx; overflow-y:auto;" または 空文字
 	 */
 	public static String buildHeightStyleAttr(Integer height) {
-		if (height != null && height > 0) {
+		if (height != null && height > 0 && height <= 10000) {
 			return " style=\"max-height:" + height.intValue() + "px; overflow-y:auto;\"";
 		}
 		return "";

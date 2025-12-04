@@ -222,7 +222,6 @@ public class ScriptEditorDialog extends AbstractWindow {
 		Integer height = condition.getMaxHeight();
 		if (height != null) {
 			maxHeightField.setValue(height);
-			condition.setMaxHeight(height);
 		}
 
 

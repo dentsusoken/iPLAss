@@ -181,7 +181,7 @@ public class MetaScriptParts extends MetaTopViewParts {
 			try {
 				Integer mh = meta.getMaxHeight();
 
-				if (mh != null && mh.intValue() > 0) {
+				if (mh != null && mh.intValue() > 0 && mh <= 10000) {
 					page.getOut()
 							.write("<div style=\"max-height:" + mh.intValue() + "px;overflow-y:auto;\">\n");
 					template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(

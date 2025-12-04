@@ -52,19 +52,19 @@ public class ScriptItem extends PartsItem {
 	@Override
 	protected void onOpen() {
 		
-		    // ScriptParts 内の値（script / maxHeight）をダイアログに引き継ぐために Condition を明示的に生成する
-		    ScriptEditorDialogCondition cond = new ScriptEditorDialogCondition();
-		    cond.setInitEditorMode(ScriptEditorDialogMode.JSP);                // エディタモード（JSP）を初期設定
-		    cond.setValue(this.parts.getScript());                             // ScriptParts に保存済みのスクリプトを設定
-		    cond.setPropertyKey(ScriptEditorDialogCondition.TOPVIEW_SCRIPT_ITEM); // ダイアログタイトル用のキー
-		    cond.setHintKey("ui_metadata_top_item_ScriptItem_scriptHint");     // ヒントメッセージのキー
-		    cond.setHintMessage(null);                                         // 直接メッセージは未指定
+		// ScriptParts 内の値（script / maxHeight）をダイアログに引き継ぐために Condition を明示的に生成する
+		ScriptEditorDialogCondition cond = new ScriptEditorDialogCondition();
+		cond.setInitEditorMode(ScriptEditorDialogMode.JSP); // エディタモード（JSP）を初期設定
+		cond.setValue(this.parts.getScript()); // ScriptParts に保存済みのスクリプトを設定
+		cond.setPropertyKey(ScriptEditorDialogCondition.TOPVIEW_SCRIPT_ITEM); // ダイアログタイトル用のキー
+		cond.setHintKey("ui_metadata_top_item_ScriptItem_scriptHint"); // ヒントメッセージのキー
+		cond.setHintMessage(null); // 直接メッセージは未指定
 
-			// ScriptParts に保存されている maxHeight をダイアログへ受け渡す
-		    cond.setMaxHeight(this.parts.getMaxHeight());
+		// ScriptParts に保存されている maxHeight をダイアログへ受け渡す
+		cond.setMaxHeight(this.parts.getMaxHeight());
 
-		    // ScriptEditorDialogCondition を直接渡す新しい呼び出し形式
-		    MetaDataUtil.showScriptEditDialog(cond, new ScriptEditorDialogHandler() {
+		// ScriptEditorDialogCondition を直接渡す新しい呼び出し形式
+		MetaDataUtil.showScriptEditDialog(cond, new ScriptEditorDialogHandler() {
 
 				@Override
 				public void onSaveDialogSetting(ScriptEditorDialogSetting dialogSetting) {

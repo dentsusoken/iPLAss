@@ -136,4 +136,4 @@ if (!isTop) {
 <%
 }
 %>
-<div id ="<%=calendarName%>" class="flat-block-top" <c:out value="<%=styleAttr%>" escapeXml="false"/>></div>
+<div id ="<%=calendarName%>" class="flat-block-top" <c:out value="<%=styleAttr%>"/>></div>

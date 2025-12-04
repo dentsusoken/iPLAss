@@ -226,7 +226,7 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 			}
 
 			// maxHeight が設定されており、かつ正の値の場合にのみコンテナでラップにする。
-			if (maxHeight != null && maxHeight > 0) {
+			if (maxHeight != null && maxHeight > 0 && maxHeight <= 10000) {
 				String wrapperStart = "<div class='mtop-template-container' style='max-height:" + maxHeight.intValue() + "px; overflow-y:auto;'>";
 				page.getOut()
 						.write(wrapperStart);
