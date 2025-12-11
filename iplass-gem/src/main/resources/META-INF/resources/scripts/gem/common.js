@@ -4139,7 +4139,7 @@ function addNestRow_Date(type, cell, idx, label) {
 		var hiddenDate = $(cell).children("input:hidden:last").val();
 		if (hiddenDate != null && hiddenDate !== "") {
 			// ロケール日付文字列へ変換（JSP の convertToLocaleDateString と同等）
-			var date = convertToLocaleDateString(hiddenDate);
+			var date = convertToLocaleDateString(hiddenDate, dateUtil.getServerDateFormat());
 
 			// 表示用 input に値を設定
 			$("#d_" + es(id)).val(date).trigger("blur");
