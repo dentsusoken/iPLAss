@@ -4098,7 +4098,7 @@ function addNestRow_Date(type, cell, idx, label) {
 				$("#d_" + es(id)).val(date).trigger("blur");
 			}
 
-				// 日付入力欄の初期化
+		// 日付入力欄の初期化
 		$(cell).children(":text:first").each(function() {
 			this.removeAttribute("onchange");
 			$(this).change(function() {dateChange(id);});
