@@ -4091,12 +4091,12 @@ function addNestRow_Date(type, cell, idx, label) {
 		
 		// hidden input から初期値を取得（JSP と同様の処理）
 		var hiddenDate = $(cell).children("input:hidden:last").val();
-			if (hiddenDate != null && hiddenDate !== "") {
-				// ロケール日付文字列へ変換（JSP の convertToLocaleDateString と同等）
-				var date = convertToLocaleDateString(hiddenDate, dateUtil.getServerDateFormat());
-				// 表示用 input に値を設定
-				$("#d_" + es(id)).val(date).trigger("blur");
-			}
+		if (hiddenDate != null && hiddenDate !== "") {
+			// ロケール日付文字列へ変換（JSP の convertToLocaleDateString と同等）
+			var date = convertToLocaleDateString(hiddenDate, dateUtil.getServerDateFormat());
+			// 表示用 input に値を設定
+			$("#d_" + es(id)).val(date).trigger("blur");
+		}
 
 		// 日付入力欄の初期化
 		$(cell).children(":text:first").each(function() {
