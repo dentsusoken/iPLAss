@@ -45,6 +45,9 @@ public abstract class MetaTopViewParts implements MetaData {
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 329805942769537467L;
 
+	/** パーツID */
+	private String partsId;
+
 	/**
 	 * インスタンスを生成します。
 	 * @param parts TOP画面パーツ
@@ -74,6 +77,34 @@ public abstract class MetaTopViewParts implements MetaData {
 	private Integer maxHeight;
 
 	/**
+	 * パーツIDを設定します
+	 * @param partsId パーツID
+	 */
+	public void setPartsId(String partsId) {
+		this.partsId = partsId;
+	}
+
+	/**
+	 * パーツIDを取得します
+	 * @return パーツID
+	 */
+	public String getPartsId() {
+		return partsId;
+	}
+
+	/**
+	 * パーツIDを生成するかどうか
+	 * <p>
+	 * デフォルトでは {@code false} を返します。サブクラスでパーツIDを自動生成したい場合はこのメソッドをオーバーライドして {@code true} を返してください。
+	 * パーツIDを自動生成する必要がない場合は、オーバーライド不要です。
+	 * </p>
+	 * @return パーツIDを自動生成する場合は {@code true}、それ以外は {@code false}
+	 */
+	public boolean generatePartsId() {
+		return false;
+	}
+
+	/**
 	 * 最大高さを取得します。
 	 * @return 最大高さ
 	 */
@@ -94,7 +125,8 @@ public abstract class MetaTopViewParts implements MetaData {
 	 * @param parts 定義
 	 */
 	protected void fillFrom(TopViewParts parts) {
-		this.maxHeight = parts.getMaxHeight();
+	this.maxHeight = parts.getMaxHeight();
+	this.partsId = parts.getPartsId();
 	}
 
 	/**
@@ -108,7 +140,8 @@ public abstract class MetaTopViewParts implements MetaData {
 	 * @param parts 定義
 	 */
 	protected void fillTo(TopViewParts parts) {
-		parts.setMaxHeight(this.maxHeight);
+	parts.setPartsId(partsId);
+	parts.setMaxHeight(this.maxHeight);
 	}
 
 	/**

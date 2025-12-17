@@ -77,6 +77,21 @@ public abstract class TopViewParts implements Serializable {
 	}
 
 	/**
+	 * パーツIDを設定します
+	 * @param partsId パーツID
+	 */
+	public void setPartsId(String partsId) {
+		setParam("partsId", partsId);
+	}
+
+	/**
+	 * パーツIDを取得します
+	 * @return パーツID
+	 */
+	public String getPartsId() {
+		return getParam("partsId");
+	}
+	/**
 	 * 最大高さを取得します。
 	 * @return 最大高さ
 	 */
