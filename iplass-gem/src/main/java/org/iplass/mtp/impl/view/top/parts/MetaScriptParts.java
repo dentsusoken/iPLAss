@@ -153,22 +153,7 @@ public class MetaScriptParts extends MetaTopViewParts {
 				ServletContext application, PageContext page)
 				throws IOException, ServletException {
 			try {
-
-				Integer mh = meta.getMaxHeight();
-
-				if (mh != null && mh.intValue() > 0) {
-					page.getOut()
-							.write("<div style=\"max-height:" + mh.intValue() + "px;overflow-y:auto;\">\n");
-					template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
-							WebUtil.getRequestContext(), req, res, application, page));
-					page.getOut()
-							.write("</div>\n");
-				} else {
-					// maxHeight 未設定の場合、height 指定なし
-					template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
-							WebUtil.getRequestContext(), req, res, application, page));
-				}
-
+				renderTemplateWithMaxHeight(req, res, application, page);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -179,22 +164,40 @@ public class MetaScriptParts extends MetaTopViewParts {
 				HttpServletResponse res, ServletContext application,
 				PageContext page) throws IOException, ServletException {
 			try {
-				Integer mh = meta.getMaxHeight();
-
-				if (mh != null && mh.intValue() > 0 && mh <= 10000) {
-					page.getOut()
-							.write("<div style=\"max-height:" + mh.intValue() + "px;overflow-y:auto;\">\n");
-					template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
-							WebUtil.getRequestContext(), req, res, application, page));
-					page.getOut()
-							.write("</div>\n");
-				} else {
-					// maxHeight 未設定の場合、height 指定なし
-					template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(
-							WebUtil.getRequestContext(), req, res, application, page));
-				}
+				renderTemplateWithMaxHeight(req, res, application, page);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
+			}
+		}
+
+		/**
+		 * maxHeight 指定がある場合に div でラップしてテンプレートを出力します。
+		 */
+		private void renderTemplateWithMaxHeight(
+				HttpServletRequest req,
+				HttpServletResponse res,
+				ServletContext application,
+				PageContext page) throws IOException, ServletException {
+
+			Integer mh = meta.getMaxHeight();
+
+			boolean useMaxHeight = (mh != null && mh > 0 && mh <= 10000);
+
+			if (useMaxHeight) {
+				page.getOut()
+						.write(
+								String.format(
+										"<div class=\"topview-parts\" style=\"max-height:%dpx;overflow-y:auto;\">\n",
+										mh));
+			}
+
+			template.doTemplate(
+					new MetaGroovyTemplate.WebGroovyTemplateBinding(
+							WebUtil.getRequestContext(), req, res, application, page));
+
+			if (useMaxHeight) {
+				page.getOut()
+						.write("</div>\n");
 			}
 		}
 	}

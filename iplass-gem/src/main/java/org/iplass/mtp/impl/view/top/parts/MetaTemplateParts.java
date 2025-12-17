@@ -206,35 +206,30 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 		/**
 		 * 共通テンプレート出力処理
 		 */
-		private void includeTemplateWithWrapper(String path, Integer maxHeight,
+		private void includeTemplateWithWrapper(
+				String path,
+				Integer maxHeight,
 				HttpServletRequest req,
 				HttpServletResponse res,
 				ServletContext application,
 				PageContext page) throws IOException, ServletException {
-			// CSS を出力、1 回だけ
-			Boolean cssInjected = (Boolean) req.getAttribute("_mtop_template_css_injected");
-			if (cssInjected == null || !cssInjected) {
+
+			boolean useWrapper = (maxHeight != null && maxHeight > 0 && maxHeight <= 10000);
+
+			if (useWrapper) {
+				// maxHeight 指定がある場合は div でラップする
 				page.getOut()
-						.write("<style>" +
-								".mtop-template-container {" +
-								"display: block;" +
-								"width: 100%;" +
-								"box-sizing: border-box;" +
-								"}" +
-								"</style>");
-				req.setAttribute("_mtop_template_css_injected", true);
+						.write(
+								"<div class=\"topview-parts\" style=\"max-height:"
+										+ maxHeight.intValue()
+										+ "px; overflow-y:auto;\">");
 			}
 
-			// maxHeight が設定されており、かつ正の値の場合にのみコンテナでラップにする。
-			if (maxHeight != null && maxHeight > 0 && maxHeight <= 10000) {
-				String wrapperStart = "<div class='mtop-template-container' style='max-height:" + maxHeight.intValue() + "px; overflow-y:auto;'>";
-				page.getOut()
-						.write(wrapperStart);
-				WebUtil.includeTemplate(path, req, res, application, page);
+			WebUtil.includeTemplate(path, req, res, application, page);
+
+			if (useWrapper) {
 				page.getOut()
 						.write("</div>");
-			} else {
-				WebUtil.includeTemplate(path, req, res, application, page);
 			}
 		}
 	}
