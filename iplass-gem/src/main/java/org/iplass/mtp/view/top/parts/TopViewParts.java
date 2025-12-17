@@ -40,9 +40,6 @@ public abstract class TopViewParts implements Serializable {
 	/** パラメータ */
 	protected Map<String, String> params = new HashMap<>();
 
-	/** 最大高さ */
-	private Integer maxHeight;
-
 	/**
 	 * パラメータを設定します
 	 * @param params パラメータ
@@ -91,19 +88,20 @@ public abstract class TopViewParts implements Serializable {
 	public String getPartsId() {
 		return getParam("partsId");
 	}
-	/**
-	 * 最大高さを取得します。
-	 * @return 最大高さ
-	 */
-	public Integer getMaxHeight() {
-		return maxHeight;
-	}
-
+	
 	/**
 	 * 最大高さを設定します。
 	 * @param maxHeight 最大高さ
 	 */
 	public void setMaxHeight(Integer maxHeight) {
-		this.maxHeight = maxHeight;
+		setParam("maxHeight", String.valueOf(maxHeight));
+	}
+	
+	/**
+	 * 最大高さを取得します。
+	 * @return 最大高さ
+	 */
+	public Integer getMaxHeight() {
+		return Integer.valueOf(getParam("maxHeight"));
 	}
 }
