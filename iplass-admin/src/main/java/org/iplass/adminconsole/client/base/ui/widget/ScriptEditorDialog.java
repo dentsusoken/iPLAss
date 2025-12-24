@@ -48,6 +48,7 @@ import com.smartgwt.client.widgets.events.DrawHandler;
 import com.smartgwt.client.widgets.events.ResizedEvent;
 import com.smartgwt.client.widgets.events.ResizedHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.StaticTextItem;
@@ -182,7 +183,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 			}
 		});
 
-		maxHeightField = new TextItem();
+		maxHeightField = new IntegerItem();
 		maxHeightField.setTitle("MaxHeight");
 		maxHeightField.setWidth(130);
 		maxHeightField.setDisabled(!enableMaxHeight);
@@ -191,7 +192,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 		if (enableMaxHeight) {
 			Integer maxHeight = condition.getMaxHeight();
 			if (maxHeight != null && maxHeight > 0) {
-				maxHeightField.setValue(maxHeight.toString());
+				maxHeightField.setValue(maxHeight);
 			}
 		}
 		
@@ -203,7 +204,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 				if (!maxHeightField.isVisible()) {
 					return;
 				}
-				Integer value = SmartGWTUtil.getIntegerValue(maxHeightField);
+				Integer value = maxHeightField.getValueAsInteger();
 				dialogSetting.setMaxHeight(value);
 				condition.setMaxHeight(value);
 			}
