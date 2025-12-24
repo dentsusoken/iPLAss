@@ -174,7 +174,7 @@
 		<!-- 一括更新のコミット件数 -->
 		<property name="bulkUpdateAllCommandBatchSize" value="100" />
 
-		<!-- 参照型（SelectFilter）毎回検索件数 -->
+		<!-- 参照型選択フィルターの毎回検索件数 -->
 		<property name="selectFilterSearchPageSizeDefault" value="40" />
 
 		<property name="binaryDownloadLoggingTargetProperty">

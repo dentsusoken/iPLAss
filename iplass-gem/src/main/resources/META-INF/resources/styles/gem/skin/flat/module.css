@@ -1528,17 +1528,6 @@ p.nav-login-01 {
     width: auto; }
   .tbl-search-01 span.error {
     padding-bottom: 0; }
-  .tbl-search-01 .ref-select-filter {
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-start;
-    justify-content: flex-start;
-    box-sizing: border-box; }
-  .tbl-search-01 .ref-select-filter .ref-select-filter-item {
-    flex: 1 1 calc(50% - 0.25rem);
-    max-width: 35rem;
-    min-width: 0;
-    width: auto; }
 
 .result-block {
   display: block;

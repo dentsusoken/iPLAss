@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 DENTSU SOKEN INC. All Rights Reserved.
+ * Copyright (C) 2025 DENTSU SOKEN INC. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -236,15 +236,6 @@ public class MetaReferenceSelectFilterSetting implements MetaData {
 	}
 
 	/**
-	 * 除外するプロパティタイプかどうかを判定します。
-	 * @param pd プロパティタイプ
-	 * @return 除外するプロパティタイプの場合はtrue、そうでない場合はfalse
-	 */
-	private static boolean isExcludedPropertyType(PropertyDefinitionType pd) {
-		return pd != null && EXCLUDED_TYPES.contains(pd);
-	}
-
-	/**
 	 * 設定情報を適用します。
 	 * @param setting 設定情報
 	 * @param entity エンティティハンドラ
@@ -257,7 +248,7 @@ public class MetaReferenceSelectFilterSetting implements MetaData {
 			return;
 
 		PropertyDefinitionType pd = property.getEnumType();
-		if (isExcludedPropertyType(pd)) {
+		if (pd != null && EXCLUDED_TYPES.contains(pd)) {
 			throw new IllegalArgumentException("Invalid property type for ReferenceSelectFilterSetting: " + pd);
 		}
 
