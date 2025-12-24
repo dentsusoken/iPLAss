@@ -150,4 +150,10 @@ public @interface MetaFieldInfo {
 	 */
 	String sourceEntityNameField() default "";
 
+	/**
+	 * inputTypeがPropertyの場合、対象のEntityのプロパティタイプを除外するための設定
+	 * 指定されたプロパティタイプのプロパティは選択肢に表示されなくなる
+	 */
+	String[] excludePropertyType() default {};
+
 }

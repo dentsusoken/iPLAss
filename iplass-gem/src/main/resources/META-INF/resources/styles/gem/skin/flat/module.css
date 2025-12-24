@@ -1491,6 +1491,8 @@ p.nav-login-01 {
     width: 100%;
     height: 24px;
     margin: 2px 0; }
+    .tbl-search-01 select[multiple] {
+      height: 72px; }
   .tbl-search-01 .submit-area th {
     background: none; }
   .tbl-search-01 .submit-area:not(.submit-criteria) td {
@@ -1526,6 +1528,17 @@ p.nav-login-01 {
     width: auto; }
   .tbl-search-01 span.error {
     padding-bottom: 0; }
+  .tbl-search-01 .ref-select-filter {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+    box-sizing: border-box; }
+  .tbl-search-01 .ref-select-filter .ref-select-filter-item {
+    flex: 1 1 calc(50% - 0.25rem);
+    max-width: 35rem;
+    min-width: 0;
+    width: auto; }
 
 .result-block {
   display: block;
@@ -2156,6 +2169,19 @@ a + .binaryDelete {
 
 .modal-body .tbl-section td.section-data .numericRange input {
   width: 44%; }
+
+.ref-select-filter {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+  box-sizing: border-box; }
+
+.ref-select-filter .ref-select-filter-item {
+  flex: 1 1 calc(50% - 0.25rem);
+  max-width: 35rem;
+  min-width: 0;
+  width: auto; }
 
 .bulk-edit .tbl-section td.section-data {
   padding: 8px 10px; }

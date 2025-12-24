@@ -51,6 +51,7 @@
  * applyDatetimepicker
  * treeViewList
  * treeViewGrid
+ * refSelectFilter
  */
 
 $(function(){
@@ -4417,4 +4418,342 @@ function datetimepicker(selector) {
 			$("tr:not(:hidden):has(td)", $this).addClass("stripeRow");
 		});
 	};
+})(jQuery);
+
+(function ($) {
+  /**
+   * 参照選択フィルター
+   */
+  $.fn.refSelectFilter = function (option) {
+    const defaults = {
+		i18n: {
+			pleaseSelect: scriptContext.gem.locale.common.pleaseSelect,
+			noResult: scriptContext.gem.locale.reference.noResult,
+			more: "...",
+			moreOptionsValue: "__more__"
+		},
+    };
+    const options = $.extend({}, defaults, option);
+
+    return this.each(function () {
+		const $container = $(this);
+		setup($container);
+
+		const $txt = $container.find("input");
+		const $select = $container.find("select");
+		const isMultiple = !!$select.prop("multiple");
+		const keepSelection = $txt.data("researchPattern");
+		const keepSelectionFlag = !(keepSelection && keepSelection === "CLEAR");
+
+		// 状態（インスタンスごと）
+		let loading = false;
+		let lastKeyword = "";
+
+		// ページング / 集合
+		let serverOffset = 0;          // サーバーに渡す offset（元の返却件数を累積）
+		let totalRawCount = 0;         // サーバーが返した総件数
+		let canLoadMoreResults = false;// さらに検索できるか
+
+		// 選択と結果
+		let selectedMap = new Map();   // oid -> entity（挿入順を維持＝選択順／初期順）
+		let resultEntities = [];       // 未選択の検索結果（重複除去かつ選択済みを除外）
+		let excludeOids = []; 		   // 新しい検索するとき、除外したいOIDのリスト
+		
+		// 初期選択を selectedMap に取り込む
+		updateSelectedMap();
+		// 初期選択を 検索値を補完
+		autoUpdateInputValue();
+
+		function setup($v) {
+			var $input = $v.find("input");
+			$input.data({
+				defName: $input.attr("data-defName"),
+				viewName: $input.attr("data-viewName"),
+				propName: $input.attr("data-propName"),
+				viewType: $input.attr("data-viewType"),
+				entityOid: $input.attr("data-entityOid"),
+				entityVersion: $input.attr("data-entityVersion"),
+				webapiName: $input.attr("data-webapiName"),
+				researchPattern: $input.attr("data-researchPattern")
+			});
+		}
+
+		/**
+		 * 選択状態を同期
+		 * @param {jQuery} $select セレクトボックスのjQueryオブジェクト
+		 */
+		function updateSelectedMap() {
+			// 選択肢がない場合、すべて初期値にする
+			if ($select.find("option").length === 0) {
+				selectedMap = new Map();
+				resultEntities = [];
+				$txt.val("");
+				lastKeyword = "";
+				return;
+			}
+
+			if ($select.prop("multiple")) {
+				handleMultipleSelect();
+			} else {
+				handleSingleSelect();
+			}
+		}
+
+		function handleMultipleSelect() {
+			selectedMap = new Map();
+			resultEntities = [];
+			$select.find("option").each(function () {
+				const val = $(this).val();
+				if (!val || val === options.i18n.moreOptionsValue) return;
+				const oid = String(val || "");
+				const code = $(this).attr("data-code") || "";
+				const name = $(this).text() || "";
+
+				if ($(this).is(":selected")) {
+					selectedMap.set(oid, { oid, code, name });
+				} else {
+					resultEntities.push({ oid, code, name });
+				}
+			});
+		}
+
+		function handleSingleSelect() {
+			selectedMap = new Map();
+			resultEntities = [];
+			const $opt = $select.find("option:selected").first();
+			if ($opt.length > 0) {
+				const oid = String($opt.val() || "");
+				const code = $opt.attr("data-code") || "";
+				const name = $opt.text() || "";
+				selectedMap.set(oid, { oid, code, name });
+				lastKeyword = code;
+			}
+		}
+
+		/**
+		 * 複数選択不可の場合、検索値を補完
+		 */
+		function autoUpdateInputValue() {
+			if (!$select.prop("multiple")) {
+				const $opt = $select.find("option:selected").first();
+				if ($opt.length > 0) {
+					const selectedCode = $opt.attr("data-code") || "";
+					if (selectedCode) {
+						lastKeyword = selectedCode
+						$select.empty().append($opt.prop("selected", true))
+						$txt.val(selectedCode);
+					}
+				}
+			}
+		}
+
+		/**
+		 * エンティティオプションを追加
+		 * @param {Object} e - エンティティ
+		 * @param {boolean} isSelected - 選択済みかどうか
+		 */
+		function appendEntityOption(e, isSelected) {
+			const name = e.name != null ? String(e.name) : "";
+			const code = e.code != null ? String(e.code) : "";
+			const oid = e.oid != null ? String(e.oid) : "";
+			const $opt = $("<option/>").val(oid).text(name).attr("data-code", code);
+			if (isSelected) $opt.prop("selected", true);
+			return $opt.get(0);
+		}
+
+
+		/**
+		 * 選択済みオプションをレンダリングする。
+		 * 単一選択（isMultiple === false）の場合は、selectedList の先頭要素のみを選択状態で追加し、
+		 * 2件目以降は未選択のオプションとして追加する。
+		 * 複数選択（isMultiple === true）の場合は、selectedList の全要素を選択状態で追加する。
+		 * @param {Array} selectedList - 選択済みエンティティのリスト
+		 * @param {boolean} isMultiple - 複数選択可能かどうか（単一選択時のみ先頭要素が選択状態になる）
+		 */
+		function renderSelectedOptions(selectedList, isMultiple, fragment) {
+			if (!isMultiple) {
+				fragment.appendChild(appendEntityOption(selectedList[0], true));
+			} else {
+				for (const e of selectedList) {
+					fragment.appendChild(appendEntityOption(e, true));
+				}
+			}
+		}
+		
+		/**
+		 * 未選択オプションをレンダリング
+		 * @param {Array} resultEntities - 未選択のエンティティ
+		 * @param {boolean} isMultiple - 複数選択可能かどうか
+		 * @param {DocumentFragment} fragment - 追加先のフラグメント
+		 */
+		function renderResultOptions(resultEntities, isMultiple, fragment) {
+			if (!isMultiple && resultEntities.length > 1) {
+				fragment.appendChild($("<option/>").val("").text(options.i18n.pleaseSelect).get(0));
+			}
+
+			for (const e of resultEntities) {
+				fragment.appendChild(appendEntityOption(e, false));
+			}
+		}
+		
+		// レンダリング：'選択済み（先頭、選択順）' + '未選択結果（API順）'。
+		function renderOptions() {
+
+			const fragment = document.createDocumentFragment();
+			const selectedList = Array.from(selectedMap.values());
+
+			// 選択済選択肢
+			if (selectedList.length > 0) {
+				renderSelectedOptions(selectedList, isMultiple, fragment)
+			}
+			
+			// 未選択選択肢
+			if (resultEntities.length > 0) {
+				renderResultOptions(resultEntities, isMultiple, fragment)
+			}
+
+			// 「もっと」：さらに読み込み可能な場合のみ表示
+			if (canLoadMoreResults) {
+				fragment.appendChild($("<option/>").val(options.i18n.moreOptionsValue).text(options.i18n.more).get(0));
+			}
+
+			$select.empty().append(fragment);
+		}
+
+		/**
+		 * ローディング状態を設定
+		 * @param {boolean} isLoading ローディング中かどうか
+		 */
+		function setLoading(isLoading) {
+			loading = isLoading;
+			$select.prop("disabled", isLoading);
+			$txt.prop("disabled", isLoading);
+		}
+
+
+		/**
+		 * 検索前の処理
+		 * @param {boolean} isNewSearch 新しい検索かどうか
+		 */
+		function triggerSearch(isNewSearch) {
+			if (loading) return;
+			setLoading(true)
+
+			const keyword = $txt.val().trim();
+			if (keyword && isNewSearch && keyword === lastKeyword) {
+				setLoading(false);
+				return;
+			}
+
+			if (isNewSearch) {
+				serverOffset = 0;
+				resultEntities = [];
+				lastKeyword = keyword;
+				if (isMultiple && keepSelectionFlag) {
+					excludeOids = selectedMap.size > 0 ? Array.from(selectedMap.keys()).map(String): [];
+				} else {
+					selectedMap = new Map()
+					excludeOids = [];
+				}
+			}
+
+			loadReferenceData($txt, $select);
+		}
+
+		// Enterで即時検索
+		$txt.on("keydown", function (e) {
+			if (e.key === "Enter") {
+				e.preventDefault();
+				triggerSearch(true);
+			}
+		});
+
+		// blurで検索をトリガー
+		$txt.on("blur", function () {
+			triggerSearch(true);
+		});
+
+		// select の変更
+		$select.on("change", function () {
+			const val = $select.val();
+			const selectedValues = Array.isArray(val) ? val : (val ? [val] : []);
+
+			// 「もっと」をトリガー
+			if (selectedValues.includes(options.i18n.moreOptionsValue)) {
+				// 「もっと」の選択状態を解除
+				$select.find("option[value='" + options.i18n.moreOptionsValue + "']").remove();
+				// さらに読み込む（再描画を許可、選択済みは先頭のまま）
+				triggerSearch(false);
+				return;
+			}
+
+			// 選択状態を同期
+			updateSelectedMap();
+			autoUpdateInputValue();
+		});
+
+		function loadReferenceData($v, $target) {
+			const keyword = $v.val().trim();
+			const defName = $v.data("defName");
+			const viewName = $v.data("viewName");
+			const propName = $v.data("propName");
+			const viewType = $v.data("viewType");
+			const entityOid = $v.data("entityOid");
+			const entityVersion = $v.data("entityVersion");
+			const webapiName = $v.data("webapiName");
+
+			const params = [];
+			if (entityOid && entityVersion) {
+				params.push({ key: "entityOid", value: entityOid });
+				params.push({ key: "entityVersion", value: entityVersion });
+			}
+			if (excludeOids && excludeOids.length > 0) {
+				params.push({ key: "excludeOid", value: excludeOids.join(",") }); 
+			}
+			params.push({ key: "keyword", value: keyword });
+			params.push({ key: "offset", value: serverOffset }); 
+            
+			getSelectFilterItem(webapiName, defName, viewName, propName, params, viewType, function (entities, count) {
+				const list = Array.isArray(entities) ? entities : [];
+				// サーバーの元の戻り件数を加算して offset を進める（フロントでの重複除去による再取得を防ぐ）
+				serverOffset += list.length;
+
+				// 総数
+				if (typeof count === "number" && !isNaN(count)) {
+					totalRawCount = count;
+				} else if (typeof count === "string" && !isNaN(Number(count))) {
+					totalRawCount = Number(count);
+				}
+
+				// マージ：選択済みおよび既存を除外（oidで重複除去）
+				const existOids = new Set(resultEntities.map(x => String(x.oid)));
+				const selectedOids = new Set(Array.from(selectedMap.keys()).map(String));
+
+				const filteredEntities = [];
+				for (const e of entities) {
+					const oid = e && e.oid != null ? String(e.oid) : "";
+					if (!oid) continue;
+					if (isMultiple && selectedOids.has(oid)) continue; // 選択済みは未選結果に入れない
+					if (existOids.has(oid)) continue;                 // 未選結果を重複排除
+					const name = e.name != null ? String(e.name) : "";
+					const code = e.code != null ? String(e.code) : "";
+					filteredEntities.push({ oid, name, code });
+					existOids.add(oid);
+				}
+				resultEntities.push(...filteredEntities);
+
+				// 未選択結果があり、さらに読み込みが可能な場合のみ「もっと」を表示
+				canLoadMoreResults = (serverOffset < totalRawCount);
+				renderOptions();
+				autoUpdateInputValue();
+			});
+		}
+
+		// 破棄
+		$container.data("destroyRefSelectFilter", function () {
+			$txt.off("keydown blur");
+			$select.off("change");
+		});
+    });
+  };
 })(jQuery);

@@ -373,6 +373,11 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 					Object[] array = (Object[]) Array.newInstance(annotation.enumClass(), enumValues.size());
 					info.setEnumValues((Serializable[]) enumValues.toArray(array));
 				}
+				// 入力型がプロパティかつ除外タイプがある場合
+				if (annotation.inputType() == InputType.PROPERTY && annotation.excludePropertyType() != null
+						 && annotation.excludePropertyType().length > 0) {
+					info.setExcludePropertyType(annotation.excludePropertyType());
+				}
 				info.setMode(annotation.mode());
 				info.setDescription(annotation.description());
 //				info.setDescription(getDescription(annotation));

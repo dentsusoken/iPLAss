@@ -21,7 +21,10 @@
 package org.iplass.adminconsole.client.metadata.data.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
 import org.iplass.adminconsole.client.base.data.DataSourceConstants;
@@ -73,22 +76,25 @@ public class PropertyDS extends AbstractAdminDataSource {
 		fields = new DataSourceField[] {name, dispName, javaType, must, max, min, objRef};
 	}
 
-    public static void setDataSource(final SelectItem item, final String defName) {
-    	setup(item, defName, null);
+	public static void setDataSource(final SelectItem item, final String defName) {
+		setup(item, defName, null, null);
     }
-    public static void setDataSource(final SelectItem item, final String defName, final String refPropertyName) {
-    	setup(item, defName, refPropertyName);
+	public static void setDataSource(final SelectItem item, final String defName, final String refPropertyName) {
+		setup(item, defName, refPropertyName, null);
     }
-    public static void setDataSource(final ComboBoxItem item, final String defName) {
-    	setup(item, defName, null);
-    }
-    public static void setDataSource(final ComboBoxItem item, final String defName, final String refPropertyName) {
-    	setup(item, defName, refPropertyName);
+	public static void setDataSource(final ComboBoxItem item, final String defName) {
+		setup(item, defName, null, null);
+	}
+	public static void setDataSource(final ComboBoxItem item, final String defName, final String refPropertyName) {
+		setup(item, defName, refPropertyName, null);
+	}
+	public static void setDataSource(final ComboBoxItem item, final String defName, final String refPropertyName, String[] excludeTypes) {
+		setup(item, defName, refPropertyName, excludeTypes);
     }
 
-    private static void setup(final FormItem item, final String defName, final String refPropertyName) {
+	private static void setup(final FormItem item, final String defName, final String refPropertyName, String[] excludeTypes) {
 
-    	item.setOptionDataSource(getInstance(defName, refPropertyName));
+		item.setOptionDataSource(getInstance(defName, refPropertyName, excludeTypes));
     	item.setValueField(DataSourceConstants.FIELD_NAME);
 
     	ListGrid pickListProperties = new ListGrid();
@@ -112,20 +118,23 @@ public class PropertyDS extends AbstractAdminDataSource {
 	private MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
 	public static PropertyDS getInstance(String defName) {
-		return new PropertyDS(defName, null);
+		return new PropertyDS(defName, null, null);
 	}
-	public static PropertyDS getInstance(String defName, String refPropertyName) {
-		return new PropertyDS(defName, refPropertyName);
+	public static PropertyDS getInstance(String defName, String refPropertyName, String[] excludeTypes) {
+		return new PropertyDS(defName, refPropertyName, excludeTypes);
 	}
 
 	/** Entity定義名 */
 	private final String defName;
 	/** 表示対象の参照Property定義名(ReferencePropertyのみ) */
 	private final String refPropertyName;
+	/** 除外するプロパティタイプのリスト */
+	private String[] excludePropertyType;
 
-	private PropertyDS(String defName, String refPropertyName) {
+	private PropertyDS(String defName, String refPropertyName, String[] excludePropertyType) {
 		this.defName = defName;
 		this.refPropertyName = refPropertyName;
+		this.excludePropertyType = excludePropertyType != null ? excludePropertyType : new String[] {};
 		setFields(fields);
 	}
 
@@ -174,7 +183,7 @@ public class PropertyDS extends AbstractAdminDataSource {
 									return;
 								}
 
-								response.setData(createRecord(red));
+								response.setData(createRecord(red, null));
 								response.setTotalRows(red.getPropertyList().size());
 								processResponse(requestId, response);
 							}
@@ -185,8 +194,9 @@ public class PropertyDS extends AbstractAdminDataSource {
 						processResponse(requestId, response);
 					}
 				} else {
-					response.setData(createRecord(ed));
-					response.setTotalRows(ed.getPropertyList().size());
+					ListGridRecord[] records = createRecord(ed, excludePropertyType);
+					response.setData(records);
+					response.setTotalRows(records.length);
 					processResponse(requestId, response);
 				}
 			}
@@ -199,10 +209,18 @@ public class PropertyDS extends AbstractAdminDataSource {
 		return getAttribute("defName");
 	}
 
-	private ListGridRecord[] createRecord(EntityDefinition ed) {
+	private ListGridRecord[] createRecord(EntityDefinition ed, String[] excludePropertyType) {
+		// 除外するプロパティタイプを効率的に検索するためのセットを作成
+		Set<String> excludePropertyTypeSet = (excludePropertyType == null || excludePropertyType.length == 0)
+                ? java.util.Collections.emptySet()
+                : new HashSet<String>(Arrays.asList(excludePropertyType));
 
 		List<ListGridRecord> properties = new ArrayList<ListGridRecord>();
 		for (PropertyDefinition pd : ed.getPropertyList()) {
+			// 除外対象のタイプに一致するプロパティをスキップ
+			if (pd.getType() != null && excludePropertyTypeSet.contains(pd.getType().name())) {
+				continue;
+			}
 			ListGridRecord record = new ListGridRecord();
 			copyValues(pd, record);
 			properties.add(record);

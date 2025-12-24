@@ -633,6 +633,23 @@ function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValu
 	});
 }
 
+function getSelectFilterItem(webapi, defName, viewName, propName, _params, viewType, func) {
+	var params = "{";
+	params += '"defName":"' + defName + '"';
+	params += ',"viewName":"' + viewName + '"';
+	params += ',"propName":"' + propName + '"';
+	for (var i = 0; i < _params.length; i++) {
+		params += ',"' + _params[i].key + '":"' + _params[i].value + '"';
+	}
+	params += ',"viewType":"' + viewType + '"';
+	params += "}";
+	postAsync(webapi, params, function (results) {
+		var entities = results.data;
+		var count = results.count;
+		if (func && $.isFunction(func)) func.call(this, entities, count);
+	});
+}
+
 ////////////////////////////////////////////////////////
 //バージョン取得用のJavascript
 ////////////////////////////////////////////////////////
