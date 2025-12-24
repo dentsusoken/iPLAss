@@ -147,6 +147,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	/** 参照コンボ設定 */
 	private MetaReferenceComboSetting referenceComboSetting;
 
+	/** 参照選択フィルター設定 */
+	private MetaReferenceSelectFilterSetting referenceSelectFilterSetting;
+
 	/** 選択アクションコールバックスクリプト */
 	private String selectActionCallbackScript;
 
@@ -930,6 +933,22 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		this.isNullSearchEnabled = isNullSearchEnabled;
 	}
 
+	/**
+	 * 参照選択フィルター設定を取得します。
+	 * @return 参照選択フィルター設定
+	 */
+	public MetaReferenceSelectFilterSetting getReferenceSelectFilterSetting() {
+		return referenceSelectFilterSetting;
+	}
+
+	/**
+	 * 参照選択フィルター設定を設定します。
+	 * @param referenceSelectFilterSetting 参照選択フィルター設定
+	 */
+	public void setReferenceSelectFilterSetting(MetaReferenceSelectFilterSetting referenceSelectFilterSetting) {
+		this.referenceSelectFilterSetting = referenceSelectFilterSetting;
+	}
+
 	@Override
 	public void applyConfig(PropertyEditor editor) {
 		super.fillFrom(editor);
@@ -1025,6 +1044,15 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 			//プロパティIDが設定されてない場合は保存しない(不正なプロパティ名や被参照でない場合等)
 			if (tmp.getPropertyId() != null) referenceComboSetting = tmp;
+		}
+		if (ReferenceDisplayType.SELECTFILTER == rpe.getDisplayType() && rpe.getReferenceSelectFilterSetting() != null
+				&& rpe.getReferenceSelectFilterSetting().getPropertyName() != null) {
+			MetaReferenceSelectFilterSetting tmp = new MetaReferenceSelectFilterSetting();
+			tmp.applyConfig(rpe.getReferenceSelectFilterSetting(), referenceEntity);
+
+			//プロパティIDが設定されてない場合は保存しない(不正なプロパティ名や被参照でない場合等)
+			if (tmp.getPropertyId() != null)
+				referenceSelectFilterSetting = tmp;
 		}
 		if (rpe.getReferenceRecursiveTreeSetting() != null) {
 			MetaReferenceRecursiveTreeSetting setting = new MetaReferenceRecursiveTreeSetting();
@@ -1137,6 +1165,10 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		}
 		if (referenceComboSetting != null && referenceComboSetting.getPropertyId() != null) {
 			editor.setReferenceComboSetting(referenceComboSetting.currentConfig(referenceEntity));
+		}
+		if (referenceSelectFilterSetting != null && referenceSelectFilterSetting.getPropertyId() != null) {
+			editor.setReferenceSelectFilterSetting(
+					referenceSelectFilterSetting.currentConfig(referenceEntity));
 		}
 		if (referenceRecursiveTreeSetting != null && referenceRecursiveTreeSetting.getChildPropertyId() != null) {
 			editor.setReferenceRecursiveTreeSetting(referenceRecursiveTreeSetting.currentConfig(referenceEntity));

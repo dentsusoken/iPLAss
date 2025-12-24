@@ -1604,6 +1604,12 @@ function <%=toggleAddBtnFunc%>() {
 %>
 <jsp:include page="ReferencePropertyEditor_Table.jsp" />
 <%
+	} else if (editor.getDisplayType() == ReferenceDisplayType.SELECTFILTER) {
+%>
+
+<jsp:include page="ReferencePropertyEditor_SelectFilter.jsp" />
+
+<%
 	} else {
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
 		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor, element);

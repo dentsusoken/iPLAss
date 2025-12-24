@@ -433,6 +433,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/generic/editor/ReferenceComboSetting.java'
 		include 'mtp/view/generic/editor/ReferencePropertyEditor.java'
 		include 'mtp/view/generic/editor/ReferenceRecursiveTreeSetting.java'
+		include 'mtp/view/generic/editor/ReferenceSelectFilterSetting.java'
 		include 'mtp/view/generic/editor/SelectPropertyEditor.java'
 		include 'mtp/view/generic/editor/StringPropertyEditor.java'
 		include 'mtp/view/generic/editor/TemplatePropertyEditor.java'

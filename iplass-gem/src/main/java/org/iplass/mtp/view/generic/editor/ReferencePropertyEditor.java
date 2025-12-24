@@ -63,9 +63,12 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 		@XmlEnumValue("NestTable")NESTTABLE,
 		@XmlEnumValue("Label")LABEL,
 		@XmlEnumValue("Unique")UNIQUE,
-		@XmlEnumValue("Hidden")HIDDEN
+		@XmlEnumValue("Hidden")
+		HIDDEN,
+		@XmlEnumValue("SelectFilter")
+		SELECTFILTER
 	}
-
+	
 	/** 編集ページ */
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum EditPage {
@@ -782,7 +785,21 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	private boolean updateWithLabelValue = false;
 
 
-
+	/** 選択フィルター参照設定 */
+	@MetaFieldInfo(
+			displayName = "選択フィルター設定",
+			displayNameKey = "generic_editor_ReferencePropertyEditor_referenceSelectFilterSettingDisplayNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = ReferenceSelectFilterSetting.class,
+			displayOrder = 1100,
+			description = "<b>表示タイプ:SelectFilter</b>"
+					+ "<br>選択フィルターの条件を設定します。",
+			descriptionKey = "generic_editor_ReferencePropertyEditor_referenceSelectFilterSettingDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK }
+	)
+	private ReferenceSelectFilterSetting referenceSelectFilterSetting;
 
 
 	/** 参照先オブジェクト名 */
@@ -1546,6 +1563,22 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 */
 	public void setIsNullSearchEnabled(boolean isNullSearchEnabled) {
 		this.isNullSearchEnabled = isNullSearchEnabled;
+	}
+
+	/**
+	 * 選択フィルター参照設定を取得します。
+	 * @return 選択フィルター参照設定
+	 */
+	public ReferenceSelectFilterSetting getReferenceSelectFilterSetting() {
+		return referenceSelectFilterSetting;
+	}
+
+	/**
+	 * 選択フィルター参照設定を設定します。
+	 * @param referenceSelectFilterSetting 選択フィルター参照設定
+	 */
+	public void setReferenceSelectFilterSetting(ReferenceSelectFilterSetting referenceSelectFilterSetting) {
+		this.referenceSelectFilterSetting = referenceSelectFilterSetting;
 	}
 
 }
