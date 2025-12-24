@@ -120,6 +120,7 @@ public class SearchResultListItem extends PartsItem {
 		private ComboBoxItem viewForDetailField;
 		private SelectItem filterField;
 		private IntegerItem heightField;
+		private IntegerItem maxHeightField;
 		private CheckboxItem searchAsync;
 
 		private List<DataChangedHandler> handlers = new ArrayList<>();
@@ -196,14 +197,19 @@ public class SearchResultListItem extends PartsItem {
 			styleField.setValue(parts.getStyle());
 			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
-			heightField = new IntegerItem("height", "Height");
+			heightField = new IntegerItem("height", "Table Height");
 			heightField.setWidth("100%");
 			heightField.setValue(parts.getHeight());
+			
+			maxHeightField = new IntegerItem("maxHeight", "Max Height");
+			maxHeightField.setWidth("100%");
+			maxHeightField.setValue(parts.getMaxHeight());
+			SmartGWTUtil.addHoverToFormItem(maxHeightField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
 
 			searchAsync = new CheckboxItem("searchAsync", "Search asynchronously");
 			searchAsync.setValue(parts.isSearchAsync());
 
-			form.setItems(entityField, viewField, viewForLinkField, viewForDetailField, filterField, titleField, iconTagField, styleField, heightField, searchAsync);
+			form.setItems(entityField, viewField, viewForLinkField, viewForDetailField, filterField, titleField, iconTagField, styleField, heightField, maxHeightField, searchAsync);
 
 			container.addMember(form);
 
@@ -222,6 +228,7 @@ public class SearchResultListItem extends PartsItem {
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
 						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
 						parts.setHeight(heightField.getValueAsInteger());
+						parts.setMaxHeight(maxHeightField.getValueAsInteger());
 						parts.setSearchAsync(searchAsync.getValueAsBoolean());
 						parts.setLocalizedTitleList(titleField.getLocalizedList());
 						fireDataChanged();

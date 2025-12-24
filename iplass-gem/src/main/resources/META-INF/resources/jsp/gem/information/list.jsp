@@ -139,7 +139,7 @@ function changePassword() {
 <%
 	}
 %>
-<div class="info-block mb20" <%=styleAttr%>>
+<div class="info-block mb20" style="<%=styleAttr%>">
 <table class="tbl-information-list flat-block-top">
 <%
 	if (data != null && !data.isEmpty()) {

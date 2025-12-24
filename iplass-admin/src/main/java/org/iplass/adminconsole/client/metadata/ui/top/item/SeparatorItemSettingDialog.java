@@ -30,6 +30,7 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
 public class SeparatorItemSettingDialog extends MtpDialog {
@@ -53,10 +54,10 @@ public class SeparatorItemSettingDialog extends MtpDialog {
 		styleField.setValue(parts.getStyle());
 		SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
-		maxHeightField = new MtpTextItem("maxHeight", "Max Height");
+		maxHeightField = new IntegerItem("maxHeight", "Max Height");
+		maxHeightField.setWidth("100%");
 		if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
-			maxHeightField.setValue(parts.getMaxHeight()
-					.toString());
+			maxHeightField.setValue(parts.getMaxHeight());
 		}
 		SmartGWTUtil.addHoverToFormItem(maxHeightField,
 				AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
@@ -72,7 +73,7 @@ public class SeparatorItemSettingDialog extends MtpDialog {
 				if (form.validate()){
 					//入力情報をパーツに
 					parts.setStyle(SmartGWTUtil.getStringValue(styleField));
-					parts.setMaxHeight(SmartGWTUtil.getIntegerValue(maxHeightField));
+					parts.setMaxHeight(maxHeightField.getValueAsInteger());
 					destroy();
 				}
 			}

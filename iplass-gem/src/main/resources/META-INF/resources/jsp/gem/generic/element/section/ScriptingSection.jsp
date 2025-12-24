@@ -49,7 +49,7 @@
 	
 	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
 %>
-<div <%=id %> class="scripting-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
+<div <%=id %> class="scripting-section <c:out value="<%=style %>"/>" style="<%= styleAttr %>">
 <%
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	evm.executeTemplate(ed.getName(), section.getKey(), request, response, application, pageContext);

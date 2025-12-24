@@ -62,6 +62,7 @@ public class ScriptItem extends PartsItem {
 
 		// ScriptParts に保存されている maxHeight をダイアログへ受け渡す
 		cond.setMaxHeight(this.parts.getMaxHeight());
+		cond.setEnableMaxHeight(true); // maxHeight を使用する
 
 		// ScriptEditorDialogCondition を直接渡す新しい呼び出し形式
 		MetaDataUtil.showScriptEditDialog(cond, new ScriptEditorDialogHandler() {

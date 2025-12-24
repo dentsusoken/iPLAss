@@ -91,6 +91,7 @@ public abstract class TopViewParts implements Serializable {
 	public String getPartsId() {
 		return getParam("partsId");
 	}
+	
 	/**
 	 * 最大高さを取得します。
 	 * @return 最大高さ

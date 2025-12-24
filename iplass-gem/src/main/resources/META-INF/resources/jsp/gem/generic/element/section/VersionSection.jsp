@@ -114,7 +114,7 @@ $(function() {
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
 
-<div <%= styleAttr %> class="version-block" style="display:none;">
+<div class="version-block" style="display:none;<%= styleAttr %>">
 <table class="tbl-version">
 <tr>
 <td>

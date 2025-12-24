@@ -685,7 +685,7 @@ $(function() {
 </div><!--tabList-search-01-->
 
 <div class="box-search-01">
-<div class="data-search tab-panel" <%= styleAttr %> style="display: none;">
+<div class="data-search tab-panel" style="display: none;<%= styleAttr %>">
 <form name="normalForm" method="POST">
 <input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>"/>
 <input type="text" style="display: none;" />

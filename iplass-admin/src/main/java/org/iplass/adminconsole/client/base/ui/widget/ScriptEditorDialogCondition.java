@@ -33,6 +33,8 @@ public class ScriptEditorDialogCondition implements ScriptEditorDialogConstants 
 	private String value;
 
 	private boolean readOnly;
+	
+	private boolean enableMaxHeight = false;
 
 	/**
 	 * 対象PropertyKEY
@@ -121,4 +123,11 @@ public class ScriptEditorDialogCondition implements ScriptEditorDialogConstants 
 		this.hintMessage = hintMessage;
 	}
 
+	public boolean isEnableMaxHeight() {
+		return enableMaxHeight;
+	}
+
+	public void setEnableMaxHeight(boolean enableMaxHeight) {
+		this.enableMaxHeight = enableMaxHeight;
+	}
 }

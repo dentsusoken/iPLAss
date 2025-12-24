@@ -251,7 +251,7 @@
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
-<div <%= styleAttr %> style="<c:out value="<%=disclosureStyle %>"/>">
+<div style="<%= disclosureStyle %><%= styleAttr %>">
 <%
 	if (StringUtil.isNotBlank(section.getUpperContents())) {
 		String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);

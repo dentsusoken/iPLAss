@@ -33,6 +33,7 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
 /**
@@ -96,7 +97,8 @@ public class TreeViewItem extends PartsItem {
 			styleField.setValue(parts.getStyle());
 			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
-			maxHeightField = new MtpTextItem("maxHeight", "Max Height");
+			maxHeightField = new IntegerItem("maxHeight", "Max Height");
+			maxHeightField.setWidth("100%");
 			maxHeightField.setValue(parts.getMaxHeight());
 			SmartGWTUtil.addHoverToFormItem(maxHeightField,
 					AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
@@ -113,7 +115,7 @@ public class TreeViewItem extends PartsItem {
 						//入力情報をパーツに
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
 						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
-						parts.setMaxHeight(SmartGWTUtil.getIntegerValue(maxHeightField));
+						parts.setMaxHeight(maxHeightField.getValueAsInteger());
 						destroy();
 					}
 				}

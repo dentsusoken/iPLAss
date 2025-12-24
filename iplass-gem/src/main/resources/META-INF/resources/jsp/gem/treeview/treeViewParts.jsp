@@ -64,6 +64,6 @@ ${treeViewParts.iconTag}
  data-getDefinitionWebapi="<%=GetTreeViewDefinitionCommand.WEBAPI_NAME %>"
  data-viewAction="<%=DetailViewCommand.VIEW_ACTION_NAME %>"
  data-getDataWebapiName="<%=GetTreeViewGridDataCommand.WEBAPI_NAME%>"
- <%=styleAttr%>>
+ style="<%=styleAttr%>">
 </div>
 </div>

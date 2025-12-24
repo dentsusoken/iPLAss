@@ -122,7 +122,10 @@ public class ScriptEditorDialog extends AbstractWindow {
 				adjustHeight();
 			}
 		});
-
+		
+		//maxHeight使用有無
+		boolean enableMaxHeight = condition.isEnableMaxHeight();
+		
 		HLayout header = new HLayout();
 		header.setWidth100();
 		header.setAutoHeight();
@@ -131,8 +134,13 @@ public class ScriptEditorDialog extends AbstractWindow {
 		DynamicForm optionForm = new DynamicForm();
 		optionForm.setHeight(30);
 		optionForm.setWidth100();
-		optionForm.setNumCols(8);
-		optionForm.setColWidths(70, 130, 70, 130, 90, 130, 30, "*");
+		if (enableMaxHeight) {
+			optionForm.setNumCols(6);
+			optionForm.setColWidths(70, 130, 70, 130, 50, "*");
+		} else {
+			optionForm.setNumCols(8);
+			optionForm.setColWidths(70, 130, 70, 130, 90, 130, 30, "*");
+		}
 		header.addMember(optionForm);
 
 		LinkedHashMap<String, String> modeMap = new LinkedHashMap<>();
@@ -177,18 +185,26 @@ public class ScriptEditorDialog extends AbstractWindow {
 		maxHeightField = new TextItem();
 		maxHeightField.setTitle("MaxHeight");
 		maxHeightField.setWidth(130);
-		if (condition.getMaxHeight() != null && condition.getMaxHeight() > 0) {
-			maxHeightField.setValue(condition.getMaxHeight()
-					.toString());
+		maxHeightField.setDisabled(!enableMaxHeight);
+		maxHeightField.setVisible(enableMaxHeight);
+		
+		if (enableMaxHeight) {
+			Integer maxHeight = condition.getMaxHeight();
+			if (maxHeight != null && maxHeight > 0) {
+				maxHeightField.setValue(maxHeight.toString());
+			}
 		}
+		
 		SmartGWTUtil.addHoverToFormItem(maxHeightField,
 				AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
 		maxHeightField.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
+				if (!maxHeightField.isVisible()) {
+					return;
+				}
 				Integer value = SmartGWTUtil.getIntegerValue(maxHeightField);
 				dialogSetting.setMaxHeight(value);
-
 				condition.setMaxHeight(value);
 			}
 		});
@@ -197,7 +213,11 @@ public class ScriptEditorDialog extends AbstractWindow {
 		tipsField.setShowTitle(false);
 		tipsField.setValue("[Ctrl]+[Space] shows snippets.");
 
-		optionForm.setItems(modeField, themeField, maxHeightField, new SpacerItem(), tipsField);
+		if (enableMaxHeight) {
+			optionForm.setItems(modeField, themeField, maxHeightField, new SpacerItem(),tipsField);
+		} else {
+			optionForm.setItems(modeField, themeField, new SpacerItem(), tipsField);
+		}
 
 		modeField.setValue(condition.getInitEditorMode().name());
 		if (condition.getInitEditorTheme() == null) {
@@ -218,12 +238,6 @@ public class ScriptEditorDialog extends AbstractWindow {
 			condition.setInitEditorTheme(theme);
 		}
 		themeField.setValue(condition.getInitEditorTheme().name());
-		
-		Integer height = condition.getMaxHeight();
-		if (height != null) {
-			maxHeightField.setValue(height);
-		}
-
 
 		HLayout mainPane = new HLayout();
 		mainPane.setMargin(10);

@@ -214,9 +214,9 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 				ServletContext application,
 				PageContext page) throws IOException, ServletException {
 
-			boolean useWrapper = (maxHeight != null && maxHeight > 0 && maxHeight <= 10000);
+			boolean wrap = useWrapper(maxHeight);
 
-			if (useWrapper) {
+			if (wrap) {
 				// maxHeight 指定がある場合は div でラップする
 				page.getOut()
 						.write(
@@ -227,10 +227,18 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 
 			WebUtil.includeTemplate(path, req, res, application, page);
 
-			if (useWrapper) {
+			if (wrap) {
 				page.getOut()
 						.write("</div>");
 			}
 		}
+
+		/**
+		 * maxHeight 指定がある場合に div でラップするかどうか
+		 */
+		protected boolean useWrapper(Integer maxHeight) {
+			return maxHeight != null && maxHeight > 0 && maxHeight <= 10000;
+		}
+
 	}
 }

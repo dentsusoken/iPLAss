@@ -62,8 +62,7 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 表示行数 */
 	private Integer dispRowCount;
 
-	/** 表示高さ */
-	@Deprecated
+	/** 表示TABLEの高さ */
 	private int dispHeight;
 
 	/** 検索結果をまとめる設定 */

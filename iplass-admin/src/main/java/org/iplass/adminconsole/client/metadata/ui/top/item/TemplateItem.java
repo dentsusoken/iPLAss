@@ -38,6 +38,7 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
@@ -113,10 +114,10 @@ public class TemplateItem extends PartsItem {
 			SmartGWTUtil.setRequired(templateField);
 			templateField.setValue(path);
 
-			maxHeightField = new MtpTextItem("maxHeight", "Max Height");
+			maxHeightField = new IntegerItem("maxHeight", "Max Height");
+			maxHeightField.setWidth("100%");
 			if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
-				maxHeightField.setValue(parts.getMaxHeight()
-						.toString());
+				maxHeightField.setValue(parts.getMaxHeight());
 			}
 			SmartGWTUtil.addHoverToFormItem(maxHeightField,
 					AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
@@ -131,7 +132,7 @@ public class TemplateItem extends PartsItem {
 				public void onClick(ClickEvent event) {
 					if (form.validate()){
 						parts.setTemplatePath(SmartGWTUtil.getStringValue(templateField));
-						parts.setMaxHeight(SmartGWTUtil.getIntegerValue(maxHeightField));
+						parts.setMaxHeight(maxHeightField.getValueAsInteger());
 						fireDataChanged();
 						destroy();
 					}

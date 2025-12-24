@@ -188,7 +188,7 @@
 
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
-<div <%= styleAttr %> style="<c:out value="<%=disclosureStyle %>"/>">
+<div style="<%= disclosureStyle %><%= styleAttr %>">
 <%
 	if (StringUtil.isNotBlank(section.getUpperContents())) {
 		evm.executeTemplate(defName, section.getContentScriptKey() + "_UpperContent", request, response, application, pageContext);

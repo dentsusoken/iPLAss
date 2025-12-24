@@ -47,7 +47,7 @@
 	
 	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
 %>
-<div <%=id %> class="template-section <c:out value="<%=style %>"/>" <%= styleAttr %>>
+<div <%=id %> class="template-section <c:out value="<%=style %>"/>" style="<%= styleAttr %>">
 <%
 	TemplateUtil.includeTemplate(section.getTemplateName(), pageContext);
 %>
