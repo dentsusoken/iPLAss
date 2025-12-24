@@ -171,7 +171,7 @@ if (outputType == OutputType.BULK && !useBulkView) {
 String rootDefName = (String) request.getAttribute(Constants.ROOT_DEF_NAME);
 String scriptKey = (String) request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 String viewName = StringUtil.escapeHtml((String) request.getAttribute(Constants.VIEW_NAME), true);
-String propertyName = pd.getName();
+String referencePropertyName = pd.getName();
 String propName = setting.getPropertyName();
 ReferenceSelectFilterSetting.SelectFilterResearchPattern researchPattern = setting.getSelectFilterResearchPattern() != null 
 	? setting.getSelectFilterResearchPattern() 
@@ -227,7 +227,7 @@ if (StringUtil.isNotBlank(editorPlaceholder)) {
 	    placeholder="<%=org.apache.commons.text.StringEscapeUtils.escapeHtml4(placeHolder) %>"
         data-defName="<c:out value="<%=rootDefName%>"/>"
         data-viewName="<%=viewName %>" 
-        data-propName="<c:out value="<%=propertyName%>"/>" 
+        data-propName="<c:out value="<%=referencePropertyName%>"/>" 
         data-viewType="<%=viewType %>" 
         data-researchPattern="<c:out value="<%=researchPattern%>"/>"
         data-entityOid="<c:out value="<%=rootOid%>"/>" 
@@ -237,7 +237,7 @@ if (StringUtil.isNotBlank(editorPlaceholder)) {
     />
     <select
     	id="<c:out value="<%=selectId %>"/>"
-        name="<c:out value="<%=propertyName%>"/>"
+        name="<c:out value="<%=referencePropertyName%>"/>"
         class="<c:out value="<%=cls %>"/>"
         style="<c:out value="<%=customStyle%>"/>"
         <c:out value="<%=multiple %>"/>
