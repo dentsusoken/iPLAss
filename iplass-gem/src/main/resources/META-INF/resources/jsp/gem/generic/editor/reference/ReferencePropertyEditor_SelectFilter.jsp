@@ -1,5 +1,5 @@
 <%--
- Copyright (C) 2013 DENTSU SOKEN INC. All Rights Reserved.
+ Copyright (C) 2025 DENTSU SOKEN INC. All Rights Reserved.
 
  Unless you have purchased a commercial license,
  the following license terms apply:
@@ -121,11 +121,11 @@
 		if (oid == null || oid.trim().isEmpty()) {
 			return new ArrayList<>();
 		}
-		Object[] oidArr = oid.split(",");
+		String[] oidStrArray = oid.split(",");
 		Query q = new Query();
 		q.select(Entity.OID, propName, labelItem);
 		q.from(editor.getObjectName());
-		q.where(new In(Entity.OID, oidArr));
+		q.where(new In(Entity.OID, oidStrArray));
 		String sortItem = setting.getSortItem();
 		if (sortItem == null || sortItem.isEmpty()) {
 			sortItem = Entity.OID;

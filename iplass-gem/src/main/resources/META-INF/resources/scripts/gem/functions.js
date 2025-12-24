@@ -4658,6 +4658,7 @@ function datetimepicker(selector) {
 			}
 
 			loadReferenceData($txt, $select);
+			setLoading(false)
 		}
 
 		// Enterで即時検索

@@ -129,7 +129,7 @@ public class PropertyDS extends AbstractAdminDataSource {
 	/** 表示対象の参照Property定義名(ReferencePropertyのみ) */
 	private final String refPropertyName;
 	/** 除外するプロパティタイプのリスト */
-	private String[] excludePropertyType;
+	private final String[] excludePropertyType;
 
 	private PropertyDS(String defName, String refPropertyName, String[] excludePropertyType) {
 		this.defName = defName;
