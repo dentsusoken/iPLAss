@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 DENTSU SOKEN INC. All Rights Reserved.
+ * Copyright (C) 2025 DENTSU SOKEN INC. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -22,9 +22,7 @@ package org.iplass.gem.command.generic.selectfilter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
@@ -241,7 +239,7 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 		// 設定から検索件数のデフォルト値を取得
 		int searchCount = ServiceRegistry.getRegistry()
 				.getService(GemConfigService.class)
-				.getSelectFilterSearchPageSize();
+				.getSelectFilterSearchPageSizeDefault();
 
  		final String keywordRaw = request.getParam(KEYWORD);
 		final String excludeOid = request.getParam(EXCLUDE_OID);

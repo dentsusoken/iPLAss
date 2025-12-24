@@ -620,7 +620,7 @@ public class GemConfigService implements Service {
 	 * 選択フィルターの毎回検索件数を取得する
 	 * @return 毎回検索件数
 	 */
-	public int getSelectFilterSearchPageSize() {
+	public int getSelectFilterSearchPageSizeDefault() {
 		return selectFilterSearchPageSize;
 	}
 
