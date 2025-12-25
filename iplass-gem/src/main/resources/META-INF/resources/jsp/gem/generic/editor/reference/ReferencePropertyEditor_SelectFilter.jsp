@@ -194,8 +194,8 @@ if (propValue instanceof Entity) {
        if (o.getOid() != null) {
     	   oidList.add(o.getOid());
        }
-       oid = String.join(",", oidList);
     }
+    oid = String.join(",", oidList);
 }
 List<Entity> optionValues = new ArrayList<>();
 if (StringUtil.isNotEmpty(oid)) {
