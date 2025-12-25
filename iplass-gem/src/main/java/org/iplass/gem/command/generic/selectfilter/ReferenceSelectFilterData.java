@@ -28,10 +28,10 @@ import org.iplass.mtp.entity.Entity;
  */
 public class ReferenceSelectFilterData {
 
-    /** 総件数を保持するフィールド */
+	/** 総件数 */
     private int totalCount;
 
-    /** 選択肢の値を保持するフィールド */
+	/** 選択肢の値 */
     private List<Entity> optionValues;
 
     /**

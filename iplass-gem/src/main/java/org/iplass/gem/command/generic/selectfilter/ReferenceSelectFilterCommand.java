@@ -144,6 +144,14 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
     }
 
 	/**
+	 * 参照選択用の空結果データを生成して返す。
+	 * @return 空の検索結果データ（一覧と総件数0）
+	 */
+	private ReferenceSelectFilterData emptyReferenceSelectFilterData() {
+		return new ReferenceSelectFilterData(0, new ArrayList<Entity>());
+	}
+
+	/**
 	 * コンストラクタ
 	 */
 	public ReferenceSelectFilterCommand() {
@@ -197,19 +205,18 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
      * @return 検索結果データ（一覧と総件数）
      */
 	private ReferenceSelectFilterData buildReferenceSelectFilterData(ReferencePropertyEditor editor, RequestContext request) {
-		List<Entity> optionValues = new ArrayList<>();
 		if (editor == null) {
-            return new ReferenceSelectFilterData(0, optionValues);
+			return emptyReferenceSelectFilterData();
         }
 		ReferenceSelectFilterSetting setting = editor.getReferenceSelectFilterSetting();
 		if (setting == null) {
-            return new ReferenceSelectFilterData(0, optionValues);
+			return emptyReferenceSelectFilterData();
         }
 
 		String propName = setting.getPropertyName();
         // プロパティ指定がなければ処理不能なので空結果を返す
 		if (propName == null || propName.trim().isEmpty()) {
-            return new ReferenceSelectFilterData(0, optionValues);
+			return emptyReferenceSelectFilterData();
         }
 
 		// 表示ラベル項目

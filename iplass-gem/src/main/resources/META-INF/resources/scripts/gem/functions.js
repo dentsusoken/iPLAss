@@ -4681,7 +4681,9 @@ function datetimepicker(selector) {
 			// 「もっと」をトリガー
 			if (selectedValues.includes(options.i18n.moreOptionsValue)) {
 				// 「もっと」の選択状態を解除
-				$select.find("option[value='" + options.i18n.moreOptionsValue + "']").remove();
+				$select.find("option").filter(function () {
+					return $(this).val() === String(options.i18n.moreOptionsValue);
+				}).remove();
 				// さらに読み込む（再描画を許可、選択済みは先頭のまま）
 				triggerSearch(false);
 				return;

@@ -1478,7 +1478,7 @@ $(function() {
 		.toString() : "";
 		
 		Boolean isPropertyMultiple = pd.getMultiplicity() != 1;
-		String cls = isPropertyMultiple ? "form-size-12 inpbr ref-select-filter-item" : "form-size-02 inpbr ref-select-filter-item";
+		String filterClass = isPropertyMultiple ? "form-size-12 inpbr ref-select-filter-item" : "form-size-02 inpbr ref-select-filter-item";
 		String multiple = isPropertyMultiple ? " multiple" : "";
 		
 		String inputId = "input_" + editor.getPropertyName();
@@ -1509,7 +1509,7 @@ $(function() {
 	<select
 		id="<c:out value="<%=selectId %>"/>"
 	    name="<c:out value="<%=propName %>"/>"
-	    class="<c:out value="<%=cls %>"/>"
+	    class="<c:out value="<%=filterClass %>"/>"
 	    style="<c:out value="<%=customStyle%>"/>"
 	    <c:out value="<%=multiple %>"/>
 	> 		
