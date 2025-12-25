@@ -237,8 +237,8 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
      * @param request リクエストコンテキスト
      * @return 検索結果データ
      */
-	private ReferenceSelectFilterData executeKeywordSearch(ReferencePropertyEditor editor, ReferenceSelectFilterSetting setting, String propName, String labelItem,
-			RequestContext request) {
+	private ReferenceSelectFilterData executeKeywordSearch(ReferencePropertyEditor editor, ReferenceSelectFilterSetting setting, String propName,
+			String labelItem, RequestContext request) {
 		List<Condition> conditions = new ArrayList<Condition>();
 
 		final List<Entity> optionValues = new ArrayList<>();

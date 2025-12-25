@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.data.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -212,7 +213,7 @@ public class PropertyDS extends AbstractAdminDataSource {
 	private ListGridRecord[] createRecord(EntityDefinition ed, String[] excludePropertyType) {
 		// 除外するプロパティタイプを効率的に検索するためのセットを作成
 		Set<String> excludePropertyTypeSet = (excludePropertyType == null || excludePropertyType.length == 0)
-                ? java.util.Collections.emptySet()
+				? Collections.emptySet()
                 : new HashSet<String>(Arrays.asList(excludePropertyType));
 
 		List<ListGridRecord> properties = new ArrayList<ListGridRecord>();

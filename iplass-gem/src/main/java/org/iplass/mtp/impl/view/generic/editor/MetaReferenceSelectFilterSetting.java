@@ -247,9 +247,9 @@ public class MetaReferenceSelectFilterSetting implements MetaData {
 		if (property == null)
 			return;
 
-		PropertyDefinitionType pd = property.getEnumType();
-		if (pd != null && EXCLUDED_TYPES.contains(pd)) {
-			throw new IllegalArgumentException("Invalid property type for ReferenceSelectFilterSetting: " + pd);
+		PropertyDefinitionType propDefType = property.getEnumType();
+		if (propDefType != null && EXCLUDED_TYPES.contains(propDefType)) {
+			throw new IllegalArgumentException("Invalid property type for ReferenceSelectFilterSetting: " + propDefType);
 		}
 
 		this.propertyId = property.getId();
