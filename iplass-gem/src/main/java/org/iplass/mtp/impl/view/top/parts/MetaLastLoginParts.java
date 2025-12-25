@@ -94,6 +94,11 @@ public class MetaLastLoginParts extends MetaTemplateParts {
 			public String getTemplatePathForParts(HttpServletRequest req) {
 				return TEMPLATE_PATH;
 			}
+			
+			@Override
+			protected boolean useWrapper(Integer maxHeight) {
+				return false;
+			}
 		};
 	}
 }

@@ -38,8 +38,8 @@ import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
  * @author lis3wg
  */
 @XmlSeeAlso({MetaTopViewContentParts.class, MetaScriptParts.class, MetaUserMaintenanceParts.class,
-	MetaFulltextSearchViewParts.class, MetaCsvDownloadSettingsParts.class,
-	MetaApplicationMaintenanceParts.class, MetaPreviewDateParts.class})
+		MetaFulltextSearchViewParts.class, MetaCsvDownloadSettingsParts.class,
+		MetaApplicationMaintenanceParts.class, MetaPreviewDateParts.class })
 public abstract class MetaTopViewParts implements MetaData {
 
 	/** SerialVersionUID */
@@ -73,6 +73,9 @@ public abstract class MetaTopViewParts implements MetaData {
 		return null;
 	}
 
+	/** 最大高さ */
+	private Integer maxHeight;
+
 	/**
 	 * パーツIDを設定します
 	 * @param partsId パーツID
@@ -102,11 +105,28 @@ public abstract class MetaTopViewParts implements MetaData {
 	}
 
 	/**
+	 * 最大高さを取得します。
+	 * @return 最大高さ
+	 */
+	public Integer getMaxHeight() {
+		return maxHeight;
+	}
+
+	/**
+	 * 最大高さを設定します。
+	 * @param maxHeight 最大高さ
+	 */
+	public void setMaxHeight(Integer maxHeight) {
+		this.maxHeight = maxHeight;
+	}
+
+	/**
 	 * 定義の内容を自身に設定します。
 	 * @param parts 定義
 	 */
 	protected void fillFrom(TopViewParts parts) {
-		partsId = parts.getPartsId();
+	this.maxHeight = parts.getMaxHeight();
+	this.partsId = parts.getPartsId();
 	}
 
 	/**
@@ -120,7 +140,8 @@ public abstract class MetaTopViewParts implements MetaData {
 	 * @param parts 定義
 	 */
 	protected void fillTo(TopViewParts parts) {
-		parts.setPartsId(partsId);
+	parts.setPartsId(partsId);
+	parts.setMaxHeight(this.maxHeight);
 	}
 
 	/**

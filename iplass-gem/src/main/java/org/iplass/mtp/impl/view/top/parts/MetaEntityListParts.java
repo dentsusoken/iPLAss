@@ -387,6 +387,11 @@ public class MetaEntityListParts extends MetaTemplateParts {
 			@Override
 			public void clearAttribute(HttpServletRequest req) {
 			}
+			
+			@Override
+			protected boolean useWrapper(Integer maxHeight) {
+				return false;
+			}
 
 			private boolean checkEntity() {
 				if (definitionId == null) return false;

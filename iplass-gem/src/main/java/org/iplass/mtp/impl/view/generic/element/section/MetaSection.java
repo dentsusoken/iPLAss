@@ -45,9 +45,9 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * セクションのメタデータ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaTemplateSection.class, MetaDefaultSection.class, MetaScriptingSection.class,
-	MetaVersionSection.class, MetaSearchConditionSection.class, MetaSearchResultSection.class,
-	MetaReferenceSection.class, MetaMassReferenceSection.class})
+@XmlSeeAlso({ MetaTemplateSection.class, MetaDefaultSection.class, MetaScriptingSection.class,
+		MetaVersionSection.class, MetaSearchConditionSection.class, MetaReferenceSection.class,
+		MetaMassReferenceSection.class, MetaSearchResultSection.class })
 public abstract class MetaSection extends MetaElement {
 
 	/** シリアルバージョンUID */
@@ -85,6 +85,9 @@ public abstract class MetaSection extends MetaElement {
 
 	/** クラス名 */
 	private String style;
+
+	/** セクション高さ設定（px） */
+	private Integer sectionHeight;
 
 	/**
 	 * タイトルを取得します。
@@ -150,6 +153,22 @@ public abstract class MetaSection extends MetaElement {
 		this.style = style;
 	}
 
+	/**
+	 * セクション高さ設定（px）を取得します。
+	 * @return セクション高さ設定（px）
+	 */
+	public Integer getSectionHeight() {
+		return sectionHeight;
+	}
+
+	/**
+	 * セクション高さ設定（px）を設定します。
+	 * @param sectionHeight セクション高さ設定（px）
+	 */
+	public void setSectionHeight(Integer sectionHeight) {
+		this.sectionHeight = sectionHeight;
+	}
+
 	@Override
 	protected void fillFrom(Element element, String definitionId) {
 		super.fillFrom(element, definitionId);
@@ -158,6 +177,7 @@ public abstract class MetaSection extends MetaElement {
 		this.title = section.getTitle();
 		this.id = section.getId();
 		this.style = section.getStyle();
+		this.sectionHeight = section.getSectionHeight();
 
 		// 言語毎の文字情報設定
 		localizedTitleList = I18nUtil.toMeta(section.getLocalizedTitleList());
@@ -171,6 +191,7 @@ public abstract class MetaSection extends MetaElement {
 		section.setTitle(this.title);
 		section.setId(this.id);
 		section.setStyle(this.style);
+		section.setSectionHeight(this.sectionHeight);
 
 		section.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 	}
