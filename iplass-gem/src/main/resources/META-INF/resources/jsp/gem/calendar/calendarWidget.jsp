@@ -57,6 +57,8 @@ String defaultDate = (String) request.getParameter("targetDate");
 //設定情報取得
 CalendarParts parts = (CalendarParts) request.getAttribute(Constants.CALENDAR_SETTING);
 
+String styleAttr = ViewUtil.buildHeightStyleAttr(parts.getMaxHeight());
+
 //スタイルシートのクラス名
 String style = "topview-widget";
 if (StringUtil.isNotBlank(parts.getStyle())) {
@@ -86,7 +88,7 @@ if (request.getAttribute(Constants.CALENDAR_LIB_LOADED) == null) {
 <div id="calendarWidget_${m:esc(calendarName)}" class="lyt-shortcut-01 mb05">
 	${calendarParts.iconTag}
 	<p class="title"></p>
-	<div class="calendar-block">
+	<div class="calendar-block"  style="<%= styleAttr %>">
 		<table id="calendarWidgetTable_${m:esc(calendarName)}" class="tbl-calendar" >
 		<thead>
 			<tr>
