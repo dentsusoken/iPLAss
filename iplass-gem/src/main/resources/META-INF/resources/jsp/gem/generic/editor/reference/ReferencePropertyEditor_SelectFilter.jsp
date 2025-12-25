@@ -121,7 +121,7 @@
 		if (oid == null || oid.trim().isEmpty()) {
 			return new ArrayList<>();
 		}
-		String[] oidStrArray = oid.split(",");
+		Object[] oidStrArray = oid.split(",");
 		Query q = new Query();
 		q.select(Entity.OID, propName, labelItem);
 		q.from(editor.getObjectName());
