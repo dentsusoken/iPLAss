@@ -4651,7 +4651,12 @@ function datetimepicker(selector) {
 				resultEntities = [];
 				lastKeyword = keyword;
 				if (isMultiple && keepSelectionFlag) {
-					excludeOids = selectedMap.size > 0 ? Array.from(selectedMap.keys()).map(String): [];
+					excludeOids = [];
+					if (selectedMap.size > 0) {
+						for (const key of selectedMap.keys()) {
+							excludeOids.push(String(key));
+						}
+					}
 				} else {
 					selectedMap = new Map()
 					excludeOids = [];
