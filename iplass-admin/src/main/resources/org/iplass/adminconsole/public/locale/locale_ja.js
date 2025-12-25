@@ -2131,7 +2131,7 @@ LocaleInfo.generic_editor_ReferenceSelectFilterSetting_searchCountDescriptionKey
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_searchPatternDisplaNameKey = "検索パターン";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_searchPatternDescriptionKey = "<b>表示タイプ: SelectFilter</b><br>検索パターンを指定します。<br>PREFIX: 前方一致<br>PARTIAL: 部分一致<br>POSTFIX: 後方一致<br>未指定の場合は前方一致が適用されます。";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_researchPatternDisplaNameKey = "再検索パターン";
-LocaleInfo.generic_editor_ReferenceSelectFilterSetting_reSearchPatternDescriptionKey = "<b>表示タイプ: SelectFilter</b><br>再検索を実行した際に、選択肢の選択状態をどう扱うかを指定します。<br>KEEP：現在の選択を保持します。<br>CLEAR：選択をすべてクリアします。<br>未指定の場合はKEEP（選択を保持）が適用されます。";
+LocaleInfo.generic_editor_ReferenceSelectFilterSetting_researchPatternDescriptionKey = "<b>表示タイプ: SelectFilter</b><br>再検索を実行した際に、選択肢の選択状態をどう扱うかを指定します。<br>KEEP：現在の選択を保持します。<br>CLEAR：選択をすべてクリアします。<br>未指定の場合はKEEP（選択を保持）が適用されます。";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_placeholderDisplaNameKey = "プレースホルダー";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_placeholderDescriptionKey = "<b>表示タイプ: SelectFilter</b><br>選択フィルターの入力欄に表示するプレースホルダーを設定します。";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_placeholderListDisplaNameKey = "プレースホルダーの多言語設定";

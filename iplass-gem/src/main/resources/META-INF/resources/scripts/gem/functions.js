@@ -4461,7 +4461,7 @@ function datetimepicker(selector) {
 		
 		// 初期選択を selectedMap に取り込む
 		updateSelectedMap();
-		// 初期選択を 検索値を補完
+		// 初期選択の検索値を補完
 		autoUpdateInputValue();
 
 		function setup($v) {
@@ -4569,6 +4569,7 @@ function datetimepicker(selector) {
 		 * 複数選択（isMultiple === true）の場合は、selectedList の全要素を選択状態で追加する。
 		 * @param {Array} selectedList - 選択済みエンティティのリスト
 		 * @param {boolean} isMultiple - 複数選択可能かどうか（単一選択時のみ先頭要素が選択状態になる）
+		 * @param {DocumentFragment} fragment - 追加先のフラグメント
 		 */
 		function renderSelectedOptions(selectedList, isMultiple, fragment) {
 			if (!isMultiple) {

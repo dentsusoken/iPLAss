@@ -63,10 +63,8 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 		@XmlEnumValue("NestTable")NESTTABLE,
 		@XmlEnumValue("Label")LABEL,
 		@XmlEnumValue("Unique")UNIQUE,
-		@XmlEnumValue("Hidden")
-		HIDDEN,
-		@XmlEnumValue("SelectFilter")
-		SELECTFILTER
+		@XmlEnumValue("Hidden")HIDDEN,
+		@XmlEnumValue("SelectFilter")SELECTFILTER
 	}
 	
 	/** 編集ページ */

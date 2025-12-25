@@ -2131,7 +2131,7 @@ LocaleInfo.generic_editor_ReferenceSelectFilterSetting_searchCountDescriptionKey
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_searchPatternDisplaNameKey = "Search pattern for select filter";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_searchPatternDescriptionKey = "<b>Display type: SelectFilter</b><br>Specify the search pattern.<br>PREFIX: Prefix match<br>PARTIAL: Partial match<br>POSTFIX: Suffix match<br>If not specified, PREFIX (prefix match) is applied by default.";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_researchPatternDisplaNameKey = "Behavior on re-search";
-LocaleInfo.generic_editor_ReferenceSelectFilterSetting_reSearchPatternDescriptionKey = "<b>Display type: SelectFilter</b><br>Defines how selected items are treated when a new search is executed in multi-select mode.<br>KEEP: retain current selections.<br>CLEAR: clear all selections.<br>If not specified, KEEP (retain selections) is used by default.";
+LocaleInfo.generic_editor_ReferenceSelectFilterSetting_researchPatternDescriptionKey = "<b>Display type: SelectFilter</b><br>Defines how selected items are treated when a new search is executed in multi-select mode.<br>KEEP: retain current selections.<br>CLEAR: clear all selections.<br>If not specified, KEEP (retain selections) is used by default.";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_placeholderDisplaNameKey = "Placeholder for select filter";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_placeholderDescriptionKey = "<b>Display type: SelectFilter</b><br>Set the placeholder text displayed in the select filter input.";
 LocaleInfo.generic_editor_ReferenceSelectFilterSetting_placeholderListDisplaNameKey = "Multilingual settings for placeholder";

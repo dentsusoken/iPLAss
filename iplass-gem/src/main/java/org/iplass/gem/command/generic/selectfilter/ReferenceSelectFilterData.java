@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DENTSU SOKEN INC. All Rights Reserved.
+ * Copyright (C) 2025 DENTSU SOKEN INC. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
