@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.IndexType;

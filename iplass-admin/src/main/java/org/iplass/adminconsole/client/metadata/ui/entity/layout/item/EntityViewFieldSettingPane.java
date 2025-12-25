@@ -241,8 +241,14 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 			//RootのEntityが指定されている場合
 			item = new EntityPropertyComboBoxItem(defName);
 		} else if (refDefName != null) {
-			//参照先としてEntityが指定されている場合
-			item = new EntityPropertyComboBoxItem(refDefName);
+			if (info.getInputType() == InputType.PROPERTY
+					&& info.getExcludePropertyType() != null && info.getExcludePropertyType().length > 0) {
+				// 除外タイプが指定されている場合
+				item = new EntityPropertyComboBoxItem(refDefName, info.getExcludePropertyType());
+			} else {
+				//参照先としてEntityが指定されている場合
+				item = new EntityPropertyComboBoxItem(refDefName);
+			}
 		} else {
 			item = new EntityPropertyComboBoxItem(defName);
 		}

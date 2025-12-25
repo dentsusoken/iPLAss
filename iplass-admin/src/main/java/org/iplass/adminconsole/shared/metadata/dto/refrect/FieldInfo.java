@@ -123,6 +123,9 @@ public class FieldInfo implements Serializable {
 	/** 起動トリガーのタイプを上書きする参照タイプ */
 	private FieldReferenceType overrideTriggerType;
 
+	/** 除外するプロパティタイプ名 */
+	private String[] excludePropertyType;
+
 	/**
 	 * コンストラクタ
 	 */
@@ -563,4 +566,21 @@ public class FieldInfo implements Serializable {
 		this.overrideTriggerType = overrideTriggerType;
 	}
 
+    /**
+     * 除外するプロパティタイプ名を取得します。
+     *
+     * @return 除外するプロパティタイプ名の配列
+     */
+	public String[] getExcludePropertyType() {
+		return excludePropertyType;
+	}
+
+    /**
+     * 除外するプロパティタイプ名を設定します。
+     *
+     * @param excludePropertyType 除外するプロパティタイプ名の配列
+     */
+	public void setExcludePropertyType(String[] excludePropertyType) {
+		this.excludePropertyType = excludePropertyType;
+	}
 }

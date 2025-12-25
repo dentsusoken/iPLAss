@@ -87,6 +87,7 @@ import org.iplass.gem.command.generic.search.SearchNameListCommand;
 import org.iplass.gem.command.generic.search.SearchSelectListCommand;
 import org.iplass.gem.command.generic.search.SearchValidateCommand;
 import org.iplass.gem.command.generic.search.SearchViewCommand;
+import org.iplass.gem.command.generic.selectfilter.ReferenceSelectFilterCommand;
 import org.iplass.gem.command.generic.upload.EntityFileSampleDownloadCommand;
 import org.iplass.gem.command.generic.upload.EntityFileUploadCommand;
 import org.iplass.gem.command.generic.upload.EntityFileUploadIndexCommand;
@@ -160,6 +161,8 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	GetReferenceLinkItemCommand.class,
 	//参照ユニークキー
 	GetReferenceUniqueItemCommand.class,
+	//参照選択フィルター
+	ReferenceSelectFilterCommand.class,
 	//お知らせ
 	InformationListCommand.class,
 	InformationViewCommand.class,
