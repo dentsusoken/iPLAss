@@ -1167,7 +1167,7 @@ $(function() {
 });
 </script>
 
-<div class="data-deep-search tab-panel" <%= styleAttr %> style="display: none;">
+<div class="data-deep-search tab-panel" style="display: none;<%= styleAttr %>">
 
 <form name="detailForm" method="POST">
 <input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>"/>
@@ -1400,7 +1400,7 @@ $(function() {
 			showFilters.add(setting.getFilterName());
 		}
 %>
-<div class="data-fixed-search tab-panel" <%= styleAttr %> style="display: none;">
+<div class="data-fixed-search tab-panel" style="display: none;<%= styleAttr %>">
 <form name="fixedForm" method="POST">
 <input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>"/>
 <table class="tbl-search-01">
