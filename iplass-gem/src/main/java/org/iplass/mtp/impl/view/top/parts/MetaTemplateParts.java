@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import java.io.IOException;
 
+import org.iplass.gem.command.Constants;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.top.TopViewHandler;
@@ -237,7 +238,7 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 		 * maxHeight 指定がある場合に div でラップするかどうか
 		 */
 		protected boolean useWrapper(Integer maxHeight) {
-			return maxHeight != null && maxHeight > 0 && maxHeight <= 10000;
+			return maxHeight != null && maxHeight > 0 && maxHeight <= Constants.MAX_HEIGHT_LIMIT;
 		}
 
 	}

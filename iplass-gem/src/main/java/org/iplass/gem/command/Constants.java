@@ -407,4 +407,6 @@ public class Constants {
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";
 	public static final String LAYOUT_POPOUT_ACTION = "gem/layout/popupLayout";
 
+	// セクション、最大高さ制限
+	public static final Integer MAX_HEIGHT_LIMIT = 10000;
 }

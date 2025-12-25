@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.iplass.gem.command.Constants;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.top.TopViewHandler;
@@ -179,7 +180,7 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 
 
 			Writer writer = page.getOut();
-			if (maxHeight != null && maxHeight.intValue() > 0 && maxHeight <= 10000) {
+			if (maxHeight != null && maxHeight.intValue() > 0 && maxHeight <= Constants.MAX_HEIGHT_LIMIT) {
 				writer.write("<div class=\"" + separatorClass + "\" style=\"max-height:" + maxHeight.intValue() + "px; overflow-y:auto;\">\n");
 			} else {
 				writer.write("<div class=\"" + separatorClass + "\">\n");

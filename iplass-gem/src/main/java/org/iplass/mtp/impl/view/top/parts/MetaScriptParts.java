@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import java.io.IOException;
 
+import org.iplass.gem.command.Constants;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.metadata.MetaData;
@@ -181,7 +182,7 @@ public class MetaScriptParts extends MetaTopViewParts {
 
 			Integer mh = meta.getMaxHeight();
 
-			boolean useMaxHeight = (mh != null && mh > 0 && mh <= 10000);
+			boolean useMaxHeight = (mh != null && mh > 0 && mh <= Constants.MAX_HEIGHT_LIMIT);
 
 			if (useMaxHeight) {
 				page.getOut()
