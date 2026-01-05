@@ -117,6 +117,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 	
 	private String backUrlAfterAuth;
 	private String backUrlAfterConnect;
+	private String prompt;
 	
 	//TODO 単なるOAuthClient（OpenIdConnectをサポートしない）としても利用可能に
 	//private boolean disableOpenIdConnectFuture;
@@ -135,6 +136,14 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 
 	public void setBackUrlAfterConnect(String backUrlAfterConnect) {
 		this.backUrlAfterConnect = backUrlAfterConnect;
+	}
+
+	public String getPrompt() {
+		return prompt;
+	}
+
+	public void setPrompt(String prompt) {
+		this.prompt = prompt;
 	}
 
 	public String getIssuer() {
@@ -308,6 +317,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 		enableTransientUser = def.isEnableTransientUser();
 		backUrlAfterAuth = def.getBackUrlAfterAuth();
 		backUrlAfterConnect = def.getBackUrlAfterConnect();
+		prompt = def.getPrompt();
 	}
 	@Override
 	public OpenIdConnectDefinition currentConfig() {
@@ -337,7 +347,8 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 		def.setEnableTransientUser(enableTransientUser);
 		def.setBackUrlAfterAuth(backUrlAfterAuth);
 		def.setBackUrlAfterConnect(backUrlAfterConnect);
-		
+		def.setPrompt(prompt);
+
 		return def;
 	}
 	
@@ -807,7 +818,11 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				url.append("&");
 				url.append(OAuthEndpointConstants.PARAM_CODE_CHALLENGE).append("=").append(OAuthUtil.calcCodeChallenge(OAuthConstants.CODE_CHALLENGE_METHOD_S256, state.getCodeVerifier()));
 			}
-			
+			if (prompt != null && !prompt.isEmpty()) {
+				url.append("&");
+				url.append(OAuthEndpointConstants.PARAM_PROMPT).append("=").append(OAuthUtil.encodeRfc3986(prompt));
+			}
+
 			return url.toString();
 		}
 

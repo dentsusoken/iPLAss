@@ -59,6 +59,7 @@ public class OpenIdConnectDefinition implements Definition {
 
 	private String backUrlAfterAuth;
 	private String backUrlAfterConnect;
+	private String prompt;
 	
 	public String getBackUrlAfterAuth() {
 		return backUrlAfterAuth;
@@ -74,6 +75,14 @@ public class OpenIdConnectDefinition implements Definition {
 
 	public void setBackUrlAfterConnect(String backUrlAfterConnect) {
 		this.backUrlAfterConnect = backUrlAfterConnect;
+	}
+
+	public String getPrompt() {
+		return prompt;
+	}
+
+	public void setPrompt(String prompt) {
+		this.prompt = prompt;
 	}
 
 	public String getIssuer() {

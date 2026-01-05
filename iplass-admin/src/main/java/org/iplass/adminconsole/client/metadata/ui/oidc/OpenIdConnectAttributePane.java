@@ -62,6 +62,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 	private TextItem txtSubjectNameClaimField;
 	private TextItem txtAutoUserProvisioningHandlerField;
 	private CheckboxItem chkEnableTransientUserField;
+	private TextItem txtPromptField;
 
 	private TextAreaItem txtBackUrlAfterAuthField;
 	private TextAreaItem txtBackUrlAfterConnectField;
@@ -179,6 +180,12 @@ public class OpenIdConnectAttributePane extends VLayout {
 
 		chkEnableTransientUserField = new CheckboxItem("enableTransientUser", "Enable Transient User");
 
+		txtPromptField = new TextItem();
+		txtPromptField.setTitle("Prompt");
+		txtPromptField.setWidth("100%");
+		txtPromptField.setBrowserSpellCheck(false);
+		txtPromptField.setColSpan(3);
+		txtPromptField.setStartRow(true);
 
 		ButtonItem backUrlAfterAuthCondBtn = new ButtonItem();
 		backUrlAfterAuthCondBtn.setTitle("Edit");
@@ -266,6 +273,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 				chkIssParameterSupportedField,
 				chkValidateSignField,
 				selResponseModeField,
+				txtPromptField,
 				txtSubjectNameClaimField,
 				txtAutoUserProvisioningHandlerField,
 				chkEnableTransientUserField,
@@ -313,6 +321,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txtSubjectNameClaimField.setValue(definition.getSubjectNameClaim());
 		txtAutoUserProvisioningHandlerField.setValue(definition.getAutoUserProvisioningHandler());
 		chkEnableTransientUserField.setValue(definition.isEnableTransientUser());
+		txtPromptField.setValue(definition.getPrompt());
 		txtBackUrlAfterAuthField.setValue(definition.getBackUrlAfterAuth());
 		txtBackUrlAfterConnectField.setValue(definition.getBackUrlAfterConnect());
 	}
@@ -351,6 +360,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		definition.setSubjectNameClaim(SmartGWTUtil.getStringValue(txtSubjectNameClaimField));
 		definition.setAutoUserProvisioningHandler(SmartGWTUtil.getStringValue(txtAutoUserProvisioningHandlerField));
 		definition.setEnableTransientUser(SmartGWTUtil.getBooleanValue(chkEnableTransientUserField));
+		definition.setPrompt(SmartGWTUtil.getStringValue(txtPromptField));
 
 		definition.setBackUrlAfterAuth(SmartGWTUtil.getStringValue(txtBackUrlAfterAuthField));
 		definition.setBackUrlAfterConnect(SmartGWTUtil.getStringValue(txtBackUrlAfterConnectField));
