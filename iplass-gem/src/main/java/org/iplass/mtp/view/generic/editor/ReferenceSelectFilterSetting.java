@@ -88,6 +88,7 @@ public class ReferenceSelectFilterSetting implements Refrectable {
     @MetaFieldInfo(
             displayName = "検索条件",
             displayNameKey = "generic_editor_ReferenceSelectFilterSetting_conditionDisplaNameKey",
+			displayOrder = 1103,
             description = "表示する選択肢を検索する際に付与する条件を設定します。",
             descriptionKey = "generic_editor_ReferenceSelectFilterSetting_conditionDescriptionKey"
     )
@@ -101,6 +102,7 @@ public class ReferenceSelectFilterSetting implements Refrectable {
             displayName = "ソートアイテム",
             displayNameKey = "generic_editor_ReferenceSelectFilterSetting_sortItemDisplaNameKey",
             inputType = InputType.PROPERTY,
+			displayOrder = 1104,
             description = "<b>表示タイプ: SelectFilter</b><br>参照データをソートする項目を指定します。",
             descriptionKey = "generic_editor_ReferenceSelectFilterSetting_sortItemDescriptionKey"
     )
@@ -114,6 +116,7 @@ public class ReferenceSelectFilterSetting implements Refrectable {
             displayName = "ソート種別",
             displayNameKey = "generic_editor_ReferenceSelectFilterSetting_sortTypeDisplaNameKey",
             inputType = InputType.ENUM,
+			displayOrder = 1105,
             enumClass = RefSortType.class,
             description = "<b>表示タイプ: SelectFilter</b><br>参照データをソートする順序を指定します。",
             descriptionKey = "generic_editor_ReferenceSelectFilterSetting_sortTypeDescriptionKey"
@@ -123,7 +126,7 @@ public class ReferenceSelectFilterSetting implements Refrectable {
     )
     private RefSortType sortType;
 
-    /** 選択フィルターの1回あたりの検索件数 */
+	/** 選択フィルターの1回あたりの検索件数 */
     @MetaFieldInfo(
             displayName = "検索件数",
             displayNameKey = "generic_editor_ReferenceSelectFilterSetting_searchCountDisplaNameKey",

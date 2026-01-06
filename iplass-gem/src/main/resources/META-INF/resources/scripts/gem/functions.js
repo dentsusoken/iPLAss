@@ -4444,6 +4444,15 @@ function datetimepicker(selector) {
 		const isMultiple = !!$select.prop("multiple");
 		const keepSelection = $txt.data("researchPattern");
 		const keepSelectionFlag = !(keepSelection && keepSelection === "CLEAR");
+		
+		let multiplicity = $txt.data("multiplicity");
+		if (typeof multiplicity === "number" && !isNaN(multiplicity)) {
+			// do nothing, already a valid number
+		} else if (typeof multiplicity === "string" && !isNaN(Number(multiplicity))) {
+			multiplicity = Number(multiplicity);
+		}
+		const propertyName = $txt.data("propName");
+		const $errorMsg = $container.find("#error_" + propertyName);
 
 		// 状態（インスタンスごと）
 		let loading = false;
@@ -4474,7 +4483,8 @@ function datetimepicker(selector) {
 				entityOid: $input.attr("data-entityOid"),
 				entityVersion: $input.attr("data-entityVersion"),
 				webapiName: $input.attr("data-webapiName"),
-				researchPattern: $input.attr("data-researchPattern")
+				researchPattern: $input.attr("data-researchPattern"),
+				multiplicity: $input.attr("data-multiplicity")
 			});
 		}
 
@@ -4515,6 +4525,13 @@ function datetimepicker(selector) {
 					resultEntities.push({ oid, code, name });
 				}
 			});
+
+			// 多重度が超える場合、エラーメッセージを表示する
+			if (multiplicity > 1 && selectedMap.size > multiplicity) {
+				$errorMsg.show();
+			} else {
+				$errorMsg.hide();
+			}
 		}
 
 		function handleSingleSelect() {
