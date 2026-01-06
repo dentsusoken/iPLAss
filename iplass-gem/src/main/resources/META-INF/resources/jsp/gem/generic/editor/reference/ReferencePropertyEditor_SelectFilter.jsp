@@ -203,12 +203,15 @@ if (StringUtil.isNotEmpty(oid)) {
 }
 String inputId = "input_" + editor.getPropertyName();
 String selectId = "select_" + editor.getPropertyName();
+String errorId = "error_" + editor.getPropertyName();
+
 String customStyle = "";
 if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
 	customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
 }
 
-Boolean isMultiple = pd.getMultiplicity() != 1;
+int multiplicity = pd.getMultiplicity();
+Boolean isMultiple = multiplicity != 1;
 String cls = isMultiple ? "form-size-12 inpbr ref-select-filter-item" : "form-size-02 inpbr ref-select-filter-item";
 String multiple = isMultiple ? " multiple" : "";
 
@@ -220,43 +223,62 @@ if (StringUtil.isNotBlank(editorPlaceholder)) {
 %>
 
 <div class="ref-select-filter">
-    <input type="text"
-        class="form-size-02 inpbr ref-select-filter-item"
-   		id="<c:out value="<%=inputId %>"/>"
-        style="<c:out value="<%=customStyle%>"/>" 
-	    placeholder="<%=org.apache.commons.text.StringEscapeUtils.escapeHtml4(placeHolder) %>"
-        data-defName="<c:out value="<%=rootDefName%>"/>"
-        data-viewName="<%=viewName %>" 
-        data-propName="<c:out value="<%=referencePropertyName%>"/>" 
-        data-viewType="<%=viewType %>" 
-        data-researchPattern="<c:out value="<%=researchPattern%>"/>"
-        data-entityOid="<c:out value="<%=rootOid%>"/>" 
-        data-entityVersion="<c:out value="<%=rootVersion%>"/>"
-        data-webapiName="<%=ReferenceSelectFilterCommand.WEBAPI_NAME%>"
-        autocomplete="off"
-    />
-    <select
-    	id="<c:out value="<%=selectId %>"/>"
-        name="<c:out value="<%=referencePropertyName%>"/>"
-        class="<c:out value="<%=cls %>"/>"
-        style="<c:out value="<%=customStyle%>"/>"
-        <c:out value="<%=multiple %>"/>
-    >   
+	<input type="text"
+		class="form-size-02 inpbr ref-select-filter-item"
+		id="<c:out value="<%=inputId %>"/>"
+		style="<c:out value="<%=customStyle%>"/>" 
+		placeholder="<%=org.apache.commons.text.StringEscapeUtils.escapeHtml4(placeHolder) %>"
+		data-defName="<c:out value="<%=rootDefName%>"/>"
+		data-viewName="<%=viewName %>" 
+		data-propName="<c:out value="<%=referencePropertyName%>"/>" 
+		data-viewType="<%=viewType %>" 
+		data-multiplicity="<c:out value="<%=multiplicity%>"/>"
+		data-researchPattern="<c:out value="<%=researchPattern%>"/>"
+		data-entityOid="<c:out value="<%=rootOid%>"/>" 
+		data-entityVersion="<c:out value="<%=rootVersion%>"/>"
+		data-webapiName="<%=ReferenceSelectFilterCommand.WEBAPI_NAME%>"
+		autocomplete="off"
+	/>
+	<select
+		id="<c:out value="<%=selectId %>"/>"
+		name="<c:out value="<%=referencePropertyName%>"/>"
+		class="<c:out value="<%=cls %>"/>"
+		style="<c:out value="<%=customStyle%>"/>"
+		<c:out value="<%=multiple %>"/>
+	>   
 <%
-    if (CollectionUtil.isNotEmpty(optionValues)) {
-    	for (Entity en : optionValues) {
-    		if (en == null || StringUtil.isEmpty(en.getOid())) {
-    			continue;
-    		}
-    		String initOid = en.getOid();
-    		String name = StringUtil.isNotEmpty(en.getName()) ? en.getName() : "";
-    		String code = StringUtil.isNotEmpty(en.getValue("code")) ? en.getValue("code") : "";
+	if (CollectionUtil.isNotEmpty(optionValues)) {
+		for (Entity en : optionValues) {
+			if (en == null || StringUtil.isEmpty(en.getOid())) {
+				continue;
+			}
+			String initOid = en.getOid();
+			String name = StringUtil.isNotEmpty(en.getName()) ? en.getName() : "";
+			String code = StringUtil.isNotEmpty(en.getValue("code")) ? en.getValue("code") : "";
 %>
- 		<option value="<c:out value="<%=initOid%>" />" data-code="<c:out value="<%=code%>" />"  selected ><c:out value="<%=name%>" /></option>
+		<option value="<c:out value="<%=initOid%>" />" data-code="<c:out value="<%=code%>" />"  selected ><c:out value="<%=name%>" /></option>
 <%	
-    	}
-    }
+		}
+	}
 %>
 	</select>
+
+	<c:set var="multiplicity" value="<%= pd.getMultiplicity() %>" />
+	<p class="error-multiplicity" style="display: none;" id="<c:out value="<%=errorId %>"/>">
+		<span class="error">${m:rsp("mtp-gem-messages","generic.editor.reference.ReferencePropertyEditor_Edit.maxMultipleError",multiplicity)}</span>
+	</p>
 </div>
+<script>
+$(function() {
+	<%-- common.js --%>
+	addEditValidator(function() {
+		const selectedCount = $("select[name='" + es("<%=StringUtil.escapeJavaScript(referencePropertyName)%>") + "'] option:selected").length;
+		if (<%=pd.getMultiplicity()%> > 1 && selectedCount > <%=pd.getMultiplicity()%>) {
+			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
+			return false;
+		}
+		return true;
+	});
+});
+</script>
 
