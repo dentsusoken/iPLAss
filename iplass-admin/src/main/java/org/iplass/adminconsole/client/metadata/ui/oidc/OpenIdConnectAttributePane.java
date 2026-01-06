@@ -186,6 +186,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txtPromptField.setBrowserSpellCheck(false);
 		txtPromptField.setColSpan(3);
 		txtPromptField.setStartRow(true);
+		txtPromptField.setTooltip(SmartGWTUtil.getHoverString(rs("ui_metadata_oidc_OpenIdConnectAttributePane_prompt")));
 
 		ButtonItem backUrlAfterAuthCondBtn = new ButtonItem();
 		backUrlAfterAuthCondBtn.setTitle("Edit");
@@ -360,7 +361,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		definition.setSubjectNameClaim(SmartGWTUtil.getStringValue(txtSubjectNameClaimField));
 		definition.setAutoUserProvisioningHandler(SmartGWTUtil.getStringValue(txtAutoUserProvisioningHandlerField));
 		definition.setEnableTransientUser(SmartGWTUtil.getBooleanValue(chkEnableTransientUserField));
-		definition.setPrompt(SmartGWTUtil.getStringValue(txtPromptField));
+		definition.setPrompt(SmartGWTUtil.getStringValue(txtPromptField, true));
 
 		definition.setBackUrlAfterAuth(SmartGWTUtil.getStringValue(txtBackUrlAfterAuthField));
 		definition.setBackUrlAfterConnect(SmartGWTUtil.getStringValue(txtBackUrlAfterConnectField));

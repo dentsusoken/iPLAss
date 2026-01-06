@@ -818,7 +818,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				url.append("&");
 				url.append(OAuthEndpointConstants.PARAM_CODE_CHALLENGE).append("=").append(OAuthUtil.calcCodeChallenge(OAuthConstants.CODE_CHALLENGE_METHOD_S256, state.getCodeVerifier()));
 			}
-			if (prompt != null && !prompt.isEmpty()) {
+			if (prompt != null) {
 				url.append("&");
 				url.append(OAuthEndpointConstants.PARAM_PROMPT).append("=").append(OAuthUtil.encodeRfc3986(prompt));
 			}
