@@ -908,6 +908,7 @@ LocaleInfo.ui_metadata_oidc_OpenIdConnectEditPane_completion = "Completion";
 LocaleInfo.ui_metadata_oidc_OpenIdConnectEditPane_saveOpenIdConnect = "Save OpenIdConnect(RP) is complete.";
 LocaleInfo.ui_metadata_oidc_OpenIdConnectEditPane_backUrlAfterAuthHint = "<ul><li>request : RequestContext</li></ul>";
 LocaleInfo.ui_metadata_oidc_OpenIdConnectEditPane_backUrlAfterConnectHint = "<ul><li>request : RequestContext</li></ul>";
+LocaleInfo.ui_metadata_oidc_OpenIdConnectAttributePane_prompt = "Use space-separated values for multiple entries.";
 LocaleInfo.ui_metadata_oidc_ClientSecretDialog_completion = "Completion";
 LocaleInfo.ui_metadata_oidc_ClientSecretDialog_saveClientSecretComp = "Save ClientSecret is complete.";
 LocaleInfo.ui_metadata_webauthn_webAuthnPlugin_webAuthnTemplate = "WebAuthn(passkey)";

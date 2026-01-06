@@ -908,6 +908,7 @@ LocaleInfo.ui_metadata_oidc_OpenIdConnectEditPane_completion = "完了";
 LocaleInfo.ui_metadata_oidc_OpenIdConnectEditPane_saveOpenIdConnect = "OpenIdConnect(RP)の保存が完了しました。";
 LocaleInfo.ui_metadata_oidc_OpenIdConnectEditPane_backUrlAfterAuthHint = "<ul><li>request : RequestContext</li></ul>";
 LocaleInfo.ui_metadata_oidc_OpenIdConnectEditPane_backUrlAfterConnectHint = "<ul><li>request : RequestContext</li></ul>";
+LocaleInfo.ui_metadata_oidc_OpenIdConnectAttributePane_prompt = "複数入力する場合はスペース区切りで指定してください。";
 LocaleInfo.ui_metadata_oidc_ClientSecretDialog_completion = "完了";
 LocaleInfo.ui_metadata_oidc_ClientSecretDialog_saveClientSecretComp = "ClientSecretの保存が完了しました。";
 LocaleInfo.ui_metadata_webauthn_webAuthnPlugin_webAuthnTemplate = "WebAuthn(passkey)";
