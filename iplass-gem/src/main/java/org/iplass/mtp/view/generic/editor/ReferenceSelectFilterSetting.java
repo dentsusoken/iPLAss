@@ -162,7 +162,7 @@ public class ReferenceSelectFilterSetting implements Refrectable {
 			inputType = InputType.ENUM,
 			enumClass = SelectFilterResearchPattern.class,
 			displayOrder = 1140,
-			description = "<b>表示タイプ: SelectFilter</b><br>再検索実行時に既存の選択を維持するかクリアするかを指定します。KEEP_SELECTION: 選択を保持、CLEAR_SELECTION: 選択を解除します。",
+			description = "<b>表示タイプ: SelectFilter</b><br>再検索実行時に既存の選択を維持するかクリアするかを指定します。KEEP: 選択を保持、CLEAR: 選択を解除します。",
 			descriptionKey = "generic_editor_ReferenceSelectFilterSetting_researchPatternDescriptionKey"
 	)
 	@EntityViewField(

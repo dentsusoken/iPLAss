@@ -35,7 +35,6 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -49,6 +48,7 @@ import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.expr.Not;
 import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
+import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -104,24 +104,6 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
             default: return Like.MatchPattern.PREFIX;
         }
     }
-
-	/**
-	 * 表示用文字列変換
-	 * @param v 値
-	 * @return 表示用文字列
-	 */
-	private String toDisplayString(Object v) {
-        if (v == null) {
-            return "";
-        }
-		if (v instanceof String) {
-            return (String) v;
-        }
-        if (v instanceof SelectValue) {
-            return ((SelectValue) v).getValue();
-        }
-		return String.valueOf(v);
-	}
 
 	/**
 	 * プロパティ名を EntityDefinition に応じて調整する
@@ -308,7 +290,7 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
         // 検索実行
 		em.searchEntity(q, (entity) -> {
 			entity.setName(entity.getValue(labelItem));
-			entity.setValue(RESULT_CODE, this.toDisplayString(entity.getValue(propName)));
+			entity.setValue(RESULT_CODE, ConvertUtil.convertToString(entity.getValue(propName)));
 			optionValues.add(entity);
 			return true;
 		});
