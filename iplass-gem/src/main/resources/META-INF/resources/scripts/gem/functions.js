@@ -4738,8 +4738,8 @@ function datetimepicker(selector) {
 			
 			getSelectFilterItem(webapiName, defName, viewName, propName, params, viewType, function (entities, count) {
 				try {
-					const list = Array.isArray(entities) ? entities : [];
-					// サーバーの元の戻り件数を加算して offset を進める（フロントでの重複除去による再取得を防ぐ）
+					const list = (entities && Array.isArray(entities)) ? entities : [];
+					// サーバーの元の戻り件数を加算して offset を進める
 					serverOffset += list.length;
 
 					// 総数
@@ -4754,7 +4754,7 @@ function datetimepicker(selector) {
 					const selectedOids = new Set(Array.from(selectedMap.keys()).map(String));
 
 					const filteredEntities = [];
-					for (const e of entities) {
+					for (const e of list) {
 						const oid = e && e.oid != null ? String(e.oid) : "";
 						if (!oid) continue;
 						if (isMultiple && selectedOids.has(oid)) continue; // 選択済みは未選結果に入れない

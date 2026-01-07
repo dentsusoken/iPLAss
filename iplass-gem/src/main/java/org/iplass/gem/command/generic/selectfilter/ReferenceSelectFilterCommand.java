@@ -289,7 +289,7 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 
         // 検索実行
 		em.searchEntity(q, (entity) -> {
-			entity.setName(entity.getValue(labelItem));
+			entity.setName(ConvertUtil.convertToString(entity.getValue(labelItem)));
 			entity.setValue(RESULT_CODE, ConvertUtil.convertToString(entity.getValue(propName)));
 			optionValues.add(entity);
 			return true;

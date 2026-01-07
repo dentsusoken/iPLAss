@@ -105,11 +105,11 @@
 		if (oid == null || oid.trim().isEmpty()) {
 			return new ArrayList<>();
 		}
-		Object[] oidStrArray = oid.split(",");
+		Object[] oidArray = oid.split(",");
 		Query q = new Query();
 		q.select(Entity.OID, propName, labelItem);
 		q.from(editor.getObjectName());
-		q.where(new In(Entity.OID, oidStrArray));
+		q.where(new In(Entity.OID, oidArray));
 		String sortItem = setting.getSortItem();
 		if (sortItem == null || sortItem.isEmpty()) {
 			sortItem = Entity.OID;
@@ -124,7 +124,7 @@
 
 		List<Entity> optionValues = new ArrayList<>();
 		em.searchEntity(q, (entity) -> {
-			entity.setName(entity.getValue(labelItem));
+			entity.setName(ConvertUtil.convertToString(entity.getValue(labelItem)));
 			entity.setValue("code", ConvertUtil.convertToString(entity.getValue(finalPropName)));
 			optionValues.add(entity);
 			return true;
