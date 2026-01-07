@@ -28,16 +28,14 @@
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%@ page import="org.iplass.gem.command.generic.selectfilter.ReferenceSelectFilterCommand"%>
-<%@ page import="org.iplass.mtp.ManagerLocator"%>
+
 <%@ page import="org.iplass.mtp.entity.Entity" %>
 <%@ page import="org.iplass.mtp.entity.EntityManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
-<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.ReferenceSelectFilterSetting" %>
-<%@ page import="org.iplass.mtp.view.generic.OutputType"%>
-<%@ page import="org.iplass.mtp.util.StringUtil" %>
-<%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
+<%@ page import="org.iplass.mtp.entity.definition.EntityDefinition" %>
+<%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager" %>
+<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition" %>
+<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinitionType" %>
 <%@ page import="org.iplass.mtp.entity.query.Query" %>
 <%@ page import="org.iplass.mtp.entity.query.SortSpec" %>
 <%@ page import="org.iplass.mtp.entity.query.SortSpec.SortType" %>
@@ -45,13 +43,17 @@
 <%@ page import="org.iplass.mtp.entity.query.condition.expr.And" %>
 <%@ page import="org.iplass.mtp.entity.query.condition.expr.Not" %>
 <%@ page import="org.iplass.mtp.entity.query.condition.predicate.In" %>
-<%@ page import="org.iplass.mtp.entity.definition.EntityDefinition" %>
-<%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager" %>
-<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition" %>
-<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinitionType" %>
-<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefSortType" %>
 <%@ page import="org.iplass.mtp.entity.SelectValue" %>
+<%@ page import="org.iplass.mtp.impl.util.ConvertUtil" %>
+<%@ page import="org.iplass.mtp.ManagerLocator"%>
+<%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.util.CollectionUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.ReferenceSelectFilterSetting" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefSortType" %>
+<%@ page import="org.iplass.mtp.view.generic.OutputType"%>
+<%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 
 <%!
 	private EntityManager em = ManagerLocator.manager(EntityManager.class);
@@ -76,24 +78,6 @@
         }
         return propName;
     }
-	
-	/**
-	 * 表示用文字列変換
-	 * @param v 値
-	 * @return 表示用文字列
-	 */
-	private static String toDisplayString(Object v) {
-        if (v == null) {
-            return "";
-        }
-        if (v instanceof SelectValue) {
-            return ((SelectValue) v).getValue();
-        }
-        if (v instanceof String) {
-            return (String) v;
-        }
-        return String.valueOf(v);
-	}
 	
 	List<Entity> searchOptionValues(ReferencePropertyEditor editor, String oid) {
 		if (editor == null) {
@@ -141,7 +125,7 @@
 		List<Entity> optionValues = new ArrayList<>();
 		em.searchEntity(q, (entity) -> {
 			entity.setName(entity.getValue(labelItem));
-			entity.setValue("code", toDisplayString(entity.getValue(finalPropName)));
+			entity.setValue("code", ConvertUtil.convertToString(entity.getValue(finalPropName)));
 			optionValues.add(entity);
 			return true;
 		});
