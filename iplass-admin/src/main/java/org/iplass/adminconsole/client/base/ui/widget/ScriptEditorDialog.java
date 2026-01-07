@@ -136,11 +136,11 @@ public class ScriptEditorDialog extends AbstractWindow {
 		optionForm.setHeight(30);
 		optionForm.setWidth100();
 		if (enableMaxHeight) {
-			optionForm.setNumCols(6);
-			optionForm.setColWidths(70, 130, 70, 130, 50, "*");
-		} else {
 			optionForm.setNumCols(8);
 			optionForm.setColWidths(70, 130, 70, 130, 90, 130, 30, "*");
+		} else {
+			optionForm.setNumCols(6);
+			optionForm.setColWidths(70, 130, 70, 130, 50, "*");
 		}
 		header.addMember(optionForm);
 
