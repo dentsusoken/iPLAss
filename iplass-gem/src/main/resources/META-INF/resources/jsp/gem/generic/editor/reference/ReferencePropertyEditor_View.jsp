@@ -34,7 +34,6 @@
 <%@ page import="org.iplass.mtp.entity.EntityManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.VersionControlReferenceType"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.ReferenceSelectFilterSetting" %>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.IndexType"%>
@@ -220,15 +219,6 @@
 		return StringUtil.escapeHtml(str);
 	}
 
-	String getSelectFilterValue(ReferencePropertyEditor editor, Entity refEntity) {
-		ReferenceSelectFilterSetting setting = editor.getReferenceSelectFilterSetting();
-		if (setting == null) return "";
-		String selectPropName = setting.getPropertyName();
-		if (selectPropName == null || refEntity.getValue(selectPropName) == null) return "";
-		String str = ConvertUtil.convertToString(refEntity.getValue(selectPropName));
-		return StringUtil.escapeHtml(str);
-	}
-
 	Integer toInteger(Object val) {
 		if (val == null) return null;
 		if (val instanceof Integer) {
@@ -402,8 +392,7 @@
 			|| editor.getDisplayType() == ReferenceDisplayType.CHECKBOX
 			|| editor.getDisplayType() == ReferenceDisplayType.TREE
 			|| editor.getDisplayType() == ReferenceDisplayType.LABEL
-			|| editor.getDisplayType() == ReferenceDisplayType.UNIQUE
-			|| editor.getDisplayType() == ReferenceDisplayType.SELECTFILTER) {
+			|| editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
 
 		//リンク or リスト
 		String ulId = "ul_" + propName;
@@ -447,8 +436,7 @@
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.LINK
 					|| editor.getDisplayType() == ReferenceDisplayType.TREE
-					|| editor.getDisplayType() == ReferenceDisplayType.UNIQUE
-					|| editor.getDisplayType() == ReferenceDisplayType.SELECTFILTER) {
+					|| editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
 				if (editor.isShowRefComboParent() && editor.getDisplayType() == ReferenceDisplayType.TREE) {
 					//親階層検索
 					Entity[] parents = getParents(refEntity, editor);
@@ -463,12 +451,6 @@
 				if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && isUniqueProp(editor)) {
 %>
 <span><c:out value="<%=getUniquePropValue(editor, refEntity) %>" /></span>&nbsp;&nbsp;
-<%
-				}
-				
-				if (editor.getDisplayType() == ReferenceDisplayType.SELECTFILTER) {
-%>
-<span><c:out value="<%=getSelectFilterValue(editor, refEntity) %>" /></span>&nbsp;&nbsp;
 <%
 				}
 
