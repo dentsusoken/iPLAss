@@ -4604,7 +4604,7 @@ function datetimepicker(selector) {
 		 * @param {DocumentFragment} fragment - 追加先のフラグメント
 		 */
 		function renderResultOptions(resultEntities, isMultiple, fragment) {
-			if (!isMultiple && resultEntities.length > 1) {
+			if (!isMultiple && totalRawCount > 1) {
 				fragment.appendChild($("<option/>").val("").text(options.i18n.pleaseSelect).get(0));
 			}
 
