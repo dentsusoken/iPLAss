@@ -4455,7 +4455,6 @@ function datetimepicker(selector) {
 		const $errorMsg = $container.find("#error_" + propertyName);
 
 		// 状態（インスタンスごと）
-		let loading = false;
 		let lastKeyword = "";
 
 		// ページング / 集合
@@ -4639,25 +4638,12 @@ function datetimepicker(selector) {
 		}
 
 		/**
-		 * ローディング状態を設定
-		 * @param {boolean} isLoading ローディング中かどうか
-		 */
-		function setLoading(isLoading) {
-			loading = isLoading;
-		}
-
-
-		/**
 		 * 検索前の処理
 		 * @param {boolean} isNewSearch 新しい検索かどうか
 		 */
 		function triggerSearch(isNewSearch) {
-			if (loading) return;
-			setLoading(true)
-
 			const keyword = $txt.val().trim();
 			if (keyword && isNewSearch && keyword === lastKeyword) {
-				setLoading(false);
 				return;
 			}
 
@@ -4737,42 +4723,38 @@ function datetimepicker(selector) {
 			params.push({ key: "offset", value: serverOffset }); 
 			
 			getSelectFilterItem(webapiName, defName, viewName, propName, params, viewType, function (entities, count) {
-				try {
-					const list = (entities && Array.isArray(entities)) ? entities : [];
-					// サーバーの元の戻り件数を加算して offset を進める
-					serverOffset += list.length;
+				const list = (entities && Array.isArray(entities)) ? entities : [];
+				// サーバーの元の戻り件数を加算して offset を進める
+				serverOffset += list.length;
 
-					// 総数
-					if (typeof count === "number" && !isNaN(count)) {
-						totalRawCount = count;
-					} else if (typeof count === "string" && !isNaN(Number(count))) {
-						totalRawCount = Number(count);
-					}
-
-					// マージ：選択済みおよび既存を除外（oidで重複除去）
-					const existOids = new Set(resultEntities.map(x => String(x.oid)));
-					const selectedOids = new Set(Array.from(selectedMap.keys()).map(String));
-
-					const filteredEntities = [];
-					for (const e of list) {
-						const oid = e && e.oid != null ? String(e.oid) : "";
-						if (!oid) continue;
-						if (isMultiple && selectedOids.has(oid)) continue; // 選択済みは未選結果に入れない
-						if (existOids.has(oid)) continue;                 // 未選結果を重複排除
-						const name = e.name != null ? String(e.name) : "";
-						const code = e.code != null ? String(e.code) : "";
-						filteredEntities.push({ oid, name, code });
-						existOids.add(oid);
-					}
-					resultEntities.push(...filteredEntities);
-
-					// 未選択結果があり、さらに読み込みが可能な場合のみ「もっと」を表示
-					canLoadMoreResults = (serverOffset < totalRawCount);
-					renderOptions();
-					autoUpdateInputValue();
-				} finally {
-					setLoading(false);
+				// 総数
+				if (typeof count === "number" && !isNaN(count)) {
+					totalRawCount = count;
+				} else if (typeof count === "string" && !isNaN(Number(count))) {
+					totalRawCount = Number(count);
 				}
+
+				// マージ：選択済みおよび既存を除外（oidで重複除去）
+				const existOids = new Set(resultEntities.map(x => String(x.oid)));
+				const selectedOids = new Set(Array.from(selectedMap.keys()).map(String));
+
+				const filteredEntities = [];
+				for (const e of list) {
+					const oid = e && e.oid != null ? String(e.oid) : "";
+					if (!oid) continue;
+					if (isMultiple && selectedOids.has(oid)) continue; // 選択済みは未選結果に入れない
+					if (existOids.has(oid)) continue;                 // 未選結果を重複排除
+					const name = e.name != null ? String(e.name) : "";
+					const code = e.code != null ? String(e.code) : "";
+					filteredEntities.push({ oid, name, code });
+					existOids.add(oid);
+				}
+				resultEntities.push(...filteredEntities);
+
+				// 未選択結果があり、さらに読み込みが可能な場合のみ「もっと」を表示
+				canLoadMoreResults = (serverOffset < totalRawCount);
+				renderOptions();
+				autoUpdateInputValue();
 			});
 		}
 
