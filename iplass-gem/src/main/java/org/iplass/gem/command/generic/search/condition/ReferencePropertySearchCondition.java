@@ -198,6 +198,19 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 						conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
 					}
 				}
+			} else if (editor.getDisplayType() == ReferenceDisplayType.SELECTFILTER) {
+				Entity[] list = (Entity[]) value;
+				if (list != null) {
+					if (list.length == 1) {
+						conditions.add(new Equals(getPropertyName() + "." + Entity.OID, list[0].getOid()));
+					} else if (list.length > 1) {
+						List<String> oidList = new ArrayList<>();
+						for (Entity tmp : list) {
+							oidList.add(tmp.getOid());
+						}
+						conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
+					}
+				}
 			} else {
 				Entity entity = (Entity) value;
 				if (entity.getName() != null && !entity.getName().isEmpty()) {
@@ -420,6 +433,11 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 					createException(null);
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
+				Entity[] list = (Entity[]) value;
+				if (validateEntity && (value == null || list.length == 0)) {
+					createException(null);
+				}
+			} else if (editor.getDisplayType() == ReferenceDisplayType.SELECTFILTER) {
 				Entity[] list = (Entity[]) value;
 				if (validateEntity && (value == null || list.length == 0)) {
 					createException(null);

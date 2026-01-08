@@ -101,6 +101,9 @@
 		width: 100%;
 		height: 24px;
 		margin: 2px 0;
+		&[multiple] {
+			height: 72px;
+		}
 	}
 	.submit-area {
 		th {
