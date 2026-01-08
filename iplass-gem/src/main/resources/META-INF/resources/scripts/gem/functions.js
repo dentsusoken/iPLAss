@@ -4671,7 +4671,7 @@ function datetimepicker(selector) {
 		$txt.on("keydown", function (e) {
 			if (e.key === "Enter") {
 				e.preventDefault();
-				triggerSearch(true);
+				$(this).blur();
 			}
 		});
 
