@@ -31,7 +31,7 @@ ext {
 		'org.apache.commons:commons-pool2': '2.11.1',
 		'commons-io:commons-io': '2.19.0',
 		'commons-beanutils:commons-beanutils': '1.9.4',
-		'commons-codec:commons-codec': '1.15',
+		'commons-codec:commons-codec': '1.17.1',
 		
 		'org.apache.httpcomponents:httpclient': '4.5.13',
 		'org.apache.httpcomponents:httpmime': '4.5.13',
