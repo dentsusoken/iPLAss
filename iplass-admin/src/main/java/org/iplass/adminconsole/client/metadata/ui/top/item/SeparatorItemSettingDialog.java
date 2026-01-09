@@ -36,7 +36,7 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 public class SeparatorItemSettingDialog extends MtpDialog {
 	private TextItem styleField;
 	
-	private TextItem maxHeightField;
+	private IntegerItem maxHeightField;
 
 	/**
 	 * コンストラクタ

@@ -238,7 +238,7 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 		 * maxHeight 指定がある場合に div でラップするかどうか
 		 */
 		protected boolean useWrapper(Integer maxHeight) {
-			return maxHeight != null && maxHeight > 0 && maxHeight <= Constants.MAX_HEIGHT_LIMIT;
+			return maxHeight != null && maxHeight > 0;
 		}
 
 	}

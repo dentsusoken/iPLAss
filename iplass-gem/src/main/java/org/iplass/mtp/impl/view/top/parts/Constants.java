@@ -24,7 +24,4 @@ public interface Constants {
 	public static final String INFO_SETTING = "infoSetting";
 	public static final String CALENDAR_SETTING = "calendarParts";
 
-	// TOPVIEW_PARTSの 最大高さ制限値
-	public static final Integer MAX_HEIGHT_LIMIT = 10000;
-
 }

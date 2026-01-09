@@ -29,7 +29,6 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
-import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
@@ -40,7 +39,6 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 
 /**
  *
@@ -97,7 +95,7 @@ public class TemplateItem extends PartsItem {
 
 		private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
-		private TextItem maxHeightField;
+		private IntegerItem maxHeightField;
 		/**
 		 * コンストラクタ
 		 */

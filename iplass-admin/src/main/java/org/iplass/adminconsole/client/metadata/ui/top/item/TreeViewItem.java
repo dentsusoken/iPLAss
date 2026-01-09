@@ -75,7 +75,7 @@ public class TreeViewItem extends PartsItem {
 
 		private TextItem iconTagField;
 		private TextItem styleField;
-		private TextItem maxHeightField;
+		private IntegerItem maxHeightField;
 
 		/**
 		 * コンストラクタ
@@ -99,7 +99,9 @@ public class TreeViewItem extends PartsItem {
 
 			maxHeightField = new IntegerItem("maxHeight", "Max Height");
 			maxHeightField.setWidth("100%");
-			maxHeightField.setValue(parts.getMaxHeight());
+			if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
+				maxHeightField.setValue(parts.getMaxHeight());
+			}
 			SmartGWTUtil.addHoverToFormItem(maxHeightField,
 					AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
 

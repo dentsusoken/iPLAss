@@ -75,7 +75,7 @@ public class CalendarItem extends PartsItem {
 
 		private TextItem iconTagField;
 		private TextItem styleField;
-		private TextItem maxHeightField;
+		private IntegerItem maxHeightField;
 
 		/**
 		 * コンストラクタ

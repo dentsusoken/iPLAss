@@ -22,7 +22,6 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import java.io.IOException;
 
-import org.iplass.gem.command.Constants;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.metadata.MetaData;
@@ -116,14 +115,11 @@ public class MetaScriptParts extends MetaTopViewParts {
 		/** テンプレート */
 		private GroovyTemplate template;
 
-		/** スクリプトパーツ メタデータ */
-		private final MetaScriptParts meta;
 		/**
 		 * コンストラクタ
 		 */
 		public ScriptPartsHandler(MetaScriptParts meta) {
 			super(meta);
-			this.meta = meta;
 			if (meta.script != null && meta.key == null) {
 				meta.key = "Jsp_" + GroovyTemplateCompiler.randomName().replace("-", "_");
 				template = compile(key, meta);
@@ -180,9 +176,10 @@ public class MetaScriptParts extends MetaTopViewParts {
 				ServletContext application,
 				PageContext page) throws IOException, ServletException {
 
-			Integer mh = meta.getMaxHeight();
+			Integer mh = this.getMetaData()
+					.getMaxHeight();
 
-			boolean useMaxHeight = (mh != null && mh > 0 && mh <= Constants.MAX_HEIGHT_LIMIT);
+			boolean useMaxHeight = (mh != null && mh > 0);
 
 			if (useMaxHeight) {
 				page.getOut()
