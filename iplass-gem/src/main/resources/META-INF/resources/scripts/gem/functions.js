@@ -4555,7 +4555,7 @@ function datetimepicker(selector) {
 				if ($opt.length > 0) {
 					const selectedCode = $opt.attr("data-code") || "";
 					if (selectedCode) {
-						lastKeyword = selectedCode
+						lastKeyword = selectedCode;
 						$select.empty().append($opt.prop("selected", true))
 						$txt.val(selectedCode);
 					}
@@ -4581,7 +4581,6 @@ function datetimepicker(selector) {
 		/**
 		 * 選択済みオプションをレンダリングする。
 		 * 単一選択（isMultiple === false）の場合は、selectedList の先頭要素のみを選択状態で追加し、
-		 * 2件目以降は未選択のオプションとして追加する。
 		 * 複数選択（isMultiple === true）の場合は、selectedList の全要素を選択状態で追加する。
 		 * @param {Array} selectedList - 選択済みエンティティのリスト
 		 * @param {boolean} isMultiple - 複数選択可能かどうか（単一選択時のみ先頭要素が選択状態になる）
@@ -4659,7 +4658,7 @@ function datetimepicker(selector) {
 						}
 					}
 				} else {
-					selectedMap = new Map()
+					selectedMap = new Map();
 					excludeOids = [];
 				}
 			}
