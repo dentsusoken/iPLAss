@@ -224,6 +224,7 @@
 %>
 <div class="bulk-edit">
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
+<span class="error page-error"></span>
 <%
 	if (isSuccess) {
 		//更新に成功した場合
@@ -380,6 +381,10 @@ $(function() {
 
 			String path = EntityViewUtil.getJspPath(pc, ViewConst.DESIGN_TYPE_GEM);
 			if (path != null) {
+				PropertyDefinition pd = defMap.get(pc.getPropertyName());
+				String displayLabel = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(), pd.getDisplayName(),
+						pd.getLocalizedDisplayNameList());
+				request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
 %>
 <tr id="id_tr_<c:out value="<%=pc.getPropertyName()%>"/>" style="display: none;">
 <jsp:include page="<%=path%>" />
@@ -482,6 +487,7 @@ function onclick_cancel() {
 	$("#modal-dialog-root .modal-close", parent.document).trigger("click");
 }
 function onclick_bulkupdate(target){
+	if (!validation()) return;
 	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
 		return;
 	}
@@ -489,6 +495,7 @@ function onclick_bulkupdate(target){
 		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
+	
 	$(target).prop("disabled", true);
 	$("#detailForm").submit();
 }
@@ -508,6 +515,13 @@ function propChange(obj) {
 		$(this).css("display", "none").val("");
 	});
 	$("tr#id_tr_" + propName).css("display", "");
+}
+function validation() {
+	<%-- common.js --%>
+	var ret = editValidate();
+	var message = !ret ? "${m:rs('mtp-gem-messages', 'command.generic.detail.DetailCommandBase.inputErr')}" : "";
+	$(".bulk-edit > .page-error").text(message);
+	return ret;
 }
 $(function() {
 <%
