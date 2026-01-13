@@ -201,7 +201,8 @@ $(function() {
 			//チェックボックスorラジオボタン
 			String ulId = "ul_" + propName;
 			String cls = "list-radio-01";
-			if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) cls = "list-check-01";
+			boolean isCheckBox = editor.getDisplayType() == SelectDisplayType.CHECKBOX;
+			if (isCheckBox) cls = "list-check-01";
 %>
 <ul id="<c:out value="<%=ulId %>"/>" class="<c:out value="<%=cls %>"/>" data-itemName="<c:out value="<%=propName %>"/>">
 <%
@@ -212,7 +213,7 @@ $(function() {
 <li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <%
 				String checked = values.contains(tmp.getValue()) ? " checked" : "";
-				if (isMultiple) {
+				if (isMultiple || isCheckBox) {
 					//チェックボックス
 %>
 <input type="checkbox" name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=optStyle %>"/>" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
