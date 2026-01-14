@@ -487,12 +487,36 @@ function onclick_cancel() {
 	$("#modal-dialog-root .modal-close", parent.document).trigger("click");
 }
 function onclick_bulkupdate(target){
-	if (!validation()) return;
-	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
+	// 一括更新する項目で選択中の値
+    var selectedProp = $("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").val();
+	if (!selectedProp) {
+		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
-	if ($("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").val() == "") {
-		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
+	$("#id_tbl_bulkupdate tr").each(function () {
+	    var $tr = $(this);
+	    if ($tr.is("#id_tr_" + selectedProp)) {
+	        return; // 選択された項目に対応する行はスキップ（値をそのまま残す）
+	    }
+	    $tr.find(":input").each(function () {
+	        var el = this;
+	        var $el = $(el);
+	        if ($el.is(":button, :submit, :reset")) {
+	            return;
+	        }
+	        if ($el.is(":checkbox, :radio")) {
+	            el.checked = el.defaultChecked;
+	        } else if ($el.is("select")) {
+	            Array.prototype.forEach.call(el.options, function (opt) {
+	                opt.selected = opt.defaultSelected;
+	            });
+	        } else {
+	            el.value = el.defaultValue;
+	        }
+	    });
+	});
+	if (!validation()) return;
+	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
 		return;
 	}
 	$(target).prop("disabled", true);
