@@ -495,7 +495,6 @@ function onclick_bulkupdate(target){
 		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
-	
 	$(target).prop("disabled", true);
 	$("#detailForm").submit();
 }
