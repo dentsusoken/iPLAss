@@ -381,10 +381,6 @@ $(function() {
 
 			String path = EntityViewUtil.getJspPath(pc, ViewConst.DESIGN_TYPE_GEM);
 			if (path != null) {
-				PropertyDefinition pd = defMap.get(pc.getPropertyName());
-				String displayLabel = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(), pd.getDisplayName(),
-						pd.getLocalizedDisplayNameList());
-				request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
 %>
 <tr id="id_tr_<c:out value="<%=pc.getPropertyName()%>"/>" style="display: none;">
 <jsp:include page="<%=path%>" />
