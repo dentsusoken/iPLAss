@@ -494,15 +494,12 @@ function onclick_bulkupdate(target){
 		if ($tr.is("#id_tr_" + selectedProp)) {
 			return; // 選択された項目に対応する行はスキップ（値をそのまま残す）
 		}
-		$tr.find(":input").each(function () {
+		// 一括更新を必要としない行の場合は、値をリセットします
+		$tr.find(":input:not(:button, :submit, :reset)").each(function () {
 			var el = this;
-			var $el = $(el);
-			if ($el.is(":button, :submit, :reset")) {
-				return;
-			}
-			if ($el.is(":checkbox, :radio")) {
+			if (el.type === "checkbox" || el.type === "radio") {
 				el.checked = el.defaultChecked;
-			} else if ($el.is("select")) {
+			} else if (el.tagName === "SELECT") {
 				Array.from(el.options).forEach(function (opt) {
 					opt.selected = opt.defaultSelected;
 				});
@@ -540,7 +537,7 @@ function validation() {
 	var ret = editValidate();
 	if (!ret) {
 		$(".bulk-edit > .page-error").text("${m:rs('mtp-gem-messages', 'command.generic.detail.DetailCommandBase.inputErr')}");
-	}else{
+	} else {
 		$(".bulk-edit > .page-error").text("");
 	}
 	return ret;
