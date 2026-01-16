@@ -504,7 +504,7 @@ function onclick_bulkupdate(target){
 			if ($el.is(":checkbox, :radio")) {
 				el.checked = el.defaultChecked;
 			} else if ($el.is("select")) {
-				Array.prototype.forEach.call(el.options, function (opt) {
+				Array.from(el.options).forEach(function (opt) {
 					opt.selected = opt.defaultSelected;
 				});
 			} else {
