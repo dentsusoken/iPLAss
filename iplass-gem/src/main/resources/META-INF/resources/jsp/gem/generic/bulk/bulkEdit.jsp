@@ -489,7 +489,7 @@ function onclick_bulkupdate(target){
 		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
-	$("#id_tbl_bulkupdate tr").each(function () {
+	$("#id_tbl_bulkupdate tbody tr").each(function () {
 		var $tr = $(this);
 		if ($tr.is("#id_tr_" + selectedProp)) {
 			return; // 選択された項目に対応する行はスキップ（値をそのまま残す）
@@ -537,10 +537,13 @@ function propChange(obj) {
 }
 function validation() {
 	<%-- common.js --%>
-	var ret = editValidate();
-	var message = !ret ? "${m:rs('mtp-gem-messages', 'command.generic.detail.DetailCommandBase.inputErr')}" : "";
-	$(".bulk-edit > .page-error").text(message);
-	return ret;
+	var isValid = editValidate();
+	if (!isValid) {
+		$(".bulk-edit > .page-error").text("${m:rs('mtp-gem-messages', 'command.generic.detail.DetailCommandBase.inputErr')}");
+		return false;
+	}
+	$(".bulk-edit > .page-error").text("");
+	return true;
 }
 $(function() {
 <%
