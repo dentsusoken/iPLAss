@@ -493,7 +493,7 @@ function onclick_bulkupdate(target){
 	$("#id_tbl_bulkupdate tbody tr").each(function () {
 		var $tr = $(this);
 		if ($tr.is("#id_tr_" + selectedPropEscaped)) {
-			return; // 選択された項目に対応する行はスキップ（値をそのまま残す）
+		return; // 選択された項目に対応する行はスキップ（値をそのまま残す）
 		}
 		$tr.find(":input").each(function () {
 			var el = this;
