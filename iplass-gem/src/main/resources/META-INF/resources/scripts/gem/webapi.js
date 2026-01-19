@@ -634,16 +634,18 @@ function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValu
 }
 
 function getSelectFilterItem(webapi, defName, viewName, propName, _params, viewType, func) {
-	var params = "{";
-	params += '"defName":"' + defName + '"';
-	params += ',"viewName":"' + viewName + '"';
-	params += ',"propName":"' + propName + '"';
-	for (var i = 0; i < _params.length; i++) {
-		params += ',"' + _params[i].key + '":"' + _params[i].value + '"';
+	const body = {
+		defName: String(defName),
+		viewName: String(viewName),
+		propName: String(propName),
+		viewType: String(viewType)
+	};
+	for (let i = 0; i < _params.length; i++) {
+		const key = _params[i].key;
+		const value = _params[i].value;
+		body[key] = value == null ? "" : String(value);
 	}
-	params += ',"viewType":"' + viewType + '"';
-	params += "}";
-	postAsync(webapi, params, function (results) {
+	postAsync(webapi, JSON.stringify(body), function (results) {
 		var entities = results.data;
 		var count = results.count;
 		if (func && $.isFunction(func)) func.call(this, entities, count);

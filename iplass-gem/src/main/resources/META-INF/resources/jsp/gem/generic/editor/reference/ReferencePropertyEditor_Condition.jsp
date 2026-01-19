@@ -1472,6 +1472,9 @@ $(function() {
 		Object propValue = request.getAttribute(Constants.EDITOR_PROP_VALUE);
 
 		String propertyName = pd.getName();
+		if (StringUtil.isNotEmpty(nestPropertyName)) {
+		    propertyName = nestPropertyName + "." + pd.getName();
+		}
 		Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
 		String rootOid = rootEntity != null ? rootEntity.getOid() : "";
 		String rootVersion = rootEntity != null && rootEntity.getVersion() != null ? rootEntity.getVersion()
@@ -1481,8 +1484,8 @@ $(function() {
 		String filterClass = isPropertyMultiple ? "form-size-12 inpbr ref-select-filter-item" : "form-size-02 inpbr ref-select-filter-item";
 		String multiple = isPropertyMultiple ? " multiple" : "";
 		
-		String inputId = "input_" + editor.getPropertyName();
-		String selectId = "select_" + editor.getPropertyName();
+		String inputId = "input_" + editor.getPropertyName().replaceAll("\\.", "_");
+		String selectId = "select_" + editor.getPropertyName().replaceAll("\\.", "_");
 		
 		String editorPlaceholder = setting.getSelectFilterPlaceholder();
 		String placeHolder = "";

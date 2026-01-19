@@ -4451,8 +4451,8 @@ function datetimepicker(selector) {
 		} else if (typeof multiplicity === "string" && !isNaN(Number(multiplicity))) {
 			multiplicity = Number(multiplicity);
 		}
-		const propertyName = $txt.data("propName");
-		const $errorMsg = $container.find("#error_" + propertyName);
+		const propertyName = $select.attr("name").replace(/\./g, "_");
+		const $errorMsg = $container.find("#error_" + es(propertyName));
 
 		// 状態（インスタンスごと）
 		let lastKeyword = "";

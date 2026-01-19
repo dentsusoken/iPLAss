@@ -155,8 +155,15 @@ if (outputType == OutputType.BULK && !useBulkView) {
 String rootDefName = (String) request.getAttribute(Constants.ROOT_DEF_NAME);
 String scriptKey = (String) request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 String viewName = StringUtil.escapeHtml((String) request.getAttribute(Constants.VIEW_NAME), true);
-String referencePropertyName = pd.getName();
-String propName = setting.getPropertyName();
+String selectPropertyName = editor.getPropertyName();
+
+// NestTable参照元プロパティ名
+String propertyName = pd.getName();
+String nestPropertyName = (String)request.getAttribute(Constants.EDITOR_REF_NEST_PROP_NAME);
+if (nestPropertyName != null && !nestPropertyName.isEmpty()) {
+	propertyName = nestPropertyName + "." + pd.getName();
+}
+
 ReferenceSelectFilterSetting.SelectFilterResearchPattern researchPattern = setting.getSelectFilterResearchPattern() != null 
 	? setting.getSelectFilterResearchPattern() 
 	: ReferenceSelectFilterSetting.SelectFilterResearchPattern.KEEP;
@@ -185,9 +192,9 @@ List<Entity> optionValues = new ArrayList<>();
 if (StringUtil.isNotEmpty(oid)) {
 	optionValues = this.searchOptionValues(editor ,oid);
 }
-String inputId = "input_" + editor.getPropertyName();
-String selectId = "select_" + editor.getPropertyName();
-String errorId = "error_" + editor.getPropertyName();
+String inputId = "input_" + editor.getPropertyName().replaceAll("\\.", "_");
+String selectId = "select_" + editor.getPropertyName().replaceAll("\\.", "_");
+String errorId = "error_" + editor.getPropertyName().replaceAll("\\.", "_");
 
 String customStyle = "";
 if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
@@ -214,7 +221,7 @@ if (StringUtil.isNotBlank(editorPlaceholder)) {
 		placeholder="<%=org.apache.commons.text.StringEscapeUtils.escapeHtml4(placeHolder) %>"
 		data-defName="<c:out value="<%=rootDefName%>"/>"
 		data-viewName="<%=viewName %>" 
-		data-propName="<c:out value="<%=referencePropertyName%>"/>" 
+		data-propName="<c:out value="<%=propertyName%>"/>" 
 		data-viewType="<%=viewType %>" 
 		data-multiplicity="<c:out value="<%=multiplicity%>"/>"
 		data-researchPattern="<c:out value="<%=researchPattern%>"/>"
@@ -225,7 +232,7 @@ if (StringUtil.isNotBlank(editorPlaceholder)) {
 	/>
 	<select
 		id="<c:out value="<%=selectId %>"/>"
-		name="<c:out value="<%=referencePropertyName%>"/>"
+		name="<c:out value="<%=selectPropertyName%>"/>"
 		class="<c:out value="<%=cls %>"/>"
 		style="<c:out value="<%=customStyle%>"/>"
 		<c:out value="<%=multiple %>"/>
@@ -256,7 +263,7 @@ if (StringUtil.isNotBlank(editorPlaceholder)) {
 $(function() {
 	<%-- common.js --%>
 	addEditValidator(function() {
-		const selectedCount = $("select[name='" + es("<%=StringUtil.escapeJavaScript(referencePropertyName)%>") + "'] option:selected").length;
+		const selectedCount = $("select[name='" + es("<%=StringUtil.escapeJavaScript(selectPropertyName)%>") + "'] option:selected").length;
 		if (<%=pd.getMultiplicity()%> > 1 && selectedCount > <%=pd.getMultiplicity()%>) {
 			alert("${m:rs("mtp-gem-messages","command.generic.detail.DetailCommandBase.inputErr")}");
 			return false;
