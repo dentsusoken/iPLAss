@@ -224,6 +224,7 @@
 %>
 <div class="bulk-edit">
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
+<span class="error page-error"></span>
 <%
 	if (isSuccess) {
 		//更新に成功した場合
@@ -482,11 +483,33 @@ function onclick_cancel() {
 	$("#modal-dialog-root .modal-close", parent.document).trigger("click");
 }
 function onclick_bulkupdate(target){
-	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
+	// 一括更新する項目で選択中の値
+	var selectedProp = $("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").val();
+	if (!selectedProp) {
+		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
-	if ($("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").val() == "") {
-		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
+	$("#id_tbl_bulkupdate tbody tr").each(function () {
+		var $tr = $(this);
+		if ($tr.is("#id_tr_" + selectedProp)) {
+			return; // 選択された項目に対応する行はスキップ（値をそのまま残す）
+		}
+		// 一括更新を必要としない行の場合は、値をリセットします
+		$tr.find(":input:not(:button, :submit, :reset)").each(function () {
+			var el = this;
+			if (el.type === "checkbox" || el.type === "radio") {
+				el.checked = el.defaultChecked;
+			} else if (el.tagName === "SELECT") {
+				Array.from(el.options).map(function (opt) {
+					opt.selected = opt.defaultSelected;
+				});
+			} else {
+				el.value = el.defaultValue;
+			}
+		});
+	});
+	if (!validation()) return;
+	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
 		return;
 	}
 	$(target).prop("disabled", true);
@@ -508,6 +531,16 @@ function propChange(obj) {
 		$(this).css("display", "none").val("");
 	});
 	$("tr#id_tr_" + propName).css("display", "");
+}
+function validation() {
+	<%-- common.js --%>
+	var ret = editValidate();
+	if (!ret) {
+		$(".bulk-edit > .page-error").text("${m:rs('mtp-gem-messages', 'command.generic.detail.DetailCommandBase.inputErr')}");
+	} else {
+		$(".bulk-edit > .page-error").text("");
+	}
+	return ret;
 }
 $(function() {
 <%
