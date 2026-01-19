@@ -1047,12 +1047,12 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		}
 		if (ReferenceDisplayType.SELECTFILTER == rpe.getDisplayType() && rpe.getReferenceSelectFilterSetting() != null
 				&& rpe.getReferenceSelectFilterSetting().getPropertyName() != null) {
-			MetaReferenceSelectFilterSetting tmp = new MetaReferenceSelectFilterSetting();
-			tmp.applyConfig(rpe.getReferenceSelectFilterSetting(), referenceEntity);
+			MetaReferenceSelectFilterSetting selectFilterSetting = new MetaReferenceSelectFilterSetting();
+			selectFilterSetting.applyConfig(rpe.getReferenceSelectFilterSetting(), referenceEntity);
 
 			//プロパティIDが設定されてない場合は保存しない(不正なプロパティ名や被参照でない場合等)
-			if (tmp.getPropertyId() != null)
-				referenceSelectFilterSetting = tmp;
+			if (selectFilterSetting.getPropertyId() != null)
+				referenceSelectFilterSetting = selectFilterSetting;
 		}
 		if (rpe.getReferenceRecursiveTreeSetting() != null) {
 			MetaReferenceRecursiveTreeSetting setting = new MetaReferenceRecursiveTreeSetting();

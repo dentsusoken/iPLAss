@@ -4458,14 +4458,14 @@ function datetimepicker(selector) {
 		let lastKeyword = "";
 
 		// ページング / 集合
-		let serverOffset = 0;          // サーバーに渡す offset（元の返却件数を累積）
-		let totalRawCount = 0;         // サーバーが返した総件数
-		let canLoadMoreResults = false;// さらに検索できるか
+		let serverOffset = 0;			// サーバーに渡す offset（元の返却件数を累積）
+		let totalRawCount = 0;			// サーバーが返した総件数
+		let canLoadMoreResults = false;	// さらに検索できるか
 
 		// 選択と結果
-		let selectedMap = new Map();   // oid -> entity（挿入順を維持＝選択順／初期順）
-		let resultEntities = [];       // 未選択の検索結果（重複除去かつ選択済みを除外）
-		let excludeOids = []; 		   // 新しい検索するとき、除外したいOIDのリスト
+		let selectedMap = new Map();	// oid -> entity（挿入順を維持＝選択順／初期順）
+		let resultEntities = []; 		// 未選択の検索結果（重複除去かつ選択済みを除外）
+		let excludeOids = [];			// 新しい検索するとき、除外したいOIDのリスト
 		
 		// 初期選択を selectedMap に取り込む
 		updateSelectedMap();
@@ -4565,13 +4565,13 @@ function datetimepicker(selector) {
 
 		/**
 		 * エンティティオプションを追加
-		 * @param {Object} e - エンティティ
+		 * @param {Object} entity - エンティティ
 		 * @param {boolean} isSelected - 選択済みかどうか
 		 */
-		function appendEntityOption(e, isSelected) {
-			const name = e.name != null ? String(e.name) : "";
-			const code = e.code != null ? String(e.code) : "";
-			const oid = e.oid != null ? String(e.oid) : "";
+		function appendEntityOption(entity, isSelected) {
+			const name = entity.name != null ? String(entity.name) : "";
+			const code = entity.code != null ? String(entity.code) : "";
+			const oid = entity.oid != null ? String(entity.oid) : "";
 			const $opt = $("<option/>").val(oid).text(name).attr("data-code", code);
 			if (isSelected) $opt.prop("selected", true);
 			return $opt.get(0);
@@ -4579,17 +4579,17 @@ function datetimepicker(selector) {
 
 
 		/**
-		 * 選択済みオプションをレンダリングする。
-		 * 単一選択（isMultiple === false）の場合は、selectedList の先頭要素のみを選択状態で追加し、
-		 * 複数選択（isMultiple === true）の場合は、selectedList の全要素を選択状態で追加する。
+		 * 選択済みオプションをレンダリング
 		 * @param {Array} selectedList - 選択済みエンティティのリスト
 		 * @param {boolean} isMultiple - 複数選択可能かどうか（単一選択時のみ先頭要素が選択状態になる）
 		 * @param {DocumentFragment} fragment - 追加先のフラグメント
 		 */
 		function renderSelectedOptions(selectedList, isMultiple, fragment) {
 			if (!isMultiple) {
+				// selectedList の先頭要素のみを選択状態で追加し
 				fragment.appendChild(appendEntityOption(selectedList[0], true));
 			} else {
+				// selectedList の全要素を選択状態で追加する
 				for (const e of selectedList) {
 					fragment.appendChild(appendEntityOption(e, true));
 				}

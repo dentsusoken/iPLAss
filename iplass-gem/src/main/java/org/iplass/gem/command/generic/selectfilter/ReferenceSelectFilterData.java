@@ -35,7 +35,7 @@ public class ReferenceSelectFilterData {
     private List<Entity> optionValues;
 
     /**
-     * 総件数を取得するメソッド
+     * 総件数を返します。
      * @return 総件数
      */
     public int getTotalCount() {
@@ -43,7 +43,7 @@ public class ReferenceSelectFilterData {
     }
 
     /**
-     * 総件数を設定するメソッド
+     * 総件数を設定します。
      * @param totalCount 総件数
      */
     public void setTotalCount(int totalCount) {
@@ -51,16 +51,16 @@ public class ReferenceSelectFilterData {
     }
 
     /**
-     * 選択肢の値を取得するメソッド
-     * @return 選択肢の値のリスト
+     * 選択肢を返します。
+     * @return 選択肢のリスト
      */
     public List<Entity> getOptionValues() {
         return optionValues;
     }
 
     /**
-     * 選択肢の値を設定するメソッド
-     * @param optionValues 選択肢の値のリスト
+     * 選択肢を設定します。
+     * @param optionValues 選択肢のリスト
      */
     public void setOptionValues(List<Entity> optionValues) {
         this.optionValues = optionValues;
@@ -69,7 +69,7 @@ public class ReferenceSelectFilterData {
     /**
      * コンストラクタ
      * @param totalCount 総件数
-     * @param optionValues 選択肢の値のリスト
+     * @param optionValues 選択肢のリスト
      */
 	public ReferenceSelectFilterData(int totalCount, List<Entity> optionValues) {
         this.totalCount = totalCount;
