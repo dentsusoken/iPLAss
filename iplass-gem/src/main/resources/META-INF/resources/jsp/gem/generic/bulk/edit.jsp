@@ -146,6 +146,7 @@
 %>
 <div class="bulk-edit">
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
+<span class="error page-error"></span>
 <%
 	if (isSuccess) {
 		//更新に成功した場合
@@ -343,6 +344,7 @@ function onclick_cancel() {
 	$("#modal-dialog-root .modal-close", parent.document).trigger("click");
 }
 function onclick_bulkupdate(target){
+	if (!validation()) return;
 	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
 		return;
 	}
@@ -358,6 +360,13 @@ function onDialogClose() {
 		func.call(parent.window, id);
 	}
 	return true;
+}
+function validation() {
+	<%-- common.js --%>
+	var ret = editValidate();
+	var message = !ret ? "${m:rs('mtp-gem-messages', 'command.generic.detail.DetailCommandBase.inputErr')}" : "";
+	$(".bulk-edit > .page-error").text(message);
+	return ret;
 }
 $(function() {
 	// タイトルの設定
