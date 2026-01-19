@@ -500,7 +500,7 @@ function onclick_bulkupdate(target){
 			if (el.type === "checkbox" || el.type === "radio") {
 				el.checked = el.defaultChecked;
 			} else if (el.tagName === "SELECT") {
-				Array.from(el.options).forEach(function (opt) {
+				Array.from(el.options).map(function (opt) {
 					opt.selected = opt.defaultSelected;
 				});
 			} else {
