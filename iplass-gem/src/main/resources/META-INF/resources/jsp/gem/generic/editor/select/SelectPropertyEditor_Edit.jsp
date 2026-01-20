@@ -213,7 +213,7 @@ $(function() {
 <li <c:if test="<%=editor.isItemDirectionColumn() %>">style="display: block;"</c:if>><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=label %>" />">
 <%
 				String checked = values.contains(tmp.getValue()) ? " checked" : "";
-				if (isMultiple || isCheckBox) {
+				if (isCheckBox) {
 					//チェックボックス
 %>
 <input type="checkbox" name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=optStyle %>"/>" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
