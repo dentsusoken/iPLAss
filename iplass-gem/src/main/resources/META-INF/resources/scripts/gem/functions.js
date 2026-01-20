@@ -4489,7 +4489,6 @@ function datetimepicker(selector) {
 
 		/**
 		 * 選択状態を同期
-		 * @param {jQuery} $select セレクトボックスのjQueryオブジェクト
 		 */
 		function updateSelectedMap() {
 			// 選択肢がない場合、すべて初期値にする
@@ -4620,12 +4619,12 @@ function datetimepicker(selector) {
 
 			// 選択済選択肢
 			if (selectedEntities.length > 0) {
-				renderSelectedOptions(selectedEntities, isMultiple, fragment)
+				renderSelectedOptions(selectedEntities, isMultiple, fragment);
 			}
 			
 			// 未選択選択肢
 			if (resultEntities.length > 0) {
-				renderResultOptions(resultEntities, isMultiple, fragment)
+				renderResultOptions(resultEntities, isMultiple, fragment);
 			}
 
 			// 「もっと」：さらに読み込み可能な場合のみ表示
