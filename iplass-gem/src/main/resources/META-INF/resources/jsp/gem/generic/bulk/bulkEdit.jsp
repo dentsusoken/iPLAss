@@ -489,25 +489,6 @@ function onclick_bulkupdate(target){
 		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
-	$("#id_tbl_bulkupdate tbody tr").each(function () {
-		var $tr = $(this);
-		if ($tr.is("#id_tr_" + selectedProp)) {
-			return; // 選択された項目に対応する行はスキップ（値をそのまま残す）
-		}
-		// 一括更新を必要としない行の場合は、値をリセットします
-		$tr.find(":input:not(:button, :submit, :reset)").each(function () {
-			var el = this;
-			if (el.type === "checkbox" || el.type === "radio") {
-				el.checked = el.defaultChecked;
-			} else if (el.tagName === "SELECT") {
-				Array.from(el.options).map(function (opt) {
-					opt.selected = opt.defaultSelected;
-				});
-			} else {
-				el.value = el.defaultValue;
-			}
-		});
-	});
 	if (!validation()) return;
 	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
 		return;
@@ -526,11 +507,28 @@ function onDialogClose() {
 	return true;
 }
 function propChange(obj) {
+	var $obj = $(obj);
+	var prevPropName = $obj.data("prevValue");
+	if (prevPropName){
+		$("#id_tr_" + prevPropName).find(":input:not(:button, :submit, :reset)").each(function () {
+			if (this.type === "checkbox" || this.type === "radio") {
+				this.checked = this.defaultChecked;
+			} else if (this.tagName === "SELECT") {
+				Array.from(this.options).map(function (opt) {
+					opt.selected = opt.defaultSelected;
+				});
+			} else {
+				this.value = this.defaultValue;
+			}
+		});
+	}
 	var propName = obj.options[obj.selectedIndex].value;
+	console.log(prevPropName, propName);
 	$("table#id_tbl_bulkupdate tbody").children("tr").each(function() {
 		$(this).css("display", "none").val("");
 	});
 	$("tr#id_tr_" + propName).css("display", "");
+	$obj.data('prevValue', propName);
 }
 function validation() {
 	<%-- common.js --%>
@@ -555,6 +553,8 @@ $(function() {
 	//またはデフォルト選択項目が設定された場合、その入力項目を表示します。
 %>
 	$("tr#id_tr_<%=selectPropName%>").css("display", "");
+	var $sel = $("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>");
+	$sel.data('prevValue', $sel.val());
 <%
 	}
 %>
