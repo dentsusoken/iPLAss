@@ -510,7 +510,9 @@ function propChange(obj) {
 	var $obj = $(obj);
 	var prevPropName = $obj.data("prevValue");
 	if (prevPropName){
-		$("#id_tr_" + prevPropName).find(":input:not(:button, :submit, :reset)").each(function () {
+		var $prevRow = $("#id_tr_" + prevPropName);
+		// 入力項目の値をリセットする
+		$prevRow.find(":input:not(:button, :submit, :reset)").each(function () {
 			if (this.type === "checkbox" || this.type === "radio") {
 				this.checked = this.defaultChecked;
 			} else if (this.tagName === "SELECT") {
@@ -521,6 +523,8 @@ function propChange(obj) {
 				this.value = this.defaultValue;
 			}
 		});
+		// エラーメッセージ要素を削除する
+		$prevRow.find("p.error.format-error").remove();
 	}
 	var propName = obj.options[obj.selectedIndex].value;
 	console.log(prevPropName, propName);
