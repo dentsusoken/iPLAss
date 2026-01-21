@@ -4659,6 +4659,7 @@ function datetimepicker(selector) {
 				} else {
 					selectedMap = new Map();
 					excludeOids = [];
+					$errorMsg.hide();
 				}
 			}
 
