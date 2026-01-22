@@ -578,3 +578,24 @@ a + .binaryDelete {
 		}
 	}
 }
+.ref-select-filter {
+	display: flex;
+	flex-wrap: wrap; 
+	gap: 0.5rem;
+	align-items: flex-start;
+	justify-content: flex-start;
+	box-sizing: border-box;
+}
+.ref-select-filter .ref-select-filter-item {
+	flex: 1 1 calc(50% - 0.25rem);
+	max-width: 35rem;
+	min-width: 0;
+	width: auto;
+	order: 0;
+}
+.ref-select-filter .error-multiplicity{
+	flex: 0 0 100%; 
+	order: 1; 
+	margin-top: 0.5rem;
+	box-sizing: border-box;
+}

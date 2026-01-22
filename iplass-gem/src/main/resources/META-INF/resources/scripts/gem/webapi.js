@@ -633,6 +633,25 @@ function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValu
 	});
 }
 
+function getSelectFilterItem(webapi, defName, viewName, propName, _params, viewType, func) {
+	const body = {
+		defName: String(defName),
+		viewName: String(viewName),
+		propName: String(propName),
+		viewType: String(viewType)
+	};
+	for (let i = 0; i < _params.length; i++) {
+		const key = _params[i].key;
+		const value = _params[i].value;
+		body[key] = value == null ? "" : String(value);
+	}
+	postAsync(webapi, JSON.stringify(body), function (results) {
+		var entities = results.data;
+		var count = results.count;
+		if (func && $.isFunction(func)) func.call(this, entities, count);
+	});
+}
+
 ////////////////////////////////////////////////////////
 //バージョン取得用のJavascript
 ////////////////////////////////////////////////////////
