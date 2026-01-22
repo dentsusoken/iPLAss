@@ -203,7 +203,9 @@ public class SearchResultListItem extends PartsItem {
 			
 			maxHeightField = new IntegerItem("maxHeight", "Max Height");
 			maxHeightField.setWidth("100%");
-			maxHeightField.setValue(parts.getMaxHeight());
+			if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
+				maxHeightField.setValue(parts.getMaxHeight());
+			}
 			SmartGWTUtil.addHoverToFormItem(maxHeightField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
 
 			searchAsync = new CheckboxItem("searchAsync", "Search asynchronously");

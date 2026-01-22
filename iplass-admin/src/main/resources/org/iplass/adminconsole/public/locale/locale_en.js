@@ -2557,8 +2557,8 @@ LocaleInfo.generic_element_section_SearchConditionSection_csvUploadInterrupterNa
 LocaleInfo.generic_element_section_SearchConditionSection_csvUploadInterrupterNameDescriptionKey = "Specify the class name of a custom file upload process used for data registration.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.SearchFormCsvUploadInterrupter.";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplayNameKey = "Display number of search results";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "Specify the number of documents to be displayed in the list of search results.";
-LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplayNameKey = "Display height of search results";
-LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "Specify the display height of search results.<br>If set to 0, auto height will be used.";
+LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplayNameKey = "Display height of search results table";
+LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "Specify the display height of the search results table.<br>If set to 0, the height will be adjusted automatically.";
 LocaleInfo.generic_element_section_SearchResultSection_groupingDataDisplayNameKey = "Summarize search results";
 LocaleInfo.generic_element_section_SearchResultSection_groupingDataDescriptionKey = "Summarize search results to display.<br>Summarize records with same OID and Version.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplayNameKey = "Hide Edit Link";

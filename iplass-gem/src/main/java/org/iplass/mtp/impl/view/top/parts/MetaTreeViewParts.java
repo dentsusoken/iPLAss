@@ -146,11 +146,6 @@ public class MetaTreeViewParts extends MetaTemplateParts {
 				req.removeAttribute("treeViewName");
 				req.removeAttribute("treeViewParts");
 			}
-			
-			@Override
-			protected boolean useWrapper(Integer maxHeight) {
-				return false;
-			}
 		};
 	}
 }

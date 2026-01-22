@@ -146,11 +146,6 @@ public class MetaCalendarParts extends MetaTemplateParts {
 				req.removeAttribute(Constants.CALENDAR_NAME);
 				req.removeAttribute(Constants.CALENDAR_SETTING);
 			}
-			
-			@Override
-			protected boolean useWrapper(Integer maxHeight) {
-				return false;
-			}
 		};
 	}
 }

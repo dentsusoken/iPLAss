@@ -30,8 +30,8 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * TOP画面パーツ
  * @author lis3wg
  */
-@XmlSeeAlso({TopViewContentParts.class, ScriptParts.class, UserMaintenanceParts.class, FulltextSearchViewParts.class,
-	CsvDownloadSettingsParts.class, ApplicationMaintenanceParts.class, PreviewDateParts.class})
+@XmlSeeAlso({ TopViewContentParts.class, ScriptParts.class, UserMaintenanceParts.class, FulltextSearchViewParts.class,
+		CsvDownloadSettingsParts.class, ApplicationMaintenanceParts.class, PreviewDateParts.class })
 public abstract class TopViewParts implements Serializable {
 
 	/** SerialVersionUID */
@@ -91,7 +91,7 @@ public abstract class TopViewParts implements Serializable {
 	public String getPartsId() {
 		return getParam("partsId");
 	}
-	
+
 	/**
 	 * 最大高さを取得します。
 	 * @return 最大高さ
