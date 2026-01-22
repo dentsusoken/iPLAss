@@ -498,7 +498,8 @@ $(function() {
 						//削除ボタン
 						String deleteId = "del_" + propName + i;
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_View.delete')}" class="gr-btn-02" id="<c:out value="<%=deleteId %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_View.delete')}" class="gr-btn-02 reference-view-delete"
+ id="<c:out value="<%=deleteId %>"/>" data-propertyName="<%=StringUtil.escapeJavaScript(propName)%>"/>
 <script type="text/javascript">
 $(function() {
 	$(":button[id='<%=StringUtil.escapeJavaScript(deleteId)%>']").click(function() {

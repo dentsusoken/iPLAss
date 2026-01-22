@@ -2780,19 +2780,25 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 			}
 		}
 
-		var $form = $("#detailForm");
-		for (var i = 0; i < selectArray.length; i++) {
-			var key = selectArray[i];
-			if (key in refLink) continue;
-
-			$("<input type='hidden' />").attr("name", propName).val(key).appendTo($form);
+		var func = document.scriptContext["customSearchReferenceFromViewCallback"];
+		if (func && $.isFunction(func)) {
+			closeModalDialog();
+			func.call(this, selectArray, propName, refLink);
+		} else {
+			var $form = $("#detailForm");
+			for (var i = 0; i < selectArray.length; i++) {
+				var key = selectArray[i];
+				if (key in refLink) continue;
+	
+				$("<input type='hidden' />").attr("name", propName).val(key).appendTo($form);
+			}
+	
+			closeModalDialog();
+	
+			$("<input type='hidden' name='updatePropertyName' />").val(propName).appendTo($form);
+			$("<input type='hidden' name='reloadUrl' />").val(reloadUrl).appendTo($form);
+			$form.attr("action", updateAction).submit();
 		}
-
-		closeModalDialog();
-
-		$("<input type='hidden' name='updatePropertyName' />").val(propName).appendTo($form);
-		$("<input type='hidden' name='reloadUrl' />").val(reloadUrl).appendTo($form);
-		$form.attr("action", updateAction).submit();
 
 	};
 
@@ -3036,17 +3042,22 @@ function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam,
 				"_t": $(":hidden[name='_t']").val()
 			};
 			postAsync(webapi, JSON.stringify(param), function() {
-				var $form = $("#detailForm");
-				if (isMappedBy) {
-					//非参照の場合は再ロード
-					$form.attr("action", reloadUrl).submit()
+				var func = document.scriptContext["customInsertReferenceFromViewCallback"];
+				if (func && $.isFunction(func)) {
+					func.call(this, entity, propName, isMappedBy);
 				} else {
-					//通常参照の場合は参照Propertyを更新（更新Action側で再ロード）
-					var key = entity.oid + "_" + entity.version;
-					$("<input type='hidden' name='" + propName + "' />").val(key).appendTo($form);
-					$("<input type='hidden' name='updatePropertyName' />").val(propName).appendTo($form);
-					$("<input type='hidden' name='reloadUrl' />").val(reloadUrl).appendTo($form);
-					$form.attr("action", updateAction).submit();
+					var $form = $("#detailForm");
+					if (isMappedBy) {
+						//非参照の場合は再ロード
+						$form.attr("action", reloadUrl).submit()
+					} else {
+						//通常参照の場合は参照Propertyを更新（更新Action側で再ロード）
+						var key = entity.oid + "_" + entity.version;
+						$("<input type='hidden' name='" + propName + "' />").val(key).appendTo($form);
+						$("<input type='hidden' name='updatePropertyName' />").val(propName).appendTo($form);
+						$("<input type='hidden' name='reloadUrl' />").val(reloadUrl).appendTo($form);
+						$form.attr("action", updateAction).submit();
+					}
 				}
 			});
 		};
