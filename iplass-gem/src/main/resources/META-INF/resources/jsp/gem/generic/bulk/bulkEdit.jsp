@@ -484,16 +484,14 @@ function onclick_cancel() {
 	$("#modal-dialog-root .modal-close", parent.document).trigger("click");
 }
 function onclick_bulkupdate(target){
-	// 一括更新する項目で選択中の値
-	var selectedProp = $("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").val();
-	if (!selectedProp) {
+	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
+		return;
+	}
+	if ($("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").val() == "") {
 		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
 	if (!validation()) return;
-	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
-		return;
-	}
 	$(target).prop("disabled", true);
 	$("#detailForm").submit();
 }
@@ -510,83 +508,12 @@ function onDialogClose() {
 function propChange(obj) {
 	var $obj = $(obj);
 	var prevPropName = $obj.data("prevValue");
-	var editor = $obj.data("editorTypeMap")[prevPropName];
-	if (editor){
-		var $prevRow = $("#id_tr_" + prevPropName);
-		if (editor.type === "ReferencePropertyEditor"){
-			// Link選択の値をクリアする
-	        if (editor.displayType === "<%=ReferenceDisplayType.LINK.toString()%>"){
-	        	$prevRow.find("#ul_" + prevPropName).empty();
-	        	$("#ins_btn_" + prevPropName).show();
-	        }
-			// Select選択の値をクリアする
-	        else if (editor.displayType === "<%=ReferenceDisplayType.SELECT.toString()%>"){
-	        	// エラーメッセージを非表示
-	        	$prevRow.find("p.error-multiplicity").hide();
-	        }
-	     	// Checkbox選択の値をクリアする
-	        else if (editor.displayType === "<%=ReferenceDisplayType.CHECKBOX.toString()%>"){
-	        	// pseudo-checkbox のクラスをクリア（チェック状態の見た目をリセット）
-	            $prevRow.find(".pseudo-checkbox").removeClass("checked");
-	            // エラーメッセージを非表示
-	            $prevRow.find("p.error-multiplicity").hide();
-	        }
-	     	// Tree選択の値をクリアする
-	        else if (editor.displayType === "<%=ReferenceDisplayType.TREE.toString()%>"){
-	            // ツリー表示領域をクリア
-	            $prevRow.find("#ul_" + prevPropName).empty();
-	            // 新規ボタンを表示
-	            $("#ins_btn_" + prevPropName).show();
-	            // エラーメッセージを非表示
-	            $prevRow.find("p.error-multiplicity").hide();
-	        }
-	     	// UNIQUE 選択の値をクリアする
-            else if (editor.displayType === "<%=ReferenceDisplayType.UNIQUE.toString()%>"){
-            	$prevRow.find("ul li:not(:first-child)").remove();
-            	$prevRow.find("input[type='hidden'][id*='_count']").val(0);
-            	$prevRow.find(".add-btn").show();
-            }
-	     	// RefCombo 選択の値をクリアする
-            else if (editor.displayType === "<%=ReferenceDisplayType.REFCOMBO.toString()%>"){
-                // 多重度1の場合は select タグ
-                $prevRow.find("select.ref-combo-sync").each(function() {
-                    $(this).val("");
-                });
-                // 多重度複数の場合は ul 内の li を削除（最初のダミー行以外）
-                $prevRow.find("ul li:not(:first-child)").remove();
-                // add-btn を表示
-                $prevRow.find(".add-btn").show();
-            }
-	     	// NestTableの場合、テーブル内のデータをクリアし、テーブルを非表示にする
-            else if (editor.displayType === "<%=ReferenceDisplayType.NESTTABLE.toString()%>"){
-            	var $nestTable = $prevRow.find("table.tbl-reference");
-            	// テーブル内の全ての行を削除(ヘッダー行以外)
-	            $nestTable.find("tbody tr:not([id*='<%=Constants.EDITOR_REF_NEST_DUMMY_ROW_INDEX%>'])").remove();
-	            // hiddenフィールドのカウンターをリセット
-	            $prevRow.find("input[type='hidden'][id*='_count']").val(0);
-	            // テーブルを非表示
-	            $nestTable.closest(".box-scroll").find("table").hide();
-	            // 追加ボタンを表示
-	            $prevRow.find(".add-btn").show();
-            }
-		}
-        
-		// 入力項目の値をリセットする
-		$prevRow.find(":input:not(:button, :submit, :reset)").each(function () {
-			if (this.type === "checkbox" || this.type === "radio") {
-				this.checked = this.defaultChecked;
-			} else if (this.tagName === "SELECT") {
-				Array.from(this.options).map(function (opt) {
-					opt.selected = opt.defaultSelected;
-				});
-			} else {
-				this.value = this.defaultValue;
-			}
-		});
-		// エラーメッセージ要素を削除する
-		$prevRow.find(".format-error").remove();
-		
-	}
+	// 前回選択していたプロパティ行を初期状態に戻す
+    if (prevPropName && initialRowHtmlMap[prevPropName]) {
+        var $prevRow = $("#id_tr_" + prevPropName);
+        // 初期状態のHTMLで置き換える
+        $prevRow.replaceWith(initialRowHtmlMap[prevPropName]);
+    }
 	var propName = obj.options[obj.selectedIndex].value;
 	$("table#id_tbl_bulkupdate > tbody > tr").each(function() {
 		$(this).hide();
@@ -605,6 +532,8 @@ function validation() {
 	}
 	return ret;
 }
+//グローバル変数：各プロパティ行の初期HTMLを保存
+var initialRowHtmlMap = {};
 $(function() {
 <%
 	String selectPropName = null;
@@ -638,32 +567,15 @@ $(function() {
 			}
 		});
 	}
-	var editorTypeMap = {
-    <%
-        boolean first = true;
-        for (PropertyColumn pc : colMap.values()) {
-            if (!canBulkUpdate(defName, pc)) continue;
-            String propName = pc.getPropertyName();
-            PropertyEditor editor = pc.getBulkUpdateEditor();
-            String editorType = editor != null ? editor.getClass().getSimpleName() : "";
-            String displayType = "";
-            if (editor instanceof ReferencePropertyEditor) {
-                ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
-                displayType = rpe.getDisplayType() != null ? rpe.getDisplayType().toString() : "";
-            }
-            if (!first) { out.print(","); }
-            first = false;
-    %>
-        "<%=StringUtil.escapeJavaScript(propName)%>": {
-            type: "<%=StringUtil.escapeJavaScript(editorType)%>",
-            displayType: "<%=StringUtil.escapeJavaScript(displayType)%>"
+	// 各プロパティ行の初期HTMLを保存
+    $("table#id_tbl_bulkupdate > tbody > tr").each(function() {
+        var $row = $(this);
+        var rowId = $row.attr("id");
+        if (rowId && rowId.startsWith("id_tr_")) {
+            var propName = rowId.replace("id_tr_", "");
+            initialRowHtmlMap[propName] = $row.prop("outerHTML");
         }
-    <%
-        }
-    %>
-    };
-	$("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").data("editorTypeMap", editorTypeMap);
-	
+    });
 })
 </script>
 </div>
