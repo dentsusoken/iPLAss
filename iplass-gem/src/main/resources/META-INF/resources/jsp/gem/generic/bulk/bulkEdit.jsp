@@ -33,7 +33,6 @@
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.*" %>
-<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType" %>
 <%@ page import="org.iplass.mtp.view.generic.element.Element" %>
 <%@ page import="org.iplass.mtp.view.generic.element.section.*" %>
 <%@ page import="org.iplass.mtp.view.generic.element.property.*" %>
@@ -484,14 +483,14 @@ function onclick_cancel() {
 	$("#modal-dialog-root .modal-close", parent.document).trigger("click");
 }
 function onclick_bulkupdate(target){
-	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
-		return;
-	}
 	if ($("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").val() == "") {
 		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
 	if (!validation()) return;
+	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
+		return;
+	}
 	$(target).prop("disabled", true);
 	$("#detailForm").submit();
 }
