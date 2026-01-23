@@ -584,7 +584,7 @@ function propChange(obj) {
 			}
 		});
 		// エラーメッセージ要素を削除する
-		$prevRow.find("p.error.format-error").remove();
+		$prevRow.find(".format-error").remove();
 		
 	}
 	var propName = obj.options[obj.selectedIndex].value;
@@ -617,7 +617,7 @@ $(function() {
 	//前回の更新に失敗したプロパティに対してエラーメッセージを表示します、
 	//またはデフォルト選択項目が設定された場合、その入力項目を表示します。
 %>
-	$("tr#id_tr_<%=selectPropName%>").css("display", "");
+	$("tr#id_tr_<%=selectPropName%>").show();
 	var $sel = $("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>");
 	$sel.data('prevValue', $sel.val());
 <%
