@@ -33,6 +33,7 @@
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.*" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType" %>
 <%@ page import="org.iplass.mtp.view.generic.element.Element" %>
 <%@ page import="org.iplass.mtp.view.generic.element.section.*" %>
 <%@ page import="org.iplass.mtp.view.generic.element.property.*" %>
@@ -509,8 +510,67 @@ function onDialogClose() {
 function propChange(obj) {
 	var $obj = $(obj);
 	var prevPropName = $obj.data("prevValue");
-	if (prevPropName){
+	var editor = $obj.data("editorTypeMap")[prevPropName];
+	if (editor){
 		var $prevRow = $("#id_tr_" + prevPropName);
+		if (editor.type === "ReferencePropertyEditor"){
+			// Link選択の値をクリアする
+	        if (editor.displayType === "<%=ReferenceDisplayType.LINK.toString()%>"){
+	        	$prevRow.find("#ul_" + prevPropName).empty();
+	        	$("#ins_btn_" + prevPropName).show();
+	        }
+			// Select選択の値をクリアする
+	        else if (editor.displayType === "<%=ReferenceDisplayType.SELECT.toString()%>"){
+	        	// エラーメッセージを非表示
+	        	$prevRow.find("p.error-multiplicity").hide();
+	        }
+	     	// Checkbox選択の値をクリアする
+	        else if (editor.displayType === "<%=ReferenceDisplayType.CHECKBOX.toString()%>"){
+	        	// pseudo-checkbox のクラスをクリア（チェック状態の見た目をリセット）
+	            $prevRow.find(".pseudo-checkbox").removeClass("checked");
+	            // エラーメッセージを非表示
+	            $prevRow.find("p.error-multiplicity").hide();
+	        }
+	     	// Tree選択の値をクリアする
+	        else if (editor.displayType === "<%=ReferenceDisplayType.TREE.toString()%>"){
+	            // ツリー表示領域をクリア
+	            $prevRow.find("#ul_" + prevPropName).empty();
+	            // 新規ボタンを表示
+	            $("#ins_btn_" + prevPropName).show();
+	            // エラーメッセージを非表示
+	            $prevRow.find("p.error-multiplicity").hide();
+	        }
+	     	// UNIQUE 選択の値をクリアする
+            else if (editor.displayType === "<%=ReferenceDisplayType.UNIQUE.toString()%>"){
+            	$prevRow.find("ul li:not(:first-child)").remove();
+            	$prevRow.find("input[type='hidden'][id*='_count']").val(0);
+            	$prevRow.find(".add-btn").show();
+            }
+	     	// RefCombo 選択の値をクリアする
+            else if (editor.displayType === "<%=ReferenceDisplayType.REFCOMBO.toString()%>"){
+                // 多重度1の場合は select タグ
+                $prevRow.find("select.ref-combo-sync").each(function() {
+                    $(this).val("");
+                });
+                // 多重度複数の場合は ul 内の li を削除（最初のダミー行以外）
+                $prevRow.find("ul li:not(:first-child)").remove();
+                // add-btn を表示
+                $prevRow.find(".add-btn").show();
+            }
+	     	// NestTableの場合、テーブル内のデータをクリアし、テーブルを非表示にする
+            else if (editor.displayType === "<%=ReferenceDisplayType.NESTTABLE.toString()%>"){
+            	var $nestTable = $prevRow.find("table.tbl-reference");
+            	// テーブル内の全ての行を削除(ヘッダー行以外)
+	            $nestTable.find("tbody tr:not([id*='<%=Constants.EDITOR_REF_NEST_DUMMY_ROW_INDEX%>'])").remove();
+	            // hiddenフィールドのカウンターをリセット
+	            $prevRow.find("input[type='hidden'][id*='_count']").val(0);
+	            // テーブルを非表示
+	            $nestTable.closest(".box-scroll").find("table").hide();
+	            // 追加ボタンを表示
+	            $prevRow.find(".add-btn").show();
+            }
+		}
+        
 		// 入力項目の値をリセットする
 		$prevRow.find(":input:not(:button, :submit, :reset)").each(function () {
 			if (this.type === "checkbox" || this.type === "radio") {
@@ -525,13 +585,14 @@ function propChange(obj) {
 		});
 		// エラーメッセージ要素を削除する
 		$prevRow.find("p.error.format-error").remove();
+		
 	}
 	var propName = obj.options[obj.selectedIndex].value;
-	console.log(prevPropName, propName);
-	$("table#id_tbl_bulkupdate tbody").children("tr").each(function() {
-		$(this).css("display", "none").val("");
+	$("table#id_tbl_bulkupdate > tbody > tr").each(function() {
+		$(this).hide();
 	});
-	$("tr#id_tr_" + propName).css("display", "");
+	$("tr#id_tr_" + propName).show();
+	$(".bulk-edit > .page-error").text("");
 	$obj.data('prevValue', propName);
 }
 function validation() {
@@ -577,6 +638,32 @@ $(function() {
 			}
 		});
 	}
+	var editorTypeMap = {
+    <%
+        boolean first = true;
+        for (PropertyColumn pc : colMap.values()) {
+            if (!canBulkUpdate(defName, pc)) continue;
+            String propName = pc.getPropertyName();
+            PropertyEditor editor = pc.getBulkUpdateEditor();
+            String editorType = editor != null ? editor.getClass().getSimpleName() : "";
+            String displayType = "";
+            if (editor instanceof ReferencePropertyEditor) {
+                ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
+                displayType = rpe.getDisplayType() != null ? rpe.getDisplayType().toString() : "";
+            }
+            if (!first) { out.print(","); }
+            first = false;
+    %>
+        "<%=propName%>": {
+            type: "<%=editorType%>",
+            displayType: "<%=displayType%>"
+        }
+    <%
+        }
+    %>
+    };
+	$("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").data("editorTypeMap", editorTypeMap);
+	
 })
 </script>
 </div>
