@@ -654,9 +654,9 @@ $(function() {
             if (!first) { out.print(","); }
             first = false;
     %>
-        "<%=propName%>": {
-            type: "<%=editorType%>",
-            displayType: "<%=displayType%>"
+        "<%=StringUtil.escapeJavaScript(propName)%>": {
+            type: "<%=StringUtil.escapeJavaScript(editorType)%>",
+            displayType: "<%=StringUtil.escapeJavaScript(displayType)%>"
         }
     <%
         }
