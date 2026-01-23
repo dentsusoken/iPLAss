@@ -2730,7 +2730,13 @@ $.fn.allInputCheck = function(){
 						}
 
 						if ($v.updateRefAction && $v.reloadUrl) {
-							//詳細表示はリロード
+							// 詳細表示はリロード
+							/**
+							 * Entityデータ選択後のリロード処理をカスタイズする場合は、下記を引数に
+							 * document.scriptContext["customRefRecursiveTreeCallback"]に関数を設定します。
+							 * 
+							 * @param propName プロパティ名
+							 */
 							var func = document.scriptContext["customRefRecursiveTreeCallback"];
 							if (func && $.isFunction(func)) {
 								func.call(this, $v.propName);

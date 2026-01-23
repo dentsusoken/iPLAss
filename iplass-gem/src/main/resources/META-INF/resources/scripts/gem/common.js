@@ -2780,6 +2780,15 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 			}
 		}
 
+		/**
+		 * Entityデータ選択後のリロード処理をカスタイズする場合は、下記を引数に
+		 * document.scriptContext["customSearchReferenceFromViewCallback"]に関数を設定します。
+		 * 
+		 * @param selectArray 選択したEntityデータ
+		 * @param propName プロパティ名
+		 * @param refLink Entityデータ選択後のリンク情報
+		 * 
+		 */
 		var func = document.scriptContext["customSearchReferenceFromViewCallback"];
 		if (func && $.isFunction(func)) {
 			closeModalDialog();
@@ -2792,9 +2801,9 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 	
 				$("<input type='hidden' />").attr("name", propName).val(key).appendTo($form);
 			}
-	
+
 			closeModalDialog();
-	
+
 			$("<input type='hidden' name='updatePropertyName' />").val(propName).appendTo($form);
 			$("<input type='hidden' name='reloadUrl' />").val(reloadUrl).appendTo($form);
 			$form.attr("action", updateAction).submit();
@@ -3042,6 +3051,14 @@ function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam,
 				"_t": $(":hidden[name='_t']").val()
 			};
 			postAsync(webapi, JSON.stringify(param), function() {
+				/**
+				 * Entityデータ追加後のリロード処理をカスタマイズする場合、下記を引数に
+				 * document.scriptContext["customInsertReferenceFromViewCallback"]に関数を設定します。
+				 * 
+				 * @param entity 追加したEntityデータ
+				 * @param propName プロパティ名
+				 * @param isMappedBy 被参照かどうか
+				 */
 				var func = document.scriptContext["customInsertReferenceFromViewCallback"];
 				if (func && $.isFunction(func)) {
 					func.call(this, entity, propName, isMappedBy);
