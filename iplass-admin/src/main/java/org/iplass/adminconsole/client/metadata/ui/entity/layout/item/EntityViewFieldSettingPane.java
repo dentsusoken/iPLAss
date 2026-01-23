@@ -228,7 +228,18 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 
 		if (SmartGWTUtil.isNotEmpty(info.getFixedEntityName())) {
 			//Entityが固定されている場合
-			item = new EntityPropertyComboBoxItem(info.getFixedEntityName());
+			//Entity が固定されている場合 + 除外タイプが指定されている場合は除外付コンストラクタを使用
+	        if (info.getInputType() == InputType.PROPERTY
+	                && info.getExcludePropertyType() != null
+	                && info.getExcludePropertyType().length > 0) {
+	            item = new EntityPropertyComboBoxItem(
+	                    info.getFixedEntityName(),
+	                    info.getExcludePropertyType()
+	            );
+	        } else {
+	        	//Entity が固定されている場合 + 除外タイプが指定されてい場合
+	            item = new EntityPropertyComboBoxItem(info.getFixedEntityName());
+	        }
 		} else if (SmartGWTUtil.isNotEmpty(info.getSourceEntityNameField())) {
 			//Entityが他のプロパティで設定される場合
 			String _defName = refDefName != null ? refDefName : defName;
