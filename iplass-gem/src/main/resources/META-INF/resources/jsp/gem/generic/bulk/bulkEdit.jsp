@@ -33,6 +33,8 @@
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.*" %>
+<%@page import="org.iplass.mtp.view.generic.editor.BooleanPropertyEditor.BooleanDisplayType" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.StringPropertyEditor.StringDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.element.Element" %>
 <%@ page import="org.iplass.mtp.view.generic.element.section.*" %>
 <%@ page import="org.iplass.mtp.view.generic.element.property.*" %>
@@ -507,12 +509,44 @@ function onDialogClose() {
 function propChange(obj) {
 	var $obj = $(obj);
 	var prevPropName = $obj.data("prevValue");
-	// 前回選択していたプロパティ行を初期状態に戻す
-    if (prevPropName && initialRowHtmlMap[prevPropName]) {
-        var $prevRow = $("#id_tr_" + prevPropName);
-        // 初期状態のHTMLで置き換える
-        $prevRow.replaceWith(initialRowHtmlMap[prevPropName]);
-    }
+	if (prevPropName){
+		// 前回選択されたプロパティのエディタ情報を取得
+	    var editorInfo = editorTypeMap[prevPropName];
+	    var $prevRow = $("#id_tr_" + prevPropName);
+		if (editorInfo.displayType === "RICHTEXT" || editorInfo.displayType === "SELECT"
+					|| editorInfo.displayType === "RADIO" || editorInfo.displayType === "CHECKBOX"){
+			// RICHTEXTエディタの場合、Quillエディタの内容をクリアする
+			if (editorInfo.displayType === "RICHTEXT") {
+				// Quillコンテナのp要素をクリア
+				$prevRow.find(".gem-quill-container p").html("<br>");
+			}
+			if (editorInfo.displayType === "RADIO" || editorInfo.displayType === "CHECKBOX") {
+				// pseudo-checkbox のクラスをクリア（チェック状態の見た目をリセット）
+	            $prevRow.find(".pseudo-checkbox, .pseudo-radio").removeClass("checked");
+			}
+			// 入力項目の値をリセットする
+			$prevRow.find(":input:not(:button, :submit, :reset)").each(function () {
+				if (this.type === "checkbox" || this.type === "radio") {
+					this.checked = this.defaultChecked;
+				} else if (this.tagName === "SELECT") {
+					Array.from(this.options).map(function (opt) {
+						opt.selected = opt.defaultSelected;
+					});
+				} else {
+					this.value = this.defaultValue;
+				}
+			});
+			// エラーメッセージ要素を削除する
+			$prevRow.find(".format-error").remove();
+			$prevRow.find("p.error-multiplicity").hide();
+		} else {
+			// 前回選択していたプロパティ行を初期状態に戻す
+		    if (initialRowHtmlMap[prevPropName]) {
+		        // 初期状態のHTMLで置き換える
+		        $prevRow.replaceWith(initialRowHtmlMap[prevPropName]);
+		    }
+		}
+	}
 	var propName = obj.options[obj.selectedIndex].value;
 	$("table#id_tbl_bulkupdate > tbody > tr").each(function() {
 		$(this).hide();
@@ -531,8 +565,12 @@ function validation() {
 	}
 	return ret;
 }
+//グローバル変数：各プロパティ行の初期子要素を保存（script以外）
+var initialRowChildrenMap = {};
 //グローバル変数：各プロパティ行の初期HTMLを保存
 var initialRowHtmlMap = {};
+//グローバル変数：各プロパティのエディタ情報を保存
+var editorTypeMap = {};
 $(function() {
 <%
 	String selectPropName = null;
@@ -566,15 +604,48 @@ $(function() {
 			}
 		});
 	}
-	// 各プロパティ行の初期HTMLを保存
+	// 各プロパティ行の初期HTMLを保存（イベント付きでクローン）
     $("table#id_tbl_bulkupdate > tbody > tr").each(function() {
         var $row = $(this);
         var rowId = $row.attr("id");
         if (rowId && rowId.startsWith("id_tr_")) {
             var propName = rowId.replace("id_tr_", "");
             initialRowHtmlMap[propName] = $row.prop("outerHTML");
+            var children = [];
+            $row.children().not("script").each(function() {
+                // true, true でイベントとデータもコピー
+                children.push($(this).clone(true, true));
+            });
+            initialRowChildrenMap[propName] = children;
         }
     });
+    // 各プロパティのエディタ種別と表示タイプを保存
+    editorTypeMap = {
+<%
+    boolean isFirst = true;
+    for (PropertyColumn pc : colMap.values()) {
+        if (!canBulkUpdate(defName, pc)) continue;
+        String propName = pc.getPropertyName();
+        PropertyEditor editor = pc.getBulkUpdateEditor();
+        String editorType = editor.getClass().getSimpleName();
+        String displayType = editor.getDisplayType().name();        
+        if (!isFirst) {
+%>
+        ,
+<%
+        }
+        isFirst = false;
+%>
+        "<%=propName%>": {
+            editorType: "<%=editorType%>",
+            displayType: "<%=displayType%>"
+        }
+<%
+    }
+%>
+    };
+    
+    console.log(editorTypeMap);
 })
 </script>
 </div>
