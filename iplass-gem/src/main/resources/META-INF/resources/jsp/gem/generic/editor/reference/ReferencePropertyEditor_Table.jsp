@@ -1209,7 +1209,8 @@ $(function() {
 				String deleteId = "del_" + propName + i;
 %>
 <td nowrap="nowrap">
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.delete')}" class="gr-btn-02 del-btn" id="<c:out value="<%=deleteId %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.delete')}" class="gr-btn-02 del-btn nesttable-view-delete"
+ id="<c:out value="<%=deleteId %>"/>" data-propertyName="<%=StringUtil.escapeJavaScript(propName)%>" />
 <script type="text/javascript">
 $(function() {
 	$(":button[id='<%=StringUtil.escapeJavaScript(deleteId)%>']").click(function() {
