@@ -48,6 +48,7 @@ import com.smartgwt.client.widgets.events.DrawHandler;
 import com.smartgwt.client.widgets.events.ResizedEvent;
 import com.smartgwt.client.widgets.events.ResizedHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.StaticTextItem;
@@ -66,6 +67,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 
 	private SelectItem modeField;
 	private SelectItem themeField;
+	private IntegerItem maxHeightField;
 
 	private EditorPane editorPane;
 	private HintPane hintPane;
@@ -120,7 +122,10 @@ public class ScriptEditorDialog extends AbstractWindow {
 				adjustHeight();
 			}
 		});
-
+		
+		//maxHeight使用有無
+		boolean enableMaxHeight = condition.isEnableMaxHeight();
+		
 		HLayout header = new HLayout();
 		header.setWidth100();
 		header.setAutoHeight();
@@ -129,8 +134,13 @@ public class ScriptEditorDialog extends AbstractWindow {
 		DynamicForm optionForm = new DynamicForm();
 		optionForm.setHeight(30);
 		optionForm.setWidth100();
-		optionForm.setNumCols(6);
-		optionForm.setColWidths(70, 130, 70, 130, 50, "*");
+		if (enableMaxHeight) {
+			optionForm.setNumCols(8);
+			optionForm.setColWidths(70, 130, 70, 130, 90, 130, 30, "*");
+		} else {
+			optionForm.setNumCols(6);
+			optionForm.setColWidths(70, 130, 70, 130, 50, "*");
+		}
 		header.addMember(optionForm);
 
 		LinkedHashMap<String, String> modeMap = new LinkedHashMap<>();
@@ -171,12 +181,42 @@ public class ScriptEditorDialog extends AbstractWindow {
 				SmartGWTUtil.setCookie(THEME_COOKIE_NAME, theme.name());
 			}
 		});
+
+		maxHeightField = new IntegerItem();
+		maxHeightField.setTitle("MaxHeight");
+		maxHeightField.setWidth(130);
+		maxHeightField.setDisabled(!enableMaxHeight);
+		maxHeightField.setVisible(enableMaxHeight);
+		
+		if (enableMaxHeight) {
+			Integer maxHeight = condition.getMaxHeight();
+			if (maxHeight != null && maxHeight > 0) {
+				maxHeightField.setValue(maxHeight);
+			}
+		}
+		
+		SmartGWTUtil.addHoverToFormItem(maxHeightField,
+				AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
+		maxHeightField.addChangedHandler(new ChangedHandler() {
+			@Override
+			public void onChanged(ChangedEvent event) {
+				if (!maxHeightField.isVisible()) {
+					return;
+				}
+				Integer value = maxHeightField.getValueAsInteger();
+				dialogSetting.setMaxHeight(value);
+			}
+		});
+
 		StaticTextItem tipsField = new StaticTextItem();
 		tipsField.setShowTitle(false);
 		tipsField.setValue("[Ctrl]+[Space] shows snippets.");
 
-
-		optionForm.setItems(modeField, themeField, new SpacerItem(), tipsField);
+		if (enableMaxHeight) {
+			optionForm.setItems(modeField, themeField, maxHeightField, new SpacerItem(),tipsField);
+		} else {
+			optionForm.setItems(modeField, themeField, new SpacerItem(), tipsField);
+		}
 
 		modeField.setValue(condition.getInitEditorMode().name());
 		if (condition.getInitEditorTheme() == null) {

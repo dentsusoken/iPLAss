@@ -181,6 +181,8 @@
 	if (StringUtil.isNotBlank(section.getTitle())) {
 		title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
 	}
+	
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
 %>
 <div <%=id %> class="result-block search-result-section <c:out value="<%=secStyle %>"/>" style="display:none;">
 <h3 class="hgroup-02">
@@ -189,7 +191,7 @@
 <span class="searching" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.searching")}</span>
 <span class="paginInputError" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.paginInputError")}</span>
 </h3>
-<div class="result-data" style="display:none;">
+<div class="result-data" style="display:none;<%= styleAttr %>">
 <%
 	if (showdDetermineButton) {
 		//選択画面の確定ボタンを結果の上にも出す

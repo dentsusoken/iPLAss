@@ -66,13 +66,16 @@
 	if (StringUtil.isNotBlank(parts.getStyle())) {
 		style = style + " " + parts.getStyle();
 	}
+	
+	//パーツの高さスタイル属性
+	String styleAttr = ViewUtil.buildHeightStyleAttr(parts.getMaxHeight());
 %>
 <div class="<c:out value="<%=style %>"/>" data-defName="${m:escJs(entityListParts.defName)}" data-viewName="${m:escJs(entityListParts.viewName)}" data-filterName="${m:escJs(entityListParts.filterName)}"
  data-limit="<%=limit%>" data-prevLabel="<c:out value="<%=prevLabel%>"/>" data-nextLabel="<c:out value="<%=nextLabel%>"/>">
 <div class="lyt-shortcut-01 mb05">
 ${entityListParts.iconTag}
 <p class="title">${m:esc(title)}</p>
-<div class="widget-contents">
+<div class="widget-contents" style="<%=styleAttr%>">
 <ul class="list-entity-name" data-webapiName="<%=SearchNameListCommand.WEBAPI_NAME%>" data-viewAction="<c:out value="<%=viewAction%>" />">
 </ul>
 </div><!--todo-block-->
