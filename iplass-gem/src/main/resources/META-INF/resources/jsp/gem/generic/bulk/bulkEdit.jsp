@@ -509,49 +509,58 @@ function onDialogClose() {
 function propChange(obj) {
 	var $obj = $(obj);
 	var prevPropName = $obj.data("prevValue");
-	if (prevPropName){
-		// 前回選択されたプロパティのエディタ情報を取得
-	    var editorInfo = editorTypeMap[prevPropName];
-	    var $prevRow = $("#id_tr_" + prevPropName);
-		if (editorInfo.displayType === "RICHTEXT" || editorInfo.displayType === "SELECT"
-					|| editorInfo.displayType === "RADIO" || editorInfo.displayType === "CHECKBOX"){
-			// RICHTEXTエディタの場合、Quillエディタの内容をクリアする
-			if (editorInfo.displayType === "RICHTEXT") {
-				// Quillコンテナのp要素をクリア
+	
+	// 前回選択したプロパティの状態をリセット
+	if (prevPropName) {
+		var editorInfo = editorTypeMap[prevPropName];
+		var $prevRow = $("#id_tr_" + prevPropName);
+		var displayType = editorInfo.displayType;
+		var isRichText = displayType === "RICHTEXT";
+		var isSelect = displayType === "SELECT";
+		var isRadioCheckbox = displayType === "RADIO" || displayType === "CHECKBOX";
+		var isBinary = editorInfo.editorType === "BinaryPropertyEditor";
+		// 特殊エディタは個別にクリア処理
+		if (isRichText || isSelect || isRadioCheckbox || isBinary) {
+			// RICHTEXTエディタの内容をクリア
+			if (isRichText) {
 				$prevRow.find(".gem-quill-container p").html("<br>");
 			}
-			if (editorInfo.displayType === "RADIO" || editorInfo.displayType === "CHECKBOX") {
-				// pseudo-checkbox のクラスをクリア（チェック状態の見た目をリセット）
-	            $prevRow.find(".pseudo-checkbox, .pseudo-radio").removeClass("checked");
+			// RADIO/CHECKBOXの見た目をリセット
+			if (isRadioCheckbox) {
+				$prevRow.find(".pseudo-checkbox, .pseudo-radio").removeClass("checked");
 			}
-			// 入力項目の値をリセットする
-			$prevRow.find(":input:not(:button, :submit, :reset)").each(function () {
+			// BINARYのアップロード済みファイルをクリア
+			if (isBinary) {
+				$prevRow.find("ul[id^='ul_'] li").remove();
+				$prevRow.find("input[type='file']").val('').attr('data-binCount', '0').show();
+				$prevRow.find("span[id^='em_'], p[id^='img_']").hide();
+			}
+			// 全入力項目の値をリセット
+			$prevRow.find(":input:not(:button, :submit, :reset)").each(function() {
 				if (this.type === "checkbox" || this.type === "radio") {
 					this.checked = this.defaultChecked;
 				} else if (this.tagName === "SELECT") {
-					Array.from(this.options).map(function (opt) {
+					Array.from(this.options).forEach(function(opt) {
 						opt.selected = opt.defaultSelected;
 					});
-				} else {
+				} else if (this.type !== "file") {
 					this.value = this.defaultValue;
 				}
 			});
-			// エラーメッセージ要素を削除する
+			// エラーメッセージをクリア
 			$prevRow.find(".format-error").remove();
 			$prevRow.find("p.error-multiplicity").hide();
 		} else {
-			// 前回選択していたプロパティ行を初期状態に戻す
-		    if (initialRowHtmlMap[prevPropName]) {
-		        // 初期状態のHTMLで置き換える
-		        $prevRow.replaceWith(initialRowHtmlMap[prevPropName]);
-		    }
+			// 通常エディタは初期状態に戻す
+			if (initialRowHtmlMap[prevPropName]) {
+				$prevRow.replaceWith(initialRowHtmlMap[prevPropName].clone(true, true));
+			}
 		}
 	}
+	// 選択されたプロパティを表示
 	var propName = obj.options[obj.selectedIndex].value;
-	$("table#id_tbl_bulkupdate > tbody > tr").each(function() {
-		$(this).hide();
-	});
-	$("tr#id_tr_" + propName).show();
+	$("table#id_tbl_bulkupdate > tbody > tr").hide();
+	$("#id_tr_" + propName).show();
 	$(".bulk-edit > .page-error").text("");
 	$obj.data('prevValue', propName);
 }
@@ -565,8 +574,6 @@ function validation() {
 	}
 	return ret;
 }
-//グローバル変数：各プロパティ行の初期子要素を保存（script以外）
-var initialRowChildrenMap = {};
 //グローバル変数：各プロパティ行の初期HTMLを保存
 var initialRowHtmlMap = {};
 //グローバル変数：各プロパティのエディタ情報を保存
@@ -604,23 +611,15 @@ $(function() {
 			}
 		});
 	}
-	// 各プロパティ行の初期HTMLを保存（イベント付きでクローン）
-    $("table#id_tbl_bulkupdate > tbody > tr").each(function() {
-        var $row = $(this);
-        var rowId = $row.attr("id");
-        if (rowId && rowId.startsWith("id_tr_")) {
-            var propName = rowId.replace("id_tr_", "");
-            initialRowHtmlMap[propName] = $row.prop("outerHTML");
-            var children = [];
-            $row.children().not("script").each(function() {
-                // true, true でイベントとデータもコピー
-                children.push($(this).clone(true, true));
-            });
-            initialRowChildrenMap[propName] = children;
-        }
-    });
-    // 各プロパティのエディタ種別と表示タイプを保存
-    editorTypeMap = {
+	// プロパティ行とエディタ情報の初期化
+	$("table#id_tbl_bulkupdate > tbody > tr[id^='id_tr_']").each(function() {
+		var $row = $(this);
+		var propName = $row.attr("id").replace("id_tr_", "");
+		// イベントとデータを含めてクローンを保存
+		initialRowHtmlMap[propName] = $row.clone(true, true);
+	});
+	// エディタ情報のマップを構築
+	editorTypeMap = {
 <%
     boolean isFirst = true;
     for (PropertyColumn pc : colMap.values()) {
@@ -644,8 +643,6 @@ $(function() {
     }
 %>
     };
-    
-    console.log(editorTypeMap);
 })
 </script>
 </div>
