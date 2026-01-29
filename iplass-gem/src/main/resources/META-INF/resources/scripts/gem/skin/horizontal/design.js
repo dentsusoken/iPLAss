@@ -120,6 +120,7 @@ $(function(){
 	$(".refLinkSelect").refLinkSelect();
 	$(".refLinkRadio").refLinkRadio();
 	$(".refUnique").refUnique();
+	$(".ref-select-filter").refSelectFilter();
 
 	if (typeof CKEDITOR !== "undefined") {
 		CKEDITOR.on("instanceReady", function(ev) {
