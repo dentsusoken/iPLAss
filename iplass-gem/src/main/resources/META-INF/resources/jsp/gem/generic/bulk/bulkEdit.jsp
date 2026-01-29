@@ -515,15 +515,20 @@ function propChange(obj) {
 		var editorInfo = editorTypeMap[prevPropName];
 		var $prevRow = $("#id_tr_" + prevPropName);
 		var displayType = editorInfo.displayType;
-		var isRichText = displayType === "RICHTEXT";
+		var isRichText = displayType === "RICHTEXT" && editorInfo.multiplicity === 1;
 		var isSelect = displayType === "SELECT";
 		var isRadioCheckbox = displayType === "RADIO" || displayType === "CHECKBOX";
 		var isBinary = editorInfo.editorType === "BinaryPropertyEditor";
+		var isDateTime = editorInfo.displayType === "DATETIME" && editorInfo.multiplicity === 1;
 		// 特殊エディタは個別にクリア処理
-		if (isRichText || isSelect || isRadioCheckbox || isBinary) {
+		if (isRichText || isSelect || isRadioCheckbox || isBinary || isDateTime) {
 			// RICHTEXTエディタの内容をクリア
 			if (isRichText) {
 				$prevRow.find(".gem-quill-container p").html("<br>");
+				var editorId = $prevRow.find("textarea[id^='id_']").attr("id");
+	            if (editorId && CKEDITOR.instances[editorId]) {
+	                CKEDITOR.instances[editorId].setData("");
+	            }
 			}
 			// RADIO/CHECKBOXの見た目をリセット
 			if (isRadioCheckbox) {
@@ -553,7 +558,7 @@ function propChange(obj) {
 		} else {
 			// 通常エディタは初期状態に戻す
 			if (initialRowHtmlMap[prevPropName]) {
-				$prevRow.replaceWith(initialRowHtmlMap[prevPropName].clone(true, true));
+				$prevRow.replaceWith(initialRowHtmlMap[prevPropName]);
 			}
 		}
 	}
@@ -611,13 +616,6 @@ $(function() {
 			}
 		});
 	}
-	// プロパティ行とエディタ情報の初期化
-	$("table#id_tbl_bulkupdate > tbody > tr[id^='id_tr_']").each(function() {
-		var $row = $(this);
-		var propName = $row.attr("id").replace("id_tr_", "");
-		// イベントとデータを含めてクローンを保存
-		initialRowHtmlMap[propName] = $row.clone(true, true);
-	});
 	// エディタ情報のマップを構築
 	editorTypeMap = {
 <%
@@ -626,8 +624,10 @@ $(function() {
         if (!canBulkUpdate(defName, pc)) continue;
         String propName = pc.getPropertyName();
         PropertyEditor editor = pc.getBulkUpdateEditor();
+        PropertyDefinition pd = defMap.get(propName);
         String editorType = editor.getClass().getSimpleName();
-        String displayType = editor.getDisplayType().name();        
+        String displayType = editor.getDisplayType().name();
+        int multiplicity = pd.getMultiplicity();
         if (!isFirst) {
 %>
         ,
@@ -637,12 +637,22 @@ $(function() {
 %>
         "<%=propName%>": {
             editorType: "<%=editorType%>",
-            displayType: "<%=displayType%>"
+            displayType: "<%=displayType%>",
+            multiplicity: <%=multiplicity%>
         }
 <%
     }
 %>
     };
 })
+$(window).on('load', function() {
+    // すべてのリソース の読み込みが完了した後に実行します。
+    $("table#id_tbl_bulkupdate > tbody > tr[id^='id_tr_']").each(function() {
+        var $row = $(this);
+        var propName = $row.attr("id").replace("id_tr_", "");
+        initialRowHtmlMap[propName] = $row.clone(true, true);
+    });
+    console.log(initialRowHtmlMap);
+});
 </script>
 </div>
