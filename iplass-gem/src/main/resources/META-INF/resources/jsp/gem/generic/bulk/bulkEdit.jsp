@@ -33,8 +33,6 @@
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.*" %>
-<%@page import="org.iplass.mtp.view.generic.editor.BooleanPropertyEditor.BooleanDisplayType" %>
-<%@ page import="org.iplass.mtp.view.generic.editor.StringPropertyEditor.StringDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.element.Element" %>
 <%@ page import="org.iplass.mtp.view.generic.element.section.*" %>
 <%@ page import="org.iplass.mtp.view.generic.element.property.*" %>
@@ -558,7 +556,8 @@ function propChange(obj) {
 		} else {
 			// 通常エディタは初期状態に戻す
 			if (initialRowHtmlMap[prevPropName]) {
-				$prevRow.replaceWith(initialRowHtmlMap[prevPropName]);
+				var $initialRow = $(initialRowHtmlMap[prevPropName]);
+				$prevRow.replaceWith($initialRow.clone(true, true));
 			}
 		}
 	}
@@ -652,7 +651,6 @@ $(window).on('load', function() {
         var propName = $row.attr("id").replace("id_tr_", "");
         initialRowHtmlMap[propName] = $row.clone(true, true);
     });
-    console.log(initialRowHtmlMap);
 });
 </script>
 </div>
