@@ -74,6 +74,8 @@
 		style = section.getStyle();
 	}
 
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
+	
 	String disclosure = "";
 	String disclosureStyle = "";
 	if (!section.isExpandable()) {
@@ -161,11 +163,11 @@
 	//非同期で参照先のEntityを被参照のOIDで検索する
 %>
 
-<div <%=id %> class="mass-reference-section <c:out value="<%=style %>"/>">
+<div <%=id %> class="mass-reference-section <c:out value="<%=style %>"/>" >
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
-<div style="<c:out value="<%=disclosureStyle %>"/>">
+<div style="<%= disclosureStyle %><%= styleAttr %>">
 <%
 	if (StringUtil.isNotBlank(section.getUpperContents())) {
 		String defName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);

@@ -1804,6 +1804,14 @@ span.success, span.error {
   font-size: 1rem;
   display: block; }
 
+#detailForm .default-section > div,
+#detailForm .mass-reference-section > div,
+#detailForm .reference-section > div,
+#detailForm .version-section > div {
+  display: block;
+  float: none;
+  width: 100%; }
+
 .formArchive {
   padding: 20px;
   padding-bottom: 0;

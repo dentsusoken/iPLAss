@@ -59,6 +59,7 @@
 <%@page import="org.iplass.mtp.view.generic.element.Element" %>
 <%@page import="org.iplass.mtp.view.generic.element.section.ReferenceSection" %>
 <%@page import="org.iplass.mtp.web.template.TemplateUtil"%>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%!
 	LoadEntityInterrupterHandler getLoadEntityInterrupterHandler(EntityManager em, EntityDefinitionManager edm, EntityViewManager evm) {
 		DetailCommandContext context = new DetailCommandContext(TemplateUtil.getRequestContext(), em, edm);//ここでこれを作るのはちょっと微妙だが・・・
@@ -202,6 +203,8 @@
 		style = section.getStyle();
 	}
 
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
+	
 	String disclosure = "";
 	String disclosureStyle = "";
 	if (!section.isExpandable()) {
@@ -244,11 +247,11 @@
 
 %>
 
-<div <%=id %> class="reference-section <c:out value="<%=style %>"/>">
+<div <%=id %> class="reference-section <c:out value="<%=style %>"/>" >
 <div class="hgroup-03 sechead<c:out value="<%=disclosure %>"/>">
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
-<div style="<c:out value="<%=disclosureStyle %>"/>">
+<div style="<%= disclosureStyle %><%= styleAttr %>">
 <%
 	if (StringUtil.isNotBlank(section.getUpperContents())) {
 		String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
