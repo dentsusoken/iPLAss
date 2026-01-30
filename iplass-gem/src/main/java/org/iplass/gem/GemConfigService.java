@@ -140,6 +140,9 @@ public class GemConfigService implements Service {
 	/** 一括更新のコミット件数 */
 	private int bulkUpdateAllCommandBatchSize;
 
+	/** 参照型（SelectFilter）毎回検索件数 */
+	private int selectFilterSearchPageSize;
+
 	/** エンティティをコピーする際にLobデータをシャッローコピーするか */
 	private boolean shallowCopyLobData;
 
@@ -246,6 +249,8 @@ public class GemConfigService implements Service {
 		deleteAllCommandBatchSize = config.getValue("deleteAllCommandBatchSize", Integer.class, 100);
 
 		bulkUpdateAllCommandBatchSize = config.getValue("bulkUpdateAllCommandBatchSize", Integer.class, 100);
+		
+		selectFilterSearchPageSize = config.getValue("selectFilterSearchPageSizeDefault", Integer.class, 40);
 
 		shallowCopyLobData = config.getValue("shallowCopyLobData", Boolean.class, false);
 
@@ -609,6 +614,14 @@ public class GemConfigService implements Service {
 	 */
 	public int getBulkUpdateAllCommandBatchSize() {
 		return bulkUpdateAllCommandBatchSize;
+	}
+
+	/** 
+	 * 選択フィルターの毎回検索件数を取得する
+	 * @return 毎回検索件数
+	 */
+	public int getSelectFilterSearchPageSizeDefault() {
+		return selectFilterSearchPageSize;
 	}
 
 	/**

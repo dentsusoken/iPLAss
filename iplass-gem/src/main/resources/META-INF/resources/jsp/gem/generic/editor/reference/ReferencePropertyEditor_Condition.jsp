@@ -58,6 +58,7 @@
 <%@ page import="org.iplass.gem.command.generic.reftree.SearchTreeDataCommand"%>
 <%@ page import="org.iplass.gem.command.generic.refunique.GetReferenceUniqueItemCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchViewCommand"%>
+<%@ page import="org.iplass.gem.command.generic.selectfilter.ReferenceSelectFilterCommand"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.CommandUtil" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
@@ -1461,6 +1462,89 @@ $(function() {
 			}
 		}
 
+	} else if (editor.getDisplayType() == ReferenceDisplayType.SELECTFILTER) {
+		ReferenceSelectFilterSetting setting = editor.getReferenceSelectFilterSetting();
+		ReferenceSelectFilterSetting.SelectFilterResearchPattern researchPattern = setting.getSelectFilterResearchPattern() != null 
+			? setting.getSelectFilterResearchPattern() 
+			: ReferenceSelectFilterSetting.SelectFilterResearchPattern.KEEP;
+
+		Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
+		Object propValue = request.getAttribute(Constants.EDITOR_PROP_VALUE);
+
+		String propertyName = pd.getName();
+		if (StringUtil.isNotEmpty(nestPropertyName)) {
+		    propertyName = nestPropertyName + "." + pd.getName();
+		}
+		Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+		String rootOid = rootEntity != null ? rootEntity.getOid() : "";
+		String rootVersion = rootEntity != null && rootEntity.getVersion() != null ? rootEntity.getVersion()
+		.toString() : "";
+		
+		Boolean isPropertyMultiple = pd.getMultiplicity() != 1;
+		String filterClass = isPropertyMultiple ? "form-size-12 inpbr ref-select-filter-item" : "form-size-02 inpbr ref-select-filter-item";
+		String multiple = isPropertyMultiple ? " multiple" : "";
+		
+		String inputId = "input_" + editor.getPropertyName().replaceAll("\\.", "_");
+		String selectId = "select_" + editor.getPropertyName().replaceAll("\\.", "_");
+		
+		String editorPlaceholder = setting.getSelectFilterPlaceholder();
+		String placeHolder = "";
+		if (StringUtil.isNotBlank(editorPlaceholder)) {
+			placeHolder = TemplateUtil.getMultilingualString(editorPlaceholder, setting.getLocalizedPlaceholderList());
+		}
+%>
+<div class="ref-select-filter">
+	<input type="text"
+	    class="form-size-02 inpbr ref-select-filter-item"
+		id="<c:out value="<%=inputId %>"/>"
+	    style="<c:out value="<%=customStyle%>"/>"
+	    placeholder="<%=org.apache.commons.text.StringEscapeUtils.escapeHtml4(placeHolder) %>"
+	    data-defName="<c:out value="<%=rootDefName%>"/>"
+	    data-viewName="<%=viewName %>" 
+	    data-propName="<c:out value="<%=propertyName%>"/>" 
+		data-researchPattern="<c:out value="<%=researchPattern%>"/>"
+	    data-viewType="<%=Constants.VIEW_TYPE_SEARCH %>" 
+	    data-entityOid="<c:out value="<%=rootOid %>"/>" 
+	    data-entityVersion="<c:out value="<%=rootVersion %>"/>"
+	    data-webapiName="<%=ReferenceSelectFilterCommand.WEBAPI_NAME%>"
+	    autocomplete="off"
+	/>
+	<select
+		id="<c:out value="<%=selectId %>"/>"
+	    name="<c:out value="<%=propName %>"/>"
+	    class="<c:out value="<%=filterClass %>"/>"
+	    style="<c:out value="<%=customStyle%>"/>"
+	    <c:out value="<%=multiple %>"/>
+	> 		
+	</select>
+</div>
+<script type="text/javascript">
+$(function() {
+	<%-- common.js --%>
+	addNormalConditionItemResetHandler(function(){
+       	var $select = $("#<c:out value='<%=selectId %>'/>");
+        $select.val(null); 
+        $select.find("option").remove();
+        $select.trigger("change");
+	});
+<%
+		if (required) {
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var val = $("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
+		if (typeof val === "undefined" || val == null || val == "") {
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+		return true;
+	});
+<%
+		}
+%>
+});
+</script>
+<%
 	} else {
 		//→今までのネストと同じ動き
 		showProperty = false;

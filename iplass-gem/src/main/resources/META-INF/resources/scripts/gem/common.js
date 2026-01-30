@@ -4429,6 +4429,9 @@ function addNestRow_Reference(type, cell, idx) {
 	} else if (type == "REFCOMBO") {
 		// 参照コンボの対応
 		$(".ref-combo-sync", cell).refComboSync();
+	} else if (type == "SELECTFILTER") {
+		// 選択フィルターの対応
+		$(".ref-select-filter", cell).refSelectFilter();
 	}
 }
 

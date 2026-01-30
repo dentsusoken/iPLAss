@@ -392,7 +392,8 @@
 			|| editor.getDisplayType() == ReferenceDisplayType.CHECKBOX
 			|| editor.getDisplayType() == ReferenceDisplayType.TREE
 			|| editor.getDisplayType() == ReferenceDisplayType.LABEL
-			|| editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
+			|| editor.getDisplayType() == ReferenceDisplayType.UNIQUE
+			|| editor.getDisplayType() == ReferenceDisplayType.SELECTFILTER) {
 
 		//リンク or リスト
 		String ulId = "ul_" + propName;

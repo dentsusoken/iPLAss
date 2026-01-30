@@ -114,7 +114,11 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 		} else {
 			//Template等のケース、likeで検索
 			//conditions.add(new Like(getPropertyName(), "%" + StringUtil.escapeEqlForLike(getValue().toString()) + "%"));
-			conditions.add(new Like(getPropertyName(), getValue().toString(), Like.MatchPattern.PARTIAL));
+
+			Object v = getValue();
+			conditions.add(new Like(getPropertyName(),
+					(v instanceof String[] values && values.length > 0) ? values[0] : v.toString(),
+							Like.MatchPattern.PARTIAL));
 		}
 		return conditions;
 	}

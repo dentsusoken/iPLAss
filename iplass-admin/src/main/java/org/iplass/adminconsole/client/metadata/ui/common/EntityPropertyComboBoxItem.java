@@ -31,14 +31,18 @@ import com.smartgwt.client.widgets.form.fields.events.FormItemIconClickEvent;
 public class EntityPropertyComboBoxItem extends MtpComboBoxItem implements MtpWidgetConstants {
 
 	public EntityPropertyComboBoxItem(final String defName) {
-		this(defName, null, null);
+		this(defName, null, null, null);
+	}
+
+	public EntityPropertyComboBoxItem(final String defName, String[] excludeTypes) {
+		this(defName, null, null, excludeTypes);
 	}
 
 	public EntityPropertyComboBoxItem(final String defName, final String refPropertyName) {
-		this(defName, refPropertyName, null);
+		this(defName, refPropertyName, null, null);
 	}
 
-	public EntityPropertyComboBoxItem(final String defName, final String refPropertyName, final String title) {
+	public EntityPropertyComboBoxItem(final String defName, final String refPropertyName, final String title, String[] excludeTypes) {
 		super();
 
 		if (title != null) {
@@ -59,7 +63,7 @@ public class EntityPropertyComboBoxItem extends MtpComboBoxItem implements MtpWi
 
 		setIcons(iconRefresh);
 
-		PropertyDS.setDataSource(this, defName, refPropertyName);
+		PropertyDS.setDataSource(this, defName, refPropertyName, excludeTypes);
 	}
 
 	public void resetDataSource(String defName) {
