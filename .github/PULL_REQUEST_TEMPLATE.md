@@ -1,4 +1,3 @@
-<!-- I want to review in Japanese. -->
 <!--
 タイトルには、変更点の概要を記述してください。
 コミットメッセージとして使用されるため、タイトルは簡潔で短く、説明的なものにしてください。
@@ -22,22 +21,3 @@ Issueを解決するPRである場合には、Issueへのリンクを張って�
 <!--
 特に注視して確認してほしい点や、補足情報があれば記述してください。
 -->
-
-<!-- I want to review in Japanese. -->
-<!-- for GitHub Copilot review rule -->
-<!--
-When reviewing, use the following prefixes:
-[must] - Critical issues requiring mandatory revision
-[imo] - Suggestions for improvement (optional modifications)
-[ask] - Questions or points needing clarification about the implementation
-[nits] - Minor issues or style notes
-[fyi] - Information provided for reference
--->
-<!--
-When reviewing, focus not only on technical aspects but also on:
-- Explaining logic changes and their purpose in terms understandable to non-engineers
-- Suggesting improvements from readability and maintainability perspectives
-- Possibilities for future extensibility and refactoring
--->
-<!-- for GitHub Copilot review rule -->
-<!-- I want to review in Japanese. -->
