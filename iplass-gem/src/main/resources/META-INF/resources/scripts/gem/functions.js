@@ -2717,11 +2717,22 @@ $.fn.allInputCheck = function(){
 						}
 
 						if ($v.updateRefAction && $v.reloadUrl) {
-							//詳細表示はリロード
-							var $form = $("#detailForm");
-							$("<input type='hidden' name='updatePropertyName' />").val($v.propName).appendTo($form);
-							$("<input type='hidden' name='reloadUrl' />").val($v.reloadUrl).appendTo($form);
-							$form.attr("action", $v.updateRefAction).submit();
+							// 詳細表示はリロード
+							/**
+							 * Entityデータ選択後のリロード処理をカスタイズする場合は、下記を引数に
+							 * document.scriptContext["customRefRecursiveTreeCallback"]に関数を設定します。
+							 * 
+							 * @param propName プロパティ名
+							 */
+							var func = document.scriptContext["customRefRecursiveTreeCallback"];
+							if (func && $.isFunction(func)) {
+								func.call(this, $v.propName);
+							} else {
+								var $form = $("#detailForm");
+								$("<input type='hidden' name='updatePropertyName' />").val($v.propName).appendTo($form);
+								$("<input type='hidden' name='reloadUrl' />").val($v.reloadUrl).appendTo($form);
+								$form.attr("action", $v.updateRefAction).submit();
+							}
 						} else {
 							$dialog.dialog("close");
 						}
