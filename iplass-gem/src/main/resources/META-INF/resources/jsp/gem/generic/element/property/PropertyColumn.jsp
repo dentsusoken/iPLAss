@@ -77,7 +77,7 @@
 	if (colNum == null || colNum < 1) {
 		colNum = 1;
 	}
-	String cellStyle = "section-data col" + colNum;
+	String cellStyle = "property-data section-data col" + colNum;
 
 	String style = cellStyle;
 	if (StringUtil.isNotBlank(property.getStyle())) {
