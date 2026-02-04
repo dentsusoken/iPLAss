@@ -217,7 +217,7 @@ public class EntityManagerImpl implements EntityManager {
 			
 			if (entity.getOid() == null) {
 				//oidがnullの場合はエラーメッセージを出力
-				throw new IllegalArgumentException("Failed to retrieve the target data (OID = null)");
+				throw new IllegalArgumentException("oid is required for delete operation");
 			}
 			if (entity.getDefinitionName() == null) {
 				//データモデル定義名が設定されていない
@@ -691,7 +691,7 @@ public class EntityManagerImpl implements EntityManager {
 
 			if (entity.getOid() == null) {
 				//oidがnullの場合はエラーメッセージを出力
-				throw new IllegalArgumentException("Failed to retrieve the target data (OID = null)");
+				throw new IllegalArgumentException("oid is required for update operation");
 			}
 			if (entity.getDefinitionName() == null) {
 				//データモデル定義名が設定されていない
@@ -946,11 +946,6 @@ public class EntityManagerImpl implements EntityManager {
 				throw new EntityRuntimeException("no definitionName");//TODO メッセージを埋める（メッセージ管理）
 			}
 
-			if (cond.getWhere() == null) {
-				//where条件がnullの場合はエラー
-				throw new IllegalArgumentException("where condition is required for deleteAll operation");
-			}
-
 			EntityHandler handler = getEntityHandler(cond.getDefinitionName());
 			return new EntityDeleteAllInvocationImpl(cond, ehService.getInterceptors(), handler).proceed();
 		} catch (ApplicationException e) {
@@ -978,9 +973,9 @@ public class EntityManagerImpl implements EntityManager {
 				throw new EntityRuntimeException("no definitionName");//TODO メッセージを埋める（メッセージ管理）
 			}
 
-			if (cond.getWhere() == null) {
-				//where条件がnullの場合はエラー
-				throw new IllegalArgumentException("where condition is required for updateAll operation");
+			if (cond.getValues() == null) {
+				//更新値が設定されていない場合はエラー
+				throw new IllegalArgumentException("update values are required for updateAll operation");
 			}
 
 			EntityHandler handler = getEntityHandler(cond.getDefinitionName());
