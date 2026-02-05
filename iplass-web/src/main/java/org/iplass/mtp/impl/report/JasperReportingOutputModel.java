@@ -36,7 +36,10 @@ public class JasperReportingOutputModel implements ReportingOutputModel{
 	private String type;
 	private MetaReportParamMap[] maps;
 	private String dataSourceAttributeName;
+	@Deprecated
 	private String passwordAttributeName;
+	private String ownerPasswordAttributeName;
+	private String userPasswordAttributeName;
 
 	private final String JASPER_STR = "jasper";
 	private final String JRXML_STR = "jrxml";
@@ -99,12 +102,36 @@ public class JasperReportingOutputModel implements ReportingOutputModel{
 		this.dataSourceAttributeName = dataSourceAttributeName;
 	}
 
+	/**
+	 * @deprecated {@link #getOwnerPasswordAttributeName()}, {@link #getUserPasswordAttributeName()} を使用してください
+	 */
+	@Deprecated
 	public String getPasswordAttributeName() {
 		return passwordAttributeName;
 	}
 
+	/**
+	 * @deprecated {@link #setOwnerPasswordAttributeName(String)}, {@link #setUserPasswordAttributeName(String)} を使用してください
+	 */
+	@Deprecated
 	public void setPasswordAttributeName(String passwordAttributeName) {
 		this.passwordAttributeName = passwordAttributeName;
+	}
+
+	public String getOwnerPasswordAttributeName() {
+		return ownerPasswordAttributeName;
+	}
+
+	public void setOwnerPasswordAttributeName(String ownerPasswordAttributeName) {
+		this.ownerPasswordAttributeName = ownerPasswordAttributeName;
+	}
+
+	public String getUserPasswordAttributeName() {
+		return userPasswordAttributeName;
+	}
+
+	public void setUserPasswordAttributeName(String userPasswordAttributeName) {
+		this.userPasswordAttributeName = userPasswordAttributeName;
 	}
 
 }
