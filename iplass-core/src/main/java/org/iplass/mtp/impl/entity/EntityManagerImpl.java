@@ -214,7 +214,11 @@ public class EntityManagerImpl implements EntityManager {
 			if (logger.isDebugEnabled()) {
 				logger.debug("delete():" + entity + ", option=" + option);
 			}
-
+			
+			if (entity.getOid() == null) {
+				//oidがnullの場合はエラーメッセージを出力
+				throw new IllegalArgumentException("oid is required for delete operation");
+			}
 			if (entity.getDefinitionName() == null) {
 				//データモデル定義名が設定されていない
 				throw new EntityRuntimeException("no definitionName");//TODO メッセージを埋める（メッセージ管理）
@@ -685,6 +689,10 @@ public class EntityManagerImpl implements EntityManager {
 				logger.debug("update():" + entity + ", option=" + option);
 			}
 
+			if (entity.getOid() == null) {
+				//oidがnullの場合はエラーメッセージを出力
+				throw new IllegalArgumentException("oid is required for update operation");
+			}
 			if (entity.getDefinitionName() == null) {
 				//データモデル定義名が設定されていない
 				throw new EntityRuntimeException("no definitionName");//TODO メッセージを埋める（メッセージ管理）
@@ -963,6 +971,11 @@ public class EntityManagerImpl implements EntityManager {
 			if (cond.getDefinitionName() == null) {
 				//データモデル定義名が設定されていない
 				throw new EntityRuntimeException("no definitionName");//TODO メッセージを埋める（メッセージ管理）
+			}
+
+			if (cond.getValues() == null) {
+				//更新値が設定されていない場合はエラー
+				throw new IllegalArgumentException("update values are required for updateAll operation");
 			}
 
 			EntityHandler handler = getEntityHandler(cond.getDefinitionName());
