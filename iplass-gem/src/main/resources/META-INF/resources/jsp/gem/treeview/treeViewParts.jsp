@@ -31,11 +31,14 @@
 <%@ page import="org.iplass.gem.command.treeview.GetTreeViewGridDataCommand"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.mtp.view.top.parts.TreeViewParts"%>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 
 <%
 	//設定情報取得
 	TreeViewParts parts = (TreeViewParts) request.getAttribute("treeViewParts");
+
+	String styleAttr = ViewUtil.buildHeightStyleAttr(parts.getMaxHeight());
 
 	String treeViewName = (String) request.getAttribute("treeViewName");
 	if (treeViewName == null) return;
@@ -60,6 +63,7 @@ ${treeViewParts.iconTag}
 <div class="treeViewGrid" data-defName="${m:esc(treeViewName)}"
  data-getDefinitionWebapi="<%=GetTreeViewDefinitionCommand.WEBAPI_NAME %>"
  data-viewAction="<%=DetailViewCommand.VIEW_ACTION_NAME %>"
- data-getDataWebapiName="<%=GetTreeViewGridDataCommand.WEBAPI_NAME%>">
+ data-getDataWebapiName="<%=GetTreeViewGridDataCommand.WEBAPI_NAME%>"
+ style="<%=styleAttr%>">
 </div>
 </div>

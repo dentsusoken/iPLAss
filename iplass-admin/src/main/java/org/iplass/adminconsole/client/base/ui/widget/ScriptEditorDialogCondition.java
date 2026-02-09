@@ -28,9 +28,13 @@ public class ScriptEditorDialogCondition implements ScriptEditorDialogConstants 
 
 	private EditorTheme initEditorTheme;
 
+	private Integer maxHeight;
+
 	private String value;
 
 	private boolean readOnly;
+	
+	private boolean enableMaxHeight = false;
 
 	/**
 	 * 対象PropertyKEY
@@ -69,6 +73,14 @@ public class ScriptEditorDialogCondition implements ScriptEditorDialogConstants 
 
 	public void setInitEditorTheme(EditorTheme initEditorTheme) {
 		this.initEditorTheme = initEditorTheme;
+	}
+
+	public Integer getMaxHeight() {
+		return maxHeight;
+	}
+
+	public void setMaxHeight(Integer maxHeight) {
+		this.maxHeight = maxHeight;
 	}
 
 	public String getValue() {
@@ -111,4 +123,11 @@ public class ScriptEditorDialogCondition implements ScriptEditorDialogConstants 
 		this.hintMessage = hintMessage;
 	}
 
+	public boolean isEnableMaxHeight() {
+		return enableMaxHeight;
+	}
+
+	public void setEnableMaxHeight(boolean enableMaxHeight) {
+		this.enableMaxHeight = enableMaxHeight;
+	}
 }

@@ -137,6 +137,9 @@
 	if (StringUtil.isNotBlank(parts.getStyle())) {
 		cellStyle = cellStyle + " " + parts.getStyle();
 	}
+	
+	//パーツの高さスタイル属性
+	String styleAttr = ViewUtil.buildHeightStyleAttr(parts.getMaxHeight());
 %>
 <div class="<c:out value="<%=cellStyle %>"/>" id="topview-parts-id_${partsCnt}" style="display:none;">
 <h3 class="hgroup-02">
@@ -146,7 +149,7 @@ ${m:esc(title)}
 <%
 	String id = ((int)(Math.random() * 1000) + "_" + new Date().getTime());
 %>
-<form id="form_<c:out value="<%=id%>"/>" class="flat-block-top">
+<form id="form_<c:out value="<%=id%>"/>" class="flat-block-top" style="<%=styleAttr%>">
 <table id="searchResult_<c:out value="<%=id%>"/>"></table>
 </form>
 <script type="text/javascript">

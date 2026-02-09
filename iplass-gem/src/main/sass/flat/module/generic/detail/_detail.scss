@@ -71,12 +71,27 @@
 	display: block;
 }
 
+//original selectors
+//#detailForm .default-section > div, #detailForm .mass-reference-section > div, #detailForm .reference-section > div, #detailForm .version-section > div
+%extend_default_section {
+  display: block;
+  float: none;
+  width: 100%;
+}
+
 #detailForm {
 	> div {
 		@extend %extend_gdd_1;
 	}
 	.formArchive > div {
 		@extend %extend_gdd_1;
+	}
+	// default-section など、スクロール対応用に新規追加
+	.default-section > div,
+	.mass-reference-section > div,
+	.reference-section > div,
+	.version-section > div {
+	    @extend %extend_default_section;
 	}
 }
 .formArchive {

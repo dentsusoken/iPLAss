@@ -29,11 +29,13 @@
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@ page import="org.iplass.gem.command.treeview.GetTreeViewListDataCommand"%>
 <%@ page import="org.iplass.mtp.view.top.parts.TreeViewParts"%>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%
 	//設定情報取得
 	TreeViewParts parts = (TreeViewParts) request.getAttribute("treeViewParts");
 
+	String styleAttr = ViewUtil.buildHeightStyleAttr(parts.getMaxHeight());
 
 	String treeViewName = (String) request.getAttribute("treeViewName");
 	if (treeViewName == null) return;
@@ -56,7 +58,7 @@
 <div class="lyt-shortcut-01">
 ${treeViewParts.iconTag}
 <p class="title"><c:out value="<%=displayName %>" /></p>
-<div class="widget-contents">
+<div class="widget-contents" style="<%= styleAttr %>">
 <div class="treeViewList" data-defName="${m:esc(treeViewName)}"
  data-viewAction="<%=DetailViewCommand.VIEW_ACTION_NAME %>"
  data-webapiName="<%=GetTreeViewListDataCommand.WEBAPI_NAME%>">

@@ -98,6 +98,7 @@ public class InformationItem extends PartsItem {
 		private MetaDataLangTextItem titleField;
 		private TextItem iconTagField;
 		private TextItem styleField;
+		private IntegerItem maxHeightField;
 
 		private SelectItem dispRangeField;
 		private IntegerItem numberOfDisplayField;
@@ -137,7 +138,12 @@ public class InformationItem extends PartsItem {
 			styleField = new MtpTextItem("style", "Class");
 			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
-			commonForm.setItems(titleField, iconTagField, styleField);
+			maxHeightField = new IntegerItem("maxHeight", "Max Height");
+			maxHeightField.setWidth("100%");
+			SmartGWTUtil.addHoverToFormItem(maxHeightField,
+					AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
+
+			commonForm.setItems(titleField, iconTagField, styleField, maxHeightField);
 
 			//------------------------------
 			//Information List
@@ -266,6 +272,7 @@ public class InformationItem extends PartsItem {
 						parts.setLocalizedTitleList(titleField.getLocalizedList());
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
 						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
+						parts.setMaxHeight(maxHeightField.getValueAsInteger());
 						if (dispRangeField.getValue() != null && !dispRangeField.getValueAsString().isEmpty()) {
 							parts.setDispRange(TimeDispRange.valueOf(SmartGWTUtil.getStringValue(dispRangeField)));
 						} else {
@@ -354,7 +361,9 @@ public class InformationItem extends PartsItem {
 			titleField.setLocalizedList(parts.getLocalizedTitleList());
 			iconTagField.setValue(parts.getIconTag());
 			styleField.setValue(parts.getStyle());
-
+			if (parts.getMaxHeight() != null && parts.getMaxHeight() > 0) {
+				maxHeightField.setValue(parts.getMaxHeight());
+			}
 			if (parts.getDispRange() != null) {
 				dispRangeField.setValue(parts.getDispRange().name());
 			} else {

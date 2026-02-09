@@ -92,7 +92,7 @@ public class SearchResultSection extends Section {
 	private Integer dispRowCount;
 
 	@MetaFieldInfo(
-			displayName="検索結果の高さ",
+			displayName="検索結果TABLEの高さ",
 			displayNameKey="generic_element_section_SearchResultSection_dispHeightDisplayNameKey",
 			inputType=InputType.NUMBER,
 			rangeCheck=true,

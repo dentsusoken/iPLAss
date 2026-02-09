@@ -91,12 +91,14 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		TemplateParts t = (TemplateParts) parts;
+		fillFrom(t);
 		templatePath = t.getTemplatePath();
 	}
 
 	@Override
 	public TopViewParts currentConfig() {
 		TemplateParts parts = new TemplateParts();
+		fillTo(parts);
 		parts.setTemplatePath(templatePath);
 		return parts;
 	}
@@ -184,7 +186,8 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 			if (isParts()) {
 				String path = getTemplatePathForParts(req);
 				if (path != null) {
-					WebUtil.includeTemplate(path, req, res, application, page);
+					includeTemplateWithWrapper(path, this.getMetaData()
+							.getMaxHeight(), req, res, application, page);
 				}
 			}
 		}
@@ -195,9 +198,49 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 			if (isWidget()) {
 				String path = getTemplatePathForWidget(req);
 				if (path != null) {
-					WebUtil.includeTemplate(path, req, res, application, page);
+					includeTemplateWithWrapper(path, this.getMetaData().getMaxHeight(), req, res, application, page);
 				}
 			}
 		}
+
+		/**
+		 * 共通テンプレート出力処理
+		 */
+		private void includeTemplateWithWrapper(
+				String path,
+				Integer maxHeight,
+				HttpServletRequest req,
+				HttpServletResponse res,
+				ServletContext application,
+				PageContext page) throws IOException, ServletException {
+
+			boolean wrap = useWrapper(maxHeight);
+
+			if (wrap) {
+				// maxHeight 指定がある場合は div でラップする
+				page.getOut()
+						.write(
+								"<div class=\"topview-parts\" style=\"max-height:"
+										+ maxHeight.intValue()
+										+ "px; overflow-y:auto;\">");
+			}
+
+			WebUtil.includeTemplate(path, req, res, application, page);
+
+			if (wrap) {
+				page.getOut()
+						.write("</div>");
+			}
+		}
+
+	}
+
+	/**
+	 * maxHeight 指定がある場合に div でラップするかどうか
+	 */
+	protected boolean useWrapper(Integer maxHeight) {
+		// MetaTemplateParts の場合にのみ有効
+		return this.getClass() == MetaTemplateParts.class
+				&& maxHeight != null && maxHeight > 0;
 	}
 }

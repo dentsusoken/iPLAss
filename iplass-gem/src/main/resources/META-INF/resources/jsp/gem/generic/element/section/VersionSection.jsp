@@ -66,12 +66,14 @@
 		style = section.getStyle();
 	}
 
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
+	
 	String title = GemResourceBundleUtil.resourceString("generic.element.section.VersionSection.anotherVer");
 	if (StringUtil.isNotBlank(section.getTitle())) {
 		title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
 	}
 %>
-<div <%=id %> class="version-section <c:out value="<%=style %>"/>">
+<div <%=id %> class="version-section <c:out value="<%=style %>"/>" >
 <script type="text/javascript">
 $(function() {
 	$("div.other-version").off("click");
@@ -112,7 +114,7 @@ $(function() {
 <h3><span><c:out value="<%=title %>"/></span></h3>
 </div>
 
-<div class="version-block" style="display:none;">
+<div class="version-block" style="display:none;<%= styleAttr %>">
 <table class="tbl-version">
 <tr>
 <td>

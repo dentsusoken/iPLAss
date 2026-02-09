@@ -27,6 +27,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.section.*" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.Constants" %>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%
 	Element element = (Element) request.getAttribute(Constants.ELEMENT);
@@ -43,8 +44,10 @@
 	if (StringUtil.isNotBlank(section.getStyle())) {
 		style = section.getStyle();
 	}
+	
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
 %>
-<div <%=id %> class="template-section <c:out value="<%=style %>"/>">
+<div <%=id %> class="template-section <c:out value="<%=style %>"/>" style="<%= styleAttr %>">
 <%
 	TemplateUtil.includeTemplate(section.getTemplateName(), pageContext);
 %>

@@ -28,6 +28,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.section.*" %>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
@@ -45,8 +46,10 @@
 	if (StringUtil.isNotBlank(section.getStyle())) {
 		style = section.getStyle();
 	}
+	
+	String styleAttr = ViewUtil.buildHeightStyleAttr(section.getSectionHeight());
 %>
-<div <%=id %> class="scripting-section <c:out value="<%=style %>"/>">
+<div <%=id %> class="scripting-section <c:out value="<%=style %>"/>" style="<%= styleAttr %>">
 <%
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	evm.executeTemplate(ed.getName(), section.getKey(), request, response, application, pageContext);
