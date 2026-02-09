@@ -113,6 +113,7 @@
 	request.setAttribute(Constants.EDITOR_EDITOR, property.getBulkUpdateEditor());
 	request.setAttribute(Constants.EDITOR_PROP_VALUE, propValue);
 	request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
+	request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
 	if (OutputType.EDIT == type) {
 		request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
 	}
