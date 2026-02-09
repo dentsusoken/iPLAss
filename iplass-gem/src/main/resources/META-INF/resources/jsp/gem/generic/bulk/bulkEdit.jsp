@@ -489,7 +489,7 @@ function onclick_bulkupdate(target){
 		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
-	$("#id_tbl_bulkupdate tbody tr").each(function () {
+	$("#id_tbl_bulkupdate > tbody > tr").each(function () {
 		var $tr = $(this);
 		if ($tr.is("#id_tr_" + selectedProp)) {
 			return; // 選択された項目に対応する行はスキップ（値をそのまま残す）
@@ -503,7 +503,7 @@ function onclick_bulkupdate(target){
 				Array.from(el.options).map(function (opt) {
 					opt.selected = opt.defaultSelected;
 				});
-			} else {
+			} else if (el.type !== "file") {
 				el.value = el.defaultValue;
 			}
 		});
@@ -527,10 +527,9 @@ function onDialogClose() {
 }
 function propChange(obj) {
 	var propName = obj.options[obj.selectedIndex].value;
-	$("table#id_tbl_bulkupdate tbody").children("tr").each(function() {
-		$(this).css("display", "none").val("");
-	});
-	$("tr#id_tr_" + propName).css("display", "");
+	$("table#id_tbl_bulkupdate > tbody > tr").hide();
+	$("#id_tr_" + propName).show();
+	$(".bulk-edit > .page-error").text("");
 }
 function validation() {
 	<%-- common.js --%>
