@@ -42,14 +42,7 @@ public class JasperReportType extends ReportType {
 	private String dataSourceAttributeName;
 
 	/** パスワードAttribute名 */
-	@Deprecated
 	private String passwordAttributeName;
-
-	/** オーナーパスワードAttribute名 */
-	private String ownerPasswordAttributeName;
-
-	/** ユーザーパスワードAttribute名 */
-	private String userPasswordAttributeName;
 
 	public ReportParamMapDefinition[] getParamMap() {
 		return paramMap;
@@ -67,36 +60,12 @@ public class JasperReportType extends ReportType {
 		this.dataSourceAttributeName = dataSourceAttributeName;
 	}
 
-	/**
-	 * @deprecated {@link #getOwnerPasswordAttributeName()}, {@link #getUserPasswordAttributeName()} を使用してください
-	 */
-	@Deprecated
 	public String getPasswordAttributeName() {
 		return passwordAttributeName;
 	}
 
-	/**
-	 * @deprecated {@link #setOwnerPasswordAttributeName(String)}, {@link #setUserPasswordAttributeName(String)} を使用してください
-	 */
-	@Deprecated
 	public void setPasswordAttributeName(String passwordAttributeName) {
 		this.passwordAttributeName = passwordAttributeName;
-	}
-
-	public String getOwnerPasswordAttributeName() {
-		return ownerPasswordAttributeName;
-	}
-
-	public void setOwnerPasswordAttributeName(String ownerPasswordAttributeName) {
-		this.ownerPasswordAttributeName = ownerPasswordAttributeName;
-	}
-
-	public String getUserPasswordAttributeName() {
-		return userPasswordAttributeName;
-	}
-
-	public void setUserPasswordAttributeName(String userPasswordAttributeName) {
-		this.userPasswordAttributeName = userPasswordAttributeName;
 	}
 
 }

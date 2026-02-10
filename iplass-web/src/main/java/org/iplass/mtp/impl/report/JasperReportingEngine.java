@@ -156,20 +156,9 @@ public class JasperReportingEngine implements ReportingEngine{
 			}
 		}
 
-		String ownerPassword = null;
-		String userPassword = null;
-		// 新しいowner/userパスワード属性名を優先
-		if (StringUtil.isNotEmpty(jasperModel.getOwnerPasswordAttributeName())) {
-			ownerPassword = (String)getAttribute(request, jasperModel.getOwnerPasswordAttributeName());
-		}
-		if (StringUtil.isNotEmpty(jasperModel.getUserPasswordAttributeName())) {
-			userPassword = (String)getAttribute(request, jasperModel.getUserPasswordAttributeName());
-		}
-		// 後方互換性: 従来のpasswordAttributeNameが設定されている場合はowner/user両方に適用
-		if (ownerPassword == null && userPassword == null && StringUtil.isNotEmpty(jasperModel.getPasswordAttributeName())) {
-			String password = (String)getAttribute(request, jasperModel.getPasswordAttributeName());
-			ownerPassword = password;
-			userPassword = password;
+		String password = null;
+		if (StringUtil.isNotEmpty(jasperModel.getPasswordAttributeName())) {
+			password = (String)getAttribute(request, jasperModel.getPasswordAttributeName());
 		}
 
 		// JasperPrintインスタンス生成
@@ -191,13 +180,9 @@ public class JasperReportingEngine implements ReportingEngine{
 			pdfExporter.setExporterOutput(output);
 
 			SimplePdfExporterConfiguration config = new SimplePdfExporterConfiguration();
-			if (StringUtil.isNotEmpty(ownerPassword) || StringUtil.isNotEmpty(userPassword)) {
-				if (StringUtil.isNotEmpty(ownerPassword)) {
-					config.setOwnerPassword(ownerPassword);
-				}
-				if (StringUtil.isNotEmpty(userPassword)) {
-					config.setUserPassword(userPassword);
-				}
+			if (StringUtil.isNotEmpty(password)) {
+				config.setOwnerPassword(password);
+				config.setUserPassword(password);
 				config.setEncrypted(true);
 			}
 			pdfExporter.setConfiguration(config);
@@ -211,7 +196,7 @@ public class JasperReportingEngine implements ReportingEngine{
 			xlsExporter.setExporterOutput(output);
 
 			SimpleXlsReportConfiguration config = new SimpleXlsReportConfiguration();
-			if (StringUtil.isNotEmpty(ownerPassword) || StringUtil.isNotEmpty(userPassword)) {
+			if (StringUtil.isNotEmpty(password)) {
 				logger.warn("XLS type does not support encryption. IF you want to encryption, change to XLSX type.");
 			}
 			config.setWhitePageBackground(false);
@@ -226,11 +211,8 @@ public class JasperReportingEngine implements ReportingEngine{
 			xlsxExporter.setExporterOutput(output);
 
 			SimpleXlsxReportConfiguration config = new SimpleXlsxReportConfiguration();
-			// XLSXはuserPasswordのみサポート、ownerPasswordは設定されていればuserPasswordとして使用
-			if (StringUtil.isNotEmpty(userPassword)) {
-				config.setPassword(userPassword);
-			} else if (StringUtil.isNotEmpty(ownerPassword)) {
-				config.setPassword(ownerPassword);
+			if (StringUtil.isNotEmpty(password)) {
+				config.setPassword(password);
 			}
 			config.setWhitePageBackground(false);
 			xlsxExporter.setConfiguration(config);
