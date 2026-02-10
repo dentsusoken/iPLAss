@@ -64,6 +64,17 @@ boolean isRememberMe = ExecuteContext.getCurrentContext().getCurrentTenant().get
 <%@include file="../layout/resource/langfont.jsp" %>
 <%@include file="../layout/resource/tenant.jsp" %>
 
+<script type="text/javascript">
+$(function() {
+	const loginBtn = $("#loginBtn");
+	document.loginForm.onsubmit = function(e) {
+		loginBtn.prop("disabled", true);
+		setTimeout(function() {
+			loginBtn.prop("disabled", false);
+		}, 60000);
+	};
+});
+</script>
 <%if (isRememberMe) {%>
 <script type="text/javascript">
 <!--
@@ -145,7 +156,7 @@ TemplateUtil.includeTemplate("gem/layout/header", pageContext);
 </table>
 
 <p class="nav-login-01">
-<input type="submit" class="gr-btn" value="${m:rs('mtp-gem-messages', 'auth.Login.login')}" />
+<input type="submit" id="loginBtn" class="gr-btn" value="${m:rs('mtp-gem-messages', 'auth.Login.login')}" />
 </p>
 
 <%if (orgUrl != null) {%>
