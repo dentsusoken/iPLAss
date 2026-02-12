@@ -66,12 +66,13 @@ boolean isRememberMe = ExecuteContext.getCurrentContext().getCurrentTenant().get
 
 <script type="text/javascript">
 $(function() {
+	const LOGIN_BUTTON_DISABLE_DURATION_MS = 60 * 1000;
 	const loginBtn = $("#loginBtn");
 	$('form[name="loginForm"]').on('submit', function(e) {
 		loginBtn.prop("disabled", true);
 		setTimeout(function() {
 			loginBtn.prop("disabled", false);
-		}, 60000);
+		}, LOGIN_BUTTON_DISABLE_DURATION_MS);
 	});
 });
 </script>
