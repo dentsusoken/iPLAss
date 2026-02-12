@@ -67,12 +67,12 @@ boolean isRememberMe = ExecuteContext.getCurrentContext().getCurrentTenant().get
 <script type="text/javascript">
 $(function() {
 	const loginBtn = $("#loginBtn");
-	document.loginForm.onsubmit = function(e) {
+	$('form[name="loginForm"]').on('submit', function(e) {
 		loginBtn.prop("disabled", true);
 		setTimeout(function() {
 			loginBtn.prop("disabled", false);
 		}, 60000);
-	};
+	});
 });
 </script>
 <%if (isRememberMe) {%>
