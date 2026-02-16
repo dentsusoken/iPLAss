@@ -162,7 +162,9 @@ public class JasperReportingEngine implements ReportingEngine{
 		boolean isAdmin = AuthContext.getCurrentContext().getUser().isAdmin();
 		if (isAdmin && StringUtil.isNotEmpty(jasperModel.getAdminPasswordAttributeName())) {
 			password = (String)getAttribute(request, jasperModel.getAdminPasswordAttributeName());
-		} else if (StringUtil.isNotEmpty(jasperModel.getPasswordAttributeName())) {
+		}
+		// 管理者用パスワードが取得できなかった場合はユーザー用パスワードにフォールバック
+		if (StringUtil.isEmpty(password) && StringUtil.isNotEmpty(jasperModel.getPasswordAttributeName())) {
 			password = (String)getAttribute(request, jasperModel.getPasswordAttributeName());
 		}
 
