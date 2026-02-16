@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
@@ -157,7 +158,11 @@ public class JasperReportingEngine implements ReportingEngine{
 		}
 
 		String password = null;
-		if (StringUtil.isNotEmpty(jasperModel.getPasswordAttributeName())) {
+		// 管理者フラグをチェックし、管理者の場合は管理者用パスワード、それ以外はユーザー用パスワードを使用
+		boolean isAdmin = AuthContext.getCurrentContext().getUser().isAdmin();
+		if (isAdmin && StringUtil.isNotEmpty(jasperModel.getAdminPasswordAttributeName())) {
+			password = (String)getAttribute(request, jasperModel.getAdminPasswordAttributeName());
+		} else if (StringUtil.isNotEmpty(jasperModel.getPasswordAttributeName())) {
 			password = (String)getAttribute(request, jasperModel.getPasswordAttributeName());
 		}
 

@@ -44,6 +44,9 @@ public class JasperReportType extends ReportType {
 	/** パスワードAttribute名 */
 	private String passwordAttributeName;
 
+	/** 管理者用パスワードAttribute名 */
+	private String adminPasswordAttributeName;
+
 	public ReportParamMapDefinition[] getParamMap() {
 		return paramMap;
 	}
@@ -66,6 +69,14 @@ public class JasperReportType extends ReportType {
 
 	public void setPasswordAttributeName(String passwordAttributeName) {
 		this.passwordAttributeName = passwordAttributeName;
+	}
+
+	public String getAdminPasswordAttributeName() {
+		return adminPasswordAttributeName;
+	}
+
+	public void setAdminPasswordAttributeName(String adminPasswordAttributeName) {
+		this.adminPasswordAttributeName = adminPasswordAttributeName;
 	}
 
 }
