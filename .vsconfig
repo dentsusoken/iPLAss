@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "components": [
+    "Microsoft.VisualStudio.Workload.CoreEditor",
+    "Microsoft.VisualStudio.Workload.Java",
+    "Microsoft.VisualStudio.Component.Git",
+    "Microsoft.VisualStudio.Component.IntelliCode"
+  ]
+}
