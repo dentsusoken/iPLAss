@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.entity.definition.DataLocalizationStrategy;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -71,7 +72,7 @@ public class DataLocalizationPane extends VLayout {
 		typeForm.setColWidths(120, "*", 100);
 
 		dataLocalizationTypeField = new SelectItem();
-		dataLocalizationTypeField.setTitle("Data Localize Type");
+		dataLocalizationTypeField.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_DataLocalizationPane_dataLocalizationType"));
 		dataLocalizationTypeField.setWidth(150);
 		LinkedHashMap<String, String> typeMap = new LinkedHashMap<String, String>();
 		typeMap.put("", "Not Localize");
@@ -319,7 +320,7 @@ public class DataLocalizationPane extends VLayout {
 			form.setColWidths(120, "*", 100);
 
 			languagePropertyNameField = new TextItem();
-			languagePropertyNameField.setTitle("Language Property");
+			languagePropertyNameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_DataLocalizationPane_languagePropertyName"));
 			languagePropertyNameField.setWidth(150);
 
 			form.setItems(languagePropertyNameField);

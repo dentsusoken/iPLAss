@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.auth.property;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpIntegerItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
@@ -42,7 +43,7 @@ public class RememberMePolicySettingPane  extends AbstractSettingPane {
 		form.setGroupTitle("Remember Me Policy Setting");
 
 		chkUsePolicy = new CheckboxItem();
-		chkUsePolicy.setTitle("Use Remember Me Policy");
+		chkUsePolicy.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_RememberMePolicySettingPane_useRememberMePolicy"));
 		chkUsePolicy.setShowTitle(false);
 		chkUsePolicy.setColSpan(2);
 		chkUsePolicy.addChangedHandler(new ChangedHandler() {
@@ -54,11 +55,11 @@ public class RememberMePolicySettingPane  extends AbstractSettingPane {
 		});
 
 		txtLifetimeMinutes = new MtpIntegerItem();
-		txtLifetimeMinutes.setTitle("Lifetime Minutes");
+		txtLifetimeMinutes.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_RememberMePolicySettingPane_lifetimeMinutes"));
 		txtLifetimeMinutes.setStartRow(true);
 
 		chkAbsoluteLifetime = new CheckboxItem();
-		chkAbsoluteLifetime.setTitle("Absolute Lifetime");
+		chkAbsoluteLifetime.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_RememberMePolicySettingPane_absoluteLifetime"));
 
 		form.setItems(chkUsePolicy,
 				txtLifetimeMinutes, chkAbsoluteLifetime);

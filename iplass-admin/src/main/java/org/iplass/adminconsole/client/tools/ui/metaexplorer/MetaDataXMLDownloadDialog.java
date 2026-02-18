@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.tools.ui.metaexplorer;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
@@ -54,13 +55,13 @@ public class MetaDataXMLDownloadDialog extends AbstractWindow {
 		centerInPage();
 
 		final SelectItem fileTypeField = new SelectItem();
-		fileTypeField.setTitle("File Type");
+		fileTypeField.setTitle(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataXMLDownloadDialog_fileType"));
 		fileTypeField.setValueMap(FILETYPE.XML.name());
 		fileTypeField.setValue(FILETYPE.XML.name());
 		fileTypeField.setDisabled(true);	//XML固定
 
 		final SelectItem encodeField = new SelectItem();
-		encodeField.setTitle("Encode");
+		encodeField.setTitle(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataXMLDownloadDialog_encode"));
 //		encodeField.setValueMap(ENCODE.UTF8.name(), ENCODE.MS932.name());
 		encodeField.setValueMap(ENCODE.UTF8.name());
 		encodeField.setValue(ENCODE.UTF8.name());

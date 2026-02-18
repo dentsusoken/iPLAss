@@ -88,7 +88,7 @@ public class EntityCrawlListPane extends VLayout {
 
 		final ToolStripButton startCrawlButton = new ToolStripButton();
 		startCrawlButton.setIcon(EXECUTE_ICON);
-		startCrawlButton.setTitle("Start Crawl");
+	startCrawlButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_startCrawl"));
 		startCrawlButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_startCrawling")));
 		startCrawlButton.addClickHandler(new ClickHandler() {
 
@@ -103,7 +103,7 @@ public class EntityCrawlListPane extends VLayout {
 
 		final ToolStripButton deleteButton = new ToolStripButton();
 		deleteButton.setIcon(RE_CRAWL_ICON);
-		deleteButton.setTitle("Re Crawl All Entity");
+	deleteButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_reCrawlAllEntity"));
 		deleteButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_deleteAllIndex"));
 		deleteButton.setHoverWrap(false);
 		deleteButton.addClickHandler(new ClickHandler() {
@@ -135,7 +135,7 @@ public class EntityCrawlListPane extends VLayout {
 
 		final ToolStripButton refreshIndexChangesButton = new ToolStripButton();
 		refreshIndexChangesButton.setIcon(RE_CRAWL_ICON);
-		refreshIndexChangesButton.setTitle("Refresh");
+	refreshIndexChangesButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_refresh"));
 		refreshIndexChangesButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_refreshIndexChanges"));
 		refreshIndexChangesButton.setHoverWrap(false);
 		refreshIndexChangesButton.addClickHandler(new ClickHandler() {
@@ -160,7 +160,7 @@ public class EntityCrawlListPane extends VLayout {
 		toolStrip.addSeparator();
 
 		showCountItem = new CheckboxItem();
-		showCountItem.setTitle("Get Data Count");
+	showCountItem.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_getDataCount"));
 		showCountItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_entityDataNumberLarge")));
 		showCountItem.addChangedHandler(new ChangedHandler() {
 

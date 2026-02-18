@@ -265,22 +265,22 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			form = new MtpForm();
 
 			txtName = new MtpTextItem();
-			txtName.setTitle("Name");
+			txtName.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ScopeGridPane_name"));
 			SmartGWTUtil.setRequired(txtName);
 			txtName.setRequired(true);	//TODO 直接指定しないと効かない
 
 			txtDisplayName = new MetaDataLangTextItem();
-			txtDisplayName.setTitle("Display Name");
+			txtDisplayName.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ScopeGridPane_displayName"));
 
 			txaDescription = new MtpTextAreaItem();
-			txaDescription.setTitle("Description");
+			txaDescription.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ScopeGridPane_description"));
 			txaDescription.setHeight(55);
 
 			SpacerItem spacer = new SpacerItem();
 			spacer.setStartRow(true);
 
 			ButtonItem btbDescLang = new ButtonItem();
-			btbDescLang.setTitle("Description Lang");
+			btbDescLang.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ScopeGridPane_descriptionLang"));
 			btbDescLang.setIcon(ICON_LANG);
 			btbDescLang.setShowTitle(false);
 			btbDescLang.setStartRow(false);
@@ -305,7 +305,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 			pnlClaimMappingGrid = new ClaimMappingGridPane();
 			CanvasItem canvasClaims = new CanvasItem();
-			canvasClaims.setTitle("Claims");
+			canvasClaims.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ScopeGridPane_claims"));
 			canvasClaims.setCanvas(pnlClaimMappingGrid);
 			canvasClaims.setColSpan(2);
 			canvasClaims.setStartRow(true);
@@ -600,15 +600,15 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			form = new MtpForm();
 
 			txtClaimName = new MtpTextItem();
-			txtClaimName.setTitle("Claim Name");
+			txtClaimName.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ScopeGridPane_claimName"));
 			SmartGWTUtil.setRequired(txtClaimName);
 			txtClaimName.setRequired(true);	//TODO 直接指定しないと効かない
 
 			txtUserPropertyName = new MtpTextItem();
-			txtUserPropertyName.setTitle("User Property Name");
+			txtUserPropertyName.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ScopeGridPane_userPropertyName"));
 
 			txaCustomValueScript = new MtpTextAreaItem();
-			txaCustomValueScript.setTitle("Custom Value Script");
+			txaCustomValueScript.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ScopeGridPane_customValueScript"));
 			txaCustomValueScript.setHeight(55);
 			SmartGWTUtil.setReadOnlyTextArea(txaCustomValueScript);
 
@@ -616,7 +616,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			spacer.setStartRow(true);
 
 			ButtonItem btnCustomValueScript = new ButtonItem();
-			btnCustomValueScript.setTitle("Script");
+			btnCustomValueScript.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ScopeGridPane_script"));
 			btnCustomValueScript.setShowTitle(false);
 			btnCustomValueScript.setStartRow(false);
 			btnCustomValueScript.setEndRow(false);

@@ -292,7 +292,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 			//Type
 			//---------------------------------
 			typeItem = new SelectItem();
-			typeItem.setTitle("Type");
+			typeItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicListGrid_type"));
 			SmartGWTUtil.setRequired(typeItem);
 			typeItem.addChangedHandler(new ChangedHandler() {
 				public void onChanged(ChangedEvent event) {
@@ -317,7 +317,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 			//---------------------------------
 			scriptItem = new MtpTextAreaItem();
 			scriptItem.setColSpan(2);
-			scriptItem.setTitle("Script");
+			scriptItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicListGrid_script"));
 			scriptItem.setHeight("100%");
 			SmartGWTUtil.setRequired(scriptItem);
 			SmartGWTUtil.setReadOnlyTextArea(scriptItem);
@@ -356,7 +356,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 			//Java Class
 			//---------------------------------
 			javaClassNameItem = new MtpTextItem();
-			javaClassNameItem.setTitle("Class Name");
+			javaClassNameItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicListGrid_className"));
 			SmartGWTUtil.setRequired(javaClassNameItem);
 			SmartGWTUtil.addHoverToFormItem(javaClassNameItem,
 					AdminClientMessageUtil.getString(javaClassNameItemComment));

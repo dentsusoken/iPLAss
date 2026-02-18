@@ -122,7 +122,7 @@ public class ValidationEditDialog extends MtpDialog {
 	private void initialize() {
 
 		selType = new MtpSelectItem();
-		selType.setTitle("Type");
+		selType.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_validation_ValidationEditDialog_type"));
 		SmartGWTUtil.setRequired(selType);
 		selType.addChangedHandler(new ChangedHandler() {
 			@Override
@@ -170,7 +170,7 @@ public class ValidationEditDialog extends MtpDialog {
 
 		validationSkipScriptItem = new MtpTextAreaItem();
 		validationSkipScriptItem.setColSpan(2);
-		validationSkipScriptItem.setTitle("Validation Skip Script");
+		validationSkipScriptItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_validation_ValidationEditDialog_validationSkipScript"));
 		validationSkipScriptItem.setHeight(100);
 		SmartGWTUtil.setReadOnlyTextArea(validationSkipScriptItem);
 
@@ -327,12 +327,12 @@ public class ValidationEditDialog extends MtpDialog {
 							+ rs("ui_metadata_entity_PropertyListGrid_referenceTypeExists") + "</td></tr>"
 							+ "</table></div></div>");
 			errorMessageItem = new MetaDataLangTextItem(hintIcon);
-			errorMessageItem.setTitle("Message (Direct)");
+			errorMessageItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_validation_ValidationEditDialog_messageDirect"));
 			errorMessageItem.setColSpan(3);
 			SmartGWTUtil.addHoverToFormItem(errorMessageItem, rs("ui_metadata_entity_PropertyListGrid_messageSpecifyComment"));
 
 			messageCategoryItem = new MetaDataSelectItem(MessageCategory.class, new ItemOption(true, false));
-			messageCategoryItem.setTitle("Message Category");
+			messageCategoryItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_validation_ValidationEditDialog_messageCategory"));
 			messageCategoryItem.addChangedHandler(new ChangedHandler() {
 				@Override
 				public void onChanged(ChangedEvent event) {
@@ -342,7 +342,7 @@ public class ValidationEditDialog extends MtpDialog {
 			});
 
 			messageIdItem = new MtpSelectItem();
-			messageIdItem.setTitle("Message Id");
+			messageIdItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_validation_ValidationEditDialog_messageId"));
 			messageIdItem.setValueField("id");
 			messageIdItem.setDisplayField("id");
 			messageIdItem.setPickListWidth(520);
@@ -352,7 +352,7 @@ public class ValidationEditDialog extends MtpDialog {
 			messageIdItem.setSortField("id");
 
 			errorCodeItem = new MtpTextItem();
-			errorCodeItem.setTitle("Code");
+			errorCodeItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_validation_ValidationEditDialog_code"));
 
 			form = new MtpForm2Column();
 			form.setIsGroup(true);

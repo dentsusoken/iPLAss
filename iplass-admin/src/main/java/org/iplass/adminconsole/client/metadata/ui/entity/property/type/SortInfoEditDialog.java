@@ -73,11 +73,11 @@ public class SortInfoEditDialog extends MtpDialog {
 		centerInPage();
 
 		selProperty = new MtpSelectItem();
-		selProperty.setTitle("Property Name");
+		selProperty.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_type_SortInfoEditDialog_propertyName"));
 		SmartGWTUtil.setRequired(selProperty);
 
 		selSortType = new MtpSelectItem();
-		selSortType.setTitle("Order");
+		selSortType.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_type_SortInfoEditDialog_order"));
 
 		final DynamicForm form = new MtpForm2Column();
 		form.setItems(selProperty, selSortType);

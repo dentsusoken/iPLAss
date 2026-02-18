@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -38,7 +39,7 @@ public class BinaryTypeAttributePane extends ValidationAttributePane {
 	public BinaryTypeAttributePane() {
 
 		mimeTypePatternItem = new MtpTextItem();
-		mimeTypePatternItem.setTitle("Pattern");
+		mimeTypePatternItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_BinaryTypeAttributePane_pattern"));
 
 		form = new MtpForm();
 		form.setItems(mimeTypePatternItem);

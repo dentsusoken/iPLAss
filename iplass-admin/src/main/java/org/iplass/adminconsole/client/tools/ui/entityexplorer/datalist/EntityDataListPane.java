@@ -402,7 +402,7 @@ public class EntityDataListPane extends VLayout {
 			//------------------------
 			final ToolStripButton deleteButton = new ToolStripButton();
 			deleteButton.setIcon(DELETE_ICON);
-			deleteButton.setTitle("Delete");
+			deleteButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_delete"));
 			SmartGWTUtil.addHoverToCanvas(deleteButton, AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_deleteSelectEntity"));
 			deleteButton.setHoverWrap(false);
 			deleteButton.addClickHandler(new ClickHandler() {
@@ -420,7 +420,7 @@ public class EntityDataListPane extends VLayout {
 			//Search Option
 			//------------------------
 			showAllPropertyItem = new CheckboxItem();
-			showAllPropertyItem.setTitle("show inherited properties");
+			showAllPropertyItem.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_showInheritedProperties"));
 			showAllPropertyItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_showAllPropInherit")));
 			showAllPropertyItem.addChangedHandler(new ChangedHandler() {
 
@@ -438,7 +438,7 @@ public class EntityDataListPane extends VLayout {
 			//------------------------
 			final ToolStripButton firstButton = new ToolStripButton();
 			firstButton.setIcon("resultset_first.png");
-			firstButton.setTitle("First");
+			firstButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_first"));
 			firstButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -450,7 +450,7 @@ public class EntityDataListPane extends VLayout {
 
 			final ToolStripButton prevButton = new ToolStripButton();
 			prevButton.setIcon("resultset_previous.png");
-			prevButton.setTitle("Prev");
+			prevButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_prev"));
 			prevButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -462,7 +462,7 @@ public class EntityDataListPane extends VLayout {
 
 			final ToolStripButton nextButton = new ToolStripButton();
 			nextButton.setIcon("resultset_next.png");
-			nextButton.setTitle("Next");
+			nextButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_next"));
 			nextButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -499,7 +499,7 @@ public class EntityDataListPane extends VLayout {
 						button.setHeight(18);
 						button.setWidth(80);
 						button.setIcon(MtpWidgetConstants.ICON_SEARCH);
-						button.setTitle("Show...");
+						button.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_show"));
 						button.addClickHandler(new ClickHandler() {
 							@Override
 							public void onClick(ClickEvent event) {
@@ -760,19 +760,19 @@ public class EntityDataListPane extends VLayout {
 			form.setAutoFocus(true);
 
 			whereField = new TextAreaItem();
-			whereField.setTitle("Where");
+			whereField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_where"));
 			whereField.setWidth("100%");
 			whereField.setHeight("100%");
 			whereField.setSelectOnFocus(true);
 
 			orderByField = new TextAreaItem();
-			orderByField.setTitle("Oder By");
+			orderByField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_orderBy"));
 			orderByField.setWidth("100%");
 			orderByField.setHeight(50);
 			orderByField.setSelectOnFocus(true);
 
 			searchAllVersion = new CheckboxItem();
-			searchAllVersion.setTitle("seach all version");
+			searchAllVersion.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchAllVersion"));
 			searchAllVersion.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_allVerSearch")));
 
 

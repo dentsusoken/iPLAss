@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
@@ -164,7 +165,7 @@ public class LocalizedScriptSettingDialog extends MtpDialog {
 			SectionStack sectionStack = new SectionStack();
 
 			SectionStackSection section1 = new SectionStackSection();
-			section1.setTitle("Language List");
+			section1.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_LocalizedScriptSettingDialog_languageList"));
 			section1.setItems(grid);
 			section1.setControls(removeButton);
 			section1.setExpanded(true);

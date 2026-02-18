@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
@@ -277,38 +278,38 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			form = new MtpForm();
 
 			selClientType = new MtpSelectItem();
-			selClientType.setTitle("Client Type");
+			selClientType.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_ClientPolicyGridPane_clientType"));
 			selClientType.setValueMap(clientTypeMap);
 
 			txtAccessTokenLifetimeSeconds = new IntegerItem();
-			txtAccessTokenLifetimeSeconds.setTitle("Access Token Lifetime Seconds");
+			txtAccessTokenLifetimeSeconds.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_ClientPolicyGridPane_accessTokenLifetimeSeconds"));
 			txtAccessTokenLifetimeSeconds.setWidth("100%");
 			txtAccessTokenLifetimeSeconds.setBrowserSpellCheck(false);
 
 			chkSupportRefreshToken = new CheckboxItem();
-			chkSupportRefreshToken.setTitle("Support Refresh Token");
+			chkSupportRefreshToken.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_ClientPolicyGridPane_supportRefreshToken"));
 
 			txtRefreshTokenLifetimeSeconds = new IntegerItem();
-			txtRefreshTokenLifetimeSeconds.setTitle("Refresh Token Lifetime Seconds");
+			txtRefreshTokenLifetimeSeconds.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ClientPolicyGridPane_refreshTokenLifetimeSeconds"));
 			txtRefreshTokenLifetimeSeconds.setWidth("100%");
 			txtRefreshTokenLifetimeSeconds.setBrowserSpellCheck(false);
 
 			pnlConsentType = new ConsentTypeEditPane();
 			CanvasItem canvasConsentType = new CanvasItem();
-			canvasConsentType.setTitle("Consent Type");
+			canvasConsentType.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ClientPolicyGridPane_consentType"));
 			canvasConsentType.setCanvas(pnlConsentType);
 			canvasConsentType.setColSpan(2);
 			canvasConsentType.setStartRow(true);
 
 			pnlScopeGrid = new ScopeGridPane();
 			CanvasItem canvasScopes = new CanvasItem();
-			canvasScopes.setTitle("Scopes");
+			canvasScopes.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ClientPolicyGridPane_scopes"));
 			canvasScopes.setCanvas(pnlScopeGrid);
 			canvasScopes.setColSpan(2);
 			canvasScopes.setStartRow(true);
 
 			chkSupportOpenIDConnect = new CheckboxItem();
-			chkSupportOpenIDConnect.setTitle("Support OpenID Connect");
+			chkSupportOpenIDConnect.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ClientPolicyGridPane_supportOpenIDConnect"));
 
 			form.setItems(selClientType, txtAccessTokenLifetimeSeconds, chkSupportRefreshToken,
 					txtRefreshTokenLifetimeSeconds, canvasConsentType, canvasScopes, chkSupportOpenIDConnect);

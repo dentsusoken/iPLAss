@@ -185,15 +185,15 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		form.setMargin(5);
 
 		selAuthorizationServer = new MetaDataSelectItem(OAuthAuthorizationDefinition.class, new ItemOption(true, false));
-		selAuthorizationServer.setTitle("OAuth Authorization");
+		selAuthorizationServer.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_oauthAuthorization"));
 
 		selClientType = new SelectItem();
-		selClientType.setTitle("Client Type");
+		selClientType.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_clientType"));
 		selClientType.setWidth("100%");
 		selClientType.setValueMap(clientTypeMap);
 
 		txaRedirectUris = new TextAreaItem();
-		txaRedirectUris.setTitle("Redirect URI");
+		txaRedirectUris.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_redirectUri"));
 		txaRedirectUris.setWidth("100%");
 		txaRedirectUris.setHeight(75);
 		txaRedirectUris.setBrowserSpellCheck(false);
@@ -202,7 +202,7 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		txaRedirectUris.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_redirectUris")));
 
 		txtSectorIdentifierUri = new TextItem();
-		txtSectorIdentifierUri.setTitle("Sector Identifier URI");
+		txtSectorIdentifierUri.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_sectorIdentifierUri"));
 		txtSectorIdentifierUri.setWidth("100%");
 		txtSectorIdentifierUri.setBrowserSpellCheck(false);
 		txtSectorIdentifierUri.setColSpan(3);
@@ -210,7 +210,7 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 
 		mapGrantTypeItems = new LinkedHashMap<>();
 		CanvasItem canvasGrantTypes = new CanvasItem();
-		canvasGrantTypes.setTitle("Grant Type");
+		canvasGrantTypes.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_grantType"));
 		formGrantType = new DynamicForm();
 		formGrantType.setWidth100();
 		formGrantType.setAutoHeight();
@@ -228,21 +228,21 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		canvasGrantTypes.setStartRow(true);
 
 		txtClientUri = new TextItem();
-		txtClientUri.setTitle("Client URI");
+		txtClientUri.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_clientUri"));
 		txtClientUri.setWidth("100%");
 		txtClientUri.setBrowserSpellCheck(false);
 		txtClientUri.setColSpan(3);
 		txtClientUri.setStartRow(true);
 
 		txtLogoUri = new TextItem();
-		txtLogoUri.setTitle("Logo URI");
+		txtLogoUri.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_logoUri"));
 		txtLogoUri.setWidth("100%");
 		txtLogoUri.setBrowserSpellCheck(false);
 		txtLogoUri.setColSpan(3);
 		txtLogoUri.setStartRow(true);
 
 		txaContacts = new TextAreaItem();
-		txaContacts.setTitle("Contacts");
+		txaContacts.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_contacts"));
 		txaContacts.setWidth("100%");
 		txaContacts.setHeight(75);
 		txaContacts.setBrowserSpellCheck(false);
@@ -251,14 +251,14 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		txaContacts.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_contacts")));
 
 		txtTosUri = new TextItem();
-		txtTosUri.setTitle("Terms Of Service URI");
+		txtTosUri.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_termsOfServiceUri"));
 		txtTosUri.setWidth("100%");
 		txtTosUri.setBrowserSpellCheck(false);
 		txtTosUri.setColSpan(3);
 		txtTosUri.setStartRow(true);
 
 		txtPolicyUri = new TextItem();
-		txtPolicyUri.setTitle("Policy URI");
+		txtPolicyUri.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_policyUri"));
 		txtPolicyUri.setWidth("100%");
 		txtPolicyUri.setBrowserSpellCheck(false);
 		txtPolicyUri.setColSpan(3);

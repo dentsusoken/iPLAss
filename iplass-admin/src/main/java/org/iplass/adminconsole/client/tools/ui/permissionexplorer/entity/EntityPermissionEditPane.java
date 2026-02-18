@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.tools.ui.permissionexplorer.entity;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionEditPane;
 import org.iplass.mtp.entity.Entity;
@@ -124,7 +125,7 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 
 		slctReferenceAllowFiled = new SelectItem();
 		slctReferenceAllowFiled.setWidth(370);
-		slctReferenceAllowFiled.setTitle("Entity Reference Allow");
+		slctReferenceAllowFiled.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_entityReferenceAllow"));
 		LinkedHashMap<String, String> referenceAllowMap = new LinkedHashMap<String, String>();
 		referenceAllowMap.put("true", "Enable");
 		referenceAllowMap.put("false", "Disable");
@@ -132,12 +133,12 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 		slctReferenceAllowFiled.setDefaultValue("false");
 
 		areaReferenceAllowRangeField = new TextAreaItem();
-		areaReferenceAllowRangeField.setTitle("Reference Allow Range");
+		areaReferenceAllowRangeField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_referenceAllowRange"));
 		areaReferenceAllowRangeField.setWidth(370);
 
 		slctReferencePropertyControlField = new SelectItem();
 		slctReferencePropertyControlField.setWidth(370);
-		slctReferencePropertyControlField.setTitle("Property Reference Allow");
+		slctReferencePropertyControlField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_propertyReferenceAllow"));
 		LinkedHashMap<String, String> referencePropertyControlMap = new LinkedHashMap<String, String>();
 		referencePropertyControlMap.put("", "Please select.");
 		referencePropertyControlMap.put("E", "The following properties are reference allowed.");
@@ -146,7 +147,7 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 		slctReferencePropertyControlField.setDefaultValue("");
 
 		areaReferencePropertyListField = new TextAreaItem();
-		areaReferencePropertyListField.setTitle("Reference Property List");
+		areaReferencePropertyListField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_referencePropertyList"));
 		areaReferencePropertyListField.setWidth(370);
 
 		referencePermissionForm.setItems(slctReferenceAllowFiled, areaReferenceAllowRangeField, slctReferencePropertyControlField, areaReferencePropertyListField);
@@ -162,7 +163,7 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 
 		slctCreateAllowFiled = new SelectItem();
 		slctCreateAllowFiled.setWidth(370);
-		slctCreateAllowFiled.setTitle("Create Allow");
+		slctCreateAllowFiled.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_createAllow"));
 		LinkedHashMap<String, String> createAllowMap = new LinkedHashMap<String, String>();
 		createAllowMap.put("true", "Enable");
 		createAllowMap.put("false", "Disable");
@@ -171,11 +172,11 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 
 		areaCreateAllowRangeField = new TextAreaItem();
 		areaCreateAllowRangeField.setWidth(370);
-		areaCreateAllowRangeField.setTitle("Create Allow Range");
+		areaCreateAllowRangeField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_createAllowRange"));
 
 		slctCreatePropertyControlField = new SelectItem();
 		slctCreatePropertyControlField.setWidth(370);
-		slctCreatePropertyControlField.setTitle("Create Allow");
+		slctCreatePropertyControlField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_createAllow"));
 		LinkedHashMap<String, String> createPropertyControlMap = new LinkedHashMap<String, String>();
 		createPropertyControlMap.put("", "Please select.");
 		createPropertyControlMap.put("E", "The following properties are creation Allowed.");
@@ -185,7 +186,7 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 
 		areaCreatePropertyListField = new TextAreaItem();
 		areaCreatePropertyListField.setWidth(370);
-		areaCreatePropertyListField.setTitle("Create Property List");
+		areaCreatePropertyListField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_createPropertyList"));
 
 		createPermissionForm.setItems(slctCreateAllowFiled, areaCreateAllowRangeField, slctCreatePropertyControlField, areaCreatePropertyListField);
 
@@ -200,7 +201,7 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 
 		slctUpdateAllowFiled = new SelectItem();
 		slctUpdateAllowFiled.setWidth(370);
-		slctUpdateAllowFiled.setTitle("Update Allow");
+		slctUpdateAllowFiled.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_updateAllow"));
 		LinkedHashMap<String, String> updateAllowMap = new LinkedHashMap<String, String>();
 		updateAllowMap.put("true", "Enable");
 		updateAllowMap.put("false", "Disable");
@@ -209,11 +210,11 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 
 		areaUpdateAllowRangeField = new TextAreaItem();
 		areaUpdateAllowRangeField.setWidth(370);
-		areaUpdateAllowRangeField.setTitle("Update Allow Range");
+		areaUpdateAllowRangeField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_updateAllowRange"));
 
 		slctUpdatePropertyControlField = new SelectItem();
 		slctUpdatePropertyControlField.setWidth(370);
-		slctUpdatePropertyControlField.setTitle("Update Allow");
+		slctUpdatePropertyControlField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_updateAllow"));
 		LinkedHashMap<String, String> updatePropertyControlMap = new LinkedHashMap<String, String>();
 		updatePropertyControlMap.put("", "Please select.");
 		updatePropertyControlMap.put("E", "The following properties are update Allowed.");
@@ -223,7 +224,7 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 
 		areaUpdatePropertyListField = new TextAreaItem();
 		areaUpdatePropertyListField.setWidth(370);
-		areaUpdatePropertyListField.setTitle("Update Property List");
+		areaUpdatePropertyListField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_updatePropertyList"));
 
 		updatePermissionForm.setItems(slctUpdateAllowFiled, areaUpdateAllowRangeField, slctUpdatePropertyControlField, areaUpdatePropertyListField);
 
@@ -238,7 +239,7 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 
 		slctDeleteAllowFiled = new SelectItem();
 		slctDeleteAllowFiled.setWidth(370);
-		slctDeleteAllowFiled.setTitle("Delete Allow");
+		slctDeleteAllowFiled.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_deleteAllow"));
 		LinkedHashMap<String, String> deleteAllowMap = new LinkedHashMap<String, String>();
 		deleteAllowMap.put("true", "Enable");
 		deleteAllowMap.put("false", "Disable");
@@ -247,7 +248,7 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 
 		areaDeleteAllowRangeField = new TextAreaItem();
 		areaDeleteAllowRangeField.setWidth(370);
-		areaDeleteAllowRangeField.setTitle("Delete Allow Range");
+		areaDeleteAllowRangeField.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_EntityPermissionEditPane_deleteAllowRange"));
 
 		deletePermissionForm.setItems(slctDeleteAllowFiled, areaDeleteAllowRangeField);
 

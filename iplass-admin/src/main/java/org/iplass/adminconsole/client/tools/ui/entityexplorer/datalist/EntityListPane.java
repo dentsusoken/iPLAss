@@ -84,7 +84,7 @@ public class EntityListPane extends VLayout {
 
 		final ToolStripButton configExportButton = new ToolStripButton();
 		configExportButton.setIcon(EXPORT_ICON);
-		configExportButton.setTitle("ConfigExport");
+	configExportButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_configExport"));
 		configExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_exportEntityDef")));
 		configExportButton.addClickHandler(new ClickHandler() {
 
@@ -98,7 +98,7 @@ public class EntityListPane extends VLayout {
 		toolStrip.addSeparator();
 
 		showCountItem = new CheckboxItem();
-		showCountItem.setTitle("Get Data Count");
+	showCountItem.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_getDataCount"));
 		showCountItem.setTooltip(SmartGWTUtil.getHoverString(
 				AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_dataNumOften")));
 		showCountItem.addChangedHandler(new ChangedHandler() {

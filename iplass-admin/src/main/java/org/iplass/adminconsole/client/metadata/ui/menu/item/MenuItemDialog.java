@@ -161,7 +161,7 @@ public class MenuItemDialog extends MtpDialog {
 		nameField = new MtpTextItem("name","Name");
 		SmartGWTUtil.setRequired(nameField);
 		displayNameField = new MetaDataLangTextItem();
-		displayNameField.setTitle("Display Name");
+		displayNameField.setTitle(rs("ui_metadata_menu_item_MenuItemDialog_displayName"));
 
 		descriptionField = new MtpTextAreaItem("description", "Description");
 		descriptionField.setColSpan(2);
@@ -201,7 +201,7 @@ public class MenuItemDialog extends MtpDialog {
 			actionParameterField = new MtpTextItem("actionParameter", "Parameter");
 
 			actionCustomizeScriptField = new ButtonItem();
-			actionCustomizeScriptField.setTitle("Dynamic Customize Setting");
+			actionCustomizeScriptField.setTitle(rs("ui_metadata_menu_item_MenuItemDialog_dynamicCustomizeSetting"));
 			actionCustomizeScriptField.setStartRow(false);
 			actionCustomizeScriptField.setWidth("100%");
 			actionCustomizeScriptField.setPrompt(rs("ui_metadata_menu_item_MenuItemDialog_customizeScriptComment"));
@@ -251,16 +251,16 @@ public class MenuItemDialog extends MtpDialog {
 			});
 
 			entityViewNameField = new MtpSelectItem();
-			entityViewNameField.setTitle("View Name");
+			entityViewNameField.setTitle(rs("ui_metadata_menu_item_MenuItemDialog_viewName"));
 
 			entityParameterField = new MtpTextItem("entityParameter", "Parameter");
 
 			executeSearchField = new CheckboxItem();
-			executeSearchField.setTitle("show with execute search");
+			executeSearchField.setTitle(rs("ui_metadata_menu_item_MenuItemDialog_showWithExecuteSearch"));
 			executeSearchField.setShowTitle(false);
 
 			entityCustomizeScriptField = new ButtonItem();
-			entityCustomizeScriptField.setTitle("Dynamic Customize Setting");
+			entityCustomizeScriptField.setTitle(rs("ui_metadata_menu_item_MenuItemDialog_dynamicCustomizeSetting"));
 			entityCustomizeScriptField.setWidth("100%");
 			entityCustomizeScriptField.setStartRow(false);
 			entityCustomizeScriptField.setPrompt(rs("ui_metadata_menu_item_MenuItemDialog_customizeScriptComment"));
@@ -309,11 +309,11 @@ public class MenuItemDialog extends MtpDialog {
 			urlParameterField = new MtpTextItem("urlParameter", "Parameter");
 
 			urlShowNewPageField = new CheckboxItem();
-			urlShowNewPageField.setTitle("show new page");
+			urlShowNewPageField.setTitle(rs("ui_metadata_menu_item_MenuItemDialog_showNewPage"));
 			urlShowNewPageField.setShowTitle(false);
 
 			urlCustomizeScriptField = new ButtonItem();
-			urlCustomizeScriptField.setTitle("Dynamic Customize Setting");
+			urlCustomizeScriptField.setTitle(rs("ui_metadata_menu_item_MenuItemDialog_dynamicCustomizeSetting"));
 			urlCustomizeScriptField.setWidth("100%");
 			urlCustomizeScriptField.setStartRow(false);
 			urlCustomizeScriptField.setPrompt(rs("ui_metadata_menu_item_MenuItemDialog_customizeScriptComment"));

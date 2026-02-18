@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.action.result;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
@@ -72,11 +73,11 @@ public class TemplateResultEditPane extends ResultTypeEditPane {
 		form.setAutoHeight();
 
 		templateField = new MetaDataSelectItem(TemplateDefinition.class);
-		templateField.setTitle("Template");
+		templateField.setTitle(AdminClientMessageUtil.getString("ui_metadata_action_result_TemplateResultEditPane_template"));
 		SmartGWTUtil.setRequired(templateField);
 
 		layoutActionNameField = new MetaDataSelectItem(ActionMappingDefinition.class, new ItemOption(true, false));
-		layoutActionNameField.setTitle("Layout Action");
+		layoutActionNameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_action_result_TemplateResultEditPane_layoutActionName"));
 
 		form.setItems(templateField, layoutActionNameField);
 
@@ -88,7 +89,7 @@ public class TemplateResultEditPane extends ResultTypeEditPane {
 		useContentDispositionField = new CheckboxItem("useContentDisposition", "Set ContentDisposition");
 
 		contentDispositionTypeField = new MtpSelectItem();
-		contentDispositionTypeField.setTitle("Content Disposition Type");
+		contentDispositionTypeField.setTitle(AdminClientMessageUtil.getString("ui_metadata_action_result_TemplateResultEditPane_contentDispositionType"));
 
 		LinkedHashMap<String, String> contentDispositionTypeMap = new LinkedHashMap<String, String>();
 		contentDispositionTypeMap.put("", "Default");

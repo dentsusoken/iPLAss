@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
 import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
@@ -185,7 +186,7 @@ public class LangTreeGridPane extends VLayout {
 
 			//RadioGroupだとレイアウトが難しいのでCheckboxを利用
 			updateDateField = new CheckboxItem();
-			updateDateField.setTitle("By Update Date:");
+			updateDateField.setTitle(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangTreeGridPane_byUpdateDate"));
 			updateDateField.setShowTitle(false);
 			updateDateField.setValue(true);		//初期選択
 			updateDateField.addChangedHandler(new ChangedHandler() {
@@ -266,7 +267,7 @@ public class LangTreeGridPane extends VLayout {
 
 			//RadioGroupだとレイアウトが難しいのでCheckboxを利用
 			tagDateField = new CheckboxItem();
-			tagDateField.setTitle("By Tag Create Date:");
+			tagDateField.setTitle(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangTreeGridPane_byTagCreateDate"));
 			tagDateField.setShowTitle(false);
 			tagDateField.setValue(false);		//初期未選択
 			tagDateField.addChangedHandler(new ChangedHandler() {
@@ -366,7 +367,7 @@ public class LangTreeGridPane extends VLayout {
 			buttonItems.setStartRow(true);
 
 			IButton advanceSearchBtn = new IButton();
-			advanceSearchBtn.setTitle("Search");
+			advanceSearchBtn.setTitle(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangTreeGridPane_search"));
 			advanceSearchBtn.setIcon(MtpWidgetConstants.ICON_SEARCH);
 			advanceSearchBtn.addClickHandler(new ClickHandler() {
 
@@ -376,7 +377,7 @@ public class LangTreeGridPane extends VLayout {
 				}
 			});
 			IButton clearBtn = new IButton();
-			clearBtn.setTitle("Clear");
+			clearBtn.setTitle(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangTreeGridPane_clear"));
 			clearBtn.addClickHandler(new ClickHandler() {
 
 				@Override

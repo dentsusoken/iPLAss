@@ -140,7 +140,7 @@ public class QueueInfoPane extends VLayout {
 
 			final ToolStripButton taskCancel = new ToolStripButton();
 			taskCancel.setIcon(CANCEL_ICON);
-			taskCancel.setTitle("Cancel Task");
+			taskCancel.setTitle(AdminClientMessageUtil.getString("ui_tools_queueexplorer_QueueInfoPane_cancelTask"));
 			taskCancel.setTooltip(SmartGWTUtil.getHoverString(getResString("cancelTaskHint")));
 			taskCancel.addClickHandler(new ClickHandler() {
 
@@ -157,7 +157,7 @@ public class QueueInfoPane extends VLayout {
 
 			final ToolStripButton taskDelete = new ToolStripButton();
 			taskDelete.setIcon(DELETE_ICON);
-			taskDelete.setTitle("Delete Task");
+			taskDelete.setTitle(AdminClientMessageUtil.getString("ui_tools_queueexplorer_QueueInfoPane_deleteTask"));
 			taskDelete.setTooltip(SmartGWTUtil.getHoverString(getResString("deleteTaskHint")));
 			taskDelete.addClickHandler(new ClickHandler() {
 
@@ -174,7 +174,7 @@ public class QueueInfoPane extends VLayout {
 			//Show History
 			//------------------------
 			showHistory = new CheckboxItem();
-			showHistory.setTitle("show with history");
+			showHistory.setTitle(AdminClientMessageUtil.getString("ui_tools_queueexplorer_QueueInfoPane_showWithHistory"));
 			showHistory.setTooltip(SmartGWTUtil.getHoverString(getResString("showWithHistoryHint")));
 			showHistory.addChangedHandler(new ChangedHandler() {
 
@@ -192,7 +192,7 @@ public class QueueInfoPane extends VLayout {
 			//------------------------
 			final ToolStripButton firstButton = new ToolStripButton();
 			firstButton.setIcon("resultset_first.png");
-			firstButton.setTitle("First");
+			firstButton.setTitle(AdminClientMessageUtil.getString("ui_tools_queueexplorer_QueueInfoPane_first"));
 			firstButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -204,7 +204,7 @@ public class QueueInfoPane extends VLayout {
 
 			final ToolStripButton prevButton = new ToolStripButton();
 			prevButton.setIcon("resultset_previous.png");
-			prevButton.setTitle("Prev");
+			prevButton.setTitle(AdminClientMessageUtil.getString("ui_tools_queueexplorer_QueueInfoPane_prev"));
 			prevButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -216,7 +216,7 @@ public class QueueInfoPane extends VLayout {
 
 			final ToolStripButton nextButton = new ToolStripButton();
 			nextButton.setIcon("resultset_next.png");
-			nextButton.setTitle("Next");
+			nextButton.setTitle(AdminClientMessageUtil.getString("ui_tools_queueexplorer_QueueInfoPane_next"));
 			nextButton.addClickHandler(new ClickHandler() {
 
 				@Override

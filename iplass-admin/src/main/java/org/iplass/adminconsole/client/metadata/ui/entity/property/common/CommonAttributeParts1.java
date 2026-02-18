@@ -69,7 +69,7 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 	public CommonAttributeParts1() {
 
 		txtName = new MtpTextItem();
-		txtName.setTitle("Name");
+		txtName.setTitle(rs("ui_metadata_entity_CommonAttributeParts1_name"));
 
 		//名前のPolicyをカスタマイズ
 		RegExpValidator nameValidator = new RegExpValidator();
@@ -79,10 +79,10 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 		SmartGWTUtil.setRequired(txtName);
 
 		txtDisplayName = new MetaDataLangTextItem();
-		txtDisplayName.setTitle("Display Name");
+		txtDisplayName.setTitle(rs("ui_metadata_entity_CommonAttributeParts1_displayName"));
 
 		selType = new MtpSelectItem();
-		selType.setTitle("Type");
+		selType.setTitle(rs("ui_metadata_entity_CommonAttributeParts1_type"));
 		SmartGWTUtil.setRequired(selType);
 		selType.addChangedHandler(new ChangedHandler() {
 			@Override
@@ -92,7 +92,7 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 		});
 
 		txtMultipl = new MtpTextItem();
-		txtMultipl.setTitle("Multiple");
+		txtMultipl.setTitle(rs("ui_metadata_entity_CommonAttributeParts1_multiple"));
 		txtMultipl.setKeyPressFilter(KEYFILTER_NUM);
 		multipleValidator = new MultipleValidator(false);
 		multipleReferenceValidator = new MultipleValidator(true);

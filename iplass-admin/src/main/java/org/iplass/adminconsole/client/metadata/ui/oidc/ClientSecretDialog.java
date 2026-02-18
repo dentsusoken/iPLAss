@@ -37,7 +37,7 @@ public class ClientSecretDialog extends MtpDialog {
 		form.setAutoHeight();
 		
 		txtClientSecretField = new TextItem();
-		txtClientSecretField.setTitle("ClientSecret");
+		txtClientSecretField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_ClientSecretDialog_clientSecret"));
 		txtClientSecretField.setWidth("100%");
 		txtClientSecretField.setBrowserSpellCheck(false);
 		txtClientSecretField.setColSpan(3);

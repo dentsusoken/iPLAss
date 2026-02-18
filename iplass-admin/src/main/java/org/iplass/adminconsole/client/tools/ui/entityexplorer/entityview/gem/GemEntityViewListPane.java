@@ -74,7 +74,7 @@ public class GemEntityViewListPane extends VLayout {
 
 		final ToolStripButton configExportButton = new ToolStripButton();
 		configExportButton.setIcon(EXPORT_ICON);
-		configExportButton.setTitle("ConfigExport");
+	configExportButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityViewListPane_configExport"));
 		configExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_exportEntityDef")));
 		configExportButton.addClickHandler(new ClickHandler() {
 
@@ -88,7 +88,7 @@ public class GemEntityViewListPane extends VLayout {
 		toolStrip.addSeparator();
 
 		showCountItem = new CheckboxItem();
-		showCountItem.setTitle("Get Data Count");
+	showCountItem.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityViewListPane_getDataCount"));
 		showCountItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_dataNumOften")));
 		showCountItem.addChangedHandler(new ChangedHandler() {
 

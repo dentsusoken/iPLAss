@@ -881,7 +881,7 @@ public class PackageImportDialog extends AbstractWindow {
 			chkIgnoreNotExistsPropertyField.setValue(true);	//デフォルトtrue
 
 			prefixOidField = new TextItem();
-			prefixOidField.setTitle("OID Prefix");
+			prefixOidField.setTitle(AdminClientMessageUtil.getString("ui_tools_pack_PackageImportDialog_oidPrefix"));
 			prefixOidField.setKeyPressFilter("[A-Za-z0-9]");	//英数字のみ
 			prefixOidField.setHint(rs("ui_tools_pack_PackageImportDialog_preOidHint"));
 
@@ -928,13 +928,13 @@ public class PackageImportDialog extends AbstractWindow {
 			i18nForm.setColWidths(90, 170, 120, "*");	//レイアウト調整したのでEntityCsvUploadDialogと少し異なる
 
 			localeField = new ComboBoxItem();
-			localeField.setTitle("File Locale");
+			localeField.setTitle(AdminClientMessageUtil.getString("ui_tools_pack_PackageImportDialog_fileLocale"));
 			localeField.setValueMap(SmartGWTUtil.getDefaultLocaleMap());
 			SmartGWTUtil.addHoverToFormItem(localeField, AdminClientMessageUtil.getString("ui_common_i18n_importLocaleTooltip"));
 			localeField.setValue("");
 
 			timeZoneField = new ComboBoxItem();
-			timeZoneField.setTitle("File TimeZone");
+			timeZoneField.setTitle(AdminClientMessageUtil.getString("ui_tools_pack_PackageImportDialog_fileTimeZone"));
 			timeZoneField.setValueMap(SmartGWTUtil.getDefaultTimeZoneMap());
 			SmartGWTUtil.addHoverToFormItem(timeZoneField, AdminClientMessageUtil.getString("ui_common_i18n_importTimezoneTooltip"));
 			timeZoneField.setValue("");

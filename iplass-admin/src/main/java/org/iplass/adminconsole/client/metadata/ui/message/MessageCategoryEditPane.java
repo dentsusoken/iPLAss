@@ -570,14 +570,14 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			}
 
 			filterItem = new TextItem();
-			filterItem.setTitle("Filter");
+			filterItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_filter"));
 			filterItem.setDefaultValue("");
 			filterItem.setWidth("100%");
 			filterItem.setColSpan(enableLanguages.size());
 			fileds.add(filterItem);
 
 			ButtonItem btnApply = new ButtonItem();
-			btnApply.setTitle("Apply");
+			btnApply.setTitle(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_apply"));
 			btnApply.setShowTitle(false);
 			btnApply.setWidth(100);
 			btnApply.setEndRow(false);
@@ -590,7 +590,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			fileds.add(btnApply);
 
 			ResetItem btnReset = new ResetItem();
-			btnReset.setTitle("Reset");
+			btnReset.setTitle(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_reset"));
 			btnReset.setShowTitle(false);
 			btnReset.setWidth(100);
 			btnReset.setStartRow(false);

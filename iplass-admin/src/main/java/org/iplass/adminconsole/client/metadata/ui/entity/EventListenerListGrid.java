@@ -451,7 +451,7 @@ public class EventListenerListGrid extends ListGrid {
 			//Type
 			//---------------------------------
 			typeItem = new MtpSelectItem();
-			typeItem.setTitle("Type");
+			typeItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_type"));
 			SmartGWTUtil.setRequired(typeItem);
 			typeItem.addChangedHandler(new ChangedHandler() {
 				@Override
@@ -503,7 +503,7 @@ public class EventListenerListGrid extends ListGrid {
 
 			scriptItem = new MtpTextAreaItem();
 			scriptItem.setColSpan(2);
-			scriptItem.setTitle("Script");
+			scriptItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_script"));
 			scriptItem.setHeight("100%");
 			SmartGWTUtil.setRequired(scriptItem);
 			SmartGWTUtil.setReadOnlyTextArea(scriptItem);
@@ -513,25 +513,25 @@ public class EventListenerListGrid extends ListGrid {
 			scriptItemForm.setItems(editScript, scriptItem);
 
 			beforeIItem = new CheckboxItem();
-			beforeIItem.setTitle("beforeInsert");
+			beforeIItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_beforeInsert"));
 			afterIItem = new CheckboxItem();
-			afterIItem.setTitle("afterInsert");
+			afterIItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterInsert"));
 			beforeUItem = new CheckboxItem();
-			beforeUItem.setTitle("beforeUpdate");
+			beforeUItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_beforeUpdate"));
 			afterUItem = new CheckboxItem();
-			afterUItem.setTitle("afterUpdate");
+			afterUItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterUpdate"));
 			beforeDItem = new CheckboxItem();
-			beforeDItem.setTitle("beforeDelete");
+			beforeDItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_beforeDelete"));
 			afterDItem = new CheckboxItem();
-			afterDItem.setTitle("afterDelete");
+			afterDItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterDelete"));
 			afterRItem = new CheckboxItem();
-			afterRItem.setTitle("afterRestore");
+			afterRItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterRestore"));
 			afterPItem = new CheckboxItem();
-			afterPItem.setTitle("afterPurge");
+			afterPItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterPurge"));
 			onLoadItem = new CheckboxItem();
-			onLoadItem.setTitle("onLoad");
+			onLoadItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_onLoad"));
 			beforeValidateItem = new CheckboxItem();
-			beforeValidateItem.setTitle("beforeValidate");
+			beforeValidateItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_beforeValidate"));
 
 			scriptEventItemForm = new DynamicForm();
 			scriptEventItemForm.setNumCols(9);
@@ -546,7 +546,7 @@ public class EventListenerListGrid extends ListGrid {
 			//Java Class
 			//---------------------------------
 			javaClassNameItem = new MtpTextItem();
-			javaClassNameItem.setTitle("Class Name");
+			javaClassNameItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_javaClassName"));
 			SmartGWTUtil.setRequired(javaClassNameItem);
 			SmartGWTUtil.addHoverToFormItem(javaClassNameItem,
 					AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_javaClassNameItemComment"));
@@ -559,7 +559,7 @@ public class EventListenerListGrid extends ListGrid {
 			//Send Notification
 			//---------------------------------
 			notificationTypeItem = new MtpSelectItem();
-			notificationTypeItem.setTitle("Notification type");
+			notificationTypeItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_notificationType"));
 			SmartGWTUtil.setRequired(notificationTypeItem);
 			notificationTypeItem.addChangedHandler(new ChangedHandler() {
 				@Override
@@ -593,7 +593,7 @@ public class EventListenerListGrid extends ListGrid {
 			notificationDestinationGrid = new NotificationDestinationGrid();
 			notificationDestinationGrid.setWidth("100%");
 			notificationDestinationGrid.setHeight("100%");
-			notificationDestinationGrid.setTitle("Destination");
+			notificationDestinationGrid.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_destination"));
 			notificationDestinationGrid.addDoubleClickHandler(new DoubleClickHandler() {
 				@Override
 				public void onDoubleClick(DoubleClickEvent event) {
@@ -678,7 +678,7 @@ public class EventListenerListGrid extends ListGrid {
 
 			notificationCondScriptItem = new MtpTextAreaItem();
 			notificationCondScriptItem.setColSpan(2);
-			notificationCondScriptItem.setTitle("Notification condition");
+			notificationCondScriptItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_notificationCondition"));
 			notificationCondScriptItem.setHeight("100%");
 			SmartGWTUtil.setReadOnlyTextArea(notificationCondScriptItem);
 
@@ -687,25 +687,25 @@ public class EventListenerListGrid extends ListGrid {
 			notificationCondForm.setItems(editNotificationCond, notificationCondScriptItem);
 
 			notifyBeforeIItem = new CheckboxItem();
-			notifyBeforeIItem.setTitle("beforeInsert");
+			notifyBeforeIItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_beforeInsert"));
 			notifyAfterIItem = new CheckboxItem();
-			notifyAfterIItem.setTitle("afterInsert");
+			notifyAfterIItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterInsert"));
 			notifyBeforeUItem = new CheckboxItem();
-			notifyBeforeUItem.setTitle("beforeUpdate");
+			notifyBeforeUItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_beforeUpdate"));
 			notifyAfterUItem = new CheckboxItem();
-			notifyAfterUItem.setTitle("afterUpdate");
+			notifyAfterUItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterUpdate"));
 			notifyBeforeDItem = new CheckboxItem();
-			notifyBeforeDItem.setTitle("beforeDelete");
+			notifyBeforeDItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_beforeDelete"));
 			notifyAfterDItem = new CheckboxItem();
-			notifyAfterDItem.setTitle("afterDelete");
+			notifyAfterDItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterDelete"));
 			notifyAfterRItem = new CheckboxItem();
-			notifyAfterRItem.setTitle("afterRestore");
+			notifyAfterRItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterRestore"));
 			notifyAfterPItem = new CheckboxItem();
-			notifyAfterPItem.setTitle("afterPurge");
+			notifyAfterPItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_afterPurge"));
 			notifyOnLoadItem = new CheckboxItem();
-			notifyOnLoadItem.setTitle("onLoad");
+			notifyOnLoadItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_onLoad"));
 			notifyBeforeValidateItem = new CheckboxItem();
-			notifyBeforeValidateItem.setTitle("beforeValidate");
+			notifyBeforeValidateItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_beforeValidate"));
 
 			notifyEventItemForm = new DynamicForm();
 			notifyEventItemForm.setNumCols(9);
@@ -720,7 +720,7 @@ public class EventListenerListGrid extends ListGrid {
 			//withoutMappedByReference
 			//---------------------------------
 			withoutMappedByReferenceItem = new CheckboxItem();
-			withoutMappedByReferenceItem.setTitle("mapped by reference info is unnecessary for listener.");
+			withoutMappedByReferenceItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_withoutMappedByReference"));
 			withoutMappedByReferenceItem.setShowTitle(false);
 			SmartGWTUtil.addHoverToFormItem(withoutMappedByReferenceItem,
 					AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_withoutMappByRefComment"));

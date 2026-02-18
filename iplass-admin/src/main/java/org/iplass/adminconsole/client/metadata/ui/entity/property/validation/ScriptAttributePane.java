@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
@@ -77,12 +78,12 @@ public class ScriptAttributePane extends ValidationAttributePane {
 
 		scriptItem = new MtpTextAreaItem();
 		scriptItem.setColSpan(2);
-		scriptItem.setTitle("Script");
+		scriptItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_ScriptAttributePane_script"));
 		scriptItem.setHeight("100%");
 		SmartGWTUtil.setReadOnlyTextArea(scriptItem);
 
 		bindAsArrayItem = new CheckboxItem();
-		bindAsArrayItem.setTitle("bind variable as array type");
+		bindAsArrayItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_ScriptAttributePane_bindAsArray"));
 		SmartGWTUtil.addHoverToFormItem(bindAsArrayItem, rs("ui_metadata_entity_PropertyListGrid_scriptAsArray"));
 
 		form = new MtpForm();

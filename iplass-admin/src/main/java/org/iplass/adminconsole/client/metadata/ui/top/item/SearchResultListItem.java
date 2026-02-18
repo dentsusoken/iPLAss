@@ -185,7 +185,7 @@ public class SearchResultListItem extends PartsItem {
 			});
 
 			final MetaDataLangTextItem titleField = new MetaDataLangTextItem();
-			titleField.setTitle("Title");
+			titleField.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_SearchResultListItem_title"));
 			titleField.setValue(parts.getTitle());
 			titleField.setLocalizedList(parts.getLocalizedTitleList());
 

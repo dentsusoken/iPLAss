@@ -37,7 +37,7 @@ public class RecycleBinCleanProgressDialog extends Window {
 
 		setWidth(400);
 		setHeight(150);
-		setTitle("Clean Recycle Bin...");
+	setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_RecycleBinCleanProgressDialog_cleanRecycleBin"));
 		setShowMinimizeButton(false);
 		setIsModal(true);
 		setShowModalMask(true);

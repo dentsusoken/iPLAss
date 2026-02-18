@@ -307,12 +307,12 @@ public class MenuEditPane extends MetaDataMainEditPane {
 			List<FormItem> items = new ArrayList<>();
 
 			displayOrderField = new IntegerItem();
-			displayOrderField.setTitle("Display Order");
+			displayOrderField.setTitle(AdminClientMessageUtil.getString("ui_metadata_menu_MenuEditPane_displayOrder"));
 			SmartGWTUtil.addHoverToFormItem(displayOrderField, AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_displayOrder"));
 			items.add(displayOrderField);
 
 			showMenuDisplayName = new BooleanItem();
-			showMenuDisplayName.setTitle("Show Menu Display Name");
+			showMenuDisplayName.setTitle(AdminClientMessageUtil.getString("ui_metadata_menu_MenuEditPane_showMenuDisplayName"));
 			SmartGWTUtil.addHoverToFormItem(showMenuDisplayName, AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_showMenuDisplayName"));
 			items.add(showMenuDisplayName);
 

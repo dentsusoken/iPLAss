@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.auth.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataComboBoxItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataComboBoxItem.ItemOption;
@@ -52,7 +53,7 @@ public class WebAuthnPolicySettingPane extends AbstractSettingPane {
 
 		pnlWebAuthnGrid = new WebAuthnGridPane();
 		CanvasItem canvasWebAuthns = new CanvasItem();
-		canvasWebAuthns.setTitle("WebAuthn");
+		canvasWebAuthns.setTitle(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnPolicySettingPane_webAuthn"));
 		canvasWebAuthns.setCanvas(pnlWebAuthnGrid);
 		canvasWebAuthns.setColSpan(3);
 		canvasWebAuthns.setStartRow(true);

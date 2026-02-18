@@ -113,7 +113,7 @@ public class OAuthAuthorizationAttributePane extends VLayout implements Editable
 		form.setMargin(5);
 
 		txaAvailableRoles = new TextAreaItem();
-		txaAvailableRoles.setTitle("Available Roles");
+		txaAvailableRoles.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationAttributePane_availableRoles"));
 		txaAvailableRoles.setWidth("100%");
 		txaAvailableRoles.setHeight(75);
 		txaAvailableRoles.setBrowserSpellCheck(false);
@@ -123,30 +123,30 @@ public class OAuthAuthorizationAttributePane extends VLayout implements Editable
 
 		gridScopes = new ScopeGridPane();
 		CanvasItem canvasScopes = new CanvasItem();
-		canvasScopes.setTitle("Scopes");
+		canvasScopes.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationAttributePane_scopes"));
 		canvasScopes.setCanvas(gridScopes);
 		canvasScopes.setColSpan(3);
 		canvasScopes.setStartRow(true);
 
 		selConsentTemplate = new MetaDataSelectItem(TemplateDefinition.class, new ItemOption(true, false));
-		selConsentTemplate.setTitle("Consent Template");
+		selConsentTemplate.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationAttributePane_consentTemplate"));
 
 		gridClientPolicies = new ClientPolicyGridPane();
 		CanvasItem canvasClientPolicies = new CanvasItem();
-		canvasClientPolicies.setTitle("Client Policies");
+		canvasClientPolicies.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationAttributePane_clientPolicies"));
 		canvasClientPolicies.setCanvas(gridClientPolicies);
 		canvasClientPolicies.setColSpan(3);
 		canvasClientPolicies.setStartRow(true);
 
 		pnlSubjectIdentifierType = new SubjectIdentifierTypeEditPane();
 		CanvasItem canvasSubjectIdentifierType = new CanvasItem();
-		canvasSubjectIdentifierType.setTitle("SubjectIdentifier");
+		canvasSubjectIdentifierType.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationAttributePane_subjectIdentifier"));
 		canvasSubjectIdentifierType.setCanvas(pnlSubjectIdentifierType);
 		canvasSubjectIdentifierType.setColSpan(3);
 		canvasSubjectIdentifierType.setStartRow(true);
 
 		txtIssuerUri = new TextItem();
-		txtIssuerUri.setTitle("Issuer URI");
+		txtIssuerUri.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationAttributePane_issuerUri"));
 		txtIssuerUri.setWidth("100%");
 		txtIssuerUri.setBrowserSpellCheck(false);
 		txtIssuerUri.setColSpan(3);

@@ -100,7 +100,7 @@ public class LogExplorerFileListPane extends VLayout {
 		toolStrip.addFill();
 
 		limitItem = new ComboBoxItem();
-		limitItem.setTitle("Limit");
+		limitItem.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerFileListPane_limit"));
 		limitItem.setValueMap(limitValueMap);
 		// limitItem.setValidators(new IsIntegerValidator());
 		limitItem.setValue(100);

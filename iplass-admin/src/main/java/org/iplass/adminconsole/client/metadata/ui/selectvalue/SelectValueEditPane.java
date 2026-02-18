@@ -344,9 +344,9 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 			});
 
 			IButton addSel = new IButton();
-			addSel.setTitle("Add");
+			addSel.setTitle(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditPane_add"));
 			IButton delSel = new IButton();
-			delSel.setTitle("Remove");
+			delSel.setTitle(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditPane_remove"));
 			addSel.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {

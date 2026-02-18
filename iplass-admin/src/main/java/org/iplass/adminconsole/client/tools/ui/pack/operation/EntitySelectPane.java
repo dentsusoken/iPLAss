@@ -67,7 +67,7 @@ public class EntitySelectPane extends VLayout implements CreateOperationPane {
 		//------------------------
 
 		showCountItem = new CheckboxItem();
-		showCountItem.setTitle("Get Data Count");
+		showCountItem.setTitle(AdminClientMessageUtil.getString("ui_tools_pack_operation_EntitySelectPane_getDataCount"));
 		showCountItem.setTooltip(SmartGWTUtil.getHoverString(
 				AdminClientMessageUtil.getString("ui_tools_pack_operation_EntitySelectPane_dataNumOften")));
 		showCountItem.addChangedHandler(new ChangedHandler() {

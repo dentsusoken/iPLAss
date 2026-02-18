@@ -82,7 +82,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		form.setMargin(5);
 
 		txtIssuerField = new TextItem();
-		txtIssuerField.setTitle("Issuer");
+		txtIssuerField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_issuer"));
 		txtIssuerField.setWidth("100%");
 		txtIssuerField.setBrowserSpellCheck(false);
 		txtIssuerField.setColSpan(3);
@@ -90,7 +90,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txtIssuerField.setRequired(true);
 
 		txtAuthorizationEndpointField = new TextItem();
-		txtAuthorizationEndpointField.setTitle("Authorization Endpoint");
+		txtAuthorizationEndpointField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_authorizationEndpoint"));
 		txtAuthorizationEndpointField.setWidth("100%");
 		txtAuthorizationEndpointField.setBrowserSpellCheck(false);
 		txtAuthorizationEndpointField.setColSpan(3);
@@ -98,7 +98,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txtAuthorizationEndpointField.setRequired(true);
 
 		txtTokenEndpointField = new TextItem();
-		txtTokenEndpointField.setTitle("Token Endpoint");
+		txtTokenEndpointField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_tokenEndpoint"));
 		txtTokenEndpointField.setWidth("100%");
 		txtTokenEndpointField.setBrowserSpellCheck(false);
 		txtTokenEndpointField.setColSpan(3);
@@ -106,28 +106,28 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txtTokenEndpointField.setRequired(true);
 
 		txtUserInfoEndpointField = new TextItem();
-		txtUserInfoEndpointField.setTitle("UserInfo Endpoint");
+		txtUserInfoEndpointField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_userInfoEndpoint"));
 		txtUserInfoEndpointField.setWidth("100%");
 		txtUserInfoEndpointField.setBrowserSpellCheck(false);
 		txtUserInfoEndpointField.setColSpan(3);
 		txtUserInfoEndpointField.setStartRow(true);
 
 		txtJwksEndpointField = new TextItem();
-		txtJwksEndpointField.setTitle("Jwks Endpoint");
+		txtJwksEndpointField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_jwksEndpoint"));
 		txtJwksEndpointField.setWidth("100%");
 		txtJwksEndpointField.setBrowserSpellCheck(false);
 		txtJwksEndpointField.setColSpan(3);
 		txtJwksEndpointField.setStartRow(true);
 
 		txaJwksContentsField = new TextAreaItem();
-		txaJwksContentsField.setTitle("Jwks Contents");
+		txaJwksContentsField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_jwksContents"));
 		txaJwksContentsField.setWidth("100%");
 		txaJwksContentsField.setBrowserSpellCheck(false);
 		txaJwksContentsField.setColSpan(3);
 		txaJwksContentsField.setStartRow(true);
 
 		txtClientIdField = new TextItem();
-		txtClientIdField.setTitle("Client Id");
+		txtClientIdField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_clientId"));
 		txtClientIdField.setWidth("100%");
 		txtClientIdField.setBrowserSpellCheck(false);
 		txtClientIdField.setColSpan(3);
@@ -135,7 +135,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txtClientIdField.setRequired(true);
 
 		txaScopesField = new TextAreaItem();
-		txaScopesField.setTitle("Scopes");
+		txaScopesField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_scopes"));
 		txaScopesField.setWidth("100%");
 		txaScopesField.setHeight(75);
 		txaScopesField.setBrowserSpellCheck(false);
@@ -144,7 +144,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txaScopesField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_redirectUris")));
 
 		selClientAuthenticationTypeField = new SelectItem();
-		selClientAuthenticationTypeField.setTitle("Client Authentication Type");
+		selClientAuthenticationTypeField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_clientAuthenticationType"));
 		selClientAuthenticationTypeField.setWidth("100%");
 		selClientAuthenticationTypeField.setValueMap(clientAuthenticationTypeMap);
 		selClientAuthenticationTypeField.setRequired(true);
@@ -159,12 +159,12 @@ public class OpenIdConnectAttributePane extends VLayout {
 		chkValidateSignField = new CheckboxItem("validateSign", "Validate Sign");
 
 		selResponseModeField = new SelectItem();
-		selResponseModeField.setTitle("Response Mode");
+		selResponseModeField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_responseMode"));
 		selResponseModeField.setWidth("100%");
 		selResponseModeField.setValueMap(responseModeMap);
 
 		txtSubjectNameClaimField = new TextItem();
-		txtSubjectNameClaimField.setTitle("Subject Name Claim");
+		txtSubjectNameClaimField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_subjectNameClaim"));
 		txtSubjectNameClaimField.setWidth("100%");
 		txtSubjectNameClaimField.setBrowserSpellCheck(false);
 		txtSubjectNameClaimField.setColSpan(3);
@@ -172,7 +172,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txtSubjectNameClaimField.setRequired(true);
 
 		txtAutoUserProvisioningHandlerField = new TextItem();
-		txtAutoUserProvisioningHandlerField.setTitle("AutoUser Provisioning Handler");
+		txtAutoUserProvisioningHandlerField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_autoUserProvisioningHandler"));
 		txtAutoUserProvisioningHandlerField.setWidth("100%");
 		txtAutoUserProvisioningHandlerField.setBrowserSpellCheck(false);
 		txtAutoUserProvisioningHandlerField.setColSpan(3);
@@ -181,7 +181,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		chkEnableTransientUserField = new CheckboxItem("enableTransientUser", "Enable Transient User");
 
 		txtPromptField = new TextItem();
-		txtPromptField.setTitle("Prompt");
+		txtPromptField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_prompt"));
 		txtPromptField.setWidth("100%");
 		txtPromptField.setBrowserSpellCheck(false);
 		txtPromptField.setColSpan(3);
@@ -189,7 +189,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txtPromptField.setTooltip(SmartGWTUtil.getHoverString(rs("ui_metadata_oidc_OpenIdConnectAttributePane_prompt")));
 
 		ButtonItem backUrlAfterAuthCondBtn = new ButtonItem();
-		backUrlAfterAuthCondBtn.setTitle("Edit");
+		backUrlAfterAuthCondBtn.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_edit"));
 		backUrlAfterAuthCondBtn.setWidth(100);
 		backUrlAfterAuthCondBtn.setStartRow(true);
 		backUrlAfterAuthCondBtn.setColSpan(4);
@@ -217,7 +217,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		});
 
 		txtBackUrlAfterAuthField = new TextAreaItem();
-		txtBackUrlAfterAuthField.setTitle("Back Url After Auth");
+		txtBackUrlAfterAuthField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_backUrlAfterAuth"));
 		txtBackUrlAfterAuthField.setWidth("100%");
 		txtBackUrlAfterAuthField.setBrowserSpellCheck(false);
 		txtBackUrlAfterAuthField.setColSpan(3);
@@ -225,7 +225,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		SmartGWTUtil.setReadOnlyTextArea(txtBackUrlAfterAuthField);
 
 		ButtonItem backUrlAfterConnectCondBtn = new ButtonItem();
-		backUrlAfterConnectCondBtn.setTitle("Edit");
+		backUrlAfterConnectCondBtn.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_edit"));
 		backUrlAfterConnectCondBtn.setWidth(100);
 		backUrlAfterConnectCondBtn.setStartRow(true);
 		backUrlAfterConnectCondBtn.setColSpan(4);
@@ -253,7 +253,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 		});
 
 		txtBackUrlAfterConnectField = new TextAreaItem();
-		txtBackUrlAfterConnectField.setTitle("Back Url After Connect");
+		txtBackUrlAfterConnectField.setTitle(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectAttributePane_backUrlAfterConnect"));
 		txtBackUrlAfterConnectField.setWidth("100%");
 		txtBackUrlAfterConnectField.setBrowserSpellCheck(false);
 		txtBackUrlAfterConnectField.setColSpan(3);

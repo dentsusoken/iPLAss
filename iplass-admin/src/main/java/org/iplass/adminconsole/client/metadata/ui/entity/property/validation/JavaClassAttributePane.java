@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -40,11 +41,11 @@ public class JavaClassAttributePane extends ValidationAttributePane {
 	public JavaClassAttributePane() {
 
 		classNameItem = new MtpTextItem();
-		classNameItem.setTitle("Java Class Name");
+		classNameItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_JavaClassAttributePane_className"));
 		SmartGWTUtil.addHoverToFormItem(classNameItem, rs("ui_metadata_entity_PropertyListGrid_javaClassComment"));
 
 		bindAsArrayItem = new CheckboxItem();
-		bindAsArrayItem.setTitle("bind variable as array type");
+		bindAsArrayItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_JavaClassAttributePane_bindAsArray"));
 		SmartGWTUtil.addHoverToFormItem(bindAsArrayItem, rs("ui_metadata_entity_PropertyListGrid_javaClassAsArray"));
 
 		form = new MtpForm();

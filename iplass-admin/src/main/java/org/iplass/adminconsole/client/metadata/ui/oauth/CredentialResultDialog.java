@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.oauth;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
@@ -42,7 +43,7 @@ public final class CredentialResultDialog  extends MtpDialog {
 		DynamicForm form = new MtpForm();
 
 		TextAreaItem txaSecret = new MtpTextAreaItem();
-		txaSecret.setTitle("Secret");
+		txaSecret.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_CredentialResultDialog_secret"));
 		txaSecret.setHeight(105);
 		txaSecret.setWrap(TextAreaWrap.HARD);
 		txaSecret.setValue(secret);

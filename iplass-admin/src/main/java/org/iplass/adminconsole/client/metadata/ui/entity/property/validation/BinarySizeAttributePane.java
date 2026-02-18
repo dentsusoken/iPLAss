@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -39,11 +40,11 @@ public class BinarySizeAttributePane extends ValidationAttributePane {
 	public BinarySizeAttributePane() {
 
 		minItem = new MtpTextItem("minValue");
-		minItem.setTitle("Min");
+		minItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_BinarySizeAttributePane_min"));
 		minItem.setKeyPressFilter("[0-9]");
 
 		maxItem = new MtpTextItem("maxValue");
-		maxItem.setTitle("Max");
+		maxItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_BinarySizeAttributePane_max"));
 		maxItem.setKeyPressFilter("[0-9]");
 
 		form = new MtpForm();

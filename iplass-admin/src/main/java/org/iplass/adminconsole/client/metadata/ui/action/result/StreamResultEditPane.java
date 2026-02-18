@@ -96,7 +96,7 @@ public class StreamResultEditPane extends ResultTypeEditPane {
 		useContentDispositionField = new CheckboxItem("useContentDisposition", "Set ContentDisposition");
 
 		contentDispositionTypeField = new MtpSelectItem();
-		contentDispositionTypeField.setTitle("Content Disposition Type");
+		contentDispositionTypeField.setTitle(AdminClientMessageUtil.getString("ui_metadata_action_result_StreamResultEditPane_contentDispositionType"));
 
 		LinkedHashMap<String, String> contentDispositionTypeMap = new LinkedHashMap<String, String>();
 		contentDispositionTypeMap.put("", "Default");

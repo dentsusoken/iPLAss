@@ -130,7 +130,7 @@ public class EqlWorksheetMainPane extends VLayout {
 
 			final ToolStripButton executeButton = new ToolStripButton();
 			executeButton.setIcon("[SKIN]/actions/forward.png");
-			executeButton.setTitle("Execute(F8)");
+			executeButton.setTitle(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_execute"));
 			SmartGWTUtil.addHoverToCanvas(executeButton, AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_runEqlComment"));
 			executeButton.addClickHandler(new ClickHandler() {
 
@@ -143,7 +143,7 @@ public class EqlWorksheetMainPane extends VLayout {
 
 			final ToolStripButton dataExportButton = new ToolStripButton();
 			dataExportButton.setIcon(EXPORT_ICON);
-			dataExportButton.setTitle("Export CSV");
+			dataExportButton.setTitle(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_exportCsv"));
 			dataExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_exportCsvFileEql")));
 			dataExportButton.addClickHandler(new ClickHandler() {
 
@@ -156,7 +156,7 @@ public class EqlWorksheetMainPane extends VLayout {
 
 			final ToolStripButton entitySelectButton = new ToolStripButton();
 			entitySelectButton.setIcon("[SKIN]/actions/configure.png");
-			entitySelectButton.setTitle("Select Entity");
+			entitySelectButton.setTitle(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_selectEntity"));
 			SmartGWTUtil.addHoverToCanvas(entitySelectButton, AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_createEqlFromEntityDef"));
 			entitySelectButton.addClickHandler(new ClickHandler() {
 
@@ -169,7 +169,7 @@ public class EqlWorksheetMainPane extends VLayout {
 			toolStrip.addButton(entitySelectButton);
 
 			searchAllVersion = new CheckboxItem();
-			searchAllVersion.setTitle("seach all version");
+			searchAllVersion.setTitle(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_searchAllVersion"));
 			SmartGWTUtil.addHoverToFormItem(searchAllVersion, AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_allVerSearch"));
 			toolStrip.addFormItem(searchAllVersion);
 

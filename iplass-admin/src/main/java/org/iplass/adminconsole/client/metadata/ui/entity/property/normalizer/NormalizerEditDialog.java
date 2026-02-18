@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
@@ -82,7 +83,7 @@ public class NormalizerEditDialog extends MtpDialog {
 	private void initialize() {
 
 		selType = new MtpSelectItem();
-		selType.setTitle("Type");
+		selType.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_normalizer_NormalizerEditDialog_type"));
 		SmartGWTUtil.setRequired(selType);
 		selType.addChangedHandler(new ChangedHandler() {
 			@Override

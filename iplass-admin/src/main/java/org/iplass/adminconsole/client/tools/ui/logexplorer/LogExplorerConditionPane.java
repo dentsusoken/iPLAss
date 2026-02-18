@@ -364,7 +364,7 @@ public class LogExplorerConditionPane extends VLayout {
 			pnlHeader.setMembers(btnOK, btnCancel);
 
 			selLevel =  new MtpSelectItem();
-			selLevel.setTitle("Level");
+			selLevel.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_level"));
 			LinkedHashMap<String, String> levelMap = new LinkedHashMap<>();
 			levelMap.put("TRACE", "TRACE");
 			levelMap.put("DEBUG", "DEBUG");
@@ -376,16 +376,16 @@ public class LogExplorerConditionPane extends VLayout {
 			selLevel.setDisabled(true);
 
 			txtExpiresAt = SmartGWTUtil.createDateTimeItem();
-			txtExpiresAt.setTitle("Expires At");
+			txtExpiresAt.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_expiresAt"));
 			SmartGWTUtil.setRequired(txtExpiresAt);
 			txtExpiresAt.setDisabled(true);
 
 			txtLoggerNamePattern = new MtpTextItem();
-			txtLoggerNamePattern.setTitle("Logger Name Pattern");
+			txtLoggerNamePattern.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_loggerNamePattern"));
 			txtLoggerNamePattern.setDisabled(true);
 
 			btnEditCondition = new ButtonItem();
-			btnEditCondition.setTitle("Edit");
+			btnEditCondition.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_edit"));
 			btnEditCondition.setWidth(100);
 			btnEditCondition.setStartRow(true);
 			btnEditCondition.setColSpan(3);
@@ -411,7 +411,7 @@ public class LogExplorerConditionPane extends VLayout {
 			btnEditCondition.setDisabled(true);
 
 			txaCondition = new MtpTextAreaItem();
-			txaCondition.setTitle("Condition");
+			txaCondition.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_condition"));
 			txaCondition.setColSpan(2);
 			txaCondition.setHeight(80);
 			SmartGWTUtil.setReadOnlyTextArea(txaCondition);

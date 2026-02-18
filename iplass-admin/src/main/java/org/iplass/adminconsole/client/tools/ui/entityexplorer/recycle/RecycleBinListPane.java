@@ -63,13 +63,13 @@ public class RecycleBinListPane extends VLayout {
 
 		purgeTargetDateItem = SmartGWTUtil.createDateItem();
 		purgeTargetDateItem.setValue(new Timestamp(System.currentTimeMillis()));
-		purgeTargetDateItem.setTitle("Purge target date");
+		purgeTargetDateItem.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_RecycleBinListPane_purgeTargetDate"));
 		purgeTargetDateItem.setWrapTitle(false);
 		toolStrip.addFormItem(purgeTargetDateItem);
 
 		final ToolStripButton cleanButton = new ToolStripButton();
 		cleanButton.setIcon(CLEAN_ICON);
-		cleanButton.setTitle("Clean");
+		cleanButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_RecycleBinListPane_clean"));
 		cleanButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "cleanTooltip")));
 		cleanButton.addClickHandler(new ClickHandler() {
 
@@ -83,7 +83,7 @@ public class RecycleBinListPane extends VLayout {
 		toolStrip.addSeparator();
 
 		showCountItem = new CheckboxItem();
-		showCountItem.setTitle("Get Data Count");
+		showCountItem.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_RecycleBinListPane_getDataCount"));
 		showCountItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "dataNumOften")));
 		showCountItem.addChangedHandler(new ChangedHandler() {
 

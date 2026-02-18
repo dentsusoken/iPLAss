@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
@@ -77,13 +78,13 @@ public class ScriptingNormalizerAttributePane extends NormalizerAttributePane {
 
 		txaScript = new MtpTextAreaItem();
 		txaScript.setColSpan(2);
-		txaScript.setTitle("Script");
+	txaScript.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_normalizer_ScriptingNormalizerAttributePane_script"));
 		txaScript.setHeight("100%");
 		SmartGWTUtil.setRequired(txaScript);
 		SmartGWTUtil.setReadOnlyTextArea(txaScript);
 
 		chkBindAsArray = new CheckboxItem();
-		chkBindAsArray.setTitle("bind variable as array type");
+		chkBindAsArray.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_normalizer_ScriptingNormalizerAttributePane_bindAsArray"));
 		SmartGWTUtil.addHoverToFormItem(chkBindAsArray, rs("ui_metadata_entity_property_ScriptingNormalizerAttributePane_scriptAsArray"));
 
 		form = new MtpForm();

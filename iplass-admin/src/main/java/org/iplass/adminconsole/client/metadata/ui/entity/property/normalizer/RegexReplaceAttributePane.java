@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -42,12 +43,12 @@ public class RegexReplaceAttributePane extends NormalizerAttributePane {
 	public RegexReplaceAttributePane() {
 
 		txtRegex = new MtpTextItem();
-		txtRegex.setTitle("Regex");
+		txtRegex.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_normalizer_RegexReplaceAttributePane_regex"));
 		SmartGWTUtil.setRequired(txtRegex);
 		SmartGWTUtil.addHoverToFormItem(txtRegex, rs("ui_metadata_entity_property_RegexReplaceAttributePane_txtRegex"));
 
 		txtReplacement = new MtpTextItem();
-		txtReplacement.setTitle("Replacement");
+		txtReplacement.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_normalizer_RegexReplaceAttributePane_replacement"));
 		SmartGWTUtil.setRequired(txtReplacement);
 		SmartGWTUtil.addHoverToFormItem(txtReplacement, rs("ui_metadata_entity_property_RegexReplaceAttributePane_txtReplacement"));
 

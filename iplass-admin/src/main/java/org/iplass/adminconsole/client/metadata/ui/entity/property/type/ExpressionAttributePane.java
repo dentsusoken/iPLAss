@@ -66,7 +66,7 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 		setAutoHeight();
 
 		selResultType = new MtpSelectItem();
-		selResultType.setTitle("Result Type");
+		selResultType.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_type_ExpressionAttributePane_resultType"));
 		selResultType.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
@@ -76,7 +76,7 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 
 		selGlobalSelectValue = new MetaDataSelectItem(SelectValueDefinition.class,
 				(new ItemOption(true, false)).tooltip(rs("ui_metadata_entity_PropertyListGrid_expressionGlobalSelectValueComment")));
-		selGlobalSelectValue.setTitle("Global Value");
+		selGlobalSelectValue.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_type_ExpressionAttributePane_globalValue"));
 		SmartGWTUtil.addHoverToFormItem(selGlobalSelectValue, rs("ui_metadata_entity_PropertyListGrid_expressionGlobalSelectValueComment"));
 
 		formResultType = new MtpForm2Column();

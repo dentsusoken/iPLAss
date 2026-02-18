@@ -94,7 +94,7 @@ public class LangListPane extends VLayout {
 		//------------------------
 
 		ToolStripMenuButton portingButton = new ToolStripMenuButton();
-		portingButton.setTitle("Export / Import");
+		portingButton.setTitle(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangListPane_exportImport"));
 		portingButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangListPane_portingMetaDataMenuTooltip"));
 		portingButton.setHoverWrap(false);
 
@@ -152,7 +152,7 @@ public class LangListPane extends VLayout {
 
 		final ToolStripButton expandAllButton = new ToolStripButton();
 		expandAllButton.setIcon(EXPAND_ICON);
-		expandAllButton.setTitle("Expand");
+		expandAllButton.setTitle(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangListPane_expand"));
 		expandAllButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -164,7 +164,7 @@ public class LangListPane extends VLayout {
 
 		final ToolStripButton contractAllButton = new ToolStripButton();
 		contractAllButton.setIcon(CONTRACT_ICON);
-		contractAllButton.setTitle("Collapse");
+		contractAllButton.setTitle(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangListPane_collapse"));
 		contractAllButton.addClickHandler(new ClickHandler() {
 
 			@Override

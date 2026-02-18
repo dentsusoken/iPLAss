@@ -178,14 +178,14 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 			form = new MtpForm();
 
 			nameField = new MtpTextItem();
-			nameField.setTitle("Name");
+			nameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_name"));
 			SmartGWTUtil.setReadOnly(nameField);
 
 			displayNameField = new MetaDataLangTextItem(useLangSetting);
-			displayNameField.setTitle("Display Name");
+			displayNameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_displayName"));
 
 			descriptionField = new MtpTextAreaItem();
-			descriptionField.setTitle("Description");
+			descriptionField.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_description"));
 			descriptionField.setHeight(55);
 			descriptionField.setColSpan(2);
 

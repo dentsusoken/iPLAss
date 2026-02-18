@@ -74,8 +74,7 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 		setAutoHeight();
 
 		selGlobalSelectValue = new MetaDataSelectItem(SelectValueDefinition.class, new ItemOption(true, false));
-		selGlobalSelectValue.setTitle("Global Value");
-		SmartGWTUtil.addHoverToFormItem(selGlobalSelectValue, rs("ui_metadata_entity_PropertyListGrid_globalSelectValueComment"));
+	selGlobalSelectValue.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_type_SelectAttributePane_globalValue"));
 
 		DynamicForm formGlobal = new MtpForm2Column();
 		formGlobal.setItems(selGlobalSelectValue);

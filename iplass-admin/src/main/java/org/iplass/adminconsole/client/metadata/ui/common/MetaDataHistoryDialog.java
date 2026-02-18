@@ -73,7 +73,7 @@ public class MetaDataHistoryDialog extends MtpDialog {
 
 		IButton create = new IButton("Create");
 		create.setIcon(EXPORT_ICON);
-		create.setTitle("ConfigExport");
+		create.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaDataHistoryDialog_configExport"));
 		create.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 

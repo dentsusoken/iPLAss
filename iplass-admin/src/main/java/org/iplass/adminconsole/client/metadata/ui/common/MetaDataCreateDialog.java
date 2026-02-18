@@ -119,24 +119,24 @@ public abstract class MetaDataCreateDialog extends MtpDialog {
 		centerInPage();
 
 		sourceNameField = new MtpTextItem();
-		sourceNameField.setTitle("Source Name");
+		sourceNameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaDataCreateDialog_sourceName"));
 		SmartGWTUtil.setReadOnly(sourceNameField);
 		if (!isCopyMode) {
 			sourceNameField.hide();
 		}
 
 		nameField = new MtpTextItem();
-		nameField.setTitle("Name");
+		nameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaDataCreateDialog_name"));
 		SmartGWTUtil.setRequired(nameField);
 		nameField.setValue(folderPath);
 
 		setNamePolicy(true, false);
 
 		displayNameField = new MtpTextItem();
-		displayNameField.setTitle("Display Name");
+		displayNameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaDataCreateDialog_displayName"));
 
 		descriptionField = new MtpTextAreaItem();
-		descriptionField.setTitle("Description");
+		descriptionField.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaDataCreateDialog_description"));
 		descriptionField.setColSpan(2);
 		descriptionField.setHeight(60);
 

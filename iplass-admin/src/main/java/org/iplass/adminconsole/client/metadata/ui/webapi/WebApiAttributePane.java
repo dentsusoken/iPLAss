@@ -140,7 +140,7 @@ public class WebApiAttributePane extends HLayout {
 		synchronizeOnSessionField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_synchronizeOnSession")));
 
 		stateTypeField = new SelectItem();
-		stateTypeField.setTitle("State Type");
+		stateTypeField.setTitle(AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiAttributePane_stateType"));
 		stateTypeField.setWidth(150);
 		stateTypeField.setStartRow(true);
 

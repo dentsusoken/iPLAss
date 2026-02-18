@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.common;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
@@ -49,17 +50,16 @@ public class CommonAttributeParts2 extends PropertyCommonAttributeParts implemen
 	public CommonAttributeParts2() {
 
 		chkNotNull = new CheckboxItem();
-		chkNotNull.setTitle("Required");
-		chkNotNull.addChangedHandler(new ChangedHandler() {
-			@Override
-			public void onChanged(ChangedEvent event) {
-				handler.onChangeNotNull(SmartGWTUtil.getBooleanValue(chkNotNull));
-			}
-		});
+	chkNotNull.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_common_CommonAttributeParts2_required"));
+	chkNotNull.addChangedHandler(new ChangedHandler() {
+		@Override
+		public void onChanged(ChangedEvent event) {
+			handler.onChangeNotNull(SmartGWTUtil.getBooleanValue(chkNotNull));
+		}
+	});
 
-		chkUpdatable = new CheckboxItem();
-		chkUpdatable.setTitle("CanEdit");
-
+	chkUpdatable = new CheckboxItem();
+	chkUpdatable.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_common_CommonAttributeParts2_canEdit"));
 		form = new MtpForm2Column();
 		form.setItems(chkNotNull, chkUpdatable);
 

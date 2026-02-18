@@ -54,7 +54,7 @@ public class EntityDefragProgressDialog extends AbstractWindow {
 
 		setWidth(400);
 		setHeight(150);
-		setTitle("Defrag Entity...");
+	setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDefragProgressDialog_defragEntity"));
 		setShowMinimizeButton(false);
 		setIsModal(true);
 		setShowModalMask(true);

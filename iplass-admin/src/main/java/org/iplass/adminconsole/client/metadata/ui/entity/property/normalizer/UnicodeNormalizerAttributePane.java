@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpComboBoxItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -41,7 +42,7 @@ public class UnicodeNormalizerAttributePane extends NormalizerAttributePane {
 	public UnicodeNormalizerAttributePane() {
 
 		cboForm = new MtpComboBoxItem();
-		cboForm.setTitle("Form");
+		cboForm.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_normalizer_UnicodeNormalizerAttributePane_form"));
 		LinkedHashMap<String, String> formMap = new LinkedHashMap<>();
 		//GWTではjava.text.Normalizer.FormはEmulationできないので、直接
 //		for (Form form : Form.values()) {

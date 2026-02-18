@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -38,7 +39,7 @@ public class RegexAttributePane extends ValidationAttributePane {
 	public RegexAttributePane() {
 
 		patternItem = new MtpTextItem();
-		patternItem.setTitle("Pattern");
+		patternItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_RegexAttributePane_pattern"));
 
 		form = new MtpForm();
 		form.setItems(patternItem);

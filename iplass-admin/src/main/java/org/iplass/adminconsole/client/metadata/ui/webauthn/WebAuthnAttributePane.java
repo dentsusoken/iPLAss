@@ -21,6 +21,7 @@ package org.iplass.adminconsole.client.metadata.ui.webauthn;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.webauthn.definition.AttestationConveyancePreference;
 import org.iplass.mtp.auth.webauthn.definition.AuthenticatorAttachment;
@@ -90,38 +91,38 @@ public class WebAuthnAttributePane extends VLayout {
 
 
 		txtRpIdField = new TextItem();
-		txtRpIdField.setTitle("RP ID");
+		txtRpIdField.setTitle(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnAttributePane_rpId"));
 		txtRpIdField.setWidth("100%");
 		txtRpIdField.setBrowserSpellCheck(false);
 		txtRpIdField.setColSpan(3);
 		txtRpIdField.setStartRow(true);
 
 		txtOriginField = new TextItem();
-		txtOriginField.setTitle("Origin");
+		txtOriginField.setTitle(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnAttributePane_origin"));
 		txtOriginField.setWidth("100%");
 		txtOriginField.setBrowserSpellCheck(false);
 		txtOriginField.setColSpan(3);
 		txtOriginField.setStartRow(true);
 
 		selAttestationConveyancePreferenceField = new SelectItem();
-		selAttestationConveyancePreferenceField.setTitle("Attestation Conveyance Preference");
+		selAttestationConveyancePreferenceField.setTitle(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnAttributePane_attestationConveyancePreference"));
 		selAttestationConveyancePreferenceField.setWidth("100%");
 		selAttestationConveyancePreferenceField.setValueMap(attestationConveyancePreference);
 		selAttestationConveyancePreferenceField.setRequired(true);
 
 		selAuthenticatorAttachmentField = new SelectItem();
-		selAuthenticatorAttachmentField.setTitle("Authenticator Attachment");
+		selAuthenticatorAttachmentField.setTitle(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnAttributePane_authenticatorAttachment"));
 		selAuthenticatorAttachmentField.setWidth("100%");
 		selAuthenticatorAttachmentField.setValueMap(authenticatorAttachment);
 
 		selResidentKeyRequirementField = new SelectItem();
-		selResidentKeyRequirementField.setTitle("Resident Key Requirement");
+		selResidentKeyRequirementField.setTitle(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnAttributePane_residentKeyRequirement"));
 		selResidentKeyRequirementField.setWidth("100%");
 		selResidentKeyRequirementField.setValueMap(residentKeyRequirement);
 		selResidentKeyRequirementField.setRequired(true);
 
 		selUserVerificationRequirementField = new SelectItem();
-		selUserVerificationRequirementField.setTitle("User Verification Requirement");
+		selUserVerificationRequirementField.setTitle(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnAttributePane_userVerificationRequirement"));
 		selUserVerificationRequirementField.setWidth("100%");
 		selUserVerificationRequirementField.setValueMap(userVerificationRequirement);
 		selUserVerificationRequirementField.setRequired(true);
@@ -130,7 +131,7 @@ public class WebAuthnAttributePane extends VLayout {
 		chkSelfAttestationAllowed.setStartRow(true);
 
 		txaAllowedAaguidListField = new TextAreaItem();
-		txaAllowedAaguidListField.setTitle("Allowed Aaguid List");
+		txaAllowedAaguidListField.setTitle(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnAttributePane_allowedAaguidList"));
 		txaAllowedAaguidListField.setWidth("100%");
 		txaAllowedAaguidListField.setBrowserSpellCheck(false);
 		txaAllowedAaguidListField.setColSpan(3);

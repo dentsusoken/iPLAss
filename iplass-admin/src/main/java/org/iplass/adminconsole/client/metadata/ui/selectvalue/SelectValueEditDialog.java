@@ -68,11 +68,11 @@ public class SelectValueEditDialog extends MtpDialog {
 		centerInPage();
 
 		_valueItem = new MtpTextItem();
-		_valueItem.setTitle("Value");
+		_valueItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditDialog_value"));
 		SmartGWTUtil.setRequired(_valueItem);
 
 		_dispNameItem = new MetaDataLangTextItem();
-		_dispNameItem.setTitle("Display Name");
+		_dispNameItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditDialog_displayName"));
 		SmartGWTUtil.setRequired(_dispNameItem);
 
 		final DynamicForm form = new MtpForm();

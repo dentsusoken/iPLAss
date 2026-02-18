@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -101,7 +102,7 @@ public class FulltextSearchViewItem extends PartsItem {
 			form = new MtpForm();
 
 			CheckboxItem isDispSearchWindow = new CheckboxItem();
-			isDispSearchWindow.setTitle("Display search textbox");
+			isDispSearchWindow.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_FulltextSearchViewItem_displaySearchTextbox"));
 			isDispSearchWindow.setName("dispSearchWindow");
 			if (isInitDrop) {
 				isDispSearchWindow.setValue(true);
@@ -110,7 +111,7 @@ public class FulltextSearchViewItem extends PartsItem {
 			}
 
 			CheckboxItem isShowUserNameWithPrivilegedValue = new CheckboxItem();
-			isShowUserNameWithPrivilegedValue.setTitle("Display user name in privileged execution");
+			isShowUserNameWithPrivilegedValue.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_FulltextSearchViewItem_displayUserNameInPrivilegedExecution"));
 			isShowUserNameWithPrivilegedValue.setName("showUserName");
 			if (isInitDrop) {
 				isShowUserNameWithPrivilegedValue.setValue(false);

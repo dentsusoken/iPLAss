@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
@@ -86,7 +87,7 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 		centerInPage();
 
 		fileTypeField = new SelectItem();
-		fileTypeField.setTitle("Output Type");
+		fileTypeField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityConfigDownloadDialog_outputType"));
 		fileTypeField.setValueMap(FILETYPE.CSV.name(), FILETYPE.XML.name());
 		fileTypeField.setValue(FILETYPE.CSV.name());
 		fileTypeField.addChangedHandler(new ChangedHandler() {
@@ -97,23 +98,23 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 		});
 
 		csvEncodeField = new SelectItem();
-		csvEncodeField.setTitle("Encode");
+		csvEncodeField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityConfigDownloadDialog_encode"));
 		csvEncodeField.setValueMap(ENCODE.UTF8.name(), ENCODE.MS932.name());
 		csvEncodeField.setValue(ENCODE.UTF8.name());
 		csvEncodeField.setVisible(false);
 
 		xmlEntityFilterField = new CheckboxItem();
-		xmlEntityFilterField.setTitle("with entity filter definition.");
+		xmlEntityFilterField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityConfigDownloadDialog_withFilter"));
 		xmlEntityFilterField.setValue(true);
 		xmlEntityFilterField.setVisible(false);
 
 		xmlEntityMenuItemField = new CheckboxItem();
-		xmlEntityMenuItemField.setTitle("with entity menu item definition.");
+		xmlEntityMenuItemField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityConfigDownloadDialog_withMenuItem"));
 		xmlEntityMenuItemField.setValue(false);
 		xmlEntityMenuItemField.setVisible(false);
 
 		xmlEntityWebAPIField = new CheckboxItem();
-		xmlEntityWebAPIField.setTitle("with entity WebAPI definition.");
+		xmlEntityWebAPIField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityConfigDownloadDialog_withWebAPI"));
 		xmlEntityWebAPIField.setValue(false);
 		xmlEntityWebAPIField.setVisible(false);
 
