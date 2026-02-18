@@ -160,6 +160,10 @@ public class JasperReportingEngine implements ReportingEngine{
 		if (StringUtil.isNotEmpty(jasperModel.getPasswordAttributeName())) {
 			password = (String)getAttribute(request, jasperModel.getPasswordAttributeName());
 		}
+		String ownerPassword = null;
+		if (StringUtil.isNotEmpty(jasperModel.getOwnerPasswordAttributeName())) {
+			ownerPassword = (String)getAttribute(request, jasperModel.getOwnerPasswordAttributeName());
+		}
 
 		// JasperPrintインスタンス生成
 		List<JasperPrint> jrList = new ArrayList<JasperPrint>();
@@ -180,9 +184,9 @@ public class JasperReportingEngine implements ReportingEngine{
 			pdfExporter.setExporterOutput(output);
 
 			SimplePdfExporterConfiguration config = new SimplePdfExporterConfiguration();
-			if (StringUtil.isNotEmpty(password)) {
-				config.setOwnerPassword(password);
-				config.setUserPassword(password);
+			if (StringUtil.isNotEmpty(password) || StringUtil.isNotEmpty(ownerPassword)) {
+				config.setUserPassword(StringUtil.isNotEmpty(password) ? password : null);
+				config.setOwnerPassword(StringUtil.isNotEmpty(ownerPassword) ? ownerPassword : null);
 				config.setEncrypted(true);
 			}
 			pdfExporter.setConfiguration(config);

@@ -37,6 +37,7 @@ public class JasperReportingOutputModel implements ReportingOutputModel{
 	private MetaReportParamMap[] maps;
 	private String dataSourceAttributeName;
 	private String passwordAttributeName;
+	private String ownerPasswordAttributeName;
 
 	private final String JASPER_STR = "jasper";
 	private final String JRXML_STR = "jrxml";
@@ -105,6 +106,14 @@ public class JasperReportingOutputModel implements ReportingOutputModel{
 
 	public void setPasswordAttributeName(String passwordAttributeName) {
 		this.passwordAttributeName = passwordAttributeName;
+	}
+
+	public String getOwnerPasswordAttributeName() {
+		return ownerPasswordAttributeName;
+	}
+
+	public void setOwnerPasswordAttributeName(String ownerPasswordAttributeName) {
+		this.ownerPasswordAttributeName = ownerPasswordAttributeName;
 	}
 
 }
