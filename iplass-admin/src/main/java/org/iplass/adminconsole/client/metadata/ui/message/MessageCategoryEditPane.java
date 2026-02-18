@@ -176,7 +176,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 		messageItemPane = new MessageItemEditPane();
 
 		//Section設定
-		SectionStackSection messageSection = createSection("Message Attribute", messageItemPane);
+		SectionStackSection messageSection = createSection(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_messageAttribute"), messageItemPane);
 		setMainSections(commonSection, messageSection);
 
 		//全体配置

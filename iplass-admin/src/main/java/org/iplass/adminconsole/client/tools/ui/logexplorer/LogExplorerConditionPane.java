@@ -436,7 +436,7 @@ public class LogExplorerConditionPane extends VLayout {
 			layout.addMember(dummy);
 
 			SectionStack stack = new SectionStack();
-			SectionStackSection section = new SectionStackSection("Condition Setting");
+		SectionStackSection section = new SectionStackSection(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_conditionSetting"));
 			section.setCanCollapse(false);	//CLOSE不可
 
 			section.addItem(layout);

@@ -371,7 +371,7 @@ public class EqlWorksheetMainPane extends VLayout {
 
 			setVisibilityMode(VisibilityMode.MUTEX);
 
-			SectionStackSection hintSection = new SectionStackSection("Hint");
+			SectionStackSection hintSection = new SectionStackSection(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_hint"));
 			VLayout hintPane = new VLayout();
 			hintPane.setHeight100();
 			hintPane.setWidth100();

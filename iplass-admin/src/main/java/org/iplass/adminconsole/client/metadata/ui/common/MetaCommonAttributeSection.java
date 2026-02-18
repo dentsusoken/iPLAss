@@ -78,7 +78,7 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 	public MetaCommonAttributeSection(MetaDataItemMenuTreeNode targetNode, Class<D> defClass, boolean useLangSetting) {
 		this.defClass = defClass;
 
-		setTitle("Common Attribute");
+		setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_commonAttribute"));
 		setExpanded(false);	//デフォルトは閉じた状態
 
 		Label metaTypeCap = new Label("Type：");

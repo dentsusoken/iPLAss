@@ -84,7 +84,7 @@ public class LangTreeGridPane extends VLayout {
 		searchPane = new MetaDataAdvancedSearchPane();
 
 		SectionStackSection advancedSearchSection = new SectionStackSection();
-		advancedSearchSection.setTitle("Advanced Search");
+		advancedSearchSection.setTitle(AdminClientMessageUtil.getString("ui_tools_langexplorer_LangTreeGridPane_advancedSearch"));
 		advancedSearchSection.setItems(searchPane);
 		advancedSearchSection.setExpanded(false);
 		advancedSearchSection.setResizeable(true);

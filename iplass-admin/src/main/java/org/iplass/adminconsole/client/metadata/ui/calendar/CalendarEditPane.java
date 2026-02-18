@@ -112,7 +112,7 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 		calendarGrid = new CalendarGrid();
 
 		SectionStack menuLayoutSection = new SectionStack();
-		SectionStackSection sec1 = new SectionStackSection("Target Items");
+		SectionStackSection sec1 = new SectionStackSection(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarEditPane_targetItems"));
 		sec1.setCanCollapse(false);	//CLOSE不可
 		sec1.addItem(calendarGrid);
 		menuLayoutSection.addSection(sec1);
@@ -127,7 +127,7 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 		layout.addMember(dragPane);
 
 		//Section設定
-		SectionStackSection calendarSection = createSection("Calendar Attribute", attributePane, layout);
+		SectionStackSection calendarSection = createSection(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarEditPane_calendarAttribute"), attributePane, layout);
 		setMainSections(commonSection, calendarSection);
 
 		//配置

@@ -123,7 +123,7 @@ public class AutoNumberValueListDialog extends MtpDialog {
 			grid = new AutoNumberValueListGrid();
 
 			SectionStackSection section1 = new SectionStackSection();
-			section1.setTitle("Current Values");
+			section1.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_type_AutoNumberValueListDialog_currentValues"));
 			section1.setItems(grid);
 			section1.setExpanded(true);
 			section1.setCanCollapse(false);
