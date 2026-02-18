@@ -260,7 +260,7 @@
 		<!-- 送信メールをデバッグ出力する場合、以下を有効にしてください。 -->
 		<!--
 		<property name="listener" class="org.iplass.mtp.mail.listeners.LoggingSendMailListener" additional="true"/>
-		-->
+		 -->
 	</service>
 
 	<!-- SMS -->
