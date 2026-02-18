@@ -251,10 +251,10 @@ public class JasperReportParamMapGridPane extends VLayout {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField typeField = new ListGridField(FIELD_NAME.PARAM_TYPE_DISPLAY_NAME.name(), "Type");
+			ListGridField typeField = new ListGridField(FIELD_NAME.PARAM_TYPE_DISPLAY_NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JasperReportParamMapGridPane_type"));
 			typeField.setWidth(150);
-			ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), "Name");
-			ListGridField mapFromField = new ListGridField(FIELD_NAME.MAP_FROM.name(), "Value");
+			ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JasperReportParamMapGridPane_name"));
+			ListGridField mapFromField = new ListGridField(FIELD_NAME.MAP_FROM.name(), AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JasperReportParamMapGridPane_value"));
 
 			setFields(typeField, nameField, mapFromField);
 		}

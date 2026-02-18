@@ -228,12 +228,12 @@ public class LogExplorerFileListPane extends VLayout {
 		//（参考）setFieldsは、setDataSource後に指定しないと効かない
 
 		//ボタンを表示したいためListGridFieldを指定
-		ListGridField pathField = new ListGridField(FIELD_NAME.PATH.name(), "Path");
+		ListGridField pathField = new ListGridField(FIELD_NAME.PATH.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerFileListPane_path"));
 		pathField.setCanFilter(true);
-		ListGridField lastModifiedField = new ListGridField(FIELD_NAME.LAST_MODIFIED.name(), "Last Modified");
+		ListGridField lastModifiedField = new ListGridField(FIELD_NAME.LAST_MODIFIED.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerFileListPane_lastModified"));
 		lastModifiedField.setWidth(120);
 		lastModifiedField.setCanFilter(true);
-		ListGridField sizeField = new ListGridField(FIELD_NAME.SIZE.name(), "Size");
+		ListGridField sizeField = new ListGridField(FIELD_NAME.SIZE.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerFileListPane_size"));
 		sizeField.setWidth(100);
 		sizeField.setAlign(Alignment.RIGHT);
 		sizeField.setCanFilter(false);

@@ -218,9 +218,9 @@ public class ParamMapGridPane extends VLayout {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), "Parameter Name");
-			ListGridField mapFromField = new ListGridField(FIELD_NAME.MAP_FROM.name(), "Map From");
-			ListGridField conditionField = new ListGridField(FIELD_NAME.CONDITION.name(), "Condition");
+			ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_ParamMapGridPane_parameterName"));
+			ListGridField mapFromField = new ListGridField(FIELD_NAME.MAP_FROM.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_ParamMapGridPane_mapFrom"));
+			ListGridField conditionField = new ListGridField(FIELD_NAME.CONDITION.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_ParamMapGridPane_condition"));
 
 			setFields(nameField, mapFromField, conditionField);
 		}

@@ -108,8 +108,8 @@ public class LocalizedScriptSettingDialog extends MtpDialog {
 			grid.setWidth100();
 			grid.setHeight100();
 
-			ListGridField languageField = new ListGridField("langDisp", "Language");
-			ListGridField hasCustomField = new ListGridField("custom", "Custom");
+			ListGridField languageField = new ListGridField("langDisp", AdminClientMessageUtil.getString("ui_metadata_ui_common_LocalizedScriptSettingDialog_language"));
+			ListGridField hasCustomField = new ListGridField("custom", AdminClientMessageUtil.getString("ui_metadata_ui_common_LocalizedScriptSettingDialog_custom"));
 			hasCustomField.setWidth(70);
 			hasCustomField.setAlign(Alignment.CENTER);
 			grid.setFields(languageField, hasCustomField);

@@ -151,10 +151,10 @@ public class RoleEditDialog extends AbstractWindow {
 
 		listGrid.setCanEdit(true);
 
-		ListGridField roleConditionName = new ListGridField("name", "Condition Name");
+		ListGridField roleConditionName = new ListGridField("name", AdminClientMessageUtil.getString("ui_tools_ui_permissionexplorer_role_RoleEditDialog_conditionName"));
 		roleConditionName.setRequired(true);
 		roleConditionName.setWidth(150);
-		ListGridField roleCondition = new ListGridField("expression", "Condition");
+		ListGridField roleCondition = new ListGridField("expression", AdminClientMessageUtil.getString("ui_tools_ui_permissionexplorer_role_RoleEditDialog_condition"));
 		roleCondition.setRequired(true);
 		TextAreaItem conditionField = new TextAreaItem();
 		roleCondition.setEditorProperties(conditionField);

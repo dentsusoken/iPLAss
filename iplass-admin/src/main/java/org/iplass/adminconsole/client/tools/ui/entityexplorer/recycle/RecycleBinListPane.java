@@ -266,9 +266,9 @@ public class RecycleBinListPane extends VLayout {
 		explorerField.setWidth(25);
 		ListGridField errorField = new ListGridField("error", " ");
 		errorField.setWidth(25);
-		ListGridField nameField = new ListGridField(RecycleBinEntityInfoDS.FIELD_NAME.NAME.name(), "Name");
-		ListGridField displayNameField = new ListGridField(RecycleBinEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), "Display Name");
-		ListGridField countField = new ListGridField(RecycleBinEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), "Count");
+		ListGridField nameField = new ListGridField(RecycleBinEntityInfoDS.FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_tools_entityexplorer_RecycleBinListPane_name"));
+		ListGridField displayNameField = new ListGridField(RecycleBinEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), AdminClientMessageUtil.getString("ui_tools_entityexplorer_RecycleBinListPane_displayName"));
+		ListGridField countField = new ListGridField(RecycleBinEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), AdminClientMessageUtil.getString("ui_tools_entityexplorer_RecycleBinListPane_count"));
 		countField.setWidth(70);
 
 		grid.setFields(explorerField, errorField, nameField, displayNameField, countField);

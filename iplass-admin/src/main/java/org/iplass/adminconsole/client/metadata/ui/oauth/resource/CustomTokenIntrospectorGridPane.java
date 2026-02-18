@@ -140,7 +140,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 
 			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
 
-			ListGridField clientTypeField = new ListGridField(FIELD_NAME.TYPE.name(), "Type");
+			ListGridField clientTypeField = new ListGridField(FIELD_NAME.TYPE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_oauth_resource_CustomTokenIntrospectorGridPane_type"));
 
 			setFields(clientTypeField);
 

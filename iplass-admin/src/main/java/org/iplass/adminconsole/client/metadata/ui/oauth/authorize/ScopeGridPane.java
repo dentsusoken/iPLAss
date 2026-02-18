@@ -142,8 +142,8 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
 
-			ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), "Name");
-			ListGridField dispNameField = new ListGridField(FIELD_NAME.DISPLAY_NAME.name(), "Display Name");;
+			ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_oauth_authorize_ScopeGridPane_name"));
+			ListGridField dispNameField = new ListGridField(FIELD_NAME.DISPLAY_NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_oauth_authorize_ScopeGridPane_displayName"));;
 
 			setFields(nameField, dispNameField);
 
@@ -467,9 +467,9 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
 
-			ListGridField claimNameField = new ListGridField(FIELD_NAME.CLAIM_NAME.name(), "Claim Name");
-			ListGridField userPropertyNameField = new ListGridField(FIELD_NAME.USER_PROPERTY_NAME.name(), "User Property Name");
-			ListGridField scriptField = new ListGridField(FIELD_NAME.HAS_SCRIPT.name(), "Script");
+			ListGridField claimNameField = new ListGridField(FIELD_NAME.CLAIM_NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_oauth_authorize_ScopeGridPane_claimName"));
+			ListGridField userPropertyNameField = new ListGridField(FIELD_NAME.USER_PROPERTY_NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_oauth_authorize_ScopeGridPane_userPropertyName"));
+			ListGridField scriptField = new ListGridField(FIELD_NAME.HAS_SCRIPT.name(), AdminClientMessageUtil.getString("ui_metadata_ui_oauth_authorize_ScopeGridPane_script"));
 			scriptField.setWidth(50);
 
 			setFields(claimNameField, userPropertyNameField, scriptField);

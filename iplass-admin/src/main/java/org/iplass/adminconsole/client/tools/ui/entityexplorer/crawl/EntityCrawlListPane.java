@@ -354,13 +354,13 @@ public class EntityCrawlListPane extends VLayout {
 		explorerField.setWidth(25);
 		ListGridField errorField = new ListGridField("error", " ");
 		errorField.setWidth(25);
-		ListGridField nameField = new ListGridField("name", "Name");
-		ListGridField displayNameField = new ListGridField("displayName", "DisplayName");
-		ListGridField countField = new ListGridField("count", "Data Count");
+		ListGridField nameField = new ListGridField("name", AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_crawl_EntityCrawlListPane_name"));
+		ListGridField displayNameField = new ListGridField("displayName", AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_crawl_EntityCrawlListPane_displayName"));
+		ListGridField countField = new ListGridField("count", AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_crawl_EntityCrawlListPane_dataCount"));
 		countField.setWidth(70);
-		ListGridField updateDateField = new ListGridField("updateDate", "Update Date");
+		ListGridField updateDateField = new ListGridField("updateDate", AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_crawl_EntityCrawlListPane_updateDate"));
 		updateDateField.setWidth(130);
-		ListGridField lastCrawlDateField = new ListGridField("lastCrawlDate", "Last Crawl Date");
+		ListGridField lastCrawlDateField = new ListGridField("lastCrawlDate", AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_crawl_EntityCrawlListPane_lastCrawlDate"));
 		lastCrawlDateField.setWidth(130);
 		grid.setFields(explorerField, errorField, nameField, displayNameField, countField, updateDateField, lastCrawlDateField);
 

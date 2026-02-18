@@ -329,10 +329,10 @@ public class MetaDataTagSelectDialog extends AbstractWindow {
 		//（参考）setFieldsは、setDataSource後に指定しないと効かない
 
 		//ボタンを表示したいためListGridFieldを指定
-		ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), "Tag Name");
-		ListGridField createDateField = new ListGridField(FIELD_NAME.CREATEDATE_DISP.name(), "Create Date");
+		ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_tools_ui_metaexplorer_MetaDataTagSelectDialog_tagName"));
+		ListGridField createDateField = new ListGridField(FIELD_NAME.CREATEDATE_DISP.name(), AdminClientMessageUtil.getString("ui_tools_ui_metaexplorer_MetaDataTagSelectDialog_createDate"));
 		createDateField.setWidth(130);
-		ListGridField descriptionField = new ListGridField(FIELD_NAME.DESCRIPTION.name(), "Comment");
+		ListGridField descriptionField = new ListGridField(FIELD_NAME.DESCRIPTION.name(), AdminClientMessageUtil.getString("ui_tools_ui_metaexplorer_MetaDataTagSelectDialog_comment"));
 		descriptionField.setWrap(true);
 		descriptionField.setShowHover(true);
 		descriptionField.setHoverCustomizer(new HoverCustomizer() {

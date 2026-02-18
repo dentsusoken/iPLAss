@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.mtp.web.actionmapping.definition.cache.CacheCriteriaDefinition;
 import org.iplass.mtp.web.actionmapping.definition.cache.CacheRelatedEntityDefinition;
 
@@ -212,8 +213,8 @@ public class CacheRelatedEntityGridPane extends VLayout {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField entityNameField = new ListGridField(FIELD_NAME.ENTITY_NAME.name(), "Entity Name");
-			ListGridField typeField = new ListGridField(FIELD_NAME.RELATED_TYPE.name(), "Type");
+			ListGridField entityNameField = new ListGridField(FIELD_NAME.ENTITY_NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_cache_CacheRelatedEntityGridPane_entityName"));
+			ListGridField typeField = new ListGridField(FIELD_NAME.RELATED_TYPE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_cache_CacheRelatedEntityGridPane_type"));
 			typeField.setWidth(100);
 
 			setFields(entityNameField, typeField);

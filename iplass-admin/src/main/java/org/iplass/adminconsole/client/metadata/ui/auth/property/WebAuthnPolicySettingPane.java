@@ -109,7 +109,7 @@ public class WebAuthnPolicySettingPane extends AbstractSettingPane {
 			grid.setCanEdit(true);
 			grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
 
-			ListGridField webAuthnField = new ListGridField("webAuthn", "WebAuthn");
+			ListGridField webAuthnField = new ListGridField("webAuthn", AdminClientMessageUtil.getString("ui_metadata_ui_auth_property_WebAuthnPolicySettingPane_webAuthn"));
 			// ListGridFieldに対してComboboxを設定する場合、
 			// Refreshを実行するとエラーになるので除外(fetchData is not a function)
 			// Tooltipを表示するとエラーになるので除外(self.getSelectedRecord is not a function)

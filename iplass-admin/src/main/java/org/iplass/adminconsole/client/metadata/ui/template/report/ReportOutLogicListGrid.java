@@ -100,9 +100,9 @@ public class ReportOutLogicListGrid extends ListGrid {
 		setCanReorderRecords(true);
 
 		// 各フィールド初期化
-		ListGridField elNameField = new ListGridField(ReportOutLogicListGridRecord.ELNAME, "Type");
+		ListGridField elNameField = new ListGridField(ReportOutLogicListGridRecord.ELNAME, AdminClientMessageUtil.getString("ui_metadata_ui_template_report_ReportOutLogicListGrid_type"));
 		elNameField.setWidth(150);
-		ListGridField gpField = new ListGridField(ReportOutLogicListGridRecord.GP, "Value");
+		ListGridField gpField = new ListGridField(ReportOutLogicListGridRecord.GP, AdminClientMessageUtil.getString("ui_metadata_ui_template_report_ReportOutLogicListGrid_value"));
 
 		// 各フィールドをListGridに設定
 		setFields(elNameField, gpField);

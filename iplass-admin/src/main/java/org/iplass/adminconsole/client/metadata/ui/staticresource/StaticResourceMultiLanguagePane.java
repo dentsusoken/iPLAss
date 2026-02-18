@@ -158,9 +158,9 @@ public class StaticResourceMultiLanguagePane extends VLayout {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField languageKeyField = new ListGridField(FIELD_NAME.LANG_KEY.name(), "LanguageKey");
+			ListGridField languageKeyField = new ListGridField(FIELD_NAME.LANG_KEY.name(), AdminClientMessageUtil.getString("ui_metadata_ui_staticresource_StaticResourceMultiLanguagePane_languageKey"));
 			languageKeyField.setHidden(true);
-			ListGridField languageField = new ListGridField(FIELD_NAME.LANG_DISPLAY_NAME.name(), "Language");
+			ListGridField languageField = new ListGridField(FIELD_NAME.LANG_DISPLAY_NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_staticresource_StaticResourceMultiLanguagePane_language"));
 			setFields(languageKeyField, languageField);
 		}
 

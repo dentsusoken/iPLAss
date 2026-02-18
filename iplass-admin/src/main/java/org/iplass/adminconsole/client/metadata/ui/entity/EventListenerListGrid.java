@@ -106,9 +106,9 @@ public class EventListenerListGrid extends ListGrid {
 		setCanReorderRecords(true);
 
 		// 各フィールド初期化
-		ListGridField elNameField = new ListGridField(EventListenerListGridRecord.ELNAME, "Type");
+		ListGridField elNameField = new ListGridField(EventListenerListGridRecord.ELNAME, AdminClientMessageUtil.getString("ui_metadata_ui_entity_EventListenerListGrid_type"));
 		elNameField.setWidth(150);
-		ListGridField gpField = new ListGridField(EventListenerListGridRecord.GP, "Value");
+		ListGridField gpField = new ListGridField(EventListenerListGridRecord.GP, AdminClientMessageUtil.getString("ui_metadata_ui_entity_EventListenerListGrid_value"));
 
 		// 各フィールドをListGridに設定
 		setFields(elNameField, gpField);
@@ -1035,7 +1035,7 @@ public class EventListenerListGrid extends ListGrid {
 			private NotificationDestinationGrid(){
 				setTitle("Destination");
 				setBodyOverflow(Overflow.SCROLL);
-				destinationField = new ListGridField(NOTIFICATION_DESTINATION_ATTRIBUTE_NAME,"Destination");
+				destinationField = new ListGridField(NOTIFICATION_DESTINATION_ATTRIBUTE_NAME, AdminClientMessageUtil.getString("ui_metadata_ui_entity_EventListenerListGrid_destination"));
 				destinationField.setCanEdit(false);
 				this.setFields(destinationField);
 			}

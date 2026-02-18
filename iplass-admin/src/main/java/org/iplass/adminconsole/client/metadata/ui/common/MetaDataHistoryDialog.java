@@ -175,9 +175,9 @@ public class MetaDataHistoryDialog extends MtpDialog {
 			setShowRecordComponents(true);
 			setShowRecordComponentsByCell(true);
 
-			ListGridField createDateField = new ListGridField(FIELD_NAME.VERSION.name(), "version");
-			ListGridField updateUserField = new ListGridField(FIELD_NAME.UPDATE_USER.name(), "Update User");
-			ListGridField updateDateField = new ListGridField(FIELD_NAME.UPDATE_DATE.name(), "Update Date");
+			ListGridField createDateField = new ListGridField(FIELD_NAME.VERSION.name(), AdminClientMessageUtil.getString("ui_metadata_ui_common_MetaDataHistoryDialog_version"));
+			ListGridField updateUserField = new ListGridField(FIELD_NAME.UPDATE_USER.name(), AdminClientMessageUtil.getString("ui_metadata_ui_common_MetaDataHistoryDialog_updateUser"));
+			ListGridField updateDateField = new ListGridField(FIELD_NAME.UPDATE_DATE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_common_MetaDataHistoryDialog_updateDate"));
 
 			setFields(createDateField, updateUserField, updateDateField);
 		}

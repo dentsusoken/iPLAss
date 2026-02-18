@@ -99,8 +99,8 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 		gridLocalSelectValue.setCanAcceptDroppedRecords(true);
 		gridLocalSelectValue.setCanReorderRecords(true);
 
-		ListGridField valueField = new ListGridField("value", "Value");
-		ListGridField dispNameField = new ListGridField("dispName", "DisplayName");
+		ListGridField valueField = new ListGridField("value", AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_type_SelectAttributePane_value"));
+		ListGridField dispNameField = new ListGridField("dispName", AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_type_SelectAttributePane_displayName"));
 		gridLocalSelectValue.setFields(valueField, dispNameField);
 		gridLocalSelectValue.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			@Override

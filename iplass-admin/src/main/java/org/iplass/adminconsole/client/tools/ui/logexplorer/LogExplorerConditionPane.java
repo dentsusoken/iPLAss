@@ -290,13 +290,13 @@ public class LogExplorerConditionPane extends VLayout {
 			setDataSource(ds);
 
 			//ボタンを表示したいためListGridFieldを指定
-			ListGridField levelField = new ListGridField(FIELD_NAME.LEVEL.name(), "Level");
+			ListGridField levelField = new ListGridField(FIELD_NAME.LEVEL.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerConditionPane_level"));
 			levelField.setWidth(120);
-			ListGridField expiresAtField = new ListGridField(FIELD_NAME.EXPIRES_AT.name(), "ExpiresAt");
+			ListGridField expiresAtField = new ListGridField(FIELD_NAME.EXPIRES_AT.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerConditionPane_expiresAt"));
 			expiresAtField.setWidth(120);
-			ListGridField conditionField = new ListGridField(FIELD_NAME.CONDITION.name(), "Condition");
+			ListGridField conditionField = new ListGridField(FIELD_NAME.CONDITION.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerConditionPane_condition"));
 			conditionField.setWidth(100);
-			ListGridField loggerNamePatternField = new ListGridField(FIELD_NAME.LOGGER_NAME_PATTERN.name(), "loggerName Pattern");
+			ListGridField loggerNamePatternField = new ListGridField(FIELD_NAME.LOGGER_NAME_PATTERN.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerConditionPane_loggerNamePattern"));
 
 			setFields(levelField, expiresAtField, conditionField, loggerNamePatternField);
 

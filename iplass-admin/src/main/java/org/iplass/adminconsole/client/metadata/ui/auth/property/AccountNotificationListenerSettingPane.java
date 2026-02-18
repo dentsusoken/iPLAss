@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpCanvasItem;
 import org.iplass.adminconsole.client.metadata.ui.auth.listener.AuthenticationListenerEditDialog;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
@@ -222,7 +223,7 @@ public class AccountNotificationListenerSettingPane extends AbstractSettingPane 
 			setShowRecordComponents(true);
 			setShowRecordComponentsByCell(true);
 
-			ListGridField listenerTypeField = new ListGridField(FIELD_NAME.LISTENER_TYPE.name(), "Listener Type");
+			ListGridField listenerTypeField = new ListGridField(FIELD_NAME.LISTENER_TYPE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_auth_property_AccountNotificationListenerSettingPane_listenerType"));
 
 			setFields(listenerTypeField);
 		}

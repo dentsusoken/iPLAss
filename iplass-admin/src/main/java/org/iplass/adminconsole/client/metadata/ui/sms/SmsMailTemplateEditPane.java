@@ -577,7 +577,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField languageField = new ListGridField(FIELD_NAME.NAME.name(), "Language");
+			ListGridField languageField = new ListGridField(FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_sms_SmsMailTemplateEditPane_language"));
 
 			setFields(languageField);
 		}

@@ -294,7 +294,7 @@ public class DataLocalizationPane extends VLayout {
 				setSelectionType(SelectionStyle.SIMPLE);
 				setSelectionAppearance(SelectionAppearance.CHECKBOX);
 
-				ListGridField displayField = new ListGridField("displayName", "Language");
+				ListGridField displayField = new ListGridField("displayName", AdminClientMessageUtil.getString("ui_metadata_ui_entity_DataLocalizationPane_language"));
 
 				setFields(displayField);
 			}

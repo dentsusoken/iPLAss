@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.auth.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataComboBoxItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataComboBoxItem.ItemOption;
@@ -108,7 +109,7 @@ public class OpenIdConnectPolicySettingPane extends AbstractSettingPane {
 			grid.setCanEdit(true);
 			grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
 
-			ListGridField openIdConnectField = new ListGridField("openIdConnect", "OpenID Connect");
+			ListGridField openIdConnectField = new ListGridField("openIdConnect", AdminClientMessageUtil.getString("ui_metadata_ui_auth_property_OpenIdConnectPolicySettingPane_openIdConnect"));
 			// ListGridFieldに対してComboboxを設定する場合、
 			// Refreshを実行するとエラーになるので除外(fetchData is not a function)
 			// Tooltipを表示するとエラーになるので除外(self.getSelectedRecord is not a function)

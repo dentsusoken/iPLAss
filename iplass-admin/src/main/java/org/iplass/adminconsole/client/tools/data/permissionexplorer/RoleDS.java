@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.shared.tools.rpc.permissionexplorer.PermissionExplorerServiceAsync;
 import org.iplass.adminconsole.shared.tools.rpc.permissionexplorer.PermissionExplorerServiceFactory;
@@ -78,17 +79,17 @@ public class RoleDS extends AbstractAdminDataSource {
 		statusField.setWidth(30);
 		fields.add(statusField);
 
-		ListGridField oidField = new ListGridField("oid", "OID");
+		ListGridField oidField = new ListGridField("oid", AdminClientMessageUtil.getString("ui_tools_data_permissionexplorer_RoleDS_oid"));
 		oidField.setHidden(true);
 		fields.add(oidField);
 
-		ListGridField roleCodeField = new ListGridField("code", "Role Code");
+		ListGridField roleCodeField = new ListGridField("code", AdminClientMessageUtil.getString("ui_tools_data_permissionexplorer_RoleDS_roleCode"));
 		fields.add(roleCodeField);
 
-		ListGridField roleNameField = new ListGridField("name", "Role Name");
+		ListGridField roleNameField = new ListGridField("name", AdminClientMessageUtil.getString("ui_tools_data_permissionexplorer_RoleDS_roleName"));
 		fields.add(roleNameField);
 
-		ListGridField priorityField = new ListGridField("priority", "Priority");
+		ListGridField priorityField = new ListGridField("priority", AdminClientMessageUtil.getString("ui_tools_data_permissionexplorer_RoleDS_priority"));
 		priorityField.setWidth(100);
 		fields.add(priorityField);
 

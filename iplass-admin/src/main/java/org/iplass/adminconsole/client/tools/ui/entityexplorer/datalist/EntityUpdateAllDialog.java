@@ -421,28 +421,28 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 		}
 
 		private void createGridField() {
-			ListGridField nameField = new ListGridField(UpdateValueGridRecord.NAME, "Name");
-			ListGridField dispNameField = new ListGridField(UpdateValueGridRecord.DISPNAME, "Display Name");
-			ListGridField typeField = new ListGridField(UpdateValueGridRecord.TYPE_DISP_VAL, "Type");
+			ListGridField nameField = new ListGridField(UpdateValueGridRecord.NAME, AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityUpdateAllDialog_name"));
+			ListGridField dispNameField = new ListGridField(UpdateValueGridRecord.DISPNAME, AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityUpdateAllDialog_displayName"));
+			ListGridField typeField = new ListGridField(UpdateValueGridRecord.TYPE_DISP_VAL, AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityUpdateAllDialog_type"));
 			typeField.setWidth(90);
-			ListGridField multiplicity = new ListGridField(UpdateValueGridRecord.MULTIPLE_DISP_VAL, "Multi");
+			ListGridField multiplicity = new ListGridField(UpdateValueGridRecord.MULTIPLE_DISP_VAL, AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityUpdateAllDialog_multi"));
 			multiplicity.setWidth(35);
 			multiplicity.setAlign(Alignment.RIGHT);
-			ListGridField mustField = new ListGridField(UpdateValueGridRecord.NOT_NULL_DISP_VAL, "Required");
+			ListGridField mustField = new ListGridField(UpdateValueGridRecord.NOT_NULL_DISP_VAL, AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityUpdateAllDialog_required"));
 			mustField.setWidth(60);
 			mustField.setAlign(Alignment.CENTER);
-			ListGridField updatableField = new ListGridField(UpdateValueGridRecord.UPDATABLE_DISP_VAL, "CanEdit");
+			ListGridField updatableField = new ListGridField(UpdateValueGridRecord.UPDATABLE_DISP_VAL, AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityUpdateAllDialog_canEdit"));
 			updatableField.setWidth(55);
 			updatableField.setAlign(Alignment.CENTER);
-			ListGridField indexField = new ListGridField(UpdateValueGridRecord.INDEXTYPE_DISP_VAL, "Index");
+			ListGridField indexField = new ListGridField(UpdateValueGridRecord.INDEXTYPE_DISP_VAL, AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityUpdateAllDialog_index"));
 			indexField.setWidth(40);
 			indexField.setAlign(Alignment.CENTER);
 
-			ListGridField valueTypeField = new ListGridField(UpdateValueGridRecord.VALUE_TYPE, "Value Type");
+			ListGridField valueTypeField = new ListGridField(UpdateValueGridRecord.VALUE_TYPE, AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityUpdateAllDialog_valueType"));
 			valueTypeField.setType(ListGridFieldType.TEXT);
 			valueTypeField.setWidth(130);
 
-			ListGridField valueField = new ListGridField(UpdateValueGridRecord.UPDATE_VALUE, "Update Value");
+			ListGridField valueField = new ListGridField(UpdateValueGridRecord.UPDATE_VALUE, AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityUpdateAllDialog_updateValue"));
 			valueField.setType(ListGridFieldType.TEXT);
 			//valueField.setWidth(300);
 			valueField.setWidth("*");

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.tools.dto.permissionexplorer.PermissionInfo;
 import org.iplass.adminconsole.shared.tools.dto.permissionexplorer.PermissionSearchResult;
@@ -71,10 +72,10 @@ public abstract class PermissionListGridDS extends PermissionGridDS {
 		List<ListGridField> fields = new ArrayList<ListGridField>();
 
 		//ListGridではDisplayNameは未利用
-		ListGridField displayNameField = new ListGridField("displayName", "Display Name");
+		ListGridField displayNameField = new ListGridField("displayName", AdminClientMessageUtil.getString("ui_tools_data_permissionexplorer_PermissionListGridDS_displayName"));
 		displayNameField.setHidden(true);
 		fields.add(displayNameField);
-		ListGridField definitionNameField = new ListGridField("definitionName", "Name");
+		ListGridField definitionNameField = new ListGridField("definitionName", AdminClientMessageUtil.getString("ui_tools_data_permissionexplorer_PermissionListGridDS_name"));
 		//definitionNameField.setHidden(true);
 		definitionNameField.setWidth(200);
 		definitionNameField.setFrozen(true);

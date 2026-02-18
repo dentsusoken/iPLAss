@@ -346,8 +346,8 @@ public class ValidationEditDialog extends MtpDialog {
 			messageIdItem.setValueField("id");
 			messageIdItem.setDisplayField("id");
 			messageIdItem.setPickListWidth(520);
-			ListGridField itemIdField = new ListGridField("id", "ID", 150);
-			ListGridField itemMsgField = new ListGridField("shortMessage", "Message", 350);
+			ListGridField itemIdField = new ListGridField("id", AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_validation_ValidationEditDialog_id"), 150);
+			ListGridField itemMsgField = new ListGridField("shortMessage", AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_validation_ValidationEditDialog_message"), 350);
 			messageIdItem.setPickListFields(itemIdField, itemMsgField);
 			messageIdItem.setSortField("id");
 

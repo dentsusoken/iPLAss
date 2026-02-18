@@ -453,9 +453,9 @@ public class WebApiOpenApiStubTabPane extends VLayout {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField contentTypeField = new ListGridField(FieldName.CONTENT_TYPE.name(), "Content Type");
-			ListGridField labelField = new ListGridField(FieldName.LABEL.name(), "Label");
-			ListGridField contentField = new ListGridField(FieldName.DISPLAY_CONTENT.name(), "Content");
+			ListGridField contentTypeField = new ListGridField(FieldName.CONTENT_TYPE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_webapi_WebApiOpenApiStubTabPane_contentType"));
+			ListGridField labelField = new ListGridField(FieldName.LABEL.name(), AdminClientMessageUtil.getString("ui_metadata_ui_webapi_WebApiOpenApiStubTabPane_label"));
+			ListGridField contentField = new ListGridField(FieldName.DISPLAY_CONTENT.name(), AdminClientMessageUtil.getString("ui_metadata_ui_webapi_WebApiOpenApiStubTabPane_content"));
 
 			setFields(contentTypeField, labelField, contentField);
 		}

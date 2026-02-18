@@ -20,6 +20,8 @@
 
 package org.iplass.adminconsole.client.tools.data.auth.builtin;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+
 import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
@@ -37,15 +39,15 @@ public class SelectBuiltinUserDS extends BuiltinUserDS {
 		SelectBuiltinUserDS instance = getInstance();
 		grid.setDataSource(instance);
 
-		ListGridField oidField = new ListGridField(OID, "OID");
-		ListGridField accountIdField = new ListGridField(ACCOUNT_ID, "Account ID");
-		ListGridField nameField = new ListGridField(NAME, "Name");
-		ListGridField mailField = new ListGridField(MAIL, "Mail");
-		ListGridField adminField = new ListGridField(ADMIN, "Admin");
+		ListGridField oidField = new ListGridField(OID, AdminClientMessageUtil.getString("ui_tools_data_auth_builtin_SelectBuiltinUserDS_oid"));
+		ListGridField accountIdField = new ListGridField(ACCOUNT_ID, AdminClientMessageUtil.getString("ui_tools_data_auth_builtin_SelectBuiltinUserDS_accountId"));
+		ListGridField nameField = new ListGridField(NAME, AdminClientMessageUtil.getString("ui_tools_data_auth_builtin_SelectBuiltinUserDS_name"));
+		ListGridField mailField = new ListGridField(MAIL, AdminClientMessageUtil.getString("ui_tools_data_auth_builtin_SelectBuiltinUserDS_mail"));
+		ListGridField adminField = new ListGridField(ADMIN, AdminClientMessageUtil.getString("ui_tools_data_auth_builtin_SelectBuiltinUserDS_admin"));
 		adminField.setAlign(Alignment.CENTER);
-		ListGridField startDateField = new ListGridField(START_DATE, "Start Date");
+		ListGridField startDateField = new ListGridField(START_DATE, AdminClientMessageUtil.getString("ui_tools_data_auth_builtin_SelectBuiltinUserDS_startDate"));
 		startDateField.setWidth(130);
-		ListGridField endDateField = new ListGridField(END_DATE, "End Date");
+		ListGridField endDateField = new ListGridField(END_DATE, AdminClientMessageUtil.getString("ui_tools_data_auth_builtin_SelectBuiltinUserDS_endDate"));
 		endDateField.setWidth(130);
 
 		grid.setFields(oidField, accountIdField, nameField, mailField, adminField, startDateField, endDateField);

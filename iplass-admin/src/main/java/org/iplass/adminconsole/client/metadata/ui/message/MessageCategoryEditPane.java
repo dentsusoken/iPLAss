@@ -689,13 +689,13 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			statusField.setCanEdit(false);
 			fields.add(statusField);
 
-			ListGridField messageIdField = new ListGridField(MessageItemListGridRecord.MESSAGE_ID, "ID");
+			ListGridField messageIdField = new ListGridField(MessageItemListGridRecord.MESSAGE_ID, AdminClientMessageUtil.getString("ui_metadata_ui_message_MessageCategoryEditPane_id"));
 			messageIdField.setWidth(100);
 			messageIdField.setCanEdit(true);
 
 			fields.add(messageIdField);
 
-			ListGridField defaultMessageField = new ListGridField(MessageItemListGridRecord.DEFAULT_MESSAGE, "Message");
+			ListGridField defaultMessageField = new ListGridField(MessageItemListGridRecord.DEFAULT_MESSAGE, AdminClientMessageUtil.getString("ui_metadata_ui_message_MessageCategoryEditPane_message"));
 			defaultMessageField.setCanEdit(true);
 			defaultMessageField.setEscapeHTML(true);
 			//改行も許可するためTextAreaで入力

@@ -325,19 +325,19 @@ public class QueueInfoPane extends VLayout {
 				ds = AsyncTaskDS.getInstance();
 				grid.setDataSource(ds);
 
-				ListGridField taskId = new ListGridField("taskId", "Task ID");
+				ListGridField taskId = new ListGridField("taskId", AdminClientMessageUtil.getString("ui_tools_ui_queueexplorer_QueueInfoPane_taskId"));
 				taskId.setWidth(70);
 				taskId.setCanEdit(false);
-				ListGridField groupingKey = new ListGridField("groupingKey", "Grouping Key");
+				ListGridField groupingKey = new ListGridField("groupingKey", AdminClientMessageUtil.getString("ui_tools_ui_queueexplorer_QueueInfoPane_groupingKey"));
 				groupingKey.setWidth(150);
 				groupingKey.setCanEdit(false);
-				ListGridField status = new ListGridField("status", "Status");
+				ListGridField status = new ListGridField("status", AdminClientMessageUtil.getString("ui_tools_ui_queueexplorer_QueueInfoPane_status"));
 				status.setWidth(120);
 				status.setCanEdit(false);
-				ListGridField retryCount = new ListGridField("retryCount", "Retry Count");
+				ListGridField retryCount = new ListGridField("retryCount", AdminClientMessageUtil.getString("ui_tools_ui_queueexplorer_QueueInfoPane_retryCount"));
 				retryCount.setWidth(70);
 				retryCount.setCanEdit(false);
-				ListGridField exceptionHandlingMode = new ListGridField("exceptionHandlingMode", "Exception Handling Mode");
+				ListGridField exceptionHandlingMode = new ListGridField("exceptionHandlingMode", AdminClientMessageUtil.getString("ui_tools_ui_queueexplorer_QueueInfoPane_exceptionHandlingMode"));
 				exceptionHandlingMode.setWidth(120);
 				exceptionHandlingMode.setCanEdit(false);
 

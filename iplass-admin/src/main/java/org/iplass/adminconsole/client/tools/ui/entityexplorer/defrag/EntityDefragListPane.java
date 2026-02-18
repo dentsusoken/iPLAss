@@ -277,13 +277,13 @@ public class EntityDefragListPane extends VLayout {
 		explorerField.setWidth(25);
 		ListGridField errorField = new ListGridField("error", " ");
 		errorField.setWidth(25);
-		ListGridField nameField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.NAME.name(), "Name");
-		ListGridField displayNameField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), "Display Name");
-		ListGridField countField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), "Count");
+		ListGridField nameField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_defrag_EntityDefragListPane_name"));
+		ListGridField displayNameField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_defrag_EntityDefragListPane_displayName"));
+		ListGridField countField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_defrag_EntityDefragListPane_count"));
 		countField.setWidth(70);
-		ListGridField updateDateField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.UPDATE_DATE.name(), "Update Date");
+		ListGridField updateDateField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.UPDATE_DATE.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_defrag_EntityDefragListPane_updateDate"));
 		updateDateField.setWidth(130);
-		ListGridField curVersionField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.CURRENT_VERSION.name(), "Cur Version");
+		ListGridField curVersionField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.CURRENT_VERSION.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_defrag_EntityDefragListPane_curVersion"));
 		curVersionField.setWidth(70);
 
 		grid.setFields(explorerField, errorField, nameField, displayNameField, countField, updateDateField, curVersionField);

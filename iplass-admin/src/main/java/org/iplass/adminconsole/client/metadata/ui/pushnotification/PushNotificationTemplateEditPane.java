@@ -703,8 +703,8 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField languageField = new ListGridField(FIELD_NAME.NAME.name(), "Language");
-			ListGridField titleField = new ListGridField(FIELD_NAME.TITLE.name(), "Title");
+			ListGridField languageField = new ListGridField(FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_pushnotification_PushNotificationTemplateEditPane_language"));
+			ListGridField titleField = new ListGridField(FIELD_NAME.TITLE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_pushnotification_PushNotificationTemplateEditPane_title"));
 
 			setFields(languageField, titleField);
 		}

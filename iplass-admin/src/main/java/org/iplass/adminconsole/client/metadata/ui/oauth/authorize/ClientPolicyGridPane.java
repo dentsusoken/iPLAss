@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
@@ -140,7 +140,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 
 			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
 
-			ListGridField clientTypeField = new ListGridField(FIELD_NAME.CLIENT_TYPE.name(), "Client Type");
+			ListGridField clientTypeField = new ListGridField(FIELD_NAME.CLIENT_TYPE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_oauth_authorize_ClientPolicyGridPane_clientType"));
 
 			setFields(clientTypeField);
 
@@ -427,7 +427,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			grid.setCanEdit(true);
 			grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
 
-			ListGridField scopeField = new ListGridField("scope", "Scope");
+			ListGridField scopeField = new ListGridField("scope", AdminClientMessageUtil.getString("ui_metadata_ui_oauth_authorize_ClientPolicyGridPane_scope"));
 			grid.setFields(scopeField);
 
 			IButton btnAdd = new IButton("Add");

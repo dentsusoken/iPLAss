@@ -500,8 +500,8 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField headerNameField = new ListGridField(HEADER_FIELD_NAME.HEADERNAME.name(), "Name Key");
-			ListGridField headerValueField = new ListGridField(HEADER_FIELD_NAME.HEADERVALUE.name(), "Value");
+			ListGridField headerNameField = new ListGridField(HEADER_FIELD_NAME.HEADERNAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_webhook_WebhookTemplateEditPane_headerName"));
+			ListGridField headerValueField = new ListGridField(HEADER_FIELD_NAME.HEADERVALUE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_webhook_WebhookTemplateEditPane_headerValue"));
 			
 			setFields(headerNameField, headerValueField);
 		}

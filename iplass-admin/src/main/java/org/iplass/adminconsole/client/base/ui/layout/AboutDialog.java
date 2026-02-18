@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.shared.base.dto.tenant.AdminPlatformInfo;
 
@@ -123,8 +124,8 @@ public class AboutDialog extends MtpDialog {
 			versionGrid.setCanSort(false);
 			versionGrid.setCanDragSelectText(true);
 
-			ListGridField versionKeyField = new ListGridField("key", "key");
-			ListGridField versionValueField = new ListGridField("value", "value");
+		ListGridField versionKeyField = new ListGridField("key", AdminClientMessageUtil.getString("ui_base_ui_layout_AboutDialog_key"));
+		ListGridField versionValueField = new ListGridField("value", AdminClientMessageUtil.getString("ui_base_ui_layout_AboutDialog_value"));
 			versionGrid.setFields(versionKeyField, versionValueField);
 
 			List<ListGridRecord> versionRecords = new ArrayList<ListGridRecord>();
@@ -177,8 +178,8 @@ public class AboutDialog extends MtpDialog {
 			serverGrid.setCanSort(false);
 			serverGrid.setCanDragSelectText(true);
 
-			ListGridField serverKeyField = new ListGridField("key", "key");
-			ListGridField serverValueField = new ListGridField("value", "value");
+		ListGridField serverKeyField = new ListGridField("key", AdminClientMessageUtil.getString("ui_base_ui_layout_AboutDialog_key"));
+		ListGridField serverValueField = new ListGridField("value", AdminClientMessageUtil.getString("ui_base_ui_layout_AboutDialog_value"));
 			serverGrid.setFields(serverKeyField, serverValueField);
 
 			List<ListGridRecord> serverRecords = new ArrayList<ListGridRecord>();
