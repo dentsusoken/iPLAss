@@ -185,9 +185,16 @@ public class JasperReportingEngine implements ReportingEngine{
 
 			SimplePdfExporterConfiguration config = new SimplePdfExporterConfiguration();
 			if (StringUtil.isNotEmpty(password) || StringUtil.isNotEmpty(ownerPassword)) {
-				config.setUserPassword(StringUtil.isNotEmpty(password) ? password : null);
-				config.setOwnerPassword(StringUtil.isNotEmpty(ownerPassword) ? ownerPassword : null);
 				config.setEncrypted(true);
+				if (StringUtil.isNotEmpty(password)) {
+					config.setUserPassword(password);
+				}
+				if (StringUtil.isNotEmpty(ownerPassword)) {
+					config.setOwnerPassword(ownerPassword);
+				} else if (StringUtil.isNotEmpty(password)) {
+					// ownerパスワードがnullの場合は下位互換性のためuserパスワードをセット
+					config.setOwnerPassword(password);
+				}
 			}
 			pdfExporter.setConfiguration(config);
 
