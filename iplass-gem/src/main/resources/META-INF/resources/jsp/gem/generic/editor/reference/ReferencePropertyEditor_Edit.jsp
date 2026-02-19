@@ -1487,8 +1487,18 @@ $(function() {
  onclick="<c:out value="<%=deleteItem %>"/>"/>
 <%
 				} else {
+					// 多重度が1の場合は、削除ではなく値をクリアする
+					String clearUniqueRefFunc = "clearUniqueBtn_" + StringUtil.escapeJavaScript(propName);
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
+<script type="text/javascript">
+function <%=clearUniqueRefFunc%>() {
+	const $txt = $("#uniq_txt_" + es("<%=StringUtil.escapeJavaScript(liId)%>"));
+	$txt.val("");
+	$txt.change();
+}
+</script>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
+ onclick="<c:out value="<%=clearUniqueRefFunc %>"/>()"/>
 <%
 				}
 			}
