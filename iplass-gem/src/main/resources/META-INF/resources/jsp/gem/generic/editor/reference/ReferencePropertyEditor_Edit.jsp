@@ -1394,11 +1394,18 @@ $(function() {
 			Entity refEntity = entityList.get(i);
 			String id = propName + i;
 			String liId = "li_" + id;
-			String linkId = propName + "_" + refEntity.getOid();
-			String dispPropLabel = getDisplayPropLabel(editor, refEntity);
-
+			String linkId = "";
+			String linkDisplayStyle = "";
+			String dispPropLabel = "";
 			String key = "";
-			if (length > 0) key = refEntity.getOid() + "_" + refEntity.getVersion();
+			// 多重度1で値が未指定の場合のダミーデータを除外
+			if (refEntity.getOid() != null) {
+				linkId = propName + "_" + refEntity.getOid();
+				dispPropLabel = getDisplayPropLabel(editor, refEntity);
+				key = refEntity.getOid() + "_" + refEntity.getVersion();
+			} else {
+				linkDisplayStyle = "display:none;";
+			}
 
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
@@ -1471,7 +1478,7 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=linkDisplayStyle%>"/> <c:out value="<%=customStyle%>"/>"
   onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
