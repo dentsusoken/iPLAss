@@ -1492,10 +1492,10 @@ $(function() {
 %>
 <script type="text/javascript">
 function <%=clearUniqueRefFunc%>() {
-	const $li = $("#<%=StringUtil.escapeJavaScript(liId)%>");
-	const $txt = $("#uniq_txt_<%=StringUtil.escapeJavaScript(liId)%>");
+	const $li = $("#" + es("<%=StringUtil.escapeJavaScript(liId)%>"));
+	const $txt = $("#uniq_txt_" + es("<%=StringUtil.escapeJavaScript(liId)%>"));
 	const $link = $("a.modal-lnk", $li);
-	const $hidden = $("#i_<%=StringUtil.escapeJavaScript(liId)%>");
+	const $hidden = $("#i_" + es("<%=StringUtil.escapeJavaScript(liId)%>"));
 	
 	$txt.val("");
 	$link.attr({"id":"", "data-linkId":""}).text("").hide();
