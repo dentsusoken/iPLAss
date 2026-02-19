@@ -1398,7 +1398,7 @@ $(function() {
 			String linkDisplayStyle = "";
 			String dispPropLabel = "";
 			String key = "";
-			// 多重度1で値が未指定の場合のダミーデータを除外
+			// 多重度1で値が未指定の場合の空エンティティは、リンクのIDを指定しない、非表示にする
 			if (refEntity.getOid() != null) {
 				linkId = propName + "_" + refEntity.getOid();
 				dispPropLabel = getDisplayPropLabel(editor, refEntity);
