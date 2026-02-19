@@ -41,6 +41,9 @@ public class MetaJasperReportType extends MetaReportType {
 	/** パスワードAttribute名 */
 	private String passwordAttributeName;
 
+	/** オーナーパスワードAttribute名 */
+	private String ownerPasswordAttributeName;
+
 	public MetaReportParamMap[] getParamMap() {
 		return paramMap;
 	}
@@ -65,6 +68,14 @@ public class MetaJasperReportType extends MetaReportType {
 		this.passwordAttributeName = passwordAttributeName;
 	}
 
+	public String getOwnerPasswordAttributeName() {
+		return ownerPasswordAttributeName;
+	}
+
+	public void setOwnerPasswordAttributeName(String ownerPasswordAttributeName) {
+		this.ownerPasswordAttributeName = ownerPasswordAttributeName;
+	}
+
 	@Override
 	public void applyConfig(ReportType reportType) {
 		JasperReportType def = (JasperReportType)reportType;
@@ -85,6 +96,7 @@ public class MetaJasperReportType extends MetaReportType {
 		dataSourceAttributeName = def.getDataSourceAttributeName();
 
 		passwordAttributeName = def.getPasswordAttributeName();
+		ownerPasswordAttributeName = def.getOwnerPasswordAttributeName();
 	}
 
 	@Override
@@ -104,6 +116,7 @@ public class MetaJasperReportType extends MetaReportType {
 
 		definition.setDataSourceAttributeName(dataSourceAttributeName);
 		definition.setPasswordAttributeName(passwordAttributeName);
+		definition.setOwnerPasswordAttributeName(ownerPasswordAttributeName);
 
 		return definition;
 	}
@@ -136,6 +149,7 @@ public class MetaJasperReportType extends MetaReportType {
 				model.setMaps(paramMap);
 			}
 			model.setPasswordAttributeName(passwordAttributeName);
+			model.setOwnerPasswordAttributeName(ownerPasswordAttributeName);
 		}
 	}
 }

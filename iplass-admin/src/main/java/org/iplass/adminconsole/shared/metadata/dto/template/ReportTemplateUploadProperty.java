@@ -59,8 +59,12 @@ public interface ReportTemplateUploadProperty extends UploadProperty {
 
 	/** Jasper DataSourceAttributeName */
 	public static final String JASPER_DATASOURCE_ATTRIBUTE_NAME = "jasperDataSourceAttributeName";
+
 	/** Jasper PasswordAttributeName */
 	public static final String JASPER_PASSWORD_ATTRIBUTE_NAME = "jasperPasswordAttributeName";
+	
+	/** Jasper OwnerPasswordAttributeName */
+	public static final String JASPER_OWNER_PASSWORD_ATTRIBUTE_NAME = "jasperOwnerPasswordAttributeName";
 
 	/** Poiレポート出力ロジック形式 */
 	public static final String POI_LOGIC_NAME = "poiLogicName";
