@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.auth.property;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpIntegerItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.policy.definition.AccountLockoutPolicyDefinition;
@@ -39,7 +40,7 @@ public class AccountLockoutPolicySettingPane extends AbstractSettingPane {
 		form.setGroupTitle("Account Lockout Policy Setting");
 
 		txtlockoutFailureCount = new MtpIntegerItem();
-		txtlockoutFailureCount.setTitle("Lockout Failure Count");
+		txtlockoutFailureCount.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_AccountLockoutPolicySettingPane_lockoutFailureCount"));
 		SmartGWTUtil.setRequired(txtlockoutFailureCount);
 		IntegerRangeValidator validator = new IntegerRangeValidator();
 		validator.setMin(0);
@@ -49,11 +50,11 @@ public class AccountLockoutPolicySettingPane extends AbstractSettingPane {
 		txtlockoutFailureCount.setStartRow(true);
 
 		txtlockoutDuration = new MtpIntegerItem();
-		txtlockoutDuration.setTitle("Lockout Duration(min)");
+		txtlockoutDuration.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_AccountLockoutPolicySettingPane_lockoutDuration"));
 		SmartGWTUtil.setRequired(txtlockoutDuration);
 
 		txtlockoutFailureExpirationInterval = new MtpIntegerItem();
-		txtlockoutFailureExpirationInterval.setTitle("Lockout Failure Expiration Interval(min)");
+		txtlockoutFailureExpirationInterval.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_AccountLockoutPolicySettingPane_lockoutFailureExpirationInterval"));
 		SmartGWTUtil.setRequired(txtlockoutFailureExpirationInterval);
 
 		form.setItems(

@@ -123,8 +123,8 @@ public class StatusErrorListPane extends HLayout {
 			messageGrid.setAutoFitData(Autofit.HORIZONTAL);
 //			messageGrid.setAutoFitMaxHeight(56);
 
-			ListGridField pathField = new ListGridField("path", "Path", 200);
-	        ListGridField messageField = new ListGridField("message", "Message");
+			ListGridField pathField = new ListGridField("path", AdminClientMessageUtil.getString("ui_tools_ui_metaexplorer_StatusErrorListPane_path"), 200);
+	        ListGridField messageField = new ListGridField("message", AdminClientMessageUtil.getString("ui_tools_ui_metaexplorer_StatusErrorListPane_message"));
 	        messageGrid.setFields(pathField, messageField);
 
 	        ListGridRecord[] records = new ListGridRecord[allResult.size()];

@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.MetaTreeNode;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.ImportFileInfo;
@@ -98,7 +99,7 @@ public class MetaDataImportTreeDS extends AbstractAdminDataSource {
 		List<TreeGridField> fields = new ArrayList<TreeGridField>();
 
 		TreeGridField displayNameField = new TreeGridField(FIELD_NAME.DISPLAY_NAME.name());
-		displayNameField.setTitle("Path");
+		displayNameField.setTitle(AdminClientMessageUtil.getString("ui_tools_data_metaexplorer_MetaDataImportTreeDS_path"));
 		displayNameField.setShowHover(true);
 		displayNameField.setHoverCustomizer(new HoverCustomizer() {
 			@Override
@@ -110,7 +111,7 @@ public class MetaDataImportTreeDS extends AbstractAdminDataSource {
 		fields.add(displayNameField);
 
 		TreeGridField itemIdField = new TreeGridField(FIELD_NAME.ITEM_ID.name());
-		itemIdField.setTitle("ID");
+		itemIdField.setTitle(AdminClientMessageUtil.getString("ui_tools_data_metaexplorer_MetaDataImportTreeDS_id"));
 		itemIdField.setWidth(250);
 		itemIdField.setShowHover(true);
 		itemIdField.setHoverCustomizer(new HoverCustomizer() {
@@ -123,12 +124,12 @@ public class MetaDataImportTreeDS extends AbstractAdminDataSource {
 		fields.add(itemIdField);
 
 		TreeGridField importActionField = new TreeGridField(FIELD_NAME.ACTION_NAME.name());
-		importActionField.setTitle("Action");
+		importActionField.setTitle(AdminClientMessageUtil.getString("ui_tools_data_metaexplorer_MetaDataImportTreeDS_action"));
 		importActionField.setWidth(150);
 		fields.add(importActionField);
 
 		TreeGridField messageField = new TreeGridField(FIELD_NAME.MESSAGE.name());
-		messageField.setTitle("Message");
+		messageField.setTitle(AdminClientMessageUtil.getString("ui_tools_data_metaexplorer_MetaDataImportTreeDS_message"));
 		//下に詳細を表示するようにしたのでHoverしない
 //		messageField.setShowHover(true);
 //		messageField.setWrap(true);

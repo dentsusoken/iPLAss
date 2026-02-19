@@ -75,32 +75,32 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		form.setGroupTitle("Password Policy Setting");
 
 		txtMaximumPasswordAge = new MtpIntegerItem();
-		txtMaximumPasswordAge.setTitle("Max Password Age(day)");
+		txtMaximumPasswordAge.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_maxPasswordAge"));
 		SmartGWTUtil.setRequired(txtMaximumPasswordAge);
 		txtMaximumPasswordAge.setValidators(new IsIntegerValidator());
 		txtMaximumPasswordAge.setStartRow(true);
 
 		txtMinimumPasswordAge = new MtpIntegerItem();
-		txtMinimumPasswordAge.setTitle("Min Password Age(day)");
+		txtMinimumPasswordAge.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_minPasswordAge"));
 		SmartGWTUtil.setRequired(txtMinimumPasswordAge);
 
 		txtPasswordPattern = new MtpTextItem();
-		txtPasswordPattern.setTitle("Password Pattern");
+		txtPasswordPattern.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_passwordPattern"));
 		txtPasswordPattern.setStartRow(true);
 		txtPasswordPattern.setColSpan(3);
 
 		chkDenySamePasswordAsAccountId = new CheckboxItem();
 		chkDenySamePasswordAsAccountId.setShowTitle(false);
-		chkDenySamePasswordAsAccountId.setTitle("Deny Same Password As Account ID.");
+		chkDenySamePasswordAsAccountId.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_denySamePasswordAsAccountId"));
 
 		txtDenyList = new MtpTextAreaItem();
-		txtDenyList.setTitle("Deny List");
+		txtDenyList.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_denyList"));
 		txtDenyList.setStartRow(true);
 		txtDenyList.setColSpan(3);
 		txtDenyList.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyEditPane_denyList")));
 
 		txtPasswordPatternErrorMessage = new MtpTextItem();
-		txtPasswordPatternErrorMessage.setTitle("Password Pattern Error Message");
+		txtPasswordPatternErrorMessage.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_passwordPatternErrorMessage"));
 		txtPasswordPatternErrorMessage.setStartRow(true);
 		txtPasswordPatternErrorMessage.setColSpan(3);
 
@@ -127,21 +127,21 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		});
 
 		txtPasswordHistoryCount = new MtpIntegerItem();
-		txtPasswordHistoryCount.setTitle("Password History Count");
+		txtPasswordHistoryCount.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_passwordHistoryCount"));
 		SmartGWTUtil.setRequired(txtPasswordHistoryCount);
 		txtPasswordHistoryCount.setStartRow(true);
 		
 		txtPasswordHistoryPeriod = new MtpIntegerItem();
-		txtPasswordHistoryPeriod.setTitle("Password History Period");
+		txtPasswordHistoryPeriod.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_passwordHistoryPeriod"));
 		SmartGWTUtil.setRequired(txtPasswordHistoryPeriod);
 
 		chkCreateAccountWithSpecificPassword = new CheckboxItem();
 		chkCreateAccountWithSpecificPassword.setShowTitle(false);
-		chkCreateAccountWithSpecificPassword.setTitle("Create Account With Specific Password.");
+		chkCreateAccountWithSpecificPassword.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_createAccountWithSpecificPassword"));
 
 		chkResetPasswordWithSpecificPassword = new CheckboxItem();
 		chkResetPasswordWithSpecificPassword.setShowTitle(false);
-		chkResetPasswordWithSpecificPassword.setTitle("Reset Password With Specific Password.");
+		chkResetPasswordWithSpecificPassword.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_resetPasswordWithSpecificPassword"));
 
 		form.setItems(
 				txtMaximumPasswordAge, txtMinimumPasswordAge, txtPasswordPattern, space,
@@ -160,23 +160,23 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		addMember(spacer);
 		
 		txtRandomPasswordIncludeSigns = new MtpTextItem();
-		txtRandomPasswordIncludeSigns.setTitle("Random Password Include Signs");
+		txtRandomPasswordIncludeSigns.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_randomPasswordIncludeSigns"));
 		txtRandomPasswordIncludeSigns.setStartRow(true);
 
 		txtRandomPasswordExcludeChars = new MtpTextItem();
-		txtRandomPasswordExcludeChars.setTitle("Random Password Exclude Chars");
+		txtRandomPasswordExcludeChars.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_randomPasswordExcludeChars"));
 
 		txtRandomPasswordLength = new MtpIntegerItem();
-		txtRandomPasswordLength.setTitle("Random Password Length");
+		txtRandomPasswordLength.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_randomPasswordLength"));
 		SmartGWTUtil.setRequired(txtRandomPasswordLength);
 		txtRandomPasswordLength.setStartRow(true);
 
 		txtMaximumRandomPasswordAge = new MtpIntegerItem();
-		txtMaximumRandomPasswordAge.setTitle("Max Random Password Age(day)");
+		txtMaximumRandomPasswordAge.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_maxRandomPasswordAge"));
 		SmartGWTUtil.setRequired(txtMaximumRandomPasswordAge);
 		
 		customUserEndDateBtn = new ButtonItem();
-		customUserEndDateBtn.setTitle("Edit");
+		customUserEndDateBtn.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_edit"));
 		customUserEndDateBtn.setWidth(100);
 		customUserEndDateBtn.setStartRow(false);
 		customUserEndDateBtn.setColSpan(3);
@@ -205,7 +205,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		});
 
 		txaCustomUserEndDate = new TextAreaItem();
-		txaCustomUserEndDate.setTitle("Custom User End Date Script");
+		txaCustomUserEndDate.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_PasswordPolicySettingPane_customUserEndDateScript"));
 		txaCustomUserEndDate.setColSpan(3);
 		txaCustomUserEndDate.setWidth("100%");
 		txaCustomUserEndDate.setHeight(100);

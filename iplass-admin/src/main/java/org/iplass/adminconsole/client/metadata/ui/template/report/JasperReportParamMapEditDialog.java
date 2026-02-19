@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
@@ -79,8 +80,8 @@ public class JasperReportParamMapEditDialog extends MtpDialog {
 					templateField.setPickListWidth(480);
 					SmartGWTUtil.setRequired(templateField);
 
-					ListGridField nameField = new ListGridField("name", "Name", 230);
-					ListGridField displayNameField = new ListGridField("displayName", "Display Name", 230);
+				ListGridField nameField = new ListGridField("name", AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JasperReportParamMapEditDialog_name"), 230);
+				ListGridField displayNameField = new ListGridField("displayName", AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JasperReportParamMapEditDialog_displayName"), 230);
 					templateField.setPickListFields(displayNameField, nameField);
 
 				} else {
@@ -141,8 +142,8 @@ public class JasperReportParamMapEditDialog extends MtpDialog {
 			templateField.setPickListWidth(480);
 			SmartGWTUtil.setRequired(templateField);
 
-			ListGridField nameField = new ListGridField("name", "Name", 230);
-			ListGridField displayNameField = new ListGridField("displayName", "Display Name", 230);
+			ListGridField nameField = new ListGridField("name", AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JasperReportParamMapEditDialog_name"), 230);
+			ListGridField displayNameField = new ListGridField("displayName", AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JasperReportParamMapEditDialog_displayName"), 230);
 			templateField.setPickListFields(displayNameField, nameField);
 
 			templateField.setValue(paramMap.getMapFrom());

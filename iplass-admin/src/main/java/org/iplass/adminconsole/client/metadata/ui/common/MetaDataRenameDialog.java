@@ -89,12 +89,12 @@ public class MetaDataRenameDialog extends MtpDialog {
 		centerInPage();
 
 		fromField = new MtpTextItem();
-		fromField.setTitle("From Name");
+		fromField.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaDataRenameDialog_fromName"));
 		fromField.setValue(fromName);
 		SmartGWTUtil.setReadOnly(fromField);
 
 		toField = new MtpTextItem();
-		toField.setTitle("To Name");
+		toField.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaDataRenameDialog_toName"));
 		SmartGWTUtil.setRequired(toField);
 		toField.setValue(fromName);
 

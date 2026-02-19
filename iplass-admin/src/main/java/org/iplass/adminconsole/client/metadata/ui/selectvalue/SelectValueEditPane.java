@@ -331,9 +331,9 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 			selectGrid.setCanAcceptDroppedRecords(true);
 			selectGrid.setCanReorderRecords(true);
 
-			ListGridField valueField = new ListGridField("value", "Value");
+			ListGridField valueField = new ListGridField("value", AdminClientMessageUtil.getString("ui_metadata_ui_selectvalue_SelectValueEditPane_value"));
 			valueField.setWidth(150);
-			ListGridField dispNameField = new ListGridField("dispName", "DisplayName");
+			ListGridField dispNameField = new ListGridField("dispName", AdminClientMessageUtil.getString("ui_metadata_ui_selectvalue_SelectValueEditPane_displayName"));
 			selectGrid.setFields(valueField, dispNameField);
 
 			selectGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
@@ -344,9 +344,9 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 			});
 
 			IButton addSel = new IButton();
-			addSel.setTitle("Add");
+			addSel.setTitle(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditPane_add"));
 			IButton delSel = new IButton();
-			delSel.setTitle("Remove");
+			delSel.setTitle(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditPane_remove"));
 			addSel.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {

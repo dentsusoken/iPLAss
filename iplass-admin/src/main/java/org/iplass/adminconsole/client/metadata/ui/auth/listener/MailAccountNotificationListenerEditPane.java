@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
@@ -299,7 +300,7 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 				setShowRecordComponents(true);
 				setShowRecordComponentsByCell(true);
 
-				ListGridField displayNameField = new ListGridField("propertyName", "Property Name");
+				ListGridField displayNameField = new ListGridField("propertyName", AdminClientMessageUtil.getString("ui_metadata_ui_auth_listener_MailAccountNotificationListenerEditPane_propertyName"));
 
 				setFields(displayNameField);
 			}

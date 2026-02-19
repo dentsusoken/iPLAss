@@ -290,13 +290,13 @@ public class LogExplorerConditionPane extends VLayout {
 			setDataSource(ds);
 
 			//ボタンを表示したいためListGridFieldを指定
-			ListGridField levelField = new ListGridField(FIELD_NAME.LEVEL.name(), "Level");
+			ListGridField levelField = new ListGridField(FIELD_NAME.LEVEL.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerConditionPane_level"));
 			levelField.setWidth(120);
-			ListGridField expiresAtField = new ListGridField(FIELD_NAME.EXPIRES_AT.name(), "ExpiresAt");
+			ListGridField expiresAtField = new ListGridField(FIELD_NAME.EXPIRES_AT.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerConditionPane_expiresAt"));
 			expiresAtField.setWidth(120);
-			ListGridField conditionField = new ListGridField(FIELD_NAME.CONDITION.name(), "Condition");
+			ListGridField conditionField = new ListGridField(FIELD_NAME.CONDITION.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerConditionPane_condition"));
 			conditionField.setWidth(100);
-			ListGridField loggerNamePatternField = new ListGridField(FIELD_NAME.LOGGER_NAME_PATTERN.name(), "loggerName Pattern");
+			ListGridField loggerNamePatternField = new ListGridField(FIELD_NAME.LOGGER_NAME_PATTERN.name(), AdminClientMessageUtil.getString("ui_tools_ui_logexplorer_LogExplorerConditionPane_loggerNamePattern"));
 
 			setFields(levelField, expiresAtField, conditionField, loggerNamePatternField);
 
@@ -364,7 +364,7 @@ public class LogExplorerConditionPane extends VLayout {
 			pnlHeader.setMembers(btnOK, btnCancel);
 
 			selLevel =  new MtpSelectItem();
-			selLevel.setTitle("Level");
+			selLevel.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_level"));
 			LinkedHashMap<String, String> levelMap = new LinkedHashMap<>();
 			levelMap.put("TRACE", "TRACE");
 			levelMap.put("DEBUG", "DEBUG");
@@ -376,16 +376,16 @@ public class LogExplorerConditionPane extends VLayout {
 			selLevel.setDisabled(true);
 
 			txtExpiresAt = SmartGWTUtil.createDateTimeItem();
-			txtExpiresAt.setTitle("Expires At");
+			txtExpiresAt.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_expiresAt"));
 			SmartGWTUtil.setRequired(txtExpiresAt);
 			txtExpiresAt.setDisabled(true);
 
 			txtLoggerNamePattern = new MtpTextItem();
-			txtLoggerNamePattern.setTitle("Logger Name Pattern");
+			txtLoggerNamePattern.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_loggerNamePattern"));
 			txtLoggerNamePattern.setDisabled(true);
 
 			btnEditCondition = new ButtonItem();
-			btnEditCondition.setTitle("Edit");
+			btnEditCondition.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_edit"));
 			btnEditCondition.setWidth(100);
 			btnEditCondition.setStartRow(true);
 			btnEditCondition.setColSpan(3);
@@ -411,7 +411,7 @@ public class LogExplorerConditionPane extends VLayout {
 			btnEditCondition.setDisabled(true);
 
 			txaCondition = new MtpTextAreaItem();
-			txaCondition.setTitle("Condition");
+			txaCondition.setTitle(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_condition"));
 			txaCondition.setColSpan(2);
 			txaCondition.setHeight(80);
 			SmartGWTUtil.setReadOnlyTextArea(txaCondition);
@@ -436,7 +436,7 @@ public class LogExplorerConditionPane extends VLayout {
 			layout.addMember(dummy);
 
 			SectionStack stack = new SectionStack();
-			SectionStackSection section = new SectionStackSection("Condition Setting");
+		SectionStackSection section = new SectionStackSection(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_conditionSetting"));
 			section.setCanCollapse(false);	//CLOSE不可
 
 			section.addItem(layout);

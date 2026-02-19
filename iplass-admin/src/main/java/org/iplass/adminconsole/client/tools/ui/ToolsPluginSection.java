@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.tools.ui;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.HasDestroy;
 
 import com.smartgwt.client.widgets.layout.SectionStackSection;
@@ -30,7 +31,7 @@ public class ToolsPluginSection extends SectionStackSection implements HasDestro
 
 	public ToolsPluginSection() {
 
-		setTitle("Tools");
+		setTitle(AdminClientMessageUtil.getString("ui_tools_ToolsPluginSection_tools"));
 
 		toolsTreeGrid = ToolsPluginTreeGrid.getInstance();
 		toolsTreeGrid.setWidth100();

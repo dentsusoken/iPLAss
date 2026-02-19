@@ -110,7 +110,7 @@ public class MainTopNav extends VStack {
 		topBar.addSeparator();
 
 		closeButton = new ToolStripButton();
-		closeButton.setTitle("Close");
+		closeButton.setTitle(AdminClientMessageUtil.getString("ui_base_layout_MainTopNav_close"));
 		closeButton.setIcon("close.png");
 		closeButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -161,9 +161,9 @@ public class MainTopNav extends VStack {
 		this.directLogin = directLogin;
 
 		if (directLogin) {
-			closeButton.setTitle("Logoff");
+			closeButton.setTitle(AdminClientMessageUtil.getString("ui_base_layout_MainTopNav_logoff"));
 		} else {
-			closeButton.setTitle("Close");
+			closeButton.setTitle(AdminClientMessageUtil.getString("ui_base_layout_MainTopNav_close"));
 		}
 	}
 

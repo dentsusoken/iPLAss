@@ -396,15 +396,15 @@ public class PackageListPane extends VLayout {
 		//（参考）setFieldsは、setDataSource後に指定しないと効かない
 
 		//ボタンを表示したいためListGridFieldを指定
-		ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), "Name");
-		ListGridField typeField = new ListGridField(FIELD_NAME.TYPE.name(), "Type");
-		ListGridField statusField = new ListGridField(FIELD_NAME.STATUS.name(), "Status");
-		ListGridField progressField = new ListGridField(FIELD_NAME.PROGRESS.name(), "Progress");
-		ListGridField execStartDateField = new ListGridField(FIELD_NAME.EXEC_START_DATE.name(), "Start Time");
+		ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_tools_ui_pack_PackageListPane_name"));
+		ListGridField typeField = new ListGridField(FIELD_NAME.TYPE.name(), AdminClientMessageUtil.getString("ui_tools_ui_pack_PackageListPane_type"));
+		ListGridField statusField = new ListGridField(FIELD_NAME.STATUS.name(), AdminClientMessageUtil.getString("ui_tools_ui_pack_PackageListPane_status"));
+		ListGridField progressField = new ListGridField(FIELD_NAME.PROGRESS.name(), AdminClientMessageUtil.getString("ui_tools_ui_pack_PackageListPane_progress"));
+		ListGridField execStartDateField = new ListGridField(FIELD_NAME.EXEC_START_DATE.name(), AdminClientMessageUtil.getString("ui_tools_ui_pack_PackageListPane_startTime"));
 		execStartDateField.setWidth(130);
-		ListGridField execEndDateField = new ListGridField(FIELD_NAME.EXEC_END_DATE.name(), "Finish Time");
+		ListGridField execEndDateField = new ListGridField(FIELD_NAME.EXEC_END_DATE.name(), AdminClientMessageUtil.getString("ui_tools_ui_pack_PackageListPane_finishTime"));
 		execEndDateField.setWidth(130);
-		ListGridField sizeField = new ListGridField("sizeStr", "Size");
+		ListGridField sizeField = new ListGridField("sizeStr", AdminClientMessageUtil.getString("ui_tools_ui_pack_PackageListPane_size"));
 		sizeField.setWidth(100);
 		ListGridField downloadField = new ListGridField("download", " ");
 		downloadField.setWidth(25);

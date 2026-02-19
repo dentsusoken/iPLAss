@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
 import org.iplass.adminconsole.client.metadata.ui.template.TemplateMultiLanguageEditDialog.TemplateDataChangedEvent;
 import org.iplass.adminconsole.client.metadata.ui.template.TemplateMultiLanguagePane.FIELD_NAME;
@@ -76,9 +77,9 @@ public class TemplateMultiLanguagePaneControllerImpl implements TemplateMultiLan
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField languageKeyField = new ListGridField(FIELD_NAME.LANG_KEY.name(), "LanguageKey");
+			ListGridField languageKeyField = new ListGridField(FIELD_NAME.LANG_KEY.name(), AdminClientMessageUtil.getString("ui_metadata_ui_template_TemplateMultiLanguagePaneControllerImpl_languageKey"));
 			languageKeyField.setHidden(true);
-			ListGridField languageField = new ListGridField(FIELD_NAME.LANG_DISPLAY_NAME.name(), "Language");
+			ListGridField languageField = new ListGridField(FIELD_NAME.LANG_DISPLAY_NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_template_TemplateMultiLanguagePaneControllerImpl_language"));
 			setFields(languageKeyField, languageField);
 		}
 

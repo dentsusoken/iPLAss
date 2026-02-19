@@ -125,13 +125,13 @@ public class StaticResourceEditPane extends MetaDataMainEditPane {
 			}});
 
 		//Section設定
-		SectionStackSection staticResourceSection = createSection("StaticResource Attribute", attributePane);
+		SectionStackSection staticResourceSection = createSection(AdminClientMessageUtil.getString("ui_metadata_staticresource_StaticResourceEditPane_staticResourceAttribute"), attributePane);
 
 		//多言語編集部分
 		multilingualPane = new StaticResourceMultiLanguagePane();
 
 		//Section設定
-		SectionStackSection multilingualSection = createSection("Multilingual Attribute", false, multilingualPane);
+		SectionStackSection multilingualSection = createSection(AdminClientMessageUtil.getString("ui_metadata_staticresource_StaticResourceEditPane_multilingualAttribute"), false, multilingualPane);
 
 		setMainSections(commonSection, staticResourceSection, multilingualSection);
 

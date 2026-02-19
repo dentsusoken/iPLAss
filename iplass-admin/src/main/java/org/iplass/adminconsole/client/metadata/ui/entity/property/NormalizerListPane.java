@@ -72,7 +72,7 @@ public class NormalizerListPane extends VLayout implements PropertyAttributePane
 	public NormalizerListPane() {
 
 		chkTrimSpace = new CheckboxItem();
-		chkTrimSpace.setTitle("Trim White Space");
+		chkTrimSpace.setTitle(rs("ui_metadata_entity_property_NormalizerListPane_trimWhiteSpace"));
 		chkTrimSpace.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
@@ -82,7 +82,7 @@ public class NormalizerListPane extends VLayout implements PropertyAttributePane
 		SmartGWTUtil.addHoverToFormItem(chkTrimSpace, rs("ui_metadata_entity_property_NormalizerListPane_chkTrimSpace"));
 
 		selNewLineType = new MtpSelectItem();
-		selNewLineType.setTitle("Unify Line Breaks Code");
+		selNewLineType.setTitle(rs("ui_metadata_entity_property_NormalizerListPane_newLineType"));
 		LinkedHashMap<String, String> newLineTypeMap = new LinkedHashMap<>();
 		newLineTypeMap.put("", "");
 		for (NewlineType type : NewlineType.values()) {

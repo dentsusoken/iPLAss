@@ -541,7 +541,7 @@ public class CalendarGrid extends MtpTreeGrid {
 			items.add(toPropertyNameField);
 
 			filterConditionField = new MtpTextAreaItem();
-			filterConditionField.setTitle("Filter Condition");
+			filterConditionField.setTitle(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_filterCondition"));
 			filterConditionField.setHeight(100);
 			SmartGWTUtil.addHoverToFormItem(filterConditionField, AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speCommonFilterCond"));
 			items.add(filterConditionField);

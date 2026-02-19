@@ -176,7 +176,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 		messageItemPane = new MessageItemEditPane();
 
 		//Section設定
-		SectionStackSection messageSection = createSection("Message Attribute", messageItemPane);
+		SectionStackSection messageSection = createSection(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_messageAttribute"), messageItemPane);
 		setMainSections(commonSection, messageSection);
 
 		//全体配置
@@ -570,14 +570,14 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			}
 
 			filterItem = new TextItem();
-			filterItem.setTitle("Filter");
+			filterItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_filter"));
 			filterItem.setDefaultValue("");
 			filterItem.setWidth("100%");
 			filterItem.setColSpan(enableLanguages.size());
 			fileds.add(filterItem);
 
 			ButtonItem btnApply = new ButtonItem();
-			btnApply.setTitle("Apply");
+			btnApply.setTitle(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_apply"));
 			btnApply.setShowTitle(false);
 			btnApply.setWidth(100);
 			btnApply.setEndRow(false);
@@ -590,7 +590,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			fileds.add(btnApply);
 
 			ResetItem btnReset = new ResetItem();
-			btnReset.setTitle("Reset");
+			btnReset.setTitle(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_reset"));
 			btnReset.setShowTitle(false);
 			btnReset.setWidth(100);
 			btnReset.setStartRow(false);
@@ -689,13 +689,13 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			statusField.setCanEdit(false);
 			fields.add(statusField);
 
-			ListGridField messageIdField = new ListGridField(MessageItemListGridRecord.MESSAGE_ID, "ID");
+			ListGridField messageIdField = new ListGridField(MessageItemListGridRecord.MESSAGE_ID, AdminClientMessageUtil.getString("ui_metadata_ui_message_MessageCategoryEditPane_id"));
 			messageIdField.setWidth(100);
 			messageIdField.setCanEdit(true);
 
 			fields.add(messageIdField);
 
-			ListGridField defaultMessageField = new ListGridField(MessageItemListGridRecord.DEFAULT_MESSAGE, "Message");
+			ListGridField defaultMessageField = new ListGridField(MessageItemListGridRecord.DEFAULT_MESSAGE, AdminClientMessageUtil.getString("ui_metadata_ui_message_MessageCategoryEditPane_message"));
 			defaultMessageField.setCanEdit(true);
 			defaultMessageField.setEscapeHTML(true);
 			//改行も許可するためTextAreaで入力

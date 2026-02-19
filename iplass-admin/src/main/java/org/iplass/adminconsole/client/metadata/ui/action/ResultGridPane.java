@@ -276,13 +276,13 @@ public class ResultGridPane extends VLayout {
 
 			ListGridField showMetaButtonField = new ListGridField(FIELD_NAME.SHOW_ICON.name(), " ");
 			showMetaButtonField.setWidth(25);
-			ListGridField statusField = new ListGridField(FIELD_NAME.STATUS.name(), "Status");
+			ListGridField statusField = new ListGridField(FIELD_NAME.STATUS.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_ResultGridPane_status"));
 			statusField.setWidth(200);
-			ListGridField exceptionClassNameField = new ListGridField(FIELD_NAME.EXCEPTION_CLASS_NAME.name(), "Exception Class Name");
+			ListGridField exceptionClassNameField = new ListGridField(FIELD_NAME.EXCEPTION_CLASS_NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_ResultGridPane_exceptionClassName"));
 			exceptionClassNameField.setWidth(200);
-			ListGridField resultTypeField = new ListGridField(FIELD_NAME.RESULT_TYPE.name(), "Type");
+			ListGridField resultTypeField = new ListGridField(FIELD_NAME.RESULT_TYPE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_ResultGridPane_type"));
 			resultTypeField.setWidth(100);
-			ListGridField summaryField = new ListGridField(FIELD_NAME.SUMMARY.name(), "Value");
+			ListGridField summaryField = new ListGridField(FIELD_NAME.SUMMARY.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_ResultGridPane_value"));
 
 			setFields(showMetaButtonField, statusField, exceptionClassNameField, resultTypeField, summaryField);
 		}

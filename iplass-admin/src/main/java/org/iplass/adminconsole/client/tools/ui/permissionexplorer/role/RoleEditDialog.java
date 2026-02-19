@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
@@ -150,17 +151,17 @@ public class RoleEditDialog extends AbstractWindow {
 
 		listGrid.setCanEdit(true);
 
-		ListGridField roleConditionName = new ListGridField("name", "Condition Name");
+		ListGridField roleConditionName = new ListGridField("name", AdminClientMessageUtil.getString("ui_tools_ui_permissionexplorer_role_RoleEditDialog_conditionName"));
 		roleConditionName.setRequired(true);
 		roleConditionName.setWidth(150);
-		ListGridField roleCondition = new ListGridField("expression", "Condition");
+		ListGridField roleCondition = new ListGridField("expression", AdminClientMessageUtil.getString("ui_tools_ui_permissionexplorer_role_RoleEditDialog_condition"));
 		roleCondition.setRequired(true);
 		TextAreaItem conditionField = new TextAreaItem();
 		roleCondition.setEditorProperties(conditionField);
 		listGrid.setFields(roleConditionName, roleCondition);
 
 		SectionStackSection section1 = new SectionStackSection();
-		section1.setTitle("RoleCondition");
+		section1.setTitle(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_role_RoleEditDialog_roleCondition"));
 		section1.setItems(listGrid);
 		section1.setExpanded(true);
 		section1.setCanCollapse(false);

@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property.common;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
@@ -50,10 +51,10 @@ public class CommonAttributeParts3 extends PropertyCommonAttributeParts implemen
 	public CommonAttributeParts3() {
 
 		selIndexType = new MtpSelectItem();
-		selIndexType.setTitle("Index Type");
+		selIndexType.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_CommonAttributeParts3_indexType"));
 
 		txtStoreColName = new MtpTextItem();
-		txtStoreColName.setTitle("Store Col Name");
+		txtStoreColName.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_CommonAttributeParts3_storeColName"));
 
 		form = new MtpForm2Column();
 		form.setItems(selIndexType, txtStoreColName);

@@ -77,11 +77,11 @@ public class CommandAttributePane extends HLayout {
 		SmartGWTUtil.setRequired(typeField);
 
 		readOnlyField = new CheckboxItem();
-		readOnlyField.setTitle("read only proccess.");
+		readOnlyField.setTitle(AdminClientMessageUtil.getString("ui_metadata_command_CommandAttributePane_readOnly"));
 		readOnlyField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_CommandAttributePane_readOnlyTooltip")));
 
 		newInstancePerRequestField = new CheckboxItem();
-		newInstancePerRequestField.setTitle("instantiated for each request.");
+		newInstancePerRequestField.setTitle(AdminClientMessageUtil.getString("ui_metadata_command_CommandAttributePane_newInstancePerRequest"));
 		newInstancePerRequestField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_CommandAttributePane_newInstanceTooltip")));
 
 		form.setFields(typeField, readOnlyField, newInstancePerRequestField);

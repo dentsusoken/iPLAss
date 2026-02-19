@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.mtp.web.actionmapping.definition.cache.CacheCriteriaDefinition;
 import org.iplass.mtp.web.actionmapping.definition.cache.ParameterMatchCacheCriteriaDefinition;
 
@@ -203,7 +204,7 @@ public class ParameterMatchCacheCriteriaGridEditPane extends CacheCriteriaTypeEd
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField statusField = new ListGridField(FIELD_NAME.PARAM_NAME.name(), "Parameter Name");
+			ListGridField statusField = new ListGridField(FIELD_NAME.PARAM_NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_action_cache_ParameterMatchCacheCriteriaGridEditPane_parameterName"));
 
 			setFields(statusField);
 		}

@@ -100,9 +100,9 @@ public class ReportOutLogicListGrid extends ListGrid {
 		setCanReorderRecords(true);
 
 		// 各フィールド初期化
-		ListGridField elNameField = new ListGridField(ReportOutLogicListGridRecord.ELNAME, "Type");
+		ListGridField elNameField = new ListGridField(ReportOutLogicListGridRecord.ELNAME, AdminClientMessageUtil.getString("ui_metadata_ui_template_report_ReportOutLogicListGrid_type"));
 		elNameField.setWidth(150);
-		ListGridField gpField = new ListGridField(ReportOutLogicListGridRecord.GP, "Value");
+		ListGridField gpField = new ListGridField(ReportOutLogicListGridRecord.GP, AdminClientMessageUtil.getString("ui_metadata_ui_template_report_ReportOutLogicListGrid_value"));
 
 		// 各フィールドをListGridに設定
 		setFields(elNameField, gpField);
@@ -292,7 +292,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 			//Type
 			//---------------------------------
 			typeItem = new SelectItem();
-			typeItem.setTitle("Type");
+			typeItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicListGrid_type"));
 			SmartGWTUtil.setRequired(typeItem);
 			typeItem.addChangedHandler(new ChangedHandler() {
 				public void onChanged(ChangedEvent event) {
@@ -317,7 +317,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 			//---------------------------------
 			scriptItem = new MtpTextAreaItem();
 			scriptItem.setColSpan(2);
-			scriptItem.setTitle("Script");
+			scriptItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicListGrid_script"));
 			scriptItem.setHeight("100%");
 			SmartGWTUtil.setRequired(scriptItem);
 			SmartGWTUtil.setReadOnlyTextArea(scriptItem);
@@ -356,7 +356,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 			//Java Class
 			//---------------------------------
 			javaClassNameItem = new MtpTextItem();
-			javaClassNameItem.setTitle("Class Name");
+			javaClassNameItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicListGrid_className"));
 			SmartGWTUtil.setRequired(javaClassNameItem);
 			SmartGWTUtil.addHoverToFormItem(javaClassNameItem,
 					AdminClientMessageUtil.getString(javaClassNameItemComment));

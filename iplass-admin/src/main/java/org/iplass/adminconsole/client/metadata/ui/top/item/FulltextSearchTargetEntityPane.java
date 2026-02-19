@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.data.entity.CrawlEntityDS;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -96,11 +97,11 @@ public class FulltextSearchTargetEntityPane extends VLayout {
 		//（参考）setFieldsは、setDataSource後に指定しないと効かない
 		ListGridField errorField = new ListGridField("error", " ");
 		errorField.setWidth(25);
-		ListGridField nameField = new ListGridField("name", "Name");
+		ListGridField nameField = new ListGridField("name", AdminClientMessageUtil.getString("ui_metadata_ui_top_item_FulltextSearchTargetEntityPane_name"));
 		nameField.setHidden(true);
-		ListGridField displayNameField = new ListGridField("displayName", "Entity Name");
+		ListGridField displayNameField = new ListGridField("displayName", AdminClientMessageUtil.getString("ui_metadata_ui_top_item_FulltextSearchTargetEntityPane_entityName"));
 		displayNameField.setCanEdit(false);
-		ListGridField entityViewField = new ListGridField("entityView", "Entity View");
+		ListGridField entityViewField = new ListGridField("entityView", AdminClientMessageUtil.getString("ui_metadata_ui_top_item_FulltextSearchTargetEntityPane_entityView"));
 		SelectItem entityView = new SelectItem();
 		entityViewField.setEditorProperties(entityView);
 		entityViewField.setEditorValueMapFunction(new EditorValueMapFunction() {
@@ -117,7 +118,7 @@ public class FulltextSearchTargetEntityPane extends VLayout {
 			}
 		});
 
-		ListGridField isDispEntity = new ListGridField("isDispEntity", "show in search list");
+		ListGridField isDispEntity = new ListGridField("isDispEntity", AdminClientMessageUtil.getString("ui_metadata_ui_top_item_FulltextSearchTargetEntityPane_showInSearchList"));
 		grid.setFields(nameField, displayNameField, entityViewField, isDispEntity);
 
 		grid.setCanEdit(true);

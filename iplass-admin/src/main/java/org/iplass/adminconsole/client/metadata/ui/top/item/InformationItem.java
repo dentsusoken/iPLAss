@@ -129,7 +129,7 @@ public class InformationItem extends PartsItem {
 			commonForm.setAutoFocus(true);
 
 			titleField = new MetaDataLangTextItem();
-			titleField.setTitle("Title");
+			titleField.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_title"));
 			SmartGWTUtil.addHoverToFormItem(titleField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_titleCustom"));
 
 			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
@@ -157,18 +157,18 @@ public class InformationItem extends PartsItem {
 			setDispRangeValues();
 
 			numberOfDisplayField = new IntegerItem();
-			numberOfDisplayField.setTitle("Scroll display number");
+			numberOfDisplayField.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_scrollDisplayNumber"));
 			numberOfDisplayField.setWidth("100%");
 			SmartGWTUtil.addHoverToFormItem(numberOfDisplayField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_numberOfDisplay"));
 
 			chkEnableDataLocalization = new CheckboxItem();
-			chkEnableDataLocalization.setTitle("Enable Data Localization");
+			chkEnableDataLocalization.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_enableDataLocalization"));
 			SmartGWTUtil.addHoverToFormItem(chkEnableDataLocalization, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_dataLocalization"));
 
 			chkEnableHtmlTag = new CheckboxItem();
-			chkEnableHtmlTag.setTitle("Enable Html Tag");
+			chkEnableHtmlTag.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_enableHtmlTag"));
 			chkUseRichtextEditor = new CheckboxItem();
-			chkUseRichtextEditor.setTitle("Use RichText Editor");
+			chkUseRichtextEditor.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_useRichTextEditor"));
 
 			richTextLibraryField = new MtpSelectItem("richTextLibrary", "RichText Library");
 			SmartGWTUtil.addHoverToFormItem(richTextLibraryField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_richTextLibrary"));
@@ -176,14 +176,14 @@ public class InformationItem extends PartsItem {
 
 			txaRichtextEditorOption = new MtpTextAreaItem();
 			txaRichtextEditorOption.setColSpan(2);
-			txaRichtextEditorOption.setTitle("RichText Editor Option");
+			txaRichtextEditorOption.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_richTextEditorOption"));
 			txaRichtextEditorOption.setHeight(100);
 
 			chkAllowRichTextEditorLinkAction = new CheckboxItem();
-			chkAllowRichTextEditorLinkAction.setTitle("Allow RichText Editor Link Action (CKEditor)");
+			chkAllowRichTextEditorLinkAction.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_allowRichTextEditorLinkAction"));
 
 			ButtonItem btnEditEetailCustomStyle = new ButtonItem();
-			btnEditEetailCustomStyle.setTitle("Edit");
+			btnEditEetailCustomStyle.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_edit"));
 			btnEditEetailCustomStyle.setWidth(100);
 			btnEditEetailCustomStyle.setStartRow(false);
 			btnEditEetailCustomStyle.setColSpan(3);
@@ -209,7 +209,7 @@ public class InformationItem extends PartsItem {
 
 			txaDetailCustomStyle = new MtpTextAreaItem();
 			txaDetailCustomStyle.setColSpan(2);
-			txaDetailCustomStyle.setTitle("Detail Custom Style");
+			txaDetailCustomStyle.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_detailCustomStyle"));
 			txaDetailCustomStyle.setHeight(100);
 			SmartGWTUtil.setReadOnlyTextArea(txaDetailCustomStyle);
 
@@ -226,11 +226,11 @@ public class InformationItem extends PartsItem {
 			pwWarnform.setGroupTitle("Password Warning Message Settings");
 
 			showPasswordWarnField = new CheckboxItem();
-			showPasswordWarnField.setTitle("show warning message of the password expiration date.");
+			showPasswordWarnField.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_showWarningMessageOfPasswordExpiration"));
 			SmartGWTUtil.addHoverToFormItem(showPasswordWarnField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_showPasswordWarn"));
 
 			passwordWarningAgeField = new SliderItem();
-			passwordWarningAgeField.setTitle("Remain days threshold");
+			passwordWarningAgeField.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_remainDaysThreshold"));
 			passwordWarningAgeField.setWidth(300);
 			passwordWarningAgeField.setHeight(20);
 			passwordWarningAgeField.setMinValue(0.0);
@@ -244,12 +244,12 @@ public class InformationItem extends PartsItem {
 			SmartGWTUtil.addHoverToFormItem(passwordWarningMessageField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_specifyCustomWarnMessage"));
 
 			passwordWarnAreaStyleField = new MtpComboBoxItem();
-			passwordWarnAreaStyleField.setTitle("Custom message area style class");
+			passwordWarnAreaStyleField.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_customMessageAreaStyleClass"));
 			SmartGWTUtil.addHoverToFormItem(passwordWarnAreaStyleField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_warnMessageDispAreaStyle"));
 			setPasswordWarnAreaStyleValues();
 
 			passwordWarnMarkStyleField = new MtpComboBoxItem();
-			passwordWarnMarkStyleField.setTitle("Custom message mark style class");
+			passwordWarnMarkStyleField.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_customMessageMarkStyleClass"));
 			SmartGWTUtil.addHoverToFormItem(passwordWarnMarkStyleField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_warnMessageDispAreaIcon"));
 			setPasswordWarnMarkStyleValues();
 

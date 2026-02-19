@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.template.report;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
 import org.iplass.adminconsole.client.base.io.upload.UploadResultInfo;
@@ -191,7 +192,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		downloadForm = new MtpForm();
 
 		txtDownloadFileName = new StaticTextItem();
-		txtDownloadFileName.setTitle("Saved File");
+		txtDownloadFileName.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_report_ReportTemplateEditPane_savedFile"));
 
 		SpacerItem downloadSpace = new SpacerItem();
 		downloadSpace.setStartRow(true);
@@ -223,9 +224,9 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		jasperAttributeForm = new MtpForm();
 
 		jasperDataSourceAttributeNameField = new MtpTextItem();
-		jasperDataSourceAttributeNameField.setTitle("DataSource AttributeName");
+		jasperDataSourceAttributeNameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_report_ReportTemplateEditPane_dataSourceAttributeName"));
 		jasperPasswordAttributeNameField = new MtpTextItem();
-		jasperPasswordAttributeNameField.setTitle("Password AttributeName");
+		jasperPasswordAttributeNameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_report_ReportTemplateEditPane_passwordAttributeName"));
 
 		jasperAttributeForm.setItems(jasperDataSourceAttributeNameField, jasperPasswordAttributeNameField);
 

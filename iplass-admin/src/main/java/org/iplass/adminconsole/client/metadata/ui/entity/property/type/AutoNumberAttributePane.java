@@ -126,7 +126,7 @@ public class AutoNumberAttributePane extends VLayout implements PropertyAttribut
 		btnCurrent = new ButtonItem();
 		btnCurrent.setWidth(100);
 		btnCurrent.setStartRow(false);
-		btnCurrent.setTitle("Current Value");
+		btnCurrent.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_type_AutoNumberAttributePane_currentValue"));
 		btnCurrent.setColSpan(2);
 		btnCurrent.setAlign(Alignment.RIGHT);
 		btnCurrent.setPrompt(SmartGWTUtil.getHoverString(rs("ui_metadata_entity_PropertyListGrid_showCurrentValueList")));

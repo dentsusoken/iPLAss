@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataViewGridButton;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyEditDialog.PropertyEditDialogHandler;
@@ -118,7 +119,7 @@ public class PropertyListGrid extends ListGrid {
 		statusField.setAlign(Alignment.CENTER);
 		statusField.setCanEdit(false);
 
-		ListGridField customOidField = new ListGridField(PropertyListGridRecord.CUSTOM_OID, "OID");
+		ListGridField customOidField = new ListGridField(PropertyListGridRecord.CUSTOM_OID, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_customOid"));
 		customOidField.setType(ListGridFieldType.BOOLEAN);
 		customOidField.setWidth(40);
 		customOidField.addChangedHandler(new com.smartgwt.client.widgets.grid.events.ChangedHandler() {
@@ -128,7 +129,7 @@ public class PropertyListGrid extends ListGrid {
 				valueChanged(PropertyListGridRecord.CUSTOM_OID, event.getRowNum(), event.getValue());
 			}
 		});
-		ListGridField customNameField = new ListGridField(PropertyListGridRecord.CUSTOM_NAME, "Name");
+		ListGridField customNameField = new ListGridField(PropertyListGridRecord.CUSTOM_NAME, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_customName"));
 		customNameField.setType(ListGridFieldType.BOOLEAN);
 		customNameField.setWidth(40);
 		customNameField.addChangedHandler(new com.smartgwt.client.widgets.grid.events.ChangedHandler() {
@@ -138,7 +139,7 @@ public class PropertyListGrid extends ListGrid {
 				valueChanged(PropertyListGridRecord.CUSTOM_NAME, event.getRowNum(), event.getValue());
 			}
 		});
-		ListGridField crawlPropField = new ListGridField(PropertyListGridRecord.CRAWL_PROP, "Crawl");
+		ListGridField crawlPropField = new ListGridField(PropertyListGridRecord.CRAWL_PROP, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_crawl"));
 		crawlPropField.setType(ListGridFieldType.BOOLEAN);
 		crawlPropField.setWidth(40);
 		crawlPropField.addChangedHandler(new com.smartgwt.client.widgets.grid.events.ChangedHandler() {
@@ -148,35 +149,35 @@ public class PropertyListGrid extends ListGrid {
 				valueChanged(PropertyListGridRecord.CRAWL_PROP, event.getRowNum(), event.getValue());
 			}
 		});
-		ListGridField nameField = new ListGridField(PropertyListGridRecord.NAME, "Name");
+		ListGridField nameField = new ListGridField(PropertyListGridRecord.NAME, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_name"));
 		nameField.setCanEdit(false);
 		nameField.setShowHover(true);
-		ListGridField dispNameField = new ListGridField(PropertyListGridRecord.DISPNAME, "Display Name");
+		ListGridField dispNameField = new ListGridField(PropertyListGridRecord.DISPNAME, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_displayName"));
 		dispNameField.setCanEdit(false);
 		dispNameField.setShowHover(true);
 		dispNameField.setHoverWrap(false);
-		ListGridField typeField = new ListGridField(PropertyListGridRecord.TYPE_DISP_VAL, "Type");
+		ListGridField typeField = new ListGridField(PropertyListGridRecord.TYPE_DISP_VAL, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_type"));
 		typeField.setCanEdit(false);
 		typeField.setShowHover(true);
 		typeField.setHoverWrap(false);
 		typeField.setWidth(90);
-		ListGridField multiplicity = new ListGridField(PropertyListGridRecord.MULTIPLE_DISP_VAL, "Multi");
+		ListGridField multiplicity = new ListGridField(PropertyListGridRecord.MULTIPLE_DISP_VAL, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_multi"));
 		multiplicity.setWidth(35);
 		multiplicity.setAlign(Alignment.RIGHT);
 		multiplicity.setCanEdit(false);
-		ListGridField mustField = new ListGridField(PropertyListGridRecord.NOT_NULL_DISP_VAL, "Required");
+		ListGridField mustField = new ListGridField(PropertyListGridRecord.NOT_NULL_DISP_VAL, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_required"));
 		mustField.setWidth(60);
 		mustField.setAlign(Alignment.CENTER);
 		mustField.setCanEdit(false);
-		ListGridField updatableField = new ListGridField(PropertyListGridRecord.UPDATABLE_DISP_VAL, "CanEdit");
+		ListGridField updatableField = new ListGridField(PropertyListGridRecord.UPDATABLE_DISP_VAL, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_canEdit"));
 		updatableField.setWidth(55);
 		updatableField.setAlign(Alignment.CENTER);
 		updatableField.setCanEdit(false);
-		ListGridField indexField = new ListGridField(PropertyListGridRecord.INDEXTYPE_DISP_VAL, "Index");
+		ListGridField indexField = new ListGridField(PropertyListGridRecord.INDEXTYPE_DISP_VAL, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_index"));
 		indexField.setWidth(40);
 		indexField.setAlign(Alignment.CENTER);
 		indexField.setCanEdit(false);
-		ListGridField columnMappingNameField = new ListGridField(PropertyListGridRecord.STORE_COLUMN_MAPPING_NAME, "Col Mapping");
+		ListGridField columnMappingNameField = new ListGridField(PropertyListGridRecord.STORE_COLUMN_MAPPING_NAME, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_PropertyListGrid_colMapping"));
 		columnMappingNameField.setWidth(70);
 		columnMappingNameField.setCanEdit(false);
 		columnMappingNameField.setShowHover(true);

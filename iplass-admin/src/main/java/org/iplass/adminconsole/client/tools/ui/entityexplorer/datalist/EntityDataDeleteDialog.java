@@ -96,7 +96,7 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 		//Input Items
 		//------------------------
 		operationField = new RadioGroupItem();
-		operationField.setTitle("Delete Operation");
+		operationField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_deleteOperation"));
 
 		LinkedHashMap<String, String> opeValues = new LinkedHashMap<String, String>();
 		opeValues.put(OPERATION_VALUE_ALL_DELETE, "delete all records by delete condition.");
@@ -111,7 +111,7 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 
 
 		whereField = new TextAreaItem();
-		whereField.setTitle("Delete Condition");
+		whereField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_deleteCondition"));
 		whereField.setWidth("100%");
 //		whereField.setHeight("100%");
 		whereField.setHeight(150);
@@ -119,12 +119,12 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 		whereField.setValue(whereClause);
 
 		chkNotifyListenersField = new CheckboxItem();
-		chkNotifyListenersField.setTitle("execute EventListneres");
+		chkNotifyListenersField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_executeEventListener"));
 		chkNotifyListenersField.setValue(true);
 		SmartGWTUtil.addHoverToFormItem(chkNotifyListenersField, AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_runEventListenerDelet"));
 
 		commitLimitField = new SelectItem();
-		commitLimitField.setTitle("Commit Count");
+		commitLimitField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_commitCount"));
 		LinkedHashMap<String, String> commitValues = new LinkedHashMap<String, String>();
 		commitValues.put("1", "1");
 		commitValues.put("10", "10");

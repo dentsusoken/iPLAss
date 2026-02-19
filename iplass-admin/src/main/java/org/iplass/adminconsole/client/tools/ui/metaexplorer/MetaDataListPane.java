@@ -111,7 +111,7 @@ public class MetaDataListPane extends VLayout {
 		//------------------------
 		final ToolStripButton deleteButton = new ToolStripButton();
 		deleteButton.setIcon(DELETE_ICON);
-		deleteButton.setTitle("Delete");
+		deleteButton.setTitle(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_delete"));
 		deleteButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_deleteSelectMetaData"));
 		deleteButton.setHoverWrap(false);
 		deleteButton.addClickHandler(new ClickHandler() {
@@ -130,7 +130,7 @@ public class MetaDataListPane extends VLayout {
 		//------------------------
 
 		ToolStripMenuButton portingButton = new ToolStripMenuButton();
-		portingButton.setTitle("Export / Import");
+		portingButton.setTitle(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_exportImport"));
 		portingButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_portingMetaDataMenuTooltip"));
 		portingButton.setHoverWrap(false);
 
@@ -176,7 +176,7 @@ public class MetaDataListPane extends VLayout {
 		//------------------------
 
 		ToolStripMenuButton tagButton = new ToolStripMenuButton();
-		tagButton.setTitle("Tags");
+		tagButton.setTitle(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_tags"));
 		tagButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_saveMetaDataTagImport"));
 		tagButton.setHoverWrap(false);
 
@@ -214,7 +214,7 @@ public class MetaDataListPane extends VLayout {
 
 		final ToolStripButton statusCheckButton = new ToolStripButton();
 		statusCheckButton.setIcon(STATUS_ICON);
-		statusCheckButton.setTitle("Status Check");
+		statusCheckButton.setTitle(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_statusCheck"));
 		statusCheckButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_verifyStatusMetaData"));
 		statusCheckButton.setHoverWrap(false);
 		statusCheckButton.addClickHandler(new ClickHandler() {
@@ -252,7 +252,7 @@ public class MetaDataListPane extends VLayout {
 
 		final ToolStripButton expandAllButton = new ToolStripButton();
 		expandAllButton.setIcon(EXPAND_ICON);
-		expandAllButton.setTitle("Expand");
+		expandAllButton.setTitle(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_expand"));
 		expandAllButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -264,7 +264,7 @@ public class MetaDataListPane extends VLayout {
 
 		final ToolStripButton contractAllButton = new ToolStripButton();
 		contractAllButton.setIcon(CONTRACT_ICON);
-		contractAllButton.setTitle("Collapse");
+		contractAllButton.setTitle(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_collapse"));
 		contractAllButton.addClickHandler(new ClickHandler() {
 
 			@Override

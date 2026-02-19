@@ -20,6 +20,8 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
@@ -51,7 +53,7 @@ public class NormalizerListGrid extends ListGrid {
 		setBodyOverflow(Overflow.VISIBLE);
 		setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
 
-		ListGridField typeField = new ListGridField(NormalizerListGridRecord.TYPE_NAME, "Type");
+		ListGridField typeField = new ListGridField(NormalizerListGridRecord.TYPE_NAME, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_NormalizerListGrid_type"));
 		typeField.setWidth(150);
 		ListGridField gpField = new ListGridField(NormalizerListGridRecord.GP, " ");
 		setFields(typeField, gpField);

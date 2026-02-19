@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.oauth.resource;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.mtp.auth.oauth.definition.OAuthResourceServerDefinition;
 
@@ -72,7 +73,7 @@ public class OAuthResourceServerAttributePane extends VLayout implements Editabl
 
 		gridCustomTokenIntrospector = new CustomTokenIntrospectorGridPane();
 		CanvasItem canvasCustomTokenIntrospector = new CanvasItem();
-		canvasCustomTokenIntrospector.setTitle("Custom Token Introspector");
+		canvasCustomTokenIntrospector.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerAttributePane_customTokenIntrospector"));
 		canvasCustomTokenIntrospector.setCanvas(gridCustomTokenIntrospector);
 		canvasCustomTokenIntrospector.setColSpan(3);
 		canvasCustomTokenIntrospector.setStartRow(true);

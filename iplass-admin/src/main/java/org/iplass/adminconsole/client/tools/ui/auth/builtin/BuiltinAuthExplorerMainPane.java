@@ -192,7 +192,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			specificTypeValues.put(BuiltinAuthUserSpecificType.PASSWORDDAYS.name(), BuiltinAuthUserSpecificType.PASSWORDDAYS.displayName());
 			specificTypeValues.put(BuiltinAuthUserSpecificType.LASTLOGIN.name(), BuiltinAuthUserSpecificType.LASTLOGIN.displayName());
 			specificTypeItem = new RadioGroupItem();
-			specificTypeItem.setTitle("Condition");
+			specificTypeItem.setTitle(AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_specificType"));
 			specificTypeItem.setValueMap(specificTypeValues);
 			specificTypeItem.setValue(BuiltinAuthUserSpecificType.LOCKED.name());
 			specificTypeItem.addChangedHandler(new ChangedHandler() {
@@ -252,7 +252,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			remainDaysOparatorValues.put(BuiltinAuthUserSearchOperator.EQUAL.name(), BuiltinAuthUserSearchOperator.EQUAL.displayName());
 			remainDaysOperatorItem = new SelectItem();
 			remainDaysOperatorItem.setStartRow(true);
-			remainDaysOperatorItem.setTitle("Remain days");
+			remainDaysOperatorItem.setTitle(AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_remainDaysOperator"));
 			remainDaysOperatorItem.setWidth(50);
 			remainDaysOperatorItem.setValueMap(remainDaysOparatorValues);
 			remainDaysOperatorItem.setValue(BuiltinAuthUserSearchOperator.LESSTHAN.name());
@@ -283,7 +283,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 //			lastLoginFromItem.setUseTextField(true);
 //			lastLoginFromItem.setDateFormatter(DateDisplayFormat.TOJAPANSHORTDATE);
 			lastLoginFromItem = SmartGWTUtil.createDateItem();
-			lastLoginFromItem.setTitle("Last Login Date");
+			lastLoginFromItem.setTitle(AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_lastLoginDate"));
 			lastLoginFromItem.setStartRow(true);
 
 			StaticTextItem lastLoginDummy = new StaticTextItem();
@@ -505,7 +505,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			remainDaysOparatorValues.put(BuiltinAuthUserSearchOperator.EQUAL.name(), BuiltinAuthUserSearchOperator.EQUAL.displayName());
 			remainDaysOperatorItem = new SelectItem();
 			remainDaysOperatorItem.setStartRow(true);
-			remainDaysOperatorItem.setTitle("Remain days to expire user");
+		remainDaysOperatorItem.setTitle(AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_remainDaysOperator"));
 			remainDaysOperatorItem.setWidth(50);
 			remainDaysOperatorItem.setValueMap(remainDaysOparatorValues);
 			remainDaysOperatorItem.setValue("");
@@ -534,7 +534,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			whereForm.setColWidths(100, "*", 10);
 
 			whereCondItem = new TextAreaItem();
-			whereCondItem.setTitle("Direct Where EQL");
+		whereCondItem.setTitle(AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_directWhereEql"));
 			whereCondItem.setWidth("100%");
 			whereCondItem.setHeight(140);
 			SmartGWTUtil.addHoverToFormItem(whereCondItem,

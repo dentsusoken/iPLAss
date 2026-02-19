@@ -62,7 +62,7 @@ public class TopViewDragPane extends VLayout {
 
 		sectionStack = new SectionStack();
 		partsSection = new SectionStackSection();
-		partsSection.setTitle("Items");
+		partsSection.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_TopViewDragPane_items"));
 		partsSection.setExpanded(true);
 		sectionStack.addSection(partsSection);
 

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.shared.metadata.dto.staticresource.StaticResourceInfo;
 import org.iplass.mtp.web.staticresource.definition.MimeTypeMappingDefinition;
 
@@ -204,8 +205,8 @@ public class MimeTypeMapGridPane extends VLayout {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField extensionField = new ListGridField(FIELD_NAME.EXTENSION.name(), "Extension");
-			ListGridField mimeTypeField = new ListGridField(FIELD_NAME.MIME_TYPE.name(), "MIME Type");
+			ListGridField extensionField = new ListGridField(FIELD_NAME.EXTENSION.name(), AdminClientMessageUtil.getString("ui_metadata_ui_staticresource_MimeTypeMapGridPane_extension"));
+			ListGridField mimeTypeField = new ListGridField(FIELD_NAME.MIME_TYPE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_staticresource_MimeTypeMapGridPane_mimeType"));
 
 			setFields(extensionField, mimeTypeField);
 		}

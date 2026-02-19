@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property.type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyListGridRecord;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.type.SortInfoEditDialog.SortInfoEditDialogHandler;
@@ -192,8 +193,8 @@ public class SortInfoListPane extends VLayout {
 			setBodyOverflow(Overflow.VISIBLE);
 			setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
 
-			ListGridField sortNameField = new ListGridField("propertyName", "Property Name");
-			ListGridField sortTypeField = new ListGridField("sortType", "Order");
+			ListGridField sortNameField = new ListGridField("propertyName", AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_type_SortInfoListPane_propertyName"));
+			ListGridField sortTypeField = new ListGridField("sortType", AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_type_SortInfoListPane_order"));
 			setFields(sortNameField, sortTypeField);
 
 		}

@@ -882,7 +882,7 @@ public class TreeViewGrid extends MtpTreeGrid {
 			setShowRecordComponents(true);
 			setShowRecordComponentsByCell(true);
 
-			ListGridField nameField = new ListGridField("name", "name");
+			ListGridField nameField = new ListGridField("name", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_name"));
 			nameField.setWidth(75);
 			ListGridField displayLabelField = new ListGridField("displayLabel", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_propertyDispName"));
 			ListGridField mappingItemDisplayNameField = new ListGridField("mappingItemDisplayLabel", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_propertyDispNameCorre"));

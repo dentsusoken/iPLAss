@@ -40,12 +40,12 @@ public class JavaClassNormalizerAttributePane extends NormalizerAttributePane {
 	public JavaClassNormalizerAttributePane() {
 
 		txtClassName = new MtpTextItem();
-		txtClassName.setTitle("Java Class Name");
+		txtClassName.setTitle(rs("ui_metadata_entity_property_normalizer_JavaClassNormalizerAttributePane_javaClassName"));
 		SmartGWTUtil.setRequired(txtClassName);
 		SmartGWTUtil.addHoverToFormItem(txtClassName, rs("ui_metadata_entity_property_JavaClassNormalizerAttributePane_javaClassComment"));
 
 		chkBindAsArray = new CheckboxItem();
-		chkBindAsArray.setTitle("bind variable as array type");
+		chkBindAsArray.setTitle(rs("ui_metadata_entity_property_normalizer_JavaClassNormalizerAttributePane_bindAsArray"));
 		SmartGWTUtil.addHoverToFormItem(chkBindAsArray, rs("ui_metadata_entity_property_JavaClassNormalizerAttributePane_javaClassAsArray"));
 
 		form = new MtpForm();

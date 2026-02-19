@@ -279,12 +279,12 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			chkIgnoreNotExistsPropertyField.setValue(true);	//デフォルトtrue
 
 			prefixOidField = new TextItem();
-			prefixOidField.setTitle("OID Prefix");
+			prefixOidField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCsvUploadDialog_oidPrefix"));
 			prefixOidField.setKeyPressFilter("[A-Za-z0-9]");	//英数字のみ
 			prefixOidField.setHint(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_preOidHint"));
 
 			uniqueKeyField = new SelectItem();
-			uniqueKeyField.setTitle("Unique Key");
+			uniqueKeyField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCsvUploadDialog_uniqueKey"));
 			UniquePropertyDS.setDataSource(uniqueKeyField, definition);
 			uniqueKeyField.setValue(Entity.OID);
 
@@ -332,13 +332,13 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			i18nForm.setColWidths(90, 170, 120, "*", "*");	//2つの幅を狭めたいので2番目のWidthも指定
 
 			localeField = new ComboBoxItem();
-			localeField.setTitle("File Locale");
+			localeField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCsvUploadDialog_fileLocale"));
 			localeField.setValueMap(SmartGWTUtil.getDefaultLocaleMap());
 			SmartGWTUtil.addHoverToFormItem(localeField, AdminClientMessageUtil.getString("ui_common_i18n_importLocaleTooltip"));
 			localeField.setValue("");
 
 			timeZoneField = new ComboBoxItem();
-			timeZoneField.setTitle("File TimeZone");
+			timeZoneField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCsvUploadDialog_fileTimeZone"));
 			timeZoneField.setValueMap(SmartGWTUtil.getDefaultTimeZoneMap());
 			SmartGWTUtil.addHoverToFormItem(timeZoneField, AdminClientMessageUtil.getString("ui_common_i18n_importTimezoneTooltip"));
 			timeZoneField.setValue("");

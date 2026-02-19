@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -42,19 +43,19 @@ public class RangeAttributePane extends ValidationAttributePane {
 	public RangeAttributePane() {
 
 		minItem = new MtpTextItem("minValue");
-		minItem.setTitle("Min");
+		minItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_RangeAttributePane_min"));
 		minItem.setKeyPressFilter("[0-9.-]");
 
 		minExcludeItem = new CheckboxItem();
-		minExcludeItem.setTitle("greater than min value");
+		minExcludeItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_RangeAttributePane_greaterThanMin"));
 		SmartGWTUtil.addHoverToFormItem(minExcludeItem, rs("ui_metadata_entity_PropertyListGrid_minExclude"));
 
 		maxItem = new MtpTextItem("maxValue");
-		maxItem.setTitle("Max");
+		maxItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_RangeAttributePane_max"));
 		maxItem.setKeyPressFilter("[0-9.-]");
 
 		maxExcludeItem = new CheckboxItem();
-		maxExcludeItem.setTitle("less than max value");
+		maxExcludeItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_RangeAttributePane_lessThanMax"));
 		SmartGWTUtil.addHoverToFormItem(maxExcludeItem, rs("ui_metadata_entity_PropertyListGrid_maxExclude"));
 
 		form = new MtpForm();

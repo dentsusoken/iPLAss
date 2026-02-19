@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -154,7 +155,7 @@ public class LocalizedStringSettingDialog extends MtpDialog {
 						grid.setCanEdit(true);
 						grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
 					}
-					ListGridField languageField = new ListGridField("language", "Language");
+					ListGridField languageField = new ListGridField("language", AdminClientMessageUtil.getString("ui_metadata_ui_common_LocalizedStringSettingDialog_language"));
 					languageField.setWidth(200);
 					SelectItem viewField = new SelectItem("langItem", "LangItem");
 
@@ -165,7 +166,7 @@ public class LocalizedStringSettingDialog extends MtpDialog {
 					languageField.setEditorProperties(viewField);
 					languageField.setValueMap(enableLanguagesMap);
 
-					ListGridField valueField = new ListGridField("multilingual", "Multilingual");
+					ListGridField valueField = new ListGridField("multilingual", AdminClientMessageUtil.getString("ui_metadata_ui_common_LocalizedStringSettingDialog_multilingual"));
 					if (option.isModeTextArea()) {
 						TextAreaItem txtValueField = new TextAreaItem();
 						txtValueField.setHeight(55);

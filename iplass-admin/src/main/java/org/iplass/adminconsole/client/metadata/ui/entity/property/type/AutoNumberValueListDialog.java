@@ -123,7 +123,7 @@ public class AutoNumberValueListDialog extends MtpDialog {
 			grid = new AutoNumberValueListGrid();
 
 			SectionStackSection section1 = new SectionStackSection();
-			section1.setTitle("Current Values");
+			section1.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_property_type_AutoNumberValueListDialog_currentValues"));
 			section1.setItems(grid);
 			section1.setExpanded(true);
 			section1.setCanCollapse(false);
@@ -255,9 +255,9 @@ public class AutoNumberValueListDialog extends MtpDialog {
 			statusField.setAlign(Alignment.CENTER);
 			statusField.setCanEdit(false);
 
-			ListGridField unitKeyField = new ListGridField("unitKey", "Unit Key");
+			ListGridField unitKeyField = new ListGridField("unitKey", AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_type_AutoNumberValueListDialog_unitKey"));
 
-			ListGridField valueField = new ListGridField("currentValue", "Value");
+			ListGridField valueField = new ListGridField("currentValue", AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_type_AutoNumberValueListDialog_value"));
 			//数値のみ入力可能、18桁まで、IntegerItemだと、大きい数字で勝手に変更されるのでTextItemにする
 			TextItem valueInputField = new TextItem();
 			valueInputField.setKeyPressFilter("[0-9-]");

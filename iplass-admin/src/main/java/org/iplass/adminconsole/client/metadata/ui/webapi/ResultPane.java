@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.webapi;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiResultAttribute;
 
@@ -223,10 +224,10 @@ public class ResultPane extends VLayout {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField nameField = new ListGridField(RESULT, "Attribute Name");
+			ListGridField nameField = new ListGridField(RESULT, AdminClientMessageUtil.getString("ui_metadata_ui_webapi_ResultPane_attributeName"));
 			nameField.setRequired(Boolean.TRUE);
 
-			ListGridField dataTypeField = new ListGridField(DATA_TYPE, "Data Type");
+			ListGridField dataTypeField = new ListGridField(DATA_TYPE, AdminClientMessageUtil.getString("ui_metadata_ui_webapi_ResultPane_dataType"));
 			dataTypeField.setRequired(Boolean.FALSE);
 
 			setFields(nameField, dataTypeField);

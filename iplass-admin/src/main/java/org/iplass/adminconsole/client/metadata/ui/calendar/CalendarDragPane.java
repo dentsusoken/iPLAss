@@ -50,7 +50,7 @@ public class CalendarDragPane extends VLayout {
 
 		SectionStack menuItemHeaderSection = new SectionStack();
 
-		SectionStackSection menuItemSection = new SectionStackSection("Entity Items");
+		SectionStackSection menuItemSection = new SectionStackSection(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarDragPane_entityItems"));
 		menuItemSection.setExpanded(true);
 		menuItemSection.setCanCollapse(false);	//CLOSE不可
 

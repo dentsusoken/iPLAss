@@ -148,7 +148,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 			modeMap.put(mode.name(), mode.getText());
 		}
 		modeField = new SelectItem();
-		modeField.setTitle("Highlight");
+		modeField.setTitle(AdminClientMessageUtil.getString("ui_base_ui_widget_ScriptEditorDialog_highlight"));
 		modeField.setWidth(130);
 		modeField.setValueMap(modeMap);
 		modeField.addChangedHandler(new ChangedHandler() {
@@ -166,7 +166,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 			themeMap.put(theme.name(), theme.getText());
 		}
 		themeField = new SelectItem();
-		themeField.setTitle("Theme");
+		themeField.setTitle(AdminClientMessageUtil.getString("ui_base_ui_widget_ScriptEditorDialog_theme"));
 		themeField.setWidth(130);
 		themeField.setValueMap(themeMap);
 		themeField.addChangedHandler(new ChangedHandler() {
@@ -183,7 +183,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 		});
 
 		maxHeightField = new IntegerItem();
-		maxHeightField.setTitle("MaxHeight");
+		maxHeightField.setTitle(AdminClientMessageUtil.getString("ui_base_ui_widget_ScriptEditorDialog_maxHeight"));
 		maxHeightField.setWidth(130);
 		maxHeightField.setDisabled(!enableMaxHeight);
 		maxHeightField.setVisible(enableMaxHeight);

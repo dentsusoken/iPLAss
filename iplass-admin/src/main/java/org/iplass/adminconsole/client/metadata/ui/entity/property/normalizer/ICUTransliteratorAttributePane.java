@@ -39,7 +39,7 @@ public class ICUTransliteratorAttributePane extends NormalizerAttributePane {
 	public ICUTransliteratorAttributePane() {
 
 		txtTransliteratorId = new MtpTextItem();
-		txtTransliteratorId.setTitle("Transliterator Id");
+		txtTransliteratorId.setTitle(rs("ui_metadata_entity_property_normalizer_ICUTransliteratorAttributePane_transliteratorId"));
 		SmartGWTUtil.setRequired(txtTransliteratorId);
 		SmartGWTUtil.addHoverToFormItem(txtTransliteratorId, rs("ui_metadata_entity_property_ICUTransliteratorAttributePane_txtTransliteratorId"));
 

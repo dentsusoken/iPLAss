@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -43,18 +44,18 @@ public class LengthAttributePane extends ValidationAttributePane {
 	public LengthAttributePane() {
 
 		minItem = new MtpTextItem("minValue");
-		minItem.setTitle("Min");
+		minItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_LengthAttributePane_min"));
 		minItem.setKeyPressFilter("[0-9]");
 
 		maxItem = new MtpTextItem("maxValue");
-		maxItem.setTitle("Max");
+		maxItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_LengthAttributePane_max"));
 		maxItem.setKeyPressFilter("[0-9]");
 
 		byteCheckItem = new CheckboxItem();
-		byteCheckItem.setTitle("check byte");
+		byteCheckItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_LengthAttributePane_checkByte"));
 
 		surrogatePairAsOneCharItem = new CheckboxItem();
-		surrogatePairAsOneCharItem.setTitle("surrogate pair as one char");
+		surrogatePairAsOneCharItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_validation_LengthAttributePane_surrogatePair"));
 
 		form = new MtpForm();
 		form.setItems(minItem, maxItem, byteCheckItem, surrogatePairAsOneCharItem);

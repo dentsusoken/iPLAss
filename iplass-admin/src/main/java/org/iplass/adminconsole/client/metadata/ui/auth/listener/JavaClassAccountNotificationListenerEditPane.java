@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.auth.listener;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -49,7 +50,7 @@ public class JavaClassAccountNotificationListenerEditPane extends Authentication
 		form.setAutoHeight();
 
 		txtClassNameField = new MtpTextItem();
-		txtClassNameField.setTitle("Class Name");
+		txtClassNameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_JavaClassAccountNotificationListenerEditPane_className"));
 		SmartGWTUtil.setRequired(txtClassNameField);
 
 		form.setItems(txtClassNameField);

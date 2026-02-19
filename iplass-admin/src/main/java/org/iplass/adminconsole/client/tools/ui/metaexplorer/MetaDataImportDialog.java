@@ -1022,10 +1022,10 @@ public class MetaDataImportDialog extends AbstractWindow {
 			messageGrid.setAutoFitData(Autofit.HORIZONTAL);
 //			messageGrid.setAutoFitMaxHeight(56);
 
-	        ListGridField statusField = new ListGridField("status", "Status");
+	        ListGridField statusField = new ListGridField("status", AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataImportDialog_status"));
 	        statusField.setWidth(80);
 
-			ListGridField pathField = new ListGridField("path", "Path", 300);
+	        ListGridField pathField = new ListGridField("path", AdminClientMessageUtil.getString("ui_tools_ui_metaexplorer_MetaDataImportDialog_path"), 300);
 			pathField.setShowHover(true);
 			pathField.setHoverCustomizer(new HoverCustomizer() {
 				@Override
@@ -1034,10 +1034,10 @@ public class MetaDataImportDialog extends AbstractWindow {
 				}
 			});
 
-	        ListGridField actionField = new ListGridField("action", "Action");
+	        ListGridField actionField = new ListGridField("action", AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataImportDialog_action"));
 	        actionField.setWidth(150);
 
-	        ListGridField messageField = new ListGridField("message", "Message");
+	        ListGridField messageField = new ListGridField("message", AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataImportDialog_message"));
 	        messageField.setShowHover(true);
 	        messageField.setHoverCustomizer(new HoverCustomizer() {
 				@Override

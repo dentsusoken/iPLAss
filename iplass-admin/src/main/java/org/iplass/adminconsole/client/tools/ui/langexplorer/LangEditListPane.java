@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.screen.ScreenModuleBasedUIFactoryHolder;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
@@ -118,10 +119,10 @@ public class LangEditListPane extends VLayout {
 		listGrid.setCanEdit(true);
 		listGrid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
 
-		ListGridField itemKey = new ListGridField(ITEM_KEY_NAME, "Item");
+		ListGridField itemKey = new ListGridField(ITEM_KEY_NAME, AdminClientMessageUtil.getString("ui_tools_ui_langexplorer_LangEditListPane_item"));
 		itemKey.setCanEdit(false);
 		itemKey.setWidth(300);
-		ListGridField defaultLang = new ListGridField(DEFAULT_KEY_NAME, "Default");
+		ListGridField defaultLang = new ListGridField(DEFAULT_KEY_NAME, AdminClientMessageUtil.getString("ui_tools_ui_langexplorer_LangEditListPane_default"));
 
 		ListGridField[] listGridFields = new ListGridField[enableLanguages.size() + 2];
 		listGridFields[0] = itemKey;

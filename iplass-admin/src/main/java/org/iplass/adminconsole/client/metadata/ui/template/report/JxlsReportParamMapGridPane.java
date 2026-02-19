@@ -217,11 +217,11 @@ public class JxlsReportParamMapGridPane extends VLayout {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField keyField = new ListGridField(FIELD_NAME.KEY.name(), "Key");
+			ListGridField keyField = new ListGridField(FIELD_NAME.KEY.name(), AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JxlsReportParamMapGridPane_key"));
 			keyField.setWidth("30%");
-			ListGridField mapFromField = new ListGridField(FIELD_NAME.MAP_FROM.name(), "Value");
+			ListGridField mapFromField = new ListGridField(FIELD_NAME.MAP_FROM.name(), AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JxlsReportParamMapGridPane_value"));
 			mapFromField.setWidth("50%");
-			ListGridField toMapField = new ListGridField(FIELD_NAME.TO_MAP.name(), "To Map");
+			ListGridField toMapField = new ListGridField(FIELD_NAME.TO_MAP.name(), AdminClientMessageUtil.getString("ui_metadata_ui_template_report_JxlsReportParamMapGridPane_toMap"));
 			toMapField.setWidth("20%");
 
 			setFields(keyField, mapFromField, toMapField);

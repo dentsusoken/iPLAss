@@ -162,9 +162,9 @@ public class EntityEditPane extends MetaDataMainEditPane {
 		dataLocalizationPane = new DataLocalizationPane();
 
 		// Section設定
-		SectionStackSection propSection = createSection("Properties", entityAttributePane, propertyPane);
-		SectionStackSection eListenerSection = createSection("EventListeners", false, eventListnerPane);
-		SectionStackSection dataLocalizationSection = createSection("Data Localization", false, dataLocalizationPane);
+		SectionStackSection propSection = createSection(AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_properties"), entityAttributePane, propertyPane);
+		SectionStackSection eListenerSection = createSection(AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_eventListeners"), false, eventListnerPane);
+		SectionStackSection dataLocalizationSection = createSection(AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_dataLocalization"), false, dataLocalizationPane);
 		setMainSections(commonSection, propSection, eListenerSection, dataLocalizationSection);
 
 		addMember(lockedPane);

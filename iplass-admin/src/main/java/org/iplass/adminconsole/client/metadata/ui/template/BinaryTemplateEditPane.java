@@ -91,7 +91,7 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 		downloadForm.setMargin(5);
 
 		txtDownloadFileName = new StaticTextItem();
-		txtDownloadFileName.setTitle("Saved File");
+		txtDownloadFileName.setTitle(AdminClientMessageUtil.getString("ui_metadata_template_BinaryTemplateEditPane_savedFile"));
 
 		downloadFilebtn = new ButtonItem("Download", "Download");
 		downloadFilebtn.setWidth(100);

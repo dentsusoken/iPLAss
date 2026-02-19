@@ -58,7 +58,7 @@ public class OAuthAttributePane extends VLayout {
 		supportBearerTokenField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_OAuthAttributePane_supportBearerToken")));
 
 		oauthScopesField = new TextAreaItem();
-		oauthScopesField.setTitle("Scopes");
+		oauthScopesField.setTitle(AdminClientMessageUtil.getString("ui_metadata_webapi_OAuthAttributePane_scopes"));
 		oauthScopesField.setWidth("100%");
 		oauthScopesField.setHeight(75);
 		oauthScopesField.setBrowserSpellCheck(false);

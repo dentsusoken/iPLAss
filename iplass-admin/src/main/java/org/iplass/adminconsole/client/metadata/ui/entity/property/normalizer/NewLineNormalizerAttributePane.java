@@ -42,7 +42,7 @@ public class NewLineNormalizerAttributePane extends NormalizerAttributePane {
 	public NewLineNormalizerAttributePane() {
 
 		selNewLineType = new MtpSelectItem();
-		selNewLineType.setTitle("Line Breaks Code");
+		selNewLineType.setTitle(rs("ui_metadata_entity_property_normalizer_NewLineNormalizerAttributePane_newLineType"));
 		LinkedHashMap<String, String> newLineTypeMap = new LinkedHashMap<>();
 		for (NewlineType type : NewlineType.values()) {
 			newLineTypeMap.put(type.name(), type.name());

@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.auth.property;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
 
@@ -35,7 +36,7 @@ public class AuditLogSettingPane extends AbstractSettingPane {
 
 		chkRecordLastLoginDate = new CheckboxItem();
 		chkRecordLastLoginDate.setShowTitle(false);
-		chkRecordLastLoginDate.setTitle("Record Last LoginDate.");
+		chkRecordLastLoginDate.setTitle(AdminClientMessageUtil.getString("ui_metadata_auth_property_AuditLogSettingPane_recordLastLoginDate"));
 		chkRecordLastLoginDate.setColSpan(2);
 
 		form.setItems(chkRecordLastLoginDate);

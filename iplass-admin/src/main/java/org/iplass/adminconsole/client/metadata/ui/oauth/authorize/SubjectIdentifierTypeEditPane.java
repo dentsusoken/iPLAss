@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.oauth.authorize;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.oauth.definition.SubjectIdentifierTypeDefinition;
@@ -67,7 +68,7 @@ public class SubjectIdentifierTypeEditPane extends VLayout implements EditablePa
 		form.setMargin(3);
 
 		selSubjectIdentifierType = new SelectItem();
-		selSubjectIdentifierType.setTitle("Type");
+		selSubjectIdentifierType.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_SubjectIdentifierTypeEditPane_type"));
 		selSubjectIdentifierType.setWidth("100%");
 		selSubjectIdentifierType.setValueMap(subjectIdentifierTypeMap);
 		selSubjectIdentifierType.addChangedHandler(new ChangedHandler() {
@@ -79,12 +80,12 @@ public class SubjectIdentifierTypeEditPane extends VLayout implements EditablePa
 		});
 
 		txtSubjectIdMappedUserProperty = new TextItem();
-		txtSubjectIdMappedUserProperty.setTitle("SubjectId Mapped User Property");
+		txtSubjectIdMappedUserProperty.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_SubjectIdentifierTypeEditPane_subjectIdMappedUserProperty"));
 		txtSubjectIdMappedUserProperty.setWidth("100%");
 		txtSubjectIdMappedUserProperty.setBrowserSpellCheck(false);
 
 		chkHashing = new CheckboxItem();
-		chkHashing.setTitle("Hashing");
+		chkHashing.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_SubjectIdentifierTypeEditPane_hashing"));
 		chkHashing.setDisabled(true);
 
 		form.setItems(selSubjectIdentifierType, txtSubjectIdMappedUserProperty, chkHashing);

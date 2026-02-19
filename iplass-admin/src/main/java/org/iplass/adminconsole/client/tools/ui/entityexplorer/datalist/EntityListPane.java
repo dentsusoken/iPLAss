@@ -84,7 +84,7 @@ public class EntityListPane extends VLayout {
 
 		final ToolStripButton configExportButton = new ToolStripButton();
 		configExportButton.setIcon(EXPORT_ICON);
-		configExportButton.setTitle("ConfigExport");
+	configExportButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_configExport"));
 		configExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_exportEntityDef")));
 		configExportButton.addClickHandler(new ClickHandler() {
 
@@ -98,7 +98,7 @@ public class EntityListPane extends VLayout {
 		toolStrip.addSeparator();
 
 		showCountItem = new CheckboxItem();
-		showCountItem.setTitle("Get Data Count");
+	showCountItem.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_getDataCount"));
 		showCountItem.setTooltip(SmartGWTUtil.getHoverString(
 				AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_dataNumOften")));
 		showCountItem.addChangedHandler(new ChangedHandler() {
@@ -241,15 +241,15 @@ public class EntityListPane extends VLayout {
 		explorerField.setWidth(25);
 		ListGridField errorField = new ListGridField("error", " ");
 		errorField.setWidth(25);
-		ListGridField nameField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.NAME.name(), "Name");
-		ListGridField displayNameField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), "DisplayName");
-		ListGridField countField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), "Count");
+		ListGridField nameField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityListPane_name"));
+		ListGridField displayNameField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityListPane_displayName"));
+		ListGridField countField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityListPane_count"));
 		countField.setWidth(70);
-		ListGridField listenerCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.LISTENER_COUNT.name(), "Listeners");
+		ListGridField listenerCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.LISTENER_COUNT.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityListPane_listeners"));
 		listenerCountField.setWidth(75);
-		ListGridField versioningField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.VERSIONING.name(), "Version Control");
+		ListGridField versioningField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.VERSIONING.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityListPane_versionControl"));
 		versioningField.setWidth(75);
-		ListGridField repositoryField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.REPOSITORY.name(), "Repository");
+		ListGridField repositoryField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.REPOSITORY.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_datalist_EntityListPane_repository"));
 		repositoryField.setWidth(60);
 
 		grid.setFields(explorerField, errorField, nameField, displayNameField, countField, listenerCountField, versioningField, repositoryField);

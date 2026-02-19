@@ -43,7 +43,7 @@ public class MetaDataPluginSection extends SectionStackSection implements HasDes
 
 	public MetaDataPluginSection() {
 
-		setTitle("MetaDataSettings");
+		setTitle(AdminClientMessageUtil.getString("ui_metadata_MetaDataPluginSection_metaDataSettings"));
 
 		ImgButton clearCache = new ImgButton();
 		clearCache.setSrc(REFRESH_ICON);

@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord.ValidationType;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.ValidationEditDialog;
@@ -478,14 +479,14 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			setBodyOverflow(Overflow.VISIBLE);
 			setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
-			ListGridField validationField = new ListGridField(ValidationListGridRecord.VALTYPE, "Type");
+			ListGridField validationField = new ListGridField(ValidationListGridRecord.VALTYPE, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_ValidationListPane_type"));
 			validationField.setWidth(100);
-			ListGridField gpField = new ListGridField(ValidationListGridRecord.GP, "Value");
+			ListGridField gpField = new ListGridField(ValidationListGridRecord.GP, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_ValidationListPane_value"));
 			gpField.setWidth(200);
-			ListGridField errorMsgField = new ListGridField(ValidationListGridRecord.MSG_DISP_INFO, "Message");
-			ListGridField errorCodeField = new ListGridField(ValidationListGridRecord.ERRORCODE, "Code");
+			ListGridField errorMsgField = new ListGridField(ValidationListGridRecord.MSG_DISP_INFO, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_ValidationListPane_message"));
+			ListGridField errorCodeField = new ListGridField(ValidationListGridRecord.ERRORCODE, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_ValidationListPane_code"));
 			errorCodeField.setWidth(60);
-			ListGridField validationSkipScriptField = new ListGridField(ValidationListGridRecord.VALIDATION_SKIP_SCRIPT_DISP_INFO, "Skip Setting");
+			ListGridField validationSkipScriptField = new ListGridField(ValidationListGridRecord.VALIDATION_SKIP_SCRIPT_DISP_INFO, AdminClientMessageUtil.getString("ui_metadata_ui_entity_property_ValidationListPane_skipSetting"));
 			validationSkipScriptField.setWidth(70);
 			setFields(validationField, gpField, errorMsgField, errorCodeField, validationSkipScriptField);
 		}

@@ -88,7 +88,7 @@ public class ApplicationMaintenanceItem extends PartsItem {
 			form.setAutoFocus(true);
 
 			txtTitle = new MetaDataLangTextItem();
-			txtTitle.setTitle("Title");
+			txtTitle.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_ApplicationMaintenanceItem_title"));
 			txtTitle.setValue(parts.getTitle());
 			txtTitle.setLocalizedList(parts.getLocalizedTitleList());
 

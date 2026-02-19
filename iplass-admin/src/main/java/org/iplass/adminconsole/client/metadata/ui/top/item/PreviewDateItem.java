@@ -88,12 +88,12 @@ public class PreviewDateItem extends PartsItem {
 			form.setAutoFocus(true);
 
 			txtTitle = new MetaDataLangTextItem();
-			txtTitle.setTitle("Title");
+			txtTitle.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_PreviewDateItem_title"));
 			txtTitle.setValue(parts.getTitle());
 			txtTitle.setLocalizedList(parts.getLocalizedTitleList());
 
 			chkUsePreviewDate = new CheckboxItem();
-			chkUsePreviewDate.setTitle("Use Preview Date");
+			chkUsePreviewDate.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_PreviewDateItem_usePreviewDate"));
 			chkUsePreviewDate.setValue(parts.isUsePreviewDate());
 			SmartGWTUtil.addHoverToFormItem(chkUsePreviewDate,
 					AdminClientMessageUtil.getString("ui_metadata_top_item_PreviewDatePartsItem_usePreviewDate"));

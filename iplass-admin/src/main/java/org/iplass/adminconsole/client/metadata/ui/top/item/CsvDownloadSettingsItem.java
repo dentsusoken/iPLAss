@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.metadata.ui.top.item;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -130,7 +131,7 @@ public class CsvDownloadSettingsItem extends PartsItem {
 		public void createForm(CsvDownloadSettingsParts parts, DynamicForm form) {
 
 			specfyCharacterCodeEntityView = new CheckboxItem();
-			specfyCharacterCodeEntityView.setTitle("SpecfyCharacterCodeEntityView");
+			specfyCharacterCodeEntityView.setTitle(AdminClientMessageUtil.getString("ui_metadata_top_item_CsvDownloadSettingsItem_specifyCharacterCodeEntityView"));
 			specfyCharacterCodeEntityView.setName("specfyCharacterCodeEntityView");
 			specfyCharacterCodeEntityView.setValue(parts.isSpecfyCharacterCodeEntityView());
 

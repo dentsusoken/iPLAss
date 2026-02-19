@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.MultiReferencePropertyDS;
 import org.iplass.mtp.entity.Entity;
@@ -112,7 +113,7 @@ public class MultiReferencePropertyDialog extends MtpDialog {
 
 		IButton cancelBtn = new IButton();
 		cancelBtn.setWidth(100);
-		cancelBtn.setTitle("Close");
+	cancelBtn.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_MultiReferencePropertyDialog_close"));
 		cancelBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

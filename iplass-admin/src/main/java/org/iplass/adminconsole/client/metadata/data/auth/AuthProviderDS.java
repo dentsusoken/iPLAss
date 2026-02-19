@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.data.auth;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
 import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
@@ -53,7 +54,7 @@ public class AuthProviderDS extends AbstractAdminDataSource {
 		grid.setDataSource(AuthProviderDS.getInstance());
 
 		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME);
-		nameField.setTitle("Provider Name");
+		nameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_data_auth_AuthProviderDS_providerName"));
 		grid.setFields(nameField);
 	}
 

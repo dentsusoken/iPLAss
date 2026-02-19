@@ -67,7 +67,7 @@ public class QueueExplorerMainPane extends VLayout implements ContentStateChange
 		//------------------------
 
 		queueNameItem = new SelectItem();
-		queueNameItem.setTitle("Queue");
+		queueNameItem.setTitle(AdminClientMessageUtil.getString("ui_tools_queueexplorer_QueueExplorerMainPane_queue"));
 		//queueNameItem.setShowTitle(false);
 		queueNameItem.setWidth(200);
 		QueueListDS.setDataSource(queueNameItem, false);

@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
@@ -107,8 +108,8 @@ public class LocalizedScriptSettingDialog extends MtpDialog {
 			grid.setWidth100();
 			grid.setHeight100();
 
-			ListGridField languageField = new ListGridField("langDisp", "Language");
-			ListGridField hasCustomField = new ListGridField("custom", "Custom");
+			ListGridField languageField = new ListGridField("langDisp", AdminClientMessageUtil.getString("ui_metadata_ui_common_LocalizedScriptSettingDialog_language"));
+			ListGridField hasCustomField = new ListGridField("custom", AdminClientMessageUtil.getString("ui_metadata_ui_common_LocalizedScriptSettingDialog_custom"));
 			hasCustomField.setWidth(70);
 			hasCustomField.setAlign(Alignment.CENTER);
 			grid.setFields(languageField, hasCustomField);
@@ -164,7 +165,7 @@ public class LocalizedScriptSettingDialog extends MtpDialog {
 			SectionStack sectionStack = new SectionStack();
 
 			SectionStackSection section1 = new SectionStackSection();
-			section1.setTitle("Language List");
+			section1.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_LocalizedScriptSettingDialog_languageList"));
 			section1.setItems(grid);
 			section1.setControls(removeButton);
 			section1.setExpanded(true);

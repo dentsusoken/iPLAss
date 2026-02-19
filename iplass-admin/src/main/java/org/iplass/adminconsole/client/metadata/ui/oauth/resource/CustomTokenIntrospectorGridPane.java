@@ -140,7 +140,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 
 			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
 
-			ListGridField clientTypeField = new ListGridField(FIELD_NAME.TYPE.name(), "Type");
+			ListGridField clientTypeField = new ListGridField(FIELD_NAME.TYPE.name(), AdminClientMessageUtil.getString("ui_metadata_ui_oauth_resource_CustomTokenIntrospectorGridPane_type"));
 
 			setFields(clientTypeField);
 
@@ -276,7 +276,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			form = new MtpForm();
 
 			selType = new MtpSelectItem();
-			selType.setTitle("Type");
+			selType.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_CustomTokenIntrospectorGridPane_type"));
 			selType.setValueMap(typeMap);
 			SmartGWTUtil.setRequired(selType);
 			selType.setRequired(true);
@@ -293,7 +293,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			javaForm = new MtpForm();
 
 			txtClassName = new MtpTextItem();
-			txtClassName.setTitle("Java ClassName");
+			txtClassName.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_CustomTokenIntrospectorGridPane_javaClassName"));
 			txtClassName.setStartRow(true);
 			SmartGWTUtil.addHoverToFormItem(txtClassName,
 					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerAttributePane_introspectorJavaClassName")));
@@ -303,7 +303,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			scriptForm = new MtpForm();
 
 			txaScript = new MtpTextAreaItem();
-			txaScript.setTitle("Script");
+			txaScript.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_CustomTokenIntrospectorGridPane_script"));
 			txaScript.setHeight(255);
 			SmartGWTUtil.setReadOnlyTextArea(txaScript);
 
@@ -311,7 +311,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			spacer.setStartRow(true);
 
 			ButtonItem btnScript = new ButtonItem();
-			btnScript.setTitle("Edit Script");
+			btnScript.setTitle(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_CustomTokenIntrospectorGridPane_editScript"));
 			btnScript.setShowTitle(false);
 			btnScript.setStartRow(false);
 			btnScript.setEndRow(false);

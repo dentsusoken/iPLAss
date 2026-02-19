@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.action.result;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
@@ -71,7 +72,7 @@ public class DynamicTemplateResultEditPane extends ResultTypeEditPane {
 		SmartGWTUtil.setRequired(attributeNameField);
 
 		layoutActionAttributeNameField = new MtpTextItem();
-		layoutActionAttributeNameField.setTitle("Layout Action AttributeName");
+		layoutActionAttributeNameField.setTitle(AdminClientMessageUtil.getString("ui_metadata_action_result_DynamicTemplateResultEditPane_layoutActionAttributeName"));
 
 		form.setItems(attributeNameField, layoutActionAttributeNameField);
 
@@ -83,7 +84,7 @@ public class DynamicTemplateResultEditPane extends ResultTypeEditPane {
 		useContentDispositionField = new CheckboxItem("useContentDisposition", "Set ContentDisposition");
 
 		contentDispositionTypeField = new MtpSelectItem();
-		contentDispositionTypeField.setTitle("Content Disposition Type");
+		contentDispositionTypeField.setTitle(AdminClientMessageUtil.getString("ui_metadata_action_result_DynamicTemplateResultEditPane_contentDispositionType"));
 
 		LinkedHashMap<String, String> contentDispositionTypeMap = new LinkedHashMap<String, String>();
 		contentDispositionTypeMap.put("", "Default");

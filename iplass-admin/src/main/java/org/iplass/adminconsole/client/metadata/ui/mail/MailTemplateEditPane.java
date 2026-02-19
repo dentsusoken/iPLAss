@@ -481,8 +481,8 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			ListGridField languageField = new ListGridField(FIELD_NAME.NAME.name(), "Language");
-			ListGridField templateField = new ListGridField(FIELD_NAME.SUBJECT.name(), "Subject");
+			ListGridField languageField = new ListGridField(FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_mail_MailTemplateEditPane_language"));
+			ListGridField templateField = new ListGridField(FIELD_NAME.SUBJECT.name(), AdminClientMessageUtil.getString("ui_metadata_ui_mail_MailTemplateEditPane_subject"));
 
 			setFields(languageField, templateField);
 		}

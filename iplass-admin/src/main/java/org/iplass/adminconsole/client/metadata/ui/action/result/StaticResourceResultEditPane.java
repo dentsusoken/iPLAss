@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.action.result;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
@@ -68,7 +69,7 @@ public class StaticResourceResultEditPane extends ResultTypeEditPane {
 		form.setAutoHeight();
 
 		staticResourceField = new MetaDataSelectItem(StaticResourceDefinition.class);
-		staticResourceField.setTitle("StaticResource");
+		staticResourceField.setTitle(AdminClientMessageUtil.getString("ui_metadata_action_result_StaticResourceResultEditPane_staticResource"));
 		SmartGWTUtil.setRequired(staticResourceField);
 
 		form.setItems(staticResourceField);
@@ -81,7 +82,7 @@ public class StaticResourceResultEditPane extends ResultTypeEditPane {
 		useContentDispositionField = new CheckboxItem("useContentDisposition", "Set ContentDisposition");
 
 		contentDispositionTypeField = new MtpSelectItem();
-		contentDispositionTypeField.setTitle("Content Disposition Type");
+		contentDispositionTypeField.setTitle(AdminClientMessageUtil.getString("ui_metadata_action_result_StaticResourceResultEditPane_contentDispositionType"));
 
 		LinkedHashMap<String, String> contentDispositionTypeMap = new LinkedHashMap<String, String>();
 		contentDispositionTypeMap.put("", "Default");

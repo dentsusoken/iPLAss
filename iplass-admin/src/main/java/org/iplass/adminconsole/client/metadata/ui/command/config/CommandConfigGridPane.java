@@ -396,12 +396,11 @@ public class CommandConfigGridPane extends VLayout {
 
 			ListGridField showMetaButtonField = new ListGridField(FIELD_NAME.SHOW_ICON.name(), " ");
 			showMetaButtonField.setWidth(25);
-			ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), "Command Name");
+			ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_metadata_ui_command_config_CommandConfigGridPane_commandName"));
 //			ListGridField dispNameField = new ListGridField(FIELD_NAME.DISPLAY_NAME.name(), "Display Name");;
 //			ListGridField commandField = new ListGridField(FIELD_NAME.COMMAND_NAME.name(), "実行Command");	//IDはDefinitionレベルでは不明
-			ListGridField initScriptField = new ListGridField(FIELD_NAME.INIT_SCRIPT_STATUS.name(), "Init Script");
-			initScriptField.setWidth(80);
-
+			ListGridField initScriptField = new ListGridField(FIELD_NAME.INIT_SCRIPT_STATUS.name(), AdminClientMessageUtil.getString("ui_metadata_ui_command_config_CommandConfigGridPane_initScript"));
+			initScriptField.setWidth(80);	
 			setFields(showMetaButtonField, nameField, initScriptField);
 		}
 

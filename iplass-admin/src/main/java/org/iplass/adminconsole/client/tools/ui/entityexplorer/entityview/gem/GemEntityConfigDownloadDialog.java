@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.entityview.gem;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
@@ -73,7 +74,7 @@ public class GemEntityConfigDownloadDialog extends AbstractWindow {
 		centerInPage();
 
 		fileTypeField = new SelectItem();
-		fileTypeField.setTitle("Output Type");
+	fileTypeField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityConfigDownloadDialog_outputType"));
 		fileTypeField.setValueMap(FILETYPE.CSV.name(), FILETYPE.XML.name());
 		fileTypeField.setValue(FILETYPE.CSV.name());
 		fileTypeField.addChangedHandler(new ChangedHandler() {
@@ -84,7 +85,7 @@ public class GemEntityConfigDownloadDialog extends AbstractWindow {
 		});
 
 		SelectItem csvEncodeField = new SelectItem();
-		csvEncodeField.setTitle("Encode");
+	csvEncodeField.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityConfigDownloadDialog_encode"));
 		csvEncodeField.setValueMap(ENCODE.UTF8.name(), ENCODE.MS932.name());
 		csvEncodeField.setValue(ENCODE.UTF8.name());
 

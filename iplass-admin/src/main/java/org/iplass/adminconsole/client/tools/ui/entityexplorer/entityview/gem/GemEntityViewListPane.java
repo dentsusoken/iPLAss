@@ -74,7 +74,7 @@ public class GemEntityViewListPane extends VLayout {
 
 		final ToolStripButton configExportButton = new ToolStripButton();
 		configExportButton.setIcon(EXPORT_ICON);
-		configExportButton.setTitle("ConfigExport");
+	configExportButton.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityViewListPane_configExport"));
 		configExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_exportEntityDef")));
 		configExportButton.addClickHandler(new ClickHandler() {
 
@@ -88,7 +88,7 @@ public class GemEntityViewListPane extends VLayout {
 		toolStrip.addSeparator();
 
 		showCountItem = new CheckboxItem();
-		showCountItem.setTitle("Get Data Count");
+	showCountItem.setTitle(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityViewListPane_getDataCount"));
 		showCountItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_dataNumOften")));
 		showCountItem.addChangedHandler(new ChangedHandler() {
 
@@ -190,17 +190,17 @@ public class GemEntityViewListPane extends VLayout {
 		//（参考）setFieldsは、setDataSource後に指定しないと効かない
 
 		//ボタンを表示したいためListGridFieldを指定
-		ListGridField nameField = new ListGridField(EntityViewInfoDS.FIELD_NAME.NAME.name(), "Name");
-		ListGridField displayNameField = new ListGridField(EntityViewInfoDS.FIELD_NAME.DISPLAY_NAME.name(), "DisplayName");
-		ListGridField countField = new ListGridField(EntityViewInfoDS.FIELD_NAME.DATA_COUNT.name(), "Count");
+		ListGridField nameField = new ListGridField(EntityViewInfoDS.FIELD_NAME.NAME.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_entityview_gem_GemEntityViewListPane_name"));
+		ListGridField displayNameField = new ListGridField(EntityViewInfoDS.FIELD_NAME.DISPLAY_NAME.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_entityview_gem_GemEntityViewListPane_displayName"));
+		ListGridField countField = new ListGridField(EntityViewInfoDS.FIELD_NAME.DATA_COUNT.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_entityview_gem_GemEntityViewListPane_count"));
 		countField.setWidth(70);
-		ListGridField detailViewCountField = new ListGridField(EntityViewInfoDS.FIELD_NAME.DETAIL_VIEW_COUNT.name(), "DetailViews");
+		ListGridField detailViewCountField = new ListGridField(EntityViewInfoDS.FIELD_NAME.DETAIL_VIEW_COUNT.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_entityview_gem_GemEntityViewListPane_detailViews"));
 		detailViewCountField.setWidth(90);
-		ListGridField searchViewCountField = new ListGridField(EntityViewInfoDS.FIELD_NAME.SEARCH_VIEW_COUNT.name(), "SearchViews");
+		ListGridField searchViewCountField = new ListGridField(EntityViewInfoDS.FIELD_NAME.SEARCH_VIEW_COUNT.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_entityview_gem_GemEntityViewListPane_searchViews"));
 		searchViewCountField.setWidth(90);
-		ListGridField bulkViewCountField = new ListGridField(EntityViewInfoDS.FIELD_NAME.BULK_VIEW_COUNT.name(), "BulkViews");
+		ListGridField bulkViewCountField = new ListGridField(EntityViewInfoDS.FIELD_NAME.BULK_VIEW_COUNT.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_entityview_gem_GemEntityViewListPane_bulkViews"));
 		bulkViewCountField.setWidth(90);
-		ListGridField viewControlField = new ListGridField(EntityViewInfoDS.FIELD_NAME.VIEW_CONTROL.name(), "ViewControls");
+		ListGridField viewControlField = new ListGridField(EntityViewInfoDS.FIELD_NAME.VIEW_CONTROL.name(), AdminClientMessageUtil.getString("ui_tools_ui_entityexplorer_entityview_gem_GemEntityViewListPane_viewControls"));
 		viewControlField.setWidth(100);
 
 		grid.setFields(nameField, displayNameField, countField, detailViewCountField, searchViewCountField, bulkViewCountField, viewControlField);
