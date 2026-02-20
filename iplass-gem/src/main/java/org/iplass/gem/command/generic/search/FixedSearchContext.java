@@ -32,9 +32,9 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.SortSpec;
-import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
+import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.impl.parser.ParseContext;
@@ -95,6 +95,8 @@ public class FixedSearchContext extends SearchContextBase {
 		if (entityFilter != null && filterName != null && !filterName.isEmpty()) {
 			item = entityFilter.getItem(filterName);
 		}
+		
+		SortSpec sortSpec = getSortSpec();
 
 		if (item != null && StringUtil.isNotEmpty(item.getSort())) {
 			SyntaxService service = ServiceRegistry.getRegistry().getService(SyntaxService.class);
@@ -105,7 +107,6 @@ public class FixedSearchContext extends SearchContextBase {
 				orderBy = syntax.parse(context);
 
 				//画面でソート指定された場合は、その項目を第1ソートキーに
-				SortSpec sortSpec = getSortSpec();
 				if (sortSpec != null) {
 					orderBy.getSortSpecList().add(0, sortSpec);
 				}
@@ -115,11 +116,14 @@ public class FixedSearchContext extends SearchContextBase {
 			}
 		} else {
 			//画面でソート指定された場合は、その項目を第1ソートキーに
-			SortSpec sortSpec = getSortSpec();
+			orderBy = new OrderBy();
 			if (sortSpec != null) {
-				orderBy = new OrderBy();
 				orderBy.add(sortSpec);
 			}
+			// Admin Consoleでソート条件が未設定の場合、ソート順序を一意にするため、OIDをソートキーの末尾に追加 
+			//TODO: hasSortSetting()（= SearchLayout設定内のソート条件） を使うべき？ or 今クラスは固定検索のため、SearchLayoutのソート条件は無視でよい？（現実装 = 後者）
+			//TODO: addする際に重複チェックするべきか？
+			orderBy.add(Entity.OID, SortType.ASC);
 		}
 
 		return orderBy;
