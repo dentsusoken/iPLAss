@@ -222,6 +222,13 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	@Override
 	public OrderBy getOrderBy() {
 		// ソート設定が存在する場合
+		// TODO: 以下、分かりづらくないか
+		// 画面でユーザーが指定したソート列：
+		// * hasSortSetting() には入ってないが
+		// * getSortSetting() には入っている
+		
+		// TODO: やりたいことは結局：OrderBy = (画面ソート列) + (ソート設定 or OID)
+		// ∴ 「まず前者を冒頭で処理した後に、後者を場合分けする」方が自然で分かりやすいのでは？（現状は、後者の場合分けから始まっているが）
 		if (hasSortSetting()) {
 			OrderBy orderBy = new OrderBy();
 			for (SortSetting ss : getSortSetting()) {
@@ -263,9 +270,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		}
 		
 		if (Entity.OID.equals(sortKey)) {
-			OrderBy orderBy = new OrderBy();
-			orderBy.add(sortKey, getSortType());
-			return orderBy;
+			return new OrderBy().add(sortKey, getSortType());
 		} 
 		PropertyColumn property = getLayoutPropertyColumn(sortKey);
 		// OID以外はSearchResultに定義されているPropertyのみ許可
@@ -274,6 +279,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		}
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		// 参照プロパティの場合、画面上の表示項目でソート
+		// TODO: 上のロジックのコピペ。解消できないか
 		if (pd instanceof ReferenceProperty) {
 			if (property.getPropertyName().equals(sortKey)) {
 				// ソートキーが直接D&Dされた列の場合
@@ -289,8 +295,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				}
 			}
 		} else {
-			if (!property.getPropertyName()
-					.equals(sortKey)) {
+			if (!property.getPropertyName().equals(sortKey)) {
+				// TODO: この分岐は上にはない。意図的か？
 				// ソートキーが直接D&Dされた列以外の場合、ネストの存在チェック
 				NestProperty np = getLayoutNestProperty(property, sortKey);
 				if (np == null) {
@@ -299,18 +305,9 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				}
 			}
 		}
-		OrderBy orderBy = new OrderBy();
-		
 		NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-		orderBy.add(sortKey, getSortType(), nullOrderingSpec);
-		
 		// ソート順序を一意にするため、OIDをソートキーの末尾に追加
-		boolean hasOid = orderBy.getSortSpecList().stream()
-				.anyMatch(ss -> Entity.OID.equals(ss.getSortKey().toString()));
-		if (!hasOid) {
-			orderBy.add(Entity.OID, SortType.ASC);
-		}
-		return orderBy;
+		return new OrderBy().add(sortKey, getSortType(), nullOrderingSpec).add(Entity.OID, SortType.ASC);
 	}
 
 	@Override
