@@ -381,6 +381,10 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			if (StringUtil.isNotEmpty(passwordAttributeName)) {
 				jasperTemplate.setPasswordAttributeName(passwordAttributeName);
 			}
+			String ownerPasswordAttributeName = (String) args.get(ReportTemplateUploadProperty.JASPER_OWNER_PASSWORD_ATTRIBUTE_NAME);
+			if (StringUtil.isNotEmpty(ownerPasswordAttributeName)) {
+				jasperTemplate.setOwnerPasswordAttributeName(ownerPasswordAttributeName);
+			}
 
 			return jasperTemplate;
 		} else {

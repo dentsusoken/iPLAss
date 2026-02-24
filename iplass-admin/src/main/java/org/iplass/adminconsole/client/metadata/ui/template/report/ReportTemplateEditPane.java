@@ -93,6 +93,8 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private TextItem jasperDataSourceAttributeNameField;
 	/** Jasper PasswordAttributeName */
 	private TextItem jasperPasswordAttributeNameField;
+	/** Jasper OwnerPasswordAttributeName */
+	private TextItem jasperOwnerPasswordAttributeNameField;
 
 	/** Poi PasswordAttributeName */
 	private DynamicForm poiPasswordAttributeNameForm;
@@ -226,8 +228,10 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		jasperDataSourceAttributeNameField.setTitle("DataSource AttributeName");
 		jasperPasswordAttributeNameField = new MtpTextItem();
 		jasperPasswordAttributeNameField.setTitle("Password AttributeName");
+		jasperOwnerPasswordAttributeNameField = new MtpTextItem();
+		jasperOwnerPasswordAttributeNameField.setTitle("Owner Password AttributeName");
 
-		jasperAttributeForm.setItems(jasperDataSourceAttributeNameField, jasperPasswordAttributeNameField);
+		jasperAttributeForm.setItems(jasperDataSourceAttributeNameField, jasperPasswordAttributeNameField, jasperOwnerPasswordAttributeNameField);
 
 		//Jasper ParamMap部分
 		jasperParamMapPane = new JasperReportParamMapGridPane();
@@ -329,6 +333,8 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 			//PasswordAttributeName
 			jasperTemplate.setPasswordAttributeName(SmartGWTUtil.getStringValue(jasperPasswordAttributeNameField, true));
+			//OwnerPasswordAttributeName
+			jasperTemplate.setOwnerPasswordAttributeName(SmartGWTUtil.getStringValue(jasperOwnerPasswordAttributeNameField, true));
 			//パラメータマッピング設定
 			jasperTemplate.setParamMap(jasperParamMapPane.getParamMap());
 
@@ -447,6 +453,9 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 				if (!SmartGWTUtil.isEmpty(jasRepo.getPasswordAttributeName())) {
 					addUploadParameter(prefix + ReportTemplateUploadProperty.JASPER_PASSWORD_ATTRIBUTE_NAME, jasRepo.getPasswordAttributeName());
 				}
+				if (!SmartGWTUtil.isEmpty(jasRepo.getOwnerPasswordAttributeName())) {
+					addUploadParameter(prefix + ReportTemplateUploadProperty.JASPER_OWNER_PASSWORD_ATTRIBUTE_NAME, jasRepo.getOwnerPasswordAttributeName());
+				}
 
 			} else if (type instanceof PoiReportType) {
 				addUploadParameter(prefix + ReportTemplateUploadProperty.REPORT_TYPE, PoiReportType.class.getName());
@@ -557,6 +566,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			jasperParamMapPane.setParamMap(jasRepo.getParamMap());
 			jasperDataSourceAttributeNameField.setValue(jasRepo.getDataSourceAttributeName());
 			jasperPasswordAttributeNameField.setValue(jasRepo.getPasswordAttributeName());
+			jasperOwnerPasswordAttributeNameField.setValue(jasRepo.getOwnerPasswordAttributeName());
 			removeMembers(poiPasswordAttributeNameForm, reportOutPane);
 			removeMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
 			beforeReportType = JasperReportType.class.getName();
@@ -653,6 +663,8 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			jasperTemplate.setDataSourceAttributeName(SmartGWTUtil.getStringValue(jasperDataSourceAttributeNameField, true));
 			//PasswordAttributeName
 			jasperTemplate.setPasswordAttributeName(SmartGWTUtil.getStringValue(jasperPasswordAttributeNameField, true));
+			//OwnerPasswordAttributeName
+			jasperTemplate.setOwnerPasswordAttributeName(SmartGWTUtil.getStringValue(jasperOwnerPasswordAttributeNameField, true));
 
 			definition.setReportType(jasperTemplate);
 		} else if (JxlsReportType.class.getName().equals(reportTypeField.getValueAsString())) {
