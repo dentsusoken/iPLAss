@@ -54,6 +54,7 @@ import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -181,8 +182,10 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		OrderBy orderBy = getOrderBy();
 		if (orderBy != null) {
 			for (SortSpec sortSpec : orderBy.getSortSpecList()) {
-				String sortKey = sortSpec.getSortKey().toString();
-				if (!select.contains(sortKey)) addSearchProperty(select, sortKey);
+				if (sortSpec.getSortKey() instanceof EntityField) {
+					String sortKey = sortSpec.getSortKey().toString();
+					if (!select.contains(sortKey)) addSearchProperty(select, sortKey);
+				}
 			}
 		}
 		boolean distinct = getConditionSection().isDistinct();
