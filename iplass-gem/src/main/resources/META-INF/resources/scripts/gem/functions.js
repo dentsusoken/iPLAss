@@ -1596,7 +1596,7 @@ $.fn.allInputCheck = function(){
 									} else if (error && error.errorMessages) {
 										// ValidateErrorオブジェクトの場合
 										// 各メッセージから改行を除去してからカンマで結合
-										var messages = error.errorMessages.map(normalizeText).join(', ');
+										const messages = error.errorMessages.map(normalizeText).join(', ');
 										if (error.propertyDisplayName) {
 											return error.propertyDisplayName + ':' + messages;
 										}
