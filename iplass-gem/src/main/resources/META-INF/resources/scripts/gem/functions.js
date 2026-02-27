@@ -1583,7 +1583,8 @@ $.fn.allInputCheck = function(){
 							} else {
 								// テキストの改行を除去するヘルパー関数
 								const normalizeText = (text) => {
-									return String(text).replace(/\n/g, ' ');
+									// CRLF(\r\n)、LF(\n)、CR(\r) など連続する改行コードをまとめて空白に正規化する
+									return String(text).replace(/[\r\n]+/g, ' ');
 								};
 
 								// エラーメッセージを文字列に変換して表示
