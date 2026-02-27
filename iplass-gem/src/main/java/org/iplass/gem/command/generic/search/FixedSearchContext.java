@@ -32,9 +32,9 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.SortSpec;
-import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
+import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.impl.parser.ParseContext;
@@ -87,42 +87,37 @@ public class FixedSearchContext extends SearchContextBase {
 
 	@Override
 	public OrderBy getOrderBy() {
-		OrderBy orderBy = null;
 		EntityFilterManager efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
 		EntityFilter entityFilter = efm.get(getDefName());
-		EntityFilterItem item = null;
 		String filterName = getFilterName();
-		if (entityFilter != null && filterName != null && !filterName.isEmpty()) {
-			item = entityFilter.getItem(filterName);
-		}
-
-		if (item != null && StringUtil.isNotEmpty(item.getSort())) {
-			SyntaxService service = ServiceRegistry.getRegistry().getService(SyntaxService.class);
-			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT).getSyntax(OrderBySyntax.class);
-
-			ParseContext context = new ParseContext("order by " + item.getSort());
-			try {
-				orderBy = syntax.parse(context);
-
-				//画面でソート指定された場合は、その項目を第1ソートキーに
-				SortSpec sortSpec = getSortSpec();
-				if (sortSpec != null) {
-					orderBy.getSortSpecList().add(0, sortSpec);
-				}
-
-			} catch (ParseException e) {
-				throw new SystemException(e.getMessage(), e);
-			}
-		} else {
+		// TODO: 【要確認】通常検索（SearchContextBase.getOrderBy()）とロジックが違うが、意図的か？
+		SortSpec sortSpec = getSortSpec();
+		
+		OrderBy orderBy = new OrderBy();
+		if (sortSpec != null) {
 			//画面でソート指定された場合は、その項目を第1ソートキーに
-			SortSpec sortSpec = getSortSpec();
-			if (sortSpec != null) {
-				orderBy = new OrderBy();
-				orderBy.add(sortSpec);
+			orderBy.add(sortSpec);
+		}
+		
+		// 検索結果の順番を一意にするために、補助的なソートを追加する
+		if (entityFilter != null && filterName != null && !filterName.isEmpty()) {
+			EntityFilterItem item = entityFilter.getItem(filterName);
+			if (item != null && StringUtil.isNotEmpty(item.getSort())) {
+				SyntaxService service = ServiceRegistry.getRegistry().getService(SyntaxService.class);
+				OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT).getSyntax(OrderBySyntax.class);
+				ParseContext context = new ParseContext("order by " + item.getSort());
+				try {
+					syntax.parse(context).getSortSpecList().forEach(orderBy::add);
+					return orderBy;
+				} catch (ParseException e) {
+					throw new SystemException(e.getMessage(), e);
+				}
 			}
 		}
-
-		return orderBy;
+		
+		//TODO: hasSortSetting()（= SearchLayout設定内のソート条件） を使うべき？ or 今クラスは固定検索のため、SearchLayoutのソート条件は無視でよい？（現実装 = 後者）
+		//TODO: addする際に重複チェックするべきか？
+		return orderBy.add(Entity.OID, SortType.ASC);
 	}
 
 	/**

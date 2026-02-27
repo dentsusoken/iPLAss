@@ -31,7 +31,6 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.SortSpec;
-import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
@@ -100,47 +99,42 @@ public class SearchListContext extends SearchContextBase {
 
 		OrderBy orderBy = null;
 		if (StringUtil.isNotBlank(sortKey)) {
+			// TODO: 【要確認】通常検索（SearchContextBase.getOrderBy()）とロジックが違うが、意図的か？
 			PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(sortKey, getEntityDefinition());
-			String propName = sortKey;
-			if (pd instanceof ReferenceProperty) {
-				propName = sortKey + "." + Entity.OID;
-			}
-			if (StringUtil.isBlank(sortType)) {
-				orderBy = new OrderBy().add(new SortSpec(propName, SortType.DESC));
-			} else {
-				orderBy = new OrderBy().add(new SortSpec(propName, SortType.valueOf(sortType)));
-			}
-		} else if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
+			String propName = pd instanceof ReferenceProperty ? sortKey + "." + Entity.OID : sortKey ;
+			orderBy = new OrderBy().add(new SortSpec(propName, StringUtil.isBlank(sortType) ? SortType.DESC : SortType.valueOf(sortType)));
+		}
+		//TODO: addする際に重複チェックするべきか？
+		if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
 			SyntaxService service = ServiceRegistry.getRegistry().getService(SyntaxService.class);
 			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT).getSyntax(OrderBySyntax.class);
 			ParseContext context = new ParseContext("order by " + filter.getSort());
+			if (orderBy == null) {
+				orderBy = new OrderBy();
+			}
 			try {
-				orderBy = syntax.parse(context);
+				syntax.parse(context).getSortSpecList().forEach(orderBy::add);
+				return orderBy;
 			} catch (ParseException e) {
 				throw new SystemException(e.getMessage(), e);
 			}
-		} else if (hasSortSetting()) {
-			List<SortSetting> setting = getSortSetting();
-			for (SortSetting ss : setting) {
-				if (ss.getSortKey() != null) {
-					String key = null;
-					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
-					if (pd instanceof ReferenceProperty) {
-						key = ss.getSortKey() + "." + Entity.OID;
-					} else {
-						key = ss.getSortKey();
-					}
-					SortType type = SortType.valueOf(ss.getSortType().name());
-					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-					if (orderBy == null) orderBy = new OrderBy();
-					orderBy.add(key, type, nullOrderingSpec);
-				}
-			}
-		} else {
-			orderBy = new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
 		}
+		if (hasSortSetting()) {
+			// TODO: 【要確認】通常検索（SearchContextBase.getOrderBy()）とロジックが違うが、意図的か？
+			for (SortSetting ss : getSortSetting()) {
+				String _sortKey = ss.getSortKey();
+				if (_sortKey == null) 
+					continue;
 
-		return orderBy;
+				PropertyDefinition pd = getPropertyDefinition(_sortKey);
+				String key = pd instanceof ReferenceProperty ? _sortKey + "." + Entity.OID : _sortKey;
+				if (orderBy == null)
+					orderBy = new OrderBy();
+				orderBy.add(key, SortType.valueOf(ss.getSortType().name()), getNullOrderingSpec(ss.getNullOrderType()));
+			}
+			return orderBy;
+		} 
+		return (orderBy == null ? new OrderBy() : orderBy).add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
 	}
 
 	@Override
