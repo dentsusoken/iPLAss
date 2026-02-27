@@ -1578,10 +1578,35 @@ $.fn.allInputCheck = function(){
 
 							$v.tokenValue = _t;
 
-							if (errors == null || erros.length == 0) {
+							if (errors == null || errors.length == 0) {
 								$v.getMassReference();
 							} else {
-								alert(errors);
+								// テキストの改行を除去するヘルパー関数
+								const normalizeText = (text) => {
+									// CRLF(\r\n)、LF(\n)、CR(\r) など連続する改行コードをまとめて空白に正規化する
+									return String(text).replace(/[\r\n]+/g, ' ');
+								};
+
+								// エラーメッセージを文字列に変換して表示
+								// errorsは配列形式（List<ValidateError>またはList<String>）
+								const errorMessage = errors.map((error) => {
+									if (typeof error === 'string') {
+										// 文字列の場合（ApplicationException）
+										return normalizeText(error);
+									} else if (error && error.errorMessages) {
+										// ValidateErrorオブジェクトの場合
+										// 各メッセージから改行を除去してからカンマで結合
+										const messages = error.errorMessages.map(normalizeText).join(', ');
+										if (error.propertyDisplayName) {
+											return error.propertyDisplayName + ':' + messages;
+										}
+										return messages;
+									} else {
+										// その他の場合
+										return normalizeText(error);
+									}
+								}).join('\n\n');
+								alert(errorMessage);
 							}
 						});
 					});
