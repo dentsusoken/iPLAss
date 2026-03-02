@@ -256,6 +256,16 @@
 		<!-- Content-Transfer-Encoding -->
 		<property name="mail.encoding" value="base64"/>
 
+		<!-- カスタムヘッダー -->
+		<!-- メールにヘッダー情報追加する場合、以下を有効にしてヘッダー名とヘッダー値を設定してください。 -->
+		<!-- 
+		<property name="mail.customheaderMap">
+			<property name="headerName1" value="headerValue1"/>
+			<property name="headerName2" value="headerValue2"/>
+			<property name="headerName3" value="headerValue3"/>
+		</property>
+		 -->
+
 		<!-- ■ for develop only (additional="true) ■ -->
 		<!-- 送信メールをデバッグ出力する場合、以下を有効にしてください。 -->
 		<!--

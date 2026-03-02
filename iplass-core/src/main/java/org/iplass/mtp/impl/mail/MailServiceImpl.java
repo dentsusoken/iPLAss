@@ -65,6 +65,8 @@ import org.iplass.mtp.mail.template.definition.MailTemplateDefinitionManager;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.TenantMailInfo;
+import org.iplass.mtp.util.CollectionUtil;
+import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +91,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	public static final String MAIL_SMTP_AUTH_PASSWORD ="mail.smtp.auth.password";
 	public static final String MAIL_CHARSET ="mail.charset";
 	public static final String MAIL_ENCODING ="mail.encoding";
+	public static final String MAIL_CUSTOM_HEADER_MAP = "mail.customheaderMap";
 	
 	private static Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 
@@ -118,6 +121,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	private String mailEncoding;
 
 	private Map<String, Object> sendProperties;
+	private Map<String, String> customHeaders;
 
 	private List<SendMailListener> listener;
 
@@ -160,6 +164,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	 *
 	 * @see org.iplass.mtp.spi.Service#init(org.iplass.mtp.spi.Config)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
 		
@@ -191,6 +196,9 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				break;
 			case MAIL_ENCODING:
 				mailEncoding = config.getValue(MAIL_ENCODING);
+				break;
+			case MAIL_CUSTOM_HEADER_MAP:
+				customHeaders = config.getValue(MAIL_CUSTOM_HEADER_MAP, Map.class);
 				break;
 			default:
 				if (name.startsWith("mail.")) {
@@ -355,7 +363,20 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		setMessage(mail, message, charset);
 
 		// その他の付加情報。
-		// message.addHeader("X-Mailer", "blancoMail 0.1");
+		if (CollectionUtil.isNotEmpty(customHeaders)) {
+			for (Map.Entry<String, String> entry : customHeaders.entrySet()) {
+				String headerName = excludeLineBreak(entry.getKey());
+				String headerValue = excludeLineBreak(entry.getValue());
+
+				// ヘッダー名未指定の場合はヘッダーに追加しない
+				if (StringUtil.isEmpty(headerName)) {
+					continue;
+				}
+
+				message.addHeader(headerName, headerValue);
+			}
+		}
+
 		Date d = mail.getDate();
 		if(d == null) {
 			d = new Date();
@@ -369,6 +390,13 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		return message;
 	}
 
+	private String excludeLineBreak(String value) {
+		if (StringUtil.isEmpty(value)) {
+			return value;
+		}
+
+		return value.replaceAll("\r\n|\r|\n", "");
+	}
 
 
 
