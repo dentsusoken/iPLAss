@@ -669,6 +669,15 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 			}
 		}
 
+		/**
+		 * 前提：
+		 * passListには、現在有効なパスワードは含まないリストとなっており、最終的に残す件数はpasswordHistoryCount-1件を残す形に実装。
+		 * passListはupdateDateの降順で並んでいるものとする。
+		 * 
+		 * @param passList
+		 * @param passwordHistoryCount
+		 * @param passwordHistoryPeriod
+		 */
 		private void trimPassList(List<Password> passList, int passwordHistoryCount, int passwordHistoryPeriod) {
 			if (passList != null) {
 				if (passwordHistoryCount <= 0 || passList.size() >=  passwordHistoryCount) {
@@ -766,9 +775,11 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 						checkPasswordHistory(newPassword, account, passList, passwordHistoryCount, passwordHistoryPeriod);
 					}
 					// Also check against current password
-					String[] curVerAndSalt = divVerAndSalt(account.getSalt());
-					if (account.getPassword().equals(convertPassword(newPassword, curVerAndSalt[1], selectSetting(curVerAndSalt[0])))) {
-						throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
+					if (passwordHistoryCount > 0 || passwordHistoryPeriod > 0) {
+						String[] curVerAndSalt = divVerAndSalt(account.getSalt());
+						if (account.getPassword().equals(convertPassword(newPassword, curVerAndSalt[1], selectSetting(curVerAndSalt[0])))) {
+							throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
+						}
 					}
 				} else {
 					if (((IdPasswordCredential) credential).getPassword() != null) {
