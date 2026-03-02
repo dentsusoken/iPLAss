@@ -90,7 +90,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	public static final String MAIL_SMTP_AUTH_PASSWORD ="mail.smtp.auth.password";
 	public static final String MAIL_CHARSET ="mail.charset";
 	public static final String MAIL_ENCODING ="mail.encoding";
-	public static final String MAIL_CUSTOM_HEADER_MAP = "mail.customheaderMap";
+	public static final String MAIL_CUSTOM_HEADER_MAP = "mail.customHeaderMap";
 	
 	private static Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 
