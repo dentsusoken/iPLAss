@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.auth.authenticate.builtin;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -654,21 +652,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					//前回パスワードを保存
 					accountDao.addPasswordHistory(new Password(tenantId, account.getAccountId(), account.getPassword(), account.getSalt(), currentTime));
 				}
-				if (passList != null) {
-					if (passwordHistoryCount <= 0 || passList.size() >=  passwordHistoryCount) {
-						//過去のパスワード履歴の削除（厳密な削除は求めないものとする。タイムスタンプが同一の場合を考慮しない）
-						//パスワード保持個数が設定されている場合はパスワード保持個数から溢れたインデックスを開始インデックスとする。
-						int startIndex = passwordHistoryCount > 0 ? passwordHistoryCount -1 : 0;
-						for (int i = startIndex; i < passList.size(); i++) {
-							Password pwd = passList.get(i);
-							//パスワード保持期間が設定されている場合は更新日時がパスワード保持期間外であるパスワードを削除
-							if (passwordHistoryPeriod <= 0 || pwd.getUpdateDate().getTime() + TimeUnit.DAYS.toMillis(passwordHistoryPeriod) < System.currentTimeMillis()) {
-								accountDao.deletePasswordHistory(pwd.getTenantId(), pwd.getUid(), pwd.getUpdateDate());
-								break;
-							}
-						}
-					}
-				}
+				trimPassList(passList, passwordHistoryCount, passwordHistoryPeriod);
 
 				if (policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
 					User userEntity = getUserEntity(account.getAccountId(), true);
@@ -682,6 +666,23 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 
 				//通知
 				policy.notify(new PasswordNotification(NotificationType.CREDENTIAL_UPDATED, account.getOid(), newIdPass.getPassword(), false));
+			}
+		}
+
+		private void trimPassList(List<Password> passList, int passwordHistoryCount, int passwordHistoryPeriod) {
+			if (passList != null) {
+				if (passwordHistoryCount <= 0 || passList.size() >=  passwordHistoryCount) {
+					//過去のパスワード履歴の削除（厳密な削除は求めないものとする。タイムスタンプが同一の場合を考慮しない）
+					//パスワード保持個数が設定されている場合はパスワード保持個数から溢れたインデックスを開始インデックスとする。
+					int startIndex = passwordHistoryCount > 0 ? passwordHistoryCount -1 : 0;
+					for (int i = startIndex; i < passList.size(); i++) {
+						Password pwd = passList.get(i);
+						//パスワード保持期間が設定されている場合は更新日時がパスワード保持期間外であるパスワードを削除
+						if (passwordHistoryPeriod <= 0 || pwd.getUpdateDate().getTime() + TimeUnit.DAYS.toMillis(passwordHistoryPeriod) < System.currentTimeMillis()) {
+							accountDao.deletePasswordHistory(pwd.getTenantId(), pwd.getUid(), pwd.getUpdateDate());
+						}
+					}
+				}
 			}
 		}
 
@@ -735,7 +736,16 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				AuthenticationPolicyRuntime policy = getPolicy(account.getPolicyName());
 
 				boolean isGenPassword = true;
-				final String newPassword;
+				String newPassword = null;
+				List<Password> passList = null;
+				int passwordHistoryCount = policy.getMetaData().getPasswordPolicy().getPasswordHistoryCount();
+				int passwordHistoryPeriod = policy.getMetaData().getPasswordPolicy().getPasswordHistoryPeriod();
+
+				// If history checks are enabled, prefetch history once
+				if (passwordHistoryCount > 0 || passwordHistoryPeriod > 0) {
+					passList = accountDao.getPasswordHistory(account.getTenantId(), account.getAccountId());
+				}
+
 				if (policy.getMetaData().getPasswordPolicy().isResetPasswordWithSpecificPassword()
 						&& ((IdPasswordCredential) credential).getPassword() != null) {
 
@@ -751,28 +761,63 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 
 					//パスワードポリシーの確認
 					policy.checkPasswordPattern(newPassword, account.getAccountId());
-					//パスワード履歴の確認
-					List<Password> passList = null;
-					int passwordHistoryCount = policy.getMetaData().getPasswordPolicy().getPasswordHistoryCount();
-					int passwordHistoryPeriod = policy.getMetaData().getPasswordPolicy().getPasswordHistoryPeriod();
-					if (passwordHistoryCount > 0 || passwordHistoryPeriod > 0) {
-						passList = accountDao.getPasswordHistory(account.getTenantId(), account.getAccountId());
+					//パスワード履歴の確認（履歴および現行パスワードと比較）
+					if (passList != null) {
 						checkPasswordHistory(newPassword, account, passList, passwordHistoryCount, passwordHistoryPeriod);
+					}
+					// Also check against current password
+					String[] curVerAndSalt = divVerAndSalt(account.getSalt());
+					if (account.getPassword().equals(convertPassword(newPassword, curVerAndSalt[1], selectSetting(curVerAndSalt[0])))) {
+						throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
 					}
 				} else {
 					if (((IdPasswordCredential) credential).getPassword() != null) {
 						logger.warn("resetCredential() was called with specific password, but authPolicy not allow specific password...");
 					}
 
-					newPassword = policy.makePassword();
+					// Auto-generate password and ensure it does not collide with current or history when history checks enabled
+					int maxRetries = 100; // safety to avoid infinite loops
+					int attempt = 0;
+					while (true) {
+						newPassword = policy.makePassword();
+						boolean conflict = false;
+						if (passwordHistoryCount > 0 || passwordHistoryPeriod > 0) {
+							// check against current password
+							String[] curVerAndSalt = divVerAndSalt(account.getSalt());
+							if (account.getPassword().equals(convertPassword(newPassword, curVerAndSalt[1], selectSetting(curVerAndSalt[0])))) {
+								conflict = true;
+							}
+							// check against history
+							if (!conflict && passList != null) {
+								try {
+									checkPasswordHistory(newPassword, account, passList, passwordHistoryCount, passwordHistoryPeriod);
+								} catch (CredentialUpdateException e) {
+									conflict = true;
+								}
+							}
+						}
+						if (!conflict) {
+							break;
+						}
+						attempt++;
+						if (attempt >= maxRetries) {
+							// Safety: if we couldn't find a unique password, throw
+							throw new SystemException("Failed to generate unique password after " + maxRetries + " attempts");
+						}
+					}
 				}
-
-				final String newSalt = makeSalt();
 
 				//パスワード更新
 				Password pass = null;
 				Timestamp updateTime = null;
 				long currentTimeMillis = System.currentTimeMillis();
+				// Before updating, record previous (current) password into history if history tracking is enabled
+				if ((passwordHistoryCount > 0 || passwordHistoryPeriod > 0) && account.getPassword() != null) {
+					// add current password into history
+					accountDao.addPasswordHistory(new Password(tenantId, account.getAccountId(), account.getPassword(), account.getSalt(), new Timestamp(currentTimeMillis)));
+				}
+				trimPassList(passList, passwordHistoryCount, passwordHistoryPeriod);
+
 				if (isGenPassword) {
 					//自動生成パスワードの有効期間を設定する
 					if (policy.getMetaData().getPasswordPolicy().getMaximumRandomPasswordAge() > 0) {
@@ -785,6 +830,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					updateTime = new Timestamp(currentTimeMillis);
 				}
 
+				final String newSalt = makeSalt();
 				if (passwordHashSettings == null) {
 					pass = new Password(tenantId, credential.getId(), convertPassword(newPassword, newSalt, null), newSalt, updateTime);
 				} else {
