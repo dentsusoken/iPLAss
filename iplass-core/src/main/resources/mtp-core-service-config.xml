@@ -259,7 +259,7 @@
 		<!-- カスタムヘッダー -->
 		<!-- メールにヘッダー情報追加する場合、以下を有効にしてヘッダー名とヘッダー値を設定してください。 -->
 		<!-- 
-		<property name="mail.customheaderMap">
+		<property name="mail.customHeaderMap">
 			<property name="headerName1" value="headerValue1"/>
 			<property name="headerName2" value="headerValue2"/>
 			<property name="headerName3" value="headerValue3"/>
