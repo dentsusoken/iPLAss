@@ -673,6 +673,7 @@ LocaleInfo.ui_metadata_entity_property_ICUTransliteratorAttributePane_txtTransli
 LocaleInfo.ui_metadata_entity_property_RegexReplaceAttributePane_txtRegex = "正規表現を指定します。";
 LocaleInfo.ui_metadata_entity_property_RegexReplaceAttributePane_txtReplacement = "置換文字を指定します。";
 LocaleInfo.ui_metadata_entity_property_UnicodeNormalizerAttributePane_cboForm = "java.text.Normalizer.Formを指定します。";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizeAttributePane_selPolicy = "HTMLサニタイズのポリシーを指定します。許可するタグの範囲を選択してください。";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_displayDialogEditScript = "スクリプトの編集ダイアログを表示します。";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_scriptHint = "<p>正規化後の値を返却するように実装します。</p><p>以下の変数がバインドされます。</p><ul><li>entity: Entity</li><li>propertyName : プロパティ名</li><li>value : プロパティ値</li><li>context : ValidationContext</li></ul>";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_scriptAsArray = "検証対象が配列の場合、分解せず配列のまま正規化Scriptのvalueへ渡します。";

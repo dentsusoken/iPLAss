@@ -24,6 +24,7 @@ import java.io.Serializable;
 
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
+import org.iplass.mtp.entity.definition.normalizers.HtmlSanitize;
 import org.iplass.mtp.entity.definition.normalizers.ICUTransliterator;
 import org.iplass.mtp.entity.definition.normalizers.JavaClassNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.NewlineNormalizer;
@@ -45,6 +46,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  *
  */
 @XmlSeeAlso({
+		HtmlSanitize.class,
 		ICUTransliterator.class,
 		JavaClassNormalizer.class,
 		NewlineNormalizer.class,

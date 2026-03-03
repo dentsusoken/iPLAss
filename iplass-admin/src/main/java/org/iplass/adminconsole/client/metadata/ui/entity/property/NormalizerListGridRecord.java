@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.HtmlSanitizeAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.ICUTransliteratorAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.JavaClassNormalizerAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.NewLineNormalizerAttributePane;
@@ -31,6 +32,7 @@ import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.Scr
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.UnicodeNormalizerAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.WhiteSpaceTrimmerAttributePane;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
+import org.iplass.mtp.entity.definition.normalizers.HtmlSanitize;
 import org.iplass.mtp.entity.definition.normalizers.ICUTransliterator;
 import org.iplass.mtp.entity.definition.normalizers.JavaClassNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.NewlineNormalizer;
@@ -85,6 +87,12 @@ public class NormalizerListGridRecord extends ListGridRecord {
 			@Override
 			public NormalizerAttributePane attributePane() {
 				return new JavaClassNormalizerAttributePane();
+			}
+		},
+		HTML_SANITIZE("HTML Sanitize"){
+			@Override
+			public NormalizerAttributePane attributePane() {
+				return new HtmlSanitizeAttributePane();
 			}
 		};
 
@@ -208,6 +216,10 @@ public class NormalizerListGridRecord extends ListGridRecord {
 		} else if (definition instanceof WhiteSpaceTrimmer) {
 			setType(NormalizerType.TRIM_WHITE_SPACE);
 			setGeneralPurpus(null);
+		} else if (definition instanceof HtmlSanitize) {
+			HtmlSanitize impl = (HtmlSanitize)definition;
+			setType(NormalizerType.HTML_SANITIZE);
+			setGeneralPurpus(impl.getPolicy() != null ? impl.getPolicy().name() : null);
 		}
 	}
 
