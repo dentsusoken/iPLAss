@@ -22,10 +22,11 @@ package org.iplass.mtp.impl.entity.normalizer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
-import org.iplass.mtp.entity.definition.normalizers.HtmlSanitize;
+import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizer;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
@@ -37,39 +38,32 @@ import org.jsoup.safety.Safelist;
 public class MetaHtmlSanitize extends MetaNormalizer {
 	private static final long serialVersionUID = 7103458921654823710L;
 
-	private List<String> allowTags;
+	private List<String> allowTags = new ArrayList<>();
 
 	public List<String> getAllowTags() {
 		return allowTags;
 	}
 
 	public void setAllowTags(List<String> allowTags) {
+		if (allowTags == null) {
+			throw new IllegalArgumentException("allowTags cannot be null");
+		}
 		this.allowTags = allowTags;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((allowTags == null) ? 0 : allowTags.hashCode());
-		return result;
+		return Objects.hash(allowTags);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if (obj == null || getClass() != obj.getClass())
 			return false;
 		MetaHtmlSanitize other = (MetaHtmlSanitize) obj;
-		if (allowTags == null) {
-			if (other.allowTags != null)
-				return false;
-		} else if (!allowTags.equals(other.allowTags))
-			return false;
-		return true;
+		return Objects.equals(allowTags, other.allowTags);
 	}
 
 	@Override
@@ -79,13 +73,12 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 
 	@Override
 	public void applyConfig(NormalizerDefinition definition) {
-		HtmlSanitize def = (HtmlSanitize) definition;
-		this.allowTags = def.getAllowTags() != null ? new ArrayList<>(def.getAllowTags()) : null;
+		this.allowTags = ((HtmlSanitizer) definition).getAllowTags();
 	}
 
 	@Override
-	public HtmlSanitize currentConfig(EntityContext context) {
-		return new HtmlSanitize(allowTags != null ? new ArrayList<>(allowTags) : null);
+	public HtmlSanitizer currentConfig(EntityContext context) {
+		return new HtmlSanitizer(allowTags);
 	}
 
 	@Override
@@ -100,9 +93,7 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 
 		HtmlSanitizeRuntime() {
 			Safelist sl = Safelist.none();
-			if (allowTags != null && !allowTags.isEmpty()) {
-				sl.addTags(allowTags.toArray(new String[0]));
-			}
+			sl.addTags(allowTags.toArray(new String[0]));
 			this.safelist = sl;
 			this.outputSettings = new Document.OutputSettings().prettyPrint(false);
 		}

@@ -20,31 +20,40 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
-import org.iplass.mtp.entity.definition.normalizers.HtmlSanitize;
+import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizer;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
 public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 
-	private DynamicForm form;
+	/** タグの区切り文字 */
+	private static final String TAG_DELIMITER = ",";
+
+	/** タグ分割用の正規表現パターン（区切り文字および空白） */
+	private static final String TAG_SPLIT_PATTERN = "[" + TAG_DELIMITER + "\\s]+";
+
+	private final DynamicForm form;
 
 	/** 許可タグ */
-	private TextItem txtAllowTags;
+	private final TextItem txtAllowTags;
 
 	public HtmlSanitizeAttributePane() {
 
 		txtAllowTags = new MtpTextItem();
 		txtAllowTags.setTitle("Allow Tags");
 		txtAllowTags.setWidth("100%");
-		SmartGWTUtil.addHoverToFormItem(txtAllowTags, rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_txtAllowTags"));
+		SmartGWTUtil.addHoverToFormItem(txtAllowTags,
+				rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_txtAllowTags"));
 
 		form = new MtpForm();
 		form.setItems(txtAllowTags);
@@ -54,34 +63,31 @@ public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 
 	@Override
 	public void setDefinition(NormalizerDefinition definition) {
-		if (definition instanceof HtmlSanitize) {
-			List<String> tags = ((HtmlSanitize) definition).getAllowTags();
-			if (tags != null && !tags.isEmpty()) {
-				txtAllowTags.setValue(String.join(",", tags));
-			} else {
-				txtAllowTags.clearValue();
-			}
-		} else {
+		if (!(definition instanceof HtmlSanitizer)) {
 			form.clearValues();
+			return;
 		}
+
+		List<String> tags = ((HtmlSanitizer) definition).getAllowTags();
+		if (tags.isEmpty()) {
+			txtAllowTags.clearValue();
+			return;
+		}
+
+		txtAllowTags.setValue(String.join(TAG_DELIMITER, tags));
 	}
 
 	@Override
 	public NormalizerDefinition getEditDefinition(NormalizerDefinition definition) {
-		HtmlSanitize newOne = new HtmlSanitize();
 		String value = SmartGWTUtil.getStringValue(txtAllowTags, true);
-		if (value != null && !value.isEmpty()) {
-			String[] parts = value.split("[,\\s]+");
-			List<String> tags = new ArrayList<>();
-			for (String part : parts) {
-				String tag = part.trim();
-				if (!tag.isEmpty()) {
-					tags.add(tag);
-				}
-			}
-			newOne.setAllowTags(tags);
+		if (value == null || value.isEmpty()) {
+			return new HtmlSanitizer(Collections.emptyList());
 		}
-		return newOne;
+		List<String> tags = Arrays.stream(value.split(TAG_SPLIT_PATTERN))
+				.map(String::trim)
+				.filter(tag -> !tag.isEmpty())
+				.collect(Collectors.toList());
+		return new HtmlSanitizer(tags);
 	}
 
 	@Override
