@@ -20,39 +20,34 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
-import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.entity.definition.normalizers.HtmlSanitize;
-import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizePolicy;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 
 public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 
 	private DynamicForm form;
 
-	/** サニタイズポリシー */
-	private SelectItem selPolicy;
+	/** 許可タグ */
+	private TextItem txtAllowTags;
 
 	public HtmlSanitizeAttributePane() {
 
-		selPolicy = new MtpSelectItem();
-		selPolicy.setTitle("Sanitize Policy");
-		LinkedHashMap<String, String> policyMap = new LinkedHashMap<>();
-		for (HtmlSanitizePolicy policy : HtmlSanitizePolicy.values()) {
-			policyMap.put(policy.name(), policy.name());
-		}
-		selPolicy.setValueMap(policyMap);
-		SmartGWTUtil.setRequired(selPolicy);
-		SmartGWTUtil.addHoverToFormItem(selPolicy, rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_selPolicy"));
+		txtAllowTags = new MtpTextItem();
+		txtAllowTags.setTitle("Allow Tags");
+		txtAllowTags.setWidth("100%");
+		SmartGWTUtil.addHoverToFormItem(txtAllowTags, rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_txtAllowTags"));
 
 		form = new MtpForm();
-		form.setItems(selPolicy);
+		form.setItems(txtAllowTags);
 
 		addMember(form);
 	}
@@ -60,11 +55,11 @@ public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 	@Override
 	public void setDefinition(NormalizerDefinition definition) {
 		if (definition instanceof HtmlSanitize) {
-			HtmlSanitizePolicy policy = ((HtmlSanitize) definition).getPolicy();
-			if (policy != null) {
-				selPolicy.setValue(policy.name());
+			List<String> tags = ((HtmlSanitize) definition).getAllowTags();
+			if (tags != null && !tags.isEmpty()) {
+				txtAllowTags.setValue(String.join(",", tags));
 			} else {
-				selPolicy.clearValue();
+				txtAllowTags.clearValue();
 			}
 		} else {
 			form.clearValues();
@@ -74,7 +69,18 @@ public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 	@Override
 	public NormalizerDefinition getEditDefinition(NormalizerDefinition definition) {
 		HtmlSanitize newOne = new HtmlSanitize();
-		newOne.setPolicy(HtmlSanitizePolicy.valueOf(SmartGWTUtil.getStringValue(selPolicy)));
+		String value = SmartGWTUtil.getStringValue(txtAllowTags, true);
+		if (value != null && !value.isEmpty()) {
+			String[] parts = value.split("[,\\s]+");
+			List<String> tags = new ArrayList<>();
+			for (String part : parts) {
+				String tag = part.trim();
+				if (!tag.isEmpty()) {
+					tags.add(tag);
+				}
+			}
+			newOne.setAllowTags(tags);
+		}
 		return newOne;
 	}
 

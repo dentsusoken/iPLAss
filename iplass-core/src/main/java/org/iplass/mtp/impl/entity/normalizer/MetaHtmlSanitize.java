@@ -20,10 +20,12 @@
 
 package org.iplass.mtp.impl.entity.normalizer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.entity.definition.normalizers.HtmlSanitize;
-import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizePolicy;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
@@ -35,21 +37,21 @@ import org.jsoup.safety.Safelist;
 public class MetaHtmlSanitize extends MetaNormalizer {
 	private static final long serialVersionUID = 7103458921654823710L;
 
-	private HtmlSanitizePolicy policy;
+	private List<String> allowTags;
 
-	public HtmlSanitizePolicy getPolicy() {
-		return policy;
+	public List<String> getAllowTags() {
+		return allowTags;
 	}
 
-	public void setPolicy(HtmlSanitizePolicy policy) {
-		this.policy = policy;
+	public void setAllowTags(List<String> allowTags) {
+		this.allowTags = allowTags;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((policy == null) ? 0 : policy.hashCode());
+		result = prime * result + ((allowTags == null) ? 0 : allowTags.hashCode());
 		return result;
 	}
 
@@ -62,7 +64,10 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 		if (getClass() != obj.getClass())
 			return false;
 		MetaHtmlSanitize other = (MetaHtmlSanitize) obj;
-		if (policy != other.policy)
+		if (allowTags == null) {
+			if (other.allowTags != null)
+				return false;
+		} else if (!allowTags.equals(other.allowTags))
 			return false;
 		return true;
 	}
@@ -74,37 +79,18 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 
 	@Override
 	public void applyConfig(NormalizerDefinition definition) {
-		this.policy = ((HtmlSanitize) definition).getPolicy();
+		HtmlSanitize def = (HtmlSanitize) definition;
+		this.allowTags = def.getAllowTags() != null ? new ArrayList<>(def.getAllowTags()) : null;
 	}
 
 	@Override
 	public HtmlSanitize currentConfig(EntityContext context) {
-		return new HtmlSanitize(policy);
+		return new HtmlSanitize(allowTags != null ? new ArrayList<>(allowTags) : null);
 	}
 
 	@Override
 	public NormalizerRuntime createRuntime(MetaEntity entity, MetaProperty property) {
-		return new HtmlSanitizeRuntime(property);
-	}
-
-	private static Safelist toSafelist(HtmlSanitizePolicy policy) {
-		if (policy == null) {
-			return Safelist.none();
-		}
-		switch (policy) {
-		case NONE:
-			return Safelist.none();
-		case SIMPLE_TEXT:
-			return Safelist.simpleText();
-		case BASIC:
-			return Safelist.basic();
-		case BASIC_WITH_IMAGES:
-			return Safelist.basicWithImages();
-		case RELAXED:
-			return Safelist.relaxed();
-		default:
-			return Safelist.none();
-		}
+		return new HtmlSanitizeRuntime();
 	}
 
 	public class HtmlSanitizeRuntime extends NormalizerRuntime {
@@ -112,11 +98,12 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 		private final Safelist safelist;
 		private final Document.OutputSettings outputSettings;
 
-		HtmlSanitizeRuntime(MetaProperty property) {
-			if (policy == null) {
-				throw new NullPointerException(property.getName() + "'s HtmlSanitize policy must be specified");
+		HtmlSanitizeRuntime() {
+			Safelist sl = Safelist.none();
+			if (allowTags != null && !allowTags.isEmpty()) {
+				sl.addTags(allowTags.toArray(new String[0]));
 			}
-			this.safelist = toSafelist(policy);
+			this.safelist = sl;
 			this.outputSettings = new Document.OutputSettings().prettyPrint(false);
 		}
 
