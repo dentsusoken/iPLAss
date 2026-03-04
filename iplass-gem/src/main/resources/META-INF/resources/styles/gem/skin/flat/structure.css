@@ -63,7 +63,8 @@ a {
 .nomenu-layout #header-container .cms-title {
   background: url(../../../../images/gem/skin/flat/cms-title.png) #4c7607 center center no-repeat; }
 
-.nomenu-layout #header #title i {
+.nomenu-layout #header #title i,
+.nomenu-layout #header #title svg {
   display: none; }
 
 .nav-closed .header-title {
