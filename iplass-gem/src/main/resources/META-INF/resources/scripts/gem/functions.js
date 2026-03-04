@@ -1598,7 +1598,7 @@ $.fn.allInputCheck = function(){
 										// 各メッセージから改行を除去してからカンマで結合
 										const messages = error.errorMessages.map(normalizeText).join(', ');
 										if (error.propertyDisplayName) {
-											return error.propertyDisplayName + ':' + messages;
+											return error.propertyDisplayName + ': ' + messages;
 										}
 										return messages;
 									} else {
