@@ -673,6 +673,7 @@ LocaleInfo.ui_metadata_entity_property_ICUTransliteratorAttributePane_txtTransli
 LocaleInfo.ui_metadata_entity_property_RegexReplaceAttributePane_txtRegex = "Specify a regular expression.";
 LocaleInfo.ui_metadata_entity_property_RegexReplaceAttributePane_txtReplacement = "Specify the replacement character.";
 LocaleInfo.ui_metadata_entity_property_UnicodeNormalizerAttributePane_cboForm = "Specify the java.text.Normalizer.Form.";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizeAttributePane_txtAllowTags = "Specify allowed HTML tags separated by commas. e.g., b,i,em,strong,a,p,br,ul,ol,li,div,span,h1,h2,h3,img. If not specified, all tags will be removed.";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_displayDialogEditScript = "Display a dialog to edit the script.";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_scriptHint = "<p>This is implemented to return the normalized value.</p><p>The following variables are bound.</p><ul><li>entity: Entity</li><li>propertyName : Property Name</li><li>value : Property Value</li><li>context : ValidationContext</li></ul>";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_scriptAsArray = "If the verification target is an array, it is passed to the value of the Normalizer script as it is without decomposition.";
