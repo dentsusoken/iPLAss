@@ -22,7 +22,6 @@ package org.iplass.gem.command.generic.upload;
 
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import org.iplass.gem.GemConfigService;
@@ -92,7 +91,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 
 		String uniqueKey = request.getParam("uniqueKey");
 		String updateTargetVersion = request.getParam("updateTargetVersion");
-		boolean ignoreNotExistsProperty = Optional.ofNullable(request.getParamAsBoolean("ignoreNotExistsProperty")).orElse(false);
+		boolean ignoreNotExistsProperty = request.getParam("ignoreNotExistsProperty", Boolean.class, false);
 		UploadFileHandle file = request.getParamAsFile("filePath");
 
 		EntityDefinition ed = context.getEntityDefinition();
