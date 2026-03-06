@@ -328,6 +328,20 @@ $(function(){
 <%
 	}
 %>
+
+<%
+	{
+		// Entity定義に存在しないプロパティを無視するかの選択
+		boolean ignoreNotExistsChecked = searchFormView != null && searchFormView.getCondSection().isCsvUploadIgnoreNotExistsProperty();
+%>
+<ul class="csvupload-ignore-not-exists clear">
+<li><label>
+<input name="ignoreNotExistsProperty" type="checkbox" value="true" <%=ignoreNotExistsChecked ? "checked" : "" %> />${m:rs("mtp-gem-messages", "generic.csvUpload.ignoreNotExistsPropertyLabel")}
+</label></li>
+</ul>
+<%
+	}
+%>
 <span class="uploading" style="display:none;"><img src="${m:esc(skinImagePath)}/loading.gif" alt="" />　${m:rs("mtp-gem-messages", "generic.csvUpload.uploding")}</span>
 
 <div class="operation-bar operation-bar_top">

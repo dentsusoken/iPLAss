@@ -22,6 +22,7 @@ package org.iplass.gem.command.generic.upload;
 
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.iplass.gem.GemConfigService;
@@ -91,6 +92,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 
 		String uniqueKey = request.getParam("uniqueKey");
 		String updateTargetVersion = request.getParam("updateTargetVersion");
+		boolean ignoreNotExistsProperty = Optional.ofNullable(request.getParamAsBoolean("ignoreNotExistsProperty")).orElse(false);
 		UploadFileHandle file = request.getParamAsFile("filePath");
 
 		EntityDefinition ed = context.getEntityDefinition();
@@ -168,6 +170,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 						.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
 						.deleteSpecificVersion(searchFormView.isDeleteSpecificVersion())
 						.updateTargetVersionForNoneVersionedEntity(targetVersion)
+						.ignoreNotExistsProperty(ignoreNotExistsProperty)
 						.interrupterClassName(searchFormView.getCondSection().getCsvUploadInterrupterName());
 
 				service.asyncUpload(is, file.getFileName(), defName, viewName, option);
@@ -194,7 +197,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 
 			try (InputStream is = file.getInputStream()) {
 				service.validate(is, entityFileType, defName, gcs.isCsvDownloadReferenceVersion(),
-						searchFormView.getCondSection().getCsvUploadInterrupterName());
+						ignoreNotExistsProperty, searchFormView.getCondSection().getCsvUploadInterrupterName());
 			} catch (EntityCsvException e) {
 				if (logger.isDebugEnabled()) {
 					logger.debug(e.getMessage(), e);
@@ -224,6 +227,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 						.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
 						.deleteSpecificVersion(searchFormView.isDeleteSpecificVersion())
 						.updateTargetVersionForNoneVersionedEntity(targetVersion)
+						.ignoreNotExistsProperty(ignoreNotExistsProperty)
 						.interrupterClassName(searchFormView.getCondSection().getCsvUploadInterrupterName());
 
 				EntityFileUploadStatus result = service.upload(is, defName, option);
