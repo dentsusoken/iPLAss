@@ -91,6 +91,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 
 		String uniqueKey = request.getParam("uniqueKey");
 		String updateTargetVersion = request.getParam("updateTargetVersion");
+		boolean ignoreNotExistsProperty = request.getParam("ignoreNotExistsProperty", Boolean.class, false);
 		UploadFileHandle file = request.getParamAsFile("filePath");
 
 		EntityDefinition ed = context.getEntityDefinition();
@@ -161,14 +162,10 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 			// 非同期アップロード(パラメータとしてView名を設定)
 
 			try (InputStream is = file.getInputStream()) {
-				EntityFileUploadOption option = new EntityFileUploadOption().entityFileType(entityFileType)
-						.uniqueKey(uniqueKey).denyInsert(isDenyInsert).denyUpdate(isDenyUpdate).denyDelete(isDenyDelete)
-						.insertProperties(insertProperties).updateProperties(updateProperties)
-						.transactionType(toTransactionType(csvUploadTransactionType)).commitLimit(commitLimit)
-						.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
-						.deleteSpecificVersion(searchFormView.isDeleteSpecificVersion())
-						.updateTargetVersionForNoneVersionedEntity(targetVersion)
-						.interrupterClassName(searchFormView.getCondSection().getCsvUploadInterrupterName());
+				EntityFileUploadOption option = createUploadOption(entityFileType, uniqueKey,
+						isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
+						csvUploadTransactionType, commitLimit, searchFormView, targetVersion,
+						ignoreNotExistsProperty);
 
 				service.asyncUpload(is, file.getFileName(), defName, viewName, option);
 
@@ -194,7 +191,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 
 			try (InputStream is = file.getInputStream()) {
 				service.validate(is, entityFileType, defName, gcs.isCsvDownloadReferenceVersion(),
-						searchFormView.getCondSection().getCsvUploadInterrupterName());
+						ignoreNotExistsProperty, searchFormView.getCondSection().getCsvUploadInterrupterName());
 			} catch (EntityCsvException e) {
 				if (logger.isDebugEnabled()) {
 					logger.debug(e.getMessage(), e);
@@ -217,14 +214,10 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 			}
 
 			try (InputStream is = file.getInputStream()) {
-				EntityFileUploadOption option = new EntityFileUploadOption().entityFileType(entityFileType)
-						.uniqueKey(uniqueKey).denyInsert(isDenyInsert).denyUpdate(isDenyUpdate).denyDelete(isDenyDelete)
-						.insertProperties(insertProperties).updateProperties(updateProperties)
-						.transactionType(toTransactionType(csvUploadTransactionType)).commitLimit(commitLimit)
-						.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
-						.deleteSpecificVersion(searchFormView.isDeleteSpecificVersion())
-						.updateTargetVersionForNoneVersionedEntity(targetVersion)
-						.interrupterClassName(searchFormView.getCondSection().getCsvUploadInterrupterName());
+				EntityFileUploadOption option = createUploadOption(entityFileType, uniqueKey,
+						isDenyInsert, isDenyUpdate, isDenyDelete, insertProperties, updateProperties,
+						csvUploadTransactionType, commitLimit, searchFormView, targetVersion,
+						ignoreNotExistsProperty);
 
 				EntityFileUploadStatus result = service.upload(is, defName, option);
 
@@ -257,6 +250,29 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 			}
 
 		}
+	}
+
+	private EntityFileUploadOption createUploadOption(EntityFileType entityFileType, String uniqueKey,
+			boolean isDenyInsert, boolean isDenyUpdate, boolean isDenyDelete,
+			Set<String> insertProperties, Set<String> updateProperties,
+			CsvUploadTransactionType csvUploadTransactionType, int commitLimit,
+			SearchFormView searchFormView, TargetVersion targetVersion, boolean ignoreNotExistsProperty) {
+
+		return new EntityFileUploadOption().entityFileType(entityFileType)
+				.uniqueKey(uniqueKey)
+				.denyInsert(isDenyInsert)
+				.denyUpdate(isDenyUpdate)
+				.denyDelete(isDenyDelete)
+				.insertProperties(insertProperties)
+				.updateProperties(updateProperties)
+				.transactionType(toTransactionType(csvUploadTransactionType))
+				.commitLimit(commitLimit)
+				.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+				.deleteSpecificVersion(searchFormView.isDeleteSpecificVersion())
+				.updateTargetVersionForNoneVersionedEntity(targetVersion)
+				.ignoreNotExistsProperty(ignoreNotExistsProperty)
+				.interrupterClassName(searchFormView.getCondSection()
+						.getCsvUploadInterrupterName());
 	}
 
 	private EntityFileType getEntityFileType(final RequestContext request, SearchConditionSection condition) {

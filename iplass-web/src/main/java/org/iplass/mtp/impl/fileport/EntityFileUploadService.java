@@ -164,7 +164,15 @@ public class EntityFileUploadService implements Service {
 	 */
 	public void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
 			final String interrupterClassName) {
-		validate(is, entityFileType, defName, withReferenceVersion, interrupterClassName, showErrorLimitCount);
+		validate(is, entityFileType, defName, withReferenceVersion, false, interrupterClassName, showErrorLimitCount);
+	}
+
+	/**
+	 * Uploadファイルを検証します。
+	 */
+	public void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
+			final boolean ignoreNotExistsProperty, final String interrupterClassName) {
+		validate(is, entityFileType, defName, withReferenceVersion, ignoreNotExistsProperty, interrupterClassName, showErrorLimitCount);
 	}
 
 	/**
@@ -172,12 +180,21 @@ public class EntityFileUploadService implements Service {
 	 */
 	public void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
 			final String interrupterClassName, final int errorLimit) {
+		validate(is, entityFileType, defName, withReferenceVersion, false, interrupterClassName, errorLimit);
+	}
+
+	/**
+	 * Uploadファイルを検証します。
+	 */
+	private void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
+			final boolean ignoreNotExistsProperty, final String interrupterClassName, final int errorLimit) {
 
 		EntityDefinition ed = edm.get(defName);
 		final CsvUploadInterrupter interrupter = createInterrupter(interrupterClassName);
 
 		try (EntityFileReader<?> reader = getReader(is, entityFileType, ed)) {
 			reader.withReferenceVersion(withReferenceVersion);
+			reader.setIgnoreNotExistsProperty(ignoreNotExistsProperty);
 			reader.setCustomColumnNameMap(getCustomColumnNameMap(ed, interrupter));
 			reader.validate(errorLimit);
 		} catch (UnsupportedEncodingException e) {
@@ -212,6 +229,7 @@ public class EntityFileUploadService implements Service {
 
 		try (EntityFileReader<?> reader = getReader(is, option.getEntityFileType(), ed)) {
 			reader.withReferenceVersion(option.isWithReferenceVersion());
+			reader.setIgnoreNotExistsProperty(option.isIgnoreNotExistsProperty());
 			reader.setCustomColumnNameMap(getCustomColumnNameMap(ed, interrupter));
 
 			Transaction.with(Propagation.SUPPORTS, t -> {

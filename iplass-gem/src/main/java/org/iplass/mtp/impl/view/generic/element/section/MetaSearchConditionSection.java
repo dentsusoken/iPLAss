@@ -116,6 +116,9 @@ public class MetaSearchConditionSection extends MetaSection {
 	/** カスタムCSVアップロード処理クラス名 */
 	private String csvUploadInterrupterName;
 
+	/** アップロードでEntity定義に存在しないプロパティを無視する */
+	private boolean csvUploadIgnoreNotExistsProperty;
+
 	/** CSVダウンロードボタン非表示設定 */
 	private boolean hideCsvdownload;
 
@@ -289,6 +292,22 @@ public class MetaSearchConditionSection extends MetaSection {
 	 */
 	public void setCsvUploadInterrupterName(String csvUploadInterrupterName) {
 		this.csvUploadInterrupterName = csvUploadInterrupterName;
+	}
+
+	/**
+	 * アップロードでEntity定義に存在しないプロパティを無視するかを取得します。
+	 * @return アップロードでEntity定義に存在しないプロパティを無視するか
+	 */
+	public boolean isCsvUploadIgnoreNotExistsProperty() {
+		return csvUploadIgnoreNotExistsProperty;
+	}
+
+	/**
+	 * アップロードでEntity定義に存在しないプロパティを無視するかを設定します。
+	 * @param csvUploadIgnoreNotExistsProperty アップロードでEntity定義に存在しないプロパティを無視するか
+	 */
+	public void setCsvUploadIgnoreNotExistsProperty(boolean csvUploadIgnoreNotExistsProperty) {
+		this.csvUploadIgnoreNotExistsProperty = csvUploadIgnoreNotExistsProperty;
 	}
 
 	/**
@@ -750,6 +769,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.csvUploadTargetVersionForNoneVersionedEntity = section.getCsvUploadTargetVersionForNoneVersionedEntity();
 		this.canCsvUploadTargetVersionSelectForNoneVersionedEntity = section.isCanCsvUploadTargetVersionSelectForNoneVersionedEntity();
 		this.csvUploadInterrupterName = section.getCsvUploadInterrupterName();
+		this.csvUploadIgnoreNotExistsProperty = section.isCsvUploadIgnoreNotExistsProperty();
 		this.csvdownloadMaxCount = section.getCsvdownloadMaxCount();
 		this.uploadableCsvdownloadLoadAtOnce = section.isUploadableCsvdownloadLoadAtOnce();
 		this.uploadableCsvdownloadLoadSize = section.getUploadableCsvdownloadLoadSize();
@@ -823,6 +843,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setCsvUploadTargetVersionForNoneVersionedEntity(this.csvUploadTargetVersionForNoneVersionedEntity);
 		section.setCanCsvUploadTargetVersionSelectForNoneVersionedEntity(this.canCsvUploadTargetVersionSelectForNoneVersionedEntity);
 		section.setCsvUploadInterrupterName(this.csvUploadInterrupterName);
+		section.setCsvUploadIgnoreNotExistsProperty(this.csvUploadIgnoreNotExistsProperty);
 		section.setCsvdownloadMaxCount(this.csvdownloadMaxCount);
 		section.setUploadableCsvdownloadLoadAtOnce(this.uploadableCsvdownloadLoadAtOnce);
 		section.setUploadableCsvdownloadLoadSize(this.uploadableCsvdownloadLoadSize);
