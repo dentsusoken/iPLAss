@@ -126,7 +126,6 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 		request.setAttribute("requiredProperties", CsvUploadUtil.getRequiredProperties(ed));
 		request.setAttribute("customColumnNameMap", getCustomColumnNameMap(ed, searchFormView));
 
-		int commitLimit = gcs.getCsvUploadCommitCount();
 		TargetVersion targetVersion = null;
 		if (ed.getVersionControlType() == VersionControlType.NONE) {
 			// バージョン管理対象外のEntityの場合
@@ -151,7 +150,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 		}
 
 		EntityFileUploadOption option = createUploadOption(entityFileType, uniqueKey,
-				searchFormView, commitLimit, targetVersion, ignoreNotExistsProperty);
+				searchFormView, targetVersion, ignoreNotExistsProperty);
 
 		if (gcs.isCsvUploadAsync()) {
 			// 非同期アップロード(パラメータとしてView名を設定)
@@ -238,8 +237,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 	}
 
 	private EntityFileUploadOption createUploadOption(EntityFileType entityFileType, String uniqueKey,
-			SearchFormView searchFormView, int commitLimit,
-			TargetVersion targetVersion, boolean ignoreNotExistsProperty) {
+			SearchFormView searchFormView, TargetVersion targetVersion, boolean ignoreNotExistsProperty) {
 
 		SearchConditionSection condSection = searchFormView.getCondSection();
 
@@ -251,7 +249,7 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 				.insertProperties(condSection.getCsvUploadInsertPropertiesSet())
 				.updateProperties(condSection.getCsvUploadUpdatePropertiesSet())
 				.transactionType(toTransactionType(condSection.getCsvUploadTransactionType()))
-				.commitLimit(commitLimit)
+				.commitLimit(gcs.getCsvUploadCommitCount())
 				.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
 				.deleteSpecificVersion(searchFormView.isDeleteSpecificVersion())
 				.updateTargetVersionForNoneVersionedEntity(targetVersion)
