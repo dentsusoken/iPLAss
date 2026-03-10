@@ -14,8 +14,6 @@ import java.util.List;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.GenericEntity;
-import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.view.generic.SearchFormCsvUploadInterrupter;
@@ -77,9 +75,12 @@ public class SampleCsvUploadInterrupter implements SearchFormCsvUploadInterrupte
 
         // カスタムJSPから送信されたhiddenパラメータを取得
         String refOid = request.getParam("customRefOid");
+        String refVersion = request.getParam("customRefVersion");
         String refDefName = request.getParam("customRefDefName");
 
-        System.out.println("Row " + row + ": Received refOid=" + refOid + ", refDefName=" + refDefName);
+		// 何らかの処理
+        System.out.println("Row " + row + ": Received refOid=" + refOid
+                + ", refVersion=" + refVersion + ", refDefName=" + refDefName);
     }
 
     /**

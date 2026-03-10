@@ -49,6 +49,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map"%>
+<%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
 
 <%!
 	/**
@@ -125,6 +126,30 @@
 	//アップロードアクション
 	String upload = contextPath + "/" + EntityFileUploadCommand.ACTION_NAME + urlPath;
 	String sampleDl = contextPath + "/" + EntityFileSampleDownloadCommand.ACTION_NAME + urlPath;
+
+	// ========== カスタム: Reference選択ダイアログ用設定 ==========
+	// 選択対象のReferenceプロパティ名（対象Entity上のプロパティ名を指定してください）
+	String customRefPropName = "parent";  // TODO: 実際のプロパティ名に変更してください
+
+	// Reference先Entity定義名を取得
+	String customRefDefName = "";
+	String customRefDisplayName = "";
+	PropertyDefinition customRefPd = ed.getProperty(customRefPropName);
+	if (customRefPd instanceof ReferenceProperty) {
+		customRefDefName = ((ReferenceProperty) customRefPd).getObjectDefinitionName();
+		// Reference先の表示名はプロパティの表示名を利用
+		customRefDisplayName = TemplateUtil.getMultilingualString(
+			customRefPd.getDisplayName(), customRefPd.getLocalizedDisplayNameList());
+	}
+	if (StringUtil.isEmpty(customRefDisplayName)) {
+		customRefDisplayName = customRefPropName;
+	}
+	// Reference選択ダイアログ用のselectAction
+	String customRefSelectAction = contextPath + "/" + SearchViewCommand.SELECT_ACTION_NAME;
+	if (StringUtil.isNotBlank(customRefDefName)) {
+		customRefSelectAction += "/" + customRefDefName;
+	}
+	// ========== カスタム: ここまで ==========
 
 	//キャンセルアクション
 	String cancel = null;
@@ -275,19 +300,80 @@ $(function(){
 <input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="searchCond" value="${m:esc(searchCond)}" />
 
-<%-- ========== カスタム: Reference項目の選択結果をhiddenで送信 ========== --%>
-<%--
-  実際の実装では、ここにReference項目選択ダイアログを配置します。
-  このサンプルでは、選択済みというていでOIDを固定値として設定しています。
-  Interrupter側で request.getParam("customRefOid") で取得できます。
---%>
-<h3 class="hgroup-02 hgroup-02-01">Reference項目（カスタム）</h3>
+<%-- ========== カスタム: Reference項目の選択ダイアログ ========== --%>
+<%
+	if (StringUtil.isNotBlank(customRefDefName)) {
+%>
+<h3 class="hgroup-02 hgroup-02-01"><c:out value="<%=customRefDisplayName%>"/></h3>
 <div style="margin-bottom:10px; padding:10px; border:1px solid #ccc; background:#f9f9f9;">
-<p>※ サンプル: Reference項目の選択結果がhiddenフィールドとしてフォームに含まれます。</p>
-<input type="hidden" name="customRefOid" value="sampleOid001" />
-<input type="hidden" name="customRefDefName" value="sample.SampleRefEntity" />
-<span>選択済み参照先: OID=sampleOid001 (sample.SampleRefEntity)</span>
+<input type="hidden" name="customRefOid" id="customRefOid" value="" />
+<input type="hidden" name="customRefVersion" id="customRefVersion" value="" />
+<input type="hidden" name="customRefDefName" id="customRefDefName" value="<c:out value="<%=customRefDefName%>"/>" />
+<span id="customRefLabel" style="margin-right:10px;">（未選択）</span>
+<ul id="customRefRoot" style="display:none;"></ul>
+<input type="button" value="選択" class="gr-btn-02 modal-btn" id="customRefSelectBtn" />
+<input type="button" value="クリア" class="gr-btn-02" id="customRefClearBtn" />
 </div>
+<script type="text/javascript">
+$(function() {
+	// 選択ボタンクリック
+	$("#customRefSelectBtn").on("click", function() {
+		// コールバック登録: ダイアログで選択されたEntityのOID_Versionを受け取る
+		document.scriptContext["searchReferenceCallback"] = function(selectArray) {
+			if (selectArray.length > 0) {
+				var key = selectArray[0]; // 単一選択
+				var idx = key.lastIndexOf("_");
+				var oid = key.substr(0, idx);
+				var version = key.substr(idx + 1);
+				$("#customRefOid").val(oid);
+				$("#customRefVersion").val(version);
+				// Entity名を取得して表示
+				var list = [{oid: oid, version: version}];
+				getEntityNameList(
+					"<%=StringUtil.escapeJavaScript(customRefDefName)%>",
+					null, null, null, null, null, null, list, null, function(entities) {
+						if (entities.length > 0) {
+							$("#customRefLabel").text(entities[0].name + " (OID: " + oid + ")");
+						} else {
+							$("#customRefLabel").text("OID: " + oid);
+						}
+					}
+				);
+			}
+			closeModalDialog();
+		};
+		// selectActionへフォームをPOST (iframeをターゲット)
+		var target = $(".modal-inner iframe", document).attr("name");
+		var $form = $("<form />").attr({
+			method: "POST",
+			action: "<%=StringUtil.escapeJavaScript(customRefSelectAction)%>",
+			target: target
+		}).appendTo("body");
+		$("<input />").attr({type: "hidden", name: "defName", value: "<%=StringUtil.escapeJavaScript(customRefDefName)%>"}).appendTo($form);
+		$("<input />").attr({type: "hidden", name: "multiplicity", value: "1"}).appendTo($form);
+		$("<input />").attr({type: "hidden", name: "selectType", value: "single"}).appendTo($form);
+		$("<input />").attr({type: "hidden", name: "propName", value: "customRefOid"}).appendTo($form);
+		$("<input />").attr({type: "hidden", name: "rootName", value: "customRefRoot"}).appendTo($form);
+		$form.submit();
+		$form.remove();
+	});
+	// クリアボタンクリック
+	$("#customRefClearBtn").on("click", function() {
+		$("#customRefOid").val("");
+		$("#customRefVersion").val("");
+		$("#customRefLabel").text("（未選択）");
+	});
+});
+</script>
+<%
+	} else {
+%>
+<div style="margin-bottom:10px; padding:10px; border:1px solid #f99; background:#fff0f0; color:#c00;">
+<p>※ Reference プロパティ「<c:out value="<%=customRefPropName%>"/>」が見つかりません。JSP内の customRefPropName を正しいプロパティ名に変更してください。</p>
+</div>
+<%
+	}
+%>
 <%-- ========== カスタム: ここまで ========== --%>
 
 <ul class="csvupload_csvfile clear"><li>
