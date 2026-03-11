@@ -707,7 +707,8 @@ $.fn.allInputCheck = function(){
 					scriptContext.overlayManager.removeOverlay($overlay);
 				}
 			};
-			$this.on("click", function(){
+			$this.off("click.modalWindow")
+				.on("click.modalWindow", function(){
 				//ダイアログを起動したものをトリガーとして保持しておき、
 				//maximize,restore,resizeHandlerから呼び出せるようにする。
 				$trigger = $this;
