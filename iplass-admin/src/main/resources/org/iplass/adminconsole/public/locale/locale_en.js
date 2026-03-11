@@ -2575,8 +2575,6 @@ LocaleInfo.generic_element_section_SearchConditionSection_canCsvUploadTargetVers
 LocaleInfo.generic_element_section_SearchConditionSection_canCsvUploadTargetVersionSelectForNoneVersionedEntityDescriptionKey = "For none version controlled entity, allows the TargetVersion to be specified when updating on the file upload screen. <br/>The option `Target data to be updated when saving` will be displayed.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvUploadInterrupterNameDisplayNameKey = "Custom file upload process class";
 LocaleInfo.generic_element_section_SearchConditionSection_csvUploadInterrupterNameDescriptionKey = "Specify the class name of a custom file upload process used for data registration.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.SearchFormCsvUploadInterrupter.";
-LocaleInfo.generic_element_section_SearchConditionSection_csvUploadIgnoreNotExistsPropertyDisplayNameKey = "Ignore properties not in Entity definition on upload";
-LocaleInfo.generic_element_section_SearchConditionSection_csvUploadIgnoreNotExistsPropertyDescriptionKey = "Sets the default value for whether to skip columns not defined in the Entity definition and proceed with the import.";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplayNameKey = "Display number of search results";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "Specify the number of documents to be displayed in the list of search results.";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplayNameKey = "Display height of search results table";

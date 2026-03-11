@@ -115,6 +115,9 @@ public class EntityFileUploadService implements Service {
 	/** ダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
 	private boolean mustOrderByWithLimit;
 
+	/** アップロードでEntity定義に存在しないプロパティを無視するかのデフォルト値 */
+	private boolean defaultIgnoreNotExistsProperty;
+
 	private EntityManager em = null;
 	private EntityDefinitionManager edm = null;
 
@@ -135,6 +138,7 @@ public class EntityFileUploadService implements Service {
 		defaultUpdateTargetVersionForNoneVersionedEntity = config.getValue(
 				"defaultUpdateTargetVersionForNoneVersionedEntity", TargetVersion.class, TargetVersion.CURRENT_VALID);
 		mustOrderByWithLimit = config.getValue("mustOrderByWithLimit", Boolean.class, false);
+		defaultIgnoreNotExistsProperty = config.getValue("defaultIgnoreNotExistsProperty", Boolean.class, false);
 	}
 
 	@Override
@@ -157,6 +161,15 @@ public class EntityFileUploadService implements Service {
 	 */
 	public boolean isMustOrderByWithLimit() {
 		return mustOrderByWithLimit;
+	}
+
+	/**
+	 * アップロードでEntity定義に存在しないプロパティを無視するかのデフォルト値を取得します。
+	 *
+	 * @return アップロードでEntity定義に存在しないプロパティを無視するかのデフォルト値
+	 */
+	public boolean isDefaultIgnoreNotExistsProperty() {
+		return defaultIgnoreNotExistsProperty;
 	}
 
 	/**

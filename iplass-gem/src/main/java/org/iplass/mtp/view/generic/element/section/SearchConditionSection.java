@@ -415,17 +415,6 @@ public class SearchConditionSection extends Section {
 	)
 	private String csvUploadInterrupterName;
 
-	/** アップロードでEntity定義に存在しないプロパティを無視する */
-	@MetaFieldInfo(
-			displayName="アップロードでEntity定義に存在しないプロパティを無視する",
-			displayNameKey="generic_element_section_SearchConditionSection_csvUploadIgnoreNotExistsPropertyDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=2080,
-			description="アップロードファイルにEntity定義に存在しないプロパティのデータが含まれている場合に、そのデータを無視してインポートを行うかのデフォルト値を設定します。",
-			descriptionKey="generic_element_section_SearchConditionSection_csvUploadIgnoreNotExistsPropertyDescriptionKey"
-	)
-	private boolean csvUploadIgnoreNotExistsProperty;
-
 
 	/** 重複行をまとめるか */
 	@MetaFieldInfo(
@@ -1010,22 +999,6 @@ public class SearchConditionSection extends Section {
 	 */
 	public void setCsvUploadInterrupterName(String csvUploadInterrupterName) {
 		this.csvUploadInterrupterName = csvUploadInterrupterName;
-	}
-
-	/**
-	 * アップロードでEntity定義に存在しないプロパティを無視するかを取得します。
-	 * @return アップロードでEntity定義に存在しないプロパティを無視するか
-	 */
-	public boolean isCsvUploadIgnoreNotExistsProperty() {
-		return csvUploadIgnoreNotExistsProperty;
-	}
-
-	/**
-	 * アップロードでEntity定義に存在しないプロパティを無視するかを設定します。
-	 * @param csvUploadIgnoreNotExistsProperty アップロードでEntity定義に存在しないプロパティを無視するか
-	 */
-	public void setCsvUploadIgnoreNotExistsProperty(boolean csvUploadIgnoreNotExistsProperty) {
-		this.csvUploadIgnoreNotExistsProperty = csvUploadIgnoreNotExistsProperty;
 	}
 
 

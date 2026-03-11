@@ -333,7 +333,7 @@ $(function(){
 
 <%
 	{
-		boolean ignoreNotExistsChecked = condSection != null && condSection.isCsvUploadIgnoreNotExistsProperty();
+		boolean ignoreNotExistsChecked = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class).isDefaultIgnoreNotExistsProperty();
 %>
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.ignoreNotExistsPropertyTitle")}</h3>
 <ul class="csvupload-ignore-not-exists clear">
