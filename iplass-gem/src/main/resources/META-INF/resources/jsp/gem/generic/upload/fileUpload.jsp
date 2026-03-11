@@ -28,6 +28,8 @@
 <%@ page import="org.iplass.mtp.entity.TargetVersion"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
+<%@ page import="org.iplass.mtp.impl.fileport.EntityFileUploadService"%>
+<%@ page import="org.iplass.mtp.spi.ServiceRegistry"%>
 <%@ page import="org.iplass.mtp.entity.definition.IndexType" %>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition" %>
 <%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>
@@ -338,7 +340,7 @@ $(function(){
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.ignoreNotExistsPropertyTitle")}</h3>
 <ul class="csvupload-ignore-not-exists clear">
 <li><label>
-<input name="ignoreNotExistsProperty" type="checkbox" value="true" <%=ignoreNotExistsChecked ? "checked" : "" %> />${m:rs("mtp-gem-messages", "generic.csvUpload.ignoreNotExistsPropertyLabel")}
+<input name="ignoreNotExistsProperty" type="checkbox" value="true" <%=ignoreNotExistsChecked ? "checked" : "" %> /><%= GemResourceBundleUtil.resourceString("generic.csvUpload.ignoreNotExistsPropertyLabel", defName) %>
 </label></li>
 </ul>
 <%
