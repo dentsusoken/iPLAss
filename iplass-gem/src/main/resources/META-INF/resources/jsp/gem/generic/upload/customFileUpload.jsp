@@ -61,11 +61,11 @@
 	import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
 
 <%!/**
-	 * プロパティに対する表示名を返します。
-	 *
-	 * @param propertyName プロパティ名
-	 * @param customColumnNameMap プロパティ名に対する出力CSV列名のマッピング定義
-	 */
+		 * プロパティに対する表示名を返します。
+		 *
+		 * @param propertyName プロパティ名
+		 * @param customColumnNameMap プロパティ名に対する出力CSV列名のマッピング定義
+		 */
 	String getDispPropertyName(String propertyName, Map<String, String> customColumnNameMap) {
 		if (customColumnNameMap != null) {
 			String displayPropertyName = customColumnNameMap.get(propertyName);
@@ -131,8 +131,8 @@ boolean uPermission = auth.checkPermission(new EntityPermission(defName, EntityP
 //ビュー名があればアクションの後につける
 String urlPath = ViewUtil.getParamMappingPath(defName, viewName);
 
-//アップロードアクション
-String upload = contextPath + "/" + EntityFileUploadCommand.ACTION_NAME + urlPath;
+//アップロードアクション（カスタム: 失敗時にカスタム画面へ戻るため独自アクションを使用）
+String upload = contextPath + "/work/customFileUpload/executeUpload" + urlPath;
 String sampleDl = contextPath + "/" + EntityFileSampleDownloadCommand.ACTION_NAME + urlPath;
 
 // ========== カスタム: Reference選択ダイアログ用設定 ==========
@@ -430,15 +430,13 @@ $(function(){
 
 		<ul class="csvupload_uniquekey clear">
 			<li><label><input name="uniqueKey" type="radio"
-					value="<%=Entity.OID%>" checked />
-				<c:out
+					value="<%=Entity.OID%>" checked /> <c:out
 						value="<%=getDispPropertyName(Entity.OID, customColumnNameMap)%>" /></label></li>
 			<%
 			for (String propName : uniquePropList) {
 			%>
 			<li><label><input name="uniqueKey" type="radio"
-					value="<%=propName%>" />
-				<c:out
+					value="<%=propName%>" /> <c:out
 						value="<%=getDispPropertyName(propName, customColumnNameMap)%>" /></label></li>
 			<%
 			}
