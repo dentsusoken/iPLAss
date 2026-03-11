@@ -340,7 +340,7 @@ $(function(){
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.ignoreNotExistsPropertyTitle")}</h3>
 <ul class="csvupload-ignore-not-exists clear">
 <li><label>
-<input name="ignoreNotExistsProperty" type="checkbox" value="true" <%=ignoreNotExistsChecked ? "checked" : "" %> /><%= GemResourceBundleUtil.resourceString("generic.csvUpload.ignoreNotExistsPropertyLabel", defName) %>
+<input name="ignoreNotExistsProperty" type="checkbox" value="true" <%=ignoreNotExistsChecked ? "checked" : "" %> /><%= GemResourceBundleUtil.resourceString("generic.csvUpload.ignoreNotExistsPropertyLabel", displayName) %>
 </label></li>
 </ul>
 <%
