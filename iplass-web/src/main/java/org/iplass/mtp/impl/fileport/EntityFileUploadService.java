@@ -171,29 +171,13 @@ public class EntityFileUploadService implements Service {
 	public boolean isDefaultIgnoreNotExistsProperty() {
 		return defaultIgnoreNotExistsProperty;
 	}
-
-	/**
-	 * Uploadファイルを検証します。
-	 */
-	public void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
-			final String interrupterClassName) {
-		validate(is, entityFileType, defName, withReferenceVersion, false, interrupterClassName, showErrorLimitCount);
-	}
-
+	
 	/**
 	 * Uploadファイルを検証します。
 	 */
 	public void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
 			final boolean ignoreNotExistsProperty, final String interrupterClassName) {
 		validate(is, entityFileType, defName, withReferenceVersion, ignoreNotExistsProperty, interrupterClassName, showErrorLimitCount);
-	}
-
-	/**
-	 * Uploadファイルを検証します。
-	 */
-	public void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
-			final String interrupterClassName, final int errorLimit) {
-		validate(is, entityFileType, defName, withReferenceVersion, false, interrupterClassName, errorLimit);
 	}
 
 	/**
