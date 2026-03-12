@@ -42,7 +42,7 @@ import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 
-public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
+public class HtmlSanitizerAttributePane extends NormalizerAttributePane {
 
 	private static final SafelistType DEFAULT_TYPE = SafelistType.BASIC;
 
@@ -50,7 +50,7 @@ public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 	private final SelectItem selSafelistType;
 	private final TextAreaItem txaCustomizeScript;
 
-	public HtmlSanitizeAttributePane() {
+	public HtmlSanitizerAttributePane() {
 
 		setHeight100();
 
@@ -125,7 +125,7 @@ public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 		select.setValueMap(typeMap);
 		select.setDefaultValue(DEFAULT_TYPE.name());
 		SmartGWTUtil.addHoverToFormItem(select,
-				rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_selSafelist"));
+				rs("ui_metadata_entity_property_HtmlSanitizerAttributePane_selSafelist"));
 
 		return select;
 	}
@@ -137,13 +137,13 @@ public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
 		editScript.setPrompt(SmartGWTUtil.getHoverString(
-				rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_editScript")));
+				rs("ui_metadata_entity_property_HtmlSanitizerAttributePane_editScript")));
 		editScript.addClickHandler(event -> {
 			MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
 					SmartGWTUtil.getStringValue(txaCustomizeScript),
 					ScriptEditorDialogConstants.ENTITY_NORMALIZER,
 					null,
-					rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_scriptHint"),
+					rs("ui_metadata_entity_property_HtmlSanitizerAttributePane_scriptHint"),
 					new ScriptEditorDialogHandler() {
 						@Override
 						public void onSave(String text) {
@@ -166,7 +166,7 @@ public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 		area.setHeight("100%");
 		SmartGWTUtil.setReadOnlyTextArea(area);
 		SmartGWTUtil.addHoverToFormItem(area,
-				rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_txaCustomizeScript"));
+				rs("ui_metadata_entity_property_HtmlSanitizerAttributePane_txaCustomizeScript"));
 
 		return area;
 	}

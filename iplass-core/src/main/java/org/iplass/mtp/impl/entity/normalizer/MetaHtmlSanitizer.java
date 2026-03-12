@@ -40,11 +40,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
 
-public class MetaHtmlSanitize extends MetaNormalizer {
+public class MetaHtmlSanitizer extends MetaNormalizer {
 	private static final long serialVersionUID = 7103458921654823710L;
 
 	private static final String SAFELIST_BINDING_NAME = "safelist";
-	private static final String SCRIPT_PREFIX = "HtmlSanitize_customizeScript";
+	private static final String SCRIPT_PREFIX = "HtmlSanitizer_customizeScript";
 
 	private SafelistType safelistType = SafelistType.BASIC;
 	private String customizeScript;
@@ -76,13 +76,13 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 			return true;
 		if (obj == null || getClass() != obj.getClass())
 			return false;
-		MetaHtmlSanitize other = (MetaHtmlSanitize) obj;
+		MetaHtmlSanitizer other = (MetaHtmlSanitizer) obj;
 		return safelistType == other.safelistType
 				&& Objects.equals(customizeScript, other.customizeScript);
 	}
 
 	@Override
-	public MetaHtmlSanitize copy() {
+	public MetaHtmlSanitizer copy() {
 		return ObjectUtil.deepCopy(this);
 	}
 
@@ -103,7 +103,7 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 
 	@Override
 	public NormalizerRuntime createRuntime(MetaEntity entity, MetaProperty property) {
-		return new HtmlSanitizeRuntime(entity, property);
+		return new HtmlSanitizerRuntime(entity, property);
 	}
 
 	private static Safelist toJsoupSafelist(SafelistType type) {
@@ -148,18 +148,18 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 	private String resolveScriptName(MetaEntity entity, MetaProperty property) {
 		List<MetaNormalizer> normalizers = property.getNormalizers();
 		int index = IntStream.range(0, normalizers.size())
-				.filter(i -> normalizers.get(i) == MetaHtmlSanitize.this)
+				.filter(i -> normalizers.get(i) == MetaHtmlSanitizer.this)
 				.findFirst()
 				.orElse(-1);
 		return SCRIPT_PREFIX + "_" + entity.getId() + "_" + property.getId() + "_" + index;
 	}
 
-	public class HtmlSanitizeRuntime extends NormalizerRuntime {
+	public class HtmlSanitizerRuntime extends NormalizerRuntime {
 
 		private final Safelist runtimeSafelist;
 		private final Document.OutputSettings outputSettings;
 
-		HtmlSanitizeRuntime(MetaEntity entity, MetaProperty property) {
+		HtmlSanitizerRuntime(MetaEntity entity, MetaProperty property) {
 			this.runtimeSafelist = buildSafelist(entity, property);
 			this.outputSettings = new Document.OutputSettings().prettyPrint(false);
 		}

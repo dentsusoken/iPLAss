@@ -22,7 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property;
 
 import java.util.LinkedHashMap;
 
-import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.HtmlSanitizeAttributePane;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.HtmlSanitizerAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.ICUTransliteratorAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.JavaClassNormalizerAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.NewLineNormalizerAttributePane;
@@ -92,7 +92,7 @@ public class NormalizerListGridRecord extends ListGridRecord {
 		HTML_SANITIZER("HTML Sanitizer") {
 			@Override
 			public NormalizerAttributePane attributePane() {
-				return new HtmlSanitizeAttributePane();
+				return new HtmlSanitizerAttributePane();
 			}
 		};
 

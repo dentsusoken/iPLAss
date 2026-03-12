@@ -42,7 +42,7 @@ public class NormalizerService implements Service {
 	@Override
 	public void init(Config config) {
 		map = new HashMap<>();
-		map.put(HtmlSanitizer.class, MetaHtmlSanitize.class);
+		map.put(HtmlSanitizer.class, MetaHtmlSanitizer.class);
 		map.put(ICUTransliterator.class, MetaICUTransliterator.class);
 		map.put(JavaClassNormalizer.class, MetaJavaClassNormalizer.class);
 		map.put(NewlineNormalizer.class, MetaNewlineNormalizer.class);
