@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.entity.definition.normalizers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 
 /**
@@ -32,21 +29,28 @@ import org.iplass.mtp.entity.definition.NormalizerDefinition;
  * 主に、RichTextエディタで入力されたHTMLのサーバー側サニタイズを想定しています。
  *
  * <p>
- * allowTagsに許可するHTMLタグ名を指定します。
- * 指定されていないタグは除去され、テキストコンテンツのみが残ります。
- * allowTagsが未設定（空）の場合は、すべてのタグが除去されます。
+ * {@link SafelistType}でjsoupのSafelistプリセットを選択します。
+ * デフォルトは{@link SafelistType#BASIC}です。
  * </p>
+ * <p>
+ * customizeScriptにGroovyスクリプトを指定すると、選択したプリセットのSafelistオブジェクトを
+ * スクリプト内でカスタマイズできます。スクリプト内ではバインド変数{@code safelist}
+ * （org.jsoup.safety.Safelist）を操作します。
+ * </p>
+ *
  * <%} else {%>
  * Normalizer definition for HTML sanitization.
- * Removes HTML elements and attributes that are not allowed, converting to safe
- * HTML.
- * Primarily intended for server-side sanitization of HTML input from RichText
- * editors.
+ * Removes HTML elements and attributes that are not allowed, converting to safe HTML.
+ * Primarily intended for server-side sanitization of HTML input from RichText editors.
  *
  * <p>
- * Specify allowed HTML tag names in allowTags.
- * Tags not specified will be removed, leaving only text content.
- * If allowTags is not set (empty), all tags will be removed.
+ * Select a jsoup Safelist preset via {@link SafelistType}.
+ * The default is {@link SafelistType#BASIC}.
+ * </p>
+ * <p>
+ * If customizeScript is specified, the Safelist object created from the selected preset
+ * can be customized via a Groovy script. The binding variable {@code safelist}
+ * (org.jsoup.safety.Safelist) is available in the script.
  * </p>
  * <%}%>
  *
@@ -54,43 +58,65 @@ import org.iplass.mtp.entity.definition.NormalizerDefinition;
 public class HtmlSanitizer extends NormalizerDefinition {
 	private static final long serialVersionUID = 2897541036845127893L;
 
-	private List<String> allowTags = new ArrayList<>();
+	private SafelistType safelistType;
+
+	private String customizeScript;
 
 	public HtmlSanitizer() {
-	}
-
-	public HtmlSanitizer(List<String> allowTags) {
-		setAllowTags(allowTags);
+		this.safelistType = SafelistType.BASIC;
 	}
 
 	/**
 	 * <% if (doclang == "ja") {%>
-	 * 許可するHTMLタグのリストを取得します。
+	 * Safelistプリセットタイプを取得します。
 	 * <%} else {%>
-	 * Gets the list of allowed HTML tags.
+	 * Gets the Safelist preset type.
 	 * <%}%>
 	 *
-	 * @return 許可タグのリスト
+	 * @return Safelistプリセットタイプ
 	 */
-	public List<String> getAllowTags() {
-		return allowTags;
+	public SafelistType getSafelistType() {
+		return safelistType;
 	}
 
 	/**
 	 * <% if (doclang == "ja") {%>
-	 * 許可するHTMLタグのリストを設定します。
-	 * タグ名を指定します（例："a", "b", "p", "div", "img" 等）。
+	 * Safelistプリセットタイプを設定します。
 	 * <%} else {%>
-	 * Sets the list of allowed HTML tags.
-	 * Specify tag names (e.g., "a", "b", "p", "div", "img", etc.).
+	 * Sets the Safelist preset type.
 	 * <%}%>
 	 *
-	 * @param allowTags 許可タグのリスト
+	 * @param safelistType Safelistプリセットタイプ
 	 */
-	public void setAllowTags(List<String> allowTags) {
-		if (allowTags == null) {
-			throw new IllegalArgumentException("allowTags cannot be null");
-		}
-		this.allowTags = allowTags;
+	public void setSafelistType(SafelistType safelistType) {
+		this.safelistType = safelistType;
+	}
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * Safelistカスタマイズ用のGroovyスクリプトを取得します。
+	 * <%} else {%>
+	 * Gets the Groovy script for customizing the Safelist.
+	 * <%}%>
+	 *
+	 * @return カスタマイズスクリプト
+	 */
+	public String getCustomizeScript() {
+		return customizeScript;
+	}
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * Safelistカスタマイズ用のGroovyスクリプトを設定します。
+	 * スクリプト内ではバインド変数{@code safelist}（org.jsoup.safety.Safelist）を操作できます。
+	 * <%} else {%>
+	 * Sets the Groovy script for customizing the Safelist.
+	 * The binding variable {@code safelist} (org.jsoup.safety.Safelist) is available in the script.
+	 * <%}%>
+	 *
+	 * @param customizeScript カスタマイズスクリプト
+	 */
+	public void setCustomizeScript(String customizeScript) {
+		this.customizeScript = customizeScript;
 	}
 }

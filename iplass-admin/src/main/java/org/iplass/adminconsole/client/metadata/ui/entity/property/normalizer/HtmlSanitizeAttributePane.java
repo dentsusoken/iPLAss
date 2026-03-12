@@ -21,42 +21,46 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
-import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizer;
+import org.iplass.mtp.entity.definition.normalizers.SafelistType;
 
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 
 public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 
-	/** タグの区切り文字 */
-	private static final String TAG_DELIMITER = ",";
-
-	/** タグ分割用の正規表現パターン（区切り文字および空白） */
-	private static final String TAG_SPLIT_PATTERN = "[" + TAG_DELIMITER + "\\s]+";
+	private static final SafelistType DEFAULT_TYPE = SafelistType.BASIC;
 
 	private final DynamicForm form;
-
-	/** 許可タグ */
-	private final TextItem txtAllowTags;
+	private final SelectItem selSafelistType;
+	private final TextAreaItem txaCustomizeScript;
 
 	public HtmlSanitizeAttributePane() {
 
-		txtAllowTags = new MtpTextItem();
-		txtAllowTags.setTitle("Allow Tags");
-		txtAllowTags.setWidth("100%");
-		SmartGWTUtil.addHoverToFormItem(txtAllowTags,
-				rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_txtAllowTags"));
+		setHeight100();
+
+		selSafelistType = createSafelistTypeSelect();
+		ButtonItem editScript = createEditScriptButton();
+		txaCustomizeScript = createCustomizeScriptArea();
 
 		form = new MtpForm();
-		form.setItems(txtAllowTags);
+		form.setHeight100();
+		form.setItems(selSafelistType, editScript, txaCustomizeScript);
 
 		addMember(form);
 	}
@@ -65,29 +69,31 @@ public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 	public void setDefinition(NormalizerDefinition definition) {
 		if (!(definition instanceof HtmlSanitizer)) {
 			form.clearValues();
+			selSafelistType.setValue(DEFAULT_TYPE.name());
 			return;
 		}
 
-		List<String> tags = ((HtmlSanitizer) definition).getAllowTags();
-		if (tags.isEmpty()) {
-			txtAllowTags.clearValue();
-			return;
-		}
+		HtmlSanitizer impl = (HtmlSanitizer) definition;
 
-		txtAllowTags.setValue(String.join(TAG_DELIMITER, tags));
+		selSafelistType.setValue(impl.getSafelistType().name());
+
+		String script = impl.getCustomizeScript();
+		if (script != null && !script.isEmpty()) {
+			txaCustomizeScript.setValue(script);
+		} else {
+			txaCustomizeScript.clearValue();
+		}
 	}
 
 	@Override
 	public NormalizerDefinition getEditDefinition(NormalizerDefinition definition) {
-		String value = SmartGWTUtil.getStringValue(txtAllowTags, true);
-		if (value == null || value.isEmpty()) {
-			return new HtmlSanitizer(Collections.emptyList());
-		}
-		List<String> tags = Arrays.stream(value.split(TAG_SPLIT_PATTERN))
-				.map(String::trim)
-				.filter(tag -> !tag.isEmpty())
-				.collect(Collectors.toList());
-		return new HtmlSanitizer(tags);
+		HtmlSanitizer newOne = new HtmlSanitizer();
+
+		String typeName = SmartGWTUtil.getStringValue(selSafelistType, true);
+		newOne.setSafelistType(typeName != null ? SafelistType.valueOf(typeName) : DEFAULT_TYPE);
+		newOne.setCustomizeScript(SmartGWTUtil.getStringValue(txaCustomizeScript, true));
+
+		return newOne;
 	}
 
 	@Override
@@ -102,6 +108,66 @@ public class HtmlSanitizeAttributePane extends NormalizerAttributePane {
 
 	@Override
 	public int panelHeight() {
-		return 30;
+		return 200;
+	}
+
+	private SelectItem createSafelistTypeSelect() {
+		SelectItem select = new MtpSelectItem();
+		select.setTitle("Safelist");
+		select.setWidth("100%");
+
+		LinkedHashMap<String, String> typeMap = Arrays.stream(SafelistType.values())
+				.collect(Collectors.toMap(
+						SafelistType::name,
+						SafelistType::name,
+						(a, b) -> a,
+						LinkedHashMap::new));
+		select.setValueMap(typeMap);
+		select.setDefaultValue(DEFAULT_TYPE.name());
+		SmartGWTUtil.addHoverToFormItem(select,
+				rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_selSafelist"));
+
+		return select;
+	}
+
+	private ButtonItem createEditScriptButton() {
+		ButtonItem editScript = new ButtonItem("editScript", "Edit");
+		editScript.setWidth(100);
+		editScript.setStartRow(false);
+		editScript.setColSpan(3);
+		editScript.setAlign(Alignment.RIGHT);
+		editScript.setPrompt(SmartGWTUtil.getHoverString(
+				rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_editScript")));
+		editScript.addClickHandler(event -> {
+			MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
+					SmartGWTUtil.getStringValue(txaCustomizeScript),
+					ScriptEditorDialogConstants.ENTITY_NORMALIZER,
+					null,
+					rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_scriptHint"),
+					new ScriptEditorDialogHandler() {
+						@Override
+						public void onSave(String text) {
+							txaCustomizeScript.setValue(text);
+						}
+
+						@Override
+						public void onCancel() {
+						}
+					});
+		});
+
+		return editScript;
+	}
+
+	private TextAreaItem createCustomizeScriptArea() {
+		TextAreaItem area = new MtpTextAreaItem();
+		area.setColSpan(2);
+		area.setTitle("Customize Script");
+		area.setHeight("100%");
+		SmartGWTUtil.setReadOnlyTextArea(area);
+		SmartGWTUtil.addHoverToFormItem(area,
+				rs("ui_metadata_entity_property_HtmlSanitizeAttributePane_txaCustomizeScript"));
+
+		return area;
 	}
 }

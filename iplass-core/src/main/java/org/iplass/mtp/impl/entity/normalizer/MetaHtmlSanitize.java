@@ -20,16 +20,21 @@
 
 package org.iplass.mtp.impl.entity.normalizer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizer;
+import org.iplass.mtp.entity.definition.normalizers.SafelistType;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
+import org.iplass.mtp.impl.script.Script;
+import org.iplass.mtp.impl.script.ScriptContext;
+import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,22 +43,31 @@ import org.jsoup.safety.Safelist;
 public class MetaHtmlSanitize extends MetaNormalizer {
 	private static final long serialVersionUID = 7103458921654823710L;
 
-	private List<String> allowTags = new ArrayList<>();
+	private static final String SAFELIST_BINDING_NAME = "safelist";
+	private static final String SCRIPT_PREFIX = "HtmlSanitize_customizeScript";
 
-	public List<String> getAllowTags() {
-		return allowTags;
+	private SafelistType safelistType = SafelistType.BASIC;
+	private String customizeScript;
+
+	public SafelistType getSafelistType() {
+		return safelistType;
 	}
 
-	public void setAllowTags(List<String> allowTags) {
-		if (allowTags == null) {
-			throw new IllegalArgumentException("allowTags cannot be null");
-		}
-		this.allowTags = allowTags;
+	public void setSafelistType(SafelistType safelistType) {
+		this.safelistType = safelistType;
+	}
+
+	public String getCustomizeScript() {
+		return customizeScript;
+	}
+
+	public void setCustomizeScript(String customizeScript) {
+		this.customizeScript = customizeScript;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(allowTags);
+		return Objects.hash(safelistType, customizeScript);
 	}
 
 	@Override
@@ -63,7 +77,8 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		MetaHtmlSanitize other = (MetaHtmlSanitize) obj;
-		return Objects.equals(allowTags, other.allowTags);
+		return safelistType == other.safelistType
+				&& Objects.equals(customizeScript, other.customizeScript);
 	}
 
 	@Override
@@ -73,28 +88,79 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 
 	@Override
 	public void applyConfig(NormalizerDefinition definition) {
-		this.allowTags = ((HtmlSanitizer) definition).getAllowTags();
+		HtmlSanitizer d = (HtmlSanitizer) definition;
+		this.safelistType = d.getSafelistType();
+		this.customizeScript = d.getCustomizeScript();
 	}
 
 	@Override
 	public HtmlSanitizer currentConfig(EntityContext context) {
-		return new HtmlSanitizer(allowTags);
+		HtmlSanitizer d = new HtmlSanitizer();
+		d.setSafelistType(safelistType);
+		d.setCustomizeScript(customizeScript);
+		return d;
 	}
 
 	@Override
 	public NormalizerRuntime createRuntime(MetaEntity entity, MetaProperty property) {
-		return new HtmlSanitizeRuntime();
+		return new HtmlSanitizeRuntime(entity, property);
+	}
+
+	private static Safelist toJsoupSafelist(SafelistType type) {
+		switch (type) {
+			case NONE:
+				return Safelist.none();
+			case SIMPLE_TEXT:
+				return Safelist.simpleText();
+			case BASIC:
+				return Safelist.basic();
+			case BASIC_WITH_IMAGES:
+				return Safelist.basicWithImages();
+			case RELAXED:
+				return Safelist.relaxed();
+			default:
+				return Safelist.basic();
+		}
+	}
+
+	private Safelist buildSafelist(MetaEntity entity, MetaProperty property) {
+		Safelist safelist = toJsoupSafelist(safelistType);
+
+		if (customizeScript == null || customizeScript.isEmpty()) {
+			return safelist;
+		}
+
+		return applyCustomizeScript(safelist, entity, property);
+	}
+
+	private Safelist applyCustomizeScript(Safelist safelist, MetaEntity entity, MetaProperty property) {
+		ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+
+		String scriptName = resolveScriptName(entity, property);
+		Script compiledScript = scriptEngine.createScript(customizeScript, scriptName);
+
+		ScriptContext scriptContext = scriptEngine.newScriptContext();
+		scriptContext.setAttribute(SAFELIST_BINDING_NAME, safelist);
+		compiledScript.eval(scriptContext);
+		return safelist;
+	}
+
+	private String resolveScriptName(MetaEntity entity, MetaProperty property) {
+		List<MetaNormalizer> normalizers = property.getNormalizers();
+		int index = IntStream.range(0, normalizers.size())
+				.filter(i -> normalizers.get(i) == MetaHtmlSanitize.this)
+				.findFirst()
+				.orElse(-1);
+		return SCRIPT_PREFIX + "_" + entity.getId() + "_" + property.getId() + "_" + index;
 	}
 
 	public class HtmlSanitizeRuntime extends NormalizerRuntime {
 
-		private final Safelist safelist;
+		private final Safelist runtimeSafelist;
 		private final Document.OutputSettings outputSettings;
 
-		HtmlSanitizeRuntime() {
-			Safelist sl = Safelist.none();
-			sl.addTags(allowTags.toArray(new String[0]));
-			this.safelist = sl;
+		HtmlSanitizeRuntime(MetaEntity entity, MetaProperty property) {
+			this.runtimeSafelist = buildSafelist(entity, property);
 			this.outputSettings = new Document.OutputSettings().prettyPrint(false);
 		}
 
@@ -109,7 +175,7 @@ public class MetaHtmlSanitize extends MetaNormalizer {
 				return html;
 			}
 
-			return Jsoup.clean(html, "", safelist, outputSettings);
+			return Jsoup.clean(html, "", runtimeSafelist, outputSettings);
 		}
 	}
 }

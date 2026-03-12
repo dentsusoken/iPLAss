@@ -673,7 +673,10 @@ LocaleInfo.ui_metadata_entity_property_ICUTransliteratorAttributePane_txtTransli
 LocaleInfo.ui_metadata_entity_property_RegexReplaceAttributePane_txtRegex = "正規表現を指定します。";
 LocaleInfo.ui_metadata_entity_property_RegexReplaceAttributePane_txtReplacement = "置換文字を指定します。";
 LocaleInfo.ui_metadata_entity_property_UnicodeNormalizerAttributePane_cboForm = "java.text.Normalizer.Formを指定します。";
-LocaleInfo.ui_metadata_entity_property_HtmlSanitizeAttributePane_txtAllowTags = "許可するHTMLタグをカンマ区切りで指定します。例：b,i,em,strong,a,p,br,ul,ol,li,div,span,h1,h2,h3,img。未指定の場合は全タグが除去されます。";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizeAttributePane_selSafelist = "jsoupのSafelistプリセットを選択します。none：全タグ除去、simpleText：テキスト書式のみ、basic：基本的なHTML、basicWithImages：basic＋画像、relaxed：広範囲のHTML許可。";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizeAttributePane_editScript = "Safelistカスタマイズスクリプトの編集ダイアログを表示します。";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizeAttributePane_scriptHint = "<p>バインド変数<b>safelist</b>（org.jsoup.safety.Safelist）を操作してカスタマイズします。</p><p>例：</p><pre>safelist.addTags('img')\nsafelist.addAttributes('img', 'src', 'alt')\nsafelist.addProtocols('img', 'src', 'https')</pre>";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizeAttributePane_txaCustomizeScript = "選択したSafelistプリセットをGroovyスクリプトでカスタマイズします。バインド変数 safelist（org.jsoup.safety.Safelist）を操作できます。";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_displayDialogEditScript = "スクリプトの編集ダイアログを表示します。";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_scriptHint = "<p>正規化後の値を返却するように実装します。</p><p>以下の変数がバインドされます。</p><ul><li>entity: Entity</li><li>propertyName : プロパティ名</li><li>value : プロパティ値</li><li>context : ValidationContext</li></ul>";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_scriptAsArray = "検証対象が配列の場合、分解せず配列のまま正規化Scriptのvalueへ渡します。";
