@@ -150,7 +150,7 @@ public class MetaHtmlSanitizer extends MetaNormalizer {
 		int index = IntStream.range(0, normalizers.size())
 				.filter(i -> normalizers.get(i) == MetaHtmlSanitizer.this)
 				.findFirst()
-				.orElse(-1);
+				.orElseThrow();
 		return SCRIPT_PREFIX + "_" + entity.getId() + "_" + property.getId() + "_" + index;
 	}
 
