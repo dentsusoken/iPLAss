@@ -707,8 +707,7 @@ $.fn.allInputCheck = function(){
 					scriptContext.overlayManager.removeOverlay($overlay);
 				}
 			};
-			$this.off("click.modalWindow")
-				.on("click.modalWindow", function(){
+			$this.on("click", function(){
 				//ダイアログを起動したものをトリガーとして保持しておき、
 				//maximize,restore,resizeHandlerから呼び出せるようにする。
 				$trigger = $this;
@@ -3153,7 +3152,10 @@ $.fn.allInputCheck = function(){
 			if ($("body.modal-body").length != 0) {
 				$selBtn.subModalWindow();
 			} else {
-				$selBtn.modalWindow();
+				if (!$selBtn.data("modalWindowInitialized")) {
+					$selBtn.modalWindow();
+					$selBtn.data("modalWindowInitialized", true);
+				}
 			}
 
 			for (key in params) {
@@ -3169,7 +3171,10 @@ $.fn.allInputCheck = function(){
 			if ($("body.modal-body").length != 0) {
 				$insBtn.subModalWindow();
 			} else {
-				$insBtn.modalWindow();
+				if (!$insBtn.data("modalWindowInitialized")) {
+					$insBtn.modalWindow();
+					$insBtn.data("modalWindowInitialized", true);
+				}
 			}
 
 			for (key in params) {
