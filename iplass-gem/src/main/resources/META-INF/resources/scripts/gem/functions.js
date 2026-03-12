@@ -3152,7 +3152,10 @@ $.fn.allInputCheck = function(){
 			if ($("body.modal-body").length != 0) {
 				$selBtn.subModalWindow();
 			} else {
-				$selBtn.modalWindow();
+				if (!$selBtn.data("modalWindowInitialized")) {
+					$selBtn.modalWindow();
+					$selBtn.data("modalWindowInitialized", true);
+				}
 			}
 
 			for (key in params) {
@@ -3168,7 +3171,10 @@ $.fn.allInputCheck = function(){
 			if ($("body.modal-body").length != 0) {
 				$insBtn.subModalWindow();
 			} else {
-				$insBtn.modalWindow();
+				if (!$insBtn.data("modalWindowInitialized")) {
+					$insBtn.modalWindow();
+					$insBtn.data("modalWindowInitialized", true);
+				}
 			}
 
 			for (key in params) {
