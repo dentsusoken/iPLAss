@@ -20,52 +20,43 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
-<%@ page language="java" contentType="text/html; charset=utf-8"
-	pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@ page import="org.iplass.mtp.async.TaskStatus"%>
-<%@ page import="org.iplass.mtp.auth.AuthContext"%>
+<%@ page import="org.iplass.mtp.auth.AuthContext" %>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.TargetVersion"%>
-<%@ page import="org.iplass.mtp.entity.permission.EntityPermission"%>
+<%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
-<%@ page import="org.iplass.mtp.entity.definition.IndexType"%>
-<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
+<%@ page import="org.iplass.mtp.entity.definition.IndexType" %>
+<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition" %>
 <%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>
-<%@ page import="org.iplass.mtp.util.StringUtil"%>
-<%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
+<%@ page import="org.iplass.mtp.util.StringUtil" %>
+<%@ page import="org.iplass.mtp.view.generic.DetailFormView" %>
 <%@ page import="org.iplass.mtp.view.generic.SearchFormView"%>
-<%@ page
-	import="org.iplass.mtp.view.generic.element.section.SearchConditionSection"%>
-<%@ page
-	import="org.iplass.mtp.view.generic.element.section.SearchConditionSection.FileSupportType"%>
-<%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
-<%@ page
-	import="org.iplass.gem.command.generic.detail.DetailFormViewData"%>
-<%@ page
-	import="org.iplass.gem.command.generic.search.SearchViewCommand"%>
-<%@ page
-	import="org.iplass.gem.command.generic.upload.EntityFileUploadCommand"%>
-<%@ page
-	import="org.iplass.gem.command.generic.upload.EntityFileUploadStatusCommand"%>
-<%@ page
-	import="org.iplass.gem.command.generic.upload.EntityFileSampleDownloadCommand"%>
+<%@ page import="org.iplass.mtp.view.generic.element.section.SearchConditionSection"%>
+<%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
+<%@ page import="org.iplass.gem.command.generic.detail.DetailFormViewData" %>
+<%@ page import="org.iplass.gem.command.generic.search.SearchViewCommand"%>
+<%@ page import="org.iplass.gem.command.generic.upload.CsvSampleDownloadCommand"%>
+<%@ page import="org.iplass.gem.command.generic.upload.CsvUploadCommand"%>
+<%@ page import="org.iplass.gem.command.generic.upload.CsvUploadStatusCommand"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 
-<%@ page import="java.util.ArrayList"%>
-<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 <%@ page import="java.util.Map"%>
-<%@ page
-	import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
+<%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
 
-<%!/**
-		 * プロパティに対する表示名を返します。
-		 *
-		 * @param propertyName プロパティ名
-		 * @param customColumnNameMap プロパティ名に対する出力CSV列名のマッピング定義
-		 */
+<%!
+	/**
+	 * プロパティに対する表示名を返します。
+	 *
+	 * @param propertyName プロパティ名
+	 * @param customColumnNameMap プロパティ名に対する出力CSV列名のマッピング定義
+	 */
 	String getDispPropertyName(String propertyName, Map<String, String> customColumnNameMap) {
 		if (customColumnNameMap != null) {
 			String displayPropertyName = customColumnNameMap.get(propertyName);
@@ -73,7 +64,7 @@
 				return displayPropertyName;
 			}
 		}
-
+		
 		return propertyName;
 	}
 
@@ -94,97 +85,96 @@
 			});
 		}
 		return requiredPropertyNames.toString();
-	}%>
-<%
-// データ取得
-String contextPath = TemplateUtil.getTenantContextPath();
-
-String message = (String) request.getAttribute(Constants.MESSAGE);
-List<String> requiredProperties = (List<String>) request.getAttribute("requiredProperties");
-Map<String, String> customColumnNameMap = (Map<String, String>) request.getAttribute("customColumnNameMap");
-
-EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
-DetailFormView form = (DetailFormView) request.getAttribute("detailFormView");
-SearchFormView searchFormView = (SearchFormView) request.getAttribute("searchFormView");
-SearchConditionSection condSection = (searchFormView != null) ? searchFormView.getCondSection() : null;
-
-FileSupportType fileSupportType = (FileSupportType) request.getAttribute("fileSupportType");
-
-String defName = ed.getName();
-String viewName = form.getName();
-if (viewName == null)
-	viewName = "";
-
-List<String> uniquePropList = new ArrayList<String>();
-// oid以外のユニークキーがないか確認
-for (PropertyDefinition pd : ed.getDeclaredPropertyList()) {
-	if (pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL) {
-		uniquePropList.add(pd.getName());
 	}
-}
+%>
+<%
+	// データ取得
+	String contextPath = TemplateUtil.getTenantContextPath();
 
-// 権限データ取得
-AuthContext auth = AuthContext.getCurrentContext();
-boolean cPermission = auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.CREATE));
-boolean uPermission = auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE));
+	String message = (String) request.getAttribute(Constants.MESSAGE);
+	List<String> requiredProperties = (List<String>) request.getAttribute("requiredProperties");
+	Map<String, String> customColumnNameMap = (Map<String, String>) request.getAttribute("customColumnNameMap");
 
-//ビュー名があればアクションの後につける
-String urlPath = ViewUtil.getParamMappingPath(defName, viewName);
+	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
+	DetailFormView form = (DetailFormView) request.getAttribute("detailFormView");
+	SearchFormView searchFormView = (SearchFormView) request.getAttribute("searchFormView");
 
-//アップロードアクション（カスタム: 失敗時にカスタム画面へ戻るため独自アクションを使用）
-String upload = contextPath + "/work/customFileUpload/executeUpload" + urlPath;
-String sampleDl = contextPath + "/" + EntityFileSampleDownloadCommand.ACTION_NAME + urlPath;
+	String defName = ed.getName();
+	String viewName = form.getName();
+	if (viewName == null) viewName = "";
 
-// ========== カスタム: Reference選択ダイアログ用設定 ==========
-// 選択対象のReferenceプロパティ名（対象Entity上のプロパティ名を指定してください）
-String customRefPropName = "parent"; // TODO: 実際のプロパティ名に変更してください
+	List<String> uniquePropList = new ArrayList<String>();
+	// oid以外のユニークキーがないか確認
+	for (PropertyDefinition pd : ed.getDeclaredPropertyList()) {
+		if (pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL) {
+			uniquePropList.add(pd.getName());
+		}
+	}
 
-// Reference先Entity定義名を取得
-String customRefDefName = "";
-String customRefDisplayName = "";
-PropertyDefinition customRefPd = ed.getProperty(customRefPropName);
-if (customRefPd instanceof ReferenceProperty) {
-	customRefDefName = ((ReferenceProperty) customRefPd).getObjectDefinitionName();
-	// Reference先の表示名はプロパティの表示名を利用
-	customRefDisplayName = TemplateUtil.getMultilingualString(customRefPd.getDisplayName(),
-	customRefPd.getLocalizedDisplayNameList());
-}
-if (StringUtil.isEmpty(customRefDisplayName)) {
-	customRefDisplayName = customRefPropName;
-}
-// Reference選択ダイアログ用のselectAction
-String customRefSelectAction = contextPath + "/" + SearchViewCommand.SELECT_ACTION_NAME;
-if (StringUtil.isNotBlank(customRefDefName)) {
-	customRefSelectAction += "/" + customRefDefName;
-}
-// ========== カスタム: ここまで ==========
+	// 権限データ取得
+	AuthContext auth = AuthContext.getCurrentContext();
+	boolean cPermission = auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.CREATE));
+	boolean uPermission = auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE));
 
-//キャンセルアクション
-String cancel = null;
-if (StringUtil.isNotBlank(form.getCancelActionName())) {
-	cancel = form.getCancelActionName() + urlPath;
-} else {
-	cancel = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
-}
+	//ビュー名があればアクションの後につける
+	String urlPath = ViewUtil.getParamMappingPath(defName, viewName);
 
-// 表示名
-String displayName = TemplateUtil.getMultilingualString(ed.getDisplayName(), ed.getLocalizedDisplayNameList());
-String viewTitle = TemplateUtil.getMultilingualString(form.getTitle(), form.getLocalizedTitleList());
-if (StringUtil.isNotBlank(viewTitle)) {
-	displayName = viewTitle;
-}
+	//アップロードアクション
+	// カスタム: 失敗時にカスタム画面へ戻る場合は、独自アクションのURLに変更してください
+	// 例: String upload = contextPath + "/work/customFileUpload/executeUpload" + urlPath;
+	String upload = contextPath + "/" + CsvUploadCommand.ACTION_NAME + urlPath;
+	String sampleDl = contextPath + "/" + CsvSampleDownloadCommand.ACTION_NAME + urlPath;
 
-String imageColor = ViewUtil.getEntityImageColor(form);
-String imageColorStyle = "";
-if (imageColor != null) {
-	imageColorStyle = "imgclr_" + imageColor;
-}
+	// ========== カスタム: Reference選択ダイアログ用設定 ==========
+	// 選択対象のReferenceプロパティ名（対象Entity上のプロパティ名を指定してください）
+	String customRefPropName = "parent";  // TODO: 実際のプロパティ名に変更してください
 
-String className = defName.replaceAll("\\.", "_");
+	// Reference先Entity定義名を取得
+	String customRefDefName = "";
+	String customRefDisplayName = "";
+	PropertyDefinition customRefPd = ed.getProperty(customRefPropName);
+	if (customRefPd instanceof ReferenceProperty) {
+		customRefDefName = ((ReferenceProperty) customRefPd).getObjectDefinitionName();
+		// Reference先の表示名はプロパティの表示名を利用
+		customRefDisplayName = TemplateUtil.getMultilingualString(
+			customRefPd.getDisplayName(), customRefPd.getLocalizedDisplayNameList());
+	}
+	if (StringUtil.isEmpty(customRefDisplayName)) {
+		customRefDisplayName = customRefPropName;
+	}
+	// Reference選択ダイアログ用のselectAction
+	String customRefSelectAction = contextPath + "/" + SearchViewCommand.SELECT_ACTION_NAME;
+	if (StringUtil.isNotBlank(customRefDefName)) {
+		customRefSelectAction += "/" + customRefDefName;
+	}
+	// ========== カスタム: ここまで ==========
+
+	//キャンセルアクション
+	String cancel = null;
+	if (StringUtil.isNotBlank(form.getCancelActionName())) {
+		cancel = form.getCancelActionName() + urlPath;
+	} else {
+		cancel = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
+	}
+
+	// 表示名
+	String displayName = TemplateUtil.getMultilingualString(ed.getDisplayName(), ed.getLocalizedDisplayNameList());
+	String viewTitle = TemplateUtil.getMultilingualString(form.getTitle(), form.getLocalizedTitleList());
+	if(StringUtil.isNotBlank(viewTitle)) {
+		displayName = viewTitle;
+	}
+
+	String imageColor = ViewUtil.getEntityImageColor(form);
+	String imageColorStyle = "";
+	if (imageColor != null) {
+		imageColorStyle = "imgclr_" + imageColor;
+	}
+
+	String className = defName.replaceAll("\\.", "_");
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayName) --%>
-<div class="generic_search_csvupload d_<c:out value="<%=className%>"/>">
-	<script type="text/javascript">
+<div class="generic_search_csvupload d_<c:out value="<%=className %>"/>">
+<script type="text/javascript">
 function cancel() {
 	submitForm(contextPath + "/<%=StringUtil.escapeJavaScript(cancel)%>", {
 			defName:"<%=StringUtil.escapeJavaScript(defName)%>",
@@ -193,16 +183,9 @@ function cancel() {
 }
 
 function sampleDonwload() {
-<%if (fileSupportType == FileSupportType.SPECIFY) {%>
-	submitForm("<%=sampleDl%>", {
-			defName:"<%=StringUtil.escapeJavaScript(defName)%>",
-			fileSupportType:$('input:radio[name="fileSupportType"]:checked').val()
-		});
-<%} else {%>
 	submitForm("<%=sampleDl%>", {
 			defName:"<%=StringUtil.escapeJavaScript(defName)%>"
 		});
-<%}%>
 }
 
 function showUpdateMessage() {
@@ -213,10 +196,8 @@ function showUpdateMessage() {
 }
 </script>
 
-	<%
-	if (ViewUtil.isCsvUploadAsync()) {
-	%>
-	<script type="text/javascript">
+<%	if (ViewUtil.isCsvUploadAsync()) { %>
+<script type="text/javascript">
 
 var wait_time = function(time){
 	return (function(){
@@ -237,11 +218,11 @@ function csvUploadStatusPollingHandler(results){
 		$('<td>').appendTo($tr).text(this.statusLabel);
 
 		var $msg = $('<td>').appendTo($tr);
-		if (this.status === '<%=TaskStatus.ABORTED.name()%>') {
+		if (this.status === '<%= TaskStatus.ABORTED.name() %>') {
 			$msg.addClass("error");
 		}
 
-		if (this.status === '<%=TaskStatus.COMPLETED.name()%>') {
+		if (this.status === '<%= TaskStatus.COMPLETED.name() %>') {
 			if (this.insertCount != null) {
 				$('<p>').appendTo($msg).text('${m:rs("mtp-gem-messages", "generic.csvUploadResult.regCnt")}' + this.insertCount);
 			}
@@ -258,16 +239,18 @@ function csvUploadStatusPollingHandler(results){
 	$(".tableStripe").tableStripe();
 }
 
-<%String _defName = StringUtil.escapeJavaScript(defName);
-String _viewName = StringUtil.escapeJavaScript(viewName);%>
+<%
+		String _defName = StringUtil.escapeJavaScript(defName);
+		String _viewName = StringUtil.escapeJavaScript(viewName);
+%>
 function pollingCsvUploadStatus(){
 	var params = "{";
 	params += "\"defName\":\"<%=_defName%>\"";
 	params += ",\"viewName\":\"<%=_viewName%>\"";
 	params += "}";
 	var d = $.Deferred();
-	d.then(postAsync("<%=EntityFileUploadStatusCommand.WEBAPI_NAME%>", params, csvUploadStatusPollingHandler))
-		.then(wait_time(<%=ViewUtil.getCsvUploadStatusPollingInterval()%>))
+	d.then(postAsync("<%=CsvUploadStatusCommand.WEBAPI_NAME%>", params, csvUploadStatusPollingHandler))
+		.then(wait_time(<%= ViewUtil.getCsvUploadStatusPollingInterval() %>))
 		.then(pollingCsvUploadStatus);
 	d.resolve();
 	return d.promise();
@@ -277,53 +260,44 @@ $(function(){
 	pollingCsvUploadStatus();
 });
 </script>
-	<%
+<%	} %>
+
+<h2 class="hgroup-01">
+<span class="<c:out value="<%=imageColorStyle%>"/>">
+<i class="far fa-circle default-icon"></i>
+</span>
+<c:out value="<%=displayName%>"/>
+</h2>
+
+<form name="detailForm" method="post" action="<c:out value="<%=upload%>"/>" enctype="multipart/form-data">
+<h3 class="hgroup-02 hgroup-02-01"><%= GemResourceBundleUtil.resourceString("generic.csvUpload.csvUpTitle", displayName) %></h3>
+<%
+	if (StringUtil.isNotBlank(message)) {
+%>
+<div class="error" style="margin-bottom:17px;">
+<%= message %>
+</div>
+<%
 	}
-	%>
+%>
+<input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
+<input type="hidden" name="searchCond" value="${m:esc(searchCond)}" />
 
-	<h2 class="hgroup-01">
-		<span class="<c:out value="<%=imageColorStyle%>"/>"> <i
-			class="far fa-circle default-icon"></i>
-		</span>
-		<c:out value="<%=displayName%>" />
-	</h2>
-
-	<form name="detailForm" method="post"
-		action="<c:out value="<%=upload%>"/>" enctype="multipart/form-data">
-		<h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.csvUpload.csvUpTitle", displayName)%></h3>
-		<%
-		if (StringUtil.isNotBlank(message)) {
-		%>
-		<div class="error" style="margin-bottom: 17px;">
-			<%=message%>
-		</div>
-		<%
-		}
-		%>
-		<input type="hidden" name="defName"
-			value="<c:out value="<%=defName%>"/>" /> <input type="hidden"
-			name="searchCond" value="${m:esc(searchCond)}" />
-
-		<%-- ========== カスタム: Reference項目の選択ダイアログ ========== --%>
-		<%
-		if (StringUtil.isNotBlank(customRefDefName)) {
-		%>
-		<h3 class="hgroup-02 hgroup-02-01">
-			<c:out value="<%=customRefDisplayName%>" />
-		</h3>
-		<div
-			style="margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9;">
-			<input type="hidden" name="customRefOid" id="customRefOid" value="" />
-			<input type="hidden" name="customRefVersion" id="customRefVersion"
-				value="" /> <input type="hidden" name="customRefDefName"
-				id="customRefDefName" value="<c:out value="<%=customRefDefName%>"/>" />
-			<span id="customRefLabel" style="margin-right: 10px;">（未選択）</span>
-			<ul id="customRefRoot" style="display: none;"></ul>
-			<input type="button" value="選択" class="gr-btn-02 modal-btn"
-				id="customRefSelectBtn" /> <input type="button" value="クリア"
-				class="gr-btn-02" id="customRefClearBtn" />
-		</div>
-		<script type="text/javascript">
+<%-- ========== カスタム: Reference項目の選択ダイアログ ========== --%>
+<%
+	if (StringUtil.isNotBlank(customRefDefName)) {
+%>
+<h3 class="hgroup-02 hgroup-02-01"><c:out value="<%=customRefDisplayName%>"/></h3>
+<div style="margin-bottom:10px; padding:10px; border:1px solid #ccc; background:#f9f9f9;">
+<input type="hidden" name="customRefOid" id="customRefOid" value="" />
+<input type="hidden" name="customRefVersion" id="customRefVersion" value="" />
+<input type="hidden" name="customRefDefName" id="customRefDefName" value="<c:out value="<%=customRefDefName%>"/>" />
+<span id="customRefLabel" style="margin-right:10px;">（未選択）</span>
+<ul id="customRefRoot" style="display:none;"></ul>
+<input type="button" value="選択" class="gr-btn-02 modal-btn" id="customRefSelectBtn" />
+<input type="button" value="クリア" class="gr-btn-02" id="customRefClearBtn" />
+</div>
+<script type="text/javascript">
 $(function() {
 	// 選択ボタンクリック
 	$("#customRefSelectBtn").on("click", function() {
@@ -374,150 +348,75 @@ $(function() {
 	});
 });
 </script>
-		<%
-		} else {
-		%>
-		<div
-			style="margin-bottom: 10px; padding: 10px; border: 1px solid #f99; background: #fff0f0; color: #c00;">
-			<p>
-				※ Reference プロパティ「
-				<c:out value="<%=customRefPropName%>" />
-				」が見つかりません。JSP内の customRefPropName を正しいプロパティ名に変更してください。
-			</p>
-		</div>
-		<%
-		}
-		%>
-		<%-- ========== カスタム: ここまで ========== --%>
-
-		<ul class="csvupload_csvfile clear">
-			<li>
-				<%
-				if (fileSupportType == FileSupportType.SPECIFY) {
-				%>
-				<ul class="csvupload_fileSupportType clear">
-					<li><label><input name="fileSupportType" type="radio"
-							value="<%=FileSupportType.CSV%>" checked />CSV</label></li>
-					<li><label><input name="fileSupportType" type="radio"
-							value="<%=FileSupportType.EXCEL%>" />EXCEL</label></li>
-				</ul> <script>
-$(function(){
-	$('input[name="fileSupportType"]:radio').on('change', function () {
-		const value = $(this).val();
-		if (value == "<%=FileSupportType.CSV%>
-					") {
-										$('input[name="filePath"]:file').attr(
-												"accept", ".csv");
-									} else {
-										$('input[name="filePath"]:file').attr(
-												"accept", ".xlsx");
-									}
-								});
-					});
-				</script> <%
- }
-
- String acceptType = ".csv";
- if (fileSupportType == FileSupportType.EXCEL) {
- acceptType = ".xlsx";
- }
- %> <input id="upload" type="file" name="filePath"
-				accept="<%=acceptType%>">
-			</li>
-		</ul>
-
-		<h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.selectUniqueKey")}</h3>
-
-		<ul class="csvupload_uniquekey clear">
-			<li><label><input name="uniqueKey" type="radio"
-					value="<%=Entity.OID%>" checked /> <c:out
-						value="<%=getDispPropertyName(Entity.OID, customColumnNameMap)%>" /></label></li>
-			<%
-			for (String propName : uniquePropList) {
-			%>
-			<li><label><input name="uniqueKey" type="radio"
-					value="<%=propName%>" /> <c:out
-						value="<%=getDispPropertyName(propName, customColumnNameMap)%>" /></label></li>
-			<%
-			}
-			%>
-		</ul>
-
-		<%
-		// バージョン管理対象外のEntityの場合の更新時の対象バージョンの選択
-		if (ed.getVersionControlType() == VersionControlType.NONE
-				&& condSection != null && condSection.isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
-			String selected = condSection.getCsvUploadTargetVersionForNoneVersionedEntity() == TargetVersion.SPECIFIC ? "checked" : "";
-		%>
-		<h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.selectUpdateTargetVersion")}</h3>
-		<ul class="csvupload-update-target clear">
-			<li><label> <input name="updateTargetVersion"
-					type="checkbox" value="<%=TargetVersion.SPECIFIC%>" <%=selected%> />${m:rs("mtp-gem-messages", "generic.csvUpload.updateTargetVersionSpecific")}
-			</label></li>
-		</ul>
-		<%
-		}
-		%>
-
-		<%-- <%
-	{
-		boolean ignoreNotExistsChecked = condSection != null && condSection.isCsvUploadIgnoreNotExistsProperty();
+<%
+	} else {
 %>
-<ul class="csvupload-ignore-not-exists clear">
+<div style="margin-bottom:10px; padding:10px; border:1px solid #f99; background:#fff0f0; color:#c00;">
+<p>※ Reference プロパティ「<c:out value="<%=customRefPropName%>"/>」が見つかりません。JSP内の customRefPropName を正しいプロパティ名に変更してください。</p>
+</div>
+<%
+	}
+%>
+<%-- ========== カスタム: ここまで ========== --%>
+
+<ul class="csvupload_csvfile clear"><li>
+<input id="upload" type="file" name="filePath" >
+</li></ul>
+
+<h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.selectUniqueKey")}</h3>
+
+<ul class="csvupload_uniquekey clear">
+<li><label><input name="uniqueKey" type="radio" value="<%=Entity.OID%>" checked /><c:out value="<%=getDispPropertyName(Entity.OID, customColumnNameMap) %>"/></label></li>
+<%	for (String propName : uniquePropList) { %>
+<li><label><input name="uniqueKey" type="radio" value="<%=propName%>" /><c:out value="<%=getDispPropertyName(propName, customColumnNameMap) %>"/></label></li>
+<%	} %>
+</ul>
+
+<%
+	// バージョン管理対象外のEntityの場合の更新時の対象バージョンの選択
+	if (ed.getVersionControlType() == VersionControlType.NONE
+			&& searchFormView != null && searchFormView.getCondSection().isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
+		String selected = searchFormView.getCondSection().getCsvUploadTargetVersionForNoneVersionedEntity() == TargetVersion.SPECIFIC ? "checked" : "";
+%>
+<h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.selectUpdateTargetVersion")}</h3>
+<ul class="csvupload-update-target clear">
 <li><label>
-<input name="ignoreNotExistsProperty" type="checkbox" value="true" <%=ignoreNotExistsChecked ? "checked" : "" %> />${m:rs("mtp-gem-messages", "generic.csvUpload.ignoreNotExistsPropertyLabel")}
+<input name="updateTargetVersion" type="checkbox" value="<%=TargetVersion.SPECIFIC%>" <%=selected%> />${m:rs("mtp-gem-messages", "generic.csvUpload.updateTargetVersionSpecific")}
 </label></li>
 </ul>
 <%
 	}
-%> --%>
-		<span class="uploading" style="display: none;"><img
-			src="${m:esc(skinImagePath)}/loading.gif" alt="" />
-			${m:rs("mtp-gem-messages", "generic.csvUpload.uploding")}</span>
+%>
+<span class="uploading" style="display:none;"><img src="${m:esc(skinImagePath)}/loading.gif" alt="" />　${m:rs("mtp-gem-messages", "generic.csvUpload.uploding")}</span>
 
-		<div class="operation-bar operation-bar_top">
-			<ul class="list_operation edit-bar">
-				<%
-				if (cPermission && uPermission) {
-				%>
-				<li class="btn insert-btn"><input type="submit"
-					value="${m:rs('mtp-gem-messages', 'generic.csvUpload.csvUpBtn')}"
-					class="gr-btn" onclick="showUpdateMessage();return true;" /></li>
-				<%
-				}
-				%>
-				<li class="btn insert-btn"><input type="submit"
-					value="${m:rs('mtp-gem-messages', 'generic.csvUpload.sampleCsv')}"
-					class="gr-btn" onclick="sampleDonwload();return false;" /></li>
-				<li class="cancel-link mt05"><a href="javascript:void(0)"
-					onclick="cancel();return false;">${m:rs("mtp-gem-messages", "generic.csvUpload.cancel")}</a></li>
-			</ul>
-		</div>
-		${m:outputToken('FORM_XHTML', true)}
-	</form>
+<div class="operation-bar operation-bar_top">
+<ul class="list_operation edit-bar">
+<%	if (cPermission && uPermission) { %>
+<li class="btn insert-btn"><input type="submit" value="${m:rs('mtp-gem-messages', 'generic.csvUpload.csvUpBtn')}" class="gr-btn" onclick="showUpdateMessage();return true;" /></li>
+<%	} %>
+<li class="btn insert-btn"><input type="submit" value="${m:rs('mtp-gem-messages', 'generic.csvUpload.sampleCsv')}" class="gr-btn" onclick="sampleDonwload();return false;" /></li>
+<li class="cancel-link mt05"><a href="javascript:void(0)" onclick="cancel();return false;">${m:rs("mtp-gem-messages", "generic.csvUpload.cancel")}</a></li>
+</ul>
+</div>
+${m:outputToken('FORM_XHTML', true)}
+</form>
 
-	<div class="csvupload_description flat-block-top">
-		<%-- <ul>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription2")}</li>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription3")}</li>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription4")}</li>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription6")}</li>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription7")}</li>
-<li class="description"><%= GemResourceBundleUtil.resourceString("generic.csvUpload.uploadDescription8", getRequiredPropertyNames(requiredProperties, customColumnNameMap)) %></li>
+<div class="csvupload_description flat-block-top">
+<ul>
+<li class="desc1">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription1")}</li>
+<li class="desc2">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription2")}</li>
+<li class="desc3">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription3")}</li>
+<li class="desc4">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription4")}</li>
+<li class="desc5">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription5")}</li>
+<li class="desc6">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription6")}</li>
+<li class="desc7">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription7")}</li>
+<li class="desc8"><%= GemResourceBundleUtil.resourceString("generic.csvUpload.uploadDescription8", getRequiredPropertyNames(requiredProperties, customColumnNameMap)) %></li>
+<li class="desc9">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription9")}</li>
 <%
 	if (ed.getVersionControlType() == VersionControlType.NONE
-			&& condSection != null && condSection.isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
+			&& searchFormView != null && searchFormView.getCondSection().isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
 %>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription10")}</li>
-<%
-	}
-
-	if (fileSupportType != FileSupportType.EXCEL) {
-%>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadCsvDescriptionTitle")}</li>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadCsvDescription1")}</li>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadCsvDescription2")}</li>
-<li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadCsvDescription3")}</li>
+<li class="desc10">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription10")}</li>
 <%
 	}
 %>
@@ -543,7 +442,7 @@ $(function(){
 <tbody></tbody>
 </table>
 </div>
-<%	} %> --%>
-	</div>
+<%	} %>
+</div>
 
 </div>
