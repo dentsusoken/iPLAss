@@ -30,6 +30,7 @@ import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.metadata.MetaData;
 
 @XmlSeeAlso({
+	MetaHtmlSanitize.class,
 	MetaICUTransliterator.class,
 	MetaJavaClassNormalizer.class,
 	MetaNewlineNormalizer.class,
