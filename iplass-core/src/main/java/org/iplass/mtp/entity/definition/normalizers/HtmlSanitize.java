@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.entity.definition.normalizers;
 
+import java.util.List;
+
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 
 /**
@@ -27,48 +29,62 @@ import org.iplass.mtp.entity.definition.NormalizerDefinition;
  * HTMLサニタイズのNormalizer定義です。
  * 許可されたHTML要素・属性以外を除去し、安全なHTMLに変換します。
  * 主に、RichTextエディタで入力されたHTMLのサーバー側サニタイズを想定しています。
+ *
+ * <p>
+ * allowTagsに許可するHTMLタグ名を指定します。
+ * 指定されていないタグは除去され、テキストコンテンツのみが残ります。
+ * allowTagsが未設定（null）の場合は、すべてのタグが除去されます。
+ * </p>
  * <%} else {%>
  * Normalizer definition for HTML sanitization.
  * Removes HTML elements and attributes that are not allowed, converting to safe HTML.
  * Primarily intended for server-side sanitization of HTML input from RichText editors.
+ *
+ * <p>
+ * Specify allowed HTML tag names in allowTags.
+ * Tags not specified will be removed, leaving only text content.
+ * If allowTags is not set (null), all tags will be removed.
+ * </p>
  * <%}%>
  *
  */
 public class HtmlSanitize extends NormalizerDefinition {
 	private static final long serialVersionUID = 2897541036845127893L;
 
-	private HtmlSanitizePolicy policy;
+	private List<String> allowTags;
 
 	public HtmlSanitize() {
 	}
 
-	public HtmlSanitize(HtmlSanitizePolicy policy) {
-		this.policy = policy;
+	public HtmlSanitize(List<String> allowTags) {
+		this.allowTags = allowTags;
 	}
 
 	/**
 	 * <% if (doclang == "ja") {%>
-	 * サニタイズポリシーを取得します。
+	 * 許可するHTMLタグのリストを取得します。
 	 * <%} else {%>
-	 * Gets the sanitize policy.
+	 * Gets the list of allowed HTML tags.
 	 * <%}%>
 	 *
-	 * @return サニタイズポリシー
+	 * @return 許可タグのリスト
 	 */
-	public HtmlSanitizePolicy getPolicy() {
-		return policy;
+	public List<String> getAllowTags() {
+		return allowTags;
 	}
 
 	/**
 	 * <% if (doclang == "ja") {%>
-	 * サニタイズポリシーを設定します。
+	 * 許可するHTMLタグのリストを設定します。
+	 * タグ名を指定します（例："a", "b", "p", "div", "img" 等）。
 	 * <%} else {%>
-	 * Sets the sanitize policy.
+	 * Sets the list of allowed HTML tags.
+	 * Specify tag names (e.g., "a", "b", "p", "div", "img", etc.).
 	 * <%}%>
 	 *
-	 * @param policy サニタイズポリシー
+	 * @param allowTags 許可タグのリスト
 	 */
-	public void setPolicy(HtmlSanitizePolicy policy) {
-		this.policy = policy;
+	public void setAllowTags(List<String> allowTags) {
+		this.allowTags = allowTags;
 	}
 }
