@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.entity.definition.normalizers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
@@ -33,31 +34,33 @@ import org.iplass.mtp.entity.definition.NormalizerDefinition;
  * <p>
  * allowTagsに許可するHTMLタグ名を指定します。
  * 指定されていないタグは除去され、テキストコンテンツのみが残ります。
- * allowTagsが未設定（null）の場合は、すべてのタグが除去されます。
+ * allowTagsが未設定（空）の場合は、すべてのタグが除去されます。
  * </p>
  * <%} else {%>
  * Normalizer definition for HTML sanitization.
- * Removes HTML elements and attributes that are not allowed, converting to safe HTML.
- * Primarily intended for server-side sanitization of HTML input from RichText editors.
+ * Removes HTML elements and attributes that are not allowed, converting to safe
+ * HTML.
+ * Primarily intended for server-side sanitization of HTML input from RichText
+ * editors.
  *
  * <p>
  * Specify allowed HTML tag names in allowTags.
  * Tags not specified will be removed, leaving only text content.
- * If allowTags is not set (null), all tags will be removed.
+ * If allowTags is not set (empty), all tags will be removed.
  * </p>
  * <%}%>
  *
  */
-public class HtmlSanitize extends NormalizerDefinition {
+public class HtmlSanitizer extends NormalizerDefinition {
 	private static final long serialVersionUID = 2897541036845127893L;
 
-	private List<String> allowTags;
+	private List<String> allowTags = new ArrayList<>();
 
-	public HtmlSanitize() {
+	public HtmlSanitizer() {
 	}
 
-	public HtmlSanitize(List<String> allowTags) {
-		this.allowTags = allowTags;
+	public HtmlSanitizer(List<String> allowTags) {
+		setAllowTags(allowTags);
 	}
 
 	/**
@@ -85,6 +88,9 @@ public class HtmlSanitize extends NormalizerDefinition {
 	 * @param allowTags 許可タグのリスト
 	 */
 	public void setAllowTags(List<String> allowTags) {
+		if (allowTags == null) {
+			throw new IllegalArgumentException("allowTags cannot be null");
+		}
 		this.allowTags = allowTags;
 	}
 }
