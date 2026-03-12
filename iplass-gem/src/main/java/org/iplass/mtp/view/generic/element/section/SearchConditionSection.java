@@ -101,7 +101,7 @@ public class SearchConditionSection extends Section {
 	/** 詳細条件の表示件数 */
 	@MetaFieldInfo(
 			displayName="詳細条件の表示件数",
-			displayNameKey="generic_element_section_SearchConditionSection_conditionDispCountDisplayNameKey",
+			displayNameKey="generic_element_section_SearchConditionSection_conditionDispCountDisplayNameKey", //TODO: locale_ja.jsにキー追加
 			inputType=InputType.NUMBER,
 			rangeCheck=true,
 			minRange=1,
