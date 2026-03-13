@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
+import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizer;
 import org.iplass.mtp.entity.definition.normalizers.ICUTransliterator;
 import org.iplass.mtp.entity.definition.normalizers.JavaClassNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.NewlineNormalizer;
@@ -35,12 +36,13 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
 public class NormalizerService implements Service {
-	
+
 	private Map<Class<? extends NormalizerDefinition>, Class<? extends MetaNormalizer>> map;
 
 	@Override
 	public void init(Config config) {
 		map = new HashMap<>();
+		map.put(HtmlSanitizer.class, MetaHtmlSanitizer.class);
 		map.put(ICUTransliterator.class, MetaICUTransliterator.class);
 		map.put(JavaClassNormalizer.class, MetaJavaClassNormalizer.class);
 		map.put(NewlineNormalizer.class, MetaNewlineNormalizer.class);
@@ -56,7 +58,8 @@ public class NormalizerService implements Service {
 
 	public MetaNormalizer createNormalizerMetaData(NormalizerDefinition n) {
 		try {
-			MetaNormalizer meta = map.get(n.getClass()).newInstance();
+			MetaNormalizer meta = map.get(n.getClass())
+					.newInstance();
 			meta.applyConfig(n);
 			return meta;
 		} catch (InstantiationException | IllegalAccessException e) {
