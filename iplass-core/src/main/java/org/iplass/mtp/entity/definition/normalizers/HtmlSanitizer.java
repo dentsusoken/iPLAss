@@ -63,7 +63,20 @@ public class HtmlSanitizer extends NormalizerDefinition {
 	private String customizeScript;
 
 	public HtmlSanitizer() {
-		this.safelistType = SafelistType.BASIC;
+	}
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * 指定されたSafelistプリセットタイプで初期化します。
+	 * <%} else {%>
+	 * Initializes with the specified Safelist preset type.
+	 * <%}%>
+	 *
+	 * @param safelistType Safelistプリセットタイプ
+	 * @throws IllegalArgumentException safelistTypeがnullの場合
+	 */
+	public HtmlSanitizer(SafelistType safelistType) {
+		setSafelistType(safelistType);
 	}
 
 	/**
@@ -89,6 +102,9 @@ public class HtmlSanitizer extends NormalizerDefinition {
 	 * @param safelistType Safelistプリセットタイプ
 	 */
 	public void setSafelistType(SafelistType safelistType) {
+		if (safelistType == null) {
+			throw new IllegalArgumentException("safelistType cannot be null");
+		}
 		this.safelistType = safelistType;
 	}
 

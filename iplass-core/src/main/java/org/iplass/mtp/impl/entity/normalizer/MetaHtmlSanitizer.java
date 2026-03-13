@@ -46,7 +46,7 @@ public class MetaHtmlSanitizer extends MetaNormalizer {
 	private static final String SAFELIST_BINDING_NAME = "safelist";
 	private static final String SCRIPT_PREFIX = "HtmlSanitizer_customizeScript";
 
-	private SafelistType safelistType = SafelistType.BASIC;
+	private SafelistType safelistType;
 	private String customizeScript;
 
 	public SafelistType getSafelistType() {
@@ -54,6 +54,9 @@ public class MetaHtmlSanitizer extends MetaNormalizer {
 	}
 
 	public void setSafelistType(SafelistType safelistType) {
+		if (safelistType == null) {
+			throw new IllegalArgumentException("safelistType cannot be null");
+		}
 		this.safelistType = safelistType;
 	}
 
@@ -89,14 +92,13 @@ public class MetaHtmlSanitizer extends MetaNormalizer {
 	@Override
 	public void applyConfig(NormalizerDefinition definition) {
 		HtmlSanitizer d = (HtmlSanitizer) definition;
-		this.safelistType = d.getSafelistType();
-		this.customizeScript = d.getCustomizeScript();
+		setSafelistType(d.getSafelistType());
+		setCustomizeScript(d.getCustomizeScript());
 	}
 
 	@Override
 	public HtmlSanitizer currentConfig(EntityContext context) {
-		HtmlSanitizer d = new HtmlSanitizer();
-		d.setSafelistType(safelistType);
+		HtmlSanitizer d = new HtmlSanitizer(safelistType);
 		d.setCustomizeScript(customizeScript);
 		return d;
 	}
@@ -108,18 +110,18 @@ public class MetaHtmlSanitizer extends MetaNormalizer {
 
 	private static Safelist toJsoupSafelist(SafelistType type) {
 		switch (type) {
-			case NONE:
-				return Safelist.none();
-			case SIMPLE_TEXT:
-				return Safelist.simpleText();
-			case BASIC:
-				return Safelist.basic();
-			case BASIC_WITH_IMAGES:
-				return Safelist.basicWithImages();
-			case RELAXED:
-				return Safelist.relaxed();
-			default:
-				return Safelist.basic();
+		case NONE:
+			return Safelist.none();
+		case SIMPLE_TEXT:
+			return Safelist.simpleText();
+		case BASIC:
+			return Safelist.basic();
+		case BASIC_WITH_IMAGES:
+			return Safelist.basicWithImages();
+		case RELAXED:
+			return Safelist.relaxed();
+		default:
+			return Safelist.basic();
 		}
 	}
 
@@ -134,7 +136,9 @@ public class MetaHtmlSanitizer extends MetaNormalizer {
 	}
 
 	private Safelist applyCustomizeScript(Safelist safelist, MetaEntity entity, MetaProperty property) {
-		ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+		ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getScriptEngine();
 
 		String scriptName = resolveScriptName(entity, property);
 		Script compiledScript = scriptEngine.createScript(customizeScript, scriptName);
@@ -156,11 +160,11 @@ public class MetaHtmlSanitizer extends MetaNormalizer {
 
 	public class HtmlSanitizerRuntime extends NormalizerRuntime {
 
-		private final Safelist runtimeSafelist;
+		private final Safelist safelist;
 		private final Document.OutputSettings outputSettings;
 
 		HtmlSanitizerRuntime(MetaEntity entity, MetaProperty property) {
-			this.runtimeSafelist = buildSafelist(entity, property);
+			this.safelist = buildSafelist(entity, property);
 			this.outputSettings = new Document.OutputSettings().prettyPrint(false);
 		}
 
@@ -175,7 +179,7 @@ public class MetaHtmlSanitizer extends MetaNormalizer {
 				return html;
 			}
 
-			return Jsoup.clean(html, "", runtimeSafelist, outputSettings);
+			return Jsoup.clean(html, "", safelist, outputSettings);
 		}
 	}
 }

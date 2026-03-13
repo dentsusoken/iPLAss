@@ -47,20 +47,20 @@ public class HtmlSanitizerAttributePane extends NormalizerAttributePane {
 	private static final SafelistType DEFAULT_TYPE = SafelistType.BASIC;
 
 	private final DynamicForm form;
-	private final SelectItem selSafelistType;
-	private final TextAreaItem txaCustomizeScript;
+	private final SelectItem selectedSafelistType;
+	private final TextAreaItem customizeScript;
 
 	public HtmlSanitizerAttributePane() {
 
 		setHeight100();
 
-		selSafelistType = createSafelistTypeSelect();
-		ButtonItem editScript = createEditScriptButton();
-		txaCustomizeScript = createCustomizeScriptArea();
+		selectedSafelistType = initSafelistTypeSelect();
+		ButtonItem editScript = initEditScriptButton();
+		customizeScript = initCustomizeScriptArea();
 
 		form = new MtpForm();
 		form.setHeight100();
-		form.setItems(selSafelistType, editScript, txaCustomizeScript);
+		form.setItems(selectedSafelistType, editScript, customizeScript);
 
 		addMember(form);
 	}
@@ -68,32 +68,58 @@ public class HtmlSanitizerAttributePane extends NormalizerAttributePane {
 	@Override
 	public void setDefinition(NormalizerDefinition definition) {
 		if (!(definition instanceof HtmlSanitizer)) {
-			form.clearValues();
-			selSafelistType.setValue(DEFAULT_TYPE.name());
 			return;
 		}
 
 		HtmlSanitizer impl = (HtmlSanitizer) definition;
 
-		selSafelistType.setValue(impl.getSafelistType().name());
+		selectSafelistType(impl.getSafelistType());
 
 		String script = impl.getCustomizeScript();
 		if (script != null && !script.isEmpty()) {
-			txaCustomizeScript.setValue(script);
+			customizeScript.setValue(script);
 		} else {
-			txaCustomizeScript.clearValue();
+			customizeScript.clearValue();
 		}
 	}
 
 	@Override
 	public NormalizerDefinition getEditDefinition(NormalizerDefinition definition) {
-		HtmlSanitizer newOne = new HtmlSanitizer();
-
-		String typeName = SmartGWTUtil.getStringValue(selSafelistType, true);
-		newOne.setSafelistType(typeName != null ? SafelistType.valueOf(typeName) : DEFAULT_TYPE);
-		newOne.setCustomizeScript(SmartGWTUtil.getStringValue(txaCustomizeScript, true));
-
+		HtmlSanitizer newOne = new HtmlSanitizer(getSelectedSafelistType());
+		newOne.setCustomizeScript(SmartGWTUtil.getStringValue(customizeScript, true));
 		return newOne;
+	}
+
+	private static String getKey(SafelistType type) {
+		return type.name();
+	}
+
+	private static SafelistType toSafelistType(String key) {
+		return SafelistType.valueOf(key);
+	}
+
+	private static String toDisplayName(SafelistType type) {
+		switch (type) {
+		case NONE:
+			return "None";
+		case SIMPLE_TEXT:
+			return "Simple Text";
+		case BASIC:
+			return "Basic";
+		case BASIC_WITH_IMAGES:
+			return "Basic with Images";
+		case RELAXED:
+			return "Relaxed";
+		};
+		throw new IllegalArgumentException("Unknown SafelistType: " + type);
+	}
+
+	private SafelistType getSelectedSafelistType() {
+		return toSafelistType(SmartGWTUtil.getStringValue(selectedSafelistType, true));
+	}
+
+	private void selectSafelistType(SafelistType type) {
+		selectedSafelistType.setValue(getKey(type));
 	}
 
 	@Override
@@ -111,26 +137,26 @@ public class HtmlSanitizerAttributePane extends NormalizerAttributePane {
 		return 200;
 	}
 
-	private SelectItem createSafelistTypeSelect() {
+	private SelectItem initSafelistTypeSelect() {
 		SelectItem select = new MtpSelectItem();
 		select.setTitle("Safelist");
 		select.setWidth("100%");
 
 		LinkedHashMap<String, String> typeMap = Arrays.stream(SafelistType.values())
 				.collect(Collectors.toMap(
-						SafelistType::name,
-						SafelistType::name,
+						HtmlSanitizerAttributePane::getKey,
+						HtmlSanitizerAttributePane::toDisplayName,
 						(a, b) -> a,
 						LinkedHashMap::new));
 		select.setValueMap(typeMap);
-		select.setDefaultValue(DEFAULT_TYPE.name());
+		select.setDefaultValue(getKey(DEFAULT_TYPE));
 		SmartGWTUtil.addHoverToFormItem(select,
 				rs("ui_metadata_entity_property_HtmlSanitizerAttributePane_selSafelist"));
 
 		return select;
 	}
 
-	private ButtonItem createEditScriptButton() {
+	private ButtonItem initEditScriptButton() {
 		ButtonItem editScript = new ButtonItem("editScript", "Edit");
 		editScript.setWidth(100);
 		editScript.setStartRow(false);
@@ -140,14 +166,14 @@ public class HtmlSanitizerAttributePane extends NormalizerAttributePane {
 				rs("ui_metadata_entity_property_HtmlSanitizerAttributePane_editScript")));
 		editScript.addClickHandler(event -> {
 			MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
-					SmartGWTUtil.getStringValue(txaCustomizeScript),
+					SmartGWTUtil.getStringValue(customizeScript),
 					ScriptEditorDialogConstants.ENTITY_NORMALIZER,
 					null,
 					rs("ui_metadata_entity_property_HtmlSanitizerAttributePane_scriptHint"),
 					new ScriptEditorDialogHandler() {
 						@Override
 						public void onSave(String text) {
-							txaCustomizeScript.setValue(text);
+							customizeScript.setValue(text);
 						}
 
 						@Override
@@ -159,7 +185,7 @@ public class HtmlSanitizerAttributePane extends NormalizerAttributePane {
 		return editScript;
 	}
 
-	private TextAreaItem createCustomizeScriptArea() {
+	private TextAreaItem initCustomizeScriptArea() {
 		TextAreaItem area = new MtpTextAreaItem();
 		area.setColSpan(2);
 		area.setTitle("Customize Script");
