@@ -115,6 +115,9 @@ public class EntityFileUploadService implements Service {
 	/** ダウンロード時にLimitが指定されている場合にOrderByを必ず指定する。SQLServer対応。 */
 	private boolean mustOrderByWithLimit;
 
+	/** アップロードでEntity定義に存在しないプロパティを無視するかのデフォルト値 */
+	private boolean defaultIgnoreNotExistsProperty;
+
 	private EntityManager em = null;
 	private EntityDefinitionManager edm = null;
 
@@ -135,6 +138,7 @@ public class EntityFileUploadService implements Service {
 		defaultUpdateTargetVersionForNoneVersionedEntity = config.getValue(
 				"defaultUpdateTargetVersionForNoneVersionedEntity", TargetVersion.class, TargetVersion.CURRENT_VALID);
 		mustOrderByWithLimit = config.getValue("mustOrderByWithLimit", Boolean.class, false);
+		defaultIgnoreNotExistsProperty = config.getValue("defaultIgnoreNotExistsProperty", Boolean.class, false);
 	}
 
 	@Override
@@ -160,24 +164,34 @@ public class EntityFileUploadService implements Service {
 	}
 
 	/**
+	 * アップロードでEntity定義に存在しないプロパティを無視するかのデフォルト値を取得します。
+	 *
+	 * @return アップロードでEntity定義に存在しないプロパティを無視するかのデフォルト値
+	 */
+	public boolean isDefaultIgnoreNotExistsProperty() {
+		return defaultIgnoreNotExistsProperty;
+	}
+	
+	/**
 	 * Uploadファイルを検証します。
 	 */
 	public void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
-			final String interrupterClassName) {
-		validate(is, entityFileType, defName, withReferenceVersion, interrupterClassName, showErrorLimitCount);
+			final boolean ignoreNotExistsProperty, final String interrupterClassName) {
+		validate(is, entityFileType, defName, withReferenceVersion, ignoreNotExistsProperty, interrupterClassName, showErrorLimitCount);
 	}
 
 	/**
 	 * Uploadファイルを検証します。
 	 */
-	public void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
-			final String interrupterClassName, final int errorLimit) {
+	private void validate(InputStream is, EntityFileType entityFileType, String defName, final boolean withReferenceVersion,
+			final boolean ignoreNotExistsProperty, final String interrupterClassName, final int errorLimit) {
 
 		EntityDefinition ed = edm.get(defName);
 		final CsvUploadInterrupter interrupter = createInterrupter(interrupterClassName);
 
 		try (EntityFileReader<?> reader = getReader(is, entityFileType, ed)) {
 			reader.withReferenceVersion(withReferenceVersion);
+			reader.setIgnoreNotExistsProperty(ignoreNotExistsProperty);
 			reader.setCustomColumnNameMap(getCustomColumnNameMap(ed, interrupter));
 			reader.validate(errorLimit);
 		} catch (UnsupportedEncodingException e) {
@@ -212,6 +226,7 @@ public class EntityFileUploadService implements Service {
 
 		try (EntityFileReader<?> reader = getReader(is, option.getEntityFileType(), ed)) {
 			reader.withReferenceVersion(option.isWithReferenceVersion());
+			reader.setIgnoreNotExistsProperty(option.isIgnoreNotExistsProperty());
 			reader.setCustomColumnNameMap(getCustomColumnNameMap(ed, interrupter));
 
 			Transaction.with(Propagation.SUPPORTS, t -> {
