@@ -317,6 +317,23 @@ $(function(){
 <%	} %>
 </ul>
 
+
+
+
+<%
+	{
+		boolean ignoreNotExistsChecked = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class).isDefaultIgnoreNotExistsProperty();
+%>
+<h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.ignoreNotExistsPropertyTitle")}</h3>
+<ul class="csvupload-ignore-not-exists clear">
+<li><label>
+<input name="ignoreNotExistsProperty" type="checkbox" value="true" <%=ignoreNotExistsChecked ? "checked" : "" %> /><%= GemResourceBundleUtil.resourceString("generic.csvUpload.ignoreNotExistsPropertyLabel", displayName) %>
+</label></li>
+</ul>
+<%
+	}
+%>
+
 <%
 	// バージョン管理対象外のEntityの場合の更新時の対象バージョンの選択
 	if (ed.getVersionControlType() == VersionControlType.NONE
@@ -327,20 +344,6 @@ $(function(){
 <ul class="csvupload-update-target clear">
 <li><label>
 <input name="updateTargetVersion" type="checkbox" value="<%=TargetVersion.SPECIFIC%>" <%=selected%> />${m:rs("mtp-gem-messages", "generic.csvUpload.updateTargetVersionSpecific")}
-</label></li>
-</ul>
-<%
-	}
-%>
-
-<%
-	{
-		boolean ignoreNotExistsChecked = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class).isDefaultIgnoreNotExistsProperty();
-%>
-<h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.ignoreNotExistsPropertyTitle")}</h3>
-<ul class="csvupload-ignore-not-exists clear">
-<li><label>
-<input name="ignoreNotExistsProperty" type="checkbox" value="true" <%=ignoreNotExistsChecked ? "checked" : "" %> /><%= GemResourceBundleUtil.resourceString("generic.csvUpload.ignoreNotExistsPropertyLabel", displayName) %>
 </label></li>
 </ul>
 <%
