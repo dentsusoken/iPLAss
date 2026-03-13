@@ -220,7 +220,8 @@ public class NormalizerListGridRecord extends ListGridRecord {
 		} else if (definition instanceof HtmlSanitizer) {
 			HtmlSanitizer impl = (HtmlSanitizer) definition;
 			setType(NormalizerType.HTML_SANITIZER);
-			setGeneralPurpus(impl.getSafelistType().name());
+			setGeneralPurpus(impl.getSafelistType()
+					.name());
 		}
 	}
 
