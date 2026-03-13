@@ -30,7 +30,6 @@ import org.iplass.mtp.entity.definition.NormalizerDefinition;
  *
  * <p>
  * {@link SafelistType}でjsoupのSafelistプリセットを選択します。
- * デフォルトは{@link SafelistType#BASIC}です。
  * </p>
  * <p>
  * customizeScriptにGroovyスクリプトを指定すると、選択したプリセットのSafelistオブジェクトを
@@ -40,15 +39,17 @@ import org.iplass.mtp.entity.definition.NormalizerDefinition;
  *
  * <%} else {%>
  * Normalizer definition for HTML sanitization.
- * Removes HTML elements and attributes that are not allowed, converting to safe HTML.
- * Primarily intended for server-side sanitization of HTML input from RichText editors.
+ * Removes HTML elements and attributes that are not allowed, converting to safe
+ * HTML.
+ * Primarily intended for server-side sanitization of HTML input from RichText
+ * editors.
  *
  * <p>
  * Select a jsoup Safelist preset via {@link SafelistType}.
- * The default is {@link SafelistType#BASIC}.
  * </p>
  * <p>
- * If customizeScript is specified, the Safelist object created from the selected preset
+ * If customizeScript is specified, the Safelist object created from the
+ * selected preset
  * can be customized via a Groovy script. The binding variable {@code safelist}
  * (org.jsoup.safety.Safelist) is available in the script.
  * </p>
@@ -65,42 +66,14 @@ public class HtmlSanitizer extends NormalizerDefinition {
 	public HtmlSanitizer() {
 	}
 
-	/**
-	 * <% if (doclang == "ja") {%>
-	 * 指定されたSafelistプリセットタイプで初期化します。
-	 * <%} else {%>
-	 * Initializes with the specified Safelist preset type.
-	 * <%}%>
-	 *
-	 * @param safelistType Safelistプリセットタイプ
-	 * @throws IllegalArgumentException safelistTypeがnullの場合
-	 */
 	public HtmlSanitizer(SafelistType safelistType) {
 		setSafelistType(safelistType);
 	}
 
-	/**
-	 * <% if (doclang == "ja") {%>
-	 * Safelistプリセットタイプを取得します。
-	 * <%} else {%>
-	 * Gets the Safelist preset type.
-	 * <%}%>
-	 *
-	 * @return Safelistプリセットタイプ
-	 */
 	public SafelistType getSafelistType() {
 		return safelistType;
 	}
 
-	/**
-	 * <% if (doclang == "ja") {%>
-	 * Safelistプリセットタイプを設定します。
-	 * <%} else {%>
-	 * Sets the Safelist preset type.
-	 * <%}%>
-	 *
-	 * @param safelistType Safelistプリセットタイプ
-	 */
 	public void setSafelistType(SafelistType safelistType) {
 		if (safelistType == null) {
 			throw new IllegalArgumentException("safelistType cannot be null");
@@ -108,30 +81,10 @@ public class HtmlSanitizer extends NormalizerDefinition {
 		this.safelistType = safelistType;
 	}
 
-	/**
-	 * <% if (doclang == "ja") {%>
-	 * Safelistカスタマイズ用のGroovyスクリプトを取得します。
-	 * <%} else {%>
-	 * Gets the Groovy script for customizing the Safelist.
-	 * <%}%>
-	 *
-	 * @return カスタマイズスクリプト
-	 */
 	public String getCustomizeScript() {
 		return customizeScript;
 	}
 
-	/**
-	 * <% if (doclang == "ja") {%>
-	 * Safelistカスタマイズ用のGroovyスクリプトを設定します。
-	 * スクリプト内ではバインド変数{@code safelist}（org.jsoup.safety.Safelist）を操作できます。
-	 * <%} else {%>
-	 * Sets the Groovy script for customizing the Safelist.
-	 * The binding variable {@code safelist} (org.jsoup.safety.Safelist) is available in the script.
-	 * <%}%>
-	 *
-	 * @param customizeScript カスタマイズスクリプト
-	 */
 	public void setCustomizeScript(String customizeScript) {
 		this.customizeScript = customizeScript;
 	}

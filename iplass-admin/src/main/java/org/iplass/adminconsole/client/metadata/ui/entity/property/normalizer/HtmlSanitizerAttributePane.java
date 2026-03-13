@@ -141,6 +141,7 @@ public class HtmlSanitizerAttributePane extends NormalizerAttributePane {
 		SelectItem select = new MtpSelectItem();
 		select.setTitle("Safelist");
 		select.setWidth("100%");
+		select.setRequired(true);
 
 		LinkedHashMap<String, String> typeMap = Arrays.stream(SafelistType.values())
 				.collect(Collectors.toMap(
