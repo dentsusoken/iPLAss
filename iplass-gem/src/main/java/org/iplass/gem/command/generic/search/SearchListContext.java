@@ -31,7 +31,6 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.SortSpec;
-import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
@@ -100,16 +99,10 @@ public class SearchListContext extends SearchContextBase {
 
 		OrderBy orderBy = null;
 		if (StringUtil.isNotBlank(sortKey)) {
+			// TODO: 【要確認】通常検索（SearchContextBase.getOrderBy()）とロジックが違うが、意図的か？
 			PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(sortKey, getEntityDefinition());
-			String propName = sortKey;
-			if (pd instanceof ReferenceProperty) {
-				propName = sortKey + "." + Entity.OID;
-			}
-			if (StringUtil.isBlank(sortType)) {
-				orderBy = new OrderBy().add(new SortSpec(propName, SortType.DESC));
-			} else {
-				orderBy = new OrderBy().add(new SortSpec(propName, SortType.valueOf(sortType)));
-			}
+			String propName = pd instanceof ReferenceProperty ? sortKey + "." + Entity.OID : sortKey ;
+			orderBy = new OrderBy().add(new SortSpec(propName, StringUtil.isBlank(sortType) ? SortType.DESC : SortType.valueOf(sortType)));
 		}
 		//TODO: addする際に重複チェックするべきか？
 		if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
@@ -127,20 +120,17 @@ public class SearchListContext extends SearchContextBase {
 			}
 		}
 		if (hasSortSetting()) {
+			// TODO: 【要確認】通常検索（SearchContextBase.getOrderBy()）とロジックが違うが、意図的か？
 			for (SortSetting ss : getSortSetting()) {
-				if (ss.getSortKey() != null) {
-					String key;
-					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
-					if (pd instanceof ReferenceProperty) {
-						key = ss.getSortKey() + "." + Entity.OID;
-					} else {
-						key = ss.getSortKey();
-					}
-					SortType type = SortType.valueOf(ss.getSortType().name());
-					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-					if (orderBy == null) orderBy = new OrderBy();
-					orderBy.add(key, type, nullOrderingSpec);
-				}
+				String _sortKey = ss.getSortKey();
+				if (_sortKey == null) 
+					continue;
+
+				PropertyDefinition pd = getPropertyDefinition(_sortKey);
+				String key = pd instanceof ReferenceProperty ? _sortKey + "." + Entity.OID : _sortKey;
+				if (orderBy == null)
+					orderBy = new OrderBy();
+				orderBy.add(key, SortType.valueOf(ss.getSortType().name()), getNullOrderingSpec(ss.getNullOrderType()));
 			}
 			return orderBy;
 		} 
