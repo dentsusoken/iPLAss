@@ -317,9 +317,6 @@ $(function(){
 <%	} %>
 </ul>
 
-
-
-
 <%
 	{
 		boolean ignoreNotExistsChecked = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class).isDefaultIgnoreNotExistsProperty();
