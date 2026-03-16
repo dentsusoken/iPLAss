@@ -110,20 +110,26 @@ public class SearchListContext extends SearchContextBase {
 			} else {
 				orderBy = new OrderBy().add(new SortSpec(propName, SortType.valueOf(sortType)));
 			}
-		} else if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
+		}
+		//TODO: addする際に重複チェックするべきか？
+		if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
 			SyntaxService service = ServiceRegistry.getRegistry().getService(SyntaxService.class);
 			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT).getSyntax(OrderBySyntax.class);
 			ParseContext context = new ParseContext("order by " + filter.getSort());
+			if (orderBy == null) {
+				orderBy = new OrderBy();
+			}
 			try {
-				orderBy = syntax.parse(context);
+				syntax.parse(context).getSortSpecList().forEach(orderBy::add);
+				return orderBy;
 			} catch (ParseException e) {
 				throw new SystemException(e.getMessage(), e);
 			}
-		} else if (hasSortSetting()) {
-			List<SortSetting> setting = getSortSetting();
-			for (SortSetting ss : setting) {
+		}
+		if (hasSortSetting()) {
+			for (SortSetting ss : getSortSetting()) {
 				if (ss.getSortKey() != null) {
-					String key = null;
+					String key;
 					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
 					if (pd instanceof ReferenceProperty) {
 						key = ss.getSortKey() + "." + Entity.OID;
@@ -136,11 +142,9 @@ public class SearchListContext extends SearchContextBase {
 					orderBy.add(key, type, nullOrderingSpec);
 				}
 			}
-		} else {
-			orderBy = new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
-		}
-
-		return orderBy;
+			return orderBy;
+		} 
+		return (orderBy == null ? new OrderBy() : orderBy).add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
 	}
 
 	@Override
