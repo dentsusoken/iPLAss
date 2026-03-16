@@ -297,6 +297,14 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 						orderBy.add(sortKey, getSortType(), nullOrderingSpec);
 					}
 				}
+				// ソート順序を一意にするため、OIDをソートキーの末尾に追加
+				if (orderBy != null) {
+					boolean hasOid = orderBy.getSortSpecList().stream()
+							.anyMatch(ss -> Entity.OID.equals(ss.getSortKey().toString()));
+					if (!hasOid) {
+						orderBy.add(Entity.OID, SortType.ASC);
+					}
+				}
 			}
 		}
 		return orderBy;
