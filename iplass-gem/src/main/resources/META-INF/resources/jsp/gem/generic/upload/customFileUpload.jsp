@@ -299,6 +299,8 @@ $(function(){
 </div>
 <script type="text/javascript">
 $(function() {
+	
+	
 	// 選択ボタンクリック
 	$("#customRefSelectBtn").on("click", function() {
 		// コールバック登録: ダイアログで選択されたEntityのOID_Versionを受け取る
@@ -315,10 +317,34 @@ $(function() {
 				getEntityNameList(
 					"<%=StringUtil.escapeJavaScript(customRefDefName)%>",
 					null, null, null, null, null, null, list, null, function(entities) {
-						if (entities.length > 0) {
-							$("#customRefLabel").text(entities[0].name + " (OID: " + oid + ")");
+						var $label = $("#customRefLabel");
+						$label.empty();
+						var labelText = (entities.length > 0)
+							? entities[0].name + " (OID: " + oid + ")"
+							: "OID: " + oid;
+						var linkId = "customRefOid_" + oid;
+						var customStyle = "";
+						var defName = "<%=StringUtil.escapeJavaScript(customRefDefName)%>";
+						var viewAction = "<%=TemplateUtil.getTenantContextPath()%>/<%=org.iplass.gem.command.generic.detail.DetailViewCommand.REF_VIEW_ACTION_NAME%>/<%=StringUtil.escapeJavaScript(customRefDefName)%>";
+						var refEdit = false;
+						var parentDefName = "";
+						var parentViewName = "";
+						var propName = "customRefOid";
+						var viewType = "detail";
+						var refSectionIndex = "";
+						var entityOid = "";
+						var entityVersion = "";
+						var $link = $("<a href='javascript:void(0)' />")
+							.attr({"id":linkId, "data-linkId":linkId, "style":customStyle})
+							.click(function() {
+								showReference(viewAction, defName, oid, version, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType, refSectionIndex, entityOid, entityVersion);
+							});
+						$link.text(labelText);
+						$label.append($link);
+						if ($("body.modal-body").length != 0) {
+							$link.subModalWindow();
 						} else {
-							$("#customRefLabel").text("OID: " + oid);
+							$link.modalWindow();
 						}
 					}
 				);
