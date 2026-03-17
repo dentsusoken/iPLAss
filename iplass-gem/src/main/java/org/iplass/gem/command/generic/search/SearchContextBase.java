@@ -21,11 +21,13 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.iplass.gem.command.CommandUtil;
 import org.iplass.gem.command.Constants;
@@ -54,6 +56,7 @@ import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -181,7 +184,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		OrderBy orderBy = getOrderBy();
 		if (orderBy != null) {
 			for (SortSpec sortSpec : orderBy.getSortSpecList()) {
-				String sortKey = sortSpec.getSortKey().toString();
+				String sortKey = sortSpec.getSortKey()
+						.toString();
 				if (!select.contains(sortKey))
 					addSearchProperty(select, sortKey);
 			}
@@ -220,99 +224,169 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		return from;
 	}
 
+	private static class InvalidSortKeyException extends Exception {
+		public InvalidSortKeyException(String property) {
+			super("Failed to resolve sort key for property: " + property);
+		}
+	}
+
 	@Override
 	public OrderBy getOrderBy() {
-		// ソート設定が存在する場合
-		// TODO: 以下、分かりづらくないか
-		// 画面でユーザーが指定したソート列：
-		// * hasSortSetting() には入ってないが
-		// * getSortSetting() には入っている
+		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
+		boolean requestHasSortKey = StringUtil.isNotBlank(sortKey);
 
-		// TODO: やりたいことは結局：OrderBy = (画面ソート列) + (ソート設定 or OID)
-		// ∴ 「まず前者を冒頭で処理した後に、後者を場合分けする」方が自然で分かりやすいのでは？（現状は、後者の場合分けから始まっているが）
-		if (hasSortSetting()) {
-			OrderBy orderBy = new OrderBy();
-			for (SortSetting ss : getSortSetting()) {
-				String sortKey = ss.getSortKey();
-				PropertyDefinition pd = getPropertyDefinition(sortKey);
-				// ソートキーに参照プロパティ自体が指定された場合（参照先Entityのプロパティまで明示指定された場合は除く）
-				if (pd instanceof ReferenceProperty) {
-					PropertyColumn property = getLayoutPropertyColumn(sortKey);
-					// 当該項目が画面上表示される場合は、画面上の表示項目でソート
-					if (property != null) {
-						if (property.getPropertyName().equals(sortKey)) {
-							// ソートキーが直接D&Dされた列の場合
-							sortKey = sortKey + "." + getReferencePropertyDisplayName(property.getEditor());
-						} else {
-							// ネストの存在チェック
-							NestProperty np = getLayoutNestProperty(property, sortKey);
-							if (np != null) {
-								sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
-							} else {
-								// 画面上に表示されない場合は、Nameでソート ※ここが、ユーザー指定との大きな違い
-								sortKey = sortKey + "." + Entity.NAME;
-							}
-						}
-					} else {
-						// 画面上に表示されない場合は、Nameでソート ※ここが、ユーザー指定との大きな違い
-						sortKey = sortKey + "." + Entity.NAME;
-					}
-				}
-				SortType type = SortType.valueOf(ss.getSortType().name());
-				NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-				orderBy.add(sortKey, type, nullOrderingSpec);
-			}
-			return orderBy;
-		}
-		// ソート設定がない場合
-		String sortKey = getSortKey();
-		if (sortKey == null) {
+		List<SortSpec> settingSortKeys = getSettingSortKeys();
+		if (!requestHasSortKey && settingSortKeys.isEmpty() && getConditionSection().isUnsorted()) {
+			// ソートしない
 			return null;
 		}
+		try {
 
-		if (Entity.OID.equals(sortKey)) {
-			return new OrderBy().add(sortKey, getSortType());
+			Optional<SortSpec> resolvedReqSortKey = requestHasSortKey
+					? resolveRequestSortKey(sortKey, !settingSortKeys.isEmpty())
+					: Optional.empty();
+
+			// 補助的なソート列（出来るだけ一意になるように）
+			List<SortSpec> additionalSortKeys = settingSortKeys.isEmpty()
+					? List.of(new SortSpec(Entity.OID, SortType.ASC)) // TODO: 【要 仕様確認】DESCかも
+					: settingSortKeys;
+
+			OrderBy orderBy = new OrderBy();
+			// TODO: 重複削除
+			// FIXME: 元ロジックと違う（リクエストソート列がない場合）
+			// 元：(OID, DESC)
+			// 今：(OID, ASC)
+			Stream.concat(resolvedReqSortKey.stream(), additionalSortKeys.stream())
+					.forEach(orderBy::add);
+			return orderBy;
+		} catch (InvalidSortKeyException e) {
+			return null;
 		}
+	}
+
+	/**
+	 * ソート設定からソート列を取得します。
+	 */
+	private List<SortSpec> getSettingSortKeys() {
+		return getSortSettings().stream()
+				.map(ss -> {
+					String sortKey = ss.getSortKey();
+					PropertyDefinition pd = getPropertyDefinition(sortKey);
+					// ソートキーに参照プロパティ自体が指定された場合（参照先Entityのプロパティまで明示指定された場合は除く）
+					if (pd instanceof ReferenceProperty) {
+						PropertyColumn property = getLayoutPropertyColumn(sortKey);
+						// 当該項目が画面上表示される場合は、画面上の表示項目でソート
+						if (property != null) {
+							if (property.getPropertyName()
+									.equals(sortKey)) {
+								// ソートキーが直接D&Dされた列の場合
+								sortKey = sortKey + "." + getReferencePropertyDisplayName(property.getEditor());
+							} else {
+								// ネストの存在チェック
+								NestProperty np = getLayoutNestProperty(property, sortKey);
+								if (np != null) {
+									sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
+								} else {
+									// 画面上に表示されない場合は、Nameでソート ※ユーザー指定列は、そもそもここに来ない
+									sortKey = sortKey + "." + Entity.NAME;
+								}
+							}
+						} else {
+							// 画面上に表示されない場合は、Nameでソート ※ユーザー指定列は、そもそもここに来ない
+							sortKey = sortKey + "." + Entity.NAME;
+						}
+					}
+					SortType type = SortType.valueOf(ss.getSortType()
+							.name());
+					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
+
+					return new SortSpec(new EntityField(sortKey), type, nullOrderingSpec);
+				})
+				.toList();
+	}
+
+	/**
+	 * リクエストからソート列を解決します。
+	 * 
+	 * @param hasSortSetting TODO: 削除したい
+	 */
+	private Optional<SortSpec> resolveRequestSortKey(String sortKey, boolean hasSortSetting)
+			throws InvalidSortKeyException {
+
+		if (!hasSortSetting) {
+			if (getPropertyDefinition(sortKey) == null) {
+				// TODO: 【要 仕様確認】例外を投げるべきでは？
+				// TODO: 【要 仕様確認】ソート列とSortTypeのズレ
+				return Optional.of(new SortSpec(Entity.OID, getSortType()));
+			}
+
+			if (Entity.OID.equals(sortKey)) {
+				// TODO: 【要 仕様確認】この分岐は「設定あり分岐」にはない。実装漏れ？
+				// -> 多分、意図的。しかし、ここでやるべきではない
+				return Optional.of(new SortSpec(sortKey, getSortType()));
+			}
+		}
+
 		PropertyColumn property = getLayoutPropertyColumn(sortKey);
 		// OID以外はSearchResultに定義されているPropertyのみ許可
 		if (property == null) {
-			return null;
+			// TODO: 【要 仕様確認】例外を投げるべきでは？
+			if (hasSortSetting) {
+				return Optional.empty();
+			}
+			throw new InvalidSortKeyException(sortKey);
 		}
+
+		// TODO: 【要 仕様確認】resolve()の結果が、リクエストのソート列とは全く別の列になるケースもあり得る。この場合、SortType/Nullソート設定とズレるが、OKなのか？
+		return resolveRequestSortKey(sortKey, property, hasSortSetting)
+				.map(key -> new SortSpec(new EntityField(key), getSortType(),
+						getNullOrderingSpec(property.getNullOrderType())));
+	}
+
+	/**
+	 * リクエストからソート列を解決します。
+	 * 
+	 * @param hasSortSetting TODO: 削除したい
+	 */
+	private Optional<String> resolveRequestSortKey(String sortKey, PropertyColumn property, boolean hasSortSetting)
+			throws InvalidSortKeyException {
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		// 参照プロパティの場合、画面上の表示項目でソート
 		// TODO: 上のロジックのコピペ。解消できないか
 		// TODO: ここで本質的なのは、「画面上の項目かどうか」。それがパッと分かるようにロジックを整理できないか
+		// MEMO: このチェックの順番は「設定あり分岐」とは違う。が、結果的には同じ
 		if (pd instanceof ReferenceProperty) {
-			if (property.getPropertyName().equals(sortKey)) {
+			if (property.getPropertyName()
+					.equals(sortKey)) {
 				// ソートキーが直接D&Dされた列の場合
-				sortKey = sortKey + "." + getReferencePropertyDisplayName(property.getEditor());
+				return Optional.of(sortKey + "." + getReferencePropertyDisplayName(property.getEditor()));
 			} else {
 				// ネストの存在チェック
 				NestProperty np = getLayoutNestProperty(property, sortKey);
 				if (np != null) {
-					sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
+					return Optional.of(sortKey + "." + getReferencePropertyDisplayName(np.getEditor()));
 				} else {
 					// 未設定の項目
-					// TODO: Noneを返す（getParamSortKey()として）
-					sortKey = Entity.OID;
+					// TODO: OID変換は、ここでやるべきではない気がする
+					return hasSortSetting ? Optional.empty() : Optional.of(Entity.OID);
 				}
 			}
 		} else {
 			if (!property.getPropertyName().equals(sortKey)) {
-				// TODO: この分岐は上にはない。意図的か？
+				// TODO: 【要 仕様確認】この分岐は「設定あり分岐」にはない。実装漏れ？
+				// -> 恐らく、意図的。しかし、「OIDに変換」は、ここでやるべきではない
 				// ソートキーが直接D&Dされた列以外の場合、ネストの存在チェック
 				NestProperty np = getLayoutNestProperty(property, sortKey);
 				if (np == null) {
 					// 例：(a.b , a.b.c0) & a.b がc0をNPとして持たない ※ もっとも、画面からはありえないだろうが
 					// 未設定の項目
-					// TODO: Noneを返す（getParamSortKey()として）
-					sortKey = Entity.OID;
+					// TODO: OID変換は、ここでやるべきではない気がする
+					return hasSortSetting ? Optional.empty() : Optional.of(Entity.OID);
 				}
 			}
 		}
-		NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-		// ソート順序を一意にするため、OIDをソートキーの末尾に追加
-		return new OrderBy().add(sortKey, getSortType(), nullOrderingSpec).add(Entity.OID, SortType.ASC);
+
+		return Optional.of(sortKey);
 	}
 
 	@Override
@@ -373,8 +447,10 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return
 	 */
 	protected List<PropertyItem> getLayoutProperties() {
-		List<PropertyItem> filteredList = getConditionSection().getElements().stream()
-				.filter(e -> e instanceof PropertyItem).map(e -> (PropertyItem) e)
+		List<PropertyItem> filteredList = getConditionSection().getElements()
+				.stream()
+				.filter(e -> e instanceof PropertyItem)
+				.map(e -> (PropertyItem) e)
 				.collect(Collectors.toList());
 
 		List<PropertyItem> properties = new ArrayList<>();
@@ -411,15 +487,18 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return
 	 */
 	protected List<PropertyColumn> getColumnProperties() {
-		List<PropertyColumn> properties = getResultSection().getElements().stream()
-				.filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e)
+		List<PropertyColumn> properties = getResultSection().getElements()
+				.stream()
+				.filter(e -> e instanceof PropertyColumn)
+				.map(e -> (PropertyColumn) e)
 				.collect(Collectors.toList());
 		return properties;
 	}
 
 	protected PropertyItem getLayoutProperty(String propName) {
 		List<PropertyItem> properties = getLayoutProperties();
-		Optional<PropertyItem> property = properties.stream().filter(e -> propName.equals(e.getPropertyName()))
+		Optional<PropertyItem> property = properties.stream()
+				.filter(e -> propName.equals(e.getPropertyName()))
 				.findFirst();
 		if (property.isPresent()) {
 			return property.get();
@@ -444,7 +523,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	protected PropertyColumn getLayoutPropertyColumn(String propName) {
 		Optional<PropertyColumn> property = getColumnProperties().stream()
-				.filter(e -> propName.equals(e.getPropertyName())).findFirst();
+				.filter(e -> propName.equals(e.getPropertyName()))
+				.findFirst();
 		if (property.isPresent()) {
 			return property.get();
 		}
@@ -471,7 +551,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		}
 
 		// 親階層以降のプロパティ名で再帰検索
-		String subPropName = propName.substring(property.getPropertyName().length() + 1);
+		String subPropName = propName.substring(property.getPropertyName()
+				.length() + 1);
 		return findLayoutNestPropertyRecursive(subPropName, (ReferencePropertyEditor) property.getEditor());
 	}
 
@@ -483,7 +564,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return ネストプロパティ
 	 */
 	private NestProperty findLayoutNestPropertyRecursive(String propertyName, ReferencePropertyEditor editor) {
-		if (editor.getNestProperties().isEmpty()) {
+		if (editor.getNestProperties()
+				.isEmpty()) {
 			return null;
 		}
 
@@ -493,8 +575,11 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			String topPropName = propertyName.substring(0, dotIndex);
 			String subPropName = propertyName.substring(dotIndex + 1);
 
-			Optional<NestProperty> opt = editor.getNestProperties().stream()
-					.filter(np -> np.getPropertyName().equals(topPropName)).findFirst();
+			Optional<NestProperty> opt = editor.getNestProperties()
+					.stream()
+					.filter(np -> np.getPropertyName()
+							.equals(topPropName))
+					.findFirst();
 			if (!opt.isPresent())
 				return null;
 
@@ -505,8 +590,11 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		}
 
 		// 一致するNestPropetyを取得
-		Optional<NestProperty> opt = editor.getNestProperties().stream()
-				.filter(np -> np.getPropertyName().equals(propertyName)).findFirst();
+		Optional<NestProperty> opt = editor.getNestProperties()
+				.stream()
+				.filter(np -> np.getPropertyName()
+						.equals(propertyName))
+				.findFirst();
 		return opt.orElse(null);
 	}
 
@@ -537,8 +625,10 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * ソートキーが指定されていない場合は、検索画面のデフォルトソートキーを取得します。
 	 * 
 	 * @return ソートキー
+	 * @deprecated //TODO: 削除すべし
 	 */
 	protected String getSortKey() {
+		// TODO: 以下のチェックは、hasSortSetting()分岐内にはない
 		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
 
 		// 検索時のソートキー
@@ -593,17 +683,25 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return ソート設定が定義されているか
 	 */
 	protected boolean hasSortSetting() {
+		return !getSortSettings().isEmpty();
+	}
+
+	/**
+	 * 検索条件セクションからソート設定を取得します。
+	 */
+	private List<SortSetting> getSortSettings() {
 		SearchConditionSection section = getConditionSection();
-		if (section != null) {
-			return !section.getSortSetting().isEmpty();
+		if (section == null) {
+			return Collections.emptyList();
 		}
-		return false;
+		return section.getSortSetting();
 	}
 
 	/**
 	 * ソート設定を取得します。
 	 * 
 	 * @return ソート設定
+	 * @deprecated わざわざAdminConsole設定のソート列とユーザー指定列を混ぜる必要はない。かえって分かりにくい
 	 */
 	protected List<SortSetting> getSortSetting() {
 		List<SortSetting> setting = new ArrayList<>();
@@ -615,7 +713,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			// SearchResultに定義されているPropertyのみ許可
 			if (property != null) {
 				SortSetting ss = null;
-				if (property.getPropertyName().equals(sortKey)) {
+				if (property.getPropertyName()
+						.equals(sortKey)) {
 					// ソートキーが直接D&Dされた列の場合
 					ss = new SortSetting();
 					ss.setSortKey(sortKey);
@@ -643,10 +742,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			}
 		}
 
-		SearchConditionSection section = getConditionSection();
-		if (section != null && !section.getSortSetting().isEmpty()) {
-			setting.addAll(section.getSortSetting());
-		}
+		setting.addAll(getSortSettings());
 		return setting;
 	}
 
@@ -756,7 +852,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 						}
 						if (np.getEditor() instanceof ReferencePropertyEditor) {
 							ReferencePropertyEditor rpe = (ReferencePropertyEditor) np.getEditor();
-							if (!rpe.getNestProperties().isEmpty()) {
+							if (!rpe.getNestProperties()
+									.isEmpty()) {
 								List<NestProperty> _nest = rpe.getNestProperties();
 								addSearchProperty(select, nestPropName, rpe,
 										_nest.toArray(new NestProperty[_nest.size()]));
@@ -765,7 +862,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 						} else if (np.getEditor() instanceof JoinPropertyEditor) {
 							JoinPropertyEditor jpe = (JoinPropertyEditor) np.getEditor();
 							addSearchProperty(select, nestPropName, jpe.getEditor());
-							if (!jpe.getProperties().isEmpty()) {
+							if (!jpe.getProperties()
+									.isEmpty()) {
 								List<NestProperty> _nest = jpe.getProperties();
 								addSearchProperty(select, propName, editor,
 										_nest.toArray(new NestProperty[_nest.size()]));
@@ -804,7 +902,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return
 	 */
 	protected EntityDefinition getReferenceEntityDefinition(ReferenceProperty rp) {
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		EntityDefinitionManager edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 		return edm.get(rp.getObjectDefinitionName());
 	}
 
@@ -862,7 +961,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			if (property.getEditor() instanceof ReferencePropertyEditor) {
 				// ネストの項目を確認
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
-				if (!editor.getNestProperties().isEmpty()) {
+				if (!editor.getNestProperties()
+						.isEmpty()) {
 					Set<String> nest = getUseUserPropertyEditorNestPropertyName(editor);
 					for (String nestPropertyName : nest) {
 						String _nestPropertyName = propertyName + "." + nestPropertyName;
@@ -885,7 +985,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			if (property.getEditor() instanceof ReferencePropertyEditor) {
 				// 再ネストの項目を確認
 				ReferencePropertyEditor nestEditor = (ReferencePropertyEditor) property.getEditor();
-				if (!nestEditor.getNestProperties().isEmpty()) {
+				if (!nestEditor.getNestProperties()
+						.isEmpty()) {
 					Set<String> nest = getUseUserPropertyEditorNestPropertyName(nestEditor);
 					for (String nestPropertyName : nest) {
 						String _nestPropertyName = property.getPropertyName() + "." + nestPropertyName;
