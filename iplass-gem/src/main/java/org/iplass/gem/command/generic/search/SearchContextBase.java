@@ -158,7 +158,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			if (EntityViewUtil.isDisplayElement(getDefName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				String propName = p.getPropertyName();
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
-					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();
+					List<NestProperty> nest = ((ReferencePropertyEditor) p.getEditor()).getNestProperties();
 					addSearchProperty(select, propName, p.getEditor(), nest.toArray(new NestProperty[nest.size()]));
 				} else if (p.getEditor() instanceof JoinPropertyEditor) {
 					JoinPropertyEditor je = (JoinPropertyEditor) p.getEditor();
@@ -182,7 +182,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		if (orderBy != null) {
 			for (SortSpec sortSpec : orderBy.getSortSpecList()) {
 				String sortKey = sortSpec.getSortKey().toString();
-				if (!select.contains(sortKey)) addSearchProperty(select, sortKey);
+				if (!select.contains(sortKey))
+					addSearchProperty(select, sortKey);
 			}
 		}
 		boolean distinct = getConditionSection().isDistinct();
@@ -195,22 +196,22 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	public From getFrom() {
 		From from = new From(getDefName());
 
-		//バージョン管理されてるEntityでリクエストパラメータに対象とするバージョンがあるか確認
+		// バージョン管理されてるEntityでリクエストパラメータに対象とするバージョンがあるか確認
 		Object specValue = null;
 		String paramSpec = getRequest().getParam(Constants.SEARCH_SPEC_VERSION);
 		if (definition.getVersionControlType() != null && StringUtil.isNotBlank(paramSpec)) {
 			if (VersionControlType.TIMEBASE.equals(definition.getVersionControlType())
 					|| VersionControlType.SIMPLE_TIMEBASE.equals(definition.getVersionControlType())) {
-				//日時
+				// 日時
 				specValue = CommandUtil.getTimestamp(paramSpec);
 			} else if (VersionControlType.VERSIONED.equals(definition.getVersionControlType())
 					|| VersionControlType.STATEBASE.equals(definition.getVersionControlType())) {
-				//数値
+				// 数値
 				specValue = CommandUtil.getLong(paramSpec);
 			}
 		}
 
-		//リテラル化してAsOfに設定
+		// リテラル化してAsOfに設定
 		if (specValue != null) {
 			AsOf asof = new AsOf(new Literal(specValue));
 			from.setAsOf(asof);
@@ -226,7 +227,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		// 画面でユーザーが指定したソート列：
 		// * hasSortSetting() には入ってないが
 		// * getSortSetting() には入っている
-		
+
 		// TODO: やりたいことは結局：OrderBy = (画面ソート列) + (ソート設定 or OID)
 		// ∴ 「まず前者を冒頭で処理した後に、後者を場合分けする」方が自然で分かりやすいのでは？（現状は、後者の場合分けから始まっているが）
 		if (hasSortSetting()) {
@@ -248,12 +249,12 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 							if (np != null) {
 								sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
 							} else {
-								// 画面上に表示されない場合は、Nameでソート
+								// 画面上に表示されない場合は、Nameでソート ※ここが、ユーザー指定との大きな違い
 								sortKey = sortKey + "." + Entity.NAME;
 							}
 						}
 					} else {
-						// 画面上に表示されない場合は、Nameでソート
+						// 画面上に表示されない場合は、Nameでソート ※ここが、ユーザー指定との大きな違い
 						sortKey = sortKey + "." + Entity.NAME;
 					}
 				}
@@ -268,10 +269,10 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		if (sortKey == null) {
 			return null;
 		}
-		
+
 		if (Entity.OID.equals(sortKey)) {
 			return new OrderBy().add(sortKey, getSortType());
-		} 
+		}
 		PropertyColumn property = getLayoutPropertyColumn(sortKey);
 		// OID以外はSearchResultに定義されているPropertyのみ許可
 		if (property == null) {
@@ -280,6 +281,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		// 参照プロパティの場合、画面上の表示項目でソート
 		// TODO: 上のロジックのコピペ。解消できないか
+		// TODO: ここで本質的なのは、「画面上の項目かどうか」。それがパッと分かるようにロジックを整理できないか
 		if (pd instanceof ReferenceProperty) {
 			if (property.getPropertyName().equals(sortKey)) {
 				// ソートキーが直接D&Dされた列の場合
@@ -291,6 +293,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
 				} else {
 					// 未設定の項目
+					// TODO: Noneを返す（getParamSortKey()として）
 					sortKey = Entity.OID;
 				}
 			}
@@ -300,7 +303,9 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				// ソートキーが直接D&Dされた列以外の場合、ネストの存在チェック
 				NestProperty np = getLayoutNestProperty(property, sortKey);
 				if (np == null) {
+					// 例：(a.b , a.b.c0) & a.b がc0をNPとして持たない ※ もっとも、画面からはありえないだろうが
 					// 未設定の項目
+					// TODO: Noneを返す（getParamSortKey()として）
 					sortKey = Entity.OID;
 				}
 			}
@@ -321,7 +326,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		if (getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
 			String allVer = getRequest().getParam(Constants.SEARCH_ALL_VERSION);
 			return "1".equals(allVer);
-		} else if (getForm().isCanVersionedReferenceSearchForNoneVersionedEntity()){
+		} else if (getForm().isCanVersionedReferenceSearchForNoneVersionedEntity()) {
 			String referenceVer = getRequest().getParam(Constants.SEARCH_SAVED_VERSION);
 			return "1".equals(referenceVer);
 		}
@@ -355,6 +360,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 検索条件セクションを取得します。
+	 * 
 	 * @return 検索条件セクション
 	 */
 	protected SearchConditionSection getConditionSection() {
@@ -363,6 +369,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 検索条件プロパティを取得します。
+	 * 
 	 * @return
 	 */
 	protected List<PropertyItem> getLayoutProperties() {
@@ -373,7 +380,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		List<PropertyItem> properties = new ArrayList<>();
 		for (PropertyItem property : filteredList) {
 			if (property.getEditor() instanceof RangePropertyEditor) {
-				//範囲系の場合FromとToを分離しておく
+				// 範囲系の場合FromとToを分離しておく
 				RangePropertyEditor editor = (RangePropertyEditor) property.getEditor();
 				PropertyItem from = ObjectUtil.deepCopy(property);
 				properties.add(from);
@@ -391,6 +398,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 検索結果セクションを取得します。
+	 * 
 	 * @return 検索結果セクション
 	 */
 	protected SearchResultSection getResultSection() {
@@ -399,6 +407,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 検索結果プロパティを取得します。
+	 * 
 	 * @return
 	 */
 	protected List<PropertyColumn> getColumnProperties() {
@@ -410,7 +419,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	protected PropertyItem getLayoutProperty(String propName) {
 		List<PropertyItem> properties = getLayoutProperties();
-		Optional<PropertyItem> property = properties.stream().filter(e -> propName.equals(e.getPropertyName())).findFirst();
+		Optional<PropertyItem> property = properties.stream().filter(e -> propName.equals(e.getPropertyName()))
+				.findFirst();
 		if (property.isPresent()) {
 			return property.get();
 		}
@@ -426,7 +436,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				condPropName = condPropName.split("\\.")[0];
 			}
 
-			if (propName.equals(condPropName)) return property;
+			if (propName.equals(condPropName))
+				return property;
 		}
 		return null;
 	}
@@ -449,6 +460,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * プロパティからNestPropertyを取得
+	 * 
 	 * @param property
 	 * @param propName
 	 * @return
@@ -457,7 +469,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		if (property.getEditor() != null && !(property.getEditor() instanceof ReferencePropertyEditor)) {
 			return null;
 		}
-	
+
 		// 親階層以降のプロパティ名で再帰検索
 		String subPropName = propName.substring(property.getPropertyName().length() + 1);
 		return findLayoutNestPropertyRecursive(subPropName, (ReferencePropertyEditor) property.getEditor());
@@ -465,8 +477,9 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * プロパティ名に一致するネストプロパティを再帰的に検索し取得する
+	 * 
 	 * @param propertyName プロパティ名
-	 * @param editor 参照プロパティエディタ
+	 * @param editor       参照プロパティエディタ
 	 * @return ネストプロパティ
 	 */
 	private NestProperty findLayoutNestPropertyRecursive(String propertyName, ReferencePropertyEditor editor) {
@@ -482,7 +495,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 			Optional<NestProperty> opt = editor.getNestProperties().stream()
 					.filter(np -> np.getPropertyName().equals(topPropName)).findFirst();
-			if (!opt.isPresent()) return null;
+			if (!opt.isPresent())
+				return null;
 
 			NestProperty subProp = opt.get();
 			if (subProp.getEditor() instanceof ReferencePropertyEditor) {
@@ -491,12 +505,14 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		}
 
 		// 一致するNestPropetyを取得
-		Optional<NestProperty> opt = editor.getNestProperties().stream().filter(np -> np.getPropertyName().equals(propertyName)).findFirst();
+		Optional<NestProperty> opt = editor.getNestProperties().stream()
+				.filter(np -> np.getPropertyName().equals(propertyName)).findFirst();
 		return opt.orElse(null);
 	}
 
 	/**
 	 * プロパティ定義の一覧を取得します。
+	 * 
 	 * @return プロパティ定義の一覧
 	 */
 	protected List<PropertyDefinition> getPropertyList() {
@@ -519,6 +535,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * リクエストからソートキーを取得します。
 	 * ソートキーが指定されていない場合は、検索画面のデフォルトソートキーを取得します。
+	 * 
 	 * @return ソートキー
 	 */
 	protected String getSortKey() {
@@ -535,7 +552,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		if (pd == null) {
-			//ソート項目が存在しない場合はOIDを設定
+			// ソート項目が存在しない場合はOIDを設定
 			return Entity.OID;
 		}
 
@@ -545,6 +562,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * リクエストからソートタイプを取得します。
 	 * ソート種別が指定されていない場合は検索画面のデフォルトソートタイプを取得します。
+	 * 
 	 * @return ソートタイプ
 	 */
 	protected SortType getSortType() {
@@ -556,20 +574,22 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	}
 
 	protected NullOrderingSpec getNullOrderingSpec(NullOrderType type) {
-		if (type == null) return null;
+		if (type == null)
+			return null;
 		switch (type) {
-		case FIRST:
-			return NullOrderingSpec.FIRST;
-		case LAST:
-			return NullOrderingSpec.LAST;
-		default:
-			break;
+			case FIRST:
+				return NullOrderingSpec.FIRST;
+			case LAST:
+				return NullOrderingSpec.LAST;
+			default:
+				break;
 		}
 		return null;
 	}
 
 	/**
 	 * ソート設定が定義されているか
+	 * 
 	 * @return ソート設定が定義されているか
 	 */
 	protected boolean hasSortSetting() {
@@ -582,12 +602,13 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * ソート設定を取得します。
+	 * 
 	 * @return ソート設定
 	 */
 	protected List<SortSetting> getSortSetting() {
 		List<SortSetting> setting = new ArrayList<>();
 
-		//画面でソート条件が指定されれば第1キーに
+		// 画面でソート条件が指定されれば第1キーに
 		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
 		if (StringUtil.isNotBlank(sortKey)) {
 			PropertyColumn property = getLayoutPropertyColumn(sortKey);
@@ -606,7 +627,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 						ss.setSortKey(sortKey);
 					}
 				}
-				
+
 				if (ss != null) {
 					String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
 					if (StringUtil.isBlank(sortType)) {
@@ -614,9 +635,9 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					} else {
 						ss.setSortType(ConditionSortType.valueOf(sortType));
 					}
-	
+
 					ss.setNullOrderType(property.getNullOrderType());
-	
+
 					setting.add(ss);
 				}
 			}
@@ -631,13 +652,14 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 参照項目の表示ラベルを取得
+	 * 
 	 * @param editor
 	 * @return
 	 */
 	protected String getReferencePropertyDisplayName(PropertyEditor editor) {
 		if (editor instanceof ReferencePropertyEditor
 				&& StringUtil.isNotEmpty(((ReferencePropertyEditor) editor).getDisplayLabelItem())) {
-			return ((ReferencePropertyEditor)editor).getDisplayLabelItem();
+			return ((ReferencePropertyEditor) editor).getDisplayLabelItem();
 		} else {
 			return Entity.NAME;
 		}
@@ -665,26 +687,30 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * リクエストから現在の検索位置を取得します。
 	 * 検索位置が指定されていない場合は0が返ります。
+	 * 
 	 * @return
 	 */
 	protected Integer getOffset() {
 		Integer offset = request.getParamAsInt(Constants.SEARCH_OFFSET);
-		if (offset == null) offset = 0;
+		if (offset == null)
+			offset = 0;
 		return offset;
 	}
 
 	/**
 	 * 検索項目として利用可能な場合にプロパティを検索項目に追加します。
-	 * @param context コンテキスト
-	 * @param select SELECTするプロパティの一覧
+	 * 
+	 * @param context  コンテキスト
+	 * @param select   SELECTするプロパティの一覧
 	 * @param propName セットするプロパティ名
-	 * @param nest 参照先Entityのプロパティ
+	 * @param nest     参照先Entityのプロパティ
 	 */
 	protected void addSearchProperty(ArrayList<String> select, String propName, NestProperty... nest) {
 		addSearchProperty(select, propName, null, nest);
 	}
 
-	protected void addSearchProperty(ArrayList<String> select, String propName, PropertyEditor editor, NestProperty... nest) {
+	protected void addSearchProperty(ArrayList<String> select, String propName, PropertyEditor editor,
+			NestProperty... nest) {
 		PropertyDefinition pd = getPropertyDefinition(propName);
 		if (pd instanceof ReferenceProperty) {
 			if (!select.contains(propName + "." + Entity.NAME)) {
@@ -709,7 +735,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 					PropertyDefinition rpd = red.getProperty(np.getPropertyName());
 					if (rpd != null
-							&&!Entity.OID.equals(np.getPropertyName())
+							&& !Entity.OID.equals(np.getPropertyName())
 							&& !Entity.NAME.equals(np.getPropertyName())
 							&& !Entity.VERSION.equals(np.getPropertyName())) {
 						String nestPropName = propName + "." + np.getPropertyName();
@@ -732,7 +758,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 							ReferencePropertyEditor rpe = (ReferencePropertyEditor) np.getEditor();
 							if (!rpe.getNestProperties().isEmpty()) {
 								List<NestProperty> _nest = rpe.getNestProperties();
-								addSearchProperty(select, nestPropName, rpe, _nest.toArray(new NestProperty[_nest.size()]));
+								addSearchProperty(select, nestPropName, rpe,
+										_nest.toArray(new NestProperty[_nest.size()]));
 							}
 							addDisplayLabelProperty(select, nestPropName, rpe);
 						} else if (np.getEditor() instanceof JoinPropertyEditor) {
@@ -740,7 +767,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 							addSearchProperty(select, nestPropName, jpe.getEditor());
 							if (!jpe.getProperties().isEmpty()) {
 								List<NestProperty> _nest = jpe.getProperties();
-								addSearchProperty(select, propName, editor, _nest.toArray(new NestProperty[_nest.size()]));
+								addSearchProperty(select, propName, editor,
+										_nest.toArray(new NestProperty[_nest.size()]));
 							}
 						} else if (np.getEditor() instanceof RangePropertyEditor) {
 							RangePropertyEditor jpe = (RangePropertyEditor) np.getEditor();
@@ -752,12 +780,14 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				}
 			}
 		} else {
-			if (!select.contains(propName)) select.add(propName);
+			if (!select.contains(propName))
+				select.add(propName);
 		}
 	}
 
 	protected void addDisplayLabelProperty(ArrayList<String> select, String propName, ReferencePropertyEditor rpe) {
-		if (rpe.getDisplayLabelItem() == null) return;
+		if (rpe.getDisplayLabelItem() == null)
+			return;
 
 		PropertyDefinition pd = getPropertyDefinition(propName);
 		if (pd instanceof ReferenceProperty) {
@@ -769,6 +799,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 参照型プロパティのEntity定義を取得します。
+	 * 
 	 * @param rp
 	 * @return
 	 */
@@ -786,11 +817,11 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			if (topProperty instanceof ReferenceProperty) {
 				EntityDefinition red = getReferenceEntityDefinition((ReferenceProperty) topProperty);
 				if (red != null) {
-					//definitionを参照先のdefinitionに置き換えて再帰呼び出し
+					// definitionを参照先のdefinitionに置き換えて再帰呼び出し
 					EntityDefinition _definition = definition;
 					definition = red;
 					PropertyDefinition pd = getPropertyDefinition(subPropName);
-					//definitionを戻す
+					// definitionを戻す
 					definition = _definition;
 					return pd;
 				}
@@ -803,6 +834,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * UserPropertyEditorを利用しているか
+	 * 
 	 * @return UserPropertyEditorを利用しているか
 	 */
 	public boolean isUseUserPropertyEditor() {
@@ -812,6 +844,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * UserPropertyEditorを利用しているプロパティ名の一覧を取得します。
+	 * 
 	 * @return UserPropertyEditorを利用しているプロパティ名の一覧
 	 */
 	public Set<String> getUseUserPropertyEditorPropertyName() {
@@ -850,7 +883,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		for (NestProperty property : editor.getNestProperties()) {
 
 			if (property.getEditor() instanceof ReferencePropertyEditor) {
-				//再ネストの項目を確認
+				// 再ネストの項目を確認
 				ReferencePropertyEditor nestEditor = (ReferencePropertyEditor) property.getEditor();
 				if (!nestEditor.getNestProperties().isEmpty()) {
 					Set<String> nest = getUseUserPropertyEditorNestPropertyName(nestEditor);
@@ -869,6 +902,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 検索処理実行前にクエリに対する操作を行います。
+	 * 
 	 * @param query
 	 * @return
 	 */
@@ -878,6 +912,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * 検索処理実行後にカスタム処理を実行します。
+	 * 
 	 * @param query
 	 * @param resultList
 	 * @param type
@@ -888,6 +923,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	/**
 	 * カスタム登録処理を取得します。
+	 * 
 	 * @return カスタム登録処理
 	 */
 	public SearchQueryInterrupterHandler getSearchQueryInterrupterHandler() {
@@ -908,11 +944,12 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				interrupter = ucdm.createInstanceAs(SearchQueryInterrupter.class, className);
 			} catch (ClassNotFoundException e) {
 				log.error(className + " can not instantiate.", e);
-				throw new EntityRuntimeException(resourceString("command.generic.detail.DetailCommandContext.internalErr"));
+				throw new EntityRuntimeException(
+						resourceString("command.generic.detail.DetailCommandContext.internalErr"));
 			}
 		}
 		if (interrupter == null) {
-			//何もしないデフォルトInterrupter生成
+			// 何もしないデフォルトInterrupter生成
 			if (log.isDebugEnabled()) {
 				log.debug("set defaul search query interrupter.");
 			}
@@ -922,7 +959,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	}
 
 	protected SearchQueryInterrupter getDefaultSearchQueryInterrupter() {
-		return new SearchQueryInterrupter() {};
+		return new SearchQueryInterrupter() {
+		};
 	}
 
 	@Override
@@ -942,7 +980,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					searchFormViewHandlers.add(createSearchFormViewHandler(handlerClassName));
 				}
 			}
-			//編集リンクの範囲権限チェックを行う場合は、先頭にHandlerを追加
+			// 編集リンクの範囲権限チェックを行う場合は、先頭にHandlerを追加
 			if (!getResultSection().isHideDetailLink()
 					&& getResultSection().isCheckEntityPermissionLimitConditionOfEditLink()) {
 				if (log.isDebugEnabled()) {
@@ -964,7 +1002,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				handler = ucdm.createInstanceAs(SearchFormViewHandler.class, handlerClassName);
 			} catch (ClassNotFoundException e) {
 				log.error(handlerClassName + " can not instantiate.", e);
-				throw new EntityRuntimeException(resourceString("command.generic.detail.DetailCommandContext.internalErr"));
+				throw new EntityRuntimeException(
+						resourceString("command.generic.detail.DetailCommandContext.internalErr"));
 			}
 		}
 		return handler;
