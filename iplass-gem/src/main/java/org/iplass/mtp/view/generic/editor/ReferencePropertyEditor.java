@@ -45,7 +45,8 @@ import org.iplass.mtp.view.generic.ViewConst;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/editor/ReferencePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
-	@Jsp(path="/jsp/gem/aggregation/unit/editor/ReferencePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
+	@Jsp(path="/jsp/gem/aggregation/unit/editor/ReferencePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
+	@Jsp(path="/jsp/gem/excel/element/section/editor/ExcelViewFilterReferencePropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_EXCELVIEW)
 })
 public class ReferencePropertyEditor extends PropertyEditor implements HasNestProperty, LabelablePropertyEditor {
 
