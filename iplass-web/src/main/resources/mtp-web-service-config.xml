@@ -792,6 +792,13 @@
 		<!--
 		<property name="mustOrderByWithLimit" value="false"/>
 		-->
+		<!--
+		 アップロードでEntity定義に存在しないプロパティを無視するかのデフォルト値。
+		 デフォルトはfalse。  
+		-->
+		<!--
+		<property name="defaultIgnoreNotExistsProperty" value="false"/>
+		-->
 	</service>
 
 	<service>

@@ -28,12 +28,15 @@
 <%@ page import="org.iplass.mtp.entity.TargetVersion"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
+<%@ page import="org.iplass.mtp.impl.fileport.EntityFileUploadService"%>
+<%@ page import="org.iplass.mtp.spi.ServiceRegistry"%>
 <%@ page import="org.iplass.mtp.entity.definition.IndexType" %>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition" %>
 <%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView" %>
 <%@ page import="org.iplass.mtp.view.generic.SearchFormView"%>
+<%@ page import="org.iplass.mtp.view.generic.element.section.SearchConditionSection"%>
 <%@ page import="org.iplass.mtp.view.generic.element.section.SearchConditionSection.FileSupportType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailFormViewData" %>
@@ -97,7 +100,8 @@
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
 	DetailFormView form = (DetailFormView) request.getAttribute("detailFormView");
 	SearchFormView searchFormView = (SearchFormView) request.getAttribute("searchFormView");
-	
+	SearchConditionSection condSection = (searchFormView != null) ? searchFormView.getCondSection() : null;
+
 	FileSupportType fileSupportType = (FileSupportType) request.getAttribute("fileSupportType");
 
 	String defName = ed.getName();
@@ -314,10 +318,24 @@ $(function(){
 </ul>
 
 <%
+	{
+		boolean ignoreNotExistsChecked = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class).isDefaultIgnoreNotExistsProperty();
+%>
+<h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.ignoreNotExistsPropertyTitle")}</h3>
+<ul class="csvupload-ignore-not-exists clear">
+<li><label>
+<input name="ignoreNotExistsProperty" type="checkbox" value="true" <%=ignoreNotExistsChecked ? "checked" : "" %> /><%= GemResourceBundleUtil.resourceString("generic.csvUpload.ignoreNotExistsPropertyLabel", displayName) %>
+</label></li>
+</ul>
+<%
+	}
+%>
+
+<%
 	// バージョン管理対象外のEntityの場合の更新時の対象バージョンの選択
 	if (ed.getVersionControlType() == VersionControlType.NONE
-			&& searchFormView != null && searchFormView.getCondSection().isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
-		String selected = searchFormView.getCondSection().getCsvUploadTargetVersionForNoneVersionedEntity() == TargetVersion.SPECIFIC ? "checked" : "";
+			&& condSection != null && condSection.isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
+		String selected = condSection.getCsvUploadTargetVersionForNoneVersionedEntity() == TargetVersion.SPECIFIC ? "checked" : "";
 %>
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "generic.csvUpload.selectUpdateTargetVersion")}</h3>
 <ul class="csvupload-update-target clear">
@@ -352,7 +370,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <li class="description"><%= GemResourceBundleUtil.resourceString("generic.csvUpload.uploadDescription8", getRequiredPropertyNames(requiredProperties, customColumnNameMap)) %></li>
 <%
 	if (ed.getVersionControlType() == VersionControlType.NONE
-			&& searchFormView != null && searchFormView.getCondSection().isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
+			&& condSection != null && condSection.isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
 %>
 <li class="description">${m:rs("mtp-gem-messages", "generic.csvUpload.uploadDescription10")}</li>
 <%
