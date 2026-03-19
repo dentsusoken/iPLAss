@@ -68,6 +68,9 @@ public class EntityFileUploadOption implements Serializable {
 	/** バージョン管理Entity以外の場合の更新時のデフォルトTargetVersion */
 	private TargetVersion updateTargetVersionForNoneVersionedEntity = null;
 
+	/** Entity定義に存在しないプロパティを無視するか */
+	private boolean ignoreNotExistsProperty;
+
 	/** CsvUploadInterrupterクラス名 */
 	private String interrupterClassName;
 
@@ -368,6 +371,31 @@ public class EntityFileUploadOption implements Serializable {
 	 */
 	public EntityFileUploadOption updateTargetVersionForNoneVersionedEntity(TargetVersion updateTargetVersionForNoneVersionedEntity) {
 		this.updateTargetVersionForNoneVersionedEntity = updateTargetVersionForNoneVersionedEntity;
+		return this;
+	}
+
+	/**
+	 * Entity定義に存在しないプロパティを無視するかを返します。
+	 * @return Entity定義に存在しないプロパティを無視するか
+	 */
+	public boolean isIgnoreNotExistsProperty() {
+		return ignoreNotExistsProperty;
+	}
+
+	/**
+	 * Entity定義に存在しないプロパティを無視するかを設定します。
+	 * @param ignoreNotExistsProperty Entity定義に存在しないプロパティを無視するか
+	 */
+	public void setIgnoreNotExistsProperty(boolean ignoreNotExistsProperty) {
+		this.ignoreNotExistsProperty = ignoreNotExistsProperty;
+	}
+
+	/**
+	 * Entity定義に存在しないプロパティを無視するかを設定します。
+	 * @param ignoreNotExistsProperty Entity定義に存在しないプロパティを無視するか
+	 */
+	public EntityFileUploadOption ignoreNotExistsProperty(boolean ignoreNotExistsProperty) {
+		this.ignoreNotExistsProperty = ignoreNotExistsProperty;
 		return this;
 	}
 
