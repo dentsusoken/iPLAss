@@ -131,7 +131,8 @@ public class EntityFileUploadTask implements Callable<EntityFileUploadStatus>, E
 		EntityFileUploadService service = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class);
 
 		try (InputStream is = new FileInputStream(filePath)) {
-			service.validate(is, option.getEntityFileType(), defName, option.isWithReferenceVersion(), option.getInterrupterClassName());
+			service.validate(is, option.getEntityFileType(), defName, option.isWithReferenceVersion(), option.isIgnoreNotExistsProperty(),
+					option.getInterrupterClassName());
 		} catch (FileNotFoundException e) {
 			throw new SystemException(e);
 		} catch (EntityCsvException e) {
