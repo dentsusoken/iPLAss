@@ -706,8 +706,7 @@ $.fn.allInputCheck = function(){
 					scriptContext.overlayManager.removeOverlay($overlay);
 				}
 			};
-			$this.off("click.modalWindow")
-				 .on("click.modalWindow", function(){
+			$this.on("click", function(){
 				//ダイアログを起動したものをトリガーとして保持しておき、
 				//maximize,restore,resizeHandlerから呼び出せるようにする。
 				$trigger = $this;
@@ -3136,12 +3135,6 @@ $.fn.allInputCheck = function(){
 			var $link = $("a.modal-lnk", $v);
 			var $hidden = $(":hidden[name='" + $v.propName + "']", $v);
 
-			if ($("body.modal-body").length != 0) {
-				$selBtn.subModalWindow();
-			} else {
-				$selBtn.modalWindow();
-			}
-
 			for (key in params) {
 				$selBtn.attr("data-" + key, params[key]);
 			}
@@ -3151,12 +3144,6 @@ $.fn.allInputCheck = function(){
 				var selDynamicParamCallback = scriptContext[$v.selectDynamicParamCallback];
 				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.selectUrlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.permitVersionedSelect, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion, selDynamicParamCallback, $v.customStyle);
 			});
-
-			if ($("body.modal-body").length != 0) {
-				$insBtn.subModalWindow();
-			} else {
-				$insBtn.modalWindow();
-			}
 
 			for (key in params) {
 				$insBtn.attr("data-" + key, params[key]);
