@@ -37,14 +37,8 @@ $(function() {
 	$("#pagetop").pageTop(); //ページトップ
 	$(".rollover").rollOverSet(); //ロールオーバー
 
-	// モーダルウィンドウをバインドし、初期化済みフラグを設定
-	$(".modal-btn, .modal-lnk").each(function(){
-		var $btn = $(this);
-		if (!$btn.data("modalWindowInitialized")) {
-			$btn.modalWindow();
-			$btn.data("modalWindowInitialized", true); // 初期化済みフラグ
-		}
-	});
+	$(".modal-btn, .modal-lnk").modalWindow();
+
 	//jQuery UI Dialogがドラッグでおかしな動きをするので、デフォルト値を変更
 	if ($("#dialog_parent").length > 0) {
 		$.ui.dialog.prototype.options.appendTo = "#dialog_parent";
