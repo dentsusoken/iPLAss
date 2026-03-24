@@ -1194,7 +1194,7 @@ function addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, fun
 		var copyId = "li_" + newId;
 
 		//ソースをコピー
-		var $src = $("#" + dummyRowId);
+		var $src = $("#" + es(dummyRowId));
 		var $copy = clone($src, copyId);
 
 		//input
