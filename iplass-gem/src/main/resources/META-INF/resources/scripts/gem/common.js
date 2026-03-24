@@ -1209,16 +1209,16 @@ function addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, fun
 		$text.attr("id", "uniq_txt_" + copyId);
 
 		if ($("body.modal-body").length != 0) {
-      // modal 内で開く場合
-      $link.subModalWindow();
-      $selBtn.subModalWindow();
-      $insBtn.subModalWindow();
-    } else {
-      // main ページで開く場合
-      $link.modalWindow();
-      $selBtn.modalWindow();
-      $insBtn.modalWindow();
-    }
+			// modal 内で開く場合
+			$link.subModalWindow();
+			$selBtn.subModalWindow();
+			$insBtn.subModalWindow();
+		} else {
+			// main ページで開く場合
+			$link.modalWindow();
+			$selBtn.modalWindow();
+			$insBtn.modalWindow();
+		}
 
 		//hiddenにnameとidを指定
 		$hidden.attr({name: propName, id: "i_" + copyId});
@@ -4462,11 +4462,11 @@ function addNestRow_Reference(type, cell, idx) {
 		replaceDummyAttr($li, "data-propName", idx);
 		$(".refUnique", cell).refUnique();
 		var $buttons = $(cell).find(".sel-btn, .ins-btn");
-    if ($("body.modal-body").length != 0) {
-      $buttons.subModalWindow();
-    } else {
-      $buttons.modalWindow();
-    }
+		if ($("body.modal-body").length != 0) {
+			$buttons.subModalWindow();
+		} else {
+			$buttons.modalWindow();
+		}
 	} else if (type == "REFCOMBO") {
 		// 参照コンボの対応
 		$(".ref-combo-sync", cell).refComboSync();
