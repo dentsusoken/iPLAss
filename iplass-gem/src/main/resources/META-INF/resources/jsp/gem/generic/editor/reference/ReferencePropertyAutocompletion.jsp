@@ -186,7 +186,7 @@ for (var i = 0; i < value.length; i++) {
 	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
 	var unique = <%="value[i]." + editor.getUniqueItem() %>;
 	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
-	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", propName, multiplicity + 1, "ul_" + _propName, "id_li_" + _propName + "Dummmy", <%=refEdit%>, "id_count_" + _propName, callback ,"<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
+	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", propName, multiplicity + 1, "ul_" + _propName, "id_li_" + propName + "Dummmy", <%=refEdit%>, "id_count_" + _propName, callback ,"<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
 }
 <%-- Dummy行が存在するので、 multiplicity + 1 --%>
 toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
@@ -339,7 +339,7 @@ for (var i = 0; i < value.length; i++) {
 	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
 	var unique = <%="value[i]." + editor.getUniqueItem() %>;
 	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
-	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", "sc_" + propName, -1, "ul_sc_" + _propName, "id_li_sc_" + _propName + "Dummmy", false, "id_count_sc_" + _propName);
+	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", "sc_" + propName, -1, "ul_sc_" + _propName, "id_li_sc_" + propName + "Dummmy", false, "id_count_sc_" + _propName);
 }
 <%
 		} else {
