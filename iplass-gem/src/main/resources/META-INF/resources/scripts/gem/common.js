@@ -1182,7 +1182,8 @@ function addDateItem(ulId, multiplicity, dummyRowId, propName, countId, func, de
  */
 function addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, func, delCallback) {
 	if (canAddItem(ulId, multiplicity)) {
-		countUp(countId, function(count) {
+		//jQueryセレクタ用のエスケープは、本来 セレクタ側（countUpの $()）でやるべき。しかし、影響範囲が広すぎるため、ここでエスケープしている
+		countUp(es(countId), function(count) {
 			var $copy = copyUniqueRefItem(dummyRowId, propName, count, delCallback);
 			if (func && $.isFunction(func)) func.call(this, $copy);
 		});
