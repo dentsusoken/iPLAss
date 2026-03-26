@@ -120,7 +120,7 @@ ext {
 		'org.apache.commons:commons-compress': '1.28.0',
 
 		//jsoup (HTML sanitize)
-		'org.jsoup:jsoup': '1.18.3',
+		'org.jsoup:jsoup': '1.21.1',
 		
 		'org.apache.poi:poi': '5.4.1',
 		'org.apache.poi:poi-scratchpad': '5.4.1',
