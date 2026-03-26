@@ -547,7 +547,10 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 					record.setUpdateValue(updateValue);
 					record.setUpdateArrayValues(updateArrayValues);
 
-					if (valueType == UpdateAllValueType.ARRAY.name() || valueType == UpdateAllValueType.ARRAY_INDEX.name()) {
+					if (UpdateAllValueType.ARRAY.name()
+							.equals(valueType)
+							|| UpdateAllValueType.ARRAY_INDEX.name()
+									.equals(valueType)) {
 						record.setUpdateValueSummary(updateArrayValues != null ? "array [" + updateArrayValues.size() + "]" : "array is null");
 					} else {
 						record.setUpdateValueSummary(updateValue);
@@ -621,7 +624,11 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 		@SuppressWarnings("unchecked")
 		public List<UpdateAllArrayValue> getUpdateArrayValues() {
-			return (List<UpdateAllArrayValue>) JSOHelper.convertToJava((JavaScriptObject) getAttributeAsObject(UPDATE_ARRAY_VALUES));
+			if (getAttributeAsObject(UPDATE_ARRAY_VALUES) != null) {
+				return (List<UpdateAllArrayValue>) JSOHelper.convertToJava((JavaScriptObject) getAttributeAsObject(UPDATE_ARRAY_VALUES));
+			} else {
+				return null;
+			}
 		}
 
 		public void setUpdateArrayValues(List<UpdateAllArrayValue> values) {
@@ -780,8 +787,10 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 			valueTypeField.setValueMap(typeMap);
 			valueTypeField.setValue(record.getValueType());
 
-			if (record.getValueType() == UpdateAllValueType.ARRAY.name()
-					|| record.getValueType() == UpdateAllValueType.ARRAY_INDEX.name()) {
+			if (UpdateAllValueType.ARRAY.name()
+					.equals(record.getValueType())
+					|| UpdateAllValueType.ARRAY_INDEX.name()
+							.equals(record.getValueType())) {
 				setUpdateValue(null);
 				setUpdateArrayValues(record.getUpdateArrayValues());
 			} else {

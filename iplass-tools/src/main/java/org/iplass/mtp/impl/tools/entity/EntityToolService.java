@@ -217,26 +217,36 @@ public class EntityToolService implements Service {
 				PropertyDefinition pd = definition.getProperty(entry.getPropertyName());
 				if (pd == null) {
 					validateErrors.add(entry.getPropertyName() + " property not found.");
+					continue;
 				}
 
 				if (entry.getValueType() == UpdateAllValueType.ARRAY || entry.getValueType() == UpdateAllValueType.ARRAY_INDEX) {
 					// 配列指定
 
 					if (pd instanceof ReferenceProperty) {
-						String message = entry.getPropertyName() + " property is unsupport array values. property type=Reference";
+						String message = entry.getPropertyName() + " property is unsupported array values. property type=Reference";
 						logger.error(message);
 						validateErrors.add(message);
 					} else if (pd.getMultiplicity() <= 1) {
-						String message = entry.getPropertyName() + " property is not multiplicity. multiplicity=" + pd.getMultiplicity();
+						String message = entry.getPropertyName() + " property is not multi-valued. multiplicity=" + pd.getMultiplicity();
 						logger.error(message);
 						validateErrors.add(message);
 					} else {
 						if (entry.getValueType() == UpdateAllValueType.ARRAY) {
 							// 多重度複数の複数指定
 							List<Object> arrayValues = new ArrayList<>();
-							for (UpdateAllArrayValue arrayValue : entry.getArrayValues()) {
-								Object storeValue = getUpdateAllStoreValue(pd, arrayValue.getValueType(), arrayValue.getValue(), validateErrors);
-								arrayValues.add(storeValue);
+							if (entry.getArrayValues() != null) {
+								for (UpdateAllArrayValue arrayValue : entry.getArrayValues()) {
+									Object storeValue = getUpdateAllStoreValue(pd, arrayValue.getValueType(), arrayValue.getValue(), validateErrors);
+									arrayValues.add(storeValue);
+								}
+							}
+							if (arrayValues.size() > pd.getMultiplicity()) {
+								String message = entry.getPropertyName()
+										+ " property, the number of specified values exceeds the configured multiplicity.multiplicity="
+										+ pd.getMultiplicity();
+								logger.error(message);
+								validateErrors.add(message);
 							}
 							if (arrayValues.isEmpty()) {
 								updateCond.value(entry.getPropertyName(), null);
@@ -245,15 +255,31 @@ public class EntityToolService implements Service {
 							}
 						} else {
 							// 多重度複数のIndex指定
-							for (UpdateAllArrayValue arrayValue : entry.getArrayValues()) {
-								ValueExpression expressionValue = null;
-								Object storeValue = getUpdateAllStoreValue(pd, arrayValue.getValueType(), arrayValue.getValue(), validateErrors);
-								if (storeValue instanceof ValueExpression) {
-									expressionValue = (ValueExpression) storeValue;
-								} else if (storeValue != null) {
-									expressionValue = new Literal(storeValue);
+							if (entry.getArrayValues() != null) {
+								for (UpdateAllArrayValue arrayValue : entry.getArrayValues()) {
+									if (arrayValue.getIndex() == null) {
+										String message = entry.getPropertyName()
+												+ " property contains values with unspecified indexes.";
+										logger.error(message);
+										validateErrors.add(message);
+									} else if (arrayValue.getIndex() >= pd.getMultiplicity()) {
+										String message = entry.getPropertyName()
+												+ " property, the number of specified index exceeds the configured multiplicity.multiplicity="
+												+ pd.getMultiplicity();
+										logger.error(message);
+										validateErrors.add(message);
+									} else {
+										ValueExpression expressionValue = null;
+										Object storeValue = getUpdateAllStoreValue(pd, arrayValue.getValueType(), arrayValue.getValue(),
+												validateErrors);
+										if (storeValue instanceof ValueExpression) {
+											expressionValue = (ValueExpression) storeValue;
+										} else if (storeValue != null) {
+											expressionValue = new Literal(storeValue);
+										}
+										updateCond.value(new EntityField(entry.getPropertyName(), arrayValue.getIndex()), expressionValue);
+									}
 								}
-								updateCond.value(new EntityField(entry.getPropertyName(), arrayValue.getIndex()), expressionValue);
 							}
 						}
 					}
@@ -312,10 +338,10 @@ public class EntityToolService implements Service {
 					} catch (NumberFormatException e) {
 						logger.error(e.getMessage(), e);
 						validateErrors.add(pd.getName()
-								+ " property value is unsupport format. cannot be parsed number. value = " + stringValue);
+								+ " property value is unsupported format. cannot be parsed number. value = " + stringValue);
 					} catch (IllegalArgumentException e) {
 						logger.error(e.getMessage(), e);
-						validateErrors.add(pd.getName() + " property value is unsupport format. " + e.getMessage() + " value = "
+						validateErrors.add(pd.getName() + " property value is unsupported format. " + e.getMessage() + " value = "
 								+ stringValue);
 					}
 				} else if (type == UpdateAllValueType.VALUE_EXPRESSION) {
@@ -323,7 +349,7 @@ public class EntityToolService implements Service {
 						storeValue = ValueExpression.newValue(stringValue);
 					} catch (QueryException e) {
 						logger.error(e.getMessage(), e);
-						validateErrors.add(pd.getName() + " property value is unsupport format. " + e.getMessage() + " value = "
+						validateErrors.add(pd.getName() + " property value is unsupported format. " + e.getMessage() + " value = "
 								+ stringValue);
 					}
 				}
