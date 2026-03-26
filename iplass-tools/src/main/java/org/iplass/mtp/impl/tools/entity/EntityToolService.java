@@ -262,9 +262,15 @@ public class EntityToolService implements Service {
 												+ " property contains values with unspecified indexes.";
 										logger.error(message);
 										validateErrors.add(message);
+									} else if (arrayValue.getIndex() < 0) {
+										String message = entry.getPropertyName()
+												+ " property contains values with negative index. index="
+												+ arrayValue.getIndex();
+										logger.error(message);
+										validateErrors.add(message);
 									} else if (arrayValue.getIndex() >= pd.getMultiplicity()) {
 										String message = entry.getPropertyName()
-												+ " property, the number of specified index exceeds the configured multiplicity.multiplicity="
+												+ " property, the number of specified index exceeds the configured multiplicity. multiplicity="
 												+ pd.getMultiplicity();
 										logger.error(message);
 										validateErrors.add(message);

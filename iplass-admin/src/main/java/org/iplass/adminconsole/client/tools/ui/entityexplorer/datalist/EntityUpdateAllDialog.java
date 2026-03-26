@@ -1168,6 +1168,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 			indexValueField = new IntegerItem();
 			indexValueField.setTitle("Index");
+			indexValueField.setKeyPressFilter("[0-9]");
 			indexValueField.setWidth(300);
 			indexValueField.setVisible(false);
 
