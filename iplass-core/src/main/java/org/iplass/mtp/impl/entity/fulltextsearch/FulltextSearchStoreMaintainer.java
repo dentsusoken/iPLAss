@@ -33,7 +33,6 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-
 public class FulltextSearchStoreMaintainer implements AdditionalStoreMaintainer {
 	private RdbAdapter rdb;
 	private CrawlLogDeleteSql crawlLogDeleteSql;
@@ -41,7 +40,9 @@ public class FulltextSearchStoreMaintainer implements AdditionalStoreMaintainer 
 
 	@Override
 	public void inited(EntityService service, Config config) {
-		rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+		rdb = ServiceRegistry.getRegistry()
+				.getService(RdbAdapterService.class)
+				.getRdbAdapter();
 		crawlLogDeleteSql = rdb.getUpdateSqlCreator(CrawlLogDeleteSql.class);
 		deleteLogDeleteSql = rdb.getUpdateSqlCreator(DeleteLogDeleteSql.class);
 	}
@@ -52,9 +53,10 @@ public class FulltextSearchStoreMaintainer implements AdditionalStoreMaintainer 
 
 	@Override
 	public void clean(int tenantId, String defId) {
-		FulltextSearchService fulltextSearchService = ServiceRegistry.getRegistry().getService(FulltextSearchService.class);
+		FulltextSearchService fulltextSearchService = ServiceRegistry.getRegistry()
+				.getService(FulltextSearchService.class);
 		if (fulltextSearchService.isUseFulltextSearch()) {
-			
+
 			new SqlExecuter<Void>() {
 				@Override
 				public Void logic() throws SQLException {
@@ -67,7 +69,7 @@ public class FulltextSearchStoreMaintainer implements AdditionalStoreMaintainer 
 					return null;
 				}
 			}.execute(rdb, true);
-			
+
 		}
 	}
 

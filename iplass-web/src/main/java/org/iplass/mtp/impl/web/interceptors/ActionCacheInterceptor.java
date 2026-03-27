@@ -43,37 +43,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ActionCacheInterceptor implements RequestInterceptor {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ActionCacheInterceptor.class);
-	
+
 	private PreviewHandler preview = new PreviewHandler();
-	
+
 	@Override
 	public void intercept(RequestInvocation invocation) {
-		
+
 		//if preview, no cache contents
 		if (preview.isPreview(invocation.getRequest())) {
 			invocation.proceedRequest();
 			return;
 		}
-		
+
 		WebInvocationImpl webInvocation = (WebInvocationImpl) invocation;
 		WebRequestStack reqStack = webInvocation.getRequestStack();
 		reqStack.setAttribute(CachableHttpServletResponse.ACTION_RUNTIME_NAME, webInvocation.getAction());
-		
+
 		//CachableHttpServletResponseでラップする。
-		CachableHttpServletResponse response = (CachableHttpServletResponse) reqStack.getRequest().getAttribute(CachableHttpServletResponse.CHSR_NAME);
+		CachableHttpServletResponse response = (CachableHttpServletResponse) reqStack.getRequest()
+				.getAttribute(CachableHttpServletResponse.CHSR_NAME);
 		if (response == null) {
 			response = new CachableHttpServletResponse(reqStack.getResponse());
-			reqStack.getRequest().setAttribute(CachableHttpServletResponse.CHSR_NAME, response);
+			reqStack.getRequest()
+					.setAttribute(CachableHttpServletResponse.CHSR_NAME, response);
 			reqStack.setResponse(response);
 		}
-		
+
 		boolean prevDoCache = response.isDoCache();
-		
+
 		try {
 			ActionMappingRuntime amr = webInvocation.getAction();
-			
+
 			if (reqStack.isIncludeStack()) {
 				//includeの場合
 				doInclude(response, webInvocation, amr);
@@ -84,9 +86,9 @@ public class ActionCacheInterceptor implements RequestInterceptor {
 				//Client直呼び出しの場合
 				doDirect(response, webInvocation, amr, true);
 			}
-			
+
 			response.flushToContentCache();
-			
+
 		} catch (IOException e) {
 			throw new WebProcessRuntimeException(e);
 		} catch (ServletException e) {
@@ -95,17 +97,19 @@ public class ActionCacheInterceptor implements RequestInterceptor {
 			response.setDoCache(prevDoCache);
 		}
 	}
-	
+
 	//FIXME 多段のlayoutがあると駄目？？
-	
-	private void doDirect(CachableHttpServletResponse response, WebInvocationImpl invocation, ActionMappingRuntime amr, boolean isClientDirect) throws ServletException, IOException {
+
+	private void doDirect(CachableHttpServletResponse response, WebInvocationImpl invocation, ActionMappingRuntime amr, boolean isClientDirect)
+			throws ServletException, IOException {
 		if (amr.getCacheCriteria() != null) {
 			//キャッシュな場合
-			String lang = ExecuteContext.getCurrentContext().getLanguage();
+			String lang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 			ContentCacheContext ac = ContentCacheContext.getContentCacheContext();
 			CacheCriteriaRuntime ccr = amr.getCacheCriteria();
 			String key = ccr.createContentCacheKey(invocation.getRequest());
-			
+
 			if (key == null) {
 				withoutCache(response, invocation);
 			} else {
@@ -113,9 +117,9 @@ public class ActionCacheInterceptor implements RequestInterceptor {
 				if (cache != null) {
 					//キャッシュから出力
 					response.setDoCache(false);
-					
+
 					long lastModified = cache.getLastModified(invocation, ac, lang);
-					
+
 					if (isClientDirect && isNotModified(cache, lastModified, response, invocation, ac, lang)) {
 						if (logger.isDebugEnabled()) {
 							logger.debug("action:" + invocation.getActionName() + " cached and not modified.");
@@ -139,20 +143,27 @@ public class ActionCacheInterceptor implements RequestInterceptor {
 				} else {
 					//キャッシュを新規に作成
 					long ttl = 0L;
-					if (ccr.getMetaData().getTimeToLive() != null) {
-						ttl = ccr.getMetaData().getTimeToLive().longValue();
+					if (ccr.getMetaData()
+							.getTimeToLive() != null) {
+						ttl = ccr.getMetaData()
+								.getTimeToLive()
+								.longValue();
 					}
 					ContentCache newCache = new ContentCache(invocation.getActionName(), lang, key, ttl);
 					response.setDoCache(true);
 					response.setCurrentContentCache(newCache);
 					invocation.proceedRequest();
-					
+
 					//JSPのバッファをフラッシュ
-					if (invocation.getRequestStack().getPageContext() != null) {
-						invocation.getRequestStack().getPageContext().getOut().flush();
+					if (invocation.getRequestStack()
+							.getPageContext() != null) {
+						invocation.getRequestStack()
+								.getPageContext()
+								.getOut()
+								.flush();
 					}
 					response.flushToContentCache();
-					
+
 					ContentCache createdCache = response.getCurrentContentCache();
 					//エラー、リダイレクトの場合はキャッシュしない
 					if (!response.isError() && !response.isRedirect()
@@ -161,7 +172,7 @@ public class ActionCacheInterceptor implements RequestInterceptor {
 					}
 				}
 			}
-			
+
 		} else {
 			withoutCache(response, invocation);
 		}
@@ -172,10 +183,14 @@ public class ActionCacheInterceptor implements RequestInterceptor {
 		response.setDoCache(false);
 		response.setCurrentContentCache(null);
 		invocation.proceedRequest();
-		
+
 		//JSPのバッファをフラッシュ
-		if (invocation.getRequestStack().getPageContext() != null) {
-			invocation.getRequestStack().getPageContext().getOut().flush();
+		if (invocation.getRequestStack()
+				.getPageContext() != null) {
+			invocation.getRequestStack()
+					.getPageContext()
+					.getOut()
+					.flush();
 		}
 	}
 
@@ -186,80 +201,91 @@ public class ActionCacheInterceptor implements RequestInterceptor {
 			response.setHeader("ETag", cache.getEtag(lastModified, lang));
 		}
 	}
-	
-	
+
 	private boolean isNotModified(ContentCache cache, long lastModified,
 			CachableHttpServletResponse response, WebInvocationImpl invocation, ContentCacheContext cc, String lang) {
-		long ifModifiedSince = invocation.getRequestStack().getRequest().getDateHeader("If-Modified-Since");
-		String ifNoneMatch = invocation.getRequestStack().getRequest().getHeader("If-None-Match");
-		
+		long ifModifiedSince = invocation.getRequestStack()
+				.getRequest()
+				.getDateHeader("If-Modified-Since");
+		String ifNoneMatch = invocation.getRequestStack()
+				.getRequest()
+				.getHeader("If-None-Match");
+
 		//両方ない場合
 		if (ifModifiedSince < 0 && ifNoneMatch == null) {
 			return false;
 		}
-		
+
 		boolean isNotModified = true;
 		//ifModifiedSince指定あり
 		if (ifModifiedSince >= 0) {
 			isNotModified = (lastModified <= ifModifiedSince + 1000);//ifModifiedSinceの精度が秒なので、、
 		}
-		
+
 		//ifNoneMatch指定あり
 		if (isNotModified && ifNoneMatch != null) {
 			String etag = cache.getEtag(lastModified, lang);
-            boolean conditionSatisfied = false;
-            if (!ifNoneMatch.equals("*")) {
-            	StringTokenizer commaTokenizer = new StringTokenizer(ifNoneMatch, ",");
+			boolean conditionSatisfied = false;
+			if (!ifNoneMatch.equals("*")) {
+				StringTokenizer commaTokenizer = new StringTokenizer(ifNoneMatch, ",");
 				while (!conditionSatisfied && commaTokenizer.hasMoreTokens()) {
 					String currentToken = commaTokenizer.nextToken();
-					if (currentToken.trim().equals(etag))
+					if (currentToken.trim()
+							.equals(etag))
 						conditionSatisfied = true;
 				}
 			} else {
 				conditionSatisfied = true;
 			}
-            
+
 			if (conditionSatisfied) {
-				if ( ("GET".equals(invocation.getRequestStack().getRequest().getMethod()))
-							|| ("HEAD".equals(invocation.getRequestStack().getRequest().getMethod()))) {
+				if (("GET".equals(invocation.getRequestStack()
+						.getRequest()
+						.getMethod()))
+						|| ("HEAD".equals(invocation.getRequestStack()
+								.getRequest()
+								.getMethod()))) {
 					isNotModified &= true;
 				} else {
 					isNotModified &= false;
 				}
-	        } else {
+			} else {
 				isNotModified &= false;
-	        }
+			}
 		}
-		
+
 		return isNotModified;
 	}
 
-	private void doLayout(CachableHttpServletResponse response, WebInvocationImpl invocation, ActionMappingRuntime amr) throws ServletException, IOException {
+	private void doLayout(CachableHttpServletResponse response, WebInvocationImpl invocation, ActionMappingRuntime amr)
+			throws ServletException, IOException {
 //		response.flushToContentCache(invocation.getRequestStack());
 		//contentActionにlayoutAction名をセット
 		ContentCache prevCc = response.getCurrentContentCache();
 		if (prevCc != null) {
 			prevCc.setLayoutActionName(invocation.getActionName());
 		}
-		
-		invocation.getRequestStack().setAttribute(CachableHttpServletResponse.CONTENT_CACHE_NAME, prevCc);
+
+		invocation.getRequestStack()
+				.setAttribute(CachableHttpServletResponse.CONTENT_CACHE_NAME, prevCc);
 		response.setCurrentContentCache(null);
-		
+
 		doDirect(response, invocation, amr, false);
-		
+
 		response.setCurrentContentCache(prevCc);
 	}
 
-	private void doInclude(CachableHttpServletResponse response, WebInvocationImpl invocation, ActionMappingRuntime amr) throws ServletException, IOException {
+	private void doInclude(CachableHttpServletResponse response, WebInvocationImpl invocation, ActionMappingRuntime amr)
+			throws ServletException, IOException {
 		//include元のキャッシュをflush&IncludeContent
 		response.flushToContentCache();
 		ContentCache prevCc = response.getCurrentContentCache();
 		if (prevCc != null) {
 			prevCc.addContent(new IncludeActionBlock(invocation.getActionName()));
 		}
-		
+
 		doDirect(response, invocation, amr, false);
-		
+
 		response.setCurrentContentCache(prevCc);
 	}
 

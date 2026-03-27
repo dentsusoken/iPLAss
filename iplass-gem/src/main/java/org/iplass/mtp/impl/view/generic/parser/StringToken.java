@@ -38,7 +38,8 @@ public class StringToken implements Token {
 	@Override
 	public void printOut(PageContext page) throws ServletException, IOException {
 		if (token != null) {
-			page.getOut().write(token);
+			page.getOut()
+					.write(token);
 		}
 	}
 

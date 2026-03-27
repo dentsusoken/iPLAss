@@ -34,17 +34,8 @@ import org.iplass.mtp.impl.webapi.MetaEntityWebApi;
 import org.iplass.mtp.impl.webapi.MetaWebApi;
 
 @XmlSeeAlso({
-	MetaActionMapping.class
-	,MetaTemplate.class
-	,MetaEntityWebApi.class
-	,MetaWebApi.class
-	,MetaStaticResource.class
-	,MetaTenantWebInfo.class
-	,MetaOAuthAuthorization.class
-	,MetaOAuthClient.class
-	,MetaOAuthResourceServer.class
-	,MetaOpenIdConnect.class
-	,MetaWebAuthn.class
+		MetaActionMapping.class, MetaTemplate.class, MetaEntityWebApi.class, MetaWebApi.class, MetaStaticResource.class, MetaTenantWebInfo.class,
+		MetaOAuthAuthorization.class, MetaOAuthClient.class, MetaOAuthResourceServer.class, MetaOpenIdConnect.class, MetaWebAuthn.class
 })
 class WebRootMetaDatas {
 	//Web系のMetaDataへのXmlSeeAlsoを管理するためだけのクラス

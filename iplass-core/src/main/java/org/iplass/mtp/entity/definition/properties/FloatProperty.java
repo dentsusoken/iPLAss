@@ -34,7 +34,7 @@ public class FloatProperty extends PropertyDefinition {
 
 	public FloatProperty() {
 	}
-	
+
 	public FloatProperty(String name) {
 		setName(name);
 	}
@@ -43,7 +43,7 @@ public class FloatProperty extends PropertyDefinition {
 	public Class<?> getJavaType() {
 		return Double.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getType() {
 		return PropertyDefinitionType.FLOAT;

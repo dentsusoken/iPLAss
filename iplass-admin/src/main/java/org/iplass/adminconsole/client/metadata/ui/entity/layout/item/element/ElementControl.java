@@ -73,7 +73,7 @@ public class ElementControl extends ItemControl {
 		this(defName, triggerType);
 
 		//TODO 復元時に保持する内容
-		if (element instanceof Button){
+		if (element instanceof Button) {
 			setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_ElementWindow_btn"));
 		} else if (element instanceof Link) {
 			setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_ElementWindow_link"));
@@ -84,7 +84,8 @@ public class ElementControl extends ItemControl {
 		} else {
 			setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_ElementWindow_space"));
 		}
-		setClassName(element.getClass().getName());
+		setClassName(element.getClass()
+				.getName());
 		setValueObject(element);
 	}
 
@@ -102,20 +103,24 @@ public class ElementControl extends ItemControl {
 	 */
 	private Element createElement() {
 		String name = getClassName();
-		if (Button.class.getName().equals(name)) {
+		if (Button.class.getName()
+				.equals(name)) {
 			Button b = new Button();
 			b.setDispFlag(true);
 			b.setDisplayLabel(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_ElementWindow_btn"));
 			return b;
-		} else if (ScriptingElement.class.getName().equals(name)) {
+		} else if (ScriptingElement.class.getName()
+				.equals(name)) {
 			ScriptingElement script = new ScriptingElement();
 			script.setDispFlag(true);
 			return script;
-		} else if (TemplateElement.class.getName().equals(name)) {
+		} else if (TemplateElement.class.getName()
+				.equals(name)) {
 			TemplateElement template = new TemplateElement();
 			template.setDispFlag(true);
 			return template;
-		} else if (Link.class.getName().equals(name)) {
+		} else if (Link.class.getName()
+				.equals(name)) {
 			Link link = new Link();
 			link.setDispFlag(true);
 			link.setDisplayLabel(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_ElementWindow_link"));

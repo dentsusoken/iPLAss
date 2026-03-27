@@ -62,6 +62,7 @@ public class MetaDataImportResult implements Serializable {
 		}
 		messages.add(message);
 	}
+
 	public void addMessages(List<String> message) {
 		if (messages == null) {
 			messages = new ArrayList<String>();

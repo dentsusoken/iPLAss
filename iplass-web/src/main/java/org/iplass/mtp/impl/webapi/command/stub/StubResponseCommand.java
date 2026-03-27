@@ -87,21 +87,27 @@ public class StubResponseCommand implements Command {
 		logger.debug("Stub command executed. This command is used for testing purposes only. " +
 				"Do not use this command in production environment. WebAPI name: {}", name);
 
-		var service = ServiceRegistry.getRegistry().getService(WebApiService.class);
+		var service = ServiceRegistry.getRegistry()
+				.getService(WebApiService.class);
 		var runtime = service.getRuntimeByName(name);
 		var variant = selectVariant(runtime);
 
 		// クエリ文字列からラベル文字列 mtp_stub_label を取得
 		var label = request.getParam("mtp_stub_label");
 		// コンテンツタイプに対応するスタブコンテンツリスト
-		var stubContentList = runtime.getStubContentList(variant.getMediaType().toString());
+		var stubContentList = runtime.getStubContentList(variant.getMediaType()
+				.toString());
 		// 返却するコンテンツを決定
-		var contentValue = getContent(stubContentList, label, runtime.getMetaData().getStubDefaultContent());
+		var contentValue = getContent(stubContentList, label, runtime.getMetaData()
+				.getStubDefaultContent());
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("Stub Response. content-type: {}, content: {}", variant.getMediaType().toString(), contentValue);
+			logger.debug("Stub Response. content-type: {}, content: {}", variant.getMediaType()
+					.toString(), contentValue);
 		}
-		var responseBuilder = Response.status(200).variant(variant).entity(contentValue);
+		var responseBuilder = Response.status(200)
+				.variant(variant)
+				.entity(contentValue);
 		// スタブ動作の場合は、ResponseResults のキー名が {@link org.iplass.mtp.webapi.WebApiRequestConstants#DEFAULT_RESULT} になる
 		// org.iplass.mtp.impl.webapi.MetaWebApi$WebApiRuntime のコンストラクタを参照
 		request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, responseBuilder);
@@ -145,22 +151,28 @@ public class StubResponseCommand implements Command {
 
 		if (1 == stubContentList.size()) {
 			// スタブコンテンツが1つしかない場合は、そのスタブコンテンツを返却
-			return stubContentList.get(0).getMetaData().getContent();
+			return stubContentList.get(0)
+					.getMetaData()
+					.getContent();
 		}
 
 		if (StringUtil.isNotEmpty(label)) {
 			for (WebApiStubContentRuntime stubContent : stubContentList) {
-				if (StringUtil.equals(stubContent.getMetaData().getLabel(), label)) {
+				if (StringUtil.equals(stubContent.getMetaData()
+						.getLabel(), label)) {
 					logger.debug("Stub content selected. label: {}", label);
 					// ラベルに一致する場合、そのスタブコンテンツを返却
-					return stubContent.getMetaData().getContent();
+					return stubContent.getMetaData()
+							.getContent();
 				}
 			}
 		}
 
 		// ラベル設定が無いもしくはラベルに該当するスタブコンテンツが見つからない場合は、ランダム選択した値を返却
 		var randomInt = random.nextInt(stubContentList.size());
-		return stubContentList.get(randomInt).getMetaData().getContent();
+		return stubContentList.get(randomInt)
+				.getMetaData()
+				.getContent();
 	}
 
 	/**
@@ -176,10 +188,12 @@ public class StubResponseCommand implements Command {
 
 		WebRequestStack stack = WebRequestStack.getCurrent();
 		RestRequestContext context = (RestRequestContext) stack.getRequestContext();
-		Variant selected = context.rsRequest().selectVariant(variants);
+		Variant selected = context.rsRequest()
+				.selectVariant(variants);
 		if (null == selected) {
 			throw new WebApiRuntimeException(
-					"Response Type cannot determined. Specify correct Accept header:" + stack.getRequest().getHeader("Accept"));
+					"Response Type cannot determined. Specify correct Accept header:" + stack.getRequest()
+							.getHeader("Accept"));
 		}
 		return selected;
 	}

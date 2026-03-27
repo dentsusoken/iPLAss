@@ -158,7 +158,7 @@ public class MenuItemDialog extends MtpDialog {
 
 		final DynamicForm commonForm = new MtpForm();
 
-		nameField = new MtpTextItem("name","Name");
+		nameField = new MtpTextItem("name", "Name");
 		SmartGWTUtil.setRequired(nameField);
 		displayNameField = new MetaDataLangTextItem();
 		displayNameField.setTitle("Display Name");
@@ -169,19 +169,19 @@ public class MenuItemDialog extends MtpDialog {
 
 		imageUrlField = new MtpTextItem("imageUrl", "Icon URL");
 		String prompt = "<div style=\"white-space: nowrap;\">"
-			+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment1")
-			+ "<ul style=\"margin:5px 0px;padding-left:5px;list-style-type:none;\">"
-			+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment2")
-			+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment3")
-			+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment4")
-			+ "</ul>"
-			+ "</div>";
+				+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment1")
+				+ "<ul style=\"margin:5px 0px;padding-left:5px;list-style-type:none;\">"
+				+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment2")
+				+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment3")
+				+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment4")
+				+ "</ul>"
+				+ "</div>";
 		imageUrlField.setPrompt(prompt);
 
 		iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 		prompt = "<div style=\"white-space: nowrap;\">"
-			+ rs("ui_metadata_menu_item_MenuItemDialog_iconTagComment")
-			+ "</div>";
+				+ rs("ui_metadata_menu_item_MenuItemDialog_iconTagComment")
+				+ "</div>";
 		iconTagField.setPrompt(prompt);
 
 		imageColorField = new MtpSelectItem("imageColor", "Image Color");
@@ -190,7 +190,7 @@ public class MenuItemDialog extends MtpDialog {
 
 		container.addMember(commonForm);
 
-		if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)){
+		if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)) {
 			actionForm = new MtpForm();
 			actionForm.setIsGroup(true);
 			actionForm.setGroupTitle("Action Menu Attribute");
@@ -210,22 +210,21 @@ public class MenuItemDialog extends MtpDialog {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
 					MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
-						actionCustomizeScript,
-						ScriptEditorDialogConstants.MENU_ITEM_CUSTOMIZE_SCRIPT_NAME,
-						null,
-						rs("ui_metadata_menu_item_MenuItemDialog_actionCustomizeScriptHint"),
-						new ScriptEditorDialogHandler() {
+							actionCustomizeScript,
+							ScriptEditorDialogConstants.MENU_ITEM_CUSTOMIZE_SCRIPT_NAME,
+							null,
+							rs("ui_metadata_menu_item_MenuItemDialog_actionCustomizeScriptHint"),
+							new ScriptEditorDialogHandler() {
 
-							@Override
-							public void onSave(String text) {
-								actionCustomizeScript = text;
-							}
+								@Override
+								public void onSave(String text) {
+									actionCustomizeScript = text;
+								}
 
-							@Override
-							public void onCancel() {
-							}
-						}
-					);
+								@Override
+								public void onCancel() {
+								}
+							});
 				}
 			});
 
@@ -235,7 +234,7 @@ public class MenuItemDialog extends MtpDialog {
 			container.addMember(actionForm);
 		}
 
-		if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)){
+		if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)) {
 			entityForm = new MtpForm();
 			entityForm.setIsGroup(true);
 			entityForm.setGroupTitle("Entity Menu Attribute");
@@ -269,22 +268,21 @@ public class MenuItemDialog extends MtpDialog {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
 					MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
-						entityCustomizeScript,
-						ScriptEditorDialogConstants.MENU_ITEM_CUSTOMIZE_SCRIPT_NAME,
-						null,
-						rs("ui_metadata_menu_item_MenuItemDialog_entityCustomizeScriptHint"),
-						new ScriptEditorDialogHandler() {
+							entityCustomizeScript,
+							ScriptEditorDialogConstants.MENU_ITEM_CUSTOMIZE_SCRIPT_NAME,
+							null,
+							rs("ui_metadata_menu_item_MenuItemDialog_entityCustomizeScriptHint"),
+							new ScriptEditorDialogHandler() {
 
-							@Override
-							public void onSave(String text) {
-								entityCustomizeScript = text;
-							}
+								@Override
+								public void onSave(String text) {
+									entityCustomizeScript = text;
+								}
 
-							@Override
-							public void onCancel() {
-							}
-						}
-					);
+								@Override
+								public void onCancel() {
+								}
+							});
 				}
 			});
 
@@ -298,7 +296,7 @@ public class MenuItemDialog extends MtpDialog {
 			SmartGWTUtil.setRequired(displayNameField);
 		}
 
-		if (MenuItemTreeDS.MenuItemType.URL.equals(type)){
+		if (MenuItemTreeDS.MenuItemType.URL.equals(type)) {
 			urlForm = new MtpForm();
 			urlForm.setIsGroup(true);
 			urlForm.setGroupTitle("Url Menu Attribute");
@@ -322,22 +320,21 @@ public class MenuItemDialog extends MtpDialog {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
 					MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
-						urlCustomizeScript,
-						ScriptEditorDialogConstants.MENU_ITEM_CUSTOMIZE_SCRIPT_NAME,
-						null,
-						rs("ui_metadata_menu_item_MenuItemDialog_urlCustomizeScriptHint"),
-						new ScriptEditorDialogHandler() {
+							urlCustomizeScript,
+							ScriptEditorDialogConstants.MENU_ITEM_CUSTOMIZE_SCRIPT_NAME,
+							null,
+							rs("ui_metadata_menu_item_MenuItemDialog_urlCustomizeScriptHint"),
+							new ScriptEditorDialogHandler() {
 
-							@Override
-							public void onSave(String text) {
-								urlCustomizeScript = text;
-							}
+								@Override
+								public void onSave(String text) {
+									urlCustomizeScript = text;
+								}
 
-							@Override
-							public void onCancel() {
-							}
-						}
-					);
+								@Override
+								public void onCancel() {
+								}
+							});
 				}
 			});
 
@@ -360,7 +357,7 @@ public class MenuItemDialog extends MtpDialog {
 		sharedForm.setAlign(Alignment.CENTER);
 		sharedForm.setIsGroup(true);
 		sharedForm.setGroupTitle("Shared Setting：");
-		sharedForm.setNumCols(4);	//間延びしないように最後に１つ余分に作成
+		sharedForm.setNumCols(4); //間延びしないように最後に１つ余分に作成
 
 		sharableField = new CheckboxItem("sharable", "CanShare");
 		sharableField.setShowTitle(false);
@@ -390,7 +387,7 @@ public class MenuItemDialog extends MtpDialog {
 				boolean isEntityValidate = (entityForm != null ? entityForm.validate() : true);
 				boolean isActionValidate = (actionForm != null ? actionForm.validate() : true);
 				boolean isCommonValidate = commonForm.validate();
-				if (isCommonValidate && isActionValidate && isEntityValidate){
+				if (isCommonValidate && isActionValidate && isEntityValidate) {
 					saveMenuItem();
 				}
 			}
@@ -473,12 +470,12 @@ public class MenuItemDialog extends MtpDialog {
 				if (current.getImageColor() != null) {
 					imageColorField.setValue(menuItem.getImageColor());
 				}
-				if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)){
-					setMenuItem((ActionMenuItem)current);
-				} else if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)){
-					setMenuItem((EntityMenuItem)current);
+				if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)) {
+					setMenuItem((ActionMenuItem) current);
+				} else if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)) {
+					setMenuItem((EntityMenuItem) current);
 				} else if (MenuItemTreeDS.MenuItemType.URL.equals(type)) {
-					setMenuItem((UrlMenuItem)current);
+					setMenuItem((UrlMenuItem) current);
 				}
 
 				setTitleSuffix();
@@ -503,16 +500,15 @@ public class MenuItemDialog extends MtpDialog {
 		handlers.add(0, handler);
 	}
 
-
 	/**
 	 * タイプ別の画面サイズを調整します。
 	 */
 	private void setItemTypeDisplay(boolean isShowSharedPane) {
 
 		int height = 300;
-		if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)){
+		if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)) {
 			height = 420;
-		} else if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)){
+		} else if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)) {
 			height = 460;
 		} else if (MenuItemTreeDS.MenuItemType.URL.equals(type)) {
 			height = 440;
@@ -527,17 +523,16 @@ public class MenuItemDialog extends MtpDialog {
 	 * タイトルの接尾語を設定します。
 	 */
 	private void setTitleSuffix() {
-		if (MenuItemTreeDS.MenuItemType.NODE.equals(type)){
+		if (MenuItemTreeDS.MenuItemType.NODE.equals(type)) {
 			setTitle(getTitle() + " : Node Item");
-		} else if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)){
+		} else if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)) {
 			setTitle(getTitle() + " : Action Item");
-		} else if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)){
+		} else if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)) {
 			setTitle(getTitle() + " : Entity Item");
 		} else if (MenuItemTreeDS.MenuItemType.URL.equals(type)) {
 			setTitle(getTitle() + " : Url Item");
 		}
 	}
-
 
 	/**
 	 * ActionMenuItemに特化した値を設定します。
@@ -588,24 +583,25 @@ public class MenuItemDialog extends MtpDialog {
 		if (isNew()) {
 			//新規登録、またはコピー
 			//同じ名前の存在チェックする
-			service.getDefinition(TenantInfoHolder.getId(), MenuItem.class.getName(), SmartGWTUtil.getStringValue(nameField), new AsyncCallback<MenuItem>() {
+			service.getDefinition(TenantInfoHolder.getId(), MenuItem.class.getName(), SmartGWTUtil.getStringValue(nameField),
+					new AsyncCallback<MenuItem>() {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedToSaveMenuItem") + caught.getMessage());
-				}
+						@Override
+						public void onFailure(Throwable caught) {
+							SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedToSaveMenuItem") + caught.getMessage());
+						}
 
-				@Override
-				public void onSuccess(MenuItem menuItem) {
-					if (menuItem != null) {
-						SC.warn(rs("ui_metadata_common_MetaDataCreateDialog_alreadyExistsErr",
-								rs("ui_metadata_menu_MenuPluginManager_menuItem")));
-					} else {
-						createMenuItem();
-					}
-				}
+						@Override
+						public void onSuccess(MenuItem menuItem) {
+							if (menuItem != null) {
+								SC.warn(rs("ui_metadata_common_MetaDataCreateDialog_alreadyExistsErr",
+										rs("ui_metadata_menu_MenuPluginManager_menuItem")));
+							} else {
+								createMenuItem();
+							}
+						}
 
-			});
+					});
 		} else {
 			//更新処理
 			updateMenuItem();
@@ -682,13 +678,13 @@ public class MenuItemDialog extends MtpDialog {
 	 */
 	private MenuItem getEditMenuItem() {
 		MenuItem menuItem = null;
-		if (MenuItemTreeDS.MenuItemType.NODE.equals(type)){
+		if (MenuItemTreeDS.MenuItemType.NODE.equals(type)) {
 			menuItem = getEditNodeMenuItem();
-		} else if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)){
+		} else if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)) {
 			menuItem = getEditActionMenuItem();
-		} else if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)){
+		} else if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)) {
 			menuItem = getEditEntityMenuItem();
-		} else if (MenuItemTreeDS.MenuItemType.URL.equals(type)){
+		} else if (MenuItemTreeDS.MenuItemType.URL.equals(type)) {
 			menuItem = getEditUrlMenuItem();
 		}
 		return menuItem;
@@ -777,7 +773,6 @@ public class MenuItemDialog extends MtpDialog {
 		}
 	}
 
-
 	private void setSharedConfig() {
 		//新規でないときのみ検索して設定
 		if (!isNew()) {
@@ -792,8 +787,7 @@ public class MenuItemDialog extends MtpDialog {
 						setItemTypeDisplay(true);
 
 						String iconHTML = Canvas.imgHTML(
-								MetaDataUtil.getMetaTypeIcon(result.isShared(), result.isSharedOverwrite(), config.isOverwritable())
-						);
+								MetaDataUtil.getMetaTypeIcon(result.isShared(), result.isSharedOverwrite(), config.isOverwritable()));
 						String caption = MetaDataUtil.getMetaTypeName(result.isShared(), result.isSharedOverwrite(), config.isOverwritable());
 						sharedForm.setGroupTitle(sharedForm.getGroupTitle() + "<span>" + iconHTML + "&nbsp;" + caption + "</span>");
 
@@ -865,44 +859,45 @@ public class MenuItemDialog extends MtpDialog {
 			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName,
 					new AsyncCallback<EntityView>() {
 
-				@Override
-				public void onSuccess(EntityView entityView) {
+						@Override
+						public void onSuccess(EntityView entityView) {
 
-					Set<String> viewNames = new HashSet<>();
-					if (entityView != null) {
-						//登録SearchFormを追加
-						viewNames.addAll(Arrays.asList(entityView.getSearchFormViewNames()));
+							Set<String> viewNames = new HashSet<>();
+							if (entityView != null) {
+								//登録SearchFormを追加
+								viewNames.addAll(Arrays.asList(entityView.getSearchFormViewNames()));
 
-						//管理設定がある場合、自動生成分のみ追加
-						if (entityView.getViewControlSettings() != null) {
-							viewNames.addAll(
-									entityView.getViewControlSettings().stream()
-										.filter(setting -> setting.isAutoGenerateSearchView())
-										.map(setting -> setting.getName() != null ? setting.getName() : "")
-										.collect(Collectors.toSet()));
+								//管理設定がある場合、自動生成分のみ追加
+								if (entityView.getViewControlSettings() != null) {
+									viewNames.addAll(
+											entityView.getViewControlSettings()
+													.stream()
+													.filter(setting -> setting.isAutoGenerateSearchView())
+													.map(setting -> setting.getName() != null ? setting.getName() : "")
+													.collect(Collectors.toSet()));
+								}
+							}
+
+							//１つもない場合はデフォルト追加
+							if (viewNames.isEmpty()) {
+								viewNames.add("");
+							}
+
+							//ソートして、Map生成
+							Map<String, String> valueMap = viewNames.stream()
+									.sorted(Comparator.nullsFirst(Comparator.naturalOrder()))
+									.collect(Collectors.toMap(viewName -> viewName, viewName -> {
+										return viewName.isEmpty() ? "(default)" : viewName;
+									}));
+							entityViewNameField.setValueMap(valueMap);
 						}
-					}
 
-					//１つもない場合はデフォルト追加
-					if (viewNames.isEmpty()) {
-						viewNames.add("");
-					}
-
-					//ソートして、Map生成
-					Map<String, String> valueMap = viewNames.stream()
-							.sorted(Comparator.nullsFirst(Comparator.naturalOrder()))
-							.collect(Collectors.toMap(viewName -> viewName, viewName -> {
-								return viewName.isEmpty() ? "(default)" : viewName;
-							}));
-					entityViewNameField.setValueMap(valueMap);
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedGetScreenInfo") + caught.getMessage());
-					GWT.log(caught.toString(), caught);
-				}
-			});
+						@Override
+						public void onFailure(Throwable caught) {
+							SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedGetScreenInfo") + caught.getMessage());
+							GWT.log(caught.toString(), caught);
+						}
+					});
 		}
 	}
 

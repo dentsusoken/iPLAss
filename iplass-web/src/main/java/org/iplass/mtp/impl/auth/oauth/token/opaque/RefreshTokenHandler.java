@@ -35,12 +35,12 @@ import org.iplass.mtp.spi.Config;
 
 class RefreshTokenHandler extends AuthTokenHandler {
 	//internal use only
-	
+
 	@Override
 	public void inited(AuthTokenService service, Config config) {
 		super.inited(service, config);
 	}
-	
+
 	@Override
 	public AuthTokenInfo toAuthTokenInfo(AuthToken authToken) {
 		RefreshTokenInfo info = new RefreshTokenInfo();
@@ -48,10 +48,10 @@ class RefreshTokenHandler extends AuthTokenHandler {
 		info.setKey(authToken.getSeries());
 		info.setStartDate(authToken.getStartDate());
 		((RefreshTokenMement) authToken.getDetails()).fill(info);
-		
+
 		return info;
 	}
-	
+
 	@Override
 	public Credential toCredential(AuthToken newToken) {
 		//never use
@@ -64,9 +64,11 @@ class RefreshTokenHandler extends AuthTokenHandler {
 		RefreshTokenInfo info = (RefreshTokenInfo) tokenInfo;
 		OAuthClientRuntime client = OAuthServiceHolder.client.getRuntimeByName(info.getClientName());
 		OAuthAuthorizationRuntime server = client.getAuthorizationServer();
-		ClientPolicyRuntime cp = server.getClientPolicy(client.getMetaData().getClientType());
-		long expires = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(cp.getMetaData().getRefreshTokenLifetimeSeconds());
-		
+		ClientPolicyRuntime cp = server.getClientPolicy(client.getMetaData()
+				.getClientType());
+		long expires = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(cp.getMetaData()
+				.getRefreshTokenLifetimeSeconds());
+
 		mement.save(info, expires, userUniqueId);
 		return mement;
 	}

@@ -28,14 +28,14 @@ import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class OAuthClientDefinitionManagerImpl extends AbstractTypedDefinitionManager<OAuthClientDefinition> implements OAuthClientDefinitionManager {
-	
-	
-	private OAuthClientService service = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
 
+	private OAuthClientService service = ServiceRegistry.getRegistry()
+			.getService(OAuthClientService.class);
 
 	@Override
 	public IdPasswordCredential generateClientSecret(String clientName) {
-		return (IdPasswordCredential) service.getRuntimeByName(clientName).generateCredential();
+		return (IdPasswordCredential) service.getRuntimeByName(clientName)
+				.generateCredential();
 	}
 
 	@Override

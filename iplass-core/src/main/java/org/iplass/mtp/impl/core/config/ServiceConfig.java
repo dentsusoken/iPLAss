@@ -33,88 +33,104 @@ public class ServiceConfig {
 	private String[] depend;
 	private NameValue[] property;
 	private NameValue[] bean;
-	
+
 	private boolean isFinal;
 	private boolean isInherit = true;
 	private boolean isIfnone = false;
-	
+
 	@XmlAttribute
 	public boolean isIfnone() {
 		return isIfnone;
 	}
+
 	public void setIfnone(boolean isIfnone) {
 		this.isIfnone = isIfnone;
 	}
+
 	@XmlAttribute
 	public boolean isInherit() {
 		return isInherit;
 	}
+
 	public void setInherit(boolean isInherit) {
 		this.isInherit = isInherit;
 	}
+
 	@XmlAttribute
 	public boolean isFinal() {
 		return isFinal;
 	}
+
 	public void setFinal(boolean isFinal) {
 		this.isFinal = isFinal;
 	}
-	
+
 	@XmlAttribute
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public NameValue[] getProperty() {
 		return property;
 	}
+
 	public void setProperty(NameValue[] property) {
 		this.property = property;
 	}
+
 	public NameValue[] getBean() {
 		return bean;
 	}
+
 	public void setBean(NameValue[] bean) {
 		this.bean = bean;
 	}
-	@XmlElement(name="interface")
+
+	@XmlElement(name = "interface")
 	public String getInterfaceName() {
 		return interfaceName;
 	}
+
 	public void setInterfaceName(String interfaceName) {
 		this.interfaceName = interfaceName;
 	}
-	@XmlElement(name="class")
+
+	@XmlElement(name = "class")
 	public String getClassName() {
 		return className;
 	}
+
 	public void setClassName(String className) {
 		this.className = className;
 	}
+
 	public String[] getDepend() {
 		return depend;
 	}
+
 	public void setDepend(String[] depend) {
 		this.depend = depend;
 	}
-	
-	
+
 	public String id() {
 		if (name != null) {
 			return name;
 		} else {
 			if (interfaceName == null) {
-				throw new NullPointerException("can not determine ServiceConfig's id. name or interface must specified.name=" + name + ",interfaceName=" + interfaceName + ",className=" + className);
+				throw new NullPointerException("can not determine ServiceConfig's id. name or interface must specified.name=" + name + ",interfaceName="
+						+ interfaceName + ",className=" + className);
 			} else {
 				return interfaceName;
 			}
 		}
 	}
-	
+
 	public ServiceConfig merge(ServiceConfig superConfig) {
-		
+
 		ServiceConfig merged = new ServiceConfig();
 		merged.interfaceName = superConfig.interfaceName;
 		merged.name = superConfig.name;
@@ -135,13 +151,11 @@ public class ServiceConfig {
 		} else {
 			merged.depend = superConfig.depend;
 		}
-		
+
 		merged.property = NameValue.mergeNameValueArray(id(), property, superConfig.property);
 		merged.bean = NameValue.mergeNameValueArray(id() + "(bean)", bean, superConfig.bean);
-		
+
 		return merged;
 	}
-	
-	
 
 }

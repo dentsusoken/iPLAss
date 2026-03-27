@@ -145,7 +145,7 @@ public class MetaTimePropertyEditor extends MetaDateTimePropertyEditor {
 					return true;
 				}
 				if (pd instanceof ExpressionProperty) {
-					ExpressionProperty ep = (ExpressionProperty)pd;
+					ExpressionProperty ep = (ExpressionProperty) pd;
 					if (ep.getResultType() == PropertyDefinitionType.TIME) {
 						return true;
 					}

@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.shared.base.dto.auth;
 
-
 /**
  * テナント未確定
  */

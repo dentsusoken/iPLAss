@@ -41,34 +41,34 @@ public class WithinGroupSortSpec implements ASTNode {
 	private ValueExpression sortKey;
 	private SortType type;
 	private NullOrderingSpec nullOrderingSpec;
-	
+
 	public WithinGroupSortSpec() {
 	}
-	
+
 	public WithinGroupSortSpec(String sortKeyField, SortType type) {
 		super();
 		this.sortKey = new EntityField(sortKeyField);
 		this.type = type;
 	}
-	
+
 	public WithinGroupSortSpec(ValueExpression sortKey, SortType type) {
 		super();
 		this.sortKey = sortKey;
 		this.type = type;
 	}
-	
+
 	public WithinGroupSortSpec(ValueExpression sortKey, SortType type, NullOrderingSpec nullOrderingSpec) {
 		super();
 		this.sortKey = sortKey;
 		this.type = type;
 		this.nullOrderingSpec = nullOrderingSpec;
 	}
-	
+
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			sortKey.accept(visitor);
@@ -90,7 +90,7 @@ public class WithinGroupSortSpec implements ASTNode {
 	public void setType(SortType type) {
 		this.type = type;
 	}
-	
+
 	public NullOrderingSpec getNullOrderingSpec() {
 		return nullOrderingSpec;
 	}
@@ -98,12 +98,12 @@ public class WithinGroupSortSpec implements ASTNode {
 	public void setNullOrderingSpec(NullOrderingSpec nullOrderingSpec) {
 		this.nullOrderingSpec = nullOrderingSpec;
 	}
-	
+
 	public WithinGroupSortSpec nulls(NullOrderingSpec nullOrderingSpec) {
 		this.nullOrderingSpec = nullOrderingSpec;
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -151,5 +151,5 @@ public class WithinGroupSortSpec implements ASTNode {
 			return false;
 		return true;
 	}
-	
+
 }

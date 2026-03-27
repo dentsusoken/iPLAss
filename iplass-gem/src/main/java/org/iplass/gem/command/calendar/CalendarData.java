@@ -23,9 +23,6 @@ package org.iplass.gem.command.calendar;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.calendar.EntityCalendar.CalendarType;
 
-
-
-
 /**
  * 日付毎のデータ
  * @author lis7zi
@@ -34,33 +31,31 @@ public class CalendarData {
 
 	/** カレンダータイプ */
 	private String calendarType;
-	
+
 	/** タイトル */
 	private String title;
-	
+
 	/** 時間表記 */
 	private String time;
 
 	/** 表示用開始時間(カレンダーに表示される開始時間) */
 	private String start;
-	
+
 	/** 表示用終了時間(カレンダーに表示される終了時間) */
 	private String end;
-	
+
 	/** 終日フラグ trueの時は終日欄に表示されます */
 	private boolean allDay;
-	
+
 	/** エンティティごとの予定表の色 */
 	private String color;
-	
+
 	/** カレンダーに表示するEntityのデータ */
 	private CalendarEntityData calendarEntityData;
-	
 
 	public CalendarData(String calendarType) {
 		this.calendarType = calendarType;
 	}
-	
 
 	public String getTitle() {
 		return title;
@@ -112,15 +107,14 @@ public class CalendarData {
 
 	/** 月表示かつallday = false の場合、透過100% */
 	public String getBackgroundColor() {
-		
-		if(StringUtil.isNotBlank(color)) {
+
+		if (StringUtil.isNotBlank(color)) {
 			return color;
 		} else {
 			return "rgba(255,255,255,1.0)";
 		}
 	}
 
-	
 	public void setColor(String color) {
 		this.color = color;
 	}
@@ -128,5 +122,5 @@ public class CalendarData {
 	public String getColor() {
 		return color;
 	}
-	
+
 }

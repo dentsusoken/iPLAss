@@ -82,8 +82,9 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 			Object val = obl[0];
 
 			String parentName = "";
-			if (getParent() != null && getEditor().getToPropertyName().indexOf(".") == -1) {
-				parentName =  getParent()  + ".";
+			if (getParent() != null && getEditor().getToPropertyName()
+					.indexOf(".") == -1) {
+				parentName = getParent() + ".";
 			}
 			String fromPropertyName = getPropertyName();
 			String toPropertyName = parentName + getEditor().getToPropertyName();
@@ -100,7 +101,8 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 			}
 
 			if (equivalentInput) {
-				or.addExpression(new And().eq(fromPropertyName, val).eq(toPropertyName, val));
+				or.addExpression(new And().eq(fromPropertyName, val)
+						.eq(toPropertyName, val));
 			}
 			conditions.add(or);
 		}

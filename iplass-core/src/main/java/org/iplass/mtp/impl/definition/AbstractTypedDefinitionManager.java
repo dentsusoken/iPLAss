@@ -44,13 +44,16 @@ import org.slf4j.LoggerFactory;
  * @param <D> このDefinitionManagerが扱うDefinitionのType
  */
 public abstract class AbstractTypedDefinitionManager<D extends Definition> implements TypedDefinitionManager<D> {
-	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
+	private DefinitionManager dm = ManagerLocator.getInstance()
+			.getManager(DefinitionManager.class);
 	private static final Logger logger = LoggerFactory.getLogger(AbstractTypedDefinitionManager.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public D get(String definitionName) {
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(DefinitionService.getInstance().getPath(getDefinitionType(), definitionName));
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(DefinitionService.getInstance()
+						.getPath(getDefinitionType(), definitionName));
 		if (entry == null) {
 			return null;
 		}
@@ -58,7 +61,9 @@ public abstract class AbstractTypedDefinitionManager<D extends Definition> imple
 		if (entry.getMetaData() instanceof DefinableMetaData<?>) {
 			definition = (D) ((DefinableMetaData<D>) entry.getMetaData()).currentConfig();
 		} else {
-			logger.error("metadata is not definable. type=" + entry.getMetaData().getClass().getName());
+			logger.error("metadata is not definable. type=" + entry.getMetaData()
+					.getClass()
+					.getName());
 		}
 
 		return definition;
@@ -72,18 +77,23 @@ public abstract class AbstractTypedDefinitionManager<D extends Definition> imple
 		if (meta instanceof DefinableMetaData<?>) {
 			((DefinableMetaData<D>) meta).applyConfig(definition);
 		} else {
-			logger.error("metadata is not definable. type=" + meta.getClass().getName());
-			return new DefinitionModifyResult(false, "metadata is not definable. type=" + meta.getClass().getName());
+			logger.error("metadata is not definable. type=" + meta.getClass()
+					.getName());
+			return new DefinitionModifyResult(false, "metadata is not definable. type=" + meta.getClass()
+					.getName());
 		}
 
 		try {
 			service.createMetaData(meta);
 		} catch (Exception e) {
 			setRollbackOnly();
-			String type = meta.getClass().getSimpleName();
+			String type = meta.getClass()
+					.getSimpleName();
 			if (e.getCause() != null) {
-				logger.error("exception occured during " + type + " create:" + e.getCause().getMessage(), e.getCause());
-				return new DefinitionModifyResult(false, "exception occured during " + type + " create:" + e.getCause().getMessage());
+				logger.error("exception occured during " + type + " create:" + e.getCause()
+						.getMessage(), e.getCause());
+				return new DefinitionModifyResult(false, "exception occured during " + type + " create:" + e.getCause()
+						.getMessage());
 			} else {
 				logger.error("exception occured during " + type + " create:" + e.getMessage(), e);
 				return new DefinitionModifyResult(false, "exception occured during " + type + " create:" + e.getMessage());
@@ -97,8 +107,9 @@ public abstract class AbstractTypedDefinitionManager<D extends Definition> imple
 	public DefinitionModifyResult update(D definition) {
 		TypedMetaDataService service = getService();
 		MetaDataRuntime handler = getService().getRuntimeByName(definition.getName());
-		if(handler == null) {
-			String type = definition.getClass().getSimpleName();
+		if (handler == null) {
+			String type = definition.getClass()
+					.getSimpleName();
 			logger.error("exception occured during " + type + " update:"
 					+ type + " not found.definitionName=" + definition.getName());
 			return new DefinitionModifyResult(false, "exception occured during " + type + " update:"
@@ -109,18 +120,23 @@ public abstract class AbstractTypedDefinitionManager<D extends Definition> imple
 		if (meta instanceof DefinableMetaData<?>) {
 			((DefinableMetaData<D>) meta).applyConfig(definition);
 		} else {
-			logger.error("metadata is not definable. type=" + meta.getClass().getName());
-			return new DefinitionModifyResult(false, "metadata is not definable. type=" + meta.getClass().getName());
+			logger.error("metadata is not definable. type=" + meta.getClass()
+					.getName());
+			return new DefinitionModifyResult(false, "metadata is not definable. type=" + meta.getClass()
+					.getName());
 		}
 
 		try {
 			service.updateMetaData(meta);
 		} catch (Exception e) {
 			setRollbackOnly();
-			String type = meta.getClass().getSimpleName();
+			String type = meta.getClass()
+					.getSimpleName();
 			if (e.getCause() != null) {
-				logger.error("exception occured during " + type + " update:" + e.getCause().getMessage(), e.getCause());
-				return new DefinitionModifyResult(false, "exception occured during " + type + " update:" + e.getCause().getMessage());
+				logger.error("exception occured during " + type + " update:" + e.getCause()
+						.getMessage(), e.getCause());
+				return new DefinitionModifyResult(false, "exception occured during " + type + " update:" + e.getCause()
+						.getMessage());
 			} else {
 				logger.error("exception occured during " + type + " update:" + e.getMessage(), e);
 				return new DefinitionModifyResult(false, "exception occured during " + type + " update:" + e.getMessage());
@@ -133,8 +149,8 @@ public abstract class AbstractTypedDefinitionManager<D extends Definition> imple
 	@Override
 	public DefinitionModifyResult remove(String definitionName) {
 		TypedMetaDataService service = getService();
-		MetaDataRuntime handler =  service.getRuntimeByName(definitionName);
-		if(handler == null) {
+		MetaDataRuntime handler = service.getRuntimeByName(definitionName);
+		if (handler == null) {
 			//該当がない場合は正常とみなす
 			return new DefinitionModifyResult(true);
 		}
@@ -143,10 +159,13 @@ public abstract class AbstractTypedDefinitionManager<D extends Definition> imple
 			service.removeMetaData(meta.getName());
 		} catch (Exception e) {
 			setRollbackOnly();
-			String type = meta.getClass().getSimpleName();
+			String type = meta.getClass()
+					.getSimpleName();
 			if (e.getCause() != null) {
-				logger.error("exception occured during " + type + " remove:" + e.getCause().getMessage(), e.getCause());
-				return new DefinitionModifyResult(false, "exception occured during " + type + " remove:" + e.getCause().getMessage());
+				logger.error("exception occured during " + type + " remove:" + e.getCause()
+						.getMessage(), e.getCause());
+				return new DefinitionModifyResult(false, "exception occured during " + type + " remove:" + e.getCause()
+						.getMessage());
 			} else {
 				logger.error("exception occured during " + type + " remove:" + e.getMessage(), e);
 				return new DefinitionModifyResult(false, "exception occured during " + type + " remove:" + e.getMessage());
@@ -154,7 +173,6 @@ public abstract class AbstractTypedDefinitionManager<D extends Definition> imple
 		}
 		return new DefinitionModifyResult(true);
 	}
-
 
 	protected void setRollbackOnly() {
 		Transaction t = Transaction.getCurrent();

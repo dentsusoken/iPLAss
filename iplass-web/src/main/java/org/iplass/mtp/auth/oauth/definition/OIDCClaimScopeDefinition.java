@@ -31,10 +31,11 @@ public class OIDCClaimScopeDefinition extends ScopeDefinition {
 	private static final long serialVersionUID = -3276795373511412049L;
 
 	private List<ClaimMappingDefinition> claims;
-	
+
 	public List<ClaimMappingDefinition> getClaims() {
 		return claims;
 	}
+
 	public void setClaims(List<ClaimMappingDefinition> claims) {
 		this.claims = claims;
 	}

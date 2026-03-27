@@ -45,25 +45,29 @@ public class GroovyObjectSerializeWrapper implements Serializable {
 	private static final long serialVersionUID = 5102391278876534117L;
 
 	private static Logger logger = LoggerFactory.getLogger(GroovyObjectSerializeWrapper.class);
-	
+
 	private byte[] byteData;
 	private transient volatile GroovyObject object;
-	
+
 	public GroovyObjectSerializeWrapper(GroovyObject object) {
 		this.object = object;
 	}
-	
+
 	public GroovyObject getObject() {
-		
+
 		//まずは、volatile変数のみでチェック
 		GroovyObject obj = object;
 		if (obj != null) {
 			//classloaderチェック。リロードされた場合、classloaderが異なるため、castができない
-			GroovyScriptEngine gse = (GroovyScriptEngine) ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-			if (((GroovyClassLoader.InnerLoader) obj.getClass().getClassLoader()).getParent() != gse.getSharedClassLoader()) {
+			GroovyScriptEngine gse = (GroovyScriptEngine) ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getScriptEngine();
+			if (((GroovyClassLoader.InnerLoader) obj.getClass()
+					.getClassLoader()).getParent() != gse.getSharedClassLoader()) {
 				synchronized (this) {
 					//double check
-					if (object != null && ((GroovyClassLoader.InnerLoader) object.getClass().getClassLoader()).getParent() != gse.getSharedClassLoader()) {
+					if (object != null && ((GroovyClassLoader.InnerLoader) object.getClass()
+							.getClassLoader()).getParent() != gse.getSharedClassLoader()) {
 						byte[] copyByte = serializeObject(obj);
 						try {
 							obj = deserializeObject(copyByte);
@@ -77,7 +81,7 @@ public class GroovyObjectSerializeWrapper implements Serializable {
 			}
 			return obj;
 		}
-		
+
 		synchronized (this) {
 			if (byteData != null) {
 				try {
@@ -97,7 +101,7 @@ public class GroovyObjectSerializeWrapper implements Serializable {
 			return (GroovyObject) in.readObject();
 		}
 	}
-	
+
 	private byte[] serializeObject(Object obj) {
 		try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 				ObjectOutputStream oos = new ObjectOutputStream(byteOut)) {
@@ -108,10 +112,10 @@ public class GroovyObjectSerializeWrapper implements Serializable {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		byteData = serializeObject(object);
 		out.defaultWriteObject();
 	}
-	
+
 }

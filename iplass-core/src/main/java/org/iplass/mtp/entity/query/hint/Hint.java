@@ -41,7 +41,8 @@ public abstract class Hint implements ASTNode {
 	 * @return
 	 */
 	public static List<Hint> externalHint(String key) {
-		return QueryServiceHolder.getInstance().getExternalHint(key);
+		return QueryServiceHolder.getInstance()
+				.getExternalHint(key);
 	}
 
 	public abstract void accept(HintVisitor visitor);

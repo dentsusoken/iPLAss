@@ -33,11 +33,11 @@ import org.slf4j.LoggerFactory;
 
 public class ServiceDefinitionParser {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceDefinitionParser.class);
-	
+
 	private JAXBContext context;
 	private ConfigLoader loader;
 	private ConfigPreprocessor[] prepros;
-	
+
 	public ServiceDefinitionParser() {
 		try {
 			context = JAXBContext.newInstance(NameValue.class, ServiceConfig.class, ServiceDefinition.class);
@@ -48,26 +48,31 @@ public class ServiceDefinitionParser {
 		this.loader = newConfigLoader();
 		this.prepros = newConfigPreprocessor();
 	}
-	
+
 	private ConfigLoader newConfigLoader() {
-		String clsName = BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_LOADER_CLASS_NAME, BootstrapProps.DEFAULT_CONFIG_LOADER_CLASS_NAME);
+		String clsName = BootstrapProps.getInstance()
+				.getProperty(BootstrapProps.CONFIG_LOADER_CLASS_NAME, BootstrapProps.DEFAULT_CONFIG_LOADER_CLASS_NAME);
 		try {
-			ConfigLoader cls = (ConfigLoader) Class.forName(clsName).newInstance();
+			ConfigLoader cls = (ConfigLoader) Class.forName(clsName)
+					.newInstance();
 			return cls;
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			throw new ServiceConfigrationException("Can not instanceate ConfigLoader:" + clsName, e);
 		}
 	}
-	
+
 	private ConfigPreprocessor[] newConfigPreprocessor() {
-		String cpsProp = BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_PREPROCESSORS_CLASS_NAME, BootstrapProps.DEFAULT_CONFIG_PREPROCESSORS_CLASS_NAME);
-		String[] cnames = cpsProp.trim().split("\\s*,\\s*");
+		String cpsProp = BootstrapProps.getInstance()
+				.getProperty(BootstrapProps.CONFIG_PREPROCESSORS_CLASS_NAME, BootstrapProps.DEFAULT_CONFIG_PREPROCESSORS_CLASS_NAME);
+		String[] cnames = cpsProp.trim()
+				.split("\\s*,\\s*");
 		ConfigPreprocessor[] cps = null;
 		if (cnames != null) {
 			cps = new ConfigPreprocessor[cnames.length];
 			for (int i = 0; i < cps.length; i++) {
 				try {
-					cps[i] = (ConfigPreprocessor) Class.forName(cnames[i]).newInstance();
+					cps[i] = (ConfigPreprocessor) Class.forName(cnames[i])
+							.newInstance();
 				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 					throw new ServiceConfigrationException("Can not instanceate ConfigPreprocessor:" + cnames[i], e);
 				}
@@ -77,10 +82,10 @@ public class ServiceDefinitionParser {
 	}
 
 	public ServiceDefinition read(String fileName) {
-		
+
 		String content = loader.load(fileName);
 		if (prepros != null) {
-			for (ConfigPreprocessor p: prepros) {
+			for (ConfigPreprocessor p : prepros) {
 				content = p.preprocess(content, fileName);
 			}
 		}
@@ -89,11 +94,11 @@ public class ServiceDefinitionParser {
 			Unmarshaller um = context.createUnmarshaller();
 			ServiceDefinition sd = (ServiceDefinition) um.unmarshal(new StringReader(content));
 			if (prepros != null) {
-				for (ConfigPreprocessor p: prepros) {
+				for (ConfigPreprocessor p : prepros) {
 					sd = p.preprocess(sd);
 				}
 			}
-			
+
 			if (sd.getInherits() != null) {
 				//merge multi inherits
 				if (logger.isDebugEnabled()) {
@@ -106,12 +111,12 @@ public class ServiceDefinitionParser {
 					}
 					inhSd.include(read(sd.getInherits()[i]));
 				}
-				
+
 				sd.inherit(inhSd);
 			}
 
 			if (sd.getIncludes() != null) {
-				for (String inc: sd.getIncludes()) {
+				for (String inc : sd.getIncludes()) {
 					ServiceDefinition incSd = read(inc);
 					sd.include(incSd);
 					if (logger.isDebugEnabled()) {

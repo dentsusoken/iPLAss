@@ -27,7 +27,7 @@ class AuthTokenKey implements Serializable {
 	private final int tenantId;
 	private final String type;
 	private final String series;
-	
+
 	public AuthTokenKey(int tenantId, String type, String series) {
 		this.tenantId = tenantId;
 		this.type = type;

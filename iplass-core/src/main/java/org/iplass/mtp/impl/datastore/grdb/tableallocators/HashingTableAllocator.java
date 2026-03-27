@@ -48,7 +48,7 @@ public class HashingTableAllocator implements TableAllocator {
 	public int allocate(int tenantId, String metaId, StorageSpaceMap storage) {
 		return Math.abs(toKey(tenantId, metaId).hashCode() % storage.getTableCount());
 	}
-	
+
 	private String toKey(int tenantId, String metaId) {
 		if (useMetaDataId) {
 			if (useTenantId) {

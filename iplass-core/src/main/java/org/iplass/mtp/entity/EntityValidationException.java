@@ -32,13 +32,13 @@ import java.util.List;
  */
 public class EntityValidationException extends EntityApplicationException {
 	private static final long serialVersionUID = 742734525985667059L;
-	
+
 	private List<ValidateError> validateResults;
 
 	public EntityValidationException() {
 		super();
 	}
-	
+
 	public EntityValidationException(String message) {
 		super(message);
 	}
@@ -47,17 +47,17 @@ public class EntityValidationException extends EntityApplicationException {
 		super(message + makeDetailMessage(validateResults));
 		setValidateResults(validateResults);
 	}
-	
+
 	@Deprecated
 	public EntityValidationException(String message, ValidateError[] validateResult) {
 		super(message + makeDetailMessage(new ArrayList<>(Arrays.asList(validateResult))));
 		setValidateResult(validateResult);
 	}
-	
+
 	private static String makeDetailMessage(List<ValidateError> validateResults) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		for (ValidateError v: validateResults) {
+		for (ValidateError v : validateResults) {
 			sb.append("\"");
 			sb.append(v.getPropertyName());
 			sb.append("=");

@@ -36,35 +36,36 @@ import org.iplass.mtp.impl.properties.extend.AutoNumberType;
 import org.iplass.mtp.impl.properties.extend.ComplexWrapperType;
 
 class BulkUpdateAdapter implements BulkUpdatable {
-	
+
 	private static final String BEFORE_UPDATE_ENTITY = "____mtp_beforeUpdateEntity_";
-	
+
 	private BulkUpdatable actual;
 	private EntityHandler eh;
 	private EntityContext ec;
-	
+
 	private UpdateOption op;
 	private Timestamp sysdate;
-	
+
 	private List<PropertyHandler> complexWrapperTypePropList;
 	private List<PropertyHandler> autoNumPropList;
 
-	
 	BulkUpdateAdapter(BulkUpdatable actual, EntityHandler eh, EntityContext ec) {
 		this.actual = actual;
 		this.eh = eh;
 		this.ec = ec;
 		complexWrapperTypePropList = eh.getPropertyListByPropertyType(ComplexWrapperType.class, ec);
 		autoNumPropList = eh.getPropertyListByPropertyType(AutoNumberType.class, ec);
-		if (actual.getUpdateProperties() != null && actual.getUpdateProperties().size() > 0) {
+		if (actual.getUpdateProperties() != null && actual.getUpdateProperties()
+				.size() > 0) {
 			op = new UpdateOption(false);
 			op.setUpdateProperties(actual.getUpdateProperties());
 		}
 	}
-	
+
 	@Override
 	public Iterator<BulkUpdateEntity> iterator() {
-		return new It(actual.iterator(), ExecuteContext.getCurrentContext().getClientId());
+		return new It(actual.iterator(), ExecuteContext.getCurrentContext()
+				.getClientId());
 	}
 
 	@Override
@@ -76,24 +77,31 @@ class BulkUpdateAdapter implements BulkUpdatable {
 	public void updated(BulkUpdateEntity updatedEntity) {
 		if (updatedEntity instanceof BulkUpdateEntityWrapper) {
 			if (updatedEntity.getMethod() == UpdateMethod.DELETE) {
-				Entity before = updatedEntity.getEntity().getValue(BEFORE_UPDATE_ENTITY);
+				Entity before = updatedEntity.getEntity()
+						.getValue(BEFORE_UPDATE_ENTITY);
 				if (before != null) {
 					eh.postporcessDeleteDirect(before, ec, complexWrapperTypePropList, null);
 				}
 			}
-			
+
 			BulkUpdateEntity forRet = ((BulkUpdateEntityWrapper) updatedEntity).actualBulkUpdateEntity;
 			//oid,version,autoNumをコピー
-			forRet.getEntity().setOid(updatedEntity.getEntity().getOid());
-			forRet.getEntity().setVersion(updatedEntity.getEntity().getVersion());
+			forRet.getEntity()
+					.setOid(updatedEntity.getEntity()
+							.getOid());
+			forRet.getEntity()
+					.setVersion(updatedEntity.getEntity()
+							.getVersion());
 
 			//auto numberを通知
 			if (autoNumPropList != null) {
-				for (PropertyHandler ph: autoNumPropList) {
-					forRet.getEntity().setValue(ph.getName(), updatedEntity.getEntity().getValue(ph.getName()));
+				for (PropertyHandler ph : autoNumPropList) {
+					forRet.getEntity()
+							.setValue(ph.getName(), updatedEntity.getEntity()
+									.getValue(ph.getName()));
 				}
 			}
-			
+
 			actual.updated(forRet);
 		} else {
 			actual.updated(updatedEntity);
@@ -104,7 +112,7 @@ class BulkUpdateAdapter implements BulkUpdatable {
 	public void close() {
 		actual.close();
 	}
-	
+
 	@Override
 	public List<String> getUpdateProperties() {
 		return actual.getUpdateProperties();
@@ -115,10 +123,9 @@ class BulkUpdateAdapter implements BulkUpdatable {
 		return actual.isEnableAuditPropertySpecification();
 	}
 
-
 	private static class BulkUpdateEntityWrapper extends BulkUpdateEntity {
 		BulkUpdateEntity actualBulkUpdateEntity;
-		
+
 		public BulkUpdateEntityWrapper(BulkUpdateEntity actualBulkUpdateEntity) {
 			this.actualBulkUpdateEntity = actualBulkUpdateEntity;
 			setMethod(actualBulkUpdateEntity.getMethod());
@@ -126,12 +133,12 @@ class BulkUpdateAdapter implements BulkUpdatable {
 		}
 
 	}
-	
+
 	private class It implements Iterator<BulkUpdateEntity> {
-		
+
 		private Iterator<BulkUpdateEntity> actualIt;
 		private String clientId;
-		
+
 		private It(Iterator<BulkUpdateEntity> actualIt, String clientId) {
 			this.actualIt = actualIt;
 			this.clientId = clientId;
@@ -141,7 +148,7 @@ class BulkUpdateAdapter implements BulkUpdatable {
 		public boolean hasNext() {
 			return actualIt.hasNext();
 		}
-		
+
 		private Timestamp sysdate() {
 			if (sysdate == null) {
 				sysdate = new Timestamp(System.currentTimeMillis());
@@ -152,51 +159,67 @@ class BulkUpdateAdapter implements BulkUpdatable {
 		@Override
 		public BulkUpdateEntity next() {
 			BulkUpdateEntityWrapper forInternalUse = new BulkUpdateEntityWrapper(actualIt.next());
-			if (forInternalUse.getEntity().getVersion() == null) {
-				forInternalUse.getEntity().setVersion(Long.valueOf(0));
+			if (forInternalUse.getEntity()
+					.getVersion() == null) {
+				forInternalUse.getEntity()
+						.setVersion(Long.valueOf(0));
 			}
 			if (isEnableAuditPropertySpecification()) {
-				if (forInternalUse.getEntity().getCreateBy() == null) {
-					forInternalUse.getEntity().setCreateBy(clientId);
+				if (forInternalUse.getEntity()
+						.getCreateBy() == null) {
+					forInternalUse.getEntity()
+							.setCreateBy(clientId);
 				}
-				if (forInternalUse.getEntity().getUpdateBy() == null) {
-					forInternalUse.getEntity().setUpdateBy(clientId);
+				if (forInternalUse.getEntity()
+						.getUpdateBy() == null) {
+					forInternalUse.getEntity()
+							.setUpdateBy(clientId);
 				}
 			} else {
-				forInternalUse.getEntity().setCreateBy(clientId);
-				forInternalUse.getEntity().setUpdateBy(clientId);
+				forInternalUse.getEntity()
+						.setCreateBy(clientId);
+				forInternalUse.getEntity()
+						.setUpdateBy(clientId);
 			}
-			
-			if (forInternalUse.getEntity().getState() == null) {
-				forInternalUse.getEntity().setState(new SelectValue(Entity.STATE_VALID_VALUE));
+
+			if (forInternalUse.getEntity()
+					.getState() == null) {
+				forInternalUse.getEntity()
+						.setState(new SelectValue(Entity.STATE_VALID_VALUE));
 			}
 
 			if (isEnableAuditPropertySpecification()) {
-				if (forInternalUse.getEntity().getCreateDate() == null) {
-					forInternalUse.getEntity().setCreateDate(sysdate());
+				if (forInternalUse.getEntity()
+						.getCreateDate() == null) {
+					forInternalUse.getEntity()
+							.setCreateDate(sysdate());
 				}
-				if (forInternalUse.getEntity().getUpdateDate() == null) {
-					forInternalUse.getEntity().setUpdateDate(sysdate());
+				if (forInternalUse.getEntity()
+						.getUpdateDate() == null) {
+					forInternalUse.getEntity()
+							.setUpdateDate(sysdate());
 				}
 			}
-			
+
 			switch (forInternalUse.actualBulkUpdateEntity.getMethod()) {
 			case INSERT:
 				eh.normalizeInternal(forInternalUse.getEntity(), null, ec);
 				eh.preprocessInsertDirect(forInternalUse.getEntity(), ec, complexWrapperTypePropList);
 				break;
 			case UPDATE:
-				eh.normalizeInternal(forInternalUse.getEntity(), op == null ? null: op.getUpdateProperties(), ec);
+				eh.normalizeInternal(forInternalUse.getEntity(), op == null ? null : op.getUpdateProperties(), ec);
 				eh.preprocessUpdateDirect(forInternalUse.getEntity(), op, ec, complexWrapperTypePropList, true);
 				break;
 			case DELETE:
 				Entity beforedelete = eh.preporcessDeleteDirect(forInternalUse.getEntity(), ec, complexWrapperTypePropList);
-				forInternalUse.getEntity().setValue(BEFORE_UPDATE_ENTITY, beforedelete);;
+				forInternalUse.getEntity()
+						.setValue(BEFORE_UPDATE_ENTITY, beforedelete);;
 				break;
 			case MERGE:
 				//厳密にinsert/update判断できないのですべてのpropertyにnormalize実施、
 				eh.normalizeInternal(forInternalUse.getEntity(), null, ec);
-				if (forInternalUse.getEntity().getOid() == null) {
+				if (forInternalUse.getEntity()
+						.getOid() == null) {
 					//insert
 					eh.preprocessInsertDirect(forInternalUse.getEntity(), ec, complexWrapperTypePropList);
 					forInternalUse.setMethod(UpdateMethod.INSERT);
@@ -214,6 +237,6 @@ class BulkUpdateAdapter implements BulkUpdatable {
 			}
 			return forInternalUse;
 		}
-		
+
 	}
 }

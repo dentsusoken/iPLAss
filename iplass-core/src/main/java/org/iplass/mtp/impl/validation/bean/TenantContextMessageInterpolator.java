@@ -39,7 +39,7 @@ import org.iplass.mtp.impl.core.TenantContext;
  *
  */
 public class TenantContextMessageInterpolator implements MessageInterpolator {
-	
+
 	private MessageInterpolatorFactory messageInterpolatorFactory;
 
 	public MessageInterpolatorFactory getMessageInterpolatorFactory() {
@@ -52,18 +52,22 @@ public class TenantContextMessageInterpolator implements MessageInterpolator {
 
 	@Override
 	public String interpolate(String messageTemplate, Context context) {
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+		TenantContext tc = ExecuteContext.getCurrentContext()
+				.getTenantContext();
 		BeanValidationResource bvr = tc.getResource(BeanValidationResource.class);
-		return bvr.getMessageInterpolator().interpolate(messageTemplate, context);
+		return bvr.getMessageInterpolator()
+				.interpolate(messageTemplate, context);
 	}
 
 	@Override
 	public String interpolate(String messageTemplate, Context context, Locale locale) {
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+		TenantContext tc = ExecuteContext.getCurrentContext()
+				.getTenantContext();
 		BeanValidationResource bvr = tc.getResource(BeanValidationResource.class);
-		return bvr.getMessageInterpolator().interpolate(messageTemplate, context, locale);
+		return bvr.getMessageInterpolator()
+				.interpolate(messageTemplate, context, locale);
 	}
-	
+
 	public MessageInterpolator createMessageInterpolatorForTenant(int tenantId) {
 		return messageInterpolatorFactory.newMessageInterpolator(tenantId);
 	}

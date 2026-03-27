@@ -51,7 +51,6 @@ import org.iplass.mtp.web.interceptor.RequestInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class ExceptionInterceptor implements RequestInterceptor, ServiceInitListener<ActionMappingService> {
 	private static Logger logger = LoggerFactory.getLogger(ExceptionInterceptor.class);
 
@@ -61,9 +60,12 @@ public class ExceptionInterceptor implements RequestInterceptor, ServiceInitList
 	private List<Class<?>[]> noHandeClass;
 	private List<Class<?>[]> eliminateClass;
 
-	private WebFrontendService wfService = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
-	private MetaTenantService metaTenantService = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
-	private TemplateService tService = ServiceRegistry.getRegistry().getService(TemplateService.class);
+	private WebFrontendService wfService = ServiceRegistry.getRegistry()
+			.getService(WebFrontendService.class);
+	private MetaTenantService metaTenantService = ServiceRegistry.getRegistry()
+			.getService(MetaTenantService.class);
+	private TemplateService tService = ServiceRegistry.getRegistry()
+			.getService(TemplateService.class);
 
 	@Override
 	public void inited(ActionMappingService service, Config config) {
@@ -77,12 +79,12 @@ public class ExceptionInterceptor implements RequestInterceptor, ServiceInitList
 
 	public static List<Class<?>[]> toClassList(List<String> classNames) {
 		List<Class<?>[]> ret = new ArrayList<>(classNames.size());
-		for (String cn: classNames) {
+		for (String cn : classNames) {
 			String[] splits = cn.split(":");
 			try {
 				Class<?>[] cl = new Class<?>[splits.length];
 				for (int i = 0; i < splits.length; i++) {
-						cl[i] = Class.forName(splits[i]);
+					cl[i] = Class.forName(splits[i]);
 				}
 				ret.add(cl);
 			} catch (ClassNotFoundException e) {
@@ -112,12 +114,11 @@ public class ExceptionInterceptor implements RequestInterceptor, ServiceInitList
 		this.noHande = noHande;
 	}
 
-
 	public static boolean match(List<Class<?>[]> classList, Throwable e) {
 		if (classList == null) {
 			return false;
 		}
-		for (Class<?>[] nha: classList) {
+		for (Class<?>[] nha : classList) {
 			Throwable current = e;
 			for (int i = 0; i < nha.length; i++) {
 				if (current == null || !nha[i].isAssignableFrom(current.getClass())) {
@@ -141,7 +142,8 @@ public class ExceptionInterceptor implements RequestInterceptor, ServiceInitList
 
 		} catch (RuntimeException e) {
 			WebInvocationImpl webInvocation = (WebInvocationImpl) invocation;
-			if (!webInvocation.getRequestStack().isClientDirectRequest()) {
+			if (!webInvocation.getRequestStack()
+					.isClientDirectRequest()) {
 				throw e;
 			}
 
@@ -158,23 +160,33 @@ public class ExceptionInterceptor implements RequestInterceptor, ServiceInitList
 			//また、既にレンダリングが開始されている場合（Template内での例外）はエラー画面出せない。
 			//TODO 出せるように出力を一旦すべてメモリにためる？？
 			try {
-				if (!webInvocation.getRequestStack().getResponse().isCommitted()
-						&& invocation.getRequest().getAttribute(WebRequestContext.MARK_USE_OUTPUT_STREAM) == null) {
+				if (!webInvocation.getRequestStack()
+						.getResponse()
+						.isCommitted()
+						&& invocation.getRequest()
+								.getAttribute(WebRequestContext.MARK_USE_OUTPUT_STREAM) == null) {
 
-					webInvocation.getRequestStack().getResponse().resetBuffer();
+					webInvocation.getRequestStack()
+							.getResponse()
+							.resetBuffer();
 					if (!(e instanceof ApplicationException)) {
-						webInvocation.getRequestStack().getResponse().setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						webInvocation.getRequestStack()
+								.getResponse()
+								.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					}
-					webInvocation.getRequest().setAttribute(WebRequestConstants.EXCEPTION, e);
+					webInvocation.getRequest()
+							.setAttribute(WebRequestConstants.EXCEPTION, e);
 
 					WebUtil.setCacheControlHeader(webInvocation.getRequestStack(), false, -1);
 
-					Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+					Tenant tenant = ExecuteContext.getCurrentContext()
+							.getCurrentTenant();
 					MetaTenantHandler th = metaTenantService.getRuntimeByName(tenant.getName());
 //					String errorTemplateName = th.errorUrlSelector(e, webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
 					MetaTenantWebInfoRuntime twebr = th.getConfigRuntime(MetaTenantWebInfoRuntime.class);
-					String errorTemplateName = (twebr != null ?
-							twebr.errorUrlSelector(e, webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true)) : null);
+					String errorTemplateName = (twebr != null ? twebr.errorUrlSelector(e, webInvocation.getRequest(), webInvocation.getRequestStack()
+							.getRequestPath()
+							.getTargetPath(true)) : null);
 
 					TemplateRuntime tr = null;
 					if (StringUtil.isNotEmpty(errorTemplateName)) {
@@ -192,7 +204,9 @@ public class ExceptionInterceptor implements RequestInterceptor, ServiceInitList
 						//デフォルトのErrorUrlSelectorで指定するTemplateの取得
 						ErrorUrlSelector defaultSelector = wfService.getErrorUrlSelector();
 						if (defaultSelector != null) {
-							defaultErrorTemplate = defaultSelector.getErrorTemplateName(e, webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
+							defaultErrorTemplate = defaultSelector.getErrorTemplateName(e, webInvocation.getRequest(), webInvocation.getRequestStack()
+									.getRequestPath()
+									.getTargetPath(true));
 						}
 						if (defaultErrorTemplate != null) {
 							tr = tService.getRuntimeByName(defaultErrorTemplate);

@@ -33,12 +33,12 @@ import org.iplass.mtp.impl.web.auth.ActionAuthContext;
 import org.iplass.mtp.web.actionmapping.permission.ActionPermission;
 
 class BuiltinActionAuthContext extends BuiltinAuthorizationContext implements ActionAuthContext {
-	
+
 	private final ActionPermissionEntry[] permissionEntry;
 	private final TenantAuthorizeContext tenantAuthContext;
-	
+
 	private boolean hasParameterCondition;
-	
+
 	//複数ロールがある場合、基本はそれぞれのロールの権限をOR（許可と否許可では許可優先）。
 	//ロールには優先順位を定義可能で、優先順位の高いロールがあった場合は、それの権限を優先。
 
@@ -47,13 +47,13 @@ class BuiltinActionAuthContext extends BuiltinAuthorizationContext implements Ac
 	//1つでもEntryがある場合、全体に対して否許可
 	//EntryがあるActionに対して許可がある場合、許可
 	//同一Actionに対して否許可があった場合、否許可
-	
+
 	BuiltinActionAuthContext(String actionPath, ActionPermissionEntry[] permissionEntry, TenantAuthorizeContext tenantAuthContext) {
 		super(actionPath);
 		this.permissionEntry = permissionEntry;
 		this.tenantAuthContext = tenantAuthContext;
 		if (permissionEntry != null) {
-			for (ActionPermissionEntry ape: permissionEntry) {
+			for (ActionPermissionEntry ape : permissionEntry) {
 				if (ape.hasParam()) {
 					hasParameterCondition = true;
 					break;
@@ -61,12 +61,13 @@ class BuiltinActionAuthContext extends BuiltinAuthorizationContext implements Ac
 			}
 		}
 	}
-	
+
 	private List<ActionPermissionEntry> listTarget(AuthContextHolder userAuthContext) {
 		List<ActionPermissionEntry> target = new LinkedList<ActionPermissionEntry>();
 		long currentPriority = 0;
 		for (int i = 0; i < permissionEntry.length; i++) {
-			if (userAuthContext.userInRole(permissionEntry[i].getRole(), tenantAuthContext.getTenantContext().getTenantId())) {
+			if (userAuthContext.userInRole(permissionEntry[i].getRole(), tenantAuthContext.getTenantContext()
+					.getTenantId())) {
 				RoleContext role = tenantAuthContext.getRoleContext(permissionEntry[i].getRole());
 				if (currentPriority < role.getPriority()) {
 					//reset priority
@@ -80,7 +81,7 @@ class BuiltinActionAuthContext extends BuiltinAuthorizationContext implements Ac
 		}
 		return target;
 	}
-	
+
 	@Override
 	public boolean isPermit(Permission permission, AuthContextHolder user) {
 		//admin（かつ、他テナントユーザーでない）は全権限保持
@@ -88,11 +89,11 @@ class BuiltinActionAuthContext extends BuiltinAuthorizationContext implements Ac
 		if (userBinding.isGrantAllPermissions()) {
 			return true;
 		}
-		
+
 		ActionPermission ap = (ActionPermission) permission;
-		
+
 		List<ActionPermissionEntry> target = listTarget(user);
-		for (ActionPermissionEntry pe: target) {
+		for (ActionPermissionEntry pe : target) {
 			if (pe.isPermit(user, ap.getActionName(), ap.getParameter(), tenantAuthContext)) {
 				return true;
 			}

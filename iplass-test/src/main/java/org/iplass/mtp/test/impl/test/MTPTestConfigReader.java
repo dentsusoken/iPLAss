@@ -287,7 +287,8 @@ public class MTPTestConfigReader {
 	 * @param defaultValue アノテーション指定がない場合のデフォルト値
 	 * @return アノテーション値
 	 */
-	private static <A extends Annotation, T> T getAnnotationValue(AnnotatedElement elem, Class<A> annotation, Function<A, T> valueGetFn, T defaultValue) {
+	private static <A extends Annotation, T> T getAnnotationValue(AnnotatedElement elem, Class<A> annotation, Function<A, T> valueGetFn,
+			T defaultValue) {
 		A anno = elem.getAnnotation(annotation);
 		if (null != anno) {
 			return valueGetFn.apply(anno);

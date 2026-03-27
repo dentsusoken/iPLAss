@@ -31,7 +31,6 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
 
-
 public class MetaGroovyPoiReportOutputLogic extends MetaPoiReportOutputLogic {
 	private static final long serialVersionUID = -5525839977593609749L;
 
@@ -80,12 +79,13 @@ public class MetaGroovyPoiReportOutputLogic extends MetaPoiReportOutputLogic {
 
 		public GroovyPoiReportOutputLogicRuntime(MetaReportType reportType) {
 
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			scriptEngine = tc.getScriptEngine();
 
 			if (script != null) {
 				String scriptName = null;
-				MetaPoiReportType poiTemp = (MetaPoiReportType)reportType;
+				MetaPoiReportType poiTemp = (MetaPoiReportType) reportType;
 				if (poiTemp.getReportOutputLogic() != null) {
 					scriptName = SCRIPT_PREFIX + "_" + reportType.getOutputFileType() + "_" + GroovyTemplateCompiler.randomName();
 				}

@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.condition.predicate.PredicateSyntax;
 
 public class ParenSyntax implements Syntax<Condition>, QueryConstants {
-	
+
 	private OrSyntax or;
 	private PredicateSyntax predicate;
 
@@ -44,21 +44,21 @@ public class ParenSyntax implements Syntax<Condition>, QueryConstants {
 		//TODO 実際は括弧が必要ない場合「((a=12))」とかにBracketValueをショートカットするロジックを入れるかどうか
 
 		if (str.startsWith(LEFT_PAREN)) {
-			
+
 			int index = str.getCurrentIndex();
 
 			try {
 				str.consumeChars(LEFT_PAREN.length());
 				str.consumeChars(ParseContext.WHITE_SPACES);
-				
+
 				Condition nested = or.parse(str);
-				
+
 				if (!str.startsWith(RIGHT_PAREN)) {
 					throw new ParseException(new EvalError(") expected.", this, str));
 				}
 				str.consumeChars(RIGHT_PAREN.length());
 				str.consumeChars(ParseContext.WHITE_SPACES);
-				
+
 				return new Paren(nested);
 			} catch (ParseException e) {
 				str.setCurrentIndex(index);

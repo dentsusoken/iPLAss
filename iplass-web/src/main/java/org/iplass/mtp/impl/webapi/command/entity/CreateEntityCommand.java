@@ -52,17 +52,18 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
-@WebApi(name="mtp/entity/POST",
-		accepts={RequestType.REST_JSON, RequestType.REST_XML, RequestType.REST_FORM},
-		methods={MethodType.POST},
-		restJson=@RestJson(parameterName=CreateEntityCommand.PARAM_ENTITY, parameterType=Entity.class),
-		restXml=@RestXml(parameterName=CreateEntityCommand.PARAM_ENTITY),
-		results={CreateEntityCommand.RESULT_OID,
+@WebApi(
+		name = "mtp/entity/POST",
+		accepts = { RequestType.REST_JSON, RequestType.REST_XML, RequestType.REST_FORM },
+		methods = { MethodType.POST },
+		restJson = @RestJson(parameterName = CreateEntityCommand.PARAM_ENTITY, parameterType = Entity.class),
+		restXml = @RestXml(parameterName = CreateEntityCommand.PARAM_ENTITY),
+		results = { CreateEntityCommand.RESULT_OID,
 				CreateEntityCommand.RESULT_UPLOAD_INSERT, CreateEntityCommand.RESULT_UPLOAD_UPDATE,
-				CreateEntityCommand.RESULT_UPLOAD_DELETE, CreateEntityCommand.RESULT_UPLOAD_ERROR},
+				CreateEntityCommand.RESULT_UPLOAD_DELETE, CreateEntityCommand.RESULT_UPLOAD_ERROR },
 		supportBearerToken = true,
-		overwritable=false)
-@CommandClass(name="mtp/entity/CreateEntityCommand", displayName="Entity Create Web API", overwritable=false)
+		overwritable = false)
+@CommandClass(name = "mtp/entity/CreateEntityCommand", displayName = "Entity Create Web API", overwritable = false)
 public final class CreateEntityCommand extends AbstractEntityCommand {
 
 	public static final String PARAM_ENTITY = "entity";
@@ -120,12 +121,13 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 
 	private boolean isMultipart(RequestContext request) {
 		return (request instanceof WebRequestContext
-				&& ((WebRequestContext)request).getValueMap() instanceof MultiPartParameterValueMap);
+				&& ((WebRequestContext) request).getValueMap() instanceof MultiPartParameterValueMap);
 	}
 
 	private void doInsert(RequestContext request, String defName) {
 
-		checkPermission(defName, def -> def.getMetaData().isInsert());
+		checkPermission(defName, def -> def.getMetaData()
+				.isInsert());
 
 		Entity e = (Entity) request.getAttribute(PARAM_ENTITY);
 		e.setDefinitionName(defName);
@@ -144,7 +146,8 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 	 * @param option InsertOption
 	 */
 	private void setInsertOptionWithParam(RequestContext request, InsertOption option) {
-		EntityWebApiService service = ServiceRegistry.getRegistry().getService(EntityWebApiService.class);
+		EntityWebApiService service = ServiceRegistry.getRegistry()
+				.getService(EntityWebApiService.class);
 
 		if (service.isPermitRolesToSpecifyOptions()) {
 			String withValidation = request.getParam(PARAM_POST_WITH_VALIDATION);
@@ -180,7 +183,8 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 
 	private void doCsvUpload(RequestContext request, String defName) {
 
-		checkPermission(defName, def -> def.getMetaData().isUpdate());
+		checkPermission(defName, def -> def.getMetaData()
+				.isUpdate());
 
 		UploadFileHandle file = request.getParamAsFile(PARAM_UPLOAD_FILE);
 		String uniqueKey = StringUtil.stripToNull(request.getParam(PARAM_UPLOAD_UNIQUE_KEY));
@@ -190,8 +194,10 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 			throw new IllegalArgumentException("illegal parameter:" + PARAM_UPLOAD_FILE);
 		}
 
-		CsvUploadService service = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
-		EntityCsvImportService importService = ServiceRegistry.getRegistry().getService(EntityCsvImportService.class);
+		CsvUploadService service = ServiceRegistry.getRegistry()
+				.getService(CsvUploadService.class);
+		EntityCsvImportService importService = ServiceRegistry.getRegistry()
+				.getService(EntityCsvImportService.class);
 		EntityCsvImportOption option = new EntityCsvImportOption();
 		setImportOptionWithParam(request, option);
 
@@ -219,7 +225,8 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 				//管理者用オプションあり
 				//MetaDataEntry
 				String entityPath = EntityService.ENTITY_META_PATH + defName.replace(".", "/");
-				MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(entityPath);
+				MetaDataEntry entry = MetaDataContext.getContext()
+						.getMetaDataEntry(entityPath);
 				List<String> excludeEntityNames = Arrays.asList("mtp.maintenance.Package", "mtp.maintenance.MetaDataTag");
 				try (InputStream is = file.getInputStream()) {
 					EntityCsvImportResult ret = importService.importEntityData(defName, is, entry, option, null, null, excludeEntityNames);
@@ -265,7 +272,8 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 	 * @param option EntityCsvImportOption
 	 */
 	private void setImportOptionWithParam(RequestContext request, EntityCsvImportOption option) {
-		EntityWebApiService service = ServiceRegistry.getRegistry().getService(EntityWebApiService.class);
+		EntityWebApiService service = ServiceRegistry.getRegistry()
+				.getService(EntityWebApiService.class);
 
 		if (service.isPermitRolesToSpecifyOptions()) {
 			String truncate = request.getParam(PARAM_UPLOAD_TRUNCATE);

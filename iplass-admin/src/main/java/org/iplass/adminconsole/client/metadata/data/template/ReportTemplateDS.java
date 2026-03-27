@@ -80,7 +80,8 @@ public class ReportTemplateDS extends AbstractAdminDataSource {
 				Collections.sort(result, new Comparator<Name>() {
 					@Override
 					public int compare(Name o1, Name o2) {
-						return o1.getName().compareTo(o2.getName());
+						return o1.getName()
+								.compareTo(o2.getName());
 					}
 				});
 

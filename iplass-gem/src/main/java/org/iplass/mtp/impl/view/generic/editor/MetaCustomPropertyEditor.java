@@ -29,7 +29,8 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.TemplatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 
-@XmlSeeAlso( {MetaDateRangePropertyEditor.class, MetaNumericRangePropertyEditor.class, MetaJoinPropertyEditor.class, MetaTemplatePropertyEditor.class, MetaUserPropertyEditor.class})
+@XmlSeeAlso({ MetaDateRangePropertyEditor.class, MetaNumericRangePropertyEditor.class, MetaJoinPropertyEditor.class, MetaTemplatePropertyEditor.class,
+		MetaUserPropertyEditor.class })
 public abstract class MetaCustomPropertyEditor extends MetaPropertyEditor {
 
 	/** SerialVersionUID */

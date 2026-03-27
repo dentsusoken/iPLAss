@@ -33,18 +33,23 @@ public class LocalizedBinaryDefinition implements Serializable {
 	public String getLocaleName() {
 		return localeName;
 	}
+
 	public void setLocaleName(String localeName) {
 		this.localeName = localeName;
 	}
+
 	public String getFileName() {
 		return fileName;
 	}
+
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
+
 	public byte[] getBinaryValue() {
 		return binaryValue;
 	}
+
 	public void setBinaryValue(byte[] binaryValue) {
 		this.binaryValue = binaryValue;
 	}

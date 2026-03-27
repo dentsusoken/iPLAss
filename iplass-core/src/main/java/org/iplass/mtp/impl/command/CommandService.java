@@ -31,7 +31,6 @@ import org.iplass.mtp.impl.definition.DefinitionNameChecker;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
-
 public class CommandService extends AbstractTypedMetaDataService<MetaMetaCommand, MetaCommandRuntime> implements Service {
 	public static final String COMMAND_META_PATH = "/command/";
 	public static final String COMMAND_META_META_PATH = "/commandClass/";
@@ -40,9 +39,11 @@ public class CommandService extends AbstractTypedMetaDataService<MetaMetaCommand
 		public TypeMap() {
 			super(getFixedPath(), MetaMetaCommand.class, CommandDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<CommandDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(CommandDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(CommandDefinitionManager.class);
 		}
 
 		@Override

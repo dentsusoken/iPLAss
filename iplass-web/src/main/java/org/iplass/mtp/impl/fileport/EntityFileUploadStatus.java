@@ -81,7 +81,6 @@ public class EntityFileUploadStatus implements Serializable {
 		this.message = message;
 	}
 
-
 	public String getCode() {
 		return code;
 	}
@@ -129,6 +128,5 @@ public class EntityFileUploadStatus implements Serializable {
 	public void setParameter(String parameter) {
 		this.parameter = parameter;
 	}
-
 
 }

@@ -55,7 +55,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @return 名前
 	 */
 	public String getName() {
-	    return name;
+		return name;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @param name 名前
 	 */
 	public void setName(String name) {
-	    this.name = name;
+		this.name = name;
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @return 表示ラベル
 	 */
 	public String getDisplayLabel() {
-	    return displayLabel;
+		return displayLabel;
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @param displayLabel 表示ラベル
 	 */
 	public void setDisplayLabel(String displayLabel) {
-	    this.displayLabel = displayLabel;
+		this.displayLabel = displayLabel;
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @return 幅
 	 */
 	public Integer getWidth() {
-	    return width;
+		return width;
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @param width 幅
 	 */
 	public void setWidth(Integer width) {
-	    this.width = width;
+		this.width = width;
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @return 配置
 	 */
 	public String getAlign() {
-	    return align;
+		return align;
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @param align 配置
 	 */
 	public void setAlign(String align) {
-	    this.align = align;
+		this.align = align;
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @return 多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedDisplayLabelList() {
-	    return localizedDisplayLabelList;
+		return localizedDisplayLabelList;
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class TreeViewGridColModel implements Serializable {
 	 * @param localizedDisplayLabelList 多言語設定情報
 	 */
 	public void setLocalizedDisplayLabelList(List<LocalizedStringDefinition> localizedDisplayLabelList) {
-	    this.localizedDisplayLabelList = localizedDisplayLabelList;
+		this.localizedDisplayLabelList = localizedDisplayLabelList;
 	}
 
 	/**

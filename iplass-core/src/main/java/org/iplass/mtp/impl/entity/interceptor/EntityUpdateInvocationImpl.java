@@ -28,10 +28,10 @@ import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
 public class EntityUpdateInvocationImpl extends EntityInvocationImpl<Void> implements EntityUpdateInvocation {
-	
+
 	private Entity entity;
 	private UpdateOption updateOption;
-	
+
 	public EntityUpdateInvocationImpl(
 			Entity entity, UpdateOption updateOption,
 			EntityInterceptor[] entityInterceptors,
@@ -40,23 +40,23 @@ public class EntityUpdateInvocationImpl extends EntityInvocationImpl<Void> imple
 		this.entity = entity;
 		this.updateOption = updateOption;
 	}
-	
+
 	public Entity getEntity() {
 		return entity;
 	}
-	
+
 	public void setEntity(Entity entity) {
 		this.entity = entity;
 	}
-	
+
 	public UpdateOption getUpdateOption() {
 		return updateOption;
 	}
-	
+
 	public void setUpdateOption(UpdateOption updateOption) {
 		this.updateOption = updateOption;
 	}
-	
+
 	@Override
 	protected Void callEntityHandler(EntityHandler eh) {
 		eh.update(entity, updateOption);

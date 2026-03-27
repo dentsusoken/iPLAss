@@ -98,6 +98,7 @@ public class JspTemplateHttpSession implements HttpSession {
 				public boolean hasMoreElements() {
 					return it.hasNext();
 				}
+
 				@Override
 				public String nextElement() {
 					return it.next();

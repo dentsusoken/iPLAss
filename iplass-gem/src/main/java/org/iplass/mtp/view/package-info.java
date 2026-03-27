@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-		namespace="http://mtp.iplass.org/xml/definition/view",
-		xmlns={
-			@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/view", prefix="def-view")
+		namespace = "http://mtp.iplass.org/xml/definition/view",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/view", prefix = "def-view")
 		}
-	)
+)
 package org.iplass.mtp.view;

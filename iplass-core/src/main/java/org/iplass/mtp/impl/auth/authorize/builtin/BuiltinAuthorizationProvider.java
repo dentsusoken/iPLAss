@@ -35,19 +35,20 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class BuiltinAuthorizationProvider implements AuthorizationProvider {
 
-	private TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	
+	private TenantContextService tcService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+
 	private boolean grantAllPermissionsToAdmin = true;
 	private boolean declareTransactionExplicitly = true;
-	
+
 	private List<AuthorizationContextHandler> authorizationContextHandler;
-	
+
 	private HashMap<Class<? extends Permission>, AuthorizationContextHandler> authorizationContextHandlerMap;
-	
+
 	public <T extends Permission> AuthorizationContextHandler getAuthorizationContextHandler(Class<T> type) {
 		return authorizationContextHandlerMap.get(type);
 	}
-	
+
 	public List<AuthorizationContextHandler> getAuthorizationContextHandler() {
 		return authorizationContextHandler;
 	}
@@ -74,7 +75,8 @@ public class BuiltinAuthorizationProvider implements AuthorizationProvider {
 
 	@Override
 	public boolean userInRole(AuthContextHolder userAuthContext, int tenantId, String role) {
-		TenantAuthorizeContext context = tcService.getTenantContext(tenantId).getResource(TenantAuthorizeContext.class);
+		TenantAuthorizeContext context = tcService.getTenantContext(tenantId)
+				.getResource(TenantAuthorizeContext.class);
 		RoleContext roleContext = context.getRoleContext(role);
 		if (roleContext == null) {
 			return false;
@@ -87,28 +89,31 @@ public class BuiltinAuthorizationProvider implements AuthorizationProvider {
 	public boolean useSharedPermission(Permission permission) {
 		AuthorizationContextHandler handler = getAuthorizationContextHandler(permission.getClass());
 		if (handler == null) {
-			throw new IllegalArgumentException("AuthorizationContextHandler of type:" + permission.getClass().getName() + " not defined.");
+			throw new IllegalArgumentException("AuthorizationContextHandler of type:" + permission.getClass()
+					.getName() + " not defined.");
 		}
 
 		return handler.useSharedPermission(permission);
 	}
-	
+
 	@Override
 	public AuthorizationContext getAuthorizationContext(int tenantId, Permission permission) {
 		AuthorizationContextHandler handler = getAuthorizationContextHandler(permission.getClass());
 		if (handler == null) {
-			throw new IllegalArgumentException("AuthorizationContextHandler of type:" + permission.getClass().getName() + " not defined.");
+			throw new IllegalArgumentException("AuthorizationContextHandler of type:" + permission.getClass()
+					.getName() + " not defined.");
 		}
-		
-		TenantAuthorizeContext context = tcService.getTenantContext(tenantId).getResource(TenantAuthorizeContext.class);
+
+		TenantAuthorizeContext context = tcService.getTenantContext(tenantId)
+				.getResource(TenantAuthorizeContext.class);
 		return handler.getOrDefault(handler.contextName(permission), context);
 	}
 
 	@Override
 	public void inited(AuthService s, Config config) {
 		authorizationContextHandlerMap = new HashMap<>();
-		for (AuthorizationContextHandler ach: authorizationContextHandler) {
-			for (Class<? extends Permission> p: ach.permissionType()) {
+		for (AuthorizationContextHandler ach : authorizationContextHandler) {
+			for (Class<? extends Permission> p : ach.permissionType()) {
 				authorizationContextHandlerMap.put(p, ach);
 			}
 		}

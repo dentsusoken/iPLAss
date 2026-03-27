@@ -34,19 +34,23 @@ import org.iplass.mtp.impl.web.WebResponseWrapper;
 
 public class ResponseUtil {
 
-	public static String getIncludeJspContents(String includePath, Func beforeIncludeFunction, Func afterIncludeFunction) throws ServletException, IOException {
+	public static String getIncludeJspContents(String includePath, Func beforeIncludeFunction, Func afterIncludeFunction)
+			throws ServletException, IOException {
 		return getIncludeJspContents(includePath, beforeIncludeFunction, afterIncludeFunction, new StringWriter());
 	}
 
-	public static String getIncludeJspContents(String includePath, Func beforeFunction, Func afterFunction, Writer writer) throws ServletException, IOException {
+	public static String getIncludeJspContents(String includePath, Func beforeFunction, Func afterFunction, Writer writer)
+			throws ServletException, IOException {
 		WebRequestStack stack = WebRequestStack.getCurrent();
 		HttpServletRequest req = stack.getRequest();
 		WebResponseWrapper res = new WebResponseWrapper(stack.getResponse(), writer);
 
-		if (beforeFunction != null) beforeFunction.execute(req, res);
+		if (beforeFunction != null)
+			beforeFunction.execute(req, res);
 		RequestDispatcher dispatcher = req.getRequestDispatcher(includePath);
 		dispatcher.include(req, res);
-		if (afterFunction != null) afterFunction.execute(req, res);
+		if (afterFunction != null)
+			afterFunction.execute(req, res);
 		return res.toString();
 	}
 

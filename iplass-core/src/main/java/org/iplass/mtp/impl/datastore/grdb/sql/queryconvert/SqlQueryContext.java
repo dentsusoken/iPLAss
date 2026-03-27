@@ -42,7 +42,7 @@ import org.iplass.mtp.util.StringUtil;
 public class SqlQueryContext {
 
 	public enum Clause {
-		SELECT,WHERE,ORDERBYGROUPBY,HINT,REFER
+		SELECT, WHERE, ORDERBYGROUPBY, HINT, REFER
 	}
 
 	public static class QueryBindValue extends BindValue {
@@ -128,7 +128,8 @@ public class SqlQueryContext {
 		this.stringTypeLengthOnQuery = parent.stringTypeLengthOnQuery;
 	}
 
-	public SqlQueryContext(EntityHandler primaryMetaData, EntityContext metaContext, RdbAdapter rdb, String prefix, TableAliasMapping aliases, JoinPath joinPath, List<String> indexTable, boolean enableBindVariable) {
+	public SqlQueryContext(EntityHandler primaryMetaData, EntityContext metaContext, RdbAdapter rdb, String prefix, TableAliasMapping aliases,
+			JoinPath joinPath, List<String> indexTable, boolean enableBindVariable) {
 		this.primaryMetaData = primaryMetaData;
 		this.metaContext = metaContext;
 		this.rdb = rdb;
@@ -278,7 +279,6 @@ public class SqlQueryContext {
 		return prefix;
 	}
 
-
 	public StringBuilder getCurrentSb() {
 		return currentSb;
 	}
@@ -345,10 +345,10 @@ public class SqlQueryContext {
 	}
 
 	private boolean needAppendHint() {
-		return rdb.isSupportOptimizerHint() && 
+		return rdb.isSupportOptimizerHint() &&
 				(hintSb.length() != 0 || rdb.getOptimizerHint() != null);
 	}
-	
+
 	private void appendHint(StringBuilder sb) {
 		String[] hintBracket = rdb.getOptimizerHintBracket();
 		if (hintBracket != null && hintBracket[0] != null) {
@@ -381,7 +381,7 @@ public class SqlQueryContext {
 				}
 				List<BindValue> limited = new ArrayList<>(2);
 				Object[] limitBindValues = rdb.toLimitSqlBindValue(getLimitCount(), limitOffset);
-				for (Object v: limitBindValues) {
+				for (Object v : limitBindValues) {
 					limited.add(new QueryBindValue(v, rdb.getRdbTypeAdapter(v), Clause.ORDERBYGROUPBY, false));
 				}
 				return limited;
@@ -400,7 +400,7 @@ public class SqlQueryContext {
 			}
 			//join,indextable以前のバインド変数追加
 			if (bindVariables != null) {
-				for (BindValue b: bindVariables) {
+				for (BindValue b : bindVariables) {
 					if (((QueryBindValue) b).clause != Clause.SELECT) {
 						break;
 					}
@@ -411,19 +411,19 @@ public class SqlQueryContext {
 			}
 			//join追加
 			if (joinClauseBindVariables != null) {
-				for (BindValue b: joinClauseBindVariables) {
+				for (BindValue b : joinClauseBindVariables) {
 					ordered.add(b);
 				}
 			}
 			if (bindVariables != null) {
 				//index追加
-				for (BindValue b: bindVariables) {
+				for (BindValue b : bindVariables) {
 					if (((QueryBindValue) b).inIndexTable) {
 						ordered.add(b);
 					}
 				}
 				//それ以外追加
-				for (BindValue b: bindVariables) {
+				for (BindValue b : bindVariables) {
 					if (((QueryBindValue) b).clause != Clause.SELECT) {
 						if (!((QueryBindValue) b).inIndexTable) {
 							ordered.add(b);
@@ -438,7 +438,7 @@ public class SqlQueryContext {
 					limitOffset = getLimitOffset();
 				}
 				Object[] limitBindValues = rdb.toLimitSqlBindValue(getLimitCount(), limitOffset);
-				for (Object v: limitBindValues) {
+				for (Object v : limitBindValues) {
 					ordered.add(new QueryBindValue(v, rdb.getRdbTypeAdapter(v), Clause.ORDERBYGROUPBY, false));
 				}
 			}
@@ -454,7 +454,7 @@ public class SqlQueryContext {
 				List<BindValue> limited = new ArrayList<>(2 + bindVariables.size());
 				limited.addAll(bindVariables);
 				Object[] limitBindValues = rdb.toLimitSqlBindValue(getLimitCount(), limitOffset);
-				for (Object v: limitBindValues) {
+				for (Object v : limitBindValues) {
 					limited.add(new QueryBindValue(v, rdb.getRdbTypeAdapter(v), Clause.ORDERBYGROUPBY, false));
 				}
 				return limited;
@@ -482,13 +482,14 @@ public class SqlQueryContext {
 		sb.append(((GRdbEntityStoreRuntime) primaryMetaData.getEntityStoreRuntime()).OBJ_STORE());
 		sb.append(" ");
 		if (getPrefix() != null) {
-			sb.append(getPrefix()).append(" ");
+			sb.append(getPrefix())
+					.append(" ");
 			appendTableHint(getPrefix(), sb);
 		}
 		joinPath.appendJoinCause(sb, this);
 
 		if (indexTable != null) {
-			for (String t: indexTable) {
+			for (String t : indexTable) {
 				sb.append(",");
 				sb.append(t);
 			}
@@ -496,17 +497,23 @@ public class SqlQueryContext {
 
 		sb.append(" WHERE ");
 		if (getPrefix() != null) {
-			sb.append(getPrefix()).append(".");
+			sb.append(getPrefix())
+					.append(".");
 		}
-		sb.append("OBJ_DEF_ID='").append(rdb.sanitize(primaryMetaData.getMetaData().getId()));
+		sb.append("OBJ_DEF_ID='")
+				.append(rdb.sanitize(primaryMetaData.getMetaData()
+						.getId()));
 		sb.append("' AND ");
 		if (getPrefix() != null) {
-			sb.append(getPrefix()).append(".");
+			sb.append(getPrefix())
+					.append(".");
 		}
-		sb.append("TENANT_ID=").append(metaContext.getTenantId(primaryMetaData));
+		sb.append("TENANT_ID=")
+				.append(metaContext.getTenantId(primaryMetaData));
 		sb.append(" AND ");
 		if (getPrefix() != null) {
-			sb.append(getPrefix()).append(".");
+			sb.append(getPrefix())
+					.append(".");
 		}
 		sb.append(ObjStoreTable.PG_NO + "=0");
 //		sb.append(" AND ");
@@ -516,7 +523,9 @@ public class SqlQueryContext {
 //		sb.append("STATUS='V'");
 
 		if (StringUtil.isNotEmpty(additionalJoin)) {
-			sb.append(" AND (").append(additionalJoin).append(")");
+			sb.append(" AND (")
+					.append(additionalJoin)
+					.append(")");
 		}
 
 		if (whereSb.length() != 0) {
@@ -554,7 +563,7 @@ public class SqlQueryContext {
 
 		return sql.toString();
 	}
-	
+
 	//SQLの末尾にヒント句を付与するため
 	public String sqlEnded(CharSequence sql) {
 		if (rdb.getOptimizerHintPlace() == HintPlace.END_OF_SQL && parentContext == null && needAppendHint()) {
@@ -581,7 +590,9 @@ public class SqlQueryContext {
 
 	public void setFrom(String entityName) {
 		if (primaryMetaData == null ||
-				!primaryMetaData.getMetaData().getName().equals(entityName)) {
+				!primaryMetaData.getMetaData()
+						.getName()
+						.equals(entityName)) {
 			EntityHandler e = metaContext.getHandlerByName(entityName);
 
 			if (e == null) {
@@ -694,7 +705,8 @@ public class SqlQueryContext {
 			}
 		}
 
-		return target.getFromEntity().getPropertyCascade(propName, getMetaContext());
+		return target.getFromEntity()
+				.getPropertyCascade(propName, getMetaContext());
 	}
 
 	public void notifyUsedPropertyName(String propertyName) {
@@ -710,8 +722,8 @@ public class SqlQueryContext {
 			}
 		}
 //		if (propertyName.contains(".")) {
-			boolean useIndex = checkIndexHint(target, propertyName);
-			target.joinPath.addPath(propertyName.split("[.]"), -1, metaContext, target.primaryMetaData, target.currentClause == Clause.WHERE, useIndex);
+		boolean useIndex = checkIndexHint(target, propertyName);
+		target.joinPath.addPath(propertyName.split("[.]"), -1, metaContext, target.primaryMetaData, target.currentClause == Clause.WHERE, useIndex);
 //		}
 	}
 
@@ -745,12 +757,18 @@ public class SqlQueryContext {
 
 		if (!targetCol.isNative()) {
 			if (targetCol.getIndexColName() != null && checkIndexHint(target, propName)) {
-				if (targetCol.getMetaData().getIndexPageNo() > 0) {
-					sb.append(JoinPath.PAGE_PREFIX).append(targetCol.getMetaData().getIndexPageNo());
+				if (targetCol.getMetaData()
+						.getIndexPageNo() > 0) {
+					sb.append(JoinPath.PAGE_PREFIX)
+							.append(targetCol.getMetaData()
+									.getIndexPageNo());
 				}
 			} else {
-				if (targetCol.getMetaData().getPageNo() > 0) {
-					sb.append(JoinPath.PAGE_PREFIX).append(targetCol.getMetaData().getPageNo());
+				if (targetCol.getMetaData()
+						.getPageNo() > 0) {
+					sb.append(JoinPath.PAGE_PREFIX)
+							.append(targetCol.getMetaData()
+									.getPageNo());
 				}
 			}
 		}

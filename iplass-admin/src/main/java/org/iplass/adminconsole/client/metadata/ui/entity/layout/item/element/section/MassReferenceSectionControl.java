@@ -75,15 +75,18 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 			@Override
 			public void execute(MetaFieldUpdateEvent event) {
 				String title = null;
-				if (event.getValueMap().containsKey("title")) {
-					title = (String) event.getValueMap().get("title");
+				if (event.getValueMap()
+						.containsKey("title")) {
+					title = (String) event.getValueMap()
+							.get("title");
 				}
 
 				createTitle(title);
 			}
 		});
 
-		setClassName(section.getClass().getName());
+		setClassName(section.getClass()
+				.getName());
 		setValueObject(section);
 
 		getDisplayLabel(defName, section.getPropertyName());
@@ -106,12 +109,14 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 	}
 
 	private void createTitle(String itemDisplayName) {
-		String title = itemDisplayName != null ? itemDisplayName + " ": "";
-		title = title + "(" + entityPropertyDisplayName + "[" + (String)getValue("name") + "])";
+		String title = itemDisplayName != null ? itemDisplayName + " " : "";
+		title = title + "(" + entityPropertyDisplayName + "[" + (String) getValue("name") + "])";
 		setTitle(title);
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see org.iplass.adminconsole.client.metadata.ui.entity.layout.item.SectionWindow#getSection()
 	 */
 	@Override
@@ -125,9 +130,8 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 		EntityViewFieldSettingDialog dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
 
 		// ダイアログのタイトルに対象のプロパティ名を表示
-		dialog.setTitlePropertyInfo(new PropertyInfo((String)getValue("name"), entityPropertyDisplayName));
+		dialog.setTitlePropertyInfo(new PropertyInfo((String) getValue("name"), entityPropertyDisplayName));
 		return dialog;
 	}
-
 
 }

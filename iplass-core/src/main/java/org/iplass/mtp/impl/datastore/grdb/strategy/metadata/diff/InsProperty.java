@@ -30,13 +30,12 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaPrimitiveProperty;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public class InsProperty extends Diff {
-	
+
 	private InsPropertyIndexType insPropertyIndexType;
-	
+
 	private MetaPrimitiveProperty insertProperty;
-	
+
 	private ColResolver colResolver;
 	private MetaEntity entity;
 
@@ -44,10 +43,11 @@ public class InsProperty extends Diff {
 		this.insertProperty = insertProperty;
 		this.colResolver = colResolver;
 		this.entity = entity;
-		
+
 		if (insertProperty.getIndexType() != null
 				&& insertProperty.getIndexType() != IndexType.NON_INDEXED
-				&& !insertProperty.getType().isVirtual()) {
+				&& !insertProperty.getType()
+						.isVirtual()) {
 			insPropertyIndexType = new InsPropertyIndexType(insertProperty, entity, dataStore);
 		}
 	}

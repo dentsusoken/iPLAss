@@ -63,7 +63,7 @@ public abstract class SimpleCacheStoreBase implements CacheStore {
 	protected void notifyRemoved(CacheEntry entry) {
 		if (listeners != null) {
 			CacheRemoveEvent e = new CacheRemoveEvent(entry);
-			for (CacheEventListener l: listeners) {
+			for (CacheEventListener l : listeners) {
 				l.removed(e);
 			}
 		}
@@ -72,7 +72,7 @@ public abstract class SimpleCacheStoreBase implements CacheStore {
 	protected void notifyPut(CacheEntry entry) {
 		if (listeners != null) {
 			CacheCreateEvent e = new CacheCreateEvent(entry);
-			for (CacheEventListener l: listeners) {
+			for (CacheEventListener l : listeners) {
 				l.created(e);
 			}
 		}
@@ -81,7 +81,7 @@ public abstract class SimpleCacheStoreBase implements CacheStore {
 	protected void notifyUpdated(CacheEntry preEntry, CacheEntry entry) {
 		if (listeners != null) {
 			CacheUpdateEvent e = new CacheUpdateEvent(preEntry, entry);
-			for (CacheEventListener l: listeners) {
+			for (CacheEventListener l : listeners) {
 				l.updated(e);
 			}
 		}
@@ -90,19 +90,19 @@ public abstract class SimpleCacheStoreBase implements CacheStore {
 	protected void notifyInvalidated(CacheEntry entry) {
 		if (listeners != null) {
 			CacheInvalidateEvent e = new CacheInvalidateEvent(entry);
-			for (CacheEventListener l: listeners) {
+			for (CacheEventListener l : listeners) {
 				l.invalidated(e);
 			}
 		}
 	}
-	
+
 	protected boolean hasListener() {
 		if (listeners == null) {
 			return false;
 		}
 		return listeners.size() > 0;
 	}
-	
+
 //	protected void notifyExpired(CacheEntry entry) {
 //		if (listeners != null) {
 //			for (CacheEventListener l: listeners) {
@@ -127,7 +127,7 @@ public abstract class SimpleCacheStoreBase implements CacheStore {
 			listeners.remove(listener);
 		}
 	}
-	
+
 	@Override
 	public List<CacheEventListener> getListeners() {
 		if (listeners == null) {
@@ -138,8 +138,9 @@ public abstract class SimpleCacheStoreBase implements CacheStore {
 	}
 
 	protected abstract void removeInvalidEntry();
+
 	protected abstract void removeNullEntry(NullKey key);
-	
+
 	//インデックスに関するユーティリティメソッド。
 	Object margeVal(Object current, Object added) {
 		if (added == null) {
@@ -159,7 +160,7 @@ public abstract class SimpleCacheStoreBase implements CacheStore {
 			newVal[newVal.length - 1] = added;
 			return newVal;
 		}
-		return new Object[]{current, added};
+		return new Object[] { current, added };
 	}
 
 	Object subtractVal(Object current, Object removed, boolean loose) {

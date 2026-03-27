@@ -28,7 +28,7 @@ public class Password {
 	private final String convertedPassword;
 	private final String salt;
 	private final Timestamp updateDate;
-	
+
 	public Password(int tenantId, String uid, String convertedPassword,
 			String salt, Timestamp updateDate) {
 		super();
@@ -38,21 +38,25 @@ public class Password {
 		this.salt = salt;
 		this.updateDate = updateDate;
 	}
-	
+
 	public int getTenantId() {
 		return tenantId;
 	}
+
 	public String getUid() {
 		return uid;
 	}
+
 	public String getConvertedPassword() {
 		return convertedPassword;
 	}
+
 	public String getSalt() {
 		return salt;
 	}
+
 	public Timestamp getUpdateDate() {
 		return updateDate;
 	}
-	
+
 }

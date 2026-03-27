@@ -21,9 +21,9 @@
 package org.iplass.mtp.command.interceptor;
 
 public interface CommandInterceptor {
-	
+
 	//TODO 暗黙的な初期化、破棄メソッド。init()、destroy()の呼び出し。
-	
+
 	public String intercept(CommandInvocation invocation);
 
 }

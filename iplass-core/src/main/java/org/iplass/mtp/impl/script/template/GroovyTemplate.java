@@ -33,14 +33,14 @@ public class GroovyTemplate {
 
 	private Script script;
 	private Closure<?> templateClosure;
-	
+
 	public GroovyTemplate(Script script) {
 		this.script = script;
 		GroovyObject object = script.createInstanceAs(GroovyObject.class, null);
 		templateClosure = (Closure<?>) object.invokeMethod("getTemplate", null);
 		templateClosure.setResolveStrategy(Closure.DELEGATE_FIRST);
 	}
-	
+
 	public void doTemplate(GroovyTemplateBinding binding) throws IOException {
 		Closure<?> template = (Closure<?>) templateClosure.clone();
 		template.setDelegate(binding);

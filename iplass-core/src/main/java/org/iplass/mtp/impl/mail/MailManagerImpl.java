@@ -36,8 +36,8 @@ import org.iplass.mtp.tenant.Tenant;
  */
 public class MailManagerImpl implements MailManager {
 
-	private MailService mailService = ServiceRegistry.getRegistry().getService(MailService.class);
-
+	private MailService mailService = ServiceRegistry.getRegistry()
+			.getService(MailService.class);
 
 	/**
 	 *
@@ -50,7 +50,8 @@ public class MailManagerImpl implements MailManager {
 	 */
 	@Override
 	public Mail createMail() {
-		return mailService.createMail(ExecuteContext.getCurrentContext().getCurrentTenant(), null);
+		return mailService.createMail(ExecuteContext.getCurrentContext()
+				.getCurrentTenant(), null);
 	}
 
 	/**
@@ -58,10 +59,13 @@ public class MailManagerImpl implements MailManager {
 	 */
 	@Override
 	public void sendMail(Mail mail) {
-		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+		Tenant tenant = ExecuteContext.getCurrentContext()
+				.getCurrentTenant();
 		if (mail.getSubject() != null) {
-			mail.setSubject(mail.getSubject().replace('\r', ' '));
-			mail.setSubject(mail.getSubject().replace('\n', ' '));
+			mail.setSubject(mail.getSubject()
+					.replace('\r', ' '));
+			mail.setSubject(mail.getSubject()
+					.replace('\n', ' '));
 		}
 		mailService.sendMail(tenant, mail);
 

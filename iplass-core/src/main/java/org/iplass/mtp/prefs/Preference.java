@@ -52,14 +52,14 @@ import org.iplass.mtp.definition.Definition;
 @XmlRootElement
 public class Preference implements Definition {
 	private static final long serialVersionUID = -2478688296064953043L;
-	
+
 	private String name;
 	private String displayName;
 	private String description;
 	private String value;
-	
+
 	private String runtimeClassName;
-	
+
 	/**
 	 * コンストラクタ。
 	 */
@@ -76,7 +76,7 @@ public class Preference implements Definition {
 		this.name = name;
 		this.value = value;
 	}
-	
+
 	/**
 	 * コンストラクタ。
 	 * 
@@ -89,7 +89,7 @@ public class Preference implements Definition {
 		this.value = value;
 		this.runtimeClassName = runtimeClassName;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -113,7 +113,7 @@ public class Preference implements Definition {
 	public void setRuntimeClassName(String runtimeClassName) {
 		this.runtimeClassName = runtimeClassName;
 	}
-	
+
 	public String getDisplayName() {
 		return displayName;
 	}
@@ -143,5 +143,5 @@ public class Preference implements Definition {
 		}
 		return value;
 	}
-	
+
 }

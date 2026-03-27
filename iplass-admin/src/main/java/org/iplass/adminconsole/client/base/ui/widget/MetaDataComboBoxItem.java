@@ -96,7 +96,7 @@ public class MetaDataComboBoxItem extends MtpComboBoxItem implements MtpWidgetCo
 		}
 
 		if (!icons.isEmpty()) {
-			setIcons(icons.toArray(new FormItemIcon[]{}));
+			setIcons(icons.toArray(new FormItemIcon[] {}));
 		}
 
 		MetaDataNameDS.setDataSource(this, definition, option.toMetaDataNameDSOption());

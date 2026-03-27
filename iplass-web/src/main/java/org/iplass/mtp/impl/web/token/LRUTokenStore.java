@@ -30,13 +30,13 @@ public class LRUTokenStore extends TokenStore {
 	private static final long serialVersionUID = 2864948027935155294L;
 
 	private static Logger logger = LoggerFactory.getLogger(LRUTokenStore.class);
-	
+
 	private final String fixedToken;
 	//listをLinkedList -> LinkedHashMapするにあたり、TokenStoreがSerializeされてしまっているので、サブクラスとして実装する。
 	private final LinkedHashMap<String, Object> list;
-	
+
 	public LRUTokenStore(final int maxSize) {
-		list = new LinkedHashMap<String, Object>(){
+		list = new LinkedHashMap<String, Object>() {
 			private static final long serialVersionUID = -6502264709029793582L;
 
 			@Override
@@ -50,7 +50,7 @@ public class LRUTokenStore extends TokenStore {
 		};
 		fixedToken = StringUtil.randomToken();
 	}
-	
+
 	@Override
 	String getFixedToken() {
 		return fixedToken;
@@ -79,7 +79,7 @@ public class LRUTokenStore extends TokenStore {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean isValidFixed(String token) {
 		if (fixedToken.equals(token)) {
@@ -87,17 +87,17 @@ public class LRUTokenStore extends TokenStore {
 		} else {
 			return false;
 		}
-	}	
-	
+	}
+
 	@Override
 	public boolean isValid(String token, boolean withConsume) {
 		synchronized (this) {
-			
+
 			//no consume if fixed token, and return true
 			if (fixedToken.equals(token)) {
 				return true;
 			}
-			
+
 			if (list.remove(token) != null) {
 				if (!withConsume) {
 					//put to last
@@ -109,7 +109,7 @@ public class LRUTokenStore extends TokenStore {
 				}
 				return true;
 			}
-			
+
 			return false;
 		}
 	}

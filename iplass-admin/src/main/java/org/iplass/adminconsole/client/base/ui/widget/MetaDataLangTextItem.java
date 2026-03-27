@@ -90,7 +90,7 @@ public class MetaDataLangTextItem extends MtpTextItem implements MtpWidgetConsta
 			}
 		}
 		if (!iconList.isEmpty()) {
-			setIcons(iconList.toArray(new FormItemIcon[]{}));
+			setIcons(iconList.toArray(new FormItemIcon[] {}));
 		}
 	}
 

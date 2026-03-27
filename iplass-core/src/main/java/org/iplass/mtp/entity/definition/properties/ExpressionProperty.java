@@ -37,24 +37,24 @@ import org.iplass.mtp.entity.definition.PropertyDefinitionType;
  */
 public class ExpressionProperty extends PropertyDefinition {
 	private static final long serialVersionUID = -8100457099996385877L;
-	
+
 	private String expression;//数式表現（abs(x)みたいな）
-	
+
 	private PropertyDefinitionType resultType;
 	private PropertyDefinition resultTypeSpec;
-	
+
 	public ExpressionProperty() {
 	}
-	
+
 	public ExpressionProperty(String name) {
 		setName(name);
 	}
-	
+
 	public ExpressionProperty(String name, String expression) {
 		setName(name);
 		setExpression(expression);
 	}
-	
+
 	public ExpressionProperty(String name, String expression, PropertyDefinitionType resultType) {
 		setName(name);
 		setExpression(expression);
@@ -84,7 +84,7 @@ public class ExpressionProperty extends PropertyDefinition {
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
-	
+
 	@Override
 	public Class<?> getJavaType() {
 		if (resultType == null) {
@@ -114,7 +114,7 @@ public class ExpressionProperty extends PropertyDefinition {
 			}
 		}
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getType() {
 		return PropertyDefinitionType.EXPRESSION;

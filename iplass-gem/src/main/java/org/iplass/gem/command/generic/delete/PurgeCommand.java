@@ -47,15 +47,15 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @WebApi(
-	name=PurgeCommand.WEBAPI_NAME,
-	displayName="物理削除",
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	tokenCheck=@WebApiTokenCheck(consume=false, useFixedToken=true),
-	checkXRequestedWithHeader=true
+		name = PurgeCommand.WEBAPI_NAME,
+		displayName = "物理削除",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		tokenCheck = @WebApiTokenCheck(consume = false, useFixedToken = true),
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/delete/PurgeCommand", displayName="物理削除")
+@CommandClass(name = "gem/generic/delete/PurgeCommand", displayName = "物理削除")
 public final class PurgeCommand extends DeleteCommandBase {
 
 	private static Logger logger = LoggerFactory.getLogger(PurgeCommand.class);
@@ -67,29 +67,35 @@ public final class PurgeCommand extends DeleteCommandBase {
 		final String defName = request.getParam(Constants.DEF_NAME);
 		String viewName = request.getParam(Constants.VIEW_NAME);
 		Long[] rbid = null;
-		Object val = request.getParamMap().get(Constants.RBID);
+		Object val = request.getParamMap()
+				.get(Constants.RBID);
 		if (val instanceof String) {
-			rbid = new Long[]{CommandUtil.getLong((String)val)};
+			rbid = new Long[] { CommandUtil.getLong((String) val) };
 		} else if (val instanceof ArrayList<?>) {
 			ArrayList<?> list = (ArrayList<?>) val;
 			rbid = new Long[list.size()];
 			for (int i = 0; i < list.size(); i++) {
-				rbid[i] = CommandUtil.getLong(list.get(i).toString());
+				rbid[i] = CommandUtil.getLong(list.get(i)
+						.toString());
 			}
 		}
 
 		if (rbid != null && rbid.length > 0) {
 			final boolean isAllowTrashOperationToRecycleBy = isAllowTrashOperationToRecycleBy(defName, viewName);
-			final String userOid = AuthContext.getCurrentContext().getUser().getOid();
+			final String userOid = AuthContext.getCurrentContext()
+					.getUser()
+					.getOid();
 
 			int count = rbid.length;
 			int countPerHundret = count / 100;
-			if (count % 100 > 0) countPerHundret++;
+			if (count % 100 > 0)
+				countPerHundret++;
 			int current = 0;
 			for (int i = 0; i < countPerHundret; i++) {
 				current = i * 100;
 				int last = current + 100;
-				if (last > rbid.length) last = rbid.length;
+				if (last > rbid.length)
+					last = rbid.length;
 				List<Long> list = Arrays.asList(rbid);
 				final List<Long> subList = list.subList(current, last);
 				Boolean ret = Transaction.requiresNew(transaction -> {

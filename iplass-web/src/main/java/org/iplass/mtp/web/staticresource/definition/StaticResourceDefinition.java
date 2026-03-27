@@ -39,9 +39,15 @@ import org.iplass.mtp.definition.binary.BinaryDefinition;
 @XmlRootElement
 public class StaticResourceDefinition implements Definition {
 	private static final long serialVersionUID = 7919419226190191428L;
-	
+
 	private String name;
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 	private List<LocalizedStringDefinition> localizedDisplayNameList;
 	private String description;
@@ -49,70 +55,89 @@ public class StaticResourceDefinition implements Definition {
 	private BinaryDefinition resource;
 	private List<LocalizedStaticResourceDefinition> localizedResourceList;
 	private String contentType;
-	
+
 	private List<MimeTypeMappingDefinition> mimeTypeMapping;
 	private String entryTextCharset;
 	private EntryPathTranslatorDefinition entryPathTranslator;
-	
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDisplayName() {
 		return displayName;
 	}
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
 	public List<LocalizedStringDefinition> getLocalizedDisplayNameList() {
 		return localizedDisplayNameList;
 	}
+
 	public void setLocalizedDisplayNameList(
 			List<LocalizedStringDefinition> localizedDisplayNameList) {
 		this.localizedDisplayNameList = localizedDisplayNameList;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public BinaryDefinition getResource() {
 		return resource;
 	}
+
 	public void setResource(BinaryDefinition resource) {
 		this.resource = resource;
 	}
+
 	public List<LocalizedStaticResourceDefinition> getLocalizedResourceList() {
 		return localizedResourceList;
 	}
+
 	public void setLocalizedResourceList(
 			List<LocalizedStaticResourceDefinition> localizedResourceList) {
 		this.localizedResourceList = localizedResourceList;
 	}
+
 	public String getContentType() {
 		return contentType;
 	}
+
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
+
 	public List<MimeTypeMappingDefinition> getMimeTypeMapping() {
 		return mimeTypeMapping;
 	}
+
 	public void setMimeTypeMapping(List<MimeTypeMappingDefinition> mimeTypeMapping) {
 		this.mimeTypeMapping = mimeTypeMapping;
 	}
+
 	public String getEntryTextCharset() {
 		return entryTextCharset;
 	}
+
 	public void setEntryTextCharset(String entryTextCharset) {
 		this.entryTextCharset = entryTextCharset;
 	}
+
 	public EntryPathTranslatorDefinition getEntryPathTranslator() {
 		return entryPathTranslator;
 	}
+
 	public void setEntryPathTranslator(
 			EntryPathTranslatorDefinition entryPathTranslator) {
 		this.entryPathTranslator = entryPathTranslator;

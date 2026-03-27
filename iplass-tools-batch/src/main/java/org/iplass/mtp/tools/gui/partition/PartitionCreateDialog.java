@@ -84,7 +84,9 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 
 	private List<ChangeListener> dataChangeListners = new ArrayList<>();
 
-	private final RdbAdapter adapter = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+	private final RdbAdapter adapter = ServiceRegistry.getRegistry()
+			.getService(RdbAdapterService.class)
+			.getRdbAdapter();
 
 	public PartitionCreateDialog(Frame owner) {
 		super(owner);
@@ -198,7 +200,7 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 
 		constraints.gridx = 0;
 		constraints.gridy = (row * 2);
-		constraints.gridwidth= 1;
+		constraints.gridwidth = 1;
 		constraints.gridheight = 1;
 		gridbag.setConstraints(label, constraints);
 		pane.add(label);
@@ -218,7 +220,7 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 		//行余白
 		constraints.gridx = 0;
 		constraints.gridy = (row * 2) + 1;
-		constraints.gridwidth= GridBagConstraints.REMAINDER;
+		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		Box dummy = Box.createHorizontalBox();
 		dummy.setPreferredSize(new Dimension(15, 15));
 		gridbag.setConstraints(dummy, constraints);
@@ -238,7 +240,7 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 		//行余白
 		constraints.gridx = 0;
 		constraints.gridy = (row * 2) + 1;
-		constraints.gridwidth= GridBagConstraints.REMAINDER;
+		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		Box dummy = Box.createHorizontalBox();
 		dummy.setPreferredSize(new Dimension(15, 15));
 		gridbag.setConstraints(dummy, constraints);
@@ -267,7 +269,8 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 				}
 
 				if (txtSubPartitionSize != null) {
-					String strSubPartitionSize = txtSubPartitionSize.getText().trim();
+					String strSubPartitionSize = txtSubPartitionSize.getText()
+							.trim();
 					if (strSubPartitionSize.isEmpty()) {
 						JOptionPane.showMessageDialog(PartitionCreateDialog.this,
 								rs("PartitionManagerApp.PartitionCreateDialog.inputSubPartitionSizeMsg"),
@@ -278,7 +281,8 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 						int subPartitionSize = Integer.parseInt(strSubPartitionSize);
 						if (subPartitionSize < TenantRdbConstants.MIN_SUBPARTITION) {
 							JOptionPane.showMessageDialog(PartitionCreateDialog.this,
-									rs("PartitionManagerApp.PartitionCreateDialog.invalidValueSubPartitionSizeMsg", TenantRdbConstants.MIN_SUBPARTITION),
+									rs("PartitionManagerApp.PartitionCreateDialog.invalidValueSubPartitionSizeMsg",
+											TenantRdbConstants.MIN_SUBPARTITION),
 									"ERROR", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
@@ -422,7 +426,7 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 		@Override
 		protected void process(List<String> chunks) {
 			// パブリッシュされた文字をテキストエリアに追加
-			for (String message: chunks) {
+			for (String message : chunks) {
 				addLog(message);
 			}
 		}
@@ -461,7 +465,8 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 		int tenantId = Integer.parseInt(txtMaxTenantId.getText());
 		param.setTenantId(tenantId);
 		if (txtSubPartitionSize != null) {
-			param.setSubPartitionSize(Integer.parseInt(txtSubPartitionSize.getText().trim()));
+			param.setSubPartitionSize(Integer.parseInt(txtSubPartitionSize.getText()
+					.trim()));
 		}
 		return param;
 	}

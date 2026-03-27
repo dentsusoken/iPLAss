@@ -30,7 +30,6 @@ import org.iplass.mtp.entity.definition.listeners.SendNotificationEventListenerD
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-
 /**
  * <p>
  * Entity登録、更新、削除、検索、検証時に
@@ -45,12 +44,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author K.Higuchi
  *
  */
-@XmlSeeAlso (value = {
-		JavaClassEventListenerDefinition.class,
-		ScriptingEventListenerDefinition.class,
-		SendNotificationEventListenerDefinition.class
-})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(
+		value = {
+				JavaClassEventListenerDefinition.class,
+				ScriptingEventListenerDefinition.class,
+				SendNotificationEventListenerDefinition.class
+		})
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class EventListenerDefinition implements Serializable {
 	private static final long serialVersionUID = -643271790982890174L;
 
@@ -70,7 +70,5 @@ public abstract class EventListenerDefinition implements Serializable {
 	public void setWithoutMappedByReference(boolean withoutMappedByReference) {
 		this.withoutMappedByReference = withoutMappedByReference;
 	}
-
-
 
 }

@@ -30,15 +30,15 @@ package org.iplass.mtp.web.template.report.definition;
  *
  */
 public class JxlsReportType extends ReportType {
-	
+
 	private static final long serialVersionUID = 4425769299483314155L;
-	
+
 	private ReportOutputLogicDefinition reportOutputLogicDefinition;
-	
+
 	private ReportParamMapDefinition[] paramMap;
-	
+
 	private String passwordAttributeName;
-	
+
 	private String templateName;
 
 	public ReportOutputLogicDefinition getReportOutputLogicDefinition() {

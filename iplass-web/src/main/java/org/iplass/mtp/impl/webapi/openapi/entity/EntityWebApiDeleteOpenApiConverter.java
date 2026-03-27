@@ -55,7 +55,9 @@ public class EntityWebApiDeleteOpenApiConverter extends AbstractEntityWebApiOpen
 		var operation = new Operation().responses(new ApiResponses());
 
 		// parameters
-		var timestamp = new QueryParameter().name(DeleteEntityCommand.PARAM_TIMESTAMP).required(Boolean.FALSE).schema(new IntegerSchema());
+		var timestamp = new QueryParameter().name(DeleteEntityCommand.PARAM_TIMESTAMP)
+				.required(Boolean.FALSE)
+				.schema(new IntegerSchema());
 		operation.addParametersItem(timestamp);
 
 		// responses
@@ -64,8 +66,10 @@ public class EntityWebApiDeleteOpenApiConverter extends AbstractEntityWebApiOpen
 				.addProperty(RESPONSE_STATUS, new StringSchema());
 		var okMediaType = new MediaType().schema(okSchema);
 		var okContent = new Content().addMediaType(jakarta.ws.rs.core.MediaType.APPLICATION_JSON, okMediaType);
-		var okResponse = new ApiResponse().content(okContent).description(description);;
-		operation.getResponses().addApiResponse(STATUS_OK, okResponse);
+		var okResponse = new ApiResponse().content(okContent)
+				.description(description);;
+		operation.getResponses()
+				.addApiResponse(STATUS_OK, okResponse);
 
 		// OpenAPI に設定
 		getEntityOidPathItem(openApi, entityDefinition).setDelete(operation);

@@ -38,16 +38,16 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
 
-
 public class MetaEachPropertyDataLocalizationStrategy extends MetaDataLocalizationStrategy {
 	private static final long serialVersionUID = 7582698366671336713L;
-	
+
 	public MetaEachPropertyDataLocalizationStrategy() {
 	}
+
 	public MetaEachPropertyDataLocalizationStrategy(List<String> languages) {
 		super(languages);
 	}
-	
+
 	@Override
 	public MetaDataLocalizationStrategy copy() {
 		MetaEachPropertyDataLocalizationStrategy copy = new MetaEachPropertyDataLocalizationStrategy();
@@ -66,7 +66,7 @@ public class MetaEachPropertyDataLocalizationStrategy extends MetaDataLocalizati
 		fillTo(def);
 		return def;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();
@@ -87,25 +87,26 @@ public class MetaEachPropertyDataLocalizationStrategy extends MetaDataLocalizati
 	public DataLocalizationStrategyRuntime createDataLocalizationStrategyRuntime(EntityHandler eh) {
 		return new EachPropertyDataLocalizationStrategyRuntime(eh);
 	}
-	
+
 	public class EachPropertyDataLocalizationStrategyRuntime extends DataLocalizationStrategyRuntime {
 		private Map<String, Map<String, String>> map;
 		private Map<String, String> defaultMap;
 		private EntityHandler eh;
-		
+
 		private EachPropertyDataLocalizationStrategyRuntime(EntityHandler eh) {
 			this.eh = eh;
 			map = new HashMap<>();
-			
+
 			Set<String> propNames = new HashSet<>();
 			MetaEntity meta = eh.getMetaData();
 			while (meta != null) {
 				List<MetaProperty> plist = meta.getDeclaredPropertyList();
-				for (MetaProperty p: plist) {
+				for (MetaProperty p : plist) {
 					propNames.add(p.getName());
 				}
 				if (meta.getInheritedEntityMetaDataId() != null) {
-					EntityHandler superEh = EntityContext.getCurrentContext().getHandlerById(meta.getInheritedEntityMetaDataId());
+					EntityHandler superEh = EntityContext.getCurrentContext()
+							.getHandlerById(meta.getInheritedEntityMetaDataId());
 					if (superEh != null) {
 						meta = superEh.getMetaData();
 					} else {
@@ -115,13 +116,13 @@ public class MetaEachPropertyDataLocalizationStrategy extends MetaDataLocalizati
 					meta = null;
 				}
 			}
-			
+
 			Set<String> subProps = new HashSet<>();
 			if (getLanguages() != null) {
-				for (String lang: getLanguages()) {
+				for (String lang : getLanguages()) {
 					String userLangPostFix = "_" + lang.replace('-', '_');
 					Map<String, String> propMap = new HashMap<>();
-					for (String pname: propNames) {
+					for (String pname : propNames) {
 						String lpn = pname + userLangPostFix;
 						if (propNames.contains(lpn)) {
 							propMap.put(pname, lpn);
@@ -133,9 +134,11 @@ public class MetaEachPropertyDataLocalizationStrategy extends MetaDataLocalizati
 					map.put(lang, propMap);
 				}
 			}
-			
-			for (Map.Entry<String, Map<String, String>> e: map.entrySet()) {
-				Iterator<Map.Entry<String, String>> it = e.getValue().entrySet().iterator();
+
+			for (Map.Entry<String, Map<String, String>> e : map.entrySet()) {
+				Iterator<Map.Entry<String, String>> it = e.getValue()
+						.entrySet()
+						.iterator();
 				while (it.hasNext()) {
 					Map.Entry<String, String> ee = it.next();
 					if (subProps.contains(ee.getKey())) {
@@ -143,36 +146,38 @@ public class MetaEachPropertyDataLocalizationStrategy extends MetaDataLocalizati
 					}
 				}
 			}
-			
+
 			//create defaultMap
 			defaultMap = new HashMap<>();
 			if (getLanguages() != null && getLanguages().size() > 0) {
-				Map<String, String> ent = map.values().iterator().next();
-				for (String k: ent.keySet()) {
+				Map<String, String> ent = map.values()
+						.iterator()
+						.next();
+				for (String k : ent.keySet()) {
 					defaultMap.put(k, null);
 				}
-				
+
 			} else {
-				for (String pn: propNames) {
+				for (String pn : propNames) {
 					defaultMap.put(pn, null);
 				}
 			}
-			
-			
+
 		}
-		
+
 		public Map<String, String> getPropMap(String userLang) {
 			return map.getOrDefault(userLang, defaultMap);
 		}
 
 		@Override
 		public void handleEntityForInsert(Entity e, InsertOption option) {
-			String userLang = ExecuteContext.getCurrentContext().getLanguage();
+			String userLang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 			//special for name
 			String entityNameValue = e.getName();
 			Map<String, String> propMap = map.get(userLang);
 			if (propMap != null) {
-				for (Map.Entry<String, String> ft: propMap.entrySet()) {
+				for (Map.Entry<String, String> ft : propMap.entrySet()) {
 					if (ft.getValue() != null) {
 						Object val = e.getValue(ft.getKey());
 						if (val != null) {
@@ -187,11 +192,12 @@ public class MetaEachPropertyDataLocalizationStrategy extends MetaDataLocalizati
 
 		@Override
 		public void handleEntityForUpdate(Entity e, UpdateOption option) {
-			String userLang = ExecuteContext.getCurrentContext().getLanguage();
+			String userLang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 			Map<String, String> propMap = map.get(userLang);
 			if (propMap != null && propMap.size() > 0) {
 				ArrayList<String> ups = new ArrayList<>();
-				for (String prop: option.getUpdateProperties()) {
+				for (String prop : option.getUpdateProperties()) {
 					String lpn = propMap.get(prop);
 					if (lpn != null) {
 						Object val = e.getValue(prop);
@@ -213,11 +219,12 @@ public class MetaEachPropertyDataLocalizationStrategy extends MetaDataLocalizati
 			if (e == null) {
 				return null;
 			}
-			String userLang = ExecuteContext.getCurrentContext().getLanguage();
+			String userLang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 			Map<String, String> propMap = map.getOrDefault(userLang, defaultMap);
 			if (propMap != null && propMap.size() > 0) {
 				Entity ret = eh.newInstance();
-				for (Map.Entry<String, String> me: propMap.entrySet()) {
+				for (Map.Entry<String, String> me : propMap.entrySet()) {
 					String lpn = me.getValue();
 					if (lpn == null) {
 						lpn = me.getKey();
@@ -230,6 +237,5 @@ public class MetaEachPropertyDataLocalizationStrategy extends MetaDataLocalizati
 			}
 		}
 	}
-
 
 }

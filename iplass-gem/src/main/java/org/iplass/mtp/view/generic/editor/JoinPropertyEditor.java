@@ -42,7 +42,7 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/JoinPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/editor/JoinPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
 public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestProperty {
 
@@ -51,7 +51,8 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 
 	/** 表示タイプ */
 	public enum JoinDisplayType {
-		@XmlEnumValue("Join")JOIN
+		@XmlEnumValue("Join")
+		JOIN
 	}
 
 	/** オブジェクト名 */
@@ -59,63 +60,64 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 
 	/** プロパティエディタ */
 	@MetaFieldInfo(
-			displayName="プロパティエディタ",
-			displayNameKey="generic_editor_JoinPropertyEditor_editorDisplaNameKey",
-			required=true,
-			inputType=InputType.REFERENCE,
+			displayName = "プロパティエディタ",
+			displayNameKey = "generic_editor_JoinPropertyEditor_editorDisplaNameKey",
+			required = true,
+			inputType = InputType.REFERENCE,
 //			referenceClass=PropertyEditor.class,
-			fixedReferenceClass={
-				UserPropertyEditor.class,
-				AutoNumberPropertyEditor.class,
-				BinaryPropertyEditor.class,
-				BooleanPropertyEditor.class,
-				DatePropertyEditor.class,
-				TimePropertyEditor.class,
-				TimestampPropertyEditor.class,
-				ExpressionPropertyEditor.class,
-				DecimalPropertyEditor.class,
-				FloatPropertyEditor.class,
-				IntegerPropertyEditor.class,
-				SelectPropertyEditor.class,
-				StringPropertyEditor.class,
-				LongTextPropertyEditor.class,
-				ReferencePropertyEditor.class
+			fixedReferenceClass = {
+					UserPropertyEditor.class,
+					AutoNumberPropertyEditor.class,
+					BinaryPropertyEditor.class,
+					BooleanPropertyEditor.class,
+					DatePropertyEditor.class,
+					TimePropertyEditor.class,
+					TimestampPropertyEditor.class,
+					ExpressionPropertyEditor.class,
+					DecimalPropertyEditor.class,
+					FloatPropertyEditor.class,
+					IntegerPropertyEditor.class,
+					SelectPropertyEditor.class,
+					StringPropertyEditor.class,
+					LongTextPropertyEditor.class,
+					ReferencePropertyEditor.class
 			},
-			displayOrder=100,
-			description="プロパティの型にあわせたプロパティエディタを選択してください",
-			descriptionKey="generic_editor_JoinPropertyEditor_editorDescriptionKey"
+			displayOrder = 100,
+			description = "プロパティの型にあわせたプロパティエディタを選択してください",
+			descriptionKey = "generic_editor_JoinPropertyEditor_editorDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private PropertyEditor editor;
 
 	/** プロパティ */
-	@MetaFieldInfo(displayName="プロパティ",
-			displayNameKey="generic_editor_JoinPropertyEditor_propertiesDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=NestProperty.class,
-			multiple=true,
-			displayOrder=110,
-			description="このプロパティと組み合わせて表示する他のプロパティを指定します。",
-			descriptionKey="generic_editor_JoinPropertyEditor_propertiesDescriptionKey"
+	@MetaFieldInfo(
+			displayName = "プロパティ",
+			displayNameKey = "generic_editor_JoinPropertyEditor_propertiesDisplaNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = NestProperty.class,
+			multiple = true,
+			displayOrder = 110,
+			description = "このプロパティと組み合わせて表示する他のプロパティを指定します。",
+			descriptionKey = "generic_editor_JoinPropertyEditor_propertiesDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private List<NestProperty> properties;
 
 	/** フォーマット */
 	@MetaFieldInfo(
-			displayName="フォーマット",
-			displayNameKey="generic_editor_JoinPropertyEditor_formatDisplaNameKey",
-			displayOrder=120,
-			description="複数のプロパティを組み合わせて表示するためのフォーマットです。<br>" +
+			displayName = "フォーマット",
+			displayNameKey = "generic_editor_JoinPropertyEditor_formatDisplaNameKey",
+			displayOrder = 120,
+			description = "複数のプロパティを組み合わせて表示するためのフォーマットです。<br>" +
 					"プロパティを指定する際は「${プロパティ名}」のように指定します。",
-			descriptionKey="generic_editor_JoinPropertyEditor_formatDescriptionKey"
+			descriptionKey = "generic_editor_JoinPropertyEditor_formatDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL }
 	)
 	private String format;
 
@@ -129,7 +131,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 			descriptionKey = "generic_editor_JoinPropertyEditor_showNestPropertyErrorsDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes= {FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+			referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK }
 	)
 	private boolean showNestPropertyErrors;
 
@@ -138,7 +140,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 * @return オブジェクト名
 	 */
 	public String getObjectName() {
-	    return objectName;
+		return objectName;
 	}
 
 	/**
@@ -146,7 +148,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 * @param objectName オブジェクト名
 	 */
 	public void setObjectName(String objectName) {
-	    this.objectName = objectName;
+		this.objectName = objectName;
 	}
 
 	/**
@@ -154,7 +156,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 * @return フォーマット
 	 */
 	public String getFormat() {
-	    return format;
+		return format;
 	}
 
 	/**
@@ -162,7 +164,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 * @param format フォーマット
 	 */
 	public void setFormat(String format) {
-	    this.format = format;
+		this.format = format;
 	}
 
 	/**
@@ -170,7 +172,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 * @return プロパティエディタ
 	 */
 	public PropertyEditor getEditor() {
-	    return editor;
+		return editor;
 	}
 
 	/**
@@ -178,7 +180,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 * @param editor プロパティエディタ
 	 */
 	public void setEditor(PropertyEditor editor) {
-	    this.editor = editor;
+		this.editor = editor;
 	}
 
 	/**
@@ -202,8 +204,9 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 * @return プロパティ
 	 */
 	public List<NestProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<>();
-	    return properties;
+		if (properties == null)
+			properties = new ArrayList<>();
+		return properties;
 	}
 
 	/**
@@ -211,7 +214,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 * @param properties プロパティ
 	 */
 	public void setProperties(List<NestProperty> properties) {
-	    this.properties = properties;
+		this.properties = properties;
 	}
 
 	public void addProperty(NestProperty property) {

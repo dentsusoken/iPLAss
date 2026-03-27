@@ -40,12 +40,12 @@ import groovy.lang.Binding;
 
 class BindContext {
 	private static Logger log = LoggerFactory.getLogger(BindContext.class);
-	
+
 	String propertyDelimiter;
 	String indexPrefix;
 	String indexPostfix;
 	String prefix;
-	
+
 	String beanVariableName;
 	String mappingResultVariableName;
 	Boolean autoDetectErrors = Boolean.TRUE;
@@ -56,18 +56,18 @@ class BindContext {
 	String errorsVariableName;
 	Boolean htmlEscape;
 	ValueFormatter formatter;
-	
+
 	BindContext parent;
-	
+
 	Object bean;
 	String prop;
 	MappingResult mappingResult;
-	
+
 	boolean setBean;
 	ELMapper elMapper;
-	
+
 	Binding binding;
-	
+
 	BindContext(Map<String, Object> params, BindContext parent) {
 		setBean = params.containsKey("bean");
 		if (!setBean && parent != null && parent.setBean) {
@@ -75,7 +75,7 @@ class BindContext {
 		}
 		initParam(params);
 		prop = asString(params.get("prop"));
-		
+
 		if (setBean) {
 			bean = params.get("bean");
 			mappingResult = (MappingResult) params.get("mappingResult");
@@ -89,38 +89,39 @@ class BindContext {
 				mappingResult = this.parent.mappingResult;
 			}
 		}
-		
+
 		if (prop != null) {
 			exposeProp();
 		}
 	}
-	
+
 	public Binding getBinding() {
 		return binding;
 	}
-	
+
 	private String asString(Object val) {
 		if (val == null) {
 			return null;
 		}
 		return val.toString();
 	}
-	
+
 	private void setVariable(String name, Object value) {
 		if (binding == null) {
 			binding = new Binding();
 		}
 		binding.setVariable(name, value);
 	}
-	
+
 	private void exposeBean() {
 		setVariable(beanVariableName, bean);
-		
+
 		if (autoDetectErrors != null && autoDetectErrors.booleanValue()) {
 			if (mappingResult == null) {
 				WebRequestStack webStack = WebRequestStack.getCurrent();
 				if (webStack != null) {
-					Exception e = (Exception) webStack.getRequestContext().getAttribute(WebRequestConstants.EXCEPTION);
+					Exception e = (Exception) webStack.getRequestContext()
+							.getAttribute(WebRequestConstants.EXCEPTION);
 					if (e != null) {
 						MappingResult mr = ((MappingException) e).getResult();
 						if (bean == mr.getBean()) {
@@ -135,7 +136,7 @@ class BindContext {
 		}
 		setVariable(mappingResultVariableName, mappingResult);
 	}
-	
+
 	private void exposeProp() {
 		if (bean != null) {
 			String name = prop;
@@ -152,7 +153,7 @@ class BindContext {
 				name = prefix + name;
 			}
 			setVariable(propertyNameVariableName, name);
-			
+
 			//init error value. MissingPropertyException発生させないために
 			setVariable(propertyErrorValueVariableName, null);
 			setVariable(errorsVariableName, null);
@@ -164,16 +165,19 @@ class BindContext {
 					value = e.getErrorValue();
 					valResolve = true;
 				}
-				
+
 				ArrayList<String> errMsgs = new ArrayList<>();
 				Object errorValue = null;
-				for (MappingError me: mappingResult.getErrors()) {
-					if (me.getPropertyPath().startsWith(prop)) {
-						if (me.getPropertyPath().length() == prop.length()) {
+				for (MappingError me : mappingResult.getErrors()) {
+					if (me.getPropertyPath()
+							.startsWith(prop)) {
+						if (me.getPropertyPath()
+								.length() == prop.length()) {
 							errMsgs.addAll(me.getErrorMessages());
 							errorValue = me.getErrorValue();
 						} else {
-							char c = me.getPropertyPath().charAt(prop.length());
+							char c = me.getPropertyPath()
+									.charAt(prop.length());
 							if (c == '.' || c == '[') {
 								errMsgs.addAll(me.getErrorMessages());
 							}
@@ -189,7 +193,7 @@ class BindContext {
 					}
 				}
 			}
-			
+
 			if (!valResolve) {
 				try {
 					value = elMapper.getValue(prop);
@@ -199,7 +203,7 @@ class BindContext {
 					}
 				}
 			}
-			
+
 			if (value != null && htmlEscape) {
 				setVariable(propertyValueVariableName, StringUtil.escapeHtml(formatter.apply(value)));
 			} else {
@@ -208,7 +212,7 @@ class BindContext {
 			setVariable(propertyRawValueVariableName, value);
 		}
 	}
-	
+
 	private void initParam(Map<String, Object> params) {
 		propertyDelimiter = asString(params.get("propertyDelimiter"));
 		if (propertyDelimiter == null) {
@@ -252,12 +256,12 @@ class BindContext {
 				formatter = ValueFormatter.DEFAULT_FORMATTER;
 			}
 		}
-		
+
 		Boolean adr = (Boolean) params.get("autoDetectErrors");
 		if (adr != null) {
 			autoDetectErrors = adr;
 		}
-		
+
 		beanVariableName = asString(params.get("beanVariableName"));
 		if (beanVariableName == null) {
 			if (parent != null) {

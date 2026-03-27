@@ -91,7 +91,6 @@ public interface TopViewDefinitionManager extends TypedDefinitionManager<TopView
 	 */
 	public <T extends TopViewParts> List<T> getRequestTopViewPartsList(Class<T> type);
 
-
 	/**
 	 * ロール対象となるTopViewPartsのHandlerを返します。
 	 *

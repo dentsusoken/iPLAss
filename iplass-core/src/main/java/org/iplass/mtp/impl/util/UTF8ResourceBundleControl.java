@@ -43,7 +43,7 @@ public class UTF8ResourceBundleControl extends ResourceBundle.Control {
 				return null;
 			}
 			String resourceName = toResourceName(bundleName, "properties");
-			
+
 			InputStream stream = null;
 			try {
 				stream = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>) () -> {
@@ -74,7 +74,7 @@ public class UTF8ResourceBundleControl extends ResourceBundle.Control {
 			}
 			return bundle;
 		}
-		
+
 		return super.newBundle(baseName, locale, format, loader, reload);
 	}
 }

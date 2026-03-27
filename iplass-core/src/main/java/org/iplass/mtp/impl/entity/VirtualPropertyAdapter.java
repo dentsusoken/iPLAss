@@ -62,7 +62,6 @@ import org.iplass.mtp.impl.properties.extend.select.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class VirtualPropertyAdapter extends ASTTransformerSupport implements SearchResultIterator {
 	private static final Logger logger = LoggerFactory.getLogger(VirtualPropertyAdapter.class);
 
@@ -73,7 +72,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		int actualIndex;
 		PrimitivePropertyHandler ph;
 		LoadAdapterMapping lam;
-		
+
 		boolean isSelectCast;
 
 		public FieldMapping(int actualIndex, ValueExpression field, ValueExpression actualField,
@@ -83,7 +82,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 			this.actualField = actualField;
 			this.ph = ph;
 		}
-		
+
 		public FieldMapping(int actualIndex, ValueExpression field, ValueExpression actualField,
 				boolean isSelectCast) {
 			this.actualIndex = actualIndex;
@@ -120,9 +119,9 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		private EntityContext ec;
 		private EntityHandler eh;
 		private ThisRefNormalizer parent;
-		
+
 		private boolean isOn;
-		
+
 		private ThisRefNormalizer(EntityContext ec, EntityHandler eh, ThisRefNormalizer parent) {
 			this.ec = ec;
 			this.eh = eh;
@@ -148,7 +147,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 						break;
 					}
 				}
-				
+
 				if (pname.equalsIgnoreCase(SubQuery.THIS)) {
 					pname = Entity.OID;
 				} else {
@@ -161,11 +160,11 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 						pname = pname + "." + Entity.OID;
 					}
 				}
-				
+
 				if (prefix.length() > 0) {
 					pname = prefix + pname;
 				}
-				
+
 				entityField.setPropertyName(pname);
 			}
 			return super.visit(entityField);
@@ -173,20 +172,26 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 
 		@Override
 		public boolean visit(SubQuery subQuery) {
-			
-			EntityHandler subEh = ec.getHandlerByName(subQuery.getQuery().getFrom().getEntityName());
+
+			EntityHandler subEh = ec.getHandlerByName(subQuery.getQuery()
+					.getFrom()
+					.getEntityName());
 			if (subEh == null) {
-				throw new QueryException(subQuery.getQuery().getFrom().getEntityName() + " not defined");
+				throw new QueryException(subQuery.getQuery()
+						.getFrom()
+						.getEntityName() + " not defined");
 			}
-			
+
 			ThisRefNormalizer subNor = new ThisRefNormalizer(ec, subEh, this);
-			subQuery.getQuery().accept(subNor);
-			
+			subQuery.getQuery()
+					.accept(subNor);
+
 			if (subQuery.getOn() != null) {
 				subNor.isOn = true;
-				subQuery.getOn().accept(subNor);
+				subQuery.getOn()
+						.accept(subNor);
 			}
-			
+
 			return false;
 		}
 	}
@@ -199,93 +204,98 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 	private Query transformedQuery;
 	private EntityContext ec;
 	private EntityHandler eh;
-	
+
 	private UpdateCondition updateCond;
 	private UpdateCondition transformedUpdateCond;
-	
+
 	private DeleteCondition deleteCond;
 	private DeleteCondition transformedDeleteCond;
-	
 
 	private boolean isSubQuery = false;
-	
+
 	private boolean isSelectField = false;
 
 	private SearchResultIterator iterator;
-	
+
 	public VirtualPropertyAdapter(Query query, EntityContext ec, EntityHandler eh) {
 		selectFieldMap = new HashMap<ValueExpression, FieldMapping>();
-		selectFieldList = new ArrayList<>(query.getSelect().getSelectValues().size());
+		selectFieldList = new ArrayList<>(query.getSelect()
+				.getSelectValues()
+				.size());
 		this.query = query;
 		this.ec = ec;
 		this.eh = eh;
 		loadAdaptorMap = new HashMap<>();
 	}
-	
-	
+
 	public VirtualPropertyAdapter(UpdateCondition updateCond, EntityContext ec, EntityHandler eh) {
 		this.updateCond = updateCond;
 		this.ec = ec;
 		this.eh = eh;
 	}
-	
+
 	public VirtualPropertyAdapter(DeleteCondition deleteCond, EntityContext ec, EntityHandler eh) {
 		this.deleteCond = deleteCond;
 		this.ec = ec;
 		this.eh = eh;
 	}
-	
+
 	public UpdateCondition getTransformedUpdateCondition() {
 		if (transformedUpdateCond == null) {
 			transformedUpdateCond = updateCond.copy();
 			ThisRefNormalizer trn = new ThisRefNormalizer(ec, eh, null);
 			if (transformedUpdateCond.getValues() != null) {
-				for (UpdateValue uv: transformedUpdateCond.getValues()) {
+				for (UpdateValue uv : transformedUpdateCond.getValues()) {
 					if (uv.getValue() != null) {
-						uv.setValue((ValueExpression) uv.getValue().accept(this));
-						uv.getValue().accept(trn);
+						uv.setValue((ValueExpression) uv.getValue()
+								.accept(this));
+						uv.getValue()
+								.accept(trn);
 					}
 				}
 			}
 			if (transformedUpdateCond.getWhere() != null) {
-				transformedUpdateCond.setWhere((Where) transformedUpdateCond.getWhere().accept(this));
-				transformedUpdateCond.getWhere().accept(trn);
+				transformedUpdateCond.setWhere((Where) transformedUpdateCond.getWhere()
+						.accept(this));
+				transformedUpdateCond.getWhere()
+						.accept(trn);
 			}
-			
+
 			if (logger.isDebugEnabled()) {
 				logger.debug("translate to virtualProperty extracted updateCondition: " + transformedUpdateCond);
 			}
-			
+
 		}
-		
+
 		return transformedUpdateCond;
 	}
-	
+
 	public DeleteCondition getTransformedDeleteCondition() {
 		if (transformedDeleteCond == null) {
 			transformedDeleteCond = deleteCond.copy();
 			ThisRefNormalizer trn = new ThisRefNormalizer(ec, eh, null);
 			if (transformedDeleteCond.getWhere() != null) {
-				transformedDeleteCond.setWhere((Where) transformedDeleteCond.getWhere().accept(this));
-				transformedDeleteCond.getWhere().accept(trn);
+				transformedDeleteCond.setWhere((Where) transformedDeleteCond.getWhere()
+						.accept(this));
+				transformedDeleteCond.getWhere()
+						.accept(trn);
 			}
-			
+
 			if (logger.isDebugEnabled()) {
 				logger.debug("translate to virtualProperty extracted deleteCondition: " + transformedDeleteCond);
 			}
 		}
-		
+
 		return transformedDeleteCond;
 	}
-
 
 	public Query getTransformedQuery() {
 		if (transformedQuery == null) {
 			transformedQuery = (Query) query.accept(this);
-			
+
 			//subqueryのon内のReference名指定（もしくはTHIS指定）をoidでの結合に変換する。
 			transformedQuery.accept(new ThisRefNormalizer(ec, eh, null));
-			
+
 			if (logger.isDebugEnabled()) {
 				logger.debug("translate to virtualProperty extracted query: " + transformedQuery);
 			}
@@ -295,7 +305,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 
 	public void setIterator(SearchResultIterator iterator) {
 		this.iterator = iterator;
-		for (Map.Entry<ComplexWrapperType, LoadAdapterMapping> e: loadAdaptorMap.entrySet()) {
+		for (Map.Entry<ComplexWrapperType, LoadAdapterMapping> e : loadAdaptorMap.entrySet()) {
 			e.getValue().loadAdapter.setContext(ec);
 		}
 	}
@@ -308,13 +318,13 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		boolean isNext = iterator.next();
 		if (isNext) {
 			if (loadAdaptorMap.size() != 0) {
-				for (Map.Entry<ComplexWrapperType, LoadAdapterMapping> e: loadAdaptorMap.entrySet()) {
+				for (Map.Entry<ComplexWrapperType, LoadAdapterMapping> e : loadAdaptorMap.entrySet()) {
 					List<Object> values = new ArrayList<Object>();
-					for (FieldMapping f: e.getValue().fields) {
+					for (FieldMapping f : e.getValue().fields) {
 						Object val = iterator.getValue(f.actualIndex);
 						if (val != null) {
 							if (val instanceof Object[]) {
-								for (Object v: (Object[]) val) {
+								for (Object v : (Object[]) val) {
 									values.add(v);
 								}
 							} else {
@@ -342,7 +352,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		FieldMapping mappedProp = selectFieldList.get(index);
 		return getValueImpl(mappedProp);
 	}
-	
+
 	private Object getValueImpl(FieldMapping mappedProp) {
 		Object value = iterator.getValue(mappedProp.actualIndex);
 
@@ -353,7 +363,8 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 				}
 			} else if (mappedProp.lam != null) {
 				//ComplexTypeの変換
-				if (mappedProp.ph.getMetaData().getMultiplicity() == 1) {
+				if (mappedProp.ph.getMetaData()
+						.getMultiplicity() == 1) {
 					value = mappedProp.lam.loadAdapter.toComplexWrapperTypeValue(value);
 				} else {
 					if (value != null) {
@@ -365,10 +376,13 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 						value = extendValArray;
 					}
 				}
-			} else if (mappedProp.ph.getMetaData().getType() instanceof VirtualType) {
-				VirtualType vt = (VirtualType) mappedProp.ph.getMetaData().getType();
+			} else if (mappedProp.ph.getMetaData()
+					.getType() instanceof VirtualType) {
+				VirtualType vt = (VirtualType) mappedProp.ph.getMetaData()
+						.getType();
 				//VirtualTypeの変換
-				if (mappedProp.ph.getMetaData().getMultiplicity() == 1) {
+				if (mappedProp.ph.getMetaData()
+						.getMultiplicity() == 1) {
 					value = vt.toVirtualTypeValue(value, mappedProp.ph);
 				} else {
 					if (value != null) {
@@ -406,15 +420,13 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 //
 //クエリ変換と型マッピング処理は分けるべきか？
 
-
-
 	//以下、query解析処理
 
 	@Override
 	public ASTNode visit(Select select) {
 		List<ValueExpression> selectValues = new ArrayList<ValueExpression>();
 		if (select.getSelectValues() != null) {
-			for (ValueExpression v: select.getSelectValues()) {
+			for (ValueExpression v : select.getSelectValues()) {
 				if (!isSubQuery && v instanceof EntityField) {
 					isSelectField = true;
 				}
@@ -424,21 +436,27 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 				if (!isSubQuery) {
 					if (v instanceof EntityField) {
 						EntityHandler handler = null;
-						if (eh.getMetaData().getName().equals(query.getFrom().getEntityName())) {
+						if (eh.getMetaData()
+								.getName()
+								.equals(query.getFrom()
+										.getEntityName())) {
 							handler = eh;
 						} else {
-							handler = ec.getHandlerByName(query.getFrom().getEntityName());
+							handler = ec.getHandlerByName(query.getFrom()
+									.getEntityName());
 						}
 						PropertyHandler ph = handler.getPropertyCascade(((EntityField) v).getPropertyName(), ec);
 						if (ph instanceof PrimitivePropertyHandler) {
 							FieldMapping fMap = new FieldMapping(selectValues.size() - 1, v, transV, (PrimitivePropertyHandler) ph);
 							selectFieldMap.put(v, fMap);
 							selectFieldList.add(fMap);
-							PropertyType type = fMap.ph.getMetaData().getType();
+							PropertyType type = fMap.ph.getMetaData()
+									.getType();
 							if (type instanceof ComplexWrapperType) {
 								LoadAdapterMapping laMap = null;
-								for (Map.Entry<ComplexWrapperType, LoadAdapterMapping> e: loadAdaptorMap.entrySet()) {
-									if (e.getKey().equals(type)) {
+								for (Map.Entry<ComplexWrapperType, LoadAdapterMapping> e : loadAdaptorMap.entrySet()) {
+									if (e.getKey()
+											.equals(type)) {
 										laMap = e.getValue();
 										break;
 									}
@@ -473,12 +491,13 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 	@Override
 	public ASTNode visit(EntityField entityField) {
 		ValueExpression v = null;
-		
-		if (entityField.getPropertyName().charAt(0) == '.') {
+
+		if (entityField.getPropertyName()
+				.charAt(0) == '.') {
 			//on句での指定と判断して、処理しない
 			return (ValueExpression) super.visit(entityField);
 		}
-		
+
 		PropertyHandler ph = getPh(entityField.getPropertyName());
 		if (ph instanceof PrimitivePropertyHandler) {
 			MetaPrimitiveProperty mpp = (MetaPrimitiveProperty) ph.getMetaData();
@@ -513,12 +532,14 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		Query subQuery = null;
 		Condition on = null;
 		if (sq.getQuery() != null) {
-			subQuery = (Query) sq.getQuery().accept(this);
+			subQuery = (Query) sq.getQuery()
+					.accept(this);
 		}
 		if (sq.getOn() != null) {
-			on = (Condition) sq.getOn().accept(this);
+			on = (Condition) sq.getOn()
+					.accept(this);
 		}
-		
+
 		SubQuery transSubQuery = new SubQuery(subQuery, on);
 
 		query = parentQuery;
@@ -527,33 +548,40 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		return transSubQuery;
 
 	}
-	
-	
+
 	protected PropertyHandler getPh(String propName) {
 		EntityHandler handler = null;
 		if (query != null) {
-			if (eh.getMetaData().getName().equals(query.getFrom().getEntityName())) {
+			if (eh.getMetaData()
+					.getName()
+					.equals(query.getFrom()
+							.getEntityName())) {
 				handler = eh;
 			} else {
-				handler = ec.getHandlerByName(query.getFrom().getEntityName());
+				handler = ec.getHandlerByName(query.getFrom()
+						.getEntityName());
 			}
 		} else if (updateCond != null) {
-			if (eh.getMetaData().getName().equals(updateCond.getDefinitionName())) {
+			if (eh.getMetaData()
+					.getName()
+					.equals(updateCond.getDefinitionName())) {
 				handler = eh;
 			} else {
 				handler = ec.getHandlerByName(updateCond.getDefinitionName());
 			}
 		} else {
-			if (eh.getMetaData().getName().equals(deleteCond.getDefinitionName())) {
+			if (eh.getMetaData()
+					.getName()
+					.equals(deleteCond.getDefinitionName())) {
 				handler = eh;
 			} else {
 				handler = ec.getHandlerByName(deleteCond.getDefinitionName());
 			}
 		}
-		
+
 		return handler.getPropertyCascade(propName, ec);
 	}
-	
+
 	@Override
 	public ASTNode visit(Literal literal) {
 		//FIXME SelectValueって判断をここでやらなくてよい形にきれいにならないか？
@@ -586,12 +614,14 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 			//FIXME SelectValueって判断をここでやらなくてよい形にきれいにならないか？
 			//検索条件、ソート、セレクト項目それぞれのハンドリングをPropertTypeのメソッドにデリゲートする形に
 			if (ph != null && ph.getEnumType() == PropertyDefinitionType.SELECT) {
-				SelectType type = (SelectType) ((PrimitivePropertyHandler) ph).getMetaData().getType();
+				SelectType type = (SelectType) ((PrimitivePropertyHandler) ph).getMetaData()
+						.getType();
 				List<Value> sl = type.runtimeValues();
 				if (sl != null && sl.size() > 0) {
 					Case cs = new Case();
 					for (int i = 0; i < sl.size(); i++) {
-						cs.when(new Equals(propName, new Literal(sl.get(i).getValue(), false)), new Literal(Long.valueOf(i), false));
+						cs.when(new Equals(propName, new Literal(sl.get(i)
+								.getValue(), false)), new Literal(Long.valueOf(i), false));
 					}
 					cs.elseClause(new Literal(null, false));
 					return new SortSpec(cs, order.getType(), order.getNullOrderingSpec());

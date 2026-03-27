@@ -25,10 +25,11 @@ public interface Credential {
 	 * authenticationFactorにAuthenticationProcessTypeをセットする際のキー名
 	 */
 	public static final String FACTOR_AUTHENTICATION_PROCESS_TYPE = "mtp.auth.AuthenticationProcessType";
-	
+
 	public String getId();
-	
+
 	public Object getAuthenticationFactor(String name);
+
 	public void setAuthenticationFactor(String name, Object value);
 
 }

@@ -27,18 +27,21 @@ public class WebhookAuthTokenInfo implements AuthTokenInfo {
 	private String type;
 	private String key;
 	private Timestamp startDate;
-	public WebhookAuthTokenInfo(){
-		
+
+	public WebhookAuthTokenInfo() {
+
 	}
-	public WebhookAuthTokenInfo(String type, String key){
-		this.type=type;
-		this.key=key;
+
+	public WebhookAuthTokenInfo(String type, String key) {
+		this.type = type;
+		this.key = key;
 	}
+
 	@Override
 	public String getType() {
 		return type;
 	}
-	
+
 	public void setType(String type) {
 		this.type = type;
 	}
@@ -51,16 +54,16 @@ public class WebhookAuthTokenInfo implements AuthTokenInfo {
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
+
 	@Override
 	public Timestamp getStartDate() {
 		return startDate;
 	}
-	
+
 	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}
-	
+
 	@Override
 	public String getDescription() {
 		StringBuilder sb = new StringBuilder();

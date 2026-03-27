@@ -65,7 +65,8 @@ public class MetaRequiresAtLeastOneFieldValidator extends MetaViewValidator {
 			for (MetaPropertyValidationCondition meta : propertyList) {
 				PropertyValidationCondition condition = meta.currentConfig(definitionId);
 				if (condition != null) {
-					validator.getPropertyList().add(condition);
+					validator.getPropertyList()
+							.add(condition);
 				}
 			}
 		}

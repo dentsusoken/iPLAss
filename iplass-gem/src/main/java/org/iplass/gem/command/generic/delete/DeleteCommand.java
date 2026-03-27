@@ -49,25 +49,30 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @ActionMapping(
-	name=DeleteCommand.ACTION_NAME,
-	displayName="削除",
-	paramMapping={
-		@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-		@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-		@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
-	},
-	result={
-		@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_SEARCH),
-		@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
-		@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-				layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-		@Result(status=Constants.CMD_EXEC_SUCCESS_BACK_PATH, type=Type.JSP,
-				value=Constants.CMD_RSLT_JSP_BACK_PATH,
-				templateName="gem/generic/backPath"),
-	},
-	tokenCheck=@TokenCheck
+		name = DeleteCommand.ACTION_NAME,
+		displayName = "削除",
+		paramMapping = {
+				@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+				@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+				@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
+		},
+		result = {
+				@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_SEARCH),
+				@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_EDIT),
+				@Result(
+						status = Constants.CMD_EXEC_ERROR_NODATA,
+						type = Type.TEMPLATE,
+						value = Constants.TEMPLATE_COMMON_ERROR,
+						layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+				@Result(
+						status = Constants.CMD_EXEC_SUCCESS_BACK_PATH,
+						type = Type.JSP,
+						value = Constants.CMD_RSLT_JSP_BACK_PATH,
+						templateName = "gem/generic/backPath"),
+		},
+		tokenCheck = @TokenCheck
 )
-@CommandClass(name="gem/generic/delete/DeleteCommand", displayName="削除")
+@CommandClass(name = "gem/generic/delete/DeleteCommand", displayName = "削除")
 public final class DeleteCommand extends DeleteCommandBase {
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteCommand.class);
@@ -115,7 +120,8 @@ public final class DeleteCommand extends DeleteCommandBase {
 		if (StringUtil.isNotEmpty(oid)) {
 			Long targetVersion = null;
 			DeleteTargetVersion deleteTargetVersion = DeleteTargetVersion.ALL;
-			if (context.getEntityDefinition().getVersionControlType() != VersionControlType.NONE
+			if (context.getEntityDefinition()
+					.getVersionControlType() != VersionControlType.NONE
 					&& Boolean.valueOf(deleteSpecificVersion)) {
 				//バージョン指定削除
 				targetVersion = Long.parseLong(version);
@@ -134,7 +140,10 @@ public final class DeleteCommand extends DeleteCommandBase {
 				if (ret.getResultType() == ResultType.ERROR) {
 					//削除でエラーが出てたら終了
 					request.setAttribute(Constants.MESSAGE, ret.getMessage());
-					ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction().rollback();
+					ManagerLocator.getInstance()
+							.getManager(TransactionManager.class)
+							.currentTransaction()
+							.rollback();
 					detail.execute(request);
 					return Constants.CMD_EXEC_ERROR;
 				}

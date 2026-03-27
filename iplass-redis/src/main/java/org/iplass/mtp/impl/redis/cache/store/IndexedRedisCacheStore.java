@@ -81,14 +81,16 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 					if (logger.isDebugEnabled()) {
 						logger.debug(String.format("Occur expired event. channel:%s, message:%s", channel, message));
 					}
-					Object key = codec.decodeKey(codec.getCharset().encode(message));
+					Object key = codec.decodeKey(codec.getCharset()
+							.encode(message));
 					notifyRemoved(new CacheEntry(key, null));
 					removeAllIndexByEntryKey(key);
 				}
 			}
 		});
 		this.pubSubCommands = pubSubConnection.sync();
-		pubSubCommands.subscribe("__keyevent@" + String.valueOf(factory.getServer().getDatabase()) + "__:expired"); // Expiredイベントのみ受信、DB番号は0固定
+		pubSubCommands.subscribe("__keyevent@" + String.valueOf(factory.getServer()
+				.getDatabase()) + "__:expired"); // Expiredイベントのみ受信、DB番号は0固定
 	}
 
 	@Override
@@ -119,7 +121,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 				commands.multi();
 
-				if (entry.getTimeToLive().longValue() > 0L) {
+				if (entry.getTimeToLive()
+						.longValue() > 0L) {
 					commands.setex(entry.getKey(), getTtlSeconds(entry), entry);
 				} else {
 					commands.set(entry.getKey(), entry);
@@ -160,7 +163,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 				if (previous == null) {
 					commands.multi();
 
-					if (entry.getTimeToLive().longValue() >= 0L) {
+					if (entry.getTimeToLive()
+							.longValue() >= 0L) {
 						commands.setex(entry.getKey(), getTtlSeconds(entry), entry);
 					} else {
 						commands.set(entry.getKey(), entry);
@@ -224,13 +228,15 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 					setTtl(newEntry);
 					if (oldEntry != null) {
 						// replace
-						if (!oldEntry.getKey().equals(newEntry.getKey())) {
+						if (!oldEntry.getKey()
+								.equals(newEntry.getKey())) {
 							throw new IllegalArgumentException("oldEntry key not equals newEntry key");
 						}
 
 						commands.multi();
 
-						if (newEntry.getTimeToLive().longValue() >= 0L) {
+						if (newEntry.getTimeToLive()
+								.longValue() >= 0L) {
 							commands.setex(newEntry.getKey(), getTtlSeconds(newEntry), newEntry);
 						} else {
 							commands.set(newEntry.getKey(), newEntry);
@@ -249,7 +255,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 						commands.multi();
 
 						// putIfAbsent
-						if (newEntry.getTimeToLive().longValue() >= 0L) {
+						if (newEntry.getTimeToLive()
+								.longValue() >= 0L) {
 							commands.setex(newEntry.getKey(), getTtlSeconds(newEntry), newEntry);
 						} else {
 							commands.set(newEntry.getKey(), newEntry);
@@ -288,7 +295,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 					CacheEntry newEntry = mappingFunction.apply(key);
 					if (newEntry != null) {
 						setTtl(newEntry);
-						if (newEntry.getTimeToLive().longValue() >= 0L) {
+						if (newEntry.getTimeToLive()
+								.longValue() >= 0L) {
 							commands.setex(newEntry.getKey(), getTtlSeconds(newEntry), newEntry);
 						} else {
 							commands.set(newEntry.getKey(), newEntry);
@@ -400,7 +408,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 					commands.multi();
 
-					if (entry.getTimeToLive().longValue() >= 0L) {
+					if (entry.getTimeToLive()
+							.longValue() >= 0L) {
 						commands.setex(entry.getKey(), getTtlSeconds(entry), entry);
 					} else {
 						commands.set(entry.getKey(), entry);
@@ -428,7 +437,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-		if (!oldEntry.getKey().equals(newEntry.getKey())) {
+		if (!oldEntry.getKey()
+				.equals(newEntry.getKey())) {
 			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
 		}
 
@@ -446,7 +456,8 @@ public class IndexedRedisCacheStore extends RedisCacheStoreBase {
 
 					commands.multi();
 
-					if (newEntry.getTimeToLive().longValue() >= 0L) {
+					if (newEntry.getTimeToLive()
+							.longValue() >= 0L) {
 						commands.setex(newEntry.getKey(), getTtlSeconds(newEntry), newEntry);
 					} else {
 						commands.set(newEntry.getKey(), newEntry);

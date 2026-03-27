@@ -68,7 +68,6 @@ public class SelectValue implements Comparable<SelectValue>, Serializable {
 		return "{\"value\":\"" + value + "\"" + ",\"displayName\":\"" + displayName + "\"}";
 	}
 
-
 	public SelectValue copy() {
 		return new SelectValue(value, displayName);
 	}

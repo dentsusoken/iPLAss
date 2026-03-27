@@ -350,7 +350,7 @@ public class ErrorsTag extends BodyTagSupport implements TryCatchFinally {
 		if (errors instanceof String) {
 			writeMessage((String) errors, out);
 		} else if (errors instanceof List) {
-			for (Object e: (List) errors) {
+			for (Object e : (List) errors) {
 				writeError(e, out);
 			}
 		} else if (errors instanceof Object[]) {
@@ -359,11 +359,11 @@ public class ErrorsTag extends BodyTagSupport implements TryCatchFinally {
 				writeError(array[i], out);
 			}
 		} else if (errors instanceof MappingError) {
-			for (String m: ((MappingError) errors).getErrorMessages()) {
+			for (String m : ((MappingError) errors).getErrorMessages()) {
 				writeError(m, out);
 			}
 		} else if (errors instanceof MappingResult) {
-			for (MappingError me: ((MappingResult) errors).getErrors()) {
+			for (MappingError me : ((MappingResult) errors).getErrors()) {
 				writeError(me, out);
 			}
 		} else if (errors instanceof MappingException) {

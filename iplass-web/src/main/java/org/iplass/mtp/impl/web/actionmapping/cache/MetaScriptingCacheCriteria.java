@@ -57,7 +57,7 @@ public class MetaScriptingCacheCriteria extends MetaCacheCriteria {
 	@Override
 	public void applyConfig(CacheCriteriaDefinition definition) {
 		fillFrom(definition);
-		ScriptingCacheCriteriaDefinition def = (ScriptingCacheCriteriaDefinition)definition;
+		ScriptingCacheCriteriaDefinition def = (ScriptingCacheCriteriaDefinition) definition;
 		script = def.getScript();
 	}
 
@@ -81,8 +81,10 @@ public class MetaScriptingCacheCriteria extends MetaCacheCriteria {
 		private Script scriptRuntime;
 
 		public ScriptingCacheCriteriaRuntime(MetaActionMapping actionMapping) {
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
-			scriptRuntime = tc.getScriptEngine().createScript(script, SCRIPT_PREFIX + "_" + actionMapping.getName());
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
+			scriptRuntime = tc.getScriptEngine()
+					.createScript(script, SCRIPT_PREFIX + "_" + actionMapping.getName());
 		}
 
 		@Override
@@ -92,7 +94,8 @@ public class MetaScriptingCacheCriteria extends MetaCacheCriteria {
 			ScriptEngine scriptEngine = tc.getScriptEngine();
 			ScriptContext sc = scriptEngine.newScriptContext();
 			sc.setAttribute(REQUEST_BINDING_NAME, request);
-			sc.setAttribute("user", AuthContextHolder.getAuthContext().newUserBinding());
+			sc.setAttribute("user", AuthContextHolder.getAuthContext()
+					.newUserBinding());
 			sc.setAttribute("auth", AuthContext.getCurrentContext());
 			return (String) scriptRuntime.eval(sc);
 		}

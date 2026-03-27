@@ -66,7 +66,8 @@ public interface HasSectionPropertyRuntimeMap {
 
 		return isNestProperty && null != parent && parent instanceof SectionNestPropertyRuntime
 				// ネストプロパティの場合は、取得したプロパティのネストランタイムから取得し、返却する
-				? ((SectionNestPropertyRuntime) parent).getNest().get(nestPropertyKey)
+				? ((SectionNestPropertyRuntime) parent).getNest()
+						.get(nestPropertyKey)
 				// 通常プロパティの場合は、先に取得したプロパティランタイムを返却する
 				: parent;
 	}
@@ -91,7 +92,9 @@ public interface HasSectionPropertyRuntimeMap {
 	default <T extends PropertyEditorRuntime> T getPropertyEditorRuntime(String propertyName, Class<T> clazz) {
 		SectionPropertyRuntime property = getSectionPropertyRuntime(propertyName);
 
-		return (T) Optional.ofNullable(property).map(v -> v.getEditor()).filter(v -> clazz.isAssignableFrom(v.getClass()))
+		return (T) Optional.ofNullable(property)
+				.map(v -> v.getEditor())
+				.filter(v -> clazz.isAssignableFrom(v.getClass()))
 				.orElse(null);
 	}
 }

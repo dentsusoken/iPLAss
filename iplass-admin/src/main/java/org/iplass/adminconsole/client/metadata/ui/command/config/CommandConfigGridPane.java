@@ -91,24 +91,24 @@ public class CommandConfigGridPane extends VLayout {
 		Label captionHint = new Label();
 		SmartGWTUtil.addHintToLabel(captionHint,
 				"<style type=\"text/css\"><!--"
-				+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
-				+ "ul.notes li{padding:5px 0px;}"
-				+ "ul.notes li span.strong {text-decoration:underline;color:red}"
-				+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
-				+ "--></style>"
-				+ "<h3>Notes</h3>"
-				+ "<ul class=\"notes\">"
-				+ AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigGridPane_runScriptComment1")
-				+ AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigGridPane_runScriptComment2")
-				+ AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigGridPane_runScriptComment3")
-				+ "</ul>");
+						+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
+						+ "ul.notes li{padding:5px 0px;}"
+						+ "ul.notes li span.strong {text-decoration:underline;color:red}"
+						+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
+						+ "--></style>"
+						+ "<h3>Notes</h3>"
+						+ "<ul class=\"notes\">"
+						+ AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigGridPane_runScriptComment1")
+						+ AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigGridPane_runScriptComment2")
+						+ AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigGridPane_runScriptComment3")
+						+ "</ul>");
 		captionComposit.addMember(captionHint);
 
 		grid = new CommandConfigGrid();
 		// レコード編集イベント設定
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				editCommand((ListGridRecord)event.getRecord());
+				editCommand((ListGridRecord) event.getRecord());
 			}
 		});
 
@@ -153,24 +153,25 @@ public class CommandConfigGridPane extends VLayout {
 	 * @param config 編集対象のCommandConfig
 	 */
 	public void setConfig(CommandConfig config) {
-		grid.setData(new ListGridRecord[]{});
+		grid.setData(new ListGridRecord[] {});
 		if (config != null) {
 			List<ListGridRecord> records = new ArrayList<ListGridRecord>();
 			if (config instanceof SingleCommandConfig) {
-				records.add(createSingleRecord((SingleCommandConfig)config, null));
+				records.add(createSingleRecord((SingleCommandConfig) config, null));
 			} else if (config instanceof CompositeCommandConfig) {
-				CompositeCommandConfig composite = (CompositeCommandConfig)config;
+				CompositeCommandConfig composite = (CompositeCommandConfig) config;
 				records.addAll(createCompositeRecord(composite));
 
 				execScript = composite.getExecuteScript();
 				initScript = composite.getInitializeScript();
 				if (composite.getTransactionPropagation() != null) {
-					transactionPropagation = composite.getTransactionPropagation().name();
+					transactionPropagation = composite.getTransactionPropagation()
+							.name();
 				}
 				rollbackWhenException = composite.isRollbackWhenException();
 				throwExceptionIfSetRollbackOnly = composite.isThrowExceptionIfSetRollbackOnly();
 			}
-			grid.setData(records.toArray(new ListGridRecord[]{}));
+			grid.setData(records.toArray(new ListGridRecord[] {}));
 		}
 		setExecScriptCommandStatus();
 	}
@@ -198,7 +199,7 @@ public class CommandConfigGridPane extends VLayout {
 		}
 
 		if (records.length == 1) {
-			SingleCommandConfig single = (SingleCommandConfig)records[0].getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+			SingleCommandConfig single = (SingleCommandConfig) records[0].getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 			return single;
 		} else {
 			CompositeCommandConfig composite = new CompositeCommandConfig();
@@ -219,7 +220,7 @@ public class CommandConfigGridPane extends VLayout {
 			SingleCommandConfig[] commands = new SingleCommandConfig[records.length];
 			int i = 0;
 			for (ListGridRecord record : records) {
-				SingleCommandConfig single = (SingleCommandConfig)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+				SingleCommandConfig single = (SingleCommandConfig) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 				commands[i] = single;
 				i++;
 			}
@@ -231,24 +232,25 @@ public class CommandConfigGridPane extends VLayout {
 	public void addCommand(MetaDataItemMenuTreeNode itemNode) {
 
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.getDefinition(TenantInfoHolder.getId(), CommandDefinition.class.getName(), itemNode.getDefName(), new AdminAsyncCallback<CommandDefinition>() {
+		service.getDefinition(TenantInfoHolder.getId(), CommandDefinition.class.getName(), itemNode.getDefName(),
+				new AdminAsyncCallback<CommandDefinition>() {
 
-			@Override
-			public void onSuccess(CommandDefinition result) {
-				SingleCommandConfig command = new SingleCommandConfig();
+					@Override
+					public void onSuccess(CommandDefinition result) {
+						SingleCommandConfig command = new SingleCommandConfig();
 //				command.setName(result.getName());
 //				command.setDisplayName(result.getDisplayName());
 //				command.setDescription(result.getDescription());
-				command.setCommandName(result.getName());
-				command.setInitializeScript(null);
+						command.setCommandName(result.getName());
+						command.setInitializeScript(null);
 
-				ListGridRecord newRecord = createSingleRecord(command, null);
-				grid.addData(newRecord);
-				setExecScriptCommandStatus();
-				grid.refreshFields();
-			}
+						ListGridRecord newRecord = createSingleRecord(command, null);
+						grid.addData(newRecord);
+						setExecScriptCommandStatus();
+						grid.refreshFields();
+					}
 
-		});
+				});
 	}
 
 	private ListGridRecord createSingleRecord(SingleCommandConfig single, ListGridRecord record) {
@@ -261,7 +263,7 @@ public class CommandConfigGridPane extends VLayout {
 		record.setAttribute(FIELD_NAME.INIT_SCRIPT.name(), single.getInitializeScript());
 		if (SmartGWTUtil.isEmpty(single.getInitializeScript())) {
 			record.setAttribute(FIELD_NAME.INIT_SCRIPT_STATUS.name(), "");
-			single.setInitializeScript(null);	//今まで""の可能性があったので編集しない場合も想定しクリア
+			single.setInitializeScript(null); //今まで""の可能性があったので編集しない場合も想定しクリア
 		} else {
 			record.setAttribute(FIELD_NAME.INIT_SCRIPT_STATUS.name(), "*");
 		}
@@ -274,13 +276,13 @@ public class CommandConfigGridPane extends VLayout {
 		CommandConfig[] commands = composite.getCommands();
 		for (CommandConfig config : commands) {
 			if (config instanceof SingleCommandConfig) {
-				records.add(createSingleRecord((SingleCommandConfig)config, null));
+				records.add(createSingleRecord((SingleCommandConfig) config, null));
 			} else if (config instanceof CompositeCommandConfig) {
 				//実際Compositeの中にComposite設定が可能だが、AdminConsoleでの登録は１階層とする。
 				//この用途としてはCompositeでは実行を制御できるScriptが定義できること
 				//でも一番上でスクリプト制御すれば、あえて子供で再度制御スクリプト定義をすることもないだろう
 				//TODO むしろCompositeCommandConfigが保持するCommandをSingleCommandConfigにしたほうがいいか？
-				records.addAll(createCompositeRecord((CompositeCommandConfig)config));
+				records.addAll(createCompositeRecord((CompositeCommandConfig) config));
 			}
 		}
 		return records;
@@ -299,7 +301,8 @@ public class CommandConfigGridPane extends VLayout {
 		}
 		if (!SmartGWTUtil.isEmpty(execScript)
 				|| !SmartGWTUtil.isEmpty(initScript)
-				|| (!SmartGWTUtil.isEmpty(transactionPropagation) && !Propagation.REQUIRED.name().equals(transactionPropagation))
+				|| (!SmartGWTUtil.isEmpty(transactionPropagation) && !Propagation.REQUIRED.name()
+						.equals(transactionPropagation))
 				|| !rollbackWhenException
 				|| throwExceptionIfSetRollbackOnly) {
 			compositeCommandConfigButton.setTitle("Composite Command Config(*)");
@@ -332,7 +335,7 @@ public class CommandConfigGridPane extends VLayout {
 		});
 
 		if (record != null) {
-			dialog.setCommandConfig((SingleCommandConfig)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+			dialog.setCommandConfig((SingleCommandConfig) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 		}
 		dialog.show();
 	}
@@ -377,14 +380,14 @@ public class CommandConfigGridPane extends VLayout {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
@@ -392,7 +395,7 @@ public class CommandConfigGridPane extends VLayout {
 			setShowRecordComponents(true);
 			setShowRecordComponentsByCell(true);
 
-			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+			setCanReorderRecords(true); //Dragによる並び替えを可能にする
 
 			ListGridField showMetaButtonField = new ListGridField(FIELD_NAME.SHOW_ICON.name(), " ");
 			showMetaButtonField.setWidth(25);
@@ -408,9 +411,11 @@ public class CommandConfigGridPane extends VLayout {
 		@Override
 		protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 			final String fieldName = this.getFieldName(colNum);
-			if (FIELD_NAME.SHOW_ICON.name().equals(fieldName)) {
+			if (FIELD_NAME.SHOW_ICON.name()
+					.equals(fieldName)) {
 				MetaDataViewGridButton button = new MetaDataViewGridButton(CommandDefinition.class.getName());
-				button.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigGridPane_dispMetadataEditScreenCommand")));
+				button.setActionButtonPrompt(SmartGWTUtil.getHoverString(
+						AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigGridPane_dispMetadataEditScreenCommand")));
 				button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
 					@Override
 					public String targetDefinitionName() {

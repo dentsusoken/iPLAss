@@ -105,14 +105,14 @@ public class AuthenticationProviderSettingPane extends AbstractSettingPane {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
@@ -149,7 +149,8 @@ public class AuthenticationProviderSettingPane extends AbstractSettingPane {
 		if (providers != null && !providers.isEmpty()) {
 			for (String provider : providers) {
 				for (ListGridRecord record : grid.getRecords()) {
-					if (record.getAttribute("name").equals(provider)) {
+					if (record.getAttribute("name")
+							.equals(provider)) {
 						grid.selectRecord(record);
 						break;
 					}

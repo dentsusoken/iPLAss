@@ -35,5 +35,6 @@ public interface I18nServiceAsync {
 
 	void getMultiLangItemInfoForDisp(int tenantId, Definition definition, AsyncCallback<Map<String, List<LocalizedStringDefinition>>> callback);
 
-	void getMultiLangItemInfoForUpdate(int tenantId, Definition definition, Map<String, MultiLangFieldInfo> updateDefinitionInfo, AsyncCallback<Definition> callback);
+	void getMultiLangItemInfoForUpdate(int tenantId, Definition definition, Map<String, MultiLangFieldInfo> updateDefinitionInfo,
+			AsyncCallback<Definition> callback);
 }

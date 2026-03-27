@@ -128,7 +128,8 @@ public class EntityFileUploadTask implements Callable<EntityFileUploadStatus>, E
 	@Override
 	public EntityFileUploadStatus call() throws Exception {
 
-		EntityFileUploadService service = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class);
+		EntityFileUploadService service = ServiceRegistry.getRegistry()
+				.getService(EntityFileUploadService.class);
 
 		try (InputStream is = new FileInputStream(filePath)) {
 			service.validate(is, option.getEntityFileType(), defName, option.isWithReferenceVersion(), option.isIgnoreNotExistsProperty(),
@@ -149,7 +150,7 @@ public class EntityFileUploadTask implements Callable<EntityFileUploadStatus>, E
 			}
 		}
 
-		try (InputStream is = new FileInputStream(filePath)){
+		try (InputStream is = new FileInputStream(filePath)) {
 			EntityFileUploadStatus result = service.upload(is, defName, option);
 			return result;
 		} catch (FileNotFoundException e) {

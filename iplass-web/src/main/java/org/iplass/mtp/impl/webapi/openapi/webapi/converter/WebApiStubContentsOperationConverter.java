@@ -40,13 +40,15 @@ public class WebApiStubContentsOperationConverter extends AbstractWebApiOpenApiO
 
 	@Override
 	protected boolean isMapOpenApiOperationValue(WebApiOpenApiConvertContext context) {
-		return ArrayUtil.isNotEmpty(context.getWebApiDefinition().getStubContents());
+		return ArrayUtil.isNotEmpty(context.getWebApiDefinition()
+				.getStubContents());
 	}
 
 	@Override
 	protected void convertOpenApiOperation(OperationContext operation, WebApiOpenApiConvertContext context) {
 		var content = initResponseContent(operation.getOperation());
-		for (var stubContent : context.getWebApiDefinition().getStubContents()) {
+		for (var stubContent : context.getWebApiDefinition()
+				.getStubContents()) {
 			var contentMediaType = content.get(stubContent.getContentType());
 			var example = new Example();
 			example.setValue(stubContent.getContent());
@@ -56,24 +58,29 @@ public class WebApiStubContentsOperationConverter extends AbstractWebApiOpenApiO
 
 	@Override
 	protected void setWebApiDefaultValue(WebApiOpenApiConvertContext context) {
-		context.getWebApiDefinition().setStubContents(null);
+		context.getWebApiDefinition()
+				.setStubContents(null);
 	}
 
 	@Override
 	protected CheckNext convertWebApiOperation(OperationContext operation, WebApiOpenApiConvertContext context) {
-		var service = ServiceRegistry.getRegistry(). getService(OpenApiService.class);
-		var jsonMapper = service.getOpenApiResolver().getObjectMapper(OpenApiFileType.JSON, context.getVersion());
+		var service = ServiceRegistry.getRegistry()
+				.getService(OpenApiService.class);
+		var jsonMapper = service.getOpenApiResolver()
+				.getObjectMapper(OpenApiFileType.JSON, context.getVersion());
 
 		var okContent = getResponseContent(operation.getOperation());
 		if (null != okContent) {
 			for (var entry : okContent.entrySet()) {
 				var contentType = entry.getKey();
-				var examples = entry.getValue().getExamples();
+				var examples = entry.getValue()
+						.getExamples();
 
 				if (null != examples) {
 					for (var exampleEntry : examples.entrySet()) {
 						var label = exampleEntry.getKey();
-						var contentObject = exampleEntry.getValue().getValue();
+						var contentObject = exampleEntry.getValue()
+								.getValue();
 
 						var content = getStubContent(contentObject, jsonMapper);
 
@@ -83,11 +90,14 @@ public class WebApiStubContentsOperationConverter extends AbstractWebApiOpenApiO
 							stubContent.setLabel(label);
 							stubContent.setContent(content);
 
-							if (!containsStubContent(context.getWebApiDefinition().getStubContents(), stubContent)) {
+							if (!containsStubContent(context.getWebApiDefinition()
+									.getStubContents(), stubContent)) {
 								// 同一スタブが含まれていない場合は追加する
-								var newStubContents = ArrayUtil.add(context.getWebApiDefinition().getStubContents(), stubContent,
+								var newStubContents = ArrayUtil.add(context.getWebApiDefinition()
+										.getStubContents(), stubContent,
 										WebApiStubContent[]::new);
-								context.getWebApiDefinition().setStubContents(newStubContents);
+								context.getWebApiDefinition()
+										.setStubContents(newStubContents);
 							}
 						}
 					}

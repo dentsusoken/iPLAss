@@ -31,7 +31,6 @@ import org.iplass.mtp.impl.query.prepared.PreparedQueryBinding;
 import org.iplass.mtp.impl.query.prepared.PreparedQueryTemplate;
 import org.iplass.mtp.impl.query.prepared.PreparedQueryTemplateFactory;
 
-
 /**
  * <p>
  * バインド変数を定義可能なQuery。
@@ -104,7 +103,8 @@ public class PreparedQuery {
 		Timestamp date = ex.getCurrentTimestamp();//同一トランザクション内の時間を一緒にするため
 		return new PreparedQueryBinding(
 				date,
-				AuthContextHolder.getAuthContext().newUserBinding(),
+				AuthContextHolder.getAuthContext()
+						.newUserBinding(),
 				binding);
 	}
 

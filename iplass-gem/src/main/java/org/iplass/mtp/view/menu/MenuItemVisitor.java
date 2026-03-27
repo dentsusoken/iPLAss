@@ -49,7 +49,7 @@ public interface MenuItemVisitor<R> {
 	 * @param nodeMenuItem 階層フォルダ用メニューアイテム
 	 * @return 処理結果
 	 */
-	public R visit(NodeMenuItem nodeMenuItem) ;
+	public R visit(NodeMenuItem nodeMenuItem);
 
 	/**
 	 * Action実行用メニューアイテムに対する処理

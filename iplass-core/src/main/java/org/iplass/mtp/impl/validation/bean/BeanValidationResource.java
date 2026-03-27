@@ -27,7 +27,7 @@ import org.iplass.mtp.impl.validation.ValidationService;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class BeanValidationResource implements TenantResource {
-	
+
 	private MessageInterpolator messageInterpolator;
 
 	public MessageInterpolator getMessageInterpolator() {
@@ -36,7 +36,8 @@ public class BeanValidationResource implements TenantResource {
 
 	@Override
 	public void init(TenantContext tenantContext) {
-		ValidationService vs = ServiceRegistry.getRegistry().getService(ValidationService.class);
+		ValidationService vs = ServiceRegistry.getRegistry()
+				.getService(ValidationService.class);
 		BeanValidationConfig bvConfig = vs.getBeanValidation();
 		if (bvConfig != null) {
 			MessageInterpolator mi = bvConfig.getMessageInterpolator();

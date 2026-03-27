@@ -28,6 +28,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
+
 /**
  * ツリービュー定義
  * @author lis3wg
@@ -41,7 +42,13 @@ public class TreeView implements Definition {
 	private String name;
 
 	/** 表示名 */
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 
 	/** 記述 */
@@ -166,8 +173,9 @@ public class TreeView implements Definition {
 	 * @return ColModel
 	 */
 	public List<TreeViewGridColModel> getColModel() {
-		if (colModel == null) colModel = new ArrayList<TreeViewGridColModel>();
-	    return colModel;
+		if (colModel == null)
+			colModel = new ArrayList<TreeViewGridColModel>();
+		return colModel;
 	}
 
 	/**
@@ -175,7 +183,7 @@ public class TreeView implements Definition {
 	 * @param colModel ColModel
 	 */
 	public void setColModel(List<TreeViewGridColModel> colModel) {
-	    this.colModel = colModel;
+		this.colModel = colModel;
 	}
 
 	/**
@@ -183,7 +191,7 @@ public class TreeView implements Definition {
 	 * @param colModel ColModel
 	 */
 	public void addColModel(TreeViewGridColModel colModel) {
-	    getColModel().add(colModel);
+		getColModel().add(colModel);
 	}
 
 	/**
@@ -215,11 +223,13 @@ public class TreeView implements Definition {
 	private TreeViewItem search(String name) {
 		for (TreeViewItem item : getItems()) {
 			if (item instanceof EntityTreeViewItem) {
-				if (((EntityTreeViewItem) item).getDefName().equals(name))
+				if (((EntityTreeViewItem) item).getDefName()
+						.equals(name))
 					return item;
 			} else if (item instanceof ReferenceTreeViewItem) {
-				if (((ReferenceTreeViewItem) item).getPropertyName().equals(
-						name))
+				if (((ReferenceTreeViewItem) item).getPropertyName()
+						.equals(
+								name))
 					return item;
 			}
 		}

@@ -30,15 +30,15 @@ import org.iplass.mtp.auth.Permission;
  *
  */
 public class EntityPropertyPermission extends Permission {
-	
+
 	public enum Action {
 		REFERENCE, CREATE, UPDATE;
 	}
-	
+
 	private final String definitionName;
 	private final String propertyName;
 	private final Action action;
-	
+
 	public EntityPropertyPermission(String definitionName, String propertyName, Action action) {
 		this.definitionName = definitionName;
 		this.propertyName = propertyName;

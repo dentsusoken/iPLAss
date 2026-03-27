@@ -87,7 +87,8 @@ public abstract class PartsItem extends AbstractWindow {
 	}
 
 	public void doDropAction(DropActionCallback callback) {
-		if (callback != null) callback.handle();
+		if (callback != null)
+			callback.handle();
 	}
 
 	public interface DropActionCallback {

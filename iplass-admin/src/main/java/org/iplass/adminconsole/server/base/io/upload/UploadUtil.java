@@ -45,7 +45,8 @@ public class UploadUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadUtil.class);
 
-	private UploadUtil(){};
+	private UploadUtil() {
+	};
 
 	public static File writeFileToTemporary(final MultipartRequestParameter fileItem, final File contextTempDir) {
 
@@ -67,8 +68,7 @@ public class UploadUtil {
 			//書き込み
 			try (
 					FileOutputStream fos = new FileOutputStream(tempFile);
-					InputStream is = fileItem.getInputStream();
-					) {
+					InputStream is = fileItem.getInputStream();) {
 				IOUtils.copy(is, fos);
 			}
 		} catch (IOException e) {
@@ -78,7 +78,8 @@ public class UploadUtil {
 	}
 
 	private static File getTempDir(final File contextTempDir) {
-		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+		WebFrontendService webFront = ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class);
 		File tempDir = null;
 		if (webFront.getTempFileDir() == null) {
 			tempDir = contextTempDir;
@@ -90,7 +91,7 @@ public class UploadUtil {
 
 	public static String getValueAsString(final MultipartRequestParameter fileItem) {
 
-		try (InputStream is = fileItem.getInputStream()){
+		try (InputStream is = fileItem.getInputStream()) {
 			// TODO リテラル UTF-8
 			return fileItem.getString(StandardCharsets.UTF_8);
 		} catch (IOException e) {
@@ -116,7 +117,9 @@ public class UploadUtil {
 			//JSONで出力
 			ObjectMapper mapper = new ObjectMapper();
 			//for backward compatibility
-			mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
+			mapper.configOverride(java.sql.Date.class)
+					.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd")
+							.withTimeZone(TimeZone.getDefault()));
 
 			JsonFactory f = new JsonFactory();
 			JsonGenerator g = f.createGenerator(new Writer() {

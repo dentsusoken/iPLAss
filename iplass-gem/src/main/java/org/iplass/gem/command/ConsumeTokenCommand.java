@@ -30,14 +30,14 @@ import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
 
 @WebApi(
-	name=ConsumeTokenCommand.WEBAPI_NAME,
-	displayName="トークン消費",
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	tokenCheck=@WebApiTokenCheck()
+		name = ConsumeTokenCommand.WEBAPI_NAME,
+		displayName = "トークン消費",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		tokenCheck = @WebApiTokenCheck()
 )
-@CommandClass(name="gem/ConsumeTokenCommand", displayName="トークン消費")
+@CommandClass(name = "gem/ConsumeTokenCommand", displayName = "トークン消費")
 public class ConsumeTokenCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/consumeToken";

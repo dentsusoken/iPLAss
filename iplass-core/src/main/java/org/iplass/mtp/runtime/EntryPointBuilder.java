@@ -31,7 +31,7 @@ package org.iplass.mtp.runtime;
  *
  */
 public interface EntryPointBuilder {
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * EntryPointを構築します。
@@ -47,7 +47,7 @@ public interface EntryPointBuilder {
 	 * @throws AlreadyInitializedException <%=doclang == 'ja' ? 'EntryPointが既に初期化済みの場合': 'When EntryPoint has already been initialized'%>
 	 */
 	public EntryPoint build();
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * iPLAssのBootstrapプロパティが指定されているプロパティファイルのパスを指定します。
@@ -61,7 +61,7 @@ public interface EntryPointBuilder {
 	 * @return
 	 */
 	public EntryPointBuilder serverEnvFile(String serverEnvFile);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * このiPLAsssのインスタンスのserverIdを指定します。
@@ -75,7 +75,7 @@ public interface EntryPointBuilder {
 	 * @return
 	 */
 	public EntryPointBuilder serverId(String serverId);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * このiPLAsssのインスタンスのserverRoleを必要に応じて指定します。
@@ -87,7 +87,7 @@ public interface EntryPointBuilder {
 	 * @return
 	 */
 	public EntryPointBuilder serverRole(String... serverRole);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * 設定ファイル（service-config.xml）のパスを指定します。
@@ -101,7 +101,7 @@ public interface EntryPointBuilder {
 	 * @return
 	 */
 	public EntryPointBuilder config(String configFileName);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * service-config.xmlを難読化する場合、難読化設定ファイル（crypt.properties）のパスを指定します。
@@ -114,7 +114,7 @@ public interface EntryPointBuilder {
 	 * @return
 	 */
 	public EntryPointBuilder crypt(String configCryptFileName);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * 設定ファイルを読み込むConfigLoaderのclass名を指定します。
@@ -128,7 +128,7 @@ public interface EntryPointBuilder {
 	 * @return
 	 */
 	public EntryPointBuilder loader(String loaderClassName);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * iPLAssのBootstrapプロパティをnameを指定して設定します。
@@ -141,5 +141,5 @@ public interface EntryPointBuilder {
 	 * @return
 	 */
 	public EntryPointBuilder property(String name, String value);
-	
+
 }

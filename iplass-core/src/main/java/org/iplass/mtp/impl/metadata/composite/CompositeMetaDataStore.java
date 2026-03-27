@@ -55,27 +55,31 @@ public class CompositeMetaDataStore implements MetaDataStore {
 	@Override
 	public void inited(MetaDataRepository service, Config config) {
 
-		if(store == null) {
+		if (store == null) {
 			throw new ServiceConfigrationException("CompositeMetaDataStore must be set 'store' property.");
 		}
 
-		if(defaultStoreClass == null) {
+		if (defaultStoreClass == null) {
 			throw new ServiceConfigrationException("CompositeMetaDataStore must be set 'defaultStoreClassName' property.");
 		}
 		for (MetaDataStore ds : store) {
-			if (ds.getClass().getName().equals(defaultStoreClass)) {
+			if (ds.getClass()
+					.getName()
+					.equals(defaultStoreClass)) {
 				defaultStore = ds;
 				break;
 			}
 		}
 
 		if (pathMapping != null) {
-			for (MetaDataStorePathMapping m: pathMapping) {
+			for (MetaDataStorePathMapping m : pathMapping) {
 				String pathPrefix = m.getPathPrefix();
 				String className = m.getStore();
 				MetaDataStore mdstore = null;
 				for (MetaDataStore ds : store) {
-					if (ds.getClass().getName().equals(className)) {
+					if (ds.getClass()
+							.getName()
+							.equals(className)) {
 						mdstore = ds;
 						break;
 					}
@@ -103,10 +107,12 @@ public class CompositeMetaDataStore implements MetaDataStore {
 			for (Map.Entry<String, MetaDataStore> e : container.entrySet()) {
 				MetaDataStore ds = e.getValue();
 				String pathOfStore = e.getKey();
-				if(!ds.getClass().isInstance(defaultStore)) {
+				if (!ds.getClass()
+						.isInstance(defaultStore)) {
 					ent = ds.loadById(tenantId, id, version);
 					// パス:ストアが1:1なのでエンティティパスとマッピングパスが整合していればそれが正しいストア
-					if(ent != null && ent.getPath().startsWith(pathOfStore)) {
+					if (ent != null && ent.getPath()
+							.startsWith(pathOfStore)) {
 						break;
 					}
 				}
@@ -116,7 +122,8 @@ public class CompositeMetaDataStore implements MetaDataStore {
 			//念の為そのパスに対応するストアがあれば引き直す
 			String path = ent.getPath();
 			MetaDataStore pathMappedStore = resolveStore(path);
-			if(!pathMappedStore.getClass().isInstance(defaultStore)) {
+			if (!pathMappedStore.getClass()
+					.isInstance(defaultStore)) {
 				ent = pathMappedStore.loadById(tenantId, id, version);
 			}
 		}
@@ -140,10 +147,11 @@ public class CompositeMetaDataStore implements MetaDataStore {
 			}
 			List<MetaDataEntryInfo> defaultList = defaultStore.definitionList(tenantId, prefixPath, withInvalid);
 			Iterator<MetaDataEntryInfo> ite = defaultList.iterator();
-			while(ite.hasNext()) {
+			while (ite.hasNext()) {
 				MetaDataEntryInfo e = ite.next();
 				for (String pathPrefix : container.keySet()) {
-					if (e.getPath().startsWith(pathPrefix)) {
+					if (e.getPath()
+							.startsWith(pathPrefix)) {
 						//ダブりがあればマージする前に消しておく.
 						ite.remove();
 					}
@@ -229,11 +237,11 @@ public class CompositeMetaDataStore implements MetaDataStore {
 	}
 
 	public MetaDataStore resolveStore(String path) {
-		if(!"/".equals(path) && path != null) {
-			for(Map.Entry<String, MetaDataStore> e : container.entrySet()) {
+		if (!"/".equals(path) && path != null) {
+			for (Map.Entry<String, MetaDataStore> e : container.entrySet()) {
 				String pathOfStore = e.getKey();
 
-				if(path.startsWith(pathOfStore)) {
+				if (path.startsWith(pathOfStore)) {
 
 					return e.getValue();
 				}
@@ -246,13 +254,13 @@ public class CompositeMetaDataStore implements MetaDataStore {
 
 	public <T extends MetaDataStore> T getStore(Class<T> storeType) {
 		MetaDataStore store = null;
-		for(Map.Entry<String, MetaDataStore> e : container.entrySet()) {
+		for (Map.Entry<String, MetaDataStore> e : container.entrySet()) {
 			store = e.getValue();
 			if (storeType.isInstance(store)) {
 				return storeType.cast(store);
 			}
 		}
-		if(storeType.isInstance(defaultStore)) {
+		if (storeType.isInstance(defaultStore)) {
 			return storeType.cast(defaultStore);
 		} else {
 			return null;
@@ -260,7 +268,7 @@ public class CompositeMetaDataStore implements MetaDataStore {
 	}
 
 	private MetaDataStore resolveStoreById(int tenantId, String id) {
-		for(Map.Entry<String, MetaDataStore> e : container.entrySet()) {
+		for (Map.Entry<String, MetaDataStore> e : container.entrySet()) {
 			MetaDataStore ds = e.getValue();
 			if (ds.loadById(tenantId, id) != null) {
 				return ds;

@@ -54,8 +54,10 @@ public class NamespaceSerializedObjectCodec implements RedisCodec<Object, Object
 	@Override
 	public Object decodeKey(ByteBuffer bytes) {
 		try {
-			String strKey = removePrefix(charset.decode(bytes).toString());
-			ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(strKey)));
+			String strKey = removePrefix(charset.decode(bytes)
+					.toString());
+			ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(Base64.getDecoder()
+					.decode(strKey)));
 			return is.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			throw new SystemException(e);
@@ -85,7 +87,8 @@ public class NamespaceSerializedObjectCodec implements RedisCodec<Object, Object
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			ObjectOutputStream os = new ObjectOutputStream(bytes);
 			os.writeObject(key);
-			String strKey = Base64.getEncoder().encodeToString(bytes.toByteArray());
+			String strKey = Base64.getEncoder()
+					.encodeToString(bytes.toByteArray());
 			return charset.encode(addPrefix(strKey));
 		} catch (IOException e) {
 			throw new SystemException(e);
@@ -96,7 +99,8 @@ public class NamespaceSerializedObjectCodec implements RedisCodec<Object, Object
 	public ByteBuffer encodeValue(Object value) {
 		// LuaScriptの引数として渡されるtimeToLiveはシリアライズしない
 		if (value instanceof Long) {
-			return ByteBuffer.wrap(String.valueOf(value).getBytes());
+			return ByteBuffer.wrap(String.valueOf(value)
+					.getBytes());
 		}
 
 		try {

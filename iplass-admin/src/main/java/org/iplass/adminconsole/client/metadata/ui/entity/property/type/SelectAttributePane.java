@@ -106,7 +106,7 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 		gridLocalSelectValue.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				startSelectValueEdit(false, gridLocalSelectValue, (SelectValueListGridRecord)event.getRecord());
+				startSelectValueEdit(false, gridLocalSelectValue, (SelectValueListGridRecord) event.getRecord());
 			}
 		});
 
@@ -150,15 +150,17 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 			btnDel.setDisabled(true);
 		}
 
-		SelectAttribute selectAttribute = (SelectAttribute)typeAttribute;
+		SelectAttribute selectAttribute = (SelectAttribute) typeAttribute;
 
 		selGlobalSelectValue.setValue(selectAttribute.getSelectValueDefinitionName());
-		if (selectAttribute.getSelectValueDefinitionName() == null || selectAttribute.getSelectValueDefinitionName().isEmpty()) {
+		if (selectAttribute.getSelectValueDefinitionName() == null || selectAttribute.getSelectValueDefinitionName()
+				.isEmpty()) {
 			//SelectValueDefNameが未指定の場合（Globalが未指定）のみ、LocalValueを設定する
 			//SelectValueDefNameが設定されている場合、SelectValueListにその値が設定された状態で渡されるので、
 			//SelectValueListの存在チェックでは、GlobalかLocalかは判断できない
 
-			if (selectAttribute.getSelectValueList() != null && selectAttribute.getSelectValueList().size() > 0) {
+			if (selectAttribute.getSelectValueList() != null && selectAttribute.getSelectValueList()
+					.size() > 0) {
 				List<SelectValue> svList = selectAttribute.getSelectValueList();
 				List<LocalizedSelectValueDefinition> lsvdList = selectAttribute.getLocalizedSelectValueList();
 				int size = svList.size();
@@ -170,9 +172,11 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 
 					for (LocalizedSelectValueDefinition lsvd : lsvdList) {
 
-						if (lsvd.getSelectValueList() != null && lsvd.getSelectValueList().size() > 0) {
-							for (SelectValue lsv :lsvd.getSelectValueList()) {
-								if (sv.getValue().equals(lsv.getValue())) {
+						if (lsvd.getSelectValueList() != null && lsvd.getSelectValueList()
+								.size() > 0) {
+							for (SelectValue lsv : lsvd.getSelectValueList()) {
+								if (sv.getValue()
+										.equals(lsv.getValue())) {
 									LocalizedStringDefinition lsd = new LocalizedStringDefinition();
 									lsd.setLocaleName(lsvd.getLocaleName());
 									lsd.setStringValue(lsv.getDisplayName());
@@ -205,7 +209,7 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 		}
 
 		for (ListGridRecord valueRecord : gridLocalSelectValue.getRecords()) {
-			SelectValueListGridRecord sRecord = (SelectValueListGridRecord)valueRecord;
+			SelectValueListGridRecord sRecord = (SelectValueListGridRecord) valueRecord;
 			SelectValue sv = new SelectValue(sRecord.getSelectValue(), sRecord.getDispName());
 			svList.add(sv);
 
@@ -224,7 +228,7 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 			lsvdList.add(lsvd);
 		}
 
-		SelectAttribute selectAttribute = (SelectAttribute)record.getTypeAttribute();
+		SelectAttribute selectAttribute = (SelectAttribute) record.getTypeAttribute();
 
 		selectAttribute.setSelectValueList(svList);
 		selectAttribute.setLocalizedSelectValueList(lsvdList);

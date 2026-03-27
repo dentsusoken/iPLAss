@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.tools.ui.permissionexplorer.action;
 
-
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
@@ -84,18 +83,22 @@ public class ActionPermissionListPane extends PermissionListPane {
 		if (grid != null) {
 			//対象が多いと時間がかかるのでProgress表示(効かない、先にhideまで処理が進んでしまう)
 			//SmartGWTUtil.showProgress();
-			grid.getTree().openAll();
+			grid.getTree()
+					.openAll();
 			//SmartGWTUtil.hideProgress();
 		}
 	}
 
-
 	@Override
 	protected void doGridContractAll() {
 		if (grid != null) {
-			grid.getTree().closeAll();
-			grid.getTree().openFolders(
-					grid.getTree().getChildren(grid.getTree().getRoot()));
+			grid.getTree()
+					.closeAll();
+			grid.getTree()
+					.openFolders(
+							grid.getTree()
+									.getChildren(grid.getTree()
+											.getRoot()));
 		}
 	}
 
@@ -143,7 +146,8 @@ public class ActionPermissionListPane extends PermissionListPane {
 			}
 
 			@Override
-			public void applyEditRolePermission(PermissionTreeNode record, int rowNum, int colNum, String defName, String roleCode, int roleIndex, DataChangedEvent event) {
+			public void applyEditRolePermission(PermissionTreeNode record, int rowNum, int colNum, String defName, String roleCode, int roleIndex,
+					DataChangedEvent event) {
 
 				Entity[] permissionArray = event.getValueObject(Entity[].class);
 
@@ -155,7 +159,8 @@ public class ActionPermissionListPane extends PermissionListPane {
 			}
 
 			@Override
-			public void showRolePermissionEditDialog(final PermissionTreeNode record, final String defName, final String roleCode, final int roleIndex, final PermissionEditDialog dialog) {
+			public void showRolePermissionEditDialog(final PermissionTreeNode record, final String defName, final String roleCode, final int roleIndex,
+					final PermissionEditDialog dialog) {
 
 				Entity[] permissionArray = record.getPermission(roleIndex);
 

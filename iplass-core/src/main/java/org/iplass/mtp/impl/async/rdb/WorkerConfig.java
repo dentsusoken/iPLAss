@@ -23,22 +23,21 @@ package org.iplass.mtp.impl.async.rdb;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-
 public class WorkerConfig {
-	
+
 	private int virtualWorkerSize = 16;
 	private int actualWorkerSize = 1;
 	private long executionTimeout = TimeUnit.MINUTES.toMillis(3);
 	private long pollingInterval = TimeUnit.SECONDS.toMillis(30);
 	private long restartDelay = TimeUnit.SECONDS.toMillis(30);
-	
+
 	private int maxRetryCount = 100;
-	
+
 	private boolean wakeupOnSubmit = true;//現状localWorkerの場合のみ有効
-	
+
 	private boolean trace = true;
 	private boolean local = true;
-	
+
 	private boolean newProcessPerTask = false;
 	private String javaCommand;
 	private List<String> vmArgs;
@@ -47,78 +46,103 @@ public class WorkerConfig {
 	public int getMaxRetryCount() {
 		return maxRetryCount;
 	}
+
 	public void setMaxRetryCount(int maxRetryCount) {
 		this.maxRetryCount = maxRetryCount;
 	}
+
 	public String getRedirectFile() {
 		return redirectFile;
 	}
+
 	public void setRedirectFile(String redirectFile) {
 		this.redirectFile = redirectFile;
 	}
+
 	public boolean isWakeupOnSubmit() {
 		return wakeupOnSubmit;
 	}
+
 	public void setWakeupOnSubmit(boolean wakeupOnSubmit) {
 		this.wakeupOnSubmit = wakeupOnSubmit;
 	}
+
 	public boolean isNewProcessPerTask() {
 		return newProcessPerTask;
 	}
+
 	public void setNewProcessPerTask(boolean newProcessPerTask) {
 		this.newProcessPerTask = newProcessPerTask;
 	}
+
 	public String getJavaCommand() {
 		return javaCommand;
 	}
+
 	public void setJavaCommand(String javaCommand) {
 		this.javaCommand = javaCommand;
 	}
+
 	public List<String> getVmArgs() {
 		return vmArgs;
 	}
+
 	public void setVmArgs(List<String> vmArgs) {
 		this.vmArgs = vmArgs;
 	}
+
 	public long getRestartDelay() {
 		return restartDelay;
 	}
+
 	public void setRestartDelay(long restartDelay) {
 		this.restartDelay = restartDelay;
 	}
+
 	public long getExecutionTimeout() {
 		return executionTimeout;
 	}
+
 	public void setExecutionTimeout(long executionTimeout) {
 		this.executionTimeout = executionTimeout;
 	}
+
 	public long getPollingInterval() {
 		return pollingInterval;
 	}
+
 	public void setPollingInterval(long pollingInterval) {
 		this.pollingInterval = pollingInterval;
 	}
+
 	public int getVirtualWorkerSize() {
 		return virtualWorkerSize;
 	}
+
 	public void setVirtualWorkerSize(int virtualWorkerSize) {
 		this.virtualWorkerSize = virtualWorkerSize;
 	}
+
 	public int getActualWorkerSize() {
 		return actualWorkerSize;
 	}
+
 	public void setActualWorkerSize(int actualWorkerSize) {
 		this.actualWorkerSize = actualWorkerSize;
 	}
+
 	public boolean isTrace() {
 		return trace;
 	}
+
 	public void setTrace(boolean trace) {
 		this.trace = trace;
 	}
+
 	public boolean isLocal() {
 		return local;
 	}
+
 	public void setLocal(boolean local) {
 		this.local = local;
 	}

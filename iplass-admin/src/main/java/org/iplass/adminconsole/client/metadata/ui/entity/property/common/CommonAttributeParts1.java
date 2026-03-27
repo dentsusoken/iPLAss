@@ -118,13 +118,14 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 	@Override
 	public void applyFrom(String defName, PropertyListGridRecord record, PropertyAttribute typeAttribute) {
 
-		CommonAttribute commonAttribute = (CommonAttribute)typeAttribute;
+		CommonAttribute commonAttribute = (CommonAttribute) typeAttribute;
 
 		txtName.setValue(commonAttribute.getName());
 		txtDisplayName.setValue(commonAttribute.getDisplayName());
 		txtDisplayName.setLocalizedList(commonAttribute.getLocalizedDisplayNameList());
 		if (commonAttribute.getType() != null) {
-			selType.setValue(commonAttribute.getType().name());
+			selType.setValue(commonAttribute.getType()
+					.name());
 			typeControl(commonAttribute.getType());
 		}
 		txtMultipl.setValue(commonAttribute.getMultipleStringValue());
@@ -133,7 +134,7 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 	@Override
 	public void applyTo(PropertyListGridRecord record) {
 
-		CommonAttribute commonAttribute = (CommonAttribute)record.getCommonAttribute();
+		CommonAttribute commonAttribute = (CommonAttribute) record.getCommonAttribute();
 
 		if (txtName.getValue() != null) {
 			commonAttribute.setName(SmartGWTUtil.getStringValue(txtName));

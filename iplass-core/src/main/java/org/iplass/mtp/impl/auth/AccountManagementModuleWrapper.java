@@ -28,19 +28,19 @@ import org.iplass.mtp.auth.login.CredentialUpdateException;
 import org.iplass.mtp.impl.auth.authenticate.AccountManagementModule;
 
 public class AccountManagementModuleWrapper implements AccountManagementModule {
-	
+
 	private List<AccountManagementModule> list;
-	
+
 	public AccountManagementModuleWrapper() {
 	}
-	
+
 	public void add(AccountManagementModule module) {
 		if (list == null) {
 			list = new LinkedList<>();
 		}
 		list.add(module);
 	}
-	
+
 	public AccountManagementModule stripOrThis() {
 		if (list == null) {
 			return null;
@@ -50,10 +50,10 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 		}
 		return this;
 	}
-	
+
 	@Override
 	public boolean canCreate() {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			if (m.canCreate()) {
 				return true;
 			}
@@ -63,7 +63,7 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 
 	@Override
 	public boolean canUpdate() {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			if (m.canUpdate()) {
 				return true;
 			}
@@ -73,7 +73,7 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 
 	@Override
 	public boolean canRemove() {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			if (m.canRemove()) {
 				return true;
 			}
@@ -83,7 +83,7 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 
 	@Override
 	public boolean canRestore() {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			if (m.canRestore()) {
 				return true;
 			}
@@ -93,7 +93,7 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 
 	@Override
 	public boolean canPurge() {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			if (m.canPurge()) {
 				return true;
 			}
@@ -103,7 +103,7 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 
 	@Override
 	public boolean canUpdateCredential() {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			if (m.canUpdateCredential()) {
 				return true;
 			}
@@ -113,7 +113,7 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 
 	@Override
 	public boolean canResetCredential() {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			if (m.canResetCredential()) {
 				return true;
 			}
@@ -123,7 +123,7 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 
 	@Override
 	public boolean canResetLockoutStatus() {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			if (m.canResetLockoutStatus()) {
 				return true;
 			}
@@ -133,70 +133,70 @@ public class AccountManagementModuleWrapper implements AccountManagementModule {
 
 	@Override
 	public void create(User user) {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.create(user);
 		}
 	}
 
 	@Override
 	public void afterCreate(User user) {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.afterCreate(user);
 		}
 	}
 
 	@Override
 	public void update(User user, List<String> updateProperties) {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.update(user, updateProperties);
 		}
 	}
 
 	@Override
 	public void afterUpdate(User user, String policyName, List<String> updateProperties) {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.afterUpdate(user, policyName, updateProperties);
 		}
 	}
 
 	@Override
 	public void remove(User user) {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.remove(user);
 		}
 	}
 
 	@Override
 	public void restore(User user) {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.restore(user);
 		}
 	}
 
 	@Override
 	public void purge(User user) {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.purge(user);
 		}
 	}
 
 	@Override
 	public void updateCredential(Credential oldCredential, Credential newCredential) throws CredentialUpdateException {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.updateCredential(oldCredential, newCredential);
 		}
 	}
 
 	@Override
 	public void resetCredential(Credential credential) throws CredentialUpdateException {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.resetCredential(credential);
 		}
 	}
 
 	@Override
 	public void resetLockoutStatus(String accountId) {
-		for (AccountManagementModule m: list) {
+		for (AccountManagementModule m : list) {
 			m.resetLockoutStatus(accountId);
 		}
 	}

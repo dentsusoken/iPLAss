@@ -57,6 +57,7 @@ public final class AnonymousUserContext implements UserContext {
 				public String getId() {
 					return "Anonymous";
 				}
+
 				@Override
 				public Object getAuthenticationFactor(String name) {
 					return null;
@@ -92,7 +93,6 @@ public final class AnonymousUserContext implements UserContext {
 	static {
 		anonymousUser = new User("Anonymous", "Anonymous", true);
 	}
-
 
 //	@Override
 //	public User getUser() {

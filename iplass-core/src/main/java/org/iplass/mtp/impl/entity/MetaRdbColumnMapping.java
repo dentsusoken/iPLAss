@@ -28,10 +28,10 @@ public class MetaRdbColumnMapping implements MetaData {
 
 	private String propertyId;
 	private String columnName;
-	
+
 	public MetaRdbColumnMapping() {
 	}
-	
+
 	public MetaRdbColumnMapping(String propertyId, String columnName) {
 		this.propertyId = propertyId;
 		this.columnName = columnName;
@@ -45,12 +45,15 @@ public class MetaRdbColumnMapping implements MetaData {
 	public String getPropertyId() {
 		return propertyId;
 	}
+
 	public void setPropertyId(String propertyId) {
 		this.propertyId = propertyId;
 	}
+
 	public String getColumnName() {
 		return columnName;
 	}
+
 	public void setColumnName(String columnName) {
 		this.columnName = columnName;
 	}

@@ -88,27 +88,27 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			DefinitionModifyResult ret = AuthUtil.authCheckAndInvoke(getServletContext(), request, null, tenantId,
 					new AuthUtil.Callable<DefinitionModifyResult>() {
 
-				@Override
-				public DefinitionModifyResult call() {
+						@Override
+						public DefinitionModifyResult call() {
 
-					DefinitionModifyResult result = null;
-					try {
-						// バージョンの最新チェック
-						MetaDataVersionCheckUtil.versionCheck(checkVersion, ReportTemplateDefinition.class, defName,
-								currentVersion);
+							DefinitionModifyResult result = null;
+							try {
+								// バージョンの最新チェック
+								MetaDataVersionCheckUtil.versionCheck(checkVersion, ReportTemplateDefinition.class, defName,
+										currentVersion);
 
-						// Definition生成
-						ReportTemplateDefinition definition = convertDefinition(args);
+								// Definition生成
+								ReportTemplateDefinition definition = convertDefinition(args);
 
-						// 更新
-						result = update(definition);
-					} catch (Throwable e) {
-						logger.error(e.getMessage(), e);
-						result = new DefinitionModifyResult(false, e.getMessage());
-					}
-					return result;
-				}
-			});
+								// 更新
+								result = update(definition);
+							} catch (Throwable e) {
+								logger.error(e.getMessage(), e);
+								result = new DefinitionModifyResult(false, e.getMessage());
+							}
+							return result;
+						}
+					});
 
 			// ステータスの書き込み
 			if (ret.isSuccess()) {
@@ -247,7 +247,8 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 
 	private ReportTemplateDefinition convertDefinition(HashMap<String, Object> args) {
 
-		TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
+		TemplateDefinitionManager tdm = ManagerLocator.getInstance()
+				.getManager(TemplateDefinitionManager.class);
 		TemplateDefinition oldTemplate = tdm.get((String) args.get(ReportTemplateUploadProperty.DEF_NAME));
 
 		ReportTemplateDefinition definition;
@@ -297,7 +298,8 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 					// 更新
 					if (oldLocaleList != null) {
 						for (LocalizedReportDefinition old : oldLocaleList) {
-							if (old.getLocaleName().equals(value.storedLocale)) {
+							if (old.getLocaleName()
+									.equals(value.storedLocale)) {
 								localeDef = old;
 								break;
 							}
@@ -334,7 +336,8 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 
 		String reportType = (String) args.get(ReportTemplateUploadProperty.REPORT_TYPE);
 
-		if (PoiReportType.class.getName().equals(reportType)) {
+		if (PoiReportType.class.getName()
+				.equals(reportType)) {
 			PoiReportType poiTemplate = new PoiReportType();
 			poiTemplate.setOutputFileType((String) args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
 
@@ -355,7 +358,8 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			}
 
 			return poiTemplate;
-		} else if (JasperReportType.class.getName().equals(reportType)) {
+		} else if (JasperReportType.class.getName()
+				.equals(reportType)) {
 			JasperReportType jasperTemplate = new JasperReportType();
 			jasperTemplate.setOutputFileType((String) args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
 
@@ -434,9 +438,11 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 	}
 
 	private DefinitionModifyResult update(ReportTemplateDefinition definition) {
-		TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
-		MetaDataAuditLogger.getLogger().logMetadata(MetaDataAction.UPDATE, ReportTemplateDefinition.class.getName(),
-				"name:" + definition.getName());
+		TemplateDefinitionManager tdm = ManagerLocator.getInstance()
+				.getManager(TemplateDefinitionManager.class);
+		MetaDataAuditLogger.getLogger()
+				.logMetadata(MetaDataAction.UPDATE, ReportTemplateDefinition.class.getName(),
+						"name:" + definition.getName());
 		return tdm.update(definition);
 	}
 

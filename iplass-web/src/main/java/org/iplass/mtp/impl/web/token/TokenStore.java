@@ -29,7 +29,6 @@ import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 
-
 public class TokenStore implements Serializable {
 
 	private static final long serialVersionUID = -7232300170363200575L;
@@ -52,7 +51,9 @@ public class TokenStore implements Serializable {
 	public static String createNewToken(SessionContext session) {
 		TokenStore tokenStore = (TokenStore) session.getAttribute(TOKEN_STORE_NAME);
 		if (tokenStore == null) {
-			int maxSize = ServiceRegistry.getRegistry().getService(WebFrontendService.class).getTransactionTokenMaxSize();
+			int maxSize = ServiceRegistry.getRegistry()
+					.getService(WebFrontendService.class)
+					.getTransactionTokenMaxSize();
 			//既にSerializeされているTokenStoreに影響ないように、サブクラスにて新ロジック実装
 			tokenStore = new LRUTokenStore(maxSize);
 			//tokenStore = new TokenStore(maxSize);
@@ -61,11 +62,13 @@ public class TokenStore implements Serializable {
 		session.setAttribute(TOKEN_STORE_NAME, tokenStore);//クラスタ対応のため必ず最後にセット
 		return token;
 	}
-	
+
 	public static String getFixedToken(SessionContext session) {
 		TokenStore tokenStore = (TokenStore) session.getAttribute(TOKEN_STORE_NAME);
 		if (tokenStore == null) {
-			int maxSize = ServiceRegistry.getRegistry().getService(WebFrontendService.class).getTransactionTokenMaxSize();
+			int maxSize = ServiceRegistry.getRegistry()
+					.getService(WebFrontendService.class)
+					.getTransactionTokenMaxSize();
 			//既にSerializeされているTokenStoreに影響ないように、サブクラスにて新ロジック実装
 			tokenStore = new LRUTokenStore(maxSize);
 			//tokenStore = new TokenStore(maxSize);
@@ -75,7 +78,9 @@ public class TokenStore implements Serializable {
 	}
 
 	public TokenStore() {
-		this(ServiceRegistry.getRegistry().getService(WebFrontendService.class).getTransactionTokenMaxSize());
+		this(ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class)
+				.getTransactionTokenMaxSize());
 	}
 
 	public TokenStore(int maxSize) {
@@ -83,7 +88,7 @@ public class TokenStore implements Serializable {
 		this.maxSize = maxSize;
 		fixedToken = StringUtil.randomToken();
 	}
-	
+
 	String getFixedToken() {
 		return fixedToken;
 	}
@@ -103,26 +108,27 @@ public class TokenStore implements Serializable {
 			}
 		}
 	}
-	
+
 	public boolean isValidFixed(String token) {
 		if (fixedToken.equals(token)) {
 			return true;
 		} else {
 			return false;
 		}
-	}	
-	
+	}
+
 	public boolean isValid(String token, boolean withConsume) {
 		synchronized (this) {
 			boolean isValid = false;
-			
+
 			//固定トークンの場合は、withConsumeがtrueであってもvalidなトークンとする。
 			if (fixedToken.equals(token)) {
 				return true;
 			}
-			
+
 			for (ListIterator<String> it = list.listIterator(); it.hasNext();) {
-				if (it.next().equals(token)) {
+				if (it.next()
+						.equals(token)) {
 					isValid = true;
 					it.remove();
 					break;

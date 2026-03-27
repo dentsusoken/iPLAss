@@ -52,7 +52,7 @@ public class MetaJavaClassJxlsReportOutputLogic extends MetaJxlsReportOutputLogi
 
 	@Override
 	public void applyConfig(ReportOutputLogicDefinition def) {
-		JavaClassReportOutputLogicDefinition d = (JavaClassReportOutputLogicDefinition)def;
+		JavaClassReportOutputLogicDefinition d = (JavaClassReportOutputLogicDefinition) def;
 		className = d.getClassName();
 	}
 
@@ -74,7 +74,9 @@ public class MetaJavaClassJxlsReportOutputLogic extends MetaJxlsReportOutputLogi
 
 		public JavaClassReportJxlsOutputLogicRuntime() {
 			try {
-				outputLogic = (JxlsReportOutputLogic) Class.forName(className).getConstructor().newInstance();
+				outputLogic = (JxlsReportOutputLogic) Class.forName(className)
+						.getConstructor()
+						.newInstance();
 			} catch (InstantiationException e) {
 				throw new TemplateRuntimeException("can not instantiate " + className, e);
 			} catch (IllegalAccessException e) {

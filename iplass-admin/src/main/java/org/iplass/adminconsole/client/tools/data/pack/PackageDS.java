@@ -79,7 +79,7 @@ public class PackageDS extends AbstractAdminDataSource {
 			@Override
 			public void onSuccess(List<PackageEntryStatusInfo> result) {
 				List<ListGridRecord> records = createRecord(result);
-				response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 			}
@@ -109,17 +109,20 @@ public class PackageDS extends AbstractAdminDataSource {
 				record.setAttribute(FIELD_NAME.NAME.name(), info.getName());
 				record.setAttribute(FIELD_NAME.DESCRIPTION.name(), info.getDescription());
 				if (info.getType() != null) {
-					record.setAttribute(FIELD_NAME.TYPE.name(), info.getType().getDisplayName());
+					record.setAttribute(FIELD_NAME.TYPE.name(), info.getType()
+							.getDisplayName());
 				}
 				if (info.getStatus() != null) {
-					record.setAttribute(FIELD_NAME.STATUS.name(), info.getStatus().getDisplayName());
+					record.setAttribute(FIELD_NAME.STATUS.name(), info.getStatus()
+							.getDisplayName());
 				}
 				record.setAttribute(FIELD_NAME.PROGRESS.name(), info.getProgress());
 				record.setAttribute(FIELD_NAME.EXEC_START_DATE.name(), SmartGWTUtil.formatTimestamp(info.getExecStartDate()));
 				record.setAttribute(FIELD_NAME.EXEC_END_DATE.name(), SmartGWTUtil.formatTimestamp(info.getExecEndDate()));
 				if (info.getArchive() != null) {
 					record.setAttribute(FIELD_NAME.COMPLETED.name(), true);
-					record.setAttribute(FIELD_NAME.SIZE.name(), info.getArchive().getSize());
+					record.setAttribute(FIELD_NAME.SIZE.name(), info.getArchive()
+							.getSize());
 				} else {
 					record.setAttribute(FIELD_NAME.COMPLETED.name(), false);
 					record.setAttribute(FIELD_NAME.SIZE.name(), 0);

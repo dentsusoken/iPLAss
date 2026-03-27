@@ -30,7 +30,10 @@ package org.iplass.mtp.impl.lob.checksum;
  */
 public interface Checksum {
 	public void update(int b);
+
 	public void update(byte[] b, int off, int len);
+
 	public String getValue();
+
 	public void reset();
 }

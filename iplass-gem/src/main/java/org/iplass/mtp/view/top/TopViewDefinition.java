@@ -61,7 +61,7 @@ public class TopViewDefinition implements Definition {
 	 * @return 定義名
 	 */
 	public String getName() {
-	    return name;
+		return name;
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class TopViewDefinition implements Definition {
 	 * @param name 定義名
 	 */
 	public void setName(String name) {
-	    this.name = name;
+		this.name = name;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class TopViewDefinition implements Definition {
 	 * @return 表示名
 	 */
 	public String getDisplayName() {
-	    return displayName;
+		return displayName;
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class TopViewDefinition implements Definition {
 	 * @param displayName 表示名
 	 */
 	public void setDisplayName(String displayName) {
-	    this.displayName = displayName;
+		this.displayName = displayName;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class TopViewDefinition implements Definition {
 	 * @return 概要
 	 */
 	public String getDescription() {
-	    return description;
+		return description;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class TopViewDefinition implements Definition {
 	 * @param description 概要
 	 */
 	public void setDescription(String description) {
-	    this.description = description;
+		this.description = description;
 	}
 
 	/**
@@ -109,8 +109,9 @@ public class TopViewDefinition implements Definition {
 	 * @return TOP画面パーツ
 	 */
 	public List<TopViewParts> getParts() {
-		if (parts == null) parts = new ArrayList<TopViewParts>();
-	    return parts;
+		if (parts == null)
+			parts = new ArrayList<TopViewParts>();
+		return parts;
 	}
 
 	/**
@@ -118,7 +119,7 @@ public class TopViewDefinition implements Definition {
 	 * @param parts TOP画面パーツ
 	 */
 	public void setParts(List<TopViewParts> parts) {
-	    this.parts = parts;
+		this.parts = parts;
 	}
 
 	/**
@@ -134,8 +135,9 @@ public class TopViewDefinition implements Definition {
 	 * @return ウィジェット
 	 */
 	public List<TopViewParts> getWidgets() {
-		if (widgets == null) widgets = new ArrayList<TopViewParts>();
-	    return widgets;
+		if (widgets == null)
+			widgets = new ArrayList<TopViewParts>();
+		return widgets;
 	}
 
 	/**
@@ -143,7 +145,7 @@ public class TopViewDefinition implements Definition {
 	 * @param widgets ウィジェット
 	 */
 	public void setWidgets(List<TopViewParts> widgets) {
-	    this.widgets = widgets;
+		this.widgets = widgets;
 	}
 
 	/**

@@ -25,46 +25,49 @@ import java.util.HashMap;
 
 public class Message implements Serializable {
 	private static final long serialVersionUID = -7232626383853152949L;
-	
+
 	String eventName;
 	HashMap<String, String> param;
-	
+
 	public Message() {
 	}
-	
+
 	public Message(String eventName) {
 		this.eventName = eventName;
 	}
-	
+
 	public void addParameter(String name, String value) {
 		if (param == null) {
 			param = new HashMap<String, String>();
 		}
 		param.put(name, value);
 	}
-	
+
 	public void removeParameter(String name) {
 		if (param != null) {
 			param.remove(name);
 		}
 	}
-	
+
 	public String getParameter(String name) {
 		if (param == null) {
 			return null;
 		}
 		return param.get(name);
 	}
-	
+
 	public String getEventName() {
 		return eventName;
 	}
+
 	public void setEventName(String eventName) {
 		this.eventName = eventName;
 	}
+
 	public HashMap<String, String> getParam() {
 		return param;
 	}
+
 	public void setParam(HashMap<String, String> param) {
 		this.param = param;
 	}

@@ -38,9 +38,11 @@ public class StaticResourceService extends AbstractTypedMetaDataService<MetaStat
 		public TypeMap() {
 			super(getFixedPath(), MetaStaticResource.class, StaticResourceDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<StaticResourceDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(StaticResourceDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(StaticResourceDefinitionManager.class);
 		}
 	}
 

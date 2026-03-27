@@ -26,12 +26,12 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.tenant.Tenant;
 
 public class AsyncTaskContextImpl extends AsyncTaskContext {
-	
+
 	public static final String EXE_CONTEXT_ATTR_NAME = "mtp.async.AsyncTaskContext";
-	
+
 	private final long taskId;
 	private final String queueName;
-	
+
 	public AsyncTaskContextImpl(long taskId, String queueName) {
 		this.taskId = taskId;
 		this.queueName = queueName;
@@ -49,8 +49,9 @@ public class AsyncTaskContextImpl extends AsyncTaskContext {
 
 	@Override
 	public Tenant getTenant() {
-		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+		Tenant tenant = ExecuteContext.getCurrentContext()
+				.getCurrentTenant();
 		return ObjectUtil.deepCopy(tenant);
 	}
-	
+
 }

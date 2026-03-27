@@ -73,7 +73,7 @@ public class MetaDataTagCreateDialog extends AbstractWindow {
 		//Input
 		//------------------------
 
-		nameField = new TextItem("name","Tag Name");
+		nameField = new TextItem("name", "Tag Name");
 		nameField.setWidth("100%");
 		SmartGWTUtil.setRequired(nameField);
 
@@ -98,7 +98,7 @@ public class MetaDataTagCreateDialog extends AbstractWindow {
 		IButton backupButton = new IButton("Create");
 		backupButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					executeBackup();
 				}
 			}
@@ -140,7 +140,9 @@ public class MetaDataTagCreateDialog extends AbstractWindow {
 	private void initialize() {
 		Timestamp date = new Timestamp(System.currentTimeMillis());
 		String dateStr = SmartGWTUtil.formatTimestamp(date);
-		String nameValue = dateStr.replace("/", "").replace(":", "").replace(" ", "_");
+		String nameValue = dateStr.replace("/", "")
+				.replace(":", "")
+				.replace(" ", "_");
 		nameField.setValue("Tag_" + nameValue);
 		descriptionField.setValue(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataTagCreateDialog_defPoint", dateStr));
 	}
@@ -153,27 +155,28 @@ public class MetaDataTagCreateDialog extends AbstractWindow {
 				SmartGWTUtil.getStringValue(nameField),
 				SmartGWTUtil.getStringValue(descriptionField), new AsyncCallback<Void>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				SmartGWTUtil.hideProgress();
+					@Override
+					public void onFailure(Throwable caught) {
+						SmartGWTUtil.hideProgress();
 
-				SC.warn(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataTagCreateDialog_failedToCreateTag") + caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				SmartGWTUtil.hideProgress();
-
-				SC.say(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataTagCreateDialog_completion"),
-						AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataTagCreateDialog_tagCreateComp"), new BooleanCallback() {
+						SC.warn(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataTagCreateDialog_failedToCreateTag")
+								+ caught.getMessage());
+					}
 
 					@Override
-					public void execute(Boolean value) {
-						//ダイアログ消去
-						destroy();
+					public void onSuccess(Void result) {
+						SmartGWTUtil.hideProgress();
+
+						SC.say(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataTagCreateDialog_completion"),
+								AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataTagCreateDialog_tagCreateComp"), new BooleanCallback() {
+
+									@Override
+									public void execute(Boolean value) {
+										//ダイアログ消去
+										destroy();
+									}
+								});
 					}
 				});
-			}
-		});
 	}
 }

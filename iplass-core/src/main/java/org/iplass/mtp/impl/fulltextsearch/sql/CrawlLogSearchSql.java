@@ -27,7 +27,6 @@ import org.iplass.mtp.impl.fulltextsearch.AbstractFulltextSearchService.CrawlTim
 import org.iplass.mtp.impl.rdb.adapter.QuerySqlHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public class CrawlLogSearchSql extends QuerySqlHandler {
 
 	public String toGetLastCrawlTimestampSql(int tenantId, String defId, int version, RdbAdapter rdb) {

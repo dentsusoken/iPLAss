@@ -60,9 +60,12 @@ public class MetaDataExport extends MtpCuiBase {
 	/** Silentモード 設定ファイル名 */
 	public static final String KEY_CONFIG_FILE = "meta.config";
 
-	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private MetaDataPortingService mdps = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
-	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
+	private TenantContextService tcs = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private MetaDataPortingService mdps = ServiceRegistry.getRegistry()
+			.getService(MetaDataPortingService.class);
+	private TenantService ts = ServiceRegistry.getRegistry()
+			.getService(TenantService.class);
 
 	//実行モード
 	private ExecMode execMode = ExecMode.WIZARD;
@@ -124,13 +127,13 @@ public class MetaDataExport extends MtpCuiBase {
 		logEnvironment();
 
 		switch (execMode) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start Export Wizard");
 			logInfo("");
 
 			//Wizardの実行
 			return wizard();
-		case SILENT :
+		case SILENT:
 			logInfo("■Start Export Silent");
 			logInfo("");
 
@@ -139,7 +142,7 @@ public class MetaDataExport extends MtpCuiBase {
 
 			//Silentの実行
 			return silent();
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -169,7 +172,8 @@ public class MetaDataExport extends MtpCuiBase {
 
 			TenantContext tc = tcs.getTenantContext(param.getTenantId());
 			return ExecuteContext.executeAs(tc, () -> {
-				ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+				ExecuteContext.getCurrentContext()
+						.setLanguage(getLanguage());
 
 				//外部から直接呼び出された場合を考慮し、Pathを取得
 				if (param.getExportMetaDataPathList() == null) {
@@ -177,13 +181,14 @@ public class MetaDataExport extends MtpCuiBase {
 				}
 
 				if (CollectionUtil.isNotEmpty(param.getExportMetaDataPathList())) {
-					logDebug("metadata path count : " + param.getExportMetaDataPathList().size());
+					logDebug("metadata path count : " + param.getExportMetaDataPathList()
+							.size());
 
 					logInfo(rs("MetaDataExport.startExportMetaData"));
 
 					//MetaDataをtempに出力
 					File metadataFile = new File(param.getExportDir(), param.getFileName() + ".xml");
-					try (PrintWriter writer = new PrintWriter(metadataFile, "UTF-8")){
+					try (PrintWriter writer = new PrintWriter(metadataFile, "UTF-8")) {
 
 						mdps.write(writer, param.getExportMetaDataPathList(), new MetaDataWriteCallback() {
 
@@ -256,7 +261,8 @@ public class MetaDataExport extends MtpCuiBase {
 		} else {
 			metaTarget = param.getExportMetaDataPathStr();
 		}
-		metaTarget += "(" + param.getExportMetaDataPathList().size() + ")";
+		metaTarget += "(" + param.getExportMetaDataPathList()
+				.size() + ")";
 
 		logInfo("\tmetadata target :" + metaTarget);
 		logInfo("-----------------------------------------------------------");
@@ -271,7 +277,8 @@ public class MetaDataExport extends MtpCuiBase {
 
 		List<String> paths = new ArrayList<>();
 		if (param.isExportAllMetaData()) {
-			List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList("/");
+			List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext()
+					.definitionList("/");
 			for (MetaDataEntryInfo info : allMeta) {
 				if (param.isExportLocalMetaDataOnly()) {
 					if (info.getRepositryType() == RepositoryType.SHARED) {
@@ -288,9 +295,10 @@ public class MetaDataExport extends MtpCuiBase {
 		} else {
 			//個別指定
 
-			Set<String> directPathSet = new HashSet<>();	//重複を避けるためSetに保持
+			Set<String> directPathSet = new HashSet<>(); //重複を避けるためSetに保持
 
-			String[] pathStrArray = param.getExportMetaDataPathStr().split(",");
+			String[] pathStrArray = param.getExportMetaDataPathStr()
+					.split(",");
 			for (String pathStr : pathStrArray) {
 				//,,などの阻止
 				if (StringUtil.isEmpty(pathStr)) {
@@ -299,7 +307,8 @@ public class MetaDataExport extends MtpCuiBase {
 
 				if (pathStr.endsWith("*")) {
 					//アスタリスク指定
-					List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList(pathStr.substring(0, pathStr.length() - 1));
+					List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext()
+							.definitionList(pathStr.substring(0, pathStr.length() - 1));
 					for (MetaDataEntryInfo info : allMeta) {
 						if (param.isExportLocalMetaDataOnly()) {
 							if (info.getRepositryType() == RepositoryType.SHARED) {
@@ -310,7 +319,8 @@ public class MetaDataExport extends MtpCuiBase {
 					}
 				} else {
 					//直接指定
-					MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(pathStr);
+					MetaDataEntry entry = MetaDataContext.getContext()
+							.getMetaDataEntry(pathStr);
 					if (entry != null) {
 						if (param.isExportLocalMetaDataOnly()) {
 							if (entry.getRepositryType() == RepositoryType.SHARED) {
@@ -329,7 +339,9 @@ public class MetaDataExport extends MtpCuiBase {
 		}
 
 		//ソートして返す
-		return paths.stream().sorted().collect(Collectors.toList());
+		return paths.stream()
+				.sorted()
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -393,8 +405,9 @@ public class MetaDataExport extends MtpCuiBase {
 		MetaDataExportParameter param = new MetaDataExportParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()-> {
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
 
 			//出力先ディレクトリ
 			boolean validFile = false;
@@ -408,7 +421,7 @@ public class MetaDataExport extends MtpCuiBase {
 					param.setExportDir(dir);
 					validFile = true;
 				}
-			} while(validFile == false);
+			} while (validFile == false);
 
 			//ファイル名
 			String fileName = readConsole(rs("MetaDataExport.Wizard.inputFileNameMsg") + "(" + param.getFileName() + ")");
@@ -418,7 +431,8 @@ public class MetaDataExport extends MtpCuiBase {
 
 			boolean validTarget = false;
 			do {
-				boolean isExportLocalOnly = readConsoleBoolean(rs("MetaDataExport.Wizard.confirmTargetLocalMetaMsg"), param.isExportLocalMetaDataOnly());
+				boolean isExportLocalOnly = readConsoleBoolean(rs("MetaDataExport.Wizard.confirmTargetLocalMetaMsg"),
+						param.isExportLocalMetaDataOnly());
 				param.setExportLocalMetaDataOnly(isExportLocalOnly);
 
 				boolean isExportAllMeta = readConsoleBoolean(rs("MetaDataExport.Wizard.confirmExportAllMetaMsg"), param.isExportAllMetaData());
@@ -427,7 +441,8 @@ public class MetaDataExport extends MtpCuiBase {
 					//全メタデータ出力
 
 					//テナントを含めるかを確認
-					boolean isExportTenantMetaData = readConsoleBoolean(rs("MetaDataExport.Wizard.confirmIncludeTenantMetaMsg"), param.isExportTenantMetaData());
+					boolean isExportTenantMetaData = readConsoleBoolean(rs("MetaDataExport.Wizard.confirmIncludeTenantMetaMsg"),
+							param.isExportTenantMetaData());
 					param.setExportTenantMetaData(isExportTenantMetaData);
 
 					validTarget = true;
@@ -448,7 +463,8 @@ public class MetaDataExport extends MtpCuiBase {
 					//Pathの取得
 					param.setExportMetaDataPathList(getMetaDataPathList(param));
 
-					boolean isShow = readConsoleBoolean(rs("MetaDataExport.Wizard.confirmShowMetaListMsg", param.getExportMetaDataPathList().size()), false);
+					boolean isShow = readConsoleBoolean(rs("MetaDataExport.Wizard.confirmShowMetaListMsg", param.getExportMetaDataPathList()
+							.size()), false);
 					if (isShow) {
 						showMetaDataPathList(param);
 					}
@@ -458,7 +474,7 @@ public class MetaDataExport extends MtpCuiBase {
 					}
 				}
 
-			} while(validTarget == false);
+			} while (validTarget == false);
 
 			boolean validExecute = false;
 			do {
@@ -477,7 +493,7 @@ public class MetaDataExport extends MtpCuiBase {
 						return wizard();
 					}
 				}
-			} while(validExecute == false);
+			} while (validExecute == false);
 
 			//Consoleを削除してLogに切り替え
 			switchLog(false, true);
@@ -510,7 +526,7 @@ public class MetaDataExport extends MtpCuiBase {
 			if (Files.exists(path)) {
 				logDebug("load config file from file path:" + configFileName);
 				try (InputStream is = new FileInputStream(path.toFile());
-					InputStreamReader reader = new InputStreamReader(is, "UTF-8");) {
+						InputStreamReader reader = new InputStreamReader(is, "UTF-8");) {
 					prop.load(reader);
 				}
 			} else {
@@ -573,8 +589,9 @@ public class MetaDataExport extends MtpCuiBase {
 		MetaDataExportParameter param = new MetaDataExportParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()-> {
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
 
 			String exportDirName = prop.getProperty(PROP_EXPORT_DIR);
 			if (StringUtil.isNotEmpty(exportDirName)) {

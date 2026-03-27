@@ -72,7 +72,6 @@ import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class EntityService extends AbstractTypedMetaDataService<MetaEntity, EntityHandler> implements Service {
 
 	public static final String ENTITY_META_PATH = "/entity/";
@@ -85,17 +84,22 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 		public TypeMap() {
 			super(getFixedPath(), MetaEntity.class, EntityDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<EntityDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(EntityDefinitionManager.class);
 		}
+
 		@Override
 		public String toPath(String defName) {
 			return pathPrefix + defName.replace('.', '/');
 		}
+
 		@Override
 		public String toDefName(String path) {
-			return path.substring(pathPrefix.length()).replace("/", ".");
+			return path.substring(pathPrefix.length())
+					.replace("/", ".");
 		}
 
 		@Override
@@ -118,7 +122,7 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 	private final EnumMap<VersionControlType, VersionController> versionControllers;
 	private ExtendPropertyAdapterFactory extendPropertyAdapterFactory;
 
-	public EntityService () {
+	public EntityService() {
 		versionControllers = new EnumMap<VersionControlType, VersionController>(VersionControlType.class);
 		versionControllers.put(VersionControlType.NONE, new NonVersionController());
 		versionControllers.put(VersionControlType.VERSIONED, new NumberbaseVersionController());
@@ -144,12 +148,13 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 	}
 
 	public VersionController getVersionController(EntityHandler eh) {
-		if (eh.getMetaData().getVersionControlType() == null) {
+		if (eh.getMetaData()
+				.getVersionControlType() == null) {
 			return versionControllers.get(VersionControlType.NONE);
 		}
-		return versionControllers.get(eh.getMetaData().getVersionControlType());
+		return versionControllers.get(eh.getMetaData()
+				.getVersionControlType());
 	}
-
 
 	public Future<String> createDataModelSchema(final EntityDefinition definition) {
 		EntityContext context = EntityContext.getCurrentContext();
@@ -200,12 +205,14 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 		}
 
 		String path = convertPath(ENTITY_META_PATH + newMeta.getName());
-		
+
 		int curerntMaxVersion = -1;
-		List<MetaDataEntryInfo> infoList = ServiceRegistry.getRegistry().getService(MetaDataRepository.class)
-				.getHistoryById(ExecuteContext.getCurrentContext().getClientTenantId(), newMeta.getId());
+		List<MetaDataEntryInfo> infoList = ServiceRegistry.getRegistry()
+				.getService(MetaDataRepository.class)
+				.getHistoryById(ExecuteContext.getCurrentContext()
+						.getClientTenantId(), newMeta.getId());
 		if (infoList != null) {
-			for (MetaDataEntryInfo mi: infoList) {
+			for (MetaDataEntryInfo mi : infoList) {
 				if (mi.getState() == State.VALID) {
 					//有効なデータがある場合はエラー
 					throw new MetaDataRuntimeException("Registered metadata already exists. id=" + newMeta.getId() + ", path=" + path);
@@ -219,35 +226,43 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 		MetaEntity prevMeta = null;
 		if (curerntMaxVersion >= 0) {
 			//既に登録済の同一MetaDataが存在するので、登録済のMetaDataを取得
-			MetaDataEntry curEntry = MetaDataContext.getContext().getMetaDataEntryById(newMeta.getId(), curerntMaxVersion);
+			MetaDataEntry curEntry = MetaDataContext.getContext()
+					.getMetaDataEntryById(newMeta.getId(), curerntMaxVersion);
 			if (curEntry != null && curEntry.getMetaData() instanceof MetaEntity) {
 				prevMeta = (MetaEntity) curEntry.getMetaData();
 			}
 		}
 
 		if (prevMeta == null) {
-			configDataModel.create(newMeta, context/*, curerntMaxVersion + 1*/);
+			configDataModel.create(newMeta, context/* , curerntMaxVersion + 1 */);
 			//MetaData登録
-			MetaDataContext.getContext().store(path, newMeta, /*curerntMaxVersion + 1,*/ config, doAutoReload);
+			MetaDataContext.getContext()
+					.store(path, newMeta, /* curerntMaxVersion + 1, */ config, doAutoReload);
 			logger.info("created " + newMeta.getName() + "(" + newMeta.getId() + ")");
 		} else {
 			//復活処理
 			boolean prepare = configDataModel.prepare(newMeta, prevMeta, context);
 
 			if (!prepare) {
-				throw new EntityRuntimeException("can not prepare for re-create Entity:" + newMeta.getName() + "(tenant=" + ExecuteContext.getCurrentContext().getClientTenantId() + ")");
+				throw new EntityRuntimeException(
+						"can not prepare for re-create Entity:" + newMeta.getName() + "(tenant=" + ExecuteContext.getCurrentContext()
+								.getClientTenantId() + ")");
 			}
 
 			boolean res = false;
 
 			try {
-				res = updateData(configDataModel, ExecuteContext.getCurrentContext().getClientTenantId(), newMeta, prevMeta, context, config, curerntMaxVersion);
+				res = updateData(configDataModel, ExecuteContext.getCurrentContext()
+						.getClientTenantId(), newMeta, prevMeta, context, config, curerntMaxVersion);
 				if (res) {
 					//MetaData登録
-					MetaDataContext.getContext().store(path, newMeta, /*curerntMaxVersion + 1,*/ config, doAutoReload);
+					MetaDataContext.getContext()
+							.store(path, newMeta, /* curerntMaxVersion + 1, */ config, doAutoReload);
 					logger.info("re-created " + newMeta.getName() + "(" + newMeta.getId() + ")");
 				} else {
-					throw new EntityRuntimeException("can not re-create Entity Definition:" + newMeta.getName() + "(tenant=" + ExecuteContext.getCurrentContext().getClientTenantId() + ")");
+					throw new EntityRuntimeException(
+							"can not re-create Entity Definition:" + newMeta.getName() + "(tenant=" + ExecuteContext.getCurrentContext()
+									.getClientTenantId() + ")");
 				}
 
 			} finally {
@@ -263,8 +278,8 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 		return newMeta.getId();
 	}
 
-
-	private boolean doPrepare(final ApplyMetaDataStrategy st, int tenantId, final MetaEntity newOne, final MetaEntity previous, final EntityContext context) {
+	private boolean doPrepare(final ApplyMetaDataStrategy st, int tenantId, final MetaEntity newOne, final MetaEntity previous,
+			final EntityContext context) {
 
 		return Transaction.requiresNew(t -> {
 			boolean prepare = st.prepare(newOne, previous, context);
@@ -272,25 +287,31 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 		});
 	}
 
-	private boolean updateData(final ApplyMetaDataStrategy st, final int tenantId, final MetaEntity newOne, final MetaEntity previous, final EntityContext context, final MetaDataConfig config, final Integer previousVersion) {
+	private boolean updateData(final ApplyMetaDataStrategy st, final int tenantId, final MetaEntity newOne, final MetaEntity previous,
+			final EntityContext context, final MetaDataConfig config, final Integer previousVersion) {
 		//SharedTenantのデータの場合は、複数のテナントを一括で更新する必要あり
 		int[] targetTenantIds = null;
-		TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+		TenantContextService tcService = ServiceRegistry.getRegistry()
+				.getService(TenantContextService.class);
 		MetaDataEntry ent;
 		if (previousVersion == null) {
-			ent = MetaDataContext.getContext().getMetaDataEntryById(previous.getId());
+			ent = MetaDataContext.getContext()
+					.getMetaDataEntryById(previous.getId());
 		} else {
-			ent = MetaDataContext.getContext().getMetaDataEntryById(previous.getId(), previousVersion);
+			ent = MetaDataContext.getContext()
+					.getMetaDataEntryById(previous.getId(), previousVersion);
 		}
 		if (tcService.getSharedTenantId() == tenantId
 				&& ent.isSharable()
 				&& !ent.isDataSharable()) {
 			List<Integer> allTenantIds = tcService.getAllTenantIdList();
-			List<Integer> overwritedTenantIds = MetaDataContext.getContext().getOverwriteTenantIdList(previous.getId());
+			List<Integer> overwritedTenantIds = MetaDataContext.getContext()
+					.getOverwriteTenantIdList(previous.getId());
 			for (Iterator<Integer> it = allTenantIds.iterator(); it.hasNext();) {
 				Integer id = it.next();
 				if (overwritedTenantIds.contains(id)) {
-					logger.info(id + "'s MetaData:" + ent.getPath() + " (" + ent.getMetaData().getId() + ") is overwrote. so skip data patch.");
+					logger.info(id + "'s MetaData:" + ent.getPath() + " (" + ent.getMetaData()
+							.getId() + ") is overwrote. so skip data patch.");
 					it.remove();
 				}
 			}
@@ -299,21 +320,22 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 				targetTenantIds[i] = allTenantIds.get(i);
 			}
 		} else {
-			targetTenantIds = new int[]{tenantId};
+			targetTenantIds = new int[] { tenantId };
 		}
 
 		return st.modify(newOne, previous, context, targetTenantIds);
 	}
 
-	private boolean doModify(final ApplyMetaDataStrategy st, final int tenantId, final MetaEntity newOne, final MetaEntity previous, final EntityContext context, final MetaDataConfig config, final Integer previousVersion) {
+	private boolean doModify(final ApplyMetaDataStrategy st, final int tenantId, final MetaEntity newOne, final MetaEntity previous,
+			final EntityContext context, final MetaDataConfig config, final Integer previousVersion) {
 		return Transaction.requiresNew(transaction -> {
 
-				boolean res = updateData(st, tenantId, newOne, previous, context, config, previousVersion);
+			boolean res = updateData(st, tenantId, newOne, previous, context, config, previousVersion);
 
-				if (!res) {
-					transaction.setRollbackOnly();
-					return false;
-				}
+			if (!res) {
+				transaction.setRollbackOnly();
+				return false;
+			}
 
 //					//AutoNumberカラムの場合、対応するカウンターを作成
 //					//FIXME でも、local->sharedのタイミングでも作らなければ。。。もしくはInsert時になかったら作るか。。。同時に来た場合は2つめがエラーとなる可能性が高い。別Tranで作って、リトライか。。
@@ -352,21 +374,28 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 //					}
 
 //					newOne.createRuntime(new MetaDataConfig(ent.isSharable(), ent.isOverwritable(), ent.isDataSharable()));
-				TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
-				tc.getMetaDataContext().update(convertPath(ENTITY_META_PATH + newOne.getName()), newOne);
+			TenantContext tc = ServiceRegistry.getRegistry()
+					.getService(TenantContextService.class)
+					.getTenantContext(tenantId);
+			tc.getMetaDataContext()
+					.update(convertPath(ENTITY_META_PATH + newOne.getName()), newOne);
 
-				if (config != null) {
-					tc.getMetaDataContext().updateConfig(convertPath(ENTITY_META_PATH + newOne.getName()), config);
-				}
+			if (config != null) {
+				tc.getMetaDataContext()
+						.updateConfig(convertPath(ENTITY_META_PATH + newOne.getName()), config);
+			}
 
-				return true;
+			return true;
 		});
 	}
 
 	private boolean doRemove(final ApplyMetaDataStrategy st, final int tenantId, final MetaEntity previous, final EntityContext context) {
 		return Transaction.requiresNew(t -> {
-			TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
-			tc.getMetaDataContext().remove(convertPath(ENTITY_META_PATH + previous.getName()));//, previous);
+			TenantContext tc = ServiceRegistry.getRegistry()
+					.getService(TenantContextService.class)
+					.getTenantContext(tenantId);
+			tc.getMetaDataContext()
+					.remove(convertPath(ENTITY_META_PATH + previous.getName()));//, previous);
 			return true;
 		});
 	}
@@ -374,53 +403,60 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 	private boolean doDefragMeta(final ApplyMetaDataStrategy st, final int tenantId, final MetaEntity target, final EntityContext context) {
 		return Transaction.requiresNew(transaction -> {
 
-				MetaEntity before = target.copy();
+			MetaEntity before = target.copy();
 
-				//SharedTenantのデータの場合は、複数のテナントを一括で更新する必要あり
-				int[] targetTenantIds = null;
-				TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-				MetaDataEntry ent = MetaDataContext.getContext().getMetaDataEntryById(target.getId());
-				//カスタムせずに、SharedTenantと同一のメタデータを利用している場合
-				if (tcService.getSharedTenantId() == tenantId
-						&& ent.isSharable()
-						&& !ent.isDataSharable()) {
-					List<Integer> allTenantIds = tcService.getAllTenantIdList();
-					List<Integer> overwritedTenantIds = MetaDataContext.getContext().getOverwriteTenantIdList(target.getId());
-					for (Iterator<Integer> it = allTenantIds.iterator(); it.hasNext();) {
-						Integer id = it.next();
-						if (overwritedTenantIds.contains(id)) {
-							logger.info(id + "'s MetaData:" + ent.getPath() + " (" + ent.getMetaData().getId() + ") is overwrote. so skip defrag data.");
-							it.remove();
-						}
+			//SharedTenantのデータの場合は、複数のテナントを一括で更新する必要あり
+			int[] targetTenantIds = null;
+			TenantContextService tcService = ServiceRegistry.getRegistry()
+					.getService(TenantContextService.class);
+			MetaDataEntry ent = MetaDataContext.getContext()
+					.getMetaDataEntryById(target.getId());
+			//カスタムせずに、SharedTenantと同一のメタデータを利用している場合
+			if (tcService.getSharedTenantId() == tenantId
+					&& ent.isSharable()
+					&& !ent.isDataSharable()) {
+				List<Integer> allTenantIds = tcService.getAllTenantIdList();
+				List<Integer> overwritedTenantIds = MetaDataContext.getContext()
+						.getOverwriteTenantIdList(target.getId());
+				for (Iterator<Integer> it = allTenantIds.iterator(); it.hasNext();) {
+					Integer id = it.next();
+					if (overwritedTenantIds.contains(id)) {
+						logger.info(id + "'s MetaData:" + ent.getPath() + " (" + ent.getMetaData()
+								.getId() + ") is overwrote. so skip defrag data.");
+						it.remove();
 					}
-					targetTenantIds = new int[allTenantIds.size()];
-					for (int i = 0; i < allTenantIds.size(); i++) {
-						targetTenantIds[i] = allTenantIds.get(i);
-					}
-				} else {
-					targetTenantIds = new int[]{tenantId};
 				}
-
-				boolean res = st.defrag(target, context, targetTenantIds);
-
-				if (!res) {
-					transaction.setRollbackOnly();
-					return false;
+				targetTenantIds = new int[allTenantIds.size()];
+				for (int i = 0; i < allTenantIds.size(); i++) {
+					targetTenantIds[i] = allTenantIds.get(i);
 				}
+			} else {
+				targetTenantIds = new int[] { tenantId };
+			}
 
-				//TODO 作成したAutoNumberカウンターの削除は現状、未対応
+			boolean res = st.defrag(target, context, targetTenantIds);
 
-				if (!before.equals(target)) {
-					TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
-					tc.getMetaDataContext().update(convertPath(ENTITY_META_PATH + target.getName()), target);
-				}
+			if (!res) {
+				transaction.setRollbackOnly();
+				return false;
+			}
 
-				return true;
+			//TODO 作成したAutoNumberカウンターの削除は現状、未対応
+
+			if (!before.equals(target)) {
+				TenantContext tc = ServiceRegistry.getRegistry()
+						.getService(TenantContextService.class)
+						.getTenantContext(tenantId);
+				tc.getMetaDataContext()
+						.update(convertPath(ENTITY_META_PATH + target.getName()), target);
+			}
+
+			return true;
 		});
 	}
 
-
-	private void doFinish(final boolean modifyResult, final ApplyMetaDataStrategy st, final int tenantId, final MetaEntity newOne, final MetaEntity previous, final EntityContext context) {
+	private void doFinish(final boolean modifyResult, final ApplyMetaDataStrategy st, final int tenantId, final MetaEntity newOne,
+			final MetaEntity previous, final EntityContext context) {
 		try {
 			Transaction.requiresNew(t -> {
 				st.finish(modifyResult, newOne, previous, context);
@@ -443,7 +479,8 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 			throw new MetaDataRuntimeException(definition.getName() + " not found.");
 		}
 
-		MetaEntity newMeta = currentHandler.getMetaData().copy();
+		MetaEntity newMeta = currentHandler.getMetaData()
+				.copy();
 
 		//プロパティ名の変更を反映
 		if (renamePropertyMap != null) {
@@ -484,48 +521,68 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 //				try {
 //					ExecuteContext.setContext(currentContext);
 
-					ExecuteContext currentContext = ExecuteContext.getCurrentContext();
+				ExecuteContext currentContext = ExecuteContext.getCurrentContext();
 
-					//TODO EntityContextはトランザクションに紐付くものなのに、下記処理ではトランザクションをまたいで同一のEntityContextを使用してしまっている
-					EntityContext context = EntityContext.getCurrentContext();
-					//idから既存を取得(パスの変更がある場合を考慮)
-					EntityHandler currentHandler = context.getHandlerById(newMeta.getId());
+				//TODO EntityContextはトランザクションに紐付くものなのに、下記処理ではトランザクションをまたいで同一のEntityContextを使用してしまっている
+				EntityContext context = EntityContext.getCurrentContext();
+				//idから既存を取得(パスの変更がある場合を考慮)
+				EntityHandler currentHandler = context.getHandlerById(newMeta.getId());
 
-					DataStore currentDs = storeService.getDataStore();
+				DataStore currentDs = storeService.getDataStore();
 
-					ApplyMetaDataStrategy reConfigDataModel = currentDs.getApplyMetaDataStrategy();
+				ApplyMetaDataStrategy reConfigDataModel = currentDs.getApplyMetaDataStrategy();
 
-					//DataStoreの実装が異なる場合(別環境、別DataStore実装からImport)は、StoreMappingは、既存からコピーする
-					if (newMeta.getEntityStoreDefinition() != null &&
-							!newMeta.getEntityStoreDefinition().getClass().equals(currentDs.getEntityStoreType())) {
-						if (currentHandler.getMetaData().getStoreMapping() != null) {
-							newMeta.setStoreMapping((MetaStoreMapping) currentHandler.getMetaData().getStoreMapping().copy());
-						}
+				//DataStoreの実装が異なる場合(別環境、別DataStore実装からImport)は、StoreMappingは、既存からコピーする
+				if (newMeta.getEntityStoreDefinition() != null &&
+						!newMeta.getEntityStoreDefinition()
+								.getClass()
+								.equals(currentDs.getEntityStoreType())) {
+					if (currentHandler.getMetaData()
+							.getStoreMapping() != null) {
+						newMeta.setStoreMapping((MetaStoreMapping) currentHandler.getMetaData()
+								.getStoreMapping()
+								.copy());
 					}
+				}
 
-					logger.info("update " + currentHandler.getMetaData().getName() + "(" + currentHandler.getMetaData().getId() + ") process start");
-					boolean prepare = doPrepare(reConfigDataModel, currentContext.getClientTenantId(), newMeta, currentHandler.getMetaData(), context);
+				logger.info("update " + currentHandler.getMetaData()
+						.getName() + "("
+						+ currentHandler.getMetaData()
+								.getId()
+						+ ") process start");
+				boolean prepare = doPrepare(reConfigDataModel, currentContext.getClientTenantId(), newMeta, currentHandler.getMetaData(), context);
 
-					if (!prepare) {
-						throw new EntityRuntimeException("can not prepare for update Entity:" + currentHandler.getMetaData().getName() + "(tenant=" + currentContext.getClientTenantId() + ")");
+				if (!prepare) {
+					throw new EntityRuntimeException("can not prepare for update Entity:" + currentHandler.getMetaData()
+							.getName() + "(tenant=" + currentContext.getClientTenantId() + ")");
+				}
+
+				boolean result = false;
+				try {
+					result = doModify(reConfigDataModel, currentContext.getClientTenantId(), newMeta, currentHandler.getMetaData(), context, config,
+							null);
+					if (result) {
+						return newMeta.getId();
+					} else {
+						throw new EntityRuntimeException("can not modify Entity Definition:" + currentHandler.getMetaData()
+								.getName() + "(tenant=" + currentContext.getClientTenantId() + ")");
 					}
-
-					boolean result = false;
-					try {
-						result = doModify(reConfigDataModel, currentContext.getClientTenantId(), newMeta, currentHandler.getMetaData(), context, config, null);
-						if (result) {
-							return newMeta.getId();
-						} else {
-							throw new EntityRuntimeException("can not modify Entity Definition:" + currentHandler.getMetaData().getName() + "(tenant=" + currentContext.getClientTenantId() + ")");
-						}
-					} finally {
-						doFinish(result, reConfigDataModel, currentContext.getClientTenantId(), newMeta, currentHandler.getMetaData(), context);
-						if (result) {
-							logger.info("update " + currentHandler.getMetaData().getName() + "(" + currentHandler.getMetaData().getId() + ") process finish");
-						} else {
-							logger.info("update " + currentHandler.getMetaData().getName() + "(" + currentHandler.getMetaData().getId() + ") process fail");
-						}
+				} finally {
+					doFinish(result, reConfigDataModel, currentContext.getClientTenantId(), newMeta, currentHandler.getMetaData(), context);
+					if (result) {
+						logger.info("update " + currentHandler.getMetaData()
+								.getName() + "("
+								+ currentHandler.getMetaData()
+										.getId()
+								+ ") process finish");
+					} else {
+						logger.info("update " + currentHandler.getMetaData()
+								.getName() + "("
+								+ currentHandler.getMetaData()
+										.getId()
+								+ ") process fail");
 					}
+				}
 //				} finally {
 //					ExecuteContext.setContext(null);
 //				}
@@ -534,8 +591,6 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 
 		return asyncTaskService.execute(task);
 	}
-
-
 
 	public Future<String> removeDataModelSchema(final EntityDefinition definition) {
 		EntityContext context = EntityContext.getCurrentContext();
@@ -554,55 +609,75 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 			public String call() throws Exception {
 //				try {
 //					ExecuteContext.setContext(currentContext);
-					ExecuteContext currentContext = ExecuteContext.getCurrentContext();
+				ExecuteContext currentContext = ExecuteContext.getCurrentContext();
 
-					EntityContext context = EntityContext.getCurrentContext();
-					EntityHandler currentHandler = context.getHandlerByName(curMeta.getName());
+				EntityContext context = EntityContext.getCurrentContext();
+				EntityHandler currentHandler = context.getHandlerByName(curMeta.getName());
 
-					ApplyMetaDataStrategy reConfigDataModel = currentHandler.getDataStore().getApplyMetaDataStrategy();
-					MetaEntity metaEntity = currentHandler.getMetaData();
+				ApplyMetaDataStrategy reConfigDataModel = currentHandler.getDataStore()
+						.getApplyMetaDataStrategy();
+				MetaEntity metaEntity = currentHandler.getMetaData();
 
-					logger.info("remove " + currentHandler.getMetaData().getName() + "(" + currentHandler.getMetaData().getId() + ") process start");
-					boolean prepare = doPrepare(reConfigDataModel, currentContext.getClientTenantId(), metaEntity, metaEntity, context);
-					if (!prepare) {
-						throw new EntityRuntimeException("can not prepare for remove Entity:" + currentHandler.getMetaData().getName() + "(tenant=" + currentContext.getClientTenantId() + ")");
-					}
-					boolean result = false;
-					MetaEntity newOne = null;
-					try {
-						MetaDataEntry ent = MetaDataContext.getContext().getMetaDataEntryById(metaEntity.getId());
-						if (ent.getRepositryType() == RepositoryType.SHARED_OVERWRITE) {
-							//上書きされているので、SHAREDの初期状態で再上書き
-							MetaDataContext shredContext = ServiceRegistry.getRegistry().getService(TenantContextService.class).getSharedTenantContext().getMetaDataContext();
-							MetaDataEntry shared = shredContext.getMetaDataEntryById(metaEntity.getId());
-							if (shared != null) {
-								result = doModify(reConfigDataModel, currentContext.getClientTenantId(), (MetaEntity) shared.getMetaData(), metaEntity, context, null, null);
-								newOne = (MetaEntity) shared.getMetaData();
-							} else {
-								//path一致、id不一致の場合
-								//実削除
-								result = doRemove(reConfigDataModel, currentContext.getClientTenantId(), metaEntity, context);
-								newOne = metaEntity;
-							}
+				logger.info("remove " + currentHandler.getMetaData()
+						.getName() + "("
+						+ currentHandler.getMetaData()
+								.getId()
+						+ ") process start");
+				boolean prepare = doPrepare(reConfigDataModel, currentContext.getClientTenantId(), metaEntity, metaEntity, context);
+				if (!prepare) {
+					throw new EntityRuntimeException("can not prepare for remove Entity:" + currentHandler.getMetaData()
+							.getName() + "(tenant=" + currentContext.getClientTenantId() + ")");
+				}
+				boolean result = false;
+				MetaEntity newOne = null;
+				try {
+					MetaDataEntry ent = MetaDataContext.getContext()
+							.getMetaDataEntryById(metaEntity.getId());
+					if (ent.getRepositryType() == RepositoryType.SHARED_OVERWRITE) {
+						//上書きされているので、SHAREDの初期状態で再上書き
+						MetaDataContext shredContext = ServiceRegistry.getRegistry()
+								.getService(TenantContextService.class)
+								.getSharedTenantContext()
+								.getMetaDataContext();
+						MetaDataEntry shared = shredContext.getMetaDataEntryById(metaEntity.getId());
+						if (shared != null) {
+							result = doModify(reConfigDataModel, currentContext.getClientTenantId(), (MetaEntity) shared.getMetaData(), metaEntity,
+									context, null, null);
+							newOne = (MetaEntity) shared.getMetaData();
 						} else {
+							//path一致、id不一致の場合
 							//実削除
 							result = doRemove(reConfigDataModel, currentContext.getClientTenantId(), metaEntity, context);
 							newOne = metaEntity;
 						}
-
-						if (!result) {
-							throw new EntityRuntimeException("can not delete Entity definition:" + currentHandler.getMetaData().getName() + "(tenant=" + currentContext.getClientTenantId() + ")");
-						}
-
-						return metaEntity.getId();
-					} finally {
-						doFinish(result, reConfigDataModel, currentContext.getClientTenantId(), newOne, metaEntity, context);
-						if (result) {
-							logger.info("remove " + currentHandler.getMetaData().getName() + "(" + currentHandler.getMetaData().getId() + ") process finish");
-						} else {
-							logger.info("remove " + currentHandler.getMetaData().getName() + "(" + currentHandler.getMetaData().getId() + ") process fail");
-						}
+					} else {
+						//実削除
+						result = doRemove(reConfigDataModel, currentContext.getClientTenantId(), metaEntity, context);
+						newOne = metaEntity;
 					}
+
+					if (!result) {
+						throw new EntityRuntimeException("can not delete Entity definition:" + currentHandler.getMetaData()
+								.getName() + "(tenant=" + currentContext.getClientTenantId() + ")");
+					}
+
+					return metaEntity.getId();
+				} finally {
+					doFinish(result, reConfigDataModel, currentContext.getClientTenantId(), newOne, metaEntity, context);
+					if (result) {
+						logger.info("remove " + currentHandler.getMetaData()
+								.getName() + "("
+								+ currentHandler.getMetaData()
+										.getId()
+								+ ") process finish");
+					} else {
+						logger.info("remove " + currentHandler.getMetaData()
+								.getName() + "("
+								+ currentHandler.getMetaData()
+										.getId()
+								+ ") process fail");
+					}
+				}
 //				} finally {
 //					ExecuteContext.setContext(null);
 //				}
@@ -619,7 +694,8 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 			throw new MetaDataRuntimeException(defName + " not found.");
 		}
 
-		MetaEntity meta = eh.getMetaData().copy();
+		MetaEntity meta = eh.getMetaData()
+				.copy();
 		MetaProperty p = meta.getDeclaredProperty(from);
 		if (p == null) {
 			throw new MetaDataRuntimeException(defName + "'s " + from + " not found.");
@@ -631,17 +707,20 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 
 		p.setName(to);
 
-		MetaDataContext.getContext().update(convertPath(ENTITY_META_PATH + defName), meta);
+		MetaDataContext.getContext()
+				.update(convertPath(ENTITY_META_PATH + defName), meta);
 	}
 
 	@Override
 	public List<String> nameList() {
-		List<String> pathList = MetaDataContext.getContext().pathList(getFixedPath());
+		List<String> pathList = MetaDataContext.getContext()
+				.pathList(getFixedPath());
 		//pathList.replaceAll(path -> path.substring(getFixedPath().length()).replace("/", "."));
 		pathList.replaceAll(new UnaryOperator<String>() {
 			@Override
 			public String apply(String path) {
-				return path.substring(getFixedPath().length()).replace("/", ".");
+				return path.substring(getFixedPath().length())
+						.replace("/", ".");
 			}
 		});
 		//Entityの除外
@@ -662,7 +741,8 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 
 	@Override
 	public List<MetaDataEntryInfo> list(String path) {
-		List<MetaDataEntryInfo> list = MetaDataContext.getContext().definitionList(convertPath(getFixedPath() + path));
+		List<MetaDataEntryInfo> list = MetaDataContext.getContext()
+				.definitionList(convertPath(getFixedPath() + path));
 		if (list != null) {
 			//Entityの除外
 			String entityPath = getFixedPath() + ENTITY_NAME;
@@ -679,15 +759,18 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 	}
 
 	public EntityHandler getRuntimeByName(String name) {
-		return MetaDataContext.getContext().getMetaDataHandler(EntityHandler.class, convertPath(ENTITY_META_PATH + name));
+		return MetaDataContext.getContext()
+				.getMetaDataHandler(EntityHandler.class, convertPath(ENTITY_META_PATH + name));
 	}
 
 	public EntityHandler getRuntimeById(String id) {
-		return MetaDataContext.getContext().getMetaDataHandlerById(EntityHandler.class, id);
+		return MetaDataContext.getContext()
+				.getMetaDataHandlerById(EntityHandler.class, id);
 	}
 
 	public EntityHandler getHandlerById(String id, int version) {
-		return MetaDataContext.getContext().getMetaDataHandlerById(EntityHandler.class, id, version);
+		return MetaDataContext.getContext()
+				.getMetaDataHandlerById(EntityHandler.class, id, version);
 	}
 
 	/**
@@ -708,11 +791,11 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 
 			DataStore dataStore = storeService.getDataStore();
 			EntityStoreStrategy strategy = dataStore.getEntityStoreStrategy();
-			
+
 			logger.info("purge by id:" + id + ") process start");
 			strategy.purgeById(eContext, id);
 			if (additionalStoreMaintainer != null) {
-				for (AdditionalStoreMaintainer asm: additionalStoreMaintainer) {
+				for (AdditionalStoreMaintainer asm : additionalStoreMaintainer) {
 					asm.clean(context.getClientTenantId(), id);
 				}
 			}
@@ -753,7 +836,8 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 			logger.info("defrag " + name + "(" + meta.getId() + ") process start");
 			boolean prepare = doPrepare(metaStrategy, context.getClientTenantId(), meta, meta, eContext);
 			if (!prepare) {
-				throw new EntityRuntimeException("can not prepare for defrag Entity:" + meta.getName() + "(tenant=" + context.getClientTenantId() + ")");
+				throw new EntityRuntimeException(
+						"can not prepare for defrag Entity:" + meta.getName() + "(tenant=" + context.getClientTenantId() + ")");
 			}
 			MetaEntity target = meta.copy();
 			try {
@@ -773,7 +857,7 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 			dataStrategy.defragData(eContext, eh);
 
 			if (additionalStoreMaintainer != null) {
-				for (AdditionalStoreMaintainer asm: additionalStoreMaintainer) {
+				for (AdditionalStoreMaintainer asm : additionalStoreMaintainer) {
 					asm.defrag(context.getClientTenantId(), eh);
 				}
 			}
@@ -835,19 +919,20 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 		if (extendPropertyAdapterFactory == null) {
 			extendPropertyAdapterFactory = new ExtendPropertyAdapterFactory();
 		}
-		
+
 		if (config.getValue("oidValidationPattern") != null) {
 			oidValidationPattern = Pattern.compile(config.getValue("oidValidationPattern"));
 		}
 	}
-	
+
 	public Pattern getOidValidationPattern() {
 		return oidValidationPattern;
 	}
-	
+
 	public void checkValidOidPattern(String oid) {
 		if (oidValidationPattern != null) {
-			if (!oidValidationPattern.matcher(oid).matches()) {
+			if (!oidValidationPattern.matcher(oid)
+					.matches()) {
 				throw new EntityRuntimeException("OidProperty value must match pattern: " + oidValidationPattern.pattern());
 			}
 		}
@@ -862,7 +947,7 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 	 * @return 有効なパス
 	 */
 	private String convertPath(String path) {
-		return path.replace(".","/");
+		return path.replace(".", "/");
 	}
 
 	@Override

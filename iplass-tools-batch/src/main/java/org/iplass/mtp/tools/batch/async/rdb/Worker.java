@@ -10,28 +10,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Worker {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(Worker.class);
-	
+
 	public static void main(String[] args) {
-		
+
 		logger.info("start Woker process...");
-		
+
 		final ServiceRegistry sr = ServiceRegistry.getRegistry();
-		
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				
-				logger.info("shuthing down Woker process...");
-				
-				sr.destroyAllService();
-			}
-		}));
-		
+
+		Runtime.getRuntime()
+				.addShutdownHook(new Thread(new Runnable() {
+					@Override
+					public void run() {
+
+						logger.info("shuthing down Woker process...");
+
+						sr.destroyAllService();
+					}
+				}));
+
 		//start queue
 		sr.getService(RdbQueueService.class);
-		
+
 	}
 
 }

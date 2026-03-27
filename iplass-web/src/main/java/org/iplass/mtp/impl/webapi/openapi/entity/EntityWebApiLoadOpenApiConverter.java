@@ -69,12 +69,15 @@ public class EntityWebApiLoadOpenApiConverter extends AbstractEntityWebApiOpenAp
 		var operation = new Operation().responses(new ApiResponses());
 
 		// parameters
-		var withMappedByReference = new QueryParameter().name(GetEntityCommand.PARAM_WITH_MAPPED_BY_REFERENCE).required(Boolean.FALSE)
+		var withMappedByReference = new QueryParameter().name(GetEntityCommand.PARAM_WITH_MAPPED_BY_REFERENCE)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
 		operation.addParametersItem(withMappedByReference);
 
-		var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-		var componentsSchemaRef = service.getReusableSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
+		var service = ServiceRegistry.getRegistry()
+				.getService(OpenApiService.class);
+		var componentsSchemaRef = service.getReusableSchemaFactory()
+				.addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
 
 		// responses
 		var okSchema = new ObjectSchema()
@@ -82,8 +85,10 @@ public class EntityWebApiLoadOpenApiConverter extends AbstractEntityWebApiOpenAp
 				.addProperty(GetEntityCommand.RESULT_ENTITY, new ObjectSchema().$ref(componentsSchemaRef));
 		var okMediaType = new MediaType().schema(okSchema);
 		var okContent = new Content().addMediaType(jakarta.ws.rs.core.MediaType.APPLICATION_JSON, okMediaType);
-		var okResponse = new ApiResponse().content(okContent).description(description);
-		operation.getResponses().addApiResponse(STATUS_OK, okResponse);
+		var okResponse = new ApiResponse().content(okContent)
+				.description(description);
+		operation.getResponses()
+				.addApiResponse(STATUS_OK, okResponse);
 
 		return operation;
 	}

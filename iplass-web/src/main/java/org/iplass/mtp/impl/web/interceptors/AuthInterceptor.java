@@ -73,8 +73,7 @@ import org.iplass.mtp.web.interceptor.RequestInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<ActionMappingService> {
+public class AuthInterceptor implements RequestInterceptor, ServiceInitListener<ActionMappingService> {
 
 	private static Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
@@ -87,10 +86,14 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 
 	private LangSelector lang = new LangSelector();
 	private ActionMappingService amService;
-	private WebFrontendService wfService = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
-	private AuthService authService = ServiceRegistry.getRegistry().getService(AuthService.class);
-	private MetaTenantService metaTenantService = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
-	private TemplateService ts = ServiceRegistry.getRegistry().getService(TemplateService.class);
+	private WebFrontendService wfService = ServiceRegistry.getRegistry()
+			.getService(WebFrontendService.class);
+	private AuthService authService = ServiceRegistry.getRegistry()
+			.getService(AuthService.class);
+	private MetaTenantService metaTenantService = ServiceRegistry.getRegistry()
+			.getService(MetaTenantService.class);
+	private TemplateService ts = ServiceRegistry.getRegistry()
+			.getService(TemplateService.class);
 
 	@Override
 	public void inited(ActionMappingService service, Config config) {
@@ -100,12 +103,16 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 	@Override
 	public void destroyed() {
 	}
+
 	private AuthContextHolder getAuthContextHolder(ActionMappingRuntime action) {
-		if (action.getMetaData().isPrivileged()) {
+		if (action.getMetaData()
+				.isPrivileged()) {
 			if (logger.isDebugEnabled()) {
-				logger.debug("do as Privileged action:" + action.getMetaData().getName());
+				logger.debug("do as Privileged action:" + action.getMetaData()
+						.getName());
 			}
-			return AuthContextHolder.getAuthContext().privilegedAuthContextHolder();
+			return AuthContextHolder.getAuthContext()
+					.privilegedAuthContextHolder();
 		} else {
 			return AuthContextHolder.getAuthContext();
 		}
@@ -131,7 +138,7 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 						if (he instanceof ApplicationException) {
 							throw (ApplicationException) he;
 						} else if (he != null) {
-							throw new WebProcessRuntimeException("auto login fail. cause:" + he ,he);
+							throw new WebProcessRuntimeException("auto login fail. cause:" + he, he);
 						} else {
 							if (logger.isDebugEnabled()) {
 								logger.debug("auto login fail. cause:" + e);
@@ -156,7 +163,7 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 				}
 			}
 		} else {
-			for (AuthenticationProvider ap: authService.getAuthenticationProviders()) {
+			for (AuthenticationProvider ap : authService.getAuthenticationProviders()) {
 				AutoLoginHandler autoLoginHandler = ap.getAutoLoginHandler();
 				if (autoLoginHandler != null) {
 					AutoLoginInstruction inst = autoLoginHandler.handle(invocation.getRequest(), false, null);
@@ -165,14 +172,14 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 						try {
 							authService.login(inst.getCredential());
 							autoLoginHandler.handleSuccess(inst, invocation.getRequest(), authService.getCurrentSessionUserContext());
-							
+
 							return;
 						} catch (ApplicationException e) {
 							Exception he = autoLoginHandler.handleException(inst, e, invocation.getRequest(), false, null);
 							if (he instanceof ApplicationException) {
 								throw (ApplicationException) he;
 							} else if (he != null) {
-								throw new WebProcessRuntimeException("auto login fail. cause:" + he ,he);
+								throw new WebProcessRuntimeException("auto login fail. cause:" + he, he);
 							} else {
 								if (logger.isDebugEnabled()) {
 									logger.debug("auto login fail. cause:" + e);
@@ -211,23 +218,24 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		if (ec.getAttribute(AUTO_LOGIN_PROCESSED_FLAG) == null) {
 			try {
-				
+
 				ec.setAttribute(AUTO_LOGIN_PROCESSED_FLAG, true, false);
 				processAutoLogin(webInvocation, authService);
 			} catch (ApplicationException e) {
 				//notify to client...
-				invocation.getRequest().setAttribute(WebRequestConstants.EXCEPTION, e);
+				invocation.getRequest()
+						.setAttribute(WebRequestConstants.EXCEPTION, e);
 				try {
-					
+
 					showLoginForm(webInvocation, wfService);
 				} catch (ServletException | IOException ee) {
 					throw new WebProcessRuntimeException("can not forword to login form:" + ee.getMessage(), ee);
 				}
-				
+
 				return;
 			}
 		}
-		
+
 		final AuthContextHolder account = getAuthContextHolder(webInvocation.getAction());
 
 		//当該権限にて処理実行
@@ -236,13 +244,18 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 			lang.selectLangByUser(webInvocation.getRequest(), ExecuteContext.getCurrentContext());
 
 			boolean isPermitted;
-			if (webInvocation.getAction().getMetaData().isPublicAction()) {
+			if (webInvocation.getAction()
+					.getMetaData()
+					.isPublicAction()) {
 				isPermitted = true;
 				if (logger.isDebugEnabled()) {
-					logger.debug("do as public action:" + webInvocation.getAction().getMetaData().getName());
+					logger.debug("do as public action:" + webInvocation.getAction()
+							.getMetaData()
+							.getName());
 				}
 			} else {
-				ActionPermission permission = new ActionPermission(invocation.getActionName(), new RequestContextActionParameter(invocation.getRequest()));
+				ActionPermission permission = new ActionPermission(invocation.getActionName(),
+						new RequestContextActionParameter(invocation.getRequest()));
 				isPermitted = account.checkPermission(permission);
 			}
 
@@ -279,8 +292,11 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 			try {
 
 				//信頼された認証を必要とするか否か
-				if (webInvocation.getAction().getMetaData().isNeedTrustedAuthenticate()) {
-					if (!authService.checkCurrentSessionTrusted().isTrusted()) {
+				if (webInvocation.getAction()
+						.getMetaData()
+						.isNeedTrustedAuthenticate()) {
+					if (!authService.checkCurrentSessionTrusted()
+							.isTrusted()) {
 						throw new NeedTrustedAuthenticationException();
 					}
 				}
@@ -320,10 +336,14 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 	private void showLoginForm(WebInvocationImpl webInvocation, WebFrontendService wfService) throws ServletException, IOException {
 
 		ExecuteContext exec = ExecuteContext.getCurrentContext();
-		if (wfService.isRedirectAfterLogin() && webInvocation.getAction().getRequestRestriction().isAllowedMethod(HttpMethodType.GET.toString())) {
+		if (wfService.isRedirectAfterLogin() && webInvocation.getAction()
+				.getRequestRestriction()
+				.isAllowedMethod(HttpMethodType.GET.toString())) {
 			//redirectAfterLoginがonかつ、当該ActionがGETを許可する場合
-			String reReqPath = createReRequestPath(webInvocation.getRequestStack().getRequest());
-			webInvocation.getRequest().setAttribute(WebRequestConstants.REDIRECT_PATH, reReqPath);
+			String reReqPath = createReRequestPath(webInvocation.getRequestStack()
+					.getRequest());
+			webInvocation.getRequest()
+					.setAttribute(WebRequestConstants.REDIRECT_PATH, reReqPath);
 		}
 
 		WebUtil.setCacheControlHeader(webInvocation.getRequestStack(), false, -1);
@@ -333,8 +353,9 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 		MetaTenantHandler handler = metaTenantService.getRuntimeByName(tenant.getName());
 		MetaTenantWebInfoRuntime twebr = handler.getConfigRuntime(MetaTenantWebInfoRuntime.class);
 		RequestContext request = new RequestContextWrapper(webInvocation.getRequest(), RequestContextWrapper.Mode.SHARED);
-		String loginActionName = (twebr != null ?
-				twebr.loginUrlSelector(request, webInvocation.getRequestStack().getRequestPath().getTargetPath(true)) : null);
+		String loginActionName = (twebr != null ? twebr.loginUrlSelector(request, webInvocation.getRequestStack()
+				.getRequestPath()
+				.getTargetPath(true)) : null);
 		if (StringUtil.isNotEmpty(loginActionName)) {
 			if (amService.getByPathHierarchy(loginActionName) == null) {
 				//指定Actionが見つからない場合は、エラーログを出力して、service-configで指定されているデフォルトを表示
@@ -349,7 +370,9 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 				logger.error("LoginUrlSelector must specified on WebFrontendService");
 				throw new SystemException("LoginUrlSelector must specified on WebFrontendService");
 			}
-			loginActionName = defaultSelector.getLoginActionName(request, webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
+			loginActionName = defaultSelector.getLoginActionName(request, webInvocation.getRequestStack()
+					.getRequestPath()
+					.getTargetPath(true));
 			if (StringUtil.isEmpty(loginActionName)) {
 				throw new NullPointerException("LoginUrlSelector's loginActionName is null or blank");
 			}
@@ -367,10 +390,14 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 	private void showReAuthForm(WebInvocationImpl webInvocation, AuthService authService) throws ServletException, IOException {
 
 		ExecuteContext exec = ExecuteContext.getCurrentContext();
-		if (webInvocation.getAction().getRequestRestriction().isAllowedMethod(HttpMethodType.GET.toString())) {
+		if (webInvocation.getAction()
+				.getRequestRestriction()
+				.isAllowedMethod(HttpMethodType.GET.toString())) {
 			//当該ActionがGETを許可する場合
-			String reReqPath = createReRequestPath(webInvocation.getRequestStack().getRequest());
-			webInvocation.getRequest().setAttribute(WebRequestConstants.REDIRECT_PATH, reReqPath);
+			String reReqPath = createReRequestPath(webInvocation.getRequestStack()
+					.getRequest());
+			webInvocation.getRequest()
+					.setAttribute(WebRequestConstants.REDIRECT_PATH, reReqPath);
 		}
 
 		WebUtil.setCacheControlHeader(webInvocation.getRequestStack(), false, -1);
@@ -380,8 +407,9 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 		MetaTenantHandler handler = metaTenantService.getRuntimeByName(tenant.getName());
 		MetaTenantWebInfoRuntime twebr = handler.getConfigRuntime(MetaTenantWebInfoRuntime.class);
 		RequestContext request = new RequestContextWrapper(webInvocation.getRequest(), RequestContextWrapper.Mode.SHARED);
-		String tenantReAuthActionName = (twebr != null ?
-				twebr.reAuthUrlSelector(request, webInvocation.getRequestStack().getRequestPath().getTargetPath(true)) : null);
+		String tenantReAuthActionName = (twebr != null ? twebr.reAuthUrlSelector(request, webInvocation.getRequestStack()
+				.getRequestPath()
+				.getTargetPath(true)) : null);
 
 		if (StringUtil.isEmpty(tenantReAuthActionName)) {
 			LoginUrlSelector defaultSelector = wfService.getLoginUrlSelector();
@@ -389,7 +417,9 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 				logger.error("LoginUrlSelector must specified on WebFrontendService");
 				throw new SystemException("LoginUrlSelector must specified on WebFrontendService");
 			}
-			tenantReAuthActionName = defaultSelector.getReAuthActionName(request, webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
+			tenantReAuthActionName = defaultSelector.getReAuthActionName(request, webInvocation.getRequestStack()
+					.getRequestPath()
+					.getTargetPath(true));
 		}
 
 		request.setAttribute(REDIRECT_BY_AUTH_INTERCEPTOR, Boolean.TRUE);
@@ -403,15 +433,17 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 
 		//例外をセット
 		NoPermissionException exp = new NoPermissionException(resourceString("impl.web.interceptors.AuthInterceptor.noPermission"));
-		webInvocation.getRequest().setAttribute(WebRequestConstants.EXCEPTION, exp);
+		webInvocation.getRequest()
+				.setAttribute(WebRequestConstants.EXCEPTION, exp);
 
 		//Tenantで指定されている権限エラーTemplateを取得
 		Tenant tenant = exec.getCurrentTenant();
 		MetaTenantHandler handler = metaTenantService.getRuntimeByName(tenant.getName());
 //		String tenantPermErrorTemplate = handler.errorUrlSelector(exp, webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
 		MetaTenantWebInfoRuntime twebr = handler.getConfigRuntime(MetaTenantWebInfoRuntime.class);
-		String tenantPermErrorTemplate = (twebr != null ?
-				twebr.errorUrlSelector(exp, webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true)) : null);
+		String tenantPermErrorTemplate = (twebr != null ? twebr.errorUrlSelector(exp, webInvocation.getRequest(), webInvocation.getRequestStack()
+				.getRequestPath()
+				.getTargetPath(true)) : null);
 
 		TemplateRuntime tr = null;
 		if (StringUtil.isNotEmpty(tenantPermErrorTemplate)) {
@@ -431,7 +463,9 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 			//デフォルトのErrorUrlSelectorで指定するTemplateの取得
 			ErrorUrlSelector defaultSelector = wfService.getErrorUrlSelector();
 			if (defaultSelector != null) {
-				defaultPermErrorTemplate = defaultSelector.getErrorTemplateName(exp, webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
+				defaultPermErrorTemplate = defaultSelector.getErrorTemplateName(exp, webInvocation.getRequest(), webInvocation.getRequestStack()
+						.getRequestPath()
+						.getTargetPath(true));
 			}
 			if (defaultPermErrorTemplate != null) {
 				tr = ts.getRuntimeByName(defaultPermErrorTemplate);
@@ -451,14 +485,16 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 	}
 
 	private String createReRequestPath(HttpServletRequest req) {
-		StringBuilder buffer =  createParameter(req);
-		if(buffer.length() > 0) {
+		StringBuilder buffer = createParameter(req);
+		if (buffer.length() > 0) {
 			buffer.insert(0, "?");
 		}
 
 		WebRequestStack reqStack = WebRequestStack.getCurrent();
-		buffer.insert(0, reqStack.getRequestPath().getTargetPath());
-		buffer.insert(0, reqStack.getRequestPath().getTenantContextPath(req));
+		buffer.insert(0, reqStack.getRequestPath()
+				.getTargetPath());
+		buffer.insert(0, reqStack.getRequestPath()
+				.getTenantContextPath(req));
 		return buffer.toString();
 	}
 
@@ -479,10 +515,16 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 			int length = values.length;
 			try {
 				if (length == 1) {
-					sb.append(key).append("=").append(URLEncoder.encode(values[0], "UTF-8")).append("&");
+					sb.append(key)
+							.append("=")
+							.append(URLEncoder.encode(values[0], "UTF-8"))
+							.append("&");
 				} else if (length != 0) {
 					for (int i = 0; i < length; i++) {
-						sb.append(key).append("=").append(URLEncoder.encode(values[i], "UTF-8")).append("&");
+						sb.append(key)
+								.append("=")
+								.append(URLEncoder.encode(values[i], "UTF-8"))
+								.append("&");
 					}
 				}
 			} catch (UnsupportedEncodingException e) {
@@ -519,7 +561,9 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 			logger.debug("after loggedout redirect URL specified, so redirect to " + redirectPath);
 		}
 		try {
-			((WebInvocationImpl) invocation).getRequestStack().getResponse().sendRedirect(StringUtil.removeLineFeedCode(redirectPath));
+			((WebInvocationImpl) invocation).getRequestStack()
+					.getResponse()
+					.sendRedirect(StringUtil.removeLineFeedCode(redirectPath));
 		} catch (IOException e) {
 			throw new WebProcessRuntimeException(e);
 		}
@@ -529,7 +573,8 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 		if (logger.isDebugEnabled()) {
 			logger.debug("after loggedout template specified, so do template:" + template);
 		}
-		TemplateService ts = ServiceRegistry.getRegistry().getService(TemplateService.class);
+		TemplateService ts = ServiceRegistry.getRegistry()
+				.getService(TemplateService.class);
 		TemplateRuntime tr = ts.getRuntimeByName(template);
 		if (tr == null) {
 			throw new WebProcessRuntimeException("after loggedout template specified, but " + template + " not defined.");

@@ -79,7 +79,8 @@ public class RemoteJwks extends Jwks {
 				HttpEntity entity = null;
 				try {
 					if (res.getCode() != 200) {
-						throw new IllegalStateException("http response error: " + res.getVersion().format() + " " + res.getCode() + " " + res.getReasonPhrase());
+						throw new IllegalStateException("http response error: " + res.getVersion()
+								.format() + " " + res.getCode() + " " + res.getReasonPhrase());
 					}
 					entity = res.getEntity();
 					return EntityUtils.toString(entity);

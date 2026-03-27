@@ -58,15 +58,17 @@ public class MtpBatchResourceDisposer {
 	 * </p>
 	 */
 	public static void addShutdownHookForDisposeResource(Runnable disposeProcess) {
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			LOG.info("Begin resource dispose by shutdown hook.");
-			try {
-				Optional.ofNullable(disposeProcess).ifPresent(r -> r.run());
-			} finally {
-				// リソース破棄
-				disposeResource();
-			}
-		}));
+		Runtime.getRuntime()
+				.addShutdownHook(new Thread(() -> {
+					LOG.info("Begin resource dispose by shutdown hook.");
+					try {
+						Optional.ofNullable(disposeProcess)
+								.ifPresent(r -> r.run());
+					} finally {
+						// リソース破棄
+						disposeResource();
+					}
+				}));
 	}
 
 	/**
@@ -75,6 +77,7 @@ public class MtpBatchResourceDisposer {
 	public static void disposeResource() {
 		LOG.info("Destroy all services.");
 		// 全サービス破棄。
-		ServiceRegistry.getRegistry().destroyAllService();
+		ServiceRegistry.getRegistry()
+				.destroyAllService();
 	}
 }

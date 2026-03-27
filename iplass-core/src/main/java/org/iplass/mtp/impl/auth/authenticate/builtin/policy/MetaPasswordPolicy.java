@@ -130,7 +130,7 @@ public class MetaPasswordPolicy implements MetaData {
 	public void setPasswordHistoryCount(int passwordHistoryCount) {
 		this.passwordHistoryCount = passwordHistoryCount;
 	}
-	
+
 	public int getPasswordHistoryPeriod() {
 		return passwordHistoryPeriod;
 	}

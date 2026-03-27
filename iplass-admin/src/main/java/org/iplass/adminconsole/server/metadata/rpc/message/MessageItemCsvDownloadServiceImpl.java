@@ -59,15 +59,16 @@ public class MessageItemCsvDownloadServiceImpl extends AdminDownloadService {
 
 	private void writeCsv(HttpServletResponse resp, String definitionName, String fileName) {
 
-		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
 		aals.logDownload("MessageItemCsvDownload", fileName, "name:" + fileName);
 
-		MessageManager mm = ManagerLocator.getInstance().getManager(MessageManager.class);
+		MessageManager mm = ManagerLocator.getInstance()
+				.getManager(MessageManager.class);
 		MessageCategory category = mm.get(definitionName);
 
-
 		//Writerの生成
-		try (MessageItemCsvWriter writer = new MessageItemCsvWriter(resp.getOutputStream())){
+		try (MessageItemCsvWriter writer = new MessageItemCsvWriter(resp.getOutputStream())) {
 
 			DownloadUtil.setCsvResponseHeader(resp, fileName);
 
@@ -76,7 +77,8 @@ public class MessageItemCsvDownloadServiceImpl extends AdminDownloadService {
 
 			if (category != null) {
 				if (category.getMessageItems() != null) {
-					for (MessageItem item : category.getMessageItems().values()) {
+					for (MessageItem item : category.getMessageItems()
+							.values()) {
 						writer.writeMessageItem(item);
 					}
 				}

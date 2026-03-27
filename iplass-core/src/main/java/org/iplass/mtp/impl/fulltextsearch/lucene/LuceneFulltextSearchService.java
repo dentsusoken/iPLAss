@@ -106,11 +106,12 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 
 	private ConcurrentHashMap<Integer, LuceneFulltextSearchContext> contexts;
 
-
 	IndexDir newIndexDir(int tenantId, String defId) {
-		EntityService entityService = ServiceRegistry.getRegistry().getService(EntityService.class);
+		EntityService entityService = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
 		EntityHandler eh = entityService.getRuntimeById(defId);
-		if (eh == null || !eh.getMetaData().isCrawl()) {
+		if (eh == null || !eh.getMetaData()
+				.isCrawl()) {
 			logger.debug("defId:" + defId + " not foud or disable crawl.");
 			return null;
 		}
@@ -125,7 +126,8 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 				if (MMapDirectory.class.equals(luceneFSDirectoryClass)) {
 					dir = new MMapDirectory(dirPath, maxChunkSizeMB);
 				} else {
-					dir = (FSDirectory) luceneFSDirectoryClass.getConstructor(Path.class).newInstance(dirPath);
+					dir = (FSDirectory) luceneFSDirectoryClass.getConstructor(Path.class)
+							.newInstance(dirPath);
 				}
 			} else {
 				dir = FSDirectory.open(dirPath);
@@ -172,7 +174,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 			if (timer != null) {
 				timer.cancel();
 			}
-			for (LuceneFulltextSearchContext fsc: contexts.values()) {
+			for (LuceneFulltextSearchContext fsc : contexts.values()) {
 				fsc.destroy();
 			}
 		}
@@ -218,7 +220,8 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 	@Override
 	public void execRefresh() {
 		if (isUseFulltextSearch()) {
-			LuceneFulltextSearchContext fsc = contexts.get(ExecuteContext.getCurrentContext().getClientTenantId());
+			LuceneFulltextSearchContext fsc = contexts.get(ExecuteContext.getCurrentContext()
+					.getClientTenantId());
 			if (fsc != null) {
 				fsc.refreshAll();
 			}
@@ -228,7 +231,9 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 	@Override
 	protected void createIndexData(final int tenantId, String defName) {
 		// 存在しないdefinitionNameが指定された場合は終了
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(DefinitionService.getInstance().getPath(EntityDefinition.class, defName));
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(DefinitionService.getInstance()
+						.getPath(EntityDefinition.class, defName));
 		if (entry == null) {
 			logger.warn(defName + " is not found.");
 			return;
@@ -244,12 +249,12 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 		}
 
 		// Crawl対象プロパティが0件以下の場合は終了
-		if (meta.getCrawlPropertyId() == null || meta.getCrawlPropertyId().isEmpty()) {
+		if (meta.getCrawlPropertyId() == null || meta.getCrawlPropertyId()
+				.isEmpty()) {
 			logger.warn(defName + " have no crawl target property. so skip crawl.");
 			logger.info("end crawl " + defName);
 			return;
 		}
-
 
 		AuthContext.doPrivileged(() -> {
 			// 対象プロパティのリストを作成する
@@ -257,9 +262,10 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 
 			Select select = new Select();
 			select.add(new EntityField(Entity.OID), new EntityField(Entity.VERSION));
-			crawlPropertyNameMap.keySet().forEach(propName -> {
-				select.add(new EntityField(propName));
-			});
+			crawlPropertyNameMap.keySet()
+					.forEach(propName -> {
+						select.add(new EntityField(propName));
+					});
 
 			String objDefId = meta.getId();
 			int objDefVer = entry.getVersion();
@@ -284,38 +290,40 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 
 					//削除
 					dtoList.stream()
-					.filter(dto -> dto.getStatus().equals(Status.DELETE))
-					.forEach(dto -> {
+							.filter(dto -> dto.getStatus()
+									.equals(Status.DELETE))
+							.forEach(dto -> {
 
-						try {
-							Term term = new Term("id", dto.getId());
-							writer.deleteDocuments(term);
-						} catch (IOException e) {
-							throw new FulltextSearchRuntimeException("Cant create index cause " + e.toString(), e);
-						}
-					});
+								try {
+									Term term = new Term("id", dto.getId());
+									writer.deleteDocuments(term);
+								} catch (IOException e) {
+									throw new FulltextSearchRuntimeException("Cant create index cause " + e.toString(), e);
+								}
+							});
 
 					//リストア
 					List<ValueExpression> oidList = new ArrayList<>();
 
 					dtoList.stream()
-					.filter(dto -> dto.getStatus().equals(Status.RESTORE))
-					.forEach(dto -> {
+							.filter(dto -> dto.getStatus()
+									.equals(Status.RESTORE))
+							.forEach(dto -> {
 
-						oidList.add(new Literal(dto.getObjId()));
+								oidList.add(new Literal(dto.getObjId()));
 
-						if (oidList.size() == 1000) {
-							//Oracle 1000件制限対応
-							// oidList（メモリ保持）を解放する目的
-							Query query = new Query();
-							query.setSelect(select);
-							query.from(defName);
-							In in = new In(new EntityField(Entity.OID), new ArrayList<ValueExpression>(oidList));
-							query.where(in);
-							createIndexByQuery(query, tenantId, objDefId, writer, crawlPropertyNameMap);
-							oidList.clear();
-						}
-					});
+								if (oidList.size() == 1000) {
+									//Oracle 1000件制限対応
+									// oidList（メモリ保持）を解放する目的
+									Query query = new Query();
+									query.setSelect(select);
+									query.from(defName);
+									In in = new In(new EntityField(Entity.OID), new ArrayList<ValueExpression>(oidList));
+									query.where(in);
+									createIndexByQuery(query, tenantId, objDefId, writer, crawlPropertyNameMap);
+									oidList.clear();
+								}
+							});
 
 					if (oidList.size() > 0) {
 						Query query = new Query();
@@ -335,7 +343,6 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 						query.where(new GreaterEqual(Entity.UPDATE_DATE, lastUpdate));
 					}
 					createIndexByQuery(query, tenantId, objDefId, writer, crawlPropertyNameMap);
-
 
 					//DeleteLogテーブルから削除
 					removeDeleteLog(objDefId, delTargetDatetime);
@@ -360,13 +367,15 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 		});
 	}
 
-	private boolean createIndexByQuery(final Query query, final int tenantId, final String objDefId, final EntityIndexWriter writer, final Map<String, String> crawlPropertyNameMap) {
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+	private boolean createIndexByQuery(final Query query, final int tenantId, final String objDefId, final EntityIndexWriter writer,
+			final Map<String, String> crawlPropertyNameMap) {
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		if (logger.isDebugEnabled()) {
 			logger.debug("### EQL : " + query.toString() + "###");
 		}
 
-		final boolean[] isIndexed = new boolean[]{false};
+		final boolean[] isIndexed = new boolean[] { false };
 
 		em.searchEntity(query, entity -> {
 
@@ -389,12 +398,13 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 					doc.add(new StringField("OBJ_VER", Long.toString(entity.getVersion()), Field.Store.YES));
 				}
 
-				for(Map.Entry<String, String> e : crawlPropertyNameMap.entrySet()) {
+				for (Map.Entry<String, String> e : crawlPropertyNameMap.entrySet()) {
 					String propName = e.getKey();
 					Object val = entity.getValue(propName);
 					if (val != null) {
 						String fieldName = e.getValue();
-						if (val.getClass().isArray()) {
+						if (val.getClass()
+								.isArray()) {
 							Object[] valArray = (Object[]) val;
 							for (int i = 0; i < valArray.length; i++) {
 								doc.add(toField(fieldName, valArray[i]));
@@ -427,24 +437,36 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 		if (eh == null || StringUtil.isEmpty(fulltext)) {
 			return Collections.emptyList();
 		}
-		IndexDir dir = contexts.get(tenantId).getIndexDir(eh.getMetaData().getId());
+		IndexDir dir = contexts.get(tenantId)
+				.getIndexDir(eh.getMetaData()
+						.getId());
 		if (dir == null) {
 			return Collections.emptyList();
 		}
-		if (eh.getMetaData().getCrawlPropertyId() == null || eh.getMetaData().getCrawlPropertyId().isEmpty()) {
+		if (eh.getMetaData()
+				.getCrawlPropertyId() == null || eh.getMetaData()
+						.getCrawlPropertyId()
+						.isEmpty()) {
 			return Collections.emptyList();
 		}
-		String[] fields = eh.getMetaData().getCrawlPropertyId().toArray(new String[eh.getMetaData().getCrawlPropertyId().size()]);
-		MultiFieldQueryParser qp = new MultiFieldQueryParser(fields, analyzerSetting.getAnalyzer(tenantId, eh.getMetaData().getName()));
+		String[] fields = eh.getMetaData()
+				.getCrawlPropertyId()
+				.toArray(new String[eh.getMetaData()
+						.getCrawlPropertyId()
+						.size()]);
+		MultiFieldQueryParser qp = new MultiFieldQueryParser(fields, analyzerSetting.getAnalyzer(tenantId, eh.getMetaData()
+				.getName()));
 		qp.setDefaultOperator(defaultOperator);
 
 		IndexSearcher searcher = null;
 		try {
-			searcher = dir.getSearcherManager().acquire();
+			searcher = dir.getSearcherManager()
+					.acquire();
 
 			// searchaerでlimit未指定はできない為，全index数をmaxとして指定する
 			if (limit < 0) {
-				limit = searcher.getIndexReader().numDocs();
+				limit = searcher.getIndexReader()
+						.numDocs();
 			}
 
 			org.apache.lucene.search.Query fulltextQuery = qp.parse(fulltext);
@@ -461,7 +483,8 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 				Document doc = storedFields.document(hit.doc);
 				String oid = doc.get("OBJ_ID");
 
-				result.add(new IndexedEntity(eh.getMetaData().getName(), oid, hit.score));
+				result.add(new IndexedEntity(eh.getMetaData()
+						.getName(), oid, hit.score));
 			}
 
 			return result;
@@ -470,7 +493,8 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 		} finally {
 			if (searcher != null) {
 				try {
-					dir.getSearcherManager().release(searcher);
+					dir.getSearcherManager()
+							.release(searcher);
 				} catch (IOException e) {
 					logger.error("Error occurred when IndexSearcher releasing, maybe resource leak", e);
 				} finally {
@@ -482,16 +506,21 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 
 	@Override
 	public void deleteAllIndex() {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		EntityService es = ServiceRegistry.getRegistry().getService(EntityService.class);
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
+		EntityService es = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
 		List<MetaDataEntryInfo> defList = es.list();
-		for (MetaDataEntryInfo def: defList) {
+		for (MetaDataEntryInfo def : defList) {
 			if (existsDir(tenantId, def.getId())) {
 				EntityHandler eh = es.getRuntimeById(def.getId());
-				IndexDir dir = contexts.get(tenantId).getIndexDir(eh.getMetaData().getId());
+				IndexDir dir = contexts.get(tenantId)
+						.getIndexDir(eh.getMetaData()
+								.getId());
 				if (dir != null) {
 					try (IndexWriter writer = new IndexWriter(dir.getDirectory(),
-							new IndexWriterConfig(analyzerSetting.getAnalyzer(tenantId, eh.getMetaData().getName())))) {
+							new IndexWriterConfig(analyzerSetting.getAnalyzer(tenantId, eh.getMetaData()
+									.getName())))) {
 						Term term = new Term("tenant_id", String.valueOf(tenantId));
 						writer.deleteDocuments(term);
 					} catch (IOException e) {
@@ -639,13 +668,15 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 			commit();
 			close();
 			counter = 0;
-			logger.info("commit lucene index writer. because the operation count has exceeded the upper limit value(" + indexWriterSetting.getCommitLimit() + ").");
+			logger.info("commit lucene index writer. because the operation count has exceeded the upper limit value("
+					+ indexWriterSetting.getCommitLimit() + ").");
 			createWriter();
 		}
 
 		private void createWriter() throws IOException {
 			IndexWriterConfig config = indexWriterSetting.createIndexWriterConfig(analyzerSetting.getAnalyzer(tenantId, metaEntity.getName()));
-			IndexDir dir = contexts.get(tenantId).getIndexDir(metaEntity.getId());
+			IndexDir dir = contexts.get(tenantId)
+					.getIndexDir(metaEntity.getId());
 			writer = new IndexWriter(dir.getDirectory(), config);
 		}
 

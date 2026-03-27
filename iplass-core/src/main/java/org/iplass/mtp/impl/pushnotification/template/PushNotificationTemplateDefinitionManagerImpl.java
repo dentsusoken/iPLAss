@@ -30,7 +30,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 public class PushNotificationTemplateDefinitionManagerImpl extends AbstractTypedDefinitionManager<PushNotificationTemplateDefinition> implements
 		PushNotificationTemplateDefinitionManager {
 
-	private PushNotificationService service = ServiceRegistry.getRegistry().getService(PushNotificationService.class);
+	private PushNotificationService service = ServiceRegistry.getRegistry()
+			.getService(PushNotificationService.class);
 
 	@Override
 	public Class<PushNotificationTemplateDefinition> getDefinitionType() {

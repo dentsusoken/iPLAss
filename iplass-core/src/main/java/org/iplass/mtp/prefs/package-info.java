@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/prefs",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/prefs", prefix="def-prefs")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/prefs",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/prefs", prefix = "def-prefs")
+		}
 )
 package org.iplass.mtp.prefs;

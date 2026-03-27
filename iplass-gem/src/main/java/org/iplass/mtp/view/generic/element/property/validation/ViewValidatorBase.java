@@ -41,8 +41,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({RequiresAtLeastOneFieldValidator.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso({ RequiresAtLeastOneFieldValidator.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class ViewValidatorBase implements Refrectable {
 
 	/** serialVersionUID */
@@ -50,54 +50,54 @@ public abstract class ViewValidatorBase implements Refrectable {
 
 	/** メッセージ */
 	@MetaFieldInfo(
-			displayName="メッセージ",
-			displayNameKey="generic_element_property_validation_ValidatorBase_messageDisplaNameKey",
-			description="入力チェックエラー時に表示するメッセージを設定します。",
-			descriptionKey="generic_element_property_validation_ValidatorBase_messageDescriptionKey",
-			required=true,
-			inputType=InputType.MULTI_LANG,
+			displayName = "メッセージ",
+			displayNameKey = "generic_element_property_validation_ValidatorBase_messageDisplaNameKey",
+			description = "入力チェックエラー時に表示するメッセージを設定します。",
+			descriptionKey = "generic_element_property_validation_ValidatorBase_messageDescriptionKey",
+			required = true,
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedMessageList"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	@MultiLang()
 	private String message;
 
 	/** メッセージの多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="メッセージの多言語設定",
-			displayNameKey="generic_element_property_validation_ValidatorBase_localizedMessageListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			displayName = "メッセージの多言語設定",
+			displayNameKey = "generic_element_property_validation_ValidatorBase_localizedMessageListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private List<LocalizedStringDefinition> localizedMessageList;
 
 	/** 通常検索でのチェック有無 */
 	@MetaFieldInfo(
-			displayName="通常検索で入力チェックを行う",
-			displayNameKey="generic_element_property_validation_ValidatorBase_validateNormalDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="通常検索で入力チェックを行うかを設定します。",
-			descriptionKey="generic_element_property_validation_ValidatorBase_validateNormalDescriptionKey"
+			displayName = "通常検索で入力チェックを行う",
+			displayNameKey = "generic_element_property_validation_ValidatorBase_validateNormalDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			description = "通常検索で入力チェックを行うかを設定します。",
+			descriptionKey = "generic_element_property_validation_ValidatorBase_validateNormalDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean validateNormal;
 
 	/** 詳細検索でのチェック有無 */
 	@MetaFieldInfo(
-			displayName="詳細検索で入力チェックを行う",
-			displayNameKey="generic_element_property_validation_ValidatorBase_validateDetailDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="詳細検索で入力チェックを行うかを設定します。",
-			descriptionKey="generic_element_property_validation_ValidatorBase_validateDetailDescriptionKey"
+			displayName = "詳細検索で入力チェックを行う",
+			displayNameKey = "generic_element_property_validation_ValidatorBase_validateDetailDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			description = "詳細検索で入力チェックを行うかを設定します。",
+			descriptionKey = "generic_element_property_validation_ValidatorBase_validateDetailDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean validateDetail;
 
@@ -106,7 +106,7 @@ public abstract class ViewValidatorBase implements Refrectable {
 	 * @return メッセージ
 	 */
 	public String getMessage() {
-	    return message;
+		return message;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public abstract class ViewValidatorBase implements Refrectable {
 	 * @param message メッセージ
 	 */
 	public void setMessage(String message) {
-	    this.message = message;
+		this.message = message;
 	}
 
 	/**
@@ -122,7 +122,7 @@ public abstract class ViewValidatorBase implements Refrectable {
 	 * @return メッセージの多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedMessageList() {
-	    return localizedMessageList;
+		return localizedMessageList;
 	}
 
 	/**
@@ -130,7 +130,7 @@ public abstract class ViewValidatorBase implements Refrectable {
 	 * @param localizedMessageList メッセージの多言語設定情報
 	 */
 	public void setLocalizedMessageList(List<LocalizedStringDefinition> localizedMessageList) {
-	    this.localizedMessageList = localizedMessageList;
+		this.localizedMessageList = localizedMessageList;
 	}
 
 	/**
@@ -138,7 +138,7 @@ public abstract class ViewValidatorBase implements Refrectable {
 	 * @return 通常検索でのチェック有無
 	 */
 	public boolean isValidateNormal() {
-	    return validateNormal;
+		return validateNormal;
 	}
 
 	/**
@@ -146,7 +146,7 @@ public abstract class ViewValidatorBase implements Refrectable {
 	 * @param validateNormal 通常検索でのチェック有無
 	 */
 	public void setValidateNormal(boolean validateNormal) {
-	    this.validateNormal = validateNormal;
+		this.validateNormal = validateNormal;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public abstract class ViewValidatorBase implements Refrectable {
 	 * @return 詳細検索でのチェック有無
 	 */
 	public boolean isValidateDetail() {
-	    return validateDetail;
+		return validateDetail;
 	}
 
 	/**
@@ -162,6 +162,6 @@ public abstract class ViewValidatorBase implements Refrectable {
 	 * @param validateDetail 詳細検索でのチェック有無
 	 */
 	public void setValidateDetail(boolean validateDetail) {
-	    this.validateDetail = validateDetail;
+		this.validateDetail = validateDetail;
 	}
 }

@@ -24,8 +24,10 @@ public class RecycleBinCleanService implements Service {
 
 	@Override
 	public void init(Config config) {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 	}
 
 	@Override
@@ -53,7 +55,8 @@ public class RecycleBinCleanService implements Service {
 				}
 				String[] definitionNames = entityDefinitionNames;
 				if (definitionNames == null) {
-					definitionNames = edm.definitionList().toArray(new String[] {});
+					definitionNames = edm.definitionList()
+							.toArray(new String[] {});
 				}
 
 				for (final String definitionName : definitionNames) {
@@ -63,7 +66,8 @@ public class RecycleBinCleanService implements Service {
 						@Override
 						public boolean test(Entity dataModel) {
 							// getRecycleBinで取得するUpdateDateにはrbDateがセットされている
-							if (dataModel.getUpdateDate().before(purgeTargetDate)) {
+							if (dataModel.getUpdateDate()
+									.before(purgeTargetDate)) {
 
 								if (logger.isDebugEnabled()) {
 									logger.debug("purge " + definitionName + " data. purgeTargetDate=" + purgeTargetDate);

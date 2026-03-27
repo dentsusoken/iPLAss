@@ -40,9 +40,9 @@ public class EntityPropertyXmlAdapter extends XmlAdapter<JaxbProperty[], Map<Str
 
 	@Override
 	public Map<String, Object> unmarshal(JaxbProperty[] v) throws Exception {
-		
+
 		HashMap<String, Object> props = new HashMap<String, Object>();
-		for (JaxbProperty p: v) {
+		for (JaxbProperty p : v) {
 			if (p.value != null) {
 				props.put(p.name, p.value);
 			}
@@ -57,7 +57,7 @@ public class EntityPropertyXmlAdapter extends XmlAdapter<JaxbProperty[], Map<Str
 	@Override
 	public JaxbProperty[] marshal(Map<String, Object> v) throws Exception {
 		List<JaxbProperty> property = new ArrayList<JaxbProperty>();
-		for (Map.Entry<String, Object> e: v.entrySet()) {
+		for (Map.Entry<String, Object> e : v.entrySet()) {
 			Object val = e.getValue();
 			if (val != null) {
 				JaxbProperty p = new JaxbProperty();

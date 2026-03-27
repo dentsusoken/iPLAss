@@ -33,7 +33,7 @@ import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.QueryConstants;
 
 public class CaseSyntax implements Syntax<Case>, QueryConstants {
-	
+
 	private WhenSyntax when;
 	private ElseSyntax elseClause;
 
@@ -48,9 +48,9 @@ public class CaseSyntax implements Syntax<Case>, QueryConstants {
 		}
 		str.consumeChars(CASE.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		Case caseClause = new Case();
-		
+
 		List<When> whenList = null;
 		while (str.equalsNextToken(WHEN, ParseContext.WHITE_SPACES)) {
 			When w = when.parse(str);
@@ -67,13 +67,13 @@ public class CaseSyntax implements Syntax<Case>, QueryConstants {
 			caseClause.setElseClause(elseClause.parse(str));
 			str.consumeChars(ParseContext.WHITE_SPACES);
 		}
-		
+
 		if (!str.equalsNextToken(END, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("END expected.", this, str));
 		}
 		str.consumeChars(END.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		return caseClause;
 	}
 

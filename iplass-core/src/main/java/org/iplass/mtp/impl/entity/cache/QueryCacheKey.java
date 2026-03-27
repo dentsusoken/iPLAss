@@ -27,7 +27,7 @@ class QueryCacheKey {
 	final Query query;
 	final boolean countOnly;
 	private final int hash;
-	
+
 	public QueryCacheKey(Query query, boolean returnStructuredEntity, boolean countOnly) {
 		this.query = query;
 		this.returnStructuredEntity = returnStructuredEntity;

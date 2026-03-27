@@ -44,93 +44,112 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 	private static final long serialVersionUID = -3395174355560173705L;
 
 	private static Logger logger = LoggerFactory.getLogger("mtp.auth.oauth");
-	
+
 	private String authorizationServerId;
-	
+
 	private ClientType clientType;
-	
+
 	//clientId=nameとする
 	//private String clientId;
-	
+
 	private List<String> redirectUris;
 	private String sectorIdentifierUri;//subjectのID生成用に
-	
+
 	private List<GrantType> grantTypes;//authorization_code, refresh_tokenに限定
 	//private List<String> responseTypes;//codeに限定
 	//private List<String> scopes;//authServer（のClientポリシー）単位で設定
-	
+
 	private String clientUri;
 	private String logoUri;
 	private List<String> contacts;
 	private String tosUri;
 	private String policyUri;
-	
+
 	//以下OpenID Connect
 	//private String applicationType;//web(default) or native
 	//private initiateLoginUri;//openid connect
 	//:
 	//:
 	//subject_type
-	
+
 	//private List<String> postLogoutRedirectUris;//TODO OpenID Connect Session Management 1.0
-	
+
 	public String getClientUri() {
 		return clientUri;
 	}
+
 	public void setClientUri(String clientUri) {
 		this.clientUri = clientUri;
 	}
+
 	public String getLogoUri() {
 		return logoUri;
 	}
+
 	public void setLogoUri(String logoUri) {
 		this.logoUri = logoUri;
 	}
+
 	public List<String> getContacts() {
 		return contacts;
 	}
+
 	public void setContacts(List<String> contacts) {
 		this.contacts = contacts;
 	}
+
 	public String getTosUri() {
 		return tosUri;
 	}
+
 	public void setTosUri(String tosUri) {
 		this.tosUri = tosUri;
 	}
+
 	public String getPolicyUri() {
 		return policyUri;
 	}
+
 	public void setPolicyUri(String policyUri) {
 		this.policyUri = policyUri;
 	}
+
 	public List<String> getRedirectUris() {
 		return redirectUris;
 	}
+
 	public void setRedirectUris(List<String> redirectUris) {
 		this.redirectUris = redirectUris;
 	}
+
 	public String getSectorIdentifierUri() {
 		return sectorIdentifierUri;
 	}
+
 	public void setSectorIdentifierUri(String sectorIdentifierUri) {
 		this.sectorIdentifierUri = sectorIdentifierUri;
 	}
+
 	public List<GrantType> getGrantTypes() {
 		return grantTypes;
 	}
+
 	public void setGrantTypes(List<GrantType> grantTypes) {
 		this.grantTypes = grantTypes;
 	}
+
 	public ClientType getClientType() {
 		return clientType;
 	}
+
 	public void setClientType(ClientType clientType) {
 		this.clientType = clientType;
 	}
+
 	public String getAuthorizationServerId() {
 		return authorizationServerId;
 	}
+
 	public void setAuthorizationServerId(String authorizationServerId) {
 		this.authorizationServerId = authorizationServerId;
 	}
@@ -151,14 +170,17 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 		description = def.getDescription();
 		displayName = def.getDisplayName();
 		localizedDisplayNameList = I18nUtil.toMeta(def.getLocalizedDisplayNameList());
-		
+
 		if (def.getAuthorizationServer() != null) {
-			OAuthAuthorizationService oauthService = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
-			authorizationServerId = oauthService.getRuntimeByName(def.getAuthorizationServer()).getMetaData().getId();
+			OAuthAuthorizationService oauthService = ServiceRegistry.getRegistry()
+					.getService(OAuthAuthorizationService.class);
+			authorizationServerId = oauthService.getRuntimeByName(def.getAuthorizationServer())
+					.getMetaData()
+					.getId();
 		} else {
 			authorizationServerId = null;
 		}
-		
+
 		clientType = def.getClientType();
 		if (def.getRedirectUris() != null) {
 			redirectUris = new ArrayList<>(def.getRedirectUris());
@@ -189,14 +211,17 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 		def.setDescription(description);
 		def.setDisplayName(displayName);
 		def.setLocalizedDisplayNameList(I18nUtil.toDef(localizedDisplayNameList));
-		
+
 		if (authorizationServerId != null) {
-			OAuthAuthorizationRuntime oauthRuntime = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class).getRuntimeById(authorizationServerId);
+			OAuthAuthorizationRuntime oauthRuntime = ServiceRegistry.getRegistry()
+					.getService(OAuthAuthorizationService.class)
+					.getRuntimeById(authorizationServerId);
 			if (oauthRuntime != null) {
-				def.setAuthorizationServer(oauthRuntime.getMetaData().getName());
+				def.setAuthorizationServer(oauthRuntime.getMetaData()
+						.getName());
 			}
 		}
-		
+
 		def.setClientType(clientType);
 		if (redirectUris != null) {
 			def.setRedirectUris(new ArrayList<>(redirectUris));
@@ -212,21 +237,24 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 		}
 		def.setTosUri(tosUri);
 		def.setPolicyUri(policyUri);
-		
+
 		return def;
 	}
-	
+
 	public class OAuthClientRuntime extends BaseMetaDataRuntime {
-		private OAuthAuthorizationService serverService = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
-		private OAuthClientCredentialHandler ch = (OAuthClientCredentialHandler) ServiceRegistry.getRegistry().getService(AuthTokenService.class).getHandler(OAuthClientCredentialHandler.TYPE_CLIENT);
+		private OAuthAuthorizationService serverService = ServiceRegistry.getRegistry()
+				.getService(OAuthAuthorizationService.class);
+		private OAuthClientCredentialHandler ch = (OAuthClientCredentialHandler) ServiceRegistry.getRegistry()
+				.getService(AuthTokenService.class)
+				.getHandler(OAuthClientCredentialHandler.TYPE_CLIENT);
 		private String sectorId;
-		
+
 		public OAuthClientRuntime() {
 			try {
 				if (redirectUris == null || redirectUris.size() == 0) {
 					throw new IllegalStateException("redirectUris  must be specified");
 				} else {
-					for (String ru: redirectUris) {
+					for (String ru : redirectUris) {
 						//check redirectUris valid
 						try {
 							new URI(ru);
@@ -235,16 +263,16 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 						}
 					}
 				}
-				
+
 				sectorId = genSectorId();
-				
+
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
 		}
-		
+
 		private String genSectorId() {
-			
+
 			String targetHost = null;
 			if (sectorIdentifierUri != null) {
 				try {
@@ -253,7 +281,7 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 					throw new IllegalStateException("sectorIdentifierUri must valid uri", e);
 				}
 			} else if (redirectUris != null) {
-				for (String ru: redirectUris) {
+				for (String ru : redirectUris) {
 					try {
 						String host = new URI(ru).getHost();
 						if (targetHost == null) {
@@ -275,23 +303,24 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 		public MetaOAuthClient getMetaData() {
 			return MetaOAuthClient.this;
 		}
-		
+
 		public OAuthAuthorizationRuntime getAuthorizationServer() {
 			return serverService.getRuntimeById(authorizationServerId);
 		}
-		
+
 		public Credential generateCredential() {
 			if (clientType == ClientType.PUBLIC) {
 				throw new OAuthRuntimeException("Public client can not generate credential.");
 			}
-			
+
 			return ch.generateCredential(getName());
 		}
-		
+
 		public boolean validateCredential(Credential cre, boolean allowPublicClient) {
 			if (clientType == ClientType.PUBLIC) {
 				if (allowPublicClient) {
-					if (!cre.getId().equals(getName())) {
+					if (!cre.getId()
+							.equals(getName())) {
 						if (logger.isWarnEnabled()) {
 							logger.warn(getName() + ",publicClientValidate,fail");
 						}
@@ -306,10 +335,10 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 					return false;
 				}
 			}
-			
+
 			return ch.validateCredential(cre, getName());
 		}
-		
+
 		public void deleteOldCredential() {
 			ch.deleteOldCredential(getName());
 		}
@@ -318,20 +347,20 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 			if (redirectUri == null) {
 				return null;
 			}
-			
+
 			if (redirectUris == null) {
 				return null;
 			}
-			
-			for (String ru: redirectUris) {
+
+			for (String ru : redirectUris) {
 				if (ru.equals(redirectUri)) {
 					return ru;
 				}
 			}
-			
+
 			return null;
 		}
-		
+
 		public String sectorIdentifier() {
 			if (sectorId == null) {
 				throw new NullPointerException("sectorIdentifier is null");

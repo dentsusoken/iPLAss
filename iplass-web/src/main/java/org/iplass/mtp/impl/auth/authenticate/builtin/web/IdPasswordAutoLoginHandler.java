@@ -40,15 +40,15 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(IdPasswordAutoLoginHandler.class);
-	
+
 	public static final String AUTH_ID_HEADER = "X-Auth-Id";
 	public static final String AUTH_PASSWORD_HEADER = "X-Auth-Password";
-	
+
 	private boolean enableBasicAuthentication;
 	private boolean rejectAmbiguousRequest;
-	
+
 	public boolean isRejectAmbiguousRequest() {
 		return rejectAmbiguousRequest;
 	}
@@ -69,7 +69,7 @@ public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
 		HttpServletRequest hr = (HttpServletRequest) req.getAttribute(WebRequestConstants.SERVLET_REQUEST);
 		String id = null;
 		String pass = null;
-		
+
 		//カスタムヘッダーによる認証処理
 		id = hr.getHeader(AUTH_ID_HEADER);
 		if (id != null && id.length() > 0) {
@@ -77,7 +77,7 @@ public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
 			pass = hr.getHeader(AUTH_PASSWORD_HEADER);
 			return new IdPasswordCredential(id, pass);
 		}
-		
+
 		//Basic認証
 		if (enableBasicAuthentication) {
 			IdPasswordCredential cre = BasicAuthUtil.decodeFromHeader(req);
@@ -86,35 +86,40 @@ public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
 				return cre;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public AutoLoginInstruction handle(RequestContext req, boolean isLogined, UserContext user) {
 		if (!(req instanceof RestRequestContext)) {
 			return AutoLoginInstruction.THROUGH;
 		}
-		
+
 		IdPasswordCredential cre = idPassFromHeader(req);
 		if (cre == null) {
 			return AutoLoginInstruction.THROUGH;
 		}
-		
+
 		if (isLogined) {
-			if (!cre.getId().equals(user.getAccount().getCredential().getId())) {
+			if (!cre.getId()
+					.equals(user.getAccount()
+							.getCredential()
+							.getId())) {
 				if (rejectAmbiguousRequest) {
 					//セッション上のUserと、HeaderのIDが等しくないならエラー
 					throw new LoginFailedException("another login session is avaliable");
 				} else {
 					if (logger.isDebugEnabled()) {
-						logger.debug("login session is avaliable, but another id/pass is specified. current id:" + user.getAccount().getCredential().getId() + ", request id:" + cre.getId());
+						logger.debug("login session is avaliable, but another id/pass is specified. current id:" + user.getAccount()
+								.getCredential()
+								.getId() + ", request id:" + cre.getId());
 					} else {
 						logger.warn("login session is avaliable, but another id/pass is specified.");
 					}
 				}
 			}
-			
+
 			return AutoLoginInstruction.THROUGH;
 		} else {
 			return new AutoLoginInstruction(cre);
@@ -139,12 +144,12 @@ public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
 		if (!enableBasicAuthentication) {
 			return false;
 		}
-		
+
 		HttpServletRequest hr = (HttpServletRequest) req.getAttribute(WebRequestConstants.SERVLET_REQUEST);
 		if (hr.getHeader(AUTH_ID_HEADER) != null) {
 			return false;
 		}
-		
+
 		return true;
 	}
 

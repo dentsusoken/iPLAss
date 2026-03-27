@@ -43,7 +43,7 @@ public class UploadFileUtil {
 			is = new FileInputStream(tempFile);
 			is.read(buf);
 		} catch (IOException e) {
-			logger.warn("upload file is externally deleted. maybe contains virus." , e);
+			logger.warn("upload file is externally deleted. maybe contains virus.", e);
 		} finally {
 			if (is != null) {
 				try {
@@ -68,37 +68,37 @@ public class UploadFileUtil {
 
 		if (type.equals("image/gif")) {
 			if (!(magicByte.startsWith("474946383761") || magicByte.startsWith("474946383961"))) {
-				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 			}
 		}
 
 		if (type.equals("image/bmp")) {
 			if (!magicByte.startsWith("424d")) {
-				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 			}
 		}
 
 		if (type.equals("image/jpeg")) {
 			if (!magicByte.startsWith("ffd8")) {
-				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 			}
 		}
 
 		if (type.equals("image/png")) {
 			if (!magicByte.startsWith("89504e470d0a1a0a")) {
-				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 			}
 		}
 
 		if (type.equals("application/x-shockwave-flash")) {
 			if (!(magicByte.startsWith("465753") || magicByte.startsWith("435753"))) {
-				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 			}
 		}
 
 		if (type.equals("application/pdf")) {
 			if (!magicByte.startsWith("25504446")) {
-				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+				throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 			}
 		}
 
@@ -118,7 +118,7 @@ public class UploadFileUtil {
 //				}
 				// 拡張子がcsvの場合はOKとする
 				if (!(StringUtil.equalsIgnoreCase(ext, "csv"))) {
-					throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+					throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 				}
 			}
 		}
@@ -129,7 +129,7 @@ public class UploadFileUtil {
 
 			if (StringUtil.equalsIgnoreCase(ext, "xls")) {
 				if (!magicByte.startsWith("d0cf11e0a1b11ae1")) {
-					throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+					throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 				}
 			}
 		}
@@ -141,8 +141,9 @@ public class UploadFileUtil {
 				// poiで生成したファイルの対応
 				String ext = StringUtil.substringAfterLast(fileName, ".");
 				if (!((magicByte.startsWith("504b030414000808") || magicByte.startsWith("d0cf11e0a1b11ae1"))
-						&& (StringUtil.equalsIgnoreCase(ext, "xlsx") || StringUtil.equalsIgnoreCase(ext, "docx") || StringUtil.equalsIgnoreCase(ext, "pptx")))) {
-					throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+						&& (StringUtil.equalsIgnoreCase(ext, "xlsx") || StringUtil.equalsIgnoreCase(ext, "docx")
+								|| StringUtil.equalsIgnoreCase(ext, "pptx")))) {
+					throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 				}
 			}
 		}

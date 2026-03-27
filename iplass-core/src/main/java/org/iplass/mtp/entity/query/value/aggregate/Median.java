@@ -35,11 +35,11 @@ public class Median extends Aggregate {
 	public Median(String propertyName) {
 		setValue(new EntityField(propertyName));
 	}
-	
+
 	public Median(ValueExpression value) {
 		setValue(value);
 	}
-	
+
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);

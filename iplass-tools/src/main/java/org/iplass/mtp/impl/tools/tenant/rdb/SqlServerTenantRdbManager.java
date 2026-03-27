@@ -58,7 +58,7 @@ public class SqlServerTenantRdbManager extends DefaultTenantRdbManager {
 			+ "FILEGROWTH = 1MB) TO FILEGROUP %s";
 	private static final String SQL_MOD_PARTITION_FUNCTION = "ALTER PARTITION FUNCTION " + PARTITION_FUNCTION_NAME + "() SPLIT RANGE (%d)";
 	private static final String SQL_MOD_PARTITION_SCHEME = "ALTER PARTITION SCHEME " + PARTITION_SCHEME_NAME + " NEXT USED %s";
-	private static final String SQL_EXIST_PARTITION_FUNCTION = "SELECT 'X' FROM SYS.PARTITION_FUNCTIONS WHERE NAME='"+ PARTITION_FUNCTION_NAME + "'";
+	private static final String SQL_EXIST_PARTITION_FUNCTION = "SELECT 'X' FROM SYS.PARTITION_FUNCTIONS WHERE NAME='" + PARTITION_FUNCTION_NAME + "'";
 
 	private static final String SQLSERVER_EXIST_TABLE_SQL = "select count(*) from sys.tables where lower(name) = lower(?)";
 	private static final String SQLSERVER_EXIST_SYNONYM_SQL = "select count(*) from sys.synonyms where lower(name) = lower(?)";
@@ -103,10 +103,12 @@ public class SqlServerTenantRdbManager extends DefaultTenantRdbManager {
 		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
 			@Override
 			public Boolean logic() throws SQLException {
-				return getPreparedStatement(SQL_EXIST_PARTITION_FUNCTION).executeQuery().next();
+				return getPreparedStatement(SQL_EXIST_PARTITION_FUNCTION).executeQuery()
+						.next();
 			}
 		};
-		return exec.execute(adapter, true).booleanValue();
+		return exec.execute(adapter, true)
+				.booleanValue();
 	}
 
 	@Override
@@ -133,14 +135,15 @@ public class SqlServerTenantRdbManager extends DefaultTenantRdbManager {
 	private boolean createPartitionInternal(final PartitionCreateParameter param, final LogHandler logHandler) {
 		try {
 			return Transaction.required(transaction -> {
-					transaction.commit();	// 後続のパーティション構成の変更でデッドロックが発生するのを防ぐため
+				transaction.commit(); // 後続のパーティション構成の変更でデッドロックが発生するのを防ぐため
 
-					doCreatePartition(param, logHandler);
+				doCreatePartition(param, logHandler);
 
-					logHandler.info(getPartitionResourceMessage(param.getLoggerLanguage(), "createdPartitionMsg", param.getTenantId()));
+				logHandler.info(getPartitionResourceMessage(param.getLoggerLanguage(), "createdPartitionMsg", param.getTenantId()));
 
-					return Boolean.TRUE;
-			}).booleanValue();
+				return Boolean.TRUE;
+			})
+					.booleanValue();
 		} catch (Throwable e) {
 			logHandler.error(getCommonResourceMessage(param.getLoggerLanguage(), "errorMsg", e.getMessage()));
 			return false;
@@ -219,15 +222,15 @@ public class SqlServerTenantRdbManager extends DefaultTenantRdbManager {
 
 	private void executeAlter(final String sql) {
 		Transaction.requiresNew(t -> {
-				SqlExecuter<Void> exec = new SqlExecuter<Void>() {
-					@Override
-					public Void logic() throws SQLException {
-						getPreparedStatement(sql).execute();
-						return null;
-					}
-				};
-				exec.execute(adapter, true);
-				return null;
+			SqlExecuter<Void> exec = new SqlExecuter<Void>() {
+				@Override
+				public Void logic() throws SQLException {
+					getPreparedStatement(sql).execute();
+					return null;
+				}
+			};
+			exec.execute(adapter, true);
+			return null;
 		});
 	}
 
@@ -260,7 +263,7 @@ public class SqlServerTenantRdbManager extends DefaultTenantRdbManager {
 				ResultSet rs = ps.executeQuery();
 				int count = 0;
 				try {
-					if(rs.next()) {
+					if (rs.next()) {
 						count = rs.getInt(1);
 					}
 				} finally {
@@ -318,7 +321,8 @@ public class SqlServerTenantRdbManager extends DefaultTenantRdbManager {
 		};
 		String version = executer.execute(adapter, true);
 		// @@VERSION に WINDOWS という文字パターンが見つかれば、true を返却する
-		return version.toUpperCase().indexOf("WINDOWS") > 0;
+		return version.toUpperCase()
+				.indexOf("WINDOWS") > 0;
 	}
 
 }

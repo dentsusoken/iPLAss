@@ -26,5 +26,6 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public abstract class PermissionEditPane extends VLayout {
 	public abstract GenericEntity getEditEntity();
+
 	public abstract boolean validate();
 }

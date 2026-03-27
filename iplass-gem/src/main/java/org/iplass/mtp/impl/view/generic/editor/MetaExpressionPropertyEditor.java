@@ -66,7 +66,7 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @return 表示タイプ
 	 */
 	public ExpressionDisplayType getDisplayType() {
-	    return displayType;
+		return displayType;
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @param displayType 表示タイプ
 	 */
 	public void setDisplayType(ExpressionDisplayType displayType) {
-	    this.displayType = displayType;
+		this.displayType = displayType;
 	}
 
 	/**
@@ -162,7 +162,8 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 
 		MetaPropertyEditor me = MetaPropertyEditor.createInstance(pe.getEditor());
 		if (me != null) {
-			pe.getEditor().setPropertyName(pe.getPropertyName());
+			pe.getEditor()
+					.setPropertyName(pe.getPropertyName());
 			me.applyConfig(pe.getEditor());
 			this.editor = me;
 		}

@@ -48,7 +48,9 @@ public class JsonStreamingOutput implements StreamingOutput {
 	public void write(OutputStream output) throws IOException, WebApplicationException {
 		ObjectMapper mapper = new ObjectMapper();
 		//for backward compatibility
-		mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
+		mapper.configOverride(java.sql.Date.class)
+				.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd")
+						.withTimeZone(TimeZone.getDefault()));
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"));

@@ -85,7 +85,8 @@ public class DefinitionNameChecker {
 	 * @return チェック結果
 	 */
 	public DefinitionNameCheckResult check(String definitionName) {
-		if (StringUtil.isNotEmpty(definitionName) && !this.definitionNamePattern.matcher(definitionName).matches()) {
+		if (StringUtil.isNotEmpty(definitionName) && !this.definitionNamePattern.matcher(definitionName)
+				.matches()) {
 			return new DefinitionNameCheckResult(true, this.getErrorMessage(definitionName));
 		}
 

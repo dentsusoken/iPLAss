@@ -49,7 +49,6 @@ import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
-
 public class SimpleTimebaseVersionController extends NumberbaseVersionController {
 
 	public SimpleTimebaseVersionController() {
@@ -59,51 +58,62 @@ public class SimpleTimebaseVersionController extends NumberbaseVersionController
 	public void normalizeForInsert(Entity entity, InsertOption option, EntityContext entityContext) {
 		super.normalizeForInsert(entity, option, entityContext);
 		if (entity.getStartDate() == null) {
-			entity.setStartDate(ExecuteContext.getCurrentContext().getCurrentTimestamp());
+			entity.setStartDate(ExecuteContext.getCurrentContext()
+					.getCurrentTimestamp());
 		}
 		if (entity.getEndDate() == null) {
-			entity.setEndDate((Timestamp) ExecuteContext.getCurrentContext().getDefaultEndDate());
+			entity.setEndDate((Timestamp) ExecuteContext.getCurrentContext()
+					.getDefaultEndDate());
 		}
 	}
 
 	@Override
 	public void update(Entity entity, UpdateOption option, EntityHandler eh, EntityContext entityContext) {
 		if (entity.getStartDate() == null) {
-			entity.setStartDate(ExecuteContext.getCurrentContext().getCurrentTimestamp());
+			entity.setStartDate(ExecuteContext.getCurrentContext()
+					.getCurrentTimestamp());
 		}
 		if (entity.getEndDate() == null) {
-			entity.setEndDate((Timestamp) ExecuteContext.getCurrentContext().getDefaultEndDate());
+			entity.setEndDate((Timestamp) ExecuteContext.getCurrentContext()
+					.getDefaultEndDate());
 		}
 		super.update(entity, option, eh, entityContext);
-		
+
 		//重複期間がないかどうかチェック
 		if (option.getTargetVersion() == TargetVersion.NEW ||
 				(option.getUpdateProperties() != null &&
-				(option.getUpdateProperties().contains(Entity.START_DATE)
-						|| option.getUpdateProperties().contains(Entity.END_DATE)
-						|| option.getUpdateProperties().contains(Entity.STATE)))) {
+						(option.getUpdateProperties()
+								.contains(Entity.START_DATE)
+								|| option.getUpdateProperties()
+										.contains(Entity.END_DATE)
+								|| option.getUpdateProperties()
+										.contains(Entity.STATE)))) {
 			Query q = new Query().select(new Count())
 					.hint(new SuppressWarningsHint())
-					.from(eh.getMetaData().getName())
+					.from(eh.getMetaData()
+							.getName())
 					.where(new And(
 							new Equals(Entity.OID, entity.getOid()),
 							new Equals(Entity.STATE, Entity.STATE_VALID_VALUE),
 							new Lesser(Entity.START_DATE, new ScalarSubQuery(
 									new Query().select(new EntityField(Entity.END_DATE))
-									.from(eh.getMetaData().getName())
-									.where(new And(new Equals(Entity.OID, entity.getOid()),
-											new Equals(Entity.VERSION, entity.getVersion()),
-											new Equals(Entity.STATE, Entity.STATE_VALID_VALUE)))
-									.versioned())),
+											.from(eh.getMetaData()
+													.getName())
+											.where(new And(new Equals(Entity.OID, entity.getOid()),
+													new Equals(Entity.VERSION, entity.getVersion()),
+													new Equals(Entity.STATE, Entity.STATE_VALID_VALUE)))
+											.versioned())),
 							new Greater(Entity.END_DATE, new ScalarSubQuery(
 									new Query().select(new EntityField(Entity.START_DATE))
-									.from(eh.getMetaData().getName())
-									.where(new And(new Equals(Entity.OID, entity.getOid()),
-											new Equals(Entity.VERSION, entity.getVersion()),
-											new Equals(Entity.STATE, Entity.STATE_VALID_VALUE)))
-									.versioned()))))
+											.from(eh.getMetaData()
+													.getName())
+											.where(new And(new Equals(Entity.OID, entity.getOid()),
+													new Equals(Entity.VERSION, entity.getVersion()),
+													new Equals(Entity.STATE, Entity.STATE_VALID_VALUE)))
+											.versioned()))))
 					.versioned();
-			SearchResultIterator it = eh.getStrategy().search(entityContext, q, eh);
+			SearchResultIterator it = eh.getStrategy()
+					.search(entityContext, q, eh);
 			Long[] res = new Long[1];
 			try {
 				if (it.next()) {
@@ -113,19 +123,21 @@ public class SimpleTimebaseVersionController extends NumberbaseVersionController
 				it.close();
 			}
 			if (res[0].longValue() > 1) {
-				throw new EntityApplicationException(resourceString("impl.core.versioning.SimpleTimebaseVersionController.overlappingPeriods", eh.getLocalizedDisplayName()));
+				throw new EntityApplicationException(
+						resourceString("impl.core.versioning.SimpleTimebaseVersionController.overlappingPeriods", eh.getLocalizedDisplayName()));
 			}
-			
+
 		}
 	}
 
 	@Override
 	public Condition refEntityQueryCondition(String refPropPath, ReferencePropertyHandler rph, AsOf asOf, EntityContext context) {
-		
+
 		asOf = judgeAsOf(refPropPath, rph, asOf);
-		
-		Timestamp ts = ExecuteContext.getCurrentContext().getCurrentTimestamp();
-		
+
+		Timestamp ts = ExecuteContext.getCurrentContext()
+				.getCurrentTimestamp();
+
 		switch (asOf.getSpec()) {
 		case UPDATE_TIME:
 			return null;
@@ -133,15 +145,13 @@ public class SimpleTimebaseVersionController extends NumberbaseVersionController
 			return new And(
 					new Equals(refPropPath + "." + Entity.STATE, Entity.STATE_VALID_VALUE),
 					new LesserEqual(refPropPath + "." + Entity.START_DATE, ts),
-					new Greater(refPropPath + "." + Entity.END_DATE, ts)
-					);
+					new Greater(refPropPath + "." + Entity.END_DATE, ts));
 		case SPEC_VALUE:
 			ValueExpression asOfVal = asOf.getValue();
 			return new And(
 					new Equals(refPropPath + "." + Entity.STATE, Entity.STATE_VALID_VALUE),
 					new LesserEqual(refPropPath + "." + Entity.START_DATE, asOfVal),
-					new Greater(refPropPath + "." + Entity.END_DATE, asOfVal)
-					);
+					new Greater(refPropPath + "." + Entity.END_DATE, asOfVal));
 		default:
 			return null;
 		}
@@ -150,19 +160,18 @@ public class SimpleTimebaseVersionController extends NumberbaseVersionController
 	@Override
 	public Condition mainQueryCondition(EntityHandler eh, AsOf asOf, EntityContext context) {
 		if (asOf == null || asOf.getSpec() != AsOfSpec.SPEC_VALUE) {
-			Timestamp ts = ExecuteContext.getCurrentContext().getCurrentTimestamp();
+			Timestamp ts = ExecuteContext.getCurrentContext()
+					.getCurrentTimestamp();
 			return new And(
 					new Equals(Entity.STATE, Entity.STATE_VALID_VALUE),
 					new LesserEqual(Entity.START_DATE, ts),
-					new Greater(Entity.END_DATE, ts)
-					);
+					new Greater(Entity.END_DATE, ts));
 		} else {
 			ValueExpression asOfVal = asOf.getValue();
 			return new And(
 					new Equals(Entity.STATE, Entity.STATE_VALID_VALUE),
 					new LesserEqual(Entity.START_DATE, asOfVal),
-					new Greater(Entity.END_DATE, asOfVal)
-					);
+					new Greater(Entity.END_DATE, asOfVal));
 		}
 	}
 

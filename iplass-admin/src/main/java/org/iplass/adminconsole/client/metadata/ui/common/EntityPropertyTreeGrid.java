@@ -57,7 +57,7 @@ public class EntityPropertyTreeGrid extends MtpTreeGrid implements EntityPropert
 	 */
 	public EntityPropertyTreeGrid(boolean showRoot) {
 		super();
-		
+
 		this.showRoot = showRoot;
 
 		setLeaveScrollbarGap(false);
@@ -103,7 +103,7 @@ public class EntityPropertyTreeGrid extends MtpTreeGrid implements EntityPropert
 									String displayName = node.getAttribute("displayName");
 									String parentDisplayName = node.getAttribute("parentDisplayName");
 									if (parentDisplayName != null && !parentDisplayName.isEmpty()) {
-										displayName = parentDisplayName + "."  + displayName;
+										displayName = parentDisplayName + "." + displayName;
 									}
 									nodes[i].setAttribute("parentDisplayName", displayName);
 								}
@@ -128,7 +128,7 @@ public class EntityPropertyTreeGrid extends MtpTreeGrid implements EntityPropert
 		ListGridField displayNameField = new ListGridField("outputDisplayName");
 		fields.add(displayNameField);
 
-		setFields(fields.toArray(new ListGridField[]{}));
+		setFields(fields.toArray(new ListGridField[] {}));
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class EntityPropertyTreeGrid extends MtpTreeGrid implements EntityPropert
 						}
 						root.setChildren(nodes);
 
-						tree = new Tree();	//Treeをnewしなおさないと階層がうまく表示されない
+						tree = new Tree(); //Treeをnewしなおさないと階層がうまく表示されない
 						tree.setRoot(root);
 						tree.setModelType(TreeModelType.CHILDREN);
 
@@ -174,7 +174,7 @@ public class EntityPropertyTreeGrid extends MtpTreeGrid implements EntityPropert
 			root.setAttribute("displayName", "root");
 			root.setIsFolder(true);
 
-			tree = new Tree();	//Treeをnewしなおさないと階層がうまく表示されない
+			tree = new Tree(); //Treeをnewしなおさないと階層がうまく表示されない
 			tree.setRoot(root);
 			tree.setModelType(TreeModelType.CHILDREN);
 

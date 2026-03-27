@@ -66,9 +66,8 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.iplass.mtp.spi.ServiceInitListener;
 
-
 public class SmimeHandler implements ServiceInitListener<MailService> {
-	
+
 	static {
 		if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
 			MailcapCommandMap map = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
@@ -81,13 +80,12 @@ public class SmimeHandler implements ServiceInitListener<MailService> {
 			Security.addProvider(new BouncyCastleProvider());
 		}
 	}
-	
+
 	private String cmsAlgorithmName = "AES128_CBC";
 	private Map<String, String> signatureAlgorithmMap;
 	private SmimeCertStore certStore;
-	
+
 	private ASN1ObjectIdentifier cmsAlgorithm;
-	
 
 	@Override
 	public void inited(MailService service, Config config) {
@@ -100,9 +98,10 @@ public class SmimeHandler implements ServiceInitListener<MailService> {
 			signatureAlgorithmMap.put("DSA", "SHA256withDSA");
 			signatureAlgorithmMap.put("EC", "SHA256withECDSA");
 		}
-		
+
 		try {
-			cmsAlgorithm = (ASN1ObjectIdentifier) CMSAlgorithm.class.getDeclaredField(cmsAlgorithmName).get(null);
+			cmsAlgorithm = (ASN1ObjectIdentifier) CMSAlgorithm.class.getDeclaredField(cmsAlgorithmName)
+					.get(null);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			throw new ServiceConfigrationException("cant get cmsAlgorithm: " + e.getMessage(), e);
 		}
@@ -114,32 +113,37 @@ public class SmimeHandler implements ServiceInitListener<MailService> {
 			certStore.destroyed();
 		}
 	}
-	
+
 	public String getCmsAlgorithmName() {
 		return cmsAlgorithmName;
 	}
+
 	public void setCmsAlgorithmName(String cmsAlgorithmName) {
 		this.cmsAlgorithmName = cmsAlgorithmName;
 	}
+
 	public Map<String, String> getSignatureAlgorithmMap() {
 		return signatureAlgorithmMap;
 	}
+
 	public void setSignatureAlgorithmMap(Map<String, String> signatureAlgorithmMap) {
 		this.signatureAlgorithmMap = signatureAlgorithmMap;
 	}
+
 	public SmimeCertStore getCertStore() {
 		return certStore;
 	}
+
 	public void setCertStore(SmimeCertStore certStore) {
 		this.certStore = certStore;
 	}
-	
+
 	public MimeMessage handle(Session session, MimeMessage message, boolean sign, String keyPass, boolean encrypt) throws MessagingException {
 		if (sign) {
 			message.saveChanges();
 			message = sign(session, message, keyPass);
 		}
-		
+
 		if (encrypt) {
 			message.saveChanges();
 			message = encrypt(session, message);
@@ -149,73 +153,80 @@ public class SmimeHandler implements ServiceInitListener<MailService> {
 	}
 
 	private MimeMessage sign(Session session, MimeMessage message, String keyPass) throws MessagingException {
-		
+
 		//TODO 先頭のaddressで署名するでよいか？
 		Address[] from = message.getFrom();
-		
+
 		CertificateKeyPair ckp = certStore.getCertificateKeyPair(((InternetAddress) from[0]).getAddress(), keyPass);
 		if (ckp == null) {
 			throw new CertificateInvalidException("Valid CertificateKeyPair not found:" + ((InternetAddress) from[0]).getAddress());
 		}
-		
+
 		//Sign the message
 		MimeMultipart mm;
 		try {
 			//Create the SMIMESignedGenerator
 			SMIMECapabilityVector capabilities = new SMIMECapabilityVector();
 			capabilities.addCapability(cmsAlgorithm);
-			
+
 			ASN1EncodableVector attributes = new ASN1EncodableVector();
 			attributes.add(new SMIMEEncryptionKeyPreferenceAttribute(
 					new IssuerAndSerialNumber(
-							new X500Name((ckp.getCertificate()).getIssuerDN().getName()), ckp.getCertificate().getSerialNumber())));
+							new X500Name((ckp.getCertificate()).getIssuerDN()
+									.getName()),
+							ckp.getCertificate()
+									.getSerialNumber())));
 			attributes.add(new SMIMECapabilitiesAttribute(capabilities));
-			
+
 			SMIMESignedGenerator signer = new SMIMESignedGenerator();
 			signer.addSignerInfoGenerator(
-					new JcaSimpleSignerInfoGeneratorBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).setSignedAttributeGenerator(
-							new AttributeTable(attributes)).build(
-									signatureAlgorithmMap.get(ckp.getKey().getAlgorithm()), ckp.getKey(), ckp.getCertificate()));
-			
+					new JcaSimpleSignerInfoGeneratorBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME)
+							.setSignedAttributeGenerator(
+									new AttributeTable(attributes))
+							.build(
+									signatureAlgorithmMap.get(ckp.getKey()
+											.getAlgorithm()),
+									ckp.getKey(), ckp.getCertificate()));
+
 			//Add the list of certs to the generator
 			List<Object> certList = new ArrayList<>();
 			certList.add(ckp.getCertificate());
 			Store<?> certs = new JcaCertStore(certList);
 			signer.addCertificates(certs);
-			
+
 			mm = signer.generate(message);
 		} catch (CertificateEncodingException | OperatorCreationException | SMIMEException e) {
 			throw new SmimeRuntimeException("can not sign to mail: " + e.getMessage(), e);
 		}
 		MimeMessage signedMessage = new MimeMessage(session);
-		
+
 		///Set all original MIME headers in the signed message
 		Enumeration<?> headers = message.getAllHeaderLines();
 		while (headers.hasMoreElements()) {
 			signedMessage.addHeaderLine((String) headers.nextElement());
 		}
-		
+
 		//Set the content of the signed message
 		signedMessage.setContent(mm);
-		
+
 		return signedMessage;
 	}
-	
+
 	private MimeMessage encrypt(Session session, MimeMessage message) throws MessagingException {
-		
+
 		//BCCに関しては現状、未サポートとする
 		Address[] bcc = message.getRecipients(RecipientType.BCC);
 		if (bcc != null && bcc.length > 0) {
 			throw new SmimeRuntimeException("currently no support of bcc recipients with encrypted message");
 		}
-		
+
 		//Create the encrypter
 		SMIMEEnvelopedGenerator encrypter = new SMIMEEnvelopedGenerator();
 
 		//Create a new MimeMessage that contains the encrypted and signed content
 		MimeMessage encryptedMessage;
 		try {
-			for (Address recipient: message.getAllRecipients()) {
+			for (Address recipient : message.getAllRecipients()) {
 				X509Certificate cert = certStore.getCertificate(((InternetAddress) recipient).getAddress());
 				if (cert == null) {
 					throw new CertificateInvalidException("Valid Certificate not found:" + ((InternetAddress) recipient).getAddress());
@@ -226,7 +237,8 @@ public class SmimeHandler implements ServiceInitListener<MailService> {
 
 			//Encrypt the message
 			MimeBodyPart encryptedPart = encrypter.generate(message,
-					new JceCMSContentEncryptorBuilder(cmsAlgorithm).setProvider(BouncyCastleProvider.PROVIDER_NAME).build());
+					new JceCMSContentEncryptorBuilder(cmsAlgorithm).setProvider(BouncyCastleProvider.PROVIDER_NAME)
+							.build());
 
 			encryptedMessage = new MimeMessage(session);
 			encryptedMessage.setContent(encryptedPart.getContent(), encryptedPart.getContentType());
@@ -234,18 +246,19 @@ public class SmimeHandler implements ServiceInitListener<MailService> {
 				| CMSException | IOException e) {
 			throw new SmimeRuntimeException("can not encrypt mail: " + e.getMessage(), e);
 		}
-		
+
 		//Set all original MIME headers in the encrypted message
 		Enumeration<?> headers = message.getAllHeaderLines();
 		while (headers.hasMoreElements()) {
 			String headerLine = (String) headers.nextElement();
-			 //Make sure not to override any content-* headers from the original message
-			if (!Strings.toLowerCase(headerLine).startsWith("content-")) {
+			//Make sure not to override any content-* headers from the original message
+			if (!Strings.toLowerCase(headerLine)
+					.startsWith("content-")) {
 				encryptedMessage.addHeaderLine(headerLine);
 			}
 		}
 
 		return encryptedMessage;
 	}
-	
+
 }

@@ -33,12 +33,12 @@ public class InsertOption {
 	private boolean withValidation = true;
 	private boolean notifyListeners = true;
 	private boolean enableAuditPropertySpecification = false;
-	
+
 	private boolean localized = false;
-	
+
 	public InsertOption() {
 	}
-	
+
 	public InsertOption copy() {
 		InsertOption copy = new InsertOption();
 		copy.regenerateOid = regenerateOid;
@@ -48,10 +48,10 @@ public class InsertOption {
 		copy.notifyListeners = notifyListeners;
 		copy.enableAuditPropertySpecification = enableAuditPropertySpecification;
 		copy.localized = localized;
-		
+
 		return copy;
 	}
-	
+
 	public boolean isEnableAuditPropertySpecification() {
 		return enableAuditPropertySpecification;
 	}
@@ -140,7 +140,7 @@ public class InsertOption {
 	public void setNotifyListeners(boolean notifyListeners) {
 		this.notifyListeners = notifyListeners;
 	}
-	
+
 	public boolean isLocalized() {
 		return localized;
 	}
@@ -163,7 +163,7 @@ public class InsertOption {
 		this.withValidation = false;
 		return this;
 	}
-	
+
 	/**
 	 * 追加時に{@link EntityEventListener}に通知しないように設定します。
 	 * @return
@@ -172,7 +172,7 @@ public class InsertOption {
 		this.notifyListeners = false;
 		return this;
 	}
-	
+
 	/**
 	 * oidがnullの場合のみ生成し、指定されていた場合はそれをそのまま利用するように設定します。
 	 * @return
@@ -181,7 +181,7 @@ public class InsertOption {
 		this.regenerateOid = false;
 		return this;
 	}
-	
+
 	/**
 	 * 常にautoNumber項目の値を再生成するように設定します。
 	 * @return
@@ -190,7 +190,7 @@ public class InsertOption {
 		this.regenerateAutoNumber = true;
 		return this;
 	}
-	
+
 	/**
 	 * Entityに指定されたバージョンとしてインサートするように設定します。
 	 * （Entityがバージョン管理されている場合）
@@ -200,7 +200,7 @@ public class InsertOption {
 		this.versionSpecified = true;
 		return this;
 	}
-	
+
 	/**
 	 * インサートするEntityにcreateBy,createDate,updateBy,updateDateの値を
 	 * 指定してその値のまま登録するように設定します。
@@ -213,7 +213,7 @@ public class InsertOption {
 		this.enableAuditPropertySpecification = true;
 		return this;
 	}
-	
+
 	/**
 	 * localized=trueに設定します。
 	 * @return

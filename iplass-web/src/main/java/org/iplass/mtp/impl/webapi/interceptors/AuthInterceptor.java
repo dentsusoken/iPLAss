@@ -59,23 +59,28 @@ public class AuthInterceptor implements CommandInterceptor {
 	private static Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
 	private LangSelector lang = new LangSelector();
-	private AuthService authService = ServiceRegistry.getRegistry().getService(AuthService.class);
-	private SessionService sessionService = ServiceRegistry.getRegistry().getService(SessionService.class);
+	private AuthService authService = ServiceRegistry.getRegistry()
+			.getService(AuthService.class);
+	private SessionService sessionService = ServiceRegistry.getRegistry()
+			.getService(SessionService.class);
 
 	private AuthContextHolder getAuthContextHolder(WebApiRuntime webapi) {
-		if (webapi.getMetaData().isPrivileged()) {
+		if (webapi.getMetaData()
+				.isPrivileged()) {
 			if (logger.isDebugEnabled()) {
-				logger.debug("do as Privileged webapi:" + webapi.getMetaData().getName());
+				logger.debug("do as Privileged webapi:" + webapi.getMetaData()
+						.getName());
 			}
-			return AuthContextHolder.getAuthContext().privilegedAuthContextHolder();
+			return AuthContextHolder.getAuthContext()
+					.privilegedAuthContextHolder();
 		} else {
 			return AuthContextHolder.getAuthContext();
 		}
 	}
-	
+
 	private void processAutoLogin(WebApiInvocationImpl invocation) {
 		UserContext user = authService.getCurrentSessionUserContext();
-		
+
 		//process auto login...
 
 		if (user != null && !(user instanceof AnonymousUserContext)) {
@@ -123,10 +128,10 @@ public class AuthInterceptor implements CommandInterceptor {
 				}
 			}
 		} else {
-			for (AuthenticationProvider ap: authService.getAuthenticationProviders()) {
+			for (AuthenticationProvider ap : authService.getAuthenticationProviders()) {
 				AutoLoginHandler autoLoginHandler = ap.getAutoLoginHandler();
 				if (autoLoginHandler != null) {
-					
+
 					AutoLoginInstruction inst = autoLoginHandler.handle(invocation.getRequest(), false, null);
 					switch (inst.getInstruction()) {
 					case DO_AUTH:
@@ -177,52 +182,66 @@ public class AuthInterceptor implements CommandInterceptor {
 	private void responseToken(WebApiInvocationImpl invocation) {
 		if (!sessionService.isSessionStateless()) {
 			//transaction token を返却
-			String token = TokenStore.getFixedToken(invocation.getRequest().getSession());
-			ResponseHeader res = (ResponseHeader) invocation.getRequest().getAttribute(WebRequestConstants.RESPONSE_HEADER);
+			String token = TokenStore.getFixedToken(invocation.getRequest()
+					.getSession());
+			ResponseHeader res = (ResponseHeader) invocation.getRequest()
+					.getAttribute(WebRequestConstants.RESPONSE_HEADER);
 			res.setHeader(TokenStore.TOKEN_HEADER_NAME, token);
 		}
 	}
-	
+
 	@Override
 	public String intercept(CommandInvocation invocation) {
 		WebApiInvocationImpl webApiInvocation = (WebApiInvocationImpl) invocation;
 
 		//AutoLogin processing
 		processAutoLogin(webApiInvocation);
-		
+
 		AuthContextHolder account = getAuthContextHolder(webApiInvocation.getWebApiRuntime());
 
 		//当該権限にて処理実行
 		return authService.doSecuredAction(account, () -> {
 			//set Lang if user has Lang Setting
 			lang.selectLangByUser(webApiInvocation.getRequest(), ExecuteContext.getCurrentContext());
-			
+
 			boolean isPermitted;
-			if (webApiInvocation.getWebApiRuntime().getMetaData().isPublicWebApi()) {
+			if (webApiInvocation.getWebApiRuntime()
+					.getMetaData()
+					.isPublicWebApi()) {
 				isPermitted = true;
 				if (logger.isDebugEnabled()) {
-					logger.debug("do as public webapi:" + webApiInvocation.getWebApiRuntime().getMetaData().getName());
+					logger.debug("do as public webapi:" + webApiInvocation.getWebApiRuntime()
+							.getMetaData()
+							.getName());
 				}
 			} else {
-				WebApiPermission permission = new WebApiPermission(webApiInvocation.getWebApiRuntime().getMetaData().getName(),
+				WebApiPermission permission = new WebApiPermission(webApiInvocation.getWebApiRuntime()
+						.getMetaData()
+						.getName(),
 						new RequestContextWebApiParameter(webApiInvocation.getRequest(), additionalParam(webApiInvocation)));
 				isPermitted = account.checkPermission(permission);
 			}
-			
+
 			if (!isPermitted) {
 				//TODO BearerTokenAutoLoginHandlerを参照してしまっているが、、、
 				if (account.getUserContext() instanceof AnonymousUserContext) {
-					if (webApiInvocation.getWebApiRuntime().getMetaData().isSupportBearerToken()) {
-						throw new AuthorizationRequiredException(BearerTokenAutoLoginHandler.AUTH_SCHEME_BEARER, null, AuthorizationRequiredException.CODE_NONE, null);
+					if (webApiInvocation.getWebApiRuntime()
+							.getMetaData()
+							.isSupportBearerToken()) {
+						throw new AuthorizationRequiredException(BearerTokenAutoLoginHandler.AUTH_SCHEME_BEARER, null,
+								AuthorizationRequiredException.CODE_NONE, null);
 					}
 				}
-				
+
 				throw new NoPermissionException(resourceString("impl.webapi.WebAPIUtil.noPermission"));
 			}
-			
+
 			//信頼された認証を必要とするか否か
-			if (webApiInvocation.getWebApiRuntime().getMetaData().isNeedTrustedAuthenticate()) {
-				if (!authService.checkCurrentSessionTrusted().isTrusted()) {
+			if (webApiInvocation.getWebApiRuntime()
+					.getMetaData()
+					.isNeedTrustedAuthenticate()) {
+				if (!authService.checkCurrentSessionTrusted()
+						.isTrusted()) {
 					//TODO to resource bundle
 					throw new NeedTrustedAuthenticationException("need trusted authentication");
 				}
@@ -234,10 +253,11 @@ public class AuthInterceptor implements CommandInterceptor {
 	}
 
 	private Map<String, Object> additionalParam(WebApiInvocationImpl webApiInvocation) {
-		MetaWebApi meta = webApiInvocation.getWebApiRuntime().getMetaData();
+		MetaWebApi meta = webApiInvocation.getWebApiRuntime()
+				.getMetaData();
 		RestRequestContext rc = (RestRequestContext) webApiInvocation.getRequest();
 		String paramName = null;
-		switch ( rc.requestType()) {
+		switch (rc.requestType()) {
 		case REST_JSON:
 			paramName = meta.getRestJsonParameterName();
 			break;

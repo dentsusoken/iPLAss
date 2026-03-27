@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/view/calendar",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/view/calendar", prefix="def-vcalendar")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/view/calendar",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/view/calendar", prefix = "def-vcalendar")
+		}
 )
 package org.iplass.mtp.view.calendar;

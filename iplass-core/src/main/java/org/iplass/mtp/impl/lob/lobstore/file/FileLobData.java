@@ -135,22 +135,25 @@ public class FileLobData implements LobData {
 			throw new SystemException("can not create file:" + newFile.getAbsolutePath() + ", cause " + e, e);
 		}
 	}
-	
+
 	@Override
 	public void transferFrom(File file) throws IOException {
 		if (blobFile == null) {
 			blobFile = createNewFile(lobDataId);
 		}
-		
-		Transaction t = ServiceRegistry.getRegistry().getService(TransactionService.class).getTransacitonManager().currentTransaction();
+
+		Transaction t = ServiceRegistry.getRegistry()
+				.getService(TransactionService.class)
+				.getTransacitonManager()
+				.currentTransaction();
 		if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 			t.afterRollback(() -> {
-					if (!blobFile.delete()) {
-						logger.warn("maybe can not delete file:" + blobFile.getAbsolutePath());
-					}
+				if (!blobFile.delete()) {
+					logger.warn("maybe can not delete file:" + blobFile.getAbsolutePath());
+				}
 			});
 		}
-		
+
 		Files.copy(file.toPath(), blobFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 
@@ -166,12 +169,15 @@ public class FileLobData implements LobData {
 			} catch (FileNotFoundException e) {
 				throw new SystemException("can not open FileOutputStream:" + blobFile.getAbsolutePath(), e);
 			}
-			Transaction t = ServiceRegistry.getRegistry().getService(TransactionService.class).getTransacitonManager().currentTransaction();
+			Transaction t = ServiceRegistry.getRegistry()
+					.getService(TransactionService.class)
+					.getTransacitonManager()
+					.currentTransaction();
 			if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 				t.afterRollback(() -> {
-						if (!blobFile.delete()) {
-							logger.warn("maybe can not delete file:" + blobFile.getAbsolutePath());
-						}
+					if (!blobFile.delete()) {
+						logger.warn("maybe can not delete file:" + blobFile.getAbsolutePath());
+					}
 				});
 			}
 		}

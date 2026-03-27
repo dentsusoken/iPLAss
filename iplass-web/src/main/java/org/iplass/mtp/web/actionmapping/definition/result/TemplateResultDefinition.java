@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.web.actionmapping.definition.result;
 
-
 /**
  * 実行結果として、templateを出力するResult定義です。
  *

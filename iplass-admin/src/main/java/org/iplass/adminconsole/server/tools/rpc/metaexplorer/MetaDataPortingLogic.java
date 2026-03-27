@@ -90,7 +90,8 @@ public class MetaDataPortingLogic {
 	}
 
 	private MetaDataPortingLogic() {
-		metaService = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
+		metaService = ServiceRegistry.getRegistry()
+				.getService(MetaDataPortingService.class);
 		em = AdminEntityManager.getInstance();
 	}
 
@@ -129,7 +130,8 @@ public class MetaDataPortingLogic {
 		Entity entity = em.load(tagOid, MetaDataTagEntity.ENTITY_DEFINITION_NAME);
 		if (entity != null) {
 			if (MetaDataTagEntity.TYPE_IMPORT_FILE.equals(
-					entity.getValueAs(SelectValue.class, MetaDataTagEntity.TYPE).getValue())) {
+					entity.getValueAs(SelectValue.class, MetaDataTagEntity.TYPE)
+							.getValue())) {
 				em.delete(entity, new DeleteOption(false));
 			}
 		}
@@ -154,11 +156,12 @@ public class MetaDataPortingLogic {
 
 			try {
 				//LocalStoreのMetaDataのパスを取得
-				MetaDataRepository repos = ServiceRegistry.getRegistry().getService(MetaDataRepository.class);
+				MetaDataRepository repos = ServiceRegistry.getRegistry()
+						.getService(MetaDataRepository.class);
 				MetaDataStore rdb = repos.getTenantLocalStore();
 				List<MetaDataEntryInfo> list = rdb.definitionList(tenantId, "/");
 				List<String> paths = new ArrayList<String>(list.size());
-				for (MetaDataEntryInfo info: list) {
+				for (MetaDataEntryInfo info : list) {
 					paths.add(info.getPath());
 				}
 
@@ -205,7 +208,8 @@ public class MetaDataPortingLogic {
 		List<MetaDataEntryInfo> definitionList = convertMetaDataEntryInfo(entryInfo.getEntryInfo());
 
 		//MetaDataEntryInfo->MetaTreeNodeの変換
-		MetaTreeNode pathRoot = new MetaDataTreeBuilder().items(definitionList).build();
+		MetaTreeNode pathRoot = new MetaDataTreeBuilder().items(definitionList)
+				.build();
 
 		ret.put(KEY_ROOT_NODE, pathRoot);
 		ret.put(KEY_FILE_NAME, entryInfo.getTagName());
@@ -239,7 +243,8 @@ public class MetaDataPortingLogic {
 			status.setPath(path);
 
 			//ImportStatus -> ImportMetaDataStatus
-			status.setImportActionName(resourceString("ImportAction." + storedStatus.getAction().displayName()));	//表示名に変換
+			status.setImportActionName(resourceString("ImportAction." + storedStatus.getAction()
+					.displayName())); //表示名に変換
 			status.setError(storedStatus.isError());
 			status.setWarn(storedStatus.isWarn());
 			status.setInfo(storedStatus.isInfo());
@@ -262,15 +267,18 @@ public class MetaDataPortingLogic {
 		//MetaDataEntryの取得
 		TagEntryInfo entryInfo = getTagMetaDataEntry(tagOid);
 
-		for (Map.Entry<String, MetaDataEntry> entry : entryInfo.getEntryInfo().getPathEntryMap().entrySet()) {
+		for (Map.Entry<String, MetaDataEntry> entry : entryInfo.getEntryInfo()
+				.getPathEntryMap()
+				.entrySet()) {
 			if (metaService.isTenantMeta(entry.getKey())) {
-				MetaTenant meta = (MetaTenant)entry.getValue().getMetaData();
+				MetaTenant meta = (MetaTenant) entry.getValue()
+						.getMetaData();
 				Tenant tenant = new Tenant();
 				meta.applyToTenant(tenant);
 
-				tenant.setId(-1);								//IDはセットされない（不明なので未セット）
-				tenant.setName(meta.getName());					//nameはapplyToTenantでセットされないのでセット(DB側優先)
-				tenant.setDescription(meta.getDescription());	//descriptionはapplyToTenantでセットされないのでセット(DB側優先)
+				tenant.setId(-1); //IDはセットされない（不明なので未セット）
+				tenant.setName(meta.getName()); //nameはapplyToTenantでセットされないのでセット(DB側優先)
+				tenant.setDescription(meta.getDescription()); //descriptionはapplyToTenantでセットされないのでセット(DB側優先)
 
 				return tenant;
 			}
@@ -300,7 +308,7 @@ public class MetaDataPortingLogic {
 
 			result.setError(true);
 			result.clearMessages();
-			result.addMessages(resourceString("errImportTargetGet",  e.getMessage()));
+			result.addMessages(resourceString("errImportTargetGet", e.getMessage()));
 			return result;
 		}
 
@@ -321,9 +329,9 @@ public class MetaDataPortingLogic {
 	public List<Entity> getTagList() {
 		return em.searchEntity(
 				new Query()
-				.selectAll(MetaDataTagEntity.ENTITY_DEFINITION_NAME, false, false)
-				.where(new Equals(MetaDataTagEntity.TYPE, MetaDataTagEntity.TYPE_SNAPSHOT))
-				.order(new SortSpec(Entity.CREATE_DATE, SortType.DESC), new SortSpec(Entity.OID, SortType.DESC)))
+						.selectAll(MetaDataTagEntity.ENTITY_DEFINITION_NAME, false, false)
+						.where(new Equals(MetaDataTagEntity.TYPE, MetaDataTagEntity.TYPE_SNAPSHOT))
+						.order(new SortSpec(Entity.CREATE_DATE, SortType.DESC), new SortSpec(Entity.OID, SortType.DESC)))
 				.getList();
 	}
 
@@ -425,9 +433,12 @@ public class MetaDataPortingLogic {
 		String path = "/";
 
 		ArrayList<MetaDataEntryInfo> res = new ArrayList<MetaDataEntryInfo>();
-		for (Map.Entry<String, MetaDataEntry> e: entryInfo.getPathEntryMap().entrySet()) {
-			if (e.getKey().startsWith(path)) {
-				RootMetaData meta = e.getValue().getMetaData();
+		for (Map.Entry<String, MetaDataEntry> e : entryInfo.getPathEntryMap()
+				.entrySet()) {
+			if (e.getKey()
+					.startsWith(path)) {
+				RootMetaData meta = e.getValue()
+						.getMetaData();
 				MetaDataEntryInfo node = new MetaDataEntryInfo();
 				node.setPath(e.getKey());
 				node.setId(meta.getId());
@@ -442,7 +453,10 @@ public class MetaDataPortingLogic {
 		Collections.sort(res, new Comparator<MetaDataEntryInfo>() {
 			@Override
 			public int compare(MetaDataEntryInfo o1, MetaDataEntryInfo o2) {
-				return o1.getPath().toLowerCase().compareTo(o2.getPath().toLowerCase());
+				return o1.getPath()
+						.toLowerCase()
+						.compareTo(o2.getPath()
+								.toLowerCase());
 			}
 		});
 		return res;

@@ -48,16 +48,18 @@ import org.slf4j.LoggerFactory;
 import jakarta.servlet.http.Cookie;
 
 @ActionMapping(
-		name=EntityFileDownloadCommand.ACTION_NAME,
-		result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.STREAM, useContentDisposition=true),
-				@Result(status=Constants.CMD_EXEC_ERROR_PARAMETER, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_COMMON_ERROR,
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
+		name = EntityFileDownloadCommand.ACTION_NAME,
+		result = {
+				@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.STREAM, useContentDisposition = true),
+				@Result(
+						status = Constants.CMD_EXEC_ERROR_PARAMETER,
+						type = Type.TEMPLATE,
+						value = Constants.TEMPLATE_COMMON_ERROR,
+						layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
 		}
 )
-@CommandClass(name="gem/generic/search/EntityFileDownloadCommand", displayName="エンティティファイルダウンロード")
-public final class EntityFileDownloadCommand  implements Command {
+@CommandClass(name = "gem/generic/search/EntityFileDownloadCommand", displayName = "エンティティファイルダウンロード")
+public final class EntityFileDownloadCommand implements Command {
 
 	public static final String ACTION_NAME = "gem/generic/search/download";
 
@@ -105,9 +107,11 @@ public final class EntityFileDownloadCommand  implements Command {
 		fileNameVariableMap.put(ENTITY_DISP_BINDING_NAME, TemplateUtil.getMultilingualString(ed.getDisplayName(), ed.getLocalizedDisplayNameList()));
 		fileNameVariableMap.put(VIEW_NAME_BINDING_NAME, StringUtil.isEmpty(context.getViewName()) ? null : context.getViewName());
 		String defaultName = TemplateUtil.getMultilingualString(ed.getDisplayName(), ed.getLocalizedDisplayNameList());
-		String filename = evm.getEntityDownloadFileName(context.getDefName(), context.getViewName(), defaultName, fileNameVariableMap) + context.getFileExtension();
+		String filename = evm.getEntityDownloadFileName(context.getDefName(), context.getViewName(), defaultName, fileNameVariableMap)
+				+ context.getFileExtension();
 
-		auditLogger.info("EntityFileDownload," + filename + "," + context.getDefName() + " " + context.getWhere() + " isForUpload:" + context.isForUpload());
+		auditLogger.info(
+				"EntityFileDownload," + filename + "," + context.getDefName() + " " + context.getWhere() + " isForUpload:" + context.isForUpload());
 
 		request.setAttribute(Constants.CMD_RSLT_STREAM_FILENAME, filename);
 		request.setAttribute(Constants.CMD_RSLT_STREAM_CONTENT_TYPE, context.getFileContentType());
@@ -145,7 +149,9 @@ public final class EntityFileDownloadCommand  implements Command {
 			command = new FixedSearchCommand();
 		}
 		try {
-			context = command.getContextClass().getDeclaredConstructor().newInstance();
+			context = command.getContextClass()
+					.getDeclaredConstructor()
+					.newInstance();
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			throw new EntityRuntimeException(resourceString("command.generic.search.EntityFileDownloadCommand.internalErr"), e);
 		}

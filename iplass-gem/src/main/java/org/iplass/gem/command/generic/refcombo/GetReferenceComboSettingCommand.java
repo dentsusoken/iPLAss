@@ -38,15 +38,15 @@ import org.iplass.mtp.webapi.definition.RequestType;
  * 参照コンボ設定取得処理
  */
 @WebApi(
-		name=GetReferenceComboSettingCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={GetReferenceComboSettingCommand.RESULT_DATA_NAME},
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name=GetReferenceComboSettingCommand.CMD_NAME, displayName="参照コンボ設定取得")
-public class GetReferenceComboSettingCommand implements Command, HasDisplayScriptBindings{
+		name = GetReferenceComboSettingCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { GetReferenceComboSettingCommand.RESULT_DATA_NAME },
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = GetReferenceComboSettingCommand.CMD_NAME, displayName = "参照コンボ設定取得")
+public class GetReferenceComboSettingCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String CMD_NAME = "gem/generic/refcombo/GetReferenceComboSettingCommand";
 	public static final String WEBAPI_NAME = "gem/generic/refcombo/getComboSetting";
@@ -57,7 +57,8 @@ public class GetReferenceComboSettingCommand implements Command, HasDisplayScrip
 	private EntityViewManager evm = null;
 
 	public GetReferenceComboSettingCommand() {
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 	}
 
 	@Override
@@ -72,7 +73,7 @@ public class GetReferenceComboSettingCommand implements Command, HasDisplayScrip
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
 		if (editor instanceof ReferencePropertyEditor) {
-			rpe = (ReferencePropertyEditor)editor;
+			rpe = (ReferencePropertyEditor) editor;
 		}
 		if (rpe == null) {
 			return "NOT_DEFINED_EDITOR";

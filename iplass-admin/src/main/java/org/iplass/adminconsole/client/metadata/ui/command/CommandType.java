@@ -34,7 +34,7 @@ public enum CommandType {
 
 	JAVA("Java", JavaClassCommandDefinition.class),
 	SCRIPT("Script", ScriptingCommandDefinition.class);
-	
+
 	private String displayName;
 	private Class<CommandDefinition> definitionClass;
 
@@ -44,41 +44,48 @@ public enum CommandType {
 		this.displayName = displayName;
 		this.definitionClass = definitionClass;
 	}
-	
+
 	public String displayName() {
 		return displayName;
 	}
-	
+
 	public Class<CommandDefinition> definitionClass() {
 		return definitionClass;
 	}
-	
+
 	public static CommandType valueOf(CommandDefinition definition) {
 		for (CommandType type : values()) {
 			//if (definition.getClass().isAssignableFrom(type.definitionClass)) {
-			if (definition.getClass().getName().equals(type.definitionClass().getName())) {
+			if (definition.getClass()
+					.getName()
+					.equals(type.definitionClass()
+							.getName())) {
 				return type;
 			}
 		}
 		return null;
 	}
-	
+
 //	public static CommandDefinition typeOfDefinition(CommandType type) throws InstantiationException, IllegalAccessException {
 //		return type.definitionClass().newInstance();
 //	}
 	public static CommandDefinition typeOfDefinition(CommandType type) {
-		if (type.definitionClass().equals(JavaClassCommandDefinition.class)) {
+		if (type.definitionClass()
+				.equals(JavaClassCommandDefinition.class)) {
 			return new JavaClassCommandDefinition();
-		} else if (type.definitionClass().equals(ScriptingCommandDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ScriptingCommandDefinition.class)) {
 			return new ScriptingCommandDefinition();
 		}
 		return null;
 	}
-	
+
 	public static CommandTypeEditPane typeOfEditPane(CommandType type) {
-		if (type.definitionClass().equals(JavaClassCommandDefinition.class)) {
+		if (type.definitionClass()
+				.equals(JavaClassCommandDefinition.class)) {
 			return new JavaClassCommandEditPane();
-		} else if (type.definitionClass().equals(ScriptingCommandDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ScriptingCommandDefinition.class)) {
 			return new ScriptingCommandEditPane();
 		}
 		return null;

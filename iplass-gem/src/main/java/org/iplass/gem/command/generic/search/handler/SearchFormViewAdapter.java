@@ -33,7 +33,7 @@ public class SearchFormViewAdapter implements SearchFormViewHandler {
 
 	@Override
 	final public void onCreateSearchResult(FormViewEvent event) {
-		onCreateSearchResult((CreateSearchResultEvent)event);
+		onCreateSearchResult((CreateSearchResultEvent) event);
 	}
 
 	/**

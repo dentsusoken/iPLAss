@@ -86,7 +86,8 @@ class WebAuthn4jDataMapper {
 
 	private AuthenticationExtensionsClientInputs<RegistrationExtensionClientInput> newRegistrationExtensions() {
 		AuthenticationExtensionsClientInputs.BuilderForRegistration builder = new AuthenticationExtensionsClientInputs.BuilderForRegistration();
-		return builder.setCredProps(true).build();
+		return builder.setCredProps(true)
+				.build();
 	}
 
 	private com.webauthn4j.data.AttestationConveyancePreference newAttestationConveyancePreference(

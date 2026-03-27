@@ -33,30 +33,31 @@ public class MetaLocalizedSmsMailTemplate implements MetaData {
 	private static final long serialVersionUID = -4137737997417644384L;
 	private String localeName;
 	private MetaPlainTextBodyPart message;
-	
+
 	@Override
 	public MetaData copy() {
 		return ObjectUtil.deepCopy(this);
 	}
-	
+
 	public void applyConfig(LocalizedSmsMailTemplateDefinition d) {
 		this.localeName = d.getLocaleName();
 
 		if (d.getMessage() != null) {
 			message = new MetaPlainTextBodyPart();
-			message.setContent(d.getMessage().getContent());
+			message.setContent(d.getMessage()
+					.getContent());
 		} else {
 			message = null;
 		}
 	}
-	
+
 	public LocalizedSmsMailTemplateDefinition currentConfig() {
 		LocalizedSmsMailTemplateDefinition d = new LocalizedSmsMailTemplateDefinition();
 		d.setLocaleName(getLocaleName());
 		d.setMessage(message.currentConfig());
 		return d;
 	}
-	
+
 	public String getLocaleName() {
 		return localeName;
 	}

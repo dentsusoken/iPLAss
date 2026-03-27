@@ -30,10 +30,10 @@ import java.util.Map;
  */
 public class MapActionParameter implements ActionParameter {
 	private Map<String, Object> map;
-	
+
 	public MapActionParameter() {
 	}
-	
+
 	public MapActionParameter(Map<String, Object> map) {
 		this.map = map;
 	}
@@ -45,7 +45,7 @@ public class MapActionParameter implements ActionParameter {
 		}
 		return map.get(name);
 	}
-	
+
 	public MapActionParameter put(String name, Object value) {
 		if (map == null) {
 			map = new HashMap<>();

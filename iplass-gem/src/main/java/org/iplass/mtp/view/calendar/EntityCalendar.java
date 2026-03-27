@@ -39,11 +39,14 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 public class EntityCalendar implements Definition {
 
 	/** 期間タイプ */
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/calendar")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/calendar")
 	public enum CalendarType {
-		@XmlEnumValue("Month")MONTH,
-		@XmlEnumValue("Week")WEEK,
-		@XmlEnumValue("Day")DAY
+		@XmlEnumValue("Month")
+		MONTH,
+		@XmlEnumValue("Week")
+		WEEK,
+		@XmlEnumValue("Day")
+		DAY
 	}
 
 	/** SerialVersionUID */
@@ -53,7 +56,13 @@ public class EntityCalendar implements Definition {
 	private String name;
 
 	/** カレンダー定義の表示名 */
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 
 	/** 概要 */
@@ -179,7 +188,7 @@ public class EntityCalendar implements Definition {
 	 */
 	public String getPropertyName(String definitionName) {
 		EntityCalendarItem item = getItem(definitionName);
-		if (item!= null) {
+		if (item != null) {
 			return item.getPropertyName();
 		}
 		return null;

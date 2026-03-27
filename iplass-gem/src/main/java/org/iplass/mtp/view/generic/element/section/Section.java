@@ -41,7 +41,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({ TemplateSection.class, DefaultSection.class, ScriptingSection.class, VersionSection.class,
 		SearchConditionSection.class, ReferenceSection.class, MassReferenceSection.class, SearchResultSection.class })
-@FieldOrder(manual=true)
+@FieldOrder(manual = true)
 public abstract class Section extends Element {
 
 	/** シリアルバージョンUID */
@@ -49,43 +49,43 @@ public abstract class Section extends Element {
 
 	/** タイトル */
 	@MetaFieldInfo(
-			displayName="タイトル",
-			displayNameKey="generic_element_section_Section_titleDisplayNameKey",
-			description="セクションのタイトルを設定します。",
-			descriptionKey="generic_element_section_Section_titleDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "タイトル",
+			displayNameKey = "generic_element_section_Section_titleDisplayNameKey",
+			description = "セクションのタイトルを設定します。",
+			descriptionKey = "generic_element_section_Section_titleDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedTitleList",
-			displayOrder=300
+			displayOrder = 300
 	)
 	@MultiLang()
 	private String title;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_element_section_Section_localizedTitleListDisplayNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=310
+			displayName = "多言語設定",
+			displayNameKey = "generic_element_section_Section_localizedTitleListDisplayNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 310
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
 	/** クラス名 */
 	@MetaFieldInfo(
-			displayName="クラス名",
-			displayNameKey="generic_element_section_Section_styleDisplayNameKey",
-			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
-			descriptionKey="generic_element_section_Section_styleDescriptionKey",
-			displayOrder=320
+			displayName = "クラス名",
+			displayNameKey = "generic_element_section_Section_styleDisplayNameKey",
+			description = "スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
+			descriptionKey = "generic_element_section_Section_styleDescriptionKey",
+			displayOrder = 320
 	)
 	private String style;
 
 	/** id */
 	@MetaFieldInfo(
-			displayName="id",
-			displayNameKey="generic_element_section_Section_idDisplayNameKey",
-			displayOrder=330,
-			description="画面上で一意となるIDを設定してください。",
-			descriptionKey="generic_element_section_Section_idDescriptionKey"
+			displayName = "id",
+			displayNameKey = "generic_element_section_Section_idDisplayNameKey",
+			displayOrder = 330,
+			description = "画面上で一意となるIDを設定してください。",
+			descriptionKey = "generic_element_section_Section_idDescriptionKey"
 	)
 	private String id;
 

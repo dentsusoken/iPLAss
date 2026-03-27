@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 		methods = { MethodType.GET },
 		supportBearerToken = true,
 		overwritable = false
-		)
+)
 @WebApi(
 		name = "mtp/bin/POST",
 		accepts = { RequestType.REST_FORM },
@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
 		results = { BinaryCommand.RESULT_LOB_ID },
 		supportBearerToken = true,
 		overwritable = false
-		)
+)
 @CommandClass(name = "mtp/binary/BinaryCommand", displayName = "Binary Web API", overwritable = false)
 public final class BinaryCommand implements Command, Constants {
 	private static Logger logger = LoggerFactory.getLogger(BinaryCommand.class);
@@ -73,7 +73,8 @@ public final class BinaryCommand implements Command, Constants {
 	public static final String RESULT_LOB_ID = "lobId";
 
 	DefinitionService service = DefinitionService.getInstance();
-	WebApiService webApiService = ServiceRegistry.getRegistry().getService(WebApiService.class);
+	WebApiService webApiService = ServiceRegistry.getRegistry()
+			.getService(WebApiService.class);
 
 	@Override
 	public String execute(RequestContext request) {
@@ -118,7 +119,8 @@ public final class BinaryCommand implements Command, Constants {
 		}
 		long lobId = Long.parseLong(subPath);
 
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		BinaryReference br = em.loadBinaryReference(lobId);
 		if (br == null) {
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -131,13 +133,15 @@ public final class BinaryCommand implements Command, Constants {
 		}
 
 		ResponseBuilder rb = Response.ok(stream, br.getType());
-		if (br.getType() != null && br.getType().length() != 0) {
+		if (br.getType() != null && br.getType()
+				.length() != 0) {
 			rb.type(br.getType());
 		}
 		if (br.getSize() != 0) {
 			rb.header("Content-Length", br.getSize());
 		}
-		if (br.getName() != null && br.getName().length() != 0) {
+		if (br.getName() != null && br.getName()
+				.length() != 0) {
 			if (webApiService.isWriteEncodedFilenameInBinaryApi()) {
 				String encodedFileName;
 				try {
@@ -187,7 +191,8 @@ public final class BinaryCommand implements Command, Constants {
 		}
 
 		if (webApiService.getUnescapeFilenameCharacterInBinaryApi() != null) {
-			return webApiService.getUnescapeFilenameCharacterInBinaryApi().indexOf(ch) >= 0;
+			return webApiService.getUnescapeFilenameCharacterInBinaryApi()
+					.indexOf(ch) >= 0;
 		}
 		return false;
 	}
@@ -201,11 +206,14 @@ public final class BinaryCommand implements Command, Constants {
 	private boolean isRejectMimeTypes(String type) {
 		boolean isAccept = true;
 
-		WebApiService service = ServiceRegistry.getRegistry().getService(WebApiService.class);
+		WebApiService service = ServiceRegistry.getRegistry()
+				.getService(WebApiService.class);
 
 		if (null != service.getAcceptMimeTypesPatternInBinaryApi()) {
 			// WebApiServiceの受け入れ許可設定が存在する場合は、WebApiService の設定で許可設定を行う
-			isAccept = service.getAcceptMimeTypesPatternInBinaryApi().matcher(type).matches();
+			isAccept = service.getAcceptMimeTypesPatternInBinaryApi()
+					.matcher(type)
+					.matches();
 		}
 		// else {
 		// // WebApiService に設定が無い場合はチェックしない

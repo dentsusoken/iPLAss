@@ -50,8 +50,8 @@ public class EQLExecutePane extends VLayout {
 
 		resultTabSet = new EQLResultTabSet();
 		resultTabSet.setHeight("70%");
-		resultTabSet.setShowResizeBar(true);		//リサイズ可能
-		resultTabSet.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+		resultTabSet.setShowResizeBar(true); //リサイズ可能
+		resultTabSet.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、下を収縮
 
 		messageTabSet = new MessageTabSet();
 		messageTabSet.setHeight("30%");
@@ -177,7 +177,9 @@ public class EQLExecutePane extends VLayout {
 					ds = EqlDS.getInstance(result);
 
 					//行番号列が行数によりつぶれるので再設定
-					int rownoSize = String.valueOf(result.getRecords().size()).length() * 11;
+					int rownoSize = String.valueOf(result.getRecords()
+							.size())
+							.length() * 11;
 					grid.setRowNumberFieldProperties(new ListGridField("autorownumber", rownoSize));
 
 					//グリッド表示
@@ -202,7 +204,9 @@ public class EQLExecutePane extends VLayout {
 
 					//行番号表示
 					grid.setShowRowNumbers(true);
-					int rownoSize = String.valueOf(result.getRecords().size()).length() * 11;
+					int rownoSize = String.valueOf(result.getRecords()
+							.size())
+							.length() * 11;
 					grid.setRowNumberFieldProperties(new ListGridField("autorownumber", rownoSize));
 
 					grid.setDataFetchMode(FetchMode.PAGED);

@@ -62,7 +62,7 @@ public class SubjectIdentifierTypeEditPane extends VLayout implements EditablePa
 
 		form = new DynamicForm();
 		form.setWidth100();
-		form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+		form.setNumCols(3); //間延びしないように最後に１つ余分に作成
 		form.setColWidths(100, 300, "*");
 		form.setMargin(3);
 
@@ -96,15 +96,17 @@ public class SubjectIdentifierTypeEditPane extends VLayout implements EditablePa
 	public void setDefinition(SubjectIdentifierTypeDefinition definition) {
 
 		if (definition != null) {
-			String value = subjectIdentifierTypeMap.get(definition.getClass().getName());
+			String value = subjectIdentifierTypeMap.get(definition.getClass()
+					.getName());
 			if (value != null) {
-				selSubjectIdentifierType.setValue(definition.getClass().getName());
+				selSubjectIdentifierType.setValue(definition.getClass()
+						.getName());
 
 				if (definition instanceof PairwiseSubjectIdentifierTypeDefinition) {
-					txtSubjectIdMappedUserProperty.setValue(((PairwiseSubjectIdentifierTypeDefinition)definition).getSubjectIdMappedUserProperty());
+					txtSubjectIdMappedUserProperty.setValue(((PairwiseSubjectIdentifierTypeDefinition) definition).getSubjectIdMappedUserProperty());
 				} else if (definition instanceof PublicSubjectIdentifierTypeDefinition) {
-					txtSubjectIdMappedUserProperty.setValue(((PublicSubjectIdentifierTypeDefinition)definition).getSubjectIdMappedUserProperty());
-					chkHashing.setValue(((PublicSubjectIdentifierTypeDefinition)definition).isHashing());
+					txtSubjectIdMappedUserProperty.setValue(((PublicSubjectIdentifierTypeDefinition) definition).getSubjectIdMappedUserProperty());
+					chkHashing.setValue(((PublicSubjectIdentifierTypeDefinition) definition).isHashing());
 				}
 			} else {
 				selSubjectIdentifierType.setValue("");
@@ -126,7 +128,7 @@ public class SubjectIdentifierTypeEditPane extends VLayout implements EditablePa
 				PairwiseSubjectIdentifierTypeDefinition edit = new PairwiseSubjectIdentifierTypeDefinition();
 				edit.setSubjectIdMappedUserProperty(SmartGWTUtil.getStringValue(txtSubjectIdMappedUserProperty));
 				return edit;
-			} else 	if (type.equals(PublicSubjectIdentifierTypeDefinition.class.getName())) {
+			} else if (type.equals(PublicSubjectIdentifierTypeDefinition.class.getName())) {
 				PublicSubjectIdentifierTypeDefinition edit = new PublicSubjectIdentifierTypeDefinition();
 				edit.setSubjectIdMappedUserProperty(SmartGWTUtil.getStringValue(txtSubjectIdMappedUserProperty));
 				edit.setHashing(SmartGWTUtil.getBooleanValue(chkHashing));

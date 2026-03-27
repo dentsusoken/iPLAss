@@ -24,7 +24,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 
-@XmlSeeAlso({MetaHtmlBodyPart.class, MetaPlainTextBodyPart.class})
+@XmlSeeAlso({ MetaHtmlBodyPart.class, MetaPlainTextBodyPart.class })
 public abstract class MetaBodyPart implements MetaData {
 	private static final long serialVersionUID = -5023654734590319836L;
 

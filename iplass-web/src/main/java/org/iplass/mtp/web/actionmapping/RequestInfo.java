@@ -182,7 +182,6 @@ public interface RequestInfo {
 	 */
 	public String getAuthType();
 
-	
 	/**
 	 * @see HttpServletRequest#getContextPath()
 	 * @return
@@ -235,7 +234,6 @@ public interface RequestInfo {
 	 */
 	public String getMethod();
 
-	
 	/**
 	 * @see HttpServletRequest#getPathInfo()
 	 * @return
@@ -271,20 +269,20 @@ public interface RequestInfo {
 	 * @return
 	 */
 	public String getServletPath();
-	
+
 	/**
 	 * @see HttpServletRequest#getUserPrincipal()
 	 * @return
 	 */
 	public Principal getUserPrincipal();
-	
+
 	/**
 	 * @see HttpServletRequest#isUserInRole(String)
 	 * @param role
 	 * @return
 	 */
 	public boolean isUserInRole(String role);
-	
+
 	/**
 	 * @see HttpServletRequest#getLocales()
 	 * @return

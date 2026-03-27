@@ -71,7 +71,7 @@ public abstract class AdminDownloadService extends HttpServlet {
 		//パラメータの取得
 		final int tenantId = Integer.parseInt(req.getParameter(EntityJavaMappingClassDownloadProperty.TENANT_ID));
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, ()-> {
+		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, () -> {
 			doDownload(req, resp, tenantId);
 			return null;
 		});

@@ -32,11 +32,10 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-@XmlSeeAlso({GenericEntity.class, GenericEntity[].class})
-@JsonPropertyOrder({"name", "valueType", "value"})
-@JsonDeserialize(using=WebApiParameterDeserializer.class)
+@XmlSeeAlso({ GenericEntity.class, GenericEntity[].class })
+@JsonPropertyOrder({ "name", "valueType", "value" })
+@JsonDeserialize(using = WebApiParameterDeserializer.class)
 public class WebApiParameter {
-
 
 	private String name;
 
@@ -63,7 +62,6 @@ public class WebApiParameter {
 	public void setValueType(String valueType) {
 		this.valueType = valueType;
 	}
-
 
 	@XmlAttribute
 	public String getName() {

@@ -60,13 +60,13 @@ public class JspTemplateEditPane extends TemplateTypeEditPane implements HasEdit
 
 	@Override
 	public void setDefinition(TemplateDefinition definition) {
-		JspTemplateDefinition jspDefinition = (JspTemplateDefinition)definition;
+		JspTemplateDefinition jspDefinition = (JspTemplateDefinition) definition;
 		pathField.setValue(jspDefinition.getPath());
 	}
 
 	@Override
 	public TemplateDefinition getEditDefinition(TemplateDefinition definition) {
-		JspTemplateDefinition jspDefinition = (JspTemplateDefinition)definition;
+		JspTemplateDefinition jspDefinition = (JspTemplateDefinition) definition;
 		jspDefinition.setPath(SmartGWTUtil.getStringValue(pathField));
 		return jspDefinition;
 	}

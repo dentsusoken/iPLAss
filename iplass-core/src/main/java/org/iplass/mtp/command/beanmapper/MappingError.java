@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "mappingError", propOrder = { "propertyPath", "errorMessages"})
+@XmlType(name = "mappingError", propOrder = { "propertyPath", "errorMessages" })
 @JsonSerialize(using = MappingErrorSerializer.class)
 public class MappingError {
 	@XmlElement
@@ -52,12 +52,12 @@ public class MappingError {
 	private Object errorValue;
 	@XmlTransient
 	private Object cause;
-	
+
 	public MappingError(String propertyPath, Object errorValue) {
 		this.propertyPath = propertyPath;
 		this.errorValue = errorValue;
 	}
-	
+
 	public MappingError(String propertyPath, List<String> errorMessages, Object errorValue, Object cause) {
 		this.propertyPath = propertyPath;
 		this.errorMessages = errorMessages;
@@ -125,7 +125,7 @@ public class MappingError {
 	public void setCause(Object cause) {
 		this.cause = cause;
 	}
-	
+
 	public void addMessage(String message) {
 		addMessage(message, null);
 	}
@@ -136,7 +136,7 @@ public class MappingError {
 			errorMessages = new LinkedList<>();
 		}
 		errorMessages.add(message);
-		
+
 		if (cause != null) {
 			if (this.cause == null) {
 				this.cause = cause;

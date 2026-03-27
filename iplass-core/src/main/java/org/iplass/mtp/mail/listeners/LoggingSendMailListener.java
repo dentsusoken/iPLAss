@@ -76,12 +76,16 @@ public class LoggingSendMailListener implements SendMailListener {
 
 			builder.append("PlainMessage:" + mail.getMessage() + "\n");
 			if (mail.getHtmlMessage() != null) {
-				builder.append("HtmlMessage:" + mail.getHtmlMessage().getContent() + "\n");
-				if (mail.getHtmlMessage().getInlineContents() != null) {
+				builder.append("HtmlMessage:" + mail.getHtmlMessage()
+						.getContent() + "\n");
+				if (mail.getHtmlMessage()
+						.getInlineContents() != null) {
 					builder.append("InlineContents:");
-					for (InlineContent ic: mail.getHtmlMessage().getInlineContents()) {
+					for (InlineContent ic : mail.getHtmlMessage()
+							.getInlineContents()) {
 						if (ic != null) {
-							builder.append(ic.getContentId()).append(", ");
+							builder.append(ic.getContentId())
+									.append(", ");
 						}
 					}
 					builder.append("\n");
@@ -112,7 +116,8 @@ public class LoggingSendMailListener implements SendMailListener {
 		if (address == null) {
 			return "";
 		}
-		if (address.getPersonal() != null && !address.getPersonal().isEmpty()) {
+		if (address.getPersonal() != null && !address.getPersonal()
+				.isEmpty()) {
 			return address.getPersonal() + "[" + address.getAddress() + "]";
 		} else {
 			return address.getAddress();

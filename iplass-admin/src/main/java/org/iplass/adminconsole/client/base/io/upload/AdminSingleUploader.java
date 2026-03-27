@@ -150,8 +150,10 @@ public class AdminSingleUploader extends Composite {
 		if (null != extensions && 0 < extensions.length) {
 			for (String ext : extensions) {
 				if (null != ext && 0 < ext.length()) {
-					String validExtension = new StringBuilder(".").append(ext).toString();
-					acceptValue.append(",").append(validExtension);
+					String validExtension = new StringBuilder(".").append(ext)
+							.toString();
+					acceptValue.append(",")
+							.append(validExtension);
 				}
 			}
 		}
@@ -159,13 +161,16 @@ public class AdminSingleUploader extends Composite {
 		if (0 < acceptValue.length()) {
 			acceptValue.deleteCharAt(0);
 			String accept = acceptValue.toString();
-			fileUpload.getElement().setAttribute("accept", accept);
+			fileUpload.getElement()
+					.setAttribute("accept", accept);
 
 			// accept に設定する拡張子一覧を設定
 			validExtensionList.addAll(Arrays.asList(accept.split(",")));
 
-		} else if (fileUpload.getElement().hasAttribute("accept")) {
-			fileUpload.getElement().removeAttribute("accept");
+		} else if (fileUpload.getElement()
+				.hasAttribute("accept")) {
+			fileUpload.getElement()
+					.removeAttribute("accept");
 
 		}
 	}
@@ -222,7 +227,9 @@ public class AdminSingleUploader extends Composite {
 	 * アップロードファイルをクリアする
 	 */
 	private void clearFile() {
-		fileUpload.getElement().<InputElement> cast().setValue(null);
+		fileUpload.getElement()
+				.<InputElement> cast()
+				.setValue(null);
 	}
 
 	/**
@@ -289,7 +296,8 @@ public class AdminSingleUploader extends Composite {
 	 */
 	private String getFileUploadFileExtension() {
 		// ファイル名
-		String uploadFileName = getInputElementFileName(this.fileUpload.getElement().<InputElement> cast(), 0);
+		String uploadFileName = getInputElementFileName(this.fileUpload.getElement()
+				.<InputElement> cast(), 0);
 		// "." 最終位置
 		int lastDot = uploadFileName.lastIndexOf(".");
 		// 拡張子部を返却
@@ -363,7 +371,8 @@ public class AdminSingleUploader extends Composite {
 	public void debugUploader(String eventName) {
 		GWT.log(eventName + ": isSuccess                   ->" + lastUploadState.isSuccess());
 
-		InputElement file = fileUpload.getElement().<InputElement> cast();
+		InputElement file = fileUpload.getElement()
+				.<InputElement> cast();
 		if (0 == getInputElementFileLength(file)) {
 			GWT.log(eventName + ": UploadedInfo is Null.");
 

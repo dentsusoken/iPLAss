@@ -40,7 +40,6 @@ import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
-
 public class PredicateSyntax implements Syntax<Predicate>, QueryConstants {
 
 	private ComparisonPredicateSyntax comparisonPredicate;
@@ -53,7 +52,6 @@ public class PredicateSyntax implements Syntax<Predicate>, QueryConstants {
 //	private PrimaryValueSyntax primaryValue;
 	private PolynomialSyntax primaryValue;
 	private ContainsSyntax contains;
-
 
 	public void init(SyntaxContext context) {
 //		entityField = context.getSyntax(EntityFieldSyntax.class);
@@ -88,10 +86,10 @@ public class PredicateSyntax implements Syntax<Predicate>, QueryConstants {
 						str.consumeChars(COMMA.length());
 						str.consumeChars(ParseContext.WHITE_SPACES);
 					}
-					
+
 					props.add(primaryValue.parse(str));
 				}
-				
+
 				if (!str.startsWith(RIGHT_PAREN) || props.size() < 2) {
 					//inの複数EntityField指定ではなかった、、
 					str.setCurrentIndex(index);
@@ -99,7 +97,7 @@ public class PredicateSyntax implements Syntax<Predicate>, QueryConstants {
 				} else {
 					str.consumeChars(RIGHT_PAREN.length());
 					str.consumeChars(ParseContext.WHITE_SPACES);
-	
+
 					In i = in.parse(str);
 //					if (i.getSubQuery() == null) {
 //						throw new ParseException(new EvalError("multi property in clause only alowed to subquery.", this, str));
@@ -116,7 +114,6 @@ public class PredicateSyntax implements Syntax<Predicate>, QueryConstants {
 			Contains con = contains.parse(str);
 			return con;
 		}
-
 
 		ValueExpression ef = primaryValue.parse(str);
 
@@ -172,7 +169,6 @@ public class PredicateSyntax implements Syntax<Predicate>, QueryConstants {
 		} catch (ParseException e) {
 			str.setCurrentIndex(index);
 		}
-
 
 		str.setCurrentIndex(index);
 		throw new ParseException(new EvalError("Predicate expected.", this, str));

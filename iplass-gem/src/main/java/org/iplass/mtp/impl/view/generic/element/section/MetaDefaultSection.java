@@ -74,7 +74,6 @@ public class MetaDefaultSection extends MetaSection {
 		defaultDispBorderInSection = Boolean.parseBoolean(value);
 	}
 
-
 	public static MetaDefaultSection createInstance(Element element) {
 		return new MetaDefaultSection();
 	}
@@ -245,7 +244,8 @@ public class MetaDefaultSection extends MetaSection {
 	 * @return 要素情報
 	 */
 	public List<MetaElement> getElements() {
-		if (this.elements == null) this.elements = new ArrayList<>();
+		if (this.elements == null)
+			this.elements = new ArrayList<>();
 		return elements;
 	}
 
@@ -262,7 +262,8 @@ public class MetaDefaultSection extends MetaSection {
 	 * @param val 要素情報
 	 */
 	public void addElement(MetaElement element) {
-		if (this.elements == null) this.elements = new ArrayList<>();
+		if (this.elements == null)
+			this.elements = new ArrayList<>();
 		this.elements.add(element);
 	}
 
@@ -284,7 +285,8 @@ public class MetaDefaultSection extends MetaSection {
 		this.upperContents = section.getUpperContents();
 		this.lowerContents = section.getLowerContents();
 		this.dispBorderInSection = section.isDispBorderInSection();
-		if (section.getElements().size() > 0) {
+		if (section.getElements()
+				.size() > 0) {
 			for (Element elem : section.getElements()) {
 				MetaElement mElem = null;
 				if (elem instanceof Section) {
@@ -294,7 +296,8 @@ public class MetaDefaultSection extends MetaSection {
 				} else {
 					mElem = fillFromElement(elem, definitionId);
 				}
-				if (mElem != null) this.addElement(mElem);
+				if (mElem != null)
+					this.addElement(mElem);
 			}
 		}
 	}
@@ -320,7 +323,8 @@ public class MetaDefaultSection extends MetaSection {
 	private MetaPropertyLayout fillFromProperty(Element element, String definitionId) {
 		MetaPropertyItem mProp = new MetaPropertyItem();
 		mProp.applyConfig(element, definitionId);
-		if (mProp.getPropertyId() == null) mProp = null;
+		if (mProp.getPropertyId() == null)
+			mProp = null;
 		return mProp;
 	}
 
@@ -335,10 +339,12 @@ public class MetaDefaultSection extends MetaSection {
 		meta.applyConfig(element, definitionId);
 		if (element instanceof ReferenceSection) {
 			MetaReferenceSection rs = (MetaReferenceSection) meta;
-			if (rs.getPropertyId() == null) return null;
+			if (rs.getPropertyId() == null)
+				return null;
 		} else if (element instanceof MassReferenceSection) {
 			MetaMassReferenceSection ms = (MetaMassReferenceSection) meta;
-			if (ms.getPropertyId() == null) return null;
+			if (ms.getPropertyId() == null)
+				return null;
 		}
 		return meta;
 	}
@@ -359,17 +365,21 @@ public class MetaDefaultSection extends MetaSection {
 		section.setUpperContents(this.upperContents);
 		section.setLowerContents(this.lowerContents);
 		section.setDispBorderInSection(this.dispBorderInSection);
-		if (this.getElements().size() > 0) {
+		if (this.getElements()
+				.size() > 0) {
 			for (MetaElement elem : this.getElements()) {
 				if (elem instanceof MetaSection) {
 					Section subSection = fillToSection(elem, definitionId);
-					if (subSection != null) section.addElement(subSection);
+					if (subSection != null)
+						section.addElement(subSection);
 				} else if (elem instanceof MetaPropertyLayout) {
 					PropertyBase p = fillToProperty(elem, definitionId);
-					if (p != null) section.addElement(p);
+					if (p != null)
+						section.addElement(p);
 				} else {
 					Element e = fillToElement(elem, definitionId);
-					if (e != null) section.addElement(e);
+					if (e != null)
+						section.addElement(e);
 				}
 			}
 		}
@@ -438,7 +448,8 @@ public class MetaDefaultSection extends MetaSection {
 			super(metadata, entityView);
 
 			EntityContext context = EntityContext.getCurrentContext();
-			EntityHandler eh = context.getHandlerById(entityView.getMetaData().getDefinitionId());
+			EntityHandler eh = context.getHandlerById(entityView.getMetaData()
+					.getDefinitionId());
 
 			elements = new ArrayList<>();
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();
@@ -447,7 +458,7 @@ public class MetaDefaultSection extends MetaSection {
 				elements.add(elementRuntime);
 
 				if (element instanceof MetaPropertyLayout) {
-					MetaPropertyLayout propertyLayout = (MetaPropertyLayout)element;
+					MetaPropertyLayout propertyLayout = (MetaPropertyLayout) element;
 					MetaPropertyEditor editor = propertyLayout.getEditor();
 
 					// element が MetaPropertyLaytout であれば、propertyRuntime として管理する。
@@ -458,7 +469,7 @@ public class MetaDefaultSection extends MetaSection {
 					builder.element(elementRuntime);
 
 					if (editor != null) {
-						PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView, formView, propertyLayout, context, eh);
+						PropertyEditorRuntime runtime = (PropertyEditorRuntime) editor.createRuntime(entityView, formView, propertyLayout, context, eh);
 						customStyleMap.put(editor.getOutputCustomStyleScriptKey(), runtime.getOutputCustomStyleScript());
 						customStyleMap.put(editor.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 
@@ -471,7 +482,7 @@ public class MetaDefaultSection extends MetaSection {
 							EntityHandler nestEh = context.getHandlerById(((HasMetaNestProperty) editor).getObjectId());
 							// プロパティ情報に格納するプロパティインスタンス
 							Map<String, SectionPropertyRuntime> nestProperties = new HashMap<>();
-							for (MetaNestProperty nest : ((HasMetaNestProperty)editor).getNestProperties()) {
+							for (MetaNestProperty nest : ((HasMetaNestProperty) editor).getNestProperties()) {
 								MetaPropertyEditor nestEditor = nest.getEditor();
 
 								// ネストプロパティランタイム管理用インスタンスのビルダーを作成
@@ -481,7 +492,8 @@ public class MetaDefaultSection extends MetaSection {
 
 								if (nestEditor != null) {
 									//TODO nest type check
-									PropertyEditorRuntime nestRuntime = (PropertyEditorRuntime)nestEditor.createRuntime(entityView, formView, null, context, eh);
+									PropertyEditorRuntime nestRuntime = (PropertyEditorRuntime) nestEditor.createRuntime(entityView, formView, null,
+											context, eh);
 									customStyleMap.put(nestEditor.getOutputCustomStyleScriptKey(), nestRuntime.getOutputCustomStyleScript());
 									customStyleMap.put(nestEditor.getInputCustomStyleScriptKey(), nestRuntime.getInputCustomStyleScript());
 
@@ -501,26 +513,28 @@ public class MetaDefaultSection extends MetaSection {
 				}
 
 				if (element instanceof MetaButton) {
-					MetaButton button = (MetaButton)element;
+					MetaButton button = (MetaButton) element;
 					ButtonRuntime runtime = button.createRuntime(entityView, formView);
 					customStyleMap.put(button.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 				}
 				if (element instanceof MetaLink) {
-					MetaLink link = (MetaLink)element;
+					MetaLink link = (MetaLink) element;
 					LinkRuntime runtime = link.createRuntime(entityView, formView);
 					customStyleMap.put(link.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 				}
 			}
 			//StyleScript用のKEYを設定
-			metadata.styleScriptKey = "DefaultSection_Style_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+			metadata.styleScriptKey = "DefaultSection_Style_" + GroovyTemplateCompiler.randomName()
+					.replace("-", "_");
 			//EntityViewに登録
-			entityView.addCustomStyle(styleScriptKey , customStyleMap);
+			entityView.addCustomStyle(styleScriptKey, customStyleMap);
 
 			//上下コンテンツのコンパイル
 			if (StringUtil.isNotEmpty(metadata.upperContents) || StringUtil.isNotEmpty(metadata.lowerContents)) {
 				if (metadata.contentScriptKey == null) {
 					//ContentsScript用のKEYを設定
-					metadata.contentScriptKey = "DefaultSection_content_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+					metadata.contentScriptKey = "DefaultSection_content_" + GroovyTemplateCompiler.randomName()
+							.replace("-", "_");
 				}
 				if (StringUtil.isNotEmpty(metadata.upperContents)) {
 					//EntityViewにセット
@@ -537,7 +551,8 @@ public class MetaDefaultSection extends MetaSection {
 		}
 
 		private GroovyTemplate compile(String script, String key) {
-			TenantContext tenant = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tenant = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			return GroovyTemplateCompiler.compile(
 					script, key, (GroovyScriptEngine) tenant.getScriptEngine());
 		}

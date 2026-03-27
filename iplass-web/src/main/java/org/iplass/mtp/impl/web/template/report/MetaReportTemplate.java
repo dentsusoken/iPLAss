@@ -59,11 +59,11 @@ public class MetaReportTemplate extends MetaTemplate {
 	private List<MetaLocalizedReport> localizedReportList = new ArrayList<MetaLocalizedReport>();
 
 	public String getFileName() {
-	    return fileName;
+		return fileName;
 	}
 
 	public void setFileName(String fileName) {
-	    this.fileName = fileName;
+		this.fileName = fileName;
 	}
 
 	public byte[] getBinary() {
@@ -101,11 +101,11 @@ public class MetaReportTemplate extends MetaTemplate {
 				MetaJasperReportType jrt = new MetaJasperReportType();
 				jrt.applyConfig(reportType);
 				this.reportType = jrt;
-			} else if(reportType instanceof PoiReportType) {
+			} else if (reportType instanceof PoiReportType) {
 				MetaPoiReportType prt = new MetaPoiReportType();
 				prt.applyConfig(reportType);
 				this.reportType = prt;
-			} else if(reportType instanceof JxlsReportType) {
+			} else if (reportType instanceof JxlsReportType) {
 				MetaJxlsReportType jxrt = new MetaJxlsReportType();
 				jxrt.applyConfig(reportType);
 				this.reportType = jxrt;
@@ -119,7 +119,7 @@ public class MetaReportTemplate extends MetaTemplate {
 
 		if (def.getLocalizedReportList() != null) {
 			localizedReportList = new ArrayList<MetaLocalizedReport>();
-			for (LocalizedReportDefinition ed: def.getLocalizedReportList()) {
+			for (LocalizedReportDefinition ed : def.getLocalizedReportList()) {
 
 				MetaLocalizedReport mlr = new MetaLocalizedReport();
 				mlr.setLocaleName(ed.getLocaleName());
@@ -132,7 +132,7 @@ public class MetaReportTemplate extends MetaTemplate {
 						MetaJasperReportType jrt = new MetaJasperReportType();
 						jrt.applyConfig(reportType);
 						mlr.setReportType(jrt);
-					} else if(reportType instanceof PoiReportType) {
+					} else if (reportType instanceof PoiReportType) {
 						MetaPoiReportType prt = new MetaPoiReportType();
 						prt.applyConfig(reportType);
 						mlr.setReportType(prt);
@@ -155,14 +155,14 @@ public class MetaReportTemplate extends MetaTemplate {
 	public TemplateDefinition currentConfig() {
 		ReportTemplateDefinition definition = new ReportTemplateDefinition();
 		fillTo(definition);
-		if(reportType != null){
+		if (reportType != null) {
 			definition.setReportType(reportType.currentConfig());
 		}
 		definition.setFileName(fileName);
 		definition.setBinary(binary);
 
 		if (localizedReportList != null) {
-			for (MetaLocalizedReport mlr: localizedReportList) {
+			for (MetaLocalizedReport mlr : localizedReportList) {
 				definition.addLocalizedReport(mlr.currentConfig());
 			}
 		}
@@ -178,8 +178,9 @@ public class MetaReportTemplate extends MetaTemplate {
 	public class ReportTemplateRuntime extends TemplateRuntime {
 
 		private static final String DOT = ".";
-		private ReportingEngine reportEngine ;
-		private ReportingEngineService service = ServiceRegistry.getRegistry().getService(ReportingEngineService.class);
+		private ReportingEngine reportEngine;
+		private ReportingEngineService service = ServiceRegistry.getRegistry()
+				.getService(ReportingEngineService.class);
 		private ReportTypeRuntime reportTypeRuntime;
 
 		private Map<String, ReportSet> reportSetMap = new HashMap<String, ReportSet>();
@@ -194,9 +195,9 @@ public class MetaReportTemplate extends MetaTemplate {
 		}
 
 		public ReportTemplateRuntime() {
-			if(binary == null){
+			if (binary == null) {
 				//初期登録時は、バイナリなしのため
-				return ;
+				return;
 			}
 
 			// ReportEngineの作成
@@ -204,8 +205,11 @@ public class MetaReportTemplate extends MetaTemplate {
 				ReportingEngine _reportEngine;
 				if (localizedReportList != null) {
 					for (MetaLocalizedReport mlr : localizedReportList) {
-						_reportEngine = service.createReportingEngine(mlr.getReportType().currentConfig().getClass().getName());
-						if(_reportEngine == null){
+						_reportEngine = service.createReportingEngine(mlr.getReportType()
+								.currentConfig()
+								.getClass()
+								.getName());
+						if (_reportEngine == null) {
 							//ReportEngineがnullの場合、サポート外のメタデータを使用する場合
 							throw new TemplateRuntimeException("Report tempalte is outside of support . templateName:" + getName());
 						}
@@ -213,15 +217,18 @@ public class MetaReportTemplate extends MetaTemplate {
 						ReportSet reportSet = new ReportSet();
 						reportSet.reportEngine = _reportEngine;
 						reportSet.binary = mlr.getBinary();
-						reportSet.reportTypeRuntime = mlr.getReportType().createRuntime();
+						reportSet.reportTypeRuntime = mlr.getReportType()
+								.createRuntime();
 						reportSet.fileName = mlr.getFileName();
 
 						reportSetMap.put(mlr.getLocaleName(), reportSet);
 					}
 				}
 
-				reportEngine = service.createReportingEngine(reportType.currentConfig().getClass().getName());
-				if(reportEngine == null){
+				reportEngine = service.createReportingEngine(reportType.currentConfig()
+						.getClass()
+						.getName());
+				if (reportEngine == null) {
 					//ReportEngineがnullの場合、サポート外のメタデータを使用する場合
 					throw new TemplateRuntimeException("Report tempalte is outside of support . templateName:" + getName());
 				}
@@ -232,7 +239,6 @@ public class MetaReportTemplate extends MetaTemplate {
 			}
 		}
 
-
 		public MetaReportTemplate getMetaData() {
 			return MetaReportTemplate.this;
 		}
@@ -242,15 +248,16 @@ public class MetaReportTemplate extends MetaTemplate {
 				throws IOException, ServletException {
 			checkState();
 
-			try{
+			try {
 
 				ReportingEngine _reportEngine = reportEngine;
 				byte[] _binary = binary;
 				ReportTypeRuntime _reportTypeRuntime = reportTypeRuntime;
 				String _fileName = fileName;
 				MetaReportType _reportType = (MetaReportType) reportTypeRuntime.getMetaData();
-						
-				String lang = ExecuteContext.getCurrentContext().getLanguage();
+
+				String lang = ExecuteContext.getCurrentContext()
+						.getLanguage();
 
 				if (reportSetMap.get(lang) != null) {
 					_reportEngine = reportSetMap.get(lang).reportEngine;
@@ -258,10 +265,10 @@ public class MetaReportTemplate extends MetaTemplate {
 					_reportTypeRuntime = reportSetMap.get(lang).reportTypeRuntime;
 					_fileName = reportSetMap.get(lang).fileName;
 				}
-				
+
 				//出力モデルの生成
-				try (ReportingOutputModel createOutputModel
-						= _reportEngine.createOutputModel(_binary, _reportType.getOutputFileType(), _fileName.substring(_fileName.indexOf(DOT)+1))) {
+				try (ReportingOutputModel createOutputModel = _reportEngine.createOutputModel(_binary, _reportType.getOutputFileType(),
+						_fileName.substring(_fileName.indexOf(DOT) + 1))) {
 
 					_reportTypeRuntime.setParam(createOutputModel);
 
@@ -278,6 +285,5 @@ public class MetaReportTemplate extends MetaTemplate {
 			}
 		}
 	}
-
 
 }

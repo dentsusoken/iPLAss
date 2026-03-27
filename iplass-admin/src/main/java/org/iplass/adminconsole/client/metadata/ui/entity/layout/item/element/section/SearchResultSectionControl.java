@@ -49,7 +49,6 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.Layout;
 
-
 /**
  * 検索結果セクション用のウィンドウ
  * @author lis3wg
@@ -87,7 +86,8 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 				layout = new VDropLayout();
 				addItem(layout);
 				restore(section);
-			}});
+			}
+		});
 		horizontal = new HeaderControl(HeaderControl.DOUBLE_ARROW_RIGHT, new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -102,7 +102,8 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 				layout = new HDropLayout();
 				addItem(layout);
 				restore(section);
-			}});
+			}
+		});
 		horizontal.setVisible(false);
 
 		setHeaderControls(HeaderControls.HEADER_LABEL, vertical, horizontal, setting);
@@ -118,7 +119,8 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 
 		SearchResultSection section = new SearchResultSection();
 		section.setDispFlag(true);
-		setClassName(section.getClass().getName());
+		setClassName(section.getClass()
+				.getName());
 		setValueObject(section);
 	}
 
@@ -188,13 +190,15 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 						// 仮想プロパティ
 						ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 						String name = record.getAttribute("name");
-						if (VirtualPropertyItem.class.getName().equals(name)) {
+						if (VirtualPropertyItem.class.getName()
+								.equals(name)) {
 							final VirtualPropertyDialog dialog = new VirtualPropertyDialog();
 							dialog.addOKClickHandler(new ClickHandler() {
 
 								@Override
 								public void onClick(ClickEvent event) {
-									if (!dialog.validate()) return;
+									if (!dialog.validate())
+										return;
 
 									final String name = dialog.getPropertyName();
 									if (ed.getProperty(name) != null) {
@@ -210,7 +214,8 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 									editor.setDisplayType(StringDisplayType.TEXT);
 									property.setEditor(editor);
 
-									VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHRESULT, ed, property);
+									VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHRESULT, ed,
+											property);
 									newProperty.setWidth(DropLayout.this.getColWidth());
 
 									DropLayout.this.addMember(newProperty, dropPosition);
@@ -242,7 +247,6 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 			super();
 			setScClassName("HLayout");
 		}
-
 
 		@Override
 		public String getColWidth() {
@@ -289,7 +293,8 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 			}
 		}
 
-		setClassName(section.getClass().getName());
+		setClassName(section.getClass()
+				.getName());
 		setValueObject(section);
 	}
 
@@ -303,7 +308,8 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 		if (section.getElements() == null) {
 			section.setElements(new ArrayList<Element>());
 		} else {
-			section.getElements().clear();
+			section.getElements()
+					.clear();
 		}
 		for (Canvas canvas : layout.getMembers()) {
 			if (canvas instanceof PropertyControl) {

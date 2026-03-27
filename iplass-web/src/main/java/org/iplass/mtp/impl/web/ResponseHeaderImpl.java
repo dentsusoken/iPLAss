@@ -27,9 +27,9 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.actionmapping.ResponseHeader;
 
 public class ResponseHeaderImpl implements ResponseHeader {
-	
+
 	private HttpServletResponse response;
-	
+
 	ResponseHeaderImpl() {
 		WebRequestStack stack = WebRequestStack.getCurrent();
 		if (stack != null) {

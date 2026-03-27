@@ -27,20 +27,20 @@ import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import org.iplass.mtp.impl.xml.jaxb.DateXmlAdapter;
 
 public class ResultValueXmlAdapter extends XmlAdapter<Object, Object> {
-	
+
 	private DateXmlAdapter dateAdapter = new DateXmlAdapter();
-	
+
 	@Override
 	public Object marshal(Object v) throws Exception {
 		if (v instanceof List<?>) {
 			List<?> vList = (List<?>) v;
 			List<Object> bList = new ArrayList<>(vList.size());
-			for (Object lv: vList) {
+			for (Object lv : vList) {
 				bList.add(marshal(lv));
 			}
 			return new JaxbListValue(bList);
 		}
-		
+
 		return dateAdapter.marshal(v);
 	}
 
@@ -49,13 +49,13 @@ public class ResultValueXmlAdapter extends XmlAdapter<Object, Object> {
 		if (b instanceof JaxbListValue) {
 			List<?> bList = (List<?>) b;
 			List<Object> vList = new ArrayList<>(bList.size());
-			for (Object lv: bList) {
+			for (Object lv : bList) {
 				vList.add(unmarshal(lv));
 			}
-			
+
 			return vList;
 		}
-		
+
 		return dateAdapter.unmarshal(b);
 	}
 

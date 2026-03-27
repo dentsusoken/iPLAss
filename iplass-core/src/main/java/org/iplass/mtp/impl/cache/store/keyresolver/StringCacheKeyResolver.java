@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.impl.cache.store.keyresolver;
 
-
 public class StringCacheKeyResolver implements CacheKeyResolver {
 
 	@Override

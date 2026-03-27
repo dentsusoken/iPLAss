@@ -31,9 +31,11 @@ import io.swagger.v3.oas.models.media.StringSchema;
  */
 public class WebApiCacheControlOpenApiOperationConverter extends AbstractWebApiOpenApiOperationConverter {
 	private static final String HEADER = "cache-control";
+
 	@Override
 	protected boolean isMapOpenApiOperationValue(WebApiOpenApiConvertContext context) {
-		return CacheControlType.UNSPECIFIED != context.getWebApiDefinition().getCacheControlType();
+		return CacheControlType.UNSPECIFIED != context.getWebApiDefinition()
+				.getCacheControlType();
 	}
 
 	@Override

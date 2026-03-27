@@ -26,7 +26,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class UuidMdcValueResolver implements MdcValueResolver {
-	
+
 	private boolean secure = true;
 
 	public UuidMdcValueResolver() {
@@ -47,7 +47,8 @@ public class UuidMdcValueResolver implements MdcValueResolver {
 	@Override
 	public String resolve(HttpServletRequest request) {
 		if (secure) {
-			return UUID.randomUUID().toString();
+			return UUID.randomUUID()
+					.toString();
 		} else {
 			return insecureUUID().toString();
 		}

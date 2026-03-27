@@ -56,19 +56,19 @@ public class SubQuery implements ASTNode {
 
 	private Query query;
 	private Condition on;
-	
+
 	public SubQuery() {
 	}
-	
+
 	public SubQuery(Query query) {
 		this.query = query;
 	}
-	
+
 	public SubQuery(Query query, Condition on) {
 		this.query = query;
 		this.on = on;
 	}
-	
+
 	public Query getQuery() {
 		return query;
 	}
@@ -84,7 +84,7 @@ public class SubQuery implements ASTNode {
 	public void setOn(Condition on) {
 		this.on = on;
 	}
-	
+
 	/**
 	 * 相関サブクエリとする場合の結合条件を指定。
 	 * 
@@ -95,7 +95,7 @@ public class SubQuery implements ASTNode {
 		setOn(on);
 		return this;
 	}
-	
+
 	/**
 	 * 相関サブクエリとする場合の結合条件を指定。
 	 * 指定のunnestCount分上位のクエリと指定のプロパティで結合する。
@@ -109,7 +109,7 @@ public class SubQuery implements ASTNode {
 		on = new Equals(withDot(mainQueryProperty, unnestCount), subQueryProperty);
 		return this;
 	}
-	
+
 	private EntityField withDot(EntityField propName, int unnestCount) {
 		if (propName == null || propName.getPropertyName() == null) {
 			propName = new EntityField(THIS);
@@ -121,7 +121,7 @@ public class SubQuery implements ASTNode {
 		sb.append(propName.getPropertyName());
 		return new EntityField(sb.toString());
 	}
-	
+
 	/**
 	 * 相関サブクエリとする場合の結合条件を指定。
 	 * 指定のunnestCount分上位のクエリと指定のプロパティで結合する。
@@ -134,7 +134,7 @@ public class SubQuery implements ASTNode {
 	public SubQuery on(String mainQueryProperyName, String subQueryPropertyName, int unnestCount) {
 		return on(new EntityField(mainQueryProperyName), new EntityField(subQueryPropertyName), unnestCount);
 	}
-	
+
 	/**
 	 * 相関サブクエリとする場合の結合条件を指定。
 	 * ひとつ上位のクエリと指定のプロパティで結合する。
@@ -145,8 +145,8 @@ public class SubQuery implements ASTNode {
 	 */
 	public SubQuery on(String mainQueryProperyName, String subQueryPropertyName) {
 		return on(mainQueryProperyName, subQueryPropertyName, 1);
-	}	
-	
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -159,7 +159,7 @@ public class SubQuery implements ASTNode {
 		sb.append(")");
 		return sb.toString();
 	}
-	
+
 	public void accept(QueryVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (visitor instanceof QueryVisitor && query != null) {
@@ -172,6 +172,7 @@ public class SubQuery implements ASTNode {
 			}
 		}
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

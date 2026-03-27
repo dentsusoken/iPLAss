@@ -45,24 +45,25 @@ import org.slf4j.LoggerFactory;
 
 public class QueryService implements Service {
 	private static Logger logger = LoggerFactory.getLogger(QueryService.class);
-	
+
 	private String externalHintFile;
 	private Map<String, HintComment> externalHints;
-	
-	private SyntaxParser queryParser= new SyntaxParser(QuerySyntaxRegister.QUERY_CONTEXT);
+
+	private SyntaxParser queryParser = new SyntaxParser(QuerySyntaxRegister.QUERY_CONTEXT);
 
 	@Override
 	public void init(Config config) {
-		
+
 		externalHints = new HashMap<>();
-		
+
 		@SuppressWarnings("unchecked")
 		Map<String, String> inlineExternalHints = config.getValue("externalHints", Map.class);
 		if (inlineExternalHints != null) {
-			for (Map.Entry<String, String> e: inlineExternalHints.entrySet()) {
+			for (Map.Entry<String, String> e : inlineExternalHints.entrySet()) {
 				try {
 					HintComment hintComment = queryParser.parse("/*+ " + e.getValue() + " */", HintCommentSyntax.class);
-					if (hintComment.getHintList() != null && hintComment.getHintList().size() > 0) {
+					if (hintComment.getHintList() != null && hintComment.getHintList()
+							.size() > 0) {
 						externalHints.put(e.getKey(), hintComment);
 					}
 				} catch (ParseException exp) {
@@ -73,14 +74,15 @@ public class QueryService implements Service {
 		externalHintFile = config.getValue("externalHintFile");
 		if (externalHintFile != null) {
 			Properties prop = getProperties(externalHintFile);
-			for (String key: prop.stringPropertyNames()) {
+			for (String key : prop.stringPropertyNames()) {
 				String val = prop.getProperty(key);
 				if (val != null) {
 					val = val.trim();
 					if (!val.isEmpty()) {
 						try {
 							HintComment hintComment = queryParser.parse("/*+ " + val + " */", HintCommentSyntax.class);
-							if (hintComment.getHintList() != null && hintComment.getHintList().size() > 0) {
+							if (hintComment.getHintList() != null && hintComment.getHintList()
+									.size() > 0) {
 								externalHints.put(key, hintComment);
 							}
 						} catch (ParseException e) {
@@ -91,7 +93,7 @@ public class QueryService implements Service {
 			}
 		}
 	}
-	
+
 	private Properties getProperties(String fileName) {
 		Properties prop = new Properties();
 		Path path = Paths.get(fileName);
@@ -113,7 +115,7 @@ public class QueryService implements Service {
 					logger.error("ExternalHintFile:" + fileName + " not found.Can not initialize QueryService.");
 					throw new ServiceConfigrationException("ExternalHintFile:" + fileName + " Not Found.");
 				}
-				
+
 				InputStreamReader isr = new InputStreamReader(is, "utf-8");
 				prop.load(isr);
 
@@ -123,15 +125,15 @@ public class QueryService implements Service {
 		}
 		return prop;
 	}
-	
+
 	@Override
 	public void destroy() {
 	}
-	
+
 	public SyntaxParser getQueryParser() {
 		return queryParser;
 	}
-	
+
 	public String getExternalHintFile() {
 		return externalHintFile;
 	}

@@ -39,7 +39,7 @@ public class Else implements ASTNode {
 
 	public Else() {
 	}
-	
+
 	public Else(ValueExpression result) {
 		this.result = result;
 	}
@@ -51,7 +51,7 @@ public class Else implements ASTNode {
 			this.result = new Literal(resultLiteral);
 		}
 	}
-	
+
 	public ValueExpression getResult() {
 		return result;
 	}
@@ -72,7 +72,7 @@ public class Else implements ASTNode {
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

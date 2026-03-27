@@ -21,14 +21,13 @@
 package org.iplass.mtp.impl.metadata;
 
 public interface MetaDataRuntime {
-	
-	
+
 	public MetaData getMetaData();
-	
+
 	//TODO 持つべきメソッドは？
 	//instanceate()
 	//handle()<-汎用的過ぎる。。
-	
+
 	/**
 	 * 実行可能な状態かどうかをチェックする。
 	 * 実行不可の場合、MetaDataIllegalStateExceptionをスロー

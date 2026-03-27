@@ -28,19 +28,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PreparedBulkUpdateContext implements BulkUpdateContext {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PreparedBulkUpdateContext.class);
-	
+
 	private List<ColumnValue> keyColumnValue;
 	private List<ColumnValue> updateColumnValue;
 	private PreparedStatement ps;
 	private int currentSize;
-	
+
 	public PreparedBulkUpdateContext() {
 	}
 
 	@Override
-	public void setContext(String tableName, List<ColumnValue> keyColumnValue, List<ColumnValue> updateColumnValue, String additionalConditionExpression, Connection con) throws SQLException {
+	public void setContext(String tableName, List<ColumnValue> keyColumnValue, List<ColumnValue> updateColumnValue,
+			String additionalConditionExpression, Connection con) throws SQLException {
 		this.keyColumnValue = keyColumnValue;
 		this.updateColumnValue = updateColumnValue;
 		StringBuilder sql = new StringBuilder();
@@ -79,7 +80,9 @@ public class PreparedBulkUpdateContext implements BulkUpdateContext {
 			}
 		}
 		if (additionalConditionExpression != null) {
-			sql.append(" AND (").append(additionalConditionExpression).append(")");
+			sql.append(" AND (")
+					.append(additionalConditionExpression)
+					.append(")");
 		}
 		ps = con.prepareStatement(sql.toString());
 	}
@@ -112,7 +115,7 @@ public class PreparedBulkUpdateContext implements BulkUpdateContext {
 				index++;
 			}
 		}
-		
+
 		ps.addBatch();
 		currentSize++;
 	}

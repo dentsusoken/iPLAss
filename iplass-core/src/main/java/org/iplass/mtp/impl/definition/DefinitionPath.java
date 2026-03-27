@@ -22,17 +22,20 @@ package org.iplass.mtp.impl.definition;
 import org.iplass.mtp.definition.Definition;
 
 public final class DefinitionPath {
-	
+
 	final Class<? extends Definition> type;
 	final String path;
+
 	public DefinitionPath(Class<? extends Definition> type, String path) {
 		super();
 		this.type = type;
 		this.path = path;
 	}
+
 	public Class<? extends Definition> getType() {
 		return type;
 	}
+
 	public String getPath() {
 		return path;
 	}

@@ -28,7 +28,7 @@ package org.iplass.mtp.impl.datastore.grdb;
  *
  */
 public interface TableAllocator {
-	
+
 	public int allocate(int tenantId, String metaId, StorageSpaceMap storage);
 
 }

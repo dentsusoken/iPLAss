@@ -52,7 +52,8 @@ public class TaskDao {
 		updateSql = rdb.getUpdateSqlCreator(TaskQueueUpdateSql.class);
 	}
 
-	public Task load(final int tenantId, final int queueId, final long taskId, final boolean withBinary, final boolean withHistory, final boolean withLock) {
+	public Task load(final int tenantId, final int queueId, final long taskId, final boolean withBinary, final boolean withHistory,
+			final boolean withLock) {
 		SqlExecuter<Task> exec = new SqlExecuter<Task>() {
 			@Override
 			public Task logic() throws SQLException {
@@ -147,7 +148,8 @@ public class TaskDao {
 				updateSql.setStoreParameter(t, rdb, ps);
 				int count = ps.executeUpdate();
 				if (count < 1) {
-					throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+					throw new EntityConcurrentUpdateException(
+							resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 				}
 				return null;
 			}
@@ -167,7 +169,8 @@ public class TaskDao {
 				insertSql.setStoreParameterForCopy(task, toStatus, rdb, ps);
 				int count = ps.executeUpdate();
 				if (count < 1) {
-					throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+					throw new EntityConcurrentUpdateException(
+							resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 				}
 
 				ps.close();
@@ -177,7 +180,8 @@ public class TaskDao {
 				deleteSql.setDelParameter(task, rdb, ps);
 				count = ps.executeUpdate();
 				if (count < 1) {
-					throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+					throw new EntityConcurrentUpdateException(
+							resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 				}
 				return null;
 			}

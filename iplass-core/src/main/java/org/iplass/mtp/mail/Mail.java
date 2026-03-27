@@ -62,10 +62,10 @@ public class Mail {
 	private String message;
 	/** htmlメール本文 */
 	private HtmlMessage htmlMessage;
-	
+
 	/** メールメッセージ日付 */
 	private Date date;
-	
+
 	/** 添付ファイル */
 	private List<DataHandler> attachments;
 
@@ -76,7 +76,7 @@ public class Mail {
 	public Mail(String charset) {
 		this.charset = charset;
 	}
-	
+
 	/**
 	 * TO送信アドレスを追加します。
 	 *
@@ -92,7 +92,7 @@ public class Mail {
 	 * @param address 送信アドレス
 	 * @param personal 個人名
 	 */
-	public void addRecipientTo(String address, String personal) throws MailException{
+	public void addRecipientTo(String address, String personal) throws MailException {
 		add(recipientTo, address, personal);
 	}
 
@@ -111,7 +111,7 @@ public class Mail {
 	 * @param address 送信アドレス
 	 * @param personal 個人名
 	 */
-	public void addRecipientCc(String address, String personal) throws MailException{
+	public void addRecipientCc(String address, String personal) throws MailException {
 		add(recipientCc, address, personal);
 	}
 
@@ -130,7 +130,7 @@ public class Mail {
 	 * @param address 送信アドレス
 	 * @param personal 個人名
 	 */
-	public void addRecipientBcc(String address, String personal) throws MailException{
+	public void addRecipientBcc(String address, String personal) throws MailException {
 		add(recipientBcc, address, personal);
 	}
 
@@ -149,7 +149,7 @@ public class Mail {
 	 * @param address 送信元アドレス
 	 * @param personal 個人名
 	 */
-	public void setFrom(String address, String personal) throws MailException{
+	public void setFrom(String address, String personal) throws MailException {
 		fromAddress = createAddress(address, personal, charset);
 	}
 
@@ -160,7 +160,7 @@ public class Mail {
 	public void setFromAddress(InternetAddress address) {
 		this.fromAddress = address;
 	}
-	
+
 	private InternetAddress createAddress(String address, String personal, String charset) {
 		try {
 			InternetAddress iAddress;
@@ -182,7 +182,7 @@ public class Mail {
 	private void add(List<InternetAddress> list, String address, String personal) throws MailException {
 		list.add(createAddress(address, personal, charset));
 	}
-	
+
 	/**
 	 * セットされている送信元アドレスを取得します。
 	 * @return
@@ -217,7 +217,7 @@ public class Mail {
 	public void setReplyToAddress(InternetAddress address) {
 		this.replyToAddress = address;
 	}
-	
+
 	/**
 	 * セットされている返信先アドレスを取得します。
 	 * @return
@@ -234,7 +234,7 @@ public class Mail {
 	public void setReturnPath(String returnPath) {
 		this.returnPath = returnPath;
 	}
-	
+
 	/**
 	 * 設定されているReturn-Pathを取得します。
 	 * @return
@@ -242,13 +242,13 @@ public class Mail {
 	public String getReturnPath() {
 		return returnPath;
 	}
-	
+
 	/**
 	 * 文字コードを取得します。
 	 * @return 文字コード
 	 */
 	public String getCharset() {
-	    return charset;
+		return charset;
 	}
 
 	/**
@@ -256,7 +256,7 @@ public class Mail {
 	 * @return メール件名
 	 */
 	public String getSubject() {
-	    return subject;
+		return subject;
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class Mail {
 	 * @param subject メール件名
 	 */
 	public void setSubject(String subject) {
-	    this.subject = subject;
+		this.subject = subject;
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class Mail {
 	 * @return メール本文
 	 */
 	public String getMessage() {
-	    return message;
+		return message;
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class Mail {
 	 * @param message メール本文
 	 */
 	public void setMessage(String message) {
-	    this.message = message;
+		this.message = message;
 	}
 
 	/**
@@ -309,17 +309,17 @@ public class Mail {
 	 * @return メールメッセージ日付
 	 */
 	public Date getDate() {
-	    return date;
+		return date;
 	}
-	
+
 	/**
 	 * メールメッセージ日付を設定します。
 	 * @param date メールメッセージ日付
 	 */
 	public void setDate(Date date) {
-	    this.date = date;
+		this.date = date;
 	}
-	
+
 	/**
 	 * 添付ファイルを追加します。
 	 * 添付ファイル名は、BinaryReferenceのname、contentTypeはBinaryReferenceのtypeが設定されます。
@@ -329,7 +329,7 @@ public class Mail {
 	public void addAttachment(BinaryReference bin) {
 		addAttachment(new DataHandler(new BinaryReferenceDataSource(bin)));
 	}
-	
+
 	/**
 	 * 添付ファイルを追加します。
 	 * 
@@ -341,7 +341,7 @@ public class Mail {
 		}
 		attachments.add(dataHandler);
 	}
-	
+
 	public List<DataHandler> getAttachments() {
 		return attachments;
 	}
@@ -349,31 +349,31 @@ public class Mail {
 	public void setAttachments(List<DataHandler> attachments) {
 		this.attachments = attachments;
 	}
-	
+
 	public List<InternetAddress> getRecipientTo() {
-	    return recipientTo;
+		return recipientTo;
 	}
 
 	public void setRecipientTo(List<InternetAddress> recipientTo) {
-	    this.recipientTo = recipientTo;
+		this.recipientTo = recipientTo;
 	}
 
 	public List<InternetAddress> getRecipientCc() {
-	    return recipientCc;
+		return recipientCc;
 	}
 
 	public void setRecipientCc(List<InternetAddress> recipientCc) {
-	    this.recipientCc = recipientCc;
+		this.recipientCc = recipientCc;
 	}
 
 	public List<InternetAddress> getRecipientBcc() {
-	    return recipientBcc;
+		return recipientBcc;
 	}
 
 	public void setRecipientBcc(List<InternetAddress> recipientBcc) {
-	    this.recipientBcc = recipientBcc;
+		this.recipientBcc = recipientBcc;
 	}
-	
+
 	/**
 	 * S/MIMEによる署名を行う場合、trueを設定します。
 	 * 事前に、S/MIME用の証明書（および秘密鍵）ストアに
@@ -384,6 +384,7 @@ public class Mail {
 	public void setSmimeSign(boolean smimeSign) {
 		this.smimeSign = smimeSign;
 	}
+
 	public boolean isSmimeSign() {
 		return smimeSign;
 	}
@@ -397,10 +398,11 @@ public class Mail {
 	public void setSmimeSignPassword(String smimeSignPassword) {
 		this.smimeSignPassword = smimeSignPassword;
 	}
+
 	public String getSmimeSignPassword() {
 		return smimeSignPassword;
 	}
-	
+
 	/**
 	 * S/MIMEによる暗号化を行う場合、trueを設定します。
 	 * 事前に、S/MIME用の証明書ストアに
@@ -411,6 +413,7 @@ public class Mail {
 	public void setSmimeEncript(boolean smimeEncript) {
 		this.smimeEncript = smimeEncript;
 	}
+
 	public boolean isSmimeEncript() {
 		return smimeEncript;
 	}

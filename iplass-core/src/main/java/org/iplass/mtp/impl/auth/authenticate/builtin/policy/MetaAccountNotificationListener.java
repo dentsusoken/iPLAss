@@ -30,7 +30,8 @@ import org.iplass.mtp.auth.policy.definition.listeners.ScriptingAccountNotificat
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
-@XmlSeeAlso({MetaJavaClassAccountNotificationListener.class, MetaScriptingAccountNotificationListener.class, MetaMailAccountNotificationListener.class})
+@XmlSeeAlso({ MetaJavaClassAccountNotificationListener.class, MetaScriptingAccountNotificationListener.class,
+		MetaMailAccountNotificationListener.class })
 public abstract class MetaAccountNotificationListener implements MetaData {
 	private static final long serialVersionUID = -2010834276738481945L;
 
@@ -55,6 +56,7 @@ public abstract class MetaAccountNotificationListener implements MetaData {
 	public abstract AccountNotificationListener createInstance(String policyName, int i);
 
 	public abstract AccountNotificationListenerDefinition currentConfig();
+
 	public abstract void applyConfig(AccountNotificationListenerDefinition def);
 
 }

@@ -39,28 +39,27 @@ import com.smartgwt.client.widgets.layout.VLayout;
  */
 public class WebhookHeaderDialog extends MtpDialog {
 	private HeaderAttributePane headerAttrEditPane;
-	
+
 	private WebhookHeaderDefinition curHeaderDefinition;
-	
+
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
-	
-	
+
 	public WebhookHeaderDialog(WebhookHeaderDefinition headerDefinition) {
 		curHeaderDefinition = headerDefinition;
-		if (curHeaderDefinition==null) {
+		if (curHeaderDefinition == null) {
 			curHeaderDefinition = new WebhookHeaderDefinition();
 		}
-		
+
 		setTitle("Header Editor");
 		setHeight("20%");
 		centerInPage();
-		
+
 		headerAttrEditPane = new HeaderAttributePane();
 		headerAttrEditPane.setHeight100();
-		
+
 		container.addMember(headerAttrEditPane);
-		
+
 		IButton save = new IButton("Save");
 		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
@@ -69,7 +68,7 @@ public class WebhookHeaderDialog extends MtpDialog {
 					return;
 				}
 				definition = headerAttrEditPane.getEditDefinition(definition);
-				
+
 				fireDataChanged(definition);
 				destroy();
 			}
@@ -82,26 +81,27 @@ public class WebhookHeaderDialog extends MtpDialog {
 			}
 		});
 		footer.setMembers(save, cancel);
-		
+
 	}
+
 	private class HeaderAttributePane extends VLayout {
 		private DynamicForm form;
 		private TextItem headerNameField;
 		private TextItem headerValueField;
-		
+
 		public HeaderAttributePane() {
 			form = new MtpForm2Column();
 			headerNameField = new TextItem("headerName", "Header");
-			headerValueField = new TextItem("headerValue","Value");
-			
+			headerValueField = new TextItem("headerValue", "Value");
+
 			form.setItems(headerNameField, headerValueField);
 			addMember(form);
 			setDefinition(curHeaderDefinition);
 		}
-		
+
 		/** definition -> dialog */
 		public void setDefinition(WebhookHeaderDefinition _curHeaderDefinition) {
-			if ( _curHeaderDefinition!=null) {
+			if (_curHeaderDefinition != null) {
 				headerNameField.setValue(_curHeaderDefinition.getKey());
 				headerValueField.setValue(_curHeaderDefinition.getValue());
 			} else {
@@ -109,21 +109,24 @@ public class WebhookHeaderDialog extends MtpDialog {
 				headerValueField.clearValue();
 			}
 		}
-		
+
 		/** dialog -> definition */
-		public WebhookHeaderDefinition getEditDefinition(WebhookHeaderDefinition curHeaderDefinition){
-			curHeaderDefinition.setKey((SmartGWTUtil.getStringValue(headerNameField)).replaceAll("\\s+",""));
-			curHeaderDefinition.setValue((SmartGWTUtil.getStringValue(headerValueField)).replaceAll("\\s+",""));
+		public WebhookHeaderDefinition getEditDefinition(WebhookHeaderDefinition curHeaderDefinition) {
+			curHeaderDefinition.setKey((SmartGWTUtil.getStringValue(headerNameField)).replaceAll("\\s+", ""));
+			curHeaderDefinition.setValue((SmartGWTUtil.getStringValue(headerValueField)).replaceAll("\\s+", ""));
 			return curHeaderDefinition;
 		}
+
 		public boolean isHeaderNameFieldEmpty() {
-			if (SmartGWTUtil.getStringValue(headerNameField)==null||SmartGWTUtil.getStringValue(headerNameField).replaceAll("\\s+","").isEmpty()) {
+			if (SmartGWTUtil.getStringValue(headerNameField) == null || SmartGWTUtil.getStringValue(headerNameField)
+					.replaceAll("\\s+", "")
+					.isEmpty()) {
 				return true;
 			}
 			return false;
 		}
 	}
-	
+
 	/**
 	 * {@link DataChangedHandler} を追加します。
 	 *
@@ -132,7 +135,7 @@ public class WebhookHeaderDialog extends MtpDialog {
 	public void addDataChangeHandler(DataChangedHandler handler) {
 		handlers.add(0, handler);
 	}
-	
+
 	/**
 	 * データ変更通知処理
 	 */

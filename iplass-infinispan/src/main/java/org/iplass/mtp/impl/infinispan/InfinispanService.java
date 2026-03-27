@@ -110,13 +110,17 @@ public class InfinispanService implements Service {
 		// infinispan.xml /infinispan/cache-container/serialization/allow-list/class の設定追加
 		List<String> allowClassList = config.getValues("infinispan.serialization.allowList.class", String.class, Collections.emptyList());
 		if (0 < allowClassList.size()) {
-			builder.serialization().allowList().addClasses(allowClassList.toArray(new String[allowClassList.size()]));
+			builder.serialization()
+					.allowList()
+					.addClasses(allowClassList.toArray(new String[allowClassList.size()]));
 		}
 
 		// infinispan.xml /infinispan/cache-container/serialization/allow-list/regex の設定追加
 		List<String> allowRegexList = config.getValues("infinispan.serialization.allowList.regex", String.class, Collections.emptyList());
 		if (0 < allowRegexList.size()) {
-			builder.serialization().allowList().addRegexps(allowRegexList.toArray(new String[allowRegexList.size()]));
+			builder.serialization()
+					.allowList()
+					.addRegexps(allowRegexList.toArray(new String[allowRegexList.size()]));
 		}
 
 		return builder;

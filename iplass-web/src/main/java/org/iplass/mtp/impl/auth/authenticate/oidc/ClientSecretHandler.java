@@ -34,13 +34,13 @@ import org.iplass.mtp.spi.Config;
 
 public class ClientSecretHandler extends AuthTokenHandler {
 	public static final String TYPE_OIDC_CLIENT_SECRET = "OIDCCS";
-	
+
 	private static class ClientSecretInfo implements AuthTokenInfo {
-		
+
 		private String type;
 		private String metaDataId;
 		private String secret;
-		
+
 		private ClientSecretInfo(String type, String metaDataId, String secret) {
 			this.type = type;
 			this.metaDataId = metaDataId;
@@ -66,25 +66,28 @@ public class ClientSecretHandler extends AuthTokenHandler {
 		public Timestamp getStartDate() {
 			return null;
 		}
-		
+
 	}
-	
+
 	String getClientSecret(String metaDataId) {
-		AuthToken at = authTokenStore().getBySeries(ExecuteContext.getCurrentContext().getClientTenantId(), getType(), metaDataId);
+		AuthToken at = authTokenStore().getBySeries(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), getType(), metaDataId);
 		if (at != null) {
 			return at.getToken();
 		}
 		return null;
 	}
-	
+
 	void saveClientSecret(String metaDataId, String clientSecret) {
-		authTokenStore().deleteBySeries(ExecuteContext.getCurrentContext().getClientTenantId(), getType(), metaDataId);
+		authTokenStore().deleteBySeries(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), getType(), metaDataId);
 		AuthToken at = newAuthToken(metaDataId, null, new ClientSecretInfo(getType(), metaDataId, clientSecret));
 		authTokenStore().create(at);
 	}
 
 	void deleteClientSecret(String metaDataId) {
-		authTokenStore().deleteBySeries(ExecuteContext.getCurrentContext().getClientTenantId(), getType(), metaDataId);
+		authTokenStore().deleteBySeries(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), getType(), metaDataId);
 	}
 
 	@Override
@@ -95,7 +98,7 @@ public class ClientSecretHandler extends AuthTokenHandler {
 		}
 		setVisible(false);
 	}
-	
+
 	@Override
 	protected Serializable createDetails(String seriesString, String tokenString, String userUniqueId,
 			String policyName, AuthTokenInfo tokenInfo) {

@@ -33,74 +33,91 @@ import org.iplass.mtp.impl.auth.log.AuthLoggerService;
 import org.iplass.mtp.spi.Config;
 
 public abstract class AuthenticationProviderBase implements AuthenticationProvider {
-	
+
 	public static AccountManagementModule NO_UPDATABLE_AMM = new AccountManagementModule() {
 		@Override
 		public void updateCredential(Credential oldCredential,
 				Credential newCredential) throws CredentialUpdateException {
 		}
+
 		@Override
 		public void update(User user, List<String> updateProperties) {
 		}
+
 		@Override
 		public void restore(User user) {
 		}
+
 		@Override
 		public void resetCredential(Credential credential)
 				throws CredentialUpdateException {
 		}
+
 		@Override
 		public void remove(User user) {
 		}
+
 		@Override
 		public void purge(User user) {
 		}
+
 		@Override
 		public void create(User user) {
 		}
+
 		@Override
 		public boolean canUpdateCredential() {
 			return false;
 		}
+
 		@Override
 		public boolean canUpdate() {
 			return false;
 		}
+
 		@Override
 		public boolean canRestore() {
 			return false;
 		}
+
 		@Override
 		public boolean canResetCredential() {
 			return false;
 		}
+
 		@Override
 		public boolean canRemove() {
 			return false;
 		}
+
 		@Override
 		public boolean canPurge() {
 			return false;
 		}
+
 		@Override
 		public boolean canCreate() {
 			return false;
 		}
+
 		@Override
 		public void afterCreate(User user) {
 		}
+
 		@Override
 		public boolean canResetLockoutStatus() {
 			return false;
 		}
+
 		@Override
 		public void resetLockoutStatus(String accountId) {
 		}
+
 		@Override
 		public void afterUpdate(User user, String policyName, List<String> updateProperties) {
 		}
 	};
-	
+
 	private AuthLogger authLogger;
 
 	/** アカウント管理モジュール使用フラグ */
@@ -108,13 +125,13 @@ public abstract class AuthenticationProviderBase implements AuthenticationProvid
 
 	/** プロバイダ名称 */
 	private String providerName;
-	
+
 	private String authLoggerName;
-	
+
 	private UserEntityResolver userEntityResolver;
 	private TrustedAuthValidator trustedAuthValidator;
 	private AutoLoginHandler autoLoginHandler;
-	
+
 	public AuthenticationProviderBase() {
 	}
 
@@ -160,29 +177,30 @@ public abstract class AuthenticationProviderBase implements AuthenticationProvid
 	public void setSelectableOnAuthPolicy(boolean selectableOnAuthPolicy) {
 		this.selectableOnAuthPolicy = selectableOnAuthPolicy;
 	}
-	
+
 	@Override
 	public String getProviderName() {
-	    return providerName;
+		return providerName;
 	}
 
 	public void setProviderName(String providerName) {
-	    this.providerName = providerName;
+		this.providerName = providerName;
 	}
 
 	@Override
 	public AuthLogger getAuthLogger() {
 		return authLogger;
 	}
-	
+
 	@Override
 	public void cleanupData() {
 	}
 
 	@Override
 	public void inited(AuthService service, Config config) {
-		authLogger = config.getDependentService(AuthLoggerService.class).getAuthLogger(authLoggerName);
-		
+		authLogger = config.getDependentService(AuthLoggerService.class)
+				.getAuthLogger(authLoggerName);
+
 		if (userEntityResolver == null) {
 			DefaultUserEntityResolver er = new DefaultUserEntityResolver();
 			er.setEagerLoadReferenceProperty(DefaultUserEntityResolver.DEFAULT_EAGER_LOAD_REFERENCE_PROPERTY);
@@ -190,18 +208,19 @@ public abstract class AuthenticationProviderBase implements AuthenticationProvid
 			userEntityResolver = er;
 		}
 		userEntityResolver.inited(service, this);
-		
+
 		if (trustedAuthValidator == null) {
 			trustedAuthValidator = new DefaultTrustedAuthValidator(getAccountHandleClassForTrust().getName(), getCredentialTypeForTrust().getName());
 		}
 		trustedAuthValidator.inited(service, this);
-		
+
 		if (autoLoginHandler != null) {
 			autoLoginHandler.inited(service, this);
 		}
 	}
-	
+
 	protected abstract Class<? extends AccountHandle> getAccountHandleClassForTrust();
+
 	protected Class<? extends Credential> getCredentialTypeForTrust() {
 		return getCredentialType();
 	}

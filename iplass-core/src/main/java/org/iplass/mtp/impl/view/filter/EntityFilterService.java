@@ -45,17 +45,22 @@ public class EntityFilterService extends AbstractTypedMetaDataService<MetaEntity
 		public TypeMap() {
 			super(getFixedPath(), MetaEntityFilter.class, EntityFilter.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<EntityFilter> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(EntityFilterManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(EntityFilterManager.class);
 		}
+
 		@Override
 		public String toPath(String defName) {
 			return pathPrefix + defName.replace('.', '/');
 		}
+
 		@Override
 		public String toDefName(String path) {
-			return path.substring(pathPrefix.length()).replace("/", ".");
+			return path.substring(pathPrefix.length())
+					.replace("/", ".");
 		}
 
 		@Override

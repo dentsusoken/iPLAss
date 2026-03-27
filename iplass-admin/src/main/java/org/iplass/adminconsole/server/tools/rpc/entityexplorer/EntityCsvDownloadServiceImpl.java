@@ -38,7 +38,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Entity CSV Export用Service実装クラス
  */
@@ -65,22 +64,25 @@ public class EntityCsvDownloadServiceImpl extends AdminDownloadService {
 		condition.setOrderByClause(orderByClause);
 		condition.setVersioned(isSearchAllVersion);
 
-		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
 		aals.logDownload("EntityExplorerCsvDownload", fileName, condition);
 
 		//MetaDataEntryの取得
-		String entityPath =  EntityService.ENTITY_META_PATH + defName.replace(".", "/");
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(entityPath);
+		String entityPath = EntityService.ENTITY_META_PATH + defName.replace(".", "/");
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(entityPath);
 
 		//Export
 		try {
 			DownloadUtil.setCsvResponseHeader(resp, fileName);
 
-			EntityPortingService entityService = ServiceRegistry.getRegistry().getService(EntityPortingService.class);
+			EntityPortingService entityService = ServiceRegistry.getRegistry()
+					.getService(EntityPortingService.class);
 			entityService.write(resp.getOutputStream(), entry, condition);
 		} catch (IOException e) {
 			logger.error("failed to export entity. path =" + entityPath, e);
-        	throw new DownloadRuntimeException(e);
+			throw new DownloadRuntimeException(e);
 		}
 
 	}

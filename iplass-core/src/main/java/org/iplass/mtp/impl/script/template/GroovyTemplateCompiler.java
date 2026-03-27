@@ -31,7 +31,6 @@ import org.iplass.mtp.impl.util.KeyGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class GroovyTemplateCompiler {
 
 	private static Logger logger = LoggerFactory.getLogger(GroovyTemplateCompiler.class);
@@ -39,7 +38,7 @@ public class GroovyTemplateCompiler {
 	//References: Groovy's GStringTemplateEngine
 
 	private static KeyGenerator keyGen = new KeyGenerator();
-	
+
 	private static boolean isSpace(int c) {
 		if (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\b') {
 			return true;
@@ -51,11 +50,11 @@ public class GroovyTemplateCompiler {
 	public static String randomName() {
 		return keyGen.generateId();
 	}
-	
+
 	public static GroovyTemplate compile(String templateCode, String templateName, GroovyScriptEngine scriptEngine) {
 		return compile(templateCode, templateName, GTmplBase.class.getName(), scriptEngine);
 	}
-	
+
 	public static GroovyTemplate compile(String templateCode, String templateName, String baseClassName, GroovyScriptEngine scriptEngine) {
 
 		//クラス名にできない文字を_に変換
@@ -77,16 +76,17 @@ public class GroovyTemplateCompiler {
 		return new GroovyTemplate(script);
 	}
 
-
 	private static String parseToScript(Reader templateCode, String templateName, String baseClassName) throws IOException {
 
 		StringBuilder templateExpressions = new StringBuilder("package org.iplass.mtp.tmp.templates;\n");
 		StringBuilder importSection = new StringBuilder();
 
 		StringBuilder templateSection = new StringBuilder();
-		templateSection.append("class ").append(templateName);
+		templateSection.append("class ")
+				.append(templateName);
 		if (baseClassName != null) {
-			templateSection.append(" extends ").append(baseClassName);
+			templateSection.append(" extends ")
+					.append(baseClassName);
 		}
 		templateSection.append(" {\n def getTemplate() { return { out -> out << \"\"\"");
 
@@ -98,7 +98,8 @@ public class GroovyTemplateCompiler {
 		while (true) {
 			bc = c;
 			c = templateCode.read();
-			if (c == -1) break;
+			if (c == -1)
+				break;
 			if (isComment) {
 				if (c == '-') {
 					c = templateCode.read();
@@ -163,7 +164,7 @@ public class GroovyTemplateCompiler {
 					continue;
 				} else if (c == 'h') {
 					c = templateCode.read();
-					
+
 					if (bc == '\\') {
 						appendCharacter('h', templateSection, writingString);
 					}
@@ -177,7 +178,7 @@ public class GroovyTemplateCompiler {
 					}
 				} else if (c == 'x') {
 					c = templateCode.read();
-					
+
 					if (bc == '\\') {
 						appendCharacter('x', templateSection, writingString);
 					}
@@ -191,7 +192,7 @@ public class GroovyTemplateCompiler {
 					}
 				} else if (c == 'j') {
 					c = templateCode.read();
-					
+
 					if (bc == '\\') {
 						appendCharacter('j', templateSection, writingString);
 					}
@@ -205,7 +206,7 @@ public class GroovyTemplateCompiler {
 					}
 				} else if (c == 's') {
 					c = templateCode.read();
-					
+
 					if (bc == '\\') {
 						appendCharacter('s', templateSection, writingString);
 					}
@@ -218,7 +219,7 @@ public class GroovyTemplateCompiler {
 						continue;
 					} else if (c == 'l') {
 						c = templateCode.read();
-						
+
 						if (bc == '\\') {
 							appendCharacter('l', templateSection, writingString);
 						}
@@ -264,11 +265,12 @@ public class GroovyTemplateCompiler {
 		int bc = -1;
 		int c = -1;
 		boolean esc = false;
-		
+
 		while (true) {
 			bc = c;
 			c = reader.read();
-			if (c == -1) break;
+			if (c == -1)
+				break;
 			if (c == '}' && depth == 0 && context == CurrentContext.CODE) {
 				break;
 			}
@@ -338,15 +340,17 @@ public class GroovyTemplateCompiler {
 			templateExpressions.append((char) c);
 		}
 	}
-	
+
 	private static void parseImport(final Reader reader, final StringBuilder importSection) throws IOException {
 		boolean consumePageToken = false;
 		while (true) {
 			int c = reader.read();
-			if (c == -1) break;
+			if (c == -1)
+				break;
 			if (c == '%') {
 				c = reader.read();
-				if (c == '>') break;
+				if (c == '>')
+					break;
 				importSection.append('%');
 			} else if (!consumePageToken && c == 'p') {
 				//check page directive
@@ -374,9 +378,9 @@ public class GroovyTemplateCompiler {
 					importSection.append('p');
 				}
 			}
-			
+
 			importSection.append((char) c);
-			
+
 			if (!isSpace(c)) {
 				consumePageToken = true;
 			}
@@ -387,10 +391,12 @@ public class GroovyTemplateCompiler {
 	private static void parsePageImportDirective(Reader reader, StringBuilder importSection) throws IOException {
 		while (true) {
 			int c = reader.read();
-			if (c == -1) break;
+			if (c == -1)
+				break;
 			if (c == '%') {
 				c = reader.read();
-				if (c == '>') break;
+				if (c == '>')
+					break;
 				importSection.append('%');
 			}
 			if (!isSpace(c)) {
@@ -399,8 +405,7 @@ public class GroovyTemplateCompiler {
 							&& reader.read() == 'p'
 							&& reader.read() == 'o'
 							&& reader.read() == 'r'
-							&& reader.read() == 't'
-							) {
+							&& reader.read() == 't') {
 						//import
 						int cc = reader.read();
 						while (isSpace(cc)) {
@@ -426,8 +431,10 @@ public class GroovyTemplateCompiler {
 		boolean isappending = false;
 		while (true) {
 			int c = reader.read();
-			if (c == -1) break;
-			if (c == terminate) break;
+			if (c == -1)
+				break;
+			if (c == terminate)
+				break;
 			if (c == ',') {
 				insertImport = true;
 				continue;
@@ -445,12 +452,11 @@ public class GroovyTemplateCompiler {
 				isappending = true;
 			}
 		}
-		
+
 		if (isappending) {
 			importSection.append(";\n");
 		}
 	}
-
 
 	/**
 	 * Parse a &lt;% .... %&gt; section
@@ -461,13 +467,15 @@ public class GroovyTemplateCompiler {
 			templateExpressions.append("\"\"\";\n");
 		}
 		templateExpressions.append((char) pendingC);
-		
+
 		while (true) {
 			int c = reader.read();
-			if (c == -1) break;
+			if (c == -1)
+				break;
 			if (c == '%') {
 				c = reader.read();
-				if (c == '>') break;
+				if (c == '>')
+					break;
 				templateExpressions.append('%');
 			}
 			templateExpressions.append((char) c);
@@ -484,24 +492,25 @@ public class GroovyTemplateCompiler {
 		if (!writingString) {
 			templateExpressions.append("out << \"\"\"");
 		}
-		
+
 		templateExpressions.append("${");
-		
+
 		while (true) {
 			int c = reader.read();
-			if (c == -1) break;
+			if (c == -1)
+				break;
 			if (c == '%') {
 				c = reader.read();
-				if (c == '>') break;
+				if (c == '>')
+					break;
 				templateExpressions.append('%');
 			}
 			templateExpressions.append((char) c);
 		}
-		
+
 		templateExpressions.append('}');
 	}
-	
-	
+
 	enum CurrentContext {
 		//TODO slashコメント対応が難しい。。。
 		CODE,

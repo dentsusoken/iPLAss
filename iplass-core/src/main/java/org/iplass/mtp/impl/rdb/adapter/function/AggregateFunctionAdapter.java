@@ -27,22 +27,22 @@ import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
 public class AggregateFunctionAdapter<T extends Aggregate> implements FunctionAdapter<T> {
-	
+
 	private String functionName;
 	private String sqlFunctionName;
 
 	private Class<?> type;
-	
+
 	public AggregateFunctionAdapter(String functionName, Class<?> type) {
 		this(functionName, functionName, type);
 	}
-	
+
 	public AggregateFunctionAdapter(String functionName, String sqlFunctionName, Class<?> type) {
 		this.functionName = functionName;
 		this.sqlFunctionName = sqlFunctionName;
 		this.type = type;
 	}
-	
+
 	public String getSqlFunctionName() {
 		return sqlFunctionName;
 	}
@@ -56,7 +56,7 @@ public class AggregateFunctionAdapter<T extends Aggregate> implements FunctionAd
 		if (type != null) {
 			return type;
 		}
-		
+
 		ValueExpression value = function.getValue();
 		if (value != null) {
 			return typeResolver.resolveType(value);
@@ -64,7 +64,7 @@ public class AggregateFunctionAdapter<T extends Aggregate> implements FunctionAd
 			return null;
 		}
 	};
-	
+
 	@Override
 	public void toSQL(FunctionContext context, T function, RdbAdapter rdb) {
 		context.append(sqlFunctionName);

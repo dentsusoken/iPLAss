@@ -41,16 +41,17 @@ public class RequiresAtLeastOneFieldValidator extends ViewValidatorBase {
 	private static final long serialVersionUID = -2381982337496185594L;
 
 	/** プロパティのリスト */
-	@MetaFieldInfo(displayName="対象プロパティ",
-			displayNameKey="generic_element_property_validation_RequiresAtLeastOneFieldValidator_propertyListDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=PropertyValidationCondition.class,
-			multiple=true,
-			description="組み合わせて必須チェックを行うプロパティを指定します。",
-			descriptionKey="generic_element_property_validation_RequiresAtLeastOneFieldValidator_propertyListDescriptionKey"
+	@MetaFieldInfo(
+			displayName = "対象プロパティ",
+			displayNameKey = "generic_element_property_validation_RequiresAtLeastOneFieldValidator_propertyListDisplaNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = PropertyValidationCondition.class,
+			multiple = true,
+			description = "組み合わせて必須チェックを行うプロパティを指定します。",
+			descriptionKey = "generic_element_property_validation_RequiresAtLeastOneFieldValidator_propertyListDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private List<PropertyValidationCondition> propertyList;
 
@@ -59,7 +60,7 @@ public class RequiresAtLeastOneFieldValidator extends ViewValidatorBase {
 	 * @return プロパティのリスト
 	 */
 	public List<PropertyValidationCondition> getPropertyList() {
-	    return propertyList;
+		return propertyList;
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class RequiresAtLeastOneFieldValidator extends ViewValidatorBase {
 	 * @param propertyList プロパティのリスト
 	 */
 	public void setPropertyList(List<PropertyValidationCondition> propertyList) {
-	    this.propertyList = propertyList;
+		this.propertyList = propertyList;
 	}
 
 }

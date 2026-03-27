@@ -43,7 +43,6 @@ import org.iplass.mtp.impl.query.OrderBySyntax;
 import org.iplass.mtp.impl.query.QueryServiceHolder;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
-
 public class MetaReferenceProperty extends MetaProperty {
 	private static final long serialVersionUID = -5316413329202006700L;
 
@@ -60,12 +59,12 @@ public class MetaReferenceProperty extends MetaProperty {
 	private String versionControlAsOfExpression;
 
 	private boolean auditLogMappedBy;
-	
+
 	public MetaReferenceProperty() {
 		//参照なので、NON_INDEXED固定
 		setIndexType(IndexType.NON_INDEXED);
 	}
-	
+
 	@Override
 	public IndexType getIndexType() {
 		//参照なので、NON_INDEXED固定
@@ -146,13 +145,15 @@ public class MetaReferenceProperty extends MetaProperty {
 		if (refEntity == null) {
 			throw new EntityRuntimeException(refDef.getObjectDefinitionName() + " is undefined.");
 		}
-		referenceEntityMetaDataId = refEntity.getMetaData().getId();
+		referenceEntityMetaDataId = refEntity.getMetaData()
+				.getId();
 		if (refDef.getMappedBy() != null) {
-			MetaProperty rh = (MetaProperty) refEntity.getMetaData().getDeclaredProperty(refDef.getMappedBy());
+			MetaProperty rh = (MetaProperty) refEntity.getMetaData()
+					.getDeclaredProperty(refDef.getMappedBy());
 			if (rh == null) {
 				throw new EntityRuntimeException(refDef.getObjectDefinitionName() + "." + refDef.getMappedBy() + " is undefined.");
 			}
-			if (! (rh instanceof MetaReferenceProperty)) {
+			if (!(rh instanceof MetaReferenceProperty)) {
 				throw new EntityRuntimeException(refDef.getObjectDefinitionName() + "." + refDef.getMappedBy() + " is not reference property.");
 			}
 			mappedByPropertyMetaDataId = rh.getId();
@@ -166,22 +167,27 @@ public class MetaReferenceProperty extends MetaProperty {
 		if (refDef.getOrderBy() != null) {
 			OrderBy q;
 			try {
-				q = QueryServiceHolder.getInstance().getQueryParser().parse("order by " + refDef.getOrderBy(), OrderBySyntax.class);
+				q = QueryServiceHolder.getInstance()
+						.getQueryParser()
+						.parse("order by " + refDef.getOrderBy(), OrderBySyntax.class);
 			} catch (ParseException e) {
 				throw new QueryException(e.getMessage(), e);
 			}
 
-			if (q.getSortSpecList() != null && q.getSortSpecList().size() > 0) {
+			if (q.getSortSpecList() != null && q.getSortSpecList()
+					.size() > 0) {
 				ArrayList<ReferenceSortSpec> sList = new ArrayList<ReferenceSortSpec>();
-				for (SortSpec ss: q.getSortSpecList()) {
+				for (SortSpec ss : q.getSortSpecList()) {
 					if (!(ss.getSortKey() instanceof EntityField)) {
 						throw new EntityRuntimeException("sort key must EntityField:" + ss.getSortKey());
 					}
 					String sortPropName = ((EntityField) ss.getSortKey()).getPropertyName();
-					MetaProperty ph = refEntity.getMetaData().getDeclaredProperty(sortPropName);
+					MetaProperty ph = refEntity.getMetaData()
+							.getDeclaredProperty(sortPropName);
 					if (ph == null) {
 						EntityHandler superEh = refEntity.getSuperDataModelHandler(ectx);
-						ph = superEh.getMetaData().getDeclaredProperty(sortPropName);
+						ph = superEh.getMetaData()
+								.getDeclaredProperty(sortPropName);
 					}
 					if (ph == null) {
 						throw new EntityRuntimeException("sort key " + ss.getSortKey() + " is not defined at " + refDef.getObjectDefinitionName());
@@ -229,12 +235,13 @@ public class MetaReferenceProperty extends MetaProperty {
 
 		EntityHandler refEntity = ectx.getHandlerById(referenceEntityMetaDataId);
 		if (refEntity != null) {
-			pd.setObjectDefinitionName(refEntity.getMetaData().getName());
+			pd.setObjectDefinitionName(refEntity.getMetaData()
+					.getName());
 			if (mappedByPropertyMetaDataId != null) {
 				//ここでcheckStateでエラーになる可能性あり
 				try {
 					ReferencePropertyHandler rh = (ReferencePropertyHandler) refEntity.getDeclaredPropertyById(mappedByPropertyMetaDataId);
-					if(rh == null) {
+					if (rh == null) {
 						return null;
 					}
 					pd.setMappedBy(rh.getName());
@@ -250,7 +257,7 @@ public class MetaReferenceProperty extends MetaProperty {
 
 			if (orderBy != null && orderBy.size() > 0) {
 				OrderBy q = new OrderBy();
-				for (ReferenceSortSpec rss: orderBy) {
+				for (ReferenceSortSpec rss : orderBy) {
 					//ここでcheckStateでエラーになる可能性あり
 					try {
 						PropertyHandler ph = refEntity.getPropertyById(rss.getSortPropertyMetaDataId(), ectx);
@@ -262,11 +269,14 @@ public class MetaReferenceProperty extends MetaProperty {
 							}
 						}
 					} catch (MetaDataIllegalStateException e) {
-						MetaProperty ph = refEntity.getMetaData().getDeclaredPropertyById(rss.getSortPropertyMetaDataId());
-						if (ph == null && refEntity.getMetaData().getInheritedEntityMetaDataId() != null) {
+						MetaProperty ph = refEntity.getMetaData()
+								.getDeclaredPropertyById(rss.getSortPropertyMetaDataId());
+						if (ph == null && refEntity.getMetaData()
+								.getInheritedEntityMetaDataId() != null) {
 							//TODO 現状1段階の親まで
 							EntityHandler superEh = refEntity.getSuperDataModelHandler(ectx);
-							ph = superEh.getMetaData().getDeclaredPropertyById(rss.getSortPropertyMetaDataId());
+							ph = superEh.getMetaData()
+									.getDeclaredPropertyById(rss.getSortPropertyMetaDataId());
 						}
 						if (ph != null && !(ph instanceof MetaReferenceProperty)) {
 							if (rss.getSortType() == ReferenceSortSpec.SortType.DESC) {
@@ -278,8 +288,10 @@ public class MetaReferenceProperty extends MetaProperty {
 					}
 
 				}
-				if (q.getSortSpecList() != null && q.getSortSpecList().size() > 0) {
-					pd.setOrderBy(q.toString().substring("order by".length()));//TODO リテラル埋め込まない。もう少しきれいな形にする
+				if (q.getSortSpecList() != null && q.getSortSpecList()
+						.size() > 0) {
+					pd.setOrderBy(q.toString()
+							.substring("order by".length()));//TODO リテラル埋め込まない。もう少しきれいな形にする
 				}
 			}
 
@@ -317,8 +329,9 @@ public class MetaReferenceProperty extends MetaProperty {
 						: versionControlAsOfExpression.hashCode());
 		result = prime
 				* result
-				+ ((versionControlType == null) ? 0 : versionControlType
-						.hashCode());
+				+ ((versionControlType == null) ? 0
+						: versionControlType
+								.hashCode());
 		return result;
 	}
 

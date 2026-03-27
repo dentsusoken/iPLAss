@@ -98,7 +98,7 @@ public class TopViewHandler extends BaseMetaDataRuntime {
 		if (handler instanceof HasNestPartsHandler) {
 			List<TopViewPartsHandler> handlers = new ArrayList<>();
 			handlers.add(handler);
-			handlers.addAll(((HasNestPartsHandler)handler).getNestParts());
+			handlers.addAll(((HasNestPartsHandler) handler).getNestParts());
 			return handlers;
 		} else {
 			return Arrays.asList(handler);

@@ -76,7 +76,7 @@ public class PermissionEditDialog extends AbstractWindow {
 			public void onClick(ClickEvent event) {
 				boolean typeValidate = true;
 
-				for (PermissionEditPane permissionEditPane: permissionEditPaneList) {
+				for (PermissionEditPane permissionEditPane : permissionEditPaneList) {
 					typeValidate = typeValidate && permissionEditPane.validate();
 				}
 
@@ -105,7 +105,6 @@ public class PermissionEditDialog extends AbstractWindow {
 	}
 
 	public void setPermissionEditPane(PermissionEditPane permissionEditPane) {
-
 
 		if (tabSet == null || tabSet.getTabs().length < 1) {
 			permissionEditPaneList.add(permissionEditPane);
@@ -151,7 +150,7 @@ public class PermissionEditDialog extends AbstractWindow {
 		int cnt = 0;
 		for (PermissionEditPane permissionEditPane : permissionEditPaneList) {
 			entityArray[cnt] = permissionEditPane.getEditEntity();
-			cnt ++;
+			cnt++;
 		}
 		fireDataChanged(entityArray);
 

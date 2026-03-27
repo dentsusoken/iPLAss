@@ -31,16 +31,16 @@ import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 public class SimpleAuthTokenAccountHandle implements AccountHandle {
 	private static final long serialVersionUID = 731216514006775874L;
 
-	public static final String AUTHED_BY_SIMPLE_AUTH_TOKEN ="authedBySimpleAuthToken";
-	public static final String SIMPLE_AUTH_TOKEN_SERIES ="simpleAuthTokenSeries";
-	
+	public static final String AUTHED_BY_SIMPLE_AUTH_TOKEN = "authedBySimpleAuthToken";
+	public static final String SIMPLE_AUTH_TOKEN_SERIES = "simpleAuthTokenSeries";
+
 	private String unmodifiableUniqueKey;
 	private Map<String, Object> attributeMap;
 	private int authenticationProviderIndex;
 
 	public SimpleAuthTokenAccountHandle() {
 	}
-	
+
 	public SimpleAuthTokenAccountHandle(String unmodifiableUniqueKey, String series, String policyName) {
 		this.unmodifiableUniqueKey = unmodifiableUniqueKey;
 		getAttributeMap().put(SimpleAuthTokenAccountHandle.AUTHED_BY_SIMPLE_AUTH_TOKEN, Boolean.TRUE);
@@ -77,7 +77,7 @@ public class SimpleAuthTokenAccountHandle implements AccountHandle {
 
 	@Override
 	public Map<String, Object> getAttributeMap() {
-		if(attributeMap == null){
+		if (attributeMap == null) {
 			attributeMap = new HashMap<String, Object>();
 		}
 		return attributeMap;
@@ -92,5 +92,5 @@ public class SimpleAuthTokenAccountHandle implements AccountHandle {
 	public int getAuthenticationProviderIndex() {
 		return authenticationProviderIndex;
 	}
-	
+
 }

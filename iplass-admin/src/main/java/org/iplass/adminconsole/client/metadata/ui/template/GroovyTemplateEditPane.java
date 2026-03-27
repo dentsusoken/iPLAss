@@ -63,7 +63,8 @@ public class GroovyTemplateEditPane extends TemplateTypeEditPane implements HasE
 		editScript.setStartRow(false);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_template_GroovyTemplateEditPane_displayEditDialogSource")));
+		editScript.setPrompt(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_template_GroovyTemplateEditPane_displayEditDialogSource")));
 		editScript.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -79,6 +80,7 @@ public class GroovyTemplateEditPane extends TemplateTypeEditPane implements HasE
 							public void onSave(String text) {
 								sourceField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -106,7 +108,7 @@ public class GroovyTemplateEditPane extends TemplateTypeEditPane implements HasE
 	 */
 	@Override
 	public void setDefinition(TemplateDefinition definition) {
-		GroovyTemplateDefinition groovyDefinition = (GroovyTemplateDefinition)definition;
+		GroovyTemplateDefinition groovyDefinition = (GroovyTemplateDefinition) definition;
 		sourceField.setValue(groovyDefinition.getSource());
 	}
 
@@ -117,7 +119,7 @@ public class GroovyTemplateEditPane extends TemplateTypeEditPane implements HasE
 	 */
 	@Override
 	public TemplateDefinition getEditDefinition(TemplateDefinition definition) {
-		GroovyTemplateDefinition groovyDefinition = (GroovyTemplateDefinition)definition;
+		GroovyTemplateDefinition groovyDefinition = (GroovyTemplateDefinition) definition;
 		groovyDefinition.setSource(SmartGWTUtil.getStringValue(sourceField));
 		return groovyDefinition;
 	}

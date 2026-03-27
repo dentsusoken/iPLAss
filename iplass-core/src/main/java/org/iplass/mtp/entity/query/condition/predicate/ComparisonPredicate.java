@@ -35,10 +35,10 @@ public abstract class ComparisonPredicate extends Predicate {
 
 	private ValueExpression property;
 	private ValueExpression value;
-	
+
 	public ComparisonPredicate() {
 	}
-	
+
 	public ComparisonPredicate(String propertyName, Object valueLiteral) {
 		setPropertyName(propertyName);
 		if (valueLiteral instanceof ValueExpression) {
@@ -47,46 +47,48 @@ public abstract class ComparisonPredicate extends Predicate {
 			setValue(new Literal(valueLiteral));
 		}
 	}
-	
+
 	public ComparisonPredicate(ValueExpression property, ValueExpression value) {
 		setProperty(property);
 		setValue(value);
 	}
-	
+
 	public String getPropertyName() {
 		if (property == null) {
 			return null;
 		}
 		return property.toString();
 	}
-	
+
 	public void setPropertyName(String propertyName) {
 		property = new EntityField(propertyName);
 	}
-	
+
 	public void setProperty(ValueExpression property) {
 		this.property = property;
 	}
-	
+
 	public ValueExpression getProperty() {
 		return property;
 	}
-	
+
 	public ValueExpression getValue() {
 		return value;
 	}
-	
+
 	public void setValue(ValueExpression value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(getPropertyName()).append(getOpString()).append(value);
+		sb.append(getPropertyName())
+				.append(getOpString())
+				.append(value);
 		return sb.toString();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -127,5 +129,5 @@ public abstract class ComparisonPredicate extends Predicate {
 	}
 
 	protected abstract String getOpString();
-	
+
 }

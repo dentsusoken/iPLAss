@@ -39,21 +39,22 @@ import org.slf4j.LoggerFactory;
 
 public class ClusterMessageChannelServlet extends HttpServlet {
 	private static final long serialVersionUID = 8940534146769969242L;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ClusterMessageChannelServlet.class);
-	
+
 	private HttpMessageChannel messageChannel;
-	
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		ClusterService cs = ServiceRegistry.getRegistry().getService(ClusterService.class);
+		ClusterService cs = ServiceRegistry.getRegistry()
+				.getService(ClusterService.class);
 		MessageChannel mc = cs.getMessageChannel();
 		if (mc instanceof HttpMessageChannel) {
 			messageChannel = (HttpMessageChannel) mc;
 		}
 	}
-	
+
 	private Message toMessage(HttpServletRequest req) {
 		String eventName = req.getParameter(HttpMessageChannel.EVENT_NAME_NAME);
 		if (eventName != null) {
@@ -67,10 +68,9 @@ public class ClusterMessageChannelServlet extends HttpServlet {
 			return msg;
 		}
 		return null;
-		
+
 	}
-	
-	
+
 	private void doMessage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		if (messageChannel != null) {
 			try {
@@ -100,7 +100,5 @@ public class ClusterMessageChannelServlet extends HttpServlet {
 			throws ServletException, IOException {
 		doMessage(req, resp);
 	}
-	
-	
 
 }

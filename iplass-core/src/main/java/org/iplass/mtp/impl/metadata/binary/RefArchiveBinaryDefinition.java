@@ -27,10 +27,10 @@ class RefArchiveBinaryDefinition implements ArchiveBinaryDefinition {
 	private static final long serialVersionUID = -5719000121510382495L;
 
 	private ArchiveBinaryMetaData bin;
-	
+
 	RefArchiveBinaryDefinition() {
 	}
-	
+
 	RefArchiveBinaryDefinition(ArchiveBinaryMetaData bin) {
 		this.bin = bin;
 	}

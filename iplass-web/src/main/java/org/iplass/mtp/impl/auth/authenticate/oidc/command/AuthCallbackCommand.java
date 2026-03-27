@@ -37,25 +37,27 @@ import org.iplass.mtp.impl.auth.authenticate.oidc.MetaOpenIdConnect.OpenIdConnec
 import org.iplass.mtp.impl.auth.authenticate.oidc.OIDCCredential;
 import org.iplass.mtp.web.WebRequestConstants;
 
-@ActionMapping(name=AuthCallbackCommand.ACTION_NAME,
-	clientCacheType=ClientCacheType.NO_CACHE,
-	publicAction=true,
-	privileged=true,
-	paramMapping={
-			@ParamMapping(name=AuthCallbackCommand.PARAM_DEFINITION_NAME, mapFrom=ParamMapping.PATHS)
-	},
-	result={
-			@Result(status=AuthCallbackCommand.STAT_SUCCESS, type=Type.REDIRECT, value=WebRequestConstants.REDIRECT_PATH),
-			@Result(exception=ApplicationException.class, type=Type.DYNAMIC, value=AuthCommand.REQUEST_ERROR_TEMPLATE)
-	}
+@ActionMapping(
+		name = AuthCallbackCommand.ACTION_NAME,
+		clientCacheType = ClientCacheType.NO_CACHE,
+		publicAction = true,
+		privileged = true,
+		paramMapping = {
+				@ParamMapping(name = AuthCallbackCommand.PARAM_DEFINITION_NAME, mapFrom = ParamMapping.PATHS)
+		},
+		result = {
+				@Result(status = AuthCallbackCommand.STAT_SUCCESS, type = Type.REDIRECT, value = WebRequestConstants.REDIRECT_PATH),
+				@Result(exception = ApplicationException.class, type = Type.DYNAMIC, value = AuthCommand.REQUEST_ERROR_TEMPLATE)
+		}
 )
-@CommandClass(name="mtp/oidc/AuthCallbackCommand", displayName="OpenID Connect Auth Callback processing")
-public class AuthCallbackCommand extends  AbstractCallbackCommand {
+@CommandClass(name = "mtp/oidc/AuthCallbackCommand", displayName = "OpenID Connect Auth Callback processing")
+public class AuthCallbackCommand extends AbstractCallbackCommand {
 	public static final String ACTION_NAME = "oidc/authcb";
 	public static final String PARAM_DEFINITION_NAME = "defName";
 	public static final String STAT_SUCCESS = "SUCCESS";
 
-	private AuthManager auth = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private AuthManager auth = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	public AuthCallbackCommand() {
 		super(AuthCommand.SESSION_OIDC_STATE);

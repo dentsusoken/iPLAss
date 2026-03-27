@@ -49,11 +49,10 @@ import com.smartgwt.client.widgets.layout.VLayout;
  *
  */
 public class EntityViewDragPane extends VLayout {
-	
+
 	public static final String DRAG_TYPE_PROPERTY = "property";
 	public static final String DRAG_TYPE_SECTION = "section";
 	public static final String DRAG_TYPE_ELEMENT = "element";
-			
 
 	/** プロパティ用のスタック */
 	private SectionStackSection propertySection;
@@ -76,8 +75,8 @@ public class EntityViewDragPane extends VLayout {
 	public EntityViewDragPane(String defName, boolean showTree, ViewType viewType) {
 		setWidth("25%");
 
-    	SectionStack dropItemStack = new SectionStack();
-    	dropItemStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+		SectionStack dropItemStack = new SectionStack();
+		dropItemStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 
 		propertySection = new SectionStackSection("Property");
 		propertySection.setExpanded(true);
@@ -94,7 +93,7 @@ public class EntityViewDragPane extends VLayout {
 		setElement(viewType);
 		dropItemStack.addSection(elementSection);
 
-    	addMember(dropItemStack);
+		addMember(dropItemStack);
 	}
 
 	/**
@@ -133,7 +132,7 @@ public class EntityViewDragPane extends VLayout {
 	 * DSからセクションを設定。
 	 */
 	private void setSection(ViewType viewType) {
-		final ListGrid grid  =new ListGrid();
+		final ListGrid grid = new ListGrid();
 		grid.setShowHeader(false);
 		grid.setDragType(DRAG_TYPE_SECTION);
 		grid.setDragDataAction(DragDataAction.NONE);

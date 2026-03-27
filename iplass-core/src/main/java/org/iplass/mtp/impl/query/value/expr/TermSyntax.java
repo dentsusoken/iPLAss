@@ -31,16 +31,14 @@ import org.iplass.mtp.impl.parser.Syntax;
 import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.QueryConstants;
 
-
 public class TermSyntax implements Syntax<ValueExpression>, QueryConstants {
-	
+
 	private static final int TYPE_ASTER = 1;
 	private static final int TYPE_SOLID = 2;
 	private static final int TYPE_OTHER = 3;
-	
 
 	private MinusSignSyntax minusSign;
-	
+
 	public void init(SyntaxContext context) {
 		minusSign = context.getSyntax(MinusSignSyntax.class);
 
@@ -57,10 +55,10 @@ public class TermSyntax implements Syntax<ValueExpression>, QueryConstants {
 	}
 
 	public ValueExpression parse(ParseContext str) throws ParseException {
-		
+
 		//first expression
 		ValueExpression firstExp = minusSign.parse(str);
-		
+
 		//2項目以降の処理
 		List<ValueExpression> mulExp = null;
 		List<ValueExpression> divExp = null;
@@ -87,22 +85,22 @@ public class TermSyntax implements Syntax<ValueExpression>, QueryConstants {
 				break;
 			}
 		}
-		
+
 		if (mulExp == null && divExp == null) {
 			return firstExp;
 		}
-		
+
 		if (mulExp == null) {
 			mulExp = new ArrayList<ValueExpression>();
 			mulExp.add(firstExp);
 		}
-		
+
 		Term term = new Term();
 		term.setMulValues(mulExp);
 		term.setDivValues(divExp);
-		
+
 		return term;
-		
+
 	}
 
 //	public void appendSb(StringBuilder sb, ValueExpression node) {

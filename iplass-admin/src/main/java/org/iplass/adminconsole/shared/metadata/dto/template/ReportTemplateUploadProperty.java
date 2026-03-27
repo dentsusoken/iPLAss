@@ -62,7 +62,7 @@ public interface ReportTemplateUploadProperty extends UploadProperty {
 
 	/** Jasper PasswordAttributeName */
 	public static final String JASPER_PASSWORD_ATTRIBUTE_NAME = "jasperPasswordAttributeName";
-	
+
 	/** Jasper OwnerPasswordAttributeName */
 	public static final String JASPER_OWNER_PASSWORD_ATTRIBUTE_NAME = "jasperOwnerPasswordAttributeName";
 
@@ -80,7 +80,7 @@ public interface ReportTemplateUploadProperty extends UploadProperty {
 
 	/** Poi PasswordAttributeName */
 	public static final String POI_PASSWORD_ATTRIBUTE_NAME = "poiPasswordAttributeName";
-	
+
 	/** Jxlsレポート出力ロジック形式 */
 	public static final String JXLS_LOGIC_NAME = "jxlsLogicName";
 
@@ -95,19 +95,19 @@ public interface ReportTemplateUploadProperty extends UploadProperty {
 
 	/** Jxls PasswordAttributeName */
 	public static final String JXLS_PASSWORD_ATTRIBUTE_NAME = "jxlsPasswordAttributeName";
-	
+
 	/** Jxls ParamMapKey */
 	public static final String JXLS_PARAM_MAP_NAME = "jxlsParamMapName";
 
 	/** Jxls ParamMapValue */
 	public static final String JXLS_PARAM_MAP_VALUE = "jxlsParamMapValue ";
-	
+
 	/** Jxls ParamMapToMap */
 	public static final String JXLS_PARAM_MAP_TO_MAP = "jxlsParamMapToMap ";
-	
+
 	/** Jxls ParamMapCount */
 	public static final String JXLS_PARAM_MAP_CNT = "jxlsParamMapCnt";
-	
+
 	/** 多言語用変更前Locale名 */
 	public static final String LOCALE_BEFORE = "beforeLocale";
 

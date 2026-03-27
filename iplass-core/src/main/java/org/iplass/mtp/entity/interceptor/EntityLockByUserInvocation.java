@@ -20,14 +20,18 @@
 
 package org.iplass.mtp.entity.interceptor;
 
-
 public interface EntityLockByUserInvocation extends EntityInvocation<Boolean> {
 
 	public String getOid();
+
 	public void setOid(String oid);
+
 	public String getUserId();
+
 	public void setUserId(String userId);
+
 	public boolean isForce();
+
 	public void setForce(boolean force);
 
 }

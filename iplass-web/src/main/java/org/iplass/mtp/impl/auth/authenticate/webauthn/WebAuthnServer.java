@@ -22,8 +22,11 @@ package org.iplass.mtp.impl.auth.authenticate.webauthn;
 public interface WebAuthnServer {
 
 	String rpId();
+
 	String origin();
+
 	WebAuthnState getWebAuthnState(boolean withRemove);
+
 	void saveWebAuthnState(WebAuthnState state);
 
 }

@@ -26,21 +26,21 @@ import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 public class ToSqlResult {
 	public String sql;
 	public List<BindValue> bindVariables;
-	
+
 	ToSqlResult(String sql, List<BindValue> bindVariables) {
 		this.sql = sql;
 		this.bindVariables = bindVariables;
 	}
-	
+
 	public static class BindValue {
 		public Object value;
 		public BaseRdbTypeAdapter type;
-		
+
 		public BindValue(Object value, BaseRdbTypeAdapter type) {
 			super();
 			this.value = value;
 			this.type = type;
 		}
 	}
-	
+
 }

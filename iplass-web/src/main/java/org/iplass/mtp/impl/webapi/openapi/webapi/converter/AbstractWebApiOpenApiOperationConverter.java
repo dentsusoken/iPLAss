@@ -125,11 +125,14 @@ public abstract class AbstractWebApiOpenApiOperationConverter implements WebApiO
 		if (null == operation.getRequestBody()) {
 			operation.setRequestBody(new RequestBody());
 		}
-		if (null == operation.getRequestBody().getContent()) {
-			operation.getRequestBody().setContent(new Content());
+		if (null == operation.getRequestBody()
+				.getContent()) {
+			operation.getRequestBody()
+					.setContent(new Content());
 		}
 
-		return operation.getRequestBody().getContent();
+		return operation.getRequestBody()
+				.getContent();
 	}
 
 	/**
@@ -145,11 +148,13 @@ public abstract class AbstractWebApiOpenApiOperationConverter implements WebApiO
 			return null;
 		}
 
-		if (null == operation.getRequestBody().getContent()) {
+		if (null == operation.getRequestBody()
+				.getContent()) {
 			return null;
 		}
 
-		return operation.getRequestBody().getContent();
+		return operation.getRequestBody()
+				.getContent();
 	}
 
 	/**
@@ -158,7 +163,8 @@ public abstract class AbstractWebApiOpenApiOperationConverter implements WebApiO
 	 * @return "200" の ApiResponse インスタンス
 	 */
 	protected ApiResponse getOkResponse(Operation operation) {
-		return operation.getResponses().get("200");
+		return operation.getResponses()
+				.get("200");
 	}
 
 	/**

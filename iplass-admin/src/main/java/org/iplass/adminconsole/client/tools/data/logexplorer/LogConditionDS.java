@@ -76,7 +76,7 @@ public class LogConditionDS extends AbstractAdminDataSource {
 			@Override
 			public void onSuccess(List<LogConditionInfo> result) {
 				List<ListGridRecord> records = createRecords(result);
-				response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 			}
@@ -98,21 +98,21 @@ public class LogConditionDS extends AbstractAdminDataSource {
 	@Override
 	protected void executeAdd(String requestId, DSRequest request, DSResponse response) {
 		ListGridRecord record = new ListGridRecord(request.getData());
-		response.setData(new ListGridRecord[] {record});
+		response.setData(new ListGridRecord[] { record });
 		processResponse(requestId, response);
 	}
 
 	@Override
 	protected void executeUpdate(String requestId, DSRequest request, DSResponse response) {
 		ListGridRecord record = new ListGridRecord(request.getData());
-		response.setData(new ListGridRecord[] {record});
+		response.setData(new ListGridRecord[] { record });
 		processResponse(requestId, response);
 	}
 
 	@Override
 	protected void executeRemove(String requestId, DSRequest request, DSResponse response) {
 		ListGridRecord record = new ListGridRecord(request.getData());
-		response.setData(new ListGridRecord[] {record});
+		response.setData(new ListGridRecord[] { record });
 		processResponse(requestId, response);
 	}
 

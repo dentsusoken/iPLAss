@@ -27,8 +27,7 @@ package org.iplass.mtp.web.actionmapping.definition;
  *
  */
 public enum ClientCacheType {
-	
-	
+
 	/**
 	 * キャッシュを許可します。
 	 * 具体的にはCache-Controlをprivate指定します。
@@ -36,14 +35,14 @@ public enum ClientCacheType {
 	 * 
 	 */
 	CACHE,
-	
+
 	/**
 	 * キャッシュを許可します。
 	 * 具体的にはCache-Controlをpublic指定します。
 	 * CACHE_PUBLICを指定する場合は、合わせてclientCacheMaxAgeも指定してください。
 	 */
 	CACHE_PUBLIC,
-	
+
 	/**
 	 * キャッシュを許可しません。
 	 * 具体的にはCache-Controlをprivate, no-store, no-cache, must-revalidate指定します

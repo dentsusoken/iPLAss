@@ -37,12 +37,14 @@ public abstract class ValueExpression implements ASTNode {
 
 	public static ValueExpression newValue(String valueExpression) {
 		try {
-			return QueryServiceHolder.getInstance().getQueryParser().parse(valueExpression, PolynomialSyntax.class);
+			return QueryServiceHolder.getInstance()
+					.getQueryParser()
+					.parse(valueExpression, PolynomialSyntax.class);
 		} catch (ParseException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
 	}
-	
+
 	public abstract void accept(ValueExpressionVisitor visitor);
-	
+
 }

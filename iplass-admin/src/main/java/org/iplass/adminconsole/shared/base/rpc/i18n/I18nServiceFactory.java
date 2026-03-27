@@ -39,7 +39,7 @@ public abstract class I18nServiceFactory extends AbstractAdminServiceFactory {
 
 		I18nServiceAsync service = GWT.create(I18nService.class);
 
-		init((HasRpcToken)service);
+		init((HasRpcToken) service);
 
 		I18nServiceFactory.service = service;
 

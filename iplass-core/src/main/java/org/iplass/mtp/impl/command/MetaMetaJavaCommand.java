@@ -27,9 +27,9 @@ import org.iplass.mtp.command.definition.JavaClassCommandDefinition;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 
 public class MetaMetaJavaCommand extends MetaMetaCommand {
-	
+
 	private static final long serialVersionUID = 8509052112705251985L;
-	
+
 	private String className;
 
 	public String getClassName() {
@@ -54,15 +54,15 @@ public class MetaMetaJavaCommand extends MetaMetaCommand {
 		definition.setClassName(className);
 		return definition;
 	}
-	
+
 	public MetaJavaCommandRuntime createRuntime(MetaDataConfig metaDataConfig) {
 		return new MetaJavaCommandRuntime();
 	}
-	
+
 	public class MetaJavaCommandRuntime extends MetaCommandRuntime {
 
 		Class<Command> clazz;
-		
+
 		@SuppressWarnings("unchecked")
 		public MetaJavaCommandRuntime() {
 			try {
@@ -81,11 +81,11 @@ public class MetaMetaJavaCommand extends MetaMetaCommand {
 				setIllegalStateException(e);
 			}
 		}
-		
+
 		@Override
 		public Command newCommand() {
 			checkState();
-			
+
 			if (clazz != null) {
 				try {
 					return clazz.newInstance();
@@ -101,7 +101,7 @@ public class MetaMetaJavaCommand extends MetaMetaCommand {
 		public MetaMetaJavaCommand getMetaData() {
 			return MetaMetaJavaCommand.this;
 		}
-		
+
 	}
 
 }

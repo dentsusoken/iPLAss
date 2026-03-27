@@ -32,10 +32,10 @@ import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 public class IntegerProperty extends PropertyDefinition {
 	private static final long serialVersionUID = -2843588733088091905L;
 
-	public IntegerProperty(){
+	public IntegerProperty() {
 	}
-	
-	public IntegerProperty(String name){
+
+	public IntegerProperty(String name) {
 		setName(name);
 	}
 
@@ -43,12 +43,11 @@ public class IntegerProperty extends PropertyDefinition {
 	public Class<?> getJavaType() {
 		return Long.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getType() {
 		return PropertyDefinitionType.INTEGER;
 	}
-
 
 //	public IntegerProperty copy() {
 //		IntegerProperty copy = new IntegerProperty();

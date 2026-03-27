@@ -34,7 +34,6 @@ public class OpenApiSupportTreeGridSelected {
 	/** Entity CRUD API 選択リスト */
 	private Map<String, List<String>> entityCRUDApiMap;
 
-
 	/**
 	 * WebAPI選択リストを取得します。
 	 * <p>

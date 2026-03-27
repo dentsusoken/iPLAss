@@ -62,16 +62,19 @@ public class FormViewRuntimeUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends FormViewRuntime> T getFormViewRuntime(String defName, String viewName, Class<T> runtimeClass) {
-		EntityViewService service = ServiceRegistry.getRegistry().getService(EntityViewService.class);
+		EntityViewService service = ServiceRegistry.getRegistry()
+				.getService(EntityViewService.class);
 		EntityViewRuntime entityViewRuntime = service.getRuntimeByName(defName);
 
 		if (null != entityViewRuntime) {
 			// エンティティビュー名を非null化
-			String nonNullViewName = Optional.ofNullable(viewName).orElse(VIEW_DEFAULT_NAME);
+			String nonNullViewName = Optional.ofNullable(viewName)
+					.orElse(VIEW_DEFAULT_NAME);
 
 			for (FormViewRuntime viewRuntime : entityViewRuntime.getFormViews()) {
 				if (runtimeClass.isAssignableFrom(viewRuntime.getClass())
-						&& nonNullViewName.equals(viewRuntime.getMetaData().getName())) {
+						&& nonNullViewName.equals(viewRuntime.getMetaData()
+								.getName())) {
 					return (T) viewRuntime;
 				}
 			}
@@ -118,7 +121,9 @@ public class FormViewRuntimeUtil {
 
 		// 警告ログ出力
 		LOG.warn("Property does not exist or PropertyEditor is not defined. viewRuntime = {}, propName = {}, runtimeClass = {}",
-				viewRuntime.getMetaData().getName(), propName, runtimeClass);
+				viewRuntime.getMetaData()
+						.getName(),
+				propName, runtimeClass);
 
 		// 定義が無い場合は null を返却
 		return null;

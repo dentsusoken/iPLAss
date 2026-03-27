@@ -41,7 +41,6 @@ import org.iplass.mtp.web.WebRequestConstants;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
-
 public class WebRequestContext implements RequestContext {
 	public static final String MARK_USE_OUTPUT_STREAM = "org.iplass.mtp.markUseOutputStream";
 
@@ -121,6 +120,7 @@ public class WebRequestContext implements RequestContext {
 			public boolean hasNext() {
 				return e.hasMoreElements();
 			}
+
 			@Override
 			public String next() {
 				return e.nextElement();
@@ -135,8 +135,10 @@ public class WebRequestContext implements RequestContext {
 
 		//セッションの保存
 		if (session != null && session.isUpdate()) {
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-			SessionService ss = ServiceRegistry.getRegistry().getService(SessionService.class);
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getClientTenantId();
+			SessionService ss = ServiceRegistry.getRegistry()
+					.getService(SessionService.class);
 			Session s = ss.getSession(true);
 			session.resetUpdateFlag();
 			s.setAttribute(SimpleSessionContext.KEY_FOR_HTTP_SERVLET_REQUEST + "." + tenantId, session);
@@ -160,14 +162,16 @@ public class WebRequestContext implements RequestContext {
 		case WebRequestConstants.COMMAND_RESULT:
 		case WebRequestConstants.EXECUTED_COMMAND:
 		case WebRequestConstants.EXCEPTION:
-			return WebRequestStack.getCurrent().getAttribute(name);
+			return WebRequestStack.getCurrent()
+					.getAttribute(name);
 		case WebRequestConstants.SUB_PATH:
 			WebRequestStack stack = WebRequestStack.getCurrent();
 			String actName = (String) stack.getAttribute(WebRequestConstants.ACTION_NAME);
 			if (actName == null) {
 				return null;
 			}
-			return stack.getRequestPath().getTargetSubPath(actName, true);
+			return stack.getRequestPath()
+					.getTargetSubPath(actName, true);
 		default:
 			return servletRequest.getAttribute(name);
 		}
@@ -186,7 +190,8 @@ public class WebRequestContext implements RequestContext {
 			throw new IllegalArgumentException(name + " is ReadOnly attribute.");
 		case WebRequestConstants.COMMAND_RESULT:
 		case WebRequestConstants.EXCEPTION:
-			WebRequestStack.getCurrent().setAttribute(name, value);
+			WebRequestStack.getCurrent()
+					.setAttribute(name, value);
 		default:
 			servletRequest.setAttribute(name, value);
 		}
@@ -293,10 +298,12 @@ public class WebRequestContext implements RequestContext {
 	@Override
 	public SessionContext getSession(boolean create) {
 		if (session == null) {
-			SessionService ss = ServiceRegistry.getRegistry().getService(SessionService.class);
+			SessionService ss = ServiceRegistry.getRegistry()
+					.getService(SessionService.class);
 			Session s = ss.getSession(create);
 			if (s != null) {
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				session = (SimpleSessionContext) s.getAttribute(SimpleSessionContext.KEY_FOR_HTTP_SERVLET_REQUEST + "." + tenantId);
 
 				if (session == null) {

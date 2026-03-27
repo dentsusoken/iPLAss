@@ -35,7 +35,6 @@ import org.iplass.mtp.entity.query.value.ValueExpressionVisitor;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 
-
 /**
  * IN条件文を表す。
  * ValueExpressionのリスト、もしくはサブクエリーを指定可能。
@@ -49,18 +48,18 @@ public class In extends Predicate {
 	//TODO NOT INの対応。orクエリーが遅くなること想定されるから対応なしか？
 
 	private List<ValueExpression> propertyList;
-	
+
 	private List<ValueExpression> value;
 	private SubQuery subQuery;
-	
+
 	public In() {
 	}
-	
+
 	public In(String propertyName, Object... literalValues) {
 		setPropertyName(propertyName);
 		List<ValueExpression> valList = new ArrayList<ValueExpression>();
 		if (literalValues != null) {
-			for (Object o: literalValues) {
+			for (Object o : literalValues) {
 				if (o instanceof Literal) {
 					valList.add((Literal) o);
 				} else {
@@ -70,55 +69,54 @@ public class In extends Predicate {
 		}
 		this.value = valList;
 	}
-	
+
 	public In(String[] propertyName, Object[]... literalRowValueLists) {
 		setPropertyName(propertyName);
 		List<ValueExpression> valList = new ArrayList<ValueExpression>();
 		if (literalRowValueLists != null) {
-			for (Object[] o: literalRowValueLists) {
+			for (Object[] o : literalRowValueLists) {
 				RowValueList rvl = new RowValueList(o);
 				valList.add(rvl);
 			}
 		}
 		this.value = valList;
 	}
-	
-	
+
 	public In(String propertyName, SubQuery subQuery) {
 		setPropertyName(propertyName);
 		this.subQuery = subQuery;
 	}
-	
+
 	public In(String[] propertyName, SubQuery subQuery) {
 		setPropertyName(propertyName);
 		this.subQuery = subQuery;
 	}
-	
+
 	public In(String propertyName, Query subQuery) {
 		setPropertyName(propertyName);
 		this.subQuery = new SubQuery(subQuery);
 	}
-	
+
 	public In(String[] propertyName, Query subQuery) {
 		setPropertyName(propertyName);
 		this.subQuery = new SubQuery(subQuery);
 	}
-	
+
 	public In(String[] propertyName, List<ValueExpression> value) {
 		setPropertyName(propertyName);
 		this.value = value;
 	}
-	
+
 	public In(ValueExpression property, List<ValueExpression> value) {
 		setProperty(property);
 		this.value = value;
 	}
-	
+
 	public In(ValueExpression property, Object... literalValues) {
 		setProperty(property);
 		List<ValueExpression> valList = new ArrayList<ValueExpression>();
 		if (literalValues != null) {
-			for (Object o: literalValues) {
+			for (Object o : literalValues) {
 				if (o instanceof Literal) {
 					valList.add((Literal) o);
 				} else {
@@ -133,49 +131,49 @@ public class In extends Predicate {
 		setProperty(property);
 		this.subQuery = subQuery;
 	}
-	
+
 	public In(List<ValueExpression> property, SubQuery subQuery) {
 		setPropertyList(property);
 		this.subQuery = subQuery;
 	}
-	
+
 	public In(ValueExpression property, Query subQuery) {
 		setProperty(property);
 		this.subQuery = new SubQuery(subQuery);
 	}
-	
+
 	public In(List<ValueExpression> property, Query subQuery) {
 		setPropertyList(property);
 		this.subQuery = new SubQuery(subQuery);
 	}
-	
+
 	public In(List<ValueExpression> property, List<ValueExpression> value) {
 		setPropertyList(property);
 		this.value = value;
 	}
-	
+
 	public void setPropertyName(String... propertyName) {
 		propertyList = new ArrayList<ValueExpression>();
-		for (String pName: propertyName) {
+		for (String pName : propertyName) {
 			propertyList.add(new EntityField(pName));
 		}
 	}
-	
+
 	public void setProperty(ValueExpression... property) {
 		propertyList = new ArrayList<ValueExpression>();
-		for (ValueExpression p: property) {
+		for (ValueExpression p : property) {
 			propertyList.add(p);
 		}
 	}
-	
+
 	public void setPropertyList(List<ValueExpression> propertyList) {
 		this.propertyList = propertyList;
 	}
-	
+
 	public List<ValueExpression> getPropertyList() {
 		return propertyList;
 	}
-	
+
 	public List<ValueExpression> getValue() {
 		return value;
 	}
@@ -183,7 +181,7 @@ public class In extends Predicate {
 	public void setValue(List<ValueExpression> value) {
 		this.value = value;
 	}
-	
+
 	public SubQuery getSubQuery() {
 		return subQuery;
 	}
@@ -197,12 +195,12 @@ public class In extends Predicate {
 			if (visitor instanceof ValueExpressionVisitor) {
 				ValueExpressionVisitor vVisitor = (ValueExpressionVisitor) visitor;
 				if (propertyList != null) {
-					for (ValueExpression p: propertyList) {
+					for (ValueExpression p : propertyList) {
 						p.accept(vVisitor);
 					}
 				}
 				if (value != null) {
-					for (ValueExpression v: value) {
+					for (ValueExpression v : value) {
 						v.accept(vVisitor);
 					}
 				}
@@ -231,7 +229,7 @@ public class In extends Predicate {
 				sb.append(propertyList.get(i));
 			}
 			sb.append(")");
-			
+
 		}
 		sb.append(" in ");
 		if (subQuery != null) {
@@ -250,7 +248,7 @@ public class In extends Predicate {
 		}
 		return sb.toString();
 	}
-	
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

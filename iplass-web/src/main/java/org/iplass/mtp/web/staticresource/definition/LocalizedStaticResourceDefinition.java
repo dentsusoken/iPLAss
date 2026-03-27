@@ -28,10 +28,10 @@ public class LocalizedStaticResourceDefinition implements Serializable {
 
 	private String localeName;
 	private BinaryDefinition resource;
-	
+
 	public LocalizedStaticResourceDefinition() {
 	}
-	
+
 	public String getLocaleName() {
 		return localeName;
 	}

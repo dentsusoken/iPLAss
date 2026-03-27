@@ -37,14 +37,15 @@ import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 
 public class WebApiParameterDeserializer extends JsonDeserializer<WebApiParameter> {
 
-	public static final String NAME_PROPERTY_NAME ="name";
-	public static final String VALUE_PROPERTY_NAME ="value";
-	public static final String VALUE_TYPE_PROPERTY_NAME ="valueType";
+	public static final String NAME_PROPERTY_NAME = "name";
+	public static final String VALUE_PROPERTY_NAME = "value";
+	public static final String VALUE_TYPE_PROPERTY_NAME = "valueType";
 
 	private WebApiObjectMapperService mapperService;
 
-	WebApiParameterDeserializer () {
-		mapperService = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class);
+	WebApiParameterDeserializer() {
+		mapperService = ServiceRegistry.getRegistry()
+				.getService(WebApiObjectMapperService.class);
 	}
 
 	@Override

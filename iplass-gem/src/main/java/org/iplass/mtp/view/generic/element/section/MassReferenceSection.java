@@ -40,13 +40,13 @@ import jakarta.xml.bind.annotation.XmlType;
  *
  */
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/element/section/MassReferenceSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/element/section/MassReferenceSection.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
 public class MassReferenceSection extends Section implements HasNestProperty {
 
 	private static final long serialVersionUID = -5068125265820445100L;
 
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
 	public enum MassReferenceEditType {
 		DETAIL,
 		VIEW
@@ -60,323 +60,306 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 
 	/** 詳細編集非表示設定 */
 	@MetaFieldInfo(
-			displayName="詳細編集非表示設定",
-			displayNameKey="generic_element_section_MassReferenceSection_hideDetailDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=200,
-			description="詳細編集で非表示にするかを設定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_hideDetailDescriptionKey"
+			displayName = "詳細編集非表示設定",
+			displayNameKey = "generic_element_section_MassReferenceSection_hideDetailDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 200,
+			description = "詳細編集で非表示にするかを設定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_hideDetailDescriptionKey"
 	)
 	private boolean hideDetail;
 
 	/** 詳細表示非表示設定 */
 	@MetaFieldInfo(
-			displayName="詳細表示非表示設定",
-			displayNameKey="generic_element_section_MassReferenceSection_hideViewDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=210,
-			description="詳細表示で非表示にするかを設定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_hideViewDescriptionKey"
+			displayName = "詳細表示非表示設定",
+			displayNameKey = "generic_element_section_MassReferenceSection_hideViewDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 210,
+			description = "詳細表示で非表示にするかを設定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_hideViewDescriptionKey"
 	)
 	private boolean hideView;
 
-
-
 	/** セクションの展開可否 */
 	@MetaFieldInfo(
-			displayName="初期表示時に展開",
-			displayNameKey="generic_element_section_MassReferenceSection_expandableDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=410,
-			description="セクションを初期展開するかを指定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_expandableDescriptionKey"
+			displayName = "初期表示時に展開",
+			displayNameKey = "generic_element_section_MassReferenceSection_expandableDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 410,
+			description = "セクションを初期展開するかを指定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_expandableDescriptionKey"
 	)
 	private boolean expandable;
 
 	/** リンクを表示するか */
 	@MetaFieldInfo(
-			displayName="リンクを表示するか",
-			displayNameKey="generic_element_section_MassReferenceSection_showLinkDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=420,
-			description="詳細画面でのページ内リンクを表示するかを指定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_showLinkDescriptionKey"
+			displayName = "リンクを表示するか",
+			displayNameKey = "generic_element_section_MassReferenceSection_showLinkDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 420,
+			description = "詳細画面でのページ内リンクを表示するかを指定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_showLinkDescriptionKey"
 	)
 	private boolean showLink;
 
-
-
-
 	/** 上限値 */
 	@MetaFieldInfo(
-			displayName="上限値",
-			displayNameKey="generic_element_section_MassReferenceSection_limitDisplayNameKey",
-			inputType=InputType.NUMBER,
-			minRange=1,
-			displayOrder=1000,
-			description="一度に表示する件数の上限値を設定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_limitDescriptionKey"
+			displayName = "上限値",
+			displayNameKey = "generic_element_section_MassReferenceSection_limitDisplayNameKey",
+			inputType = InputType.NUMBER,
+			minRange = 1,
+			displayOrder = 1000,
+			description = "一度に表示する件数の上限値を設定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_limitDescriptionKey"
 	)
 	private int limit;
 
 	/** 削除ボタン非表示設定 */
 	@MetaFieldInfo(
-			displayName="削除ボタン非表示",
-			displayNameKey="generic_element_section_MassReferenceSection_hideDeleteButtonDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1010,
-			description="データを削除するボタンを非表示にします。",
-			descriptionKey="generic_element_section_MassReferenceSection_hideDeleteButtonDescriptionKey"
+			displayName = "削除ボタン非表示",
+			displayNameKey = "generic_element_section_MassReferenceSection_hideDeleteButtonDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1010,
+			description = "データを削除するボタンを非表示にします。",
+			descriptionKey = "generic_element_section_MassReferenceSection_hideDeleteButtonDescriptionKey"
 	)
 	private boolean hideDeleteButton;
 
 	/** 追加ボタン非表示設定 */
 	@MetaFieldInfo(
-			displayName="追加ボタン非表示",
-			displayNameKey="generic_element_section_MassReferenceSection_hideAddButtonDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1020,
-			description="データを追加するボタンを非表示にします。",
-			descriptionKey="generic_element_section_MassReferenceSection_hideAddButtonDescriptionKey"
+			displayName = "追加ボタン非表示",
+			displayNameKey = "generic_element_section_MassReferenceSection_hideAddButtonDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1020,
+			description = "データを追加するボタンを非表示にします。",
+			descriptionKey = "generic_element_section_MassReferenceSection_hideAddButtonDescriptionKey"
 	)
 	private boolean hideAddButton;
 
-
-
-
 	/** ページング非表示設定 */
 	@MetaFieldInfo(
-			displayName="ページング非表示設定",
-			displayNameKey="generic_element_section_MassReferenceSection_hidePagingDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=2000,
-			description="参照の一覧のページングを非表示にします。<br>" +
+			displayName = "ページング非表示設定",
+			displayNameKey = "generic_element_section_MassReferenceSection_hidePagingDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 2000,
+			description = "参照の一覧のページングを非表示にします。<br>" +
 					"非表示にした場合はページングが行えないため、対象データを全件取得します。",
-			descriptionKey="generic_element_section_MassReferenceSection_hidePagingDescriptionKey"
+			descriptionKey = "generic_element_section_MassReferenceSection_hidePagingDescriptionKey"
 	)
 	private boolean hidePaging;
 
 	/** 件数非表示設定 */
 	@MetaFieldInfo(
-			displayName="件数非表示設定",
-			displayNameKey="generic_element_section_MassReferenceSection_hideCountDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=2010,
-			description="参照の一覧のページングで件数を非表示にします。",
-			descriptionKey="generic_element_section_MassReferenceSection_hideCountDescriptionKey"
+			displayName = "件数非表示設定",
+			displayNameKey = "generic_element_section_MassReferenceSection_hideCountDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 2010,
+			description = "参照の一覧のページングで件数を非表示にします。",
+			descriptionKey = "generic_element_section_MassReferenceSection_hideCountDescriptionKey"
 	)
 	private boolean hideCount;
 
 	/** ページジャンプ非表示設定 */
 	@MetaFieldInfo(
-			displayName="ページジャンプ非表示設定",
-			displayNameKey="generic_element_section_MassReferenceSection_hidePageJumpDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=2020,
-			description="参照の一覧のページングでページジャンプを非表示にします。",
-			descriptionKey="generic_element_section_MassReferenceSection_hidePageJumpDescriptionKey"
+			displayName = "ページジャンプ非表示設定",
+			displayNameKey = "generic_element_section_MassReferenceSection_hidePageJumpDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 2020,
+			description = "参照の一覧のページングでページジャンプを非表示にします。",
+			descriptionKey = "generic_element_section_MassReferenceSection_hidePageJumpDescriptionKey"
 	)
 	private boolean hidePageJump;
 
 	/** ページリンク非表示設定 */
 	@MetaFieldInfo(
-			displayName="ページリンク非表示設定",
-			displayNameKey="generic_element_section_MassReferenceSection_hidePageLinkDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=2030,
-			description="参照の一覧のページングでページリンクを非表示にします。",
-			descriptionKey="generic_element_section_MassReferenceSection_hidePageLinkDescriptionKey"
+			displayName = "ページリンク非表示設定",
+			displayNameKey = "generic_element_section_MassReferenceSection_hidePageLinkDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 2030,
+			description = "参照の一覧のページングでページリンクを非表示にします。",
+			descriptionKey = "generic_element_section_MassReferenceSection_hidePageLinkDescriptionKey"
 	)
 	private boolean hidePageLink;
 
 	/** 検索アイコンを常に表示 */
 	@MetaFieldInfo(
-			displayName="検索アイコンを常に表示",
-			displayNameKey="generic_element_section_MassReferenceSection_showSearchBtnDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=2035,
-			description="検索アイコンを常に表示にします。",
-			descriptionKey="generic_element_section_MassReferenceSection_showSearchBtnDescriptionKey"
+			displayName = "検索アイコンを常に表示",
+			displayNameKey = "generic_element_section_MassReferenceSection_showSearchBtnDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 2035,
+			description = "検索アイコンを常に表示にします。",
+			descriptionKey = "generic_element_section_MassReferenceSection_showSearchBtnDescriptionKey"
 	)
 	private boolean showSearchBtn;
 
 	/** ページング表示位置 */
 	@MetaFieldInfo(
-			displayName="ページング表示位置",
-			displayNameKey="generic_element_section_MassReferenceSection_pagingPositionDisplayNameKey",
-			inputType=InputType.ENUM,
-			enumClass=PagingPosition.class,
-			displayOrder=2040,
-			description="ページングの表示位置を指定します。<br>" +
+			displayName = "ページング表示位置",
+			displayNameKey = "generic_element_section_MassReferenceSection_pagingPositionDisplayNameKey",
+			inputType = InputType.ENUM,
+			enumClass = PagingPosition.class,
+			displayOrder = 2040,
+			description = "ページングの表示位置を指定します。<br>" +
 					"<b>BOTH   :</b> グリッドの上下<br>" +
 					"<b>TOP    :</b> グリッドの上部<br>" +
 					"<b>BOTTOM :</b> グリッドの下部<br>",
-			descriptionKey="generic_element_section_MassReferenceSection_pagingPositionDescriptionKey"
+			descriptionKey = "generic_element_section_MassReferenceSection_pagingPositionDescriptionKey"
 	)
 	private PagingPosition pagingPosition;
 
-
-
-
 	/** 表示プロパティ */
-	@MetaFieldInfo(displayName="参照型の表示プロパティ",
-			displayNameKey="generic_element_section_MassReferenceSection_propertiesDisplayNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=NestProperty.class,
-			multiple=true,
-			displayOrder=3000,
-			description="参照セクションに表示するプロパティを設定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_propertiesDescriptionKey"
+	@MetaFieldInfo(
+			displayName = "参照型の表示プロパティ",
+			displayNameKey = "generic_element_section_MassReferenceSection_propertiesDisplayNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = NestProperty.class,
+			multiple = true,
+			displayOrder = 3000,
+			description = "参照セクションに表示するプロパティを設定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_propertiesDescriptionKey"
 	)
 	private List<NestProperty> properties;
 
 	/** 編集タイプ */
 	@MetaFieldInfo(
-			displayName="編集タイプ",
-			displayNameKey="generic_element_section_MassReferenceSection_editTypeDisplayNameKey",
-			inputType=InputType.ENUM,
-			enumClass=MassReferenceEditType.class,
-			displayOrder=3010,
-			description="参照型の編集方法を指定します。<br>" +
+			displayName = "編集タイプ",
+			displayNameKey = "generic_element_section_MassReferenceSection_editTypeDisplayNameKey",
+			inputType = InputType.ENUM,
+			enumClass = MassReferenceEditType.class,
+			displayOrder = 3010,
+			description = "参照型の編集方法を指定します。<br>" +
 					"<b>DETAIL :</b> 詳細編集画面で編集<br>" +
 					"<b>VIEW   :</b> 詳細表示画面で編集<br>",
-			descriptionKey="generic_element_section_MassReferenceSection_editTypeDescriptionKey"
+			descriptionKey = "generic_element_section_MassReferenceSection_editTypeDescriptionKey"
 	)
 	private MassReferenceEditType editType;
 
 	/** 編集リンクを詳細リンクに変更 */
 	@MetaFieldInfo(
-			displayName="編集リンクを詳細リンクに変更",
-			displayNameKey="generic_element_section_MassReferenceSection_changeEditLinkToViewLinkDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=3020,
-			description="編集リンクを詳細リンクに変更します。",
-			descriptionKey="generic_element_section_MassReferenceSection_changeEditLinkToViewLinkDescriptionKey"
+			displayName = "編集リンクを詳細リンクに変更",
+			displayNameKey = "generic_element_section_MassReferenceSection_changeEditLinkToViewLinkDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 3020,
+			description = "編集リンクを詳細リンクに変更します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_changeEditLinkToViewLinkDescriptionKey"
 	)
 	private boolean changeEditLinkToViewLink;
 
-
-
-
 	/** 絞り込み条件設定スクリプト */
 	@MetaFieldInfo(
-			displayName="絞り込み条件設定スクリプト",
-			displayNameKey="generic_element_section_MassReferenceSection_filterConditionScriptDisplayNameKey",
-			inputType=InputType.SCRIPT,
-			mode="groovy_script",
-			displayOrder=4000,
-			description="参照データ検索時に自動で絞り込みをする条件を指定するGroovyScriptです。",
-			descriptionKey="generic_element_section_MassReferenceSection_filterConditionScriptDescriptionKey"
+			displayName = "絞り込み条件設定スクリプト",
+			displayNameKey = "generic_element_section_MassReferenceSection_filterConditionScriptDisplayNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 4000,
+			description = "参照データ検索時に自動で絞り込みをする条件を指定するGroovyScriptです。",
+			descriptionKey = "generic_element_section_MassReferenceSection_filterConditionScriptDescriptionKey"
 	)
 	private String filterConditionScript;
 
 	/** ソート設定 */
 	@MetaFieldInfo(
-			displayName="ソート設定",
-			displayNameKey="generic_element_section_MassReferenceSection_sortSettingDisplayNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=SortSetting.class,
-			multiple=true,
-			displayOrder=4010,
-			description="検索時にデフォルトで設定されるソート条件を設定します。<br>" +
+			displayName = "ソート設定",
+			displayNameKey = "generic_element_section_MassReferenceSection_sortSettingDisplayNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = SortSetting.class,
+			multiple = true,
+			displayOrder = 4010,
+			description = "検索時にデフォルトで設定されるソート条件を設定します。<br>" +
 					"検索画面でソートが行われた場合、設定された内容は2番目以降のソート条件として機能します。",
-			descriptionKey="generic_element_section_MassReferenceSection_sortSettingDescriptionKey"
+			descriptionKey = "generic_element_section_MassReferenceSection_sortSettingDescriptionKey"
 	)
 	private List<SortSetting> sortSetting;
 
-
-
-
 	/** ダイアログ表示アクション名 */
 	@MetaFieldInfo(
-			displayName="ダイアログ表示アクション名",
-			displayNameKey="generic_element_section_MassReferenceSection_viewActionNameDisplayNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=5000,
-			description="詳細表示時に表示リンククリックで実行されるアクションを設定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_viewActionNameDescriptionKey"
+			displayName = "ダイアログ表示アクション名",
+			displayNameKey = "generic_element_section_MassReferenceSection_viewActionNameDisplayNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 5000,
+			description = "詳細表示時に表示リンククリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_viewActionNameDescriptionKey"
 	)
 	private String viewActionName;
 
 	/** ダイアログ編集アクション名 */
 	@MetaFieldInfo(
-			displayName="ダイアログ編集アクション名",
-			displayNameKey="generic_element_section_MassReferenceSection_detailActionNameDisplayNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=5005,
-			description="詳細編集時に編集リンク・追加ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_detailActionNameDescriptionKey"
+			displayName = "ダイアログ編集アクション名",
+			displayNameKey = "generic_element_section_MassReferenceSection_detailActionNameDisplayNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 5005,
+			description = "詳細編集時に編集リンク・追加ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_detailActionNameDescriptionKey"
 	)
 	private String detailActionName;
 
 	/** 別タブ表示アクション名 */
 	@MetaFieldInfo(
-			displayName="別タブ表示アクション名",
-			displayNameKey="generic_element_section_MassReferenceSection_viewTabActionNameDisplayNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=5010,
-			description="詳細の別タブ表示時に表示リンククリックで実行されるアクションを設定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_viewTabActionNameDescriptionKey"
+			displayName = "別タブ表示アクション名",
+			displayNameKey = "generic_element_section_MassReferenceSection_viewTabActionNameDisplayNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 5010,
+			description = "詳細の別タブ表示時に表示リンククリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_viewTabActionNameDescriptionKey"
 	)
 	private String viewTabActionName;
 
 	/** 別タブ編集アクション名 */
 	@MetaFieldInfo(
-			displayName="別タブ編集アクション名",
-			displayNameKey="generic_element_section_MassReferenceSection_detailTabActionNameDisplayNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=5015,
-			description="別タブで詳細編集の時に編集リンク・追加ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_detailTabActionNameDescriptionKey"
+			displayName = "別タブ編集アクション名",
+			displayNameKey = "generic_element_section_MassReferenceSection_detailTabActionNameDisplayNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 5015,
+			description = "別タブで詳細編集の時に編集リンク・追加ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_detailTabActionNameDescriptionKey"
 	)
 	private String detailTabActionName;
 
 	/** ビュー定義名 */
 	@MetaFieldInfo(
-			displayName="ビュー定義名",
-			displayNameKey="generic_element_section_MassReferenceSection_viewNameDisplayNameKey",
-			displayOrder=5020,
-			description="編集リンク押下で表示する画面のView定義名を設定します。<br>" +
+			displayName = "ビュー定義名",
+			displayNameKey = "generic_element_section_MassReferenceSection_viewNameDisplayNameKey",
+			displayOrder = 5020,
+			description = "編集リンク押下で表示する画面のView定義名を設定します。<br>" +
 					"未指定の場合はデフォルトのView定義を使用します。",
-			descriptionKey="generic_element_section_MassReferenceSection_viewNameDescriptionKey"
+			descriptionKey = "generic_element_section_MassReferenceSection_viewNameDescriptionKey"
 	)
 	private String viewName;
 
 	/** Entity権限における限定条件の除外設定 */
 	@MetaFieldInfo(
-			displayName="Entity権限における限定条件の除外設定",
-			displayNameKey="generic_element_section_MassReferenceSection_withoutConditionReferenceNameDisplayNameKey",
-			inputType=InputType.MULTI_TEXT,
-			displayOrder=5030,
-			description="Entity権限における限定条件を除外する参照先を指定します。",
-			descriptionKey="generic_element_section_MassReferenceSection_withoutConditionReferenceNameDescriptionKey"
+			displayName = "Entity権限における限定条件の除外設定",
+			displayNameKey = "generic_element_section_MassReferenceSection_withoutConditionReferenceNameDisplayNameKey",
+			inputType = InputType.MULTI_TEXT,
+			displayOrder = 5030,
+			description = "Entity権限における限定条件を除外する参照先を指定します。",
+			descriptionKey = "generic_element_section_MassReferenceSection_withoutConditionReferenceNameDescriptionKey"
 	)
 	private List<String> withoutConditionReferenceName;
 
-
 	/** 上部のコンテンツ */
 	@MetaFieldInfo(
-			displayName="上部のコンテンツ",
-			displayNameKey="generic_element_section_MassReferenceSection_upperContentsDisplayNameKey",
-			description="セクションの上部に表示するコンテンツを設定します。<br>" +
+			displayName = "上部のコンテンツ",
+			displayNameKey = "generic_element_section_MassReferenceSection_upperContentsDisplayNameKey",
+			description = "セクションの上部に表示するコンテンツを設定します。<br>" +
 					"コンテンツの内容にHTMLタグを利用することも可能です。",
-			descriptionKey="generic_element_section_MassReferenceSection_upperContentsDescriptionKey",
-			inputType=InputType.SCRIPT,
-			mode="groovytemplate",
-			displayOrder=6000
+			descriptionKey = "generic_element_section_MassReferenceSection_upperContentsDescriptionKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovytemplate",
+			displayOrder = 6000
 	)
 	private String upperContents;
 
 	/** 下部のコンテンツ */
 	@MetaFieldInfo(
-			displayName="下部のコンテンツ",
-			displayNameKey="generic_element_section_MassReferenceSection_lowerContentsDisplayNameKey",
-			description="セクションの下部に表示するコンテンツを設定します。<br>" +
+			displayName = "下部のコンテンツ",
+			displayNameKey = "generic_element_section_MassReferenceSection_lowerContentsDisplayNameKey",
+			description = "セクションの下部に表示するコンテンツを設定します。<br>" +
 					"コンテンツの内容にHTMLタグを利用することも可能です。",
-			descriptionKey="generic_element_section_MassReferenceSection_lowerContentsDescriptionKey",
-			inputType=InputType.SCRIPT,
-			mode="groovytemplate",
-			displayOrder=6010
+			descriptionKey = "generic_element_section_MassReferenceSection_lowerContentsDescriptionKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovytemplate",
+			displayOrder = 6010
 	)
 	private String lowerContents;
 
@@ -388,7 +371,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return Entity定義名
 	 */
 	public String getDefintionName() {
-	    return defintionName;
+		return defintionName;
 	}
 
 	/**
@@ -396,7 +379,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param defintionName Entity定義名
 	 */
 	public void setDefintionName(String defintionName) {
-	    this.defintionName = defintionName;
+		this.defintionName = defintionName;
 	}
 
 	/**
@@ -404,7 +387,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return プロパティ名
 	 */
 	public String getPropertyName() {
-	    return propertyName;
+		return propertyName;
 	}
 
 	/**
@@ -412,7 +395,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param propertyName プロパティ名
 	 */
 	public void setPropertyName(String propertyName) {
-	    this.propertyName = propertyName;
+		this.propertyName = propertyName;
 	}
 
 	/**
@@ -420,7 +403,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 詳細編集非表示設定
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -428,7 +411,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param hideDetail 詳細編集非表示設定
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -436,7 +419,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 詳細表示非表示設定
 	 */
 	public boolean isHideView() {
-	    return hideView;
+		return hideView;
 	}
 
 	/**
@@ -444,7 +427,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param hideView 詳細表示非表示設定
 	 */
 	public void setHideView(boolean hideView) {
-	    this.hideView = hideView;
+		this.hideView = hideView;
 	}
 
 	/**
@@ -452,7 +435,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return セクションの展開可否
 	 */
 	public boolean isExpandable() {
-	    return expandable;
+		return expandable;
 	}
 
 	/**
@@ -460,7 +443,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param expandable セクションの展開可否
 	 */
 	public void setExpandable(boolean expandable) {
-	    this.expandable = expandable;
+		this.expandable = expandable;
 	}
 
 	/**
@@ -469,7 +452,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 */
 	@Override
 	public boolean isShowLink() {
-	    return showLink;
+		return showLink;
 	}
 
 	/**
@@ -477,7 +460,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param showLink リンクを表示するか
 	 */
 	public void setShowLink(boolean showLink) {
-	    this.showLink = showLink;
+		this.showLink = showLink;
 	}
 
 	/**
@@ -485,7 +468,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 上限値
 	 */
 	public int getLimit() {
-	    return limit;
+		return limit;
 	}
 
 	/**
@@ -493,7 +476,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param limit 上限値
 	 */
 	public void setLimit(int limit) {
-	    this.limit = limit;
+		this.limit = limit;
 	}
 
 	/**
@@ -501,7 +484,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 削除ボタン非表示設定
 	 */
 	public boolean isHideDeleteButton() {
-	    return hideDeleteButton;
+		return hideDeleteButton;
 	}
 
 	/**
@@ -509,7 +492,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param hideDeleteButton 削除ボタン非表示設定
 	 */
 	public void setHideDeleteButton(boolean hideDeleteButton) {
-	    this.hideDeleteButton = hideDeleteButton;
+		this.hideDeleteButton = hideDeleteButton;
 	}
 
 	/**
@@ -517,7 +500,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 追加ボタン非表示設定
 	 */
 	public boolean isHideAddButton() {
-	    return hideAddButton;
+		return hideAddButton;
 	}
 
 	/**
@@ -525,7 +508,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param hideAddButton 追加ボタン非表示設定
 	 */
 	public void setHideAddButton(boolean hideAddButton) {
-	    this.hideAddButton = hideAddButton;
+		this.hideAddButton = hideAddButton;
 	}
 
 	/**
@@ -533,7 +516,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return ページング非表示設定
 	 */
 	public boolean isHidePaging() {
-	    return hidePaging;
+		return hidePaging;
 	}
 
 	/**
@@ -541,7 +524,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param hidePaging ページング非表示設定
 	 */
 	public void setHidePaging(boolean hidePaging) {
-	    this.hidePaging = hidePaging;
+		this.hidePaging = hidePaging;
 	}
 
 	/**
@@ -549,7 +532,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 件数非表示設定
 	 */
 	public boolean isHideCount() {
-	    return hideCount;
+		return hideCount;
 	}
 
 	/**
@@ -557,7 +540,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param hideCount 件数非表示設定
 	 */
 	public void setHideCount(boolean hideCount) {
-	    this.hideCount = hideCount;
+		this.hideCount = hideCount;
 	}
 
 	/**
@@ -565,7 +548,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return ページジャンプ非表示設定
 	 */
 	public boolean isHidePageJump() {
-	    return hidePageJump;
+		return hidePageJump;
 	}
 
 	/**
@@ -573,7 +556,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param hidePageJump ページジャンプ非表示設定
 	 */
 	public void setHidePageJump(boolean hidePageJump) {
-	    this.hidePageJump = hidePageJump;
+		this.hidePageJump = hidePageJump;
 	}
 
 	/**
@@ -581,7 +564,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return ページリンク非表示設定
 	 */
 	public boolean isHidePageLink() {
-	    return hidePageLink;
+		return hidePageLink;
 	}
 
 	/**
@@ -589,7 +572,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param hidePageLink ページリンク非表示設定
 	 */
 	public void setHidePageLink(boolean hidePageLink) {
-	    this.hidePageLink = hidePageLink;
+		this.hidePageLink = hidePageLink;
 	}
 
 	/**
@@ -613,8 +596,9 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 表示プロパティ
 	 */
 	public List<NestProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<>();
-	    return properties;
+		if (properties == null)
+			properties = new ArrayList<>();
+		return properties;
 	}
 
 	/**
@@ -622,7 +606,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param properties 表示プロパティ
 	 */
 	public void setProperties(List<NestProperty> properties) {
-	    this.properties = properties;
+		this.properties = properties;
 	}
 
 	/**
@@ -638,7 +622,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 編集タイプ
 	 */
 	public MassReferenceEditType getEditType() {
-	    return editType;
+		return editType;
 	}
 
 	/**
@@ -646,7 +630,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param editType 編集タイプ
 	 */
 	public void setEditType(MassReferenceEditType editType) {
-	    this.editType = editType;
+		this.editType = editType;
 	}
 
 	/**
@@ -670,7 +654,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 絞り込み条件設定スクリプト
 	 */
 	public String getFilterConditionScript() {
-	    return filterConditionScript;
+		return filterConditionScript;
 	}
 
 	/**
@@ -678,7 +662,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param filterConditionScript 絞り込み条件設定スクリプト
 	 */
 	public void setFilterConditionScript(String filterConditionScript) {
-	    this.filterConditionScript = filterConditionScript;
+		this.filterConditionScript = filterConditionScript;
 	}
 
 	/**
@@ -686,7 +670,8 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return ソート設定
 	 */
 	public List<SortSetting> getSortSetting() {
-		if (sortSetting == null) sortSetting = new ArrayList<>();
+		if (sortSetting == null)
+			sortSetting = new ArrayList<>();
 		return sortSetting;
 	}
 
@@ -707,7 +692,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return ダイアログ表示アクション名
 	 */
 	public String getViewActionName() {
-	    return viewActionName;
+		return viewActionName;
 	}
 
 	/**
@@ -715,7 +700,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param viewActionName ダイアログ表示アクション名
 	 */
 	public void setViewActionName(String viewActionName) {
-	    this.viewActionName = viewActionName;
+		this.viewActionName = viewActionName;
 	}
 
 	/**
@@ -723,7 +708,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return ダイアログ編集アクション名
 	 */
 	public String getDetailActionName() {
-	    return detailActionName;
+		return detailActionName;
 	}
 
 	/**
@@ -731,7 +716,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param detailActionName ダイアログ編集アクション名
 	 */
 	public void setDetailActionName(String detailActionName) {
-	    this.detailActionName = detailActionName;
+		this.detailActionName = detailActionName;
 	}
 
 	/**
@@ -771,7 +756,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return ビュー定義名
 	 */
 	public String getViewName() {
-	    return viewName;
+		return viewName;
 	}
 
 	/**
@@ -779,7 +764,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param viewName ビュー定義名
 	 */
 	public void setViewName(String viewName) {
-	    this.viewName = viewName;
+		this.viewName = viewName;
 	}
 
 	/**
@@ -803,7 +788,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 上部のコンテンツ
 	 */
 	public String getUpperContents() {
-	    return upperContents;
+		return upperContents;
 	}
 
 	/**
@@ -811,7 +796,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param upperContents 上部のコンテンツ
 	 */
 	public void setUpperContents(String upperContents) {
-	    this.upperContents = upperContents;
+		this.upperContents = upperContents;
 	}
 
 	/**
@@ -819,7 +804,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 下部のコンテンツ
 	 */
 	public String getLowerContents() {
-	    return lowerContents;
+		return lowerContents;
 	}
 
 	/**
@@ -827,7 +812,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param lowerContents 下部のコンテンツ
 	 */
 	public void setLowerContents(String lowerContents) {
-	    this.lowerContents = lowerContents;
+		this.lowerContents = lowerContents;
 	}
 
 	/**
@@ -835,7 +820,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return ページング表示位置
 	 */
 	public PagingPosition getPagingPosition() {
-	    return pagingPosition;
+		return pagingPosition;
 	}
 
 	/**
@@ -843,7 +828,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @param pagingPosition ページング表示位置
 	 */
 	public void setPagingPosition(PagingPosition pagingPosition) {
-	    this.pagingPosition = pagingPosition;
+		this.pagingPosition = pagingPosition;
 	}
 
 	/**

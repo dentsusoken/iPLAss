@@ -24,22 +24,23 @@ import java.io.Serializable;
 
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-@XmlSeeAlso (value = {
-		PoiReportType.class,
-		JasperReportType.class,
-		JxlsReportType.class
-})
-public class ReportType implements Serializable  {
-	
+@XmlSeeAlso(
+		value = {
+				PoiReportType.class,
+				JasperReportType.class,
+				JxlsReportType.class
+		})
+public class ReportType implements Serializable {
+
 	private static final long serialVersionUID = -7878509238666614937L;
-	
+
 	private String outputFileType;
 
 	public String getOutputFileType() {
-	    return outputFileType;
+		return outputFileType;
 	}
 
 	public void setOutputFileType(String outputFileType) {
-	    this.outputFileType = outputFileType;
+		this.outputFileType = outputFileType;
 	}
 }

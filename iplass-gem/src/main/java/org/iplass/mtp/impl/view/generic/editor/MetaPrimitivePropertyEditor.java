@@ -37,10 +37,10 @@ import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
  *
  * @author lis3wg
  */
-@XmlSeeAlso( {MetaAutoNumberPropertyEditor.class, MetaBinaryPropertyEditor.class, MetaBooleanPropertyEditor.class,
-	MetaDateTimePropertyEditor.class, MetaExpressionPropertyEditor.class,
-	MetaNumberPropertyEditor.class, MetaSelectPropertyEditor.class,
-	MetaStringPropertyEditor.class})
+@XmlSeeAlso({ MetaAutoNumberPropertyEditor.class, MetaBinaryPropertyEditor.class, MetaBooleanPropertyEditor.class,
+		MetaDateTimePropertyEditor.class, MetaExpressionPropertyEditor.class,
+		MetaNumberPropertyEditor.class, MetaSelectPropertyEditor.class,
+		MetaStringPropertyEditor.class })
 public abstract class MetaPrimitivePropertyEditor extends MetaPropertyEditor {
 
 	/** シリアルバージョンUID */

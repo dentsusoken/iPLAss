@@ -91,23 +91,28 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 	 * @return ファイルダウンロード用のコンテキスト
 	 */
 	public static EntityFileDownloadSearchContext getContext(SearchContextBase context) {
-		FileSupportType fileSupportType = context.getConditionSection().getFileSupportType();
+		FileSupportType fileSupportType = context.getConditionSection()
+				.getFileSupportType();
 
 		// 未指定の場合は、GemConfigServiceから取得
 		if (fileSupportType == null) {
-			GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+			GemConfigService gemConfigService = ServiceRegistry.getRegistry()
+					.getService(GemConfigService.class);
 			fileSupportType = gemConfigService.getFileSupportType();
 		}
 
 		if (fileSupportType == FileSupportType.SPECIFY) {
-			String specifyType = context.getRequest().getParam(Constants.FILE_SUPPORT_TYPE);
-			if (FileSupportType.CSV.name().equals(specifyType)) {
+			String specifyType = context.getRequest()
+					.getParam(Constants.FILE_SUPPORT_TYPE);
+			if (FileSupportType.CSV.name()
+					.equals(specifyType)) {
 				fileSupportType = FileSupportType.CSV;
-			} else if (FileSupportType.EXCEL.name().equals(specifyType)) {
+			} else if (FileSupportType.EXCEL.name()
+					.equals(specifyType)) {
 				fileSupportType = FileSupportType.EXCEL;
 			} else {
-                fileSupportType = FileSupportType.CSV;
-            }
+				fileSupportType = FileSupportType.CSV;
+			}
 		}
 
 		if (fileSupportType == FileSupportType.CSV) {
@@ -117,7 +122,7 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 		} else {
 			log.error("Unsupported file support type: " + fileSupportType);
 			throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.search.EntityFileDownloadSearchContext.internalErr"));
-        }
+		}
 	}
 
 	protected EntityFileDownloadSearchContext(SearchContextBase context) {
@@ -139,10 +144,10 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 	public abstract String getFileExtension();
 
 	/**
-     * ファイル出力用のWriterを生成します。
-     *
-     * @return ファイル出力用のWriter
-     */
+	 * ファイル出力用のWriterを生成します。
+	 *
+	 * @return ファイル出力用のWriter
+	 */
 	public abstract ResultStreamWriter createWriter();
 
 	@Override
@@ -349,13 +354,14 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 			}
 
 			//FileItemでかつ出力対象を取得
-			List<FileItem> fileItems = getResultSection().getElements().stream()
+			List<FileItem> fileItems = getResultSection().getElements()
+					.stream()
 					.filter(element -> {
 						return EntityViewUtil.isDisplayElement(
 								getDefName(), element.getElementRuntimeId(), OutputType.SEARCHRESULT, null);
 					})
 					.filter(element -> {
-						return (element instanceof FileItem) && ((FileItem)element).isOutputCsv();
+						return (element instanceof FileItem) && ((FileItem) element).isOutputCsv();
 					})
 					.map(e -> (FileItem) e)
 					.collect(Collectors.toList());
@@ -365,7 +371,7 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 				String propertyName = fileItem.getPropertyName();
 				if (fileItem.getEditor() instanceof ReferencePropertyEditor) {
 					//ReferencePropertyEditorの場合、Nestがあるかで設定
-					List<NestProperty> nest = ((ReferencePropertyEditor)fileItem.getEditor()).getNestProperties();
+					List<NestProperty> nest = ((ReferencePropertyEditor) fileItem.getEditor()).getNestProperties();
 					addColumn(columnMap, propertyName, fileItem, nest.toArray(new NestProperty[nest.size()]));
 				} else if (fileItem.getEditor() instanceof JoinPropertyEditor) {
 					//JoinPropertyEditorの場合、自身を追加
@@ -507,8 +513,9 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 						columnMap.putIfAbsent(oidColumn.getPropertyName(), oidColumn);
 					}
 
-					GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
-					String displayLabelItem = ((ReferencePropertyEditor)fileItem.getEditor()).getDisplayLabelItem();
+					GemConfigService service = ServiceRegistry.getRegistry()
+							.getService(GemConfigService.class);
+					String displayLabelItem = ((ReferencePropertyEditor) fileItem.getEditor()).getDisplayLabelItem();
 
 					FileColumn fileColumn = null;
 					if (service.isUseDisplayLabelItemInCsvDownload() && StringUtil.isNotBlank(displayLabelItem)) {
@@ -561,7 +568,8 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 			FileItem property = getTopFileItem(topPropName);
 			if (property != null
 					&& property.getEditor() instanceof ReferencePropertyEditor
-					&& !((ReferencePropertyEditor) property.getEditor()).getNestProperties().isEmpty()) {
+					&& !((ReferencePropertyEditor) property.getEditor()).getNestProperties()
+							.isEmpty()) {
 				//下位のネストのFileItemを取得
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 				FileItem nestProperty = getNestFileItem(editor.getNestProperties(), subPropName);
@@ -585,10 +593,12 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 	 * @return FileItem
 	 */
 	private FileItem getTopFileItem(final String propertyName) {
-		Optional<FileItem> fileItem = getResultSection().getElements().stream()
+		Optional<FileItem> fileItem = getResultSection().getElements()
+				.stream()
 				.filter(element -> element instanceof FileItem)
 				.map(element -> (FileItem) element)
-				.filter(element -> propertyName.equals(element.getPropertyName())).findFirst();
+				.filter(element -> propertyName.equals(element.getPropertyName()))
+				.findFirst();
 		if (fileItem.isPresent()) {
 			return fileItem.get();
 		}
@@ -613,7 +623,8 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 			NestProperty property = getNestProperty(properties, topPropName);
 			if (property != null
 					&& property.getEditor() instanceof ReferencePropertyEditor
-					&& !((ReferencePropertyEditor) property.getEditor()).getNestProperties().isEmpty()) {
+					&& !((ReferencePropertyEditor) property.getEditor()).getNestProperties()
+							.isEmpty()) {
 				//下位のネストのFileItemを取得
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 				return getNestFileItem(editor.getNestProperties(), subPropName);
@@ -638,8 +649,8 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 	 */
 	private NestProperty getNestProperty(List<NestProperty> properties, String propertyName) {
 		Optional<NestProperty> nest = properties.stream()
-			.filter(property -> propertyName.equals(property.getPropertyName()))
-			.findFirst();
+				.filter(property -> propertyName.equals(property.getPropertyName()))
+				.findFirst();
 		if (nest.isPresent()) {
 			return nest.get();
 		} else {
@@ -718,7 +729,9 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 			if (!StringUtil.isEmpty(fileItem.getDisplayLabel())) {
 				String displayLabel = TemplateUtil.getMultilingualString(fileItem.getDisplayLabel(), fileItem.getLocalizedDisplayLabelList());
 				if (displayLabel != null) {
-					if (fileColumn.getReferenceProperty() != null && fileColumn.getPropertyDefinition().getName().equals(Entity.OID)) {
+					if (fileColumn.getReferenceProperty() != null && fileColumn.getPropertyDefinition()
+							.getName()
+							.equals(Entity.OID)) {
 						return displayLabel + "(ID)";
 					} else {
 						return displayLabel;
@@ -733,7 +746,9 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 		if (fileColumn.getReferenceProperty() != null) {
 			PropertyDefinition pd = fileColumn.getReferenceProperty();
 			String referenceName = TemplateUtil.getMultilingualString(pd.getDisplayName(), pd.getLocalizedDisplayNameList());
-			if (fileColumn.getPropertyDefinition() != null && fileColumn.getPropertyDefinition().getName().equals(Entity.OID)) {
+			if (fileColumn.getPropertyDefinition() != null && fileColumn.getPropertyDefinition()
+					.getName()
+					.equals(Entity.OID)) {
 				return referenceName + "(ID)";
 			} else {
 				return referenceName;
@@ -761,10 +776,10 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 		String viewTitle = TemplateUtil.getMultilingualString(
 				getForm().getTitle(),
 				getForm().getLocalizedTitleList());
-		if(StringUtil.isNotBlank(viewTitle)) {
+		if (StringUtil.isNotBlank(viewTitle)) {
 			displayName = viewTitle;
 		}
-		return displayName  + "(ID)";
+		return displayName + "(ID)";
 	}
 
 	/**
@@ -807,15 +822,18 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 
 		SearchFormCsvUploadInterrupter csvUploadInterrupter = null;
 		if (getConditionSection() != null && StringUtil.isNotEmpty(getConditionSection().getCsvUploadInterrupterName())) {
-			UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+			UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance()
+					.getManager(UtilityClassDefinitionManager.class);
 			try {
 				csvUploadInterrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class, getConditionSection().getCsvUploadInterrupterName());
 			} catch (ClassNotFoundException e) {
 				log.error(getConditionSection().getCsvUploadInterrupterName() + " can not instantiate.", e);
-				throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.search.EntityFileDownloadSearchContext.internalErr"));
+				throw new ApplicationException(
+						GemResourceBundleUtil.resourceString("command.generic.search.EntityFileDownloadSearchContext.internalErr"));
 			}
 		} else {
-			csvUploadInterrupter = new SearchFormCsvUploadInterrupter() {};
+			csvUploadInterrupter = new SearchFormCsvUploadInterrupter() {
+			};
 		}
 
 		customColumnNameMap = csvUploadInterrupter.columnNameMap(getEntityDefinition());
@@ -972,9 +990,9 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 				PropertyEditor editor = fileItem.getEditor();
 				//WrapしているEditorは設定されているEditorを返す
 				if (editor instanceof JoinPropertyEditor) {
-					return ((JoinPropertyEditor)editor).getEditor();
+					return ((JoinPropertyEditor) editor).getEditor();
 				} else if (editor instanceof DateRangePropertyEditor) {
-					return ((DateRangePropertyEditor)editor).getEditor();
+					return ((DateRangePropertyEditor) editor).getEditor();
 				} else {
 					return editor;
 				}
@@ -1000,7 +1018,7 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 		}
 
 		@Override
-		public String toString( ) {
+		public String toString() {
 			StringBuilder builder = new StringBuilder();
 			builder.append("FileColumn [");
 			builder.append("propertyName=");
@@ -1011,13 +1029,15 @@ public abstract class EntityFileDownloadSearchContext extends SearchContextBase 
 			builder.append(getMultiplicity());
 			builder.append(", property=");
 			if (propertyDefinition != null) {
-				builder.append(propertyDefinition.getClass().getSimpleName());
+				builder.append(propertyDefinition.getClass()
+						.getSimpleName());
 			} else {
 				builder.append("null");
 			}
 			builder.append(", fileItem=");
 			if (fileItem != null) {
-				builder.append(fileItem.getClass().getSimpleName());
+				builder.append(fileItem.getClass()
+						.getSimpleName());
 			} else {
 				builder.append("null");
 			}

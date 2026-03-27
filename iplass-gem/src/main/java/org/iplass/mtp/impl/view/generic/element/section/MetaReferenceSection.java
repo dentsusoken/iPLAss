@@ -64,7 +64,6 @@ public class MetaReferenceSection extends MetaSection {
 		defaultDispBorderInSection = Boolean.parseBoolean(value);
 	}
 
-
 	public static MetaReferenceSection createInstance(Element element) {
 		return new MetaReferenceSection();
 	}
@@ -222,6 +221,7 @@ public class MetaReferenceSection extends MetaSection {
 	public void setForceUpadte(boolean forceUpadte) {
 		this.forceUpadte = forceUpadte;
 	}
+
 	/**
 	 * 上部のコンテンツを取得します。
 	 * @return 上部のコンテンツ
@@ -259,7 +259,8 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return 表示プロパティ
 	 */
 	public List<MetaNestProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<>();
+		if (properties == null)
+			properties = new ArrayList<>();
 		return properties;
 	}
 
@@ -335,10 +336,12 @@ public class MetaReferenceSection extends MetaSection {
 
 		EntityContext ctx = EntityContext.getCurrentContext();
 		EntityHandler fromEntity = ctx.getHandlerById(definitionId);
-		if (fromEntity == null) return;
+		if (fromEntity == null)
+			return;
 
 		PropertyHandler property = fromEntity.getProperty(section.getPropertyName(), ctx);
-		if (!(property instanceof ReferencePropertyHandler)) return;
+		if (!(property instanceof ReferencePropertyHandler))
+			return;
 
 		ReferencePropertyHandler refHandler = (ReferencePropertyHandler) property;
 		EntityHandler referenceEntity = refHandler.getReferenceEntityHandler(ctx);
@@ -356,12 +359,14 @@ public class MetaReferenceSection extends MetaSection {
 		dispBorderInSection = section.isDispBorderInSection();
 		if (StringUtil.isNotBlank(section.getOrderPropName())) {
 			PropertyHandler orderProp = referenceEntity.getProperty(section.getOrderPropName(), ctx);
-			if (orderProp != null) orderPropId = orderProp.getId();
+			if (orderProp != null)
+				orderPropId = orderProp.getId();
 		}
 		for (NestProperty nest : section.getProperties()) {
 			MetaNestProperty meta = new MetaNestProperty();
 			meta.applyConfig(nest, referenceEntity, fromEntity, fromEntity);
-			if (meta.getPropertyId() != null) addProperty(meta);
+			if (meta.getPropertyId() != null)
+				addProperty(meta);
 		}
 	}
 
@@ -372,10 +377,12 @@ public class MetaReferenceSection extends MetaSection {
 		super.fillTo(section, definitionId);
 		EntityContext ctx = EntityContext.getCurrentContext();
 		EntityHandler fromEntity = ctx.getHandlerById(definitionId);
-		if (fromEntity == null) return null;
+		if (fromEntity == null)
+			return null;
 
 		PropertyHandler property = fromEntity.getPropertyById(propertyId, ctx);
-		if (property == null || !(property instanceof ReferencePropertyHandler)) return null;
+		if (property == null || !(property instanceof ReferencePropertyHandler))
+			return null;
 
 		ReferencePropertyHandler refHandler = (ReferencePropertyHandler) property;
 		EntityHandler referenceEntity = refHandler.getReferenceEntityHandler(ctx);
@@ -384,7 +391,8 @@ public class MetaReferenceSection extends MetaSection {
 			return null;
 		}
 
-		section.setDefintionName(referenceEntity.getMetaData().getName());
+		section.setDefintionName(referenceEntity.getMetaData()
+				.getName());
 		section.setPropertyName(refHandler.getName());
 		section.setExpandable(expandable);
 		section.setColNum(this.colNum);
@@ -398,11 +406,13 @@ public class MetaReferenceSection extends MetaSection {
 		section.setDispBorderInSection(dispBorderInSection);
 		if (StringUtil.isNotBlank(orderPropId)) {
 			PropertyHandler orderProp = referenceEntity.getPropertyById(orderPropId, ctx);
-			if (orderProp != null) section.setOrderPropName(orderProp.getName());
+			if (orderProp != null)
+				section.setOrderPropName(orderProp.getName());
 		}
 		for (MetaNestProperty meta : getProperties()) {
 			NestProperty nest = meta.currentConfig(referenceEntity, fromEntity, fromEntity);
-			if (nest != null) section.addProperty(nest);
+			if (nest != null)
+				section.addProperty(nest);
 		}
 		section.setContentScriptKey(contentScriptKey);
 
@@ -435,7 +445,8 @@ public class MetaReferenceSection extends MetaSection {
 			super(metadata, entityView);
 
 			EntityContext ctx = EntityContext.getCurrentContext();
-			EntityHandler parentEntityHandler = ctx.getHandlerById(entityView.getMetaData().getDefinitionId());
+			EntityHandler parentEntityHandler = ctx.getHandlerById(entityView.getMetaData()
+					.getDefinitionId());
 			ReferencePropertyHandler referencePropertyHandler = (ReferencePropertyHandler) parentEntityHandler
 					.getPropertyById(metadata.getPropertyId(), ctx);
 			EntityHandler referenceEntityHandler = referencePropertyHandler.getReferenceEntityHandler(ctx);
@@ -446,8 +457,9 @@ public class MetaReferenceSection extends MetaSection {
 			if (properties != null && !properties.isEmpty()) {
 				Map<String, SectionPropertyRuntime> nestPropertyRuntimeMap = new HashMap<>();
 				for (MetaNestProperty meta : properties) {
-					if (meta.getAutocompletionSetting()  != null) {
-						entityView.addAutocompletionSetting(meta.getAutocompletionSetting().createRuntime(entityView));
+					if (meta.getAutocompletionSetting() != null) {
+						entityView.addAutocompletionSetting(meta.getAutocompletionSetting()
+								.createRuntime(entityView));
 					}
 
 					// Referenceプロパティの参照先プロパティの情報を取得
@@ -474,7 +486,8 @@ public class MetaReferenceSection extends MetaSection {
 			if (StringUtil.isNotEmpty(metadata.upperContents) || StringUtil.isNotEmpty(metadata.lowerContents)) {
 				if (metadata.contentScriptKey == null) {
 					//ContentsScript用のKEYを設定
-					metadata.contentScriptKey = "ReferenceSection_content_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+					metadata.contentScriptKey = "ReferenceSection_content_" + GroovyTemplateCompiler.randomName()
+							.replace("-", "_");
 				}
 				if (StringUtil.isNotEmpty(metadata.upperContents)) {
 					//EntityViewにセット
@@ -501,7 +514,8 @@ public class MetaReferenceSection extends MetaSection {
 		}
 
 		private GroovyTemplate compile(String script, String key) {
-			TenantContext tenant = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tenant = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			return GroovyTemplateCompiler.compile(
 					script, key, (GroovyScriptEngine) tenant.getScriptEngine());
 		}

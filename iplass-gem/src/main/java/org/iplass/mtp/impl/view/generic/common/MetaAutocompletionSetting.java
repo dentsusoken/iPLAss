@@ -35,7 +35,7 @@ import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.common.JavascriptAutocompletionSetting;
 import org.iplass.mtp.view.generic.common.WebApiAutocompletionSetting;
 
-@XmlSeeAlso({MetaJavascriptAutocompletionSetting.class, MetaWebApiAutocompletionSetting.class})
+@XmlSeeAlso({ MetaJavascriptAutocompletionSetting.class, MetaWebApiAutocompletionSetting.class })
 public abstract class MetaAutocompletionSetting implements MetaData {
 
 	private static final long serialVersionUID = 6255668944455905313L;
@@ -59,7 +59,8 @@ public abstract class MetaAutocompletionSetting implements MetaData {
 	 * @return properties
 	 */
 	public List<MetaAutocompletionProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<>();
+		if (properties == null)
+			properties = new ArrayList<>();
 		return properties;
 	}
 
@@ -86,7 +87,8 @@ public abstract class MetaAutocompletionSetting implements MetaData {
 	public abstract void applyConfig(AutocompletionSetting setting, EntityHandler entity, EntityHandler rootEntity);
 
 	protected void fillFrom(AutocompletionSetting setting, EntityHandler entity, EntityHandler rootEntity) {
-		if (setting.getProperties() != null && !setting.getProperties().isEmpty()) {
+		if (setting.getProperties() != null && !setting.getProperties()
+				.isEmpty()) {
 			for (AutocompletionProperty property : setting.getProperties()) {
 				MetaAutocompletionProperty meta = new MetaAutocompletionProperty();
 				meta.applyConfig(property, entity, rootEntity);

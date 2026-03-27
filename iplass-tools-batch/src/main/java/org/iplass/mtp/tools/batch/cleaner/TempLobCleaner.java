@@ -22,7 +22,8 @@ public class TempLobCleaner extends MtpSilentBatch {
 
 	private static Logger logger = LoggerFactory.getLogger(TempLobCleaner.class);
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
 
 	private int tenantId;
 
@@ -47,7 +48,7 @@ public class TempLobCleaner extends MtpSilentBatch {
 			} else {
 				List<TenantInfo> tenants = getValidTenantInfoList();
 				if (tenants != null) {
-					for (TenantInfo t: tenants) {
+					for (TenantInfo t : tenants) {
 						(new TempLobCleaner(t.getId())).clean();
 					}
 				}
@@ -87,12 +88,12 @@ public class TempLobCleaner extends MtpSilentBatch {
 
 				//テンポラリのBinaryReference削除
 				Transaction.required(t -> {
-						LobHandler.cleanTemporaryBinaryData();
+					LobHandler.cleanTemporaryBinaryData();
 				});
 
 				//参照カウント0のバイナリデータ削除
 				Transaction.required(t -> {
-						LobHandler.cleanLobData();
+					LobHandler.cleanLobData();
 				});
 
 				setSuccess(true);
@@ -116,7 +117,7 @@ public class TempLobCleaner extends MtpSilentBatch {
 	 * @return tenantId
 	 */
 	public int getTenantId() {
-	    return tenantId;
+		return tenantId;
 	}
 
 	/**
@@ -124,7 +125,7 @@ public class TempLobCleaner extends MtpSilentBatch {
 	 * @param tenantId tenantId
 	 */
 	public void setTenantId(int tenantId) {
-	    this.tenantId = tenantId;
+		this.tenantId = tenantId;
 	}
 
 	@Override

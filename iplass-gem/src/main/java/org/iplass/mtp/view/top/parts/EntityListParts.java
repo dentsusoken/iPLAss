@@ -52,7 +52,7 @@ public class EntityListParts extends TemplateParts {
 	 * @return アイコンタグ
 	 */
 	public String getIconTag() {
-	    return iconTag;
+		return iconTag;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class EntityListParts extends TemplateParts {
 	 * @param iconTag アイコンタグ
 	 */
 	public void setIconTag(String iconTag) {
-	    this.iconTag = iconTag;
+		this.iconTag = iconTag;
 	}
 
 	/**
@@ -147,7 +147,12 @@ public class EntityListParts extends TemplateParts {
 	 * タイトルを取得します。
 	 * @return タイトル
 	 */
-	@MultiLang(itemKey = "title", itemGetter = "getTitle", itemSetter = "setTitle", multiLangGetter = "getLocalizedTitleList", multiLangSetter = "setLocalizedTitleList")
+	@MultiLang(
+			itemKey = "title",
+			itemGetter = "getTitle",
+			itemSetter = "setTitle",
+			multiLangGetter = "getLocalizedTitleList",
+			multiLangSetter = "setLocalizedTitleList")
 	public String getTitle() {
 		return getParam("title");
 	}
@@ -165,7 +170,7 @@ public class EntityListParts extends TemplateParts {
 	 * @return 高さ
 	 */
 	public Integer getHeight() {
-	    return height;
+		return height;
 	}
 
 	/**
@@ -173,7 +178,7 @@ public class EntityListParts extends TemplateParts {
 	 * @param height 高さ
 	 */
 	public void setHeight(Integer height) {
-	    this.height = height;
+		this.height = height;
 	}
 
 	/**

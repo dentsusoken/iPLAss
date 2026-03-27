@@ -43,20 +43,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InfinispanIndexedCacheStore implements CacheStore {
-	
+
 	//TODO index更新に失敗した場合のリカバリ方法（バッチで別プロセスで修復か。。。）
-	
+
 	private static Logger logger = LoggerFactory.getLogger(InfinispanIndexedCacheStore.class);
 	protected static Logger fatalLogger = LoggerFactory.getLogger("mtp.fatal.cache");
-	
+
 	protected final CacheStore wrapped;
 	protected final Cache<IndexKey, IndexEntry> indexStore;
 	protected final int indexSize;
 	protected final int indexRemoveTryCount;
 	protected final long indexRemoveRetryIntervalNanos;
 	protected final boolean invalidationMode;
-	
-	public InfinispanIndexedCacheStore(CacheStore wrapped, Cache<IndexKey, IndexEntry> indexStore, int indexSize, int indexRemoveRetryCount, long indexRemoveRetryIntervalNanos, boolean invalidationMode) {
+
+	public InfinispanIndexedCacheStore(CacheStore wrapped, Cache<IndexKey, IndexEntry> indexStore, int indexSize, int indexRemoveRetryCount,
+			long indexRemoveRetryIntervalNanos, boolean invalidationMode) {
 		this.wrapped = wrapped;
 		this.indexStore = indexStore;
 		this.indexSize = indexSize;
@@ -68,21 +69,24 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 				@Override
 				public void updated(CacheUpdateEvent event) {
 				}
+
 				@Override
 				public void removed(CacheRemoveEvent event) {
 				}
+
 				@Override
 				public void created(CacheCreateEvent event) {
 				}
+
 				@Override
 				public void invalidated(CacheInvalidateEvent event) {
 					mainteIndex(event.getEntry(), null);
 				}
 			});
 		}
-		
+
 	}
-	
+
 	@Override
 	public String getNamespace() {
 		return wrapped.getNamespace();
@@ -100,18 +104,18 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 		mainteIndex(previous, entry);
 		return previous;
 	}
-	
+
 	protected void mainteIndex(CacheEntry oldEntry, CacheEntry newEntry) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("mainteIndex:old=" + oldEntry + ", new=" + newEntry);
 		}
-		
+
 		for (int i = 0; i < indexSize; i++) {
 			if (oldEntry != null) {
 				CacheEntryRef oldRef = new CacheEntryRef(oldEntry.getKey(), oldEntry.getVersion());
 				Object iVal = oldEntry.getIndexValue(i);
 				if (iVal instanceof Object[]) {
-					for (Object iv: (Object[]) iVal) {
+					for (Object iv : (Object[]) iVal) {
 						removeFromIndex(indexStore, new IndexKey(i, iv), oldRef, indexRemoveTryCount, indexRemoveRetryIntervalNanos);
 					}
 				} else {
@@ -122,7 +126,7 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 				CacheEntryRef newRef = new CacheEntryRef(newEntry.getKey(), newEntry.getVersion());
 				Object iVal = newEntry.getIndexValue(i);
 				if (iVal instanceof Object[]) {
-					for (Object iv: (Object[]) iVal) {
+					for (Object iv : (Object[]) iVal) {
 						addToIndex(indexStore, new IndexKey(i, iv), newRef);
 					}
 				} else {
@@ -131,8 +135,7 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 			}
 		}
 	}
-	
-	
+
 	protected static void addToIndex(Cache<IndexKey, IndexEntry> indexStore, IndexKey iKey, CacheEntryRef ref) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("addToIndex:" + iKey + ", " + ref);
@@ -152,10 +155,11 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 				}
 			}
 		}
-		
+
 	}
-	
-	protected static void removeFromIndex(Cache<IndexKey, IndexEntry> indexStore, IndexKey iKey, CacheEntryRef ref, int indexRemoveTryCount, long indexRemoveRetryIntervalNanos) {
+
+	protected static void removeFromIndex(Cache<IndexKey, IndexEntry> indexStore, IndexKey iKey, CacheEntryRef ref, int indexRemoveTryCount,
+			long indexRemoveRetryIntervalNanos) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("removeFromIndex:" + iKey + ", " + ref);
 		}
@@ -183,10 +187,10 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 				}
 			}
 		}
-		
-		fatalLogger.error("cant remove entry from index cause retry counts over. maybe cache index is inconsistent state... IndexKey=" + iKey + ", CacheEntryRef=" + ref);
+
+		fatalLogger.error("cant remove entry from index cause retry counts over. maybe cache index is inconsistent state... IndexKey=" + iKey
+				+ ", CacheEntryRef=" + ref);
 	}
-	
 
 	@Override
 	public CacheEntry putIfAbsent(CacheEntry entry) {
@@ -237,7 +241,7 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 		if (removed) {
 			mainteIndex(entry, null);
 		}
-		
+
 		return removed;
 	}
 
@@ -263,12 +267,11 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 	public void removeAll() {
 		removeAllLocal();
 	}
-	
-	
+
 	protected void removeAllLocal() {
 		//ロックできないので、、
 		List<Object> keySet = keySet();
-		for (Object k: keySet) {
+		for (Object k : keySet) {
 			remove(k);
 		}
 	}
@@ -293,14 +296,15 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 				}
 				//不正な状態で残ってしまったentryRefもしくは、index更新中のEntry
 				//TODO warnで出したいけど、大量にログがでてしまう。。。
-				logger.debug("maybe memoryleak... cache index:(" + key + ", " + entryRef + ") has no cacheEntry, so research next entry cache:namespace=" + getNamespace());
+				logger.debug("maybe memoryleak... cache index:(" + key + ", " + entryRef
+						+ ") has no cacheEntry, so research next entry cache:namespace=" + getNamespace());
 				//TODO 本当はメモリリーク防ぐために消したいけど、消してよいかの判断がつかない（更新中の場合もある。。）
 				//FIXME 別途バッチで、Indexの整合性をチェック＆修正するプロセスを走らす
 			}
 			return null;
 		}
 	}
-	
+
 	@Override
 	public List<CacheEntry> getListByIndex(int indexKey, Object indexValue) {
 		IndexKey key = new IndexKey(indexKey, indexValue);
@@ -310,7 +314,7 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 		} else {
 			ArrayList<CacheEntry> ret = new ArrayList<>();
 			HashSet<Object> keySet = new HashSet<>();
-			for (CacheEntryRef r: indexEntry.getRefs()) {
+			for (CacheEntryRef r : indexEntry.getRefs()) {
 				CacheEntry ce = get(r.getCacheEntryKey());
 				if (ce != null && ce.getVersion() == r.getCacheEntryVersion()) {
 					//Index更新中の場合、同一キーで複数エントリ(別バージョンの)がある可能性あり
@@ -334,7 +338,7 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 	public List<CacheEntry> removeByIndex(int indexKey, Object indexValue) {
 		List<CacheEntry> list = getListByIndex(indexKey, indexValue);
 		if (list != null) {
-			for (CacheEntry e: list) {
+			for (CacheEntry e : list) {
 				remove(e.getKey());
 			}
 		}
@@ -355,7 +359,7 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 	public List<CacheEventListener> getListeners() {
 		return wrapped.getListeners();
 	}
-	
+
 	@Override
 	public int getSize() {
 		return wrapped.getSize();
@@ -371,21 +375,22 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 		wrapped.destroy();
 		indexStore.stop();
 	}
-	
+
 	protected static final class IndexKey implements Serializable {
 		private static final long serialVersionUID = -5273768024839363116L;
-		
+
 		private final int index;
 		private final Object value;
-		
+
 		public IndexKey(int index, Object value) {
 			this.index = index;
 			this.value = value;
 		}
-		
+
 		public int getIndex() {
 			return index;
 		}
+
 		public Object getValue() {
 			return value;
 		}
@@ -422,25 +427,25 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 		public String toString() {
 			return "IndexKey [index=" + index + ", value=" + value + "]";
 		}
-		
+
 	}
-	
+
 	protected static final class IndexEntry implements Serializable {
 		private static final long serialVersionUID = -5028653348986984019L;
-		
+
 		private final long modCount;
 		private final CacheEntryRef[] refs;
-		
+
 		public IndexEntry(CacheEntryRef ref) {
 			this.modCount = 0;
-			this.refs = new CacheEntryRef[]{ref};
+			this.refs = new CacheEntryRef[] { ref };
 		}
-		
+
 		public IndexEntry(long modCount, CacheEntryRef[] refs) {
 			this.modCount = modCount;
 			this.refs = refs;
 		}
-		
+
 		public long getModCount() {
 			return modCount;
 		}
@@ -450,13 +455,13 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 		}
 
 		public IndexEntry add(CacheEntryRef ref) {
-			
+
 			CacheEntryRef[] newRefs = new CacheEntryRef[refs.length + 1];
 			System.arraycopy(refs, 0, newRefs, 0, refs.length);
 			newRefs[refs.length] = ref;
 			return new IndexEntry(modCount + 1, newRefs);
 		}
-		
+
 		public IndexEntry remove(CacheEntryRef ref) {
 			int index = -1;
 			for (int i = 0; i < refs.length; i++) {
@@ -506,15 +511,15 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 			return "IndexEntry [modCount=" + modCount + ", refs="
 					+ Arrays.toString(refs) + "]";
 		}
-		
+
 	}
-	
+
 	protected static final class CacheEntryRef implements Serializable {
 		private static final long serialVersionUID = -7243931537378415392L;
-		
+
 		private final Object cacheEntryKey;
 		private final long cacheEntryVersion;
-		
+
 		public CacheEntryRef(Object cacheEntryKey, long cacheEntryVersion) {
 			this.cacheEntryKey = cacheEntryKey;
 			this.cacheEntryVersion = cacheEntryVersion;
@@ -563,7 +568,7 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 			return "CacheEntryRef [cacheEntryKey=" + cacheEntryKey
 					+ ", cacheEntryVersion=" + cacheEntryVersion + "]";
 		}
-		
+
 	}
 
 }

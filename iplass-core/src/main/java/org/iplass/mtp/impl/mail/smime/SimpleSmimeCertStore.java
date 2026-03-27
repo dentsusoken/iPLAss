@@ -42,7 +42,6 @@ import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * KeyStoreベースのシンプルなSmimeCertStore実装です。
  * 
@@ -56,7 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleSmimeCertStore implements SmimeCertStore {
 	private static Logger logger = LoggerFactory.getLogger(SimpleSmimeCertStore.class);
-	
+
 	//java8から証明書のみでStoreできるようになり、java9以降はデフォルトのStoreとなったのでこれで
 	private String keyStoreType = "PKCS12";
 	private String keyStoreProvider;
@@ -64,17 +63,18 @@ public class SimpleSmimeCertStore implements SmimeCertStore {
 	private String keyStoreFilePath;
 	private String keyStorePassword;
 	private Map<String, String> keyPasswordMap;
-	
+
 	private Integer keyStoreReloadIntervalMinutes;
-	
+
 	private volatile CertStore certStore;
-	
+
 	private class CertStore {
 		private final long expires;
 		private final KeyStore store;
-		
-		private CertStore() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException, NoSuchProviderException {
-			
+
+		private CertStore()
+				throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException, NoSuchProviderException {
+
 			KeyStore ks;
 			if (keyStoreProvider == null) {
 				ks = KeyStore.getInstance(keyStoreType);
@@ -98,7 +98,7 @@ public class SimpleSmimeCertStore implements SmimeCertStore {
 				}
 			}
 			store = ks;
-			
+
 			if (keyStoreReloadIntervalMinutes != null && keyStoreReloadIntervalMinutes > 0) {
 				expires = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(keyStoreReloadIntervalMinutes);
 			} else {
@@ -106,12 +106,12 @@ public class SimpleSmimeCertStore implements SmimeCertStore {
 			}
 		}
 	}
-	
+
 	private CertStore getStore() {
 		if (certStore == null) {
 			return null;
 		}
-		
+
 		long now = System.currentTimeMillis();
 		if (certStore.expires < now) {
 			synchronized (this) {
@@ -126,40 +126,51 @@ public class SimpleSmimeCertStore implements SmimeCertStore {
 		}
 		return certStore;
 	}
-	
+
 	public String getKeyStoreType() {
 		return keyStoreType;
 	}
+
 	public void setKeyStoreType(String keyStoreType) {
 		this.keyStoreType = keyStoreType;
 	}
+
 	public String getKeyStoreProvider() {
 		return keyStoreProvider;
 	}
+
 	public void setKeyStoreProvider(String keyStoreProvider) {
 		this.keyStoreProvider = keyStoreProvider;
 	}
+
 	public String getKeyStoreFilePath() {
 		return keyStoreFilePath;
 	}
+
 	public void setKeyStoreFilePath(String keyStoreFilePath) {
 		this.keyStoreFilePath = keyStoreFilePath;
 	}
+
 	public String getKeyStorePassword() {
 		return keyStorePassword;
 	}
+
 	public void setKeyStorePassword(String keyStorePassword) {
 		this.keyStorePassword = keyStorePassword;
 	}
+
 	public Map<String, String> getKeyPasswordMap() {
 		return keyPasswordMap;
 	}
+
 	public void setKeyPasswordMap(Map<String, String> keyPasswordMap) {
 		this.keyPasswordMap = keyPasswordMap;
 	}
+
 	public Integer getKeyStoreReloadIntervalMinutes() {
 		return keyStoreReloadIntervalMinutes;
 	}
+
 	public void setKeyStoreReloadIntervalMinutes(Integer keyStoreReloadIntervalMinutes) {
 		this.keyStoreReloadIntervalMinutes = keyStoreReloadIntervalMinutes;
 	}
@@ -182,6 +193,7 @@ public class SimpleSmimeCertStore implements SmimeCertStore {
 		}
 		return null;
 	}
+
 	@Override
 	public CertificateKeyPair getCertificateKeyPair(String mailAddress, String keyPass) {
 		CertStore cs = getStore();
@@ -194,7 +206,7 @@ public class SimpleSmimeCertStore implements SmimeCertStore {
 					keyPass = keyStorePassword;
 				}
 			}
-			
+
 			try {
 				X509Certificate c = (X509Certificate) cs.store.getCertificate(mailAddress);
 				c.checkValidity();
@@ -227,10 +239,10 @@ public class SimpleSmimeCertStore implements SmimeCertStore {
 			}
 		}
 	}
-	
+
 	@Override
 	public void destroyed() {
 		certStore = null;
 	}
-	
+
 }

@@ -56,12 +56,15 @@ public class MessageTabSet extends TabSet {
 		this.title = title;
 		setTabTitleNormal();
 	}
+
 	public void setTabTitleProgress() {
 		messageTab.setTitle("<span>" + Canvas.imgHTML(PROGRESS_ICON) + "&nbsp;Execute...</span>");
 	}
+
 	public void setTabTitleNormal() {
 		messageTab.setTitle(title);
 	}
+
 	public void clearMessage() {
 		messagePane.clearMessage();
 	}
@@ -69,36 +72,47 @@ public class MessageTabSet extends TabSet {
 	public void setMessage(String message) {
 		messagePane.setMessage(message);
 	}
+
 	public void setMessage(List<String> messages) {
 		messagePane.setMessage(messages);
 	}
+
 	public void addMessage(String message) {
 		messagePane.addMessage(message);
 	}
+
 	public void addMessage(List<String> messages) {
 		messagePane.addMessage(messages);
 	}
+
 	public void setErrorMessage(String message) {
 		messagePane.setErrorMessage(message);
 	}
+
 	public void setErrorMessage(List<String> messages) {
 		messagePane.setErrorMessage(messages);
 	}
+
 	public void addErrorMessage(String message) {
 		messagePane.addErrorMessage(message);
 	}
+
 	public void addErrorMessage(List<String> messages) {
 		messagePane.addErrorMessage(messages);
 	}
+
 	public void setWarnMessage(String message) {
 		messagePane.setWarnMessage(message);
 	}
+
 	public void setWarnMessage(List<String> messages) {
 		messagePane.setWarnMessage(messages);
 	}
+
 	public void addWarnMessage(String message) {
 		messagePane.addWarnMessage(message);
 	}
+
 	public void addWarnMessage(List<String> messages) {
 		messagePane.addWarnMessage(messages);
 	}
@@ -130,6 +144,7 @@ public class MessageTabSet extends TabSet {
 			messages.add(message);
 			setMessage(messages);
 		}
+
 		public void setMessage(List<String> messages) {
 			logContents.setContents(getMessageString(messages));
 		}
@@ -154,6 +169,7 @@ public class MessageTabSet extends TabSet {
 			messages.add(message);
 			setErrorMessage(messages);
 		}
+
 		public void setErrorMessage(List<String> messages) {
 			logContents.setContents("<font color=\"red\">" + getMessageString(messages) + "</font>");
 		}
@@ -178,6 +194,7 @@ public class MessageTabSet extends TabSet {
 			messages.add(message);
 			setWarnMessage(messages);
 		}
+
 		public void setWarnMessage(List<String> messages) {
 			logContents.setContents("<font color=\"blue\">" + getMessageString(messages) + "</font>");
 		}

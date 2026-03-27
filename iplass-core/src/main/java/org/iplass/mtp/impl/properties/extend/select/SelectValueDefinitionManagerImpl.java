@@ -42,7 +42,8 @@ public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	private SelectValueService service;
 
 	public SelectValueDefinitionManagerImpl() {
-		service = ServiceRegistry.getRegistry().getService(SelectValueService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(SelectValueService.class);
 	}
 
 	@Override
@@ -60,25 +61,25 @@ public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	protected TypedMetaDataService getService() {
 		return service;
 	}
-	
+
 	@Override
 	public SelectValue getSelectValue(String entityName, String propertyName, String value) {
-		
+
 		EntityDefinitionManager entityDefinitionManager = ManagerLocator.manager(EntityDefinitionManager.class);
 		EntityDefinition entityDefinition = entityDefinitionManager.get(entityName);
 
-		if(entityDefinition == null || propertyName == null|| value == null) {
+		if (entityDefinition == null || propertyName == null || value == null) {
 			return null;
 		}
-		
+
 		PropertyDefinition propertyDefinition = entityDefinition.getProperty(propertyName);
-		
-		if(propertyDefinition instanceof SelectProperty) {
-			SelectProperty selectProperty = (SelectProperty)propertyDefinition;
+
+		if (propertyDefinition instanceof SelectProperty) {
+			SelectProperty selectProperty = (SelectProperty) propertyDefinition;
 			String lang = I18nUtil.getLanguageIfUseMultilingual();
 			return selectProperty.getLocalizedSelectValue(value, lang);
 		}
-		
+
 		return null;
 	}
 }

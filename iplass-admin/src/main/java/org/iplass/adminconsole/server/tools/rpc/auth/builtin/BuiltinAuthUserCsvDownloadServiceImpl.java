@@ -45,7 +45,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Builtin Auth User CSV Export用Service実装クラス
  */
@@ -123,14 +122,16 @@ public class BuiltinAuthUserCsvDownloadServiceImpl extends AdminDownloadService 
 
 		final String fileName = tenantId + "-user.csv";
 
-		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
 		aals.logDownload("AuthExplorerCsvDownload", fileName, param.getCondition());
 
 		//Export
 		try {
 			DownloadUtil.setCsvResponseHeader(resp, fileName);
 
-			BuiltinAuthToolService service = ServiceRegistry.getRegistry().getService(BuiltinAuthToolService.class);
+			BuiltinAuthToolService service = ServiceRegistry.getRegistry()
+					.getService(BuiltinAuthToolService.class);
 			service.exportCsv(resp.getOutputStream(), param);
 		} catch (IOException e) {
 			logger.error("failed to export user.", e);

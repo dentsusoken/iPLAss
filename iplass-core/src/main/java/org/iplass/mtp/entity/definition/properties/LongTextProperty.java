@@ -34,7 +34,7 @@ public class LongTextProperty extends PropertyDefinition {
 
 	public LongTextProperty() {
 	}
-	
+
 	public LongTextProperty(String name) {
 		setName(name);
 	}
@@ -43,12 +43,11 @@ public class LongTextProperty extends PropertyDefinition {
 	public Class<?> getJavaType() {
 		return String.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getType() {
 		return PropertyDefinitionType.LONGTEXT;
 	}
-
 
 //	public LongTextProperty copy() {
 //		LongTextProperty copy = new LongTextProperty();

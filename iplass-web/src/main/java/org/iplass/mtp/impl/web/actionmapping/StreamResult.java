@@ -46,7 +46,6 @@ import org.iplass.mtp.web.actionmapping.definition.result.StreamResultDefinition
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class StreamResult extends Result {
 
 	private static final long serialVersionUID = -6801751736171646783L;
@@ -198,7 +197,8 @@ public class StreamResult extends Result {
 			} else if (bin instanceof byte[]) {
 				is = new ByteArrayInputStream((byte[]) bin);
 			} else if (bin instanceof BinaryReference) {
-				binData = LobHandler.getInstance(BinaryType.LOB_STORE_NAME).getBinaryData(((BinaryReference) bin).getLobId());
+				binData = LobHandler.getInstance(BinaryType.LOB_STORE_NAME)
+						.getBinaryData(((BinaryReference) bin).getLobId());
 				is = binData.getBinaryInputStream();
 				if (contentType == null) {
 					contentType = binData.getType();
@@ -219,7 +219,9 @@ public class StreamResult extends Result {
 
 			try {
 				if (contentType != null) {
-					requestContext.getResponse().setContentType(contentType.replace("\n", "").replace("\r", ""));
+					requestContext.getResponse()
+							.setContentType(contentType.replace("\n", "")
+									.replace("\r", ""));
 				}
 				long contentLength = (size == null ? -1 : size.longValue());
 				if (doRange) {
@@ -227,13 +229,14 @@ public class StreamResult extends Result {
 				}
 
 				if (contentLength != -1) {
-					requestContext.getResponse().setHeader("Content-Length", String.valueOf(contentLength));
+					requestContext.getResponse()
+							.setHeader("Content-Length", String.valueOf(contentLength));
 				}
 
 				if (useContentDisposition) {
 					String fileName = null;
 					if (StringUtil.isNotEmpty(fileNameAttributeName)) {
-						fileName = (String)cmdRequestContext.getAttribute(fileNameAttributeName);
+						fileName = (String) cmdRequestContext.getAttribute(fileNameAttributeName);
 					}
 					if (fileName == null && binData != null) {
 						fileName = binData.getName();
@@ -251,7 +254,8 @@ public class StreamResult extends Result {
 					start = System.currentTimeMillis();
 				}
 
-				OutputStream os = requestContext.getResponse().getOutputStream();
+				OutputStream os = requestContext.getResponse()
+						.getOutputStream();
 				//OutputStreamを使っていることをマーク（一度つかったら、getWriter()使えない。）
 				cmdRequestContext.setAttribute(WebRequestContext.MARK_USE_OUTPUT_STREAM, WebRequestContext.MARK_USE_OUTPUT_STREAM);
 
@@ -291,7 +295,7 @@ public class StreamResult extends Result {
 		}
 
 		private String getLastActionName(RequestContext cmdRequestContext) {
-			String actionName = (String)cmdRequestContext.getAttribute(WebRequestConstants.ACTION_NAME);
+			String actionName = (String) cmdRequestContext.getAttribute(WebRequestConstants.ACTION_NAME);
 			if (actionName == null) {
 				return null;
 			}
@@ -301,6 +305,6 @@ public class StreamResult extends Result {
 				return actionName;
 			}
 		}
-}
+	}
 
 }

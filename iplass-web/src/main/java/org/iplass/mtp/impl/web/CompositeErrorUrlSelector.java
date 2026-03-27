@@ -33,11 +33,13 @@ public class CompositeErrorUrlSelector implements ErrorUrlSelector {
 	public String getErrorTemplateName(Throwable exception, RequestContext request, String path) {
 		for (Map.Entry<String, ErrorUrlSelector> entry : selectorMap.entrySet()) {
 			if (path.startsWith(entry.getKey())) {
-				return entry.getValue().getErrorTemplateName(exception, request, path);
+				return entry.getValue()
+						.getErrorTemplateName(exception, request, path);
 			}
 		}
 
-		return selectorMap.get("default").getErrorTemplateName(exception, request, path);
+		return selectorMap.get("default")
+				.getErrorTemplateName(exception, request, path);
 	}
 
 	public Map<String, ErrorUrlSelector> getSelectorMap() {

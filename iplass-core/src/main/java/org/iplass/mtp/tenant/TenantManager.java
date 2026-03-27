@@ -42,7 +42,7 @@ public interface TenantManager extends TypedDefinitionManager<Tenant> {
 	 * @param tenant {@link Tenant}
 	 */
 	public DefinitionModifyResult updateTenant(Tenant tenant);
-	public DefinitionModifyResult updateTenant(Tenant tenant, final boolean forceUpdate);
 
+	public DefinitionModifyResult updateTenant(Tenant tenant, final boolean forceUpdate);
 
 }

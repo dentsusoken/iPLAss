@@ -32,7 +32,7 @@ import org.iplass.mtp.impl.web.actionmapping.cache.ContentCacheContext;
 
 public class RenderContentBlock implements ContentBlock {
 	private static final long serialVersionUID = -6254733288979280661L;
-	
+
 	public RenderContentBlock() {
 	}
 
@@ -41,7 +41,7 @@ public class RenderContentBlock implements ContentBlock {
 			ServletException {
 		WebUtil.renderContent(request.getRequest(), request.getResponse(), request.getServletContext(), request.getPageContext());
 	}
-	
+
 	@Override
 	public long lastModified(long lastModified, WebInvocationImpl invocation, ContentCacheContext cc, String lang) {
 		return lastModified;

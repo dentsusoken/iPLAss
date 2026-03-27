@@ -102,7 +102,8 @@ public class ActionEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -134,25 +135,30 @@ public class ActionEditPane extends MetaDataMainEditPane {
 
 			@Override
 			protected void onMetaDataDrop(MetaDataItemMenuTreeNode itemNode) {
-				if (itemNode.getDefinitionClassName().equals(CommandDefinition.class.getName())) {
+				if (itemNode.getDefinitionClassName()
+						.equals(CommandDefinition.class.getName())) {
 					commandConfigPane.addCommand(itemNode);
-				} else if (itemNode.getDefinitionClassName().equals(TemplateDefinition.class.getName())
-						|| itemNode.getDefinitionClassName().equals(StaticResourceDefinition.class.getName())) {
+				} else if (itemNode.getDefinitionClassName()
+						.equals(TemplateDefinition.class.getName())
+						|| itemNode.getDefinitionClassName()
+								.equals(StaticResourceDefinition.class.getName())) {
 					resultPane.addResult(itemNode);
 				}
 			}
 
 			@Override
 			protected boolean canAcceptDrop(MetaDataItemMenuTreeNode itemNode) {
-				if (itemNode.getDefinitionClassName().equals(CommandDefinition.class.getName())
-						|| itemNode.getDefinitionClassName().equals(TemplateDefinition.class.getName())
-						|| itemNode.getDefinitionClassName().equals(StaticResourceDefinition.class.getName())) {
+				if (itemNode.getDefinitionClassName()
+						.equals(CommandDefinition.class.getName())
+						|| itemNode.getDefinitionClassName()
+								.equals(TemplateDefinition.class.getName())
+						|| itemNode.getDefinitionClassName()
+								.equals(StaticResourceDefinition.class.getName())) {
 					return true;
 				}
 				return false;
 			}
 		}.setTarget(actionSection.getLayout());
-
 
 		//CacheCriteria部分
 		cacheCriteriaPane = new CacheCriteriaPane(this);
@@ -205,8 +211,10 @@ public class ActionEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (ActionMappingDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
@@ -293,24 +301,24 @@ public class ActionEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_action_ActionEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_action_ActionEditPane_saveConfirmComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						ActionMappingDefinition definition = new ActionMappingDefinition();
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								ActionMappingDefinition definition = new ActionMappingDefinition();
 
-						definition = commonSection.getEditDefinition(definition);
-						definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-						definition = actionAttributePane.getEditDefinition(definition);
-						definition = restrictionRequestAttributePane.getEditDefinition(definition);
-						definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
-						definition = paramMapPane.getEditDefinition(definition);
-						definition = resultPane.getEditDefinition(definition);
-						definition = cacheCriteriaPane.getEditDefinition(definition);
+								definition = commonSection.getEditDefinition(definition);
+								definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
+								definition = actionAttributePane.getEditDefinition(definition);
+								definition = restrictionRequestAttributePane.getEditDefinition(definition);
+								definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
+								definition = paramMapPane.getEditDefinition(definition);
+								definition = resultPane.getEditDefinition(definition);
+								definition = cacheCriteriaPane.getEditDefinition(definition);
 
-						updateAction(definition, true);
-					}
-				}
-			});
+								updateAction(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -323,16 +331,15 @@ public class ActionEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_action_ActionEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_action_ActionEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_action_ActionEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 }

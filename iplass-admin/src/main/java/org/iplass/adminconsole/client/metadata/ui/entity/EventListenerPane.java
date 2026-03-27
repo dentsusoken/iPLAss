@@ -95,7 +95,6 @@ public class EventListenerPane extends VLayout {
 	public void clearErrors() {
 	}
 
-
 //	/**
 //	 * データ再読込
 //	 */

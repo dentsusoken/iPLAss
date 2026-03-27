@@ -416,7 +416,7 @@ public class MetaInformationParts extends MetaActionParts {
 
 	@Override
 	public void applyConfig(TopViewParts parts) {
-		InformationParts definition = (InformationParts)parts;
+		InformationParts definition = (InformationParts) parts;
 		fillFrom(definition);
 
 		title = definition.getTitle();
@@ -494,11 +494,15 @@ public class MetaInformationParts extends MetaActionParts {
 		public InformationPartsHandler(MetaInformationParts meta, TopViewHandler topView) {
 			super(meta);
 			if (meta.detailCustomStyle != null) {
-				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				String templateName = SCRIPT_PREFIX_CUSTOM_STYLE + "_" + topView.getMetaData().getId()
-						+ GroovyTemplateCompiler.randomName().replace("-", "_");
+				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
+				String templateName = SCRIPT_PREFIX_CUSTOM_STYLE + "_" + topView.getMetaData()
+						.getId()
+						+ GroovyTemplateCompiler.randomName()
+								.replace("-", "_");
 				detailCustomStyle = GroovyTemplateCompiler.compile(
-						meta.detailCustomStyle, templateName, (GroovyScriptEngine)scriptEngine);
+						meta.detailCustomStyle, templateName, (GroovyScriptEngine) scriptEngine);
 			} else {
 				detailCustomStyle = null;
 			}
@@ -556,7 +560,8 @@ public class MetaInformationParts extends MetaActionParts {
 			String style = sw.toString();
 			if (StringUtil.isNotEmpty(style)) {
 				//先頭、末尾の空白、改行、タブを削除
-				style = StringUtil.removeLineFeedCode(StringUtil.stripToEmpty(style)).replaceAll("\t", "");
+				style = StringUtil.removeLineFeedCode(StringUtil.stripToEmpty(style))
+						.replaceAll("\t", "");
 			}
 
 			return style;

@@ -86,7 +86,7 @@ public class OracleTenantRdbManager extends DefaultTenantRdbManager {
 				ResultSet rs = ps.executeQuery();
 				int count = 0;
 				try {
-					if(rs.next()) {
+					if (rs.next()) {
 						count = rs.getInt(1);
 					}
 				} finally {

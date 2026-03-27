@@ -21,6 +21,6 @@ package org.iplass.mtp.webhook.template.definition;
 
 import org.iplass.mtp.definition.TypedDefinitionManager;
 
-public interface WebhookTemplateDefinitionManager extends TypedDefinitionManager<WebhookTemplateDefinition>{
+public interface WebhookTemplateDefinitionManager extends TypedDefinitionManager<WebhookTemplateDefinition> {
 
 }

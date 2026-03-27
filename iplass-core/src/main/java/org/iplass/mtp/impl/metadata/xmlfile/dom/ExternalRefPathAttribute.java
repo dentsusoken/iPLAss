@@ -29,68 +29,76 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ExternalRefPathAttribute {
-	
+
 	/**
 	 * 対象のタグのパス.
 	 * <p>"metaDataEntry/metaData/message/content"のようにルートタグから指定する. 
 	 * @return
 	 */
 	String path();
-	
+
 	/**
 	 * 外部参照ファイルの拡張子を取得.
 	 * @return
 	 */
 	FileExtention fileExtension() default FileExtention.TMPL;
-	
+
 	/**
 	 * 当該ノードのテンプレートの種別.
 	 * @return
 	 */
 	TemplateType templateType() default TemplateType.NULL;
-	
+
 	/**
 	 * 外部参照ファイルにBase64デコード/エンコードして保存するタグか.
 	 * @return
 	 */
 	boolean base64Tag() default false;
-	
+
 	/**
 	 * 対象のタグに対応するロケールタグの名前
 	 * @return
 	 */
 	String localeTagName() default "localeName";
-	
+
 	/**
 	 * 外部参照ファイル名のシーケンス番号有無
 	 * @return
 	 */
 	boolean useFileSequence() default false;
-	
+
 	/**
 	 * 外部参照ファイルのGroovy専用ソースフォルダ使用有無.
 	 * @return
 	 */
 	boolean useGroovyDir() default false;
-		
+
 	/**
 	 * 外部参照ファイルの拡張子.
 	 */
 	public enum FileExtention {
-		GROOVY(".groovy"), TMPL(".gtmpl"), GIF(".gif"), 
-		BMP(".bmp"), JPEG(".jpg"), PNG(".png"), BIN(".bin"), XML(".xml"), HTML(".html"), JAVASCRIPT(".js");
+		GROOVY(".groovy"),
+		TMPL(".gtmpl"),
+		GIF(".gif"),
+		BMP(".bmp"),
+		JPEG(".jpg"),
+		PNG(".png"),
+		BIN(".bin"),
+		XML(".xml"),
+		HTML(".html"),
+		JAVASCRIPT(".js");
 
 		private final String ext;
-		
+
 		private FileExtention(String ext) {
 			this.ext = ext;
 		}
-		
+
 		public String getExt() {
 			return ext;
 		}
 	}
-	
+
 	/**
 	 * テンプレートの種別. 
 	 * <p>メールテンプレートとプレーンテキスト版とHTML版など外部参照ファイルの名前を一意にするための文字列.

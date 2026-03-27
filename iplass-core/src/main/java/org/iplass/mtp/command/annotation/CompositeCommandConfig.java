@@ -30,13 +30,13 @@ import org.iplass.mtp.transaction.RollbackException;
  *
  */
 public @interface CompositeCommandConfig {
-	
+
 	/**
 	 * 複合するCommandの設定を指定します。
 	 * @return
 	 */
 	CommandConfig[] command() default {};
-	
+
 	/**
 	 * 複合Commandのインスタンスの初期化設定です。<br>
 	 * 設定例
@@ -51,7 +51,7 @@ public @interface CompositeCommandConfig {
 	 * @return
 	 */
 	String value() default "##default";
-	
+
 	/**
 	 * 複合Commandを利用する場合の複合Command全体に対するトランザクションのPropagationの設定です。
 	 * 未指定（デフォルト）の場合は、REQUIREDが指定されます。
@@ -59,14 +59,14 @@ public @interface CompositeCommandConfig {
 	 * @return
 	 */
 	Propagation transactionPropagation() default Propagation.REQUIRED;
-	
+
 	/**
 	 * 複合Commandより例外がスローされた場合、トランザクションをロールバックするか否かの設定です。
 	 * 未指定（デフォルト）の場合はtrueです。
 	 * @return
 	 */
 	boolean rollbackWhenException() default true;
-	
+
 	/**
 	 * トランザクションが本複合Command処理用に新規作成された際、
 	 * 処理中にsetRoobackOnlyされた場合、
@@ -75,7 +75,7 @@ public @interface CompositeCommandConfig {
 	 * @return
 	 */
 	boolean throwExceptionIfSetRollbackOnly() default false;
-	
+
 	/**
 	 * 複合Commandを利用する場合の処理ルールをGroovyScriptで設定します。
 	 * ルールでは、複数のCommandの呼び出し順などを制御可能で、
@@ -98,5 +98,5 @@ public @interface CompositeCommandConfig {
 	 * @return
 	 */
 	String rule() default "##default";
-	
+
 }

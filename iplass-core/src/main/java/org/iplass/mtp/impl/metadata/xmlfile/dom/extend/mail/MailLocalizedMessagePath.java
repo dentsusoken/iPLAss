@@ -25,12 +25,14 @@ import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.FileExt
 import org.w3c.dom.Node;
 
 @ExternalRefPathAttribute(
-		path = "/metaDataEntry/metaData/localizedMailTemplateList/message/content", 
+		path = "/metaDataEntry/metaData/localizedMailTemplateList/message/content",
 		fileExtension = FileExtention.TMPL)
 public class MailLocalizedMessagePath extends MultiLangExternalRefPath {
 
 	@Override
 	protected Node getLocaleParentNode(Node targetTextNode) {
-		return targetTextNode.getParentNode().getParentNode().getParentNode();
+		return targetTextNode.getParentNode()
+				.getParentNode()
+				.getParentNode();
 	}
 }

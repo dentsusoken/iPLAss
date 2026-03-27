@@ -31,22 +31,22 @@ import org.iplass.mtp.impl.query.hint.HintCommentSyntax;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
 public class SelectSyntax implements Syntax<Select>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 	private HintCommentSyntax hintComment;
 
 	public Select parse(ParseContext str) throws ParseException {
-		
+
 		//SELECT
 		if (!str.equalsNextToken(SELECT, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("SELECT expected.", this, str));
 		}
 		str.consumeChars(SELECT.length());
-		
+
 		Select select = new Select();
-		
+
 		boolean hasSpace = str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		// /*+ (Hint Comment)
 		if (str.startsWith(LEFT_HINT_COMMENT)) {
 			select.setHintComment(hintComment.parse(str));
@@ -56,17 +56,17 @@ public class SelectSyntax implements Syntax<Select>, QueryConstants {
 				throw new ParseException(new EvalError("space expected.", this, str));
 			}
 		}
-		
+
 		//DISTINCT
 		if (str.equalsNextToken(DISTINCT, ParseContext.TOKEN_DELIMITERS)) {
 			str.consumeChars(DISTINCT.length());
 			select.setDistinct(true);
-			
+
 			if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 				throw new ParseException(new EvalError("space expected.", this, str));
 			}
 		}
-		
+
 		//ValueExpression
 		boolean isFirst = true;
 		while (true) {
@@ -82,16 +82,14 @@ public class SelectSyntax implements Syntax<Select>, QueryConstants {
 			ValueExpression val = polynomial.parse(str);
 			select.add(val);
 		}
-		
+
 		return select;
 	}
-
 
 	public void init(SyntaxContext context) {
 		polynomial = context.getSyntax(PolynomialSyntax.class);
 		hintComment = context.getSyntax(HintCommentSyntax.class);
 	}
-
 
 //	public void appendSb(StringBuilder sb, Select node) {
 //		
@@ -108,6 +106,5 @@ public class SelectSyntax implements Syntax<Select>, QueryConstants {
 //			}
 //		}
 //	}
-
 
 }

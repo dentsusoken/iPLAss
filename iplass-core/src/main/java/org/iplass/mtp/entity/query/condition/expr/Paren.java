@@ -35,18 +35,18 @@ public class Paren extends Condition {
 	private static final long serialVersionUID = 2119445900243861643L;
 
 	private Condition nestedExpression;
-	
+
 	public Paren() {
 	}
-	
+
 	public Paren(Condition nestedExpression) {
 		this.nestedExpression = nestedExpression;
 	}
-	
+
 	public void setNestedExpression(Condition nestedExpression) {
 		this.nestedExpression = nestedExpression;
 	}
-	
+
 	public Condition getNestedExpression() {
 		return nestedExpression;
 	}
@@ -89,12 +89,14 @@ public class Paren extends Condition {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("(").append(nestedExpression).append(")");
+		sb.append("(")
+				.append(nestedExpression)
+				.append(")");
 		return sb.toString();
 	}
-	
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 }

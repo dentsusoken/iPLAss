@@ -28,7 +28,7 @@ import org.iplass.mtp.view.filter.expression.UnsupportedFilterOperationException
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@CommandClass(name=DetailSearchCommand.CMD_NAME, displayName="詳細検索")
+@CommandClass(name = DetailSearchCommand.CMD_NAME, displayName = "詳細検索")
 public final class DetailSearchCommand extends SearchCommandBase {
 
 	public static final String CMD_NAME = "gem/generic/search/DetailSearchCommand";
@@ -48,13 +48,15 @@ public final class DetailSearchCommand extends SearchCommandBase {
 			if (log.isDebugEnabled()) {
 				log.debug(e.getMessage(), e);
 			}
-			context.getRequest().setAttribute(Constants.MESSAGE, e.getMessage());
+			context.getRequest()
+					.setAttribute(Constants.MESSAGE, e.getMessage());
 			return null;
 		} catch (IllegalArgumentException e) {
 			if (log.isDebugEnabled()) {
 				log.debug(e.getMessage(), e);
 			}
-			context.getRequest().setAttribute(Constants.MESSAGE, resourceString("command.generic.search.SearchCommandBase.searchCondErr"));
+			context.getRequest()
+					.setAttribute(Constants.MESSAGE, resourceString("command.generic.search.SearchCommandBase.searchCondErr"));
 			return null;
 		}
 	}

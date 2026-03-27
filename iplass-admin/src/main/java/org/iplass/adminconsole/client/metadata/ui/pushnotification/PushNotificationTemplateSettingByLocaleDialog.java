@@ -130,7 +130,8 @@ public class PushNotificationTemplateSettingByLocaleDialog extends MtpDialog {
 					langSelectItem.setValueMap(enableLanguagesMap);
 					SmartGWTUtil.setRequired(langSelectItem);
 
-					titleField = new MtpTextItem("title", AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateSettingByLocaleDialog_title"));
+					titleField = new MtpTextItem("title",
+							AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateSettingByLocaleDialog_title"));
 					titleField.setColSpan(3);
 
 					form.setItems(langSelectItem, titleField);
@@ -138,11 +139,12 @@ public class PushNotificationTemplateSettingByLocaleDialog extends MtpDialog {
 					//メッセージ編集領域
 					tabSet = new TabSet();
 					tabSet.setWidth100();
-					tabSet.setHeight(450);	//高さは固定でないとうまくいかないため指定
-					tabSet.setPaneContainerOverflow(Overflow.HIDDEN);	//Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
+					tabSet.setHeight(450); //高さは固定でないとうまくいかないため指定
+					tabSet.setPaneContainerOverflow(Overflow.HIDDEN); //Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
 
 					bodyTab = new Tab();
-					bodyTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateSettingByLocaleDialog_body"));
+					bodyTab.setTitle(
+							AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateSettingByLocaleDialog_body"));
 
 					bodyEditor = new ScriptEditorPane();
 					bodyEditor.setMode(EditorMode.HTML);
@@ -179,7 +181,8 @@ public class PushNotificationTemplateSettingByLocaleDialog extends MtpDialog {
 
 			tabSet.selectTab(bodyTab);
 
-			setTabTitle(bodyTab, AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateSettingByLocaleDialog_body"), body);
+			setTabTitle(bodyTab, AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateSettingByLocaleDialog_body"),
+					body);
 		}
 
 		/**
@@ -227,7 +230,6 @@ public class PushNotificationTemplateSettingByLocaleDialog extends MtpDialog {
 	public void addDataChangeHandler(DataChangedHandler handler) {
 		handlers.add(0, handler);
 	}
-
 
 	/**
 	 * データ変更通知処理

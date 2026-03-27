@@ -42,7 +42,6 @@ import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 import org.iplass.mtp.entity.query.condition.predicate.Like.MatchPattern;
 
-
 /**
  * And条件を表す。
  * 
@@ -53,15 +52,14 @@ public class And extends Condition {
 	private static final long serialVersionUID = 6770787599085842938L;
 
 	protected List<Condition> childExpressions;
-	
-	
+
 	public And() {
 	}
-	
+
 	public And(Condition... condition) {
 		if (condition != null) {
 			ArrayList<Condition> condList = new ArrayList<Condition>();
-			for (Condition c: condition) {
+			for (Condition c : condition) {
 				//expressionがORの場合、()を付ける
 				if (c instanceof Or) {
 					c = new Paren(c);
@@ -71,33 +69,33 @@ public class And extends Condition {
 			childExpressions = condList;
 		}
 	}
-	
+
 	public And(List<Condition> childExpressions) {
 		this.childExpressions = childExpressions;
 	}
-	
+
 	public void setConditions(List<Condition> conditions) {
 		this.childExpressions = conditions;
-		
+
 	}
-	
+
 	//TODO アクセッサメソッド名変更
 	public void addExpression(Condition expression) {
 		if (childExpressions == null) {
 			childExpressions = new ArrayList<Condition>();
 		}
-		
+
 		//expressionがORの場合、()を付ける
 		if (expression instanceof Or) {
 			expression = new Paren(expression);
 		}
 		childExpressions.add(expression);
 	}
-	
+
 	public List<Condition> getChildExpressions() {
 		return childExpressions;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -127,31 +125,32 @@ public class And extends Condition {
 
 	@Override
 	public String toString() {
-		
+
 		if (childExpressions != null) {
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < childExpressions.size(); i++) {
 				if (i != 0) {
 					sb.append(" and ");
 				}
-				sb.append(childExpressions.get(i).toString());
+				sb.append(childExpressions.get(i)
+						.toString());
 			}
 			return sb.toString();
 		}
-		
+
 		return null;
 	}
 
 	public void accept(ConditionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (childExpressions != null) {
-				for (Condition exp: childExpressions) {
+				for (Condition exp : childExpressions) {
 					exp.accept(visitor);
 				}
 			}
 		}
 	}
-	
+
 	public Condition strip() {
 		if (childExpressions != null && childExpressions.size() == 1) {
 			return childExpressions.get(0);
@@ -159,7 +158,7 @@ public class And extends Condition {
 			return this;
 		}
 	}
-	
+
 	/**
 	 * 指定の条件を追加する。
 	 * 
@@ -170,7 +169,7 @@ public class And extends Condition {
 		addExpression(expression);
 		return this;
 	}
-	
+
 	/**
 	 * Equals条件を追加する。
 	 * 
@@ -183,7 +182,7 @@ public class And extends Condition {
 		addExpression(eq);
 		return this;
 	}
-	
+
 	/**
 	 * NotEquals条件を追加する。
 	 * 
@@ -196,7 +195,7 @@ public class And extends Condition {
 		addExpression(eq);
 		return this;
 	}
-	
+
 	/**
 	 * Lesser条件を追加する。
 	 * 
@@ -209,7 +208,7 @@ public class And extends Condition {
 		addExpression(less);
 		return this;
 	}
-	
+
 	/**
 	 * LesserEqual条件を追加する。
 	 * 
@@ -222,7 +221,7 @@ public class And extends Condition {
 		addExpression(lessEq);
 		return this;
 	}
-	
+
 	/**
 	 * Greater条件を追加する。
 	 * 
@@ -235,7 +234,7 @@ public class And extends Condition {
 		addExpression(great);
 		return this;
 	}
-	
+
 	/**
 	 * GreaterEqual条件を追加する。
 	 * 
@@ -248,7 +247,7 @@ public class And extends Condition {
 		addExpression(greatEq);
 		return this;
 	}
-	
+
 	/**
 	 * In条件を追加する。
 	 * 
@@ -261,7 +260,7 @@ public class And extends Condition {
 		addExpression(in);
 		return this;
 	}
-	
+
 	/**
 	 * In条件を追加する。
 	 * 
@@ -274,7 +273,7 @@ public class And extends Condition {
 		addExpression(in);
 		return this;
 	}
-	
+
 	/**
 	 * ※なるべく{@link #like(String, String, MatchPattern)}を利用すること。
 	 * 
@@ -286,12 +285,12 @@ public class And extends Condition {
 	 * @return
 	 */
 	@Deprecated
-	public And like(String propName, String pattern)  {
+	public And like(String propName, String pattern) {
 		Like like = new Like(propName, pattern);
 		addExpression(like);
 		return this;
 	}
-	
+
 	/**
 	 * Like条件を追加する。
 	 * 
@@ -300,12 +299,12 @@ public class And extends Condition {
 	 * @param matchPatternType
 	 * @return
 	 */
-	public And like(String propName, String str, MatchPattern matchPatternType)  {
+	public And like(String propName, String str, MatchPattern matchPatternType) {
 		Like like = new Like(propName, str, matchPatternType);
 		addExpression(like);
 		return this;
 	}
-	
+
 	/**
 	 * Between条件を追加する。
 	 * 
@@ -319,14 +318,14 @@ public class And extends Condition {
 		addExpression(bet);
 		return this;
 	}
-	
+
 	/**
 	 * IsNull条件を追加する。
 	 * 
 	 * @param propName
 	 * @return
 	 */
-	public And isNull(String propName)  {
+	public And isNull(String propName) {
 		IsNull isNull = new IsNull(propName);
 		addExpression(isNull);
 		return this;
@@ -338,12 +337,12 @@ public class And extends Condition {
 	 * @param propName
 	 * @return
 	 */
-	public And isNotNull(String propName)  {
+	public And isNotNull(String propName) {
 		IsNotNull isNotNull = new IsNotNull(propName);
 		addExpression(isNotNull);
 		return this;
 	}
-	
+
 	/**
 	 * Contains条件を追加する。
 	 * 

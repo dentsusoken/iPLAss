@@ -40,52 +40,51 @@ import org.iplass.mtp.impl.properties.extend.ExpressionType;
 import org.iplass.mtp.impl.properties.extend.LongTextType;
 import org.iplass.mtp.impl.properties.extend.SelectType;
 
-
 //TODO JAXBへ設定するクラス群は、メタデータの設定から取得する。
-@XmlSeeAlso({DateTimeType.class, DateType.class, TimeType.class, FloatType.class, IntegerType.class,
-				LongTextType.class, StringType.class, BinaryType.class, DecimalType.class,
-				BooleanType.class, SelectType.class, ExpressionType.class, AutoNumberType.class
-				})
+@XmlSeeAlso({ DateTimeType.class, DateType.class, TimeType.class, FloatType.class, IntegerType.class,
+		LongTextType.class, StringType.class, BinaryType.class, DecimalType.class,
+		BooleanType.class, SelectType.class, ExpressionType.class, AutoNumberType.class
+})
 public abstract class PropertyType implements MetaData {
-	
+
 	//TODO 複合型への対応
-	
+
 	private static final long serialVersionUID = 7289723395858447148L;
 
 	public abstract PropertyDefinition createPropertyDefinitionInstance();
-	
+
 	public abstract void applyDefinition(PropertyDefinition def);
 
 	public abstract PropertyType copy();
-	
+
 	//TODO メソッド名が紛らわしい
 	//iPLAss上でのデータのクラス（SelectValue型だったらSelectValue）
 	//getEnumType or getDataStoreEnumTypeを使う！
 	@Deprecated
 	public abstract Class<?> storeType();
-	
+
 	public abstract boolean isVirtual();
-	
+
 	public abstract Object toDataStore(Object toDataStore);
-	
+
 	public abstract Object fromDataStore(Object fromDataStore);
 
 	public abstract Object createRuntime(MetaProperty metaProperty, MetaEntity metaEntity);
-	
+
 	public abstract boolean isCompatibleTo(PropertyType another);
-	
+
 	public abstract String toString(Object value);
-	
+
 	public abstract Object fromString(String strValue);
-	
+
 	public abstract PropertyDefinitionType getEnumType();
-	
+
 	public PropertyDefinitionType getDataStoreEnumType() {
 		return getEnumType();
 	};
-	
+
 	public Object formatToLog(Object val) {
 		return val;
 	}
-	
+
 }

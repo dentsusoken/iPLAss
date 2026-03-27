@@ -29,28 +29,31 @@ import org.iplass.mtp.impl.lob.checksum.ChecksumFactory;
 import org.iplass.mtp.impl.lob.lobstore.LobValidator;
 
 public class LobValidatedOutputStream extends FilterOutputStream {
-	
+
 	private Checksum checksum;
 	private Lob lob;
 	private LobValidator lobValidator;
-	
+
 	private boolean closed;
 
 	public LobValidatedOutputStream(OutputStream out, Lob lob, LobValidator lobValidator) {
 		super(out);
-		this.checksum = ChecksumFactory.getFactory().newChecksum(lobValidator.getChecksumAlgorithm());
+		this.checksum = ChecksumFactory.getFactory()
+				.newChecksum(lobValidator.getChecksumAlgorithm());
 		this.lob = lob;
 		this.lobValidator = lobValidator;
 	}
-	
+
 	public void write(int b) throws IOException {
 		out.write(b);
 		checksum.update(b);
 	}
+
 	public void write(byte[] b, int off, int len) throws IOException {
 		out.write(b, off, len);
 		checksum.update(b, off, len);
 	}
+
 	public Checksum getChecksum() {
 		return checksum;
 	}

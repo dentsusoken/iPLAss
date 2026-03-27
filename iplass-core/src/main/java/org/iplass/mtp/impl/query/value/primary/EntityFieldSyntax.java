@@ -34,7 +34,7 @@ public class EntityFieldSyntax implements Syntax<EntityField>, QueryConstants {
 	}
 
 	public EntityField parse(ParseContext str) throws ParseException {
-		
+
 		int index = str.getCurrentIndex();
 		String fieldName = str.nextToken(ParseContext.TOKEN_DELIMITERS);
 		if (fieldName == null) {

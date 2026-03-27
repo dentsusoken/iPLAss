@@ -39,15 +39,15 @@ import org.iplass.mtp.impl.mail.BinaryReferenceDataSource;
  *
  */
 public class HtmlMessage {
-	
+
 	private List<InlineContent> inlineContents;
-	
+
 	private String content;
 	private String charset;
-	
+
 	public HtmlMessage() {
 	}
-	
+
 	public HtmlMessage(String content, String charset) {
 		this.content = content;
 		this.charset = charset;
@@ -86,7 +86,7 @@ public class HtmlMessage {
 	public void setCharset(String charset) {
 		this.charset = charset;
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * htmlへの埋め込み画像を追加します。
@@ -100,7 +100,7 @@ public class HtmlMessage {
 	public void addInlineContent(String cid, BinaryReference bin) {
 		addInlineContent(cid, new DataHandler(new BinaryReferenceDataSource(bin)));
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * htmlへの埋め込み画像を追加します。
@@ -117,7 +117,7 @@ public class HtmlMessage {
 		}
 		inlineContents.add(new InlineContent(cid, dataHandler));
 	}
-	
+
 	public List<InlineContent> getInlineContents() {
 		return inlineContents;
 	}

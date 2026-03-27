@@ -25,7 +25,7 @@ import org.iplass.mtp.SystemException;
 public class SmsException extends SystemException {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public SmsException() {
 		super();
 	}

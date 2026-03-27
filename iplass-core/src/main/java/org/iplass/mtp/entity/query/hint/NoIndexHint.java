@@ -37,24 +37,23 @@ public class NoIndexHint extends EQLHint {
 	private static final long serialVersionUID = -99648397631007464L;
 
 	private List<String> propertyNameList;
-	
+
 	public NoIndexHint() {
 	}
-	
+
 	public NoIndexHint(String... propertyName) {
 		if (propertyName != null) {
 			propertyNameList = new ArrayList<>(propertyName.length);
-			for (String p: propertyName) {
+			for (String p : propertyName) {
 				propertyNameList.add(p);
 			}
 		}
 	}
-	
+
 	public NoIndexHint(List<String> propertyNameList) {
 		this.propertyNameList = propertyNameList;
 	}
-	
-	
+
 	public List<String> getPropertyNameList() {
 		return propertyNameList;
 	}
@@ -62,7 +61,7 @@ public class NoIndexHint extends EQLHint {
 	public void setPropertyNameList(List<String> propertyNameList) {
 		this.propertyNameList = propertyNameList;
 	}
-	
+
 	public NoIndexHint add(String propertyName) {
 		if (propertyNameList == null) {
 			propertyNameList = new ArrayList<>();
@@ -70,7 +69,7 @@ public class NoIndexHint extends EQLHint {
 		propertyNameList.add(propertyName);
 		return this;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -97,7 +96,7 @@ public class NoIndexHint extends EQLHint {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -105,7 +104,7 @@ public class NoIndexHint extends EQLHint {
 		if (propertyNameList != null && propertyNameList.size() > 0) {
 			sb.append("(");
 			boolean first = true;
-			for (String p: propertyNameList) {
+			for (String p : propertyNameList) {
 				if (first) {
 					first = false;
 				} else {
@@ -115,7 +114,7 @@ public class NoIndexHint extends EQLHint {
 			}
 			sb.append(")");
 		}
-		
+
 		return sb.toString();
 	}
 

@@ -21,7 +21,7 @@
 package org.iplass.mtp.impl.datastore.grdb.sql.table;
 
 public interface ObjIndexTable {
-	
+
 	public static final String TABLE_INDEX_PREFIX_NAME = "OBJ_INDEX_";
 	public static final String TABLE_UNIQUE_PREFIX_NAME = "OBJ_UNIQUE_";
 
@@ -31,15 +31,15 @@ public interface ObjIndexTable {
 	public static final String OBJ_ID = "OBJ_ID";
 	public static final String OBJ_VER = "OBJ_VER";
 	public static final String VAL = "VAL";
-	
+
 	public static final String PG_COL_SEPARATOR = ":";
 
 	public static final String[] COLS_INDEX = {
-		TENANT_ID,OBJ_DEF_ID,COL_NAME,OBJ_ID,OBJ_VER,VAL
+			TENANT_ID, OBJ_DEF_ID, COL_NAME, OBJ_ID, OBJ_VER, VAL
 	};
 
 	public static final String[] COLS_UNIQUE = {
-		TENANT_ID,OBJ_DEF_ID,COL_NAME,OBJ_ID,VAL
+			TENANT_ID, OBJ_DEF_ID, COL_NAME, OBJ_ID, VAL
 	};
 
 }

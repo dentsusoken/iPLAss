@@ -62,7 +62,7 @@ public class EntityMenuItem extends MenuItem {
 	 * @return Action実行時に追加されるパラメータ
 	 */
 	public String getParameter() {
-	    return parameter;
+		return parameter;
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class EntityMenuItem extends MenuItem {
 	 * @param parameter Action実行時に追加されるパラメータ
 	 */
 	public void setParameter(String parameter) {
-	    this.parameter = parameter;
+		this.parameter = parameter;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class EntityMenuItem extends MenuItem {
 	 * @return メニューに表示するEntity定義名
 	 */
 	public String getEntityDefinitionName() {
-	    return entityDefinitionName;
+		return entityDefinitionName;
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class EntityMenuItem extends MenuItem {
 	 * @param entityDefinitionName メニューに表示するEntity定義名
 	 */
 	public void setEntityDefinitionName(String entityDefinitionName) {
-	    this.entityDefinitionName = entityDefinitionName;
+		this.entityDefinitionName = entityDefinitionName;
 	}
 
 	/**

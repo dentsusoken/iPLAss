@@ -53,7 +53,8 @@ public class WebApiParameterMappingsOpenApiConverter implements WebApiOpenApiCon
 		var pathOnlyLen = pathExcludeParam.split("/").length;
 
 		// 先頭の "/" を除き、split する
-		var splittedPath = path.substring(1).split("/");
+		var splittedPath = path.substring(1)
+				.split("/");
 
 		var paramMapDefList = new ArrayList<WebApiParamMapDefinition>();
 
@@ -78,6 +79,7 @@ public class WebApiParameterMappingsOpenApiConverter implements WebApiOpenApiCon
 			paramMapDefList.add(def);
 		}
 
-		context.getWebApiDefinition().setWebApiParamMap(paramMapDefList.toArray(WebApiParamMapDefinition[]::new));
+		context.getWebApiDefinition()
+				.setWebApiParamMap(paramMapDefList.toArray(WebApiParamMapDefinition[]::new));
 	}
 }

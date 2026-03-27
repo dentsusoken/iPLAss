@@ -48,8 +48,8 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
  * プロパティエディタのメタデータ
  * @author lis3wg
  */
-@XmlSeeAlso( {MetaReferencePropertyEditor.class, MetaPrimitivePropertyEditor.class,
-	MetaCustomPropertyEditor.class})
+@XmlSeeAlso({ MetaReferencePropertyEditor.class, MetaPrimitivePropertyEditor.class,
+		MetaCustomPropertyEditor.class })
 public abstract class MetaPropertyEditor implements MetaData {
 
 	/** シリアルバージョンUID */
@@ -180,31 +180,45 @@ public abstract class MetaPropertyEditor implements MetaData {
 				PropertyDefinition pd = propertyLayout.getProperty(propertyLayout.getPropertyId(), context, eh);
 				//プロパティが取得できない場合はチェック除外(プロパティ削除などで無視されるため)
 				if (pd != null && !checkPropertyType(pd)) {
-					String entityName = entityView.getMetaData().getName();
-					String layoutType = formView != null ? formView.getMetaData().getClass().getSimpleName() : "unknown";
+					String entityName = entityView.getMetaData()
+							.getName();
+					String layoutType = formView != null ? formView.getMetaData()
+							.getClass()
+							.getSimpleName() : "unknown";
 					String viewName = null;
-					if (formView != null && StringUtil.isNotEmpty(formView.getMetaData().getName())) {
-						viewName = formView.getMetaData().getName();
+					if (formView != null && StringUtil.isNotEmpty(formView.getMetaData()
+							.getName())) {
+						viewName = formView.getMetaData()
+								.getName();
 					} else {
 						viewName = "(default)";
 					}
 					throw new EntityViewRuntimeException("on " + entityName + " [" + viewName + "] view of " + layoutType + ", "
-							+ "[" + pd.getName() + "] 's " + getMetaData().getClass().getSimpleName()
-							+ " is unsupport " + pd.getClass().getSimpleName() + " type.");
+							+ "[" + pd.getName() + "] 's " + getMetaData().getClass()
+									.getSimpleName()
+							+ " is unsupport " + pd.getClass()
+									.getSimpleName()
+							+ " type.");
 				}
 			}
 
-			outputCustomStyleScriptKey = "PropertyEditor_OutputStyle_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+			outputCustomStyleScriptKey = "PropertyEditor_OutputStyle_" + GroovyTemplateCompiler.randomName()
+					.replace("-", "_");
 			if (StringUtil.isNotEmpty(customStyle)) {
-				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				outputCustomStyleScript = GroovyTemplateCompiler.compile(customStyle,
 						outputCustomStyleScriptKey + "_" + SCRIPT_PREFIX_OUTPUT_CUSTOM_STYLE,
 						(GroovyScriptEngine) scriptEngine);
 			}
 
-			inputCustomStyleScriptKey = "PropertyEditor_InputStyle_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+			inputCustomStyleScriptKey = "PropertyEditor_InputStyle_" + GroovyTemplateCompiler.randomName()
+					.replace("-", "_");
 			if (StringUtil.isNotEmpty(inputCustomStyle)) {
-				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				inputCustomStyleScript = GroovyTemplateCompiler.compile(inputCustomStyle,
 						inputCustomStyleScriptKey + "_" + SCRIPT_PREFIX_INPUT_CUSTOM_STYLE,
 						(GroovyScriptEngine) scriptEngine);

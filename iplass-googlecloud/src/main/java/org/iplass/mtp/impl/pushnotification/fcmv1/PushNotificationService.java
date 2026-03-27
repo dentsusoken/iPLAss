@@ -19,7 +19,6 @@
  */
 package org.iplass.mtp.impl.pushnotification.fcmv1;
 
-
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.time.Duration;
@@ -236,9 +235,10 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		exponentialBackoff = enableRetry
 				// 再実行が有効
 				? config.getValue("exponentialBackoff", ExponentialBackoff.class, new ExponentialBackoff())
-						// 再実行が無効
-						: ExponentialBackoff.NO_RETRY;
-		defaultRetryAfterSeconds = config.getValue("defaultRetryAfterSeconds", Long.class, DEFAULT_RETRY_AFTER_SECONDS).longValue();
+				// 再実行が無効
+				: ExponentialBackoff.NO_RETRY;
+		defaultRetryAfterSeconds = config.getValue("defaultRetryAfterSeconds", Long.class, DEFAULT_RETRY_AFTER_SECONDS)
+				.longValue();
 		registrationTokenHandler = config.getValue("registrationTokenHandler", RegistrationTokenHandler.class, new EmptyRegistrationTokenHandler());
 		httpClientConfig = config.getValueWithSupplier("httpClientConfig", HttpClientConfig.class, () -> new HttpClientConfig());
 		objectMapper = config.getValueWithSupplier("objectMapper", ObjectMapper.class, () -> JsonMapper.builder()
@@ -256,7 +256,8 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 		// instance initialze
 		serviceEndpoint = SERVICE_ENDPOINT_PREFIX + projectId + SERVICE_ENDPOINT_POSTFIX;
-		googleCloudSettings = ServiceRegistry.getRegistry().getService(GoogleCloudSettings.class);
+		googleCloudSettings = ServiceRegistry.getRegistry()
+				.getService(GoogleCloudSettings.class);
 		compressRequestEntity = compressRequest ? this::compressHttpEntity : this::plainHttpEntity;
 		// リトライが有効な場合は、ExponentialBackoff が有効な処理を利用する
 		pushApi = enableRetry ? this::requestPushApiExponentialBackoff : this::requestPushApi;
@@ -268,7 +269,8 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 	@Override
 	protected PushNotificationResult pushImpl(Tenant tenant, PushNotification notification) {
-		boolean toListIsNotEmpty = 0 < notification.getToList().size();
+		boolean toListIsNotEmpty = 0 < notification.getToList()
+				.size();
 		// TO の設定有無でエントリメソッドを変更する
 		return toListIsNotEmpty ? pushByToList(tenant, notification) : pushByMessage(tenant, notification);
 	}
@@ -289,22 +291,25 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 	 * @param notification 通知情報
 	 * @return 通知実行結果
 	 */
-	private PushNotificationResult pushByToList(Tenant tenant, PushNotification notification)  {
+	private PushNotificationResult pushByToList(Tenant tenant, PushNotification notification) {
 		Map<String, Object> message = toMessageResource(notification);
 		PushNotificationTarget target = getTarget(message);
 
 		if (null != target) {
 			// message に target 指定されていても無視する
-			message.remove(target.getType().getFieldName());
+			message.remove(target.getType()
+					.getFieldName());
 			// 無視される宛先の情報をログ出力
-			logger.warn("A destination({}:{}) was set but is ignored, because it is the destination set for the message.", target.getType(), target.getTarget());
+			logger.warn("A destination({}:{}) was set but is ignored, because it is the destination set for the message.", target.getType(),
+					target.getTarget());
 		}
 
 		List<PushNotificationResponseDetail> responseDetailList = new ArrayList<PushNotificationResponseDetail>();
 		for (String prefixedTo : notification.getToList()) {
 			Map<String, Object> messageClone = new HashMap<>(message);
 			PushNotificationTarget toTarget = PushNotificationTarget.create(prefixedTo);
-			messageClone.put(toTarget.getType().getFieldName(), toTarget.getTarget());
+			messageClone.put(toTarget.getType()
+					.getFieldName(), toTarget.getTarget());
 
 			PushNotificationResponseDetail responseDetail = pushApi.request(toTarget, messageClone);
 			responseDetailList.add(responseDetail);
@@ -313,7 +318,9 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		Map<String, Object> detail = new HashMap<String, Object>();
 		detail.put(PushNotificationResultDetailKey.DETAIL_LIST, responseDetailList);
 		// 失敗数が 0 であれば全て成功と判定する
-		boolean isSuccessAll = responseDetailList.stream().filter(r -> PushNotificationStatus.SUCCESS != r.getStatus()).count() == 0;
+		boolean isSuccessAll = responseDetailList.stream()
+				.filter(r -> PushNotificationStatus.SUCCESS != r.getStatus())
+				.count() == 0;
 		return new PushNotificationResult(isSuccessAll, detail);
 	}
 
@@ -324,13 +331,14 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 	 * @param notification 通知情報
 	 * @return 通知実行結果
 	 */
-	private PushNotificationResult pushByMessage(Tenant tenant, PushNotification notification)  {
+	private PushNotificationResult pushByMessage(Tenant tenant, PushNotification notification) {
 		Map<String, Object> message = toMessageResource(notification);
 		PushNotificationTarget target = getTarget(message);
 		if (null == target) {
 			// 宛先指定なし
-			throw new PushNotificationException("Notification target information is not set. Please set " + PushNotificationTargetType.TOKEN.getFieldName() + " or "
-					+ PushNotificationTargetType.TOPIC.getFieldName() + " or " + PushNotificationTargetType.CONDITION.getFieldName() + ".");
+			throw new PushNotificationException(
+					"Notification target information is not set. Please set " + PushNotificationTargetType.TOKEN.getFieldName() + " or "
+							+ PushNotificationTargetType.TOPIC.getFieldName() + " or " + PushNotificationTargetType.CONDITION.getFieldName() + ".");
 		}
 		List<PushNotificationResponseDetail> responseDetailList = new ArrayList<PushNotificationResponseDetail>();
 		PushNotificationResponseDetail responseDetail = pushApi.request(target, message);
@@ -339,7 +347,9 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 		Map<String, Object> detail = new HashMap<String, Object>();
 		detail.put(PushNotificationResultDetailKey.DETAIL_LIST, responseDetailList);
 		// 失敗数が 0 であれば全て成功と判定する
-		boolean isSuccessAll = responseDetailList.stream().filter(r -> PushNotificationStatus.SUCCESS != r.getStatus()).count() == 0;
+		boolean isSuccessAll = responseDetailList.stream()
+				.filter(r -> PushNotificationStatus.SUCCESS != r.getStatus())
+				.count() == 0;
 		return new PushNotificationResult(isSuccessAll, detail);
 	}
 
@@ -358,7 +368,8 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 	protected PushNotificationResponseDetail requestPushApiExponentialBackoff(PushNotificationTarget target, Map<String, Object> messageResource) {
 		try {
 			final PushNotificationResponseDetail[] result = new PushNotificationResponseDetail[] { null };
-			final ZonedDateTime maxElapsedDateTime = ZonedDateTime.now().plus(Duration.ofMillis(exponentialBackoff.getMaxElapsedTimeMillis()));
+			final ZonedDateTime maxElapsedDateTime = ZonedDateTime.now()
+					.plus(Duration.ofMillis(exponentialBackoff.getMaxElapsedTimeMillis()));
 			final int[] retryCount = new int[] { -1 };
 
 			exponentialBackoff.execute(() -> {
@@ -369,7 +380,8 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 				result[0] = responseDetail;
 
 				if (PushNotificationStatus.FAIL_RETRYABLE == responseDetail.getStatus()) {
-					ZonedDateTime waitFinishDateTime = ZonedDateTime.now().plus(Duration.ofSeconds(responseDetail.getRetryAfterSeconds()));
+					ZonedDateTime waitFinishDateTime = ZonedDateTime.now()
+							.plus(Duration.ofSeconds(responseDetail.getRetryAfterSeconds()));
 					if (maxElapsedDateTime.isAfter(waitFinishDateTime)) {
 						// retry-after の秒数待ち、再実行を行うシーケンス
 						try {
@@ -383,7 +395,10 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 					// リトライ可能なエラーだが、最大経過時間を過ぎるので中断する。
 					logger.warn("Retryable error, but aborted because the maximum elapsed time has passed. target = {}:{}.",
-							responseDetail.getTarget().getType(), responseDetail.getTarget().getTarget());
+							responseDetail.getTarget()
+									.getType(),
+							responseDetail.getTarget()
+									.getTarget());
 				}
 
 				return true;
@@ -423,23 +438,24 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 
 			logger.debug("Request - requestBody = {}, headers = {}", requestBody, request.getHeaders());
 
-			PushNotificationResponseDetail responseDetail = httpClientConfig.getInstance().execute(request, response -> {
-				HttpEntity entity = response.getEntity();
-				try {
-					String contents = EntityUtils.toString(entity);
-					logger.debug("Response - serviceEndpoint = {}, code = {}({}), contents = {}, headers = {}",
-							serviceEndpoint, response.getCode(), response.getReasonPhrase(), contents, response.getHeaders());
-					// response header "retry-after" の値を数値変換する。設定が無い場合は、defaultRetryAfterMillis を設定する。
-					Header retryAfterHeader = response.getFirstHeader(RESPONSE_HEADER_RETRY_AFTER);
-					String retryAfterValue = null != retryAfterHeader ? retryAfterHeader.getValue() : null;
-					long retryAfterSeconds = toRetryAfterSeconds(retryAfterValue, defaultRetryAfterSeconds);
+			PushNotificationResponseDetail responseDetail = httpClientConfig.getInstance()
+					.execute(request, response -> {
+						HttpEntity entity = response.getEntity();
+						try {
+							String contents = EntityUtils.toString(entity);
+							logger.debug("Response - serviceEndpoint = {}, code = {}({}), contents = {}, headers = {}",
+									serviceEndpoint, response.getCode(), response.getReasonPhrase(), contents, response.getHeaders());
+							// response header "retry-after" の値を数値変換する。設定が無い場合は、defaultRetryAfterMillis を設定する。
+							Header retryAfterHeader = response.getFirstHeader(RESPONSE_HEADER_RETRY_AFTER);
+							String retryAfterValue = null != retryAfterHeader ? retryAfterHeader.getValue() : null;
+							long retryAfterSeconds = toRetryAfterSeconds(retryAfterValue, defaultRetryAfterSeconds);
 
-					return handleResponse(target, response.getCode(), contents, retryAfterSeconds);
+							return handleResponse(target, response.getCode(), contents, retryAfterSeconds);
 
-				} finally {
-					EntityUtils.consume(entity);
-				}
-			});
+						} finally {
+							EntityUtils.consume(entity);
+						}
+					});
 
 			postProcessOfReequestPushApi(responseDetail);
 
@@ -569,7 +585,8 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 	 * @param responseDetail
 	 */
 	protected void postProcessOfReequestPushApi(PushNotificationResponseDetail responseDetail) {
-		if (PushNotificationTargetType.TOKEN == responseDetail.getTarget().getType()
+		if (PushNotificationTargetType.TOKEN == responseDetail.getTarget()
+				.getType()
 				&& PushNotificationStatus.FAIL_DEVICE_UNREGISTERED == responseDetail.getStatus()) {
 			// DEVICE_UNREGISTERED の場合に、未登録を通知する。
 			registrationTokenHandler.unregistered(responseDetail.getTarget());
@@ -614,15 +631,18 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 			return defaultSeconds;
 		}
 
-		boolean isNumber = NUMBER_PATTERN.matcher(retryAfter).matches();
+		boolean isNumber = NUMBER_PATTERN.matcher(retryAfter)
+				.matches();
 		if (isNumber) {
 			return Long.valueOf(retryAfter);
 		}
 
 		ZonedDateTime now = ZonedDateTime.now();
-		ZonedDateTime retryAfterDate = DateUtils.parseStandardDate(retryAfter).atZone(ZoneId.systemDefault());
+		ZonedDateTime retryAfterDate = DateUtils.parseStandardDate(retryAfter)
+				.atZone(ZoneId.systemDefault());
 
-		long retryAfterSeconds = Duration.between(now, retryAfterDate).toSeconds();
+		long retryAfterSeconds = Duration.between(now, retryAfterDate)
+				.toSeconds();
 		// マイナス値になる場合は 0 を設定する
 		return 0 <= retryAfterSeconds ? retryAfterSeconds : 0;
 	}
@@ -748,7 +768,8 @@ public class PushNotificationService extends org.iplass.mtp.impl.pushnotificatio
 				childMap.putAll(valueMap);
 
 			} else {
-				logger.warn("The instance set to the key '{}' is not a java.util.Map. (Class of value set: '{}')", key, child.getClass().getName());
+				logger.warn("The instance set to the key '{}' is not a java.util.Map. (Class of value set: '{}')", key, child.getClass()
+						.getName());
 			}
 		}
 	}

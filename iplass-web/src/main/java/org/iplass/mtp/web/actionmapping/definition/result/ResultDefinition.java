@@ -33,14 +33,15 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author K.Higuchi
  *
  */
-@XmlSeeAlso (value = {
-		DynamicTemplateResultDefinition.class,
-		RedirectResultDefinition.class,
-		StreamResultDefinition.class,
-		TemplateResultDefinition.class,
-		StaticResourceResultDefinition.class
-})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(
+		value = {
+				DynamicTemplateResultDefinition.class,
+				RedirectResultDefinition.class,
+				StreamResultDefinition.class,
+				TemplateResultDefinition.class,
+				StaticResourceResultDefinition.class
+		})
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class ResultDefinition implements Serializable {
 
 	private static final long serialVersionUID = 2185607355522422387L;
@@ -50,7 +51,7 @@ public abstract class ResultDefinition implements Serializable {
 	 * *指定の場合は全てのステータスの意。
 	 */
 	private String commandResultStatus;
-	
+
 	private String exceptionClassName;
 
 	public String getExceptionClassName() {

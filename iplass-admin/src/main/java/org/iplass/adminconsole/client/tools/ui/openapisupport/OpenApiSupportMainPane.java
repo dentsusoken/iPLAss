@@ -146,11 +146,11 @@ public class OpenApiSupportMainPane extends VLayout {
 
 		PostDownloadFrame frame = new PostDownloadFrame();
 		frame.setAction(GWT.getModuleBaseURL() + OpenApiSupportRpcConstant.Export.SERVICE_NAME)
-		.addParameter(ConfigDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
-		.addParameter(OpenApiSupportRpcConstant.Export.Parameter.VERSION, version)
-		.addParameter(OpenApiSupportRpcConstant.Export.Parameter.FILE_TYPE, fileType)
-		.addParameter(OpenApiSupportRpcConstant.Export.Parameter.SELECT_VALUE, selectDataString)
-		.execute();
+				.addParameter(ConfigDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
+				.addParameter(OpenApiSupportRpcConstant.Export.Parameter.VERSION, version)
+				.addParameter(OpenApiSupportRpcConstant.Export.Parameter.FILE_TYPE, fileType)
+				.addParameter(OpenApiSupportRpcConstant.Export.Parameter.SELECT_VALUE, selectDataString)
+				.execute();
 
 	}
 
@@ -177,7 +177,8 @@ public class OpenApiSupportMainPane extends VLayout {
 		// WebAPI 文字列の作成
 		if (dto.isSelectWebApi()) {
 			for (String webApi : dto.getWebApiList()) {
-				converted.append(webApi).append(":");
+				converted.append(webApi)
+						.append(":");
 			}
 			converted.deleteCharAt(converted.length() - 1); // 最後のコロンを削除
 		}
@@ -186,11 +187,13 @@ public class OpenApiSupportMainPane extends VLayout {
 
 		// Entity CRUD API 文字列の作成
 		if (dto.isSelectEntityCRUDApi()) {
-			for (Map.Entry<String, List<String>> entityCRUDApi : dto.getEntityCRUDApiMap().entrySet()) {
+			for (Map.Entry<String, List<String>> entityCRUDApi : dto.getEntityCRUDApiMap()
+					.entrySet()) {
 				var definitionName = entityCRUDApi.getKey();
 				var authList = entityCRUDApi.getValue();
 				// 先頭にエンティティ名を設定
-				converted.append(definitionName).append(",");
+				converted.append(definitionName)
+						.append(",");
 				// 以降に許可された権限を追加
 				converted.append(String.join(",", authList));
 				converted.append(":");

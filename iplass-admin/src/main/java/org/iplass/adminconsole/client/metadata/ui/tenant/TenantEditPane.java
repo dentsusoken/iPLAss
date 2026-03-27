@@ -110,11 +110,15 @@ public class TenantEditPane extends MetaDataMainEditPane {
 
 				DefinitionEntry entry = dataSource.getTenantEntry();
 				curDefinition = (Tenant) entry.getDefinition();
-				curVersion = entry.getDefinitionInfo().getVersion();
-				curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+				curVersion = entry.getDefinitionInfo()
+						.getVersion();
+				curDefinitionId = entry.getDefinitionInfo()
+						.getObjDefId();
 
 				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(
-						curDefinition.getClass().getName(), curDefinitionId, curVersion);
+						curDefinition.getClass()
+								.getName(),
+						curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -164,7 +168,8 @@ public class TenantEditPane extends MetaDataMainEditPane {
 			}
 		});
 
-		dataSource = ScreenModuleBasedUIFactoryHolder.getFactory().createTenantDataSource();
+		dataSource = ScreenModuleBasedUIFactoryHolder.getFactory()
+				.createTenantDataSource();
 		grid.setDataSource(dataSource);
 		grid.setAutoFetchData(true);
 
@@ -209,7 +214,8 @@ public class TenantEditPane extends MetaDataMainEditPane {
 							// 更新対象の取得
 							Tenant tenant = dataSource.getUpdateData();
 							DefinitionEntry entry = dataSource.getTenantEntry();
-							curVersion = entry.getDefinitionInfo().getVersion();
+							curVersion = entry.getDefinitionInfo()
+									.getVersion();
 
 							updateTenant(tenant, true);
 						}

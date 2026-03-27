@@ -44,13 +44,14 @@ public abstract class AbstractCallbackCommand implements Command {
 	public static final String STAT_SUCCESS = "SUCCESS";
 
 	public static final String REQUEST_ERROR_TEMPLATE = "org.iplass.mtp.oidc.errorTemplate";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(AbstractCallbackCommand.class);
-	
-	private OpenIdConnectService service = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
-	
+
+	private OpenIdConnectService service = ServiceRegistry.getRegistry()
+			.getService(OpenIdConnectService.class);
+
 	private String sessionOidStateKey;
-	
+
 	public AbstractCallbackCommand(String sessionOidStateKey) {
 		this.sessionOidStateKey = sessionOidStateKey;
 	}
@@ -62,12 +63,12 @@ public abstract class AbstractCallbackCommand implements Command {
 		String stateToken = request.getParam(OAuthEndpointConstants.PARAM_STATE);
 		String code = request.getParam(OAuthEndpointConstants.PARAM_CODE);
 		String iss = request.getParam(OAuthEndpointConstants.PARAM_ISS);
-		
+
 		OpenIdConnectRuntime oidp = service.getOrDefault(defName);
 		if (oidp == null) {
 			throw new OIDCRuntimeException("no OpenIdProvider Definition:" + defName);
 		}
-		
+
 		OIDCState state = null;
 		SessionContext session = request.getSession(false);
 		if (session != null) {
@@ -81,23 +82,24 @@ public abstract class AbstractCallbackCommand implements Command {
 		if (error != null) {
 			String errorDesc = StringUtil.stripToEmpty(request.getParam(OAuthEndpointConstants.PARAM_ERROR_DESCRIPTION));
 			String errorUri = StringUtil.stripToEmpty(request.getParam(OAuthEndpointConstants.PARAM_ERROR_URI));
-			logger.error("oidc error: error=" + error +", error_desc=" + errorDesc + ", error_uri=" + errorUri);
-			throw new ApplicationException(resourceString("impl.auth.authenticate.oidc.command.AbstractCallbackCommand.error", StringUtil.stripToEmpty(errorDesc), error));
+			logger.error("oidc error: error=" + error + ", error_desc=" + errorDesc + ", error_uri=" + errorUri);
+			throw new ApplicationException(
+					resourceString("impl.auth.authenticate.oidc.command.AbstractCallbackCommand.error", StringUtil.stripToEmpty(errorDesc), error));
 		}
-		
-		
+
 		if (state == null) {
 			//invalid state
 			if (logger.isDebugEnabled()) {
 				logger.debug("invalid state:" + state);
 			}
 			logger.error("oidc error: error=invalid client state");
-			throw new ApplicationException(resourceString("impl.auth.authenticate.oidc.command.AbstractCallbackCommand.error", "", "invalid_client_state"));
+			throw new ApplicationException(
+					resourceString("impl.auth.authenticate.oidc.command.AbstractCallbackCommand.error", "", "invalid_client_state"));
 		}
-		
+
 		OIDCCredential cre = new OIDCCredential(defName, code, stateToken, createRedirectUri(oidp, request), iss, state);
 		executeImpl(oidp, request, cre);
-		
+
 		if (state.getBackUrlAfterAuth() == null) {
 			throw new OIDCRuntimeException("No redirect url");
 		}
@@ -110,10 +112,11 @@ public abstract class AbstractCallbackCommand implements Command {
 		request.setAttribute(WebRequestConstants.REDIRECT_PATH, state.getBackUrlAfterAuth());
 		return STAT_SUCCESS;
 	}
-	
+
 	protected abstract void executeImpl(OpenIdConnectRuntime oidp, RequestContext request, OIDCCredential cre);
+
 	protected abstract String createRedirectUri(OpenIdConnectRuntime oidp, RequestContext request);
-	
+
 	void setErrorTemplate(RequestContext request, OIDCState state) {
 		String errorTmpl = null;
 		if (state != null) {

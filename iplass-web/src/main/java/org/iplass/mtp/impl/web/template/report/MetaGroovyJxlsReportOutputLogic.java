@@ -105,7 +105,8 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 		 */
 		public GroovyJxlsReportOutputLogicRuntime(MetaReportType reportType) {
 
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			scriptEngine = tc.getScriptEngine();
 
 			if (script != null) {
@@ -154,7 +155,8 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 						if (transformer instanceof PoiTransformer poiTransformer) {
 							var book = poiTransformer.getWorkbook();
 
-							if (cellRef.getSheetName() != null && cellRef.getSheetName().length() > 0) {
+							if (cellRef.getSheetName() != null && cellRef.getSheetName()
+									.length() > 0) {
 								book.setSheetName(0, cellRef.getSheetName());
 							}
 						}
@@ -191,7 +193,8 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 		 */
 		@SuppressWarnings("javadoc")
 		@Deprecated
-		public void processGridTemplateAtCell(JxlsTemplateFillerBuilder<?> builder, Map<String, Object> reportData, OutputStream out, String objectProps,
+		public void processGridTemplateAtCell(JxlsTemplateFillerBuilder<?> builder, Map<String, Object> reportData, OutputStream out,
+				String objectProps,
 				String targetCell) {
 			final var cellRef = new CellRef(targetCell);
 			builder
@@ -199,7 +202,10 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 					.withAreaBuilder((transformer, clearTemplateCells) -> {
 						var areaList = new XlsCommentAreaBuilder().build(transformer, clearTemplateCells);
 
-						GridCommand gridCommand = (GridCommand) areaList.get(0).getCommandDataList().get(0).getCommand();
+						GridCommand gridCommand = (GridCommand) areaList.get(0)
+								.getCommandDataList()
+								.get(0)
+								.getCommand();
 						gridCommand.setProps(objectProps);
 
 						return areaList;
@@ -209,7 +215,8 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 						if (transformer instanceof PoiTransformer poiTransformer) {
 							var book = poiTransformer.getWorkbook();
 
-							if (cellRef.getSheetName() != null && cellRef.getSheetName().length() > 0) {
+							if (cellRef.getSheetName() != null && cellRef.getSheetName()
+									.length() > 0) {
 								book.setSheetName(0, cellRef.getSheetName());
 							}
 						}

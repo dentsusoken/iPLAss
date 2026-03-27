@@ -96,4 +96,3 @@ public enum PushNotificationTargetType {
 				"The argument fieldName must be " + TOKEN.fieldName + " or " + TOPIC.fieldName + " or " + CONDITION.fieldName + ".");
 	}
 }
-

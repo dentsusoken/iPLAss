@@ -30,8 +30,9 @@ public enum MetaDataRepositoryKind {
 	RDB("Rdb"),
 	XMLFILE("XmlFile"),
 	XMLRESOURCE("Xml");
-	
+
 	private String displayName;
+
 	private MetaDataRepositoryKind(String displayName) {
 		this.displayName = displayName;
 	}

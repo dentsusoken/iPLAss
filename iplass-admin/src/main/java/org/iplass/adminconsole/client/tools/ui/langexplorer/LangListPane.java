@@ -74,7 +74,8 @@ public class LangListPane extends VLayout {
 	private LangTreeGridPane grid;
 	private LangEditListPane langEditListPane;
 
-	private LangExplorerSettingController controller = ScreenModuleBasedUIFactoryHolder.getFactory().createLangExplorerSettingController();
+	private LangExplorerSettingController controller = ScreenModuleBasedUIFactoryHolder.getFactory()
+			.createLangExplorerSettingController();
 
 	/**
 	 * コンストラクタ
@@ -212,11 +213,15 @@ public class LangListPane extends VLayout {
 				}
 
 				TreeNode node = (TreeNode) record;
-				if (grid.getTree().isFolder(node)) {
-					if (grid.getTree().isOpen(node)) {
-						grid.getTree().closeFolder(node);
+				if (grid.getTree()
+						.isFolder(node)) {
+					if (grid.getTree()
+							.isOpen(node)) {
+						grid.getTree()
+								.closeFolder(node);
 					} else {
-						grid.getTree().openFolder(node);
+						grid.getTree()
+								.openFolder(node);
 					}
 					return;
 				}
@@ -290,7 +295,8 @@ public class LangListPane extends VLayout {
 				//gridが表示されてたらリフレッシュ
 				if (langEditListPane.isShowGrid()) {
 					//pathとdefinitionNameはgrid表示時に設定してるはず
-					controller.displayMultiLangInfo(langEditListPane, langEditListPane.getDefinitionClassName(), langEditListPane.getDefinitionName(), langEditListPane.getPath());
+					controller.displayMultiLangInfo(langEditListPane, langEditListPane.getDefinitionClassName(), langEditListPane.getDefinitionName(),
+							langEditListPane.getPath());
 				}
 			}
 		});

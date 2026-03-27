@@ -54,7 +54,10 @@ public enum AuthenticationListenerType {
 
 	public static AuthenticationListenerType valueOf(AccountNotificationListenerDefinition definition) {
 		for (AuthenticationListenerType type : values()) {
-			if (definition.getClass().getName().equals(type.definitionClass().getName())) {
+			if (definition.getClass()
+					.getName()
+					.equals(type.definitionClass()
+							.getName())) {
 				return type;
 			}
 		}
@@ -62,22 +65,28 @@ public enum AuthenticationListenerType {
 	}
 
 	public static AccountNotificationListenerDefinition typeOfDefinition(AuthenticationListenerType type) {
-		if (type.definitionClass().equals(JavaClassAccountNotificationListenerDefinition.class)) {
+		if (type.definitionClass()
+				.equals(JavaClassAccountNotificationListenerDefinition.class)) {
 			return new JavaClassAccountNotificationListenerDefinition();
-		} else if (type.definitionClass().equals(MailAccountNotificationListenerDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(MailAccountNotificationListenerDefinition.class)) {
 			return new MailAccountNotificationListenerDefinition();
-		} else if (type.definitionClass().equals(ScriptingAccountNotificationListenerDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ScriptingAccountNotificationListenerDefinition.class)) {
 			return new ScriptingAccountNotificationListenerDefinition();
 		}
 		return null;
 	}
 
 	public static AuthenticationListenerTypeEditPane typeOfEditPane(AuthenticationListenerType type) {
-		if (type.definitionClass().equals(JavaClassAccountNotificationListenerDefinition.class)) {
+		if (type.definitionClass()
+				.equals(JavaClassAccountNotificationListenerDefinition.class)) {
 			return new JavaClassAccountNotificationListenerEditPane();
-		} else if (type.definitionClass().equals(MailAccountNotificationListenerDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(MailAccountNotificationListenerDefinition.class)) {
 			return new MailAccountNotificationListenerEditPane();
-		} else if (type.definitionClass().equals(ScriptingAccountNotificationListenerDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ScriptingAccountNotificationListenerDefinition.class)) {
 			return new ScriptingAccountNotificationListenerEditPane();
 		}
 		return null;

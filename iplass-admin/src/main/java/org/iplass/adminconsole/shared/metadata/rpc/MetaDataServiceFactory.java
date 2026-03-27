@@ -39,7 +39,7 @@ public abstract class MetaDataServiceFactory extends AbstractAdminServiceFactory
 
 		MetaDataServiceAsync service = GWT.create(MetaDataService.class);
 
-		init((HasRpcToken)service);
+		init((HasRpcToken) service);
 
 		MetaDataServiceFactory.service = service;
 

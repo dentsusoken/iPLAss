@@ -42,17 +42,19 @@ import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.util.StringUtil;
 
 @ActionMapping(
-	name=AboutCommand.ACTION_NAME,
-	clientCacheType=ClientCacheType.NO_CACHE,
-	displayName="About画面表示",
-	result={
-		@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-				value="/jsp/gem/layout/about.jsp",
-				templateName="gem/layout/about",
-				layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-	}
+		name = AboutCommand.ACTION_NAME,
+		clientCacheType = ClientCacheType.NO_CACHE,
+		displayName = "About画面表示",
+		result = {
+				@Result(
+						status = Constants.CMD_EXEC_SUCCESS,
+						type = Type.JSP,
+						value = "/jsp/gem/layout/about.jsp",
+						templateName = "gem/layout/about",
+						layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+		}
 )
-@CommandClass(name="gem/layout/AboutCommand", displayName="About画面表示")
+@CommandClass(name = "gem/layout/AboutCommand", displayName = "About画面表示")
 public final class AboutCommand implements Command {
 
 	public static final String ACTION_NAME = "gem/about";
@@ -62,7 +64,8 @@ public final class AboutCommand implements Command {
 	@Override
 	public String execute(RequestContext request) {
 
-		ServletContext sc = WebRequestStack.getCurrent().getServletContext();
+		ServletContext sc = WebRequestStack.getCurrent()
+				.getServletContext();
 
 		String appName = sc.getServletContextName();
 		if (StringUtil.isEmpty(appName)) {
@@ -95,7 +98,7 @@ public final class AboutCommand implements Command {
 			try (InputStreamReader isr = new InputStreamReader(resource.openStream(), "UTF8");
 					BufferedReader br = new BufferedReader(isr)) {
 				String line = br.readLine();
-				while (line != null){
+				while (line != null) {
 					lines.add(line);
 					line = br.readLine();
 				}

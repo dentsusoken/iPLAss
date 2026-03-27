@@ -23,18 +23,18 @@ package org.iplass.mtp.impl.metadata;
 import java.io.Serializable;
 
 public interface MetaData extends Serializable {
-	
+
 	/**
 	 * 当該のメタデータのコピーを作成する。
 	 * 
 	 * @return コピーされたメタデータ
 	 */
 	public MetaData copy();
-	
+
 	public boolean equals(Object obj);
-	
+
 	public int hashCode();
-	
+
 //	/**
 //	 * このメタデータの情報から、何らかの処理を実際に実行するMetaDataRuntimeを取得する。
 //	 * メタデータ自身は、リポジトリ上に保存するデータのみを保持する形に作成し、
@@ -43,7 +43,5 @@ public interface MetaData extends Serializable {
 //	 * @return MetaDataRuntimeのインスタンス
 //	 */
 //	public MetaDataRuntime createRuntime();
-	
-	
 
 }

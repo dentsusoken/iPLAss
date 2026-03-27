@@ -116,17 +116,18 @@ public class AuthTag extends TagSupport implements TryCatchFinally {
 	private static final long serialVersionUID = 1L;
 
 	private static Logger log = LoggerFactory.getLogger(AuthTag.class);
-	
+
 	private static Pattern sp = Pattern.compile("[,\\s]+");
-	
+
 	private Boolean privileged = Boolean.FALSE;
 	private String role;
 	private Permission permission;
-	
-	private AuthService authService = ServiceRegistry.getRegistry().getService(AuthService.class);
+
+	private AuthService authService = ServiceRegistry.getRegistry()
+			.getService(AuthService.class);
 	private AuthContextHolder doAuthContext;
 	private AuthContextHolder prev;
-	
+
 	public Boolean getPrivileged() {
 		return privileged;
 	}
@@ -160,7 +161,7 @@ public class AuthTag extends TagSupport implements TryCatchFinally {
 				userInRole = auth.userInRole(role);
 			} else {
 				String[] roles = sp.split(role);
-				for (String r: roles) {
+				for (String r : roles) {
 					userInRole |= userInRole | auth.userInRole(r);
 					if (userInRole) {
 						break;
@@ -174,7 +175,7 @@ public class AuthTag extends TagSupport implements TryCatchFinally {
 				return SKIP_BODY;
 			}
 		}
-		
+
 		if (permission != null) {
 			if (!auth.checkPermission(permission)) {
 				if (log.isDebugEnabled()) {
@@ -183,32 +184,33 @@ public class AuthTag extends TagSupport implements TryCatchFinally {
 				return SKIP_BODY;
 			}
 		}
-		
+
 		if (privileged != null && privileged.booleanValue()) {
-			doAuthContext = AuthContextHolder.getAuthContext().privilegedAuthContextHolder();
+			doAuthContext = AuthContextHolder.getAuthContext()
+					.privilegedAuthContextHolder();
 			ExecuteContext exec = ExecuteContext.getCurrentContext();
 			prev = authService.doSecuredActionPre(doAuthContext, exec);
 		}
-		
+
 		return EVAL_BODY_INCLUDE;
 	}
-	
+
 	@Override
 	public void doCatch(Throwable t) throws Throwable {
 		throw t;
 	}
-	
+
 	@Override
 	public void doFinally() {
-		
+
 		if (privileged != null && privileged.booleanValue()) {
 			ExecuteContext exec = ExecuteContext.getCurrentContext();
 			authService.doSecuredActionPost(doAuthContext, true, prev, exec);
 		}
-		
+
 		doAuthContext = null;
 		prev = null;
-		
+
 		privileged = Boolean.FALSE;
 		role = null;
 		permission = null;

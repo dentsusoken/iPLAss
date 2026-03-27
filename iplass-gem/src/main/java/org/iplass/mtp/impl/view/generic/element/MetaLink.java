@@ -254,9 +254,12 @@ public class MetaLink extends MetaElement {
 		public LinkRuntime(MetaLink metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
-			inputCustomStyleScriptKey = "Link_InputStyle_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+			inputCustomStyleScriptKey = "Link_InputStyle_" + GroovyTemplateCompiler.randomName()
+					.replace("-", "_");
 			if (StringUtil.isNotEmpty(inputCustomStyle)) {
-				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				inputCustomStyleScript = GroovyTemplateCompiler.compile(inputCustomStyle,
 						inputCustomStyleScriptKey + "_" + SCRIPT_PREFIX,
 						(GroovyScriptEngine) scriptEngine);

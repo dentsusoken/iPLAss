@@ -27,7 +27,7 @@ import org.iplass.mtp.auth.login.Credential;
 public class JeeContainerManagedCredential implements Credential {
 	private String id;
 	private Map<String, Object> additionalAuthenticationFactor;
-	
+
 	JeeContainerManagedCredential(String id) {
 		this.id = id;
 	}

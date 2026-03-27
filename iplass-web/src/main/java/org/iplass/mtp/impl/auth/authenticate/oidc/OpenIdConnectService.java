@@ -57,9 +57,11 @@ public class OpenIdConnectService extends AbstractTypedMetaDataService<MetaOpenI
 		public TypeMap() {
 			super(OIDC_PATH, MetaOpenIdConnect.class, OpenIdConnectDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<OpenIdConnectDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(OpenIdConnectDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(OpenIdConnectDefinitionManager.class);
 		}
 
 		@Override
@@ -136,7 +138,9 @@ public class OpenIdConnectService extends AbstractTypedMetaDataService<MetaOpenI
 
 		httpClientConfig = config.getValueWithSupplier("httpClientConfig", HttpClientConfig.class, () -> new HttpClientConfig());
 		objectMapper = new ObjectMapper();
-		clientSecretHandler = (ClientSecretHandler) ServiceRegistry.getRegistry().getService(AuthTokenService.class).getHandler(clientSecretType);
+		clientSecretHandler = (ClientSecretHandler) ServiceRegistry.getRegistry()
+				.getService(AuthTokenService.class)
+				.getHandler(clientSecretType);
 	}
 
 	@Override
@@ -152,7 +156,8 @@ public class OpenIdConnectService extends AbstractTypedMetaDataService<MetaOpenI
 		if (defName == null) {
 			defName = DEFAULT_NAME;
 		}
-		return MetaDataContext.getContext().getMetaDataHandler(OpenIdConnectRuntime.class, OIDC_PATH + defName);
+		return MetaDataContext.getContext()
+				.getMetaDataHandler(OpenIdConnectRuntime.class, OIDC_PATH + defName);
 	}
 
 	String getClientSecret(String metaDataId) {
@@ -166,14 +171,16 @@ public class OpenIdConnectService extends AbstractTypedMetaDataService<MetaOpenI
 	 */
 	public void saveClientSecret(String metaDataId, String clientSecret) {
 		clientSecretHandler.saveClientSecret(metaDataId, clientSecret);
-		MetaDataContext.getContext().reloadById(metaDataId);
+		MetaDataContext.getContext()
+				.reloadById(metaDataId);
 	}
 
 	@Override
 	public void removeMetaData(String definitionName) {
 		OpenIdConnectRuntime r = getRuntimeByName(definitionName);
 		if (r != null) {
-			clientSecretHandler.deleteClientSecret(r.getMetaData().getId());
+			clientSecretHandler.deleteClientSecret(r.getMetaData()
+					.getId());
 		}
 		super.removeMetaData(definitionName);
 	}

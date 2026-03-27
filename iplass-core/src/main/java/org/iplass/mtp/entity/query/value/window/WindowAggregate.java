@@ -34,20 +34,20 @@ public class WindowAggregate extends WindowFunction {
 	private static final long serialVersionUID = -4147882213737684279L;
 
 	private Aggregate aggregate;
-	
+
 	public WindowAggregate() {
 	}
-	
+
 	public WindowAggregate(Aggregate aggregate) {
 		this.aggregate = aggregate;
 	}
-	
+
 	public WindowAggregate(Aggregate aggregate, PartitionBy partitionBy, WindowOrderBy orderBy) {
 		this.aggregate = aggregate;
 		setPartitionBy(partitionBy);
 		setOrderBy(orderBy);
 	}
-	
+
 	public Aggregate getAggregate() {
 		return aggregate;
 	}
@@ -55,12 +55,12 @@ public class WindowAggregate extends WindowFunction {
 	public void setAggregate(Aggregate aggregate) {
 		this.aggregate = aggregate;
 	}
-	
+
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	@Override
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
@@ -75,7 +75,7 @@ public class WindowAggregate extends WindowFunction {
 			}
 		}
 	}
-	
+
 	@Override
 	public WindowAggregate partitionBy(Object... partitionField) {
 		super.partitionBy(partitionField);
@@ -120,5 +120,5 @@ public class WindowAggregate extends WindowFunction {
 			return false;
 		return true;
 	}
-	
+
 }

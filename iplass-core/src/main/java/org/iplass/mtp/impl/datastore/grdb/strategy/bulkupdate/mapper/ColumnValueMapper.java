@@ -26,8 +26,9 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.bulk.ColumnValue;
 
 public interface ColumnValueMapper {
-	
+
 	public void columns(List<ColumnValue> columnValues, RdbAdapter rdb);
+
 	public void values(List<Object> values, Entity target, RdbAdapter rdb);
 
 }

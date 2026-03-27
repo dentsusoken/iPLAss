@@ -50,7 +50,12 @@ public class InformationParts extends ActionParts {
 	private Integer passwordWarningAge;
 
 	/** パスワード警告メッセージ */
-	@MultiLang(itemKey = "passwordWarningMessage", itemGetter = "getPasswordWarningMessage", itemSetter = "setPasswordWarningMessage", multiLangGetter = "getLocalizedPasswordWarningMessageList", multiLangSetter = "setLocalizedPasswordWarningMessageList")
+	@MultiLang(
+			itemKey = "passwordWarningMessage",
+			itemGetter = "getPasswordWarningMessage",
+			itemSetter = "setPasswordWarningMessage",
+			multiLangGetter = "getLocalizedPasswordWarningMessageList",
+			multiLangSetter = "setLocalizedPasswordWarningMessageList")
 	private String passwordWarningMessage;
 
 	/** パスワード警告メッセージ多言語設定情報 */
@@ -90,7 +95,12 @@ public class InformationParts extends ActionParts {
 	 * タイトルを取得します。
 	 * @return タイトル
 	 */
-	@MultiLang(itemKey = "title", itemGetter = "getTitle", itemSetter = "setTitle", multiLangGetter = "getLocalizedTitleList", multiLangSetter = "setLocalizedTitleList")
+	@MultiLang(
+			itemKey = "title",
+			itemGetter = "getTitle",
+			itemSetter = "setTitle",
+			multiLangGetter = "getLocalizedTitleList",
+			multiLangSetter = "setLocalizedTitleList")
 	public String getTitle() {
 		return getParam("title");
 	}
@@ -167,7 +177,6 @@ public class InformationParts extends ActionParts {
 			setParam("dispRange", null);
 		}
 	}
-
 
 	/**
 	 * パスワード残日数の警告表示を取得します。

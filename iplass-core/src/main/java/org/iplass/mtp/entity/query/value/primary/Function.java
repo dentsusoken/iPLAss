@@ -89,7 +89,6 @@ public class Function extends PrimaryValue {
 	private String name;
 	private List<ValueExpression> arguments;
 
-
 	public Function() {
 	}
 
@@ -102,7 +101,7 @@ public class Function extends PrimaryValue {
 		this.name = name;
 		if (arguments != null) {
 			this.arguments = new ArrayList<ValueExpression>();
-			for (ValueExpression ve: arguments) {
+			for (ValueExpression ve : arguments) {
 				this.arguments.add(ve);
 			}
 		}
@@ -145,7 +144,7 @@ public class Function extends PrimaryValue {
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (getArguments() != null) {
-				for (ValueExpression v: getArguments()) {
+				for (ValueExpression v : getArguments()) {
 					v.accept(visitor);
 				}
 			}

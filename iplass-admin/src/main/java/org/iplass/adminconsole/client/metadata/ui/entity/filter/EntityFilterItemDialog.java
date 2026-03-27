@@ -67,7 +67,8 @@ public class EntityFilterItemDialog extends MtpDialog {
 		nameField = new MtpTextItem("name", AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_name"));
 		SmartGWTUtil.setRequired(nameField);
 
-		displayNameField = new MtpTextItem("displayName", AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_dispName"));
+		displayNameField = new MtpTextItem("displayName",
+				AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_dispName"));
 		form.setItems(nameField, displayNameField);
 
 		container.addMember(form);
@@ -75,7 +76,7 @@ public class EntityFilterItemDialog extends MtpDialog {
 		IButton add = new IButton(AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_add"));
 		add.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					add();
 				}
 			}
@@ -111,7 +112,6 @@ public class EntityFilterItemDialog extends MtpDialog {
 		parent.addData(record);
 		destroy();
 	}
-
 
 	private ListGridRecord item2Record(EntityFilterItem item) {
 		ListGridRecord record = new ListGridRecord();

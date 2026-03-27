@@ -44,45 +44,51 @@ public class EditorValue implements Refrectable {
 	private static final long serialVersionUID = 372120834366334182L;
 
 	/** ラベル */
-	@MetaFieldInfo(displayName="表示名", description="選択肢のラベルを設定します。",
-			displayNameKey="generic_editor_EditorValue_labelDisplaNameKey", descriptionKey="generic_editor_EditorValue_labelDescriptionKey", 
-			inputType=InputType.MULTI_LANG,
+	@MetaFieldInfo(
+			displayName = "表示名",
+			description = "選択肢のラベルを設定します。",
+			displayNameKey = "generic_editor_EditorValue_labelDisplaNameKey",
+			descriptionKey = "generic_editor_EditorValue_labelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedLabelList"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	@MultiLang()
 	private String label;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定情報",
-			displayNameKey="generic_editor_EditorValue_localizedLabelListDisplayNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			displayName = "多言語設定情報",
+			displayNameKey = "generic_editor_EditorValue_localizedLabelListDisplayNameKey",
+			inputType = InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private List<LocalizedStringDefinition> localizedLabelList;
 
 	/** 値 */
-	@MetaFieldInfo(displayName="値", description="選択肢の値を設定します。",
-			displayNameKey="generic_editor_EditorValue_valueDisplaNameKey", descriptionKey="generic_editor_EditorValue_valueDescriptionKey")
+	@MetaFieldInfo(
+			displayName = "値",
+			description = "選択肢の値を設定します。",
+			displayNameKey = "generic_editor_EditorValue_valueDisplaNameKey",
+			descriptionKey = "generic_editor_EditorValue_valueDescriptionKey")
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String value;
 
 	/** クラス名 */
 	@MetaFieldInfo(
-			displayName="クラス名",
-			displayNameKey="generic_editor_EditorValue_styleDisplaNameKey",
-			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
-			descriptionKey="generic_editor_EditorValue_styleDescriptionKey"
+			displayName = "クラス名",
+			displayNameKey = "generic_editor_EditorValue_styleDisplaNameKey",
+			description = "スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
+			descriptionKey = "generic_editor_EditorValue_styleDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String style;
 

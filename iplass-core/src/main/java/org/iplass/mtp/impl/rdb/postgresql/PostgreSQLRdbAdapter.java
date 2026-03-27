@@ -87,10 +87,11 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 	//FIXME AWS RedShiftでサポートされる関数が微妙に異なる。。特に日付関数系。どちらかというとOracleに近い
 
-	private static PostgreSQLTimeRdbTypeAdapter postgreSQLTimeRdbTypeAdapter =
-			new PostgreSQLTimeRdbTypeAdapter(ServiceRegistry.getRegistry().getService(PropertyService.class).getPropertyType(java.sql.Time.class));
+	private static PostgreSQLTimeRdbTypeAdapter postgreSQLTimeRdbTypeAdapter = new PostgreSQLTimeRdbTypeAdapter(ServiceRegistry.getRegistry()
+			.getService(PropertyService.class)
+			.getPropertyType(java.sql.Time.class));
 
-	private static final String[] optimizerHintBracket = {"/*+", "*/"};
+	private static final String[] optimizerHintBracket = { "/*+", "*/" };
 	private static final String DATE_MIN = "-47120101000000000";
 	private static final String DATE_MAX = "99991231235959999";
 	long dateMin;
@@ -119,10 +120,10 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 		addFunction(new StaticTypedFunctionAdapter("CONCAT", String.class));
 		addFunction(new PostgreSQLSubstrFunctionAdapter("SUBSTR"));
 		addFunction(new StaticTypedFunctionAdapter("REPLACE", String.class));
-		addFunction(new DynamicTypedFunctionAdapter("MOD", new int[]{0,1}));
+		addFunction(new DynamicTypedFunctionAdapter("MOD", new int[] { 0, 1 }));
 		addFunction(new StaticTypedFunctionAdapter("SQRT", Double.class));
-		addFunction(new DynamicTypedFunctionAdapter("POWER", new int[]{0,1}));
-		addFunction(new DynamicTypedFunctionAdapter("ABS", new int[]{0}));
+		addFunction(new DynamicTypedFunctionAdapter("POWER", new int[] { 0, 1 }));
+		addFunction(new DynamicTypedFunctionAdapter("ABS", new int[] { 0 }));
 		addFunction(new StaticTypedFunctionAdapter("CEIL", Long.class));
 		addFunction(new StaticTypedFunctionAdapter("FLOOR", Long.class));
 		addFunction(new PostgreSQLRoundTruncFunctionAdapter("ROUND", "ROUND"));
@@ -169,15 +170,18 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 		DateFormatSymbols symbols = new DateFormatSymbols();
 		symbols.setEras(new String[] { "-", "" });
 
-		I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
+		I18nService i18n = ServiceRegistry.getRegistry()
+				.getService(I18nService.class);
 		SimpleDateFormat sdfMin = new SimpleDateFormat("GyyyyMMddHHmmssSSS", symbols);
 		sdfMin.setTimeZone(i18n.getTimezone());
 		SimpleDateFormat sdfMax = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		sdfMax.setTimeZone(i18n.getTimezone());
 
 		try {
-			dateMin = sdfMin.parse(DATE_MIN).getTime();
-			dateMax = sdfMax.parse(DATE_MAX).getTime();
+			dateMin = sdfMin.parse(DATE_MIN)
+					.getTime();
+			dateMax = sdfMax.parse(DATE_MAX)
+					.getTime();
 		} catch (ParseException e) {
 			throw new UnsupportedDataTypeException(e);
 		}
@@ -238,9 +242,11 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 	public Connection getConnection(String connectionFactoryName) throws SQLException {
 		ConnectionFactory cf;
 		if (connectionFactoryName == null) {
-			cf = ServiceRegistry.getRegistry().getService(ConnectionFactory.class);
+			cf = ServiceRegistry.getRegistry()
+					.getService(ConnectionFactory.class);
 		} else {
-			cf = ServiceRegistry.getRegistry().<ConnectionFactory>getService(connectionFactoryName);
+			cf = ServiceRegistry.getRegistry()
+					.<ConnectionFactory> getService(connectionFactoryName);
 		}
 		return cf.getConnection();
 	}
@@ -249,6 +255,7 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 	public String getOptimizerHint() {
 		return null;
 	}
+
 	@Override
 	public HintPlace getOptimizerHintPlace() {
 		return HintPlace.HEAD_OF_SQL;
@@ -322,10 +329,10 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 		if (sqlType == Types.DECIMAL && scale != null && scale < 0) {
 			if (lengthOrPrecision == null) {
 				//負のスケールを設定できないため、取り得る最大桁数を設定し、ROUND関数で切り捨てる。
-				return new String[]{"ROUND(CAST(",  " AS NUMERIC(65,0))," + scale + ")"};
+				return new String[] { "ROUND(CAST(", " AS NUMERIC(65,0))," + scale + ")" };
 			} else {
 				//負のスケールを設定できないため、取り得る最大桁数を設定し、ROUND関数で切り捨てる。
-				return new String[]{"ROUND(CAST(",  " AS NUMERIC(" + lengthOrPrecision + -scale + ",0))," + scale + ")"};
+				return new String[] { "ROUND(CAST(", " AS NUMERIC(" + lengthOrPrecision + -scale + ",0))," + scale + ")" };
 			}
 		}
 
@@ -355,7 +362,7 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 				if (scale == null) {
 					return "NUMERIC(" + lengthOrPrecision + ",0)";
 				} else {
-					return "NUMERIC("+ lengthOrPrecision + "," + scale + ")";
+					return "NUMERIC(" + lengthOrPrecision + "," + scale + ")";
 				}
 			}
 		case Types.DATE:
@@ -404,7 +411,7 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 	@Override
 	public Object[] toLimitSqlBindValue(int limitCount,
 			int offset) {
-		return new Integer[]{Integer.valueOf(limitCount), Integer.valueOf(offset)};
+		return new Integer[] { Integer.valueOf(limitCount), Integer.valueOf(offset) };
 	}
 
 	@Override
@@ -494,15 +501,15 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 	@Override
 	public String sanitize(String str) {
-        if (str == null) {
-        	return null;
-        }
+		if (str == null) {
+			return null;
+		}
 
-        boolean needSanitaizing = false;
-        char current = 0;
-        for (int i = 0; i < str.length(); i++) {
-            current = str.charAt(i);
-            switch (current) {
+		boolean needSanitaizing = false;
+		char current = 0;
+		for (int i = 0; i < str.length(); i++) {
+			current = str.charAt(i);
+			switch (current) {
 			case '\'':
 				needSanitaizing = true;
 				break;
@@ -515,37 +522,36 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 				break;
 			}
 
-            if (needSanitaizing) {
-            	break;
-            }
-        }
+			if (needSanitaizing) {
+				break;
+			}
+		}
 
-        if (!needSanitaizing) {
-            return str;
-        }
+		if (!needSanitaizing) {
+			return str;
+		}
 
+		StringBuilder buff = new StringBuilder();
 
-        StringBuilder buff = new StringBuilder();
+		for (int i = 0; i < str.length(); i++) {
+			current = str.charAt(i);
+			switch (current) {
+			case '\'':
+				buff.append('\'');
+				break;
+			case '\\':
+				if (escapeBackslash) {
+					buff.append('\\');
+				}
+				break;
+			default:
+				break;
+			}
 
-        for (int i = 0; i < str.length(); i++) {
-        	current = str.charAt(i);
-            switch (current) {
-            case '\'':
-                buff.append('\'');
-                break;
-            case '\\':
-            	if (escapeBackslash) {
-            		buff.append('\\');
-            	}
-                break;
-            default:
-                break;
-            }
+			buff.append(current);
+		}
 
-            buff.append(current);
-        }
-
-        return buff.toString();
+		return buff.toString();
 	}
 
 	@Override
@@ -604,11 +610,11 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 		if (rdbTimeZone() == null) {
 			return new String[] {
 					"TIMEZONE('" + to + "',CAST(",
-					" AS TIMESTAMPTZ(3)))"};
+					" AS TIMESTAMPTZ(3)))" };
 		} else {
 			return new String[] {
 					"TIMEZONE('" + to + "',TIMEZONE('" + rdbTimeZone().getID() + "',",
-					"))"};
+					"))" };
 		}
 	}
 
@@ -784,7 +790,8 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 		// LobID
 		sb.append(String.format("TRIM(SUBSTR(c%d::TEXT, 3, 16)) AS \"%s%s\"",
-				colNo, colName.toLowerCase(), lobIdSuffix.toLowerCase())).append(",");
+				colNo, colName.toLowerCase(), lobIdSuffix.toLowerCase()))
+				.append(",");
 		// Text
 		sb.append(String.format("SUBSTR(c%d::TEXT, 22) AS \"%s\"", colNo, colName.toLowerCase()));
 
@@ -799,13 +806,22 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 		// ビュー削除DDL
 		if (withDropView) {
-			sb.append("DROP VIEW IF EXISTS \"").append(viewName.toLowerCase()).append("\" CASCADE;");
-			sb.append(lf).append(lf);
+			sb.append("DROP VIEW IF EXISTS \"")
+					.append(viewName.toLowerCase())
+					.append("\" CASCADE;");
+			sb.append(lf)
+					.append(lf);
 		}
 
 		// ビュー作成DDL
-		sb.append("CREATE VIEW \"").append(viewName.toLowerCase()).append("\" AS").append(lf);
-		sb.append(selectSql).append(";").append(lf).append(lf);
+		sb.append("CREATE VIEW \"")
+				.append(viewName.toLowerCase())
+				.append("\" AS")
+				.append(lf);
+		sb.append(selectSql)
+				.append(";")
+				.append(lf)
+				.append(lf);
 
 		return sb.toString();
 	}

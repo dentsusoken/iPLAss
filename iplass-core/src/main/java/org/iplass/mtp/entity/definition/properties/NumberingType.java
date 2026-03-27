@@ -27,7 +27,7 @@ package org.iplass.mtp.entity.definition.properties;
  *
  */
 public enum NumberingType {
-	
+
 	/** 飛び番を許容する。登録処理の並列実行性は高まる。 */
 	ALLOW_SKIPPING,
 	/** 飛び番を許容しない。当該Entityの登録はシーケンシャルな処理となる。 */

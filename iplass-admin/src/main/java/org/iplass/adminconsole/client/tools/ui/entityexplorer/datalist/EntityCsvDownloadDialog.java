@@ -41,10 +41,7 @@ public class EntityCsvDownloadDialog extends AbstractWindow {
 		MS932
 	}
 
-	public EntityCsvDownloadDialog(final String defName
-			, final String whereClause
-			, final String orderByClause
-			, final boolean isSearchAllVersion) {
+	public EntityCsvDownloadDialog(final String defName, final String whereClause, final String orderByClause, final boolean isSearchAllVersion) {
 
 		setWidth(400);
 		setHeight(150);
@@ -58,7 +55,7 @@ public class EntityCsvDownloadDialog extends AbstractWindow {
 		csvEncodeField.setTitle("Encode");
 		csvEncodeField.setValueMap(ENCODE.UTF8.name(), ENCODE.MS932.name());
 		csvEncodeField.setValue(ENCODE.UTF8.name());
-		csvEncodeField.setDisabled(true);	//UTF-8固定
+		csvEncodeField.setDisabled(true); //UTF-8固定
 
 		final DynamicForm form = new DynamicForm();
 		form.setMargin(5);
@@ -72,12 +69,12 @@ public class EntityCsvDownloadDialog extends AbstractWindow {
 				//POST化
 				PostDownloadFrame frame = new PostDownloadFrame();
 				frame.setAction(GWT.getModuleBaseURL() + "service/entitydownload")
-					.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-					.addParameter("definitionName", defName)
-					.addParameter("whereClause", whereClause)
-					.addParameter("orderByClause", orderByClause)
-					.addParameter("isSearchAllVersion", isSearchAllVersion + "")
-					.execute();
+						.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+						.addParameter("definitionName", defName)
+						.addParameter("whereClause", whereClause)
+						.addParameter("orderByClause", orderByClause)
+						.addParameter("isSearchAllVersion", isSearchAllVersion + "")
+						.execute();
 				destroy();
 			}
 		});

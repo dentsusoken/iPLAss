@@ -55,11 +55,11 @@ import org.iplass.mtp.view.top.parts.InformationParts;
  *
  */
 @ActionMapping(
-	name=InformationListCommand.ACTION_NAME,
-	displayName="お知らせ一覧",
-	result=@Result(type=Type.JSP, value=Constants.CMD_RSLT_JSP_INFO_LIST, templateName="gem/information/list")
+		name = InformationListCommand.ACTION_NAME,
+		displayName = "お知らせ一覧",
+		result = @Result(type = Type.JSP, value = Constants.CMD_RSLT_JSP_INFO_LIST, templateName = "gem/information/list")
 )
-@CommandClass(name="gem/information/InformationCommand", displayName="お知らせ一覧")
+@CommandClass(name = "gem/information/InformationCommand", displayName = "お知らせ一覧")
 public final class InformationListCommand implements Command {
 
 	public static final String ACTION_NAME = "gem/information/list";
@@ -68,13 +68,16 @@ public final class InformationListCommand implements Command {
 	public static final String INFORMATION_ENTITY = "mtp.Information";
 
 	/** EntityManager */
-	private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+	private EntityManager em = ManagerLocator.getInstance()
+			.getManager(EntityManager.class);
 
 	/** AuthManager */
-	private AuthManager am = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private AuthManager am = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	/** AuthenticationPolicyDefinitionManager */
-	private AuthenticationPolicyDefinitionManager apdm = ManagerLocator.getInstance().getManager(AuthenticationPolicyDefinitionManager.class);
+	private AuthenticationPolicyDefinitionManager apdm = ManagerLocator.getInstance()
+			.getManager(AuthenticationPolicyDefinitionManager.class);
 
 	/**
 	 * コンストラクタ
@@ -85,7 +88,7 @@ public final class InformationListCommand implements Command {
 	@Override
 	public String execute(RequestContext request) {
 		//対象のInformationParts取得
-		InformationParts infoParts = (InformationParts)request.getAttribute(Constants.INFO_SETTING);
+		InformationParts infoParts = (InformationParts) request.getAttribute(Constants.INFO_SETTING);
 
 		//お知らせ情報Entity検索
 		searchInfo(request, infoParts);
@@ -104,13 +107,14 @@ public final class InformationListCommand implements Command {
 		a.addExpression(new GreaterEqual(Entity.END_DATE, value));
 		Query q = new Query();
 		q.select(Entity.OID, Entity.NAME, Entity.VERSION, Entity.START_DATE)
-		 .from(INFORMATION_ENTITY)
-		 .where(a)
-		 .order(new SortSpec(Entity.START_DATE, SortType.DESC),
-				 new SortSpec(Entity.OID, SortType.DESC))
-		 .localized(infoParts == null ? false : infoParts.isEnableDataLocalization());
+				.from(INFORMATION_ENTITY)
+				.where(a)
+				.order(new SortSpec(Entity.START_DATE, SortType.DESC),
+						new SortSpec(Entity.OID, SortType.DESC))
+				.localized(infoParts == null ? false : infoParts.isEnableDataLocalization());
 
-		request.setAttribute(Constants.DATA, em.searchEntity(q).getList());
+		request.setAttribute(Constants.DATA, em.searchEntity(q)
+				.getList());
 	}
 
 	private void checkPasswordAge(RequestContext request, InformationParts infoParts) {
@@ -127,7 +131,7 @@ public final class InformationListCommand implements Command {
 		}
 
 		//パスワード変更日時の取得
-		Date lastPasswordChange = (Date)auth.getAttribute(AccountHandle.LAST_PASSWORD_CHANGE);
+		Date lastPasswordChange = (Date) auth.getAttribute(AccountHandle.LAST_PASSWORD_CHANGE);
 		if (lastPasswordChange == null) {
 			//パスワード変更日が取得できない場合（AccountHandler側でサポートしていない）は終了
 			return;
@@ -142,7 +146,8 @@ public final class InformationListCommand implements Command {
 
 		//認証ポリシーから最大日数を取得
 		AuthenticationPolicyDefinition policy = apdm.getOrDefault(auth.getPolicyName());
-		int maxAge = policy.getPasswordPolicy().getMaximumPasswordAge();
+		int maxAge = policy.getPasswordPolicy()
+				.getMaximumPasswordAge();
 
 		//期限が無期限の場合は終了
 		if (maxAge <= 0) {
@@ -153,7 +158,7 @@ public final class InformationListCommand implements Command {
 		Date limitDate = InternalDateUtil.addDays(lastPasswordChange, maxAge);
 
 		//残日数を計算
-		Date now = new Date(System.currentTimeMillis());	//TODO プレビュー日付で？
+		Date now = new Date(System.currentTimeMillis()); //TODO プレビュー日付で？
 		now = InternalDateUtil.truncateTime(now);
 		int days = InternalDateUtil.diffDays(limitDate, now);
 

@@ -140,7 +140,8 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 	@Override
 	public CsvUploadStatus call() throws Exception {
 
-		CsvUploadService service = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
+		CsvUploadService service = ServiceRegistry.getRegistry()
+				.getService(CsvUploadService.class);
 
 		try (InputStream is = new FileInputStream(filePath)) {
 			service.validate(is, defName, option.isWithReferenceVersion(), option.getInterrupterClassName());
@@ -160,7 +161,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 			}
 		}
 
-		try (InputStream is = new FileInputStream(filePath)){
+		try (InputStream is = new FileInputStream(filePath)) {
 			CsvUploadStatus result = service.upload(is, defName, option);
 			return result;
 		} catch (FileNotFoundException e) {

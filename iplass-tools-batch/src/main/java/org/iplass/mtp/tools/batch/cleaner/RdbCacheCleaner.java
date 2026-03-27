@@ -20,7 +20,8 @@ public class RdbCacheCleaner extends MtpSilentBatch {
 
 	private static Logger logger = LoggerFactory.getLogger(RdbCacheCleaner.class);
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
 
 	public static void main(String[] args) throws Exception {
 		try {

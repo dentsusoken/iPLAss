@@ -29,30 +29,30 @@ import org.iplass.mtp.impl.metadata.RootMetaData;
 
 @XmlRootElement(name = "metaDataEntry")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class VersioningMetaDataEntryThinWrapper  extends MetaDataEntryThinWrapper {
+public class VersioningMetaDataEntryThinWrapper extends MetaDataEntryThinWrapper {
 	@XmlAttribute(required = false)
 	private Integer version;
-	
-	@XmlAttribute(required=false)
+
+	@XmlAttribute(required = false)
 	private boolean overwritable = true;
-	
+
 	@XmlAttribute(required = false)
 	private boolean sharable = false;
 
 	@XmlAttribute(required = false)
 	private boolean dataSharable = false;
-	
+
 	@XmlAttribute(required = false)
 	private boolean permissionSharable = false;
-	
+
 	public VersioningMetaDataEntryThinWrapper() {
 		super();
 	}
-	
-	public VersioningMetaDataEntryThinWrapper(RootMetaData metaData) {	
+
+	public VersioningMetaDataEntryThinWrapper(RootMetaData metaData) {
 		super(metaData);
 	}
-	
+
 	public Integer getVersion() {
 		return version;
 	}
@@ -60,7 +60,7 @@ public class VersioningMetaDataEntryThinWrapper  extends MetaDataEntryThinWrappe
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
-	
+
 	public boolean isPermissionSharable() {
 		return permissionSharable;
 	}
@@ -68,7 +68,7 @@ public class VersioningMetaDataEntryThinWrapper  extends MetaDataEntryThinWrappe
 	public void setPermissionSharable(boolean permissionSharable) {
 		this.permissionSharable = permissionSharable;
 	}
-	
+
 	public boolean isDataSharable() {
 		return dataSharable;
 	}

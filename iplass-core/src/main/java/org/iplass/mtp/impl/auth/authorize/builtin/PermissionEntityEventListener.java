@@ -37,29 +37,35 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public abstract class PermissionEntityEventListener implements EntityEventListener {
-	
+
 	private static final String KEY_UPDATE = "authContextForUpdate";
 	private static final String KEY_DEL = "authContextForDel";
 
 	protected AuthorizationContextHandler handler;
 
 	public PermissionEntityEventListener(Class<? extends Permission> typeForHandler) {
-		AuthorizationProvider ap = ServiceRegistry.getRegistry().getService(AuthService.class).getAuthorizationProvider();
+		AuthorizationProvider ap = ServiceRegistry.getRegistry()
+				.getService(AuthService.class)
+				.getAuthorizationProvider();
 		if (ap instanceof BuiltinAuthorizationProvider) {
 			handler = ((BuiltinAuthorizationProvider) ap).getAuthorizationContextHandler(typeForHandler);
 		}
 	}
-	
+
 	protected abstract String contextName(Entity entity);
-	
+
 	private TenantAuthorizeContext getTenantAuthorizeContext() {
-		return ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class);
+		return ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getResource(TenantAuthorizeContext.class);
 	}
 
 	@Override
 	public boolean beforeDelete(Entity entity, EntityEventContext context) {
 		if (handler != null) {
-			Entity before = ManagerLocator.getInstance().getManager(EntityManager.class).load(entity.getOid(), entity.getDefinitionName());
+			Entity before = ManagerLocator.getInstance()
+					.getManager(EntityManager.class)
+					.load(entity.getOid(), entity.getDefinitionName());
 			if (before != null) {
 				BuiltinAuthorizationContext beforeContext = handler.get(contextName(before), getTenantAuthorizeContext());
 				context.setAttribute(KEY_DEL, beforeContext);
@@ -88,7 +94,9 @@ public abstract class PermissionEntityEventListener implements EntityEventListen
 	@Override
 	public boolean beforeUpdate(Entity entity, EntityEventContext context) {
 		if (handler != null) {
-			Entity before = ManagerLocator.getInstance().getManager(EntityManager.class).load(entity.getOid(), entity.getDefinitionName());
+			Entity before = ManagerLocator.getInstance()
+					.getManager(EntityManager.class)
+					.load(entity.getOid(), entity.getDefinitionName());
 			if (before != null) {
 				BuiltinAuthorizationContext beforeContext = handler.get(contextName(before), getTenantAuthorizeContext());
 				context.setAttribute(KEY_UPDATE, beforeContext);
@@ -96,13 +104,14 @@ public abstract class PermissionEntityEventListener implements EntityEventListen
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void afterUpdate(Entity entity, EntityEventContext context) {
 		if (handler != null) {
 			BuiltinAuthorizationContext beforeContext = (BuiltinAuthorizationContext) context.getAttribute(KEY_UPDATE);
 			if (beforeContext != null) {
-				if (!beforeContext.getContextName().equals(contextName(entity))) {
+				if (!beforeContext.getContextName()
+						.equals(contextName(entity))) {
 					handler.notifyUpdate(beforeContext.getContextName(), getTenantAuthorizeContext());
 				}
 				handler.notifyUpdate(contextName(entity), getTenantAuthorizeContext());

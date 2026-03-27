@@ -102,7 +102,8 @@ public abstract class MetaTemplate extends BaseRootMetaData implements Definable
 
 	//Definition → Meta インスタンス
 	public static MetaTemplate createInstance(TemplateDefinition definition) {
-		TemplateService service = ServiceRegistry.getRegistry().getService(TemplateService.class);
+		TemplateService service = ServiceRegistry.getRegistry()
+				.getService(TemplateService.class);
 
 		// Definitionに対応するMetaTemplateクラスを取得
 		Class<? extends MetaTemplate> metaTemplateClass = service.getMetaTemplateClassByDef(definition);
@@ -111,7 +112,8 @@ public abstract class MetaTemplate extends BaseRootMetaData implements Definable
 		}
 
 		try {
-			return metaTemplateClass.getDeclaredConstructor().newInstance();
+			return metaTemplateClass.getDeclaredConstructor()
+					.newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			throw new TemplateRuntimeException(e);
@@ -134,10 +136,13 @@ public abstract class MetaTemplate extends BaseRootMetaData implements Definable
 		contentType = definition.getContentType();
 
 		//name -> id 変換
-		if (definition.getLayoutActionName() != null && !definition.getLayoutActionName().isEmpty()) {
-			ActionMappingService service = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+		if (definition.getLayoutActionName() != null && !definition.getLayoutActionName()
+				.isEmpty()) {
+			ActionMappingService service = ServiceRegistry.getRegistry()
+					.getService(ActionMappingService.class);
 			ActionMappingRuntime runtime = service.getRuntimeByName(definition.getLayoutActionName());
-			layoutId = runtime.getMetaData().getId();
+			layoutId = runtime.getMetaData()
+					.getId();
 			layoutName = null;
 			layoutResolveByName = false;
 		}
@@ -153,17 +158,21 @@ public abstract class MetaTemplate extends BaseRootMetaData implements Definable
 
 		if (StringUtil.isNotEmpty(layoutId)) {
 			//id -> name 変換
-			ActionMappingService service = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+			ActionMappingService service = ServiceRegistry.getRegistry()
+					.getService(ActionMappingService.class);
 			ActionMappingRuntime runtime = service.getRuntimeById(layoutId);
 			if (runtime != null) {
-				definition.setLayoutActionName(runtime.getMetaData().getName());
+				definition.setLayoutActionName(runtime.getMetaData()
+						.getName());
 			}
 		} else if (StringUtil.isNotEmpty(layoutName)) {
 			//存在チェック
-			ActionMappingService service = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+			ActionMappingService service = ServiceRegistry.getRegistry()
+					.getService(ActionMappingService.class);
 			ActionMappingRuntime runtime = service.getRuntimeByName(layoutName);
 			if (runtime != null) {
-				definition.setLayoutActionName(runtime.getMetaData().getName());
+				definition.setLayoutActionName(runtime.getMetaData()
+						.getName());
 			}
 		}
 
@@ -186,14 +195,16 @@ public abstract class MetaTemplate extends BaseRootMetaData implements Definable
 			String resultLayoutActionId = (String) requestStack.getAttribute(LAYOUT_ACTION_ID);
 
 			if (resultLayoutActionName != null || (layoutResolveByName && StringUtil.isNotEmpty(layoutName))) {
-				ActionMappingService ams = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+				ActionMappingService ams = ServiceRegistry.getRegistry()
+						.getService(ActionMappingService.class);
 				String executeLayoutActionName = resultLayoutActionName != null ? resultLayoutActionName : layoutName;
 				layout = ams.getRuntimeByName(executeLayoutActionName);
 				if (layout == null) {
 					layout = ams.getRuntimeById(executeLayoutActionName);
 				}
 			} else if (resultLayoutActionId != null || StringUtil.isNotEmpty(layoutId)) {
-				ActionMappingService ams = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+				ActionMappingService ams = ServiceRegistry.getRegistry()
+						.getService(ActionMappingService.class);
 				String executeLayoutActionId = resultLayoutActionId != null ? resultLayoutActionId : layoutId;
 				layout = ams.getRuntimeById(executeLayoutActionId);
 			}
@@ -211,9 +222,11 @@ public abstract class MetaTemplate extends BaseRootMetaData implements Definable
 					}
 				}
 			} else {
-				if (requestStack.getResponse().getContentType() == null) {
+				if (requestStack.getResponse()
+						.getContentType() == null) {
 					if (getContentType() != null) {
-						requestStack.getResponse().setContentType(getContentType());
+						requestStack.getResponse()
+								.setContentType(getContentType());
 					}
 				}
 				handleContent(requestStack);

@@ -98,7 +98,8 @@ public class EntityFilter implements Definition {
 	 * @return フィルタ設定
 	 */
 	public List<EntityFilterItem> getItems() {
-		if (items == null) items = new ArrayList<EntityFilterItem>();
+		if (items == null)
+			items = new ArrayList<EntityFilterItem>();
 		return items;
 	}
 
@@ -125,7 +126,8 @@ public class EntityFilter implements Definition {
 	 */
 	public EntityFilterItem getItem(String name) {
 		for (EntityFilterItem item : getItems()) {
-			if (name.equals(item.getName())) return item;
+			if (name.equals(item.getName()))
+				return item;
 		}
 		return null;
 	}

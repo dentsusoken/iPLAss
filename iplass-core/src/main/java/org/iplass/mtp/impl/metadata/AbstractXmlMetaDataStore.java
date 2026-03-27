@@ -20,13 +20,11 @@
 
 package org.iplass.mtp.impl.metadata;
 
-
 import java.util.List;
 
 import jakarta.xml.bind.JAXBContext;
 
 import org.iplass.mtp.spi.Config;
-
 
 public abstract class AbstractXmlMetaDataStore implements MetaDataStore {
 	protected JAXBContext context;
@@ -46,7 +44,5 @@ public abstract class AbstractXmlMetaDataStore implements MetaDataStore {
 	public List<MetaDataEntryInfo> definitionList(int tenantId, String prefixPath) throws MetaDataRuntimeException {
 		return definitionList(tenantId, prefixPath, false);
 	}
-	
-	
 
 }

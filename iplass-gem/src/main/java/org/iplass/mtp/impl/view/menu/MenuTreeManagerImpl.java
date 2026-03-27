@@ -30,7 +30,8 @@ import org.iplass.mtp.view.menu.MenuTreeManager;
 
 public class MenuTreeManagerImpl extends AbstractTypedDefinitionManager<MenuTree> implements MenuTreeManager {
 
-	private MenuTreeService service = ServiceRegistry.getRegistry().getService(MenuTreeService.class);
+	private MenuTreeService service = ServiceRegistry.getRegistry()
+			.getService(MenuTreeService.class);
 
 	@Deprecated
 	@Override

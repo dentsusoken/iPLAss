@@ -37,13 +37,16 @@ public class SqlServerModFunctionAdapter implements FunctionAdapter<Function> {
 
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		if (function.getArguments() == null || function.getArguments().size() != 2) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() != 2) {
 			throw new QueryException(function.getName() + " must have two arguments.");
 		}
 		context.append("(");
-		context.appendArgument(function.getArguments().get(0));
+		context.appendArgument(function.getArguments()
+				.get(0));
 		context.append(" % ");
-		context.appendArgument(function.getArguments().get(1));
+		context.appendArgument(function.getArguments()
+				.get(1));
 		context.append(")");
 	}
 

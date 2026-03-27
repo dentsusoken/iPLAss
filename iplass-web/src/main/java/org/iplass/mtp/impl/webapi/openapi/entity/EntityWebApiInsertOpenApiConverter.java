@@ -59,37 +59,47 @@ public class EntityWebApiInsertOpenApiConverter extends AbstractEntityWebApiOpen
 		var operation = new Operation().responses(new ApiResponses());
 
 		// parameters
-		var withValidation = new QueryParameter().name(CreateEntityCommand.PARAM_POST_WITH_VALIDATION).required(Boolean.FALSE)
+		var withValidation = new QueryParameter().name(CreateEntityCommand.PARAM_POST_WITH_VALIDATION)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
-		var notifyListeners = new QueryParameter().name(CreateEntityCommand.PARAM_POST_NOTIFY_LISTENERS).required(Boolean.FALSE)
+		var notifyListeners = new QueryParameter().name(CreateEntityCommand.PARAM_POST_NOTIFY_LISTENERS)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
 		var enableAuditPropertySpecification = new QueryParameter().name(CreateEntityCommand.PARAM_POST_ENABLE_AUDIT_PROPERTY_SPECIFICATION)
-				.required(Boolean.FALSE).schema(new BooleanSchema());
-		var regenerateOid = new QueryParameter().name(CreateEntityCommand.PARAM_POST_REGENERATE_OID).required(Boolean.FALSE)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
-		var regenerateAutoNumber = new QueryParameter().name(CreateEntityCommand.PARAM_POST_REGENERATE_AUTO_NUMBER).required(Boolean.FALSE)
+		var regenerateOid = new QueryParameter().name(CreateEntityCommand.PARAM_POST_REGENERATE_OID)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
-		var versionSpecified = new QueryParameter().name(CreateEntityCommand.PARAM_POST_VERSION_SPECIFIED).required(Boolean.FALSE)
+		var regenerateAutoNumber = new QueryParameter().name(CreateEntityCommand.PARAM_POST_REGENERATE_AUTO_NUMBER)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
-		var localized = new QueryParameter().name(CreateEntityCommand.PARAM_POST_LOCALIZED).required(Boolean.FALSE)
+		var versionSpecified = new QueryParameter().name(CreateEntityCommand.PARAM_POST_VERSION_SPECIFIED)
+				.required(Boolean.FALSE)
+				.schema(new BooleanSchema());
+		var localized = new QueryParameter().name(CreateEntityCommand.PARAM_POST_LOCALIZED)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
 
 		operation.addParametersItem(withValidation)
-		.addParametersItem(notifyListeners)
-		.addParametersItem(enableAuditPropertySpecification)
-		.addParametersItem(regenerateOid)
-		.addParametersItem(regenerateAutoNumber)
-		.addParametersItem(versionSpecified)
-		.addParametersItem(localized);
+				.addParametersItem(notifyListeners)
+				.addParametersItem(enableAuditPropertySpecification)
+				.addParametersItem(regenerateOid)
+				.addParametersItem(regenerateAutoNumber)
+				.addParametersItem(versionSpecified)
+				.addParametersItem(localized);
 
-		var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-		var componentsSchemaRef = service.getReusableSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
+		var service = ServiceRegistry.getRegistry()
+				.getService(OpenApiService.class);
+		var componentsSchemaRef = service.getReusableSchemaFactory()
+				.addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
 
 		// requestBody
 		var requestBodySchema = new ObjectSchema().$ref(componentsSchemaRef);
 		var requestBodyMediaType = new MediaType().schema(requestBodySchema);
 		var requestBodyContent = new Content().addMediaType(jakarta.ws.rs.core.MediaType.APPLICATION_JSON, requestBodyMediaType);
-		operation.requestBody(new RequestBody().required(Boolean.TRUE).content(requestBodyContent));
+		operation.requestBody(new RequestBody().required(Boolean.TRUE)
+				.content(requestBodyContent));
 
 		// responses
 		var description = getResponseDescription("POST", getEntityPath(entityDefinition));
@@ -98,8 +108,10 @@ public class EntityWebApiInsertOpenApiConverter extends AbstractEntityWebApiOpen
 				.addProperty(CreateEntityCommand.RESULT_OID, new StringSchema());
 		var okMediaType = new MediaType().schema(okSchema);
 		var okContent = new Content().addMediaType(jakarta.ws.rs.core.MediaType.APPLICATION_JSON, okMediaType);
-		var okResponse = new ApiResponse().content(okContent).description(description);
-		operation.getResponses().addApiResponse(STATUS_OK, okResponse);
+		var okResponse = new ApiResponse().content(okContent)
+				.description(description);
+		operation.getResponses()
+				.addApiResponse(STATUS_OK, okResponse);
 
 		getEntityPathItem(openApi, entityDefinition).setPost(operation);
 	}

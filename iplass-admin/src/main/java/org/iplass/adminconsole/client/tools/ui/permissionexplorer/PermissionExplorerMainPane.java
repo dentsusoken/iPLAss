@@ -166,10 +166,13 @@ public class PermissionExplorerMainPane extends VLayout implements ContentStateC
 			for (Entity current : roleList) {
 				boolean isMatch = false;
 				for (Entity update : newRoleList) {
-					if (current.getOid().equals(update.getOid())) {
+					if (current.getOid()
+							.equals(update.getOid())) {
 						isMatch = true;
-						if (!current.getName().equals(update.getName())
-								|| !current.getValue("code").equals(update.getValue("code"))) {
+						if (!current.getName()
+								.equals(update.getName())
+								|| !current.getValue("code")
+										.equals(update.getValue("code"))) {
 							isChange = true;
 						}
 						break;

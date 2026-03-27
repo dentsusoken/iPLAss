@@ -88,28 +88,29 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 			final boolean checkVersion = Boolean.parseBoolean((String) args.get(StaticResourceUploadProperty.CHECK_VERSION));
 
 			//ここでトランザクションを開始
-			DefinitionModifyResult ret = AuthUtil.authCheckAndInvoke(getServletContext(), request, null, tenantId, new AuthUtil.Callable<DefinitionModifyResult>() {
-				@Override
-				public DefinitionModifyResult call() {
-					DefinitionModifyResult result = null;
+			DefinitionModifyResult ret = AuthUtil.authCheckAndInvoke(getServletContext(), request, null, tenantId,
+					new AuthUtil.Callable<DefinitionModifyResult>() {
+						@Override
+						public DefinitionModifyResult call() {
+							DefinitionModifyResult result = null;
 
-					try {
-						//バージョンの最新チェック
-						MetaDataVersionCheckUtil.versionCheck(checkVersion, StaticResourceDefinition.class, defName, currentVersion);
+							try {
+								//バージョンの最新チェック
+								MetaDataVersionCheckUtil.versionCheck(checkVersion, StaticResourceDefinition.class, defName, currentVersion);
 
-						//Definition生成
-						StaticResourceDefinition definition = convertDefinition(args);
+								//Definition生成
+								StaticResourceDefinition definition = convertDefinition(args);
 
-						//更新
-						result = update(definition);
-					} catch (Throwable e) {
-						logger.error(e.getMessage(), e);
-						result = new DefinitionModifyResult(false, e.getMessage());
-					}
+								//更新
+								result = update(definition);
+							} catch (Throwable e) {
+								logger.error(e.getMessage(), e);
+								result = new DefinitionModifyResult(false, e.getMessage());
+							}
 
-					return result;
-				}
-			});
+							return result;
+						}
+					});
 
 			//ステータスの書き込み
 			if (ret.isSuccess()) {
@@ -231,7 +232,7 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 		}
 	}
 
-	private void validateRequest(HashMap<String,Object> args) {
+	private void validateRequest(HashMap<String, Object> args) {
 		if (args.get(StaticResourceUploadProperty.TENANT_ID) == null) {
 			throw new UploadRuntimeException(resourceString("canNotGetTenantInfo"));
 		}
@@ -256,7 +257,8 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 	}
 
 	private StaticResourceDefinition convertDefinition(HashMap<String, Object> args) {
-		StaticResourceDefinitionManager dm = ManagerLocator.getInstance().getManager(StaticResourceDefinitionManager.class);
+		StaticResourceDefinitionManager dm = ManagerLocator.getInstance()
+				.getManager(StaticResourceDefinitionManager.class);
 		StaticResourceDefinition oldDefinition = dm.get((String) args.get(StaticResourceUploadProperty.DEF_NAME));
 
 		StaticResourceDefinition definition;
@@ -275,7 +277,8 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 		definition.setDescription((String) args.get(StaticResourceUploadProperty.DESCRIPTION));
 
 		@SuppressWarnings("unchecked")
-		final List<LocaleDisplayNameInfo> displayNameList = (List<LocaleDisplayNameInfo>) args.get(StaticResourceUploadProperty.DISPLAY_NAME_LOCALE_PREFIX);
+		final List<LocaleDisplayNameInfo> displayNameList = (List<LocaleDisplayNameInfo>) args
+				.get(StaticResourceUploadProperty.DISPLAY_NAME_LOCALE_PREFIX);
 		if (displayNameList != null) {
 			List<LocalizedStringDefinition> localizedStringList = new ArrayList<LocalizedStringDefinition>();
 			for (LocaleDisplayNameInfo info : displayNameList) {
@@ -291,7 +294,7 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 		File binaryFile = (File) args.get(StaticResourceUploadProperty.UPLOAD_FILE);
 		if (contentType != null && !contentType.isEmpty()) {
 			definition.setContentType(contentType);
-		} else if (binaryFile != null){
+		} else if (binaryFile != null) {
 			//未指定の場合は、アップロードファイルから設定
 			definition.setContentType((String) args.get(StaticResourceUploadProperty.FILE_CONTENT_TYPE));
 		}
@@ -300,7 +303,8 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 			BinaryDefinition resource = null;
 			String binaryName = (String) args.get(StaticResourceUploadProperty.UPLOAD_FILE_NAME);
 			String binaryType = (String) args.get(StaticResourceUploadProperty.BINARY_TYPE);
-			if (FileType.ARCHIVE.toString().equals(binaryType)) {
+			if (FileType.ARCHIVE.toString()
+					.equals(binaryType)) {
 				resource = new FileArchiveBinaryDefinition(binaryName, binaryFile.toPath());
 			} else {
 				resource = new FileBinaryDefinition(binaryName, binaryFile.toPath());
@@ -357,7 +361,8 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 					//更新
 					if (oldLocaleList != null) {
 						for (LocalizedStaticResourceDefinition old : oldLocaleList) {
-							if (old.getLocaleName().equals(localeInfo.storedLocale)) {
+							if (old.getLocaleName()
+									.equals(localeInfo.storedLocale)) {
 								localeDef = old;
 								break;
 							}
@@ -392,8 +397,10 @@ public class StaticResourceUploadServiceImpl extends AdminUploadAction {
 	}
 
 	private DefinitionModifyResult update(StaticResourceDefinition definition) {
-		StaticResourceDefinitionManager dm = ManagerLocator.getInstance().getManager(StaticResourceDefinitionManager.class);
-		MetaDataAuditLogger.getLogger().logMetadata(MetaDataAction.UPDATE, StaticResourceDefinition.class.getName(), "name:" + definition.getName());
+		StaticResourceDefinitionManager dm = ManagerLocator.getInstance()
+				.getManager(StaticResourceDefinitionManager.class);
+		MetaDataAuditLogger.getLogger()
+				.logMetadata(MetaDataAction.UPDATE, StaticResourceDefinition.class.getName(), "name:" + definition.getName());
 		return dm.update(definition);
 	}
 

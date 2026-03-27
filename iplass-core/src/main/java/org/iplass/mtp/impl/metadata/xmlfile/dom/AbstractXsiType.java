@@ -33,7 +33,8 @@ public class AbstractXsiType implements XsiType {
 	@Override
 	public final List<ExternalRefPath> getExternalRefPaths() {
 		List<ExternalRefPath> list = new ArrayList<ExternalRefPath>();
-		Class<?>[] annotatedPathClass = getClass().getAnnotation(ExternalRefPathClass.class).value();
+		Class<?>[] annotatedPathClass = getClass().getAnnotation(ExternalRefPathClass.class)
+				.value();
 		for (Class<?> ac : annotatedPathClass) {
 			try {
 				list.add((ExternalRefPath) ac.newInstance());

@@ -28,14 +28,15 @@ public class EntityDataCrawler extends MtpSilentBatch {
 
 	/** 実行モード */
 	enum Mode {
-		RECRAWL
-		,CRAWL
+		RECRAWL, CRAWL
 	};
 
 	private static final Logger logger = LoggerFactory.getLogger(EntityDataCrawler.class);
 
-	private TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private FulltextSearchManager fsm = ManagerLocator.getInstance().getManager(FulltextSearchManager.class);
+	private TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private FulltextSearchManager fsm = ManagerLocator.getInstance()
+			.getManager(FulltextSearchManager.class);
 
 	private Mode mode;
 	private int tenantId;
@@ -58,9 +59,11 @@ public class EntityDataCrawler extends MtpSilentBatch {
 
 		if (args != null && args.length > 0) {
 			Mode mode = null;
-			if (Mode.CRAWL.name().equalsIgnoreCase(args[0])) {
+			if (Mode.CRAWL.name()
+					.equalsIgnoreCase(args[0])) {
 				mode = Mode.CRAWL;
-			} else if (Mode.RECRAWL.name().equalsIgnoreCase(args[0])) {
+			} else if (Mode.RECRAWL.name()
+					.equalsIgnoreCase(args[0])) {
 				mode = Mode.RECRAWL;
 			}
 			if (mode != null) {
@@ -70,7 +73,8 @@ public class EntityDataCrawler extends MtpSilentBatch {
 					tenantId = Integer.parseInt(args[1]);
 				}
 				if (args.length > 2) {
-					if (args[2] != null && !args[2].trim().isEmpty()) {
+					if (args[2] != null && !args[2].trim()
+							.isEmpty()) {
 						ename = args[2];
 					}
 				}
@@ -81,7 +85,7 @@ public class EntityDataCrawler extends MtpSilentBatch {
 					} else {
 						List<TenantInfo> tenants = getValidTenantInfoList();
 						if (tenants != null) {
-							for (TenantInfo t: tenants) {
+							for (TenantInfo t : tenants) {
 								(new EntityDataCrawler(mode, t.getId(), ename)).execute();
 							}
 						}

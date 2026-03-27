@@ -27,12 +27,14 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinitionManager;
 
-public class ActionMappingDefinitionManagerImpl extends AbstractTypedDefinitionManager<ActionMappingDefinition> implements ActionMappingDefinitionManager {
+public class ActionMappingDefinitionManagerImpl extends AbstractTypedDefinitionManager<ActionMappingDefinition>
+		implements ActionMappingDefinitionManager {
 
 	private ActionMappingService service;
 
 	public ActionMappingDefinitionManagerImpl() {
-		service = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(ActionMappingService.class);
 	}
 
 	@Override

@@ -147,7 +147,8 @@ public abstract class PropertySearchCondition {
 				conditions.add(new IsNull(detail.getPropertyName()));
 			} else if (Constants.IN.equals(detail.getPredicate())) {
 				Object[] array = null;
-				if (conditionValue.getClass().isArray()) {
+				if (conditionValue.getClass()
+						.isArray()) {
 					array = (Object[]) conditionValue;
 				} else {
 					array = new Object[] { conditionValue };
@@ -259,6 +260,7 @@ public abstract class PropertySearchCondition {
 			PropertyEditor editor, Object value) {
 		return newInstance(definition, editor, value, null);
 	}
+
 	public static PropertySearchCondition newInstance(PropertyDefinition definition,
 			PropertyEditor editor, Object value, String parent) {
 		if (definition instanceof AutoNumberProperty) {

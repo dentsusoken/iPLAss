@@ -35,14 +35,14 @@ import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
 
 @WebApi(
-		name=GetTreeViewDefinitionCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={"definition"},
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/treeview/GetTreeViewDefinitionCommand", displayName="ツリービューリストデータ取得")
+		name = GetTreeViewDefinitionCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { "definition" },
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/treeview/GetTreeViewDefinitionCommand", displayName = "ツリービューリストデータ取得")
 public class GetTreeViewDefinitionCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/treeview/GetTreeViewDefinition";
@@ -51,7 +51,8 @@ public class GetTreeViewDefinitionCommand implements Command {
 	private TreeViewManager tvm = null;
 
 	public GetTreeViewDefinitionCommand() {
-		tvm = ManagerLocator.getInstance().getManager(TreeViewManager.class);
+		tvm = ManagerLocator.getInstance()
+				.getManager(TreeViewManager.class);
 	}
 
 	@Override

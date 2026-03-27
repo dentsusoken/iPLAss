@@ -67,11 +67,13 @@ public class SeparatorItem extends PartsItem {
 	public SeparatorParts getParts() {
 		TopViewParts leftParts = null;
 		PartsItem leftItem = leftArea.getFirst();
-		if (leftItem != null) leftParts = leftItem.getParts();
+		if (leftItem != null)
+			leftParts = leftItem.getParts();
 
 		TopViewParts rightParts = null;
 		PartsItem rightItem = rightArea.getFirst();
-		if (rightItem != null) rightParts = rightItem.getParts();
+		if (rightItem != null)
+			rightParts = rightItem.getParts();
 
 		parts.setLeftParts(leftParts);
 		parts.setRightParts(rightParts);
@@ -119,7 +121,8 @@ public class SeparatorItem extends PartsItem {
 
 				@Override
 				public void onDrop(TopViewNode node, int dropPosition) {
-					if (SeparatorParts.class.getName().equals(node.getType())) {
+					if (SeparatorParts.class.getName()
+							.equals(node.getType())) {
 						//セパレータ内にセパレータは配置不可
 						return;
 					}

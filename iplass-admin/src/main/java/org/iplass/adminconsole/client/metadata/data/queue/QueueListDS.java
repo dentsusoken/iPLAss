@@ -54,30 +54,29 @@ public class QueueListDS extends AbstractAdminDataSource {
 				DataSourceConstants.FIELD_NAME,
 				FieldType.TEXT,
 				DataSourceConstants.FIELD_NAME_TITLE);
-		fields = new DataSourceField[] {key, name};
+		fields = new DataSourceField[] { key, name };
 	}
 
-    public static void setDataSource(final SelectItem item, boolean addBlank) {
-    	setup(item, addBlank);
-    }
+	public static void setDataSource(final SelectItem item, boolean addBlank) {
+		setup(item, addBlank);
+	}
 
-    private static void setup(final FormItem item, boolean addBlank) {
+	private static void setup(final FormItem item, boolean addBlank) {
 
-    	item.setOptionDataSource(QueueListDS.getInstance(addBlank));
-    	item.setValueField(DataSourceConstants.FIELD_NAME);
+		item.setOptionDataSource(QueueListDS.getInstance(addBlank));
+		item.setValueField(DataSourceConstants.FIELD_NAME);
 
-    	if (item instanceof SelectItem) {
-    		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
-    		((SelectItem)item).setPickListFields(nameField);
-    		((SelectItem)item).setPickListWidth(420);
-    	} else if (item instanceof ComboBoxItem) {
-    		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
-    		((ComboBoxItem)item).setPickListFields(nameField);
-    		((ComboBoxItem)item).setPickListWidth(420);
-    	}
+		if (item instanceof SelectItem) {
+			ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
+			((SelectItem) item).setPickListFields(nameField);
+			((SelectItem) item).setPickListWidth(420);
+		} else if (item instanceof ComboBoxItem) {
+			ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
+			((ComboBoxItem) item).setPickListFields(nameField);
+			((ComboBoxItem) item).setPickListWidth(420);
+		}
 
-    }
-
+	}
 
 	private boolean addBlank;
 

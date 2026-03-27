@@ -58,193 +58,204 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 
 	private static final long serialVersionUID = 8928880432819501403L;
 
-	private PackageService service = ServiceRegistry.getRegistry().getService(PackageService.class);
+	private PackageService service = ServiceRegistry.getRegistry()
+			.getService(PackageService.class);
 
 	@Override
 	public List<PackageEntryStatusInfo> getPackageList(final int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<PackageEntryStatusInfo>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<PackageEntryStatusInfo>>() {
 
-			@Override
-			public List<PackageEntryStatusInfo> call() {
+					@Override
+					public List<PackageEntryStatusInfo> call() {
 
-				List<PackageEntryStatusInfo> result = new ArrayList<>();
-				SearchResult<Entity> list = service.getPackageList();
-				if (list.getList() != null) {
-					for (Entity entity : list.getList()) {
-						PackageEntryStatusInfo info = new PackageEntryStatusInfo();
-						info.setOid(entity.getOid());
-						info.setName(entity.getName());
-						info.setDescription(entity.getDescription());
-						info.setType(entity.getValueAs(SelectValue.class, PackageEntity.TYPE));
-						info.setStatus(entity.getValueAs(SelectValue.class, PackageEntity.STATUS));
-						info.setProgress(entity.getValueAs(Integer.class, PackageEntity.COMPLETE_TASK_COUNT)
-								+ " / " + entity.getValueAs(Integer.class, PackageEntity.TASK_COUNT));
-						info.setExecStartDate(entity.getValueAs(Timestamp.class, PackageEntity.EXEC_START_DATE));
-						info.setExecEndDate(entity.getValueAs(Timestamp.class, PackageEntity.EXEC_END_DATE));
-						info.setCreateSetting(entity.getValueAs(BinaryReference.class, PackageEntity.CREATE_SETTING));
+						List<PackageEntryStatusInfo> result = new ArrayList<>();
+						SearchResult<Entity> list = service.getPackageList();
+						if (list.getList() != null) {
+							for (Entity entity : list.getList()) {
+								PackageEntryStatusInfo info = new PackageEntryStatusInfo();
+								info.setOid(entity.getOid());
+								info.setName(entity.getName());
+								info.setDescription(entity.getDescription());
+								info.setType(entity.getValueAs(SelectValue.class, PackageEntity.TYPE));
+								info.setStatus(entity.getValueAs(SelectValue.class, PackageEntity.STATUS));
+								info.setProgress(entity.getValueAs(Integer.class, PackageEntity.COMPLETE_TASK_COUNT)
+										+ " / " + entity.getValueAs(Integer.class, PackageEntity.TASK_COUNT));
+								info.setExecStartDate(entity.getValueAs(Timestamp.class, PackageEntity.EXEC_START_DATE));
+								info.setExecEndDate(entity.getValueAs(Timestamp.class, PackageEntity.EXEC_END_DATE));
+								info.setCreateSetting(entity.getValueAs(BinaryReference.class, PackageEntity.CREATE_SETTING));
 //						info.setDetail(entity.getValueAs(BinaryReference.class, PackageEntry.DETAIL));
-						info.setArchive(entity.getValueAs(BinaryReference.class, PackageEntity.ARCHIVE));
-						result.add(info);
+								info.setArchive(entity.getValueAs(BinaryReference.class, PackageEntity.ARCHIVE));
+								result.add(info);
+							}
+						}
+						return result;
 					}
-				}
-				return result;
-			}
 
-		});
+				});
 	}
 
 	@Override
 	public void deletePackage(final int tenantId, final List<String> packOids) {
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				service.deletePackage(packOids);
-				return null;
-			}
+					@Override
+					public Void call() {
+						service.deletePackage(packOids);
+						return null;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public String storePackage(final int tenantId, final PackageCreateInfo createInfo) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<String>() {
 
-			@Override
-			public String call() {
+					@Override
+					public String call() {
 
-				//PackageCreateInfo -> PackageCreateCondition
-				PackageCreateCondition condition = new PackageCreateCondition();
-				condition.setName(createInfo.getName());
-				condition.setDescription(createInfo.getDescription());
-				condition.setMetaDataPaths(createInfo.getMetaDataPaths());
-				condition.setEntityPaths(createInfo.getEntityPaths());
+						//PackageCreateInfo -> PackageCreateCondition
+						PackageCreateCondition condition = new PackageCreateCondition();
+						condition.setName(createInfo.getName());
+						condition.setDescription(createInfo.getDescription());
+						condition.setMetaDataPaths(createInfo.getMetaDataPaths());
+						condition.setEntityPaths(createInfo.getEntityPaths());
 
-				return service.storePackage(condition);
-			}
+						return service.storePackage(condition);
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public void asyncCreatePackage(final int tenantId, final String packOid) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				service.archivePackageAsync(packOid);
-				return null;
-			}
+					@Override
+					public Void call() {
+						service.archivePackageAsync(packOid);
+						return null;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public PackageCreateResultInfo syncCreatePackage(final int tenantId, final String packOid) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<PackageCreateResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<PackageCreateResultInfo>() {
 
-			@Override
-			public PackageCreateResultInfo call() {
-				PackageCreateResult result = service.archivePackage(packOid);
+					@Override
+					public PackageCreateResultInfo call() {
+						PackageCreateResult result = service.archivePackage(packOid);
 
-				PackageCreateResultInfo info = new PackageCreateResultInfo();
-				info.setError(result.isError());
-				info.setMessages(result.getMessages());
+						PackageCreateResultInfo info = new PackageCreateResultInfo();
+						info.setError(result.isError());
+						info.setMessages(result.getMessages());
 
-				return info;
-			}
+						return info;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public PackageEntryInfo getPackageEntryInfo(final int tenantId, final String packOid) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<PackageEntryInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<PackageEntryInfo>() {
 
-			@Override
-			public PackageEntryInfo call() {
-				PackageInfo info = service.getPackageInfo(packOid);
+					@Override
+					public PackageEntryInfo call() {
+						PackageInfo info = service.getPackageInfo(packOid);
 
-				//PackageInfo -> PackageEntryInfo(DTO)
-				PackageEntryInfo entry = new PackageEntryInfo();
-				entry.setPackageName(info.getPackageName());
-				entry.setMetaDataPaths(info.getMetaDataPaths());
-				entry.setTenant(info.getTenant());
-				entry.setWarningTenant(info.isWarningTenant());
-				entry.setEntityPaths(info.getEntityPaths());
-				entry.setHasLobData(info.isHasLobData());
-				return entry;
-			}
+						//PackageInfo -> PackageEntryInfo(DTO)
+						PackageEntryInfo entry = new PackageEntryInfo();
+						entry.setPackageName(info.getPackageName());
+						entry.setMetaDataPaths(info.getMetaDataPaths());
+						entry.setTenant(info.getTenant());
+						entry.setWarningTenant(info.isWarningTenant());
+						entry.setEntityPaths(info.getEntityPaths());
+						entry.setHasLobData(info.isHasLobData());
+						return entry;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public MetaDataImportResultInfo importPackageMetaData(final int tenantId, final String packOid, final Tenant importTenant) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<MetaDataImportResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<MetaDataImportResultInfo>() {
 
-			@Override
-			public MetaDataImportResultInfo call() {
-				MetaDataImportResult info = service.importPackageMetaData(packOid, importTenant);
+					@Override
+					public MetaDataImportResultInfo call() {
+						MetaDataImportResult info = service.importPackageMetaData(packOid, importTenant);
 
-				//MetaDataImportResult -> MetaDataImportResultInfo(DTO)
-				MetaDataImportResultInfo result = new MetaDataImportResultInfo();
-				result.setError(info.isError());
-				result.setMessages(info.getMessages());
+						//MetaDataImportResult -> MetaDataImportResultInfo(DTO)
+						MetaDataImportResultInfo result = new MetaDataImportResultInfo();
+						result.setError(info.isError());
+						result.setMessages(info.getMessages());
 
-				return result;
-			}
+						return result;
+					}
 
-		});
+				});
 	}
 
 	@Override
-	public EntityDataImportResultInfo importPackageEntityData(final int tenantId, final String packOid, final String path, final PackageImportCondition condition) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataImportResultInfo>() {
+	public EntityDataImportResultInfo importPackageEntityData(final int tenantId, final String packOid, final String path,
+			final PackageImportCondition condition) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityDataImportResultInfo>() {
 
-			@Override
-			public EntityDataImportResultInfo call() {
+					@Override
+					public EntityDataImportResultInfo call() {
 
-				//EntityImportCondition(DTO) -> EntityDataImportCondition
-				EntityDataImportCondition cond = new EntityDataImportCondition();
-				cond.setTruncate(condition.isTruncate());
-				cond.setBulkUpdate(condition.isBulkUpdate());
-				cond.setCommitLimit(condition.getCommitLimit());
-				cond.setNotifyListeners(condition.isNotifyListeners());
-				if (condition.isUpdateDisupdatableProperty()) {
-					cond.setUpdateDisupdatableProperty(true);
-					cond.setWithValidation(false);
-				} else {
-					cond.setUpdateDisupdatableProperty(false);
-					cond.setWithValidation(condition.isWithValidation());
-				}
-				cond.setInsertEnableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
-				cond.setErrorSkip(condition.isErrorSkip());
-				cond.setIgnoreNotExistsProperty(condition.isIgnoreNotExistsProperty());
-				cond.setPrefixOid(condition.getPrefixOid());
-				cond.setFourceUpdate(condition.isFourceUpdate());
-				if (StringUtil.isNotEmpty(condition.getLocale())) {
-					cond.setLocale(condition.getLocale());
-				}
-				if (StringUtil.isNotEmpty(condition.getTimezone())) {
-					cond.setTimezone(condition.getTimezone());
-				}
+						//EntityImportCondition(DTO) -> EntityDataImportCondition
+						EntityDataImportCondition cond = new EntityDataImportCondition();
+						cond.setTruncate(condition.isTruncate());
+						cond.setBulkUpdate(condition.isBulkUpdate());
+						cond.setCommitLimit(condition.getCommitLimit());
+						cond.setNotifyListeners(condition.isNotifyListeners());
+						if (condition.isUpdateDisupdatableProperty()) {
+							cond.setUpdateDisupdatableProperty(true);
+							cond.setWithValidation(false);
+						} else {
+							cond.setUpdateDisupdatableProperty(false);
+							cond.setWithValidation(condition.isWithValidation());
+						}
+						cond.setInsertEnableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
+						cond.setErrorSkip(condition.isErrorSkip());
+						cond.setIgnoreNotExistsProperty(condition.isIgnoreNotExistsProperty());
+						cond.setPrefixOid(condition.getPrefixOid());
+						cond.setFourceUpdate(condition.isFourceUpdate());
+						if (StringUtil.isNotEmpty(condition.getLocale())) {
+							cond.setLocale(condition.getLocale());
+						}
+						if (StringUtil.isNotEmpty(condition.getTimezone())) {
+							cond.setTimezone(condition.getTimezone());
+						}
 
-				String entityPath =  EntityService.ENTITY_META_PATH + path.substring(0, path.length() - 4).replace(".", "/");	//.csvを除く
-				EntityDataImportResult info = service.importPackageEntityData(packOid, entityPath, cond);
+						String entityPath = EntityService.ENTITY_META_PATH + path.substring(0, path.length() - 4)
+								.replace(".", "/"); //.csvを除く
+						EntityDataImportResult info = service.importPackageEntityData(packOid, entityPath, cond);
 
-				//EntityDataImportResult -> EntityDataImportResultInfo(DTO)
-				EntityDataImportResultInfo result = new EntityDataImportResultInfo();
-				result.setError(info.isError());
-				result.setMessages(info.getMessages());
+						//EntityDataImportResult -> EntityDataImportResultInfo(DTO)
+						EntityDataImportResultInfo result = new EntityDataImportResultInfo();
+						result.setError(info.isError());
+						result.setMessages(info.getMessages());
 
-				return result;
-			}
+						return result;
+					}
 
-		});
+				});
 	}
 
 	@Override

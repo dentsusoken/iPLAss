@@ -60,8 +60,8 @@ public class RegexReplaceAttributePane extends NormalizerAttributePane {
 	@Override
 	public void setDefinition(NormalizerDefinition definition) {
 		if (definition instanceof RegexReplace) {
-			txtRegex.setValue(((RegexReplace)definition).getRegex());
-			txtReplacement.setValue(((RegexReplace)definition).getReplacement());
+			txtRegex.setValue(((RegexReplace) definition).getRegex());
+			txtReplacement.setValue(((RegexReplace) definition).getReplacement());
 		} else {
 			form.clearValues();
 		}

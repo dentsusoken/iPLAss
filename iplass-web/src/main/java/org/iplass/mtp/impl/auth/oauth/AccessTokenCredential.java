@@ -38,9 +38,9 @@ public class AccessTokenCredential implements Credential, Serializable {
 
 	private String id;
 	private String token;
-	
+
 	private Map<String, Object> additionalAuthenticationFactor;
-	
+
 	public AccessTokenCredential() {
 	}
 
@@ -64,7 +64,7 @@ public class AccessTokenCredential implements Credential, Serializable {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	
+
 	@Override
 	public Object getAuthenticationFactor(String name) {
 		if (additionalAuthenticationFactor == null) {

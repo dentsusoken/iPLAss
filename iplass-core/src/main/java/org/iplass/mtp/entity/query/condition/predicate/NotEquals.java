@@ -37,7 +37,7 @@ public class NotEquals extends ComparisonPredicate {
 
 	public NotEquals() {
 	}
-	
+
 	public NotEquals(String propertyName, Object valueLiteral) {
 		super(propertyName, valueLiteral);
 	}
@@ -63,9 +63,9 @@ public class NotEquals extends ComparisonPredicate {
 	protected String getOpString() {
 		return "!=";
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-
 
 }

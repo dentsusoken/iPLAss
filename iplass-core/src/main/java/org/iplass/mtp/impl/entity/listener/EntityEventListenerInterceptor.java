@@ -52,7 +52,8 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 		EntityValidateInvocationImpl invImpl = (EntityValidateInvocationImpl) invocation;
 		EntityHandler eh = invImpl.getEntityHandler();
 		EntityEventContext eeContext = null;
-		if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers().size() > 0) {
+		if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers()
+				.size() > 0) {
 			eeContext = new EntityEventContext();
 			if (invocation.getValidatePropertyList() != null) {
 				eeContext.setAttribute(EntityEventContext.VALIDATE_PROPERTIES, new ArrayList<String>(invocation.getValidatePropertyList()));
@@ -63,7 +64,7 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 			if (invImpl.getInsertOption() != null) {
 				eeContext.setAttribute(EntityEventContext.INSERT_OPTION, invImpl.getInsertOption());
 			}
-			for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+			for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 				eeh.handleBeforeValidate(invocation.getEntity(), eeContext);
 			}
 		}
@@ -72,14 +73,16 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 
 	@Override
 	public String insert(EntityInsertInvocation invocation) {
-		if (invocation.getInsertOption().isNotifyListeners()) {
+		if (invocation.getInsertOption()
+				.isNotifyListeners()) {
 			EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
 			EntityEventContext eeContext = null;
-			if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers().size() > 0) {
+			if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers()
+					.size() > 0) {
 				eeContext = new EntityEventContext();
 				eeContext.setAttribute(EntityEventContext.INSERT_OPTION, invocation.getInsertOption());
 
-				for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+				for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 					if (!eeh.handleBeforeInsert(invocation.getEntity(), eeContext)) {
 						//do nothing
 						return null;
@@ -90,7 +93,7 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 			String oid = invocation.proceed();
 
 			if (eeContext != null) {//実行順は先頭から
-				for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+				for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 					eeh.handleAfterInsert(invocation.getEntity(), eeContext);
 				}
 			}
@@ -102,8 +105,9 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 	}
 
 	private boolean loadWithMappedBy(List<EventListenerRuntime> elList) {
-		for (EventListenerRuntime elr: elList) {
-			if (!elr.getMetaData().isWithoutMappedByReference()) {
+		for (EventListenerRuntime elr : elList) {
+			if (!elr.getMetaData()
+					.isWithoutMappedByReference()) {
 				return true;
 			}
 		}
@@ -112,20 +116,34 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 
 	@Override
 	public void update(EntityUpdateInvocation invocation) {
-		if (invocation.getUpdateOption().isNotifyListeners()) {
+		if (invocation.getUpdateOption()
+				.isNotifyListeners()) {
 			EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
 			EntityEventContext eeContext = null;
-			if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers().size() > 0) {
+			if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers()
+					.size() > 0) {
 				eeContext = new EntityEventContext();
 				eeContext.setAttribute(EntityEventContext.UPDATE_OPTION, invocation.getUpdateOption());
 				Entity beforeUpdate = null;
 				if (loadWithMappedBy(eh.getEventListenerHandlers())) {
-					beforeUpdate = new EntityLoadInvocationImpl(invocation.getEntity().getOid(), invocation.getEntity().getVersion(), null, false, eh.getService().getInterceptors(), eh).proceed();
+					beforeUpdate = new EntityLoadInvocationImpl(invocation.getEntity()
+							.getOid(),
+							invocation.getEntity()
+									.getVersion(),
+							null, false, eh.getService()
+									.getInterceptors(),
+							eh).proceed();
 				} else {
-					beforeUpdate = new EntityLoadInvocationImpl(invocation.getEntity().getOid(), invocation.getEntity().getVersion(), new LoadOption(true, false), false, eh.getService().getInterceptors(), eh).proceed();
+					beforeUpdate = new EntityLoadInvocationImpl(invocation.getEntity()
+							.getOid(),
+							invocation.getEntity()
+									.getVersion(),
+							new LoadOption(true, false), false, eh.getService()
+									.getInterceptors(),
+							eh).proceed();
 				}
 				eeContext.setAttribute(EntityEventContext.BEFORE_UPDATE_ENTITY, beforeUpdate);
-				for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+				for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 					if (!eeh.handleBeforeUpdate(invocation.getEntity(), eeContext)) {
 						//do nothing
 						return;
@@ -136,7 +154,7 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 			invocation.proceed();
 
 			if (eeContext != null) {//実行順は先頭から
-				for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+				for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 					eeh.handleAfterUpdate(invocation.getEntity(), eeContext);
 				}
 			}
@@ -147,13 +165,15 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 
 	@Override
 	public void delete(EntityDeleteInvocation invocation) {
-		if (invocation.getDeleteOption().isNotifyListeners()) {
+		if (invocation.getDeleteOption()
+				.isNotifyListeners()) {
 			EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
 			EntityEventContext eeContext = null;
-			if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers().size() > 0) {
+			if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers()
+					.size() > 0) {
 				eeContext = new EntityEventContext();
 				eeContext.setAttribute(EntityEventContext.DELETE_OPTION, invocation.getDeleteOption());
-				for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+				for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 					if (!eeh.handleBeforeDelete(invocation.getEntity(), eeContext)) {
 						//do nothing
 						return;
@@ -164,11 +184,12 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 			invocation.proceed();
 
 			if (eeContext != null) {
-				for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+				for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 					eeh.handleAfterDelete(invocation.getEntity(), eeContext);
 				}
-				if (invocation.getDeleteOption().isPurge()) {
-					for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+				if (invocation.getDeleteOption()
+						.isPurge()) {
+					for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 						eeh.handleAfterPurge(invocation.getEntity());
 					}
 				}
@@ -182,10 +203,12 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 	public Entity load(EntityLoadInvocation invocation) {
 		Entity entity = invocation.proceed();
 		if (entity != null) {
-			if (invocation.getLoadOption() == null || invocation.getLoadOption().isNotifyListeners()) {
+			if (invocation.getLoadOption() == null || invocation.getLoadOption()
+					.isNotifyListeners()) {
 				EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
-				if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers().size() > 0) {
-					for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+				if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers()
+						.size() > 0) {
+					for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 						eeh.handleOnLoad(entity);
 					}
 				}
@@ -198,15 +221,17 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 	@Override
 	public void query(final EntityQueryInvocation invocation) {
 		if (invocation.getType() == InvocationType.SEARCH_ENTITY) {
-			if (invocation.getSearchOption().isNotifyListeners()) {
+			if (invocation.getSearchOption()
+					.isNotifyListeners()) {
 				final EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
-				if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers().size() > 0) {
+				if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers()
+						.size() > 0) {
 					final Predicate<Entity> actual = ((Predicate<Entity>) invocation.getPredicate());
 					Predicate<Entity> wrapper = new Predicate<Entity>() {
 						@Override
 						public boolean test(Entity entity) {
 
-							for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+							for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 								eeh.handleOnLoad(entity);
 							}
 							return actual.test(entity);
@@ -223,8 +248,9 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 	public Entity restore(EntityRestoreInvocation invocation) {
 		Entity entity = invocation.proceed();
 		EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
-		if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers().size() > 0) {
-			for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+		if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers()
+				.size() > 0) {
+			for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 				eeh.handleAfterRestore(entity);
 			}
 		}
@@ -235,7 +261,8 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 	public void purge(EntityPurgeInvocation invocation) {
 		EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
 		Entity entity = null;
-		if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers().size() > 0) {
+		if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers()
+				.size() > 0) {
 			Entity ee = new GenericEntity();
 			eh.getRecycleBin(
 					new Predicate<Entity>() {
@@ -252,8 +279,9 @@ public class EntityEventListenerInterceptor extends EntityInterceptorAdapter {
 			entity = ee;
 		}
 		invocation.proceed();
-		if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers().size() > 0) {
-			for (EventListenerRuntime eeh: eh.getEventListenerHandlers()) {
+		if (eh.getEventListenerHandlers() != null && eh.getEventListenerHandlers()
+				.size() > 0) {
+			for (EventListenerRuntime eeh : eh.getEventListenerHandlers()) {
 				eeh.handleAfterPurge(entity);
 			}
 		}

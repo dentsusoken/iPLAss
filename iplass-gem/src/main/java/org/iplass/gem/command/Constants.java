@@ -373,9 +373,9 @@ public class Constants {
 	public static final String CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD = "/jsp/gem/auth/specificPassword.jsp";
 	public static final String CMD_RSLT_JSP_PASSWORD_EXPIRE = "/jsp/gem/auth/Expire.jsp";
 	public static final String CMD_RSLT_JSP_VERIFY2ND = "/jsp/gem/auth/Verify2nd.jsp";
-	public static final String CMD_RSLT_JSP_BULK_EDIT="/jsp/gem/generic/bulk/bulkEdit.jsp";
-	public static final String CMD_RSLT_JSP_BULK_MULTI_EDIT="/jsp/gem/generic/bulk/edit.jsp";
-	public static final String CMD_RSLT_JSP_APP_MAINTENANCE="/jsp/gem/auth/application.jsp";
+	public static final String CMD_RSLT_JSP_BULK_EDIT = "/jsp/gem/generic/bulk/bulkEdit.jsp";
+	public static final String CMD_RSLT_JSP_BULK_MULTI_EDIT = "/jsp/gem/generic/bulk/edit.jsp";
+	public static final String CMD_RSLT_JSP_APP_MAINTENANCE = "/jsp/gem/auth/application.jsp";
 	public static final String CMD_RSLT_HTML_PDFVIEWER_PATH = "/jsp/gem/binary/pdfviewer.jsp";
 	public static final String CMD_RSLT_HTML_IMGVIEWER_PATH = "/jsp/gem/binary/imgviewer.jsp";
 
@@ -395,8 +395,8 @@ public class Constants {
 	public static final String TEMPLATE_EDIT = "gem/generic/detail/edit";
 	public static final String TEMPLATE_REF_EDIT = "gem/generic/detail/ref/edit";
 	public static final String TEMPLATE_COMPLETED = "gem/generic/detail/ref/completed";
-	public static final String TEMPLATE_BULK_EDIT="gem/generic/bulk/bulkEdit";
-	public static final String TEMPLATE_BULK_MULTI_EDIT="gem/generic/bulk/edit";
+	public static final String TEMPLATE_BULK_EDIT = "gem/generic/bulk/bulkEdit";
+	public static final String TEMPLATE_BULK_MULTI_EDIT = "gem/generic/bulk/edit";
 	public static final String TEMPLATE_SEARCH = "gem/generic/search/search";
 	public static final String TEMPLATE_FILE_UPLOAD = "gem/generic/upload/fileUpload";
 

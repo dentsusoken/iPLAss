@@ -62,7 +62,8 @@ public class ApplicationInitializer implements ServletContextListener {
 						stopMethod.invoke(lf);
 					}
 				}
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e) {
 				//ignore
 				e.printStackTrace();
 			}

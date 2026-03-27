@@ -91,7 +91,8 @@ public class AuthService implements Service {
 			if (user == null) {
 				return authenticationProviders[DEFAULT_AUTH_PROVIDER];
 			}
-			return authenticationProviders[user.getAccount().getAuthenticationProviderIndex()];
+			return authenticationProviders[user.getAccount()
+					.getAuthenticationProviderIndex()];
 		}
 	}
 
@@ -138,17 +139,18 @@ public class AuthService implements Service {
 			doSecuredActionPost(userAuthContext, prevSecuredAction, prev, exec);
 		}
 	}
-	
+
 	public AuthContextHolder doSecuredActionPre(AuthContextHolder doAuthContext, ExecuteContext ec) {
 		//AuthTagと処理を共有したいがためだけに、メソッド切り出し＆public
 		AuthContextHolder prev = (AuthContextHolder) ec.getAttribute(HOLDER_NAME);
 		ec.setAttribute(HOLDER_NAME, doAuthContext, false);
-		ec.setClientId(doAuthContext.getUserContext().getIdForLog());
+		ec.setClientId(doAuthContext.getUserContext()
+				.getIdForLog());
 		ec.mdcPut(MDC_USER, ec.getClientId());
 		doAuthContext.setSecuredAction(true);
 		return prev;
 	}
-	
+
 	public void doSecuredActionPost(AuthContextHolder doAuthContext, boolean prevSecuredAction, AuthContextHolder prev, ExecuteContext ec) {
 		//AuthTagと処理を共有したいがためだけに、メソッド切り出し＆public
 		if (doAuthContext != null) {
@@ -156,7 +158,8 @@ public class AuthService implements Service {
 		}
 		ec.setAttribute(HOLDER_NAME, prev, false);
 		if (prev != null) {
-			ec.setClientId(prev.getUserContext().getIdForLog());
+			ec.setClientId(prev.getUserContext()
+					.getIdForLog());
 		} else {
 			ec.setClientId(null);
 		}
@@ -167,7 +170,9 @@ public class AuthService implements Service {
 		UserContext current = getCurrentSessionUserContext();
 
 		if (current != null && current.getUser() != null) {
-			User userEntity = authenticationProviders[current.getAccount().getAuthenticationProviderIndex()].getUserEntityResolver().searchUser(current.getAccount());
+			User userEntity = authenticationProviders[current.getAccount()
+					.getAuthenticationProviderIndex()].getUserEntityResolver()
+							.searchUser(current.getAccount());
 			if (userEntity == null) {
 				throw new LoginFailedException(resourceString("impl.auth.AuthService.removed"));
 			}
@@ -198,7 +203,8 @@ public class AuthService implements Service {
 			providerIndex = account.getAuthenticationProviderIndex();
 
 			//ユーザーエンティティ存在チェック
-			userEntity = authenticationProviders[providerIndex].getUserEntityResolver().searchUser(account);
+			userEntity = authenticationProviders[providerIndex].getUserEntityResolver()
+					.searchUser(account);
 			if (userEntity != null && !isValidAuthProviderOnAuthPolicy(userEntity, providerIndex)) {
 				userEntity = null;
 			}
@@ -210,7 +216,8 @@ public class AuthService implements Service {
 		}
 		userEntity = validateUser(account.getCredential(), account, userEntity);
 
-		account.getAttributeMap().put(AUTHENTICATION_PROCESS_TYPE, credential.getAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE));
+		account.getAttributeMap()
+				.put(AUTHENTICATION_PROCESS_TYPE, credential.getAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE));
 
 		//UserContext生成
 		UserContext user;
@@ -235,10 +242,15 @@ public class AuthService implements Service {
 		if (apr == null) {
 			return true;
 		}
-		if (apr.getMetaData().getAuthenticationProvider() == null || apr.getMetaData().getAuthenticationProvider().size() == 0) {
+		if (apr.getMetaData()
+				.getAuthenticationProvider() == null
+				|| apr.getMetaData()
+						.getAuthenticationProvider()
+						.size() == 0) {
 			return true;
 		}
-		for (String pn: apr.getMetaData().getAuthenticationProvider()) {
+		for (String pn : apr.getMetaData()
+				.getAuthenticationProvider()) {
 			if (pn.equals(authenticationProviders[providerIndex].getProviderName())) {
 				return true;
 			}
@@ -260,23 +272,28 @@ public class AuthService implements Service {
 				credential.setAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.LOGIN);
 			}
 			UserContext user = authenticate(credential);
-			
+
 			if (isAuthenticate()) {
 				//afterLoginSuccess()呼び出しより前でlogoutする
 				logout();
 				AuthContextHolder.reflesh();
 			}
 			//ログイン成功の通知＆ログ出力
-			authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].afterLoginSuccess(user.getAccount());
-			authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].getAuthLogger().loginSuccess(user);
+			authenticationProviders[user.getAccount()
+					.getAuthenticationProviderIndex()].afterLoginSuccess(user.getAccount());
+			authenticationProviders[user.getAccount()
+					.getAuthenticationProviderIndex()].getAuthLogger()
+							.loginSuccess(user);
 
 			//セッション情報初期化
 			initializeSession(user, true);
 
-			AuthenticationPolicyRuntime policy = AuthContextHolder.getAuthContext().getPolicy();
+			AuthenticationPolicyRuntime policy = AuthContextHolder.getAuthContext()
+					.getPolicy();
 			if (policy != null && policy.getListeners() != null) {
-				LoginNotification notification = new LoginNotification(NotificationType.LOGIN_SUCCESS, user.getUser().getOid(), credential, null);
-				for (AccountNotificationListener l: policy.getListeners()) {
+				LoginNotification notification = new LoginNotification(NotificationType.LOGIN_SUCCESS, user.getUser()
+						.getOid(), credential, null);
+				for (AccountNotificationListener l : policy.getListeners()) {
 					l.loginSuccess(notification);
 				}
 			}
@@ -285,12 +302,12 @@ public class AuthService implements Service {
 			if (policy != null) {
 				if (policy != null && policy.getListeners() != null) {
 					LoginNotification notification = new LoginNotification(NotificationType.LOGIN_FAILED, null, credential, e);
-					for (AccountNotificationListener l: policy.getListeners()) {
+					for (AccountNotificationListener l : policy.getListeners()) {
 						l.loginFailed(notification);
 					}
 				}
 			}
-			
+
 			throw e;
 		}
 	}
@@ -334,14 +351,22 @@ public class AuthService implements Service {
 		}
 		credential.setAuthenticationFactor(Credential.FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.TRUSTED_LOGIN);
 		UserContext user = authenticate(credential);
-		if (!pre.getAccount().getUnmodifiableUniqueKey().equals(user.getAccount().getUnmodifiableUniqueKey())) {
-			authenticationProviders[pre.getAccount().getAuthenticationProviderIndex()].getAuthLogger().loginFail(credential, null);
+		if (!pre.getAccount()
+				.getUnmodifiableUniqueKey()
+				.equals(user.getAccount()
+						.getUnmodifiableUniqueKey())) {
+			authenticationProviders[pre.getAccount()
+					.getAuthenticationProviderIndex()].getAuthLogger()
+							.loginFail(credential, null);
 			throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
 		}
-		
+
 		//ログイン成功の通知＆ログ出力
-		authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].afterLoginSuccess(user.getAccount());
-		authenticationProviders[user.getAccount().getAuthenticationProviderIndex()].getAuthLogger().loginSuccess(user);
+		authenticationProviders[user.getAccount()
+				.getAuthenticationProviderIndex()].afterLoginSuccess(user.getAccount());
+		authenticationProviders[user.getAccount()
+				.getAuthenticationProviderIndex()].getAuthLogger()
+						.loginSuccess(user);
 
 		initializeSession(user, false);
 	}
@@ -354,22 +379,26 @@ public class AuthService implements Service {
 				if (account != null) {
 					account.setAuthenticationProviderIndex(i);
 					//認証プロバイダー名設定
-					account.getAttributeMap().put(PROVIDER_NAME, authenticationProviders[i].getProviderName());
+					account.getAttributeMap()
+							.put(PROVIDER_NAME, authenticationProviders[i].getProviderName());
 					break;
 				}
 			}
 		} catch (LoginException e) {
-			getAuthenticationProvider().getAuthLogger().loginFail(credential, e);
+			getAuthenticationProvider().getAuthLogger()
+					.loginFail(credential, e);
 			throw e;
 		}
 
 		if (account == null) {
-			getAuthenticationProvider().getAuthLogger().loginFail(credential, null);
+			getAuthenticationProvider().getAuthLogger()
+					.loginFail(credential, null);
 			throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
 		}
 
 		if (account.isAccountLocked()) {
-			authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger().loginLocked(credential);
+			authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger()
+					.loginLocked(credential);
 			throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
 		}
 		return account;
@@ -378,26 +407,31 @@ public class AuthService implements Service {
 	private User validateUser(Credential credential, AccountHandle account, User userEntity) {
 		//ユーザーエンティティ存在チェック
 		if (userEntity == null) {
-			authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger().loginFail(credential, null);
+			authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger()
+					.loginFail(credential, null);
 			throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
-		//有効期間のチェック
+			//有効期間のチェック
 		} else {
-			Timestamp now = new Timestamp(InternalDateUtil.getNow().getTime());
+			Timestamp now = new Timestamp(InternalDateUtil.getNow()
+					.getTime());
 			if (userEntity.getStartDate() != null) {
 				if (now.compareTo((Timestamp) userEntity.getStartDate()) < 0) {
-					authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger().loginLocked(credential);
+					authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger()
+							.loginLocked(credential);
 					throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
 				}
 			}
 			if (userEntity.getEndDate() != null) {
 				if (now.compareTo((Timestamp) userEntity.getEndDate()) >= 0) {
-					authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger().loginLocked(credential);
+					authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger()
+							.loginLocked(credential);
 					throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
 				}
 			}
 		}
 		if (account.isExpired()) {
-			authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger().loginPasswordExpired(credential);
+			authenticationProviders[account.getAuthenticationProviderIndex()].getAuthLogger()
+					.loginPasswordExpired(credential);
 			CredentialExpiredException cee = new CredentialExpiredException(resourceString("impl.auth.AuthService.expired"));
 			if (account.isInitialLogin()) {
 				cee.setInitialLogin(true);
@@ -422,7 +456,8 @@ public class AuthService implements Service {
 
 		//ExecuteContext/LogのユーザーID更新
 		ExecuteContext exec = ExecuteContext.getCurrentContext();
-		UserContext uc = AuthContextHolder.getAuthContext().getUserContext();
+		UserContext uc = AuthContextHolder.getAuthContext()
+				.getUserContext();
 		exec.setClientId(uc.getIdForLog());
 		exec.mdcPut(MDC_USER, exec.getClientId());
 	}
@@ -463,14 +498,14 @@ public class AuthService implements Service {
 		//既存セッションの破棄
 		UserContext user = getCurrentSessionUserContext();
 		if (user != null) {
-			for (AuthenticationProvider ap: authenticationProviders) {
+			for (AuthenticationProvider ap : authenticationProviders) {
 				ap.logout(user.getAccount());
 			}
 		}
 		userSessionStore.invalidateUserSession();
 
 		if (user != null) {
-			for (AuthenticationProvider ap: authenticationProviders) {
+			for (AuthenticationProvider ap : authenticationProviders) {
 				ap.afterLogout(user.getAccount());
 			}
 		}
@@ -480,7 +515,8 @@ public class AuthService implements Service {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		int tenantId = ec.getClientTenantId();
 		if (authorizationProvider.useSharedPermission(permission)) {
-			TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+			TenantContextService tcService = ServiceRegistry.getRegistry()
+					.getService(TenantContextService.class);
 			tenantId = tcService.getSharedTenantId();
 		}
 		return authorizationProvider.getAuthorizationContext(tenantId, permission);
@@ -522,7 +558,8 @@ public class AuthService implements Service {
 		allAmm = new LoggingAccountManagementModule(ammr.stripOrThis());
 
 		authorizationProvider = config.getValue("authorizationProvider", AuthorizationProvider.class);
-		authPolicyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
+		authPolicyService = ServiceRegistry.getRegistry()
+				.getService(AuthenticationPolicyService.class);
 	}
 
 	@Override

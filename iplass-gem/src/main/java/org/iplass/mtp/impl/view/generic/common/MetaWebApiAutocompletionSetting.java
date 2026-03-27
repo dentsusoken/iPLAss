@@ -161,17 +161,23 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 		public WebApiAutocompletionSettingRuntime(MetaAutocompletionSetting metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
-			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getScriptEngine();
 			if (AutocompletionType.EQL.equals(getMetaData().getAutocompletionType()) && StringUtil.isNotEmpty(eql)) {
-				String templateKey = AUTOCOMPLETION_EQL + "_" + entityView.getMetaData().getId()
-						+ GroovyTemplateCompiler.randomName().replace("-", "_");
+				String templateKey = AUTOCOMPLETION_EQL + "_" + entityView.getMetaData()
+						.getId()
+						+ GroovyTemplateCompiler.randomName()
+								.replace("-", "_");
 				eqlTemplate = GroovyTemplateCompiler.compile(eql, templateKey, (GroovyScriptEngine) scriptEngine);
 				metadata.setRuntimeKey(templateKey);
 			}
 
 			if (AutocompletionType.GROOVYSCRIPT.equals(getMetaData().getAutocompletionType()) && StringUtil.isNotEmpty(groovyscript)) {
-				String scriptKey = AUTOCOMPLETION_GROOVYSCRIPT + "_" + entityView.getMetaData().getId()
-						+ GroovyTemplateCompiler.randomName().replace("-", "_");
+				String scriptKey = AUTOCOMPLETION_GROOVYSCRIPT + "_" + entityView.getMetaData()
+						.getId()
+						+ GroovyTemplateCompiler.randomName()
+								.replace("-", "_");
 				groovyscriptScript = scriptEngine.createScript(groovyscript, scriptKey);
 				metadata.setRuntimeKey(scriptKey);
 			}
@@ -188,10 +194,12 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 		}
 
 		private Object handleEql(Map<String, String[]> param, Object currentValue, boolean isReference) {
-			if (eqlTemplate == null) return null;
+			if (eqlTemplate == null)
+				return null;
 
 			Map<String, Object> bindings = new HashMap<String, Object>();
-			bindings.put(USER_BINDING_NAME, AuthContextHolder.getAuthContext().newUserBinding());
+			bindings.put(USER_BINDING_NAME, AuthContextHolder.getAuthContext()
+					.newUserBinding());
 			bindings.put(PARAMS_BINDING_NAME, escapeEql(param));
 			bindings.put(CURRENT_VALUE_BINDING_NAME, escapeEql(currentValue));
 
@@ -203,14 +211,17 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 				throw new RuntimeException(e);
 			}
 			String queryString = sw.toString();
-			if (StringUtil.isEmpty(queryString)) return null;
+			if (StringUtil.isEmpty(queryString))
+				return null;
 
 			//先頭、末尾の空白、改行、タブを削除
-			queryString = StringUtil.removeLineFeedCode(StringUtil.stripToEmpty(queryString)).replaceAll("\t", "");
+			queryString = StringUtil.removeLineFeedCode(StringUtil.stripToEmpty(queryString))
+					.replaceAll("\t", "");
 
 			Query query = Query.newQuery(queryString);
 
-			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+			EntityManager em = ManagerLocator.getInstance()
+					.getManager(EntityManager.class);
 			if (isReference) {
 				SearchResult<Entity> result = em.searchEntity(query);
 				return result.getList();
@@ -221,7 +232,8 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 				for (Object[] data : result.getList()) {
 					if (data.length > 0) {
 						// 多重度複数のpropertyをSELECTするとdata[0]が配列になる
-						if (data[0] != null && data[0].getClass().isArray()) {
+						if (data[0] != null && data[0].getClass()
+								.isArray()) {
 							for (Object value : (Object[]) data[0]) {
 								ret.add(value);
 							}
@@ -240,27 +252,32 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 			} else if (value instanceof String[]) {
 				String[] array = (String[]) value;
 				return Arrays.stream(array)
-							.map(s -> StringUtil.escapeEql(s))
-							.toArray();
+						.map(s -> StringUtil.escapeEql(s))
+						.toArray();
 			} else if (value instanceof List<?>) {
 				List<?> list = (List<?>) value;
 				return list.stream()
-							.map(s -> escapeEql(s))
-							.collect(Collectors.toList());
+						.map(s -> escapeEql(s))
+						.collect(Collectors.toList());
 			} else if (value instanceof Map<?, ?>) {
 				Map<?, ?> map = (Map<?, ?>) value;
-				return map.entrySet().stream()
+				return map.entrySet()
+						.stream()
 						.collect(Collectors.toMap(Map.Entry::getKey, entry -> escapeEql(entry.getValue()), (a, b) -> a, LinkedHashMap::new));
 			}
 			return value;
 		}
 
 		private Object handleGroovyScript(Map<String, String[]> param, Object currentValue) {
-			if (groovyscriptScript == null) return null;
+			if (groovyscriptScript == null)
+				return null;
 
-			UserBinding user = AuthContextHolder.getAuthContext().newUserBinding();
+			UserBinding user = AuthContextHolder.getAuthContext()
+					.newUserBinding();
 
-			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getScriptEngine();
 			ScriptContext sc = scriptEngine.newScriptContext();
 
 			sc.setAttribute(USER_BINDING_NAME, user);

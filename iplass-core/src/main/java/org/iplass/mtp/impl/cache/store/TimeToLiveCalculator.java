@@ -24,7 +24,7 @@ package org.iplass.mtp.impl.cache.store;
  * CacheEntryの生存期間を個別に指定する際のロジックを実装するためのインタフェース。
  */
 public interface TimeToLiveCalculator {
-	
+
 	/**
 	 * CacheEntryにtimeToLiveをセットする実装。
 	 * 

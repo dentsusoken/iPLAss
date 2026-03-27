@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/web/actionmapping",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/web/actionmapping", prefix="def-action")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/web/actionmapping",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/web/actionmapping", prefix = "def-action")
+		}
 )
 package org.iplass.mtp.web.actionmapping.definition;

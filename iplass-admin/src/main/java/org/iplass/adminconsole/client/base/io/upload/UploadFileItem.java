@@ -35,7 +35,6 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-
 public class UploadFileItem extends VLayout {
 
 	private Label title;

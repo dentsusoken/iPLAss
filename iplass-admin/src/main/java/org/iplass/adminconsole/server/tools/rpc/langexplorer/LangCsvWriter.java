@@ -43,7 +43,8 @@ public class LangCsvWriter extends AdminCsvWriter {
 	private String[] header;
 	private CellProcessor[] processors;
 
-	private I18nService i18nService = ServiceRegistry.getRegistry().getService(I18nService.class);
+	private I18nService i18nService = ServiceRegistry.getRegistry()
+			.getService(I18nService.class);
 
 	public LangCsvWriter(OutputStream out) throws IOException {
 		super(out);
@@ -66,23 +67,23 @@ public class LangCsvWriter extends AdminCsvWriter {
 
 	public void writeRecord(Map<String, List<LocalizedStringDefinition>> localizedStringMap, String definitionPath) throws IOException {
 
-		for(Map.Entry<String, List<LocalizedStringDefinition>> entry : localizedStringMap.entrySet()) {
+		for (Map.Entry<String, List<LocalizedStringDefinition>> entry : localizedStringMap.entrySet()) {
 			Map<String, String> recordMap = new HashMap<String, String>();
 
 			recordMap.put(header[0], definitionPath);
 			recordMap.put(header[1], entry.getKey());
 
-			for (LocalizedStringDefinition lsd: entry.getValue()) {
+			for (LocalizedStringDefinition lsd : entry.getValue()) {
 				String localeName = lsd.getLocaleName();
 				String localeValue = lsd.getStringValue();
 
 				int cnt = 0;
 				for (String key : header) {
 					if (key.equals(localeName)) {
-						recordMap.put(header[cnt],localeValue);
+						recordMap.put(header[cnt], localeValue);
 						break;
 					}
-					cnt ++;
+					cnt++;
 				}
 			}
 
@@ -101,8 +102,9 @@ public class LangCsvWriter extends AdminCsvWriter {
 		header[1] = "item";
 		header[2] = "defaultLang";
 
-		for (int cnt = 0; cnt < enableLanguages.size(); cnt ++) {
-			header[cnt + 3] = enableLanguages.get(cnt).getLanguageKey();
+		for (int cnt = 0; cnt < enableLanguages.size(); cnt++) {
+			header[cnt + 3] = enableLanguages.get(cnt)
+					.getLanguageKey();
 		}
 
 	}

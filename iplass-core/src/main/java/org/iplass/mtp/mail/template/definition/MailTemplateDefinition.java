@@ -147,7 +147,7 @@ public class MailTemplateDefinition implements Definition {
 	 * @return 表示名
 	 */
 	public String getDisplayName() {
-	    return displayName;
+		return displayName;
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class MailTemplateDefinition implements Definition {
 	 * @param displayName 表示名
 	 */
 	public void setDisplayName(String displayName) {
-	    this.displayName = displayName;
+		this.displayName = displayName;
 	}
 
 	/**

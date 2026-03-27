@@ -37,7 +37,13 @@ public class MessageItem implements Serializable {
 
 	private static final long serialVersionUID = 6941829508291170486L;
 
-	@MultiLang(itemNameGetter = "getMessageId", itemKey = "message", itemGetter = "getMessage", itemSetter = "setMessage", multiLangGetter = "getLocalizedMessageList", multiLangSetter = "setLocalizedMessageList")
+	@MultiLang(
+			itemNameGetter = "getMessageId",
+			itemKey = "message",
+			itemGetter = "getMessage",
+			itemSetter = "setMessage",
+			multiLangGetter = "getLocalizedMessageList",
+			multiLangSetter = "setLocalizedMessageList")
 	private String message;
 	private String messageId;
 

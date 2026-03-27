@@ -61,7 +61,8 @@ public class DetailFormViewControl extends ItemControl {
 		DetailFormView fv = new DetailFormView();
 		fv.setLoadDefinedReferenceProperty(true);
 		setValueObject(fv);
-		setClassName(fv.getClass().getName());
+		setClassName(fv.getClass()
+				.getName());
 	}
 
 	/**
@@ -78,7 +79,8 @@ public class DetailFormViewControl extends ItemControl {
 	 */
 	public void apply(EntityDefinition ed, DetailFormView fv) {
 		setValueObject(fv);
-		setClassName(fv.getClass().getName());
+		setClassName(fv.getClass()
+				.getName());
 		if (fv.getTitle() == null) {
 			setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_DetailFormWindow_detailScreen"));
 		} else {
@@ -89,7 +91,7 @@ public class DetailFormViewControl extends ItemControl {
 			ItemControl window = sectionController.createControl(section, defName, FieldReferenceType.DETAIL, ed);
 
 			if (window instanceof DefaultSectionControl) {
-				DefaultSectionControl dsChild = (DefaultSectionControl)window;
+				DefaultSectionControl dsChild = (DefaultSectionControl) window;
 				dsChild.setEntityDefinition(ed);
 				dsChild.restoreMember();
 			} else if (window instanceof ReferenceSectionControl) {

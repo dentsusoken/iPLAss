@@ -31,30 +31,33 @@ public class RdbTableCounterSql extends UpdateSqlHandler {
 	public static final String INCREMENT_UNIT_KEY = "INC_UNIT_KEY";
 	public static final String COUNTER_VAL = "CNT_VAL";
 
-
 	public String createCounterSql(int tenantId, String counterName, String incrementUnitKey, long initValue, RdbAdapter rdb) {
 		return "INSERT INTO " + TABLE_NAME + "(" + TENANT_ID + "," + COUNTER_NAME + "," + INCREMENT_UNIT_KEY + "," + COUNTER_VAL + ") "
-			+ "VALUES(" + tenantId + ",'" + rdb.sanitize(counterName) + "','" + rdb.sanitize(incrementUnitKey) + "'," + initValue + ")";
+				+ "VALUES(" + tenantId + ",'" + rdb.sanitize(counterName) + "','" + rdb.sanitize(incrementUnitKey) + "'," + initValue + ")";
 	}
 
 	public String incrementSql(int tenantId, String counterName, String incrementUnitKey, int increment, RdbAdapter rdb) {
 		//TODO Preparedの方が高速か？？（ステートメントキャッシュ前提であればあるいは？）
 		return "UPDATE " + TABLE_NAME + " SET " + COUNTER_VAL + "=" + COUNTER_VAL + "+" + increment +
-				" WHERE " + TENANT_ID + "=" + tenantId + " AND " + COUNTER_NAME + "='" + rdb.sanitize(counterName) + "' AND " + INCREMENT_UNIT_KEY + "='" + rdb.sanitize(incrementUnitKey) + "'";
+				" WHERE " + TENANT_ID + "=" + tenantId + " AND " + COUNTER_NAME + "='" + rdb.sanitize(counterName) + "' AND " + INCREMENT_UNIT_KEY
+				+ "='" + rdb.sanitize(incrementUnitKey) + "'";
 	}
 
 	public String deleteCounterSql(int tenantId, String counterName, String incrementUnitKey, RdbAdapter rdb) {
 		return "DELETE FROM " + TABLE_NAME +
-				" WHERE " + TENANT_ID + "=" + tenantId + " AND " + COUNTER_NAME + "='" + rdb.sanitize(counterName) + "' AND " + INCREMENT_UNIT_KEY + "='" + rdb.sanitize(incrementUnitKey) + "'";
+				" WHERE " + TENANT_ID + "=" + tenantId + " AND " + COUNTER_NAME + "='" + rdb.sanitize(counterName) + "' AND " + INCREMENT_UNIT_KEY
+				+ "='" + rdb.sanitize(incrementUnitKey) + "'";
 	}
 
 	public String currentValueSql(int tenantId, String counterName, String incrementUnitKey, boolean withLock, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT " + COUNTER_VAL + " FROM " + TABLE_NAME +	" WHERE " + TENANT_ID + "=")
-			.append(tenantId)
-			.append(" AND " + COUNTER_NAME + "='")
-			.append(rdb.sanitize(counterName)).append("' AND " + INCREMENT_UNIT_KEY + "='")
-			.append(rdb.sanitize(incrementUnitKey)).append("'");
+		sb.append("SELECT " + COUNTER_VAL + " FROM " + TABLE_NAME + " WHERE " + TENANT_ID + "=")
+				.append(tenantId)
+				.append(" AND " + COUNTER_NAME + "='")
+				.append(rdb.sanitize(counterName))
+				.append("' AND " + INCREMENT_UNIT_KEY + "='")
+				.append(rdb.sanitize(incrementUnitKey))
+				.append("'");
 
 		return withLock ? rdb.createRowLockSql(sb.toString()) : sb.toString();
 	}
@@ -62,13 +65,12 @@ public class RdbTableCounterSql extends UpdateSqlHandler {
 	public String keySetSql(int tenantId, String counterName, String prefixIncrementUnitKey, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT " + INCREMENT_UNIT_KEY + " FROM " + TABLE_NAME)
-			.append(" WHERE " + TENANT_ID + "=" + tenantId)
-			.append(" AND " + COUNTER_NAME + "='" + rdb.sanitize(counterName) + "'")
-			.append(" AND " + INCREMENT_UNIT_KEY + " LIKE '"
-					+ rdb.sanitize(rdb.sanitizeForLike(prefixIncrementUnitKey)) + "%' " + rdb.escape());
+				.append(" WHERE " + TENANT_ID + "=" + tenantId)
+				.append(" AND " + COUNTER_NAME + "='" + rdb.sanitize(counterName) + "'")
+				.append(" AND " + INCREMENT_UNIT_KEY + " LIKE '"
+						+ rdb.sanitize(rdb.sanitizeForLike(prefixIncrementUnitKey)) + "%' " + rdb.escape());
 
 		return sb.toString();
 	}
-
 
 }

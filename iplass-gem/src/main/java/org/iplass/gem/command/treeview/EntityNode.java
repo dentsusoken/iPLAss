@@ -20,7 +20,6 @@
 
 package org.iplass.gem.command.treeview;
 
-
 /**
  * Entityを表すノード
  * @author lis3wg
@@ -117,7 +116,7 @@ public class EntityNode extends TreeViewNode {
 	 * @return ビュー名
 	 */
 	public String getViewName() {
-	    return viewName;
+		return viewName;
 	}
 
 	/**
@@ -125,7 +124,7 @@ public class EntityNode extends TreeViewNode {
 	 * @param viewName ビュー名
 	 */
 	public void setViewName(String viewName) {
-	    this.viewName = viewName;
+		this.viewName = viewName;
 	}
 
 	/**
@@ -133,7 +132,7 @@ public class EntityNode extends TreeViewNode {
 	 * @return 参照設定
 	 */
 	public boolean isHasReference() {
-	    return hasReference;
+		return hasReference;
 	}
 
 	/**
@@ -141,7 +140,7 @@ public class EntityNode extends TreeViewNode {
 	 * @param hasReference 参照設定
 	 */
 	public void setHasReference(boolean hasReference) {
-	    this.hasReference = hasReference;
+		this.hasReference = hasReference;
 	}
 
 }

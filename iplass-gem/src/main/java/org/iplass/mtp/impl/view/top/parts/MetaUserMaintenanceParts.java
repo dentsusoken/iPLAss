@@ -56,7 +56,7 @@ public class MetaUserMaintenanceParts extends MetaTopViewParts {
 	 * @return ビュー名
 	 */
 	public String getViewName() {
-	    return viewName;
+		return viewName;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class MetaUserMaintenanceParts extends MetaTopViewParts {
 	 * @param viewName ビュー名
 	 */
 	public void setViewName(String viewName) {
-	    this.viewName = viewName;
+		this.viewName = viewName;
 	}
 
 	@Override

@@ -65,20 +65,24 @@ public class EntityPropertyDefinitionJsonSchemaResolver {
 			yield new ObjectSchema().$ref(ref);
 		}
 		case SELECT -> {
-			var schemaResolver = ServiceRegistry.getRegistry().getService(OpenApiService.class).getStandardClassSchemaResolver();
+			var schemaResolver = ServiceRegistry.getRegistry()
+					.getService(OpenApiService.class)
+					.getStandardClassSchemaResolver();
 			yield schemaResolver.resolve(type.getJavaType(), schemaType);
 		}
 		case BINARY -> new IntegerSchema();
 		case
-		// string
-		AUTONUMBER, LONGTEXT, STRING,
-		// boolean
-		BOOLEAN,
-		// 数値,
-		DECIMAL, FLOAT, INTEGER,
-		// 日付
-		DATE, DATETIME, TIME -> {
-			var schemaResolver = ServiceRegistry.getRegistry().getService(OpenApiService.class).getStandardClassSchemaResolver();
+				// string
+				AUTONUMBER, LONGTEXT, STRING,
+				// boolean
+				BOOLEAN,
+				// 数値,
+				DECIMAL, FLOAT, INTEGER,
+				// 日付
+				DATE, DATETIME, TIME -> {
+			var schemaResolver = ServiceRegistry.getRegistry()
+					.getService(OpenApiService.class)
+					.getStandardClassSchemaResolver();
 			yield schemaResolver.resolve(type.getJavaType(), schemaType);
 		}
 		};

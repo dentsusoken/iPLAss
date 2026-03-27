@@ -155,7 +155,7 @@ public class EntityDefragProgressDialog extends AbstractWindow {
 	}
 
 	private void statusRefresh(final int allCount, final int execCount) {
-		int percent = (int)(((double)execCount / (double)allCount) * 100.0);
+		int percent = (int) (((double) execCount / (double) allCount) * 100.0);
 
 		GWT.log(percent + "% execute." + execCount + "/" + allCount);
 		progressLabel.setContents("Progress:" + percent + "%");

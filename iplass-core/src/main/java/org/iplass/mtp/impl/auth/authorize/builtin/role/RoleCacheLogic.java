@@ -45,7 +45,8 @@ public class RoleCacheLogic implements LoadingAdapter<String, RoleContext> {
 	public static final String ROLE_CONDITION_ROLE = "role";
 
 	private final TenantAuthorizeContext authorizeContext;
-	private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+	private EntityManager em = ManagerLocator.getInstance()
+			.getManager(EntityManager.class);
 
 	public RoleCacheLogic(TenantAuthorizeContext authorizeContext) {
 		this.authorizeContext = authorizeContext;
@@ -71,8 +72,8 @@ public class RoleCacheLogic implements LoadingAdapter<String, RoleContext> {
 					.where(new Equals(ROLE_CODE, key));
 
 			final ArrayList<String> expressionList = new ArrayList<String>();
-			final boolean[] isFind = {false};
-			final long[] priority = {0};
+			final boolean[] isFind = { false };
+			final long[] priority = { 0 };
 			em.search(q, new Predicate<Object[]>() {
 
 				@Override
@@ -82,7 +83,8 @@ public class RoleCacheLogic implements LoadingAdapter<String, RoleContext> {
 						priority[0] = ((Long) dataModel[1]).longValue();
 					}
 					String exp = (String) dataModel[2];
-					if (exp != null && exp.trim().length() != 0) {
+					if (exp != null && exp.trim()
+							.length() != 0) {
 						expressionList.add(exp);
 					}
 					return true;
@@ -106,10 +108,12 @@ public class RoleCacheLogic implements LoadingAdapter<String, RoleContext> {
 	public List<RoleContext> loadByIndex(int indexType, Object indexVal) {
 		return null;
 	}
+
 	@Override
 	public long getVersion(RoleContext value) {
 		return 0;
 	}
+
 	@Override
 	public Object getIndexVal(int indexType, RoleContext value) {
 		return null;

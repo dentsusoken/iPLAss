@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.web.template.report.definition;
 
-
 /**
  * <% if (doclang == "ja") {%>
  * <p>
@@ -41,9 +40,9 @@ package org.iplass.mtp.web.template.report.definition;
  */
 
 public class JavaClassReportOutputLogicDefinition extends ReportOutputLogicDefinition {
-	
+
 	private static final long serialVersionUID = -5912655631675112047L;
-	
+
 	private String className;
 
 	public String getClassName() {

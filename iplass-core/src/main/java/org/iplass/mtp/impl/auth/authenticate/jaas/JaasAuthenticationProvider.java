@@ -49,7 +49,7 @@ public class JaasAuthenticationProvider extends AuthenticationProviderBase {
 	public static final String DEFAULT_JAAS_CONFIG_ENTRY_NAME = "mtplogin";
 
 	private static Logger logger = LoggerFactory.getLogger(JaasAuthenticationProvider.class);
-	
+
 	private String entryName;
 	private Class<? extends Principal> uniquePrincipalType;
 
@@ -90,7 +90,8 @@ public class JaasAuthenticationProvider extends AuthenticationProviderBase {
 							tNameCallback.setName(idPass.getId());
 						} else if (tCallback instanceof PasswordCallback) {
 							PasswordCallback tPasswordCallback = (PasswordCallback) tCallback;
-							tPasswordCallback.setPassword(idPass.getPassword().toCharArray());
+							tPasswordCallback.setPassword(idPass.getPassword()
+									.toCharArray());
 						} else {
 							throw new UnsupportedCallbackException(tCallback, "Unrecognized callback");
 						}
@@ -117,16 +118,19 @@ public class JaasAuthenticationProvider extends AuthenticationProviderBase {
 			JaasAccountHandle jaasUser = (JaasAccountHandle) user;
 			if (jaasUser.getLoginContext() != null) {
 				try {
-					jaasUser.getLoginContext().logout();
+					jaasUser.getLoginContext()
+							.logout();
 				} catch (LoginException e) {
-					logger.warn("fail logout process of " + user.getCredential().getId() + " cause " + e.toString());
+					logger.warn("fail logout process of " + user.getCredential()
+							.getId() + " cause " + e.toString());
 				}
 			} else {
-				logger.warn("fail logout process of " + user.getCredential().getId() + " cause no LoginContext. Maybe session failover occured.");
+				logger.warn("fail logout process of " + user.getCredential()
+						.getId() + " cause no LoginContext. Maybe session failover occured.");
 			}
 		}
 	}
-	
+
 	@Override
 	public Class<? extends Credential> getCredentialType() {
 		return IdPasswordCredential.class;
@@ -145,24 +149,24 @@ public class JaasAuthenticationProvider extends AuthenticationProviderBase {
 	@Override
 	public void inited(AuthService s, Config config) {
 		boolean userEntityResolverIsNull = getUserEntityResolver() == null;
-		
+
 		super.inited(s, config);
-		
+
 		if (userEntityResolverIsNull) {
 			//DefaultUserEntityResolverのkeyをaccountIdに。
 			logger.warn("userEntityResolver not specified, so use DefaultUserEntityResolver and User's accountId as unmodifiableUniqueKeyProperty");
 			((DefaultUserEntityResolver) getUserEntityResolver()).setUnmodifiableUniqueKeyProperty(User.ACCOUNT_ID);
 		}
-		
+
 		if (entryName == null) {
 			logger.debug("entryName not specified. use default entryName:" + DEFAULT_JAAS_CONFIG_ENTRY_NAME);
 			entryName = DEFAULT_JAAS_CONFIG_ENTRY_NAME;
 		}
-		
+
 		if (uniquePrincipalType == null) {
 			logger.warn("uniquePrincipalType not specified, so use login id as uniqueKey");
 		}
-		
+
 	}
 
 	@Override

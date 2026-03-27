@@ -65,15 +65,18 @@ public class ReferenceSectionControl extends ItemControl implements SectionContr
 			@Override
 			public void execute(MetaFieldUpdateEvent event) {
 				String title = null;
-				if (event.getValueMap().containsKey("title")) {
-					title = (String) event.getValueMap().get("title");
+				if (event.getValueMap()
+						.containsKey("title")) {
+					title = (String) event.getValueMap()
+							.get("title");
 				}
 
 				createTitle(title);
 			}
 		});
 
-		setClassName(section.getClass().getName());
+		setClassName(section.getClass()
+				.getName());
 		setValueObject(section);
 
 		getDisplayLabel(defName, section.getPropertyName());
@@ -96,8 +99,8 @@ public class ReferenceSectionControl extends ItemControl implements SectionContr
 	}
 
 	private void createTitle(String itemDisplayName) {
-		String title = itemDisplayName != null ? itemDisplayName + " ": "";
-		title = title + "(" + entityPropertyDisplayName + "[" + (String)getValue("name") + "])";
+		String title = itemDisplayName != null ? itemDisplayName + " " : "";
+		title = title + "(" + entityPropertyDisplayName + "[" + (String) getValue("name") + "])";
 		setTitle(title);
 	}
 
@@ -110,10 +113,11 @@ public class ReferenceSectionControl extends ItemControl implements SectionContr
 	@Override
 	protected EntityViewFieldSettingDialog createSubDialog() {
 		ReferenceSection section = getSection();
-		EntityViewFieldSettingDialog dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, section.getDefintionName());
+		EntityViewFieldSettingDialog dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName,
+				section.getDefintionName());
 
 		// ダイアログのタイトルに対象のプロパティ名を表示
-		dialog.setTitlePropertyInfo(new PropertyInfo((String)getValue("name"), entityPropertyDisplayName));
+		dialog.setTitlePropertyInfo(new PropertyInfo((String) getValue("name"), entityPropertyDisplayName));
 		return dialog;
 	}
 

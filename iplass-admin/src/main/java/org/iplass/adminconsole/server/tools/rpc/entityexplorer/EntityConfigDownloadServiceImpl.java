@@ -73,9 +73,12 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 	public void init() throws ServletException {
 		super.init();
 
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		ds = ServiceRegistry.getRegistry().getService(DefinitionService.class);
-		aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		ds = ServiceRegistry.getRegistry()
+				.getService(DefinitionService.class);
+		aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
 	}
 
 	@Override
@@ -107,13 +110,15 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 			boolean isOutEntityFilter = Boolean.valueOf(xmlEntityFilter);
 			boolean isOutEntityMenuItem = Boolean.valueOf(xmlEntityMenuItem);
 			boolean isOutEntityWebAPI = Boolean.valueOf(xmlEntityWebAPI);
-			xmlDownload(tenantId, getDefNames(defName, defNames), isOutEntity, isOutEntityView, isOutEntityFilter, isOutEntityMenuItem, isOutEntityWebAPI, resp);
+			xmlDownload(tenantId, getDefNames(defName, defNames), isOutEntity, isOutEntityView, isOutEntityFilter, isOutEntityMenuItem,
+					isOutEntityWebAPI, resp);
 		}
 	}
 
 	private String[] getDefNames(String defName, String defNames) {
-		if (defName != null && !defName.trim().isEmpty()) {
-			return new String[]{defName};
+		if (defName != null && !defName.trim()
+				.isEmpty()) {
+			return new String[] { defName };
 		}
 		if (defNames == null || defNames.isEmpty()) {
 			throw new IllegalArgumentException(rs("tools.entityexplorer.EntityConfigDownloadServiceImpl.canNotGetEntityTarget"));
@@ -121,7 +126,8 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 		return defNames.split(",");
 	}
 
-	private void csvDownload(final int tenantId, final String[] defNames, final String outputTarget, final String encode, final HttpServletResponse resp) {
+	private void csvDownload(final int tenantId, final String[] defNames, final String outputTarget, final String encode,
+			final HttpServletResponse resp) {
 
 		if (TARGET.PROPERTY.equals(TARGET.valueOf(outputTarget))) {
 			downloadProperty(resp, defNames, encode);
@@ -141,32 +147,37 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 
 			//名前が一致するMetaData定義を取得
 			String path = ds.getPath(EntityDefinition.class, defName);
-			MetaDataEntry entity = MetaDataContext.getContext().getMetaDataEntry(path);
+			MetaDataEntry entity = MetaDataContext.getContext()
+					.getMetaDataEntry(path);
 			if (entity == null) {
 				continue;
 			}
 			if (isOutEntity) {
 				entryPaths.add(entity.getPath());
 			}
-			entityIds.add(entity.getMetaData().getId());
+			entityIds.add(entity.getMetaData()
+					.getId());
 
 			if (isOutEntityView) {
 				path = ds.getPath(EntityView.class, defName);
-				MetaDataEntry view = MetaDataContext.getContext().getMetaDataEntry(path);
+				MetaDataEntry view = MetaDataContext.getContext()
+						.getMetaDataEntry(path);
 				if (view != null) {
 					entryPaths.add(view.getPath());
 				}
 			}
 			if (isOutEntityFilter) {
 				path = ds.getPath(EntityFilter.class, defName);
-				MetaDataEntry filter = MetaDataContext.getContext().getMetaDataEntry(path);
+				MetaDataEntry filter = MetaDataContext.getContext()
+						.getMetaDataEntry(path);
 				if (filter != null) {
 					entryPaths.add(filter.getPath());
 				}
 			}
 			if (isOutEntityWebAPI) {
 				path = ds.getPath(EntityWebApiDefinition.class, defName);
-				MetaDataEntry webapi = MetaDataContext.getContext().getMetaDataEntry(path);
+				MetaDataEntry webapi = MetaDataContext.getContext()
+						.getMetaDataEntry(path);
 				if (webapi != null) {
 					entryPaths.add(webapi.getPath());
 				}
@@ -175,12 +186,14 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 
 		if (isOutEntityMenuItem) {
 			//Menuを出力する場合は、EntityMenuItemの参照Entityをチェックして対象にする
-			List<MetaDataEntryInfo> menuList = MetaDataContext.getContext().definitionList(ds.getPrefixPath(MenuItem.class));
+			List<MetaDataEntryInfo> menuList = MetaDataContext.getContext()
+					.definitionList(ds.getPrefixPath(MenuItem.class));
 			if (menuList != null) {
 				for (MetaDataEntryInfo info : menuList) {
-					MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(info.getPath());
+					MetaDataEntry entry = MetaDataContext.getContext()
+							.getMetaDataEntry(info.getPath());
 					if (entry.getMetaData() instanceof MetaEntityMenu) {
-						MetaEntityMenu menu = (MetaEntityMenu)entry.getMetaData();
+						MetaEntityMenu menu = (MetaEntityMenu) entry.getMetaData();
 						if (entityIds.contains(menu.getDefinitionId())) {
 							entryPaths.add(entry.getPath());
 						}
@@ -190,10 +203,11 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 		}
 
 		//ソート(コンテキストPathを合わせるため)
-        Collections.sort(entryPaths, new Comparator<String>() {
+		Collections.sort(entryPaths, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				return o1.toLowerCase().compareTo(o2.toLowerCase());
+				return o1.toLowerCase()
+						.compareTo(o2.toLowerCase());
 			}
 		});
 
@@ -211,14 +225,14 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 
 		//出力処理
 		try (
-			OutputStreamWriter os = new OutputStreamWriter(resp.getOutputStream(), "UTF-8");
-			PrintWriter writer = new PrintWriter(os);
-		) {
-	        // ファイル名を設定
+				OutputStreamWriter os = new OutputStreamWriter(resp.getOutputStream(), "UTF-8");
+				PrintWriter writer = new PrintWriter(os);) {
+			// ファイル名を設定
 			DownloadUtil.setResponseHeader(resp, MediaType.TEXT_XML, fileName);
 
 			//Export
-			MetaDataPortingService metaService = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
+			MetaDataPortingService metaService = ServiceRegistry.getRegistry()
+					.getService(MetaDataPortingService.class);
 			metaService.write(writer, entryPaths);
 
 		} catch (IOException e) {
@@ -228,7 +242,7 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 
 	private void downloadProperty(final HttpServletResponse resp, final String[] defNames, final String encode) {
 
-		try (EntityPropertyCsvWriter writer = new EntityPropertyCsvWriter(resp.getOutputStream(), encode)){
+		try (EntityPropertyCsvWriter writer = new EntityPropertyCsvWriter(resp.getOutputStream(), encode)) {
 
 			String fileName = null;
 			StringBuilder sbParam = new StringBuilder();
@@ -256,14 +270,14 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 				writer.writeConfig(definition);
 			}
 
-        } catch (IOException e) {
-        	throw new DownloadRuntimeException(e);
-        }
+		} catch (IOException e) {
+			throw new DownloadRuntimeException(e);
+		}
 	}
 
 	private void downloadView(final HttpServletResponse resp, final String[] defNames, final String encode) {
 
-		try (EntityViewCsvWriter writer = new EntityViewCsvWriter(resp.getOutputStream(), encode)){
+		try (EntityViewCsvWriter writer = new EntityViewCsvWriter(resp.getOutputStream(), encode)) {
 
 			String fileName = null;
 			StringBuilder sbParam = new StringBuilder();
@@ -280,7 +294,8 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 			//レスポンス設定
 			DownloadUtil.setCsvResponseHeader(resp, fileName, encode);
 
-			EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+			EntityViewManager evm = ManagerLocator.getInstance()
+					.getManager(EntityViewManager.class);
 			int i = 1;
 			for (String defName : defNames) {
 				//EntityViewの取得
@@ -291,8 +306,8 @@ public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 				i++;
 			}
 
-        } catch (IOException e) {
-        	throw new DownloadRuntimeException(e);
+		} catch (IOException e) {
+			throw new DownloadRuntimeException(e);
 		}
 	}
 

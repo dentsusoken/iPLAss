@@ -45,14 +45,14 @@ import org.iplass.mtp.webapi.definition.RequestType;
  * 上位階層選択値取得処理
  */
 @WebApi(
-		name=SearchParentCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={"parent"},
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/generic/refcombo/SearchParentCommand", displayName="上位階層選択値取得")
+		name = SearchParentCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { "parent" },
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/generic/refcombo/SearchParentCommand", displayName = "上位階層選択値取得")
 public final class SearchParentCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/generic/refcombo/searchParent";
@@ -62,9 +62,12 @@ public final class SearchParentCommand implements Command {
 	private CommandInvoker ci;
 
 	public SearchParentCommand() {
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		ci = ManagerLocator.getInstance().getManager(CommandInvoker.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		ci = ManagerLocator.getInstance()
+				.getManager(CommandInvoker.class);
 	}
 
 	@Override
@@ -143,14 +146,16 @@ public final class SearchParentCommand implements Command {
 						.select(parentProperty.getName() + "." + Entity.OID)
 						.from(currentProperty.getObjectDefinitionName())
 						.where(new Equals(Entity.OID, childOid));
-				Entity ret = em.searchEntity(query).getFirst();
+				Entity ret = em.searchEntity(query)
+						.getFirst();
 				if (ret != null && ret.getValue(parentProperty.getName()) != null) {
 					//最初の項目をデフォルト選択させる
 					Entity ref = ret.getValue(parentProperty.getName());
 					return ref;
 				}
 			} else {
-				if (setting.getParent() != null && StringUtil.isNotBlank(setting.getParent().getPropertyName())) {
+				if (setting.getParent() != null && StringUtil.isNotBlank(setting.getParent()
+						.getPropertyName())) {
 					return searchParent(setting.getParent(), targetPath, childOid, parentProperty, parentPath);
 				}
 			}

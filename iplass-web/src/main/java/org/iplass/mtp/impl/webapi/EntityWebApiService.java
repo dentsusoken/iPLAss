@@ -48,17 +48,22 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		public TypeMap() {
 			super(getFixedPath(), MetaEntityWebApi.class, EntityWebApiDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<EntityWebApiDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(EntityWebApiDefinitionManager.class);
 		}
+
 		@Override
 		public String toPath(String defName) {
 			return pathPrefix + defName.replace('.', '/');
 		}
+
 		@Override
 		public String toDefName(String path) {
-			return path.substring(pathPrefix.length()).replace("/", ".");
+			return path.substring(pathPrefix.length())
+					.replace("/", ".");
 		}
 
 		@Override
@@ -72,7 +77,7 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	private String csvDateFormat;
 	private String csvTimeFormat;
 	private String csvDownloadFooter;
-	
+
 	private boolean enableNativeHint;
 
 	//for backward compatibility
@@ -121,7 +126,7 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	public String getCsvTimeFormat() {
 		return csvTimeFormat;
 	}
-	
+
 	public String getCsvDownloadFooter() {
 		return csvDownloadFooter;
 	}
@@ -132,7 +137,8 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	 */
 	public boolean isPermitRolesToSpecifyOptions() {
 		AuthContext auth = AuthContext.getCurrentContext();
-		if (auth.getUser().isAdmin()) {
+		if (auth.getUser()
+				.isAdmin()) {
 			// adminなら許可
 			return true;
 		}
@@ -160,9 +166,10 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		csvDateFormat = config.getValue("csvDateFormat", String.class, null);
 		csvTimeFormat = config.getValue("csvTimeFormat", String.class, null);
 		csvDownloadFooter = config.getValue("csvDownloadFooter", String.class, "");
-		
-		listWithMappedByReference = config.getValue("listWithMappedByReference", Boolean.TYPE, Boolean.FALSE).booleanValue();
-		
+
+		listWithMappedByReference = config.getValue("listWithMappedByReference", Boolean.TYPE, Boolean.FALSE)
+				.booleanValue();
+
 		//for backward compatibility
 		//基本的には、listWithMappedByReferenceと同じ設定値を参照。csvListWithMappedByReferenceが明示的に指定された場合のみ適用
 		Boolean valOfCsvList = config.getValue("csvListWithMappedByReference", Boolean.TYPE);

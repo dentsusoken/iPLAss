@@ -157,9 +157,9 @@ public class MetaDataStatusCheckDialog extends AbstractWindow {
 			endIndex = paths.size();
 		}
 		//subListのままだと、 「com.google.gwt.user.client.rpc.SerializationException: java.util.RandomAccessSubList is not a serializable type」
-		List<String> execPath = new ArrayList<String>(paths.subList(offset * PAGE_SIZE , endIndex));
+		List<String> execPath = new ArrayList<String>(paths.subList(offset * PAGE_SIZE, endIndex));
 
-		service.checkStatus(TenantInfoHolder.getId(), execPath, new AsyncCallback<LinkedHashMap<String,String>>() {
+		service.checkStatus(TenantInfoHolder.getId(), execPath, new AsyncCallback<LinkedHashMap<String, String>>() {
 
 			@Override
 			public void onSuccess(LinkedHashMap<String, String> result) {
@@ -188,7 +188,7 @@ public class MetaDataStatusCheckDialog extends AbstractWindow {
 	}
 
 	private void statusRefresh(final int allCount, final int execCount) {
-		int percent = (int)(((double)execCount / (double)allCount) * 100.0);
+		int percent = (int) (((double) execCount / (double) allCount) * 100.0);
 
 		GWT.log(percent + "% check execute." + execCount + "/" + allCount);
 		progressLabel.setContents("Check Progress:" + percent + "%");
@@ -200,20 +200,21 @@ public class MetaDataStatusCheckDialog extends AbstractWindow {
 		if (allResult.size() == 0) {
 			SC.say(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataStatusCheckDialog_checkComp"), new BooleanCallback() {
 
-					@Override
-					public void execute(Boolean value) {
-						destroy();
-					}
+				@Override
+				public void execute(Boolean value) {
+					destroy();
+				}
 			});
 		} else {
 
-			SC.warn(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataStatusCheckDialog_checkFinishErr", Integer.toString(allResult.size())), new BooleanCallback() {
+			SC.warn(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataStatusCheckDialog_checkFinishErr",
+					Integer.toString(allResult.size())), new BooleanCallback() {
 
-					@Override
-					public void execute(Boolean value) {
-						showError(allResult);
-					}
-			});
+						@Override
+						public void execute(Boolean value) {
+							showError(allResult);
+						}
+					});
 		}
 	}
 

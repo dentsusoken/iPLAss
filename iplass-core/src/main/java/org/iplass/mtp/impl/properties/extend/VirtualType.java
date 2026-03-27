@@ -29,13 +29,14 @@ public abstract class VirtualType extends ExtendType {
 	private static final long serialVersionUID = -7322533318695639725L;
 
 	public abstract ValueExpression translate(EntityField field);
-	
+
 	@Override
 	public boolean isCompatibleTo(PropertyType another) {
 		return equals(another);
 	}
-	
+
 	public abstract Object toVirtualTypeValue(Object value, PrimitivePropertyHandler ph);
+
 	public abstract Object[] newVirtualTypeArray(int size);
 
 }

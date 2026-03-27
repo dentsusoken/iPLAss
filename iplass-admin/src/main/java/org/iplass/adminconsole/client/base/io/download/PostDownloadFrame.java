@@ -84,7 +84,8 @@ public class PostDownloadFrame extends NamedFrame {
 			}
 		});
 
-		RootPanel.get().add(this);
+		RootPanel.get()
+				.add(this);
 	}
 
 	/**
@@ -142,7 +143,8 @@ public class PostDownloadFrame extends NamedFrame {
 			//メソッドはPOST
 			setMethod(METHOD_POST);
 
-			RootPanel.get().add(this);
+			RootPanel.get()
+					.add(this);
 		}
 
 		/**

@@ -81,11 +81,12 @@ public class OpenIdConnectEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
-		
+
 		LayoutSpacer space = new LayoutSpacer();
 		space.setWidth(95);
 		headerPane.addMember(space);
@@ -152,8 +153,10 @@ public class OpenIdConnectEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (OpenIdConnectDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
@@ -177,18 +180,18 @@ public class OpenIdConnectEditPane extends MetaDataMainEditPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectEditPane_saveConfirm"),
 				AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectEditPane_saveOpenIdConnectComment"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					final OpenIdConnectDefinition definition = curDefinition;
-					commonSection.getEditDefinition(definition);
-					definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-					attrPane.getEditDefinition(definition);
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							final OpenIdConnectDefinition definition = curDefinition;
+							commonSection.getEditDefinition(definition);
+							definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
+							attrPane.getEditDefinition(definition);
 
-					updateDefinition(definition, true);
-				}
-			}
-		});
+							updateDefinition(definition, true);
+						}
+					}
+				});
 	}
 
 	/**
@@ -197,17 +200,16 @@ public class OpenIdConnectEditPane extends MetaDataMainEditPane {
 	private void cancelDefinition() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					//再表示
-					initializeData();
-					commonSection.refreshSharedConfig();
-				}
-			}
-		});
+				AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectEditPane_cancelConfirmComment"), new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							//再表示
+							initializeData();
+							commonSection.refreshSharedConfig();
+						}
+					}
+				});
 	}
 
 	/**

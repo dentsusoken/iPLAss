@@ -26,7 +26,7 @@ import org.iplass.mtp.impl.properties.extend.BinaryType;
 import org.iplass.mtp.spi.Config;
 
 public class LobStoreMaintainer implements AdditionalStoreMaintainer {
-	
+
 	//FIXME longTextの場合を考慮してない？？
 
 	@Override

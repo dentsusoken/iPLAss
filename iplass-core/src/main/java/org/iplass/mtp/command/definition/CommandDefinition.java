@@ -36,16 +36,23 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
  *
  */
 
-@XmlSeeAlso(value = {
-		JavaClassCommandDefinition.class,
-		ScriptingCommandDefinition.class
-})
+@XmlSeeAlso(
+		value = {
+				JavaClassCommandDefinition.class,
+				ScriptingCommandDefinition.class
+		})
 public abstract class CommandDefinition implements Definition {
 
 	private static final long serialVersionUID = -7945112167553853471L;
 
 	private String name;
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 	private List<LocalizedStringDefinition> localizedDisplayNameList;
 	private String description;

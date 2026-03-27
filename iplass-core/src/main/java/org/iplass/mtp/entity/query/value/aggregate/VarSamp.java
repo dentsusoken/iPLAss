@@ -37,11 +37,11 @@ public class VarSamp extends Aggregate {
 
 	public VarSamp() {
 	}
-	
+
 	public VarSamp(String propertyName) {
 		setValue(new EntityField(propertyName));
 	}
-	
+
 	public VarSamp(ValueExpression value) {
 		setValue(value);
 	}

@@ -36,10 +36,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  *
  */
 @XmlSeeAlso({
-	AlwaysConsentTypeDefinition.class,
-	OnceConsentTypeDefinition.class,
-	ScriptingConsentTypeDefinition.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+		AlwaysConsentTypeDefinition.class,
+		OnceConsentTypeDefinition.class,
+		ScriptingConsentTypeDefinition.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class ConsentTypeDefinition implements Serializable {
 	private static final long serialVersionUID = 4679081921898475535L;
 }

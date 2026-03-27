@@ -64,7 +64,8 @@ public class LangEditListPane extends VLayout {
 	/** メタデータサービス */
 	private final MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
-	private LangExplorerSettingController controller = ScreenModuleBasedUIFactoryHolder.getFactory().createLangExplorerSettingController();
+	private LangExplorerSettingController controller = ScreenModuleBasedUIFactoryHolder.getFactory()
+			.createLangExplorerSettingController();
 
 	public LangEditListPane() {
 
@@ -106,7 +107,8 @@ public class LangEditListPane extends VLayout {
 	 * @param langEditListPane
 	 * @param path
 	 */
-	public void createGrid(Map<String, List<LocalizedStringDefinition>> localizedStringMap, String definitionClassName, String definitionName, String path) {
+	public void createGrid(Map<String, List<LocalizedStringDefinition>> localizedStringMap, String definitionClassName, String definitionName,
+			String path) {
 		//古いグリッド削除
 		if (sectionStack.getMember(0) != null) {
 			sectionStack.removeChild(sectionStack.getMember(0));
@@ -128,16 +130,16 @@ public class LangEditListPane extends VLayout {
 		listGridFields[1] = defaultLang;
 
 		int enableCnt = 2;
-		for(Map.Entry<String, String> entry : enableLanguages.entrySet()) {
+		for (Map.Entry<String, String> entry : enableLanguages.entrySet()) {
 			listGridFields[enableCnt] = new ListGridField(entry.getKey(), entry.getValue());
-			enableCnt ++;
+			enableCnt++;
 		}
 
 		listGrid.setFields(listGridFields);
 
 		ListGridRecord[] records = new ListGridRecord[localizedStringMap.size()];
 		int cnt = 0;
-		for(Map.Entry<String, List<LocalizedStringDefinition>> entry : localizedStringMap.entrySet()) {
+		for (Map.Entry<String, List<LocalizedStringDefinition>> entry : localizedStringMap.entrySet()) {
 			ListGridRecord record = new ListGridRecord();
 
 			record.setAttribute(ITEM_KEY_NAME, entry.getKey());
@@ -147,7 +149,7 @@ public class LangEditListPane extends VLayout {
 			}
 
 			records[cnt] = record;
-			cnt ++;
+			cnt++;
 		}
 
 		listGrid.setData(records);
@@ -171,7 +173,7 @@ public class LangEditListPane extends VLayout {
 	 * @return
 	 */
 	public Map<String, MultiLangFieldInfo> createUpdateInfo() {
-		Canvas[] temp =  sectionStack.getMembers();
+		Canvas[] temp = sectionStack.getMembers();
 		ListGrid grid = (ListGrid) temp[1];
 		ListGridRecord[] records = grid.getRecords();
 
@@ -184,9 +186,10 @@ public class LangEditListPane extends VLayout {
 			multiLangFieldInfo.setDefaultString(record.getAttribute(DEFAULT_KEY_NAME));
 
 			List<LocalizedStringDefinition> localizedDisplayNameList = new ArrayList<LocalizedStringDefinition>();
-			for(Map.Entry<String, String> entry : this.enableLanguages.entrySet()) {
+			for (Map.Entry<String, String> entry : this.enableLanguages.entrySet()) {
 				String multiLang = record.getAttribute(entry.getKey());
-				if (multiLang == null || multiLang.isEmpty()) continue;//未設定の場合は多言語定義作らない
+				if (multiLang == null || multiLang.isEmpty())
+					continue;//未設定の場合は多言語定義作らない
 
 				LocalizedStringDefinition localizedDefinition = new LocalizedStringDefinition();
 				localizedDefinition.setLocaleName(entry.getKey());

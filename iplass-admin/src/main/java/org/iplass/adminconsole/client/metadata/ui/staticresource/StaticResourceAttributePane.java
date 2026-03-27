@@ -83,7 +83,7 @@ public class StaticResourceAttributePane extends VLayout {
 		// 共通入力部分
 		commonForm = new DynamicForm();
 		commonForm.setWidth100();
-		commonForm.setNumCols(5);	//間延びしないように最後に１つ余分に作成
+		commonForm.setNumCols(5); //間延びしないように最後に１つ余分に作成
 		commonForm.setColWidths(100, "*", 100, "*", "*");
 		commonForm.setMargin(5);
 
@@ -155,7 +155,7 @@ public class StaticResourceAttributePane extends VLayout {
 			mimeTypeMapGridPane.clearRecord();
 			List<MimeTypeMappingDefinition> mimeTypeMappingList = definition.getMimeTypeMapping();
 			if (mimeTypeMappingList != null) {
-				this.mimeTypeMapGridPane.setMimeTypeMap(mimeTypeMappingList.toArray(new MimeTypeMappingDefinition[]{}));
+				this.mimeTypeMapGridPane.setMimeTypeMap(mimeTypeMappingList.toArray(new MimeTypeMappingDefinition[] {}));
 			}
 		} else {
 			this.entryPathTypeField.clearValue();

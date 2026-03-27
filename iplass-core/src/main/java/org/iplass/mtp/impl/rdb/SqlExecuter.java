@@ -38,7 +38,6 @@ import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public abstract class SqlExecuter<R> {
 
 	RdbAdapter rdb;
@@ -128,12 +127,12 @@ public abstract class SqlExecuter<R> {
 				// DeadLock
 				EntityConcurrentUpdateException ecue;
 				if (rdb.isDeadLock(e)) {
-					ecue = new EntityConcurrentUpdateException(resourceString("spi.rdb.SqlExecuter.cantUpdate") ,e);
+					ecue = new EntityConcurrentUpdateException(resourceString("spi.rdb.SqlExecuter.cantUpdate"), e);
 					ecue.setDeadLock(true);
 					throw ecue;
 				}
 				// LockFailed
-				if(rdb.isLockFailed(e)) {
+				if (rdb.isLockFailed(e)) {
 					ecue = new EntityConcurrentUpdateException(resourceString("spi.rdb.SqlExecuter.cantUpdate"), e);
 					ecue.setNowait(true);
 					throw ecue;
@@ -172,7 +171,7 @@ public abstract class SqlExecuter<R> {
 					throw ecue;
 				}
 				// LockFailed
-				if(rdb.isLockFailed(e)) {
+				if (rdb.isLockFailed(e)) {
 					ecue = new EntityConcurrentUpdateException(e);
 					ecue.setNowait(true);
 					throw ecue;
@@ -208,7 +207,7 @@ public abstract class SqlExecuter<R> {
 			}
 		}
 		if (pstmt != null) {
-			for (PreparedStatement ps: pstmt) {
+			for (PreparedStatement ps : pstmt) {
 				try {
 					ps.close();
 				} catch (SQLException e) {

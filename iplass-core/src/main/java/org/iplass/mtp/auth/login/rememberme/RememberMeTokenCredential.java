@@ -41,14 +41,14 @@ public class RememberMeTokenCredential implements Credential, Serializable {
 	private String token;
 
 	private Map<String, Object> additionalAuthenticationFactor;
-	
+
 	public RememberMeTokenCredential() {
 	}
-	
+
 	public RememberMeTokenCredential(String token) {
 		this.token = token;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -65,7 +65,7 @@ public class RememberMeTokenCredential implements Credential, Serializable {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	
+
 	@Override
 	public Object getAuthenticationFactor(String name) {
 		if (additionalAuthenticationFactor == null) {

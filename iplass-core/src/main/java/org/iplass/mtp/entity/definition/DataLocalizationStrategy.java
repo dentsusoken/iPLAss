@@ -40,9 +40,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author K.Higuchi
  *
  */
-@XmlSeeAlso(value = {EachInstanceDataLocalizationStrategy.class,
-		EachPropertyDataLocalizationStrategy.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(
+		value = { EachInstanceDataLocalizationStrategy.class,
+				EachPropertyDataLocalizationStrategy.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public class DataLocalizationStrategy implements Serializable {
 	private static final long serialVersionUID = -7453476741431507201L;
 

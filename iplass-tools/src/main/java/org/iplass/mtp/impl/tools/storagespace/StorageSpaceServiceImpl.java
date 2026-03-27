@@ -138,8 +138,8 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 
 	@Override
 	public void init(Config config) {
-		storeService =  config.getDependentService(StoreService.class);
-		rdbAdapterService =  config.getDependentService(RdbAdapterService.class);
+		storeService = config.getDependentService(StoreService.class);
+		rdbAdapterService = config.getDependentService(RdbAdapterService.class);
 		entityPortingService = config.getDependentService(EntityPortingService.class);
 
 		if (config.getValue("migrateCommitLimit") != null) {
@@ -150,7 +150,8 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 			cleanupCommitLimit = Integer.parseInt(config.getValue("cleanupCommitLimit"));
 		}
 
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 	}
 
 	@Override
@@ -172,11 +173,14 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 		}
 
 		// MetaDataEntry取得
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(EntityService.ENTITY_META_PATH + entityDefinition.getName().replace(".", "/"));
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(EntityService.ENTITY_META_PATH + entityDefinition.getName()
+						.replace(".", "/"));
 
 		File tempFile = null;
 		try {
-			tempFile = Files.createTempFile("mtp", ".csv").toFile();
+			tempFile = Files.createTempFile("mtp", ".csv")
+					.toFile();
 
 			// EntityCSVデータエクスポート
 			exportCSV(tempFile, entry);
@@ -220,7 +224,8 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 
 	@Override
 	public String getTableNamePostfix(String entityName) {
-		EntityService entityService = ServiceRegistry.getRegistry().getService(EntityService.class);
+		EntityService entityService = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
 		EntityHandler entityHandler = entityService.getRuntimeByName(entityName);
 		GRdbEntityStoreRuntime entityStoreRuntime = (GRdbEntityStoreRuntime) entityHandler.getEntityStoreRuntime();
 
@@ -238,7 +243,8 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 	private void cleanupInner(int tenantId, String storageSpaceName, MetaEntity metaEntity, Function<StorageSpaceMap, List<String>> postfixListFn) {
 		// StorageSpace存在チェック
 		StorageSpaceMap ssm = ((GRdbDataStore) storeService.getDataStore()).getStorageSpaceMapOrDefault(storageSpaceName);
-		if (!ssm.getStorageSpaceName().equals(storageSpaceName)) {
+		if (!ssm.getStorageSpaceName()
+				.equals(storageSpaceName)) {
 			// 指定のStorageSpaceが存在しない
 			throw new IllegalArgumentException(getRS("noStorageSpace", storageSpaceName));
 		}
@@ -252,7 +258,8 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 		int index = 0;
 		boolean exists = !objIdList.isEmpty();
 		while (exists) {
-			int toIndex = cleanupCommitLimit > 0 ? index + cleanupCommitLimit > objIdList.size() ? objIdList.size() : index + (cleanupCommitLimit) : objIdList.size();
+			int toIndex = cleanupCommitLimit > 0 ? index + cleanupCommitLimit > objIdList.size() ? objIdList.size() : index + (cleanupCommitLimit)
+					: objIdList.size();
 			final List<String> objIdSubList = objIdList.subList(index, toIndex);
 
 			Transaction.requiresNew(t -> {
@@ -261,10 +268,17 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 						@Override
 						public int[] logic() throws SQLException {
 							StringBuilder sbSql = new StringBuilder();
-							sbSql.append("DELETE FROM ").append(table);
-							sbSql.append(" WHERE ").append(COL_TENANT_ID).append("=?");
-							sbSql.append(" AND ").append(COL_OBJ_DEF_ID).append("=?");
-							sbSql.append(" AND ").append(COL_OBJ_ID).append("=?");
+							sbSql.append("DELETE FROM ")
+									.append(table);
+							sbSql.append(" WHERE ")
+									.append(COL_TENANT_ID)
+									.append("=?");
+							sbSql.append(" AND ")
+									.append(COL_OBJ_DEF_ID)
+									.append("=?");
+							sbSql.append(" AND ")
+									.append(COL_OBJ_ID)
+									.append("=?");
 
 							PreparedStatement ps = getPreparedStatement(sbSql.toString());
 
@@ -312,7 +326,7 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 	}
 
 	private boolean changeStorageSpace(EntityDefinition ed, String storageSpaceName) {
-		SchemalessRdbStore sd = (SchemalessRdbStore)ed.getStoreDefinition();
+		SchemalessRdbStore sd = (SchemalessRdbStore) ed.getStoreDefinition();
 		sd.setStorageSpace(storageSpaceName);
 		EntityDefinitionModifyResult result = edm.update(ed);
 		return result.isSuccess();
@@ -330,28 +344,70 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 						if (sbSql.length() > 0) {
 							sbSql.append(" UNION ");
 						}
-						sbSql.append("SELECT ").append(COL_OBJ_ID).append(" FROM ").append(TBL_OBJ_STORE);
+						sbSql.append("SELECT ")
+								.append(COL_OBJ_ID)
+								.append(" FROM ")
+								.append(TBL_OBJ_STORE);
 						if (StringUtil.isNotBlank(postfix)) {
-							sbSql.append(StorageSpaceMap.TABLE_NAME_SEPARATOR).append(postfix);
+							sbSql.append(StorageSpaceMap.TABLE_NAME_SEPARATOR)
+									.append(postfix);
 						}
-						sbSql.append(" WHERE ").append(COL_TENANT_ID).append("=").append(tenantId);
-						sbSql.append(" AND ").append(COL_OBJ_DEF_ID).append("='").append(sanitizedObjDefId).append("'");
+						sbSql.append(" WHERE ")
+								.append(COL_TENANT_ID)
+								.append("=")
+								.append(tenantId);
+						sbSql.append(" AND ")
+								.append(COL_OBJ_DEF_ID)
+								.append("='")
+								.append(sanitizedObjDefId)
+								.append("'");
 						sbSql.append(" UNION ");
-						sbSql.append("SELECT ").append(COL_OBJ_ID).append(" FROM ").append(TBL_OBJ_STORE_RB);
+						sbSql.append("SELECT ")
+								.append(COL_OBJ_ID)
+								.append(" FROM ")
+								.append(TBL_OBJ_STORE_RB);
 						if (StringUtil.isNotBlank(postfix)) {
-							sbSql.append(StorageSpaceMap.TABLE_NAME_SEPARATOR).append(postfix);
+							sbSql.append(StorageSpaceMap.TABLE_NAME_SEPARATOR)
+									.append(postfix);
 						}
-						sbSql.append(" WHERE ").append(COL_TENANT_ID).append("=").append(tenantId);
-						sbSql.append(" AND ").append(COL_OBJ_DEF_ID).append("='").append(sanitizedObjDefId).append("'");
+						sbSql.append(" WHERE ")
+								.append(COL_TENANT_ID)
+								.append("=")
+								.append(tenantId);
+						sbSql.append(" AND ")
+								.append(COL_OBJ_DEF_ID)
+								.append("='")
+								.append(sanitizedObjDefId)
+								.append("'");
 					});
 				} else {
-					sbSql.append("SELECT ").append(COL_OBJ_ID).append(" FROM ").append(TBL_OBJ_STORE);
-					sbSql.append(" WHERE ").append(COL_TENANT_ID).append("=").append(tenantId);
-					sbSql.append(" AND ").append(COL_OBJ_DEF_ID).append("='").append(sanitizedObjDefId).append("'");
+					sbSql.append("SELECT ")
+							.append(COL_OBJ_ID)
+							.append(" FROM ")
+							.append(TBL_OBJ_STORE);
+					sbSql.append(" WHERE ")
+							.append(COL_TENANT_ID)
+							.append("=")
+							.append(tenantId);
+					sbSql.append(" AND ")
+							.append(COL_OBJ_DEF_ID)
+							.append("='")
+							.append(sanitizedObjDefId)
+							.append("'");
 					sbSql.append(" UNION ");
-					sbSql.append("SELECT ").append(COL_OBJ_ID).append(" FROM ").append(TBL_OBJ_STORE_RB);
-					sbSql.append(" WHERE ").append(COL_TENANT_ID).append("=").append(tenantId);
-					sbSql.append(" AND ").append(COL_OBJ_DEF_ID).append("='").append(sanitizedObjDefId).append("'");
+					sbSql.append("SELECT ")
+							.append(COL_OBJ_ID)
+							.append(" FROM ")
+							.append(TBL_OBJ_STORE_RB);
+					sbSql.append(" WHERE ")
+							.append(COL_TENANT_ID)
+							.append("=")
+							.append(tenantId);
+					sbSql.append(" AND ")
+							.append(COL_OBJ_DEF_ID)
+							.append("='")
+							.append(sanitizedObjDefId)
+							.append("'");
 				}
 
 				List<String> ret = new ArrayList<String>();
@@ -378,10 +434,12 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 		postfixList.forEach(postfix -> {
 			for (String table : CLEANUP_TABLES) {
 				if (StringUtil.isNotBlank(postfix)) {
-					if(!useExternalIndexedTable && Arrays.asList(INDEX_TABLES).contains(table)) {
+					if (!useExternalIndexedTable && Arrays.asList(INDEX_TABLES)
+							.contains(table)) {
 						//接尾語付きIndexテーブルを利用しない場合は削除対象のテーブルに含まない。
 						continue;
-					} else if(!useExternalUniqueIndexedTable && Arrays.asList(UNIQUE_TABLES).contains(table)) {
+					} else if (!useExternalUniqueIndexedTable && Arrays.asList(UNIQUE_TABLES)
+							.contains(table)) {
 						//接尾語付きUnique Indexテーブルを利用しない場合は削除対象のテーブルに含まない。
 						continue;
 					}

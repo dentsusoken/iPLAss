@@ -34,7 +34,7 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
 public class CastSyntax implements Syntax<Cast>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 
 	public void init(SyntaxContext context) {
@@ -52,19 +52,19 @@ public class CastSyntax implements Syntax<Cast>, QueryConstants {
 		}
 		str.consumeChars(LEFT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		Cast cast = new Cast();
 
 		ValueExpression value = polynomial.parse(str);
 		cast.setValue(value);
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
 		if (!str.equalsNextToken(AS, ParseContext.WHITE_SPACES)) {
 			throw new ParseException(new EvalError("AS expected.", this, str));
 		}
 		str.consumeChars(AS.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		String type = str.nextToken(ParseContext.TOKEN_DELIMITERS);
 		if (type == null) {
 			throw new ParseException(new EvalError("type expected.", this, str));
@@ -77,7 +77,7 @@ public class CastSyntax implements Syntax<Cast>, QueryConstants {
 			throw new ParseException(new EvalError("invalid type spec.", this, str));
 		}
 		cast.setType(pdt);
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
 		if (str.startsWith(LEFT_PAREN)) {
 			str.consumeChars(1);
@@ -89,7 +89,8 @@ public class CastSyntax implements Syntax<Cast>, QueryConstants {
 					if (cast.getTypeArguments() == null) {
 						cast.setTypeArguments(new ArrayList<>());
 					}
-					cast.getTypeArguments().add(typeArg);
+					cast.getTypeArguments()
+							.add(typeArg);
 				} catch (NumberFormatException e) {
 					throw new ParseException(new EvalError("invalid type arguments.", this, str));
 				}
@@ -107,13 +108,13 @@ public class CastSyntax implements Syntax<Cast>, QueryConstants {
 			}
 			str.consumeChars(ParseContext.WHITE_SPACES);
 		}
-		
+
 		if (!str.startsWith(RIGHT_PAREN)) {
 			throw new ParseException(new EvalError(") expected.", this, str));
 		}
 		str.consumeChars(RIGHT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		return cast;
 	}
 

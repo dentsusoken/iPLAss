@@ -52,34 +52,34 @@ public class DefaultMagicByteChecker implements MagicByteChecker {
 		int index = contentType.indexOf(';');
 		String mimeType = index < 0 ? contentType : contentType.substring(0, index);
 		byte[] magicByte = readMagicByte(tempFile);
-		if(!isCorrectMagicByte(mimeType, extension, magicByte)) {
-			throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[])null));
+		if (!isCorrectMagicByte(mimeType, extension, magicByte)) {
+			throw new ApplicationException(resourceString("impl.web.fileupload.UploadFileHandleImpl.invalidFileMsg", (Object[]) null));
 		}
 	}
-	
+
 	private boolean isCorrectMagicByte(String mimeType, String extension, byte[] magicByte) {
-		if(magicByteRule == null) {
+		if (magicByteRule == null) {
 			return true;
 		}
 
-		for(MagicByteRule rule : magicByteRule) {
-			if(rule.matchMimeType(mimeType) && rule.matchExtension(extension)) {
+		for (MagicByteRule rule : magicByteRule) {
+			if (rule.matchMimeType(mimeType) && rule.matchExtension(extension)) {
 				return rule.matchMagicByte(magicByte);
 			}
 		}
-		
+
 		//mimeTypeとextensionの組み合わせが定義されていない場合はtrueで返却する
 		return true;
 	}
-	
+
 	private static byte[] readMagicByte(File tempFile) {
 		byte[] buf = new byte[128];
 
-		try(InputStream is = new FileInputStream(tempFile);) {
+		try (InputStream is = new FileInputStream(tempFile);) {
 			is.read(buf);
 		} catch (IOException e) {
-			logger.warn("upload file is externally deleted. maybe contains virus." , e);
-		} 
+			logger.warn("upload file is externally deleted. maybe contains virus.", e);
+		}
 		return buf;
 	}
 

@@ -33,7 +33,7 @@ import org.iplass.mtp.entity.GenericEntity;
  */
 public class User extends GenericEntity {
 	private static final long serialVersionUID = -3856409198625059398L;
-	
+
 	public static final String DEFINITION_NAME = "mtp.auth.User";
 	public static final String ACCOUNT_ID = "accountId";
 	public static final String FIRST_NAME = "firstName";
@@ -50,54 +50,58 @@ public class User extends GenericEntity {
 	public static final String RANK = "rank";
 	public static final String ACCOUNT_POLICY = "accountPolicy";
 	public static final String IP_ADDRESS_HISTORY = "ipAddressHistory";
-	
-	
+
 	public User() {
 		setDefinitionName(DEFINITION_NAME);
 	}
-	
+
 	public User(String oid, String accountId, boolean isAnonymous) {
 		setDefinitionName(DEFINITION_NAME);
 		setOid(oid);
 		setValue(ACCOUNT_ID, accountId);
 		setValue("ANONYMOUS_FLG", Boolean.valueOf(isAnonymous));
 	}
-	
+
 	public String getAccountId() {
 		return getValue(ACCOUNT_ID);
 	}
+
 	public void setAccountId(String accountId) {
 		setValue(ACCOUNT_ID, accountId);
 	}
-	
+
 	public String getFirstName() {
 		return getValue(FIRST_NAME);
 	}
+
 	public void setFirstName(String firstName) {
 		setValue(FIRST_NAME, firstName);
 	}
-	
+
 	public String getLastName() {
 		return getValue(LAST_NAME);
 	}
+
 	public void setLastName(String lastName) {
 		setValue(LAST_NAME, lastName);
 	}
-	
+
 	public String getMail() {
 		return getValue(MAIL);
 	}
+
 	public void setMail(String mail) {
 		setValue(MAIL, mail);
 	}
-	
+
 	public String getPassword() {
 		return getValue(PASSWORD);
 	}
+
 	public void setPassword(String password) {
 		setValue(PASSWORD, password);
 	}
-	
+
 	public boolean isAdmin() {
 		Object obj = getValue(ADMIN_FLG);
 		if (obj == null) {
@@ -105,10 +109,11 @@ public class User extends GenericEntity {
 		}
 		return ((Boolean) obj).booleanValue();
 	}
+
 	public void setAdmin(boolean admin) {
 		setValue(ADMIN_FLG, Boolean.valueOf(admin));
 	}
-	
+
 	public boolean isTemporary() {
 		Object obj = getValue(TEMPORARY_FLG);
 		if (obj == null) {
@@ -116,73 +121,81 @@ public class User extends GenericEntity {
 		}
 		return ((Boolean) obj).booleanValue();
 	}
+
 	public void setTemporary(boolean temporary) {
 		setValue(TEMPORARY_FLG, Boolean.valueOf(temporary));
 	}
-	
+
 	public String getLanguage() {
 		return getValue(LANGUAGE);
 	}
+
 	public void setLanguage(String language) {
 		setValue(LANGUAGE, language);
 	}
-	
+
 	public String getFirstNameKana() {
 		return getValue(FIRST_NAME_KANA);
 	}
+
 	public void setFirstNameKana(String firstNameKana) {
 		setValue(FIRST_NAME_KANA, firstNameKana);
 	}
-	
+
 	public String getLastNameKana() {
 		return getValue(LAST_NAME_KANA);
 	}
+
 	public void setLastNameKana(String lastNameKana) {
 		setValue(LAST_NAME_KANA, lastNameKana);
 	}
-	
+
 	public Group[] getGroups() {
 		Object g = getValue(GROUPS);
 		if (g instanceof Group) {
-			return new Group[]{(Group) g};
+			return new Group[] { (Group) g };
 		} else {
 			return (Group[]) g;
 		}
 	}
+
 	public void setGroups(Group[] groups) {
 		setValue(GROUPS, groups);
 	}
-	
+
 	public Rank getRank() {
 		return getValue(RANK);
 	}
+
 	public void setRank(Rank rank) {
 		setValue(RANK, rank);
 	}
-	
+
 	public boolean isAnonymous() {
 		Object obj = getValue("ANONYMOUS_FLG");
-		if(obj instanceof Boolean) {
-			return (Boolean)obj;
+		if (obj instanceof Boolean) {
+			return (Boolean) obj;
 		}
 		return false;
 	}
-	
+
 	public String getAccountPolicy() {
 		return getValue(ACCOUNT_POLICY);
 	}
+
 	public void setAccountPolicy(String accountPolicy) {
 		setValue(ACCOUNT_POLICY, accountPolicy);
 	}
-	
+
 	/**
 	 * 2step認証時、リスクベースによる判断で、IPAddress履歴による判断を行う場合、その履歴を保存するためのプロパティ。
 	 */
 	public String getIpAddressHistory() {
 		return getValue(IP_ADDRESS_HISTORY);
 	}
+
 	public void setIpAddressHistory(String ipAddressHistory) {
 		setValue(IP_ADDRESS_HISTORY, ipAddressHistory);
 	}
-	
+
 }

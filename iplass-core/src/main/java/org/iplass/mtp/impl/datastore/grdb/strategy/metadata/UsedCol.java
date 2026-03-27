@@ -26,14 +26,14 @@ import org.iplass.mtp.impl.datastore.grdb.RawColType;
 import org.iplass.mtp.impl.entity.property.MetaPrimitiveProperty;
 
 public class UsedCol implements Comparable<UsedCol> {
-	
+
 	private final RawColType rawColType;
 	private final RawColIndexType rawColIndexType;
 	private final ColumnPosition position;
-	
+
 	private final MetaGRdbPropertyStore col;
 	private final MetaPrimitiveProperty property;
-	
+
 	public UsedCol(RawColType rawColType, RawColIndexType rawColIndexType, ColumnPosition position) {
 		this.rawColType = rawColType;
 		this.rawColIndexType = rawColIndexType;
@@ -41,7 +41,7 @@ public class UsedCol implements Comparable<UsedCol> {
 		this.col = null;
 		this.property = null;
 	}
-	
+
 	public UsedCol(RawColType rawColType, RawColIndexType rawColIndexType, ColumnPosition position, MetaGRdbPropertyStore col,
 			MetaPrimitiveProperty property) {
 		this.rawColType = rawColType;
@@ -50,7 +50,7 @@ public class UsedCol implements Comparable<UsedCol> {
 		this.col = col;
 		this.property = property;
 	}
-	
+
 	public RawColType getRawColType() {
 		return rawColType;
 	}
@@ -117,5 +117,5 @@ public class UsedCol implements Comparable<UsedCol> {
 			return false;
 		return true;
 	}
-	
+
 }

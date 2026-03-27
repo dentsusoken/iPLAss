@@ -32,8 +32,6 @@ import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;
 
-
-
 /**
  * <p>
  * Entityの論理定義。
@@ -59,7 +57,13 @@ public class EntityDefinition implements Definition {
 	private String name;
 
 	/** 表示名 */
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 
 	/** 説明 */
@@ -223,7 +227,7 @@ public class EntityDefinition implements Definition {
 	public List<PropertyDefinition> getDeclaredPropertyList() {
 		ArrayList<PropertyDefinition> decList = new ArrayList<PropertyDefinition>();
 		if (propertyList != null) {
-			for (PropertyDefinition pd: propertyList) {
+			for (PropertyDefinition pd : propertyList) {
 				if (!pd.isInherited()) {
 					decList.add(pd);
 				}
@@ -263,7 +267,7 @@ public class EntityDefinition implements Definition {
 			return null;
 		}
 
-		for (PropertyDefinition p: propertyList) {
+		for (PropertyDefinition p : propertyList) {
 			if (propName.equals(p.getName())) {
 				return p;
 			}

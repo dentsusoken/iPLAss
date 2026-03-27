@@ -27,8 +27,12 @@ import org.iplass.mtp.tenant.Tenant;
 
 public interface TenantStore extends ServiceInitListener<TenantService> {
 	public Tenant getTenant(String url);
+
 	public Tenant getTenant(int id);
+
 	public void registTenant(Tenant tenant, String registId);
+
 	public void updateTenant(Tenant tenant, String updateId, boolean forceUpdate);
+
 	public List<Integer> getAllTenantIdList();
 }

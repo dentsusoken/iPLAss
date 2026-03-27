@@ -86,7 +86,8 @@ public class OpenApiStandardClassSchemaResolverImpl implements OpenApiStandardCl
 		map.put(BinaryReference.class, schemaType -> new IntegerSchema());
 		// Select Value
 		map.put(SelectValue.class,
-				schemaType -> new ObjectSchema().addProperty("displayName", new StringSchema()).addProperty("value", new StringSchema()));
+				schemaType -> new ObjectSchema().addProperty("displayName", new StringSchema())
+						.addProperty("value", new StringSchema()));
 		return map;
 	}
 

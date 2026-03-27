@@ -184,24 +184,28 @@ public class MetaTenantWebInfo extends MetaTenantConfig<TenantWebInfo> {
 
 		public MetaTenantWebInfoRuntime(MetaTenantHandler tenantRuntime) {
 
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			ScriptEngine scriptEngine = tc.getScriptEngine();
 
 			try {
 				// ログインURLセレクター
 				if (!StringUtil.isEmpty(loginUrlSelector)) {
 					loginUrlSelectorScript = scriptEngine.createScript(loginUrlSelector,
-							SCRIPT_PREFIX_LOGIN_URL_SELECTOR + "_" + tenantRuntime.getMetaData().getId());
+							SCRIPT_PREFIX_LOGIN_URL_SELECTOR + "_" + tenantRuntime.getMetaData()
+									.getId());
 				}
 				// 再認証URLセレクター
 				if (!StringUtil.isEmpty(reAuthUrlSelector)) {
 					reAuthUrlSelectorScript = scriptEngine.createScript(reAuthUrlSelector,
-							SCRIPT_PREFIX_REAUTH_URL_SELECTOR + "_" + tenantRuntime.getMetaData().getId());
+							SCRIPT_PREFIX_REAUTH_URL_SELECTOR + "_" + tenantRuntime.getMetaData()
+									.getId());
 				}
 
 				if (!StringUtil.isEmpty(errorUrlSelector)) {
 					errorUrlSelectorScript = scriptEngine.createScript(errorUrlSelector,
-							SCRIPT_PREFIX_ERROR_URL_SELECTOR + "_" + tenantRuntime.getMetaData().getId());
+							SCRIPT_PREFIX_ERROR_URL_SELECTOR + "_" + tenantRuntime.getMetaData()
+									.getId());
 				}
 
 			} catch (GroovyBugError | NoClassDefFoundError e) {
@@ -224,7 +228,10 @@ public class MetaTenantWebInfo extends MetaTenantConfig<TenantWebInfo> {
 			if (loginUrlSelectorScript == null) {
 				return null;
 			} else {
-				ScriptContext sc = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine().newScriptContext();
+				ScriptContext sc = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine()
+						.newScriptContext();
 				sc.setAttribute("request", context);
 				sc.setAttribute("path", path);
 
@@ -247,7 +254,10 @@ public class MetaTenantWebInfo extends MetaTenantConfig<TenantWebInfo> {
 			if (reAuthUrlSelectorScript == null) {
 				return null;
 			} else {
-				ScriptContext sc = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine().newScriptContext();
+				ScriptContext sc = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine()
+						.newScriptContext();
 				sc.setAttribute("request", context);
 				sc.setAttribute("path", path);
 
@@ -270,7 +280,10 @@ public class MetaTenantWebInfo extends MetaTenantConfig<TenantWebInfo> {
 			if (errorUrlSelectorScript == null) {
 				return null;
 			} else {
-				ScriptContext sc = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine().newScriptContext();
+				ScriptContext sc = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine()
+						.newScriptContext();
 				sc.setAttribute("request", context);
 				sc.setAttribute("path", path);
 				sc.setAttribute("exception", exp);

@@ -97,9 +97,12 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 	private TenantManager tm = ManagerLocator.manager(TenantManager.class);
 	private DefinitionManager dm = ManagerLocator.manager(DefinitionManager.class);
 
-	private AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
-	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
+	private AdminConsoleService acs = ServiceRegistry.getRegistry()
+			.getService(AdminConsoleService.class);
+	private TenantContextService tcs = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private I18nService i18n = ServiceRegistry.getRegistry()
+			.getService(I18nService.class);
 
 	private MetaDataAuditLogger auditLogger = MetaDataAuditLogger.getLogger();
 
@@ -116,7 +119,8 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 		BufferedReader br = null;
 
 		try {
-			is = this.getClass().getResourceAsStream("/TimeZoneConstants.properties");
+			is = this.getClass()
+					.getResourceAsStream("/TimeZoneConstants.properties");
 			isr = new InputStreamReader(is);
 			br = new BufferedReader(isr);
 			for (String s; (s = br.readLine()) != null;) {
@@ -173,118 +177,127 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 
 	@Override
 	public Tenant getTenant(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Tenant>() {
-			@Override
-			public Tenant call() {
-				return tm.getTenant();
-				//下の方式だとTenant更新時に更新日時が変更されないので続けて更新時に排他エラーになる
-				//return ExecuteContext.getCurrentContext().getTenantContext().loadTenantInfo();
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Tenant>() {
+					@Override
+					public Tenant call() {
+						return tm.getTenant();
+						//下の方式だとTenant更新時に更新日時が変更されないので続けて更新時に排他エラーになる
+						//return ExecuteContext.getCurrentContext().getTenantContext().loadTenantInfo();
+					}
+				});
 	}
 
 	@Override
 	public boolean updateTenant(int tenantId, final Tenant tenant, final int currentVersion, final boolean checkVersion) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Boolean>() {
-			@Override
-			public Boolean call() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Boolean>() {
+					@Override
+					public Boolean call() {
 
-				// バージョンの最新チェック
-				MetaDataVersionCheckUtil.versionCheck(checkVersion, tenant.getClass(), tenant.getName(), currentVersion);
+						// バージョンの最新チェック
+						MetaDataVersionCheckUtil.versionCheck(checkVersion, tenant.getClass(), tenant.getName(), currentVersion);
 
-				auditLogger.logMetadata(MetaDataAction.UPDATE, Tenant.class.getName(), "name:" + tenant.getName());
-				tm.updateTenant(tenant, false);
-				return true;
-			}
-		});
+						auditLogger.logMetadata(MetaDataAction.UPDATE, Tenant.class.getName(), "name:" + tenant.getName());
+						tm.updateTenant(tenant, false);
+						return true;
+					}
+				});
 	}
 
 	@Override
 	public boolean updateTenant(int tenantId, final Tenant tenant, final int currentVersion, final boolean checkVersion, final boolean forceUpdate) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Boolean>() {
-			@Override
-			public Boolean call() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Boolean>() {
+					@Override
+					public Boolean call() {
 
-				// バージョンの最新チェック
-				MetaDataVersionCheckUtil.versionCheck(checkVersion, tenant.getClass(), tenant.getName(), currentVersion);
+						// バージョンの最新チェック
+						MetaDataVersionCheckUtil.versionCheck(checkVersion, tenant.getClass(), tenant.getName(), currentVersion);
 
-				auditLogger.logMetadata(MetaDataAction.UPDATE, Tenant.class.getName(), "name:" + tenant.getName());
-				tm.updateTenant(tenant, forceUpdate);
-				return true;
-			}
-		});
+						auditLogger.logMetadata(MetaDataAction.UPDATE, Tenant.class.getName(), "name:" + tenant.getName());
+						tm.updateTenant(tenant, forceUpdate);
+						return true;
+					}
+				});
 	}
 
 	@Override
 	public AdminPlatformInfo getPlatformInformation(int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminPlatformInfo>() {
-			@Override
-			public AdminPlatformInfo call() {
-				AdminPlatformInfo ret = new AdminPlatformInfo();
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminPlatformInfo>() {
+					@Override
+					public AdminPlatformInfo call() {
+						AdminPlatformInfo ret = new AdminPlatformInfo();
 
-				PlatformInfo info = PlatformUtil.getPlatformInformation();
+						PlatformInfo info = PlatformUtil.getPlatformInformation();
 
-				//PlatformInfo -> AdminPlatformInfo
-				if (info.isError()) {
-					ret.setPlatformErrorMessage(info.getErrorMessage());
-				} else {
-					for (Entry<String, String> entry : info.getInfomations().entrySet()) {
-						if (entry.getKey().equals(PlatformUtil.BUILD_KEY)) {
-							//作成日付はLocaleに合わせてFormat
-							String strBuildDate = entry.getValue();
-							try {
-								DateFormat inFormatter = DateUtil.getSimpleDateFormat("yyyy/MM/dd HH:mm:ss", true);
-								Date buildDate = inFormatter.parse(strBuildDate);
-								DateFormat outFormatter = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDatetimeSecFormat(), true);
-
-								ret.addPlatformInfomation(entry.getKey(), outFormatter.format(buildDate));
-							} catch (ParseException e) {
-								ret.addPlatformInfomation(entry.getKey(), strBuildDate);
-							}
+						//PlatformInfo -> AdminPlatformInfo
+						if (info.isError()) {
+							ret.setPlatformErrorMessage(info.getErrorMessage());
 						} else {
-							ret.addPlatformInfomation(entry.getKey(), entry.getValue());
+							for (Entry<String, String> entry : info.getInfomations()
+									.entrySet()) {
+								if (entry.getKey()
+										.equals(PlatformUtil.BUILD_KEY)) {
+									//作成日付はLocaleに合わせてFormat
+									String strBuildDate = entry.getValue();
+									try {
+										DateFormat inFormatter = DateUtil.getSimpleDateFormat("yyyy/MM/dd HH:mm:ss", true);
+										Date buildDate = inFormatter.parse(strBuildDate);
+										DateFormat outFormatter = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+												.getOutputDatetimeSecFormat(), true);
+
+										ret.addPlatformInfomation(entry.getKey(), outFormatter.format(buildDate));
+									} catch (ParseException e) {
+										ret.addPlatformInfomation(entry.getKey(), strBuildDate);
+									}
+								} else {
+									ret.addPlatformInfomation(entry.getKey(), entry.getValue());
+								}
+							}
 						}
+
+						if (acs.isShowServerInfo()) {
+							ret.setShowServerInfo(true);
+							try {
+								//Server情報の取得
+								String serverName = ServerEnv.getInstance()
+										.getServerId();
+								ret.addSeverInfomation("Connect Server", serverName);
+							} catch (ServiceConfigrationException e) {
+								//エラー時はエラーメッセージをセット(バージョンは取得できているのでエラーにしない)
+								ret.addSeverInfomation("Connect Server", e.getMessage());
+							}
+
+							Locale locale = Locale.getDefault();
+							ret.addSeverInfomation("Server Locale", locale.toString());
+							TimeZone timeZone = TimeZone.getDefault();
+							ret.addSeverInfomation("Server TimeZone",
+									timeZone.getID() + " (" + timeZone.getDisplayName(false, TimeZone.LONG, locale) + ")");
+						} else {
+							ret.setShowServerInfo(false);
+						}
+
+						List<String> noticeLines = getResourceLines(getServletContext(), RESOUCE_NOTICE);
+						if (noticeLines.isEmpty()) {
+							noticeLines.add("not found notice resource.");
+						}
+						ret.setNoticeLines(noticeLines);
+
+						List<String> licenseLines = getResourceLines(getServletContext(), RESOUCE_LICENSE);
+						if (licenseLines.isEmpty()) {
+							licenseLines.add("not found license resource.");
+						}
+						ret.setLicenseLines(licenseLines);
+
+						return ret;
 					}
-				}
 
-				if (acs.isShowServerInfo()) {
-					ret.setShowServerInfo(true);
-					try {
-						//Server情報の取得
-						String serverName = ServerEnv.getInstance().getServerId();
-						ret.addSeverInfomation("Connect Server", serverName);
-					} catch (ServiceConfigrationException e) {
-						//エラー時はエラーメッセージをセット(バージョンは取得できているのでエラーにしない)
-						ret.addSeverInfomation("Connect Server", e.getMessage());
-					}
-
-					Locale locale = Locale.getDefault();
-					ret.addSeverInfomation("Server Locale", locale.toString());
-					TimeZone timeZone = TimeZone.getDefault();
-					ret.addSeverInfomation("Server TimeZone", timeZone.getID() + " (" + timeZone.getDisplayName(false, TimeZone.LONG, locale) + ")");
-				} else {
-					ret.setShowServerInfo(false);
-				}
-
-				List<String> noticeLines = getResourceLines(getServletContext(), RESOUCE_NOTICE);
-				if (noticeLines.isEmpty()) {
-					noticeLines.add("not found notice resource.");
-				}
-				ret.setNoticeLines(noticeLines);
-
-				List<String> licenseLines = getResourceLines(getServletContext(), RESOUCE_LICENSE);
-				if (licenseLines.isEmpty()) {
-					licenseLines.add("not found license resource.");
-				}
-				ret.setLicenseLines(licenseLines);
-
-				return ret;
-			}
-
-		});
+				});
 	}
 
 	private List<String> getResourceLines(ServletContext sc, String path) {
@@ -302,7 +315,7 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 			try (InputStreamReader isr = new InputStreamReader(resource.openStream(), "UTF8");
 					BufferedReader br = new BufferedReader(isr)) {
 				String line = br.readLine();
-				while (line != null){
+				while (line != null) {
 					lines.add(line);
 					line = br.readLine();
 				}
@@ -343,7 +356,7 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 				env.setTenantTimeZoneInfo(timezoneMap.get(tenantTimeZone.getID()));
 			} else {
 				//IDがマッチしない場合はoffsetで求める（この場合サマータイムに対応できない）
-				int offsetMinutes = (tenantTimeZone.getRawOffset() / (1000 * 60)) * -1;	//分に変換してマイナス
+				int offsetMinutes = (tenantTimeZone.getRawOffset() / (1000 * 60)) * -1; //分に変換してマイナス
 				if (tenantTimeZone.useDaylightTime()) {
 					logger.warn("not found timezone matched data. id=" + tenantTimeZone.getID() + ". not support daylight time.");
 				}
@@ -357,7 +370,7 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 				env.setServerTimeZoneInfo(timezoneMap.get(defaultTimeZone.getID()));
 			} else {
 				//IDがマッチしない場合はoffsetで求める（この場合サマータイムに対応できない）
-				int offsetMinutes = (defaultTimeZone.getRawOffset() / (1000 * 60)) * -1;	//分に変換してマイナス
+				int offsetMinutes = (defaultTimeZone.getRawOffset() / (1000 * 60)) * -1; //分に変換してマイナス
 				if (defaultTimeZone.useDaylightTime()) {
 					logger.warn("not found timezone matched data. id=" + defaultTimeZone.getID() + ". not support daylight time.");
 				}
@@ -367,23 +380,28 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 
 			//Inputは3種類あるが、とりあえずja_JPかen_USに分類（他はヨーロッパ系）
 			String inputLocale = env.getTenantLocale();
-			if (inputLocale.equalsIgnoreCase("ja")){
+			if (inputLocale.equalsIgnoreCase("ja")) {
 				//localeがjaの場合はja_JPに変更
 				inputLocale = "ja_JP";
 			}
-			if (!inputLocale.equalsIgnoreCase("ja_JP")){
+			if (!inputLocale.equalsIgnoreCase("ja_JP")) {
 				//ja_JP以外の場合はen_US
 				inputLocale = "en_US";
 			}
 			env.setInputLocale(inputLocale);
 
-			env.setOutputDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat());
-			env.setOutputTimeSecFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat());
-			env.setOutputDateTimeSecFormat(TemplateUtil.getLocaleFormat().getOutputDatetimeSecFormat());
+			env.setOutputDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputDateFormat());
+			env.setOutputTimeSecFormat(TemplateUtil.getLocaleFormat()
+					.getOutputTimeSecFormat());
+			env.setOutputDateTimeSecFormat(TemplateUtil.getLocaleFormat()
+					.getOutputDatetimeSecFormat());
 
-			RdbAdapterService ras = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
+			RdbAdapterService ras = ServiceRegistry.getRegistry()
+					.getService(RdbAdapterService.class);
 			RdbAdapter adapter = ras.getRdbAdapter();
-			env.setRdbAdapterName(adapter != null ? adapter.getClass().getSimpleName() : "");
+			env.setRdbAdapterName(adapter != null ? adapter.getClass()
+					.getSimpleName() : "");
 
 		} finally {
 			ExecuteContext.finContext();
@@ -405,44 +423,51 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 	@Override
 	public void setLanguage(int tenantId, final String language) {
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				RequestContextHolder.getCurrent().getSession().setAttribute("language", language);
+					@Override
+					public Void call() {
+						RequestContextHolder.getCurrent()
+								.getSession()
+								.setAttribute("language", language);
 
-				return null;
-			}
+						return null;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public TenantInfo getTenantDefinitionEntry(int tenantId, final boolean doGetOption) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<TenantInfo>() {
-			@Override
-			public TenantInfo call() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<TenantInfo>() {
+					@Override
+					public TenantInfo call() {
 
-				DefinitionEntry entry = dm.getDefinitionEntry(Tenant.class, ExecuteContext.getCurrentContext().getCurrentTenant().getName());
+						DefinitionEntry entry = dm.getDefinitionEntry(Tenant.class, ExecuteContext.getCurrentContext()
+								.getCurrentTenant()
+								.getName());
 
-				TenantInfo info = new TenantInfo();
-				info.setTenantEntry(entry);
+						TenantInfo info = new TenantInfo();
+						info.setTenantEntry(entry);
 
-				if (doGetOption) {
-					GemConfigService gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
-					info.setSkins(gcs.getSkins());
-					info.setThemes(gcs.getThemes());
+						if (doGetOption) {
+							GemConfigService gcs = ServiceRegistry.getRegistry()
+									.getService(GemConfigService.class);
+							info.setSkins(gcs.getSkins());
+							info.setThemes(gcs.getThemes());
 
-					LinkedHashMap<String, String> enableLanguageMap = new LinkedHashMap<>();
-					for (EnableLanguages lang : i18n.getEnableLanguages()) {
-						enableLanguageMap.put(lang.getLanguageKey(), lang.getLanguageName());
+							LinkedHashMap<String, String> enableLanguageMap = new LinkedHashMap<>();
+							for (EnableLanguages lang : i18n.getEnableLanguages()) {
+								enableLanguageMap.put(lang.getLanguageKey(), lang.getLanguageName());
+							}
+							info.setEnableLanguageMap(enableLanguageMap);
+						}
+
+						return info;
 					}
-					info.setEnableLanguageMap(enableLanguageMap);
-				}
-
-				return info;
-			}
-		});
+				});
 	}
 
 	private static String rs(String key, Object... arguments) {

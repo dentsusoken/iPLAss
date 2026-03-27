@@ -30,7 +30,7 @@ public class TempEntityList {
 	EntityHandler eh;
 	List<IndexedEntity> oids = new ArrayList<>();
 	FulltextSearchCondition cond;
-	
+
 	public TempEntityList(EntityHandler eh, FulltextSearchCondition cond) {
 		this.eh = eh;
 		this.cond = cond;

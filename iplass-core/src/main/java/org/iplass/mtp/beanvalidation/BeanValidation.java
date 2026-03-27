@@ -31,9 +31,10 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public class BeanValidation {
-	
-	private static ValidationService service = ServiceRegistry.getRegistry().getService(ValidationService.class);
-	
+
+	private static ValidationService service = ServiceRegistry.getRegistry()
+			.getService(ValidationService.class);
+
 	public static Validator getValidator() {
 		return service.getValidator();
 	}

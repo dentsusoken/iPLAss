@@ -36,7 +36,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author K.Higuchi
  *
  */
-@XmlType(name="date", namespace="http://www.w3.org/2001/XMLSchema")
+@XmlType(name = "date", namespace = "http://www.w3.org/2001/XMLSchema")
 public class XmlDate {
 
 	public XmlDate() {
@@ -71,7 +71,7 @@ public class XmlDate {
 		GregorianCalendar cal = xmlCal.toGregorianCalendar();
 		return new Date(cal.getTimeInMillis());
 	}
-	
+
 	public String toXmlString() {
 		return value;
 	}

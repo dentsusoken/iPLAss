@@ -32,32 +32,39 @@ public class PasswordHashSetting {
 	private String passwordHashAlgorithm;
 	private String systemSalt;
 	private int stretchCount = 1000;
-	
+
 	public String getVersion() {
 		return version;
 	}
+
 	public void setVersion(String version) {
 		this.version = version;
 	}
+
 	public String getPasswordHashAlgorithm() {
 		return passwordHashAlgorithm;
 	}
+
 	public void setPasswordHashAlgorithm(String passwordHashAlgorithm) {
 		this.passwordHashAlgorithm = passwordHashAlgorithm;
 	}
+
 	public String getSystemSalt() {
 		return systemSalt;
 	}
+
 	public void setSystemSalt(String systemSalt) {
 		this.systemSalt = systemSalt;
 	}
+
 	public int getStretchCount() {
 		return stretchCount;
 	}
+
 	public void setStretchCount(int stretchCount) {
 		this.stretchCount = stretchCount;
 	}
-	
+
 	public void checkValidConfiguration() {
 		try {
 			MessageDigest.getInstance(getPasswordHashAlgorithm());
@@ -65,7 +72,7 @@ public class PasswordHashSetting {
 			throw new ServiceConfigrationException("invalid PasswordHashAlgorithm", e);
 		}
 	}
-	
+
 	protected String hash(String password, String salt) {
 		try {
 			String hashTarget = password;

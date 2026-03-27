@@ -25,10 +25,10 @@ import org.iplass.mtp.entity.definition.properties.StringProperty;
 
 public class StringType extends BasicType {
 	//TODO カラムを2つ以上消費して、VARCHAR(8000)～の文字を定義可能とする
-	
+
 	private static final long serialVersionUID = -1150069680319011062L;
 	private static final int hash = 24;
-	
+
 	@Override
 	public int hashCode() {
 		return hash;
@@ -56,7 +56,7 @@ public class StringType extends BasicType {
 	public Class<?> storeType() {
 		return String.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getEnumType() {
 		return PropertyDefinitionType.STRING;
@@ -66,5 +66,5 @@ public class StringType extends BasicType {
 	public Object fromString(String strValue) {
 		return strValue;
 	}
-	
+
 }

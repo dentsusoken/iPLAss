@@ -46,9 +46,10 @@ public class MultiReferencePropertyDialog extends MtpDialog {
 		final Label oidLabel = new Label();
 		oidLabel.setHeight(18);
 		oidLabel.setMargin(5);
-		oidLabel.setContents(SafeHtmlUtils.htmlEscape("Target Entity：" + entity.getName() + "(oid=" + entity.getOid() + ",ver=" + entity.getVersion() + ")"));
+		oidLabel.setContents(
+				SafeHtmlUtils.htmlEscape("Target Entity：" + entity.getName() + "(oid=" + entity.getOid() + ",ver=" + entity.getVersion() + ")"));
 
-		ReferenceProperty property = (ReferenceProperty)definition.getProperty(propertyName);
+		ReferenceProperty property = (ReferenceProperty) definition.getProperty(propertyName);
 
 		final Label propertyNameLabel = new Label();
 		propertyNameLabel.setHeight(18);
@@ -65,15 +66,12 @@ public class MultiReferencePropertyDialog extends MtpDialog {
 		referenceNameLabel.setHeight(18);
 		referenceNameLabel.setMargin(5);
 		referenceNameLabel.setContents("Reference Entity：" + property.getObjectDefinitionName()
-				+ (property.getMappedBy() != null ? ", Mapped By：" + property.getMappedBy() : "")
-				);
+				+ (property.getMappedBy() != null ? ", Mapped By：" + property.getMappedBy() : ""));
 		final Label referenceTypeLabel = new Label();
 		referenceTypeLabel.setHeight(18);
 		referenceTypeLabel.setMargin(5);
 		referenceTypeLabel.setContents("Reference Type：" + property.getReferenceType()
-				+ ", Version Control Type：" + property.getVersionControlType()
-				);
-
+				+ ", Version Control Type：" + property.getVersionControlType());
 
 		final Label countLabel = new Label();
 		countLabel.setHeight(30);
@@ -89,7 +87,7 @@ public class MultiReferencePropertyDialog extends MtpDialog {
 		grid.setCanResizeFields(true);
 		grid.setLeaveScrollbarGap(false);
 
-		grid.setCanDragSelectText(true);	//セルの値をドラッグで選択可能（コピー用）にする
+		grid.setCanDragSelectText(true); //セルの値をドラッグで選択可能（コピー用）にする
 
 		grid.addDataArrivedHandler(new DataArrivedHandler() {
 

@@ -40,7 +40,8 @@ import org.iplass.mtp.view.menu.UrlMenuItem;
 
 public class MenuItemManagerImpl extends AbstractTypedDefinitionManager<MenuItem> implements MenuItemManager {
 
-	private MenuItemService service = ServiceRegistry.getRegistry().getService(MenuItemService.class);
+	private MenuItemService service = ServiceRegistry.getRegistry()
+			.getService(MenuItemService.class);
 
 	@Deprecated
 	@Override
@@ -74,11 +75,13 @@ public class MenuItemManagerImpl extends AbstractTypedDefinitionManager<MenuItem
 		MetaMenuHandler handler = service.getRuntimeByName(menuItem.getName());
 		if (handler != null && handler.getCompiledCustomizeScript() != null) {
 			ExecuteContext ec = ExecuteContext.getCurrentContext();
-			ScriptEngine scriptEngine = ec.getTenantContext().getScriptEngine();
+			ScriptEngine scriptEngine = ec.getTenantContext()
+					.getScriptEngine();
 			ScriptContext sc = scriptEngine.newScriptContext();
 			sc.setAttribute("menu", ret);
 
-			handler.getCompiledCustomizeScript().eval(sc);
+			handler.getCompiledCustomizeScript()
+					.eval(sc);
 		}
 
 		return ret;
@@ -91,11 +94,13 @@ public class MenuItemManagerImpl extends AbstractTypedDefinitionManager<MenuItem
 		MetaMenuHandler handler = service.getRuntimeByName(menuItem.getName());
 		if (handler != null && handler.getCompiledCustomizeScript() != null) {
 			ExecuteContext ec = ExecuteContext.getCurrentContext();
-			ScriptEngine scriptEngine = ec.getTenantContext().getScriptEngine();
+			ScriptEngine scriptEngine = ec.getTenantContext()
+					.getScriptEngine();
 			ScriptContext sc = scriptEngine.newScriptContext();
 			sc.setAttribute("menu", ret);
 
-			handler.getCompiledCustomizeScript().eval(sc);
+			handler.getCompiledCustomizeScript()
+					.eval(sc);
 		}
 
 		return ret;
@@ -107,11 +112,13 @@ public class MenuItemManagerImpl extends AbstractTypedDefinitionManager<MenuItem
 		MetaMenuHandler handler = service.getRuntimeByName(menuItem.getName());
 		if (handler != null && handler.getCompiledCustomizeScript() != null) {
 			ExecuteContext ec = ExecuteContext.getCurrentContext();
-			ScriptEngine scriptEngine = ec.getTenantContext().getScriptEngine();
+			ScriptEngine scriptEngine = ec.getTenantContext()
+					.getScriptEngine();
 			ScriptContext sc = scriptEngine.newScriptContext();
 			sc.setAttribute("menu", ret);
 
-			handler.getCompiledCustomizeScript().eval(sc);
+			handler.getCompiledCustomizeScript()
+					.eval(sc);
 		}
 
 		return ret;

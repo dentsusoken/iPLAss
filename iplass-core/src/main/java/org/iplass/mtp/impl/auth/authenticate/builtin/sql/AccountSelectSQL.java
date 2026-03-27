@@ -31,22 +31,26 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 public class AccountSelectSQL extends QuerySqlHandler {
 
 	private static final String ACCOUNT_SELECT_SQL = "SELECT " +
-													"TENANT_ID,ACCOUNT_ID,POL_NAME,PASSWORD,SALT,OID,LAST_LOGIN_ON,LOGIN_ERR_CNT,LOGIN_ERR_DATE,LAST_PASSWORD_CHANGE,CRE_USER,CRE_DATE,UP_USER,UP_DATE " +
-													"FROM T_ACCOUNT ";
+			"TENANT_ID,ACCOUNT_ID,POL_NAME,PASSWORD,SALT,OID,LAST_LOGIN_ON,LOGIN_ERR_CNT,LOGIN_ERR_DATE,LAST_PASSWORD_CHANGE,CRE_USER,CRE_DATE,UP_USER,UP_DATE "
+			+
+			"FROM T_ACCOUNT ";
 
 	public String createAccountSQL() {
 		return ACCOUNT_SELECT_SQL + "WHERE TENANT_ID = ? AND ACCOUNT_ID = ? ";
 
 	}
+
 	public void setAccountParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String accountId) throws SQLException {
 		int index = 1;
 		ps.setInt(index++, tenantId);
 		ps.setString(index++, accountId);
 	}
+
 	public String createAccountFromOidSQL() {
 		return ACCOUNT_SELECT_SQL + "WHERE TENANT_ID = ? AND OID = ? ";
 
 	}
+
 	public void setAccountFromOidParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String oid) throws SQLException {
 		int index = 1;
 		ps.setInt(index++, tenantId);
@@ -54,7 +58,7 @@ public class AccountSelectSQL extends QuerySqlHandler {
 	}
 
 	public BuiltinAccount getAccount(ResultSet rs, RdbAdapter rdb) throws SQLException {
-		if(!rs.next()) {
+		if (!rs.next()) {
 			return null;
 		}
 		BuiltinAccount ret = new BuiltinAccount();

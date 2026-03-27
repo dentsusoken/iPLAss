@@ -47,59 +47,61 @@ import org.slf4j.LoggerFactory;
 
 public class ValidEntityValidator implements ConstraintValidator<ValidEntity, Entity> {
 	private static Logger logger = LoggerFactory.getLogger(ValidEntityValidator.class);
-	
+
 	private PropTree propTree;
-	
+
 	private boolean hasMessage;
 	private EntityManager em;
-	
+
 	@Override
 	public void initialize(ValidEntity constraintAnnotation) {
 		String[] props = constraintAnnotation.properties();
 		if (props != null && props.length > 0) {
 			propTree = new PropTree();
-			for (String p: props) {
+			for (String p : props) {
 				propTree.parse(p);
 			}
 		}
-		
-		if (constraintAnnotation.message() != null && constraintAnnotation.message().length() > 0) {
+
+		if (constraintAnnotation.message() != null && constraintAnnotation.message()
+				.length() > 0) {
 			hasMessage = true;
 		}
-		
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 	}
-	
+
 	@Override
 	public boolean isValid(Entity value, ConstraintValidatorContext context) {
 		if (!hasMessage) {
 			context.disableDefaultConstraintViolation();
 		}
-		
+
 		return isValidCascade(value, new LinkedList<>(), propTree, context);
 	}
-	
+
 	private Set<String> allRefs(EntityHandler eh, EntityContext ec) {
-		
+
 		HashSet<String> refs = new HashSet<>();
-		for (ReferencePropertyHandler rh: eh.getReferencePropertyList(false, ec)) {
+		for (ReferencePropertyHandler rh : eh.getReferencePropertyList(false, ec)) {
 			refs.add(rh.getName());
 		}
 		return refs;
 	}
-	
+
 	private boolean isValidCascade(Entity value, List<Object> path, PropTree target, ConstraintValidatorContext context) {
-		
-		List<String> props = (target == null || target.isAllPrimitive) ? null: target.reaf();
-		
+
+		List<String> props = (target == null || target.isAllPrimitive) ? null : target.reaf();
+
 		ValidateResult vr = em.validate(value, props);
 		if (vr.hasError()) {
-			for (ValidateError ve: vr.getErrors()) {
-				for (String msg: ve.getErrorMessages()) {
+			for (ValidateError ve : vr.getErrors()) {
+				for (String msg : ve.getErrorMessages()) {
 					NodeBuilderCustomizableContext bbcc = null;
 					NodeBuilderDefinedContext nbdc = null;
 					Integer index = null;
-					for (Object p: path) {
+					for (Object p : path) {
 						if (p instanceof String) {
 							if (nbdc != null) {
 								bbcc = nbdc.addPropertyNode((String) p);
@@ -107,50 +109,55 @@ public class ValidEntityValidator implements ConstraintValidator<ValidEntity, En
 							} else if (bbcc != null) {
 								bbcc = bbcc.addPropertyNode((String) p);
 							} else {
-								bbcc = context.buildConstraintViolationWithTemplate(msg).addPropertyNode((String) p);
+								bbcc = context.buildConstraintViolationWithTemplate(msg)
+										.addPropertyNode((String) p);
 							}
 							if (index != null) {
-								nbdc = bbcc.inIterable().atIndex(index);
+								nbdc = bbcc.inIterable()
+										.atIndex(index);
 								index = null;
 							}
 						} else {
 							index = (Integer) p;
 						}
 					}
-					
+
 					if (nbdc != null) {
 						bbcc = nbdc.addPropertyNode(ve.getPropertyName());
 					} else if (bbcc != null) {
 						bbcc = bbcc.addPropertyNode(ve.getPropertyName());
 					} else {
 						bbcc = context.buildConstraintViolationWithTemplate(msg)
-							.addPropertyNode(ve.getPropertyName());
+								.addPropertyNode(ve.getPropertyName());
 					}
 					if (index != null) {
-						bbcc.inIterable().atIndex(index).addConstraintViolation();
+						bbcc.inIterable()
+								.atIndex(index)
+								.addConstraintViolation();
 					} else {
 						bbcc.addConstraintViolation();
 					}
 				}
 			}
 		}
-		
+
 		boolean isValid = !vr.hasError();
-		
+
 		EntityContext ec = EntityContext.getCurrentContext();
 		EntityHandler eh = ec.getHandlerByName(value.getDefinitionName());
-		
-		Set<String> childKeys = (target == null || target.isAllReference) ? allRefs(eh, ec): target.childKeys();
-		
-		for (String ref: childKeys) {
+
+		Set<String> childKeys = (target == null || target.isAllReference) ? allRefs(eh, ec) : target.childKeys();
+
+		for (String ref : childKeys) {
 			PropertyHandler ph = eh.getProperty(ref, ec);
 			if (ph == null || !(ph instanceof ReferencePropertyHandler)) {
 				logger.warn("ReferenceProperty:" + ref + " is undefined on " + value.getDefinitionName() + ", so can not validate..");
 				continue;
 			}
-			
-			PropTree child = (target == null || target.isAllReference) ? null: target.children.get(ref);
-			if (ph.getMetaData().getMultiplicity() == 1) {
+
+			PropTree child = (target == null || target.isAllReference) ? null : target.children.get(ref);
+			if (ph.getMetaData()
+					.getMultiplicity() == 1) {
 				Entity refEntity = value.getValue(ref);
 				if (refEntity != null) {
 					path.add(ref);
@@ -179,31 +186,31 @@ public class ValidEntityValidator implements ConstraintValidator<ValidEntity, En
 				}
 			}
 		}
-		
+
 		return isValid;
 	}
-	
+
 	private static class PropTree {
 		PropTree parent;
 		boolean isAllPrimitive;
 		boolean isAllReference;
 		List<String> reaf;
 		LinkedHashMap<String, PropTree> children;
-		
+
 		Set<String> childKeys() {
 			if (children == null) {
 				return Collections.emptySet();
 			}
 			return children.keySet();
 		}
-		
+
 		List<String> reaf() {
 			if (reaf == null) {
 				return Collections.emptyList();
 			}
 			return reaf;
 		}
-		
+
 		void parse(String path) {
 			int index = path.indexOf('.');
 			if (index > 0) {
@@ -225,7 +232,7 @@ public class ValidEntityValidator implements ConstraintValidator<ValidEntity, En
 				}
 			}
 		}
-		
+
 		PropTree child(String name, PropTree parent) {
 			if (children == null) {
 				children = new LinkedHashMap<>();

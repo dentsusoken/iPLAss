@@ -40,7 +40,6 @@ import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.TenantConfig;
 import org.iplass.mtp.tenant.TenantManager;
 
-
 /**
  * テナントメタ情報管理サービス
  *
@@ -66,19 +65,24 @@ public class MetaTenantService extends AbstractTypedMetaDataService<MetaTenant, 
 		public TypeMap() {
 			super(getFixedPath(), MetaTenant.class, Tenant.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<Tenant> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(TenantManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(TenantManager.class);
 		}
+
 		@Override
 		public Tenant toDefinition(MetaTenant metaData) {
 			return typedDefinitionManager().get(null);
 		}
+
 		@Override
 		public String toPath(String defName) {
 			//pathは固定
 			return pathPrefix + TENANT_FIXED_NAME;
 		}
+
 		@Override
 		public String toDefName(String path) {
 			//nameは固定
@@ -91,7 +95,8 @@ public class MetaTenantService extends AbstractTypedMetaDataService<MetaTenant, 
 		private String metadataClass;
 		private String scriptBindingName;
 
-		public ConfigType() {}
+		public ConfigType() {
+		}
 
 		public String getDefinitionClass() {
 			return definitionClass;
@@ -126,7 +131,7 @@ public class MetaTenantService extends AbstractTypedMetaDataService<MetaTenant, 
 		if (configTypes != null) {
 			configTypeMap = new HashMap<>();
 			configBindNameMap = new HashMap<>();
-			configTypes.forEach(type->{
+			configTypes.forEach(type -> {
 				Class<? extends TenantConfig> defClass = null;
 				try {
 					defClass = (Class<? extends TenantConfig>) Class.forName(type.getDefinitionClass());
@@ -172,7 +177,8 @@ public class MetaTenantService extends AbstractTypedMetaDataService<MetaTenant, 
 		//id、name固定
 		meta.setId(TENANT_FIXED_NAME);
 		meta.setName(TENANT_FIXED_NAME);
-		MetaDataContext.getContext().store(TENANT_META_PATH + TENANT_FIXED_NAME, meta);
+		MetaDataContext.getContext()
+				.store(TENANT_META_PATH + TENANT_FIXED_NAME, meta);
 	}
 
 	@Override
@@ -189,7 +195,8 @@ public class MetaTenantService extends AbstractTypedMetaDataService<MetaTenant, 
 
 	public MetaTenantHandler get() {
 		//名前は固定
-		return MetaDataContext.getContext().getMetaDataHandler(MetaTenantHandler.class, TENANT_META_PATH + TENANT_FIXED_NAME);
+		return MetaDataContext.getContext()
+				.getMetaDataHandler(MetaTenantHandler.class, TENANT_META_PATH + TENANT_FIXED_NAME);
 	}
 
 	@Override
@@ -207,7 +214,8 @@ public class MetaTenantService extends AbstractTypedMetaDataService<MetaTenant, 
 		Class<? extends MetaTenantConfig> metaClass = configTypeMap.get(tenantConfig.getClass());
 		if (metaClass != null) {
 			try {
-				return metaClass.getDeclaredConstructor().newInstance();
+				return metaClass.getDeclaredConstructor()
+						.newInstance();
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				return null;

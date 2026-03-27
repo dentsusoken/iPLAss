@@ -84,8 +84,8 @@ public class EqlWorksheetMainPane extends VLayout {
 
 		worksheetPane = new EQLWorksheetPane();
 		worksheetPane.setHeight("30%");
-		worksheetPane.setShowResizeBar(true);		//リサイズ可能
-		worksheetPane.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+		worksheetPane.setShowResizeBar(true); //リサイズ可能
+		worksheetPane.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、下を収縮
 
 		executePane = new EQLExecutePane();
 		executePane.setHeight("70%");
@@ -102,8 +102,8 @@ public class EqlWorksheetMainPane extends VLayout {
 
 			EQLEditPane worksheetPane = new EQLEditPane();
 			worksheetPane.setWidth("60%");
-			worksheetPane.setShowResizeBar(true);	//リサイズ可能
-			worksheetPane.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+			worksheetPane.setShowResizeBar(true); //リサイズ可能
+			worksheetPane.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、下を収縮
 
 			EQLHintPane hintPane = new EQLHintPane();
 			hintPane.setWidth("40%");
@@ -144,7 +144,8 @@ public class EqlWorksheetMainPane extends VLayout {
 			final ToolStripButton dataExportButton = new ToolStripButton();
 			dataExportButton.setIcon(EXPORT_ICON);
 			dataExportButton.setTitle("Export CSV");
-			dataExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_exportCsvFileEql")));
+			dataExportButton
+					.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_exportCsvFileEql")));
 			dataExportButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -157,7 +158,8 @@ public class EqlWorksheetMainPane extends VLayout {
 			final ToolStripButton entitySelectButton = new ToolStripButton();
 			entitySelectButton.setIcon("[SKIN]/actions/configure.png");
 			entitySelectButton.setTitle("Select Entity");
-			SmartGWTUtil.addHoverToCanvas(entitySelectButton, AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_createEqlFromEntityDef"));
+			SmartGWTUtil.addHoverToCanvas(entitySelectButton,
+					AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_createEqlFromEntityDef"));
 			entitySelectButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -173,7 +175,6 @@ public class EqlWorksheetMainPane extends VLayout {
 			SmartGWTUtil.addHoverToFormItem(searchAllVersion, AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_allVerSearch"));
 			toolStrip.addFormItem(searchAllVersion);
 
-
 			toolStrip.addFill();
 
 			cursorPositionLabel = new Label();
@@ -188,7 +189,7 @@ public class EqlWorksheetMainPane extends VLayout {
 			DynamicForm form = new DynamicForm();
 			form.setWidth100();
 			form.setHeight100();
-			form.setNumCols(1);	//これを指定することでTextAreaの幅が自動的に決定
+			form.setNumCols(1); //これを指定することでTextAreaの幅が自動的に決定
 			form.setCellPadding(0);
 			form.setAutoFocus(true);
 
@@ -203,9 +204,10 @@ public class EqlWorksheetMainPane extends VLayout {
 			eqlField.addKeyPressHandler(new KeyPressHandler() {
 				@Override
 				public void onKeyPress(KeyPressEvent event) {
-					if (event.getKeyName() != null && "F8".equals(event.getKeyName().toUpperCase())) {
+					if (event.getKeyName() != null && "F8".equals(event.getKeyName()
+							.toUpperCase())) {
 						String eql = getEql();
-						executeButton.focus();	//連続実行を阻止するためフォーカスを逃がす
+						executeButton.focus(); //連続実行を阻止するためフォーカスを逃がす
 						execute(eql, SmartGWTUtil.getBooleanValue(searchAllVersion));
 					}
 					setCursorPosition();
@@ -243,7 +245,8 @@ public class EqlWorksheetMainPane extends VLayout {
 			if (selected == null || selected[0] == selected[1]) {
 				return eqlField.getValueAsString();
 			} else {
-				return eqlField.getValueAsString().substring(selected[0], selected[1]);
+				return eqlField.getValueAsString()
+						.substring(selected[0], selected[1]);
 			}
 		}
 
@@ -266,10 +269,10 @@ public class EqlWorksheetMainPane extends VLayout {
 
 			PostDownloadFrame frame = new PostDownloadFrame();
 			frame.setAction(GWT.getModuleBaseURL() + "service/eqldownload")
-				.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-				.addParameter("eql", eql)
-				.addParameter("isSearchAllVersion", String.valueOf(isSearchAllVersion))
-				.execute();
+					.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+					.addParameter("eql", eql)
+					.addParameter("isSearchAllVersion", String.valueOf(isSearchAllVersion))
+					.execute();
 
 		}
 
@@ -327,7 +330,7 @@ public class EqlWorksheetMainPane extends VLayout {
 				}
 				if (property instanceof ReferenceProperty) {
 					if (!isExcludeRef) {
-						ReferenceProperty refp = (ReferenceProperty)property;
+						ReferenceProperty refp = (ReferenceProperty) property;
 						builder.append(formatPrefix + refp.getName() + "." + Entity.OID + ", " + formatSuffix);
 						builder.append(formatPrefix + refp.getName() + "." + Entity.NAME + ", " + formatSuffix);
 						builder.append(formatPrefix + refp.getName() + "." + Entity.VERSION + ", " + formatSuffix);
@@ -353,7 +356,8 @@ public class EqlWorksheetMainPane extends VLayout {
 					//eqlFieldのlengthチェックをしている理由
 					//Windowを最小化した場合などに、「setHint」の文字数分でカーソル位置が取得されてしまうため
 					if (eqlField.getValueAsString() != null
-							&& !eqlField.getValueAsString().isEmpty()
+							&& !eqlField.getValueAsString()
+									.isEmpty()
 							&& eqlField.getSelectionRange() != null
 							&& eqlField.getSelectionRange().length > 1) {
 						position = eqlField.getSelectionRange()[0];

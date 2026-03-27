@@ -86,7 +86,8 @@ public class EntityPortingService implements Service {
 
 		syntaxService = config.getDependentService(SyntaxService.class);
 
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 	}
 
 	@Override
@@ -118,7 +119,8 @@ public class EntityPortingService implements Service {
 	 * @return 出力件数
 	 * @throws IOException
 	 */
-	public int writeWithBinary(final OutputStream os, final MetaDataEntry entry, final EntityDataExportCondition condition, final ZipOutputStream zos) throws IOException {
+	public int writeWithBinary(final OutputStream os, final MetaDataEntry entry, final EntityDataExportCondition condition, final ZipOutputStream zos)
+			throws IOException {
 		return writeWithBinary(os, entry, condition, zos, null);
 	}
 
@@ -134,9 +136,11 @@ public class EntityPortingService implements Service {
 	 * @return 出力件数
 	 * @throws IOException
 	 */
-	public int writeWithBinary(final OutputStream os, final MetaDataEntry entry, final EntityDataExportCondition condition, final ZipOutputStream zos, String exportBinaryDataDir) throws IOException {
+	public int writeWithBinary(final OutputStream os, final MetaDataEntry entry, final EntityDataExportCondition condition, final ZipOutputStream zos,
+			String exportBinaryDataDir) throws IOException {
 
-		EntityDefinition definition = edm.get(entry.getMetaData().getName());
+		EntityDefinition definition = edm.get(entry.getMetaData()
+				.getName());
 
 		Where where = null;
 		if (StringUtil.isNotEmpty(condition.getWhereClause())) {
@@ -146,8 +150,9 @@ public class EntityPortingService implements Service {
 		if (StringUtil.isNotEmpty(condition.getOrderByClause())) {
 			try {
 				SyntaxContext sc = syntaxService.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT);
-				orderBy = sc.getSyntax(OrderBySyntax.class).parse(new ParseContext("order by " + condition.getOrderByClause()));
-			} catch(ParseException e) {
+				orderBy = sc.getSyntax(OrderBySyntax.class)
+						.parse(new ParseContext("order by " + condition.getOrderByClause()));
+			} catch (ParseException e) {
 				throw new EntityDataPortingRuntimeException(e);
 			}
 		} else {
@@ -156,7 +161,8 @@ public class EntityPortingService implements Service {
 			orderBy.add(new SortSpec(Entity.VERSION, SortType.ASC));
 		}
 
-		CsvUploadService csvUploadService = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
+		CsvUploadService csvUploadService = ServiceRegistry.getRegistry()
+				.getService(CsvUploadService.class);
 
 		//Writer生成
 		EntityCsvWriteOption option = new EntityCsvWriteOption()
@@ -188,7 +194,8 @@ public class EntityPortingService implements Service {
 	 * @param zipFile LOBファイルが格納されているzipファイル(nullの場合、LOBファイルは取り込みません)
 	 * @return Import結果
 	 */
-	public EntityDataImportResult importEntityData(String targetName, final InputStream is, final MetaDataEntry entry, final EntityDataImportCondition condition, final ZipFile zipFile) {
+	public EntityDataImportResult importEntityData(String targetName, final InputStream is, final MetaDataEntry entry,
+			final EntityDataImportCondition condition, final ZipFile zipFile) {
 		return importEntityData(targetName, is, entry, condition, zipFile, null);
 	}
 
@@ -203,7 +210,8 @@ public class EntityPortingService implements Service {
 	 * @param importBinaryDataDir LOBファイルが格納されているディレクトリ(nullの場合、LOBファイルは取り込みません)
 	 * @return Import結果
 	 */
-	public EntityDataImportResult importEntityData(String targetName, final InputStream is, final MetaDataEntry entry, final EntityDataImportCondition condition, final ZipFile zipFile, final String importBinaryDataDir) {
+	public EntityDataImportResult importEntityData(String targetName, final InputStream is, final MetaDataEntry entry,
+			final EntityDataImportCondition condition, final ZipFile zipFile, final String importBinaryDataDir) {
 		// tools -> webのクラスへ変換
 		EntityCsvImportOption option = new EntityCsvImportOption()
 				.truncate(condition.isTruncate())
@@ -224,7 +232,8 @@ public class EntityPortingService implements Service {
 		// 取り込み対象外のEntity
 		List<String> excludeEntityNames = Arrays.asList(PackageEntity.ENTITY_DEFINITION_NAME, MetaDataTagEntity.ENTITY_DEFINITION_NAME);
 
-		EntityCsvImportService service = ServiceRegistry.getRegistry().getService(EntityCsvImportService.class);
+		EntityCsvImportService service = ServiceRegistry.getRegistry()
+				.getService(EntityCsvImportService.class);
 		if (canCreateUserWithSpecificPassword != null) {
 			// アプリ側での設定変更があれば設定を引き継ぐ
 			service.setCanCreateUserWithSpecificPassword(canCreateUserWithSpecificPassword);

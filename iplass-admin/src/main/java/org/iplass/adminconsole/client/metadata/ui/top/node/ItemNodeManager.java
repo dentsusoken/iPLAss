@@ -41,7 +41,7 @@ public abstract class ItemNodeManager {
 	 * コンストラクタ
 	 */
 	public ItemNodeManager() {
-		 service = MetaDataServiceFactory.get();
+		service = MetaDataServiceFactory.get();
 	}
 
 	public TopViewNode getFolder() {
@@ -111,7 +111,7 @@ public abstract class ItemNodeManager {
 			for (MetaTreeNode child : treeNode.getChildren()) {
 				//フォルダ要素
 				entries[i] = createChildNode(child);
-				tree.add(entries[i], parent);	//node.setChildrenだとツリーのIndentがうまくいかない。treeに対して操作する
+				tree.add(entries[i], parent); //node.setChildrenだとツリーのIndentがうまくいかない。treeに対して操作する
 				convertNode(tree, entries[i], child);
 				i++;
 			}
@@ -148,7 +148,8 @@ public abstract class ItemNodeManager {
 	 */
 	private TopViewNode createItemNode(MetaTreeNode item) {
 		String displayName = null;
-		if (item.getDisplayName() == null || item.getDisplayName().isEmpty()) {
+		if (item.getDisplayName() == null || item.getDisplayName()
+				.isEmpty()) {
 			displayName = getSimpleName(item.getName());
 		} else {
 			displayName = getSimpleName(item.getName()) + "(" + item.getDisplayName() + ")";
@@ -158,7 +159,8 @@ public abstract class ItemNodeManager {
 	}
 
 	private String getSimpleName(String name) {
-		if (name == null || name.isEmpty()) return "";
+		if (name == null || name.isEmpty())
+			return "";
 
 		if (name.contains("/")) {
 			if (name.lastIndexOf("/") < name.length()) {

@@ -90,7 +90,8 @@ public class MetaReferenceTreeViewItem extends MetaEntityTreeViewItem {
 	public void applyConfig(TreeViewItem item, EntityHandler parent) {
 		if (!(item instanceof ReferenceTreeViewItem)) {
 			throw new IllegalArgumentException(
-					"type is not ReferenceTreeViewItem. value is" + item.getClass().getName());
+					"type is not ReferenceTreeViewItem. value is" + item.getClass()
+							.getName());
 		}
 		super.fillFrom(item);
 		ReferenceTreeViewItem rItem = (ReferenceTreeViewItem) item;

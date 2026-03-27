@@ -34,60 +34,64 @@ import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
 public class EntityELResolver extends ELResolver {
-	
+
 	@Override
 	public Object getValue(ELContext context, Object base, Object property) {
 		if (!checkArgs(context, base, property)) {
 			return null;
 		}
-		
+
 		Entity entity = (Entity) base;
 		EntityContext ec = EntityContext.getCurrentContext();
 		EntityHandler eh = ec.getHandlerByName(entity.getDefinitionName());
 		if (eh == null) {
 			return null;
 		}
-		
+
 		String propName = property.toString();
 		PropertyHandler ph = eh.getProperty(propName, ec);
 		if (ph != null) {
 			context.setPropertyResolved(base, property);
-			
+
 			BeanMapperELContext bmc = (BeanMapperELContext) context.getContext(BeanMapperELContext.class);
 			Object value = entity.getValue(propName);
 			if (value == null) {
-				if (bmc.getElMapper().isAutoGrow()) {
+				if (bmc.getElMapper()
+						.isAutoGrow()) {
 					if (ph instanceof ReferencePropertyHandler) {
 						ReferencePropertyHandler rph = (ReferencePropertyHandler) ph;
-						if (rph.getMetaData().getMultiplicity() == 1) {
-							value = rph.getReferenceEntityHandler(ec).newInstance();
+						if (rph.getMetaData()
+								.getMultiplicity() == 1) {
+							value = rph.getReferenceEntityHandler(ec)
+									.newInstance();
 						} else {
 							value = rph.newArrayInstance(0, ec);
 						}
 					}
-					
+
 					if (value != null) {
 						entity.setValue(propName, value);
 					}
-					
+
 				}
 			}
-			
-			if (bmc.getElMapper().isAutoGrow() && ph instanceof ReferencePropertyHandler) {
+
+			if (bmc.getElMapper()
+					.isAutoGrow() && ph instanceof ReferencePropertyHandler) {
 				bmc.setPropertyRef(base, (ReferencePropertyHandler) ph, value);
 			}
-			
+
 			return value;
 		} else {
-            throw new PropertyNotFoundException("Entity:" + entity.getDefinitionName() + " property:" + propName + " not defined.");
+			throw new PropertyNotFoundException("Entity:" + entity.getDefinitionName() + " property:" + propName + " not defined.");
 		}
 	}
-	
+
 	private boolean checkArgs(ELContext context, Object base, Object property) {
 		if (context == null) {
 			throw new NullPointerException();
 		}
-		if (base == null || property == null){
+		if (base == null || property == null) {
 			return false;
 		}
 		if (!(base instanceof Entity)) {
@@ -97,7 +101,7 @@ public class EntityELResolver extends ELResolver {
 		if (entity.getDefinitionName() == null) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -106,25 +110,28 @@ public class EntityELResolver extends ELResolver {
 		if (!checkArgs(context, base, property)) {
 			return null;
 		}
-		
+
 		Entity entity = (Entity) base;
 		EntityContext ec = EntityContext.getCurrentContext();
 		EntityHandler eh = ec.getHandlerByName(entity.getDefinitionName());
 		if (eh == null) {
 			return null;
 		}
-		
+
 		String propName = property.toString();
 		PropertyHandler ph = eh.getProperty(propName, ec);
 		if (ph != null) {
 			context.setPropertyResolved(base, property);
-			Class<?> t = ph.getEnumType().getJavaType();
-			if (ph.getMetaData().getMultiplicity() != 1) {
-				t = Array.newInstance(t, 0).getClass();
+			Class<?> t = ph.getEnumType()
+					.getJavaType();
+			if (ph.getMetaData()
+					.getMultiplicity() != 1) {
+				t = Array.newInstance(t, 0)
+						.getClass();
 			}
 			return t;
 		} else {
-            throw new PropertyNotFoundException("Entity:" + entity.getDefinitionName() + " property:" + propName + " not defined.");
+			throw new PropertyNotFoundException("Entity:" + entity.getDefinitionName() + " property:" + propName + " not defined.");
 		}
 	}
 
@@ -133,21 +140,21 @@ public class EntityELResolver extends ELResolver {
 		if (!checkArgs(context, base, property)) {
 			return;
 		}
-		
+
 		Entity entity = (Entity) base;
 		EntityContext ec = EntityContext.getCurrentContext();
 		EntityHandler eh = ec.getHandlerByName(entity.getDefinitionName());
 		if (eh == null) {
 			return;
 		}
-		
+
 		String propName = property.toString();
 		PropertyHandler ph = eh.getProperty(propName, ec);
 		if (ph != null) {
 			entity.setValue(propName, value);
 			context.setPropertyResolved(base, property);
 		} else {
-            throw new PropertyNotFoundException("Entity:" + entity.getDefinitionName() + " property:" + propName + " not defined.");
+			throw new PropertyNotFoundException("Entity:" + entity.getDefinitionName() + " property:" + propName + " not defined.");
 		}
 	}
 

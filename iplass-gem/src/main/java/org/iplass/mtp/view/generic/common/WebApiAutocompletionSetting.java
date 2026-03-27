@@ -46,43 +46,43 @@ public class WebApiAutocompletionSetting extends AutocompletionSetting {
 
 	/** 自動補完タイプ */
 	@MetaFieldInfo(
-		displayName="自動補完タイプ",
-		displayNameKey="generic_common_WebApiAutocompletionSetting_autocompletionTypeDisplaNameKey",
-		inputType=InputType.ENUM,
-		enumClass=AutocompletionType.class,
-		description="自動補完する値を取得する方法を指定します。<BR />" +
-				"EQL          : 設定されたEQLを実行し、その結果で自動補完します。<BR />" +
-				"GROOVYSCRIPT : Groovyscriptの実行結果を自動補完します。",
-		descriptionKey="generic_common_WebApiAutocompletionSetting_autocompletionTypeDescriptionKey"
+			displayName = "自動補完タイプ",
+			displayNameKey = "generic_common_WebApiAutocompletionSetting_autocompletionTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = AutocompletionType.class,
+			description = "自動補完する値を取得する方法を指定します。<BR />" +
+					"EQL          : 設定されたEQLを実行し、その結果で自動補完します。<BR />" +
+					"GROOVYSCRIPT : Groovyscriptの実行結果を自動補完します。",
+			descriptionKey = "generic_common_WebApiAutocompletionSetting_autocompletionTypeDescriptionKey"
 	)
 	@EntityViewField()
 	private AutocompletionType autocompletionType;
 
 	/** EQL */
 	@MetaFieldInfo(
-		displayName="EQL",
-		displayNameKey="generic_common_WebApiAutocompletionSetting_eqlDisplaNameKey",
-		inputType=InputType.SCRIPT,
-		mode="groovytemplate",
-		description="自動補完タイプでEQLを選択した際に実行する処理です。<br>"
-				+ "実行結果の1行目の最初のSelect項目を補完の値として利用します。<br>"
-				+ "連動元のプロパティの値は以下の名前でバインドされています。<br>"
-				+ "xxx",
-		descriptionKey="generic_common_WebApiAutocompletionSetting_eqlDescriptionKey"
+			displayName = "EQL",
+			displayNameKey = "generic_common_WebApiAutocompletionSetting_eqlDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovytemplate",
+			description = "自動補完タイプでEQLを選択した際に実行する処理です。<br>"
+					+ "実行結果の1行目の最初のSelect項目を補完の値として利用します。<br>"
+					+ "連動元のプロパティの値は以下の名前でバインドされています。<br>"
+					+ "xxx",
+			descriptionKey = "generic_common_WebApiAutocompletionSetting_eqlDescriptionKey"
 	)
 	@EntityViewField()
 	private String eql;
 
 	/** Groovyscript */
 	@MetaFieldInfo(
-		displayName="Groovyscript",
-		displayNameKey="generic_common_WebApiAutocompletionSetting_groovyscriptDisplaNameKey",
-		inputType=InputType.SCRIPT,
-		mode="groovy_script",
-		description="自動補完タイプでGROOVYSCRIPTを選択した際に実行する処理です。<br>"
-				+ "連動元のプロパティの値は以下の名前でバインドされています。<br>"
-				+ "xxx",
-		descriptionKey="generic_common_WebApiAutocompletionSetting_groovyscriptDescriptionKey"
+			displayName = "Groovyscript",
+			displayNameKey = "generic_common_WebApiAutocompletionSetting_groovyscriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			description = "自動補完タイプでGROOVYSCRIPTを選択した際に実行する処理です。<br>"
+					+ "連動元のプロパティの値は以下の名前でバインドされています。<br>"
+					+ "xxx",
+			descriptionKey = "generic_common_WebApiAutocompletionSetting_groovyscriptDescriptionKey"
 	)
 	@EntityViewField()
 	private String groovyscript;
