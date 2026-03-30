@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.command;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.definition.CommandDefinition;
 import org.iplass.mtp.command.definition.JavaClassCommandDefinition;
@@ -31,6 +29,8 @@ import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaMetaJavaCommand.class, MetaMetaScriptingCommand.class })
 public abstract class MetaMetaCommand extends BaseRootMetaData implements DefinableMetaData<CommandDefinition> {

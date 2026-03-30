@@ -39,8 +39,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
@@ -53,6 +51,8 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.prefs.Preference;
 import org.iplass.mtp.prefs.PreferenceAware;
 import org.iplass.mtp.prefs.PreferenceSet;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso(MetaPreferenceSet.class)
 public class MetaPreference extends BaseRootMetaData implements DefinableMetaData<Preference> {

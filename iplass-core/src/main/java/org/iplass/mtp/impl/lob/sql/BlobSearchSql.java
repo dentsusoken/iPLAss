@@ -25,7 +25,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.iplass.mtp.impl.lob.Lob;
-import org.iplass.mtp.impl.lob.LobDao;
 import org.iplass.mtp.impl.lob.LobStoreService;
 import org.iplass.mtp.impl.lob.lobstore.LobStore;
 import org.iplass.mtp.impl.rdb.adapter.QuerySqlHandler;

@@ -23,8 +23,6 @@ package org.iplass.adminconsole.shared.metadata.dto.staticresource;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
@@ -32,6 +30,8 @@ import org.iplass.mtp.web.staticresource.definition.EntryPathTranslatorDefinitio
 import org.iplass.mtp.web.staticresource.definition.LocalizedStaticResourceDefinition;
 import org.iplass.mtp.web.staticresource.definition.MimeTypeMappingDefinition;
 import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * 静的リソースの定義。

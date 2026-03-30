@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.iplass.mtp.entity.BinaryReference;
+import org.iplass.mtp.impl.mail.BinaryReferenceDataSource;
+
 import jakarta.activation.DataHandler;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
-
-import org.iplass.mtp.entity.BinaryReference;
-import org.iplass.mtp.impl.mail.BinaryReferenceDataSource;
 
 /**
  * メールを表すクラスです。

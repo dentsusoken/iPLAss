@@ -26,11 +26,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.TimeZone;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.StreamingOutput;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.StreamingOutput;
 
 /**
  * Objectを直接JSON文字列化してWebAPIの結果としたい場合に

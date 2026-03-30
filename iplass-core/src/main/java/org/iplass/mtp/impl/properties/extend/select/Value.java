@@ -24,9 +24,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinition;
@@ -34,6 +31,9 @@ import org.iplass.mtp.impl.i18n.EnableLanguages;
 import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.spi.ServiceRegistry;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Value implements Serializable {

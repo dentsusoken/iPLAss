@@ -19,13 +19,13 @@
  */
 package org.iplass.mtp.impl.web;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.web.TenantWebInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class RequestPath {
 	private static Logger logger = LoggerFactory.getLogger(RequestPath.class);

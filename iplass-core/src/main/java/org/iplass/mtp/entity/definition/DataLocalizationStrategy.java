@@ -22,12 +22,11 @@ package org.iplass.mtp.entity.definition;
 import java.io.Serializable;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.l10n.EachInstanceDataLocalizationStrategy;
 import org.iplass.mtp.entity.definition.l10n.EachPropertyDataLocalizationStrategy;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * <p>Entityのデータを多言語対応する戦略の定義。</p>

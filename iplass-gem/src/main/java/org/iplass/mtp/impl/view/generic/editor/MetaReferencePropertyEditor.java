@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -51,6 +49,8 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefComboSearch
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefSortType;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
+
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * 参照型プロパティエディタのメタデータ

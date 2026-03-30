@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.tools.gui.partition;
 
-import java.awt.EventQueue;
-
 import javax.swing.UIManager;
+
+import java.awt.EventQueue;
 
 import org.iplass.mtp.tools.batch.partition.PostgreSQLPartitionBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;

@@ -23,16 +23,16 @@ import java.beans.FeatureDescriptor;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
-import jakarta.el.PropertyNotFoundException;
-
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.impl.command.beanmapper.el.PropertyInfo.TypeKind;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
 
 /**
  * <p>カスタムのArrayELResolver</p>

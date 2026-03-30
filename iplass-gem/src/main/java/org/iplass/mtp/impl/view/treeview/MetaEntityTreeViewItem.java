@@ -20,11 +20,11 @@
 
 package org.iplass.mtp.impl.view.treeview;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.view.treeview.EntityTreeViewItem;
 import org.iplass.mtp.view.treeview.ReferenceTreeViewItem;
 import org.iplass.mtp.view.treeview.TreeViewItem;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * ツリービューにEntityを表示するための定義情報

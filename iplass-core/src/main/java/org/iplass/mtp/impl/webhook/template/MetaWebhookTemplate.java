@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
@@ -44,6 +42,8 @@ import org.iplass.mtp.webhook.Webhook;
 import org.iplass.mtp.webhook.WebhookHeader;
 import org.iplass.mtp.webhook.template.definition.WebhookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMetaData<WebhookTemplateDefinition> {

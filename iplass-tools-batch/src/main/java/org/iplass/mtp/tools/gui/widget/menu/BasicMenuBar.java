@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.tools.gui.widget.menu;
 
-import java.awt.Frame;
-
 import javax.swing.JMenuBar;
+
+import java.awt.Frame;
 
 public class BasicMenuBar extends JMenuBar {
 

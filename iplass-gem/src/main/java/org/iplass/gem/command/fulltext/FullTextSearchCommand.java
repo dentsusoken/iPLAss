@@ -35,8 +35,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.CreateSearchResultUtil;
 import org.iplass.gem.command.GemResourceBundleUtil;
@@ -97,6 +95,8 @@ import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletException;
 
 @WebApi(
 		name = FullTextSearchCommand.SEARCH_WEB_API_NAME,

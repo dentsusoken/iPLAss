@@ -22,9 +22,6 @@ package org.iplass.mtp.impl.auth.authenticate.jee;
 import java.security.Principal;
 import java.util.ArrayList;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.command.RequestContext;
@@ -41,6 +38,9 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class JeeContainerManagedAuthenticationProvider extends AuthenticationProviderBase implements AutoLoginHandler {
 	private static Logger logger = LoggerFactory.getLogger(JeeContainerManagedAuthenticationProvider.class);

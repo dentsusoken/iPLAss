@@ -31,8 +31,8 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.view.treeview.TreeView;
 import org.iplass.mtp.view.treeview.TreeViewManager;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
 		name = GetTreeViewDefinitionCommand.WEBAPI_NAME,

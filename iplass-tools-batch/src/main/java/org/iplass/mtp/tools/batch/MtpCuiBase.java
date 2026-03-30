@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.tools.batch;
 
+import javax.sql.DataSource;
+
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.IOException;
@@ -29,8 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
-
-import javax.sql.DataSource;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;

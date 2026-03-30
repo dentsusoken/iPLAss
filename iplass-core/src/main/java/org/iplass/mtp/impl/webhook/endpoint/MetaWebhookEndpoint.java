@@ -24,8 +24,6 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
@@ -43,6 +41,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.endpoint.WebhookAuthenticationType;
 import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMetaData<WebhookEndpointDefinition> {

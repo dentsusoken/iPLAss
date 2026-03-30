@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor;
 import org.iplass.mtp.view.generic.editor.BinaryPropertyEditor;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
@@ -32,6 +30,8 @@ import org.iplass.mtp.view.generic.editor.PrimitivePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.SelectPropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  *

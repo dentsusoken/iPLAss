@@ -54,8 +54,8 @@ import org.iplass.mtp.view.treeview.TreeViewManager;
 import org.iplass.mtp.web.actionmapping.permission.ActionParameter;
 import org.iplass.mtp.web.actionmapping.permission.ActionPermission;
 import org.iplass.mtp.web.template.TemplateUtil;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

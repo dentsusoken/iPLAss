@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.properties.ExpressionProperty;
@@ -39,6 +37,8 @@ import org.iplass.mtp.view.generic.editor.IntegerPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NumberPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NumberPropertyEditor.NumberDisplayType;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * 数値型プロパティエディタのメタデータのスーパークラス

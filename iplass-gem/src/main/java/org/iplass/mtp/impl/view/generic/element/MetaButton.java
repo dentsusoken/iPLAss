@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.generic.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.auth.UserBinding;
@@ -47,6 +45,8 @@ import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.element.Button;
 import org.iplass.mtp.view.generic.element.DisplayType;
 import org.iplass.mtp.view.generic.element.Element;
+
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * ボタンのメタデータ

@@ -32,8 +32,8 @@ import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 /**
  * プロパティ値取得コマンド

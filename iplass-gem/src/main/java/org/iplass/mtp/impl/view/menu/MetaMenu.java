@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.impl.view.menu;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.i18n.I18nUtil;
@@ -38,6 +35,9 @@ import org.iplass.mtp.view.menu.EntityMenuItem;
 import org.iplass.mtp.view.menu.MenuItem;
 import org.iplass.mtp.view.menu.NodeMenuItem;
 import org.iplass.mtp.view.menu.UrlMenuItem;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlRootElement
 @XmlSeeAlso({ MetaActionMenu.class, MetaEntityMenu.class, MetaNodeMenu.class, MetaUrlMenu.class })

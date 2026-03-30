@@ -22,7 +22,6 @@ package org.iplass.gem.command.information;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.Optional;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;

@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.validation;
 
-import jakarta.validation.Validator;
-
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.BinarySizeValidation;
 import org.iplass.mtp.entity.definition.validations.BinaryTypeValidation;
@@ -35,6 +33,8 @@ import org.iplass.mtp.entity.definition.validations.ScriptingValidation;
 import org.iplass.mtp.impl.validation.bean.BeanValidationConfig;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
+
+import jakarta.validation.Validator;
 
 public class ValidationService implements Service {
 

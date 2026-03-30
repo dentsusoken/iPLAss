@@ -26,9 +26,9 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.plugin.ContentClosedEvent;
 import org.iplass.adminconsole.client.base.plugin.ContentSelectedEvent;
 import org.iplass.adminconsole.client.base.plugin.ContentStateChangeHandler;
-import org.iplass.adminconsole.client.tools.ui.permissionexplorer.role.RoleMainPane;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.role.RoleListPane.RoleDataChangeEvent;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.role.RoleListPane.RoleDataChangeHandler;
+import org.iplass.adminconsole.client.tools.ui.permissionexplorer.role.RoleMainPane;
 import org.iplass.mtp.entity.Entity;
 
 import com.google.gwt.core.shared.GWT;

@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
 import java.util.ArrayList;
+
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;

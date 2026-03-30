@@ -20,13 +20,13 @@
 
 package org.iplass.mtp.command.async.definition;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.async.AsyncTaskManager;
 import org.iplass.mtp.async.AsyncTaskOption;
 import org.iplass.mtp.async.ExceptionHandlingMode;
 import org.iplass.mtp.command.definition.config.CommandConfig;
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * 非同期実行Commandの定義。

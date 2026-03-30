@@ -22,11 +22,10 @@ package org.iplass.mtp.entity.definition;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso(value = { SchemalessRdbStore.class })
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)

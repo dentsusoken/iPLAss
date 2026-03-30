@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -33,6 +31,8 @@ import org.iplass.mtp.web.actionmapping.definition.result.RedirectResultDefiniti
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletException;
 
 public class RedirectResult extends Result {
 

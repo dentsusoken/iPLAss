@@ -20,12 +20,12 @@
 
 package org.iplass.mtp.impl.auth.authenticate.token.web;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenClientStore;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.web.template.TemplateUtil;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * RememberMeTokenをcookieで保存する場合のClientStore。

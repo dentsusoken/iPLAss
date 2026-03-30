@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.command;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.definition.config.CommandConfig;
 import org.iplass.mtp.command.definition.config.CompositeCommandConfig;
@@ -35,6 +33,8 @@ import org.iplass.mtp.impl.util.KeyGenerator;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.transaction.Propagation;
 import org.iplass.mtp.transaction.TransactionOption;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaSingleCommand.class, MetaCompositeCommand.class })
 public abstract class MetaCommand implements MetaData {

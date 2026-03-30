@@ -20,10 +20,6 @@
 
 package org.iplass.mtp.impl.webapi;
 
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.impl.webapi.jackson.WebApiParameterDeserializer;
 
@@ -31,6 +27,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 @XmlSeeAlso({ GenericEntity.class, GenericEntity[].class })
 @JsonPropertyOrder({ "name", "valueType", "value" })

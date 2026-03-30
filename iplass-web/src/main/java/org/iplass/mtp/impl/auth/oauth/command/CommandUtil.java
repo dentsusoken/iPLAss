@@ -19,9 +19,6 @@
  */
 package org.iplass.mtp.impl.auth.oauth.command;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.auth.authenticate.builtin.web.BasicAuthUtil;
@@ -34,6 +31,9 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 class CommandUtil {
 	//TODO 以下そのうち対応

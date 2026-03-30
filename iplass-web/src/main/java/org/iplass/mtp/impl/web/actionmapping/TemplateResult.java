@@ -22,8 +22,6 @@ package org.iplass.mtp.impl.web.actionmapping;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.WebUtil;
@@ -36,6 +34,8 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType;
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.TemplateResultDefinition;
+
+import jakarta.servlet.ServletException;
 
 public class TemplateResult extends Result {
 	private static final long serialVersionUID = 8382753736577498165L;

@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
@@ -33,9 +31,11 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.view.generic.ViewControlSetting;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.FormView;
+import org.iplass.mtp.view.generic.ViewControlSetting;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * 画面定義

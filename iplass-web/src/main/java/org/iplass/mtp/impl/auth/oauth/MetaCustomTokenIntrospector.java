@@ -21,8 +21,6 @@ package org.iplass.mtp.impl.auth.oauth;
 
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.oauth.definition.CustomTokenIntrospectorDefinition;
 import org.iplass.mtp.auth.oauth.definition.introspectors.JavaClassCustomTokenIntrospectorDefinition;
 import org.iplass.mtp.auth.oauth.definition.introspectors.ScriptingCustomTokenIntrospectorDefinition;
@@ -32,6 +30,8 @@ import org.iplass.mtp.impl.auth.oauth.introspectors.MetaScriptingCustomTokenIntr
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaJavaClassCustomTokenIntrospector.class, MetaScriptingCustomTokenIntrospector.class })
 public abstract class MetaCustomTokenIntrospector implements MetaData {

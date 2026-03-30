@@ -22,8 +22,6 @@ package org.iplass.mtp.impl.web.actionmapping;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
 import org.iplass.mtp.impl.command.InvocationImpl;
@@ -40,6 +38,8 @@ import org.iplass.mtp.web.interceptor.RequestInterceptor;
 import org.iplass.mtp.web.interceptor.RequestInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletException;
 
 public class WebInvocationImpl extends InvocationImpl implements RequestInvocation {
 

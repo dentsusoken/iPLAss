@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.impl.logging;
 
-import java.math.BigDecimal;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 

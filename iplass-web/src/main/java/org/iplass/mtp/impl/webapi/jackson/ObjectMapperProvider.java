@@ -20,11 +20,10 @@
 
 package org.iplass.mtp.impl.webapi.jackson;
 
-import jakarta.ws.rs.ext.ContextResolver;
-
 import org.iplass.mtp.spi.ServiceRegistry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.ext.ContextResolver;
 
 /**
  * jacksonのObjectMapperのプロバイダ。

@@ -22,10 +22,10 @@ package org.iplass.mtp.impl.view.generic.parser;
 
 import java.io.IOException;
 
+import org.iplass.mtp.view.generic.parser.Token;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.jsp.PageContext;
-
-import org.iplass.mtp.view.generic.parser.Token;
 
 public class StringToken implements Token {
 

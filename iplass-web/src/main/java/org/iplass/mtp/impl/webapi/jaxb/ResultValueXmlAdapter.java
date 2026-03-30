@@ -22,9 +22,9 @@ package org.iplass.mtp.impl.webapi.jaxb;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.iplass.mtp.impl.xml.jaxb.DateXmlAdapter;
+
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class ResultValueXmlAdapter extends XmlAdapter<Object, Object> {
 

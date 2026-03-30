@@ -20,13 +20,13 @@
 
 package org.iplass.mtp.impl.view.top.parts;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.view.top.parts.ActionParts;
 import org.iplass.mtp.view.top.parts.SeparatorParts;
 import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.view.top.parts.TopViewContentParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * 画面表示パーツ

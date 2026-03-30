@@ -23,10 +23,10 @@ package org.iplass.mtp.mail;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.activation.DataHandler;
-
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.impl.mail.BinaryReferenceDataSource;
+
+import jakarta.activation.DataHandler;
 
 /**
  * <% if (doclang == "ja") {%>

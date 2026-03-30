@@ -26,13 +26,13 @@ import java.security.Principal;
 import java.util.Enumeration;
 import java.util.Locale;
 
+import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.web.WebRequestConstants;
+
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-
-import org.iplass.mtp.command.RequestContext;
-import org.iplass.mtp.web.WebRequestConstants;
 
 /**
  * <% if (doclang == "ja") {%>

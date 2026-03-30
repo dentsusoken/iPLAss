@@ -22,12 +22,12 @@ package org.iplass.mtp.impl.auth.authenticate.builtin.web;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.web.WebRequestConstants;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class BasicAuthUtil {
 	public static final String HEADER_AUTHORIZATION = "Authorization";

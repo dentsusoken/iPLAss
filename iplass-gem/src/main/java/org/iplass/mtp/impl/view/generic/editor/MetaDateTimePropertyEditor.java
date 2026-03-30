@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor;
@@ -33,6 +31,8 @@ import org.iplass.mtp.view.generic.editor.LocalizedDateTimeFormatSetting;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * 日付・時間型プロパティエディタのメタデータのスーパークラス

@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.web.actionmapping.cache;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
@@ -36,6 +34,8 @@ import org.iplass.mtp.web.actionmapping.definition.cache.JavaClassCacheCriteriaD
 import org.iplass.mtp.web.actionmapping.definition.cache.ParameterMatchCacheCriteriaDefinition;
 import org.iplass.mtp.web.actionmapping.definition.cache.RelatedEntityType;
 import org.iplass.mtp.web.actionmapping.definition.cache.ScriptingCacheCriteriaDefinition;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * キャッシュ基準の定義。

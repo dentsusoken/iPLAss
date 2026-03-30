@@ -25,16 +25,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.mtp.impl.command.beanmapper.jackson.MappingResultSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlTransient;
-
-import org.iplass.mtp.impl.command.beanmapper.jackson.MappingResultSerializer;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Beanへのマッピング結果を表現するクラスです。

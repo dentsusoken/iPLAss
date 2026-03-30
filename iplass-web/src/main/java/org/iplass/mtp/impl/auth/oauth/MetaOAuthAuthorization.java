@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.oauth.definition.ClientPolicyDefinition;
 import org.iplass.mtp.auth.oauth.definition.ClientType;
@@ -53,6 +51,8 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.template.TemplateUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class MetaOAuthAuthorization extends BaseRootMetaData implements DefinableMetaData<OAuthAuthorizationDefinition> {
 	private static final long serialVersionUID = 3413613829144055452L;

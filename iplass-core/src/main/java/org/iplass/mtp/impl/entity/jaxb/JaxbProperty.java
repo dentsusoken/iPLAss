@@ -22,12 +22,6 @@ package org.iplass.mtp.impl.entity.jaxb;
 
 import java.math.BigDecimal;
 
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.SelectValue;
@@ -35,6 +29,12 @@ import org.iplass.mtp.impl.xml.jaxb.DateXmlAdapter;
 import org.iplass.mtp.impl.xml.jaxb.XmlDate;
 import org.iplass.mtp.impl.xml.jaxb.XmlDateTime;
 import org.iplass.mtp.impl.xml.jaxb.XmlTime;
+
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *

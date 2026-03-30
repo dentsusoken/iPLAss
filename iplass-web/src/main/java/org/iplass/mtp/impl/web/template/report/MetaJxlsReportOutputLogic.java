@@ -22,11 +22,11 @@ package org.iplass.mtp.impl.web.template.report;
 import java.io.OutputStream;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
 import org.jxls.builder.JxlsTemplateFillerBuilder;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaJavaClassJxlsReportOutputLogic.class, MetaGroovyJxlsReportOutputLogic.class })
 public abstract class MetaJxlsReportOutputLogic implements MetaData {

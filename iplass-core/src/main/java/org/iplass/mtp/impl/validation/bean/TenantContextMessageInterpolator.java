@@ -21,10 +21,10 @@ package org.iplass.mtp.impl.validation.bean;
 
 import java.util.Locale;
 
-import jakarta.validation.MessageInterpolator;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
+
+import jakarta.validation.MessageInterpolator;
 
 /**
  * Tenant単位にMessageInterpolatorのインスタンスを保持し、呼び分けるMessageInterpolator。

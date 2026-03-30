@@ -52,7 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
-
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 

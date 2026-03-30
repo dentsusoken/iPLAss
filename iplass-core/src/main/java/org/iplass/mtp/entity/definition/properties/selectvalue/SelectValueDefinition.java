@@ -23,12 +23,12 @@ package org.iplass.mtp.entity.definition.properties.selectvalue;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * SelectValueのグローバル定義。

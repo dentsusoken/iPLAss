@@ -24,9 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
@@ -34,6 +31,9 @@ import org.iplass.mtp.view.generic.common.AutocompletionProperty;
 import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.common.JavascriptAutocompletionSetting;
 import org.iplass.mtp.view.generic.common.WebApiAutocompletionSetting;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 @XmlSeeAlso({ MetaJavascriptAutocompletionSetting.class, MetaWebApiAutocompletionSetting.class })
 public abstract class MetaAutocompletionSetting implements MetaData {

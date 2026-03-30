@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.GenericEntity;
+
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * GenericEntityのプロパティ（HashMap）のXmlAdapter。

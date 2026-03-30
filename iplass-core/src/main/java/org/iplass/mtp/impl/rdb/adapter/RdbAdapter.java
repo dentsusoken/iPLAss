@@ -37,8 +37,8 @@ import java.util.TimeZone;
 import java.util.function.UnaryOperator;
 
 import org.iplass.mtp.entity.EntityRuntimeException;
-import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.GroupBy.RollType;
+import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.value.aggregate.Aggregate;

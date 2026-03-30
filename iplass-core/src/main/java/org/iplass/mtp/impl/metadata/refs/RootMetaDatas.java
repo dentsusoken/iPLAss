@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.metadata.refs;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.MetaAuthenticationPolicy;
 import org.iplass.mtp.impl.command.MetaInterceptorClass;
 import org.iplass.mtp.impl.command.MetaMetaCommand;
@@ -41,6 +39,8 @@ import org.iplass.mtp.impl.tenant.MetaTenantMailInfo;
 import org.iplass.mtp.impl.view.filter.MetaEntityFilter;
 import org.iplass.mtp.impl.webhook.endpoint.MetaWebhookEndpoint;
 import org.iplass.mtp.impl.webhook.template.MetaWebhookTemplate;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({
 		BaseRootMetaData.class, MetaInterceptorClass.class, MetaMetaCommand.class, MetaEntity.class, MetaEntityFilter.class, MetaMailTemplate.class,

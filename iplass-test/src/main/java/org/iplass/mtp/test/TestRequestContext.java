@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.command.IllegalParameterException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.SessionContext;
@@ -46,6 +44,8 @@ import org.iplass.mtp.impl.web.SimpleSessionContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.ResponseHeader;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * テスト時に利用可能なRequestContextの実装です。

@@ -21,7 +21,6 @@
 package org.iplass.gem.command.generic.search.condition;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.text.StringTokenizer;

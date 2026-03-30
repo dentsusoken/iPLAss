@@ -20,11 +20,11 @@
 
 package org.iplass.mtp.impl.webapi.jaxb;
 
+import org.iplass.mtp.spi.ServiceRegistry;
+
 import jakarta.ws.rs.ext.ContextResolver;
 import jakarta.ws.rs.ext.Provider;
 import jakarta.xml.bind.JAXBContext;
-
-import org.iplass.mtp.spi.ServiceRegistry;
 
 @Provider
 public class JAXBContextProvider implements ContextResolver<JAXBContext> {

@@ -22,8 +22,6 @@ package org.iplass.mtp.impl.entity.l10n;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.InsertOption;
 import org.iplass.mtp.entity.UpdateOption;
@@ -32,6 +30,8 @@ import org.iplass.mtp.entity.definition.l10n.EachInstanceDataLocalizationStrateg
 import org.iplass.mtp.entity.definition.l10n.EachPropertyDataLocalizationStrategy;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.metadata.MetaData;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaEachInstanceDataLocalizationStrategy.class, MetaEachPropertyDataLocalizationStrategy.class })
 public abstract class MetaDataLocalizationStrategy implements MetaData {

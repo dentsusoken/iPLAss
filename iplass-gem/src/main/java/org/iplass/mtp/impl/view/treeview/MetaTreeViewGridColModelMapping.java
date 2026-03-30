@@ -22,10 +22,10 @@ package org.iplass.mtp.impl.view.treeview;
 
 import java.io.Serializable;
 
+import org.iplass.mtp.view.treeview.TreeViewGridColModelMapping;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-
-import org.iplass.mtp.view.treeview.TreeViewGridColModelMapping;
 
 /**
  * ツリービューグリッドのColModel

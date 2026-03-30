@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.token.web;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.login.token.SimpleAuthTokenCredential;
@@ -39,6 +37,8 @@ import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * RFC6750ベースのAutoLoginHandler。

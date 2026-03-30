@@ -22,8 +22,6 @@ package org.iplass.mtp.impl.web.template.groovy;
 import java.util.ArrayList;
 import java.util.Map;
 
-import jakarta.el.PropertyNotFoundException;
-
 import org.iplass.mtp.command.beanmapper.MappingError;
 import org.iplass.mtp.command.beanmapper.MappingException;
 import org.iplass.mtp.command.beanmapper.MappingResult;
@@ -37,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import groovy.lang.Binding;
+import jakarta.el.PropertyNotFoundException;
 
 class BindContext {
 	private static Logger log = LoggerFactory.getLogger(BindContext.class);

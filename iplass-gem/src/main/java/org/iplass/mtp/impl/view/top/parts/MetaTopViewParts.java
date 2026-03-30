@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.view.top.parts;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
@@ -32,6 +30,8 @@ import org.iplass.mtp.view.top.parts.ScriptParts;
 import org.iplass.mtp.view.top.parts.TopViewContentParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * TOP画面パーツ

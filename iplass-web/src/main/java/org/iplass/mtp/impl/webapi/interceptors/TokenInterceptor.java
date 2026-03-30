@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.webapi.interceptors;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
 import org.iplass.mtp.command.interceptor.CommandInvocation;
@@ -33,6 +31,8 @@ import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.TokenValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class TokenInterceptor implements CommandInterceptor {
 

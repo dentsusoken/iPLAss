@@ -21,8 +21,6 @@ package org.iplass.mtp.impl.auth.oauth;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.oauth.definition.ClientType;
 import org.iplass.mtp.auth.oauth.definition.ConsentTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.consents.AlwaysConsentTypeDefinition;
@@ -30,11 +28,13 @@ import org.iplass.mtp.auth.oauth.definition.consents.OnceConsentTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.consents.ScriptingConsentTypeDefinition;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.auth.oauth.consents.MetaAlwaysConsentType;
-import org.iplass.mtp.impl.auth.oauth.consents.MetaScriptingConsentType;
 import org.iplass.mtp.impl.auth.oauth.consents.MetaOnceConsentType;
+import org.iplass.mtp.impl.auth.oauth.consents.MetaScriptingConsentType;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({
 		MetaAlwaysConsentType.class,

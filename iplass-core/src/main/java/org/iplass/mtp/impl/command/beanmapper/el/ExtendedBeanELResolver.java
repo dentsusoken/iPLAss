@@ -31,14 +31,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.GenericEntity;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.PropertyNotWritableException;
-
-import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.GenericEntity;
 
 /**
  * <p>カスタムのBeanELResolver</p>

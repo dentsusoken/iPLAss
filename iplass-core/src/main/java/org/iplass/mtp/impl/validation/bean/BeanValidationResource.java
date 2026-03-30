@@ -19,12 +19,12 @@
  */
 package org.iplass.mtp.impl.validation.bean;
 
-import jakarta.validation.MessageInterpolator;
-
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantResource;
 import org.iplass.mtp.impl.validation.ValidationService;
 import org.iplass.mtp.spi.ServiceRegistry;
+
+import jakarta.validation.MessageInterpolator;
 
 public class BeanValidationResource implements TenantResource {
 
