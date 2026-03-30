@@ -30,7 +30,9 @@ allprojects {
     spotless {
         java {
             eclipse().configFile("${rootDir}/editor-settings/iplass-codestyle-eclipse/eclipse-java-formatter.xml")
-        }
+			importOrder( 'javax', 'java', 'org' , "")
+			removeUnusedImports()
+		}
     }
 }
 
