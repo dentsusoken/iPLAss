@@ -24,17 +24,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.mtp.impl.webapi.jackson.WebApiResponseSerializer;
+import org.iplass.mtp.impl.webapi.jaxb.Result;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.iplass.mtp.impl.webapi.jackson.WebApiResponseSerializer;
-import org.iplass.mtp.impl.webapi.jaxb.Result;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * WebAPI呼び出し結果。

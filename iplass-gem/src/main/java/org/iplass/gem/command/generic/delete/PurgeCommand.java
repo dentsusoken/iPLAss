@@ -37,8 +37,8 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.SearchFormView;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

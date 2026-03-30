@@ -22,11 +22,6 @@ package org.iplass.mtp.impl.auth.oauth.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.ResponseBuilder;
-
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -50,6 +45,11 @@ import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
 
 @WebApi(
 		name = "oauth/introspect",

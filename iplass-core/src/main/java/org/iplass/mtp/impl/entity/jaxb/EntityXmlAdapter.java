@@ -20,14 +20,14 @@
 
 package org.iplass.mtp.impl.entity.jaxb;
 
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.util.StringUtil;
+
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * EntityのXmlAdapter。

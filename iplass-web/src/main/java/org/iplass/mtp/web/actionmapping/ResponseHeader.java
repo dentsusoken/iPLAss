@@ -20,10 +20,10 @@
 
 package org.iplass.mtp.web.actionmapping;
 
-import jakarta.servlet.http.Cookie;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.web.WebRequestConstants;
+
+import jakarta.servlet.http.Cookie;
 
 /**
  * HTTPレスポンスのヘッダーに値をセットしたい際に利用するインタフェース。

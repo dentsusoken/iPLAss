@@ -22,14 +22,14 @@ package org.iplass.mtp.impl.core.config;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import org.iplass.mtp.spi.ServiceConfigrationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
-
-import org.iplass.mtp.spi.ServiceConfigrationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ServiceDefinitionParser {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceDefinitionParser.class);

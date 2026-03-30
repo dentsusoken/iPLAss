@@ -29,9 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-
 import org.iplass.mtp.impl.metadata.AbstractXmlMetaDataStore;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
@@ -48,6 +45,9 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 	private static Logger logger = LoggerFactory.getLogger(RdbMetaDataStore.class);

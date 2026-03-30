@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.impl.metadata.binary.jaxb;
 
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.iplass.mtp.definition.binary.BinaryDefinition;
+
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class BinaryDefinitionXmlAdapter extends XmlAdapter<BinaryDefinitionJaxbRepresentation, BinaryDefinition> {
 

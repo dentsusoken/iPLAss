@@ -25,10 +25,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import jakarta.ws.rs.core.MediaType;
-
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;
+
+import jakarta.ws.rs.core.MediaType;
 
 public class RequestRestriction implements ServiceInitListener<WebFrontendService> {
 	//ファイルサイズ、ボディサイズなど、基本的にはWAF、リバースプロキシ等の前段でやる想定だが、前段でできない場合も想定しておく。

@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.webapi.definition;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * EntityのWebAPIから利用可能なEntityWebApi定義

@@ -24,11 +24,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.iplass.mtp.definition.binary.BinaryDefinition;
 import org.iplass.mtp.impl.metadata.binary.jaxb.BinaryMetaDataXmlAdapter;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlSeeAlso({ SimpleBinaryMetaData.class, ArchiveBinaryMetaData.class })
 @XmlJavaTypeAdapter(BinaryMetaDataXmlAdapter.class)

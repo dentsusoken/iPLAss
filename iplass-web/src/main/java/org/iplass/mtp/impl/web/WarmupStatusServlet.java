@@ -23,12 +23,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.iplass.mtp.impl.tenant.TenantService;
 import org.iplass.mtp.impl.warmup.WarmupContext;
 import org.iplass.mtp.impl.warmup.WarmupService;
@@ -39,6 +33,12 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * ウォームアップ状態サーブレット

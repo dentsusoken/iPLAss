@@ -23,14 +23,14 @@ package org.iplass.mtp.impl.view.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSection;
 import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.element.section.Section;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * 検索画面用のレイアウト情報

@@ -20,8 +20,8 @@
 package org.iplass.mtp.impl.metadata.xmlfile.dom.extend.template;
 
 import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute;
-import org.iplass.mtp.impl.metadata.xmlfile.dom.MultiLangExternalRefPath;
 import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.FileExtention;
+import org.iplass.mtp.impl.metadata.xmlfile.dom.MultiLangExternalRefPath;
 
 @ExternalRefPathAttribute(
 		path = "/metaDataEntry/metaData/localizedSourceList/stringValue",

@@ -23,8 +23,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.command.RequestContext;
@@ -36,6 +34,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.TenantI18nInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class LangSelector {
 	private static Logger logger = LoggerFactory.getLogger(LangSelector.class);

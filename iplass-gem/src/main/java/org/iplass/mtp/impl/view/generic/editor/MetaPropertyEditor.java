@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityContext;
@@ -43,6 +40,9 @@ import org.iplass.mtp.view.generic.editor.CustomPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PrimitivePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * プロパティエディタのメタデータ

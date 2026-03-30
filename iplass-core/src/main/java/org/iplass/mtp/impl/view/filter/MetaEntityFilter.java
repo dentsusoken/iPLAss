@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
@@ -36,6 +34,8 @@ import org.iplass.mtp.impl.util.KeyGenerator;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * フィルタ定義

@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.entity.property;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.impl.entity.MetaEntity;
@@ -39,6 +37,8 @@ import org.iplass.mtp.impl.properties.extend.BinaryType;
 import org.iplass.mtp.impl.properties.extend.ExpressionType;
 import org.iplass.mtp.impl.properties.extend.LongTextType;
 import org.iplass.mtp.impl.properties.extend.SelectType;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 //TODO JAXBへ設定するクラス群は、メタデータの設定から取得する。
 @XmlSeeAlso({ DateTimeType.class, DateType.class, TimeType.class, FloatType.class, IntegerType.class,

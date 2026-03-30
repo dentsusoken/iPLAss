@@ -27,11 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-import jakarta.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext;
-import jakarta.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderDefinedContext;
-
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.beanvalidation.constraints.ValidEntity;
 import org.iplass.mtp.entity.Entity;
@@ -44,6 +39,11 @@ import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext;
+import jakarta.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderDefinedContext;
 
 public class ValidEntityValidator implements ConstraintValidator<ValidEntity, Entity> {
 	private static Logger logger = LoggerFactory.getLogger(ValidEntityValidator.class);

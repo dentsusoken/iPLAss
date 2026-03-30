@@ -30,10 +30,10 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.iplass.mtp.impl.beanvalidation.ValidEntityValidator;
+
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-
-import org.iplass.mtp.impl.beanvalidation.ValidEntityValidator;
 
 /**
  * <p>

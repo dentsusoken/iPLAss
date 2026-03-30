@@ -22,9 +22,9 @@ package org.iplass.mtp.entity;
 
 import java.sql.Timestamp;
 
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.iplass.mtp.impl.entity.jaxb.EntityXmlAdapter;
+
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Entity（データ）を表すインタフェース。

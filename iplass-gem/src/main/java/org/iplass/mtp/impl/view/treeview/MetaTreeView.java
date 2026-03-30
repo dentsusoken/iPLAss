@@ -23,10 +23,6 @@ package org.iplass.mtp.impl.view.treeview;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
@@ -37,6 +33,10 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.view.treeview.TreeView;
 import org.iplass.mtp.view.treeview.TreeViewGridColModel;
 import org.iplass.mtp.view.treeview.TreeViewItem;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * ツリービュー定義のメタデータ

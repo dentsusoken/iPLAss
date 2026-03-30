@@ -20,12 +20,12 @@
 
 package org.iplass.mtp.impl.web.template.report;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.web.template.report.definition.ReportType;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaJasperReportType.class, MetaPoiReportType.class, MetaJxlsReportType.class })
 public abstract class MetaReportType implements MetaData {

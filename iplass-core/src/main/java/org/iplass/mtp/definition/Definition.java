@@ -22,9 +22,8 @@ package org.iplass.mtp.definition;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * 定義がもつ共通のインタフェースを定義。

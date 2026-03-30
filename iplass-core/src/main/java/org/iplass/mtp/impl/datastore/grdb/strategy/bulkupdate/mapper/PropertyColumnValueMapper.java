@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.datastore.grdb.GRdbPropertyStoreRuntime;
-import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbMultiplePropertyStore.GRdbMultiplePropertyStoreHandler;
+import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore.GRdbPropertyStoreHandler;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;
 import org.iplass.mtp.impl.datastore.grdb.strategy.bulkupdate.PropertyColumnValue;

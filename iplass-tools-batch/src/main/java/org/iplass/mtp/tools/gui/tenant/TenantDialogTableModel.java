@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.tools.gui.tenant;
 
-import java.util.List;
-
 import javax.swing.table.DefaultTableModel;
+
+import java.util.List;
 
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 

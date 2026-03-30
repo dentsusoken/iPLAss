@@ -28,8 +28,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.servlet.ServletContext;
-
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -40,6 +38,8 @@ import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.util.StringUtil;
+
+import jakarta.servlet.ServletContext;
 
 @ActionMapping(
 		name = AboutCommand.ACTION_NAME,

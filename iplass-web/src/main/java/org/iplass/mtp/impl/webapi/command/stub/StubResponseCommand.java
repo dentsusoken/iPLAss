@@ -22,9 +22,6 @@ package org.iplass.mtp.impl.webapi.command.stub;
 import java.util.List;
 import java.util.Random;
 
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Variant;
-
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -39,6 +36,9 @@ import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.WebApiRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Variant;
 
 /**
  * WebAPI スタブレスポンスを返却するコマンド

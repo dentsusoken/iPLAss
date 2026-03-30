@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.top.parts;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -44,6 +42,8 @@ import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.top.parts.EntityListParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.web.template.TemplateUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * お知らせ一覧パーツ

@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.entity;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityEventContext;
 import org.iplass.mtp.entity.definition.EventListenerDefinition;
@@ -29,6 +27,8 @@ import org.iplass.mtp.impl.entity.listener.MetaJavaClassEventListener;
 import org.iplass.mtp.impl.entity.listener.MetaScriptingEventListener;
 import org.iplass.mtp.impl.entity.listener.MetaSendNotificationEventListener;
 import org.iplass.mtp.impl.metadata.MetaData;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaJavaClassEventListener.class, MetaScriptingEventListener.class, MetaSendNotificationEventListener.class })
 public abstract class MetaEventListener implements MetaData {

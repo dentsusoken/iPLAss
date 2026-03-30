@@ -32,10 +32,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.gem.command.generic.search.ResponseUtil;
@@ -86,6 +82,10 @@ import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebApi(
 		name = GetMassReferencesCommand.WEBAPI_NAME,

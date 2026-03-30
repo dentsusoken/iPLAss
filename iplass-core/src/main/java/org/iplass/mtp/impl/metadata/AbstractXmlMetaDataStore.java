@@ -22,9 +22,9 @@ package org.iplass.mtp.impl.metadata;
 
 import java.util.List;
 
-import jakarta.xml.bind.JAXBContext;
-
 import org.iplass.mtp.spi.Config;
+
+import jakarta.xml.bind.JAXBContext;
 
 public abstract class AbstractXmlMetaDataStore implements MetaDataStore {
 	protected JAXBContext context;

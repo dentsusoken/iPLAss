@@ -23,10 +23,10 @@ package org.iplass.mtp.impl.core.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class ServiceDefinition {

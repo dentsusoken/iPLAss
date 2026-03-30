@@ -22,8 +22,9 @@ package org.iplass.mtp.webhook.template.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class WebhookTemplateDefinition implements Definition {

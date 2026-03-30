@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.auth.oauth;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.oauth.definition.SubjectIdentifierTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.subtypes.PairwiseSubjectIdentifierTypeDefinition;
@@ -30,6 +28,8 @@ import org.iplass.mtp.impl.auth.oauth.subtypes.MetaPairwiseSubjectIdentifierType
 import org.iplass.mtp.impl.auth.oauth.subtypes.MetaPublicSubjectIdentifierType;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({
 		MetaPairwiseSubjectIdentifierType.class,

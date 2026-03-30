@@ -19,13 +19,13 @@
  */
 package org.iplass.mtp.impl.util;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * RequestPath ユーティリティ

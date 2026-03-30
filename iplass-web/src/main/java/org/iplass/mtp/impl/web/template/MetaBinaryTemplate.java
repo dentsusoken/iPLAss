@@ -24,14 +24,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.web.template.definition.BinaryTemplateDefinition;
 import org.iplass.mtp.web.template.definition.LocalizedBinaryDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
+
+import jakarta.servlet.ServletException;
 
 public class MetaBinaryTemplate extends MetaTemplate {
 	private static final long serialVersionUID = -1789466133481644517L;

@@ -23,11 +23,11 @@ package org.iplass.mtp.view.top;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.view.top.parts.TopViewParts;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * TOP画面定義

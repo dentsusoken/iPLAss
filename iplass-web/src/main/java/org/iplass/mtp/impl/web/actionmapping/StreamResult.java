@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.impl.lob.Lob;
@@ -45,6 +43,8 @@ import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.StreamResultDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletException;
 
 public class StreamResult extends Result {
 

@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
@@ -34,6 +32,8 @@ import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.template.definition.HtmlTemplateDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
+
+import jakarta.servlet.ServletException;
 
 public class MetaHtmlTemplate extends MetaTemplate {
 

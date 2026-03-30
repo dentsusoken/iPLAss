@@ -20,11 +20,11 @@
 
 package org.iplass.mtp.tools.gui.partition;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.iplass.mtp.impl.tools.tenant.PartitionInfo;
 

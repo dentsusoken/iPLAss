@@ -21,7 +21,6 @@
 package org.iplass.gem.command.calendar;
 
 import org.iplass.mtp.util.StringUtil;
-import org.iplass.mtp.view.calendar.EntityCalendar.CalendarType;
 
 /**
  * 日付毎のデータ

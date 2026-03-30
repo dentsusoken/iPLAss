@@ -22,9 +22,8 @@ package org.iplass.mtp.web.actionmapping.definition.result;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * ActionでのCommandの実行結果によるプレゼンテーション処理の定義を表します。

@@ -27,8 +27,6 @@ import org.iplass.mtp.impl.parser.ParseContext;
 import org.iplass.mtp.impl.parser.ParseException;
 import org.iplass.mtp.impl.parser.Syntax;
 import org.iplass.mtp.impl.parser.SyntaxContext;
-import org.iplass.mtp.impl.query.QueryConstants;
-import org.iplass.mtp.impl.query.QuerySyntax;
 import org.iplass.mtp.impl.query.condition.expr.OrSyntax;
 
 public class SubQuerySyntax implements Syntax<SubQuery>, QueryConstants {

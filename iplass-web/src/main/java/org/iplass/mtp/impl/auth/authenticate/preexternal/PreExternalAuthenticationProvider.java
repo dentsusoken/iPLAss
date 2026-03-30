@@ -22,9 +22,6 @@ package org.iplass.mtp.impl.auth.authenticate.preexternal;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.command.RequestContext;
@@ -33,13 +30,16 @@ import org.iplass.mtp.impl.auth.UserContext;
 import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 import org.iplass.mtp.impl.auth.authenticate.AccountManagementModule;
 import org.iplass.mtp.impl.auth.authenticate.AuthenticationProviderBase;
+import org.iplass.mtp.impl.auth.authenticate.AutoLoginHandler;
 import org.iplass.mtp.impl.auth.authenticate.AutoLoginInstruction;
 import org.iplass.mtp.impl.auth.authenticate.DefaultUserEntityResolver;
-import org.iplass.mtp.impl.auth.authenticate.AutoLoginHandler;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.interceptors.AuthInterceptor;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.web.WebRequestConstants;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 public class PreExternalAuthenticationProvider extends AuthenticationProviderBase implements AutoLoginHandler {
 

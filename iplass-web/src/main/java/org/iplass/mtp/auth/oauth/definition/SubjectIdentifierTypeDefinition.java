@@ -21,12 +21,11 @@ package org.iplass.mtp.auth.oauth.definition;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.oauth.definition.subtypes.PairwiseSubjectIdentifierTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.subtypes.PublicSubjectIdentifierTypeDefinition;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * subjectIdの方式に関する定義です。

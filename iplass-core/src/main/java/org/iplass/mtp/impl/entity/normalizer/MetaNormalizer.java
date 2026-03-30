@@ -20,14 +20,14 @@
 
 package org.iplass.mtp.impl.entity.normalizer;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.metadata.MetaData;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({
 		MetaICUTransliterator.class,

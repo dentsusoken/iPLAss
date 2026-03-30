@@ -20,6 +20,10 @@
 
 package org.iplass.mtp.impl.rdb.connection;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,10 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 import org.iplass.mtp.spi.Config;
 import org.slf4j.Logger;

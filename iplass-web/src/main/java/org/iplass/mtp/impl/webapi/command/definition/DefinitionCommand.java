@@ -19,9 +19,6 @@
  */
 package org.iplass.mtp.impl.webapi.command.definition;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response.Status;
-
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.NoPermissionException;
@@ -44,6 +41,9 @@ import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response.Status;
 
 @WebApi(
 		name = "mtp/definition/GET",

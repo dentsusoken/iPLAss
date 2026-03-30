@@ -21,8 +21,6 @@ package org.iplass.mtp.impl.webapi.openapi.entity;
 
 import java.util.function.Consumer;
 
-import jakarta.ws.rs.core.Response;
-
 import org.iplass.mtp.entity.definition.EntityDefinition;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -30,6 +28,7 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.PathParameter;
+import jakarta.ws.rs.core.Response;
 
 /**
  * 抽象的なEntityWebApiのOpenAPI変換クラス

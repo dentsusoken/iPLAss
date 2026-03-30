@@ -84,7 +84,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMetaData<OpenIdConnectDefinition> {

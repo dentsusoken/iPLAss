@@ -22,8 +22,8 @@ package org.iplass.mtp.impl.properties.extend;
 
 import java.util.List;
 
-import org.apache.commons.text.StringTokenizer;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.text.StringTokenizer;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityRuntimeException;

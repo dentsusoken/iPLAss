@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.webapi;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
@@ -32,6 +30,8 @@ import org.iplass.mtp.impl.metadata.MetaDataRuntime;
 import org.iplass.mtp.impl.util.KeyGenerator;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * EntityWebApi定義

@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.tools.gui;
 
-import java.util.ResourceBundle;
-
 import javax.swing.JFrame;
+
+import java.util.ResourceBundle;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;

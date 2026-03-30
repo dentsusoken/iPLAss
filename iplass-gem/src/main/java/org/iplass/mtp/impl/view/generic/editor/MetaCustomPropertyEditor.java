@@ -20,14 +20,14 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.TemplatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaDateRangePropertyEditor.class, MetaNumericRangePropertyEditor.class, MetaJoinPropertyEditor.class, MetaTemplatePropertyEditor.class,
 		MetaUserPropertyEditor.class })

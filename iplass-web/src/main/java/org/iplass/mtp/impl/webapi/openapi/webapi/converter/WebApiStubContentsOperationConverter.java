@@ -29,7 +29,6 @@ import org.iplass.mtp.webapi.definition.openapi.OpenApiFileType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.v3.oas.models.examples.Example;
 
 /**

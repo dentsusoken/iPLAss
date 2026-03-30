@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
@@ -50,6 +48,8 @@ import org.iplass.mtp.pushnotification.template.definition.LocalizedNotification
 import org.iplass.mtp.pushnotification.template.definition.PushNotificationTemplateDefinition;
 import org.iplass.mtp.tenant.TenantI18nInfo;
 import org.iplass.mtp.util.StringUtil;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Push通知テンプレートのメタデータ.

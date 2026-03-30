@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.entity.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -40,6 +38,8 @@ import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.validation.MetaValidation;
 import org.iplass.mtp.impl.validation.ValidationService;
 import org.iplass.mtp.spi.ServiceRegistry;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaPrimitiveProperty.class, MetaReferenceProperty.class })
 public abstract class MetaProperty implements MetaData {

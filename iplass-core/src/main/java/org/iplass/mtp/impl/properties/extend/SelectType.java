@@ -33,9 +33,9 @@ import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.entity.property.PropertyType;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.properties.basic.StringType;
+import org.iplass.mtp.impl.properties.extend.select.MetaSelectValue.SelectValueRuntime;
 import org.iplass.mtp.impl.properties.extend.select.SelectValueService;
 import org.iplass.mtp.impl.properties.extend.select.Value;
-import org.iplass.mtp.impl.properties.extend.select.MetaSelectValue.SelectValueRuntime;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 

@@ -21,10 +21,10 @@ package org.iplass.mtp.impl.metadata.binary.jaxb;
 
 import java.io.InputStream;
 
+import org.iplass.mtp.definition.binary.ArchiveBinaryDefinition;
+
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.iplass.mtp.definition.binary.ArchiveBinaryDefinition;
 
 @XmlType(name = "binaryDefinition", namespace = "http://mtp.iplass.org/xml/definition/binary")
 public class BinaryDefinitionJaxbRepresentation implements ArchiveBinaryDefinition {

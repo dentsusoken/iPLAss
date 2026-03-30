@@ -23,15 +23,15 @@ import java.beans.FeatureDescriptor;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
-import jakarta.el.PropertyNotFoundException;
-
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
 
 public class EntityELResolver extends ELResolver {
 

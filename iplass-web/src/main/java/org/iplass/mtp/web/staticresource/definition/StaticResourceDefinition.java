@@ -21,12 +21,12 @@ package org.iplass.mtp.web.staticresource.definition;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.definition.binary.BinaryDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * 静的リソースの定義。

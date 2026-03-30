@@ -22,15 +22,15 @@ package org.iplass.mtp.view.top;
 
 import java.util.List;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.impl.view.top.parts.TopViewPartsHandler;
 import org.iplass.mtp.view.top.parts.TopViewParts;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * TOP画面定義を管理するクラスのインターフェース

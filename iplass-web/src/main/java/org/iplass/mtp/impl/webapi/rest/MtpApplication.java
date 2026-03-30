@@ -23,10 +23,10 @@ package org.iplass.mtp.impl.webapi.rest;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.ws.rs.core.Application;
-
 import org.iplass.mtp.impl.webapi.jackson.ObjectMapperProvider;
 import org.iplass.mtp.impl.webapi.jaxb.JAXBContextProvider;
+
+import jakarta.ws.rs.core.Application;
 
 /**
  * JAX-RS Application定義。

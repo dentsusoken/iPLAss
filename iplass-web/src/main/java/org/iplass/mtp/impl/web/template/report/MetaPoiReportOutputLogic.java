@@ -20,12 +20,12 @@
 
 package org.iplass.mtp.impl.web.template.report;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.apache.poi.ss.usermodel.Workbook;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaJavaClassPoiReportOutputLogic.class, MetaGroovyPoiReportOutputLogic.class })
 public abstract class MetaPoiReportOutputLogic implements MetaData {

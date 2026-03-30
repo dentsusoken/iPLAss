@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.auth.authenticate.builtin.policy;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.policy.AccountNotificationListener;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.listeners.JavaClassAccountNotificationListenerDefinition;
@@ -29,6 +27,8 @@ import org.iplass.mtp.auth.policy.definition.listeners.MailAccountNotificationLi
 import org.iplass.mtp.auth.policy.definition.listeners.ScriptingAccountNotificationListenerDefinition;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaJavaClassAccountNotificationListener.class, MetaScriptingAccountNotificationListener.class,
 		MetaMailAccountNotificationListener.class })

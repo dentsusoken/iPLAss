@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.web.staticresource;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.web.staticresource.EntryPathTranslator;
@@ -28,6 +26,8 @@ import org.iplass.mtp.web.staticresource.definition.EntryPathTranslatorDefinitio
 import org.iplass.mtp.web.staticresource.definition.JavaClassEntryPathTranslatorDefinition;
 import org.iplass.mtp.web.staticresource.definition.PrefixEntryPathTranslatorDefinition;
 import org.iplass.mtp.web.staticresource.definition.ScriptingEntryPathTranslatorDefinition;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaJavaClassEntryPathTranslator.class,
 		MetaPrefixEntryPathTranslator.class,

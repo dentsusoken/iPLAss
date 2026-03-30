@@ -22,12 +22,12 @@ package org.iplass.mtp.impl.web.actionmapping.cache.blocks;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.actionmapping.WebInvocationImpl;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentBlock;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentCacheContext;
+
+import jakarta.servlet.ServletException;
 
 public class TextContentBlock implements ContentBlock {
 	private static final long serialVersionUID = -325256717321320555L;

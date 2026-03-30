@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.generic.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
@@ -38,6 +36,8 @@ import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.Link;
+
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * リンクのメタデータ

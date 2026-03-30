@@ -22,14 +22,14 @@ package org.iplass.mtp.mail.listeners;
 
 import java.util.List;
 
-import jakarta.activation.DataHandler;
-import jakarta.mail.internet.InternetAddress;
-
 import org.iplass.mtp.mail.InlineContent;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.SendMailListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.activation.DataHandler;
+import jakarta.mail.internet.InternetAddress;
 
 /**
  * 送信メールをLogに出力します。

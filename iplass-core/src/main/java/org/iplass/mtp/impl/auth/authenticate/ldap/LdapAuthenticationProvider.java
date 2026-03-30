@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.impl.auth.authenticate.ldap;
 
-import java.util.Map;
-
 import javax.naming.Context;
+
+import java.util.Map;
 
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.Credential;

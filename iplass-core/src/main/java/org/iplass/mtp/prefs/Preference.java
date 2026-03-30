@@ -20,10 +20,10 @@
 
 package org.iplass.mtp.prefs;
 
+import org.iplass.mtp.definition.Definition;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
-
-import org.iplass.mtp.definition.Definition;
 
 /**
  * テナント単位に定義可能な汎用の設定を表す。

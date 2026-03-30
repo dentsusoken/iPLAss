@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.web;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.web.actionmapping.RequestInfo;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Webからの呼び出しの際、RequestContextで取得可能なattributeの名前の定数。

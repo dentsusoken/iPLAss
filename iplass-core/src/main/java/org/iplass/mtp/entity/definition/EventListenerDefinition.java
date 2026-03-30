@@ -22,13 +22,12 @@ package org.iplass.mtp.entity.definition;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.listeners.JavaClassEventListenerDefinition;
 import org.iplass.mtp.entity.definition.listeners.ScriptingEventListenerDefinition;
 import org.iplass.mtp.entity.definition.listeners.SendNotificationEventListenerDefinition;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * <p>

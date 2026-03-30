@@ -20,11 +20,11 @@
 
 package org.iplass.mtp.impl.entity;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.StoreDefinition;
 import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;
 import org.iplass.mtp.impl.metadata.MetaData;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso(value = { MetaSchemalessRdbStoreMapping.class })
 public abstract class MetaStoreMapping implements MetaData {

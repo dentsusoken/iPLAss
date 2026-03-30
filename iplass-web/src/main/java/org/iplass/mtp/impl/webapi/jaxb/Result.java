@@ -19,13 +19,13 @@
  */
 package org.iplass.mtp.impl.webapi.jaxb;
 
+import org.iplass.mtp.command.beanmapper.MappingResult;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.iplass.mtp.command.beanmapper.MappingResult;
 
 @XmlSeeAlso({
 		JaxbListValue.class,

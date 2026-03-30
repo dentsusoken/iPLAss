@@ -22,10 +22,6 @@ package org.iplass.mtp.impl.view.generic.parser;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -34,6 +30,10 @@ import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.parser.Token;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 public class PropertyToken implements Token {
 

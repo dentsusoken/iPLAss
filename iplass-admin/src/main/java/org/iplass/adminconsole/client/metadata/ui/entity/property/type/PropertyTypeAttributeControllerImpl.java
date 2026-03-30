@@ -21,8 +21,8 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.property.type;
 
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute.DefaultAttribute;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.properties.AutoNumberProperty;

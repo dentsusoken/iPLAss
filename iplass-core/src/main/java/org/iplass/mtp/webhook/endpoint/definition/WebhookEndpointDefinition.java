@@ -19,9 +19,9 @@
  */
 package org.iplass.mtp.webhook.endpoint.definition;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class WebhookEndpointDefinition implements Definition {

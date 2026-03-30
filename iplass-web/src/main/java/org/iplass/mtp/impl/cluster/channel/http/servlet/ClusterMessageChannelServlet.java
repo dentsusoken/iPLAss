@@ -23,12 +23,6 @@ package org.iplass.mtp.impl.cluster.channel.http.servlet;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.iplass.mtp.impl.cluster.ClusterService;
 import org.iplass.mtp.impl.cluster.Message;
 import org.iplass.mtp.impl.cluster.channel.MessageChannel;
@@ -36,6 +30,12 @@ import org.iplass.mtp.impl.cluster.channel.http.HttpMessageChannel;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ClusterMessageChannelServlet extends HttpServlet {
 	private static final long serialVersionUID = 8940534146769969242L;

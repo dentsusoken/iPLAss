@@ -39,8 +39,8 @@ import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
-import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 import org.iplass.mtp.entity.query.condition.predicate.Like.MatchPattern;
+import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 
 /**
  * OR条件を表す。

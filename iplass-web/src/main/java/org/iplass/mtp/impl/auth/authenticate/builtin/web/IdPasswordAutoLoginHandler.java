@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.builtin.web;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.auth.login.LoginFailedException;
@@ -32,6 +30,8 @@ import org.iplass.mtp.impl.webapi.rest.RestRequestContext;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * ID/PasswordベースのAutoLoginHandler。

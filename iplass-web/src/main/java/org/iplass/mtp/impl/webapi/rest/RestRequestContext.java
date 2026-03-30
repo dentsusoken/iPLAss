@@ -19,17 +19,17 @@
  */
 package org.iplass.mtp.impl.webapi.rest;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.HttpMethod;
-import jakarta.ws.rs.core.Request;
-
 import org.iplass.mtp.impl.web.WebRequestContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
-import org.iplass.mtp.webapi.definition.RequestType;;
+import org.iplass.mtp.webapi.definition.RequestType;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.core.Request;
 
 public class RestRequestContext extends WebRequestContext {
 	static final String WEB_API_RUNTIME_NAME = "mtp.restRequestContext.webApiRuntime";;

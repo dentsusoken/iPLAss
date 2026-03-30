@@ -22,8 +22,6 @@ package org.iplass.mtp.impl.webapi.openapi.webapi.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.ws.rs.core.Response;
-
 import org.iplass.mtp.impl.webapi.openapi.webapi.converter.WebApiOpenApiConvertContext.OperationContext;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
@@ -34,6 +32,7 @@ import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem.HttpMethod;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
+import jakarta.ws.rs.core.Response;
 
 /**
  * OpenAPI仕様とWebAPI定義の変換(WebAPI名とMethod単位)

@@ -21,14 +21,14 @@ package org.iplass.mtp.impl.auth.oauth;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.oauth.definition.OIDCClaimScopeDefinition;
 import org.iplass.mtp.auth.oauth.definition.ScopeDefinition;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaOIDCClaimScope.class })
 public class MetaScope implements MetaData {

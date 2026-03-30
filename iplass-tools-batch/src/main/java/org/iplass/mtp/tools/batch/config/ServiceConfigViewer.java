@@ -27,16 +27,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-
 import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.core.config.ServiceDefinition;
 import org.iplass.mtp.impl.core.config.ServiceDefinitionParser;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
 import org.iplass.mtp.util.StringUtil;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 public class ServiceConfigViewer {
 

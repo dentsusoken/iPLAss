@@ -24,11 +24,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import jakarta.activation.DataSource;
-
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.EntityManager;
+
+import jakarta.activation.DataSource;
 
 public class BinaryReferenceDataSource implements DataSource {
 

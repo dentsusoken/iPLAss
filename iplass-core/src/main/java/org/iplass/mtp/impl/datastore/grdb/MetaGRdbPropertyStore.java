@@ -25,9 +25,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.impl.datastore.MetaPropertyStore;
 import org.iplass.mtp.impl.datastore.PropertyStoreHandler;
@@ -44,6 +41,9 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MetaGRdbPropertyStore extends MetaPropertyStore {

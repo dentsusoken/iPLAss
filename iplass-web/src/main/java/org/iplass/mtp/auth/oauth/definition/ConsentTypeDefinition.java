@@ -21,13 +21,12 @@ package org.iplass.mtp.auth.oauth.definition;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.oauth.definition.consents.AlwaysConsentTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.consents.OnceConsentTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.consents.ScriptingConsentTypeDefinition;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * スコープ承認画面の表示有無を判断するための定義です。
