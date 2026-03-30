@@ -27,23 +27,23 @@ package org.iplass.mtp.entity;
  *
  */
 public class DeleteOption {
-	
+
 	/** 更新時タイムスタンプチェックを行うかどうか */
 	private boolean checkTimestamp;
-	
+
 	/** ごみ箱に入れず、物理削除するかどうか（デフォルトtrue） */
 	private boolean purge = true;
-	
+
 	/**　ユーザーによるロックのチェックを行うかどうか。デフォルトtrue */
 	private boolean checkLockedByUser = true;
-	
+
 	private boolean notifyListeners = true;
-	
+
 	private DeleteTargetVersion targetVersion = DeleteTargetVersion.ALL;
-	
+
 	public DeleteOption() {
 	}
-	
+
 	/**
 	 * コンストラクタ。
 	 * 
@@ -146,7 +146,7 @@ public class DeleteOption {
 	public void setCheckLockedByUser(boolean checkLockedByUser) {
 		this.checkLockedByUser = checkLockedByUser;
 	}
-	
+
 	/**
 	 * 削除時、 {@link EntityEventListener}に通知するか否か
 	 * 
@@ -165,8 +165,7 @@ public class DeleteOption {
 	public void setNotifyListeners(boolean notifyListeners) {
 		this.notifyListeners = notifyListeners;
 	}
-	
-	
+
 	/**
 	 * ユーザーにより、当該Entityがロックされているか否かを確認せず削除処理する。
 	 * @return
@@ -175,7 +174,7 @@ public class DeleteOption {
 		this.checkLockedByUser = false;
 		return this;
 	}
-	
+
 	/**
 	 * 削除時、パージしないように設定。
 	 * DeleteTargetVersion.SPECIFICを指定した場合、purgeはfalseに設定できません。
@@ -185,7 +184,7 @@ public class DeleteOption {
 		this.purge = false;
 		return this;
 	}
-	
+
 	/**
 	 * 削除時に{@link EntityEventListener}に通知しないように設定。
 	 * @return
@@ -194,7 +193,7 @@ public class DeleteOption {
 		this.notifyListeners = false;
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "DeleteOption [checkTimestamp=" + checkTimestamp + ", targetVersion=" + targetVersion + ", purge="

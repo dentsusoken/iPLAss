@@ -57,7 +57,7 @@ public class ReportTemplateDefinition extends TemplateDefinition {
 	 * @return reportType
 	 */
 	public ReportType getReportType() {
-	    return reportType;
+		return reportType;
 	}
 
 	/**
@@ -65,15 +65,15 @@ public class ReportTemplateDefinition extends TemplateDefinition {
 	 * @param reportType reportType
 	 */
 	public void setReportType(ReportType reportType) {
-	    this.reportType = reportType;
+		this.reportType = reportType;
 	}
 
 	public String getFileName() {
-	    return fileName;
+		return fileName;
 	}
 
 	public void setFileName(String fileName) {
-	    this.fileName = fileName;
+		this.fileName = fileName;
 	}
 
 	public byte[] getBinary() {

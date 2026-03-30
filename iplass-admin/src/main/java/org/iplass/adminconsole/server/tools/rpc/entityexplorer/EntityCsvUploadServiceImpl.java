@@ -66,7 +66,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException {
 
 		final EntityImportResponseInfo result = new EntityImportResponseInfo();
-		final HashMap<String,Object> args = new HashMap<>();
+		final HashMap<String, Object> args = new HashMap<>();
 		try {
 
 			//リクエスト情報の取得
@@ -76,66 +76,70 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 			validateRequest(args);
 
 			//テナントID
-			int tenantId = Integer.parseInt((String)args.get("tenantId"));
+			int tenantId = Integer.parseInt((String) args.get("tenantId"));
 
-			EntityDataImportResult importResult = AuthUtil.authCheckAndInvoke(getServletContext(), request, null, tenantId, new AuthUtil.Callable<EntityDataImportResult>() {
+			EntityDataImportResult importResult = AuthUtil.authCheckAndInvoke(getServletContext(), request, null, tenantId,
+					new AuthUtil.Callable<EntityDataImportResult>() {
 
-				@Override
-				public EntityDataImportResult call() {
+						@Override
+						public EntityDataImportResult call() {
 
-					//リクエスト->EntityDataImportCondition
-					EntityDataImportCondition cond = new EntityDataImportCondition();
-					cond.setTruncate(args.containsKey("chkTruncate"));
-					cond.setBulkUpdate(args.containsKey("chkBulkUpdate"));
-					if (args.containsKey("commitLimit")) {
-						cond.setCommitLimit(Integer.parseInt((String)args.get("commitLimit")));
-					}
-					cond.setNotifyListeners(args.containsKey("chkNotifyListeners"));
-					if (args.containsKey("chkUpdateDisupdatableProperty")) {
-						//更新不可項目も更新する場合はValidationはfalse
-						cond.setUpdateDisupdatableProperty(true);
-						cond.setWithValidation(false);
-					} else {
-						cond.setUpdateDisupdatableProperty(false);
-						cond.setWithValidation(args.containsKey("chkWithValidation"));
-					}
-					cond.setInsertEnableAuditPropertySpecification(args.containsKey("chkInsertEnableAuditPropertySpecification"));
-					cond.setErrorSkip(args.containsKey("chkErrorSkip"));
-					cond.setIgnoreNotExistsProperty(args.containsKey("chkIgnoreNotExistsProperty"));
-					cond.setFourceUpdate(args.containsKey("chkForceUpdate"));
-					if (args.containsKey("prefixOid")) {
-						cond.setPrefixOid((String)args.get("prefixOid"));
-					}
-					if (args.containsKey("locale")) {
-						cond.setLocale((String)args.get("locale"));
-					}
-					if (args.containsKey("timeZone")) {
-						cond.setTimezone((String)args.get("timeZone"));
-					}
-					if (args.containsKey("uniqueKey")) {
-						cond.setUniqueKey((String)args.get("uniqueKey"));
-					}
+							//リクエスト->EntityDataImportCondition
+							EntityDataImportCondition cond = new EntityDataImportCondition();
+							cond.setTruncate(args.containsKey("chkTruncate"));
+							cond.setBulkUpdate(args.containsKey("chkBulkUpdate"));
+							if (args.containsKey("commitLimit")) {
+								cond.setCommitLimit(Integer.parseInt((String) args.get("commitLimit")));
+							}
+							cond.setNotifyListeners(args.containsKey("chkNotifyListeners"));
+							if (args.containsKey("chkUpdateDisupdatableProperty")) {
+								//更新不可項目も更新する場合はValidationはfalse
+								cond.setUpdateDisupdatableProperty(true);
+								cond.setWithValidation(false);
+							} else {
+								cond.setUpdateDisupdatableProperty(false);
+								cond.setWithValidation(args.containsKey("chkWithValidation"));
+							}
+							cond.setInsertEnableAuditPropertySpecification(args.containsKey("chkInsertEnableAuditPropertySpecification"));
+							cond.setErrorSkip(args.containsKey("chkErrorSkip"));
+							cond.setIgnoreNotExistsProperty(args.containsKey("chkIgnoreNotExistsProperty"));
+							cond.setFourceUpdate(args.containsKey("chkForceUpdate"));
+							if (args.containsKey("prefixOid")) {
+								cond.setPrefixOid((String) args.get("prefixOid"));
+							}
+							if (args.containsKey("locale")) {
+								cond.setLocale((String) args.get("locale"));
+							}
+							if (args.containsKey("timeZone")) {
+								cond.setTimezone((String) args.get("timeZone"));
+							}
+							if (args.containsKey("uniqueKey")) {
+								cond.setUniqueKey((String) args.get("uniqueKey"));
+							}
 
-					//MetaDataEntry
-					String entityPath =  EntityService.ENTITY_META_PATH + ((String)args.get("defName")).replace(".", "/");
-					MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(entityPath);
-					if (entry == null) {
-						throw new EntityCsvFatalException(rs("tools.entityexplorer.EntityCsvUploadServiceImpl.canNotGetEntityInfo", entityPath));
-					}
+							//MetaDataEntry
+							String entityPath = EntityService.ENTITY_META_PATH + ((String) args.get("defName")).replace(".", "/");
+							MetaDataEntry entry = MetaDataContext.getContext()
+									.getMetaDataEntry(entityPath);
+							if (entry == null) {
+								throw new EntityCsvFatalException(
+										rs("tools.entityexplorer.EntityCsvUploadServiceImpl.canNotGetEntityInfo", entityPath));
+							}
 
-					//File
-					File tempFile = (File)args.get("targetFile");
-					String fileName = (String)args.get("targetFileName");
+							//File
+							File tempFile = (File) args.get("targetFile");
+							String fileName = (String) args.get("targetFileName");
 
-					try (FileInputStream fis = new FileInputStream(tempFile)) {
-						EntityPortingService service = ServiceRegistry.getRegistry().getService(EntityPortingService.class);
-						return service.importEntityData(fileName, fis, entry, cond, null);
-					} catch (IOException e) {
-						throw new EntityCsvFatalException(rs("tools.entityexplorer.EntityCsvUploadServiceImpl.errReadFile"), e);
-					}
-				}
+							try (FileInputStream fis = new FileInputStream(tempFile)) {
+								EntityPortingService service = ServiceRegistry.getRegistry()
+										.getService(EntityPortingService.class);
+								return service.importEntityData(fileName, fis, entry, cond, null);
+							} catch (IOException e) {
+								throw new EntityCsvFatalException(rs("tools.entityexplorer.EntityCsvUploadServiceImpl.errReadFile"), e);
+							}
+						}
 
-			});
+					});
 
 			//EntityDataImportResult->EntityImportResponseInfo
 			if (importResult.isError()) {
@@ -157,7 +161,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 			throw new UploadActionException(e);
 		} finally {
 			//Tempファイルを削除
-			File tempFile = (File)args.get("targetFile");
+			File tempFile = (File) args.get("targetFile");
 			if (tempFile != null) {
 				if (!tempFile.delete()) {
 					logger.warn("Fail to delete temporary resource:" + tempFile.getPath());
@@ -192,7 +196,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		}
 	}
 
-	private void validateRequest(HashMap<String,Object> args) {
+	private void validateRequest(HashMap<String, Object> args) {
 		if (!args.containsKey("tenantId")) {
 			throw new EntityCsvFatalException(rs("tools.entityexplorer.EntityCsvUploadServiceImpl.canNotGetTenantInfo"));
 		}
@@ -214,7 +218,9 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		//JSONで出力
 		ObjectMapper mapper = new ObjectMapper();
 		//for backward compatibility
-		mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
+		mapper.configOverride(java.sql.Date.class)
+				.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd")
+						.withTimeZone(TimeZone.getDefault()));
 
 		JsonFactory f = new JsonFactory();
 		JsonGenerator g = f.createGenerator(new Writer() {
@@ -242,7 +248,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 	/**
 	 * インポート結果情報
 	 */
-	private class EntityImportResponseInfo extends LinkedHashMap<String, Object>{
+	private class EntityImportResponseInfo extends LinkedHashMap<String, Object> {
 
 		private static final long serialVersionUID = 1L;
 
@@ -256,7 +262,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		}
 
 		public String getStatus() {
-			return (String)get("status");
+			return (String) get("status");
 		}
 
 		public void setStatus(String status) {
@@ -268,21 +274,24 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		}
 
 		public void setStatusSuccess() {
-			if (!UploadProperty.Status.ERROR.name().equals(getStatus()) && !UploadProperty.Status.WARN.name().equals(getStatus())) {
+			if (!UploadProperty.Status.ERROR.name()
+					.equals(getStatus())
+					&& !UploadProperty.Status.WARN.name()
+							.equals(getStatus())) {
 				setStatus(UploadProperty.Status.SUCCESS.name());
 			}
 		}
 
 		@SuppressWarnings("unchecked")
 		public void setMessages(List<String> message) {
-			List<String> messages = (List<String>)get("messages");
+			List<String> messages = (List<String>) get("messages");
 			messages.clear();
 			messages.addAll(message);
 		}
 
 		@SuppressWarnings("unchecked")
 		public void addMessage(String message) {
-			List<String> messages = (List<String>)get("messages");
+			List<String> messages = (List<String>) get("messages");
 			messages.add(message);
 		}
 
@@ -290,6 +299,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		public long getInsertCount() {
 			return insertCount;
 		}
+
 		public void setInsertCount(long insertCount) {
 			this.insertCount = insertCount;
 		}
@@ -298,6 +308,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		public long getUpdateCount() {
 			return updateCount;
 		}
+
 		public void setUpdateCount(long updateCount) {
 			this.updateCount = updateCount;
 		}
@@ -306,6 +317,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		public long getErrorCount() {
 			return errorCount;
 		}
+
 		public void setErrorCount(long errorCount) {
 			this.errorCount = errorCount;
 		}

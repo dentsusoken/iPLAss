@@ -27,7 +27,7 @@ public enum TenantColType {
 	PASSWORD, //現時点で未使用
 	SELECTRADIO, //現時点で未使用
 	SELECTCHECKBOX,
-	SELECTCOMBO,	//現時点で未使用
+	SELECTCOMBO, //現時点で未使用
 	SCRIPT,
 	GROOVYTEMPLATE,
 	COLORSCHEME

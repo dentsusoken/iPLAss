@@ -44,9 +44,9 @@ import org.iplass.mtp.auth.policy.definition.listeners.ScriptingAccountNotificat
  *
  */
 @XmlSeeAlso({
-	JavaClassAccountNotificationListenerDefinition.class,
-	MailAccountNotificationListenerDefinition.class,
-	ScriptingAccountNotificationListenerDefinition.class})
+		JavaClassAccountNotificationListenerDefinition.class,
+		MailAccountNotificationListenerDefinition.class,
+		ScriptingAccountNotificationListenerDefinition.class })
 public class AccountNotificationListenerDefinition implements Serializable {
 	private static final long serialVersionUID = -5481438995099093572L;
 

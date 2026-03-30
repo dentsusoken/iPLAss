@@ -52,7 +52,7 @@ public class ICUTransliteratorAttributePane extends NormalizerAttributePane {
 	@Override
 	public void setDefinition(NormalizerDefinition definition) {
 		if (definition instanceof ICUTransliterator) {
-			txtTransliteratorId.setValue(((ICUTransliterator)definition).getTransliteratorId());
+			txtTransliteratorId.setValue(((ICUTransliterator) definition).getTransliteratorId());
 		} else {
 			form.clearValues();
 		}

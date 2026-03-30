@@ -44,16 +44,16 @@ import net.logstash.logback.argument.StructuredArguments;
 
 public class WorkerCallable implements Callable<Void> {
 	public static final String MDC_TASK_ID = "taskId";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(WorkerCallable.class);
 	private static Logger mtpLogger = LoggerFactory.getLogger("mtp.async.rdb");
 	private static Logger fatalLogger = LoggerFactory.getLogger("mtp.fatal.async.rdb");
-	
+
 	private final Task task;
 	private final Queue queue;
 	private final boolean trace;
 	private final boolean initRH;
-	
+
 	public WorkerCallable(Task task, Queue queue, boolean trace, boolean initRH) {
 		this.task = task;
 		this.queue = queue;
@@ -65,17 +65,21 @@ public class WorkerCallable implements Callable<Void> {
 	public Void call() throws Exception {
 		try {
 			MDC.put(MDC_TASK_ID, String.valueOf(task.getTaskId()));
-			if (task.getCallable() != null && task.getCallable().getTraceId() != null) {
-				MDC.put(ExecuteContext.MDC_TRACE_ID, task.getCallable().getTraceId());
+			if (task.getCallable() != null && task.getCallable()
+					.getTraceId() != null) {
+				MDC.put(ExecuteContext.MDC_TRACE_ID, task.getCallable()
+						.getTraceId());
 			}
 			if (initRH) {
 				ResourceHolder.init();
 			}
-			
+
 			final AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(task.getTaskId(), queue.getName());
-			
+
 			//Tenant設定
-			TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(task.getTenantId());
+			TenantContext tc = ServiceRegistry.getRegistry()
+					.getService(TenantContextService.class)
+					.getTenantContext(task.getTenantId());
 			return ExecuteContext.executeAs(tc, new Executable<Void>() {
 				@Override
 				public Void execute() {
@@ -83,24 +87,33 @@ public class WorkerCallable implements Callable<Void> {
 					try {
 						ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
 
-						if (task.getCallable().getUserContext() != null) {
+						if (task.getCallable()
+								.getUserContext() != null) {
 							//Auth設定
-							AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
-							as.doSecuredAction(task.getCallable().getUserContext(), () -> {
-								callImpl();
-								return null;
-							});
+							AuthService as = ServiceRegistry.getRegistry()
+									.getService(AuthService.class);
+							as.doSecuredAction(task.getCallable()
+									.getUserContext(), () -> {
+										callImpl();
+										return null;
+									});
 						} else {
 							callImpl();
 						}
 					} catch (final RuntimeException | Error e) {
-						
+
 						switch (task.getExceptionHandlingMode()) {
 						case RESTART:
-							if (task.getRetryCount() >= queue.getConfig().getWorker().getMaxRetryCount()) {
-								fatalLogger.error("queue:" + queue.getConfig().getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId() + ") is failed. max retry count over.", e);
+							if (task.getRetryCount() >= queue.getConfig()
+									.getWorker()
+									.getMaxRetryCount()) {
+								fatalLogger.error("queue:" + queue.getConfig()
+										.getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId()
+										+ ") is failed. max retry count over.", e);
 							} else {
-								mtpLogger.warn("queue:" + queue.getConfig().getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId() + ") is failed(cause:" + e + "). re-run after a while.");
+								mtpLogger.warn("queue:" + queue.getConfig()
+										.getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId() + ") is failed(cause:" + e
+										+ "). re-run after a while.");
 							}
 							break;
 						case ABORT_LOG_FATAL:
@@ -113,11 +126,14 @@ public class WorkerCallable implements Callable<Void> {
 									t = e;
 								}
 								if (queue.taskAbort(task, true, t, false, false)) {
-									if (task.getCallable().getActual() instanceof ExceptionHandleable) {
+									if (task.getCallable()
+											.getActual() instanceof ExceptionHandleable) {
 										try {
-											((ExceptionHandleable) task.getCallable().getActual()).aborted(t);
+											((ExceptionHandleable) task.getCallable()
+													.getActual()).aborted(t);
 										} catch (Throwable ee) {
-											fatalLogger.error("ExceptionHandleable's aborted() call failed(queue:" + queue.getConfig().getName() + ", task:" + task.getTaskId() + ",tenantId:" + task.getTenantId() + ")", ee);
+											fatalLogger.error("ExceptionHandleable's aborted() call failed(queue:" + queue.getConfig()
+													.getName() + ", task:" + task.getTaskId() + ",tenantId:" + task.getTenantId() + ")", ee);
 											transaction.setRollbackOnly();
 										}
 									}
@@ -132,7 +148,7 @@ public class WorkerCallable implements Callable<Void> {
 					} finally {
 						ec.removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
 					}
-					
+
 					return null;
 				}
 			});
@@ -144,7 +160,7 @@ public class WorkerCallable implements Callable<Void> {
 			MDC.remove(MDC_TASK_ID);
 		}
 	}
-	
+
 	private void callImpl() {
 		//トランザクション開始
 		Transaction.required(transaction -> {
@@ -158,9 +174,11 @@ public class WorkerCallable implements Callable<Void> {
 				if (logger.isDebugEnabled()) {
 					logger.debug("execute " + task);
 				}
-				
+
 				//タスク実行
-				Object res = task.getCallable().getActual().call();
+				Object res = task.getCallable()
+						.getActual()
+						.call();
 				//queueのステータス＆Result更新
 				if (task.isReturnResult()) {
 					task.setResult(res);
@@ -197,7 +215,8 @@ public class WorkerCallable implements Callable<Void> {
 					}
 					if (t instanceof Error
 							|| task.getExceptionHandlingMode() == ExceptionHandlingMode.ABORT_LOG_FATAL) {
-						fatalLogger.error("queue:" + queue.getConfig().getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId() + ") fatal error.", t);
+						fatalLogger.error("queue:" + queue.getConfig()
+								.getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId() + ") fatal error.", t);
 					}
 				} else {
 					if (trace) {

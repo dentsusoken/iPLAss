@@ -39,7 +39,7 @@ public interface AccountHandle extends Serializable {
 	/** パスワード変更日Attribute key */
 	public static final String LAST_PASSWORD_CHANGE = "lastPasswordChange";
 	public static final String LAST_LOGIN_ON = "lastLoginOn";
-	
+
 	//TODO 明示的にgetterを定義したほうがよいか？
 	public static final String GROUP_CODE = "groupCode";
 
@@ -50,13 +50,14 @@ public interface AccountHandle extends Serializable {
 	public boolean isInitialLogin();
 
 	public Credential getCredential();
-	
+
 	public String getUnmodifiableUniqueKey();
-	
+
 //	public User getUser();
 	public Map<String, Object> getAttributeMap();
 
 	//FIXME ここに持つべきではない
 	public void setAuthenticationProviderIndex(int authenticationProviderIndex);
+
 	public int getAuthenticationProviderIndex();
 }

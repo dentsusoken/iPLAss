@@ -43,7 +43,7 @@ public class PostgreSQLPartitionManagerApp {
 			public void run() {
 				try {
 					PartitionManagerApp frame = new PartitionManagerApp(new PostgreSQLPartitionBatch(TenantBatchExecMode.GUI.name()));
-					frame.setLocationRelativeTo(null);	// 中央表示
+					frame.setLocationRelativeTo(null); // 中央表示
 					frame.setTitle("PostgreSQL Partition Manager");
 					frame.setVisible(true);
 				} catch (Exception e) {

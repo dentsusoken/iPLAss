@@ -44,14 +44,14 @@ import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
-	name=SearchCommand.WEBAPI_NAME,
-	displayName="汎用検索",
-	accepts=RequestType.REST_FORM,
-	methods=MethodType.POST,
-	results={"count", "message", "htmlData"},
-	checkXRequestedWithHeader=true
+		name = SearchCommand.WEBAPI_NAME,
+		displayName = "汎用検索",
+		accepts = RequestType.REST_FORM,
+		methods = MethodType.POST,
+		results = { "count", "message", "htmlData" },
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/search/SearchCommand", displayName="汎用検索")
+@CommandClass(name = "gem/generic/search/SearchCommand", displayName = "汎用検索")
 public final class SearchCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/generic/search/search";
@@ -62,7 +62,8 @@ public final class SearchCommand implements Command {
 		String searchType = request.getParam(Constants.SEARCH_TYPE);
 
 		SearchCommandBase command = null;
-		CommandInvoker ci = ManagerLocator.getInstance().getManager(CommandInvoker.class);
+		CommandInvoker ci = ManagerLocator.getInstance()
+				.getManager(CommandInvoker.class);
 		if (Constants.SEARCH_TYPE_NORMAL.equals(searchType)) {
 			command = (SearchCommandBase) ci.getCommandInstance(NormalSearchCommand.CMD_NAME);
 		} else if (Constants.SEARCH_TYPE_DETAIL.equals(searchType)) {
@@ -85,7 +86,7 @@ public final class SearchCommand implements Command {
 								((SearchContextBase) sc).getResultSection(), ((SearchContextBase) sc).getViewName());
 
 						if (sc instanceof CreateSearchResultEventHandler) {
-							((CreateSearchResultEventHandler)sc).fireCreateSearchResultEvent(resultData);
+							((CreateSearchResultEventHandler) sc).fireCreateSearchResultEvent(resultData);
 						}
 						request.setAttribute("htmlData", resultData.toResponse());
 					} else {

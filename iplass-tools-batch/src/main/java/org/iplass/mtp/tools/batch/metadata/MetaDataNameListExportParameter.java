@@ -6,7 +6,6 @@ package org.iplass.mtp.tools.batch.metadata;
 
 import java.io.File;
 
-
 public class MetaDataNameListExportParameter {
 
 	//メタデータファイルパス

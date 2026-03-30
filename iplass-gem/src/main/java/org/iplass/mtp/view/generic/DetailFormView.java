@@ -40,16 +40,20 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 public class DetailFormView extends FormView {
 
 	/** コピー対象 */
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
 	public enum CopyTarget {
 		/** 当該エンティティのみコピー */
-		@XmlEnumValue("Shallow")SHALLOW("Shallow"),
+		@XmlEnumValue("Shallow")
+		SHALLOW("Shallow"),
 		/** 包含する（親子関係の）エンティティも一括にコピー */
-		@XmlEnumValue("Deep")DEEP("Deep"),
+		@XmlEnumValue("Deep")
+		DEEP("Deep"),
 		/** コピー時にShallowかDeepを選択 */
-		@XmlEnumValue("Both")BOTH("Both"),
+		@XmlEnumValue("Both")
+		BOTH("Both"),
 		/** 独自実装したコピー処理を実行 */
-		@XmlEnumValue("Custom")CUSTOM("Custom");
+		@XmlEnumValue("Custom")
+		CUSTOM("Custom");
 
 		private final String value;
 
@@ -63,7 +67,8 @@ public class DetailFormView extends FormView {
 
 		public static CopyTarget getEnum(String value) {
 			for (CopyTarget v : values()) {
-				if (v.value().equals(value)) {
+				if (v.value()
+						.equals(value)) {
 					return v;
 				}
 			}
@@ -74,508 +79,500 @@ public class DetailFormView extends FormView {
 	/** シリアルバージョンID */
 	private static final long serialVersionUID = -5906085368820747139L;
 
-
-
 	/** 編集ボタン非表示 */
 	@MetaFieldInfo(
-			displayName="編集ボタン非表示",
-			displayNameKey="generic_DetailFormView_hideDetailDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=200,
-			description="編集ボタンを非表示にするかを設定します。",
-			descriptionKey="generic_DetailFormView_hideDetailDescriptionKey"
+			displayName = "編集ボタン非表示",
+			displayNameKey = "generic_DetailFormView_hideDetailDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 200,
+			description = "編集ボタンを非表示にするかを設定します。",
+			descriptionKey = "generic_DetailFormView_hideDetailDescriptionKey"
 	)
 	private boolean hideDetail;
 
 	/** ロックボタン非表示設定 */
 	@MetaFieldInfo(
-			displayName="ロックボタンを非表示",
-			displayNameKey="generic_DetailFormView_hideLockDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=210,
-			description="ロックボタンを非表示にするかを設定します。",
-			descriptionKey="generic_DetailFormView_hideLockDescriptionKey"
+			displayName = "ロックボタンを非表示",
+			displayNameKey = "generic_DetailFormView_hideLockDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 210,
+			description = "ロックボタンを非表示にするかを設定します。",
+			descriptionKey = "generic_DetailFormView_hideLockDescriptionKey"
 	)
 	private boolean hideLock;
 
 	/** コピーボタン非表示設定 */
 	@MetaFieldInfo(
-			displayName="コピーボタンを非表示",
-			displayNameKey="generic_DetailFormView_isNoneDispCopyButtonDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=220,
-			description="コピーボタンを非表示にするかを設定します",
-			descriptionKey="generic_DetailFormView_isNoneDispCopyButtonDescriptionKey"
+			displayName = "コピーボタンを非表示",
+			displayNameKey = "generic_DetailFormView_isNoneDispCopyButtonDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 220,
+			description = "コピーボタンを非表示にするかを設定します",
+			descriptionKey = "generic_DetailFormView_isNoneDispCopyButtonDescriptionKey"
 	)
 	private boolean isNoneDispCopyButton;
 
 	/** 削除ボタン非表示 */
 	@MetaFieldInfo(
-			displayName="削除ボタン非表示",
-			displayNameKey="generic_DetailFormView_hideDeleteDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=230,
-			description="削除ボタンを非表示にするかを設定します。",
-			descriptionKey="generic_DetailFormView_hideDeleteDescriptionKey"
+			displayName = "削除ボタン非表示",
+			displayNameKey = "generic_DetailFormView_hideDeleteDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 230,
+			description = "削除ボタンを非表示にするかを設定します。",
+			descriptionKey = "generic_DetailFormView_hideDeleteDescriptionKey"
 	)
 	private boolean hideDelete;
 
 	/** バージョン削除ボタン表示 */
 	@MetaFieldInfo(
-			displayName="バージョン削除ボタン表示",
-			displayNameKey="generic_DetailFormView_showDeleteSpecificVersionDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=233,
-			description="バージョン管理されているEntityの場合、「このバージョンを削除」ボタンを表示します。この場合、当該バージョンのみを削除します。親子関係の参照を持つ場合はエラーになります。",
-			descriptionKey="generic_DetailFormView_showDeleteSpecificVersionDescriptionKey"
+			displayName = "バージョン削除ボタン表示",
+			displayNameKey = "generic_DetailFormView_showDeleteSpecificVersionDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 233,
+			description = "バージョン管理されているEntityの場合、「このバージョンを削除」ボタンを表示します。この場合、当該バージョンのみを削除します。親子関係の参照を持つ場合はエラーになります。",
+			descriptionKey = "generic_DetailFormView_showDeleteSpecificVersionDescriptionKey"
 	)
 	private boolean showDeleteSpecificVersion;
 
 	/** Entity権限の可能範囲条件でボタン表示を制御 */
 	@MetaFieldInfo(
-			displayName="Entity権限の可能範囲条件でボタン表示を制御",
-			displayNameKey="generic_DetailFormView_checkEntityPermissionLimitConditionOfButtonDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=235,
-			description="Entity権限の可能範囲条件をチェックし各ボタンの表示を制御します。",
-			descriptionKey="generic_DetailFormView_checkEntityPermissionLimitConditionOfButtonDescriptionKey"
+			displayName = "Entity権限の可能範囲条件でボタン表示を制御",
+			displayNameKey = "generic_DetailFormView_checkEntityPermissionLimitConditionOfButtonDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 235,
+			description = "Entity権限の可能範囲条件をチェックし各ボタンの表示を制御します。",
+			descriptionKey = "generic_DetailFormView_checkEntityPermissionLimitConditionOfButtonDescriptionKey"
 	)
 	private boolean checkEntityPermissionLimitConditionOfButton;
 
 	/** 編集ボタン表示ラベル */
 	@MetaFieldInfo(
-			displayName="編集ボタン表示ラベル",
-			displayNameKey="generic_DetailFormView_editDisplayLabelDisplaNameKey",
-			description="編集ボタンに表示されるラベルを設定します。",
-			descriptionKey="generic_DetailFormView_editDisplayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "編集ボタン表示ラベル",
+			displayNameKey = "generic_DetailFormView_editDisplayLabelDisplaNameKey",
+			description = "編集ボタンに表示されるラベルを設定します。",
+			descriptionKey = "generic_DetailFormView_editDisplayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedEditDisplayLabelList",
-			displayOrder=240
+			displayOrder = 240
 	)
 	@MultiLang()
 	private String editDisplayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_DetailFormView_localizedEditDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=250
+			displayName = "多言語設定",
+			displayNameKey = "generic_DetailFormView_localizedEditDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 250
 	)
 	private List<LocalizedStringDefinition> localizedEditDisplayLabelList;
 
 	/** コピーボタン表示ラベル */
 	@MetaFieldInfo(
-			displayName="コピーボタン表示ラベル",
-			displayNameKey="generic_DetailFormView_copyDisplayLabelDisplaNameKey",
-			description="コピーボタンに表示されるラベルを設定します。",
-			descriptionKey="generic_DetailFormView_copyDisplayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "コピーボタン表示ラベル",
+			displayNameKey = "generic_DetailFormView_copyDisplayLabelDisplaNameKey",
+			description = "コピーボタンに表示されるラベルを設定します。",
+			descriptionKey = "generic_DetailFormView_copyDisplayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedCopyDisplayLabelList",
-			displayOrder=260
+			displayOrder = 260
 	)
 	@MultiLang()
 	private String copyDisplayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_DetailFormView_localizedCopyDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=270
+			displayName = "多言語設定",
+			displayNameKey = "generic_DetailFormView_localizedCopyDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 270
 	)
 	private List<LocalizedStringDefinition> localizedCopyDisplayLabelList;
 
 	/** バージョンアップボタン表示ラベル */
 	@MetaFieldInfo(
-			displayName="バージョンアップボタン表示ラベル",
-			displayNameKey="generic_DetailFormView_versionupDisplayLabelDisplaNameKey",
-			description="バージョンアップボタンに表示されるラベルを設定します。",
-			descriptionKey="generic_DetailFormView_versionupDisplayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "バージョンアップボタン表示ラベル",
+			displayNameKey = "generic_DetailFormView_versionupDisplayLabelDisplaNameKey",
+			description = "バージョンアップボタンに表示されるラベルを設定します。",
+			descriptionKey = "generic_DetailFormView_versionupDisplayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedVersionupDisplayLabelList",
-			displayOrder=280
+			displayOrder = 280
 	)
 	@MultiLang()
 	private String versionupDisplayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_DetailFormView_localizedVersionupDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=290
+			displayName = "多言語設定",
+			displayNameKey = "generic_DetailFormView_localizedVersionupDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 290
 	)
 	private List<LocalizedStringDefinition> localizedVersionupDisplayLabelList;
 
 	/** 追加ボタン表示ラベル */
 	@MetaFieldInfo(
-			displayName="追加ボタン表示ラベル",
-			displayNameKey="generic_DetailFormView_insertDisplayLabelDisplaNameKey",
-			description="追加ボタンに表示されるラベルを設定します。",
-			descriptionKey="generic_DetailFormView_insertDisplayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "追加ボタン表示ラベル",
+			displayNameKey = "generic_DetailFormView_insertDisplayLabelDisplaNameKey",
+			description = "追加ボタンに表示されるラベルを設定します。",
+			descriptionKey = "generic_DetailFormView_insertDisplayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedInsertDisplayLabelList",
-			displayOrder=300
+			displayOrder = 300
 	)
 	@MultiLang()
 	private String insertDisplayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_DetailFormView_localizedInsertDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=310
+			displayName = "多言語設定",
+			displayNameKey = "generic_DetailFormView_localizedInsertDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 310
 	)
 	private List<LocalizedStringDefinition> localizedInsertDisplayLabelList;
 
 	/** 更新ボタン表示ラベル */
 	@MetaFieldInfo(
-			displayName="更新ボタン表示ラベル",
-			displayNameKey="generic_DetailFormView_updateDisplayLabelDisplaNameKey",
-			description="更新ボタンに表示されるラベルを設定します。",
-			descriptionKey="generic_DetailFormView_updateDisplayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "更新ボタン表示ラベル",
+			displayNameKey = "generic_DetailFormView_updateDisplayLabelDisplaNameKey",
+			description = "更新ボタンに表示されるラベルを設定します。",
+			descriptionKey = "generic_DetailFormView_updateDisplayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedUpdateDisplayLabelList",
-			displayOrder=320
+			displayOrder = 320
 	)
 	@MultiLang()
 	private String updateDisplayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_DetailFormView_localizedUpdateDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=330
+			displayName = "多言語設定",
+			displayNameKey = "generic_DetailFormView_localizedUpdateDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 330
 	)
 	private List<LocalizedStringDefinition> localizedUpdateDisplayLabelList;
 
 	/** 削除ボタン表示ラベル */
 	@MetaFieldInfo(
-			displayName="削除ボタン表示ラベル",
-			displayNameKey="generic_DetailFormView_deleteDisplayLabelDisplaNameKey",
-			description="削除ボタンに表示されるラベルを設定します。",
-			descriptionKey="generic_DetailFormView_deleteDisplayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "削除ボタン表示ラベル",
+			displayNameKey = "generic_DetailFormView_deleteDisplayLabelDisplaNameKey",
+			description = "削除ボタンに表示されるラベルを設定します。",
+			descriptionKey = "generic_DetailFormView_deleteDisplayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedDeleteDisplayLabelList",
-			displayOrder=340
+			displayOrder = 340
 	)
 	@MultiLang()
 	private String deleteDisplayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_DetailFormView_localizedDeleteDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=350
+			displayName = "多言語設定",
+			displayNameKey = "generic_DetailFormView_localizedDeleteDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 350
 	)
 	private List<LocalizedStringDefinition> localizedDeleteDisplayLabelList;
 
 	/** バージョン削除ボタン表示ラベル */
 	@MetaFieldInfo(
-			displayName="バージョン削除ボタン表示ラベル",
-			displayNameKey="generic_DetailFormView_deleteSpecificVersionDisplayLabelDisplaNameKey",
-			description="バージョン削除ボタンに表示されるラベルを設定します。",
-			descriptionKey="generic_DetailFormView_deleteSpecificVersionDisplayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "バージョン削除ボタン表示ラベル",
+			displayNameKey = "generic_DetailFormView_deleteSpecificVersionDisplayLabelDisplaNameKey",
+			description = "バージョン削除ボタンに表示されるラベルを設定します。",
+			descriptionKey = "generic_DetailFormView_deleteSpecificVersionDisplayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedDeleteSpecificVersionDisplayLabelList",
-			displayOrder=360
+			displayOrder = 360
 	)
 	@MultiLang()
 	private String deleteSpecificVersionDisplayLabel;
 
 	/** バージョン削除ボタン表示ラベル多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="バージョン削除ボタン表示ラベル多言語設定",
-			displayNameKey="generic_DetailFormView_localizedDeleteSpecificVersionDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=370
+			displayName = "バージョン削除ボタン表示ラベル多言語設定",
+			displayNameKey = "generic_DetailFormView_localizedDeleteSpecificVersionDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 370
 	)
 	private List<LocalizedStringDefinition> localizedDeleteSpecificVersionDisplayLabelList;
 
-
 	/** 編集アクション名 */
 	@MetaFieldInfo(
-			displayName="編集アクション名",
-			displayNameKey="generic_DetailFormView_editActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=500,
-			description="編集ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_DetailFormView_editActionNameDescriptionKey"
+			displayName = "編集アクション名",
+			displayNameKey = "generic_DetailFormView_editActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 500,
+			description = "編集ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_DetailFormView_editActionNameDescriptionKey"
 	)
 	private String editActionName;
 
 	/** 参照時編集アクション名 */
 	@MetaFieldInfo(
-			displayName="参照時編集アクション名",
-			displayNameKey="generic_DetailFormView_refEditActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=510,
-			description="参照ダイアログで編集ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_DetailFormView_refEditActionNameDescriptionKey"
+			displayName = "参照時編集アクション名",
+			displayNameKey = "generic_DetailFormView_refEditActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 510,
+			description = "参照ダイアログで編集ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_DetailFormView_refEditActionNameDescriptionKey"
 	)
 	private String refEditActionName;
 
 	/** 追加アクション名 */
 	@MetaFieldInfo(
-			displayName="追加アクション名",
-			displayNameKey="generic_DetailFormView_insertActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=520,
-			description="追加ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_DetailFormView_insertActionNameDescriptionKey"
+			displayName = "追加アクション名",
+			displayNameKey = "generic_DetailFormView_insertActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 520,
+			description = "追加ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_DetailFormView_insertActionNameDescriptionKey"
 	)
 	private String insertActionName;
 
 	/** 参照時追加アクション名 */
 	@MetaFieldInfo(
-			displayName="参照時追加アクション名",
-			displayNameKey="generic_DetailFormView_refInsertActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=530,
-			description="参照ダイアログで追加ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_DetailFormView_refInsertActionNameDescriptionKey"
+			displayName = "参照時追加アクション名",
+			displayNameKey = "generic_DetailFormView_refInsertActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 530,
+			description = "参照ダイアログで追加ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_DetailFormView_refInsertActionNameDescriptionKey"
 	)
 	private String refInsertActionName;
 
 	/** 更新アクション名 */
 	@MetaFieldInfo(
-			displayName="更新アクション名",
-			displayNameKey="generic_DetailFormView_updateActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=540,
-			description="更新ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_DetailFormView_updateActionNameDescriptionKey"
+			displayName = "更新アクション名",
+			displayNameKey = "generic_DetailFormView_updateActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 540,
+			description = "更新ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_DetailFormView_updateActionNameDescriptionKey"
 	)
 	private String updateActionName;
 
 	/** 参照時更新アクション名 */
 	@MetaFieldInfo(
-			displayName="参照時更新アクション名",
-			displayNameKey="generic_DetailFormView_refUpdateActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=550,
-			description="参照ダイアログで更新ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_DetailFormView_refUpdateActionNameDescriptionKey"
+			displayName = "参照時更新アクション名",
+			displayNameKey = "generic_DetailFormView_refUpdateActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 550,
+			description = "参照ダイアログで更新ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_DetailFormView_refUpdateActionNameDescriptionKey"
 	)
 	private String refUpdateActionName;
 
 	/** 削除アクション名 */
 	@MetaFieldInfo(
-			displayName="削除アクション名",
-			displayNameKey="generic_DetailFormView_deleteActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=560,
-			description="削除ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_DetailFormView_deleteActionNameDescriptionKey"
+			displayName = "削除アクション名",
+			displayNameKey = "generic_DetailFormView_deleteActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 560,
+			description = "削除ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_DetailFormView_deleteActionNameDescriptionKey"
 	)
 	private String deleteActionName;
 
 	/** キャンセルアクション名 */
 	@MetaFieldInfo(
-			displayName="キャンセルアクション名",
-			displayNameKey="generic_DetailFormView_cancelActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=570,
-			description="キャンセルリンククリックで実行されるアクションを設定します。",
-			descriptionKey="generic_DetailFormView_cancelActionNameDescriptionKey"
+			displayName = "キャンセルアクション名",
+			displayNameKey = "generic_DetailFormView_cancelActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 570,
+			description = "キャンセルリンククリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_DetailFormView_cancelActionNameDescriptionKey"
 	)
 	private String cancelActionName;
 
-
-
-
 	/** JavaScriptコード */
 	@MetaFieldInfo(
-			displayName="JavaScriptコード",
-			displayNameKey="generic_DetailFormView_javaScriptDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			mode="javascript",
-			displayOrder=1100,
-			description="SCRIPTタグ内に出力するJavaScriptコードを設定します。",
-			descriptionKey="generic_DetailFormView_javaScriptDescriptionKey"
+			displayName = "JavaScriptコード",
+			displayNameKey = "generic_DetailFormView_javaScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "javascript",
+			displayOrder = 1100,
+			description = "SCRIPTタグ内に出力するJavaScriptコードを設定します。",
+			descriptionKey = "generic_DetailFormView_javaScriptDescriptionKey"
 	)
 	private String javaScript;
 
 	/** Javascriptコード有効可否(編集) */
 	@MetaFieldInfo(
-			displayName="編集でJavascriptコードを有効化",
-			displayNameKey="generic_DetailFormView_validJavascriptDetailPageDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1110,
-			description="Javascriptコードに設定した内容を詳細編集画面で有効にするかを設定します。",
-			descriptionKey="generic_DetailFormView_validJavascriptDetailPageDescriptionKey"
+			displayName = "編集でJavascriptコードを有効化",
+			displayNameKey = "generic_DetailFormView_validJavascriptDetailPageDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1110,
+			description = "Javascriptコードに設定した内容を詳細編集画面で有効にするかを設定します。",
+			descriptionKey = "generic_DetailFormView_validJavascriptDetailPageDescriptionKey"
 	)
 	private boolean validJavascriptDetailPage;
 
 	/** Javascriptコード有効可否(表示) */
 	@MetaFieldInfo(
-			displayName="表示でJavascriptコードを有効化",
-			displayNameKey="generic_DetailFormView_validJavascriptViewPageDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1120,
-			description="Javascriptコードに設定した内容を詳細表示画面で有効にするかを設定します。",
-			descriptionKey="generic_DetailFormView_validJavascriptViewPageDescriptionKey"
+			displayName = "表示でJavascriptコードを有効化",
+			displayNameKey = "generic_DetailFormView_validJavascriptViewPageDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1120,
+			description = "Javascriptコードに設定した内容を詳細表示画面で有効にするかを設定します。",
+			descriptionKey = "generic_DetailFormView_validJavascriptViewPageDescriptionKey"
 	)
 	private boolean validJavascriptViewPage;
 
-
-
 	/** ロード時にSearchLayoutのデフォルト検索条件を適用する */
 	@MetaFieldInfo(
-			displayName="ロード時にSearchLayoutのデフォルト検索条件を適用する",
-			displayNameKey="generic_DetailFormView_applySearchLayoutDefaultConditionDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1505,
-			description="ロード時にSearchLayoutのデフォルト検索条件を適用するかを設定します。",
-			descriptionKey="generic_DetailFormView_applySearchLayoutDefaultConditionDescriptionKey"
+			displayName = "ロード時にSearchLayoutのデフォルト検索条件を適用する",
+			displayNameKey = "generic_DetailFormView_applySearchLayoutDefaultConditionDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1505,
+			description = "ロード時にSearchLayoutのデフォルト検索条件を適用するかを設定します。",
+			descriptionKey = "generic_DetailFormView_applySearchLayoutDefaultConditionDescriptionKey"
 	)
 	private boolean applySearchLayoutDefaultCondition = true;
 
 	/** 物理削除するかどうか */
 	@MetaFieldInfo(
-			displayName="物理削除するか",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1510,
-			description="物理削除を行うかを設定します。",
-			displayNameKey="generic_DetailFormView_isPurgeDisplaNameKey",
-			descriptionKey="generic_DetailFormView_isPurgeDescriptionKey")
+			displayName = "物理削除するか",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1510,
+			description = "物理削除を行うかを設定します。",
+			displayNameKey = "generic_DetailFormView_isPurgeDisplaNameKey",
+			descriptionKey = "generic_DetailFormView_isPurgeDescriptionKey")
 	private boolean isPurge;
 
 	/** 親子関係の参照を物理削除するか */
 	@MetaFieldInfo(
-			displayName="親子関係の参照を物理削除するか",
-			displayNameKey="generic_DetailFormView_purgeCompositionedEntityDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1600,
-			description="親子関係の参照を物理削除するかを設定します",
-			descriptionKey="generic_DetailFormView_purgeCompositionedEntityDescriptionKey"
+			displayName = "親子関係の参照を物理削除するか",
+			displayNameKey = "generic_DetailFormView_purgeCompositionedEntityDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1600,
+			description = "親子関係の参照を物理削除するかを設定します",
+			descriptionKey = "generic_DetailFormView_purgeCompositionedEntityDescriptionKey"
 	)
 	private boolean purgeCompositionedEntity;
 
 	/** 定義されている参照プロパティのみを取得 */
 	@MetaFieldInfo(
-			displayName="定義されている参照プロパティのみを取得",
-			displayNameKey="generic_DetailFormView_loadDefinedReferencePropertyDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1610,
-			description="画面定義に設定された参照プロパティのみを詳細画面表示時に取得します。",
-			descriptionKey="generic_DetailFormView_loadDefinedReferencePropertyDescriptionKey"
+			displayName = "定義されている参照プロパティのみを取得",
+			displayNameKey = "generic_DetailFormView_loadDefinedReferencePropertyDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1610,
+			description = "画面定義に設定された参照プロパティのみを詳細画面表示時に取得します。",
+			descriptionKey = "generic_DetailFormView_loadDefinedReferencePropertyDescriptionKey"
 	)
 	private boolean loadDefinedReferenceProperty;
 
 	/** 更新時に強制的に更新処理を行う */
 	@MetaFieldInfo(
-			displayName="更新時に強制的に更新処理を行う",
-			displayNameKey="generic_DetailFormView_forceUpadteDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1620,
-			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
-			descriptionKey="generic_DetailFormView_forceUpadteDescriptionKey"
+			displayName = "更新時に強制的に更新処理を行う",
+			displayNameKey = "generic_DetailFormView_forceUpadteDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1620,
+			description = "変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
+			descriptionKey = "generic_DetailFormView_forceUpadteDescriptionKey"
 	)
 	private boolean forceUpadte;
 
 	/** 特権実行でユーザー名を表示 */
 	@MetaFieldInfo(
-			displayName="特権実行でユーザー名を表示する",
-			displayNameKey="generic_DetailFormView_showUserNameWithPrivilegedDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1630,
-			description="ユーザー情報の参照権限が無くてもユーザー名を表示するかを指定します。",
-			descriptionKey="generic_DetailFormView_showUserNameWithPrivilegedDescriptionKey"
+			displayName = "特権実行でユーザー名を表示する",
+			displayNameKey = "generic_DetailFormView_showUserNameWithPrivilegedDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1630,
+			description = "ユーザー情報の参照権限が無くてもユーザー名を表示するかを指定します。",
+			descriptionKey = "generic_DetailFormView_showUserNameWithPrivilegedDescriptionKey"
 	)
 	private boolean showUserNameWithPrivilegedValue;
 
 	/** コピー対象 */
 	@MetaFieldInfo(
-			displayName="コピー対象",
-			displayNameKey="generic_DetailFormView_copyTargetDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=CopyTarget.class,
-			displayOrder=1630,
-			description="コピーボタン押下時のコピー対象を設定します。<BR />" +
+			displayName = "コピー対象",
+			displayNameKey = "generic_DetailFormView_copyTargetDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = CopyTarget.class,
+			displayOrder = 1630,
+			description = "コピーボタン押下時のコピー対象を設定します。<BR />" +
 					"Shallow : 当該エンティティのみコピー<BR />" +
 					"Deep    : 包含する（親子関係の）エンティティも一括にコピー<BR />" +
 					"Both    : コピーボタン押下時にShallowかDeepを選択<BR />" +
 					"Custom  : 独自実装したコピー処理を実行",
 
-			descriptionKey="generic_DetailFormView_copyTargetDescriptionKey"
+			descriptionKey = "generic_DetailFormView_copyTargetDescriptionKey"
 	)
 	private CopyTarget copyTarget;
 
 	/** カスタムコピースクリプト */
 	@MetaFieldInfo(
-			displayName="カスタムコピースクリプト",
-			displayNameKey="generic_DetailFormView_customCopyScriptDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			mode="groovy_script",
-			displayOrder=1640,
-			description="コピー対象でCustomを選択した際に実行されるGroovyScriptです。<BR />" +
+			displayName = "カスタムコピースクリプト",
+			displayNameKey = "generic_DetailFormView_customCopyScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 1640,
+			description = "コピー対象でCustomを選択した際に実行されるGroovyScriptです。<BR />" +
 					"以下のオブジェクトがバインドされています。<BR />" +
 					"バインド変数名  ：内容<BR />" +
 					"entity          ：コピー元のEntity<BR />" +
 					"entityDefinition：Entity定義<BR />" +
-					"entityManager   ：EntityManager"+
+					"entityManager   ：EntityManager" +
 					"user            ：ユーザー情報",
 
-			descriptionKey="generic_DetailFormView_customCopyScriptDescriptionKey"
+			descriptionKey = "generic_DetailFormView_customCopyScriptDescriptionKey"
 	)
 	private String customCopyScript;
 
 	/** 初期化スクリプト */
 	@MetaFieldInfo(
-			displayName="初期化スクリプト ",
-			displayNameKey="generic_DetailFormView_initScriptDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			mode="groovy_script",
-			displayOrder=1650,
-			description="Entityを新規作成する際に実行されるGroovyScriptです。<BR />" +
+			displayName = "初期化スクリプト ",
+			displayNameKey = "generic_DetailFormView_initScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 1650,
+			description = "Entityを新規作成する際に実行されるGroovyScriptです。<BR />" +
 					"新規作成画面表示前に呼び出され、空のEntityに対して初期値設定等を行います。<BR />" +
 					"以下のオブジェクトがバインドされています。<BR />" +
 					"バインド変数名  ：内容<BR />" +
 					"entity          ：空のEntity" +
 					"user            ：ユーザー情報",
 
-			descriptionKey="generic_DetailFormView_initScriptDescriptionKey"
+			descriptionKey = "generic_DetailFormView_initScriptDescriptionKey"
 	)
 	private String initScript;
 
 	/** カスタム登録処理クラス名 */
 	@MetaFieldInfo(
-			displayName="カスタム登録処理クラス名",
-			displayNameKey="generic_DetailFormView_interrupterNameDisplaNameKey",
-			displayOrder=1660,
-			description="データ登録時に行うカスタム登録処理のクラス名を指定します。<br>" +
+			displayName = "カスタム登録処理クラス名",
+			displayNameKey = "generic_DetailFormView_interrupterNameDisplaNameKey",
+			displayOrder = 1660,
+			description = "データ登録時に行うカスタム登録処理のクラス名を指定します。<br>" +
 					"RegistrationInterrupterインターフェースを実装するクラスを指定してください。",
 
-			descriptionKey="generic_DetailFormView_interrupterNameDescriptionKey"
+			descriptionKey = "generic_DetailFormView_interrupterNameDescriptionKey"
 	)
 	private String interrupterName;
 
 	/** カスタムロード処理クラス名 */
 	@MetaFieldInfo(
-			displayName="カスタムロード処理クラス名",
-			displayNameKey="generic_DetailFormView_loadEntityInterrupterNameDisplaNameKey",
-			displayOrder=1670,
-			description="Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>" +
+			displayName = "カスタムロード処理クラス名",
+			displayNameKey = "generic_DetailFormView_loadEntityInterrupterNameDisplaNameKey",
+			displayOrder = 1670,
+			description = "Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>" +
 					"LoadEntityInterrupterインターフェースを実装するクラスを指定してください。",
 
-			descriptionKey="generic_DetailFormView_loadEntityInterrupterNameDescriptionKey"
+			descriptionKey = "generic_DetailFormView_loadEntityInterrupterNameDescriptionKey"
 	)
 	private String loadEntityInterrupterName;
 
 	/** 詳細編集画面Handlerクラス名 */
 	@MetaFieldInfo(
-			displayName="詳細編集画面Handlerクラス名",
-			displayNameKey="generic_DetailFormView_detailFormViewHandlerNameDisplaNameKey",
-			inputType=InputType.MULTI_TEXT,
-			displayOrder=1680,
-			description="詳細編集画面の制御クラス名を指定します。<br>" +
+			displayName = "詳細編集画面Handlerクラス名",
+			displayNameKey = "generic_DetailFormView_detailFormViewHandlerNameDisplaNameKey",
+			inputType = InputType.MULTI_TEXT,
+			displayOrder = 1680,
+			description = "詳細編集画面の制御クラス名を指定します。<br>" +
 					"DetailFormViewHandlerインターフェースを実装するクラスを指定してください。",
-			descriptionKey="generic_DetailFormView_detailFormViewHandlerNameDescriptionKey"
+			descriptionKey = "generic_DetailFormView_detailFormViewHandlerNameDescriptionKey"
 	)
 	private List<String> detailFormViewHandlerName;
 
@@ -606,7 +603,7 @@ public class DetailFormView extends FormView {
 	 * @return 参照時編集アクション名
 	 */
 	public String getRefEditActionName() {
-	    return refEditActionName;
+		return refEditActionName;
 	}
 
 	/**
@@ -614,7 +611,7 @@ public class DetailFormView extends FormView {
 	 * @param refEditActionName 参照時編集アクション名
 	 */
 	public void setRefEditActionName(String refEditActionName) {
-	    this.refEditActionName = refEditActionName;
+		this.refEditActionName = refEditActionName;
 	}
 
 	/**
@@ -622,7 +619,7 @@ public class DetailFormView extends FormView {
 	 * @return 編集ボタン表示ラベル
 	 */
 	public String getEditDisplayLabel() {
-	    return editDisplayLabel;
+		return editDisplayLabel;
 	}
 
 	/**
@@ -630,7 +627,7 @@ public class DetailFormView extends FormView {
 	 * @param editDisplayLabel 編集ボタン表示ラベル
 	 */
 	public void setEditDisplayLabel(String editDisplayLabel) {
-	    this.editDisplayLabel = editDisplayLabel;
+		this.editDisplayLabel = editDisplayLabel;
 	}
 
 	/**
@@ -638,7 +635,7 @@ public class DetailFormView extends FormView {
 	 * @return 多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedEditDisplayLabelList() {
-	    return localizedEditDisplayLabelList;
+		return localizedEditDisplayLabelList;
 	}
 
 	/**
@@ -646,7 +643,7 @@ public class DetailFormView extends FormView {
 	 * @param localizedEditDisplayLabelList 多言語設定情報
 	 */
 	public void setLocalizedEditDisplayLabelList(List<LocalizedStringDefinition> localizedEditDisplayLabelList) {
-	    this.localizedEditDisplayLabelList = localizedEditDisplayLabelList;
+		this.localizedEditDisplayLabelList = localizedEditDisplayLabelList;
 	}
 
 	/**
@@ -654,7 +651,7 @@ public class DetailFormView extends FormView {
 	 * @return コピーボタン表示ラベル
 	 */
 	public String getCopyDisplayLabel() {
-	    return copyDisplayLabel;
+		return copyDisplayLabel;
 	}
 
 	/**
@@ -662,7 +659,7 @@ public class DetailFormView extends FormView {
 	 * @param copyDisplayLabel コピーボタン表示ラベル
 	 */
 	public void setCopyDisplayLabel(String copyDisplayLabel) {
-	    this.copyDisplayLabel = copyDisplayLabel;
+		this.copyDisplayLabel = copyDisplayLabel;
 	}
 
 	/**
@@ -670,7 +667,7 @@ public class DetailFormView extends FormView {
 	 * @return 多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedCopyDisplayLabelList() {
-	    return localizedCopyDisplayLabelList;
+		return localizedCopyDisplayLabelList;
 	}
 
 	/**
@@ -678,7 +675,7 @@ public class DetailFormView extends FormView {
 	 * @param localizedCopyDisplayLabelList 多言語設定情報
 	 */
 	public void setLocalizedCopyDisplayLabelList(List<LocalizedStringDefinition> localizedCopyDisplayLabelList) {
-	    this.localizedCopyDisplayLabelList = localizedCopyDisplayLabelList;
+		this.localizedCopyDisplayLabelList = localizedCopyDisplayLabelList;
 	}
 
 	/**
@@ -686,7 +683,7 @@ public class DetailFormView extends FormView {
 	 * @return バージョンアップボタン表示ラベル
 	 */
 	public String getVersionupDisplayLabel() {
-	    return versionupDisplayLabel;
+		return versionupDisplayLabel;
 	}
 
 	/**
@@ -694,7 +691,7 @@ public class DetailFormView extends FormView {
 	 * @param versionupDisplayLabel バージョンアップボタン表示ラベル
 	 */
 	public void setVersionupDisplayLabel(String versionupDisplayLabel) {
-	    this.versionupDisplayLabel = versionupDisplayLabel;
+		this.versionupDisplayLabel = versionupDisplayLabel;
 	}
 
 	/**
@@ -702,7 +699,7 @@ public class DetailFormView extends FormView {
 	 * @return 多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedVersionupDisplayLabelList() {
-	    return localizedVersionupDisplayLabelList;
+		return localizedVersionupDisplayLabelList;
 	}
 
 	/**
@@ -710,7 +707,7 @@ public class DetailFormView extends FormView {
 	 * @param localizedVersionupDisplayLabelList 多言語設定情報
 	 */
 	public void setLocalizedVersionupDisplayLabelList(List<LocalizedStringDefinition> localizedVersionupDisplayLabelList) {
-	    this.localizedVersionupDisplayLabelList = localizedVersionupDisplayLabelList;
+		this.localizedVersionupDisplayLabelList = localizedVersionupDisplayLabelList;
 	}
 
 	/**
@@ -734,7 +731,7 @@ public class DetailFormView extends FormView {
 	 * @return 参照時追加アクション名
 	 */
 	public String getRefInsertActionName() {
-	    return refInsertActionName;
+		return refInsertActionName;
 	}
 
 	/**
@@ -742,7 +739,7 @@ public class DetailFormView extends FormView {
 	 * @param refInsertActionName 参照時追加アクション名
 	 */
 	public void setRefInsertActionName(String refInsertActionName) {
-	    this.refInsertActionName = refInsertActionName;
+		this.refInsertActionName = refInsertActionName;
 	}
 
 	/**
@@ -750,7 +747,7 @@ public class DetailFormView extends FormView {
 	 * @return 追加ボタン表示ラベル
 	 */
 	public String getInsertDisplayLabel() {
-	    return insertDisplayLabel;
+		return insertDisplayLabel;
 	}
 
 	/**
@@ -758,7 +755,7 @@ public class DetailFormView extends FormView {
 	 * @param insertDisplayLabel 追加ボタン表示ラベル
 	 */
 	public void setInsertDisplayLabel(String insertDisplayLabel) {
-	    this.insertDisplayLabel = insertDisplayLabel;
+		this.insertDisplayLabel = insertDisplayLabel;
 	}
 
 	/**
@@ -766,7 +763,7 @@ public class DetailFormView extends FormView {
 	 * @return 多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedInsertDisplayLabelList() {
-	    return localizedInsertDisplayLabelList;
+		return localizedInsertDisplayLabelList;
 	}
 
 	/**
@@ -774,7 +771,7 @@ public class DetailFormView extends FormView {
 	 * @param localizedInsertDisplayLabelList 多言語設定情報
 	 */
 	public void setLocalizedInsertDisplayLabelList(List<LocalizedStringDefinition> localizedInsertDisplayLabelList) {
-	    this.localizedInsertDisplayLabelList = localizedInsertDisplayLabelList;
+		this.localizedInsertDisplayLabelList = localizedInsertDisplayLabelList;
 	}
 
 	/**
@@ -798,7 +795,7 @@ public class DetailFormView extends FormView {
 	 * @return 参照時更新アクション名
 	 */
 	public String getRefUpdateActionName() {
-	    return refUpdateActionName;
+		return refUpdateActionName;
 	}
 
 	/**
@@ -806,7 +803,7 @@ public class DetailFormView extends FormView {
 	 * @param refUpdateActionName 参照時更新アクション名
 	 */
 	public void setRefUpdateActionName(String refUpdateActionName) {
-	    this.refUpdateActionName = refUpdateActionName;
+		this.refUpdateActionName = refUpdateActionName;
 	}
 
 	/**
@@ -814,7 +811,7 @@ public class DetailFormView extends FormView {
 	 * @return 更新ボタン表示ラベル
 	 */
 	public String getUpdateDisplayLabel() {
-	    return updateDisplayLabel;
+		return updateDisplayLabel;
 	}
 
 	/**
@@ -822,7 +819,7 @@ public class DetailFormView extends FormView {
 	 * @param updateDisplayLabel 更新ボタン表示ラベル
 	 */
 	public void setUpdateDisplayLabel(String updateDisplayLabel) {
-	    this.updateDisplayLabel = updateDisplayLabel;
+		this.updateDisplayLabel = updateDisplayLabel;
 	}
 
 	/**
@@ -830,7 +827,7 @@ public class DetailFormView extends FormView {
 	 * @return 多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedUpdateDisplayLabelList() {
-	    return localizedUpdateDisplayLabelList;
+		return localizedUpdateDisplayLabelList;
 	}
 
 	/**
@@ -838,7 +835,7 @@ public class DetailFormView extends FormView {
 	 * @param localizedUpdateDisplayLabelList 多言語設定情報
 	 */
 	public void setLocalizedUpdateDisplayLabelList(List<LocalizedStringDefinition> localizedUpdateDisplayLabelList) {
-	    this.localizedUpdateDisplayLabelList = localizedUpdateDisplayLabelList;
+		this.localizedUpdateDisplayLabelList = localizedUpdateDisplayLabelList;
 	}
 
 	/**
@@ -862,7 +859,7 @@ public class DetailFormView extends FormView {
 	 * @return 削除ボタン表示ラベル
 	 */
 	public String getDeleteDisplayLabel() {
-	    return deleteDisplayLabel;
+		return deleteDisplayLabel;
 	}
 
 	/**
@@ -870,7 +867,7 @@ public class DetailFormView extends FormView {
 	 * @param deleteDisplayLabel 削除ボタン表示ラベル
 	 */
 	public void setDeleteDisplayLabel(String deleteDisplayLabel) {
-	    this.deleteDisplayLabel = deleteDisplayLabel;
+		this.deleteDisplayLabel = deleteDisplayLabel;
 	}
 
 	/**
@@ -878,7 +875,7 @@ public class DetailFormView extends FormView {
 	 * @return 多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedDeleteDisplayLabelList() {
-	    return localizedDeleteDisplayLabelList;
+		return localizedDeleteDisplayLabelList;
 	}
 
 	/**
@@ -886,7 +883,7 @@ public class DetailFormView extends FormView {
 	 * @param localizedDeleteDisplayLabelList 多言語設定情報
 	 */
 	public void setLocalizedDeleteDisplayLabelList(List<LocalizedStringDefinition> localizedDeleteDisplayLabelList) {
-	    this.localizedDeleteDisplayLabelList = localizedDeleteDisplayLabelList;
+		this.localizedDeleteDisplayLabelList = localizedDeleteDisplayLabelList;
 	}
 
 	/**
@@ -894,7 +891,7 @@ public class DetailFormView extends FormView {
 	 * @return 削除ボタン表示ラベル
 	 */
 	public String getDeleteSpecificVersionDisplayLabel() {
-	    return deleteSpecificVersionDisplayLabel;
+		return deleteSpecificVersionDisplayLabel;
 	}
 
 	/**
@@ -902,7 +899,7 @@ public class DetailFormView extends FormView {
 	 * @param deleteSpecificVersionDisplayLabel 削除ボタン表示ラベル
 	 */
 	public void setDeleteSpecificVersionDisplayLabel(String deleteSpecificVersionDisplayLabel) {
-	    this.deleteSpecificVersionDisplayLabel = deleteSpecificVersionDisplayLabel;
+		this.deleteSpecificVersionDisplayLabel = deleteSpecificVersionDisplayLabel;
 	}
 
 	/**
@@ -910,7 +907,7 @@ public class DetailFormView extends FormView {
 	 * @return バージョン削除ボタン表示ラベル多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedDeleteSpecificVersionDisplayLabelList() {
-	    return localizedDeleteSpecificVersionDisplayLabelList;
+		return localizedDeleteSpecificVersionDisplayLabelList;
 	}
 
 	/**
@@ -918,7 +915,7 @@ public class DetailFormView extends FormView {
 	 * @param localizedDeleteSpecificVersionDisplayLabelList バージョン削除ボタン表示ラベル多言語設定情報
 	 */
 	public void setLocalizedDeleteSpecificVersionDisplayLabelList(List<LocalizedStringDefinition> localizedDeleteSpecificVersionDisplayLabelList) {
-	    this.localizedDeleteSpecificVersionDisplayLabelList = localizedDeleteSpecificVersionDisplayLabelList;
+		this.localizedDeleteSpecificVersionDisplayLabelList = localizedDeleteSpecificVersionDisplayLabelList;
 	}
 
 	/**
@@ -942,7 +939,7 @@ public class DetailFormView extends FormView {
 	 * @return Javascriptコード有効可否(編集)
 	 */
 	public boolean isValidJavascriptDetailPage() {
-	    return validJavascriptDetailPage;
+		return validJavascriptDetailPage;
 	}
 
 	/**
@@ -950,7 +947,7 @@ public class DetailFormView extends FormView {
 	 * @param validJavascriptDetailPage Javascriptコード有効可否(編集)
 	 */
 	public void setValidJavascriptDetailPage(boolean validJavascriptDetailPage) {
-	    this.validJavascriptDetailPage = validJavascriptDetailPage;
+		this.validJavascriptDetailPage = validJavascriptDetailPage;
 	}
 
 	/**
@@ -958,7 +955,7 @@ public class DetailFormView extends FormView {
 	 * @return Javascriptコード有効可否(表示)
 	 */
 	public boolean isValidJavascriptViewPage() {
-	    return validJavascriptViewPage;
+		return validJavascriptViewPage;
 	}
 
 	/**
@@ -966,7 +963,7 @@ public class DetailFormView extends FormView {
 	 * @param validJavascriptViewPage Javascriptコード有効可否(表示)
 	 */
 	public void setValidJavascriptViewPage(boolean validJavascriptViewPage) {
-	    this.validJavascriptViewPage = validJavascriptViewPage;
+		this.validJavascriptViewPage = validJavascriptViewPage;
 	}
 
 	/**
@@ -974,7 +971,7 @@ public class DetailFormView extends FormView {
 	 * @return 編集ボタン非表示
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -982,7 +979,7 @@ public class DetailFormView extends FormView {
 	 * @param hideDetail 編集ボタン非表示
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -990,7 +987,7 @@ public class DetailFormView extends FormView {
 	 * @return ロックボタン非表示設定
 	 */
 	public boolean isHideLock() {
-	    return hideLock;
+		return hideLock;
 	}
 
 	/**
@@ -998,7 +995,7 @@ public class DetailFormView extends FormView {
 	 * @param hideLock ロックボタン非表示設定
 	 */
 	public void setHideLock(boolean hideLock) {
-	    this.hideLock = hideLock;
+		this.hideLock = hideLock;
 	}
 
 	/**
@@ -1022,7 +1019,7 @@ public class DetailFormView extends FormView {
 	 * @return 削除ボタン非表示
 	 */
 	public boolean isHideDelete() {
-	    return hideDelete;
+		return hideDelete;
 	}
 
 	/**
@@ -1030,7 +1027,7 @@ public class DetailFormView extends FormView {
 	 * @param hideDelete 削除ボタン非表示
 	 */
 	public void setHideDelete(boolean hideDelete) {
-	    this.hideDelete = hideDelete;
+		this.hideDelete = hideDelete;
 	}
 
 	/**
@@ -1086,7 +1083,7 @@ public class DetailFormView extends FormView {
 	 * @return 物理削除するかどうか
 	 */
 	public boolean isPurge() {
-	    return isPurge;
+		return isPurge;
 	}
 
 	/**
@@ -1094,7 +1091,7 @@ public class DetailFormView extends FormView {
 	 * @param isPurge 物理削除するかどうか
 	 */
 	public void setPurge(boolean isPurge) {
-	    this.isPurge = isPurge;
+		this.isPurge = isPurge;
 	}
 
 	/**
@@ -1102,7 +1099,7 @@ public class DetailFormView extends FormView {
 	 * @return 親子関係の参照を物理削除するか
 	 */
 	public boolean isPurgeCompositionedEntity() {
-	    return purgeCompositionedEntity;
+		return purgeCompositionedEntity;
 	}
 
 	/**
@@ -1110,7 +1107,7 @@ public class DetailFormView extends FormView {
 	 * @param purgeCompositionedEntity 親子関係の参照を物理削除するか
 	 */
 	public void setPurgeCompositionedEntity(boolean purgeCompositionedEntity) {
-	    this.purgeCompositionedEntity = purgeCompositionedEntity;
+		this.purgeCompositionedEntity = purgeCompositionedEntity;
 	}
 
 	/**
@@ -1118,7 +1115,7 @@ public class DetailFormView extends FormView {
 	 * @return 定義されている参照プロパティのみを取得
 	 */
 	public boolean isLoadDefinedReferenceProperty() {
-	    return loadDefinedReferenceProperty;
+		return loadDefinedReferenceProperty;
 	}
 
 	/**
@@ -1126,7 +1123,7 @@ public class DetailFormView extends FormView {
 	 * @param loadDefinedReferenceProperty 定義されている参照プロパティのみを取得
 	 */
 	public void setLoadDefinedReferenceProperty(boolean loadDefinedReferenceProperty) {
-	    this.loadDefinedReferenceProperty = loadDefinedReferenceProperty;
+		this.loadDefinedReferenceProperty = loadDefinedReferenceProperty;
 	}
 
 	/**
@@ -1166,7 +1163,7 @@ public class DetailFormView extends FormView {
 	 * @return コピー対象
 	 */
 	public CopyTarget getCopyTarget() {
-	    return copyTarget;
+		return copyTarget;
 	}
 
 	/**
@@ -1174,7 +1171,7 @@ public class DetailFormView extends FormView {
 	 * @param copyTarget コピー対象
 	 */
 	public void setCopyTarget(CopyTarget copyTarget) {
-	    this.copyTarget = copyTarget;
+		this.copyTarget = copyTarget;
 	}
 
 	/**
@@ -1198,7 +1195,7 @@ public class DetailFormView extends FormView {
 	 * @return カスタムコピースクリプト
 	 */
 	public String getCustomCopyScript() {
-	    return customCopyScript;
+		return customCopyScript;
 	}
 
 	/**
@@ -1206,7 +1203,7 @@ public class DetailFormView extends FormView {
 	 * @param customCopyScript カスタムコピースクリプト
 	 */
 	public void setCustomCopyScript(String customCopyScript) {
-	    this.customCopyScript = customCopyScript;
+		this.customCopyScript = customCopyScript;
 	}
 
 	/**
@@ -1214,7 +1211,7 @@ public class DetailFormView extends FormView {
 	 * @return 初期化スクリプト
 	 */
 	public String getInitScript() {
-	    return initScript;
+		return initScript;
 	}
 
 	/**
@@ -1222,7 +1219,7 @@ public class DetailFormView extends FormView {
 	 * @param initScript 初期化スクリプト
 	 */
 	public void setInitScript(String initScript) {
-	    this.initScript = initScript;
+		this.initScript = initScript;
 	}
 
 	/**
@@ -1230,7 +1227,7 @@ public class DetailFormView extends FormView {
 	 * @return カスタム登録処理クラス名
 	 */
 	public String getInterrupterName() {
-	    return interrupterName;
+		return interrupterName;
 	}
 
 	/**
@@ -1238,7 +1235,7 @@ public class DetailFormView extends FormView {
 	 * @param interrupterName カスタム登録処理クラス名
 	 */
 	public void setInterrupterName(String interrupterName) {
-	    this.interrupterName = interrupterName;
+		this.interrupterName = interrupterName;
 	}
 
 	/**
@@ -1246,7 +1243,7 @@ public class DetailFormView extends FormView {
 	 * @return カスタムロード処理クラス名
 	 */
 	public String getLoadEntityInterrupterName() {
-	    return loadEntityInterrupterName;
+		return loadEntityInterrupterName;
 	}
 
 	/**
@@ -1254,7 +1251,7 @@ public class DetailFormView extends FormView {
 	 * @param loadEntityInterrupterName カスタムロード処理クラス名
 	 */
 	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
-	    this.loadEntityInterrupterName = loadEntityInterrupterName;
+		this.loadEntityInterrupterName = loadEntityInterrupterName;
 	}
 
 	/**

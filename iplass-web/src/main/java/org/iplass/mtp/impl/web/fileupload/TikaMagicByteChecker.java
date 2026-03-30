@@ -258,7 +258,8 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 	 */
 	private boolean doCheckMagic(TikaMimeType mimeType, byte[] magic, boolean isNeverTested) {
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Check status of magic bytes. MimeType = {}, MimeType.hasMagic() = {}, isNeverTested = {}.", mimeType.getName(), mimeType.hasMagic(),
+			LOG.debug("Check status of magic bytes. MimeType = {}, MimeType.hasMagic() = {}, isNeverTested = {}.", mimeType.getName(),
+					mimeType.hasMagic(),
 					isNeverTested);
 		}
 
@@ -279,7 +280,8 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 		if (null != parentMimeType) {
 			// 親のMimeTypeが存在する
 
-			if (parentMimeType.getName().equals(APPLICATION_OCTET_STERAM) && !tikaAdapter.hasChild(parentMimeType, mimeType)) {
+			if (parentMimeType.getName()
+					.equals(APPLICATION_OCTET_STERAM) && !tikaAdapter.hasChild(parentMimeType, mimeType)) {
 				// 親 MimeType が "application/octet-stream" かつ、子 MimeTypte として定義されていない場合（MimeType として関連が無い）、処理を終了する。
 				LOG.debug("Complete the check. MimeType \"{}\" is not defined as a child of \"{}\".", mimeType.getName(), parentMimeType.getName());
 				return isNeverTestedCurrent;
@@ -390,8 +392,10 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 			@Override
 			public void performCheck(TikaMimeType mimeType, String extension, String fileName, TikaMagicByteChecker checker) {
 				// mimeType で管理している拡張子に、ファイル名の拡張子が存在するか確認
-				if (!mimeType.getExtensions().contains(extension)) {
-					LOG.error("Does not match the extension defined for the MimeType. filename = {}, extension = {}, MimeType = {}, defined extension settings = {}",
+				if (!mimeType.getExtensions()
+						.contains(extension)) {
+					LOG.error(
+							"Does not match the extension defined for the MimeType. filename = {}, extension = {}, MimeType = {}, defined extension settings = {}",
 							fileName, extension, mimeType.getName(), mimeType.getExtensions());
 					// ファイル名の拡張子が存在しなければ、チェックエラー
 					throw new MagicByteCheckApplicationException(checker.getCheckExceptionMessage());
@@ -416,19 +420,20 @@ public class TikaMagicByteChecker implements MagicByteChecker {
 		 * @return 拡張子チェック処理
 		 */
 		public static ExtensionCheckStrategy getStrategy(TikaMimeType mimeType, String extension) {
-			return mimeType.getExtensions().isEmpty()
-					// MimeType拡張子定義 = 空
-					? StringUtil.isEmpty(extension)
-							// ファイル拡張子 = 無し
-							? EMPTY_MIMETYPE_EXTENSION_AND_NO_FILE_EXTENSION
-							// ファイル拡張子 = 有り
-							: EMPTY_MIMETYPE_EXTENSION_AND_FILE_EXTENSION_EXIST
-					// MimeType拡張子定義 = 有り
-					: StringUtil.isEmpty(extension)
-							// ファイル拡張子 = 無し
-							? MIMETYPE_EXTENSION_EXIST_AND_NO_FILE_EXTENSION
-							// ファイル拡張子 = 有り
-							: MIMETYPE_EXTENSION_EXIST_AND_FILE_EXTENSION_EXIST;
+			return mimeType.getExtensions()
+					.isEmpty()
+							// MimeType拡張子定義 = 空
+							? StringUtil.isEmpty(extension)
+									// ファイル拡張子 = 無し
+									? EMPTY_MIMETYPE_EXTENSION_AND_NO_FILE_EXTENSION
+									// ファイル拡張子 = 有り
+									: EMPTY_MIMETYPE_EXTENSION_AND_FILE_EXTENSION_EXIST
+							// MimeType拡張子定義 = 有り
+							: StringUtil.isEmpty(extension)
+									// ファイル拡張子 = 無し
+									? MIMETYPE_EXTENSION_EXIST_AND_NO_FILE_EXTENSION
+									// ファイル拡張子 = 有り
+									: MIMETYPE_EXTENSION_EXIST_AND_FILE_EXTENSION_EXIST;
 		}
 	}
 

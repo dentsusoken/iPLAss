@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConnectionFactory {
 	private static Logger logger = LoggerFactory.getLogger(ReplicationAwareDataSourceConnectionFactory.class);
-	
+
 	private List<DataSource> replicaDataSource;
 	private boolean directCreate;
 	private Random rand = new Random();
@@ -50,7 +50,7 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 	@Override
 	public void init(Config config) {
 		super.init(config);
-		
+
 		replicaDataSource = config.getValues("replicaDataSource", DataSource.class);
 		if (replicaDataSource != null) {
 			if (logger.isDebugEnabled()) {
@@ -61,7 +61,7 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 			//look up from JNDI
 			if (config.getValues("replicaDataSourceName") != null) {
 				List<String> replicaDataSourceName = config.getValues("replicaDataSourceName");
-				
+
 				if (logger.isDebugEnabled()) {
 					logger.debug("look up replicaDataSource from JNDI. name:" + replicaDataSourceName);
 				}
@@ -70,7 +70,7 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 				try {
 					replicaDataSource = new ArrayList<>();
 					context = getInitialContext();
-					for (String rdsn: replicaDataSourceName) {
+					for (String rdsn : replicaDataSourceName) {
 						replicaDataSource.add((DataSource) context.lookup(rdsn));
 					}
 				} catch (NamingException e) {
@@ -92,7 +92,7 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 	public void destroy() {
 		super.destroy();
 		if (directCreate && replicaDataSource != null) {
-			for (DataSource rds: replicaDataSource) {
+			for (DataSource rds : replicaDataSource) {
 				try {
 					if (rds instanceof Closeable) {
 						((Closeable) rds).close();
@@ -105,7 +105,7 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 			}
 		}
 		replicaDataSource = null;
-		
+
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 	}
 
 	protected Connection getReplicaConnectionInternal() {
-		
+
 		DataSource target = null;
 		if (replicaDataSource != null && replicaDataSource.size() > 0) {
 			int i;
@@ -132,7 +132,7 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 			}
 			target = replicaDataSource.get(i);
 		}
-		
+
 		if (target == null) {
 			//fallback to default dataSource
 			if (logger.isDebugEnabled()) {
@@ -140,7 +140,7 @@ public class ReplicationAwareDataSourceConnectionFactory extends DataSourceConne
 			}
 			target = getDataSource();
 		}
-		
+
 		try {
 			return target.getConnection();
 		} catch (SQLException e) {

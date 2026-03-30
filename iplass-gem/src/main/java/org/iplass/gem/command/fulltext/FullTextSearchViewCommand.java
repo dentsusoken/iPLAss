@@ -34,21 +34,25 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.util.StringUtil;
 
 @ActionMappings({
-	@ActionMapping(
-			name=FullTextSearchViewCommand.SEARCH_VIEW_ACTION_NAME,
-			displayName="全文検索画面表示",
-			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_FULLTEXT_SEARCH,
-						templateName="gem/fulltext/search",
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_COMMON_ERROR,
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-			}
-	)
+		@ActionMapping(
+				name = FullTextSearchViewCommand.SEARCH_VIEW_ACTION_NAME,
+				displayName = "全文検索画面表示",
+				result = {
+						@Result(
+								status = Constants.CMD_EXEC_SUCCESS,
+								type = Type.JSP,
+								value = Constants.CMD_RSLT_JSP_FULLTEXT_SEARCH,
+								templateName = "gem/fulltext/search",
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
+				}
+		)
 })
-@CommandClass(name="gem/fulltext/FullTextSearchViewCommand", displayName="全文検索画面表示")
+@CommandClass(name = "gem/fulltext/FullTextSearchViewCommand", displayName = "全文検索画面表示")
 public final class FullTextSearchViewCommand implements Command {
 
 	public static final String SEARCH_VIEW_ACTION_NAME = "gem/fulltext/searchview";
@@ -111,4 +115,3 @@ public final class FullTextSearchViewCommand implements Command {
 		return defNames;
 	}
 }
-

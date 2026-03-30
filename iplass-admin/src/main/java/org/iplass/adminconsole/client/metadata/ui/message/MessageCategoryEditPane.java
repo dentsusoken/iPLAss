@@ -83,7 +83,6 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-
 /**
  * メッセージカテゴリ編集パネル
  *
@@ -141,7 +140,8 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -222,8 +222,10 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (MessageCategory) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		messageItemPane.setMessageItems(curDefinition.getMessageItems());
@@ -242,16 +244,16 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_saveConfirm"),
 				AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_saveConfirmComment"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					commonSection.getEditDefinition(curDefinition);
-					curDefinition.setMessageItems(messageItemPane.getEditMessageItems());
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							commonSection.getEditDefinition(curDefinition);
+							curDefinition.setMessageItems(messageItemPane.getEditMessageItems());
 
-					updateDefinition(curDefinition, true);
-				}
-			}
-		});
+							updateDefinition(curDefinition, true);
+						}
+					}
+				});
 	}
 
 	/**
@@ -260,17 +262,16 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 	private void cancel() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					//再表示
-					initializeData();
-					commonSection.refreshSharedConfig();
-				}
-			}
-		});
+				AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_cancelConfirmComment"), new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							//再表示
+							initializeData();
+							commonSection.refreshSharedConfig();
+						}
+					}
+				});
 	}
 
 	/**
@@ -280,9 +281,9 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 
 		PostDownloadFrame frame = new PostDownloadFrame();
 		frame.setAction(GWT.getModuleBaseURL() + "service/messagedownload")
-			.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-			.addParameter("definitionName", defName)
-			.execute();
+				.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+				.addParameter("definitionName", defName)
+				.execute();
 	}
 
 	/**
@@ -291,25 +292,24 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 	private void importCSV() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					MessageItemCsvUploadDialog dialog = new MessageItemCsvUploadDialog(defName);
-					dialog.addDataChangedHandler(new DataChangedHandler() {
+				AdminClientMessageUtil.getString("ui_metadata_message_MessageCategoryEditPane_cancelConfirmComment"), new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							MessageItemCsvUploadDialog dialog = new MessageItemCsvUploadDialog(defName);
+							dialog.addDataChangedHandler(new DataChangedHandler() {
 
-						@Override
-						public void onDataChanged(DataChangedEvent event) {
-							//再表示
-							initializeData();
-							commonSection.refreshSharedConfig();
+								@Override
+								public void onDataChanged(DataChangedEvent event) {
+									//再表示
+									initializeData();
+									commonSection.refreshSharedConfig();
+								}
+							});
+							dialog.show();
 						}
-					});
-					dialog.show();
-				}
-			}
-		});
+					}
+				});
 	}
 
 	/**
@@ -543,7 +543,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 				fileds.add(langCaption);
 				coWidths.add(100);
 
-				for(Map.Entry<String, String> entry : enableLanguages.entrySet()) {
+				for (Map.Entry<String, String> entry : enableLanguages.entrySet()) {
 					CheckboxItem showLangField = new CheckboxItem();
 					showLangField.setTitle(entry.getValue());
 					//ValueはBooleanで設定して、langKeyに値を設定
@@ -603,7 +603,6 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			});
 			fileds.add(btnReset);
 
-
 			form.setColWidths(coWidths.toArray(new Object[0]));
 			form.setFields(fileds.toArray(new FormItem[0]));
 
@@ -656,29 +655,29 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);	// 列を全て表示
-			setShowAllRecords(true);	// レコードを全て表示
+			setShowAllColumns(true); // 列を全て表示
+			setShowAllRecords(true); // レコードを全て表示
 
 			setOverflow(Overflow.VISIBLE);
 			setBodyOverflow(Overflow.VISIBLE);
 
-			setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+			setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
-			setShowRowNumbers(true);		//行番号表示
+			setShowRowNumbers(true); //行番号表示
 
-			setCanResizeFields(true);	//列幅変更可
-			setCanSort(false);			//ソート不可
-			setCanGroupBy(false);		//Group化不可
-			setCanPickFields(false);	//列の選択不可
-			setCanAutoFitFields(false);	//列幅の自動調整不可(崩れるので)
+			setCanResizeFields(true); //列幅変更可
+			setCanSort(false); //ソート不可
+			setCanGroupBy(false); //Group化不可
+			setCanPickFields(false); //列の選択不可
+			setCanAutoFitFields(false); //列幅の自動調整不可(崩れるので)
 
-			setCanDragRecordsOut(false);				//grid内でのD&Dでの並べ替え不可
+			setCanDragRecordsOut(false); //grid内でのD&Dでの並べ替え不可
 			setCanAcceptDroppedRecords(false);
 			setCanReorderRecords(false);
 
-			setCanEdit(true);						//編集可
-			setEditEvent(ListGridEditEvent.DOUBLECLICK);	//DoubleClickで編集開始
-			setEditByCell(true);					//Cell単位で編集
+			setCanEdit(true); //編集可
+			setEditEvent(ListGridEditEvent.DOUBLECLICK); //DoubleClickで編集開始
+			setEditByCell(true); //Cell単位で編集
 
 			// 各フィールド初期化
 			List<ListGridField> fields = new ArrayList<ListGridField>();
@@ -704,7 +703,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			fields.add(defaultMessageField);
 
 			//多言語Field
-			for(Map.Entry<String, String> entry : enableLanguages.entrySet()) {
+			for (Map.Entry<String, String> entry : enableLanguages.entrySet()) {
 				ListGridField langMessageField = new ListGridField(entry.getKey(), entry.getValue());
 				langMessageField.setCanEdit(true);
 				langMessageField.setEscapeHTML(true);
@@ -732,8 +731,8 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 		}
 
 		@Override
-	    protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
-			MessageItemListGridRecord itemRecord = (MessageItemListGridRecord)record;
+		protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
+			MessageItemListGridRecord itemRecord = (MessageItemListGridRecord) record;
 
 			//削除対象レコードのみカスタムスタイル設定
 			String status = itemRecord.getStatus();
@@ -779,7 +778,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 				String status = itemRecord.getStatus();
 				if (status.equals(MessageItemListGridRecord.DELETE)) {
 					continue;
-				} else  {
+				} else {
 					String messageId = itemRecord.getMessageId();
 					//メッセージIDが未指定は除外
 					if (SmartGWTUtil.isEmpty(messageId)) {
@@ -829,7 +828,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			}
 
 			for (ListGridRecord record : records) {
-				MessageItemListGridRecord itemRecord = (MessageItemListGridRecord)record;
+				MessageItemListGridRecord itemRecord = (MessageItemListGridRecord) record;
 
 				String status = itemRecord.getStatus();
 				if (status.equals(MessageItemListGridRecord.INSERT)) {
@@ -851,7 +850,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			}
 
 			for (ListGridRecord record : records) {
-				MessageItemListGridRecord itemRecord = (MessageItemListGridRecord)record;
+				MessageItemListGridRecord itemRecord = (MessageItemListGridRecord) record;
 
 				//新規以外は元に戻す
 				String status = itemRecord.getStatus();
@@ -885,11 +884,13 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 			if (!SmartGWTUtil.isEmpty(filter)) {
 				List<MessageItemListGridRecord> filterRecords = new ArrayList<>();
 				for (MessageItemListGridRecord itemRecord : allRecords) {
-					if (itemRecord.getMessageId() != null && itemRecord.getMessageId().contains(filter)) {
+					if (itemRecord.getMessageId() != null && itemRecord.getMessageId()
+							.contains(filter)) {
 						filterRecords.add(itemRecord);
 						continue;
 					}
-					if (itemRecord.getMessage() != null && itemRecord.getMessage().contains(filter)) {
+					if (itemRecord.getMessage() != null && itemRecord.getMessage()
+							.contains(filter)) {
 						filterRecords.add(itemRecord);
 						continue;
 					}
@@ -911,7 +912,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 
 		private void itemValueChanged(int rowNum) {
 
-			MessageItemListGridRecord record = (MessageItemListGridRecord)getRecord(rowNum);
+			MessageItemListGridRecord record = (MessageItemListGridRecord) getRecord(rowNum);
 
 			//変更がない状態のもののみ変更ありに更新(オリジナルとの値チェックまではしない)
 			String status = record.getStatus();
@@ -965,15 +966,17 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 				}
 			}
 		}
+
 		private void clearLocalizedMessage(Map<String, String> enableLanguages) {
 			for (String locale : enableLanguages.keySet()) {
-				setAttribute(locale, (String)null);
+				setAttribute(locale, (String) null);
 			}
 		}
 
 		public void setStatus(String status) {
 			setAttribute(STATUS, status);
 		}
+
 		public String getStatus() {
 			return getAttribute(STATUS);
 		}
@@ -981,6 +984,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 		public void setMessageId(String messageId) {
 			setAttribute(MESSAGE_ID, messageId);
 		}
+
 		public String getMessageId() {
 			return getAttribute(MESSAGE_ID);
 		}
@@ -988,6 +992,7 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 		public void setMessage(String message) {
 			setAttribute(DEFAULT_MESSAGE, message);
 		}
+
 		public String getMessage() {
 			return getAttribute(DEFAULT_MESSAGE);
 		}

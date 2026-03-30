@@ -74,7 +74,8 @@ public class PushNotificationTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected void itemCreateAction(String folderPath) {
-		CreatePushNotificationTemplateDialog dialog = new CreatePushNotificationTemplateDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
+		CreatePushNotificationTemplateDialog dialog = new CreatePushNotificationTemplateDialog(definitionClassName(), nodeDisplayName(), folderPath,
+				false);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
 			@Override
@@ -102,23 +103,30 @@ public class PushNotificationTemplatePlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), PushNotificationTemplateDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplatePluginManager_failedToDeletePushNotificationTemplate") + caught.getMessage());
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplatePluginManager_completion"),
-						AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplatePluginManager_deletePushNotificationTemplateComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), PushNotificationTemplateDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil
+								.getString("ui_metadata_pushnotification_PushNotificationTemplatePluginManager_failedToDeletePushNotificationTemplate")
+								+ caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplatePluginManager_failedToDeletePushNotificationTemplate") + result.getMessage());
-				}
-			}
-		});
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplatePluginManager_completion"),
+									AdminClientMessageUtil.getString(
+											"ui_metadata_pushnotification_PushNotificationTemplatePluginManager_deletePushNotificationTemplateComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString(
+									"ui_metadata_pushnotification_PushNotificationTemplatePluginManager_failedToDeletePushNotificationTemplate")
+									+ result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -128,7 +136,7 @@ public class PushNotificationTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{ PushNotificationTemplateEditPane.class };
+		return new Class[] { PushNotificationTemplateEditPane.class };
 	}
 
 }

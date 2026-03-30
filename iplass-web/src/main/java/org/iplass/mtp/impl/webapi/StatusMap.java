@@ -22,16 +22,19 @@ package org.iplass.mtp.impl.webapi;
 public class StatusMap {
 	private int status;
 	private Class<? extends Throwable> exception;
-	
+
 	public int getStatus() {
 		return status;
 	}
+
 	public void setStatus(int status) {
 		this.status = status;
 	}
+
 	public Class<? extends Throwable> getException() {
 		return exception;
 	}
+
 	public void setException(Class<? extends Throwable> exception) {
 		this.exception = exception;
 	}

@@ -16,9 +16,8 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
-
 public class ClientSecretDialog extends MtpDialog {
-	
+
 	private final MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
 	private String definitionName;
@@ -35,7 +34,7 @@ public class ClientSecretDialog extends MtpDialog {
 
 		final DynamicForm form = new MtpForm();
 		form.setAutoHeight();
-		
+
 		txtClientSecretField = new TextItem();
 		txtClientSecretField.setTitle("ClientSecret");
 		txtClientSecretField.setWidth("100%");
@@ -43,7 +42,7 @@ public class ClientSecretDialog extends MtpDialog {
 		txtClientSecretField.setColSpan(3);
 		txtClientSecretField.setStartRow(true);
 		txtClientSecretField.setRequired(true);
-		
+
 		form.setItems(txtClientSecretField);
 
 		container.addMember(form);
@@ -74,15 +73,15 @@ public class ClientSecretDialog extends MtpDialog {
 			@Override
 			public void onSuccess(Void result) {
 				SmartGWTUtil.hideProgress();
-				
+
 				SC.say(AdminClientMessageUtil.getString("ui_metadata_oidc_ClientSecretDialog_completion"),
 						AdminClientMessageUtil.getString("ui_metadata_oidc_ClientSecretDialog_saveClientSecretComp"));
-				
+
 				destroy();
 			}
 
 			@Override
-			protected void beforeFailure(Throwable caught){
+			protected void beforeFailure(Throwable caught) {
 				SmartGWTUtil.hideProgress();
 			}
 		});

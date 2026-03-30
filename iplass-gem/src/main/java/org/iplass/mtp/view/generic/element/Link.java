@@ -41,89 +41,87 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/element/Link.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/element/Link.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
-@FieldOrder(manual=true)
+@FieldOrder(manual = true)
 public class Link extends Element {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 131576062106926116L;
 
 	/** タイトル */
-	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。",
-			displayNameKey="generic_element_Link_titleDisplaNameKey",
-			descriptionKey="generic_element_Link_titleDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+	@MetaFieldInfo(
+			displayName = "タイトル",
+			description = "ヘッダに表示するタイトルを設定します。",
+			displayNameKey = "generic_element_Link_titleDisplaNameKey",
+			descriptionKey = "generic_element_Link_titleDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedTitleList",
-			displayOrder=300
+			displayOrder = 300
 	)
 	@MultiLang()
 	private String title;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_element_Link_localizedTitleListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=310
+			displayName = "多言語設定",
+			displayNameKey = "generic_element_Link_localizedTitleListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 310
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
 	/** 表示ラベル */
-	@MetaFieldInfo(displayName="表示ラベル", description="リンクに表示するラベルを設定します。",
-			displayNameKey="generic_element_Link_displayLabelDisplaNameKey",
-			descriptionKey="generic_element_Link_displayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+	@MetaFieldInfo(
+			displayName = "表示ラベル",
+			description = "リンクに表示するラベルを設定します。",
+			displayNameKey = "generic_element_Link_displayLabelDisplaNameKey",
+			descriptionKey = "generic_element_Link_displayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedDisplayLabelList",
-			displayOrder=320
+			displayOrder = 320
 	)
 	@MultiLang()
 	private String displayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_element_Link_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=330
+			displayName = "多言語設定",
+			displayNameKey = "generic_element_Link_localizedDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 330
 	)
 	private List<LocalizedStringDefinition> localizedDisplayLabelList;
 
-
-
-
 	/** URL */
 	@MetaFieldInfo(
-			displayName="URL",
-			description="リンクのURLを設定します。",
-			displayOrder=1000,
-			displayNameKey="generic_element_Link_urlDisplaNameKey",
-			descriptionKey="generic_element_Link_urlDescriptionKey")
+			displayName = "URL",
+			description = "リンクのURLを設定します。",
+			displayOrder = 1000,
+			displayNameKey = "generic_element_Link_urlDisplaNameKey",
+			descriptionKey = "generic_element_Link_urlDescriptionKey")
 	private String url;
 
 	/** 別ウィンドウで表示するか */
 	@MetaFieldInfo(
-			displayName="別ウィンドウで表示",
-			displayNameKey="generic_element_Link_dispNewWindowDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1010,
-			description="別ウィンドウで表示するかを指定します。",
-			descriptionKey="generic_element_Link_dispNewWindowDescriptionKey"
+			displayName = "別ウィンドウで表示",
+			displayNameKey = "generic_element_Link_dispNewWindowDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1010,
+			description = "別ウィンドウで表示するかを指定します。",
+			descriptionKey = "generic_element_Link_dispNewWindowDescriptionKey"
 	)
 	private boolean dispNewWindow;
 
-
-
-
 	/** 入力カスタムスタイル */
 	@MetaFieldInfo(
-			displayName="入力カスタムスタイル",
-			displayNameKey="generic_element_Link_inputCustomStyleDisplayNameKey",
-			description="編集画面のinput要素に対するスタイルを指定します。(例)width:100px;",
-			descriptionKey="generic_element_Link_inputCustomStyleDescriptionKey",
-			inputType=InputType.SCRIPT,
-			mode="CSS",
-			displayOrder=2000
+			displayName = "入力カスタムスタイル",
+			displayNameKey = "generic_element_Link_inputCustomStyleDisplayNameKey",
+			description = "編集画面のinput要素に対するスタイルを指定します。(例)width:100px;",
+			descriptionKey = "generic_element_Link_inputCustomStyleDescriptionKey",
+			inputType = InputType.SCRIPT,
+			mode = "CSS",
+			displayOrder = 2000
 	)
 	private String inputCustomStyle;
 

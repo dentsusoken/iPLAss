@@ -31,28 +31,29 @@ public class MagicByteRuleCondition {
 	public boolean isUseRegex() {
 		return useRegex;
 	}
-	
+
 	public void setUseRegex(boolean useRegex) {
 		this.useRegex = useRegex;
 	}
-	
+
 	public String getPattern() {
 		return pattern;
 	}
-	
+
 	public void setPattern(String pattern) {
 		this.pattern = pattern;
 	}
-	
+
 	public void compilePattern() {
-		if(isUseRegex()) {
+		if (isUseRegex()) {
 			this.patternCompile = Pattern.compile(this.pattern);
 		}
 	}
 
 	public boolean match(String inputValue) {
-		if(isUseRegex()) {
-			return this.patternCompile == null || this.patternCompile.matcher(inputValue).matches();
+		if (isUseRegex()) {
+			return this.patternCompile == null || this.patternCompile.matcher(inputValue)
+					.matches();
 		}
 		return this.pattern.equals(inputValue);
 	}

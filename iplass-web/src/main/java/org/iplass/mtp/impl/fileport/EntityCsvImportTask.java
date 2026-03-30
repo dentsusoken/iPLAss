@@ -111,11 +111,13 @@ public class EntityCsvImportTask implements Callable<EntityCsvImportResult>, Exc
 
 	@Override
 	public EntityCsvImportResult call() throws Exception {
-		EntityCsvImportService importService = ServiceRegistry.getRegistry().getService(EntityCsvImportService.class);
+		EntityCsvImportService importService = ServiceRegistry.getRegistry()
+				.getService(EntityCsvImportService.class);
 
 		//MetaDataEntry
 		String entityPath = EntityService.ENTITY_META_PATH + defName.replace(".", "/");
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(entityPath);
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(entityPath);
 		try (InputStream is = new FileInputStream(filePath)) {
 			EntityCsvImportResult ret = importService.importEntityData(defName, is, entry, option, null, null, excludeEntityNames);
 

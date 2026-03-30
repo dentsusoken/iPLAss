@@ -60,7 +60,7 @@ public class DomXmlExternalRefHandler implements XmlExternalRefHandler {
 	private static final int XML_INDENT_NUM = 4;
 	private String charset = "UTF-8";
 	private DomHandlerFactory domHandlerFactory = new XsiTypeDomHandlerFactory();
-	
+
 	public DomHandlerFactory getDomHandlerFactory() {
 		return domHandlerFactory;
 	}
@@ -72,8 +72,11 @@ public class DomXmlExternalRefHandler implements XmlExternalRefHandler {
 	@Override
 	public void putOutExtcontent(File xml) {
 		try {
-			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xml);
-			doc.getDocumentElement().normalize();
+			Document doc = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder()
+					.parse(xml);
+			doc.getDocumentElement()
+					.normalize();
 
 			DomHandler handler = resolveDomHamdler(doc, xml);
 			handler.putUnescapedExtFiles(doc);
@@ -93,8 +96,11 @@ public class DomXmlExternalRefHandler implements XmlExternalRefHandler {
 	public byte[] readRestoringExtContent(File xml) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
-			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xml);
-			doc.getDocumentElement().normalize();
+			Document doc = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder()
+					.parse(xml);
+			doc.getDocumentElement()
+					.normalize();
 
 			DomHandler handler = resolveDomHamdler(doc, xml);
 			handler.restoreFromUnescapedExtFiles(doc);
@@ -145,29 +151,29 @@ public class DomXmlExternalRefHandler implements XmlExternalRefHandler {
 		writer.close();
 		return bos;
 	}
-	
+
 	/**
 	 * 外部参照されなくなったファイルを削除.
 	 */
 	private void deleteUnrefFiles(File xml, List<String> refFiles) {
 		File dir = xml.getParentFile();
 		for (String fileName : dir.list()) {
-			if(fileName.startsWith(xml.getName() + ".")) {
-				if(!refFiles.contains(fileName)) {
+			if (fileName.startsWith(xml.getName() + ".")) {
+				if (!refFiles.contains(fileName)) {
 					File unReferencedFile = new File(dir, fileName);
 					unReferencedFile.delete();
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * メタデータのタイプに応じたDomHandlerを返す.
 	 * @param type
 	 * @return
 	 */
 	private DomHandler resolveDomHamdler(Document doc, File xml) {
-		return domHandlerFactory.createDomHamdler(xml, charset, doc);	 		
+		return domHandlerFactory.createDomHamdler(xml, charset, doc);
 	}
 
 	@Override

@@ -261,12 +261,20 @@ public class EntityFileUploadService implements Service {
 
 				while (iterator.hasNext()) {
 
-					final ImportFunction func = new ImportFunction(em).ed(ed).iterator(iterator)
-							.isDenyInsert(option.isDenyInsert()).isDenyUpdate(option.isDenyUpdate())
-							.isDenyDelete(option.isDenyDelete()).insertProperties(option.getInsertProperties())
-							.updateProperties(option.getUpdateProperties()).transactionType(option.getTransactionType())
-							.commitLimit(option.getCommitLimit()).useCtrl(useCtrl).uniqueKey(option.getUniqueKey())
-							.properties(properties).updatableProperties(updatableProperties).keyValueMap(keyValueMap)
+					final ImportFunction func = new ImportFunction(em).ed(ed)
+							.iterator(iterator)
+							.isDenyInsert(option.isDenyInsert())
+							.isDenyUpdate(option.isDenyUpdate())
+							.isDenyDelete(option.isDenyDelete())
+							.insertProperties(option.getInsertProperties())
+							.updateProperties(option.getUpdateProperties())
+							.transactionType(option.getTransactionType())
+							.commitLimit(option.getCommitLimit())
+							.useCtrl(useCtrl)
+							.uniqueKey(option.getUniqueKey())
+							.properties(properties)
+							.updatableProperties(updatableProperties)
+							.keyValueMap(keyValueMap)
 							.deleteSpecificVersion(option.isDeleteSpecificVersion())
 							.updateTargetVersionForNoneVersionedEntity(
 									option.getUpdateTargetVersionForNoneVersionedEntity() != null
@@ -348,7 +356,8 @@ public class EntityFileUploadService implements Service {
 		}
 	}
 
-	private EntityFileReader<?> getReader(final InputStream is, final EntityFileType entityFileType, final EntityDefinition ed) throws UnsupportedEncodingException {
+	private EntityFileReader<?> getReader(final InputStream is, final EntityFileType entityFileType, final EntityDefinition ed)
+			throws UnsupportedEncodingException {
 		if (entityFileType == EntityFileType.EXCEL) {
 			return new EntityExcelReader(ed, is);
 		} else {
@@ -394,7 +403,9 @@ public class EntityFileUploadService implements Service {
 	private Map<String, String> getCustomColumnNameMap(EntityDefinition ed, CsvUploadInterrupter interrupter) {
 		if (interrupter.columnNameMap(ed) != null) {
 			// プロパティ名、カラム名をカラム名、プロパティ名に変換
-			return interrupter.columnNameMap(ed).entrySet().stream()
+			return interrupter.columnNameMap(ed)
+					.entrySet()
+					.stream()
 					.collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
 		}
 		return null;
@@ -432,28 +443,35 @@ public class EntityFileUploadService implements Service {
 		Path destPath = copyUploadFile(is);
 
 		// 非同期実行用のタスクを定義
-		EntityFileUploadTask task = new EntityFileUploadTask(destPath.toString(), fileName, DateUtil.getCurrentTimestamp().getTime(),
+		EntityFileUploadTask task = new EntityFileUploadTask(destPath.toString(), fileName, DateUtil.getCurrentTimestamp()
+				.getTime(),
 				defName, parameter, option);
 
 		AsyncTaskOption taskOption = new AsyncTaskOption();
 		taskOption.setExceptionHandlingMode(ExceptionHandlingMode.ABORT);
-		taskOption.setGroupingKey(AuthContext.getCurrentContext().getUser().getOid());
+		taskOption.setGroupingKey(AuthContext.getCurrentContext()
+				.getUser()
+				.getOid());
 		taskOption.setQueue(UPLOAD_QUEUE);
 		taskOption.setReturnResult(true);
 
-		ManagerLocator.manager(AsyncTaskManager.class).execute(taskOption, task);
+		ManagerLocator.manager(AsyncTaskManager.class)
+				.execute(taskOption, task);
 
 	}
 
 	private Path copyUploadFile(InputStream is) {
 
 		// 一時ディレクトリ取得
-		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+		WebFrontendService webFront = ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class);
 		File tempDir = null;
 		if (webFront.getTempFileDir() == null) {
 			WebRequestStack reqStack = WebRequestStack.getCurrent();
 			if (reqStack != null && reqStack.getRequest() != null) {
-				tempDir = (File) reqStack.getRequest().getServletContext().getAttribute(ServletContext.TEMPDIR);
+				tempDir = (File) reqStack.getRequest()
+						.getServletContext()
+						.getAttribute(ServletContext.TEMPDIR);
 			}
 		} else {
 			tempDir = new File(webFront.getTempFileDir());
@@ -488,7 +506,9 @@ public class EntityFileUploadService implements Service {
 
 		AsyncTaskInfoSearchCondtion cond = new AsyncTaskInfoSearchCondtion();
 		cond.setQueue(UPLOAD_QUEUE);
-		cond.setGroupingKey(AuthContext.getCurrentContext().getUser().getOid());
+		cond.setGroupingKey(AuthContext.getCurrentContext()
+				.getUser()
+				.getOid());
 		cond.setWithHistory(true);
 
 		AsyncTaskManager atm = ManagerLocator.manager(AsyncTaskManager.class);
@@ -748,7 +768,8 @@ public class EntityFileUploadService implements Service {
 				return;
 			}
 
-			entity.setOid(searchResult.getFirst().getOid());
+			entity.setOid(searchResult.getFirst()
+					.getOid());
 
 			interrupter.dataMapping(readCount, entity, ed, CsvRegistrationType.DELETE);
 
@@ -803,7 +824,8 @@ public class EntityFileUploadService implements Service {
 				}
 
 				if (insertProperties != null) {
-					properties.stream().filter(property -> !insertProperties.contains(property))
+					properties.stream()
+							.filter(property -> !insertProperties.contains(property))
 							.forEach(property -> entity.setValue(property, null));
 				}
 				// lockedByは指定されていても無視
@@ -911,7 +933,8 @@ public class EntityFileUploadService implements Service {
 							execType = ExecType.UPDATE_SPECIFIC;
 
 							// UniqueKeyで検索している可能性があるので登録済のOIDをセット
-							entity.setOid(versionedResult.getFirst().getOid());
+							entity.setOid(versionedResult.getFirst()
+									.getOid());
 						} else {
 							// OIDの登録状態で実行タイプを決定
 							execType = versionedExecType(ed, uniqueKey, uniqueKeyValue, entity);
@@ -939,7 +962,8 @@ public class EntityFileUploadService implements Service {
 						}
 
 						// UniqueKeyで検索している可能性があるので登録済のOIDをセット
-						entity.setOid(searchResult.getFirst().getOid());
+						entity.setOid(searchResult.getFirst()
+								.getOid());
 					} else {
 						// 指定OIDデータが存在しないのでInsert
 						execType = ExecType.INSERT;
@@ -966,7 +990,8 @@ public class EntityFileUploadService implements Service {
 				entity.setVersion(null);
 
 				// UniqueKeyで検索している可能性があるので登録済のOIDをセット
-				entity.setOid(validResult.getFirst().getOid());
+				entity.setOid(validResult.getFirst()
+						.getOid());
 			} else {
 				// 有効データに登録済OIDデータが存在しない場合は、全バージョン含めて登録済OIDデータを検索
 				Query versionedOidQuery = onVersionQuery(ed.getName(), uniqueKey, uniqueKeyValue, null);
@@ -977,10 +1002,12 @@ public class EntityFileUploadService implements Service {
 					execType = ExecType.UPDATE_NEW;
 
 					// バージョン元として登録済データのMAXバージョンを指定
-					entity.setVersion(versionedOidResult.getFirst().getVersion());
+					entity.setVersion(versionedOidResult.getFirst()
+							.getVersion());
 
 					// UniqueKeyで検索している可能性があるので登録済のOIDをセット
-					entity.setOid(versionedOidResult.getFirst().getOid());
+					entity.setOid(versionedOidResult.getFirst()
+							.getOid());
 
 				} else {
 					// 登録済OIDデータが存在しない場合は、新規追加
@@ -992,12 +1019,16 @@ public class EntityFileUploadService implements Service {
 		}
 
 		private Query noVersionQuery(String defName, String uniqueKey, Object uniqueKeyValue) {
-			return new Query().select(Entity.OID).from(defName).where(new Equals(uniqueKey, uniqueKeyValue));
+			return new Query().select(Entity.OID)
+					.from(defName)
+					.where(new Equals(uniqueKey, uniqueKeyValue));
 		}
 
 		private Query onVersionQuery(String defName, String uniqueKey, Object uniqueKeyValue, Long version) {
-			Query query = new Query().select(Entity.OID, Entity.VERSION).from(defName)
-					.order(new SortSpec(Entity.VERSION, SortType.DESC)).versioned(true);
+			Query query = new Query().select(Entity.OID, Entity.VERSION)
+					.from(defName)
+					.order(new SortSpec(Entity.VERSION, SortType.DESC))
+					.versioned(true);
 			if (version != null) {
 				query.where(new And(new Equals(uniqueKey, uniqueKeyValue), new Equals(Entity.VERSION, version)));
 			} else {
@@ -1039,10 +1070,13 @@ public class EntityFileUploadService implements Service {
 							&& !s.equals(Entity.UPDATE_DATE) && !s.equals(Entity.LOCKED_BY)
 							&& !s.equals(Entity.CREATE_BY) && !s.equals(Entity.CREATE_DATE)
 							&& !s.equals(EntityCsvReader.CTRL_CODE_KEY))
-					.map(s -> ed.getProperty(s)).filter(pd -> pd != null).filter(pd -> pd.isUpdatable())
+					.map(s -> ed.getProperty(s))
+					.filter(pd -> pd != null)
+					.filter(pd -> pd.isUpdatable())
 					.filter(pd -> !(pd instanceof ExpressionProperty) && !(pd instanceof BinaryProperty))
 					.filter(pd -> !(pd instanceof ReferenceProperty) || ((ReferenceProperty) pd).getMappedBy() == null)
-					.map(PropertyDefinition::getName).collect(Collectors.toSet());
+					.map(PropertyDefinition::getName)
+					.collect(Collectors.toSet());
 		}
 
 	}

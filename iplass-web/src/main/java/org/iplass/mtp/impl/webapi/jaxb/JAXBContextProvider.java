@@ -31,7 +31,9 @@ public class JAXBContextProvider implements ContextResolver<JAXBContext> {
 
 	@Override
 	public JAXBContext getContext(Class<?> type) {
-		JAXBContext context = ServiceRegistry.getRegistry().getService(WebApiJaxbService.class).getJAXBContext();
+		JAXBContext context = ServiceRegistry.getRegistry()
+				.getService(WebApiJaxbService.class)
+				.getJAXBContext();
 		return context;
 	}
 }

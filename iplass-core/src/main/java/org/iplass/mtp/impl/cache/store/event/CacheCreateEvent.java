@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.cache.store.event;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 
 public final class CacheCreateEvent extends CacheEvent {
-	
+
 	private final CacheEntry entry;
 
 	public CacheCreateEvent(CacheEntry entry) {
@@ -39,6 +39,5 @@ public final class CacheCreateEvent extends CacheEvent {
 	public String toString() {
 		return "CacheCreateEvent [type=" + type + ", entry=" + entry + "]";
 	}
-
 
 }

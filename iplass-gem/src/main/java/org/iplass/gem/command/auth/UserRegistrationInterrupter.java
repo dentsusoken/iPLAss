@@ -27,7 +27,7 @@ public class UserRegistrationInterrupter implements RegistrationInterrupter {
 
 	@Override
 	public String[] getAdditionalProperties() {
-		return new String[]{Entity.NAME};
+		return new String[] { Entity.NAME };
 	}
 
 }

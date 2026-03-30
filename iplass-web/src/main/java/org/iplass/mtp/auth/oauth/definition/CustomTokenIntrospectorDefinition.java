@@ -35,9 +35,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  *
  */
 @XmlSeeAlso({
-	JavaClassCustomTokenIntrospectorDefinition.class,
-	ScriptingCustomTokenIntrospectorDefinition.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+		JavaClassCustomTokenIntrospectorDefinition.class,
+		ScriptingCustomTokenIntrospectorDefinition.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class CustomTokenIntrospectorDefinition implements Serializable {
 	private static final long serialVersionUID = 7744740045019365425L;
 }

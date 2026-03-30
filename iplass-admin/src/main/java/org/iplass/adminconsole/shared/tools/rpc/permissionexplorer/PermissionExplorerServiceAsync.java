@@ -30,8 +30,6 @@ import org.iplass.mtp.entity.Entity;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-
-
 /**
  * PermissionExplorer用AsyncService
  */
@@ -43,16 +41,21 @@ public interface PermissionExplorerServiceAsync {
 	void entityDataTypeWhiteList(EntityDataTransferTypeList param, AsyncCallback<EntityDataTransferTypeList> callback);
 
 	void getRoleList(int tenantId, AsyncCallback<List<Entity>> callback);
+
 	void loadRoleData(int tenantId, final String oid, AsyncCallback<Entity> callback);
+
 	void updateRoleData(int tenantId, final UpdateRoleInfo storeInfo, AsyncCallback<Void> callback);
 
 	void getAllEntityPermissionData(int tenantId, AsyncCallback<PermissionSearchResult> callback);
+
 	void updateEntityPermissionData(int tenantId, List<PermissionInfo> permissionList, AsyncCallback<Void> callback);
 
 	void getAllActionPermissionData(int tenantId, AsyncCallback<PermissionSearchResult> callback);
+
 	void updateActionPermissionData(int tenantId, List<PermissionInfo> permissionList, AsyncCallback<Void> callback);
 
 	void getAllWebApiPermissionData(int tenantId, AsyncCallback<PermissionSearchResult> callback);
+
 	void updateWebApiPermissionData(int tenantId, List<PermissionInfo> permissionList, AsyncCallback<Void> callback);
 
 	void dummyConnect(int tenantId, AsyncCallback<Void> callback);

@@ -97,6 +97,7 @@ public class MetaSmsMailTemplate extends BaseRootMetaData implements DefinableMe
 	public MetaSmsMailTemplate copy() {
 		return ObjectUtil.deepCopy(this);
 	}
+
 	public void applyConfig(SmsMailTemplateDefinition d) {
 		name = d.getName();
 		displayName = d.getDisplayName();
@@ -108,9 +109,9 @@ public class MetaSmsMailTemplate extends BaseRootMetaData implements DefinableMe
 			message = null;
 		}
 
-		if(d.getLocalizedSmsMailTemplateList() != null) {
+		if (d.getLocalizedSmsMailTemplateList() != null) {
 			localizedSmsMailTemplateList = new ArrayList<MetaLocalizedSmsMailTemplate>();
-			for(LocalizedSmsMailTemplateDefinition ltd : d.getLocalizedSmsMailTemplateList()) {
+			for (LocalizedSmsMailTemplateDefinition ltd : d.getLocalizedSmsMailTemplateList()) {
 				MetaLocalizedSmsMailTemplate mt = new MetaLocalizedSmsMailTemplate();
 				mt.applyConfig(ltd);
 				localizedSmsMailTemplateList.add(mt);
@@ -129,15 +130,14 @@ public class MetaSmsMailTemplate extends BaseRootMetaData implements DefinableMe
 		if (message != null) {
 			d.setPlainMessage(message.currentConfig());
 		}
-		if(localizedSmsMailTemplateList != null) {
-			for(MetaLocalizedSmsMailTemplate mt : localizedSmsMailTemplateList) {
+		if (localizedSmsMailTemplateList != null) {
+			for (MetaLocalizedSmsMailTemplate mt : localizedSmsMailTemplateList) {
 				d.addLocalizedSmsMailTemplate(mt.currentConfig());
 			}
 		}
 		d.setLangOrUserBindingName(langOrUserBindingName);
 		return d;
 	}
-
 
 	public class SmsMailTemplateRuntime extends BaseMetaDataRuntime {
 
@@ -151,20 +151,27 @@ public class MetaSmsMailTemplate extends BaseRootMetaData implements DefinableMe
 
 		public SmsMailTemplateRuntime() {
 			try {
-				if(localizedSmsMailTemplateList != null && localizedSmsMailTemplateList.size() > 0) {
+				if (localizedSmsMailTemplateList != null && localizedSmsMailTemplateList.size() > 0) {
 					GroovyTemplate messageTemplate = null;
-					ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-					for(MetaLocalizedSmsMailTemplate m : localizedSmsMailTemplateList) {
+					ScriptEngine se = ExecuteContext.getCurrentContext()
+							.getTenantContext()
+							.getScriptEngine();
+					for (MetaLocalizedSmsMailTemplate m : localizedSmsMailTemplateList) {
 						String localeName = m.getLocaleName();
-						if (m.getMessage() != null && m.getMessage().getContent() != null) {
-							messageTemplate = GroovyTemplateCompiler.compile(m.getMessage().getContent(), "SmsMailTemplate_Text" + getName() + "__" + localeName, (GroovyScriptEngine) se);
+						if (m.getMessage() != null && m.getMessage()
+								.getContent() != null) {
+							messageTemplate = GroovyTemplateCompiler.compile(m.getMessage()
+									.getContent(), "SmsMailTemplate_Text" + getName() + "__" + localeName, (GroovyScriptEngine) se);
 						}
 						templateSetMap.put(localeName, messageTemplate);
 					}
 				}
-				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				ScriptEngine se = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				if (message != null && message.getContent() != null) {
-					this.messageTemplate = GroovyTemplateCompiler.compile(message.getContent(), "MailTemplate_Text" + getName(), (GroovyScriptEngine) se);
+					this.messageTemplate = GroovyTemplateCompiler.compile(message.getContent(), "MailTemplate_Text" + getName(),
+							(GroovyScriptEngine) se);
 				}
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
@@ -173,13 +180,16 @@ public class MetaSmsMailTemplate extends BaseRootMetaData implements DefinableMe
 
 		public SmsMail createMail(Map<String, Object> bindings) {
 			checkState();
-			String lang = ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantI18nInfo.class).getLocale();
+			String lang = ExecuteContext.getCurrentContext()
+					.getCurrentTenant()
+					.getTenantConfig(TenantI18nInfo.class)
+					.getLocale();
 			if (StringUtil.isNotEmpty(langOrUserBindingName)) {
 				if (bindings.get(langOrUserBindingName) != null) {
 					if (bindings.get(langOrUserBindingName) instanceof String) {
 						lang = (String) bindings.get(langOrUserBindingName);
 					} else if (bindings.get(langOrUserBindingName) instanceof User) {
-						User user = (User)bindings.get(langOrUserBindingName);
+						User user = (User) bindings.get(langOrUserBindingName);
 						String userLang = user.getLanguage();
 						if (StringUtil.isNotEmpty(userLang)) {
 							lang = userLang;
@@ -188,7 +198,8 @@ public class MetaSmsMailTemplate extends BaseRootMetaData implements DefinableMe
 				}
 			}
 
-			SmsService service = ServiceRegistry.getRegistry().getService(SmsService.class);
+			SmsService service = ServiceRegistry.getRegistry()
+					.getService(SmsService.class);
 			ExecuteContext ex = ExecuteContext.getCurrentContext();
 
 			GroovyTemplate msgTmpl = messageTemplate;
@@ -201,7 +212,7 @@ public class MetaSmsMailTemplate extends BaseRootMetaData implements DefinableMe
 				StringWriter sw = new StringWriter();
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
 				if (bindings != null) {
-					for (Map.Entry<String, Object> e: bindings.entrySet()) {
+					for (Map.Entry<String, Object> e : bindings.entrySet()) {
 						gtb.setVariable(e.getKey(), e.getValue());
 					}
 				}

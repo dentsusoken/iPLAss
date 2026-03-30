@@ -27,10 +27,8 @@ import org.iplass.mtp.command.annotation.template.Templates;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 
-
 public class MetaTemplatesFactory implements
 		AnnotatableMetaDataFactory<Templates, Object> {
-
 
 	private MetaTemplateFactory metaTemplateFactory;
 
@@ -57,6 +55,5 @@ public class MetaTemplatesFactory implements
 		}
 		return map;
 	}
-
 
 }

@@ -43,7 +43,7 @@ import org.iplass.mtp.web.actionmapping.definition.cache.ScriptingCacheCriteriaD
  * @author K.Higuchi
  *
  */
-@XmlSeeAlso({MetaJavaClassCacheCriteria.class, MetaParameterMatchCacheCriteria.class, MetaScriptingCacheCriteria.class})
+@XmlSeeAlso({ MetaJavaClassCacheCriteria.class, MetaParameterMatchCacheCriteria.class, MetaScriptingCacheCriteria.class })
 public abstract class MetaCacheCriteria implements MetaData {
 	private static final long serialVersionUID = -4394764286765456178L;
 
@@ -159,7 +159,7 @@ public abstract class MetaCacheCriteria implements MetaData {
 			if (cachableCommandResultStatus == null) {
 				isAllOkCommandStatus = true;
 			} else {
-				for (String s: cachableCommandResultStatus) {
+				for (String s : cachableCommandResultStatus) {
 					if ("*".equals(s)) {
 						isAllOkCommandStatus = true;
 						break;
@@ -167,7 +167,7 @@ public abstract class MetaCacheCriteria implements MetaData {
 				}
 			}
 			if (relatedEntity != null) {
-				for (MetaCacheRelatedEntity cre: relatedEntity) {
+				for (MetaCacheRelatedEntity cre : relatedEntity) {
 					if ("*".equals(cre.getDefinitionName())) {
 						isTargetAllEntity = true;
 						targetAllEntityType = cre.getType();
@@ -176,19 +176,19 @@ public abstract class MetaCacheCriteria implements MetaData {
 				}
 			}
 		}
-		
+
 		public MetaCacheCriteria getMetaData() {
 			return MetaCacheCriteria.this;
 		}
 
 		public abstract String createContentCacheKey(RequestContext request);
-		
+
 		public RelatedEntityType checkRelatedEntity(String entityName) {
 			if (isTargetAllEntity) {
 				return targetAllEntityType;
 			}
 			if (relatedEntity != null) {
-				for (MetaCacheRelatedEntity re: relatedEntity) {
+				for (MetaCacheRelatedEntity re : relatedEntity) {
 					if (entityName.equals(re.getDefinitionName())) {
 						return re.getType();
 					}
@@ -203,7 +203,7 @@ public abstract class MetaCacheCriteria implements MetaData {
 				return true;
 			}
 
-			for (String s: cachableCommandResultStatus) {
+			for (String s : cachableCommandResultStatus) {
 				if (s.equals(webInvocation.getStatus())) {
 					return true;
 				}
@@ -212,8 +212,6 @@ public abstract class MetaCacheCriteria implements MetaData {
 			return false;
 		}
 
-
 	}
-
 
 }

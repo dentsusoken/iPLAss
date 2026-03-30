@@ -27,7 +27,7 @@ package org.iplass.mtp.entity.definition.properties;
  *
  */
 public enum ReferenceType {
-	
+
 	/** 通常の参照。 */
 	ASSOCIATION,
 	/** 親子関係をなす参照。参照元が削除された場合は、参照先も削除対象となる */

@@ -34,9 +34,9 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/element/BlankSpace.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/element/BlankSpace.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
-@IgnoreField({"editDisplayType"})
+@IgnoreField({ "editDisplayType" })
 public class BlankSpace extends Element {
 
 	/** シリアルバージョンUID */

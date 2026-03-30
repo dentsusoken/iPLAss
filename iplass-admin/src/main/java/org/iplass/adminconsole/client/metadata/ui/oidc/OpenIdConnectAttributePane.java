@@ -141,7 +141,8 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txaScopesField.setBrowserSpellCheck(false);
 		txaScopesField.setColSpan(3);
 		txaScopesField.setStartRow(true);
-		txaScopesField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_redirectUris")));
+		txaScopesField.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_redirectUris")));
 
 		selClientAuthenticationTypeField = new SelectItem();
 		selClientAuthenticationTypeField.setTitle("Client Authentication Type");
@@ -209,6 +210,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 							public void onSave(String text) {
 								txtBackUrlAfterAuthField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -245,6 +247,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 							public void onSave(String text) {
 								txtBackUrlAfterConnectField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -294,31 +297,33 @@ public class OpenIdConnectAttributePane extends VLayout {
 		txtJwksEndpointField.setValue(definition.getJwksEndpoint());
 		txaJwksContentsField.setValue(definition.getJwksContents());
 		txtClientIdField.setValue(definition.getClientId());
-		
+
 		String scopeText = SmartGWTUtil.convertListToString(definition.getScopes(), "\n");
 		if (scopeText != null) {
 			txaScopesField.setValue(scopeText);
 		} else {
 			txaScopesField.clearValue();
 		}
-		
+
 		if (definition.getClientAuthenticationType() != null) {
-			selClientAuthenticationTypeField.setValue(definition.getClientAuthenticationType().name());
+			selClientAuthenticationTypeField.setValue(definition.getClientAuthenticationType()
+					.name());
 		} else {
 			selClientAuthenticationTypeField.setValue("");
 		}
-		
+
 		chkUseNonceField.setValue(definition.isUseNonce());
 		chkEnablePKCEField.setValue(definition.isEnablePKCE());
 		chkIssParameterSupportedField.setValue(definition.isIssParameterSupported());
 		chkValidateSignField.setValue(definition.isValidateSign());
-		
+
 		if (definition.getResponseMode() != null) {
-			selResponseModeField.setValue(definition.getResponseMode().name());
+			selResponseModeField.setValue(definition.getResponseMode()
+					.name());
 		} else {
 			selResponseModeField.setValue("");
 		}
-		
+
 		txtSubjectNameClaimField.setValue(definition.getSubjectNameClaim());
 		txtAutoUserProvisioningHandlerField.setValue(definition.getAutoUserProvisioningHandler());
 		chkEnableTransientUserField.setValue(definition.isEnableTransientUser());
@@ -335,10 +340,10 @@ public class OpenIdConnectAttributePane extends VLayout {
 		definition.setJwksEndpoint(SmartGWTUtil.getStringValue(txtJwksEndpointField));
 		definition.setJwksContents(SmartGWTUtil.getStringValue(txaJwksContentsField));
 		definition.setClientId(SmartGWTUtil.getStringValue(txtClientIdField));
-		
+
 		String scopesText = SmartGWTUtil.getStringValue(txaScopesField, true);
 		definition.setScopes(SmartGWTUtil.convertStringToList(scopesText));
-		
+
 		String clientAuthenticationType = SmartGWTUtil.getStringValue(selClientAuthenticationTypeField, true);
 		if (clientAuthenticationType != null) {
 			definition.setClientAuthenticationType(ClientAuthenticationType.valueOf(clientAuthenticationType));
@@ -350,14 +355,14 @@ public class OpenIdConnectAttributePane extends VLayout {
 		definition.setEnablePKCE(SmartGWTUtil.getBooleanValue(chkEnablePKCEField));
 		definition.setIssParameterSupported(SmartGWTUtil.getBooleanValue(chkIssParameterSupportedField));
 		definition.setValidateSign(SmartGWTUtil.getBooleanValue(chkValidateSignField));
-		
+
 		String responseMode = SmartGWTUtil.getStringValue(selResponseModeField, true);
 		if (responseMode != null) {
 			definition.setResponseMode(ResponseMode.valueOf(responseMode));
 		} else {
 			definition.setResponseMode(null);
 		}
-		
+
 		definition.setSubjectNameClaim(SmartGWTUtil.getStringValue(txtSubjectNameClaimField));
 		definition.setAutoUserProvisioningHandler(SmartGWTUtil.getStringValue(txtAutoUserProvisioningHandlerField));
 		definition.setEnableTransientUser(SmartGWTUtil.getBooleanValue(chkEnableTransientUserField));
@@ -370,7 +375,7 @@ public class OpenIdConnectAttributePane extends VLayout {
 	public boolean validate() {
 		return form.validate();
 	}
-	
+
 	private String rs(String key) {
 		return AdminClientMessageUtil.getString(key);
 	}

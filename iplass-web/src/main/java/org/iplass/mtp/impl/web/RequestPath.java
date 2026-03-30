@@ -190,7 +190,8 @@ public class RequestPath {
 
 	public String getTenantContextPath(HttpServletRequest req) {
 		if (tenantContextPath == null) {
-			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+			Tenant tenant = ExecuteContext.getCurrentContext()
+					.getCurrentTenant();
 			if (isDirectAccess(req)) {
 				switch (tenantAuthType) {
 				case DOMAIN:
@@ -266,7 +267,8 @@ public class RequestPath {
 	public boolean isDirectAccess(HttpServletRequest req) {
 		if (isDirectAccess == null) {
 			if (wfService.getDirectAccessPort() != null) {
-				isDirectAccess = wfService.getDirectAccessPort().equals(String.valueOf(req.getServerPort()));
+				isDirectAccess = wfService.getDirectAccessPort()
+						.equals(String.valueOf(req.getServerPort()));
 			} else {
 				isDirectAccess = Boolean.FALSE;
 			}
@@ -289,6 +291,7 @@ public class RequestPath {
 	public String getTargetPath() {
 		return targetPath;
 	}
+
 	public String getTargetPath(boolean withoutHeadSlash) {
 		if (withoutHeadSlash) {
 			if (targetPathWithoutHeadSlash == null) {
@@ -310,7 +313,8 @@ public class RequestPath {
 
 	private String requestURIWithoutContext(HttpServletRequest req) {
 		String reqUri = req.getRequestURI();
-		int contextPathLength = req.getContextPath().length();
+		int contextPathLength = req.getContextPath()
+				.length();
 		if (contextPathLength == 0) {// "/"の場合
 			return reqUri;
 		} else {
@@ -321,54 +325,54 @@ public class RequestPath {
 	//from org.apache.tomcat.util.http.RequestUtil#normalize
 	private String normalize(String path) {
 
-        if (path == null)
-            return null;
+		if (path == null)
+			return null;
 
-        // Create a place for the normalized path
-        String normalized = path;
+		// Create a place for the normalized path
+		String normalized = path;
 
-        if (normalized.indexOf('\\') >= 0)
-            normalized = normalized.replace('\\', '/');
+		if (normalized.indexOf('\\') >= 0)
+			normalized = normalized.replace('\\', '/');
 
-        if (normalized.equals("/."))
-            return "/";
+		if (normalized.equals("/."))
+			return "/";
 
-        // Add a leading "/" if necessary
-        if (!normalized.startsWith("/"))
-            normalized = "/" + normalized;
+		// Add a leading "/" if necessary
+		if (!normalized.startsWith("/"))
+			normalized = "/" + normalized;
 
-        // Resolve occurrences of "//" in the normalized path
-        while (true) {
-            int index = normalized.indexOf("//");
-            if (index < 0)
-                break;
-            normalized = normalized.substring(0, index) +
-                normalized.substring(index + 1);
-        }
+		// Resolve occurrences of "//" in the normalized path
+		while (true) {
+			int index = normalized.indexOf("//");
+			if (index < 0)
+				break;
+			normalized = normalized.substring(0, index) +
+					normalized.substring(index + 1);
+		}
 
-        // Resolve occurrences of "/./" in the normalized path
-        while (true) {
-            int index = normalized.indexOf("/./");
-            if (index < 0)
-                break;
-            normalized = normalized.substring(0, index) +
-                normalized.substring(index + 2);
-        }
+		// Resolve occurrences of "/./" in the normalized path
+		while (true) {
+			int index = normalized.indexOf("/./");
+			if (index < 0)
+				break;
+			normalized = normalized.substring(0, index) +
+					normalized.substring(index + 2);
+		}
 
-        // Resolve occurrences of "/../" in the normalized path
-        while (true) {
-            int index = normalized.indexOf("/../");
-            if (index < 0)
-                break;
-            if (index == 0)
-                return (null);  // Trying to go outside our context
-            int index2 = normalized.lastIndexOf('/', index - 1);
-            normalized = normalized.substring(0, index2) +
-                normalized.substring(index + 3);
-        }
+		// Resolve occurrences of "/../" in the normalized path
+		while (true) {
+			int index = normalized.indexOf("/../");
+			if (index < 0)
+				break;
+			if (index == 0)
+				return (null); // Trying to go outside our context
+			int index2 = normalized.lastIndexOf('/', index - 1);
+			normalized = normalized.substring(0, index2) +
+					normalized.substring(index + 3);
+		}
 
-        // Return the normalized path that we have completed
-        return (normalized);
-    }
+		// Return the normalized path that we have completed
+		return (normalized);
+	}
 
 }

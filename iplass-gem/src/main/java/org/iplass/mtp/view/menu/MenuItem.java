@@ -36,13 +36,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * メニューツリーに設定するアイテム定義
  */
 @XmlRootElement
-@XmlSeeAlso(value = {
-		ActionMenuItem.class,
-		EntityMenuItem.class,
-		NodeMenuItem.class,
-		UrlMenuItem.class
-})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(
+		value = {
+				ActionMenuItem.class,
+				EntityMenuItem.class,
+				NodeMenuItem.class,
+				UrlMenuItem.class
+		})
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class MenuItem implements Definition {
 
 	private static final long serialVersionUID = 6208979768417580786L;
@@ -50,7 +51,13 @@ public abstract class MenuItem implements Definition {
 	/** 名前 */
 	private String name;
 	/** 表示名 */
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 	/** 説明 */
 	private String description;
@@ -88,7 +95,7 @@ public abstract class MenuItem implements Definition {
 	 * @return childs 子階層のメニューアイテム
 	 */
 	public List<MenuItem> getChilds() {
-	    return childs;
+		return childs;
 	}
 
 	/**
@@ -97,9 +104,8 @@ public abstract class MenuItem implements Definition {
 	 * @param childs 子階層のメニューアイテム
 	 */
 	public void setChilds(List<MenuItem> childs) {
-	    this.childs = childs;
+		this.childs = childs;
 	}
-
 
 	/**
 	 * 子階層のメニューアイテムを追加します。
@@ -119,12 +125,11 @@ public abstract class MenuItem implements Definition {
 	 * @return true：存在する/false：存在しない
 	 */
 	public boolean hasChild() {
-		if(childs != null && childs.size() > 0) {
+		if (childs != null && childs.size() > 0) {
 			return true;
 		}
 		return false;
 	}
-
 
 	/**
 	 * 名前を返します。
@@ -132,7 +137,7 @@ public abstract class MenuItem implements Definition {
 	 * @return name 名前
 	 */
 	public String getName() {
-	    return name;
+		return name;
 	}
 
 	/**
@@ -141,7 +146,7 @@ public abstract class MenuItem implements Definition {
 	 * @param name 名前
 	 */
 	public void setName(String name) {
-	    this.name = name;
+		this.name = name;
 	}
 
 	/**
@@ -150,7 +155,7 @@ public abstract class MenuItem implements Definition {
 	 * @return 表示名
 	 */
 	public String getDisplayName() {
-	    return displayName;
+		return displayName;
 	}
 
 	/**
@@ -159,7 +164,7 @@ public abstract class MenuItem implements Definition {
 	 * @param displayName 表示名
 	 */
 	public void setDisplayName(String displayName) {
-	    this.displayName = displayName;
+		this.displayName = displayName;
 	}
 
 	/**
@@ -168,7 +173,7 @@ public abstract class MenuItem implements Definition {
 	 * @return 説明
 	 */
 	public String getDescription() {
-	    return description;
+		return description;
 	}
 
 	/**
@@ -177,7 +182,7 @@ public abstract class MenuItem implements Definition {
 	 * @param description 説明
 	 */
 	public void setDescription(String description) {
-	    this.description = description;
+		this.description = description;
 	}
 
 	/**
@@ -186,7 +191,7 @@ public abstract class MenuItem implements Definition {
 	 * @return メニューアイコンURL
 	 */
 	public String getImageUrl() {
-	    return imageUrl;
+		return imageUrl;
 	}
 
 	/**
@@ -195,7 +200,7 @@ public abstract class MenuItem implements Definition {
 	 * @param imageUrl メニューアイコンURL
 	 */
 	public void setImageUrl(String imageUrl) {
-	    this.imageUrl = imageUrl;
+		this.imageUrl = imageUrl;
 	}
 
 	/**
@@ -203,7 +208,7 @@ public abstract class MenuItem implements Definition {
 	 * @return アイコンタグ
 	 */
 	public String getIconTag() {
-	    return iconTag;
+		return iconTag;
 	}
 
 	/**
@@ -211,7 +216,7 @@ public abstract class MenuItem implements Definition {
 	 * @param iconTag アイコンタグ
 	 */
 	public void setIconTag(String iconTag) {
-	    this.iconTag = iconTag;
+		this.iconTag = iconTag;
 	}
 
 	/**
@@ -247,7 +252,7 @@ public abstract class MenuItem implements Definition {
 	 * @return イメージカラー
 	 */
 	public String getImageColor() {
-	    return imageColor;
+		return imageColor;
 	}
 
 	/**
@@ -255,7 +260,7 @@ public abstract class MenuItem implements Definition {
 	 * @param imageColor イメージカラー
 	 */
 	public void setImageColor(String imageColor) {
-	    this.imageColor = imageColor;
+		this.imageColor = imageColor;
 	}
 
 	/**
@@ -285,7 +290,7 @@ public abstract class MenuItem implements Definition {
 		result = prime * result + ((displayName == null) ? 0 : displayName.hashCode());
 		result = prime * result + ((imageUrl == null) ? 0 : imageUrl.hashCode());
 		result = prime * result + ((childs == null) ? 0 : childs.hashCode());
-		result = prime * result + ((imageColor == null) ? 0: imageColor.hashCode());
+		result = prime * result + ((imageColor == null) ? 0 : imageColor.hashCode());
 		result = prime * result + ((customizeScript == null) ? 0 : customizeScript.hashCode());
 		return result;
 	}

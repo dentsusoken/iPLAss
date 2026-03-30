@@ -40,13 +40,13 @@ import com.webauthn4j.credential.CredentialRecord;
  * CredentialRecord Handler
  */
 public class CredentialRecordHandler extends AuthTokenHandler {
-	
+
 	//SERIES->Credential ID
 	//TOKEN->User.id
 	//U_KEY->oid
-	
+
 	public static final String TYPE_WEBAUTHN_CREDENTIAL_DEFAULT = "WAC";
-	
+
 	private String hashAlgorithm = "SHA-512";
 	private int seriesMaxLength = 256;
 
@@ -80,8 +80,9 @@ public class CredentialRecordHandler extends AuthTokenHandler {
 		info.setType(authToken.getType());
 		info.setKey(authToken.getSeries());
 		info.setStartDate(authToken.getStartDate());
-		info.setUserHandle(Base64.getUrlDecoder().decode(authToken.getToken()));
-		
+		info.setUserHandle(Base64.getUrlDecoder()
+				.decode(authToken.getToken()));
+
 		CredentialRecordMement credentialRecordDetails = (CredentialRecordMement) authToken.getDetails();
 		info.setCredentialRecord(credentialRecordDetails.toCredentialRecord());
 		info.setAuthenticatorDisplayName(credentialRecordDetails.getAuthenticatorDisplayName());
@@ -89,7 +90,7 @@ public class CredentialRecordHandler extends AuthTokenHandler {
 
 		return info;
 	}
-	
+
 	@Override
 	public Credential toCredential(AuthToken newToken) {
 		//TODO 
@@ -107,13 +108,17 @@ public class CredentialRecordHandler extends AuthTokenHandler {
 	@Override
 	public String newTokenString(AuthTokenInfo tokenInfo) {
 		WebAuthnAuthenticatorInfoImpl ti = (WebAuthnAuthenticatorInfoImpl) tokenInfo;
-		return Base64.getUrlEncoder().withoutPadding().encodeToString(ti.getUserHandle());
+		return Base64.getUrlEncoder()
+				.withoutPadding()
+				.encodeToString(ti.getUserHandle());
 	}
 
 	@Override
 	public String newSeriesString(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
 		WebAuthnAuthenticatorInfoImpl ti = (WebAuthnAuthenticatorInfoImpl) tokenInfo;
-		byte[] credentialId = ti.getCredentialRecord().getAttestedCredentialData().getCredentialId();
+		byte[] credentialId = ti.getCredentialRecord()
+				.getAttestedCredentialData()
+				.getCredentialId();
 		return credentialIdToSeriesString(credentialId);
 	}
 
@@ -129,11 +134,15 @@ public class CredentialRecordHandler extends AuthTokenHandler {
 	 */
 	private String credentialIdToSeriesString(byte[] credentialId) {
 		try {
-			String seriesString = Base64.getUrlEncoder().withoutPadding().encodeToString(credentialId);
+			String seriesString = Base64.getUrlEncoder()
+					.withoutPadding()
+					.encodeToString(credentialId);
 			if (seriesString.length() > seriesMaxLength) {
 				MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
 				byte[] buf = md.digest(credentialId);
-				seriesString = Base64.getUrlEncoder().withoutPadding().encodeToString(buf);
+				seriesString = Base64.getUrlEncoder()
+						.withoutPadding()
+						.encodeToString(buf);
 			}
 			return seriesString;
 		} catch (NoSuchAlgorithmException e) {
@@ -142,7 +151,8 @@ public class CredentialRecordHandler extends AuthTokenHandler {
 	}
 
 	public AuthToken getAuthTokenByCredentialId(byte[] credentialId) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		return authTokenStore().getBySeries(tenantId, getType(), credentialIdToSeriesString(credentialId));
 	}
 
@@ -158,7 +168,8 @@ public class CredentialRecordHandler extends AuthTokenHandler {
 	}
 
 	public int countCredentialRecordsByUser(String userUniqueId) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		List<AuthToken> authTokens = authTokenStore().getByOwner(tenantId, getType(), userUniqueId);
 		if (authTokens == null) {
 			return 0;

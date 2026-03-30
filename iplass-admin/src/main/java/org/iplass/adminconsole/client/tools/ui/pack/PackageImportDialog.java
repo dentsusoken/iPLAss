@@ -89,15 +89,14 @@ public class PackageImportDialog extends AbstractWindow {
 	//テナントプロパティ選択画面
 	private MetaDataImportTenantPane tanantSelectPane;
 
-
 	public static void showFullScreen(final String fileOid, final PackageListPane owner) {
 		SmartGWTUtil.showAnimationFullScreen(new AnimationFullScreenCallback() {
 			@Override
 			public void execute(boolean earlyFinish) {
-              animateOutline.hide();
-              PackageImportDialog dialog = new PackageImportDialog(fileOid, owner, width, height);
-              dialog.show();
-              dialog.initializeData();	//showの後で実行しないとProgressが表示されないので、ここで
+				animateOutline.hide();
+				PackageImportDialog dialog = new PackageImportDialog(fileOid, owner, width, height);
+				dialog.show();
+				dialog.initializeData(); //showの後で実行しないとProgressが表示されないので、ここで
 			}
 		});
 	}
@@ -269,7 +268,6 @@ public class PackageImportDialog extends AbstractWindow {
 			});
 		}
 
-
 		private void executeImport() {
 
 			//テナントが含まれている場合は、プロパティ選択を行う
@@ -317,17 +315,19 @@ public class PackageImportDialog extends AbstractWindow {
 
 			//EntityにUserが含まれていてTruncateする場合は確認
 			if (SmartGWTUtil.isNotEmpty(packageInfo.getEntityPaths())) {
-				if (packageInfo.getEntityPaths().contains("mtp.auth.User" + ".csv")) {
+				if (packageInfo.getEntityPaths()
+						.contains("mtp.auth.User" + ".csv")) {
 					PackageImportCondition cond = entityImportPane.getCondition();
 					if (cond.isTruncate()) {
-						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_userTruncateConfirm"), new BooleanCallback() {
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									doCheckListener(importTenant);
-								}
-							}
-						});
+						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_userTruncateConfirm"),
+								new BooleanCallback() {
+									@Override
+									public void execute(Boolean value) {
+										if (value) {
+											doCheckListener(importTenant);
+										}
+									}
+								});
 						return;
 					}
 				}
@@ -335,52 +335,58 @@ public class PackageImportDialog extends AbstractWindow {
 
 			doCheckListener(importTenant);
 		}
-		
+
 		private void doCheckListener(final Tenant importTenant) {
 
 			//EntityにUserまたはPermission系が含まれていてListener実行しない場合は確認
 			if (SmartGWTUtil.isNotEmpty(packageInfo.getEntityPaths())) {
 				PackageImportCondition cond = entityImportPane.getCondition();
 				if (!cond.isNotifyListeners()) {
-					boolean userEntityExists = packageInfo.getEntityPaths().contains("mtp.auth.User" + ".csv");
+					boolean userEntityExists = packageInfo.getEntityPaths()
+							.contains("mtp.auth.User" + ".csv");
 					boolean permissionEntityExists = Arrays.asList(
-							"mtp.auth.ActionPermission" + ".csv", 
-							"mtp.auth.CubePermission" + ".csv", 
-							"mtp.auth.EntityPermission" + ".csv", 
-							"mtp.auth.UserTaskPermission" + ".csv", 
-							"mtp.auth.WebApiPermission" + ".csv", 
-							"mtp.auth.WorkflowPermission" + ".csv").stream()
-							.anyMatch(l -> packageInfo.getEntityPaths().contains(l));
-					
+							"mtp.auth.ActionPermission" + ".csv",
+							"mtp.auth.CubePermission" + ".csv",
+							"mtp.auth.EntityPermission" + ".csv",
+							"mtp.auth.UserTaskPermission" + ".csv",
+							"mtp.auth.WebApiPermission" + ".csv",
+							"mtp.auth.WorkflowPermission" + ".csv")
+							.stream()
+							.anyMatch(l -> packageInfo.getEntityPaths()
+									.contains(l));
+
 					if (userEntityExists && permissionEntityExists) {
-						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_userListenerAndPermissionListenerConfirm"), new BooleanCallback() {
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									doExecuteImport(importTenant);
-								}
-							}
-						});
+						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"),
+								rs("ui_tools_pack_PackageImportDialog_userListenerAndPermissionListenerConfirm"), new BooleanCallback() {
+									@Override
+									public void execute(Boolean value) {
+										if (value) {
+											doExecuteImport(importTenant);
+										}
+									}
+								});
 						return;
 					} else if (userEntityExists) {
-						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_userListenerConfirm"), new BooleanCallback() {
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									doExecuteImport(importTenant);
-								}
-							}
-						});
+						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_userListenerConfirm"),
+								new BooleanCallback() {
+									@Override
+									public void execute(Boolean value) {
+										if (value) {
+											doExecuteImport(importTenant);
+										}
+									}
+								});
 						return;
 					} else if (permissionEntityExists) {
-						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_permissionListenerConfirm"), new BooleanCallback() {
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									doExecuteImport(importTenant);
-								}
-							}
-						});
+						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_permissionListenerConfirm"),
+								new BooleanCallback() {
+									@Override
+									public void execute(Boolean value) {
+										if (value) {
+											doExecuteImport(importTenant);
+										}
+									}
+								});
 						return;
 					}
 				}
@@ -510,7 +516,8 @@ public class PackageImportDialog extends AbstractWindow {
 		private void importEntityData() {
 
 			//Role、RoleConditionチェック
-			List<String> execList = new ArrayList<>(packageInfo.getEntityPaths().size());
+			List<String> execList = new ArrayList<>(packageInfo.getEntityPaths()
+					.size());
 			boolean hasRole = false;
 			for (String path : packageInfo.getEntityPaths()) {
 				if (path.equals(MetaDataConstants.ENTITY_NAME_ROLE + ".csv")) {
@@ -571,7 +578,8 @@ public class PackageImportDialog extends AbstractWindow {
 					@Override
 					public void onFailure(Throwable caught) {
 						GWT.log(caught.toString(), caught);
-						resultDialog.addErrorMessage("[" + path + "]" + rs("ui_tools_pack_PackageImportDialog_failedImportEntityDataCause") + caught.getMessage());
+						resultDialog.addErrorMessage(
+								"[" + path + "]" + rs("ui_tools_pack_PackageImportDialog_failedImportEntityDataCause") + caught.getMessage());
 
 						resultDialog.addErrorMessage(rs("ui_tools_pack_PackageImportDialog_stopImportEntityData"));
 
@@ -620,6 +628,7 @@ public class PackageImportDialog extends AbstractWindow {
 		public void setMessage(String message) {
 			entryPane.setMessage(message);
 		}
+
 		public void setMessage(List<String> messages) {
 			entryPane.setMessage(messages);
 		}
@@ -681,6 +690,7 @@ public class PackageImportDialog extends AbstractWindow {
 				messages.add(message);
 				setMessage(messages);
 			}
+
 			public void setMessage(List<String> messages) {
 				logContents.setContents(getMessageString(messages));
 			}
@@ -781,7 +791,7 @@ public class PackageImportDialog extends AbstractWindow {
 //		private CheckboxItem chkAsyncField;
 
 		public EntityImportPane() {
-			setOverflow(Overflow.AUTO);	//Resize可能にするため
+			setOverflow(Overflow.AUTO); //Resize可能にするため
 
 			DynamicForm entityForm = new DynamicForm();
 			entityForm.setPadding(5);
@@ -807,7 +817,7 @@ public class PackageImportDialog extends AbstractWindow {
 			chkBulkUpdateField.setTitle(rs("ui_tools_pack_PackageImportDialog_bulkUpdate"));
 			chkBulkUpdateField.setShowTitle(false);
 			chkBulkUpdateField.setColSpan(2);
-			chkBulkUpdateField.addChangedHandler((e)->{
+			chkBulkUpdateField.addChangedHandler((e) -> {
 
 				if (SmartGWTUtil.getBooleanValue(chkBulkUpdateField)) {
 					//bulkUpdateモード
@@ -878,11 +888,11 @@ public class PackageImportDialog extends AbstractWindow {
 			chkIgnoreNotExistsPropertyField.setTitle(rs("ui_tools_pack_PackageImportDialog_ignoreNotExistsProperty"));
 			chkIgnoreNotExistsPropertyField.setShowTitle(false);
 			chkIgnoreNotExistsPropertyField.setColSpan(2);
-			chkIgnoreNotExistsPropertyField.setValue(true);	//デフォルトtrue
+			chkIgnoreNotExistsPropertyField.setValue(true); //デフォルトtrue
 
 			prefixOidField = new TextItem();
 			prefixOidField.setTitle("OID Prefix");
-			prefixOidField.setKeyPressFilter("[A-Za-z0-9]");	//英数字のみ
+			prefixOidField.setKeyPressFilter("[A-Za-z0-9]"); //英数字のみ
 			prefixOidField.setHint(rs("ui_tools_pack_PackageImportDialog_preOidHint"));
 
 			commitLimitField = new SelectItem();
@@ -925,7 +935,7 @@ public class PackageImportDialog extends AbstractWindow {
 			i18nForm.setIsGroup(true);
 			i18nForm.setGroupTitle("i18n Support Setting:");
 			i18nForm.setNumCols(4);
-			i18nForm.setColWidths(90, 170, 120, "*");	//レイアウト調整したのでEntityCsvUploadDialogと少し異なる
+			i18nForm.setColWidths(90, 170, 120, "*"); //レイアウト調整したのでEntityCsvUploadDialogと少し異なる
 
 			localeField = new ComboBoxItem();
 			localeField.setTitle("File Locale");
@@ -1030,7 +1040,7 @@ public class PackageImportDialog extends AbstractWindow {
 					destroy();
 				}
 			});
-			okButton.setDisabled(true);	//初期状態は使用不可
+			okButton.setDisabled(true); //初期状態は使用不可
 
 			HLayout execButtons = new HLayout(5);
 			execButtons.setMargin(5);
@@ -1068,18 +1078,23 @@ public class PackageImportDialog extends AbstractWindow {
 		private void clearMessage() {
 			messageTab.clearMessage();
 		}
+
 		private void setTabTitleProgress() {
 			messageTab.setTabTitleProgress();
 		}
+
 		private void addMessage(String message) {
 			messageTab.addMessage(message);
 		}
+
 		private void addMessage(List<String> message) {
 			messageTab.addMessage(message);
 		}
+
 		private void addErrorMessage(String message) {
 			messageTab.addErrorMessage(message);
 		}
+
 		private void addErrorMessage(List<String> message) {
 			messageTab.addErrorMessage(message);
 		}

@@ -26,17 +26,19 @@ import org.iplass.mtp.view.top.parts.PreviewDateParts;
 import org.iplass.mtp.web.template.TemplateUtil;
 
 @ActionMapping(
-	name=PreviewDateViewCommand.ACTION_NAME,
-	clientCacheType=ClientCacheType.NO_CACHE,
-	displayName="プレビュー日付画面表示",
-	result={
-		@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-				value="/jsp/gem/layout/previewDate.jsp",
-				templateName="gem/preview/previewDate",
-				layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-	}
+		name = PreviewDateViewCommand.ACTION_NAME,
+		clientCacheType = ClientCacheType.NO_CACHE,
+		displayName = "プレビュー日付画面表示",
+		result = {
+				@Result(
+						status = Constants.CMD_EXEC_SUCCESS,
+						type = Type.JSP,
+						value = "/jsp/gem/layout/previewDate.jsp",
+						templateName = "gem/preview/previewDate",
+						layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+		}
 )
-@CommandClass(name="gem/preview/PreviewDateViewCommand", displayName="プレビュー日付画面表示")
+@CommandClass(name = "gem/preview/PreviewDateViewCommand", displayName = "プレビュー日付画面表示")
 public final class PreviewDateViewCommand implements Command {
 
 	public static final String ACTION_NAME = "gem/preview/index";

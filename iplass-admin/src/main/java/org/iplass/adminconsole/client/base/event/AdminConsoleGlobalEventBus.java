@@ -35,7 +35,8 @@ public class AdminConsoleGlobalEventBus {
 	/** 全体で管理するイベントハンドラの実装クラス */
 	private static EventBus EVENT_BUS = GWT.create(SimpleEventBus.class);
 
-	private AdminConsoleGlobalEventBus() {}
+	private AdminConsoleGlobalEventBus() {
+	}
 
 	public static <H extends EventHandler> HandlerRegistration addHandler(GwtEvent.Type<H> type, H handler) {
 		return EVENT_BUS.addHandler(type, handler);

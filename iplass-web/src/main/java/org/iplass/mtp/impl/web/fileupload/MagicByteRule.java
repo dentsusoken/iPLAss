@@ -31,7 +31,7 @@ public class MagicByteRule {
 	private MagicByteRuleCondition mimeType;
 	private MagicByteRuleCondition extension;
 	private List<String> magicByte;
-	
+
 	private List<byte[]> magicByteList;
 
 	public MagicByteRuleCondition getMimeType() {
@@ -58,9 +58,9 @@ public class MagicByteRule {
 
 	public void setMagicByte(List<String> magicByte) throws DecoderException {
 		this.magicByte = magicByte;
-		if(magicByte != null) {
+		if (magicByte != null) {
 			this.magicByteList = new ArrayList<>();
-			for(String magicByteStr : magicByte) {
+			for (String magicByteStr : magicByte) {
 				this.magicByteList.add(Hex.decodeHex(magicByteStr.toCharArray()));
 			}
 		}
@@ -69,23 +69,23 @@ public class MagicByteRule {
 	public boolean matchMimeType(String mimeType) {
 		return this.mimeType == null || this.mimeType.match(mimeType);
 	}
-	
+
 	public boolean matchExtension(String extension) {
 		return this.extension == null || this.extension.match(extension);
 	}
-	
+
 	public boolean matchMagicByte(byte[] inputMagicByte) {
-		if(CollectionUtils.isEmpty(this.magicByteList)) {
+		if (CollectionUtils.isEmpty(this.magicByteList)) {
 			return true;
 		}
-		
+
 		return magicByteList.stream()
 				.anyMatch(m -> matchMagicByte(m, inputMagicByte));
 	}
-	
+
 	private boolean matchMagicByte(byte[] magicByte, byte[] inputMagicByte) {
-		for(int index = 0 ; index < magicByte.length ; index++) {
-			if(magicByte[index] != inputMagicByte[index]) {
+		for (int index = 0; index < magicByte.length; index++) {
+			if (magicByte[index] != inputMagicByte[index]) {
 				return false;
 			}
 		}

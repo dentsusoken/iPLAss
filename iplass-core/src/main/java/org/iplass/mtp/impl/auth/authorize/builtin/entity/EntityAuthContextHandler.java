@@ -30,10 +30,10 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityService;
 
 public class EntityAuthContextHandler extends AuthorizationContextHandler {
-	private static final Class<?>[] PERM_TYPE = {EntityPermission.class, EntityPropertyPermission.class};
+	private static final Class<?>[] PERM_TYPE = { EntityPermission.class, EntityPropertyPermission.class };
 
 	private boolean useCorrelatedSubqueryOnEntityLimitCondition;
-	
+
 	public EntityAuthContextHandler() {
 	}
 
@@ -45,7 +45,7 @@ public class EntityAuthContextHandler extends AuthorizationContextHandler {
 			boolean useCorrelatedSubqueryOnEntityLimitCondition) {
 		this.useCorrelatedSubqueryOnEntityLimitCondition = useCorrelatedSubqueryOnEntityLimitCondition;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends Permission>[] permissionType() {
@@ -56,7 +56,7 @@ public class EntityAuthContextHandler extends AuthorizationContextHandler {
 	protected String cacheNamespace() {
 		return "mtp.auth.builtin.entity";
 	}
-	
+
 	@Override
 	protected String contextName(Permission permission) {
 		if (permission instanceof EntityPermission) {
@@ -79,7 +79,9 @@ public class EntityAuthContextHandler extends AuthorizationContextHandler {
 	@Override
 	protected AuthorizationContext defaultAuthorizationContext(String contextName, TenantAuthorizeContext tac) {
 		//他テナントのユーザーの場合は、ReadOnlyがデフォルト
-		if (ExecuteContext.getCurrentContext().getClientTenantId() != tac.getTenantContext().getTenantId()) {
+		if (ExecuteContext.getCurrentContext()
+				.getClientTenantId() != tac.getTenantContext()
+						.getTenantId()) {
 			return new DefaultEntityAuthContext(contextName, null, null, tac, true);
 		} else {
 			return new DefaultEntityAuthContext(contextName, null, null, tac, false);

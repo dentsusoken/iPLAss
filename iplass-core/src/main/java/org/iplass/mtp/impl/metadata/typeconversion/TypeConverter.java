@@ -30,9 +30,14 @@ import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
  */
 public interface TypeConverter {
 	public boolean hasFallbackPath(String path);
+
 	public String fallbackPath(String path);
+
 	public boolean isConvertTarget(MetaDataEntry entry);
+
 	public void convert(MetaDataEntry entry);
+
 	public boolean isConvertTarget(MetaDataEntryInfo entryInfo);
+
 	public void convert(MetaDataEntryInfo entryInfo);
 }

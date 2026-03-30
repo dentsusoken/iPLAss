@@ -44,7 +44,7 @@ public class SeparatorParts extends TopViewContentParts implements HasNestParts 
 	 * @return 左エリアパーツ
 	 */
 	public TopViewParts getLeftParts() {
-	    return leftParts;
+		return leftParts;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class SeparatorParts extends TopViewContentParts implements HasNestParts 
 	 * @param leftParts 左エリアパーツ
 	 */
 	public void setLeftParts(TopViewParts leftParts) {
-	    this.leftParts = leftParts;
+		this.leftParts = leftParts;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class SeparatorParts extends TopViewContentParts implements HasNestParts 
 	 * @return 右エリアパーツ
 	 */
 	public TopViewParts getRightParts() {
-	    return rightParts;
+		return rightParts;
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class SeparatorParts extends TopViewContentParts implements HasNestParts 
 	 * @param rightParts 右エリアパーツ
 	 */
 	public void setRightParts(TopViewParts rightParts) {
-	    this.rightParts = rightParts;
+		this.rightParts = rightParts;
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class SeparatorParts extends TopViewContentParts implements HasNestParts 
 		if (parts instanceof HasNestParts) {
 			List<TopViewParts> nestParts = new ArrayList<>();
 			nestParts.add(parts);
-			nestParts.addAll(((HasNestParts)parts).getNestParts());
+			nestParts.addAll(((HasNestParts) parts).getNestParts());
 			return nestParts;
 		} else {
 			return Arrays.asList(parts);

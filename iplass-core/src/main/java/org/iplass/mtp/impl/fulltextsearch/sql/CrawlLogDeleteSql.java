@@ -24,11 +24,11 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class CrawlLogDeleteSql extends UpdateSqlHandler {
 
 	public String toSqlForCleanup(int tenantId, EntityHandler eh, RdbAdapter rdb) {
-		return deleteByDefId(tenantId, eh.getMetaData().getId(), rdb);
+		return deleteByDefId(tenantId, eh.getMetaData()
+				.getId(), rdb);
 	}
 
 	public String deleteByDefId(int tenantId, String defId, RdbAdapter rdb) {
@@ -38,7 +38,8 @@ public class CrawlLogDeleteSql extends UpdateSqlHandler {
 				.append(" WHERE " + CrawlLogTable.TENANT_ID + "=")
 				.append(tenantId)
 				.append(" AND " + CrawlLogTable.OBJ_DEF_ID + "='")
-				.append(rdb.sanitize(defId)).append("'")
+				.append(rdb.sanitize(defId))
+				.append("'")
 				.toString();
 	}
 

@@ -85,18 +85,23 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 	public String getFrom() {
 		return from;
 	}
+
 	public void setFrom(String from) {
 		this.from = from;
 	}
+
 	public String getReplyTo() {
 		return replyTo;
 	}
+
 	public void setReplyTo(String replyTo) {
 		this.replyTo = replyTo;
 	}
+
 	public String getReturnPath() {
 		return returnPath;
 	}
+
 	public void setReturnPath(String returnPath) {
 		this.returnPath = returnPath;
 	}
@@ -104,12 +109,15 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 	public String getFromDisplayName() {
 		return this.fromDisplayName;
 	}
+
 	public void setFromDisplayName(String fromDisplayName) {
 		this.fromDisplayName = fromDisplayName;
 	}
+
 	public String getReplyToDisplayName() {
 		return this.replyToDisplayName;
 	}
+
 	public void setReplyToDisplayName(String replyToDisplayName) {
 		this.replyToDisplayName = replyToDisplayName;
 	}
@@ -117,31 +125,40 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 	public List<MetaLocalizedMailTemplate> getLocalizedMailTemplateList() {
 		return localizedMailTemplateList;
 	}
+
 	public void setLocalizedMailTemplateList(
 			List<MetaLocalizedMailTemplate> localizedMailTemplateList) {
 		this.localizedMailTemplateList = localizedMailTemplateList;
 	}
+
 	public String getCharset() {
 		return charset;
 	}
+
 	public void setCharset(String charset) {
 		this.charset = charset;
 	}
+
 	public String getSubject() {
 		return subject;
 	}
+
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
+
 	public MetaPlainTextBodyPart getMessage() {
 		return message;
 	}
+
 	public void setMessage(MetaPlainTextBodyPart message) {
 		this.message = message;
 	}
+
 	public MetaHtmlBodyPart getHtmlMessage() {
 		return htmlMessage;
 	}
+
 	public void setHtmlMessage(MetaHtmlBodyPart htmlMessage) {
 		this.htmlMessage = htmlMessage;
 	}
@@ -149,6 +166,7 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 	public String getLangOrUserBindingName() {
 		return langOrUserBindingName;
 	}
+
 	public void setLangOrUserBindingName(String bindKey) {
 		this.langOrUserBindingName = bindKey;
 	}
@@ -156,12 +174,15 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 	public boolean isSmimeSign() {
 		return smimeSign;
 	}
+
 	public void setSmimeSign(boolean smimeSign) {
 		this.smimeSign = smimeSign;
 	}
+
 	public boolean isSmimeEncrypt() {
 		return smimeEncrypt;
 	}
+
 	public void setSmimeEncrypt(boolean smimeEncrypt) {
 		this.smimeEncrypt = smimeEncrypt;
 	}
@@ -170,6 +191,7 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 	public MailTemplateRuntime createRuntime(MetaDataConfig metaDataConfig) {
 		return new MailTemplateRuntime();
 	}
+
 	@Override
 	public MetaMailTemplate copy() {
 		return ObjectUtil.deepCopy(this);
@@ -203,7 +225,7 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 
 		if (definition.getLocalizedMailTemplateList() != null) {
 			localizedMailTemplateList = new ArrayList<MetaLocalizedMailTemplate>();
-			for (LocalizedMailTemplateDefinition ed: definition.getLocalizedMailTemplateList()) {
+			for (LocalizedMailTemplateDefinition ed : definition.getLocalizedMailTemplateList()) {
 
 				MetaLocalizedMailTemplate mls = new MetaLocalizedMailTemplate();
 //				mls.setLocaleName(ed.getLocaleName());
@@ -244,7 +266,7 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 		}
 
 		if (localizedMailTemplateList != null) {
-			for (MetaLocalizedMailTemplate mls: localizedMailTemplateList) {
+			for (MetaLocalizedMailTemplate mls : localizedMailTemplateList) {
 				definition.addLocalizedMailTemplate(mls.currentConfig());
 			}
 		}
@@ -276,7 +298,9 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 
 				if (localizedMailTemplateList != null && localizedMailTemplateList.size() > 0) {
 
-					ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+					ScriptEngine se = ExecuteContext.getCurrentContext()
+							.getTenantContext()
+							.getScriptEngine();
 
 					for (MetaLocalizedMailTemplate meta : localizedMailTemplateList) {
 
@@ -285,14 +309,19 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 						String localeName = meta.getLocaleName();
 
 						if (meta.getSubject() != null) {
-							templateSet.subjectTemplate = GroovyTemplateCompiler.compile(meta.getSubject(), "MailTemplate_Subject" + getName() +"__" + localeName, (GroovyScriptEngine) se);
+							templateSet.subjectTemplate = GroovyTemplateCompiler.compile(meta.getSubject(),
+									"MailTemplate_Subject" + getName() + "__" + localeName, (GroovyScriptEngine) se);
 						}
 
-						if (meta.getMessage() != null && meta.getMessage().getContent() != null) {
-							templateSet.messageTemplate = GroovyTemplateCompiler.compile(meta.getMessage().getContent(), "MailTemplate_Text" + getName() + "__" + localeName, (GroovyScriptEngine) se);
+						if (meta.getMessage() != null && meta.getMessage()
+								.getContent() != null) {
+							templateSet.messageTemplate = GroovyTemplateCompiler.compile(meta.getMessage()
+									.getContent(), "MailTemplate_Text" + getName() + "__" + localeName, (GroovyScriptEngine) se);
 						}
-						if (meta.getHtmlMessage() != null && meta.getHtmlMessage().getContent() != null) {
-							templateSet.htmlMessageTemplate = GroovyTemplateCompiler.compile(meta.getHtmlMessage().getContent(), "MailTemplate_Html" + getName() + "__" + localeName, (GroovyScriptEngine) se);
+						if (meta.getHtmlMessage() != null && meta.getHtmlMessage()
+								.getContent() != null) {
+							templateSet.htmlMessageTemplate = GroovyTemplateCompiler.compile(meta.getHtmlMessage()
+									.getContent(), "MailTemplate_Html" + getName() + "__" + localeName, (GroovyScriptEngine) se);
 						}
 
 						if (meta.getCharset() != null) {
@@ -303,7 +332,9 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 					}
 				}
 
-				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				ScriptEngine se = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				if (subject != null) {
 					subjectTemplate = GroovyTemplateCompiler.compile(subject, "MailTemplate_Subject" + getName(), (GroovyScriptEngine) se);
 				}
@@ -311,7 +342,8 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 					messageTemplate = GroovyTemplateCompiler.compile(message.getContent(), "MailTemplate_Text" + getName(), (GroovyScriptEngine) se);
 				}
 				if (htmlMessage != null && htmlMessage.getContent() != null) {
-					htmlMessageTemplate = GroovyTemplateCompiler.compile(htmlMessage.getContent(), "MailTemplate_Html" + getName(), (GroovyScriptEngine) se);
+					htmlMessageTemplate = GroovyTemplateCompiler.compile(htmlMessage.getContent(), "MailTemplate_Html" + getName(),
+							(GroovyScriptEngine) se);
 				}
 
 			} catch (RuntimeException e) {
@@ -328,14 +360,17 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 
 			checkState();
 
-			String lang = ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantI18nInfo.class).getLocale();
+			String lang = ExecuteContext.getCurrentContext()
+					.getCurrentTenant()
+					.getTenantConfig(TenantI18nInfo.class)
+					.getLocale();
 			if (StringUtil.isNotEmpty(langOrUserBindingName)) {
 				if (bindings.get(langOrUserBindingName) != null) {
 
 					if (bindings.get(langOrUserBindingName) instanceof String) {
 						lang = (String) bindings.get(langOrUserBindingName);
 					} else if (bindings.get(langOrUserBindingName) instanceof User) {
-						User user = (User)bindings.get(langOrUserBindingName);
+						User user = (User) bindings.get(langOrUserBindingName);
 						String userLang = user.getLanguage();
 						if (StringUtil.isNotEmpty(userLang)) {
 							lang = userLang;
@@ -344,7 +379,8 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 				}
 			}
 
-			MailService ms = ServiceRegistry.getRegistry().getService(MailService.class);
+			MailService ms = ServiceRegistry.getRegistry()
+					.getService(MailService.class);
 			ExecuteContext ex = ExecuteContext.getCurrentContext();
 
 			String _charset = charset;
@@ -377,7 +413,7 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
 				gtb.setVariable("mail", mail);
 				if (bindings != null) {
-					for (Map.Entry<String, Object> e: bindings.entrySet()) {
+					for (Map.Entry<String, Object> e : bindings.entrySet()) {
 						gtb.setVariable(e.getKey(), e.getValue());
 					}
 				}
@@ -394,7 +430,7 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
 				gtb.setVariable("mail", mail);
 				if (bindings != null) {
-					for (Map.Entry<String, Object> e: bindings.entrySet()) {
+					for (Map.Entry<String, Object> e : bindings.entrySet()) {
 						gtb.setVariable(e.getKey(), e.getValue());
 					}
 				}
@@ -419,7 +455,7 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
 				gtb.setVariable("mail", mail);
 				if (bindings != null) {
-					for (Map.Entry<String, Object> e: bindings.entrySet()) {
+					for (Map.Entry<String, Object> e : bindings.entrySet()) {
 						gtb.setVariable(e.getKey(), e.getValue());
 					}
 				}
@@ -429,7 +465,8 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 					throw new ScriptRuntimeException(e);
 				}
 				if (mail.getHtmlMessage() != null) {
-					mail.getHtmlMessage().setContent(sw.toString());
+					mail.getHtmlMessage()
+							.setContent(sw.toString());
 				} else {
 					mail.setHtmlMessage(new HtmlMessage(sw.toString(), htmlCharset));
 				}
@@ -438,9 +475,6 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 			return mail;
 		}
 
-
-
 	}
-
 
 }

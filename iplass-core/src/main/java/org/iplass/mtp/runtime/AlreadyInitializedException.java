@@ -22,7 +22,6 @@ package org.iplass.mtp.runtime;
 
 import org.iplass.mtp.SystemException;
 
-
 /**
  * <% if (doclang == "ja") {%>
  * EntryPointがすでに初期化済みの際にスローされる例外です。

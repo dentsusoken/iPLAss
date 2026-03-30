@@ -34,14 +34,14 @@ import org.iplass.mtp.impl.auth.authenticate.oidc.OIDCAccountHandle;
  *
  */
 public interface AutoUserProvisioningHandler {
-	
+
 	/**
 	 * AutoUserProvisioningHandlerの処理化処理を記述可能。
 	 * @param definition
 	 */
 	public default void init(OpenIdConnectDefinition definition) {
 	}
-	
+
 	/**
 	 * 認証されたユーザーが存在しない場合に呼び出されるので、
 	 * Userエンティティを生成する処理を記述する。
@@ -52,7 +52,7 @@ public interface AutoUserProvisioningHandler {
 	 * @return 生成したUserエンティティのoid
 	 */
 	public String createUser(String subjectId, String subjectName, Map<String, Object> attributes);
-	
+
 	/**
 	 * 認証されたユーザーの再ログインのタイミングで、呼び出される。
 	 * ユーザー属性を更新する必要がある場合は、更新処理を記述する。
@@ -63,7 +63,7 @@ public interface AutoUserProvisioningHandler {
 	 * @param attributes その他IdToken、UserInfo Endpointから取得したClaim情報
 	 */
 	public void updateUser(User user, String subjectId, String subjectName, Map<String, Object> attributes);
-	
+
 	/**
 	 * attributesの値をUserエンティティにマッピングします。
 	 * 
@@ -101,7 +101,7 @@ public interface AutoUserProvisioningHandler {
 				user.setName(subjectName);
 			}
 		}
-		
+
 		Object bv = attributes.get(OIDCAccountHandle.EMAIL_VERIFIED);
 		if (bv != null && bv instanceof Boolean && ((Boolean) bv).booleanValue()) {
 			user.setMail((String) attributes.get(OIDCAccountHandle.EMAIL));
@@ -124,7 +124,7 @@ public interface AutoUserProvisioningHandler {
 		User u = new User();
 		attributeMappingToUserInstance(u, subjectId, subjectName, attributes);
 		u.setOid(u.getAccountId());
-		
+
 		return u;
 	}
 

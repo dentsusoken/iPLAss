@@ -22,7 +22,7 @@ package org.iplass.gem;
 
 import java.util.List;
 
-public class ImageColorSetting  {
+public class ImageColorSetting {
 
 	/** 色名 */
 	private String colorName;

@@ -33,7 +33,8 @@ public class MetaDataAuditLogger {
 
 	private static MetaDataAuditLogger instance = new MetaDataAuditLogger();
 
-	private MetaDataAuditLogger() {}
+	private MetaDataAuditLogger() {
+	}
 
 	public static MetaDataAuditLogger getLogger() {
 		return instance;
@@ -68,7 +69,9 @@ public class MetaDataAuditLogger {
 	 */
 	private String sanitize(Object detail) {
 		if (detail != null) {
-			return detail.toString().replace("\n", "\\n").replace("\r", "\\r");
+			return detail.toString()
+					.replace("\n", "\\n")
+					.replace("\r", "\\r");
 		}
 		return "";
 	}

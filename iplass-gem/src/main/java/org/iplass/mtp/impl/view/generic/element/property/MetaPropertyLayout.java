@@ -186,7 +186,6 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 		this.localizedDisplayLabelList = localizedDisplayLabelList;
 	}
 
-
 	@Override
 	public MetaPropertyLayout copy() {
 		return ObjectUtil.deepCopy(this);
@@ -219,7 +218,8 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 		fillCustomPropertyEditor(p.getEditor(), p.getPropertyName(), context, entity);
 
 		if (editor != null) {
-			p.getEditor().setPropertyName(p.getPropertyName());
+			p.getEditor()
+					.setPropertyName(p.getPropertyName());
 			editor.applyConfig(p.getEditor());
 			this.editor = editor;
 		}
@@ -236,21 +236,27 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 
 	protected void fillCustomPropertyEditor(PropertyEditor pe, String propName, EntityContext context, EntityHandler entity) {
 		if (pe instanceof JoinPropertyEditor) {
-			((JoinPropertyEditor) pe).setObjectName(entity.getMetaData().getName());
+			((JoinPropertyEditor) pe).setObjectName(entity.getMetaData()
+					.getName());
 		} else if (pe instanceof DateRangePropertyEditor) {
-				((DateRangePropertyEditor) pe).setObjectName(entity.getMetaData().getName());
+			((DateRangePropertyEditor) pe).setObjectName(entity.getMetaData()
+					.getName());
 		} else if (pe instanceof NumericRangePropertyEditor) {
-			((NumericRangePropertyEditor) pe).setObjectName(entity.getMetaData().getName());
+			((NumericRangePropertyEditor) pe).setObjectName(entity.getMetaData()
+					.getName());
 		} else if (pe instanceof ReferencePropertyEditor) {
-			ReferencePropertyEditor rpe = (ReferencePropertyEditor)pe;
+			ReferencePropertyEditor rpe = (ReferencePropertyEditor) pe;
 			//参照Entity情報を取得してEditorにEntity名をセット
 			PropertyHandler handler = getHandler(propName, context, entity);
 			if (handler != null && handler instanceof ReferencePropertyHandler) {
-				String objName = ((ReferencePropertyHandler) handler).getReferenceEntityHandler(context).getMetaData().getName();
+				String objName = ((ReferencePropertyHandler) handler).getReferenceEntityHandler(context)
+						.getMetaData()
+						.getName();
 				rpe.setObjectName(objName);
 			}
 			//Editorに参照元Entity名をセット
-			rpe.setReferenceFromObjectName(entity.getMetaData().getName());
+			rpe.setReferenceFromObjectName(entity.getMetaData()
+					.getName());
 		}
 	}
 
@@ -265,7 +271,8 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 
 			PropertyHandler property = entity.getProperty(objPropName, context);
 			if (!(property instanceof ReferencePropertyHandler)) {
-				throw new IllegalArgumentException("path is invalid:" + objPropName + " is not ObjectReferenceProperty of " + entity.getMetaData().getName());
+				throw new IllegalArgumentException("path is invalid:" + objPropName + " is not ObjectReferenceProperty of " + entity.getMetaData()
+						.getName());
 			}
 			ReferencePropertyHandler refProp = (ReferencePropertyHandler) property;
 			EntityHandler refEntity = refProp.getReferenceEntityHandler(context);

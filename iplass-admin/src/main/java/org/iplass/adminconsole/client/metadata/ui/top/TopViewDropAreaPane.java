@@ -79,7 +79,8 @@ public abstract class TopViewDropAreaPane extends VStack {
 	public PartsItem[] getParts() {
 		List<PartsItem> items = new ArrayList<PartsItem>();
 		for (Canvas canvas : getMembers()) {
-			if (canvas instanceof PartsItem) items.add((PartsItem) canvas);
+			if (canvas instanceof PartsItem)
+				items.add((PartsItem) canvas);
 		}
 		return items.toArray(new PartsItem[items.size()]);
 	}
@@ -117,13 +118,16 @@ public abstract class TopViewDropAreaPane extends VStack {
 	protected abstract DropItemHandler createHandler();
 
 	private DropItemHandler handler;
+
 	private DropItemHandler getDropItemHandler() {
-		if (handler == null) handler = createHandler();
+		if (handler == null)
+			handler = createHandler();
 		return handler;
 	}
 
 	public interface DropItemHandler {
 		public void onDrop(TopViewNode node, int dropPosition);
+
 		public boolean onDrag(PartsItem item, int dropPosition);
 	}
 
@@ -146,7 +150,8 @@ public abstract class TopViewDropAreaPane extends VStack {
 				event.cancel();
 			} else if (dragTarget instanceof PartsItem) {
 				boolean cancel = getDropItemHandler().onDrag((PartsItem) dragTarget, dropPosition);
-				if (!cancel) event.cancel();
+				if (!cancel)
+					event.cancel();
 			}
 		}
 

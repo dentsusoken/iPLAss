@@ -23,9 +23,9 @@ import java.io.Serializable;
 
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-@XmlSeeAlso({JavaClassEntryPathTranslatorDefinition.class,
-	PrefixEntryPathTranslatorDefinition.class,
-	ScriptingEntryPathTranslatorDefinition.class})
+@XmlSeeAlso({ JavaClassEntryPathTranslatorDefinition.class,
+		PrefixEntryPathTranslatorDefinition.class,
+		ScriptingEntryPathTranslatorDefinition.class })
 public abstract class EntryPathTranslatorDefinition implements Serializable {
 	private static final long serialVersionUID = -6417327445573147737L;
 

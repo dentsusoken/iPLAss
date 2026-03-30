@@ -58,7 +58,6 @@ public class MenuItemDragPane extends VLayout {
 
 	private MenuItemTreeGrid grid;
 
-
 	/** データ変更ハンドラ */
 	private List<MenuItemDataChangeHandler> handlers = new ArrayList<>();
 
@@ -72,7 +71,7 @@ public class MenuItemDragPane extends VLayout {
 
 		SectionStackSection menuItemSection = new SectionStackSection("Menu Items");
 		menuItemSection.setExpanded(true);
-		menuItemSection.setCanCollapse(false);	//CLOSE不可
+		menuItemSection.setCanCollapse(false); //CLOSE不可
 
 		//Expand/Contractボタン
 		ImgButton expandAllButton = new ImgButton();
@@ -123,13 +122,14 @@ public class MenuItemDragPane extends VLayout {
 
 		//表示TreeGrid
 		grid = new MenuItemTreeGrid(this);
-		grid.setDragType(DRAG_TYPE);	//DragされるItemのType設定
+		grid.setDragType(DRAG_TYPE); //DragされるItemのType設定
 		grid.addDataArrivedHandler(new DataArrivedHandler() {
 
 			@Override
 			public void onDataArrived(DataArrivedEvent event) {
 				// 展開する
-				grid.getData().openAll();
+				grid.getData()
+						.openAll();
 			}
 		});
 		menuItemSection.addItem(grid);
@@ -238,26 +238,28 @@ public class MenuItemDragPane extends VLayout {
 	 */
 	void delMenuItem(final MenuItem menuItem) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), MenuItem.class.getName(), menuItem.getName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_faledToDeleteMenuItem") + caught.getMessage());
-			}
-			@Override
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_deleteMenuItemComp"));
-					MenuItemDataChangedEvent event = new MenuItemDataChangedEvent(MenuItemDataChangedEvent.Type.DELETE);
-					event.setValueObject(menuItem);
-					refreshDataChanged(event);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_failedToDeleteMenuItem") + result.getMessage());
-				}
-			}
-		});
-	}
+		service.deleteDefinition(TenantInfoHolder.getId(), MenuItem.class.getName(), menuItem.getName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_faledToDeleteMenuItem") + caught.getMessage());
+					}
 
+					@Override
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_deleteMenuItemComp"));
+							MenuItemDataChangedEvent event = new MenuItemDataChangedEvent(MenuItemDataChangedEvent.Type.DELETE);
+							event.setValueObject(menuItem);
+							refreshDataChanged(event);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_failedToDeleteMenuItem")
+									+ result.getMessage());
+						}
+					}
+				});
+	}
 
 	/**
 	 * {@link MenuItemDataChangedEvent} を受けて、画面を再表示します。

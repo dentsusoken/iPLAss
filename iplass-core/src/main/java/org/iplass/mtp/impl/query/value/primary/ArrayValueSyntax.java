@@ -33,9 +33,8 @@ import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
-
 public class ArrayValueSyntax implements Syntax<ArrayValue>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 
 	@Override
@@ -45,11 +44,11 @@ public class ArrayValueSyntax implements Syntax<ArrayValue>, QueryConstants {
 
 	@Override
 	public ArrayValue parse(ParseContext str) throws ParseException {
-		
+
 		if (!str.equalsNextToken(ARRAY, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("array expected.", this, str));
 		}
-		
+
 		ArrayValue array = new ArrayValue();
 		str.consumeChars(ARRAY.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
@@ -58,7 +57,7 @@ public class ArrayValueSyntax implements Syntax<ArrayValue>, QueryConstants {
 		}
 		str.consumeChars(LEFT_BRACKET.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		List<ValueExpression> values = new ArrayList<ValueExpression>();
 		boolean isFirst = true;
 		while (!str.startsWith(RIGHT_BRACKET) && !str.isEnd()) {
@@ -74,17 +73,17 @@ public class ArrayValueSyntax implements Syntax<ArrayValue>, QueryConstants {
 			values.add(polynomial.parse(str));
 			str.consumeChars(ParseContext.WHITE_SPACES);
 		}
-		
+
 		if (!str.startsWith(RIGHT_BRACKET)) {
 			throw new ParseException(new EvalError("] expected.", this, str));
 		}
 		str.consumeChars(RIGHT_BRACKET.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (values.size() != 0) {
 			array.setValues(values);
 		}
-		
+
 		return array;
 	}
 

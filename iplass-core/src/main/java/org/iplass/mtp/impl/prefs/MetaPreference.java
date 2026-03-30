@@ -127,7 +127,6 @@ public class MetaPreference extends BaseRootMetaData implements DefinableMetaDat
 		return def;
 	}
 
-
 	public class PreferenceRuntime extends BaseMetaDataRuntime {
 
 		protected Object runtime;
@@ -135,10 +134,13 @@ public class MetaPreference extends BaseRootMetaData implements DefinableMetaDat
 		PreferenceRuntime() {
 			if (runtimeClassName != null) {
 				try {
-					ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+					ScriptEngine se = ExecuteContext.getCurrentContext()
+							.getTenantContext()
+							.getScriptEngine();
 					GroovyScriptEngine gse = (GroovyScriptEngine) se;
 					ClassLoader cl = gse.getSharedClassLoader();
-					runtime = Class.forName(runtimeClassName, true, cl).newInstance();
+					runtime = Class.forName(runtimeClassName, true, cl)
+							.newInstance();
 					if (runtime instanceof PreferenceAware) {
 						((PreferenceAware) runtime).initialize(MetaPreference.this.currentConfig());
 					} else {
@@ -162,9 +164,10 @@ public class MetaPreference extends BaseRootMetaData implements DefinableMetaDat
 			return runtime;
 		}
 
-		protected void applyToBean(Object bean, List<MetaPreference> nameValues, ClassLoader cl) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IntrospectionException {
+		protected void applyToBean(Object bean, List<MetaPreference> nameValues, ClassLoader cl)
+				throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IntrospectionException {
 			if (nameValues != null) {
-				for (MetaPreference nv: nameValues) {
+				for (MetaPreference nv : nameValues) {
 					setProperty(bean, nv, cl);
 				}
 			}
@@ -193,7 +196,8 @@ public class MetaPreference extends BaseRootMetaData implements DefinableMetaDat
 									type = (Class<?>) t;
 									resolve = true;
 								} else if (t instanceof ParameterizedType) {
-									type = ((ParameterizedType) t).getRawType().getClass();
+									type = ((ParameterizedType) t).getRawType()
+											.getClass();
 									resolve = true;
 								}
 							}
@@ -252,8 +256,7 @@ public class MetaPreference extends BaseRootMetaData implements DefinableMetaDat
 					|| type == Timestamp.class
 					|| type == Time.class
 					|| type == BigDecimal.class
-					|| type == Class.class
-					) {
+					|| type == Class.class) {
 				return true;
 			}
 			if (type.isEnum()) {
@@ -266,8 +269,9 @@ public class MetaPreference extends BaseRootMetaData implements DefinableMetaDat
 			BeanInfo bi = Introspector.getBeanInfo(clazz);
 			PropertyDescriptor[] pds = bi.getPropertyDescriptors();
 			if (pds != null) {
-				for (PropertyDescriptor pd: pds) {
-					if (pd.getName().equals(name)) {
+				for (PropertyDescriptor pd : pds) {
+					if (pd.getName()
+							.equals(name)) {
 						return pd;
 					}
 				}
@@ -276,45 +280,54 @@ public class MetaPreference extends BaseRootMetaData implements DefinableMetaDat
 		}
 
 		@SuppressWarnings("unchecked")
-		private void setProperty(Object bean, MetaPreference nv, ClassLoader cl) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IntrospectionException {
+		private void setProperty(Object bean, MetaPreference nv, ClassLoader cl)
+				throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IntrospectionException {
 			try {
 				PropertyDescriptor pd = getPropertyDescriptor(bean.getClass(), nv.getName());
 				if (pd != null) {
 					Object value = toBean(pd, nv, cl);
-					if (pd.getPropertyType().isArray()) {
-						Object array = pd.getReadMethod().invoke(bean, new Object[]{});
+					if (pd.getPropertyType()
+							.isArray()) {
+						Object array = pd.getReadMethod()
+								.invoke(bean, new Object[] {});
 						if (array == null) {
-							array = Array.newInstance(pd.getPropertyType().getComponentType(), 1);
+							array = Array.newInstance(pd.getPropertyType()
+									.getComponentType(), 1);
 							Array.set(array, 0, value);
 						} else {
 							int arrayLength = arrayLength(array);
-							Object newArray = Array.newInstance(pd.getPropertyType().getComponentType(), arrayLength + 1);
+							Object newArray = Array.newInstance(pd.getPropertyType()
+									.getComponentType(), arrayLength + 1);
 							System.arraycopy(array, 0, newArray, 0, arrayLength);
 							Array.set(newArray, arrayLength, value);
 							array = newArray;
 						}
 						if (pd.getWriteMethod() != null) {
-							pd.getWriteMethod().invoke(bean, new Object[]{array});
+							pd.getWriteMethod()
+									.invoke(bean, new Object[] { array });
 						}
 					} else if (pd.getPropertyType() == List.class) {
 //					List list = (List) pd.getReadMethod().invoke(bean, (Object)null);
-						List list = (List) pd.getReadMethod().invoke(bean);
+						List list = (List) pd.getReadMethod()
+								.invoke(bean);
 						if (list == null) {
 							list = new ArrayList();
 						}
 						list.add(value);//Listは実体型がわからない
 						if (pd.getWriteMethod() != null) {
-							pd.getWriteMethod().invoke(bean, list);
+							pd.getWriteMethod()
+									.invoke(bean, list);
 						}
 					} else {
 						if (pd.getWriteMethod() != null) {
-							pd.getWriteMethod().invoke(bean, value);
+							pd.getWriteMethod()
+									.invoke(bean, value);
 						}
 					}
 
 				}
 			} catch (RuntimeException e) {
-				throw new IllegalStateException("cant set property value:" + nv.getName() + " to " + bean,  e);
+				throw new IllegalStateException("cant set property value:" + nv.getName() + " to " + bean, e);
 			}
 		}
 
@@ -399,6 +412,5 @@ public class MetaPreference extends BaseRootMetaData implements DefinableMetaDat
 		}
 
 	}
-
 
 }

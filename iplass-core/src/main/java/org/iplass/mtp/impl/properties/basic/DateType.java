@@ -38,7 +38,7 @@ public class DateType extends BasicType {
 	private static final int hash = 20;
 
 	private static Logger logger = LoggerFactory.getLogger(DateType.class);
-	
+
 	@Override
 	public int hashCode() {
 		return hash;
@@ -78,7 +78,8 @@ public class DateType extends BasicType {
 			return null;
 		} else {
 			if (DateTimeType.OLD_FORMAT_FLAG) {
-				return DateUtil.getDateInstance(DateFormat.MEDIUM, false).format(value);
+				return DateUtil.getDateInstance(DateFormat.MEDIUM, false)
+						.format(value);
 			} else {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(Literal.DATE_FROMAT, false);
 				return sdf.format(value);
@@ -93,10 +94,13 @@ public class DateType extends BasicType {
 		}
 		try {
 			if (DateTimeType.OLD_FORMAT_FLAG) {
-				return new Date(DateUtil.getDateInstance(DateFormat.MEDIUM, false).parse(strValue).getTime());
+				return new Date(DateUtil.getDateInstance(DateFormat.MEDIUM, false)
+						.parse(strValue)
+						.getTime());
 			} else {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(Literal.DATE_FROMAT, false);
-				return new Date(sdf.parse(strValue).getTime());
+				return new Date(sdf.parse(strValue)
+						.getTime());
 			}
 		} catch (ParseException e) {
 			try {

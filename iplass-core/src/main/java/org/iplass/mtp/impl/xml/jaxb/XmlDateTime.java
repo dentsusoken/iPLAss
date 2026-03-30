@@ -37,7 +37,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author K.Higuchi
  *
  */
-@XmlType(name="dateTime", namespace="http://www.w3.org/2001/XMLSchema")
+@XmlType(name = "dateTime", namespace = "http://www.w3.org/2001/XMLSchema")
 public class XmlDateTime {
 
 	public XmlDateTime() {
@@ -60,7 +60,9 @@ public class XmlDateTime {
 		GregorianCalendar cal = xmlCal.toGregorianCalendar();
 		Timestamp ts = new Timestamp(cal.getTimeInMillis());
 		if (xmlCal.getFractionalSecond() != null) {
-			ts.setNanos(xmlCal.getFractionalSecond().movePointRight(9).intValue());
+			ts.setNanos(xmlCal.getFractionalSecond()
+					.movePointRight(9)
+					.intValue());
 		}
 		return ts;
 	}

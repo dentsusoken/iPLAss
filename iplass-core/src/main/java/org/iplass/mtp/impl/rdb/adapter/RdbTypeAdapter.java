@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.rdb.adapter;
 
 public interface RdbTypeAdapter {
 	//FIXME インタフェースいらないか。。。
-	
+
 	public int allocateColumnCount();
-	
+
 }

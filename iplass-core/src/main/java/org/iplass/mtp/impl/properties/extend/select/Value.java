@@ -38,8 +38,9 @@ import org.iplass.mtp.spi.ServiceRegistry;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Value implements Serializable {
 	private static final long serialVersionUID = 2187443429118008336L;
-	
-	private static I18nService i18nService = ServiceRegistry.getRegistry().getService(I18nService.class);
+
+	private static I18nService i18nService = ServiceRegistry.getRegistry()
+			.getService(I18nService.class);
 
 	public static SelectValueDefinition toSelectValueDefinition(List<Value> values) {
 		SelectValueDefinition def = new SelectValueDefinition();
@@ -52,8 +53,10 @@ public class Value implements Serializable {
 				def.addSelectValue(new SelectValue(val.getValue(), val.getDisplayName()));
 				if (val.getLocalizedDisplayNameList() != null) {
 					for (int j = 0; j < els.size(); j++) {
-						for (MetaLocalizedString mls: val.getLocalizedDisplayNameList()) {
-							if (els.get(j).getLanguageKey().equals(mls.getLocaleName())) {
+						for (MetaLocalizedString mls : val.getLocalizedDisplayNameList()) {
+							if (els.get(j)
+									.getLanguageKey()
+									.equals(mls.getLocaleName())) {
 								if (lsvl[j] == null) {
 									lsvl[j] = new ArrayList<>(values.size());
 								}
@@ -64,26 +67,28 @@ public class Value implements Serializable {
 					}
 				}
 			}
-			
+
 			for (int i = 0; i < els.size(); i++) {
-				def.addLocalizedSelectValue(new LocalizedSelectValueDefinition(els.get(i).getLanguageKey(), lsvl[i]));
+				def.addLocalizedSelectValue(new LocalizedSelectValueDefinition(els.get(i)
+						.getLanguageKey(), lsvl[i]));
 			}
 		}
 		return def;
 	}
-	
+
 	public static List<Value> toValues(SelectValueDefinition def) {
 		ArrayList<Value> values = new ArrayList<>();
 		if (def.getSelectValueList() != null) {
-			for (SelectValue v: def.getSelectValueList()) {
+			for (SelectValue v : def.getSelectValueList()) {
 				Value value = new Value(v.getValue(), v.getDisplayName());
 
 				List<MetaLocalizedString> mlsList = new ArrayList<MetaLocalizedString>();
 				if (def.getLocalizedSelectValueList() != null) {
-					for (LocalizedSelectValueDefinition lsvd: def.getLocalizedSelectValueList()) {
+					for (LocalizedSelectValueDefinition lsvd : def.getLocalizedSelectValueList()) {
 						if (lsvd.getSelectValueList() != null) {
-							for (SelectValue lsv :lsvd.getSelectValueList()) {
-								if (v.getValue().equals(lsv.getValue())) {
+							for (SelectValue lsv : lsvd.getSelectValueList()) {
+								if (v.getValue()
+										.equals(lsv.getValue())) {
 									MetaLocalizedString mls = new MetaLocalizedString();
 									mls.setLocaleName(lsvd.getLocaleName());
 									mls.setStringValue(lsv.getDisplayName());
@@ -103,8 +108,7 @@ public class Value implements Serializable {
 		}
 		return values;
 	}
-	
-	
+
 	String value;
 	String displayName;
 	private List<MetaLocalizedString> localizedDisplayNameList;
@@ -129,6 +133,7 @@ public class Value implements Serializable {
 	public String getValue() {
 		return value;
 	}
+
 	public String getDisplayName() {
 		return displayName;
 	}
@@ -165,5 +170,4 @@ public class Value implements Serializable {
 		return true;
 	}
 
-	
 }

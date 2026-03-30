@@ -51,7 +51,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class ExpressionType extends VirtualType {
 	private static final long serialVersionUID = -7890554839217349016L;
-	
+
 	private String expression;
 	private PropertyDefinitionType resultType;
 	private PropertyType resultTypeSpec;
@@ -116,7 +116,7 @@ public class ExpressionType extends VirtualType {
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
-	
+
 	@Override
 	public PropertyType copy() {
 		ExpressionType copy = new ExpressionType();
@@ -138,7 +138,7 @@ public class ExpressionType extends VirtualType {
 		if (resultTypeSpec != null) {
 			prop.setResultTypeSpec(resultTypeSpec.createPropertyDefinitionInstance());
 		}
-		
+
 		return prop;
 	}
 
@@ -149,7 +149,9 @@ public class ExpressionType extends VirtualType {
 		expression = exDef.getExpression();
 		resultType = exDef.getResultType();
 		if (resultType != null && exDef.getResultTypeSpec() != null) {
-			resultTypeSpec = ServiceRegistry.getRegistry().getService(PropertyService.class).newPropertyType(exDef.getResultTypeSpec());
+			resultTypeSpec = ServiceRegistry.getRegistry()
+					.getService(PropertyService.class)
+					.newPropertyType(exDef.getResultTypeSpec());
 		} else {
 			resultTypeSpec = null;
 		}
@@ -176,51 +178,55 @@ public class ExpressionType extends VirtualType {
 	public PropertyDefinitionType getEnumType() {
 		return PropertyDefinitionType.EXPRESSION;
 	}
-	
+
 	@Override
 	public Object toDataStore(Object toDataStore) {
 		throw new UnsupportedOperationException("ExpressionType is ReadOnly");
 	}
 
 	public ValueExpression translate(EntityField field) {
-		
+
 		ValueExpression ve;
 		try {
-			ve = QueryServiceHolder.getInstance().getQueryParser().parse(expression, PolynomialSyntax.class);
+			ve = QueryServiceHolder.getInstance()
+					.getQueryParser()
+					.parse(expression, PolynomialSyntax.class);
 		} catch (ParseException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
-		
-		final String parentPath = field.getPropertyName().contains(".") 
-				? field.getPropertyName().substring(0, field.getPropertyName().lastIndexOf('.'))
-				: null;
-		
+
+		final String parentPath = field.getPropertyName()
+				.contains(".")
+						? field.getPropertyName()
+								.substring(0, field.getPropertyName()
+										.lastIndexOf('.'))
+						: null;
+
 		ExpressionVisitor qvs = new ExpressionVisitor(parentPath);
 		ve.accept(qvs);
-		
+
 		return ve;
 	}
-	
+
 	//FIXME バージョン対応したクエリー変換は、サブクエリだけでなく、通常のEntityFieldにも必要と思われる。。。
 	//		処理の順番として、仮想カラムの展開→バージョン用に変換の順番がよいが、今は逆。
-	
-	
+
 	private class ExpressionVisitor extends QueryVisitorSupport {
 		ExpressionVisitor upper;
 		String parentPath;
-		
+
 		boolean inSubqueryOnClause;
-		
+
 		ExpressionVisitor(String parentPath) {
 			this.parentPath = parentPath;
 		}
-		
+
 		@Override
 		public boolean visit(EntityField entityField) {
 			if (inSubqueryOnClause) {
 				ExpressionVisitor forMain = this;
 				int unnestCount = entityField.unnestCount();
-				
+
 				if (unnestCount > 0) {
 					for (int i = 0; i <= unnestCount; i++) {
 						if (forMain == null) {
@@ -230,63 +236,68 @@ public class ExpressionType extends VirtualType {
 					}
 					if (forMain == null && parentPath != null) {
 						//一番外側と結合なので結合用対象を変換する。
-						String pre = entityField.getPropertyName().substring(0, unnestCount);
-						String prop = entityField.getPropertyName().substring(unnestCount);
+						String pre = entityField.getPropertyName()
+								.substring(0, unnestCount);
+						String prop = entityField.getPropertyName()
+								.substring(unnestCount);
 						if (!SubQuery.THIS.equalsIgnoreCase(prop)) {
 							entityField.setPropertyName(pre + parentPath + "." + prop);
 						} else {
 							entityField.setPropertyName(pre + parentPath);
 						}
 					}
-					
+
 					return super.visit(entityField);
 				}
 			}
-			
+
 			if (upper == null && parentPath != null) {
 				entityField.setPropertyName(parentPath + "." + entityField.getPropertyName());
 			}
 			return super.visit(entityField);
 		}
-		
+
 		@Override
 		public boolean visit(SubQuery subQuery) {
 			//一番外側の条件だけ変更すればよいので、
 			//ScalerSubQuery内は、変換しない。
 			//ただし、Onの外側は必要。
-			
+
 			Query q = subQuery.getQuery();
-			
+
 			//FIXME ここでバージョンクエリー変換しているのはカッコ悪い。。。
 			if (upper == null) {
 				if (!q.isVersioned()) {
 					EntityContext context = EntityContext.getCurrentContext();
-					EntityService ehService = ServiceRegistry.getRegistry().getService(EntityService.class);
-					EntityHandler eh = ehService.getRuntimeByName(q.getFrom().getEntityName());
+					EntityService ehService = ServiceRegistry.getRegistry()
+							.getService(EntityService.class);
+					EntityHandler eh = ehService.getRuntimeByName(q.getFrom()
+							.getEntityName());
 					if (eh == null) {
-						throw new EntityRuntimeException(q.getFrom().getEntityName() + " is undefined. at expression property of " + expression);
+						throw new EntityRuntimeException(q.getFrom()
+								.getEntityName() + " is undefined. at expression property of " + expression);
 					}
 					q = (Query) new VersionedQueryNormalizer(
 							ehService.getVersionController(eh), eh, context, null).visit(q);
 					subQuery.setQuery(q);
 				}
 			}
-			
+
 			ExpressionVisitor nest = new ExpressionVisitor(parentPath);
 			nest.upper = this;
 			q.accept(nest);
-			
+
 			Condition on = subQuery.getOn();
 			if (on != null) {
 				nest.inSubqueryOnClause = true;
-				subQuery.getOn().accept(nest);
+				subQuery.getOn()
+						.accept(nest);
 				nest.inSubqueryOnClause = false;
 			}
-			
+
 			return false;
 		}
 	}
-	
 
 	@Override
 	public boolean isVirtual() {
@@ -410,7 +421,5 @@ public class ExpressionType extends VirtualType {
 			return strValue;
 		}
 	}
-	
-	
 
 }

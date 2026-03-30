@@ -53,24 +53,24 @@ import org.iplass.mtp.entity.definition.PropertyDefinitionType;
  */
 public class AutoNumberProperty extends PropertyDefinition {
 	private static final long serialVersionUID = -410534539656362978L;
-	
+
 	/** 桁数。桁数に満たない場合は、0埋めする。-1指定の場合は、0埋めなし。*/
 	private int fixedNumberOfDigits = -1;//0埋めする桁数。-1なら、0埋めなし
 	/** 自動採番されるIDのフォーマット指定。po-${yyyy}${MM}-${nextVal()}みたいな形でフォーマット指定 */
 	private String formatScript;//groovyTemplate、"po-${yyyy}${MM}-${nextVal()}"みたいな
 	private long startsWith = 0;
 	private NumberingType numberingType = NumberingType.ALLOW_SKIPPING;
-	
+
 	public AutoNumberProperty() {
 		setUpdatable(false);
 		setIndexType(IndexType.UNIQUE);
 	}
-	
+
 	public AutoNumberProperty(String name) {
 		setName(name);
 		setUpdatable(false);
 	}
-	
+
 	public NumberingType getNumberingType() {
 		return numberingType;
 	}
@@ -78,7 +78,7 @@ public class AutoNumberProperty extends PropertyDefinition {
 	public void setNumberingType(NumberingType numberingType) {
 		this.numberingType = numberingType;
 	}
-	
+
 	public long getStartsWith() {
 		return startsWith;
 	}
@@ -86,7 +86,7 @@ public class AutoNumberProperty extends PropertyDefinition {
 	public void setStartsWith(long startsWith) {
 		this.startsWith = startsWith;
 	}
-	
+
 	public int getFixedNumberOfDigits() {
 		return fixedNumberOfDigits;
 	}

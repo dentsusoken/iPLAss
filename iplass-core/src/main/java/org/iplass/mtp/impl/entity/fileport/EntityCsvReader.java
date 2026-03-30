@@ -74,7 +74,8 @@ public class EntityCsvReader extends EntityFileReader<EntityCsvReader> {
 	protected List<String> readHeader() {
 
 		csvListReader = new CsvListReader(reader,
-				new CsvPreference.Builder(CsvPreference.STANDARD_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
+				new CsvPreference.Builder(CsvPreference.STANDARD_PREFERENCE).surroundingSpacesNeedQuotes(true)
+						.build());
 
 		List<String> headerLine = null;
 		try {

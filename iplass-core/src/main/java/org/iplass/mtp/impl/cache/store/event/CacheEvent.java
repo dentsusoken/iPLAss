@@ -21,7 +21,7 @@
 package org.iplass.mtp.impl.cache.store.event;
 
 public abstract class CacheEvent {
-	
+
 	protected final CacheEventType type;
 
 	public CacheEvent(CacheEventType type) {

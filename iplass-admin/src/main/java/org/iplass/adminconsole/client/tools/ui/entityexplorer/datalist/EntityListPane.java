@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist;
 
-
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataViewGridButton;
@@ -85,7 +84,8 @@ public class EntityListPane extends VLayout {
 		final ToolStripButton configExportButton = new ToolStripButton();
 		configExportButton.setIcon(EXPORT_ICON);
 		configExportButton.setTitle("ConfigExport");
-		configExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_exportEntityDef")));
+		configExportButton
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_exportEntityDef")));
 		configExportButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -130,14 +130,15 @@ public class EntityListPane extends VLayout {
 		});
 		toolStrip.addButton(refreshButton);
 
-		grid = new MtpListGrid(){
+		grid = new MtpListGrid() {
 			@Override
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				final String fieldName = this.getFieldName(colNum);
 				if ("explorerButton".equals(fieldName)) {
-					if (!record.getAttributeAsBoolean(SimpleEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
+					if (!record.getAttributeAsBoolean(SimpleEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
 						MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
-						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_showMetaDataEditScreen")));
+						button.setActionButtonPrompt(SmartGWTUtil
+								.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_showMetaDataEditScreen")));
 						button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
 							@Override
 							public String targetDefinitionName() {
@@ -147,7 +148,7 @@ public class EntityListPane extends VLayout {
 						return button;
 					}
 				} else if ("error".equals(fieldName)) {
-					if (record.getAttributeAsBoolean(SimpleEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
+					if (record.getAttributeAsBoolean(SimpleEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
 						record.setEnabled(false);
 						GridActionImgButton recordCanvas = new GridActionImgButton();
 						recordCanvas.setActionButtonSrc(ERROR_ICON);
@@ -190,7 +191,8 @@ public class EntityListPane extends VLayout {
 
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				String name = event.getRecord().getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.NAME.name());
+				String name = event.getRecord()
+						.getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.NAME.name());
 				showExplorer(name);
 			}
 
@@ -227,7 +229,6 @@ public class EntityListPane extends VLayout {
 		dialog.show();
 
 	}
-
 
 	private void refreshGrid() {
 		boolean isGetDataCount = showCountItem.getValueAsBoolean();

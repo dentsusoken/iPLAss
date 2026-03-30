@@ -70,7 +70,8 @@ public enum OpenApiVersion {
 	 */
 	public static OpenApiVersion fromSeriesVersion(String seriesVersion) {
 		for (OpenApiVersion version : OpenApiVersion.values()) {
-			if (version.getSeriesVersion().equalsIgnoreCase(seriesVersion)) {
+			if (version.getSeriesVersion()
+					.equalsIgnoreCase(seriesVersion)) {
 				return version;
 			}
 		}

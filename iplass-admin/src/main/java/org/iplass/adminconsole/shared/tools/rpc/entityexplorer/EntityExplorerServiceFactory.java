@@ -39,7 +39,7 @@ public abstract class EntityExplorerServiceFactory extends AbstractAdminServiceF
 
 		EntityExplorerServiceAsync service = GWT.create(EntityExplorerService.class);
 
-		init((HasRpcToken)service);
+		init((HasRpcToken) service);
 
 		EntityExplorerServiceFactory.service = service;
 

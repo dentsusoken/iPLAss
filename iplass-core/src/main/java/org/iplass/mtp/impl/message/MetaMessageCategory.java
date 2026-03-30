@@ -41,7 +41,6 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.message.MessageCategory;
 import org.iplass.mtp.message.MessageItem;
 
-
 /**
  * メッセージカテゴリのメタ情報
  * @author 藤田　義弘
@@ -55,7 +54,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 
 	/** メッセージメタ情報 */
 	@XmlElement
-	private LinkedHashMap<String,MetaMessageItem> messages;
+	private LinkedHashMap<String, MetaMessageItem> messages;
 
 	/**
 	 * コンストラクタ
@@ -83,14 +82,15 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	 * @return Map<String, MessageItem> メッセージ情報マップ
 	 */
 	public Map<String, MessageItem> createMessageItems() {
-		if(messages == null || messages.size() == 0) {
+		if (messages == null || messages.size() == 0) {
 			return Collections.emptyMap();
 		}
 		Map<String, MessageItem> ret = new LinkedHashMap<String, MessageItem>(messages.size());
-		for (Map.Entry<String, MetaMessageItem> metaItem: messages.entrySet()) {
-			ret.put(metaItem.getKey(),metaItem.getValue().createMessageItem());
+		for (Map.Entry<String, MetaMessageItem> metaItem : messages.entrySet()) {
+			ret.put(metaItem.getKey(), metaItem.getValue()
+					.createMessageItem());
 		}
-		return ret.size() == 0 ? Collections.<String, MessageItem>emptyMap() : ret;
+		return ret.size() == 0 ? Collections.<String, MessageItem> emptyMap() : ret;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 		 * @return MessageItem メタメッセージカテゴリ
 		 */
 		public MessageItem createMessageItem(String messageId) {
-			if(messages == null || messages.size() == 0) {
+			if (messages == null || messages.size() == 0) {
 				return null;
 			}
 			MetaMessageItem meta = messages.get(messageId);
@@ -153,7 +153,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 			}
 			if (lang != null) {
 				if (item.getLocalizedMessageList() != null) {
-					for (MetaLocalizedString mls: item.getLocalizedMessageList()) {
+					for (MetaLocalizedString mls : item.getLocalizedMessageList()) {
 						if (lang.equals(mls.getLocaleName())) {
 							return mls.getStringValue();
 						}
@@ -186,20 +186,20 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	 * @return メッセージメタ情報
 	 */
 	@XmlTransient
-	public Map<String,MetaMessageItem> getMessages() {
-	    return messages;
+	public Map<String, MetaMessageItem> getMessages() {
+		return messages;
 	}
 
 	/**
 	 * メッセージメタ情報を設定します。
 	 * @param messages メッセージメタ情報
 	 */
-	public void setMessages(Map<String,MetaMessageItem> messages) {
+	public void setMessages(Map<String, MetaMessageItem> messages) {
 		if (messages == null) {
 			this.messages = null;
 		} else {
 			if (messages instanceof LinkedHashMap) {
-			    this.messages = (LinkedHashMap<String,MetaMessageItem>)messages;
+				this.messages = (LinkedHashMap<String, MetaMessageItem>) messages;
 			} else {
 				this.messages = new LinkedHashMap<>(messages);
 			}
@@ -211,8 +211,8 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	 * @param messages メッセージメタ情報
 	 */
 	public void addMessage(MetaMessageItem metaMessageItem) {
-		if(messages == null) {
-			messages = new LinkedHashMap<String,MetaMessageItem>();
+		if (messages == null) {
+			messages = new LinkedHashMap<String, MetaMessageItem>();
 		}
 		messages.put(metaMessageItem.getMessageId(), metaMessageItem);
 	}
@@ -225,7 +225,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 		if (messages == null) {
 			return;
 		}
-		for (Map.Entry<String, MessageItem> messageItem: messages.entrySet()) {
+		for (Map.Entry<String, MessageItem> messageItem : messages.entrySet()) {
 			MetaMessageItem item = new MetaMessageItem();
 			item.setValue(messageItem.getValue());
 			addMessage(item);

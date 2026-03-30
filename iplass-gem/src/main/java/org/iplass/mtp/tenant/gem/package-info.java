@@ -3,9 +3,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/tenant",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/tenant", prefix="def-tenant")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/tenant",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/tenant", prefix = "def-tenant")
+		}
 )
 package org.iplass.mtp.tenant.gem;

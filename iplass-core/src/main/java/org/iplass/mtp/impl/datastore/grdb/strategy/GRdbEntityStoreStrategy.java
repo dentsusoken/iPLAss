@@ -94,7 +94,6 @@ import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 	private static Logger log = LoggerFactory.getLogger(GRdbEntityStoreStrategy.class);
 
@@ -145,7 +144,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 	private BulkUpdateStrategy createBulkUpdateStrategy() {
 		String propBulkStrategy = System.getProperty(BULK_STRATEGY);
 		if (propBulkStrategy != null
-				&& EachRecordBulkUpdateStrategy.class.getName().equals(propBulkStrategy)) {
+				&& EachRecordBulkUpdateStrategy.class.getName()
+						.equals(propBulkStrategy)) {
 			return new EachRecordBulkUpdateStrategy(this, rdb);
 		}
 
@@ -160,7 +160,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 			@Override
 			public Integer logic() throws SQLException {
 
-				EntityHandler handler = context.getHandlerByName(query.getFrom().getEntityName());
+				EntityHandler handler = context.getHandlerByName(query.getFrom()
+						.getEntityName());
 				ToSqlResult sql = searchSql.count(handler, context, query, rdb.isEnableBindHint(), rdb);
 				if (sql.bindVariables == null || sql.bindVariables.size() == 0) {
 					//検索SQL実行
@@ -186,7 +187,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						((PreparedStatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, true, handler, context));
 					}
 					int index = 1;
-					for (BindValue val: sql.bindVariables) {
+					for (BindValue val : sql.bindVariables) {
 						val.type.setParameter(index, val.value, stmt, rdb);
 						index++;
 					}
@@ -221,10 +222,14 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 		for (PropertyHandler ph : handler.getDeclaredPropertyList()) {
 			if (ph.getStoreSpecProperty() instanceof GRdbPropertyStoreRuntime) {
 				GRdbPropertyStoreRuntime psh = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
-				if (psh.getPropertyRuntime().isIndexed() && psh.isExternalIndex()) {
-					if (IndexType.NON_UNIQUE != psh.getPropertyRuntime().getMetaData().getIndexType()) {
+				if (psh.getPropertyRuntime()
+						.isIndexed() && psh.isExternalIndex()) {
+					if (IndexType.NON_UNIQUE != psh.getPropertyRuntime()
+							.getMetaData()
+							.getIndexType()) {
 						try (ResultSet rs = stmt.executeQuery(
-								delSql.countByOidWithoutTargetVersion(context.getTenantId(handler), handler, model.getOid(), model.getVersion(), rdb))) {
+								delSql.countByOidWithoutTargetVersion(context.getTenantId(handler), handler, model.getOid(), model.getVersion(),
+										rdb))) {
 							rs.next();
 							return rs.getInt(1) > 0;
 						}
@@ -245,13 +250,15 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 			public Void logic() throws SQLException {
 				//pageNoが複数ある場合を考慮。まずpageNo=0を削除。成功（=Lockが取れた）したら、pageNo=1以降を一括で削除
 				int tenantId = context.getTenantId(handler);
-				String mainSql = delSql.deleteMainPageByOid(tenantId, handler, model.getOid(), model.getVersion(), option.isCheckTimestamp(), model.getUpdateDate(), rdb);
+				String mainSql = delSql.deleteMainPageByOid(tenantId, handler, model.getOid(), model.getVersion(), option.isCheckTimestamp(),
+						model.getUpdateDate(), rdb);
 
 				int count = getStatement().executeUpdate(mainSql);
 				if (count < 1) {
-					throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+					throw new EntityConcurrentUpdateException(
+							resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 				}
-				
+
 				//version管理されていて、バージョン指定の削除で、且つ別バージョンのレコードが存在する場合はUniqueIndexTableのデータは残す
 				boolean isKeepUniqueIndexTable = isKeepUniqueIndexTable(context, model, handler, option, getStatement());
 
@@ -265,32 +272,41 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				List<String> delTalbeIndex = new ArrayList<>();
 				List<String> delTalbeUnique = new ArrayList<>();
 				boolean hasReference = false;
-				for (PropertyHandler ph: handler.getDeclaredPropertyList()) {
+				for (PropertyHandler ph : handler.getDeclaredPropertyList()) {
 					if (ph instanceof ReferencePropertyHandler &&
 							((MetaReferenceProperty) ph.getMetaData()).getMappedByPropertyMetaDataId() == null) {
 						hasReference = true;
 					}
 					if (ph.getStoreSpecProperty() instanceof GRdbPropertyStoreRuntime) {
 						GRdbPropertyStoreRuntime psh = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
-						if (psh.getPropertyRuntime().isIndexed() && psh.isExternalIndex()) {
-							if (IndexType.NON_UNIQUE == psh.getPropertyRuntime().getMetaData().getIndexType()) {
-								if (!delTalbeIndex.contains(psh.getSingleColumnRdbTypeAdapter().getColOfIndex())) {
-									delTalbeIndex.add(psh.getSingleColumnRdbTypeAdapter().getColOfIndex());
+						if (psh.getPropertyRuntime()
+								.isIndexed() && psh.isExternalIndex()) {
+							if (IndexType.NON_UNIQUE == psh.getPropertyRuntime()
+									.getMetaData()
+									.getIndexType()) {
+								if (!delTalbeIndex.contains(psh.getSingleColumnRdbTypeAdapter()
+										.getColOfIndex())) {
+									delTalbeIndex.add(psh.getSingleColumnRdbTypeAdapter()
+											.getColOfIndex());
 								}
 							} else {
-								if (!delTalbeUnique.contains(psh.getSingleColumnRdbTypeAdapter().getColOfIndex())) {
-									delTalbeUnique.add(psh.getSingleColumnRdbTypeAdapter().getColOfIndex());
+								if (!delTalbeUnique.contains(psh.getSingleColumnRdbTypeAdapter()
+										.getColOfIndex())) {
+									delTalbeUnique.add(psh.getSingleColumnRdbTypeAdapter()
+											.getColOfIndex());
 								}
 							}
 						}
 					}
 				}
-				for (String table: delTalbeIndex) {
-					getStatement().addBatch(indexDelSql.toSqlDelByOid(tenantId, handler, table, IndexType.NON_UNIQUE, model.getOid(), model.getVersion(), rdb));
+				for (String table : delTalbeIndex) {
+					getStatement().addBatch(
+							indexDelSql.toSqlDelByOid(tenantId, handler, table, IndexType.NON_UNIQUE, model.getOid(), model.getVersion(), rdb));
 				}
 				if (!isKeepUniqueIndexTable) {
 					for (String table : delTalbeUnique) {
-						getStatement().addBatch(indexDelSql.toSqlDelByOid(tenantId, handler, table, IndexType.UNIQUE, model.getOid(), model.getVersion(), rdb));
+						getStatement().addBatch(
+								indexDelSql.toSqlDelByOid(tenantId, handler, table, IndexType.UNIQUE, model.getOid(), model.getVersion(), rdb));
 					}
 				}
 
@@ -364,12 +380,16 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 			EntityHandler dataModelHandler, Entity model, MultiInsertContext ctx, Statement stmt) throws SQLException {
 		boolean result = false;
 		List<PropertyHandler> props = dataModelHandler.getDeclaredPropertyList();
-		for (PropertyHandler storeP: props) {
+		for (PropertyHandler storeP : props) {
 			if (storeP instanceof PrimitivePropertyHandler
-					&& !((PrimitivePropertyHandler) storeP).getMetaData().getType().isVirtual()) {
+					&& !((PrimitivePropertyHandler) storeP).getMetaData()
+							.getType()
+							.isVirtual()) {
 				//TODO 現状、multi=1のみ対応
-				if (storeP.getMetaData().getMultiplicity() == 1) {
-					IndexType indexType = storeP.getMetaData().getIndexType();
+				if (storeP.getMetaData()
+						.getMultiplicity() == 1) {
+					IndexType indexType = storeP.getMetaData()
+							.getIndexType();
 					if (indexType == IndexType.NON_UNIQUE || indexType == IndexType.UNIQUE || indexType == IndexType.UNIQUE_WITHOUT_NULL) {
 						GRdbPropertyStoreHandler storePropHandler = (GRdbPropertyStoreHandler) storeP.getStoreSpecProperty();
 						if (storePropHandler.isExternalIndex()) {
@@ -413,6 +433,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 		ReferencePropertyHandler rh;
 		EntityHandler refEh;
 		Object value;
+
 		private InsertReferenceTarget(ReferencePropertyHandler rh,
 				EntityHandler refEh, Object value) {
 			this.rh = rh;
@@ -426,11 +447,11 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 		List<InsertReferenceTarget> ret = null;
 		if (updatePropList == null) {
 			List<PropertyHandler> props = dataModelHandler.getDeclaredPropertyList();
-			for (PropertyHandler p: props) {
+			for (PropertyHandler p : props) {
 				ret = addTargetRefrerence(ret, p, model, ectx);
 			}
 		} else {
-			for (String propName: updatePropList) {
+			for (String propName : updatePropList) {
 				PropertyHandler p = dataModelHandler.getDeclaredProperty(propName);
 				ret = addTargetRefrerence(ret, p, model, ectx);
 			}
@@ -446,7 +467,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 	private List<InsertReferenceTarget> addTargetRefrerence(List<InsertReferenceTarget> list, PropertyHandler ph, Entity model, EntityContext ectx) {
 		if (ph instanceof ReferencePropertyHandler) {
 			ReferencePropertyHandler rh = (ReferencePropertyHandler) ph;
-			if (rh.getMetaData().getMappedByPropertyMetaDataId() == null) {
+			if (rh.getMetaData()
+					.getMappedByPropertyMetaDataId() == null) {
 				EntityHandler refEh = rh.getReferenceEntityHandler(ectx);
 				if (list == null) {
 					list = new LinkedList<>();
@@ -463,9 +485,10 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 		}
 
 		int count = 0;
-		for (InsertReferenceTarget t: list) {
+		for (InsertReferenceTarget t : list) {
 			if (t.value != null) {
-				if (t.rh.getMetaData().getMultiplicity() != 1) {
+				if (t.rh.getMetaData()
+						.getMultiplicity() != 1) {
 					if (t.value instanceof Object[]) {
 						count += ((Object[]) t.value).length;
 					} else {
@@ -480,7 +503,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 		return count >= rdb.getThresholdCountOfUsePrepareStatement();
 	}
 
-	private void insRef(int[] counter, int tenantId, String oid, Long version, Entity ref, EntityHandler eh, ReferencePropertyHandler rh, EntityHandler refEntityType, MultiInsertContext ctx, PreparedStatement ps) throws SQLException {
+	private void insRef(int[] counter, int tenantId, String oid, Long version, Entity ref, EntityHandler eh, ReferencePropertyHandler rh,
+			EntityHandler refEntityType, MultiInsertContext ctx, PreparedStatement ps) throws SQLException {
 		String refOid = ref.getOid();
 		Long refVer = ref.getVersion();
 		if (refOid == null || refOid.length() == 0) {
@@ -489,10 +513,13 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 		counter[0]++;
 		if (ctx != null) {
 			ctx.addInsertSql(referenceInsertSql.insert(tenantId, eh,
-					rh.getId(), oid, version, refEntityType.getMetaData().getId(), refOid, refVer, rdb));
+					rh.getId(), oid, version, refEntityType.getMetaData()
+							.getId(),
+					refOid, refVer, rdb));
 		} else {
 			ps.clearParameters();
-			referenceInsertSql.setPrepareInsertParameter(ps, tenantId, eh, rh.getId(), oid, version, refEntityType.getMetaData().getId(), refOid, refVer, rdb);
+			referenceInsertSql.setPrepareInsertParameter(ps, tenantId, eh, rh.getId(), oid, version, refEntityType.getMetaData()
+					.getId(), refOid, refVer, rdb);
 			ps.addBatch();
 			if (counter[0] % rdb.getBatchSize() == 0) {
 				ps.executeBatch();
@@ -502,12 +529,13 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 
 	private void insertReferences(int tenantId, String oid, Long version,
 			EntityHandler eh, List<InsertReferenceTarget> list, MultiInsertContext ctx, PreparedStatement ps, EntityContext ectx) throws SQLException {
-		int[] counter = {0};
-		for (InsertReferenceTarget t: list) {
+		int[] counter = { 0 };
+		for (InsertReferenceTarget t : list) {
 			if (t.value != null) {
-				if (t.rh.getMetaData().getMultiplicity() != 1) {
+				if (t.rh.getMetaData()
+						.getMultiplicity() != 1) {
 					if (t.value instanceof Entity[]) {
-						for (Entity ref: (Entity[]) t.value) {
+						for (Entity ref : (Entity[]) t.value) {
 							insRef(counter, tenantId, oid, version, ref, eh, t.rh, t.refEh, ctx, ps);
 						}
 					} else {
@@ -521,7 +549,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 
 		if (ps != null) {
 			//残りを実行
-			if (counter[0] %  rdb.getBatchSize() != 0) {
+			if (counter[0] % rdb.getBatchSize() != 0) {
 				ps.executeBatch();
 			}
 		}
@@ -534,7 +562,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 			public Boolean logic() throws SQLException {
 				String sql = lockSql.lockByOid(context.getTenantId(handler), handler, context, oid, rdb);
 				//検索SQL実行
-				try(ResultSet rs = getStatement().executeQuery(sql)) {
+				try (ResultSet rs = getStatement().executeQuery(sql)) {
 					return rs.next();
 				}
 			}
@@ -557,10 +585,14 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				QueryOption option = QueryOption.getQueryOption(query);
 
 				EntityHandler handler = null;
-				if (eh.getMetaData().getName().equals(query.getFrom().getEntityName())) {
+				if (eh.getMetaData()
+						.getName()
+						.equals(query.getFrom()
+								.getEntityName())) {
 					handler = eh;
 				} else {
-					handler = context.getHandlerByName(query.getFrom().getEntityName());
+					handler = context.getHandlerByName(query.getFrom()
+							.getEntityName());
 				}
 				ToSqlResult sql = searchSql.query(handler, context, query, false, rdb.isEnableBindHint(), dataStore.getStringTypeLengthOnQuery(), rdb);
 
@@ -594,7 +626,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 					}
 
 					int index = 1;
-					for (BindValue val: sql.bindVariables) {
+					for (BindValue val : sql.bindVariables) {
 						val.type.setParameter(index, val.value, stmt, rdb);
 						index++;
 					}
@@ -637,7 +669,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				int count = getStatement().executeUpdate(sql);
 
 				if (count < 1) {
-					throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+					throw new EntityConcurrentUpdateException(
+							resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 				}
 
 				MultiInsertContext ctx = rdb.createMultiInsertContext(getStatement());
@@ -662,7 +695,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				Long version = model.getVersion();
 				List<InsertReferenceTarget> updRefs = targetReference(handler, model, context, option.getUpdateProperties());
 				if (updRefs.size() > 0) {
-					for (InsertReferenceTarget t: updRefs) {
+					for (InsertReferenceTarget t : updRefs) {
 						ctx.addUpdateSql(refDelSql.deleteByOidAndVersion(tenantId, handler, t.rh.getId(), oid, version, rdb));
 					}
 
@@ -693,25 +726,29 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 		exec.execute(rdb, true);
 	}
 
-	private void updateIndex(int tenantId, EntityHandler dataModelHandler, Entity model, MultiInsertContext ctx, List<String> updatePropList) throws SQLException {
-		for (String propName: updatePropList) {
+	private void updateIndex(int tenantId, EntityHandler dataModelHandler, Entity model, MultiInsertContext ctx, List<String> updatePropList)
+			throws SQLException {
+		for (String propName : updatePropList) {
 			PropertyHandler storeP = dataModelHandler.getDeclaredProperty(propName);
 
 			if (storeP != null && storeP.getStoreSpecProperty() instanceof GRdbPropertyStoreRuntime) {
 				GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) storeP.getStoreSpecProperty();
 				if (col.isExternalIndex()) {
-					IndexType indexType = storeP.getMetaData().getIndexType();
+					IndexType indexType = storeP.getMetaData()
+							.getIndexType();
 					if (indexType == IndexType.NON_UNIQUE
 							|| indexType == IndexType.UNIQUE
 							|| indexType == IndexType.UNIQUE_WITHOUT_NULL) {
 
 						//multiは未対応
 
-						ctx.addUpdateSql(indexDelSql.deleteByOidAndVersion(tenantId, (GRdbPropertyStoreHandler) col, model.getOid(), model.getVersion(), rdb));
+						ctx.addUpdateSql(
+								indexDelSql.deleteByOidAndVersion(tenantId, (GRdbPropertyStoreHandler) col, model.getOid(), model.getVersion(), rdb));
 						//UNIQUE_WITHOUT_NULLもしくはNON_UNIQUE、かつ、valueがnullの場合はinsertしない
 						Object val = model.getValue(storeP.getName());
 						if (indexType == IndexType.UNIQUE || val != null) {
-							ctx.addInsertSql(indexInsertSql.insert(tenantId, (GRdbPropertyStoreHandler) col, model.getOid(), model.getVersion(), val, rdb));
+							ctx.addInsertSql(
+									indexInsertSql.insert(tenantId, (GRdbPropertyStoreHandler) col, model.getOid(), model.getVersion(), val, rdb));
 						}
 					}
 				}
@@ -728,7 +765,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				int tenantId = entityContext.getTenantId(handler);
 
 				boolean hasIndexOrRef = false;
-				for (PropertyHandler ph: handler.getDeclaredPropertyList()) {
+				for (PropertyHandler ph : handler.getDeclaredPropertyList()) {
 					if (ph instanceof ReferencePropertyHandler &&
 							((MetaReferenceProperty) ph.getMetaData()).getMappedByPropertyMetaDataId() == null) {
 						hasIndexOrRef = true;
@@ -760,7 +797,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						getStatement().addBatch(rdb.deleteTemporaryTable(ObjStoreTable.TABLE_NAME_TMP));
 
 						if (!rdb.isSupportGlobalTemporaryTable()) {
-							String createTempTable = rdb.createLocalTemporaryTable(ObjStoreTable.TABLE_NAME_TMP, ObjStoreTable.TABLE_NAME, new String[]{ObjStoreTable.OBJ_ID, ObjStoreTable.OBJ_VER});
+							String createTempTable = rdb.createLocalTemporaryTable(ObjStoreTable.TABLE_NAME_TMP, ObjStoreTable.TABLE_NAME,
+									new String[] { ObjStoreTable.OBJ_ID, ObjStoreTable.OBJ_VER });
 							getStatement().addBatch(createTempTable);
 						}
 
@@ -778,7 +816,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						if (cond.isLockStrictly()) {
 							String sql = lockSql.lockByTempTable(tenantId, handler, entityContext, rdb);
 							//検索SQL実行
-							try(ResultSet rs = getStatement().executeQuery(sql)) {
+							try (ResultSet rs = getStatement().executeQuery(sql)) {
 //FIXME nextの呼び出しが必要か確認！！！
 //								rs.next();
 							}
@@ -789,7 +827,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						Set<String> delTalbeIndex = new HashSet<>();
 						Set<String> delTalbeUnique = new HashSet<>();
 						boolean hasReference = false;
-						for (PropertyHandler ph: handler.getDeclaredPropertyList()) {
+						for (PropertyHandler ph : handler.getDeclaredPropertyList()) {
 							if (ph instanceof ReferencePropertyHandler &&
 									((MetaReferenceProperty) ph.getMetaData()).getMappedByPropertyMetaDataId() == null) {
 								hasReference = true;
@@ -797,18 +835,22 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 							if (ph.getStoreSpecProperty() instanceof GRdbPropertyStoreHandler) {
 								GRdbPropertyStoreHandler psh = (GRdbPropertyStoreHandler) ph.getStoreSpecProperty();
 								if (psh.isExternalIndex()) {
-									if (IndexType.NON_UNIQUE == psh.getPropertyRuntime().getMetaData().getIndexType()) {
-										delTalbeIndex.add(psh.getSingleColumnRdbTypeAdapter().getColOfIndex());
+									if (IndexType.NON_UNIQUE == psh.getPropertyRuntime()
+											.getMetaData()
+											.getIndexType()) {
+										delTalbeIndex.add(psh.getSingleColumnRdbTypeAdapter()
+												.getColOfIndex());
 									} else {
-										delTalbeUnique.add(psh.getSingleColumnRdbTypeAdapter().getColOfIndex());
+										delTalbeUnique.add(psh.getSingleColumnRdbTypeAdapter()
+												.getColOfIndex());
 									}
 								}
 							}
 						}
-						for (String table: delTalbeIndex) {
+						for (String table : delTalbeIndex) {
 							getStatement().addBatch(indexDelSql.deleteByTempTable(tenantId, handler, table, IndexType.NON_UNIQUE, rdb));
 						}
-						for (String table: delTalbeUnique) {
+						for (String table : delTalbeUnique) {
 							getStatement().addBatch(indexDelSql.deleteByTempTable(tenantId, handler, table, IndexType.UNIQUE, rdb));
 						}
 
@@ -829,13 +871,15 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						int maxPageNo = ((GRdbEntityStoreRuntime) handler.getEntityStoreRuntime()).getCurrentMaxPage();
 						if (maxPageNo != 0) {
 							if (ret % (maxPageNo + 1) != 0) {
-								throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+								throw new EntityConcurrentUpdateException(
+										resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 							}
 							ret = ret / (maxPageNo + 1);
 						}
 
 						if (count[count.length - 1] != ret) {
-							throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+							throw new EntityConcurrentUpdateException(
+									resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 						}
 
 						return ret;
@@ -846,7 +890,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 							try {
 								getStatement().executeUpdate(rdb.deleteTemporaryTable(ObjStoreTable.TABLE_NAME_TMP));
 							} catch (Exception e) {
-								LoggerFactory.getLogger(GRdbEntityStoreStrategy.class).warn("temporary table:" + ObjStoreTable.TABLE_NAME_TMP + " drop fail. may be resource leak...");
+								LoggerFactory.getLogger(GRdbEntityStoreStrategy.class)
+										.warn("temporary table:" + ObjStoreTable.TABLE_NAME_TMP + " drop fail. may be resource leak...");
 							}
 						}
 					}
@@ -854,7 +899,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 			}
 		};
 
-		return exec.execute(rdb, true).intValue();
+		return exec.execute(rdb, true)
+				.intValue();
 	}
 
 	@Override
@@ -866,8 +912,9 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				int tenantId = context.getTenantId(handler);
 
 				boolean hasExIndex = false;
-				for (UpdateValue uv: cond.getValues()) {
-					GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) handler.getProperty(uv.getEntityField(), context).getStoreSpecProperty();
+				for (UpdateValue uv : cond.getValues()) {
+					GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) handler.getProperty(uv.getEntityField(), context)
+							.getStoreSpecProperty();
 					if (col.isExternalIndex()) {
 						hasExIndex = true;
 						break;
@@ -887,7 +934,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						getStatement().addBatch(rdb.deleteTemporaryTable(ObjStoreTable.TABLE_NAME_TMP));
 
 						if (!rdb.isSupportGlobalTemporaryTable()) {
-							String createTempTable = rdb.createLocalTemporaryTable(ObjStoreTable.TABLE_NAME_TMP, ObjStoreTable.TABLE_NAME, new String[]{ObjStoreTable.OBJ_ID, ObjStoreTable.OBJ_VER});
+							String createTempTable = rdb.createLocalTemporaryTable(ObjStoreTable.TABLE_NAME_TMP, ObjStoreTable.TABLE_NAME,
+									new String[] { ObjStoreTable.OBJ_ID, ObjStoreTable.OBJ_VER });
 							getStatement().addBatch(createTempTable);
 						}
 
@@ -904,7 +952,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						if (cond.isLockStrictly()) {
 							String sql = lockSql.lockByTempTable(tenantId, handler, context, rdb);
 							//検索SQL実行
-							try(ResultSet rs = getStatement().executeQuery(sql)) {
+							try (ResultSet rs = getStatement().executeQuery(sql)) {
 //FIXME nextの呼び出しが必要か確認！！！
 //								rs.next();
 							}
@@ -933,7 +981,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						// 5.件数チェック：workテーブルインサート件数と、mainの削除件数。違うってことはdef_verが違ったってこと
 						for (int i = 0; i <= updatePageCount; i++) {
 							if (count[count.length - 1] != updateCounts[i]) {
-								throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+								throw new EntityConcurrentUpdateException(
+										resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 							}
 						}
 
@@ -946,7 +995,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 							try {
 								getStatement().executeUpdate(rdb.deleteTemporaryTable(ObjStoreTable.TABLE_NAME_TMP));
 							} catch (Exception e) {
-								LoggerFactory.getLogger(GRdbEntityStoreStrategy.class).warn("temporary table:" + ObjStoreTable.TABLE_NAME_TMP + " drop fail. may be resource leak...");
+								LoggerFactory.getLogger(GRdbEntityStoreStrategy.class)
+										.warn("temporary table:" + ObjStoreTable.TABLE_NAME_TMP + " drop fail. may be resource leak...");
 							}
 						}
 					}
@@ -954,27 +1004,31 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 			}
 		};
 
-		return exec.execute(rdb, true).intValue();
+		return exec.execute(rdb, true)
+				.intValue();
 
 	}
 
-	private void updateIndexAll(int tenantId, EntityHandler dataModelHandler, MultiInsertContext ctx, List<UpdateValue> updatePropList) throws SQLException {
+	private void updateIndexAll(int tenantId, EntityHandler dataModelHandler, MultiInsertContext ctx, List<UpdateValue> updatePropList)
+			throws SQLException {
 		//TODO delete->insert。これでよいか。。。
-		for (UpdateValue upadteValue: updatePropList) {
+		for (UpdateValue upadteValue : updatePropList) {
 			String propName = upadteValue.getEntityField();
 			PropertyHandler storeP = dataModelHandler.getDeclaredProperty(propName);
 
 			if (storeP != null && storeP.getStoreSpecProperty() instanceof GRdbPropertyStoreRuntime) {
 				GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) storeP.getStoreSpecProperty();
 				if (col.isExternalIndex()) {
-					IndexType indexType = storeP.getMetaData().getIndexType();
+					IndexType indexType = storeP.getMetaData()
+							.getIndexType();
 					if (indexType == IndexType.NON_UNIQUE
 							|| indexType == IndexType.UNIQUE
 							|| indexType == IndexType.UNIQUE_WITHOUT_NULL) {
 
 						//multiは未対応
 
-						ctx.addUpdateSql(indexDelSql.deleteByTempTable(tenantId, dataModelHandler, col.getSingleColumnRdbTypeAdapter().getColOfIndex(), indexType, rdb));
+						ctx.addUpdateSql(indexDelSql.deleteByTempTable(tenantId, dataModelHandler, col.getSingleColumnRdbTypeAdapter()
+								.getColOfIndex(), indexType, rdb));
 						//マルチテーブルインサートはINSERT～SLECT文では使用できないので、addUpdateを使用。。。
 						ctx.addUpdateSql(indexInsertSql.insertByTempTable(tenantId, (GRdbPropertyStoreHandler) col, rdb));
 					}
@@ -996,7 +1050,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				int tenantId = context.getTenantId(handler);
 
 				//OBJ_STORE copySql
-				StorageSpaceMap ssMap = dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) handler.getMetaData().getStoreMapping());
+				StorageSpaceMap ssMap = dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) handler.getMetaData()
+						.getStoreMapping());
 				String copySql = recycleBinSql.copyDataToRB(tenantId, handler, rbid, oid, userId, rdb, ssMap);
 				getStatement().executeUpdate(copySql);
 
@@ -1032,14 +1087,16 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 					if (rs.next()) {
 						oid = rs.getString(ObjStoreTable.OBJ_ID);
 					} else {
-						throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+						throw new EntityConcurrentUpdateException(
+								resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 					}
 				}
 
 				MultiInsertContext ctx = rdb.createMultiInsertContext(getStatement());
 
 				//OBJ_DATA restoreSql
-				StorageSpaceMap ssMap = dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) handler.getMetaData().getStoreMapping());
+				StorageSpaceMap ssMap = dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) handler.getMetaData()
+						.getStoreMapping());
 				String copySql = recycleBinSql.copyDataFromRB(tenantId, handler, rbid, rdb, context, ssMap);
 				ctx.addUpdateSql(copySql);
 
@@ -1061,12 +1118,13 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 
 	private void insertIndexForRestore(int tenantId, EntityHandler dataModelHandler, String oid, MultiInsertContext ctx) throws SQLException {
 		List<PropertyHandler> props = dataModelHandler.getDeclaredPropertyList();
-		for (PropertyHandler storeP: props) {
+		for (PropertyHandler storeP : props) {
 
 			if (storeP != null && storeP.getStoreSpecProperty() instanceof GRdbPropertyStoreRuntime) {
 				GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) storeP.getStoreSpecProperty();
 				if (col.isExternalIndex()) {
-					IndexType indexType = storeP.getMetaData().getIndexType();
+					IndexType indexType = storeP.getMetaData()
+							.getIndexType();
 					if (indexType == IndexType.NON_UNIQUE
 							|| indexType == IndexType.UNIQUE
 							|| indexType == IndexType.UNIQUE_WITHOUT_NULL) {
@@ -1093,7 +1151,8 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						tenantId, handler, rbid, null, rdb);
 				try (ResultSet rs = getStatement().executeQuery(sql)) {
 					if (!rs.next()) {
-						throw new EntityConcurrentUpdateException(resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
+						throw new EntityConcurrentUpdateException(
+								resourceString("impl.datastore.schemalessrdb.strategy.SLREntityStoreStrategy.alreadyOperated"));
 					}
 				}
 
@@ -1154,11 +1213,14 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 
 	@Override
 	public void clean(final EntityContext context, final EntityHandler handler) {
-		log.info("metaEntity restored. id = " + handler.getMetaData().getId() + ". execute cleanup entity data.");
+		log.info("metaEntity restored. id = " + handler.getMetaData()
+				.getId() + ". execute cleanup entity data.");
 
 		int tenantId = context.getLocalTenantId();
-		String tableNamePostfix = ((MetaGRdbEntityStore) handler.getMetaData().getEntityStoreDefinition()).getTableNamePostfix();
-		purgeDividedTable(tenantId, handler.getMetaData().getId(), tableNamePostfix, rdb);
+		String tableNamePostfix = ((MetaGRdbEntityStore) handler.getMetaData()
+				.getEntityStoreDefinition()).getTableNamePostfix();
+		purgeDividedTable(tenantId, handler.getMetaData()
+				.getId(), tableNamePostfix, rdb);
 	}
 
 	//FIXME cleanと統合
@@ -1168,8 +1230,9 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 
 		log.debug("start purge meta entity data. tenant id = " + tenantId + ",defId = " + defId + ".");
 
-		for (StorageSpaceMap storage: dataStore.getStorageSpaceMap().values()) {
-			for (String tableNamePostfix: storage.allTableNamePostfix()) {
+		for (StorageSpaceMap storage : dataStore.getStorageSpaceMap()
+				.values()) {
+			for (String tableNamePostfix : storage.allTableNamePostfix()) {
 				purgeDividedTable(tenantId, defId, tableNamePostfix, rdb);
 			}
 		}
@@ -1189,17 +1252,19 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 			}
 			extIndexTable.add(adaptor.getColOfIndex());
 		}
-		for (String n: extIndexTable) {
+		for (String n : extIndexTable) {
 			//Index用テーブルは、MTP、USERのStorageSpaceに対してデフォルトで作成していないのでExceptionが発生しても処理を続ける
 			try {
 				doBatch(tenantId, defId, indexDelSql.deleteAll(tenantId, defId, tableNamePostfix, n, IndexType.UNIQUE, rdb));
 			} catch (EntityRuntimeException e) {
-				log.warn("Unable to delete unique index data, but continue purge processing. indexType = " + n + ", tableNamePostfix = " + tableNamePostfix);
+				log.warn("Unable to delete unique index data, but continue purge processing. indexType = " + n + ", tableNamePostfix = "
+						+ tableNamePostfix);
 			}
 			try {
 				doBatch(tenantId, defId, indexDelSql.deleteAll(tenantId, defId, tableNamePostfix, n, IndexType.NON_UNIQUE, rdb));
 			} catch (EntityRuntimeException e) {
-				log.warn("Unable to delete none unique index data, but continue purge processing. indexType = " + n + ", tableNamePostfix = " + tableNamePostfix);
+				log.warn("Unable to delete none unique index data, but continue purge processing. indexType = " + n + ", tableNamePostfix = "
+						+ tableNamePostfix);
 			}
 		}
 
@@ -1263,17 +1328,24 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 							extUniqueIndexTable.put(adaptor.getColOfIndex(), new ArrayList<>());
 						}
 					}
-					for (PrimitivePropertyHandler property: handler.getIndexedPropertyList(context)) {
+					for (PrimitivePropertyHandler property : handler.getIndexedPropertyList(context)) {
 						GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) property.getStoreSpecProperty();
 						if (col.isExternalIndex()) {
 							List<String> list;
-							if (property.getMetaData().getIndexType() == IndexType.NON_UNIQUE) {
-								list = extIndexTable.get(col.getSingleColumnRdbTypeAdapter().getColOfIndex());
+							if (property.getMetaData()
+									.getIndexType() == IndexType.NON_UNIQUE) {
+								list = extIndexTable.get(col.getSingleColumnRdbTypeAdapter()
+										.getColOfIndex());
 							} else {
-								list = extUniqueIndexTable.get(col.getSingleColumnRdbTypeAdapter().getColOfIndex());
+								list = extUniqueIndexTable.get(col.getSingleColumnRdbTypeAdapter()
+										.getColOfIndex());
 							}
-							col.asList().get(0).getExternalIndexColName();
-							list.add(col.asList().get(0).getExternalIndexColName());
+							col.asList()
+									.get(0)
+									.getExternalIndexColName();
+							list.add(col.asList()
+									.get(0)
+									.getExternalIndexColName());
 						}
 					}
 
@@ -1281,27 +1353,31 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 					Set<String> existTables = new HashSet<>();
 					try (ResultSet rs = rdb.getTableNames(ObjIndexTable.TABLE_INDEX_PREFIX_NAME + "%", getConnection())) {
 						while (rs.next()) {
-							existTables.add(rs.getString("TABLE_NAME").toUpperCase());
+							existTables.add(rs.getString("TABLE_NAME")
+									.toUpperCase());
 						}
 					}
 					try (ResultSet rs = rdb.getTableNames(ObjIndexTable.TABLE_UNIQUE_PREFIX_NAME + "%", getConnection())) {
 						while (rs.next()) {
-							existTables.add(rs.getString("TABLE_NAME").toUpperCase());
+							existTables.add(rs.getString("TABLE_NAME")
+									.toUpperCase());
 						}
 					}
 
 					if (treatNonUniqueExternalIndexTable) {
-						for (Map.Entry<String, List<String>> e: extIndexTable.entrySet()) {
+						for (Map.Entry<String, List<String>> e : extIndexTable.entrySet()) {
 							String tableName = ((GRdbEntityStoreRuntime) handler.getEntityStoreRuntime()).OBJ_INDEX(e.getKey());
 							if (existTables.contains(tableName)) {
-								getStatement().executeUpdate(indexDelSql.deleteForDefrag(context.getLocalTenantId(), handler, e.getKey(), IndexType.NON_UNIQUE, e.getValue(), rdb));
+								getStatement().executeUpdate(indexDelSql.deleteForDefrag(context.getLocalTenantId(), handler, e.getKey(),
+										IndexType.NON_UNIQUE, e.getValue(), rdb));
 							}
 						}
 					}
-					for (Map.Entry<String, List<String>> e: extUniqueIndexTable.entrySet()) {
+					for (Map.Entry<String, List<String>> e : extUniqueIndexTable.entrySet()) {
 						String tableName = ((GRdbEntityStoreRuntime) handler.getEntityStoreRuntime()).OBJ_UNIQUE(e.getKey());
 						if (existTables.contains(tableName)) {
-							getStatement().executeUpdate(indexDelSql.deleteForDefrag(context.getLocalTenantId(), handler, e.getKey(), IndexType.UNIQUE, e.getValue(), rdb));
+							getStatement().executeUpdate(
+									indexDelSql.deleteForDefrag(context.getLocalTenantId(), handler, e.getKey(), IndexType.UNIQUE, e.getValue(), rdb));
 						}
 					}
 

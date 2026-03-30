@@ -37,16 +37,16 @@ public class XmlFileMetaDataEntryThinWrapper extends MetaDataEntryThinWrapper {
 	public XmlFileMetaDataEntryThinWrapper() {
 		super();
 	}
-	
-	public XmlFileMetaDataEntryThinWrapper(RootMetaData metaData) {	
+
+	public XmlFileMetaDataEntryThinWrapper(RootMetaData metaData) {
 		super(metaData);
 	}
-	
+
 	public Integer getVersion() {
 		return version;
 	}
 
 	public void setVersion(Integer version) {
 		this.version = version;
-	}	
+	}
 }

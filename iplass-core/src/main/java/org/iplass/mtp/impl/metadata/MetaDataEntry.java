@@ -21,15 +21,15 @@
 package org.iplass.mtp.impl.metadata;
 
 public class MetaDataEntry {
-	
+
 	public enum State {
 		VALID, INVALID
 	}
-	
+
 	public enum RepositoryType {
 		SHARED, TENANT_LOCAL, SHARED_OVERWRITE
 	}
-	
+
 	private String path;
 	private RootMetaData metaData;
 	private State state;
@@ -39,13 +39,14 @@ public class MetaDataEntry {
 	private boolean dataSharable;//現状、MetaEntityのみ利用
 	private boolean permissionSharable;
 	private RepositoryType repositryType;
-	
+
 	private MetaDataRuntime runtime;
-	
+
 	public MetaDataEntry() {
 	}
-	
-	public MetaDataEntry(String path, RootMetaData metaData, State state, int version, boolean overwritable, boolean sharable, boolean dataSharable, boolean permissionSharable) {
+
+	public MetaDataEntry(String path, RootMetaData metaData, State state, int version, boolean overwritable, boolean sharable, boolean dataSharable,
+			boolean permissionSharable) {
 		this.path = path;
 		this.metaData = metaData;
 		this.state = state;
@@ -55,7 +56,7 @@ public class MetaDataEntry {
 		this.dataSharable = dataSharable;
 		this.permissionSharable = permissionSharable;
 	}
-	
+
 	/**
 	 * shallow copy
 	 * 
@@ -75,11 +76,11 @@ public class MetaDataEntry {
 		copy.runtime = runtime;
 		return copy;
 	}
-	
+
 	public void initRuntime() {
 		runtime = metaData.createRuntime(new MetaDataConfig(sharable, overwritable, dataSharable, permissionSharable));
 	}
-	
+
 	public MetaDataRuntime getRuntime() {
 		return runtime;
 	}
@@ -127,24 +128,31 @@ public class MetaDataEntry {
 	public String getPath() {
 		return path;
 	}
+
 	public void setPath(String path) {
 		this.path = path;
 	}
+
 	public RootMetaData getMetaData() {
 		return metaData;
 	}
+
 	public void setMetaData(RootMetaData metaData) {
 		this.metaData = metaData;
 	}
+
 	public State getState() {
 		return state;
 	}
+
 	public void setState(State state) {
 		this.state = state;
 	}
+
 	public int getVersion() {
 		return version;
 	}
+
 	public void setVersion(int version) {
 		this.version = version;
 	}

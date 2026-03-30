@@ -97,14 +97,16 @@ public class RestRequestContext extends WebRequestContext {
 		case WebApiRequestConstants.HTTP_METHOD:
 			return methodType;
 		case WebApiRequestConstants.API_NAME:
-			return WebRequestStack.getCurrent().getAttribute(WebApiRequestConstants.API_NAME);
+			return WebRequestStack.getCurrent()
+					.getAttribute(WebApiRequestConstants.API_NAME);
 		case WebApiRequestConstants.SUB_PATH:
 			WebRequestStack stack = WebRequestStack.getCurrent();
 			String apiName = (String) stack.getAttribute(WebApiRequestConstants.API_NAME);
 			if (apiName == null) {
 				return null;
 			}
-			return stack.getRequestPath().getTargetSubPath(apiName, true);
+			return stack.getRequestPath()
+					.getTargetSubPath(apiName, true);
 
 		default:
 			return super.getAttribute(name);

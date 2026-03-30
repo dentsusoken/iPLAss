@@ -38,9 +38,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({PrimitivePropertyEditor.class, ReferencePropertyEditor.class, CustomPropertyEditor.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
-@FieldOrder(manual=true)
+@XmlSeeAlso({ PrimitivePropertyEditor.class, ReferencePropertyEditor.class, CustomPropertyEditor.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
+@FieldOrder(manual = true)
 public abstract class PropertyEditor implements Refrectable {
 
 	/** シリアルバージョンUID */
@@ -51,30 +51,30 @@ public abstract class PropertyEditor implements Refrectable {
 
 	/** 表示カスタムスタイル */
 	@MetaFieldInfo(
-			displayName="表示カスタムスタイル",
-			displayNameKey="generic_editor_PropertyEditor_customStyleDisplayNameKey",
-			displayOrder=10000,
-			description="検索結果一覧表示用のスタイルを指定します。GroovyScriptで記述して下さい。",
-			descriptionKey="generic_editor_PropertyEditor_customStyleDescriptionKey",
-			inputType=InputType.SCRIPT
+			displayName = "表示カスタムスタイル",
+			displayNameKey = "generic_editor_PropertyEditor_customStyleDisplayNameKey",
+			displayOrder = 10000,
+			description = "検索結果一覧表示用のスタイルを指定します。GroovyScriptで記述して下さい。",
+			descriptionKey = "generic_editor_PropertyEditor_customStyleDescriptionKey",
+			inputType = InputType.SCRIPT
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL }
 	)
 	private String customStyle;
 
 	/** 入力カスタムスタイル */
 	@MetaFieldInfo(
-			displayName="入力カスタムスタイル",
-			displayNameKey="generic_editor_PropertyEditor_inputCustomStyleDisplayNameKey",
-			displayOrder=10010,
-			description="編集画面のinput要素に対するスタイルを指定します。(例)width:100px;",
-			descriptionKey="generic_editor_PropertyEditor_inputCustomStyleDescriptionKey",
-			inputType=InputType.SCRIPT,
-			mode="CSS"
+			displayName = "入力カスタムスタイル",
+			displayNameKey = "generic_editor_PropertyEditor_inputCustomStyleDisplayNameKey",
+			displayOrder = 10010,
+			description = "編集画面のinput要素に対するスタイルを指定します。(例)width:100px;",
+			descriptionKey = "generic_editor_PropertyEditor_inputCustomStyleDescriptionKey",
+			inputType = InputType.SCRIPT,
+			mode = "CSS"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK }
 	)
 	private String inputCustomStyle;
 
@@ -127,7 +127,6 @@ public abstract class PropertyEditor implements Refrectable {
 	public void setCustomStyle(String customStyle) {
 		this.customStyle = customStyle;
 	}
-
 
 	/**
 	 * 入力カスタムスタイルを取得します。

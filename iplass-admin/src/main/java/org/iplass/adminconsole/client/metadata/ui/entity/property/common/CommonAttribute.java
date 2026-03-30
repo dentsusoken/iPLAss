@@ -113,7 +113,7 @@ public class CommonAttribute implements PropertyAttribute {
 		VersionControlType versionType = entity.getVersionControlType();
 		//UniqueIndexでかつEntityがバージョンコントロールされている場合は、PropertyのcanEditをfalseに設定
 		if ((property.getIndexType() == IndexType.UNIQUE
-					|| property.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL)
+				|| property.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL)
 				&& (versionType != null && VersionControlType.NONE != versionType)) {
 			property.setUpdatable(false);
 		} else {

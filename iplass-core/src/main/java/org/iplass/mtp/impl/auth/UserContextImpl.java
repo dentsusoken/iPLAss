@@ -36,7 +36,7 @@ public class UserContextImpl implements UserContext {
 	private User userEntity;
 	private String[] groupCode;
 	private long creationTime;
-	
+
 	public UserContextImpl(AccountHandle account, User userEntity) {
 		this.account = account;
 		this.userEntity = userEntity;
@@ -49,8 +49,8 @@ public class UserContextImpl implements UserContext {
 		if (userEntity != null) {
 			Entity[] group = userEntity.getGroups();
 			if (group != null) {
-				for (Entity g: group) {
-					list.add(g.<String>getValue(Group.CODE));
+				for (Entity g : group) {
+					list.add(g.<String> getValue(Group.CODE));
 				}
 			}
 		}
@@ -61,7 +61,7 @@ public class UserContextImpl implements UserContext {
 				if (groupCode instanceof String) {
 					if (((String) groupCode).indexOf(',') >= 0) {
 						String[] gcs = ((String) groupCode).split(",");
-						for (String gc: gcs) {
+						for (String gc : gcs) {
 							String gctrimed = gc.trim();
 							if (!gctrimed.isEmpty()) {
 								list.add(gctrimed);
@@ -72,7 +72,7 @@ public class UserContextImpl implements UserContext {
 					}
 				} else if (groupCode instanceof String[]) {
 					String[] gCodeList = (String[]) groupCode;
-					for (String g: gCodeList) {
+					for (String g : gCodeList) {
 						list.add(g);
 					}
 				} else {
@@ -122,8 +122,9 @@ public class UserContextImpl implements UserContext {
 
 	@Override
 	public String getIdForLog() {
-		if(userEntity == null) {
-			return account.getCredential().getId();
+		if (userEntity == null) {
+			return account.getCredential()
+					.getId();
 		} else {
 			return userEntity.getOid();
 		}

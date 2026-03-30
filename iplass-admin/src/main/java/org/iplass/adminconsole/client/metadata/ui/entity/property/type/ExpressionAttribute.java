@@ -52,7 +52,7 @@ public class ExpressionAttribute implements PropertyAttribute {
 		if (PropertyDefinitionType.SELECT == expression.getResultType()) {
 			if (expression.getResultTypeSpec() != null
 					&& expression.getResultTypeSpec() instanceof SelectProperty) {
-				SelectProperty sp = (SelectProperty)expression.getResultTypeSpec();
+				SelectProperty sp = (SelectProperty) expression.getResultTypeSpec();
 				setGlobalSelectName(sp.getSelectValueDefinitionName());
 			} else {
 				setGlobalSelectName(null);
@@ -66,7 +66,7 @@ public class ExpressionAttribute implements PropertyAttribute {
 	@Override
 	public void applyTo(PropertyDefinition property, EntityDefinition entity) {
 
-		ExpressionProperty expression = (ExpressionProperty)property;
+		ExpressionProperty expression = (ExpressionProperty) property;
 
 		expression.setExpression(getExpression());
 		if (getResultType() != null) {

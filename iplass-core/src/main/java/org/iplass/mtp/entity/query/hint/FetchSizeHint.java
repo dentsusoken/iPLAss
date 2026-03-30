@@ -33,14 +33,14 @@ public class FetchSizeHint extends EQLHint {
 	private static final long serialVersionUID = 4029023340850326409L;
 
 	private int size;
-	
+
 	public FetchSizeHint() {
 	}
-	
+
 	public FetchSizeHint(int size) {
 		this.size = size;
 	}
-	
+
 	public int getSize() {
 		return size;
 	}
@@ -58,7 +58,7 @@ public class FetchSizeHint extends EQLHint {
 	public void accept(HintVisitor visitor) {
 		visitor.visit(this);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "fetch_size(" + size + ")";

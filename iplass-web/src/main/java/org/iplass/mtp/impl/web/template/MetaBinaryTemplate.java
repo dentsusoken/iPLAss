@@ -74,7 +74,7 @@ public class MetaBinaryTemplate extends MetaTemplate {
 
 		if (def.getLocalizedBinaryList() != null) {
 			localizedBinaryList = new ArrayList<MetaLocalizedBinary>();
-			for (LocalizedBinaryDefinition locale: def.getLocalizedBinaryList()) {
+			for (LocalizedBinaryDefinition locale : def.getLocalizedBinaryList()) {
 
 				MetaLocalizedBinary mlb = new MetaLocalizedBinary();
 				mlb.applyConfig(locale);
@@ -95,7 +95,7 @@ public class MetaBinaryTemplate extends MetaTemplate {
 		definition.setBinary(binary);
 
 		if (localizedBinaryList != null) {
-			for (MetaLocalizedBinary mlb: localizedBinaryList) {
+			for (MetaLocalizedBinary mlb : localizedBinaryList) {
 				definition.addLocalizedBinary(mlb.currentConfig());
 			}
 		}
@@ -118,11 +118,13 @@ public class MetaBinaryTemplate extends MetaTemplate {
 				throws IOException, ServletException {
 			checkState();
 
-			String lang = ExecuteContext.getCurrentContext().getLanguage();
+			String lang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 			byte[] tempBinary = binary;
 			if (localizedBinaryList != null) {
 				for (MetaLocalizedBinary mlb : localizedBinaryList) {
-					if (mlb.getLocaleName().equals(lang)) {
+					if (mlb.getLocaleName()
+							.equals(lang)) {
 						if (mlb.getBinaryValue() != null && mlb.getBinaryValue().length > 0) {
 							tempBinary = mlb.getBinaryValue();
 						}
@@ -133,7 +135,9 @@ public class MetaBinaryTemplate extends MetaTemplate {
 			if (requestContext.getPageContext() != null) {
 				throw new TemplateRuntimeException("binary tempalte can not include from jsp... templateName:" + getName());
 			} else {
-				requestContext.getResponse().getOutputStream().write(tempBinary);
+				requestContext.getResponse()
+						.getOutputStream()
+						.write(tempBinary);
 			}
 		}
 	}

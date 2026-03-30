@@ -27,7 +27,7 @@ package org.iplass.mtp.entity;
  *
  */
 public enum DeleteTargetVersion {
-	
+
 	/** すべてのバージョン */
 	ALL,
 	/** 特定のバージョン */

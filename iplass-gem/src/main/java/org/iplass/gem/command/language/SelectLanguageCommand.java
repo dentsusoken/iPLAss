@@ -30,12 +30,13 @@ import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
 
-@CommandClass(name="gem/webapi/SelectLanguageCommand", displayName="言語選択")
-@WebApi(name="gem/webapi/SelectLanguageCommand",
-	accepts={RequestType.REST_JSON},
-	methods={MethodType.GET, MethodType.POST},
-	restJson=@RestJson(parameterName="param"),
-	checkXRequestedWithHeader=true
+@CommandClass(name = "gem/webapi/SelectLanguageCommand", displayName = "言語選択")
+@WebApi(
+		name = "gem/webapi/SelectLanguageCommand",
+		accepts = { RequestType.REST_JSON },
+		methods = { MethodType.GET, MethodType.POST },
+		restJson = @RestJson(parameterName = "param"),
+		checkXRequestedWithHeader = true
 )
 public final class SelectLanguageCommand implements Command {
 
@@ -43,7 +44,8 @@ public final class SelectLanguageCommand implements Command {
 	public String execute(RequestContext request) {
 
 		String language = request.getParam("language");
-		request.getSession().setAttribute(LangSelector.LANG_ATTRIBUTE_NAME, language);
+		request.getSession()
+				.setAttribute(LangSelector.LANG_ATTRIBUTE_NAME, language);
 		request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, language);
 
 		return "SUCCESS";

@@ -33,7 +33,7 @@ import org.iplass.mtp.impl.query.condition.expr.OrSyntax;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
 public class WhenSyntax implements Syntax<When>, QueryConstants {
-	
+
 	private OrSyntax or;
 	private PolynomialSyntax polynomial;
 
@@ -50,29 +50,29 @@ public class WhenSyntax implements Syntax<When>, QueryConstants {
 			throw new ParseException(new EvalError("WHEN expected.", this, str));
 		}
 		str.consumeChars(WHEN.length());
-		
+
 		When when = new When();
-		
+
 		if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 			throw new ParseException(new EvalError("space expected.", this, str));
 		}
-		
+
 		//Condition
 		Condition cond = or.parse(str);
 		when.setCondition(cond);
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//THEN
 		if (!str.equalsNextToken(THEN, ParseContext.WHITE_SPACES)) {
 			throw new ParseException(new EvalError("THEN expected.", this, str));
 		}
 		str.consumeChars(THEN.length());
-		
+
 		if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 			throw new ParseException(new EvalError("space expected.", this, str));
 		}
-		
+
 		ValueExpression result = polynomial.parse(str);
 		when.setResult(result);
 

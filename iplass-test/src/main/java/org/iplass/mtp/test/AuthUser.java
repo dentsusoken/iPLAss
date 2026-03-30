@@ -31,11 +31,12 @@ import java.lang.annotation.Target;
  * @author K.Higuchi
  *
  */
-@Retention(value=RetentionPolicy.RUNTIME)
-@Target(value={ElementType.TYPE, ElementType.METHOD})
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(value = { ElementType.TYPE, ElementType.METHOD })
 public @interface AuthUser {
-	
+
 	String userId();
+
 	String password();
 
 }

@@ -57,7 +57,8 @@ public class MetaEntityTreeViewItem extends MetaTreeViewItem {
 	public void applyConfig(TreeViewItem item) {
 		if (!(item instanceof EntityTreeViewItem)) {
 			throw new IllegalArgumentException(
-					"type is not EntityTreeViewItem. value is"+ item.getClass().getName());
+					"type is not EntityTreeViewItem. value is" + item.getClass()
+							.getName());
 		}
 		this.fillFrom(item);
 	}

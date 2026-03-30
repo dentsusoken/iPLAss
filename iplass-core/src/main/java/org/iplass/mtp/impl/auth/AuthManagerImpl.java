@@ -37,7 +37,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class AuthManagerImpl implements AuthManager {
 
-	private AuthService authService = ServiceRegistry.getRegistry().getService(AuthService.class);
+	private AuthService authService = ServiceRegistry.getRegistry()
+			.getService(AuthService.class);
 
 	@Override
 	public AuthContext getContext() {
@@ -47,27 +48,33 @@ public class AuthManagerImpl implements AuthManager {
 	@Override
 	public <T> T doPrivileged(Supplier<T> action) {
 		return authService.doSecuredAction(
-				AuthContextHolder.getAuthContext().privilegedAuthContextHolder(), action);
+				AuthContextHolder.getAuthContext()
+						.privilegedAuthContextHolder(),
+				action);
 	}
 
 	@Override
 	public boolean canUpdateCredential() {
-		return authService.getAccountManagementModule().canUpdateCredential();
+		return authService.getAccountManagementModule()
+				.canUpdateCredential();
 	}
 
 	@Override
 	public boolean canUpdateCredential(String policyName) {
-		return authService.getAccountManagementModule(policyName).canUpdateCredential();
+		return authService.getAccountManagementModule(policyName)
+				.canUpdateCredential();
 	}
 
 	@Override
 	public boolean canResetCredential() {
-		return authService.getAccountManagementModule().canResetCredential();
+		return authService.getAccountManagementModule()
+				.canResetCredential();
 	}
 
 	@Override
 	public boolean canResetCredential(String policyName) {
-		return authService.getAccountManagementModule(policyName).canResetCredential();
+		return authService.getAccountManagementModule(policyName)
+				.canResetCredential();
 	}
 
 	@Override
@@ -83,10 +90,12 @@ public class AuthManagerImpl implements AuthManager {
 	@Override
 	public String[] getGroupOids(GroupOidListType type, String... groupCode) {
 
-		TenantAuthorizeContext tenantAuthContext = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class);
+		TenantAuthorizeContext tenantAuthContext = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getResource(TenantAuthorizeContext.class);
 
 		TreeSet<String> list = new TreeSet<String>();
-		for (String code: groupCode) {
+		for (String code : groupCode) {
 			GroupContext gc = tenantAuthContext.getGroupContext(code);
 			if (gc != null) {
 				switch (type) {
@@ -95,13 +104,13 @@ public class AuthManagerImpl implements AuthManager {
 					break;
 				case WITH_CHILDREN:
 					List<GroupContext> gclc = gc.getAllNestedChildGroup();
-					for (GroupContext gclcgc: gclc) {
+					for (GroupContext gclcgc : gclc) {
 						list.add(gclcgc.getOid());
 					}
 					break;
 				case WITH_PARENTS:
 					List<GroupContext> gclp = gc.getGroupPath();
-					for (GroupContext gclpgc: gclp) {
+					for (GroupContext gclpgc : gclp) {
 						list.add(gclpgc.getOid());
 					}
 					break;
@@ -144,22 +153,26 @@ public class AuthManagerImpl implements AuthManager {
 
 	@Override
 	public boolean canResetLockoutStatus() {
-		return authService.getAccountManagementModule().canResetLockoutStatus();
+		return authService.getAccountManagementModule()
+				.canResetLockoutStatus();
 	}
 
 	@Override
 	public boolean canResetLockoutStatus(String policyName) {
-		return authService.getAccountManagementModule(policyName).canResetLockoutStatus();
+		return authService.getAccountManagementModule(policyName)
+				.canResetLockoutStatus();
 	}
 
 	@Override
 	public void resetLockoutStatus(String accountId) {
-		authService.getAccountManagementModule().resetLockoutStatus(accountId);
+		authService.getAccountManagementModule()
+				.resetLockoutStatus(accountId);
 	}
 
 	@Override
 	public void resetLockoutStatus(String accountId, String policyName) {
-		authService.getAccountManagementModule(policyName).resetLockoutStatus(accountId);
+		authService.getAccountManagementModule(policyName)
+				.resetLockoutStatus(accountId);
 	}
 
 }

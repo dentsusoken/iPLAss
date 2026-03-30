@@ -32,7 +32,8 @@ public class TemplateDefinitionManagerImpl extends AbstractTypedDefinitionManage
 	private TemplateService service;
 
 	public TemplateDefinitionManagerImpl() {
-		service = ServiceRegistry.getRegistry().getService(TemplateService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(TemplateService.class);
 	}
 
 	@Override

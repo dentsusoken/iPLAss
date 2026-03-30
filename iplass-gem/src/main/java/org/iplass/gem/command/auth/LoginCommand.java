@@ -56,38 +56,50 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ActionMappings({
-	@ActionMapping(name=LoginCommand.ACTION_VIEW_LOGIN,
-			clientCacheType=ClientCacheType.NO_CACHE,
-			privileged=true,
-			command={},
-			result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_LOGIN)),
-	@ActionMapping(name=LoginCommand.ACTION_LOGIN,
-			allowMethod=HttpMethodType.POST,
-			clientCacheType=ClientCacheType.NO_CACHE,
-			privileged=true,
-			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.REDIRECT, value="mtp.auth.redirectPath"),
-				@Result(status=LoginCommand.CMD_EXEC_EXPIRE, type=Type.TEMPLATE, value=Constants.TEMPLATE_PASSWORD_EXPIRE),
-				@Result(status=LoginCommand.CMD_EXEC_TWOSTEP, type=Type.TEMPLATE, value=Constants.TEMPLATE_VERIFY2ND),
-				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_LOGIN),
-				@Result(exception=ApplicationException.class, type=Type.TEMPLATE, value=Constants.TEMPLATE_LOGIN)
+		@ActionMapping(
+				name = LoginCommand.ACTION_VIEW_LOGIN,
+				clientCacheType = ClientCacheType.NO_CACHE,
+				privileged = true,
+				command = {},
+				result = @Result(type = Type.TEMPLATE, value = Constants.TEMPLATE_LOGIN)),
+		@ActionMapping(
+				name = LoginCommand.ACTION_LOGIN,
+				allowMethod = HttpMethodType.POST,
+				clientCacheType = ClientCacheType.NO_CACHE,
+				privileged = true,
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.REDIRECT, value = "mtp.auth.redirectPath"),
+						@Result(status = LoginCommand.CMD_EXEC_EXPIRE, type = Type.TEMPLATE, value = Constants.TEMPLATE_PASSWORD_EXPIRE),
+						@Result(status = LoginCommand.CMD_EXEC_TWOSTEP, type = Type.TEMPLATE, value = Constants.TEMPLATE_VERIFY2ND),
+						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_LOGIN),
+						@Result(exception = ApplicationException.class, type = Type.TEMPLATE, value = Constants.TEMPLATE_LOGIN)
 				}
-	)
+		)
 })
 @Templates({
-	@Template(name=Constants.TEMPLATE_LOGIN, path=Constants.CMD_RSLT_JSP_LOGIN,
-			contentType="text/html; charset=utf-8"),
-	@Template(name=Constants.TEMPLATE_PASSWORD_EXPIRE, path=Constants.CMD_RSLT_JSP_PASSWORD_EXPIRE,
-			contentType="text/html; charset=utf-8"),
-	@Template(name=Constants.TEMPLATE_VERIFY2ND, path=Constants.CMD_RSLT_JSP_VERIFY2ND,
-			contentType="text/html; charset=utf-8"),
-	@Template(name="gem/auth/LastLoginParts", displayName="最終ログイン日時パーツ", path="/jsp/gem/auth/lastLoginParts.jsp"),
-	@Template(name="gem/generic/editor/EntitySelectPropertyEditorJsp", displayName="エンティティ選択プロパティエディタ",
-		path="/jsp/gem/generic/editor/EntitySelectPropertyEditor.jsp"),
-	@Template(name="gem/generic/editor/AuthenticationPolicySelectPropertyEditorJsp", displayName="認証ポリシー選択プロパティエディタ",
-		path="/jsp/gem/generic/editor/AuthenticationPolicySelectPropertyEditor.jsp")
+		@Template(
+				name = Constants.TEMPLATE_LOGIN,
+				path = Constants.CMD_RSLT_JSP_LOGIN,
+				contentType = "text/html; charset=utf-8"),
+		@Template(
+				name = Constants.TEMPLATE_PASSWORD_EXPIRE,
+				path = Constants.CMD_RSLT_JSP_PASSWORD_EXPIRE,
+				contentType = "text/html; charset=utf-8"),
+		@Template(
+				name = Constants.TEMPLATE_VERIFY2ND,
+				path = Constants.CMD_RSLT_JSP_VERIFY2ND,
+				contentType = "text/html; charset=utf-8"),
+		@Template(name = "gem/auth/LastLoginParts", displayName = "最終ログイン日時パーツ", path = "/jsp/gem/auth/lastLoginParts.jsp"),
+		@Template(
+				name = "gem/generic/editor/EntitySelectPropertyEditorJsp",
+				displayName = "エンティティ選択プロパティエディタ",
+				path = "/jsp/gem/generic/editor/EntitySelectPropertyEditor.jsp"),
+		@Template(
+				name = "gem/generic/editor/AuthenticationPolicySelectPropertyEditorJsp",
+				displayName = "認証ポリシー選択プロパティエディタ",
+				path = "/jsp/gem/generic/editor/AuthenticationPolicySelectPropertyEditor.jsp")
 })
-@CommandClass(name="gem/auth/LoginCommand", displayName="ログイン処理")
+@CommandClass(name = "gem/auth/LoginCommand", displayName = "ログイン処理")
 public final class LoginCommand implements Command, AuthCommandConstants {
 
 	private static Logger logger = LoggerFactory.getLogger(LoginCommand.class);
@@ -100,7 +112,8 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 
 	private boolean checkLoginToken = true;
 
-	private AuthManager auth = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private AuthManager auth = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	public LoginCommand() {
 	}
@@ -108,6 +121,7 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 	public boolean isCheckLoginToken() {
 		return checkLoginToken;
 	}
+
 	public void setCheckLoginToken(boolean checkLoginToken) {
 		this.checkLoginToken = checkLoginToken;
 	}
@@ -141,7 +155,10 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 
 		try {
 			IdPasswordCredential cre = new IdPasswordCredential(id, pass);
-			if (ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseRememberMe()) {
+			if (ExecuteContext.getCurrentContext()
+					.getCurrentTenant()
+					.getTenantConfig(TenantAuthInfo.class)
+					.isUseRememberMe()) {
 				cre.setAuthenticationFactor(RememberMeConstants.FACTOR_REMEMBER_ME_FLAG, rememberMe);
 			}
 			setRedirectPathAfterLogin(request, redirectPath);
@@ -175,15 +192,22 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 		request.setAttribute(RESULT_REDIRECT_PATH, validPath);
 	}
 
-	static String handleCredentialExpiredException(RequestContext request, String id, String token, Credential secondaryCredential, String redirectPath, boolean rememberMe, CredentialExpiredException e) {
-		if (ManagerLocator.getInstance().getManager(AuthManager.class).canUpdateCredential(e.getPolicyName())) {
+	static String handleCredentialExpiredException(RequestContext request, String id, String token, Credential secondaryCredential, String redirectPath,
+			boolean rememberMe, CredentialExpiredException e) {
+		if (ManagerLocator.getInstance()
+				.getManager(AuthManager.class)
+				.canUpdateCredential(e.getPolicyName())) {
 			//パスワード変更画面へ
 
 			//認証情報を一旦待避
 			CredentialExpiredState state = new CredentialExpiredState(id, token, secondaryCredential,
-					rememberMe && ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseRememberMe(),
+					rememberMe && ExecuteContext.getCurrentContext()
+							.getCurrentTenant()
+							.getTenantConfig(TenantAuthInfo.class)
+							.isUseRememberMe(),
 					secondaryCredential != null, redirectPath, e.getPolicyName());
-			request.getSession().setAttribute(SESSION_CREDENTIAL_EXPIRE_STATE, state);
+			request.getSession()
+					.setAttribute(SESSION_CREDENTIAL_EXPIRE_STATE, state);
 
 			//パスワード有効期限切れの場合にエラーメッセージをセット
 			if (!e.isInitialLogin()) {
@@ -191,7 +215,8 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 			}
 
 			//onetimeCodeの消費などをrollbackするため
-			Transaction.getCurrent().setRollbackOnly();
+			Transaction.getCurrent()
+					.setRollbackOnly();
 
 			return CMD_EXEC_EXPIRE;
 		} else {
@@ -224,9 +249,11 @@ public final class LoginCommand implements Command, AuthCommandConstants {
 			return redirectPath;
 		} else {
 			// トップ画面へ遷移
-			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+			Tenant tenant = ExecuteContext.getCurrentContext()
+					.getCurrentTenant();
 			String homeUrl = (tenant.getTenantConfig(TenantWebInfo.class) != null
-					? tenant.getTenantConfig(TenantWebInfo.class).getHomeUrl()
+					? tenant.getTenantConfig(TenantWebInfo.class)
+							.getHomeUrl()
 					: null);
 
 			return StringUtil.isNotEmpty(homeUrl) ? TemplateUtil.getTenantContextPath() + homeUrl

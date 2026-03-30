@@ -31,12 +31,14 @@ import org.iplass.mtp.spi.ServiceRegistry;
 /**
  * SmsMailTemplateDefinitionManagerの実装.
  */
-public class SmsMailTemplateDefinitionManagerImpl extends AbstractTypedDefinitionManager<SmsMailTemplateDefinition> implements SmsMailTemplateDefinitionManager {
+public class SmsMailTemplateDefinitionManagerImpl extends AbstractTypedDefinitionManager<SmsMailTemplateDefinition>
+		implements SmsMailTemplateDefinitionManager {
 
 	private SmsService service;
 
 	public SmsMailTemplateDefinitionManagerImpl() {
-		service = ServiceRegistry.getRegistry().getService(SmsService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(SmsService.class);
 	}
 
 	@Override

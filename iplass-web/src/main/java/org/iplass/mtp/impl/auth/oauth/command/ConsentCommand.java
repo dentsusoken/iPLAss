@@ -35,53 +35,67 @@ import org.iplass.mtp.impl.auth.oauth.util.OAuthConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 
-@ActionMapping(name="oauth/consent",
-	clientCacheType=ClientCacheType.NO_CACHE,
-	//requestIdがCSRF Token代替になるので、Tokenチェックは行わない
-	//tokenCheck=@TokenCheck(),
-	synchronizeOnSession=true,
-	result={
-		@Result(status=AuthorizeCommand.STAT_SUCCESS_REDIRECT, type=Type.REDIRECT, allowExternalLocation=true, value=WebRequestConstants.REDIRECT_PATH),
-		@Result(status=AuthorizeCommand.STAT_SUCCESS_POST, type=Type.TEMPLATE, value=AuthorizeCommand.TMPL_POST),
-		@Result(status=AuthorizeCommand.STAT_ERROR_REDIRECT, type=Type.REDIRECT, allowExternalLocation=true, value=WebRequestConstants.REDIRECT_PATH)
-	}
+@ActionMapping(
+		name = "oauth/consent",
+		clientCacheType = ClientCacheType.NO_CACHE,
+		//requestIdがCSRF Token代替になるので、Tokenチェックは行わない
+		//tokenCheck=@TokenCheck(),
+		synchronizeOnSession = true,
+		result = {
+				@Result(
+						status = AuthorizeCommand.STAT_SUCCESS_REDIRECT,
+						type = Type.REDIRECT,
+						allowExternalLocation = true,
+						value = WebRequestConstants.REDIRECT_PATH),
+				@Result(status = AuthorizeCommand.STAT_SUCCESS_POST, type = Type.TEMPLATE, value = AuthorizeCommand.TMPL_POST),
+				@Result(
+						status = AuthorizeCommand.STAT_ERROR_REDIRECT,
+						type = Type.REDIRECT,
+						allowExternalLocation = true,
+						value = WebRequestConstants.REDIRECT_PATH)
+		}
 )
-@CommandClass(name="mtp/oauth/ConsentCommand", displayName="OAuth2.0 Consent Processing")
+@CommandClass(name = "mtp/oauth/ConsentCommand", displayName = "OAuth2.0 Consent Processing")
 public class ConsentCommand implements Command {
 	public static final String PARAM_REQUEST_ID = "requestId";
 	public static final String PARAM_SUBMIT = "submit";
 	public static final String SUBMIT_CANCEL = "cancel";
 	public static final String SUBMIT_ACCEPT = "accept";
-	
+
 	private AuthorizeCommand authorizeCommand = new AuthorizeCommand();
-	private OAuthAuthorizationService authorizationService = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
-	
+	private OAuthAuthorizationService authorizationService = ServiceRegistry.getRegistry()
+			.getService(OAuthAuthorizationService.class);
+
 	@Override
 	public String execute(RequestContext request) {
 		AuthorizationRequest authReq = null;
 		String requestId = request.getParam(PARAM_REQUEST_ID);
 		String submit = request.getParam(PARAM_SUBMIT);
 		try {
-			authReq = (AuthorizationRequest) request.getSession().getAttribute(AuthorizeCommand.SESSION_AUTHORIZATION_REQUEST);
+			authReq = (AuthorizationRequest) request.getSession()
+					.getAttribute(AuthorizeCommand.SESSION_AUTHORIZATION_REQUEST);
 			if (authReq == null) {
 				//session timeout or ?
 				//TODO 多言語化
 				throw new ApplicationException("Invalid OAuth authorization flow.");
 			}
-			if (!authReq.getRequestId().equals(requestId)) {
+			if (!authReq.getRequestId()
+					.equals(requestId)) {
 				throw new ApplicationException("Invalid OAuth authorization flow.");
 			}
-			
+
 		} finally {
-			request.getSession().removeAttribute(AuthorizeCommand.SESSION_AUTHORIZATION_REQUEST);
+			request.getSession()
+					.removeAttribute(AuthorizeCommand.SESSION_AUTHORIZATION_REQUEST);
 		}
-		
+
 		OAuthAuthorizationRuntime authRuntime = authorizationService.getRuntimeByName(authReq.getAuthorizationServerId());
 		if (SUBMIT_ACCEPT.equals(submit)) {
 			AuthorizationCode code = authRuntime.generateCode(authReq);
 			return authorizeCommand.success(request, code, authRuntime.issuerId(request));
 		} else {
-			return authorizeCommand.error(request, OAuthConstants.ERROR_ACCESS_DENIED, "User canceled OAuth request.", authReq, authRuntime.issuerId(request));
+			return authorizeCommand.error(request, OAuthConstants.ERROR_ACCESS_DENIED, "User canceled OAuth request.", authReq,
+					authRuntime.issuerId(request));
 		}
 	}
 

@@ -40,27 +40,27 @@ public class RowValueList extends ValueExpression {
 	private static final long serialVersionUID = -7414534715211409579L;
 
 	private List<ValueExpression> rowValues;
-	
+
 	public RowValueList() {
 	}
-	
+
 	public RowValueList(List<ValueExpression> rowValues) {
 		this.rowValues = rowValues;
 	}
-	
+
 	public RowValueList(ValueExpression... rowValue) {
 		if (rowValue != null) {
 			rowValues = new ArrayList<ValueExpression>();
-			for (ValueExpression v: rowValue) {
+			for (ValueExpression v : rowValue) {
 				rowValues.add(v);
 			}
 		}
 	}
-	
+
 	public RowValueList(Object... literalRowValue) {
 		if (literalRowValue != null) {
 			rowValues = new ArrayList<ValueExpression>();
-			for (Object o: literalRowValue) {
+			for (Object o : literalRowValue) {
 				if (o instanceof Literal) {
 					rowValues.add((ValueExpression) o);
 				} else {
@@ -69,7 +69,7 @@ public class RowValueList extends ValueExpression {
 			}
 		}
 	}
-	
+
 	public List<ValueExpression> getRowValues() {
 		return rowValues;
 	}
@@ -87,7 +87,7 @@ public class RowValueList extends ValueExpression {
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (rowValues != null) {
-				for (ValueExpression v: rowValues) {
+				for (ValueExpression v : rowValues) {
 					v.accept(visitor);
 				}
 			}

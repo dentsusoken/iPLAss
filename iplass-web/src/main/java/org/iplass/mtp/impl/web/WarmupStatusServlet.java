@@ -72,10 +72,11 @@ public class WarmupStatusServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		ServletConfig config = super.getServletConfig();
-		String configWaitOnWarmup =  config.getInitParameter("waitOnWarmup");
+		String configWaitOnWarmup = config.getInitParameter("waitOnWarmup");
 		long waitOnWarmup = StringUtil.isNotEmpty(configWaitOnWarmup) ? Long.valueOf(configWaitOnWarmup) : DEFAULT_WAIT_ON_WARMUP;
 
-		var warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
+		var warmupService = ServiceRegistry.getRegistry()
+				.getService(WarmupService.class);
 		if (warmupService.isEnabled()) {
 			// ウォームアップが有効な場合、非同期でウォームアップする
 			var warmupTaskExecutor = createWarmupTaskExecutor(waitOnWarmup);
@@ -89,11 +90,13 @@ public class WarmupStatusServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		var warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
+		var warmupService = ServiceRegistry.getRegistry()
+				.getService(WarmupService.class);
 		var status = warmupService.getStatus();
 
 		int httpStatus = getHttpStatus(status);
-		response.getWriter().write(status.getStatus());
+		response.getWriter()
+				.write(status.getStatus());
 		response.setStatus(httpStatus);
 	}
 
@@ -182,8 +185,10 @@ public class WarmupStatusServlet extends HttpServlet {
 		 * </p>
 		 */
 		private void startWarmup() {
-			var tenantService = ServiceRegistry.getRegistry().getService(TenantService.class);
-			var warmupService = ServiceRegistry.getRegistry().getService(WarmupService.class);
+			var tenantService = ServiceRegistry.getRegistry()
+					.getService(TenantService.class);
+			var warmupService = ServiceRegistry.getRegistry()
+					.getService(WarmupService.class);
 			warmupService.changeStatus(WarmupStatus.PROCESSING);
 
 			boolean isError = false;
@@ -206,7 +211,8 @@ public class WarmupStatusServlet extends HttpServlet {
 				// テナント毎にウォームアップ処理を実行
 
 				// スレッド状態判定
-				if (Thread.currentThread().isInterrupted()) {
+				if (Thread.currentThread()
+						.isInterrupted()) {
 					// スレッドが中断された場合、ウォームアップ処理を終了する
 					logger.debug("Warmup task interrupted.");
 					break;
@@ -221,11 +227,13 @@ public class WarmupStatusServlet extends HttpServlet {
 
 					logger.debug("Tenant {} warmup start.", tenantId);
 
-					EntryPoint.getInstance().withTenant(tenantId).run(() -> {
-						// NOTE: コンテキストはテナント単位で作成する
-						var warmupContext = createWarmupContext();
-						warmupService.warmupTenant(warmupContext);
-					});
+					EntryPoint.getInstance()
+							.withTenant(tenantId)
+							.run(() -> {
+								// NOTE: コンテキストはテナント単位で作成する
+								var warmupContext = createWarmupContext();
+								warmupService.warmupTenant(warmupContext);
+							});
 
 					logger.debug("Tenant {} warmup finish.", tenantId);
 

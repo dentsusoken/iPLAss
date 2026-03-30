@@ -249,7 +249,7 @@ public class GemConfigService implements Service {
 		deleteAllCommandBatchSize = config.getValue("deleteAllCommandBatchSize", Integer.class, 100);
 
 		bulkUpdateAllCommandBatchSize = config.getValue("bulkUpdateAllCommandBatchSize", Integer.class, 100);
-		
+
 		selectFilterSearchPageSize = config.getValue("selectFilterSearchPageSizeDefault", Integer.class, 40);
 
 		shallowCopyLobData = config.getValue("shallowCopyLobData", Boolean.class, false);
@@ -556,7 +556,9 @@ public class GemConfigService implements Service {
 
 	public List<String> getImageColorNames() {
 		if (imageColors != null && !imageColors.isEmpty()) {
-			List<String> imageColorNames = imageColors.stream().map(s -> s.getColorName()).collect(Collectors.toList());
+			List<String> imageColorNames = imageColors.stream()
+					.map(s -> s.getColorName())
+					.collect(Collectors.toList());
 			return imageColorNames;
 		} else {
 			return Collections.emptyList();
@@ -566,7 +568,8 @@ public class GemConfigService implements Service {
 	public List<String> getCssPathList(String skinName) {
 		if (imageColors != null && !imageColors.isEmpty()) {
 			List<String> imageColorNames = imageColors.stream()
-					.flatMap(s -> s.getCssSettings().stream()
+					.flatMap(s -> s.getCssSettings()
+							.stream()
 							.filter(c -> skinName.equals(c.getSkinName()))
 							.map(c -> c.getCssPath()))
 					.collect(Collectors.toList());

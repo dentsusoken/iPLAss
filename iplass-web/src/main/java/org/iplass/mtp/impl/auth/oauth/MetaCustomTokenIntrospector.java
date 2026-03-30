@@ -33,7 +33,7 @@ import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
-@XmlSeeAlso({MetaJavaClassCustomTokenIntrospector.class, MetaScriptingCustomTokenIntrospector.class})
+@XmlSeeAlso({ MetaJavaClassCustomTokenIntrospector.class, MetaScriptingCustomTokenIntrospector.class })
 public abstract class MetaCustomTokenIntrospector implements MetaData {
 	private static final long serialVersionUID = -7429329401774731834L;
 
@@ -41,16 +41,17 @@ public abstract class MetaCustomTokenIntrospector implements MetaData {
 	public MetaCustomTokenIntrospector copy() {
 		return ObjectUtil.deepCopy(this);
 	}
-	
+
 	public abstract void applyConfig(CustomTokenIntrospectorDefinition def);
+
 	public abstract CustomTokenIntrospectorDefinition currentConfig();
-	
+
 	public abstract CustomTokenIntrospectorRuntime createRuntime(String metaId, int index);
-	
+
 	public abstract class CustomTokenIntrospectorRuntime {
-		
+
 		public abstract boolean handle(Map<String, Object> response, RequestContext request, AccessToken token);
-		
+
 		public abstract MetaCustomTokenIntrospector getMetaData();
 	}
 

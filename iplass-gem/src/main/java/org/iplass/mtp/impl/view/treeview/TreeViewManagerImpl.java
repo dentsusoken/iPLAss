@@ -35,7 +35,8 @@ import org.iplass.mtp.view.treeview.TreeViewManager;
 public class TreeViewManagerImpl extends AbstractTypedDefinitionManager<TreeView> implements TreeViewManager {
 
 	/** サービス */
-	private TreeViewService service = ServiceRegistry.getRegistry().getService(TreeViewService.class);
+	private TreeViewService service = ServiceRegistry.getRegistry()
+			.getService(TreeViewService.class);
 
 	@Deprecated
 	@Override

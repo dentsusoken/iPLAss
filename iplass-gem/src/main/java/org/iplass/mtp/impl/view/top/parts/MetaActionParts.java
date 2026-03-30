@@ -38,7 +38,7 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
  * アクション系のパーツ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaInformationParts.class})
+@XmlSeeAlso({ MetaInformationParts.class })
 public abstract class MetaActionParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */

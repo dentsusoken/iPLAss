@@ -57,7 +57,9 @@ public class IncludeActionBlock implements ContentBlock {
 	@Override
 	public long lastModified(long lastModified, WebInvocationImpl invocation, ContentCacheContext cc, String lang) {
 
-		ActionMappingRuntime amr = ServiceRegistry.getRegistry().getService(ActionMappingService.class).getRuntimeByName(actionName);
+		ActionMappingRuntime amr = ServiceRegistry.getRegistry()
+				.getService(ActionMappingService.class)
+				.getRuntimeByName(actionName);
 		if (amr == null) {
 			return Long.MAX_VALUE;
 		}

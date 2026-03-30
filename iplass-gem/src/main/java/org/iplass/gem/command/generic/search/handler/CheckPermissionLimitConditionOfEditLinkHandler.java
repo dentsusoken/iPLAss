@@ -56,12 +56,16 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 	protected void onCreateSearchResult(CreateSearchResultEvent event) {
 
 		//検索結果が0件の場合は対象外
-		if (event.getResultData().getRows().isEmpty()) {
+		if (event.getResultData()
+				.getRows()
+				.isEmpty()) {
 			return;
 		}
 
 		AuthContextHolder user = AuthContextHolder.getAuthContext();
-		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(event.getEntityName());
+		EntityHandler handler = ServiceRegistry.getRegistry()
+				.getService(EntityService.class)
+				.getRuntimeByName(event.getEntityName());
 
 		if (!user.isPrivilegedExecution()) {
 			//更新権限チェック
@@ -74,12 +78,15 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 	}
 
 	private void checkUpdatePermission(EntityHandler handler, SearchResultData resultData, AuthContextHolder user) {
-		EntityPermission permission = new EntityPermission(handler.getMetaData().getName(), EntityPermission.Action.UPDATE);
+		EntityPermission permission = new EntityPermission(handler.getMetaData()
+				.getName(), EntityPermission.Action.UPDATE);
 		if (!user.checkPermission(permission)) {
 			//全部編集不可
-			resultData.getRows().forEach(row -> {
-				row.getResponse().put(SearchResultRow.CAN_EDIT, String.valueOf(false));
-			});
+			resultData.getRows()
+					.forEach(row -> {
+						row.getResponse()
+								.put(SearchResultRow.CAN_EDIT, String.valueOf(false));
+					});
 			return;
 		}
 
@@ -88,12 +95,15 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 	}
 
 	private void checkDeletePermission(EntityHandler handler, SearchResultData resultData, AuthContextHolder user) {
-		EntityPermission permission = new EntityPermission(handler.getMetaData().getName(), EntityPermission.Action.DELETE);
+		EntityPermission permission = new EntityPermission(handler.getMetaData()
+				.getName(), EntityPermission.Action.DELETE);
 		if (!user.checkPermission(permission)) {
 			//全部削除不可
-			resultData.getRows().forEach(row -> {
-				row.getResponse().put(SearchResultRow.CAN_DELETE, String.valueOf(false));
-			});
+			resultData.getRows()
+					.forEach(row -> {
+						row.getResponse()
+								.put(SearchResultRow.CAN_DELETE, String.valueOf(false));
+					});
 			return;
 		}
 
@@ -101,13 +111,17 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 		checkLimitCondition(handler, resultData, permission, user, SearchResultRow.CAN_DELETE);
 	}
 
-	private void checkLimitCondition(final EntityHandler handler, SearchResultData resultData, EntityPermission permission, AuthContextHolder user, String responseKey) {
+	private void checkLimitCondition(final EntityHandler handler, SearchResultData resultData, EntityPermission permission, AuthContextHolder user,
+			String responseKey) {
 		EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(permission);
 		if (eac.hasLimitCondition(permission, user)) {
 			boolean versionSpecified = handler.isVersioned();
-			Query q = new Query().select(Entity.OID).from(handler.getMetaData().getName());
+			Query q = new Query().select(Entity.OID)
+					.from(handler.getMetaData()
+							.getName());
 			if (versionSpecified) {
-				q.select().add(Entity.VERSION);
+				q.select()
+						.add(Entity.VERSION);
 			}
 
 			Condition cond = null;
@@ -116,16 +130,21 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 
 			if (rows.size() > 1) {
 				final List<ValueExpression> oids = new ArrayList<>();
-				resultData.getRows().forEach(row -> {
-					if (versionSpecified) {
-						oids.add(new RowValueList(new Literal(row.getEntity().getOid()), new Literal(row.getEntity().getVersion())));
-					} else {
-						oids.add(new Literal(row.getEntity().getOid()));
-					}
-				});
+				resultData.getRows()
+						.forEach(row -> {
+							if (versionSpecified) {
+								oids.add(new RowValueList(new Literal(row.getEntity()
+										.getOid()), new Literal(
+												row.getEntity()
+														.getVersion())));
+							} else {
+								oids.add(new Literal(row.getEntity()
+										.getOid()));
+							}
+						});
 				In in;
 				if (versionSpecified) {
-					in = new In(new String[] {Entity.OID, Entity.VERSION});
+					in = new In(new String[] { Entity.OID, Entity.VERSION });
 				} else {
 					in = new In(Entity.OID);
 				}
@@ -133,9 +152,16 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 				cond = in;
 			} else {
 				if (versionSpecified) {
-					cond = new And(new Equals(Entity.OID, rows.get(0).getEntity().getOid()), new Equals(Entity.VERSION, rows.get(0).getEntity().getVersion()));
+					cond = new And(new Equals(Entity.OID, rows.get(0)
+							.getEntity()
+							.getOid()), new Equals(Entity.VERSION,
+									rows.get(0)
+											.getEntity()
+											.getVersion()));
 				} else {
-					cond = new Equals(Entity.OID, rows.get(0).getEntity().getOid());
+					cond = new Equals(Entity.OID, rows.get(0)
+							.getEntity()
+							.getOid());
 				}
 			}
 
@@ -159,23 +185,26 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 							}
 						},
 						InvocationType.SEARCH,
-						handler.getService().getInterceptors(),
+						handler.getService()
+								.getInterceptors(),
 						handler)
-				.proceed();
+								.proceed();
 			});
 
-			resultData.getRows().forEach(row -> {
-				Entity entity = row.getEntity();
-				String ct;
-				if (versionSpecified) {
-					ct = entity.getOid() + "." + entity.getVersion();
-				} else {
-					ct = entity.getOid();
-				}
-				if (!oids.contains(ct)) {
-					row.getResponse().put(responseKey, String.valueOf(false));
-				}
-			});
+			resultData.getRows()
+					.forEach(row -> {
+						Entity entity = row.getEntity();
+						String ct;
+						if (versionSpecified) {
+							ct = entity.getOid() + "." + entity.getVersion();
+						} else {
+							ct = entity.getOid();
+						}
+						if (!oids.contains(ct)) {
+							row.getResponse()
+									.put(responseKey, String.valueOf(false));
+						}
+					});
 		}
 	}
 }

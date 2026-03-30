@@ -21,11 +21,11 @@
 package org.iplass.mtp.impl.fulltextsearch;
 
 public class IndexedEntity {
-	
+
 	private String defName;
 	private String oid;
 	private double score;
-	
+
 	public IndexedEntity(String defName, String oid, double score) {
 		this.defName = defName;
 		this.oid = oid;

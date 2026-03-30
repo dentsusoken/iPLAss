@@ -28,18 +28,18 @@ import org.iplass.mtp.impl.parser.Syntax;
 import org.iplass.mtp.impl.parser.SyntaxContext;
 
 public class LimitSyntax implements Syntax<Limit>, QueryConstants {
-	
+
 	public Limit parse(ParseContext str) throws ParseException {
-		
+
 		//LIMIT
 		if (!str.equalsNextToken(LIMIT, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("LIMIT expected.", this, str));
 		}
 		str.consumeChars(LIMIT.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		Limit limit = new Limit();
-		
+
 		boolean isBind = true;
 		if (str.startsWith(LEFT_HINT_COMMENT)) {
 			str.consumeChars(LEFT_HINT_COMMENT.length());
@@ -58,7 +58,7 @@ public class LimitSyntax implements Syntax<Limit>, QueryConstants {
 				throw new ParseException(new EvalError("hint clause not terminated.", this, str));
 			}
 		}
-		
+
 		//int of limit
 		int currentIndex = str.getCurrentIndex();
 		String limitVal = str.nextToken(ParseContext.TOKEN_DELIMITERS);
@@ -69,12 +69,12 @@ public class LimitSyntax implements Syntax<Limit>, QueryConstants {
 			throw new ParseException(new EvalError("limit count unspecified.", this, str));
 		}
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//OFFSET
 		if (str.equalsNextToken(OFFSET, ParseContext.TOKEN_DELIMITERS)) {
 			str.consumeChars(OFFSET.length());
 			str.consumeChars(ParseContext.WHITE_SPACES);
-			
+
 			//int of offset
 			currentIndex = str.getCurrentIndex();
 			String offsetVal = str.nextToken(ParseContext.TOKEN_DELIMITERS);
@@ -86,9 +86,9 @@ public class LimitSyntax implements Syntax<Limit>, QueryConstants {
 			}
 			str.consumeChars(ParseContext.WHITE_SPACES);
 		}
-		
+
 		limit.setBindable(isBind);
-		
+
 		return limit;
 	}
 

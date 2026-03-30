@@ -65,13 +65,13 @@ import org.iplass.mtp.webapi.definition.RequestType;
  * @author lish0p
  */
 @WebApi(
-		name=ReferenceSelectFilterCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
+		name = ReferenceSelectFilterCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
 		results = { ReferenceSelectFilterCommand.RESULT_TOTAL, ReferenceSelectFilterCommand.RESULT_DATA },
-		checkXRequestedWithHeader=true
-	)
+		checkXRequestedWithHeader = true
+)
 @CommandClass(name = "gem/generic/selectfilter/ReferenceSelectFilterCommand", displayName = "参照選択フィルターリスト取得処理")
 public final class ReferenceSelectFilterCommand implements Command, HasDisplayScriptBindings {
 	public static final String WEBAPI_NAME = "gem/generic/selectfilter/referenceSelectfilter";
@@ -84,7 +84,7 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 	/** 返却値のkeyword名 */
 	public static final String RESULT_TOTAL = "count";
 	public static final String RESULT_DATA = "data";
-    public static final String RESULT_CODE = "code";
+	public static final String RESULT_CODE = "code";
 
 	private EntityManager em = null;
 	private EntityViewManager evm = null;
@@ -95,15 +95,20 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 	 * @param p パターン
 	 * @return 変換したパターン
 	 */
-    private static Like.MatchPattern toLikePattern(SelectFilterMatchPattern p) {
-        if (p == null) return Like.MatchPattern.PREFIX;
-        switch (p) {
-            case PREFIX: return Like.MatchPattern.PREFIX;
-            case POSTFIX: return Like.MatchPattern.POSTFIX;
-            case PARTIAL: return Like.MatchPattern.PARTIAL;
-            default: return Like.MatchPattern.PREFIX;
-        }
-    }
+	private static Like.MatchPattern toLikePattern(SelectFilterMatchPattern p) {
+		if (p == null)
+			return Like.MatchPattern.PREFIX;
+		switch (p) {
+		case PREFIX:
+			return Like.MatchPattern.PREFIX;
+		case POSTFIX:
+			return Like.MatchPattern.POSTFIX;
+		case PARTIAL:
+			return Like.MatchPattern.PARTIAL;
+		default:
+			return Like.MatchPattern.PREFIX;
+		}
+	}
 
 	/**
 	 * プロパティ名を EntityDefinition に応じて調整する
@@ -111,19 +116,19 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 	 * @param propName 元のプロパティ名
 	 * @return 調整後のプロパティ名
 	 */
-    private static String adjustPropertyName(EntityDefinition ed, String propName) {
-        if (ed == null || propName == null) {
-            return propName;
-        }
-        PropertyDefinition pd = ed.getProperty(propName);
-        if (pd == null) {
-            return propName;
-        }
-        if (pd.getType() == PropertyDefinitionType.REFERENCE) {
-            return propName + ".name";
-        }
-        return propName;
-    }
+	private static String adjustPropertyName(EntityDefinition ed, String propName) {
+		if (ed == null || propName == null) {
+			return propName;
+		}
+		PropertyDefinition pd = ed.getProperty(propName);
+		if (pd == null) {
+			return propName;
+		}
+		if (pd.getType() == PropertyDefinitionType.REFERENCE) {
+			return propName + ".name";
+		}
+		return propName;
+	}
 
 	/**
 	 * 参照選択用の空結果データを生成して返す。
@@ -137,18 +142,19 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 	 * コンストラクタ
 	 */
 	public ReferenceSelectFilterCommand() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 		edm = ManagerLocator.getInstance()
 				.getManager(EntityDefinitionManager.class);
 	}
 
-
-    /**
-     * コマンド実行エントリ。
-     * @param request リクエストコンテキスト
-     * @return 実行結果コード
-     */
+	/**
+	 * コマンド実行エントリ。
+	 * @param request リクエストコンテキスト
+	 * @return 実行結果コード
+	 */
 	@Override
 	public String execute(RequestContext request) {
 		//パラメータ取得
@@ -159,47 +165,45 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 
 		if (defName == null || viewName == null || propName == null || viewType == null) {
 			return Constants.CMD_EXEC_ERROR;
-        }
+		}
 
-        // バインディングエンティティを取得
+		// バインディングエンティティを取得
 		final Entity entity = getBindingEntity(request);
-        final PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
+		final PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 
-        // Reference 用のエディタでない場合は処理対象外
-        if (!(editor instanceof ReferencePropertyEditor)) {
+		// Reference 用のエディタでない場合は処理対象外
+		if (!(editor instanceof ReferencePropertyEditor)) {
 			return Constants.CMD_EXEC_ERROR;
-        }
-        final ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
+		}
+		final ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
 
 		ReferenceSelectFilterData result = buildReferenceSelectFilterData(rpe, request);
 		request.setAttribute(RESULT_DATA, result.getOptionValues());
 		request.setAttribute(RESULT_TOTAL, result.getTotalCount());
-        return Constants.CMD_EXEC_SUCCESS;
-    }
-
-
-
+		return Constants.CMD_EXEC_SUCCESS;
+	}
 
 	/**
 	 * 参照選択用データを構築して返す。
-     * @param editor ReferencePropertyEditor
-     * @param request リクエストコンテキスト
-     * @return 検索結果データ（一覧と総件数）
-     */
+	 * @param editor ReferencePropertyEditor
+	 * @param request リクエストコンテキスト
+	 * @return 検索結果データ（一覧と総件数）
+	 */
 	private ReferenceSelectFilterData buildReferenceSelectFilterData(ReferencePropertyEditor editor, RequestContext request) {
 		if (editor == null) {
 			return emptyReferenceSelectFilterData();
-        }
+		}
 		ReferenceSelectFilterSetting setting = editor.getReferenceSelectFilterSetting();
 		if (setting == null) {
 			return emptyReferenceSelectFilterData();
-        }
+		}
 
 		String propName = setting.getPropertyName();
-        // プロパティ指定がなければ処理不能なので空結果を返す
-		if (propName == null || propName.trim().isEmpty()) {
+		// プロパティ指定がなければ処理不能なので空結果を返す
+		if (propName == null || propName.trim()
+				.isEmpty()) {
 			return emptyReferenceSelectFilterData();
-        }
+		}
 
 		// 表示ラベル項目
 		String labelItem = (editor.getDisplayLabelItem() != null) ? editor.getDisplayLabelItem() : Entity.NAME;
@@ -208,17 +212,17 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 		EntityDefinition ed = edm.get(editor.getObjectName());
 		propName = adjustPropertyName(ed, propName);
 		return executeKeywordSearch(editor, setting, propName, labelItem, request);
-    }
+	}
 
 	/**
-     * キーワード検索を実行して結果を返す。
-     * @param editor 参照プロパティエディター
-     * @param setting 参照選択フィルタ設定
-     * @param propName 抽出するプロパティ名
-     * @param labelItem 表示ラベル用プロパティ名
-     * @param request リクエストコンテキスト
-     * @return 検索結果データ
-     */
+	 * キーワード検索を実行して結果を返す。
+	 * @param editor 参照プロパティエディター
+	 * @param setting 参照選択フィルタ設定
+	 * @param propName 抽出するプロパティ名
+	 * @param labelItem 表示ラベル用プロパティ名
+	 * @param request リクエストコンテキスト
+	 * @return 検索結果データ
+	 */
 	private ReferenceSelectFilterData executeKeywordSearch(ReferencePropertyEditor editor, ReferenceSelectFilterSetting setting, String propName,
 			String labelItem, RequestContext request) {
 		List<Condition> conditions = new ArrayList<Condition>();
@@ -230,14 +234,14 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 				.getService(GemConfigService.class)
 				.getSelectFilterSearchPageSizeDefault();
 
- 		final String keywordRaw = request.getParam(KEYWORD);
+		final String keywordRaw = request.getParam(KEYWORD);
 		final String excludeOid = request.getParam(EXCLUDE_OID);
 
-        // offset の正規化（null/負値を 0 に）
+		// offset の正規化（null/負値を 0 に）
 		final Integer offset = request.getParam(OFFSET, Integer.class);
 		final int safeOffset = (offset != null && offset > 0) ? offset : 0;
 
-        // limit の決定（setting が 0 => グローバル設定を使用、負数は無制限）
+		// limit の決定（setting が 0 => グローバル設定を使用、負数は無制限）
 		int limit = setting.getSelectFilterSearchPageSize() == 0 ? searchCount : setting.getSelectFilterSearchPageSize();
 		final Like.MatchPattern likePattern = toLikePattern(setting.getSelectFilterSearchPattern());
 
@@ -263,7 +267,8 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 			}
 		}
 
-		if (setting.getCondition() != null && !setting.getCondition().isEmpty()) {
+		if (setting.getCondition() != null && !setting.getCondition()
+				.isEmpty()) {
 			conditions.add(new PreparedQuery(setting.getCondition()).condition(null));
 		}
 		if (!conditions.isEmpty()) {
@@ -287,7 +292,7 @@ public final class ReferenceSelectFilterCommand implements Command, HasDisplaySc
 		}
 		q.order(new SortSpec(sortItem, sortType));
 
-        // 検索実行
+		// 検索実行
 		em.searchEntity(q, (entity) -> {
 			entity.setName(ConvertUtil.convertToString(entity.getValue(labelItem)));
 			entity.setValue(RESULT_CODE, ConvertUtil.convertToString(entity.getValue(propName)));

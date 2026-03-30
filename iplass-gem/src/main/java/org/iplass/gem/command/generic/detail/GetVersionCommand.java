@@ -44,13 +44,13 @@ import org.iplass.mtp.webapi.definition.MethodType;
  * @author lis3wg
  */
 @WebApi(
-	name=GetVersionCommand.WEBAPI_NAME,
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	checkXRequestedWithHeader=true
+		name = GetVersionCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/detail/GetVersionCommand", displayName="別バージョン取得")
+@CommandClass(name = "gem/generic/detail/GetVersionCommand", displayName = "別バージョン取得")
 public final class GetVersionCommand extends DetailCommandBase {
 
 	public static final String WEBAPI_NAME = "gem/generic/detail/getVersion";
@@ -63,12 +63,13 @@ public final class GetVersionCommand extends DetailCommandBase {
 
 		Query q = new Query();
 		q.select(Entity.OID, Entity.NAME, Entity.VERSION)
-		 .from(defName)
-		 .where(new And(new Equals(Entity.OID, oid),
-				new NotEquals(Entity.VERSION, version)))
-		 .order(new SortSpec(Entity.VERSION, SortType.DESC));
+				.from(defName)
+				.where(new And(new Equals(Entity.OID, oid),
+						new NotEquals(Entity.VERSION, version)))
+				.order(new SortSpec(Entity.VERSION, SortType.DESC));
 
-		List<Entity> list = em.searchEntity(q).getList();
+		List<Entity> list = em.searchEntity(q)
+				.getList();
 
 		request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, toSimpleList(request, list));
 		return Constants.CMD_EXEC_SUCCESS;
@@ -86,6 +87,7 @@ public final class GetVersionCommand extends DetailCommandBase {
 		private String oid;
 		private String name;
 		private Long version;
+
 		/**
 		 * コンストラクタ
 		 */
@@ -94,6 +96,7 @@ public final class GetVersionCommand extends DetailCommandBase {
 			this.name = entity.getName();
 			this.version = entity.getVersion();
 		}
+
 		/**
 		 * oidを取得します。
 		 * @return oid
@@ -101,6 +104,7 @@ public final class GetVersionCommand extends DetailCommandBase {
 		public String getOid() {
 			return oid;
 		}
+
 		/**
 		 * oidを設定します。
 		 * @param oid oid
@@ -108,6 +112,7 @@ public final class GetVersionCommand extends DetailCommandBase {
 		public void setOid(String oid) {
 			this.oid = oid;
 		}
+
 		/**
 		 * nameを取得します。
 		 * @return name
@@ -115,6 +120,7 @@ public final class GetVersionCommand extends DetailCommandBase {
 		public String getName() {
 			return name;
 		}
+
 		/**
 		 * nameを設定します。
 		 * @param name name
@@ -122,6 +128,7 @@ public final class GetVersionCommand extends DetailCommandBase {
 		public void setName(String name) {
 			this.name = name;
 		}
+
 		/**
 		 * versionを取得します。
 		 * @return version
@@ -129,6 +136,7 @@ public final class GetVersionCommand extends DetailCommandBase {
 		public Long getVersion() {
 			return version;
 		}
+
 		/**
 		 * versionを設定します。
 		 * @param version version

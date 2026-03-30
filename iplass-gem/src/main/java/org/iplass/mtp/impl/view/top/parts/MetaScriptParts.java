@@ -70,7 +70,7 @@ public class MetaScriptParts extends MetaTopViewParts {
 	 * @return スクリプト
 	 */
 	public String getScript() {
-	    return script;
+		return script;
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class MetaScriptParts extends MetaTopViewParts {
 	 * @param script スクリプト
 	 */
 	public void setScript(String script) {
-	    this.script = script;
+		this.script = script;
 	}
 
 	@Override
@@ -121,7 +121,8 @@ public class MetaScriptParts extends MetaTopViewParts {
 		public ScriptPartsHandler(MetaScriptParts meta) {
 			super(meta);
 			if (meta.script != null && meta.key == null) {
-				meta.key = "Jsp_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+				meta.key = "Jsp_" + GroovyTemplateCompiler.randomName()
+						.replace("-", "_");
 				template = compile(key, meta);
 			}
 		}
@@ -132,7 +133,8 @@ public class MetaScriptParts extends MetaTopViewParts {
 		 * @return テンプレート
 		 */
 		private GroovyTemplate compile(String key, MetaScriptParts meta) {
-			TenantContext tenant = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tenant = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			return GroovyTemplateCompiler.compile(
 					meta.script, key, (GroovyScriptEngine) tenant.getScriptEngine());
 		}

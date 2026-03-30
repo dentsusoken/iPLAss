@@ -36,8 +36,6 @@ import org.iplass.mtp.entity.bulkupdate.BulkUpdateEntity;
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.entity.query.Query;
 
-
-
 /**
  * <p>
  * Entityを管理するクラスのインタフェースです。
@@ -81,7 +79,7 @@ public interface EntityManager extends Manager {
 	 * @param entity 正規化対象のEntity
 	 */
 	public void normalize(Entity entity);
-	
+
 	/**
 	 * 指定のEntityの指定のプロパティの値を正規化します。
 	 * 
@@ -432,7 +430,6 @@ public interface EntityManager extends Manager {
 	 * @return
 	 */
 	public boolean unlockByUser(String oid, String definitionName);
-
 
 	/**
 	 * ごみ箱から、削除します。

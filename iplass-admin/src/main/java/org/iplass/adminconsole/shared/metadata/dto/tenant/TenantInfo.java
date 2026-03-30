@@ -29,7 +29,7 @@ import org.iplass.gem.Theme;
 import org.iplass.mtp.definition.DefinitionEntry;
 import org.iplass.mtp.tenant.Tenant;
 
-public class TenantInfo implements Serializable{
+public class TenantInfo implements Serializable {
 
 	private static final long serialVersionUID = -6875426740802399867L;
 
@@ -48,7 +48,7 @@ public class TenantInfo implements Serializable{
 	 * @return tenant
 	 */
 	public Tenant getTenant() {
-	    return tenant;
+		return tenant;
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class TenantInfo implements Serializable{
 	 * @param tenant tenant
 	 */
 	public void setTenant(Tenant tenant) {
-	    this.tenant = tenant;
+		this.tenant = tenant;
 	}
 
 	/**

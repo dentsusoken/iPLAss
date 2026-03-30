@@ -97,7 +97,6 @@ public class InfinispanCacheListener {
 		LOG.debug("infinispan cache modified. key={}, oldValue = {}, newValue = {}, commandRetried={}, originLocal={}, currentState={}",
 				event.getKey(), event.getOldValue(), event.getNewValue(), event.isCommandRetried(), event.isOriginLocal(), event.isCurrentState());
 
-
 		if (event.isCreated()) {
 			doCreated(new CacheCreateEvent(event.getNewValue()));
 

@@ -32,12 +32,12 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
  * 画面表示パーツ
  * @author li3369
  */
-@XmlSeeAlso({MetaActionParts.class, MetaTemplateParts.class,  MetaSeparatorParts.class})
-public abstract class MetaTopViewContentParts extends MetaTopViewParts{
+@XmlSeeAlso({ MetaActionParts.class, MetaTemplateParts.class, MetaSeparatorParts.class })
+public abstract class MetaTopViewContentParts extends MetaTopViewParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 7929105536750599630L;
-	
+
 	/**
 	 * インスタンスを生成します。
 	 * @param parts TOP画面パーツ
@@ -53,7 +53,7 @@ public abstract class MetaTopViewContentParts extends MetaTopViewParts{
 		}
 		return null;
 	}
-	
+
 	/** スタイルシートのクラス名 */
 	protected String style;
 
@@ -72,19 +72,19 @@ public abstract class MetaTopViewContentParts extends MetaTopViewParts{
 	public void setStyle(String style) {
 		this.style = style;
 	}
-	
+
 	@Override
 	protected void fillFrom(TopViewParts parts) {
 		super.fillFrom(parts);
 		TopViewContentParts contentParts = (TopViewContentParts) parts;
 		style = contentParts.getStyle();
 	}
-	
+
 	@Override
 	protected void fillTo(TopViewParts parts) {
 		super.fillTo(parts);
 		TopViewContentParts contentParts = (TopViewContentParts) parts;
 		contentParts.setStyle(style);
 	}
-	
+
 }

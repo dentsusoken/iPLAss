@@ -43,53 +43,53 @@ public class HtmlValidationMessage implements Refrectable {
 
 	/** タイプ不一致 */
 	@MetaFieldInfo(
-			displayName="タイプ不一致",
-			displayNameKey="generic_editor_HtmlValidationMessage_typeMismatchDisplaNameKey",
-			description="タイプ不一致時に表示するメッセージを設定します。",
-			descriptionKey="generic_editor_HtmlValidationMessage_typeMismatchDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "タイプ不一致",
+			displayNameKey = "generic_editor_HtmlValidationMessage_typeMismatchDisplaNameKey",
+			description = "タイプ不一致時に表示するメッセージを設定します。",
+			descriptionKey = "generic_editor_HtmlValidationMessage_typeMismatchDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedTypeMismatchList"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+			referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK }
 	)
 	@MultiLang()
 	private String typeMismatch;
 
 	/** タイプ不一致の多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="タイプ不一致の多言語設定",
-			displayNameKey="generic_editor_HtmlValidationMessage_localizedTypeMismatchListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			displayName = "タイプ不一致の多言語設定",
+			displayNameKey = "generic_editor_HtmlValidationMessage_localizedTypeMismatchListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+			referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK }
 	)
 	private List<LocalizedStringDefinition> localizedTypeMismatchList;
 
 	/** パターン不一致 */
 	@MetaFieldInfo(
-			displayName="パターン不一致",
-			displayNameKey="generic_editor_HtmlValidationMessage_patternMismatchDisplaNameKey",
-			description="パターン不一致時に表示するメッセージを設定します。",
-			descriptionKey="generic_editor_HtmlValidationMessage_patternMismatchDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "パターン不一致",
+			displayNameKey = "generic_editor_HtmlValidationMessage_patternMismatchDisplaNameKey",
+			description = "パターン不一致時に表示するメッセージを設定します。",
+			descriptionKey = "generic_editor_HtmlValidationMessage_patternMismatchDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedPatternMismatchList"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+			referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK }
 	)
 	@MultiLang()
 	private String patternMismatch;
 
 	/** パターン不一致の多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="パターン不一致の多言語設定",
-			displayNameKey="generic_editor_HtmlValidationMessage_localizedPatternMismatchListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			displayName = "パターン不一致の多言語設定",
+			displayNameKey = "generic_editor_HtmlValidationMessage_localizedPatternMismatchListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+			referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK }
 	)
 	private List<LocalizedStringDefinition> localizedPatternMismatchList;
 

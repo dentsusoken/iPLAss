@@ -27,5 +27,5 @@ import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.Templat
 		path = "/metaDataEntry/metaData/localizedMailTemplateList/htmlMessage/content",
 		templateType = TemplateType.HTML,
 		fileExtension = FileExtention.TMPL)
-public class MailLocalizedHtmlMessagePath extends MailLocalizedMessagePath {	
+public class MailLocalizedHtmlMessagePath extends MailLocalizedMessagePath {
 }

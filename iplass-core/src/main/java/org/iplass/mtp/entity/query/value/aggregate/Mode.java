@@ -35,11 +35,11 @@ public class Mode extends Aggregate {
 	public Mode(String propertyName) {
 		setValue(new EntityField(propertyName));
 	}
-	
+
 	public Mode(ValueExpression value) {
 		setValue(value);
 	}
-	
+
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);

@@ -111,14 +111,15 @@ public class TenantManagerApp extends MtpJFrameBase {
 		JPanel mainPane = new JPanel();
 		mainPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		mainPane.setLayout(new BorderLayout(0, 0));
-		mainPane.setPreferredSize(new Dimension(830, 600));	//テーブルの列幅と調整
+		mainPane.setPreferredSize(new Dimension(830, 600)); //テーブルの列幅と調整
 		getContentPane().add(mainPane, BorderLayout.CENTER);
 
 		mainPane.add(createHeaderPane(), BorderLayout.NORTH);
 		mainPane.add(createTenantList(), BorderLayout.CENTER);
 		pack();
 
-		tenantToolService = ServiceRegistry.getRegistry().getService(TenantToolService.class);
+		tenantToolService = ServiceRegistry.getRegistry()
+				.getService(TenantToolService.class);
 
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -183,7 +184,8 @@ public class TenantManagerApp extends MtpJFrameBase {
 		});
 		headerMainPane.add(btnDelete);
 
-		RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
+		RdbAdapterService adapterService = ServiceRegistry.getRegistry()
+				.getService(RdbAdapterService.class);
 		RdbAdapter adapter = adapterService.getRdbAdapter();
 
 		//TODO SQLServerはどうする？
@@ -194,9 +196,9 @@ public class TenantManagerApp extends MtpJFrameBase {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (adapter instanceof MysqlRdbAdaptor) {
-						MySQLPartitionManagerApp.main(new String[]{});
+						MySQLPartitionManagerApp.main(new String[] {});
 					} else if (adapter instanceof PostgreSQLRdbAdapter) {
-						PostgreSQLPartitionManagerApp.main(new String[]{});
+						PostgreSQLPartitionManagerApp.main(new String[] {});
 					}
 
 					//自身を消す
@@ -221,7 +223,7 @@ public class TenantManagerApp extends MtpJFrameBase {
 		JLabel lblCount = new JLabel("Count");
 		lblCount.setHorizontalAlignment(JTextField.RIGHT);
 		txtCount = new JTextField();
-		txtCount.setPreferredSize(new Dimension(30,25));
+		txtCount.setPreferredSize(new Dimension(30, 25));
 		txtCount.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
 		txtCount.setHorizontalAlignment(JTextField.RIGHT);
 		txtCount.setEditable(false);
@@ -244,12 +246,14 @@ public class TenantManagerApp extends MtpJFrameBase {
 		model = new TenantTableModel();
 
 		JTable tblTenantList = new JTable(model);
-		tblTenantList.setAutoCreateRowSorter(true);	//ソート機能
+		tblTenantList.setAutoCreateRowSorter(true); //ソート機能
 
 		tblTenantList.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		int i = 0;
 		for (TenantTableColumnInfo columnInfo : COLUMNS) {
-			tblTenantList.getColumnModel().getColumn(i++).setPreferredWidth(columnInfo.getColSize());
+			tblTenantList.getColumnModel()
+					.getColumn(i++)
+					.setPreferredWidth(columnInfo.getColSize());
 		}
 
 		scrlTenantList.setViewportView(tblTenantList);
@@ -261,7 +265,7 @@ public class TenantManagerApp extends MtpJFrameBase {
 	private String[] COLUMN_NAMES;
 	private static final int CHECKED_COL_NUM = 0;
 
-	private void initColumnInfo () {
+	private void initColumnInfo() {
 		COLUMNS.add(new TenantTableColumnInfo("*", 40));
 		COLUMNS.add(new TenantTableColumnInfo("id", 60));
 		COLUMNS.add(new TenantTableColumnInfo("name", 150));
@@ -290,12 +294,15 @@ public class TenantManagerApp extends MtpJFrameBase {
 		public String getName() {
 			return name;
 		}
+
 		public void setName(String name) {
 			this.name = name;
 		}
+
 		public int getColSize() {
 			return colSize;
 		}
+
 		public void setColSize(int colSize) {
 			this.colSize = colSize;
 		}
@@ -344,10 +351,9 @@ public class TenantManagerApp extends MtpJFrameBase {
 			return selected;
 		}
 
-
-        @Override
+		@Override
 		public int getRowCount() {
-			return data !=null ? data.size() : 0;
+			return data != null ? data.size() : 0;
 		}
 
 		@Override
@@ -358,30 +364,28 @@ public class TenantManagerApp extends MtpJFrameBase {
 			}
 
 			switch (column) {
-				case 0:
-					return isSelects.get(row);
-				case 1:
-					return tenant.getId();
-				case 2:
-					return tenant.getName();
-				case 3:
-					return tenant.getUrl();
-				case 4:
-					return tenant.getYukoDateFrom();
-				case 5:
-					return tenant.getYukoDateTo();
-				case 6:
-					return tenant.getCreateDate();
-				case 7:
-					return tenant.getUpdateDate();
-				default:
-					break;
+			case 0:
+				return isSelects.get(row);
+			case 1:
+				return tenant.getId();
+			case 2:
+				return tenant.getName();
+			case 3:
+				return tenant.getUrl();
+			case 4:
+				return tenant.getYukoDateFrom();
+			case 5:
+				return tenant.getYukoDateTo();
+			case 6:
+				return tenant.getCreateDate();
+			case 7:
+				return tenant.getUpdateDate();
+			default:
+				break;
 			}
 
 			return super.getValueAt(row, column);
 		}
-
-
 
 		@Override
 		public void setValueAt(Object aValue, int row, int column) {
@@ -390,16 +394,16 @@ public class TenantManagerApp extends MtpJFrameBase {
 				return;
 			}
 			switch (column) {
-				case 0:
-					isSelects.set(row, (Boolean)aValue);
-					return;
-				default:
-					break;
+			case 0:
+				isSelects.set(row, (Boolean) aValue);
+				return;
+			default:
+				break;
 			}
 		}
 
 		@Override
-        public Class<?> getColumnClass(int column) {
+		public Class<?> getColumnClass(int column) {
 			if (getRowCount() == 0) {
 				return String.class;
 			}
@@ -409,11 +413,12 @@ public class TenantManagerApp extends MtpJFrameBase {
 			} else {
 				return value.getClass();
 			}
-        }
-        @Override
-        public boolean isCellEditable(int row, int col) {
-            return col == CHECKED_COL_NUM;
-        }
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int col) {
+			return col == CHECKED_COL_NUM;
+		}
 	}
 
 	private void searchTenantList() {
@@ -455,12 +460,12 @@ public class TenantManagerApp extends MtpJFrameBase {
 			} catch (ExecutionException e) {
 				JOptionPane.showMessageDialog(TenantManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
-            } catch (InterruptedException e) {
+			} catch (InterruptedException e) {
 				JOptionPane.showMessageDialog(TenantManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
-    		btnRefresh.setText("Refresh List");
-    		btnRefresh.setEnabled(true);
+			btnRefresh.setText("Refresh List");
+			btnRefresh.setEnabled(true);
 		}
 
 	}

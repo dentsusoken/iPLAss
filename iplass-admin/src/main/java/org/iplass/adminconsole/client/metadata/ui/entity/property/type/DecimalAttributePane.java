@@ -49,7 +49,7 @@ public class DecimalAttributePane extends VLayout implements PropertyAttributePa
 
 	/** 丸めモード */
 	private SelectItem selRoundMode;
-	
+
 	/** mySQL用メッセージ */
 	private Label mySqlLabel;
 
@@ -71,7 +71,8 @@ public class DecimalAttributePane extends VLayout implements PropertyAttributePa
 		addMember(form);
 
 		// MySqlの場合に注意喚起のメッセージを設定する
-		if (TenantInfoHolder.getRdbAdapterName().equals("MysqlRdbAdaptor")) {
+		if (TenantInfoHolder.getRdbAdapterName()
+				.equals("MysqlRdbAdaptor")) {
 			mySqlLabel = new Label(rs("ui_metadata_entity_DecimalAttributePane_divPrecisionIncrement"));
 			mySqlLabel.setAutoHeight();
 			mySqlLabel.setWidth100();
@@ -79,25 +80,26 @@ public class DecimalAttributePane extends VLayout implements PropertyAttributePa
 			mySqlLabel.setMargin(5);
 			addMember(mySqlLabel);
 		}
-		
+
 		initialize();
 	}
 
 	@Override
 	public void applyFrom(String defName, PropertyListGridRecord record, PropertyAttribute typeAttribute) {
 
-		DecimalAttribute decimalAttribute = (DecimalAttribute)typeAttribute;
+		DecimalAttribute decimalAttribute = (DecimalAttribute) typeAttribute;
 
 		txtScale.setValue(decimalAttribute.getScale());
 		if (decimalAttribute.getRoundingMode() != null) {
-			selRoundMode.setValue(decimalAttribute.getRoundingMode().name());
+			selRoundMode.setValue(decimalAttribute.getRoundingMode()
+					.name());
 		}
 	}
 
 	@Override
 	public void applyTo(PropertyListGridRecord record) {
 
-		DecimalAttribute decimalAttribute = (DecimalAttribute)record.getTypeAttribute();
+		DecimalAttribute decimalAttribute = (DecimalAttribute) record.getTypeAttribute();
 
 		if (txtScale.getValueAsString() != null) {
 			decimalAttribute.setScale(Integer.parseInt(SmartGWTUtil.getStringValue(txtScale)));
@@ -129,7 +131,6 @@ public class DecimalAttributePane extends VLayout implements PropertyAttributePa
 		roundModeMap.put(RoundingMode.HALF_EVEN.name(), rs("ui_metadata_entity_PropertyListGrid_roundModeHalfEven"));
 		selRoundMode.setValueMap(roundModeMap);
 	}
-
 
 	private String rs(String key) {
 		return AdminClientMessageUtil.getString(key);

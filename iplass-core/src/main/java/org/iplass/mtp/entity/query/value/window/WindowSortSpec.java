@@ -41,33 +41,33 @@ public class WindowSortSpec implements ASTNode {
 	private ValueExpression sortKey;
 	private SortType type;
 	private NullOrderingSpec nullOrderingSpec;
-	
+
 	public WindowSortSpec() {
 	}
-	
+
 	public WindowSortSpec(String sortKeyField, SortType type) {
 		super();
 		this.sortKey = new EntityField(sortKeyField);
 		this.type = type;
 	}
-	
+
 	public WindowSortSpec(ValueExpression sortKey, SortType type) {
 		super();
 		this.sortKey = sortKey;
 		this.type = type;
 	}
-	
+
 	public WindowSortSpec(ValueExpression sortKey, SortType type, NullOrderingSpec nullOrderingSpec) {
 		super();
 		this.sortKey = sortKey;
 		this.type = type;
 		this.nullOrderingSpec = nullOrderingSpec;
 	}
-	
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			sortKey.accept(visitor);
@@ -89,7 +89,7 @@ public class WindowSortSpec implements ASTNode {
 	public void setType(SortType type) {
 		this.type = type;
 	}
-	
+
 	public NullOrderingSpec getNullOrderingSpec() {
 		return nullOrderingSpec;
 	}
@@ -97,12 +97,12 @@ public class WindowSortSpec implements ASTNode {
 	public void setNullOrderingSpec(NullOrderingSpec nullOrderingSpec) {
 		this.nullOrderingSpec = nullOrderingSpec;
 	}
-	
+
 	public WindowSortSpec nulls(NullOrderingSpec nullOrderingSpec) {
 		this.nullOrderingSpec = nullOrderingSpec;
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -150,5 +150,5 @@ public class WindowSortSpec implements ASTNode {
 			return false;
 		return true;
 	}
-	
+
 }

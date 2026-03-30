@@ -50,14 +50,18 @@ public class CreateTopViewProcess implements TenantCreateProcess {
 		meta.applyConfig(definition);
 		meta.setId(generator.generateId());
 
-		String path = DefinitionService.getInstance().getPathByMeta(MetaTopView.class, meta.getName());
+		String path = DefinitionService.getInstance()
+				.getPathByMeta(MetaTopView.class, meta.getName());
 		try {
 			//Reloadしない
-			MetaDataContext.getContext().store(path, meta, null, false);
+			MetaDataContext.getContext()
+					.store(path, meta, null, false);
 		} catch (Exception e) {
-			String type = meta.getClass().getSimpleName();
+			String type = meta.getClass()
+					.getSimpleName();
 			if (e.getCause() != null) {
-				throw new RuntimeException("exception occured during " + type + " create:" + e.getCause().getMessage());
+				throw new RuntimeException("exception occured during " + type + " create:" + e.getCause()
+						.getMessage());
 			} else {
 				throw new RuntimeException("exception occured during " + type + " create:" + e.getMessage());
 			}

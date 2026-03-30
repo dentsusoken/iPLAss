@@ -27,7 +27,7 @@ import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.web.template.report.definition.ReportType;
 
-@XmlSeeAlso({MetaJasperReportType.class, MetaPoiReportType.class, MetaJxlsReportType.class})
+@XmlSeeAlso({ MetaJasperReportType.class, MetaPoiReportType.class, MetaJxlsReportType.class })
 public abstract class MetaReportType implements MetaData {
 
 	private static final long serialVersionUID = 401694582362361475L;
@@ -35,18 +35,18 @@ public abstract class MetaReportType implements MetaData {
 	private String outputFileType;
 
 	public String getOutputFileType() {
-	    return outputFileType;
+		return outputFileType;
 	}
 
 	public void setOutputFileType(String outputFileType) {
-	    this.outputFileType = outputFileType;
+		this.outputFileType = outputFileType;
 	}
-	
+
 	//Definition → Meta共通項目
 	protected void fillFrom(ReportType reportType) {
 		outputFileType = reportType.getOutputFileType();
 	}
-	
+
 	//Meta共通項目 → Definition
 	protected void fillTo(ReportType reportType) {
 		reportType.setOutputFileType(outputFileType);
@@ -64,7 +64,7 @@ public abstract class MetaReportType implements MetaData {
 
 		public ReportTypeRuntime() {
 		}
-		
+
 		public abstract void setParam(ReportingOutputModel createOutputModel);
 	}
 

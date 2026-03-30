@@ -40,7 +40,13 @@ public class AuthenticationPolicyDefinition implements Definition {
 	private static final long serialVersionUID = 1686825565380276912L;
 
 	private String name;
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 	private List<LocalizedStringDefinition> localizedDisplayNameList;
 	private String description;
@@ -53,7 +59,7 @@ public class AuthenticationPolicyDefinition implements Definition {
 	private List<String> authenticationProvider;
 	private List<String> openIdConnectDefinition;
 	private List<String> webAuthnDefinition;
-	
+
 	/** ユーザー作成時、パスワード更新時にその情報を受け取る為のListener */
 	private List<AccountNotificationListenerDefinition> notificationListener;
 
@@ -180,7 +186,7 @@ public class AuthenticationPolicyDefinition implements Definition {
 	public void setAuthenticationProvider(List<String> authenticationProvider) {
 		this.authenticationProvider = authenticationProvider;
 	}
-	
+
 	/**
 	 * @see AccountNotificationListenerDefinition
 	 * @return

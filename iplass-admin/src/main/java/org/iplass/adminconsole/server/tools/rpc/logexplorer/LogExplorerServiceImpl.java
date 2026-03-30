@@ -65,8 +65,10 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	/** web.xmlで指定されたLOG_HOME（service-configで指定されていない場合に利用） */
 	private String initLogHome;
 
-	private AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
-	private LoggingService ls = ServiceRegistry.getRegistry().getService(LoggingService.class);
+	private AdminConsoleService acs = ServiceRegistry.getRegistry()
+			.getService(AdminConsoleService.class);
+	private LoggingService ls = ServiceRegistry.getRegistry()
+			.getService(LoggingService.class);
 
 	@Override
 	public void init() throws ServletException {
@@ -108,7 +110,9 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 		List<String> logHomes = acs.getTenantLogHomes(initLogHome);
 		List<String> filters = acs.getTenantLogFileFilters();
-		List<Pattern> filterPatterns = filters.stream().map(Pattern::compile).collect(Collectors.toList());
+		List<Pattern> filterPatterns = filters.stream()
+				.map(Pattern::compile)
+				.collect(Collectors.toList());
 
 		// 画面上の入力Filter条件を取得
 		Pattern fileNamePattern = null;
@@ -128,7 +132,8 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 		List<LogFile> logFiles = new ArrayList<>();
 
-		DateFormat dateFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDatetimeSecFormat(), true);
+		DateFormat dateFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+				.getOutputDatetimeSecFormat(), true);
 		for (String logHome : logHomes) {
 			logFiles.addAll(searchLogFile(logHome, filterPatterns, fileNamePattern, lastModifiedPattern,
 					logFiles.size(), logFileCondition.getLimit(), dateFormat, logHomes.size() > 1));
@@ -277,7 +282,8 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 					if (index < homePaths.length) {
 						//フォルダ名チェック
 						if (!homePaths[index].equals("*")) {
-							if (!file.getName().equals(homePaths[index])) {
+							if (!file.getName()
+									.equals(homePaths[index])) {
 								//対象外
 								continue;
 							}
@@ -331,7 +337,8 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 */
 	private String getFileName(String hidePrefixPath, File file, boolean multiHomes) {
 
-		String path = file.getPath().replaceAll("\\\\", "/");
+		String path = file.getPath()
+				.replaceAll("\\\\", "/");
 
 		// ログホームが複数の場合、パスからホームを除去しない
 		if (!multiHomes && path.startsWith(hidePrefixPath)) {
@@ -359,7 +366,8 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 		// Filterチェック
 		if (!filterPatterns.isEmpty()) {
 			for (Pattern filter : filterPatterns) {
-				if (filter.matcher(fileName).matches()) {
+				if (filter.matcher(fileName)
+						.matches()) {
 					isMatch = true;
 					break;
 				}
@@ -370,12 +378,14 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 		// ファイル名チェック
 		if (isMatch && fileNamePattern != null) {
-			isMatch = fileNamePattern.matcher(fileName).find();
+			isMatch = fileNamePattern.matcher(fileName)
+					.find();
 		}
 
 		// 最終更新日時チェック
 		if (isMatch && lastModifiedPattern != null) {
-			isMatch = lastModifiedPattern.matcher(dateFormat.format(new Timestamp(file.lastModified()))).find();
+			isMatch = lastModifiedPattern.matcher(dateFormat.format(new Timestamp(file.lastModified())))
+					.find();
 		}
 
 		return isMatch;

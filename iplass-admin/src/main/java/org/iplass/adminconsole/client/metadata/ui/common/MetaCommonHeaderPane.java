@@ -110,7 +110,6 @@ public class MetaCommonHeaderPane extends HLayout {
 		SmartGWTUtil.addHoverToCanvas(save, hover);
 	}
 
-
 	/**
 	 * キャンセルボタンクリックイベントを設定します。
 	 *
@@ -146,7 +145,6 @@ public class MetaCommonHeaderPane extends HLayout {
 	public void setCancelHover(String hover) {
 		SmartGWTUtil.addHoverToCanvas(cancel, hover);
 	}
-
 
 	/**
 	 * 履歴ボタンクリックイベントを設定します。

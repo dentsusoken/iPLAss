@@ -30,12 +30,13 @@ import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition;
 
-@XmlSeeAlso(value = {
-		JspTemplateDefinition.class,
-		GroovyTemplateDefinition.class,
-		HtmlTemplateDefinition.class,
-		BinaryTemplateDefinition.class,
-		ReportTemplateDefinition.class
+@XmlSeeAlso(
+		value = {
+				JspTemplateDefinition.class,
+				GroovyTemplateDefinition.class,
+				HtmlTemplateDefinition.class,
+				BinaryTemplateDefinition.class,
+				ReportTemplateDefinition.class
 		})
 public abstract class TemplateDefinition implements Definition {
 
@@ -45,7 +46,13 @@ public abstract class TemplateDefinition implements Definition {
 	private String name;
 
 	/** 表示名 */
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 
 	private List<LocalizedStringDefinition> localizedDisplayNameList;

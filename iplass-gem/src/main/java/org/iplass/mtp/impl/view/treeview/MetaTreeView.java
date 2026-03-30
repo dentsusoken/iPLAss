@@ -70,7 +70,8 @@ public class MetaTreeView extends BaseRootMetaData implements DefinableMetaData<
 	 * @return ツリービューを構成するアイテム
 	 */
 	public List<MetaTreeViewItem> getItems() {
-		if (items == null) items = new ArrayList<MetaTreeViewItem>();
+		if (items == null)
+			items = new ArrayList<MetaTreeViewItem>();
 		return items;
 	}
 
@@ -95,8 +96,9 @@ public class MetaTreeView extends BaseRootMetaData implements DefinableMetaData<
 	 * @return ColModel
 	 */
 	public List<MetaTreeViewGridColModel> getColModel() {
-		if (colModel == null) colModel = new ArrayList<>();
-	    return colModel;
+		if (colModel == null)
+			colModel = new ArrayList<>();
+		return colModel;
 	}
 
 	/**
@@ -104,7 +106,7 @@ public class MetaTreeView extends BaseRootMetaData implements DefinableMetaData<
 	 * @param colModel ColModel
 	 */
 	public void setColModel(List<MetaTreeViewGridColModel> colModel) {
-	    this.colModel = colModel;
+		this.colModel = colModel;
 	}
 
 	/**
@@ -112,7 +114,7 @@ public class MetaTreeView extends BaseRootMetaData implements DefinableMetaData<
 	 * @param colModel ColModel
 	 */
 	public void addColModel(MetaTreeViewGridColModel colModel) {
-	    getColModel().add(colModel);
+		getColModel().add(colModel);
 	}
 
 	/**

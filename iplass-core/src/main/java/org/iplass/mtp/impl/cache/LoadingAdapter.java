@@ -24,8 +24,12 @@ import java.util.List;
 
 public interface LoadingAdapter<K, V> {
 	public V load(K key);
+
 	public List<V> loadByIndex(int indexType, Object indexVal);
+
 	public long getVersion(V value);
+
 	public Object getIndexVal(int indexType, V value);
+
 	public K getKey(V val);
 }

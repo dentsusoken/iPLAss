@@ -36,14 +36,13 @@ import org.slf4j.LoggerFactory;
 
 import groovy.lang.GroovyObject;
 
-
 public class SimpleSessionContext implements SessionContext, Serializable {
 	private static final long serialVersionUID = -8791351188424167826L;
-	
+
 	public static final String KEY_FOR_HTTP_SERVLET_REQUEST = "org.iplass.mtp.sessionContext";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(SimpleSessionContext.class);
-	
+
 	private Map<String, Object> values = new ConcurrentHashMap<>();
 	private transient volatile boolean isUpdate = false;
 
@@ -67,7 +66,7 @@ public class SimpleSessionContext implements SessionContext, Serializable {
 				&& !(value instanceof Externalizable)) {
 			logger.warn("name:" + name + ", value:" + value + " is not Serializable/Externalizable.");
 		}
-		
+
 		if (value instanceof GroovyObject) {
 			values.put(name, new GroovyObjectSerializeWrapper((GroovyObject) value));
 		} else {
@@ -86,20 +85,22 @@ public class SimpleSessionContext implements SessionContext, Serializable {
 
 	@Override
 	public Iterator<String> getAttributeNames() {
-		return values.keySet().iterator();
+		return values.keySet()
+				.iterator();
 	}
 
 	public boolean isUpdate() {
 		return isUpdate;
 	}
-	
+
 	public void resetUpdateFlag() {
 		isUpdate = false;
 	}
 
 	@Override
 	public BinaryReference loadFromTemporary(long lobId) {
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		BinaryReference br = em.loadBinaryReference(lobId);
 		if (br.getDefinitionName() != null) {
 			//すでに永続化されている

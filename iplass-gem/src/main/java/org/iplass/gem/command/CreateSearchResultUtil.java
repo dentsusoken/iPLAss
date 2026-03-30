@@ -53,7 +53,8 @@ public class CreateSearchResultUtil {
 	 * @deprecated use {@link #getResultData(List, EntityDefinition, SearchResultSection, String)}}.
 	 */
 	@Deprecated
-	public static List<Map<String, String>> getHtmlData(List<Entity> entityList, final EntityDefinition ed, SearchResultSection section, String viewName) throws IOException, ServletException {
+	public static List<Map<String, String>> getHtmlData(List<Entity> entityList, final EntityDefinition ed, SearchResultSection section,
+			String viewName) throws IOException, ServletException {
 		return getResultData(entityList, ed, section, viewName).toResponse();
 	}
 
@@ -68,10 +69,12 @@ public class CreateSearchResultUtil {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	public static SearchResultData getResultData(List<Entity> entityList, final EntityDefinition ed, SearchResultSection section, String viewName) throws IOException, ServletException {
+	public static SearchResultData getResultData(List<Entity> entityList, final EntityDefinition ed, SearchResultSection section, String viewName)
+			throws IOException, ServletException {
 		SearchResultData result = new SearchResultData();
 
-		if (entityList == null) return result;
+		if (entityList == null)
+			return result;
 
 		List<Element> elements = section.getElements();
 		for (final Entity entity : entityList) {
@@ -79,13 +82,16 @@ public class CreateSearchResultUtil {
 			final SearchResultRow row = new SearchResultRow(entity, rowData);
 
 			rowData.put(SearchResultRow.OID, entity.getOid());
-			rowData.put(SearchResultRow.VERSION, entity.getVersion().toString());
+			rowData.put(SearchResultRow.VERSION, entity.getVersion()
+					.toString());
 
 			if (entity.getUpdateDate() != null) {
-				rowData.put(SearchResultRow.TIMESTAMP, String.valueOf(entity.getUpdateDate().getTime()));
+				rowData.put(SearchResultRow.TIMESTAMP, String.valueOf(entity.getUpdateDate()
+						.getTime()));
 			}
 			if (entity.getValue("score") != null) {
-				rowData.put(SearchResultRow.SCORE, entity.getValue("score").toString());
+				rowData.put(SearchResultRow.SCORE, entity.getValue("score")
+						.toString());
 			}
 			for (Element element : elements) {
 				if (element instanceof PropertyColumn) {
@@ -104,7 +110,7 @@ public class CreateSearchResultUtil {
 
 	private static void outputVirtualProperty(EntityDefinition ed, SearchResultSection section,
 			Entity entity, Map<String, String> rowData, VirtualPropertyItem property, String viewName)
-					throws ServletException, IOException {
+			throws ServletException, IOException {
 		if (isDispProperty(ed, property)) {
 			PropertyEditor editor = property.getEditor();
 			String path = EntityViewUtil.getJspPath(editor, ViewConst.DESIGN_TYPE_GEM);
@@ -121,7 +127,7 @@ public class CreateSearchResultUtil {
 
 	private static void outputPropertyColumn(EntityDefinition ed, SearchResultSection section,
 			Entity entity, Map<String, String> rowData, PropertyColumn property, String viewName)
-					throws ServletException, IOException {
+			throws ServletException, IOException {
 		if (isDispProperty(ed, property)) {
 			PropertyEditor editor = property.getEditor();
 			String path = EntityViewUtil.getJspPath(editor, ViewConst.DESIGN_TYPE_GEM);
@@ -184,11 +190,15 @@ public class CreateSearchResultUtil {
 
 		//HTML取得
 		editor.setPropertyName(propName);
-		String html = ResponseUtil.getIncludeJspContents(path, beforeFunc, afterFunc).replace("\r\n", "").replace("\n", "").replace("\r", "");
+		String html = ResponseUtil.getIncludeJspContents(path, beforeFunc, afterFunc)
+				.replace("\r\n", "")
+				.replace("\n", "")
+				.replace("\r", "");
 
 		// カスタムスタイルの反映
 		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-			String customStyle = EntityViewUtil.getCustomStyle(entity.getDefinitionName(), section.getScriptKey(), editor.getOutputCustomStyleScriptKey(), entity, propValue);
+			String customStyle = EntityViewUtil.getCustomStyle(entity.getDefinitionName(), section.getScriptKey(),
+					editor.getOutputCustomStyleScriptKey(), entity, propValue);
 			html = "<span style=\"" + customStyle + "\">" + html + "</span>";
 		}
 		return html;
@@ -199,10 +209,12 @@ public class CreateSearchResultUtil {
 			return false;
 		}
 		if (element instanceof PropertyColumn) {
-			if (((PropertyColumn) element).getEditor() != null) return true;
+			if (((PropertyColumn) element).getEditor() != null)
+				return true;
 		}
 		if (element instanceof VirtualPropertyItem) {
-			if (((VirtualPropertyItem) element).getEditor() != null) return true;
+			if (((VirtualPropertyItem) element).getEditor() != null)
+				return true;
 		}
 		return false;
 	}

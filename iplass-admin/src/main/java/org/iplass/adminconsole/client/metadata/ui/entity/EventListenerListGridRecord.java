@@ -53,10 +53,10 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String NAFTERP = "notifyAfterP";
 	public static final String NONLOAD = "notifyOnLoad";
 	public static final String NBEFOREVALIDATE = "notifyBeforeValidate";
-	public static final String DESTINATIONLIST="destinationList";
-	public static final String WEBHOOKRESPONSEHANLDER="webhookResponseHandler";
-	public static final String SYNCHRONOUS="syncrhonous";
-	public static final String SENDTOGETHER="sendTogether";
+	public static final String DESTINATIONLIST = "destinationList";
+	public static final String WEBHOOKRESPONSEHANLDER = "webhookResponseHandler";
+	public static final String SYNCHRONOUS = "syncrhonous";
+	public static final String SENDTOGETHER = "sendTogether";
 
 	public static final String GP = "gp";
 
@@ -195,7 +195,7 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public void setNotificationCondScript(String value) {
 		setAttribute(NCONDSCRIPT, value);
 	}
-	
+
 	public boolean isNotifyAfterD() {
 		return getAttributeAsBoolean(NAFTERD);
 	}
@@ -283,21 +283,21 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public void setGeneralPurpus(String value) {
 		setAttribute(GP, value);
 	}
-	
+
 	public void setDestinationList(List<String> destinationList) {
 		setAttributeAsJavaObject(DESTINATIONLIST, destinationList);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<String> getDestinationList(){
+	public List<String> getDestinationList() {
 		return (List<String>) getAttributeAsObject(DESTINATIONLIST);
 	}
-	
+
 	public void setWebhookResponseHandler(String webhookResponseHandler) {
 		setAttribute(WEBHOOKRESPONSEHANLDER, webhookResponseHandler);
 	}
-	
-	public String getWebhookResponseHandler(){
+
+	public String getWebhookResponseHandler() {
 		return getAttribute(WEBHOOKRESPONSEHANLDER);
 	}
 

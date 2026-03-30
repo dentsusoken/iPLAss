@@ -22,8 +22,16 @@ package org.iplass.gem.command.generic;
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.command.annotation.template.Template;
 
-@Template(name = Constants.TEMPLATE_EDITOR_RICHTEXT_CKEDITOR, displayName = "CKEditor Resource", path = "/jsp/gem/layout/resource/richtext/ckeditor/ckeditorResource.inc.jsp", contentType = "text/html; charset=utf-8")
-@Template(name = Constants.TEMPLATE_EDITOR_RICHTEXT_QUILL, displayName = "Quill Resource", path = "/jsp/gem/layout/resource/richtext/quill/quillResource.inc.jsp", contentType = "text/html; charset=utf-8")
+@Template(
+		name = Constants.TEMPLATE_EDITOR_RICHTEXT_CKEDITOR,
+		displayName = "CKEditor Resource",
+		path = "/jsp/gem/layout/resource/richtext/ckeditor/ckeditorResource.inc.jsp",
+		contentType = "text/html; charset=utf-8")
+@Template(
+		name = Constants.TEMPLATE_EDITOR_RICHTEXT_QUILL,
+		displayName = "Quill Resource",
+		path = "/jsp/gem/layout/resource/richtext/quill/quillResource.inc.jsp",
+		contentType = "text/html; charset=utf-8")
 public class GenericMetaDataRefs {
 
 }

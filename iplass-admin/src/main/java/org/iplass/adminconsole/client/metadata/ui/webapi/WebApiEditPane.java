@@ -134,7 +134,8 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -190,14 +191,16 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 
 			@Override
 			protected void onMetaDataDrop(MetaDataItemMenuTreeNode itemNode) {
-				if (itemNode.getDefinitionClassName().equals(CommandDefinition.class.getName())) {
+				if (itemNode.getDefinitionClassName()
+						.equals(CommandDefinition.class.getName())) {
 					commandConfigPane.addCommand(itemNode);
 				}
 			}
 
 			@Override
 			protected boolean canAcceptDrop(MetaDataItemMenuTreeNode itemNode) {
-				if (itemNode.getDefinitionClassName().equals(CommandDefinition.class.getName())) {
+				if (itemNode.getDefinitionClassName()
+						.equals(CommandDefinition.class.getName())) {
 					return true;
 				}
 				return false;
@@ -290,8 +293,10 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (WebApiDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		attributePane.setDefinition(curDefinition);
@@ -390,41 +395,41 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIEditPane_saveConfirmComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						WebApiDefinition definition = new WebApiDefinition();
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								WebApiDefinition definition = new WebApiDefinition();
 
-						definition = commonSection.getEditDefinition(definition);
-						definition = attributePane.getEditDefinition(definition);
-						definition = restrictionRequestAttributePane.getEditDefinition(definition);
-						definition = corsAttributePane.getEditDefinition(definition);
-						definition = oauthAttributePane.getEditDefinition(definition);
-						definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
-						definition = webApiParamMapPane.getEditDefinition(definition);
-						definition = requestTypeGridPane.getEditDefinition(definition);
-						definition = resultPane.getEditDefinition(definition);
-						// OpenAPI属性値をWebAPI定義に反映
-						definition = openApiPane.getDefinition(definition);
+								definition = commonSection.getEditDefinition(definition);
+								definition = attributePane.getEditDefinition(definition);
+								definition = restrictionRequestAttributePane.getEditDefinition(definition);
+								definition = corsAttributePane.getEditDefinition(definition);
+								definition = oauthAttributePane.getEditDefinition(definition);
+								definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
+								definition = webApiParamMapPane.getEditDefinition(definition);
+								definition = requestTypeGridPane.getEditDefinition(definition);
+								definition = resultPane.getEditDefinition(definition);
+								// OpenAPI属性値をWebAPI定義に反映
+								definition = openApiPane.getDefinition(definition);
 
-						List<RequestType> checkedRequestType = Arrays.asList(definition.getAccepts());
-						boolean isCheckedRestJson = checkedRequestType.contains(RequestType.REST_JSON);
-						boolean isCheckedRestXml = checkedRequestType.contains(RequestType.REST_XML);
+								List<RequestType> checkedRequestType = Arrays.asList(definition.getAccepts());
+								boolean isCheckedRestJson = checkedRequestType.contains(RequestType.REST_JSON);
+								boolean isCheckedRestXml = checkedRequestType.contains(RequestType.REST_XML);
 
-						if (isCheckedRestJson && jsonParamPane != null) {
-							// REST_JSON にチェック有り、jsonParamPane がnullでない場合
-							definition = jsonParamPane.getEditDefinition(definition);
+								if (isCheckedRestJson && jsonParamPane != null) {
+									// REST_JSON にチェック有り、jsonParamPane がnullでない場合
+									definition = jsonParamPane.getEditDefinition(definition);
+								}
+								if (isCheckedRestXml && xmlParamPane != null) {
+									// REST_XML にチェック有り、jsonParamPane がnullでない場合
+									definition = xmlParamPane.getEditDefinition(definition);
+								}
+
+								definition = responseTypePane.getEditDefinition(definition);
+								updateWebAPI(definition, true);
+							}
 						}
-						if (isCheckedRestXml && xmlParamPane != null) {
-							// REST_XML にチェック有り、jsonParamPane がnullでない場合
-							definition = xmlParamPane.getEditDefinition(definition);
-						}
-
-						definition = responseTypePane.getEditDefinition(definition);
-						updateWebAPI(definition, true);
-					}
-				}
-			});
+					});
 		}
 	}
 
@@ -437,16 +442,15 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 }

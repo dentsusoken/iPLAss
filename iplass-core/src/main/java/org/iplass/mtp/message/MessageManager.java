@@ -97,6 +97,6 @@ public interface MessageManager extends TypedDefinitionManager<MessageCategory> 
 	 * メッセージカテゴリ内のメッセージを取得する
 	 * @return List<String>
 	 */
-	public MessageItem getMessageItem(String category , String messageId);
+	public MessageItem getMessageItem(String category, String messageId);
 
 }

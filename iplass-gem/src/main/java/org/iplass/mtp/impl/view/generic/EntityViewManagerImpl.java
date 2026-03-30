@@ -143,9 +143,12 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	 * コンストラクタ
 	 */
 	public EntityViewManagerImpl() {
-		service = ServiceRegistry.getRegistry().getService(EntityViewService.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(EntityViewService.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 	}
 
 	@Override
@@ -225,13 +228,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		}
 
 		//FIXME outputtypeを判定
-		OutputType outputType =  OutputType.EDIT;
+		OutputType outputType = OutputType.EDIT;
 		for (Section section : form.getSections()) {
 			if (!isDisplayElement(defName, section.getElementRuntimeId(), outputType, entity)) {
 				continue;
 			}
 			if (section instanceof DefaultSection) {
-				PropertyEditor editor = getEditor(defName, outputType, (DefaultSection)section, currentPropName, subPropName, entity);
+				PropertyEditor editor = getEditor(defName, outputType, (DefaultSection) section, currentPropName, subPropName, entity);
 				if (editor != null) {
 					return editor;
 				}
@@ -245,20 +248,23 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		return null;
 	}
 
-	private PropertyEditor getEditor(String defName, OutputType outputType, DefaultSection section, final String currentPropName, final String subPropName, final Entity entity) {
+	private PropertyEditor getEditor(String defName, OutputType outputType, DefaultSection section, final String currentPropName,
+			final String subPropName, final Entity entity) {
 		for (Element element : section.getElements()) {
 			if (!isDisplayElement(defName, element.getElementRuntimeId(), outputType, entity)) {
 				continue;
 			}
 			if (element instanceof PropertyItem) {
 				PropertyItem property = (PropertyItem) element;
-				if (property.getPropertyName().equals(currentPropName)) {
+				if (property.getPropertyName()
+						.equals(currentPropName)) {
 					//FIXME なぜセットが必要？
 //					if (property.getEditor() instanceof ReferencePropertyEditor) {
 //						property.getEditor().setPropertyName(property.getPropertyName());
 //					}
 					if (subPropName == null) {
-						property.getEditor().setPropertyName(property.getPropertyName());	//念のためセット
+						property.getEditor()
+								.setPropertyName(property.getPropertyName()); //念のためセット
 						return property.getEditor();
 					} else {
 						return getEditor(subPropName, property.getEditor());
@@ -278,16 +284,18 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				}
 			} else if (element instanceof VirtualPropertyItem) {
 				VirtualPropertyItem property = (VirtualPropertyItem) element;
-				if (property.getPropertyName().equals(currentPropName)) {
+				if (property.getPropertyName()
+						.equals(currentPropName)) {
 					if (subPropName == null) {
-						property.getEditor().setPropertyName(property.getPropertyName());
+						property.getEditor()
+								.setPropertyName(property.getPropertyName());
 						return property.getEditor();
 					} else {
 						return getEditor(subPropName, property.getEditor());
 					}
 				}
 			} else if (element instanceof DefaultSection) {
-				PropertyEditor nest = getEditor(defName, outputType, (DefaultSection)element, currentPropName, subPropName, entity);
+				PropertyEditor nest = getEditor(defName, outputType, (DefaultSection) element, currentPropName, subPropName, entity);
 				if (nest != null) {
 					return nest;
 				}
@@ -296,7 +304,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		return null;
 	}
 
-	private PropertyEditor getEditor(String defName, OutputType outputType, MassReferenceSection section, final String currentPropName, final String subPropName, final Entity entity) {
+	private PropertyEditor getEditor(String defName, OutputType outputType, MassReferenceSection section, final String currentPropName,
+			final String subPropName, final Entity entity) {
 		if (subPropName == null) {
 			return null;
 		}
@@ -305,7 +314,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return null;
 		}
 
-		if (section.getPropertyName().equals(currentPropName)) {
+		if (section.getPropertyName()
+				.equals(currentPropName)) {
 			for (NestProperty np : section.getProperties()) {
 				if (subPropName.indexOf(".") > -1) {
 					PropertyEditor editor = getEditor(subPropName, np.getEditor());
@@ -313,7 +323,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 						return editor;
 					}
 				} else {
-					if (np.getPropertyName().equals(subPropName)) {
+					if (np.getPropertyName()
+							.equals(subPropName)) {
 						return np.getEditor();
 					}
 				}
@@ -341,7 +352,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				}
 
 				PropertyItem property = (PropertyItem) element;
-				if (!property.isBlank() && property.getPropertyName().equals(propName)) {
+				if (!property.isBlank() && property.getPropertyName()
+						.equals(propName)) {
 					return property.getEditor();
 				}
 			}
@@ -362,13 +374,15 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			}
 
 			PropertyItem property = (PropertyItem) element;
-			if (!property.isBlank() && property.getPropertyName().equals(currentPropName)) {
+			if (!property.isBlank() && property.getPropertyName()
+					.equals(currentPropName)) {
 				//FIXME なぜセットが必要？
 //				if (property.getEditor() instanceof ReferencePropertyEditor) {
 //					property.getEditor().setPropertyName(property.getPropertyName());
 //				}
 				if (subPropName == null) {
-					property.getEditor().setPropertyName(property.getPropertyName());	//念のためセット
+					property.getEditor()
+							.setPropertyName(property.getPropertyName()); //念のためセット
 					return property.getEditor();
 				} else {
 					return getEditor(subPropName, property.getEditor());
@@ -405,9 +419,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		}
 
 		for (NestProperty property : nestProperties) {
-			if (property.getPropertyName().equals(currentPropName)) {
+			if (property.getPropertyName()
+					.equals(currentPropName)) {
 				if (subPropName == null) {
-					property.getEditor().setPropertyName(property.getPropertyName());	//念のためセット
+					property.getEditor()
+							.setPropertyName(property.getPropertyName()); //念のためセット
 					return property.getEditor();
 				} else {
 					return getEditor(subPropName, property.getEditor());
@@ -442,7 +458,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 					continue;
 				}
 				PropertyColumn property = (PropertyColumn) element;
-				if (property.getPropertyName().equals(propName)
+				if (property.getPropertyName()
+						.equals(propName)
 						&& EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 					return property.getEditor();
 				}
@@ -459,14 +476,16 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				continue;
 			}
 			PropertyColumn property = (PropertyColumn) element;
-			if (property.getPropertyName().equals(currentPropName)
+			if (property.getPropertyName()
+					.equals(currentPropName)
 					&& EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				//FIXME なぜセットが必要？
 //				if (property.getEditor() instanceof ReferencePropertyEditor) {
 //					property.getEditor().setPropertyName(property.getPropertyName());
 //				}
 				if (subPropName == null) {
-					property.getEditor().setPropertyName(property.getPropertyName());	//念のためセット
+					property.getEditor()
+							.setPropertyName(property.getPropertyName()); //念のためセット
 					return property.getEditor();
 				} else {
 					return getEditor(subPropName, property.getEditor());
@@ -500,9 +519,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			if (property.getBulkUpdateEditor() == null) {
 				continue;
 			}
-			if (property.getPropertyName().equals(currentPropName)) {
+			if (property.getPropertyName()
+					.equals(currentPropName)) {
 				if (subPropName == null) {
-					property.getBulkUpdateEditor().setPropertyName(property.getPropertyName());
+					property.getBulkUpdateEditor()
+							.setPropertyName(property.getPropertyName());
 					return property.getBulkUpdateEditor();
 				} else {
 					return getEditor(subPropName, property.getBulkUpdateEditor());
@@ -539,7 +560,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				continue;
 			}
 			if (section instanceof DefaultSection) {
-				PropertyEditor editor = getEditor(defName, OutputType.BULK, (DefaultSection)section, currentPropName, subPropName, null);
+				PropertyEditor editor = getEditor(defName, OutputType.BULK, (DefaultSection) section, currentPropName, subPropName, null);
 				if (editor != null) {
 					return editor;
 				}
@@ -598,12 +619,16 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			if (formView instanceof DetailFormViewRuntime) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
-					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
+					if (formView.getMetaData()
+							.getName() == null || formView.getMetaData()
+									.getName()
+									.isEmpty()) {
 						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				} else {
-					if (viewName.equals(formView.getMetaData().getName())) {
+					if (viewName.equals(formView.getMetaData()
+							.getName())) {
 						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
@@ -629,12 +654,16 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			if (formView instanceof DetailFormViewRuntime) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
-					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
+					if (formView.getMetaData()
+							.getName() == null || formView.getMetaData()
+									.getName()
+									.isEmpty()) {
 						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				} else {
-					if (viewName.equals(formView.getMetaData().getName())) {
+					if (viewName.equals(formView.getMetaData()
+							.getName())) {
 						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
@@ -661,12 +690,16 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			if (formView instanceof SearchFormViewRuntime) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
-					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
+					if (formView.getMetaData()
+							.getName() == null || formView.getMetaData()
+									.getName()
+									.isEmpty()) {
 						searchView = (SearchFormViewRuntime) formView;
 						break;
 					}
 				} else {
-					if (viewName.equals(formView.getMetaData().getName())) {
+					if (viewName.equals(formView.getMetaData()
+							.getName())) {
 						searchView = (SearchFormViewRuntime) formView;
 						break;
 					}
@@ -696,12 +729,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				if (formView instanceof SearchFormViewRuntime) {
 					//nameが一致するhandlerを検索
 					if (StringUtil.isEmpty(viewName)) {
-						if (StringUtil.isEmpty(formView.getMetaData().getName())) {
+						if (StringUtil.isEmpty(formView.getMetaData()
+								.getName())) {
 							searchView = (SearchFormViewRuntime) formView;
 							break;
 						}
 					} else {
-						if (viewName.equals(formView.getMetaData().getName())) {
+						if (viewName.equals(formView.getMetaData()
+								.getName())) {
 							searchView = (SearchFormViewRuntime) formView;
 							break;
 						}
@@ -710,12 +745,15 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			}
 
 			if (searchView != null) {
-				fileName = searchView.getCsvDownloadFileName(defaultName, fileNameVariableMap).replace("/", "_").replace(" ", "_");
+				fileName = searchView.getCsvDownloadFileName(defaultName, fileNameVariableMap)
+						.replace("/", "_")
+						.replace(" ", "_");
 			}
 		} else {
 			//View未定義はdefaultName
 		}
-		return fileName.replace("/", "_").replace(" ", "_");
+		return fileName.replace("/", "_")
+				.replace(" ", "_");
 	}
 
 	@Override
@@ -810,7 +848,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		String style = sw.toString();
 		if (StringUtil.isNotEmpty(style)) {
 			//先頭、末尾の空白、改行、タブを削除
-			style = StringUtil.removeLineFeedCode(StringUtil.stripToEmpty(style)).replaceAll("\t", "");
+			style = StringUtil.removeLineFeedCode(StringUtil.stripToEmpty(style))
+					.replaceAll("\t", "");
 		}
 
 		return style;
@@ -895,7 +934,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		String urlParam = sw.toString();
 		if (StringUtil.isNotEmpty(urlParam)) {
 			//先頭、末尾の空白、改行、タブを削除
-			urlParam = StringUtil.removeLineFeedCode(StringUtil.stripToEmpty(urlParam)).replaceAll("\t", "");
+			urlParam = StringUtil.removeLineFeedCode(StringUtil.stripToEmpty(urlParam))
+					.replaceAll("\t", "");
 		}
 
 		return urlParam;
@@ -915,7 +955,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
-	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue, Entity entity) {
+	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey,
+			Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue, Entity entity) {
 		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
 		if (entityView == null) {
 			return null;
@@ -952,12 +993,17 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				List<?> list = (List<?>) value;
 				for (Object obj : list) {
 					if (obj != null && !(obj instanceof Entity)) {
-						logger.error("For return type, please set Entity class as return value. The result type of this execution is of type " + obj.getClass().getName() + ".");
+						logger.error("For return type, please set Entity class as return value. The result type of this execution is of type "
+								+ obj.getClass()
+										.getName()
+								+ ".");
 						throw new AutocompletionHandleException();
 					}
 				}
 			} else if (value != null && !(value instanceof Entity)) {
-				logger.error("For return type, please set Entity class as return value. The result type of this execution is of type " + value.getClass().getName() + ".");
+				logger.error(
+						"For return type, please set Entity class as return value. The result type of this execution is of type " + value.getClass()
+								.getName() + ".");
 				throw new AutocompletionHandleException();
 			}
 			returnValue = value;
@@ -974,12 +1020,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			if (editor instanceof NumberPropertyEditor && editor.getDisplayType() == NumberDisplayType.LABEL) {
 				format = getDisplayNumberFormat((NumberPropertyEditor) editor);
 			} else if (editor instanceof TimePropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				format = getDisplayTimeFormat(((TimePropertyEditor) editor).getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale());
+				format = getDisplayTimeFormat(((TimePropertyEditor) editor).getDispRange(), formatInfo.getDatetimeFormat(),
+						formatInfo.getDatetimeLocale());
 			} else if (editor instanceof TimestampPropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 				format = getDisplayTimestampFormat(((TimestampPropertyEditor) editor).getDispRange(), formatInfo.getDatetimeFormat(),
 						formatInfo.getDatetimeLocale(), ((TimestampPropertyEditor) editor).isShowWeekday());
 			} else if (editor instanceof DatePropertyEditor && editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				format = getDisplayDateFormat(formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), ((DatePropertyEditor) editor).isShowWeekday());
+				format = getDisplayDateFormat(formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(),
+						((DatePropertyEditor) editor).isShowWeekday());
 			}
 
 			if (value instanceof Entity) {
@@ -1010,7 +1058,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return convertAutocompletionValue;
 		}
 
-		if (convertAutocompletionValue == null || convertAutocompletionValue.toString().isEmpty()) {
+		if (convertAutocompletionValue == null || convertAutocompletionValue.toString()
+				.isEmpty()) {
 			return convertAutocompletionValue;
 		}
 
@@ -1039,7 +1088,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	private Format getDisplayNumberFormat(NumberPropertyEditor editor) {
-		GemConfigService gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		GemConfigService gemConfig = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 		String format = editor.getNumberFormat();
 		DecimalFormat df = new DecimalFormat();
 		if (gemConfig.isFormatNumberWithComma()) {
@@ -1072,19 +1122,24 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		String timeFormat = "";
 		if (TimeDispRange.isDispSec(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
+			timeFormat = " " + TemplateUtil.getLocaleFormat()
+					.getOutputTimeSecFormat();
 		} else if (TimeDispRange.isDispMin(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
+			timeFormat = " " + TemplateUtil.getLocaleFormat()
+					.getOutputTimeMinFormat();
 		} else if (TimeDispRange.isDispHour(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
+			timeFormat = " " + TemplateUtil.getLocaleFormat()
+					.getOutputTimeHourFormat();
 		}
 
 		if (showWeekday) {
-			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
+			String dateFormat = TemplateUtil.getLocaleFormat()
+					.getOutputDateWeekdayFormat();
 			// テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
 			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
 		} else {
-			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
+			String dateFormat = TemplateUtil.getLocaleFormat()
+					.getOutputDateFormat();
 			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
 		}
 		return format;
@@ -1093,17 +1148,20 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	private DateFormat getDisplayTimeFormat(TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale) {
 
 		DateFormat format = null;
-		if(datetimeFormatPattern != null){
+		if (datetimeFormatPattern != null) {
 			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
 			return format;
 		}
 
 		if (TimeDispRange.isDispSec(dispRange)) {
-			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat(), false);
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputTimeSecFormat(), false);
 		} else if (TimeDispRange.isDispMin(dispRange)) {
-			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeMinFormat(), false);
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputTimeMinFormat(), false);
 		} else if (TimeDispRange.isDispHour(dispRange)) {
-			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeHourFormat(), false);
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputTimeHourFormat(), false);
 		}
 
 		return format;
@@ -1119,10 +1177,12 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		if (showWeekday) {
 			// テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
-			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat(), false,
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputDateWeekdayFormat(), false,
 					true);
 		} else {
-			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), false);
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputDateFormat(), false);
 		}
 		return format;
 	}
@@ -1152,15 +1212,18 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		final String _currentPropName = currentPropName;
 
 		//プロパティ名が一致する参照セクション抽出
-		List<ReferenceSection> secList = form.getSections().stream()
-				.filter(s -> s instanceof ReferenceSection).map(s -> (ReferenceSection) s)
+		List<ReferenceSection> secList = form.getSections()
+				.stream()
+				.filter(s -> s instanceof ReferenceSection)
+				.map(s -> (ReferenceSection) s)
 				.filter(s -> _currentPropName.equals(s.getPropertyName()))
 				.collect(Collectors.toList());
 
 		//インデックスに合うセクション取得
 		ReferenceSection refSection = null;
 		if (!secList.isEmpty()) {
-			PropertyDefinition pd = edm.get(definitionName).getProperty(currentPropName);
+			PropertyDefinition pd = edm.get(definitionName)
+					.getProperty(currentPropName);
 			if (pd.getMultiplicity() == 1) {
 				refSection = secList.get(0);
 			} else {
@@ -1190,13 +1253,19 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return ((BinaryReference) value).getName();
 		} else if (value instanceof Date) {
 			//日付入力形式の文字列に
-			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateFormat(), false).format((Date) value);
+			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getServerDateFormat(), false)
+					.format((Date) value);
 		} else if (value instanceof Timestamp) {
 			//日時入力形式の文字列に
-			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateTimeFormat(), false).format((Timestamp) value);
+			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getServerDateTimeFormat(), false)
+					.format((Timestamp) value);
 		} else if (value instanceof Time) {
 			//時間入力形式の文字列に
-			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerTimeFormat(), false).format((Time) value);
+			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getServerTimeFormat(), false)
+					.format((Time) value);
 		} else if (value instanceof SelectValue) {
 			return ((SelectValue) value).getValue();
 		}
@@ -1230,13 +1299,15 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return null;
 		}
 
-		List<MetaViewControlSetting> settings = entityView.getMetaData().getViewControlSettings();
+		List<MetaViewControlSetting> settings = entityView.getMetaData()
+				.getViewControlSettings();
 		if (settings != null && !settings.isEmpty()) {
 			//View管理設定あり
 			MetaViewControlSetting setting = getViewControl(settings, viewName);
 			if (setting != null) {
 				if (StringUtil.isNotEmpty(setting.getPermitRoles())) {
-					String[] permitRoles = setting.getPermitRoles().split(",");
+					String[] permitRoles = setting.getPermitRoles()
+							.split(",");
 					return Arrays.asList(permitRoles);
 				} else {
 					//許可ロール未指定の場合は全許可
@@ -1266,7 +1337,6 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		throw new ApplicationException("invalid viewName. defName=" + definitionName + ",viewName=" + viewName);
 	}
 
-
 	private MetaViewControlSetting getViewControl(List<MetaViewControlSetting> settings, String viewName) {
 		final boolean checkDefault = StringUtil.isEmpty(viewName);
 		Optional<MetaViewControlSetting> ret = settings.stream()
@@ -1292,14 +1362,15 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		Optional<SearchFormViewRuntime> searchView = formViews.stream()
 				.filter(view -> view instanceof SearchFormViewRuntime)
 				.filter(view -> {
-					String name = view.getMetaData().getName();
+					String name = view.getMetaData()
+							.getName();
 					if (checkDefault) {
 						return StringUtil.isEmpty(name);
 					} else {
 						return viewName.equals(name);
 					}
 				})
-				.map(view -> (SearchFormViewRuntime)view)
+				.map(view -> (SearchFormViewRuntime) view)
 				.findFirst();
 
 		if (searchView.isPresent()) {
@@ -1338,7 +1409,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		if (detailView.isApplySearchLayoutDefaultCondition()) {
 			SearchFormView searchView = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
-			if (StringUtil.isNotEmpty(searchView.getCondSection().getDefaultCondition())) {
+			if (StringUtil.isNotEmpty(searchView.getCondSection()
+					.getDefaultCondition())) {
 				// デフォルト検索条件を取得
 				Condition defaultCond = getSearchConditionSectionDefaultCondition(
 						definitionName, searchView.getCondSection());

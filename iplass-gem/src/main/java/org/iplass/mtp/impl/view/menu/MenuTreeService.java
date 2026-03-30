@@ -39,9 +39,11 @@ public class MenuTreeService extends AbstractTypedMetaDataService<MetaTreeMenu, 
 		public TypeMap() {
 			super(getFixedPath(), MetaTreeMenu.class, MenuTree.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<MenuTree> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(MenuTreeManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(MenuTreeManager.class);
 		}
 
 		@Override

@@ -22,22 +22,22 @@ package org.iplass.mtp.impl.parser;
 
 public class ParseException extends Exception {
 	private static final long serialVersionUID = -6001769683742261519L;
-	
+
 	private EvalError evalError;
 
 	public ParseException() {
 	}
-	
+
 	public ParseException(EvalError evalError) {
-		
+
 		//FIXME ここHotSpot！！！
 		//エラー情報をParseCOntextに保持する方向で。最終的なエラーの場合だけ、new ParseException
-		
-		
-		super(evalError.getMessage() + " at " + evalError.getPosition() + " (..." + concat(evalError.getParsedString(), evalError.getPosition()) + "...)");
+
+		super(evalError.getMessage() + " at " + evalError.getPosition() + " (..." + concat(evalError.getParsedString(), evalError.getPosition())
+				+ "...)");
 		this.evalError = evalError;
 	}
-	
+
 	private static String concat(String str, int position) {
 		if (str == null) {
 			return "";
@@ -52,7 +52,6 @@ public class ParseException extends Exception {
 		}
 		return str.substring(start, position) + "^" + str.substring(position, end);
 	}
-	
 
 //	public ParseException(String message, Throwable cause) {
 //		super(message, cause);
@@ -65,7 +64,7 @@ public class ParseException extends Exception {
 //	public ParseException(Throwable cause) {
 //		super(cause);
 //	}
-	
+
 	public EvalError getEvalError() {
 		return evalError;
 	}

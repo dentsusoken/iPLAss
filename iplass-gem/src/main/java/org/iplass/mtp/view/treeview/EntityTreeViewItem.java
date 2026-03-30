@@ -26,7 +26,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * ツリービューにEntityを表示するための定義情報
  * @author lis3wg
  */
-@XmlSeeAlso({ReferenceTreeViewItem.class})
+@XmlSeeAlso({ ReferenceTreeViewItem.class })
 public class EntityTreeViewItem extends TreeViewItem {
 
 	/** SerialVersionUID */

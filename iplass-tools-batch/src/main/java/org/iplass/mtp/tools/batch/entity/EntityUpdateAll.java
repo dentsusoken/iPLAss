@@ -62,7 +62,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Entity UpdateAll Batch
  */
@@ -91,11 +90,15 @@ public class EntityUpdateAll extends MtpCuiBase {
 	/** 実行Entity */
 	private EntityDefinition ed;
 
-	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
-	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private EntityToolService ets = ServiceRegistry.getRegistry().getService(EntityToolService.class);
+	private TenantService ts = ServiceRegistry.getRegistry()
+			.getService(TenantService.class);
+	private TenantContextService tcs = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private EntityToolService ets = ServiceRegistry.getRegistry()
+			.getService(EntityToolService.class);
 	private EntityDefinitionManager edm = ManagerLocator.manager(EntityDefinitionManager.class);
-	private QueryService qs = ServiceRegistry.getRegistry().getService(QueryService.class);
+	private QueryService qs = ServiceRegistry.getRegistry()
+			.getService(QueryService.class);
 
 	/**
 	 * args[0]・・・execMode
@@ -164,7 +167,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 
 		//環境情報出力
 		logEnvironment();
-		
+
 		if (tenantId != null) {
 			Tenant tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
@@ -175,13 +178,13 @@ public class EntityUpdateAll extends MtpCuiBase {
 		}
 
 		switch (execMode) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start UpdateAll Wizard");
 			logInfo("");
 
 			//Wizardの実行
 			return wizard();
-		case SILENT :
+		case SILENT:
 			logInfo("■Start UpdateAll Silent");
 			logInfo("");
 
@@ -190,7 +193,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 
 			//Silentの実行
 			return silent();
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -246,8 +249,9 @@ public class EntityUpdateAll extends MtpCuiBase {
 		EntityUpdateAllCondition condition = param.getEntityUpdateAllCondition();
 		logInfo("\tentity name :" + condition.getDefinitionName());
 		logInfo("\tupdate values :");
-		condition.getValues().stream()
-			.forEach(u ->logInfo("\t\t\t" + u.getPropertyName() + "=" + u.getValue()));
+		condition.getValues()
+				.stream()
+				.forEach(u -> logInfo("\t\t\t" + u.getPropertyName() + "=" + u.getValue()));
 		logInfo("\twhere clause :" + condition.getWhere());
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
@@ -258,9 +262,10 @@ public class EntityUpdateAll extends MtpCuiBase {
 	 */
 	private <T> T executeTask(EntityUpdateAllParameter param, Supplier<T> task) {
 
-		TenantContext tc  = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()->{
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+		TenantContext tc = tcs.getTenantContext(param.getTenantId());
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
 
 			return task.get();
 		});
@@ -279,10 +284,11 @@ public class EntityUpdateAll extends MtpCuiBase {
 
 		@Override
 		public Boolean get() {
-			return !ets.updateAll(param.getEntityUpdateAllCondition()).isError();
+			return !ets.updateAll(param.getEntityUpdateAllCondition())
+					.isError();
 		}
 	}
-	
+
 	/**
 	 * プロパティの一覧を出力します。
 	 */
@@ -300,13 +306,22 @@ public class EntityUpdateAll extends MtpCuiBase {
 			throw new SystemException(e);
 		}
 	}
-	
+
 	private boolean isShowRecord(PropertyDefinition prop) {
 		//キー項目、audit項目は更新不可のため表示しない
 		if (prop.isInherited()) {
-			if (prop.getName().equals(Entity.OID) || prop.getName().equals(Entity.VERSION)
-					|| prop.getName().equals(Entity.CREATE_BY) || prop.getName().equals(Entity.CREATE_DATE)
-					|| prop.getName().equals(Entity.UPDATE_BY) || prop.getName().equals(Entity.UPDATE_DATE)) {
+			if (prop.getName()
+					.equals(Entity.OID)
+					|| prop.getName()
+							.equals(Entity.VERSION)
+					|| prop.getName()
+							.equals(Entity.CREATE_BY)
+					|| prop.getName()
+							.equals(Entity.CREATE_DATE)
+					|| prop.getName()
+							.equals(Entity.UPDATE_BY)
+					|| prop.getName()
+							.equals(Entity.UPDATE_DATE)) {
 				return false;
 			}
 		}
@@ -324,35 +339,37 @@ public class EntityUpdateAll extends MtpCuiBase {
 		}
 		return true;
 	}
-	
+
 	private List<UpdateAllValue> getUpdateAllValue(EntityDefinition ed, String updateAllValueListStr) throws ParseException {
 		List<UpdateAllValue> updateAllValues = new ArrayList<>();
 		ParseContext ctx = new ParseContext(updateAllValueListStr);
-		while(!ctx.isEnd()) {
+		while (!ctx.isEnd()) {
 			ctx.consumeChars(ParseContext.WHITE_SPACES);
-			if(ctx.startsWith(QueryConstants.COMMA)) {
+			if (ctx.startsWith(QueryConstants.COMMA)) {
 				ctx.consumeChars(QueryConstants.COMMA.length());
 			}
-			Predicate predicate = qs.getQueryParser().parse(ctx, PredicateSyntax.class);
-			if(!(predicate instanceof Equals)) {
+			Predicate predicate = qs.getQueryParser()
+					.parse(ctx, PredicateSyntax.class);
+			if (!(predicate instanceof Equals)) {
 				logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", ctx.toString()));
 				return null;
 			}
-			
+
 			Equals equals = (Equals) predicate;
-			
-			if(!(equals.getProperty() instanceof EntityField)) {
+
+			if (!(equals.getProperty() instanceof EntityField)) {
 				logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", ctx.toString()));
 				return null;
 			}
-			
+
 			String propertyName = equals.getPropertyName();
 			String value = equals.getValue() == null
 					? null
-					: equals.getValue().toString();
+					: equals.getValue()
+							.toString();
 			PropertyDefinition propertyDefinition = ed.getProperty(propertyName);
-			
-			if(propertyDefinition == null || !isShowRecord(propertyDefinition) || !isEnable(propertyDefinition)) {
+
+			if (propertyDefinition == null || !isShowRecord(propertyDefinition) || !isEnable(propertyDefinition)) {
 				logWarn(rs("EntityUpdateAll.notExistsPropertyNameMsg", propertyName));
 				return null;
 			}
@@ -399,11 +416,12 @@ public class EntityUpdateAll extends MtpCuiBase {
 		EntityUpdateAllParameter param = new EntityUpdateAllParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()->{
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
 
 			EntityUpdateAllCondition condition = new EntityUpdateAllCondition();
-			
+
 			//Entity名
 			boolean validEntity = false;
 			do {
@@ -416,7 +434,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 					condition.setDefinitionName(inputEntityName);
 
 					//存在チェック
-					ed = edm.get(inputEntityName);					
+					ed = edm.get(inputEntityName);
 					if (ed == null) {
 						logWarn(rs("EntityUpdateAll.notExistsEntityMsg", inputEntityName));
 						continue;
@@ -425,7 +443,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 				} else {
 					logWarn(rs("EntityUpdateAll.Wizard.requiredEntityNameMsg"));
 				}
-			} while(validEntity == false);
+			} while (validEntity == false);
 
 			//UpdateAllValue
 			boolean validUpdateValue = false;
@@ -447,7 +465,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 						logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", inputUpdateAllValue));
 						continue;
 					}
-					if(CollectionUtils.isEmpty(updateAllValues)) {
+					if (CollectionUtils.isEmpty(updateAllValues)) {
 						continue;
 					}
 					condition.addValues(updateAllValues);
@@ -455,39 +473,39 @@ public class EntityUpdateAll extends MtpCuiBase {
 				} else {
 					logWarn(rs("EntityUpdateAll.requiredUpdateAllValuesMsg"));
 				}
-			} while(validUpdateValue == false);
-			
+			} while (validUpdateValue == false);
+
 			//Where条件
 			String whereClause = readConsole(rs("EntityUpdateAll.Wizard.inputWhereClauseMsg"));
 			if (StringUtil.isNotBlank(whereClause)) {
 				condition.setWhere(whereClause);
 			}
-			
+
 			//条件をセット
 			param.setEntityUpdateAllCondition(condition);
-			
+
 			boolean validExecute = false;
 			do {
 				//実行情報出力
 				logArguments(param);
-	
+
 				boolean isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmUpdateMsg"), false);
 				if (isExecute) {
 					validExecute = true;
 				} else {
 					//defaultがfalseなので念のため再度確認
 					isExecute = readConsoleBoolean(rs("EntityUpdateAll.Wizard.confirmRetryMsg"), true);
-	
+
 					if (isExecute) {
 						//再度実行
 						return wizard();
 					}
 				}
-			} while(validExecute == false);
-	
+			} while (validExecute == false);
+
 			//Consoleを削除してLogに切り替え
 			switchLog(false, true);
-	
+
 			//UpdateAll処理実行
 			return executeTask(param, (paramA) -> {
 				return updateAll(paramA);
@@ -512,12 +530,13 @@ public class EntityUpdateAll extends MtpCuiBase {
 		EntityUpdateAllParameter param = new EntityUpdateAllParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()->{
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
-			
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
+
 			//オプションをコンフィグから取得
 			EntityUpdateAllCondition condition = new EntityUpdateAllCondition();
-			
+
 			//Entity
 			ed = edm.get(entityName);
 			if (ed == null) {
@@ -525,7 +544,7 @@ public class EntityUpdateAll extends MtpCuiBase {
 				return false;
 			}
 			condition.setDefinitionName(ed.getName());
-			
+
 			//UpdateAllValue
 			if (StringUtil.isBlank(updateAllValuesStr)) {
 				logWarn(rs("EntityUpdateAll.requiredUpdateAllValuesMsg"));
@@ -538,16 +557,16 @@ public class EntityUpdateAll extends MtpCuiBase {
 				logWarn(rs("EntityUpdateAll.invalidUpdateAllValueMsg", updateAllValuesStr));
 				return false;
 			}
-			if(CollectionUtils.isEmpty(updateAllValues)) {
+			if (CollectionUtils.isEmpty(updateAllValues)) {
 				return false;
 			}
 			condition.addValues(updateAllValues);
-			
+
 			//Where条件
 			condition.setWhere(whereClause);
-			
+
 			param.setEntityUpdateAllCondition(condition);
-			
+
 			//実行情報出力
 			logArguments(param);
 

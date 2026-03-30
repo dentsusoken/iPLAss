@@ -108,23 +108,26 @@ public class TopViewPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), TopViewDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_top_TopViewPluginManager_failedToDeleteTopView") + caught.getMessage());
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_top_TopViewPluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_top_TopViewPluginManager_deleteTopViewComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), TopViewDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_top_TopViewPluginManager_failedToDeleteTopView") + caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_top_TopViewPluginManager_failedToDeleteTopView") + result.getMessage());
-				}
-			}
-		});
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_top_TopViewPluginManager_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_top_TopViewPluginManager_deleteTopViewComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_top_TopViewPluginManager_failedToDeleteTopView")
+									+ result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -134,6 +137,6 @@ public class TopViewPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{TopViewEditPane.class};
+		return new Class[] { TopViewEditPane.class };
 	}
 }

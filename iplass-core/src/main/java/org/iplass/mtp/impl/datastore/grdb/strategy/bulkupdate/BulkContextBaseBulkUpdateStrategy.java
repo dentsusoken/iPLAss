@@ -35,7 +35,7 @@ public class BulkContextBaseBulkUpdateStrategy implements BulkUpdateStrategy {
 
 	private GRdbEntityStoreStrategy storeStrategy;
 	private RdbAdapter rdb;
-	
+
 	public BulkContextBaseBulkUpdateStrategy(GRdbEntityStoreStrategy storeStrategy, RdbAdapter rdb) {
 		this.storeStrategy = storeStrategy;
 		this.rdb = rdb;
@@ -45,42 +45,46 @@ public class BulkContextBaseBulkUpdateStrategy implements BulkUpdateStrategy {
 	public void bulkUpdate(BulkUpdatable bulkUpdatable,
 			EntityContext entityContext, EntityHandler entityHandler,
 			String clientId) {
-		
+
 		final int tenantId = entityContext.getLocalTenantId();
 		int buffSize = rdb.getBatchSize();//TODO 別定義がよいか？？
-		
+
 		try (Connection con = rdb.getConnection();
-				BulkUpdateState updateState = new BulkUpdateState(storeStrategy, tenantId, clientId, entityContext, entityHandler, bulkUpdatable, con, rdb, buffSize)) {
-			
+				BulkUpdateState updateState = new BulkUpdateState(storeStrategy, tenantId, clientId, entityContext, entityHandler, bulkUpdatable, con,
+						rdb, buffSize)) {
+
 			int count = 0;
-			for (BulkUpdateEntity target: bulkUpdatable) {
-				
-				if (target.getEntity().getVersion() == null) {
-					target.getEntity().setVersion(Long.valueOf(0));
+			for (BulkUpdateEntity target : bulkUpdatable) {
+
+				if (target.getEntity()
+						.getVersion() == null) {
+					target.getEntity()
+							.setVersion(Long.valueOf(0));
 				}
-				if (target.getEntity().getState() == null) {
-					target.getEntity().setValue(Entity.STATE, Entity.STATE_VALID_VALUE);
+				if (target.getEntity()
+						.getState() == null) {
+					target.getEntity()
+							.setValue(Entity.STATE, Entity.STATE_VALID_VALUE);
 				}
-				
+
 				updateState.addToBuffer(target);
 				count++;
-				
+
 				if (count >= buffSize) {
 					updateState.doUpdate();
 					count = 0;
 				}
 			}
-			
+
 			if (count > 0) {
 				updateState.doUpdate();
 			}
-			
+
 			updateState.flushAll();
-			
+
 		} catch (SQLException e) {
 			throw new EntityRuntimeException(e);
 		}
 	}
-	
 
 }

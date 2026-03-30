@@ -27,10 +27,10 @@ import org.iplass.mtp.impl.rdb.adapter.bulk.ColumnValue;
 import org.iplass.mtp.impl.rdb.adapter.bulk.DynamicColumnValue;
 
 public class FixedLiteralColumnValueMapper implements ColumnValueMapper {
-	
+
 	private String colName;
 	private Object value;
-	
+
 	public FixedLiteralColumnValueMapper(String colName, Object value) {
 		this.colName = colName;
 		this.value = value;

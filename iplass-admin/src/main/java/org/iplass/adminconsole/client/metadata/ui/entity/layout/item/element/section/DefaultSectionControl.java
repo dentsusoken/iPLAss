@@ -94,13 +94,15 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 				//カラム数が変更されていたら再構築
 				DefaultSection section = (DefaultSection) event.getValue();
 
-				if (section.getTitle() != null && !section.getTitle().isEmpty()) {
+				if (section.getTitle() != null && !section.getTitle()
+						.isEmpty()) {
 					setTitle(section.getTitle());
 				} else {
 					setTitle("Default Section");
 				}
 
-				if (section.getColNum() == layout.getColNum()) return;
+				if (section.getColNum() == layout.getColNum())
+					return;
 
 				EntityViewItemDropLayout old = layout;
 				layout = createDropLayout(triggerType, defName, section.getColNum());
@@ -137,7 +139,7 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 		} else {
 			layout = new DetailDropLayout(colNum, defName);
 		}
-		
+
 		layout.setDropTypes(
 				EntityViewDragPane.DRAG_TYPE_SECTION,
 				EntityViewDragPane.DRAG_TYPE_PROPERTY,
@@ -155,7 +157,8 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 	 */
 	public DefaultSectionControl(String defName, FieldReferenceType triggerType, DefaultSection section) {
 		this(defName, triggerType, section.getTitle(), section.getColNum());
-		setClassName(section.getClass().getName());
+		setClassName(section.getClass()
+				.getName());
 		setValueObject(section);
 	}
 
@@ -183,14 +186,14 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 	 * @param propertyOperationHandler
 	 */
 	public void restoreMember() {
-		DefaultSection section = (DefaultSection)getValueObject();
+		DefaultSection section = (DefaultSection) getValueObject();
 
 		//配下の要素を復元
 		for (Element element : section.getElements()) {
 			if (element instanceof Section) {
-				ItemControl child = sectionController.createControl((Section)element, defName, getTriggerType(), ed);
+				ItemControl child = sectionController.createControl((Section) element, defName, getTriggerType(), ed);
 				if (child instanceof DefaultSectionControl) {
-					DefaultSectionControl dsChild = (DefaultSectionControl)child;
+					DefaultSectionControl dsChild = (DefaultSectionControl) child;
 					dsChild.setEntityDefinition(ed);
 					dsChild.restoreMember();
 				}
@@ -221,13 +224,16 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 		}
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see org.iplass.adminconsole.client.ui.layout.SectionWindow#getSection()
 	 */
 	@Override
 	public DefaultSection getSection() {
 		DefaultSection section = (DefaultSection) getValueObject();
-		section.getElements().clear();
+		section.getElements()
+				.clear();
 		section.setElements(getData());
 		return section;
 	}

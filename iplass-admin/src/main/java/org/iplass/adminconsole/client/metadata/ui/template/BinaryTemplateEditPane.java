@@ -193,7 +193,8 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 		if (localeList != null && !localeList.isEmpty()) {
 			for (LocalizedBinaryDefinitionInfo info : localeList) {
-				String locale = info.getDefinition().getLocaleName();
+				String locale = info.getDefinition()
+						.getLocaleName();
 
 				String prefix = BinaryTemplateUploadProperty.LOCALE_PREFIX + locale + "_";
 
@@ -204,7 +205,8 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 				// ファイルが選択されているもののみ送る
 				// (新規でFileが選択されていないものは除外される
 				if (info.getFileItem() != null) {
-					FileUpload localeFile = info.getFileItem().getEditFileUpload();
+					FileUpload localeFile = info.getFileItem()
+							.getEditFileUpload();
 					localeFile.setName(prefix + BinaryTemplateUploadProperty.UPLOAD_FILE);
 					localeFile.setVisible(false);
 					paramPanel.add(localeFile);
@@ -246,23 +248,22 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 		} else {
 			downloadForm.setVisible(false);
 			lblRegistedStatus.setContents("Still no binary data.");
-			imgRegistedBinary.setSrc((String)null);
+			imgRegistedBinary.setSrc((String) null);
 			imgRegistedBinary.setVisible(false);
 		}
 	}
 
 	private void setTemplateDownloadAction(final String templateName, final String lang) {
-		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler =
-				new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler = new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				PostDownloadFrame frame = new PostDownloadFrame();
 				frame.setAction(GWT.getModuleBaseURL() + BinaryTemplateDownloadProperty.ACTION_URL)
-				.addParameter(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
-				.addParameter(BinaryTemplateDownloadProperty.DEFINITION_NAME, templateName)
-				.addParameter(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.ATTACHMENT.name())
-				.addParameter("dummy", String.valueOf(System.currentTimeMillis()));
+						.addParameter(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
+						.addParameter(BinaryTemplateDownloadProperty.DEFINITION_NAME, templateName)
+						.addParameter(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.ATTACHMENT.name())
+						.addParameter("dummy", String.valueOf(System.currentTimeMillis()));
 				if (!SmartGWTUtil.isEmpty(lang)) {
 					frame.addParameter(BinaryTemplateDownloadProperty.LANG, lang);
 				}
@@ -313,8 +314,10 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 			if (callback != null) {
 				String message = null;
-				if (result.getMessages() != null && result.getMessages().size() > 0) {
-					message = result.getMessages().get(0);
+				if (result.getMessages() != null && result.getMessages()
+						.size() > 0) {
+					message = result.getMessages()
+							.get(0);
 				}
 				callback.onSuccess(new AdminDefinitionModifyResult(result.isFileUploadStatusSuccess(), message));
 			}

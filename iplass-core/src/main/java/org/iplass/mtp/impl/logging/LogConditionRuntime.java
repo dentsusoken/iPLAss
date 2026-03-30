@@ -34,23 +34,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LogConditionRuntime {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(LogConditionRuntime.class);
-	
+
 	private LogCondition condition;
 	private Object concreteServiceRuntime;
 	private Script conditionScript;
 	private Pattern loggerNamePattern;
 	private ConcurrentHashMap<String, Boolean> loggerNameCache;
 
-	
 	public LogConditionRuntime(LogCondition condition, Object concreteServiceRuntime, TenantContext tc, int index) {
 		this.condition = condition;
 		this.concreteServiceRuntime = concreteServiceRuntime;
-		
+
 		if (condition != null) {
 			if (condition.getCondition() != null) {
-				conditionScript = tc.getScriptEngine().createScript(condition.getCondition(), "LogCondition_" + index);
+				conditionScript = tc.getScriptEngine()
+						.createScript(condition.getCondition(), "LogCondition_" + index);
 			}
 			if (condition.getLoggerNamePattern() != null) {
 				loggerNamePattern = Pattern.compile(condition.getLoggerNamePattern());
@@ -58,25 +58,27 @@ public class LogConditionRuntime {
 			}
 		}
 	}
-	
+
 	public boolean hasConditionScript() {
 		return conditionScript != null;
 	}
-	
+
 	public boolean isConditionMatch(ExecuteContext ec) {
 		if (condition == null) {
 			return false;
 		}
-		
+
 		if (condition.getCondition() == null) {
 			return true;
 		}
-		
-		ScriptContext sc = ec.getTenantContext().getScriptEngine().newScriptContext();
+
+		ScriptContext sc = ec.getTenantContext()
+				.getScriptEngine()
+				.newScriptContext();
 		sc.setAttribute(LogCondition.BIND_NAME_MDC, new MdcAdapter());
 		sc.setAttribute(LogCondition.BIND_NAME_REQUEST, RequestContextHolder.getCurrent());
 		sc.setAttribute(LogCondition.BIND_NAME_AUTH_CONTEXT, AuthContext.getCurrentContext());
-		
+
 		try {
 			Boolean ret = (Boolean) conditionScript.eval(sc);
 			if (ret == null) {
@@ -90,34 +92,34 @@ public class LogConditionRuntime {
 		}
 		return false;
 	}
-	
+
 	public boolean isTargetLogger(String loggerName) {
 		if (loggerNamePattern == null) {
 			return true;
 		}
-		
+
 		Boolean ret = loggerNameCache.get(loggerName);
 		if (ret == null) {
-			if (loggerNamePattern.matcher(loggerName).matches()) {
+			if (loggerNamePattern.matcher(loggerName)
+					.matches()) {
 				ret = Boolean.TRUE;
 			} else {
 				ret = Boolean.FALSE;
 			}
-			
+
 			loggerNameCache.put(loggerName, ret);
 		}
-		
+
 		return ret;
 	}
-	
-	
+
 	public LogCondition getCondition() {
 		if (condition == null) {
 			return null;
 		}
 		return condition.copy();
 	}
-	
+
 	public Object getConcreteServiceRuntime() {
 		return concreteServiceRuntime;
 	}

@@ -39,7 +39,7 @@ public class FileArchiveBinaryDefinition extends FileBinaryDefinition implements
 	public FileArchiveBinaryDefinition() {
 		super();
 	}
-	
+
 	public FileArchiveBinaryDefinition(String name, Path file) {
 		super(name, file);
 	}
@@ -84,8 +84,7 @@ public class FileArchiveBinaryDefinition extends FileBinaryDefinition implements
 		}
 		return false;
 	}
-	
-	
+
 	private static class ZipInputStreamPerZipFile extends FilterInputStream {
 		private ZipFile zip;
 

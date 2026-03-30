@@ -85,5 +85,4 @@ public class MetaFieldUpdateEvent {
 		this.value = value;
 	}
 
-
 }

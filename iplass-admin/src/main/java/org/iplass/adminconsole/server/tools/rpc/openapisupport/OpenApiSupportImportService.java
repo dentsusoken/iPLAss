@@ -190,7 +190,8 @@ public class OpenApiSupportImportService extends AdminUploadAction {
 		@Override
 		public List<OpenApiImportResult> call() {
 			try {
-				var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
+				var service = ServiceRegistry.getRegistry()
+						.getService(OpenApiService.class);
 				return service.importOpenApiToWebApi(file, fileType, version);
 			} catch (Exception e) {
 				TransactionUtil.setRollback();

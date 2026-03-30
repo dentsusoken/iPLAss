@@ -57,9 +57,12 @@ public abstract class DeleteCommandBase implements Command {
 	 * コンストラクタ
 	 */
 	public DeleteCommandBase() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 	}
 
 	public DeleteCommandContext getContext(RequestContext request) {
@@ -136,7 +139,8 @@ public abstract class DeleteCommandBase implements Command {
 		private String message;
 
 		/** コンストラクタ */
-		public DeleteResult() {}
+		public DeleteResult() {
+		}
 
 		/**
 		 * 結果を取得します。

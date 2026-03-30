@@ -25,24 +25,23 @@ import java.sql.Statement;
 
 import org.iplass.mtp.impl.rdb.adapter.MultiInsertContext;
 
-
 public class OracleMultiInsertContext extends MultiInsertContext {
-	
+
 	private StringBuilder sb;
-	
+
 	private boolean isInsert;
-	
+
 	public OracleMultiInsertContext(Statement stmt) {
 		super(stmt);
 		sb = new StringBuilder();
 		sb.append("INSERT ALL ");
 		isInsert = false;
 	}
-	
+
 	@Override
 	public void addInsertSql(String sql) throws SQLException {
-		
-		if (sql.regionMatches(true,0,"INSERT",0,6)) {
+
+		if (sql.regionMatches(true, 0, "INSERT", 0, 6)) {
 			sb.append(sql.substring(6));
 			sb.append(" ");
 			isInsert = true;
@@ -50,14 +49,14 @@ public class OracleMultiInsertContext extends MultiInsertContext {
 			super.addInsertSql(sql);
 		}
 	}
-	
+
 	@Override
 	public int[] execute() throws SQLException {
 		//insertが最後に実行
 		if (isInsert) {
 			sb.append(" SELECT 1 FROM DUAL");
 			super.addInsertSql(sb.toString());
-			
+
 		}
 		return super.execute();
 	}
@@ -69,7 +68,5 @@ public class OracleMultiInsertContext extends MultiInsertContext {
 		}
 		return super.isSqlAdded();
 	}
-	
-	
 
 }

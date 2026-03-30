@@ -27,10 +27,10 @@ public class MetaPrefixEntryPathTranslator extends MetaEntryPathTranslator {
 	private static final long serialVersionUID = 6596220816874468752L;
 
 	private String prefix;
-	
+
 	public MetaPrefixEntryPathTranslator() {
 	}
-	
+
 	public MetaPrefixEntryPathTranslator(String prefix) {
 		this.prefix = prefix;
 	}

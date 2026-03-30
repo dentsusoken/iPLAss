@@ -35,9 +35,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  *
  */
 @XmlSeeAlso({
-	PairwiseSubjectIdentifierTypeDefinition.class,
-	PublicSubjectIdentifierTypeDefinition.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+		PairwiseSubjectIdentifierTypeDefinition.class,
+		PublicSubjectIdentifierTypeDefinition.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public class SubjectIdentifierTypeDefinition implements Serializable {
 	private static final long serialVersionUID = 6494917476553206278L;
 }

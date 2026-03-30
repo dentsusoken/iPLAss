@@ -52,7 +52,7 @@ public class EntityMenuAction {
 	 * @return アクション名
 	 */
 	public String getActionName() {
-	    return actionName;
+		return actionName;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class EntityMenuAction {
 	 * @param actionName アクション名
 	 */
 	public void setActionName(String actionName) {
-	    this.actionName = actionName;
+		this.actionName = actionName;
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class EntityMenuAction {
 	 * @return Entity定義名
 	 */
 	public String getDefName() {
-	    return defName;
+		return defName;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class EntityMenuAction {
 	 * @param defName Entity定義名
 	 */
 	public void setDefName(String defName) {
-	    this.defName = defName;
+		this.defName = defName;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class EntityMenuAction {
 	 * @return View名
 	 */
 	public String getViewName() {
-	    return viewName;
+		return viewName;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class EntityMenuAction {
 	 * @param viewName View名
 	 */
 	public void setViewName(String viewName) {
-	    this.viewName = viewName;
+		this.viewName = viewName;
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class EntityMenuAction {
 	 * @return 画面表示時に検索を実行
 	 */
 	public boolean isExecuteSearch() {
-	    return executeSearch;
+		return executeSearch;
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class EntityMenuAction {
 	 * @param executeSearch 画面表示時に検索を実行
 	 */
 	public void setExecuteSearch(boolean executeSearch) {
-	    this.executeSearch = executeSearch;
+		this.executeSearch = executeSearch;
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class EntityMenuAction {
 	 * @return 実行時に追加されるパラメータ
 	 */
 	public String getParameter() {
-	    return parameter;
+		return parameter;
 	}
 
 	/**
@@ -124,6 +124,6 @@ public class EntityMenuAction {
 	 * @param parameter 実行時に追加されるパラメータ
 	 */
 	public void setParameter(String parameter) {
-	    this.parameter = parameter;
+		this.parameter = parameter;
 	}
 }

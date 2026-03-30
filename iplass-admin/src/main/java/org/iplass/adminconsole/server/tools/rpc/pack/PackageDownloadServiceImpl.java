@@ -40,7 +40,6 @@ import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.impl.tools.pack.PackageEntity;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-
 /**
  * PackageDownload用Service実装クラス
  */
@@ -74,10 +73,12 @@ public class PackageDownloadServiceImpl extends AdminDownloadService {
 			fileName = fileName + ".zip";
 		}
 
-		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
-		aals.logDownload("PackageDownload", fileName, "packageName:" + entity.getName() + " lobId:" + bin.getLobId() + " entityName:" + PackageEntity.ENTITY_DEFINITION_NAME + " propertyName:" + PackageEntity.ARCHIVE);
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
+		aals.logDownload("PackageDownload", fileName, "packageName:" + entity.getName() + " lobId:" + bin.getLobId() + " entityName:"
+				+ PackageEntity.ENTITY_DEFINITION_NAME + " propertyName:" + PackageEntity.ARCHIVE);
 
-		try (InputStream is = em.getInputStream(bin)){
+		try (InputStream is = em.getInputStream(bin)) {
 
 			if (is == null) {
 				throw new RuntimeException(rs("tools.pack.PackageDownloadServiceImpl.canNotGetUploadFile", fileOid));
@@ -90,7 +91,7 @@ public class PackageDownloadServiceImpl extends AdminDownloadService {
 			IOUtils.copy(is, resp.getOutputStream());
 
 		} catch (IOException e) {
-            throw new DownloadRuntimeException(e);
+			throw new DownloadRuntimeException(e);
 		}
 	}
 

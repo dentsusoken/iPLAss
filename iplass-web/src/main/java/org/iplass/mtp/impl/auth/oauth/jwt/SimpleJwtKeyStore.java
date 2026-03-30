@@ -49,7 +49,6 @@ import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * KeyStoreベースのJwtKeyStore実装。
  * KeyStoreに格納されている鍵を利用してJWTの署名に利用。
@@ -63,7 +62,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleJwtKeyStore implements JwtKeyStore {
 	private static Logger logger = LoggerFactory.getLogger(SimpleJwtKeyStore.class);
-	
+
 	private String keyStoreType = "PKCS12";
 	private String keyStoreProvider;
 	private String keyStoreFilePath;
@@ -72,16 +71,17 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 	private Integer keyStoreReloadIntervalMinutes;
 	private JwtKeyRolloverType rollOverType = JwtKeyRolloverType.OLDER;
 	private long rollOverDaysBeforeExpire;
-	
+
 	private volatile CertStore certStore;
-	
+
 	private class CertStore {
 		private final long expires;
 		private final KeyStore store;
 		private final List<String> aliases;
 
-		private CertStore() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException, NoSuchProviderException {
-			
+		private CertStore()
+				throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException, NoSuchProviderException {
+
 			KeyStore ks;
 			if (keyStoreProvider == null) {
 				ks = KeyStore.getInstance(keyStoreType);
@@ -106,7 +106,7 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 				}
 			}
 			store = ks;
-			
+
 			List<String> al = new ArrayList<>();
 			Enumeration<String> en = ks.aliases();
 			while (en.hasMoreElements()) {
@@ -121,7 +121,7 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 					} catch (CertificateExpiredException e) {
 						//ignore
 						logger.warn("JwtKey:" + name + " is expired.");
-					} catch(CertificateNotYetValidException e) {
+					} catch (CertificateNotYetValidException e) {
 						valid = true;
 					}
 
@@ -134,7 +134,7 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 							if (keyPass == null) {
 								keyPass = keyStorePassword;
 							}
-							
+
 							Key k = ks.getKey(name, keyPass.toCharArray());
 							if (k instanceof PrivateKey) {
 								al.add(name);
@@ -145,21 +145,21 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 					}
 				}
 			}
-			
+
 			if (keyStoreReloadIntervalMinutes != null && keyStoreReloadIntervalMinutes > 0) {
 				expires = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(keyStoreReloadIntervalMinutes);
 			} else {
 				expires = Long.MAX_VALUE;
 			}
-			
+
 			aliases = al;
-			
+
 			if (aliases.size() == 0) {
 				logger.warn("Currently non expired JwtKey does not exists.");
 			}
 		}
 	}
-	
+
 	protected InputStream inputStreamFromFile() throws IOException {
 		InputStream is = getClass().getResourceAsStream(keyStoreFilePath);
 		if (is == null) {
@@ -167,12 +167,12 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 		}
 		return is;
 	}
-	
+
 	private CertStore getStore() {
 		if (certStore == null) {
 			return null;
 		}
-		
+
 		long now = System.currentTimeMillis();
 		if (certStore.expires < now) {
 			synchronized (this) {
@@ -187,7 +187,7 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 		}
 		return certStore;
 	}
-	
+
 	public JwtKeyRolloverType getRollOverType() {
 		return rollOverType;
 	}
@@ -207,36 +207,47 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 	public String getKeyStoreType() {
 		return keyStoreType;
 	}
+
 	public void setKeyStoreType(String keyStoreType) {
 		this.keyStoreType = keyStoreType;
 	}
+
 	public String getKeyStoreProvider() {
 		return keyStoreProvider;
 	}
+
 	public void setKeyStoreProvider(String keyStoreProvider) {
 		this.keyStoreProvider = keyStoreProvider;
 	}
+
 	public String getKeyStoreFilePath() {
 		return keyStoreFilePath;
 	}
+
 	public void setKeyStoreFilePath(String keyStoreFilePath) {
 		this.keyStoreFilePath = keyStoreFilePath;
 	}
+
 	public String getKeyStorePassword() {
 		return keyStorePassword;
 	}
+
 	public void setKeyStorePassword(String keyStorePassword) {
 		this.keyStorePassword = keyStorePassword;
 	}
+
 	public Map<String, String> getKeyPasswordMap() {
 		return keyPasswordMap;
 	}
+
 	public void setKeyPasswordMap(Map<String, String> keyPasswordMap) {
 		this.keyPasswordMap = keyPasswordMap;
 	}
+
 	public Integer getKeyStoreReloadIntervalMinutes() {
 		return keyStoreReloadIntervalMinutes;
 	}
+
 	public void setKeyStoreReloadIntervalMinutes(Integer keyStoreReloadIntervalMinutes) {
 		this.keyStoreReloadIntervalMinutes = keyStoreReloadIntervalMinutes;
 	}
@@ -245,7 +256,7 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 	public CertificateKeyPair getCertificateKeyPair() {
 		return rollOverType.select(this);
 	}
-	
+
 	private CertificateKeyPair getCertificateKeyPair(String keyId, CertStore cs) throws CertificateExpiredException, CertificateNotYetValidException {
 		String keyPass = null;
 		if (cs != null) {
@@ -256,7 +267,7 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 				keyPass = keyStorePassword;
 			}
 		}
-			
+
 		try {
 			X509Certificate c = (X509Certificate) cs.store.getCertificate(keyId);
 			try {
@@ -272,17 +283,18 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public List<CertificateKeyPair> list() {
 		CertStore cs = getStore();
 		if (cs != null) {
 			List<CertificateKeyPair> list = new ArrayList<>();
-			for (String keyId: cs.aliases) {
+			for (String keyId : cs.aliases) {
 				CertificateKeyPair pair = null;
 				try {
 					pair = getCertificateKeyPair(keyId, cs);
-					pair.getCertificate().checkValidity();
+					pair.getCertificate()
+							.checkValidity();
 				} catch (CertificateExpiredException e) {
 					pair = null;
 					logger.debug("JwtKey:" + keyId + " is expired.");
@@ -290,7 +302,7 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 					//今後利用されうるので結果として含めて返す
 					logger.debug("JwtKey:" + keyId + " is not yet valid.");
 				}
-				
+
 				if (pair != null) {
 					list.add(pair);
 				}
@@ -315,5 +327,5 @@ public class SimpleJwtKeyStore implements JwtKeyStore {
 			}
 		}
 	}
-	
+
 }

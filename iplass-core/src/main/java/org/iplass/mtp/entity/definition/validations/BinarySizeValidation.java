@@ -55,16 +55,19 @@ public class BinarySizeValidation extends ValidationDefinition {
 		this.min = min;
 		this.max = max;
 	}
-	
+
 	public Long getMax() {
 		return max;
 	}
+
 	public void setMax(Long max) {
 		this.max = max;
 	}
+
 	public Long getMin() {
 		return min;
 	}
+
 	public void setMin(Long min) {
 		this.min = min;
 	}

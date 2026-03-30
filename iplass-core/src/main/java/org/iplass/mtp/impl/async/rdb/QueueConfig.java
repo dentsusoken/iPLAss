@@ -23,23 +23,23 @@ package org.iplass.mtp.impl.async.rdb;
 import java.util.concurrent.TimeUnit;
 
 public class QueueConfig {
-	
+
 	private int id;
 	private String name;
 	private long resultRemainingTime = TimeUnit.DAYS.toMillis(1);
 	private boolean strictSequence = true;
 	private boolean selectWorkerOnSubmit = false;
-	
+
 	private WorkerConfig worker = new WorkerConfig();
-	
+
 	public QueueConfig() {
 	}
-	
+
 	public QueueConfig(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
-	
+
 	public WorkerConfig getWorker() {
 		return worker;
 	}
@@ -47,33 +47,43 @@ public class QueueConfig {
 	public void setWorker(WorkerConfig worker) {
 		this.worker = worker;
 	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public boolean isSelectWorkerOnSubmit() {
 		return selectWorkerOnSubmit;
 	}
+
 	public void setSelectWorkerOnSubmit(boolean selectWorkerOnSubmit) {
 		this.selectWorkerOnSubmit = selectWorkerOnSubmit;
 	}
+
 	public boolean isStrictSequence() {
 		return strictSequence;
 	}
+
 	public void setStrictSequence(boolean strictSequence) {
 		this.strictSequence = strictSequence;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public long getResultRemainingTime() {
 		return resultRemainingTime;
 	}
+
 	public void setResultRemainingTime(long resultRemainingTime) {
 		this.resultRemainingTime = resultRemainingTime;
 	}

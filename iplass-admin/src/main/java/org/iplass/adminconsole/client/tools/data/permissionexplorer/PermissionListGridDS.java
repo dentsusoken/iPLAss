@@ -103,7 +103,7 @@ public abstract class PermissionListGridDS extends PermissionGridDS {
 		fields.addAll(codeFieldList);
 		fields.addAll(dataFieldList);
 
-		return fields.toArray(new ListGridField[]{});
+		return fields.toArray(new ListGridField[] {});
 	}
 
 	/**
@@ -118,7 +118,7 @@ public abstract class PermissionListGridDS extends PermissionGridDS {
 
 		if (!getRoleCodeList().isEmpty() && records != null) {
 			for (ListGridRecord lgrecord : records) {
-				PermissionListGridRecord record = (PermissionListGridRecord)lgrecord;
+				PermissionListGridRecord record = (PermissionListGridRecord) lgrecord;
 
 				PermissionInfo permissionInfo = new PermissionInfo();
 				permissionInfo.setDefinitionName(record.getDefinitionName());
@@ -130,7 +130,7 @@ public abstract class PermissionListGridDS extends PermissionGridDS {
 						for (Entity permission : record.getPermission(i)) {
 							RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
 							rolePermissionInfo.setPermission(permission);
-							rolePermissionInfo.setStatus(record.getPermissionStatus(i));	//StatusはRoleレベルで同じ
+							rolePermissionInfo.setStatus(record.getPermissionStatus(i)); //StatusはRoleレベルで同じ
 							rolePermissionList.add(rolePermissionInfo);
 						}
 					}
@@ -161,17 +161,18 @@ public abstract class PermissionListGridDS extends PermissionGridDS {
 
 		if (!getRoleCodeList().isEmpty() && records != null) {
 			for (ListGridRecord lgrecord : records) {
-				PermissionListGridRecord record = (PermissionListGridRecord)lgrecord;
+				PermissionListGridRecord record = (PermissionListGridRecord) lgrecord;
 
 				List<RolePermissionInfo> rolePermissionList = new ArrayList<RolePermissionInfo>();
 				for (int i = 0; i < getRoleCodeList().size(); i++) {
 					//Statusが設定されている場合のみ対象(追加、編集、削除されているデータ)
-					if (record.getPermissionStatus(i) != null && !record.getPermissionStatus(i).isEmpty()) {
+					if (record.getPermissionStatus(i) != null && !record.getPermissionStatus(i)
+							.isEmpty()) {
 						if (record.getPermission(i) != null) {
 							for (Entity permission : record.getPermission(i)) {
 								RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
 								rolePermissionInfo.setPermission(permission);
-								rolePermissionInfo.setStatus(record.getPermissionStatus(i));	//StatusはRoleレベルで同じ
+								rolePermissionInfo.setStatus(record.getPermissionStatus(i)); //StatusはRoleレベルで同じ
 								rolePermissionList.add(rolePermissionInfo);
 							}
 						}
@@ -201,7 +202,7 @@ public abstract class PermissionListGridDS extends PermissionGridDS {
 	 */
 	protected void setResponsePermissinData(String requestId, DSRequest request, DSResponse response, PermissionSearchResult result) {
 		List<PermissionListGridRecord> records = createRecordList(result.getPermissionList());
-		response.setData(records.toArray(new PermissionListGridRecord[]{}));
+		response.setData(records.toArray(new PermissionListGridRecord[] {}));
 		response.setTotalRows(records.size());
 		response.setStartRow(0);
 		processResponse(requestId, response);
@@ -357,7 +358,7 @@ public abstract class PermissionListGridDS extends PermissionGridDS {
 
 		private List<String> roleCodeList;
 
-		public PermissionListGridRecord(){
+		public PermissionListGridRecord() {
 		}
 
 		public PermissionListGridRecord(List<String> roleCodeList, PermissionInfo info) {
@@ -418,12 +419,12 @@ public abstract class PermissionListGridDS extends PermissionGridDS {
 			}
 			Object jsObject = getAttributeAsObject("roleData_" + roleIndex);
 			if (jsObject != null) {
-				Object[] objArray = (Object[]) JSOHelper.convertToJava((JavaScriptObject)jsObject, true);
+				Object[] objArray = (Object[]) JSOHelper.convertToJava((JavaScriptObject) jsObject, true);
 				Entity[] entityArray = new Entity[objArray.length];
 				int cnt = 0;
 				for (Object obj : objArray) {
-					entityArray[cnt]  = (Entity) obj;
-					cnt ++;
+					entityArray[cnt] = (Entity) obj;
+					cnt++;
 				}
 				return entityArray;
 			} else {
@@ -434,7 +435,7 @@ public abstract class PermissionListGridDS extends PermissionGridDS {
 		public void addPermission(String roleCode, Entity value) {
 			Entity[] current = getPermission(roleCode);
 			if (current == null) {
-				setPermission(roleCode, new Entity[]{value});
+				setPermission(roleCode, new Entity[] { value });
 			} else {
 				Entity[] newArray = new Entity[current.length + 1];
 				for (int i = 0; i < current.length; i++) {

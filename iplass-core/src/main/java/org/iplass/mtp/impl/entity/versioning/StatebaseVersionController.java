@@ -41,40 +41,44 @@ public class StatebaseVersionController extends NumberbaseVersionController {
 
 	@Override
 	public void update(Entity entity, UpdateOption option, EntityHandler eh, EntityContext entityContext) {
-		
+
 		boolean needStateUpdate = needStateUpdate(entity, option, eh, entityContext);
-		
+
 		super.update(entity, option, eh, entityContext);
-		
+
 		if (needStateUpdate) {
 			//他のversionのstateをinvalidに
-			UpdateCondition uc = new UpdateCondition(eh.getMetaData().getName())
-					.value(Entity.STATE, new SelectValue(Entity.STATE_INVALID_VALUE))
-					.where(new And()
-							.and(new Equals(Entity.OID, entity.getOid()))
-							.and(new NotEquals(Entity.VERSION, entity.getVersion()))
-							.and(new Equals(Entity.STATE, new SelectValue(Entity.STATE_VALID_VALUE))));
-			
-			new EntityUpdateAllInvocationImpl(uc, eh.getService().getInterceptors(), eh).proceed();
+			UpdateCondition uc = new UpdateCondition(eh.getMetaData()
+					.getName())
+							.value(Entity.STATE, new SelectValue(Entity.STATE_INVALID_VALUE))
+							.where(new And()
+									.and(new Equals(Entity.OID, entity.getOid()))
+									.and(new NotEquals(Entity.VERSION, entity.getVersion()))
+									.and(new Equals(Entity.STATE, new SelectValue(Entity.STATE_VALID_VALUE))));
+
+			new EntityUpdateAllInvocationImpl(uc, eh.getService()
+					.getInterceptors(), eh).proceed();
 		}
 	}
-	
+
 	private boolean needStateUpdate(Entity entity, UpdateOption option, EntityHandler eh, EntityContext entityContext) {
 		if (option.getTargetVersion() == TargetVersion.NEW) {
 			return true;
 		}
-		
+
 		return option.getUpdateProperties() != null
-				&& option.getUpdateProperties().contains(Entity.STATE)
+				&& option.getUpdateProperties()
+						.contains(Entity.STATE)
 				&& entity.getState() != null
-				&& Entity.STATE_VALID_VALUE.equals(entity.getState().getValue());
+				&& Entity.STATE_VALID_VALUE.equals(entity.getState()
+						.getValue());
 	}
 
 	@Override
 	public Condition refEntityQueryCondition(String refPropPath, ReferencePropertyHandler rph, AsOf asOf, EntityContext context) {
-		
+
 		asOf = judgeAsOf(refPropPath, rph, asOf);
-		
+
 		switch (asOf.getSpec()) {
 		case UPDATE_TIME:
 			return null;

@@ -30,12 +30,12 @@ import org.iplass.mtp.impl.entity.listener.MetaScriptingEventListener;
 import org.iplass.mtp.impl.entity.listener.MetaSendNotificationEventListener;
 import org.iplass.mtp.impl.metadata.MetaData;
 
-@XmlSeeAlso({MetaJavaClassEventListener.class, MetaScriptingEventListener.class, MetaSendNotificationEventListener.class})
+@XmlSeeAlso({ MetaJavaClassEventListener.class, MetaScriptingEventListener.class, MetaSendNotificationEventListener.class })
 public abstract class MetaEventListener implements MetaData {
 	private static final long serialVersionUID = 3146246621777839273L;
-	
+
 	private boolean withoutMappedByReference;
-	
+
 	public boolean isWithoutMappedByReference() {
 		return withoutMappedByReference;
 	}
@@ -43,19 +43,18 @@ public abstract class MetaEventListener implements MetaData {
 	public void setWithoutMappedByReference(boolean withoutMappedByReference) {
 		this.withoutMappedByReference = withoutMappedByReference;
 	}
-	
+
 	protected void copyTo(MetaEventListener l) {
 		l.withoutMappedByReference = withoutMappedByReference;
 	}
-	
+
 	protected void fillFrom(EventListenerDefinition def) {
 		this.withoutMappedByReference = def.isWithoutMappedByReference();
 	}
-	
+
 	protected void fillTo(EventListenerDefinition def) {
 		def.setWithoutMappedByReference(withoutMappedByReference);
 	}
-	
 
 	@Override
 	public int hashCode() {
@@ -80,27 +79,36 @@ public abstract class MetaEventListener implements MetaData {
 	}
 
 	public abstract MetaEventListener copy();
-	
+
 	public abstract void applyConfig(EventListenerDefinition def);
-	
+
 	public abstract EventListenerDefinition currentConfig();
-	
+
 	public abstract EventListenerRuntime createRuntime(MetaEntity entity);
-	
-	public abstract class EventListenerRuntime /*implements MetaDataRuntime*/ {
-		
+
+	public abstract class EventListenerRuntime /* implements MetaDataRuntime */ {
+
 		public abstract void handleAfterDelete(Entity entity, EntityEventContext context);
+
 		public abstract void handleAfterInsert(Entity entity, EntityEventContext context);
+
 		public abstract void handleAfterUpdate(Entity entity, EntityEventContext context);
+
 		public abstract boolean handleBeforeDelete(Entity entity, EntityEventContext context);
+
 		public abstract boolean handleBeforeInsert(Entity entity, EntityEventContext context);
+
 		public abstract boolean handleBeforeUpdate(Entity entity, EntityEventContext context);
+
 		public abstract void handleOnLoad(Entity entity);
+
 		public abstract void handleBeforeValidate(Entity entity, EntityEventContext context);
+
 		//TODO insertとupdateのvalidate分ける
 		public abstract void handleAfterRestore(Entity entity);
+
 		public abstract void handleAfterPurge(Entity entity);
-		
+
 		public MetaEventListener getMetaData() {
 			return MetaEventListener.this;
 		}

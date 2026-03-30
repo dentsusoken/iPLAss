@@ -44,7 +44,7 @@ import org.iplass.mtp.view.generic.element.property.validation.ViewValidatorBase
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/element/property/Property.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/element/property/Property.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
 public class PropertyItem extends PropertyBase {
 
@@ -53,134 +53,131 @@ public class PropertyItem extends PropertyBase {
 
 	/** 通常検索非表示設定 */
 	@MetaFieldInfo(
-			displayName="通常検索非表示設定",
-			displayNameKey="generic_element_property_PropertyItem_hideNormalConditionDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=200,
-			description="通常検索の項目として非表示にするかを設定します。",
-			descriptionKey="generic_element_property_PropertyItem_hideNormalConditionDescriptionKey"
+			displayName = "通常検索非表示設定",
+			displayNameKey = "generic_element_property_PropertyItem_hideNormalConditionDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 200,
+			description = "通常検索の項目として非表示にするかを設定します。",
+			descriptionKey = "generic_element_property_PropertyItem_hideNormalConditionDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean hideNormalCondition;
 
 	/** 詳細検索非表示設定 */
 	@MetaFieldInfo(
-			displayName="詳細検索非表示設定",
-			displayNameKey="generic_element_property_PropertyItem_hideDetailConditionDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=210,
-			description="詳細検索の項目として非表示にするかを設定します。",
-			descriptionKey="generic_element_property_PropertyItem_hideDetailConditionDescriptionKey"
+			displayName = "詳細検索非表示設定",
+			displayNameKey = "generic_element_property_PropertyItem_hideDetailConditionDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 210,
+			description = "詳細検索の項目として非表示にするかを設定します。",
+			descriptionKey = "generic_element_property_PropertyItem_hideDetailConditionDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean hideDetailCondition;
 
 	/** 詳細編集非表示設定 */
 	@MetaFieldInfo(
-			displayName="詳細編集非表示設定",
-			displayNameKey="generic_element_property_PropertyItem_hideDetailDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=220,
-			description="詳細編集の項目として非表示にするかを設定します。",
-			descriptionKey="generic_element_property_PropertyItem_hideDetailDescriptionKey"
+			displayName = "詳細編集非表示設定",
+			displayNameKey = "generic_element_property_PropertyItem_hideDetailDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 220,
+			description = "詳細編集の項目として非表示にするかを設定します。",
+			descriptionKey = "generic_element_property_PropertyItem_hideDetailDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean hideDetail;
 
 	/** 詳細表示非表示設定 */
 	@MetaFieldInfo(
-			displayName="詳細表示非表示設定",
-			displayNameKey="generic_element_property_PropertyItem_hideViewDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=230,
-			description="詳細表示の項目として非表示にするかを設定します。",
-			descriptionKey="generic_element_property_PropertyItem_hideViewDescriptionKey"
+			displayName = "詳細表示非表示設定",
+			displayNameKey = "generic_element_property_PropertyItem_hideViewDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 230,
+			description = "詳細表示の項目として非表示にするかを設定します。",
+			descriptionKey = "generic_element_property_PropertyItem_hideViewDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean hideView;
 
-
-
-
 	/** 説明 */
 	@MetaFieldInfo(
-			displayName="説明",
-			displayNameKey="generic_element_property_PropertyItem_descriptionDisplaNameKey",
-			description="入力欄下部表示する説明を設定します。",
-			descriptionKey="generic_element_property_PropertyItem_descriptionDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "説明",
+			displayNameKey = "generic_element_property_PropertyItem_descriptionDisplaNameKey",
+			description = "入力欄下部表示する説明を設定します。",
+			descriptionKey = "generic_element_property_PropertyItem_descriptionDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedDescriptionList",
-			displayOrder=400
+			displayOrder = 400
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	@MultiLang(itemNameGetter = "getPropertyName", isUseSuperForItemName = true)
 	private String description;
 
 	/** 説明の多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="説明の多言語設定",
-			displayNameKey="generic_element_property_PropertyItem_localizedDescriptionListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=410
+			displayName = "説明の多言語設定",
+			displayNameKey = "generic_element_property_PropertyItem_localizedDescriptionListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 410
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private List<LocalizedStringDefinition> localizedDescriptionList;
 
 	/** ツールチップ */
 	@MetaFieldInfo(
-			displayName="ツールチップ",
-			displayNameKey="generic_element_property_PropertyItem_tooltipDisplaNameKey",
-			description="ツールチップに表示する説明を設定します。",
-			descriptionKey="generic_element_property_PropertyItem_tooltipDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "ツールチップ",
+			displayNameKey = "generic_element_property_PropertyItem_tooltipDisplaNameKey",
+			description = "ツールチップに表示する説明を設定します。",
+			descriptionKey = "generic_element_property_PropertyItem_tooltipDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedTooltipList",
-			displayOrder=420
+			displayOrder = 420
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	@MultiLang(itemNameGetter = "getPropertyName", isUseSuperForItemName = true)
 	private String tooltip;
 
 	/** ツールチップの多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="ツールチップの多言語設定",
-			displayNameKey="generic_element_property_PropertyItem_localizedTooltipListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=430
+			displayName = "ツールチップの多言語設定",
+			displayNameKey = "generic_element_property_PropertyItem_localizedTooltipListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 430
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	private List<LocalizedStringDefinition> localizedTooltipList;
 
 	/** 必須属性表示タイプ */
 	@MetaFieldInfo(
-			displayName="必須属性表示",
-			displayNameKey="generic_element_property_PropertyItem_requiredDisplayTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=RequiredDisplayType.class,
-			displayOrder=440,
-			description="詳細画面で必須表示を行うかを設定します。<BR />" +
+			displayName = "必須属性表示",
+			displayNameKey = "generic_element_property_PropertyItem_requiredDisplayTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = RequiredDisplayType.class,
+			displayOrder = 440,
+			description = "詳細画面で必須表示を行うかを設定します。<BR />" +
 					"DEFAULT : プロパティ定義の必須設定に従って必須属性を表示<BR />" +
 					"DISPLAY : 必須属性を表示<BR />" +
 					"NONE    : 必須属性を表示しない",
-			descriptionKey="generic_element_property_PropertyItem_requiredDisplayTypeDescriptionKey"
+			descriptionKey = "generic_element_property_PropertyItem_requiredDisplayTypeDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private RequiredDisplayType requiredDisplayType;
 
@@ -189,49 +186,46 @@ public class PropertyItem extends PropertyBase {
 
 	/** 通常検索で必須条件にする */
 	@MetaFieldInfo(
-			displayName="通常検索で必須条件にする",
-			displayNameKey="generic_element_property_PropertyItem_requiredNormalDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=450,
-			description="通常検索で必須条件にするかを設定します。",
-			descriptionKey="generic_element_property_PropertyItem_requiredNormalDescriptionKey"
+			displayName = "通常検索で必須条件にする",
+			displayNameKey = "generic_element_property_PropertyItem_requiredNormalDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 450,
+			description = "通常検索で必須条件にするかを設定します。",
+			descriptionKey = "generic_element_property_PropertyItem_requiredNormalDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean requiredNormal;
 
 	/** 詳細検索で必須条件にする */
 	@MetaFieldInfo(
-			displayName="詳細検索で必須条件にする",
-			displayNameKey="generic_element_property_PropertyItem_requiredDetailDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=460,
-			description="詳細検索で必須条件にするかを設定します。",
-			descriptionKey="generic_element_property_PropertyItem_requiredDetailDescriptionKey"
+			displayName = "詳細検索で必須条件にする",
+			displayNameKey = "generic_element_property_PropertyItem_requiredDetailDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 460,
+			description = "詳細検索で必須条件にするかを設定します。",
+			descriptionKey = "generic_element_property_PropertyItem_requiredDetailDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean requiredDetail;
 
-
-
-
 	/** 入力チェック */
 	@MetaFieldInfo(
-			displayName="入力チェック",
-			displayNameKey="generic_element_property_PropertyItem_validatorDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=ViewValidatorBase.class,
-			displayOrder=2100,
-			description="入力チェックを設定します。",
-			descriptionKey="generic_element_property_PropertyItem_validatorDescriptionKey"
+			displayName = "入力チェック",
+			displayNameKey = "generic_element_property_PropertyItem_validatorDisplaNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = ViewValidatorBase.class,
+			displayOrder = 2100,
+			description = "入力チェックを設定します。",
+			descriptionKey = "generic_element_property_PropertyItem_validatorDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
-	@MultiLang(isMultiLangValue=false)
+	@MultiLang(isMultiLangValue = false)
 	private ViewValidatorBase validator;
 
 	/**
@@ -309,7 +303,7 @@ public class PropertyItem extends PropertyBase {
 	 * @return 詳細編集非表示設定
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -317,7 +311,7 @@ public class PropertyItem extends PropertyBase {
 	 * @param hideDetail 詳細編集非表示設定
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -325,7 +319,7 @@ public class PropertyItem extends PropertyBase {
 	 * @return 詳細表示非表示設定
 	 */
 	public boolean isHideView() {
-	    return hideView;
+		return hideView;
 	}
 
 	/**
@@ -333,7 +327,7 @@ public class PropertyItem extends PropertyBase {
 	 * @param hideView 詳細表示非表示設定
 	 */
 	public void setHideView(boolean hideView) {
-	    this.hideView = hideView;
+		this.hideView = hideView;
 	}
 
 	/**
@@ -429,7 +423,7 @@ public class PropertyItem extends PropertyBase {
 	 * @return 通常検索で必須条件にする
 	 */
 	public boolean isRequiredNormal() {
-	    return requiredNormal;
+		return requiredNormal;
 	}
 
 	/**
@@ -437,7 +431,7 @@ public class PropertyItem extends PropertyBase {
 	 * @param requiredNormal 通常検索で必須条件にする
 	 */
 	public void setRequiredNormal(boolean requiredNormal) {
-	    this.requiredNormal = requiredNormal;
+		this.requiredNormal = requiredNormal;
 	}
 
 	/**
@@ -445,7 +439,7 @@ public class PropertyItem extends PropertyBase {
 	 * @return 詳細検索で必須条件にする
 	 */
 	public boolean isRequiredDetail() {
-	    return requiredDetail;
+		return requiredDetail;
 	}
 
 	/**
@@ -453,7 +447,7 @@ public class PropertyItem extends PropertyBase {
 	 * @param requiredDetail 詳細検索で必須条件にする
 	 */
 	public void setRequiredDetail(boolean requiredDetail) {
-	    this.requiredDetail = requiredDetail;
+		this.requiredDetail = requiredDetail;
 	}
 
 	/**
@@ -461,7 +455,7 @@ public class PropertyItem extends PropertyBase {
 	 * @return 入力チェック
 	 */
 	public ViewValidatorBase getValidator() {
-	    return validator;
+		return validator;
 	}
 
 	/**
@@ -469,7 +463,7 @@ public class PropertyItem extends PropertyBase {
 	 * @param validator 入力チェック
 	 */
 	public void setValidator(ViewValidatorBase validator) {
-	    this.validator = validator;
+		this.validator = validator;
 	}
 
 }

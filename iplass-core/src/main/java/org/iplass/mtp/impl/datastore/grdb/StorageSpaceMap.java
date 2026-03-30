@@ -49,9 +49,9 @@ public class StorageSpaceMap {
 	private int uniqueIndexedDoubleColumns;
 
 	private boolean customPartition;
-	
+
 	private TableAllocator tableAllocator = new HashingTableAllocator();
-	
+
 	private int varcharColumnLength = -1;
 
 	public String generateTableNamePostfix(int tenantId, String metaId) {
@@ -80,7 +80,7 @@ public class StorageSpaceMap {
 			}
 		}
 	}
-	
+
 	public int maxColumns() {
 		int ret = Math.max(varcharColumns, decimalColumns);
 		ret = Math.max(ret, timestampColumns);
@@ -105,11 +105,11 @@ public class StorageSpaceMap {
 				return -1;
 			}
 		}
-		
+
 		if (checkTableNamePostfix.equals(tableNamePostfix)) {
 			return 0;
 		}
-		
+
 		int i = checkTableNamePostfix.lastIndexOf(TABLE_NAME_SEPARATOR);
 		if (i == -1) {
 			try {
@@ -162,12 +162,15 @@ public class StorageSpaceMap {
 	public String getStorageSpaceName() {
 		return storageSpaceName;
 	}
+
 	public void setStorageSpaceName(String storageSpaceName) {
 		this.storageSpaceName = storageSpaceName;
 	}
+
 	public String getTableNamePostfix() {
 		return tableNamePostfix;
 	}
+
 	public void setTableNamePostfix(String tableNamePostfix) {
 		this.tableNamePostfix = tableNamePostfix;
 	}
@@ -175,6 +178,7 @@ public class StorageSpaceMap {
 	public int getTableCount() {
 		return tableCount;
 	}
+
 	public void setTableCount(int tableCount) {
 		this.tableCount = tableCount;
 	}
@@ -210,7 +214,7 @@ public class StorageSpaceMap {
 	public void setDoubleColumns(int doubleColumns) {
 		this.doubleColumns = doubleColumns;
 	}
-	
+
 	public boolean isUseExternalIndexedTable() {
 		return useExternalIndexedTable;
 	}
@@ -258,6 +262,7 @@ public class StorageSpaceMap {
 	public void setUseExternalUniqueIndexedTable(boolean useExternalUniqueIndexedTable) {
 		this.useExternalUniqueIndexedTable = useExternalUniqueIndexedTable;
 	}
+
 	public int getUniqueIndexedVarcharColumns() {
 		return uniqueIndexedVarcharColumns;
 	}

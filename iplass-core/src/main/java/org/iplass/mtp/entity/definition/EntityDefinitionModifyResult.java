@@ -39,13 +39,15 @@ public class EntityDefinitionModifyResult extends DefinitionModifyResult {
 
 	protected static final long FIXED_SERIAL_VERSION = 7145015583970134749L;
 	private static final long serialVersionUID = FIXED_SERIAL_VERSION;
-	
+
 	public EntityDefinitionModifyResult() {
 		super();
 	}
+
 	public EntityDefinitionModifyResult(boolean isSuccess, String message) {
 		super(isSuccess, message);
 	}
+
 	public EntityDefinitionModifyResult(boolean isSuccess) {
 		super(isSuccess);
 	}

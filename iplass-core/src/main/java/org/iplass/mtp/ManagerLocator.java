@@ -37,7 +37,8 @@ public abstract class ManagerLocator {
 			String managerLocatorName = System.getProperty(MANAGER_LOCATOR_SYSTEM_PROPERTY_NAME);
 			if (managerLocatorName != null) {
 				try {
-					instance = (ManagerLocator) Class.forName(managerLocatorName).newInstance();
+					instance = (ManagerLocator) Class.forName(managerLocatorName)
+							.newInstance();
 				} catch (InstantiationException | IllegalAccessException
 						| ClassNotFoundException e) {
 					throw new SystemException(managerLocatorName + " can't instanceate.");
@@ -47,7 +48,7 @@ public abstract class ManagerLocator {
 			}
 		}
 	}
-	
+
 	/**
 	 * ManagerLocator自体のインスタンスを取得します。
 	 *
@@ -56,7 +57,7 @@ public abstract class ManagerLocator {
 	public static ManagerLocator getInstance() {
 		return Holder.instance;
 	}
-	
+
 	/**
 	 * Managerのインスタンスを取得するためのユーティリティメソッドです。
 	 * ManagerLocator.getInstance().getManager(type)を呼び出します。

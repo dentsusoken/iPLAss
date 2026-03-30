@@ -48,7 +48,7 @@ public abstract class BasicType extends PropertyType {
 			MetaProperty metaProperty, MetaEntity metaEntity) {
 		return null;
 	}
-	
+
 	@Override
 	public boolean isCompatibleTo(PropertyType another) {
 		if (another instanceof StringType) {
@@ -56,7 +56,7 @@ public abstract class BasicType extends PropertyType {
 		}
 		return equals(another);
 	}
-	
+
 	@Override
 	public String toString(Object value) {
 		if (value == null) {
@@ -69,6 +69,5 @@ public abstract class BasicType extends PropertyType {
 	@Override
 	public void applyDefinition(PropertyDefinition def) {
 	}
-	
-	
+
 }

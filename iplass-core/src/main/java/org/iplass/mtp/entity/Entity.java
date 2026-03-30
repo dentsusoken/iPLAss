@@ -34,51 +34,51 @@ import org.iplass.mtp.impl.entity.jaxb.EntityXmlAdapter;
  */
 @XmlJavaTypeAdapter(EntityXmlAdapter.class)
 public interface Entity {
-	
+
 	//FIXME Entityの項目の更新、参照可否（セキュリティ、ワークフロー状態による）を判断できる機能（EntityRuntimeStatus的なクラス）
 
 	/** 作成日 */
 	public static final String CREATE_DATE = "createDate";
-	
+
 	/** 作成者のID */
 	public static final String CREATE_BY = "createBy";//TODO createdBy
-	
+
 	/** Entityを特定するなんらかの名称（必須） */
 	public static final String NAME = "name";
-	
+
 	/** Entityを一意に識別するID */
 	public static final String OID = "oid";
-	
+
 	/** EntityのバージョンNo */
 	public static final String VERSION = "version";
-	
+
 	/** 更新日 */
 	public static final String UPDATE_DATE = "updateDate";
-	
+
 	/** 更新者のID */
 	public static final String UPDATE_BY = "updateBy";//TODO updatedBy
-	
+
 	/** Entityの説明 */
 	public static final String DESCRIPTION = "description";
-	
+
 	/** Entityの状態（バージョン管理下で、有効/無効を識別する） */
 	public static final String STATE = "state";
-	
+
 	/** Entityが編集ロックされている場合、ロックしているユーザーのID */
 	public static final String LOCKED_BY = "lockedBy";
-	
+
 	/** Entityの有効期間開始日時 */
 	public static final String START_DATE = "startDate";
-	
+
 	/** Entityの有効期間終了日時 */
 	public static final String END_DATE = "endDate";
-	
+
 	/** ごみ箱に入っているデータを特定するためのID */
 	public static final String RECYCLE_BIN_ID = "recycleBinId";
-	
+
 	public static final String STATE_VALID_VALUE = "V";
 	public static final String STATE_INVALID_VALUE = "I";
-	
+
 	/**
 	 * 指定の属性名の属性値を取得します。<br>
 	 * propNameには、"."にてネストされたプロパティ、"[index]"にて配列アクセスを指定可能です。<br>
@@ -110,7 +110,7 @@ public interface Entity {
 	 * @param value
 	 */
 	public void setValue(String propName, Object value);
-	
+
 	/**
 	 * 指定の属性名の属性値を取得します。<br>
 	 * propNameには、"."にてネストされたプロパティ、"[index]"にて配列アクセスを指定可能です。<br>
@@ -129,20 +129,21 @@ public interface Entity {
 	 * @return
 	 */
 	public <P> P getValueAs(Class<P> type, String propName);
-	
+
 	public String getOid();
 
 	public void setOid(String oid);
-	
+
 	public Long getVersion();
+
 	public void setVersion(Long version);
 
 	public String getName();
 
 	public void setName(String name);
-	
+
 	public String getDescription();
-	
+
 	public void setDescription(String description);
 
 	public Timestamp getCreateDate();
@@ -164,20 +165,25 @@ public interface Entity {
 	public String getDefinitionName();
 
 	public void setDefinitionName(String definitionName);
-	
+
 	public SelectValue getState();
+
 	public void setState(SelectValue state);
-	
+
 	public String getLockedBy();
+
 	public void setLockedBy(String lockedBy);
-	
+
 	public Timestamp getStartDate();
+
 	public void setStartDate(Timestamp startDate);
-	
+
 	public Timestamp getEndDate();
+
 	public void setEndDate(Timestamp endDate);
-	
+
 	public Long getRecycleBinId();
+
 	public void setRecycleBinId(Long recycleBinId);
-	
+
 }

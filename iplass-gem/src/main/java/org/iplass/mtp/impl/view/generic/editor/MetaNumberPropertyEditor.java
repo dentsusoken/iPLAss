@@ -44,7 +44,7 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
  * 数値型プロパティエディタのメタデータのスーパークラス
  * @author lis3wg
  */
-@XmlSeeAlso({MetaDecimalPropertyEditor.class, MetaFloatPropertyEditor.class, MetaIntegerPropertyEditor.class})
+@XmlSeeAlso({ MetaDecimalPropertyEditor.class, MetaFloatPropertyEditor.class, MetaIntegerPropertyEditor.class })
 public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 
 	/** シリアルバージョンUID */
@@ -144,7 +144,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	 * @return 範囲で検索するか
 	 */
 	public boolean isSearchInRange() {
-	    return searchInRange;
+		return searchInRange;
 	}
 
 	/**
@@ -152,7 +152,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	 * @param searchInRange 範囲で検索するか
 	 */
 	public void setSearchInRange(boolean searchInRange) {
-	    this.searchInRange = searchInRange;
+		this.searchInRange = searchInRange;
 	}
 
 	/**
@@ -160,7 +160,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	 * @return 検索条件From非表示設定
 	 */
 	public boolean isHideSearchConditionFrom() {
-	    return hideSearchConditionFrom;
+		return hideSearchConditionFrom;
 	}
 
 	/**
@@ -168,7 +168,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	 * @param hideSearchConditionFrom 検索条件From非表示設定
 	 */
 	public void setHideSearchConditionFrom(boolean hideSearchConditionFrom) {
-	    this.hideSearchConditionFrom = hideSearchConditionFrom;
+		this.hideSearchConditionFrom = hideSearchConditionFrom;
 	}
 
 	/**
@@ -176,7 +176,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	 * @return 検索条件To非表示設定
 	 */
 	public boolean isHideSearchConditionTo() {
-	    return hideSearchConditionTo;
+		return hideSearchConditionTo;
 	}
 
 	/**
@@ -184,7 +184,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	 * @param hideSearchConditionTo 検索条件To非表示設定
 	 */
 	public void setHideSearchConditionTo(boolean hideSearchConditionTo) {
-	    this.hideSearchConditionTo = hideSearchConditionTo;
+		this.hideSearchConditionTo = hideSearchConditionTo;
 	}
 
 	/**
@@ -301,7 +301,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 					return true;
 				}
 				if (pd instanceof ExpressionProperty) {
-					ExpressionProperty ep = (ExpressionProperty)pd;
+					ExpressionProperty ep = (ExpressionProperty) pd;
 					if (ep.getResultType() == PropertyDefinitionType.FLOAT
 							|| ep.getResultType() == PropertyDefinitionType.INTEGER) {
 						return true;

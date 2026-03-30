@@ -36,7 +36,7 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.util.ConvertUtil;
 
 public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
-	
+
 	private static char QUOTE_CHAR = '\'';
 	private static char PLUS_CHAR = '+';
 	private static char MINUS_CHAR = '-';
@@ -56,14 +56,14 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 	private static final char DATETIME_SUFFIX_L = 'm';
 	private static final char SELECT_SUFFIX_U = 'S';
 	private static final char SELECT_SUFFIX_L = 's';
-	
+
 	public void init(SyntaxContext context) {
 	}
-	
+
 	public Literal parse(ParseContext str) throws ParseException {
-		
+
 		Object val = null;
-		
+
 		boolean isBind = true;
 		if (str.startsWith(LEFT_HINT_COMMENT)) {
 			str.consumeChars(LEFT_HINT_COMMENT.length());
@@ -82,7 +82,7 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 				throw new ParseException(new EvalError("hint clause not terminated.", this, str));
 			}
 		}
-		
+
 		//null
 		if (str.equalsNextToken(NULL, ParseContext.TOKEN_DELIMITERS)) {
 			str.consumeChars(NULL.length());
@@ -181,9 +181,11 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 							//decimal
 							try {
 								if (peekChar == MINUS_CHAR) {
-									val = new BigDecimal(MINUS + literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
+									val = new BigDecimal(
+											MINUS + literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
 								} else {
-									val = new BigDecimal(literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
+									val = new BigDecimal(
+											literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
 								}
 							} catch (NumberFormatException e) {
 								str.setCurrentIndex(index);
@@ -193,9 +195,11 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 							//double
 							try {
 								if (peekChar == MINUS_CHAR) {
-									val = Double.parseDouble(MINUS + literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
+									val = Double.parseDouble(
+											MINUS + literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
 								} else {
-									val = Double.parseDouble(literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
+									val = Double.parseDouble(
+											literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
 								}
 							} catch (NumberFormatException e) {
 								str.setCurrentIndex(index);
@@ -205,9 +209,11 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 							//double
 							try {
 								if (peekChar == MINUS_CHAR) {
-									val = Double.parseDouble(MINUS + literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length()));
+									val = Double.parseDouble(
+											MINUS + literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length()));
 								} else {
-									val = Double.parseDouble(literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length()));
+									val = Double
+											.parseDouble(literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length()));
 								}
 							} catch (NumberFormatException e) {
 								str.setCurrentIndex(index);
@@ -218,7 +224,7 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 						str.setCurrentIndex(index);
 						throw new ParseException(new EvalError("can not parse exponential value.", this, str));
 					}
-					
+
 				} else if (literalExp.contains(".")) {
 					//Float
 					try {
@@ -244,7 +250,7 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 						throw new ParseException(new EvalError("can not parse integer value.", this, str));
 					}
 				}
-				
+
 			} else {
 				int index = str.getCurrentIndex();
 				String literalExp = str.nextToken(ParseContext.TOKEN_DELIMITERS);
@@ -297,7 +303,8 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 							if (expSuffix == DECIMAL_SUFFIX_U || expSuffix == DECIMAL_SUFFIX_L) {
 								//decimal
 								try {
-									val = new BigDecimal(literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
+									val = new BigDecimal(
+											literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
 								} catch (NumberFormatException e) {
 									str.setCurrentIndex(index);
 									throw new ParseException(new EvalError("can not parse exponential value.", this, str));
@@ -305,7 +312,8 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 							} else if (expSuffix == FLOAT_SUFFIX_U || expSuffix == FLOAT_SUFFIX_L) {
 								//double
 								try {
-									val = Double.parseDouble(literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
+									val = Double.parseDouble(
+											literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length() - 1));
 								} catch (NumberFormatException e) {
 									str.setCurrentIndex(index);
 									throw new ParseException(new EvalError("can not parse exponential value.", this, str));
@@ -313,7 +321,8 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 							} else {
 								//double
 								try {
-									val = Double.parseDouble(literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length()));
+									val = Double
+											.parseDouble(literalExp.substring(0, literalExp.length()) + MINUS + expStr.substring(0, expStr.length()));
 								} catch (NumberFormatException e) {
 									str.setCurrentIndex(index);
 									throw new ParseException(new EvalError("can not parse exponential value.", this, str));
@@ -323,7 +332,7 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 							str.setCurrentIndex(index);
 							throw new ParseException(new EvalError("can not parse exponential value.", this, str));
 						}
-						
+
 					} else if (literalExp.contains(".")) {
 						//Float
 						try {
@@ -344,9 +353,9 @@ public class LiteralSyntax implements Syntax<Literal>, QueryConstants {
 				}
 			}
 		}
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		return new Literal(val, isBind);
 
 	}

@@ -51,37 +51,37 @@ public class NormalizerListGridRecord extends ListGridRecord {
 				return new WhiteSpaceTrimmerAttributePane();
 			}
 		},
-		NORMALIZE_NEW_LINE("New line Normalizer"){
+		NORMALIZE_NEW_LINE("New line Normalizer") {
 			@Override
 			public NormalizerAttributePane attributePane() {
 				return new NewLineNormalizerAttributePane();
 			}
 		},
-		ICU_TRANSLITERATE("ICU Transliterator"){
+		ICU_TRANSLITERATE("ICU Transliterator") {
 			@Override
 			public NormalizerAttributePane attributePane() {
 				return new ICUTransliteratorAttributePane();
 			}
 		},
-		REPLACE_REGEX("Regex Replace"){
+		REPLACE_REGEX("Regex Replace") {
 			@Override
 			public NormalizerAttributePane attributePane() {
 				return new RegexReplaceAttributePane();
 			}
 		},
-		NORMALIZE_UNICODE("Unicode Normalizer"){
+		NORMALIZE_UNICODE("Unicode Normalizer") {
 			@Override
 			public NormalizerAttributePane attributePane() {
 				return new UnicodeNormalizerAttributePane();
 			}
 		},
-		SCRIPT("Scripting"){
+		SCRIPT("Scripting") {
 			@Override
 			public NormalizerAttributePane attributePane() {
 				return new ScriptingNormalizerAttributePane();
 			}
 		},
-		JAVA_CLASS("Java Class"){
+		JAVA_CLASS("Java Class") {
 			@Override
 			public NormalizerAttributePane attributePane() {
 				return new JavaClassNormalizerAttributePane();
@@ -135,7 +135,7 @@ public class NormalizerListGridRecord extends ListGridRecord {
 	}
 
 	public NormalizerDefinition getNormalizerDefinition() {
-		return (NormalizerDefinition)getAttributeAsObject(VALUE_OBJECT);
+		return (NormalizerDefinition) getAttributeAsObject(VALUE_OBJECT);
 	}
 
 	public void setNormalizerDefinition(NormalizerDefinition definition) {
@@ -144,7 +144,7 @@ public class NormalizerListGridRecord extends ListGridRecord {
 	}
 
 	public NormalizerType getType() {
-		return (NormalizerType)getAttributeAsObject(TYPE);
+		return (NormalizerType) getAttributeAsObject(TYPE);
 	}
 
 	public void setType(NormalizerType type) {
@@ -181,19 +181,20 @@ public class NormalizerListGridRecord extends ListGridRecord {
 		}
 
 		if (definition instanceof ICUTransliterator) {
-			ICUTransliterator impl = (ICUTransliterator)definition;
+			ICUTransliterator impl = (ICUTransliterator) definition;
 			setType(NormalizerType.ICU_TRANSLITERATE);
 			setGeneralPurpus(impl.getTransliteratorId());
 		} else if (definition instanceof JavaClassNormalizer) {
-			JavaClassNormalizer impl = (JavaClassNormalizer)definition;
+			JavaClassNormalizer impl = (JavaClassNormalizer) definition;
 			setType(NormalizerType.JAVA_CLASS);
 			setGeneralPurpus(impl.getClassName());
 		} else if (definition instanceof NewlineNormalizer) {
-			NewlineNormalizer impl = (NewlineNormalizer)definition;
+			NewlineNormalizer impl = (NewlineNormalizer) definition;
 			setType(NormalizerType.NORMALIZE_NEW_LINE);
-			setGeneralPurpus(impl.getType().name());
+			setGeneralPurpus(impl.getType()
+					.name());
 		} else if (definition instanceof RegexReplace) {
-			RegexReplace impl = (RegexReplace)definition;
+			RegexReplace impl = (RegexReplace) definition;
 			setType(NormalizerType.REPLACE_REGEX);
 			StringBuilder sb = new StringBuilder();
 			sb.append("regex=" + impl.getRegex() + " , replace=" + impl.getReplacement());
@@ -202,7 +203,7 @@ public class NormalizerListGridRecord extends ListGridRecord {
 			setType(NormalizerType.SCRIPT);
 			setGeneralPurpus(null);
 		} else if (definition instanceof UnicodeNormalizer) {
-			UnicodeNormalizer impl = (UnicodeNormalizer)definition;
+			UnicodeNormalizer impl = (UnicodeNormalizer) definition;
 			setType(NormalizerType.NORMALIZE_UNICODE);
 			setGeneralPurpus(impl.getForm());
 		} else if (definition instanceof WhiteSpaceTrimmer) {

@@ -33,10 +33,10 @@ import org.iplass.mtp.entity.definition.l10n.EachPropertyDataLocalizationStrateg
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.metadata.MetaData;
 
-@XmlSeeAlso({MetaEachInstanceDataLocalizationStrategy.class, MetaEachPropertyDataLocalizationStrategy.class})
+@XmlSeeAlso({ MetaEachInstanceDataLocalizationStrategy.class, MetaEachPropertyDataLocalizationStrategy.class })
 public abstract class MetaDataLocalizationStrategy implements MetaData {
 	private static final long serialVersionUID = 4197648632656222700L;
-	
+
 	public static MetaDataLocalizationStrategy newInstance(DataLocalizationStrategy def) {
 		if (def instanceof EachInstanceDataLocalizationStrategy) {
 			return new MetaEachInstanceDataLocalizationStrategy();
@@ -49,15 +49,17 @@ public abstract class MetaDataLocalizationStrategy implements MetaData {
 
 	public static abstract class DataLocalizationStrategyRuntime {
 		public abstract void handleEntityForInsert(Entity e, InsertOption option);
+
 		public abstract void handleEntityForUpdate(Entity e, UpdateOption option);
+
 		public abstract Entity handleEntityForLoad(Entity e);
 	}
-	
+
 	private List<String> languages;
-	
+
 	public MetaDataLocalizationStrategy() {
 	}
-	
+
 	public MetaDataLocalizationStrategy(List<String> languages) {
 		this.languages = languages;
 	}
@@ -80,24 +82,22 @@ public abstract class MetaDataLocalizationStrategy implements MetaData {
 	public void setLanguages(List<String> languages) {
 		this.languages = languages;
 	}
-	
-	
 
 	public abstract void applyConfig(DataLocalizationStrategy def);
-	
+
 	public abstract DataLocalizationStrategy currentConfig();
-	
+
 	@Override
 	public abstract MetaDataLocalizationStrategy copy();
-	
+
 	public abstract DataLocalizationStrategyRuntime createDataLocalizationStrategyRuntime(EntityHandler eh);
-	
+
 	protected void copyTo(MetaDataLocalizationStrategy c) {
 		if (languages != null) {
 			c.languages = new ArrayList<>(languages);
 		}
 	}
-	
+
 	protected void fillFrom(DataLocalizationStrategy def) {
 		if (def.getLanguages() != null) {
 			languages = new ArrayList<>(def.getLanguages());
@@ -105,7 +105,7 @@ public abstract class MetaDataLocalizationStrategy implements MetaData {
 			languages = null;
 		}
 	}
-	
+
 	protected void fillTo(DataLocalizationStrategy def) {
 		if (languages != null) {
 			def.setLanguages(new ArrayList<>(languages));

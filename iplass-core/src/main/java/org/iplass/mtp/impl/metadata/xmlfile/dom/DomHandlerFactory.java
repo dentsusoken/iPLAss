@@ -27,5 +27,6 @@ import org.w3c.dom.Document;
 
 public interface DomHandlerFactory {
 	DomHandler createDomHamdler(File xml, String charset, Document doc);
+
 	void inited(MetaDataRepository service, XmlFileMetaDataStore xmlfileMetaDataStore);
 }

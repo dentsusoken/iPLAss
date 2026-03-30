@@ -40,16 +40,19 @@ public class EntityXmlAdapter extends XmlAdapter<GenericEntity, Entity> {
 	@Override
 	public Entity unmarshal(GenericEntity v) throws Exception {
 
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		EntityDefinitionManager edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 
 		// マッピングクラスがある場合はそのクラスで返してあげる
 		String definitionName = v.getDefinitionName();
 		EntityDefinition ed = edm.get(definitionName);
 
 		if (ed != null) {
-			if (ed.getMapping() != null && !StringUtil.isEmpty(ed.getMapping().getMappingModelClass())) {
+			if (ed.getMapping() != null && !StringUtil.isEmpty(ed.getMapping()
+					.getMappingModelClass())) {
 				@SuppressWarnings("unchecked")
-				Class<GenericEntity> retEntity = (Class<GenericEntity>) Class.forName(ed.getMapping().getMappingModelClass());
+				Class<GenericEntity> retEntity = (Class<GenericEntity>) Class.forName(ed.getMapping()
+						.getMappingModelClass());
 				return v.copyAs(retEntity);
 			}
 		}

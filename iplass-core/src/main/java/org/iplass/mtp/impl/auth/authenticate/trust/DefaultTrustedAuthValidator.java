@@ -33,10 +33,9 @@ import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
  *
  */
 public class DefaultTrustedAuthValidator implements TrustedAuthValidator {
-	
+
 	private String accountHandleClass;
 	private String requiredCredentialClass;
-	
 
 	public DefaultTrustedAuthValidator(String accountHandleClass,
 			String requiredCredentialClass) {
@@ -64,7 +63,9 @@ public class DefaultTrustedAuthValidator implements TrustedAuthValidator {
 	@Override
 	public TrustedAuthValidateResult checkTrusted(UserContext userContext) {
 		AccountHandle account = userContext.getAccount();
-		if (account.getClass().getName().equals(accountHandleClass)) {
+		if (account.getClass()
+				.getName()
+				.equals(accountHandleClass)) {
 			return new TrustedAuthValidateResult(true, null);
 		} else {
 			try {

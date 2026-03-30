@@ -114,7 +114,8 @@ public class CacheableMetadataStatementRepository implements MetadataStatementRe
 
 	@Override
 	public void inited(WebAuthnService service, Config config) {
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		cacheStore = cs.getCache(CACHE_NAMESPACE);
 		if (metadataBLOBFilePath != null) {
 			metadataBLOBBasedMetadataStatementRepository = new MetadataBLOBBasedMetadataStatementRepository(

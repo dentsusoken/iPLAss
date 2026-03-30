@@ -24,30 +24,34 @@ import org.iplass.mtp.impl.metadata.MetaData;
 
 public class ReferenceSortSpec implements MetaData {
 	private static final long serialVersionUID = -5734891785217631412L;
-	
+
 	public enum SortType {
-		ASC,DESC
+		ASC, DESC
 	}
-	
+
 	public ReferenceSortSpec() {
 	}
+
 	public ReferenceSortSpec(String sortPropertyMetaDataId, SortType sortType) {
 		this.sortPropertyMetaDataId = sortPropertyMetaDataId;
 		this.sortType = sortType;
 	}
-	
+
 	private String sortPropertyMetaDataId;
 	private SortType sortType;
-	
+
 	public String getSortPropertyMetaDataId() {
 		return sortPropertyMetaDataId;
 	}
+
 	public void setSortPropertyMetaDataId(String sortPropertyMetaDataId) {
 		this.sortPropertyMetaDataId = sortPropertyMetaDataId;
 	}
+
 	public SortType getSortType() {
 		return sortType;
 	}
+
 	public void setSortType(SortType sortType) {
 		this.sortType = sortType;
 	}
@@ -56,6 +60,7 @@ public class ReferenceSortSpec implements MetaData {
 	public ReferenceSortSpec copy() {
 		return new ReferenceSortSpec(sortPropertyMetaDataId, sortType);
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -68,6 +73,7 @@ public class ReferenceSortSpec implements MetaData {
 				+ ((sortType == null) ? 0 : sortType.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -89,7 +95,5 @@ public class ReferenceSortSpec implements MetaData {
 			return false;
 		return true;
 	}
-	
-	
 
 }

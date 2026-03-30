@@ -31,14 +31,14 @@ import groovy.lang.GroovyShell;
 public class GroovyScriptObjectBuilder<T> implements ObjectBuilder<T> {
 	private Binding binding;
 	private String script;
-	
+
 	public GroovyScriptObjectBuilder(String script) {
 		this.script = script;
 		binding = new Binding();
 		binding.setVariable("properties", Collections.emptyMap());
 		binding.setVariable("args", Collections.emptyMap());
 	}
-	
+
 	@Override
 	public void setName(String name) {
 		binding.setVariable("name", name);

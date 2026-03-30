@@ -44,19 +44,21 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProviderBase  {
+public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProviderBase {
 
 	private static Logger logger = LoggerFactory.getLogger(SimpleAuthTokenAuthenticationProvider.class);
 
 	private SimpleAuthTokenAccountManagementModule amm = new SimpleAuthTokenAccountManagementModule();
-	
+
 	private SimpleAuthTokenHandler tokenHandler;
 	private String authTokenType = SimpleAuthTokenHandler.TYPE_SIMPLE_DEFAULT;
 	private Class<? extends Credential> credentialTypeForTrust;
 	private Class<? extends AccountHandle> accountHandleClassForTrust;
-	
-	private AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
-	private AuthTokenService tokenService = ServiceRegistry.getRegistry().getService(AuthTokenService.class);
+
+	private AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry()
+			.getService(AuthenticationPolicyService.class);
+	private AuthTokenService tokenService = ServiceRegistry.getRegistry()
+			.getService(AuthTokenService.class);
 
 	public void setCredentialTypeForTrust(Class<? extends Credential> credentialTypeForTrust) {
 		this.credentialTypeForTrust = credentialTypeForTrust;
@@ -75,12 +77,12 @@ public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProvide
 	protected Class<? extends Credential> getCredentialTypeForTrust() {
 		return credentialTypeForTrust;
 	}
-	
+
 	@Override
 	protected Class<? extends AccountHandle> getAccountHandleClassForTrust() {
 		return accountHandleClassForTrust;
 	}
-	
+
 	public String getAuthTokenType() {
 		return authTokenType;
 	}
@@ -110,8 +112,9 @@ public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProvide
 			if (cre.getToken() == null) {
 				throw new IllegalArgumentException("specify token");
 			}
-			
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getClientTenantId();
 			if (cre.getToken() != null) {
 				AuthToken crToken = new AuthToken();
 				crToken.decodeToken(cre.getToken());
@@ -122,31 +125,32 @@ public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProvide
 					}
 					return null;
 				}
-				
+
 				if (crToken.getToken() == null) {
 					//illegal format
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
-				AuthToken stToken = tokenHandler.authTokenStore().getBySeries(tenantId, authTokenType, crToken.getSeries());
+				AuthToken stToken = tokenHandler.authTokenStore()
+						.getBySeries(tenantId, authTokenType, crToken.getSeries());
 				if (stToken == null) {
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
 				if (!tokenHandler.checkTokenValid(crToken.getToken(), stToken)) {
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
-				
+
 				AuthenticationPolicyRuntime pol = authPolicyService.getOrDefault(stToken.getPolicyName());
 				if (pol == null) {
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
-				
+
 				return new SimpleAuthTokenAccountHandle(stToken.getOwnerId(), stToken.getSeries(), stToken.getPolicyName());
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public void logout(final AccountHandle user) {
 	}
@@ -215,7 +219,11 @@ public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProvide
 		@Override
 		public void remove(User user) {
 			UserEntityResolver uer = getUserEntityResolver();
-			tokenHandler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), authTokenType, user.getValue(uer.getUnmodifiableUniqueKeyProperty()).toString());
+			tokenHandler.authTokenStore()
+					.delete(ExecuteContext.getCurrentContext()
+							.getClientTenantId(), authTokenType,
+							user.getValue(uer.getUnmodifiableUniqueKeyProperty())
+									.toString());
 		}
 
 		@Override

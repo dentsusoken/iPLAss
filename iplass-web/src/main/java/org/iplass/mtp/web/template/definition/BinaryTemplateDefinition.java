@@ -25,7 +25,6 @@ import java.util.List;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-
 /**
  * <p>バイナリデータ（画像等）のTemplate定義。</p>
  *

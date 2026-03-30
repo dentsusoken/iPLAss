@@ -138,11 +138,13 @@ public class CacheService implements Service {
 			logger.debug("create CacheStore:" + namespace + " by specific namespace");
 			return f.createCacheStore(namespace);
 		} else {
-			for (NamespacePattern p: namespacePattern) {
-				if (p.pattern.matcher(namespace).matches()) {
+			for (NamespacePattern p : namespacePattern) {
+				if (p.pattern.matcher(namespace)
+						.matches()) {
 					if (isLocalUse) {
 						if (!p.factory.canUseForLocalCache()) {
-							throw new ServiceConfigrationException(p.factory.getClass() + " can not use for localCache. at CacheStore:" + namespace + " by namespacePattern:" + p.factory.getNamespacePattern() + " Factory");
+							throw new ServiceConfigrationException(p.factory.getClass() + " can not use for localCache. at CacheStore:" + namespace
+									+ " by namespacePattern:" + p.factory.getNamespacePattern() + " Factory");
 						}
 					}
 					logger.debug("create CacheStore:" + namespace + " by namespacePattern:" + p.factory.getNamespacePattern() + " Factory");
@@ -154,7 +156,8 @@ public class CacheService implements Service {
 			if (defaultFactory != null) {
 				if (isLocalUse) {
 					if (!defaultFactory.canUseForLocalCache()) {
-						throw new ServiceConfigrationException(defaultFactory.getClass() + " can not use for localCache. at CacheStore:" + namespace + " by defaultFactory");
+						throw new ServiceConfigrationException(
+								defaultFactory.getClass() + " can not use for localCache. at CacheStore:" + namespace + " by defaultFactory");
 					}
 				}
 				return defaultFactory.createCacheStore(namespace);
@@ -162,7 +165,6 @@ public class CacheService implements Service {
 		}
 		throw new ServiceConfigrationException("no CacheStore configration matches for " + namespace);
 	}
-
 
 	/**
 	 * 指定のnamespaceの共有のCacheStoreを無効化する。
@@ -203,7 +205,7 @@ public class CacheService implements Service {
 		ConcurrentHashMap<Object, Object> refCacheStore = cacheStore;
 		cacheStore = null;
 		if (refCacheStore != null) {
-			for (Map.Entry<Object, Object> e: refCacheStore.entrySet()) {
+			for (Map.Entry<Object, Object> e : refCacheStore.entrySet()) {
 				CacheStore c = (CacheStore) e.getValue();
 				if (c != null) {
 					logger.debug("destroy CacheStore:" + e.getKey());
@@ -222,10 +224,10 @@ public class CacheService implements Service {
 		factories = new ArrayList<>();
 
 		reloadThreadPoolSize = config.getValue(RELOAD_THREAD_POOL_SIZE_NAME, Integer.TYPE, reloadThreadPoolSize);
-		
+
 		Set<String> names = new HashSet<String>(config.getNames());
 		names.remove(RELOAD_THREAD_POOL_SIZE_NAME);
-		for (String n: names) {
+		for (String n : names) {
 			if (n.equals(CACHE_STORE_FACTORY_DEFAULT_NAME)) {
 				defaultFactory = (CacheStoreFactory) config.getBean(n);
 				factories.add(defaultFactory);
@@ -233,7 +235,7 @@ public class CacheService implements Service {
 				List<CacheStoreFactory> cacheStoreFactory = (List<CacheStoreFactory>) config.getBeans(n);
 
 				if (cacheStoreFactory != null) {
-					for (CacheStoreFactory f: cacheStoreFactory) {
+					for (CacheStoreFactory f : cacheStoreFactory) {
 						factories.add(f);
 
 						if (f.getNamespace() != null) {
@@ -245,10 +247,12 @@ public class CacheService implements Service {
 				}
 			}
 		}
-		
+
 		if (reloadThreadPoolSize > 0) {
 			SecurityManager s = System.getSecurityManager();
-			final ThreadGroup group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+			final ThreadGroup group = (s != null) ? s.getThreadGroup()
+					: Thread.currentThread()
+							.getThreadGroup();
 			executor = Executors.newScheduledThreadPool(reloadThreadPoolSize, r -> {
 				Thread t = new Thread(group, r, "CacheReloader-thread-" + threadNumber.getAndIncrement(), 0);
 				t.setDaemon(true);
@@ -268,7 +272,6 @@ public class CacheService implements Service {
 	public List<CacheStoreFactory> getFactories() {
 		return factories;
 	}
-
 
 	private class NamespacePattern {
 		Pattern pattern;

@@ -30,8 +30,7 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.template.report.ReportOutputException;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
 
-
-public class PoiReportingEngine implements ReportingEngine{
+public class PoiReportingEngine implements ReportingEngine {
 
 	private String[] supportFiles;
 
@@ -39,14 +38,14 @@ public class PoiReportingEngine implements ReportingEngine{
 	}
 
 	@Override
-	public ReportingOutputModel createOutputModel(byte[] binary, String type, String extension) throws Exception{
+	public ReportingOutputModel createOutputModel(byte[] binary, String type, String extension) throws Exception {
 		return new PoiReportingOutputModel(binary, type, extension);
 	}
 
 	@Override
 	public boolean isSupport(String type) {
-		for(String supportFile : this.supportFiles){
-			if(supportFile.equals(type)){
+		for (String supportFile : this.supportFiles) {
+			if (supportFile.equals(type)) {
 				return true;
 			}
 		}
@@ -54,19 +53,21 @@ public class PoiReportingEngine implements ReportingEngine{
 	}
 
 	@Override
-	public void exportReport( WebRequestStack context, ReportingOutputModel model ) throws Exception {
-		PoiReportingOutputModel poiModel = (PoiReportingOutputModel)model;
+	public void exportReport(WebRequestStack context, ReportingOutputModel model) throws Exception {
+		PoiReportingOutputModel poiModel = (PoiReportingOutputModel) model;
 		PoiReportOutputLogicRuntime logicRuntime = poiModel.getLogicRuntime();
-		if( logicRuntime != null){
+		if (logicRuntime != null) {
 			logicRuntime.outputReport(context.getRequestContext(), poiModel.getBook());
 		}
 
 		try {
 			String password = null;
 			if (StringUtil.isNotEmpty(poiModel.getPasswordAttributeName())) {
-				password = (String)context.getRequestContext().getAttribute(poiModel.getPasswordAttributeName());
+				password = (String) context.getRequestContext()
+						.getAttribute(poiModel.getPasswordAttributeName());
 			}
-			poiModel.write(context.getResponse().getOutputStream(), password);
+			poiModel.write(context.getResponse()
+					.getOutputStream(), password);
 		} catch (IOException e) {
 			throw new ReportOutputException(e);
 		} catch (InvalidFormatException e) {
@@ -77,11 +78,11 @@ public class PoiReportingEngine implements ReportingEngine{
 	}
 
 	public String[] getSupportFiles() {
-	    return supportFiles;
+		return supportFiles;
 	}
 
 	public void setSupportFiles(String[] supportFiles) {
-	    this.supportFiles = supportFiles;
+		this.supportFiles = supportFiles;
 	}
 
 	@Override

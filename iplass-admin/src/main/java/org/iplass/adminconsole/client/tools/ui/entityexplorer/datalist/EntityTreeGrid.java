@@ -83,14 +83,15 @@ public class EntityTreeGrid extends MtpTreeGrid {
 	protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 		final String fieldName = this.getFieldName(colNum);
 		if ("error".equals(fieldName)) {
-			if (record.getAttributeAsBoolean(FIELD_NAME.IS_ERROR.name())){
+			if (record.getAttributeAsBoolean(FIELD_NAME.IS_ERROR.name())) {
 				record.setEnabled(false);
 				GridActionImgButton recordCanvas = new GridActionImgButton();
 				recordCanvas.setActionButtonSrc(ERROR_ICON);
 				recordCanvas.setActionButtonPrompt(record.getAttributeAsString(FIELD_NAME.ERROR_MESSAGE.name()));
 				return recordCanvas;
 			}
-		} else if (FIELD_NAME.PATH.name().equals(fieldName)) {
+		} else if (FIELD_NAME.PATH.name()
+				.equals(fieldName)) {
 			if (disabledPathList != null) {
 				String path = record.getAttributeAsString(FIELD_NAME.PATH.name());
 				if (disabledPathList.contains(path)) {
@@ -170,7 +171,7 @@ public class EntityTreeGrid extends MtpTreeGrid {
 				continue;
 			}
 
-			TreeNode node = (TreeNode)record;
+			TreeNode node = (TreeNode) record;
 			if (!getTree().isFolder(node)) {
 				//Folderは対象にならない想定だが、念のためチェック
 				selectPaths.add(path);

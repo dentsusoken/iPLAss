@@ -151,8 +151,9 @@ public class TenantCreateParameter {
 	public String getUseLanguages() {
 		return useLanguages;
 	}
+
 	public void setUseLanguages(String useLanguages) {
-	    this.useLanguages = useLanguages;
+		this.useLanguages = useLanguages;
 	}
 
 	public String getLoggerLanguage() {

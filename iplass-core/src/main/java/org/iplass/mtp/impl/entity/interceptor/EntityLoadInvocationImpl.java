@@ -28,12 +28,12 @@ import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
 public class EntityLoadInvocationImpl extends EntityInvocationImpl<Entity> implements EntityLoadInvocation {
-	
+
 	private String oid;
 	private Long version;
 	private LoadOption loadOption;
 	private boolean withLock;
-	
+
 	public EntityLoadInvocationImpl(String oid, Long version, LoadOption loadOption, boolean withLock, EntityInterceptor[] entityInterceptors,
 			EntityHandler entityHandler) {
 		super(entityInterceptors, entityHandler);
@@ -42,7 +42,7 @@ public class EntityLoadInvocationImpl extends EntityInvocationImpl<Entity> imple
 		this.loadOption = loadOption;
 		this.withLock = withLock;
 	}
-	
+
 	public LoadOption getLoadOption() {
 		return loadOption;
 	}
@@ -54,7 +54,7 @@ public class EntityLoadInvocationImpl extends EntityInvocationImpl<Entity> imple
 	public Long getVersion() {
 		return version;
 	}
-	
+
 	public void setVersion(Long version) {
 		this.version = version;
 	}
@@ -62,11 +62,11 @@ public class EntityLoadInvocationImpl extends EntityInvocationImpl<Entity> imple
 	public String getOid() {
 		return oid;
 	}
-	
+
 	public void setOid(String oid) {
 		this.oid = oid;
 	}
-	
+
 	public boolean withLock() {
 		return withLock;
 	}
@@ -80,5 +80,5 @@ public class EntityLoadInvocationImpl extends EntityInvocationImpl<Entity> imple
 	public InvocationType getType() {
 		return InvocationType.LOAD;
 	}
-	
+
 }

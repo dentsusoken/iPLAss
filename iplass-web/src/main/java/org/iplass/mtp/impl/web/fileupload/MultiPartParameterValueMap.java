@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
-
 public class MultiPartParameterValueMap implements ParameterValueMap {
 
 	//一旦tempディレクトリに保存。ファイルのウイルスチェックを行う。安全なファイルのみ取り出せるように。
@@ -71,7 +70,8 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 		this.servletContext = servletContext;
 		this.req = req;
 		// マルチパートリクエストのリクエストパラメータ数最大数を設定する
-		maxParameterCount = ServiceRegistry.getRegistry().getService(WebFrontendService.class)
+		maxParameterCount = ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class)
 				.getMaxMultipartParameterCount();
 
 	}
@@ -119,7 +119,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 
 					Object oldValue = valueMap.get(name);
 					if (oldValue == null) {
-						valueMap.put(name, new String[]{value});
+						valueMap.put(name, new String[] { value });
 					} else if (oldValue instanceof String[]) {
 						String[] newValue = new String[((String[]) oldValue).length + 1];
 						System.arraycopy(oldValue, 0, newValue, 0, newValue.length - 1);
@@ -136,7 +136,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 						tempFiles.add(value);
 						Object oldValue = valueMap.get(name);
 						if (oldValue == null) {
-							valueMap.put(name, new UploadFileHandle[]{value});
+							valueMap.put(name, new UploadFileHandle[] { value });
 						} else if (oldValue instanceof UploadFileHandle[]) {
 							UploadFileHandle[] newValue = new UploadFileHandle[((UploadFileHandle[]) oldValue).length + 1];
 							System.arraycopy(oldValue, 0, newValue, 0, newValue.length - 1);
@@ -170,7 +170,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 	@Override
 	public void cleanTempResource() {
 		if (tempFiles != null) {
-			for (UploadFileHandleImpl f: tempFiles) {
+			for (UploadFileHandleImpl f : tempFiles) {
 				f.deleteTempFile();
 			}
 		}
@@ -185,7 +185,8 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 	@Override
 	public Iterator<String> getParamNames() {
 		init();
-		return valueMap.keySet().iterator();
+		return valueMap.keySet()
+				.iterator();
 	}
 
 	@Override
@@ -203,10 +204,10 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 		init();
 		Object val = valueMap.get(name);
 		if (val instanceof String) {
-			return new String[]{(String) val};
+			return new String[] { (String) val };
 		}
 		if (val instanceof UploadFileHandle) {
-			return new UploadFileHandle[]{(UploadFileHandle) val};
+			return new UploadFileHandle[] { (UploadFileHandle) val };
 		}
 		return (Object[]) val;
 	}

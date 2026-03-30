@@ -54,7 +54,8 @@ public class FixedSearchContext extends SearchContextBase {
 	@Override
 	public Where getWhere() {
 		Where where = null;
-		EntityFilterManager efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
+		EntityFilterManager efm = ManagerLocator.getInstance()
+				.getManager(EntityFilterManager.class);
 		EntityFilter entityFilter = efm.get(getDefName());
 		EntityFilterItem item = null;
 		String filterName = getFilterName();
@@ -88,7 +89,8 @@ public class FixedSearchContext extends SearchContextBase {
 	@Override
 	public OrderBy getOrderBy() {
 		OrderBy orderBy = null;
-		EntityFilterManager efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
+		EntityFilterManager efm = ManagerLocator.getInstance()
+				.getManager(EntityFilterManager.class);
 		EntityFilter entityFilter = efm.get(getDefName());
 		EntityFilterItem item = null;
 		String filterName = getFilterName();
@@ -97,8 +99,10 @@ public class FixedSearchContext extends SearchContextBase {
 		}
 
 		if (item != null && StringUtil.isNotEmpty(item.getSort())) {
-			SyntaxService service = ServiceRegistry.getRegistry().getService(SyntaxService.class);
-			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT).getSyntax(OrderBySyntax.class);
+			SyntaxService service = ServiceRegistry.getRegistry()
+					.getService(SyntaxService.class);
+			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
+					.getSyntax(OrderBySyntax.class);
 
 			ParseContext context = new ParseContext("order by " + item.getSort());
 			try {
@@ -107,7 +111,8 @@ public class FixedSearchContext extends SearchContextBase {
 				//画面でソート指定された場合は、その項目を第1ソートキーに
 				SortSpec sortSpec = getSortSpec();
 				if (sortSpec != null) {
-					orderBy.getSortSpecList().add(0, sortSpec);
+					orderBy.getSortSpecList()
+							.add(0, sortSpec);
 				}
 
 			} catch (ParseException e) {

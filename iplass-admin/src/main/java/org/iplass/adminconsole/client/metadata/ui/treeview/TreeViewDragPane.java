@@ -52,7 +52,7 @@ public class TreeViewDragPane extends VLayout {
 
 		SectionStackSection menuItemSection = new SectionStackSection("Entity Items");
 		menuItemSection.setExpanded(true);
-		menuItemSection.setCanCollapse(false);	//CLOSE不可
+		menuItemSection.setCanCollapse(false); //CLOSE不可
 
 		//Refreshボタン
 		ImgButton refreshButton = new ImgButton();
@@ -94,7 +94,8 @@ public class TreeViewDragPane extends VLayout {
 
 		@Override
 		protected boolean isVisibleItem(MetaTreeNode item) {
-			if (item.getName().equals(EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME)) {
+			if (item.getName()
+					.equals(EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME)) {
 				return false;
 			}
 			return true;

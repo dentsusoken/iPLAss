@@ -30,12 +30,11 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.MetaData;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso(value={MetaGRdbEntityStore.class})
+@XmlSeeAlso(value = { MetaGRdbEntityStore.class })
 public abstract class MetaEntityStore implements MetaData {
 	private static final long serialVersionUID = -7869335212218718713L;
-	
+
 //	private Map<String, EntityStorePropertyDefinition> propMap;
 
 	public MetaEntityStore() {
@@ -43,7 +42,7 @@ public abstract class MetaEntityStore implements MetaData {
 	}
 
 	public abstract MetaEntityStore copy();
-	
+
 	public abstract EntityStoreRuntime createRuntime(EntityHandler eh);
 
 	@Deprecated
@@ -51,7 +50,7 @@ public abstract class MetaEntityStore implements MetaData {
 
 	@Deprecated
 	public abstract StoreDefinition currentConfig(MetaEntity metaEntity);
-	
+
 //	public EntityStorePropertyDefinition getPropertyDefinitionBy(String name) {
 //		return propMap.get(name);
 //	}

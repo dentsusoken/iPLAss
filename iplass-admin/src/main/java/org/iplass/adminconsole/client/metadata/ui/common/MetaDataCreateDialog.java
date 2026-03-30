@@ -110,10 +110,10 @@ public abstract class MetaDataCreateDialog extends MtpDialog {
 
 		if (isCopyMode) {
 			setTitle(getString("copyTitle", nodeDisplayName));
-			setHeight(DEFAULT_HEIGHT + 20);	//項目を追加したい場合は調整すること
+			setHeight(DEFAULT_HEIGHT + 20); //項目を追加したい場合は調整すること
 		} else {
 			setTitle(getString("createTitle", nodeDisplayName));
-			setHeight(DEFAULT_HEIGHT);	//項目を追加したい場合は調整すること
+			setHeight(DEFAULT_HEIGHT); //項目を追加したい場合は調整すること
 		}
 
 		centerInPage();
@@ -149,7 +149,7 @@ public abstract class MetaDataCreateDialog extends MtpDialog {
 		IButton save = new IButton("Save");
 		save.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					SaveInfo info = new SaveInfo(
 							SmartGWTUtil.getStringValue(nameField),
 							SmartGWTUtil.getStringValue(displayNameField),

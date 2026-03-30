@@ -69,12 +69,14 @@ import org.iplass.mtp.impl.beanvalidation.ValidEntityValidator;
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = {ValidEntityValidator.class})
+@Constraint(validatedBy = { ValidEntityValidator.class })
 public @interface ValidEntity {
 	String message() default "";
-	Class<?>[] groups() default { };
-	Class<? extends Payload>[] payload() default { };
-	
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
 	/**
 	 * <p>検証対象のプロパティを指定します。</p>
 	 * <p>
@@ -89,8 +91,8 @@ public @interface ValidEntity {
 	 * 
 	 * @return
 	 */
-	String[] properties() default { };
-	
+	String[] properties() default {};
+
 	@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
 	@Retention(RUNTIME)
 	@Documented

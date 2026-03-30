@@ -28,7 +28,6 @@ import org.iplass.mtp.async.ExceptionHandlingMode;
 import org.iplass.mtp.command.definition.config.CommandConfig;
 import org.iplass.mtp.definition.Definition;
 
-
 /**
  * 非同期実行Commandの定義。
  * 定義した非同期実行CommandはCommandInvokerを利用して呼び出し可能。

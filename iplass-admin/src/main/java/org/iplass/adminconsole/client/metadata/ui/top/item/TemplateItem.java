@@ -96,6 +96,7 @@ public class TemplateItem extends PartsItem {
 		private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
 		private IntegerItem maxHeightField;
+
 		/**
 		 * コンストラクタ
 		 */
@@ -128,7 +129,7 @@ public class TemplateItem extends PartsItem {
 			save.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						parts.setTemplatePath(SmartGWTUtil.getStringValue(templateField));
 						parts.setMaxHeight(maxHeightField.getValueAsInteger());
 						fireDataChanged();

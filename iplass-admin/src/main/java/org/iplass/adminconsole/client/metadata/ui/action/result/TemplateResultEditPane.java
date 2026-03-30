@@ -112,12 +112,13 @@ public class TemplateResultEditPane extends ResultTypeEditPane {
 	 */
 	@Override
 	public void setDefinition(ResultDefinition definition) {
-		TemplateResultDefinition template = (TemplateResultDefinition)definition;
+		TemplateResultDefinition template = (TemplateResultDefinition) definition;
 		templateField.setValue(template.getTemplateName());
 		layoutActionNameField.setValue(template.getLayoutActionName());
 		useContentDispositionField.setValue(template.isUseContentDisposition());
 		if (template.getContentDispositionType() != null) {
-			contentDispositionTypeField.setValue(template.getContentDispositionType().name());
+			contentDispositionTypeField.setValue(template.getContentDispositionType()
+					.name());
 		} else {
 			contentDispositionTypeField.setValue("");
 		}
@@ -131,7 +132,7 @@ public class TemplateResultEditPane extends ResultTypeEditPane {
 	 */
 	@Override
 	public ResultDefinition getEditDefinition(ResultDefinition definition) {
-		TemplateResultDefinition template = (TemplateResultDefinition)definition;
+		TemplateResultDefinition template = (TemplateResultDefinition) definition;
 		template.setTemplateName(SmartGWTUtil.getStringValue(templateField));
 		template.setLayoutActionName(SmartGWTUtil.getStringValue(layoutActionNameField));
 		template.setUseContentDisposition(SmartGWTUtil.getBooleanValue(useContentDispositionField));

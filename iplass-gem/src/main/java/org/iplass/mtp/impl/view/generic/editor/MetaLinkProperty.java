@@ -117,10 +117,12 @@ public class MetaLinkProperty implements MetaData {
 				fromProperty = rootEntity.getProperty(linkProperty.getLinkFromPropertyName(), ctx);
 			}
 		}
-		if (fromProperty == null) return;
+		if (fromProperty == null)
+			return;
 
 		PropertyHandler toProperty = referenceEntity.getProperty(linkProperty.getLinkToPropertyName(), ctx);
-		if (toProperty == null) return;
+		if (toProperty == null)
+			return;
 
 		this.linkFromPropertyId = fromProperty.getId();
 		this.withNestProperty = linkProperty.isWithNestProperty();
@@ -144,10 +146,12 @@ public class MetaLinkProperty implements MetaData {
 		} else {
 			fromProperty = rootEntity.getPropertyById(linkFromPropertyId, ctx);
 		}
-		if (fromProperty == null) return null;
+		if (fromProperty == null)
+			return null;
 
 		PropertyHandler toProperty = referenceEntity.getPropertyById(linkToPropertyId, ctx);
-		if (toProperty == null) return null;
+		if (toProperty == null)
+			return null;
 
 		LinkProperty linkProperty = new LinkProperty();
 		linkProperty.setLinkFromPropertyName(fromProperty.getName());

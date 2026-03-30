@@ -39,24 +39,27 @@ import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
-@WebApi(name=AccountDisconnectCommand.WEBAPI_NAME,
-	accepts=RequestType.REST_FORM,
-	methods=MethodType.POST,
-	cacheControlType=CacheControlType.NO_CACHE,
-	tokenCheck=@WebApiTokenCheck(useFixedToken=true),
-	paramMapping={
-			@WebApiParamMapping(name=AccountDisconnectCommand.PARAM_DEFINITION_NAME, mapFrom=WebApiParamMapping.PATHS)
-	}
+@WebApi(
+		name = AccountDisconnectCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_FORM,
+		methods = MethodType.POST,
+		cacheControlType = CacheControlType.NO_CACHE,
+		tokenCheck = @WebApiTokenCheck(useFixedToken = true),
+		paramMapping = {
+				@WebApiParamMapping(name = AccountDisconnectCommand.PARAM_DEFINITION_NAME, mapFrom = WebApiParamMapping.PATHS)
+		}
 )
-@CommandClass(name="mtp/oidc/AccountDisconnectCommand", displayName="OpenID Connect Account Disconnect processing")
+@CommandClass(name = "mtp/oidc/AccountDisconnectCommand", displayName = "OpenID Connect Account Disconnect processing")
 public class AccountDisconnectCommand implements Command {
 
 	static final String WEBAPI_NAME = "oidc/disconnect";
 	static final String PARAM_DEFINITION_NAME = "defName";
 	static final String STAT_SUCCESS = "SUCCESS";
 
-	private OpenIdConnectService service = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
-	private AuthenticationPolicyService policyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
+	private OpenIdConnectService service = ServiceRegistry.getRegistry()
+			.getService(OpenIdConnectService.class);
+	private AuthenticationPolicyService policyService = ServiceRegistry.getRegistry()
+			.getService(AuthenticationPolicyService.class);
 
 	@Override
 	public String execute(RequestContext request) {
@@ -65,12 +68,14 @@ public class AccountDisconnectCommand implements Command {
 		if (oidp == null) {
 			throw new OIDCRuntimeException("no OpenIdProvider Definition:" + defName);
 		}
-		User user = AuthContext.getCurrentContext().getUser();
+		User user = AuthContext.getCurrentContext()
+				.getUser();
 		AuthenticationPolicyRuntime userPolicy = policyService.getOrDefault(user.getAccountPolicy());
 		if (!oidp.isAllowedOnPolicy(userPolicy)) {
-			throw new OIDCRuntimeException("policy not allow OpenIdConnectDefinition:" + oidp.getMetaData().getName());
+			throw new OIDCRuntimeException("policy not allow OpenIdConnectDefinition:" + oidp.getMetaData()
+					.getName());
 		}
-		
+
 		oidp.disconnect(user.getOid());
 		return STAT_SUCCESS;
 	}

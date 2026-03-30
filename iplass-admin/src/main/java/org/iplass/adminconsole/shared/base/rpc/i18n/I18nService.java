@@ -37,6 +37,7 @@ public interface I18nService extends XsrfProtectedService {
 
 	public Map<String, List<LocalizedStringDefinition>> getMultiLangItemInfoForDisp(int tenantId, Definition definition);
 
-	public Definition getMultiLangItemInfoForUpdate(int tenantId, Definition definition, Map<String, MultiLangFieldInfo> updateDefinitionInfo) throws RuntimeException;
+	public Definition getMultiLangItemInfoForUpdate(int tenantId, Definition definition, Map<String, MultiLangFieldInfo> updateDefinitionInfo)
+			throws RuntimeException;
 
 }

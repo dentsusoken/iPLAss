@@ -21,9 +21,11 @@
 package org.iplass.mtp.impl.async;
 
 public interface ExceptionHandleable {
-	
+
 	public void aborted(Throwable cause);
+
 	public void timeouted();
+
 	public void canceled();
 
 }

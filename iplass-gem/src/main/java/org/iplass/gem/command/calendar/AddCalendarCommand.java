@@ -59,23 +59,29 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @ActionMapping(
-	name=AddCalendarCommand.ACTION_NANE,
-	displayName="追加",
-	paramMapping=@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}"),
-	result={
-		@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
-		@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-				layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-		@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-				layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-	}
+		name = AddCalendarCommand.ACTION_NANE,
+		displayName = "追加",
+		paramMapping = @ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}"),
+		result = {
+				@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_EDIT),
+				@Result(
+						status = Constants.CMD_EXEC_ERROR_VIEW,
+						type = Type.TEMPLATE,
+						value = Constants.TEMPLATE_COMMON_ERROR,
+						layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+				@Result(
+						status = Constants.CMD_EXEC_ERROR_NODATA,
+						type = Type.TEMPLATE,
+						value = Constants.TEMPLATE_COMMON_ERROR,
+						layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+		}
 )
-@CommandClass(name="gem/calendar/AddCalendarCommand", displayName="追加")
+@CommandClass(name = "gem/calendar/AddCalendarCommand", displayName = "追加")
 public final class AddCalendarCommand implements Command {
 
 	private static Logger logger = LoggerFactory.getLogger(AddCalendarCommand.class);
 
-	public  static final String ACTION_NANE = "gem/calendar/add";
+	public static final String ACTION_NANE = "gem/calendar/add";
 
 	/** EntityDefinitionManager */
 	private EntityDefinitionManager edm = null;
@@ -87,8 +93,10 @@ public final class AddCalendarCommand implements Command {
 	 * コンストラクタ
 	 */
 	public AddCalendarCommand() {
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		ecm = ManagerLocator.getInstance().getManager(EntityCalendarManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		ecm = ManagerLocator.getInstance()
+				.getManager(EntityCalendarManager.class);
 	}
 
 	@Override
@@ -96,7 +104,8 @@ public final class AddCalendarCommand implements Command {
 		DetailViewCommand command = new DetailViewCommand();
 		command.setDetail(true);
 		String ret = command.execute(request);
-		if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) return ret;
+		if (!Constants.CMD_EXEC_SUCCESS.equals(ret))
+			return ret;
 
 		Long date = dateToLong(request.getParam(Constants.CALENDAR_DATE));
 		String defName = request.getParam(Constants.DEF_NAME);
@@ -167,10 +176,12 @@ public final class AddCalendarCommand implements Command {
 	 * @return Long値
 	 */
 	private Long dateToLong(String str) {
-		SimpleDateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
+		SimpleDateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+				.getServerDateFormat(), false);
 		format.setLenient(false);
 		try {
-			return format.parse(str).getTime();
+			return format.parse(str)
+					.getTime();
 		} catch (ParseException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(e.getMessage(), e);
@@ -187,9 +198,12 @@ public final class AddCalendarCommand implements Command {
 	 */
 	private Entity newEntity(EntityDefinition entityDefinition) {
 		Entity res = null;
-		if (entityDefinition.getMapping() != null && entityDefinition.getMapping().getMappingModelClass() != null) {
+		if (entityDefinition.getMapping() != null && entityDefinition.getMapping()
+				.getMappingModelClass() != null) {
 			try {
-				res = (Entity) Class.forName(entityDefinition.getMapping().getMappingModelClass()).newInstance();
+				res = (Entity) Class.forName(entityDefinition.getMapping()
+						.getMappingModelClass())
+						.newInstance();
 			} catch (InstantiationException e) {
 				throw new EntityRuntimeException(e);
 			} catch (IllegalAccessException e) {

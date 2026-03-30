@@ -66,6 +66,7 @@ public class LocalizedStringSettingDialog extends MtpDialog {
 	public LocalizedStringSettingDialog(List<LocalizedStringDefinition> localizedStringList, boolean readOnly) {
 		this(localizedStringList, new LocalizedStringSettingDialogOption(readOnly));
 	}
+
 	public LocalizedStringSettingDialog(List<LocalizedStringDefinition> localizedStringList, LocalizedStringSettingDialogOption option) {
 
 		this.localizedStringList = localizedStringList;
@@ -139,14 +140,14 @@ public class LocalizedStringSettingDialog extends MtpDialog {
 					grid.setWidth100();
 					grid.setHeight(1);
 
-					grid.setShowAllColumns(true);								//列を全て表示
-					grid.setShowAllRecords(true);								//レコードを全て表示
-					grid.setCanResizeFields(true);								//列幅変更可能
-					grid.setCanSort(false);										//ソート不可
-					grid.setCanPickFields(false);								//表示フィールドの選択不可
-					grid.setCanGroupBy(false);									//GroupByの選択不可
-					grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-					grid.setLeaveScrollbarGap(false);							//縦スクロールバー自動表示制御
+					grid.setShowAllColumns(true); //列を全て表示
+					grid.setShowAllRecords(true); //レコードを全て表示
+					grid.setCanResizeFields(true); //列幅変更可能
+					grid.setCanSort(false); //ソート不可
+					grid.setCanPickFields(false); //表示フィールドの選択不可
+					grid.setCanGroupBy(false); //GroupByの選択不可
+					grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+					grid.setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 					grid.setBodyOverflow(Overflow.VISIBLE);
 					grid.setOverflow(Overflow.VISIBLE);
 
@@ -181,7 +182,7 @@ public class LocalizedStringSettingDialog extends MtpDialog {
 					for (Map.Entry<String, String> e : localizedString.entrySet()) {
 						ListGridRecord record = new ListGridRecord();
 						record.setAttribute("language", e.getKey());
-						record.setAttribute("multilingual",localizedString.get(e.getKey()));
+						record.setAttribute("multilingual", localizedString.get(e.getKey()));
 						records[cnt] = record;
 						cnt++;
 					}
@@ -243,7 +244,7 @@ public class LocalizedStringSettingDialog extends MtpDialog {
 
 	private void fireDataChanged(List<LocalizedStringDefinition> localizedStringList) {
 		DataChangedEvent event = new DataChangedEvent();
-		event.setValue("localizedStringList", (Serializable)localizedStringList);
+		event.setValue("localizedStringList", (Serializable) localizedStringList);
 		for (DataChangedHandler handler : handlers) {
 			handler.onDataChanged(event);
 		}
@@ -265,6 +266,7 @@ public class LocalizedStringSettingDialog extends MtpDialog {
 		public boolean isReadOnly() {
 			return readOnly;
 		}
+
 		public void setReadOnly(boolean readOnly) {
 			this.readOnly = readOnly;
 		}
@@ -272,6 +274,7 @@ public class LocalizedStringSettingDialog extends MtpDialog {
 		public boolean isModeTextArea() {
 			return modeTextArea;
 		}
+
 		public void setModeTextArea(boolean modeTextArea) {
 			this.modeTextArea = modeTextArea;
 		}

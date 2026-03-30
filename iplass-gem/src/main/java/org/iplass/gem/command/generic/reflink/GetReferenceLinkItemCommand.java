@@ -56,14 +56,14 @@ import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
-		name=GetReferenceLinkItemCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={"selName", "data"},
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/generic/link/GetReferenceLinkItemCommand", displayName="連動アイテム取得")
+		name = GetReferenceLinkItemCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { "selName", "data" },
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/generic/link/GetReferenceLinkItemCommand", displayName = "連動アイテム取得")
 public final class GetReferenceLinkItemCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/link/getLinkItem";
@@ -76,9 +76,12 @@ public final class GetReferenceLinkItemCommand implements Command, HasDisplayScr
 	 * コンストラクタ
 	 */
 	public GetReferenceLinkItemCommand() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 	}
 
 	@Override
@@ -95,7 +98,7 @@ public final class GetReferenceLinkItemCommand implements Command, HasDisplayScr
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
 		if (editor instanceof ReferencePropertyEditor) {
-			rpe = (ReferencePropertyEditor)editor;
+			rpe = (ReferencePropertyEditor) editor;
 		}
 		if (rpe != null) {
 			List<SimpleEntity> data = getData(rpe, linkValue, request);
@@ -156,9 +159,11 @@ public final class GetReferenceLinkItemCommand implements Command, HasDisplayScr
 			q.from(editor.getObjectName());
 			q.select(Entity.OID, Entity.VERSION);
 			if (editor.getDisplayLabelItem() != null) {
-				q.select().add(editor.getDisplayLabelItem());
+				q.select()
+						.add(editor.getDisplayLabelItem());
 			} else {
-				q.select().add(Entity.NAME);
+				q.select()
+						.add(Entity.NAME);
 			}
 			if (condition != null) {
 				q.where(condition);
@@ -166,10 +171,12 @@ public final class GetReferenceLinkItemCommand implements Command, HasDisplayScr
 			if (editor.getSortType() != null) {
 				String sortItem = editor.getSortItem() != null ? editor.getSortItem() : Entity.OID;
 				if (!Entity.OID.equals(sortItem) && !Entity.NAME.equals(sortItem)) {
-					q.select().add(sortItem);
+					q.select()
+							.add(sortItem);
 				}
 				SortType sortType = SortSpec.SortType.ASC;
-				if ("DESC".equals(editor.getSortType().name())) {
+				if ("DESC".equals(editor.getSortType()
+						.name())) {
 					sortType = SortSpec.SortType.DESC;
 				}
 				q.order(new SortSpec(sortItem, sortType));

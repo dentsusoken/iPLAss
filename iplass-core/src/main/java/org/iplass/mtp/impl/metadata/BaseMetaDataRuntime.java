@@ -25,23 +25,23 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BaseMetaDataRuntime implements MetaDataRuntime {
 	private static final Logger logger = LoggerFactory.getLogger(BaseMetaDataRuntime.class);
-	
+
 	private RuntimeException illegalStateException;
-	
+
 	@Override
 	public void checkState() throws MetaDataIllegalStateException {
 		if (illegalStateException != null) {
 			throw new MetaDataIllegalStateException(illegalStateException.getMessage(), illegalStateException);
 		}
 	}
-	
+
 	protected void setIllegalStateException(RuntimeException illegalStateException) {
 		logger.error(illegalStateException.getMessage(), illegalStateException);
 		if (this.illegalStateException == null) {
 			this.illegalStateException = illegalStateException;
 		}
 	}
-	
+
 	protected boolean hasIllegalStateException() {
 		return illegalStateException != null;
 	}

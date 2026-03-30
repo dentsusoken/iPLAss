@@ -97,7 +97,8 @@ public class TenantPluginControllerImpl implements TenantPluginController {
 
 	@Override
 	public boolean isEditSupportMetaData(ViewMetaDataEvent event) {
-		return Tenant.class.getName().equals(event.getDefinitionClassName());
+		return Tenant.class.getName()
+				.equals(event.getDefinitionClassName());
 	}
 
 }

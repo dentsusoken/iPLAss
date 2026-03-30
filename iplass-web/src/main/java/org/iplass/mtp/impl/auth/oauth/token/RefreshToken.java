@@ -20,9 +20,11 @@
 package org.iplass.mtp.impl.auth.oauth.token;
 
 public abstract class RefreshToken {
-	
+
 	public abstract String getTokenEncoded();
+
 	public abstract long getExpiresIn();
+
 	public abstract String getClientId();
 
 }

@@ -136,7 +136,7 @@ public class MetaPushNotificationTemplate extends BaseRootMetaData implements De
 		icon = d.getIcon();
 		if (d.getLocalizedNotificationList() != null) {
 			localizedNotificationList = new ArrayList<>();
-			for (LocalizedNotificationDefinition lnd: d.getLocalizedNotificationList()) {
+			for (LocalizedNotificationDefinition lnd : d.getLocalizedNotificationList()) {
 				MetaLocalizedNotification mn = new MetaLocalizedNotification();
 				mn.setLocaleName(lnd.getLocaleName());
 				mn.setTitle(lnd.getTitle());
@@ -189,7 +189,9 @@ public class MetaPushNotificationTemplate extends BaseRootMetaData implements De
 
 		public PushNotificationTemplateRuntime() {
 			try {
-				GroovyScriptEngine se = (GroovyScriptEngine) ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				GroovyScriptEngine se = (GroovyScriptEngine) ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				if (title != null) {
 					titleTemplate = GroovyTemplateCompiler.compile(title, "PNTemplate_Title" + getName(), se);
 				}
@@ -201,15 +203,17 @@ public class MetaPushNotificationTemplate extends BaseRootMetaData implements De
 				}
 
 				if (localizedNotificationList != null && localizedNotificationList.size() > 0) {
-					for (MetaLocalizedNotification m: localizedNotificationList) {
+					for (MetaLocalizedNotification m : localizedNotificationList) {
 						String localeName = m.getLocaleName();
 						TemplateSet templateSet = new TemplateSet();
 
 						if (m.getTitle() != null) {
-							templateSet.titleTemplate = GroovyTemplateCompiler.compile(m.getTitle(), "PNTemplate_Title" + getName() +"__" + localeName, se);
+							templateSet.titleTemplate = GroovyTemplateCompiler.compile(m.getTitle(), "PNTemplate_Title" + getName() + "__" + localeName,
+									se);
 						}
 						if (m.getBody() != null) {
-							templateSet.bodyTemplate = GroovyTemplateCompiler.compile(m.getBody(), "PNTemplate_Body" + getName() +"__" + localeName, se);
+							templateSet.bodyTemplate = GroovyTemplateCompiler.compile(m.getBody(), "PNTemplate_Body" + getName() + "__" + localeName,
+									se);
 						}
 
 						templateSetMap.put(localeName, templateSet);
@@ -233,14 +237,17 @@ public class MetaPushNotificationTemplate extends BaseRootMetaData implements De
 		public PushNotification createPushNotification(Map<String, Object> bindings) {
 			checkState();
 
-			String lang = ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantI18nInfo.class).getLocale();
+			String lang = ExecuteContext.getCurrentContext()
+					.getCurrentTenant()
+					.getTenantConfig(TenantI18nInfo.class)
+					.getLocale();
 			if (StringUtil.isNotEmpty(langOrUserBindingName)) {
 				if (bindings.get(langOrUserBindingName) != null) {
 
 					if (bindings.get(langOrUserBindingName) instanceof String) {
 						lang = (String) bindings.get(langOrUserBindingName);
 					} else if (bindings.get(langOrUserBindingName) instanceof User) {
-						User user = (User)bindings.get(langOrUserBindingName);
+						User user = (User) bindings.get(langOrUserBindingName);
 						String userLang = user.getLanguage();
 						if (StringUtil.isNotEmpty(userLang)) {
 							lang = userLang;
@@ -295,12 +302,13 @@ public class MetaPushNotificationTemplate extends BaseRootMetaData implements De
 			//config
 			if (configScriptScript != null) {
 
-				TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+				TenantContext tc = ExecuteContext.getCurrentContext()
+						.getTenantContext();
 				ScriptEngine ss = tc.getScriptEngine();
 
 				ScriptContext sc = ss.newScriptContext();
 				if (bindings != null) {
-					for (Map.Entry<String, Object> e: bindings.entrySet()) {
+					for (Map.Entry<String, Object> e : bindings.entrySet()) {
 						sc.setAttribute(e.getKey(), e.getValue());
 					}
 				}

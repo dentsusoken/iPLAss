@@ -38,7 +38,7 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/TemplatePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/editor/TemplatePropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
 public class TemplatePropertyEditor extends CustomPropertyEditor {
 
@@ -47,34 +47,36 @@ public class TemplatePropertyEditor extends CustomPropertyEditor {
 
 	/** 表示タイプ */
 	public enum TemplateDisplayType {
-		@XmlEnumValue("Template")TEMPLATE,
-		@XmlEnumValue("Hidden")HIDDEN
+		@XmlEnumValue("Template")
+		TEMPLATE,
+		@XmlEnumValue("Hidden")
+		HIDDEN
 	}
 
 	@MetaFieldInfo(
-			displayName="表示タイプ",
-			displayNameKey="generic_editor_TemplatePropertyEditor_displayTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=TemplateDisplayType.class,
-			required=true,
-			displayOrder=100,
-			description="画面に表示する方法を選択します。",
-			descriptionKey="generic_editor_TemplatePropertyEditor_displayTypeDescriptionKey"
+			displayName = "表示タイプ",
+			displayNameKey = "generic_editor_TemplatePropertyEditor_displayTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = TemplateDisplayType.class,
+			required = true,
+			displayOrder = 100,
+			description = "画面に表示する方法を選択します。",
+			descriptionKey = "generic_editor_TemplatePropertyEditor_displayTypeDescriptionKey"
 	)
 	private TemplateDisplayType displayType;
 
 	/** テンプレート名 */
 	@MetaFieldInfo(
-			displayName="テンプレート名",
-			displayNameKey="generic_editor_TemplatePropertyEditor_templateNameDisplaNameKey",
-			inputType=InputType.TEMPLATE,
-			required=true,
-			displayOrder=110,
-			description="表示時に読み込むテンプレートの名前を設定します。",
-			descriptionKey="generic_editor_TemplatePropertyEditor_templateNameDescriptionKey"
+			displayName = "テンプレート名",
+			displayNameKey = "generic_editor_TemplatePropertyEditor_templateNameDisplaNameKey",
+			inputType = InputType.TEMPLATE,
+			required = true,
+			displayOrder = 110,
+			description = "表示時に読み込むテンプレートの名前を設定します。",
+			descriptionKey = "generic_editor_TemplatePropertyEditor_templateNameDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String templateName;
 

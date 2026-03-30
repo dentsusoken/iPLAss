@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.impl.tools.auth.builtin.cond;
 
-
 public class UserAttributeCondition implements BuiltinAuthUserSearchCondition {
 
 	private String accountId;
@@ -35,18 +34,23 @@ public class UserAttributeCondition implements BuiltinAuthUserSearchCondition {
 	public String getAccountId() {
 		return accountId;
 	}
+
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getMail() {
 		return mail;
 	}
+
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
@@ -54,12 +58,15 @@ public class UserAttributeCondition implements BuiltinAuthUserSearchCondition {
 	public SearchOperator getValidTermRemainDaysOparator() {
 		return validTermRemainDaysOparator;
 	}
+
 	public void setValidTermRemainDaysOparator(SearchOperator validTermRemainDaysOparator) {
 		this.validTermRemainDaysOparator = validTermRemainDaysOparator;
 	}
+
 	public int getValidTermRemainDays() {
 		return validTermRemainDays;
 	}
+
 	public void setValidTermRemainDays(int validTermRemainDays) {
 		this.validTermRemainDays = validTermRemainDays;
 	}
@@ -67,6 +74,7 @@ public class UserAttributeCondition implements BuiltinAuthUserSearchCondition {
 	public String getDirectWhere() {
 		return directWhere;
 	}
+
 	public void setDirectWhere(String directWhere) {
 		this.directWhere = directWhere;
 	}

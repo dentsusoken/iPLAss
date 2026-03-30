@@ -21,10 +21,10 @@
 package org.iplass.mtp.impl.query.prepared;
 
 public class PreparedQueryTemplateFactory {
-	
+
 	//TODO キャッシュ（テナント単位で？）
 	//TODO サービス化？
-	
+
 	public static PreparedQueryTemplate createPreparedQueryTemplate(String queryString) {
 		return new PreparedQueryTemplate(queryString);
 	}

@@ -35,12 +35,19 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 public interface EntityStoreStrategy extends StoreStrategy {
 
 	public int count(EntityContext context, Query query);
+
 	public void delete(EntityContext context, Entity model, EntityHandler handler, DeleteOption option);
+
 	public String insert(EntityContext context, EntityHandler handler, Entity model);
+
 	public SearchResultIterator search(EntityContext context, Query query, EntityHandler handler);
+
 	public void update(EntityContext context, EntityHandler handler, Entity model, UpdateOption option);
+
 	public int updateAll(UpdateCondition cond, EntityContext entityContext, EntityHandler handler, String clientId);
+
 	public int deleteAll(DeleteCondition cond, EntityContext entityContext, EntityHandler handler, String clientId);
+
 	public boolean lock(EntityContext context, EntityHandler handler, String oid);
 //	public boolean lock(EntityContext context, EntityHandler handler, Condition condition);
 
@@ -48,10 +55,15 @@ public interface EntityStoreStrategy extends StoreStrategy {
 
 	//ごみ箱関連(oid単位（複数バージョン一括）での操作とする)
 	public Long copyToRecycleBin(EntityContext context, EntityHandler handler, String oid, String clientId);
+
 	public void copyFromRecycleBin(EntityContext context, EntityHandler handler, Long rbid, String clientId);
+
 	public void deleteFromRecycleBin(EntityContext context, EntityHandler handler, Long rbid, String clientId);
+
 	public RecycleBinIterator getRecycleBin(EntityContext context, EntityHandler handler, Long rbid);
+
 	public int countRecycleBin(EntityContext context, EntityHandler handler, Timestamp ts);
+
 	public void bulkUpdate(BulkUpdatable bulkUpdatable, EntityContext entityContext, EntityHandler entityHandler, String clientId);
 
 	/**
@@ -98,6 +110,5 @@ public interface EntityStoreStrategy extends StoreStrategy {
 	 * @param handler
 	 */
 	public void defragData(EntityContext context, EntityHandler handler);
-	
 
 }

@@ -46,11 +46,12 @@ public class NumberTypeConverter extends TypeConverter {
 			try {
 				return (T) toNumber((String) obj, targetType);
 			} catch (RuntimeException e) {
-				DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(ExecuteContext.getCurrentContext().getLocale());
+				DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(ExecuteContext.getCurrentContext()
+						.getLocale());
 				if (hasCamma((String) obj, dfs)) {
 					try {
 						return (T) toNumber(trimCamma((String) obj, dfs), targetType);
-					} catch(Exception ee) {
+					} catch (Exception ee) {
 						e.addSuppressed(ee);
 					}
 				}
@@ -112,6 +113,6 @@ public class NumberTypeConverter extends TypeConverter {
 			return Float.valueOf(val);
 		}
 
-		throw new IllegalArgumentException("Can not parse to " + type.getName() + ":" +  val);
+		throw new IllegalArgumentException("Can not parse to " + type.getName() + ":" + val);
 	}
 }

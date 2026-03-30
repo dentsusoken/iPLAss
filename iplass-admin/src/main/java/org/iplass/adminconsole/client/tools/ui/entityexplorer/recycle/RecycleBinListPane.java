@@ -121,7 +121,8 @@ public class RecycleBinListPane extends VLayout {
 				if ("explorerButton".equals(fieldName)) {
 					if (!record.getAttributeAsBoolean(RecycleBinEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
 						MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
-						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "showMetaDataEditScreen")));
+						button.setActionButtonPrompt(
+								SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "showMetaDataEditScreen")));
 						button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
 							@Override
 							public String targetDefinitionName() {
@@ -231,17 +232,18 @@ public class RecycleBinListPane extends VLayout {
 		}
 		final Timestamp ts = new Timestamp(purgeTimeDate.getTime());
 
-		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"), AdminClientMessageUtil.getString(RESOURCE_PREFIX + "cleanConfirm"), new BooleanCallback() {
+		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"), AdminClientMessageUtil.getString(RESOURCE_PREFIX + "cleanConfirm"),
+				new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
+					@Override
+					public void execute(Boolean value) {
 
-				if (value) {
-					RecycleBinCleanProgressDialog dialog = new RecycleBinCleanProgressDialog(RecycleBinListPane.this, defNames, ts);
-					dialog.show();
-				}
-			}
-		});
+						if (value) {
+							RecycleBinCleanProgressDialog dialog = new RecycleBinCleanProgressDialog(RecycleBinListPane.this, defNames, ts);
+							dialog.show();
+						}
+					}
+				});
 	}
 
 	private void refreshGrid() {

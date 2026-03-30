@@ -59,7 +59,8 @@ public class UploadResultInfo {
 	}
 
 	public boolean isFileUploadStatusSuccess() {
-		return UploadProperty.Status.SUCCESS.name().equals(status);
+		return UploadProperty.Status.SUCCESS.name()
+				.equals(status);
 	}
 
 	public String getStatus() {
@@ -103,7 +104,6 @@ public class UploadResultInfo {
 		}
 		return values;
 	}
-
 
 	private String getFileUploadStatus() {
 		return getValue(UploadProperty.STATUS_CODE);

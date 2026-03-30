@@ -41,29 +41,30 @@ import org.slf4j.LoggerFactory;
 
 public class BulkUpdateState implements AutoCloseable {
 	private static Logger logger = LoggerFactory.getLogger(BulkUpdateState.class);
-	
+
 	GRdbEntityStoreStrategy storeStrategy;
 	int tenantId;
 	String clientId;
 	EntityContext entityContext;
 	EntityHandler eh;
 	BulkUpdatable bulkUpdatable;
-	
+
 	Connection con;
 	RdbAdapter rdb;
 	int bufferSize;
-	
+
 	private List<BulkUpdateEntity> buffer;
 	private List<Object[]> mergeList;
 	private Set<OidVer> existsOidVers;
-	
+
 	private Statement search;
-	
+
 	private BulkInsertHandler insert;
 	private BulkUpdateHandler update;
 	private BulkDeleteHandler delete;
-	
-	BulkUpdateState(GRdbEntityStoreStrategy storeStrategy, int tenantId, String clientId, EntityContext entityContext, EntityHandler eh, BulkUpdatable bulkUpdatable, Connection con, RdbAdapter rdb, int bufferSize) {
+
+	BulkUpdateState(GRdbEntityStoreStrategy storeStrategy, int tenantId, String clientId, EntityContext entityContext, EntityHandler eh,
+			BulkUpdatable bulkUpdatable, Connection con, RdbAdapter rdb, int bufferSize) {
 		this.tenantId = tenantId;
 		this.clientId = clientId;
 		this.entityContext = entityContext;
@@ -75,23 +76,27 @@ public class BulkUpdateState implements AutoCloseable {
 		buffer = new ArrayList<>(bufferSize);
 		existsOidVers = new HashSet<>(bufferSize);
 	}
-	
+
 	void addToBuffer(BulkUpdateEntity e) {
 		buffer.add(e);
 		if (e.getMethod() == UpdateMethod.MERGE
-				&& e.getEntity().getOid() != null) {
+				&& e.getEntity()
+						.getOid() != null) {
 			if (mergeList == null) {
 				mergeList = new ArrayList<>();
 			}
-			mergeList.add(new Object[]{e.getEntity().getOid(), e.getEntity().getVersion()});
+			mergeList.add(new Object[] { e.getEntity()
+					.getOid(),
+					e.getEntity()
+							.getVersion() });
 		}
 	}
-	
+
 	private void searchMergeOidVer() throws SQLException {
 		if (mergeList != null) {
 			if (search == null) {
 				search = con.createStatement();
-				int fetchSize = bufferSize < rdb.getMaxFetchSize() ? bufferSize: rdb.getMaxFetchSize();
+				int fetchSize = bufferSize < rdb.getMaxFetchSize() ? bufferSize : rdb.getMaxFetchSize();
 				search.setFetchSize(fetchSize);
 			}
 			try (ResultSet rs = search.executeQuery(ObjStoreSearchSql.checkExistsByKeysSql(tenantId, eh, mergeList, rdb))) {
@@ -104,18 +109,21 @@ public class BulkUpdateState implements AutoCloseable {
 
 	void doUpdate() throws SQLException {
 		searchMergeOidVer();
-		
-		for (BulkUpdateEntity bue: buffer) {
-			
+
+		for (BulkUpdateEntity bue : buffer) {
+
 			UpdateMethod um = bue.getMethod();
 			if (um == UpdateMethod.MERGE) {
-				if (existsOidVers.contains(new OidVer(bue.getEntity().getOid(), bue.getEntity().getVersion()))) {
+				if (existsOidVers.contains(new OidVer(bue.getEntity()
+						.getOid(),
+						bue.getEntity()
+								.getVersion()))) {
 					um = UpdateMethod.UPDATE;
 				} else {
 					um = UpdateMethod.INSERT;
 				}
 			}
-			
+
 			switch (um) {
 			case DELETE:
 				if (delete == null) {
@@ -127,8 +135,10 @@ public class BulkUpdateState implements AutoCloseable {
 				if (insert == null) {
 					insert = new BulkInsertHandler(this, bulkUpdatable.isEnableAuditPropertySpecification());
 				}
-				if (bue.getEntity().getOid() == null) {
-					bue.getEntity().setOid(storeStrategy.newOid(entityContext, eh));
+				if (bue.getEntity()
+						.getOid() == null) {
+					bue.getEntity()
+							.setOid(storeStrategy.newOid(entityContext, eh));
 				}
 				insert.addValue(this, bue.getEntity());
 				break;
@@ -138,7 +148,8 @@ public class BulkUpdateState implements AutoCloseable {
 				}
 				//このタイミングでしかUPDATEか否かわからないので。
 				//UPDATEの場合、updateByの指定はできないように
-				bue.getEntity().setUpdateBy(clientId);
+				bue.getEntity()
+						.setUpdateBy(clientId);
 				update.addValue(this, bue.getEntity());
 				break;
 			default:
@@ -149,13 +160,13 @@ public class BulkUpdateState implements AutoCloseable {
 
 		clearBuffer();
 	}
-	
+
 	private void clearBuffer() {
 		buffer.clear();
 		existsOidVers.clear();
 		mergeList = null;
 	}
-	
+
 	public void flushAll() throws SQLException {
 		if (insert != null) {
 			insert.flushAll();
@@ -167,7 +178,7 @@ public class BulkUpdateState implements AutoCloseable {
 			delete.flushAll(this);
 		}
 	}
-	
+
 	@Override
 	public void close() {
 		if (search != null) {
@@ -192,7 +203,7 @@ public class BulkUpdateState implements AutoCloseable {
 	private static class OidVer {
 		String oid;
 		long ver;
-		
+
 		OidVer(String oid, long ver) {
 			this.oid = oid;
 			this.ver = ver;
@@ -232,6 +243,5 @@ public class BulkUpdateState implements AutoCloseable {
 			return true;
 		}
 	}
-	
-}	
 
+}

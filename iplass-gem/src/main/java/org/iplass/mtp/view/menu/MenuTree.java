@@ -117,7 +117,7 @@ public class MenuTree implements Definition {
 	 * @return 表示順序
 	 */
 	public Integer getDisplayOrder() {
-	    return displayOrder;
+		return displayOrder;
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class MenuTree implements Definition {
 	 * @param displayOrder 表示順序
 	 */
 	public void setDisplayOrder(Integer displayOrder) {
-	    this.displayOrder = displayOrder;
+		this.displayOrder = displayOrder;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class MenuTree implements Definition {
 	 * @return 定義の表示名を表示かどうか
 	 */
 	public boolean isShowMenuDisplayName() {
-	    return showMenuDisplayName;
+		return showMenuDisplayName;
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class MenuTree implements Definition {
 	 * @param showMenuDisplayName 定義の表示名を表示かどうか
 	 */
 	public void setShowMenuDisplayName(boolean showMenuDisplayName) {
-	    this.showMenuDisplayName = showMenuDisplayName;
+		this.showMenuDisplayName = showMenuDisplayName;
 	}
 
 	/**

@@ -117,25 +117,25 @@ public class StatusErrorListPane extends HLayout {
 			messageGrid.setHeight(100);
 			messageGrid.setShowAllRecords(true);
 			messageGrid.setWrapCells(true);
-			messageGrid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-			messageGrid.setShowRowNumbers(true);		//行番号表示
+			messageGrid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
+			messageGrid.setShowRowNumbers(true); //行番号表示
 
 			messageGrid.setAutoFitData(Autofit.HORIZONTAL);
 //			messageGrid.setAutoFitMaxHeight(56);
 
 			ListGridField pathField = new ListGridField("path", "Path", 200);
-	        ListGridField messageField = new ListGridField("message", "Message");
-	        messageGrid.setFields(pathField, messageField);
+			ListGridField messageField = new ListGridField("message", "Message");
+			messageGrid.setFields(pathField, messageField);
 
-	        ListGridRecord[] records = new ListGridRecord[allResult.size()];
-	        int row = 0;
-	        for (Entry<String, String> entry : allResult.entrySet()) {
-	        	records[row] = new ListGridRecord();
-	        	records[row].setAttribute("path", entry.getKey());
-	        	records[row].setAttribute("message", entry.getValue());
-	        	row++;
-	        }
-	        messageGrid.setData(records);
+			ListGridRecord[] records = new ListGridRecord[allResult.size()];
+			int row = 0;
+			for (Entry<String, String> entry : allResult.entrySet()) {
+				records[row] = new ListGridRecord();
+				records[row].setAttribute("path", entry.getKey());
+				records[row].setAttribute("message", entry.getValue());
+				row++;
+			}
+			messageGrid.setData(records);
 
 			Label msgTitle = new Label(AdminClientMessageUtil.getString("ui_tools_metaexplorer_StatusErrorListPane_errMessage"));
 			msgTitle.setHeight(20);
@@ -150,7 +150,7 @@ public class StatusErrorListPane extends HLayout {
 			msgContents.setAlign(Alignment.LEFT);
 //			msgContents.setContents("<font color=\"red\">" + message + "</font>");
 
-	        messageGrid.addRecordClickHandler(new RecordClickHandler() {
+			messageGrid.addRecordClickHandler(new RecordClickHandler() {
 
 				@Override
 				public void onRecordClick(RecordClickEvent event) {
@@ -164,7 +164,7 @@ public class StatusErrorListPane extends HLayout {
 				}
 			});
 
-	        messageGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+			messageGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 
 				@Override
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
@@ -200,7 +200,6 @@ public class StatusErrorListPane extends HLayout {
 					});
 				}
 			});
-
 
 			addMember(title);
 			addMember(messageGrid);

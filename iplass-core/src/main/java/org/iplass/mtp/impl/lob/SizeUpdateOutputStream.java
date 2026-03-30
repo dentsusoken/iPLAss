@@ -28,7 +28,7 @@ import org.iplass.mtp.impl.lob.lobstore.LobData;
 import org.iplass.mtp.impl.lob.lobstore.LobStoreRuntimeException;
 
 public class SizeUpdateOutputStream extends FilterOutputStream {
-	
+
 	private int tenantId;
 	private LobData lobData;
 	private LobDao dao;
@@ -38,10 +38,10 @@ public class SizeUpdateOutputStream extends FilterOutputStream {
 	public SizeUpdateOutputStream(OutputStream out, int tenantId, LobData lobData, LobDao dao) {
 		super(out);
 		this.tenantId = tenantId;
-		this.lobData  = lobData;
+		this.lobData = lobData;
 		this.dao = dao;
 	}
-	
+
 	private void storeBlobSize() {
 		if (!dao.updateLobStoreSize(tenantId, lobData.getLobDataId(), lobData.getSize())) {
 			//プログラムから更新の場合、LOB_STOREでロックしてるので、発生しえないはず。なのでシステム例外。

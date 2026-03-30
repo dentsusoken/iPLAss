@@ -43,6 +43,7 @@ public class EntityViewInfo implements Serializable {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -50,6 +51,7 @@ public class EntityViewInfo implements Serializable {
 	public String getDisplayName() {
 		return displayName;
 	}
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
@@ -57,6 +59,7 @@ public class EntityViewInfo implements Serializable {
 	public int getCount() {
 		return count;
 	}
+
 	public void setCount(int count) {
 		this.count = count;
 	}
@@ -64,6 +67,7 @@ public class EntityViewInfo implements Serializable {
 	public int getDetailFormViewCount() {
 		return detailFormViewCount;
 	}
+
 	public void setDetailFormViewCount(int count) {
 		this.detailFormViewCount = count;
 	}
@@ -71,6 +75,7 @@ public class EntityViewInfo implements Serializable {
 	public int getSearchFormViewCount() {
 		return searchFormViewCount;
 	}
+
 	public void setSearchFormViewCount(int count) {
 		this.searchFormViewCount = count;
 	}
@@ -94,6 +99,7 @@ public class EntityViewInfo implements Serializable {
 	public boolean isError() {
 		return isError;
 	}
+
 	public void setError(boolean isError) {
 		this.isError = isError;
 	}
@@ -101,6 +107,7 @@ public class EntityViewInfo implements Serializable {
 	public String getErrorMessage() {
 		return errorMessage;
 	}
+
 	public void setErrorMessage(String message) {
 		this.errorMessage = message;
 	}

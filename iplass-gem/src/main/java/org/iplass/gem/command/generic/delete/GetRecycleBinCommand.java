@@ -46,16 +46,16 @@ import org.iplass.mtp.webapi.definition.MethodType;
  * @author lis3wg
  */
 @WebApi(
-	name=GetRecycleBinCommand.WEBAPI_NAME,
-	displayName="削除データ取得",
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	results={Constants.DATA_ENTITY},
-	checkXRequestedWithHeader=true
+		name = GetRecycleBinCommand.WEBAPI_NAME,
+		displayName = "削除データ取得",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { Constants.DATA_ENTITY },
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/delete/GetRecycleBinCommand", displayName="削除データ取得")
-public final class GetRecycleBinCommand implements Command{
+@CommandClass(name = "gem/generic/delete/GetRecycleBinCommand", displayName = "削除データ取得")
+public final class GetRecycleBinCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/generic/delete/getRecycleBin";
 
@@ -64,9 +64,12 @@ public final class GetRecycleBinCommand implements Command{
 	private GemConfigService gcs = null;
 
 	public GetRecycleBinCommand() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		gcs = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 	}
 
 	@Override
@@ -75,7 +78,9 @@ public final class GetRecycleBinCommand implements Command{
 		String viewName = request.getParam(Constants.VIEW_NAME);
 
 		final boolean isAllowTrashOperationToRecycleBy = isAllowTrashOperationToRecycleBy(defName, viewName);
-		final String userOid = AuthContext.getCurrentContext().getUser().getOid();
+		final String userOid = AuthContext.getCurrentContext()
+				.getUser()
+				.getOid();
 
 		final List<Entity> list = new ArrayList<Entity>();
 		em.getRecycleBin(defName, entity -> {
@@ -118,4 +123,3 @@ public final class GetRecycleBinCommand implements Command{
 	}
 
 }
-

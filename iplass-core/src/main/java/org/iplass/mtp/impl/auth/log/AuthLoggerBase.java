@@ -21,7 +21,7 @@
 package org.iplass.mtp.impl.auth.log;
 
 public abstract class AuthLoggerBase implements AuthLogger {
-	
+
 	private String loggerName;
 
 	@Override

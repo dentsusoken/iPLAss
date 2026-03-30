@@ -28,9 +28,9 @@ import org.iplass.mtp.runtime.EntryPoint;
 import org.iplass.mtp.runtime.EntryPointBuilder;
 
 public class EntryPointBuilderImpl implements EntryPointBuilder {
-	
+
 	private Map<String, String> customProps;
-	
+
 	private Map<String, String> customProps() {
 		if (customProps == null) {
 			customProps = new HashMap<>();
@@ -65,7 +65,7 @@ public class EntryPointBuilderImpl implements EntryPointBuilder {
 				concatRoles = String.join(",", serverRole);
 			}
 		}
-		
+
 		customProps().put(BootstrapProps.SERVER_ROLES, concatRoles);
 		return this;
 	}

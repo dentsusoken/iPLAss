@@ -47,7 +47,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class DispatcherFilter implements Filter {
 
 	private static Logger logger = LoggerFactory.getLogger(DispatcherFilter.class);
@@ -63,16 +62,22 @@ public class DispatcherFilter implements Filter {
 	}
 
 	public void init(FilterConfig config) throws ServletException {
-		tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+		tenantContextService = ServiceRegistry.getRegistry()
+				.getService(TenantContextService.class);
 		servletContext = config.getServletContext();
-		amService = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
-		webFrontendService = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+		amService = ServiceRegistry.getRegistry()
+				.getService(ActionMappingService.class);
+		webFrontendService = ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class);
 	}
 
 	private void setMdc(HttpServletRequest req, ExecuteContext ec) {
-		if (webFrontendService.getMdc() != null && !webFrontendService.getMdc().isEmpty()) {
-			for (Map.Entry<String, MdcValueResolver> e: webFrontendService.getMdc().entrySet()) {
-				String val = e.getValue().resolve(req);
+		if (webFrontendService.getMdc() != null && !webFrontendService.getMdc()
+				.isEmpty()) {
+			for (Map.Entry<String, MdcValueResolver> e : webFrontendService.getMdc()
+					.entrySet()) {
+				String val = e.getValue()
+						.resolve(req);
 				if (val != null) {
 					ec.mdcPutWithoutLoggingContextReload(e.getKey(), val);
 				}
@@ -100,7 +105,7 @@ public class DispatcherFilter implements Filter {
 		try {
 			//exclude path
 			if (path.getPathType() == PathType.UNKNOWN) {
-				if(logger.isTraceEnabled()) {
+				if (logger.isTraceEnabled()) {
 					logger.trace("excluded URL:" + req.getRequestURI());
 				}
 				chain.doFilter(req, res);
@@ -128,20 +133,22 @@ public class DispatcherFilter implements Filter {
 				setMdc(req, ec);
 
 				if (logger.isDebugEnabled()) {
-					logger.debug("do " + req.getRequestURL().toString() + " " + req.getMethod());
+					logger.debug("do " + req.getRequestURL()
+							.toString() + " " + req.getMethod());
 				}
 
 				//tenantContextPathより後を処理
 				switch (path.getPathType()) {
 				case REJECT:
-					if(logger.isDebugEnabled()) {
+					if (logger.isDebugEnabled()) {
 						logger.debug("reject URL:" + req.getRequestURI());
 					}
 					res.sendError(HttpServletResponse.SC_NOT_FOUND);
 					return;
 				case REST:
 					req.setAttribute(RequestPath.ATTR_NAME, path);
-					servletContext.getRequestDispatcher(path.getTargetPath()).forward(req, res);
+					servletContext.getRequestDispatcher(path.getTargetPath())
+							.forward(req, res);
 					break;
 				case THROUGH:
 					req.setAttribute(RequestPath.ATTR_NAME, path);
@@ -186,8 +193,10 @@ public class DispatcherFilter implements Filter {
 		String actionPath = path.getTargetPath(true);
 		if (actionPath.length() == 0) {
 
-			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
-			String menuUrl = WebUtil.getTenantWebInfo(tenant).getHomeUrl();
+			Tenant tenant = ExecuteContext.getCurrentContext()
+					.getCurrentTenant();
+			String menuUrl = WebUtil.getTenantWebInfo(tenant)
+					.getHomeUrl();
 			if (!StringUtil.isEmpty(menuUrl) && !menuUrl.equals("/")) {
 				String redirectPath;
 				if (menuUrl.startsWith("/")) {
@@ -207,14 +216,17 @@ public class DispatcherFilter implements Filter {
 			ActionMappingRuntime actionMapping = amService.getByPathHierarchy(actionPath, webFrontendService.getWelcomeAction());
 
 			if (actionMapping != null) {
-				logger.debug("call actionMapping:" + actionMapping.getMetaData().getName());
-				
-				if (actionMapping.getRequestRestriction().maxBodySize() != -1) {
-					req = new LimitRequestBodyHttpServletRequest(req, actionMapping.getRequestRestriction().maxBodySize());
+				logger.debug("call actionMapping:" + actionMapping.getMetaData()
+						.getName());
+
+				if (actionMapping.getRequestRestriction()
+						.maxBodySize() != -1) {
+					req = new LimitRequestBodyHttpServletRequest(req, actionMapping.getRequestRestriction()
+							.maxBodySize());
 				}
-				
+
 				requestStack = new WebRequestStack(path, servletContext, req, res);
-				
+
 				try {
 					actionMapping.executeCommand(requestStack);
 				} catch (RequestBodyTooLargeException e) {
@@ -223,7 +235,7 @@ public class DispatcherFilter implements Filter {
 			} else {
 				res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			}
-			
+
 		} finally {
 			//テンポラリで使用したリソースを削除。（内部でのincludeの時は削除しない）
 			if (requestStack != null) {

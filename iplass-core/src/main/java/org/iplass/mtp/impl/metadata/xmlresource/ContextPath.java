@@ -59,7 +59,7 @@ public class ContextPath {
 		return entry;
 	}
 
-	@XmlElement(name="metaDataEntry")
+	@XmlElement(name = "metaDataEntry")
 	public void setEntry(List<XmlResourceMetaDataEntryThinWrapper> entry) {
 		this.entry = entry;
 	}

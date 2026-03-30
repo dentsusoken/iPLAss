@@ -27,6 +27,8 @@ import org.w3c.dom.Document;
  */
 public interface DomHandler {
 	public void putUnescapedExtFiles(Document metaDataDoc);
+
 	public void restoreFromUnescapedExtFiles(Document metaDataDoc);
-	public List<String> refFiles();	
+
+	public List<String> refFiles();
 }

@@ -29,14 +29,14 @@ import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
 
 @WebApi(
-	name=CountCommand.WEBAPI_NAME,
-	displayName="全件数取得",
-	accepts=RequestType.REST_FORM,
-	methods=MethodType.POST,
-	results={"count", "message"},
-	checkXRequestedWithHeader=true
+		name = CountCommand.WEBAPI_NAME,
+		displayName = "全件数取得",
+		accepts = RequestType.REST_FORM,
+		methods = MethodType.POST,
+		results = { "count", "message" },
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/search/CountCommand", displayName="全件数取得")
+@CommandClass(name = "gem/generic/search/CountCommand", displayName = "全件数取得")
 public final class CountCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/generic/search/count";

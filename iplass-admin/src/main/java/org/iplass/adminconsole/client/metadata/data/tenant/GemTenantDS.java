@@ -86,7 +86,8 @@ public class GemTenantDS extends BaseTenantDS {
 
 			@Override
 			public void onSuccess(TenantInfo result) {
-				response.setData(records.values().toArray(new ListGridRecord[] {}));
+				response.setData(records.values()
+						.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 
 				response.setAttribute("valueObject", result);
@@ -186,7 +187,7 @@ public class GemTenantDS extends BaseTenantDS {
 		createComboRecord("skin", category, selectList);
 		selectList = getThemeList(tenantInfo.getThemes());
 		createComboRecord("theme", category, selectList);
-	}	
+	}
 
 	private LinkedHashMap<String, String> getThemeList(List<Theme> themes) {
 		final LinkedHashMap<String, String> themeMap = new LinkedHashMap<>(2);

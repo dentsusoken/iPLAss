@@ -29,9 +29,9 @@ import org.iplass.mtp.command.RequestContext;
  *
  */
 public class RequestContextActionParameter implements ActionParameter {
-	
+
 	private RequestContext request;
-	
+
 	public RequestContextActionParameter(RequestContext request) {
 		this.request = request;
 	}

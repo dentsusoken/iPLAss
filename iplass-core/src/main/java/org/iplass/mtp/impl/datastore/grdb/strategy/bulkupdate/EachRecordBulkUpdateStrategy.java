@@ -48,7 +48,7 @@ public class EachRecordBulkUpdateStrategy implements BulkUpdateStrategy {
 	private GRdbEntityStoreStrategy storeStrategy;
 	private RdbAdapter rdb;
 	private ObjStoreSearchSql searchSql;
-	
+
 	public EachRecordBulkUpdateStrategy(GRdbEntityStoreStrategy storeStrategy, RdbAdapter rdb) {
 		this.storeStrategy = storeStrategy;
 		this.rdb = rdb;
@@ -59,25 +59,26 @@ public class EachRecordBulkUpdateStrategy implements BulkUpdateStrategy {
 	public void bulkUpdate(BulkUpdatable bulkUpdatable,
 			EntityContext entityContext, EntityHandler entityHandler,
 			String clientId) {
-		
+
 		final int tenantId = entityContext.getLocalTenantId();
 		DeleteOption delOp = new DeleteOption(false);
 		UpdateOption upOp = new UpdateOption(false);
 		List<String> updateProps = new ArrayList<String>();
 		if (bulkUpdatable.getUpdateProperties() != null) {
-			for (String pn: bulkUpdatable.getUpdateProperties()) {
+			for (String pn : bulkUpdatable.getUpdateProperties()) {
 				if (ObjStoreUpdateSql.canUpdateProperty(entityHandler.getProperty(pn, entityContext))) {
 					updateProps.add(pn);
 				}
 			}
 		} else {
-			for (PropertyHandler ph: entityHandler.getPropertyList(entityContext)) {
+			for (PropertyHandler ph : entityHandler.getPropertyList(entityContext)) {
 				if (ph instanceof PrimitivePropertyHandler) {
 					if (ObjStoreUpdateSql.canUpdateProperty(ph)) {
 						updateProps.add(ph.getName());
 					}
 				} else if (ph instanceof ReferencePropertyHandler) {
-					if (((ReferencePropertyHandler) ph).getMetaData().getMappedByPropertyMetaDataId() == null) {
+					if (((ReferencePropertyHandler) ph).getMetaData()
+							.getMappedByPropertyMetaDataId() == null) {
 						updateProps.add(ph.getName());
 					}
 				}
@@ -86,31 +87,38 @@ public class EachRecordBulkUpdateStrategy implements BulkUpdateStrategy {
 		upOp.setUpdateProperties(updateProps);
 
 		PreparedStatement stmt = null;
-		
+
 		try {
-			
-			for (BulkUpdateEntity target: bulkUpdatable) {
-				if (target.getEntity().getVersion() == null) {
-					target.getEntity().setVersion(Long.valueOf(0));
+
+			for (BulkUpdateEntity target : bulkUpdatable) {
+				if (target.getEntity()
+						.getVersion() == null) {
+					target.getEntity()
+							.setVersion(Long.valueOf(0));
 				}
 				switch (target.getMethod()) {
 				case DELETE:
 					storeStrategy.delete(entityContext, target.getEntity(), entityHandler, delOp);
 					break;
 				case INSERT:
-					if (target.getEntity().getOid() == null) {
-						target.getEntity().setOid(storeStrategy.newOid(entityContext, entityHandler));
+					if (target.getEntity()
+							.getOid() == null) {
+						target.getEntity()
+								.setOid(storeStrategy.newOid(entityContext, entityHandler));
 					}
 					storeStrategy.insert(entityContext, entityHandler, target.getEntity());
 					break;
 				case MERGE:
-					String oid = target.getEntity().getOid();
+					String oid = target.getEntity()
+							.getOid();
 					if (oid == null) {
-						target.getEntity().setOid(storeStrategy.newOid(entityContext, entityHandler));
+						target.getEntity()
+								.setOid(storeStrategy.newOid(entityContext, entityHandler));
 						storeStrategy.insert(entityContext, entityHandler, target.getEntity());
 					} else {
 						if (stmt == null) {
-							stmt = rdb.getConnection().prepareStatement(searchSql.checkExistsSql(tenantId, entityHandler, target.getEntity(), rdb));
+							stmt = rdb.getConnection()
+									.prepareStatement(searchSql.checkExistsSql(tenantId, entityHandler, target.getEntity(), rdb));
 						}
 						searchSql.checkExistsParameter(stmt, tenantId, entityHandler, target.getEntity());
 						try (ResultSet rs = stmt.executeQuery()) {
@@ -130,7 +138,7 @@ public class EachRecordBulkUpdateStrategy implements BulkUpdateStrategy {
 				}
 				bulkUpdatable.updated(target);
 			}
-			
+
 		} catch (SQLException e) {
 			throw new EntityRuntimeException(e);
 		} finally {

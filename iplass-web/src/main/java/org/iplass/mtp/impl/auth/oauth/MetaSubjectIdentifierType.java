@@ -32,8 +32,8 @@ import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
 @XmlSeeAlso({
-	MetaPairwiseSubjectIdentifierType.class,
-	MetaPublicSubjectIdentifierType.class
+		MetaPairwiseSubjectIdentifierType.class,
+		MetaPublicSubjectIdentifierType.class
 })
 public abstract class MetaSubjectIdentifierType implements MetaData {
 	private static final long serialVersionUID = 8046182964089190022L;
@@ -42,13 +42,16 @@ public abstract class MetaSubjectIdentifierType implements MetaData {
 	public MetaData copy() {
 		return ObjectUtil.deepCopy(this);
 	}
-	
+
 	public abstract void applyConfig(SubjectIdentifierTypeDefinition subjectIdentifierType);
+
 	public abstract SubjectIdentifierTypeDefinition currentConfig();
+
 	public abstract SubjectIdentifierTypeRuntime createRuntime();
-	
+
 	public static abstract class SubjectIdentifierTypeRuntime {
 		public abstract String subjectId(User user, OAuthClientRuntime client);
+
 		public abstract User handleOnLoad(User user);
 
 	}

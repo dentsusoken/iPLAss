@@ -57,7 +57,7 @@ public class MetaTreeViewParts extends MetaTemplateParts {
 	 * @return ツリービュー定義名
 	 */
 	public String getTreeViewName() {
-	    return treeViewName;
+		return treeViewName;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class MetaTreeViewParts extends MetaTemplateParts {
 	 * @param treeViewName ツリービュー定義名
 	 */
 	public void setTreeViewName(String treeViewName) {
-	    this.treeViewName = treeViewName;
+		this.treeViewName = treeViewName;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class MetaTreeViewParts extends MetaTemplateParts {
 	 * @return アイコンタグ
 	 */
 	public String getIconTag() {
-	    return iconTag;
+		return iconTag;
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class MetaTreeViewParts extends MetaTemplateParts {
 	 * @param iconTag アイコンタグ
 	 */
 	public void setIconTag(String iconTag) {
-	    this.iconTag = iconTag;
+		this.iconTag = iconTag;
 	}
 
 	@Override

@@ -40,7 +40,6 @@ import org.iplass.mtp.view.calendar.EntityCalendar;
 import org.iplass.mtp.view.calendar.EntityCalendarItem;
 import org.iplass.mtp.view.calendar.EntityCalendar.CalendarType;
 
-
 /**
  * カレンダー定義
  * @author lis3wg
@@ -64,7 +63,8 @@ public class MetaCalendar extends BaseRootMetaData implements DefinableMetaData<
 	 * @return Entityの設定
 	 */
 	public List<MetaEntityCalendarItem> getItems() {
-		if (items == null) items = new ArrayList<MetaEntityCalendarItem>();
+		if (items == null)
+			items = new ArrayList<MetaEntityCalendarItem>();
 		return items;
 	}
 
@@ -158,7 +158,7 @@ public class MetaCalendar extends BaseRootMetaData implements DefinableMetaData<
 		public CalendarHandler() {
 			try {
 				if (items != null) {
-					for (MetaEntityCalendarItem item :items) {
+					for (MetaEntityCalendarItem item : items) {
 						//ItemのcreateRuntimeを実行して有効性チェック
 						item.createRuntime();
 					}
@@ -177,11 +177,12 @@ public class MetaCalendar extends BaseRootMetaData implements DefinableMetaData<
 			String result = null;
 
 			if (items != null) {
-				for (MetaEntityCalendarItem item :items) {
+				for (MetaEntityCalendarItem item : items) {
 
 					EntityCalendarItemRuntime runtime = item.createRuntime();
 
-					if (entity.getDefinitionName().equals(runtime.getDefinitionName())) {
+					if (entity.getDefinitionName()
+							.equals(runtime.getDefinitionName())) {
 						result = runtime.getColor(entity);
 						break;
 					}

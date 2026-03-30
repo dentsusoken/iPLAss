@@ -27,7 +27,7 @@ package org.iplass.mtp.entity;
  *
  */
 public enum TargetVersion {
-	
+
 	/** 特定のバージョン */
 	SPECIFIC,
 	/** 新しいバージョン */

@@ -37,15 +37,15 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
 public class ComparisonPredicateSyntax implements Syntax<ComparisonPredicate>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
-	
+
 	public void init(SyntaxContext context) {
 		polynomial = context.getSyntax(PolynomialSyntax.class);
 	}
 
 	public ComparisonPredicate parse(ParseContext str) throws ParseException {
-		
+
 		ComparisonPredicate cp = null;
 		if (str.startsWith(EQUALS)) {
 			cp = new Equals();
@@ -69,10 +69,10 @@ public class ComparisonPredicateSyntax implements Syntax<ComparisonPredicate>, Q
 			throw new ParseException(new EvalError("operator expected.", this, str));
 		}
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		ValueExpression value = polynomial.parse(str);
 		cp.setValue(value);
 		return cp;
 	}
-	
+
 }

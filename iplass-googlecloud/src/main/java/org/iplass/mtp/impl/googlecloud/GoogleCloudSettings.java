@@ -61,7 +61,8 @@ public class GoogleCloudSettings implements Service {
 	public String getAccessTokenValue() {
 		try {
 			googleCredentials.refreshIfExpired();
-			return googleCredentials.getAccessToken().getTokenValue();
+			return googleCredentials.getAccessToken()
+					.getTokenValue();
 
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to get access token.", e);

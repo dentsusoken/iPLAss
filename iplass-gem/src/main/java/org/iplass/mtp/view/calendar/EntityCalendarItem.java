@@ -32,12 +32,14 @@ import jakarta.xml.bind.annotation.XmlType;
 public class EntityCalendarItem implements Serializable {
 
 	/** カレンダーの検索方法 */
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/calendar")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/calendar")
 	public enum CalendarSearchType {
 		/** 日付で検索 */
-		@XmlEnumValue("Date")DATE,
+		@XmlEnumValue("Date")
+		DATE,
 		/** 期間で検索 */
-		@XmlEnumValue("Period")PERIOD,
+		@XmlEnumValue("Period")
+		PERIOD,
 	}
 
 	/** SerialVersionUID */
@@ -266,7 +268,7 @@ public class EntityCalendarItem implements Serializable {
 	 * @return 検索上限
 	 */
 	public Integer getLimit() {
-	    return limit;
+		return limit;
 	}
 
 	/**
@@ -274,7 +276,7 @@ public class EntityCalendarItem implements Serializable {
 	 * @param limit 検索上限
 	 */
 	public void setLimit(Integer limit) {
-	    this.limit = limit;
+		this.limit = limit;
 	}
 
 	/**

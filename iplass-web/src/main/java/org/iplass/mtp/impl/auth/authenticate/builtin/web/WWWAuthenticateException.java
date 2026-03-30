@@ -28,7 +28,7 @@ public class WWWAuthenticateException extends WebApplicationException {
 	public WWWAuthenticateException(String scheme, String realm, String errorDescription) {
 		super(errorDescription, buildResponse(scheme, realm, errorDescription));
 	}
-	
+
 	private static Response buildResponse(String scheme, String realm, String errorDescription) {
 		StringBuilder resMsg = new StringBuilder();
 		resMsg.append(scheme);
@@ -36,14 +36,19 @@ public class WWWAuthenticateException extends WebApplicationException {
 		if (realm == null) {
 			resMsg.append("realm=\"\"");
 		} else {
-			resMsg.append("realm=\"").append(realm).append("\"");
+			resMsg.append("realm=\"")
+					.append(realm)
+					.append("\"");
 		}
-		
+
 		if (errorDescription == null) {
 			errorDescription = "";
 		}
 
-		return Response.status(401).header("WWW-Authenticate", resMsg.toString()).entity(errorDescription).build();
+		return Response.status(401)
+				.header("WWW-Authenticate", resMsg.toString())
+				.entity(errorDescription)
+				.build();
 	}
 
 }

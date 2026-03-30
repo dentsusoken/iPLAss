@@ -24,11 +24,11 @@ import org.iplass.mtp.auth.User;
 import org.iplass.mtp.impl.auth.AuthService;
 
 public interface UserEntityResolver {
-	
+
 	public void inited(AuthService service, AuthenticationProvider provider);
-	
+
 	public User searchUser(AccountHandle account);
-	
+
 	public String getUnmodifiableUniqueKeyProperty();
 
 }

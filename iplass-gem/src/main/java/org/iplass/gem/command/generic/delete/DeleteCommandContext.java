@@ -20,7 +20,6 @@
 
 package org.iplass.gem.command.generic.delete;
 
-
 import java.util.Collections;
 import java.util.List;
 
@@ -60,7 +59,8 @@ public class DeleteCommandContext extends GenericCommandContext {
 	public DeleteCommandContext(RequestContext request) {
 		super(request);
 
-		ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+		ucdm = ManagerLocator.getInstance()
+				.getManager(UtilityClassDefinitionManager.class);
 	}
 
 	@Override
@@ -104,7 +104,8 @@ public class DeleteCommandContext extends GenericCommandContext {
 	}
 
 	protected String getDeleteInterrupterName() {
-		return getView().getResultSection().getDeleteInterrupterName();
+		return getView().getResultSection()
+				.getDeleteInterrupterName();
 	}
 
 	protected BulkOperationInterrupter createBulkInterrupter(String className) {
@@ -121,7 +122,8 @@ public class DeleteCommandContext extends GenericCommandContext {
 		if (interrupter == null) {
 			// 何もしないデフォルトInterrupter生成
 			getLogger().debug("set default delete operation interrupter.");
-			interrupter = new BulkOperationInterrupter() {};
+			interrupter = new BulkOperationInterrupter() {
+			};
 		}
 		return interrupter;
 	}

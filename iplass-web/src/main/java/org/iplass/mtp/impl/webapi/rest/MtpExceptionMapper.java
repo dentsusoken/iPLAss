@@ -34,10 +34,11 @@ import org.slf4j.LoggerFactory;
 public class MtpExceptionMapper implements ExceptionMapper<Throwable> {
 	private static Logger logger = LoggerFactory.getLogger(MtpExceptionMapper.class);
 	private static Logger fatalLogger = LoggerFactory.getLogger("mtp.fatal");
-	
+
 	public static final String STATUS_FAILURE = "FAILURE";
-	
-	private WebApiService waservice = ServiceRegistry.getRegistry().getService(WebApiService.class);
+
+	private WebApiService waservice = ServiceRegistry.getRegistry()
+			.getService(WebApiService.class);
 
 	@Override
 	public Response toResponse(Throwable exception) {
@@ -47,7 +48,7 @@ public class MtpExceptionMapper implements ExceptionMapper<Throwable> {
 			}
 			return ((WebApplicationException) exception).getResponse();
 		}
-		
+
 		if (exception instanceof WrappedRestException) {
 			WrappedRestException exp = (WrappedRestException) exception;
 			WebApiResponse res = exp.getResponse();
@@ -65,16 +66,19 @@ public class MtpExceptionMapper implements ExceptionMapper<Throwable> {
 			if (res.getStatus() == null) {
 				res.setStatus(STATUS_FAILURE);
 			}
-			return Response.status(mapStatus(cause)).entity(res).build();
+			return Response.status(mapStatus(cause))
+					.entity(res)
+					.build();
 		}
-		
+
 		//unhandled error
 		if (exception instanceof Error) {
 			fatalLogger.error(exception.toString(), exception);
 		}
 		logger.error("unhandle excepion on web api call:" + exception, exception);
-		
-		return Response.status(mapStatus(exception)).build();
+
+		return Response.status(mapStatus(exception))
+				.build();
 	}
 
 	private Throwable treatException(Throwable e) {

@@ -58,7 +58,8 @@ public class LangDataLogic implements Service {
 
 	private static final String DEFAULT_KEY_NAME = "defaultLang";
 
-	public void createMultiLangInfo(Map<String, List<LocalizedStringDefinition>> listGridFieldsMap, Class<?> cls, Object definition, String parentItemKeyName) {
+	public void createMultiLangInfo(Map<String, List<LocalizedStringDefinition>> listGridFieldsMap, Class<?> cls, Object definition,
+			String parentItemKeyName) {
 		Class<?> superCls = cls.getSuperclass();
 		if (superCls != null) {
 			createMultiLangInfo(listGridFieldsMap, superCls, definition, parentItemKeyName);
@@ -66,7 +67,8 @@ public class LangDataLogic implements Service {
 		createMultiLangItemInfo(listGridFieldsMap, cls, definition, parentItemKeyName);
 	}
 
-	private void createMultiLangItemInfo(Map<String, List<LocalizedStringDefinition>> listGridFieldsMap, Class<?> cls, Object definition, String parentItemKeyName) {
+	private void createMultiLangItemInfo(Map<String, List<LocalizedStringDefinition>> listGridFieldsMap, Class<?> cls, Object definition,
+			String parentItemKeyName) {
 
 		try {
 			for (Field field : cls.getDeclaredFields()) {
@@ -90,19 +92,23 @@ public class LangDataLogic implements Service {
 		}
 	}
 
-	private void createMultiLangItemInfo(Map<String, List<LocalizedStringDefinition>> listGridFieldsMap, Class<?> cls, Object definition, String parentItemKeyName, MultiLangInfo annotation) throws Exception {
+	private void createMultiLangItemInfo(Map<String, List<LocalizedStringDefinition>> listGridFieldsMap, Class<?> cls, Object definition,
+			String parentItemKeyName, MultiLangInfo annotation) throws Exception {
 
-		if (annotation == null) return;
+		if (annotation == null)
+			return;
 
 		String itemKey = createItemKeyName(annotation, cls, definition, parentItemKeyName);
 
 		if (annotation.isMultiLangValue()) {
 
 			// defaultの値を取得してlocalizeStringへ変換
-			String defaultLang = (String) cls.getMethod(annotation.itemGetter()).invoke(definition, new Object[]{});
+			String defaultLang = (String) cls.getMethod(annotation.itemGetter())
+					.invoke(definition, new Object[] {});
 
 			@SuppressWarnings("unchecked")
-			List<LocalizedStringDefinition> localizedDisplayNameList = (List<LocalizedStringDefinition>) cls.getMethod(annotation.multiLangGetter()).invoke(definition, new Object[]{});
+			List<LocalizedStringDefinition> localizedDisplayNameList = (List<LocalizedStringDefinition>) cls.getMethod(annotation.multiLangGetter())
+					.invoke(definition, new Object[] {});
 
 			LocalizedStringDefinition defaultDefinition = new LocalizedStringDefinition();
 			defaultDefinition.setLocaleName(DEFAULT_KEY_NAME);
@@ -119,7 +125,8 @@ public class LangDataLogic implements Service {
 
 		} else {
 
-			Object child = cls.getMethod(annotation.itemGetter()).invoke(definition, new Object[]{});
+			Object child = cls.getMethod(annotation.itemGetter())
+					.invoke(definition, new Object[] {});
 
 			// topsection1のようにnullの可能性あり、その場合は次の処理へ
 			if (child == null) {
@@ -138,12 +145,15 @@ public class LangDataLogic implements Service {
 					localizedDisplayNameList.add(defaultDefinition);
 
 					@SuppressWarnings("unchecked")
-					List<LocalizedSelectValueDefinition> localizedSelectValueDefinitionList = (List<LocalizedSelectValueDefinition>) cls.getMethod(annotation.multiLangGetter()).invoke(definition, new Object[]{});
+					List<LocalizedSelectValueDefinition> localizedSelectValueDefinitionList = (List<LocalizedSelectValueDefinition>) cls
+							.getMethod(annotation.multiLangGetter())
+							.invoke(definition, new Object[] {});
 					for (LocalizedSelectValueDefinition localizedSelectValueDefinition : localizedSelectValueDefinitionList) {
 						// localizedSelectValueDefinitionはnullの可能性あり
 						if (localizedSelectValueDefinition != null && localizedSelectValueDefinition.getSelectValueList() != null) {
 							for (SelectValue localizedSelectValue : localizedSelectValueDefinition.getSelectValueList()) {
-								if (localizedSelectValue.getValue().equals(selectValue.getValue())) {
+								if (localizedSelectValue.getValue()
+										.equals(selectValue.getValue())) {
 									LocalizedStringDefinition localizedDefinition = new LocalizedStringDefinition();
 									localizedDefinition.setLocaleName(localizedSelectValueDefinition.getLocaleName());
 									localizedDefinition.setStringValue(localizedSelectValue.getDisplayName());
@@ -161,29 +171,38 @@ public class LangDataLogic implements Service {
 					int cnt = 0;
 					for (Object o : (List<?>) child) {
 
-						if (o.getClass().getSuperclass() != null) {
-							createMultiLangInfo(listGridFieldsMap, o.getClass().getSuperclass(), o, itemKey + cnt);
+						if (o.getClass()
+								.getSuperclass() != null) {
+							createMultiLangInfo(listGridFieldsMap, o.getClass()
+									.getSuperclass(), o, itemKey + cnt);
 						}
 						createMultiLangItemInfo(listGridFieldsMap, o.getClass(), o, itemKey + cnt);
-						cnt ++;
+						cnt++;
 					}
-				} else if (child instanceof Map<?,?>) {
+				} else if (child instanceof Map<?, ?>) {
 
 					int cnt = 0;
 
-					Map<?,?> temp = (Map<?,?>) child;
-					for(Map.Entry<?,?> e : temp.entrySet()) {
+					Map<?, ?> temp = (Map<?, ?>) child;
+					for (Map.Entry<?, ?> e : temp.entrySet()) {
 
-						if (e.getValue().getClass().getSuperclass() != null) {
-							createMultiLangInfo(listGridFieldsMap, e.getValue().getClass().getSuperclass(), e.getValue(), itemKey + cnt);
+						if (e.getValue()
+								.getClass()
+								.getSuperclass() != null) {
+							createMultiLangInfo(listGridFieldsMap, e.getValue()
+									.getClass()
+									.getSuperclass(), e.getValue(), itemKey + cnt);
 						}
-						createMultiLangItemInfo(listGridFieldsMap, e.getValue().getClass(), e.getValue(), itemKey + cnt);
-						cnt ++;
+						createMultiLangItemInfo(listGridFieldsMap, e.getValue()
+								.getClass(), e.getValue(), itemKey + cnt);
+						cnt++;
 					}
 				} else {
 					// List以外の処理。
-					if (child.getClass().getSuperclass() != null) {
-						createMultiLangInfo(listGridFieldsMap, child.getClass().getSuperclass(), child, itemKey);
+					if (child.getClass()
+							.getSuperclass() != null) {
+						createMultiLangInfo(listGridFieldsMap, child.getClass()
+								.getSuperclass(), child, itemKey);
 					}
 					createMultiLangItemInfo(listGridFieldsMap, child.getClass(), child, itemKey);
 				}
@@ -231,9 +250,12 @@ public class LangDataLogic implements Service {
 		}
 	}
 
-	private void createDefinition(Class<?> cls, Object definition, Map<String, MultiLangFieldInfo> updateDefinitionInfo, String parentItemKeyName, MultiLangInfo annotation) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	private void createDefinition(Class<?> cls, Object definition, Map<String, MultiLangFieldInfo> updateDefinitionInfo, String parentItemKeyName,
+			MultiLangInfo annotation)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
-		if (annotation == null) return;
+		if (annotation == null)
+			return;
 
 		String itemKey = createItemKeyName(annotation, cls, definition, parentItemKeyName);
 
@@ -248,15 +270,18 @@ public class LangDataLogic implements Service {
 					MultiLangFieldInfo multiLangFieldInfo = entry.getValue();
 
 					// default
-					if (annotation.isRequired() && (multiLangFieldInfo.getDefaultString() == null || multiLangFieldInfo.getDefaultString().isEmpty())) {
+					if (annotation.isRequired() && (multiLangFieldInfo.getDefaultString() == null || multiLangFieldInfo.getDefaultString()
+							.isEmpty())) {
 						throw new RuntimeException(resourceString("inputError", editItemKey));
 					}
 					String itemSetter = annotation.itemSetter();
-					cls.getMethod(itemSetter, new Class[]{String.class}).invoke(definition, new Object[]{multiLangFieldInfo.getDefaultString()});
+					cls.getMethod(itemSetter, new Class[] { String.class })
+							.invoke(definition, new Object[] { multiLangFieldInfo.getDefaultString() });
 
 					// multilang
 					String multiLangSetter = annotation.multiLangSetter();
-					cls.getMethod(multiLangSetter, new Class[]{List.class}).invoke(definition, new Object[]{multiLangFieldInfo.getLocalizedStringList()});
+					cls.getMethod(multiLangSetter, new Class[] { List.class })
+							.invoke(definition, new Object[] { multiLangFieldInfo.getLocalizedStringList() });
 
 					continue;
 				}
@@ -264,7 +289,8 @@ public class LangDataLogic implements Service {
 
 		} else {
 
-			Object child = cls.getMethod(annotation.itemGetter()).invoke(definition, new Object[]{});
+			Object child = cls.getMethod(annotation.itemGetter())
+					.invoke(definition, new Object[] {});
 
 			// topsection1のようにnullの可能性あり、その場合は次の処理へ
 			if (child == null) {
@@ -286,14 +312,17 @@ public class LangDataLogic implements Service {
 							MultiLangFieldInfo multiLangFieldInfo = entry.getValue();
 
 							// default
-							if (multiLangFieldInfo.getDefaultString() == null || multiLangFieldInfo.getDefaultString().isEmpty()) {
+							if (multiLangFieldInfo.getDefaultString() == null || multiLangFieldInfo.getDefaultString()
+									.isEmpty()) {
 								throw new RuntimeException(resourceString("inputError", editItemKey));
 							}
 							selectValue.setDisplayName(multiLangFieldInfo.getDefaultString());
 
 							// multi
 							@SuppressWarnings("unchecked")
-							List<LocalizedSelectValueDefinition> localizedSelectValueDefinitionList = (List<LocalizedSelectValueDefinition>) cls.getMethod(annotation.multiLangGetter()).invoke(definition, new Object[]{});
+							List<LocalizedSelectValueDefinition> localizedSelectValueDefinitionList = (List<LocalizedSelectValueDefinition>) cls
+									.getMethod(annotation.multiLangGetter())
+									.invoke(definition, new Object[] {});
 							for (LocalizedStringDefinition editLocalizedString : multiLangFieldInfo.getLocalizedStringList()) {
 								String editlocale = editLocalizedString.getLocaleName();
 								for (LocalizedSelectValueDefinition lsvd : localizedSelectValueDefinitionList) {
@@ -302,7 +331,8 @@ public class LangDataLogic implements Service {
 										if (lsvd.getSelectValueList() != null) {
 											boolean isExistSelectValue = false;
 											for (SelectValue sv : lsvd.getSelectValueList()) {
-												if (sv.getValue().equals(selectValue.getValue())) {
+												if (sv.getValue()
+														.equals(selectValue.getValue())) {
 													sv.setDisplayName(editLocalizedString.getStringValue());
 													isExistSelectValue = true;
 												}
@@ -312,7 +342,8 @@ public class LangDataLogic implements Service {
 												SelectValue sv = new SelectValue();
 												sv.setDisplayName(editLocalizedString.getStringValue());
 												sv.setValue(selectValue.getValue());
-												lsvd.getSelectValueList().add(sv);
+												lsvd.getSelectValueList()
+														.add(sv);
 											}
 										} else {
 											if (editLocalizedString.getStringValue() != null) {
@@ -337,29 +368,38 @@ public class LangDataLogic implements Service {
 					int cnt = 0;
 					for (Object o : (List<?>) child) {
 
-						if (o.getClass().getSuperclass() != null) {
-							createDefinitionInfo(o.getClass().getSuperclass(), o, updateDefinitionInfo, itemKey + cnt);
+						if (o.getClass()
+								.getSuperclass() != null) {
+							createDefinitionInfo(o.getClass()
+									.getSuperclass(), o, updateDefinitionInfo, itemKey + cnt);
 						}
 						createDefinition(o.getClass(), o, updateDefinitionInfo, itemKey + cnt);
-						cnt ++;
+						cnt++;
 					}
-				} else if (child instanceof Map<?,?>) {
+				} else if (child instanceof Map<?, ?>) {
 
 					int cnt = 0;
 
-					Map<?,?> temp = (Map<?,?>) child;
-					for(Map.Entry<?,?> e : temp.entrySet()) {
+					Map<?, ?> temp = (Map<?, ?>) child;
+					for (Map.Entry<?, ?> e : temp.entrySet()) {
 
-						if (e.getValue().getClass().getSuperclass() != null) {
-							createDefinitionInfo(e.getValue().getClass().getSuperclass(), e.getValue(), updateDefinitionInfo, itemKey + cnt);
+						if (e.getValue()
+								.getClass()
+								.getSuperclass() != null) {
+							createDefinitionInfo(e.getValue()
+									.getClass()
+									.getSuperclass(), e.getValue(), updateDefinitionInfo, itemKey + cnt);
 						}
-						createDefinition(e.getValue().getClass(), e.getValue(), updateDefinitionInfo, itemKey + cnt);
-						cnt ++;
+						createDefinition(e.getValue()
+								.getClass(), e.getValue(), updateDefinitionInfo, itemKey + cnt);
+						cnt++;
 					}
 				} else {
 					// List以外の処理。
-					if (child.getClass().getSuperclass() != null) {
-						createDefinitionInfo(child.getClass().getSuperclass(), child, updateDefinitionInfo, itemKey);
+					if (child.getClass()
+							.getSuperclass() != null) {
+						createDefinitionInfo(child.getClass()
+								.getSuperclass(), child, updateDefinitionInfo, itemKey);
 					}
 					createDefinition(child.getClass(), child, updateDefinitionInfo, itemKey);
 				}
@@ -374,10 +414,13 @@ public class LangDataLogic implements Service {
 			String nameGetter = annotation.itemNameGetter();
 			if (!"".equals(nameGetter)) {
 				if (annotation.isUseSuperForItemName()) {
-					String name = (String) cls.getSuperclass().getMethod(nameGetter).invoke(definition, new Object[] {});
+					String name = (String) cls.getSuperclass()
+							.getMethod(nameGetter)
+							.invoke(definition, new Object[] {});
 					itemKey = name + "." + itemKey;
 				} else {
-					String name = (String) cls.getMethod(nameGetter).invoke(definition, new Object[] {});
+					String name = (String) cls.getMethod(nameGetter)
+							.invoke(definition, new Object[] {});
 					itemKey = name + "." + itemKey;
 				}
 			}

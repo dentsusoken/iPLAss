@@ -92,7 +92,8 @@ public class WebApiOpenApiMapper {
 			var pathUnitList = webApiDecomposer.decompose(webApi, openApi);
 			for (String pathUnit : pathUnitList) {
 				// OpenAPIに設定するパス単位で WebAPIDefinition ⇒ OpenAPI PathItem のマッピングを実行する
-				var pathItem = openApi.getPaths().get(pathUnit);
+				var pathItem = openApi.getPaths()
+						.get(pathUnit);
 				var context = new WebApiOpenApiConvertContext(webApi, webApi.getName(), openApi, pathUnit, pathItem, fileType, version);
 				converterList.forEach(m -> m.convertOpenApi(context));
 			}
@@ -114,7 +115,8 @@ public class WebApiOpenApiMapper {
 		}
 
 		List<WebApiMapInfo> mapResultList = new ArrayList<>();
-		for (var entry : openApi.getPaths().entrySet()) {
+		for (var entry : openApi.getPaths()
+				.entrySet()) {
 			var path = entry.getKey();
 			if (path.startsWith("/mtp/entity")) {
 				// EntityWebAPI は WebAPI 定義ではないのでマッピングしない
@@ -129,7 +131,8 @@ public class WebApiOpenApiMapper {
 
 			if (null != processUnitList && !processUnitList.isEmpty()) {
 				for (var processUnit : processUnitList) {
-					var context = new WebApiOpenApiConvertContext(processUnit.getWebApi(), processUnit.getWebApi().getName(), openApi, path, pathItem,
+					var context = new WebApiOpenApiConvertContext(processUnit.getWebApi(), processUnit.getWebApi()
+							.getName(), openApi, path, pathItem,
 							fileType, version);
 					context.setTargetMethod(processUnit.getMethodType());
 					converterList.forEach(m -> m.convertWebApi(context));
@@ -211,9 +214,12 @@ public class WebApiOpenApiMapper {
 		// OpenAPIが定義されている場合は、OpenAPIをマージする。
 		var version = OpenApiVersion.fromSeriesVersion(webApi.getOpenApiVersion());
 		var fileType = OpenApiFileType.fromDisplayName(webApi.getOpenApiFileType());
-		OpenApiService service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
+		OpenApiService service = ServiceRegistry.getRegistry()
+				.getService(OpenApiService.class);
 		try {
-			var webApiOpenApi = service.getOpenApiResolver().getObjectMapper(fileType, version).readValue(webApi.getOpenApi(), OpenAPI.class);
+			var webApiOpenApi = service.getOpenApiResolver()
+					.getObjectMapper(fileType, version)
+					.readValue(webApi.getOpenApi(), OpenAPI.class);
 			// マージ対象は paths と components
 			mergeComponents(base, webApiOpenApi);
 			mergePaths(base, webApiOpenApi);
@@ -244,68 +250,118 @@ public class WebApiOpenApiMapper {
 		}
 
 		// schema
-		mergeMap(base.getComponents().getSchemas(), overlay.getComponents().getSchemas(),
+		mergeMap(base.getComponents()
+				.getSchemas(),
+				overlay.getComponents()
+						.getSchemas(),
 				() -> {
-					base.getComponents().setSchemas(new LinkedHashMap<>());
-					return base.getComponents().getSchemas();
+					base.getComponents()
+							.setSchemas(new LinkedHashMap<>());
+					return base.getComponents()
+							.getSchemas();
 				});
 		// responses
-		mergeMap(base.getComponents().getResponses(), overlay.getComponents().getResponses(),
+		mergeMap(base.getComponents()
+				.getResponses(),
+				overlay.getComponents()
+						.getResponses(),
 				() -> {
-					base.getComponents().setResponses(new LinkedHashMap<>());
-					return base.getComponents().getResponses();
+					base.getComponents()
+							.setResponses(new LinkedHashMap<>());
+					return base.getComponents()
+							.getResponses();
 				});
 		// parameters
-		mergeMap(base.getComponents().getParameters(), overlay.getComponents().getParameters(),
+		mergeMap(base.getComponents()
+				.getParameters(),
+				overlay.getComponents()
+						.getParameters(),
 				() -> {
-					base.getComponents().setParameters(new LinkedHashMap<>());
-					return base.getComponents().getParameters();
+					base.getComponents()
+							.setParameters(new LinkedHashMap<>());
+					return base.getComponents()
+							.getParameters();
 				});
 		// examples
-		mergeMap(base.getComponents().getExamples(), overlay.getComponents().getExamples(),
+		mergeMap(base.getComponents()
+				.getExamples(),
+				overlay.getComponents()
+						.getExamples(),
 				() -> {
-					base.getComponents().setExamples(new LinkedHashMap<>());
-					return base.getComponents().getExamples();
+					base.getComponents()
+							.setExamples(new LinkedHashMap<>());
+					return base.getComponents()
+							.getExamples();
 				});
 		// requestBodies
-		mergeMap(base.getComponents().getRequestBodies(), overlay.getComponents().getRequestBodies(),
+		mergeMap(base.getComponents()
+				.getRequestBodies(),
+				overlay.getComponents()
+						.getRequestBodies(),
 				() -> {
-					base.getComponents().setRequestBodies(new LinkedHashMap<>());
-					return base.getComponents().getRequestBodies();
+					base.getComponents()
+							.setRequestBodies(new LinkedHashMap<>());
+					return base.getComponents()
+							.getRequestBodies();
 				});
 		// headers
-		mergeMap(base.getComponents().getHeaders(), overlay.getComponents().getHeaders(),
+		mergeMap(base.getComponents()
+				.getHeaders(),
+				overlay.getComponents()
+						.getHeaders(),
 				() -> {
-					base.getComponents().setHeaders(new LinkedHashMap<>());
-					return base.getComponents().getHeaders();
+					base.getComponents()
+							.setHeaders(new LinkedHashMap<>());
+					return base.getComponents()
+							.getHeaders();
 				});
 		// securitySchemas
-		mergeMap(base.getComponents().getSecuritySchemes(), overlay.getComponents().getSecuritySchemes(),
+		mergeMap(base.getComponents()
+				.getSecuritySchemes(),
+				overlay.getComponents()
+						.getSecuritySchemes(),
 				() -> {
-					base.getComponents().setSecuritySchemes(new LinkedHashMap<>());
-					return base.getComponents().getSecuritySchemes();
+					base.getComponents()
+							.setSecuritySchemes(new LinkedHashMap<>());
+					return base.getComponents()
+							.getSecuritySchemes();
 				});
 		// links
-		mergeMap(base.getComponents().getLinks(), overlay.getComponents().getLinks(),
+		mergeMap(base.getComponents()
+				.getLinks(),
+				overlay.getComponents()
+						.getLinks(),
 				() -> {
-					base.getComponents().setLinks(new LinkedHashMap<>());
-					return base.getComponents().getLinks();
+					base.getComponents()
+							.setLinks(new LinkedHashMap<>());
+					return base.getComponents()
+							.getLinks();
 				});
 		// callbacks
-		mergeMap(base.getComponents().getCallbacks(), overlay.getComponents().getCallbacks(),
+		mergeMap(base.getComponents()
+				.getCallbacks(),
+				overlay.getComponents()
+						.getCallbacks(),
 				() -> {
-					base.getComponents().setCallbacks(new LinkedHashMap<>());
-					return base.getComponents().getCallbacks();
+					base.getComponents()
+							.setCallbacks(new LinkedHashMap<>());
+					return base.getComponents()
+							.getCallbacks();
 				});
 
 		if (SpecVersion.V31 == base.getSpecVersion()) {
 			// for v3.1
 
 			// pathItems
-			mergeMap(base.getComponents().getPathItems(), overlay.getComponents().getPathItems(),
+			mergeMap(base.getComponents()
+					.getPathItems(),
+					overlay.getComponents()
+							.getPathItems(),
 					() -> {
-						base.getComponents().setPathItems(new LinkedHashMap<>());
-						return base.getComponents().getPathItems();
+						base.getComponents()
+								.setPathItems(new LinkedHashMap<>());
+						return base.getComponents()
+								.getPathItems();
 					});
 		}
 

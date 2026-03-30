@@ -129,18 +129,18 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+			setCanReorderRecords(true); //Dragによる並び替えを可能にする
 
 			ListGridField nameField = new ListGridField(FIELD_NAME.NAME.name(), "Name");
 			ListGridField dispNameField = new ListGridField(FIELD_NAME.DISPLAY_NAME.name(), "Display Name");;
@@ -152,7 +152,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 				@Override
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editScope((ListGridRecord)event.getRecord());
+					editScope((ListGridRecord) event.getRecord());
 
 				}
 			});
@@ -162,14 +162,14 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 		@Override
 		public void setDefinition(OAuthAuthorizationDefinition definition) {
 
-			setData(new ListGridRecord[]{});
+			setData(new ListGridRecord[] {});
 
 			if (definition.getScopes() != null) {
 				List<ListGridRecord> records = new ArrayList<ListGridRecord>();
 				for (ScopeDefinition scope : definition.getScopes()) {
 					records.add(createRecord(scope, null));
 				}
-				setData(records.toArray(new ListGridRecord[]{}));
+				setData(records.toArray(new ListGridRecord[] {}));
 			}
 		}
 
@@ -182,7 +182,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			} else {
 				List<ScopeDefinition> scopes = new ArrayList<ScopeDefinition>(records.length);
 				for (ListGridRecord record : records) {
-					ScopeDefinition scope = (ScopeDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+					ScopeDefinition scope = (ScopeDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 					scopes.add(scope);
 				}
 				definition.setScopes(scopes);
@@ -226,7 +226,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			});
 
 			if (record != null) {
-				dialog.setDefinition((ScopeDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+				dialog.setDefinition((ScopeDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 			}
 			dialog.show();
 		}
@@ -267,7 +267,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			txtName = new MtpTextItem();
 			txtName.setTitle("Name");
 			SmartGWTUtil.setRequired(txtName);
-			txtName.setRequired(true);	//TODO 直接指定しないと効かない
+			txtName.setRequired(true); //TODO 直接指定しないと効かない
 
 			txtDisplayName = new MetaDataLangTextItem();
 			txtDisplayName.setTitle("Display Name");
@@ -317,7 +317,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			IButton btnOK = new IButton("OK");
 			btnOK.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						createEditDefinition();
 					}
 				}
@@ -355,7 +355,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 				definition = new ScopeDefinition();
 			} else {
 				definition = new OIDCClaimScopeDefinition();
-				pnlClaimMappingGrid.getEditDefinition((OIDCClaimScopeDefinition)definition);
+				pnlClaimMappingGrid.getEditDefinition((OIDCClaimScopeDefinition) definition);
 			}
 			definition.setName(SmartGWTUtil.getStringValue(txtName, true));
 			definition.setDisplayName(SmartGWTUtil.getStringValue(txtDisplayName, true));
@@ -435,7 +435,8 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 		public boolean isEmpty() {
 
-			return grid.getRecordList().isEmpty();
+			return grid.getRecordList()
+					.isEmpty();
 		}
 
 	}
@@ -454,18 +455,18 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(false);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(false); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+			setCanReorderRecords(true); //Dragによる並び替えを可能にする
 
 			ListGridField claimNameField = new ListGridField(FIELD_NAME.CLAIM_NAME.name(), "Claim Name");
 			ListGridField userPropertyNameField = new ListGridField(FIELD_NAME.USER_PROPERTY_NAME.name(), "User Property Name");
@@ -479,7 +480,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 				@Override
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editClaimMapping((ListGridRecord)event.getRecord());
+					editClaimMapping((ListGridRecord) event.getRecord());
 
 				}
 			});
@@ -489,16 +490,16 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 		@Override
 		public void setDefinition(ScopeDefinition definition) {
 
-			setData(new ListGridRecord[]{});
+			setData(new ListGridRecord[] {});
 
 			if (definition instanceof OIDCClaimScopeDefinition) {
-				OIDCClaimScopeDefinition claimScope = (OIDCClaimScopeDefinition)definition;
+				OIDCClaimScopeDefinition claimScope = (OIDCClaimScopeDefinition) definition;
 				if (claimScope.getClaims() != null) {
 					List<ListGridRecord> records = new ArrayList<ListGridRecord>();
 					for (ClaimMappingDefinition claim : claimScope.getClaims()) {
 						records.add(createRecord(claim, null));
 					}
-					setData(records.toArray(new ListGridRecord[]{}));
+					setData(records.toArray(new ListGridRecord[] {}));
 				}
 			}
 		}
@@ -507,14 +508,14 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 		public ScopeDefinition getEditDefinition(ScopeDefinition definition) {
 
 			if (definition instanceof OIDCClaimScopeDefinition) {
-				OIDCClaimScopeDefinition claimScope = (OIDCClaimScopeDefinition)definition;
+				OIDCClaimScopeDefinition claimScope = (OIDCClaimScopeDefinition) definition;
 				ListGridRecord[] records = getRecords();
 				if (records == null || records.length == 0) {
 					claimScope.setClaims(null);
 				} else {
 					List<ClaimMappingDefinition> claims = new ArrayList<ClaimMappingDefinition>(records.length);
 					for (ListGridRecord record : records) {
-						ClaimMappingDefinition claim = (ClaimMappingDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+						ClaimMappingDefinition claim = (ClaimMappingDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 						claims.add(claim);
 					}
 					claimScope.setClaims(claims);
@@ -559,7 +560,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			});
 
 			if (record != null) {
-				dialog.setDefinition((ClaimMappingDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+				dialog.setDefinition((ClaimMappingDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 			}
 			dialog.show();
 		}
@@ -602,7 +603,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			txtClaimName = new MtpTextItem();
 			txtClaimName.setTitle("Claim Name");
 			SmartGWTUtil.setRequired(txtClaimName);
-			txtClaimName.setRequired(true);	//TODO 直接指定しないと効かない
+			txtClaimName.setRequired(true); //TODO 直接指定しないと効かない
 
 			txtUserPropertyName = new MtpTextItem();
 			txtUserPropertyName.setTitle("User Property Name");
@@ -637,6 +638,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 								public void onSave(String text) {
 									txaCustomValueScript.setValue(text);
 								}
+
 								@Override
 								public void onCancel() {
 								}
@@ -652,7 +654,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			IButton btnOK = new IButton("OK");
 			btnOK.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						createEditDefinition();
 					}
 				}

@@ -27,7 +27,7 @@ public class EnableLanguages {
 	private String languageKey;
 
 	private String languageName;
-	
+
 	private List<String> otherLanguageKey;
 
 	public String getLanguageKey() {

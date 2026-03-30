@@ -34,6 +34,7 @@ public class AdminXsrfTokenHolder {
 		return token;
 	}
 
-	private AdminXsrfTokenHolder(){}
+	private AdminXsrfTokenHolder() {
+	}
 
 }

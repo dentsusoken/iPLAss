@@ -44,9 +44,11 @@ public class TreeViewService extends AbstractTypedMetaDataService<MetaTreeView, 
 		public TypeMap() {
 			super(getFixedPath(), MetaTreeView.class, TreeView.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<TreeView> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(TreeViewManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(TreeViewManager.class);
 		}
 
 		@Override

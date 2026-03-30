@@ -39,16 +39,17 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public class CacheOnlyAuthTokenStore implements AuthTokenStore, ServiceInitListener<AuthTokenService> {
-	
+
 	private static final String DEFAULT_TOKEN_CACHE_NAMESPACE = "mtp.auth.cacheOnlyAuthTokenStore/DEFAULT";
-	
+
 	private String cacheStoreName = DEFAULT_TOKEN_CACHE_NAMESPACE;
-	
+
 	private CacheStore cacheStore;//index[0]=tenantId-type-userUniqueKey
-	
+
 	@Override
 	public void inited(AuthTokenService service, Config config) {
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		cacheStore = cs.getCache(cacheStoreName);
 	}
 
@@ -80,11 +81,11 @@ public class CacheOnlyAuthTokenStore implements AuthTokenStore, ServiceInitListe
 	@Override
 	public List<AuthToken> getByOwner(int tenantId, String type, String userUniqueKey) {
 		String key = indexKey0(tenantId, type, userUniqueKey);
-		
+
 		List<CacheEntry> l = cacheStore.getListByIndex(0, key);
 		if (l != null) {
 			List<AuthToken> ret = new ArrayList<>();
-			for (CacheEntry e: l) {
+			for (CacheEntry e : l) {
 				if (e.getValue() != null) {
 					ret.add(ObjectUtil.deepCopy((AuthToken) e.getValue()));
 				}
@@ -93,9 +94,14 @@ public class CacheOnlyAuthTokenStore implements AuthTokenStore, ServiceInitListe
 		}
 		return null;
 	}
-	
+
 	private String indexKey0(int tenantId, String type, String userUniqueKey) {
-		return new StringBuffer().append(tenantId).append('-').append(type).append('-').append(userUniqueKey).toString();
+		return new StringBuffer().append(tenantId)
+				.append('-')
+				.append(type)
+				.append('-')
+				.append(userUniqueKey)
+				.toString();
 	}
 
 	@Override
@@ -113,12 +119,13 @@ public class CacheOnlyAuthTokenStore implements AuthTokenStore, ServiceInitListe
 		if (ce == null || ce.getValue() == null) {
 			throw new AuthTokenUpdateException("currentToken is invalid:" + currentToken.getSeries());
 		}
-		
+
 		AuthToken cachedToken = (AuthToken) ce.getValue();
-		if (!cachedToken.getToken().equals(currentToken.getToken())) {
+		if (!cachedToken.getToken()
+				.equals(currentToken.getToken())) {
 			throw new AuthTokenUpdateException("currentToken is invalid:" + currentToken.getSeries());
 		}
-		
+
 		CacheEntry newCe = new CacheEntry(new AuthTokenKey(newToken.getTenantId(), newToken.getType(), newToken.getSeries()), newToken,
 				indexKey0(newToken.getTenantId(), newToken.getType(), newToken.getOwnerId()));
 		if (!cacheStore.replace(ce, newCe)) {
@@ -140,6 +147,5 @@ public class CacheOnlyAuthTokenStore implements AuthTokenStore, ServiceInitListe
 	public void deleteByDate(int tenantId, String type, Timestamp ts) {
 		//cacheStore側の有効期間ベースで削除される想定
 	}
-
 
 }

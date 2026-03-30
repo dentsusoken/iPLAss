@@ -27,7 +27,11 @@ public class AuthTokenKeyResolver implements CacheKeyResolver {
 	public String toString(Object cacheKey) {
 		AuthTokenKey key = (AuthTokenKey) cacheKey;
 		StringBuilder sb = new StringBuilder();
-		sb.append(key.getTenantId()).append(':').append(key.getType()).append(':').append(key.getSeries());
+		sb.append(key.getTenantId())
+				.append(':')
+				.append(key.getType())
+				.append(':')
+				.append(key.getSeries());
 		return sb.toString();
 	}
 

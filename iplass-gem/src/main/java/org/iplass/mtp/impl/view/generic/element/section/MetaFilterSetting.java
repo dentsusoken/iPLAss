@@ -53,7 +53,7 @@ public class MetaFilterSetting implements MetaData {
 	 * @return フィルタ名
 	 */
 	public String getFilterName() {
-	    return filterName;
+		return filterName;
 	}
 
 	/**
@@ -61,6 +61,6 @@ public class MetaFilterSetting implements MetaData {
 	 * @param filterName フィルタ名
 	 */
 	public void setFilterName(String filterName) {
-	    this.filterName = filterName;
+		this.filterName = filterName;
 	}
 }

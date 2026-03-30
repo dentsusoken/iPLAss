@@ -37,9 +37,9 @@ import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
 @XmlSeeAlso({
-	MetaAlwaysConsentType.class,
-	MetaOnceConsentType.class,
-	MetaScriptingConsentType.class
+		MetaAlwaysConsentType.class,
+		MetaOnceConsentType.class,
+		MetaScriptingConsentType.class
 })
 public abstract class MetaConsentType implements MetaData {
 	private static final long serialVersionUID = -1385773019313952621L;
@@ -50,11 +50,13 @@ public abstract class MetaConsentType implements MetaData {
 	}
 
 	public abstract void applyConfig(ConsentTypeDefinition consentType);
+
 	public abstract ConsentTypeDefinition currentConfig();
+
 	public abstract ConsentTypeRuntime createRuntime(String metaId, ClientType ct);
-	
+
 	public static abstract class ConsentTypeRuntime {
-		
+
 		public abstract boolean needConsent(RequestContext request, List<String> scopes, AccessToken currentToken);
 	}
 
@@ -70,5 +72,5 @@ public abstract class MetaConsentType implements MetaData {
 		}
 		return null;
 	}
-	
+
 }

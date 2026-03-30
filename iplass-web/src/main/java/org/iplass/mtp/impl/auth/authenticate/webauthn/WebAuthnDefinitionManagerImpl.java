@@ -28,7 +28,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class WebAuthnDefinitionManagerImpl extends AbstractTypedDefinitionManager<WebAuthnDefinition> implements WebAuthnDefinitionManager {
 
-	private WebAuthnService webAuthnService = ServiceRegistry.getRegistry().getService(WebAuthnService.class);
+	private WebAuthnService webAuthnService = ServiceRegistry.getRegistry()
+			.getService(WebAuthnService.class);
 
 	@Override
 	public Class<WebAuthnDefinition> getDefinitionType() {

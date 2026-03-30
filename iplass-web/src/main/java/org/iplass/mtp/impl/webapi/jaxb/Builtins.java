@@ -25,8 +25,8 @@ import org.iplass.mtp.impl.webapi.WebApiParameterMap;
 import org.iplass.mtp.impl.webapi.WebApiResponse;
 
 @XmlSeeAlso({
-	WebApiResponse.class,
-	WebApiParameterMap.class
+		WebApiResponse.class,
+		WebApiParameterMap.class
 })
 public class Builtins {
 

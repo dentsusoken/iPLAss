@@ -36,7 +36,7 @@ public class OAuthResourceServerDefinition implements Definition {
 	private String displayName;
 	private String description;
 	private List<CustomTokenIntrospectorDefinition> customTokenIntrospectors;
-	
+
 	public List<CustomTokenIntrospectorDefinition> getCustomTokenIntrospectors() {
 		return customTokenIntrospectors;
 	}
@@ -44,7 +44,7 @@ public class OAuthResourceServerDefinition implements Definition {
 	public void setCustomTokenIntrospectors(List<CustomTokenIntrospectorDefinition> customTokenIntrospectors) {
 		this.customTokenIntrospectors = customTokenIntrospectors;
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;

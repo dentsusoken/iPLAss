@@ -136,7 +136,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class BeanParamMapper {
-	
+
 	/**
 	 * デフォルトのpropertyDelimiterです。
 	 */
@@ -155,32 +155,32 @@ public class BeanParamMapper {
 	public static final int DEFAULT_INDEXED_PROPERTY_SIZE_LIMIT = 128;
 
 	private static Logger log = LoggerFactory.getLogger(BeanParamMapper.class);
-	
+
 	private char propertyDelimiter = DEFAULT_PROPERTY_DELIMITER;
 	private char indexPrefix = DEFAULT_INDEX_PREFIX;
 	private char indexPostfix = DEFAULT_INDEX_POSTFIX;
-	
+
 	private int indexedPropertySizeLimit = DEFAULT_INDEXED_PROPERTY_SIZE_LIMIT;
-	
+
 	private String paramPrefix;
 	private String whitelistPropertyNameRegex;
 	private Pattern whitelistPropertyNameRegexPattern;
-	
+
 	private boolean trim;
 	private boolean emptyToNull;
-	
+
 	private boolean withValidation;
 	private boolean autoGrow;
-	
+
 	private Validator beanValidator;
 	private Consumer<MappingError> typeConversionErrorHandler;
-	
+
 	private boolean validDelim = true;
-	
+
 	public BeanParamMapper() {
 		beanValidator = BeanValidation.getValidator();
 	}
-	
+
 	/**
 	 * パラメータをBeanにセットする際に、BeanValidationによるバリデーションを行うように設定します。
 	 * 
@@ -190,7 +190,7 @@ public class BeanParamMapper {
 		setWithValidation(true);
 		return this;
 	}
-	
+
 	/**
 	 * ネストされたBean、List, 配列、Mapにおいて、パラメータ名で指定されるパスに値が存在しない場合、
 	 * 自動的に拡張するように設定します。
@@ -201,7 +201,7 @@ public class BeanParamMapper {
 		setAutoGrow(true);
 		return this;
 	}
-	
+
 	/**
 	 * パラメータの値がStringの場合、trimを行うように設定します。
 	 * 
@@ -211,7 +211,7 @@ public class BeanParamMapper {
 		setTrim(true);
 		return this;
 	}
-	
+
 	/**
 	 * パラメータの値が空文字の場合、nullに変換するように設定します。
 	 * 
@@ -235,10 +235,10 @@ public class BeanParamMapper {
 			validDelim = false;
 			return;
 		}
-		
+
 		validDelim = true;
 	}
-	
+
 	/**
 	 * パラメータ名のデリミタ表現を設定します。
 	 * 各デリミタに指定する文字はそれぞれ異なる必要があります。
@@ -255,7 +255,7 @@ public class BeanParamMapper {
 		checkDelim();
 		return this;
 	}
-	
+
 	/**
 	 * BeanMapperでbeanにマップするパラメータを限定するためのPrefixを設定します。
 	 * 当該のparamPrefixと前方一致するパラメータのみbeanにマップされます。
@@ -267,7 +267,7 @@ public class BeanParamMapper {
 		this.paramPrefix = paramPrefix;
 		return this;
 	}
-	
+
 	/**
 	 * 設定可能なプロパティ名表現の正規表現を設定します。
 	 * 正規表現によるチェックは、paramPrefixを取り除いた後に実施されるため、
@@ -280,7 +280,7 @@ public class BeanParamMapper {
 		setWhitelistPropertyNameRegex(whitelistPropertyNameRegex);
 		return this;
 	}
-	
+
 	/**
 	 * autoGrowが有効化されている場合、List、配列、Mapにおいて自動拡張する最大サイズを設定します。
 	 * 
@@ -291,7 +291,7 @@ public class BeanParamMapper {
 		setIndexedPropertySizeLimit(indexedPropertySizeLimit);
 		return this;
 	}
-	
+
 	/**
 	 * 型変換に失敗した場合のエラーメッセージをカスタマイズするなどの処理を行う場合、セットします。
 	 * 
@@ -307,7 +307,7 @@ public class BeanParamMapper {
 		setTypeConversionErrorHandler(typeConversionErrorHandler);
 		return this;
 	}
-	
+
 	public boolean isTrim() {
 		return trim;
 	}
@@ -343,39 +343,50 @@ public class BeanParamMapper {
 	public char getPropertyDelimiter() {
 		return propertyDelimiter;
 	}
+
 	public void setPropertyDelimiter(char propertyDelimiter) {
 		this.propertyDelimiter = propertyDelimiter;
 		checkDelim();
 	}
+
 	public char getIndexPrefix() {
 		return indexPrefix;
 	}
+
 	public void setIndexPrefix(char indexPrefix) {
 		this.indexPrefix = indexPrefix;
 		checkDelim();
 	}
+
 	public char getIndexPostfix() {
 		return indexPostfix;
 	}
+
 	public void setIndexPostfix(char indexPostfix) {
 		this.indexPostfix = indexPostfix;
 		checkDelim();
 	}
+
 	public int getIndexedPropertySizeLimit() {
 		return indexedPropertySizeLimit;
 	}
+
 	public void setIndexedPropertySizeLimit(int indexedPropertySizeLimit) {
 		this.indexedPropertySizeLimit = indexedPropertySizeLimit;
 	}
+
 	public String getParamPrefix() {
 		return paramPrefix;
 	}
+
 	public void setParamPrefix(String paramPrefix) {
 		this.paramPrefix = paramPrefix;
 	}
+
 	public String getWhitelistPropertyNameRegex() {
 		return whitelistPropertyNameRegex;
 	}
+
 	public void setWhitelistPropertyNameRegex(String whitelistPropertyNameRegex) {
 		this.whitelistPropertyNameRegex = whitelistPropertyNameRegex;
 		if (whitelistPropertyNameRegex != null) {
@@ -384,6 +395,7 @@ public class BeanParamMapper {
 			whitelistPropertyNameRegexPattern = null;
 		}
 	}
+
 	public Consumer<MappingError> getTypeConversionErrorHandler() {
 		return typeConversionErrorHandler;
 	}
@@ -392,7 +404,6 @@ public class BeanParamMapper {
 		this.typeConversionErrorHandler = typeConversionErrorHandler;
 	}
 
-	
 	private String normPath(String path) {
 		if (propertyDelimiter != DEFAULT_PROPERTY_DELIMITER) {
 			path = path.replace(propertyDelimiter, DEFAULT_PROPERTY_DELIMITER);
@@ -405,7 +416,7 @@ public class BeanParamMapper {
 		}
 		return path;
 	}
-	
+
 	/**
 	 * 指定のbeanに、paramsで指定されるパラメータをセットします。
 	 * 
@@ -418,14 +429,14 @@ public class BeanParamMapper {
 		if (!validDelim) {
 			throw new SystemException("Delimiter setting invalid. Each delimiter must different char.");
 		}
-		
+
 		if ((bean == null) || (params == null)) {
 			return;
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("BeanParamMapper.populate(" + bean + ", " + params + ")");
 		}
-		
+
 		MappingResult res = new MappingResult(bean);
 		Map<String, Object> valueMap = new HashMap<>();
 		for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
@@ -442,20 +453,21 @@ public class BeanParamMapper {
 				}
 				name = name.substring(paramPrefix.length());
 			}
-			
+
 			if (whitelistPropertyNameRegexPattern != null) {
-				if (!whitelistPropertyNameRegexPattern.matcher(name).matches()) {
+				if (!whitelistPropertyNameRegexPattern.matcher(name)
+						.matches()) {
 					if (log.isTraceEnabled()) {
 						log.trace("no match whitelistPropertyNameRegex :" + name);
 					}
 					continue;
 				}
 			}
-			
+
 			name = normPath(name);
 			valueMap.put(name, entry.getValue());
 		}
-		
+
 		Mapper beanMapper = new ELMapper();
 		beanMapper.setTrim(trim);
 		beanMapper.setEmptyToNull(emptyToNull);
@@ -463,21 +475,22 @@ public class BeanParamMapper {
 		beanMapper.setIndexedPropertySizeLimit(indexedPropertySizeLimit);
 		beanMapper.setTypeConversionErrorHandler(typeConversionErrorHandler);
 		beanMapper.setTargetBean(bean);
-		
+
 		beanMapper.map(valueMap, res);
-		
+
 		if (withValidation) {
 			Set<String> typeConversionErrorProps = new HashSet<>();
 			if (res.hasError()) {
-				for (MappingError me: res.getErrors()) {
+				for (MappingError me : res.getErrors()) {
 					typeConversionErrorProps.add(me.getPropertyPath());
 				}
 			}
-			
+
 			Set<ConstraintViolation<Object>> violationSet = beanValidator.validate(bean, validationGroups);
 			if (violationSet != null) {
-				for (ConstraintViolation<Object> cv: violationSet) {
-					String path = cv.getPropertyPath().toString();
+				for (ConstraintViolation<Object> cv : violationSet) {
+					String path = cv.getPropertyPath()
+							.toString();
 					if (!typeConversionErrorProps.contains(path)) {
 						MappingError preError = res.getError(path);
 						if (preError == null) {
@@ -489,17 +502,18 @@ public class BeanParamMapper {
 				}
 			}
 		}
-		
+
 		if (res.hasError()) {
 			if (log.isDebugEnabled()) {
-				for (MappingError err: res.getErrors()) {
-					log.debug("mapping fail: property=" + err.getPropertyPath() + ", message=" + err.getErrorMessages() + ", value=" + err.getErrorValue() + ", cause=" + err.getCause(), err.getCause());
+				for (MappingError err : res.getErrors()) {
+					log.debug("mapping fail: property=" + err.getPropertyPath() + ", message=" + err.getErrorMessages() + ", value="
+							+ err.getErrorValue() + ", cause=" + err.getCause(), err.getCause());
 				}
 			}
 			throw new MappingException("mapping failed", res);
 		}
 	}
-	
+
 	/**
 	 * 明示的に指定のbeanに対してValidationを実行します。
 	 * 
@@ -511,8 +525,9 @@ public class BeanParamMapper {
 		MappingResult res = new MappingResult(bean);
 		Set<ConstraintViolation<Object>> violationSet = beanValidator.validate(bean, validationGroups);
 		if (violationSet != null) {
-			for (ConstraintViolation<Object> cv: violationSet) {
-				String path = cv.getPropertyPath().toString();
+			for (ConstraintViolation<Object> cv : violationSet) {
+				String path = cv.getPropertyPath()
+						.toString();
 				MappingError preError = res.getError(path);
 				if (preError == null) {
 					res.addError(new MappingError(path, cv.getMessage(), cv.getInvalidValue(), cv));
@@ -521,7 +536,7 @@ public class BeanParamMapper {
 				}
 			}
 		}
-		
+
 		if (res.hasError()) {
 			throw new MappingException("validation failed", res);
 		}

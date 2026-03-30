@@ -21,10 +21,10 @@
 package org.iplass.mtp.impl.datastore.grdb.sql.table;
 
 public interface ObjRefTable {
-	
+
 	public static final String TABLE_NAME = "OBJ_REF";
 	public static final String TABLE_NAME_RB = "OBJ_REF_RB";
-	
+
 	public static final String TENANT_ID = "TENANT_ID";
 	public static final String OBJ_DEF_ID = "OBJ_DEF_ID";
 	public static final String REF_DEF_ID = "REF_DEF_ID";
@@ -33,11 +33,11 @@ public interface ObjRefTable {
 	public static final String TARGET_OBJ_DEF_ID = "TARGET_OBJ_DEF_ID";
 	public static final String TARGET_OBJ_ID = "TARGET_OBJ_ID";
 	public static final String TARGET_OBJ_VER = "TARGET_OBJ_VER";
-	
+
 	//ごみ箱のみ項目
 	public static final String RB_ID = "RB_ID";
-	
+
 	public static final String[] COLS = {
-		TENANT_ID,OBJ_DEF_ID,REF_DEF_ID,OBJ_ID,OBJ_VER,TARGET_OBJ_DEF_ID,TARGET_OBJ_ID,TARGET_OBJ_VER
+			TENANT_ID, OBJ_DEF_ID, REF_DEF_ID, OBJ_ID, OBJ_VER, TARGET_OBJ_DEF_ID, TARGET_OBJ_ID, TARGET_OBJ_VER
 	};
 }

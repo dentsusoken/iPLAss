@@ -47,7 +47,6 @@ import org.iplass.mtp.entity.definition.properties.TimeProperty;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-
 /**
  * Entityが保持するプロパティを定義するクラス。
  *
@@ -55,11 +54,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso(value = { AutoNumberProperty.class, BinaryProperty.class, BooleanProperty.class,
-		DateProperty.class, DateTimeProperty.class, DecimalProperty.class, FloatProperty.class,
-		IntegerProperty.class, LongTextProperty.class,
-		ReferenceProperty.class, StringProperty.class, ExpressionProperty.class, SelectProperty.class, TimeProperty.class })
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(
+		value = { AutoNumberProperty.class, BinaryProperty.class, BooleanProperty.class,
+				DateProperty.class, DateTimeProperty.class, DecimalProperty.class, FloatProperty.class,
+				IntegerProperty.class, LongTextProperty.class,
+				ReferenceProperty.class, StringProperty.class, ExpressionProperty.class, SelectProperty.class, TimeProperty.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class PropertyDefinition implements Serializable {
 
 	private static final long serialVersionUID = -7811682916880170135L;
@@ -70,7 +70,13 @@ public abstract class PropertyDefinition implements Serializable {
 	private String name;
 
 	/** 表示名 */
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 
 	/** 説明 */
@@ -91,7 +97,12 @@ public abstract class PropertyDefinition implements Serializable {
 	/** 多重度 */
 	private int multiplicity = 1;
 
-	@MultiLang(itemNameGetter = "getName", isMultiLangValue = false, itemKey = "validation", itemGetter = "getValidations", itemSetter = "setValidations")
+	@MultiLang(
+			itemNameGetter = "getName",
+			isMultiLangValue = false,
+			itemKey = "validation",
+			itemGetter = "getValidations",
+			itemSetter = "setValidations")
 	private List<ValidationDefinition> validations;
 
 	private List<NormalizerDefinition> normalizers;

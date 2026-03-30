@@ -43,7 +43,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 	public static final String CONTENT_CACHE_NAME = "org.iplass.mtp.contentCache";
 	public static final String CHSR_NAME = "org.iplass.mtp.cachableHttpServletResponse";
 	public static final String ACTION_RUNTIME_NAME = "org.iplass.mtp.actionRuntime";
-	private static final char[] LINE = System.getProperty("line.separator").toCharArray();
+	private static final char[] LINE = System.getProperty("line.separator")
+			.toCharArray();
 
 	private ByteArrayOutputStream binaryCache;
 	private StringBuilder textCache;
@@ -91,7 +92,6 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 				contentCache.addContent(tb);
 			}
 		}
-
 
 		binaryCache = null;
 		textCache = null;
@@ -324,7 +324,7 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 
 		private OutputStream getOS() {
 			if (binaryCache == null) {
-				binaryCache = new ByteArrayOutputStream(1024*8);//8K
+				binaryCache = new ByteArrayOutputStream(1024 * 8);//8K
 			}
 			return binaryCache;
 		}
@@ -395,12 +395,10 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 			return textCache;
 		}
 
-
 		@Override
 		public void flush() {
 			actual.flush();
 		}
-
 
 		@Override
 		public void write(int c) {
@@ -526,7 +524,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		public void println(boolean x) {
 			actual.println(x);
 			if (doCache) {
-				getSb().append(x).append(LINE);
+				getSb().append(x)
+						.append(LINE);
 			}
 		}
 
@@ -534,7 +533,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		public void println(char x) {
 			actual.println(x);
 			if (doCache) {
-				getSb().append(x).append(LINE);
+				getSb().append(x)
+						.append(LINE);
 			}
 		}
 
@@ -542,7 +542,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		public void println(int x) {
 			actual.println(x);
 			if (doCache) {
-				getSb().append(x).append(LINE);
+				getSb().append(x)
+						.append(LINE);
 			}
 		}
 
@@ -550,7 +551,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		public void println(long x) {
 			actual.println(x);
 			if (doCache) {
-				getSb().append(x).append(LINE);
+				getSb().append(x)
+						.append(LINE);
 			}
 		}
 
@@ -558,7 +560,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		public void println(float x) {
 			actual.println(x);
 			if (doCache) {
-				getSb().append(x).append(LINE);
+				getSb().append(x)
+						.append(LINE);
 			}
 		}
 
@@ -566,7 +569,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		public void println(double x) {
 			actual.println(x);
 			if (doCache) {
-				getSb().append(x).append(LINE);
+				getSb().append(x)
+						.append(LINE);
 			}
 		}
 
@@ -574,7 +578,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		public void println(char[] x) {
 			actual.println(x);
 			if (doCache) {
-				getSb().append(x).append(LINE);
+				getSb().append(x)
+						.append(LINE);
 			}
 		}
 
@@ -582,7 +587,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		public void println(String x) {
 			actual.println(x);
 			if (doCache) {
-				getSb().append(x).append(LINE);
+				getSb().append(x)
+						.append(LINE);
 			}
 		}
 
@@ -590,7 +596,8 @@ public class CachableHttpServletResponse extends HttpServletResponseWrapper {
 		public void println(Object x) {
 			actual.println(x);
 			if (doCache) {
-				getSb().append(x).append(LINE);
+				getSb().append(x)
+						.append(LINE);
 			}
 		}
 

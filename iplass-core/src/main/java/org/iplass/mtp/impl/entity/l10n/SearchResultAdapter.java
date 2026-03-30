@@ -38,10 +38,18 @@ class SearchResultAdapter implements Predicate<Entity> {
 		this.trans = trans;
 		this.real = real;
 		index = new ArrayList<>();
-		for (int i = 0; i < orign.getSelect().getSelectValues().size(); i++) {
-			if (orign.getSelect().getSelectValues().get(i) instanceof EntityField) {
-				EntityField oe = (EntityField) orign.getSelect().getSelectValues().get(i);
-				EntityField te = (EntityField) trans.getSelect().getSelectValues().get(i);
+		for (int i = 0; i < orign.getSelect()
+				.getSelectValues()
+				.size(); i++) {
+			if (orign.getSelect()
+					.getSelectValues()
+					.get(i) instanceof EntityField) {
+				EntityField oe = (EntityField) orign.getSelect()
+						.getSelectValues()
+						.get(i);
+				EntityField te = (EntityField) trans.getSelect()
+						.getSelectValues()
+						.get(i);
 				if (!oe.equals(te)) {
 					index.add(i);
 				}
@@ -52,9 +60,13 @@ class SearchResultAdapter implements Predicate<Entity> {
 	@Override
 	public boolean test(Entity dataModel) {
 		if (index.size() > 0) {
-			for (Integer i: index) {
-				EntityField oe = (EntityField) orign.getSelect().getSelectValues().get(i);
-				EntityField te = (EntityField) trans.getSelect().getSelectValues().get(i);
+			for (Integer i : index) {
+				EntityField oe = (EntityField) orign.getSelect()
+						.getSelectValues()
+						.get(i);
+				EntityField te = (EntityField) trans.getSelect()
+						.getSelectValues()
+						.get(i);
 				Object val = dataModel.getValue(te.getPropertyName());
 				if (val != null) {
 					dataModel.setValue(te.getPropertyName(), null);

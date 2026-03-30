@@ -91,10 +91,17 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 	private static final long serialVersionUID = -4429152263057997180L;
 
 	private static class RandomHolder {
-		static final SecureRandomGenerator randomForState = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator("stateTokenGenerator");
-		static final SecureRandomGenerator randomForNonce = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator("nonceGenerator");
-		static final SecureRandomGenerator randomForCodeVerifier = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator("codeVerifierGenerator");
+		static final SecureRandomGenerator randomForState = ServiceRegistry.getRegistry()
+				.getService(SecureRandomService.class)
+				.createGenerator("stateTokenGenerator");
+		static final SecureRandomGenerator randomForNonce = ServiceRegistry.getRegistry()
+				.getService(SecureRandomService.class)
+				.createGenerator("nonceGenerator");
+		static final SecureRandomGenerator randomForCodeVerifier = ServiceRegistry.getRegistry()
+				.getService(SecureRandomService.class)
+				.createGenerator("codeVerifierGenerator");
 	}
+
 	private static Logger logger = LoggerFactory.getLogger(MetaOpenIdConnect.class);
 
 	private String issuer;
@@ -111,17 +118,17 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 	private boolean issParameterSupported = true;
 	private boolean validateSign;
 	private ResponseMode responseMode = ResponseMode.FORM_POST;
-	private String subjectNameClaim ="preferred_username";
+	private String subjectNameClaim = "preferred_username";
 	private String autoUserProvisioningHandler;
 	private boolean enableTransientUser;
-	
+
 	private String backUrlAfterAuth;
 	private String backUrlAfterConnect;
 	private String prompt;
-	
+
 	//TODO 単なるOAuthClient（OpenIdConnectをサポートしない）としても利用可能に
 	//private boolean disableOpenIdConnectFuture;
-	
+
 	public String getBackUrlAfterAuth() {
 		return backUrlAfterAuth;
 	}
@@ -289,7 +296,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 
 	@Override
 	public MetaOpenIdConnect copy() {
-		return  ObjectUtil.deepCopy(this);
+		return ObjectUtil.deepCopy(this);
 	}
 
 	@Override
@@ -305,7 +312,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 		jwksEndpoint = def.getJwksEndpoint();
 		jwksContents = def.getJwksContents();
 		clientId = def.getClientId();
-		scopes = (def.getScopes() == null) ? null: new ArrayList<String>(def.getScopes());
+		scopes = (def.getScopes() == null) ? null : new ArrayList<String>(def.getScopes());
 		clientAuthenticationType = def.getClientAuthenticationType();
 		useNonce = def.isUseNonce();
 		enablePKCE = def.isEnablePKCE();
@@ -319,6 +326,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 		backUrlAfterConnect = def.getBackUrlAfterConnect();
 		prompt = def.getPrompt();
 	}
+
 	@Override
 	public OpenIdConnectDefinition currentConfig() {
 		OpenIdConnectDefinition def = new OpenIdConnectDefinition();
@@ -351,28 +359,32 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 
 		return def;
 	}
-	
+
 	public class OpenIdConnectRuntime extends BaseMetaDataRuntime {
-		
+
 		private AutoUserProvisioningHandler aup;
 		private String scopeParamValue;
 		private HashSet<String> scopeParamSet;
 		private OpenIdConnectService opService;
 		private EntityManager em;
 		private String clientSecret;
-		
+
 		private Jwks jwks;
 		private OPEndpoint opEndpoint;
-		
-		private ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+
+		private ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getScriptEngine();
 		private GroovyTemplate backUrlAfterAuthTmpl;
 		private GroovyTemplate backUrlAfterConnectTmpl;
-		
+
 		private OpenIdConnectRuntime() {
 			try {
 				if (autoUserProvisioningHandler != null) {
 					try {
-						aup = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class).createInstanceAs(AutoUserProvisioningHandler.class, autoUserProvisioningHandler);
+						aup = ManagerLocator.getInstance()
+								.getManager(UtilityClassDefinitionManager.class)
+								.createInstanceAs(AutoUserProvisioningHandler.class, autoUserProvisioningHandler);
 						aup.init(currentConfig());
 					} catch (ClassNotFoundException e) {
 						throw new IllegalStateException(e);
@@ -382,16 +394,18 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				StringBuilder sb = new StringBuilder();
 				sb.append(OAuthConstants.SCOPE_OPENID);
 				scopeParamSet.add(OAuthConstants.SCOPE_OPENID);
-				if (scopes != null  && scopes.size() > 0) {
-					for (String sc: scopes) {
+				if (scopes != null && scopes.size() > 0) {
+					for (String sc : scopes) {
 						if (!OAuthConstants.SCOPE_OPENID.equals(sc)) {
-							sb.append(' ').append(sc);
+							sb.append(' ')
+									.append(sc);
 							scopeParamSet.add(sc);
 						}
 					}
 				}
 				scopeParamValue = sb.toString();
-				opService = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
+				opService = ServiceRegistry.getRegistry()
+						.getService(OpenIdConnectService.class);
 				em = ManagerLocator.manager(EntityManager.class);
 				clientSecret = opService.getClientSecret(getId());
 				if (clientSecret == null) {
@@ -402,12 +416,12 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				} else if (jwksEndpoint != null) {
 					jwks = new RemoteJwks(jwksEndpoint, opService);
 				} else {
-					if(validateSign) {
+					if (validateSign) {
 						throw new IllegalStateException("jwks endpoint or contents must specified");
 					}
 				}
 				opEndpoint = new OPEndpoint(tokenEndpoint, userInfoEndpoint, opService);
-				
+
 				if (issuer == null) {
 					throw new NullPointerException("issuer must specified");
 				}
@@ -426,7 +440,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				if (subjectNameClaim == null) {
 					throw new NullPointerException("subjectNameClaim must specified");
 				}
-				
+
 				if (backUrlAfterAuth != null) {
 					backUrlAfterAuthTmpl = GroovyTemplateCompiler.compile(
 							backUrlAfterAuth,
@@ -437,39 +451,40 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 							backUrlAfterConnect,
 							"OpenIdConnect_backUrlAfterConnect_" + getName(), (GroovyScriptEngine) scriptEngine);
 				}
-			} catch(RuntimeException e) {
-			    setIllegalStateException(e);
+			} catch (RuntimeException e) {
+				setIllegalStateException(e);
 			}
 		}
-		
+
 		//for test
 		void setOPEndpoint(OPEndpoint opEndpoint) {
 			this.opEndpoint = opEndpoint;
 		}
+
 		OPEndpoint getOPEndpoint() {
 			return opEndpoint;
 		}
-		
+
 		@Override
 		public MetaOpenIdConnect getMetaData() {
 			return MetaOpenIdConnect.this;
 		}
-		
+
 		public AutoUserProvisioningHandler getAutoUserProvisioningHandler() {
 			return aup;
 		}
-		
+
 		public String backUrlAfterAuth(RequestContext req) {
 			return doTmpl(backUrlAfterAuthTmpl, req);
 		}
-		
+
 		private String doTmpl(GroovyTemplate tmpl, RequestContext req) {
 			if (tmpl == null) {
 				return null;
 			}
 			Map<String, Object> binding = new HashMap<String, Object>();
 			binding.put("request", req);
-			
+
 			StringWriter sw = new StringWriter();
 			try {
 				tmpl.doTemplate(new GroovyTemplateBinding(sw, binding));
@@ -478,7 +493,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			}
 			return sw.toString();
 		}
-		
+
 		public String backUrlAfterConnect(RequestContext req) {
 			return doTmpl(backUrlAfterConnectTmpl, req);
 		}
@@ -496,20 +511,23 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			int port = httpReq.getServerPort();
 			if ((httpReq.isSecure() && port != 443)
 					|| (!httpReq.isSecure() && port != 80)) {
-				sb.append(':').append(port);
+				sb.append(':')
+						.append(port);
 			}
 			sb.append(TemplateUtil.getTenantContextPath());
-			sb.append("/").append(actionName);
+			sb.append("/")
+					.append(actionName);
 			if (!OpenIdConnectService.DEFAULT_NAME.equals(getName())) {
-				sb.append("/").append(getName());
+				sb.append("/")
+						.append(getName());
 			}
-			
+
 			return sb.toString();
 		}
 
 		public OIDCState newOIDCState(String backUrlAfterAuth, String redirectUri, String errorTemplateName) {
 			checkState();
-			
+
 			OIDCState state = new OIDCState();
 			state.setToken(RandomHolder.randomForState.secureRandomToken());
 			state.setBackUrlAfterAuth(backUrlAfterAuth);
@@ -522,7 +540,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			if (enablePKCE) {
 				state.setCodeVerifier(RandomHolder.randomForCodeVerifier.secureRandomToken());
 			}
-			
+
 			return state;
 		}
 
@@ -530,7 +548,8 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			if (state == null || stateToken == null) {
 				return false;
 			}
-			if (!state.getRedirectUri().equals(redirectUri)) {
+			if (!state.getRedirectUri()
+					.equals(redirectUri)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("redirectUri unmatch:expected=" + state.getRedirectUri() + ", actual=" + redirectUri);
 				}
@@ -544,7 +563,8 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				return false;
 			}
 			if (issParameterSupported) {
-				if (!state.getIssuer().equals(iss)) {
+				if (!state.getIssuer()
+						.equals(iss)) {
 					//invalid issuer
 					if (logger.isDebugEnabled()) {
 						logger.debug("issuer unmatch:expected=" + state.getIssuer() + ", actual=" + iss);
@@ -554,17 +574,18 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			}
 			return true;
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		public OIDCValidateResult validate(OIDCCredential credential) {
 			checkState();
-			
+
 			if (!validateState(credential.getState(), credential.getStateToken(), credential.getIss(), credential.getRedirectUri())) {
 				return new OIDCValidateResult("invalid_state", "Invalid client state.", null, null);
 			}
-			
+
 			Map<String, Object> ret = opEndpoint.token(clientAuthenticationType, clientId, clientSecret,
-					credential.getCode(), credential.getRedirectUri(), credential.getState().getCodeVerifier());
+					credential.getCode(), credential.getRedirectUri(), credential.getState()
+							.getCodeVerifier());
 
 			String idTokenJwt = null;
 			String tokenType = null;
@@ -584,7 +605,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				errorUri = (String) ret.get(OAuthEndpointConstants.PARAM_ERROR_URI);
 				return new OIDCValidateResult(error, errorDescription, errorUri, null);
 			}
-			
+
 			idTokenJwt = (String) ret.get(OAuthEndpointConstants.PARAM_ID_TOKEN);
 			tokenType = (String) ret.get(OAuthEndpointConstants.PARAM_TOKEN_TYPE);
 			accessToken = (String) ret.get(OAuthEndpointConstants.PARAM_ACCESS_TOKEN);
@@ -594,15 +615,15 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			}
 			refreshToken = (String) ret.get(OAuthEndpointConstants.PARAM_REFRESH_TOKEN);
 			scope = (String) ret.get(OAuthEndpointConstants.PARAM_SCOPE);
-			
+
 			if (tokenType == null || accessToken == null) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("invalid token response:" + ret);
 				}
 				return new OIDCValidateResult("invalid_token_response", "Invalid Token Response.token_type and access_token required.", null, null);
-				
+
 			}
-			
+
 			//The OAuth 2.0 token_type response parameter value MUST be Bearer
 			if (!OAuthConstants.TOKEN_TYPE_BEARER.equalsIgnoreCase(tokenType)) {
 				if (logger.isDebugEnabled()) {
@@ -610,7 +631,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				}
 				return new OIDCValidateResult("unknown_token_type", "The token type is unknown.", null, null);
 			}
-			
+
 			//validate scope exactly match.
 			scopeSet = new HashSet<>();
 			if (scope != null) {
@@ -621,7 +642,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			} else {
 				scopeSet = (Set<String>) scopeParamSet.clone();
 			}
-			
+
 			try {
 				idToken = decodeIdToken(idTokenJwt);
 				if (logger.isDebugEnabled()) {
@@ -631,7 +652,7 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			} catch (RuntimeException e) {
 				return new OIDCValidateResult("invalid_id_token", "Invalid IdToken.", null, e);
 			}
-				
+
 			Map<String, Object> claims = new HashMap<String, Object>(idToken.getClaims());
 			if (userInfoEndpoint != null) {
 				Map<String, Object> userInfo = opEndpoint.userInfo(tokenType, accessToken);
@@ -639,10 +660,11 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 					claims.putAll(userInfo);
 				}
 			}
-			
-			return new OIDCValidateResult((String) claims.get(IdTokenConstants.CLAIM_SUB), (String) claims.get(subjectNameClaim), claims, tokenType, accessToken, expiresIn, refreshToken, scopeSet);
+
+			return new OIDCValidateResult((String) claims.get(IdTokenConstants.CLAIM_SUB), (String) claims.get(subjectNameClaim), claims, tokenType,
+					accessToken, expiresIn, refreshToken, scopeSet);
 		}
-		
+
 		private Jwt decodeIdToken(String idTokenJwt) {
 			if (validateSign) {
 				JwtProcessor jwtp = JwtProcessor.getInstance();
@@ -660,11 +682,17 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				Map<String, Object> header = null;
 				Map<String, Object> claims = null;
 				try {
-					String headerPart = new String(Base64.getUrlDecoder().decode(idTokenJwt.substring(0, index1)), "UTF-8");
-					String payload = new String(Base64.getUrlDecoder().decode(idTokenJwt.substring(index1 + 1, index2)), "UTF-8");
-					header = opService.getObjectMapper().readValue(headerPart, new TypeReference<Map<String, Object>>() {});
-					claims = opService.getObjectMapper().readValue(payload, new TypeReference<Map<String, Object>>() {});
-					
+					String headerPart = new String(Base64.getUrlDecoder()
+							.decode(idTokenJwt.substring(0, index1)), "UTF-8");
+					String payload = new String(Base64.getUrlDecoder()
+							.decode(idTokenJwt.substring(index1 + 1, index2)), "UTF-8");
+					header = opService.getObjectMapper()
+							.readValue(headerPart, new TypeReference<Map<String, Object>>() {
+							});
+					claims = opService.getObjectMapper()
+							.readValue(payload, new TypeReference<Map<String, Object>>() {
+							});
+
 					//有効期限チェック
 					long now = System.currentTimeMillis();
 					Number exp = (Number) claims.get(IdTokenConstants.CLAIM_EXP);
@@ -673,33 +701,37 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 							throw new InvalidJwtException("JWT expired");
 						}
 					}
-					
+
 					return new Jwt(header, claims);
 				} catch (UnsupportedEncodingException | JsonProcessingException e) {
 					throw new InvalidJwtException(e);
 				}
 			}
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		private void validateIdToken(Jwt idToken, String accessToken, OIDCCredential cre) {
 			//iss
-			String iss = (String) idToken.getClaims().get(IdTokenConstants.CLAIM_ISS);
+			String iss = (String) idToken.getClaims()
+					.get(IdTokenConstants.CLAIM_ISS);
 			if (iss == null) {
 				throw new InvalidJwtException("iss required");
 			}
-			if (!iss.equals(cre.getState().getIssuer())) {
+			if (!iss.equals(cre.getState()
+					.getIssuer())) {
 				throw new InvalidJwtException("iss unmatch");
 			}
-			
+
 			//sub
-			String sub = (String) idToken.getClaims().get(IdTokenConstants.CLAIM_SUB);
+			String sub = (String) idToken.getClaims()
+					.get(IdTokenConstants.CLAIM_SUB);
 			if (sub == null) {
 				throw new InvalidJwtException("sub required");
 			}
-			
+
 			//aud
-			Object aud = idToken.getClaims().get(IdTokenConstants.CLAIM_AUD);
+			Object aud = idToken.getClaims()
+					.get(IdTokenConstants.CLAIM_AUD);
 			if (aud == null) {
 				throw new InvalidJwtException("aud required");
 			}
@@ -712,40 +744,47 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 					throw new InvalidJwtException("aud unmatch");
 				}
 			}
-			
+
 			//exp
 			//有効期限チェックは事前に実施済み想定（ここで記載したかったが、jwtライブラリ側でデフォルトで組み込まれてるので）
-			Number exp = (Number) idToken.getClaims().get(IdTokenConstants.CLAIM_EXP);
+			Number exp = (Number) idToken.getClaims()
+					.get(IdTokenConstants.CLAIM_EXP);
 			if (exp == null) {
 				throw new InvalidJwtException("exp required");
 			}
-			
+
 			//iat
 			//The iat Claim can be used to reject tokens that were issued too far away from the current time, limiting the amount of time that nonces need to be stored to prevent attacks. The acceptable range is Client specific.
-			Number iat = (Number) idToken.getClaims().get(IdTokenConstants.CLAIM_IAT);
+			Number iat = (Number) idToken.getClaims()
+					.get(IdTokenConstants.CLAIM_IAT);
 			if (iat == null) {
 				throw new InvalidJwtException("iat required");
 			}
-			if (cre.getState().getCreateTime() > TimeUnit.SECONDS.toMillis(iat.longValue()) + TimeUnit.MINUTES.toMillis(opService.getAllowedClockSkewMinutes())) {
+			if (cre.getState()
+					.getCreateTime() > TimeUnit.SECONDS.toMillis(iat.longValue()) + TimeUnit.MINUTES.toMillis(opService.getAllowedClockSkewMinutes())) {
 				//authorization codeフロー開始時刻以前のIdTokenは拒否
 				throw new InvalidJwtException("invalid iat");
 			}
-			
+
 			//nonce
-			if (cre.getState().getNonce() != null) {
-				String nonce = (String) idToken.getClaims().get(IdTokenConstants.CLAIM_NONCE);
+			if (cre.getState()
+					.getNonce() != null) {
+				String nonce = (String) idToken.getClaims()
+						.get(IdTokenConstants.CLAIM_NONCE);
 				if (nonce == null) {
 					throw new InvalidJwtException("nonce required");
 				}
-				if (!nonce.equals(cre.getState().getNonce())) {
+				if (!nonce.equals(cre.getState()
+						.getNonce())) {
 					throw new InvalidJwtException("invalid nonce");
 				}
 			}
-			
+
 			//azp
 			//If the ID Token contains multiple audiences, the Client SHOULD verify that an azp Claim is present.
 			//If an azp (authorized party) Claim is present, the Client SHOULD verify that its client_id is the Claim Value.
-			String azp = (String) idToken.getClaims().get(IdTokenConstants.CLAIM_AZP);
+			String azp = (String) idToken.getClaims()
+					.get(IdTokenConstants.CLAIM_AZP);
 			if (aud instanceof List) {
 				if (azp == null) {
 					throw new InvalidJwtException("azp required");
@@ -756,26 +795,30 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 					throw new InvalidJwtException("invalid azp");
 				}
 			}
-			
+
 			//at_hash
-			String atHash = (String) idToken.getClaims().get(IdTokenConstants.CLAIM_AT_HASH);
+			String atHash = (String) idToken.getClaims()
+					.get(IdTokenConstants.CLAIM_AT_HASH);
 			if (atHash != null) {
-				if (!atHash.equals(OAuthUtil.atHash(accessToken, (String) idToken.getHeader().get(IdTokenConstants.HEAER_ALG)))) {
+				if (!atHash.equals(OAuthUtil.atHash(accessToken, (String) idToken.getHeader()
+						.get(IdTokenConstants.HEAER_ALG)))) {
 					throw new InvalidJwtException("invalid at_hash");
 				}
 			}
-			
+
 			//c_hash
-			String cHash = (String) idToken.getClaims().get(IdTokenConstants.CLAIM_C_HASH);
+			String cHash = (String) idToken.getClaims()
+					.get(IdTokenConstants.CLAIM_C_HASH);
 			if (cHash != null) {
-				if (!cHash.equals(OAuthUtil.cHash(cre.getCode(), (String) idToken.getHeader().get(IdTokenConstants.HEAER_ALG)))) {
+				if (!cHash.equals(OAuthUtil.cHash(cre.getCode(), (String) idToken.getHeader()
+						.get(IdTokenConstants.HEAER_ALG)))) {
 					throw new InvalidJwtException("invalid c_hash");
 				}
 			}
 		}
 
 		public String authorizeUrl(OIDCState state) {
-			
+
 			StringBuilder url = new StringBuilder();
 			url.append(authorizationEndpoint);
 			if (authorizationEndpoint.indexOf('?') > -1) {
@@ -785,17 +828,27 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			} else {
 				url.append("?");
 			}
-			
-			url.append(OAuthEndpointConstants.PARAM_CLIENT_ID).append("=").append(OAuthUtil.encodeRfc3986(clientId));
+
+			url.append(OAuthEndpointConstants.PARAM_CLIENT_ID)
+					.append("=")
+					.append(OAuthUtil.encodeRfc3986(clientId));
 			url.append("&");
 			//TODO ハイブリッドフロー（code id_token）のサポート（issが利用できない場合のmix-up攻撃対策として）
-			url.append(OAuthEndpointConstants.PARAM_RESPONSE_TYPE).append("=").append(OAuthConstants.RESPONSE_TYPE_CODE);
+			url.append(OAuthEndpointConstants.PARAM_RESPONSE_TYPE)
+					.append("=")
+					.append(OAuthConstants.RESPONSE_TYPE_CODE);
 			url.append("&");
-			url.append(OAuthEndpointConstants.PARAM_SCOPE).append("=").append(OAuthUtil.encodeRfc3986(scopeParamValue));
+			url.append(OAuthEndpointConstants.PARAM_SCOPE)
+					.append("=")
+					.append(OAuthUtil.encodeRfc3986(scopeParamValue));
 			url.append("&");
-			url.append(OAuthEndpointConstants.PARAM_REDIRECT_URI).append("=").append(OAuthUtil.encodeRfc3986(state.getRedirectUri()));
+			url.append(OAuthEndpointConstants.PARAM_REDIRECT_URI)
+					.append("=")
+					.append(OAuthUtil.encodeRfc3986(state.getRedirectUri()));
 			url.append("&");
-			url.append(OAuthEndpointConstants.PARAM_STATE).append("=").append(OAuthUtil.encodeRfc3986(state.getToken()));
+			url.append(OAuthEndpointConstants.PARAM_STATE)
+					.append("=")
+					.append(OAuthUtil.encodeRfc3986(state.getToken()));
 			if (responseMode != null) {
 				url.append("&");
 				String rmStr;
@@ -806,21 +859,31 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 				} else {
 					throw new IllegalArgumentException();
 				}
-				url.append(OAuthEndpointConstants.PARAM_RESPONSE_MODE).append("=").append(OAuthUtil.encodeRfc3986(rmStr));
+				url.append(OAuthEndpointConstants.PARAM_RESPONSE_MODE)
+						.append("=")
+						.append(OAuthUtil.encodeRfc3986(rmStr));
 			}
 			if (useNonce) {
 				url.append("&");
-				url.append(OAuthEndpointConstants.PARAM_NONCE).append("=").append(OAuthUtil.encodeRfc3986(state.getNonce()));
+				url.append(OAuthEndpointConstants.PARAM_NONCE)
+						.append("=")
+						.append(OAuthUtil.encodeRfc3986(state.getNonce()));
 			}
 			if (enablePKCE) {
 				url.append("&");
-				url.append(OAuthEndpointConstants.PARAM_CODE_CHALLENGE_METHOD).append("=").append(OAuthConstants.CODE_CHALLENGE_METHOD_S256);
+				url.append(OAuthEndpointConstants.PARAM_CODE_CHALLENGE_METHOD)
+						.append("=")
+						.append(OAuthConstants.CODE_CHALLENGE_METHOD_S256);
 				url.append("&");
-				url.append(OAuthEndpointConstants.PARAM_CODE_CHALLENGE).append("=").append(OAuthUtil.calcCodeChallenge(OAuthConstants.CODE_CHALLENGE_METHOD_S256, state.getCodeVerifier()));
+				url.append(OAuthEndpointConstants.PARAM_CODE_CHALLENGE)
+						.append("=")
+						.append(OAuthUtil.calcCodeChallenge(OAuthConstants.CODE_CHALLENGE_METHOD_S256, state.getCodeVerifier()));
 			}
 			if (prompt != null) {
 				url.append("&");
-				url.append(OAuthEndpointConstants.PARAM_PROMPT).append("=").append(OAuthUtil.encodeRfc3986(prompt));
+				url.append(OAuthEndpointConstants.PARAM_PROMPT)
+						.append("=")
+						.append(OAuthUtil.encodeRfc3986(prompt));
 			}
 
 			return url.toString();
@@ -836,16 +899,18 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 			e.setValue(OpenIdProviderAccountEntityEventListener.SUBJECT_ID, subjectId);
 			e.setValue(OpenIdProviderAccountEntityEventListener.SUBJECT_NAME, subjectName);
 			e.setValue(OpenIdProviderAccountEntityEventListener.USER, new User(userOid, null, false));
-			
+
 			AuthContext.doPrivileged(() -> em.insert(e));
 		}
 
 		public void disconnect(String userOid) {
 			AuthContext.doPrivileged(() -> {
-				Query q = new Query().select(Entity.OID).from(OpenIdProviderAccountEntityEventListener.DEFINITION_NAME)
+				Query q = new Query().select(Entity.OID)
+						.from(OpenIdProviderAccountEntityEventListener.DEFINITION_NAME)
 						.where(new And(new Equals(OpenIdProviderAccountEntityEventListener.USER_OID, userOid),
 								new Equals(OpenIdProviderAccountEntityEventListener.OIDC_DEFINITION_NAME, getName())));
-				Entity e = em.searchEntity(q).getFirst();
+				Entity e = em.searchEntity(q)
+						.getFirst();
 				if (e != null) {
 					em.delete(e, new DeleteOption());
 				}
@@ -853,16 +918,20 @@ public class MetaOpenIdConnect extends BaseRootMetaData implements DefinableMeta
 		}
 
 		public boolean isAllowedOnPolicy(AuthenticationPolicyRuntime userPolicy) {
-			if (userPolicy.getMetaData().getOpenIdConnectDefinition() != null) {
-				for (String oidcName: userPolicy.getMetaData().getOpenIdConnectDefinition()) {
-					if (getMetaData().getName().equals(oidcName)) {
+			if (userPolicy.getMetaData()
+					.getOpenIdConnectDefinition() != null) {
+				for (String oidcName : userPolicy.getMetaData()
+						.getOpenIdConnectDefinition()) {
+					if (getMetaData().getName()
+							.equals(oidcName)) {
 						return true;
 					}
 					int ai = oidcName.indexOf('*');
 					if (ai >= 0) {
 						//check wildcard
 						String path = oidcName.substring(0, ai);
-						if (getMetaData().getName().startsWith(path)) {
+						if (getMetaData().getName()
+								.startsWith(path)) {
 							return true;
 						}
 					}

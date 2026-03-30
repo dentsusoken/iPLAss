@@ -25,22 +25,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ExponentialBackoff {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ExponentialBackoff.class);
-	
+
 	public static ExponentialBackoff NO_RETRY = new ExponentialBackoff() {
 		@Override
 		public void execute(BooleanSupplier func) throws InterruptedException {
 			func.getAsBoolean();
 		}
 	};
-	
+
 	private long retryIntervalMillis = 500;
 	private double randomizationFactor = 0.5;
 	private double multiplier = 1.5;
 	private long maxIntervalMillis = 1000 * 60;//1 min.
 	private long maxElapsedTimeMillis = 1000 * 60 * 5;//5 min.
-	
+
 	public long getRetryIntervalMillis() {
 		return retryIntervalMillis;
 	}
@@ -90,14 +90,14 @@ public class ExponentialBackoff {
 	 * @throws InterruptedException
 	 */
 	public void execute(BooleanSupplier func) throws InterruptedException {
-		
+
 		long endTime = System.currentTimeMillis() + maxElapsedTimeMillis;
 		long intervalTime = retryIntervalMillis;
 		while (System.currentTimeMillis() < endTime) {
 			if (func.getAsBoolean()) {
 				return;
 			}
-			
+
 			//retry
 			long sleepTime = randomized(intervalTime);
 			if (logger.isDebugEnabled()) {
@@ -109,12 +109,12 @@ public class ExponentialBackoff {
 				intervalTime = maxIntervalMillis;
 			}
 		}
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("execution failed and retry over.");
 		}
 	}
-	
+
 	private long randomized(long l) {
 		double rv = randomizationFactor * (Math.random() * 2 - 1);
 		return (long) (l * (1 + rv));

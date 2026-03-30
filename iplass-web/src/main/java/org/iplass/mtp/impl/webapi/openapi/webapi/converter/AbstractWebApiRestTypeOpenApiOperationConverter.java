@@ -38,7 +38,8 @@ public abstract class AbstractWebApiRestTypeOpenApiOperationConverter extends Ab
 
 	@Override
 	protected boolean isMapOpenApiOperationValue(WebApiOpenApiConvertContext context) {
-		return containsTargetRequestType(context.getWebApiDefinition().getAccepts(), getTargetRequestType());
+		return containsTargetRequestType(context.getWebApiDefinition()
+				.getAccepts(), getTargetRequestType());
 	}
 
 	/**

@@ -42,21 +42,21 @@ import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.properties.extend.VirtualType;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public class ObjStoreBulkUpdateSql {
-	
+
 	public static class ObjStoreBulkUpdateSqlResult {
 		public List<ColumnValueMapper> keys;
 		public List<ColumnValueMapper> values;
 		public String additionalConditionExpression;
 	}
-	
+
 	public static boolean canUpdateProperty(PropertyHandler pHandler) {
 		if (pHandler instanceof ReferencePropertyHandler) {
 			return false;
 		}
 		PrimitivePropertyHandler pph = (PrimitivePropertyHandler) pHandler;
-		if (pph.getMetaData().getType() instanceof VirtualType) {
+		if (pph.getMetaData()
+				.getType() instanceof VirtualType) {
 			return false;
 		}
 		String propName = pHandler.getName();
@@ -64,29 +64,32 @@ public class ObjStoreBulkUpdateSql {
 				|| propName.equals(Entity.UPDATE_DATE)//一律更新
 				|| propName.equals(Entity.VERSION)
 				|| propName.equals(Entity.CREATE_BY)
-				|| propName.equals(Entity.CREATE_DATE)
-				) {
+				|| propName.equals(Entity.CREATE_DATE)) {
 			return false;
 		}
 		return true;
 	}
-	
-	private static boolean handlePropAndVal(List<ColumnValueMapper> values, int tenantId, EntityHandler eh, int pageNo, List<String> updateProperties, RdbAdapter rdbAdaptor, EntityContext context) {
+
+	private static boolean handlePropAndVal(List<ColumnValueMapper> values, int tenantId, EntityHandler eh, int pageNo, List<String> updateProperties,
+			RdbAdapter rdbAdaptor, EntityContext context) {
 		boolean ret = false;
-		for (PropertyHandler p: eh.getPropertyList(context)) {
+		for (PropertyHandler p : eh.getPropertyList(context)) {
 			if (canUpdateProperty(p) && contains(updateProperties, p.getName())) {
 				GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) p.getStoreSpecProperty();
 				if (!colDef.isMulti()) {
 					GRdbPropertyStoreHandler scol = (GRdbPropertyStoreHandler) colDef;
-					if (scol.getMetaData().getPageNo() == pageNo
-							|| scol.getIndexColName() != null && scol.getMetaData().getIndexPageNo() == pageNo) {
+					if (scol.getMetaData()
+							.getPageNo() == pageNo
+							|| scol.getIndexColName() != null && scol.getMetaData()
+									.getIndexPageNo() == pageNo) {
 						values.add(new PropertyColumnValueMapper(tenantId, eh, (PrimitivePropertyHandler) p, pageNo));
 						ret = true;
 					}
 				} else {
 					GRdbMultiplePropertyStoreHandler mcol = (GRdbMultiplePropertyStoreHandler) colDef;
 					boolean isAdd = false;
-					for (MetaGRdbPropertyStore metaCol: mcol.getMetaData().getStore()) {
+					for (MetaGRdbPropertyStore metaCol : mcol.getMetaData()
+							.getStore()) {
 						if (metaCol.getPageNo() == pageNo) {
 							isAdd = true;
 							break;
@@ -101,7 +104,7 @@ public class ObjStoreBulkUpdateSql {
 		}
 		return ret;
 	}
-	
+
 	private static boolean contains(List<String> updateProperties, String name) {
 		if (updateProperties == null) {
 			return true;
@@ -111,12 +114,13 @@ public class ObjStoreBulkUpdateSql {
 
 	private static void keys(List<ColumnValueMapper> keys, int tenantId, EntityHandler eh, int pageNo, RdbAdapter rdb) {
 		keys.add(new FixedExpressionColumnValueMapper(ObjStoreTable.TENANT_ID, Integer.toString(tenantId)));
-		keys.add(new FixedExpressionColumnValueMapper(ObjStoreTable.OBJ_DEF_ID, rdb.toSqlExp(eh.getMetaData().getId())));
+		keys.add(new FixedExpressionColumnValueMapper(ObjStoreTable.OBJ_DEF_ID, rdb.toSqlExp(eh.getMetaData()
+				.getId())));
 		keys.add(new DirectColumnValueMapper(ObjStoreTable.OBJ_ID, Entity.OID, null));
 		keys.add(new DirectColumnValueMapper(ObjStoreTable.OBJ_VER, Entity.VERSION, Long.valueOf(0)));
 		keys.add(new FixedExpressionColumnValueMapper(ObjStoreTable.PG_NO, Integer.toString(pageNo)));
 	}
-	
+
 	//単一Entity更新,page=0
 	public static ObjStoreBulkUpdateSqlResult updateMain(int tenantId, EntityHandler eh, List<String> updateProperties,
 			RdbAdapter rdb, EntityContext context) {
@@ -124,18 +128,19 @@ public class ObjStoreBulkUpdateSql {
 		//keys
 		res.keys = new ArrayList<>(5);
 		keys(res.keys, tenantId, eh, 0, rdb);
-		
+
 		//values
 		res.values = new ArrayList<>();
 		handlePropAndVal(res.values, tenantId, eh, 0, updateProperties, rdb, context);
 		res.values.add(new FixedExpressionColumnValueMapper(ObjStoreTable.UP_DATE, rdb.systimestamp()));
-		
+
 		//defVersion check
-		res.additionalConditionExpression = ObjStoreTable.OBJ_DEF_VER + "<=" + ((MetaGRdbEntityStore) eh.getEntityStoreRuntime().getMetaData()).getVersion();
+		res.additionalConditionExpression = ObjStoreTable.OBJ_DEF_VER + "<=" + ((MetaGRdbEntityStore) eh.getEntityStoreRuntime()
+				.getMetaData()).getVersion();
 
 		return res;
 	}
-	
+
 	//単一Entity更新,page1以降
 	public static ObjStoreBulkUpdateSqlResult updateSub(int tenantId, EntityHandler eh,
 			int pageNo, List<String> updateProperties, RdbAdapter rdb, EntityContext context) {
@@ -143,7 +148,7 @@ public class ObjStoreBulkUpdateSql {
 		//keys
 		res.keys = new ArrayList<>(5);
 		keys(res.keys, tenantId, eh, pageNo, rdb);
-		
+
 		//values
 		res.values = new ArrayList<>();
 		boolean isAdd = handlePropAndVal(res.values, tenantId, eh, pageNo, updateProperties, rdb, context);

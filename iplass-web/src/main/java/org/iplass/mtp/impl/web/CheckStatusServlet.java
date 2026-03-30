@@ -39,13 +39,12 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Servlet implementation class CheckStatusServlet
  */
 public class CheckStatusServlet extends HttpServlet {
 	//TODO もう少しチェックする項目ふやす。メタデータが取得できるか？GroovyScriptコンパイルできるか？など
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger logger = LoggerFactory.getLogger(CheckStatusServlet.class);
@@ -88,9 +87,11 @@ public class CheckStatusServlet extends HttpServlet {
 	private void exec(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			check(request, response);
-			response.getWriter().write(statusOk);
+			response.getWriter()
+					.write(statusOk);
 		} catch (Throwable t) {
-			response.getWriter().write(statusNg);
+			response.getWriter()
+					.write(statusNg);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -98,7 +99,9 @@ public class CheckStatusServlet extends HttpServlet {
 	protected void check(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 		Connection con = null;
 		try {
-			RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+			RdbAdapter rdb = ServiceRegistry.getRegistry()
+					.getService(RdbAdapterService.class)
+					.getRdbAdapter();
 			con = rdb.getConnection();
 			Statement stmt = con.createStatement();;
 			try {

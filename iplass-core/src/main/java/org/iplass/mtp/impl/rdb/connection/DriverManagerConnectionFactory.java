@@ -27,12 +27,10 @@ import java.util.Properties;
 
 import org.iplass.mtp.spi.Config;
 
-
 public class DriverManagerConnectionFactory extends AbstractConnectionFactory {
 
 	private String url;
 	private Properties info;
-
 
 	@Override
 	protected Connection getConnectionInternal() {
@@ -54,16 +52,14 @@ public class DriverManagerConnectionFactory extends AbstractConnectionFactory {
 
 	}
 
-
 	public void destroy() {
 	}
-
 
 	public void init(Config config) {
 		super.init(config);
 
 		info = new Properties();
-		for (String name: config.getNames()) {
+		for (String name : config.getNames()) {
 			if (!name.equals("warnLogThreshold")
 					&& !name.equals("transactionIsolationLevel")
 					&& !name.equals("clientInfoMap")

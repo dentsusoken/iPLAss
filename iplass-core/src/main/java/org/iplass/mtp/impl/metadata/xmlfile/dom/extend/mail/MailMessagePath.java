@@ -24,7 +24,7 @@ import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute;
 import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.FileExtention;
 
 @ExternalRefPathAttribute(
-		path = "/metaDataEntry/metaData/message/content", 
+		path = "/metaDataEntry/metaData/message/content",
 		fileExtension = FileExtention.TMPL)
 public class MailMessagePath extends AbstractExternalRefPath {
 }

@@ -94,16 +94,19 @@ public class FileLobStore implements LobStore {
 
 	@Override
 	public void remove(final int tenantId, final long lobDataId) {
-		Transaction t = ServiceRegistry.getRegistry().getService(TransactionService.class).getTransacitonManager().currentTransaction();
+		Transaction t = ServiceRegistry.getRegistry()
+				.getService(TransactionService.class)
+				.getTransacitonManager()
+				.currentTransaction();
 		if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 			t.afterCommit(() -> {
-					FileLobData data = new FileLobData(tenantId, lobDataId, rootDir, overwriteFile);
-					File f = data.toFile(lobDataId);
-					if (f.exists()) {
-						if (!f.delete()) {
-							logger.warn("maybe can not delete file:" + f.getAbsolutePath());
-						}
+				FileLobData data = new FileLobData(tenantId, lobDataId, rootDir, overwriteFile);
+				File f = data.toFile(lobDataId);
+				if (f.exists()) {
+					if (!f.delete()) {
+						logger.warn("maybe can not delete file:" + f.getAbsolutePath());
 					}
+				}
 			});
 		} else {
 			FileLobData data = new FileLobData(tenantId, lobDataId, rootDir, overwriteFile);

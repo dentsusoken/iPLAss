@@ -53,7 +53,7 @@ public class MessageCategory implements Definition {
 
 	/** メッセージ情報 */
 	@MultiLang(isMultiLangValue = false, itemKey = "messageItems", itemGetter = "getMessageItems", itemSetter = "setMessageItems")
-	Map<String,MessageItem> messageItems;
+	Map<String, MessageItem> messageItems;
 
 	/**
 	 * コンストラクタ
@@ -120,8 +120,8 @@ public class MessageCategory implements Definition {
 	 *
 	 * @return メッセージ情報
 	 */
-	public Map<String,MessageItem> getMessageItems() {
-	    return messageItems;
+	public Map<String, MessageItem> getMessageItems() {
+		return messageItems;
 	}
 
 	/**
@@ -130,8 +130,8 @@ public class MessageCategory implements Definition {
 	 * @param messageItems
 	 *            メッセージ情報
 	 */
-	public void setMessageItems(Map<String,MessageItem> messageItems) {
-	    this.messageItems = messageItems;
+	public void setMessageItems(Map<String, MessageItem> messageItems) {
+		this.messageItems = messageItems;
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class MessageCategory implements Definition {
 	 */
 	public void addMessageItem(MessageItem messageItem) {
 		if (messageItems == null) {
-			messageItems = new LinkedHashMap<String,MessageItem>();
+			messageItems = new LinkedHashMap<String, MessageItem>();
 		}
 		messageItems.put(messageItem.getMessageId(), messageItem);
 	}

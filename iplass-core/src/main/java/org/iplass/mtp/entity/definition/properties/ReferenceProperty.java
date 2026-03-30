@@ -32,9 +32,9 @@ import org.iplass.mtp.entity.definition.PropertyDefinitionType;
  */
 public class ReferenceProperty extends PropertyDefinition {
 	private static final long serialVersionUID = -6892130540731635845L;
-	
+
 	//TODO 複数の型を扱えるようにする（インタフェースの概念の導入）
-	
+
 	//TODO 結合する際、oidだけでなく、それ以外の項目（oid以外のプライマリキー、キー以外の項目）での結合も許すかどうかの再検討。
 
 	/** 属性のデータ型がAGGREGATE、ASSOCIATIONの場合の参照先の汎用データの定義名 */
@@ -44,20 +44,19 @@ public class ReferenceProperty extends PropertyDefinition {
 	private VersionControlReferenceType versionControlType;
 	private String versionControlAsOfExpression;
 	private boolean auditLogMappedBy;
-	
+
 	private String orderBy;
-	
-	
+
 	public ReferenceProperty() {
 	}
-	
+
 	public ReferenceProperty(String name, String objectDefinitionName,
 			ReferenceType referenceType) {
 		setName(name);
 		this.objectDefinitionName = objectDefinitionName;
 		this.referenceType = referenceType;
 	}
-	
+
 	public ReferenceProperty(String name, String objectDefinitionName, String mappedBy,
 			ReferenceType referenceType) {
 		setName(name);
@@ -65,7 +64,7 @@ public class ReferenceProperty extends PropertyDefinition {
 		this.mappedBy = mappedBy;
 		this.referenceType = referenceType;
 	}
-	
+
 	public ReferenceProperty(String name, String objectDefinitionName,
 			ReferenceType referenceType, int multiplicity) {
 		setName(name);
@@ -73,7 +72,7 @@ public class ReferenceProperty extends PropertyDefinition {
 		this.objectDefinitionName = objectDefinitionName;
 		this.referenceType = referenceType;
 	}
-	
+
 	public ReferenceProperty(String name, String objectDefinitionName, String mappedBy,
 			ReferenceType referenceType, int multiplicity) {
 		setName(name);
@@ -82,7 +81,7 @@ public class ReferenceProperty extends PropertyDefinition {
 		this.mappedBy = mappedBy;
 		this.referenceType = referenceType;
 	}
-	
+
 	public String getVersionControlAsOfExpression() {
 		return versionControlAsOfExpression;
 	}
@@ -135,7 +134,7 @@ public class ReferenceProperty extends PropertyDefinition {
 	public Class<?> getJavaType() {
 		return Entity.class;//TODO POJOを指定可能にする
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getType() {
 		return PropertyDefinitionType.REFERENCE;
@@ -144,7 +143,7 @@ public class ReferenceProperty extends PropertyDefinition {
 	public boolean isAuditLogMappedBy() {
 		return auditLogMappedBy;
 	}
-	
+
 	public void setAuditLogMappedBy(boolean auditLogMappedBy) {
 		this.auditLogMappedBy = auditLogMappedBy;
 	}

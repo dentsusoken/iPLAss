@@ -44,7 +44,6 @@ import org.iplass.mtp.impl.entity.jaxb.EntityPropertyXmlAdapter;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
-
 /**
  * Entityのデータを表現するクラス。
  * key-value形式で、Entityのプロパティの値を保持。
@@ -52,8 +51,8 @@ import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
  * @author K.Higuchi
  *
  */
-@XmlRootElement(name="entity")
-@XmlType(name="entity")
+@XmlRootElement(name = "entity")
+@XmlType(name = "entity")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GenericEntity implements Entity, Serializable {
 
@@ -96,22 +95,30 @@ public class GenericEntity implements Entity, Serializable {
 	public void applyProperties(Map<String, Object> properties) {
 		this.properties = new HashMap<>(properties);
 	}
-	
+
 	private void toString(StringBuilder sb, LinkedList<Entity> stack) {
 		if (stack.contains(this)) {
-			sb.append("{\"definitionName\":\"").append(definitionName).append("\"");
-			sb.append(",\"oid\":\"").append(getOid()).append("\"");
+			sb.append("{\"definitionName\":\"")
+					.append(definitionName)
+					.append("\"");
+			sb.append(",\"oid\":\"")
+					.append(getOid())
+					.append("\"");
 			sb.append(",\"isLoop\":true}");
 		} else {
 			stack.push(this);
-			sb.append("{\"definitionName\":\"").append(definitionName).append("\"");
+			sb.append("{\"definitionName\":\"")
+					.append(definitionName)
+					.append("\"");
 			if (properties != null) {
 				if (properties.size() > 0) {
-					for (Map.Entry<String, Object> e: properties.entrySet()) {
+					for (Map.Entry<String, Object> e : properties.entrySet()) {
 						Object key = e.getKey();
 						Object val = e.getValue();
 						sb.append(",");
-						sb.append("\"").append(key).append("\":");
+						sb.append("\"")
+								.append(key)
+								.append("\":");
 						if (val instanceof Object[]) {
 							Object[] valArray = (Object[]) val;
 							sb.append("[");
@@ -122,7 +129,9 @@ public class GenericEntity implements Entity, Serializable {
 								if (valArray[i] instanceof GenericEntity) {
 									((GenericEntity) valArray[i]).toString(sb, stack);
 								} else if (valArray[i] instanceof String) {
-									sb.append("\"").append(valArray[i]).append("\"");
+									sb.append("\"")
+											.append(valArray[i])
+											.append("\"");
 								} else {
 									sb.append(valArray[i]);
 								}
@@ -131,7 +140,9 @@ public class GenericEntity implements Entity, Serializable {
 						} else if (val instanceof GenericEntity) {
 							((GenericEntity) val).toString(sb, stack);
 						} else if (val instanceof String) {
-							sb.append("\"").append(val).append("\"");
+							sb.append("\"")
+									.append(val)
+									.append("\"");
 						} else {
 							sb.append(val);
 						}
@@ -163,7 +174,7 @@ public class GenericEntity implements Entity, Serializable {
 	public <P> P getValue(String propName) {
 		return getValue(propName, true);
 	}
-	
+
 	/**
 	 * propNameで表現されるプロパティを取得します。
 	 * 
@@ -205,7 +216,7 @@ public class GenericEntity implements Entity, Serializable {
 			return null;
 		}
 	}
-	
+
 	private Object getValueInternal(String propName) {
 		int begin = propName.indexOf('[');
 		if (begin > 0) {
@@ -227,16 +238,16 @@ public class GenericEntity implements Entity, Serializable {
 					return valArray[index];
 				}
 				return null;
-				
+
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("propName expression invalid:" + propName, e);
 			}
-			
+
 		} else {
 			return properties.get(propName);
 		}
 	}
-	
+
 	/**
 	 * propNameで表現されるプロパティにvalueをセットします。<br>
 	 * <br>
@@ -250,7 +261,7 @@ public class GenericEntity implements Entity, Serializable {
 	public void setValue(String propName, Object value) {
 		setValue(propName, value, true);
 	}
-	
+
 	/**
 	 * propNameで表現されるプロパティにvalueをセットします。
 	 * enableExpression=trueの場合、propNameには、"."にてネストされたプロパティ、
@@ -275,7 +286,7 @@ public class GenericEntity implements Entity, Serializable {
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
 		}
-		
+
 		if (!enableExpression) {
 			if (value == null) {
 				properties.remove(propName);
@@ -306,7 +317,7 @@ public class GenericEntity implements Entity, Serializable {
 				topEntity = refDef.newInstance();
 				setValueInternal(topPropName, topEntity, refDef);
 			}
-			
+
 			if (topEntity instanceof GenericEntity) {
 				((GenericEntity) topEntity).setValue(subPropName, value, enableExpression);
 			} else {
@@ -326,7 +337,7 @@ public class GenericEntity implements Entity, Serializable {
 			return propName;
 		}
 	}
-	
+
 	private void setValueInternal(String propName, Object value, EntityHandler eh) {
 		int begin = propName.indexOf('[');
 		if (begin > 0) {
@@ -342,8 +353,7 @@ public class GenericEntity implements Entity, Serializable {
 					if (value == null) {
 						return;
 					} else {
-						Object[] valArray = (eh == null) ?
-								(Object[]) Array.newInstance(value.getClass(), index + 1): eh.newArrayInstance(index + 1);
+						Object[] valArray = (eh == null) ? (Object[]) Array.newInstance(value.getClass(), index + 1) : eh.newArrayInstance(index + 1);
 						valArray[index] = value;
 						properties.put(propNameOnly, valArray);
 						return;
@@ -368,7 +378,7 @@ public class GenericEntity implements Entity, Serializable {
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("propName expression invalid:" + propName, e);
 			}
-			
+
 		} else {
 			if (value == null) {
 				//TODO 現状、null値のセットができないが、
@@ -379,7 +389,7 @@ public class GenericEntity implements Entity, Serializable {
 			}
 		}
 	}
-	
+
 	@Override
 	public String getOid() {
 		return (String) getValue(Entity.OID);
@@ -444,7 +454,7 @@ public class GenericEntity implements Entity, Serializable {
 	@Override
 	public <P> P getValueAs(Class<P> type, String propName) {
 		//TODO 実装
-		return (P)getValue(propName);
+		return (P) getValue(propName);
 	}
 
 //	public <P> List<P> getValueListAs(Class<P> type, String propName) {
@@ -613,11 +623,12 @@ public class GenericEntity implements Entity, Serializable {
 		done.put(this, copy);
 		if (properties != null) {
 			copy.properties = new HashMap<String, Object>();
-			for (Map.Entry<String, Object> e: properties.entrySet()) {
+			for (Map.Entry<String, Object> e : properties.entrySet()) {
 				Object val = e.getValue();
 				if (val instanceof Object[]) {
 					Object[] valArray = (Object[]) val;
-					Object[] newValArray = (Object[]) Array.newInstance(valArray.getClass().getComponentType(), valArray.length);
+					Object[] newValArray = (Object[]) Array.newInstance(valArray.getClass()
+							.getComponentType(), valArray.length);
 					for (int i = 0; i < valArray.length; i++) {
 						newValArray[i] = copyVal(valArray[i], done);
 					}
@@ -661,7 +672,7 @@ public class GenericEntity implements Entity, Serializable {
 
 		return properties.keySet();
 	}
-	
+
 	/**
 	 * 保持しているPropertyをMap形式で返す。
 	 * property値が、GenericEntityの場合は、再帰的にMapに変換する、
@@ -675,19 +686,20 @@ public class GenericEntity implements Entity, Serializable {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> toMap() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		
+
 		for (Map.Entry<String, Object> e : properties.entrySet()) {
 			if (e.getValue() instanceof Object[]) {
 				Object[] valArray = (Object[]) e.getValue();
 				if (valArray instanceof Entity[]) {
 					Map<String, Object>[] newValArray = (Map<String, Object>[]) Array.newInstance(HashMap.class, valArray.length);
 					for (int i = 0; i < valArray.length; i++) {
-						GenericEntity entity = (GenericEntity)valArray[i];
+						GenericEntity entity = (GenericEntity) valArray[i];
 						newValArray[i] = entity.toMap();
 					}
 					map.put(e.getKey(), newValArray);
 				} else {
-					Object[] newValArray = (Object[]) Array.newInstance(valArray.getClass().getComponentType(), valArray.length);
+					Object[] newValArray = (Object[]) Array.newInstance(valArray.getClass()
+							.getComponentType(), valArray.length);
 					for (int i = 0; i < valArray.length; i++) {
 						newValArray[i] = copyValForToMap(valArray[i]);
 					}
@@ -699,7 +711,7 @@ public class GenericEntity implements Entity, Serializable {
 		}
 		return map;
 	}
-	
+
 	private Object copyValForToMap(Object val) {
 		if (val instanceof GenericEntity) {
 			return ((GenericEntity) val).toMap();
@@ -715,7 +727,6 @@ public class GenericEntity implements Entity, Serializable {
 		}
 		return val;
 	}
-
 
 //	/**
 //	 * JSON形式の送受信にpropertiesを含めるためのメソッド(Jacksonへの対応)。
@@ -744,6 +755,5 @@ public class GenericEntity implements Entity, Serializable {
 //     }
 //     return properties;
 // }
-	
-	
+
 }

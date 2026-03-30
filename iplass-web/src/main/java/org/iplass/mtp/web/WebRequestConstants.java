@@ -50,7 +50,6 @@ public interface WebRequestConstants {
 	/** RedirectPathを取得する為のキー */
 	public static final String REDIRECT_PATH = "redirectPath";
 
-
 	/** HTTPヘッダ（リクエストの）が格納されているMapのインスタンス。*/
 	public static final String HTTP_HEADER = "header";
 

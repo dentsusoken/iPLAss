@@ -28,7 +28,7 @@ import com.webauthn4j.data.attestation.authenticator.AAGUID;
 import com.webauthn4j.metadata.MetadataStatementRepository;
 
 class TrustAnchorRepositoryImpl implements TrustAnchorRepository {
-	
+
 	private MetadataStatementRepository metadataStatementRepository;
 
 	TrustAnchorRepositoryImpl(MetadataStatementRepository metadataStatementRepository) {
@@ -37,16 +37,20 @@ class TrustAnchorRepositoryImpl implements TrustAnchorRepository {
 
 	@Override
 	public Set<TrustAnchor> find(AAGUID aaguid) {
-		return metadataStatementRepository.find(aaguid).stream()
-				.flatMap(item -> item.getAttestationRootCertificates().stream())
+		return metadataStatementRepository.find(aaguid)
+				.stream()
+				.flatMap(item -> item.getAttestationRootCertificates()
+						.stream())
 				.map(item -> new TrustAnchor(item, null))
 				.collect(Collectors.toSet());
 	}
 
 	@Override
 	public Set<TrustAnchor> find(byte[] attestationCertificateKeyIdentifier) {
-		return metadataStatementRepository.find(attestationCertificateKeyIdentifier).stream()
-				.flatMap(item -> item.getAttestationRootCertificates().stream())
+		return metadataStatementRepository.find(attestationCertificateKeyIdentifier)
+				.stream()
+				.flatMap(item -> item.getAttestationRootCertificates()
+						.stream())
 				.map(item -> new TrustAnchor(item, null))
 				.collect(Collectors.toSet());
 	}

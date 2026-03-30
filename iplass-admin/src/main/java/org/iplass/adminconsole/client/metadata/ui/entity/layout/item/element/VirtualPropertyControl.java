@@ -64,7 +64,8 @@ public class VirtualPropertyControl extends ItemControl {
 			public void execute(MetaFieldUpdateEvent event) {
 				//プロパティ名
 				String oldPropertyName = propertyName;
-				propertyName = (String) event.getValueMap().get("propertyName");
+				propertyName = (String) event.getValueMap()
+						.get("propertyName");
 
 				if (!oldPropertyName.equals(propertyName)) {
 					//本物チェック
@@ -77,7 +78,8 @@ public class VirtualPropertyControl extends ItemControl {
 				}
 
 				//表示名
-				String displayLabel = (String) event.getValueMap().get("displayLabel");
+				String displayLabel = (String) event.getValueMap()
+						.get("displayLabel");
 				setTitle(displayLabel + "([" + propertyName + "])");
 			}
 		});
@@ -94,9 +96,10 @@ public class VirtualPropertyControl extends ItemControl {
 
 		VirtualPropertyItem property = (VirtualPropertyItem) element;
 		propertyName = property.getPropertyName();
-		setTitle(property.getDisplayLabel()  + "([" + propertyName + "])");
+		setTitle(property.getDisplayLabel() + "([" + propertyName + "])");
 
-		setClassName(element.getClass().getName());
+		setClassName(element.getClass()
+				.getName());
 		setValueObject(element);
 
 	}

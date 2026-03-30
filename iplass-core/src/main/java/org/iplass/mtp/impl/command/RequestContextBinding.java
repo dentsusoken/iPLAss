@@ -34,27 +34,27 @@ import org.iplass.mtp.command.RequestContext;
  *
  */
 public class RequestContextBinding {
-	
+
 	private RequestContext request;
-	
+
 	public static RequestContextBinding newRequestContextBinding() {
 		return new RequestContextBinding();
 	}
-	
+
 	private RequestContext getContext() {
 		if (request == null) {
 			request = RequestContextHolder.getCurrent();
 		}
 		return request;
 	}
-	
+
 	public RequestContextBinding() {
 	}
-	
+
 	public RequestContextBinding(RequestContext request) {
 		this.request = request;
 	}
-	
+
 	public Map<String, Object> getParam() {
 		RequestContext req = getContext();
 		if (req == null) {
@@ -63,7 +63,7 @@ public class RequestContextBinding {
 			return req.getParamMap();
 		}
 	}
-	
+
 	public Map<String, Object> getParamMap() {
 		RequestContext req = getContext();
 		if (req == null) {
@@ -72,7 +72,7 @@ public class RequestContextBinding {
 			return req.getParamMap();
 		}
 	}
-	
+
 	public Object getAttribute(String name) {
 		RequestContext req = getContext();
 		if (req == null) {
@@ -80,7 +80,7 @@ public class RequestContextBinding {
 		}
 		return req.getAttribute(name);
 	}
-	
+
 	public String getParam(String name) {
 		RequestContext req = getContext();
 		if (req == null) {

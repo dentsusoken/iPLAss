@@ -40,16 +40,16 @@ import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
-		name=UpdateTableOrderCommand.WEBAPI_NAME,
-		displayName="テーブル表示順更新",
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={Constants.ERROR_PROP, TokenStore.TOKEN_PARAM_NAME},
-		tokenCheck=@WebApiTokenCheck(consume=true, useFixedToken=false),
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/generic/detail/UpdateTableOrderCommand", displayName="テーブル表示順更新")
+		name = UpdateTableOrderCommand.WEBAPI_NAME,
+		displayName = "テーブル表示順更新",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { Constants.ERROR_PROP, TokenStore.TOKEN_PARAM_NAME },
+		tokenCheck = @WebApiTokenCheck(consume = true, useFixedToken = false),
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/generic/detail/UpdateTableOrderCommand", displayName = "テーブル表示順更新")
 public final class UpdateTableOrderCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/generic/detail/UpdateTableOrder";
@@ -58,8 +58,10 @@ public final class UpdateTableOrderCommand implements Command {
 	private EntityManager em;
 
 	public UpdateTableOrderCommand() {
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 	}
 
 	@Override
@@ -154,7 +156,7 @@ public final class UpdateTableOrderCommand implements Command {
 			Integer order = ConvertUtil.convert(Integer.class, targetOrderValue);
 			target.setValue(orderPropName, ConvertUtil.convert(pd.getJavaType(), order + 1));
 			shift.setValue(orderPropName, targetOrderValue);
-		} else if (shiftOrderValue != null)  {
+		} else if (shiftOrderValue != null) {
 			//入れ替え先を基準に-1
 			Integer order = ConvertUtil.convert(Integer.class, shiftOrderValue);
 			target.setValue(orderPropName, shiftOrderValue);

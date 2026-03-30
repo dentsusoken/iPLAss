@@ -45,7 +45,6 @@ public class PropertyListGridRecord extends ListGridRecord {
 	private static final String UPDATE = "U";
 	private static final String DELETE = "D";
 
-
 	/** 登録状態 */
 	public static final String STATUS = "status";
 
@@ -264,7 +263,8 @@ public class PropertyListGridRecord extends ListGridRecord {
 	}
 
 	public List<ValidationDefinition> getValidationList() {
-		if (validationList == null) validationList = new ArrayList<>();
+		if (validationList == null)
+			validationList = new ArrayList<>();
 		return validationList;
 	}
 
@@ -273,7 +273,8 @@ public class PropertyListGridRecord extends ListGridRecord {
 	}
 
 	public List<NormalizerDefinition> getNormalizerList() {
-		if (normalizerList == null) normalizerList = new ArrayList<>();
+		if (normalizerList == null)
+			normalizerList = new ArrayList<>();
 		return normalizerList;
 	}
 
@@ -299,21 +300,24 @@ public class PropertyListGridRecord extends ListGridRecord {
 		setStatus(null);
 
 		if (entity.getOidPropertyName() != null
-				&& entity.getOidPropertyName().contains(property.getName())) {
+				&& entity.getOidPropertyName()
+						.contains(property.getName())) {
 			setCustomOid(true);
 		}
 		if (Entity.OID.equals(property.getName()) && entity.getOidPropertyName() == null) {
 			setCustomOid(true);
 		}
 		if (entity.getNamePropertyName() != null
-				&& entity.getNamePropertyName().equals(property.getName())) {
+				&& entity.getNamePropertyName()
+						.equals(property.getName())) {
 			setCustomName(true);
 		}
 		if (Entity.NAME.equals(property.getName()) && entity.getNamePropertyName() == null) {
 			setCustomName(true);
 		}
 		if (entity.getCrawlPropertyName() != null
-				&& entity.getCrawlPropertyName().contains(property.getName())) {
+				&& entity.getCrawlPropertyName()
+						.contains(property.getName())) {
 			setCrawlProp(true);
 		}
 

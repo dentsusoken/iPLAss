@@ -39,10 +39,10 @@ public class PlatformUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlatformUtil.class);
 
-	public static final String TITLE_KEY 	= "Implementation-Title";
-	public static final String VERSION_KEY	= "Implementation-Version";
-	public static final String VENDOR_KEY 	= "Implementation-Vendor";
-	public static final String BUILD_KEY 	= "Build-Date";
+	public static final String TITLE_KEY = "Implementation-Title";
+	public static final String VERSION_KEY = "Implementation-Version";
+	public static final String VENDOR_KEY = "Implementation-Vendor";
+	public static final String BUILD_KEY = "Build-Date";
 
 	private static final PlatformInfo platformInfo;
 	static {
@@ -51,20 +51,23 @@ public class PlatformUtil {
 		try {
 			//mtp-apiのバージョンを取得するため、Definitionクラスを起点に取得
 			ClassLoader classLoader = Definition.class.getClassLoader();
-			URL classURL = classLoader.getResource(Definition.class.getName().replace(".", "/") + ".class");
+			URL classURL = classLoader.getResource(Definition.class.getName()
+					.replace(".", "/") + ".class");
 			conn = classURL.openConnection();
 			if (conn == null) {
 				logger.debug("platform information source is null.");
 				platformInfo.setError(true);
 				platformInfo.setErrorMessage("platform information source is null.");
 			} else {
-				logger.debug("platform information source is " + conn.getClass().getName());
+				logger.debug("platform information source is " + conn.getClass()
+						.getName());
 
 				if (conn instanceof JarURLConnection) {
 					//jar
-					JarURLConnection jarConn = (JarURLConnection)conn;
+					JarURLConnection jarConn = (JarURLConnection) conn;
 					Manifest manifest = jarConn.getManifest();
-					if (manifest == null || manifest.getMainAttributes().isEmpty()) {
+					if (manifest == null || manifest.getMainAttributes()
+							.isEmpty()) {
 						logger.debug("platform information is empty.");
 
 						platformInfo.setError(true);
@@ -92,10 +95,12 @@ public class PlatformUtil {
 						}
 					}
 				} else {
-					logger.debug("platform information source is direct or not support type. type=" + conn.getClass().getName());
+					logger.debug("platform information source is direct or not support type. type=" + conn.getClass()
+							.getName());
 
 					platformInfo.setError(true);
-					platformInfo.setErrorMessage("platform information source is direct or not support type. type=" + conn.getClass().getName());
+					platformInfo.setErrorMessage("platform information source is direct or not support type. type=" + conn.getClass()
+							.getName());
 				}
 			}
 		} catch (IOException e) {
@@ -140,6 +145,7 @@ public class PlatformUtil {
 	private static void addInfo(String key, Attributes attributes) {
 		addInfo(key, attributes, "not defined");
 	}
+
 	private static void addInfo(String key, Attributes attributes, String nullValue) {
 		//attributes.containsKeyだと一致しない（Attribute.Name(key)なので）
 		//if (attributes.containsKey(key)) {
@@ -149,7 +155,6 @@ public class PlatformUtil {
 			platformInfo.addInfomation(key, nullValue);
 		}
 	}
-
 
 	public static class PlatformInfo implements Serializable {
 

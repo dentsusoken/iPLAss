@@ -24,7 +24,7 @@ import org.iplass.mtp.impl.metadata.xmlfile.dom.MultiLangExternalRefPath;
 import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.FileExtention;
 
 @ExternalRefPathAttribute(
-		path = "/metaDataEntry/metaData/localizedSourceList/stringValue", 
+		path = "/metaDataEntry/metaData/localizedSourceList/stringValue",
 		fileExtension = FileExtention.HTML)
 public class HtmlLocalizedSourcePath extends MultiLangExternalRefPath {
 }

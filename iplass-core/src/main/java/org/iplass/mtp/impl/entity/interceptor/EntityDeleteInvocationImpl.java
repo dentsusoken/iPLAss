@@ -28,10 +28,10 @@ import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
 public class EntityDeleteInvocationImpl extends EntityInvocationImpl<Void> implements EntityDeleteInvocation {
-	
+
 	private Entity entity;
 	private DeleteOption deleteOption;
-	
+
 	public EntityDeleteInvocationImpl(Entity entity, DeleteOption deleteOption, EntityInterceptor[] entityInterceptors,
 			EntityHandler entityHandler) {
 		super(entityInterceptors, entityHandler);
@@ -42,15 +42,15 @@ public class EntityDeleteInvocationImpl extends EntityInvocationImpl<Void> imple
 	public Entity getEntity() {
 		return entity;
 	}
-	
+
 	public void setEntity(Entity entity) {
 		this.entity = entity;
 	}
-	
+
 	public DeleteOption getDeleteOption() {
 		return deleteOption;
 	}
-	
+
 	public void setDeleteOption(DeleteOption deleteOption) {
 		this.deleteOption = deleteOption;
 	}
@@ -65,5 +65,5 @@ public class EntityDeleteInvocationImpl extends EntityInvocationImpl<Void> imple
 	public InvocationType getType() {
 		return InvocationType.DELETE;
 	}
-	
+
 }

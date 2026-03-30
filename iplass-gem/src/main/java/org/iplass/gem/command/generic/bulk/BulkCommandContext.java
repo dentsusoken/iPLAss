@@ -112,7 +112,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	public BulkCommandContext(RequestContext request, EntityManager entityLoader, EntityDefinitionManager definitionLoader) {
 		super(request, entityLoader, definitionLoader);
 
-		gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		gemConfig = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 		init();
 	}
 
@@ -208,7 +209,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	private BulkCommandParams getBulkCommandParams(Integer row) {
 		List<BulkCommandParams> paramsList = bulkCommandParams.stream()
-				.filter(p -> p.getRow().equals(row))
+				.filter(p -> p.getRow()
+						.equals(row))
 				.collect(Collectors.toList());
 		if (paramsList.size() == 0) {
 			return null;
@@ -224,14 +226,19 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		for (String oid : oids) {
 			for (Long version : getVersions(oid)) {
 				List<Object> propValues = bulkCommandParams.stream()
-						.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
+						.filter(p -> p.getOid()
+								.equals(oid)
+								&& p.getVersion()
+										.equals(version))
 						.map(p -> p.getValue(propName))
 						.collect(Collectors.toList());
 				Object first = propValues.get(0);
 				if (first == null) {
-					return propValues.stream().anyMatch(v -> v != null);
+					return propValues.stream()
+							.anyMatch(v -> v != null);
 				} else {
-					return propValues.stream().anyMatch(v -> !first.equals(v));
+					return propValues.stream()
+							.anyMatch(v -> !first.equals(v));
 				}
 			}
 		}
@@ -240,7 +247,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	private BulkUpdatedProperty getBulkUpdatedProperty(Integer updateNo) {
 		List<BulkUpdatedProperty> updatedPropList = updatedProps.stream()
-				.filter(p -> p.getUpdateNo().equals(updateNo))
+				.filter(p -> p.getUpdateNo()
+						.equals(updateNo))
 				.collect(Collectors.toList());
 		if (updatedPropList.size() == 0) {
 			return null;
@@ -381,15 +389,18 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			entity.setValue(Constants.REF_RELOAD, Boolean.FALSE);
 
 			//Validationエラーが出るとhiddenに"null"が入るのでクリアする
-			if (entity.getOid() != null && entity.getOid().equals("null")) {
+			if (entity.getOid() != null && entity.getOid()
+					.equals("null")) {
 				entity.setOid(null);
 			}
 
 			//Entity生成時にエラーが発生していないかチェック
 			String checkPrefix = (errorPrefix != null ? errorPrefix : paramPrefix);
 			boolean hasError = getErrors().stream()
-					.filter(error -> error.getPropertyName().startsWith(checkPrefix))
-					.findFirst().isPresent();
+					.filter(error -> error.getPropertyName()
+							.startsWith(checkPrefix))
+					.findFirst()
+					.isPresent();
 
 			//エラーがなくて、何もデータが入ってないものは破棄する
 			if (hasError || !isEmpty(entity)) {
@@ -407,7 +418,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		setEntityDefinition(ed);//元の定義に詰め替える
 
 		// ネストテーブル用の登録処理を追加
-		Optional<PropertyColumn> ret = getProperty().stream().filter(pc -> pc.getPropertyName().equals(p.getName())).findFirst();
+		Optional<PropertyColumn> ret = getProperty().stream()
+				.filter(pc -> pc.getPropertyName()
+						.equals(p.getName()))
+				.findFirst();
 		if (ret.isPresent()) {
 			addNestTableRegistHandler(p, list, red, ret.get());
 		}
@@ -428,7 +442,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				// Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix + p.getName();
 				getErrors().stream()
-						.filter(error -> error.getPropertyName().equals(name))
+						.filter(error -> error.getPropertyName()
+								.equals(name))
 						.forEach(error -> error.setPropertyName(errorName));
 			}
 		}
@@ -449,7 +464,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			PropertyDefinition pd = red.getProperty(editor.getTableOrderPropertyName());
 			target = EntityViewUtil.sortByOrderProperty(list, Constants.REF_TABLE_ORDER_INDEX);
 			for (int i = 0; i < target.size(); i++) {
-				target.get(i).setValue(editor.getTableOrderPropertyName(), ConvertUtil.convert(pd.getJavaType(), i));
+				target.get(i)
+						.setValue(editor.getTableOrderPropertyName(), ConvertUtil.convert(pd.getJavaType(), i));
 			}
 		} else {
 			target = list;
@@ -486,12 +502,14 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	@Override
 	protected String getInterrupterName() {
-		return getView().getResultSection().getInterrupterName();
+		return getView().getResultSection()
+				.getInterrupterName();
 	}
 
 	@Override
 	protected String getLoadEntityInterrupterName() {
-		return getView().getResultSection().getLoadEntityInterrupterName();
+		return getView().getResultSection()
+				.getLoadEntityInterrupterName();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -545,7 +563,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 * @return 一括更新の排他制御起点
 	 */
 	public ExclusiveControlPoint getExclusiveControlPoint() {
-		return getView().getResultSection().getExclusiveControlPoint();
+		return getView().getResultSection()
+				.getExclusiveControlPoint();
 	}
 
 	@Override
@@ -560,7 +579,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	@Override
 	protected boolean isPurgeCompositionedEntity() {
-		return getView().getResultSection().isPurgeCompositionedEntity();
+		return getView().getResultSection()
+				.isPurgeCompositionedEntity();
 	}
 
 	@Override
@@ -570,7 +590,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	@Override
 	protected boolean isForceUpadte() {
-		return getView().getResultSection().isForceUpadte();
+		return getView().getResultSection()
+				.isForceUpadte();
 	}
 
 	/**
@@ -620,7 +641,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		// バージョン管理されているエンティティでマルチリファレンスのプロパティ定義がある場合、同じOIDとバージョンで行番号が異なるデータが存在するので、
 		// 一括更新する際に、一行目だけ更新します。
 		Optional<Integer> rw = bulkCommandParams.stream()
-				.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
+				.filter(p -> p.getOid()
+						.equals(oid)
+						&& p.getVersion()
+								.equals(version))
 				.map(p -> p.getRow())
 				.findFirst();
 		if (rw.isPresent()) {
@@ -633,7 +657,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		// バージョン管理の場合、同じOIDで異なるバージョンが存在するので、
 		// バージョンセットを取得する。
 		return bulkCommandParams.stream()
-				.filter(p -> p.getOid().equals(oid))
+				.filter(p -> p.getOid()
+						.equals(oid))
 				.map(p -> p.getVersion())
 				.collect(Collectors.toSet());
 	}
@@ -643,7 +668,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		// バージョン管理されているエンティティでマルチリファレンスのプロパティ定義がある場合、同じOIDとバージョンで行番号が異なるデータが存在するので、
 		// 一括更新する際に、一行目だけ更新します。
 		Optional<Long> updateDate = bulkCommandParams.stream()
-				.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
+				.filter(p -> p.getOid()
+						.equals(oid)
+						&& p.getVersion()
+								.equals(version))
 				.map(p -> p.getUpdateDate())
 				.findFirst();
 		if (updateDate.isPresent() && updateDate.get() != null) {
@@ -701,7 +729,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				// Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix + p.getName();
 				getErrors().stream()
-						.filter(error -> error.getPropertyName().equals(name))
+						.filter(error -> error.getPropertyName()
+								.equals(name))
 						.forEach(error -> error.setPropertyName(errorName));
 			}
 		}
@@ -737,7 +766,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 				if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE
 						&& ary != null && ary.length > 0
-						&& editor.getNestProperties() != null && !editor.getNestProperties().isEmpty()) {
+						&& editor.getNestProperties() != null && !editor.getNestProperties()
+								.isEmpty()) {
 					//NestTable、参照セクション
 					for (int i = 0; i < ary.length; i++) {
 						String errorPrefix = property.getPropertyName() + "[" + i + "].";
@@ -888,14 +918,16 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		}
 
 		SearchResultSection section = getView().getResultSection();
-		List<PropertyColumn> propertyColumns = section.getElements().stream()
+		List<PropertyColumn> propertyColumns = section.getElements()
+				.stream()
 				.filter(e -> e instanceof PropertyColumn)
 				.map(e -> (PropertyColumn) e)
 				.filter(e -> getRegistrationPropertyBaseHandler().isDispProperty(e))
 				.collect(Collectors.toList());
 
 		for (PropertyColumn pc : propertyColumns) {
-			if (pc.getPropertyName().equals(updatePropName)) {
+			if (pc.getPropertyName()
+					.equals(updatePropName)) {
 				propList.add(pc);
 				//組み合わせで使うプロパティを通常のプロパティ扱いに
 				if (pc.getBulkUpdateEditor() instanceof DateRangePropertyEditor) {
@@ -1034,7 +1066,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	}
 
 	protected String getBulkInterrupterName() {
-		return getView().getResultSection().getBulkUpdateInterrupterName();
+		return getView().getResultSection()
+				.getBulkUpdateInterrupterName();
 	}
 
 	protected BulkOperationInterrupter createBulkInterrupter(String className) {

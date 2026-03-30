@@ -39,18 +39,18 @@ import org.iplass.mtp.impl.rdb.common.function.ListaggFunctionAdapter;
  *
  */
 public class SqlServerListaggFunctionAdapter extends ListaggFunctionAdapter {
-	
+
 	public SqlServerListaggFunctionAdapter() {
 		super();
 		setSqlFunctionName("STRING_AGG");
 	}
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Listagg function, RdbAdapter rdb) {
 		context.append("STRING_AGG(");
-		
+
 		//Distinct is not supported by sqlServer.
-		
+
 		context.appendArgument(function.getValue());
 		if (function.getSeparator() != null) {
 			context.append(",");
@@ -61,10 +61,10 @@ public class SqlServerListaggFunctionAdapter extends ListaggFunctionAdapter {
 			context.append("'");
 		}
 		context.append(")");
-		
+
 		toWithinGroupSQL(context, function.getWithinGroup());
 	}
-	
+
 	@Override
 	protected void toOrderBySpecSQL(FunctionContext context, WithinGroupSortSpec ss) {
 		if (ss.getNullOrderingSpec() != null) {
@@ -107,11 +107,11 @@ public class SqlServerListaggFunctionAdapter extends ListaggFunctionAdapter {
 		if (args.size() != 4) {
 			throw new QueryException("LISTAGG argment mismatch.");
 		}
-		
+
 		context.append("STRING_AGG(");
-		
+
 		//Distinct is not supported by sqlServer.
-		
+
 		context.append(args.get(1));
 		if (args.get(2) != null) {
 			context.append(",'");

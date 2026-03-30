@@ -37,35 +37,40 @@ public class BasicAuthUtil {
 		HttpServletRequest hr = (HttpServletRequest) req.getAttribute(WebRequestConstants.SERVLET_REQUEST);
 		String authHeaderValue = hr.getHeader(HEADER_AUTHORIZATION);
 		if (authHeaderValue != null && authHeaderValue.regionMatches(true, 0, AUTH_SCHEME_BASIC + " ", 0, AUTH_SCHEME_BASIC.length() + 1)) {
-			
-			String idpassEncoded = authHeaderValue.substring(AUTH_SCHEME_BASIC.length() + 1).trim();
+
+			String idpassEncoded = authHeaderValue.substring(AUTH_SCHEME_BASIC.length() + 1)
+					.trim();
 			String idpass;
 			try {
-				idpass = new String(Base64.getDecoder().decode(idpassEncoded), "utf-8");
+				idpass = new String(Base64.getDecoder()
+						.decode(idpassEncoded), "utf-8");
 			} catch (UnsupportedEncodingException e) {
 				throw new SystemException(e);
 			}
-			
+
 			String id = null;
 			String pass = null;
 			int index = idpass.indexOf(':');
 			if (index < 0) {
 				id = idpass.trim();
 			} else {
-				id = idpass.substring(0, index).trim();
-				pass = idpass.substring(index + 1).trim();
+				id = idpass.substring(0, index)
+						.trim();
+				pass = idpass.substring(index + 1)
+						.trim();
 			}
-			
+
 			return new IdPasswordCredential(id, pass);
 		}
-		
+
 		return null;
 	}
-	
+
 	public static String encodeValue(IdPasswordCredential idpass) {
 		String str = idpass.getId() + ":" + idpass.getPassword();
 		try {
-			return AUTH_SCHEME_BASIC + " " + Base64.getEncoder().encodeToString(str.getBytes("UTF-8"));
+			return AUTH_SCHEME_BASIC + " " + Base64.getEncoder()
+					.encodeToString(str.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e);
 		}

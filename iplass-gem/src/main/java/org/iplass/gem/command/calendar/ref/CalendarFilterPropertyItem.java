@@ -82,11 +82,13 @@ public class CalendarFilterPropertyItem {
 	}
 
 	public void setPropertyEditor(PropertyEditor propertyEditor, PropertyDefinition pd) {
-		if (pd.getType().equals(PropertyDefinitionType.SELECT)
+		if (pd.getType()
+				.equals(PropertyDefinitionType.SELECT)
 				&& propertyEditor instanceof SelectPropertyEditor) {
 			SelectPropertyEditor spe = (SelectPropertyEditor) propertyEditor;
 			List<EditorValue> evList = spe.getValues();
-			if (spe.getValues().isEmpty()) {
+			if (spe.getValues()
+					.isEmpty()) {
 				SelectProperty sp = (SelectProperty) pd;
 				String lang = TemplateUtil.getLanguage();
 				for (SelectValue sv : sp.getSelectValueList()) {
@@ -97,8 +99,9 @@ public class CalendarFilterPropertyItem {
 					evList.add(ev);
 				}
 			}
-		} else if (pd.getType().equals(PropertyDefinitionType.BOOLEAN)
-					&&  propertyEditor instanceof BooleanPropertyEditor) {
+		} else if (pd.getType()
+				.equals(PropertyDefinitionType.BOOLEAN)
+				&& propertyEditor instanceof BooleanPropertyEditor) {
 			BooleanPropertyEditor bpe = (BooleanPropertyEditor) propertyEditor;
 			if (StringUtil.isEmpty(bpe.getTrueLabel())) {
 				bpe.setTrueLabel(TemplateUtil.getMultilingualString(

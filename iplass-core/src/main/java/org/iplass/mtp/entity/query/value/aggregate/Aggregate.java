@@ -41,12 +41,11 @@ public abstract class Aggregate extends PrimaryValue {
 	public void setValue(ValueExpression value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getFuncName() + "(" + getValue() + ")";
 	}
-	
 
 	@Override
 	public int hashCode() {
@@ -81,6 +80,5 @@ public abstract class Aggregate extends PrimaryValue {
 	}
 
 	protected abstract String getFuncName();
-
 
 }

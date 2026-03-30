@@ -30,13 +30,7 @@ import org.iplass.mtp.impl.view.top.MetaTopView;
 import org.iplass.mtp.impl.view.treeview.MetaTreeView;
 
 @XmlSeeAlso({
-	MetaCalendar.class
-	,MetaEntityView.class
-	,MetaMenu.class
-	,MetaTreeMenu.class
-	,MetaTopView.class
-	,MetaTreeView.class
-	,MetaTenantGemInfo.class
+		MetaCalendar.class, MetaEntityView.class, MetaMenu.class, MetaTreeMenu.class, MetaTopView.class, MetaTreeView.class, MetaTenantGemInfo.class
 })
 class ViewRootMetaDatas {
 	// View系のMetaDataへのXmlSeeAlsoを管理するためだけのクラス

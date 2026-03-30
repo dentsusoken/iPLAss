@@ -57,14 +57,15 @@ import org.iplass.mtp.webapi.definition.RequestType;
  * 参照データ名前一括取得コマンド
  * @author lis3wg
  */
-@WebApi(name=GetEntityNameListCommand.WEBAPI_NAME,
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="params", parameterType=GetEntityNameListParameter.class),
-	results={"value"},
-	checkXRequestedWithHeader=true
+@WebApi(
+		name = GetEntityNameListCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "params", parameterType = GetEntityNameListParameter.class),
+		results = { "value" },
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/common/GetEntityNameListCommand", displayName="参照データ名前一括取得")
+@CommandClass(name = "gem/generic/common/GetEntityNameListCommand", displayName = "参照データ名前一括取得")
 public final class GetEntityNameListCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/common/getEntityNameList";
@@ -92,14 +93,18 @@ public final class GetEntityNameListCommand implements Command, HasDisplayScript
 			String uniqueProp = getUniqueItem(parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, e);
 
 			Query query = new Query();
-			query.select(Entity.OID, Entity.VERSION).from(defName);
+			query.select(Entity.OID, Entity.VERSION)
+					.from(defName);
 			if (dispLabelProp == null) { //未設定場合、Nameを検索します。
-				query.select().add(Entity.NAME);
+				query.select()
+						.add(Entity.NAME);
 			} else if (dispLabelProp.length() > 0) { //表示ラベルが設定されている場合
-				query.select().add(dispLabelProp);
+				query.select()
+						.add(dispLabelProp);
 			}
 			if (uniqueProp != null) {
-				query.select().add(uniqueProp);
+				query.select()
+						.add(uniqueProp);
 			}
 			Or or = new Or();
 			for (GetEntityNameListEntityParameter entity : list) {
@@ -109,8 +114,10 @@ public final class GetEntityNameListCommand implements Command, HasDisplayScript
 			}
 			query.where(or);
 
-			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-			ret = em.searchEntity(query).getList();
+			EntityManager em = ManagerLocator.getInstance()
+					.getManager(EntityManager.class);
+			ret = em.searchEntity(query)
+					.getList();
 			if (StringUtil.isNotBlank(dispLabelProp) || StringUtil.isNotBlank(uniqueProp)) {
 				replacePropOutputName((List<Entity>) ret, dispLabelProp, uniqueProp);
 			}
@@ -138,27 +145,33 @@ public final class GetEntityNameListCommand implements Command, HasDisplayScript
 
 	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType, Integer refSectionIndex, Entity entity) {
 		FormView form = ViewUtil.getFormView(defName, viewName, viewType);
-		if (form == null) return null;
+		if (form == null)
+			return null;
 
 		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType, refSectionIndex, entity);
 		// エディター定義が見つからなかった場合、空文字を返します。
-		if (rpe == null) return "";
+		if (rpe == null)
+			return "";
 
 		return rpe.getDisplayLabelItem();
 	}
 
 	private String getUniqueItem(String defName, String viewName, String propName, String viewType, Integer refSectionIndex, Entity entity) {
 		FormView form = ViewUtil.getFormView(defName, viewName, viewType);
-		if (form == null) return null;
+		if (form == null)
+			return null;
 
 		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType, refSectionIndex, entity);
 		if (rpe == null || rpe.getDisplayType() != ReferenceDisplayType.UNIQUE || rpe.getUniqueItem() == null) {
 			return null;
 		}
 		// OIDをユニークキーフィールドとして使えるように
-		if (Entity.OID.equals(rpe.getUniqueItem())) return Entity.OID;
+		if (Entity.OID.equals(rpe.getUniqueItem()))
+			return Entity.OID;
 
-		EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(rpe.getObjectName());
+		EntityDefinition ed = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class)
+				.get(rpe.getObjectName());
 		PropertyDefinition pd = ed.getProperty(rpe.getUniqueItem());
 		if (pd != null && (pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL)) {
 			return rpe.getUniqueItem();
@@ -167,11 +180,13 @@ public final class GetEntityNameListCommand implements Command, HasDisplayScript
 		return null;
 	}
 
-	private ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType, Integer refSectionIndex, Entity entity) {
-		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+	private ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType, Integer refSectionIndex,
+			Entity entity) {
+		EntityViewManager evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, refSectionIndex, entity);
 
-		if (editor instanceof ReferencePropertyEditor) { 
+		if (editor instanceof ReferencePropertyEditor) {
 			return (ReferencePropertyEditor) editor;
 		} else if (editor instanceof JoinPropertyEditor) {
 			JoinPropertyEditor jpe = (JoinPropertyEditor) editor;

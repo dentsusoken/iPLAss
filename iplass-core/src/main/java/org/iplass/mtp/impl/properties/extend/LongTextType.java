@@ -47,7 +47,6 @@ import org.iplass.mtp.impl.lob.LobHandler;
 import org.iplass.mtp.impl.properties.basic.StringType;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-
 public class LongTextType extends ComplexWrapperType {
 	private static final long serialVersionUID = -4263828374127798455L;
 	private static final int hash = 26;
@@ -91,7 +90,6 @@ public class LongTextType extends ComplexWrapperType {
 		return null;
 	}
 
-
 	@Override
 	public LongTextType copy() {
 		return new LongTextType();
@@ -118,7 +116,8 @@ public class LongTextType extends ComplexWrapperType {
 	}
 
 	@Override
-	public Object toStoreTypeValue(Object extendTypeValue, Object prevStoreTypeValue, PropertyHandler ph, EntityHandler eh, String oid, Long version, Entity entity) {
+	public Object toStoreTypeValue(Object extendTypeValue, Object prevStoreTypeValue, PropertyHandler ph, EntityHandler eh, String oid, Long version,
+			Entity entity) {
 		try {
 			//既存のLobの削除（Lobで保存されていたら）
 			if (prevStoreTypeValue != null) {
@@ -136,7 +135,8 @@ public class LongTextType extends ComplexWrapperType {
 
 				if (!newVal.isInlineStore(inlineStoreMaxLength)) {
 					LobHandler lm = LobHandler.getInstance(LOB_STORE_NAME);
-					Lob bin = lm.createBinaryData(LOB_NAME, "text/plain", eh.getMetaData().getId(), ph.getId(), oid, version);
+					Lob bin = lm.createBinaryData(LOB_NAME, "text/plain", eh.getMetaData()
+							.getId(), ph.getId(), oid, version);
 					bin.setByte(((String) extendTypeValue).getBytes("utf-8"));
 					newVal.lobId = bin.getLobId();
 					newVal.trimOrClearText(inlineStoreMaxLength);
@@ -190,7 +190,9 @@ public class LongTextType extends ComplexWrapperType {
 	}
 
 	private int inlineStoreMaxLength(EntityHandler eh) {
-		int dataStoreStringMaxLength = LongText.storeService.getDataStore().stringPropertyStoreMaxLength(eh.getMetaData().getStoreMapping());
+		int dataStoreStringMaxLength = LongText.storeService.getDataStore()
+				.stringPropertyStoreMaxLength(eh.getMetaData()
+						.getStoreMapping());
 		if (dataStoreStringMaxLength < 0) {
 			return LongText.service.getLongTextInlineStoreMaxLength();
 		} else {
@@ -198,13 +200,14 @@ public class LongTextType extends ComplexWrapperType {
 		}
 	}
 
-
 	public static class LongText {
 
-		private static final char[] SPACE = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};
+		private static final char[] SPACE = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
 
-		private static PropertyService service = ServiceRegistry.getRegistry().getService(PropertyService.class);
-		private static StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
+		private static PropertyService service = ServiceRegistry.getRegistry()
+				.getService(PropertyService.class);
+		private static StoreService storeService = ServiceRegistry.getRegistry()
+				.getService(StoreService.class);
 
 		//LongTextの格納パターン
 		//L=             xxx,T=hogehogeパターン。xxxは固定16桁スペース埋め。検索可能にするため。
@@ -213,7 +216,9 @@ public class LongTextType extends ComplexWrapperType {
 		private String text;
 
 		public static void appendLongTextFromStringExpression(StringBuilder sb) {
-			sb.append("L=").append(SPACE, 0, 14).append("-1");
+			sb.append("L=")
+					.append(SPACE, 0, 14)
+					.append("-1");
 			sb.append(",T=");
 		}
 
@@ -227,7 +232,8 @@ public class LongTextType extends ComplexWrapperType {
 
 		private LongText(String stringExpression) {
 			if (stringExpression != null && stringExpression.startsWith("L=")) {
-				lobId = Long.parseLong(stringExpression.substring(2, 18).trim());
+				lobId = Long.parseLong(stringExpression.substring(2, 18)
+						.trim());
 				if (stringExpression.length() > META_PART_LENGTH) {
 					text = stringExpression.substring(META_PART_LENGTH);
 				}
@@ -239,7 +245,9 @@ public class LongTextType extends ComplexWrapperType {
 		private String toStringExpression() {
 			StringBuilder sb = new StringBuilder();
 			String lobIdStr = Long.toString(lobId);
-			sb.append("L=").append(SPACE, 0, 16 - lobIdStr.length()).append(lobIdStr);
+			sb.append("L=")
+					.append(SPACE, 0, 16 - lobIdStr.length())
+					.append(lobIdStr);
 			sb.append(",T=");
 			if (text != null) {
 				sb.append(text);
@@ -286,7 +294,7 @@ public class LongTextType extends ComplexWrapperType {
 
 			//list lob stored value
 			ArrayList<Long> lobedValues = new ArrayList<>();
-			for (Object v: values) {
+			for (Object v : values) {
 				LongText lt = new LongText((String) v);
 				if (lt.lobId != -1) {
 					lobedValues.add(lt.lobId);
@@ -296,12 +304,13 @@ public class LongTextType extends ComplexWrapperType {
 			if (lobedValues.size() > 0) {
 				long[] lobIdList = new long[lobedValues.size()];
 				for (int i = 0; i < lobedValues.size(); i++) {
-					lobIdList[i] = lobedValues.get(i).longValue();
+					lobIdList[i] = lobedValues.get(i)
+							.longValue();
 				}
 				Lob[] res = lobHandler.getBinaryReference(lobIdList, context);
 				if (res != null) {
 					currentRowValue = new HashMap<>();
-					for (Lob bin: res) {
+					for (Lob bin : res) {
 						currentRowValue.put(bin.getLobId(), bin);
 					}
 				}
@@ -359,7 +368,8 @@ public class LongTextType extends ComplexWrapperType {
 			return new Function("SUBSTR", field, new Literal(Long.valueOf(META_PART_LENGTH + 1)));
 		} else {
 			//呼び元でキャッチしているので、変更の際注意
-			throw new EntityRuntimeException("LongText Property can only placed main query's select clause. To use at other clause(eg:where condition...), turn on PropertyService's remainInlineText property of config file.");
+			throw new EntityRuntimeException(
+					"LongText Property can only placed main query's select clause. To use at other clause(eg:where condition...), turn on PropertyService's remainInlineText property of config file.");
 		}
 	}
 

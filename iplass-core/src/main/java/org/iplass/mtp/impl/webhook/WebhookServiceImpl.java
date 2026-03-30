@@ -71,12 +71,11 @@ import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinitionManag
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * WebhookService
  */
 public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhookTemplate, WebhookTemplateRuntime>
-implements WebhookService {
+		implements WebhookService {
 	/** webhook template メタデータパス */
 	public static final String WEBHOOK_TEMPLATE_META_PATH = "/webhook/template/";
 	private static final String WEBHOOK_ISRETRY = "retry";
@@ -105,7 +104,8 @@ implements WebhookService {
 
 		@Override
 		public TypedDefinitionManager<WebhookTemplateDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(WebhookTemplateDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(WebhookTemplateDefinitionManager.class);
 		}
 
 		@Override
@@ -139,7 +139,8 @@ implements WebhookService {
 			switch (name) {
 			case WEBHOOK_ISRETRY:
 				String tempIsRetry = config.getValue(WEBHOOK_ISRETRY);
-				if ("true".equals(tempIsRetry.replaceAll("\\s", "").toLowerCase())) {
+				if ("true".equals(tempIsRetry.replaceAll("\\s", "")
+						.toLowerCase())) {
 					webhookIsRetry = true;
 				} else {
 					webhookIsRetry = false;
@@ -153,14 +154,16 @@ implements WebhookService {
 				break;
 			case WEBHOOK_HMACTOKEN_ALGORITHM:
 				webhookHmacHashAlgorithm = config.getValue(WEBHOOK_HMACTOKEN_ALGORITHM);
-				if (webhookHmacHashAlgorithm == null || webhookHmacHashAlgorithm.replaceAll("\\s", "").isEmpty()) {
+				if (webhookHmacHashAlgorithm == null || webhookHmacHashAlgorithm.replaceAll("\\s", "")
+						.isEmpty()) {
 					webhookHmacHashAlgorithm = WEBHOOK_DEFAULT_HMACALGORITHM;
 				}
 				break;
 			case WEBHOOK_HMACTOKEN_DEFAULTNAME:
 				webhookHmacTokenDefaultName = config.getValue(WEBHOOK_HMACTOKEN_DEFAULTNAME);
 				if (webhookHmacTokenDefaultName == null
-						|| webhookHmacTokenDefaultName.replaceAll("\\s", "").isEmpty()) {
+						|| webhookHmacTokenDefaultName.replaceAll("\\s", "")
+								.isEmpty()) {
 					webhookHmacTokenDefaultName = WEBHOOK_HMAC_TOKEN_DEFAULT_NAME;
 				}
 				break;
@@ -173,8 +176,10 @@ implements WebhookService {
 			}
 		}
 		webhookHttpClientConfig.inited(this, config);
-		atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
-		wheps = ServiceRegistry.getRegistry().getService(WebhookEndpointService.class);
+		atm = ManagerLocator.getInstance()
+				.getManager(AsyncTaskManager.class);
+		wheps = ServiceRegistry.getRegistry()
+				.getService(WebhookEndpointService.class);
 		initWebhookHttpClient();
 	}
 
@@ -256,20 +261,28 @@ implements WebhookService {
 					logger.debug("Webhook: request method undefined. Post will be used.");
 				}
 			}
-			String url = webhook.getEndpoint().getUrl() + webhook.getPathAndQuery();
+			String url = webhook.getEndpoint()
+					.getUrl() + webhook.getPathAndQuery();
 			HttpUriRequest httpRequest = getReqestMethodObject(webhook.getHttpMethod(), new URI(url));
 			logger.debug("Webhook: Endpoint = {}, pathAndQuery = {}, httpMethod = {}",
-					webhook.getEndpoint().getUrl(), webhook.getPathAndQuery(), webhook.getHttpMethod());
+					webhook.getEndpoint()
+							.getUrl(),
+					webhook.getPathAndQuery(), webhook.getHttpMethod());
 
 			// payload
 			if (isEnclosingRequest(httpRequest)) {
-				if (webhook.getPayloadContent() != null && !webhook.getPayloadContent().replaceAll("\\s", "").isEmpty()) {
-					ContentType contentType = ContentType.create(webhook.getContentType()).withCharset(webhookContentCharset);
+				if (webhook.getPayloadContent() != null && !webhook.getPayloadContent()
+						.replaceAll("\\s", "")
+						.isEmpty()) {
+					ContentType contentType = ContentType.create(webhook.getContentType())
+							.withCharset(webhookContentCharset);
 					StringEntity se = new StringEntity(webhook.getPayloadContent(), contentType);
 					httpRequest.setEntity(se);
 				}
 			} else {
-				if (webhook.getContentType() != null && !webhook.getContentType().replaceAll("\\s", "").isEmpty()) {
+				if (webhook.getContentType() != null && !webhook.getContentType()
+						.replaceAll("\\s", "")
+						.isEmpty()) {
 					httpRequest.setHeader(HttpHeaders.CONTENT_TYPE, webhook.getContentType());
 				}
 			}
@@ -282,47 +295,73 @@ implements WebhookService {
 			}
 			if (webhook.getEndpoint() != null) {
 				// hmac
-				if (webhook.getEndpoint().getHmacKey() != null) {
-					if (!webhook.getEndpoint().getHmacKey().isEmpty()) {
+				if (webhook.getEndpoint()
+						.getHmacKey() != null) {
+					if (!webhook.getEndpoint()
+							.getHmacKey()
+							.isEmpty()) {
 						String hmacHeader;
-						if (webhook.getEndpoint().getHmacHashHeader() == null
-								|| webhook.getEndpoint().getHmacHashHeader().replaceAll("\\s", "").isEmpty()) {
+						if (webhook.getEndpoint()
+								.getHmacHashHeader() == null
+								|| webhook.getEndpoint()
+										.getHmacHashHeader()
+										.replaceAll("\\s", "")
+										.isEmpty()) {
 							hmacHeader = webhookHmacTokenDefaultName;
 						} else {
-							hmacHeader = webhook.getEndpoint().getHmacHashHeader().replaceAll("\\s", "");
+							hmacHeader = webhook.getEndpoint()
+									.getHmacHashHeader()
+									.replaceAll("\\s", "");
 						}
 						httpRequest.setHeader(hmacHeader,
-								this.getHmacSha256(webhook.getEndpoint().getHmacKey(), webhook.getPayloadContent()));
+								this.getHmacSha256(webhook.getEndpoint()
+										.getHmacKey(), webhook.getPayloadContent()));
 					}
 				}
 				// headerのauthorizationでの認証情報
-				if (webhook.getEndpoint().getHeaderAuthorizationType() != null) {
+				if (webhook.getEndpoint()
+						.getHeaderAuthorizationType() != null) {
 					String scheme = "";
 					String authContent = "";
-					if (WebhookAuthenticationType.BEARER.equals(webhook.getEndpoint().getHeaderAuthorizationType())) {
+					if (WebhookAuthenticationType.BEARER.equals(webhook.getEndpoint()
+							.getHeaderAuthorizationType())) {
 						scheme = "Bearer";
-						authContent = webhook.getEndpoint().getHeaderAuthorizationContent();
+						authContent = webhook.getEndpoint()
+								.getHeaderAuthorizationContent();
 					} else if (WebhookAuthenticationType.BASIC
-							.equals(webhook.getEndpoint().getHeaderAuthorizationType())) {
+							.equals(webhook.getEndpoint()
+									.getHeaderAuthorizationType())) {
 						scheme = "Basic";
-						if (webhook.getEndpoint().getHeaderAuthorizationContent() != null && !webhook.getEndpoint()
-								.getHeaderAuthorizationContent().replaceAll("\\s+", "").isEmpty()) {
+						if (webhook.getEndpoint()
+								.getHeaderAuthorizationContent() != null
+								&& !webhook.getEndpoint()
+										.getHeaderAuthorizationContent()
+										.replaceAll("\\s+", "")
+										.isEmpty()) {
 							authContent = Base64.encodeBase64String(
-									webhook.getEndpoint().getHeaderAuthorizationContent().getBytes());
+									webhook.getEndpoint()
+											.getHeaderAuthorizationContent()
+											.getBytes());
 						}
 					} else if (WebhookAuthenticationType.CUSTOM
-							.equals(webhook.getEndpoint().getHeaderAuthorizationType())) {
+							.equals(webhook.getEndpoint()
+									.getHeaderAuthorizationType())) {
 						scheme = "Custom";
-						if (webhook.getEndpoint().getHeaderAuthCustomTypeName() != null) {
-							String authTypeName = webhook.getEndpoint().getHeaderAuthCustomTypeName().replace("\n", "")
+						if (webhook.getEndpoint()
+								.getHeaderAuthCustomTypeName() != null) {
+							String authTypeName = webhook.getEndpoint()
+									.getHeaderAuthCustomTypeName()
+									.replace("\n", "")
 									.replaceAll("\\s+", "");
 							if (!authTypeName.isEmpty()) {
 								scheme = authTypeName;
 							}
 						}
-						authContent = webhook.getEndpoint().getHeaderAuthorizationContent();
+						authContent = webhook.getEndpoint()
+								.getHeaderAuthorizationContent();
 					}
-					if (authContent != null && !authContent.replaceAll("\\s+", "").isEmpty()) {
+					if (authContent != null && !authContent.replaceAll("\\s+", "")
+							.isEmpty()) {
 						httpRequest.setHeader(HttpHeaders.AUTHORIZATION, scheme + " " + authContent);
 					}
 				}
@@ -333,7 +372,8 @@ implements WebhookService {
 				if (webhook.getResponseHandler() == null) {// 設定しないなら必ずデフォルトに通します
 					webhook.setResponseHandler(new DefaultWebhookResponseHandler());
 				}
-				webhook.getResponseHandler().handleResponse(webhookResponse);
+				webhook.getResponseHandler()
+						.handleResponse(webhookResponse);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(), e);
@@ -351,7 +391,8 @@ implements WebhookService {
 					if (e.getClass() == InterruptedIOException.class || e.getClass() == UnknownHostException.class
 							|| e.getClass() == ConnectException.class || e.getClass() == SSLException.class) {
 						// リトライ不可のExceptions
-						logger.info("Webhook:" + e.getClass().getName() + " has occured. Stop retrying.");
+						logger.info("Webhook:" + e.getClass()
+								.getName() + " has occured. Stop retrying.");
 						break;
 					} else {
 						try {
@@ -369,7 +410,8 @@ implements WebhookService {
 					return generateWebhookResponse(response);
 				});
 			} catch (IOException e) {
-				logger.warn("Webhook: {} has occured.", e.getClass().getName(), e);
+				logger.warn("Webhook: {} has occured.", e.getClass()
+						.getName(), e);
 			}
 		}
 		return null;
@@ -424,8 +466,12 @@ implements WebhookService {
 	}
 
 	private boolean isEnclosingRequest(HttpUriRequest request) {
-		return request.getMethod().equals("PATCH") || request.getMethod().equals("POST")
-				|| request.getMethod().equals("PUT");
+		return request.getMethod()
+				.equals("PATCH")
+				|| request.getMethod()
+						.equals("POST")
+				|| request.getMethod()
+						.equals("PUT");
 	}
 
 	private WebhookResponse generateWebhookResponse(ClassicHttpResponse response) {
@@ -445,8 +491,10 @@ implements WebhookService {
 			} catch (Exception e) {
 				throw new RuntimeException(e.getMessage(), e);
 			}
-			whr.setContentType(response.getEntity().getContentType());
-			whr.setContentEncoding(response.getEntity().getContentEncoding());
+			whr.setContentType(response.getEntity()
+					.getContentType());
+			whr.setContentEncoding(response.getEntity()
+					.getContentEncoding());
 		}
 		ArrayList<WebhookHeader> headers = new ArrayList<WebhookHeader>();
 		if (response.getHeaders() != null) {

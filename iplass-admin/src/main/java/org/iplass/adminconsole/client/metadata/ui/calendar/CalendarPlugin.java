@@ -36,7 +36,6 @@ import org.iplass.mtp.view.calendar.EntityCalendar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-
 public class CalendarPlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
@@ -109,23 +108,27 @@ public class CalendarPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), EntityCalendar.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarPluginManager_failedToDeleteCalendar") + caught.getMessage());
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarPluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarPluginManager_deleteCalendarComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), EntityCalendar.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarPluginManager_failedToDeleteCalendar")
+								+ caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarPluginManager_failedToDeleteCalendar") + result.getMessage());
-				}
-			}
-		});
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarPluginManager_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarPluginManager_deleteCalendarComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarPluginManager_failedToDeleteCalendar")
+									+ result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -135,6 +138,6 @@ public class CalendarPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{CalendarEditPane.class};
+		return new Class[] { CalendarEditPane.class };
 	}
 }

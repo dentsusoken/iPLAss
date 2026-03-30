@@ -41,7 +41,6 @@ import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.properties.extend.ExpressionType;
 
-
 /**
  * Entity更新処理時に指定可能なオプションです。
  * 
@@ -49,7 +48,7 @@ import org.iplass.mtp.impl.properties.extend.ExpressionType;
  *
  */
 public class UpdateOption {
-	
+
 	/**
 	 * 全てのプロパティ（※更新不可項目を除く）を更新対象としてセットしたUpdateOptionを生成します。
 	 * 
@@ -61,7 +60,7 @@ public class UpdateOption {
 	public static UpdateOption allPropertyUpdateOption(String defName, boolean checkTimestamp) {
 		return allPropertyUpdateOption(defName, checkTimestamp, TargetVersion.CURRENT_VALID);
 	}
-	
+
 	/**
 	 * 全てのプロパティ（※更新不可項目を除く）を更新対象としてセットしたUpdateOptionを生成します。
 	 * 
@@ -72,18 +71,21 @@ public class UpdateOption {
 	 * @return UpdateOption
 	 */
 	public static UpdateOption allPropertyUpdateOption(String defName, boolean checkTimestamp, TargetVersion targetVersion) {
-		
-		EntityDefinition def = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(defName);
+
+		EntityDefinition def = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class)
+				.get(defName);
 		if (def == null) {
 			throw new EntityRuntimeException(defName + " not defined.");
 		}
 		List<PropertyDefinition> props = def.getPropertyList();
 		List<String> updateProps = new ArrayList<String>();
 		if (props != null) {
-			for (PropertyDefinition pd: props) {
+			for (PropertyDefinition pd : props) {
 				if (!(pd instanceof ExpressionProperty)
 						&& pd.isUpdatable()
-						&& !pd.getName().equals(Entity.UPDATE_BY)
+						&& !pd.getName()
+								.equals(Entity.UPDATE_BY)
 						//バージョン管理時は、ユニークインデックスの更新不可なので
 						&& (def.getVersionControlType() == VersionControlType.NONE
 								|| (pd.getIndexType() != IndexType.UNIQUE && pd.getIndexType() != IndexType.UNIQUE_WITHOUT_NULL))) {
@@ -99,7 +101,7 @@ public class UpdateOption {
 		option.setTargetVersion(targetVersion);
 		return option;
 	}
-	
+
 	/**
 	 * 全てのプロパティ（※更新不可項目を除く）を更新対象としてセットしたUpdateOptionを生成します。
 	 * 
@@ -117,28 +119,37 @@ public class UpdateOption {
 			List<String> updateProps = new ArrayList<String>();
 			if (eh.getDataLocalizationStrategyRuntime() != null
 					&& eh.getDataLocalizationStrategyRuntime() instanceof EachPropertyDataLocalizationStrategyRuntime) {
-				EachPropertyDataLocalizationStrategyRuntime dlsr = (EachPropertyDataLocalizationStrategyRuntime) eh.getDataLocalizationStrategyRuntime();
+				EachPropertyDataLocalizationStrategyRuntime dlsr = (EachPropertyDataLocalizationStrategyRuntime) eh
+						.getDataLocalizationStrategyRuntime();
 				Map<String, String> propMap = dlsr.getPropMap(exec.getLanguage());
-				for (String pn: propMap.keySet()) {
+				for (String pn : propMap.keySet()) {
 					PropertyHandler ph = eh.getProperty(pn, ec);
 					if (ph instanceof PrimitivePropertyHandler) {
 						PrimitivePropertyHandler pph = (PrimitivePropertyHandler) ph;
-						if (!(pph.getMetaData().getType() instanceof ExpressionType)
-								&& pph.getMetaData().isUpdatable()
-								&& !pph.getName().equals(Entity.UPDATE_BY)
-								&& (eh.getMetaData().getVersionControlType() == VersionControlType.NONE
-										|| pph.getMetaData().getIndexType() != IndexType.UNIQUE && pph.getMetaData().getIndexType() != IndexType.UNIQUE_WITHOUT_NULL)) {
+						if (!(pph.getMetaData()
+								.getType() instanceof ExpressionType)
+								&& pph.getMetaData()
+										.isUpdatable()
+								&& !pph.getName()
+										.equals(Entity.UPDATE_BY)
+								&& (eh.getMetaData()
+										.getVersionControlType() == VersionControlType.NONE
+										|| pph.getMetaData()
+												.getIndexType() != IndexType.UNIQUE
+												&& pph.getMetaData()
+														.getIndexType() != IndexType.UNIQUE_WITHOUT_NULL)) {
 							updateProps.add(pph.getName());
 						}
 					} else if (ph instanceof ReferencePropertyHandler) {
 						ReferencePropertyHandler rph = (ReferencePropertyHandler) ph;
-						if (rph.getMetaData().isUpdatable()
+						if (rph.getMetaData()
+								.isUpdatable()
 								&& rph.getMappedByPropertyHandler(ec) == null) {
 							updateProps.add(rph.getName());
 						}
 					}
 				}
-				
+
 				UpdateOption option = new UpdateOption(checkTimestamp);
 				option.setUpdateProperties(updateProps);
 				option.setTargetVersion(TargetVersion.CURRENT_VALID);
@@ -146,39 +157,39 @@ public class UpdateOption {
 				return option;
 			}
 		}
-		
+
 		return allPropertyUpdateOption(defName, checkTimestamp, TargetVersion.CURRENT_VALID);
 	}
-	
+
 	/** 更新対象のプロパティのリスト */
 	private List<String> updateProperties;
-	
+
 	/** 更新時タイムスタンプチェックを行うかどうか。デフォルトtrue */
 	private boolean checkTimestamp = true;
-	
+
 	/** バージョン管理時、更新対象のバージョンの指定。デフォルトCURRENT_VALID */
 	private TargetVersion targetVersion = TargetVersion.CURRENT_VALID;
-	
+
 	/** 参照関係がCOMPOSITIONとして定義されているEntityを物理削除するかどうか（falseの場合は論理削除） 。デフォルトtrue */
 	private boolean purgeCompositionedEntity = true;
-	
+
 	/** 変更項目が一つもなくとも、更新処理を実行する（結果、タイムスタンプ、更新者が更新される）かどうか。デフォルトfalse */
 	private boolean forceUpdate = false;
-	
+
 	/** ユーザーによるデータのロックをチェックするかどうか。デフォルトtrue */
 	private boolean checkLockedByUser = true;
-	
+
 	private boolean withValidation = true;
 	private boolean notifyListeners = true;
 	private boolean localized = false;
-	
+
 	/**
 	 * コンストラクタです。
 	 * 
 	 */
 	public UpdateOption() {
 	}
-	
+
 	/**
 	 * コンストラクタです。
 	 * 
@@ -187,7 +198,7 @@ public class UpdateOption {
 	public UpdateOption(boolean checkTimestamp) {
 		this.checkTimestamp = checkTimestamp;
 	}
-	
+
 	/**
 	 * コンストラクタです。
 	 * 
@@ -198,7 +209,7 @@ public class UpdateOption {
 		this.checkTimestamp = checkTimestamp;
 		this.targetVersion = targetVersion;
 	}
-	
+
 	public UpdateOption copy() {
 		UpdateOption copy = new UpdateOption();
 		if (updateProperties != null) {
@@ -214,7 +225,7 @@ public class UpdateOption {
 		copy.localized = localized;
 		return copy;
 	}
-	
+
 	/**
 	 * @see #setTargetVersion(TargetVersion)
 	 * @return
@@ -257,7 +268,7 @@ public class UpdateOption {
 	public void setPurgeCompositionedEntity(boolean purgeCompositionedEntity) {
 		this.purgeCompositionedEntity = purgeCompositionedEntity;
 	}
-	
+
 	/**
 	 * 更新時タイムスタンプチェックを行う場合はtrueを設定します。
 	 * その際は、更新対象のEntityにupdateDate項目のセットが必要です。
@@ -275,7 +286,7 @@ public class UpdateOption {
 	public boolean isCheckTimestamp() {
 		return checkTimestamp;
 	}
-	
+
 	/**
 	 * @see #setForceUpdate(boolean)
 	 */
@@ -292,7 +303,7 @@ public class UpdateOption {
 	public void setForceUpdate(boolean forceUpdate) {
 		this.forceUpdate = forceUpdate;
 	}
-	
+
 	/**
 	 * @see #setCheckLockedByUser(boolean)
 	 */
@@ -313,8 +324,7 @@ public class UpdateOption {
 	public void setCheckLockedByUser(boolean checkLockedByUser) {
 		this.checkLockedByUser = checkLockedByUser;
 	}
-	
-	
+
 	/**
 	 * @see #setWithValidation(boolean)
 	 */
@@ -380,7 +390,7 @@ public class UpdateOption {
 	public void setUpdateProperties(List<String> updateProperties) {
 		this.updateProperties = updateProperties;
 	}
-	
+
 	/**
 	 * 更新対象のプロパティのリストを設定します。
 	 * 
@@ -389,13 +399,13 @@ public class UpdateOption {
 	public void setUpdateProperties(String... updateProperty) {
 		ArrayList<String> list = new ArrayList<String>();
 		if (updateProperty != null) {
-			for (String s: updateProperty) {
+			for (String s : updateProperty) {
 				list.add(s);
 			}
 		}
 		this.updateProperties = list;
 	}
-	
+
 	/**
 	 * 更新対象のプロパティを追加します。
 	 * 
@@ -411,7 +421,7 @@ public class UpdateOption {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * 更新項目がなくとも、実際に更新処理実行します。結果、更新者、更新日が変更されます。
 	 * 
@@ -421,7 +431,7 @@ public class UpdateOption {
 		this.forceUpdate = true;
 		return this;
 	}
-	
+
 	/**
 	 * ユーザーにより、当該Entityがロックされているか否かを確認せず更新処理します。
 	 * @return
@@ -430,7 +440,7 @@ public class UpdateOption {
 		this.checkLockedByUser = false;
 		return this;
 	}
-	
+
 	/**
 	 * 更新時にバリデーションを行わないように設定します。
 	 * @return
@@ -439,7 +449,7 @@ public class UpdateOption {
 		this.withValidation = false;
 		return this;
 	}
-	
+
 	/**
 	 * 更新時に{@link EntityEventListener}に通知しないように設定します。
 	 * @return
@@ -448,7 +458,7 @@ public class UpdateOption {
 		this.notifyListeners = false;
 		return this;
 	}
-	
+
 	/**
 	 * 更新時、COMPOSITIONと定義されている参照先Entityが参照から削除された場合に、パージしない（ゴミ箱に入る）ように設定します。
 	 * @return
@@ -457,7 +467,7 @@ public class UpdateOption {
 		this.purgeCompositionedEntity = false;
 		return this;
 	}
-	
+
 	/**
 	 * localized=trueに設定します。
 	 * @return

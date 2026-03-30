@@ -33,14 +33,15 @@ public class OIDCValidateResult {
 	private Long expiresIn;
 	private String refreshToken;
 	private Set<String> scopes;
-	
+
 	private String error;
 	private String errorDescription;
 	private String errorUri;
-	
+
 	private Exception rootCause;
-	
-	OIDCValidateResult(String subjectId, String subjectName, Map<String, Object> claims, String tokenType, String accessToken, Long expiresIn, String refreshToken, Set<String> scopes) {
+
+	OIDCValidateResult(String subjectId, String subjectName, Map<String, Object> claims, String tokenType, String accessToken, Long expiresIn,
+			String refreshToken, Set<String> scopes) {
 		valid = true;
 		this.subjectId = subjectId;
 		this.subjectName = subjectName;
@@ -51,7 +52,7 @@ public class OIDCValidateResult {
 		this.refreshToken = refreshToken;
 		this.scopes = scopes;
 	}
-	
+
 	OIDCValidateResult(String error, String errorDescription, String errorUri, Exception rootCause) {
 		valid = false;
 		this.error = error;
@@ -59,43 +60,55 @@ public class OIDCValidateResult {
 		this.errorUri = errorUri;
 		this.rootCause = rootCause;
 	}
-	
+
 	public String getTokenType() {
 		return tokenType;
 	}
+
 	public Set<String> getScopes() {
 		return scopes;
 	}
+
 	public String getSubjectId() {
 		return subjectId;
 	}
+
 	public String getSubjectName() {
 		return subjectName;
 	}
+
 	public String getAccessToken() {
 		return accessToken;
 	}
+
 	public Long getExpiresIn() {
 		return expiresIn;
 	}
+
 	public String getRefreshToken() {
 		return refreshToken;
 	}
+
 	public Map<String, Object> getClaims() {
 		return claims;
 	}
+
 	public boolean isValid() {
 		return valid;
 	}
+
 	public String getError() {
 		return error;
 	}
+
 	public String getErrorDescription() {
 		return errorDescription;
 	}
+
 	public String getErrorUri() {
 		return errorUri;
 	}
+
 	public Exception getRootCause() {
 		return rootCause;
 	}

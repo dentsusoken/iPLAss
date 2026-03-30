@@ -27,12 +27,16 @@ import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 
 public interface UserContext extends Serializable {
 	public User getUser();
+
 	public AccountHandle getAccount();
+
 	public String[] getGroupCode();
-	
+
 	public Object getAttribute(String name);
-	
+
 	public String getIdForLog();
+
 	public void resetUserEntity(User userEntity);
+
 	public long getCreationTime();
 }

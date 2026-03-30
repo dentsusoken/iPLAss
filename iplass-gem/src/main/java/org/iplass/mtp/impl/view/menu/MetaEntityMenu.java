@@ -61,12 +61,14 @@ public final class MetaEntityMenu extends MetaMenu {
 		executeSearch = def.isExecuteSearch();
 
 		//name - id 変換
-		EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
+		EntityService ehs = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
 		EntityHandler target = ehs.getRuntimeByName(def.getEntityDefinitionName());
 		if (target == null) {
 			definitionId = null;
 		} else {
-			definitionId = target.getMetaData().getId();
+			definitionId = target.getMetaData()
+					.getId();
 		}
 	}
 
@@ -76,13 +78,14 @@ public final class MetaEntityMenu extends MetaMenu {
 		if (getDefinitionId() == null) {
 			return null;
 		}
-		EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
+		EntityService ehs = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
 		EntityHandler entityHandler = ehs.getRuntimeById(getDefinitionId());
-		if(entityHandler == null) {
+		if (entityHandler == null) {
 			return null;
 		}
 		MetaEntity entity = entityHandler.getMetaData();
-		if(entity == null) {
+		if (entity == null) {
 			return null;
 		}
 
@@ -94,7 +97,6 @@ public final class MetaEntityMenu extends MetaMenu {
 		definition.setExecuteSearch(executeSearch);
 		return definition;
 	}
-
 
 	public class MetaEntityMenuHandler extends MetaMenuHandler {
 		@Override
@@ -109,7 +111,7 @@ public final class MetaEntityMenu extends MetaMenu {
 	 * @return EntityのID
 	 */
 	public String getDefinitionId() {
-	    return definitionId;
+		return definitionId;
 	}
 
 	/**
@@ -118,7 +120,7 @@ public final class MetaEntityMenu extends MetaMenu {
 	 * @param definitionId EntityのID
 	 */
 	public void setDefinitionId(String definitionId) {
-	    this.definitionId = definitionId;
+		this.definitionId = definitionId;
 	}
 
 	/**
@@ -127,7 +129,7 @@ public final class MetaEntityMenu extends MetaMenu {
 	 * @return Action実行時に追加されるパラメータ
 	 */
 	public String getParameter() {
-	    return parameter;
+		return parameter;
 	}
 
 	/**
@@ -135,7 +137,7 @@ public final class MetaEntityMenu extends MetaMenu {
 	 * @param parameter Action実行時に追加されるパラメータ
 	 */
 	public void setParameter(String parameter) {
-	    this.parameter = parameter;
+		this.parameter = parameter;
 	}
 
 	/**

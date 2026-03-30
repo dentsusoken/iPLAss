@@ -379,7 +379,8 @@ public abstract class EntityFileReader<T extends EntityFileReader<?>> implements
 							// ReferenceのUniqueKey指定対応
 							if (references.get(propName) != null) {
 								propName = references.get(propName).propName;
-								propValue = references.get(propName).convEntity(value);
+								propValue = references.get(propName)
+										.convEntity(value);
 							} else {
 								propValue = conv(value, propName, null);
 							}
@@ -393,8 +394,10 @@ public abstract class EntityFileReader<T extends EntityFileReader<?>> implements
 								Object[] valArray = (Object[]) entity.getValue(propName);
 								if (valArray == null) {
 									valArray = (Object[]) Array.newInstance(
-											definition.getProperty(propName).getJavaType(),
-											definition.getProperty(propName).getMultiplicity());
+											definition.getProperty(propName)
+													.getJavaType(),
+											definition.getProperty(propName)
+													.getMultiplicity());
 									entity.setValue(propName, valArray);
 									multiProp.add(propName);
 								}
@@ -627,7 +630,8 @@ public abstract class EntityFileReader<T extends EntityFileReader<?>> implements
 								rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
 					}
 					// UniqueKeyチェック
-					if (!unique.getName().equals(Entity.OID) && unique.getIndexType() != IndexType.UNIQUE
+					if (!unique.getName()
+							.equals(Entity.OID) && unique.getIndexType() != IndexType.UNIQUE
 							&& unique.getIndexType() != IndexType.UNIQUE_WITHOUT_NULL) {
 						throw new EntityCsvException("CE2009",
 								rs("impl.csv.EntityCsvReader.invalidHeadRefUniqueKey", (i + 1), headerName, uniqueKey));
@@ -714,7 +718,8 @@ public abstract class EntityFileReader<T extends EntityFileReader<?>> implements
 					mapper = new ObjectMapper();
 					// for backward compatibility
 					mapper.configOverride(java.sql.Date.class)
-							.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
+							.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd")
+									.withTimeZone(TimeZone.getDefault()));
 				}
 				JsonNode root = mapper.readValue(valStr, JsonNode.class);
 
@@ -745,7 +750,8 @@ public abstract class EntityFileReader<T extends EntityFileReader<?>> implements
 			if (valStr.equals("1") || valStr.equalsIgnoreCase("true") || valStr.equalsIgnoreCase("t")
 					|| valStr.equalsIgnoreCase("yes") || valStr.equalsIgnoreCase("y")) {
 				return Boolean.TRUE;
-			} else if (valStr.trim().length() == 0 || valStr.equals("0") || valStr.equalsIgnoreCase("false")
+			} else if (valStr.trim()
+					.length() == 0 || valStr.equals("0") || valStr.equalsIgnoreCase("false")
 					|| valStr.equalsIgnoreCase("f") || valStr.equalsIgnoreCase("no") || valStr.equalsIgnoreCase("n")) {
 				return Boolean.FALSE;
 			}
@@ -805,11 +811,16 @@ public abstract class EntityFileReader<T extends EntityFileReader<?>> implements
 					}
 				}
 
-				if (reference.ed.getMapping() != null && reference.ed.getMapping().getMappingModelClass() != null) {
-					String className = reference.ed.getMapping().getMappingModelClass();
+				if (reference.ed.getMapping() != null && reference.ed.getMapping()
+						.getMappingModelClass() != null) {
+					String className = reference.ed.getMapping()
+							.getMappingModelClass();
 					try {
 						Object[] hoge = (Object[]) Array.newInstance(
-								Class.forName(className).getDeclaredConstructor().newInstance().getClass(),
+								Class.forName(className)
+										.getDeclaredConstructor()
+										.newInstance()
+										.getClass(),
 								eList.size());
 						return eList.toArray(hoge);
 					} catch (Exception e) {
@@ -847,14 +858,17 @@ public abstract class EntityFileReader<T extends EntityFileReader<?>> implements
 			return valStr;
 		}
 		throw new EntityCsvException("CE2007",
-				rs("impl.csv.EntityCsvReader.invalidValueType", pd.getName(), pd.getClass().getName(), valStr));
+				rs("impl.csv.EntityCsvReader.invalidValueType", pd.getName(), pd.getClass()
+						.getName(), valStr));
 	}
 
 	private Entity generateEntity(EntityMapping mapping, String propName) {
 		Entity entity = null;
 		if (mapping != null) {
 			try {
-				entity = (Entity) Class.forName(mapping.getMappingModelClass()).getDeclaredConstructor().newInstance();
+				entity = (Entity) Class.forName(mapping.getMappingModelClass())
+						.getDeclaredConstructor()
+						.newInstance();
 			} catch (Exception e) {
 				if (propName == null) {
 					throw new EntityCsvException("CE2008",
@@ -976,11 +990,16 @@ public abstract class EntityFileReader<T extends EntityFileReader<?>> implements
 						}
 					}
 				}
-				if (ed.getMapping() != null && ed.getMapping().getMappingModelClass() != null) {
-					String className = ed.getMapping().getMappingModelClass();
+				if (ed.getMapping() != null && ed.getMapping()
+						.getMappingModelClass() != null) {
+					String className = ed.getMapping()
+							.getMappingModelClass();
 					try {
 						Object[] hoge = (Object[]) Array.newInstance(
-								Class.forName(className).getDeclaredConstructor().newInstance().getClass(),
+								Class.forName(className)
+										.getDeclaredConstructor()
+										.newInstance()
+										.getClass(),
 								eList.size());
 						return eList.toArray(hoge);
 					} catch (Exception e) {
@@ -997,10 +1016,13 @@ public abstract class EntityFileReader<T extends EntityFileReader<?>> implements
 		private Entity search(Object uniqueValue) {
 
 			if (uniqueQuery == null) {
-				uniqueQuery = new Query().select(Entity.OID, Entity.VERSION).from(ed.getName());
+				uniqueQuery = new Query().select(Entity.OID, Entity.VERSION)
+						.from(ed.getName());
 			}
-			Query query = uniqueQuery.copy().where(new Equals(unique.getName(), uniqueValue));
-			return em.searchEntity(query).getFirst();
+			Query query = uniqueQuery.copy()
+					.where(new Equals(unique.getName(), uniqueValue));
+			return em.searchEntity(query)
+					.getFirst();
 		}
 	}
 

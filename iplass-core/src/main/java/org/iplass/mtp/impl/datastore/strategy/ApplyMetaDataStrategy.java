@@ -29,8 +29,11 @@ public interface ApplyMetaDataStrategy extends StoreStrategy {
 //	public void createSystemDefault(MetaEntity definition);
 
 	public boolean isLocked(MetaEntity definition, EntityContext context);
+
 	public boolean prepare(MetaEntity newOne, MetaEntity previous, EntityContext context);
+
 	public boolean modify(MetaEntity newOne, MetaEntity previous, EntityContext context, int[] targetTenantIds);
+
 	public void finish(boolean modifyResult, MetaEntity newOne, MetaEntity previous, EntityContext context);
 
 	public void patchData(MetaEntity newOne, MetaEntity previous, EntityContext context, int targetTenantId);

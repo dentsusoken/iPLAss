@@ -33,15 +33,16 @@ import org.iplass.mtp.view.calendar.EntityCalendar;
 import org.iplass.mtp.view.calendar.EntityCalendarManager;
 
 @ActionMapping(
-	name=CalendarCommand.ACTION_NANE,
-	displayName="カレンダー表示",
-	paramMapping=@ParamMapping(name="calendarType", mapFrom="${0}"),
-	result=@Result(type=Type.JSP,
-			value=Constants.CMD_RSLT_JSP_CALENDAR,
-			templateName="gem/calendar/calendarView",
-			layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
+		name = CalendarCommand.ACTION_NANE,
+		displayName = "カレンダー表示",
+		paramMapping = @ParamMapping(name = "calendarType", mapFrom = "${0}"),
+		result = @Result(
+				type = Type.JSP,
+				value = Constants.CMD_RSLT_JSP_CALENDAR,
+				templateName = "gem/calendar/calendarView",
+				layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
 )
-@CommandClass(name="gem/calendar/CalendarCommand", displayName="カレンダー表示")
+@CommandClass(name = "gem/calendar/CalendarCommand", displayName = "カレンダー表示")
 public final class CalendarCommand implements Command {
 
 	public static final String ACTION_NANE = "gem/calendar/calendar";
@@ -49,7 +50,8 @@ public final class CalendarCommand implements Command {
 	private EntityCalendarManager cm;
 
 	public CalendarCommand() {
-		cm = ManagerLocator.getInstance().getManager(EntityCalendarManager.class);
+		cm = ManagerLocator.getInstance()
+				.getManager(EntityCalendarManager.class);
 	}
 
 	@Override
@@ -59,7 +61,10 @@ public final class CalendarCommand implements Command {
 
 		if (calendarType == null) {
 			EntityCalendar ec = cm.get(calendarName);
-			if (ec != null) calendarType = ec.getType().name().toLowerCase();
+			if (ec != null)
+				calendarType = ec.getType()
+						.name()
+						.toLowerCase();
 		}
 		request.setAttribute("calendarType", calendarType);
 		return null;

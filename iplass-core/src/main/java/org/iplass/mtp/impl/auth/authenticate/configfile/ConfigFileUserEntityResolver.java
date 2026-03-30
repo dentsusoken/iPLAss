@@ -29,7 +29,7 @@ import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
 import org.iplass.mtp.impl.auth.authenticate.UserEntityResolver;
 
 public class ConfigFileUserEntityResolver implements UserEntityResolver {
-	
+
 	@Override
 	public void inited(AuthService service, AuthenticationProvider provider) {
 	}
@@ -38,10 +38,13 @@ public class ConfigFileUserEntityResolver implements UserEntityResolver {
 	public User searchUser(AccountHandle account) {
 		User user = new User();
 		user.setOid(account.getUnmodifiableUniqueKey());
-		user.setAccountId(account.getCredential().getId());
-		user.setName(account.getCredential().getId());
+		user.setAccountId(account.getCredential()
+				.getId());
+		user.setName(account.getCredential()
+				.getId());
 		if (account.getAttributeMap() != null) {
-			for (Map.Entry<String, Object> e: account.getAttributeMap().entrySet()) {
+			for (Map.Entry<String, Object> e : account.getAttributeMap()
+					.entrySet()) {
 				user.setValue(e.getKey(), e.getValue());
 			}
 		}

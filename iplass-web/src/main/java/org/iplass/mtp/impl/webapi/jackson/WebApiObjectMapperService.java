@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-
 public class WebApiObjectMapperService implements Service {
 
 	private ObjectMapper mapper;
@@ -66,7 +65,7 @@ public class WebApiObjectMapperService implements Service {
 
 	@Override
 	public void init(Config config) {
-		
+
 		if (config.getValue("writeNullValues") != null) {
 			writeNullValues = Boolean.valueOf(config.getValue("writeNullValues"));
 		}
@@ -76,17 +75,19 @@ public class WebApiObjectMapperService implements Service {
 		if (config.getValue("escapeNonAscii") != null) {
 			escapeNonAscii = Boolean.valueOf(config.getValue("escapeNonAscii"));
 		}
-		
+
 		mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 		//for backward compatibility
-		mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
-		
+		mapper.configOverride(java.sql.Date.class)
+				.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd")
+						.withTimeZone(TimeZone.getDefault()));
+
 		if (escapeNonAscii) {
 			mapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
 		}
-		
+
 		if (writeNullValues) {
 			mapper.setSerializationInclusion(Include.ALWAYS);
 		} else {
@@ -97,19 +98,18 @@ public class WebApiObjectMapperService implements Service {
 		} else {
 			mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
 		}
-		
+
 		mixin = config.getValues("mixin", MixinConfig.class);
 		if (mixin != null && mixin.size() > 0) {
-			for (MixinConfig mc: mixin) {
+			for (MixinConfig mc : mixin) {
 				mapper.addMixIn(mc.getTarget(), mc.getMixinSource());
 			}
 		}
-		
 
 		typeMap = new HashMap<String, Class<?>>();
 		List<WebApiParameterType> typeList = (List<WebApiParameterType>) config.getValues("parameterType", WebApiParameterType.class);
 		if (typeList != null && typeList.size() > 0) {
-			for (WebApiParameterType t: typeList) {
+			for (WebApiParameterType t : typeList) {
 				try {
 					typeMap.put(t.getTypeName(), Class.forName(t.getClassName()));
 				} catch (ClassNotFoundException e) {
@@ -129,10 +129,8 @@ public class WebApiObjectMapperService implements Service {
 		return mapper;
 	}
 
-
 	public Class<?> getMappedClass(String type) {
 		return typeMap.get(type);
 	}
-
 
 }

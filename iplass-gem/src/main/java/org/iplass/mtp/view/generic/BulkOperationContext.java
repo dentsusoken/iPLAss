@@ -42,7 +42,6 @@ public class BulkOperationContext {
 	 */
 	private List<Entity> entities;
 
-
 	public BulkOperationContext(List<Entity> entities) {
 		this.entities = entities;
 	}
@@ -74,8 +73,10 @@ public class BulkOperationContext {
 	public void addError(ValidateError error) {
 		for (ValidateError e : getErrors()) {
 			//同じプロパティのものがあればメッセージだけ追加
-			if (e.getPropertyName().equals(error.getPropertyName())) {
-				e.getErrorMessages().addAll(error.getErrorMessages());
+			if (e.getPropertyName()
+					.equals(error.getPropertyName())) {
+				e.getErrorMessages()
+						.addAll(error.getErrorMessages());
 				return;
 			}
 		}

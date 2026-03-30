@@ -35,7 +35,6 @@ import org.iplass.mtp.web.template.definition.TemplateDefinitionManager;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 import org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition;
 
-
 /**
  * ReportTemplateDownload用Service実装クラス
  */
@@ -50,29 +49,35 @@ public class ReportTemplateDownloadServiceImpl extends AdminDownloadService {
 		final String templateName = req.getParameter(ReportTemplateDownloadProperty.DEFINITION_NAME);
 		final String lang = req.getParameter(ReportTemplateDownloadProperty.LANG);
 
-		TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
+		TemplateDefinitionManager tdm = ManagerLocator.getInstance()
+				.getManager(TemplateDefinitionManager.class);
 		TemplateDefinition template = tdm.get(templateName);
 
 		try {
-			if (template != null ){
-				if(template instanceof ReportTemplateDefinition){
-					ReportTemplateDefinition rtd = (ReportTemplateDefinition)template;
+			if (template != null) {
+				if (template instanceof ReportTemplateDefinition) {
+					ReportTemplateDefinition rtd = (ReportTemplateDefinition) template;
 					if (rtd.getContentType() != null) {
 						resp.setContentType(rtd.getContentType());
 					}
 
-			        if (lang == null) {
-				        String downloadName = new String(rtd.getFileName().getBytes("Shift_JIS"), "ISO-8859-1");
-				        resp.setHeader("Content-Disposition", "attachment; filename=" + downloadName);
-				        resp.getOutputStream().write(rtd.getBinary());
+					if (lang == null) {
+						String downloadName = new String(rtd.getFileName()
+								.getBytes("Shift_JIS"), "ISO-8859-1");
+						resp.setHeader("Content-Disposition", "attachment; filename=" + downloadName);
+						resp.getOutputStream()
+								.write(rtd.getBinary());
 					} else {
 						List<LocalizedReportDefinition> binList = rtd.getLocalizedReportList();
 
 						for (LocalizedReportDefinition def : binList) {
-							if (def.getLocaleName().equals(lang)) {
-						        String downloadName = new String(def.getFileName().getBytes("Shift_JIS"), "ISO-8859-1");
-						        resp.setHeader("Content-Disposition", "attachment; filename=" + downloadName);
-								resp.getOutputStream().write(def.getBinary());
+							if (def.getLocaleName()
+									.equals(lang)) {
+								String downloadName = new String(def.getFileName()
+										.getBytes("Shift_JIS"), "ISO-8859-1");
+								resp.setHeader("Content-Disposition", "attachment; filename=" + downloadName);
+								resp.getOutputStream()
+										.write(def.getBinary());
 								break;
 							}
 						}

@@ -41,5 +41,4 @@ public class SchemaConvertException extends SystemException {
 		super(cause);
 	}
 
-
 }

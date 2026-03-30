@@ -25,17 +25,19 @@ import org.iplass.mtp.entity.query.SubQuery;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 
 class RefTrimmer extends ASTTransformerSupport {
-	
+
 	String ref;
-	
+
 	RefTrimmer(String refName) {
 		this.ref = refName + ".";
 	}
 
 	@Override
 	public ASTNode visit(EntityField entityField) {
-		if (entityField.getPropertyName().startsWith(ref)) {
-			return new EntityField(entityField.getPropertyName().substring(ref.length()), entityField.getArrayIndex());
+		if (entityField.getPropertyName()
+				.startsWith(ref)) {
+			return new EntityField(entityField.getPropertyName()
+					.substring(ref.length()), entityField.getArrayIndex());
 		} else {
 			return entityField;
 		}

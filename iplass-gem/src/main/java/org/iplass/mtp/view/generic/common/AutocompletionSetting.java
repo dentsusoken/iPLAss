@@ -39,22 +39,23 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({JavascriptAutocompletionSetting.class, WebApiAutocompletionSetting.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso({ JavascriptAutocompletionSetting.class, WebApiAutocompletionSetting.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class AutocompletionSetting implements Refrectable {
 
 	private static final long serialVersionUID = 559723210737582551L;
 
 	/** 連動元のプロパティ */
-	@MetaFieldInfo(displayName="連動元のプロパティ",
-			displayNameKey="generic_common_AutocompletionSetting_propertiesDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=AutocompletionProperty.class,
-			multiple=true,
-			description="連動元のプロパティを指定します。<br>"
+	@MetaFieldInfo(
+			displayName = "連動元のプロパティ",
+			displayNameKey = "generic_common_AutocompletionSetting_propertiesDisplaNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = AutocompletionProperty.class,
+			multiple = true,
+			description = "連動元のプロパティを指定します。<br>"
 					+ "複数指定した場合、いずれかのプロパティが変更されると、"
 					+ "全ての項目の値をパラメータとして補完処理を呼び出します。",
-			descriptionKey="generic_common_AutocompletionSetting_propertiesDescriptionKey"
+			descriptionKey = "generic_common_AutocompletionSetting_propertiesDescriptionKey"
 	)
 	@EntityViewField()
 	private List<AutocompletionProperty> properties;
@@ -66,7 +67,8 @@ public abstract class AutocompletionSetting implements Refrectable {
 	 * @return properties
 	 */
 	public List<AutocompletionProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<>();
+		if (properties == null)
+			properties = new ArrayList<>();
 		return properties;
 	}
 

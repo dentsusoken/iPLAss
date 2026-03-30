@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import org.iplass.mtp.impl.rdb.adapter.QuerySqlHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public class LobStoreSearchSql extends QuerySqlHandler {
 
 	public String toSql(int tenantId, long lobId, RdbAdapter rdb) {
@@ -84,7 +83,8 @@ public class LobStoreSearchSql extends QuerySqlHandler {
 		sb.append(tenantId);
 		sb.append(" AND " + LobStoreTable.REF_COUNT + " < 1");
 		if (day < 0) {
-			sb.append(" AND " + LobStoreTable.CRE_DATE + " < ").append(rdb.addDate(rdb.systimestamp(), day));
+			sb.append(" AND " + LobStoreTable.CRE_DATE + " < ")
+					.append(rdb.addDate(rdb.systimestamp(), day));
 		}
 		return sb.toString();
 	}

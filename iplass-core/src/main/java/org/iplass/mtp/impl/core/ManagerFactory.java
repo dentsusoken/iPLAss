@@ -28,21 +28,21 @@ import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 
 public class ManagerFactory implements Service {
-	
+
 	private Map<Class<?>, ManagerConstructor> map;
 
 	@Override
 	public void init(Config config) {
-		
+
 		map = new HashMap<>();
-		for (String name: config.getNames()) {
+		for (String name : config.getNames()) {
 			Class<?> ifType;
 			try {
 				ifType = Class.forName(name);
 			} catch (ClassNotFoundException e) {
 				throw new ServiceConfigrationException(e.toString(), e);
 			}
-			
+
 			Object value = config.getBean(name);
 			ManagerConstructor mc;
 			if (value instanceof ManagerConstructor) {
@@ -60,7 +60,7 @@ public class ManagerFactory implements Service {
 				if (!ifType.isAssignableFrom(implType)) {
 					throw new ServiceConfigrationException(implType.getName() + " must extends/implements " + ifType.getName());
 				}
-				
+
 				mc = () -> {
 					try {
 						return (Manager) implType.newInstance();
@@ -69,7 +69,7 @@ public class ManagerFactory implements Service {
 					}
 				};
 			}
-			
+
 			map.put(ifType, mc);
 		}
 	}
@@ -77,16 +77,16 @@ public class ManagerFactory implements Service {
 	@Override
 	public void destroy() {
 	}
-	
+
 	public <M extends Manager> M create(Class<M> type) {
 		ManagerConstructor constructor = map.get(type);
 		if (constructor == null) {
 			throw new ServiceConfigrationException("Manager:" + type.getName() + " not registered.");
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		M m = (M) constructor.construct();
 		return m;
 	}
-	
+
 }

@@ -79,6 +79,7 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 	public List<String> getEagerLoadReferenceProperty() {
 		return eagerLoadReferenceProperty;
 	}
+
 	public void setEagerLoadReferenceProperty(
 			List<String> eagerLoadReferenceProperty) {
 		this.eagerLoadReferenceProperty = eagerLoadReferenceProperty;
@@ -87,6 +88,7 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 	public String getFilterCondition() {
 		return filterCondition;
 	}
+
 	public void setFilterCondition(String filterCondition) {
 		this.filterCondition = filterCondition;
 	}
@@ -97,7 +99,8 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 		OpenIdConnectRuntime oidcr = oidcService.getRuntimeByName(ah.getOpenIdConnectDefinitionName());
 
 		User user = searchUser(ah);
-		if (user == null && oidcr.getMetaData().isEnableTransientUser()) {
+		if (user == null && oidcr.getMetaData()
+				.isEnableTransientUser()) {
 			user = temporaryUser(ah, oidcr);
 		}
 		return user;
@@ -106,25 +109,29 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 	private User temporaryUser(OIDCAccountHandle ah, OpenIdConnectRuntime oidcr) {
 		User user;
 		if (oidcr.getAutoUserProvisioningHandler() != null) {
-			user = oidcr.getAutoUserProvisioningHandler().transientUser(ah.getSubjectId(), ah.getSubjectName(), ah.getAttributeMap());
+			user = oidcr.getAutoUserProvisioningHandler()
+					.transientUser(ah.getSubjectId(), ah.getSubjectName(), ah.getAttributeMap());
 		} else {
 			user = new AutoUserProvisioningHandler() {
 				public void updateUser(User user, String subjectId, String subjectName, Map<String, Object> attributes) {
 				}
+
 				public String createUser(String subjectId, String subjectName, Map<String, Object> attributes) {
 					return null;
 				}
 			}.transientUser(ah.getSubjectId(), ah.getSubjectName(), ah.getAttributeMap());
 		}
-		
+
 		if (user.getAccountPolicy() == null) {
 			//resolve authPolicy
-			AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
+			AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry()
+					.getService(AuthenticationPolicyService.class);
 			List<MetaDataEntryInfo> list = authPolicyService.list();
-			for (MetaDataEntryInfo mi: list) {
+			for (MetaDataEntryInfo mi : list) {
 				AuthenticationPolicyRuntime apr = authPolicyService.getRuntimeById(mi.getId());
 				if (oidcr.isAllowedOnPolicy(apr)) {
-					user.setAccountPolicy(apr.getMetaData().getName());
+					user.setAccountPolicy(apr.getMetaData()
+							.getName());
 					break;
 				}
 			}
@@ -133,8 +140,10 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 	}
 
 	private User searchUser(OIDCAccountHandle ah) {
-		return authService.doSecuredAction(AuthContextHolder.getAuthContext().privilegedAuthContextHolder(),
-				() -> searchUserByOneEQL((String) ah.getAttributeMap().get(OIDCAccountHandle.SUBJECT_ID_WITH_DEFINITION_NAME)));
+		return authService.doSecuredAction(AuthContextHolder.getAuthContext()
+				.privilegedAuthContextHolder(),
+				() -> searchUserByOneEQL((String) ah.getAttributeMap()
+						.get(OIDCAccountHandle.SUBJECT_ID_WITH_DEFINITION_NAME)));
 	}
 
 	private User searchUserByOneEQL(String uniqueKeyOfOpenIdProviderAccount) {
@@ -143,16 +152,16 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 
 			ArrayList<ValueExpression> selectVals = new ArrayList<>();
 			EntityHandler userEh = ec.getHandlerByName(User.DEFINITION_NAME);
-			for (PropertyHandler ph: userEh.getPropertyList(ec)) {
+			for (PropertyHandler ph : userEh.getPropertyList(ec)) {
 				if (ph instanceof PrimitivePropertyHandler) {
 					selectVals.add(new EntityField(ph.getName()));
 				}
 			}
 
 			if (eagerLoadReferenceProperty != null) {
-				for (String refName: eagerLoadReferenceProperty) {
+				for (String refName : eagerLoadReferenceProperty) {
 					EntityHandler refEh = ((ReferencePropertyHandler) userEh.getPropertyCascade(refName, ec)).getReferenceEntityHandler(ec);
-					for (PropertyHandler ph: refEh.getPropertyList(ec)) {
+					for (PropertyHandler ph : refEh.getPropertyList(ec)) {
 						if (ph instanceof PrimitivePropertyHandler) {
 							selectVals.add(new EntityField(refName + "." + ph.getName()));
 						}
@@ -161,26 +170,35 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 			}
 			Query q = new Query();
 			q.setSelect(new Select(false, selectVals));
-			q.select().addHint(new CacheHint(CacheScope.TRANSACTION));
+			q.select()
+					.addHint(new CacheHint(CacheScope.TRANSACTION));
 
 			q.from(User.DEFINITION_NAME);
 
 			Query subq = new Query().select(OpenIdProviderAccountEntityEventListener.USER_OID)
 					.from(OpenIdProviderAccountEntityEventListener.DEFINITION_NAME)
 					.where(new Equals(OpenIdProviderAccountEntityEventListener.UNIQUE_KEY, uniqueKeyOfOpenIdProviderAccount));
-			
+
 			Condition c = new Equals(Entity.OID, new ScalarSubQuery(subq));
 			if (filterConditionNode != null) {
 				c = new And(c, (Condition) filterConditionNode.copy());
 			}
 			q.where(c);
 
-			String[] props = new String[q.getSelect().getSelectValues().size()];
-			for (int i = 0; i < q.getSelect().getSelectValues().size(); i++) {
-				props[i] = q.getSelect().getSelectValues().get(i).toString();
+			String[] props = new String[q.getSelect()
+					.getSelectValues()
+					.size()];
+			for (int i = 0; i < q.getSelect()
+					.getSelectValues()
+					.size(); i++) {
+				props[i] = q.getSelect()
+						.getSelectValues()
+						.get(i)
+						.toString();
 			}
 			final EntityBuilder eb = new EntityBuilder(userEh, ec, props);
-			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+			EntityManager em = ManagerLocator.getInstance()
+					.getManager(EntityManager.class);
 			em.search(q, new Predicate<Object[]>() {
 				@Override
 				public boolean test(Object[] data) {
@@ -193,7 +211,8 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 
 			Collection<Entity> result = eb.getCollection();
 			if (!result.isEmpty()) {
-				return (User) result.iterator().next();
+				return (User) result.iterator()
+						.next();
 			}
 
 			return null;
@@ -206,11 +225,13 @@ public class OIDCUserEntityResolver implements UserEntityResolver {
 	@Override
 	public void inited(AuthService service, AuthenticationProvider provider) {
 		this.authService = service;
-		oidcService = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
+		oidcService = ServiceRegistry.getRegistry()
+				.getService(OpenIdConnectService.class);
 		if (filterCondition != null) {
 			filterConditionNode = Condition.newCondition(filterCondition);
 		}
 	}
+
 	@Override
 	public String getUnmodifiableUniqueKeyProperty() {
 		return User.OID;

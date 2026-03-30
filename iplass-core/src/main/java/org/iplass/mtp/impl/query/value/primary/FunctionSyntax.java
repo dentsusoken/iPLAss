@@ -34,7 +34,7 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
 public class FunctionSyntax implements Syntax<Function>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 
 	public void init(SyntaxContext context) {
@@ -42,21 +42,21 @@ public class FunctionSyntax implements Syntax<Function>, QueryConstants {
 	}
 
 	public Function parse(ParseContext str) throws ParseException {
-		
+
 		String funcName = str.nextToken(ParseContext.TOKEN_DELIMITERS);
 		if (funcName == null) {
 			throw new ParseException(new EvalError("function name expected.", this, str));
 		}
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (!str.startsWith(LEFT_PAREN)) {
 			throw new ParseException(new EvalError("( expected.", this, str));
 		}
 		str.consumeChars(1);
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		Function func = new Function(funcName);
-		
+
 		boolean isFirst = true;
 		List<ValueExpression> values = new ArrayList<ValueExpression>();
 		while (!str.startsWith(RIGHT_PAREN) && !str.isEnd()) {
@@ -71,17 +71,17 @@ public class FunctionSyntax implements Syntax<Function>, QueryConstants {
 			values.add(polynomial.parse(str));
 			str.consumeChars(ParseContext.WHITE_SPACES);
 		}
-		
+
 		if (!str.startsWith(RIGHT_PAREN)) {
 			throw new ParseException(new EvalError(") expected.", this, str));
 		}
 		str.consumeChars(RIGHT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (values.size() != 0) {
 			func.setArguments(values);
 		}
-		
+
 		return func;
 	}
 

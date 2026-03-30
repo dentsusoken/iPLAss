@@ -45,10 +45,11 @@ public class EntityWebApiOpenApiMapper {
 	 * @param entityCRUD EntityWebApiTypeのリスト
 	 */
 	public void map(OpenAPI openApi, String definitionName, List<EntityWebApiType> entityCRUD) {
-		EntityDefinition entityDefinition = ManagerLocator.manager(EntityDefinitionManager.class).get(definitionName);
-		entityCRUD.forEach(e -> map.get(e).convert(openApi, entityDefinition));
+		EntityDefinition entityDefinition = ManagerLocator.manager(EntityDefinitionManager.class)
+				.get(definitionName);
+		entityCRUD.forEach(e -> map.get(e)
+				.convert(openApi, entityDefinition));
 	}
-
 
 	/**
 	 * EntityWebApiTypeごとに変換を行うコンバーターのマップを生成します。

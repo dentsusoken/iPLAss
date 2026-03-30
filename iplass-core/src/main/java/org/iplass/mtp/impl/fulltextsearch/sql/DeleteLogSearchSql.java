@@ -29,7 +29,6 @@ import org.iplass.mtp.impl.fulltextsearch.sql.DeleteLogTable.Status;
 import org.iplass.mtp.impl.rdb.adapter.QuerySqlHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public class DeleteLogSearchSql extends QuerySqlHandler {
 
 	public String toGetDeleteIndexDataSql(int tenantId, String defId, Timestamp baseDate, RdbAdapter rdb) {

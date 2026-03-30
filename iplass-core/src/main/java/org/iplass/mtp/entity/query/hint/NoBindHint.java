@@ -38,7 +38,7 @@ public class NoBindHint extends EQLHint {
 
 	public NoBindHint() {
 	}
-	
+
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
@@ -64,7 +64,7 @@ public class NoBindHint extends EQLHint {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "no_bind";

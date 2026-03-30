@@ -30,7 +30,6 @@ import org.iplass.adminconsole.server.metadata.rpc.GemEntityDefinitionOperationC
  */
 public class GemBasedClassFactory implements ScreenModuleBasedClassFactory {
 
-
 	public EntityDefinitionOperationController getEntityOperationController() {
 		return new GemEntityDefinitionOperationController();
 	}

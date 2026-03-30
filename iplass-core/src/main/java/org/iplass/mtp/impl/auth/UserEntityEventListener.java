@@ -44,18 +44,25 @@ import org.iplass.mtp.util.StringUtil;
  */
 public class UserEntityEventListener implements EntityEventListener {
 
-	private AuthService authService = ServiceRegistry.getRegistry().getService(AuthService.class);
-	private I18nService service = ServiceRegistry.getRegistry().getService(I18nService.class);
+	private AuthService authService = ServiceRegistry.getRegistry()
+			.getService(AuthService.class);
+	private I18nService service = ServiceRegistry.getRegistry()
+			.getService(I18nService.class);
 
 	private String makeName(String firstName, String lastName, String userLang) {
 		String name = "";
-		String locale = ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantI18nInfo.class).getLocale();
+		String locale = ExecuteContext.getCurrentContext()
+				.getCurrentTenant()
+				.getTenantConfig(TenantI18nInfo.class)
+				.getLocale();
 
 		if (StringUtil.isNotEmpty(userLang)) {
-			locale = Locale.forLanguageTag(userLang).toString();
+			locale = Locale.forLanguageTag(userLang)
+					.toString();
 		}
 
-		if (service.getLocaleFormat(locale).isLastNameIsFirst()) {
+		if (service.getLocaleFormat(locale)
+				.isLastNameIsFirst()) {
 			//lastName firstName
 			name = appendName(name, lastName);
 			name = appendName(name, firstName);
@@ -153,34 +160,45 @@ public class UserEntityEventListener implements EntityEventListener {
 		UpdateOption uo = (UpdateOption) context.getAttribute(EntityEventContext.UPDATE_OPTION);
 		Entity before = (Entity) context.getAttribute(EntityEventContext.BEFORE_UPDATE_ENTITY);
 
-		if ((!uo.getUpdateProperties().contains(Entity.NAME))
-				&& (uo.getUpdateProperties().contains(User.FIRST_NAME) || uo.getUpdateProperties().contains(User.LAST_NAME) || uo.getUpdateProperties().contains(User.LANGUAGE))) {
+		if ((!uo.getUpdateProperties()
+				.contains(Entity.NAME))
+				&& (uo.getUpdateProperties()
+						.contains(User.FIRST_NAME)
+						|| uo.getUpdateProperties()
+								.contains(User.LAST_NAME)
+						|| uo.getUpdateProperties()
+								.contains(User.LANGUAGE))) {
 			//nameを明示的に更新対象としていない場合、
 			//かつ、firstName, lastNameが更新対象の場合更新
 
 			String firstName = before.getValue(User.FIRST_NAME);
 			String lastName = before.getValue(User.LAST_NAME);
 			String language = before.getValue(User.LANGUAGE);
-			if (uo.getUpdateProperties().contains(User.FIRST_NAME)) {
+			if (uo.getUpdateProperties()
+					.contains(User.FIRST_NAME)) {
 				firstName = entity.getValue(User.FIRST_NAME);
 			}
-			if (uo.getUpdateProperties().contains(User.LAST_NAME)) {
+			if (uo.getUpdateProperties()
+					.contains(User.LAST_NAME)) {
 				lastName = entity.getValue(User.LAST_NAME);
 			}
-			if (uo.getUpdateProperties().contains(User.LANGUAGE)) {
+			if (uo.getUpdateProperties()
+					.contains(User.LANGUAGE)) {
 				language = entity.getValue(User.LANGUAGE);
 			}
 
 			entity.setName(makeName(firstName, lastName, language));
 			if (entity.getName() != null) {
 				//生成したnameがnullの場合は、更新対象に含めない
-				uo.getUpdateProperties().add(Entity.NAME);
+				uo.getUpdateProperties()
+						.add(Entity.NAME);
 			}
 		}
 
 		//AccountManagementModuleへ通知
 		String policyName = before.getValue(User.ACCOUNT_POLICY);
-		if (uo.getUpdateProperties().contains(User.ACCOUNT_POLICY)) {
+		if (uo.getUpdateProperties()
+				.contains(User.ACCOUNT_POLICY)) {
 			policyName = (String) entity.getValue(User.ACCOUNT_POLICY);
 		}
 
@@ -195,16 +213,15 @@ public class UserEntityEventListener implements EntityEventListener {
 
 		return true;
 	}
-	
-	
 
 	@Override
 	public void afterUpdate(Entity entity, EntityEventContext context) {
 		UpdateOption uo = (UpdateOption) context.getAttribute(EntityEventContext.UPDATE_OPTION);
 		Entity before = (Entity) context.getAttribute(EntityEventContext.BEFORE_UPDATE_ENTITY);
-		
+
 		String policyName = before.getValue(User.ACCOUNT_POLICY);
-		if (uo.getUpdateProperties().contains(User.ACCOUNT_POLICY)) {
+		if (uo.getUpdateProperties()
+				.contains(User.ACCOUNT_POLICY)) {
 			policyName = (String) entity.getValue(User.ACCOUNT_POLICY);
 		}
 		AccountManagementModule amm = authService.getAccountManagementModule(policyName);

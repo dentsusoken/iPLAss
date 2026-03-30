@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.webapi;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,8 +97,8 @@ public class EntityWebApiListPane extends VLayout {
 		grid.setHeight100();
 		grid.setShowAllRecords(true);
 		grid.setCellHeight(22);
-		grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-		grid.setShowRowNumbers(true);		//行番号表示
+		grid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
+		grid.setShowRowNumbers(true); //行番号表示
 
 		//CheckBox選択設定
 		grid.setSelectionType(SelectionStyle.SINGLE);
@@ -137,10 +136,12 @@ public class EntityWebApiListPane extends VLayout {
 		EntityWebApiDS ds = EntityWebApiDS.getInstance();
 		grid.setDataSource(ds);
 
-	    //（参考）setFieldsは、setDataSource後に指定しないと効かない
-		ListGridField nameField = new ListGridField("name", AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionListPane_name"));
+		//（参考）setFieldsは、setDataSource後に指定しないと効かない
+		ListGridField nameField = new ListGridField("name",
+				AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionListPane_name"));
 		nameField.setCanEdit(false);
-		ListGridField displayNameField = new ListGridField("displayName", AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionListPane_dispName"));
+		ListGridField displayNameField = new ListGridField("displayName",
+				AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionListPane_dispName"));
 		displayNameField.setCanEdit(false);
 
 		ListGridField isInsert = new ListGridField("isInsert", "INSERT");

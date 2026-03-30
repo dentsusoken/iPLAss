@@ -38,7 +38,6 @@ import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class MetaJspTemplate extends MetaTemplate {
 
 	private static final long serialVersionUID = -2563831318096568436L;
@@ -100,11 +99,13 @@ public class MetaJspTemplate extends MetaTemplate {
 				throws IOException, ServletException {
 			checkState();
 
-			String lang = ExecuteContext.getCurrentContext().getLanguage();
+			String lang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 			String tempPath = MetaJspTemplate.this.getPath();
 			if (localizedPathList != null) {
 				for (MetaLocalizedString mls : localizedPathList) {
-					if (mls.getLocaleName().equals(lang)) {
+					if (mls.getLocaleName()
+							.equals(lang)) {
 						if (StringUtil.isNotEmpty(mls.getStringValue())) {
 							tempPath = mls.getStringValue();
 						}
@@ -118,22 +119,25 @@ public class MetaJspTemplate extends MetaTemplate {
 //			requestContext.getResponse().setContentType("text/html; charset=utf-8");
 
 //			if (requestContext.getResponse().isCommitted()) {
-				if (requestStack.getPageContext() != null) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("include(pageContext) " + tempPath + "...");
-					}
-					requestStack.getPageContext().include(tempPath);
-				} else {
-					if (logger.isDebugEnabled()) {
-						logger.debug("include(request) " + tempPath + "...");
-					}
-					HttpServletRequest req = requestStack.getRequest();
-					if (!(req instanceof JspTemplateHttpServletRequest)) {
-						req = new JspTemplateHttpServletRequest(requestStack.getRequest(), requestStack.getRequestContext());
-					}
-//					req = new JspTemplateHttpServletRequest(requestStack.getRequest(), requestStack.getRequestContext());
-					requestStack.getRequest().getRequestDispatcher(tempPath).include(req, requestStack.getResponse());
+			if (requestStack.getPageContext() != null) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("include(pageContext) " + tempPath + "...");
 				}
+				requestStack.getPageContext()
+						.include(tempPath);
+			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug("include(request) " + tempPath + "...");
+				}
+				HttpServletRequest req = requestStack.getRequest();
+				if (!(req instanceof JspTemplateHttpServletRequest)) {
+					req = new JspTemplateHttpServletRequest(requestStack.getRequest(), requestStack.getRequestContext());
+				}
+//					req = new JspTemplateHttpServletRequest(requestStack.getRequest(), requestStack.getRequestContext());
+				requestStack.getRequest()
+						.getRequestDispatcher(tempPath)
+						.include(req, requestStack.getResponse());
+			}
 //			} else {
 //				if (requestContext.getPageContext() != null) {
 //					requestContext.getPageContext().forward(MetaJspTemplate.this.getPath());

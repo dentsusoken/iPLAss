@@ -44,7 +44,7 @@ import org.iplass.mtp.entity.query.ASTTransformer;
  */
 public class CacheHint extends EQLHint {
 	private static final long serialVersionUID = -2368342891687154508L;
-	
+
 	/**
 	 * キャッシュのスコープを表す列挙型です。
 	 */
@@ -73,14 +73,14 @@ public class CacheHint extends EQLHint {
 
 	private CacheScope scope = CacheScope.GLOBAL;
 	private int ttl;
-	
+
 	public CacheHint() {
 	}
-	
+
 	public CacheHint(CacheScope scope) {
 		this.scope = scope;
 	}
-	
+
 	public CacheHint(CacheScope scope, int ttl) {
 		this.scope = scope;
 		this.ttl = ttl;

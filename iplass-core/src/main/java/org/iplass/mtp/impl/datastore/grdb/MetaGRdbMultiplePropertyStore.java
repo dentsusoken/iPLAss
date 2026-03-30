@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.impl.datastore.grdb;
 
-
 import java.lang.reflect.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +39,6 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
-
 
 public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 	private static final long serialVersionUID = -1703768839712299060L;
@@ -114,14 +112,18 @@ public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 		private GRdbMultiplePropertyStoreHandler(PropertyHandler propertyRuntime, MetaEntity metaEntity) {
 			//Primitive型しかないはず
 			this.propertyRuntime = (PrimitivePropertyHandler) propertyRuntime;
-			rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
-			PropertyType type = this.propertyRuntime.getMetaData().getType();
+			rdb = ServiceRegistry.getRegistry()
+					.getService(RdbAdapterService.class)
+					.getRdbAdapter();
+			PropertyType type = this.propertyRuntime.getMetaData()
+					.getType();
 			typeMapping = rdb.getRdbTypeAdapter(type);
 			if (store == null) {
 				list = Collections.emptyList();
 			} else {
 				list = new ArrayList<>(store.size());
-				for (int i = 0; i < propertyRuntime.getMetaData().getMultiplicity(); i++) {
+				for (int i = 0; i < propertyRuntime.getMetaData()
+						.getMultiplicity(); i++) {
 					list.add(new GRdbPropertyStoreHandler(propertyRuntime, store.get(i), metaEntity));
 				}
 			}
@@ -142,7 +144,8 @@ public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 			if (store == null || store.size() == 0) {
 				return false;
 			} else {
-				return store.get(0).isNative();
+				return store.get(0)
+						.isNative();
 			}
 		}
 
@@ -151,7 +154,8 @@ public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 			if (store == null || store.size() == 0) {
 				return false;
 			} else {
-				return store.get(0).isExternalIndex();
+				return store.get(0)
+						.isExternalIndex();
 			}
 		}
 
@@ -165,7 +169,8 @@ public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 			//配列型
 			ArrayList<Object> vals = new ArrayList<Object>(store.size());
 			int nullCount = 0;
-			for (int i = 0; i < propertyRuntime.getMetaData().getMultiplicity(); i++) {
+			for (int i = 0; i < propertyRuntime.getMetaData()
+					.getMultiplicity(); i++) {
 				Object val = getSingleColumnRdbTypeAdapter().fromDataStore(rs, colNum + i, rdb);
 				if (val == null) {
 					nullCount++;
@@ -180,7 +185,9 @@ public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 				}
 			}
 			if (vals.size() > 0) {
-				return vals.toArray((Object[]) Array.newInstance(propertyRuntime.getMetaData().getType().storeType(), vals.size()));
+				return vals.toArray((Object[]) Array.newInstance(propertyRuntime.getMetaData()
+						.getType()
+						.storeType(), vals.size()));
 			} else {
 				//all null
 				return null;

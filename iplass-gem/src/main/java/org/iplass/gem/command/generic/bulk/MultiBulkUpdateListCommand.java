@@ -50,27 +50,36 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ActionMappings({
-	@ActionMapping(name=MultiBulkUpdateListCommand.BULK_UPDATE_ACTION_NAME,
-			displayName="更新",
-			paramMapping={
-				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-				@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
-			},
-			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_BULK_MULTI_EDIT),
-				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_BULK_MULTI_EDIT),
-				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_COMMON_ERROR,
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_COMMON_ERROR,
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-			},
-			tokenCheck=@TokenCheck
-	)
+		@ActionMapping(
+				name = MultiBulkUpdateListCommand.BULK_UPDATE_ACTION_NAME,
+				displayName = "更新",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
+				},
+				result = {
+						@Result(
+								status = Constants.CMD_EXEC_SUCCESS,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_BULK_MULTI_EDIT),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_BULK_MULTI_EDIT),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_TOKEN,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+				},
+				tokenCheck = @TokenCheck
+		)
 })
 @CommandClass(name = "gem/generic/bulk/MultiBulkUpdateListCommand", displayName = "一括更新")
 public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
@@ -107,7 +116,8 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
-		if (context.getProperty().size() == 0) {
+		if (context.getProperty()
+				.size() == 0) {
 			// 一括更新するプロパティ定義が一件もない場合、プロパティの一括更新が無効になっています。
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.canNotUpdateProp"));
 			return Constants.CMD_EXEC_ERROR_VIEW;
@@ -123,7 +133,8 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 			if (!isSearchCondUpdate) {
 				setSelectedData(data, entities, context);
 				//一括更新する前の処理を呼び出します。
-				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(entities);
+				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler()
+						.beforeOperation(entities);
 				errors.addAll(bulkContext.getErrors());
 				entities = bulkContext.getEntities();
 				// 更新された件数を0件に初期化します。
@@ -146,20 +157,25 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 						ret.setResultType(ResultType.ERROR);
 						ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.pleaseInput"));
 						break;
-					};
+					} ;
 
 					if (context.hasErrors()) {
 						if (ret.getResultType() == null) {
 							ret.setResultType(ResultType.ERROR);
-							ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
+							ret.setErrors(context.getErrors()
+									.toArray(new ValidateError[context.getErrors()
+											.size()]));
 							ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
 						}
 						break;
 					} else {
 						// 更新
-						if (ret.getResultType() == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
+						if (ret.getResultType() == null || ret.getResultType() == ResultType.SUCCESS)
+							ret = updateEntity(context, model);
 						if (ret.getResultType() == ResultType.SUCCESS) {
-							Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
+							Transaction transaction = ManagerLocator.getInstance()
+									.getManager(TransactionManager.class)
+									.currentTransaction();
 							transaction.addTransactionListener(new TransactionListener() {
 								@Override
 								public void afterCommit(Transaction t) {
@@ -167,7 +183,8 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 									if (!isSearchCondUpdate) {
 										Integer row = context.getRow(oid, version);
 										if (row != null) {
-											data.setSelected(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null, false));
+											data.setSelected(row,
+													loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null, false));
 										}
 									}
 									countUp(request);
@@ -176,13 +193,15 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 						}
 					}
 					// 更新し終えたNestTableのデータをクリア
-					context.getReferenceRegistHandlers().clear();
+					context.getReferenceRegistHandlers()
+							.clear();
 				}
 			}
 
 			//更新した後の処理を呼び出します。
 			if (!isSearchCondUpdate) {
-				context.getBulkUpdateInterrupterHandler().afterOperation(entities);
+				context.getBulkUpdateInterrupterHandler()
+						.afterOperation(entities);
 			}
 		} catch (ApplicationException e) {
 			if (getLogger().isDebugEnabled()) {

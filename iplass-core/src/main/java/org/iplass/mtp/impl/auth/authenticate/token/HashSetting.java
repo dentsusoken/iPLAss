@@ -28,29 +28,34 @@ public class HashSetting {
 	private String version;
 	private String hashAlgorithm;
 	private int stretchCount = 1;
-	
+
 	public String getVersion() {
 		return version;
 	}
+
 	public void setVersion(String version) {
 		this.version = version;
 	}
+
 	public String getHashAlgorithm() {
 		return hashAlgorithm;
 	}
+
 	public void setHashAlgorithm(String hashAlgorithm) {
 		this.hashAlgorithm = hashAlgorithm;
 	}
+
 	public int getStretchCount() {
 		return stretchCount;
 	}
+
 	public void setStretchCount(int stretchCount) {
 		this.stretchCount = stretchCount;
 	}
-	
+
 	protected String hash(String token) {
 		try {
-			
+
 			String hashTarget = token;
 			for (int i = 0; i < stretchCount; i++) {
 				hashTarget = HashUtil.digest(hashTarget, hashAlgorithm);

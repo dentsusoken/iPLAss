@@ -31,7 +31,7 @@ import org.iplass.mtp.view.generic.ViewConst;
  * @author lis3wg
  */
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/element/section/VersionSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/element/section/VersionSection.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
 public class VersionSection extends Section {
 
@@ -40,12 +40,12 @@ public class VersionSection extends Section {
 
 	/** リンクを表示するか */
 	@MetaFieldInfo(
-			displayName="リンクを表示するか",
-			displayNameKey="generic_element_section_VersionSection_showLinkDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=400,
-			description="詳細画面でのページ内リンクを表示するかを指定します。",
-			descriptionKey="generic_element_section_VersionSection_showLinkDescriptionKey"
+			displayName = "リンクを表示するか",
+			displayNameKey = "generic_element_section_VersionSection_showLinkDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 400,
+			description = "詳細画面でのページ内リンクを表示するかを指定します。",
+			descriptionKey = "generic_element_section_VersionSection_showLinkDescriptionKey"
 	)
 	private boolean showLink;
 
@@ -54,7 +54,7 @@ public class VersionSection extends Section {
 	 * @return リンクを表示するか
 	 */
 	public boolean isShowLink() {
-	    return showLink;
+		return showLink;
 	}
 
 	/**
@@ -62,6 +62,6 @@ public class VersionSection extends Section {
 	 * @param showLink リンクを表示するか
 	 */
 	public void setShowLink(boolean showLink) {
-	    this.showLink = showLink;
+		this.showLink = showLink;
 	}
 }

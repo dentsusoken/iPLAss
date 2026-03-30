@@ -38,7 +38,7 @@ public class RdbTenantStore implements TenantStore {
 
 	private String connectionFactoryName;
 	private String rdbAdapterName;
-	
+
 	private RdbAdapter rdb;
 	/** テナント検索SQL */
 	private TenantSelectSQL tenantSelect;
@@ -63,7 +63,9 @@ public class RdbTenantStore implements TenantStore {
 
 	@Override
 	public void inited(TenantService service, Config config) {
-		rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter(rdbAdapterName);
+		rdb = ServiceRegistry.getRegistry()
+				.getService(RdbAdapterService.class)
+				.getRdbAdapter(rdbAdapterName);
 		tenantSelect = rdb.getQuerySqlCreator(TenantSelectSQL.class);
 		tenantControl = rdb.getUpdateSqlCreator(TenantControlSQL.class);
 	}

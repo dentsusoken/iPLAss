@@ -50,7 +50,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * LogFileExport用Service実装クラス
  */
@@ -63,8 +62,10 @@ public class LogFileDownloadServiceImpl extends AdminDownloadService {
 	/** web.xmlで指定されたLOG_HOME（service-configで指定されていない場合に利用） */
 	private String initLogHome;
 
-	private AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
-	private AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+	private AdminConsoleService acs = ServiceRegistry.getRegistry()
+			.getService(AdminConsoleService.class);
+	private AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+			.getService(AdminAuditLoggingService.class);
 
 	@Override
 	public void init() throws ServletException {
@@ -114,7 +115,7 @@ public class LogFileDownloadServiceImpl extends AdminDownloadService {
 		aals.logDownload("LogFileDownload", fileName, "path:" + filePath);
 
 		//出力
-		try (InputStream is = new FileInputStream(logFile)){
+		try (InputStream is = new FileInputStream(logFile)) {
 
 			//ファイル名設定
 			DownloadUtil.setResponseHeader(resp, contentType, fileName, encode);
@@ -125,7 +126,7 @@ public class LogFileDownloadServiceImpl extends AdminDownloadService {
 			IOUtils.copy(is, resp.getOutputStream());
 
 		} catch (IOException e) {
-            throw new DownloadRuntimeException(e);
+			throw new DownloadRuntimeException(e);
 		}
 	}
 
@@ -141,17 +142,19 @@ public class LogFileDownloadServiceImpl extends AdminDownloadService {
 
 		//PrefixPathチェック
 		final Path pathFile = Paths.get(filePath);
-		Optional<String> validHome = logHomes.stream().filter(logHome -> {
-			//*を含む場合は、そこまでの固定部分の抽出
-			Path pathHome = null;
-			if (logHome.contains("/*/")) {
-				String fixPath = logHome.substring(0, logHome.indexOf("/*/") + 1);
-				pathHome = Paths.get(fixPath);
-			} else {
-				pathHome = Paths.get(logHome);
-			}
-			return pathFile.startsWith(pathHome);
-		}).findFirst();
+		Optional<String> validHome = logHomes.stream()
+				.filter(logHome -> {
+					//*を含む場合は、そこまでの固定部分の抽出
+					Path pathHome = null;
+					if (logHome.contains("/*/")) {
+						String fixPath = logHome.substring(0, logHome.indexOf("/*/") + 1);
+						pathHome = Paths.get(fixPath);
+					} else {
+						pathHome = Paths.get(logHome);
+					}
+					return pathFile.startsWith(pathHome);
+				})
+				.findFirst();
 		if (!validHome.isPresent()) {
 			throw new DownloadRuntimeException("invalid path:" + filePath);
 		}
@@ -166,9 +169,12 @@ public class LogFileDownloadServiceImpl extends AdminDownloadService {
 		List<String> fileFilters = acs.getTenantLogFileFilters();
 		if (fileFilters != null) {
 			// Filterチェック
-			Optional<String> validFilter = fileFilters.stream().filter(filter -> {
-				return logFile.getName().matches(filter);
-			}).findFirst();
+			Optional<String> validFilter = fileFilters.stream()
+					.filter(filter -> {
+						return logFile.getName()
+								.matches(filter);
+					})
+					.findFirst();
 			if (!validFilter.isPresent()) {
 				throw new DownloadRuntimeException("invalid path:" + filePath);
 			}

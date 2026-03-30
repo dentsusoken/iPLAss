@@ -86,7 +86,8 @@ public class ProcessLobValidator implements LobValidator {
 	@Override
 	public void stored(Lob lob, String streamWriteChecksum) {
 		//ユーザーのoid
-		String user = ExecuteContext.getCurrentContext().getClientId();
+		String user = ExecuteContext.getCurrentContext()
+				.getClientId();
 
 		//FileLobStoreの場合にファイルパスを取得
 		String filePath = null;
@@ -113,7 +114,9 @@ public class ProcessLobValidator implements LobValidator {
 		//投げっぱなし
 		try {
 //			Process process = new ProcessBuilder(cmd).redirectOutput(Redirect.INHERIT).redirectErrorStream(true).start();
-			new ProcessBuilder(cmd).redirectOutput(Redirect.INHERIT).redirectErrorStream(true).start();
+			new ProcessBuilder(cmd).redirectOutput(Redirect.INHERIT)
+					.redirectErrorStream(true)
+					.start();
 		} catch (IOException e) {
 			logger.error("process start fail:" + e, e);
 		}
@@ -121,7 +124,7 @@ public class ProcessLobValidator implements LobValidator {
 
 	private String toStr(ArrayList<String> command) {
 		StringBuilder sb = new StringBuilder();
-		for (String c: command) {
+		for (String c : command) {
 			sb.append(c);
 			sb.append(" ");
 		}

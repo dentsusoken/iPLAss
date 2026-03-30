@@ -105,13 +105,12 @@ public class EntityCsvImportService implements Service {
 	public static final String ENTITY_LOB_DIR = "lobs/";
 
 	/** 更新除外プロパティ */
-	private static Set<String> UN_UPDATABLE_PROPERTY
-		= Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{
-				//キー項目は除外
-				Entity.OID, Entity.VERSION,
-				//作成日、作成者、更新日、更新者は除外
-				Entity.CREATE_BY, Entity.CREATE_DATE, Entity.UPDATE_BY, Entity.UPDATE_DATE
-				})));
+	private static Set<String> UN_UPDATABLE_PROPERTY = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[] {
+			//キー項目は除外
+			Entity.OID, Entity.VERSION,
+			//作成日、作成者、更新日、更新者は除外
+			Entity.CREATE_BY, Entity.CREATE_DATE, Entity.UPDATE_BY, Entity.UPDATE_DATE
+	})));
 
 	/** UserエンティティのInsert時にパスワード指定を可能にするか */
 	private boolean canCreateUserWithSpecificPassword;
@@ -123,8 +122,10 @@ public class EntityCsvImportService implements Service {
 	public void init(Config config) {
 		canCreateUserWithSpecificPassword = config.getValue("canCreateUserWithSpecificPassword", Boolean.class, false);
 
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 	}
 
 	@Override
@@ -147,7 +148,8 @@ public class EntityCsvImportService implements Service {
 	 * @param excludeEntityNames インポート対象外とするエンティティ名
 	 * @return Import結果
 	 */
-	public EntityCsvImportResult importEntityData(String targetName, final InputStream is, final MetaDataEntry entry, final EntityCsvImportOption condition,
+	public EntityCsvImportResult importEntityData(String targetName, final InputStream is, final MetaDataEntry entry,
+			final EntityCsvImportOption condition,
 			final ZipFile zipFile, final String importBinaryDataDir, final List<String> excludeEntityNames) {
 
 		toolLogger.info("start entity data import. {target:{}, entity:{}}", targetName, entry.getPath());
@@ -156,14 +158,16 @@ public class EntityCsvImportService implements Service {
 		try {
 			if (excludeEntityNames != null && !excludeEntityNames.isEmpty()) {
 				for (String defName : excludeEntityNames) {
-					if (defName.equals(entry.getMetaData().getName())) {
+					if (defName.equals(entry.getMetaData()
+							.getName())) {
 						result.addMessages(rs("impl.csv.EntityCsvImportService.cantImportEntity", defName));
 						return result;
 					}
 				}
 			}
 
-			EntityDefinition definition = edm.get(entry.getMetaData().getName());
+			EntityDefinition definition = edm.get(entry.getMetaData()
+					.getName());
 
 			//全件削除
 			if (condition.isTruncate()) {
@@ -181,7 +185,8 @@ public class EntityCsvImportService implements Service {
 
 			return result;
 		} finally {
-			toolLogger.info("finish entity data import. {target:{}, entity:{}, result:{}}", targetName, entry.getPath(), (result.isError() ? "failed" : "success"));
+			toolLogger.info("finish entity data import. {target:{}, entity:{}, result:{}}", targetName, entry.getPath(),
+					(result.isError() ? "failed" : "success"));
 		}
 	}
 
@@ -209,22 +214,28 @@ public class EntityCsvImportService implements Service {
 		//非同期実行用のタスクを定義
 		AsyncTaskOption atOption = new AsyncTaskOption();
 		atOption.setExceptionHandlingMode(ExceptionHandlingMode.ABORT);
-		atOption.setGroupingKey(AuthContext.getCurrentContext().getUser().getOid());
+		atOption.setGroupingKey(AuthContext.getCurrentContext()
+				.getUser()
+				.getOid());
 		atOption.setQueue(CSV_UPLOAD_QUEUE);
 		atOption.setReturnResult(true);
 
-		ManagerLocator.manager(AsyncTaskManager.class).execute(atOption, task);
+		ManagerLocator.manager(AsyncTaskManager.class)
+				.execute(atOption, task);
 	}
 
 	private Path copyUploadFile(InputStream is) {
 
 		// 一時ディレクトリ取得
-		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+		WebFrontendService webFront = ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class);
 		File tempDir = null;
 		if (webFront.getTempFileDir() == null) {
 			WebRequestStack reqStack = WebRequestStack.getCurrent();
 			if (reqStack != null && reqStack.getRequest() != null) {
-				tempDir = (File) reqStack.getRequest().getServletContext().getAttribute(ServletContext.TEMPDIR);
+				tempDir = (File) reqStack.getRequest()
+						.getServletContext()
+						.getAttribute(ServletContext.TEMPDIR);
 			}
 		} else {
 			tempDir = new File(webFront.getTempFileDir());
@@ -277,7 +288,8 @@ public class EntityCsvImportService implements Service {
 						delCount = em.deleteAll(new DeleteCondition(definition.getName()));
 					} else {
 						//DeleteAll不可の場合、OIDを検索して1件1件削除
-						Query query = new Query().select(Entity.OID).from(definition.getName());
+						Query query = new Query().select(Entity.OID)
+								.from(definition.getName());
 
 						DeleteOption option = new DeleteOption(false);
 
@@ -338,14 +350,15 @@ public class EntityCsvImportService implements Service {
 			@Override
 			public Integer apply(Transaction transaction) {
 
-				try (EntityCsvReader reader = new EntityCsvReader(definition, is)){
+				try (EntityCsvReader reader = new EntityCsvReader(definition, is)) {
 
 					reader.withReferenceVersion(true)
-						.prefixOid(condition.getPrefixOid())
-						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty())
-						.enableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
+							.prefixOid(condition.getPrefixOid())
+							.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty())
+							.enableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
 
-					if (definition.getName().equals(User.DEFINITION_NAME)
+					if (definition.getName()
+							.equals(User.DEFINITION_NAME)
 							&& canCreateUserWithSpecificPassword) {
 						// Userエンティティの場合、パスワードを許可
 						reader.setVirtualProperties(Arrays.asList(User.PASSWORD));
@@ -384,35 +397,38 @@ public class EntityCsvImportService implements Service {
 											registBinaryReference(definition, entity, zipFile, importBinaryDataDir);
 
 											//Entityの登録
-											if (registEntity(condition, entity, definition, useCtrl, headerProperties, currentCount, result)){
+											if (registEntity(condition, entity, definition, useCtrl, headerProperties, currentCount, result)) {
 												registCount++;
 											}
 										} catch (EntityCsvImportRuntimeException e) {
-											String message = rs("impl.csv.EntityCsvImportService.updateErrMessage", definition.getName(), currentCount, e.getMessage(), getOidStatus(entity));
+											String message = rs("impl.csv.EntityCsvImportService.updateErrMessage", definition.getName(), currentCount,
+													e.getMessage(), getOidStatus(entity));
 											if (condition.isErrorSkip()) {
 												result.addMessages(message);
 												result.errored();
 											} else {
 												result.errored();
-												throw new EntityCsvImportRuntimeException(message , e);
+												throw new EntityCsvImportRuntimeException(message, e);
 											}
 										} catch (EntityApplicationException e) {
-											String message = rs("impl.csv.EntityCsvImportService.updateErrMessage", definition.getName(), currentCount, e.getMessage(), getOidStatus(entity));
+											String message = rs("impl.csv.EntityCsvImportService.updateErrMessage", definition.getName(), currentCount,
+													e.getMessage(), getOidStatus(entity));
 											if (condition.isErrorSkip()) {
 												result.addMessages(message);
 												result.errored();
 											} else {
 												result.errored();
-												throw new EntityCsvImportRuntimeException(message , e);
+												throw new EntityCsvImportRuntimeException(message, e);
 											}
 										} catch (EntityRuntimeException e) {
-											String message = rs("impl.csv.EntityCsvImportService.updateErrMessage", definition.getName(), currentCount, e.getMessage(), getOidStatus(entity));
+											String message = rs("impl.csv.EntityCsvImportService.updateErrMessage", definition.getName(), currentCount,
+													e.getMessage(), getOidStatus(entity));
 											if (condition.isErrorSkip()) {
 												result.addMessages(message);
 												result.errored();
 											} else {
 												result.errored();
-												throw new EntityCsvImportRuntimeException(message , e);
+												throw new EntityCsvImportRuntimeException(message, e);
 											}
 										}
 									}
@@ -424,7 +440,8 @@ public class EntityCsvImportService implements Service {
 									if (e.getMessage() != null) {
 										result.addMessages(e.getMessage());
 									} else {
-										result.addMessages(rs("impl.csv.EntityCsvImportService.importErrMessage", definition.getName(), e.getClass().getName()));
+										result.addMessages(rs("impl.csv.EntityCsvImportService.importErrMessage", definition.getName(), e.getClass()
+												.getName()));
 									}
 								}
 
@@ -447,7 +464,8 @@ public class EntityCsvImportService implements Service {
 						result.setError(true);
 					}
 
-					String message = rs("impl.csv.EntityCsvImportService.resultInfo", definition.getName(), result.getInsertCount(), result.getUpdateCount(), result.getDeleteCount(), result.getErrorCount());
+					String message = rs("impl.csv.EntityCsvImportService.resultInfo", definition.getName(), result.getInsertCount(),
+							result.getUpdateCount(), result.getDeleteCount(), result.getErrorCount());
 					if (condition.isNotifyListeners()) {
 						message += "(Listner)";
 					}
@@ -463,7 +481,8 @@ public class EntityCsvImportService implements Service {
 					if (e.getMessage() != null) {
 						result.addMessages(e.getMessage());
 					} else {
-						result.addMessages(rs("impl.csv.EntityCsvImportService.importErrMessage", definition.getName(), e.getClass().getName()));
+						result.addMessages(rs("impl.csv.EntityCsvImportService.importErrMessage", definition.getName(), e.getClass()
+								.getName()));
 					}
 				}
 				return registCount;
@@ -472,51 +491,55 @@ public class EntityCsvImportService implements Service {
 		});
 	}
 
-	private void registBinaryReference(final EntityDefinition definition, final Entity entity, final ZipFile zipFile, final String importBinaryDataDir) {
+	private void registBinaryReference(final EntityDefinition definition, final Entity entity, final ZipFile zipFile,
+			final String importBinaryDataDir) {
 
 		if (zipFile == null && StringUtil.isEmpty(importBinaryDataDir)) {
 			return;
 		}
 
-		definition.getPropertyList().forEach(property -> {
+		definition.getPropertyList()
+				.forEach(property -> {
 
-			Object value = entity.getValue(property.getName());
-			if (value != null) {
-				if (value instanceof BinaryReference) {
-					BinaryReference br = registBinaryReference(definition, (BinaryReference)value, zipFile, importBinaryDataDir);
-					entity.setValue(property.getName(), br);
-				} else if (value instanceof BinaryReference[]) {
-					BinaryReference[] brArray = (BinaryReference[])value;
-					for (int i = 0; i < brArray.length; i++) {
-						brArray[i] = registBinaryReference(definition, brArray[i], zipFile, importBinaryDataDir);
+					Object value = entity.getValue(property.getName());
+					if (value != null) {
+						if (value instanceof BinaryReference) {
+							BinaryReference br = registBinaryReference(definition, (BinaryReference) value, zipFile, importBinaryDataDir);
+							entity.setValue(property.getName(), br);
+						} else if (value instanceof BinaryReference[]) {
+							BinaryReference[] brArray = (BinaryReference[]) value;
+							for (int i = 0; i < brArray.length; i++) {
+								brArray[i] = registBinaryReference(definition, brArray[i], zipFile, importBinaryDataDir);
+							}
+							entity.setValue(property.getName(), brArray);
+						}
 					}
-					entity.setValue(property.getName(), brArray);
-				}
-			}
-		});
+				});
 	}
 
-	private BinaryReference registBinaryReference(final EntityDefinition definition, final BinaryReference br, final ZipFile zipFile, final String importBinaryDataDir) {
+	private BinaryReference registBinaryReference(final EntityDefinition definition, final BinaryReference br, final ZipFile zipFile,
+			final String importBinaryDataDir) {
 
 		if (br != null) {
 			String lobId = Long.toString(br.getLobId());
 			String entryPath = ENTITY_LOB_DIR + definition.getName() + "." + lobId;
 
-			if(zipFile != null) {
+			if (zipFile != null) {
 				ZipEntry zipEntry = zipFile.getEntry(entryPath);
 
 				if (zipEntry == null) {
 					logger.warn("Fail to find binary data. path = " + entryPath);
 				} else {
-					try (InputStream is = zipFile.getInputStream(zipEntry)){
+					try (InputStream is = zipFile.getInputStream(zipEntry)) {
 						return em.createBinaryReference(br.getName(), br.getType(), is);
 					} catch (IOException e) {
 						logger.warn("Fail to create binary data. path = " + entryPath);
 					}
 				}
-			} else if(StringUtil.isNotEmpty(importBinaryDataDir)) {
-				File lobFile = Paths.get(importBinaryDataDir, entryPath).toFile();
-				try (InputStream is = new FileInputStream(lobFile)){
+			} else if (StringUtil.isNotEmpty(importBinaryDataDir)) {
+				File lobFile = Paths.get(importBinaryDataDir, entryPath)
+						.toFile();
+				try (InputStream is = new FileInputStream(lobFile)) {
 					return em.createBinaryReference(br.getName(), br.getType(), is);
 				} catch (IOException e) {
 					logger.warn("Fail to create binary data. path = " + lobFile.getName());
@@ -607,9 +630,11 @@ public class EntityCsvImportService implements Service {
 
 		//Userエンティティの場合の実行ユーザーチェック
 		if (entity.getOid() != null && User.DEFINITION_NAME.equals(definition.getName())) {
-			if (entity.getOid().equals(executeContext.getClientId())) {
+			if (entity.getOid()
+					.equals(executeContext.getClientId())) {
 				//UserEntityの場合、実行ユーザーは更新不可
-				result.addMessages(rs("impl.csv.EntityCsvImportService.importUserSkipMessage", definition.getName(), index, entity.getOid(), entity.getValue(User.ACCOUNT_ID)));
+				result.addMessages(rs("impl.csv.EntityCsvImportService.importUserSkipMessage", definition.getName(), index, entity.getOid(),
+						entity.getValue(User.ACCOUNT_ID)));
 				return false;
 			}
 		}
@@ -621,17 +646,20 @@ public class EntityCsvImportService implements Service {
 				if (EntityCsvReader.CTRL_INSERT.equals(ctrlCode)) {
 					if (updateTargetVersion != null) {
 						//既に登録済
-						throw new EntityCsvImportRuntimeException(rs("impl.csv.EntityCsvImportService.alreadyExists", definition.getName(), index, entity.getOid(), uniqueKey + "(" + uniqueValue + ")", ctrlCode));
+						throw new EntityCsvImportRuntimeException(rs("impl.csv.EntityCsvImportService.alreadyExists", definition.getName(), index,
+								entity.getOid(), uniqueKey + "(" + uniqueValue + ")", ctrlCode));
 					}
 				} else if (EntityCsvReader.CTRL_UPDATE.equals(ctrlCode)) {
 					if (updateTargetVersion == null) {
 						//更新対象がない
-						throw new EntityCsvImportRuntimeException(rs("impl.csv.EntityCsvImportService.notExistsForUpdate", definition.getName(), index, entity.getOid(), uniqueKey + "(" + uniqueValue + ")", ctrlCode));
+						throw new EntityCsvImportRuntimeException(rs("impl.csv.EntityCsvImportService.notExistsForUpdate", definition.getName(), index,
+								entity.getOid(), uniqueKey + "(" + uniqueValue + ")", ctrlCode));
 					}
 				} else if (EntityCsvReader.CTRL_DELETE.equals(ctrlCode)) {
 					if (deleteTargetVersion == null) {
 						//削除対象がない
-						throw new EntityCsvImportRuntimeException(rs("impl.csv.EntityCsvImportService.notExistsForDelete", definition.getName(), index, entity.getOid(), uniqueKey + "(" + uniqueValue + ")", ctrlCode));
+						throw new EntityCsvImportRuntimeException(rs("impl.csv.EntityCsvImportService.notExistsForDelete", definition.getName(), index,
+								entity.getOid(), uniqueKey + "(" + uniqueValue + ")", ctrlCode));
 					}
 
 					//削除処理
@@ -690,33 +718,37 @@ public class EntityCsvImportService implements Service {
 
 	private String getVersionEntityOid(String defName, String uniqueKey, String uniqueValue, Long version, EntityHandler entityHandler) {
 
-		Query query = new Query().select(Entity.OID).from(defName);
+		Query query = new Query().select(Entity.OID)
+				.from(defName);
 		query.where(new And(new Equals(uniqueKey, uniqueValue), new Equals(Entity.VERSION, version)));
 		query.versioned(true);
-		query.getSelect().addHint(new FetchSizeHint(1));
+		query.getSelect()
+				.addHint(new FetchSizeHint(1));
 
 		final String[] storedOid = new String[1];
 		entityHandler.search(query, null, new Predicate<Object[]>() {
 			@Override
 			public boolean test(Object[] dataModel) {
-				storedOid[0] = (String)dataModel[0];
-				return false;	//1件でいい（OIDは一意）
+				storedOid[0] = (String) dataModel[0];
+				return false; //1件でいい（OIDは一意）
 			}
 		});
 		return storedOid[0];
 	}
 
 	private String getNoneVersionEntityOid(String defName, String uniqueKey, String uniqueValue, EntityHandler entityHandler) {
-		Query query = new Query().select(Entity.OID).from(defName);
+		Query query = new Query().select(Entity.OID)
+				.from(defName);
 		query.where(new Equals(uniqueKey, uniqueValue));
-		query.getSelect().addHint(new FetchSizeHint(1));
+		query.getSelect()
+				.addHint(new FetchSizeHint(1));
 
 		final String[] storedOid = new String[1];
 		entityHandler.search(query, null, new Predicate<Object[]>() {
 			@Override
 			public boolean test(Object[] dataModel) {
-				storedOid[0] = (String)dataModel[0];
-				return false;	//1件でいい（OIDは一意）
+				storedOid[0] = (String) dataModel[0];
+				return false; //1件でいい（OIDは一意）
 			}
 		});
 		return storedOid[0];
@@ -748,7 +780,8 @@ public class EntityCsvImportService implements Service {
 		//除外対象のプロパティチェック
 		List<String> updateProperties = new ArrayList<>();
 		//headerはmultipleの場合、同じものが含まれるためdistinct(set化で対応)
-		for (String propName : headerProperties.stream().collect(Collectors.toSet())) {
+		for (String propName : headerProperties.stream()
+				.collect(Collectors.toSet())) {
 			PropertyHandler ph = entityHandler.getProperty(propName, entityContext);
 			if (ph != null) {
 				if (cond.isUpdateDisupdatableProperty()) {
@@ -760,18 +793,21 @@ public class EntityCsvImportService implements Service {
 					}
 					//被参照項目は除外
 					if (ph instanceof ReferencePropertyHandler
-							&& ((ReferencePropertyHandler) ph).getMetaData().getMappedByPropertyMetaDataId() != null) {
+							&& ((ReferencePropertyHandler) ph).getMetaData()
+									.getMappedByPropertyMetaDataId() != null) {
 						continue;
 					}
 					//仮想項目は除外
 					if (ph instanceof PrimitivePropertyHandler
-							&& ((MetaPrimitiveProperty) ph.getMetaData()).getType().isVirtual()) {
+							&& ((MetaPrimitiveProperty) ph.getMetaData()).getType()
+									.isVirtual()) {
 						continue;
 					}
 					updateProperties.add(propName);
 				} else {
 					//更新不可項目を含まない場合
-					if (ph.getMetaData().isUpdatable()) {
+					if (ph.getMetaData()
+							.isUpdatable()) {
 						updateProperties.add(propName);
 					}
 				}
@@ -794,12 +830,12 @@ public class EntityCsvImportService implements Service {
 			@Override
 			public Integer apply(Transaction transaction) {
 
-				try (EntityCsvReader reader = new EntityCsvReader(definition, is)){
+				try (EntityCsvReader reader = new EntityCsvReader(definition, is)) {
 
 					reader.withReferenceVersion(true)
-						.prefixOid(condition.getPrefixOid())
-						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty())
-						.enableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
+							.prefixOid(condition.getPrefixOid())
+							.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty())
+							.enableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
 
 					final Iterator<Entity> iterator = reader.iterator();
 
@@ -828,7 +864,8 @@ public class EntityCsvImportService implements Service {
 									if (e.getMessage() != null) {
 										result.addMessages(e.getMessage());
 									} else {
-										result.addMessages(rs("impl.csv.EntityCsvImportService.importErrMessage", definition.getName(), e.getClass().getName()));
+										result.addMessages(rs("impl.csv.EntityCsvImportService.importErrMessage", definition.getName(), e.getClass()
+												.getName()));
 									}
 
 									return 0;
@@ -853,7 +890,8 @@ public class EntityCsvImportService implements Service {
 						result.setError(true);
 					}
 
-					String message = rs("impl.csv.EntityCsvImportService.bulkResultInfo", definition.getName(), result.getInsertCount(), result.getUpdateCount(), result.getDeleteCount(), result.getMergeCount());
+					String message = rs("impl.csv.EntityCsvImportService.bulkResultInfo", definition.getName(), result.getInsertCount(),
+							result.getUpdateCount(), result.getDeleteCount(), result.getMergeCount());
 					result.addMessages(message);
 
 				} catch (EntityCsvImportRuntimeException | EntityCsvException | IOException e) {
@@ -863,7 +901,8 @@ public class EntityCsvImportService implements Service {
 					if (e.getMessage() != null) {
 						result.addMessages(e.getMessage());
 					} else {
-						result.addMessages(rs("impl.csv.EntityCsvImportService.importErrMessage", definition.getName(), e.getClass().getName()));
+						result.addMessages(rs("impl.csv.EntityCsvImportService.importErrMessage", definition.getName(), e.getClass()
+								.getName()));
 					}
 				}
 				return registCount;
@@ -890,7 +929,8 @@ public class EntityCsvImportService implements Service {
 		private int registCount = 0;
 
 		public PortingBulkUpdatable(Iterator<Entity> internal, List<String> updateProperties,
-				EntityDefinition definition, EntityCsvImportOption condition, ZipFile zipFile, String importBinaryDataDir, EntityCsvImportResult result) {
+				EntityDefinition definition, EntityCsvImportOption condition, ZipFile zipFile, String importBinaryDataDir,
+				EntityCsvImportResult result) {
 			this.internal = internal;
 			this.updateProperties = updateProperties;
 			this.definition = definition;

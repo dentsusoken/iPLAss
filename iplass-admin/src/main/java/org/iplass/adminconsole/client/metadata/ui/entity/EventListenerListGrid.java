@@ -117,7 +117,7 @@ public class EventListenerListGrid extends ListGrid {
 		addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				startEventListenerEdit(false, (EventListenerListGridRecord)getRecord(event.getRecordNum()));
+				startEventListenerEdit(false, (EventListenerListGridRecord) getRecord(event.getRecordNum()));
 			}
 		});
 	}
@@ -125,7 +125,9 @@ public class EventListenerListGrid extends ListGrid {
 	public void setDefinition(EntityDefinition definition) {
 		List<EventListenerDefinition> lstElDef = definition.getEventListenerList();
 
-		if (lstElDef == null) { return; }
+		if (lstElDef == null) {
+			return;
+		}
 
 		int size = lstElDef.size();
 		EventListenerListGridRecord[] records = new EventListenerListGridRecord[size];
@@ -148,7 +150,7 @@ public class EventListenerListGrid extends ListGrid {
 		ListGridRecord[] records = getRecords();
 
 		for (ListGridRecord record : records) {
-			EventListenerDefinition elDef = createElDef((EventListenerListGridRecord)record);
+			EventListenerDefinition elDef = createElDef((EventListenerListGridRecord) record);
 			lstResult.add(elDef);
 		}
 		definition.setEventListenerList(lstResult);
@@ -159,7 +161,7 @@ public class EventListenerListGrid extends ListGrid {
 		if (elDef instanceof ScriptingEventListenerDefinition) {
 			record.setElName(SCRIPT);
 
-			ScriptingEventListenerDefinition sDef = (ScriptingEventListenerDefinition)elDef;
+			ScriptingEventListenerDefinition sDef = (ScriptingEventListenerDefinition) elDef;
 			// Script文字列
 			record.setScript(sDef.getScript());
 			record.setGeneralPurpus(sDef.getScript());
@@ -206,7 +208,7 @@ public class EventListenerListGrid extends ListGrid {
 		} else if (elDef instanceof JavaClassEventListenerDefinition) {
 			record.setElName(JAVACLASS);
 
-			JavaClassEventListenerDefinition jcDef = (JavaClassEventListenerDefinition)elDef;
+			JavaClassEventListenerDefinition jcDef = (JavaClassEventListenerDefinition) elDef;
 			record.setClassName(jcDef.getClassName());
 			record.setGeneralPurpus(jcDef.getClassName());
 			//		} else if (elDef instanceof OutboundEventListenerDefinition) {
@@ -216,9 +218,11 @@ public class EventListenerListGrid extends ListGrid {
 		} else if (elDef instanceof SendNotificationEventListenerDefinition) {
 			record.setElName(SENDNOTIFICATION);
 
-			SendNotificationEventListenerDefinition snDef = (SendNotificationEventListenerDefinition)elDef;
-			record.setNotificationType(snDef.getNotificationType().name());
-			record.setGeneralPurpus(snDef.getNotificationType().name());
+			SendNotificationEventListenerDefinition snDef = (SendNotificationEventListenerDefinition) elDef;
+			record.setNotificationType(snDef.getNotificationType()
+					.name());
+			record.setGeneralPurpus(snDef.getNotificationType()
+					.name());
 			record.setTmplDefName(snDef.getTmplDefName());
 			record.setNotificationCondScript(snDef.getNotificationCondScript());
 			record.setDestinationList(snDef.getDestinationList());
@@ -229,7 +233,7 @@ public class EventListenerListGrid extends ListGrid {
 			List<EventType> lstEType = snDef.getListenEvent();
 			if (lstEType != null) {
 				for (EventType eType : lstEType) {
-					switch(eType) {
+					switch (eType) {
 					case AFTER_DELETE:
 						record.setNotifyAfterD(true);
 						break;
@@ -285,16 +289,36 @@ public class EventListenerListGrid extends ListGrid {
 				sDef.setScript(record.getScript());
 
 				List<EventType> lstEType = new ArrayList<>();
-				if (record.isAfterD()) { lstEType.add(EventType.AFTER_DELETE); }
-				if (record.isAfterI()) { lstEType.add(EventType.AFTER_INSERT); }
-				if (record.isAfterU()) { lstEType.add(EventType.AFTER_UPDATE); }
-				if (record.isBeforeD()) { lstEType.add(EventType.BEFORE_DELETE); }
-				if (record.isBeforeI()) { lstEType.add(EventType.BEFORE_INSERT); }
-				if (record.isBeforeU()) { lstEType.add(EventType.BEFORE_UPDATE); }
-				if (record.isAfterR()) { lstEType.add(EventType.AFTER_RESTORE); }
-				if (record.isAfterP()) { lstEType.add(EventType.AFTER_PURGE); }
-				if (record.isOnLoad()) { lstEType.add(EventType.ON_LOAD); }
-				if (record.isBeforeValidate()) { lstEType.add(EventType.BEFORE_VALIDATE); }
+				if (record.isAfterD()) {
+					lstEType.add(EventType.AFTER_DELETE);
+				}
+				if (record.isAfterI()) {
+					lstEType.add(EventType.AFTER_INSERT);
+				}
+				if (record.isAfterU()) {
+					lstEType.add(EventType.AFTER_UPDATE);
+				}
+				if (record.isBeforeD()) {
+					lstEType.add(EventType.BEFORE_DELETE);
+				}
+				if (record.isBeforeI()) {
+					lstEType.add(EventType.BEFORE_INSERT);
+				}
+				if (record.isBeforeU()) {
+					lstEType.add(EventType.BEFORE_UPDATE);
+				}
+				if (record.isAfterR()) {
+					lstEType.add(EventType.AFTER_RESTORE);
+				}
+				if (record.isAfterP()) {
+					lstEType.add(EventType.AFTER_PURGE);
+				}
+				if (record.isOnLoad()) {
+					lstEType.add(EventType.ON_LOAD);
+				}
+				if (record.isBeforeValidate()) {
+					lstEType.add(EventType.BEFORE_VALIDATE);
+				}
 				sDef.setListenEvent(lstEType);
 
 				result = sDef;
@@ -316,16 +340,36 @@ public class EventListenerListGrid extends ListGrid {
 				snDef.setSendTogether(record.isSendTogether());
 
 				List<EventType> lstEType = new ArrayList<>();
-				if (record.isNotifyAfterD()) { lstEType.add(EventType.AFTER_DELETE); }
-				if (record.isNotifyAfterI()) { lstEType.add(EventType.AFTER_INSERT); }
-				if (record.isNotifyAfterU()) { lstEType.add(EventType.AFTER_UPDATE); }
-				if (record.isNotifyBeforeD()) { lstEType.add(EventType.BEFORE_DELETE); }
-				if (record.isNotifyBeforeI()) { lstEType.add(EventType.BEFORE_INSERT); }
-				if (record.isNotifyBeforeU()) { lstEType.add(EventType.BEFORE_UPDATE); }
-				if (record.isNotifyAfterR()) { lstEType.add(EventType.AFTER_RESTORE); }
-				if (record.isNotifyAfterP()) { lstEType.add(EventType.AFTER_PURGE); }
-				if (record.isNotifyOnLoad()) { lstEType.add(EventType.ON_LOAD); }
-				if (record.isNotifyBeforeValidate()) { lstEType.add(EventType.BEFORE_VALIDATE); }
+				if (record.isNotifyAfterD()) {
+					lstEType.add(EventType.AFTER_DELETE);
+				}
+				if (record.isNotifyAfterI()) {
+					lstEType.add(EventType.AFTER_INSERT);
+				}
+				if (record.isNotifyAfterU()) {
+					lstEType.add(EventType.AFTER_UPDATE);
+				}
+				if (record.isNotifyBeforeD()) {
+					lstEType.add(EventType.BEFORE_DELETE);
+				}
+				if (record.isNotifyBeforeI()) {
+					lstEType.add(EventType.BEFORE_INSERT);
+				}
+				if (record.isNotifyBeforeU()) {
+					lstEType.add(EventType.BEFORE_UPDATE);
+				}
+				if (record.isNotifyAfterR()) {
+					lstEType.add(EventType.AFTER_RESTORE);
+				}
+				if (record.isNotifyAfterP()) {
+					lstEType.add(EventType.AFTER_PURGE);
+				}
+				if (record.isNotifyOnLoad()) {
+					lstEType.add(EventType.ON_LOAD);
+				}
+				if (record.isNotifyBeforeValidate()) {
+					lstEType.add(EventType.BEFORE_VALIDATE);
+				}
 				snDef.setListenEvent(lstEType);
 
 				result = snDef;
@@ -348,7 +392,6 @@ public class EventListenerListGrid extends ListGrid {
 		EventListenerEditDialog dialog = new EventListenerEditDialog(isNewRow, record);
 		dialog.show();
 	}
-
 
 	/**
 	 * EventListener編集用ダイアログ
@@ -423,14 +466,9 @@ public class EventListenerListGrid extends ListGrid {
 		private CheckboxItem notifyOnLoadItem;
 		private CheckboxItem notifyBeforeValidateItem;
 
-
-
-
-
 		//withoutMappedByReference
 		private DynamicForm withoutMappedByReferenceItemForm;
 		private CheckboxItem withoutMappedByReferenceItem;
-
 
 		private EventListenerEditDialog(boolean isNewRow, EventListenerListGridRecord target) {
 			this.isNewRow = isNewRow;
@@ -490,14 +528,15 @@ public class EventListenerListGrid extends ListGrid {
 							null,
 							new ScriptEditorDialogHandler() {
 
-						@Override
-						public void onSave(String text) {
-							scriptItem.setValue(text);
-						}
-						@Override
-						public void onCancel() {
-						}
-					});
+								@Override
+								public void onSave(String text) {
+									scriptItem.setValue(text);
+								}
+
+								@Override
+								public void onCancel() {
+								}
+							});
 				}
 			});
 
@@ -576,7 +615,6 @@ public class EventListenerListGrid extends ListGrid {
 			tmplDefNameItem = new MtpSelectItem("template", "Template");
 			SmartGWTUtil.setRequired(tmplDefNameItem);
 
-
 			sendNotificationForm = new MtpForm();
 			sendNotificationForm.setHeight(50);
 			sendNotificationForm.setItems(notificationTypeItem, tmplDefNameItem);
@@ -597,7 +635,7 @@ public class EventListenerListGrid extends ListGrid {
 			notificationDestinationGrid.addDoubleClickHandler(new DoubleClickHandler() {
 				@Override
 				public void onDoubleClick(DoubleClickEvent event) {
-					if (notificationDestinationGrid.getSelectedRecord()!=null) {
+					if (notificationDestinationGrid.getSelectedRecord() != null) {
 						destinationEditMap(notificationDestinationGrid.getSelectedRecord());
 					}
 				}
@@ -622,12 +660,12 @@ public class EventListenerListGrid extends ListGrid {
 				}
 			});
 			destinationForm.setChildren(notificationDestinationGrid);
-			destinationButtonTempLayout.setChildren(addDestinationGridButton,deleteDestinationGridButton);
+			destinationButtonTempLayout.setChildren(addDestinationGridButton, deleteDestinationGridButton);
 			destinationLayout.setChildren(destinationButtonTempLayout, destinationForm);
 			sendTogetherForm = new MtpForm();
 			sendTogetherForm.setHeight(30);
 
-			isSendTogetherItem = new CheckboxItem("sendTogether","SendTogether");
+			isSendTogetherItem = new CheckboxItem("sendTogether", "SendTogether");
 			isSendTogetherItem.setShowTitle(false);
 			isSendTogetherItem.setPrompt(AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_notificationSendTogetherInfo"));
 			sendTogetherForm.setItems(isSendTogetherItem);
@@ -639,11 +677,11 @@ public class EventListenerListGrid extends ListGrid {
 			webhookLayout.setWidth("100%");
 			webhookSettingsForm = new MtpForm();
 			webhookSettingsForm.setNumCols(2);
-			notificationResultHandlerItem = new TextItem("ResponseHandler","ResponseHandlerImplClassName");
+			notificationResultHandlerItem = new TextItem("ResponseHandler", "ResponseHandlerImplClassName");
 			notificationResultHandlerItem.setWidth(575);
-			webhookIsSynchronousItem = new CheckboxItem("webhookIsSynchronous","Synchronous");
+			webhookIsSynchronousItem = new CheckboxItem("webhookIsSynchronous", "Synchronous");
 			webhookIsSynchronousItem.setShowTitle(false);
-			webhookSettingsForm.setItems(notificationResultHandlerItem,webhookIsSynchronousItem);
+			webhookSettingsForm.setItems(notificationResultHandlerItem, webhookIsSynchronousItem);
 			webhookLayout.addMembers(webhookSettingsForm);
 
 			//---------------------------------
@@ -665,14 +703,15 @@ public class EventListenerListGrid extends ListGrid {
 							null,
 							new ScriptEditorDialogHandler() {
 
-						@Override
-						public void onSave(String text) {
-							notificationCondScriptItem.setValue(text);
-						}
-						@Override
-						public void onCancel() {
-						}
-					});
+								@Override
+								public void onSave(String text) {
+									notificationCondScriptItem.setValue(text);
+								}
+
+								@Override
+								public void onCancel() {
+								}
+							});
 				}
 			});
 
@@ -713,7 +752,7 @@ public class EventListenerListGrid extends ListGrid {
 			notifyEventItemForm.setIsGroup(true);
 			notifyEventItemForm.setGroupTitle("Events");
 			notifyEventItemForm.setItems(notifyBeforeIItem, notifyAfterIItem, notifyBeforeUItem, notifyAfterUItem, SmartGWTUtil.createSpacer(),
-					notifyBeforeDItem, notifyAfterDItem, notifyAfterRItem, notifyAfterPItem,SmartGWTUtil.createSpacer(),
+					notifyBeforeDItem, notifyAfterDItem, notifyAfterRItem, notifyAfterPItem, SmartGWTUtil.createSpacer(),
 					notifyOnLoadItem, notifyBeforeValidateItem);
 
 			//---------------------------------
@@ -808,7 +847,8 @@ public class EventListenerListGrid extends ListGrid {
 			withoutMappedByReferenceItem.setValue(target.isWithoutMappedByReference());
 
 			//既にnotificationTypeがあったらtemplateの選択肢もロードします
-			if (notificationTypeItem.getValueAsString()!=null&&!notificationTypeItem.getValueAsString().isEmpty()) {
+			if (notificationTypeItem.getValueAsString() != null && !notificationTypeItem.getValueAsString()
+					.isEmpty()) {
 				MetaTemplateChange();
 			}
 		}
@@ -870,13 +910,16 @@ public class EventListenerListGrid extends ListGrid {
 				setHeight(470);
 				typeLayout.addMember(sendNotificationForm);
 
-				if (notificationTypeItem.getValueAsString()!=null) {
-					if (notificationTypeItem.getValueAsString().equals(SendNotificationType.WEBHOOK.name())) {
+				if (notificationTypeItem.getValueAsString() != null) {
+					if (notificationTypeItem.getValueAsString()
+							.equals(SendNotificationType.WEBHOOK.name())) {
 						typeLayout.addMember(webhookLayout);
 						typeLayout.addMember(destinationLayout);
 						setHeight(720);
-					} else if (notificationTypeItem.getValueAsString().equals(SendNotificationType.MAIL.name())
-							||notificationTypeItem.getValueAsString().equals(SendNotificationType.PUSH.name())) {
+					} else if (notificationTypeItem.getValueAsString()
+							.equals(SendNotificationType.MAIL.name())
+							|| notificationTypeItem.getValueAsString()
+									.equals(SendNotificationType.PUSH.name())) {
 						typeLayout.addMember(sendTogetherForm);
 						typeLayout.addMember(destinationLayout);
 						setHeight(680);
@@ -943,15 +986,15 @@ public class EventListenerListGrid extends ListGrid {
 				}
 			}
 			if (typeLayout.contains(destinationLayout)) {
-				if(destinationLayout.contains(destinationForm)) {
-					if(!destinationForm.validate()) {
+				if (destinationLayout.contains(destinationForm)) {
+					if (!destinationForm.validate()) {
 						isValidate = false;
 					}
 				}
 			}
 			if (typeLayout.contains(webhookLayout)) {
 				if (webhookLayout.contains(webhookSettingsForm)) {
-					if(!webhookSettingsForm.validate()) {
+					if (!webhookSettingsForm.validate()) {
 						isValidate = false;
 					}
 				}
@@ -1002,49 +1045,55 @@ public class EventListenerListGrid extends ListGrid {
 			updateData(target);
 			refreshFields();
 		}
-		private void destinationEditMap(ListGridRecord record){
+
+		private void destinationEditMap(ListGridRecord record) {
 			MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
-					record == null?null:record.getAttribute(NotificationDestinationGrid.NOTIFICATION_DESTINATION_ATTRIBUTE_NAME),
-							ScriptEditorDialogCondition.ENTITY_EVENT_LISTNER,
-							"ui_metadata_entity_EventListenerListGrid_scriptHint",
-							null,
-							new ScriptEditorDialogHandler() {
-				@Override
-				public void onSave(String text) {
-					if (record != null) {
-						notificationDestinationGrid.getRecordList().remove(record);
-					}
-					notificationDestinationGrid.addDestination(text);
-					target.setDestinationList(notificationDestinationGrid.getDestination());
-					notificationDestinationGrid.redraw();
-				}
-				@Override
-				public void onCancel() {
-				}
-			});
+					record == null ? null : record.getAttribute(NotificationDestinationGrid.NOTIFICATION_DESTINATION_ATTRIBUTE_NAME),
+					ScriptEditorDialogCondition.ENTITY_EVENT_LISTNER,
+					"ui_metadata_entity_EventListenerListGrid_scriptHint",
+					null,
+					new ScriptEditorDialogHandler() {
+						@Override
+						public void onSave(String text) {
+							if (record != null) {
+								notificationDestinationGrid.getRecordList()
+										.remove(record);
+							}
+							notificationDestinationGrid.addDestination(text);
+							target.setDestinationList(notificationDestinationGrid.getDestination());
+							notificationDestinationGrid.redraw();
+						}
+
+						@Override
+						public void onCancel() {
+						}
+					});
 		}
-		private void destinationDelMap(){
+
+		private void destinationDelMap() {
 			notificationDestinationGrid.removeSelectedData();
 			target.setDestinationList(notificationDestinationGrid.getDestination());
 			notificationDestinationGrid.markForRedraw();
 		}
 
-		protected class NotificationDestinationGrid extends ListGrid{
+		protected class NotificationDestinationGrid extends ListGrid {
 			ListGridField destinationField;
 			public final static String NOTIFICATION_DESTINATION_ATTRIBUTE_NAME = "notificationDestination";
-			private NotificationDestinationGrid(){
+
+			private NotificationDestinationGrid() {
 				setTitle("Destination");
 				setBodyOverflow(Overflow.SCROLL);
-				destinationField = new ListGridField(NOTIFICATION_DESTINATION_ATTRIBUTE_NAME,"Destination");
+				destinationField = new ListGridField(NOTIFICATION_DESTINATION_ATTRIBUTE_NAME, "Destination");
 				destinationField.setCanEdit(false);
 				this.setFields(destinationField);
 			}
+
 			private void initializeGrid(List<String> destinationList) {
 				this.setData(createWebhookEndpointRecord(destinationList));
 			}
 
 			private ListGridRecord[] createWebhookEndpointRecord(List<String> destinationList) {
-				if (destinationList == null || destinationList.size()==0) {
+				if (destinationList == null || destinationList.size() == 0) {
 					return null;
 				}
 				ListGridRecord[] result = new ListGridRecord[destinationList.size()];
@@ -1057,12 +1106,14 @@ public class EventListenerListGrid extends ListGrid {
 				}
 				return result;
 			}
+
 			private void addDestination(String destination) {
 				ListGridRecord record = new ListGridRecord();
 				record.setAttribute(NOTIFICATION_DESTINATION_ATTRIBUTE_NAME, destination);
 				this.addData(record);
 			}
-			private List<String> getDestination(){
+
+			private List<String> getDestination() {
 				ListGridRecord[] result = this.getRecords();
 				List<String> destinationList = new ArrayList<>();
 				for (ListGridRecord record : result) {

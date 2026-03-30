@@ -37,7 +37,6 @@ public class ToolbarNodeManager extends ItemNodeManager {
 
 	private ToolbarNodeManagerController controller = GWT.create(ToolbarNodeManagerController.class);
 
-
 	@Override
 	public String getName() {
 		return "Toolbar Parts";
@@ -48,7 +47,6 @@ public class ToolbarNodeManager extends ItemNodeManager {
 		TopViewNode[] nodes = controller.getNodes();
 		tree.addList(nodes, parent);
 	}
-
 
 	public interface ToolbarNodeManagerController {
 		TopViewNode[] getNodes();
@@ -61,8 +59,9 @@ public class ToolbarNodeManager extends ItemNodeManager {
 			TopViewNode userMaintenance = new TopViewNode("User Maintenance", UserMaintenanceParts.class.getName(), "", true, false, true);
 			TopViewNode appMaintenance = new TopViewNode("Application Maintenance", ApplicationMaintenanceParts.class.getName(), "", true, false, true);
 			TopViewNode fulltextSearchView = new TopViewNode("Fulltext Search", FulltextSearchViewParts.class.getName(), "", true, false, true);
-			TopViewNode csvDownloadSettingsView = new TopViewNode("CsvDownload Settings", CsvDownloadSettingsParts.class.getName(), "", true, false, true);
-			return new TopViewNode[]{previewDate, userMaintenance, appMaintenance, fulltextSearchView, csvDownloadSettingsView};
+			TopViewNode csvDownloadSettingsView = new TopViewNode("CsvDownload Settings", CsvDownloadSettingsParts.class.getName(), "", true, false,
+					true);
+			return new TopViewNode[] { previewDate, userMaintenance, appMaintenance, fulltextSearchView, csvDownloadSettingsView };
 		}
 	}
 }

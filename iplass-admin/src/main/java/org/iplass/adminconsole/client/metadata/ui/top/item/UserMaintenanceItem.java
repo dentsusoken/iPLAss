@@ -115,7 +115,7 @@ public class UserMaintenanceItem extends PartsItem {
 			save.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						//入力情報をパーツに
 						parts.setViewName(SmartGWTUtil.getStringValue(viewField));
 						destroy();
@@ -142,32 +142,33 @@ public class UserMaintenanceItem extends PartsItem {
 				service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName,
 						new AsyncCallback<EntityView>() {
 
-					@Override
-					public void onSuccess(EntityView result) {
-						viewField.setDisabled(false);
-						if (result == null || result.getDetailFormViewNames().length == 0) {
-							valueMap.put("", "default");
-						} else {
-							for (String viewName : result.getDetailFormViewNames()) {
-								if (viewName.isEmpty()) {
+							@Override
+							public void onSuccess(EntityView result) {
+								viewField.setDisabled(false);
+								if (result == null || result.getDetailFormViewNames().length == 0) {
 									valueMap.put("", "default");
 								} else {
-									valueMap.put(viewName, viewName);
+									for (String viewName : result.getDetailFormViewNames()) {
+										if (viewName.isEmpty()) {
+											valueMap.put("", "default");
+										} else {
+											valueMap.put(viewName, viewName);
+										}
+									}
 								}
+
+								viewField.setValueMap(valueMap);
 							}
-						}
 
-						viewField.setValueMap(valueMap);
-					}
+							@Override
+							public void onFailure(Throwable caught) {
+								SC.say(AdminClientMessageUtil.getString("ui_metadata_top_item_UserMaintenanceItem_failed"),
+										AdminClientMessageUtil.getString("ui_metadata_top_item_UserMaintenanceItem_failedGetScreenInfo")
+												+ caught.getMessage());
 
-					@Override
-					public void onFailure(Throwable caught) {
-						SC.say(AdminClientMessageUtil.getString("ui_metadata_top_item_UserMaintenanceItem_failed"),
-								AdminClientMessageUtil.getString("ui_metadata_top_item_UserMaintenanceItem_failedGetScreenInfo") + caught.getMessage());
-
-						GWT.log(caught.toString(), caught);
-					}
-				});
+								GWT.log(caught.toString(), caught);
+							}
+						});
 			}
 		}
 

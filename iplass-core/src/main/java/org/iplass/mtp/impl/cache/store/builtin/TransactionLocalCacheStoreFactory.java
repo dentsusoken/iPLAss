@@ -151,7 +151,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 				CacheStore store = (CacheStore) t.getAttribute(CACHE_PREFIX + namespace);
 				if (store == null) {
-					store = new MapBaseCacheStore(namespace, new HashMap<Object, CacheEntry>(initialCapacity, loadFactor), getIndexCount(), -1, TransactionLocalCacheStoreFactory.this);
+					store = new MapBaseCacheStore(namespace, new HashMap<Object, CacheEntry>(initialCapacity, loadFactor), getIndexCount(), -1,
+							TransactionLocalCacheStoreFactory.this);
 					t.setAttribute(CACHE_PREFIX + namespace, store);
 				}
 				return store;
@@ -163,14 +164,14 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 		@Override
 		public CacheEntry put(final CacheEntry entry, final boolean isClean) {
 			if (logger.isTraceEnabled()) {
-				logger.trace("put local cache!key=" + entry.getKey() + ",version=" + entry.getVersion() + ",value=" + entry.getValue() + ",clean=" + isClean);
+				logger.trace("put local cache!key=" + entry.getKey() + ",version=" + entry.getVersion() + ",value=" + entry.getValue() + ",clean="
+						+ isClean);
 			}
 			final CacheEntry localPrevious = getStore().put(entry, isClean);
-			
+
 			if (backendCacheStore == null) {
 				return localPrevious;
 			}
-			
 
 			if (isClean) {
 				//dirtyでない場合は、そのままバックエンドにput
@@ -180,7 +181,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				} else {
 					return backendPrevious;
 				}
-				
+
 			} else {
 				//dirtyの場合は、トランザクションコミットのタイミングで更新
 				final CacheEntry previous;
@@ -216,7 +217,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 									isConflict = false;
 								} else {
 									if (logger.isDebugEnabled()) {
-										logger.debug("maybe another Thread Updated newly version:" + sheredPrevious.getVersion() + ". so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
+										logger.debug("maybe another Thread Updated newly version:" + sheredPrevious.getVersion()
+												+ ". so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
 									}
 								}
 							} else {
@@ -242,7 +244,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 										} else {
 											//別スレッドがさらに新しいバージョンで更新済み
 											if (logger.isDebugEnabled()) {
-												logger.debug("maybe another Thread Updated newly version:" + current.getVersion() + ". so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
+												logger.debug("maybe another Thread Updated newly version:" + current.getVersion()
+														+ ". so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
 											}
 											isLoop = false;
 //											isConflict = false;
@@ -263,7 +266,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 						}
 					}
 				});
-				
+
 				return previous;
 			}
 		}
@@ -282,23 +285,24 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				CacheEntry backendEntry = backendCacheStore.computeIfAbsent(key, mappingFunction);
 				if (backendEntry != null) {
 					if (logger.isTraceEnabled()) {
-						logger.trace("put local cache!key=" + backendEntry.getKey() + ",version=" + backendEntry.getVersion() + ",value=" + backendEntry.getValue());
+						logger.trace("put local cache!key=" + backendEntry.getKey() + ",version=" + backendEntry.getVersion() + ",value="
+								+ backendEntry.getValue());
 					}
 					getStore().put(backendEntry, false);
 				}
-				
+
 				return backendEntry;
 			} else {
 				if (ce != null && !(ce instanceof RemovedCacheEntry)) {
 					return ce;
 				}
-				
+
 				CacheEntry backendEntry = backendCacheStore.get(key);
 				CacheEntry computedLocal = mappingFunction.apply(key);
 				if (computedLocal != null) {
 					getStore().put(computedLocal, false);
 				}
-				
+
 				//dirtyの場合は、トランザクションコミットのタイミングで更新
 				addOrRunTransactionListener(new TransactionListener() {
 					@Override
@@ -318,7 +322,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 									isConflict = false;
 								} else {
 									if (logger.isDebugEnabled()) {
-										logger.debug("maybe another Thread Updated newly version:" + sheredPrevious.getVersion() + ".  so markInvalid CacheEntry:" + key);
+										logger.debug("maybe another Thread Updated newly version:" + sheredPrevious.getVersion()
+												+ ".  so markInvalid CacheEntry:" + key);
 									}
 								}
 							} else {
@@ -335,7 +340,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 						} finally {
 							if (isConflict) {
 								if (logger.isDebugEnabled()) {
-									logger.debug("maybe another Thread Updated newly version. so so markInvalid CacheEntry:" + key + ", mappingFunction:" + mappingFunction);
+									logger.debug("maybe another Thread Updated newly version. so so markInvalid CacheEntry:" + key
+											+ ", mappingFunction:" + mappingFunction);
 								}
 								//状態があやしいので、無効化する
 								try {
@@ -349,8 +355,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				});
 				return null;
 			}
-			
-			
+
 		}
 
 		/**
@@ -362,15 +367,16 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 		 */
 		@Override
 		public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
-			
+
 			CacheEntry localEntry = getStore().get(key);
-			
+
 			if (localEntry == null) {
 				//clean load
 				CacheEntry backendEntry = backendCacheStore.compute(key, remappingFunction);
 				if (backendEntry != null) {
 					if (logger.isTraceEnabled()) {
-						logger.trace("put local cache!key=" + backendEntry.getKey() + ",version=" + backendEntry.getVersion() + ",value=" + backendEntry.getValue());
+						logger.trace("put local cache!key=" + backendEntry.getKey() + ",version=" + backendEntry.getVersion() + ",value="
+								+ backendEntry.getValue());
 					}
 					getStore().put(backendEntry, false);
 				}
@@ -394,11 +400,11 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 					}
 					return computedCe;
 				});
-				
+
 				if (Objects.equals(computedLocal, backendEntry)) {
 					return computedLocal;
 				}
-				
+
 				//dirtyの場合は、トランザクションコミットのタイミングでCAS
 				addOrRunTransactionListener(new TransactionListener() {
 					@Override
@@ -419,7 +425,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 							} else {
 								if (backendEntry != null) {
 									//backendがnull以外の場合はcasしてみる
-									if(backendCacheStore.replace(backendEntry, computedLocal)) {
+									if (backendCacheStore.replace(backendEntry, computedLocal)) {
 										isConflict = false;
 									}
 								}
@@ -427,7 +433,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 						} finally {
 							if (isConflict) {
 								if (logger.isDebugEnabled()) {
-									logger.debug("maybe another Thread Updated newly version. so so markInvalid CacheEntry:" + key + ", remappingFunction:" + remappingFunction);
+									logger.debug("maybe another Thread Updated newly version. so so markInvalid CacheEntry:" + key
+											+ ", remappingFunction:" + remappingFunction);
 								}
 								try {
 									backendCacheStore.remove(key);
@@ -438,7 +445,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 						}
 					}
 				});
-				
+
 				return computedLocal;
 			}
 		}
@@ -453,12 +460,12 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				logger.trace("put local cache!key=" + entry.getKey() + ",version=" + entry.getVersion() + ",value=" + entry.getValue());
 			}
 			getStore().put(entry, false);
-			
+
 			final CacheEntry backendPrevious = backendCacheStore.get(entry.getKey());
 			if (backendPrevious != null && !(target instanceof RemovedCacheEntry)) {
 				return backendPrevious;
 			}
-			
+
 			//ここまでくるパターンは、
 			//1. backendが本当にnull
 			//2. backendがnullでないが、ローカルトランザクション上削除済み
@@ -484,7 +491,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 								isConflict = false;
 							} else {
 								if (logger.isDebugEnabled()) {
-									logger.debug("maybe another Thread Updated newly version:" + sheredPrevious.getVersion() + ".  so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
+									logger.debug("maybe another Thread Updated newly version:" + sheredPrevious.getVersion()
+											+ ".  so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
 								}
 							}
 						} else {
@@ -493,7 +501,9 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 								isConflict = false;
 							} else {
 								if (logger.isDebugEnabled()) {
-									logger.debug("maybe another Thread Updated newly version. expected previous version is " + backendPrevious.getVersion() + " but no match.  so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
+									logger.debug(
+											"maybe another Thread Updated newly version. expected previous version is " + backendPrevious.getVersion()
+													+ " but no match.  so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
 								}
 							}
 						}
@@ -524,7 +534,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 //				if (entry instanceof RemovedCacheEntry) {
 //					return null;
 //				} else {
-					return entry;
+				return entry;
 //				}
 			}
 			if (backendCacheStore == null) {
@@ -566,7 +576,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			if (backendCacheStore == null) {
 				return removed;
 			}
-			
+
 			final CacheEntry previous;
 			if (key != null) {
 				if (removed != null) {
@@ -614,7 +624,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 									} else {
 										//別スレッドがさらに新しいバージョンで更新済み
 										if (logger.isDebugEnabled()) {
-											logger.debug("maybe another Thread Updated newly version:" + current.getVersion() + ". so markInvalid CacheEntry:" + previous.getKey() + " version:" + previous.getVersion());
+											logger.debug("maybe another Thread Updated newly version:" + current.getVersion()
+													+ ". so markInvalid CacheEntry:" + previous.getKey() + " version:" + previous.getVersion());
 										}
 										isLoop = false;
 //										isConflict = false;
@@ -662,7 +673,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			if (target instanceof RemovedCacheEntry) {
 				return null;
 			}
-			
+
 			CacheEntry backendPrevious = backendCacheStore.get(entry.getKey());
 			if (backendPrevious == null) {
 				return null;
@@ -675,9 +686,9 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				logger.trace("put local cache!key=" + entry.getKey() + ",version=" + entry.getVersion() + ",value=" + entry.getValue());
 			}
 			getStore().put(entry, false);
-			
+
 			final CacheEntry previous = target;
-			
+
 			addOrRunTransactionListener(new TransactionListener() {
 				@Override
 				public void afterRollback(Transaction t) {
@@ -714,7 +725,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 									} else {
 										//別スレッドがさらに新しいバージョンで更新済み
 										if (logger.isDebugEnabled()) {
-											logger.debug("maybe another Thread Updated newly version:" + current.getVersion() + ".  so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
+											logger.debug("maybe another Thread Updated newly version:" + current.getVersion()
+													+ ".  so markInvalid CacheEntry:" + entry.getKey() + " version:" + entry.getVersion());
 										}
 										isLoop = false;
 //										isConflict = false;
@@ -740,7 +752,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 
 		@Override
 		public boolean replace(final CacheEntry oldEntry, final CacheEntry newEntry) {
-			if (!oldEntry.getKey().equals(newEntry.getKey())) {
+			if (!oldEntry.getKey()
+					.equals(newEntry.getKey())) {
 				throw new IllegalArgumentException("new key must equals old key.");
 			}
 			CacheEntry target = getStore().get(oldEntry.getKey());
@@ -748,14 +761,14 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 					|| !oldEntry.equals(target)) {
 				return false;
 			}
-			
+
 			if (target == null) {
 				target = backendCacheStore.get(newEntry.getKey());
 			}
 			if (target == null || !oldEntry.equals(target)) {
 				return false;
 			}
-			
+
 			if (logger.isTraceEnabled()) {
 				logger.trace("put local cache!key=" + newEntry.getKey() + ",version=" + newEntry.getVersion() + ",value=" + newEntry.getValue());
 			}
@@ -763,7 +776,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 
 			//dirtyの場合は、トランザクションコミットのタイミングで更新
 			final CacheEntry previous = target;
-			
+
 			addOrRunTransactionListener(new TransactionListener() {
 				@Override
 				public void afterRollback(Transaction t) {
@@ -773,7 +786,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				public void afterCommit(Transaction t) {
 
 					if (logger.isTraceEnabled()) {
-						logger.trace("put shared cache!key=" + newEntry.getKey() + ",version=" + newEntry.getVersion() + ",value=" + newEntry.getValue());
+						logger.trace(
+								"put shared cache!key=" + newEntry.getKey() + ",version=" + newEntry.getVersion() + ",value=" + newEntry.getValue());
 					}
 					boolean isConflict = true;
 					try {
@@ -800,7 +814,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 									} else {
 										//別スレッドがさらに新しいバージョンで更新済み
 										if (logger.isDebugEnabled()) {
-											logger.debug("maybe another Thread Updated newly version:" + current.getVersion() + ". so markInvalid CacheEntry:" + newEntry.getKey() + " version:" + newEntry.getVersion());
+											logger.debug("maybe another Thread Updated newly version:" + current.getVersion()
+													+ ". so markInvalid CacheEntry:" + newEntry.getKey() + " version:" + newEntry.getVersion());
 										}
 										isLoop = false;
 //										isConflict = false;
@@ -826,7 +841,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 
 		@Override
 		public void removeAll() {
-			for (Object key: keySet()) {
+			for (Object key : keySet()) {
 				remove(key);
 			}
 		}
@@ -841,7 +856,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 
 			CacheStore localStore = getStore();
 			List<Object> localKeySet = localStore.keySet();
-			for (Object k: localKeySet) {
+			for (Object k : localKeySet) {
 				CacheEntry ce = localStore.get(k);
 				if (ce != null) {
 					if (!ret.contains(k)) {
@@ -867,7 +882,8 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				}
 
 				if (logger.isTraceEnabled()) {
-					logger.trace("hit local cache!indexVal(" + indexKey + ")=" + indexValue + ",key=" + entry.getKey() + ",version=" + entry.getVersion() + ",value=" + entry.getValue() + ",is Remove=" + (entry instanceof RemovedCacheEntry));
+					logger.trace("hit local cache!indexVal(" + indexKey + ")=" + indexValue + ",key=" + entry.getKey() + ",version="
+							+ entry.getVersion() + ",value=" + entry.getValue() + ",is Remove=" + (entry instanceof RemovedCacheEntry));
 				}
 				return entry;
 			}
@@ -881,7 +897,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				CacheEntry localEntry = localCache.get(sharedEntry.getKey());
 				if (localEntry != null &&
 						((localEntry instanceof RemovedCacheEntry) ||
-						!indexValue.equals(localEntry.getIndexValue(indexKey)))) {
+								!indexValue.equals(localEntry.getIndexValue(indexKey)))) {
 					return null;
 				} else {
 					localCache.put(sharedEntry, true);
@@ -904,7 +920,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			List<CacheEntry> ret = new ArrayList<CacheEntry>();
 			List<CacheEntry> sharedList = backendCacheStore.getListByIndex(indexKey, indexValue);
 
-			for (CacheEntry sce: sharedList) {
+			for (CacheEntry sce : sharedList) {
 				CacheEntry lce = get(sce.getKey());
 				if (lce != null && !(lce instanceof RemovedCacheEntry) && indexValue.equals(lce.getIndexValue(indexKey))) {
 					ret.add(lce);
@@ -912,12 +928,12 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			}
 
 			//新規に追加されているものを追加
-			for (CacheEntry lce: localList) {
+			for (CacheEntry lce : localList) {
 //				if (!(lce instanceof RemovedCacheEntry)) {
-					if (!ret.contains(lce)) {
-						
-						ret.add(lce);
-					}
+				if (!ret.contains(lce)) {
+
+					ret.add(lce);
+				}
 //				}
 			}
 			return ret;
@@ -941,7 +957,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 				backendCacheStore.removeCacheEventListenner(listener);
 			}
 		}
-		
+
 		@Override
 		public List<CacheEventListener> getListeners() {
 			if (backendCacheStore == null) {
@@ -952,7 +968,9 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 		}
 
 		private void addOrRunTransactionListener(TransactionListener listener) {
-			Transaction t = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
+			Transaction t = ManagerLocator.getInstance()
+					.getManager(TransactionManager.class)
+					.currentTransaction();
 			if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 				t.addTransactionListener(listener);
 			} else {
@@ -1015,7 +1033,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			List<CacheEntry> list = getListByIndex(indexKey, indexValue);
 			if (list != null) {
 				CacheStore localCache = getStore();
-				for (CacheEntry e: list) {
+				for (CacheEntry e : list) {
 					localCache.put(new RemovedCacheEntry(e), false);
 				}
 			}
@@ -1036,7 +1054,6 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			});
 			return list;
 		}
-		
 
 		@Override
 		public int getSize() {
@@ -1076,7 +1093,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 	public CacheHandler createCacheHandler(CacheStore store) {
 		return new SimpleLocalCacheHandler(store, getConcurrencyLevelOfCacheHandler());
 	}
-	
+
 	public static final class RemovedCacheEntry extends CacheEntry {
 		private static final long serialVersionUID = 8582988909194271518L;
 
@@ -1088,7 +1105,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			super(actual.getKey(), null, actual.getVersion() + 1, actual.getIndexValues());
 		}
 	}
-	
+
 	@Override
 	public CacheStoreFactory getLowerLevel() {
 		return backendStore;

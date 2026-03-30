@@ -33,9 +33,9 @@ import org.iplass.mtp.impl.auth.UserContextImpl;
  */
 public final class TemporaryUserContext extends UserContextImpl {
 	//TODO パッケージ移動->auth直下
-	
+
 	private static final long serialVersionUID = 6545530702359622550L;
-	
+
 	public TemporaryUserContext(AccountHandle account, User userEntity) {
 		super(account, userEntity);
 	}

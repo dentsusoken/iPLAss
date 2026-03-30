@@ -80,85 +80,88 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 				FieldType.TEXT,
 				DataSourceConstants.FIELD_TOOLTIP);
 
-		fields = new DataSourceField[] {name, dispName, dispValue, tooltip};
+		fields = new DataSourceField[] { name, dispName, dispValue, tooltip };
 	}
 
-    public static void setDataSource(final SelectItem item, final Class<? extends Definition> definition) {
-    	setup(item, definition, new MetaDataNameDSOption());
-    }
-    public static void setDataSource(final SelectItem item, final Class<? extends Definition> definition, final MetaDataNameDSOption option) {
-    	setup(item, definition, option);
-    }
-    public static void setDataSource(final ComboBoxItem item, final Class<? extends Definition> definition) {
-    	setup(item, definition, new MetaDataNameDSOption());
-    }
-    public static void setDataSource(final ComboBoxItem item, final Class<? extends Definition> definition, final MetaDataNameDSOption option) {
-    	setup(item, definition, option);
-    }
+	public static void setDataSource(final SelectItem item, final Class<? extends Definition> definition) {
+		setup(item, definition, new MetaDataNameDSOption());
+	}
 
-    private static void setup(final FormItem item, final Class<? extends Definition> definition, final MetaDataNameDSOption option) {
+	public static void setDataSource(final SelectItem item, final Class<? extends Definition> definition, final MetaDataNameDSOption option) {
+		setup(item, definition, option);
+	}
 
-    	item.setOptionDataSource(getInstance(definition, option));
-    	item.setValueField(DataSourceConstants.FIELD_NAME);
+	public static void setDataSource(final ComboBoxItem item, final Class<? extends Definition> definition) {
+		setup(item, definition, new MetaDataNameDSOption());
+	}
 
-    	if (option.isShowTooltip()) {
-        	//addValueHoverHandlerを利用したいが、ValueHoverはテキストがあふれないとEventが発生しないので、ItemHoverを利用
-        	item.addItemHoverHandler(new ItemHoverHandler() {
+	public static void setDataSource(final ComboBoxItem item, final Class<? extends Definition> definition, final MetaDataNameDSOption option) {
+		setup(item, definition, option);
+	}
 
-    			@Override
-    			public void onItemHover(ItemHoverEvent event) {
+	private static void setup(final FormItem item, final Class<? extends Definition> definition, final MetaDataNameDSOption option) {
 
-    				final ListGridRecord record = item.getSelectedRecord();
-    				if (record != null) {
-    					String tooltip = record.getAttributeAsString(DataSourceConstants.FIELD_TOOLTIP);
-    					if (SmartGWTUtil.isNotEmpty(tooltip)) {
-    						item.setPrompt(SmartGWTUtil.getHoverString(tooltip));
-    					}
+		item.setOptionDataSource(getInstance(definition, option));
+		item.setValueField(DataSourceConstants.FIELD_NAME);
 
-    				}
+		if (option.isShowTooltip()) {
+			//addValueHoverHandlerを利用したいが、ValueHoverはテキストがあふれないとEventが発生しないので、ItemHoverを利用
+			item.addItemHoverHandler(new ItemHoverHandler() {
 
-    			}
-    		});
-        	item.addChangedHandler(new ChangedHandler() {
+				@Override
+				public void onItemHover(ItemHoverEvent event) {
 
-    			@Override
-    			public void onChanged(ChangedEvent event) {
-    				//デフォルト値設定
-    				item.setTooltip(option.getTooltip());
+					final ListGridRecord record = item.getSelectedRecord();
+					if (record != null) {
+						String tooltip = record.getAttributeAsString(DataSourceConstants.FIELD_TOOLTIP);
+						if (SmartGWTUtil.isNotEmpty(tooltip)) {
+							item.setPrompt(SmartGWTUtil.getHoverString(tooltip));
+						}
 
-    				getTooltip(item, definition.getName());
-    			}
-    		});
+					}
 
-        	if (item instanceof HasDataArrivedHandlers) {
-    	    	((HasDataArrivedHandlers)item).addDataArrivedHandler(new DataArrivedHandler() {
+				}
+			});
+			item.addChangedHandler(new ChangedHandler() {
 
-    				@Override
-    				public void onDataArrived(DataArrivedEvent event) {
-    					//初期値に対するTooltip取得
-    					getTooltip(item, definition.getName());
-    				}
-    			});
-        	}
-    	}
+				@Override
+				public void onChanged(ChangedEvent event) {
+					//デフォルト値設定
+					item.setTooltip(option.getTooltip());
 
-    	ListGrid pickListProperties = new ListGrid();
-    	pickListProperties.setShowFilterEditor(true);
-    	if (item instanceof SelectItem) {
-    		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
-    		((SelectItem)item).setPickListFields(nameField);
-    		((SelectItem)item).setPickListWidth(420);
-    		((SelectItem)item).setPickListProperties(pickListProperties);
-    	} else if (item instanceof ComboBoxItem) {
-    		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
-    		((ComboBoxItem)item).setPickListFields(nameField);
-    		((ComboBoxItem)item).setPickListWidth(420);
-    		((ComboBoxItem)item).setPickListProperties(pickListProperties);
-    	}
+					getTooltip(item, definition.getName());
+				}
+			});
 
-    }
+			if (item instanceof HasDataArrivedHandlers) {
+				((HasDataArrivedHandlers) item).addDataArrivedHandler(new DataArrivedHandler() {
 
-    private static void getTooltip(final FormItem item, String definitionClassName) {
+					@Override
+					public void onDataArrived(DataArrivedEvent event) {
+						//初期値に対するTooltip取得
+						getTooltip(item, definition.getName());
+					}
+				});
+			}
+		}
+
+		ListGrid pickListProperties = new ListGrid();
+		pickListProperties.setShowFilterEditor(true);
+		if (item instanceof SelectItem) {
+			ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
+			((SelectItem) item).setPickListFields(nameField);
+			((SelectItem) item).setPickListWidth(420);
+			((SelectItem) item).setPickListProperties(pickListProperties);
+		} else if (item instanceof ComboBoxItem) {
+			ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
+			((ComboBoxItem) item).setPickListFields(nameField);
+			((ComboBoxItem) item).setPickListWidth(420);
+			((ComboBoxItem) item).setPickListProperties(pickListProperties);
+		}
+
+	}
+
+	private static void getTooltip(final FormItem item, String definitionClassName) {
 		final ListGridRecord record = item.getSelectedRecord();
 		if (record != null) {
 			final String defName = record.getAttributeAsString(DataSourceConstants.FIELD_NAME);
@@ -181,7 +184,7 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 				});
 			}
 		}
-    }
+	}
 
 	public static MetaDataNameDS getInstance(Class<? extends Definition> definition) {
 		return getInstance(definition, new MetaDataNameDSOption());
@@ -220,13 +223,14 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 				Collections.sort(result, new Comparator<Name>() {
 					@Override
 					public int compare(Name o1, Name o2) {
-						return o1.getName().compareTo(o2.getName());
+						return o1.getName()
+								.compareTo(o2.getName());
 					}
 				});
 
 				List<ListGridRecord> searchRecords = createRecords(result, option);
 
-				response.setData(searchRecords.toArray(new ListGridRecord[]{}));
+				response.setData(searchRecords.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(searchRecords.size());
 				processResponse(requestId, response);
 			}
@@ -253,12 +257,13 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 		return records;
 	}
 
-	protected  ListGridRecord createRecord(Name name) {
+	protected ListGridRecord createRecord(Name name) {
 		ListGridRecord record = new ListGridRecord();
 		record.setAttribute(DataSourceConstants.FIELD_NAME, name.getName());
 
 		//TODO 多言語対応できてない
-		if (name.getDisplayName() == null || name.getDisplayName().isEmpty()) {
+		if (name.getDisplayName() == null || name.getDisplayName()
+				.isEmpty()) {
 			record.setAttribute(DataSourceConstants.FIELD_DISPLAY_NAME, "(" + name.getName() + ")");
 		} else {
 			record.setAttribute(DataSourceConstants.FIELD_DISPLAY_NAME, name.getDisplayName());
@@ -281,7 +286,6 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 		record.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, "default");
 		return record;
 	}
-
 
 	public static class MetaDataNameDSOption {
 

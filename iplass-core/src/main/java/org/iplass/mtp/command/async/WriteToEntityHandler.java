@@ -47,21 +47,21 @@ import org.iplass.mtp.entity.UpdateOption;
  */
 public class WriteToEntityHandler implements ResultHandler {
 	private static final long serialVersionUID = -3139078172022183983L;
-	
+
 	public static final String FAIL_STATUS = "FAIL";
-	
+
 	private String entityDefinitionName;
 	private String propertyName;
 	private String propertyNameForExceptionName;
 	private String propertyNameForExceptionMessage;
 
 	private String oid;
-	
+
 	private boolean exceptionIfNoEntity = false;
-	
+
 	public WriteToEntityHandler() {
 	}
-	
+
 	public WriteToEntityHandler(String entityDefinitionName,
 			String propertyName, String oid, boolean exceptionIfNoEntity) {
 		this.entityDefinitionName = entityDefinitionName;
@@ -69,7 +69,7 @@ public class WriteToEntityHandler implements ResultHandler {
 		this.oid = oid;
 		this.exceptionIfNoEntity = exceptionIfNoEntity;
 	}
-	
+
 	public WriteToEntityHandler(String entityDefinitionName,
 			String propertyName, String propertyNameForExceptionName, String propertyNameForExceptionMessage, String oid, boolean exceptionIfNoEntity) {
 		this.entityDefinitionName = entityDefinitionName;
@@ -120,6 +120,7 @@ public class WriteToEntityHandler implements ResultHandler {
 			String propertyNameForExceptionMessage) {
 		this.propertyNameForExceptionMessage = propertyNameForExceptionMessage;
 	}
+
 	public boolean isExceptionIfNoEntity() {
 		return exceptionIfNoEntity;
 	}
@@ -130,7 +131,8 @@ public class WriteToEntityHandler implements ResultHandler {
 
 	@Override
 	public void handle(String commandResult) {
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		Entity e = em.load(oid, entityDefinitionName, new LoadOption(false, false));
 		if (e == null && exceptionIfNoEntity) {
 			throw new EntityRuntimeException("entity[definitionName=" + entityDefinitionName + ", oid=" + oid + "] not found.");
@@ -143,17 +145,19 @@ public class WriteToEntityHandler implements ResultHandler {
 
 	@Override
 	public void handle(Throwable exception) {
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		Entity e = em.load(oid, entityDefinitionName, new LoadOption(false, false));
 		if (e == null && exceptionIfNoEntity) {
 			throw new EntityRuntimeException("entity[definitionName=" + entityDefinitionName + ", oid=" + oid + "] not found.");
 		}
-		
+
 		List<String> updateProperties = new ArrayList<>();
 		e.setValue(propertyName, FAIL_STATUS);
 		updateProperties.add(propertyName);
 		if (propertyNameForExceptionName != null) {
-			e.setValue(propertyNameForExceptionName, exception.getClass().getName());
+			e.setValue(propertyNameForExceptionName, exception.getClass()
+					.getName());
 			updateProperties.add(propertyNameForExceptionName);
 		}
 		if (propertyNameForExceptionMessage != null) {

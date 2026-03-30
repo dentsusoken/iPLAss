@@ -36,8 +36,7 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.transaction.Propagation;
 import org.iplass.mtp.transaction.TransactionOption;
 
-
-@XmlSeeAlso({MetaSingleCommand.class, MetaCompositeCommand.class})
+@XmlSeeAlso({ MetaSingleCommand.class, MetaCompositeCommand.class })
 public abstract class MetaCommand implements MetaData {
 
 	public static final String CMD_BINDING_NAME = "cmd";
@@ -117,7 +116,7 @@ public abstract class MetaCommand implements MetaData {
 
 	public abstract CommandRuntime createRuntime();
 
-	public abstract class CommandRuntime /*implements MetaDataRuntime*/ {
+	public abstract class CommandRuntime /* implements MetaDataRuntime */ {
 
 		private static final String SCRIPT_PREFIX = "CommandRuntime_commandConfig";
 
@@ -127,7 +126,8 @@ public abstract class MetaCommand implements MetaData {
 		public CommandRuntime(String identifer) {
 			if (getMetaData().getCommandConfig() != null) {
 				//TODO tenantIDの決定は、このメソッドを呼び出した際のスレッドに紐付いているテナントIDとなる。これでセキュリティ的、動作的に大丈夫か？
-				TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+				TenantContext tc = ExecuteContext.getCurrentContext()
+						.getTenantContext();
 				ScriptEngine ss = tc.getScriptEngine();
 
 				KeyGenerator keyGen = new KeyGenerator();
@@ -156,10 +156,15 @@ public abstract class MetaCommand implements MetaData {
 		}
 
 		public abstract MetaCommand getMetaData();
+
 		protected abstract void initImpl(String identifer);
+
 		protected abstract Command newCommand();
+
 		public abstract boolean readOnly();
+
 		protected abstract boolean newInstancePerRequest();
+
 		public abstract String name();
 	}
 }

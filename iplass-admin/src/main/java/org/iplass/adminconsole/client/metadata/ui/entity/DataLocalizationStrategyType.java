@@ -53,7 +53,10 @@ public enum DataLocalizationStrategyType {
 	public static DataLocalizationStrategyType valueOf(DataLocalizationStrategy definition) {
 		for (DataLocalizationStrategyType type : values()) {
 			//if (definition.getClass().isAssignableFrom(type.definitionClass)) {
-			if (definition.getClass().getName().equals(type.definitionClass().getName())) {
+			if (definition.getClass()
+					.getName()
+					.equals(type.definitionClass()
+							.getName())) {
 				return type;
 			}
 		}
@@ -64,9 +67,11 @@ public enum DataLocalizationStrategyType {
 //		return type.definitionClass().newInstance();
 //	}
 	public static DataLocalizationStrategy typeOfDefinition(DataLocalizationStrategyType type) {
-		if (type.definitionClass().equals(EachInstanceDataLocalizationStrategy.class)) {
+		if (type.definitionClass()
+				.equals(EachInstanceDataLocalizationStrategy.class)) {
 			return new EachInstanceDataLocalizationStrategy();
-		} else if (type.definitionClass().equals(EachPropertyDataLocalizationStrategy.class)) {
+		} else if (type.definitionClass()
+				.equals(EachPropertyDataLocalizationStrategy.class)) {
 			return new EachPropertyDataLocalizationStrategy();
 		}
 		return null;

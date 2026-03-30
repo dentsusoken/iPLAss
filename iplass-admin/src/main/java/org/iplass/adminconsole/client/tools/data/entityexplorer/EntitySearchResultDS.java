@@ -117,7 +117,7 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 
 	public ListGridField[] getListGridFields() {
 		if (gridFieldList != null) {
-			return gridFieldList.toArray(new ListGridField[]{});
+			return gridFieldList.toArray(new ListGridField[] {});
 		}
 		return null;
 	}
@@ -129,12 +129,15 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 	public boolean isShowInheritedProperty() {
 		return showInheritedProperty;
 	}
+
 	public void setShowInheritedProperty(boolean showInheritedProperty) {
 		this.showInheritedProperty = showInheritedProperty;
 	}
+
 	public void setWhereString(String whereString) {
 		this.whereString = whereString;
 	}
+
 	public void setOrderByString(String orderByString) {
 		this.orderByString = orderByString;
 	}
@@ -167,9 +170,10 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 			String colTitle = property.getName();
 			//非参照の場合、列の後ろに非参照を表示
 			if (property instanceof ReferenceProperty) {
-				ReferenceProperty reference = (ReferenceProperty)property;
+				ReferenceProperty reference = (ReferenceProperty) property;
 				colTitle = colTitle + "(" + reference.getObjectDefinitionName();
-				if (reference.getMappedBy() != null && !reference.getMappedBy().isEmpty()) {
+				if (reference.getMappedBy() != null && !reference.getMappedBy()
+						.isEmpty()) {
 					colTitle = colTitle + "." + reference.getMappedBy();
 				}
 				colTitle = colTitle + ")";
@@ -182,7 +186,7 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 			ListGridField gridField = new ListGridField(property.getName(), colTitle);
 			//Filter設定
 			if (property instanceof SelectProperty) {
-				SelectProperty selectProperty = (SelectProperty)property;
+				SelectProperty selectProperty = (SelectProperty) property;
 				List<SelectValue> values = selectProperty.getSelectValueList();
 				Map<String, String> valueMap = null;
 				if (values != null) {
@@ -193,14 +197,14 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 				} else {
 					valueMap = new LinkedHashMap<>(1);
 				}
-				valueMap.put("nullvalue", "NULL");	//値がnullだとうまくいかないので別の値を設定
+				valueMap.put("nullvalue", "NULL"); //値がnullだとうまくいかないので別の値を設定
 				dsField.setValueMap(valueMap);
 				gridField.setValueMap(valueMap);
 			} else if (property instanceof BooleanProperty) {
 				Map<String, String> valueMap = new LinkedHashMap<>(3);
 				valueMap.put("true", "TRUE");
 				valueMap.put("false", "FALSE");
-				valueMap.put("nullvalue", "NULL");	//値がnullだとうまくいかないので別の値を設定
+				valueMap.put("nullvalue", "NULL"); //値がnullだとうまくいかないので別の値を設定
 				dsField.setValueMap(valueMap);
 				gridField.setValueMap(valueMap);
 			}
@@ -223,7 +227,7 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 			dsFields.add(dsField);
 			gridFieldList.add(gridField);
 		}
-		setFields(dsFields.toArray(new DataSourceField[]{}));
+		setFields(dsFields.toArray(new DataSourceField[] {}));
 	}
 
 	@Override
@@ -260,52 +264,53 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 		service.search(TenantInfoHolder.getId(), definition.getName(),
 //					criteria.getAttributeAsString(WHERE_CRITERIA),
 //					criteria.getAttributeAsString(ORDERBY_CRITERIA),
-					whereString,
-					orderByString,
-					criteria.getAttributeAsBoolean(VERSIONED_CRITERIA),
-					criteria.getAttributeAsInt(LIMIT_CRITERIA),
-					criteria.getAttributeAsInt(OFFSET_CRITERIA),
-					new AsyncCallback<EntityDataListResultInfo>() {
+				whereString,
+				orderByString,
+				criteria.getAttributeAsBoolean(VERSIONED_CRITERIA),
+				criteria.getAttributeAsInt(LIMIT_CRITERIA),
+				criteria.getAttributeAsInt(OFFSET_CRITERIA),
+				new AsyncCallback<EntityDataListResultInfo>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				GWT.log("error!!!", caught);
+					@Override
+					public void onFailure(Throwable caught) {
+						GWT.log("error!!!", caught);
 
-				//エラーの通知
-				EntityDataListResultInfo result = new EntityDataListResultInfo();
-				result.setDefinitionName(definition.getName());
-				result.addLogMessage(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_EntitySearchResultDS_errGetData", definition.getName()));
-				result.addLogMessage(caught.getMessage());
-				result.setError(true);
+						//エラーの通知
+						EntityDataListResultInfo result = new EntityDataListResultInfo();
+						result.setDefinitionName(definition.getName());
+						result.addLogMessage(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_EntitySearchResultDS_errGetData",
+								definition.getName()));
+						result.addLogMessage(caught.getMessage());
+						result.setError(true);
 
-				response.setStatus(RPCResponse.STATUS_FAILURE);
-				processResponse(requestId, response);
+						response.setStatus(RPCResponse.STATUS_FAILURE);
+						processResponse(requestId, response);
 
-				debug("executeFetch searchAll結果からレコード作成でエラーが発生. exec time -> " + (System.currentTimeMillis() - starttime) + "ms");
-			}
+						debug("executeFetch searchAll結果からレコード作成でエラーが発生. exec time -> " + (System.currentTimeMillis() - starttime) + "ms");
+					}
 
-			@Override
-			public void onSuccess(EntityDataListResultInfo result) {
-				debug("executeFetch search実行完了. exec time -> " + (System.currentTimeMillis() - starttime) + "ms");
-				final long starttime2 = System.currentTimeMillis();
+					@Override
+					public void onSuccess(EntityDataListResultInfo result) {
+						debug("executeFetch search実行完了. exec time -> " + (System.currentTimeMillis() - starttime) + "ms");
+						final long starttime2 = System.currentTimeMillis();
 
-				EntitySearchResultDS.this.result = result;
+						EntitySearchResultDS.this.result = result;
 
-				//レコードの作成
-				if (result.isError()) {
-					response.setData(new ListGridRecord[]{});
-					response.setTotalRows(0);
-				} else {
-					List<ListGridRecord> records = createRecord(result);
-					response.setData(records.toArray(new ListGridRecord[]{}));
-					response.setTotalRows(records.size());
-				}
-				processResponse(requestId, response);
+						//レコードの作成
+						if (result.isError()) {
+							response.setData(new ListGridRecord[] {});
+							response.setTotalRows(0);
+						} else {
+							List<ListGridRecord> records = createRecord(result);
+							response.setData(records.toArray(new ListGridRecord[] {}));
+							response.setTotalRows(records.size());
+						}
+						processResponse(requestId, response);
 
-				debug("executeFetch search結果からレコード作成. exec time -> " + (System.currentTimeMillis() - starttime2) + "ms");
-			}
+						debug("executeFetch search結果からレコード作成. exec time -> " + (System.currentTimeMillis() - starttime2) + "ms");
+					}
 
-		});
+				});
 
 	}
 
@@ -339,8 +344,8 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 			return new ArrayList<>(0);
 		}
 
-
-		List<ListGridRecord> list = new ArrayList<>(result.getRecords().size());
+		List<ListGridRecord> list = new ArrayList<>(result.getRecords()
+				.size());
 
 		List<PropertyDefinition> properties = definition.getPropertyList();
 
@@ -364,38 +369,38 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 		String retValue = null;
 //		if (value.getClass().isArray()) {
 		if (SmartGWTUtil.isArray(value)) {
-			retValue = getArrayDisplayValue((Object[])value);
+			retValue = getArrayDisplayValue((Object[]) value);
 		} else if (value instanceof SelectValue) {
-			SelectValue tmp = (SelectValue)value;
+			SelectValue tmp = (SelectValue) value;
 			retValue = tmp.getDisplayName() + "(" + tmp.getValue() + ")";
 		} else if (value instanceof BinaryReference) {
-			BinaryReference tmp = (BinaryReference)value;
+			BinaryReference tmp = (BinaryReference) value;
 			retValue = tmp.getName() + "(" + tmp.getLobId() + ")";
 		} else if (value instanceof Entity) {
-			Entity tmp = (Entity)value;
+			Entity tmp = (Entity) value;
 			retValue = tmp.getName() + "(" + tmp.getOid() + "." + tmp.getVersion() + ")";
 		} else if (value instanceof Timestamp) {
 			//Timestamp型
-			Timestamp tmp = (Timestamp)value;
+			Timestamp tmp = (Timestamp) value;
 			retValue = SmartGWTUtil.formatTimestamp(tmp);
 		} else if (value instanceof Time) {
 			//Time型
-			Time tmp = (Time)value;
+			Time tmp = (Time) value;
 			retValue = SmartGWTUtil.formatTime(tmp);
 		} else if (value instanceof Date) {
 			//Date型
-			Date tmp = (Date)value;
+			Date tmp = (Date) value;
 			retValue = SmartGWTUtil.formatDate(tmp);
 		} else if (value instanceof BigDecimal) {
 			//BigDecimal型
-			BigDecimal tmp = (BigDecimal)value;
+			BigDecimal tmp = (BigDecimal) value;
 			retValue = tmp.toPlainString();
 		} else if (value instanceof Double) {
 			//Double型
-			BigDecimal tmp = BigDecimal.valueOf((Double)value);
+			BigDecimal tmp = BigDecimal.valueOf((Double) value);
 			retValue = tmp.toPlainString();
 		} else {
-			retValue =  value.toString();
+			retValue = value.toString();
 		}
 		return SafeHtmlUtils.htmlEscape(retValue);
 	}
@@ -421,8 +426,9 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 		EntityDefinition definition = result.getDefinition();
 		PropertyDefinition property = definition.getProperty(fieldName);
 		if (property instanceof ReferenceProperty) {
-			ReferenceProperty reference = (ReferenceProperty)property;
-			if (reference.getMappedBy() != null && !reference.getMappedBy().isEmpty()) {
+			ReferenceProperty reference = (ReferenceProperty) property;
+			if (reference.getMappedBy() != null && !reference.getMappedBy()
+					.isEmpty()) {
 				return true;
 			} else if (property.getMultiplicity() != 1) {
 				return true;

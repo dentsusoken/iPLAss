@@ -30,7 +30,6 @@ import org.iplass.mtp.view.menu.MenuItem;
 import org.iplass.mtp.view.menu.NodeMenuItem;
 import org.iplass.mtp.view.menu.UrlMenuItem;
 
-
 /**
  * メニューアイテム情報を保持するHolderクラスです。
  *
@@ -142,13 +141,13 @@ public class MenuItemHolder implements Serializable {
 	 */
 	public void addMenuItem(MenuItem item) {
 		if (item instanceof NodeMenuItem) {
-			addMenuItem((NodeMenuItem)item);
+			addMenuItem((NodeMenuItem) item);
 		} else if (item instanceof ActionMenuItem) {
-			addMenuItem((ActionMenuItem)item);
+			addMenuItem((ActionMenuItem) item);
 		} else if (item instanceof EntityMenuItem) {
-			addMenuItem((EntityMenuItem)item);
+			addMenuItem((EntityMenuItem) item);
 		} else if (item instanceof UrlMenuItem) {
-			addMenuItem((UrlMenuItem)item);
+			addMenuItem((UrlMenuItem) item);
 		}
 	}
 

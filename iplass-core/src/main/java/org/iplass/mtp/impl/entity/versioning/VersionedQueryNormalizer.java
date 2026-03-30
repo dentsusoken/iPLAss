@@ -42,22 +42,21 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
-
 public class VersionedQueryNormalizer extends ASTTransformerSupport {
-	
+
 	private class VersionInfo {
-		
+
 		ReferencePropertyHandler rph;
 		boolean isVersionSpecify;
 		AsOf asOf;
-		
+
 		VersionInfo(ReferencePropertyHandler rph) {
-			this.rph =rph;
+			this.rph = rph;
 			isVersionSpecify = false;
 		}
-		
+
 	}
-	
+
 	//Oracleでは結合条件でサブクエリ使えないので、抽出条件にくっつける形で。。。
 
 	private VersionController vc;
@@ -68,7 +67,7 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 	private Map<String, VersionInfo> refs;
 
 	private VersionedQueryNormalizer parent;
-	
+
 	public VersionedQueryNormalizer(VersionController vc, EntityHandler eh, EntityContext context, VersionedQueryNormalizer parent) {
 		this.vc = vc;
 		this.eh = eh;
@@ -78,7 +77,7 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 		refs = new HashMap<String, VersionInfo>();
 		this.parent = parent;
 	}
-	
+
 	@Override
 	public ASTNode visit(Where where) {
 		isConditonNode = true;
@@ -86,10 +85,10 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 		isConditonNode = false;
 		return node;
 	}
-	
+
 	@Override
 	public ASTNode visit(EntityField entityField) {
-		
+
 		String propName = entityField.getPropertyName();
 		VersionedQueryNormalizer target = this;
 		int unnestCount = entityField.unnestCount();
@@ -102,7 +101,7 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 				}
 			}
 		}
-		
+
 		if (propName.contains(".")) {
 			String[] propPath = propName.split("[.]");
 			StringBuilder sb = new StringBuilder();
@@ -115,7 +114,7 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 				VersionInfo vi = target.getVi(refPropName);
 				if (i == propPath.length - 2) {
 					if (target.isConditonNode && isVersionProperty(propPath[propPath.length - 1])) {
-						vi.isVersionSpecify  = true;
+						vi.isVersionSpecify = true;
 					}
 				}
 			}
@@ -132,20 +131,20 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 		if (vi == null) {
 			PropertyHandler ph = eh.getPropertyCascade(refPropName, context);
 			if (ph == null || !(ph instanceof ReferencePropertyHandler)) {
-				throw new EntityRuntimeException(eh.getMetaData().getName() + "." + refPropName + " is not ReferenceProperty.");
+				throw new EntityRuntimeException(eh.getMetaData()
+						.getName() + "." + refPropName + " is not ReferenceProperty.");
 			}
 			vi = new VersionInfo((ReferencePropertyHandler) ph);
 			refs.put(refPropName, vi);
 		}
 		return vi;
 	}
-	
+
 	public static boolean isVersionProperty(String propName) {
 		if (propName.equals(Entity.VERSION)
 				|| propName.equals(Entity.STATE)
 				|| propName.equals(Entity.START_DATE)
-				|| propName.equals(Entity.END_DATE)
-				) {
+				|| propName.equals(Entity.END_DATE)) {
 			return true;
 		} else {
 			return false;
@@ -154,20 +153,24 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 
 	@Override
 	public ASTNode visit(Query query) {
-		
+
 		Query q = (Query) super.visit(query);
-		
+
 		And and = new And();
-		if (q.getWhere() != null && q.getWhere().getCondition() != null) {
-			and.addExpression(new Paren(q.getWhere().getCondition()));
+		if (q.getWhere() != null && q.getWhere()
+				.getCondition() != null) {
+			and.addExpression(new Paren(q.getWhere()
+					.getCondition()));
 		}
 		if (!isVersionSpecify && !q.isVersioned()) {
-			and.addExpression(vc.mainQueryCondition(eh, q.getFrom().getAsOf(), context));
+			and.addExpression(vc.mainQueryCondition(eh, q.getFrom()
+					.getAsOf(), context));
 		}
 		if (refs.size() != 0) {
-			for (Map.Entry<String, VersionInfo> e: refs.entrySet()) {
+			for (Map.Entry<String, VersionInfo> e : refs.entrySet()) {
 				if (!e.getValue().isVersionSpecify) {
-					VersionController refVc = eh.getService().getVersionController(e.getValue().rph.getReferenceEntityHandler(context));
+					VersionController refVc = eh.getService()
+							.getVersionController(e.getValue().rph.getReferenceEntityHandler(context));
 					Condition refEntityCond = refVc.refEntityQueryCondition(e.getKey(), e.getValue().rph, e.getValue().asOf, context);
 					if (refEntityCond != null) {
 						Refer r = q.refer(e.getKey());
@@ -180,51 +183,60 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 				}
 			}
 		}
-		
+
 		if (and.getChildExpressions() != null) {
-			if (and.getChildExpressions().size() > 1) {
+			if (and.getChildExpressions()
+					.size() > 1) {
 				q.where(and);
-			} else if (and.getChildExpressions().size() > 0) {
-				q.where(and.getChildExpressions().get(0));
+			} else if (and.getChildExpressions()
+					.size() > 0) {
+				q.where(and.getChildExpressions()
+						.get(0));
 			}
 		}
-		
+
 		q.setVersioned(true);
 		return q;
 	}
-	
+
 	@Override
 	public ASTNode visit(SubQuery subQuery) {
-		
+
 		Query query = null;
 		Condition on = null;
 		if (subQuery.getQuery() != null) {
-			EntityHandler subEh = context.getHandlerByName(subQuery.getQuery().getFrom().getEntityName());
+			EntityHandler subEh = context.getHandlerByName(subQuery.getQuery()
+					.getFrom()
+					.getEntityName());
 			VersionedQueryNormalizer subNormalizer = new VersionedQueryNormalizer(
-					subEh.getService().getVersionController(subEh), subEh, context, this);
-			
+					subEh.getService()
+							.getVersionController(subEh),
+					subEh, context, this);
+
 			//Onから先。生成されるQueryに反映されるように
 			if (subQuery.getOn() != null) {
-				on = (Condition) subQuery.getOn().accept(subNormalizer);
+				on = (Condition) subQuery.getOn()
+						.accept(subNormalizer);
 			}
-			
-			query = (Query) subQuery.getQuery().accept(subNormalizer);
+
+			query = (Query) subQuery.getQuery()
+					.accept(subNormalizer);
 
 		}
-		
+
 		return new SubQuery(query, on);
 	}
-	
+
 	@Override
 	public ASTNode visit(Refer refer) {
-		
+
 		if (refer.getAsOf() != null) {
-			VersionInfo vi = getVi(refer.getReferenceName().getPropertyName());
+			VersionInfo vi = getVi(refer.getReferenceName()
+					.getPropertyName());
 			vi.asOf = refer.getAsOf();
 		}
-		
+
 		return super.visit(refer);
 	}
 
-	
 }

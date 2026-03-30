@@ -45,19 +45,20 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class EntityWebApiDS extends AbstractAdminDataSource {
 
-    private static EntityWebApiDS instance = null;
+	private static EntityWebApiDS instance = null;
 
-    public static EntityWebApiDS getInstance() {
-        if (instance == null) {
-            instance = new EntityWebApiDS();
-        }
-        return instance;
-    }
+	public static EntityWebApiDS getInstance() {
+		if (instance == null) {
+			instance = new EntityWebApiDS();
+		}
+		return instance;
+	}
 
 	private EntityWebApiDS() {
 		DataSourceField nameField = new DataSourceTextField("name", AdminClientMessageUtil.getString("datasource_entity_webapi_EntityWebApiDS_name"));
 		nameField.setPrimaryKey(true);
-		DataSourceField displayNameField = new DataSourceTextField("displayName", AdminClientMessageUtil.getString("datasource_entity_webapi_EntityWebApiDS_dispName"));
+		DataSourceField displayNameField = new DataSourceTextField("displayName",
+				AdminClientMessageUtil.getString("datasource_entity_webapi_EntityWebApiDS_dispName"));
 		DataSourceField isInsertField = new DataSourceBooleanField("isInsert", "INSERT");
 		DataSourceField isLoadField = new DataSourceBooleanField("isLoad", "SELECT(Load)");
 		DataSourceField isQueryField = new DataSourceBooleanField("isQuery", "SELECT(Query)");
@@ -79,7 +80,7 @@ public class EntityWebApiDS extends AbstractAdminDataSource {
 			@Override
 			public void onSuccess(List<DefinitionEntry> entities) {
 				List<ListGridRecord> records = createRecord(entities);
-				response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 			}
@@ -117,8 +118,10 @@ public class EntityWebApiDS extends AbstractAdminDataSource {
 				record.setAttribute("isQuery", entity.isQuery());
 				record.setAttribute("isUpdate", entity.isUpdate());
 				record.setAttribute("isDelete", entity.isDelete());
-				record.setAttribute("definitionId", entry.getDefinitionInfo().getObjDefId());
-				record.setAttribute("version", entry.getDefinitionInfo().getVersion());
+				record.setAttribute("definitionId", entry.getDefinitionInfo()
+						.getObjDefId());
+				record.setAttribute("version", entry.getDefinitionInfo()
+						.getVersion());
 
 				list.add(record);
 			}

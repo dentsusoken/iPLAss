@@ -43,18 +43,23 @@ public class ResourceBundleConfig implements ServiceInitListener<MessageService>
 	public String getBaseBundleNamePattern() {
 		return baseBundleNamePattern;
 	}
+
 	public void setBaseBundleNamePattern(String baseBundleNamePattern) {
 		this.baseBundleNamePattern = baseBundleNamePattern;
 	}
+
 	public List<String> getFormats() {
 		return formats;
 	}
+
 	public void setFormats(List<String> formats) {
 		this.formats = formats;
 	}
+
 	public boolean isFallbackToSystemLocale() {
 		return fallbackToSystemLocale;
 	}
+
 	public void setFallbackToSystemLocale(boolean fallbackToSystemLocale) {
 		this.fallbackToSystemLocale = fallbackToSystemLocale;
 	}
@@ -80,14 +85,18 @@ public class ResourceBundleConfig implements ServiceInitListener<MessageService>
 				public List<String> getFormats(String baseName) {
 					return formats;
 				}
+
 				@Override
 				public Locale getFallbackLocale(String baseName, Locale locale) {
-					Locale l = ExecuteContext.getCurrentContext().getTenantContext().getTenantRuntime()
-							.getConfigRuntime(MetaTenantI18nInfoRuntime.class).getLangLocale();
+					Locale l = ExecuteContext.getCurrentContext()
+							.getTenantContext()
+							.getTenantRuntime()
+							.getConfigRuntime(MetaTenantI18nInfoRuntime.class)
+							.getLangLocale();
 					if (l != null && !locale.equals(l)) {
 						return l;
 					}
-					if(fallbackToSystemLocale) {
+					if (fallbackToSystemLocale) {
 						return super.getFallbackLocale(baseName, locale);
 					} else {
 						return null;
@@ -109,7 +118,8 @@ public class ResourceBundleConfig implements ServiceInitListener<MessageService>
 		if (bbnPtn == null) {
 			return true;
 		} else {
-			return bbnPtn.matcher(baseBundleName).matches();
+			return bbnPtn.matcher(baseBundleName)
+					.matches();
 		}
 	}
 

@@ -101,13 +101,19 @@ public class WebApiMethodOpenApiConverter implements WebApiOpenApiConverter {
 	public void convertWebApi(WebApiOpenApiConvertContext context) {
 		if (null != context.getTargetMethod()) {
 			// メソッドが１パターンに指定されている場合は、当該メソッドのみを対象とする。
-			context.getWebApiDefinition().setMethods(new MethodType[] { context.getTargetMethod() });
+			context.getWebApiDefinition()
+					.setMethods(new MethodType[] { context.getTargetMethod() });
 			var opertaion = switch (context.getTargetMethod()) {
-			case GET -> context.getPathItem().getGet();
-			case POST -> context.getPathItem().getPost();
-			case PUT -> context.getPathItem().getPut();
-			case DELETE -> context.getPathItem().getDelete();
-			case PATCH -> context.getPathItem().getPatch();
+			case GET -> context.getPathItem()
+					.getGet();
+			case POST -> context.getPathItem()
+					.getPost();
+			case PUT -> context.getPathItem()
+					.getPut();
+			case DELETE -> context.getPathItem()
+					.getDelete();
+			case PATCH -> context.getPathItem()
+					.getPatch();
 			};
 			context.putOperationContext(new OperationContext(context.getTargetMethod(), opertaion));
 
@@ -116,7 +122,8 @@ public class WebApiMethodOpenApiConverter implements WebApiOpenApiConverter {
 			List<MethodType> methodList = new ArrayList<>();
 			var pathItem = context.getPathItem();
 
-			for (var entry : pathItem.readOperationsMap().entrySet()) {
+			for (var entry : pathItem.readOperationsMap()
+					.entrySet()) {
 				var methodType = toMethodType(entry.getKey());
 				if (null == methodType) {
 					// 対応していないメソッドの場合はスキップする
@@ -128,7 +135,8 @@ public class WebApiMethodOpenApiConverter implements WebApiOpenApiConverter {
 				context.putOperationContext(new OperationContext(methodType, entry.getValue()));
 				methodList.add(methodType);
 			}
-			context.getWebApiDefinition().setMethods(methodList.toArray(MethodType[]::new));
+			context.getWebApiDefinition()
+					.setMethods(methodList.toArray(MethodType[]::new));
 		}
 	}
 
@@ -179,8 +187,10 @@ public class WebApiMethodOpenApiConverter implements WebApiOpenApiConverter {
 		var result = new StringBuilder(arr[0]);
 		for (int idx = 1; idx < arr.length; idx++) {
 			// 区切り文字の先頭を大文字にして、残りを小文字にする
-			result.append(arr[idx].substring(0, 1).toUpperCase());
-			result.append(arr[idx].substring(1).toLowerCase());
+			result.append(arr[idx].substring(0, 1)
+					.toUpperCase());
+			result.append(arr[idx].substring(1)
+					.toLowerCase());
 		}
 
 		return result.toString();

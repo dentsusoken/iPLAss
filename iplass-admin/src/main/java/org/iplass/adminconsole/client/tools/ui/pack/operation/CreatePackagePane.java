@@ -91,7 +91,7 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 		infoForm.setIsGroup(true);
 		infoForm.setGroupTitle("Package Information:");
 
-		nameField = new TextItem("name","Name");
+		nameField = new TextItem("name", "Name");
 		nameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 		SmartGWTUtil.setRequired(nameField);
 
@@ -132,7 +132,7 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 		executeButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (infoForm.validate() && validate()){
+				if (infoForm.validate() && validate()) {
 					executePack();
 				}
 			}
@@ -145,7 +145,7 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 				downloadPack();
 			}
 		});
-		downloadButton.setVisible(false);	//初期非表示
+		downloadButton.setVisible(false); //初期非表示
 
 		HLayout footer = new HLayout(5);
 		footer.setMargin(5);
@@ -181,18 +181,18 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_confirm"),
 				AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_startPackageConf"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					disableComponent(true);
-					messageTab.clearMessage();
-					messageTab.setTabTitleProgress();
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							disableComponent(true);
+							messageTab.clearMessage();
+							messageTab.setTabTitleProgress();
 
-					storePack();
-				}
-			}
+							storePack();
+						}
+					}
 
-		});
+				});
 	}
 
 	private void storePack() {
@@ -218,7 +218,8 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 			@Override
 			public void onFailure(Throwable caught) {
 				GWT.log(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_failedToCreatePackageInfo"), caught);
-				errorPack(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_failedToCreatePackageInfoCause") + caught.getMessage());
+				errorPack(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_failedToCreatePackageInfoCause")
+						+ caught.getMessage());
 			}
 		});
 	}
@@ -245,7 +246,8 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 				@Override
 				public void onFailure(Throwable caught) {
 					GWT.log(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_failedToStartPackageProcess"), caught);
-					errorPack(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_failedToStartPackageProcessCause") + caught.getMessage());
+					errorPack(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_failedToStartPackageProcessCause")
+							+ caught.getMessage());
 				}
 			});
 		} else {
@@ -283,7 +285,8 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 				@Override
 				public void onFailure(Throwable caught) {
 					GWT.log(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_failedToCreatePackage"), caught);
-					errorPack(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_failedToCreatePackageCause") + caught.getMessage());
+					errorPack(AdminClientMessageUtil.getString("ui_tools_pack_operation_CreatePackagePane_failedToCreatePackageCause")
+							+ caught.getMessage());
 				}
 			});
 
@@ -300,19 +303,21 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 	private void downloadPack() {
 		PostDownloadFrame frame = new PostDownloadFrame();
 		frame.setAction(GWT.getModuleBaseURL() + PackageDownloadProperty.ACTION_URL)
-			.addParameter(PackageDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
-			.addParameter(PackageDownloadProperty.FILE_OID, packOid)
-			.execute();
+				.addParameter(PackageDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
+				.addParameter(PackageDownloadProperty.FILE_OID, packOid)
+				.execute();
 	}
 
 	private boolean validate() {
 		int metaDataCount = 0;
 		int entityCount = 0;
 		if (createInfo.getMetaDataPaths() != null) {
-			metaDataCount = createInfo.getMetaDataPaths().size();
+			metaDataCount = createInfo.getMetaDataPaths()
+					.size();
 		}
 		if (createInfo.getEntityPaths() != null) {
-			entityCount = createInfo.getEntityPaths().size();
+			entityCount = createInfo.getEntityPaths()
+					.size();
 		}
 
 		if (metaDataCount == 0 && entityCount == 0) {

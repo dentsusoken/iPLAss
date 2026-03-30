@@ -42,7 +42,6 @@ public class ValidationService implements Service {
 
 	private Validator validator;
 
-
 	//TODO MetaDataRepository内の定義を取得する
 
 	//TODO キャッシュ？
@@ -107,7 +106,8 @@ public class ValidationService implements Service {
 		// TODO Auto-generated method stub
 		beanValidation = config.getValue("beanValidation", BeanValidationConfig.class);
 		if (beanValidation != null) {
-			validator = beanValidation.getValidatorFactory().getValidator();
+			validator = beanValidation.getValidatorFactory()
+					.getValidator();
 		}
 
 	}

@@ -44,8 +44,8 @@ import org.iplass.mtp.view.top.parts.TreeViewParts;
  * テンプレート系のパーツ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaCalendarParts.class, MetaEntityListParts.class,
-	MetaLastLoginParts.class, MetaTreeViewParts.class})
+@XmlSeeAlso({ MetaCalendarParts.class, MetaEntityListParts.class,
+		MetaLastLoginParts.class, MetaTreeViewParts.class })
 public class MetaTemplateParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */
@@ -198,7 +198,8 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 			if (isWidget()) {
 				String path = getTemplatePathForWidget(req);
 				if (path != null) {
-					includeTemplateWithWrapper(path, this.getMetaData().getMaxHeight(), req, res, application, page);
+					includeTemplateWithWrapper(path, this.getMetaData()
+							.getMaxHeight(), req, res, application, page);
 				}
 			}
 		}

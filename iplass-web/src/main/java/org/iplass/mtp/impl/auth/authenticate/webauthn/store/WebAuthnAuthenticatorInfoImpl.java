@@ -102,11 +102,14 @@ public class WebAuthnAuthenticatorInfoImpl implements WebAuthnAuthenticatorInfo 
 	public String getDescription() {
 		if (lastLoginDate != null) {
 			return "WebAuthn Authenticator:" + getAuthenticatorDisplayName()
-					+ " registered at " + DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true).format(startDate)
-					+ ", last login at " + DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true).format(lastLoginDate);
+					+ " registered at " + DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true)
+							.format(startDate)
+					+ ", last login at " + DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true)
+							.format(lastLoginDate);
 		} else {
 			return "WebAuthn Authenticator:" + getAuthenticatorDisplayName()
-					+ " registered at " + DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true).format(startDate);
+					+ " registered at " + DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true)
+							.format(startDate);
 		}
 	}
 }

@@ -40,7 +40,8 @@ public class RdbSequenceCounterService implements CounterService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
-		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
+		rdb = config.getDependentService(RdbAdapterService.class)
+				.getRdbAdapter();
 		sequenceNameMap = config.getValue("sequenceNameMap", Map.class);
 		if (sequenceNameMap == null) {
 			throw new ServiceConfigrationException("sequenceNameMap must specify.");

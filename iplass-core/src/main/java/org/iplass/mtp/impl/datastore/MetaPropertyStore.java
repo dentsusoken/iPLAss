@@ -30,14 +30,13 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.metadata.MetaData;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso(value={MetaGRdbPropertyStore.class, MetaGRdbMultiplePropertyStore.class})
+@XmlSeeAlso(value = { MetaGRdbPropertyStore.class, MetaGRdbMultiplePropertyStore.class })
 public abstract class MetaPropertyStore implements MetaData {
 	private static final long serialVersionUID = 6456276072021992839L;
 
 	public abstract MetaPropertyStore copy();
-	
+
 	public abstract PropertyStoreHandler createRuntime(PropertyHandler property, MetaEntity metaEntity);
-	
+
 }

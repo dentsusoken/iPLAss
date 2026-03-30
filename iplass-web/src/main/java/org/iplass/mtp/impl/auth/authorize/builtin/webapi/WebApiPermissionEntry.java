@@ -45,7 +45,9 @@ class WebApiPermissionEntry {
 	WebApiPermissionEntry(String role, String oid, String parameterConditionExp) {
 		this.role = role;
 		if (parameterConditionExp != null) {
-			ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+			ScriptEngine se = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getScriptEngine();
 			try {
 				parameterCondition = se.createScript(parameterConditionExp, SCRIPT_PREFIX + "_" + oid);
 			} catch (RuntimeException e) {
@@ -72,7 +74,9 @@ class WebApiPermissionEntry {
 			return true;
 		}
 
-		ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+		ScriptEngine se = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getScriptEngine();
 		ScriptContext sc = se.newScriptContext();
 		sc.setAttribute("user", userContext.newUserBinding(authContext));
 		sc.setAttribute("session", SessionBinding.newSessionBinding());

@@ -66,7 +66,7 @@ public class OAuthResourceServerAttributePane extends VLayout implements Editabl
 		//入力部分
 		form = new DynamicForm();
 		form.setWidth100();
-		form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
+		form.setNumCols(5); //間延びしないように最後に１つ余分に作成
 		form.setColWidths(100, 300, 100, 300, "*");
 		form.setMargin(5);
 

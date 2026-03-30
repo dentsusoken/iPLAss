@@ -75,9 +75,8 @@ public abstract class DefaultMetaDataTreeGrid extends MtpTreeGrid {
 		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME);
 		fields.add(nameField);
 
-		setFields(fields.toArray(new ListGridField[]{}));
+		setFields(fields.toArray(new ListGridField[] {}));
 	}
-
 
 	protected void initializeData() {
 		setGridFields();
@@ -155,10 +154,16 @@ public abstract class DefaultMetaDataTreeGrid extends MtpTreeGrid {
 	 */
 	protected TreeNode createItemNode(MetaTreeNode item) {
 		String name = null;
-		if (item.getName().contains("/")) {
-			name = item.getName().substring(item.getName().lastIndexOf("/") + 1);
-		} else if (item.getName().contains(".")) {
-			name = item.getName().substring(item.getName().lastIndexOf(".") + 1);
+		if (item.getName()
+				.contains("/")) {
+			name = item.getName()
+					.substring(item.getName()
+							.lastIndexOf("/") + 1);
+		} else if (item.getName()
+				.contains(".")) {
+			name = item.getName()
+					.substring(item.getName()
+							.lastIndexOf(".") + 1);
 		} else {
 			name = item.getName();
 		}

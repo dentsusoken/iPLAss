@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
 
 @XmlRootElement
 public class ServiceDefinition {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ServiceDefinition.class);
-	
+
 	private String[] inherits;
 	private String[] includes;
-	
+
 	private ServiceConfig[] service;
 
 	public ServiceConfig[] getService() {
@@ -45,7 +45,7 @@ public class ServiceDefinition {
 	public void setService(ServiceConfig[] service) {
 		this.service = service;
 	}
-	
+
 	public String[] getInherits() {
 		return inherits;
 	}
@@ -64,7 +64,7 @@ public class ServiceDefinition {
 
 	public ServiceConfig search(String name) {
 		if (service != null) {
-			for (ServiceConfig sc: service) {
+			for (ServiceConfig sc : service) {
 				if (name.equals(sc.id())) {
 					return sc;
 				}
@@ -72,10 +72,10 @@ public class ServiceDefinition {
 		}
 		return null;
 	}
-	
+
 	private ServiceConfig pull(ArrayList<ServiceConfig> myConfig, String id) {
 		if (myConfig.size() != 0) {
-			for (ServiceConfig sc: myConfig) {
+			for (ServiceConfig sc : myConfig) {
 				if (id.equals(sc.id())) {
 					myConfig.remove(sc);
 					return sc;
@@ -84,7 +84,7 @@ public class ServiceDefinition {
 		}
 		return null;
 	}
-	
+
 	public void include(ServiceDefinition mixinDefinition) {
 		ArrayList<ServiceConfig> mixinConfig;
 		if (mixinDefinition.service == null) {
@@ -92,10 +92,10 @@ public class ServiceDefinition {
 		} else {
 			mixinConfig = new ArrayList<ServiceConfig>(Arrays.asList(mixinDefinition.service));
 		}
-		
+
 		ArrayList<ServiceConfig> newList = new ArrayList<ServiceConfig>();
 		if (service != null) {
-			for (ServiceConfig sc: service) {
+			for (ServiceConfig sc : service) {
 				ServiceConfig override = pull(mixinConfig, sc.id());
 				if (override != null) {
 					if (sc.isFinal()) {
@@ -131,7 +131,7 @@ public class ServiceDefinition {
 		}
 		service = newList.toArray(new ServiceConfig[newList.size()]);
 	}
-	
+
 	public void inherit(ServiceDefinition superDefinition) {
 		ArrayList<ServiceConfig> myConfig;
 		if (service == null) {
@@ -139,10 +139,10 @@ public class ServiceDefinition {
 		} else {
 			myConfig = new ArrayList<ServiceConfig>(Arrays.asList(service));
 		}
-		
+
 		ArrayList<ServiceConfig> newList = new ArrayList<ServiceConfig>();
 		if (superDefinition.getService() != null) {
-			for (ServiceConfig sc: superDefinition.getService()) {
+			for (ServiceConfig sc : superDefinition.getService()) {
 				ServiceConfig override = pull(myConfig, sc.id());
 				if (override != null) {
 					if (sc.isFinal()) {
@@ -163,7 +163,8 @@ public class ServiceDefinition {
 							}
 						} else {
 							if (logger.isTraceEnabled()) {
-								logger.trace(sc.id() + " is exists in parents definition and this config declared ifnone. so can not override configration.");
+								logger.trace(sc.id()
+										+ " is exists in parents definition and this config declared ifnone. so can not override configration.");
 							}
 						}
 					}

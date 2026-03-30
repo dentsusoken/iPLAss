@@ -44,27 +44,27 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 	/** Templateファイル */
 	private static String[] templates = {
-		"obj_store_rb.gtl",
-		"obj_store.gtl",
-		"obj_ref_rb.gtl",
-		"obj_ref.gtl",
-		"obj_index_date.gtl",
-		"obj_index_dbl.gtl",
-		"obj_index_num.gtl",
-		"obj_index_str.gtl",
-		"obj_index_ts.gtl",
-		"obj_unique_date.gtl",
-		"obj_unique_dbl.gtl",
-		"obj_unique_num.gtl",
-		"obj_unique_str.gtl",
-		"obj_unique_ts.gtl"
+			"obj_store_rb.gtl",
+			"obj_store.gtl",
+			"obj_ref_rb.gtl",
+			"obj_ref.gtl",
+			"obj_index_date.gtl",
+			"obj_index_dbl.gtl",
+			"obj_index_num.gtl",
+			"obj_index_str.gtl",
+			"obj_index_ts.gtl",
+			"obj_unique_date.gtl",
+			"obj_unique_dbl.gtl",
+			"obj_unique_num.gtl",
+			"obj_unique_str.gtl",
+			"obj_unique_ts.gtl"
 	};
 
 	/** 圧縮形式 */
 	private static String[] compressedFormats = {
-		"zlib",
-		"lz4",
-		"none"
+			"zlib",
+			"lz4",
+			"none"
 	};
 
 	/** <p>実行モード</p> */
@@ -73,7 +73,9 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 	/** 実行パラメータ */
 	private ObjStoreDDLParameter parameter;
 
-	private GRdbDataStore store = (GRdbDataStore)ServiceRegistry.getRegistry().getService(StoreService.class).getDataStore();
+	private GRdbDataStore store = (GRdbDataStore) ServiceRegistry.getRegistry()
+			.getService(StoreService.class)
+			.getDataStore();
 
 	/** カラム名小文字指定 */
 	private boolean columnNameLowerCase = false;
@@ -126,7 +128,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			if (args.length > 3) {
 				if (!args[3].equalsIgnoreCase("all")) {
 					String[] spaceNames = args[3].split(",");
-					for (int i =0; i < spaceNames.length; i++) {
+					for (int i = 0; i < spaceNames.length; i++) {
 						spaceNames[i] = spaceNames[i].trim();
 					}
 					parameter.setStorageSpaceName(spaceNames);
@@ -144,7 +146,8 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			if (args.length > 5) {
 				if (getConfigSetting().isMySQL()) {
 					//指定された圧縮形式であればtrue、それ以外はfalse
-					if (Arrays.asList(compressedFormats).contains(args[5])) {
+					if (Arrays.asList(compressedFormats)
+							.contains(args[5])) {
 						parameter.setUseCompression(true);
 						parameter.setCompressedFormat(args[5]);
 					} else {
@@ -179,13 +182,13 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		logEnvironment();
 
 		switch (execMode) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start Wizard");
 			logInfo("");
 
 			//Wizardの実行
 			return startWizard();
-		case SILENT :
+		case SILENT:
 			logInfo("■Start Silent");
 			logInfo("");
 
@@ -196,7 +199,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			return executeTask(null, (param) -> {
 				return generate();
 			});
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -204,21 +207,24 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 	private boolean generate() {
 
-		GroovyScriptEngine gse = (GroovyScriptEngine) ServiceRegistry.getRegistry().getService(ScriptService.class).createScriptEngine();
+		GroovyScriptEngine gse = (GroovyScriptEngine) ServiceRegistry.getRegistry()
+				.getService(ScriptService.class)
+				.createScriptEngine();
 
 		setSuccess(false);
 
 		try {
 
-			for (String tmplName: templates) {
+			for (String tmplName : templates) {
 				GroovyTemplate tmpl = getTemplate(tmplName, gse);
 
-				try(Writer w = getWriter(tmplName.replace(".gtl", ".sql"))) {
-					for (StorageSpaceMap e: store.getStorageSpaceMap().values()) {
+				try (Writer w = getWriter(tmplName.replace(".gtl", ".sql"))) {
+					for (StorageSpaceMap e : store.getStorageSpaceMap()
+							.values()) {
 						if (parameter.getStorageSpaceName() == null || contains(parameter.getStorageSpaceName(), e.getStorageSpaceName())) {
 							List<String> allPostFix = e.allTableNamePostfix();
 							List<Col> cols = toCol(e);
-							for (String pf: allPostFix) {
+							for (String pf : allPostFix) {
 								Map<String, Object> bindings = new HashMap<>();
 								if (pf != null) {
 									bindings.put("tableNamePostfix", "__" + pf);
@@ -292,8 +298,9 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 	}
 
 	private void setVector(Col[] cols, RawColType type, RawColIndexType indexType, double distance, int targetMaxCol) {
-		for (int i = 1;  i <= targetMaxCol; i++) {
-			cols[(int) Math.round(i * distance) - 1] = new Col(type, indexType, columnNameLowerCase ? type.getColNamePrefix(indexType).toLowerCase() : type.getColNamePrefix(indexType), i);
+		for (int i = 1; i <= targetMaxCol; i++) {
+			cols[(int) Math.round(i * distance) - 1] = new Col(type, indexType, columnNameLowerCase ? type.getColNamePrefix(indexType)
+					.toLowerCase() : type.getColNamePrefix(indexType), i);
 		}
 	}
 
@@ -301,7 +308,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		List<Col> res = new ArrayList<>();
 		int maxCol = e.maxColumns();
 		RawColType[] types = RawColType.values();
-		RawColIndexType[] indexTypes = new RawColIndexType[]{RawColIndexType.UNIQUE_INDEX, RawColIndexType.INDEX, RawColIndexType.NONE};
+		RawColIndexType[] indexTypes = new RawColIndexType[] { RawColIndexType.UNIQUE_INDEX, RawColIndexType.INDEX, RawColIndexType.NONE };
 		//なるべく均等になるように配置
 		Col[][][] matrix = new Col[types.length][indexTypes.length][maxCol];
 		for (int i = 0; i < types.length; i++) {
@@ -310,7 +317,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 				double distance = 0;
 				if (targetMaxCol != 0) {
-					distance = maxCol/targetMaxCol;
+					distance = maxCol / targetMaxCol;
 				}
 				setVector(matrix[i][j], types[i], indexTypes[j], distance, targetMaxCol);
 			}
@@ -337,7 +344,8 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		boolean validTemplateFile = false;
 		do {
 			//デフォルトを02_tools/templateとして想定
-			String defaultPath = "./../template/" + (getConfigSetting().isOracle() ? "oracle" : getConfigSetting().isSQLServer() ? "sqlserver" : getConfigSetting().isPostgreSQL() ? "postgresql" : "mysql");
+			String defaultPath = "./../template/" + (getConfigSetting().isOracle() ? "oracle"
+					: getConfigSetting().isSQLServer() ? "sqlserver" : getConfigSetting().isPostgreSQL() ? "postgresql" : "mysql");
 			String templatePath = readConsole(rs("ObjStoreDDLGenerator.Wizard.templateDirMsg") + "(" + defaultPath + ")");
 			if (StringUtil.isNotBlank(templatePath)) {
 				param.setTemplateRootPath(templatePath);
@@ -355,7 +363,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 				param.setTemplateRootDir(templateDir);
 				validTemplateFile = true;
 			}
-		} while(validTemplateFile == false);
+		} while (validTemplateFile == false);
 
 		//出力先ディレクトリ
 		boolean validOutputFile = false;
@@ -377,7 +385,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 				param.setOutputDir(outputDir);
 				validOutputFile = true;
 			}
-		} while(validOutputFile == false);
+		} while (validOutputFile == false);
 
 		//StorageSpace名
 		boolean validStorageSpaceName = false;
@@ -392,7 +400,8 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 					boolean existsName = false;
 					for (String target : param.getStorageSpaceName()) {
 						existsName = false;
-						for (StorageSpaceMap e: store.getStorageSpaceMap().values()) {
+						for (StorageSpaceMap e : store.getStorageSpaceMap()
+								.values()) {
 							if (target.equals(e.getStorageSpaceName())) {
 								existsName = true;
 								ssList.add(e);
@@ -412,7 +421,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 				validStorageSpaceName = true;
 			}
 
-		} while(validStorageSpaceName == false);
+		} while (validStorageSpaceName == false);
 
 		//partition
 		boolean checkPartition = false;
@@ -454,7 +463,8 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			}
 
 			//指定された圧縮形式であればtrue、それ以外はfalse
-			if (Arrays.asList(compressedFormats).contains(compressedFormat)) {
+			if (Arrays.asList(compressedFormats)
+					.contains(compressedFormat)) {
 				param.setUseCompression(true);
 			} else {
 				param.setUseCompression(false);

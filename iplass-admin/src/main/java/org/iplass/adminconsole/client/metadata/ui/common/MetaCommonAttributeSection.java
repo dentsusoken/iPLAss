@@ -72,14 +72,14 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 	private Class<D> defClass;
 
 	public MetaCommonAttributeSection(MetaDataItemMenuTreeNode targetNode, Class<D> defClass) {
-		this(targetNode, defClass , false);
+		this(targetNode, defClass, false);
 	}
 
 	public MetaCommonAttributeSection(MetaDataItemMenuTreeNode targetNode, Class<D> defClass, boolean useLangSetting) {
 		this.defClass = defClass;
 
 		setTitle("Common Attribute");
-		setExpanded(false);	//デフォルトは閉じた状態
+		setExpanded(false); //デフォルトは閉じた状態
 
 		Label metaTypeCap = new Label("Type：");
 		metaTypeCap.setAutoFit(true);
@@ -91,7 +91,7 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 		setControls(metaTypeCap, metaTypeLabel);
 
 		HLayout contents = new HLayout();
-		contents.setHeight(20);	//これでこのSectionの高さが決まる
+		contents.setHeight(20); //これでこのSectionの高さが決まる
 
 		attrPane = new MetaCommonAttributePane<D>(useLangSetting);
 		sharedPane = new SharedSettingPane();
@@ -100,7 +100,6 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 		contents.addMember(sharedPane);
 
 		addItem(contents);
-
 
 		setTargetNode(targetNode);
 	}
@@ -134,6 +133,7 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 	public void setLocalizedDisplayNameList(List<LocalizedStringDefinition> localizedDisplayNameList) {
 		attrPane.setLocalizedDisplayNameList(localizedDisplayNameList);
 	}
+
 	public List<LocalizedStringDefinition> getLocalizedDisplayNameList() {
 		return attrPane.getLocalizedDisplayNameList();
 	}
@@ -285,7 +285,6 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 			});
 			items.add(saveButton);
 
-
 			form.setItems(items.toArray(new FormItem[0]));
 
 			addMember(form);
@@ -338,7 +337,8 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 				@Override
 				public void onFailure(Throwable caught) {
 					// 失敗時
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_failedToSaveShareSett") + caught.getMessage());
+					SC.warn(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_failedToSaveShareSett")
+							+ caught.getMessage());
 				}
 			});
 		}
@@ -347,49 +347,51 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_saveConfirmComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						final SharedConfig config = new SharedConfig(
-								SmartGWTUtil.getBooleanValue(sharableField),
-								SmartGWTUtil.getBooleanValue(overwritableField));
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								final SharedConfig config = new SharedConfig(
+										SmartGWTUtil.getBooleanValue(sharableField),
+										SmartGWTUtil.getBooleanValue(overwritableField));
 
-						if (sharableController.isDataSharableEnabled(defClass)) {
-							config.setDataSharable(SmartGWTUtil.getBooleanValue(dataSharableField));
+								if (sharableController.isDataSharableEnabled(defClass)) {
+									config.setDataSharable(SmartGWTUtil.getBooleanValue(dataSharableField));
+								}
+								if (sharableController.isPermissionSharableEnabled(defClass)) {
+									config.setPermissionSharable(SmartGWTUtil.getBooleanValue(permissionSharableField));
+								}
+
+								service.updateSharedConfig(TenantInfoHolder.getId(),
+										defClass.getName(),
+										targetNode.getDefName(),
+										config,
+										new AsyncCallback<Void>() {
+
+											@Override
+											public void onSuccess(Void result) {
+												SC.say(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_completion"),
+														AdminClientMessageUtil
+																.getString("ui_metadata_common_MetaCommonAttributeSection_shareSettCreate"));
+
+												//TargetNodeに反映(再度表示された場合に反映するため)
+												targetNode.setSharable(config.isSharable());
+												targetNode.setOverwritable(config.isOverwritable());
+												targetNode.setDataSharable(config.isDataSharable());
+												targetNode.setPermissionSharable(config.isPermissionSharable());
+
+												targetNode.refreshStatus();
+											}
+
+											@Override
+											public void onFailure(Throwable caught) {
+												// 失敗時
+												SC.warn(AdminClientMessageUtil.getString(
+														"ui_metadata_common_MetaCommonAttributeSection_failedToSaveShareSett") + caught.getMessage());
+											}
+										});
+							}
 						}
-						if (sharableController.isPermissionSharableEnabled(defClass)) {
-							config.setPermissionSharable(SmartGWTUtil.getBooleanValue(permissionSharableField));
-						}
-
-						service.updateSharedConfig(TenantInfoHolder.getId(),
-								defClass.getName(),
-								targetNode.getDefName(),
-								config,
-								new AsyncCallback<Void>() {
-
-									@Override
-									public void onSuccess(Void result) {
-										SC.say(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_completion"),
-												AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_shareSettCreate"));
-
-										//TargetNodeに反映(再度表示された場合に反映するため)
-										targetNode.setSharable(config.isSharable());
-										targetNode.setOverwritable(config.isOverwritable());
-										targetNode.setDataSharable(config.isDataSharable());
-										targetNode.setPermissionSharable(config.isPermissionSharable());
-
-										targetNode.refreshStatus();
-									}
-
-									@Override
-									public void onFailure(Throwable caught) {
-										// 失敗時
-										SC.warn(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_failedToSaveShareSett") + caught.getMessage());
-									}
-								});
-					}
-				}
-			});
+					});
 		}
 
 	}

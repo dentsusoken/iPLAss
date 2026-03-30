@@ -25,7 +25,6 @@ import java.sql.Timestamp;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 
-
 /**
  * MetaData本体除く、メタデータ情報。
  *

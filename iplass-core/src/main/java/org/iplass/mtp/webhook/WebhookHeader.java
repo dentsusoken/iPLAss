@@ -29,9 +29,9 @@ package org.iplass.mtp.webhook;
 public class WebhookHeader {
 	private String key;
 	private String value;
-	
-	public WebhookHeader () {
-		
+
+	public WebhookHeader() {
+
 	}
 
 	/**
@@ -39,9 +39,10 @@ public class WebhookHeader {
 	 * @param value <%=doclang == 'ja' ? 'ヘッダーに置く内容': 'Content for this header'%>
 	 */
 	public WebhookHeader(String key, String value) {
-		this.key=key;
-		this.value=value;
+		this.key = key;
+		this.value = value;
 	}
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * ヘッダー名を取得する。

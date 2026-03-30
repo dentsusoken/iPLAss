@@ -37,8 +37,7 @@ public class GreaterEqual extends ComparisonPredicate {
 
 	public GreaterEqual() {
 	}
-	
-	
+
 	public GreaterEqual(String propertyName, Object valueLiteral) {
 		super(propertyName, valueLiteral);
 	}
@@ -46,7 +45,6 @@ public class GreaterEqual extends ComparisonPredicate {
 	public GreaterEqual(ValueExpression property, ValueExpression value) {
 		super(property, value);
 	}
-
 
 	public void accept(ConditionVisitor visitor) {
 		if (visitor.visit(this)) {
@@ -60,14 +58,14 @@ public class GreaterEqual extends ComparisonPredicate {
 			}
 		}
 	}
-	
+
 	@Override
 	protected String getOpString() {
 		return ">=";
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
 
-	
 }

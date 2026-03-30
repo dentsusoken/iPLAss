@@ -34,22 +34,22 @@ import org.iplass.mtp.web.actionmapping.TokenValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class TokenInterceptor implements CommandInterceptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(TokenInterceptor.class);
 
 	@Override
 	public String intercept(CommandInvocation invocation) {
-		
+
 		if (invocation instanceof WebApiInvocationImpl) {
 			WebApiRuntime runtime = ((WebApiInvocationImpl) invocation).getWebApiRuntime();
 			RequestContext context = invocation.getRequest();
-			MetaWebApiTokenCheck tokenCheck = runtime.getMetaData().getTokenCheck();
-			
+			MetaWebApiTokenCheck tokenCheck = runtime.getMetaData()
+					.getTokenCheck();
+
 			if (tokenCheck != null) {
 				logger.trace("execute validate token...");
-				
+
 				boolean isValid = false;
 				String token = context.getParam(TokenStore.TOKEN_PARAM_NAME);
 				if (token == null) {
@@ -60,12 +60,12 @@ public class TokenInterceptor implements CommandInterceptor {
 				if (token == null) {
 					tokenError(tokenCheck);
 				}
-				
+
 				TokenStore tokenStore = TokenStore.getTokenStore(context.getSession(false));
 				if (tokenStore == null) {
 					tokenError(tokenCheck);
 				}
-				
+
 				try {
 					if (tokenCheck.isUseFixedToken()) {
 						isValid = tokenStore.isValidFixed(token);
@@ -75,9 +75,9 @@ public class TokenInterceptor implements CommandInterceptor {
 					if (!isValid) {
 						tokenError(tokenCheck);
 					}
-					
+
 					return invocation.proceedCommand();
-					
+
 				} catch (RuntimeException e) {
 					//例外時に、消費したTokenを元に戻す
 					if (isValid && !tokenCheck.isUseFixedToken() && tokenCheck.isExceptionRollback() && tokenCheck.isConsume()) {
@@ -87,14 +87,15 @@ public class TokenInterceptor implements CommandInterceptor {
 				}
 			}
 		}
-		
+
 		//no token check
 		return invocation.proceedCommand();
 	}
-	
+
 	private void tokenError(MetaWebApiTokenCheck tokenCheck) {
 		throw new TokenValidationException(resourceString("impl.web.interceptors.TokenInterceptor.invalidErr"));
 	}
+
 	private static String resourceString(String key, Object... arguments) {
 		return WebResourceBundleUtil.resourceString(key, arguments);
 	}

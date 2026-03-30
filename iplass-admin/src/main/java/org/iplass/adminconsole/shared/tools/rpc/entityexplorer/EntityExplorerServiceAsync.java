@@ -88,7 +88,8 @@ public interface EntityExplorerServiceAsync {
 	 * @param offset Offset
 	 * @param callback  Callbackクラス
 	 */
-	void search(int tenantId, String defName, String whereClause, String orderByClause, boolean isSearcgAllVersion, int limit, int offset, AsyncCallback<EntityDataListResultInfo> callback);
+	void search(int tenantId, String defName, String whereClause, String orderByClause, boolean isSearcgAllVersion, int limit, int offset,
+			AsyncCallback<EntityDataListResultInfo> callback);
 
 	/**
 	 * <p>Entityデータの件数を取得します。</p>
@@ -113,7 +114,8 @@ public interface EntityExplorerServiceAsync {
 	 * @param isSearcgAllVersion 全バージョン検索
 	 * @param callback  Callbackクラス
 	 */
-	void validateCriteria(int tenantId, String defName, String whereClause, String orderByClause, boolean isSearcgAllVersion, AsyncCallback<EntityDataListResultInfo> callback);
+	void validateCriteria(int tenantId, String defName, String whereClause, String orderByClause, boolean isSearcgAllVersion,
+			AsyncCallback<EntityDataListResultInfo> callback);
 
 	/**
 	 * <p>ReferenceEntityを検索します。</p>

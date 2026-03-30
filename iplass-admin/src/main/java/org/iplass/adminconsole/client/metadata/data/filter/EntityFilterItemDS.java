@@ -45,7 +45,6 @@ import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-
 /**
  * フィルタ条件アイテム データソース
  */
@@ -61,39 +60,39 @@ public class EntityFilterItemDS extends AbstractAdminDataSource {
 				DataSourceConstants.FIELD_NAME,
 				FieldType.TEXT,
 				DataSourceConstants.FIELD_NAME_TITLE);
-		fields = new DataSourceField[] {key, name};
+		fields = new DataSourceField[] { key, name };
 	}
 
-    public static void setDataSource(final SelectItem item, String defName) {
-    	setup(item, defName);
-    }
+	public static void setDataSource(final SelectItem item, String defName) {
+		setup(item, defName);
+	}
 
-    private static void setup(final FormItem item, String defName) {
+	private static void setup(final FormItem item, String defName) {
 
-    	item.setOptionDataSource(EntityFilterItemDS.getInstance(defName));
-    	item.setValueField(DataSourceConstants.FIELD_NAME);
+		item.setOptionDataSource(EntityFilterItemDS.getInstance(defName));
+		item.setValueField(DataSourceConstants.FIELD_NAME);
 
-    	if (item instanceof SelectItem) {
-    		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
-    		((SelectItem)item).setPickListFields(nameField);
-    		((SelectItem)item).setPickListWidth(420);
-    	} else if (item instanceof ComboBoxItem) {
-    		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
-    		((ComboBoxItem)item).setPickListFields(nameField);
-    		((ComboBoxItem)item).setPickListWidth(420);
-    	}
+		if (item instanceof SelectItem) {
+			ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
+			((SelectItem) item).setPickListFields(nameField);
+			((SelectItem) item).setPickListWidth(420);
+		} else if (item instanceof ComboBoxItem) {
+			ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
+			((ComboBoxItem) item).setPickListFields(nameField);
+			((ComboBoxItem) item).setPickListWidth(420);
+		}
 
-    }
+	}
 
-    public static EntityFilterItemDS getInstance(String defName) {
+	public static EntityFilterItemDS getInstance(String defName) {
 		return new EntityFilterItemDS(defName);
-    }
+	}
 
-    private EntityFilterItemDS(String defName) {
-    	setAttribute("defName", defName, true);
+	private EntityFilterItemDS(String defName) {
+		setAttribute("defName", defName, true);
 
 		setFields(fields);
-    }
+	}
 
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request,
@@ -115,7 +114,7 @@ public class EntityFilterItemDS extends AbstractAdminDataSource {
 			public void onSuccess(EntityFilter filter) {
 
 				List<ListGridRecord> records = null;
-				if  (filter != null) {
+				if (filter != null) {
 					List<EntityFilterItem> items = filter.getItems();
 					if (items == null) {
 						records = new ArrayList<ListGridRecord>(0);
@@ -134,7 +133,7 @@ public class EntityFilterItemDS extends AbstractAdminDataSource {
 					records = new ArrayList<ListGridRecord>(0);
 				}
 
-		    	response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 			}
@@ -145,21 +144,21 @@ public class EntityFilterItemDS extends AbstractAdminDataSource {
 	@Override
 	protected void executeAdd(String requestId, DSRequest request, DSResponse response) {
 		ListGridRecord record = new ListGridRecord(request.getData());
-		response.setData(new ListGridRecord[] {record});
+		response.setData(new ListGridRecord[] { record });
 		processResponse(requestId, response);
 	}
 
 	@Override
 	protected void executeUpdate(String requestId, DSRequest request, DSResponse response) {
 		ListGridRecord record = new ListGridRecord(request.getData());
-		response.setData(new ListGridRecord[] {record});
+		response.setData(new ListGridRecord[] { record });
 		processResponse(requestId, response);
 	}
 
 	@Override
 	protected void executeRemove(String requestId, DSRequest request, DSResponse response) {
 		ListGridRecord record = new ListGridRecord(request.getData());
-		response.setData(new ListGridRecord[] {record});
+		response.setData(new ListGridRecord[] { record });
 		processResponse(requestId, response);
 	}
 

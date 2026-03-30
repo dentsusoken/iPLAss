@@ -126,18 +126,18 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+			setCanReorderRecords(true); //Dragによる並び替えを可能にする
 
 			ListGridField clientTypeField = new ListGridField(FIELD_NAME.CLIENT_TYPE.name(), "Client Type");
 
@@ -148,7 +148,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 
 				@Override
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editClientPolicy((ListGridRecord)event.getRecord());
+					editClientPolicy((ListGridRecord) event.getRecord());
 
 				}
 			});
@@ -158,14 +158,14 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 		@Override
 		public void setDefinition(OAuthAuthorizationDefinition definition) {
 
-			setData(new ListGridRecord[]{});
+			setData(new ListGridRecord[] {});
 
 			if (definition.getClientPolicies() != null) {
 				List<ListGridRecord> records = new ArrayList<ListGridRecord>();
 				for (ClientPolicyDefinition policy : definition.getClientPolicies()) {
 					records.add(createRecord(policy, null));
 				}
-				setData(records.toArray(new ListGridRecord[]{}));
+				setData(records.toArray(new ListGridRecord[] {}));
 			}
 		}
 
@@ -178,7 +178,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			} else {
 				List<ClientPolicyDefinition> policies = new ArrayList<ClientPolicyDefinition>(records.length);
 				for (ListGridRecord record : records) {
-					ClientPolicyDefinition policy = (ClientPolicyDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+					ClientPolicyDefinition policy = (ClientPolicyDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 					policies.add(policy);
 				}
 				definition.setClientPolicies(policies);
@@ -222,7 +222,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			});
 
 			if (record != null) {
-				dialog.setDefinition((ClientPolicyDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+				dialog.setDefinition((ClientPolicyDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 			}
 			dialog.show();
 		}
@@ -231,7 +231,8 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			if (record == null) {
 				record = new ListGridRecord();
 			}
-			record.setAttribute(FIELD_NAME.CLIENT_TYPE.name(), policy.getClientType() != null ? policy.getClientType().name() : "");
+			record.setAttribute(FIELD_NAME.CLIENT_TYPE.name(), policy.getClientType() != null ? policy.getClientType()
+					.name() : "");
 			record.setAttribute(FIELD_NAME.VALUE_OBJECT.name(), policy);
 			return record;
 		}
@@ -318,7 +319,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			IButton btnOK = new IButton("OK");
 			btnOK.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						createEditDefinition();
 					}
 				}
@@ -337,7 +338,8 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 		public void setDefinition(ClientPolicyDefinition definition) {
 
 			if (definition.getClientType() != null) {
-				selClientType.setValue(definition.getClientType().name());
+				selClientType.setValue(definition.getClientType()
+						.name());
 			} else {
 				selClientType.setValue("");
 			}
@@ -411,17 +413,17 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			grid.setWidth100();
 			grid.setHeight(1);
 
-			grid.setShowAllColumns(true);								//列を全て表示
-			grid.setShowAllRecords(true);								//レコードを全て表示
-			grid.setCanResizeFields(false);								//列幅変更可能
-			grid.setCanSort(false);										//ソート不可
-			grid.setCanPickFields(false);								//表示フィールドの選択不可
-			grid.setCanGroupBy(false);									//GroupByの選択不可
-			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			grid.setLeaveScrollbarGap(false);							//縦スクロールバー自動表示制御
+			grid.setShowAllColumns(true); //列を全て表示
+			grid.setShowAllRecords(true); //レコードを全て表示
+			grid.setCanResizeFields(false); //列幅変更可能
+			grid.setCanSort(false); //ソート不可
+			grid.setCanPickFields(false); //表示フィールドの選択不可
+			grid.setCanGroupBy(false); //GroupByの選択不可
+			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			grid.setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			grid.setBodyOverflow(Overflow.VISIBLE);
 			grid.setOverflow(Overflow.VISIBLE);
-			grid.setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+			grid.setCanReorderRecords(true); //Dragによる並び替えを可能にする
 
 			grid.setCanEdit(true);
 			grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
@@ -457,12 +459,13 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 
 			if (definition.getScopes() != null) {
 
-				ListGridRecord[] records = new ListGridRecord[definition.getScopes().size()];
+				ListGridRecord[] records = new ListGridRecord[definition.getScopes()
+						.size()];
 
 				int cnt = 0;
 				for (String scope : definition.getScopes()) {
 					ListGridRecord record = new ListGridRecord();
-					record.setAttribute("scope",scope);
+					record.setAttribute("scope", scope);
 					records[cnt] = record;
 					cnt++;
 				}
@@ -480,7 +483,8 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 				List<String> scopes = new ArrayList<String>(records.length);
 				for (ListGridRecord record : records) {
 					String scope = record.getAttribute("scope");
-					if (scope != null && !scope.trim().isEmpty()) {
+					if (scope != null && !scope.trim()
+							.isEmpty()) {
 						scopes.add(scope);
 					}
 				}
@@ -563,6 +567,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 									script = text;
 									scriptChanged();
 								}
+
 								@Override
 								public void onCancel() {
 								}
@@ -579,12 +584,16 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 
 			script = null;
 			if (definition.getConsentType() != null) {
-				String value = consentTypeMap.get(definition.getConsentType().getClass().getName());
+				String value = consentTypeMap.get(definition.getConsentType()
+						.getClass()
+						.getName());
 				if (value != null) {
-					selConsentType.setValue(definition.getConsentType().getClass().getName());
+					selConsentType.setValue(definition.getConsentType()
+							.getClass()
+							.getName());
 
 					if (definition.getConsentType() instanceof ScriptingConsentTypeDefinition) {
-						script = ((ScriptingConsentTypeDefinition)definition.getConsentType()).getScript();
+						script = ((ScriptingConsentTypeDefinition) definition.getConsentType()).getScript();
 					}
 				} else {
 					selConsentType.setValue("");
@@ -604,10 +613,10 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 				if (type.equals(AlwaysConsentTypeDefinition.class.getName())) {
 					AlwaysConsentTypeDefinition edit = new AlwaysConsentTypeDefinition();
 					definition.setConsentType(edit);
-				} else 	if (type.equals(OnceConsentTypeDefinition.class.getName())) {
+				} else if (type.equals(OnceConsentTypeDefinition.class.getName())) {
 					OnceConsentTypeDefinition edit = new OnceConsentTypeDefinition();
 					definition.setConsentType(edit);
-				} else 	if (type.equals(ScriptingConsentTypeDefinition.class.getName())) {
+				} else if (type.equals(ScriptingConsentTypeDefinition.class.getName())) {
 					ScriptingConsentTypeDefinition edit = new ScriptingConsentTypeDefinition();
 					edit.setScript(script);
 					definition.setConsentType(edit);

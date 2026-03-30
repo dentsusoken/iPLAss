@@ -26,7 +26,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * テンプレート系のパーツ
  * @author lis3wg
  */
-@XmlSeeAlso({CalendarParts.class, EntityListParts.class, LastLoginParts.class, TreeViewParts.class})
+@XmlSeeAlso({ CalendarParts.class, EntityListParts.class, LastLoginParts.class, TreeViewParts.class })
 public class TemplateParts extends TopViewContentParts {
 
 	/** SerialVersionUID */
@@ -40,7 +40,7 @@ public class TemplateParts extends TopViewContentParts {
 	 * @return テンプレートパス
 	 */
 	public String getTemplatePath() {
-	    return templatePath;
+		return templatePath;
 	}
 
 	/**
@@ -48,6 +48,6 @@ public class TemplateParts extends TopViewContentParts {
 	 * @param templatePath テンプレートパス
 	 */
 	public void setTemplatePath(String templatePath) {
-	    this.templatePath = templatePath;
+		this.templatePath = templatePath;
 	}
 }

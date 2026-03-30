@@ -71,7 +71,6 @@ public abstract class XmlWriter implements ResultStreamWriter {
 		add(getTagWithName(element, name));
 	}
 
-
 	protected void closeElement() throws IOException {
 		String element = stackTags.pop();
 		addTabs();
@@ -144,6 +143,7 @@ public abstract class XmlWriter implements ResultStreamWriter {
 
 		return sb.toString();
 	}
+
 	protected void addTabs() throws IOException {
 		int count = stackTags.size();
 		StringBuffer sb = new StringBuffer();

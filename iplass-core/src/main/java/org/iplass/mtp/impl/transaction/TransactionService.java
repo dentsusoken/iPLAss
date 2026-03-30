@@ -27,15 +27,17 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.TransactionManager;
 
 public abstract class TransactionService implements Service {
-	
+
 	public static class TransactionManagerConstructor implements ManagerConstructor {
 		@Override
 		public Manager construct() {
-			return ServiceRegistry.getRegistry().getService(TransactionService.class).getTransacitonManager();
+			return ServiceRegistry.getRegistry()
+					.getService(TransactionService.class)
+					.getTransacitonManager();
 		}
-		
+
 	}
-	
+
 	public abstract TransactionManager getTransacitonManager();
-	
+
 }

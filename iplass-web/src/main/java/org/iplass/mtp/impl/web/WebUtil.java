@@ -57,7 +57,6 @@ public class WebUtil {
 
 	//FIXME アプリケーションが利用するメソッドのapi.webパッケージへの移動
 
-
 //	/** 認証対象外のURLの判定結果 AttributeKey */
 //	private static final String EXECLUDE_URL = "ececlude_url";
 //	private static final Object EXECLUDE_URL_VALUE = new Object();
@@ -72,11 +71,14 @@ public class WebUtil {
 		if (i >= 0) {
 			actionPath = actionPath.substring(0, i);
 		}
-		
-		ActionMappingService amService = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
-		WebFrontendService webFrontendService = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+
+		ActionMappingService amService = ServiceRegistry.getRegistry()
+				.getService(ActionMappingService.class);
+		WebFrontendService webFrontendService = ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class);
 		ActionMappingRuntime actionMapping = amService.getByPathHierarchy(actionPath, webFrontendService.getWelcomeAction());
-		if (actionMapping != null && actionMapping.getMetaData().isNeedTrustedAuthenticate()) {
+		if (actionMapping != null && actionMapping.getMetaData()
+				.isNeedTrustedAuthenticate()) {
 			return true;
 		} else {
 			return false;
@@ -85,7 +87,7 @@ public class WebUtil {
 
 	public static boolean isValidInternalUrl(String url) {
 
-		if (StringUtil.startsWithAny(StringUtil.lowerCase(url), new String[]{"http:","https:","//","/\\","/\t", "\\\\"})) {
+		if (StringUtil.startsWithAny(StringUtil.lowerCase(url), new String[] { "http:", "https:", "//", "/\\", "/\t", "\\\\" })) {
 			return false;
 		}
 
@@ -140,7 +142,8 @@ public class WebUtil {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	public static void includeTemplate(String templateName, HttpServletRequest req, HttpServletResponse resp, ServletContext context, PageContext page, RequestContextWrapper requestContext)
+	public static void includeTemplate(String templateName, HttpServletRequest req, HttpServletResponse resp, ServletContext context, PageContext page,
+			RequestContextWrapper requestContext)
 			throws IOException, ServletException {
 
 		WebRequestStack src = new WebRequestStack(requestContext, context, req, resp, page);
@@ -152,7 +155,8 @@ public class WebUtil {
 
 		src.setIncludeTemplateStack(true);
 		try {
-			TemplateService tmplService = ServiceRegistry.getRegistry().getService(TemplateService.class);
+			TemplateService tmplService = ServiceRegistry.getRegistry()
+					.getService(TemplateService.class);
 			TemplateRuntime tmpl = tmplService.getRuntimeByName(templateName);
 			if (tmpl != null) {
 				tmpl.handle(src);
@@ -193,25 +197,30 @@ public class WebUtil {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	public static void include(String actionName, HttpServletRequest req, HttpServletResponse resp, ServletContext context, PageContext page, RequestContextWrapper requestContext)
+	public static void include(String actionName, HttpServletRequest req, HttpServletResponse resp, ServletContext context, PageContext page,
+			RequestContextWrapper requestContext)
 			throws IOException, ServletException {
 
 		//JSPのバッファをフラッシュ
 		if (page != null) {
-			page.getOut().flush();
+			page.getOut()
+					.flush();
 		}
 
 		WebRequestStack current = WebRequestStack.getCurrent();
 		RequestContext reqContext = current.getRequestContext();
 
-		ActionMappingService amService = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+		ActionMappingService amService = ServiceRegistry.getRegistry()
+				.getService(ActionMappingService.class);
 		ActionMappingRuntime am = amService.getByPathHierarchy(actionName);
 		if (am == null) {
 			throw new WebProcessRuntimeException("path:" + actionName + " not defined.");
 		}
 
-		if (!am.getMetaData().isPublicAction()
-				&& !AuthContext.getCurrentContext().checkPermission(new ActionPermission(actionName, new RequestContextActionParameter(reqContext)))) {
+		if (!am.getMetaData()
+				.isPublicAction()
+				&& !AuthContext.getCurrentContext()
+						.checkPermission(new ActionPermission(actionName, new RequestContextActionParameter(reqContext)))) {
 			throw new SecurityException(actionName + "の実行権限がありません");
 		}
 
@@ -228,7 +237,8 @@ public class WebUtil {
 
 		//JSPのバッファをフラッシュ
 		if (page != null) {
-			page.getOut().flush();
+			page.getOut()
+					.flush();
 		}
 
 		//TODO RequestDispatcherを介さない方が高速か？
@@ -281,10 +291,12 @@ public class WebUtil {
 		//check cache
 		WebRequestStack reqStack = WebRequestStack.getCurrent();
 		if (reqStack != null) {
-			return reqStack.getRequestPath().getTenantContextPath(req);
+			return reqStack.getRequestPath()
+					.getTenantContextPath(req);
 		}
 
-		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+		Tenant tenant = ExecuteContext.getCurrentContext()
+				.getCurrentTenant();
 
 		if (!isDirectAccess(req)) {
 			//TenantのRoot対応
@@ -311,20 +323,25 @@ public class WebUtil {
 	}
 
 	public static boolean isDirectAccess(HttpServletRequest req) {
-		WebFrontendService ss = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+		WebFrontendService ss = ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class);
 
 		if (ss.getDirectAccessPort() != null) {
-			return ss.getDirectAccessPort().equals(String.valueOf(req.getServerPort()));
+			return ss.getDirectAccessPort()
+					.equals(String.valueOf(req.getServerPort()));
 		}
 		return false;
 	}
 
 	public static String getStaticContentPath() {
-		String path = ServiceRegistry.getRegistry().getService(WebFrontendService.class).getStaticContentPath();
+		String path = ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class)
+				.getStaticContentPath();
 		if (path == null) {
 			WebRequestStack reqStack = WebRequestStack.getCurrent();
 			if (reqStack != null) {
-				path = reqStack.getRequest().getContextPath();
+				path = reqStack.getRequest()
+						.getContextPath();
 			}
 		}
 		if (path == null) {
@@ -342,11 +359,12 @@ public class WebUtil {
 	 * @param page
 	 */
 	public static void renderContent(HttpServletRequest req, HttpServletResponse resp, ServletContext context, PageContext page)
-		throws IOException, ServletException {
+			throws IOException, ServletException {
 
 		//JSPのバッファをフラッシュ
 		if (page != null) {
-			page.getOut().flush();
+			page.getOut()
+					.flush();
 		}
 
 		//TODO キャッシュのロジックがここに入ってしまう。。。汚い感じ。。。
@@ -359,9 +377,9 @@ public class WebUtil {
 		if (content instanceof TemplateRuntime) {
 			TemplateRuntime contentTemplate = (TemplateRuntime) content;
 
-
 			//ContentCacheを実際のコンテンツのもに
-			CachableHttpServletResponse response = (CachableHttpServletResponse) layoutStack.getRequest().getAttribute(CachableHttpServletResponse.CHSR_NAME);
+			CachableHttpServletResponse response = (CachableHttpServletResponse) layoutStack.getRequest()
+					.getAttribute(CachableHttpServletResponse.CHSR_NAME);
 			boolean prevDoCache = false;
 			ContentCache layoutContentCache = null;
 			if (response != null) {
@@ -393,7 +411,8 @@ public class WebUtil {
 
 			//JSPのバッファをフラッシュ
 			if (page != null) {
-				page.getOut().flush();
+				page.getOut()
+						.flush();
 			}
 
 			if (response != null) {
@@ -407,7 +426,8 @@ public class WebUtil {
 			src.shareStackAttributeContext(contentsStack);
 			src.setRenderContentStack(true);
 			try {
-				CachableHttpServletResponse response = (CachableHttpServletResponse) layoutStack.getRequest().getAttribute(CachableHttpServletResponse.CHSR_NAME);
+				CachableHttpServletResponse response = (CachableHttpServletResponse) layoutStack.getRequest()
+						.getAttribute(CachableHttpServletResponse.CHSR_NAME);
 				boolean prevDoCache = response.isDoCache();
 
 				ContentCache layoutContentCache = null;
@@ -430,7 +450,8 @@ public class WebUtil {
 
 				//JSPのバッファをフラッシュ
 				if (page != null) {
-					page.getOut().flush();
+					page.getOut()
+							.flush();
 				}
 
 				response.flushToContentCache();
@@ -466,26 +487,34 @@ public class WebUtil {
 	public static void setCacheControlHeader(WebRequestStack req, boolean cache, boolean shared, long maxAge) {
 		// クライアントキャッシュの設定
 		if (req.isClientDirectRequest()
-				&& !req.getResponse().isCommitted()) {
+				&& !req.getResponse()
+						.isCommitted()) {
 			if (cache) {
 				if (maxAge < 0) {
 					if (shared) {
-						req.getResponse().setHeader("Cache-Control", "public");
+						req.getResponse()
+								.setHeader("Cache-Control", "public");
 					} else {
-						req.getResponse().setHeader("Cache-Control", "private");
+						req.getResponse()
+								.setHeader("Cache-Control", "private");
 					}
 				} else {
 					if (shared) {
-						req.getResponse().setHeader("Cache-Control", "public, max-age=" + maxAge);
+						req.getResponse()
+								.setHeader("Cache-Control", "public, max-age=" + maxAge);
 					} else {
-						req.getResponse().setHeader("Cache-Control", "private, max-age=" + maxAge);
+						req.getResponse()
+								.setHeader("Cache-Control", "private, max-age=" + maxAge);
 					}
 				}
 			} else {
-				req.getResponse().setHeader("Cache-Control",
-							"private, no-store, no-cache, must-revalidate");
-				if ("HTTP/1.0".equals(req.getRequest().getProtocol())) {
-					req.getResponse().setHeader("Pragma", "no-cache");
+				req.getResponse()
+						.setHeader("Cache-Control",
+								"private, no-store, no-cache, must-revalidate");
+				if ("HTTP/1.0".equals(req.getRequest()
+						.getProtocol())) {
+					req.getResponse()
+							.setHeader("Pragma", "no-cache");
 				}
 			}
 		}
@@ -512,14 +541,16 @@ public class WebUtil {
 	 * @param fileName ファイル名
 	 * @throws IOException
 	 */
-	public static void setContentDispositionHeader(HttpServletRequest req, HttpServletResponse resp, ContentDispositionType type, String fileName) throws IOException {
+	public static void setContentDispositionHeader(HttpServletRequest req, HttpServletResponse resp, ContentDispositionType type, String fileName)
+			throws IOException {
 
 		String userAgent = req.getHeader("User-Agent");
 
 		boolean noPoricy = true;
 		boolean isMatch = false;
 		if (userAgent != null) {
-			WebFrontendService wfeService = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+			WebFrontendService wfeService = ServiceRegistry.getRegistry()
+					.getService(WebFrontendService.class);
 			List<ContentDispositionPolicy> policies = wfeService.getContentDispositionPolicy();
 			ContentDispositionPolicy defaultPolicy = null;
 			if (policies != null) {
@@ -550,7 +581,6 @@ public class WebUtil {
 	}
 
 	public static TenantWebInfo getTenantWebInfo(Tenant tenant) {
-		return (tenant.getTenantConfig(TenantWebInfo.class) != null ?
-				tenant.getTenantConfig(TenantWebInfo.class) : new TenantWebInfo());
+		return (tenant.getTenantConfig(TenantWebInfo.class) != null ? tenant.getTenantConfig(TenantWebInfo.class) : new TenantWebInfo());
 	}
 }

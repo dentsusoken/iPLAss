@@ -116,8 +116,8 @@ public class AutoNumberValueListDialog extends MtpDialog {
 
 			StringBuilder contents = new StringBuilder();
 			contents.append("<div>")
-			.append(AdminClientMessageUtil.getString("ui_metadata_entity_AutoNumberValueListDialog_description"))
-			.append("</div>");
+					.append(AdminClientMessageUtil.getString("ui_metadata_entity_AutoNumberValueListDialog_description"))
+					.append("</div>");
 			hintContents.setContents(contents.toString());
 
 			grid = new AutoNumberValueListGrid();
@@ -188,13 +188,14 @@ public class AutoNumberValueListDialog extends MtpDialog {
 		}
 
 		private void getData() {
-			service.getAutoNumberCurrentValueList(TenantInfoHolder.getId(), defName, propertyName, new AdminAsyncCallback<List<KeyValue<String,Long>>>() {
+			service.getAutoNumberCurrentValueList(TenantInfoHolder.getId(), defName, propertyName,
+					new AdminAsyncCallback<List<KeyValue<String, Long>>>() {
 
-				@Override
-				public void onSuccess(List<KeyValue<String, Long>> result) {
-					grid.setUnitKeyData(result);
-				}
-			});
+						@Override
+						public void onSuccess(List<KeyValue<String, Long>> result) {
+							grid.setUnitKeyData(result);
+						}
+					});
 		}
 
 		private void update(List<KeyValue<String, Long>> values) {
@@ -202,7 +203,7 @@ public class AutoNumberValueListDialog extends MtpDialog {
 			service.resetAutoNumberCounterList(TenantInfoHolder.getId(), defName, propertyName, values, new AdminAsyncCallback<Void>() {
 
 				@Override
-				protected void beforeFailure(Throwable caught){
+				protected void beforeFailure(Throwable caught) {
 					SmartGWTUtil.hideProgress();
 				};
 
@@ -274,7 +275,7 @@ public class AutoNumberValueListDialog extends MtpDialog {
 					int rowNum = event.getRowNum();
 					itemValueChanged(rowNum);
 				}
-			 });
+			});
 		}
 
 		@Override
@@ -299,7 +300,8 @@ public class AutoNumberValueListDialog extends MtpDialog {
 				record.setAttribute("status", NO_CHANGE);
 				record.setAttribute("unitKey", value.getKey());
 				// 値が大きいと丸まるため文字列で保持
-				record.setAttribute("currentValue", value.getValue().toString());
+				record.setAttribute("currentValue", value.getValue()
+						.toString());
 				records[i] = record;
 			}
 			setData(records);

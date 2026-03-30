@@ -36,8 +36,7 @@ public enum EntityWebApiType {
 	/** 更新 */
 	UPDATE,
 	/** 削除 */
-	DELETE
-	;
+	DELETE;
 
 	/**
 	 * 指定された文字列に対応するEntityWebApiTypeを取得します。

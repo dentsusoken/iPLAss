@@ -33,8 +33,8 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/DecimalPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
-	@Jsp(path="/jsp/gem/aggregation/unit/editor/DecimalPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
+		@Jsp(path = "/jsp/gem/generic/editor/DecimalPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
+		@Jsp(path = "/jsp/gem/aggregation/unit/editor/DecimalPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
 })
 public class DecimalPropertyEditor extends NumberPropertyEditor {
 

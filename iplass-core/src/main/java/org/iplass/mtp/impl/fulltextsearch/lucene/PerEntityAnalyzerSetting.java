@@ -26,10 +26,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.iplass.mtp.spi.Config;
 
 public class PerEntityAnalyzerSetting implements AnalyzerSetting {
-	
+
 	private AnalyzerSetting defaultSetting;
 	private Map<String, AnalyzerSetting> settingsPerEntity;
-	
+
 	public AnalyzerSetting getDefaultSetting() {
 		return defaultSetting;
 	}
@@ -60,11 +60,11 @@ public class PerEntityAnalyzerSetting implements AnalyzerSetting {
 		if (settingsPerEntity != null) {
 			as = settingsPerEntity.get(entityDefName);
 		}
-		
+
 		if (as == null) {
 			as = defaultSetting;
 		}
-		
+
 		return as.getAnalyzer(tenantId, entityDefName);
 	}
 

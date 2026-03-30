@@ -187,7 +187,8 @@ public abstract class MetaProperty implements MetaData {
 
 		name = pDef.getName();
 
-		if (pDef.getDisplayName() != null && !pDef.getDisplayName().equals(pDef.getName())) {
+		if (pDef.getDisplayName() != null && !pDef.getDisplayName()
+				.equals(pDef.getName())) {
 			displayName = pDef.getDisplayName();
 		} else {
 			displayName = null;
@@ -200,7 +201,8 @@ public abstract class MetaProperty implements MetaData {
 
 		indexType = pDef.getIndexType();
 
-		ValidationService vService = ServiceRegistry.getRegistry().getService(ValidationService.class);
+		ValidationService vService = ServiceRegistry.getRegistry()
+				.getService(ValidationService.class);
 		validations = new ArrayList<MetaValidation>();
 		if (pDef.getValidations() != null) {
 			for (ValidationDefinition v : pDef.getValidations()) {
@@ -208,7 +210,8 @@ public abstract class MetaProperty implements MetaData {
 			}
 		}
 
-		NormalizerService nService = ServiceRegistry.getRegistry().getService(NormalizerService.class);
+		NormalizerService nService = ServiceRegistry.getRegistry()
+				.getService(NormalizerService.class);
 		normalizers = new ArrayList<>();
 		if (pDef.getNormalizers() != null) {
 			for (NormalizerDefinition n : pDef.getNormalizers()) {
@@ -276,7 +279,6 @@ public abstract class MetaProperty implements MetaData {
 //	}
 
 	public abstract PropertyHandler createRuntime(MetaEntity metaEntity);
-
 
 	@Override
 	public int hashCode() {

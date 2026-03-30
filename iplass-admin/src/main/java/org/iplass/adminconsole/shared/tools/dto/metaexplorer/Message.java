@@ -59,6 +59,7 @@ public class Message implements Serializable {
 	public Level getLevel() {
 		return level;
 	}
+
 	public void setLevel(Level level) {
 		this.level = level;
 	}
@@ -66,6 +67,7 @@ public class Message implements Serializable {
 	public String getMessage() {
 		return message;
 	}
+
 	public void setMessage(String message) {
 		this.message = message;
 	}

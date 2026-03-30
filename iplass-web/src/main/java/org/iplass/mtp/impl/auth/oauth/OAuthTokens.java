@@ -25,14 +25,17 @@ import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 public class OAuthTokens {
 	private final AccessToken accessToken;
 	private final IdToken idToken;
+
 	public OAuthTokens(AccessToken accessToken, IdToken idToken) {
 		super();
 		this.accessToken = accessToken;
 		this.idToken = idToken;
 	}
+
 	public AccessToken getAccessToken() {
 		return accessToken;
 	}
+
 	public IdToken getIdToken() {
 		return idToken;
 	}

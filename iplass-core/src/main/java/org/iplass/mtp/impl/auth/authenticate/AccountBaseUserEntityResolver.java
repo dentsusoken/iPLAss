@@ -52,9 +52,9 @@ import org.slf4j.LoggerFactory;
 public class AccountBaseUserEntityResolver implements UserEntityResolver {
 	public static final String UNMODIFIABLE_UNIQUE_KEY_NAME = "unmodifiableUniqueKey";
 	public static final String ID_NAME = "id";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(AccountBaseUserEntityResolver.class);
-	
+
 	public static class AttributeMapping {
 
 		private String propertyName;
@@ -62,34 +62,38 @@ public class AccountBaseUserEntityResolver implements UserEntityResolver {
 		private Object defaultValue;
 		private Class<?> type;
 		private String valueConvertScript;
-		
+
 		private GroovyTemplate accountAttributeNameTemplate;
 		private Script valueConverterScript;
-		
+
 		public AttributeMapping() {
 		}
-		
+
 		public AttributeMapping(String propertyName) {
 			this.propertyName = propertyName;
 		}
-		
+
 		public AttributeMapping(String propertyName, String accountAttributeName) {
 			this.propertyName = propertyName;
 			this.accountAttributeName = accountAttributeName;
 		}
-		
+
 		public String getPropertyName() {
 			return propertyName;
 		}
+
 		public void setPropertyName(String propertyName) {
 			this.propertyName = propertyName;
 		}
+
 		public String getAccountAttributeName() {
 			return accountAttributeName;
 		}
+
 		public void setAccountAttributeName(String accountAttributeName) {
 			this.accountAttributeName = accountAttributeName;
 		}
+
 		public Object getDefaultValue() {
 			return defaultValue;
 		}
@@ -97,12 +101,15 @@ public class AccountBaseUserEntityResolver implements UserEntityResolver {
 		public void setDefaultValue(Object defaultValue) {
 			this.defaultValue = defaultValue;
 		}
+
 		public Class<?> getType() {
 			return type;
 		}
+
 		public void setType(Class<?> type) {
 			this.type = type;
 		}
+
 		public String getValueConvertScript() {
 			return valueConvertScript;
 		}
@@ -112,9 +119,9 @@ public class AccountBaseUserEntityResolver implements UserEntityResolver {
 		}
 
 	}
-	
+
 	private AttributeMapping[] attributeMapping;
-	
+
 	private ScriptEngine se;
 
 	public AttributeMapping[] getAttributeMapping() {
@@ -133,47 +140,52 @@ public class AccountBaseUserEntityResolver implements UserEntityResolver {
 			attributeMapping[1] = new AttributeMapping(User.ACCOUNT_ID, ID_NAME);
 			attributeMapping[2] = new AttributeMapping(User.NAME, ID_NAME);
 		}
-		
-		for (AttributeMapping am: attributeMapping) {
+
+		for (AttributeMapping am : attributeMapping) {
 			if (am.accountAttributeName != null) {
 				if (am.accountAttributeName.contains("${")) {
 					if (se == null) {
-						se = ((GroovyScriptService) ServiceRegistry.getRegistry().getService(ScriptService.class)).createScriptEngine(true);
+						se = ((GroovyScriptService) ServiceRegistry.getRegistry()
+								.getService(ScriptService.class)).createScriptEngine(true);
 					}
-					am.accountAttributeNameTemplate = GroovyTemplateCompiler.compile(am.accountAttributeName, "_" + provider.getProviderName() + "_ABUER_AN_" + am.propertyName, (GroovyScriptEngine) se);
+					am.accountAttributeNameTemplate = GroovyTemplateCompiler.compile(am.accountAttributeName,
+							"_" + provider.getProviderName() + "_ABUER_AN_" + am.propertyName, (GroovyScriptEngine) se);
 				}
 			}
 			if (am.valueConvertScript != null) {
 				if (se == null) {
-					se = ((GroovyScriptService) ServiceRegistry.getRegistry().getService(ScriptService.class)).createScriptEngine(true);
+					se = ((GroovyScriptService) ServiceRegistry.getRegistry()
+							.getService(ScriptService.class)).createScriptEngine(true);
 				}
 				am.valueConverterScript = se.createScript(am.valueConvertScript, "_" + provider.getProviderName() + "_ABUER_VC_" + am.propertyName);
 			}
 		}
-		
+
 	}
 
 	@Override
 	public User searchUser(AccountHandle account) {
 		User user = new User();
-		for (AttributeMapping am: attributeMapping) {
+		for (AttributeMapping am : attributeMapping) {
 			Object val = null;
 			if (am.getAccountAttributeName() != null) {
 				switch (am.getAccountAttributeName()) {
 				case ID_NAME:
-					val = account.getCredential().getId();
+					val = account.getCredential()
+							.getId();
 					break;
 				case UNMODIFIABLE_UNIQUE_KEY_NAME:
 					val = account.getUnmodifiableUniqueKey();
 					break;
 				default:
 					if (am.accountAttributeNameTemplate == null) {
-						val = account.getAttributeMap().get(am.getAccountAttributeName());
+						val = account.getAttributeMap()
+								.get(am.getAccountAttributeName());
 					} else {
 						StringWriter sb = new StringWriter();
 						try {
 							am.accountAttributeNameTemplate.doTemplate(new GroovyTemplateBinding(sb, account.getAttributeMap()));
-						} catch(IOException e) {
+						} catch (IOException e) {
 							//発生しない
 							logger.error(e.getMessage(), e);
 						}
@@ -182,18 +194,18 @@ public class AccountBaseUserEntityResolver implements UserEntityResolver {
 					break;
 				}
 			}
-			
+
 			if (val == null && am.getDefaultValue() != null) {
 				val = am.getDefaultValue();
 			}
-			
+
 			if (val != null && am.valueConverterScript != null) {
 				//TODO ...
 				GroovyScriptContext ctx = new GroovyScriptContext();
 				ctx.setAttribute("value", val);
 				val = am.valueConverterScript.eval(ctx);
 			}
-			
+
 			if (val != null && am.getType() != null) {
 				if (am.getType() != val.getClass()) {
 					val = ConvertUtil.convert(am.getType(), val);

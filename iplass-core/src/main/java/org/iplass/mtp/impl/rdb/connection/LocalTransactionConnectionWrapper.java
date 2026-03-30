@@ -36,8 +36,9 @@ public class LocalTransactionConnectionWrapper extends ConnectionWrapper {
 
 	private boolean isClosed = false;
 	private volatile boolean isClosePhysical;
-	
-	LocalTransactionConnectionWrapper(Connection wrapped, boolean inTransaction, ResourceHolder resourceHolder, int warnLogThreshold, boolean warnLogBefore, boolean countSqlExecution) {
+
+	LocalTransactionConnectionWrapper(Connection wrapped, boolean inTransaction, ResourceHolder resourceHolder, int warnLogThreshold,
+			boolean warnLogBefore, boolean countSqlExecution) {
 		super(wrapped, warnLogThreshold, warnLogBefore, countSqlExecution);
 		this.inTransaction = inTransaction;
 		this.resourceHolder = resourceHolder;
@@ -57,7 +58,7 @@ public class LocalTransactionConnectionWrapper extends ConnectionWrapper {
 		}
 		isClosePhysical = true;
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
@@ -71,9 +72,9 @@ public class LocalTransactionConnectionWrapper extends ConnectionWrapper {
 		if (isClosed) {
 			return;
 		}
-		
+
 		isClosed = true;
-		
+
 		//closeは、Transactionのcommit or rollback or ResourceHolderのfinalizeで行われる
 		if (!inTransaction) {
 			closePhysical();

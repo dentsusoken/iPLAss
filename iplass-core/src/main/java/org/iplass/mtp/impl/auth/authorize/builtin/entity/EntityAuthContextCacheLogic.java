@@ -62,7 +62,8 @@ class EntityAuthContextCacheLogic extends AuthorizationContextCacheLogic {
 	public static final String ENABLE = "E";
 	public static final String DISABLE = "D";
 
-	private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+	private EntityManager em = ManagerLocator.getInstance()
+			.getManager(EntityManager.class);
 
 	private Pattern spliter = Pattern.compile("\\s*,\\s*|\\s+");
 
@@ -74,26 +75,26 @@ class EntityAuthContextCacheLogic extends AuthorizationContextCacheLogic {
 	protected BuiltinAuthorizationContext loadImpl(final String key) {
 		return AuthContext.doPrivileged(() -> {
 			Query q = new Query()
-					.select(Entity.OID,//0
-							ROLE + "." + RoleCacheLogic.ROLE_CODE,//1
-							CAN_CREATE,//2
-							CREATE_COND,//3
-							CREATE_PROP_CTRL_TYPE,//4
-							CREATE_PROP_LIST,//5
-							CAN_REF,//6
-							REF_COND,//7
-							REF_PROP_CTRL_TYPE,//8
-							REF_PROP_LIST,//9
-							CAN_UPDATE,//10
-							UPDATE_COND,//11
-							UPDATE_PROP_CTRL_LIST,//12
-							UPDATE_PROP_LIST,//13
-							CAN_DEL,//14
+					.select(Entity.OID, //0
+							ROLE + "." + RoleCacheLogic.ROLE_CODE, //1
+							CAN_CREATE, //2
+							CREATE_COND, //3
+							CREATE_PROP_CTRL_TYPE, //4
+							CREATE_PROP_LIST, //5
+							CAN_REF, //6
+							REF_COND, //7
+							REF_PROP_CTRL_TYPE, //8
+							REF_PROP_LIST, //9
+							CAN_UPDATE, //10
+							UPDATE_COND, //11
+							UPDATE_PROP_CTRL_LIST, //12
+							UPDATE_PROP_LIST, //13
+							CAN_DEL, //14
 							DEL_COND)//15
 					.from(ENTITY_PERMISSION_DEF_NAME)
 					.where(new Equals(TARGET_ENTITY, key));
 
-			boolean[] isFind = {false};
+			boolean[] isFind = { false };
 			ArrayList<EntityPermissionEntry> createEntity = new ArrayList<EntityPermissionEntry>();
 			ArrayList<EntityPermissionEntry> refEntity = new ArrayList<EntityPermissionEntry>();
 			ArrayList<EntityPermissionEntry> updateEntity = new ArrayList<EntityPermissionEntry>();
@@ -116,20 +117,23 @@ class EntityAuthContextCacheLogic extends AuthorizationContextCacheLogic {
 
 					//createProperty
 					if (dataModel[4] != null) {
-						createProp.add(new EntityPropertyPermissionEntry((String) dataModel[1], ((SelectValue) dataModel[4]).getValue().equals(ENABLE), toPropNameArray((String) dataModel[5])));
+						createProp.add(new EntityPropertyPermissionEntry((String) dataModel[1], ((SelectValue) dataModel[4]).getValue()
+								.equals(ENABLE), toPropNameArray((String) dataModel[5])));
 					} else {
 						//defaultはすべて許可
 						createProp.add(new EntityPropertyPermissionEntry((String) dataModel[1], false, (HashSet<String>) null));
 					}
 					//refProperty
 					if (dataModel[8] != null) {
-						refProp.add(new EntityPropertyPermissionEntry((String) dataModel[1], ((SelectValue) dataModel[8]).getValue().equals(ENABLE), toPropNameArray((String) dataModel[9])));
+						refProp.add(new EntityPropertyPermissionEntry((String) dataModel[1], ((SelectValue) dataModel[8]).getValue()
+								.equals(ENABLE), toPropNameArray((String) dataModel[9])));
 					} else {
 						refProp.add(new EntityPropertyPermissionEntry((String) dataModel[1], false, (HashSet<String>) null));
 					}
 					//updateProperty
 					if (dataModel[12] != null) {
-						updateProp.add(new EntityPropertyPermissionEntry((String) dataModel[1], ((SelectValue) dataModel[12]).getValue().equals(ENABLE), toPropNameArray((String) dataModel[13])));
+						updateProp.add(new EntityPropertyPermissionEntry((String) dataModel[1], ((SelectValue) dataModel[12]).getValue()
+								.equals(ENABLE), toPropNameArray((String) dataModel[13])));
 					} else {
 						updateProp.add(new EntityPropertyPermissionEntry((String) dataModel[1], false, (HashSet<String>) null));
 					}

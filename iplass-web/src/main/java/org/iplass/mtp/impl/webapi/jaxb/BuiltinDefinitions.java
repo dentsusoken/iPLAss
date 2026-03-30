@@ -47,33 +47,16 @@ import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
 
 @XmlSeeAlso({
-	DefinitionSummary.class,
-	ActionMappingDefinition.class
-	,CommandDefinition.class
-	,EntityDefinition.class
-	,EntityWebApiDefinition.class
-	,MailTemplateDefinition.class
-	,MessageCategory.class
-	,TemplateDefinition.class
-	,Tenant.class
-	,WebApiDefinition.class
-	,UtilityClassDefinition.class
-	,SelectValueDefinition.class
-	,AsyncCommandDefinition.class
-	,Preference.class
-	,AuthenticationPolicyDefinition.class
-	,StaticResourceDefinition.class
-	,PushNotificationTemplateDefinition.class
-	,SmsMailTemplateDefinition.class
-	,WebhookTemplateDefinition.class
-	,WebhookEndpointDefinition.class
+		DefinitionSummary.class,
+		ActionMappingDefinition.class, CommandDefinition.class, EntityDefinition.class, EntityWebApiDefinition.class, MailTemplateDefinition.class,
+		MessageCategory.class, TemplateDefinition.class, Tenant.class, WebApiDefinition.class, UtilityClassDefinition.class,
+		SelectValueDefinition.class, AsyncCommandDefinition.class, Preference.class, AuthenticationPolicyDefinition.class,
+		StaticResourceDefinition.class, PushNotificationTemplateDefinition.class, SmsMailTemplateDefinition.class, WebhookTemplateDefinition.class,
+		WebhookEndpointDefinition.class
 
-	//FIXME 今はTenantで参照しているが、参照しなくなるので追加
-	,TenantAuthInfo.class
-	,TenantMailInfo.class
-	,TenantI18nInfo.class
-	,TenantWebInfo.class
-	})
+		//FIXME 今はTenantで参照しているが、参照しなくなるので追加
+		, TenantAuthInfo.class, TenantMailInfo.class, TenantI18nInfo.class, TenantWebInfo.class
+})
 public class BuiltinDefinitions {
 
 }

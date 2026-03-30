@@ -38,8 +38,8 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/AutoNumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
-	@Jsp(path="/jsp/gem/aggregation/unit/editor/AutoNumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
+		@Jsp(path = "/jsp/gem/generic/editor/AutoNumberPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
+		@Jsp(path = "/jsp/gem/aggregation/unit/editor/AutoNumberPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
 })
 public class AutoNumberPropertyEditor extends PrimitivePropertyEditor implements LabelablePropertyEditor {
 
@@ -48,62 +48,65 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor implements
 
 	/** 表示タイプ */
 	public enum AutoNumberDisplayType {
-		@XmlEnumValue("Text")TEXT,
-		@XmlEnumValue("Label")LABEL,
-		@XmlEnumValue("Hidden")HIDDEN
+		@XmlEnumValue("Text")
+		TEXT,
+		@XmlEnumValue("Label")
+		LABEL,
+		@XmlEnumValue("Hidden")
+		HIDDEN
 	}
 
 	@MetaFieldInfo(
-			displayName="表示タイプ",
-			displayNameKey="generic_editor_AutoNumberPropertyEditor_displayTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=AutoNumberDisplayType.class,
-			required=true,
-			displayOrder=100,
-			description="画面に表示する方法を選択します。",
-			descriptionKey="generic_editor_AutoNumberPropertyEditor_displayTypeDescriptionKey"
+			displayName = "表示タイプ",
+			displayNameKey = "generic_editor_AutoNumberPropertyEditor_displayTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = AutoNumberDisplayType.class,
+			required = true,
+			displayOrder = 100,
+			description = "画面に表示する方法を選択します。",
+			descriptionKey = "generic_editor_AutoNumberPropertyEditor_displayTypeDescriptionKey"
 	)
 	private AutoNumberDisplayType displayType;
 
 	/** 検索条件完全一致設定 */
 	@MetaFieldInfo(
-			displayName="検索完全一致設定",
-			displayNameKey="generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDisplaNameKey",
-			description="チェック時は完全一致検索します。<br>未チェック時はLike検索します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=110,
-			descriptionKey="generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDescriptionKey"
+			displayName = "検索完全一致設定",
+			displayNameKey = "generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDisplaNameKey",
+			description = "チェック時は完全一致検索します。<br>未チェック時はLike検索します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 110,
+			descriptionKey = "generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean searchExactMatchCondition;
 
 	/** Label形式の場合の登録制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値を登録する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=200,
-			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+			displayName = "Label形式の場合に表示値を登録する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 200,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean insertWithLabelValue = true;
 
 	/** Label形式の場合の更新制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値で更新する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=210,
-			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+			displayName = "Label形式の場合に表示値で更新する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 210,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean updateWithLabelValue = false;
 

@@ -35,7 +35,7 @@ public class MetaRegexReplace extends MetaNormalizer {
 
 	private String regex;
 	private String replacement;
-	
+
 	public String getRegex() {
 		return regex;
 	}
@@ -104,16 +104,16 @@ public class MetaRegexReplace extends MetaNormalizer {
 	public NormalizerRuntime createRuntime(MetaEntity entity, MetaProperty property) {
 		return new RegexReplaceRuntime(property);
 	}
-	
+
 	public class RegexReplaceRuntime extends NormalizerRuntime {
-		
+
 		private Pattern pattern;
-		
+
 		RegexReplaceRuntime(MetaProperty property) {
 			if (regex == null || replacement == null) {
 				throw new NullPointerException(property.getName() + "'s RegexReplace regex and replacement must specified");
 			}
-			
+
 			pattern = Pattern.compile(regex);
 		}
 
@@ -122,10 +122,11 @@ public class MetaRegexReplace extends MetaNormalizer {
 			if (value == null) {
 				return null;
 			}
-			
-			return pattern.matcher(value.toString()).replaceAll(replacement);
+
+			return pattern.matcher(value.toString())
+					.replaceAll(replacement);
 		}
-		
+
 	}
 
 }

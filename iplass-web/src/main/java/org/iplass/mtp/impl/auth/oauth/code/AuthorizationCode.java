@@ -27,7 +27,7 @@ public class AuthorizationCode implements Serializable {
 	private AuthorizationRequest request;
 	private String codeValue;
 	private long expires;
-	
+
 	public String getCodeValue() {
 		return codeValue;
 	}

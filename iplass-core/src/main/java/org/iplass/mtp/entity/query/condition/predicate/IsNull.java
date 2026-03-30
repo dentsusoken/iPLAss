@@ -37,10 +37,10 @@ public class IsNull extends Predicate {
 	private static final long serialVersionUID = -1655365124604984488L;
 
 	private ValueExpression property;
-	
+
 	public IsNull() {
 	}
-	
+
 	public IsNull(String propertyName) {
 		setPropertyName(propertyName);
 	}
@@ -48,22 +48,22 @@ public class IsNull extends Predicate {
 	public IsNull(ValueExpression property) {
 		setProperty(property);
 	}
-	
+
 	public String getPropertyName() {
 		if (property == null) {
 			return null;
 		}
 		return property.toString();
 	}
-	
+
 	public void setPropertyName(String propertyName) {
 		property = new EntityField(propertyName);
 	}
-	
+
 	public void setProperty(ValueExpression property) {
 		this.property = property;
 	}
-	
+
 	public ValueExpression getProperty() {
 		return property;
 	}
@@ -71,7 +71,8 @@ public class IsNull extends Predicate {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(getPropertyName()).append(" is null");
+		sb.append(getPropertyName())
+				.append(" is null");
 		return sb.toString();
 	}
 
@@ -84,6 +85,7 @@ public class IsNull extends Predicate {
 			}
 		}
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

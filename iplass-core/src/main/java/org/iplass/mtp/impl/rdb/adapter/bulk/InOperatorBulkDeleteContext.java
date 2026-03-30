@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InOperatorBulkDeleteContext implements BulkDeleteContext {
-	
+
 	private Statement stmt;
 	private String baseSql;
 	private List<ColumnValue> keyColumnValue;
@@ -37,28 +37,35 @@ public class InOperatorBulkDeleteContext implements BulkDeleteContext {
 			String additionalConditionExpression, Connection con)
 			throws SQLException {
 		this.keyColumnValue = keyColumnValue;
-		
+
 		stmt = con.createStatement();
 		StringBuilder sb = new StringBuilder();
-		sb.append("DELETE FROM ").append(tableName).append(" WHERE ");
+		sb.append("DELETE FROM ")
+				.append(tableName)
+				.append(" WHERE ");
 		if (additionalConditionExpression != null) {
-			sb.append("(").append(additionalConditionExpression).append(") AND ");
+			sb.append("(")
+					.append(additionalConditionExpression)
+					.append(") AND ");
 		}
 		if (keyColumnValue.size() == 1) {
-			sb.append(keyColumnValue.get(0).colName()).append(" IN ");
+			sb.append(keyColumnValue.get(0)
+					.colName())
+					.append(" IN ");
 		} else {
 			sb.append("(");
 			for (int i = 0; i < keyColumnValue.size(); i++) {
 				if (i != 0) {
 					sb.append(",");
 				}
-				sb.append(keyColumnValue.get(i).colName());
+				sb.append(keyColumnValue.get(i)
+						.colName());
 			}
 			sb.append(") IN ");
 		}
-		
+
 		baseSql = sb.toString();
-		
+
 		keys = new ArrayList<>();
 	}
 
@@ -104,7 +111,7 @@ public class InOperatorBulkDeleteContext implements BulkDeleteContext {
 				}
 			}
 			sb.append(")");
-			
+
 			stmt.executeUpdate(sb.toString());
 			keys.clear();
 		}

@@ -97,7 +97,7 @@ public class SearchResultRow {
 
 	@Override
 	public String toString() {
-		return response != null? response.toString() : null;
+		return response != null ? response.toString() : null;
 	}
 
 }

@@ -120,7 +120,8 @@ public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 			if (getValue() instanceof JoinPropertyEditor) {
 				//JoinPropertyEditorのNestPropertyは前画面のEntityが対象
 				if (prev != null) {
-					return prev.getOwner().getNestPropertyReferenceEntityName();
+					return prev.getOwner()
+							.getNestPropertyReferenceEntityName();
 				}
 			}
 		}

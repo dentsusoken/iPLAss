@@ -136,7 +136,6 @@ public class MetaEntityFilterItem implements MetaData {
 		this.localizedDisplayNameList = localizedDisplayNameList;
 	}
 
-
 	@Override
 	public MetaData copy() {
 		return ObjectUtil.deepCopy(this);

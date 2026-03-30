@@ -36,10 +36,10 @@ public class MinusSign extends ValueExpression {
 	private static final long serialVersionUID = 6263851229554606319L;
 
 	private ValueExpression value;
-	
+
 	public MinusSign() {
 	}
-	
+
 	public MinusSign(ValueExpression value) {
 		setValue(value);
 	}
@@ -72,6 +72,7 @@ public class MinusSign extends ValueExpression {
 			}
 		}
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

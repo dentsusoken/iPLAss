@@ -89,7 +89,8 @@ public class XsrfProtectedMultipartForm extends Composite {
 		formPanel.setMethod(FormPanel.METHOD_POST);
 		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
 		// UTF-8 固定
-		formPanel.getElement().setAttribute("accept-charset", StandardCharsets.UTF_8.name());
+		formPanel.getElement()
+				.setAttribute("accept-charset", StandardCharsets.UTF_8.name());
 		// submit 完了時イベント
 		xsrfTokenRemoveSubmitCompleteHandlerRegistration = formPanel.addSubmitCompleteHandler(event -> {
 			remove(xsrfTokenWidget);
@@ -144,15 +145,19 @@ public class XsrfProtectedMultipartForm extends Composite {
 	public void setClassAttribute(String... classAttributes) {
 		StringBuilder classValue = new StringBuilder();
 		for (String attr : classAttributes) {
-			classValue.append(' ').append(attr);
+			classValue.append(' ')
+					.append(attr);
 		}
 		if (0 < classValue.length()) {
 			// 先頭ブランクを削除
 			classValue.deleteCharAt(0);
-			formPanel.getElement().setAttribute(CLASS_ATTRIBUTE_NAME, classValue.toString());
+			formPanel.getElement()
+					.setAttribute(CLASS_ATTRIBUTE_NAME, classValue.toString());
 
-		} else if (formPanel.getElement().hasAttribute(CLASS_ATTRIBUTE_NAME)) {
-			formPanel.getElement().removeAttribute(CLASS_ATTRIBUTE_NAME);
+		} else if (formPanel.getElement()
+				.hasAttribute(CLASS_ATTRIBUTE_NAME)) {
+			formPanel.getElement()
+					.removeAttribute(CLASS_ATTRIBUTE_NAME);
 
 		}
 	}
@@ -206,7 +211,8 @@ public class XsrfProtectedMultipartForm extends Composite {
 		});
 
 		// XsrfToken を追加
-		xsrfTokenWidget.setValue(AdminXsrfTokenHolder.token().getToken());
+		xsrfTokenWidget.setValue(AdminXsrfTokenHolder.token()
+				.getToken());
 		insertAfter(xsrfTokenWidget);
 		// action 属性を設定
 		formPanel.setAction(GWT.getModuleBaseURL() + service);

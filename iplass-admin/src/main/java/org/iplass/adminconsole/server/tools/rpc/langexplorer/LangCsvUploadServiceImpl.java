@@ -76,7 +76,7 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException {
 
 		final LangCsvUploadResponseInfo result = new LangCsvUploadResponseInfo();
-		final HashMap<String,Object> args = new HashMap<String,Object>();
+		final HashMap<String, Object> args = new HashMap<String, Object>();
 		try {
 
 			//リクエスト情報の取得
@@ -86,7 +86,7 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 			validateRequest(args);
 
 			//テナントIDの取得
-			int tenantId = Integer.parseInt((String)args.get(UploadProperty.TENANT_ID));
+			int tenantId = Integer.parseInt((String) args.get(UploadProperty.TENANT_ID));
 			final String mode = (String) args.get("mode");
 
 			//ここでトランザクションを開始
@@ -94,7 +94,8 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 
 				@Override
 				public Void call() {
-					if (OutputMode.SINGLE.name().equals(mode)) {
+					if (OutputMode.SINGLE.name()
+							.equals(mode)) {
 						String path = (String) args.get("path");
 						String definitionName = (String) args.get("definitionName");
 
@@ -162,7 +163,7 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 	 * 入力チェック
 	 * @param args
 	 */
-	private void validateRequest(HashMap<String,Object> args) {
+	private void validateRequest(HashMap<String, Object> args) {
 		if (args.get(UploadProperty.UPLOAD_FILE) == null) {
 			throw new UploadRuntimeException(rs("tools.langexplorer.LangCsvUploadServiceImpl.canNotGetImportFile"));
 		}
@@ -181,12 +182,13 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 	 */
 	private void updateSingleMeta(LangCsvUploadResponseInfo result, HashMap<String, Object> args, String path, String definitionName) {
 
-		File file = (File)args.get(UploadProperty.UPLOAD_FILE);
+		File file = (File) args.get(UploadProperty.UPLOAD_FILE);
 
-		try (FileInputStream fis = new FileInputStream(file)){
+		try (FileInputStream fis = new FileInputStream(file)) {
 
 			//更新対象の定義取得
-			LangDataPortingService service = ServiceRegistry.getRegistry().getService(LangDataPortingService.class);
+			LangDataPortingService service = ServiceRegistry.getRegistry()
+					.getService(LangDataPortingService.class);
 			LangDataPortingInfo info = service.getLangDataPortingInfo(path);
 
 			if (info == null) {
@@ -212,7 +214,7 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 
 			List<String> noItemKeyList = new ArrayList<String>();
 
-			for(Map.Entry<String, MultiLangFieldInfo> e : localizedStringMap.entrySet()) {
+			for (Map.Entry<String, MultiLangFieldInfo> e : localizedStringMap.entrySet()) {
 				if (!currentLocalizedStringMap.containsKey(e.getKey())) {
 					noItemKeyList.add(e.getKey());
 				}
@@ -235,13 +237,13 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 	}
 
 	private void updateMultiMeta(LangCsvUploadResponseInfo result, HashMap<String, Object> args) {
-		LangDataPortingService service = ServiceRegistry.getRegistry().getService(LangDataPortingService.class);
+		LangDataPortingService service = ServiceRegistry.getRegistry()
+				.getService(LangDataPortingService.class);
 		LangDataLogic logic = new LangDataLogic();
 
 		File file = (File) args.get(UploadProperty.UPLOAD_FILE);
 
-		try (FileInputStream fis = new FileInputStream(file)){
-
+		try (FileInputStream fis = new FileInputStream(file)) {
 
 			//更新対象の定義取得
 			Map<String, DefinitionLocalizedInfo> definitionInfoMap = getDefinitionLocalizedInfo(fis);
@@ -271,7 +273,7 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 
 				List<String> noItemKeyList = new ArrayList<String>();
 
-				for(Map.Entry<String, MultiLangFieldInfo> e : localizedStringMap.entrySet()) {
+				for (Map.Entry<String, MultiLangFieldInfo> e : localizedStringMap.entrySet()) {
 					if (!currentLocalizedStringMap.containsKey(e.getKey())) {
 						noItemKeyList.add(e.getKey());
 					}
@@ -299,10 +301,13 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private <D extends Definition> void updateDefinition(D definition) {
-		DefinitionService ds = ServiceRegistry.getRegistry().getService(DefinitionService.class);
+		DefinitionService ds = ServiceRegistry.getRegistry()
+				.getService(DefinitionService.class);
 		TypedDefinitionManager tdm = ds.getTypedDefinitionManager(definition.getClass());
 		if (tdm != null) {
-			MetaDataAuditLogger.getLogger().logMetadata(MetaDataAction.UPDATE, definition.getClass().getName(), "name:" + definition.getName());
+			MetaDataAuditLogger.getLogger()
+					.logMetadata(MetaDataAction.UPDATE, definition.getClass()
+							.getName(), "name:" + definition.getName());
 			tdm.update(definition);
 		}
 	}
@@ -317,9 +322,10 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 	 */
 	private Map<String, MultiLangFieldInfo> createUpdateInfo(InputStream is, String definitionPath) throws IOException {
 		Map<String, MultiLangFieldInfo> itemLocalizedInfoMap = new LinkedHashMap<String, MultiLangFieldInfo>();
-		DefinitionService definitionService = ServiceRegistry.getRegistry().getService(DefinitionService.class);
+		DefinitionService definitionService = ServiceRegistry.getRegistry()
+				.getService(DefinitionService.class);
 
-		try (LangCsvReader reader = new LangCsvReader(is)){
+		try (LangCsvReader reader = new LangCsvReader(is)) {
 
 			final Iterator<Map<String, Object>> iterator = reader.iterator();
 
@@ -341,7 +347,7 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 				multiLangFieldInfo.setDefaultString((String) map.get(FIXED_HEADER_DEFAULT_LANG));
 
 				List<LocalizedStringDefinition> localizedDisplayNameList = new ArrayList<LocalizedStringDefinition>();
-				for(Map.Entry<String, Object> entry : map.entrySet()) {
+				for (Map.Entry<String, Object> entry : map.entrySet()) {
 					//固定部分は入れない
 					String key = entry.getKey();
 					if (FIXED_HEADER_DEFINITION_PATH.equals(key)
@@ -351,7 +357,8 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 					}
 
 					String value = (String) entry.getValue();
-					if (value == null || value.isEmpty()) continue;//未設定の場合は多言語定義作らない
+					if (value == null || value.isEmpty())
+						continue;//未設定の場合は多言語定義作らない
 
 					LocalizedStringDefinition localizedDefinition = new LocalizedStringDefinition();
 					localizedDefinition.setLocaleName(key);
@@ -376,7 +383,7 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 	private Map<String, DefinitionLocalizedInfo> getDefinitionLocalizedInfo(InputStream is) throws IOException {
 		Map<String, DefinitionLocalizedInfo> definitionMap = new HashMap<String, DefinitionLocalizedInfo>();
 
-		try (LangCsvReader reader = new LangCsvReader(is)){
+		try (LangCsvReader reader = new LangCsvReader(is)) {
 
 			Iterator<Map<String, Object>> iterator = reader.iterator();
 
@@ -412,7 +419,8 @@ public class LangCsvUploadServiceImpl extends AdminUploadAction {
 					}
 
 					String value = (String) entry.getValue();
-					if (value == null || value.isEmpty()) continue;//未設定の場合は多言語定義作らない
+					if (value == null || value.isEmpty())
+						continue;//未設定の場合は多言語定義作らない
 
 					LocalizedStringDefinition definition = new LocalizedStringDefinition();
 					definition.setLocaleName(key);

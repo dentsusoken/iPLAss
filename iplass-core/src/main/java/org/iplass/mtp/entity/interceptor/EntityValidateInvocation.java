@@ -25,13 +25,14 @@ import java.util.List;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.ValidateResult;
 
-
 public interface EntityValidateInvocation extends EntityInvocation<ValidateResult> {
-	
+
 	public Entity getEntity();
+
 	public void setEntity(Entity entity);
-	
+
 	public List<String> getValidatePropertyList();
+
 	public void setValidatePropertyList(List<String> validatePropertyList);
-	
+
 }

@@ -33,7 +33,6 @@ import org.iplass.mtp.impl.rdb.adapter.bulk.BulkDeleteContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.ColumnValue;
 import org.iplass.mtp.impl.rdb.adapter.bulk.DynamicColumnValue;
 
-
 public class ObjStoreBulkDeleteSql {
 	private static final Long LONG_ZERO = Long.valueOf(0);
 
@@ -48,11 +47,12 @@ public class ObjStoreBulkDeleteSql {
 
 		return bdc;
 	}
-	
+
 	public static void addValueForDeleteByOid(BulkDeleteContext bdc, int tenantId, EntityHandler eh, String objId, Long version) throws SQLException {
 		List<Object> values = new ArrayList<>(4);
 		values.add(tenantId);
-		values.add(eh.getMetaData().getId());
+		values.add(eh.getMetaData()
+				.getId());
 		values.add(objId);
 		if (version == null) {
 			version = LONG_ZERO;

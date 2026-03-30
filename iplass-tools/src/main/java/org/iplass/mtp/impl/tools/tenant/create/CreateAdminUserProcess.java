@@ -45,21 +45,24 @@ public class CreateAdminUserProcess implements TenantCreateProcess {
 
 		User user = new User();
 		user.setValue(User.ACCOUNT_ID, param.getAdminUserId());
-		user.setValue(User.FIRST_NAME,"Admin");
+		user.setValue(User.FIRST_NAME, "Admin");
 		user.setValue(User.LAST_NAME, "User");
 		user.setValue(User.LAST_NAME_KANA, null);
 		user.setValue(User.FIRST_NAME_KANA, null);
 
-		user.setValue(User.ADMIN_FLG,true);
+		user.setValue(User.ADMIN_FLG, true);
 
 		//ver3.0 ではAdmin作成時にはDEFAULTのポリシーを利用
 		final AuthenticationPolicyRuntime pol = authPolicyService.getRuntimeByName(AuthenticationPolicyService.DEFAULT_NAME);
 		if (pol != null) {
-			pol.getMetaData().getPasswordPolicy().setCreateAccountWithSpecificPassword(true);
+			pol.getMetaData()
+					.getPasswordPolicy()
+					.setCreateAccountWithSpecificPassword(true);
 		}
 		user.setPassword(param.getAdminPassword());
 
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		em.insert(user);
 
 		logHandler.info(ToolsResourceBundleUtil.resourceString(param.getLoggerLanguage(), "tenant.create.createdAdminMsg", param.getAdminUserId()));

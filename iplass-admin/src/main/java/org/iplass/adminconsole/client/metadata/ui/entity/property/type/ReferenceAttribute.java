@@ -68,7 +68,8 @@ public class ReferenceAttribute implements PropertyAttribute {
 		setAuditLogMappedBy(reference.isAuditLogMappedBy());
 
 		//ソート
-		if (reference.getOrderBy() != null && reference.getOrderBy().length() > 0) {
+		if (reference.getOrderBy() != null && reference.getOrderBy()
+				.length() > 0) {
 			//文字列を分解してソート情報生成
 			service.getSortInfo(TenantInfoHolder.getId(), reference.getOrderBy(), new AdminAsyncCallback<List<SortInfo>>() {
 				@Override
@@ -83,7 +84,7 @@ public class ReferenceAttribute implements PropertyAttribute {
 	@Override
 	public void applyTo(PropertyDefinition property, EntityDefinition entity) {
 
-		ReferenceProperty reference = (ReferenceProperty)property;
+		ReferenceProperty reference = (ReferenceProperty) property;
 
 		reference.setObjectDefinitionName(getObjectDefinitionName());
 		reference.setReferenceType(getReferenceType());
@@ -180,7 +181,8 @@ public class ReferenceAttribute implements PropertyAttribute {
 	}
 
 	public List<SortInfo> getSortList() {
-		if (sortList == null) sortList = new ArrayList<SortInfo>();
+		if (sortList == null)
+			sortList = new ArrayList<SortInfo>();
 		return sortList;
 	}
 

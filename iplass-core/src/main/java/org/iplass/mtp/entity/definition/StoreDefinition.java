@@ -28,9 +28,8 @@ import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-
-@XmlSeeAlso(value = { SchemalessRdbStore.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(value = { SchemalessRdbStore.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class StoreDefinition implements Serializable {
 	private static final long serialVersionUID = 1980845539980871395L;
 

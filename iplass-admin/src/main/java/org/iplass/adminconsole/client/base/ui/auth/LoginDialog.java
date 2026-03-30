@@ -63,7 +63,7 @@ public class LoginDialog extends AbstractWindow {
 		setMargin(10);
 
 		setShowMinimizeButton(false);
-		setShowCloseButton(false);	//Closeボタン非表示
+		setShowCloseButton(false); //Closeボタン非表示
 		setIsModal(true);
 		setShowModalMask(true);
 		centerInPage();
@@ -73,25 +73,25 @@ public class LoginDialog extends AbstractWindow {
 		layoutPane.setHeight100();
 		layoutPane.setMargin(8);
 
-        ToolStrip topBar = new ToolStrip();
-        topBar.setHeight(33);
-        topBar.setWidth100();
+		ToolStrip topBar = new ToolStrip();
+		topBar.setHeight(33);
+		topBar.setWidth100();
 
-        topBar.addSpacer(6);
-        ImgButton sgwtHomeButton = new ImgButton();
-        sgwtHomeButton.setSrc("cubes_all.png");
-        sgwtHomeButton.setWidth(24);
-        sgwtHomeButton.setHeight(24);
-        sgwtHomeButton.setShowRollOver(false);
-        sgwtHomeButton.setShowDownIcon(false);
-        sgwtHomeButton.setShowDown(false);
-        sgwtHomeButton.setCanFocus(false);
-        topBar.addMember(sgwtHomeButton);
-        topBar.addSpacer(6);
+		topBar.addSpacer(6);
+		ImgButton sgwtHomeButton = new ImgButton();
+		sgwtHomeButton.setSrc("cubes_all.png");
+		sgwtHomeButton.setWidth(24);
+		sgwtHomeButton.setHeight(24);
+		sgwtHomeButton.setShowRollOver(false);
+		sgwtHomeButton.setShowDownIcon(false);
+		sgwtHomeButton.setShowDown(false);
+		sgwtHomeButton.setCanFocus(false);
+		topBar.addMember(sgwtHomeButton);
+		topBar.addSpacer(6);
 
-        final Label title = new Label("Direct Login");
-        title.setStyleName("sgwtTitle");
-        topBar.addMember(title);
+		final Label title = new Label("Direct Login");
+		title.setStyleName("sgwtTitle");
+		topBar.addMember(title);
 
 		VLayout main = new VLayout();
 		main.setMargin(10);
@@ -107,7 +107,7 @@ public class LoginDialog extends AbstractWindow {
 		form.setColWidths(100, "*");
 		form.setAutoFocus(true);
 
-		idField = new TextItem("idField","ID");
+		idField = new TextItem("idField", "ID");
 		idField.setWidth(300);
 		SmartGWTUtil.setRequired(idField);
 
@@ -162,41 +162,43 @@ public class LoginDialog extends AbstractWindow {
 		SmartGWTUtil.showProgress("Login ....");
 
 		//ログイン
-		service.authLogin(TenantInfoHolder.getId(), SmartGWTUtil.getStringValue(idField), SmartGWTUtil.getStringValue(passField), new AsyncCallback<Void>() {
+		service.authLogin(TenantInfoHolder.getId(), SmartGWTUtil.getStringValue(idField), SmartGWTUtil.getStringValue(passField),
+				new AsyncCallback<Void>() {
 
-			@Override
-			public void onSuccess(Void result) {
-				// 認証成功
+					@Override
+					public void onSuccess(Void result) {
+						// 認証成功
 
-				//ログインしたということはAdminConsoleの直接起動なので、Lang設定
-				setWindowLanguage();
+						//ログインしたということはAdminConsoleの直接起動なので、Lang設定
+						setWindowLanguage();
 
-				if (handler != null) {
-					handler.onLogin();
-				}
-			}
+						if (handler != null) {
+							handler.onLogin();
+						}
+					}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				SmartGWTUtil.hideProgress();
+					@Override
+					public void onFailure(Throwable caught) {
+						SmartGWTUtil.hideProgress();
 
-				if (caught instanceof LoginFailureException) {
-					//ログインエラー
-					SC.warn(caught.getMessage());
-					return;
-				} else if (caught instanceof UnauthorizedAccessException) {
-					//許可エラー
-					SC.warn(caught.getMessage());
-					return;
-				}
-				throw new AdminUncaughtException(caught);
-			}
-		});
+						if (caught instanceof LoginFailureException) {
+							//ログインエラー
+							SC.warn(caught.getMessage());
+							return;
+						} else if (caught instanceof UnauthorizedAccessException) {
+							//許可エラー
+							SC.warn(caught.getMessage());
+							return;
+						}
+						throw new AdminUncaughtException(caught);
+					}
+				});
 	}
 
 	private void setWindowLanguage() {
 		//引数で明示的に指定されている場合はLangを設定
-		if (TenantInfoHolder.getLanguage() != null && !TenantInfoHolder.getLanguage().isEmpty()) {
+		if (TenantInfoHolder.getLanguage() != null && !TenantInfoHolder.getLanguage()
+				.isEmpty()) {
 			service.setLanguage(TenantInfoHolder.getId(), TenantInfoHolder.getLanguage(), new AsyncCallback<Void>() {
 
 				@Override

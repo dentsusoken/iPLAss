@@ -44,19 +44,19 @@ import org.iplass.mtp.impl.xml.jaxb.XmlTime;
  *
  */
 @XmlSeeAlso({
-	XmlDate.class, XmlDate[].class,
-	XmlTime.class, XmlTime[].class,
-	XmlDateTime.class, XmlDateTime[].class,
-	BinaryReference.class, BinaryReference[].class,
-	Boolean[].class,
-	BigDecimal[].class,
-	Double[].class,
-	Long[].class,
-	SelectValue.class, SelectValue[].class,
-	String[].class,
-	GenericEntity[].class
+		XmlDate.class, XmlDate[].class,
+		XmlTime.class, XmlTime[].class,
+		XmlDateTime.class, XmlDateTime[].class,
+		BinaryReference.class, BinaryReference[].class,
+		Boolean[].class,
+		BigDecimal[].class,
+		Double[].class,
+		Long[].class,
+		SelectValue.class, SelectValue[].class,
+		String[].class,
+		GenericEntity[].class
 })
-@XmlType(name="property")
+@XmlType(name = "property")
 public class JaxbProperty {
 
 	@XmlAttribute

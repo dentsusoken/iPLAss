@@ -65,7 +65,7 @@ public class MetaPreviewDateParts extends MetaTopViewParts {
 	 * @return タイトル
 	 */
 	public String getTitle() {
-	    return title;
+		return title;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class MetaPreviewDateParts extends MetaTopViewParts {
 	 * @param title タイトル
 	 */
 	public void setTitle(String title) {
-	    this.title = title;
+		this.title = title;
 	}
 
 	/**

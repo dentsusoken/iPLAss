@@ -59,7 +59,7 @@ public class MessageItemCsvUploadServiceImpl extends AdminUploadAction {
 			final List<MultipartRequestParameter> sessionFiles) throws UploadActionException {
 
 		final MessageItemCsvUploadResponseInfo result = new MessageItemCsvUploadResponseInfo();
-		final HashMap<String,Object> args = new HashMap<String,Object>();
+		final HashMap<String, Object> args = new HashMap<String, Object>();
 		try {
 
 			//リクエスト情報の取得
@@ -69,7 +69,7 @@ public class MessageItemCsvUploadServiceImpl extends AdminUploadAction {
 			validateRequest(args);
 
 			//テナントIDの取得
-			int tenantId = Integer.parseInt((String)args.get(UploadProperty.TENANT_ID));
+			int tenantId = Integer.parseInt((String) args.get(UploadProperty.TENANT_ID));
 
 			//ここでトランザクションを開始
 			AuthUtil.authCheckAndInvoke(getServletContext(), request, null, tenantId, new AuthUtil.Callable<Void>() {
@@ -139,7 +139,7 @@ public class MessageItemCsvUploadServiceImpl extends AdminUploadAction {
 	 * 入力チェック
 	 * @param args
 	 */
-	private void validateRequest(HashMap<String,Object> args) {
+	private void validateRequest(HashMap<String, Object> args) {
 		if (args.get(UploadProperty.UPLOAD_FILE) == null) {
 			throw new UploadRuntimeException(rs("metadata.message.MessageItemCsvUploadServiceImpl.canNotGetImportFile"));
 		}
@@ -158,10 +158,11 @@ public class MessageItemCsvUploadServiceImpl extends AdminUploadAction {
 	 */
 	private void importCSV(MessageItemCsvUploadResponseInfo result, HashMap<String, Object> args, String definitionName) {
 
-		File file = (File)args.get(UploadProperty.UPLOAD_FILE);
+		File file = (File) args.get(UploadProperty.UPLOAD_FILE);
 
 		//更新対象の定義取得
-		MessageManager mm = ManagerLocator.getInstance().getManager(MessageManager.class);
+		MessageManager mm = ManagerLocator.getInstance()
+				.getManager(MessageManager.class);
 		MessageCategory category = mm.get(definitionName);
 
 		if (category == null) {
@@ -176,7 +177,7 @@ public class MessageItemCsvUploadServiceImpl extends AdminUploadAction {
 			//IDでソートするためTreeMapに格納
 			Map<String, MessageItem> messageItems = new TreeMap<>();
 
-			Iterator<MessageItem> iterator = reader.iterator();	//このタイミングでHeaderが読み込まれる
+			Iterator<MessageItem> iterator = reader.iterator(); //このタイミングでHeaderが読み込まれる
 
 			while (iterator.hasNext()) {
 				MessageItem item = iterator.next();

@@ -81,17 +81,17 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 		grid.setWidth100();
 		grid.setHeight(120);
 
-		grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+		grid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
-		grid.setCanSort(false);			//ソート不可
-		grid.setCanGroupBy(false);		//Group化不可
-		grid.setCanPickFields(false);	//列の選択不可
-		grid.setCanAutoFitFields(false);	//列幅の自動調整不可(崩れるので)
+		grid.setCanSort(false); //ソート不可
+		grid.setCanGroupBy(false); //Group化不可
+		grid.setCanPickFields(false); //列の選択不可
+		grid.setCanAutoFitFields(false); //列幅の自動調整不可(崩れるので)
 		grid.setCanFreezeFields(false);
 
-		grid.setCanResizeFields(true);	//列幅変更可
+		grid.setCanResizeFields(true); //列幅変更可
 
-		grid.setCanDragRecordsOut(true);				//grid内でのD&Dでの並べ替えを許可
+		grid.setCanDragRecordsOut(true); //grid内でのD&Dでの並べ替えを許可
 		grid.setCanAcceptDroppedRecords(true);
 		grid.setCanReorderRecords(true);
 
@@ -165,7 +165,8 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 	private void updateRecord(ListGridRecord record, String className, Refrectable value,
 			ListGridField[] fields, Map<String, Serializable> valueMap) {
 		record.setAttribute(RECORD_ATTRIBUTE_VALUE, value);
-		record.setAttribute(RECORD_ATTRIBUTE_TYPE, pane.getSimpleName(value.getClass().getName()));
+		record.setAttribute(RECORD_ATTRIBUTE_TYPE, pane.getSimpleName(value.getClass()
+				.getName()));
 
 		// Gridに表示されている項目のみ更新する
 		for (ListGridField field : fields) {
@@ -243,7 +244,8 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 			}
 
 			Refrectable fieldValue = (Refrectable) record.getAttributeAsObject(RECORD_ATTRIBUTE_VALUE);
-			String className = fieldValue.getClass().getName();
+			String className = fieldValue.getClass()
+					.getName();
 			final MetaFieldSettingDialog dialog = pane.createSubDialog(className, fieldValue, info);
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
 

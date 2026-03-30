@@ -72,7 +72,8 @@ public class RdbTableCounterService implements CounterService {
 
 	@Override
 	public void init(Config config) {
-		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
+		rdb = config.getDependentService(RdbAdapterService.class)
+				.getRdbAdapter();
 		separateTransaction = config.getValue("separateTransaction", Boolean.TYPE, false);
 		retryCount = config.getValue("retryCount", Integer.TYPE, 3);
 		sql = rdb.getUpdateSqlCreator(RdbTableCounterSql.class);
@@ -131,7 +132,7 @@ public class RdbTableCounterService implements CounterService {
 
 	@Override
 	public long increment(final int tenantId, final String incrementUnitKey, final long initialCount) {
-		Propagation p = separateTransaction ? Propagation.REQUIRES_NEW: Propagation.REQUIRED;
+		Propagation p = separateTransaction ? Propagation.REQUIRES_NEW : Propagation.REQUIRED;
 		Long v = null;
 		RuntimeException exp = null;
 		for (int i = 0; i < retryCount; i++) {
@@ -154,7 +155,8 @@ public class RdbTableCounterService implements CounterService {
 			throw exp;
 		}
 
-		throw new SystemException("counter:" + counterTypeName + "." + incrementUnitKey + " increment failed. created counter row can't view... May be Transaction Isolation Level is not READ_COMITTED...");
+		throw new SystemException("counter:" + counterTypeName + "." + incrementUnitKey
+				+ " increment failed. created counter row can't view... May be Transaction Isolation Level is not READ_COMITTED...");
 	}
 
 	@Override

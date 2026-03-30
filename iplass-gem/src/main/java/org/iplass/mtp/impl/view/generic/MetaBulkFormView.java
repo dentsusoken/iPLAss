@@ -42,7 +42,7 @@ public class MetaBulkFormView extends MetaFormView {
 
 	/** 更新アクション名 */
 	private String updateActionName;
-	
+
 	/** 検索条件で更新アクション名*/
 	private String updateAllActionName;
 

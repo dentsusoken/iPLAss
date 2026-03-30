@@ -34,7 +34,7 @@ public class BeanValidationConfig {
 	private Class providerClass;
 	private MessageInterpolator messageInterpolator;
 	private Map<String, String> properties;
-	
+
 	public Class<?> getProviderClass() {
 		return providerClass;
 	}
@@ -61,38 +61,41 @@ public class BeanValidationConfig {
 
 	@SuppressWarnings("unchecked")
 	public ValidatorFactory getValidatorFactory() {
-		
+
 		Configuration<?> config;
 		if (this.providerClass != null) {
-			config = Validation.byProvider(this.providerClass).configure();
+			config = Validation.byProvider(this.providerClass)
+					.configure();
 		} else {
-			config = Validation.byDefaultProvider().configure();
+			config = Validation.byDefaultProvider()
+					.configure();
 		}
-		
+
 		if (messageInterpolator != null) {
 			config.messageInterpolator(new TenantLocaleMessageInterpolator(messageInterpolator));
 		} else {
 			config.messageInterpolator(new TenantLocaleMessageInterpolator(config.getDefaultMessageInterpolator()));
 		}
-		
+
 		if (properties != null) {
 			properties.forEach((name, value) -> config.addProperty(name, value));
 		}
 
 		return config.buildValidatorFactory();
 	}
-	
+
 	private static class TenantLocaleMessageInterpolator implements MessageInterpolator {
-		
+
 		private MessageInterpolator wrapped;
-		
+
 		private TenantLocaleMessageInterpolator(MessageInterpolator wrapped) {
 			this.wrapped = wrapped;
 		}
 
 		@Override
 		public String interpolate(String messageTemplate, Context context) {
-			return wrapped.interpolate(messageTemplate, context, ExecuteContext.getCurrentContext().getLangLocale());
+			return wrapped.interpolate(messageTemplate, context, ExecuteContext.getCurrentContext()
+					.getLangLocale());
 		}
 
 		@Override

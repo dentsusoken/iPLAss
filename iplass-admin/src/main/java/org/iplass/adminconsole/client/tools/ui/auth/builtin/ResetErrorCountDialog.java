@@ -79,13 +79,13 @@ public class ResetErrorCountDialog extends AbstractWindow {
 				SC.ask(AdminClientMessageUtil.getString("ui_tools_auth_builtin_ResetErrorCountDialog_confirm"),
 						AdminClientMessageUtil.getString("ui_tools_auth_builtin_ResetErrorCountDialog_startResetProcess"), new BooleanCallback() {
 
-					@Override
-					public void execute(Boolean value) {
-						if (value) {
-							resetCount();
-						}
-					}
-				});
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									resetCount();
+								}
+							}
+						});
 			}
 		});
 
@@ -185,7 +185,8 @@ public class ResetErrorCountDialog extends AbstractWindow {
 		if (caught.getMessage() != null) {
 			messageTabSet.addErrorMessage(caught.getMessage());
 		} else {
-			messageTabSet.addErrorMessage(caught.getClass().getName());
+			messageTabSet.addErrorMessage(caught.getClass()
+					.getName());
 		}
 
 		disableComponent(false);

@@ -36,9 +36,8 @@ import org.iplass.mtp.impl.query.SubQuerySyntax;
 import org.iplass.mtp.impl.query.value.RowValueListSyntax;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
-
 public class InSyntax implements Syntax<In>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 	private SubQuerySyntax subQuerySyntax;
 	private RowValueListSyntax rowValueList;
@@ -50,23 +49,23 @@ public class InSyntax implements Syntax<In>, QueryConstants {
 	}
 
 	public In parse(ParseContext str) throws ParseException {
-		
+
 		if (!str.equalsNextToken(IN, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("in expected.", this, str));
 		}
-		
+
 		str.consumeChars(IN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		In in = new In();
-		
+
 		int currentPos = str.getCurrentIndex();
 		if (!str.startsWith(LEFT_PAREN)) {
 			throw new ParseException(new EvalError("( expected.", this, str));
 		}
 		str.consumeChars(LEFT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//subquery
 		if (str.equalsNextToken(SELECT, ParseContext.TOKEN_DELIMITERS)) {
 			str.setCurrentIndex(currentPos);
@@ -91,21 +90,21 @@ public class InSyntax implements Syntax<In>, QueryConstants {
 					}
 					values.add(rowValueList.parse(str));
 				}
-				
+
 				if (!str.startsWith(RIGHT_PAREN)) {
 					throw new ParseException(new EvalError(") expected.", this, str));
 				}
 				str.consumeChars(RIGHT_PAREN.length());
 				str.consumeChars(ParseContext.WHITE_SPACES);
 				in.setValue(values);
-				
+
 				return in;
 			} catch (ParseException pe) {
 				str.setCurrentIndex(currentPos);
 				//continue parse as simple value expression list...
 			}
 		}
-		
+
 		//value expression list
 		List<ValueExpression> values = new ArrayList<ValueExpression>();
 		boolean isFirst = true;
@@ -118,14 +117,14 @@ public class InSyntax implements Syntax<In>, QueryConstants {
 			}
 			values.add(polynomial.parse(str));
 		}
-		
+
 		if (!str.startsWith(RIGHT_PAREN)) {
 			throw new ParseException(new EvalError(") expected.", this, str));
 		}
 		str.consumeChars(RIGHT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
 		in.setValue(values);
-		
+
 		return in;
 	}
 

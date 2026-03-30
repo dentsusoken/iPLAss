@@ -26,7 +26,7 @@ package org.iplass.mtp.mail;
  *
  */
 public interface SendMailListener {
-	
+
 	/**
 	 * メール送信前に呼び出されます。
 	 * デフォルト実装では何もしません（return trueします）。
@@ -37,7 +37,7 @@ public interface SendMailListener {
 	public default boolean beforeSend(Mail mail) {
 		return true;
 	}
-	
+
 	/**
 	 * メール送信成功時に呼び出されます。
 	 * デフォルト実装では何もしません。
@@ -46,7 +46,7 @@ public interface SendMailListener {
 	 */
 	public default void onSuccess(Mail mail) {
 	}
-	
+
 	/**
 	 * メール送信失敗時（例外発生時）に呼び出されます。
 	 * デフォルト実装では何もしません（return trueします）。

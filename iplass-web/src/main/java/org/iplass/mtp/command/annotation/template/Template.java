@@ -40,9 +40,13 @@ import org.iplass.mtp.web.template.definition.TemplateDefinition;
 @Target(ElementType.TYPE)
 public @interface Template {
 	String id() default "##default";
+
 	String name();
+
 	String displayName() default "##default";
+
 	LocalizedString[] localizedDisplayName() default {};
+
 	String description() default "##default";
 
 	/**

@@ -37,7 +37,6 @@ import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType
 import org.iplass.mtp.web.actionmapping.definition.result.DynamicTemplateResultDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 
-
 public class DynamicTemplateResult extends Result {
 
 	//TODO DynamicResultへ。テンプレートだけでなくその他のResultも動的に選択可能にする。
@@ -144,7 +143,8 @@ public class DynamicTemplateResult extends Result {
 			RequestContext cmdRequestContext = requestStack.getRequestContext();
 			String templatePath = (String) cmdRequestContext.getAttribute(templatePathAttributeName);
 
-			TemplateService ts = ServiceRegistry.getRegistry().getService(TemplateService.class);
+			TemplateService ts = ServiceRegistry.getRegistry()
+					.getService(TemplateService.class);
 			TemplateRuntime tr = ts.getRuntimeByName(templatePath);
 
 			if (tr == null) {
@@ -154,17 +154,18 @@ public class DynamicTemplateResult extends Result {
 			if (useContentDisposition) {
 				String fileName = null;
 				if (StringUtil.isNotEmpty(fileNameAttributeName)) {
-					fileName = (String)cmdRequestContext.getAttribute(fileNameAttributeName);
+					fileName = (String) cmdRequestContext.getAttribute(fileNameAttributeName);
 				}
 				if (fileName == null) {
 					//名前が未指定の場合は、テンプレート名(階層化されている場合は最後)
-					fileName = getLastTemplateName(tr.getMetaData().getName());
+					fileName = getLastTemplateName(tr.getMetaData()
+							.getName());
 				}
 				WebUtil.setContentDispositionHeader(requestStack, getContentDispositionType(), fileName);
 			}
 
 			if (StringUtil.isNotEmpty(layoutActionAttributeName)) {
-				String layoutActionName = (String)cmdRequestContext.getAttribute(layoutActionAttributeName);
+				String layoutActionName = (String) cmdRequestContext.getAttribute(layoutActionAttributeName);
 				if (StringUtil.isNotEmpty(layoutActionName)) {
 					requestStack.setAttribute(MetaTemplate.LAYOUT_ACTION_NAME, layoutActionName);
 				}

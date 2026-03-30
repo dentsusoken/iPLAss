@@ -67,7 +67,9 @@ public class PostgreSQLSubstrFunctionAdapter implements FunctionAdapter<Function
 
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		if (function.getArguments() == null || function.getArguments().size() < 2 || function.getArguments().size() > 3) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() < 2 || function.getArguments()
+						.size() > 3) {
 			throw new QueryException(function.getName() + " must have two or three arguments.");
 		}
 

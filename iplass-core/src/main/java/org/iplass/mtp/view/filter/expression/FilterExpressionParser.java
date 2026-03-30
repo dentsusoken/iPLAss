@@ -64,9 +64,10 @@ public class FilterExpressionParser {
 		StringBuilder sb = new StringBuilder();
 
 		//$nを検索
-		Matcher m = Pattern.compile("\\$\\d+").matcher(expression);
+		Matcher m = Pattern.compile("\\$\\d+")
+				.matcher(expression);
 		int curIndex = 0;
-		while(m.find()) {
+		while (m.find()) {
 			//対象のFilter番号を取得(1始まり)
 			String numStr = expression.substring(m.start() + 1, m.end());
 			int condIndex = Integer.parseInt(numStr) - 1;

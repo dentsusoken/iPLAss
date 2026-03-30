@@ -26,7 +26,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * アクション系のパーツ
  * @author lis3wg
  */
-@XmlSeeAlso({InformationParts.class})
+@XmlSeeAlso({ InformationParts.class })
 public abstract class ActionParts extends TopViewContentParts {
 
 	/** SerialVersionUID */

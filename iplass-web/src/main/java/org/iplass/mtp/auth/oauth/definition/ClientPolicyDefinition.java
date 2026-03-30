@@ -38,41 +38,51 @@ public class ClientPolicyDefinition implements Serializable {
 	private ConsentTypeDefinition consentType;
 	private List<String> scopes;
 	private boolean supportOpenIDConnect;
-	
+
 	public ClientType getClientType() {
 		return clientType;
 	}
+
 	public void setClientType(ClientType clientType) {
 		this.clientType = clientType;
 	}
+
 	public long getAccessTokenLifetimeSeconds() {
 		return accessTokenLifetimeSeconds;
 	}
+
 	public void setAccessTokenLifetimeSeconds(long accessTokenLifetimeSeconds) {
 		this.accessTokenLifetimeSeconds = accessTokenLifetimeSeconds;
 	}
+
 	public boolean isSupportRefreshToken() {
 		return supportRefreshToken;
 	}
+
 	public void setSupportRefreshToken(boolean supportRefreshToken) {
 		this.supportRefreshToken = supportRefreshToken;
 	}
+
 	public long getRefreshTokenLifetimeSeconds() {
 		return refreshTokenLifetimeSeconds;
 	}
+
 	public void setRefreshTokenLifetimeSeconds(long refreshTokenLifetimeSeconds) {
 		this.refreshTokenLifetimeSeconds = refreshTokenLifetimeSeconds;
 	}
+
 	public ConsentTypeDefinition getConsentType() {
 		return consentType;
 	}
+
 	public void setConsentType(ConsentTypeDefinition consentType) {
 		this.consentType = consentType;
 	}
+
 	public List<String> getScopes() {
 		return scopes;
 	}
-	
+
 	/**
 	 * ClientType毎に利用可能なscopeを限定する場合設定します。
 	 * 未設定の場合は、OAuthAuthorizationDefinitionに定義されるすべてのscopeが利用可能です。
@@ -82,9 +92,11 @@ public class ClientPolicyDefinition implements Serializable {
 	public void setScopes(List<String> scopes) {
 		this.scopes = scopes;
 	}
+
 	public boolean isSupportOpenIDConnect() {
 		return supportOpenIDConnect;
 	}
+
 	public void setSupportOpenIDConnect(boolean supportOpenIDConnect) {
 		this.supportOpenIDConnect = supportOpenIDConnect;
 	}

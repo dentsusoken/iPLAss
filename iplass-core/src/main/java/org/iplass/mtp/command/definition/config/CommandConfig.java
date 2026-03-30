@@ -30,11 +30,12 @@ import org.iplass.mtp.transaction.RollbackException;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@XmlSeeAlso (value = {
-		CompositeCommandConfig.class,
-		SingleCommandConfig.class
-})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(
+		value = {
+				CompositeCommandConfig.class,
+				SingleCommandConfig.class
+		})
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class CommandConfig implements Serializable {
 	//Commandの初期化、設定を行うための定義
 
@@ -73,7 +74,7 @@ public abstract class CommandConfig implements Serializable {
 		this.throwExceptionIfSetRollbackOnly = throwExceptionIfSetRollbackOnly;
 	}
 
-	@XmlElement(namespace="http://mtp.iplass.org/xml/definition/command")
+	@XmlElement(namespace = "http://mtp.iplass.org/xml/definition/command")
 	public Propagation getTransactionPropagation() {
 		return transactionPropagation;
 	}

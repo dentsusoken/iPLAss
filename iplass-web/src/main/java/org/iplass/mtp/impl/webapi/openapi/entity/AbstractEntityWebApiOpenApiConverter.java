@@ -140,7 +140,9 @@ public abstract class AbstractEntityWebApiOpenApiConverter implements EntityWebA
 	protected PathItem getEntityOidPathItem(OpenAPI openApi, EntityDefinition entityDefinition) {
 		var entityOidPath = getEntityOidPath(entityDefinition);
 		return getPathItemIfNotExistCreate(openApi, entityOidPath, pathItem -> {
-			pathItem.addParametersItem(new PathParameter().name("oid").required(Boolean.TRUE).schema(new StringSchema()));
+			pathItem.addParametersItem(new PathParameter().name("oid")
+					.required(Boolean.TRUE)
+					.schema(new StringSchema()));
 		});
 	}
 
@@ -157,8 +159,12 @@ public abstract class AbstractEntityWebApiOpenApiConverter implements EntityWebA
 	protected PathItem getEntityOidVersionPathItem(OpenAPI openApi, EntityDefinition entityDefinition) {
 		var entityOidVersionPath = getEntityOidVersionPath(entityDefinition);
 		return getPathItemIfNotExistCreate(openApi, entityOidVersionPath, pathItem -> {
-			pathItem.addParametersItem(new PathParameter().name("oid").required(Boolean.TRUE).schema(new StringSchema()));
-			pathItem.addParametersItem(new PathParameter().name("version").required(Boolean.TRUE).schema(new StringSchema()));
+			pathItem.addParametersItem(new PathParameter().name("oid")
+					.required(Boolean.TRUE)
+					.schema(new StringSchema()));
+			pathItem.addParametersItem(new PathParameter().name("version")
+					.required(Boolean.TRUE)
+					.schema(new StringSchema()));
 		});
 	}
 

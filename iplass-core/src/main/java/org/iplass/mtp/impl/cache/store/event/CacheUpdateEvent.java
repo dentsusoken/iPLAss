@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.cache.store.event;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 
 public final class CacheUpdateEvent extends CacheEvent {
-	
+
 	private final CacheEntry previousEntry;
 	private final CacheEntry entry;
 

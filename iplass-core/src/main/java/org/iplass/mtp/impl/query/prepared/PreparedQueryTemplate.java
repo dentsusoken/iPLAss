@@ -35,7 +35,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * PreparedQueryの実装本体。
  * 
@@ -43,25 +42,27 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class PreparedQueryTemplate {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PreparedQueryTemplate.class);
-	
+
 	private String queryString;
 
 	private GroovyTemplate compiledQuery;
-	
+
 	public PreparedQueryTemplate(String queryString) {
 		this.queryString = queryString;
-		
-		ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+
+		ScriptEngine se = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getScriptEngine();
 		compiledQuery = GroovyTemplateCompiler.compile(
 				queryString, "Query_" + GroovyTemplateCompiler.randomName(), (GroovyScriptEngine) se);
 	}
-	
+
 	public String getQueryString() {
 		return queryString;
 	}
-	
+
 	public String doBind(PreparedQueryBinding binding) {
 		StringWriter w = new StringWriter();
 		binding.setVariable("out", w);
@@ -71,14 +72,14 @@ public class PreparedQueryTemplate {
 			//発生しえない
 			throw new RuntimeException(e);
 		}
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("binding to expression: org:\"" + queryString + "\": binded:\"" + w.toString() + "\"");
 		}
-		
+
 		return w.toString();
 	}
-	
+
 	/**
 	 * queryExpressionをQueryとして取得する。
 	 * 
@@ -88,7 +89,7 @@ public class PreparedQueryTemplate {
 	public Query query(PreparedQueryBinding binding) {
 		return Query.newQuery(doBind(binding));
 	}
-	
+
 	/**
 	 * queryExpressionをConditionとして取得する。
 	 * 
@@ -102,7 +103,7 @@ public class PreparedQueryTemplate {
 		}
 		return Condition.newCondition(templateResult);
 	}
-	
+
 	/**
 	 * queryExpressionをValueExpressionとして取得する。
 	 * 

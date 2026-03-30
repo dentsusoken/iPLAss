@@ -128,7 +128,8 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -142,7 +143,8 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 
 		//Section設定
 		SectionStackSection defaultPushNotificationSection = createSection("Default PushNotificationTemplate", pushNotificationTemplateAttrPane);
-		SectionStackSection multiPushNotificationSection = createSection("Multilingual PushNotificationTemplate", false, multiPushNotificationTemplateAttrPane);
+		SectionStackSection multiPushNotificationSection = createSection("Multilingual PushNotificationTemplate", false,
+				multiPushNotificationTemplateAttrPane);
 		setMainSections(commonSection, defaultPushNotificationSection, multiPushNotificationSection);
 
 		//全体配置
@@ -176,20 +178,21 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 		pushNotificationTemplateAttrPane.clearErrors();
 		multiPushNotificationTemplateAttrPane.clearErrors();
 
-		service.getDefinitionEntry(TenantInfoHolder.getId(), PushNotificationTemplateDefinition.class.getName(), defName, new AsyncCallback<DefinitionEntry>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				SC.say(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_failed"),
-						AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_failedGetScreenInfo"));
-				GWT.log(caught.toString(), caught);
-			}
+		service.getDefinitionEntry(TenantInfoHolder.getId(), PushNotificationTemplateDefinition.class.getName(), defName,
+				new AsyncCallback<DefinitionEntry>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						SC.say(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_failed"),
+								AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_failedGetScreenInfo"));
+						GWT.log(caught.toString(), caught);
+					}
 
-			@Override
-			public void onSuccess(DefinitionEntry result) {
-				//画面に反映
-				setDefinition(result);
-			}
-		});
+					@Override
+					public void onSuccess(DefinitionEntry result) {
+						//画面に反映
+						setDefinition(result);
+					}
+				});
 
 		//ステータスチェック
 		StatusCheckUtil.statuCheck(PushNotificationTemplateDefinition.class.getName(), defName, this);
@@ -202,8 +205,10 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (PushNotificationTemplateDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		pushNotificationTemplateAttrPane.setDefinition(curDefinition);
@@ -273,20 +278,22 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 			}
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_saveConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_savePushNotificationTemplateComment"), new BooleanCallback() {
+					AdminClientMessageUtil
+							.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_savePushNotificationTemplateComment"),
+					new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						PushNotificationTemplateDefinition definition = curDefinition;
-						definition = commonSection.getEditDefinition(definition);
-						definition = pushNotificationTemplateAttrPane.getEditDefinition(definition);
-						definition = multiPushNotificationTemplateAttrPane.getEditDefinition(definition);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								PushNotificationTemplateDefinition definition = curDefinition;
+								definition = commonSection.getEditDefinition(definition);
+								definition = pushNotificationTemplateAttrPane.getEditDefinition(definition);
+								definition = multiPushNotificationTemplateAttrPane.getEditDefinition(definition);
 
-						updatePushNotificationTemplate(definition, true);
-					}
-				}
-			});
+								updatePushNotificationTemplate(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -297,15 +304,16 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 		@Override
 		public void onClick(ClickEvent event) {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_cancelConfirmComment"), new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_cancelConfirmComment"),
+					new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 
@@ -323,7 +331,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 		private ScriptEditorPane bodyEditor;
 
 		public PushNotificationTemplateAttributePane() {
-			setOverflow(Overflow.AUTO);	//Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
+			setOverflow(Overflow.AUTO); //Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
 
 			VLayout mainPane = new VLayout();
 			mainPane.setMargin(5);
@@ -337,7 +345,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 
 			form = new DynamicForm();
 			form.setWidth100();
-			form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
+			form.setNumCols(5); //間延びしないように最後に１つ余分に作成
 			form.setColWidths(70, "*", "*", 100, "*");
 
 			form.setItems(title, icon);
@@ -345,8 +353,8 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 			//メッセージ編集領域
 			tabSet = new TabSet();
 			tabSet.setWidth100();
-			tabSet.setHeight(400);	//高さは固定でないとうまくいかないため指定
-			tabSet.setPaneContainerOverflow(Overflow.HIDDEN);	//Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
+			tabSet.setHeight(400); //高さは固定でないとうまくいかないため指定
+			tabSet.setPaneContainerOverflow(Overflow.HIDDEN); //Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
 
 			bodyTab = new Tab();
 			bodyTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_body"));
@@ -359,7 +367,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 			scriptForm = new DynamicForm();
 			scriptForm.setWidth100();
 			scriptForm.setHeight100();
-			scriptForm.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+			scriptForm.setNumCols(3); //間延びしないように最後に１つ余分に作成
 			scriptForm.setColWidths(70, "*", "*");
 
 			mainPane.addMember(form);
@@ -371,24 +379,26 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 			editScript.setStartRow(false);
 			editScript.setColSpan(3);
 			editScript.setAlign(Alignment.RIGHT);
-			editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_displayDialogEditScript")));
+			editScript.setPrompt(SmartGWTUtil.getHoverString(
+					AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateEditPane_displayDialogEditScript")));
 			editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
 					MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
-					SmartGWTUtil.getStringValue(configScript),
-					ScriptEditorDialogCondition.PUSHNOTIFICATION_TEMPLATE_CONFIGSCRIPT,
-					"ui_metadata_pushnotification_PushNotificationTemplateEditPane_scriptHint",
-					null,
-					new ScriptEditorDialogHandler() {
-						@Override
-						public void onSave(String text) {
-							configScript.setValue(text);
-						}
-						@Override
-						public void onCancel() {
-						}
-					});
+							SmartGWTUtil.getStringValue(configScript),
+							ScriptEditorDialogCondition.PUSHNOTIFICATION_TEMPLATE_CONFIGSCRIPT,
+							"ui_metadata_pushnotification_PushNotificationTemplateEditPane_scriptHint",
+							null,
+							new ScriptEditorDialogHandler() {
+								@Override
+								public void onSave(String text) {
+									configScript.setValue(text);
+								}
+
+								@Override
+								public void onCancel() {
+								}
+							});
 				}
 			});
 
@@ -485,10 +495,11 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 
 			form = new DynamicForm();
 			form.setWidth100();
-			form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+			form.setNumCols(3); //間延びしないように最後に１つ余分に作成
 			form.setColWidths(100, "*", "*");
 
-			langOrUserBindingName = new TextItem("bindKey", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_langConfigInfoBindName"));
+			langOrUserBindingName = new TextItem("bindKey",
+					AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_langConfigInfoBindName"));
 			langOrUserBindingName.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
 			form.setItems(langOrUserBindingName);
@@ -496,7 +507,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 			grid = new LanguageMapGrid();
 			grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editMap((ListGridRecord)event.getRecord());
+					editMap((ListGridRecord) event.getRecord());
 				}
 			});
 
@@ -514,7 +525,8 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 						return;
 					}
 
-					String lang = grid.getSelectedRecord().getAttribute(FIELD_NAME.NAME.name());
+					String lang = grid.getSelectedRecord()
+							.getAttribute(FIELD_NAME.NAME.name());
 					grid.removeSelectedData();
 
 					Map<String, LocalizedNotificationDefinition> map = new HashMap<String, LocalizedNotificationDefinition>();
@@ -526,7 +538,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 
 					List<LocalizedNotificationDefinition> newList = new ArrayList<LocalizedNotificationDefinition>();
 
-					for(Map.Entry<String, LocalizedNotificationDefinition> e : map.entrySet()) {
+					for (Map.Entry<String, LocalizedNotificationDefinition> e : map.entrySet()) {
 						newList.add(e.getValue());
 					}
 
@@ -588,7 +600,8 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 			LocalizedNotificationDefinition temp = null;
 
 			if (record != null) {
-				if (curDefinition != null && curDefinition.getLocalizedNotificationList() != null && curDefinition.getLocalizedNotificationList().size() > 0) {
+				if (curDefinition != null && curDefinition.getLocalizedNotificationList() != null && curDefinition.getLocalizedNotificationList()
+						.size() > 0) {
 					Map<String, LocalizedNotificationDefinition> map = new HashMap<String, LocalizedNotificationDefinition>();
 					for (LocalizedNotificationDefinition def : curDefinition.getLocalizedNotificationList()) {
 						map.put(enableLang.get(def.getLocaleName()), def);
@@ -624,7 +637,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 		 * @param definition PushNotificationTemplateDefinition
 		 */
 		public void setDefinition(PushNotificationTemplateDefinition definition) {
-			grid.setData(new ListGridRecord[]{});
+			grid.setData(new ListGridRecord[] {});
 
 			if (definition != null) {
 				langOrUserBindingName.setValue(definition.getLangOrUserBindingName());
@@ -637,7 +650,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 					for (LocalizedNotificationDefinition localDefinition : definitionList) {
 						ListGridRecord newRecord = createRecord(localDefinition, null, true);
 						temp[cnt] = newRecord;
-						cnt ++;
+						cnt++;
 
 					}
 					grid.setData(temp);
@@ -692,14 +705,14 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 

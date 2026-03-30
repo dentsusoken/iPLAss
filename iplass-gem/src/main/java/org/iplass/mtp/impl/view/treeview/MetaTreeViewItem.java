@@ -141,7 +141,7 @@ public abstract class MetaTreeViewItem implements MetaData {
 	 * @return ビュー名
 	 */
 	public String getViewName() {
-	    return viewName;
+		return viewName;
 	}
 
 	/**
@@ -149,7 +149,7 @@ public abstract class MetaTreeViewItem implements MetaData {
 	 * @param viewName ビュー名
 	 */
 	public void setViewName(String viewName) {
-	    this.viewName = viewName;
+		this.viewName = viewName;
 	}
 
 	/**
@@ -360,8 +360,9 @@ public abstract class MetaTreeViewItem implements MetaData {
 	 * @return ColModelのマッピング
 	 */
 	public List<MetaTreeViewGridColModelMapping> getMapping() {
-		if (mapping == null) mapping = new ArrayList<>();
-	    return mapping;
+		if (mapping == null)
+			mapping = new ArrayList<>();
+		return mapping;
 	}
 
 	/**
@@ -369,7 +370,7 @@ public abstract class MetaTreeViewItem implements MetaData {
 	 * @param mapping ColModelのマッピング
 	 */
 	public void setMapping(List<MetaTreeViewGridColModelMapping> mapping) {
-	    this.mapping = mapping;
+		this.mapping = mapping;
 	}
 
 	/**
@@ -377,7 +378,7 @@ public abstract class MetaTreeViewItem implements MetaData {
 	 * @param mapping ColModelのマッピング
 	 */
 	public void addMapping(MetaTreeViewGridColModelMapping mapping) {
-	    getMapping().add(mapping);
+		getMapping().add(mapping);
 	}
 
 	public abstract void applyConfig(TreeViewItem item);
@@ -395,7 +396,8 @@ public abstract class MetaTreeViewItem implements MetaData {
 			sortProperty = handler.getProperty(item.getSortItem(), ctx);
 		}
 
-		this.definitionId = handler.getMetaData().getId();
+		this.definitionId = handler.getMetaData()
+				.getId();
 		this.action = item.getAction();
 		this.viewName = item.getViewName();
 		this.sortItem = sortProperty != null ? sortProperty.getId() : null;
@@ -432,14 +434,15 @@ public abstract class MetaTreeViewItem implements MetaData {
 	 */
 	protected void fillTo(TreeViewItem item) {
 		EntityContext ctx = EntityContext.getCurrentContext();
-		EntityHandler handler =ctx.getHandlerById(definitionId);
+		EntityHandler handler = ctx.getHandlerById(definitionId);
 		PropertyHandler property = handler.getPropertyById(displayPropertyId, ctx);
 		PropertyHandler sortProperty = null;
 		if (sortItem != null) {
 			sortProperty = handler.getPropertyById(sortItem, ctx);
 		}
 
-		item.setDefName(handler.getMetaData().getName());
+		item.setDefName(handler.getMetaData()
+				.getName());
 		item.setAction(action);
 		item.setViewName(viewName);
 		item.setSortItem(sortProperty != null ? sortProperty.getName() : null);

@@ -39,20 +39,21 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public class ChunkedBinary {
-	
+
 	static final String TYPE_ARCHIVE = "archive";
-	
+
 	private String name;
 	private String type;
 	private List<Chunk> chunk;
-	
+
 	public ChunkedBinary(BinaryMetaData binMeta) {
-		
+
 		if (binMeta instanceof ArchiveBinaryMetaData) {
 			type = TYPE_ARCHIVE;
 		}
-		this.name= binMeta.getName();
-		BinaryMetaDataService service = ServiceRegistry.getRegistry().getService(BinaryMetaDataService.class);
+		this.name = binMeta.getName();
+		BinaryMetaDataService service = ServiceRegistry.getRegistry()
+				.getService(BinaryMetaDataService.class);
 		chunk = new ArrayList<>();
 		long offset = 0;
 		while (offset < binMeta.getSize()) {
@@ -61,7 +62,7 @@ public class ChunkedBinary {
 			offset += service.getXmlBinaryChunkSize();
 		}
 	}
-	
+
 	public ChunkedBinary() {
 	}
 
@@ -84,12 +85,13 @@ public class ChunkedBinary {
 	public List<Chunk> getChunk() {
 		return chunk;
 	}
+
 	public void setChunk(List<Chunk> chunk) {
 		this.chunk = chunk;
 	}
-	
+
 	public BinaryMetaData toBinaryMetaData() throws IOException {
-		
+
 		BinaryMetaData binMeta;
 		if (TYPE_ARCHIVE.equals(type)) {
 			binMeta = new ArchiveBinaryMetaData(name);
@@ -98,20 +100,20 @@ public class ChunkedBinary {
 		}
 		if (chunk != null && chunk.size() > 0) {
 			try (OutputStream os = binMeta.getOutputStream()) {
-				for (Chunk c: chunk) {
+				for (Chunk c : chunk) {
 					os.write(c.getBin());
 				}
 			}
 		}
 		return binMeta;
 	}
-	
+
 	public void dispose() {
 		if (chunk != null) {
-			for (Chunk c: chunk) {
+			for (Chunk c : chunk) {
 				c.dispose();
 			}
 		}
 	}
-	
+
 }

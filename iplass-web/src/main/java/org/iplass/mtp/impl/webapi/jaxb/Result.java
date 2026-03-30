@@ -28,20 +28,20 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.iplass.mtp.command.beanmapper.MappingResult;
 
 @XmlSeeAlso({
-	JaxbListValue.class,
-	MappingResult.class
+		JaxbListValue.class,
+		MappingResult.class
 })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Result {
 	@XmlAttribute
 	String key;
-	
+
 	@XmlJavaTypeAdapter(ResultValueXmlAdapter.class)
 	Object value;
-	
+
 	public Result() {
 	}
-	
+
 	public Result(String key, Object value) {
 		this.key = key;
 		this.value = value;

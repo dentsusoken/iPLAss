@@ -35,7 +35,9 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
 	@Override
 	public ObjectMapper getContext(Class<?> type) {
-		ObjectMapper mapper = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class).getObjectMapper();
+		ObjectMapper mapper = ServiceRegistry.getRegistry()
+				.getService(WebApiObjectMapperService.class)
+				.getObjectMapper();
 		return mapper;
 	}
 

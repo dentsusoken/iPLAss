@@ -35,9 +35,9 @@ import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-public class WebhookEndpointDefinitionPlugin extends DefaultMetaDataPlugin{
+public class WebhookEndpointDefinitionPlugin extends DefaultMetaDataPlugin {
 	/** カテゴリ名 */
-	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_NOTIFICATION +"/" + "Webhook";
+	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_NOTIFICATION + "/" + "Webhook";
 
 	/** ノード名 */
 	private static final String NODE_NAME = "WebhookEndpoint";
@@ -49,7 +49,6 @@ public class WebhookEndpointDefinitionPlugin extends DefaultMetaDataPlugin{
 		return CATEGORY_NAME;
 	}
 
-	
 	@Override
 	protected String nodeName() {
 		return NODE_NAME;
@@ -65,7 +64,6 @@ public class WebhookEndpointDefinitionPlugin extends DefaultMetaDataPlugin{
 		return NODE_ICON;
 	}
 
-
 	@Override
 	protected String definitionClassName() {
 		return WebhookEndpointDefinition.class.getName();
@@ -73,7 +71,8 @@ public class WebhookEndpointDefinitionPlugin extends DefaultMetaDataPlugin{
 
 	@Override
 	protected void itemCreateAction(String folderPath) {
-		CreateWebhookEndpointDefinitionDialog dialog = new CreateWebhookEndpointDefinitionDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
+		CreateWebhookEndpointDefinitionDialog dialog = new CreateWebhookEndpointDefinitionDialog(definitionClassName(), nodeDisplayName(), folderPath,
+				false);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
 			@Override
@@ -96,28 +95,33 @@ public class WebhookEndpointDefinitionPlugin extends DefaultMetaDataPlugin{
 		});
 		dialog.setSourceName(itemNode.getDefName());
 		dialog.show();
-		
+
 	}
 
 	@Override
 	protected void itemDelete(MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), WebhookEndpointDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_WebhookEndpointDefinitionPlugin_failedToDeleteWebhookEndpointDefinition" + caught.getMessage()));
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_WebhookEndpointDefinitionPlugin_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_WebhookEndpointDefinitionPlugin_deleteWebhookEndpointDefinitionComp"));
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_WebhookEndpointDefinitionPlugin_failedToDeleteWebhookEndpointDefinition" + result.getMessage()));
-				}
-			}
-		});
-		
+		service.deleteDefinition(TenantInfoHolder.getId(), WebhookEndpointDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						SC.warn(AdminClientMessageUtil.getString(
+								"ui_metadata_WebhookEndpointDefinitionPlugin_failedToDeleteWebhookEndpointDefinition" + caught.getMessage()));
+					}
+
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_WebhookEndpointDefinitionPlugin_completion"),
+									AdminClientMessageUtil
+											.getString("ui_metadata_WebhookEndpointDefinitionPlugin_deleteWebhookEndpointDefinitionComp"));
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString(
+									"ui_metadata_WebhookEndpointDefinitionPlugin_failedToDeleteWebhookEndpointDefinition" + result.getMessage()));
+						}
+					}
+				});
+
 	}
 
 	@Override
@@ -127,7 +131,7 @@ public class WebhookEndpointDefinitionPlugin extends DefaultMetaDataPlugin{
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[] {WebhookEndpointEditPane.class};
+		return new Class[] { WebhookEndpointEditPane.class };
 	}
 
 }

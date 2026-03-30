@@ -91,11 +91,11 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 
 		CriteriaTab criteriaTab = new CriteriaTab();
 		criteriaTab.setHeight(250);
-		criteriaTab.setShowResizeBar(true);		//リサイズ可能
+		criteriaTab.setShowResizeBar(true); //リサイズ可能
 
 		resultPane = new ResultListPane();
-		resultPane.setShowResizeBar(true);		//リサイズ可能
-		resultPane.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+		resultPane.setShowResizeBar(true); //リサイズ可能
+		resultPane.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、下を収縮
 
 		messageTabSet = new MessageTabSet();
 		messageTabSet.setHeight(120);
@@ -204,19 +204,18 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			});
 			SmartGWTUtil.addHintToFormItem(specificTypeItem,
 					"<br/>"
-					+ "<div><b>・" + BuiltinAuthUserSpecificType.LOCKED.displayName() + "</b><br/>"
-					+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment1")
-					+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment2")
-					+ "</div>"
-					+ "<div><b>・" + BuiltinAuthUserSpecificType.PASSWORDDAYS.displayName() + "</b><br/>"
-					+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment3")
-					+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment4")
-					+ "</div>"
-					+ "<div><b>・" + BuiltinAuthUserSpecificType.LASTLOGIN.displayName() + "</b><br/>"
-					+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment5")
-					+ "</div>"
-					);
-			specificTypeItem.setIconVAlign(VerticalAlignment.TOP);	//効かない・・
+							+ "<div><b>・" + BuiltinAuthUserSpecificType.LOCKED.displayName() + "</b><br/>"
+							+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment1")
+							+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment2")
+							+ "</div>"
+							+ "<div><b>・" + BuiltinAuthUserSpecificType.PASSWORDDAYS.displayName() + "</b><br/>"
+							+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment3")
+							+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment4")
+							+ "</div>"
+							+ "<div><b>・" + BuiltinAuthUserSpecificType.LASTLOGIN.displayName() + "</b><br/>"
+							+ AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_speItemComment5")
+							+ "</div>");
+			specificTypeItem.setIconVAlign(VerticalAlignment.TOP); //効かない・・
 
 			specificTypeForm.setFields(specificTypeItem);
 
@@ -260,10 +259,10 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			remainDaysValueItem = new SliderItem();
 			remainDaysValueItem.setShowTitle(false);
 			remainDaysValueItem.setWidth(350);
-			remainDaysValueItem.setHeight(30);	//これを指定しないと間延び
+			remainDaysValueItem.setHeight(30); //これを指定しないと間延び
 			remainDaysValueItem.setMinValue(0d);
 			remainDaysValueItem.setMaxValue(20d);
-			remainDaysValueItem.setValue(5);	//default 5 days
+			remainDaysValueItem.setValue(5); //default 5 days
 
 			remainPWDaysForm.setFields(remainDaysPolicyNameField, remainDaysOperatorItem, remainDaysValueItem);
 
@@ -303,8 +302,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 
 			lastLoginForm.setFields(lastLoginFromItem, lastLoginDummy, lastLoginToItem);
 
-			condPane.addMember(specificTypeForm);	//起動時はタイプのみ
-
+			condPane.addMember(specificTypeForm); //起動時はタイプのみ
 
 			//------------------------
 			//フッター
@@ -371,11 +369,14 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			}
 
 			String typeValue = SmartGWTUtil.getStringValue(specificTypeItem);
-			if (BuiltinAuthUserSpecificType.LOCKED.name().equals(typeValue)) {
+			if (BuiltinAuthUserSpecificType.LOCKED.name()
+					.equals(typeValue)) {
 				condPane.addMember(lockedUserForm);
-			} else if (BuiltinAuthUserSpecificType.PASSWORDDAYS.name().equals(typeValue)) {
+			} else if (BuiltinAuthUserSpecificType.PASSWORDDAYS.name()
+					.equals(typeValue)) {
 				condPane.addMember(remainPWDaysForm);
-			} else if (BuiltinAuthUserSpecificType.LASTLOGIN.name().equals(typeValue)) {
+			} else if (BuiltinAuthUserSpecificType.LASTLOGIN.name()
+					.equals(typeValue)) {
 				condPane.addMember(lastLoginForm);
 			}
 		}
@@ -391,18 +392,24 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 		private void exportCsv() {
 			PostDownloadFrame frame = new PostDownloadFrame();
 			frame.setAction(GWT.getModuleBaseURL() + "service/userdownload")
-				.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-				.addParameter("searchType", BuiltinAuthUserSearchType.SPECIFIC.name())
-				.addParameter("specificType", BuiltinAuthUserSpecificType.valueOf(SmartGWTUtil.getStringValue(specificTypeItem)).name())
-				.addParameter("lockedUserPolicyName", SmartGWTUtil.getStringValue(lockedUserPolicyNameField))
-				.addParameter("passwordRemainDaysPolicyName", SmartGWTUtil.getStringValue(remainDaysPolicyNameField))
-				.addParameter("passwordRemainDaysOparator", BuiltinAuthUserSearchOperator.valueOf(SmartGWTUtil.getStringValue(remainDaysOperatorItem)).name())
-				.addParameter("passwordRemainDays", String.valueOf(remainDaysValueItem.getValueAsFloat().intValue()));
+					.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+					.addParameter("searchType", BuiltinAuthUserSearchType.SPECIFIC.name())
+					.addParameter("specificType", BuiltinAuthUserSpecificType.valueOf(SmartGWTUtil.getStringValue(specificTypeItem))
+							.name())
+					.addParameter("lockedUserPolicyName", SmartGWTUtil.getStringValue(lockedUserPolicyNameField))
+					.addParameter("passwordRemainDaysPolicyName", SmartGWTUtil.getStringValue(remainDaysPolicyNameField))
+					.addParameter("passwordRemainDaysOparator",
+							BuiltinAuthUserSearchOperator.valueOf(SmartGWTUtil.getStringValue(remainDaysOperatorItem))
+									.name())
+					.addParameter("passwordRemainDays", String.valueOf(remainDaysValueItem.getValueAsFloat()
+							.intValue()));
 			if (lastLoginFromItem.getValueAsDate() != null) {
-				frame.addParameter("lastLoginFrom", String.valueOf(lastLoginFromItem.getValueAsDate().getTime()));
+				frame.addParameter("lastLoginFrom", String.valueOf(lastLoginFromItem.getValueAsDate()
+						.getTime()));
 			}
 			if (lastLoginToItem.getValueAsDate() != null) {
-				frame.addParameter("lastLoginTo", String.valueOf(lastLoginToItem.getValueAsDate().getTime()));
+				frame.addParameter("lastLoginTo", String.valueOf(lastLoginToItem.getValueAsDate()
+						.getTime()));
 			}
 			frame.execute();
 		}
@@ -417,7 +424,8 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 
 			cond.setPasswordRemainDaysPolicyName(SmartGWTUtil.getStringValue(remainDaysPolicyNameField));
 			cond.setPasswordRemainDaysOparator(BuiltinAuthUserSearchOperator.valueOf(SmartGWTUtil.getStringValue(remainDaysOperatorItem)));
-			cond.setPasswordRemainDays(remainDaysValueItem.getValueAsFloat().intValue());
+			cond.setPasswordRemainDays(remainDaysValueItem.getValueAsFloat()
+					.intValue());
 
 			cond.setLastLoginFrom(lastLoginFromItem.getValueAsDate());
 			cond.setLastLoginTo(lastLoginToItem.getValueAsDate());
@@ -513,10 +521,10 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			remainDaysValueItem = new SliderItem();
 			remainDaysValueItem.setShowTitle(false);
 			remainDaysValueItem.setWidth(250);
-			remainDaysValueItem.setHeight(30);	//これを指定しないと間延び
+			remainDaysValueItem.setHeight(30); //これを指定しないと間延び
 			remainDaysValueItem.setMinValue(0d);
 			remainDaysValueItem.setMaxValue(30d);
-			remainDaysValueItem.setValue(5);	//default 5 days
+			remainDaysValueItem.setValue(5); //default 5 days
 			SmartGWTUtil.addHoverToFormItem(remainDaysValueItem,
 					AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_remainDaysValueItemComment"));
 
@@ -608,16 +616,20 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 		private void exportCsv() {
 			PostDownloadFrame frame = new PostDownloadFrame();
 			frame.setAction(GWT.getModuleBaseURL() + "service/userdownload")
-				.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-				.addParameter("searchType", BuiltinAuthUserSearchType.ATTRIBUTE.name())
-				.addParameter("accountId", SmartGWTUtil.getStringValue(accountIdItem))
-				.addParameter("name", SmartGWTUtil.getStringValue(nameItem))
-				.addParameter("mail", SmartGWTUtil.getStringValue(mailItem))
-				.addParameter("directWhere", SmartGWTUtil.getStringValue(whereCondItem));
+					.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+					.addParameter("searchType", BuiltinAuthUserSearchType.ATTRIBUTE.name())
+					.addParameter("accountId", SmartGWTUtil.getStringValue(accountIdItem))
+					.addParameter("name", SmartGWTUtil.getStringValue(nameItem))
+					.addParameter("mail", SmartGWTUtil.getStringValue(mailItem))
+					.addParameter("directWhere", SmartGWTUtil.getStringValue(whereCondItem));
 
-			if (!SmartGWTUtil.getStringValue(remainDaysOperatorItem).isEmpty()) {
-				frame.addParameter("validTermRemainDaysOparator", BuiltinAuthUserSearchOperator.valueOf(SmartGWTUtil.getStringValue(remainDaysOperatorItem)).name())
-					.addParameter("validTermRemainDays", String.valueOf(remainDaysValueItem.getValueAsFloat().intValue()));
+			if (!SmartGWTUtil.getStringValue(remainDaysOperatorItem)
+					.isEmpty()) {
+				frame.addParameter("validTermRemainDaysOparator",
+						BuiltinAuthUserSearchOperator.valueOf(SmartGWTUtil.getStringValue(remainDaysOperatorItem))
+								.name())
+						.addParameter("validTermRemainDays", String.valueOf(remainDaysValueItem.getValueAsFloat()
+								.intValue()));
 			}
 			frame.execute();
 		}
@@ -630,9 +642,11 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			cond.setName(SmartGWTUtil.getStringValue(nameItem));
 			cond.setMail(SmartGWTUtil.getStringValue(mailItem));
 
-			if (!SmartGWTUtil.getStringValue(remainDaysOperatorItem).isEmpty()) {
+			if (!SmartGWTUtil.getStringValue(remainDaysOperatorItem)
+					.isEmpty()) {
 				cond.setValidTermRemainDaysOparator(BuiltinAuthUserSearchOperator.valueOf(SmartGWTUtil.getStringValue(remainDaysOperatorItem)));
-				cond.setValidTermRemainDays(remainDaysValueItem.getValueAsFloat().intValue());
+				cond.setValidTermRemainDays(remainDaysValueItem.getValueAsFloat()
+						.intValue());
 			}
 
 			cond.setDirectWhere(SmartGWTUtil.getStringValue(whereCondItem));
@@ -673,7 +687,8 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			final ToolStripButton resetCountButton = new ToolStripButton();
 			resetCountButton.setIcon(RESET_ERROR_COUNT_ICON);
 			resetCountButton.setTitle("Reset Error Count");
-			SmartGWTUtil.addHoverToCanvas(resetCountButton, AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_resetErrorNumSelectUser"));
+			SmartGWTUtil.addHoverToCanvas(resetCountButton,
+					AdminClientMessageUtil.getString("ui_tools_auth_builtin_BuiltinAuthExplorerMainPane_resetErrorNumSelectUser"));
 			resetCountButton.setHoverWrap(false);
 			resetCountButton.addClickHandler(new ClickHandler() {
 
@@ -683,7 +698,6 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 				}
 			});
 			toolStrip.addButton(resetCountButton);
-
 
 			toolStrip.addFill();
 
@@ -818,7 +832,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			ds.setCondition(newCondition);
 
 			Criteria criteria = new Criteria();
-			criteria.addCriteria("dummy", System.currentTimeMillis() + "");	//同じ条件だとDSに飛ばないので
+			criteria.addCriteria("dummy", System.currentTimeMillis() + ""); //同じ条件だとDSに飛ばないので
 
 			//fetch
 			grid.fetchData(criteria);
@@ -837,7 +851,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			ListGridRecord[] records = grid.getSelectedRecords();
 			List<BuiltinAuthUserDto> users = new ArrayList<BuiltinAuthUserDto>(records.length);
 			for (ListGridRecord record : records) {
-				users.add((BuiltinAuthUserDto)record.getAttributeAsObject(BuiltinUserDS.VALUE_OBJECT));
+				users.add((BuiltinAuthUserDto) record.getAttributeAsObject(BuiltinUserDS.VALUE_OBJECT));
 			}
 
 			ResetErrorCountDialog dialog = new ResetErrorCountDialog(users);
@@ -890,7 +904,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 		}
 
 		private int getOffset() {
-			return (getPageNum() - 1) * LIMIT ;
+			return (getPageNum() - 1) * LIMIT;
 		}
 
 		private void setLimit(BuiltinAuthUserSearchConditionDto condition) {
@@ -909,7 +923,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 				messageTabSet.setErrorMessage(result.getLogMessages());
 			} else {
 				totalCount = result.getTotalCount();
-				offset = result.getExecuteOffset();	//実行時に変更される可能性がある
+				offset = result.getExecuteOffset(); //実行時に変更される可能性がある
 				messageTabSet.setMessage(result.getLogMessages());
 			}
 

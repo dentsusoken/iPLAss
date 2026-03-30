@@ -26,14 +26,21 @@ import org.iplass.mtp.command.beanmapper.MappingError;
 import org.iplass.mtp.command.beanmapper.MappingResult;
 
 public interface Mapper {
-	
+
 	public void setTrim(boolean trim);
+
 	public void setEmptyToNull(boolean emptyToNull);
+
 	public void setAutoGrow(boolean autoGrow);
+
 	public void setIndexedPropertySizeLimit(int indexedPropertySizeLimit);
+
 	public void setTypeConversionErrorHandler(Consumer<MappingError> typeConversionErrorHandler);
+
 	public void setTargetBean(Object bean);
+
 	public void map(Map<String, Object> valueMap, MappingResult result);
+
 	public Object getValue(String propPath);
 
 }

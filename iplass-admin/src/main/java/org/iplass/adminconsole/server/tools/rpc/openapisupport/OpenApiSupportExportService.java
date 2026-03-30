@@ -82,7 +82,8 @@ public class OpenApiSupportExportService extends AdminDownloadService {
 			resp.setContentType(contentType);
 			resp.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
-			var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
+			var service = ServiceRegistry.getRegistry()
+					.getService(OpenApiService.class);
 			service.writeOpenApiSpec(resp.getOutputStream(), webApiList, entityWebApiList, fileType, version);
 
 		} catch (IOException e) {
@@ -174,7 +175,8 @@ public class OpenApiSupportExportService extends AdminDownloadService {
 
 		var ewdm = ManagerLocator.manager(EntityWebApiDefinitionManager.class);
 		var list = new ArrayList<EntityWebApiOpenApiEntry>();
-		for (var crudEntry : selected.getEntityCRUDApiMap().entrySet()) {
+		for (var crudEntry : selected.getEntityCRUDApiMap()
+				.entrySet()) {
 			String definitionName = crudEntry.getKey();
 			List<String> webapiTypeStringList = crudEntry.getValue();
 
@@ -190,35 +192,38 @@ public class OpenApiSupportExportService extends AdminDownloadService {
 				continue;
 			}
 
-			var webapiTypeList = webapiTypeStringList.stream().map(t -> {
-				var mapped = EntityWebApiType.getValue(t);
-				if (t == null) {
-					// 不正な権限情報が設定された場合は警告ログを出力
-					logger.warn("Invalid EntityWebApiTyp. Entity: {}, EntityWebApiType: {}", definitionName, t);
-				}
-				return mapped;
+			var webapiTypeList = webapiTypeStringList.stream()
+					.map(t -> {
+						var mapped = EntityWebApiType.getValue(t);
+						if (t == null) {
+							// 不正な権限情報が設定された場合は警告ログを出力
+							logger.warn("Invalid EntityWebApiTyp. Entity: {}, EntityWebApiType: {}", definitionName, t);
+						}
+						return mapped;
 
-			}).filter(t -> {
-				if (null == t) {
-					return false;
-				}
+					})
+					.filter(t -> {
+						if (null == t) {
+							return false;
+						}
 
-				// 権限の再チェック
-				boolean isAllow = switch (t) {
-				case LOAD -> entityWebApiDefinition.isLoad();
-				case QUERY -> entityWebApiDefinition.isQuery();
-				case INSERT -> entityWebApiDefinition.isInsert();
-				case UPDATE -> entityWebApiDefinition.isUpdate();
-				case DELETE -> entityWebApiDefinition.isDelete();
-				};
+						// 権限の再チェック
+						boolean isAllow = switch (t) {
+						case LOAD -> entityWebApiDefinition.isLoad();
+						case QUERY -> entityWebApiDefinition.isQuery();
+						case INSERT -> entityWebApiDefinition.isInsert();
+						case UPDATE -> entityWebApiDefinition.isUpdate();
+						case DELETE -> entityWebApiDefinition.isDelete();
+						};
 
-				if (!isAllow) {
-					// 許可されていない場合はログ出力
-					logger.warn("Unauthorized privileges were set. Entity: {}, EntityWebApiType: {}", definitionName, t);
-				}
-				return isAllow;
+						if (!isAllow) {
+							// 許可されていない場合はログ出力
+							logger.warn("Unauthorized privileges were set. Entity: {}, EntityWebApiType: {}", definitionName, t);
+						}
+						return isAllow;
 
-			}).toList();
+					})
+					.toList();
 
 			if (webapiTypeList.isEmpty()) {
 				// 許可されていない権限のみの場合はスキップ

@@ -27,20 +27,18 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaReferenceProperty;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public class UpdReference extends Diff {
-	
+
 	private MetaReferenceProperty previousProperty;
 	private MetaReferenceProperty nextProperty;
 	private MetaEntity nextEntity;
-	
+
 	public UpdReference(MetaReferenceProperty previousProperty, MetaReferenceProperty nextProperty, MetaEntity nextEntity) {
 		this.previousProperty = previousProperty;
 		this.nextProperty = nextProperty;
 		this.nextEntity = nextEntity;
 	}
-	
-	
+
 	private boolean eq(String a, String b) {
 		if (a == null) {
 			if (b != null) {
@@ -59,12 +57,13 @@ public class UpdReference extends Diff {
 
 	@Override
 	public void applyToData(Statement stmt, RdbAdapter rdb, int tenantId) throws SQLException {
-		
-		if (!previousProperty.getReferenceEntityMetaDataId().equals(nextProperty.getReferenceEntityMetaDataId())
+
+		if (!previousProperty.getReferenceEntityMetaDataId()
+				.equals(nextProperty.getReferenceEntityMetaDataId())
 				|| !eq(previousProperty.getMappedByPropertyMetaDataId(), nextProperty.getMappedByPropertyMetaDataId())) {
 			//FIXME 参照の削除
 		}
-		
+
 	}
 
 	@Override
@@ -73,11 +72,12 @@ public class UpdReference extends Diff {
 
 	@Override
 	public boolean needDataModify() {
-		if (!previousProperty.getReferenceEntityMetaDataId().equals(nextProperty.getReferenceEntityMetaDataId())
+		if (!previousProperty.getReferenceEntityMetaDataId()
+				.equals(nextProperty.getReferenceEntityMetaDataId())
 				|| !eq(previousProperty.getMappedByPropertyMetaDataId(), nextProperty.getMappedByPropertyMetaDataId())) {
 			return true;
 		}
-		
+
 		return false;
 	}
 

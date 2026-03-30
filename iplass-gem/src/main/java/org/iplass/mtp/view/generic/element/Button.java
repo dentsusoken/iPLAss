@@ -43,9 +43,9 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/element/Button.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/element/Button.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
-@FieldOrder(manual=true)
+@FieldOrder(manual = true)
 public class Button extends Element {
 
 	/** シリアルバージョンUID */
@@ -53,25 +53,25 @@ public class Button extends Element {
 
 	/** 表示タイプ */
 	@MetaFieldInfo(
-			displayName="表示タイプ",
-			displayNameKey="generic_element_Button_displayTypeDisplaNameKey",
-			description="詳細編集、詳細表示のどちらに表示するかを設定します。",
-			descriptionKey="generic_element_Button_displayTypeDescriptionKey",
-			inputType=InputType.ENUM,
-			enumClass=DisplayType.class,
-			displayOrder=40
+			displayName = "表示タイプ",
+			displayNameKey = "generic_element_Button_displayTypeDisplaNameKey",
+			description = "詳細編集、詳細表示のどちらに表示するかを設定します。",
+			descriptionKey = "generic_element_Button_displayTypeDescriptionKey",
+			inputType = InputType.ENUM,
+			enumClass = DisplayType.class,
+			displayOrder = 40
 	)
-	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
+	@EntityViewField(referenceTypes = FieldReferenceType.DETAIL)
 	private DisplayType displayType;
 
 	/** 表示判定用スクリプト */
 	@MetaFieldInfo(
-			displayName="ボタン表示判定用スクリプト",
-			displayNameKey="generic_element_Button_customDisplayTypeScriptDisplayNameKey",
-			inputType=InputType.SCRIPT,
-			mode="groovy_script",
-			displayOrder=50,
-			description="表示タイプ：Customの場合に、表示可否を判定するスクリプトを設定します。<BR />" +
+			displayName = "ボタン表示判定用スクリプト",
+			displayNameKey = "generic_element_Button_customDisplayTypeScriptDisplayNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 50,
+			description = "表示タイプ：Customの場合に、表示可否を判定するスクリプトを設定します。<BR />" +
 					"スクリプトの実行結果がtrueの場合、ボタンが表示されます。<BR />" +
 					"以下のオブジェクトがバインドされています。<BR />" +
 					"バインド変数名  ：内容<BR />" +
@@ -81,99 +81,95 @@ public class Button extends Element {
 					"outputType      ：表示タイプ<BR />" +
 					"entity          ：表示対象のエンティティ",
 
-			descriptionKey="generic_element_Button_customDisplayTypeScriptDescriptionKey"
+			descriptionKey = "generic_element_Button_customDisplayTypeScriptDescriptionKey"
 	)
-	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
+	@EntityViewField(referenceTypes = FieldReferenceType.DETAIL)
 	private String customDisplayTypeScript;
 
-
-
 	/** タイトル */
-	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。",
-			displayNameKey="generic_element_Button_titleDisplaNameKey",
-			descriptionKey="generic_element_Button_titleDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+	@MetaFieldInfo(
+			displayName = "タイトル",
+			description = "ヘッダに表示するタイトルを設定します。",
+			displayNameKey = "generic_element_Button_titleDisplaNameKey",
+			descriptionKey = "generic_element_Button_titleDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedTitleList",
-			displayOrder=300
+			displayOrder = 300
 	)
 	@MultiLang()
 	private String title;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_element_Button_localizedTitleListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=310
+			displayName = "多言語設定",
+			displayNameKey = "generic_element_Button_localizedTitleListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 310
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
 	/** 表示ラベル */
-	@MetaFieldInfo(displayName="表示ラベル", description="ボタンに表示するラベルを設定します。",
-			displayNameKey="generic_element_Button_displayLabelDisplaNameKey",
-			descriptionKey="generic_element_Button_displayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+	@MetaFieldInfo(
+			displayName = "表示ラベル",
+			description = "ボタンに表示するラベルを設定します。",
+			displayNameKey = "generic_element_Button_displayLabelDisplaNameKey",
+			descriptionKey = "generic_element_Button_displayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedDisplayLabelList",
-			displayOrder=320
+			displayOrder = 320
 	)
 	@MultiLang()
 	private String displayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_element_Button_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=330
+			displayName = "多言語設定",
+			displayNameKey = "generic_element_Button_localizedDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 330
 	)
 	private List<LocalizedStringDefinition> localizedDisplayLabelList;
 
 	/** クラス名 */
 	@MetaFieldInfo(
-			displayName="クラス名",
-			displayNameKey="generic_element_Button_styleDisplaNameKey",
-			displayOrder=340,
-			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
-			descriptionKey="generic_element_Button_styleDescriptionKey"
+			displayName = "クラス名",
+			displayNameKey = "generic_element_Button_styleDisplaNameKey",
+			displayOrder = 340,
+			description = "スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
+			descriptionKey = "generic_element_Button_styleDescriptionKey"
 	)
 	private String style;
 
-
-
-
-
-
-
 	/** プライマリー */
 	@MetaFieldInfo(
-			displayName="プライマリー",
-			displayNameKey="generic_element_Button_primaryDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1000,
-			description="設定するとボタンが強調表示されます。",
-			descriptionKey="generic_element_Button_primaryDescriptionKey"
+			displayName = "プライマリー",
+			displayNameKey = "generic_element_Button_primaryDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1000,
+			description = "設定するとボタンが強調表示されます。",
+			descriptionKey = "generic_element_Button_primaryDescriptionKey"
 	)
 	private boolean primary = true;
 
 	/** クリックイベント */
 	@MetaFieldInfo(
-			displayName="クリックイベント",
-			displayNameKey="generic_element_Button_onclickEventDisplaNameKey",
-			displayOrder=1010,
-			description="クリック時に実行されるJavaScriptコードを設定します。",
-			descriptionKey="generic_element_Button_onclickEventDescriptionKey"
+			displayName = "クリックイベント",
+			displayNameKey = "generic_element_Button_onclickEventDisplaNameKey",
+			displayOrder = 1010,
+			description = "クリック時に実行されるJavaScriptコードを設定します。",
+			descriptionKey = "generic_element_Button_onclickEventDescriptionKey"
 	)
 	private String onclickEvent;
 
 	/** 入力カスタムスタイル */
 	@MetaFieldInfo(
-			displayName="入力カスタムスタイル",
-			displayNameKey="generic_element_Button_inputCustomStyleDisplayNameKey",
-			description="編集画面のinput要素に対するスタイルを指定します。(例)width:100px;",
-			descriptionKey="generic_element_Button_inputCustomStyleDescriptionKey",
-			inputType=InputType.SCRIPT,
-			mode="CSS",
-			displayOrder=2000
+			displayName = "入力カスタムスタイル",
+			displayNameKey = "generic_element_Button_inputCustomStyleDisplayNameKey",
+			description = "編集画面のinput要素に対するスタイルを指定します。(例)width:100px;",
+			descriptionKey = "generic_element_Button_inputCustomStyleDescriptionKey",
+			inputType = InputType.SCRIPT,
+			mode = "CSS",
+			displayOrder = 2000
 	)
 	private String inputCustomStyle;
 
@@ -194,7 +190,7 @@ public class Button extends Element {
 	 * @return 表示タイプ
 	 */
 	public DisplayType getDisplayType() {
-	    return displayType;
+		return displayType;
 	}
 
 	/**
@@ -202,7 +198,7 @@ public class Button extends Element {
 	 * @param displayType 表示タイプ
 	 */
 	public void setDisplayType(DisplayType displayType) {
-	    this.displayType = displayType;
+		this.displayType = displayType;
 	}
 
 	/**
@@ -258,7 +254,7 @@ public class Button extends Element {
 	 * @return クラス名
 	 */
 	public String getStyle() {
-	    return style;
+		return style;
 	}
 
 	/**
@@ -266,7 +262,7 @@ public class Button extends Element {
 	 * @param style クラス名
 	 */
 	public void setStyle(String style) {
-	    this.style = style;
+		this.style = style;
 	}
 
 	/**
@@ -378,7 +374,7 @@ public class Button extends Element {
 	 * @return 表示判定用スクリプト
 	 */
 	public String getCustomDisplayTypeScript() {
-	    return customDisplayTypeScript;
+		return customDisplayTypeScript;
 	}
 
 	/**
@@ -386,7 +382,7 @@ public class Button extends Element {
 	 * @param customDisplayTypeScript 表示判定用スクリプト
 	 */
 	public void setCustomDisplayTypeScript(String customDisplayTypeScript) {
-	    this.customDisplayTypeScript = customDisplayTypeScript;
+		this.customDisplayTypeScript = customDisplayTypeScript;
 	}
 
 	/**
@@ -394,7 +390,7 @@ public class Button extends Element {
 	 * @return 表示判定用スクリプトキー
 	 */
 	public String getCustomDisplayTypeScriptKey() {
-	    return customDisplayTypeScriptKey;
+		return customDisplayTypeScriptKey;
 	}
 
 	/**
@@ -402,7 +398,7 @@ public class Button extends Element {
 	 * @param customDisplayTypeScriptKey 表示判定用スクリプトキー
 	 */
 	public void setCustomDisplayTypeScriptKey(String customDisplayTypeScriptKey) {
-	    this.customDisplayTypeScriptKey = customDisplayTypeScriptKey;
+		this.customDisplayTypeScriptKey = customDisplayTypeScriptKey;
 	}
 
 }

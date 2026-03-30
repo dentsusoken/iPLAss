@@ -68,7 +68,8 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 		showMenuDisplayName = definition.isShowMenuDisplayName();
 
 		if (definition.getMenuItems() != null) {
-			childs = new ArrayList<MetaMenuItem>(definition.getMenuItems().size());
+			childs = new ArrayList<MetaMenuItem>(definition.getMenuItems()
+					.size());
 			for (MenuItem item : definition.getMenuItems()) {
 				MetaMenuItem child = new MetaMenuItem();
 				child.applyConfig(item);
@@ -122,7 +123,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 * @return 表示順序
 	 */
 	public Integer getDisplayOrder() {
-	    return displayOrder;
+		return displayOrder;
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 * @param displayOrder 表示順序
 	 */
 	public void setDisplayOrder(Integer displayOrder) {
-	    this.displayOrder = displayOrder;
+		this.displayOrder = displayOrder;
 	}
 
 	/**
@@ -138,7 +139,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 * @return 定義の表示名を表示かどうか
 	 */
 	public boolean isShowMenuDisplayName() {
-	    return showMenuDisplayName;
+		return showMenuDisplayName;
 	}
 
 	/**
@@ -146,7 +147,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 * @param showMenuDisplayName 定義の表示名を表示かどうか
 	 */
 	public void setShowMenuDisplayName(boolean showMenuDisplayName) {
-	    this.showMenuDisplayName = showMenuDisplayName;
+		this.showMenuDisplayName = showMenuDisplayName;
 	}
 
 	/**
@@ -155,7 +156,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 * @return 子階層メニュ
 	 */
 	public List<MetaMenuItem> getChilds() {
-	    return childs;
+		return childs;
 	}
 
 	/**
@@ -164,7 +165,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 * @param childs 子階層メニュ
 	 */
 	public void setChilds(List<MetaMenuItem> childs) {
-	    this.childs = childs;
+		this.childs = childs;
 	}
 
 	/**
@@ -173,7 +174,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 * @param metaMenuItem 子階層メニュ
 	 */
 	public void addChild(MetaMenuItem metaMenuItem) {
-		if(childs == null) {
+		if (childs == null) {
 			childs = new ArrayList<MetaMenuItem>();
 		}
 		childs.add(metaMenuItem);

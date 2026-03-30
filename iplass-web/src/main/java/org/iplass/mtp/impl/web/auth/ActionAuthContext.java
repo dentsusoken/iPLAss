@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.web.auth;
 import org.iplass.mtp.impl.auth.authorize.AuthorizationContext;
 
 public interface ActionAuthContext extends AuthorizationContext {
-	
+
 //	public boolean isPermit(AuthContextHolder userAuthContext, String actionName, ActionParameter parameter);
 
 }

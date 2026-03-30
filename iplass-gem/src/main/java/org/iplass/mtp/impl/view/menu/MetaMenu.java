@@ -40,7 +40,7 @@ import org.iplass.mtp.view.menu.NodeMenuItem;
 import org.iplass.mtp.view.menu.UrlMenuItem;
 
 @XmlRootElement
-@XmlSeeAlso({MetaActionMenu.class, MetaEntityMenu.class, MetaNodeMenu.class, MetaUrlMenu.class})
+@XmlSeeAlso({ MetaActionMenu.class, MetaEntityMenu.class, MetaNodeMenu.class, MetaUrlMenu.class })
 public abstract class MetaMenu extends BaseRootMetaData implements DefinableMetaData<MenuItem> {
 
 	private static final long serialVersionUID = 5233713258294539616L;
@@ -114,7 +114,7 @@ public abstract class MetaMenu extends BaseRootMetaData implements DefinableMeta
 	 * @return メニューアイコン
 	 */
 	public String getIcon() {
-	    return icon;
+		return icon;
 	}
 
 	/**
@@ -122,7 +122,7 @@ public abstract class MetaMenu extends BaseRootMetaData implements DefinableMeta
 	 * @param icon メニューアイコン
 	 */
 	public void setIcon(String icon) {
-	    this.icon = icon;
+		this.icon = icon;
 	}
 
 	/**
@@ -130,7 +130,7 @@ public abstract class MetaMenu extends BaseRootMetaData implements DefinableMeta
 	 * @return イメージカラー
 	 */
 	public String getImageColor() {
-	    return imageColor;
+		return imageColor;
 	}
 
 	/**
@@ -138,7 +138,7 @@ public abstract class MetaMenu extends BaseRootMetaData implements DefinableMeta
 	 * @param imageColor イメージカラー
 	 */
 	public void setImageColor(String imageColor) {
-	    this.imageColor = imageColor;
+		this.imageColor = imageColor;
 	}
 
 	/**
@@ -146,7 +146,7 @@ public abstract class MetaMenu extends BaseRootMetaData implements DefinableMeta
 	 * @return アイコンタグ
 	 */
 	public String getIconTag() {
-	    return iconTag;
+		return iconTag;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public abstract class MetaMenu extends BaseRootMetaData implements DefinableMeta
 	 * @param iconTag アイコンタグ
 	 */
 	public void setIconTag(String iconTag) {
-	    this.iconTag = iconTag;
+		this.iconTag = iconTag;
 	}
 
 	/**
@@ -187,7 +187,9 @@ public abstract class MetaMenu extends BaseRootMetaData implements DefinableMeta
 
 		public MetaMenuHandler() {
 
-			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getScriptEngine();
 
 			if (MetaMenu.this.getCustomizeScript() != null) {
 				String scriptName = SCRIPT_PREFIX + "_" + MetaMenu.this.getId();
@@ -239,7 +241,7 @@ public abstract class MetaMenu extends BaseRootMetaData implements DefinableMeta
 			return false;
 		if (customizeScript == null) {
 			if (other.customizeScript != null)
-			return false;
+				return false;
 		} else if (!customizeScript.equals(other.customizeScript))
 			return false;
 		return true;

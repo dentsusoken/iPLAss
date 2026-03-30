@@ -39,7 +39,7 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/BinaryPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/editor/BinaryPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
 public class BinaryPropertyEditor extends PrimitivePropertyEditor implements LabelablePropertyEditor {
 
@@ -47,194 +47,199 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 	private static final long serialVersionUID = -107014320173325123L;
 
 	/** 表示タイプ */
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
 	public enum BinaryDisplayType {
-		@XmlEnumValue("Binary")BINARY,
-		@XmlEnumValue("Link")LINK,
-		@XmlEnumValue("Label")LABEL,
-		@XmlEnumValue("Preview")PREVIEW,
-		@XmlEnumValue("Hidden")HIDDEN
+		@XmlEnumValue("Binary")
+		BINARY,
+		@XmlEnumValue("Link")
+		LINK,
+		@XmlEnumValue("Label")
+		LABEL,
+		@XmlEnumValue("Preview")
+		PREVIEW,
+		@XmlEnumValue("Hidden")
+		HIDDEN
 	}
 
 	@MetaFieldInfo(
-			displayName="表示タイプ",
-			displayNameKey="generic_editor_BinaryPropertyEditor_displayTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=BinaryDisplayType.class,
-			required=true,
-			displayOrder=100,
-			description="画面に表示する方法を選択します。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_displayTypeDescriptionKey"
-			)
+			displayName = "表示タイプ",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_displayTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = BinaryDisplayType.class,
+			required = true,
+			displayOrder = 100,
+			description = "画面に表示する方法を選択します。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_displayTypeDescriptionKey"
+	)
 	private BinaryDisplayType displayType;
 
 	/** 画像の高さ */
 	@MetaFieldInfo(
-			displayName="画像の高さ(px)",
-			displayNameKey="generic_editor_BinaryPropertyEditor_heightDisplaNameKey",
-			inputType=InputType.NUMBER,
-			displayOrder=110,
-			description="バイナリが画像の場合に表示する画像の高さを設定します。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_heightDescriptionKey"
-			)
+			displayName = "画像の高さ(px)",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_heightDisplaNameKey",
+			inputType = InputType.NUMBER,
+			displayOrder = 110,
+			description = "バイナリが画像の場合に表示する画像の高さを設定します。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_heightDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL }
+	)
 	private int height;
 
 	/** 画像の幅 */
 	@MetaFieldInfo(
-			displayName="画像の幅(px)",
-			displayNameKey="generic_editor_BinaryPropertyEditor_widthDisplaNameKey",
-			inputType=InputType.NUMBER,
-			displayOrder=120,
-			description="バイナリが画像の場合に表示する画像の幅を設定します。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_widthDescriptionKey"
-			)
+			displayName = "画像の幅(px)",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_widthDisplaNameKey",
+			inputType = InputType.NUMBER,
+			displayOrder = 120,
+			description = "バイナリが画像の場合に表示する画像の幅を設定します。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_widthDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL }
+	)
 	private int width;
 
 	/** アップロードアクション名 */
 	@MetaFieldInfo(
-			displayName="アップロードアクション名",
-			displayNameKey="generic_editor_BinaryPropertyEditor_uploadActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=130,
-			description="アップロード時に実行されるアクションを設定します。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_uploadActionNameDescriptionKey"
-			)
+			displayName = "アップロードアクション名",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_uploadActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 130,
+			description = "アップロード時に実行されるアクションを設定します。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_uploadActionNameDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.DETAIL }
+	)
 	private String uploadActionName;
 
 	/** ダウンロードアクション名 */
 	@MetaFieldInfo(
-			displayName="ダウンロードアクション名",
-			displayNameKey="generic_editor_BinaryPropertyEditor_downloadActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=140,
-			description="ダウンロード時に実行されるアクションを設定します。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_downloadActionNameDescriptionKey"
-			)
+			displayName = "ダウンロードアクション名",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_downloadActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 140,
+			description = "ダウンロード時に実行されるアクションを設定します。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_downloadActionNameDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL }
+	)
 	private String downloadActionName;
 
 	/** 新しいタブで開くか */
 	@MetaFieldInfo(
-			displayName="新しいタブで開く",
-			displayNameKey="generic_editor_BinaryPropertyEditor_openNewTabDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=150,
-			description="リンククリック時にバイナリの内容を新しいタブで表示します。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_openNewTabDescriptionKey"
-			)
+			displayName = "新しいタブで開く",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_openNewTabDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 150,
+			description = "リンククリック時にバイナリの内容を新しいタブで表示します。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_openNewTabDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL }
+	)
 	private boolean openNewTab;
 
 	/** 画像表示時に回転ボタンを表示 */
 	@MetaFieldInfo(
-			displayName="画像表示時に回転ボタンを表示",
-			displayNameKey="generic_editor_BinaryPropertyEditor_showImageRotateButtonNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=153,
-			description="画像リンクの横に回転ボタンを表示します。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_showImageRotateButtonDescriptionKey"
-			)
+			displayName = "画像表示時に回転ボタンを表示",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_showImageRotateButtonNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 153,
+			description = "画像リンクの横に回転ボタンを表示します。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_showImageRotateButtonDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.DETAIL }
+	)
 	private boolean showImageRotateButton;
 
 	/** 画像表示時にイメージViewerを利用 */
 	@MetaFieldInfo(
-			displayName="画像表示時にイメージViewerを利用",
-			displayNameKey="generic_editor_BinaryPropertyEditor_useImageViewerNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=156,
-			description="画像をViewerを利用して表示します。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_useImageViewerDescriptionKey"
-			)
+			displayName = "画像表示時にイメージViewerを利用",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_useImageViewerNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 156,
+			description = "画像をViewerを利用して表示します。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_useImageViewerDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL }
+	)
 	private boolean useImageViewer = true;
 
 	/** PDF表示時にPDF.jsを利用 */
 	@MetaFieldInfo(
-			displayName="PDF表示時にPDF.jsを利用",
-			displayNameKey="generic_editor_BinaryPropertyEditor_usePdfjsNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=160,
-			description="PDF.jsを利用してPDFの表示を行います。<br>"
+			displayName = "PDF表示時にPDF.jsを利用",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_usePdfjsNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 160,
+			description = "PDF.jsを利用してPDFの表示を行います。<br>"
 					+ "細工されたPDFによる情報詐取(JVNTA#94087669)の対策が必要な場合に利用てください。",
-					descriptionKey="generic_editor_BinaryPropertyEditor_usePdfjsDescriptionKey"
-			)
+			descriptionKey = "generic_editor_BinaryPropertyEditor_usePdfjsDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL }
+	)
 	private boolean usePdfjs;
 
 	/** ファイル選択ボタンを非表示する */
 	@MetaFieldInfo(
-			displayName="ファイル選択ボタンを非表示",
-			displayNameKey="generic_editor_BinaryPropertyEditor_hideSelectButtonDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=170,
-			description="編集画面にて当バイナリファイルがいない場合、ファイル選択ボタンを非表示にします。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_hideSelectButtonDescriptionKey"
-			)
+			displayName = "ファイル選択ボタンを非表示",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_hideSelectButtonDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 170,
+			description = "編集画面にて当バイナリファイルがいない場合、ファイル選択ボタンを非表示にします。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_hideSelectButtonDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.DETAIL }
+	)
 	private boolean hideSelectButton;
 
 	/** 削除ボタンを非表示する */
 	@MetaFieldInfo(
-			displayName="削除ボタンを非表示",
-			displayNameKey="generic_editor_BinaryPropertyEditor_hideDeleteButtonDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=180,
-			description="編集画面にて当バイナリファイルデータを削除するボタンを非表示にします。",
-			descriptionKey="generic_editor_BinaryPropertyEditor_hideDeleteButtonDescriptionKey"
-			)
+			displayName = "削除ボタンを非表示",
+			displayNameKey = "generic_editor_BinaryPropertyEditor_hideDeleteButtonDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 180,
+			description = "編集画面にて当バイナリファイルデータを削除するボタンを非表示にします。",
+			descriptionKey = "generic_editor_BinaryPropertyEditor_hideDeleteButtonDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.DETAIL }
+	)
 	private boolean hideDeleteButton;
 
 	/** Label形式の場合の登録制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値を登録する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=200,
-			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
-			)
+			displayName = "Label形式の場合に表示値を登録する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 200,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.DETAIL }
+	)
 	private boolean insertWithLabelValue = true;
 
 	/** Label形式の場合の更新制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値で更新する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=210,
-			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
-			)
+			displayName = "Label形式の場合に表示値で更新する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 210,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.DETAIL }
+	)
 	private boolean updateWithLabelValue = false;
 
 	/** アップロード受け入れ可能な MIME Type */
@@ -245,10 +250,10 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor implements Lab
 			inputType = InputType.TEXT,
 			displayOrder = 220,
 			descriptionKey = "generic_editor_LabelablePropertyEditor_uploadAcceptMimeTypesPatternDescriptionKey"
-			)
+	)
 	@EntityViewField(
 			referenceTypes = { FieldReferenceType.DETAIL }
-			)
+	)
 	private String uploadAcceptMimeTypesPattern;
 
 	/**

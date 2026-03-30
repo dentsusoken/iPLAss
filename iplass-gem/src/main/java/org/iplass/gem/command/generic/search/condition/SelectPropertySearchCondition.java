@@ -80,14 +80,14 @@ public class SelectPropertySearchCondition extends PropertySearchCondition {
 							Boolean isIsNullSearchEnabled = Boolean.FALSE;
 							for (SelectValue tmp : array) {
 								// 「値なし」を検索条件の選択肢に追加するか
-								if(editor.isIsNullSearchEnabled() &&
+								if (editor.isIsNullSearchEnabled() &&
 										Constants.ISNULL_VALUE.equals(tmp.getValue())) {
 									isIsNullSearchEnabled = Boolean.TRUE;
 								} else {
 									valueList.add(tmp.getValue());
 								}
 							}
-							if(isIsNullSearchEnabled) {
+							if (isIsNullSearchEnabled) {
 								// 「値なし」を検索条件の選択肢に追加するの場合、「is null」を追加する
 								conditions.add(new Paren(new Or(
 										new IsNull(getPropertyName()),
@@ -97,8 +97,7 @@ public class SelectPropertySearchCondition extends PropertySearchCondition {
 							}
 						}
 					}
-				}
-				else if (SelectDisplayType.SELECT == editor.getDisplayType() ||
+				} else if (SelectDisplayType.SELECT == editor.getDisplayType() ||
 						SelectDisplayType.RADIO == editor.getDisplayType()) {
 					SelectValue sv = (SelectValue) value;
 					// 「値なし」を検索条件の選択肢に追加するか
@@ -107,8 +106,7 @@ public class SelectPropertySearchCondition extends PropertySearchCondition {
 					} else {
 						conditions.add(new Equals(getPropertyName(), sv.getValue()));
 					}
-				}
-				else {
+				} else {
 					SelectValue sv = (SelectValue) value;
 					conditions.add(new Equals(getPropertyName(), sv.getValue()));
 				}
@@ -138,34 +136,50 @@ public class SelectPropertySearchCondition extends PropertySearchCondition {
 	private String string2Value(String str) {
 		//値or表示ラベルが一致する場合に値を返す
 		SelectPropertyEditor editor = (SelectPropertyEditor) getEditor();
-		if (!editor.getValues().isEmpty()) {
+		if (!editor.getValues()
+				.isEmpty()) {
 			for (EditorValue ev : editor.getValues()) {
-				if (ev.getValue().equals(str)) return str;
+				if (ev.getValue()
+						.equals(str))
+					return str;
 
 				String label = TemplateUtil.getMultilingualString(ev.getLabel(), ev.getLocalizedLabelList());
-				if (label.equals(str)) return ev.getValue();
+				if (label.equals(str))
+					return ev.getValue();
 			}
 		}
 
 		//Expressionの可能性あるので念のためチェック
 		if (getDefinition() instanceof SelectProperty) {
 			SelectProperty sp = (SelectProperty) getDefinition();
-			if (sp.getSelectValue(str) != null) return str;
+			if (sp.getSelectValue(str) != null)
+				return str;
 
-			if (ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantI18nInfo.class).isUseMultilingual()
-					&& sp.getLocalizedSelectValueList() != null && !sp.getLocalizedSelectValueList().isEmpty()) {
-				String lang = ExecuteContext.getCurrentContext().getLanguage();
+			if (ExecuteContext.getCurrentContext()
+					.getCurrentTenant()
+					.getTenantConfig(TenantI18nInfo.class)
+					.isUseMultilingual()
+					&& sp.getLocalizedSelectValueList() != null && !sp.getLocalizedSelectValueList()
+							.isEmpty()) {
+				String lang = ExecuteContext.getCurrentContext()
+						.getLanguage();
 				for (LocalizedSelectValueDefinition lsd : sp.getLocalizedSelectValueList()) {
-					if (lsd.getLocaleName().equals(lang)) {
-						if (lsd.getSelectValueList() != null && !lsd.getSelectValueList().isEmpty()) {
+					if (lsd.getLocaleName()
+							.equals(lang)) {
+						if (lsd.getSelectValueList() != null && !lsd.getSelectValueList()
+								.isEmpty()) {
 							//多言語設定あり
 							for (SelectValue sv : lsd.getSelectValueList()) {
-								if (sv.getDisplayName().equals(str)) return sv.getValue();
+								if (sv.getDisplayName()
+										.equals(str))
+									return sv.getValue();
 							}
 						} else {
 							//多言語設定なし
 							for (SelectValue sv : sp.getSelectValueList()) {
-								if (sv.getDisplayName().equals(str)) return sv.getValue();
+								if (sv.getDisplayName()
+										.equals(str))
+									return sv.getValue();
 							}
 						}
 					}
@@ -173,7 +187,9 @@ public class SelectPropertySearchCondition extends PropertySearchCondition {
 			} else {
 				//多言語設定なし
 				for (SelectValue sv : sp.getSelectValueList()) {
-					if (sv.getDisplayName().equals(str)) return sv.getValue();
+					if (sv.getDisplayName()
+							.equals(str))
+						return sv.getValue();
 				}
 			}
 		}

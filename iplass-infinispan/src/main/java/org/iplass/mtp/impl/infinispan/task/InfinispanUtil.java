@@ -38,9 +38,10 @@ class InfinispanUtil {
 	 * @return 実行中ノード
 	 */
 	public static String getExecutionNode() {
-		return InfinispanUtil.getNode(ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager());
+		return InfinispanUtil.getNode(ServiceRegistry.getRegistry()
+				.getService(InfinispanService.class)
+				.getCacheManager());
 	}
-
 
 	/**
 	 * ノード情報を取得する
@@ -48,7 +49,9 @@ class InfinispanUtil {
 	 * @return ノード情報
 	 */
 	private static String getNode(EmbeddedCacheManager manager) {
-		return manager.getAddress() == null ? null : manager.getAddress().toString();
+		return manager.getAddress() == null ? null
+				: manager.getAddress()
+						.toString();
 	}
 
 }

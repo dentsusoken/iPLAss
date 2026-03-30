@@ -31,7 +31,6 @@ import org.iplass.mtp.spi.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class WebApiJaxbService implements Service {
 
 	private static Logger logger = LoggerFactory.getLogger(WebApiJaxbService.class);

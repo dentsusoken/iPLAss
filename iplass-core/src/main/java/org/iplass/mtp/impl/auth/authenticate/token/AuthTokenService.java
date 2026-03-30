@@ -32,13 +32,13 @@ public class AuthTokenService implements Service {
 
 	private Map<String, AuthTokenStore> storeMap;
 	private AuthTokenStore defaultStore;
-	
+
 	private Map<String, AuthTokenHandler> handlerMap;
-	
+
 	public Collection<AuthTokenStore> getStores() {
 		return storeMap.values();
 	}
-	
+
 	public AuthTokenStore getStore(String type) {
 		AuthTokenStore store = storeMap.get(type);
 		if (store == null) {
@@ -46,11 +46,11 @@ public class AuthTokenService implements Service {
 		}
 		return store;
 	}
-	
+
 	public AuthTokenHandler getHandler(String type) {
 		return handlerMap.get(type);
 	}
-	
+
 	public Collection<AuthTokenHandler> getHandlers() {
 		return handlerMap.values();
 	}
@@ -60,11 +60,11 @@ public class AuthTokenService implements Service {
 	public void init(Config config) {
 		storeMap = config.getValue("storeMap", Map.class);
 		defaultStore = storeMap.get(DEFAULT_STORE_NAME);
-		
+
 		handlerMap = new HashMap<>();
 		List<AuthTokenHandler> handlers = config.getValues("handler", AuthTokenHandler.class);
 		if (handlers != null) {
-			for (AuthTokenHandler ah: handlers) {
+			for (AuthTokenHandler ah : handlers) {
 				handlerMap.put(ah.getType(), ah);
 			}
 		}

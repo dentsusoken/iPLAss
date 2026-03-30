@@ -23,21 +23,22 @@ import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.token.RefreshToken;
 
 public class OpaqueRefreshToken extends RefreshToken {
-	
+
 	private String series;
 	private String tokenEncoded;
 	private long expires;
 	private long expiresIn;
 	private String clientId;
-	
+
 	public OpaqueRefreshToken(OAuthClientRuntime client, RefreshTokenMement mement, String series, String tokenEncoded) {
 		this.series = series;
 		this.tokenEncoded = tokenEncoded;
 		this.expires = mement.getExpires();
 		expiresIn = (this.expires - System.currentTimeMillis()) / 1000;
-		clientId = client.getMetaData().getName();
+		clientId = client.getMetaData()
+				.getName();
 	}
-	
+
 	public String getSeries() {
 		return series;
 	}
@@ -56,6 +57,5 @@ public class OpaqueRefreshToken extends RefreshToken {
 	public String getClientId() {
 		return clientId;
 	}
-
 
 }

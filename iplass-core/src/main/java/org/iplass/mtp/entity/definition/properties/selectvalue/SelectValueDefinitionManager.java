@@ -30,7 +30,7 @@ import org.iplass.mtp.entity.SelectValue;
  *
  */
 public interface SelectValueDefinitionManager extends TypedDefinitionManager<SelectValueDefinition> {
-	
+
 	/**
 	 * 値からSelectValueを取得します。
 	 *

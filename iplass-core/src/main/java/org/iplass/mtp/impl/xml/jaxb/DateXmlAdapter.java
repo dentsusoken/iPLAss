@@ -113,6 +113,4 @@ public class DateXmlAdapter extends XmlAdapter<Object, Object> {
 		return v;
 	}
 
-
-
 }

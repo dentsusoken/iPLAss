@@ -25,18 +25,22 @@ import org.iplass.mtp.impl.core.TenantResource;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class FulltextSearchTenantResource implements TenantResource {
-	
+
 	private TenantContext tenantContext;
-	
+
 	@Override
 	public void init(TenantContext tenantContext) {
 		this.tenantContext = tenantContext;
-		ServiceRegistry.getRegistry().getService(FulltextSearchService.class).initTenantContext(tenantContext);
+		ServiceRegistry.getRegistry()
+				.getService(FulltextSearchService.class)
+				.initTenantContext(tenantContext);
 	}
 
 	@Override
 	public void destory() {
-		ServiceRegistry.getRegistry().getService(FulltextSearchService.class).destroyTenantContext(tenantContext);
+		ServiceRegistry.getRegistry()
+				.getService(FulltextSearchService.class)
+				.destroyTenantContext(tenantContext);
 	}
 
 }

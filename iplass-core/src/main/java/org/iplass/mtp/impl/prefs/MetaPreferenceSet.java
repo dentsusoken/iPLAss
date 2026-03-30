@@ -57,7 +57,7 @@ public class MetaPreferenceSet extends MetaPreference {
 		PreferenceSet defSet = (PreferenceSet) def;
 		if (defSet.getSubSet() != null) {
 			ArrayList<MetaPreference> set = new ArrayList<>();
-			for (Preference p: defSet.getSubSet()) {
+			for (Preference p : defSet.getSubSet()) {
 				MetaPreference mp = MetaPreference.newMeta(p);
 				mp.applyConfig(p);
 				set.add(mp);
@@ -74,7 +74,7 @@ public class MetaPreferenceSet extends MetaPreference {
 		fillTo(def);
 		if (subSet != null) {
 			ArrayList<Preference> set = new ArrayList<>();
-			for (MetaPreference mp: subSet) {
+			for (MetaPreference mp : subSet) {
 				set.add(mp.currentConfig());
 			}
 			def.setSubSet(set);
@@ -97,7 +97,9 @@ public class MetaPreferenceSet extends MetaPreference {
 
 			try {
 				if (subSet != null && runtime != null) {
-					ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+					ScriptEngine se = ExecuteContext.getCurrentContext()
+							.getTenantContext()
+							.getScriptEngine();
 					GroovyScriptEngine gse = (GroovyScriptEngine) se;
 					ClassLoader cl = gse.getSharedClassLoader();
 					applyToBean(runtime, subSet, cl);
@@ -117,7 +119,7 @@ public class MetaPreferenceSet extends MetaPreference {
 		@SuppressWarnings("unchecked")
 		private void applyToMap(Map<String, Object> map, List<MetaPreference> set) {
 			if (set != null) {
-				for (MetaPreference p: set) {
+				for (MetaPreference p : set) {
 					Object pre = map.get(p.getName());
 					if (p instanceof MetaPreferenceSet) {
 						Map<String, Object> subMap = new LinkedHashMap<>();
@@ -148,7 +150,7 @@ public class MetaPreferenceSet extends MetaPreference {
 				}
 
 				//Listのunmodifiable化
-				for (Map.Entry<String, Object> e: map.entrySet()) {
+				for (Map.Entry<String, Object> e : map.entrySet()) {
 					if (e.getValue() instanceof List) {
 						e.setValue(Collections.unmodifiableList((List) e.getValue()));
 					}
