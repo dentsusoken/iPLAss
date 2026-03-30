@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
@@ -31,15 +28,20 @@ import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
 /**
  * 時間型プロパティエディタ
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/TimePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
-	@Jsp(path="/jsp/gem/aggregation/unit/editor/TimePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
-	@Jsp(path="/jsp/gem/excel/element/section/editor/ExcelViewFilterTimePropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_EXCELVIEW)
+		@Jsp(path = "/jsp/gem/generic/editor/TimePropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
+		@Jsp(path = "/jsp/gem/aggregation/unit/editor/TimePropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
+		@Jsp(
+				path = "/jsp/gem/spreadsheet/element/section/editor/SpreadSheetViewFilterTimePropertyEditor.jsp",
+				key = ViewConst.DESIGN_TYPE_GEM_SPREADSHEETVIEW)
 })
 public class TimePropertyEditor extends DateTimePropertyEditor {
 
@@ -48,58 +50,58 @@ public class TimePropertyEditor extends DateTimePropertyEditor {
 
 	/** 時間の表示範囲 */
 	@MetaFieldInfo(
-			displayName="時間の表示範囲",
-			displayNameKey="generic_editor_TimePropertyEditor_dispRangeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=TimeDispRange.class,
-			displayOrder=1010,
-			description="時間の各リストをどこまで表示するか設定します。",
-			descriptionKey="generic_editor_TimePropertyEditor_dispRangeDescriptionKey"
+			displayName = "時間の表示範囲",
+			displayNameKey = "generic_editor_TimePropertyEditor_dispRangeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = TimeDispRange.class,
+			displayOrder = 1010,
+			description = "時間の各リストをどこまで表示するか設定します。",
+			descriptionKey = "generic_editor_TimePropertyEditor_dispRangeDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private TimeDispRange dispRange;
 
 	/** 分の間隔 */
 	@MetaFieldInfo(
-			displayName="分の間隔",
-			displayNameKey="generic_editor_TimePropertyEditor_intervalDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=MinIntereval.class,
-			displayOrder=1020,
-			description="分のリストの表示間隔を設定します。",
-			descriptionKey="generic_editor_TimePropertyEditor_intervalDescriptionKey"
+			displayName = "分の間隔",
+			displayNameKey = "generic_editor_TimePropertyEditor_intervalDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = MinIntereval.class,
+			displayOrder = 1020,
+			description = "分のリストの表示間隔を設定します。",
+			descriptionKey = "generic_editor_TimePropertyEditor_intervalDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	private MinIntereval interval;
 
 	/** TimePickerの利用有無 */
 	@MetaFieldInfo(
-			displayName="TimePickerの利用有無",
-			displayNameKey="generic_editor_TimePropertyEditor_useTimePickerDisplaNameKey",
-			description="TimePickerを利用して日時を表示するかの設定です。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1030,
-			descriptionKey="generic_editor_TimePropertyEditor_useTimePickerDescriptionKey"
+			displayName = "TimePickerの利用有無",
+			displayNameKey = "generic_editor_TimePropertyEditor_useTimePickerDisplaNameKey",
+			description = "TimePickerを利用して日時を表示するかの設定です。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1030,
+			descriptionKey = "generic_editor_TimePropertyEditor_useTimePickerDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	private boolean useTimePicker;
 
 	/** 初期値 */
 	@MetaFieldInfo(
-			displayName="初期値",
-			displayNameKey="generic_editor_TimePropertyEditor_defaultValueDisplaNameKey",
-			description="新規作成時の初期値を設定します。HHmmss形式か予約語を指定してください。",
-			descriptionKey="generic_editor_TimePropertyEditor_defaultValueDescriptionKey",
-			displayOrder=1040
+			displayName = "初期値",
+			displayNameKey = "generic_editor_TimePropertyEditor_defaultValueDisplaNameKey",
+			description = "新規作成時の初期値を設定します。HHmmss形式か予約語を指定してください。",
+			descriptionKey = "generic_editor_TimePropertyEditor_defaultValueDescriptionKey",
+			displayOrder = 1040
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private String defaultValue;
 

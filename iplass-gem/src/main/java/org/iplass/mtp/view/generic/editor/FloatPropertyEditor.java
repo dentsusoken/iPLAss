@@ -20,12 +20,12 @@
 
 package org.iplass.mtp.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * 浮動小数点型プロパティエディタ
@@ -33,9 +33,11 @@ import org.iplass.mtp.view.generic.ViewConst;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/NumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
-	@Jsp(path="/jsp/gem/aggregation/unit/editor/NumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
-	@Jsp(path="/jsp/gem/excel/element/section/editor/ExcelViewFilterNumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_EXCELVIEW)
+		@Jsp(path = "/jsp/gem/generic/editor/NumberPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
+		@Jsp(path = "/jsp/gem/aggregation/unit/editor/NumberPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
+		@Jsp(
+				path = "/jsp/gem/spreadsheet/element/section/editor/SpreadSheetViewFilterNumberPropertyEditor.jsp",
+				key = ViewConst.DESIGN_TYPE_GEM_SPREADSHEETVIEW)
 })
 public class FloatPropertyEditor extends NumberPropertyEditor {
 
