@@ -15,7 +15,7 @@ jobs:
     name: Java Format Check
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     if: github.event.pull_request.draft == false
 
     steps:
