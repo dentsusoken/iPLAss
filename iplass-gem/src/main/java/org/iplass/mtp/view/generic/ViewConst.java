@@ -25,6 +25,6 @@ public class ViewConst {
 	public static final String DESIGN_TYPE = "designType";
 	public static final String DESIGN_TYPE_GEM = "gem";
 	public static final String DESIGN_TYPE_GEM_AGGREGATION = "gem_aggregation";
-	public static final String DESIGN_TYPE_GEM_SPREADSHEETVIEW = "gem_spreadsheetview";
+	public static final String DESIGN_TYPE_GEM_SPREADSHEET = "gem_spreadsheet";
 
 }

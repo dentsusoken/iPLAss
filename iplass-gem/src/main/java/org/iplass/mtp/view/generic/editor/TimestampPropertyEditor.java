@@ -40,7 +40,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/editor/TimestampPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
 	@Jsp(path="/jsp/gem/aggregation/unit/editor/TimestampPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
-	@Jsp(path="/jsp/gem/spreadsheet/element/section/editor/SpreadSheetViewFilterTimestampPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_SPREADSHEETVIEW)
+	@Jsp(path="/jsp/gem/spreadsheet/element/section/editor/SpreadSheetFilterTimestampPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_SPREADSHEET)
 })
 public class TimestampPropertyEditor extends DateTimePropertyEditor {
 
