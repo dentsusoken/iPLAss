@@ -1,10 +1,10 @@
 name: Java Format Check
 
 on:
-  push:
-    branches:
-      - master
-      - feature/1743-github-actions-spotless-check
+  # push:
+  #   branches:
+  #     - master
+  #     - feature/1743-github-actions-spotless-check
   pull_request:
     branches:
       - master
