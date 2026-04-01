@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.exception.WriteLimitReachedException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
@@ -45,8 +46,7 @@ import org.xml.sax.SAXException;
 
 public abstract class AbstractBinaryReferenceParser implements BinaryReferenceParser {
 
-	private static final String TIKA_1_WRITE_LIMIT_REACHED_EXCEPTION = "org.apache.tika.sax.WriteOutContentHandler$WriteLimitReachedException";
-	private static final String TIKA_2_WRITE_LIMIT_REACHED_EXCEPTION = "org.apache.tika.exception.WriteLimitReachedException";
+	private static final String TIKA_WRITE_LIMIT_REACHED_EXCEPTION = "org.apache.tika.sax.WriteOutContentHandler$WriteLimitReachedException";
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractBinaryReferenceParser.class);
 
@@ -91,13 +91,13 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 					logger.warn("{} contained more than {} characters. so cut {} characters.", br.getName(), writeLimit,
 							writeLimit);
 				} else {
-					throw new BinaryReferenceParseException("Exception occured on index creating process.", e);
+					throw new BinaryReferenceParseException("Exception occurred on index creating process.", e);
 				}
 			} catch (Throwable e) {
 				//タイプに一致するParserで必要なClassがなかったもしくは、処理継続可能な例外クラスに設定されていた場合、BinaryReferenceParseExceptionをthrow
 				if (e instanceof NoClassDefFoundError || continuableExceptions.contains(e.getClass()
 						.getName())) {
-					throw new BinaryReferenceParseException("Exception occured on index creating process.", e);
+					throw new BinaryReferenceParseException("Exception occurred on index creating process.", e);
 				} else {
 					throw e;
 				}
@@ -114,7 +114,7 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 			}
 
 		} catch (IOException e) {
-			throw new FulltextSearchRuntimeException("Exception occured on index creating process.", e);
+			throw new FulltextSearchRuntimeException("Exception occurred on index creating process.", e);
 		}
 	}
 
@@ -123,8 +123,8 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 		while (current != null) {
 			String exceptionClassName = current.getClass()
 					.getName();
-			if (TIKA_1_WRITE_LIMIT_REACHED_EXCEPTION.equals(exceptionClassName)
-					|| TIKA_2_WRITE_LIMIT_REACHED_EXCEPTION.equals(exceptionClassName)) {
+			if (TIKA_WRITE_LIMIT_REACHED_EXCEPTION.equals(exceptionClassName)
+					|| current instanceof WriteLimitReachedException) {
 				return true;
 			}
 			current = current.getCause();
