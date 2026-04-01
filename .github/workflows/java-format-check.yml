@@ -4,6 +4,11 @@ on:
   pull_request:
     branches:
       - master
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
 
 jobs:
   java-format-check:
@@ -14,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: SetupJava
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
