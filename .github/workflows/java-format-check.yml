@@ -13,6 +13,8 @@ on:
 jobs:
   java-format-check:
     name: Java Format Check
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
 
     steps:
