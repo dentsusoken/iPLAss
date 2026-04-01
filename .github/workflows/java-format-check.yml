@@ -1,6 +1,11 @@
 name: Java Format Check
 
 on:
+  push:
+    branches:
+      - main
+      - develop
+      - master
   pull_request:
     branches:
       - main
