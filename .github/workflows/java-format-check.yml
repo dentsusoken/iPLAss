@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - master
-      - dentsusoken/iPLAss:feature/1743-github-actions-spotless-check
+      - feature/1743-github-actions-spotless-check
   pull_request:
     branches:
       - master
-      - dentsusoken/iPLAss:feature/1743-github-actions-spotless-check
+      - feature/1743-github-actions-spotless-check
 
 jobs:
   java-format-check:
