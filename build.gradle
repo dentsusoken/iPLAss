@@ -28,6 +28,11 @@ allprojects {
     apply plugin: 'com.diffplug.spotless'
 
     spotless {
+        def diffBase = findProperty('diffBase')
+ 
+        if (diffBase) {
+            ratchetFrom diffBase
+        }
         java {
             eclipse().configFile("${rootDir}/editor-settings/iplass-codestyle-eclipse/eclipse-java-formatter.xml")
 			importOrder( 'javax', 'java', 'org' , "")
