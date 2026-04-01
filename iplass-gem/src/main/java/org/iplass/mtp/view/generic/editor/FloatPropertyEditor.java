@@ -35,7 +35,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/editor/NumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
 	@Jsp(path="/jsp/gem/aggregation/unit/editor/NumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
-	@Jsp(path="/jsp/gem/excel/element/section/editor/ExcelViewFilterNumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_EXCELVIEW)
+	@Jsp(path="/jsp/gem/spreadsheet/element/section/editor/SpreadSheetFilterNumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_SPREADSHEET)
 })
 public class FloatPropertyEditor extends NumberPropertyEditor {
 
