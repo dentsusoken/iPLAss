@@ -31,7 +31,7 @@ public class PermissionSearchResult implements Serializable {
 
 	private List<PermissionInfo> wildCardPermissionList;
 
-	public PermissionSearchResult(){
+	public PermissionSearchResult() {
 	}
 
 	public List<PermissionInfo> getPermissionList() {
@@ -49,6 +49,5 @@ public class PermissionSearchResult implements Serializable {
 	public void setWildCardPermissionList(List<PermissionInfo> wildCardPermissionList) {
 		this.wildCardPermissionList = wildCardPermissionList;
 	}
-
 
 }

@@ -22,16 +22,15 @@ package org.iplass.mtp.command.beanmapper;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.iplass.mtp.impl.command.beanmapper.jackson.MappingErrorSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.iplass.mtp.impl.command.beanmapper.jackson.MappingErrorSerializer;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Beanへのマッピングエラーの詳細を表現するクラスです。
@@ -40,7 +39,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "mappingError", propOrder = { "propertyPath", "errorMessages"})
+@XmlType(name = "mappingError", propOrder = { "propertyPath", "errorMessages" })
 @JsonSerialize(using = MappingErrorSerializer.class)
 public class MappingError {
 	@XmlElement
@@ -52,12 +51,12 @@ public class MappingError {
 	private Object errorValue;
 	@XmlTransient
 	private Object cause;
-	
+
 	public MappingError(String propertyPath, Object errorValue) {
 		this.propertyPath = propertyPath;
 		this.errorValue = errorValue;
 	}
-	
+
 	public MappingError(String propertyPath, List<String> errorMessages, Object errorValue, Object cause) {
 		this.propertyPath = propertyPath;
 		this.errorMessages = errorMessages;
@@ -125,7 +124,7 @@ public class MappingError {
 	public void setCause(Object cause) {
 		this.cause = cause;
 	}
-	
+
 	public void addMessage(String message) {
 		addMessage(message, null);
 	}
@@ -136,7 +135,7 @@ public class MappingError {
 			errorMessages = new LinkedList<>();
 		}
 		errorMessages.add(message);
-		
+
 		if (cause != null) {
 			if (this.cause == null) {
 				this.cause = cause;

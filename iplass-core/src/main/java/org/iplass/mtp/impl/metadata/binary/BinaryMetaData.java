@@ -24,20 +24,25 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.iplass.mtp.definition.binary.BinaryDefinition;
 import org.iplass.mtp.impl.metadata.binary.jaxb.BinaryMetaDataXmlAdapter;
 
-@XmlSeeAlso({SimpleBinaryMetaData.class, ArchiveBinaryMetaData.class})
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+@XmlSeeAlso({ SimpleBinaryMetaData.class, ArchiveBinaryMetaData.class })
 @XmlJavaTypeAdapter(BinaryMetaDataXmlAdapter.class)
 public interface BinaryMetaData extends Serializable {
-	
+
 	public String getName();
+
 	public long getSize();
+
 	public InputStream getInputStream();
+
 	public OutputStream getOutputStream();
+
 	public void writeTo(OutputStream out) throws IOException;
+
 	public BinaryDefinition currentConfig();
 }

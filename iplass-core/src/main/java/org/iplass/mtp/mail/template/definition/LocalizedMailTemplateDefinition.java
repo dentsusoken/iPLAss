@@ -22,7 +22,6 @@ package org.iplass.mtp.mail.template.definition;
 
 import java.io.Serializable;
 
-
 public class LocalizedMailTemplateDefinition implements Serializable {
 
 	private static final long serialVersionUID = 1385150091910302424L;
@@ -32,33 +31,43 @@ public class LocalizedMailTemplateDefinition implements Serializable {
 	private String subject;
 	private PlainTextBodyPart plainMessage;
 	private HtmlBodyPart htmlMessage;
+
 	public String getLocaleName() {
 		return localeName;
 	}
+
 	public void setLocaleName(String localeName) {
 		this.localeName = localeName;
 	}
+
 	public String getCharset() {
 		return charset;
 	}
+
 	public void setCharset(String charset) {
 		this.charset = charset;
 	}
+
 	public String getSubject() {
 		return subject;
 	}
+
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
+
 	public PlainTextBodyPart getPlainMessage() {
 		return plainMessage;
 	}
+
 	public void setPlainMessage(PlainTextBodyPart plainMessage) {
 		this.plainMessage = plainMessage;
 	}
+
 	public HtmlBodyPart getHtmlMessage() {
 		return htmlMessage;
 	}
+
 	public void setHtmlMessage(HtmlBodyPart htmlMessage) {
 		this.htmlMessage = htmlMessage;
 	}

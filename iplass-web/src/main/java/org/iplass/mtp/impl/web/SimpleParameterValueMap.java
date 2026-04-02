@@ -26,11 +26,10 @@ import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-
 public class SimpleParameterValueMap implements ParameterValueMap {
-	
+
 	private HttpServletRequest req;
-	
+
 	public SimpleParameterValueMap(HttpServletRequest req) {
 		this.req = req;
 	}
@@ -54,10 +53,12 @@ public class SimpleParameterValueMap implements ParameterValueMap {
 			public boolean hasNext() {
 				return names.hasMoreElements();
 			}
+
 			@Override
 			public String next() {
 				return names.nextElement();
 			}
+
 			@Override
 			public void remove() {
 				throw new UnsupportedOperationException();

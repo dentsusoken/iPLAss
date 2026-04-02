@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.async.rdb;
 import org.iplass.mtp.transaction.TransactionListener;
 
 public interface TaskSubmitListener extends TransactionListener {
-	
+
 	public void setContext(Task task, Queue queue);
 
 }

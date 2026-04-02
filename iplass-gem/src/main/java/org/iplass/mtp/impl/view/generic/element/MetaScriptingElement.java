@@ -85,7 +85,7 @@ public class MetaScriptingElement extends MetaElement {
 	 * @return 詳細編集非表示設定
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class MetaScriptingElement extends MetaElement {
 	 * @param hideDetail 詳細編集非表示設定
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class MetaScriptingElement extends MetaElement {
 	 * @return 詳細表示非表示設定
 	 */
 	public boolean isHideView() {
-	    return hideView;
+		return hideView;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class MetaScriptingElement extends MetaElement {
 	 * @param hideView 詳細表示非表示設定
 	 */
 	public void setHideView(boolean hideView) {
-	    this.hideView = hideView;
+		this.hideView = hideView;
 	}
 
 	/**
@@ -282,7 +282,8 @@ public class MetaScriptingElement extends MetaElement {
 		public ScriptingRuntime(MetaScriptingElement metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (metadata.script != null && metadata.key == null) {
-				metadata.key = "Jsp_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+				metadata.key = "Jsp_" + GroovyTemplateCompiler.randomName()
+						.replace("-", "_");
 				entityView.addTemplate(key, compile(key));
 			}
 		}
@@ -293,7 +294,8 @@ public class MetaScriptingElement extends MetaElement {
 		 * @return テンプレート
 		 */
 		private GroovyTemplate compile(String key) {
-			TenantContext tenant = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tenant = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			return GroovyTemplateCompiler.compile(
 					getMetaData().script, key, (GroovyScriptEngine) tenant.getScriptEngine());
 		}

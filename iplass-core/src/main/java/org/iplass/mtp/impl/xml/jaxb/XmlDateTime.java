@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.impl.xml.jaxb;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -27,7 +29,6 @@ import java.util.GregorianCalendar;
 
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.XmlValue;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
@@ -37,7 +38,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author K.Higuchi
  *
  */
-@XmlType(name="dateTime", namespace="http://www.w3.org/2001/XMLSchema")
+@XmlType(name = "dateTime", namespace = "http://www.w3.org/2001/XMLSchema")
 public class XmlDateTime {
 
 	public XmlDateTime() {
@@ -60,7 +61,9 @@ public class XmlDateTime {
 		GregorianCalendar cal = xmlCal.toGregorianCalendar();
 		Timestamp ts = new Timestamp(cal.getTimeInMillis());
 		if (xmlCal.getFractionalSecond() != null) {
-			ts.setNanos(xmlCal.getFractionalSecond().movePointRight(9).intValue());
+			ts.setNanos(xmlCal.getFractionalSecond()
+					.movePointRight(9)
+					.intValue());
 		}
 		return ts;
 	}

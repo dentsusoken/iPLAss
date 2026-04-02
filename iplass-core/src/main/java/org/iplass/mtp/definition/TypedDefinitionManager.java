@@ -54,7 +54,7 @@ public interface TypedDefinitionManager<D extends Definition> extends Manager {
 		}
 
 		ArrayList<String> ret = new ArrayList<>(nameList.size());
-		for (DefinitionSummary n: nameList) {
+		for (DefinitionSummary n : nameList) {
 			ret.add(n.getName());
 		}
 		return ret;

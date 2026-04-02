@@ -37,7 +37,6 @@ import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Object> {
 
 	public static final String PATH_PREFIX = WebApiService.WEB_API_META_PATH;
@@ -88,9 +87,12 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 			meta.setRestJsonParameterType(void.class);
 			meta.setRestJsonAcceptableContentTypes(null);
 		} else {
-			meta.setRestJsonParameterName(webapi.restJson().parameterName());
-			meta.setRestJsonParameterType(webapi.restJson().parameterType());
-			meta.setRestJsonAcceptableContentTypes(webapi.restJson().acceptableContentTypes());
+			meta.setRestJsonParameterName(webapi.restJson()
+					.parameterName());
+			meta.setRestJsonParameterType(webapi.restJson()
+					.parameterType());
+			meta.setRestJsonAcceptableContentTypes(webapi.restJson()
+					.acceptableContentTypes());
 		}
 
 		if (webapi.restXml() == null) {
@@ -98,9 +100,12 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 			meta.setRestXmlParameterType(void.class);
 			meta.setRestXmlAcceptableContentTypes(null);
 		} else {
-			meta.setRestXmlParameterName(webapi.restXml().parameterName());
-			meta.setRestXmlParameterType(webapi.restXml().parameterType());
-			meta.setRestXmlAcceptableContentTypes(webapi.restXml().acceptableContentTypes());
+			meta.setRestXmlParameterName(webapi.restXml()
+					.parameterName());
+			meta.setRestXmlParameterType(webapi.restXml()
+					.parameterType());
+			meta.setRestXmlAcceptableContentTypes(webapi.restXml()
+					.acceptableContentTypes());
 		}
 
 		if (!DEFAULT.equals(webapi.displayName())) {
@@ -162,7 +167,8 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 			for (int i = 0, len = webapi.responseResults().length; i < len; i++) {
 				MetaWebApiResultAttribute attribute = new MetaWebApiResultAttribute();
 				attribute.setName(webapi.responseResults()[i].name());
-				var dataTypeString = webapi.responseResults()[i].dataType() != Void.class ? webapi.responseResults()[i].dataType().getName() : null;
+				var dataTypeString = webapi.responseResults()[i].dataType() != Void.class ? webapi.responseResults()[i].dataType()
+						.getName() : null;
 				attribute.setDataType(dataTypeString);
 				responseResults[i] = attribute;
 			}
@@ -222,11 +228,15 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Obj
 		}
 
 		//ValidateToken設定(ActionMappingからチェック)
-		if (webapi.tokenCheck().executeCheck()) {
+		if (webapi.tokenCheck()
+				.executeCheck()) {
 			MetaWebApiTokenCheck tokenCheck = new MetaWebApiTokenCheck();
-			tokenCheck.setConsume(webapi.tokenCheck().consume());
-			tokenCheck.setExceptionRollback(webapi.tokenCheck().exceptionRollback());
-			tokenCheck.setUseFixedToken(webapi.tokenCheck().useFixedToken());
+			tokenCheck.setConsume(webapi.tokenCheck()
+					.consume());
+			tokenCheck.setExceptionRollback(webapi.tokenCheck()
+					.exceptionRollback());
+			tokenCheck.setUseFixedToken(webapi.tokenCheck()
+					.useFixedToken());
 			meta.setTokenCheck(tokenCheck);
 		}
 

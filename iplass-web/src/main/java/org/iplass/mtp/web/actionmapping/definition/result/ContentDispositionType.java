@@ -39,4 +39,3 @@ public enum ContentDispositionType {
 		return typeString;
 	}
 }
-

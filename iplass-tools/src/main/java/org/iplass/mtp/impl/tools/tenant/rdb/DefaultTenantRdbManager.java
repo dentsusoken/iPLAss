@@ -157,7 +157,7 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 				ResultSet rs = statement.executeQuery();
 				List<TenantInfo> result = new ArrayList<TenantInfo>();
 				try {
-					while(rs.next()) {
+					while (rs.next()) {
 						TenantInfo tenant = convert(rs);
 						result.add(tenant);
 					}
@@ -379,10 +379,13 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 	 * @return StorageSpaceのPostfixのリスト
 	 */
 	protected List<String> getStorageSpacePostfix(boolean isPartition) {
-		GRdbDataStore store = (GRdbDataStore)ServiceRegistry.getRegistry().getService(StoreService.class).getDataStore();
+		GRdbDataStore store = (GRdbDataStore) ServiceRegistry.getRegistry()
+				.getService(StoreService.class)
+				.getDataStore();
 
 		List<String> postfixList = new ArrayList<String>();
-		for (StorageSpaceMap e: store.getStorageSpaceMap().values()) {
+		for (StorageSpaceMap e : store.getStorageSpaceMap()
+				.values()) {
 			if (isPartition) {
 				//Partitionの場合はカスタムは除外
 				if (e.isCustomPartition()) {
@@ -390,7 +393,7 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 				}
 			}
 			List<String> allPostFix = e.allTableNamePostfix();
-			for (String pf: allPostFix) {
+			for (String pf : allPostFix) {
 				if (pf != null) {
 					postfixList.add("__" + pf);
 				} else {

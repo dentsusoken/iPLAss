@@ -60,8 +60,7 @@ import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
-
-public class JasperReportingEngine implements ReportingEngine{
+public class JasperReportingEngine implements ReportingEngine {
 
 	private static Logger logger = LoggerFactory.getLogger(JasperReportingEngine.class);
 
@@ -69,19 +68,19 @@ public class JasperReportingEngine implements ReportingEngine{
 
 	private static final String SESSION_STR = "session";
 	private static final String REQUEST_STR = "request";
-	private static final String PREFIX_REQUEST = REQUEST_STR +".";
-	private static final String PREFIX_SESSION = SESSION_STR +".";
+	private static final String PREFIX_REQUEST = REQUEST_STR + ".";
+	private static final String PREFIX_SESSION = SESSION_STR + ".";
 
 	@Override
-	public ReportingOutputModel createOutputModel(byte[] binary, String type, String extension) throws Exception{
+	public ReportingOutputModel createOutputModel(byte[] binary, String type, String extension) throws Exception {
 		return new JasperReportingOutputModel(binary, type, extension);
 	}
 
 	@Override
 	public boolean isSupport(String type) {
 		boolean isSupport = false;
-		for(String supportFile : this.supportFiles){
-			if(supportFile.equals(type)){
+		for (String supportFile : this.supportFiles) {
+			if (supportFile.equals(type)) {
 				isSupport = true;
 			}
 		}
@@ -89,7 +88,7 @@ public class JasperReportingEngine implements ReportingEngine{
 	}
 
 	@Override
-	public void exportReport( WebRequestStack context, ReportingOutputModel model ) throws Exception{
+	public void exportReport(WebRequestStack context, ReportingOutputModel model) throws Exception {
 
 		RequestContext request = context.getRequestContext();
 
@@ -103,7 +102,7 @@ public class JasperReportingEngine implements ReportingEngine{
 
 		MetaReportParamMap[] paramMaps = jasperModel.getMaps();
 		if (paramMaps != null) {
-			for (MetaReportParamMap p: paramMaps) {
+			for (MetaReportParamMap p : paramMaps) {
 
 				//TODO listは廃止する。
 				//TODO Command内でAttributeにDataSourceをセットするのと一緒。(色々なタイプが設定できるので、自由に)
@@ -111,7 +110,8 @@ public class JasperReportingEngine implements ReportingEngine{
 
 				if ("report".equals(p.getParamType())) {
 
-					TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
+					TemplateDefinitionManager tdm = ManagerLocator.getInstance()
+							.getManager(TemplateDefinitionManager.class);
 					ReportTemplateDefinition td = (ReportTemplateDefinition) tdm.get(p.getMapFrom());
 
 					InputStream inputStream = new ByteArrayInputStream(td.getBinary());
@@ -119,7 +119,8 @@ public class JasperReportingEngine implements ReportingEngine{
 					params.put(p.getName(), temp);
 
 					// 多言語処理
-					String lang = ExecuteContext.getCurrentContext().getLanguage();
+					String lang = ExecuteContext.getCurrentContext()
+							.getLanguage();
 					for (LocalizedReportDefinition lrd : td.getLocalizedReportList()) {
 						if (lang.equals(lrd.getLocaleName())) {
 							InputStream localInputStream = new ByteArrayInputStream(lrd.getBinary());
@@ -132,7 +133,7 @@ public class JasperReportingEngine implements ReportingEngine{
 					}
 
 				} else if ("list".equals(p.getParamType())) {
-					params.put(p.getName(), new JRBeanCollectionDataSource((Collection<?>)getAttribute(request, p.getMapFrom())));
+					params.put(p.getName(), new JRBeanCollectionDataSource((Collection<?>) getAttribute(request, p.getMapFrom())));
 				} else {
 					//通常のパラメータ
 					params.put(p.getName(), getAttribute(request, p.getMapFrom()));
@@ -149,20 +150,21 @@ public class JasperReportingEngine implements ReportingEngine{
 				dataSource = new JREmptyDataSource();
 			} else {
 				if (dsObject instanceof JRDataSource) {
-					dataSource = (JRDataSource)dsObject;
+					dataSource = (JRDataSource) dsObject;
 				} else {
-					throw new ReportOutputException("unsupported datasource type. class=" + dsObject.getClass().getName());
+					throw new ReportOutputException("unsupported datasource type. class=" + dsObject.getClass()
+							.getName());
 				}
 			}
 		}
 
 		String password = null;
 		if (StringUtil.isNotEmpty(jasperModel.getPasswordAttributeName())) {
-			password = (String)getAttribute(request, jasperModel.getPasswordAttributeName());
+			password = (String) getAttribute(request, jasperModel.getPasswordAttributeName());
 		}
 		String ownerPassword = null;
 		if (StringUtil.isNotEmpty(jasperModel.getOwnerPasswordAttributeName())) {
-			ownerPassword = (String)getAttribute(request, jasperModel.getOwnerPasswordAttributeName());
+			ownerPassword = (String) getAttribute(request, jasperModel.getOwnerPasswordAttributeName());
 		}
 
 		// JasperPrintインスタンス生成
@@ -173,11 +175,12 @@ public class JasperReportingEngine implements ReportingEngine{
 		//Input
 		SimpleExporterInput input = SimpleExporterInput.getInstance(jrList);
 		//Output
-		SimpleOutputStreamExporterOutput output = new SimpleOutputStreamExporterOutput((OutputStream)context.getResponse().getOutputStream());
+		SimpleOutputStreamExporterOutput output = new SimpleOutputStreamExporterOutput((OutputStream) context.getResponse()
+				.getOutputStream());
 
 		//出力形式毎に処理実施
 		JRAbstractExporter<?, ?, ?, ?> exporter = null;
-		if(OutputFileType.PDF.equals(outputType)){
+		if (OutputFileType.PDF.equals(outputType)) {
 			// PDF形式で帳票の出力
 			JRPdfExporter pdfExporter = new JRPdfExporter();
 			pdfExporter.setExporterInput(input);
@@ -200,7 +203,7 @@ public class JasperReportingEngine implements ReportingEngine{
 
 			exporter = pdfExporter;
 
-		}else if(OutputFileType.XLS.equals(outputType)){
+		} else if (OutputFileType.XLS.equals(outputType)) {
 			// XLS形式で帳票の出力
 			JRXlsExporter xlsExporter = new JRXlsExporter();
 			xlsExporter.setExporterInput(input);
@@ -215,9 +218,9 @@ public class JasperReportingEngine implements ReportingEngine{
 
 			exporter = xlsExporter;
 
-		}else if(OutputFileType.XLSX.equals(outputType)){
+		} else if (OutputFileType.XLSX.equals(outputType)) {
 			// XLSX形式で帳票の出力
-			JRXlsxExporter xlsxExporter = new JRXlsxExporter ();
+			JRXlsxExporter xlsxExporter = new JRXlsxExporter();
 			xlsxExporter.setExporterInput(input);
 			xlsxExporter.setExporterOutput(output);
 
@@ -240,7 +243,7 @@ public class JasperReportingEngine implements ReportingEngine{
 	 * @return supportFiles
 	 */
 	public String[] getSupportFiles() {
-	    return supportFiles;
+		return supportFiles;
 	}
 
 	/**
@@ -248,7 +251,7 @@ public class JasperReportingEngine implements ReportingEngine{
 	 * @param supportFiles supportFiles
 	 */
 	public void setSupportFiles(String[] supportFiles) {
-	    this.supportFiles = supportFiles;
+		this.supportFiles = supportFiles;
 	}
 
 	@Override
@@ -261,12 +264,13 @@ public class JasperReportingEngine implements ReportingEngine{
 
 	private Object getAttribute(RequestContext request, String attributeName) {
 
-		if(attributeName.startsWith(PREFIX_REQUEST)){
+		if (attributeName.startsWith(PREFIX_REQUEST)) {
 			String valueName = attributeName.substring(PREFIX_REQUEST.length());
 			return request.getAttribute(valueName);
-		}else if(attributeName.startsWith(PREFIX_SESSION)){
+		} else if (attributeName.startsWith(PREFIX_SESSION)) {
 			String valueName = attributeName.substring(PREFIX_SESSION.length());
-			return request.getSession().getAttribute(valueName);
+			return request.getSession()
+					.getAttribute(valueName);
 		} else {
 			//Prefix未指定の場合はリクエストから取得
 			return request.getAttribute(attributeName);

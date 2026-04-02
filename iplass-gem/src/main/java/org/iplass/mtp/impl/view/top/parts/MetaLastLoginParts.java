@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.view.top.parts;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
@@ -29,6 +27,8 @@ import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.view.top.parts.LastLoginParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.web.template.TemplateUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class MetaLastLoginParts extends MetaTemplateParts {
 

@@ -30,44 +30,46 @@ import org.iplass.mtp.webhook.template.definition.WebhookHeaderDefinition;
 public class MetaWebhookHeader implements MetaData {
 
 	private static final long serialVersionUID = 1113045625739189908L;
-	
+
 	private String key;
 	private String Value;
-	
+
 	public MetaWebhookHeader() {
-		
+
 	}
+
 	public MetaWebhookHeader(String key, String value) {
 		this.key = key;
 		this.Value = value;
-	}	
-	
+	}
+
 	public String getKey() {
 		return key;
 	}
-	
+
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
+
 	public String getValue() {
 		return Value;
 	}
-	
+
 	public void setValue(String value) {
 		Value = value;
 	}
-	
+
 	@Override
 	public MetaWebhookHeader copy() {
 		return ObjectUtil.deepCopy(this);
 	}
-	
+
 	//Definition → Meta
-	public void applyConfig (WebhookHeaderDefinition definition) {
+	public void applyConfig(WebhookHeaderDefinition definition) {
 		this.key = definition.getKey();
 		this.Value = definition.getValue();
 	}
+
 	//Meta → Definition
 	public WebhookHeaderDefinition currentConfig() {
 		WebhookHeaderDefinition definition = new WebhookHeaderDefinition();

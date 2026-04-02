@@ -104,10 +104,13 @@ public class MessageItemCsvUploadDialog extends AbstractWindow {
 		uploader.addOnFinishUploadHandler((result) -> {
 			uploader.debugUploader("onFinish");
 
-			if (uploader.getLastUploadState().isSuccess()) {
-				showResult(uploader.getLastUploadState().getData());
+			if (uploader.getLastUploadState()
+					.isSuccess()) {
+				showResult(uploader.getLastUploadState()
+						.getData());
 			} else {
-				errorUpload(uploader.getLastUploadState().getErrorMessage());
+				errorUpload(uploader.getLastUploadState()
+						.getErrorMessage());
 			}
 
 			//Hidden項目の削除
@@ -123,7 +126,8 @@ public class MessageItemCsvUploadDialog extends AbstractWindow {
 		upload.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (uploader.getFileName() == null || uploader.getFileName().isEmpty()) {
+				if (uploader.getFileName() == null || uploader.getFileName()
+						.isEmpty()) {
 					SC.warn(getResourceString("selectImportFile"));
 					return;
 				}
@@ -216,12 +220,16 @@ public class MessageItemCsvUploadDialog extends AbstractWindow {
 			messageTabSet.setErrorMessage(logs);
 		}
 	}
+
 	private String getStatusMessage(String status) {
-		if (UploadProperty.Status.SUCCESS.name().equals(status)) {
+		if (UploadProperty.Status.SUCCESS.name()
+				.equals(status)) {
 			return getResourceString("importSuccessful");
-		} else if (UploadProperty.Status.WARN.name().equals(status)) {
+		} else if (UploadProperty.Status.WARN.name()
+				.equals(status)) {
 			return getResourceString("importWarning");
-		} else if (UploadProperty.Status.ERROR.name().equals(status)) {
+		} else if (UploadProperty.Status.ERROR.name()
+				.equals(status)) {
 			return getResourceString("importErr");
 		} else {
 			return getResourceString("couldNotRetImportResult");
@@ -242,6 +250,7 @@ public class MessageItemCsvUploadDialog extends AbstractWindow {
 		JSONObject jsonObject = root.isObject();
 		return jsonObject.get(key);
 	}
+
 	private String getStatus(JSONValue root) {
 		return snipQuote(getValue("status", root).toString());
 	}
@@ -255,7 +264,8 @@ public class MessageItemCsvUploadDialog extends AbstractWindow {
 	}
 
 	private boolean isStatusSuccess(String status) {
-		return UploadProperty.Status.SUCCESS.name().equals(status);
+		return UploadProperty.Status.SUCCESS.name()
+				.equals(status);
 	}
 
 	private String getResourceString(String key) {

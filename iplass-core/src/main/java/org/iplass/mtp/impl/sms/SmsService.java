@@ -40,5 +40,6 @@ public interface SmsService extends TypedMetaDataService<MetaSmsMailTemplate, Sm
 	 * @param mail 送信するメール情報
 	 */
 	void sendSmsMail(Tenant tenant, SmsMail sms);
+
 	SmsMail createMail(Tenant tenant);
 }

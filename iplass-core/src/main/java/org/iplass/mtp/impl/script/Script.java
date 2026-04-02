@@ -21,11 +21,11 @@
 package org.iplass.mtp.impl.script;
 
 public interface Script {
-	
+
 	public Object eval(ScriptContext context);
-	
+
 	public <T> T createInstanceAs(Class<T> type, ScriptContext context);
-	
+
 	public boolean isInstantiateAs(Class<?> type);
-	
+
 }

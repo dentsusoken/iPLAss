@@ -39,7 +39,7 @@ public class PartitionBy implements ASTNode {
 	private static final long serialVersionUID = 8515685165315099514L;
 
 	private List<ValueExpression> partitionFieldList = new ArrayList<ValueExpression>();
-	
+
 	public List<ValueExpression> getPartitionFieldList() {
 		return partitionFieldList;
 	}
@@ -52,11 +52,11 @@ public class PartitionBy implements ASTNode {
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (partitionFieldList != null) {
-				for (ValueExpression s: partitionFieldList) {
+				for (ValueExpression s : partitionFieldList) {
 					s.accept(visitor);
 				}
 			}
@@ -73,7 +73,7 @@ public class PartitionBy implements ASTNode {
 		partitionFieldList.add(partitionField);
 		return this;
 	}
-	
+
 	public PartitionBy add(Object partitionField) {
 		if (partitionField == null) {
 			throw new NullPointerException("partitionField is null");
@@ -89,10 +89,10 @@ public class PartitionBy implements ASTNode {
 		} else {
 			throw new QueryException("partitionField is ValueExpression or String type required.");
 		}
-		
+
 		return add(v);
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -114,8 +114,9 @@ public class PartitionBy implements ASTNode {
 		int result = 1;
 		result = prime
 				* result
-				+ ((partitionFieldList == null) ? 0 : partitionFieldList
-						.hashCode());
+				+ ((partitionFieldList == null) ? 0
+						: partitionFieldList
+								.hashCode());
 		return result;
 	}
 

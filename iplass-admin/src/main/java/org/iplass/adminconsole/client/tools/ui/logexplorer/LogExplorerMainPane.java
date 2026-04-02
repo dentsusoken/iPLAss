@@ -45,8 +45,8 @@ public class LogExplorerMainPane extends VLayout implements ContentStateChangeHa
 
 		LogExplorerFileListPane listPane = new LogExplorerFileListPane();
 		listPane.setWidth("50%");
-		listPane.setShowResizeBar(true);	//リサイズ可能
-		listPane.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+		listPane.setShowResizeBar(true); //リサイズ可能
+		listPane.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、下を収縮
 
 		LogExplorerConditionPane conditionPane = new LogExplorerConditionPane();
 		conditionPane.setWidth("50%");

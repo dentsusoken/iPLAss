@@ -83,7 +83,7 @@ public class MetaScriptingSection extends MetaSection {
 	 * @return リンクを表示するか
 	 */
 	public boolean isShowLink() {
-	    return showLink;
+		return showLink;
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class MetaScriptingSection extends MetaSection {
 	 * @param showLink リンクを表示するか
 	 */
 	public void setShowLink(boolean showLink) {
-	    this.showLink = showLink;
+		this.showLink = showLink;
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class MetaScriptingSection extends MetaSection {
 	 * @return 詳細編集非表示設定
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class MetaScriptingSection extends MetaSection {
 	 * @param hideDetail 詳細編集非表示設定
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class MetaScriptingSection extends MetaSection {
 	 * @return 詳細表示非表示設定
 	 */
 	public boolean isHideView() {
-	    return hideView;
+		return hideView;
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class MetaScriptingSection extends MetaSection {
 	 * @param hideView 詳細表示非表示設定
 	 */
 	public void setHideView(boolean hideView) {
-	    this.hideView = hideView;
+		this.hideView = hideView;
 	}
 
 	/**
@@ -193,7 +193,8 @@ public class MetaScriptingSection extends MetaSection {
 		public ScriptingSectionRuntime(MetaScriptingSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (metadata.script != null && metadata.key == null) {
-				metadata.key = "Jsp_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+				metadata.key = "Jsp_" + GroovyTemplateCompiler.randomName()
+						.replace("-", "_");
 				entityView.addTemplate(key, compile(key));
 			}
 		}
@@ -204,7 +205,8 @@ public class MetaScriptingSection extends MetaSection {
 		 * @return テンプレート
 		 */
 		private GroovyTemplate compile(String key) {
-			TenantContext tenant = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tenant = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			return GroovyTemplateCompiler.compile(
 					getMetaData().script, key, (GroovyScriptEngine) tenant.getScriptEngine());
 		}

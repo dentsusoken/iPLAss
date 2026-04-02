@@ -24,7 +24,7 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
 public class SchemaControlInsertSql extends UpdateSqlHandler {
-	
+
 //	public String toSql(int tenantId, String objDefId, RdbAdapter rdb) {
 //		
 //		StringBuilder sb = new StringBuilder();
@@ -37,15 +37,19 @@ public class SchemaControlInsertSql extends UpdateSqlHandler {
 //	}
 
 	public String toSql(int tenantId, String objDefId, int defVersion, RdbAdapter rdb) {
-		
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO SCHEMA_CTRL(TENANT_ID,OBJ_DEF_ID,OBJ_DEF_VER,LOCK_STATUS,CR_DATA_VER) VALUES(");
-		sb.append(tenantId).append(",'");
-		sb.append(rdb.sanitize(objDefId)).append("',");
-		sb.append(defVersion).append(",");
+		sb.append(tenantId)
+				.append(",'");
+		sb.append(rdb.sanitize(objDefId))
+				.append("',");
+		sb.append(defVersion)
+				.append(",");
 		sb.append("'0',");
-		sb.append(defVersion).append(")");
-		
+		sb.append(defVersion)
+				.append(")");
+
 		return sb.toString();
 	}
 }

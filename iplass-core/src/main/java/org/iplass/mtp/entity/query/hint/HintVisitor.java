@@ -21,17 +21,27 @@
 package org.iplass.mtp.entity.query.hint;
 
 public interface HintVisitor {
-	
+
 	public boolean visit(HintComment hintComment);
+
 	public boolean visit(IndexHint indexHint);
+
 	public boolean visit(NoIndexHint noIndexHint);
+
 	public boolean visit(NativeHint nativeHint);
+
 	public boolean visit(BindHint bindHint);
+
 	public boolean visit(CacheHint cacheHint);
+
 	public boolean visit(FetchSizeHint fetchSizeHint);
+
 	public boolean visit(TimeoutHint timeoutHint);
+
 	public boolean visit(NoBindHint noBindHint);
+
 	public boolean visit(SuppressWarningsHint suppressWarningsHint);
+
 	public boolean visit(ReadOnlyHint readOnlyHint);
 
 }

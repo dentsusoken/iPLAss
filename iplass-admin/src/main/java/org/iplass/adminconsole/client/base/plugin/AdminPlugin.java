@@ -27,7 +27,6 @@ import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.tree.Tree;
 
-
 /**
  * <p>各プラグインごとのコントローラクラスです。</p>
  *

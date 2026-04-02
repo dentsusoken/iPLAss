@@ -24,10 +24,10 @@ import org.iplass.mtp.entity.SelectValue;
 
 public enum PackageEntryStatus {
 
-	READY("00","Ready"),
-	ACTIVE("10","Active"),
-	COMPLETED("20","Completed"),
-	ERROR("90","Error");
+	READY("00", "Ready"),
+	ACTIVE("10", "Active"),
+	COMPLETED("20", "Completed"),
+	ERROR("90", "Error");
 
 	private String value;
 	private String displayName;

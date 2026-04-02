@@ -275,7 +275,8 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 			logicRuntime.outputReport(builder, reportData, out);
 		} else {
 			// デフォルトの帳票出力処理
-			builder.build().fill(reportData, () -> out);
+			builder.build()
+					.fill(reportData, () -> out);
 		}
 	}
 }

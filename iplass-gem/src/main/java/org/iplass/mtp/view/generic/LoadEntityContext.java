@@ -62,7 +62,7 @@ public class LoadEntityContext {
 	 * @return ロード時のオプション
 	 */
 	public LoadOption getLoadOption() {
-	    return loadOption;
+		return loadOption;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class LoadEntityContext {
 	 * @param loadOption ロード時のオプション
 	 */
 	public void setLoadOption(LoadOption loadOption) {
-	    this.loadOption = loadOption;
+		this.loadOption = loadOption;
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class LoadEntityContext {
 	 * @return 特権実行を行うか
 	 */
 	public boolean isDoPrivileged() {
-	    return doPrivileged;
+		return doPrivileged;
 	}
 
 	/**
@@ -86,6 +86,6 @@ public class LoadEntityContext {
 	 * @param doPrivileged 特権実行を行うか
 	 */
 	public void setDoPrivileged(boolean doPrivileged) {
-	    this.doPrivileged = doPrivileged;
+		this.doPrivileged = doPrivileged;
 	}
 }

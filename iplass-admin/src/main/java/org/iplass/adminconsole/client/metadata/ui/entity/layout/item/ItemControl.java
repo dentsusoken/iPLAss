@@ -209,10 +209,14 @@ public abstract class ItemControl extends AbstractWindow {
 					setValueObject(event.getValue());
 
 					//displayLabelかtitleがある場合はWindowのタイトル再設定
-					if (event.getValueMap().containsKey("displayLabel")) {
-						setTitle((String) event.getValueMap().get("displayLabel"));
-					} else if (event.getValueMap().containsKey("title")) {
-						setTitle((String) event.getValueMap().get("title"));
+					if (event.getValueMap()
+							.containsKey("displayLabel")) {
+						setTitle((String) event.getValueMap()
+								.get("displayLabel"));
+					} else if (event.getValueMap()
+							.containsKey("title")) {
+						setTitle((String) event.getValueMap()
+								.get("title"));
 					}
 
 					if (updateHandler != null) {

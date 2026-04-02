@@ -70,7 +70,8 @@ public class MetaValidationBinaryType extends MetaValidation {
 				}
 				if (value instanceof BinaryReference) {
 					BinaryReference checkVal = (BinaryReference) value;
-					return compiledPattern.matcher(checkVal.getType()).matches();
+					return compiledPattern.matcher(checkVal.getType())
+							.matches();
 				}
 
 				throw new EntityRuntimeException("not support type:" + value.getClass());

@@ -54,10 +54,12 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 
 	private static Logger logger = LoggerFactory.getLogger(ReferenceRegistHandlerBase.class);
 
-	protected EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	protected EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+	protected EntityDefinitionManager edm = ManagerLocator.getInstance()
+			.getManager(EntityDefinitionManager.class);
+	protected EntityManager em = ManagerLocator.getInstance()
+			.getManager(EntityManager.class);
 	protected ReferenceRegistOption registOption;
-	
+
 	private boolean forceUpdate;
 
 	/**
@@ -69,25 +71,27 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	 * @param element エレメント
 	 * @return Entity
 	 */
-	protected Entity loadReference(RegistrationCommandContext context, final Entity entity, LoadOption loadOption, ReferenceProperty property, Element element) {
+	protected Entity loadReference(RegistrationCommandContext context, final Entity entity, LoadOption loadOption, ReferenceProperty property,
+			Element element) {
 		Entity e = null;
 		if (entity.getOid() != null) {
-			final LoadEntityContext leContext = context.getLoadEntityInterrupterHandler().beforeLoadReference(entity.getDefinitionName(), loadOption, property, element, LoadType.UPDATE);
+			final LoadEntityContext leContext = context.getLoadEntityInterrupterHandler()
+					.beforeLoadReference(entity.getDefinitionName(), loadOption, property, element, LoadType.UPDATE);
 			if (leContext.isDoPrivileged()) {
 				//特権実行
 				e = AuthContext.doPrivileged(() -> {
 					//データ取得
-					return em.load(entity.getOid(), entity.getVersion() ,entity.getDefinitionName(), leContext.getLoadOption());
+					return em.load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), leContext.getLoadOption());
 				});
 			} else {
 				//データ取得
-				e = em.load(entity.getOid(), entity.getVersion() ,entity.getDefinitionName(), leContext.getLoadOption());
+				e = em.load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), leContext.getLoadOption());
 			}
-			context.getLoadEntityInterrupterHandler().afterLoadReference(e, loadOption, property, element, LoadType.UPDATE);
+			context.getLoadEntityInterrupterHandler()
+					.afterLoadReference(e, loadOption, property, element, LoadType.UPDATE);
 		}
 		return e;
 	}
-
 
 	/**
 	 * 参照型データの登録を行います。
@@ -130,7 +134,8 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 						logger.debug(e.getMessage(), e);
 					}
 					//プロパティ名書き換え
-					if (e.getValidateResults() != null && !e.getValidateResults().isEmpty()) {
+					if (e.getValidateResults() != null && !e.getValidateResults()
+							.isEmpty()) {
 						for (ValidateError ve : e.getValidateResults()) {
 							Integer refIndex = entity.getValue(Constants.REF_INDEX);
 							String nestPropertyName = propertyName + "." + ve.getPropertyName();
@@ -188,13 +193,16 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 				//本体は参照プロパティとして設定されてるはずなので、被参照のロードは不要
 				Entity tmp = loadReference(context, refEntity, new LoadOption(true, false), rpd, element);
 				if (tmp != null && tmp.getValue(mappedBy) != null) {
-					Entity[] entities =  tmp.getValue(mappedBy);
+					Entity[] entities = tmp.getValue(mappedBy);
 					List<Entity> list = new ArrayList<Entity>(Arrays.asList(entities));
 					boolean isAdded = false;
 					for (Entity _entity : list) {
-						if (_entity.getOid().equals(entity.getOid())) isAdded = true;
+						if (_entity.getOid()
+								.equals(entity.getOid()))
+							isAdded = true;
 					}
-					if (!isAdded) list.add(entity);
+					if (!isAdded)
+						list.add(entity);
 					refEntity.setValue(mappedBy, list.toArray(new Entity[list.size()]));
 				} else {
 					refEntity.setValue(mappedBy, new Entity[] { entity });
@@ -229,7 +237,8 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 			List<Entity> list = new ArrayList<Entity>();
 			if (entities != null) {
 				for (Entity e : entities) {
-					if (!e.getOid().equals(entity.getOid())) {
+					if (!e.getOid()
+							.equals(entity.getOid())) {
 						list.add(e);
 					}
 				}
@@ -240,7 +249,6 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 			refEntity.setValue(mappedBy, null);
 		}
 	}
-	
 
 	/**
 	 * 更新オプションを適用して、更新対象プロパティを設定
@@ -250,7 +258,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	 */
 	protected void getUpdatePropertiesWithOption(List<String> updateProperties, List<NestProperty> nestProperties,
 			EntityDefinition ed) {
-		
+
 		// isSpecifyAllPropertiesがfalseの場合
 		if (!registOption.isSpecifyAllProperties()) {
 			// 標準の更新項目を追加
@@ -266,7 +274,8 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 
 		// Reference項目として更新可能且つ、NestされたEntityの個々のプロパティ指定がない場合
 		// 既存の参照先Entityは標準の更新項目を更新可能
-		if (registOption.isSpecifiedAsReference() && registOption.getSpecifiedUpdateNestProperties().isEmpty()) {
+		if (registOption.isSpecifiedAsReference() && registOption.getSpecifiedUpdateNestProperties()
+				.isEmpty()) {
 			updateProperties.addAll(getUpdateProperties(nestProperties, ed));
 			return;
 		}
@@ -284,7 +293,8 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	protected static List<String> getUpdateProperties(List<NestProperty> nestProperties, EntityDefinition ed) {
 		List<String> updateProperties = new ArrayList<>();
 		for (NestProperty nProp : nestProperties) {
-			if (nProp.isHideDetail()) continue;//編集時非表示の場合は対象外
+			if (nProp.isHideDetail())
+				continue;//編集時非表示の場合は対象外
 			if (nProp.isVirtual()) {
 				// 仮想プロパティは対象外
 				continue;

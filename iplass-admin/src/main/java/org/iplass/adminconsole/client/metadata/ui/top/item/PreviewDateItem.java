@@ -106,7 +106,7 @@ public class PreviewDateItem extends PartsItem {
 			save.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						//入力情報をパーツに
 						parts.setTitle(SmartGWTUtil.getStringValue(txtTitle));
 						parts.setLocalizedTitleList(txtTitle.getLocalizedList());

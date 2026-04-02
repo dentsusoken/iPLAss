@@ -19,9 +19,6 @@
  */
 package org.iplass.mtp.impl.webapi.command.definition;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response.Status;
-
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.NoPermissionException;
@@ -45,44 +42,52 @@ import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebApi(name="mtp/definition/GET",
-		accepts={RequestType.REST_FORM},
-		methods={MethodType.GET},
-		results={DefinitionCommand.RESULT_DEFINITION, DefinitionCommand.RESULT_DEFINITION_LIST},
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response.Status;
+
+@WebApi(
+		name = "mtp/definition/GET",
+		accepts = { RequestType.REST_FORM },
+		methods = { MethodType.GET },
+		results = { DefinitionCommand.RESULT_DEFINITION, DefinitionCommand.RESULT_DEFINITION_LIST },
 		supportBearerToken = true,
-		overwritable=false)
-@WebApi(name="mtp/definition/POST",
-		accepts={RequestType.REST_JSON, RequestType.REST_XML},
-		methods={MethodType.POST},
-		restJson=@RestJson(parameterName=DefinitionCommand.PARAM_DEFINITION, parameterType=Definition.class),
-		restXml=@RestXml(parameterName=DefinitionCommand.PARAM_DEFINITION),
+		overwritable = false)
+@WebApi(
+		name = "mtp/definition/POST",
+		accepts = { RequestType.REST_JSON, RequestType.REST_XML },
+		methods = { MethodType.POST },
+		restJson = @RestJson(parameterName = DefinitionCommand.PARAM_DEFINITION, parameterType = Definition.class),
+		restXml = @RestXml(parameterName = DefinitionCommand.PARAM_DEFINITION),
 		supportBearerToken = true,
-		overwritable=false)
-@WebApi(name="mtp/definition/PUT",
-		accepts={RequestType.REST_JSON, RequestType.REST_XML},
-		methods={MethodType.PUT},
-		restJson=@RestJson(parameterName=DefinitionCommand.PARAM_DEFINITION, parameterType=Definition.class),
-		restXml=@RestXml(parameterName=DefinitionCommand.PARAM_DEFINITION),
+		overwritable = false)
+@WebApi(
+		name = "mtp/definition/PUT",
+		accepts = { RequestType.REST_JSON, RequestType.REST_XML },
+		methods = { MethodType.PUT },
+		restJson = @RestJson(parameterName = DefinitionCommand.PARAM_DEFINITION, parameterType = Definition.class),
+		restXml = @RestXml(parameterName = DefinitionCommand.PARAM_DEFINITION),
 		supportBearerToken = true,
-		overwritable=false)
-@WebApi(name="mtp/definition/DELETE",
-		accepts={RequestType.REST_FORM},
-		methods={MethodType.DELETE},
+		overwritable = false)
+@WebApi(
+		name = "mtp/definition/DELETE",
+		accepts = { RequestType.REST_FORM },
+		methods = { MethodType.DELETE },
 		supportBearerToken = true,
-		overwritable=false)
-@CommandClass(name="mtp/definition/DefinitionCommand", displayName="Definition Web API", overwritable=false)
+		overwritable = false)
+@CommandClass(name = "mtp/definition/DefinitionCommand", displayName = "Definition Web API", overwritable = false)
 public final class DefinitionCommand implements Command, Constants {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(DefinitionCommand.class);
 
 	public static final String PARAM_DEFINITION = "definition";
 	public static final String PARAM_RECURSIVE = "recursive";
-	
+
 	public static final String RESULT_DEFINITION_LIST = "list";
 	public static final String RESULT_DEFINITION = "definition";
-	
+
 	DefinitionService service = DefinitionService.getInstance();
-	WebApiService webApiService = ServiceRegistry.getRegistry().getService(WebApiService.class);
+	WebApiService webApiService = ServiceRegistry.getRegistry()
+			.getService(WebApiService.class);
 
 	@Override
 	public String execute(RequestContext request) {
@@ -90,14 +95,16 @@ public final class DefinitionCommand implements Command, Constants {
 			logger.warn("definition web api is disabled on WebApiService configration.");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
-		
+
 		//require User is admin
-		if (!AuthContext.getCurrentContext().getUser().isAdmin()){
+		if (!AuthContext.getCurrentContext()
+				.getUser()
+				.isAdmin()) {
 			throw new NoPermissionException("this user have no admin permission");
 		}
-		
+
 		MethodType method = (MethodType) request.getAttribute(WebApiRequestConstants.HTTP_METHOD);
-		
+
 		switch (method) {
 		case GET:
 			return doGet(request);
@@ -129,15 +136,19 @@ public final class DefinitionCommand implements Command, Constants {
 		DefinitionPath typeAndPath = typeAndPath(request);
 		@SuppressWarnings("unchecked")
 		TypedDefinitionManager<Definition> tdm = (TypedDefinitionManager<Definition>) service.getTypedDefinitionManager(typeAndPath.getType());
-		
+
 		Definition def = (Definition) request.getAttribute(PARAM_DEFINITION);
 		if (def == null) {
 			throw new IllegalArgumentException("definition must specify by put body content.");
 		}
-		if (typeAndPath.getClass().isAssignableFrom(def.getClass())) {
-			throw new IllegalArgumentException("definition type unmatch. expect:" + typeAndPath.getClass().getName() + " actual:" + def.getClass().getName());
+		if (typeAndPath.getClass()
+				.isAssignableFrom(def.getClass())) {
+			throw new IllegalArgumentException("definition type unmatch. expect:" + typeAndPath.getClass()
+					.getName() + " actual:"
+					+ def.getClass()
+							.getName());
 		}
-		
+
 		DefinitionModifyResult res = tdm.update(def);
 		if (res.isSuccess()) {
 			return CMD_EXEC_SUCCESS;
@@ -151,15 +162,19 @@ public final class DefinitionCommand implements Command, Constants {
 		DefinitionPath typeAndPath = typeAndPath(request);
 		@SuppressWarnings("unchecked")
 		TypedDefinitionManager<Definition> tdm = (TypedDefinitionManager<Definition>) service.getTypedDefinitionManager(typeAndPath.getType());
-		
+
 		Definition def = (Definition) request.getAttribute(PARAM_DEFINITION);
 		if (def == null) {
 			throw new IllegalArgumentException("definition must specify by post body content.");
 		}
-		if (typeAndPath.getClass().isAssignableFrom(def.getClass())) {
-			throw new IllegalArgumentException("definition type unmatch. expect:" + typeAndPath.getClass().getName() + " actual:" + def.getClass().getName());
+		if (typeAndPath.getClass()
+				.isAssignableFrom(def.getClass())) {
+			throw new IllegalArgumentException("definition type unmatch. expect:" + typeAndPath.getClass()
+					.getName() + " actual:"
+					+ def.getClass()
+							.getName());
 		}
-		
+
 		DefinitionModifyResult res = tdm.create(def);
 		if (res.isSuccess()) {
 			return CMD_EXEC_SUCCESS;
@@ -167,20 +182,20 @@ public final class DefinitionCommand implements Command, Constants {
 			throw new SystemException(res.getMessage());
 		}
 	}
-	
+
 	private DefinitionPath typeAndPath(RequestContext request) {
 		String subPath = (String) request.getAttribute(WebApiRequestConstants.SUB_PATH);
 		if (subPath == null || subPath.length() == 0) {
 			throw new NullPointerException("definition path must specify.");
 		}
-		
+
 		DefinitionPath path = service.resolvePath(subPath);
 		if (path == null) {
 			throw new IllegalArgumentException("illegal definition path:" + subPath);
 		}
 		return path;
 	}
-	
+
 	private String doGet(RequestContext request) {
 		DefinitionPath typeAndPath = typeAndPath(request);
 		TypedDefinitionManager<? extends Definition> tdm = service.getTypedDefinitionManager(typeAndPath.getType());
@@ -193,8 +208,8 @@ public final class DefinitionCommand implements Command, Constants {
 			//definition
 			request.setAttribute(RESULT_DEFINITION, tdm.get(defPath));
 		}
-		
+
 		return CMD_EXEC_SUCCESS;
 	}
-	
+
 }

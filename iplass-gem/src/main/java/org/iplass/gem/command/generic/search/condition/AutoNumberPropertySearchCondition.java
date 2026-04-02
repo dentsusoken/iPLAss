@@ -49,7 +49,7 @@ public class AutoNumberPropertySearchCondition extends PropertySearchCondition {
 		//like検索
 		boolean isLike = false;
 		if (editor instanceof AutoNumberPropertyEditor) {
-			AutoNumberPropertyEditor anpe = (AutoNumberPropertyEditor)editor;
+			AutoNumberPropertyEditor anpe = (AutoNumberPropertyEditor) editor;
 			isLike = !anpe.isSearchExactMatchCondition();
 		}
 		if (isLike) {

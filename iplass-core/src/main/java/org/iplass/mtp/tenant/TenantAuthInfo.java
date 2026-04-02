@@ -116,7 +116,6 @@ public class TenantAuthInfo extends TenantConfig {
 		this.webAuthnDefinitionName = webAuthnDefinitionName;
 	}
 
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

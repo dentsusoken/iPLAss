@@ -60,7 +60,7 @@ public class NewLineNormalizerAttributePane extends NormalizerAttributePane {
 	@Override
 	public void setDefinition(NormalizerDefinition definition) {
 		if (definition instanceof NewlineNormalizer) {
-			NewlineType newLineType = ((NewlineNormalizer)definition).getType();
+			NewlineType newLineType = ((NewlineNormalizer) definition).getType();
 			if (newLineType != null) {
 				selNewLineType.setValue(newLineType.name());
 			} else {

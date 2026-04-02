@@ -82,7 +82,7 @@ public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
 		if (isMultipart) {
 			Map<String, Object> paramMap = requestContext.getParamMap();
 			Map<String, String[]> retMap = new HashMap<>();
-			for (Map.Entry<String, Object> e: paramMap.entrySet()) {
+			for (Map.Entry<String, Object> e : paramMap.entrySet()) {
 				if (e.getValue() instanceof String[]) {
 					retMap.put(e.getKey(), (String[]) e.getValue());
 				} else if (e.getValue() instanceof UploadFileHandle[]) {
@@ -97,7 +97,7 @@ public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
 				}
 			}
 			Map<String, String[]> superMap = super.getParameterMap();
-			for (Map.Entry<String, String[]> e: superMap.entrySet()) {
+			for (Map.Entry<String, String[]> e : superMap.entrySet()) {
 				retMap.put(e.getKey(), e.getValue());
 			}
 
@@ -107,7 +107,7 @@ public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
 				return super.getParameterMap();
 			} else {
 				Map<String, String[]> retMap = new HashMap<>((Map) requestContext.getParamMap());
-				for (Map.Entry<String, String[]> e: super.getParameterMap().entrySet()) {
+				for (Map.Entry<String, String[]> e : super.getParameterMap().entrySet()) {
 					retMap.put(e.getKey(), e.getValue());
 				}
 				return retMap;
@@ -133,6 +133,7 @@ public class JspTemplateHttpServletRequest extends HttpServletRequestWrapper {
 				public boolean hasMoreElements() {
 					return it.hasNext();
 				}
+
 				@Override
 				public String nextElement() {
 					return it.next();

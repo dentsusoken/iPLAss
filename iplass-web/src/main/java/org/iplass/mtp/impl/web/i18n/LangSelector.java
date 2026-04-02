@@ -23,8 +23,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.command.RequestContext;
@@ -37,21 +35,26 @@ import org.iplass.mtp.tenant.TenantI18nInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public class LangSelector {
 	private static Logger logger = LoggerFactory.getLogger(LangSelector.class);
 
 	public static final String LANG_ATTRIBUTE_NAME = "language";
 
-	private I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
+	private I18nService i18n = ServiceRegistry.getRegistry()
+			.getService(I18nService.class);
 
 	public void selectLangByUser(RequestContext reqContext, ExecuteContext exec) {
 		String lang = null;
-		TenantI18nInfo i18n  = exec.getCurrentTenant().getTenantConfig(TenantI18nInfo.class);
+		TenantI18nInfo i18n = exec.getCurrentTenant()
+				.getTenantConfig(TenantI18nInfo.class);
 		if (i18n.isUseMultilingual() && i18n.getUseLanguageList() != null) {
-			User user = AuthContext.getCurrentContext().getUser();
+			User user = AuthContext.getCurrentContext()
+					.getUser();
 			String ulang = user.getLanguage();
 			if (ulang != null) {
-				for (String tl: i18n.getUseLanguageList()) {
+				for (String tl : i18n.getUseLanguageList()) {
 					if (ulang.equals(tl)) {
 						lang = ulang;
 						break;
@@ -76,7 +79,8 @@ public class LangSelector {
 		}
 		if (lang == null) {
 			//HeaderのAccept-Languageから。
-			lang = getLangFromHeader(WebRequestStack.getCurrent().getRequest(), exec);
+			lang = getLangFromHeader(WebRequestStack.getCurrent()
+					.getRequest(), exec);
 		}
 
 		if (lang != null) {
@@ -88,7 +92,8 @@ public class LangSelector {
 	}
 
 	private String getLangFromHeader(HttpServletRequest req, ExecuteContext ec) {
-		TenantI18nInfo i18n = ec.getCurrentTenant().getTenantConfig(TenantI18nInfo.class);
+		TenantI18nInfo i18n = ec.getCurrentTenant()
+				.getTenantConfig(TenantI18nInfo.class);
 		if (!i18n.isUseMultilingual()) {
 			return null;
 		}

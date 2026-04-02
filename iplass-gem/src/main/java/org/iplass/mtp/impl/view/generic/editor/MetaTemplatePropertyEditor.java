@@ -57,7 +57,7 @@ public class MetaTemplatePropertyEditor extends MetaCustomPropertyEditor {
 	 * @return 表示タイプ
 	 */
 	public TemplateDisplayType getDisplayType() {
-	    return displayType;
+		return displayType;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class MetaTemplatePropertyEditor extends MetaCustomPropertyEditor {
 	 * @param displayType 表示タイプ
 	 */
 	public void setDisplayType(TemplateDisplayType displayType) {
-	    this.displayType = displayType;
+		this.displayType = displayType;
 	}
 
 	/**

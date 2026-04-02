@@ -111,8 +111,10 @@ public class SearchListContext extends SearchContextBase {
 				orderBy = new OrderBy().add(new SortSpec(propName, SortType.valueOf(sortType)));
 			}
 		} else if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
-			SyntaxService service = ServiceRegistry.getRegistry().getService(SyntaxService.class);
-			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT).getSyntax(OrderBySyntax.class);
+			SyntaxService service = ServiceRegistry.getRegistry()
+					.getService(SyntaxService.class);
+			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
+					.getSyntax(OrderBySyntax.class);
 			ParseContext context = new ParseContext("order by " + filter.getSort());
 			try {
 				orderBy = syntax.parse(context);
@@ -130,9 +132,11 @@ public class SearchListContext extends SearchContextBase {
 					} else {
 						key = ss.getSortKey();
 					}
-					SortType type = SortType.valueOf(ss.getSortType().name());
+					SortType type = SortType.valueOf(ss.getSortType()
+							.name());
 					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-					if (orderBy == null) orderBy = new OrderBy();
+					if (orderBy == null)
+						orderBy = new OrderBy();
 					orderBy.add(key, type, nullOrderingSpec);
 				}
 			}

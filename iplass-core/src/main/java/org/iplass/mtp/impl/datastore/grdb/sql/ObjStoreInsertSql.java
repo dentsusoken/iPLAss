@@ -43,14 +43,14 @@ import org.iplass.mtp.impl.properties.extend.VirtualType;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class ObjStoreInsertSql extends UpdateSqlHandler {
 
 	public String copyToTemporaryTable(EntityHandler handler, Where cond, RdbAdapter rdb, EntityContext entityContext) {
 		Query q = new Query();
 		q.select(Entity.OID, Entity.VERSION)
-			.from(handler.getMetaData().getName())
-			.setWhere(cond);
+				.from(handler.getMetaData()
+						.getName())
+				.setWhere(cond);
 		SqlQueryContext qc = new SqlQueryContext(handler, entityContext, rdb);
 		SqlConverter conv = new SqlConverter(qc, false);
 		q.accept(conv);
@@ -76,11 +76,17 @@ public class ObjStoreInsertSql extends UpdateSqlHandler {
 		handlePropList(sb, tenantId, propList, model, pageNo, rdbAdaptor);
 
 		sb.append(") VALUES(");
-		sb.append(tenantId).append(",'");
-		sb.append(rdbAdaptor.sanitize(eh.getMetaData().getId())).append("',");
-		sb.append("'").append(rdbAdaptor.sanitize(model.getOid())).append("'");
+		sb.append(tenantId)
+				.append(",'");
+		sb.append(rdbAdaptor.sanitize(eh.getMetaData()
+				.getId()))
+				.append("',");
+		sb.append("'")
+				.append(rdbAdaptor.sanitize(model.getOid()))
+				.append("'");
 		sb.append(",");
-		sb.append(model.getVersion()).append(",");
+		sb.append(model.getVersion())
+				.append(",");
 		sb.append(pageNo);
 
 		handleValue(sb, tenantId, propList, model, pageNo, rdbAdaptor);
@@ -91,27 +97,33 @@ public class ObjStoreInsertSql extends UpdateSqlHandler {
 	}
 
 	private void handlePropList(StringBuilder sb, int tenantId, List<PropertyHandler> propList, Entity model, int pageNo, RdbAdapter rdbAdaptor) {
-		for (PropertyHandler p: propList) {
+		for (PropertyHandler p : propList) {
 			if (p instanceof PrimitivePropertyHandler
-					&& !((PrimitivePropertyHandler) p).getMetaData().getType().isVirtual()) {
+					&& !((PrimitivePropertyHandler) p).getMetaData()
+							.getType()
+							.isVirtual()) {
 				GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) p.getStoreSpecProperty();
 				Object val = model.getValue(p.getName());
 				if (!colDef.isMulti()) {
 					//本体
 					GRdbPropertyStoreHandler scol = (GRdbPropertyStoreHandler) colDef;
-					if (scol.getMetaData().getPageNo() == pageNo) {
+					if (scol.getMetaData()
+							.getPageNo() == pageNo) {
 						if (val != null) {
 							sb.append(",");
-							sb.append(scol.getMetaData().getColumnName());
+							sb.append(scol.getMetaData()
+									.getColumnName());
 						}
 					}
 					//index
-					if (scol.getIndexColName() != null && scol.getMetaData().getIndexPageNo() == pageNo) {
+					if (scol.getIndexColName() != null && scol.getMetaData()
+							.getIndexPageNo() == pageNo) {
 						String indexColName = scol.getIndexColName();
 						switch (scol.getIndexType()) {
 						case UNIQUE:
 							sb.append(",");
-							sb.append(indexColName).append(ObjStoreTable.INDEX_TD_POSTFIX);
+							sb.append(indexColName)
+									.append(ObjStoreTable.INDEX_TD_POSTFIX);
 							sb.append(",");
 							sb.append(indexColName);
 							break;
@@ -119,7 +131,8 @@ public class ObjStoreInsertSql extends UpdateSqlHandler {
 						case NON_UNIQUE:
 							if (val != null) {
 								sb.append(",");
-								sb.append(indexColName).append(ObjStoreTable.INDEX_TD_POSTFIX);
+								sb.append(indexColName)
+										.append(ObjStoreTable.INDEX_TD_POSTFIX);
 								sb.append(",");
 								sb.append(indexColName);
 							}
@@ -132,10 +145,11 @@ public class ObjStoreInsertSql extends UpdateSqlHandler {
 					//本体
 					if (val != null) {
 						GRdbMultiplePropertyStoreHandler mcol = (GRdbMultiplePropertyStoreHandler) colDef;
-						for (MetaGRdbPropertyStore metaCol: mcol.getMetaData().getStore()) {
+						for (MetaGRdbPropertyStore metaCol : mcol.getMetaData()
+								.getStore()) {
 							if (metaCol.getPageNo() == pageNo) {
-									sb.append(",");
-									sb.append(metaCol.getColumnName());
+								sb.append(",");
+								sb.append(metaCol.getColumnName());
 							}
 						}
 						//TODO multiは現状index非対応
@@ -146,43 +160,57 @@ public class ObjStoreInsertSql extends UpdateSqlHandler {
 	}
 
 	private void handleValue(StringBuilder sb, int tenantId, List<PropertyHandler> propList, Entity model, int pageNo, RdbAdapter rdbAdaptor) {
-		for (PropertyHandler p: propList) {
+		for (PropertyHandler p : propList) {
 			if (p instanceof PrimitivePropertyHandler
-					&& !(((PrimitivePropertyHandler) p).getMetaData().getType() instanceof VirtualType)) {
+					&& !(((PrimitivePropertyHandler) p).getMetaData()
+							.getType() instanceof VirtualType)) {
 				GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) p.getStoreSpecProperty();
 				Object val = model.getValue(p.getName());
 				if (!colDef.isMulti()) {
 					//本体
 					GRdbPropertyStoreHandler scol = (GRdbPropertyStoreHandler) colDef;
-					if (scol.getMetaData().getPageNo() == pageNo) {
+					if (scol.getMetaData()
+							.getPageNo() == pageNo) {
 						if (val != null) {
 							sb.append(",");
 							if (colDef.isNative()) {
-								colDef.getSingleColumnRdbTypeAdapter().appendToSqlAsRealType(val, sb, rdbAdaptor);
+								colDef.getSingleColumnRdbTypeAdapter()
+										.appendToSqlAsRealType(val, sb, rdbAdaptor);
 							} else {
-								colDef.getSingleColumnRdbTypeAdapter().appendToTypedCol(sb, rdbAdaptor,
-										() -> colDef.getSingleColumnRdbTypeAdapter().appendToSqlAsRealType(val, sb, rdbAdaptor));
+								colDef.getSingleColumnRdbTypeAdapter()
+										.appendToTypedCol(sb, rdbAdaptor,
+												() -> colDef.getSingleColumnRdbTypeAdapter()
+														.appendToSqlAsRealType(val, sb, rdbAdaptor));
 							}
 						}
 					}
 					//index
-					if (scol.getIndexColName() != null && scol.getMetaData().getIndexPageNo() == pageNo) {
+					if (scol.getIndexColName() != null && scol.getMetaData()
+							.getIndexPageNo() == pageNo) {
 						switch (scol.getIndexType()) {
 						case UNIQUE:
 							sb.append(",'");
-							sb.append(MetaGRdbPropertyStore.makeInternalIndexKey(tenantId, rdbAdaptor.sanitize(p.getParent().getMetaData().getId()), pageNo));
+							sb.append(MetaGRdbPropertyStore.makeInternalIndexKey(tenantId, rdbAdaptor.sanitize(p.getParent()
+									.getMetaData()
+									.getId()), pageNo));
 							sb.append("',");
-							colDef.getSingleColumnRdbTypeAdapter().appendToTypedCol(sb, rdbAdaptor,
-									() -> colDef.getSingleColumnRdbTypeAdapter().appendToSqlAsRealType(val, sb, rdbAdaptor));
+							colDef.getSingleColumnRdbTypeAdapter()
+									.appendToTypedCol(sb, rdbAdaptor,
+											() -> colDef.getSingleColumnRdbTypeAdapter()
+													.appendToSqlAsRealType(val, sb, rdbAdaptor));
 							break;
 						case UNIQUE_WITHOUT_NULL:
 						case NON_UNIQUE:
 							if (val != null) {
 								sb.append(",'");
-								sb.append(MetaGRdbPropertyStore.makeInternalIndexKey(tenantId, rdbAdaptor.sanitize(p.getParent().getMetaData().getId()), pageNo));
+								sb.append(MetaGRdbPropertyStore.makeInternalIndexKey(tenantId, rdbAdaptor.sanitize(p.getParent()
+										.getMetaData()
+										.getId()), pageNo));
 								sb.append("',");
-								colDef.getSingleColumnRdbTypeAdapter().appendToTypedCol(sb, rdbAdaptor,
-										() -> colDef.getSingleColumnRdbTypeAdapter().appendToSqlAsRealType(val, sb, rdbAdaptor));
+								colDef.getSingleColumnRdbTypeAdapter()
+										.appendToTypedCol(sb, rdbAdaptor,
+												() -> colDef.getSingleColumnRdbTypeAdapter()
+														.appendToSqlAsRealType(val, sb, rdbAdaptor));
 							}
 							break;
 						default:
@@ -196,20 +224,27 @@ public class ObjStoreInsertSql extends UpdateSqlHandler {
 						if (val instanceof Object[]) {
 							valList = (Object[]) val;
 						} else {
-							valList = new Object[]{val};
+							valList = new Object[] { val };
 						}
 						GRdbMultiplePropertyStoreHandler mcol = (GRdbMultiplePropertyStoreHandler) colDef;
-						for (int i = 0; i < mcol.getMetaData().getStore().size(); i++) {
-							MetaGRdbPropertyStore metaCol = mcol.getMetaData().getStore().get(i);
+						for (int i = 0; i < mcol.getMetaData()
+								.getStore()
+								.size(); i++) {
+							MetaGRdbPropertyStore metaCol = mcol.getMetaData()
+									.getStore()
+									.get(i);
 							if (metaCol.getPageNo() == pageNo) {
 								sb.append(",");
 								if (i < valList.length) {
 									final int index = i;
 									if (colDef.isNative()) {
-										colDef.getSingleColumnRdbTypeAdapter().appendToSqlAsRealType(valList[index], sb, rdbAdaptor);
+										colDef.getSingleColumnRdbTypeAdapter()
+												.appendToSqlAsRealType(valList[index], sb, rdbAdaptor);
 									} else {
-										colDef.getSingleColumnRdbTypeAdapter().appendToTypedCol(sb, rdbAdaptor,
-												() -> colDef.getSingleColumnRdbTypeAdapter().appendToSqlAsRealType(valList[index], sb, rdbAdaptor));
+										colDef.getSingleColumnRdbTypeAdapter()
+												.appendToTypedCol(sb, rdbAdaptor,
+														() -> colDef.getSingleColumnRdbTypeAdapter()
+																.appendToSqlAsRealType(valList[index], sb, rdbAdaptor));
 									}
 								} else {
 									sb.append("null");
@@ -249,59 +284,84 @@ public class ObjStoreInsertSql extends UpdateSqlHandler {
 		handlePropList(sb, tenantId, propList, model, 0, rdbAdaptor);
 
 		sb.append(") VALUES(");
-		sb.append(tenantId).append(",'");
-		sb.append(rdbAdaptor.sanitize(eh.getMetaData().getId())).append("',");
-		sb.append("'").append(rdbAdaptor.sanitize(model.getOid())).append("'");
+		sb.append(tenantId)
+				.append(",'");
+		sb.append(rdbAdaptor.sanitize(eh.getMetaData()
+				.getId()))
+				.append("',");
+		sb.append("'")
+				.append(rdbAdaptor.sanitize(model.getOid()))
+				.append("'");
 		sb.append(",");
-		sb.append(model.getVersion()).append(",");
+		sb.append(model.getVersion())
+				.append(",");
 		sb.append("0,");
-		sb.append(((MetaGRdbEntityStore) eh.getMetaData().getEntityStoreDefinition()).getVersion()).append(",");
+		sb.append(((MetaGRdbEntityStore) eh.getMetaData()
+				.getEntityStoreDefinition()).getVersion())
+				.append(",");
 		if (model.getValue(Entity.STATE) != null) {
 			PropertyHandler p = eh.getProperty(Entity.STATE, context);
 			GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) p.getStoreSpecProperty();
-			colDef.getSingleColumnRdbTypeAdapter().appendToSqlAsRealType(model.getValue(Entity.STATE), sb, rdbAdaptor);
+			colDef.getSingleColumnRdbTypeAdapter()
+					.appendToSqlAsRealType(model.getValue(Entity.STATE), sb, rdbAdaptor);
 			sb.append(",");
 		} else {
 			sb.append("'V',");
 		}
-		sb.append("'").append(rdbAdaptor.sanitize(model.getName())).append("',");
+		sb.append("'")
+				.append(rdbAdaptor.sanitize(model.getName()))
+				.append("',");
 		if (model.getDescription() != null) {
-			sb.append("'").append(rdbAdaptor.sanitize(model.getDescription())).append("',");
+			sb.append("'")
+					.append(rdbAdaptor.sanitize(model.getDescription()))
+					.append("',");
 		} else {
 			sb.append("null,");
 		}
-		
+
 		Timestamp createDate = model.getCreateDate();
 		if (createDate == null) {
-			sb.append(rdbAdaptor.systimestamp()).append(",");
+			sb.append(rdbAdaptor.systimestamp())
+					.append(",");
 		} else {
-			sb.append(rdbAdaptor.toTimeStampExpression(createDate)).append(",");
+			sb.append(rdbAdaptor.toTimeStampExpression(createDate))
+					.append(",");
 		}
-		
+
 		Timestamp updateDate = model.getUpdateDate();
 		if (model.getUpdateDate() == null) {
-			sb.append(rdbAdaptor.systimestamp()).append(",");
+			sb.append(rdbAdaptor.systimestamp())
+					.append(",");
 		} else {
-			sb.append(rdbAdaptor.toTimeStampExpression(updateDate)).append(",");
+			sb.append(rdbAdaptor.toTimeStampExpression(updateDate))
+					.append(",");
 		}
-		
+
 		if (model.getStartDate() != null) {
-			sb.append(rdbAdaptor.toTimeStampExpression(model.getStartDate())).append(",");
+			sb.append(rdbAdaptor.toTimeStampExpression(model.getStartDate()))
+					.append(",");
 		} else {
 			sb.append("null,");
 		}
 		if (model.getEndDate() != null) {
-			sb.append(rdbAdaptor.toTimeStampExpression(model.getEndDate())).append(",");
+			sb.append(rdbAdaptor.toTimeStampExpression(model.getEndDate()))
+					.append(",");
 		} else {
 			sb.append("null,");
 		}
 		if (model.getLockedBy() != null) {
-			sb.append("'").append(rdbAdaptor.sanitize(model.getLockedBy())).append("',");
+			sb.append("'")
+					.append(rdbAdaptor.sanitize(model.getLockedBy()))
+					.append("',");
 		} else {
 			sb.append("null,");
 		}
-		sb.append("'").append(rdbAdaptor.sanitize(model.getCreateBy())).append("',");
-		sb.append("'").append(rdbAdaptor.sanitize(model.getUpdateBy())).append("'");
+		sb.append("'")
+				.append(rdbAdaptor.sanitize(model.getCreateBy()))
+				.append("',");
+		sb.append("'")
+				.append(rdbAdaptor.sanitize(model.getUpdateBy()))
+				.append("'");
 
 		handleValue(sb, tenantId, propList, model, 0, rdbAdaptor);
 

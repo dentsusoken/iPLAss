@@ -36,12 +36,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthTokenUpdateSQL extends UpdateSqlHandler {
-	
+
 	public String createInsertSQL() {
 		return "INSERT INTO T_ATOKEN(TENANT_ID,T_TYPE,U_KEY,SERIES,TOKEN,POL_NAME,S_DATE,T_INFO) " +
 				"VALUES (?,?,?,?,?,?,?,?)";
- 	}
-	public void setInsertParameter(RdbAdapter rdb, PreparedStatement ps, AuthToken token, boolean saveDetailAsJson, ObjectMapper om) throws SQLException, JsonProcessingException {
+	}
+
+	public void setInsertParameter(RdbAdapter rdb, PreparedStatement ps, AuthToken token, boolean saveDetailAsJson, ObjectMapper om)
+			throws SQLException, JsonProcessingException {
 		// TENANT_ID
 		ps.setInt(1, token.getTenantId());
 		// T_TYPE
@@ -69,6 +71,7 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 	public String createDeleteSQL() {
 		return "DELETE FROM T_ATOKEN WHERE TENANT_ID=? AND T_TYPE=? AND U_KEY=?";
 	}
+
 	public void setDeleteParameter(RdbAdapter rdb, PreparedStatement ps,
 			int tenantId, String type, String uniqueKey) throws SQLException {
 		ps.setInt(1, tenantId);
@@ -79,6 +82,7 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 	public String createDeleteBySeriesSQL() {
 		return "DELETE FROM T_ATOKEN WHERE TENANT_ID=? AND T_TYPE=? AND SERIES=?";
 	}
+
 	public void setDeleteBySeriesParameter(RdbAdapter rdb, PreparedStatement ps,
 			int tenantId, String type, String series) throws SQLException {
 		ps.setInt(1, tenantId);
@@ -89,6 +93,7 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 	public String createDeleteByDateSQL() {
 		return "DELETE FROM T_ATOKEN WHERE TENANT_ID=? AND T_TYPE=? S_DATE<=?";
 	}
+
 	public void setDeleteByDateParameter(RdbAdapter rdb, PreparedStatement ps,
 			int tenantId, String type, Timestamp date) throws SQLException {
 		ps.setInt(1, tenantId);
@@ -99,7 +104,9 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 	public String createUpdateStrictSQL() {
 		return "UPDATE T_ATOKEN SET TOKEN=?,S_DATE=?,T_INFO=? WHERE TENANT_ID=? AND T_TYPE=? AND SERIES=? AND TOKEN=?";
 	}
-	public void setUpdateStrictParameter(RdbAdapter rdb, PreparedStatement ps, AuthToken newToken, AuthToken currentToken, boolean saveDetailAsJson, ObjectMapper om) throws SQLException, JsonProcessingException {
+
+	public void setUpdateStrictParameter(RdbAdapter rdb, PreparedStatement ps, AuthToken newToken, AuthToken currentToken, boolean saveDetailAsJson,
+			ObjectMapper om) throws SQLException, JsonProcessingException {
 		ps.setString(1, newToken.getToken());
 		ps.setTimestamp(2, newToken.getStartDate(), rdb.rdbCalendar());
 		if (newToken.getDetails() == null) {
@@ -108,17 +115,16 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 			ps.setBytes(3, om.writeValueAsBytes(new DetailWrapper(newToken.getDetails())));
 		} else {
 			ps.setBytes(3, toBin(newToken.getDetails()));
-			
+
 		}
 		ps.setInt(4, newToken.getTenantId());
 		ps.setString(5, newToken.getType());
 		ps.setString(6, newToken.getSeries());
 		ps.setString(7, currentToken.getToken());
 	}
-	
-	
+
 	byte[] toBin(Serializable obj) {
-		
+
 		ByteArrayOutputStream byteOut;
 		try {
 			byteOut = new ByteArrayOutputStream();

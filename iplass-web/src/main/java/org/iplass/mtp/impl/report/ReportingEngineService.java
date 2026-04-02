@@ -25,10 +25,12 @@ import java.util.List;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.web.template.report.definition.OutputFileType;
 
-public interface ReportingEngineService extends Service{
+public interface ReportingEngineService extends Service {
 
 	public ReportingEngine createReportingEngine(String type) throws Exception;
+
 	public List<OutputFileType> getOutputFileTypeList(String type);
+
 	public List<ReportingType> getReportTypeList();
 
 }

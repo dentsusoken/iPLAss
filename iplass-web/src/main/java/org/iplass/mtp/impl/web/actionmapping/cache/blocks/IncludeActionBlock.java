@@ -22,18 +22,18 @@ package org.iplass.mtp.impl.web.actionmapping.cache.blocks;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.web.actionmapping.ActionMappingService;
-import org.iplass.mtp.impl.web.actionmapping.WebInvocationImpl;
 import org.iplass.mtp.impl.web.actionmapping.MetaActionMapping.ActionMappingRuntime;
+import org.iplass.mtp.impl.web.actionmapping.WebInvocationImpl;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentBlock;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentCache;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentCacheContext;
 import org.iplass.mtp.impl.web.actionmapping.cache.MetaCacheCriteria.CacheCriteriaRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
+
+import jakarta.servlet.ServletException;
 
 public class IncludeActionBlock implements ContentBlock {
 	private static final long serialVersionUID = -894755257590110956L;
@@ -57,7 +57,9 @@ public class IncludeActionBlock implements ContentBlock {
 	@Override
 	public long lastModified(long lastModified, WebInvocationImpl invocation, ContentCacheContext cc, String lang) {
 
-		ActionMappingRuntime amr = ServiceRegistry.getRegistry().getService(ActionMappingService.class).getRuntimeByName(actionName);
+		ActionMappingRuntime amr = ServiceRegistry.getRegistry()
+				.getService(ActionMappingService.class)
+				.getRuntimeByName(actionName);
 		if (amr == null) {
 			return Long.MAX_VALUE;
 		}

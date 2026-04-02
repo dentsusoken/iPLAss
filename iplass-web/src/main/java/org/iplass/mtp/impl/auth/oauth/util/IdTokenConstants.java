@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.auth.oauth.util;
 
 public interface IdTokenConstants {
 	static final String HEAER_ALG = "alg";
-	
+
 	static final String CLAIM_ISS = "iss";
 	static final String CLAIM_SUB = "sub";
 	static final String CLAIM_AUD = "aud";

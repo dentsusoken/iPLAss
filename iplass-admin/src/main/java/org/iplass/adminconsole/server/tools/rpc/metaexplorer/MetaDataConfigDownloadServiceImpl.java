@@ -31,10 +31,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.core.MediaType;
-
 import org.apache.commons.io.IOUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
@@ -58,6 +54,9 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * MetaDataConfigExport用Service実装クラス
@@ -116,7 +115,8 @@ public class MetaDataConfigDownloadServiceImpl extends AdminDownloadService {
 		Arrays.sort(pathArray, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				return o1.toLowerCase().compareTo(o2.toLowerCase());
+				return o1.toLowerCase()
+						.compareTo(o2.toLowerCase());
 			}
 		});
 		return pathArray;
@@ -133,14 +133,15 @@ public class MetaDataConfigDownloadServiceImpl extends AdminDownloadService {
 				//ContextPathの全体選択の場合
 				String contextPath = path.substring(0, path.length() - 1);
 
-				List<MetaDataEntryInfo> nodes = MetaDataContext.getContext().definitionList(contextPath);
+				List<MetaDataEntryInfo> nodes = MetaDataContext.getContext()
+						.definitionList(contextPath);
 				entryPaths = new ArrayList<>();
 				for (MetaDataEntryInfo node : nodes) {
 					if (RepositoryType.SHARED.equals(repositoryType)
 							&& !node.isSharable()) {
 						continue;
 					} else if (RepositoryType.LOCAL.equals(repositoryType)
-						&& node.isSharable()) {
+							&& node.isSharable()) {
 						continue;
 					}
 					entryPaths.add(node.getPath());
@@ -153,23 +154,24 @@ public class MetaDataConfigDownloadServiceImpl extends AdminDownloadService {
 
 		String fileName = tenantId + "-" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".xml";
 
-		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
 		aals.logDownload("MetaDataConfigDownload", fileName, "path:" + Arrays.toString(entryPaths.toArray()));
 
 		//出力処理
 		try (
-			OutputStreamWriter os = new OutputStreamWriter(resp.getOutputStream(), "UTF-8");
-			PrintWriter writer = new PrintWriter(os);
-		) {
-	        // ファイル名を設定
+				OutputStreamWriter os = new OutputStreamWriter(resp.getOutputStream(), "UTF-8");
+				PrintWriter writer = new PrintWriter(os);) {
+			// ファイル名を設定
 			DownloadUtil.setResponseHeader(resp, MediaType.TEXT_XML, fileName);
 
 			//Export
-			MetaDataPortingService metaService = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
+			MetaDataPortingService metaService = ServiceRegistry.getRegistry()
+					.getService(MetaDataPortingService.class);
 			metaService.write(writer, entryPaths);
 
-        } catch (IOException e) {
-            throw new DownloadRuntimeException(e);
+		} catch (IOException e) {
+			throw new DownloadRuntimeException(e);
 		}
 	}
 
@@ -185,7 +187,7 @@ public class MetaDataConfigDownloadServiceImpl extends AdminDownloadService {
 		//Fileの取得
 		BinaryReference binaryReference = entity.getValue(MetaDataTagEntity.METADATA);
 
-		try (InputStream is = em.getInputStream(binaryReference)){
+		try (InputStream is = em.getInputStream(binaryReference)) {
 
 			if (is == null) {
 				throw new MetaDataExplorerRuntimeException(rs("tools.metaexplorer.MetaDataConfigDownloadServiceImpl.canNotGetTagFile", fileOid));
@@ -193,14 +195,14 @@ public class MetaDataConfigDownloadServiceImpl extends AdminDownloadService {
 
 			String fileName = tenantId + "-" + entity.getName() + ".xml";
 
-			AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+			AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+					.getService(AdminAuditLoggingService.class);
 			aals.logDownload("MetaDataConfigDownload", fileName, "tagName:" + entity.getName());
 
 			//出力
 			try (
-				OutputStreamWriter os = new OutputStreamWriter(resp.getOutputStream(), "UTF-8");
-				PrintWriter writer = new PrintWriter(os);
-			) {
+					OutputStreamWriter os = new OutputStreamWriter(resp.getOutputStream(), "UTF-8");
+					PrintWriter writer = new PrintWriter(os);) {
 
 				//ファイル名設定
 				DownloadUtil.setResponseHeader(resp, MediaType.TEXT_XML, fileName);
@@ -211,7 +213,7 @@ public class MetaDataConfigDownloadServiceImpl extends AdminDownloadService {
 
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
-            throw new DownloadRuntimeException(e);
+			throw new DownloadRuntimeException(e);
 		}
 	}
 

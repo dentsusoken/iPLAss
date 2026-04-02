@@ -37,16 +37,18 @@ import org.iplass.mtp.impl.rdb.adapter.bulk.BulkDeleteContext;
 import org.iplass.mtp.impl.rdb.adapter.bulk.ColumnValue;
 import org.iplass.mtp.impl.rdb.adapter.bulk.DynamicColumnValue;
 
-
 public class IndexBulkDeleteSql {
 	private static final Long LONG_ZERO = Long.valueOf(0);
 
 	public static BulkDeleteContext deleteByOidVersion(GRdbPropertyStoreHandler colDef, Connection con, RdbAdapter rdb) throws SQLException {
-		
-		EntityHandler eh = colDef.getPropertyRuntime().getParent();
-		IndexType type = colDef.getPropertyRuntime().getMetaData().getIndexType();
+
+		EntityHandler eh = colDef.getPropertyRuntime()
+				.getParent();
+		IndexType type = colDef.getPropertyRuntime()
+				.getMetaData()
+				.getIndexType();
 		String indexTableName = IndexBulkInsertSql.indexTableName(eh, colDef);
-		
+
 		BulkDeleteContext bdc = rdb.createBulkDeleteContext();
 		List<ColumnValue> columnValue = new ArrayList<>(4);
 		columnValue.add(new DynamicColumnValue(ObjIndexTable.TENANT_ID, rdb));
@@ -56,11 +58,12 @@ public class IndexBulkDeleteSql {
 			columnValue.add(new DynamicColumnValue(ObjIndexTable.OBJ_VER, rdb));
 		}
 		bdc.setContext(indexTableName, columnValue, null, con);
-		
+
 		return bdc;
 	}
 
-	public static void addValueForDeleteByOidVersion(BulkDeleteContext bdc, int tenantId, EntityHandler eh, IndexType type, String oid, Long version) throws SQLException {
+	public static void addValueForDeleteByOidVersion(BulkDeleteContext bdc, int tenantId, EntityHandler eh, IndexType type, String oid, Long version)
+			throws SQLException {
 		List<Object> values;
 		if (type == IndexType.NON_UNIQUE) {
 			values = new ArrayList<>(4);
@@ -68,7 +71,8 @@ public class IndexBulkDeleteSql {
 			values = new ArrayList<>(3);
 		}
 		values.add(tenantId);
-		values.add(eh.getMetaData().getId());
+		values.add(eh.getMetaData()
+				.getId());
 		values.add(oid);
 		if (type == IndexType.NON_UNIQUE) {
 			if (version == null) {
@@ -79,13 +83,15 @@ public class IndexBulkDeleteSql {
 		bdc.add(values);
 	}
 
-
 	public static BulkDeleteContext deleteByOidVersionColName(GRdbPropertyStoreHandler colDef, Connection con, RdbAdapter rdb) throws SQLException {
-		
-		EntityHandler eh = colDef.getPropertyRuntime().getParent();
-		IndexType type = colDef.getPropertyRuntime().getMetaData().getIndexType();
+
+		EntityHandler eh = colDef.getPropertyRuntime()
+				.getParent();
+		IndexType type = colDef.getPropertyRuntime()
+				.getMetaData()
+				.getIndexType();
 		String indexTableName = IndexBulkInsertSql.indexTableName(eh, colDef);
-		
+
 		BulkDeleteContext bdc = rdb.createBulkDeleteContext();
 		List<ColumnValue> columnValue = new ArrayList<>(5);
 		columnValue.add(new DynamicColumnValue(ObjIndexTable.TENANT_ID, rdb));
@@ -96,14 +102,18 @@ public class IndexBulkDeleteSql {
 			columnValue.add(new DynamicColumnValue(ObjIndexTable.OBJ_VER, rdb));
 		}
 		bdc.setContext(indexTableName, columnValue, null, con);
-		
+
 		return bdc;
 	}
 
-	public static void addValueForDeleteByOidVersionColName(BulkDeleteContext bdc, int tenantId, GRdbPropertyStoreHandler colDef, String oid, Long version) throws SQLException {
-		EntityHandler eh = colDef.getPropertyRuntime().getParent();
-		IndexType type = colDef.getPropertyRuntime().getMetaData().getIndexType();
-		
+	public static void addValueForDeleteByOidVersionColName(BulkDeleteContext bdc, int tenantId, GRdbPropertyStoreHandler colDef, String oid,
+			Long version) throws SQLException {
+		EntityHandler eh = colDef.getPropertyRuntime()
+				.getParent();
+		IndexType type = colDef.getPropertyRuntime()
+				.getMetaData()
+				.getIndexType();
+
 		List<Object> values;
 		if (type == IndexType.NON_UNIQUE) {
 			values = new ArrayList<>(5);
@@ -111,7 +121,8 @@ public class IndexBulkDeleteSql {
 			values = new ArrayList<>(4);
 		}
 		values.add(tenantId);
-		values.add(eh.getMetaData().getId());
+		values.add(eh.getMetaData()
+				.getId());
 		values.add(colDef.getExternalIndexColName());
 		values.add(oid);
 		if (type == IndexType.NON_UNIQUE) {
@@ -127,8 +138,12 @@ public class IndexBulkDeleteSql {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT " + ObjStoreTable.OBJ_ID + ",COUNT(*) FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE());
-		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdbAdaptor.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+				.append(rdbAdaptor.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 		sb.append(" AND " + ObjStoreTable.OBJ_ID + " IN (");
 		boolean first = true;
 		for (String oid : oids) {
@@ -137,7 +152,9 @@ public class IndexBulkDeleteSql {
 			} else {
 				sb.append(",");
 			}
-			sb.append("'").append(rdbAdaptor.sanitize(oid)).append("'");
+			sb.append("'")
+					.append(rdbAdaptor.sanitize(oid))
+					.append("'");
 		}
 		sb.append(") AND " + ObjStoreTable.PG_NO + "=0 GROUP BY " + ObjStoreTable.OBJ_ID);
 

@@ -37,7 +37,6 @@ import org.apache.tika.parser.txt.TXTParser;
  */
 public class BinaryTextParser extends AbstractBinaryReferenceParser {
 
-
 	private static Set<MediaType> customTypes;
 
 	public BinaryTextParser() {

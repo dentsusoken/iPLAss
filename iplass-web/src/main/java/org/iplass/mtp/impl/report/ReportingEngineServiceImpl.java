@@ -26,7 +26,7 @@ import java.util.List;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.web.template.report.definition.OutputFileType;
 
-public class ReportingEngineServiceImpl implements ReportingEngineService{
+public class ReportingEngineServiceImpl implements ReportingEngineService {
 
 	private ReportingEngine[] reportingEngines;
 
@@ -49,8 +49,10 @@ public class ReportingEngineServiceImpl implements ReportingEngineService{
 		ReportingEngine repEngine = null;
 
 		//帳票出力エンジン設定
-		for(ReportingEngine reportingEngine : reportingEngines){
-			if(reportingEngine.getReportingType().getName().equals(type)){
+		for (ReportingEngine reportingEngine : reportingEngines) {
+			if (reportingEngine.getReportingType()
+					.getName()
+					.equals(type)) {
 				repEngine = reportingEngine;
 				break;
 			}
@@ -63,27 +65,29 @@ public class ReportingEngineServiceImpl implements ReportingEngineService{
 	public List<OutputFileType> getOutputFileTypeList(String type) {
 		List<OutputFileType> outputFileTypeList = new ArrayList<OutputFileType>();
 		//帳票出力エンジン設定
-		for(ReportingEngine reportingEngine : reportingEngines){
-			if(reportingEngine.getReportingType().getName().equals(type)){
-				for(String supportFile : reportingEngine.getSupportFiles()){
+		for (ReportingEngine reportingEngine : reportingEngines) {
+			if (reportingEngine.getReportingType()
+					.getName()
+					.equals(type)) {
+				for (String supportFile : reportingEngine.getSupportFiles()) {
 					outputFileTypeList.add(OutputFileType.convertOutputFileType(supportFile));
 				}
 				break;
 			}
 		}
 
-	    return outputFileTypeList;
+		return outputFileTypeList;
 	}
 
 	@Override
 	public List<ReportingType> getReportTypeList() {
 		List<ReportingType> reportTypeList = new ArrayList<ReportingType>();
 		//帳票出力エンジン設定
-		for(ReportingEngine reportingEngine : reportingEngines){
+		for (ReportingEngine reportingEngine : reportingEngines) {
 			reportTypeList.add(reportingEngine.getReportingType());
 		}
 
-	    return reportTypeList;
+		return reportTypeList;
 	}
 
 }

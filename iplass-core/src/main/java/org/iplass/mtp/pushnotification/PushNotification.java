@@ -71,6 +71,7 @@ public class PushNotification {
 			toList.add(to);
 		}
 	}
+
 	public void setToList(List<String> toList) {
 		this.toList = toList;
 	}
@@ -106,9 +107,11 @@ public class PushNotification {
 		}
 		options.put(key, value);
 	}
+
 	public Map<String, Object> getOptions() {
 		return options;
 	}
+
 	public void setOptions(Map<String, Object> options) {
 		this.options = options;
 	}
@@ -148,6 +151,7 @@ public class PushNotification {
 		}
 		return notification;
 	}
+
 	/**
 	 * 通知ペイロードをセットする。
 	 *

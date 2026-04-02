@@ -20,10 +20,9 @@
 
 package org.iplass.mtp.entity.interceptor;
 
-
-
 public interface EntityPurgeInvocation extends EntityInvocation<Void> {
-	
+
 	public Long getRecycleBinId();
+
 	public void setRecycleBinId(Long rbid);
 }

@@ -109,9 +109,8 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 		fields.addAll(codeFieldList);
 		fields.addAll(dataFieldList);
 
-		return fields.toArray(new TreeGridField[]{});
+		return fields.toArray(new TreeGridField[] {});
 	}
-
 
 	/**
 	 * <p>画面に表示されているGrid情報から全PermissionInfoを生成します。</p>
@@ -127,7 +126,7 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 		TreeNode[] allNodes = tree.getAllNodes();
 		if (!getRoleCodeList().isEmpty() && allNodes != null) {
 			for (TreeNode lgrecord : allNodes) {
-				PermissionTreeNode record = (PermissionTreeNode)lgrecord;
+				PermissionTreeNode record = (PermissionTreeNode) lgrecord;
 
 				if (tree.isFolder(record)) {
 					//フォルダは設定されているものが存在する場合のみワイルドカードとして生成
@@ -137,7 +136,7 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 							for (Entity permission : record.getPermission(i)) {
 								RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
 								rolePermissionInfo.setPermission(permission);
-								rolePermissionInfo.setStatus(record.getPermissionStatus(i));	//StatusはRoleレベルで同じ
+								rolePermissionInfo.setStatus(record.getPermissionStatus(i)); //StatusはRoleレベルで同じ
 								rolePermissionList.add(rolePermissionInfo);
 							}
 						}
@@ -163,7 +162,7 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 							for (Entity permission : record.getPermission(i)) {
 								RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
 								rolePermissionInfo.setPermission(permission);
-								rolePermissionInfo.setStatus(record.getPermissionStatus(i));	//StatusはRoleレベルで同じ
+								rolePermissionInfo.setStatus(record.getPermissionStatus(i)); //StatusはRoleレベルで同じ
 								rolePermissionList.add(rolePermissionInfo);
 							}
 						}
@@ -197,17 +196,18 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 		TreeNode[] allNodes = tree.getAllNodes();
 		if (!getRoleCodeList().isEmpty() && allNodes != null) {
 			for (TreeNode lgrecord : allNodes) {
-				PermissionTreeNode record = (PermissionTreeNode)lgrecord;
+				PermissionTreeNode record = (PermissionTreeNode) lgrecord;
 
 				List<RolePermissionInfo> rolePermissionList = new ArrayList<RolePermissionInfo>();
 				for (int i = 0; i < getRoleCodeList().size(); i++) {
 					//Statusが設定されている場合のみ対象(追加、編集、削除されているデータ)
-					if (record.getPermissionStatus(i) != null && !record.getPermissionStatus(i).isEmpty()) {
+					if (record.getPermissionStatus(i) != null && !record.getPermissionStatus(i)
+							.isEmpty()) {
 						if (record.getPermission(i) != null) {
 							for (Entity permission : record.getPermission(i)) {
 								RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
 								rolePermissionInfo.setPermission(permission);
-								rolePermissionInfo.setStatus(record.getPermissionStatus(i));	//StatusはRoleレベルで同じ
+								rolePermissionInfo.setStatus(record.getPermissionStatus(i)); //StatusはRoleレベルで同じ
 								rolePermissionList.add(rolePermissionInfo);
 							}
 						}
@@ -241,9 +241,9 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 
 		PermissionTreeNode rootNode = createTreeNode(rootNodeData);
 		if (rootNode != null) {
-			response.setData(new Record[]{rootNode});
+			response.setData(new Record[] { rootNode });
 		} else {
-			response.setData(new Record[]{});
+			response.setData(new Record[] {});
 		}
 		response.setTotalRows(1);
 		response.setStartRow(0);
@@ -390,7 +390,8 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 
 		Map<String, PermissionTreeNodeInfo> treeNodeMap = new HashMap<String, PermissionTreeNodeInfo>();
 		for (PermissionInfo permission : result.getPermissionList()) {
-			String[] nodePaths = permission.getDefinitionName().split("/");
+			String[] nodePaths = permission.getDefinitionName()
+					.split("/");
 
 			//folderの作成
 			String prePath = rootData.getPath();
@@ -414,7 +415,7 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 					}
 					prePath = folderPath;
 				}
-			} else if (nodePaths.length == 1 && !nodePaths[0].equals(permission.getDefinitionName())){
+			} else if (nodePaths.length == 1 && !nodePaths[0].equals(permission.getDefinitionName())) {
 				//gem/(TOP画面)対応
 				String folderPath = prePath + nodePaths[0] + "/";
 
@@ -442,7 +443,7 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 
 	private PermissionTreeNodeInfo createFolderTreeNodeData(String folderPath, String folderName, List<PermissionInfo> wildCardPermissionList) {
 
-		String folderDefName = folderPath.substring(1) + "*";	//先頭の/をとって、後に*を追加
+		String folderDefName = folderPath.substring(1) + "*"; //先頭の/をとって、後に*を追加
 
 		PermissionTreeNodeInfo folder = new PermissionTreeNodeInfo();
 
@@ -495,7 +496,7 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 		children.addAll(createItemTreeNodeList(rootInfo.getItems()));
 
 		if (!children.isEmpty()) {
-			root.setChildren(children.toArray(new PermissionTreeNode[]{}));
+			root.setChildren(children.toArray(new PermissionTreeNode[] {}));
 			root.setIsFolder(true);
 		}
 
@@ -523,7 +524,7 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 		children.addAll(createFolderTreeNodeList(childInfo.getChildren()));
 		children.addAll(createItemTreeNodeList(childInfo.getItems()));
 		if (!children.isEmpty()) {
-			node.setChildren(children.toArray(new PermissionTreeNode[]{}));
+			node.setChildren(children.toArray(new PermissionTreeNode[] {}));
 		}
 		return node;
 	}
@@ -614,12 +615,12 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 			}
 			Object jsObject = getAttributeAsObject("roleData_" + roleIndex);
 			if (jsObject != null) {
-				Object[] objArray = (Object[]) JSOHelper.convertToJava((JavaScriptObject)jsObject, true);
+				Object[] objArray = (Object[]) JSOHelper.convertToJava((JavaScriptObject) jsObject, true);
 				Entity[] entityArray = new Entity[objArray.length];
 				int cnt = 0;
 				for (Object obj : objArray) {
-					entityArray[cnt]  = (Entity) obj;
-					cnt ++;
+					entityArray[cnt] = (Entity) obj;
+					cnt++;
 				}
 				return entityArray;
 			} else {
@@ -630,7 +631,7 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 		public void addPermission(String roleCode, Entity value) {
 			Entity[] current = getPermission(roleCode);
 			if (current == null) {
-				setPermission(roleCode, new Entity[]{value});
+				setPermission(roleCode, new Entity[] { value });
 			} else {
 				Entity[] newArray = new Entity[current.length + 1];
 				for (int i = 0; i < current.length; i++) {
@@ -710,7 +711,6 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 			this.path = path;
 		}
 
-
 		public String getDefinitionName() {
 			return definitionName;
 		}
@@ -730,9 +730,11 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 		public List<RolePermissionInfo> getRolePermissionList() {
 			return rolePermissionList;
 		}
+
 		public void setRolePermissionList(List<RolePermissionInfo> rolePermissionList) {
 			this.rolePermissionList = rolePermissionList;
 		}
+
 		public void addRolePermission(RolePermissionInfo rolePermission) {
 			if (rolePermissionList == null) {
 				rolePermissionList = new ArrayList<RolePermissionInfo>();
@@ -747,6 +749,7 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 		public void setChildren(List<PermissionTreeNodeInfo> children) {
 			this.children = children;
 		}
+
 		public void addChild(PermissionTreeNodeInfo child) {
 			if (children == null) {
 				children = new ArrayList<PermissionTreeNodeInfo>();
@@ -757,9 +760,11 @@ public abstract class PermissionTreeGridDS extends PermissionGridDS {
 		public List<PermissionTreeNodeInfo> getItems() {
 			return items;
 		}
+
 		public void setItems(List<PermissionTreeNodeInfo> items) {
 			this.items = items;
 		}
+
 		public void addItem(PermissionTreeNodeInfo item) {
 			if (items == null) {
 				items = new ArrayList<PermissionTreeNodeInfo>();

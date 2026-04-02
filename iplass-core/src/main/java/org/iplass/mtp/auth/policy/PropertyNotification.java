@@ -25,14 +25,14 @@ import java.util.List;
 import org.iplass.mtp.auth.policy.definition.NotificationType;
 
 public class PropertyNotification extends AccountNotification {
-	
+
 	private List<String> updatedPropertyNames;
 
 	public PropertyNotification(NotificationType type, String userOid, List<String> updatedPropertyNames) {
 		super(type, userOid);
 		this.updatedPropertyNames = updatedPropertyNames;
 	}
-	
+
 	public List<String> getUpdatedPropertyNames() {
 		return updatedPropertyNames;
 	}

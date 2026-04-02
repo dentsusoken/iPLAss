@@ -71,7 +71,7 @@ public class MenuAuthVisitor implements MenuItemVisitor<Boolean> {
 		String actionName = actionMenuItem.getActionName();
 		String param = actionMenuItem.getParameter();
 
-		if(!checkActionPermission(actionName, new HashMap<String, String>(), param)) {
+		if (!checkActionPermission(actionName, new HashMap<String, String>(), param)) {
 			return false;
 		}
 
@@ -94,7 +94,7 @@ public class MenuAuthVisitor implements MenuItemVisitor<Boolean> {
 		paramMap.put(Constants.VIEW_NAME, entityMenuItem.getViewName());
 		String param = entityMenuItem.getParameter();
 
-		if(!checkActionPermission(SearchViewCommand.SEARCH_ACTION_NAME, paramMap, param)) {
+		if (!checkActionPermission(SearchViewCommand.SEARCH_ACTION_NAME, paramMap, param)) {
 			return false;
 		}
 
@@ -110,13 +110,14 @@ public class MenuAuthVisitor implements MenuItemVisitor<Boolean> {
 	}
 
 	private List<MenuItem> acceptChild(List<MenuItem> childs) {
-		if(childs == null || childs.isEmpty()) {
+		if (childs == null || childs.isEmpty()) {
 			// 子供が存在しないので終了
 			return null;
 		}
 		// 子供の権限が無い場合は除外
 		List<MenuItem> validChilds = childs.stream()
-				.filter(child -> child.accept(this)).collect(Collectors.toList());
+				.filter(child -> child.accept(this))
+				.collect(Collectors.toList());
 
 		if (validChilds.isEmpty()) {
 			return null;
@@ -127,12 +128,12 @@ public class MenuAuthVisitor implements MenuItemVisitor<Boolean> {
 
 	private Boolean checkActionPermission(String actionName, Map<String, String> paramMap, String param) {
 		// 権限チェックのパラメータにマッピングする。
-		if(StringUtil.isNotEmpty(param)) {
+		if (StringUtil.isNotEmpty(param)) {
 			paramMap.putAll(
 					Arrays.stream(param.split("&"))
-						.map(value -> value.split("="))
-						.filter(value -> value.length == 2)
-						.collect(Collectors.toMap(value -> value[0], value -> value[1])));
+							.map(value -> value.split("="))
+							.filter(value -> value.length == 2)
+							.collect(Collectors.toMap(value -> value[0], value -> value[1])));
 		}
 
 		if (authContext.checkPermission(new ActionPermission(actionName, new MenuActionParameter(paramMap)))) {

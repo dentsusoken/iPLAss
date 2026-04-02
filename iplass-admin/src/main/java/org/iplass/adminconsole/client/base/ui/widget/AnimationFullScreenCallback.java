@@ -32,9 +32,11 @@ public abstract class AnimationFullScreenCallback implements AnimationCallback {
 	public void setOutline(Canvas animateOutline) {
 		this.animateOutline = animateOutline;
 	}
+
 	public void setWidth(int width) {
 		this.width = width;
 	}
+
 	public void setHeight(int height) {
 		this.height = height;
 	}

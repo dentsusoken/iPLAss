@@ -20,12 +20,12 @@
 
 package org.iplass.mtp.webapi;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.RequestInfo;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface WebApiRequestConstants {
 

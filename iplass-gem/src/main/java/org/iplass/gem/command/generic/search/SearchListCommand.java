@@ -22,8 +22,6 @@ package org.iplass.gem.command.generic.search;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.CreateSearchResultUtil;
 import org.iplass.gem.command.common.SearchResultData;
@@ -42,6 +40,8 @@ import org.iplass.mtp.view.filter.EntityFilterManager;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
+
+import jakarta.servlet.ServletException;
 
 @WebApi(
 		name = SearchListCommand.WEBAPI_NAME,
@@ -66,9 +66,12 @@ public final class SearchListCommand extends SearchListPartsCommandBase {
 	private EntityFilterManager efm;
 
 	public SearchListCommand() {
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		efm = ManagerLocator.getInstance()
+				.getManager(EntityFilterManager.class);
 	}
 
 	@Override

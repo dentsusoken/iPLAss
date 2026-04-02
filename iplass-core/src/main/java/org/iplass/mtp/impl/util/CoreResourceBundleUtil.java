@@ -31,7 +31,8 @@ public class CoreResourceBundleUtil {
 	/** Core用リソースファイル名 */
 	public static final String RESOURCE_NAME = "mtp-core-messages";
 
-	private CoreResourceBundleUtil(){}
+	private CoreResourceBundleUtil() {
+	}
 
 	public static String resourceString(String key, Object... arguments) {
 		return resourceString(null, key, arguments);
@@ -43,7 +44,8 @@ public class CoreResourceBundleUtil {
 		if (StringUtil.isNotEmpty(lang)) {
 			langLocale = Locale.forLanguageTag(lang);
 		} else {
-			langLocale = ExecuteContext.getCurrentContext().getLangLocale();
+			langLocale = ExecuteContext.getCurrentContext()
+					.getLangLocale();
 		}
 
 		return ResourceBundleUtil.resourceString(RESOURCE_NAME, langLocale, key, arguments);

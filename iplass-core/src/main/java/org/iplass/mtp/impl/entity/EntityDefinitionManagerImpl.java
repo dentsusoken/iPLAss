@@ -49,7 +49,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class EntityDefinitionManagerImpl implements
 		EntityDefinitionManager {
 
@@ -73,7 +72,8 @@ public class EntityDefinitionManagerImpl implements
 	//・いくつかの変更をまとめて、後々どこかのタイミングで一括で適用、といったことを可能にする
 
 	public EntityDefinitionManagerImpl() {
-		dmHandlerService = ServiceRegistry.getRegistry().getService(EntityService.class);
+		dmHandlerService = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
 		dm = DefinitionService.getInstance();
 	}
 
@@ -101,7 +101,8 @@ public class EntityDefinitionManagerImpl implements
 					id = result.get();
 				} catch (ExecutionException e) {
 					//TODO 本格的な非同期実行サービス実装後は、そちらに処理結果を保存して、後から確認できるようにする。
-					message = "exception occured during entity definition create:" + e.getCause().getMessage();
+					message = "exception occured during entity definition create:" + e.getCause()
+							.getMessage();
 					logger.error(message, e.getCause());
 					if (e.getCause() instanceof MetaDataDuplicatePathException) {
 						//重複エラーは起こりやすいのでメッセージを親切にする
@@ -118,7 +119,8 @@ public class EntityDefinitionManagerImpl implements
 					return false;
 				}
 				//呼び出し元のスレッドローカルなメタデータキャッシュもクリアする
-				EntityContext.getCurrentContext().refreshTransactionLocalCache(id);
+				EntityContext.getCurrentContext()
+						.refreshTransactionLocalCache(id);
 				return true;
 			}
 
@@ -177,7 +179,8 @@ public class EntityDefinitionManagerImpl implements
 			return null;
 //			throw new EntityRuntimeException(definitionName + " is not defined.");
 		}
-		return eh.getMetaData().currentConfig(ctx);
+		return eh.getMetaData()
+				.currentConfig(ctx);
 	}
 
 	@Override
@@ -204,7 +207,8 @@ public class EntityDefinitionManagerImpl implements
 					id = result.get();
 				} catch (ExecutionException e) {
 					//TODO 本格的な非同期実行サービス実装後は、そちらに処理結果を保存して、後から確認できるようにする。
-					message = "exception occured during entity definition remove:" + e.getCause().getMessage();
+					message = "exception occured during entity definition remove:" + e.getCause()
+							.getMessage();
 					logger.error(message, e.getCause());
 					return false;
 				} catch (InterruptedException e) {
@@ -217,7 +221,8 @@ public class EntityDefinitionManagerImpl implements
 					return false;
 				}
 				//呼び出し元のスレッドローカルなメタデータキャッシュもクリアする
-				EntityContext.getCurrentContext().refreshTransactionLocalCache(id);
+				EntityContext.getCurrentContext()
+						.refreshTransactionLocalCache(id);
 				return true;
 			}
 
@@ -236,7 +241,6 @@ public class EntityDefinitionManagerImpl implements
 
 	@Override
 	public EntityDefinitionModifyResult update(EntityDefinition definition, Map<String, String> renamePropertyMap) {
-
 
 		//FIXME MappedByで定義されている定義名、プロパティ名の更新はどのように行うか？？メタデータをXmlの中に入れてしまうと、大変か。MappedByされたプロパティのみ別テーブル上で管理するか？それとも、MappedByの更新せずとも整合性を問題なくできるか？
 
@@ -276,7 +280,8 @@ public class EntityDefinitionManagerImpl implements
 					id = result.get();
 				} catch (ExecutionException e) {
 					//TODO 本格的な非同期実行サービス実装後は、そちらに処理結果を保存して、後から確認できるようにする。
-					message = "exception occured during entity definition update:" + e.getCause().getMessage();
+					message = "exception occured during entity definition update:" + e.getCause()
+							.getMessage();
 					logger.error(message, e.getCause());
 					return false;
 				} catch (InterruptedException e) {
@@ -289,7 +294,8 @@ public class EntityDefinitionManagerImpl implements
 					return false;
 				}
 				//呼び出し元のスレッドローカルなメタデータキャッシュもクリアする
-				EntityContext.getCurrentContext().refreshTransactionLocalCache(id);
+				EntityContext.getCurrentContext()
+						.refreshTransactionLocalCache(id);
 				return true;
 			}
 
@@ -302,7 +308,9 @@ public class EntityDefinitionManagerImpl implements
 
 	@Override
 	public void renameEntityDefinition(String from, String to) {
-		ManagerLocator.getInstance().getManager(DefinitionManager.class).rename(EntityDefinition.class, from, to);
+		ManagerLocator.getInstance()
+				.getManager(DefinitionManager.class)
+				.rename(EntityDefinition.class, from, to);
 	}
 
 	@Override
@@ -324,10 +332,13 @@ public class EntityDefinitionManagerImpl implements
 	@Override
 	public List<Pair<String, Long>> getAutoNumberCurrentValueList(String definitionName, String propertyName) {
 		final AutoNumberTypeRuntime typeRuntime = getAutoNumberRuntime(definitionName, propertyName);
-		return typeRuntime.keySet().stream().map(key->{
-			long value = typeRuntime.currentValue(key);
-			return new ImmutablePair<String, Long>(key, value);
-		}).collect(Collectors.toList());
+		return typeRuntime.keySet()
+				.stream()
+				.map(key -> {
+					long value = typeRuntime.currentValue(key);
+					return new ImmutablePair<String, Long>(key, value);
+				})
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -350,7 +361,8 @@ public class EntityDefinitionManagerImpl implements
 		if (!(ph instanceof PrimitivePropertyHandler)) {
 			throw new EntityRuntimeException(definitionName + "." + propertyName + " is not AutoNumberProperty");
 		}
-		if (!(((PrimitivePropertyHandler) ph).getMetaData().getType() instanceof AutoNumberType)) {
+		if (!(((PrimitivePropertyHandler) ph).getMetaData()
+				.getType() instanceof AutoNumberType)) {
 			throw new EntityRuntimeException(definitionName + "." + propertyName + " is not AutoNumberProperty");
 		}
 		return (AutoNumberTypeRuntime) ((PrimitivePropertyHandler) ph).getTypeSpecificRuntime();
@@ -358,7 +370,8 @@ public class EntityDefinitionManagerImpl implements
 
 	@Override
 	public List<String> getStorageSpaceList() {
-		StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
+		StoreService storeService = ServiceRegistry.getRegistry()
+				.getService(StoreService.class);
 		return storeService.getStorageSpaceList();
 	}
 
@@ -381,7 +394,8 @@ public class EntityDefinitionManagerImpl implements
 
 	@Override
 	public List<DefinitionSummary> definitionSummaryList(String filterPath, boolean recursive) {
-		DefinitionManager manager = ManagerLocator.getInstance().getManager(DefinitionManager.class);
+		DefinitionManager manager = ManagerLocator.getInstance()
+				.getManager(DefinitionManager.class);
 		return manager.listName(getDefinitionType(), filterPath, recursive);
 	}
 

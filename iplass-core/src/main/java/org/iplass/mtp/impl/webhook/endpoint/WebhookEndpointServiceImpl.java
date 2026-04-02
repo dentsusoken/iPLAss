@@ -19,11 +19,11 @@
  */
 package org.iplass.mtp.impl.webhook.endpoint;
 
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.iplass.mtp.ManagerLocator;
@@ -45,20 +45,25 @@ import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinitionManager;
 
-public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<MetaWebhookEndpoint, WebhookEndpointRuntime> implements WebhookEndpointService {
+public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<MetaWebhookEndpoint, WebhookEndpointRuntime>
+		implements WebhookEndpointService {
 	WebhookAuthTokenHandler tokenHandler;
 
 	public static final String WEBHOOKENDPOINT_DEFINITION_META_PATH = "/webhook/endpoint/";
-	public static class TypeMap extends DefinitionMetaDataTypeMap<WebhookEndpointDefinition, MetaWebhookEndpoint>{
+
+	public static class TypeMap extends DefinitionMetaDataTypeMap<WebhookEndpointDefinition, MetaWebhookEndpoint> {
 		public TypeMap() {
 			super(getFixedPath(), MetaWebhookEndpoint.class, WebhookEndpointDefinition.class);
 		}
+
 		public static String getFixedPath() {
 			return WEBHOOKENDPOINT_DEFINITION_META_PATH;
 		}
+
 		@Override
 		public TypedDefinitionManager<WebhookEndpointDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(WebhookEndpointDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(WebhookEndpointDefinitionManager.class);
 		}
 
 		@Override
@@ -69,15 +74,16 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 
 	@Override
 	public void init(Config config) {
-		tokenHandler = (WebhookAuthTokenHandler)ServiceRegistry
-				.getRegistry().getService(AuthTokenService.class)
+		tokenHandler = (WebhookAuthTokenHandler) ServiceRegistry
+				.getRegistry()
+				.getService(AuthTokenService.class)
 				.getHandler(WebhookAuthTokenHandler.TYPE_WEBHOOK_AUTHTOKEN_HANDLER);
 	}
 
 	@Override
 	public void destroy() {
 	}
-	
+
 	@Override
 	public Class<MetaWebhookEndpoint> getMetaDataType() {
 		return MetaWebhookEndpoint.class;
@@ -90,9 +96,11 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 
 	@Override
 	public void deleteSecurityTokenById(String metaDataId) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		WebhookAuthTokenHandler tokenHandler = (WebhookAuthTokenHandler)ServiceRegistry
-				.getRegistry().getService(AuthTokenService.class)
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
+		WebhookAuthTokenHandler tokenHandler = (WebhookAuthTokenHandler) ServiceRegistry
+				.getRegistry()
+				.getService(AuthTokenService.class)
 				.getHandler(WebhookAuthTokenHandler.TYPE_WEBHOOK_AUTHTOKEN_HANDLER);
 
 		String series = metaDataId;
@@ -105,13 +113,13 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 	/**
 	 * 
 	 * basic = basicName+":"+basicPassword;
-	 * */	
+	 * */
 	@Override
-	public void updateBasicSecurityTokenById(int tenantId,String metaDataId, String basic) {
-		
+	public void updateBasicSecurityTokenById(int tenantId, String metaDataId, String basic) {
+
 		if (basic == null || basic.isEmpty()) {
 			tokenHandler.deleteSecret(tenantId, WebhookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE, metaDataId);
-		} else if (getBasicTokenById(tenantId,metaDataId)==null) {
+		} else if (getBasicTokenById(tenantId, metaDataId) == null) {
 			String secret = Base64.encodeBase64String(basic.getBytes());
 			tokenHandler.insertSecret(tenantId, WebhookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		} else {
@@ -121,10 +129,10 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 	}
 
 	@Override
-	public void updateBearerSecurityTokenById(int tenantId,String metaDataId, String secret) {
+	public void updateBearerSecurityTokenById(int tenantId, String metaDataId, String secret) {
 		if (secret == null || secret.isEmpty()) {
 			tokenHandler.deleteSecret(tenantId, WebhookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, metaDataId);
-		} else if (getBearerTokenById(tenantId, metaDataId)==null) {
+		} else if (getBearerTokenById(tenantId, metaDataId) == null) {
 			tokenHandler.insertSecret(tenantId, WebhookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		} else {
 			tokenHandler.updateSecret(tenantId, WebhookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
@@ -132,10 +140,10 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 	}
 
 	@Override
-	public void updateHmacSecurityTokenById(int tenantId,String metaDataId, String secret) {
+	public void updateHmacSecurityTokenById(int tenantId, String metaDataId, String secret) {
 		if (secret == null || secret.isEmpty()) {
 			tokenHandler.deleteSecret(tenantId, WebhookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, metaDataId);
-		} else if (getHmacTokenById(tenantId, metaDataId)==null) {
+		} else if (getHmacTokenById(tenantId, metaDataId) == null) {
 			tokenHandler.insertSecret(tenantId, WebhookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		} else {
 			tokenHandler.updateSecret(tenantId, WebhookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
@@ -143,9 +151,9 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 	}
 
 	@Override
-	public String getBasicTokenById(int tenantId,String metaDataId){
+	public String getBasicTokenById(int tenantId, String metaDataId) {
 		String base64 = tokenHandler.getSecret(tenantId, metaDataId, WebhookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE);
-		if (base64 ==null || base64.isEmpty()) {
+		if (base64 == null || base64.isEmpty()) {
 			return null;
 		}
 		String token = new String(Base64.decodeBase64(base64));
@@ -153,52 +161,53 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 	}
 
 	@Override
-	public String getBearerTokenById(int tenantId,String metaDataId){
+	public String getBearerTokenById(int tenantId, String metaDataId) {
 		String token = tokenHandler.getSecret(tenantId, metaDataId, WebhookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE);
 		return token;
 	}
 
 	@Override
-	public String getHmacTokenById(int tenantId,String metaDataId){
+	public String getHmacTokenById(int tenantId, String metaDataId) {
 		String token = tokenHandler.getSecret(tenantId, metaDataId, WebhookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE);
 		return token;
 	}
 
 	@Override
 	public String generateHmacTokenString() {
-			KeyGenerator keyGen;
-			try {
-				keyGen = KeyGenerator.getInstance("HmacSHA256");
-			} catch (NoSuchAlgorithmException e) {
-				throw new RuntimeException(e);
-			}
-			SecretKey secretKey = keyGen.generateKey();
-			String encodedKey = java.util.Base64.getEncoder().encodeToString(secretKey.getEncoded());
+		KeyGenerator keyGen;
+		try {
+			keyGen = KeyGenerator.getInstance("HmacSHA256");
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+		SecretKey secretKey = keyGen.generateKey();
+		String encodedKey = java.util.Base64.getEncoder()
+				.encodeToString(secretKey.getEncoded());
 		return encodedKey;
 	}
 
 	@Override
 	public void deleteSecurityTokenByDefinitionName(String definitionName) {
-		
+
 		deleteSecurityTokenById(getMetaIdByDefinitionName(definitionName));
 	}
 
 	@Override
 	public void updateBasicSecurityTokenByDefinitionName(int tenantId, String definitionName, String basic) {
-		updateBasicSecurityTokenById(tenantId,getMetaIdByDefinitionName(definitionName),basic);
-		
+		updateBasicSecurityTokenById(tenantId, getMetaIdByDefinitionName(definitionName), basic);
+
 	}
 
 	@Override
 	public void updateHmacSecurityTokenByDefinitionName(int tenantId, String definitionName, String secret) {
-		
-		updateHmacSecurityTokenById(tenantId,getMetaIdByDefinitionName(definitionName),secret);
+
+		updateHmacSecurityTokenById(tenantId, getMetaIdByDefinitionName(definitionName), secret);
 	}
 
 	@Override
 	public void updateBearerSecurityTokenByDefinitionName(int tenantId, String definitionName, String secret) {
 		updateBearerSecurityTokenById(tenantId, getMetaIdByDefinitionName(definitionName), secret);
-		
+
 	}
 
 	@Override
@@ -216,20 +225,21 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 		return getBasicTokenById(tenantId, getMetaIdByDefinitionName(definitionName));
 	}
 
-	public GroovyTemplate  getUrlTemplateByName(String definitionName) {
-		return this.getRuntimeByName(definitionName).getUrlTemplate();
+	public GroovyTemplate getUrlTemplateByName(String definitionName) {
+		return this.getRuntimeByName(definitionName)
+				.getUrlTemplate();
 	}
-	
+
 	@Override
 	public void updateCustomSecurityTokenByDefinitionName(int tenantId, String definitionName, String secret) {
-		updateCustomSecurityTokenById(tenantId,getMetaIdByDefinitionName(definitionName),secret);
+		updateCustomSecurityTokenById(tenantId, getMetaIdByDefinitionName(definitionName), secret);
 	}
 
 	@Override
 	public void updateCustomSecurityTokenById(int tenantId, String metaDataId, String secret) {
 		if (secret == null || secret.isEmpty()) {
 			tokenHandler.deleteSecret(tenantId, WebhookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, metaDataId);
-		} else if (getCustomTokenById(tenantId, metaDataId)==null) {
+		} else if (getCustomTokenById(tenantId, metaDataId) == null) {
 			tokenHandler.insertSecret(tenantId, WebhookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		} else {
 			tokenHandler.updateSecret(tenantId, WebhookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
@@ -246,27 +256,28 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 		String token = tokenHandler.getSecret(tenantId, metaDataId, WebhookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE);
 		return token;
 	}
-	
+
 	/**
 	 * <p>getToken</p> 
 	 * トークンタイプ:WHHM,WHBT,WHBA,WHCT
 	 * */
 	@Override
-	public String getSecurityToken(int tenantId, String definitionName,  String tokenType) {
-		if(tokenType==null||tokenType.replaceAll("\\s","").isEmpty()) {
+	public String getSecurityToken(int tenantId, String definitionName, String tokenType) {
+		if (tokenType == null || tokenType.replaceAll("\\s", "")
+				.isEmpty()) {
 			return null;
 		}
-		if( WebhookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE.equals(tokenType)){
-			return getHmacTokenByDefinitionName(tenantId,definitionName);
+		if (WebhookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE.equals(tokenType)) {
+			return getHmacTokenByDefinitionName(tenantId, definitionName);
 		}
-		if( WebhookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE.equals(tokenType)){
-			return getBearerTokenByDefinitionName(tenantId,definitionName);
+		if (WebhookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE.equals(tokenType)) {
+			return getBearerTokenByDefinitionName(tenantId, definitionName);
 		}
-		if( WebhookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE.equals(tokenType)){
-			return getBasicTokenByDefinitionName(tenantId,definitionName);
+		if (WebhookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE.equals(tokenType)) {
+			return getBasicTokenByDefinitionName(tenantId, definitionName);
 		}
-		if( WebhookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE.equals(tokenType)){
-			return getCustomTokenByDefinitionName(tenantId,definitionName);
+		if (WebhookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE.equals(tokenType)) {
+			return getCustomTokenByDefinitionName(tenantId, definitionName);
 		}
 		throw new RuntimeException("unknown TokenType");
 	}
@@ -277,10 +288,12 @@ public class WebhookEndpointServiceImpl extends AbstractTypedMetaDataService<Met
 	}
 
 	private String getMetaIdByDefinitionName(String definitionName) {
-		String path = DefinitionService.getInstance().getPathByMeta(MetaWebhookEndpoint.class, definitionName);
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
-		return entry.getMetaData().getId();
+		String path = DefinitionService.getInstance()
+				.getPathByMeta(MetaWebhookEndpoint.class, definitionName);
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(path);
+		return entry.getMetaData()
+				.getId();
 	}
-	
-	
+
 }

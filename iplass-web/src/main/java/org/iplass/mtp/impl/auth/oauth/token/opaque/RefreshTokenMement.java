@@ -35,14 +35,14 @@ class RefreshTokenMement implements Serializable {
 		private String key;
 		private String clientName;
 		private Timestamp startDate;
-		
+
 		public RefreshTokenInfo() {
 		}
-		
+
 		public RefreshTokenInfo(String clientName) {
 			this.clientName = clientName;
 		}
-		
+
 		public String getClientName() {
 			return clientName;
 		}
@@ -58,7 +58,7 @@ class RefreshTokenMement implements Serializable {
 		public void setKey(String key) {
 			this.key = key;
 		}
-		
+
 		public void setStartDate(Timestamp startDate) {
 			this.startDate = startDate;
 		}
@@ -72,7 +72,7 @@ class RefreshTokenMement implements Serializable {
 		public String getKey() {
 			return key;
 		}
-		
+
 		@Override
 		public Timestamp getStartDate() {
 			return startDate;
@@ -85,18 +85,19 @@ class RefreshTokenMement implements Serializable {
 			return sb.toString();
 		}
 	}
-	
+
 	private String clientMetaDataId;
 	private long expires;
 	private String userUniqueId;
-	
+
 	void save(RefreshTokenInfo info, long expires, String userUniqueId) {
 		OAuthClientRuntime client = OAuthServiceHolder.client.getRuntimeByName(info.getClientName());
-		clientMetaDataId = client.getMetaData().getId();
+		clientMetaDataId = client.getMetaData()
+				.getId();
 		this.expires = expires;
 		this.userUniqueId = userUniqueId;
 	}
-	
+
 	public String getClientMetaDataId() {
 		return clientMetaDataId;
 	}
@@ -112,8 +113,9 @@ class RefreshTokenMement implements Serializable {
 	void fill(RefreshTokenInfo info) {
 		OAuthClientRuntime ocr = OAuthServiceHolder.client.getRuntimeById(clientMetaDataId);
 		if (ocr != null) {
-			info.setClientName(ocr.getMetaData().getName());
+			info.setClientName(ocr.getMetaData()
+					.getName());
 		}
 	}
-	
+
 }

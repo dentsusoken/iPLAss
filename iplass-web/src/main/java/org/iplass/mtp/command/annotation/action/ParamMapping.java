@@ -36,8 +36,10 @@ public @interface ParamMapping {
 	 * ActionMappingのパスを除いたサブパスの文字列をマップする場合の定数です。
 	 */
 	public static final String PATHS = ParamMapDefinition.PATHS;
-	
+
 	String name();
+
 	String mapFrom();
+
 	String condition() default "##default";
 }

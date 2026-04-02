@@ -27,19 +27,20 @@ class PropertyRef {
 	private PropertyInfo propertyInfo;
 	private Object bean;
 	private ReferencePropertyHandler rph;
-	
+
 	PropertyRef(Object bean, PropertyInfo propertyInfo) {
 		this.bean = bean;
 		this.propertyInfo = propertyInfo;
-		this.propertyName = propertyInfo.getDescriptor().getName();
+		this.propertyName = propertyInfo.getDescriptor()
+				.getName();
 	}
-	
+
 	PropertyRef(Object bean, ReferencePropertyHandler rph) {
 		this.bean = bean;
 		this.propertyName = rph.getName();
 		this.rph = rph;
 	}
-	
+
 	public TypeKind getComponentTypeKind() {
 		if (propertyInfo != null) {
 			return propertyInfo.getComponentTypeKind();

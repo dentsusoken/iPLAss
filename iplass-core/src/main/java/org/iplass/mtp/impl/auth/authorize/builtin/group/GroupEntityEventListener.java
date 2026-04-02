@@ -47,9 +47,14 @@ public class GroupEntityEventListener implements EntityEventListener {
 
 	@Override
 	public boolean beforeDelete(Entity entity, EntityEventContext context) {
-		Entity before = ManagerLocator.getInstance().getManager(EntityManager.class).load(entity.getOid(), entity.getDefinitionName());
+		Entity before = ManagerLocator.getInstance()
+				.getManager(EntityManager.class)
+				.load(entity.getOid(), entity.getDefinitionName());
 		if (before != null && before.getValue(Group.CODE) != null) {
-			GroupContext beforeGroupContext = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).getGroupContext((String) before.getValue(Group.CODE));
+			GroupContext beforeGroupContext = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class)
+					.getGroupContext((String) before.getValue(Group.CODE));
 			context.setAttribute("groupContextForDel", beforeGroupContext);
 		}
 		return true;
@@ -59,7 +64,9 @@ public class GroupEntityEventListener implements EntityEventListener {
 	public void afterDelete(Entity entity, EntityEventContext context) {
 		GroupContext beforeGroupContext = (GroupContext) context.getAttribute("groupContextForDel");
 		if (beforeGroupContext != null) {
-			TenantAuthorizeContext authCotnext = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class);
+			TenantAuthorizeContext authCotnext = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class);
 			authCotnext.notifyGroupDelete(beforeGroupContext.getGroupCode(), beforeGroupContext);
 			if (beforeGroupContext.getParentGroupCode() != null) {
 				authCotnext.notifyGroupUpdate(beforeGroupContext.getParentGroupCode());
@@ -69,7 +76,9 @@ public class GroupEntityEventListener implements EntityEventListener {
 
 	@Override
 	public void afterInsert(Entity entity, EntityEventContext context) {
-		TenantAuthorizeContext authCotnext = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class);
+		TenantAuthorizeContext authCotnext = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getResource(TenantAuthorizeContext.class);
 		String groupCode = (String) entity.getValue(Group.CODE);
 		authCotnext.notifyGroupCreate(groupCode);
 		GroupContext created = authCotnext.getGroupContext(groupCode);
@@ -80,21 +89,29 @@ public class GroupEntityEventListener implements EntityEventListener {
 
 	@Override
 	public boolean beforeUpdate(Entity entity, EntityEventContext context) {
-		Entity before = ManagerLocator.getInstance().getManager(EntityManager.class).load(entity.getOid(), entity.getDefinitionName());
+		Entity before = ManagerLocator.getInstance()
+				.getManager(EntityManager.class)
+				.load(entity.getOid(), entity.getDefinitionName());
 		if (before != null && before.getValue(Group.CODE) != null) {
-			GroupContext beforeGroupContext = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).getGroupContext((String) before.getValue(Group.CODE));
+			GroupContext beforeGroupContext = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class)
+					.getGroupContext((String) before.getValue(Group.CODE));
 			context.setAttribute("groupContextForUpdate", beforeGroupContext);
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void afterUpdate(Entity entity, EntityEventContext context) {
 		GroupContext beforeGroupContext = (GroupContext) context.getAttribute("groupContextForUpdate");
-		TenantAuthorizeContext tAuth = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class);
+		TenantAuthorizeContext tAuth = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getResource(TenantAuthorizeContext.class);
 		String newGroupCode = entity.getValue(Group.CODE);
 		if (beforeGroupContext != null) {
-			if (!beforeGroupContext.getGroupCode().equals(newGroupCode)) {
+			if (!beforeGroupContext.getGroupCode()
+					.equals(newGroupCode)) {
 				tAuth.notifyGroupDelete(beforeGroupContext.getGroupCode(), beforeGroupContext);
 			}
 		}
@@ -102,7 +119,8 @@ public class GroupEntityEventListener implements EntityEventListener {
 		GroupContext updated = tAuth.getGroupContext(newGroupCode);
 		if (beforeGroupContext != null) {
 			if (beforeGroupContext.getParentGroupCode() != null
-					&& !beforeGroupContext.getParentGroupCode().equals(updated.getParentGroupCode())) {
+					&& !beforeGroupContext.getParentGroupCode()
+							.equals(updated.getParentGroupCode())) {
 				tAuth.notifyGroupUpdate(beforeGroupContext.getParentGroupCode());
 			}
 		}
@@ -111,10 +129,11 @@ public class GroupEntityEventListener implements EntityEventListener {
 		}
 	}
 
-
 	@Override
 	public void afterRestore(Entity entity) {
-		TenantAuthorizeContext authCotnext = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class);
+		TenantAuthorizeContext authCotnext = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getResource(TenantAuthorizeContext.class);
 		String groupCode = (String) entity.getValue(Group.CODE);
 		authCotnext.notifyGroupCreate(groupCode);
 		GroupContext created = authCotnext.getGroupContext(groupCode);

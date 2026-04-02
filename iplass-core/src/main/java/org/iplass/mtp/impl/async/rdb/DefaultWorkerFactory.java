@@ -28,26 +28,28 @@ import org.iplass.mtp.impl.async.rdb.workers.ThreadWorker;
 import org.iplass.mtp.impl.core.config.ServerEnv;
 
 public class DefaultWorkerFactory extends WorkerFactory {
-	
+
 	private final HashMap<String, int[]> myWorkers;
 	private final boolean isWorkerProcess;
-	
+
 	public DefaultWorkerFactory() {
 		myWorkers = parseServerProperty();
 		String flg = System.getProperty(WORKER_PROCESS, "false");//あえて、直接SystemProperty
 		isWorkerProcess = Boolean.valueOf(flg);
 	}
-	
+
 	private HashMap<String, int[]> parseServerProperty() {
 		HashMap<String, int[]> map = new HashMap<>();
-		
+
 		//def format:
 		// [queueName]:[id]:[id],...
-		String def = ServerEnv.getInstance().getProperty(WORKER_ID_DEF_NAME);
+		String def = ServerEnv.getInstance()
+				.getProperty(WORKER_ID_DEF_NAME);
 		if (def != null) {
 			String[] qAndIds = def.split(",");
-			for (String qi: qAndIds) {
-				String[] qiSplit = qi.trim().split(":");
+			for (String qi : qAndIds) {
+				String[] qiSplit = qi.trim()
+						.split(":");
 				int[] ids = new int[qiSplit.length - 1];
 				for (int i = 0; i < ids.length; i++) {
 					ids[i] = Integer.parseInt(qiSplit[i + 1].trim());
@@ -64,8 +66,9 @@ public class DefaultWorkerFactory extends WorkerFactory {
 			//このプロセス自体がProcessWorkerのProcessの場合は、LocalWorkerは起動しない
 			return new RemoteWorker();
 		}
-		
-		WorkerConfig wc = queue.getConfig().getWorker();
+
+		WorkerConfig wc = queue.getConfig()
+				.getWorker();
 		if (wc.isLocal()) {
 			if (wc.isNewProcessPerTask()) {
 				return new ProcessWorker(queue, workerId);
@@ -75,7 +78,7 @@ public class DefaultWorkerFactory extends WorkerFactory {
 		} else {
 			int[] idList = getMyWorkers().get(queue.getName());
 			if (idList != null) {
-				for (int id: idList) {
+				for (int id : idList) {
 					if (id == workerId) {
 						if (wc.isNewProcessPerTask()) {
 							return new ProcessWorker(queue, workerId);

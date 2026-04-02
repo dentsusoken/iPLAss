@@ -35,7 +35,8 @@ import org.iplass.mtp.tenant.Tenant;
 
 public class TenantContext {
 
-	private static MetaTenantService mtService = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
+	private static MetaTenantService mtService = ServiceRegistry.getRegistry()
+			.getService(MetaTenantService.class);
 
 	private final Tenant baseTenantInfo;//Rdb上の不変の定義情報のみ
 	private final String tenantIdString;
@@ -80,15 +81,18 @@ public class TenantContext {
 		this.isNoMeta = isNoMeta;
 		this.baseTenantInfo = tenant;
 		tenantIdString = String.valueOf(tenant.getId());
-		this.scriptEngine = ServiceRegistry.getRegistry().getService(ScriptService.class).createScriptEngine();
+		this.scriptEngine = ServiceRegistry.getRegistry()
+				.getService(ScriptService.class)
+				.createScriptEngine();
 		this.metaDataContext = new MetaDataContext(baseTenantInfo.getId());
 		initResource();
 	}
 
 	private void initResource() {
 		resourceMap = new HashMap<>();
-		TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-		for (Class<?> trClass: tcService.getTenantResourceClasses()) {
+		TenantContextService tcService = ServiceRegistry.getRegistry()
+				.getService(TenantContextService.class);
+		for (Class<?> trClass : tcService.getTenantResourceClasses()) {
 			try {
 				TenantResource tr = (TenantResource) trClass.newInstance();
 				tr.init(this);
@@ -107,7 +111,7 @@ public class TenantContext {
 	public int getTenantId() {
 		return baseTenantInfo.getId();
 	}
-	
+
 	public String getTenantIdString() {
 		return tenantIdString;
 	}
@@ -165,7 +169,9 @@ public class TenantContext {
 				Tenant copy = ObjectUtil.deepCopy(baseTenantInfo);
 
 				//テナント情報のメタデータ設定
-				MetaTenantHandler handler = ServiceRegistry.getRegistry().getService(MetaTenantService.class).getRuntimeByName(copy.getName());
+				MetaTenantHandler handler = ServiceRegistry.getRegistry()
+						.getService(MetaTenantService.class)
+						.getRuntimeByName(copy.getName());
 				if (handler != null) {
 					handler.applyMetaDataToTenant(copy);
 				}
@@ -176,7 +182,7 @@ public class TenantContext {
 
 	public void invalidate() {
 		if (resourceMap != null) {
-			for (TenantResource r: resourceMap.values()) {
+			for (TenantResource r : resourceMap.values()) {
 				r.destory();
 			}
 		}

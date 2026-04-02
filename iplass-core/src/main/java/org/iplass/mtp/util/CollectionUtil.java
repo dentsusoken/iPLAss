@@ -25,7 +25,6 @@ import java.util.Map;
 
 public class CollectionUtil {
 	//FIXME CollectionUtilsのメソッドを呼ぶ。位置づけ的にCollectionUtilsのThinWrapperとして。
-	
 
 	/**
 	 * Collectionが空かを判定します。

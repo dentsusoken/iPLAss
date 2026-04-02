@@ -28,7 +28,7 @@ import java.util.Set;
  *
  */
 public interface Payload {
-	
+
 	/**
 	 * 指定のkey名でvalueをputする。
 	 * 
@@ -37,7 +37,9 @@ public interface Payload {
 	 * @return 以前、同一のkeyで保存されていたvalueがあった場合、その古いvalueを返却
 	 */
 	public Object put(String key, Object value);
+
 	public Object get(String key);
+
 	public Set<String> keySet();
-	
+
 }

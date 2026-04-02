@@ -31,22 +31,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
-
 import org.iplass.mtp.impl.metadata.AbstractXmlMetaDataStore;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
+import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataRepository;
 import org.iplass.mtp.impl.metadata.MetaDataRepositoryKind;
 import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.metadata.RootMetaData;
-import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.spi.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
 public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 
@@ -67,7 +66,7 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 	public Map<String, XmlResourceMetaDataEntryThinWrapper> getPathMetaMap() {
 		return pathMetaMap;
 	}
-	
+
 	@Override
 	public MetaDataEntry loadById(final int tenantId, final String id) {
 		String path = idPathMap.get(id);
@@ -78,7 +77,8 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 
 		MetaDataEntry instance = new MetaDataEntry();
 		if (meta.getMetaData() != null) {
-			instance.setMetaData(meta.getMetaData().copy());
+			instance.setMetaData(meta.getMetaData()
+					.copy());
 		}
 		instance.setVersion(0);
 		instance.setState(State.VALID);
@@ -106,17 +106,27 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 		}
 
 		ArrayList<MetaDataEntryInfo> res = new ArrayList<MetaDataEntryInfo>();
-		for (Map.Entry<String, XmlResourceMetaDataEntryThinWrapper> e: pathMetaMap.entrySet()) {
-			if (e.getKey().startsWith(path)) {
+		for (Map.Entry<String, XmlResourceMetaDataEntryThinWrapper> e : pathMetaMap.entrySet()) {
+			if (e.getKey()
+					.startsWith(path)) {
 				MetaDataEntryInfo node = new MetaDataEntryInfo();
 				node.setPath(e.getKey());
-				node.setId(e.getValue().getMetaData().getId());
-				node.setDisplayName(e.getValue().getMetaData().getDisplayName());
-				node.setDescription(e.getValue().getMetaData().getDescription());
+				node.setId(e.getValue()
+						.getMetaData()
+						.getId());
+				node.setDisplayName(e.getValue()
+						.getMetaData()
+						.getDisplayName());
+				node.setDescription(e.getValue()
+						.getMetaData()
+						.getDescription());
 				node.setSharable(true);
-				node.setDataSharable(e.getValue().isDataSharable());
-				node.setPermissionSharable(e.getValue().isPermissionSharable());
-				node.setOverwritable(e.getValue().isOverwritable());
+				node.setDataSharable(e.getValue()
+						.isDataSharable());
+				node.setPermissionSharable(e.getValue()
+						.isPermissionSharable());
+				node.setOverwritable(e.getValue()
+						.isOverwritable());
 				node.setRepository(MetaDataRepositoryKind.XMLRESOURCE.getDisplayName());
 				node.setState(State.VALID);
 				res.add(node);
@@ -127,7 +137,10 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 		Collections.sort(res, new Comparator<MetaDataEntryInfo>() {
 			@Override
 			public int compare(MetaDataEntryInfo o1, MetaDataEntryInfo o2) {
-				return o1.getPath().toLowerCase().compareTo(o2.getPath().toLowerCase());
+				return o1.getPath()
+						.toLowerCase()
+						.compareTo(o2.getPath()
+								.toLowerCase());
 			}
 		});
 		return res;
@@ -154,7 +167,7 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 		resourcePathList = config.getValues("resourcePath");
 		logger.debug("XmlResourceMetaDataRepository:load resource. " + resourcePathList);
 		if (resourcePathList != null) {
-			for (String path: resourcePathList) {
+			for (String path : resourcePathList) {
 				InputStream is = getClass().getResourceAsStream(path);
 				if (is != null) {
 					parse(is, um, path);
@@ -167,7 +180,7 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 		filePathList = config.getValues("filePath");
 		logger.debug("XmlResourceMetaDataRepository:load file. " + filePathList);
 		if (filePathList != null) {
-			for (String path: filePathList) {
+			for (String path : filePathList) {
 				InputStream is;
 				try {
 					is = new FileInputStream(path);
@@ -183,7 +196,7 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 		try {
 			MetaDataEntryList metaList = (MetaDataEntryList) um.unmarshal(is);
 			if (metaList.getContextPath() != null) {
-				for (ContextPath context: metaList.getContextPath()) {
+				for (ContextPath context : metaList.getContextPath()) {
 					parseContextPath(context, "", context.getName(), resoucePath);
 				}
 			}
@@ -202,13 +215,13 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 
 	private void parseContextPath(ContextPath context, String prefixPath, String rootPath, String resoucePath) {
 		if (context.getContextPath() != null) {
-			for (ContextPath child: context.getContextPath()) {
+			for (ContextPath child : context.getContextPath()) {
 				parseContextPath(child, prefixPath + context.getName() + "/", rootPath, resoucePath);
 			}
 		}
 
 		if (context.getEntry() != null) {
-			for (XmlResourceMetaDataEntryThinWrapper ent: context.getEntry()) {
+			for (XmlResourceMetaDataEntryThinWrapper ent : context.getEntry()) {
 				if (ent.getMetaData() == null) {
 					logger.warn("Cannot unmarshal metadata from XmlResource. resourcePath:" + resoucePath + ", contextpath:" + rootPath);
 				} else {
@@ -216,17 +229,21 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 					String path = ent.getName();
 					if (path == null) {
 						//指定されていない場合はMetaDataのnameから生成
-						path = prefixPath + context.getName() + "/" + ent.getMetaData().getName();
+						path = prefixPath + context.getName() + "/" + ent.getMetaData()
+								.getName();
 					} else if (path.length() > 0 && path.charAt(0) != '/') {
 						//相対指定の場合、contextPath + "/" + path
 						path = prefixPath + context.getName() + "/" + path;
 					}
 
 					pathMetaMap.put(path, ent);
-					if (ent.getMetaData().getId() == null) {
-						ent.getMetaData().setId(path);
+					if (ent.getMetaData()
+							.getId() == null) {
+						ent.getMetaData()
+								.setId(path);
 					}
-					idPathMap.put(ent.getMetaData().getId(), path);
+					idPathMap.put(ent.getMetaData()
+							.getId(), path);
 				}
 			}
 		}
@@ -241,7 +258,8 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 
 		MetaDataEntry instance = new MetaDataEntry();
 		if (meta.getMetaData() != null) {
-			instance.setMetaData((RootMetaData) meta.getMetaData().copy());
+			instance.setMetaData((RootMetaData) meta.getMetaData()
+					.copy());
 		}
 		instance.setVersion(0);
 		instance.setState(State.VALID);
@@ -297,5 +315,5 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 		//未使用
 		return Collections.emptyList();
 	}
-	
+
 }

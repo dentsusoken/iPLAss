@@ -47,9 +47,14 @@ public class RoleEntityEventListener implements EntityEventListener {
 
 	@Override
 	public boolean beforeDelete(Entity entity, EntityEventContext context) {
-		Entity before = ManagerLocator.getInstance().getManager(EntityManager.class).load(entity.getOid(), entity.getDefinitionName(), new LoadOption(true, false));
+		Entity before = ManagerLocator.getInstance()
+				.getManager(EntityManager.class)
+				.load(entity.getOid(), entity.getDefinitionName(), new LoadOption(true, false));
 		if (before != null) {
-			RoleContext beforeRoleContext = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).getRoleContext((String) before.getValue(RoleCacheLogic.ROLE_CODE));
+			RoleContext beforeRoleContext = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class)
+					.getRoleContext((String) before.getValue(RoleCacheLogic.ROLE_CODE));
 			context.setAttribute("roleContextForDel", beforeRoleContext);
 		}
 		return true;
@@ -59,41 +64,57 @@ public class RoleEntityEventListener implements EntityEventListener {
 	public void afterDelete(Entity entity, EntityEventContext context) {
 		RoleContext beforeRoleContext = (RoleContext) context.getAttribute("roleContextForDel");
 		if (beforeRoleContext != null) {
-			ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).notifyRoleDelete(beforeRoleContext.getRoleCode(), beforeRoleContext);
+			ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class)
+					.notifyRoleDelete(beforeRoleContext.getRoleCode(), beforeRoleContext);
 		}
 	}
 
 	@Override
 	public void afterInsert(Entity entity, EntityEventContext context) {
-		ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).notifyRoleCreate((String) entity.getValue(RoleCacheLogic.ROLE_CODE));
+		ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getResource(TenantAuthorizeContext.class)
+				.notifyRoleCreate((String) entity.getValue(RoleCacheLogic.ROLE_CODE));
 	}
 
 	@Override
 	public boolean beforeUpdate(Entity entity, EntityEventContext context) {
-		Entity before = ManagerLocator.getInstance().getManager(EntityManager.class).load(entity.getOid(), entity.getDefinitionName(), new LoadOption(true, false));
+		Entity before = ManagerLocator.getInstance()
+				.getManager(EntityManager.class)
+				.load(entity.getOid(), entity.getDefinitionName(), new LoadOption(true, false));
 		if (before != null) {
-			RoleContext beforeRoleContext = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).getRoleContext((String) before.getValue(RoleCacheLogic.ROLE_CODE));
+			RoleContext beforeRoleContext = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class)
+					.getRoleContext((String) before.getValue(RoleCacheLogic.ROLE_CODE));
 			context.setAttribute("roleContextForUpdate", beforeRoleContext);
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void afterUpdate(Entity entity, EntityEventContext context) {
 		RoleContext beforeRoleContext = (RoleContext) context.getAttribute("roleContextForUpdate");
 		if (beforeRoleContext != null) {
-			TenantAuthorizeContext tAuth = ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class);
-			if (!beforeRoleContext.getRoleCode().equals(entity.getValue(RoleCacheLogic.ROLE_CODE))) {
+			TenantAuthorizeContext tAuth = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class);
+			if (!beforeRoleContext.getRoleCode()
+					.equals(entity.getValue(RoleCacheLogic.ROLE_CODE))) {
 				tAuth.notifyRoleDelete(beforeRoleContext.getRoleCode(), beforeRoleContext);
 			}
 			tAuth.notifyRoleUpdate((String) entity.getValue(RoleCacheLogic.ROLE_CODE));
 		}
 	}
 
-
 	@Override
 	public void afterRestore(Entity entity) {
-		ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).notifyRoleCreate((String) entity.getValue(RoleCacheLogic.ROLE_CODE));
+		ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getResource(TenantAuthorizeContext.class)
+				.notifyRoleCreate((String) entity.getValue(RoleCacheLogic.ROLE_CODE));
 	}
 
 }

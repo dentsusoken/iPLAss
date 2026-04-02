@@ -24,12 +24,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.view.treeview.TreeViewGridColModel;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * ツリービューグリッドのColModel
@@ -61,7 +61,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @return 名前
 	 */
 	public String getName() {
-	    return name;
+		return name;
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @param name 名前
 	 */
 	public void setName(String name) {
-	    this.name = name;
+		this.name = name;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @return 表示ラベル
 	 */
 	public String getDisplayLabel() {
-	    return displayLabel;
+		return displayLabel;
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @param displayLabel 表示ラベル
 	 */
 	public void setDisplayLabel(String displayLabel) {
-	    this.displayLabel = displayLabel;
+		this.displayLabel = displayLabel;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @return 幅
 	 */
 	public Integer getWidth() {
-	    return width;
+		return width;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @param width 幅
 	 */
 	public void setWidth(Integer width) {
-	    this.width = width;
+		this.width = width;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @return 配置
 	 */
 	public String getAlign() {
-	    return align;
+		return align;
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @param align 配置
 	 */
 	public void setAlign(String align) {
-	    this.align = align;
+		this.align = align;
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @return 多言語設定情報
 	 */
 	public List<MetaLocalizedString> getLocalizedDisplayLabelList() {
-	    return localizedDisplayLabelList;
+		return localizedDisplayLabelList;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class MetaTreeViewGridColModel implements Serializable {
 	 * @param localizedDisplayLabelList 多言語設定情報
 	 */
 	public void setLocalizedDisplayLabelList(List<MetaLocalizedString> localizedDisplayLabelList) {
-	    this.localizedDisplayLabelList = localizedDisplayLabelList;
+		this.localizedDisplayLabelList = localizedDisplayLabelList;
 	}
 
 	/**

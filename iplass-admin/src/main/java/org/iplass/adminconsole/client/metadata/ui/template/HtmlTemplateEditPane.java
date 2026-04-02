@@ -61,7 +61,8 @@ public class HtmlTemplateEditPane extends TemplateTypeEditPane implements HasEdi
 		editScript.setStartRow(false);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_template_HtmlTemplateEditPane_displayEditDialogSource")));
+		editScript.setPrompt(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_template_HtmlTemplateEditPane_displayEditDialogSource")));
 		editScript.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -77,6 +78,7 @@ public class HtmlTemplateEditPane extends TemplateTypeEditPane implements HasEdi
 							public void onSave(String text) {
 								sourceField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -99,13 +101,13 @@ public class HtmlTemplateEditPane extends TemplateTypeEditPane implements HasEdi
 
 	@Override
 	public void setDefinition(TemplateDefinition definition) {
-		HtmlTemplateDefinition htmlDefinition = (HtmlTemplateDefinition)definition;
+		HtmlTemplateDefinition htmlDefinition = (HtmlTemplateDefinition) definition;
 		sourceField.setValue(htmlDefinition.getSource());
 	}
 
 	@Override
 	public TemplateDefinition getEditDefinition(TemplateDefinition definition) {
-		HtmlTemplateDefinition htmlDefinition = (HtmlTemplateDefinition)definition;
+		HtmlTemplateDefinition htmlDefinition = (HtmlTemplateDefinition) definition;
 		htmlDefinition.setSource(SmartGWTUtil.getStringValue(sourceField));
 		return htmlDefinition;
 	}

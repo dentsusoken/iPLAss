@@ -89,10 +89,14 @@ import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ActionMapping(name = EntityFileSampleDownloadCommand.ACTION_NAME, displayName = "サンプルファイルダウンロード", paramMapping = {
-		@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
-		@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
-		@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2"), }, result = @Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.STREAM, useContentDisposition = true))
+@ActionMapping(
+		name = EntityFileSampleDownloadCommand.ACTION_NAME,
+		displayName = "サンプルファイルダウンロード",
+		paramMapping = {
+				@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+				@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+				@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2"), },
+		result = @Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.STREAM, useContentDisposition = true))
 @CommandClass(name = "gem/generic/upload/EntityFileSampleDownloadCommand", displayName = "サンプルファイルダウンロード")
 public final class EntityFileSampleDownloadCommand implements Command {
 
@@ -111,9 +115,12 @@ public final class EntityFileSampleDownloadCommand implements Command {
 	private GemConfigService gcs = null;
 
 	public EntityFileSampleDownloadCommand() {
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		gcs = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 	}
 
 	@Override
@@ -168,13 +175,15 @@ public final class EntityFileSampleDownloadCommand implements Command {
 
 		if (fileSupportType == FileSupportType.SPECIFY) {
 			String specifyType = request.getParam(Constants.FILE_SUPPORT_TYPE);
-			if (FileSupportType.CSV.name().equals(specifyType)) {
+			if (FileSupportType.CSV.name()
+					.equals(specifyType)) {
 				fileSupportType = FileSupportType.CSV;
-			} else if (FileSupportType.EXCEL.name().equals(specifyType)) {
+			} else if (FileSupportType.EXCEL.name()
+					.equals(specifyType)) {
 				fileSupportType = FileSupportType.EXCEL;
 			} else {
-                fileSupportType = FileSupportType.CSV;
-            }
+				fileSupportType = FileSupportType.CSV;
+			}
 		}
 
 		if (fileSupportType == FileSupportType.CSV) {
@@ -186,7 +195,7 @@ public final class EntityFileSampleDownloadCommand implements Command {
 		} else {
 			logger.error("Unsupported file support type: " + fileSupportType);
 			throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.search.EntityFileDownloadSearchContext.internalErr"));
-        }
+		}
 	}
 
 	private abstract class FileDownloadSampleWriter implements ResultStreamWriter {
@@ -341,8 +350,12 @@ public final class EntityFileSampleDownloadCommand implements Command {
 				return null;
 			}
 
-			Optional<PropertyColumn> column = result.getElements().stream().filter(e -> e instanceof PropertyColumn)
-					.map(e -> (PropertyColumn) e).filter(e -> property.getName().equals(e.getPropertyName()))
+			Optional<PropertyColumn> column = result.getElements()
+					.stream()
+					.filter(e -> e instanceof PropertyColumn)
+					.map(e -> (PropertyColumn) e)
+					.filter(e -> property.getName()
+							.equals(e.getPropertyName()))
 					.findFirst();
 			if (column.isPresent()) {
 				return column.get();
@@ -477,12 +490,16 @@ public final class EntityFileSampleDownloadCommand implements Command {
 					continue;
 				} else if (pd instanceof SelectProperty) {
 					if (pd.getMultiplicity() == 1) {
-						SelectValue selectValue = ((SelectProperty) pd).getSelectValueList().get(0);
+						SelectValue selectValue = ((SelectProperty) pd).getSelectValueList()
+								.get(0);
 						entity.setValue(propName, selectValue);
 					} else {
-						SelectValue selectValue1 = ((SelectProperty) pd).getSelectValueList().get(0);
-						if (((SelectProperty) pd).getSelectValueList().size() > 1) {
-							SelectValue selectValue2 = ((SelectProperty) pd).getSelectValueList().get(1);
+						SelectValue selectValue1 = ((SelectProperty) pd).getSelectValueList()
+								.get(0);
+						if (((SelectProperty) pd).getSelectValueList()
+								.size() > 1) {
+							SelectValue selectValue2 = ((SelectProperty) pd).getSelectValueList()
+									.get(1);
 							entity.setValue(propName, new SelectValue[] { selectValue1, selectValue2 });
 						} else {
 							entity.setValue(propName, new SelectValue[] { selectValue1 });
@@ -516,7 +533,8 @@ public final class EntityFileSampleDownloadCommand implements Command {
 					}
 					continue;
 				} else {
-					throw new EntityRuntimeException("can not convert property : " + pd.getClass().getName());
+					throw new EntityRuntimeException("can not convert property : " + pd.getClass()
+							.getName());
 				}
 			}
 
@@ -578,9 +596,11 @@ public final class EntityFileSampleDownloadCommand implements Command {
 
 			// Writer生成
 			EntityCsvWriteOption option = new EntityCsvWriteOption().charset(charset)
-					.quoteAll(gcs.isCsvDownloadQuoteAll()).withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+					.quoteAll(gcs.isCsvDownloadQuoteAll())
+					.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
 					.withMappedByReference(gcs.isUploadableCsvDownloadWithMappedByReference())
-					.properties(directProperties).columnName(property -> getColumnName(property))
+					.properties(directProperties)
+					.columnName(property -> getColumnName(property))
 					.multipleColumnName((property, index) -> getMultipleColumnName(property, index));
 
 			try (EntityCsvWriter writer = new EntityCsvWriter(ed, out, option)) {
@@ -635,7 +655,8 @@ public final class EntityFileSampleDownloadCommand implements Command {
 			EntityExcelWriteOption option = new EntityExcelWriteOption()
 					.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
 					.withMappedByReference(gcs.isUploadableCsvDownloadWithMappedByReference())
-					.properties(directProperties).columnName(property -> getColumnName(property))
+					.properties(directProperties)
+					.columnName(property -> getColumnName(property))
 					.multipleColumnName((property, index) -> getMultipleColumnName(property, index));
 
 			try (EntityExcelWriter writer = new EntityExcelWriter(ed, out, option)) {

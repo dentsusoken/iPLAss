@@ -49,30 +49,47 @@ import org.iplass.mtp.web.actionmapping.definition.HttpMethodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ActionMapping(name="oauth/authorize",
-	clientCacheType=ClientCacheType.NO_CACHE,
-	allowMethod={HttpMethodType.GET, HttpMethodType.POST},
-	publicAction=true,
-	result={
-		@Result(status=AuthorizeCommand.STAT_SUCCESS_REDIRECT, type=Type.REDIRECT, allowExternalLocation=true, value=WebRequestConstants.REDIRECT_PATH),
-		@Result(status=AuthorizeCommand.STAT_SUCCESS_POST, type=Type.TEMPLATE, value=AuthorizeCommand.TMPL_POST),
-		@Result(status=AuthorizeCommand.STAT_NEED_CONSENT, type=Type.DYNAMIC, value=AuthorizeCommand.REQUEST_TMPL_NAME),
-		@Result(status=AuthorizeCommand.STAT_ERROR_REDIRECT, type=Type.REDIRECT, allowExternalLocation=true, value=WebRequestConstants.REDIRECT_PATH),
-		@Result(status=AuthorizeCommand.STAT_ERROR_POST, type=Type.TEMPLATE, value=AuthorizeCommand.TMPL_POST),
-	}
+@ActionMapping(
+		name = "oauth/authorize",
+		clientCacheType = ClientCacheType.NO_CACHE,
+		allowMethod = { HttpMethodType.GET, HttpMethodType.POST },
+		publicAction = true,
+		result = {
+				@Result(
+						status = AuthorizeCommand.STAT_SUCCESS_REDIRECT,
+						type = Type.REDIRECT,
+						allowExternalLocation = true,
+						value = WebRequestConstants.REDIRECT_PATH),
+				@Result(status = AuthorizeCommand.STAT_SUCCESS_POST, type = Type.TEMPLATE, value = AuthorizeCommand.TMPL_POST),
+				@Result(status = AuthorizeCommand.STAT_NEED_CONSENT, type = Type.DYNAMIC, value = AuthorizeCommand.REQUEST_TMPL_NAME),
+				@Result(
+						status = AuthorizeCommand.STAT_ERROR_REDIRECT,
+						type = Type.REDIRECT,
+						allowExternalLocation = true,
+						value = WebRequestConstants.REDIRECT_PATH),
+				@Result(status = AuthorizeCommand.STAT_ERROR_POST, type = Type.TEMPLATE, value = AuthorizeCommand.TMPL_POST),
+		}
 )
-@Template(name=AuthorizeCommand.TMPL_POST, displayName="OAuth Post Response Mode", path="/jsp/oauth/OAuthPost.jsp", contentType="text/html; charset=utf-8")
-@Template(name=AuthorizeCommand.TMPL_CONSENT, displayName="Default OAuth Consent View", path="/jsp/oauth/Consent.jsp", contentType="text/html; charset=utf-8")
-@CommandClass(name="mtp/oauth/AuthorizeCommand", displayName="OAuth2.0 Authorization Endpoint")
+@Template(
+		name = AuthorizeCommand.TMPL_POST,
+		displayName = "OAuth Post Response Mode",
+		path = "/jsp/oauth/OAuthPost.jsp",
+		contentType = "text/html; charset=utf-8")
+@Template(
+		name = AuthorizeCommand.TMPL_CONSENT,
+		displayName = "Default OAuth Consent View",
+		path = "/jsp/oauth/Consent.jsp",
+		contentType = "text/html; charset=utf-8")
+@CommandClass(name = "mtp/oauth/AuthorizeCommand", displayName = "OAuth2.0 Authorization Endpoint")
 public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 
 	static final String STAT_SUCCESS_REDIRECT = "SUCCESS_REDIRECT";
 	static final String STAT_SUCCESS_POST = "SUCCESS_POST";
 	static final String STAT_ERROR_REDIRECT = "ERROR_REDIRECT";
 	static final String STAT_ERROR_POST = "ERROR_POST";
-	
+
 	static final String STAT_NEED_CONSENT = "NEED_CONSENT";
-	
+
 	static final String REQUEST_TMPL_NAME = "templateName";
 	static final String REQUEST_AUTHORIZATION_CODE = "authorizationCode";
 	static final String REQUEST_AUTHORIZATION_REQUEST = "authorizationRequest";
@@ -83,11 +100,12 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 
 	public static final String TMPL_POST = "oauth/OAuthPost";
 	public static final String TMPL_CONSENT = "oauth/Consent";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(AuthorizeCommand.class);
-	
-	private OAuthClientService clientService = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
-	
+
+	private OAuthClientService clientService = ServiceRegistry.getRegistry()
+			.getService(OAuthClientService.class);
+
 	//TODO https://tools.ietf.org/html/rfc8252
 	//Authorization servers can protect against these fake agents by requiring an authentication factor only available to genuine external user agents.
 	//ユーザーエージェントでチェックするしかないか？
@@ -108,23 +126,27 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 		if (validRedirectUri == null) {
 			throw new OAuthRuntimeException("invalid redirect_uri:" + redirectUri);
 		}
-		
+
 		OAuthAuthorizationRuntime authRuntime = clientRuntime.getAuthorizationServer();
-		AuthorizationRequest authReq = new AuthorizationRequest(authRuntime.getMetaData().getName(), clientRuntime.getMetaData().getName(), validRedirectUri);
+		AuthorizationRequest authReq = new AuthorizationRequest(authRuntime.getMetaData()
+				.getName(),
+				clientRuntime.getMetaData()
+						.getName(),
+				validRedirectUri);
 		authReq.setState(StringUtil.stripToNull(request.getParam(PARAM_STATE)));
 		authReq.setCodeChallenge(StringUtil.stripToNull(request.getParam(PARAM_CODE_CHALLENGE)));
 		authReq.setCodeChallengeMethod(StringUtil.stripToNull(request.getParam(PARAM_CODE_CHALLENGE_METHOD)));
 		authReq.addResponseTypes(StringUtil.split(request.getParam(PARAM_RESPONSE_TYPE), ' '));
 		authReq.addScopes(StringUtil.split(request.getParam(PARAM_SCOPE), ' '));
 		authReq.setResponseMode(StringUtil.stripToNull(request.getParam(PARAM_RESPONSE_MODE)));
-		
+
 		authReq.setNonce(StringUtil.stripToNull(request.getParam(PARAM_NONCE)));
 		authReq.addPrompts(StringUtil.split(request.getParam(PARAM_PROMPT), ' '));
 		authReq.setMaxAge(request.getParamAsLong(PARAM_MAX_AGE));
 
 		try {
 			authRuntime.checkValidAuthorizationRequest(authReq);
-			
+
 			//check user auth context
 			AuthContext ac = AuthContext.getCurrentContext();
 			if (ac.isAuthenticated() && !authReq.hasPrompt(OAuthConstants.PROMPT_LOGIN)) {
@@ -150,17 +172,19 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 			if (!authRuntime.hasAvailableRole()) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_ACCESS_DENIED, "User can't access this resource.");
 			}
-			
+
 			if (authReq.hasPrompt(OAuthConstants.PROMPT_CONSENT) || authRuntime.isNeedConsent(request, authReq)) {
-				if (authReq.getPrompt() != null && authReq.getPrompt().contains(OAuthConstants.PROMPT_NONE)) {
+				if (authReq.getPrompt() != null && authReq.getPrompt()
+						.contains(OAuthConstants.PROMPT_NONE)) {
 					throw new OAuthApplicationException(OAuthConstants.ERROR_CONSENT_REQUIRED, "Consent required.");
 				} else {
 					return needConsent(request, authReq, authRuntime);
 				}
 			} else {
 				//remove offline_access scope
-				authReq.getScopes().remove(OAuthConstants.SCOPE_OFFLINE_ACCESS);
-				
+				authReq.getScopes()
+						.remove(OAuthConstants.SCOPE_OFFLINE_ACCESS);
+
 				AuthorizationCode code = authRuntime.generateCode(authReq);
 				return success(request, code, authRuntime.issuerId(request));
 			}
@@ -177,51 +201,65 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 			return error(request, OAuthConstants.ERROR_SERVER_ERROR, "See server log for details.", authReq, authRuntime.issuerId(request));
 		}
 	}
-	
+
 	private String encode(String str) {
 		return OAuthUtil.encodeRfc3986(str);
 	}
-	
+
 	private String createRedirectUri(AuthorizationRequest authReq, Consumer<StringBuilder> appender) {
 		StringBuilder redirectUri = new StringBuilder();
 		redirectUri.append(authReq.getRedirectUri());
-		if (authReq.getResponseMode() == null || authReq.getResponseMode().equals(OAuthConstants.RESPONSE_MODE_QUERY)) {
-			if (authReq.getRedirectUri().contains("?")) {
+		if (authReq.getResponseMode() == null || authReq.getResponseMode()
+				.equals(OAuthConstants.RESPONSE_MODE_QUERY)) {
+			if (authReq.getRedirectUri()
+					.contains("?")) {
 				redirectUri.append('&');
 			} else {
 				redirectUri.append('?');
 			}
-		} else if (authReq.getResponseMode().equals(OAuthConstants.RESPONSE_MODE_FRAGMENT)) {
+		} else if (authReq.getResponseMode()
+				.equals(OAuthConstants.RESPONSE_MODE_FRAGMENT)) {
 			redirectUri.append('#');
 		}
 		appender.accept(redirectUri);
-		
+
 		return redirectUri.toString();
 	}
-	
+
 	String success(RequestContext request, AuthorizationCode code, String iss) {
-		
-		if (OAuthConstants.RESPONSE_MODE_FORM_POST.equals(code.getRequest().getResponseMode())) {
+
+		if (OAuthConstants.RESPONSE_MODE_FORM_POST.equals(code.getRequest()
+				.getResponseMode())) {
 			request.setAttribute(REQUEST_AUTHORIZATION_REQUEST, code.getRequest());
 			request.setAttribute(REQUEST_AUTHORIZATION_CODE, code);
 			request.setAttribute(REQUEST_ISS, iss);
 			return STAT_SUCCESS_POST;
 		} else {
 			String redirectUri = createRedirectUri(code.getRequest(), sb -> {
-				sb.append(PARAM_CODE).append('=').append(encode(code.getCodeValue()));
-				if (code.getRequest().getState() != null) {
-					sb.append('&').append(PARAM_STATE).append('=').append(encode(code.getRequest().getState()));
+				sb.append(PARAM_CODE)
+						.append('=')
+						.append(encode(code.getCodeValue()));
+				if (code.getRequest()
+						.getState() != null) {
+					sb.append('&')
+							.append(PARAM_STATE)
+							.append('=')
+							.append(encode(code.getRequest()
+									.getState()));
 				}
-				sb.append('&').append(PARAM_ISS).append('=').append(encode(iss));
+				sb.append('&')
+						.append(PARAM_ISS)
+						.append('=')
+						.append(encode(iss));
 			});
-			
+
 			request.setAttribute(WebRequestConstants.REDIRECT_PATH, redirectUri.toString());
 			return STAT_SUCCESS_REDIRECT;
 		}
 	}
-	
+
 	String error(RequestContext request, String errorCode, String errorDescription, AuthorizationRequest authReq, String iss) {
-		
+
 		if (OAuthConstants.RESPONSE_MODE_FORM_POST.equals(authReq.getResponseMode())) {
 			request.setAttribute(REQUEST_AUTHORIZATION_REQUEST, authReq);
 			request.setAttribute(REQUEST_ERROR, new OAuthApplicationException(errorCode, errorDescription));
@@ -229,25 +267,37 @@ public class AuthorizeCommand implements Command, OAuthEndpointConstants {
 			return STAT_ERROR_POST;
 		} else {
 			String redirectUri = createRedirectUri(authReq, sb -> {
-				sb.append(PARAM_ERROR).append('=').append(encode(errorCode));
+				sb.append(PARAM_ERROR)
+						.append('=')
+						.append(encode(errorCode));
 				if (errorDescription != null) {
-					sb.append('&').append(PARAM_ERROR_DESCRIPTION).append('=').append(encode(errorDescription));
+					sb.append('&')
+							.append(PARAM_ERROR_DESCRIPTION)
+							.append('=')
+							.append(encode(errorDescription));
 				}
 				if (authReq.getState() != null) {
-					sb.append('&').append(PARAM_STATE).append('=').append(encode(authReq.getState()));
+					sb.append('&')
+							.append(PARAM_STATE)
+							.append('=')
+							.append(encode(authReq.getState()));
 				}
-				sb.append('&').append(PARAM_ISS).append('=').append(encode(iss));
+				sb.append('&')
+						.append(PARAM_ISS)
+						.append('=')
+						.append(encode(iss));
 			});
-			
+
 			request.setAttribute(WebRequestConstants.REDIRECT_PATH, redirectUri.toString());
 			return STAT_ERROR_REDIRECT;
 		}
 	}
-	
+
 	String needConsent(RequestContext request, AuthorizationRequest authReq, OAuthAuthorizationRuntime authRuntime) {
-		request.getSession().setAttribute(SESSION_AUTHORIZATION_REQUEST, authReq);
+		request.getSession()
+				.setAttribute(SESSION_AUTHORIZATION_REQUEST, authReq);
 		request.setAttribute(REQUEST_TMPL_NAME, authRuntime.consentTemplateName());
-		
+
 		return STAT_NEED_CONSENT;
 	}
 }

@@ -25,13 +25,12 @@ import java.sql.Statement;
 
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public abstract class Diff {
-	
+
 	public abstract void modifyMetaData();
-	
+
 	public abstract void applyToData(Statement stmt, RdbAdapter rdb, int tenantId) throws SQLException;
-	
+
 	public abstract boolean needDataModify();
-	
+
 }

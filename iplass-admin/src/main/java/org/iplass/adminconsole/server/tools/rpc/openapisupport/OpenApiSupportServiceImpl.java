@@ -68,8 +68,10 @@ public class OpenApiSupportServiceImpl extends XsrfProtectedServiceServlet imple
 	@Override
 	public OpenApiSupportTreeGridEntry getEntityCrudApiTreeGridEntry(int tenantId) {
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, () -> {
-			var ewdm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
-			var edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+			var ewdm = ManagerLocator.getInstance()
+					.getManager(EntityWebApiDefinitionManager.class);
+			var edm = ManagerLocator.getInstance()
+					.getManager(EntityDefinitionManager.class);
 
 			OpenApiSupportTreeGridEntry root = new OpenApiSupportTreeGridEntry();
 			root.setName(OpenApiSupportRpcConstant.Service.RootNode.ENTITY_CRUD_API);
@@ -111,7 +113,6 @@ public class OpenApiSupportServiceImpl extends XsrfProtectedServiceServlet imple
 			return root;
 		});
 	}
-
 
 	/**
 	 * WebAPIのパスを分割してツリー構造を追加する。
@@ -180,7 +181,8 @@ public class OpenApiSupportServiceImpl extends XsrfProtectedServiceServlet imple
 	 * @param layer 現在の階層
 	 * @param entityWebApiDef EntityWebApiDefinition
 	 */
-	private void addTreeForEntityCrud(OpenApiSupportTreeGridEntry parent, String path, String[] splitPath, int layer, EntityWebApiDefinition entityWebApiDef) {
+	private void addTreeForEntityCrud(OpenApiSupportTreeGridEntry parent, String path, String[] splitPath, int layer,
+			EntityWebApiDefinition entityWebApiDef) {
 		var name = splitPath[layer];
 		// エンティティ定義名の末端か判定
 		var isTerminal = (layer == splitPath.length - 1);

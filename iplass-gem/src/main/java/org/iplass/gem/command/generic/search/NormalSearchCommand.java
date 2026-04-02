@@ -22,7 +22,7 @@ package org.iplass.gem.command.generic.search;
 
 import org.iplass.mtp.command.annotation.CommandClass;
 
-@CommandClass(name=NormalSearchCommand.CMD_NAME, displayName="通常検索")
+@CommandClass(name = NormalSearchCommand.CMD_NAME, displayName = "通常検索")
 public final class NormalSearchCommand extends SearchCommandBase {
 
 	public static final String CMD_NAME = "gem/generic/search/NormalSearchCommand";

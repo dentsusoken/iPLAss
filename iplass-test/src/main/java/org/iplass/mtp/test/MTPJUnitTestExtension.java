@@ -176,7 +176,8 @@ public class MTPJUnitTestExtension implements BeforeAllCallback, AfterAllCallbac
 		// スタックの最終位置を取得
 		MTPTestConfig parent = configStack.peek();
 		// クラス設定情報をスタックに格納
-		configStack.push(MTPTestConfigReader.read(context.getTestClass().get(), parent));
+		configStack.push(MTPTestConfigReader.read(context.getTestClass()
+				.get(), parent));
 	}
 
 	@Override
@@ -188,7 +189,8 @@ public class MTPJUnitTestExtension implements BeforeAllCallback, AfterAllCallbac
 	}
 
 	@Override
-	public void interceptTestMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
+	public void interceptTestMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext,
+			ExtensionContext extensionContext)
 			throws Throwable {
 		// テストメソッド実行前に実行される
 

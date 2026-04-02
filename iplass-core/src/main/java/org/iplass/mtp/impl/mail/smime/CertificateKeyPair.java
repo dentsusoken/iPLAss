@@ -25,7 +25,7 @@ import java.security.cert.X509Certificate;
 public class CertificateKeyPair {
 	private final PrivateKey key;
 	private final X509Certificate certificate;
-	
+
 	CertificateKeyPair(X509Certificate certificate, PrivateKey key) {
 		this.certificate = certificate;
 		this.key = key;

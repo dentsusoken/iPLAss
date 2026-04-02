@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import groovy.lang.GroovyClassLoader;
 
 public class GroovyScriptEngine implements ScriptEngine {
-	
+
 	public static final String UTILITY_CLASS_META_PATH = "/utilityClass/";
 
 	private static Logger logger = LoggerFactory.getLogger(GroovyScriptEngine.class);
@@ -45,17 +45,16 @@ public class GroovyScriptEngine implements ScriptEngine {
 //			GroovyScript expandScript = new GroovyScript(classLoader, service.getInitScript(), "___initScript___");
 //			expandScript.eval(newScriptContext());
 //		}
-		
+
 		if (!vanilla) {
 			classLoader.setResourceLoader(new UtilitiyClassResourceLoader(classLoader.getResourceLoader(), service));
 		}
 		this.sharedClassLoader = classLoader;
 		//Entity、UserBinding、ActionParameterBindingの拡張。Groovy上で扱いやすいように
-		
-		
+
 		logger.debug("created GroovyScriptEngine");
 	}
-	
+
 	@Override
 	public Script createScript(String script, String name) {
 		return createScript(script, name, false);
@@ -65,10 +64,10 @@ public class GroovyScriptEngine implements ScriptEngine {
 	public Script createScript(String script, String name, boolean sharedClass) {
 
 		//英数以外だと、エラーとなるので_に置換する
-        name = name.replaceAll("[^\\w\\d]", "_");
+		name = name.replaceAll("[^\\w\\d]", "_");
 
-        // 先頭が数字だとエラーなるので必ず頭に_を追加する
-        name = "_".concat(name);
+		// 先頭が数字だとエラーなるので必ず頭に_を追加する
+		name = "_".concat(name);
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("create Script:" + name + " ...");
@@ -83,12 +82,12 @@ public class GroovyScriptEngine implements ScriptEngine {
 	public ScriptContext newScriptContext() {
 		return new GroovyScriptContext();
 	}
-	
+
 	@Override
 	public ScriptContext newScriptContext(PrintWriter out) {
 		return new GroovyScriptContext(out);
 	}
-	
+
 	public GroovyClassLoader getSharedClassLoader() {
 		return sharedClassLoader;
 	}
@@ -101,5 +100,4 @@ public class GroovyScriptEngine implements ScriptEngine {
 		}
 	}
 
-	
 }

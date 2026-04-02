@@ -18,9 +18,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/sms",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/sms", prefix="def-sms")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/sms",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/sms", prefix = "def-sms")
+		}
 )
 package org.iplass.mtp.sms.template.definition;

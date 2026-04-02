@@ -96,7 +96,7 @@ public class CsvDownloadSettingsItem extends PartsItem {
 			save.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						formController.applyTo(parts);
 						destroy();
 					}

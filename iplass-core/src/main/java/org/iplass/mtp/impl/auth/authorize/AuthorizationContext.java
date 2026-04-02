@@ -24,5 +24,6 @@ import org.iplass.mtp.impl.auth.AuthContextHolder;
 
 public interface AuthorizationContext {
 	public boolean isPermit(Permission permission, AuthContextHolder user);
+
 	public boolean isResultCacheable(Permission permission);
 }

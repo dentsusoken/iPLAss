@@ -27,7 +27,6 @@ import org.iplass.mtp.async.AsyncTaskFuture;
 import org.iplass.mtp.async.AsyncTaskOption;
 import org.iplass.mtp.spi.Service;
 
-
 public abstract class AsyncTaskService implements Service {
 	public static final String DEFAULT_QUEUE_BASE_ASYNC_TASK_SERVICE = "DefaultQueueBaseAsyncTaskService";
 

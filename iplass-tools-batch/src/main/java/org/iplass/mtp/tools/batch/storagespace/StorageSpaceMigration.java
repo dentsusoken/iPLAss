@@ -36,8 +36,10 @@ public class StorageSpaceMigration extends MtpCuiBase {
 
 	private static Logger logger = LoggerFactory.getLogger(StorageSpaceMigration.class);
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private static StorageSpaceService storageSpaceService = ServiceRegistry.getRegistry().getService(StorageSpaceService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private static StorageSpaceService storageSpaceService = ServiceRegistry.getRegistry()
+			.getService(StorageSpaceService.class);
 
 	/** 疑似パーティション位置を自動で決定する為のコンソール入力文字 */
 	private static final String CONSOLE_INPUT_PSEUDO_PARTITION_LOCATION_AUTO = "auto";
@@ -185,13 +187,13 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		logEnvironment();
 
 		switch (execMode) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start Wizard");
 			logInfo("");
 
 			// Wizardの実行
 			return startWizard();
-		case SILENT :
+		case SILENT:
 			logInfo("■Start Silent");
 			logInfo("");
 
@@ -201,7 +203,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 			return executeTask(null, (param) -> {
 				return proceed();
 			});
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -220,7 +222,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 					logWarn(rs("StorageSpaceMigration.Wizard.invalidTenantIdMsg", tenantId));
 				}
 			}
-		} while(validTenantId == false);
+		} while (validTenantId == false);
 
 		// EntityName(DefinitionName)
 		boolean validEntityName = false;
@@ -230,7 +232,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 				setEntityName(entityName);
 				validEntityName = true;
 			}
-		} while(validEntityName == false);
+		} while (validEntityName == false);
 
 		// StorageSpaceName
 		boolean validStorageSpaceName = false;
@@ -240,7 +242,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 				setStorageSpaceName(storageSpaceName);
 				validStorageSpaceName = true;
 			}
-		} while(validStorageSpaceName == false);
+		} while (validStorageSpaceName == false);
 
 		// 対象のストレージスペースに疑似パーティションが定義されているか確認
 		int tableCount = getStorageSpaceMap(storageSpaceName).getTableCount();
@@ -295,7 +297,8 @@ public class StorageSpaceMigration extends MtpCuiBase {
 
 		return ExecuteContext.executeAs(tc, () -> {
 
-			EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+			EntityDefinitionManager edm = ManagerLocator.getInstance()
+					.getManager(EntityDefinitionManager.class);
 			EntityDefinition ed = edm.get(entityName);
 
 			if (ed == null) {
@@ -314,13 +317,15 @@ public class StorageSpaceMigration extends MtpCuiBase {
 					// 最大パーティション位置以上の場合は、エラー終了。
 					// storageSpaceMap.getTableCount() = 2 の場合 ⇒ OBJ_STORE__SPNAME, OBJ_STORE__SPNAME__1 が定義される。
 					// pseudoPartitionLocation として指定可能な範囲は、 0 ～ 1となる。2 は指定不可能。
-					throw new IllegalArgumentException(rs("StorageSpaceMigration.overPseudoPartitionPosition", tableCount - 1, pseudoPartitionLocation));
+					throw new IllegalArgumentException(
+							rs("StorageSpaceMigration.overPseudoPartitionPosition", tableCount - 1, pseudoPartitionLocation));
 				}
 				storageSpaceMap.setTableAllocator(new LocationSpecificationTableAllocator(pseudoPartitionLocation));
 
 				// ストレージスペースが同一でも、強制敵にテーブル名接尾辞を再生成する
 				// このフラグ設定は、ストレージスペース移行機能（本機能）だけで設定することを想定し用意している
-				StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
+				StoreService storeService = ServiceRegistry.getRegistry()
+						.getService(StoreService.class);
 				DataStore dataStore = storeService.getDataStore();
 				((GRdbDataStore) dataStore).setForceRegenerateTableNamePostfix(true);
 			}
@@ -338,8 +343,10 @@ public class StorageSpaceMigration extends MtpCuiBase {
 
 			if (withCleanup) {
 				try {
-					MetaEntity metaEntity = MetaDataContext.getContext().getMetaDataHandler(
-							EntityHandler.class, EntityService.ENTITY_META_PATH + entityName.replace(".", "/")).getMetaData();
+					MetaEntity metaEntity = MetaDataContext.getContext()
+							.getMetaDataHandler(
+									EntityHandler.class, EntityService.ENTITY_META_PATH + entityName.replace(".", "/"))
+							.getMetaData();
 
 					// 移行元StorageSpaceクリーンアップ
 					storageSpaceService.cleanup(tenantId, currentStorageSpaceName, metaEntity, currentTableNamePostfix);
@@ -366,10 +373,12 @@ public class StorageSpaceMigration extends MtpCuiBase {
 	 * @return StorageSpaceMap
 	 */
 	private StorageSpaceMap getStorageSpaceMap(String storageSpaceName) {
-		StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
+		StoreService storeService = ServiceRegistry.getRegistry()
+				.getService(StoreService.class);
 		DataStore dataStore = storeService.getDataStore();
 		if (null != dataStore && dataStore instanceof GRdbDataStore) {
-			StorageSpaceMap storageSpaceMap = ((GRdbDataStore) dataStore).getStorageSpaceMap().get(storageSpaceName);
+			StorageSpaceMap storageSpaceMap = ((GRdbDataStore) dataStore).getStorageSpaceMap()
+					.get(storageSpaceName);
 			// ストレージスペース存在チェック
 			if (null == storageSpaceMap) {
 				// ストレージスペースマップが存在しない場合、エラー終了
@@ -380,6 +389,8 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		}
 
 		throw new RuntimeException(
-				"DataStore is null or the class is of an unexpected type. type = " + (null == dataStore ? "null" : dataStore.getClass().getName()));
+				"DataStore is null or the class is of an unexpected type. type = " + (null == dataStore ? "null"
+						: dataStore.getClass()
+								.getName()));
 	}
 }

@@ -111,7 +111,6 @@ public class PropertySerializeUtil {
 		typeMap = map;
 	}
 
-
 	public static byte typeOf(PropertyDefinitionType pdType) {
 		switch (pdType) {
 		case AUTONUMBER:
@@ -190,7 +189,7 @@ public class PropertySerializeUtil {
 		case STRING_ARRAY:
 			int length = is.readInt();
 			String[] strArray = new String[length];
-			for (int i = 0; i< strArray.length; i++) {
+			for (int i = 0; i < strArray.length; i++) {
 				dt = is.readByte();
 				if (dt == STRING) {
 					strArray[i] = is.readUTF();
@@ -200,7 +199,7 @@ public class PropertySerializeUtil {
 		case INTEGER_ARRAY:
 			length = is.readInt();
 			Long[] longArray = new Long[length];
-			for (int i = 0; i< longArray.length; i++) {
+			for (int i = 0; i < longArray.length; i++) {
 				dt = is.readByte();
 				if (dt == INTEGER) {
 					longArray[i] = is.readLong();
@@ -210,7 +209,7 @@ public class PropertySerializeUtil {
 		case FLOAT_ARRAY:
 			length = is.readInt();
 			Double[] doubleArray = new Double[length];
-			for (int i = 0; i< doubleArray.length; i++) {
+			for (int i = 0; i < doubleArray.length; i++) {
 				dt = is.readByte();
 				if (dt == FLOAT) {
 					doubleArray[i] = is.readDouble();
@@ -220,7 +219,7 @@ public class PropertySerializeUtil {
 		case SELECT_ARRAY:
 			length = is.readInt();
 			SelectValue[] selectArray = new SelectValue[length];
-			for (int i = 0; i< selectArray.length; i++) {
+			for (int i = 0; i < selectArray.length; i++) {
 				dt = is.readByte();
 				if (dt == SELECT) {
 					selectArray[i] = new SelectValue(is.readUTF());
@@ -233,7 +232,7 @@ public class PropertySerializeUtil {
 		case DATETIME_ARRAY:
 			length = is.readInt();
 			Timestamp[] tsArray = new Timestamp[length];
-			for (int i = 0; i< tsArray.length; i++) {
+			for (int i = 0; i < tsArray.length; i++) {
 				dt = is.readByte();
 				if (dt == DATETIME) {
 					tsArray[i] = new Timestamp(is.readLong());
@@ -244,7 +243,7 @@ public class PropertySerializeUtil {
 		case DATE_ARRAY:
 			length = is.readInt();
 			Date[] dateArray = new Date[length];
-			for (int i = 0; i< dateArray.length; i++) {
+			for (int i = 0; i < dateArray.length; i++) {
 				dt = is.readByte();
 				if (dt == DATE) {
 					dateArray[i] = new Date(is.readLong());
@@ -254,7 +253,7 @@ public class PropertySerializeUtil {
 		case BOOLEAN_ARRAY:
 			length = is.readInt();
 			Boolean[] boolArray = new Boolean[length];
-			for (int i = 0; i< boolArray.length; i++) {
+			for (int i = 0; i < boolArray.length; i++) {
 				dt = is.readByte();
 				if (dt == BOOLEAN) {
 					boolArray[i] = Boolean.valueOf(is.readBoolean());
@@ -264,7 +263,7 @@ public class PropertySerializeUtil {
 		case BINARY_ARRAY_OLD:
 			length = is.readInt();
 			BinaryReference[] binOldArray = new BinaryReference[length];
-			for (int i = 0; i< binOldArray.length; i++) {
+			for (int i = 0; i < binOldArray.length; i++) {
 				dt = is.readByte();
 				if (dt == BINARY_OLD) {
 					binOldArray[i] = new BinaryReference(is.readLong(), null, null, 0);
@@ -274,7 +273,7 @@ public class PropertySerializeUtil {
 		case BINARY_ARRAY:
 			length = is.readInt();
 			BinaryReference[] binArray = new BinaryReference[length];
-			for (int i = 0; i< binArray.length; i++) {
+			for (int i = 0; i < binArray.length; i++) {
 				dt = is.readByte();
 				if (dt == BINARY) {
 					binArray[i] = new BinaryReference(is.readLong(), null, null, 0);
@@ -287,7 +286,7 @@ public class PropertySerializeUtil {
 		case DECIMAL_ARRAY:
 			length = is.readInt();
 			BigDecimal[] decArray = new BigDecimal[length];
-			for (int i = 0; i< decArray.length; i++) {
+			for (int i = 0; i < decArray.length; i++) {
 				dt = is.readByte();
 				if (dt == DECIMAL) {
 					decArray[i] = new BigDecimal(is.readUTF());
@@ -297,7 +296,7 @@ public class PropertySerializeUtil {
 		case TIME_ARRAY:
 			length = is.readInt();
 			Time[] timeArray = new Time[length];
-			for (int i = 0; i< timeArray.length; i++) {
+			for (int i = 0; i < timeArray.length; i++) {
 				dt = is.readByte();
 				if (dt == TIME) {
 					timeArray[i] = new Time(is.readLong());
@@ -366,7 +365,7 @@ public class PropertySerializeUtil {
 		case STRING_ARRAY:
 			String[] strArray = (String[]) value;
 			os.writeInt(strArray.length);
-			for (int i = 0; i< strArray.length; i++) {
+			for (int i = 0; i < strArray.length; i++) {
 				if (strArray[i] == null) {
 					os.writeByte(NULL);
 				} else {
@@ -378,7 +377,7 @@ public class PropertySerializeUtil {
 		case INTEGER_ARRAY:
 			Long[] longArray = (Long[]) value;
 			os.writeInt(longArray.length);
-			for (int i = 0; i< longArray.length; i++) {
+			for (int i = 0; i < longArray.length; i++) {
 				if (longArray[i] == null) {
 					os.writeByte(NULL);
 				} else {
@@ -390,7 +389,7 @@ public class PropertySerializeUtil {
 		case FLOAT_ARRAY:
 			Double[] doubleArray = (Double[]) value;
 			os.writeInt(doubleArray.length);
-			for (int i = 0; i< doubleArray.length; i++) {
+			for (int i = 0; i < doubleArray.length; i++) {
 				if (doubleArray[i] == null) {
 					os.writeByte(NULL);
 				} else {
@@ -402,7 +401,7 @@ public class PropertySerializeUtil {
 		case SELECT_ARRAY:
 			SelectValue[] selectArray = (SelectValue[]) value;
 			os.writeInt(selectArray.length);
-			for (int i = 0; i< selectArray.length; i++) {
+			for (int i = 0; i < selectArray.length; i++) {
 				if (selectArray[i] == null) {
 					os.writeByte(NULL);
 				} else {
@@ -420,7 +419,7 @@ public class PropertySerializeUtil {
 		case DATETIME_ARRAY:
 			Timestamp[] tsArray = (Timestamp[]) value;
 			os.writeInt(tsArray.length);
-			for (int i = 0; i< tsArray.length; i++) {
+			for (int i = 0; i < tsArray.length; i++) {
 				if (tsArray[i] == null) {
 					os.writeByte(NULL);
 				} else {
@@ -433,7 +432,7 @@ public class PropertySerializeUtil {
 		case DATE_ARRAY:
 			Date[] dateArray = (Date[]) value;
 			os.writeInt(dateArray.length);
-			for (int i = 0; i< dateArray.length; i++) {
+			for (int i = 0; i < dateArray.length; i++) {
 				if (dateArray[i] == null) {
 					os.writeByte(NULL);
 				} else {
@@ -445,7 +444,7 @@ public class PropertySerializeUtil {
 		case BOOLEAN_ARRAY:
 			Boolean[] boolArray = (Boolean[]) value;
 			os.writeInt(boolArray.length);
-			for (int i = 0; i< boolArray.length; i++) {
+			for (int i = 0; i < boolArray.length; i++) {
 				if (boolArray[i] == null) {
 					os.writeByte(NULL);
 				} else {
@@ -457,7 +456,7 @@ public class PropertySerializeUtil {
 		case BINARY_ARRAY:
 			BinaryReference[] binArray = (BinaryReference[]) value;
 			os.writeInt(binArray.length);
-			for (int i = 0; i< binArray.length; i++) {
+			for (int i = 0; i < binArray.length; i++) {
 				if (binArray[i] == null) {
 					os.writeByte(NULL);
 				} else {
@@ -475,7 +474,7 @@ public class PropertySerializeUtil {
 		case DECIMAL_ARRAY:
 			BigDecimal[] decArray = (BigDecimal[]) value;
 			os.writeInt(decArray.length);
-			for (int i = 0; i< decArray.length; i++) {
+			for (int i = 0; i < decArray.length; i++) {
 				if (decArray[i] == null) {
 					os.writeByte(NULL);
 				} else {
@@ -487,7 +486,7 @@ public class PropertySerializeUtil {
 		case TIME_ARRAY:
 			Time[] timeArray = (Time[]) value;
 			os.writeInt(timeArray.length);
-			for (int i = 0; i< timeArray.length; i++) {
+			for (int i = 0; i < timeArray.length; i++) {
 				if (timeArray[i] == null) {
 					os.writeByte(NULL);
 				} else {

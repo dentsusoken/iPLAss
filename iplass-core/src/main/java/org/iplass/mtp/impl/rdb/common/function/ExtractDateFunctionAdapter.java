@@ -28,22 +28,24 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 
 public class ExtractDateFunctionAdapter implements FunctionAdapter<Function> {
-	
+
 	private String field;
 
 	public ExtractDateFunctionAdapter(String field) {
 		this.field = field;
 	}
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
 		context.append("EXTRACT(");
 		context.append(field);
 		context.append(" FROM ");
-		if (function.getArguments() == null || function.getArguments().size() != 1) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() != 1) {
 			throw new QueryException(function.getName() + " must have only one arguments.");
 		}
-		context.appendArgument(function.getArguments().get(0));
+		context.appendArgument(function.getArguments()
+				.get(0));
 		context.append(")");
 	}
 

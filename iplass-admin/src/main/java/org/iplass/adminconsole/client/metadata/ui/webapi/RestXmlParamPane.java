@@ -91,13 +91,16 @@ public class RestXmlParamPane extends HLayout {
 	public WebApiDefinition getEditDefinition(WebApiDefinition definition) {
 
 		if (paramName.getValue() != null) {
-			definition.setRestXmlParameterName(paramName.getValue().toString());
+			definition.setRestXmlParameterName(paramName.getValue()
+					.toString());
 		}
 		if (paramType.getValue() != null) {
-			definition.setRestXmlParameterType(paramType.getValue().toString());
+			definition.setRestXmlParameterType(paramType.getValue()
+					.toString());
 		}
 		if (acceptableContentTypes.getValue() != null) {
-			definition.setRestXmlAcceptableContentTypes(SmartGWTUtil.convertStringToArray(acceptableContentTypes.getValue().toString(), ","));
+			definition.setRestXmlAcceptableContentTypes(SmartGWTUtil.convertStringToArray(acceptableContentTypes.getValue()
+					.toString(), ","));
 		}
 		return definition;
 	}

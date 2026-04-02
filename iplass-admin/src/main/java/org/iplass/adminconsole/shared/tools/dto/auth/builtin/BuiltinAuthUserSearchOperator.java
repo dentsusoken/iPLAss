@@ -26,6 +26,7 @@ public enum BuiltinAuthUserSearchOperator {
 	LESSTHAN("<=");
 
 	private String displayName;
+
 	private BuiltinAuthUserSearchOperator(String displayName) {
 		this.displayName = displayName;
 	}

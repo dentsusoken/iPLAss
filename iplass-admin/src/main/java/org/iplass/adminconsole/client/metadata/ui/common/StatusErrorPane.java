@@ -88,7 +88,6 @@ public class StatusErrorPane extends HLayout {
 			title.setHeight(20);
 			title.setWidth100();
 
-
 			Canvas msgContents = new Canvas();
 			msgContents.setHeight("*");
 			msgContents.setWidth100();

@@ -121,7 +121,8 @@ public class MetaAsyncCommand extends BaseRootMetaData implements DefinableMetaD
 
 	public class AsyncCommandRuntime extends BaseMetaDataRuntime {
 
-		private AsyncTaskManager atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
+		private AsyncTaskManager atm = ManagerLocator.getInstance()
+				.getManager(AsyncTaskManager.class);
 		private CommandRuntime cmd;
 		private CommandInterceptor[] cmdInterceptors;
 
@@ -131,7 +132,8 @@ public class MetaAsyncCommand extends BaseRootMetaData implements DefinableMetaD
 					cmd = command.createRuntime();
 				}
 
-				InterceptorService is = ServiceRegistry.getRegistry().getService(InterceptorService.class);
+				InterceptorService is = ServiceRegistry.getRegistry()
+						.getService(InterceptorService.class);
 				cmdInterceptors = is.getInterceptors(ASYNC_INTERCEPTOR_NAME);
 
 			} catch (RuntimeException e) {
@@ -157,10 +159,12 @@ public class MetaAsyncCommand extends BaseRootMetaData implements DefinableMetaD
 				option.setExceptionHandlingMode(exceptionHandlingMode);
 			}
 			if (groupingKeyAttributeName != null) {
-				option.setGroupingKey(request.getAttribute(groupingKeyAttributeName).toString());
+				option.setGroupingKey(request.getAttribute(groupingKeyAttributeName)
+						.toString());
 			}
 
-			return atm.execute(option, task).getTaskId();
+			return atm.execute(option, task)
+					.getTaskId();
 		}
 
 		public String executeCommand(final AsyncRequestContext req, final ResultHandler resultHandler) {

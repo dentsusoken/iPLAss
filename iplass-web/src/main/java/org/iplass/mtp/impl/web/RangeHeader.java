@@ -32,7 +32,8 @@ public class RangeHeader {
 	static final long NAN = -2;
 
 	public static RangeHeader getRangeHeader(WebRequestStack req, long contentSize) {
-		String rangeValue = req.getRequest().getHeader("Range");
+		String rangeValue = req.getRequest()
+				.getHeader("Range");
 		if (rangeValue != null) {
 			return new RangeHeader(rangeValue, contentSize);
 		} else {
@@ -41,11 +42,14 @@ public class RangeHeader {
 	}
 
 	public static long writeResponseHeader(WebRequestStack req, RangeHeader range, long contentSize) {
-		req.getResponse().setHeader("Accept-Ranges", "bytes");
+		req.getResponse()
+				.setHeader("Accept-Ranges", "bytes");
 		if (range != null) {
 			if (range.valid) {
-				req.getResponse().setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-				req.getResponse().setHeader("Content-Range", "bytes " + range.start + "-" + range.end + "/" + range.totalSize);
+				req.getResponse()
+						.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+				req.getResponse()
+						.setHeader("Content-Range", "bytes " + range.start + "-" + range.end + "/" + range.totalSize);
 				return range.end - range.start + 1;
 			} else {
 //				//FIXME エラーでよいか？？マルチパート対応してない
@@ -59,7 +63,10 @@ public class RangeHeader {
 	public static void writeResponseBody(InputStream is, OutputStream os, RangeHeader range) throws IOException {
 		//Range指定の場合は、部分的な出力に
 		if (range != null && range.valid) {
-			is = BoundedInputStream.builder().setInputStream(is).setMaxCount(range.end + 1).get();;
+			is = BoundedInputStream.builder()
+					.setInputStream(is)
+					.setMaxCount(range.end + 1)
+					.get();;
 			is.skip(range.start);
 		}
 
@@ -73,7 +80,6 @@ public class RangeHeader {
 		}
 		os.flush();
 	}
-
 
 	public long start;
 	public long end;

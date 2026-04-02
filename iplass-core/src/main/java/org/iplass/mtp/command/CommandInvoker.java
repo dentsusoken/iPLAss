@@ -45,7 +45,7 @@ public interface CommandInvoker extends Manager {
 	 * @return Commandが返却する結果ステータス
 	 */
 	public String execute(String cmdName, RequestContext request);
-	
+
 	/**
 	 * 指定のcmdNameのCommandのインスタンスを指定のrequest、transactionOptionで呼び出します。
 	 * 
@@ -74,7 +74,7 @@ public interface CommandInvoker extends Manager {
 	 * @return Commandが返却する結果ステータス
 	 */
 	public String execute(Command cmd, RequestContext request, TransactionOption transactionOption);
-	
+
 	/**
 	 * 指定のcmdNameのCommandの新規インスタンスを取得します。
 	 * 指定したCommandを{@link #execute(Command, RequestContext)}で実行することが可能です。
@@ -84,7 +84,7 @@ public interface CommandInvoker extends Manager {
 	 * @return Commandが返却する結果ステータス
 	 */
 	public Command getCommandInstance(String cmdName);
-	
+
 	/**
 	 * 指定のasyncCmdNameで定義される非同期Commandを指定のrequestで実行します。
 	 * 非同期Commandは、{@link org.iplass.mtp.async.AsyncTaskManager}経由で実行されます。
@@ -95,7 +95,7 @@ public interface CommandInvoker extends Manager {
 	 * @see org.iplass.mtp.async.AsyncTaskManager
 	 */
 	public long executeAsync(String asyncCmdName, AsyncRequestContext request);
-	
+
 	/**
 	 * 指定のasyncCmdNameで定義される非同期Commandを指定のrequestで実行します。
 	 * 非同期Commandは、{@link org.iplass.mtp.async.AsyncTaskManager}経由で実行されます。
@@ -109,5 +109,5 @@ public interface CommandInvoker extends Manager {
 	 * @see org.iplass.mtp.async.AsyncTaskManager
 	 */
 	public long executeAsync(String asyncCmdName, AsyncRequestContext request, ResultHandler resultHandler);
-	
+
 }

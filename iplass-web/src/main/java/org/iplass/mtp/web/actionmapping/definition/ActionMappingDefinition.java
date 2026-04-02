@@ -23,14 +23,14 @@ package org.iplass.mtp.web.actionmapping.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.command.definition.config.CommandConfig;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.web.actionmapping.definition.cache.CacheCriteriaDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * ActionMappingの定義です。
@@ -46,7 +46,13 @@ public class ActionMappingDefinition implements Definition {
 	private static final long serialVersionUID = -8553251729036721789L;
 
 	private String name;
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 	private List<LocalizedStringDefinition> localizedDisplayNameList;
 	private String description;
@@ -68,7 +74,7 @@ public class ActionMappingDefinition implements Definition {
 
 	/** このActionMappingで処理されるCommand,Templateを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
 	private boolean isPrivileged;
-	
+
 	/** このActionの呼び出しをセキュリティ設定によらず呼び出し可能にする場合は、trueを設定。 isPrivilegedとの違いは、Entityの操作などにおいては、セキュリティ制約を受ける。デフォルトはfalse。*/
 	private boolean isPublicAction;
 
@@ -98,7 +104,7 @@ public class ActionMappingDefinition implements Definition {
 
 	/** sessionにて同期を行うか否か */
 	private boolean synchronizeOnSession;
-	
+
 	/** 許可するHTTP Method。未指定の場合は、すべて許可。 */
 	private HttpMethodType[] allowMethod;
 
@@ -167,7 +173,7 @@ public class ActionMappingDefinition implements Definition {
 	public void setNeedTrustedAuthenticate(boolean needTrustedAuthenticate) {
 		this.needTrustedAuthenticate = needTrustedAuthenticate;
 	}
-	
+
 	/**
 	 * @see #setAllowMethod(HttpMethodType[])
 	 * @return
@@ -384,7 +390,6 @@ public class ActionMappingDefinition implements Definition {
 	public void setPrivileged(boolean isPrivileged) {
 		this.isPrivileged = isPrivileged;
 	}
-
 
 	/**
 	 * @return commandConfig

@@ -30,10 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
-
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
@@ -45,12 +41,14 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
 public class SelectSQL extends QuerySqlHandler {
 	private static Logger logger = LoggerFactory.getLogger(SelectSQL.class);
 
-	private static final String META_DATA_ENTRY_INFO_SELECT =
-			"SELECT " + ObjMetaTable.OBJ_DEF_ID
+	private static final String META_DATA_ENTRY_INFO_SELECT = "SELECT " + ObjMetaTable.OBJ_DEF_ID
 			+ " ," + ObjMetaTable.OBJ_DEF_PATH
 			+ " ," + ObjMetaTable.OBJ_DEF_DISP_NAME
 			+ " ," + ObjMetaTable.OBJ_DESC
@@ -64,8 +62,7 @@ public class SelectSQL extends QuerySqlHandler {
 			+ " ," + ObjMetaTable.UP_USER
 			+ " FROM " + ObjMetaTable.TABLE_NAME;
 
-	private static final String META_DATA_LOAD_SELECT =
-			"SELECT " + ObjMetaTable.OBJ_DEF_VER
+	private static final String META_DATA_LOAD_SELECT = "SELECT " + ObjMetaTable.OBJ_DEF_VER
 			+ " ," + ObjMetaTable.OBJ_DEF_PATH
 			+ " ," + ObjMetaTable.OBJ_META_DATA
 			+ " ," + ObjMetaTable.SHARABLE
@@ -94,9 +91,9 @@ public class SelectSQL extends QuerySqlHandler {
 	}
 
 	public String createNodeListSQL(RdbAdapter rdb, String prefixPath, boolean withInvalid) {
-		
+
 		StringBuilder sb = new StringBuilder();
-		
+
 		if (withInvalid) {
 			sb.append(META_DATA_ENTRY_INFO_SELECT
 					+ " a"
@@ -111,7 +108,8 @@ public class SelectSQL extends QuerySqlHandler {
 		}
 
 		if (prefixPath != null) {
-			sb.append(" AND " + ObjMetaTable.OBJ_DEF_PATH + " LIKE ? ").append(rdb.escape());
+			sb.append(" AND " + ObjMetaTable.OBJ_DEF_PATH + " LIKE ? ")
+					.append(rdb.escape());
 		}
 		return sb.toString();
 	}
@@ -126,13 +124,13 @@ public class SelectSQL extends QuerySqlHandler {
 
 	public List<MetaDataEntryInfo> createNodeListResultData(ResultSet rs, RdbAdapter rdb) throws SQLException {
 		List<MetaDataEntryInfo> result = null;
-		while(rs.next()) {
-			if(result == null) {
+		while (rs.next()) {
+			if (result == null) {
 				result = new ArrayList<MetaDataEntryInfo>();
 			}
 			result.add(createMetaDataEntryInfo(rs, rdb));
 		}
-		return result == null ? Collections.<MetaDataEntryInfo>emptyList() : result;
+		return result == null ? Collections.<MetaDataEntryInfo> emptyList() : result;
 	}
 
 	public MetaDataEntryInfo createMetaDataEntryInfo(ResultSet rs, RdbAdapter rdb) throws SQLException {
@@ -166,9 +164,8 @@ public class SelectSQL extends QuerySqlHandler {
 	public String createLoadSQL(int version) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(META_DATA_LOAD_SELECT
-			+ " WHERE " + ObjMetaTable.TENANT_ID + " = ? "
-			+ " AND " + ObjMetaTable.OBJ_DEF_PATH + " = ? "
-		);
+				+ " WHERE " + ObjMetaTable.TENANT_ID + " = ? "
+				+ " AND " + ObjMetaTable.OBJ_DEF_PATH + " = ? ");
 		if (version < 0) {
 			sb.append(" AND " + ObjMetaTable.STATUS + " = 'V' ");
 		} else {
@@ -182,13 +179,13 @@ public class SelectSQL extends QuerySqlHandler {
 		int num = 1;
 		ps.setInt(num++, tenantId);
 		ps.setString(num++, path);
-		if(version >= 0) {
+		if (version >= 0) {
 			ps.setInt(num++, version);
 		}
 	}
 
 	public MetaDataEntry createLoadResultData(RdbAdapter rdb, ResultSet rs, JAXBContext context) throws SQLException, JAXBException {
-		if(rs.next()) {
+		if (rs.next()) {
 			Blob xmlData = null;
 			InputStream is = null;
 			try {
@@ -237,7 +234,7 @@ public class SelectSQL extends QuerySqlHandler {
 		sb.append(META_DATA_LOAD_SELECT
 				+ " WHERE " + ObjMetaTable.TENANT_ID + " = ? "
 				+ " AND " + ObjMetaTable.OBJ_DEF_ID + " = ? ");
-		if(version < 0) {
+		if (version < 0) {
 			sb.append(" AND " + ObjMetaTable.STATUS + " = 'V' ");
 		} else {
 			sb.append(" AND " + ObjMetaTable.OBJ_DEF_VER + " = ? ");
@@ -249,16 +246,16 @@ public class SelectSQL extends QuerySqlHandler {
 		int num = 1;
 		ps.setInt(num++, tenantId);
 		ps.setString(num++, id);
-		if(version >= 0) {
+		if (version >= 0) {
 			ps.setInt(num++, version);
 		}
 	}
 
 	public String createMaxVersionSQL() {
 		return "SELECT MAX(" + ObjMetaTable.OBJ_DEF_VER + ") "
-			+ " FROM " + ObjMetaTable.TABLE_NAME
-			+ " WHERE " + ObjMetaTable.TENANT_ID + " = ? "
-			+ " AND " + ObjMetaTable.OBJ_DEF_ID + " = ? ";
+				+ " FROM " + ObjMetaTable.TABLE_NAME
+				+ " WHERE " + ObjMetaTable.TENANT_ID + " = ? "
+				+ " AND " + ObjMetaTable.OBJ_DEF_ID + " = ? ";
 	}
 
 	public void setMaxVersionParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, RootMetaData metaData) throws SQLException {
@@ -268,7 +265,7 @@ public class SelectSQL extends QuerySqlHandler {
 	}
 
 	public int getMaxVersionResultData(ResultSet rs) throws SQLException {
-		if(rs.next()) {
+		if (rs.next()) {
 			return rs.getInt(1);
 		}
 		return -1;
@@ -277,9 +274,9 @@ public class SelectSQL extends QuerySqlHandler {
 	public String createDataCountSQL(boolean validOnly) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT COUNT(" + ObjMetaTable.OBJ_DEF_ID + ") "
-			+ " FROM " + ObjMetaTable.TABLE_NAME
-			+ " WHERE " + ObjMetaTable.TENANT_ID + " = ? "
-			+ " AND " + ObjMetaTable.OBJ_DEF_ID + " = ? ");
+				+ " FROM " + ObjMetaTable.TABLE_NAME
+				+ " WHERE " + ObjMetaTable.TENANT_ID + " = ? "
+				+ " AND " + ObjMetaTable.OBJ_DEF_ID + " = ? ");
 		if (validOnly) {
 			sb.append(" AND " + ObjMetaTable.STATUS + " = 'V' ");
 		}
@@ -293,7 +290,7 @@ public class SelectSQL extends QuerySqlHandler {
 	}
 
 	public int getDataCountResultData(ResultSet rs) throws SQLException {
-		if(rs.next()) {
+		if (rs.next()) {
 			return rs.getInt(1);
 		}
 		return 0;
@@ -324,7 +321,7 @@ public class SelectSQL extends QuerySqlHandler {
 		sb.append(META_DATA_ENTRY_INFO_SELECT
 				+ " WHERE " + ObjMetaTable.TENANT_ID + " = ? "
 				+ " AND " + ObjMetaTable.OBJ_DEF_ID + " = ? "
-		 		+ " ORDER BY " + ObjMetaTable.OBJ_DEF_VER + " DESC ");
+				+ " ORDER BY " + ObjMetaTable.OBJ_DEF_VER + " DESC ");
 		return sb.toString();
 	}
 

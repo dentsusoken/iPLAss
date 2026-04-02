@@ -103,13 +103,21 @@ public class AdminAuditLoggingService extends LoggerAuditLoggingService {
 	 */
 	public void logLoad(String oid, Long version, String definitionName, LoadOption option) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{\"definitionName\":\"").append(definitionName).append("\"");
-		sb.append(",\"oid\":\"").append(oid).append("\"");
+		sb.append("{\"definitionName\":\"")
+				.append(definitionName)
+				.append("\"");
+		sb.append(",\"oid\":\"")
+				.append(oid)
+				.append("\"");
 		if (version != null) {
-			sb.append(",\"version\":\"").append(version).append("\"");
+			sb.append(",\"version\":\"")
+					.append(version)
+					.append("\"");
 		}
 		if (option != null) {
-			sb.append(",\"option\":{").append(option).append("}");
+			sb.append(",\"option\":{")
+					.append(option)
+					.append("}");
 		}
 		sb.append("}");
 
@@ -126,14 +134,18 @@ public class AdminAuditLoggingService extends LoggerAuditLoggingService {
 	 */
 	public void logBatchLoad(List<EntityKey> keys, String definitionName, LoadOption option) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{\"definitionName\":\"").append(definitionName).append("\"");
+		sb.append("{\"definitionName\":\"")
+				.append(definitionName)
+				.append("\"");
 		sb.append(",\"keys\":[");
 		keys.forEach(key -> {
 			sb.append(key + ",");
 		});
 		sb.append("]");
 		if (option != null) {
-			sb.append(",\"option\":{").append(option).append("}");
+			sb.append(",\"option\":{")
+					.append(option)
+					.append("}");
 		}
 		sb.append("}");
 
@@ -169,7 +181,9 @@ public class AdminAuditLoggingService extends LoggerAuditLoggingService {
 	 */
 	private String sanitize(Object detail) {
 		if (detail != null) {
-			return detail.toString().replace("\n", "\\n").replace("\r", "\\r");
+			return detail.toString()
+					.replace("\n", "\\n")
+					.replace("\r", "\\r");
 		}
 		return "";
 	}

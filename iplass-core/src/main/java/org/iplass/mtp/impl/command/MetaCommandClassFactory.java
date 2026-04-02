@@ -32,7 +32,6 @@ import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 
-
 public class MetaCommandClassFactory implements
 		AnnotatableMetaDataFactory<CommandClass, Command> {
 
@@ -54,7 +53,8 @@ public class MetaCommandClassFactory implements
 		CommandClass classDef = annotatedClass.getAnnotation(CommandClass.class);
 		MetaMetaJavaCommand metaMetaJavaCommand = new MetaMetaJavaCommand();
 		if (DEFAULT.equals(classDef.name())) {
-			metaMetaJavaCommand.setName(annotatedClass.getName().replace(".", "/"));
+			metaMetaJavaCommand.setName(annotatedClass.getName()
+					.replace(".", "/"));
 		} else {
 			metaMetaJavaCommand.setName(classDef.name());
 		}
@@ -74,7 +74,7 @@ public class MetaCommandClassFactory implements
 		if (!DEFAULT.equals(classDef.description())) {
 			metaMetaJavaCommand.setDescription(classDef.description());
 		}
-		
+
 		metaMetaJavaCommand.setReadOnly(classDef.readOnly());
 		metaMetaJavaCommand.setNewInstancePerRequest(classDef.newInstancePerRequest());
 

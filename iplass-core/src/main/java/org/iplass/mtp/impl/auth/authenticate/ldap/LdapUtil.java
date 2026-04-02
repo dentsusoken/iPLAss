@@ -21,36 +21,36 @@ package org.iplass.mtp.impl.auth.authenticate.ldap;
 
 public class LdapUtil {
 	//OWASP Enterprise Security API (ESAPI)を参考に。
-	
+
 	public static String escapeForFilter(String str) {
 		if (str == null) {
 			return null;
 		}
-		
+
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < str.length(); i++) {
-				char c = str.charAt(i);
-				switch (c) {
-				case '\\':
-					sb.append("\\5c");
-					break;
-				case '*': 
-					sb.append("\\2a"); 
-					break;
-				case '(':
-					sb.append("\\28");
-					break;
-				case ')':
-					sb.append("\\29");
-					break;
-				case '\0':
-					sb.append("\\00");
-					break;
-				default:
-					sb.append(c);
-				}
+			char c = str.charAt(i);
+			switch (c) {
+			case '\\':
+				sb.append("\\5c");
+				break;
+			case '*':
+				sb.append("\\2a");
+				break;
+			case '(':
+				sb.append("\\28");
+				break;
+			case ')':
+				sb.append("\\29");
+				break;
+			case '\0':
+				sb.append("\\00");
+				break;
+			default:
+				sb.append(c);
+			}
 		}
-		
+
 		return sb.toString();
 	}
 
@@ -58,7 +58,7 @@ public class LdapUtil {
 		if (str == null) {
 			return null;
 		}
-		
+
 		StringBuilder sb = new StringBuilder();
 		if ((str.length() > 0) && ((str.charAt(0) == ' ') || (str.charAt(0) == '#'))) {
 			sb.append('\\');
@@ -82,7 +82,7 @@ public class LdapUtil {
 		if ((str.length() > 1) && (str.charAt(str.length() - 1) == ' ')) {
 			sb.insert(sb.length() - 1, '\\');
 		}
-		
+
 		return sb.toString();
 	}
 }

@@ -105,11 +105,11 @@ public class GemLangExplorerSettingController implements LangExplorerSettingCont
 
 		PostDownloadFrame frame = new PostDownloadFrame();
 		frame.setAction(GWT.getModuleBaseURL() + "service/langdownload")
-			.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-			.addParameter("mode", OutputMode.SINGLE.name())
-			.addParameter("definitionName", defName)
-			.addParameter("path", path)
-			.execute();
+				.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+				.addParameter("mode", OutputMode.SINGLE.name())
+				.addParameter("definitionName", defName)
+				.addParameter("path", path)
+				.execute();
 	}
 
 	@Override
@@ -123,50 +123,66 @@ public class GemLangExplorerSettingController implements LangExplorerSettingCont
 
 		StringBuilder sb = new StringBuilder();
 		for (String path : paths) {
-			if (sb.length() != 0) sb.append(",");
+			if (sb.length() != 0)
+				sb.append(",");
 			sb.append(path);
 		}
 
 		PostDownloadFrame frame = new PostDownloadFrame();
 		frame.setAction(GWT.getModuleBaseURL() + "service/langdownload")
-			.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-			.addParameter("mode", OutputMode.MULTI.name())
-			.addParameter("repoType", repoType)
-			.addParameter("paths", sb.toString())
-			.execute();
+				.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+				.addParameter("mode", OutputMode.MULTI.name())
+				.addParameter("repoType", repoType)
+				.addParameter("paths", sb.toString())
+				.execute();
 	}
 
 	protected DefinitionMultiLangSettingManager getDefinitionMultiLangSettingManager(String definitionClassName) {
 		DefinitionMultiLangSettingManager manager = null;
-		if (EntityDefinition.class.getName().equals(definitionClassName)) {
+		if (EntityDefinition.class.getName()
+				.equals(definitionClassName)) {
 			manager = new EntityDefinitionMultiLangSettingManager();
-		} else if (EntityView.class.getName().equals(definitionClassName)) {
+		} else if (EntityView.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(EntityView.class);
-		} else if (EntityFilter.class.getName().equals(definitionClassName)) {
+		} else if (EntityFilter.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(EntityFilter.class);
-		} else if (Tenant.class.getName().equals(definitionClassName)) {
+		} else if (Tenant.class.getName()
+				.equals(definitionClassName)) {
 			manager = new TenantMultiLangSettingManager();
-		} else if (SelectValueDefinition.class.getName().equals(definitionClassName)) {
+		} else if (SelectValueDefinition.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(SelectValueDefinition.class);
-		} else if (TopViewDefinition.class.getName().equals(definitionClassName)) {
+		} else if (TopViewDefinition.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(TopViewDefinition.class);
-		} else if (MenuItem.class.getName().equals(definitionClassName)) {
+		} else if (MenuItem.class.getName()
+				.equals(definitionClassName)) {
 			manager = new MenuItemMultiLangSettingManager();
-		} else if (TreeView.class.getName().equals(definitionClassName)) {
+		} else if (TreeView.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(TreeView.class);
-		} else if (EntityCalendar.class.getName().equals(definitionClassName)) {
+		} else if (EntityCalendar.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(EntityCalendar.class);
-		} else if (ActionMappingDefinition.class.getName().equals(definitionClassName)) {
+		} else if (ActionMappingDefinition.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(ActionMappingDefinition.class);
-		} else if (CommandDefinition.class.getName().equals(definitionClassName)) {
+		} else if (CommandDefinition.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(CommandDefinition.class);
-		} else if (TemplateDefinition.class.getName().equals(definitionClassName)) {
+		} else if (TemplateDefinition.class.getName()
+				.equals(definitionClassName)) {
 			manager = new TemplateDefinitionMultiLangSettingManager();
-		} else if (MessageCategory.class.getName().equals(definitionClassName)) {
+		} else if (MessageCategory.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(MessageCategory.class);
-		} else if (AuthenticationPolicyDefinition.class.getName().equals(definitionClassName)) {
+		} else if (AuthenticationPolicyDefinition.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(AuthenticationPolicyDefinition.class);
-		} else if (MenuTree.class.getName().equals(definitionClassName)) {
+		} else if (MenuTree.class.getName()
+				.equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(MenuTree.class);
 		}
 
@@ -221,18 +237,19 @@ public class GemLangExplorerSettingController implements LangExplorerSettingCont
 				@Override
 				public void execute(final Definition definition) {
 					// アノテーションから多言語項目を取得してlocalizedStringMapを作る
-					i18nService.getMultiLangItemInfoForDisp(TenantInfoHolder.getId(), definition, new AsyncCallback<Map<String, List<LocalizedStringDefinition>>>() {
+					i18nService.getMultiLangItemInfoForDisp(TenantInfoHolder.getId(), definition,
+							new AsyncCallback<Map<String, List<LocalizedStringDefinition>>>() {
 
-						@Override
-						public void onFailure(Throwable caught) {
-							_onFailure(caught);
-						}
+								@Override
+								public void onFailure(Throwable caught) {
+									_onFailure(caught);
+								}
 
-						@Override
-						public void onSuccess(Map<String, List<LocalizedStringDefinition>> localizedStringMap) {
-							langEditListPane.createGrid(localizedStringMap, defType.getName(), getDefinitionName(definition), path);
-						}
-					});
+								@Override
+								public void onSuccess(Map<String, List<LocalizedStringDefinition>> localizedStringMap) {
+									langEditListPane.createGrid(localizedStringMap, defType.getName(), getDefinitionName(definition), path);
+								}
+							});
 				}
 			});
 		}
@@ -246,18 +263,19 @@ public class GemLangExplorerSettingController implements LangExplorerSettingCont
 					Map<String, MultiLangFieldInfo> multiLangFieldsMap = langEditListPane.createUpdateInfo();
 
 					// multiLangFieldsMapとdefinitionを引数に更新用definitionを作成
-					i18nService.getMultiLangItemInfoForUpdate(TenantInfoHolder.getId(), definition, multiLangFieldsMap, new AsyncCallback<Definition>() {
+					i18nService.getMultiLangItemInfoForUpdate(TenantInfoHolder.getId(), definition, multiLangFieldsMap,
+							new AsyncCallback<Definition>() {
 
-						@Override
-						public void onFailure(Throwable caught) {
-							_onFailure(caught);
-						}
+								@Override
+								public void onFailure(Throwable caught) {
+									_onFailure(caught);
+								}
 
-						@Override
-						public void onSuccess(Definition result) {
-							updateDefinition(result, new UpdateDefinitionCallback(defType.getName(), definitionName, path, langEditListPane));
-						}
-					});
+								@Override
+								public void onSuccess(Definition result) {
+									updateDefinition(result, new UpdateDefinitionCallback(defType.getName(), definitionName, path, langEditListPane));
+								}
+							});
 				}
 			});
 		}

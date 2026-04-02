@@ -81,7 +81,7 @@ import org.iplass.mtp.impl.runtime.EntryPointImpl;
  *
  */
 public interface EntryPoint extends AutoCloseable {
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * EntryPointのインスタンスを取得します。
@@ -124,7 +124,7 @@ public interface EntryPoint extends AutoCloseable {
 	public static EntryPoint init() {
 		return builder().build();
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * EntryPointのBuilderを取得します。
@@ -139,7 +139,7 @@ public interface EntryPoint extends AutoCloseable {
 	public static EntryPointBuilder builder() {
 		return new EntryPointBuilderImpl();
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * EntryPointがすでに初期化済みか否かを取得します。
@@ -152,7 +152,7 @@ public interface EntryPoint extends AutoCloseable {
 	public static boolean isInited() {
 		return EntryPointImpl.isInited();
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * iPLAss内でロジックを実行するためのRunnerを取得します。
@@ -163,7 +163,7 @@ public interface EntryPoint extends AutoCloseable {
 	 * @return
 	 */
 	public Runner runner();
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * 言語を指定した状態のRunnerのインスタンスを取得します。
@@ -177,7 +177,7 @@ public interface EntryPoint extends AutoCloseable {
 	public default Runner withLang(String lang) {
 		return runner().withLang(lang);
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * Credentialでログインした状態のRunnerのインスタンスを取得します。
@@ -191,7 +191,7 @@ public interface EntryPoint extends AutoCloseable {
 	public default Runner withAuth(Credential credential) {
 		return runner().withAuth(credential);
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * テナントを指定した状態のRunnerのインスタンスを取得します。
@@ -205,7 +205,7 @@ public interface EntryPoint extends AutoCloseable {
 	public default Runner withTenant(String tenantUrl) {
 		return runner().withTenant(tenantUrl);
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * テナントを指定した状態のRunnerのインスタンスを取得します。
@@ -219,7 +219,7 @@ public interface EntryPoint extends AutoCloseable {
 	public default Runner withTenant(Integer tenantId) {
 		return runner().withTenant(tenantId);
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * EntryPointを破棄し、iPLAssが管理しているリソースを開放します。
@@ -228,7 +228,7 @@ public interface EntryPoint extends AutoCloseable {
 	 * <%}%>
 	 */
 	public void destroy();
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * AutoCloseableインタフェースのclose()メソッドの実装です。

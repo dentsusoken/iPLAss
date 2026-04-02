@@ -27,24 +27,25 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class ManagerLocatorImpl extends ManagerLocator {
-	
+
 	private Map<Class<?>, Manager> map = new ConcurrentHashMap<>();
-	
+
 	@Override
 	public <M extends Manager> M getManager(Class<M> type) {
-		
+
 		@SuppressWarnings("unchecked")
 		M m = (M) map.get(type);
-		
+
 		if (m == null) {
 			m = createManagerInstance(type);
 			map.put(type, m);
 		}
 		return m;
 	}
-	
+
 	protected <M extends Manager> M createManagerInstance(Class<M> type) {
-		ManagerFactory f = ServiceRegistry.getRegistry().getService(ManagerFactory.class);
+		ManagerFactory f = ServiceRegistry.getRegistry()
+				.getService(ManagerFactory.class);
 		return f.create(type);
 	}
 

@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.generic.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.auth.UserBinding;
@@ -47,6 +45,8 @@ import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.element.Button;
 import org.iplass.mtp.view.generic.element.DisplayType;
 import org.iplass.mtp.view.generic.element.Element;
+
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * ボタンのメタデータ
@@ -102,7 +102,7 @@ public class MetaButton extends MetaElement {
 	 * @return 表示タイプ
 	 */
 	public DisplayType getDisplayType() {
-	    return displayType;
+		return displayType;
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class MetaButton extends MetaElement {
 	 * @param displayType 表示タイプ
 	 */
 	public void setDisplayType(DisplayType displayType) {
-	    this.displayType = displayType;
+		this.displayType = displayType;
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class MetaButton extends MetaElement {
 	 * @return クラス名
 	 */
 	public String getStyle() {
-	    return style;
+		return style;
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class MetaButton extends MetaElement {
 	 * @param style クラス名
 	 */
 	public void setStyle(String style) {
-	    this.style = style;
+		this.style = style;
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class MetaButton extends MetaElement {
 	 * @return 表示判定用スクリプト
 	 */
 	public String getCustomDisplayTypeScript() {
-	    return customDisplayTypeScript;
+		return customDisplayTypeScript;
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class MetaButton extends MetaElement {
 	 * @param customDisplayTypeScript 表示判定用スクリプト
 	 */
 	public void setCustomDisplayTypeScript(String customDisplayTypeScript) {
-	    this.customDisplayTypeScript = customDisplayTypeScript;
+		this.customDisplayTypeScript = customDisplayTypeScript;
 	}
 
 	/**
@@ -281,7 +281,7 @@ public class MetaButton extends MetaElement {
 	 */
 	@XmlTransient
 	public String getCustomDisplayTypeScriptKey() {
-	    return customDisplayTypeScriptKey;
+		return customDisplayTypeScriptKey;
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class MetaButton extends MetaElement {
 	 * @param customDisplayTypeScriptKey 表示判定用スクリプトキー
 	 */
 	public void setCustomDisplayTypeScriptKey(String customDisplayTypeScriptKey) {
-	    this.customDisplayTypeScriptKey = customDisplayTypeScriptKey;
+		this.customDisplayTypeScriptKey = customDisplayTypeScriptKey;
 	}
 
 	@Override
@@ -364,18 +364,25 @@ public class MetaButton extends MetaElement {
 		public ButtonRuntime(MetaButton metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
-			inputCustomStyleScriptKey = "Button_InputStyle" + GroovyTemplateCompiler.randomName().replace("-", "_");
+			inputCustomStyleScriptKey = "Button_InputStyle" + GroovyTemplateCompiler.randomName()
+					.replace("-", "_");
 			if (StringUtil.isNotEmpty(inputCustomStyle)) {
-				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				inputCustomStyleScript = GroovyTemplateCompiler.compile(inputCustomStyle,
 						inputCustomStyleScriptKey + "_" + SCRIPT_PREFIX_INPUT_CUSTOM_STYLE,
 						(GroovyScriptEngine) scriptEngine);
 			}
 
 			if (StringUtil.isNotEmpty(customDisplayTypeScript)) {
-				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				String scriptName = SCRIPT_PREFIX_CUSTOM_DISPLAY_TYPE + "_" + entityView.getMetaData().getId()
-						+ GroovyTemplateCompiler.randomName().replace("-", "_");
+				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
+				String scriptName = SCRIPT_PREFIX_CUSTOM_DISPLAY_TYPE + "_" + entityView.getMetaData()
+						.getId()
+						+ GroovyTemplateCompiler.randomName()
+								.replace("-", "_");
 				compiledCustomDisplayTypeScript = scriptEngine.createScript(customDisplayTypeScript, scriptName);
 				customDisplayTypeScriptKey = scriptName;
 			}
@@ -388,11 +395,15 @@ public class MetaButton extends MetaElement {
 		}
 
 		public boolean isDisplayButton(OutputType outputType, Entity entity) {
-			if (compiledCustomDisplayTypeScript == null) return false;
+			if (compiledCustomDisplayTypeScript == null)
+				return false;
 
-			UserBinding user = AuthContextHolder.getAuthContext().newUserBinding();
+			UserBinding user = AuthContextHolder.getAuthContext()
+					.newUserBinding();
 
-			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getScriptEngine();
 			ScriptContext sc = scriptEngine.newScriptContext();
 
 			sc.setAttribute(REQUEST_BINDING_NAME, RequestContextBinding.newRequestContextBinding());

@@ -33,7 +33,6 @@ import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-
 /**
  * Comons Fileupload 用マルチパートリクエストパラメータ解析機能
  *
@@ -197,7 +196,9 @@ public class CommonsFileuploadMultipartRequestParameterParser implements Multipa
 	 * @return MultipartRequestParameter リスト
 	 */
 	protected List<MultipartRequestParameter> convert(List<FileItem<?>> fileItemList) {
-		return fileItemList.stream().map(i -> new CommonsFileuploadMultipartRequestParameter(i)).collect(Collectors.toCollection(ArrayList::new));
+		return fileItemList.stream()
+				.map(i -> new CommonsFileuploadMultipartRequestParameter(i))
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	// FIXME 構成が変わっているので対応方法を検討する必要がある

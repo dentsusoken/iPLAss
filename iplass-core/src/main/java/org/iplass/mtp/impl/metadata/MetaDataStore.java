@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.iplass.mtp.spi.ServiceInitListener;
 
-
 public interface MetaDataStore extends ServiceInitListener<MetaDataRepository> {
 
 	//TODO インタフェースは再検討
@@ -38,7 +37,7 @@ public interface MetaDataStore extends ServiceInitListener<MetaDataRepository> {
 	public MetaDataEntry loadById(int tenantId, String id, int version);
 
 	public List<MetaDataEntryInfo> definitionList(int tenantId, String prefixPath) throws MetaDataRuntimeException;
-	
+
 	public List<MetaDataEntryInfo> definitionList(int tenantId, String prefixPath, boolean withInvalid) throws MetaDataRuntimeException;
 
 	public MetaDataEntry load(int tenantId, String path) throws MetaDataRuntimeException;
@@ -56,7 +55,7 @@ public interface MetaDataStore extends ServiceInitListener<MetaDataRepository> {
 	public void updateConfigById(int tenantId, String id, MetaDataConfig config);
 
 	public List<MetaDataEntryInfo> getHistoryById(int tenantId, String id);
-	
+
 	public List<Integer> getTenantIdsOf(String id);
 
 }

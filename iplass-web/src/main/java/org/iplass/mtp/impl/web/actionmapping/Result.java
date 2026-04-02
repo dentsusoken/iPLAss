@@ -22,9 +22,6 @@ package org.iplass.mtp.impl.web.actionmapping;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.web.WebRequestStack;
@@ -35,9 +32,11 @@ import org.iplass.mtp.web.actionmapping.definition.result.StaticResourceResultDe
 import org.iplass.mtp.web.actionmapping.definition.result.StreamResultDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.TemplateResultDefinition;
 
+import jakarta.servlet.ServletException;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 //TODO Result -> MetaResult
-@XmlSeeAlso({RedirectResult.class, DynamicTemplateResult.class, StreamResult.class, TemplateResult.class, StaticResourceResult.class})
+@XmlSeeAlso({ RedirectResult.class, DynamicTemplateResult.class, StreamResult.class, TemplateResult.class, StaticResourceResult.class })
 public abstract class Result implements MetaData {
 
 	//Commandの実行結果と、それに対する後続処理のマッピング
@@ -121,7 +120,5 @@ public abstract class Result implements MetaData {
 		public abstract void finallyProcess(WebRequestStack request);
 
 	}
-
-
 
 }

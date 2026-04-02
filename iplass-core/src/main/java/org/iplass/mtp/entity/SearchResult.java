@@ -117,7 +117,7 @@ public class SearchResult<T> implements Iterable<T>, AutoCloseable {
 			throw new EntityRuntimeException("for use getValueList(propertyName), result type must Entity.");
 		}
 		List<P> res = new ArrayList<P>();
-		for (Entity e: (List<Entity>) list) {
+		for (Entity e : (List<Entity>) list) {
 			res.add((P) e.getValue(propertyName));
 		}
 		return res;
@@ -139,7 +139,7 @@ public class SearchResult<T> implements Iterable<T>, AutoCloseable {
 			throw new EntityRuntimeException("for use getValueList(index), result type must Object[].");
 		}
 		List<P> res = new ArrayList<P>();
-		for (Object[] e: (List<Object[]>) list) {
+		for (Object[] e : (List<Object[]>) list) {
 			res.add((P) e[index]);
 		}
 		return res;

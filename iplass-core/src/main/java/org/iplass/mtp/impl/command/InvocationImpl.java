@@ -55,8 +55,9 @@ public class InvocationImpl implements CommandInvocation {
 		this.request = request;
 		index = -1;
 	}
-	
-	public InvocationImpl(CommandInterceptor[] commandInterceptors, MetaCommandRuntime metaCmd, RequestContext request, TransactionOption transactionOption) {
+
+	public InvocationImpl(CommandInterceptor[] commandInterceptors, MetaCommandRuntime metaCmd, RequestContext request,
+			TransactionOption transactionOption) {
 		if (commandInterceptors != null) {
 			this.commandInterceptors = commandInterceptors;
 		} else {
@@ -64,19 +65,22 @@ public class InvocationImpl implements CommandInvocation {
 		}
 		if (metaCmd != null) {
 			this.cmd = metaCmd.newCommand();
-			this.cmdName = metaCmd.getMetaData().getName();
+			this.cmdName = metaCmd.getMetaData()
+					.getName();
 		}
 		this.request = request;
 		if (transactionOption == null) {
 			this.transactionOption = new TransactionOption();
-			this.transactionOption.setReadOnly(metaCmd.getMetaData().isReadOnly());
+			this.transactionOption.setReadOnly(metaCmd.getMetaData()
+					.isReadOnly());
 		} else {
 			this.transactionOption = transactionOption;
 		}
 		index = -1;
 	}
 
-	public InvocationImpl(CommandInterceptor[] commandInterceptors, Command cmd, RequestContext request, TransactionOption transactionOption, String cmdName) {
+	public InvocationImpl(CommandInterceptor[] commandInterceptors, Command cmd, RequestContext request, TransactionOption transactionOption,
+			String cmdName) {
 		if (commandInterceptors != null) {
 			this.commandInterceptors = commandInterceptors;
 		} else {
@@ -92,7 +96,7 @@ public class InvocationImpl implements CommandInvocation {
 		}
 		index = -1;
 	}
-	
+
 	public TransactionOption getTransactionOption() {
 		return transactionOption;
 	}

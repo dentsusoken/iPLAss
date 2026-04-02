@@ -54,11 +54,11 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @ActionMapping(
-		name=UploadCommand.ACTION_NAME,
-		displayName="アップロード",
-		result=@Result(type=Type.STREAM, useContentDisposition=false)
-		)
-@CommandClass(name="gem/binary/UploadCommand", displayName="アップロード")
+		name = UploadCommand.ACTION_NAME,
+		displayName = "アップロード",
+		result = @Result(type = Type.STREAM, useContentDisposition = false)
+)
+@CommandClass(name = "gem/binary/UploadCommand", displayName = "アップロード")
 public final class UploadCommand implements Command {
 	private static Logger logger = LoggerFactory.getLogger(UploadCommand.class);
 
@@ -107,7 +107,9 @@ public final class UploadCommand implements Command {
 				return Constants.CMD_EXEC_SUCCESS;
 			}
 		} catch (RuntimeException e) {
-			Transaction t = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
+			Transaction t = ManagerLocator.getInstance()
+					.getManager(TransactionManager.class)
+					.currentTransaction();
 			if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 				t.setRollbackOnly();
 			}
@@ -140,15 +142,20 @@ public final class UploadCommand implements Command {
 	private boolean isRejectMimeTypes(String type, BinaryPropertyEditorRuntime editorRuntime) {
 		boolean isAccept = true;
 
-		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		GemConfigService service = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 
 		if (null != editorRuntime && null != editorRuntime.getUploadAcceptMimeTypesPattern()) {
 			// プロパティエディタに許可する MIME Type が指定されている場合は、プロパティエディタを優先する
-			isAccept = editorRuntime.getUploadAcceptMimeTypesPattern().matcher(type).matches();
+			isAccept = editorRuntime.getUploadAcceptMimeTypesPattern()
+					.matcher(type)
+					.matches();
 
 		} else if (null != service.getBinaryUploadAcceptMimeTypesPattern()) {
 			// プロパティエディタに設定が無く、GemConfigServiceの受け入れ許可設定が存在する場合は、GemConfigService の設定で許可設定を行う
-			isAccept = service.getBinaryUploadAcceptMimeTypesPattern().matcher(type).matches();
+			isAccept = service.getBinaryUploadAcceptMimeTypesPattern()
+					.matcher(type)
+					.matches();
 		}
 		// else {
 		// // プロパティエディタ、GemServiceConfig に設定が無い場合はチェックしない

@@ -36,7 +36,6 @@ import java.util.TimeZone;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 
-
 /**
  * 日付操作用のユーティリティです。
  */
@@ -49,7 +48,8 @@ public class DateUtil {
 	 * @return
 	 */
 	public static Timestamp getCurrentTimestamp() {
-		return ExecuteContext.getCurrentContext().getCurrentTimestamp();
+		return ExecuteContext.getCurrentContext()
+				.getCurrentTimestamp();
 	}
 
 	/**
@@ -61,7 +61,8 @@ public class DateUtil {
 	 * @return
 	 */
 	public static Date getCurrentDate() {
-		return ExecuteContext.getCurrentContext().getCurrentLocalDate();
+		return ExecuteContext.getCurrentContext()
+				.getCurrentLocalDate();
 	}
 
 	/**
@@ -74,7 +75,8 @@ public class DateUtil {
 	 * @return
 	 */
 	public static Time getCurrentTime() {
-		return ExecuteContext.getCurrentContext().getCurrentLocalTime();
+		return ExecuteContext.getCurrentContext()
+				.getCurrentLocalTime();
 	}
 
 	/**
@@ -86,9 +88,11 @@ public class DateUtil {
 	 * @return
 	 */
 	public static SimpleDateFormat getSimpleDateFormat(String pattern, boolean useTenantTimeZone) {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, ExecuteContext.getCurrentContext().getLocale());
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, ExecuteContext.getCurrentContext()
+				.getLocale());
 		if (useTenantTimeZone) {
-			simpleDateFormat.setTimeZone(ExecuteContext.getCurrentContext().getTimeZone());
+			simpleDateFormat.setTimeZone(ExecuteContext.getCurrentContext()
+					.getTimeZone());
 		}
 		return simpleDateFormat;
 	}
@@ -104,21 +108,26 @@ public class DateUtil {
 	public static SimpleDateFormat getSimpleDateFormat(String pattern, boolean useTenantTimeZone, boolean useUserLangLocale) {
 		Locale l;
 		if (useUserLangLocale) {
-			l = ExecuteContext.getCurrentContext().getLangLocale();
+			l = ExecuteContext.getCurrentContext()
+					.getLangLocale();
 		} else {
-			l = ExecuteContext.getCurrentContext().getLocale();
+			l = ExecuteContext.getCurrentContext()
+					.getLocale();
 		}
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, l);
 		if (useTenantTimeZone) {
-			simpleDateFormat.setTimeZone(ExecuteContext.getCurrentContext().getTimeZone());
+			simpleDateFormat.setTimeZone(ExecuteContext.getCurrentContext()
+					.getTimeZone());
 		}
 		return simpleDateFormat;
 	}
 
 	public static Calendar getCalendar(boolean useTenantTimeZone) {
-		Calendar calendar = Calendar.getInstance(ExecuteContext.getCurrentContext().getLocale());
+		Calendar calendar = Calendar.getInstance(ExecuteContext.getCurrentContext()
+				.getLocale());
 		if (useTenantTimeZone) {
-			calendar.setTimeZone(ExecuteContext.getCurrentContext().getTimeZone());
+			calendar.setTimeZone(ExecuteContext.getCurrentContext()
+					.getTimeZone());
 		}
 		return calendar;
 	}
@@ -126,15 +135,18 @@ public class DateUtil {
 	public static Calendar getCalendar(Locale locale, boolean useTenantTimeZone) {
 		Calendar calendar = Calendar.getInstance(locale);
 		if (useTenantTimeZone) {
-			calendar.setTimeZone(ExecuteContext.getCurrentContext().getTimeZone());
+			calendar.setTimeZone(ExecuteContext.getCurrentContext()
+					.getTimeZone());
 		}
 		return calendar;
 	}
 
 	public static GregorianCalendar getGregorianCalendar(boolean useTenantTimeZone) {
-		GregorianCalendar gregorianCalendar = new GregorianCalendar(ExecuteContext.getCurrentContext().getLocale());
+		GregorianCalendar gregorianCalendar = new GregorianCalendar(ExecuteContext.getCurrentContext()
+				.getLocale());
 		if (useTenantTimeZone) {
-			gregorianCalendar.setTimeZone(ExecuteContext.getCurrentContext().getTimeZone());
+			gregorianCalendar.setTimeZone(ExecuteContext.getCurrentContext()
+					.getTimeZone());
 		}
 		return gregorianCalendar;
 	}
@@ -142,13 +154,16 @@ public class DateUtil {
 	public static DateFormat getDateInstance(int style, boolean useTenantTimeZone) {
 		return getDateInstance(style, null, useTenantTimeZone);
 	}
+
 	public static DateFormat getDateInstance(int style, Locale locale, boolean useTenantTimeZone) {
 		if (locale == null) {
-			locale = ExecuteContext.getCurrentContext().getLocale();
+			locale = ExecuteContext.getCurrentContext()
+					.getLocale();
 		}
 		DateFormat dateFormat = DateFormat.getDateInstance(style, locale);
 		if (useTenantTimeZone) {
-			dateFormat.setTimeZone(ExecuteContext.getCurrentContext().getTimeZone());
+			dateFormat.setTimeZone(ExecuteContext.getCurrentContext()
+					.getTimeZone());
 		}
 		return dateFormat;
 	}
@@ -156,15 +171,19 @@ public class DateUtil {
 	public static DateFormat getDateTimeInstance(int dateStyle, int timeStyle, boolean useTenantTimeZone) {
 		return getDateTimeInstance(dateStyle, timeStyle, null, null, useTenantTimeZone);
 	}
+
 	public static DateFormat getDateTimeInstance(int dateStyle, int timeStyle, Locale locale, boolean useTenantTimeZone) {
 		return getDateTimeInstance(dateStyle, timeStyle, locale, null, useTenantTimeZone);
 	}
+
 	public static DateFormat getDateTimeInstance(int dateStyle, int timeStyle, Locale locale, TimeZone timeZone, boolean useTenantTimeZone) {
 		if (locale == null) {
-			locale = ExecuteContext.getCurrentContext().getLocale();
+			locale = ExecuteContext.getCurrentContext()
+					.getLocale();
 		}
 		if (timeZone == null) {
-			timeZone = ExecuteContext.getCurrentContext().getTimeZone();
+			timeZone = ExecuteContext.getCurrentContext()
+					.getTimeZone();
 		}
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(dateStyle, timeStyle, locale);
 		if (useTenantTimeZone) {
@@ -176,16 +195,20 @@ public class DateUtil {
 	public static DateFormat getTimeInstance(boolean useTenantTimeZone) {
 		return getTimeInstance(DateFormat.DEFAULT, null, useTenantTimeZone);
 	}
+
 	public static DateFormat getTimeInstance(int style, boolean useTenantTimeZone) {
 		return getTimeInstance(style, null, useTenantTimeZone);
 	}
+
 	public static DateFormat getTimeInstance(int style, Locale locale, boolean useTenantTimeZone) {
 		if (locale == null) {
-			locale = ExecuteContext.getCurrentContext().getLocale();
+			locale = ExecuteContext.getCurrentContext()
+					.getLocale();
 		}
 		DateFormat dateFormat = DateFormat.getTimeInstance(style, locale);
 		if (useTenantTimeZone) {
-			dateFormat.setTimeZone(ExecuteContext.getCurrentContext().getTimeZone());
+			dateFormat.setTimeZone(ExecuteContext.getCurrentContext()
+					.getTimeZone());
 		}
 		return dateFormat;
 	}
@@ -198,7 +221,9 @@ public class DateUtil {
 	 * @return 現在日時
 	 */
 	public static ZonedDateTime getCurrentZonedDateTime() {
-		ZoneId tenantZoneId = ExecuteContext.getCurrentContext().getTimeZone().toZoneId();
+		ZoneId tenantZoneId = ExecuteContext.getCurrentContext()
+				.getTimeZone()
+				.toZoneId();
 		return getCurrentZonedDateTime(tenantZoneId);
 	}
 
@@ -208,7 +233,8 @@ public class DateUtil {
 	 * @return 現在日時
 	 */
 	public static ZonedDateTime getCurrentZonedDateTime(ZoneId zoneId) {
-		return ZonedDateTime.ofInstant(DateUtil.getCurrentTimestamp().toInstant(), zoneId);
+		return ZonedDateTime.ofInstant(DateUtil.getCurrentTimestamp()
+				.toInstant(), zoneId);
 	}
 
 	/**

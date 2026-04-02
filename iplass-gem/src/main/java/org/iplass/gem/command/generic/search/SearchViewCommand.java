@@ -56,44 +56,51 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ActionMappings({
-	@ActionMapping(
-			name=SearchViewCommand.SEARCH_ACTION_NAME,
-			displayName="検索画面表示",
-			paramMapping={
-				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-				@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
-			},
-			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_SEARCH),
-				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-			}
-	),
-	@ActionMapping(
-			name=SearchViewCommand.SELECT_ACTION_NAME,
-			displayName="選択画面表示",
-			paramMapping={
-				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-				@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
-			},
-			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_REF_SEARCH,
-						templateName="gem/generic/search/select",
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_COMMON_ERROR,
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-			}
-	)
+		@ActionMapping(
+				name = SearchViewCommand.SEARCH_ACTION_NAME,
+				displayName = "検索画面表示",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
+				},
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_SEARCH),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
+				}
+		),
+		@ActionMapping(
+				name = SearchViewCommand.SELECT_ACTION_NAME,
+				displayName = "選択画面表示",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
+				},
+				result = {
+						@Result(
+								status = Constants.CMD_EXEC_SUCCESS,
+								type = Type.JSP,
+								value = Constants.CMD_RSLT_JSP_REF_SEARCH,
+								templateName = "gem/generic/search/select",
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+				}
+		)
 })
-@CommandClass(name="gem/generic/search/SearchviewCommand", displayName="検索画面表示")
+@CommandClass(name = "gem/generic/search/SearchviewCommand", displayName = "検索画面表示")
 @Template(
-		name=Constants.TEMPLATE_SEARCH,
-		path=Constants.CMD_RSLT_JSP_SEARCH,
-		layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+		name = Constants.TEMPLATE_SEARCH,
+		path = Constants.CMD_RSLT_JSP_SEARCH,
+		layoutActionName = Constants.LAYOUT_NORMAL_ACTION
 )
 public final class SearchViewCommand implements Command {
 	private static Logger logger = LoggerFactory.getLogger(SearchViewCommand.class);
@@ -105,9 +112,12 @@ public final class SearchViewCommand implements Command {
 	public String execute(RequestContext request) {
 		String defName = request.getParam(Constants.DEF_NAME);
 
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		EntityFilterManager efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
+		EntityDefinitionManager edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		EntityViewManager evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		EntityFilterManager efm = ManagerLocator.getInstance()
+				.getManager(EntityFilterManager.class);
 
 		EntityDefinition entityDefinition = edm.get(defName);
 		EntityView entityView = evm.get(defName);
@@ -132,10 +142,12 @@ public final class SearchViewCommand implements Command {
 		}
 
 		// ダウンロードファイルの種類
-		FileSupportType fileSupportType = view.getCondSection().getFileSupportType();
+		FileSupportType fileSupportType = view.getCondSection()
+				.getFileSupportType();
 		// 未指定の場合は、GemConfigServiceから取得
 		if (fileSupportType == null) {
-			GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+			GemConfigService gemConfigService = ServiceRegistry.getRegistry()
+					.getService(GemConfigService.class);
 			fileSupportType = gemConfigService.getFileSupportType();
 		}
 		data.setFileSupportType(fileSupportType);
@@ -147,10 +159,15 @@ public final class SearchViewCommand implements Command {
 		//Entity defaultSearchCond = new GenericEntity(defName);
 		Map<String, Object> defaultSearchCond = new HashMap<>();
 		applyCommonParam(request, defaultSearchCond, view);
-		List<PropertyItem> properties = view.getCondSection().getElements().stream()
-				.filter(e -> e instanceof PropertyItem).map(e -> (PropertyItem) e).collect(Collectors.toList());
+		List<PropertyItem> properties = view.getCondSection()
+				.getElements()
+				.stream()
+				.filter(e -> e instanceof PropertyItem)
+				.map(e -> (PropertyItem) e)
+				.collect(Collectors.toList());
 		applyNormalSearchCond(request, defaultSearchCond, properties);
-		applyDetailSearchCond(request, defaultSearchCond, view.getCondSection().getConditionDispCount());
+		applyDetailSearchCond(request, defaultSearchCond, view.getCondSection()
+				.getConditionDispCount());
 		applyFixedSearchCond(request, defaultSearchCond);
 
 		//デフォルトプロパティ条件を反映(GroovyScriptでのカスタマイズ)
@@ -164,9 +181,11 @@ public final class SearchViewCommand implements Command {
 	private void applyCommonParam(RequestContext request, Map<String, Object> defaultSearchCond, SearchFormView view) {
 		String searchType = request.getParam(Constants.SEARCH_TYPE);
 		if (StringUtil.isNotBlank(searchType)) {
-			if (Constants.SEARCH_TYPE_DETAIL.equals(searchType) && view.getCondSection().isHideDetailCondition()) {
+			if (Constants.SEARCH_TYPE_DETAIL.equals(searchType) && view.getCondSection()
+					.isHideDetailCondition()) {
 				searchType = Constants.SEARCH_TYPE_NORMAL;
-			} else if (Constants.SEARCH_TYPE_FIXED.equals(searchType) && view.getCondSection().isHideFixedCondition()) {
+			} else if (Constants.SEARCH_TYPE_FIXED.equals(searchType) && view.getCondSection()
+					.isHideFixedCondition()) {
 				searchType = Constants.SEARCH_TYPE_NORMAL;
 			}
 			defaultSearchCond.put(Constants.SEARCH_TYPE, searchType);
@@ -192,7 +211,8 @@ public final class SearchViewCommand implements Command {
 			if (property.getEditor() instanceof ReferencePropertyEditor) {
 				//ネストの項目があれば追加する
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
-				if (!editor.getNestProperties().isEmpty()) {
+				if (!editor.getNestProperties()
+						.isEmpty()) {
 					setNestCondition(request, defaultSearchCond, editor, property.getPropertyName());
 				}
 			}
@@ -208,7 +228,8 @@ public final class SearchViewCommand implements Command {
 				defaultSearchCond.put(name, val);
 			}
 			if (nest.getEditor() instanceof ReferencePropertyEditor
-					&& !((ReferencePropertyEditor) nest.getEditor()).getNestProperties().isEmpty()) {
+					&& !((ReferencePropertyEditor) nest.getEditor()).getNestProperties()
+							.isEmpty()) {
 				setNestCondition(request, defaultSearchCond, (ReferencePropertyEditor) nest.getEditor(), name);
 			}
 		}

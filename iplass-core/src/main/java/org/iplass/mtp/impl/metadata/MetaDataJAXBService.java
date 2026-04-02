@@ -24,24 +24,23 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 
 public class MetaDataJAXBService implements Service {
 
 	private static Logger logger = LoggerFactory.getLogger(MetaDataJAXBService.class);
-	
+
 	private JAXBContext context;
 	private List<String> classesToBeBound;
-	
+
 	@Override
 	public void init(Config config) {
 		try {
@@ -51,7 +50,7 @@ public class MetaDataJAXBService implements Service {
 				classes[i] = Class.forName(classesToBeBound.get(i));
 				logger.debug("Add to JAXBContext:" + classes[i]);
 			}
-		
+
 			context = JAXBContext.newInstance(classes);
 		} catch (JAXBException e) {
 			throw new MetaDataRuntimeException(e);
@@ -59,30 +58,29 @@ public class MetaDataJAXBService implements Service {
 			throw new MetaDataRuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	public void destroy() {
 		context = null;
 	}
-	
+
 	public JAXBContext getJAXBContext() {
 		return context;
 	}
-	
-	
+
 	public String marshal(RootMetaData metaData) {
 		StringWriter w = new StringWriter();
-		
+
 		try {
 			Marshaller m = context.createMarshaller();
 			m.marshal(metaData, w);
 		} catch (JAXBException e) {
 			throw new MetaDataRuntimeException(e);
 		}
-		
+
 		return w.toString();
 	}
-	
+
 	public RootMetaData unmarshal(String marshaledString) {
 		try {
 			Unmarshaller um = context.createUnmarshaller();
@@ -91,8 +89,7 @@ public class MetaDataJAXBService implements Service {
 			throw new MetaDataRuntimeException(e);
 		}
 	}
-	
-	
+
 	public JAXBContext createJAXBContext(Class<?>... additionalClass) {
 		try {
 			Class[] classes = new Class[classesToBeBound.size() + additionalClass.length];
@@ -110,5 +107,5 @@ public class MetaDataJAXBService implements Service {
 			throw new MetaDataRuntimeException(e);
 		}
 	}
-	
+
 }

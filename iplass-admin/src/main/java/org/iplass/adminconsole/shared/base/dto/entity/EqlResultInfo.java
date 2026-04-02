@@ -39,7 +39,6 @@ public class EqlResultInfo implements Serializable {
 	private boolean isError;
 	private List<String> logMessages;
 
-
 	/**
 	 * コンストラクタ
 	 */

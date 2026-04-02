@@ -82,7 +82,7 @@ public class CacheRelatedEntityGridPane extends VLayout {
 		grid = new ResultGrid();
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				editResult((ListGridRecord)event.getRecord());
+				editResult((ListGridRecord) event.getRecord());
 			}
 		});
 
@@ -116,7 +116,7 @@ public class CacheRelatedEntityGridPane extends VLayout {
 			for (CacheRelatedEntityDefinition entity : entities) {
 				records.add(createRecord(entity, null));
 			}
-			grid.setData(records.toArray(new ListGridRecord[]{}));
+			grid.setData(records.toArray(new ListGridRecord[] {}));
 		}
 	}
 
@@ -144,7 +144,7 @@ public class CacheRelatedEntityGridPane extends VLayout {
 
 		List<CacheRelatedEntityDefinition> entities = new ArrayList<CacheRelatedEntityDefinition>();
 		for (ListGridRecord record : records) {
-			CacheRelatedEntityDefinition entity = (CacheRelatedEntityDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+			CacheRelatedEntityDefinition entity = (CacheRelatedEntityDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 			entities.add(entity);
 		}
 		definition.setRelatedEntity(entities);
@@ -157,7 +157,8 @@ public class CacheRelatedEntityGridPane extends VLayout {
 			record = new ListGridRecord();
 		}
 		record.setAttribute(FIELD_NAME.ENTITY_NAME.name(), definition.getDefinitionName());
-		record.setAttribute(FIELD_NAME.RELATED_TYPE.name(), definition.getType().name());
+		record.setAttribute(FIELD_NAME.RELATED_TYPE.name(), definition.getType()
+				.name());
 		record.setAttribute(FIELD_NAME.VALUE_OBJECT.name(), definition);
 		return record;
 	}
@@ -186,7 +187,7 @@ public class CacheRelatedEntityGridPane extends VLayout {
 
 		if (record != null) {
 			dialog.setDefinition(
-					(CacheRelatedEntityDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+					(CacheRelatedEntityDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 		}
 		dialog.show();
 	}
@@ -201,14 +202,14 @@ public class CacheRelatedEntityGridPane extends VLayout {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 

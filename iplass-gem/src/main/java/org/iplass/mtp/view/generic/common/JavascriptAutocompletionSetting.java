@@ -20,12 +20,12 @@
 
 package org.iplass.mtp.view.generic.common;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * Javascriptを利用した自動補完設定
@@ -38,19 +38,19 @@ public class JavascriptAutocompletionSetting extends AutocompletionSetting {
 
 	/** Javascript */
 	@MetaFieldInfo(
-		displayName="Javascript",
-		displayNameKey="generic_common_JavascriptAutocompletionSetting_javascriptDisplaNameKey",
-		inputType=InputType.SCRIPT,
-		mode="javascript",
-		description="連動元のプロパティが変更された際に実行する自動補完のJavascriptを設定します。<br>"
-				+ "連動元のプロパティの値は以下の形式で変数になっています。<br>"
-				+ "<pre>"
-				+ "var pVal = {\r\n"
-				+ "  プロパティ名1:[プロパティ値],\r\n"
-				+ "  プロパティ名2:[プロパティ値,...], *多重度に関わらずプロパティ値は配列になる\r\n"
-				+ "}"
-				+ "</pre>",
-		descriptionKey="generic_common_JavascriptAutocompletionSetting_javascriptDescriptionKey"
+			displayName = "Javascript",
+			displayNameKey = "generic_common_JavascriptAutocompletionSetting_javascriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "javascript",
+			description = "連動元のプロパティが変更された際に実行する自動補完のJavascriptを設定します。<br>"
+					+ "連動元のプロパティの値は以下の形式で変数になっています。<br>"
+					+ "<pre>"
+					+ "var pVal = {\r\n"
+					+ "  プロパティ名1:[プロパティ値],\r\n"
+					+ "  プロパティ名2:[プロパティ値,...], *多重度に関わらずプロパティ値は配列になる\r\n"
+					+ "}"
+					+ "</pre>",
+			descriptionKey = "generic_common_JavascriptAutocompletionSetting_javascriptDescriptionKey"
 	)
 	@EntityViewField()
 	private String javascript;

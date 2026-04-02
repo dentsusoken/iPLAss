@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-
 /**
  * <% if (doclang == "ja") {%>
  * <p>
@@ -50,10 +49,11 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * @author lis71n
  *
  */
-@XmlSeeAlso (value = {
-		JavaClassReportOutputLogicDefinition.class,
-		GroovyReportOutputLogicDefinition.class
-})
+@XmlSeeAlso(
+		value = {
+				JavaClassReportOutputLogicDefinition.class,
+				GroovyReportOutputLogicDefinition.class
+		})
 public abstract class ReportOutputLogicDefinition implements Serializable {
 	private static final long serialVersionUID = -3893705237664300024L;
 }

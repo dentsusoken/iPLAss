@@ -35,7 +35,7 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
  *
  */
 public class CurrentDateTimeFunctionAdapter implements FunctionAdapter<Function> {
-	
+
 	@Override
 	public String getFunctionName() {
 		return "CURRENT_DATETIME";
@@ -48,13 +48,15 @@ public class CurrentDateTimeFunctionAdapter implements FunctionAdapter<Function>
 
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		context.append(rdb.toTimeStampExpression(ExecuteContext.getCurrentContext().getCurrentTimestamp()));
+		context.append(rdb.toTimeStampExpression(ExecuteContext.getCurrentContext()
+				.getCurrentTimestamp()));
 	}
 
 	@Override
 	public void toSQL(StringBuilder context, List<CharSequence> args,
 			RdbAdapter rdb) {
-		context.append(rdb.toTimeStampExpression(ExecuteContext.getCurrentContext().getCurrentTimestamp()));
+		context.append(rdb.toTimeStampExpression(ExecuteContext.getCurrentContext()
+				.getCurrentTimestamp()));
 	}
 
 }

@@ -24,17 +24,20 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 
 public class RequestContextHolder {
 
-	public static final String EXEC_CONTEXT_NAME ="requestContext";
-	
+	public static final String EXEC_CONTEXT_NAME = "requestContext";
+
 	public static RequestContext getCurrent() {
-		return (RequestContext) ExecuteContext.getCurrentContext().getAttribute(EXEC_CONTEXT_NAME);
+		return (RequestContext) ExecuteContext.getCurrentContext()
+				.getAttribute(EXEC_CONTEXT_NAME);
 	}
-	
+
 	public static void setCurrent(RequestContext requestContext) {
 		if (requestContext == null) {
-			ExecuteContext.getCurrentContext().removeAttribute(EXEC_CONTEXT_NAME);
+			ExecuteContext.getCurrentContext()
+					.removeAttribute(EXEC_CONTEXT_NAME);
 		} else {
-			ExecuteContext.getCurrentContext().setAttribute(EXEC_CONTEXT_NAME, requestContext, true);
+			ExecuteContext.getCurrentContext()
+					.setAttribute(EXEC_CONTEXT_NAME, requestContext, true);
 		}
 	}
 

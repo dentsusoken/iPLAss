@@ -91,7 +91,7 @@ public class WebApiParamMapDefinition implements Serializable {
 
 	private String name;
 	private String mapFrom;
-	
+
 	private String condition;
 
 	/**

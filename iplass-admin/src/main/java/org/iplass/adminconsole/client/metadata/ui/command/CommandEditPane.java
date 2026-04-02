@@ -74,7 +74,6 @@ public class CommandEditPane extends MetaDataMainEditPane {
 	private VLayout commandTypeMainPane;
 	private CommandTypeEditPane typeEditPane;
 
-
 	public CommandEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
 
@@ -91,7 +90,8 @@ public class CommandEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -162,8 +162,10 @@ public class CommandEditPane extends MetaDataMainEditPane {
 		this.curDefinition = (CommandDefinition) entry.getDefinition();
 
 		if (useHistoryInfo) {
-			this.curVersion = entry.getDefinitionInfo().getVersion();
-			this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+			this.curVersion = entry.getDefinitionInfo()
+					.getVersion();
+			this.curDefinitionId = entry.getDefinitionInfo()
+					.getObjDefId();
 		}
 
 		commonSection.setDefinition(curDefinition);
@@ -272,20 +274,20 @@ public class CommandEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_command_CommandEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_command_CommandEditPane_saveConfirmComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						CommandDefinition definition = CommandType.typeOfDefinition(commandAttributePane.selectedType());
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								CommandDefinition definition = CommandType.typeOfDefinition(commandAttributePane.selectedType());
 
-						definition = commonSection.getEditDefinition(definition);
-						definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-						definition = commandAttributePane.getEditDefinition(definition);
-						definition = typeEditPane.getEditDefinition(definition);
+								definition = commonSection.getEditDefinition(definition);
+								definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
+								definition = commandAttributePane.getEditDefinition(definition);
+								definition = typeEditPane.getEditDefinition(definition);
 
-						updateCommand(definition, true);
-					}
-				}
-			});
+								updateCommand(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -298,16 +300,15 @@ public class CommandEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_command_CommandEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_command_CommandEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_command_CommandEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 }

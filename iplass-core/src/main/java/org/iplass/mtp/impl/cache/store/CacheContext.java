@@ -20,9 +20,8 @@
 
 package org.iplass.mtp.impl.cache.store;
 
-
 public interface CacheContext<K, V> {
-	
+
 	public V getValue(K key);
 
 }

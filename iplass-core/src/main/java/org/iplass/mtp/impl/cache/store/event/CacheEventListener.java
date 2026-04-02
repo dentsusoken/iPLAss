@@ -21,11 +21,13 @@
 package org.iplass.mtp.impl.cache.store.event;
 
 public interface CacheEventListener {
-	
+
 	public void removed(CacheRemoveEvent event);
+
 	public void created(CacheCreateEvent event);
+
 	public void updated(CacheUpdateEvent event);
+
 	public void invalidated(CacheInvalidateEvent event);
-	
 
 }

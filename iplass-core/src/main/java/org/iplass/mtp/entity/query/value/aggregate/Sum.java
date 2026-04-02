@@ -37,11 +37,11 @@ public class Sum extends Aggregate {
 
 	public Sum() {
 	}
-	
+
 	public Sum(String propertyName) {
 		setValue(new EntityField(propertyName));
 	}
-	
+
 	public Sum(ValueExpression value) {
 		setValue(value);
 	}
@@ -58,9 +58,9 @@ public class Sum extends Aggregate {
 	protected String getFuncName() {
 		return "sum";
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
 
-	
 }

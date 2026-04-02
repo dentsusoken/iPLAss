@@ -41,12 +41,15 @@ public class PostgreSQLPartitionBatch extends MtpCuiBase implements PartitionBat
 	private static Logger logger = LoggerFactory.getLogger(PostgreSQLPartitionBatch.class);
 
 	/** 実行モード */
-	public enum PostgreSQLPartitionBatchExecMode {GUI, CREATE};
+	public enum PostgreSQLPartitionBatchExecMode {
+		GUI, CREATE
+	};
 
 	// 実行モード
 	private PostgreSQLPartitionBatchExecMode execMode = PostgreSQLPartitionBatchExecMode.GUI;
 
-	private TenantToolService toolService = ServiceRegistry.getRegistry().getService(TenantToolService.class);
+	private TenantToolService toolService = ServiceRegistry.getRegistry()
+			.getService(TenantToolService.class);
 
 	/**
 	 * args[0]・・・execMode
@@ -95,22 +98,22 @@ public class PostgreSQLPartitionBatch extends MtpCuiBase implements PartitionBat
 		logEnvironment();
 
 		switch (getExecMode()) {
-		case GUI :
+		case GUI:
 			logInfo("■Start App");
 			logInfo("");
 
 			// Guiの場合はConsole出力を外す
 			switchLog(false, true);
 
-			MySQLPartitionManagerApp.main(new String[]{getLanguage()});
+			MySQLPartitionManagerApp.main(new String[] { getLanguage() });
 			return true;
-		case CREATE :
+		case CREATE:
 			logInfo("■Start Create Wizard");
 			logInfo("");
 
 			// Wizardの実行
 			return startCreateWizard();
-		default :
+		default:
 			logError("unsupport execute mode : " + getExecMode());
 			return false;
 		}

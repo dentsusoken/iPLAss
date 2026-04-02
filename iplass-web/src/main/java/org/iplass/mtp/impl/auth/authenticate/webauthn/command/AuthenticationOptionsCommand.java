@@ -62,11 +62,15 @@ public class AuthenticationOptionsCommand implements Command {
 
 	private static Logger logger = LoggerFactory.getLogger(AuthenticationOptionsCommand.class);
 
-	private WebAuthnService service = ServiceRegistry.getRegistry().getService(WebAuthnService.class);
+	private WebAuthnService service = ServiceRegistry.getRegistry()
+			.getService(WebAuthnService.class);
 
 	@Override
 	public String execute(RequestContext request) {
-		if (!ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseWebAuthn()) {
+		if (!ExecuteContext.getCurrentContext()
+				.getCurrentTenant()
+				.getTenantConfig(TenantAuthInfo.class)
+				.isUseWebAuthn()) {
 			throw new WebAuthnRuntimeException("WebAuthn is not enabled");
 		}
 		String defName = StringUtil.stripToNull(request.getParam(PARAM_DEFINITION_NAME));
@@ -78,7 +82,8 @@ public class AuthenticationOptionsCommand implements Command {
 		//認証のためなのでUserVerificationは必須とする
 		DefaultWebAuthnServer serverParam = new DefaultWebAuthnServer(request, SESSION_WEBAUTHN_STATE_AUTH);
 		String options = webauthn.publicKeyCredentialRequestOptions(serverParam, true);
-		ResponseBuilder builder = Response.ok(options).type(MediaType.APPLICATION_JSON);
+		ResponseBuilder builder = Response.ok(options)
+				.type(MediaType.APPLICATION_JSON);
 		request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, builder);
 
 		if (logger.isDebugEnabled()) {

@@ -80,8 +80,8 @@ public interface QueryConstants {
 	public static final String COMMA = ",";
 	public static final String QUOTE = "'";
 	public static final String DOT = ".";
-	public static char COMMA_CHAR = ','; 
-	public static char QUOTE_CHAR = '\''; 
+	public static char COMMA_CHAR = ',';
+	public static char QUOTE_CHAR = '\'';
 
 	public static final String COUNT = "COUNT";
 	public static final String SUM = "SUM";
@@ -96,7 +96,7 @@ public interface QueryConstants {
 	public static final String MEDIAN = "MEDIAN";
 	public static final String LISTAGG = "LISTAGG";
 	public static final String WITHIN = "WITHIN";
-	
+
 	public static final String RANK = "RANK";
 	public static final String DENSE_RANK = "DENSE_RANK";
 	public static final String PERCENT_RANK = "PERCENT_RANK";
@@ -105,7 +105,7 @@ public interface QueryConstants {
 
 	public static final String OVER = "OVER";
 	public static final String PARTITION = "PARTITION";
-	
+
 	public static final String BOOLEAN_TRUE = "TRUE";
 	public static final String BOOLEAN_FALSE = "FALSE";
 
@@ -115,23 +115,23 @@ public interface QueryConstants {
 	public static final String CUBE = "CUBE";
 
 	public static final String CONTAINS = "CONTAINS";
-	
+
 	public static final String CASE = "CASE";
 	public static final String WHEN = "WHEN";
 	public static final String THEN = "THEN";
 	public static final String ELSE = "ELSE";
 	public static final String END = "END";
-	
+
 	public static final String CS = "CS";
 	public static final String CI = "CI";
-	
+
 	public static final String CAST = "CAST";
 	public static final String AS = "AS";
 	public static final String OF = "OF";
 	public static final String NOW = "NOW";
 	public static final String UPDATE = "UPDATE";
 	public static final String TIME = "TIME";
-	
+
 	public static final String LEFT_HINT_COMMENT = "/*+";
 	public static final String RIGHT_HINT_COMMENT = "*/";
 	public static final String HINT_INDEX = "INDEX";
@@ -148,7 +148,7 @@ public interface QueryConstants {
 	public static final String HINT_TIMEOUT = "TIMEOUT";
 	public static final String HINT_SUPPRESS_WARNINGS = "SUPPRESS_WARNINGS";
 	public static final String HINT_READ_ONLY = "READ_ONLY";
-	
+
 	public static final String EXTERNAL_HINT = "@HINT";
 
 }

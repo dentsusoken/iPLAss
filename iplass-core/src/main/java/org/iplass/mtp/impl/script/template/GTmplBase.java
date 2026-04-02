@@ -52,15 +52,18 @@ import groovy.lang.MissingPropertyException;
 
 public class GTmplBase {
 	private static Logger logger = LoggerFactory.getLogger(GTmplBase.class);
-	
+
 	private static Pattern sp = Pattern.compile("[,\\s]+");
 
-	private MessageManager messageManager = ManagerLocator.getInstance().getManager(MessageManager.class);
-	private PreferenceService ps = ServiceRegistry.getRegistry().getService(PreferenceService.class);
+	private MessageManager messageManager = ManagerLocator.getInstance()
+			.getManager(MessageManager.class);
+	private PreferenceService ps = ServiceRegistry.getRegistry()
+			.getService(PreferenceService.class);
 
 	protected String msg(String categoryName, String messageId, Object... params) {
 		if (messageManager == null) {
-			messageManager = ManagerLocator.getInstance().getManager(MessageManager.class);
+			messageManager = ManagerLocator.getInstance()
+					.getManager(MessageManager.class);
 		}
 
 		MessageItem message = messageManager.getMessageItem(categoryName, messageId);
@@ -96,7 +99,7 @@ public class GTmplBase {
 		}
 		return StringUtil.escapeJavaScript(value.toString());
 	}
-	
+
 	protected String escHtml(Object value) {
 		if (value instanceof Closure) {
 			try {
@@ -114,7 +117,7 @@ public class GTmplBase {
 		}
 		return StringUtil.escapeHtml(value.toString());
 	}
-	
+
 	protected String escXml(Object value) {
 		if (value instanceof Closure) {
 			try {
@@ -132,7 +135,7 @@ public class GTmplBase {
 		}
 		return StringUtil.escapeXml10(value.toString());
 	}
-	
+
 	protected String escEql(Object value) {
 		if (value instanceof Closure) {
 			try {
@@ -177,7 +180,7 @@ public class GTmplBase {
 			return StringUtil.escapeEqlForLike(value.toString());
 		}
 	}
-	
+
 	protected String escEqlLike(Object value) {
 		return escEqlLike(value, true);
 	}
@@ -207,7 +210,8 @@ public class GTmplBase {
 
 	protected Object prefs(String name) {
 		if (ps == null) {
-			ps = ServiceRegistry.getRegistry().getService(PreferenceService.class);
+			ps = ServiceRegistry.getRegistry()
+					.getService(PreferenceService.class);
 		}
 
 		PreferenceRuntime pr = ps.getRuntimeByName(name);
@@ -220,7 +224,8 @@ public class GTmplBase {
 		if (pr instanceof PreferenceSetRuntime) {
 			return pr.getMap();
 		} else {
-			return pr.getMetaData().getValue();
+			return pr.getMetaData()
+					.getValue();
 		}
 	}
 
@@ -239,7 +244,8 @@ public class GTmplBase {
 				return fmt.format((Date) value);
 			}
 			if (value instanceof Number) {
-				DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(ExecuteContext.getCurrentContext().getLocale());
+				DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(ExecuteContext.getCurrentContext()
+						.getLocale());
 				DecimalFormat fmt = new DecimalFormat(pattern, dfs);
 				return fmt.format(value);
 			}
@@ -263,28 +269,38 @@ public class GTmplBase {
 
 	//println to logger
 	public void println() {
-		GroovyTemplateContext.getContext().loggerPrintWriter().println();
+		GroovyTemplateContext.getContext()
+				.loggerPrintWriter()
+				.println();
 	}
 
 	public void print(Object value) {
-		GroovyTemplateContext.getContext().loggerPrintWriter().print(InvokerHelper.toString(value));
+		GroovyTemplateContext.getContext()
+				.loggerPrintWriter()
+				.print(InvokerHelper.toString(value));
 	}
 
 	public void println(Object value) {
-		GroovyTemplateContext.getContext().loggerPrintWriter().println(InvokerHelper.toString(value));
+		GroovyTemplateContext.getContext()
+				.loggerPrintWriter()
+				.println(InvokerHelper.toString(value));
 	}
 
 	public void printf(String format, Object value) {
-		GroovyTemplateContext.getContext().loggerPrintWriter().printf(format, value);
+		GroovyTemplateContext.getContext()
+				.loggerPrintWriter()
+				.printf(format, value);
 	}
 
 	public void printf(String format, Object[] values) {
-		GroovyTemplateContext.getContext().loggerPrintWriter().printf(format, values);
+		GroovyTemplateContext.getContext()
+				.loggerPrintWriter()
+				.printf(format, values);
 	}
-	
+
 	public void auth(Map<String, Object> params, Closure<Void> inner) {
 		AuthContext auth = AuthContext.getCurrentContext();
-		
+
 		String role = (String) params.get("role");
 		if (role != null) {
 			boolean userInRole = false;
@@ -292,7 +308,7 @@ public class GTmplBase {
 				userInRole = auth.userInRole(role);
 			} else {
 				String[] roles = sp.split(role);
-				for (String r: roles) {
+				for (String r : roles) {
 					userInRole |= userInRole | auth.userInRole(r);
 					if (userInRole) {
 						break;
@@ -306,7 +322,7 @@ public class GTmplBase {
 				return;
 			}
 		}
-		
+
 		Permission permission = (Permission) params.get("permission");
 		if (permission != null) {
 			if (!auth.checkPermission(permission)) {
@@ -316,12 +332,12 @@ public class GTmplBase {
 				return;
 			}
 		}
-		
+
 		Boolean privileged = (Boolean) params.get("privileged");
 		if (privileged != null && privileged.booleanValue()) {
 			AuthContext.doPrivileged(() -> {
 				inner.call();
-			}); 
+			});
 		} else {
 			inner.call();
 		}

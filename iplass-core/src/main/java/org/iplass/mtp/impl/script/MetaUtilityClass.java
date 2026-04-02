@@ -87,13 +87,13 @@ public class MetaUtilityClass extends BaseRootMetaData implements DefinableMetaD
 		public UtilityClassRuntime() {
 		}
 
-
 		@Override
 		public void checkState() throws MetaDataIllegalStateException {
 			//test compile
 			try {
 				if (script != null) {
-					TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+					TenantContext tc = ExecuteContext.getCurrentContext()
+							.getTenantContext();
 					GroovyScriptEngine gse = (GroovyScriptEngine) tc.getScriptEngine();
 					GroovyClassLoader tempcl = new GroovyClassLoader(gse.getSharedClassLoader());
 
@@ -106,7 +106,6 @@ public class MetaUtilityClass extends BaseRootMetaData implements DefinableMetaD
 				throw new MetaDataIllegalStateException(e.getMessage(), e);
 			}
 		}
-
 
 //		public void compile(GroovyClassLoader cl) {
 //			checkState();

@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.impl.web.fileupload;
 
-
-
-
 /**
  * アップロードされたファイルをスキャンするためのインタフェース。
  */

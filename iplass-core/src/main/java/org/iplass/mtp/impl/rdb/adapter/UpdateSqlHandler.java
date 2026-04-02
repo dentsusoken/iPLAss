@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.rdb.adapter;
 
-
 public abstract class UpdateSqlHandler {
-	
-	
+
 }

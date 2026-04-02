@@ -56,14 +56,14 @@ public interface ScreenModuleBasedUIFactory {
 	 * @return { @link BaseTenantDS } のインスタンス
 	 */
 	BaseTenantDS createTenantImportSelectDataSource(Tenant tenant);
-	
+
 	/**
 	 * { @link BaseTenantPropertyEditDialog } のインスタンスを生成する
 	 * 
 	 * @return { @link BaseTenantPropertyEditDialog } のインスタンス
 	 */
 	BaseTenantPropertyEditDialog createTenantPropertyEditDialog(Record record);
-	
+
 	/**
 	 * {@link LangExplorerSettingController}  のインスタンスを生成する
 	 * 

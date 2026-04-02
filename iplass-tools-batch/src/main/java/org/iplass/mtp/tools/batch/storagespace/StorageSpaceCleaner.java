@@ -13,8 +13,8 @@ import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.tools.storagespace.StorageSpaceService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +26,10 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 
 	private static Logger logger = LoggerFactory.getLogger(StorageSpaceCleaner.class);
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private static StorageSpaceService storageSpaceService = ServiceRegistry.getRegistry().getService(StorageSpaceService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private static StorageSpaceService storageSpaceService = ServiceRegistry.getRegistry()
+			.getService(StorageSpaceService.class);
 
 	/** 実行モード */
 	private ExecMode execMode = ExecMode.WIZARD;
@@ -132,13 +134,13 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 		logEnvironment();
 
 		switch (execMode) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start Wizard");
 			logInfo("");
 
 			// Wizardの実行
 			return startWizard();
-		case SILENT :
+		case SILENT:
 			logInfo("■Start Silent");
 			logInfo("");
 
@@ -148,7 +150,7 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 			return executeTask(null, (param) -> {
 				return proceed();
 			});
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -167,7 +169,7 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 					logWarn(rs("StorageSpaceCleaner.Wizard.invalidTenantIdMsg", tenantId));
 				}
 			}
-		} while(validTenantId == false);
+		} while (validTenantId == false);
 
 		// EntityName(DefinitionName)
 		boolean validEntityName = false;
@@ -177,7 +179,7 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 				setEntityName(entityName);
 				validEntityName = true;
 			}
-		} while(validEntityName == false);
+		} while (validEntityName == false);
 
 		// StorageSpaceName
 		boolean validStorageSpaceName = false;
@@ -187,7 +189,7 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 				setStorageSpaceName(storageSpaceName);
 				validStorageSpaceName = true;
 			}
-		} while(validStorageSpaceName == false);
+		} while (validStorageSpaceName == false);
 
 		//Consoleを削除してLogに切り替え
 		switchLog(false, true);
@@ -210,7 +212,8 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 
 		return ExecuteContext.executeAs(tc, () -> {
 
-			EntityHandler entityHandler = MetaDataContext.getContext().getMetaDataHandler(EntityHandler.class, EntityService.ENTITY_META_PATH + entityName.replace(".", "/"));
+			EntityHandler entityHandler = MetaDataContext.getContext()
+					.getMetaDataHandler(EntityHandler.class, EntityService.ENTITY_META_PATH + entityName.replace(".", "/"));
 			if (entityHandler == null) {
 				logError(rs("StorageSpaceCleaner.notFoundEntity", entityName));
 				return isSuccess();

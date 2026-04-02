@@ -52,6 +52,7 @@ public class QueryCache implements Serializable {
 		this.listType = listType;
 		this.eol = -1;
 	}
+
 	public QueryCache(Integer count, List<?> list, InvocationType listType, int ttl) {
 		this.count = count;
 		this.list = list;
@@ -66,12 +67,15 @@ public class QueryCache implements Serializable {
 	public Integer getCount() {
 		return count;
 	}
+
 	public List<?> getList() {
 		return list;
 	}
+
 	public InvocationType getListType() {
 		return listType;
 	}
+
 	public long getEol() {
 		return eol;
 	}
@@ -104,7 +108,7 @@ public class QueryCache implements Serializable {
 		//Entity化する過程でselect項目欠落している可能性ある
 		if (invocationType == InvocationType.SEARCH_ENTITY) {
 			if (listType == InvocationType.SEARCH_ENTITY) {
-				for (Entity e: (List<Entity>) list) {
+				for (Entity e : (List<Entity>) list) {
 					if (e instanceof GenericEntity) {
 						e = ((GenericEntity) e).deepCopy();
 					} else if (e instanceof Serializable) {
@@ -118,10 +122,14 @@ public class QueryCache implements Serializable {
 					}
 				}
 			} else if (listType == InvocationType.SEARCH) {
-				for (Object[] rawData: (List<Object[]>) list) {
+				for (Object[] rawData : (List<Object[]>) list) {
 					Entity e = eh.newInstance();
-					for (int i = 0; i < query.getSelect().getSelectValues().size(); i++) {
-						ValueExpression propName = query.getSelect().getSelectValues().get(i);
+					for (int i = 0; i < query.getSelect()
+							.getSelectValues()
+							.size(); i++) {
+						ValueExpression propName = query.getSelect()
+								.getSelectValues()
+								.get(i);
 						if (propName instanceof EntityField) {
 							EntityField ef = (EntityField) propName;
 							e.setValue(ef.getPropertyName(), copyVal(rawData[i]));
@@ -134,10 +142,9 @@ public class QueryCache implements Serializable {
 				}
 			}
 
-
 		} else {
 			if (listType == InvocationType.SEARCH) {
-				for (Object[] rawData: (List<Object[]>) list) {
+				for (Object[] rawData : (List<Object[]>) list) {
 					Object[] copy = new Object[rawData.length];
 					for (int i = 0; i < rawData.length; i++) {
 						copy[i] = copyVal(rawData[i]);
@@ -154,7 +161,8 @@ public class QueryCache implements Serializable {
 	private Object copyVal(Object val) {
 		if (val instanceof Object[]) {
 			Object[] valArray = (Object[]) val;
-			Object[] newValArray = (Object[]) Array.newInstance(valArray.getClass().getComponentType(), valArray.length);
+			Object[] newValArray = (Object[]) Array.newInstance(valArray.getClass()
+					.getComponentType(), valArray.length);
 			for (int i = 0; i < valArray.length; i++) {
 				newValArray[i] = copyVal(valArray[i]);
 			}

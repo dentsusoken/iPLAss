@@ -26,17 +26,17 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name="list")
+@XmlType(name = "list")
 public class JaxbListValue {
 	private List<Object> item;
 
 	public JaxbListValue() {
 	}
-	
+
 	public JaxbListValue(List<Object> item) {
 		this.item = item;
 	}
-	
+
 	public List<Object> getItem() {
 		return item;
 	}

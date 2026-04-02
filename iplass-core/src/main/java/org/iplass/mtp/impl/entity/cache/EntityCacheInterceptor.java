@@ -38,7 +38,6 @@ import org.iplass.mtp.entity.interceptor.EntityUpdateAllInvocation;
 import org.iplass.mtp.entity.interceptor.EntityUpdateInvocation;
 import org.iplass.mtp.entity.interceptor.EntityValidateInvocation;
 
-
 /**
  * EntityのキャッシュInterceptor。
  *
@@ -52,7 +51,7 @@ public class EntityCacheInterceptor extends EntityInterceptorAdapter {
 	public static final String LOCAL_LOAD_CACHE_NAMESPACE = "mtp.entity.transactionLocalCache";
 
 	TransactionLocalLoadCacheInterceptor transactionLocalLoadCacheInterceptor;
-	
+
 	public EntityCacheInterceptor() {
 		transactionLocalLoadCacheInterceptor = new TransactionLocalLoadCacheInterceptor();
 	}
@@ -126,5 +125,5 @@ public class EntityCacheInterceptor extends EntityInterceptorAdapter {
 	public void bulkUpdate(EntityBulkUpdateInvocation invocation) {
 		transactionLocalLoadCacheInterceptor.bulkUpdate(invocation);
 	}
-	
+
 }

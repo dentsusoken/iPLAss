@@ -74,13 +74,15 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 					if (logger.isDebugEnabled()) {
 						logger.debug(String.format("Occur expired event. channel:%s, message:%s", channel, message));
 					}
-					Object key = codec.decodeKey(codec.getCharset().encode(message));
+					Object key = codec.decodeKey(codec.getCharset()
+							.encode(message));
 					notifyRemoved(new CacheEntry(key, null));
 				}
 			}
 		});
 		this.pubSubCommands = pubSubConnection.sync();
-		pubSubCommands.subscribe("__keyevent@" + String.valueOf(factory.getServer().getDatabase()) + "__:expired"); // Expiredイベントのみ受信、DB番号は0固定
+		pubSubCommands.subscribe("__keyevent@" + String.valueOf(factory.getServer()
+				.getDatabase()) + "__:expired"); // Expiredイベントのみ受信、DB番号は0固定
 	}
 
 	@Override
@@ -185,7 +187,8 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 						commands.multi();
 
 						// replace
-						if (!oldEntry.getKey().equals(newEntry.getKey())) {
+						if (!oldEntry.getKey()
+								.equals(newEntry.getKey())) {
 							throw new IllegalArgumentException("oldEntry key not equals newEntry key");
 						}
 						String sha = commands.digest(RedisCacheStoreLuaScript.REPLACE_NEW);
@@ -351,7 +354,8 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-		if (!oldEntry.getKey().equals(newEntry.getKey())) {
+		if (!oldEntry.getKey()
+				.equals(newEntry.getKey())) {
 			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
 		}
 

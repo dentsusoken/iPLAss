@@ -284,7 +284,7 @@ public class ColConverterFactory implements Service {
 
 		return null;
 	}
-	
+
 	@Override
 	public void init(Config config) {
 	}

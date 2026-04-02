@@ -54,17 +54,18 @@ public class InfinispanIndexedDistributedCacheStore extends InfinispanIndexedCac
 
 		InfinispanTaskState<Void> state = InfinispanTaskExecutor.submitAll(new RemoveAllTask(wrapped.getNamespace()));
 
-		state.getFuture().forEach(f -> {
-			try {
-				f.get();
-			} catch (InterruptedException e) {
-				fatalLogger.error("cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace={}",
-						wrapped.getNamespace(), e);
-			} catch (ExecutionException e) {
-				fatalLogger.error("cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace={}",
-						wrapped.getNamespace(), e.getCause());
-			}
-		});
+		state.getFuture()
+				.forEach(f -> {
+					try {
+						f.get();
+					} catch (InterruptedException e) {
+						fatalLogger.error("cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace={}",
+								wrapped.getNamespace(), e);
+					} catch (ExecutionException e) {
+						fatalLogger.error("cant removeAll cause remote execution interrupted. maybe cache index is inconsistent state... namespace={}",
+								wrapped.getNamespace(), e.getCause());
+					}
+				});
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class InfinispanIndexedDistributedCacheStore extends InfinispanIndexedCac
 				oldRef = new CacheEntryRef(oldEntry.getKey(), oldEntry.getVersion());
 				Object iVal = oldEntry.getIndexValue(i);
 				if (iVal instanceof Object[]) {
-					for (Object iv: (Object[]) iVal) {
+					for (Object iv : (Object[]) iVal) {
 						removeIndexList.add(new IndexKey(i, iv));
 					}
 				} else {
@@ -100,7 +101,7 @@ public class InfinispanIndexedDistributedCacheStore extends InfinispanIndexedCac
 				newRef = new CacheEntryRef(newEntry.getKey(), newEntry.getVersion());
 				Object iVal = newEntry.getIndexValue(i);
 				if (iVal instanceof Object[]) {
-					for (Object iv: (Object[]) iVal) {
+					for (Object iv : (Object[]) iVal) {
 						addIndexList.add(new IndexKey(i, iv));
 					}
 				} else {
@@ -128,18 +129,21 @@ public class InfinispanIndexedDistributedCacheStore extends InfinispanIndexedCac
 							indexRemoveRetryIntervalNanos, indexStore.getName(), new HashSet<>(k)),
 					indexStore.getName(), new ArrayList<>(keySet));
 
-			state.getFuture().forEach(f -> {
-				try {
-					f.get();
-				} catch (InterruptedException e) {
-					fatalLogger.error("cant mainte index cause remote execution interrupted. maybe cache index is inconsistent state... oldEntry={}, newEntry={}",
-							oldEntry, newEntry, e);
-				} catch (ExecutionException e) {
-					fatalLogger.error("cant mainte index cause remote execution interrupted. maybe cache index is inconsistent state... oldEntry={}, newEntry={}",
-							oldEntry, newEntry, e.getCause());
-				}
+			state.getFuture()
+					.forEach(f -> {
+						try {
+							f.get();
+						} catch (InterruptedException e) {
+							fatalLogger.error(
+									"cant mainte index cause remote execution interrupted. maybe cache index is inconsistent state... oldEntry={}, newEntry={}",
+									oldEntry, newEntry, e);
+						} catch (ExecutionException e) {
+							fatalLogger.error(
+									"cant mainte index cause remote execution interrupted. maybe cache index is inconsistent state... oldEntry={}, newEntry={}",
+									oldEntry, newEntry, e.getCause());
+						}
 
-			});
+					});
 		}
 	}
 
@@ -154,8 +158,11 @@ public class InfinispanIndexedDistributedCacheStore extends InfinispanIndexedCac
 
 		@Override
 		public Void call() {
-			LoggerFactory.getLogger(RemoveAllTask.class).debug("RemoveAllTask");
-			CacheStore store = ServiceRegistry.getRegistry().getService(CacheService.class).getCache(namespace, false);
+			LoggerFactory.getLogger(RemoveAllTask.class)
+					.debug("RemoveAllTask");
+			CacheStore store = ServiceRegistry.getRegistry()
+					.getService(CacheService.class)
+					.getCache(namespace, false);
 			if (store != null) {
 				InfinispanIndexedDistributedCacheStore infiniStore = null;
 				if (store instanceof InfinispanIndexedDistributedCacheStore) {
@@ -209,22 +216,24 @@ public class InfinispanIndexedDistributedCacheStore extends InfinispanIndexedCac
 			this.inputKeys = inputKeys;
 		}
 
-
 		@Override
 		public Void call() {
-			Cache<IndexKey, IndexEntry> cache = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getCache(cacheName);
+			Cache<IndexKey, IndexEntry> cache = ServiceRegistry.getRegistry()
+					.getService(InfinispanService.class)
+					.getCacheManager()
+					.getCache(cacheName);
 			if (logger.isTraceEnabled()) {
 				logger.trace("mainteIndexTask:old={}, new={}, keys={}", oldRef, newRef, inputKeys);
 			}
 			if (oldRef != null) {
-				for (IndexKey k: removeIndexList) {
+				for (IndexKey k : removeIndexList) {
 					if (inputKeys.contains(k)) {
 						removeFromIndex(cache, k, oldRef, indexRemoveTryCount, indexRemoveRetryIntervalNanos);
 					}
 				}
 			}
 			if (newRef != null) {
-				for (IndexKey k: addIndexList) {
+				for (IndexKey k : addIndexList) {
 					if (inputKeys.contains(k)) {
 						addToIndex(cache, k, newRef);
 					}

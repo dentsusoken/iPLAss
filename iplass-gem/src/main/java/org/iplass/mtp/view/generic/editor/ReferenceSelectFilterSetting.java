@@ -45,15 +45,15 @@ public class ReferenceSelectFilterSetting implements Refrectable {
 	private static final long serialVersionUID = 6265414317824562671L;
 
 	/** 再度検索パターン（再検索時の選択状態の扱い） */
-    @XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
-    public enum SelectFilterResearchPattern {
-        /** 選択値を保持する（再検索後も現在の選択を維持する） */
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
+	public enum SelectFilterResearchPattern {
+		/** 選択値を保持する（再検索後も現在の選択を維持する） */
 		@XmlEnumValue("Keep")
-        KEEP,
-        /** 選択値をクリアする（再検索時に選択を解除する） */
+		KEEP,
+		/** 選択値をクリアする（再検索時に選択を解除する） */
 		@XmlEnumValue("Clear")
-        CLEAR
-    }
+		CLEAR
+	}
 
 	/** 検索パターン */
 	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
@@ -70,78 +70,78 @@ public class ReferenceSelectFilterSetting implements Refrectable {
 	}
 
 	/** 選択フィルター用プロパティ */
-    @MetaFieldInfo(
-            displayName = "選択フィルター用のプロパティ",
-            displayNameKey = "generic_editor_ReferenceSelectFilterSetting_propertyDisplaNameKey",
-            inputType = InputType.PROPERTY,
-            displayOrder = 1100,
-            description = "<b>表示タイプ: SelectFilter</b><br>選択フィルター用のプロパティを指定します。<br>指定したプロパティに入力された値をもとに参照データを絞り込みます。",
-            descriptionKey = "generic_editor_ReferenceSelectFilterSetting_propertyDescriptionKey",
+	@MetaFieldInfo(
+			displayName = "選択フィルター用のプロパティ",
+			displayNameKey = "generic_editor_ReferenceSelectFilterSetting_propertyDisplaNameKey",
+			inputType = InputType.PROPERTY,
+			displayOrder = 1100,
+			description = "<b>表示タイプ: SelectFilter</b><br>選択フィルター用のプロパティを指定します。<br>指定したプロパティに入力された値をもとに参照データを絞り込みます。",
+			descriptionKey = "generic_editor_ReferenceSelectFilterSetting_propertyDescriptionKey",
 			excludePropertyType = { "BINARY", "TIME", "DATE", "DATETIME", "BOOLEAN", "EXPRESSION", "LONGTEXT", "FLOAT" }
-    )
-    @EntityViewField(
+	)
+	@EntityViewField(
 			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK }
-    )
-    private String propertyName;
+	)
+	private String propertyName;
 
-    /** 検索条件 */
-    @MetaFieldInfo(
-            displayName = "検索条件",
-            displayNameKey = "generic_editor_ReferenceSelectFilterSetting_conditionDisplaNameKey",
+	/** 検索条件 */
+	@MetaFieldInfo(
+			displayName = "検索条件",
+			displayNameKey = "generic_editor_ReferenceSelectFilterSetting_conditionDisplaNameKey",
 			displayOrder = 1103,
-            description = "表示する選択肢を検索する際に付与する条件を設定します。",
-            descriptionKey = "generic_editor_ReferenceSelectFilterSetting_conditionDescriptionKey"
-    )
-    @EntityViewField(
+			description = "表示する選択肢を検索する際に付与する条件を設定します。",
+			descriptionKey = "generic_editor_ReferenceSelectFilterSetting_conditionDescriptionKey"
+	)
+	@EntityViewField(
 			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK }
-    )
-    private String condition;
+	)
+	private String condition;
 
-    /** ソートアイテム */
-    @MetaFieldInfo(
-            displayName = "ソートアイテム",
-            displayNameKey = "generic_editor_ReferenceSelectFilterSetting_sortItemDisplaNameKey",
-            inputType = InputType.PROPERTY,
+	/** ソートアイテム */
+	@MetaFieldInfo(
+			displayName = "ソートアイテム",
+			displayNameKey = "generic_editor_ReferenceSelectFilterSetting_sortItemDisplaNameKey",
+			inputType = InputType.PROPERTY,
 			displayOrder = 1104,
-            description = "<b>表示タイプ: SelectFilter</b><br>参照データをソートする項目を指定します。",
-            descriptionKey = "generic_editor_ReferenceSelectFilterSetting_sortItemDescriptionKey"
-    )
-    @EntityViewField(
+			description = "<b>表示タイプ: SelectFilter</b><br>参照データをソートする項目を指定します。",
+			descriptionKey = "generic_editor_ReferenceSelectFilterSetting_sortItemDescriptionKey"
+	)
+	@EntityViewField(
 			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK }
-    )
-    private String sortItem;
+	)
+	private String sortItem;
 
-    /** ソート種別 */
-    @MetaFieldInfo(
-            displayName = "ソート種別",
-            displayNameKey = "generic_editor_ReferenceSelectFilterSetting_sortTypeDisplaNameKey",
-            inputType = InputType.ENUM,
+	/** ソート種別 */
+	@MetaFieldInfo(
+			displayName = "ソート種別",
+			displayNameKey = "generic_editor_ReferenceSelectFilterSetting_sortTypeDisplaNameKey",
+			inputType = InputType.ENUM,
 			displayOrder = 1105,
-            enumClass = RefSortType.class,
-            description = "<b>表示タイプ: SelectFilter</b><br>参照データをソートする順序を指定します。",
-            descriptionKey = "generic_editor_ReferenceSelectFilterSetting_sortTypeDescriptionKey"
-    )
-    @EntityViewField(
+			enumClass = RefSortType.class,
+			description = "<b>表示タイプ: SelectFilter</b><br>参照データをソートする順序を指定します。",
+			descriptionKey = "generic_editor_ReferenceSelectFilterSetting_sortTypeDescriptionKey"
+	)
+	@EntityViewField(
 			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK }
-    )
-    private RefSortType sortType;
+	)
+	private RefSortType sortType;
 
 	/** 選択フィルターの1回あたりの検索件数 */
-    @MetaFieldInfo(
-            displayName = "検索件数",
-            displayNameKey = "generic_editor_ReferenceSelectFilterSetting_searchCountDisplaNameKey",
-            inputType = InputType.NUMBER,
-            displayOrder = 1110,
-            description = "<b>表示タイプ: SelectFilter</b><br>選択フィルターで1回ごとに取得する検索件数を指定します。",
-            descriptionKey = "generic_editor_ReferenceSelectFilterSetting_searchCountDescriptionKey"
-    )
-    @EntityViewField(
+	@MetaFieldInfo(
+			displayName = "検索件数",
+			displayNameKey = "generic_editor_ReferenceSelectFilterSetting_searchCountDisplaNameKey",
+			inputType = InputType.NUMBER,
+			displayOrder = 1110,
+			description = "<b>表示タイプ: SelectFilter</b><br>選択フィルターで1回ごとに取得する検索件数を指定します。",
+			descriptionKey = "generic_editor_ReferenceSelectFilterSetting_searchCountDescriptionKey"
+	)
+	@EntityViewField(
 			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK }
-    )
-    private int selectFilterSearchPageSize;
+	)
+	private int selectFilterSearchPageSize;
 
-    /** 選択フィルター検索パターン */
-    @MetaFieldInfo(
+	/** 選択フィルター検索パターン */
+	@MetaFieldInfo(
 			displayName = "検索パターン",
 			displayNameKey = "generic_editor_ReferenceSelectFilterSetting_searchPatternDisplaNameKey",
 			inputType = InputType.ENUM,
@@ -170,33 +170,33 @@ public class ReferenceSelectFilterSetting implements Refrectable {
 	)
 	private SelectFilterResearchPattern selectFilterResearchPattern;
 
-    /** 選択フィルターのプレースホルダー */
-    @MetaFieldInfo(
-            displayName = "選択フィルターのプレースホルダー",
-            displayNameKey = "generic_editor_ReferenceSelectFilterSetting_placeholderDisplaNameKey",
-            inputType = InputType.MULTI_LANG,
+	/** 選択フィルターのプレースホルダー */
+	@MetaFieldInfo(
+			displayName = "選択フィルターのプレースホルダー",
+			displayNameKey = "generic_editor_ReferenceSelectFilterSetting_placeholderDisplaNameKey",
+			inputType = InputType.MULTI_LANG,
 			displayOrder = 1150,
-            description = "<b>表示タイプ: SelectFilter</b><br>選択フィルターの入力欄に表示するプレースホルダーを設定します。",
-            descriptionKey = "generic_editor_ReferenceSelectFilterSetting_placeholderDescriptionKey",
-            multiLangField = "localizedPlaceholderList"
-    )
-    @EntityViewField(
+			description = "<b>表示タイプ: SelectFilter</b><br>選択フィルターの入力欄に表示するプレースホルダーを設定します。",
+			descriptionKey = "generic_editor_ReferenceSelectFilterSetting_placeholderDescriptionKey",
+			multiLangField = "localizedPlaceholderList"
+	)
+	@EntityViewField(
 			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK }
-    )
-    @MultiLang(itemNameGetter = "getPropertyName", isUseSuperForItemName = true)
-    private String selectFilterPlaceholder;
+	)
+	@MultiLang(itemNameGetter = "getPropertyName", isUseSuperForItemName = true)
+	private String selectFilterPlaceholder;
 
 	/** プレースホルダーの多言語設定 */
-    @MetaFieldInfo(
-            displayName = "プレースホルダーの多言語設定",
-            displayNameKey = "generic_editor_ReferenceSelectFilterSetting_placeholderListDisplaNameKey",
-            inputType = InputType.MULTI_LANG_LIST,
+	@MetaFieldInfo(
+			displayName = "プレースホルダーの多言語設定",
+			displayNameKey = "generic_editor_ReferenceSelectFilterSetting_placeholderListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
 			displayOrder = 1160
-    )
-    @EntityViewField(
+	)
+	@EntityViewField(
 			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK }
-    )
-    private List<LocalizedStringDefinition> localizedPlaceholderList;
+	)
+	private List<LocalizedStringDefinition> localizedPlaceholderList;
 
 	/**
 	 * 選択フィルター用プロパティを取得します

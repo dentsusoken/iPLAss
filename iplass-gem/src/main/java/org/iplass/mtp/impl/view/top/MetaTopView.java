@@ -61,8 +61,9 @@ public class MetaTopView extends BaseRootMetaData implements DefinableMetaData<T
 	 * @return 画面パーツ
 	 */
 	public List<MetaTopViewParts> getParts() {
-		if (parts == null) parts = new ArrayList<MetaTopViewParts>();
-	    return parts;
+		if (parts == null)
+			parts = new ArrayList<MetaTopViewParts>();
+		return parts;
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class MetaTopView extends BaseRootMetaData implements DefinableMetaData<T
 	 * @param parts 画面パーツ
 	 */
 	public void setParts(List<MetaTopViewParts> parts) {
-	    this.parts = parts;
+		this.parts = parts;
 	}
 
 	/**
@@ -86,8 +87,9 @@ public class MetaTopView extends BaseRootMetaData implements DefinableMetaData<T
 	 * @return ウィジェット
 	 */
 	public List<MetaTopViewParts> getWidgets() {
-		if (widgets == null) widgets = new ArrayList<MetaTopViewParts>();
-	    return widgets;
+		if (widgets == null)
+			widgets = new ArrayList<MetaTopViewParts>();
+		return widgets;
 	}
 
 	/**
@@ -95,7 +97,7 @@ public class MetaTopView extends BaseRootMetaData implements DefinableMetaData<T
 	 * @param widgets ウィジェット
 	 */
 	public void setWidgets(List<MetaTopViewParts> widgets) {
-	    this.widgets = widgets;
+		this.widgets = widgets;
 	}
 
 	/**
@@ -141,11 +143,13 @@ public class MetaTopView extends BaseRootMetaData implements DefinableMetaData<T
 		definition.setDescription(description);
 		for (MetaTopViewParts meta : getParts()) {
 			TopViewParts parts = meta.currentConfig();
-			if (parts != null) definition.addParts(parts);
+			if (parts != null)
+				definition.addParts(parts);
 		}
 		for (MetaTopViewParts meta : getWidgets()) {
 			TopViewParts parts = meta.currentConfig();
-			if (parts != null) definition.addWidget(parts);
+			if (parts != null)
+				definition.addWidget(parts);
 		}
 		return definition;
 	}

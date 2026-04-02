@@ -131,11 +131,14 @@ public class TimestampPropertySearchCondition extends PropertySearchCondition {
 	private Timestamp string2Timestamp(String str) {
 
 		if (str.length() == 8) {
-			return ConvertUtil.convertToDate(Timestamp.class, str, TemplateUtil.getLocaleFormat().getServerDateFormat(), true);
+			return ConvertUtil.convertToDate(Timestamp.class, str, TemplateUtil.getLocaleFormat()
+					.getServerDateFormat(), true);
 		} else if (str.length() == 14) {
-			return ConvertUtil.convertToDate(Timestamp.class, str, TemplateUtil.getLocaleFormat().getServerDateFormat() + "HHmmss", true);
+			return ConvertUtil.convertToDate(Timestamp.class, str, TemplateUtil.getLocaleFormat()
+					.getServerDateFormat() + "HHmmss", true);
 		} else {
-			return ConvertUtil.convertToDate(Timestamp.class, str, TemplateUtil.getLocaleFormat().getServerDateTimeFormat(), true);
+			return ConvertUtil.convertToDate(Timestamp.class, str, TemplateUtil.getLocaleFormat()
+					.getServerDateTimeFormat(), true);
 		}
 	}
 

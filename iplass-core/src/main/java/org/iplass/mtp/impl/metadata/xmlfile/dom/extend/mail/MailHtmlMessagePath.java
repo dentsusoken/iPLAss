@@ -25,7 +25,7 @@ import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.Templat
 
 @ExternalRefPathAttribute(
 		path = "/metaDataEntry/metaData/htmlMessage/content",
-		templateType = TemplateType.HTML, 
+		templateType = TemplateType.HTML,
 		fileExtension = FileExtention.TMPL)
 public class MailHtmlMessagePath extends MailMessagePath {
 }

@@ -23,15 +23,16 @@ package org.iplass.mtp.impl.metadata;
 public class MetaDataRuntimeConfig {
 	private int tenantId;
 	private MetaDataConfig metaDataConfig;
-	
+
 	public MetaDataRuntimeConfig(int tenantId, MetaDataConfig metaDataConfig) {
 		this.tenantId = tenantId;
 		this.metaDataConfig = metaDataConfig;
 	}
-	
+
 	public MetaDataConfig getMetaDataConfig() {
 		return metaDataConfig;
 	}
+
 	public int getTenantId() {
 		return tenantId;
 	}

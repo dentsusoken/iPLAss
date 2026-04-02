@@ -100,13 +100,14 @@ public class StaticResourceResultEditPane extends ResultTypeEditPane {
 
 	@Override
 	public void setDefinition(ResultDefinition definition) {
-		StaticResourceResultDefinition staticResource = (StaticResourceResultDefinition)definition;
+		StaticResourceResultDefinition staticResource = (StaticResourceResultDefinition) definition;
 
 		staticResourceField.setValue(staticResource.getStaticResourceName());
 		useContentDispositionField.setValue(staticResource.isUseContentDisposition());
 
 		if (staticResource.getContentDispositionType() != null) {
-			contentDispositionTypeField.setValue(staticResource.getContentDispositionType().name());
+			contentDispositionTypeField.setValue(staticResource.getContentDispositionType()
+					.name());
 		} else {
 			contentDispositionTypeField.setValue("");
 		}
@@ -116,7 +117,7 @@ public class StaticResourceResultEditPane extends ResultTypeEditPane {
 
 	@Override
 	public ResultDefinition getEditDefinition(ResultDefinition definition) {
-		StaticResourceResultDefinition staticResource = (StaticResourceResultDefinition)definition;
+		StaticResourceResultDefinition staticResource = (StaticResourceResultDefinition) definition;
 
 		staticResource.setStaticResourceName(SmartGWTUtil.getStringValue(staticResourceField));
 		staticResource.setUseContentDisposition(SmartGWTUtil.getBooleanValue(useContentDispositionField));

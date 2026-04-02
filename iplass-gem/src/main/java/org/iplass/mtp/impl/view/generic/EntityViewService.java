@@ -44,17 +44,22 @@ public class EntityViewService extends AbstractTypedMetaDataService<MetaEntityVi
 		public TypeMap() {
 			super(getFixedPath(), MetaEntityView.class, EntityView.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<EntityView> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(EntityViewManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(EntityViewManager.class);
 		}
+
 		@Override
 		public String toPath(String defName) {
 			return pathPrefix + defName.replace('.', '/');
 		}
+
 		@Override
 		public String toDefName(String path) {
-			return path.substring(pathPrefix.length()).replace("/", ".");
+			return path.substring(pathPrefix.length())
+					.replace("/", ".");
 		}
 
 		@Override

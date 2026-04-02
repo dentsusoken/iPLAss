@@ -27,9 +27,9 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public abstract class CommandTypeEditPane extends VLayout {
 
 	public abstract void setDefinition(CommandDefinition definition);
-	
+
 	public abstract CommandDefinition getEditDefinition(CommandDefinition definition);
-	
+
 	public abstract boolean validate();
 
 }

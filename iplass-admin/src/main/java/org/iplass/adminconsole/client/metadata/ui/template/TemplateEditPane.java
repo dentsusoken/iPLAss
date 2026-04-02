@@ -99,7 +99,8 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -168,8 +169,10 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 				setDefinition((TemplateDefinition) result.getDefinition());
 
 				//登録済のバージョン情報を保持
-				curVersion = result.getDefinitionInfo().getVersion();
-				curDefinitionId = result.getDefinitionInfo().getObjDefId();
+				curVersion = result.getDefinitionInfo()
+						.getVersion();
+				curDefinitionId = result.getDefinitionInfo()
+						.getObjDefId();
 			}
 		});
 
@@ -285,7 +288,8 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 								if (result.isSuccess()) {
 									super.doSuccess(result);
 								} else {
-									if (result.getMessage() != null && result.getMessage().contains("Does not match the latest version.")) {
+									if (result.getMessage() != null && result.getMessage()
+											.contains("Does not match the latest version.")) {
 										SC.ask(getRS("overwriteConfirmMsg"), new BooleanCallback() {
 
 											@Override
@@ -328,7 +332,8 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 								if (result.isSuccess()) {
 									super.doSuccess(result);
 								} else {
-									if (result.getMessage() != null && result.getMessage().contains("Does not match the latest version.")) {
+									if (result.getMessage() != null && result.getMessage()
+											.contains("Does not match the latest version.")) {
 										SC.ask(getRS("overwriteConfirmMsg"), new BooleanCallback() {
 
 											@Override

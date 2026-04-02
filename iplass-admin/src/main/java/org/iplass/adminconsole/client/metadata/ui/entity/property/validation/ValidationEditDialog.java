@@ -373,7 +373,8 @@ public class ValidationEditDialog extends MtpDialog {
 			messageIdItem.setValue(record.getMessageId());
 			errorCodeItem.setValue(record.getErrorCode());
 
-			if (record.getMessageCategory() != null && !record.getMessageCategory().isEmpty()) {
+			if (record.getMessageCategory() != null && !record.getMessageCategory()
+					.isEmpty()) {
 				messageIdItem.setOptionDataSource(MessageItemDS.getInstance(record.getMessageCategory()));
 			}
 		}

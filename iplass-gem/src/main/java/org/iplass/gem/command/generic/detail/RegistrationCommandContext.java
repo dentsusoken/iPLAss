@@ -114,7 +114,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	private void init(EntityManager entityLoader, EntityDefinitionManager definitionLoader) {
 		this.entityManager = entityLoader;
 		this.definitionManager = definitionLoader;
-		this.ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+		this.ucdm = ManagerLocator.getInstance()
+				.getManager(UtilityClassDefinitionManager.class);
 	}
 
 	/**
@@ -143,9 +144,13 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	 */
 	protected Entity newEntity(EntityDefinition entityDefinition) {
 		Entity entity = null;
-		if (entityDefinition.getMapping() != null && entityDefinition.getMapping().getMappingModelClass() != null) {
+		if (entityDefinition.getMapping() != null && entityDefinition.getMapping()
+				.getMappingModelClass() != null) {
 			try {
-				entity = (Entity) Class.forName(entityDefinition.getMapping().getMappingModelClass()).getDeclaredConstructor().newInstance();
+				entity = (Entity) Class.forName(entityDefinition.getMapping()
+						.getMappingModelClass())
+						.getDeclaredConstructor()
+						.newInstance();
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 					| ClassNotFoundException e) {
 				throw new EntityRuntimeException(e);
@@ -230,31 +235,40 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		String editorType = getParam(name + "_editorType");
 		if (editorType != null) {
 			if (ep.getResultType() == PropertyDefinitionType.BOOLEAN
-					&& BooleanPropertyEditor.class.getSimpleName().equals(editorType)) {
+					&& BooleanPropertyEditor.class.getSimpleName()
+							.equals(editorType)) {
 				return getBooleanValue(name);
 			} else if (ep.getResultType() == PropertyDefinitionType.DATE
-					&& DatePropertyEditor.class.getSimpleName().equals(editorType)) {
+					&& DatePropertyEditor.class.getSimpleName()
+							.equals(editorType)) {
 				return getDateValue(name);
 			} else if (ep.getResultType() == PropertyDefinitionType.DATETIME
-					&& TimestampPropertyEditor.class.getSimpleName().equals(editorType)) {
+					&& TimestampPropertyEditor.class.getSimpleName()
+							.equals(editorType)) {
 				return getTimestampValue(name);
 			} else if (ep.getResultType() == PropertyDefinitionType.DECIMAL
-					&& DecimalPropertyEditor.class.getSimpleName().equals(editorType)) {
+					&& DecimalPropertyEditor.class.getSimpleName()
+							.equals(editorType)) {
 				return getDecimalValue(name);
 			} else if (ep.getResultType() == PropertyDefinitionType.FLOAT
-					&& FloatPropertyEditor.class.getSimpleName().equals(editorType)) {
+					&& FloatPropertyEditor.class.getSimpleName()
+							.equals(editorType)) {
 				return getDoubleValue(name);
 			} else if (ep.getResultType() == PropertyDefinitionType.INTEGER
-					&& IntegerPropertyEditor.class.getSimpleName().equals(editorType)) {
+					&& IntegerPropertyEditor.class.getSimpleName()
+							.equals(editorType)) {
 				return getLongValue(name);
 			} else if (ep.getResultType() == PropertyDefinitionType.SELECT
-					&& SelectPropertyEditor.class.getSimpleName().equals(editorType)) {
+					&& SelectPropertyEditor.class.getSimpleName()
+							.equals(editorType)) {
 				return getSelectValue(name);
 			} else if (ep.getResultType() == PropertyDefinitionType.STRING
-					&& StringPropertyEditor.class.getSimpleName().equals(editorType)) {
+					&& StringPropertyEditor.class.getSimpleName()
+							.equals(editorType)) {
 				return getStringValue(name);
 			} else if (ep.getResultType() == PropertyDefinitionType.TIME
-					&& TimePropertyEditor.class.getSimpleName().equals(editorType)) {
+					&& TimePropertyEditor.class.getSimpleName()
+							.equals(editorType)) {
 				return getTimeValue(name);
 			}
 		}
@@ -313,7 +327,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 				list.add(b);
 			}
 			//データが１つでも存在する場合のみ配列化
-			boolean hasValue = list.stream().anyMatch(value -> value != null);
+			boolean hasValue = list.stream()
+					.anyMatch(value -> value != null);
 			if (hasValue) {
 				ret = list.toArray(new Boolean[] {});
 			}
@@ -517,8 +532,10 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	public void addError(ValidateError error) {
 		for (ValidateError e : getErrors()) {
 			//同じプロパティのものがあればメッセージだけ追加
-			if (e.getPropertyName().equals(error.getPropertyName())) {
-				e.getErrorMessages().addAll(error.getErrorMessages());
+			if (e.getPropertyName()
+					.equals(error.getPropertyName())) {
+				e.getErrorMessages()
+						.addAll(error.getErrorMessages());
 				return;
 			}
 		}

@@ -22,35 +22,37 @@ package org.iplass.adminconsole.server.base.io.download;
 
 import java.io.UnsupportedEncodingException;
 
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.core.MediaType;
-
 import org.iplass.adminconsole.shared.base.dto.io.download.DownloadProperty.ENCODE;
 import org.iplass.mtp.util.StringUtil;
+
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 
 public class DownloadUtil {
 
 	private final static MediaType TEXT_CSV_TYPE = new MediaType("text", "csv");
 	private final static MediaType APPLICATION_ZIP_TYPE = new MediaType("application", "zip");
 
-	private DownloadUtil(){}
+	private DownloadUtil() {
+	}
 
 	public static void setResponseHeader(HttpServletResponse resp, String contentType, String fileName) throws UnsupportedEncodingException {
 		setResponseHeader(resp, contentType, fileName, ENCODE.UTF8.getValue());
 	}
 
-	public static void setResponseHeader(HttpServletResponse resp, String contentType, String fileName, String encode) throws UnsupportedEncodingException {
+	public static void setResponseHeader(HttpServletResponse resp, String contentType, String fileName, String encode)
+			throws UnsupportedEncodingException {
 
 		resp.setContentType(contentType);
 
-        // ファイル名を設定
-        String fileFullName = StringUtil.escapeXml10(fileName, true);
-        String downloadName = new String(fileFullName.getBytes("Shift_JIS"), "ISO-8859-1");
-        resp.setHeader("Content-Disposition", "attachment; filename=" + downloadName);
+		// ファイル名を設定
+		String fileFullName = StringUtil.escapeXml10(fileName, true);
+		String downloadName = new String(fileFullName.getBytes("Shift_JIS"), "ISO-8859-1");
+		resp.setHeader("Content-Disposition", "attachment; filename=" + downloadName);
 
-        if (encode != null) {
-        	resp.setCharacterEncoding(encode);
-        }
+		if (encode != null) {
+			resp.setCharacterEncoding(encode);
+		}
 	}
 
 	public static void setCsvResponseHeader(HttpServletResponse resp, String fileName) throws UnsupportedEncodingException {

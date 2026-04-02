@@ -25,6 +25,7 @@ import org.iplass.mtp.command.RequestContext;
 public interface LoginUrlSelector {
 
 	public String getLoginActionName(RequestContext request, String path);
+
 	public String getReAuthActionName(RequestContext request, String path);
 
 }

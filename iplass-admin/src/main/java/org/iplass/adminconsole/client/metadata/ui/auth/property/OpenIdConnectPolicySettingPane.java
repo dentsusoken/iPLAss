@@ -66,11 +66,13 @@ public class OpenIdConnectPolicySettingPane extends AbstractSettingPane {
 	public void setDefinition(AuthenticationPolicyDefinition definition) {
 		pnlOpenIdConnectGrid.setDefinition(definition);
 	}
+
 	@Override
 	public AuthenticationPolicyDefinition getEditDefinition(AuthenticationPolicyDefinition definition) {
 		pnlOpenIdConnectGrid.getEditDefinition(definition);
 		return definition;
 	}
+
 	@Override
 	public boolean validate() {
 		return form.validate();
@@ -93,17 +95,17 @@ public class OpenIdConnectPolicySettingPane extends AbstractSettingPane {
 			grid.setWidth100();
 			grid.setHeight(1);
 
-			grid.setShowAllColumns(true);								//列を全て表示
-			grid.setShowAllRecords(true);								//レコードを全て表示
-			grid.setCanResizeFields(false);								//列幅変更可能
-			grid.setCanSort(false);										//ソート不可
-			grid.setCanPickFields(false);								//表示フィールドの選択不可
-			grid.setCanGroupBy(false);									//GroupByの選択不可
-			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			grid.setLeaveScrollbarGap(false);							//縦スクロールバー自動表示制御
+			grid.setShowAllColumns(true); //列を全て表示
+			grid.setShowAllRecords(true); //レコードを全て表示
+			grid.setCanResizeFields(false); //列幅変更可能
+			grid.setCanSort(false); //ソート不可
+			grid.setCanPickFields(false); //表示フィールドの選択不可
+			grid.setCanGroupBy(false); //GroupByの選択不可
+			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			grid.setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			grid.setBodyOverflow(Overflow.VISIBLE);
 			grid.setOverflow(Overflow.VISIBLE);
-			grid.setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+			grid.setCanReorderRecords(true); //Dragによる並び替えを可能にする
 
 			grid.setCanEdit(true);
 			grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
@@ -147,12 +149,13 @@ public class OpenIdConnectPolicySettingPane extends AbstractSettingPane {
 
 			if (definition.getOpenIdConnectDefinition() != null) {
 
-				ListGridRecord[] records = new ListGridRecord[definition.getOpenIdConnectDefinition().size()];
+				ListGridRecord[] records = new ListGridRecord[definition.getOpenIdConnectDefinition()
+						.size()];
 
 				int cnt = 0;
 				for (String openIdConnectDefinition : definition.getOpenIdConnectDefinition()) {
 					ListGridRecord record = new ListGridRecord();
-					record.setAttribute("openIdConnect",openIdConnectDefinition);
+					record.setAttribute("openIdConnect", openIdConnectDefinition);
 					records[cnt] = record;
 					cnt++;
 				}
@@ -170,7 +173,8 @@ public class OpenIdConnectPolicySettingPane extends AbstractSettingPane {
 				List<String> openIdConnects = new ArrayList<>(records.length);
 				for (ListGridRecord record : records) {
 					String openIdConnect = record.getAttribute("openIdConnect");
-					if (openIdConnect != null && !openIdConnect.trim().isEmpty()) {
+					if (openIdConnect != null && !openIdConnect.trim()
+							.isEmpty()) {
 						openIdConnects.add(openIdConnect);
 					}
 				}

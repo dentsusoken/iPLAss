@@ -63,9 +63,14 @@ public class CreateUtilityClassDialog extends MetaDataCreateDialog {
 			definition.setDisplayName(saveInfo.getDisplayName());
 			definition.setDescription(saveInfo.getDescription());
 
-			if (saveInfo.getName().contains(".")) {
-				String packageName = saveInfo.getName().substring(0, saveInfo.getName().lastIndexOf("."));
-				String className = saveInfo.getName().substring(saveInfo.getName().lastIndexOf(".") + 1);
+			if (saveInfo.getName()
+					.contains(".")) {
+				String packageName = saveInfo.getName()
+						.substring(0, saveInfo.getName()
+								.lastIndexOf("."));
+				String className = saveInfo.getName()
+						.substring(saveInfo.getName()
+								.lastIndexOf(".") + 1);
 				String scriptValue = "package " + packageName + ";\n\nclass " + className + " {\n}";
 				definition.setScript(scriptValue);
 			} else {

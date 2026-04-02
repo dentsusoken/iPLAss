@@ -20,23 +20,6 @@
 
 package org.iplass.mtp.tools.gui.tenant;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -56,6 +39,23 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
@@ -80,8 +80,10 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 	private static Logger logger = LoggerFactory.getLogger(TenantCreateDialog.class);
 
-	private TenantToolService toolService = ServiceRegistry.getRegistry().getService(TenantToolService.class);
-	private I18nService i18nService = ServiceRegistry.getRegistry().getService(I18nService.class);
+	private TenantToolService toolService = ServiceRegistry.getRegistry()
+			.getService(TenantToolService.class);
+	private I18nService i18nService = ServiceRegistry.getRegistry()
+			.getService(I18nService.class);
 	private String defaultEnableLanguages = "";
 
 	protected JTextField txtName;
@@ -119,7 +121,8 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		super(owner);
 
 		if (i18nService.getEnableLanguagesMap() != null) {
-			for (String languageKey : i18nService.getEnableLanguagesMap().keySet()) {
+			for (String languageKey : i18nService.getEnableLanguagesMap()
+					.keySet()) {
 				defaultEnableLanguages += (languageKey + ",");
 			}
 			if (defaultEnableLanguages.length() > 1) {
@@ -169,7 +172,8 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		JLabel lblInfo1 = new JLabel(rs("TenantManagerApp.TenantCreateDialog.createTenantLabel"));
 		messagePane.add(lblInfo1);
 
-		RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
+		RdbAdapterService adapterService = ServiceRegistry.getRegistry()
+				.getService(RdbAdapterService.class);
 		RdbAdapter adapter = adapterService.getRdbAdapter();
 		if (adapter instanceof MysqlRdbAdaptor) {
 			JLabel lblInfo2 = new JLabel(rs("TenantManagerApp.TenantCreateDialog.warnAlterTablePermissionLabel"));
@@ -338,7 +342,8 @@ public class TenantCreateDialog extends MtpJDialogBase {
 			}
 		});
 
-		RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
+		RdbAdapterService adapterService = ServiceRegistry.getRegistry()
+				.getService(RdbAdapterService.class);
 		RdbAdapter adapter = adapterService.getRdbAdapter();
 		if (adapter instanceof PostgreSQLRdbAdapter) {
 			JLabel lblNumSubPartition = new JLabel("Sub-Partition size");
@@ -373,7 +378,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 		constraints.gridx = 0;
 		constraints.gridy = (row * 2);
-		constraints.gridwidth= 1;
+		constraints.gridwidth = 1;
 		constraints.gridheight = 1;
 		gridbag.setConstraints(label, constraints);
 		pane.add(label);
@@ -393,7 +398,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		//行余白
 		constraints.gridx = 0;
 		constraints.gridy = (row * 2) + 1;
-		constraints.gridwidth= GridBagConstraints.REMAINDER;
+		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		Box dummy = Box.createHorizontalBox();
 		dummy.setPreferredSize(new Dimension(15, 15));
 		gridbag.setConstraints(dummy, constraints);
@@ -413,7 +418,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		//行余白
 		constraints.gridx = 0;
 		constraints.gridy = (row * 2) + 1;
-		constraints.gridwidth= GridBagConstraints.REMAINDER;
+		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		Box dummy = Box.createHorizontalBox();
 		dummy.setPreferredSize(new Dimension(15, 15));
 		gridbag.setConstraints(dummy, constraints);
@@ -480,7 +485,6 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 	}
 
-
 	protected void setDefaultValues() {
 		if (chkUrl.isSelected()) {
 			txtUrl.setText("/" + txtName.getText());
@@ -501,10 +505,14 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 	protected boolean inputValidate() {
 		StringBuilder messages = new StringBuilder();
-		if (txtName.getText().trim().isEmpty()) {
+		if (txtName.getText()
+				.trim()
+				.isEmpty()) {
 			messages.append(rs("Common.requiredMsg", "name") + "\n");
 		}
-		if (txtAdminUserId.getText().trim().isEmpty()) {
+		if (txtAdminUserId.getText()
+				.trim()
+				.isEmpty()) {
 			messages.append(rs("Common.requiredMsg", "AdminUserId") + "\n");
 		}
 		if (txtAdminUserPass.getPassword().length == 0) {
@@ -520,16 +528,22 @@ public class TenantCreateDialog extends MtpJDialogBase {
 			}
 		}
 
-		if (txtUrl.getText().trim().isEmpty()) {
+		if (txtUrl.getText()
+				.trim()
+				.isEmpty()) {
 			messages.append(rs("Common.requiredMsg", "url") + "\n");
 		}
 
-		if (txtSubPartitionSize != null && !txtSubPartitionSize.getText().trim().isEmpty()) {
-			String strSubPartitionSize = txtSubPartitionSize.getText().trim();
+		if (txtSubPartitionSize != null && !txtSubPartitionSize.getText()
+				.trim()
+				.isEmpty()) {
+			String strSubPartitionSize = txtSubPartitionSize.getText()
+					.trim();
 			try {
 				int subPartitionSize = Integer.parseInt(strSubPartitionSize);
 				if (subPartitionSize < TenantRdbConstants.MIN_SUBPARTITION) {
-					messages.append(rs("TenantManagerApp.TenantCreateDialog.invalidValueSubPartitionSizeMsg", TenantRdbConstants.MIN_SUBPARTITION) + "\n");
+					messages.append(
+							rs("TenantManagerApp.TenantCreateDialog.invalidValueSubPartitionSizeMsg", TenantRdbConstants.MIN_SUBPARTITION) + "\n");
 				}
 			} catch (NumberFormatException nfe) {
 				messages.append(rs("TenantManagerApp.TenantCreateDialog.invalidSubPartitionSizeMsg") + "\n");
@@ -546,7 +560,8 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 	protected boolean dataValidate() {
 
-		String tenantUrl = txtUrl.getText().trim();
+		String tenantUrl = txtUrl.getText()
+				.trim();
 		if (toolService.existsURL(tenantUrl)) {
 			JOptionPane.showMessageDialog(this, rs("TenantManagerApp.TenantCreateDialog.existsTenantMsg"),
 					"WARN", JOptionPane.WARNING_MESSAGE);
@@ -637,7 +652,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		@Override
 		protected void process(List<String> chunks) {
 			// パブリッシュされた文字をテキストエリアに追加
-			for (String message: chunks) {
+			for (String message : chunks) {
 				addLog(message);
 			}
 		}
@@ -671,26 +686,37 @@ public class TenantCreateDialog extends MtpJDialogBase {
 	}
 
 	private TenantCreateParameter createParameter() {
-		String name = txtName.getText().trim();
-		String adminId = txtAdminUserId.getText().trim();
+		String name = txtName.getText()
+				.trim();
+		String adminId = txtAdminUserId.getText()
+				.trim();
 		String adminPW = new String(txtAdminUserPass.getPassword());
 
 		TenantCreateParameter param = new TenantCreateParameter(name, adminId, adminPW);
-		if (StringUtil.isNotEmpty(txtUrl.getText().trim())) {
-			param.setTenantUrl(txtUrl.getText().trim());
+		if (StringUtil.isNotEmpty(txtUrl.getText()
+				.trim())) {
+			param.setTenantUrl(txtUrl.getText()
+					.trim());
 		}
-		if (StringUtil.isNotEmpty(txtDisplayName.getText().trim())) {
-			param.setTenantDisplayName(txtDisplayName.getText().trim());
+		if (StringUtil.isNotEmpty(txtDisplayName.getText()
+				.trim())) {
+			param.setTenantDisplayName(txtDisplayName.getText()
+					.trim());
 		}
-		if (StringUtil.isNotEmpty(txtTopUrl.getText().trim())) {
-			param.setTopUrl(txtTopUrl.getText().trim());
+		if (StringUtil.isNotEmpty(txtTopUrl.getText()
+				.trim())) {
+			param.setTopUrl(txtTopUrl.getText()
+					.trim());
 		}
-		if (StringUtil.isNotEmpty(txtUseLanguages.getText().trim())) {
-			param.setUseLanguages(txtUseLanguages.getText().trim());
+		if (StringUtil.isNotEmpty(txtUseLanguages.getText()
+				.trim())) {
+			param.setUseLanguages(txtUseLanguages.getText()
+					.trim());
 		}
 		param.setCreateBlankTenant(chkBlankTenant.isSelected());
 		if (chkSubPartitionSize != null && !chkSubPartitionSize.isSelected()) {
-			String strSubPartitionSize = txtSubPartitionSize.getText().trim();
+			String strSubPartitionSize = txtSubPartitionSize.getText()
+					.trim();
 			if (StringUtil.isNotEmpty(strSubPartitionSize)) {
 				param.setSubPartitionSize(Integer.parseInt(strSubPartitionSize));
 			}
@@ -704,7 +730,8 @@ public class TenantCreateDialog extends MtpJDialogBase {
 	}
 
 	protected void fireTenantDataChanged() {
-		ChangeEvent e = new ChangeEvent(txtName.getText().trim());
+		ChangeEvent e = new ChangeEvent(txtName.getText()
+				.trim());
 		for (ChangeListener listner : dataChangeListners) {
 			listner.stateChanged(e);
 		}

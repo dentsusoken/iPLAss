@@ -41,7 +41,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Entity DeleteAll Batch
  */
@@ -60,22 +59,25 @@ public class EntityDeleteAll extends MtpCuiBase {
 
 	/** 実行テナント */
 	private Tenant tenant;
-	
+
 	/** Where条件 */
 	private String whereClause;
 
 	/** Listnerを実行する */
 	private boolean notifyListeners = true;
-	
+
 	/** Commit単位(件数) */
 	private Integer commitLimit = 100;
 
 	/** 実行Entity */
 	private EntityDefinition ed;
 
-	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
-	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private EntityToolService ets = ServiceRegistry.getRegistry().getService(EntityToolService.class);
+	private TenantService ts = ServiceRegistry.getRegistry()
+			.getService(TenantService.class);
+	private TenantContextService tcs = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private EntityToolService ets = ServiceRegistry.getRegistry()
+			.getService(EntityToolService.class);
 	private EntityDefinitionManager edm = ManagerLocator.manager(EntityDefinitionManager.class);
 
 	/**
@@ -128,10 +130,10 @@ public class EntityDeleteAll extends MtpCuiBase {
 				whereClause = args[3];
 			}
 			if (args.length > 4 && StringUtil.isNotBlank(args[4])) {
-				notifyListeners =  Boolean.parseBoolean(args[4]);;
+				notifyListeners = Boolean.parseBoolean(args[4]);;
 			}
 			if (args.length > 5 && StringUtil.isNotBlank(args[5])) {
-				commitLimit =  Integer.parseInt(args[5]);;
+				commitLimit = Integer.parseInt(args[5]);;
 			}
 		}
 	}
@@ -150,7 +152,7 @@ public class EntityDeleteAll extends MtpCuiBase {
 
 		//環境情報出力
 		logEnvironment();
-		
+
 		if (tenantId != null) {
 			Tenant tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
@@ -161,13 +163,13 @@ public class EntityDeleteAll extends MtpCuiBase {
 		}
 
 		switch (execMode) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start DeleteAll Wizard");
 			logInfo("");
 
 			//Wizardの実行
 			return wizard();
-		case SILENT :
+		case SILENT:
 			logInfo("■Start DeleteAll Silent");
 			logInfo("");
 
@@ -176,7 +178,7 @@ public class EntityDeleteAll extends MtpCuiBase {
 
 			//Silentの実行
 			return silent();
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -241,9 +243,10 @@ public class EntityDeleteAll extends MtpCuiBase {
 	 */
 	private <T> T executeTask(EntityDeleteAllParameter param, Supplier<T> task) {
 
-		TenantContext tc  = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()->{
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+		TenantContext tc = tcs.getTenantContext(param.getTenantId());
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
 
 			return task.get();
 		});
@@ -263,7 +266,8 @@ public class EntityDeleteAll extends MtpCuiBase {
 		@Override
 		public Boolean get() {
 			return !ets
-					.deleteAll(param.getTenantId(), param.getEntityName(), param.getWhereClause(), false, param.isNotifyListeners(), param.getCommitLimit())
+					.deleteAll(param.getTenantId(), param.getEntityName(), param.getWhereClause(), false, param.isNotifyListeners(),
+							param.getCommitLimit())
 					.isError();
 		}
 	}
@@ -306,9 +310,10 @@ public class EntityDeleteAll extends MtpCuiBase {
 		EntityDeleteAllParameter param = new EntityDeleteAllParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()->{
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
-			
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
+
 			//Entity名
 			boolean validEntity = false;
 			do {
@@ -321,7 +326,7 @@ public class EntityDeleteAll extends MtpCuiBase {
 					param.setEntityName(inputEntityName);
 
 					//存在チェック
-					ed = edm.get(inputEntityName);					
+					ed = edm.get(inputEntityName);
 					if (ed == null) {
 						logWarn(rs("EntityDeleteAll.notExistsEntityMsg", inputEntityName));
 						continue;
@@ -330,44 +335,44 @@ public class EntityDeleteAll extends MtpCuiBase {
 				} else {
 					logWarn(rs("EntityDeleteAll.Wizard.requiredEntityNameMsg"));
 				}
-			} while(validEntity == false);
+			} while (validEntity == false);
 
 			//Where句
 			String whereClause = readConsole(rs("EntityDeleteAll.Wizard.inputWhereClauseMsg"));
 			if (StringUtil.isNotBlank(whereClause)) {
 				param.setWhereClause(whereClause);
 			}
-			
+
 			//notifyListeners
 			boolean isNotifyListner = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmNotifyListenerMsg"), notifyListeners);
 			param.setNotifyListeners(isNotifyListner);
-			
+
 			//commitLimit
 			int commitLimit = readConsoleInteger(rs("EntityDeleteAll.Wizard.inputCommitUnitMsg"), 100);
 			param.setCommitLimit(commitLimit);
-			
+
 			boolean validExecute = false;
 			do {
 				//実行情報出力
 				logArguments(param);
-	
+
 				boolean isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmDeleteMsg"), false);
 				if (isExecute) {
 					validExecute = true;
 				} else {
 					//defaultがfalseなので念のため再度確認
 					isExecute = readConsoleBoolean(rs("EntityDeleteAll.Wizard.confirmRetryMsg"), true);
-	
+
 					if (isExecute) {
 						//再度実行
 						return wizard();
 					}
 				}
-			} while(validExecute == false);
-	
+			} while (validExecute == false);
+
 			//Consoleを削除してLogに切り替え
 			switchLog(false, true);
-	
+
 			//DeleteAll処理実行
 			return executeTask(param, (paramA) -> {
 				return deleteAll(paramA);
@@ -381,7 +386,7 @@ public class EntityDeleteAll extends MtpCuiBase {
 	 * @return false:エラー
 	 */
 	private boolean silent() {
-		
+
 		if (tenant == null) {
 			logError(rs("Common.requiredMsg", EntityDeleteAllParameter.PROP_TENANT_ID));
 			return false;
@@ -391,9 +396,10 @@ public class EntityDeleteAll extends MtpCuiBase {
 		EntityDeleteAllParameter param = new EntityDeleteAllParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()->{
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
-			
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
+
 			//Entity
 			ed = edm.get(entityName);
 			if (ed == null) {
@@ -401,16 +407,16 @@ public class EntityDeleteAll extends MtpCuiBase {
 				return false;
 			}
 			param.setEntityName(ed.getName());
-			
+
 			//Where句
 			param.setWhereClause(whereClause);
-			
+
 			//notifyListeners
 			param.setNotifyListeners(notifyListeners);
-			
+
 			//commitLimit
 			param.setCommitLimit(commitLimit);
-			
+
 			//実行情報出力
 			logArguments(param);
 

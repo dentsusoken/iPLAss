@@ -26,7 +26,7 @@ public class DeleteTarget {
 	public String oid;
 	public Long version;
 	public Timestamp updateDate;
-	
+
 	public DeleteTarget(String oid, Long version, Timestamp updateDate) {
 		super();
 		this.oid = oid;

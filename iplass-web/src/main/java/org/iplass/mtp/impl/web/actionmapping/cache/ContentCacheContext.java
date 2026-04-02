@@ -53,7 +53,9 @@ public class ContentCacheContext implements TenantResource {
 	private static Logger logger = LoggerFactory.getLogger(ContentCacheContext.class);
 
 	public static final ContentCacheContext getContentCacheContext() {
-		return ExecuteContext.getCurrentContext().getTenantContext().getResource(ContentCacheContext.class);
+		return ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getResource(ContentCacheContext.class);
 	}
 
 	//pk: actionName;key
@@ -67,7 +69,7 @@ public class ContentCacheContext implements TenantResource {
 	//Entity名＋OIDをキーにした削除
 	//Entity名をキーにした削除
 	//indexとしては、3つ
-	
+
 	private MetaDataContext metaDataContext;
 	private MetaDataContextListener metaDatalistener = new MetaDataContextListener() {
 
@@ -77,7 +79,8 @@ public class ContentCacheContext implements TenantResource {
 				String actionName = path.substring(ActionMappingService.ACTION_MAPPING_META_PATH.length());
 				invalidateByActionName(actionName);
 			} else if (path.startsWith(EntityService.ENTITY_META_PATH)) {
-				String entityName = path.substring(EntityService.ENTITY_META_PATH.length()).replace('/', '.');
+				String entityName = path.substring(EntityService.ENTITY_META_PATH.length())
+						.replace('/', '.');
 				invalidateByEntityName(entityName);
 			}
 			if (pathBefore != null) {
@@ -85,7 +88,8 @@ public class ContentCacheContext implements TenantResource {
 					String actionName = pathBefore.substring(ActionMappingService.ACTION_MAPPING_META_PATH.length());
 					invalidateByActionName(actionName);
 				} else if (pathBefore.startsWith(EntityService.ENTITY_META_PATH)) {
-					String entityName = pathBefore.substring(EntityService.ENTITY_META_PATH.length()).replace('/', '.');
+					String entityName = pathBefore.substring(EntityService.ENTITY_META_PATH.length())
+							.replace('/', '.');
 					invalidateByEntityName(entityName);
 				}
 			}
@@ -109,11 +113,12 @@ public class ContentCacheContext implements TenantResource {
 
 	public ContentCacheContext() {
 	}
-	
+
 	@Override
 	public void init(TenantContext tenantContext) {
 		int tenantId = tenantContext.getTenantId();
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		contentCacheStore = cs.getCache(ACTION_CONTENT_CACHE_NAMESPACE + "/" + tenantId);
 		metaDataContext = tenantContext.getMetaDataContext();
 		metaDataContext.addMetaDataContextListener(metaDatalistener);
@@ -121,7 +126,8 @@ public class ContentCacheContext implements TenantResource {
 
 	@Override
 	public void destory() {
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		cs.invalidate(contentCacheStore.getNamespace());
 		metaDataContext.removeMetaDataContextListener(metaDatalistener);
 		if (logger.isTraceEnabled()) {
@@ -155,17 +161,22 @@ public class ContentCacheContext implements TenantResource {
 		if (logger.isTraceEnabled()) {
 			logger.trace("put action cache:" + cacheKey);
 		}
-		
+
 		String[] entityNameAndOidArray = null;
 		if (contentCache.getRelatedEntityNameAndOid() != null) {
-			entityNameAndOidArray = contentCache.getRelatedEntityNameAndOid().toArray(new String[contentCache.getRelatedEntityNameAndOid().size()]);
+			entityNameAndOidArray = contentCache.getRelatedEntityNameAndOid()
+					.toArray(new String[contentCache.getRelatedEntityNameAndOid()
+							.size()]);
 		}
 		String[] entityNameArray = null;
 		if (contentCache.getRelatedEntityName() != null) {
-			entityNameArray = contentCache.getRelatedEntityName().toArray(new String[contentCache.getRelatedEntityName().size()]);
+			entityNameArray = contentCache.getRelatedEntityName()
+					.toArray(new String[contentCache.getRelatedEntityName()
+							.size()]);
 		}
 
-		contentCacheStore.put(new CacheEntry(cacheKey, contentCache, contentCache.getCreationTime(), new Object[]{actionName, entityNameAndOidArray, entityNameArray}), true);
+		contentCacheStore.put(new CacheEntry(cacheKey, contentCache, contentCache.getCreationTime(),
+				new Object[] { actionName, entityNameAndOidArray, entityNameArray }), true);
 	}
 
 	private ActionMappingRuntime getAction(WebRequestStack stack) {
@@ -251,7 +262,7 @@ public class ContentCacheContext implements TenantResource {
 			}
 		}
 	}
-	
+
 	private String genKey(String actionName, String lang, String key) {
 		return actionName + ";" + lang + ";" + key;
 	}
@@ -266,7 +277,7 @@ public class ContentCacheContext implements TenantResource {
 			logger.trace("invalidate action cache:" + cacheKey);
 		}
 	}
-	
+
 	public void invalidateByActionName(String actionName) {
 		contentCacheStore.removeByIndex(0, actionName);
 		if (logger.isTraceEnabled()) {
@@ -287,7 +298,7 @@ public class ContentCacheContext implements TenantResource {
 			logger.trace("invalidate action cache by entityName:" + entityName + ";" + oid);
 		}
 	}
-	
+
 	public void invalidateAllEntry() {
 		contentCacheStore.removeAll();
 		if (logger.isTraceEnabled()) {

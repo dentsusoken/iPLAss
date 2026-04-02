@@ -24,10 +24,12 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.InsertOption;
 
 public interface EntityInsertInvocation extends EntityInvocation<String> {
-	
+
 	public Entity getEntity();
+
 	public void setEntity(Entity entity);
 
 	public InsertOption getInsertOption();
+
 	public void setInsertOption(InsertOption insertOption);
 }

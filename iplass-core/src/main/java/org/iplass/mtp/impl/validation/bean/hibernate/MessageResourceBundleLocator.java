@@ -30,11 +30,11 @@ import org.slf4j.LoggerFactory;
 
 public class MessageResourceBundleLocator implements ResourceBundleLocator {
 	public static final String DEFAULT_BUNDLE_NAME = "ValidationMessages";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(MessageResourceBundleLocator.class);
-	
+
 	private String bundleName = DEFAULT_BUNDLE_NAME;
-	
+
 	public String getBundleName() {
 		return bundleName;
 	}

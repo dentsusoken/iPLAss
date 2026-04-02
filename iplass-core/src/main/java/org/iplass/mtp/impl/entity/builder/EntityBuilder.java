@@ -88,7 +88,7 @@ public class EntityBuilder {
 							&& p.equals(Entity.VERSION)) {
 						versionIndex = i;
 					}
-					primitives.add(new Object[]{p, Integer.valueOf(i)});
+					primitives.add(new Object[] { p, Integer.valueOf(i) });
 				} else {
 					//reference
 					if (subRefs == null) {
@@ -107,20 +107,23 @@ public class EntityBuilder {
 
 		if (subRefs != null) {
 			references = new ArrayList<>();
-			for (Map.Entry<String, String[]> e: subRefs.entrySet()) {
+			for (Map.Entry<String, String[]> e : subRefs.entrySet()) {
 				ReferencePropertyHandler rp = (ReferencePropertyHandler) eh.getDeclaredProperty(e.getKey());
 				EntityHandler subEh = rp.getReferenceEntityHandler(context);
 				EntityBuilder eb = new EntityBuilder(subEh, context, e.getValue());
-				if (rp.getMetaData().getMultiplicity() == PropertyDefinition.MULTIPLICITY_INFINITE
-						|| rp.getMetaData().getMultiplicity() > 1) {
+				if (rp.getMetaData()
+						.getMultiplicity() == PropertyDefinition.MULTIPLICITY_INFINITE
+						|| rp.getMetaData()
+								.getMultiplicity() > 1) {
 					eb.isMulti = true;
 				}
-				references.add(new Object[]{e.getKey(), eb});
+				references.add(new Object[] { e.getKey(), eb });
 			}
 		}
-		
+
 		if (oidIndex == -1) {
-			throw new EntityRuntimeException(eh.getMetaData().getName() + "'s oid must specify.");
+			throw new EntityRuntimeException(eh.getMetaData()
+					.getName() + "'s oid must specify.");
 		}
 
 	}
@@ -131,11 +134,11 @@ public class EntityBuilder {
 
 	public void finished() {
 		if (references != null && references.size() > 0) {
-			for (Object[] nameAndBuilder: references) {
+			for (Object[] nameAndBuilder : references) {
 				EntityBuilder eb = (EntityBuilder) nameAndBuilder[1];
 				if (eb.isMulti) {
 					//List -> Arrayに変換
-					for (Entity e: entities.values()) {
+					for (Entity e : entities.values()) {
 						List<Entity> el = e.getValue((String) nameAndBuilder[0]);
 						if (el != null) {
 							e.setValue((String) nameAndBuilder[0], el.toArray(eb.eh.newArrayInstance(el.size())));
@@ -173,14 +176,14 @@ public class EntityBuilder {
 			isNew = true;
 			e = eh.newInstance();
 			if (primitives != null) {
-				for (Object[] nameAndIndex: primitives) {
+				for (Object[] nameAndIndex : primitives) {
 					e.setValue((String) nameAndIndex[0], datas[((Integer) nameAndIndex[1]).intValue()]);
 				}
 			}
 			entities.put(key, e);
 		}
 		if (references != null) {
-			for (Object[] nameAndBuilder: references) {
+			for (Object[] nameAndBuilder : references) {
 				EntityBuilder eb = (EntityBuilder) nameAndBuilder[1];
 				Entity ref = eb.handle(datas, key);
 				if (ref != null) {

@@ -23,16 +23,16 @@ package org.iplass.mtp.impl.view.generic.element.property.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.view.generic.element.property.validation.RequiresAtLeastOneFieldValidator;
 import org.iplass.mtp.view.generic.element.property.validation.ViewValidatorBase;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * 画面入力チェックのメタデータ
@@ -68,7 +68,7 @@ public abstract class MetaViewValidator implements MetaData {
 	 * @return メッセージ
 	 */
 	public String getMessage() {
-	    return message;
+		return message;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public abstract class MetaViewValidator implements MetaData {
 	 * @param message メッセージ
 	 */
 	public void setMessage(String message) {
-	    this.message = message;
+		this.message = message;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public abstract class MetaViewValidator implements MetaData {
 	 * @return メッセージの多言語情報
 	 */
 	public List<MetaLocalizedString> getLocalizedMessageList() {
-	    return localizedMessageList;
+		return localizedMessageList;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public abstract class MetaViewValidator implements MetaData {
 	 * @param localizedMessageList メッセージの多言語情報
 	 */
 	public void setLocalizedMessageList(List<MetaLocalizedString> localizedMessageList) {
-	    this.localizedMessageList = localizedMessageList;
+		this.localizedMessageList = localizedMessageList;
 	}
 
 	/**
@@ -100,7 +100,7 @@ public abstract class MetaViewValidator implements MetaData {
 	 * @return 通常検索でのチェック有無
 	 */
 	public boolean isValidateNormal() {
-	    return validateNormal;
+		return validateNormal;
 	}
 
 	/**
@@ -108,7 +108,7 @@ public abstract class MetaViewValidator implements MetaData {
 	 * @param validateNormal 通常検索でのチェック有無
 	 */
 	public void setValidateNormal(boolean validateNormal) {
-	    this.validateNormal = validateNormal;
+		this.validateNormal = validateNormal;
 	}
 
 	/**
@@ -116,7 +116,7 @@ public abstract class MetaViewValidator implements MetaData {
 	 * @return 詳細検索でのチェック有無
 	 */
 	public boolean isValidateDetail() {
-	    return validateDetail;
+		return validateDetail;
 	}
 
 	/**
@@ -124,7 +124,7 @@ public abstract class MetaViewValidator implements MetaData {
 	 * @param validateDetail 詳細検索でのチェック有無
 	 */
 	public void setValidateDetail(boolean validateDetail) {
-	    this.validateDetail = validateDetail;
+		this.validateDetail = validateDetail;
 	}
 
 	/**

@@ -101,18 +101,20 @@ public class PartsControllerImpl implements PartsController {
 			item = new CsvDownloadSettingsItem((CsvDownloadSettingsParts) parts, controler);
 			isUnique = true;
 		} else if (parts instanceof ApplicationMaintenanceParts) {
-			item = new ApplicationMaintenanceItem((ApplicationMaintenanceParts)parts, controler);
+			item = new ApplicationMaintenanceItem((ApplicationMaintenanceParts) parts, controler);
 			isUnique = true;
 		} else if (parts instanceof PreviewDateParts) {
-			item = new PreviewDateItem((PreviewDateParts)parts, controler);
+			item = new PreviewDateItem((PreviewDateParts) parts, controler);
 			isUnique = true;
 		}
 
-		if (item != null) item.setDropAreaType(dropAreaType);
+		if (item != null)
+			item.setDropAreaType(dropAreaType);
 
 		if (isUnique) {
 			MTPEvent e = new MTPEvent();
-			String key = dropAreaType + "_" + parts.getClass().getName() + "_" + defName;
+			String key = dropAreaType + "_" + parts.getClass()
+					.getName() + "_" + defName;
 			e.setValue("key", key);
 			controler.add(e);
 		}
@@ -123,44 +125,58 @@ public class PartsControllerImpl implements PartsController {
 	public PartsItem createWindow(TopViewNode node, PartsOperationHandler controler, String dropAreaType) {
 
 		PartsItem item = null;
-		if (InformationParts.class.getName().equals(node.getType())) {
+		if (InformationParts.class.getName()
+				.equals(node.getType())) {
 			item = new InformationItem(new InformationParts(), controler);
-		} else if (CalendarParts.class.getName().equals(node.getType())) {
+		} else if (CalendarParts.class.getName()
+				.equals(node.getType())) {
 			CalendarParts parts = new CalendarParts();
 			parts.setCalendarName(node.getDefName());
 			item = new CalendarItem(parts, controler);
-		} else if (TreeViewParts.class.getName().equals(node.getType())) {
+		} else if (TreeViewParts.class.getName()
+				.equals(node.getType())) {
 			TreeViewParts parts = new TreeViewParts();
 			parts.setTreeViewName(node.getDefName());
 			item = new TreeViewItem(parts, controler);
-		} else if (EntityListParts.class.getName().equals(node.getType())) {
+		} else if (EntityListParts.class.getName()
+				.equals(node.getType())) {
 			item = new SearchResultListItem(new EntityListParts());
-		} else if (ScriptParts.class.getName().equals(node.getType())) {
+		} else if (ScriptParts.class.getName()
+				.equals(node.getType())) {
 			item = new ScriptItem(new ScriptParts());
-		} else if (SeparatorParts.class.getName().equals(node.getType())) {
+		} else if (SeparatorParts.class.getName()
+				.equals(node.getType())) {
 			item = new SeparatorItem(new SeparatorParts(), controler);
-		} else if (LastLoginParts.class.getName().equals(node.getType())) {
+		} else if (LastLoginParts.class.getName()
+				.equals(node.getType())) {
 			LastLoginParts parts = new LastLoginParts();
 			item = new LastLoginItem(parts, controler);
-		} else if (TemplateParts.class.getName().equals(node.getType())) {
+		} else if (TemplateParts.class.getName()
+				.equals(node.getType())) {
 			item = new TemplateItem(new TemplateParts());
-		} else if (UserMaintenanceParts.class.getName().equals(node.getType())) {
+		} else if (UserMaintenanceParts.class.getName()
+				.equals(node.getType())) {
 			item = new UserMaintenanceItem(new UserMaintenanceParts(), controler);
-		} else if (FulltextSearchViewParts.class.getName().equals(node.getType())) {
+		} else if (FulltextSearchViewParts.class.getName()
+				.equals(node.getType())) {
 			FulltextSearchViewParts parts = new FulltextSearchViewParts();
 			parts.setDispSearchWindow(true);
 			item = new FulltextSearchViewItem(parts, controler, true);
-		} else if (CsvDownloadSettingsParts.class.getName().equals(node.getType())) {
+		} else if (CsvDownloadSettingsParts.class.getName()
+				.equals(node.getType())) {
 			item = new CsvDownloadSettingsItem(new CsvDownloadSettingsParts(), controler);
-		} else if (ApplicationMaintenanceParts.class.getName().equals(node.getType())) {
+		} else if (ApplicationMaintenanceParts.class.getName()
+				.equals(node.getType())) {
 			item = new ApplicationMaintenanceItem(new ApplicationMaintenanceParts(), controler);
-		} else if (PreviewDateParts.class.getName().equals(node.getType())) {
+		} else if (PreviewDateParts.class.getName()
+				.equals(node.getType())) {
 			PreviewDateParts parts = new PreviewDateParts();
 			parts.setUsePreviewDate(true);
 			item = new PreviewDateItem(parts, controler);
 		}
 
-		if (item != null) item.setDropAreaType(dropAreaType);
+		if (item != null)
+			item.setDropAreaType(dropAreaType);
 
 		return item;
 	}

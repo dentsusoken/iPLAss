@@ -30,9 +30,9 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
-public class JasperReportingOutputModel implements ReportingOutputModel{
+public class JasperReportingOutputModel implements ReportingOutputModel {
 
-	private JasperReport jrMain ;
+	private JasperReport jrMain;
 	private String type;
 	private MetaReportParamMap[] maps;
 	private String dataSourceAttributeName;
@@ -42,23 +42,23 @@ public class JasperReportingOutputModel implements ReportingOutputModel{
 	private final String JASPER_STR = "jasper";
 	private final String JRXML_STR = "jrxml";
 
-	JasperReportingOutputModel(byte[] binary, String type, String extension) throws Exception{
+	JasperReportingOutputModel(byte[] binary, String type, String extension) throws Exception {
 		ByteArrayInputStream bis = null;
 		this.type = type;
 		try {
 			bis = new ByteArrayInputStream(binary);
 			//拡張子と出力種類で切り分け
-			if(JRXML_STR.equals(extension)){
+			if (JRXML_STR.equals(extension)) {
 				jrMain = JasperCompileManager.compileReport(bis);
-			}else if(JASPER_STR.equals(extension)){
-				jrMain = (JasperReport)JRLoader.loadObject(bis);
+			} else if (JASPER_STR.equals(extension)) {
+				jrMain = (JasperReport) JRLoader.loadObject(bis);
 			}
 
 		} catch (JRException e) {
 			throw e;
-		}finally{
+		} finally {
 			try {
-				if(bis != null){
+				if (bis != null) {
 					bis.close();
 					bis = null;
 				}
@@ -73,23 +73,23 @@ public class JasperReportingOutputModel implements ReportingOutputModel{
 	}
 
 	public JasperReport getJrMain() {
-	    return jrMain;
+		return jrMain;
 	}
 
 	public String getType() {
-	    return type;
+		return type;
 	}
 
 	public void setType(String type) {
-	    this.type = type;
+		this.type = type;
 	}
 
 	public MetaReportParamMap[] getMaps() {
-	    return maps;
+		return maps;
 	}
 
 	public void setMaps(MetaReportParamMap[] maps) {
-	    this.maps = maps;
+		this.maps = maps;
 	}
 
 	public String getDataSourceAttributeName() {

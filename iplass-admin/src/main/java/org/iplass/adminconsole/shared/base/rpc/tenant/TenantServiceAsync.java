@@ -48,7 +48,9 @@ public interface TenantServiceAsync {
 	 * @param callback  Callbackクラス
 	 */
 	void updateTenant(int tenantId, final Tenant tenant, final int currentVersion, final boolean checkVersion, AsyncCallback<Boolean> callback);
-	void updateTenant(int tenantId, final Tenant tenant, final int currentVersion, final boolean checkVersion, final boolean forceUpdate, AsyncCallback<Boolean> callback);
+
+	void updateTenant(int tenantId, final Tenant tenant, final int currentVersion, final boolean checkVersion, final boolean forceUpdate,
+			AsyncCallback<Boolean> callback);
 
 	void getPlatformInformation(int tenantId, AsyncCallback<AdminPlatformInfo> callback);
 

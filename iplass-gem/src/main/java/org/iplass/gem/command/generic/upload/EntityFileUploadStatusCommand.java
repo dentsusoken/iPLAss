@@ -55,15 +55,15 @@ import org.iplass.mtp.webapi.definition.RequestType;
  *
  */
 @WebApi(
-		name=EntityFileUploadStatusCommand.WEBAPI_NAME,
-		displayName="ファイルアップロードステータス確認",
-		accepts={RequestType.REST_FORM, RequestType.REST_JSON, RequestType.REST_XML},
-		methods=MethodType.POST,
-		results={WebApiRequestConstants.DEFAULT_RESULT}
-	)
+		name = EntityFileUploadStatusCommand.WEBAPI_NAME,
+		displayName = "ファイルアップロードステータス確認",
+		accepts = { RequestType.REST_FORM, RequestType.REST_JSON, RequestType.REST_XML },
+		methods = MethodType.POST,
+		results = { WebApiRequestConstants.DEFAULT_RESULT }
+)
 @CommandClass(
-	name = "gem/generic/upload/EntityFileUploadStatusCommand",
-	displayName = "ファイルアップロードステータス確認"
+		name = "gem/generic/upload/EntityFileUploadStatusCommand",
+		displayName = "ファイルアップロードステータス確認"
 )
 public final class EntityFileUploadStatusCommand implements Command {
 
@@ -78,11 +78,13 @@ public final class EntityFileUploadStatusCommand implements Command {
 	@Override
 	public String execute(RequestContext request) {
 
-		LocaleFormat lf = ExecuteContext.getCurrentContext().getLocaleFormat();
+		LocaleFormat lf = ExecuteContext.getCurrentContext()
+				.getLocaleFormat();
 		SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(lf.getOutputDatetimeSecFormat(), true);
 
 		// CSVアップロードステータスサービス呼び出し
-		EntityFileUploadService service = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class);
+		EntityFileUploadService service = ServiceRegistry.getRegistry()
+				.getService(EntityFileUploadService.class);
 		List<EntityFileUploadStatus> statusList = service.getStatus();
 
 		List<EntityFileUploadStatusData> resultList = new ArrayList<EntityFileUploadStatusData>();
@@ -96,11 +98,13 @@ public final class EntityFileUploadStatusCommand implements Command {
 			result.setFileName(status.getFileName());
 			result.setUploadDate(sdf.format(status.getUploadDateTime()));
 			result.setStatus(status.getStatus());
-			result.setStatusLabel(GemResourceBundleUtil.resourceString("generic.csvUploadAsyncResult.status." + status.getStatus().name()));
-			result.setMessage(status.getMessage() != null ? StringUtil.escapeHtml(status.getMessage()).replace("\n", "<br/>") : null);
+			result.setStatusLabel(GemResourceBundleUtil.resourceString("generic.csvUploadAsyncResult.status." + status.getStatus()
+					.name()));
+			result.setMessage(status.getMessage() != null ? StringUtil.escapeHtml(status.getMessage())
+					.replace("\n", "<br/>") : null);
 
 			String defName = status.getDefName();
-			String viewName = status.getParameter();	//parameterにViewNameを保持している
+			String viewName = status.getParameter(); //parameterにViewNameを保持している
 
 			String dispNameKey = defName + "_" + (viewName != null ? viewName : "");
 			if (dispNames.containsKey(dispNameKey)) {

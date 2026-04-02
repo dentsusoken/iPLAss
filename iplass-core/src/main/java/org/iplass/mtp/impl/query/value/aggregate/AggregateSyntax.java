@@ -46,11 +46,11 @@ import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 import org.iplass.mtp.impl.query.value.primary.LiteralSyntax;
 
 public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 	private WithinGroupSyntax withinGroup;
 	private LiteralSyntax literal;
-	
+
 	public void init(SyntaxContext context) {
 		polynomial = context.getSyntax(PolynomialSyntax.class);
 		withinGroup = context.getSyntax(WithinGroupSyntax.class);
@@ -58,15 +58,15 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 	}
 
 	public Aggregate parse(ParseContext str) throws ParseException {
-		
+
 		Aggregate ag = null;
-		
+
 		int currentIndex = str.getCurrentIndex();
 		String token = str.nextToken(ParseContext.TOKEN_DELIMITERS);
 		if (token == null) {
 			throw new ParseException(new EvalError("aggregate function expected.", this, str));
 		}
-		
+
 		token = token.toUpperCase();
 		switch (token) {
 		case COUNT:
@@ -109,7 +109,7 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 			str.setCurrentIndex(currentIndex);
 			throw new ParseException(new EvalError("aggregate function expected.", this, str));
 		}
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
 
 		if (!str.startsWith(LEFT_PAREN)) {
@@ -117,7 +117,7 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 		}
 		str.consumeChars(LEFT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (ag instanceof Listagg) {
 			if (str.equalsNextToken(DISTINCT, ParseContext.WHITE_SPACES)) {
 				((Listagg) ag).setDistinct(true);
@@ -137,7 +137,7 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 				((Listagg) ag).setSeparator(l);
 				str.consumeChars(ParseContext.WHITE_SPACES);
 			}
-			
+
 		} else if (ag instanceof Count) {
 			if (!str.startsWith(RIGHT_PAREN)) {
 				if (str.equalsNextToken(DISTINCT, ParseContext.WHITE_SPACES)) {
@@ -152,13 +152,13 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 			ValueExpression nestedValue = polynomial.parse(str);
 			ag.setValue(nestedValue);
 		}
-		
+
 		if (!str.startsWith(RIGHT_PAREN)) {
 			throw new ParseException(new EvalError(") expected.", this, str));
 		}
 		str.consumeChars(RIGHT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (ag instanceof Listagg) {
 			//within group
 			currentIndex = str.getCurrentIndex();
@@ -166,11 +166,11 @@ public class AggregateSyntax implements Syntax<Aggregate>, QueryConstants {
 				WithinGroup wg = withinGroup.parse(str);
 				((Listagg) ag).setWithinGroup(wg);
 				str.consumeChars(ParseContext.WHITE_SPACES);
-			} catch(ParseException e) {
+			} catch (ParseException e) {
 				str.setCurrentIndex(currentIndex);
 			}
 		}
-		
+
 		return ag;
 	}
 }

@@ -43,7 +43,7 @@ public class MetaPropertyValidationCondition implements MetaData, HasEntityPrope
 	 * @return プロパティID
 	 */
 	public String getPropertyId() {
-	    return propertyId;
+		return propertyId;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class MetaPropertyValidationCondition implements MetaData, HasEntityPrope
 	 * @param propertyId プロパティID
 	 */
 	public void setPropertyId(String propertyId) {
-	    this.propertyId = propertyId;
+		this.propertyId = propertyId;
 	}
 
 	/**

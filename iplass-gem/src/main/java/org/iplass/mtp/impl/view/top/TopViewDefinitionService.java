@@ -50,9 +50,11 @@ public class TopViewDefinitionService extends AbstractTypedMetaDataService<MetaT
 		public TypeMap() {
 			super(getFixedPath(), MetaTopView.class, TopViewDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<TopViewDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(TopViewDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(TopViewDefinitionManager.class);
 		}
 
 		@Override

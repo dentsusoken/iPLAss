@@ -22,8 +22,8 @@ package org.iplass.mtp.impl.properties.extend;
 
 import java.util.List;
 
-import org.apache.commons.text.StringTokenizer;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.text.StringTokenizer;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityRuntimeException;
@@ -70,7 +70,7 @@ public class BinaryType extends ComplexWrapperType {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		
+
 		return true;
 	}
 
@@ -104,7 +104,7 @@ public class BinaryType extends ComplexWrapperType {
 	public PropertyDefinitionType getEnumType() {
 		return PropertyDefinitionType.BINARY;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getDataStoreEnumType() {
 		return PropertyDefinitionType.STRING;
@@ -114,7 +114,7 @@ public class BinaryType extends ComplexWrapperType {
 	public boolean isNeedPrevStoreTypeValueOnToStoreTypeValue() {
 		return true;
 	}
-	
+
 	@Override
 	public Object toStoreTypeValue(Object extendTypeValue,
 			Object prevStoreTypeValue, PropertyHandler ph, EntityHandler eh, String oid, Long version, Entity entity) {
@@ -144,22 +144,28 @@ public class BinaryType extends ComplexWrapperType {
 			return null;
 		}
 		if (prevBin == null || prevBin.lobId != binData.getLobId()) {
-			String sessionId = ServiceRegistry.getRegistry().getService(SessionService.class).getSession(true).getId();
+			String sessionId = ServiceRegistry.getRegistry()
+					.getService(SessionService.class)
+					.getSession(true)
+					.getId();
 			if (Lob.STATE_TEMP.equals(binData.getStatus())) {
 				//テンポラリLOBを永続化
-				if (!lm.markPersistenceBinaryData(binData.getLobId(), sessionId, eh.getMetaData().getId(), ph.getId(), oid, version)) {
+				if (!lm.markPersistenceBinaryData(binData.getLobId(), sessionId, eh.getMetaData()
+						.getId(), ph.getId(), oid, version)) {
 					throw new EntityRuntimeException("new lob must user's temporary lob");
 				}
 			} else {
 				//既存の永続LOBの場合、セキュリティ上OKならば、既存をコピーして保存
 				if (lm.canAccess(binData)) {
-					binData = lm.copyFor(binData.getLobId(), eh.getMetaData().getId(), ph.getId(), oid, version);
+					binData = lm.copyFor(binData.getLobId(), eh.getMetaData()
+							.getId(), ph.getId(), oid, version);
 				} else {
 					throw new EntityRuntimeException("cant reference lob cause security reason.lobId:" + binData.getLobId());
 				}
 			}
 		}
-		Binary bin = new Binary(binData.getLobId(), binData.getName(), binData.getType(), binData.getSize(), eh.getMetaData().getId(), ph.getId(), oid, version);
+		Binary bin = new Binary(binData.getLobId(), binData.getName(), binData.getType(), binData.getSize(), eh.getMetaData()
+				.getId(), ph.getId(), oid, version);
 		return bin.toStringExpression();
 	}
 
@@ -211,7 +217,6 @@ public class BinaryType extends ComplexWrapperType {
 		return new BinaryTypeLoadAdapter();
 	}
 
-
 	public static class Binary {
 		private long lobId;
 		private String name;
@@ -235,7 +240,7 @@ public class BinaryType extends ComplexWrapperType {
 			this.propertyId = propertyId;
 			this.oid = oid;
 			this.version = version;
-			
+
 			if (name != null && name.indexOf('\t') >= 0) {
 				throw new IllegalArgumentException("Binary name can't contains tab");
 			}
@@ -249,12 +254,12 @@ public class BinaryType extends ComplexWrapperType {
 			if (tIndex >= 0) {
 				stringExpression = stringExpression.substring(0, tIndex);
 			}
-			
+
 			StringTokenizer st = StringTokenizer.getCSVInstance(stringExpression);
 			List<String> line = null;
 			line = st.getTokenList();
 			if (line != null) {
-				for (String l: line) {
+				for (String l : line) {
 					if (l != null) {
 						if (l.startsWith("lobId=")) {
 							lobId = Long.parseLong(l.substring("lobId=".length()));
@@ -269,7 +274,7 @@ public class BinaryType extends ComplexWrapperType {
 								type = null;
 							}
 						} else if (l.startsWith("size=")) {
-								size = Long.parseLong(l.substring("size=".length()));
+							size = Long.parseLong(l.substring("size=".length()));
 						} else if (l.startsWith("entityDefinitionId=")) {
 							entityDefinitionId = l.substring("entityDefinitionId=".length());
 							if (entityDefinitionId.length() == 0) {
@@ -371,7 +376,7 @@ public class BinaryType extends ComplexWrapperType {
 			} else {
 				sb.append(StringEscapeUtils.escapeCsv("version=" + version));
 			}
-			
+
 			//検索用のnameを格納
 			sb.append('\t');
 			if (name != null) {
@@ -408,7 +413,8 @@ public class BinaryType extends ComplexWrapperType {
 			String entityName = null;
 			String propertyName = null;
 			if (eh != null) {
-				entityName = eh.getMetaData().getName();
+				entityName = eh.getMetaData()
+						.getName();
 				PropertyHandler ph = eh.getPropertyById(bin.propertyId, context);
 				if (ph != null) {
 					propertyName = ph.getName();
@@ -441,20 +447,21 @@ public class BinaryType extends ComplexWrapperType {
 		if (strValue == null) {
 			return null;
 		}
-		
+
 		Binary bin = new Binary(strValue);
 		EntityContext context = EntityContext.getCurrentContext();
 		EntityHandler eh = context.getHandlerById(bin.entityDefinitionId);
 		String entityName = null;
 		String propertyName = null;
 		if (eh != null) {
-			entityName = eh.getMetaData().getName();
+			entityName = eh.getMetaData()
+					.getName();
 			PropertyHandler ph = eh.getPropertyById(bin.propertyId, context);
 			if (ph != null) {
 				propertyName = ph.getName();
 			}
 		}
-		
+
 		return new BinaryReference(bin.lobId, bin.name, bin.type, bin.size, entityName, propertyName, bin.oid);
 	}
 
@@ -463,7 +470,8 @@ public class BinaryType extends ComplexWrapperType {
 		//CASE WHEN INSTR(bin,'\t') > 0 THEN SUBSTR(bin, INSTR(bin,'\t') + 1) ELSE null END
 		return new Case()
 				.when(new Greater(new Function("INSTR", field, new Literal("\t")), new Literal(0L)),
-						new Function("SUBSTR", field, new Polynomial(new Function("INSTR", field, new Literal("\t"))).add(new Literal(Long.valueOf(1)))))
+						new Function("SUBSTR", field,
+								new Polynomial(new Function("INSTR", field, new Literal("\t"))).add(new Literal(Long.valueOf(1)))))
 				.elseClause(new Literal(null));
 	}
 

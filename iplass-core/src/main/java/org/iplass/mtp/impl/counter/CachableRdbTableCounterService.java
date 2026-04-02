@@ -72,7 +72,8 @@ public class CachableRdbTableCounterService implements CounterService {
 	@Override
 	public void destroy() {
 		rdbCounter.destroy();
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		cs.invalidate(COUNTER_CACHE_NAMESPACE);
 	}
 
@@ -164,8 +165,9 @@ public class CachableRdbTableCounterService implements CounterService {
 			int result = 1;
 			result = prime
 					* result
-					+ ((incrementUnitKey == null) ? 0 : incrementUnitKey
-							.hashCode());
+					+ ((incrementUnitKey == null) ? 0
+							: incrementUnitKey
+									.hashCode());
 			result = prime * result + tenantId;
 			result = prime * result
 					+ ((typeName == null) ? 0 : typeName.hashCode());
@@ -197,7 +199,6 @@ public class CachableRdbTableCounterService implements CounterService {
 		}
 	}
 
-
 	private class Counter {
 
 		private final CounterKey key;
@@ -223,7 +224,8 @@ public class CachableRdbTableCounterService implements CounterService {
 							throw e;
 						} else {
 							if (logger.isDebugEnabled()) {
-								logger.debug("fail to increment counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + ", retry...");
+								logger.debug("fail to increment counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey()
+										+ ", retry...");
 							}
 						}
 					}
@@ -248,7 +250,8 @@ public class CachableRdbTableCounterService implements CounterService {
 						public Long logic() throws SQLException {
 							RdbTableCounterSql sql = rdbCounter.getCounterSql();
 
-							String select = sql.currentValueSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(), true, rdbCounter.getRdbAdapter());
+							String select = sql.currentValueSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(), true,
+									rdbCounter.getRdbAdapter());
 							ResultSet rs = getStatement().executeQuery(select);
 							long current = Long.MIN_VALUE;
 							try {
@@ -260,18 +263,22 @@ public class CachableRdbTableCounterService implements CounterService {
 							}
 							if (current != Long.MIN_VALUE) {
 								//すでにカウンター初期化済み
-								String update = sql.incrementSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(), cacheSize, rdbCounter.getRdbAdapter());
+								String update = sql.incrementSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(),
+										cacheSize, rdbCounter.getRdbAdapter());
 								int res = getStatement().executeUpdate(update);
 								if (res != 1) {
-									throw new SystemException("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " increment failed");
+									throw new SystemException(
+											"counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " increment failed");
 								}
 								return current;
 							} else {
 								//カウンター初期化を試みる
-								String create = sql.createCounterSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(), count - 1 + cacheSize, rdbCounter.getRdbAdapter());
+								String create = sql.createCounterSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(),
+										count - 1 + cacheSize, rdbCounter.getRdbAdapter());
 								int res = getStatement().executeUpdate(create);
 								if (res != 1) {
-									throw new SystemException("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " increment failed");
+									throw new SystemException(
+											"counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " increment failed");
 								}
 								return count - 1;
 							}
@@ -283,17 +290,21 @@ public class CachableRdbTableCounterService implements CounterService {
 			} catch (EntityDuplicateValueException e) {
 				//別スレッド、もしくは別サーバで初期化された
 				if (logger.isDebugEnabled()) {
-					logger.debug("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " init process is failed, mybe antoher thread or server inited.retry get counter...", e);
+					logger.debug("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey()
+							+ " init process is failed, mybe antoher thread or server inited.retry get counter...", e);
 				} else {
-					logger.warn("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " init process is failed, mybe antoher thread or server inited.retry get counter...");
+					logger.warn("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey()
+							+ " init process is failed, mybe antoher thread or server inited.retry get counter...");
 				}
 				eae = e;
 			} catch (EntityConcurrentUpdateException e) {
 				//別スレッド、もしくは別サーバで初期化された
 				if (logger.isDebugEnabled()) {
-					logger.debug("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " init process is failed, mybe antoher thread or server inited.retry get counter...", e);
+					logger.debug("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey()
+							+ " init process is failed, mybe antoher thread or server inited.retry get counter...", e);
 				} else {
-					logger.warn("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " init process is failed, mybe antoher thread or server inited.retry get counter...");
+					logger.warn("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey()
+							+ " init process is failed, mybe antoher thread or server inited.retry get counter...");
 				}
 				eae = e;
 			}
@@ -307,7 +318,8 @@ public class CachableRdbTableCounterService implements CounterService {
 						public Long logic() throws SQLException {
 							RdbTableCounterSql sql = rdbCounter.getCounterSql();
 
-							String select = sql.currentValueSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(), true, rdbCounter.getRdbAdapter());
+							String select = sql.currentValueSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(), true,
+									rdbCounter.getRdbAdapter());
 							ResultSet rs = getStatement().executeQuery(select);
 							long current = Long.MIN_VALUE;
 							try {
@@ -319,10 +331,12 @@ public class CachableRdbTableCounterService implements CounterService {
 							}
 							if (current != Long.MIN_VALUE) {
 								//すでにカウンター初期化済み
-								String update = sql.incrementSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(), cacheSize, rdbCounter.getRdbAdapter());
+								String update = sql.incrementSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(),
+										cacheSize, rdbCounter.getRdbAdapter());
 								int res = getStatement().executeUpdate(update);
 								if (res != 1) {
-									throw new SystemException("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " increment failed");
+									throw new SystemException(
+											"counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " increment failed");
 								}
 								return current;
 							} else {
@@ -343,7 +357,6 @@ public class CachableRdbTableCounterService implements CounterService {
 			inited = true;
 		}
 
-
 		public synchronized long current() {
 			if (inited) {
 				return count;
@@ -360,7 +373,11 @@ public class CachableRdbTableCounterService implements CounterService {
 		public String toString(Object cacheKey) {
 			CounterKey key = (CounterKey) cacheKey;
 			StringBuilder sb = new StringBuilder();
-			sb.append(key.getTenantId()).append(':').append(key.getTypeName()).append(':').append(key.getIncrementUnitKey());
+			sb.append(key.getTenantId())
+					.append(':')
+					.append(key.getTypeName())
+					.append(':')
+					.append(key.getIncrementUnitKey());
 			return sb.toString();
 		}
 

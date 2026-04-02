@@ -59,7 +59,7 @@ public class WithinGroup implements ASTNode {
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (sortSpecList != null) {
-				for (WithinGroupSortSpec s: sortSpecList) {
+				for (WithinGroupSortSpec s : sortSpecList) {
 					s.accept(visitor);
 				}
 			}
@@ -117,11 +117,11 @@ public class WithinGroup implements ASTNode {
 		sortSpecList.add(sortSpec);
 		return this;
 	}
-	
+
 	public WithinGroup add(Object value, SortType type) {
 		return add(value, type, null);
 	}
-	
+
 	public WithinGroup add(Object value, SortType type, NullOrderingSpec nullOrderingSpec) {
 		if (value == null) {
 			throw new NullPointerException("value is null");
@@ -137,7 +137,7 @@ public class WithinGroup implements ASTNode {
 		} else {
 			throw new QueryException("value is ValueExpression or String type required.");
 		}
-		
+
 		return add(new WithinGroupSortSpec(v, type, nullOrderingSpec));
 	}
 }

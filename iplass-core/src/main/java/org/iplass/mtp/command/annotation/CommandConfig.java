@@ -44,28 +44,28 @@ public @interface CommandConfig {
 	 * @return
 	 */
 	String value() default "##default";
-	
+
 	/**
 	 * Commandの実装クラスを指定します。
 	 * 未指定（デフォルト）の場合は、このアノテーションが記述されているCommandクラスが指定されたとみなします。
 	 * @return
 	 */
 	Class<? extends Command> commandClass() default Command.class;
-	
+
 	/**
 	 * このCommandインスタンスを実行する際のトランザクションのPropagationの設定です。
 	 * 未指定（デフォルト）の場合は、REQUIREDが指定されます。
 	 * @return
 	 */
 	Propagation transactionPropagation() default Propagation.REQUIRED;
-	
+
 	/**
 	 * Commandより例外がスローされた場合、トランザクションをロールバックするか否かの設定です。
 	 * 未指定（デフォルト）の場合はtrueです。
 	 * @return
 	 */
 	boolean rollbackWhenException() default true;
-	
+
 	/**
 	 * トランザクションが本Command処理用に新規作成された際、
 	 * 処理中にsetRoobackOnlyされた場合、

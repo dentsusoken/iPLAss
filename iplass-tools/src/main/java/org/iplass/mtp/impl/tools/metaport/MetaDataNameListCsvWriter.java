@@ -46,16 +46,10 @@ public class MetaDataNameListCsvWriter implements Closeable {
 	private CsvMapWriter csvWriter;
 	private boolean removeLineFeedCode = true;
 
-	private String[] header = {"Path", "Name", "Display Name", "Description", "ID", "Repository"};
+	private String[] header = { "Path", "Name", "Display Name", "Description", "ID", "Repository" };
 	private CellProcessor[] processors = {
-			new ConvertNullTo("")
-			, new ConvertNullTo("")
-			, new ConvertNullTo("")
-			, new ConvertNullTo("")
-			, new ConvertNullTo("")
-			, new ConvertNullTo("")
-			};
-
+			new ConvertNullTo(""), new ConvertNullTo(""), new ConvertNullTo(""), new ConvertNullTo(""), new ConvertNullTo(""), new ConvertNullTo("")
+	};
 
 	public MetaDataNameListCsvWriter(OutputStream out) throws IOException {
 		this(out, true);
@@ -73,7 +67,8 @@ public class MetaDataNameListCsvWriter implements Closeable {
 
 	private void init(Writer writer) {
 		//Quat:「"」、Demilter：「,」、NewLine：「\n」
-		csvWriter = new CsvMapWriter(writer, new CsvPreference.Builder(CsvPreference.EXCEL_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
+		csvWriter = new CsvMapWriter(writer, new CsvPreference.Builder(CsvPreference.EXCEL_PREFERENCE).surroundingSpacesNeedQuotes(true)
+				.build());
 		//Quat:「"」、Demilter：「,」、NewLine：「\r\n」
 //		csvWriter = new CsvMapWriter(writer, CsvPreference.STANDARD_PREFERENCE);
 
@@ -98,7 +93,8 @@ public class MetaDataNameListCsvWriter implements Closeable {
 		recordMap.put(header[4], meta.getId());
 		String repositryType = null;
 		if (entry.getRepositryType() != null) {
-			repositryType = entry.getRepositryType().name();
+			repositryType = entry.getRepositryType()
+					.name();
 		}
 		recordMap.put(header[5], repositryType);
 

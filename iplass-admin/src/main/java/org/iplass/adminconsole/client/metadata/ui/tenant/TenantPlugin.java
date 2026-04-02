@@ -41,7 +41,6 @@ import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
-
 public class TenantPlugin extends DefaultMetaDataPlugin {
 
 	/** ノード名 */
@@ -86,7 +85,7 @@ public class TenantPlugin extends DefaultMetaDataPlugin {
 	 */
 	@Override
 	public void onNodeDoubleClick(AdminMenuTreeNode node) {
-		if (isNodeTypeRoot(node)){
+		if (isNodeTypeRoot(node)) {
 //			addTab(node);
 			addTenantTab();
 		}
@@ -97,7 +96,7 @@ public class TenantPlugin extends DefaultMetaDataPlugin {
 	 */
 	@Override
 	public void onNodeContextClick(final AdminMenuTreeNode node) {
-		if (isNodeTypeRoot(node)){
+		if (isNodeTypeRoot(node)) {
 
 			if (rootContextMenu == null) {
 				rootContextMenu = new Menu();
@@ -152,7 +151,7 @@ public class TenantPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{TenantMainPane.class};
+		return new Class[] { TenantMainPane.class };
 	}
 
 	/**
@@ -182,8 +181,9 @@ public class TenantPlugin extends DefaultMetaDataPlugin {
 	 * @param event {@link ContentSelectedEvent}
 	 */
 	@Override
-	public void onContentSelected(ContentSelectedEvent event){
-		if (TenantMainPane.class == event.getSource().getClass()) {
+	public void onContentSelected(ContentSelectedEvent event) {
+		if (TenantMainPane.class == event.getSource()
+				.getClass()) {
 			selectAndScrollNode(rootNode);
 		}
 	};
@@ -192,7 +192,7 @@ public class TenantPlugin extends DefaultMetaDataPlugin {
 		if (defName != null) {
 			addTabByName(defName);
 		} else {
-	        service.getTenant(TenantInfoHolder.getId(), new AsyncCallback<Tenant>() {
+			service.getTenant(TenantInfoHolder.getId(), new AsyncCallback<Tenant>() {
 
 				@Override
 				public void onSuccess(Tenant result) {

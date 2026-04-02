@@ -22,7 +22,6 @@ package org.iplass.mtp.entity.definition;
 
 import java.io.Serializable;
 
-
 /**
  * javaコード内で、汎用モデルをPOJOで扱いたい場合のEntity-POJO間のマッピングを定義するクラス。
  *

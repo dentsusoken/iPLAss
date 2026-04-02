@@ -27,7 +27,7 @@ import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationList
 
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public abstract class ValidationAttributePane extends VLayout implements EditablePane<ValidationListGridRecord>{
+public abstract class ValidationAttributePane extends VLayout implements EditablePane<ValidationListGridRecord> {
 
 	public abstract ValidationType getType();
 

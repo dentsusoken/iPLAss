@@ -21,11 +21,11 @@
 package org.iplass.mtp.impl.datastore.grdb.sql.table;
 
 public interface ObjStoreTable {
-	
+
 	public static final String TABLE_NAME = "OBJ_STORE";
 	public static final String TABLE_NAME_RB = "OBJ_STORE_RB";
 	public static final String TABLE_NAME_TMP = "OBJ_STORE_TMP";
-	
+
 	public static final String TENANT_ID = "TENANT_ID";
 	public static final String OBJ_DEF_ID = "OBJ_DEF_ID";
 	public static final String PG_NO = "PG_NO";
@@ -43,18 +43,17 @@ public interface ObjStoreTable {
 	public static final String LOCK_USER = "LOCK_USER";
 	public static final String CRE_USER = "CRE_USER";
 	public static final String UP_USER = "UP_USER";
-	
-	
+
 	//ごみ箱のみ項目
 	public static final String RB_ID = "RB_ID";
 	public static final String RB_DATE = "RB_DATE";
 	public static final String RB_USER = "RB_USER";
-	
+
 //	public static final String VALUE_PREFIX = "V_";
-	
+
 //	public static final int VALUE_COL_COUNT = 256;
 //	public static final int VALUE_COL_COUNT = 100;
-	
+
 	public static final String VALUE_STR_PREFIX = "STR_";
 	public static final String VALUE_NUM_PREFIX = "NUM_";
 	public static final String VALUE_TS_PREFIX = "TS_";
@@ -64,18 +63,18 @@ public interface ObjStoreTable {
 	public static final String INDEX_NUM_PREFIX = "INUM_";
 	public static final String INDEX_TS_PREFIX = "ITS_";
 	public static final String INDEX_DBL_PREFIX = "IDBL_";
-	
+
 	public static final String UNIQUE_STR_PREFIX = "USTR_";
 	public static final String UNIQUE_NUM_PREFIX = "UNUM_";
 	public static final String UNIQUE_TS_PREFIX = "UTS_";
 	public static final String UNIQUE_DBL_PREFIX = "UDBL_";
-	
+
 	public static final String INDEX_TD_POSTFIX = "_TD";
-	
+
 	public static final String INDEX_TD_SEPARATOR = ":";
 
 	//シーケンス名
 	public static final String SEQ_OBJ_ID = "SEQ_OBJ_ID";
 	public static final String SEQ_RB_ID = "SEQ_RB_ID";
-	
+
 }

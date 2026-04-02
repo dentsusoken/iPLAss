@@ -72,8 +72,10 @@ public class AuthenticationCommand implements Command {
 
 	private static Logger logger = LoggerFactory.getLogger(AuthenticationCommand.class);
 
-	private AuthManager auth = ManagerLocator.getInstance().getManager(AuthManager.class);
-	private WebAuthnService service = ServiceRegistry.getRegistry().getService(WebAuthnService.class);
+	private AuthManager auth = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
+	private WebAuthnService service = ServiceRegistry.getRegistry()
+			.getService(WebAuthnService.class);
 
 	private boolean isRememberMe(RequestContext request) {
 		String val = request.getParam(PARAM_REMEMBER_ME);
@@ -85,7 +87,10 @@ public class AuthenticationCommand implements Command {
 
 	@Override
 	public String execute(RequestContext request) {
-		if (!ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseWebAuthn()) {
+		if (!ExecuteContext.getCurrentContext()
+				.getCurrentTenant()
+				.getTenantConfig(TenantAuthInfo.class)
+				.isUseWebAuthn()) {
 			throw new WebAuthnRuntimeException("WebAuthn is not enabled");
 		}
 		String defName = StringUtil.stripToNull(request.getParam(PARAM_DEFINITION_NAME));
@@ -100,7 +105,7 @@ public class AuthenticationCommand implements Command {
 		} catch (Exception e) {
 			throw new WebAuthnRuntimeException("Failed to read publicKeyCredential", e);
 		}
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("authenticate PublicKeyCredential: " + publicKeyCredential);
 		}
@@ -108,8 +113,12 @@ public class AuthenticationCommand implements Command {
 		boolean rememberMe = isRememberMe(request);
 
 		DefaultWebAuthnServer serverParam = new DefaultWebAuthnServer(request, AuthenticationOptionsCommand.SESSION_WEBAUTHN_STATE_AUTH);
-		WebAuthnCredential cred = new WebAuthnCredential(webauthn.getMetaData().getName(), publicKeyCredential, serverParam);
-		if (ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseRememberMe()) {
+		WebAuthnCredential cred = new WebAuthnCredential(webauthn.getMetaData()
+				.getName(), publicKeyCredential, serverParam);
+		if (ExecuteContext.getCurrentContext()
+				.getCurrentTenant()
+				.getTenantConfig(TenantAuthInfo.class)
+				.isUseRememberMe()) {
 			cred.setAuthenticationFactor(RememberMeConstants.FACTOR_REMEMBER_ME_FLAG, rememberMe);
 		}
 		auth.login(cred);

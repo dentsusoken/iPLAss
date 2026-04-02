@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/binary",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/binary", prefix="def-bin")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/binary",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/binary", prefix = "def-bin")
+		}
 )
 package org.iplass.mtp.definition.binary;

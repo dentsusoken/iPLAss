@@ -36,12 +36,12 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 public class EntitySerializer extends StdSerializer<Entity> {
 	private static final long serialVersionUID = -8460188948114932009L;
 
-	public static final String PROP_DEFINITION_NAME ="definitionName";
+	public static final String PROP_DEFINITION_NAME = "definitionName";
 
 	public EntitySerializer() {
 		super(Entity.class);
 	}
-	
+
 	public EntitySerializer(Class<?> t, boolean dummy) {
 		super(t, dummy);
 	}
@@ -60,17 +60,19 @@ public class EntitySerializer extends StdSerializer<Entity> {
 
 	@Override
 	public void serialize(Entity value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-		boolean writeNull = provider.getConfig().getDefaultPropertyInclusion().getValueInclusion() == Include.ALWAYS;
-		
+		boolean writeNull = provider.getConfig()
+				.getDefaultPropertyInclusion()
+				.getValueInclusion() == Include.ALWAYS;
+
 		if (value instanceof GenericEntity) {
 			gen.writeStartObject(value);
-			
+
 			gen.writeStringField(PROP_DEFINITION_NAME, value.getDefinitionName());
-			for (String pname: ((GenericEntity) value).getPropertyNames()) {
+			for (String pname : ((GenericEntity) value).getPropertyNames()) {
 				writeProp(pname, value, gen, writeNull);
 			}
 			gen.writeEndObject();
-			
+
 		} else {
 			EntityContext ec = EntityContext.getCurrentContext();
 			EntityHandler eh = ec.getHandlerByName(value.getDefinitionName());
@@ -78,22 +80,22 @@ public class EntitySerializer extends StdSerializer<Entity> {
 				throw provider.mappingException("cant find Entity Defs... definitionName:" + value.getDefinitionName());
 			}
 			gen.writeStartObject(value);
-			
+
 			gen.writeStringField(PROP_DEFINITION_NAME, value.getDefinitionName());
-			for (PropertyHandler ph: eh.getPropertyList(ec)) {
+			for (PropertyHandler ph : eh.getPropertyList(ec)) {
 				writeProp(ph.getName(), value, gen, writeNull);
 			}
 			gen.writeEndObject();
 		}
 	}
-	
+
 	private void writeProp(String propName, Entity entity, JsonGenerator gen, boolean writeNull) throws IOException {
 		Object propVal = entity.getValue(propName);
 		if (writeNull || propVal != null) {
 			if (propVal instanceof Object[]) {
 				Object[] arrayVal = (Object[]) propVal;
 				gen.writeArrayFieldStart(propName);
-				for (Object v: arrayVal) {
+				for (Object v : arrayVal) {
 					writeValue(v, gen);
 				}
 				gen.writeEndArray();

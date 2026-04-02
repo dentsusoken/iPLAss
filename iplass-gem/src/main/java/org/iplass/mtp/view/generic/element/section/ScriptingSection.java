@@ -37,7 +37,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/element/section/ScriptingSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/element/section/ScriptingSection.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
 public class ScriptingSection extends Section {
 
@@ -46,72 +46,72 @@ public class ScriptingSection extends Section {
 
 	/** 詳細編集非表示設定 */
 	@MetaFieldInfo(
-			displayName="詳細編集非表示設定",
-			displayNameKey="generic_element_section_ScriptingSection_hideDetailDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=200,
-			description="詳細編集で非表示にするかを設定します。",
-			descriptionKey="generic_element_section_ScriptingSection_hideDetailDescriptionKey"
+			displayName = "詳細編集非表示設定",
+			displayNameKey = "generic_element_section_ScriptingSection_hideDetailDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 200,
+			description = "詳細編集で非表示にするかを設定します。",
+			descriptionKey = "generic_element_section_ScriptingSection_hideDetailDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean hideDetail;
 
 	/** 詳細表示非表示設定 */
 	@MetaFieldInfo(
-			displayName="詳細表示非表示設定",
-			displayNameKey="generic_element_section_ScriptingSection_hideViewDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=210,
-			description="詳細表示で非表示にするかを設定します。",
-			descriptionKey="generic_element_section_ScriptingSection_hideViewDescriptionKey"
+			displayName = "詳細表示非表示設定",
+			displayNameKey = "generic_element_section_ScriptingSection_hideViewDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 210,
+			description = "詳細表示で非表示にするかを設定します。",
+			descriptionKey = "generic_element_section_ScriptingSection_hideViewDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean hideView;
 
 	/** セクション内に配置した場合に枠線を表示 */
 	@MetaFieldInfo(
-			displayName="セクション内に配置した場合に枠線を表示",
-			displayNameKey="generic_element_section_ScriptingSection_dispBorderInSectionDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			description="セクション内に配置した場合に枠線を表示するかを指定します。",
-			displayOrder=400,
-			descriptionKey="generic_element_section_ScriptingSection_dispBorderInSectionDescriptionKey"
+			displayName = "セクション内に配置した場合に枠線を表示",
+			displayNameKey = "generic_element_section_ScriptingSection_dispBorderInSectionDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			description = "セクション内に配置した場合に枠線を表示するかを指定します。",
+			displayOrder = 400,
+			descriptionKey = "generic_element_section_ScriptingSection_dispBorderInSectionDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean dispBorderInSection;
 
 	/** リンクを表示するか */
 	@MetaFieldInfo(
-			displayName="リンクを表示するか",
-			displayNameKey="generic_element_section_ScriptingSection_showLinkDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=410,
-			description="詳細画面でのページ内リンクを表示するかを指定します。",
-			descriptionKey="generic_element_section_ScriptingSection_showLinkDescriptionKey"
+			displayName = "リンクを表示するか",
+			displayNameKey = "generic_element_section_ScriptingSection_showLinkDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 410,
+			description = "詳細画面でのページ内リンクを表示するかを指定します。",
+			descriptionKey = "generic_element_section_ScriptingSection_showLinkDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean showLink;
 
 	/** スクリプト */
 	@MetaFieldInfo(
-			displayName="スクリプト",
-			displayNameKey="generic_element_section_ScriptingSection_scriptDisplayNameKey",
-			inputType=InputType.SCRIPT,
-			mode="groovytemplate",
-			displayOrder=1000,
-			description="HTMLコードを含むスクリプトを設定します。",
-			descriptionKey="generic_element_section_ScriptingSection_scriptDescriptionKey"
+			displayName = "スクリプト",
+			displayNameKey = "generic_element_section_ScriptingSection_scriptDisplayNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovytemplate",
+			displayOrder = 1000,
+			description = "HTMLコードを含むスクリプトを設定します。",
+			descriptionKey = "generic_element_section_ScriptingSection_scriptDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String script;
 
@@ -129,7 +129,7 @@ public class ScriptingSection extends Section {
 	 * @return 詳細編集非表示設定
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class ScriptingSection extends Section {
 	 * @param hideDetail 詳細編集非表示設定
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class ScriptingSection extends Section {
 	 * @return 詳細表示非表示設定
 	 */
 	public boolean isHideView() {
-	    return hideView;
+		return hideView;
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class ScriptingSection extends Section {
 	 * @param hideView 詳細表示非表示設定
 	 */
 	public void setHideView(boolean hideView) {
-	    this.hideView = hideView;
+		this.hideView = hideView;
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class ScriptingSection extends Section {
 	 * @return リンクを表示するか
 	 */
 	public boolean isShowLink() {
-	    return showLink;
+		return showLink;
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class ScriptingSection extends Section {
 	 * @param showLink リンクを表示するか
 	 */
 	public void setShowLink(boolean showLink) {
-	    this.showLink = showLink;
+		this.showLink = showLink;
 	}
 
 	/**

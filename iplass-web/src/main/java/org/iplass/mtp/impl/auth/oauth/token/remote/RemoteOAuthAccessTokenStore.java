@@ -205,7 +205,8 @@ public class RemoteOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 	@Override
 	public AccessToken getAccessToken(String tokenString) {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		String endpoint = introspectionEndpointUrl.replace(TENANT_NAME_VARIABLE, ec.getCurrentTenant().getName());
+		String endpoint = introspectionEndpointUrl.replace(TENANT_NAME_VARIABLE, ec.getCurrentTenant()
+				.getName());
 		HttpPost post = new HttpPost(endpoint);
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -245,7 +246,8 @@ public class RemoteOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 			if (logger.isDebugEnabled()) {
 				logger.debug("response: " + res.content);
 			}
-			IntroResponse resJson = objectMapperService.getObjectMapper().readValue(res.content, IntroResponse.class);
+			IntroResponse resJson = objectMapperService.getObjectMapper()
+					.readValue(res.content, IntroResponse.class);
 
 			if (!resJson.active) {
 				if (logger.isDebugEnabled()) {
@@ -255,7 +257,9 @@ public class RemoteOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 			}
 
 			if (tenantValidationType == TenantValidationType.NAME) {
-				if (!ec.getCurrentTenant().getName().equals(resJson.tenant_name)) {
+				if (!ec.getCurrentTenant()
+						.getName()
+						.equals(resJson.tenant_name)) {
 					if (logger.isDebugEnabled()) {
 						logger.debug("mismatch tenant_name: " + resJson);
 					}
@@ -292,7 +296,8 @@ public class RemoteOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 
 	@Override
 	public void inited(OAuthAuthorizationService service, Config config) {
-		objectMapperService = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class);
+		objectMapperService = ServiceRegistry.getRegistry()
+				.getService(WebApiObjectMapperService.class);
 
 		if (httpClientConfig == null) {
 			httpClientConfig = new HttpClientConfig();

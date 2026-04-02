@@ -42,21 +42,28 @@ import org.iplass.mtp.view.top.parts.InformationParts;
  * @author lis3wg
  */
 @ActionMapping(
-	name=InformationViewCommand.ACTION_NAME,
-	displayName="お知らせ詳細表示",
-	result= {
-		@Result(status=Constants.CMD_EXEC_SUCCESS,
-			type=Type.JSP,
-			value=Constants.CMD_RSLT_JSP_INFO_VIEW,
-			templateName="gem/information/view",
-			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-		@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-		@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-			layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-	}
+		name = InformationViewCommand.ACTION_NAME,
+		displayName = "お知らせ詳細表示",
+		result = {
+				@Result(
+						status = Constants.CMD_EXEC_SUCCESS,
+						type = Type.JSP,
+						value = Constants.CMD_RSLT_JSP_INFO_VIEW,
+						templateName = "gem/information/view",
+						layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+				@Result(
+						status = Constants.CMD_EXEC_ERROR_NODATA,
+						type = Type.TEMPLATE,
+						value = Constants.TEMPLATE_COMMON_ERROR,
+						layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+				@Result(
+						status = Constants.CMD_EXEC_ERROR_VIEW,
+						type = Type.TEMPLATE,
+						value = Constants.TEMPLATE_COMMON_ERROR,
+						layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
+		}
 )
-@CommandClass(name="gem/information/InformationDetailViewCommand", displayName="お知らせ詳細表示")
+@CommandClass(name = "gem/information/InformationDetailViewCommand", displayName = "お知らせ詳細表示")
 public final class InformationViewCommand implements Command {
 
 	public static final String ACTION_NAME = "gem/information/view";
@@ -86,7 +93,7 @@ public final class InformationViewCommand implements Command {
 		//検索
 		Entity entity = null;
 		if (oid != null) {
-			entity = em.load(oid, version ,InformationListCommand.INFORMATION_ENTITY, getLoadOption(infoParts));
+			entity = em.load(oid, version, InformationListCommand.INFORMATION_ENTITY, getLoadOption(infoParts));
 		}
 
 		if (entity == null) {
@@ -102,7 +109,8 @@ public final class InformationViewCommand implements Command {
 		//カスタムスタイル
 		String customStyle = null;
 		if (StringUtil.isNotEmpty(infoParts.getDetailCustomStyle())) {
-			customStyle = tvdm.getRequestTopViewPartsHandler(InformationPartsHandler.class).getDetailCustomStyle(entity);
+			customStyle = tvdm.getRequestTopViewPartsHandler(InformationPartsHandler.class)
+					.getDetailCustomStyle(entity);
 		} else {
 			customStyle = "";
 		}

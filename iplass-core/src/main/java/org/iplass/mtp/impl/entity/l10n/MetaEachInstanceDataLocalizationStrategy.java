@@ -29,12 +29,11 @@ import org.iplass.mtp.entity.definition.l10n.EachInstanceDataLocalizationStrateg
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
-
 public class MetaEachInstanceDataLocalizationStrategy extends MetaDataLocalizationStrategy {
 	private static final long serialVersionUID = -6948763544125469746L;
 
 	private String languagePropertyName;
-	
+
 	public MetaEachInstanceDataLocalizationStrategy() {
 	}
 
@@ -84,8 +83,9 @@ public class MetaEachInstanceDataLocalizationStrategy extends MetaDataLocalizati
 		int result = super.hashCode();
 		result = prime
 				* result
-				+ ((languagePropertyName == null) ? 0 : languagePropertyName
-						.hashCode());
+				+ ((languagePropertyName == null) ? 0
+						: languagePropertyName
+								.hashCode());
 		return result;
 	}
 
@@ -110,12 +110,13 @@ public class MetaEachInstanceDataLocalizationStrategy extends MetaDataLocalizati
 	public DataLocalizationStrategyRuntime createDataLocalizationStrategyRuntime(EntityHandler eh) {
 		return new EachInstanceDataLocalizationStrategyRuntime();
 	}
-	
+
 	public class EachInstanceDataLocalizationStrategyRuntime extends DataLocalizationStrategyRuntime {
 
 		@Override
 		public void handleEntityForInsert(Entity e, InsertOption option) {
-			String userLang = ExecuteContext.getCurrentContext().getLanguage();
+			String userLang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 			if (getLanguages() != null && getLanguages().contains(userLang)) {
 				e.setValue(languagePropertyName, userLang);
 			} else {
@@ -125,13 +126,15 @@ public class MetaEachInstanceDataLocalizationStrategy extends MetaDataLocalizati
 
 		@Override
 		public void handleEntityForUpdate(Entity e, UpdateOption option) {
-			String userLang = ExecuteContext.getCurrentContext().getLanguage();
+			String userLang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 			if (getLanguages() != null && getLanguages().contains(userLang)) {
 				e.setValue(languagePropertyName, userLang);
 			} else {
 				e.setValue(languagePropertyName, null);
 			}
-			if (option.getUpdateProperties() == null || !option.getUpdateProperties().contains(languagePropertyName)) {
+			if (option.getUpdateProperties() == null || !option.getUpdateProperties()
+					.contains(languagePropertyName)) {
 				option.add(languagePropertyName);
 			}
 		}

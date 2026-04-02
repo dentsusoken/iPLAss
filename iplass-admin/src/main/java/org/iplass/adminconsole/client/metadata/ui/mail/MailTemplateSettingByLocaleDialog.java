@@ -134,14 +134,17 @@ public class MailTemplateSettingByLocaleDialog extends MtpDialog {
 					langSelectItem = new SelectItem("language", "Language");
 					langSelectItem.setValueMap(enableLanguagesMap);
 
-					subjectField = new MtpTextItem("subject", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_subject"));
+					subjectField = new MtpTextItem("subject",
+							AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_subject"));
 					subjectField.setColSpan(3);
 					SmartGWTUtil.setRequired(subjectField);
 
-					charsetField = new MtpTextItem("charset", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_charaCode"));
+					charsetField = new MtpTextItem("charset",
+							AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_charaCode"));
 					charsetField.setStartRow(true);
 
-					htmlCharsetField = new MtpTextItem("htmlCharset", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_htmlCharaCode"));
+					htmlCharsetField = new MtpTextItem("htmlCharset",
+							AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_htmlCharaCode"));
 
 					form.setItems(langSelectItem, subjectField, charsetField, htmlCharsetField, new SpacerItem());
 
@@ -149,20 +152,20 @@ public class MailTemplateSettingByLocaleDialog extends MtpDialog {
 					massageTabSet = new TabSet();
 					massageTabSet.setWidth100();
 					//massageTabSet.setHeight100();
-					massageTabSet.setHeight(450);	//高さは固定でないとうまくいかないため指定
-					massageTabSet.setPaneContainerOverflow(Overflow.HIDDEN);	//Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
+					massageTabSet.setHeight(450); //高さは固定でないとうまくいかないため指定
+					massageTabSet.setPaneContainerOverflow(Overflow.HIDDEN); //Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
 
-			        plainMessageTab = new Tab();
-			        plainMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_textMessage"));
+					plainMessageTab = new Tab();
+					plainMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_textMessage"));
 
 					plainEditor = new ScriptEditorPane();
 					plainEditor.setMode(EditorMode.TEXT);
 
 					plainMessageTab.setPane(plainEditor);
-			        massageTabSet.addTab(plainMessageTab);
+					massageTabSet.addTab(plainMessageTab);
 
-			        htmlMessageTab = new Tab();
-			        htmlMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_htmlMessage"));
+					htmlMessageTab = new Tab();
+					htmlMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_htmlMessage"));
 
 					htmlEditor = new ScriptEditorPane();
 					htmlEditor.setMode(EditorMode.HTML);
@@ -196,16 +199,16 @@ public class MailTemplateSettingByLocaleDialog extends MtpDialog {
 				if (definition.getPlainMessage() != null) {
 					PlainTextBodyPart part = definition.getPlainMessage();
 					plainEditor.setText(part.getContent());
-					existPlainMessage
-						= (part.getContent() != null && !part.getContent().isEmpty());
+					existPlainMessage = (part.getContent() != null && !part.getContent()
+							.isEmpty());
 					plainMessage = part.getContent();
 				}
 				if (definition.getHtmlMessage() != null) {
 					HtmlBodyPart part = definition.getHtmlMessage();
 					htmlEditor.setText(part.getContent());
 					htmlCharsetField.setValue(part.getCharset());
-					existHtmlMessage
-						= (part.getContent() != null && !part.getContent().isEmpty());
+					existHtmlMessage = (part.getContent() != null && !part.getContent()
+							.isEmpty());
 					htmlMessage = part.getContent();
 				}
 
@@ -226,8 +229,10 @@ public class MailTemplateSettingByLocaleDialog extends MtpDialog {
 				massageTabSet.selectTab(plainMessageTab);
 			}
 
-			setTabTitle(plainMessageTab, AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_textMessage"), plainMessage);
-			setTabTitle(htmlMessageTab, AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_htmlMessage"), htmlMessage);
+			setTabTitle(plainMessageTab, AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_textMessage"),
+					plainMessage);
+			setTabTitle(htmlMessageTab, AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_htmlMessage"),
+					htmlMessage);
 		}
 
 		/**
@@ -240,10 +245,10 @@ public class MailTemplateSettingByLocaleDialog extends MtpDialog {
 			definition.setLocaleName(SmartGWTUtil.getStringValue(langSelectItem));
 			definition.setSubject(SmartGWTUtil.getStringValue(subjectField));
 			definition.setCharset(SmartGWTUtil.getStringValue(charsetField));
-			PlainTextBodyPart plainPart = new  PlainTextBodyPart();
+			PlainTextBodyPart plainPart = new PlainTextBodyPart();
 			plainPart.setContent(plainEditor.getText());
 			definition.setPlainMessage(plainPart);
-			HtmlBodyPart htmlPart = new  HtmlBodyPart();
+			HtmlBodyPart htmlPart = new HtmlBodyPart();
 			htmlPart.setContent(htmlEditor.getText());
 			htmlPart.setCharset(SmartGWTUtil.getStringValue(htmlCharsetField));
 			definition.setHtmlMessage(htmlPart);
@@ -274,7 +279,6 @@ public class MailTemplateSettingByLocaleDialog extends MtpDialog {
 	public void addDataChangeHandler(DataChangedHandler handler) {
 		handlers.add(0, handler);
 	}
-
 
 	/**
 	 * データ変更通知処理

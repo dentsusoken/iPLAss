@@ -37,9 +37,11 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenService> {
 	private static class RandomHolder {
-		static final SecureRandomGenerator random = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator("authTokenGenerator");
+		static final SecureRandomGenerator random = ServiceRegistry.getRegistry()
+				.getService(SecureRandomService.class)
+				.createGenerator("authTokenGenerator");
 	}
-	
+
 	private String store;
 	private String type;
 	private boolean visible = true;
@@ -93,10 +95,10 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 	@Override
 	public void inited(AuthTokenService service, Config config) {
 		this.service = service;
-		
+
 		if (hashSettings != null) {
 			//check hash alg
-			for (HashSetting hs: hashSettings) {
+			for (HashSetting hs : hashSettings) {
 				try {
 					MessageDigest.getInstance(hs.getHashAlgorithm());
 				} catch (NoSuchAlgorithmException e) {
@@ -104,16 +106,17 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 				}
 			}
 		}
-		
-		
+
 		if (hashSettings != null && hashSettings.size() > 0) {
 			this.authTokenStore = new HashingAuthTokenStore(service.getStore(store));
 		} else {
 			this.authTokenStore = service.getStore(store);
 		}
-		
+
 		if (secureRandomGeneratorName != null) {
-			generator = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator(secureRandomGeneratorName);
+			generator = ServiceRegistry.getRegistry()
+					.getService(SecureRandomService.class)
+					.createGenerator(secureRandomGeneratorName);
 		}
 	}
 
@@ -128,7 +131,7 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 	public AuthTokenService getService() {
 		return service;
 	}
-	
+
 	public String newTokenString(AuthTokenInfo tokenInfo) {
 		if (generator != null) {
 			return generator.secureRandomToken();
@@ -140,16 +143,17 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 	public String newSeriesString(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
 		return RandomHolder.random.secureRandomToken();
 	}
-	
+
 	public boolean checkTokenValid(String inputToken, AuthToken storeToken) {
 		if (storeToken == null || inputToken == null) {
 			return false;
 		}
-		
+
 		if (hashSettings == null || hashSettings.size() == 0) {
-			return storeToken.getToken().equals(inputToken);
+			return storeToken.getToken()
+					.equals(inputToken);
 		}
-		
+
 		String[] verHash = divVerAndHash(storeToken.getToken());
 		HashSetting hs = selectSetting(verHash[0]);
 		if (hs == null) {
@@ -177,30 +181,33 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 	private String[] divVerAndHash(String token) {
 		if (token != null && token.length() != 0 && token.charAt(0) == '$') {
 			int index = token.indexOf('$', 1);
-			return new String[]{token.substring(1, index), token.substring(index + 1)};
+			return new String[] { token.substring(1, index), token.substring(index + 1) };
 		} else {
-			return new String[]{null, token};
+			return new String[] { null, token };
 		}
 	}
 
 	public AuthToken newAuthToken(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		String seriesString = newSeriesString(userUniqueId, policyName, tokenInfo);
 		String tokenString = newTokenString(tokenInfo);
 		Serializable details = createDetails(seriesString, tokenString, userUniqueId, policyName, tokenInfo);
-		return new AuthToken(tenantId, getType(), userUniqueId, seriesString, tokenString, policyName, new Timestamp(System.currentTimeMillis()), details);
+		return new AuthToken(tenantId, getType(), userUniqueId, seriesString, tokenString, policyName, new Timestamp(System.currentTimeMillis()),
+				details);
 	}
-	
-	protected abstract Serializable createDetails(String seriesString, String tokenString, String userUniqueId, String policyName, AuthTokenInfo tokenInfo);
-	
+
+	protected abstract Serializable createDetails(String seriesString, String tokenString, String userUniqueId, String policyName,
+			AuthTokenInfo tokenInfo);
+
 	public abstract AuthTokenInfo toAuthTokenInfo(AuthToken authToken);
-	
+
 	public abstract Credential toCredential(AuthToken newToken);
-	
+
 	private class HashingAuthTokenStore implements AuthTokenStore {
-		
+
 		private AuthTokenStore store;
-		
+
 		private HashingAuthTokenStore(AuthTokenStore store) {
 			this.store = store;
 		}
@@ -214,11 +221,11 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 		public List<AuthToken> getByOwner(int tenantId, String type, String userUniqueKey) {
 			return store.getByOwner(tenantId, type, userUniqueKey);
 		}
-		
+
 		private AuthToken hashToken(AuthToken token) {
 			HashSetting hs = hashSettings.get(hashSettings.size() - 1);
 			String hashedTokenString = "$" + hs.getVersion() + "$" + hs.hash(token.getToken());
-			
+
 			return new AuthToken(token.getTenantId(), token.getType(), token.getOwnerId(), token.getSeries(),
 					hashedTokenString, token.getPolicyName(), token.getStartDate(), token.getDetails());
 		}

@@ -29,9 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-
 import org.iplass.mtp.impl.metadata.AbstractXmlMetaDataStore;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
@@ -49,11 +46,15 @@ import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 	private static Logger logger = LoggerFactory.getLogger(RdbMetaDataStore.class);
 
-	private RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+	private RdbAdapter rdb = ServiceRegistry.getRegistry()
+			.getService(RdbAdapterService.class)
+			.getRdbAdapter();
 	private SelectSQL select;
 	private UpdateSQL update;
 	private UpdateConfigSQL updateConfig;
@@ -62,7 +63,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 
 	/** OBJ_DEF_NAMEカラムを利用するか(1.xとの並行利用用) */
 	private boolean useObjDefNameAndType;
-	
+
 	private boolean declareTransactionExplicitly = true;
 
 	public RdbMetaDataStore() {
@@ -113,11 +114,11 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				return ret;
 			}
 		};
-		
+
 		MetaDataEntry metaData = withTransactionOrNot(exec);
 		return metaData;
 	}
-	
+
 	private <R> R withTransactionOrNot(SqlExecuter<R> exec) {
 		if (declareTransactionExplicitly) {
 			return Transaction.required(t -> {
@@ -130,7 +131,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 
 	@Override
 	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withInvalid)
-		throws MetaDataRuntimeException {
+			throws MetaDataRuntimeException {
 		SqlExecuter<List<MetaDataEntryInfo>> exec = new SqlExecuter<List<MetaDataEntryInfo>>() {
 			@Override
 			public List<MetaDataEntryInfo> logic() throws SQLException {
@@ -163,7 +164,8 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 		super.inited(service, config);
 
 		if (config.getValue("useObjDefNameAndType") != null) {
-			useObjDefNameAndType = config.getValue("useObjDefNameAndType").equalsIgnoreCase("true");
+			useObjDefNameAndType = config.getValue("useObjDefNameAndType")
+					.equalsIgnoreCase("true");
 		}
 	}
 
@@ -237,7 +239,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 					rs = ps.executeQuery();
 					try {
 						maxVersion = select.getMaxVersionResultData(rs);
-						if(maxVersion < 0) {
+						if (maxVersion < 0) {
 							maxVersion = -1;
 						}
 					} finally {
@@ -253,7 +255,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 						int validCount = 0;
 						try {
 							validCount = select.getDataCountResultData(rs);
-							if(validCount > 0) {
+							if (validCount > 0) {
 								//有効なデータがある場合はエラー
 								throw new MetaDataRuntimeException("Registered metadata already exists. path=" + metaDataEntry.getPath());
 							}
@@ -275,7 +277,8 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 		storeImpl(tenantId, metaDataEntry, ver, false);
 	}
 
-	private void storeImpl(final int tenantId, final MetaDataEntry metaDataEntry, final int asVersion, final boolean isUpdate) throws MetaDataRuntimeException {
+	private void storeImpl(final int tenantId, final MetaDataEntry metaDataEntry, final int asVersion, final boolean isUpdate)
+			throws MetaDataRuntimeException {
 		//履歴で削除済み含めすべて保持。
 		//登録も更新も同一処理で、新しいバージョンでinsert
 		//異なる点は、insert前のチェック
@@ -300,7 +303,8 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				String sql = select.createGetMetadataInfoSQL(rdb, false);
 				try (PreparedStatement ps = getPreparedStatement(sql)) {
 					ps.setFetchSize(1);
-					select.setGetMetadataInfoParameter(rdb, ps, tenantId, metaDataEntry.getMetaData().getId());
+					select.setGetMetadataInfoParameter(rdb, ps, tenantId, metaDataEntry.getMetaData()
+							.getId());
 					try (ResultSet rs = ps.executeQuery()) {
 						if (rs.next()) {
 							info = select.createMetaDataEntryInfo(rs, rdb);
@@ -316,12 +320,14 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 //					}
 				} else {
 					if (info != null && info.getState() == State.VALID) {
-						throw new MetaDataRuntimeException("MetaData:" + metaDataEntry.getPath() + "(id=" + metaDataEntry.getMetaData().getId() + ") is already exist.");
+						throw new MetaDataRuntimeException("MetaData:" + metaDataEntry.getPath() + "(id=" + metaDataEntry.getMetaData()
+								.getId() + ") is already exist.");
 					}
 				}
 
 				boolean withPathChange = false;
-				if (info != null && !info.getPath().equals(metaDataEntry.getPath())) {
+				if (info != null && !info.getPath()
+						.equals(metaDataEntry.getPath())) {
 					withPathChange = true;
 				}
 
@@ -329,7 +335,8 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 					// 現状データの論理削除とパス変更
 					sql = update.createUpdateWithPathSQL(rdb);
 					try (PreparedStatement ps = getPreparedStatement(sql)) {
-						update.setUpdateWithPathParameter(rdb, ps, tenantId, metaDataEntry.getMetaData().getId(), metaDataEntry.getPath());
+						update.setUpdateWithPathParameter(rdb, ps, tenantId, metaDataEntry.getMetaData()
+								.getId(), metaDataEntry.getPath());
 						ps.executeUpdate();
 					}
 				} else {
@@ -337,7 +344,8 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 						// 現状データの論理削除
 						sql = update.createUpdateSQL(rdb);
 						try (PreparedStatement ps = getPreparedStatement(sql)) {
-							update.setUpdateParameter(rdb, ps, tenantId, metaDataEntry.getMetaData().getId());
+							update.setUpdateParameter(rdb, ps, tenantId, metaDataEntry.getMetaData()
+									.getId());
 							ps.executeUpdate();
 						}
 					}
@@ -422,7 +430,8 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				// 現状データの論理削除
 				String sql = update.createUpdateSQL(rdb);
 				try (PreparedStatement ps = getPreparedStatement(sql)) {
-					update.setUpdateParameter(rdb, ps, tenantId, meta.getMetaData().getId());
+					update.setUpdateParameter(rdb, ps, tenantId, meta.getMetaData()
+							.getId());
 					int delCount = ps.executeUpdate();
 					if (delCount < 1) {
 						throw new SQLException("Delete faied. update count=" + delCount);
@@ -475,24 +484,23 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 	public void purgeById(final int tenantId, final String id) throws MetaDataRuntimeException {
 
 		Transaction.required(t -> {
-				SqlExecuter<Void> exec = new SqlExecuter<Void>() {
-					@Override
-					public Void logic() throws SQLException {
+			SqlExecuter<Void> exec = new SqlExecuter<Void>() {
+				@Override
+				public Void logic() throws SQLException {
 
-						String sql = delete.createPurgeByIdSQL();
-						PreparedStatement ps = getPreparedStatement(sql);
-						delete.setPurgeByIdParameter(rdb, ps, tenantId, id);
+					String sql = delete.createPurgeByIdSQL();
+					PreparedStatement ps = getPreparedStatement(sql);
+					delete.setPurgeByIdParameter(rdb, ps, tenantId, id);
 
-						int delCount = ps.executeUpdate();
-						if (delCount <= 0) {
-							logger.warn("purge meta data, but no record deleted. tenant id = " + tenantId + ",defId = " + id);
-						}
-
-
-						return null;
+					int delCount = ps.executeUpdate();
+					if (delCount <= 0) {
+						logger.warn("purge meta data, but no record deleted. tenant id = " + tenantId + ",defId = " + id);
 					}
-				};
-				withTransactionOrNot(exec);
+
+					return null;
+				}
+			};
+			withTransactionOrNot(exec);
 		});
 	}
 

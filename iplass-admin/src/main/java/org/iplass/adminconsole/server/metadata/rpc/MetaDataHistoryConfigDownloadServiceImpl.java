@@ -26,10 +26,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.core.MediaType;
-
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
@@ -38,6 +34,10 @@ import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
 import org.iplass.mtp.spi.ServiceRegistry;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * HistoryDialogのconfig export用Service実装クラス
@@ -56,14 +56,17 @@ public class MetaDataHistoryConfigDownloadServiceImpl extends AdminDownloadServi
 		if (versionStr == null || versionStr.isEmpty()) {
 			throw new IllegalArgumentException(rs("MetaDataHistoryConfigDownloadServiceImpl.canNotGetExportTargetVersion"));
 		}
-		final String[] versions =  versionStr.split(",");
+		final String[] versions = versionStr.split(",");
 
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntryById(definitionId);
-		String defName = entry.getMetaData().getName();
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntryById(definitionId);
+		String defName = entry.getMetaData()
+				.getName();
 
 		String fileName = tenantId + "-" + defName + "_PropertyConfig" + ".xml";
 
-		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
 		aals.logDownload("MetaDataHistoryConfigDownload", fileName, "path:" + entry.getPath() + " version:" + Arrays.toString(versions));
 
 		OutputStreamWriter osWriter = null;
@@ -73,17 +76,18 @@ public class MetaDataHistoryConfigDownloadServiceImpl extends AdminDownloadServi
 			osWriter = new OutputStreamWriter(resp.getOutputStream(), "UTF-8");
 			pWriter = new PrintWriter(osWriter);
 
-	        // ファイル名を設定
+			// ファイル名を設定
 			DownloadUtil.setResponseHeader(resp, MediaType.TEXT_XML, fileName);
 
 			//Export
-			MetaDataPortingService metaService = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
+			MetaDataPortingService metaService = ServiceRegistry.getRegistry()
+					.getService(MetaDataPortingService.class);
 			metaService.writeHistory(pWriter, definitionId, versions);
 
 		} catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		} finally {
 			if (pWriter != null) {
 				try {
@@ -94,7 +98,7 @@ public class MetaDataHistoryConfigDownloadServiceImpl extends AdminDownloadServi
 						try {
 							osWriter.close();
 						} catch (IOException e) {
-				            throw new RuntimeException(e);
+							throw new RuntimeException(e);
 						}
 					}
 				}

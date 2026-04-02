@@ -36,14 +36,14 @@ public class UnicodeNormalizer extends NormalizerDefinition {
 	private static final long serialVersionUID = 2063092268493173467L;
 
 	private String form;
-	
+
 	public UnicodeNormalizer() {
 	}
 
 	public UnicodeNormalizer(String form) {
 		this.form = form;
 	}
-	
+
 	public String getForm() {
 		return form;
 	}

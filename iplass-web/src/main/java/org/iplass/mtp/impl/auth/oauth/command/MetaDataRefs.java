@@ -22,13 +22,13 @@ package org.iplass.mtp.impl.auth.oauth.command;
 import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 
 @MetaDataSeeAlso({
-	ConsentCommand.class,
-	AuthorizeCommand.class,
-	IntrospectCommand.class,
-	RevokeCommand.class,
-	TokenCommand.class,
-	UserInfoCommand.class,
-	JwksCommand.class
+		ConsentCommand.class,
+		AuthorizeCommand.class,
+		IntrospectCommand.class,
+		RevokeCommand.class,
+		TokenCommand.class,
+		UserInfoCommand.class,
+		JwksCommand.class
 })
 public class MetaDataRefs {
 }

@@ -26,23 +26,23 @@ import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.command.annotation.webapi.WebApiTokenCheck;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 /**
  * データロックコマンド
  * @author lis3wg
  */
 @WebApi(
-	name=LockCommand.WEBAPI_NAME,
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	tokenCheck=@WebApiTokenCheck(consume=false, useFixedToken=true),
-	results={Constants.LOCK_RESULT},
-	checkXRequestedWithHeader=true
+		name = LockCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		tokenCheck = @WebApiTokenCheck(consume = false, useFixedToken = true),
+		results = { Constants.LOCK_RESULT },
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/detail/LockCommand", displayName="データロック")
+@CommandClass(name = "gem/generic/detail/LockCommand", displayName = "データロック")
 public final class LockCommand extends DetailCommandBase {
 
 	public static final String WEBAPI_NAME = "gem/generic/detail/lock";

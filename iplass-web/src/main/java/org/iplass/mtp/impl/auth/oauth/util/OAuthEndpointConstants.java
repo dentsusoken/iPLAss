@@ -24,7 +24,7 @@ public interface OAuthEndpointConstants {
 	static final String PARAM_RESPONSE_TYPE = "response_type";
 	static final String PARAM_CLIENT_ID = "client_id";
 	static final String PARAM_CLIENT_SECRET = "client_secret";
-	static final String PARAM_REDIRECT_URI ="redirect_uri";
+	static final String PARAM_REDIRECT_URI = "redirect_uri";
 	static final String PARAM_SCOPE = "scope";
 	static final String PARAM_STATE = "state";
 	static final String PARAM_CODE = "code";
@@ -35,12 +35,12 @@ public interface OAuthEndpointConstants {
 	static final String PARAM_ERROR = "error";
 	static final String PARAM_ERROR_DESCRIPTION = "error_description";
 	static final String PARAM_ERROR_URI = "error_uri";
-	
+
 	static final String PARAM_NONCE = "nonce";
 	static final String PARAM_PROMPT = "prompt";
 	static final String PARAM_MAX_AGE = "max_age";
 	//static final String PARAM_REQUEST = "request";//そのうちサポート。JARMと同時に
-	
+
 	static final String PARAM_GRANT_TYPE = "grant_type";
 	static final String PARAM_CODE_VERIFIER = "code_verifier";
 	static final String PARAM_ACCESS_TOKEN = "access_token";
@@ -48,14 +48,14 @@ public interface OAuthEndpointConstants {
 	static final String PARAM_EXPIRES_IN = "expires_in";
 	static final String PARAM_REFRESH_TOKEN = "refresh_token";
 	static final String PARAM_ID_TOKEN = "id_token";
-	
+
 	//custom parameter for refresh token expiration
 	static final String PARAM_REFRESH_TOKEN_EXPIRES_IN = "refresh_token_expires_in";
-	
+
 	//for Introspection Endpoint/Token Revocation Endpoint
 	static final String PARAM_TOKEN = "token";
 	static final String PARAM_TOKEN_TYPE_HINT = "token_type_hint";
-	
+
 	//RFC 9207: OAuth 2.0 Authorization Server Issuer Identification
 	static final String PARAM_ISS = "iss";
 }

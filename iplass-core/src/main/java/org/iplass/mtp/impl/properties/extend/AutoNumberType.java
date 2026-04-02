@@ -58,7 +58,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
 
-
 //FIXME 普通のWapperTypeが妥当
 public class AutoNumberType extends ComplexWrapperType {
 	private static final long serialVersionUID = 5091141571328404880L;
@@ -72,17 +71,21 @@ public class AutoNumberType extends ComplexWrapperType {
 		@Override
 		public void setContext(EntityContext context) {
 		}
+
 		@Override
 		public void nextCalled(List<Object> values) {
 		}
+
 		@Override
 		public Object toComplexWrapperTypeValue(Object value) {
 			return value;
 		}
+
 		@Override
 		public Object[] newComplexWrapperTypeArray(int size) {
 			return new String[size];
 		}
+
 		@Override
 		public void close() {
 		}
@@ -97,8 +100,6 @@ public class AutoNumberType extends ComplexWrapperType {
 		return entityDefId + "." + propDefId;
 	}
 
-
-
 	@Override
 	public boolean isCompatibleTo(PropertyType another) {
 		if (another instanceof AutoNumberType) {
@@ -107,8 +108,6 @@ public class AutoNumberType extends ComplexWrapperType {
 			return super.isCompatibleTo(another);
 		}
 	}
-
-
 
 	@Override
 	public int hashCode() {
@@ -145,7 +144,6 @@ public class AutoNumberType extends ComplexWrapperType {
 			return false;
 		return true;
 	}
-
 
 	public NumberingType getNumberingType() {
 		return numberingType;
@@ -253,9 +251,12 @@ public class AutoNumberType extends ComplexWrapperType {
 		if (extendTypeValue != null) {
 			return extendTypeValue;
 		}
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		if (eh.isUseSharedData()) {
-			tenantId = ServiceRegistry.getRegistry().getService(TenantContextService.class).getSharedTenantId();
+			tenantId = ServiceRegistry.getRegistry()
+					.getService(TenantContextService.class)
+					.getSharedTenantId();
 		}
 		return ((AutoNumberTypeRuntime) ((PrimitivePropertyHandler) ph).getTypeSpecificRuntime()).newValue(tenantId, entity);
 	}
@@ -296,39 +297,49 @@ public class AutoNumberType extends ComplexWrapperType {
 		public AutoNumberTypeRuntime(String entityDefId, String propDefId) {
 
 			if (formatScript != null) {
-				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				ScriptEngine se = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				compiledFormatScript = GroovyTemplateCompiler.compile(
 						formatScript, "AutoNumberFormat_" + GroovyTemplateCompiler.randomName(), (GroovyScriptEngine) se);
 			}
 			if (numberingType == NumberingType.ALLOW_SKIPPING) {
-				counter = (CounterService) ServiceRegistry.getRegistry().getService(ACCEPT_SKIP_COUNTER_SERVICE_NAME);
+				counter = (CounterService) ServiceRegistry.getRegistry()
+						.getService(ACCEPT_SKIP_COUNTER_SERVICE_NAME);
 			} else {
-				counter = (CounterService) ServiceRegistry.getRegistry().getService(NO_SKIP_COUNTER_SERVICE_NAME);
+				counter = (CounterService) ServiceRegistry.getRegistry()
+						.getService(NO_SKIP_COUNTER_SERVICE_NAME);
 			}
 			incrementUnitKey = createIncrementUnitKey(entityDefId, propDefId);
 		}
 
 		public long currentValue(String subUnitKey) {
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getClientTenantId();
 			String incrementKey = incrementUnitKey + (StringUtil.isNotEmpty(subUnitKey) ? "." + subUnitKey : "");
 			return counter.current(tenantId, incrementKey);
 		}
 
 		public void resetCounter(String subUnitKey, long startsWith) {
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getClientTenantId();
 			String incrementKey = incrementUnitKey + (StringUtil.isNotEmpty(subUnitKey) ? "." + subUnitKey : "");
 			counter.resetCounter(tenantId, incrementKey, startsWith - 1);
 		}
 
 		public Set<String> keySet() {
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-			return counter.keySet(tenantId, incrementUnitKey).stream().map(key->{
-				//incrementUnitKeyを除去
-				if (key.length() > incrementUnitKey.length()) {
-					return key.substring(incrementUnitKey.length() + 1);
-				}
-				return "";
-			}).collect(Collectors.toSet());
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getClientTenantId();
+			return counter.keySet(tenantId, incrementUnitKey)
+					.stream()
+					.map(key -> {
+						//incrementUnitKeyを除去
+						if (key.length() > incrementUnitKey.length()) {
+							return key.substring(incrementUnitKey.length() + 1);
+						}
+						return "";
+					})
+					.collect(Collectors.toSet());
 		}
 
 		String newValue(int tenantId, Entity entity) {
@@ -367,7 +378,8 @@ public class AutoNumberType extends ComplexWrapperType {
 				ExecuteContext ex = ExecuteContext.getCurrentContext();
 				Timestamp date = ex.getCurrentTimestamp();//同一トランザクション内の時間を一緒にするため
 				setVariable("date", date);
-				setVariable("user", AuthContextHolder.getAuthContext().newUserBinding());
+				setVariable("user", AuthContextHolder.getAuthContext()
+						.newUserBinding());
 				setVariable("entity", entity);
 				SimpleDateFormat f = DateUtil.getSimpleDateFormat("yyyy", true);
 				setVariable("yyyy", f.format(date));

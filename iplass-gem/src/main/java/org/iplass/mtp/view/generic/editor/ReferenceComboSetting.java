@@ -38,82 +38,83 @@ public class ReferenceComboSetting implements Refrectable {
 
 	/** プロパティ名 */
 	@MetaFieldInfo(
-			displayName="プロパティ名",
-			displayNameKey="generic_editor_ReferenceComboSetting_propertyNameDisplaNameKey",
-			inputType=InputType.PROPERTY,
-			childEntityName=true,
-			description="被参照のプロパティを指定します。",
-			descriptionKey="generic_editor_ReferenceComboSetting_propertyNameDescriptionKey"
+			displayName = "プロパティ名",
+			displayNameKey = "generic_editor_ReferenceComboSetting_propertyNameDisplaNameKey",
+			inputType = InputType.PROPERTY,
+			childEntityName = true,
+			description = "被参照のプロパティを指定します。",
+			descriptionKey = "generic_editor_ReferenceComboSetting_propertyNameDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	private String propertyName;
 
 	/** 検索条件 */
 	@MetaFieldInfo(
-			displayName="検索条件",
-			displayNameKey="generic_editor_ReferenceComboSetting_conditionDisplaNameKey",
-			description="表示する選択肢を検索する際に付与する検索条件を設定します。",
-			descriptionKey="generic_editor_ReferenceComboSetting_conditionDescriptionKey"
+			displayName = "検索条件",
+			displayNameKey = "generic_editor_ReferenceComboSetting_conditionDisplaNameKey",
+			description = "表示する選択肢を検索する際に付与する検索条件を設定します。",
+			descriptionKey = "generic_editor_ReferenceComboSetting_conditionDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	private String condition;
 
 	/** 上位参照コンボ設定 */
 	@MetaFieldInfo(
-			displayName="参照コンボ設定",
-			displayNameKey="generic_editor_ReferenceComboSetting_parentDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=ReferenceComboSetting.class,
-			description="コンボの内容を絞り込む条件を指定します。",
-			descriptionKey="generic_editor_ReferenceComboSetting_parentDescriptionKey"
+			displayName = "参照コンボ設定",
+			displayNameKey = "generic_editor_ReferenceComboSetting_parentDisplaNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = ReferenceComboSetting.class,
+			description = "コンボの内容を絞り込む条件を指定します。",
+			descriptionKey = "generic_editor_ReferenceComboSetting_parentDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	private ReferenceComboSetting parent;
 
 	/** ソートアイテム */
 	@MetaFieldInfo(
-			displayName="ソートアイテム",
-			displayNameKey="generic_editor_ReferencePropertyEditor_sortItemDisplaNameKey",
-			inputType=InputType.PROPERTY,
-			description="参照データをソートする項目を指定します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_sortItemDescriptionKey",
-			sourceEntityNameField="propertyName"
+			displayName = "ソートアイテム",
+			displayNameKey = "generic_editor_ReferencePropertyEditor_sortItemDisplaNameKey",
+			inputType = InputType.PROPERTY,
+			description = "参照データをソートする項目を指定します。",
+			descriptionKey = "generic_editor_ReferencePropertyEditor_sortItemDescriptionKey",
+			sourceEntityNameField = "propertyName"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	private String sortItem;
 
 	/** ソート種別 */
 	@MetaFieldInfo(
-			displayName="ソート種別",
-			displayNameKey="generic_editor_ReferencePropertyEditor_sortTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=RefSortType.class,
-			description="参照データをソートする順序を指定します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_sortTypeDescriptionKey"
+			displayName = "ソート種別",
+			displayNameKey = "generic_editor_ReferencePropertyEditor_sortTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = RefSortType.class,
+			description = "参照データをソートする順序を指定します。",
+			descriptionKey = "generic_editor_ReferencePropertyEditor_sortTypeDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	private RefSortType sortType;
 
-	@MetaFieldInfo(displayName="表示ラベルとして扱うプロパティ",
-			displayNameKey="generic_editor_ReferencePropertyEditor_displayLabelItemDisplaNameKey",
-			inputType=InputType.PROPERTY,
-			description="<b>表示タイプ:Link、Select</b><br>" +
+	@MetaFieldInfo(
+			displayName = "表示ラベルとして扱うプロパティ",
+			displayNameKey = "generic_editor_ReferencePropertyEditor_displayLabelItemDisplaNameKey",
+			inputType = InputType.PROPERTY,
+			description = "<b>表示タイプ:Link、Select</b><br>" +
 					"表示ラベルとして扱うプロパティを指定します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey",
-			sourceEntityNameField="propertyName"
+			descriptionKey = "generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey",
+			sourceEntityNameField = "propertyName"
 	)
 	@EntityViewField(
-			referenceTypes = {FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String displayLabelItem;
 
@@ -122,7 +123,7 @@ public class ReferenceComboSetting implements Refrectable {
 	 * @return プロパティ名
 	 */
 	public String getPropertyName() {
-	    return propertyName;
+		return propertyName;
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class ReferenceComboSetting implements Refrectable {
 	 * @param propertyName プロパティ名
 	 */
 	public void setPropertyName(String propertyName) {
-	    this.propertyName = propertyName;
+		this.propertyName = propertyName;
 	}
 
 	/**
@@ -138,7 +139,7 @@ public class ReferenceComboSetting implements Refrectable {
 	 * @return 検索条件
 	 */
 	public String getCondition() {
-	    return condition;
+		return condition;
 	}
 
 	/**
@@ -146,7 +147,7 @@ public class ReferenceComboSetting implements Refrectable {
 	 * @param condition 検索条件
 	 */
 	public void setCondition(String condition) {
-	    this.condition = condition;
+		this.condition = condition;
 	}
 
 	/**
@@ -154,7 +155,7 @@ public class ReferenceComboSetting implements Refrectable {
 	 * @return 上位参照コンボ設定
 	 */
 	public ReferenceComboSetting getParent() {
-	    return parent;
+		return parent;
 	}
 
 	/**
@@ -162,7 +163,7 @@ public class ReferenceComboSetting implements Refrectable {
 	 * @param parent 上位参照コンボ設定
 	 */
 	public void setParent(ReferenceComboSetting parent) {
-	    this.parent = parent;
+		this.parent = parent;
 	}
 
 	/**

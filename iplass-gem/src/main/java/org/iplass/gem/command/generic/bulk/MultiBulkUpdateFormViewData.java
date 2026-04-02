@@ -27,7 +27,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.BulkFormView;
 
-public class MultiBulkUpdateFormViewData{
+public class MultiBulkUpdateFormViewData {
 
 	/** Entity定義 */
 	private EntityDefinition entityDefinition;

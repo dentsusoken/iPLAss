@@ -59,13 +59,12 @@ import org.iplass.mtp.impl.tools.pack.PackageService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Package Export Batch
@@ -80,11 +79,16 @@ public class PackageExport extends MtpCuiBase {
 	//実行モード
 	private ExecMode execMode = ExecMode.WIZARD;
 
-	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
-	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private PackageService ps = ServiceRegistry.getRegistry().getService(PackageService.class);
-	private MetaDataPortingService mdps = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
-	private EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
+	private TenantService ts = ServiceRegistry.getRegistry()
+			.getService(TenantService.class);
+	private TenantContextService tcs = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private PackageService ps = ServiceRegistry.getRegistry()
+			.getService(PackageService.class);
+	private MetaDataPortingService mdps = ServiceRegistry.getRegistry()
+			.getService(MetaDataPortingService.class);
+	private EntityService ehs = ServiceRegistry.getRegistry()
+			.getService(EntityService.class);
 
 	//テナントID(引数)
 	private Integer tenantId;
@@ -143,13 +147,13 @@ public class PackageExport extends MtpCuiBase {
 		logEnvironment();
 
 		switch (execMode) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start Export Wizard");
 			logInfo("");
 
 			//Wizardの実行
 			return wizard();
-		case SILENT :
+		case SILENT:
 			logInfo("■Start Export Silent");
 			logInfo("");
 
@@ -158,7 +162,7 @@ public class PackageExport extends MtpCuiBase {
 
 			//Silentの実行
 			return silent();
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -189,7 +193,8 @@ public class PackageExport extends MtpCuiBase {
 
 			TenantContext tc = tcs.getTenantContext(param.getTenantId());
 			return ExecuteContext.executeAs(tc, () -> {
-				ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+				ExecuteContext.getCurrentContext()
+						.setLanguage(getLanguage());
 
 				//外部から直接呼び出された場合を考慮し、Pathを取得
 				if (param.isExportMetaData() && param.getExportMetaDataPathList() == null) {
@@ -217,7 +222,7 @@ public class PackageExport extends MtpCuiBase {
 						return ps.storePackage(cond, PackageEntity.TYPE_OFFLINE);
 					});
 
-					String infoMsg = rs("PackageExport.createdPackageInfoLog", oid );
+					String infoMsg = rs("PackageExport.createdPackageInfoLog", oid);
 					logInfo(infoMsg);
 					messageSummary.add(infoMsg);
 
@@ -249,7 +254,7 @@ public class PackageExport extends MtpCuiBase {
 						});
 						fileName = file.getAbsolutePath();
 					} catch (IOException e) {
-			            throw new SystemException(e);
+						throw new SystemException(e);
 					}
 				}
 
@@ -275,7 +280,7 @@ public class PackageExport extends MtpCuiBase {
 
 				logInfo("-----------------------------------------------------------");
 				logInfo("■Execute Result Summary");
-				for(String message : messageSummary) {
+				for (String message : messageSummary) {
 					logInfo(message);
 				}
 				logInfo("-----------------------------------------------------------");
@@ -316,7 +321,8 @@ public class PackageExport extends MtpCuiBase {
 			} else {
 				metaTarget = param.getExportMetaDataPathStr();
 			}
-			metaTarget += "(" + param.getExportMetaDataPathList().size() + ")";
+			metaTarget += "(" + param.getExportMetaDataPathList()
+					.size() + ")";
 
 			logInfo("\tmetadata target :" + metaTarget);
 		}
@@ -333,14 +339,14 @@ public class PackageExport extends MtpCuiBase {
 			} else {
 				entityTarget = param.getExportEntityDataPathStr();
 			}
-			entityTarget += "(" + param.getExportEntityDataPathList().size() + ")";
+			entityTarget += "(" + param.getExportEntityDataPathList()
+					.size() + ")";
 
 			logInfo("\tentity target :" + entityTarget);
 		}
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
 	}
-
 
 	/**
 	 * Export対象のメタデータパスを設定します。
@@ -354,7 +360,8 @@ public class PackageExport extends MtpCuiBase {
 
 		List<String> paths = new ArrayList<>();
 		if (param.isExportAllMetaData()) {
-			List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList("/");
+			List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext()
+					.definitionList("/");
 			for (MetaDataEntryInfo info : allMeta) {
 				if (param.isExportLocalMetaDataOnly()) {
 					if (info.getRepositryType() == RepositoryType.SHARED) {
@@ -371,9 +378,10 @@ public class PackageExport extends MtpCuiBase {
 		} else {
 			//個別指定
 
-			Set<String> directPathSet = new HashSet<>();	//重複を避けるためSetに保持
+			Set<String> directPathSet = new HashSet<>(); //重複を避けるためSetに保持
 
-			String[] pathStrArray = param.getExportMetaDataPathStr().split(",");
+			String[] pathStrArray = param.getExportMetaDataPathStr()
+					.split(",");
 			for (String pathStr : pathStrArray) {
 				//,,などの阻止
 				if (StringUtil.isEmpty(pathStr)) {
@@ -382,7 +390,8 @@ public class PackageExport extends MtpCuiBase {
 
 				if (pathStr.endsWith("*")) {
 					//アスタリスク指定
-					List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList(pathStr.substring(0, pathStr.length() - 1));
+					List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext()
+							.definitionList(pathStr.substring(0, pathStr.length() - 1));
 					for (MetaDataEntryInfo info : allMeta) {
 						if (param.isExportLocalMetaDataOnly()) {
 							if (info.getRepositryType() == RepositoryType.SHARED) {
@@ -393,7 +402,8 @@ public class PackageExport extends MtpCuiBase {
 					}
 				} else {
 					//直接指定
-					MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(pathStr);
+					MetaDataEntry entry = MetaDataContext.getContext()
+							.getMetaDataEntry(pathStr);
 					if (entry != null) {
 						if (param.isExportLocalMetaDataOnly()) {
 							if (entry.getRepositryType() == RepositoryType.SHARED) {
@@ -412,7 +422,9 @@ public class PackageExport extends MtpCuiBase {
 		}
 
 		//ソートして返す
-		return paths.stream().sorted().collect(Collectors.toList());
+		return paths.stream()
+				.sorted()
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -446,7 +458,8 @@ public class PackageExport extends MtpCuiBase {
 		if (param.isExportAllEntityData()) {
 			for (MetaDataEntryInfo info : entityList) {
 				if (!param.isExportUserEntityData()) {
-					if (info.getPath().equals(EntityService.getFixedPath() + User.DEFINITION_NAME)) {
+					if (info.getPath()
+							.equals(EntityService.getFixedPath() + User.DEFINITION_NAME)) {
 						continue;
 					}
 				}
@@ -455,9 +468,10 @@ public class PackageExport extends MtpCuiBase {
 		} else {
 			//個別指定
 
-			Set<String> directPathSet = new HashSet<>();	//重複を避けるためSetに保持
+			Set<String> directPathSet = new HashSet<>(); //重複を避けるためSetに保持
 
-			String[] pathStrArray = param.getExportEntityDataPathStr().split(",");
+			String[] pathStrArray = param.getExportEntityDataPathStr()
+					.split(",");
 			for (String pathStr : pathStrArray) {
 				//,,などの阻止
 				if (StringUtil.isEmpty(pathStr)) {
@@ -471,10 +485,12 @@ public class PackageExport extends MtpCuiBase {
 					if (pathStr.equals("*")) {
 						prefixPath = "";
 					} else {
-						prefixPath = pathStr.substring(0, pathStr.length() - 1).replace(".", "/");
+						prefixPath = pathStr.substring(0, pathStr.length() - 1)
+								.replace(".", "/");
 					}
 					for (MetaDataEntryInfo info : entityList) {
-						if (!info.getPath().startsWith(EntityService.getFixedPath() + prefixPath)) {
+						if (!info.getPath()
+								.startsWith(EntityService.getFixedPath() + prefixPath)) {
 							continue;
 						}
 						isFound = true;
@@ -484,7 +500,8 @@ public class PackageExport extends MtpCuiBase {
 					//直接指定
 					for (MetaDataEntryInfo info : entityList) {
 						String entityPath = EntityService.getFixedPath() + pathStr.replace(".", "/");
-						if (info.getPath().equals(entityPath)) {
+						if (info.getPath()
+								.equals(entityPath)) {
 							directPathSet.add(info.getPath());
 							isFound = true;
 							break;
@@ -503,7 +520,9 @@ public class PackageExport extends MtpCuiBase {
 		return paths.stream()
 				.filter(path -> {
 					return excludePaths == null || !excludePaths.contains(path);
-				}).sorted().collect(Collectors.toList());
+				})
+				.sorted()
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -523,7 +542,8 @@ public class PackageExport extends MtpCuiBase {
 	private String createExportFile(final PackageExportParameter param, final String oid) {
 
 		//Entityの取得
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		Entity entity = em.load(oid, PackageEntity.ENTITY_DEFINITION_NAME);
 		if (entity == null) {
 			throw new SystemException(rs("PackageExport.notFoundPackageInfoLog", oid));
@@ -551,9 +571,9 @@ public class PackageExport extends MtpCuiBase {
 			IOUtils.copy(is, os);
 
 		} catch (UnsupportedEncodingException e) {
-            throw new SystemException(e);
+			throw new SystemException(e);
 		} catch (IOException e) {
-            throw new SystemException(e);
+			throw new SystemException(e);
 		} finally {
 			try {
 				if (is != null) {
@@ -561,7 +581,7 @@ public class PackageExport extends MtpCuiBase {
 					is = null;
 				}
 			} catch (IOException e) {
-	            throw new SystemException(e);
+				throw new SystemException(e);
 			} finally {
 				try {
 					if (os != null) {
@@ -569,7 +589,7 @@ public class PackageExport extends MtpCuiBase {
 						os = null;
 					}
 				} catch (IOException e) {
-		            throw new SystemException(e);
+					throw new SystemException(e);
 				}
 			}
 		}
@@ -623,8 +643,9 @@ public class PackageExport extends MtpCuiBase {
 		PackageExportParameter param = new PackageExportParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()-> {
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
 
 			//出力先ディレクトリ
 			boolean validFile = false;
@@ -638,7 +659,7 @@ public class PackageExport extends MtpCuiBase {
 					param.setExportDir(dir);
 					validFile = true;
 				}
-			} while(validFile == false);
+			} while (validFile == false);
 
 			//Package名
 			String packageName = readConsole(rs("PackageExport.Wizard.inputPackageNameMsg") + "(" + param.getPackageName() + ")");
@@ -659,7 +680,8 @@ public class PackageExport extends MtpCuiBase {
 					param.setExportMetaData(isExportMeta);
 					if (isExportMeta) {
 
-						boolean isExportLocalOnly = readConsoleBoolean(rs("PackageExport.Wizard.confirmTargetLocalMetaMsg"), param.isExportLocalMetaDataOnly());
+						boolean isExportLocalOnly = readConsoleBoolean(rs("PackageExport.Wizard.confirmTargetLocalMetaMsg"),
+								param.isExportLocalMetaDataOnly());
 						param.setExportLocalMetaDataOnly(isExportLocalOnly);
 
 						boolean isExportAllMeta = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportAllMetaMsg"), param.isExportAllMetaData());
@@ -668,7 +690,8 @@ public class PackageExport extends MtpCuiBase {
 							//全メタデータ出力
 
 							//テナントを含めるかを確認
-							boolean isExportTenantMetaData = readConsoleBoolean(rs("PackageExport.Wizard.confirmIncludeTenantMetaMsg"), param.isExportTenantMetaData());
+							boolean isExportTenantMetaData = readConsoleBoolean(rs("PackageExport.Wizard.confirmIncludeTenantMetaMsg"),
+									param.isExportTenantMetaData());
 							param.setExportTenantMetaData(isExportTenantMetaData);
 
 							validMetaData = true;
@@ -688,7 +711,8 @@ public class PackageExport extends MtpCuiBase {
 						if (validMetaData) {
 							//Pathの取得
 							param.setExportMetaDataPathList(getMetaDataPathList(param));
-							boolean isShow = readConsoleBoolean(rs("PackageExport.Wizard.confirmShowMetaListMsg", param.getExportMetaDataPathList().size()), false);
+							boolean isShow = readConsoleBoolean(rs("PackageExport.Wizard.confirmShowMetaListMsg", param.getExportMetaDataPathList()
+									.size()), false);
 							if (isShow) {
 								showMetaDataPathList(param);
 							}
@@ -702,8 +726,7 @@ public class PackageExport extends MtpCuiBase {
 						//Exportしない
 						validMetaData = true;
 					}
-				} while(validMetaData == false);
-
+				} while (validMetaData == false);
 
 				//EntityデータExport
 				boolean validEntityData = false;
@@ -712,13 +735,15 @@ public class PackageExport extends MtpCuiBase {
 					param.setExportEntityData(isExportEntity);
 					if (isExportEntity) {
 
-						boolean isExportAllEntity = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportAllEntityMsg"), param.isExportAllEntityData());
+						boolean isExportAllEntity = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportAllEntityMsg"),
+								param.isExportAllEntityData());
 						param.setExportAllEntityData(isExportAllEntity);
 						if (isExportAllEntity) {
 							//全Entityデータ出力
 
 							//Userを含めるかを確認
-							boolean isExportUserEntityData = readConsoleBoolean(rs("PackageExport.Wizard.confirmIncludeUserEntityMsg"), param.isExportUserEntityData());
+							boolean isExportUserEntityData = readConsoleBoolean(rs("PackageExport.Wizard.confirmIncludeUserEntityMsg"),
+									param.isExportUserEntityData());
 							param.setExportUserEntityData(isExportUserEntityData);
 
 							validEntityData = true;
@@ -738,7 +763,8 @@ public class PackageExport extends MtpCuiBase {
 						if (validEntityData) {
 							//Pathの取得
 							param.setExportEntityDataPathList(getEntityDataPathList(param));
-							boolean isShow = readConsoleBoolean(rs("PackageExport.Wizard.confirmShowEntityListMsg", param.getExportEntityDataPathList().size()), false);
+							boolean isShow = readConsoleBoolean(rs("PackageExport.Wizard.confirmShowEntityListMsg", param.getExportEntityDataPathList()
+									.size()), false);
 							if (isShow) {
 								showEntityDataPathList(param);
 							}
@@ -752,7 +778,7 @@ public class PackageExport extends MtpCuiBase {
 						//Exportしない
 						validEntityData = true;
 					}
-				} while(validEntityData == false);
+				} while (validEntityData == false);
 
 				//Export対象が含まれるかのチェック
 				if (!param.isExportMetaData() && !param.isExportEntityData()) {
@@ -763,7 +789,7 @@ public class PackageExport extends MtpCuiBase {
 					validTarget = true;
 				}
 
-			} while(validTarget == false);
+			} while (validTarget == false);
 
 			boolean validExecute = false;
 			do {
@@ -782,7 +808,7 @@ public class PackageExport extends MtpCuiBase {
 						return wizard();
 					}
 				}
-			} while(validExecute == false);
+			} while (validExecute == false);
 
 			//Consoleを削除してLogに切り替え
 			switchLog(false, true);
@@ -815,7 +841,7 @@ public class PackageExport extends MtpCuiBase {
 			if (Files.exists(path)) {
 				logDebug("load config file from file path:" + configFileName);
 				try (InputStream is = new FileInputStream(path.toFile());
-					InputStreamReader reader = new InputStreamReader(is, "UTF-8");) {
+						InputStreamReader reader = new InputStreamReader(is, "UTF-8");) {
 					prop.load(reader);
 				}
 			} else {
@@ -878,8 +904,9 @@ public class PackageExport extends MtpCuiBase {
 		PackageExportParameter param = new PackageExportParameter(tenant.getId(), tenant.getName());
 
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tc, ()-> {
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+		return ExecuteContext.executeAs(tc, () -> {
+			ExecuteContext.getCurrentContext()
+					.setLanguage(getLanguage());
 
 			String exportDirName = prop.getProperty(PROP_EXPORT_DIR);
 			if (StringUtil.isNotEmpty(exportDirName)) {

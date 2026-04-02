@@ -28,13 +28,12 @@ import org.iplass.mtp.impl.util.ConvertUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class TimeType extends BasicType {
 	private static final long serialVersionUID = -476913710631610881L;
 	private static final int hash = 26;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(TimeType.class);
-	
+
 	@Override
 	public int hashCode() {
 		return hash;
@@ -62,7 +61,7 @@ public class TimeType extends BasicType {
 	public Class<?> storeType() {
 		return Time.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getEnumType() {
 		return PropertyDefinitionType.TIME;

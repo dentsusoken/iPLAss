@@ -37,14 +37,14 @@ import org.iplass.mtp.impl.auth.authenticate.AnonymousUserContext;
  *
  */
 @ActionMapping(
-		name="admin/index",
-		displayName="Admin Console",
-		result=@Result(type=Type.JSP, value="/jsp/admin/main.jsp", templateName="admin/main.jsp")
+		name = "admin/index",
+		displayName = "Admin Console",
+		result = @Result(type = Type.JSP, value = "/jsp/admin/main.jsp", templateName = "admin/main.jsp")
 )
 @CommandClass(
-		name="admin/IndexCommand",
-		displayName="Admin Console",
-		readOnly=true
+		name = "admin/IndexCommand",
+		displayName = "Admin Console",
+		readOnly = true
 )
 public final class IndexCommand implements Command {
 
@@ -57,12 +57,14 @@ public final class IndexCommand implements Command {
 	@Override
 	public String execute(RequestContext request) {
 
-		UserContext userContext = AuthContextHolder.getAuthContext().getUserContext();
+		UserContext userContext = AuthContextHolder.getAuthContext()
+				.getUserContext();
 
 		if (userContext instanceof AnonymousUserContext) {
 			throw new UnauthorizedAccessException(AdminResourceBundleUtil.resourceString("util.AuthUtil.notHavePermission"));
 		}
-		if (!userContext.getUser().isAdmin()) {
+		if (!userContext.getUser()
+				.isAdmin()) {
 			throw new UnauthorizedAccessException(AdminResourceBundleUtil.resourceString("util.AuthUtil.notHavePermission"));
 		}
 

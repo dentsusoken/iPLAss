@@ -45,7 +45,8 @@ public class MessageManagerImpl extends AbstractTypedDefinitionManager<MessageCa
 
 	private static final Logger logger = LoggerFactory.getLogger(MessageManagerImpl.class);
 
-	private MessageService service = ServiceRegistry.getRegistry().getService(MessageService.class);
+	private MessageService service = ServiceRegistry.getRegistry()
+			.getService(MessageService.class);
 
 	/**
 	 * @deprecated {@link #create(MessageCategory)} を使用してください。
@@ -81,7 +82,7 @@ public class MessageManagerImpl extends AbstractTypedDefinitionManager<MessageCa
 		MetaMessageCategoryHandler handler = service.getRuntimeByName(category);
 		MetaMessageItem metaMessageItem = new MetaMessageItem();
 		metaMessageItem.setValue(messageItem);
-		if(handler == null) {
+		if (handler == null) {
 			metaCategoryMessage = new MetaMessageCategory();
 			metaCategoryMessage.setName(category);
 			metaCategoryMessage.addMessage(metaMessageItem);
@@ -90,14 +91,16 @@ public class MessageManagerImpl extends AbstractTypedDefinitionManager<MessageCa
 			} catch (Exception e) {
 				setRollbackOnly();
 				if (e.getCause() != null) {
-					logger.error("exception occured during message category definition create:" + e.getCause().getMessage(), e.getCause());
-					return new DefinitionModifyResult(false, "exception occured during message category definition create:" + e.getCause().getMessage());
+					logger.error("exception occured during message category definition create:" + e.getCause()
+							.getMessage(), e.getCause());
+					return new DefinitionModifyResult(false, "exception occured during message category definition create:" + e.getCause()
+							.getMessage());
 				} else {
 					logger.error("exception occured during message category definition create:" + e.getMessage(), e);
 					return new DefinitionModifyResult(false, "exception occured during message category definition create:" + e.getMessage());
 				}
 			}
-		}else{
+		} else {
 			metaCategoryMessage = handler.getMetaData();
 			metaCategoryMessage.addMessage(metaMessageItem);
 			try {
@@ -105,8 +108,10 @@ public class MessageManagerImpl extends AbstractTypedDefinitionManager<MessageCa
 			} catch (Exception e) {
 				setRollbackOnly();
 				if (e.getCause() != null) {
-					logger.error("exception occured during message category definition update:" + e.getCause().getMessage(), e.getCause());
-					return new DefinitionModifyResult(false, "exception occured during message category definition update:" + e.getCause().getMessage());
+					logger.error("exception occured during message category definition update:" + e.getCause()
+							.getMessage(), e.getCause());
+					return new DefinitionModifyResult(false, "exception occured during message category definition update:" + e.getCause()
+							.getMessage());
 				} else {
 					logger.error("exception occured during message category definition update:" + e.getMessage(), e);
 					return new DefinitionModifyResult(false, "exception occured during message category definition update:" + e.getMessage());
@@ -119,7 +124,7 @@ public class MessageManagerImpl extends AbstractTypedDefinitionManager<MessageCa
 	@Override
 	public DefinitionModifyResult updateMessageItem(String category, MessageItem messageItem) {
 		MetaMessageCategoryHandler handler = service.getRuntimeByName(category);
-		if(handler == null) {
+		if (handler == null) {
 			logger.error("exception occured during message category definition update:"
 					+ "指定のメッセージカテゴリは存在しません。メッセージカテゴリ名=" + category);
 			return new DefinitionModifyResult(false, "exception occured during message category definition update:"
@@ -134,8 +139,10 @@ public class MessageManagerImpl extends AbstractTypedDefinitionManager<MessageCa
 		} catch (Exception e) {
 			setRollbackOnly();
 			if (e.getCause() != null) {
-				logger.error("exception occured during message category definition update:" + e.getCause().getMessage(), e.getCause());
-				return new DefinitionModifyResult(false, "exception occured during message category definition update:" + e.getCause().getMessage());
+				logger.error("exception occured during message category definition update:" + e.getCause()
+						.getMessage(), e.getCause());
+				return new DefinitionModifyResult(false, "exception occured during message category definition update:" + e.getCause()
+						.getMessage());
 			} else {
 				logger.error("exception occured during message category definition update:" + e.getMessage(), e);
 				return new DefinitionModifyResult(false, "exception occured during message category definition update:" + e.getMessage());
@@ -146,20 +153,23 @@ public class MessageManagerImpl extends AbstractTypedDefinitionManager<MessageCa
 
 	@Override
 	public DefinitionModifyResult deleteMessageItem(String category, String messageId) {
-		MetaMessageCategoryHandler handler =  service.getRuntimeByName(category);
-		if(handler == null) {
+		MetaMessageCategoryHandler handler = service.getRuntimeByName(category);
+		if (handler == null) {
 			//該当がない場合は正常とみなす
 			return new DefinitionModifyResult(true);
 		}
 		MetaMessageCategory metaCategoryMessage = handler.getMetaData();
-		metaCategoryMessage.getMessages().remove(messageId);
+		metaCategoryMessage.getMessages()
+				.remove(messageId);
 		try {
 			service.updateMetaData(metaCategoryMessage);
 		} catch (Exception e) {
 			setRollbackOnly();
 			if (e.getCause() != null) {
-				logger.error("exception occured during message category definition update:" + e.getCause().getMessage(), e.getCause());
-				return new DefinitionModifyResult(false, "exception occured during message category definition update:" + e.getCause().getMessage());
+				logger.error("exception occured during message category definition update:" + e.getCause()
+						.getMessage(), e.getCause());
+				return new DefinitionModifyResult(false, "exception occured during message category definition update:" + e.getCause()
+						.getMessage());
 			} else {
 				logger.error("exception occured during message category definition update:" + e.getMessage(), e);
 				return new DefinitionModifyResult(false, "exception occured during message category definition update:" + e.getMessage());
@@ -183,7 +193,8 @@ public class MessageManagerImpl extends AbstractTypedDefinitionManager<MessageCa
 	 */
 	@Override
 	public List<String> getMessageIdList(String category) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		return service.getMessageIdList(tenantId, category);
 	}
 
@@ -191,9 +202,9 @@ public class MessageManagerImpl extends AbstractTypedDefinitionManager<MessageCa
 	 * @see org.iplass.mtp.message.MessageManager#getMessageItem(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public MessageItem getMessageItem(String category , String messageId) {
-		MetaMessageCategoryHandler handler =  service.getRuntimeByName(category);
-		if(handler == null) {
+	public MessageItem getMessageItem(String category, String messageId) {
+		MetaMessageCategoryHandler handler = service.getRuntimeByName(category);
+		if (handler == null) {
 			return null;
 		}
 		MessageItem ret = handler.createMessageItem(messageId);

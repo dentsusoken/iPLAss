@@ -39,7 +39,7 @@ public abstract class RefrectionServiceFactory extends AbstractAdminServiceFacto
 
 		RefrectionServiceAsync service = GWT.create(RefrectionService.class);
 
-		init((HasRpcToken)service);
+		init((HasRpcToken) service);
 
 		RefrectionServiceFactory.service = service;
 

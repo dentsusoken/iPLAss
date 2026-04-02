@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
 public class BetweenSyntax implements Syntax<Between>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 
 	public void init(SyntaxContext context) {
@@ -38,19 +38,19 @@ public class BetweenSyntax implements Syntax<Between>, QueryConstants {
 	}
 
 	public Between parse(ParseContext str) throws ParseException {
-		
+
 		if (!str.equalsNextToken(BETWEEN, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("between expected.", this, str));
 		}
-			
+
 		Between b = new Between();
 		str.consumeChars(BETWEEN.length());
 		if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 			throw new ParseException(new EvalError("space expected.", this, str));
 		}
-		
+
 		b.setFrom(polynomial.parse(str));
-		
+
 		if (!str.equalsNextToken(AND, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("and expected.", this, str));
 		}
@@ -58,9 +58,9 @@ public class BetweenSyntax implements Syntax<Between>, QueryConstants {
 		if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 			throw new ParseException(new EvalError("space expected.", this, str));
 		}
-		
+
 		b.setTo(polynomial.parse(str));
-		
+
 		return b;
 	}
 

@@ -108,7 +108,6 @@ public class ActionAttributePane extends HLayout {
 
 		methodForm.setItems(getMethod, postMethod, putMethod, deleteMethod);
 
-
 		accessForm = new DynamicForm();
 		accessForm.setWidth100();
 		accessForm.setPadding(10);
@@ -123,22 +122,25 @@ public class ActionAttributePane extends HLayout {
 
 		privilegedField = new CheckboxItem("privileged", "privilege execute");
 		privilegedField.setShowTitle(false);
-		privilegedField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_privilExecution")));
+		privilegedField
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_privilExecution")));
 
 		publicActionField = new CheckboxItem("publicActionField", "public action");
 		publicActionField.setShowTitle(false);
-		publicActionField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_publicAction")));
+		publicActionField
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_publicAction")));
 
 		synchronizeOnSessionField = new CheckboxItem("synchronizeOnSession", "synchronize on session");
 		synchronizeOnSessionField.setShowTitle(false);
-		synchronizeOnSessionField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_synchronizeOnSession")));
+		synchronizeOnSessionField.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_synchronizeOnSession")));
 
 		needTrustedAuthenticateField = new CheckboxItem("needTrustedAuthenticateField", "trusted authentication required");
 		needTrustedAuthenticateField.setShowTitle(false);
-		needTrustedAuthenticateField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_needTrustedAuthenticate")));
+		needTrustedAuthenticateField.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_needTrustedAuthenticate")));
 
 		accessForm.setItems(partsField, privilegedField, publicActionField, synchronizeOnSessionField, needTrustedAuthenticateField);
-
 
 		tokenForm = new DynamicForm();
 		tokenForm.setWidth100();
@@ -166,7 +168,8 @@ public class ActionAttributePane extends HLayout {
 		useFixedTokenField.setShowTitle(false);
 		useFixedTokenField.setColSpan(2);
 		useFixedTokenField.setVisible(false);
-		useFixedTokenField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_useFixedToken")));
+		useFixedTokenField
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_useFixedToken")));
 		useFixedTokenField.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
@@ -184,10 +187,10 @@ public class ActionAttributePane extends HLayout {
 		exceptionRollbackField.setShowTitle(false);
 		exceptionRollbackField.setColSpan(2);
 		exceptionRollbackField.setVisible(false);
-		exceptionRollbackField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_exceptionRollbackToken")));
+		exceptionRollbackField.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ActionAttributePane_exceptionRollbackToken")));
 
 		tokenForm.setItems(tokenCheckField, useFixedTokenField, consumeField, exceptionRollbackField);
-
 
 		cacheForm = new DynamicForm();
 		cacheForm.setWidth100();
@@ -212,7 +215,6 @@ public class ActionAttributePane extends HLayout {
 		clientCacheMaxAgeField.setKeyPressFilter("[\\-0-9]");
 
 		cacheForm.setItems(clientCacheTypeField, clientCacheMaxAgeField);
-
 
 		//配置
 		addMember(methodForm);
@@ -256,12 +258,16 @@ public class ActionAttributePane extends HLayout {
 
 		if (definition.getTokenCheck() != null) {
 			tokenCheckField.setValue(Boolean.TRUE.toString());
-			useFixedTokenField.setValue(definition.getTokenCheck().isUseFixedToken());
-			if (!definition.getTokenCheck().isUseFixedToken()) {
-				consumeField.setValue(definition.getTokenCheck().isConsume());
+			useFixedTokenField.setValue(definition.getTokenCheck()
+					.isUseFixedToken());
+			if (!definition.getTokenCheck()
+					.isUseFixedToken()) {
+				consumeField.setValue(definition.getTokenCheck()
+						.isConsume());
 				consumeField.show();
 			}
-			exceptionRollbackField.setValue(definition.getTokenCheck().isExceptionRollback());
+			exceptionRollbackField.setValue(definition.getTokenCheck()
+					.isExceptionRollback());
 			useFixedTokenField.show();
 			exceptionRollbackField.show();
 		} else {
@@ -272,7 +278,8 @@ public class ActionAttributePane extends HLayout {
 		}
 
 		if (definition.getClientCacheType() != null) {
-			clientCacheTypeField.setValue(definition.getClientCacheType().name());
+			clientCacheTypeField.setValue(definition.getClientCacheType()
+					.name());
 		} else {
 			clientCacheTypeField.setValue("");
 		}
@@ -287,16 +294,16 @@ public class ActionAttributePane extends HLayout {
 	public ActionMappingDefinition getEditDefinition(ActionMappingDefinition definition) {
 
 		List<HttpMethodType> methodTypeList = new ArrayList<HttpMethodType>();
-		if (getMethod.getValue() != null && (Boolean)getMethod.getValue()) {
+		if (getMethod.getValue() != null && (Boolean) getMethod.getValue()) {
 			methodTypeList.add(HttpMethodType.GET);
 		}
-		if (postMethod.getValue() != null && (Boolean)postMethod.getValue()) {
+		if (postMethod.getValue() != null && (Boolean) postMethod.getValue()) {
 			methodTypeList.add(HttpMethodType.POST);
 		}
-		if (putMethod.getValue() != null && (Boolean)putMethod.getValue()) {
+		if (putMethod.getValue() != null && (Boolean) putMethod.getValue()) {
 			methodTypeList.add(HttpMethodType.PUT);
 		}
-		if (deleteMethod.getValue() != null && (Boolean)deleteMethod.getValue()) {
+		if (deleteMethod.getValue() != null && (Boolean) deleteMethod.getValue()) {
 			methodTypeList.add(HttpMethodType.DELETE);
 		}
 		HttpMethodType[] methodType = new HttpMethodType[methodTypeList.size()];
@@ -323,7 +330,8 @@ public class ActionAttributePane extends HLayout {
 			definition.setTokenCheck(null);
 		}
 
-		if (clientCacheTypeField.getValue() != null && !clientCacheTypeField.getValueAsString().isEmpty()) {
+		if (clientCacheTypeField.getValue() != null && !clientCacheTypeField.getValueAsString()
+				.isEmpty()) {
 			definition.setClientCacheType(ClientCacheType.valueOf(SmartGWTUtil.getStringValue(clientCacheTypeField)));
 		} else {
 			definition.setClientCacheType(null);

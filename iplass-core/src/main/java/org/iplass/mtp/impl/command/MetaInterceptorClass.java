@@ -48,6 +48,7 @@ public class MetaInterceptorClass extends BaseRootMetaData implements DefinableM
 
 	public abstract class InterceptorClassRuntime implements MetaDataRuntime {
 		public abstract Object newInterceptor();
+
 		public abstract MetaInterceptorClass getMetaData();
 	}
 

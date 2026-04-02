@@ -42,10 +42,11 @@ public class SelectAttribute implements PropertyAttribute {
 	@Override
 	public void applyFrom(PropertyDefinition property, EntityDefinition entity) {
 
-		SelectProperty select = (SelectProperty)property;
+		SelectProperty select = (SelectProperty) property;
 
 		setSelectValueDefinitionName(select.getSelectValueDefinitionName());
-		if (select.getSelectValueDefinitionName() == null || select.getSelectValueDefinitionName().isEmpty()) {
+		if (select.getSelectValueDefinitionName() == null || select.getSelectValueDefinitionName()
+				.isEmpty()) {
 			setSelectValueList(select.getSelectValueList());
 			setLocalizedSelectValueList(select.getLocalizedSelectValueList());
 		}
@@ -55,7 +56,7 @@ public class SelectAttribute implements PropertyAttribute {
 	@Override
 	public void applyTo(PropertyDefinition property, EntityDefinition entity) {
 
-		SelectProperty select = (SelectProperty)property;
+		SelectProperty select = (SelectProperty) property;
 
 		select.setSelectValueList(getSelectValueList());
 		select.setLocalizedSelectValueList(getLocalizedSelectValueList());

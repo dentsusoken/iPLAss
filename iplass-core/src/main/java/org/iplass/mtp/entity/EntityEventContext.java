@@ -31,7 +31,7 @@ import java.util.HashMap;
  *
  */
 public class EntityEventContext {
-	
+
 	/** 追加時（および、追加に伴うバリデーション時）に、当該キー名で指定されたInsertOptionを取得可能。 */
 	public static final String INSERT_OPTION = "insertOption";
 	/** 更新時（および、更新に伴うバリデーション時）に、当該キー名で指定されたUpdateOptionを取得可能。 */
@@ -42,19 +42,19 @@ public class EntityEventContext {
 	public static final String VALIDATE_PROPERTIES = "validateProperties";
 	/** 更新時に、当該キー名で更新前のEntityを取得可能。 */
 	public static final String BEFORE_UPDATE_ENTITY = "beforeUpdateEntity";
-	
+
 	private HashMap<String, Object> contextValues;
-	
+
 	public EntityEventContext() {
 	}
-	
+
 	public void setAttribute(String key, Object value) {
 		if (contextValues == null) {
 			contextValues = new HashMap<String, Object>();
 		}
 		contextValues.put(key, value);
 	}
-	
+
 	public Object getAttribute(String key) {
 		if (contextValues == null) {
 			return null;

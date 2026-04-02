@@ -107,13 +107,15 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		// 全削除ボタン
 		IButton allDelete = new IButton("All Remove");
 		allDelete.addClickHandler(new InitClickHandler());
-		SmartGWTUtil.addHoverToCanvas(allDelete, AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_deleteLayoutCautionComment"));
+		SmartGWTUtil.addHoverToCanvas(allDelete,
+				AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_deleteLayoutCautionComment"));
 		headerPane.addMember(allDelete);
 
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -140,7 +142,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		// 編集用のエリア
 		form = new SearchFormViewControl(this.defName);
 		form.setShowResizeBar(true);
-		form.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、次を収縮
+		form.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、次を収縮
 		layout.addMember(form);
 
 		// ドラッグエリア
@@ -232,7 +234,8 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				commonSection.setDefinition(copy);
 
 				viewMenuPane.setValueMap(new String[0]);
-				viewMenuPane.getViewSelectItem().setValue("");
+				viewMenuPane.getViewSelectItem()
+						.setValue("");
 
 				//まだ未保存なのでShared設定利用不可
 				commonSection.setSharedEditDisabled(true);
@@ -241,8 +244,10 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 			}
 
 			curDefinition = (EntityView) entry.getDefinition();
-			curVersion = entry.getDefinitionInfo().getVersion();
-			curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+			curVersion = entry.getDefinitionInfo()
+					.getVersion();
+			curDefinitionId = entry.getDefinitionInfo()
+					.getObjDefId();
 
 			//共通属性
 			commonSection.setDefinition(curDefinition);
@@ -252,11 +257,13 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 
 			//作成済みのView名を取得
 			viewMenuPane.setValueMap(curDefinition.getSearchFormViewNames());
-			viewMenuPane.getViewSelectItem().setValue("");
+			viewMenuPane.getViewSelectItem()
+					.setValue("");
 
 			//デフォルトのViewを展開
 			SearchFormView fv = curDefinition.getDefaultSearchFormView();
-			if (fv == null) fv = new SearchFormView();
+			if (fv == null)
+				fv = new SearchFormView();
 
 			apply(fv);
 
@@ -283,17 +290,17 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 			if (name == null || name.isEmpty()) {
 				name = EntityViewMenuPane.DEFAULT_VIEW_NAME;
 			}
-			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_viewName") +name +
+			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_viewName") + name +
 					AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_saveView"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						//最新のView定義を取得
-						service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new SaveStartAsyncCallback());
-					}
-				}
-			});
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								//最新のView定義を取得
+								service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new SaveStartAsyncCallback());
+							}
+						}
+					});
 		}
 
 		/**
@@ -344,7 +351,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 			}
 		}
 
-		private void createEntityView(final EntityView  definition) {
+		private void createEntityView(final EntityView definition) {
 			SmartGWTUtil.showSaveProgress();
 			service.createDefinition(TenantInfoHolder.getId(), definition, new MetaDataUpdateCallback() {
 				@Override
@@ -366,7 +373,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 			});
 		}
 
-		private void updateEntityView(final EntityView  definition, boolean checkVersion) {
+		private void updateEntityView(final EntityView definition, boolean checkVersion) {
 			SmartGWTUtil.showSaveProgress();
 			service.updateDefinition(TenantInfoHolder.getId(), definition, curVersion, checkVersion, new MetaDataUpdateCallback() {
 
@@ -391,12 +398,14 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 
 						@Override
 						public void onFailure(Throwable caught) {
-							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_failedDetailLayout") + caught.getMessage());
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_failedDetailLayout")
+									+ caught.getMessage());
 						}
 
 						@Override
 						public void onSuccess(DefinitionEntry result) {
-							curVersion = result.getDefinitionInfo().getVersion();
+							curVersion = result.getDefinitionInfo()
+									.getVersion();
 						}
 
 					});
@@ -414,15 +423,14 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		@Override
 		public void onClick(ClickEvent event) {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_cancelCautionComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						reloadDefaultView();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_cancelCautionComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								reloadDefaultView();
+							}
+						}
+					});
 		}
 	}
 
@@ -494,7 +502,8 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				@Override
 				public void onSuccess(EntityView result) {
 					if (result != null && result.getDefaultSearchFormView() != null) {
-						SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_cancelCautionComment"), new OkClickHandler());
+						SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_cancelCautionComment"),
+								new OkClickHandler());
 					} else {
 						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_defaultViewCreateCaution"));
 					}
@@ -525,7 +534,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 			@Override
 			public void execute(MTPEvent event) {
 				String name = (String) event.getValue("name");
-				EntityView ev = (EntityView)  event.getValue("entityView");
+				EntityView ev = (EntityView) event.getValue("entityView");
 				List<String> names = new ArrayList<String>();
 				if (ev != null) {
 					String[] valueMap = ev.getSearchFormViewNames();
@@ -542,7 +551,8 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				//プルダウンに追加
 				names.add(name);
 				viewMenuPane.setValueMap(names.toArray(new String[names.size()]));
-				viewMenuPane.getViewSelectItem().setValue(name);
+				viewMenuPane.getViewSelectItem()
+						.setValue(name);
 
 				//画面をリセット
 				reset();
@@ -565,7 +575,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 			if (name.isEmpty()) {
 				name = EntityViewMenuPane.DEFAULT_VIEW_NAME;
 			}
-			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_viewName") +name +
+			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_viewName") + name +
 					AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_deleteViewCautionComment"),
 					new OkClickHandler());
 		}
@@ -600,7 +610,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 					}
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failed"),
 							AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_selectView") + name +
-							AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_notRegist"));
+									AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_notRegist"));
 					return;
 				}
 
@@ -608,12 +618,14 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 
 				if (name.isEmpty() && ev.getSearchFormViewNames().length > 0) {
 					//defaultを削除しても他のViewがある場合は不正なのでNG
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failed"), "[" + EntityViewMenuPane.DEFAULT_VIEW_NAME + "]" +
-							AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_viewDeleteRemainsComment"));
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failed"),
+							"[" + EntityViewMenuPane.DEFAULT_VIEW_NAME + "]" +
+									AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_viewDeleteRemainsComment"));
 					return;
 				}
 
-				if (ev.getViews().size() > 0) {
+				if (ev.getViews()
+						.size() > 0) {
 					commonSection.getEditDefinition(ev);
 					ev.setDefinitionName(defName);
 					updateEntityView(ev, true);
@@ -624,7 +636,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 
 		}
 
-		private void updateEntityView(final EntityView  definition, boolean checkVersion) {
+		private void updateEntityView(final EntityView definition, boolean checkVersion) {
 			SmartGWTUtil.showSaveProgress();
 			service.updateDefinition(TenantInfoHolder.getId(), definition, curVersion, checkVersion, new MetaDataUpdateCallback() {
 
@@ -706,7 +718,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 			if (name.isEmpty()) {
 				name = EntityViewMenuPane.DEFAULT_VIEW_NAME;
 			}
-			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_viewName") +name +
+			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_viewName") + name +
 					AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_reflectLayoutStandardDef"), new OkClickHandler());
 		}
 
@@ -733,7 +745,8 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 
 						@Override
 						public void onFailure(Throwable caught) {
-							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failedGetDefaultView") + caught.getMessage());
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failedGetDefaultView")
+									+ caught.getMessage());
 							GWT.log(caught.toString(), caught);
 						}
 					});
@@ -754,7 +767,8 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				@Override
 				public void onSuccess(EntityView result) {
 					if (result != null && result.getDefaultSearchFormView() != null) {
-						SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_cancelCautionComment"), new OkClickHandler());
+						SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_cancelCautionComment"),
+								new OkClickHandler());
 					} else {
 						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_defaultViewCreateCaution"));
 					}
@@ -785,7 +799,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 			@Override
 			public void execute(MTPEvent event) {
 				String name = (String) event.getValue("name");
-				EntityView ev = (EntityView)  event.getValue("entityView");
+				EntityView ev = (EntityView) event.getValue("entityView");
 				List<String> names = new ArrayList<String>();
 				if (ev != null) {
 					String[] valueMap = ev.getSearchFormViewNames();
@@ -802,7 +816,8 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				// プルダウンに追加
 				names.add(name);
 				viewMenuPane.setValueMap(names.toArray(new String[names.size()]));
-				viewMenuPane.getViewSelectItem().setValue(name);
+				viewMenuPane.getViewSelectItem()
+						.setValue(name);
 
 				SearchFormView fv = form.getForm();
 				fv.setName(name);

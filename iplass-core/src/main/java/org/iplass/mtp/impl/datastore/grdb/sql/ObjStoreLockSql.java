@@ -42,7 +42,8 @@ public class ObjStoreLockSql extends QuerySqlHandler {
 		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='");
-		sb.append(rdbAdaptor.sanitize(eh.getMetaData().getId()));
+		sb.append(rdbAdaptor.sanitize(eh.getMetaData()
+				.getId()));
 		sb.append("' AND " + ObjStoreTable.OBJ_ID + "='");
 		sb.append(rdbAdaptor.sanitize(oid));
 		sb.append("' AND " + ObjStoreTable.PG_NO + "=0");
@@ -58,22 +59,41 @@ public class ObjStoreLockSql extends QuerySqlHandler {
 		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='");
-		sb.append(rdbAdaptor.sanitize(eh.getMetaData().getId()));
+		sb.append(rdbAdaptor.sanitize(eh.getMetaData()
+				.getId()));
 		if (rdbAdaptor.isSupportRowValueConstructor()) {
 			sb.append("' AND (" + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + ") IN");
-			sb.append("(SELECT " + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + " FROM " + rdbAdaptor.getTemplaryTablePrefix() + ObjStoreTable.TABLE_NAME_TMP + ")");
+			sb.append("(SELECT " + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + " FROM " + rdbAdaptor.getTemplaryTablePrefix()
+					+ ObjStoreTable.TABLE_NAME_TMP + ")");
 		} else {
 			String objStoreTable = ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE();
 			sb.append("' AND EXISTS (");
-			sb.append("SELECT 1 FROM ").append(rdbAdaptor.getTemplaryTablePrefix()).append(ObjStoreTable.TABLE_NAME_TMP ).append(" ").append(TMP_TABLE_ALIAS);
-			sb.append(" WHERE ").append(TMP_TABLE_ALIAS).append(".").append(ObjStoreTable.OBJ_ID ).append("=").append(objStoreTable).append(".").append(ObjStoreTable.OBJ_ID);
-			sb.append(" AND ").append(TMP_TABLE_ALIAS).append(".").append(ObjStoreTable.OBJ_VER ).append("=").append(objStoreTable).append(".").append(ObjStoreTable.OBJ_VER);
+			sb.append("SELECT 1 FROM ")
+					.append(rdbAdaptor.getTemplaryTablePrefix())
+					.append(ObjStoreTable.TABLE_NAME_TMP)
+					.append(" ")
+					.append(TMP_TABLE_ALIAS);
+			sb.append(" WHERE ")
+					.append(TMP_TABLE_ALIAS)
+					.append(".")
+					.append(ObjStoreTable.OBJ_ID)
+					.append("=")
+					.append(objStoreTable)
+					.append(".")
+					.append(ObjStoreTable.OBJ_ID);
+			sb.append(" AND ")
+					.append(TMP_TABLE_ALIAS)
+					.append(".")
+					.append(ObjStoreTable.OBJ_VER)
+					.append("=")
+					.append(objStoreTable)
+					.append(".")
+					.append(ObjStoreTable.OBJ_VER);
 			sb.append(")");
 		}
 		sb.append(" AND " + ObjStoreTable.PG_NO + "=0");
 		sb.append(" ORDER BY " + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER);
 		return rdbAdaptor.createRowLockSql(sb.toString());
 	}
-
 
 }

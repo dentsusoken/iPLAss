@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.webhook;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
@@ -43,6 +44,7 @@ import org.iplass.gwt.ace.client.EditorMode;
 import org.iplass.mtp.definition.DefinitionEntry;
 import org.iplass.mtp.webhook.template.definition.WebhookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.AutoFitWidthApproach;
@@ -66,38 +68,36 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
+
 public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 
-	
-	private enum HEADER_FIELD_NAME{
+	private enum HEADER_FIELD_NAME {
 		HEADERNAME,
 		HEADERVALUE,
 	}
-	
+
 	private final MetaDataServiceAsync service;
-	
+
 	/** 編集対象 */
 	private WebhookTemplateDefinition curDefinition;
 	private int curVersion;
 	private String curDefinitionId;
 	private MetaCommonHeaderPane headerPane;
-	
-	
-	
+
 	/** 共通属性 */
 	private MetaCommonAttributeSection<WebhookTemplateDefinition> commonSection;
-	
+
 	/** 個別属性部分（デフォルト） */
 	private WebhookTemplateAttributePane webhookTemplateAttrPane;
-	
+
 	public WebhookTemplateEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
-		
+
 		service = MetaDataServiceFactory.get();
-		
+
 		//レイアウト設定
 		setWidth100();
-		
+
 		//ヘッダ（ボタン）部分
 		headerPane = new MetaCommonHeaderPane(targetNode);
 		headerPane.setSaveClickHandler(new SaveClickHandler());
@@ -106,20 +106,21 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
-		
+
 		commonSection = new MetaCommonAttributeSection<>(targetNode, WebhookTemplateDefinition.class);
-		
+
 		webhookTemplateAttrPane = new WebhookTemplateAttributePane();
-		
-		SectionStackSection defaultWebhookSection = createSection("Default WebhookTemplate", webhookTemplateAttrPane);		
+
+		SectionStackSection defaultWebhookSection = createSection("Default WebhookTemplate", webhookTemplateAttrPane);
 		setMainSections(commonSection, defaultWebhookSection);
 		addMember(headerPane);
 		addMember(mainStack);
-		
+
 		initializeData();
 	}
 
@@ -153,21 +154,23 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 		//ステータスチェック
 		StatusCheckUtil.statuCheck(WebhookTemplateDefinition.class.getName(), defName, this);
 	}
-	
+
 	/**
 	 * Definition画面設定内容入り
 	 *
 	 * @param definition 編集対象
 	 */
 	protected void setDefinition(DefinitionEntry entry) {
-		
+
 		this.curDefinition = (WebhookTemplateDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
-		
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
+
 		commonSection.setDefinition(curDefinition);
 		webhookTemplateAttrPane.setDefinition(curDefinition);
-		
+
 	}
 
 	/**
@@ -190,7 +193,7 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			}
 		});
 	}
-	
+
 	/**
 	 * 更新完了処理
 	 *
@@ -217,38 +220,38 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			}
 		});
 	}
-	
+
 	public class WebhookTemplateAttributePane extends VLayout {
-		
+
 		//テンプレに関する情報
 		private DynamicForm templateInfoForm;
 		private TextItem contentTypeField;
-		
-        //ヘッダー関連
+
+		//ヘッダー関連
 		public HeaderMapGrid headerGrid;
-		
+
 		//エンドポイントのurlの後に付けるリソースpathとquery,
 		private DynamicForm pathAndQueryForm;
 		private TextAreaItem pathAndQueryField;
-		
+
 		//送る情報を編集
 		private TabSet messageTabSet;
 		//request method
-		private SelectItem webhookMethodField; 
+		private SelectItem webhookMethodField;
 		private Tab plainContentTab;
 		private ScriptEditorPane plainEditor;
-		
-		public WebhookTemplateAttributePane () {
+
+		public WebhookTemplateAttributePane() {
 			setOverflow(Overflow.AUTO);
-			
+
 			VLayout mainPane = new VLayout();
 			mainPane.setMargin(5);
 			mainPane.setMembersMargin(5);
-			
+
 			HLayout topPane = new HLayout();
 			topPane.setMembersMargin(5);
 			topPane.setHeight(200);
-			
+
 			VLayout headerPane = new VLayout();
 			headerPane.setMargin(5);
 			headerPane.setMembersMargin(5);
@@ -259,14 +262,15 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			templateInfoForm.setWidth(300);
 			templateInfoForm.setPadding(10);
 			templateInfoForm.setNumCols(2);
-			templateInfoForm.setColWidths(100,"*");
+			templateInfoForm.setColWidths(100, "*");
 			templateInfoForm.setIsGroup(true);
 			templateInfoForm.setGroupTitle("Template Settings");
 			contentTypeField = new TextItem("webhookContentType", "Content-Type");
 			contentTypeField.setWidth(150);
-			SmartGWTUtil.addHoverToFormItem(contentTypeField, AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_contentTypeFieldHoverInfo"));
+			SmartGWTUtil.addHoverToFormItem(contentTypeField,
+					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_contentTypeFieldHoverInfo"));
 
-			webhookMethodField = new SelectItem("webhookMethodField","Http Request Method");
+			webhookMethodField = new SelectItem("webhookMethodField", "Http Request Method");
 			webhookMethodField.setValueMap("GET", "POST", "DELETE", "PUT", "PATCH");
 			webhookMethodField.setWidth(150);
 
@@ -275,11 +279,10 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			headerGrid.setTitle(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_headerGridTitle"));
 			headerGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editMap((ListGridRecord)event.getRecord());
+					editMap((ListGridRecord) event.getRecord());
 				}
 			});
-			
-			
+
 			IButton addMap = new IButton("Add");
 			addMap.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
@@ -297,27 +300,28 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 					headerGrid.removeSelectedData();
 
 					ArrayList<WebhookHeaderDefinition> headers = new ArrayList<WebhookHeaderDefinition>();
-					for (ListGridRecord  records: headerGrid.getRecords()) {
-						headers.add(new WebhookHeaderDefinition(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
+					for (ListGridRecord records : headerGrid.getRecords()) {
+						headers.add(new WebhookHeaderDefinition(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),
+								records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
 					}
 					curDefinition.setHeaders(headers);
 				}
 			});
-			
+
 			HLayout mapButtonPane = new HLayout(5);
 			mapButtonPane.setMargin(5);
 			mapButtonPane.addMember(addMap);
 			mapButtonPane.addMember(delMap);
 			mapButtonPane.setWidth100();
-			
+
 			headerPane.addMember(headerGrid);
 			headerPane.addMember(mapButtonPane);
 			headerPane.setIsGroup(true);
 			headerPane.setPadding(10);
 			headerPane.setGroupTitle("Custom Header");
-			
+
 			templateInfoForm.setItems(contentTypeField, webhookMethodField);
-			
+
 			pathAndQueryForm = new DynamicForm();
 			pathAndQueryForm.setWidth(500);
 			pathAndQueryForm.setPadding(10);
@@ -330,40 +334,38 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			pathAndQueryField.setHeight(180);
 			pathAndQueryField.setShowTitle(false);
 			pathAndQueryForm.setItems(pathAndQueryField);
-			
+
 			topPane.addMember(templateInfoForm);
 			topPane.addMember(headerPane);
 			topPane.addMember(pathAndQueryForm);
-			
-			
-			
+
 			messageTabSet = new TabSet();
 			messageTabSet.setWidth100();
 			messageTabSet.setHeight(550);
-			messageTabSet.setPaneContainerOverflow(Overflow.HIDDEN);	
+			messageTabSet.setPaneContainerOverflow(Overflow.HIDDEN);
 			plainContentTab = new Tab();
 			plainContentTab.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_webhookContentTabHoverInfo"));
 			plainContentTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_webhookContentTabTitle"));
-			
+
 			plainEditor = new ScriptEditorPane();
 			plainEditor.setMode(EditorMode.TEXT);
 			plainContentTab.setPane(plainEditor);
-	        messageTabSet.addTab(plainContentTab);
-	        
-	        mainPane.addMember(topPane);
-	        mainPane.addMember(messageTabSet);
-			
-	        addMember(mainPane);
-	        
-	        
+			messageTabSet.addTab(plainContentTab);
+
+			mainPane.addMember(topPane);
+			mainPane.addMember(messageTabSet);
+
+			addMember(mainPane);
+
 		}
+
 		protected void addMap() {
 			editMap(null);
 		}
 
 		protected void editMap(final ListGridRecord record) {
 			WebhookHeaderDefinition temp = null;
-			
+
 			//dialog のためのtemp
 			if (record == null) {
 
@@ -378,11 +380,12 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 				public void onDataChanged(DataChangedEvent event) {
 					WebhookHeaderDefinition param = event.getValueObject(WebhookHeaderDefinition.class);
 					if (record != null) {//既存
-						headerGrid.removeData(record);	
+						headerGrid.removeData(record);
 					}
 					ArrayList<WebhookHeaderDefinition> headers = new ArrayList<WebhookHeaderDefinition>();
-					for (ListGridRecord  records: headerGrid.getRecords()) {
-						headers.add(new WebhookHeaderDefinition(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
+					for (ListGridRecord records : headerGrid.getRecords()) {
+						headers.add(new WebhookHeaderDefinition(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),
+								records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
 					}
 					headers.add(param);
 					curDefinition.setHeaders(headers);
@@ -392,9 +395,9 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 				}
 			});
 			dialog.show();
-			
+
 		}
-		
+
 		protected ListGridRecord createRecord(WebhookHeaderDefinition param, ListGridRecord record, boolean init) {
 			if (record == null) {
 				record = new ListGridRecord();
@@ -403,17 +406,17 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 					curDefinition.addHeaders(param);
 				}
 			} else {
-				List<WebhookHeaderDefinition>_headers = curDefinition.getHeaders();
+				List<WebhookHeaderDefinition> _headers = curDefinition.getHeaders();
 				HashMap<String, WebhookHeaderDefinition> tempMap = new HashMap<String, WebhookHeaderDefinition>();
-				if (_headers !=null) {
-					for (WebhookHeaderDefinition entry :_headers) {
+				if (_headers != null) {
+					for (WebhookHeaderDefinition entry : _headers) {
 						tempMap.put(entry.getKey(), entry);
 					}
 				}
 				tempMap.remove(param.getKey());
 				tempMap.put(param.getKey(), param);
-				ArrayList<WebhookHeaderDefinition> newList = new ArrayList<WebhookHeaderDefinition>(); 
-				for (WebhookHeaderDefinition headerEntry: tempMap.values()) {
+				ArrayList<WebhookHeaderDefinition> newList = new ArrayList<WebhookHeaderDefinition>();
+				for (WebhookHeaderDefinition headerEntry : tempMap.values()) {
 					newList.add(headerEntry);
 				}
 				curDefinition.setHeaders(newList);
@@ -422,6 +425,7 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			record.setAttribute(HEADER_FIELD_NAME.HEADERVALUE.name(), param.getValue());
 			return record;
 		}
+
 		public boolean validate() {
 			return true;
 		}
@@ -429,12 +433,12 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 		public void clearErrors() {
 			templateInfoForm.clearErrors(true);
 			contentTypeField.clearErrors();
-	        webhookMethodField.clearErrors();
-	    }
+			webhookMethodField.clearErrors();
+		}
 
 		//pane -> definition
 		public WebhookTemplateDefinition getEditDefinition(WebhookTemplateDefinition definition) {
-			
+
 			definition.setContentType(SmartGWTUtil.getStringValue(contentTypeField));
 			definition.setWebhookContent(plainEditor.getText());
 			definition.setHttpMethod(SmartGWTUtil.getStringValue(webhookMethodField));
@@ -442,19 +446,19 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 
 			return definition;
 		}
-	
+
 		//Definition -> Pane
 		public void setDefinition(WebhookTemplateDefinition definition) {
 			headerGrid.setData(new ListGridRecord[] {});
 			if (definition != null) {
 				contentTypeField.setValue(definition.getContentType());
 				webhookMethodField.setValue(definition.getHttpMethod());
-				if (definition.getWebhookContent()==null) {
+				if (definition.getWebhookContent() == null) {
 					plainEditor.setText("");
 				} else {
 					plainEditor.setText(definition.getWebhookContent());
 				}
-				
+
 				ListGridRecord[] temp = getHeaderRecordList(definition);
 				headerGrid.setData(temp);
 				pathAndQueryField.setValue(definition.getPathAndQuery());
@@ -465,6 +469,7 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 				pathAndQueryField.clearErrors();
 			}
 		}
+
 		/**
 		 * @param WebhookTemplateDefinition 
 		 * @return ListGridRecord[] of headers
@@ -477,14 +482,13 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			for (WebhookHeaderDefinition header : definitionList) {
 				ListGridRecord newRecord = createRecord(header, null, true);
 				temp[cnt] = newRecord;
-				cnt ++;
+				cnt++;
 			}
 			return temp;
 		}
 	}
 
-
-	public class HeaderMapGrid extends ListGrid{
+	public class HeaderMapGrid extends ListGrid {
 		public HeaderMapGrid() {
 			setWidth(500);
 			setHeight(1);
@@ -492,22 +496,21 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			setShowAllColumns(true);
 			setShowAllRecords(true);
 			setCanResizeFields(true);
-			setCanSort(true);	
+			setCanSort(true);
 			setCanPickFields(false);
 			setCanGroupBy(false);
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);
 			setLeaveScrollbarGap(false);
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
 			ListGridField headerNameField = new ListGridField(HEADER_FIELD_NAME.HEADERNAME.name(), "Name Key");
 			ListGridField headerValueField = new ListGridField(HEADER_FIELD_NAME.HEADERVALUE.name(), "Value");
-			
+
 			setFields(headerNameField, headerValueField);
 		}
 	}
-	
-	
+
 	/**
 	 * 保存ボタンイベント
 	 */
@@ -523,17 +526,17 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_saveWebhookTemplateComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						WebhookTemplateDefinition definition = curDefinition;
-						definition = commonSection.getEditDefinition(definition);
-						definition = webhookTemplateAttrPane.getEditDefinition(definition);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								WebhookTemplateDefinition definition = curDefinition;
+								definition = commonSection.getEditDefinition(definition);
+								definition = webhookTemplateAttrPane.getEditDefinition(definition);
 
-						updateWebhookTemplate(definition, true);
-					}
-				}
-			});
+								updateWebhookTemplate(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -545,16 +548,15 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 		@Override
 		public void onClick(ClickEvent event) {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 }

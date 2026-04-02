@@ -35,7 +35,7 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 
 public class SeparatorItemSettingDialog extends MtpDialog {
 	private TextItem styleField;
-	
+
 	private IntegerItem maxHeightField;
 
 	/**
@@ -65,12 +65,12 @@ public class SeparatorItemSettingDialog extends MtpDialog {
 		form.setItems(styleField, maxHeightField);
 
 		container.addMember(form);
-	
+
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					//入力情報をパーツに
 					parts.setStyle(SmartGWTUtil.getStringValue(styleField));
 					parts.setMaxHeight(maxHeightField.getValueAsInteger());
@@ -78,7 +78,7 @@ public class SeparatorItemSettingDialog extends MtpDialog {
 				}
 			}
 		});
-		
+
 		IButton cancel = new IButton("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
 			@Override
@@ -86,8 +86,8 @@ public class SeparatorItemSettingDialog extends MtpDialog {
 				destroy();
 			}
 		});
-		
+
 		footer.setMembers(save, cancel);
 	}
-	
+
 }

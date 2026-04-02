@@ -57,7 +57,8 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 
 		@Override
 		public TypedDefinitionManager<WebApiDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(WebApiDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(WebApiDefinitionManager.class);
 		}
 
 		@Override
@@ -105,7 +106,8 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		cors = config.getValue("cors", CorsConfig.class);
 		enableDefinitionApi = config.getValue("enableDefinitionApi", Boolean.class, Boolean.FALSE);
 		enableBinaryApi = config.getValue("enableBinaryApi", Boolean.class, Boolean.FALSE);
-		enableStubResponse = config.getValue("enableStubResponse", Boolean.class, Boolean.FALSE).booleanValue();
+		enableStubResponse = config.getValue("enableStubResponse", Boolean.class, Boolean.FALSE)
+				.booleanValue();
 		writeEncodedFilenameInBinaryApi = config.getValue("writeEncodedFilenameInBinaryApi", Boolean.class,
 				Boolean.FALSE);
 		unescapeFilenameCharacterInBinaryApi = config.getValue("unescapeFilenameCharacterInBinaryApi");
@@ -113,7 +115,7 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		String acceptMimeTypesPatternInBinaryApi = config.getValue("acceptMimeTypesPatternInBinaryApi");
 		this.acceptMimeTypesPatternInBinaryApi = StringUtil.isNotBlank(acceptMimeTypesPatternInBinaryApi)
 				? Pattern.compile(acceptMimeTypesPatternInBinaryApi)
-						: null;
+				: null;
 	}
 
 	public boolean isEnableDefinitionApi() {

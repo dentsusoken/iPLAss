@@ -20,18 +20,6 @@
 
 package org.iplass.mtp.tools.gui.partition;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -44,6 +32,18 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.iplass.mtp.impl.tools.tenant.PartitionInfo;
 import org.iplass.mtp.tools.batch.partition.PartitionBatch;
@@ -75,7 +75,7 @@ public class PartitionManagerApp extends MtpJFrameBase {
 		JPanel mainPane = new JPanel();
 		mainPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		mainPane.setLayout(new BorderLayout(0, 0));
-		mainPane.setPreferredSize(new Dimension(500, 600));	//テーブルの列幅と調整
+		mainPane.setPreferredSize(new Dimension(500, 600)); //テーブルの列幅と調整
 		getContentPane().add(mainPane, BorderLayout.CENTER);
 
 		mainPane.add(createHeaderPane(), BorderLayout.NORTH);
@@ -123,14 +123,13 @@ public class PartitionManagerApp extends MtpJFrameBase {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TenantManagerApp.main(new String[]{});
+				TenantManagerApp.main(new String[] {});
 
 				//自身を消す
 				dispose();
 			}
 		});
 		headerMainPane.add(btnTenantList);
-
 
 		JPanel headerSubPane = new JPanel();
 		headerSubPane.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -147,7 +146,7 @@ public class PartitionManagerApp extends MtpJFrameBase {
 		JLabel lblCount = new JLabel("Count");
 		lblCount.setHorizontalAlignment(JTextField.RIGHT);
 		txtCount = new JTextField();
-		txtCount.setPreferredSize(new Dimension(30,25));
+		txtCount.setPreferredSize(new Dimension(30, 25));
 		txtCount.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
 		txtCount.setHorizontalAlignment(JTextField.RIGHT);
 		txtCount.setEditable(false);
@@ -213,12 +212,12 @@ public class PartitionManagerApp extends MtpJFrameBase {
 			} catch (ExecutionException e) {
 				JOptionPane.showMessageDialog(PartitionManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
-            } catch (InterruptedException e) {
+			} catch (InterruptedException e) {
 				JOptionPane.showMessageDialog(PartitionManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
-    		btnRefresh.setText("Refresh List");
-    		btnRefresh.setEnabled(true);
+			btnRefresh.setText("Refresh List");
+			btnRefresh.setEnabled(true);
 		}
 	}
 

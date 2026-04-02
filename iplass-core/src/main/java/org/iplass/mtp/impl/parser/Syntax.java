@@ -21,11 +21,11 @@
 package org.iplass.mtp.impl.parser;
 
 public interface Syntax<N> {
-	
+
 	public void init(SyntaxContext context);
-	
+
 	public N parse(ParseContext str) throws ParseException;
-	
+
 //	public void appendSb(StringBuilder sb, N node);
 
 }

@@ -32,5 +32,6 @@ import org.iplass.mtp.web.actionmapping.definition.cache.RelatedEntityType;
 public @interface CacheRelatedEntity {
 
 	String definitionName();
+
 	RelatedEntityType type() default RelatedEntityType.SPECIFIC_ID;
 }

@@ -31,10 +31,10 @@ import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 public class AccessTokenAccountHandle implements AccountHandle {
 	private static final long serialVersionUID = 9109210238979237297L;
 
-	public static final String AUTHED_BY_ACCESS_TOKEN ="authedByAccessToken";
-	public static final String GRANTED_SCOPES ="oauthGrantedScopes";
-	public static final String CLIENT_ID ="oauthClientId";
-	
+	public static final String AUTHED_BY_ACCESS_TOKEN = "authedByAccessToken";
+	public static final String GRANTED_SCOPES = "oauthGrantedScopes";
+	public static final String CLIENT_ID = "oauthClientId";
+
 	private String unmodifiableUniqueKey;
 	private Map<String, Object> attributeMap;
 	private int authenticationProviderIndex;
@@ -42,7 +42,7 @@ public class AccessTokenAccountHandle implements AccountHandle {
 
 	public AccessTokenAccountHandle() {
 	}
-	
+
 	public AccessTokenAccountHandle(String unmodifiableUniqueKey, AccessToken accessToken, String policyName) {
 		this.unmodifiableUniqueKey = unmodifiableUniqueKey;
 		this.accessToken = accessToken;
@@ -53,7 +53,7 @@ public class AccessTokenAccountHandle implements AccountHandle {
 		}
 		getAttributeMap().put(User.ACCOUNT_POLICY, policyName);
 	}
-	
+
 	public AccessToken getAccessToken() {
 		return accessToken;
 	}
@@ -87,7 +87,7 @@ public class AccessTokenAccountHandle implements AccountHandle {
 
 	@Override
 	public Map<String, Object> getAttributeMap() {
-		if(attributeMap == null){
+		if (attributeMap == null) {
 			attributeMap = new HashMap<String, Object>();
 		}
 		return attributeMap;
@@ -102,5 +102,5 @@ public class AccessTokenAccountHandle implements AccountHandle {
 	public int getAuthenticationProviderIndex() {
 		return authenticationProviderIndex;
 	}
-	
+
 }

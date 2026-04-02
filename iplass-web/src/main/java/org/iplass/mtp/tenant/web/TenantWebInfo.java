@@ -74,6 +74,7 @@ public class TenantWebInfo extends TenantConfig {
 	public void setLoginUrlSelector(String loginUrlSelector) {
 		this.loginUrlSelector = loginUrlSelector;
 	}
+
 	public String getReAuthUrlSelector() {
 		return reAuthUrlSelector;
 	}

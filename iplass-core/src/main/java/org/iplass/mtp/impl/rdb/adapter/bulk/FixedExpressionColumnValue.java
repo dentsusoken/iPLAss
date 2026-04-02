@@ -20,15 +20,15 @@
 package org.iplass.mtp.impl.rdb.adapter.bulk;
 
 public class FixedExpressionColumnValue implements ColumnValue {
-	
+
 	private String colName;
 	private String fixedValueExpression;
-	
+
 	public FixedExpressionColumnValue(String colName, String fixedValueExpression) {
 		this.colName = colName;
 		this.fixedValueExpression = fixedValueExpression;
 	}
-	
+
 	public String fixedValueExpression() {
 		return fixedValueExpression;
 	}

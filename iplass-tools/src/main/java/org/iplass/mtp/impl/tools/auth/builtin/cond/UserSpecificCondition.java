@@ -47,6 +47,7 @@ public class UserSpecificCondition implements BuiltinAuthUserSearchCondition {
 	public SpecificType getType() {
 		return type;
 	}
+
 	public void setType(SpecificType type) {
 		this.type = type;
 	}
@@ -54,6 +55,7 @@ public class UserSpecificCondition implements BuiltinAuthUserSearchCondition {
 	public String getLockedUserPolicyName() {
 		return lockedUserPolicyName;
 	}
+
 	public void setLockedUserPolicyName(String lockedUserPolicyName) {
 		this.lockedUserPolicyName = lockedUserPolicyName;
 	}
@@ -61,19 +63,24 @@ public class UserSpecificCondition implements BuiltinAuthUserSearchCondition {
 	public String getPasswordRemainDaysPolicyName() {
 		return passwordRemainDaysPolicyName;
 	}
+
 	public void setPasswordRemainDaysPolicyName(
 			String passwordRemainDaysPolicyName) {
 		this.passwordRemainDaysPolicyName = passwordRemainDaysPolicyName;
 	}
+
 	public SearchOperator getPasswordRemainDaysOparator() {
 		return passwordRemainDaysOparator;
 	}
+
 	public void setPasswordRemainDaysOparator(SearchOperator passwordRemainDaysOparator) {
 		this.passwordRemainDaysOparator = passwordRemainDaysOparator;
 	}
+
 	public int getPasswordRemainDays() {
 		return passwordRemainDays;
 	}
+
 	public void setPasswordRemainDays(int passwordRemainDays) {
 		this.passwordRemainDays = passwordRemainDays;
 	}
@@ -81,12 +88,15 @@ public class UserSpecificCondition implements BuiltinAuthUserSearchCondition {
 	public Date getLastLoginFromDate() {
 		return lastLoginFromDate;
 	}
+
 	public void setLastLoginFromDate(Date lastLoginFromDate) {
 		this.lastLoginFromDate = lastLoginFromDate;
 	}
+
 	public Date getLastLoginToDate() {
 		return lastLoginToDate;
 	}
+
 	public void setLastLoginToDate(Date lastLoginToDate) {
 		this.lastLoginToDate = lastLoginToDate;
 	}

@@ -36,32 +36,34 @@ class AccessTokenMement implements Serializable {
 	private long expires;
 	private String resouceOwnerId;
 	private User user;
-	
+
 	//新規生成時の一時的なプレースホルダ
 	private transient AuthToken refreshToken;
-	
+
 	void save(AccessTokenInfo info, long expires, String resouceOwnerId, User user) {
 		OAuthClientRuntime client = OAuthServiceHolder.client.getRuntimeByName(info.getClientName());
-		clientMetaDataId = client.getMetaData().getId();
+		clientMetaDataId = client.getMetaData()
+				.getId();
 		if (info.getGrantedScopes() != null) {
 			grantedScopes = new ArrayList<>(info.getGrantedScopes());
 		}
-		
+
 		this.expires = expires;
 		this.resouceOwnerId = resouceOwnerId;
 		this.user = user;
 	}
-	
+
 	void fill(AccessTokenInfo info) {
 		OAuthClientRuntime ocr = OAuthServiceHolder.client.getRuntimeById(clientMetaDataId);
 		if (ocr != null) {
-			info.setClientName(ocr.getMetaData().getName());
+			info.setClientName(ocr.getMetaData()
+					.getName());
 		}
 		if (grantedScopes != null) {
 			info.setGrantedScopes(new ArrayList<>(grantedScopes));
 		}
 	}
-	
+
 	public AuthToken getRefreshToken() {
 		return refreshToken;
 	}
@@ -77,7 +79,7 @@ class AccessTokenMement implements Serializable {
 	long getExpires() {
 		return expires;
 	}
-	
+
 	public String getResouceOwnerId() {
 		return resouceOwnerId;
 	}
@@ -85,7 +87,7 @@ class AccessTokenMement implements Serializable {
 	User getUser() {
 		return user;
 	}
-	
+
 	List<String> getGrantedScopes() {
 		return grantedScopes;
 	}

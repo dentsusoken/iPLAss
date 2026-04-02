@@ -22,8 +22,6 @@ package org.iplass.mtp.spi;
 
 import java.util.Map;
 
-
-
 /**
  * <% if (doclang == 'ja') {%>
  *  Service定義配下のproperty/beanの値の生成処理をカスタマイズする際に利用可能な
@@ -37,7 +35,7 @@ import java.util.Map;
  * @param <T>
  */
 public interface ObjectBuilder<T> {
-	
+
 	/**
 	 * <% if (doclang == 'ja') {%>
 	 *  設定ファイルのproperty/bean定義に指定されたname属性がセットされます。
@@ -49,7 +47,7 @@ public interface ObjectBuilder<T> {
 	 */
 	public default void setName(String name) {
 	}
-	
+
 	/**
 	 * <% if (doclang == 'ja') {%>
 	 *  設定ファイルのproperty定義にvalue属性（もしくはネストされたvalue要素）が指定されている場合、その値がセットされます。
@@ -61,7 +59,7 @@ public interface ObjectBuilder<T> {
 	 */
 	public default void setValue(String value) {
 	}
-	
+
 	/**
 	 * <% if (doclang == 'ja') {%>
 	 *  設定ファイルのproperty/bean定義にclass属性が指定されている場合、その値がセットされます。
@@ -73,7 +71,7 @@ public interface ObjectBuilder<T> {
 	 */
 	public default void setClassName(String className) {
 	}
-	
+
 	/**
 	 * <% if (doclang == 'ja') {%>
 	 *  設定ファイルのproperty/bean定義にネストされたproperty定義が存在する場合、その値がセットされます。
@@ -88,7 +86,7 @@ public interface ObjectBuilder<T> {
 	 */
 	public default void setProperties(Map<String, Object> properties) {
 	}
-	
+
 	/**
 	 * <% if (doclang == 'ja') {%>
 	 *  設定ファイルのproperty/bean定義にネストされたarg定義が存在する場合、その値がセットされます。
@@ -103,7 +101,7 @@ public interface ObjectBuilder<T> {
 	 */
 	public default void setArgs(Map<String, Object> args) {
 	}
-	
+
 	/**
 	 * <% if (doclang == 'ja') {%>
 	 *  インスタンスを生成して返却するように実装します。
@@ -114,5 +112,5 @@ public interface ObjectBuilder<T> {
 	 * @return
 	 */
 	public T build();
-	
+
 }

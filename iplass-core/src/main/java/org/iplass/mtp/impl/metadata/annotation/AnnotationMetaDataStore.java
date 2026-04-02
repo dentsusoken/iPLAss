@@ -45,13 +45,11 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 
 	private static Logger logger = LoggerFactory.getLogger(AnnotationMetaDataStore.class);
 
-
 	@SuppressWarnings("rawtypes")
 	private List<AnnotatableMetaDataFactory> annotatableMetaDataFactory;
 
 	/* <path,RootMetaData> */
 	private Map<String, AnnotateMetaDataEntry> pathMetaMap;
-
 
 	@SuppressWarnings("rawtypes")
 	public List<AnnotatableMetaDataFactory> getAnnotatableMetaDataFactory() {
@@ -91,19 +89,28 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 		}
 
 		ArrayList<MetaDataEntryInfo> res = new ArrayList<MetaDataEntryInfo>();
-		for (Map.Entry<String, AnnotateMetaDataEntry> e: pathMetaMap.entrySet()) {
-			if (e.getKey().startsWith(path)) {
+		for (Map.Entry<String, AnnotateMetaDataEntry> e : pathMetaMap.entrySet()) {
+			if (e.getKey()
+					.startsWith(path)) {
 				MetaDataEntryInfo node = new MetaDataEntryInfo();
 				node.setPath(e.getKey());
-				node.setId(e.getValue().getMetaData().getId());
-				node.setDisplayName(e.getValue().getMetaData().getDisplayName());
-				node.setDescription(e.getValue().getMetaData().getDescription());
+				node.setId(e.getValue()
+						.getMetaData()
+						.getId());
+				node.setDisplayName(e.getValue()
+						.getMetaData()
+						.getDisplayName());
+				node.setDescription(e.getValue()
+						.getMetaData()
+						.getDescription());
 				node.setRepository(MetaDataRepositoryKind.ANNOTATION.getDisplayName());
 				node.setState(State.VALID);
 				node.setSharable(true);
 				node.setDataSharable(false);
-				node.setOverwritable(e.getValue().isOverwritable());
-				node.setPermissionSharable(e.getValue().isPermissionSharable());
+				node.setOverwritable(e.getValue()
+						.isOverwritable());
+				node.setPermissionSharable(e.getValue()
+						.isPermissionSharable());
 				res.add(node);
 			}
 		}
@@ -112,7 +119,10 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 		Collections.sort(res, new Comparator<MetaDataEntryInfo>() {
 			@Override
 			public int compare(MetaDataEntryInfo o1, MetaDataEntryInfo o2) {
-				return o1.getPath().toLowerCase().compareTo(o2.getPath().toLowerCase());
+				return o1.getPath()
+						.toLowerCase()
+						.compareTo(o2.getPath()
+								.toLowerCase());
 			}
 		});
 		return res;
@@ -129,7 +139,7 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 			List<Class> checkedList = new ArrayList<Class>();
 			List<String> annotatedClassNames = config.getValues("annotatedClass");
 			if (annotatedClassNames != null) {
-				for (String n: annotatedClassNames) {
+				for (String n : annotatedClassNames) {
 					if (logger.isDebugEnabled()) {
 						logger.debug("check " + n + " 's Annotation...");
 					}
@@ -145,8 +155,10 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 		if (logger.isDebugEnabled()) {
 			logger.debug("created metaData from Annotation.");
 			if (logger.isTraceEnabled()) {
-				for (Map.Entry<String, AnnotateMetaDataEntry> e: pathMetaMap.entrySet()) {
-					logger.trace(e.getKey() + ", id=" + e.getValue().getMetaData().getId());
+				for (Map.Entry<String, AnnotateMetaDataEntry> e : pathMetaMap.entrySet()) {
+					logger.trace(e.getKey() + ", id=" + e.getValue()
+							.getMetaData()
+							.getId());
 				}
 			}
 		}
@@ -167,29 +179,32 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 
 		Annotation[] annotations = annotatedClass.getAnnotations();
 		if (annotations != null) {
-			for (Annotation a: annotations) {
+			for (Annotation a : annotations) {
 				if (a instanceof MetaDataSeeAlso) {
 					Class[] seeAlso = ((MetaDataSeeAlso) a).value();
 					if (seeAlso != null) {
-						for (Class c: seeAlso) {
+						for (Class c : seeAlso) {
 							checkAndCreateMetaData(c, checkedList, factories);
 						}
 					}
 				} else {
 					AnnotatableMetaDataFactory amdf = factories.get(a.annotationType());
 					if (amdf != null) {
-						if (amdf.getAnnotatedClass().isAssignableFrom(annotatedClass)) {
+						if (amdf.getAnnotatedClass()
+								.isAssignableFrom(annotatedClass)) {
 							Map<String, AnnotateMetaDataEntry> metaMap = amdf.toMetaData(annotatedClass);
-							for (Map.Entry<String, AnnotateMetaDataEntry> e: metaMap.entrySet()) {
+							for (Map.Entry<String, AnnotateMetaDataEntry> e : metaMap.entrySet()) {
 								String path = e.getKey();
 								if (pathMetaMap.containsKey(path)) {
 									if (logger.isDebugEnabled()) {
-										logger.debug("already use the path:" + path + " metaData:" + pathMetaMap.get(path).getClass()
+										logger.debug("already use the path:" + path + " metaData:" + pathMetaMap.get(path)
+												.getClass()
 												+ " annotatedClass:" + annotatedClass);
 									}
 								}
 								AnnotateMetaDataEntry metaData = e.getValue();
-								metaData.getMetaData().setId(path);
+								metaData.getMetaData()
+										.setId(path);
 //								if (logger.isDebugEnabled()) {
 //								logger.debug("put(" + path + "," + metaData + ")");
 //							}
@@ -203,17 +218,19 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 		}
 	}
 
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Map<Class<Annotation>, AnnotatableMetaDataFactory> createFactories(List<AnnotatableMetaDataFactory> factoryList) {
-			Map<Class<Annotation>, AnnotatableMetaDataFactory> factories = new HashMap<Class<Annotation>, AnnotatableMetaDataFactory>();
-			for (AnnotatableMetaDataFactory factory: factoryList) {
-				factories.put(factory.getAnnotationClass(), factory);
-				if (logger.isDebugEnabled()) {
-					logger.debug("regist AnnotatableMetaDataFactory:" + factory.getClass().getName() + " for " + factory.getAnnotationClass().getName());
-				}
+		Map<Class<Annotation>, AnnotatableMetaDataFactory> factories = new HashMap<Class<Annotation>, AnnotatableMetaDataFactory>();
+		for (AnnotatableMetaDataFactory factory : factoryList) {
+			factories.put(factory.getAnnotationClass(), factory);
+			if (logger.isDebugEnabled()) {
+				logger.debug("regist AnnotatableMetaDataFactory:" + factory.getClass()
+						.getName() + " for "
+						+ factory.getAnnotationClass()
+								.getName());
 			}
-			return factories;
+		}
+		return factories;
 	}
 
 	@Override
@@ -225,7 +242,8 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 		}
 
 		MetaDataEntry instance = new MetaDataEntry();
-		instance.setMetaData(meta.getMetaData().copy());
+		instance.setMetaData(meta.getMetaData()
+				.copy());
 		instance.setVersion(0);
 		instance.setState(State.VALID);
 		instance.setPath(path);

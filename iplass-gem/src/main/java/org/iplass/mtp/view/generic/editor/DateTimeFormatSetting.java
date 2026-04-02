@@ -30,37 +30,37 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
  * 日付・時間型のフォーマットのプロパティ
  * @author DENTSU SOKEN Shojima
  */
-public class DateTimeFormatSetting implements Refrectable{
+public class DateTimeFormatSetting implements Refrectable {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -4963345852735862575L;
 
 	/** 日付/時刻のフォーマット設定 */
 	@MetaFieldInfo(
-			displayName="日付/時刻のフォーマット設定",
-			displayNameKey="generic_editor_DateTimeFormatSetting_dateTimeFormatDisplaNameKey",
-			description="検索結果、詳細画面で表示する日付/時刻のフォーマットを設定する。",
-			required=true,
-			inputType=InputType.TEXT,
-			displayOrder=100,
-			descriptionKey="generic_editor_DateTimeFormatSetting_dateTimeFormatDescriptionKey"
+			displayName = "日付/時刻のフォーマット設定",
+			displayNameKey = "generic_editor_DateTimeFormatSetting_dateTimeFormatDisplaNameKey",
+			description = "検索結果、詳細画面で表示する日付/時刻のフォーマットを設定する。",
+			required = true,
+			inputType = InputType.TEXT,
+			displayOrder = 100,
+			descriptionKey = "generic_editor_DateTimeFormatSetting_dateTimeFormatDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String datetimeFormat;
 
 	/** 日付/時刻のロケール設定 */
 	@MetaFieldInfo(
-			displayName="日付/時刻のロケール設定",
-			displayNameKey="generic_editor_DateTimeFormatSetting_dateTimeLocaleDisplaNameKey",
-			description="検索結果、詳細画面で表示する日付/時刻のロケールを設定する。",
-			inputType=InputType.TEXT,
-			displayOrder=110,
-			descriptionKey="generic_editor_DateTimeFormatSetting_dateTimeLocaleDescriptionKey"
+			displayName = "日付/時刻のロケール設定",
+			displayNameKey = "generic_editor_DateTimeFormatSetting_dateTimeLocaleDisplaNameKey",
+			description = "検索結果、詳細画面で表示する日付/時刻のロケールを設定する。",
+			inputType = InputType.TEXT,
+			displayOrder = 110,
+			descriptionKey = "generic_editor_DateTimeFormatSetting_dateTimeLocaleDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String datetimeLocale;
 
@@ -95,6 +95,5 @@ public class DateTimeFormatSetting implements Refrectable{
 	public void setDatetimeLocale(String datetimeLocale) {
 		this.datetimeLocale = datetimeLocale;
 	}
-
 
 }

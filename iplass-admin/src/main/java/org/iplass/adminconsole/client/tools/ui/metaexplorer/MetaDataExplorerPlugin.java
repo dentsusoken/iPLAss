@@ -33,7 +33,6 @@ import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
-
 public class MetaDataExplorerPlugin extends DefaultAdminPlugin {
 
 	/** ノード表示名 */
@@ -52,13 +51,14 @@ public class MetaDataExplorerPlugin extends DefaultAdminPlugin {
 	public MetaDataExplorerPlugin() {
 
 		//ViewMetaDataErrorEventの登録
-		AdminConsoleGlobalEventBus.addHandler(ViewMetaDataStatusCheckResultEvent.TYPE, new ViewMetaDataStatusCheckResultEvent.ViewMetaDataStatusCheckResultHandler() {
+		AdminConsoleGlobalEventBus.addHandler(ViewMetaDataStatusCheckResultEvent.TYPE,
+				new ViewMetaDataStatusCheckResultEvent.ViewMetaDataStatusCheckResultHandler() {
 
-			@Override
-			public void onViewMetaDataStatusCheckResult(ViewMetaDataStatusCheckResultEvent event) {
-				showMetaDataStatusErrorList(event.getResult());
-			}
-		});
+					@Override
+					public void onViewMetaDataStatusCheckResult(ViewMetaDataStatusCheckResultEvent event) {
+						showMetaDataStatusErrorList(event.getResult());
+					}
+				});
 	}
 
 	@Override
@@ -69,19 +69,20 @@ public class MetaDataExplorerPlugin extends DefaultAdminPlugin {
 
 	@Override
 	public void onNodeDoubleClick(AdminMenuTreeNode node) {
-		if (NODE_TYPE.equals(node.getType())){
+		if (NODE_TYPE.equals(node.getType())) {
 			addTab(node);
 		}
 	}
 
 	@Override
 	public void onNodeContextClick(final AdminMenuTreeNode node) {
-		if (NODE_TYPE.equals(node.getType())){
+		if (NODE_TYPE.equals(node.getType())) {
 
 			if (contextMenu == null) {
 				contextMenu = new Menu();
 				//contextMenu.setWidth(100);
-				MenuItem execMenuItem = new MenuItem(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataExplorerPluginManager_startMetaDataExplorer"), NODE_ICON);
+				MenuItem execMenuItem = new MenuItem(
+						AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataExplorerPluginManager_startMetaDataExplorer"), NODE_ICON);
 				execMenuItem.addClickHandler(new ClickHandler() {
 
 					@Override

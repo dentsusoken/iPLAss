@@ -43,7 +43,7 @@ public class DynamicTemplateResultEditPane extends ResultTypeEditPane {
 	/** テンプレート名が入っているAttribute名 */
 	private TextItem attributeNameField;
 	/** レイアウトAction名が入っているAttribute名 */
-	private TextItem  layoutActionAttributeNameField;
+	private TextItem layoutActionAttributeNameField;
 
 	private DynamicForm contentDispositionForm;
 
@@ -107,12 +107,13 @@ public class DynamicTemplateResultEditPane extends ResultTypeEditPane {
 	 */
 	@Override
 	public void setDefinition(ResultDefinition definition) {
-		DynamicTemplateResultDefinition dynamic = (DynamicTemplateResultDefinition)definition;
+		DynamicTemplateResultDefinition dynamic = (DynamicTemplateResultDefinition) definition;
 		attributeNameField.setValue(dynamic.getTemplatePathAttributeName());
 		layoutActionAttributeNameField.setValue(dynamic.getLayoutActionAttributeName());
 		useContentDispositionField.setValue(dynamic.isUseContentDisposition());
 		if (dynamic.getContentDispositionType() != null) {
-			contentDispositionTypeField.setValue(dynamic.getContentDispositionType().name());
+			contentDispositionTypeField.setValue(dynamic.getContentDispositionType()
+					.name());
 		} else {
 			contentDispositionTypeField.setValue("");
 		}
@@ -126,7 +127,7 @@ public class DynamicTemplateResultEditPane extends ResultTypeEditPane {
 	 */
 	@Override
 	public ResultDefinition getEditDefinition(ResultDefinition definition) {
-		DynamicTemplateResultDefinition dynamic = (DynamicTemplateResultDefinition)definition;
+		DynamicTemplateResultDefinition dynamic = (DynamicTemplateResultDefinition) definition;
 		dynamic.setTemplatePathAttributeName(SmartGWTUtil.getStringValue(attributeNameField));
 		dynamic.setLayoutActionAttributeName(SmartGWTUtil.getStringValue(layoutActionAttributeNameField));
 		dynamic.setUseContentDisposition(SmartGWTUtil.getBooleanValue(useContentDispositionField));

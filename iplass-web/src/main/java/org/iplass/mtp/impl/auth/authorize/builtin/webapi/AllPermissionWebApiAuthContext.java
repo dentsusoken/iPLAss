@@ -39,11 +39,11 @@ class AllPermissionWebApiAuthContext implements WebApiAuthContext {
 		if (withAnonymous) {
 			return true;
 		} else {
-			if(user.getUserContext() instanceof AnonymousUserContext){
+			if (user.getUserContext() instanceof AnonymousUserContext) {
 				return false;
-			}else if(user.getUserContext() instanceof TemporaryUserContext){
+			} else if (user.getUserContext() instanceof TemporaryUserContext) {
 				return false;
-			}else{
+			} else {
 				return true;
 			}
 		}

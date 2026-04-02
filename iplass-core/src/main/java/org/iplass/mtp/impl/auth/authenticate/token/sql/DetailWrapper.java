@@ -25,7 +25,7 @@ public class DetailWrapper implements Serializable {
 	private static final long serialVersionUID = 2926799761837894728L;
 
 	private Serializable details;
-	
+
 	public DetailWrapper() {
 	}
 

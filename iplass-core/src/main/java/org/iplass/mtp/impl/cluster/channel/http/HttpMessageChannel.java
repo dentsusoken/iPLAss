@@ -75,7 +75,7 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 	public static final String INTERFACE_NAME_DEF_SYSTEM_PROP_NAME = "mtp.cluster.http.myinterfacename";
 
 	/** 非同期タスクサービス名 */
-	public static final String ASYNC_TASK_SERVICE_NAME ="AsyncTaskServiceForHttpMessageChannel";
+	public static final String ASYNC_TASK_SERVICE_NAME = "AsyncTaskServiceForHttpMessageChannel";
 
 	/** メッセージ通信の認証用キーのパラメータ名。 */
 	public static final String CERT_KEY_NAME = "certKey";
@@ -298,7 +298,6 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 		return messageHandler;
 	}
 
-
 	void doRetry(final SendMessageTask task) {
 		timer.schedule(new TimerTask() {
 			@Override
@@ -319,7 +318,8 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 			}
 			params.add(new BasicNameValuePair(EVENT_NAME_NAME, message.getEventName()));
 			if (message.getParam() != null) {
-				for (Map.Entry<String, String> e: message.getParam().entrySet()) {
+				for (Map.Entry<String, String> e : message.getParam()
+						.entrySet()) {
 					params.add(new BasicNameValuePair(e.getKey(), e.getValue()));
 				}
 			}
@@ -346,11 +346,10 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 		}
 	}
 
-
 	@Override
 	public void sendMessage(final Message message) {
 		if (serverUrl != null && serverUrl.size() > 0) {
-			for (String url: serverUrl) {
+			for (String url : serverUrl) {
 				asyncTaskService.execute(new SendMessageTask(message, url, retryCount, this));
 			}
 		}
@@ -358,7 +357,7 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 
 	private List<URI> toURI(List<String> urls) throws URISyntaxException {
 		List<URI> ret = new ArrayList<>();
-		for (String url: urls) {
+		for (String url : urls) {
 			URI u = new URI(url);
 			ret.add(u);
 		}
@@ -382,17 +381,21 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 	}
 
 	private String[] getMyServerNameAndAddress() throws SocketException {
-		String defHostName = ServerEnv.getInstance().getProperty(SERVER_NAME_DEF_SYSTEM_PROP_NAME);
+		String defHostName = ServerEnv.getInstance()
+				.getProperty(SERVER_NAME_DEF_SYSTEM_PROP_NAME);
 		if (defHostName == null) {
-			defHostName = ServerEnv.getInstance().getProperty(BootstrapProps.SERVER_NAME);
+			defHostName = ServerEnv.getInstance()
+					.getProperty(BootstrapProps.SERVER_NAME);
 		}
 		if (defHostName != null) {
-			return new String[]{defHostName};
+			return new String[] { defHostName };
 		} else {
 			Set<String> list = new LinkedHashSet<>();
-			String networkInterfaceName = ServerEnv.getInstance().getProperty(INTERFACE_NAME_DEF_SYSTEM_PROP_NAME);
+			String networkInterfaceName = ServerEnv.getInstance()
+					.getProperty(INTERFACE_NAME_DEF_SYSTEM_PROP_NAME);
 			if (networkInterfaceName == null) {
-				networkInterfaceName = ServerEnv.getInstance().getProperty(BootstrapProps.NETWORK_INTERFACE_NAME);
+				networkInterfaceName = ServerEnv.getInstance()
+						.getProperty(BootstrapProps.NETWORK_INTERFACE_NAME);
 			}
 			NetworkInterface ni = null;
 			NetworkInterface loopBack = null;
@@ -432,7 +435,8 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 	}
 
 	private int getMyPort() {
-		String portStr = ServerEnv.getInstance().getProperty(PORT_DEF_SYSTEM_PROP_NAME);
+		String portStr = ServerEnv.getInstance()
+				.getProperty(PORT_DEF_SYSTEM_PROP_NAME);
 		if (portStr == null) {
 			return -1;
 		} else {
@@ -455,13 +459,15 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 				for (int i = 0; i < uriList.size(); i++) {
 					URI uri = uriList.get(i);
 					boolean isMyHost = false;
-					for (String myName: myServerNames) {
-						if (uri.getHost().equals(myName)) {
+					for (String myName : myServerNames) {
+						if (uri.getHost()
+								.equals(myName)) {
 							if (port == -1) {
 								//ポート未指定の場合は、同一サーバ名での定義が1つの場合、それを自身のサーバ定義とみなす
 								int portCount = 0;
-								for (URI uu: uriList) {
-									if (uu.getHost().equals(uri.getHost())) {
+								for (URI uu : uriList) {
+									if (uu.getHost()
+											.equals(uri.getHost())) {
 										portCount++;
 									}
 								}
@@ -493,7 +499,7 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 
 				serverUrl = newServerUrl;
 
-			} catch(SocketException | URISyntaxException e) {
+			} catch (SocketException | URISyntaxException e) {
 				throw new ServiceConfigrationException("clusterservice setting is invalid:" + e.toString(), e);
 			}
 		}

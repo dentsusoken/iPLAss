@@ -19,10 +19,10 @@ import org.iplass.mtp.impl.core.config.DefaultPropertyValueCoder;
 import org.iplass.mtp.impl.core.config.PropertyValueCoder;
 
 public class Encoder {
-	
-	
+
 	private static Properties getProperties() throws IOException {
-		String fileName = BootstrapProps.getInstance().getProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME);
+		String fileName = BootstrapProps.getInstance()
+				.getProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME);
 		if (fileName != null) {
 			Properties prop = new Properties();
 			Path path = Paths.get(fileName);
@@ -37,9 +37,9 @@ public class Encoder {
 				try (InputStream is = PropertyValueCoder.class.getResourceAsStream(fileName)) {
 					if (is == null) {
 						System.err.println("CryptConfigFile:" + fileName + " not found.");
-						
+
 					}
-					
+
 					InputStreamReader isr = new InputStreamReader(is, "utf-8");
 					prop.load(isr);
 				}
@@ -65,15 +65,17 @@ public class Encoder {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		
+
 		Properties prop = getProperties();
-		
+
 		String propertyValueCoderName = prop.getProperty(PropertyValueCoder.PROPERTY_VALUE_CODER, DefaultPropertyValueCoder.class.getName());
-		if(DefaultPropertyValueCoder.class.getName().equals(propertyValueCoderName)) {
+		if (DefaultPropertyValueCoder.class.getName()
+				.equals(propertyValueCoderName)) {
 			prop.setProperty(DefaultPropertyValueCoder.PASSPHRASE_SUPPLIER, EncoderConsolePassphraseSupplier.class.getName());
 		}
-		
-		PropertyValueCoder coder = (PropertyValueCoder) Class.forName(propertyValueCoderName).newInstance();
+
+		PropertyValueCoder coder = (PropertyValueCoder) Class.forName(propertyValueCoderName)
+				.newInstance();
 		coder.open(prop);
 
 		while (true) {
@@ -97,15 +99,15 @@ public class Encoder {
 				BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 				plain = console.readLine();
 			}
-			
+
 			if (plain.equals("")) {
 				return;
 			}
-			
+
 			System.out.println("encrypted text:");
 			System.out.println(coder.encode(plain));
 			System.out.println();
-			
+
 			// 引数指定で起動する場合、バッチ処理を終了する。
 			if (args.length > 1 && args[0].equals("-file")) {
 				return;

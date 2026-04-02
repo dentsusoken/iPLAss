@@ -24,22 +24,22 @@ import java.util.Properties;
 
 public interface PropertyValueCoder extends AutoCloseable {
 	public static final String PROPERTY_VALUE_CODER = "propertyValueCoder";
-	
+
 	public default void open(Properties prop) {
 	};
-	
+
 	@Override
 	public default void close() {
 	};
 
-	public default String encode(String plain){
+	public default String encode(String plain) {
 		return plain;
 	};
-	
-	public default String decode(String encoded){
+
+	public default String decode(String encoded) {
 		return encoded;
 	};
-	
-	public default void clear(){
+
+	public default void clear() {
 	};
 }

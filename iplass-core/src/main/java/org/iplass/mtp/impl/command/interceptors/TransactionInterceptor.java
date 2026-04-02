@@ -26,7 +26,7 @@ import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionOption;
 
 public class TransactionInterceptor implements CommandInterceptor {
-	
+
 	@Override
 	public String intercept(final CommandInvocation invocation) {
 		TransactionOption option = ((InvocationImpl) invocation).getTransactionOption();

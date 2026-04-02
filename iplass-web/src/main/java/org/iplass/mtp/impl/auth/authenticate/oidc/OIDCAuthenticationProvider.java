@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 public class OIDCAuthenticationProvider extends AuthenticationProviderBase {
 	private static final Logger authLog = LoggerFactory.getLogger("mtp.auth.oidc");
-	
+
 	private OpenIdConnectService oidcService;
 	private AuthenticationPolicyService policyService;
 
@@ -53,8 +53,10 @@ public class OIDCAuthenticationProvider extends AuthenticationProviderBase {
 			setUserEntityResolver(er);
 		}
 		super.inited(service, config);
-		oidcService = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
-		policyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
+		oidcService = ServiceRegistry.getRegistry()
+				.getService(OpenIdConnectService.class);
+		policyService = ServiceRegistry.getRegistry()
+				.getService(AuthenticationPolicyService.class);
 	}
 
 	@Override
@@ -77,37 +79,43 @@ public class OIDCAuthenticationProvider extends AuthenticationProviderBase {
 		if (!(credential instanceof OIDCCredential)) {
 			return null;
 		}
-		
+
 		OIDCCredential cre = (OIDCCredential) credential;
 		OpenIdConnectRuntime oidcRuntime = oidcService.getOrDefault(cre.getOpenIdConnectDefinitionName());
-		
+
 		OIDCValidateResult vr = oidcRuntime.validate(cre);
 		if (!vr.isValid()) {
 			if (authLog.isDebugEnabled()) {
 				if (vr.getRootCause() == null) {
 					authLog.debug("OIDC failed:error=" + vr.getError() + ", errorDescription=" + vr.getErrorDescription());
 				} else {
-					authLog.debug("OIDC failed:error=" + vr.getError() + ", errorDescription=" + vr.getErrorDescription() + "exception=" + vr.getRootCause(), vr.getRootCause());
+					authLog.debug(
+							"OIDC failed:error=" + vr.getError() + ", errorDescription=" + vr.getErrorDescription() + "exception=" + vr.getRootCause(),
+							vr.getRootCause());
 				}
 			}
-			
+
 			OIDCRuntimeException ore;
 			if (vr.getRootCause() == null) {
 				ore = new OIDCRuntimeException(vr.getError() + ":" + vr.getErrorDescription());
 			} else {
 				ore = new OIDCRuntimeException(vr.getError() + ":" + vr.getErrorDescription(), vr.getRootCause());
 			}
-			throw new LoginFailedException(resourceString("impl.auth.authenticate.oidc.OIDCAuthenticationProvider.error", "Invalid response from OpenID Provider.", "invalid_response"), ore);
+			throw new LoginFailedException(resourceString("impl.auth.authenticate.oidc.OIDCAuthenticationProvider.error",
+					"Invalid response from OpenID Provider.", "invalid_response"), ore);
 		}
-		
+
 		OIDCAccountHandle ah = new OIDCAccountHandle(vr.getSubjectId(), vr.getSubjectName(),
-				oidcRuntime.getMetaData().getName(), vr.getClaims(), vr.getAccessToken(), vr.getExpiresIn(), vr.getRefreshToken(), vr.getScopes());
+				oidcRuntime.getMetaData()
+						.getName(),
+				vr.getClaims(), vr.getAccessToken(), vr.getExpiresIn(), vr.getRefreshToken(), vr.getScopes());
 
 		User user = getUserEntityResolver().searchUser(ah);
 		if (user == null) {
 			if (oidcRuntime.getAutoUserProvisioningHandler() != null) {
 				user = AuthContext.doPrivileged(() -> {
-					String userOid = oidcRuntime.getAutoUserProvisioningHandler().createUser(vr.getSubjectId(), vr.getSubjectName(), ah.getAttributeMap());
+					String userOid = oidcRuntime.getAutoUserProvisioningHandler()
+							.createUser(vr.getSubjectId(), vr.getSubjectName(), ah.getAttributeMap());
 					if (userOid != null) {
 						oidcRuntime.connect(userOid, vr);
 						return getUserEntityResolver().searchUser(ah);
@@ -116,16 +124,18 @@ public class OIDCAuthenticationProvider extends AuthenticationProviderBase {
 					}
 				});
 			}
-			
+
 			if (user == null) {
-				throw new LoginFailedException(resourceString("impl.auth.authenticate.oidc.OIDCAuthenticationProvider.error", "", "account_not_available"));
+				throw new LoginFailedException(
+						resourceString("impl.auth.authenticate.oidc.OIDCAuthenticationProvider.error", "", "account_not_available"));
 			}
 
 		} else {
 			if (oidcRuntime.getAutoUserProvisioningHandler() != null) {
 				final User refUser = user;
 				user = AuthContext.doPrivileged(() -> {
-					oidcRuntime.getAutoUserProvisioningHandler().updateUser(refUser, vr.getSubjectId(), vr.getSubjectName(), ah.getAttributeMap());
+					oidcRuntime.getAutoUserProvisioningHandler()
+							.updateUser(refUser, vr.getSubjectId(), vr.getSubjectName(), ah.getAttributeMap());
 					return getUserEntityResolver().searchUser(ah);
 				});
 			}
@@ -135,7 +145,9 @@ public class OIDCAuthenticationProvider extends AuthenticationProviderBase {
 
 		//check policy
 		if (!oidcRuntime.isAllowedOnPolicy(userPolicy)) {
-			throw new LoginFailedException(resourceString("impl.auth.authenticate.oidc.OIDCAuthenticationProvider.error", "", "account_policy_error"), new OIDCRuntimeException("policy not allow OpenIdConnectDefinition:" + oidcRuntime.getMetaData().getName()));
+			throw new LoginFailedException(resourceString("impl.auth.authenticate.oidc.OIDCAuthenticationProvider.error", "", "account_policy_error"),
+					new OIDCRuntimeException("policy not allow OpenIdConnectDefinition:" + oidcRuntime.getMetaData()
+							.getName()));
 		}
 
 		ah.setId(user.getAccountId());

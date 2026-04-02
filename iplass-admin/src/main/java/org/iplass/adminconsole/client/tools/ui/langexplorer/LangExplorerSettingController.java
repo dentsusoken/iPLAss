@@ -52,5 +52,4 @@ public interface LangExplorerSettingController {
 	 */
 	public void exportMultiLangInfo(String[] paths, String repoType);
 
-
 }

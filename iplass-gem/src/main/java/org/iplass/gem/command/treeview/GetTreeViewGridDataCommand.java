@@ -69,16 +69,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebApi(
-		name=GetTreeViewGridDataCommand.WEBAPI_NAME,
-		displayName="ツリービューグリッド取得",
-		accepts=RequestType.REST_FORM,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={"data"},
-		checkXRequestedWithHeader=true
-	)
-@Template(name="gem/treeview/treeViewWidget", displayName="ツリービューウィジェット", path="/jsp/gem/treeview/treeViewList.jsp")
-@CommandClass(name="gem/treeview/GetTreeViewGridDataCommand", displayName="ツリービューグリッドデータ取得")
+		name = GetTreeViewGridDataCommand.WEBAPI_NAME,
+		displayName = "ツリービューグリッド取得",
+		accepts = RequestType.REST_FORM,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { "data" },
+		checkXRequestedWithHeader = true
+)
+@Template(name = "gem/treeview/treeViewWidget", displayName = "ツリービューウィジェット", path = "/jsp/gem/treeview/treeViewList.jsp")
+@CommandClass(name = "gem/treeview/GetTreeViewGridDataCommand", displayName = "ツリービューグリッドデータ取得")
 public final class GetTreeViewGridDataCommand implements Command {
 
 	private static Logger logger = LoggerFactory.getLogger(GetTreeViewGridDataCommand.class);
@@ -94,9 +94,12 @@ public final class GetTreeViewGridDataCommand implements Command {
 	private TreeViewManager tvm = null;
 
 	public GetTreeViewGridDataCommand() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		tvm = ManagerLocator.getInstance().getManager(TreeViewManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		tvm = ManagerLocator.getInstance()
+				.getManager(TreeViewManager.class);
 	}
 
 	@Override
@@ -187,13 +190,16 @@ public final class GetTreeViewGridDataCommand implements Command {
 								return item.getViewName();
 							}
 							return null;
-						}}))) {
+						}
+					}))) {
 				if (item.isDisplayDefinitionNode()) {
 					TreeNodeData node = createEntityDefinitionNode(item, nodeInfo, treeView.getColModel());
-					if (node != null) nodes.add(node);
+					if (node != null)
+						nodes.add(node);
 				} else {
 					List<TreeNodeData> _nodes = underEntityDefinition(item, nodeInfo, treeView.getColModel());
-					if (_nodes != null && !_nodes.isEmpty()) nodes.addAll(_nodes);
+					if (_nodes != null && !_nodes.isEmpty())
+						nodes.addAll(_nodes);
 				}
 			}
 		}
@@ -213,12 +219,12 @@ public final class GetTreeViewGridDataCommand implements Command {
 	private List<TreeNodeData> underEntityDefinition(TreeViewItem item, NodeInfo nodeInfo, List<TreeViewGridColModel> colModels) {
 		List<TreeNodeData> nodes = new ArrayList<TreeNodeData>();
 		int totalCount = count(item, nodeInfo.getOid());
-		if (totalCount == 0) return nodes;
+		if (totalCount == 0)
+			return nodes;
 
 		if (totalCount > item.getLimit()) {
 			// total/limit+1個分の階層作成
-			int index = totalCount % item.getLimit() == 0 ?
-					totalCount / item.getLimit() : totalCount / item.getLimit() + 1;
+			int index = totalCount % item.getLimit() == 0 ? totalCount / item.getLimit() : totalCount / item.getLimit() + 1;
 
 			String path = null;
 			if (nodeInfo.isRoot()) {
@@ -236,7 +242,8 @@ public final class GetTreeViewGridDataCommand implements Command {
 				iNode.setOffset(_offset);
 				iNode.setOid(nodeInfo.getOid());
 
-				TreeNodeData data = new TreeNodeData(iNode, nodeInfo.getNodeid(), nodeInfo.getLevel(), nodeInfo.getOid(), _offset, new Object[colModels.size()]);
+				TreeNodeData data = new TreeNodeData(iNode, nodeInfo.getNodeid(), nodeInfo.getLevel(), nodeInfo.getOid(), _offset,
+						new Object[colModels.size()]);
 				nodes.add(data);
 			}
 		} else {
@@ -280,12 +287,14 @@ public final class GetTreeViewGridDataCommand implements Command {
 		for (ReferenceTreeViewItem rItem : item.getReferenceTreeViewItems()) {
 			if (rItem.isDisplayDefinitionNode()) {
 				TreeNodeData rNode = createEntityDefinitionNode(rItem, nodeInfo, colModels);
-				if (rNode != null) nodes.add(rNode);
+				if (rNode != null)
+					nodes.add(rNode);
 			} else {
 				NodeInfo newNodeInfo = new NodeInfo(nodeInfo.getNodeid(), nodeInfo.getLevel());
 				newNodeInfo.currentPath += "/" + rItem.getPropertyName();
 				List<TreeNodeData> _nodes = underEntityDefinition(rItem, newNodeInfo, colModels);
-				if (_nodes != null && !_nodes.isEmpty()) nodes.addAll(_nodes);
+				if (_nodes != null && !_nodes.isEmpty())
+					nodes.addAll(_nodes);
 			}
 		}
 		return nodes;
@@ -303,7 +312,8 @@ public final class GetTreeViewGridDataCommand implements Command {
 	 */
 	private TreeNodeData createEntityDefinitionNode(TreeViewItem item, NodeInfo nodeInfo, List<TreeViewGridColModel> colModels) {
 		int totalCount = count(item, nodeInfo.getOid());
-		if (totalCount == 0) return null;
+		if (totalCount == 0)
+			return null;
 
 		EntityDefinitionNode edNode = null;
 		if (item instanceof ReferenceTreeViewItem) {
@@ -314,7 +324,10 @@ public final class GetTreeViewGridDataCommand implements Command {
 			edNode = new EntityDefinitionNode(nodeInfo.getCurrentPath(), item.getDefName());
 
 			//表示名
-			String displayName = TemplateUtil.getMultilingualString(edm.get(item.getDefName()).getDisplayName(), edm.get(item.getDefName()).getLocalizedDisplayNameList());
+			String displayName = TemplateUtil.getMultilingualString(edm.get(item.getDefName())
+					.getDisplayName(),
+					edm.get(item.getDefName())
+							.getLocalizedDisplayNameList());
 
 			edNode.setDisplayName(displayName);
 		}
@@ -357,14 +370,15 @@ public final class GetTreeViewGridDataCommand implements Command {
 			en.setViewName(item.getViewName());
 			en.setIcon(item.getEntityNodeIcon());
 			en.setCssStyle(item.getEntityNodeCssStyle());
-			en.setHasReference(!item.getReferenceTreeViewItems().isEmpty());
+			en.setHasReference(!item.getReferenceTreeViewItems()
+					.isEmpty());
 
 			//oidと表示ラベル以外を詰め直し
 			Object[] propValues = null;
 			if (values.length > 2) {
 				propValues = Arrays.copyOfRange(values, 2, values.length);
 			} else {
-				propValues = new Object[]{};
+				propValues = new Object[] {};
 			}
 			TreeNodeData data = new TreeNodeData(en, nodeInfo.getNodeid(), nodeInfo.getLevel(), propValues);
 			nodes.add(data);
@@ -381,7 +395,8 @@ public final class GetTreeViewGridDataCommand implements Command {
 	private int count(TreeViewItem item, String oid) {
 		Query cond = new Query();
 		cond.select(Entity.OID);
-		cond.select().setDistinct(true);
+		cond.select()
+				.setDistinct(true);
 		cond.from(item.getDefName());
 		if (oid != null && item instanceof ReferenceTreeViewItem) {
 			cond.where(getCondition((ReferenceTreeViewItem) item, oid));
@@ -414,7 +429,8 @@ public final class GetTreeViewGridDataCommand implements Command {
 		for (TreeViewGridColModel colModel : colModels) {
 			TreeViewGridColModelMapping mapping = null;
 			for (TreeViewGridColModelMapping tmp : item.getMapping()) {
-				if (colModel.getName().equals(tmp.getName())) {
+				if (colModel.getName()
+						.equals(tmp.getName())) {
 					mapping = tmp;
 				}
 			}
@@ -446,7 +462,8 @@ public final class GetTreeViewGridDataCommand implements Command {
 			query.limit(item.getLimit());
 		}
 
-		List<Object[]> list = em.search(query).getList();
+		List<Object[]> list = em.search(query)
+				.getList();
 		return list;
 	}
 
@@ -456,10 +473,13 @@ public final class GetTreeViewGridDataCommand implements Command {
 	 * @return プロパティが定義に存在するか
 	 */
 	private boolean existProperty(TreeViewItem item) {
-		if (item == null) return false;
-		if (item.getDisplayPropertyName() == null) return false;
+		if (item == null)
+			return false;
+		if (item.getDisplayPropertyName() == null)
+			return false;
 		EntityDefinition ed = edm.get(item.getDefName());
-		if (ed.getProperty(item.getDisplayPropertyName()) == null) return false;
+		if (ed.getProperty(item.getDisplayPropertyName()) == null)
+			return false;
 		return true;
 	}
 
@@ -469,11 +489,14 @@ public final class GetTreeViewGridDataCommand implements Command {
 	 * @return プロパティが定義に存在するか
 	 */
 	private boolean isReferenceProperty(TreeViewItem item) {
-		if (item == null) return false;
-		if (item.getDisplayPropertyName() == null) return false;
+		if (item == null)
+			return false;
+		if (item.getDisplayPropertyName() == null)
+			return false;
 		EntityDefinition ed = edm.get(item.getDefName());
 		PropertyDefinition pd = ed.getProperty(item.getDisplayPropertyName());
-		if (pd == null) return false;
+		if (pd == null)
+			return false;
 		return pd instanceof ReferenceProperty;
 	}
 
@@ -484,10 +507,12 @@ public final class GetTreeViewGridDataCommand implements Command {
 	 * @return
 	 */
 	private boolean existProperty(TreeViewItem item, String propName) {
-		if (item == null || propName == null) return false;
+		if (item == null || propName == null)
+			return false;
 		EntityDefinition ed = edm.get(item.getDefName());
 		PropertyDefinition pd = getPropertyDefinition(ed, propName);
-		if (pd == null) return false;
+		if (pd == null)
+			return false;
 		return true;
 	}
 
@@ -498,10 +523,12 @@ public final class GetTreeViewGridDataCommand implements Command {
 	 * @return
 	 */
 	private boolean isReferenceProperty(TreeViewItem item, String propName) {
-		if (item == null || propName == null) return false;
+		if (item == null || propName == null)
+			return false;
 		EntityDefinition ed = edm.get(item.getDefName());
 		PropertyDefinition pd = getPropertyDefinition(ed, propName);
-		if (pd == null) return false;
+		if (pd == null)
+			return false;
 		return pd instanceof ReferenceProperty;
 	}
 
@@ -537,9 +564,12 @@ public final class GetTreeViewGridDataCommand implements Command {
 	 */
 	private Condition getCondition(ReferenceTreeViewItem item, String oid) {
 		SubQuery sq = new SubQuery(new Query().select(
-				item.getPropertyName() + "." + Entity.OID).from(
-				item.getParent().getDefName()).where(
-				new Equals(Entity.OID, oid)));
+				item.getPropertyName() + "." + Entity.OID)
+				.from(
+						item.getParent()
+								.getDefName())
+				.where(
+						new Equals(Entity.OID, oid)));
 		return new In(Entity.OID, sq);
 	}
 
@@ -551,7 +581,8 @@ public final class GetTreeViewGridDataCommand implements Command {
 	private SortSpec getSortSpec(TreeViewItem item) {
 		String sortKey = item.getSortItem() != null ? item.getSortItem() : Entity.OID;
 		SortType type = SortType.ASC;
-		if (item.getSortType() != null && item.getSortType().equals(TreeSortType.DESC)) {
+		if (item.getSortType() != null && item.getSortType()
+				.equals(TreeSortType.DESC)) {
 			type = SortType.DESC;
 		}
 		return new SortSpec(sortKey, type);
@@ -639,7 +670,8 @@ public final class GetTreeViewGridDataCommand implements Command {
 		 * @return oid
 		 */
 		public String getOid() {
-			if (isRoot()) return null;
+			if (isRoot())
+				return null;
 			return oid;
 		}
 

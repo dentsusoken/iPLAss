@@ -21,39 +21,47 @@
 package org.iplass.mtp.entity.query.hint;
 
 public abstract class HintVisitorSupport implements HintVisitor {
-	
+
 	@Override
 	public boolean visit(HintComment hintComment) {
 		return true;
 	}
+
 	@Override
 	public boolean visit(IndexHint indexHint) {
 		return true;
 	}
+
 	@Override
 	public boolean visit(NoIndexHint noIndexHint) {
 		return true;
 	}
+
 	@Override
 	public boolean visit(NativeHint nativeHint) {
 		return true;
 	}
+
 	@Override
 	public boolean visit(BindHint bindHint) {
 		return true;
 	}
+
 	@Override
 	public boolean visit(NoBindHint noBindHint) {
 		return true;
 	}
+
 	@Override
 	public boolean visit(CacheHint cacheHint) {
 		return true;
 	}
+
 	@Override
 	public boolean visit(FetchSizeHint fetchSizeHint) {
 		return true;
 	}
+
 	@Override
 	public boolean visit(TimeoutHint timeoutHint) {
 		return true;

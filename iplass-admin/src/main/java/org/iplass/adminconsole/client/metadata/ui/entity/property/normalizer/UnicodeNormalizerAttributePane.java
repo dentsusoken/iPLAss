@@ -64,7 +64,7 @@ public class UnicodeNormalizerAttributePane extends NormalizerAttributePane {
 	@Override
 	public void setDefinition(NormalizerDefinition definition) {
 		if (definition instanceof UnicodeNormalizer) {
-			String form = ((UnicodeNormalizer)definition).getForm();
+			String form = ((UnicodeNormalizer) definition).getForm();
 			if (SmartGWTUtil.isNotEmpty(form)) {
 				cboForm.setValue(form);
 			} else {

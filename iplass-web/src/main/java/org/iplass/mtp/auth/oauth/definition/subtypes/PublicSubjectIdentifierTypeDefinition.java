@@ -34,7 +34,7 @@ public class PublicSubjectIdentifierTypeDefinition extends SubjectIdentifierType
 
 	private String subjectIdMappedUserProperty;
 	private boolean hashing;
-	
+
 	public boolean isHashing() {
 		return hashing;
 	}

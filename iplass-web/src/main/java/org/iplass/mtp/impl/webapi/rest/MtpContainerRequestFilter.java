@@ -22,13 +22,6 @@ package org.iplass.mtp.impl.webapi.rest;
 
 import java.io.IOException;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.container.ContainerRequestContext;
-import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.container.PreMatching;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response.Status;
-
 import org.iplass.mtp.impl.web.RequestPath;
 import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
 import org.iplass.mtp.impl.webapi.WebApiService;
@@ -36,49 +29,64 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.PreMatching;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response.Status;
+
 @PreMatching
 public class MtpContainerRequestFilter implements ContainerRequestFilter {
 
 	private static Logger logger = LoggerFactory.getLogger(MtpContainerRequestFilter.class);
-	
-	private WebApiService apiservice = ServiceRegistry.getRegistry().getService(WebApiService.class);
-	
+
+	private WebApiService apiservice = ServiceRegistry.getRegistry()
+			.getService(WebApiService.class);
+
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
-		RequestPath path = new RequestPath(requestContext.getUriInfo().getPath(), (RequestPath) requestContext.getProperty(RequestPath.ATTR_NAME));
+		RequestPath path = new RequestPath(requestContext.getUriInfo()
+				.getPath(), (RequestPath) requestContext.getProperty(RequestPath.ATTR_NAME));
 		requestContext.setProperty(RequestPath.ATTR_NAME, path);
 		String webApiName = path.getTargetPath(true);
-		
+
 		WebApiRuntime runtime = apiservice.getByPathHierarchy(webApiName, requestContext.getMethod());
 		if (runtime == null) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(webApiName + " not defined path.");
 			}
- 			throw new WebApplicationException(Status.NOT_FOUND);
+			throw new WebApplicationException(Status.NOT_FOUND);
 		}
-		
+
 		//method,content-type,bodySizeはボディパース前にチェックする
 		runtime.checkMethodType(requestContext.getMethod());
 		MediaType mt = requestContext.getMediaType();
 		runtime.checkContentType(mt);
 		if (MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(mt)) {
 			//multipart/form-dataの場合は、直接ServletRequestのInputStreamを扱うので、ここではbodyを消費しないようにする
-			if (runtime.getRequestRestriction().maxBodySize() != -1) {
-				requestContext.setProperty(RestRequestContext.MAX_BODY_SIZE, runtime.getRequestRestriction().maxBodySize());
+			if (runtime.getRequestRestriction()
+					.maxBodySize() != -1) {
+				requestContext.setProperty(RestRequestContext.MAX_BODY_SIZE, runtime.getRequestRestriction()
+						.maxBodySize());
 			}
 		} else {
 			if (requestContext.hasEntity()) {
 				//bodySize
-				if (runtime.getRequestRestriction().maxBodySize() != -1) {
+				if (runtime.getRequestRestriction()
+						.maxBodySize() != -1) {
 					requestContext.setEntityStream(new LimitRequestBodyInputStream(requestContext.getEntityStream(),
-							runtime.getRequestRestriction().maxBodySize(), requestContext.getLength()));
-					requestContext.setProperty(RestRequestContext.MAX_BODY_SIZE, runtime.getRequestRestriction().maxBodySize());
+							runtime.getRequestRestriction()
+									.maxBodySize(),
+							requestContext.getLength()));
+					requestContext.setProperty(RestRequestContext.MAX_BODY_SIZE, runtime.getRequestRestriction()
+							.maxBodySize());
 				}
 			}
 		}
-		
+
 		requestContext.setProperty(RestRequestContext.WEB_API_RUNTIME_NAME, runtime);
-		
+
 	}
 
 }

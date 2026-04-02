@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.io.upload.AdminUploadAction;
@@ -45,6 +43,8 @@ import org.iplass.mtp.webapi.definition.openapi.OpenApiFileType;
 import org.iplass.mtp.webapi.definition.openapi.OpenApiVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * OpenAPIサポート Import サービス
@@ -190,7 +190,8 @@ public class OpenApiSupportImportService extends AdminUploadAction {
 		@Override
 		public List<OpenApiImportResult> call() {
 			try {
-				var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
+				var service = ServiceRegistry.getRegistry()
+						.getService(OpenApiService.class);
 				return service.importOpenApiToWebApi(file, fileType, version);
 			} catch (Exception e) {
 				TransactionUtil.setRollback();

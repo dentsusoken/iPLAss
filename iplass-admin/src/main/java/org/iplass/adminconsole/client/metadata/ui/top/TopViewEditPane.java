@@ -102,7 +102,8 @@ public class TopViewEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(definition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(definition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -152,8 +153,10 @@ public class TopViewEditPane extends MetaDataMainEditPane {
 			@Override
 			public void onSuccess(DefinitionEntry entry) {
 				TopViewEditPane.this.definition = (TopViewDefinition) entry.getDefinition();
-				TopViewEditPane.this.curVersion = entry.getDefinitionInfo().getVersion();
-				TopViewEditPane.this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+				TopViewEditPane.this.curVersion = entry.getDefinitionInfo()
+						.getVersion();
+				TopViewEditPane.this.curDefinitionId = entry.getDefinitionInfo()
+						.getObjDefId();
 
 				commonSection.setDefinition(definition);
 				menuArea.setWidgets(definition.getWidgets());
@@ -196,14 +199,14 @@ public class TopViewEditPane extends MetaDataMainEditPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_top_TopViewEditPane_saveConfirm"),
 				AdminClientMessageUtil.getString("ui_metadata_top_TopViewEditPane_saveConfirmComment"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					setValue();
-					updateDefinition(true);
-				}
-			}
-		});
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							setValue();
+							updateDefinition(true);
+						}
+					}
+				});
 	}
 
 	private void updateDefinition(boolean checkVersion) {
@@ -244,20 +247,20 @@ public class TopViewEditPane extends MetaDataMainEditPane {
 
 	private void cancel() {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_top_TopViewEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_top_TopViewEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					reset();
+				AdminClientMessageUtil.getString("ui_metadata_top_TopViewEditPane_cancelConfirmComment"), new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							reset();
 
-					initialize();
-				}
-			}
-		});
+							initialize();
+						}
+					}
+				});
 	}
 
 	private List<String> list = new ArrayList<String>();
+
 	public class PartsOperationHandlerImpl implements PartsOperationHandler {
 
 		@Override

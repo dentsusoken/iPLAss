@@ -58,7 +58,9 @@ public class OpenApiMappedWebApiUpdater {
 
 			} catch (RuntimeException e) {
 				logger.warn("Failed to update WebAPI. OpenAPI path = {}, definitionName = {}.",
-						webApiMapInfo.getOpenApiPath(), webApiMapInfo.getWebApiDefinition().getName(), e);
+						webApiMapInfo.getOpenApiPath(), webApiMapInfo.getWebApiDefinition()
+								.getName(),
+						e);
 				var errorResult = new WebApiUpdateInfo(webApiMapInfo, WebApiUpdateState.FAILED);
 				result.add(errorResult);
 			}
@@ -90,7 +92,7 @@ public class OpenApiMappedWebApiUpdater {
 	/**
 	 * WebAPIの更新結果情報クラス
 	 */
-	public static class WebApiUpdateInfo  {
+	public static class WebApiUpdateInfo {
 		/** WebAPIマッピング情報 */
 		private WebApiMapInfo mapInfo;
 		/** WebAPI更新結果 */

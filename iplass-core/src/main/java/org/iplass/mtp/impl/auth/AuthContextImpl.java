@@ -45,7 +45,9 @@ public class AuthContextImpl extends AuthContext {
 	public String getPolicyName() {
 		//return getAuthContextHolder().getUserContext().getUser().getAccountPolicy();
 		if (getAuthContextHolder().getPolicy() != null) {
-			return getAuthContextHolder().getPolicy().getMetaData().getName();
+			return getAuthContextHolder().getPolicy()
+					.getMetaData()
+					.getName();
 		}
 		return null;
 	}
@@ -59,7 +61,8 @@ public class AuthContextImpl extends AuthContext {
 		if (role == null) {
 			throw new NullPointerException("role is null");
 		}
-		return getAuthContextHolder().userInRole(role, ExecuteContext.getCurrentContext().getClientTenantId());
+		return getAuthContextHolder().userInRole(role, ExecuteContext.getCurrentContext()
+				.getClientTenantId());
 	}
 
 	@Override
@@ -70,25 +73,29 @@ public class AuthContextImpl extends AuthContext {
 	@Override
 	public Tenant getTenant() {
 //		return ExecuteContext.getCurrentContext().getTenant().getTenant().copy();
-		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+		Tenant tenant = ExecuteContext.getCurrentContext()
+				.getCurrentTenant();
 		return ObjectUtil.deepCopy(tenant);
 	}
 
 	@Override
 	public void refresh() {
-		AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
+		AuthService as = ServiceRegistry.getRegistry()
+				.getService(AuthService.class);
 		as.reloadUserEntity();
 		AuthContextHolder.reflesh();
 	}
 
 	@Override
 	public boolean isCurrentSessionTrusted() {
-		return getAuthContextHolder().checkCurrentSessionTrusted().isTrusted();
+		return getAuthContextHolder().checkCurrentSessionTrusted()
+				.isTrusted();
 	}
 
 	@Override
 	public Class<? extends Credential> getCredentialTypeForTrust() {
-		return getAuthContextHolder().checkCurrentSessionTrusted().getCredentialTypeForTrust();
+		return getAuthContextHolder().checkCurrentSessionTrusted()
+				.getCredentialTypeForTrust();
 	}
 
 	@Override

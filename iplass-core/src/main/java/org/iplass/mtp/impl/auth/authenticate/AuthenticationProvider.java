@@ -42,20 +42,20 @@ public interface AuthenticationProvider extends ServiceInitListener<AuthService>
 	 * @return
 	 */
 	public AccountHandle login(Credential credential);
-	
+
 	/**
 	 * 指定のユーザーのログアウト処理をする。
 	 *
 	 * @param user
 	 */
 	public void logout(AccountHandle user);
-	
+
 	/**
 	 * ログアウト処理が完了（セッションも無効化）した後のコールバック
 	 */
 	public default void afterLogout(AccountHandle user) {
 	}
-	
+
 	/**
 	 * ログイン処理が成功した後のコールバック
 	 * @param credential
@@ -63,9 +63,9 @@ public interface AuthenticationProvider extends ServiceInitListener<AuthService>
 	 */
 	public default void afterLoginSuccess(AccountHandle user) {
 	}
-	
+
 	public TrustedAuthValidator getTrustedAuthValidator();
-	
+
 	/**
 	 * ハウスキーピング処理から呼び出される。ゴミデータを消す。
 	 */
@@ -79,7 +79,7 @@ public interface AuthenticationProvider extends ServiceInitListener<AuthService>
 	 * @return
 	 */
 	public AccountManagementModule getAccountManagementModule();
-	
+
 	/**
 	 * Service-Configに設定された認証プロバイダ名を取得する。
 	 *
@@ -94,15 +94,15 @@ public interface AuthenticationProvider extends ServiceInitListener<AuthService>
 	 */
 	@Deprecated
 	public AuthLogger getAuthLogger();
-	
+
 	public UserEntityResolver getUserEntityResolver();
-	
+
 	public Class<? extends Credential> getCredentialType();
-	
+
 	public default AutoLoginHandler getAutoLoginHandler() {
 		return null;
 	}
-	
+
 	public boolean isSelectableOnAuthPolicy();
 
 }

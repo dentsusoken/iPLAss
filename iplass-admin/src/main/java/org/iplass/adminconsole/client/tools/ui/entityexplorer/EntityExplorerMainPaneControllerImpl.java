@@ -41,7 +41,9 @@ public class EntityExplorerMainPaneControllerImpl implements EntityExplorerMainP
 	@Override
 	public void setupSubModuleTab(EntityExplorerMainPane owner, TabSet tabSet) {
 
-		ScreenModuleBasedUIFactoryHolder.getFactory().createEntityExplorerViewPaneController().setupSubModuleTab(owner, tabSet);
+		ScreenModuleBasedUIFactoryHolder.getFactory()
+				.createEntityExplorerViewPaneController()
+				.setupSubModuleTab(owner, tabSet);
 		setupCrawlList(owner, tabSet);
 		setupDefragList(owner, tabSet);
 		setupRecycleBinList(owner, tabSet);
@@ -70,7 +72,7 @@ public class EntityExplorerMainPaneControllerImpl implements EntityExplorerMainP
 
 			@Override
 			public void onFailure(Throwable caught) {
-				SC.say("failed","An error occurred in full-text search configuration loading." + caught.getMessage());
+				SC.say("failed", "An error occurred in full-text search configuration loading." + caught.getMessage());
 				GWT.log(caught.toString(), caught);
 			}
 

@@ -74,7 +74,7 @@ public class CommandConfigEditDialog extends MtpDialog {
 	public CommandConfigEditDialog(boolean isMin) {
 
 		setTitle("Command Config");
-		setShowMaximizeButton(true);	//最大化は可能に設定（スクリプト編集用）
+		setShowMaximizeButton(true); //最大化は可能に設定（スクリプト編集用）
 		centerInPage();
 
 		//共通
@@ -85,7 +85,8 @@ public class CommandConfigEditDialog extends MtpDialog {
 		editScript.setWidth(100);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_dispEditDialogInitScript")));
+		editScript.setPrompt(SmartGWTUtil
+				.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_dispEditDialogInitScript")));
 		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
@@ -133,13 +134,16 @@ public class CommandConfigEditDialog extends MtpDialog {
 			}
 			transactionPropagationField.setValueMap(valueMap);
 			transactionPropagationField.setDefaultValue(Propagation.REQUIRED.name());
-			SmartGWTUtil.addHoverToFormItem(transactionPropagationField, AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_transactionPropagation"));
+			SmartGWTUtil.addHoverToFormItem(transactionPropagationField,
+					AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_transactionPropagation"));
 
 			rollbackWhenExceptionField = new CheckboxItem("rollbackWhenException", "Rollback when exception");
 			rollbackWhenExceptionField.setDefaultValue(true);
-			SmartGWTUtil.addHoverToFormItem(rollbackWhenExceptionField, AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_rollbackWhenException"));
+			SmartGWTUtil.addHoverToFormItem(rollbackWhenExceptionField,
+					AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_rollbackWhenException"));
 			throwExceptionIfSetRollbackOnlyField = new CheckboxItem("throwExceptionIfSetRollbackOnly", "Throw exception if setRollbackOnly");
-			SmartGWTUtil.addHoverToFormItem(throwExceptionIfSetRollbackOnlyField, AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_throwExceptionIfSetRollbackOnly"));
+			SmartGWTUtil.addHoverToFormItem(throwExceptionIfSetRollbackOnlyField,
+					AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_throwExceptionIfSetRollbackOnly"));
 
 			form1.setHeight(88);
 			form1.setItems(commandField, transactionPropagationField, rollbackWhenExceptionField, throwExceptionIfSetRollbackOnlyField);
@@ -157,7 +161,7 @@ public class CommandConfigEditDialog extends MtpDialog {
 			public void onClick(ClickEvent event) {
 				boolean isValidate1 = form1.validate();
 				boolean isValidate2 = form2.validate();
-				if (isValidate1 && isValidate2){
+				if (isValidate1 && isValidate2) {
 					saveCommand();
 				}
 			}
@@ -185,7 +189,8 @@ public class CommandConfigEditDialog extends MtpDialog {
 			initScriptField.setValue(command.getInitializeScript());
 		}
 		if (transactionPropagationField != null && command.getTransactionPropagation() != null) {
-			transactionPropagationField.setValue(command.getTransactionPropagation().name());
+			transactionPropagationField.setValue(command.getTransactionPropagation()
+					.name());
 		}
 		if (rollbackWhenExceptionField != null) {
 			rollbackWhenExceptionField.setValue(command.isRollbackWhenException());
@@ -210,52 +215,54 @@ public class CommandConfigEditDialog extends MtpDialog {
 
 	private void getEditedCommandConfig() {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.getDefinition(TenantInfoHolder.getId(), CommandDefinition.class.getName(), SmartGWTUtil.getStringValue(commandField), new AsyncCallback<CommandDefinition>() {
+		service.getDefinition(TenantInfoHolder.getId(), CommandDefinition.class.getName(), SmartGWTUtil.getStringValue(commandField),
+				new AsyncCallback<CommandDefinition>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_failedToCreateCommand") + caught.getMessage());
-			}
+					@Override
+					public void onFailure(Throwable caught) {
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_command_config_CommandConfigEditDialog_failedToCreateCommand")
+								+ caught.getMessage());
+					}
 
-			@Override
-			public void onSuccess(CommandDefinition result) {
-				SingleCommandConfig command = new SingleCommandConfig();
+					@Override
+					public void onSuccess(CommandDefinition result) {
+						SingleCommandConfig command = new SingleCommandConfig();
 //				command.setName(result.getName());
 //				command.setDisplayName(result.getDisplayName());
 //				command.setDescription(result.getDescription());
-				command.setCommandName(result.getName());
+						command.setCommandName(result.getName());
 
-				if (initScriptField == null || SmartGWTUtil.isEmpty(SmartGWTUtil.getStringValue(initScriptField))) {
-					command.setInitializeScript(null);
-				} else {
-					command.setInitializeScript(SmartGWTUtil.getStringValue(initScriptField));
-				}
+						if (initScriptField == null || SmartGWTUtil.isEmpty(SmartGWTUtil.getStringValue(initScriptField))) {
+							command.setInitializeScript(null);
+						} else {
+							command.setInitializeScript(SmartGWTUtil.getStringValue(initScriptField));
+						}
 
-				if (transactionPropagationField == null || SmartGWTUtil.isEmpty(SmartGWTUtil.getStringValue(transactionPropagationField))) {
-					command.setTransactionPropagation(Propagation.REQUIRED);
-				} else {
-					command.setTransactionPropagation(Propagation.valueOf(SmartGWTUtil.getStringValue(transactionPropagationField)));
-				}
+						if (transactionPropagationField == null || SmartGWTUtil.isEmpty(SmartGWTUtil.getStringValue(transactionPropagationField))) {
+							command.setTransactionPropagation(Propagation.REQUIRED);
+						} else {
+							command.setTransactionPropagation(Propagation.valueOf(SmartGWTUtil.getStringValue(transactionPropagationField)));
+						}
 
-				if (rollbackWhenExceptionField == null) {
-					command.setRollbackWhenException(true);
-				} else {
-					command.setRollbackWhenException(SmartGWTUtil.getBooleanValue(rollbackWhenExceptionField));
-				}
-				if (throwExceptionIfSetRollbackOnlyField == null) {
-					command.setThrowExceptionIfSetRollbackOnly(false);
-				} else {
-					command.setThrowExceptionIfSetRollbackOnly(SmartGWTUtil.getBooleanValue(throwExceptionIfSetRollbackOnlyField));
-				}
+						if (rollbackWhenExceptionField == null) {
+							command.setRollbackWhenException(true);
+						} else {
+							command.setRollbackWhenException(SmartGWTUtil.getBooleanValue(rollbackWhenExceptionField));
+						}
+						if (throwExceptionIfSetRollbackOnlyField == null) {
+							command.setThrowExceptionIfSetRollbackOnly(false);
+						} else {
+							command.setThrowExceptionIfSetRollbackOnly(SmartGWTUtil.getBooleanValue(throwExceptionIfSetRollbackOnlyField));
+						}
 
-				//データ変更を通知
-				fireDataChanged(command);
+						//データ変更を通知
+						fireDataChanged(command);
 
-				//ダイアログ消去
-				destroy();
-			}
+						//ダイアログ消去
+						destroy();
+					}
 
-		});
+				});
 	}
 
 	/**

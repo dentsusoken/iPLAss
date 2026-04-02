@@ -21,7 +21,7 @@
 package org.iplass.mtp.impl.core;
 
 public interface Executable<T> {
-	
+
 	public T execute();
 
 }

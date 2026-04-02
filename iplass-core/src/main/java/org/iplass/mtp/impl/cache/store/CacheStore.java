@@ -36,13 +36,13 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public interface CacheStore {
-	
+
 	public String getNamespace();
 
 	public CacheStoreFactory getFactory();
-	
+
 	public int getSize();
-	
+
 	/**
 	 * 自動リロードするキャッシュエントリをputする。
 	 * まだkeyに紐づいたエントリがない場合にreloadFunctionによって取得されたエントリをputする。
@@ -62,27 +62,29 @@ public interface CacheStore {
 		CacheEntry[] newEntry = new CacheEntry[1];
 		Long[] ttl = new Long[1];
 		CacheEntry computed = computeIfAbsent(key, k -> {
-			
+
 			newEntry[0] = reloadFunction.apply(k, null);
-			
+
 			ttl[0] = newEntry[0].getTimeToLive();
 			if (ttl[0] == null || ttl[0].longValue() <= 0L) {
 				throw new IllegalArgumentException("computeIfAbsentWithAutoReload() must specify TTL on CacheEntry.");
 			}
-			
+
 			//entryのttlを無期限に設定し、ttlによりinvalidateされないように
 			newEntry[0].setTimeToLive(-1L);
 			return newEntry[0];
 		});
-		
+
 		if (computed == newEntry[0]) {
 			//自身がputした場合のみリロードをスケジュールする
-			CacheService cacheService = ServiceRegistry.getRegistry().getService(CacheService.class);
+			CacheService cacheService = ServiceRegistry.getRegistry()
+					.getService(CacheService.class);
 			cacheService.schedule(ttl[0],
-					new AutoReloader(ExecuteContext.getCurrentContext().getClientTenantId(),
+					new AutoReloader(ExecuteContext.getCurrentContext()
+							.getClientTenantId(),
 							getNamespace(), computed, ttl[0], reloadFunction));
 		}
-		
+
 		return computed;
 	}
 
@@ -113,7 +115,7 @@ public interface CacheStore {
 	 */
 	public default CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
 		CacheEntry oldValue = get(key);
-		for(;;) {
+		for (;;) {
 			CacheEntry newValue = remappingFunction.apply(key, oldValue);
 			if (newValue == null) {
 				//remove
@@ -182,11 +184,11 @@ public interface CacheStore {
 	public void addCacheEventListenner(CacheEventListener listener);
 
 	public void removeCacheEventListenner(CacheEventListener listener);
-	
+
 	public List<CacheEventListener> getListeners();
 
 	public String trace();
-	
+
 	public void destroy();
-	
+
 }

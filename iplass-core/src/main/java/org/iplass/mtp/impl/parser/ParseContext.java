@@ -20,38 +20,36 @@
 
 package org.iplass.mtp.impl.parser;
 
-
 public class ParseContext {
-	
+
 	//TODO パース処理時のParseExceptionの共用
-	
-	
+
 	/**
 	 * 空白として認識するchar。
 	 * ' ', '\t', '\n', '\r', '\f', '\b'
 	 */
-	public static char[] WHITE_SPACES = {' ', '\t', '\n', '\r', '\f', '\b'};//TODO 外部（SytaxContext）から設定可能に
-	public static char[] TOKEN_DELIMITERS = {' ', '\t', '\n', '\r', '\f', '\b', '(', ')', '[', ']', ',', '+', '-', '*', '/','=','!','>','<'};//TODO 外部（SytaxContext）から設定可能に
-	
+	public static char[] WHITE_SPACES = { ' ', '\t', '\n', '\r', '\f', '\b' };//TODO 外部（SytaxContext）から設定可能に
+	public static char[] TOKEN_DELIMITERS = { ' ', '\t', '\n', '\r', '\f', '\b', '(', ')', '[', ']', ',', '+', '-', '*', '/', '=', '!', '>', '<' };//TODO 外部（SytaxContext）から設定可能に
+
 	private String stream;
 	private int currentIndex;
 //	private EntityContext entityContext;
-	
+
 	private int offset;
-	
+
 	public ParseContext() {
 	}
-	
-	public ParseContext(String stream/*, EntityContext entityContext*/) {
+
+	public ParseContext(String stream/* , EntityContext entityContext */) {
 		this.stream = stream;
 //		this.entityContext = entityContext;
 	}
-	
-	ParseContext(String stream, /*EntityContext entityContext,*/ int offset) {
-		this(stream/*, entityContext*/);
+
+	ParseContext(String stream, /* EntityContext entityContext, */ int offset) {
+		this(stream/* , entityContext */);
 		this.offset = offset;
 	}
-	
+
 //	public EntityContext getContext() {
 //		return entityContext;
 //	}
@@ -59,7 +57,7 @@ public class ParseContext {
 	public int totalCurrentIndex() {
 		return currentIndex + offset;
 	}
-	
+
 	/**
 	 * 指定の文字列でリセットする。
 	 * このインスタンスを再利用する際に使用する。
@@ -80,7 +78,7 @@ public class ParseContext {
 	public void setCurrentIndex(int currentIndex) throws ParseException {
 		if (currentIndex < 0 || currentIndex > stream.length()) {
 			throw new ParseException(new EvalError("stream is end.", null, this));
-			
+
 		}
 		this.currentIndex = currentIndex;
 	}
@@ -116,7 +114,7 @@ public class ParseContext {
 		currentIndex++;
 		return res;
 	}
-	
+
 	/**
 	 *
 	 * @throws IndexOutOfBoundsException すでに先頭である場合
@@ -141,9 +139,8 @@ public class ParseContext {
 	 * @throws IndexOutOfBoundsException
 	 */
 	public ParseContext subContext(int begin, int end) throws IndexOutOfBoundsException {
-		return new ParseContext(stream.substring(begin,end)/*, entityContext*/, offset + begin);
+		return new ParseContext(stream.substring(begin, end)/* , entityContext */, offset + begin);
 	}
-
 
 	/**
 	 * 現在のindex以降で最初に指定の文字が現れるindexを返す。
@@ -169,7 +166,7 @@ public class ParseContext {
 	 * @return
 	 */
 	public int lastIndexOf(char c) {
-		for (int i = stream.length() - 1 ; i >= currentIndex; i--) {
+		for (int i = stream.length() - 1; i >= currentIndex; i--) {
 			if (c == stream.charAt(i)) {
 				return i;
 			}
@@ -199,7 +196,7 @@ public class ParseContext {
 		}
 		return isConsume;
 	}
-	
+
 	public boolean consumeChars(int length) throws ParseException {
 //		if (currentIndex + length < 0 || currentIndex + length >= stream.length()) {
 //			return false;
@@ -244,7 +241,7 @@ public class ParseContext {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * delimiterで指定されている文字で囲まれている文字を切り出す。
 	 * いきなり、delimiterで囲まれていなかったり、いきなりstream最後の場合は、null。
@@ -267,7 +264,7 @@ public class ParseContext {
 			if (isEnd()) {
 				return null;
 			}
-			
+
 			char c = popChar();
 			if (c == delimiter) {
 				if (!withDoubleDelimierEscape) {
@@ -280,9 +277,9 @@ public class ParseContext {
 			}
 			sb.append(c);
 		}
-		
+
 		return sb.toString();
-		
+
 	}
 
 	/**
@@ -294,7 +291,7 @@ public class ParseContext {
 	public boolean startsWith(String prefix) {
 		return stream.startsWith(prefix, currentIndex);
 	}
-	
+
 	public boolean equalsNextToken(String expectedToken, char[] delimiters) throws ParseException {
 		int i = getCurrentIndex();
 		String token = nextToken(delimiters);

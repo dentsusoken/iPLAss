@@ -32,41 +32,41 @@ public class AutocompletionProperty implements Refrectable {
 
 	/** プロパティ名 */
 	@MetaFieldInfo(
-		displayName="プロパティ名",
-		displayNameKey="generic_common_AutocompletionProperty_propertyNameDisplaNameKey",
-		inputType=InputType.PROPERTY,
-		required=true,
-		description="連動元のプロパティ名を指定してください。",
-		descriptionKey="generic_common_AutocompletionProperty_propertyNameDescriptionKey"
+			displayName = "プロパティ名",
+			displayNameKey = "generic_common_AutocompletionProperty_propertyNameDisplaNameKey",
+			inputType = InputType.PROPERTY,
+			required = true,
+			description = "連動元のプロパティ名を指定してください。",
+			descriptionKey = "generic_common_AutocompletionProperty_propertyNameDescriptionKey"
 	)
 	@EntityViewField()
 	private String propertyName;
 
 	/** ネストプロパティか */
 	@MetaFieldInfo(
-		displayName="ネストプロパティ同士の自動補完",
-		displayNameKey="generic_common_AutocompletionProperty_nestPropertyDisplaNameKey",
-		inputType=InputType.CHECKBOX,
-		description="イベントの発生元と自動補完先が同一のNestTable、ReferenceSection内の場合にチェックします。",
-		descriptionKey="generic_common_AutocompletionProperty_nestPropertyDescriptionKey"
+			displayName = "ネストプロパティ同士の自動補完",
+			displayNameKey = "generic_common_AutocompletionProperty_nestPropertyDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			description = "イベントの発生元と自動補完先が同一のNestTable、ReferenceSection内の場合にチェックします。",
+			descriptionKey = "generic_common_AutocompletionProperty_nestPropertyDescriptionKey"
 	)
 	@EntityViewField(
-		referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean nestProperty;
 
 	/** 参照プロパティのインデックス */
 	@MetaFieldInfo(
-		displayName="参照プロパティのインデックス",
-		displayNameKey="generic_common_AutocompletionProperty_referencePropertyIndexDisplaNameKey",
-		inputType=InputType.NUMBER,
-		description="参照先の項目(NestTable、ReferenceSectionの項目)の変更をトリガーにして参照元の項目を自動補完する際に、<br>"
-				+ "NestTable内の特定の行や、特定のReferenceSectionのみを対象にする場合、そのインデックスを指定します。<br>"
-				+ "未指定の場合、全ての行やセクションの変更イベントがトリガーになります。",
-		descriptionKey="generic_common_AutocompletionProperty_referencePropertyIndexDescriptionKey"
+			displayName = "参照プロパティのインデックス",
+			displayNameKey = "generic_common_AutocompletionProperty_referencePropertyIndexDisplaNameKey",
+			inputType = InputType.NUMBER,
+			description = "参照先の項目(NestTable、ReferenceSectionの項目)の変更をトリガーにして参照元の項目を自動補完する際に、<br>"
+					+ "NestTable内の特定の行や、特定のReferenceSectionのみを対象にする場合、そのインデックスを指定します。<br>"
+					+ "未指定の場合、全ての行やセクションの変更イベントがトリガーになります。",
+			descriptionKey = "generic_common_AutocompletionProperty_referencePropertyIndexDescriptionKey"
 	)
 	@EntityViewField(
-		referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private Integer referencePropertyIndex;
 

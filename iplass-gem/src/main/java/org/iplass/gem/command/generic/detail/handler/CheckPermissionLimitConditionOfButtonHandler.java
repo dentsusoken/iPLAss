@@ -51,9 +51,12 @@ public class CheckPermissionLimitConditionOfButtonHandler extends DetailFormView
 
 		DetailFormViewData detailFormViewData = event.getDetailFormViewData();
 		AuthContextHolder user = AuthContextHolder.getAuthContext();
-		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(event.getEntityName());
+		EntityHandler handler = ServiceRegistry.getRegistry()
+				.getService(EntityService.class)
+				.getRuntimeByName(event.getEntityName());
 
-		if (detailFormViewData.getEntity() != null && detailFormViewData.getEntity().getOid() != null && !user.isPrivilegedExecution()) {
+		if (detailFormViewData.getEntity() != null && detailFormViewData.getEntity()
+				.getOid() != null && !user.isPrivilegedExecution()) {
 			//更新権限チェック
 			checkUpdatePermission(handler, detailFormViewData, user);
 
@@ -68,9 +71,12 @@ public class CheckPermissionLimitConditionOfButtonHandler extends DetailFormView
 
 		DetailFormViewData detailFormViewData = event.getDetailFormViewData();
 		AuthContextHolder user = AuthContextHolder.getAuthContext();
-		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(event.getEntityName());
+		EntityHandler handler = ServiceRegistry.getRegistry()
+				.getService(EntityService.class)
+				.getRuntimeByName(event.getEntityName());
 
-		if (detailFormViewData.getEntity() != null && detailFormViewData.getEntity().getOid() != null && !user.isPrivilegedExecution()) {
+		if (detailFormViewData.getEntity() != null && detailFormViewData.getEntity()
+				.getOid() != null && !user.isPrivilegedExecution()) {
 			//更新権限チェック
 			checkUpdatePermission(handler, detailFormViewData, user);
 
@@ -81,7 +87,8 @@ public class CheckPermissionLimitConditionOfButtonHandler extends DetailFormView
 	}
 
 	private void checkUpdatePermission(EntityHandler handler, DetailFormViewData detailFormViewData, AuthContextHolder user) {
-		EntityPermission permission = new EntityPermission(handler.getMetaData().getName(), EntityPermission.Action.UPDATE);
+		EntityPermission permission = new EntityPermission(handler.getMetaData()
+				.getName(), EntityPermission.Action.UPDATE);
 		if (!detailFormViewData.isCanUpdate()) {
 			//編集不可
 			return;
@@ -92,7 +99,8 @@ public class CheckPermissionLimitConditionOfButtonHandler extends DetailFormView
 	}
 
 	private void checkDeletePermission(EntityHandler handler, DetailFormViewData detailFormViewData, AuthContextHolder user) {
-		EntityPermission permission = new EntityPermission(handler.getMetaData().getName(), EntityPermission.Action.DELETE);
+		EntityPermission permission = new EntityPermission(handler.getMetaData()
+				.getName(), EntityPermission.Action.DELETE);
 		if (!detailFormViewData.isCanDelete()) {
 			//削除不可
 			return;
@@ -102,20 +110,29 @@ public class CheckPermissionLimitConditionOfButtonHandler extends DetailFormView
 		detailFormViewData.setCanDelete(checkLimitCondition(handler, detailFormViewData, permission, user));
 	}
 
-	private boolean checkLimitCondition(final EntityHandler handler, DetailFormViewData detailFormViewData, EntityPermission permission, AuthContextHolder user) {
+	private boolean checkLimitCondition(final EntityHandler handler, DetailFormViewData detailFormViewData, EntityPermission permission,
+			AuthContextHolder user) {
 		EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(permission);
 		if (eac.hasLimitCondition(permission, user)) {
-			boolean versionSpecified = handler.isVersioned() && detailFormViewData.getEntity().getVersion() != null;
-			Query q = new Query().select(Entity.OID).from(handler.getMetaData().getName());
+			boolean versionSpecified = handler.isVersioned() && detailFormViewData.getEntity()
+					.getVersion() != null;
+			Query q = new Query().select(Entity.OID)
+					.from(handler.getMetaData()
+							.getName());
 			if (versionSpecified) {
-				q.select().add(Entity.VERSION);
+				q.select()
+						.add(Entity.VERSION);
 			}
 
 			Condition cond;
 			if (versionSpecified) {
-				cond = new And(new Equals(Entity.OID, detailFormViewData.getEntity().getOid()), new Equals(Entity.VERSION, detailFormViewData.getEntity().getVersion()));
+				cond = new And(new Equals(Entity.OID, detailFormViewData.getEntity()
+						.getOid()), new Equals(Entity.VERSION,
+								detailFormViewData.getEntity()
+										.getVersion()));
 			} else {
-				cond = new Equals(Entity.OID, detailFormViewData.getEntity().getOid());
+				cond = new Equals(Entity.OID, detailFormViewData.getEntity()
+						.getOid());
 			}
 
 			q.where(cond);
@@ -138,9 +155,10 @@ public class CheckPermissionLimitConditionOfButtonHandler extends DetailFormView
 							}
 						},
 						InvocationType.SEARCH,
-						handler.getService().getInterceptors(),
+						handler.getService()
+								.getInterceptors(),
 						handler)
-				.proceed();
+								.proceed();
 			});
 
 			Entity entity = detailFormViewData.getEntity();

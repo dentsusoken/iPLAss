@@ -23,8 +23,10 @@ import java.io.File;
 
 import org.iplass.mtp.impl.metadata.MetaDataRepository;
 
-public interface XmlExternalRefHandler { 
+public interface XmlExternalRefHandler {
 	void putOutExtcontent(File xml);
+
 	byte[] readRestoringExtContent(File xml);
+
 	void inited(MetaDataRepository service, XmlFileMetaDataStore xmlfileMetaDataStore);
 }

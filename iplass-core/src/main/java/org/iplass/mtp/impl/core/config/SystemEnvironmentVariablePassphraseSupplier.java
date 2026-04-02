@@ -26,12 +26,13 @@ public class SystemEnvironmentVariablePassphraseSupplier implements
 	public static final String SYSENV_NAME = "systemEnvironmentVariableName";
 
 	public static final String DEFAULT_SYSENV_NAME = "MTP_CONFIG_PASSPHRASE";
-	
+
 	private String sysEnvName;
 
 	@Override
 	public char[] getPassphrase() {
-		return System.getenv(sysEnvName).toCharArray();
+		return System.getenv(sysEnvName)
+				.toCharArray();
 	}
 
 	@Override

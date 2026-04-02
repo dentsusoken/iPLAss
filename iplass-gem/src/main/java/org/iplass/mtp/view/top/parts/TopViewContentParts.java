@@ -26,12 +26,12 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * 画面表示パーツ
  * @author li3369
  */
-@XmlSeeAlso({ActionParts.class, TemplateParts.class, SeparatorParts.class})
+@XmlSeeAlso({ ActionParts.class, TemplateParts.class, SeparatorParts.class })
 public abstract class TopViewContentParts extends TopViewParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 1367215337993838879L;
-	
+
 	/** スタイルシートのクラス名 */
 	private String style;
 

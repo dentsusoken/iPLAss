@@ -118,7 +118,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	public MultiBulkCommandContext(RequestContext request, EntityManager entityLoader, EntityDefinitionManager definitionLoader) {
 		super(request, entityLoader, definitionLoader);
 
-		gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		gemConfig = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 		init();
 	}
 
@@ -186,7 +187,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 
 	private BulkCommandParams getBulkCommandParams(Integer row) {
 		List<BulkCommandParams> paramsList = bulkCommandParams.stream()
-				.filter(p -> p.getRow().equals(row))
+				.filter(p -> p.getRow()
+						.equals(row))
 				.collect(Collectors.toList());
 		if (paramsList.size() == 0) {
 			return null;
@@ -202,14 +204,19 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		for (String oid : oids) {
 			for (Long version : getVersions(oid)) {
 				List<Object> propValues = bulkCommandParams.stream()
-						.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
+						.filter(p -> p.getOid()
+								.equals(oid)
+								&& p.getVersion()
+										.equals(version))
 						.map(p -> p.getValue(propName))
 						.collect(Collectors.toList());
 				Object first = propValues.get(0);
 				if (first == null) {
-					return propValues.stream().anyMatch(v -> v != null);
+					return propValues.stream()
+							.anyMatch(v -> v != null);
 				} else {
-					return propValues.stream().anyMatch(v -> !first.equals(v));
+					return propValues.stream()
+							.anyMatch(v -> !first.equals(v));
 				}
 			}
 		}
@@ -346,14 +353,16 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			entity.setValue(Constants.REF_RELOAD, Boolean.FALSE);
 
 			//Validationエラーが出るとhiddenに"null"が入るのでクリアする
-			if (entity.getOid() != null && entity.getOid().equals("null")) {
+			if (entity.getOid() != null && entity.getOid()
+					.equals("null")) {
 				entity.setOid(null);
 			}
 
 			//Entity生成時にエラーが発生していないかチェック
 			String checkPrefix = (errorPrefix != null ? errorPrefix : paramPrefix);
 			boolean hasError = getErrors().stream()
-					.filter(error -> error.getPropertyName().startsWith(checkPrefix))
+					.filter(error -> error.getPropertyName()
+							.startsWith(checkPrefix))
 					.findFirst()
 					.isPresent();
 
@@ -373,7 +382,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		setEntityDefinition(ed);//元の定義に詰め替える
 
 		// ネストテーブル用の登録処理を追加
-		Optional<PropertyItem> ret = getProperty().stream().filter(pc -> pc.getPropertyName().equals(p.getName())).findFirst();
+		Optional<PropertyItem> ret = getProperty().stream()
+				.filter(pc -> pc.getPropertyName()
+						.equals(p.getName()))
+				.findFirst();
 		if (ret.isPresent() && !list.isEmpty()) {
 			addNestTableRegistHandler(p, list, red, ret.get());
 		}
@@ -392,7 +404,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		// isSpecifyAllPropertiesがtrue、且つReference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合
 		// 参照先EntityにおけるEntityのデータ追加不可
 		if (option.isSpecifyAllProperties() && !option.isSpecifiedAsReference()
-				&& option.getSpecifiedUpdateNestProperties().isEmpty()) {
+				&& option.getSpecifiedUpdateNestProperties()
+						.isEmpty()) {
 			return;
 		}
 
@@ -404,7 +417,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			PropertyDefinition pd = red.getProperty(editor.getTableOrderPropertyName());
 			target = EntityViewUtil.sortByOrderProperty(list, Constants.REF_TABLE_ORDER_INDEX);
 			for (int i = 0; i < target.size(); i++) {
-				target.get(i).setValue(editor.getTableOrderPropertyName(), ConvertUtil.convert(pd.getJavaType(), i));
+				target.get(i)
+						.setValue(editor.getTableOrderPropertyName(), ConvertUtil.convert(pd.getJavaType(), i));
 			}
 		} else {
 			target = list;
@@ -492,7 +506,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	public ExclusiveControlPoint getExclusiveControlPoint() {
 		String viewName = getViewName();
 		SearchFormView view = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
-		return view.getResultSection().getExclusiveControlPoint();
+		return view.getResultSection()
+				.getExclusiveControlPoint();
 	}
 
 	/**
@@ -567,7 +582,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		// バージョン管理されているエンティティでマルチリファレンスのプロパティ定義がある場合、同じOIDとバージョンで行番号が異なるデータが存在するので、
 		// 一括更新する際に、一行目だけ更新します。
 		Optional<Integer> rw = bulkCommandParams.stream()
-				.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
+				.filter(p -> p.getOid()
+						.equals(oid)
+						&& p.getVersion()
+								.equals(version))
 				.map(p -> p.getRow())
 				.findFirst();
 		if (rw.isPresent()) {
@@ -580,7 +598,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		// バージョン管理の場合、同じOIDで異なるバージョンが存在するので、
 		// バージョンセットを取得する。
 		return bulkCommandParams.stream()
-				.filter(p -> p.getOid().equals(oid))
+				.filter(p -> p.getOid()
+						.equals(oid))
 				.map(p -> p.getVersion())
 				.collect(Collectors.toSet());
 	}
@@ -590,7 +609,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		// バージョン管理されているエンティティでマルチリファレンスのプロパティ定義がある場合、同じOIDとバージョンで行番号が異なるデータが存在するので、
 		// 一括更新する際に、一行目だけ更新します。
 		Optional<Long> updateDate = bulkCommandParams.stream()
-				.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
+				.filter(p -> p.getOid()
+						.equals(oid)
+						&& p.getVersion()
+								.equals(version))
 				.map(p -> p.getUpdateDate())
 				.findFirst();
 		if (updateDate.isPresent() && updateDate.get() != null) {
@@ -655,7 +677,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 				// Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix + p.getName();
 				getErrors().stream()
-						.filter(error -> error.getPropertyName().equals(name))
+						.filter(error -> error.getPropertyName()
+								.equals(name))
 						.forEach(error -> error.setPropertyName(errorName));
 			}
 		}
@@ -692,7 +715,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 
 				if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE
 						&& ary != null && ary.length > 0
-						&& editor.getNestProperties() != null && !editor.getNestProperties().isEmpty()) {
+						&& editor.getNestProperties() != null && !editor.getNestProperties()
+								.isEmpty()) {
 					//NestTable、参照セクション
 					for (int i = 0; i < ary.length; i++) {
 						String errorPrefix = property.getPropertyName() + "[" + i + "].";
@@ -1000,7 +1024,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		String viewName = getViewName();
 		//FIXME SearchResult定義からカスタム一括更新クラスを取得します。
 		SearchFormView view = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
-		return view.getResultSection().getBulkUpdateInterrupterName();
+		return view.getResultSection()
+				.getBulkUpdateInterrupterName();
 	}
 
 	protected BulkOperationInterrupter createBulkInterrupter(String className) {

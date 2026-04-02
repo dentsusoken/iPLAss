@@ -32,7 +32,7 @@ import java.util.Iterator;
  *
  */
 public class ValidationContext {
-	
+
 	private Entity entity;
 	private String propertyName;
 	private HashMap<String, Object> contextValues;
@@ -42,14 +42,15 @@ public class ValidationContext {
 		this.entity = entity;
 		this.propertyName = propertyName;
 	}
-	
+
 	public Iterator<String> getAttributeNames() {
 		if (contextValues == null) {
 			return Collections.emptyIterator();
 		}
-		return contextValues.keySet().iterator();
+		return contextValues.keySet()
+				.iterator();
 	}
-	
+
 	/**
 	 * setAttributeされた値は、${key}形式でエラーメッセージに埋め込みが可能となります。<br>
 	 * 
@@ -76,23 +77,26 @@ public class ValidationContext {
 		}
 		contextValues.put(key, value);
 	}
-	
+
 	public Object getAttribute(String key) {
 		if (contextValues == null) {
 			return null;
 		}
 		return contextValues.get(key);
 	}
-	
+
 	public Entity getEntity() {
 		return entity;
 	}
+
 	public void setEntity(Entity entity) {
 		this.entity = entity;
 	}
+
 	public String getPropertyName() {
 		return propertyName;
 	}
+
 	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
 	}

@@ -97,7 +97,6 @@ import org.iplass.mtp.entity.query.value.window.WindowFunction;
 import org.iplass.mtp.entity.query.value.window.WindowOrderBy;
 import org.iplass.mtp.entity.query.value.window.WindowSortSpec;
 
-
 public abstract class ASTTransformerSupport implements ASTTransformer {
 	final static ASTTransformer copier = new ASTTransformerSupport() {
 	};
@@ -121,7 +120,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		if (value instanceof Time) {
 			return new Literal(new Time(((Time) value).getTime()), literal.isBindable());
 		}
-		
+
 		//immutableと判断
 		return new Literal(value, literal.isBindable());
 	}
@@ -132,7 +131,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 
 	public ASTNode visit(ParenValue parenthesizedValue) {
 		if (parenthesizedValue.getNestedValue() != null) {
-			return new ParenValue((ValueExpression) parenthesizedValue.getNestedValue().accept(this));
+			return new ParenValue((ValueExpression) parenthesizedValue.getNestedValue()
+					.accept(this));
 		} else {
 			return new ParenValue();
 		}
@@ -140,7 +140,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 
 	public ASTNode visit(Avg avg) {
 		if (avg.getValue() != null) {
-			return new Avg((ValueExpression) avg.getValue().accept(this));
+			return new Avg((ValueExpression) avg.getValue()
+					.accept(this));
 		} else {
 			return new Avg();
 		}
@@ -148,7 +149,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 
 	public ASTNode visit(Count count) {
 		if (count.getValue() != null) {
-			return new Count((ValueExpression) count.getValue().accept(this), count.isDistinct());
+			return new Count((ValueExpression) count.getValue()
+					.accept(this), count.isDistinct());
 		} else {
 			return new Count();
 		}
@@ -156,7 +158,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 
 	public ASTNode visit(Max max) {
 		if (max.getValue() != null) {
-			return new Max((ValueExpression) max.getValue().accept(this));
+			return new Max((ValueExpression) max.getValue()
+					.accept(this));
 		} else {
 			return new Max();
 		}
@@ -164,7 +167,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 
 	public ASTNode visit(Min min) {
 		if (min.getValue() != null) {
-			return new Min((ValueExpression) min.getValue().accept(this));
+			return new Min((ValueExpression) min.getValue()
+					.accept(this));
 		} else {
 			return new Min();
 		}
@@ -172,7 +176,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 
 	public ASTNode visit(Sum sum) {
 		if (sum.getValue() != null) {
-			return new Sum((ValueExpression) sum.getValue().accept(this));
+			return new Sum((ValueExpression) sum.getValue()
+					.accept(this));
 		} else {
 			return new Sum();
 		}
@@ -180,7 +185,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 
 	public ASTNode visit(MinusSign minusSign) {
 		if (minusSign.getValue() != null) {
-			return new MinusSign((ValueExpression) minusSign.getValue().accept(this));
+			return new MinusSign((ValueExpression) minusSign.getValue()
+					.accept(this));
 		} else {
 			return new MinusSign();
 		}
@@ -191,13 +197,13 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		List<ValueExpression> subValues = null;
 		if (polynomial.getAddValues() != null) {
 			addValues = new ArrayList<ValueExpression>();
-			for (ValueExpression v: polynomial.getAddValues()) {
+			for (ValueExpression v : polynomial.getAddValues()) {
 				addValues.add((ValueExpression) v.accept(this));
 			}
 		}
 		if (polynomial.getSubValues() != null) {
 			subValues = new ArrayList<ValueExpression>();
-			for (ValueExpression v: polynomial.getSubValues()) {
+			for (ValueExpression v : polynomial.getSubValues()) {
 				subValues.add((ValueExpression) v.accept(this));
 			}
 		}
@@ -210,13 +216,13 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		List<ValueExpression> divValues = null;
 		if (term.getMulValues() != null) {
 			mulValues = new ArrayList<ValueExpression>();
-			for (ValueExpression v: term.getMulValues()) {
+			for (ValueExpression v : term.getMulValues()) {
 				mulValues.add((ValueExpression) v.accept(this));
 			}
 		}
 		if (term.getDivValues() != null) {
 			divValues = new ArrayList<ValueExpression>();
-			for (ValueExpression v: term.getDivValues()) {
+			for (ValueExpression v : term.getDivValues()) {
 				divValues.add((ValueExpression) v.accept(this));
 			}
 		}
@@ -227,7 +233,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(ScalarSubQuery scalarSubQuery) {
 		SubQuery subQuery = null;
 		if (scalarSubQuery.getSubQuery() != null) {
-			subQuery = (SubQuery) scalarSubQuery.getSubQuery().accept(this);
+			subQuery = (SubQuery) scalarSubQuery.getSubQuery()
+					.accept(this);
 		}
 		return new ScalarSubQuery(subQuery);
 	}
@@ -237,10 +244,12 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		Query query = null;
 		Condition on = null;
 		if (subQuery.getQuery() != null) {
-			query = (Query) subQuery.getQuery().accept(this);
+			query = (Query) subQuery.getQuery()
+					.accept(this);
 		}
 		if (subQuery.getOn() != null) {
-			on = (Condition) subQuery.getOn().accept(this);
+			on = (Condition) subQuery.getOn()
+					.accept(this);
 		}
 		return new SubQuery(query, on);
 	}
@@ -248,7 +257,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(From from) {
 		From copy = new From(from.getEntityName());
 		if (from.getAsOf() != null) {
-			copy.setAsOf((AsOf) from.getAsOf().accept(this));
+			copy.setAsOf((AsOf) from.getAsOf()
+					.accept(this));
 		}
 		return copy;
 	}
@@ -256,7 +266,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(SortSpec order) {
 		ValueExpression ve = null;
 		if (order.getSortKey() != null) {
-			ve = (ValueExpression) order.getSortKey().accept(this);
+			ve = (ValueExpression) order.getSortKey()
+					.accept(this);
 		}
 		return new SortSpec(ve, order.getType(), order.getNullOrderingSpec());
 	}
@@ -266,32 +277,39 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		Query q = new Query();
 
 		if (query.getSelect() != null) {
-			q.setSelect((Select) query.getSelect().accept(this));
+			q.setSelect((Select) query.getSelect()
+					.accept(this));
 		}
 		if (query.getFrom() != null) {
-			q.setFrom((From) query.getFrom().accept(this));
+			q.setFrom((From) query.getFrom()
+					.accept(this));
 		}
 		if (query.getRefer() != null) {
 			ArrayList<Refer> refer = new ArrayList<Refer>();
-			for (Refer r: query.getRefer()) {
+			for (Refer r : query.getRefer()) {
 				refer.add((Refer) r.accept(this));
 			}
 			q.setRefer(refer);
 		}
 		if (query.getWhere() != null) {
-			q.setWhere((Where) query.getWhere().accept(this));
+			q.setWhere((Where) query.getWhere()
+					.accept(this));
 		}
 		if (query.getGroupBy() != null) {
-			q.setGroupBy((GroupBy) query.getGroupBy().accept(this));
+			q.setGroupBy((GroupBy) query.getGroupBy()
+					.accept(this));
 		}
 		if (query.getHaving() != null) {
-			q.setHaving((Having) query.getHaving().accept(this));
+			q.setHaving((Having) query.getHaving()
+					.accept(this));
 		}
 		if (query.getOrderBy() != null) {
-			q.setOrderBy((OrderBy) query.getOrderBy().accept(this));
+			q.setOrderBy((OrderBy) query.getOrderBy()
+					.accept(this));
 		}
 		if (query.getLimit() != null) {
-			q.setLimit((Limit) query.getLimit().accept(this));
+			q.setLimit((Limit) query.getLimit()
+					.accept(this));
 		}
 		q.setVersioned(query.isVersioned());
 		q.setLocalized(query.isLocalized());
@@ -302,11 +320,12 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(Select select) {
 		HintComment hc = null;
 		if (select.getHintComment() != null) {
-			hc = (HintComment) select.getHintComment().accept(this);
+			hc = (HintComment) select.getHintComment()
+					.accept(this);
 		}
 		List<ValueExpression> selectValues = new ArrayList<ValueExpression>();
 		if (select.getSelectValues() != null) {
-			for (ValueExpression v: select.getSelectValues()) {
+			for (ValueExpression v : select.getSelectValues()) {
 				selectValues.add((ValueExpression) v.accept(this));
 			}
 		}
@@ -319,7 +338,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 
 		Condition condition = null;
 		if (where.getCondition() != null) {
-			condition = (Condition) where.getCondition().accept(this);
+			condition = (Condition) where.getCondition()
+					.accept(this);
 		}
 		return new Where(condition);
 	}
@@ -328,7 +348,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		List<Condition> childExpressions = null;
 		if (and.getChildExpressions() != null) {
 			childExpressions = new ArrayList<Condition>();
-			for (Condition c: and.getChildExpressions()) {
+			for (Condition c : and.getChildExpressions()) {
 				childExpressions.add((Condition) c.accept(this));
 			}
 		}
@@ -338,7 +358,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(Paren paren) {
 		Condition nestedExpression = null;
 		if (paren.getNestedExpression() != null) {
-			nestedExpression = (Condition) paren.getNestedExpression().accept(this);
+			nestedExpression = (Condition) paren.getNestedExpression()
+					.accept(this);
 		}
 		return new Paren(nestedExpression);
 	}
@@ -346,7 +367,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(Not not) {
 		Condition nestedExpression = null;
 		if (not.getNestedExpression() != null) {
-			nestedExpression = (Condition) not.getNestedExpression().accept(this);
+			nestedExpression = (Condition) not.getNestedExpression()
+					.accept(this);
 		}
 		return new Not(nestedExpression);
 	}
@@ -355,7 +377,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		List<Condition> childExpressions = null;
 		if (or.getChildExpressions() != null) {
 			childExpressions = new ArrayList<Condition>();
-			for (Condition c: or.getChildExpressions()) {
+			for (Condition c : or.getChildExpressions()) {
 				childExpressions.add((Condition) c.accept(this));
 			}
 		}
@@ -367,13 +389,16 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		ValueExpression from = null;
 		ValueExpression to = null;
 		if (between.getProperty() != null) {
-			property = (ValueExpression) between.getProperty().accept(this);
+			property = (ValueExpression) between.getProperty()
+					.accept(this);
 		}
 		if (between.getFrom() != null) {
-			from = (ValueExpression) between.getFrom().accept(this);
+			from = (ValueExpression) between.getFrom()
+					.accept(this);
 		}
 		if (between.getTo() != null) {
-			to = (ValueExpression) between.getTo().accept(this);
+			to = (ValueExpression) between.getTo()
+					.accept(this);
 		}
 		return new Between(property, from, to);
 	}
@@ -382,10 +407,12 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		ValueExpression property = null;
 		ValueExpression value = null;
 		if (equals.getProperty() != null) {
-			property = (ValueExpression) equals.getProperty().accept(this);
+			property = (ValueExpression) equals.getProperty()
+					.accept(this);
 		}
 		if (equals.getValue() != null) {
-			value = (ValueExpression) equals.getValue().accept(this);
+			value = (ValueExpression) equals.getValue()
+					.accept(this);
 		}
 		return new Equals(property, value);
 	}
@@ -394,10 +421,12 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		ValueExpression property = null;
 		ValueExpression value = null;
 		if (greater.getProperty() != null) {
-			property = (ValueExpression) greater.getProperty().accept(this);
+			property = (ValueExpression) greater.getProperty()
+					.accept(this);
 		}
 		if (greater.getValue() != null) {
-			value = (ValueExpression) greater.getValue().accept(this);
+			value = (ValueExpression) greater.getValue()
+					.accept(this);
 		}
 		return new Greater(property, value);
 	}
@@ -406,10 +435,12 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		ValueExpression property = null;
 		ValueExpression value = null;
 		if (greaterEqual.getProperty() != null) {
-			property = (ValueExpression) greaterEqual.getProperty().accept(this);
+			property = (ValueExpression) greaterEqual.getProperty()
+					.accept(this);
 		}
 		if (greaterEqual.getValue() != null) {
-			value = (ValueExpression) greaterEqual.getValue().accept(this);
+			value = (ValueExpression) greaterEqual.getValue()
+					.accept(this);
 		}
 		return new GreaterEqual(property, value);
 	}
@@ -418,18 +449,19 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		List<ValueExpression> propertyList = null;
 		if (in.getPropertyList() != null) {
 			propertyList = new ArrayList<ValueExpression>();
-			for (ValueExpression p: in.getPropertyList()) {
+			for (ValueExpression p : in.getPropertyList()) {
 				propertyList.add((ValueExpression) p.accept(this));
 			}
 		}
 		if (in.getSubQuery() != null) {
-			SubQuery subQuery = (SubQuery) in.getSubQuery().accept(this);
+			SubQuery subQuery = (SubQuery) in.getSubQuery()
+					.accept(this);
 			return new In(propertyList, subQuery);
 		} else {
 			List<ValueExpression> value = null;
 			if (in.getValue() != null) {
 				value = new ArrayList<ValueExpression>();
-				for (ValueExpression v: in.getValue()) {
+				for (ValueExpression v : in.getValue()) {
 					value.add((ValueExpression) v.accept(this));
 				}
 			}
@@ -443,7 +475,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(IsNotNull isNotNull) {
 		ValueExpression property = null;
 		if (isNotNull.getProperty() != null) {
-			property = (ValueExpression) isNotNull.getProperty().accept(this);
+			property = (ValueExpression) isNotNull.getProperty()
+					.accept(this);
 		}
 		return new IsNotNull(property);
 	}
@@ -451,7 +484,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(IsNull isNull) {
 		ValueExpression property = null;
 		if (isNull.getProperty() != null) {
-			property = (ValueExpression) isNull.getProperty().accept(this);
+			property = (ValueExpression) isNull.getProperty()
+					.accept(this);
 		}
 		return new IsNull(property);
 	}
@@ -460,10 +494,12 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		ValueExpression property = null;
 		ValueExpression value = null;
 		if (lesser.getProperty() != null) {
-			property = (ValueExpression) lesser.getProperty().accept(this);
+			property = (ValueExpression) lesser.getProperty()
+					.accept(this);
 		}
 		if (lesser.getValue() != null) {
-			value = (ValueExpression) lesser.getValue().accept(this);
+			value = (ValueExpression) lesser.getValue()
+					.accept(this);
 		}
 		return new Lesser(property, value);
 	}
@@ -472,10 +508,12 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		ValueExpression property = null;
 		ValueExpression value = null;
 		if (lesserEqual.getProperty() != null) {
-			property = (ValueExpression) lesserEqual.getProperty().accept(this);
+			property = (ValueExpression) lesserEqual.getProperty()
+					.accept(this);
 		}
 		if (lesserEqual.getValue() != null) {
-			value = (ValueExpression) lesserEqual.getValue().accept(this);
+			value = (ValueExpression) lesserEqual.getValue()
+					.accept(this);
 		}
 		return new LesserEqual(property, value);
 	}
@@ -483,11 +521,13 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(Like like) {
 		ValueExpression property = null;
 		if (like.getProperty() != null) {
-			property = (ValueExpression) like.getProperty().accept(this);
+			property = (ValueExpression) like.getProperty()
+					.accept(this);
 		}
 		Literal pattern = null;
 		if (like.getPatternAsLiteral() != null) {
-			pattern = (Literal) like.getPatternAsLiteral().accept(this);
+			pattern = (Literal) like.getPatternAsLiteral()
+					.accept(this);
 		}
 		return new Like(property, pattern, like.getCaseType());
 	}
@@ -496,10 +536,12 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		ValueExpression property = null;
 		ValueExpression value = null;
 		if (notEquals.getProperty() != null) {
-			property = (ValueExpression) notEquals.getProperty().accept(this);
+			property = (ValueExpression) notEquals.getProperty()
+					.accept(this);
 		}
 		if (notEquals.getValue() != null) {
-			value = (ValueExpression) notEquals.getValue().accept(this);
+			value = (ValueExpression) notEquals.getValue()
+					.accept(this);
 		}
 		return new NotEquals(property, value);
 	}
@@ -509,19 +551,19 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		List<ValueExpression> values = null;
 		if (arrayValue.getValues() != null) {
 			values = new ArrayList<ValueExpression>();
-			for (ValueExpression c: arrayValue.getValues()) {
+			for (ValueExpression c : arrayValue.getValues()) {
 				values.add((ValueExpression) c.accept(this));
 			}
 		}
 		return new ArrayValue(values);
 	}
-	
+
 	@Override
 	public ASTNode visit(RowValueList rowValueList) {
 		List<ValueExpression> values = null;
 		if (rowValueList.getRowValues() != null) {
 			values = new ArrayList<ValueExpression>();
-			for (ValueExpression c: rowValueList.getRowValues()) {
+			for (ValueExpression c : rowValueList.getRowValues()) {
 				values.add((ValueExpression) c.accept(this));
 			}
 		}
@@ -531,7 +573,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(OrderBy orderBy) {
 		OrderBy copy = new OrderBy();
 		if (orderBy.getSortSpecList() != null) {
-			for (SortSpec s: orderBy.getSortSpecList()) {
+			for (SortSpec s : orderBy.getSortSpecList()) {
 				copy.add((SortSpec) s.accept(this));
 			}
 		}
@@ -542,14 +584,13 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(GroupBy groupBy) {
 		GroupBy copy = new GroupBy();
 		if (groupBy.getGroupingFieldList() != null) {
-			for (ValueExpression v: groupBy.getGroupingFieldList()) {
+			for (ValueExpression v : groupBy.getGroupingFieldList()) {
 				copy.add((ValueExpression) v.accept(this));
 			}
 		}
 		if (groupBy.getRollType() != null) {
 			copy.setRollType(groupBy.getRollType());
 		}
-
 
 		return copy;
 	}
@@ -566,42 +607,47 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		Function copy = new Function(function.getName());
 		if (function.getArguments() != null) {
 			ArrayList<ValueExpression> args = new ArrayList<ValueExpression>();
-			for (ValueExpression ve: function.getArguments()) {
+			for (ValueExpression ve : function.getArguments()) {
 				args.add((ValueExpression) ve.accept(this));
 			}
 			copy.setArguments(args);
 		}
 		return copy;
 	}
-	
+
 	@Override
 	public ASTNode visit(Cast cast) {
 		Cast copy = new Cast();
 		if (cast.getValue() != null) {
-			copy.setValue((ValueExpression) cast.getValue().accept(this));
+			copy.setValue((ValueExpression) cast.getValue()
+					.accept(this));
 		}
 		copy.setType(cast.getType());
 		if (cast.getTypeArguments() != null) {
-			copy.setTypeArguments(new ArrayList<>(cast.getTypeArguments().size()));
-			for (Integer i: cast.getTypeArguments()) {
-				copy.getTypeArguments().add(i);
+			copy.setTypeArguments(new ArrayList<>(cast.getTypeArguments()
+					.size()));
+			for (Integer i : cast.getTypeArguments()) {
+				copy.getTypeArguments()
+						.add(i);
 			}
 		}
 		return copy;
 	}
 
-
 	@Override
 	public ASTNode visit(Refer refer) {
 		Refer copy = new Refer();
 		if (refer.getReferenceName() != null) {
-			copy.setReferenceName((EntityField) refer.getReferenceName().accept(this));
+			copy.setReferenceName((EntityField) refer.getReferenceName()
+					.accept(this));
 		}
 		if (refer.getAsOf() != null) {
-			copy.setAsOf((AsOf) refer.getAsOf().accept(this));
+			copy.setAsOf((AsOf) refer.getAsOf()
+					.accept(this));
 		}
 		if (refer.getCondition() != null) {
-			copy.setCondition((Condition) refer.getCondition().accept(this));
+			copy.setCondition((Condition) refer.getCondition()
+					.accept(this));
 		}
 		return copy;
 	}
@@ -610,7 +656,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(Having having) {
 		Having copy = new Having();
 		if (having.getCondition() != null) {
-			copy.setCondition((Condition) having.getCondition().accept(this));
+			copy.setCondition((Condition) having.getCondition()
+					.accept(this));
 		}
 		return copy;
 	}
@@ -625,13 +672,14 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		Case copy = new Case();
 		if (caseClause.getWhen() != null) {
 			ArrayList<When> copyWhen = new ArrayList<When>();
-			for (When w: caseClause.getWhen()) {
+			for (When w : caseClause.getWhen()) {
 				copyWhen.add((When) w.accept(this));
 			}
 			copy.setWhen(copyWhen);
 		}
 		if (caseClause.getElseClause() != null) {
-			copy.setElseClause((Else) caseClause.getElseClause().accept(this));
+			copy.setElseClause((Else) caseClause.getElseClause()
+					.accept(this));
 		}
 		return copy;
 	}
@@ -640,7 +688,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(Else elseClause) {
 		Else copy = new Else();
 		if (elseClause.getResult() != null) {
-			copy.setResult((ValueExpression) elseClause.getResult().accept(this));
+			copy.setResult((ValueExpression) elseClause.getResult()
+					.accept(this));
 		}
 		return copy;
 	}
@@ -649,10 +698,12 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(When when) {
 		When copy = new When();
 		if (when.getCondition() != null) {
-			copy.setCondition((Condition) when.getCondition().accept(this));
+			copy.setCondition((Condition) when.getCondition()
+					.accept(this));
 		}
 		if (when.getResult() != null) {
-			copy.setResult((ValueExpression) when.getResult().accept(this));
+			copy.setResult((ValueExpression) when.getResult()
+					.accept(this));
 		}
 		return copy;
 	}
@@ -660,7 +711,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	@Override
 	public ASTNode visit(StdDevPop stdDevPop) {
 		if (stdDevPop.getValue() != null) {
-			return new StdDevPop((ValueExpression) stdDevPop.getValue().accept(this));
+			return new StdDevPop((ValueExpression) stdDevPop.getValue()
+					.accept(this));
 		} else {
 			return new StdDevPop();
 		}
@@ -669,7 +721,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	@Override
 	public ASTNode visit(StdDevSamp stdDevSamp) {
 		if (stdDevSamp.getValue() != null) {
-			return new StdDevSamp((ValueExpression) stdDevSamp.getValue().accept(this));
+			return new StdDevSamp((ValueExpression) stdDevSamp.getValue()
+					.accept(this));
 		} else {
 			return new StdDevSamp();
 		}
@@ -678,7 +731,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	@Override
 	public ASTNode visit(VarPop varPop) {
 		if (varPop.getValue() != null) {
-			return new VarPop((ValueExpression) varPop.getValue().accept(this));
+			return new VarPop((ValueExpression) varPop.getValue()
+					.accept(this));
 		} else {
 			return new VarPop();
 		}
@@ -687,7 +741,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	@Override
 	public ASTNode visit(VarSamp varSamp) {
 		if (varSamp.getValue() != null) {
-			return new VarSamp((ValueExpression) varSamp.getValue().accept(this));
+			return new VarSamp((ValueExpression) varSamp.getValue()
+					.accept(this));
 		} else {
 			return new VarSamp();
 		}
@@ -696,7 +751,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	@Override
 	public ASTNode visit(Mode mode) {
 		if (mode.getValue() != null) {
-			return new Mode((ValueExpression) mode.getValue().accept(this));
+			return new Mode((ValueExpression) mode.getValue()
+					.accept(this));
 		} else {
 			return new Mode();
 		}
@@ -705,7 +761,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	@Override
 	public ASTNode visit(Median median) {
 		if (median.getValue() != null) {
-			return new Median((ValueExpression) median.getValue().accept(this));
+			return new Median((ValueExpression) median.getValue()
+					.accept(this));
 		} else {
 			return new Median();
 		}
@@ -715,7 +772,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(HintComment hintComment) {
 		HintComment copy = new HintComment();
 		if (hintComment.getHintList() != null) {
-			for (Hint h: hintComment.getHintList()) {
+			for (Hint h : hintComment.getHintList()) {
 				copy.add((Hint) h.accept(this));
 			}
 		}
@@ -759,7 +816,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(AsOf asOf) {
 		AsOf copy = new AsOf(asOf.getSpec());
 		if (asOf.getValue() != null) {
-			copy.setValue((ValueExpression) asOf.getValue().accept(this));
+			copy.setValue((ValueExpression) asOf.getValue()
+					.accept(this));
 		}
 		return copy;
 	}
@@ -793,18 +851,21 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(WindowAggregate windowAggregateFunction) {
 		WindowAggregate copy = new WindowAggregate();
 		if (windowAggregateFunction.getAggregate() != null) {
-			copy.setAggregate((Aggregate) windowAggregateFunction.getAggregate().accept(this));
+			copy.setAggregate((Aggregate) windowAggregateFunction.getAggregate()
+					.accept(this));
 		}
 		handleOver(copy, windowAggregateFunction);
 		return copy;
 	}
-	
+
 	private void handleOver(WindowFunction copy, WindowFunction org) {
 		if (org.getPartitionBy() != null) {
-			copy.setPartitionBy((PartitionBy) org.getPartitionBy().accept(this));
+			copy.setPartitionBy((PartitionBy) org.getPartitionBy()
+					.accept(this));
 		}
 		if (org.getOrderBy() != null) {
-			copy.setOrderBy((WindowOrderBy) org.getOrderBy().accept(this));
+			copy.setOrderBy((WindowOrderBy) org.getOrderBy()
+					.accept(this));
 		}
 	}
 
@@ -848,7 +909,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		PartitionBy copy = new PartitionBy();
 		if (partitionBy.getPartitionFieldList() != null) {
 			ArrayList<ValueExpression> list = new ArrayList<>();
-			for (ValueExpression v: partitionBy.getPartitionFieldList()) {
+			for (ValueExpression v : partitionBy.getPartitionFieldList()) {
 				list.add((ValueExpression) v.accept(this));
 			}
 			copy.setPartitionFieldList(list);
@@ -860,7 +921,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(WindowOrderBy orderBy) {
 		WindowOrderBy copy = new WindowOrderBy();
 		if (orderBy.getSortSpecList() != null) {
-			for (WindowSortSpec s: orderBy.getSortSpecList()) {
+			for (WindowSortSpec s : orderBy.getSortSpecList()) {
 				copy.add((WindowSortSpec) s.accept(this));
 			}
 		}
@@ -871,7 +932,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(WindowSortSpec sortSpec) {
 		ValueExpression ve = null;
 		if (sortSpec.getSortKey() != null) {
-			ve = (ValueExpression) sortSpec.getSortKey().accept(this);
+			ve = (ValueExpression) sortSpec.getSortKey()
+					.accept(this);
 		}
 		return new WindowSortSpec(ve, sortSpec.getType(), sortSpec.getNullOrderingSpec());
 	}
@@ -881,13 +943,16 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 		Listagg copy = new Listagg();
 		copy.setDistinct(listagg.isDistinct());
 		if (listagg.getValue() != null) {
-			copy.setValue((ValueExpression) listagg.getValue().accept(this));
+			copy.setValue((ValueExpression) listagg.getValue()
+					.accept(this));
 		}
 		if (listagg.getSeparator() != null) {
-			copy.setSeparator((Literal) listagg.getSeparator().accept(this));
+			copy.setSeparator((Literal) listagg.getSeparator()
+					.accept(this));
 		}
 		if (listagg.getWithinGroup() != null) {
-			copy.setWithinGroup((WithinGroup) listagg.getWithinGroup().accept(this));
+			copy.setWithinGroup((WithinGroup) listagg.getWithinGroup()
+					.accept(this));
 		}
 		return copy;
 	}
@@ -896,7 +961,7 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(WithinGroup withinGroup) {
 		WithinGroup copy = new WithinGroup();
 		if (withinGroup.getSortSpecList() != null) {
-			for (WithinGroupSortSpec s: withinGroup.getSortSpecList()) {
+			for (WithinGroupSortSpec s : withinGroup.getSortSpecList()) {
 				copy.add((WithinGroupSortSpec) s.accept(this));
 			}
 		}
@@ -907,7 +972,8 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	public ASTNode visit(WithinGroupSortSpec sortSpec) {
 		ValueExpression ve = null;
 		if (sortSpec.getSortKey() != null) {
-			ve = (ValueExpression) sortSpec.getSortKey().accept(this);
+			ve = (ValueExpression) sortSpec.getSortKey()
+					.accept(this);
 		}
 		return new WithinGroupSortSpec(ve, sortSpec.getType(), sortSpec.getNullOrderingSpec());
 	}

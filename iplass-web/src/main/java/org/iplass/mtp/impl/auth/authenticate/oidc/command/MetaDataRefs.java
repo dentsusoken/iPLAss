@@ -23,13 +23,17 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 import org.iplass.mtp.command.annotation.template.Template;
 
 @MetaDataSeeAlso({
-	AuthCommand.class,
-	AuthCallbackCommand.class,
-	AccountConnectCommand.class,
-	AccountConnectCallbackCommand.class,
-	AccountDisconnectCommand.class
+		AuthCommand.class,
+		AuthCallbackCommand.class,
+		AccountConnectCommand.class,
+		AccountConnectCallbackCommand.class,
+		AccountDisconnectCommand.class
 })
-@Template(name=MetaDataRefs.TMPL_OIDC_ERROR, displayName="OpenID Connect Error", path="/jsp/oidc/Error.jsp", contentType="text/html; charset=utf-8")
+@Template(
+		name = MetaDataRefs.TMPL_OIDC_ERROR,
+		displayName = "OpenID Connect Error",
+		path = "/jsp/oidc/Error.jsp",
+		contentType = "text/html; charset=utf-8")
 public class MetaDataRefs {
 	public static final String TMPL_OIDC_ERROR = "oidc/Error";
 }

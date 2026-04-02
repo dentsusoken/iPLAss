@@ -26,19 +26,19 @@ import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
 public class EntityPurgeInvocationImpl extends EntityInvocationImpl<Void> implements EntityPurgeInvocation {
-	
+
 	private Long rbid;
-	
+
 	public EntityPurgeInvocationImpl(Long rbid, EntityInterceptor[] entityInterceptors,
 			EntityHandler entityHandler) {
 		super(entityInterceptors, entityHandler);
 		this.rbid = rbid;
 	}
-	
+
 	public Long getRecycleBinId() {
 		return rbid;
 	}
-	
+
 	public void setRecycleBinId(Long rbid) {
 		this.rbid = rbid;
 	}
@@ -53,5 +53,5 @@ public class EntityPurgeInvocationImpl extends EntityInvocationImpl<Void> implem
 		eh.purge(rbid);
 		return null;
 	}
-	
+
 }

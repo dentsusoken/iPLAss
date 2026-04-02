@@ -23,7 +23,7 @@ package org.iplass.adminconsole.server.connect;
 import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 
 @MetaDataSeeAlso({
-	IndexCommand.class,
+		IndexCommand.class,
 })
 public class MetaDataRefs {
 }

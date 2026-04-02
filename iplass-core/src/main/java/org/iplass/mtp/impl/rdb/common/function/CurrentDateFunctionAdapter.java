@@ -48,13 +48,15 @@ public class CurrentDateFunctionAdapter implements FunctionAdapter<Function> {
 
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		context.append(rdb.toDateExpression(ExecuteContext.getCurrentContext().getCurrentLocalDate()));
+		context.append(rdb.toDateExpression(ExecuteContext.getCurrentContext()
+				.getCurrentLocalDate()));
 	}
 
 	@Override
 	public void toSQL(StringBuilder context, List<CharSequence> args,
 			RdbAdapter rdb) {
-		context.append(rdb.toDateExpression(ExecuteContext.getCurrentContext().getCurrentLocalDate()));
+		context.append(rdb.toDateExpression(ExecuteContext.getCurrentContext()
+				.getCurrentLocalDate()));
 	}
 
 }

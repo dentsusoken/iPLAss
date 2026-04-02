@@ -65,11 +65,11 @@ public class JasperReportParamMapEditDialog extends MtpDialog {
 		LinkedHashMap<String, String> typeMap = new LinkedHashMap<String, String>();
 		typeMap.put("string", "Parameter");
 		typeMap.put("report", "SubReport");
-		typeMap.put("list", "List(Deprecated)");	//TODO 削除予定
+		typeMap.put("list", "List(Deprecated)"); //TODO 削除予定
 		typeField.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
-				if("report".equals(typeField.getValueAsString())){
+				if ("report".equals(typeField.getValueAsString())) {
 					fromField.hide();
 					templateField.show();
 
@@ -110,7 +110,7 @@ public class JasperReportParamMapEditDialog extends MtpDialog {
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					saveMap();
 				}
 			}
@@ -131,7 +131,7 @@ public class JasperReportParamMapEditDialog extends MtpDialog {
 	 * @param paramMap 編集対象の {@link ReportParamMapDefinition}
 	 */
 	public void setParamMap(ReportParamMapDefinition paramMap) {
-		if("report".equals(paramMap.getParamType())){
+		if ("report".equals(paramMap.getParamType())) {
 			fromField.hide();
 			templateField.show();
 
@@ -172,7 +172,7 @@ public class JasperReportParamMapEditDialog extends MtpDialog {
 
 	private void getEditedParamMap() {
 		ReportParamMapDefinition paramMap = new ReportParamMapDefinition();
-		if("report".equals(typeField.getValueAsString())){
+		if ("report".equals(typeField.getValueAsString())) {
 			paramMap.setMapFrom(SmartGWTUtil.getStringValue(templateField));
 		} else {
 			paramMap.setMapFrom(SmartGWTUtil.getStringValue(fromField));

@@ -63,7 +63,7 @@ public class Queue {
 	private final int[][] workerIdMap;
 
 	private final Worker[] workers;
-	
+
 	public Queue(QueueConfig config, CounterService counter, CounterService counterForGroup, RdbAdapter rdb) {
 		this(config, counter, counterForGroup, rdb, new DefaultWorkerFactory());
 	}
@@ -74,10 +74,18 @@ public class Queue {
 		this.counterForGroup = counterForGroup;
 		dao = new TaskDao(rdb);
 
-		workerIdMap = new int[config.getWorker().getActualWorkerSize()][];
-		if (config.getWorker().getActualWorkerSize() > 0) {
-			int mod = config.getWorker().getVirtualWorkerSize() % config.getWorker().getActualWorkerSize();
-			int length = config.getWorker().getVirtualWorkerSize() / config.getWorker().getActualWorkerSize();
+		workerIdMap = new int[config.getWorker()
+				.getActualWorkerSize()][];
+		if (config.getWorker()
+				.getActualWorkerSize() > 0) {
+			int mod = config.getWorker()
+					.getVirtualWorkerSize()
+					% config.getWorker()
+							.getActualWorkerSize();
+			int length = config.getWorker()
+					.getVirtualWorkerSize()
+					/ config.getWorker()
+							.getActualWorkerSize();
 			for (int i = 0; i < workerIdMap.length; i++) {
 				if (i < mod) {
 					workerIdMap[i] = new int[length + 1];
@@ -87,7 +95,8 @@ public class Queue {
 			}
 			int index = 0;
 			for (int i = 0; i < workerIdMap[0].length; i++) {
-				for (int j = 0; j < config.getWorker().getActualWorkerSize(); j++) {
+				for (int j = 0; j < config.getWorker()
+						.getActualWorkerSize(); j++) {
 					if (workerIdMap[j].length > i) {
 						workerIdMap[j][i] = index;
 					}
@@ -96,20 +105,21 @@ public class Queue {
 			}
 		}
 
-		workers = new Worker[config.getWorker().getActualWorkerSize()];
+		workers = new Worker[config.getWorker()
+				.getActualWorkerSize()];
 		for (int i = 0; i < workers.length; i++) {
 			workers[i] = workerFactory.createWorker(this, i);
 		}
 	}
 
 	public void startWorker() {
-		for (Worker w: workers) {
+		for (Worker w : workers) {
 			w.start();
 		}
 	}
 
 	public void stopWorker() {
-		for (Worker w: workers) {
+		for (Worker w : workers) {
 			w.stop();
 		}
 	}
@@ -130,7 +140,8 @@ public class Queue {
 				int result = 1;
 				result = prime * result + task.getTenantId();
 				result = prime * result + (int) (task.getTaskId() ^ (task.getTaskId() >>> 32));
-				task.setVirtualWorkerId(Math.abs(result) % config.getWorker().getVirtualWorkerSize());
+				task.setVirtualWorkerId(Math.abs(result) % config.getWorker()
+						.getVirtualWorkerSize());
 			} else {
 				task.setVirtualWorkerId(-1);
 			}
@@ -140,8 +151,10 @@ public class Queue {
 			int result = 1;
 			result = prime * result + task.getTenantId();
 			result = prime * result
-					+ task.getGroupingKey().hashCode();
-			task.setVirtualWorkerId(Math.abs(result) % config.getWorker().getVirtualWorkerSize());
+					+ task.getGroupingKey()
+							.hashCode();
+			task.setVirtualWorkerId(Math.abs(result) % config.getWorker()
+					.getVirtualWorkerSize());
 		}
 	}
 
@@ -155,7 +168,8 @@ public class Queue {
 		}
 		task.setStatus(TaskStatus.SUBMITTED);
 		task.setVersion(0);
-		task.setServerId(ServerEnv.getInstance().getServerId());
+		task.setServerId(ServerEnv.getInstance()
+				.getServerId());
 
 		if (task.getGroupingKey() != null && config.isStrictSequence()) {
 			//groupingKeyが設定されていて、strictSequence=true場合は、タスクIDはシーケンシャルに（キャッシュ利用しない）。
@@ -170,11 +184,11 @@ public class Queue {
 		case IMMEDIATELY:
 			//別トランザクションで
 			Transaction.requiresNew(t -> {
-					dao.insert(task);
-					if (callback != null) {
-						callback.setContext(task, Queue.this);
-						t.addTransactionListener(callback);
-					}
+				dao.insert(task);
+				if (callback != null) {
+					callback.setContext(task, Queue.this);
+					t.addTransactionListener(callback);
+				}
 			});
 			break;
 		case AFTER_COMMIT:
@@ -221,13 +235,15 @@ public class Queue {
 		if (virtualWorkerId == -1) {
 			return -1;
 		} else {
-			return virtualWorkerId % config.getWorker().getActualWorkerSize();
+			return virtualWorkerId % config.getWorker()
+					.getActualWorkerSize();
 		}
 	}
 
 	private String getServerId(boolean localOnly) {
 		if (localOnly) {
-			return ServerEnv.getInstance().getServerId();
+			return ServerEnv.getInstance()
+					.getServerId();
 		} else {
 			return null;
 		}
@@ -243,7 +259,8 @@ public class Queue {
 		//Taskへんきゃく。
 
 		if (myWorkerId >= workerIdMap.length) {
-			throw new IllegalArgumentException("requested workerId:" + myWorkerId + " is out of range.ActualWorkerSize is " + config.getWorker().getActualWorkerSize());
+			throw new IllegalArgumentException("requested workerId:" + myWorkerId + " is out of range.ActualWorkerSize is " + config.getWorker()
+					.getActualWorkerSize());
 		}
 
 		List<Task> tlist = dao.searchForPoll(
@@ -251,25 +268,25 @@ public class Queue {
 				workerIdMap[myWorkerId],
 				System.currentTimeMillis(),
 				getServerId(localOnly),
-				config.getWorker().getMaxRetryCount()
-				);
+				config.getWorker()
+						.getMaxRetryCount());
 		if (tlist.size() == 0) {
 			return null;
 		}
 		HashSet<String> excludeGroupingKeys = new HashSet<>();
-		for (Task t: tlist) {
+		for (Task t : tlist) {
 			//GroupingKey specified
 			if (t.getGroupingKey() != null) {
 				//check previous is executing
 				if (excludeGroupingKeys.contains(t.getGroupingKey())) {
 					continue;
 				} else if (dao.countPreExecuting(
-						ExecuteContext.getCurrentContext().getClientTenantId(),
+						ExecuteContext.getCurrentContext()
+								.getClientTenantId(),
 						config.getId(),
 						t.getGroupingKey(),
 						t.getTaskId(),
-						getServerId(localOnly)
-						) > 0) {
+						getServerId(localOnly)) > 0) {
 					excludeGroupingKeys.add(t.getGroupingKey());
 					continue;
 				}
@@ -279,40 +296,50 @@ public class Queue {
 			if (t.getStatus() == TaskStatus.EXECUTING) {
 				switch (t.getExceptionHandlingMode()) {
 				case RESTART:
-					mtpLogger.warn("queue:" + getName() + "'s task:" + t.getTaskId() + "(tenantId:" + t.getTenantId() + ") is timeout. so re-run task.");
+					mtpLogger
+							.warn("queue:" + getName() + "'s task:" + t.getTaskId() + "(tenantId:" + t.getTenantId() + ") is timeout. so re-run task.");
 					t.setRetryCount(t.getRetryCount() + 1);
 					break;
 				case ABORT:
 				case ABORT_LOG_FATAL:
 					final Task loaded = dao.load(t.getTenantId(), t.getQueueId(), t.getTaskId(), true, false, true);
 					if (taskAbort(loaded, true, new TaskTimeoutException(), false, true)) {
-						mtpLogger.error("queue:" + getName() + "'s task:" + t.getTaskId() + "(tenantId:" + t.getTenantId() + ") is timeout.so abort task.");
+						mtpLogger.error(
+								"queue:" + getName() + "'s task:" + t.getTaskId() + "(tenantId:" + t.getTenantId() + ") is timeout.so abort task.");
 						if (t.getExceptionHandlingMode() == ExceptionHandlingMode.ABORT_LOG_FATAL) {
-							fatalLogger.error("queue:" + getName() + "'s task:" + t.getTaskId() + "(tenantId:" + t.getTenantId() + ") is timeout.so abort task.");
+							fatalLogger.error(
+									"queue:" + getName() + "'s task:" + t.getTaskId() + "(tenantId:" + t.getTenantId() + ") is timeout.so abort task.");
 						}
 						try {
-							if (loaded.getCallable().getActual() instanceof ExceptionHandleable) {
-								ExecuteContext.executeAs(ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(t.getTenantId()), new Executable<Void>() {
-									@Override
-									public Void execute() {
-										AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(loaded.getTaskId(), getName());
-										ExecuteContext ec = ExecuteContext.getCurrentContext();
-										ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
-										try {
-											if (loaded.getCallable().getTraceId() != null) {
-												ec.mdcPut(ExecuteContext.MDC_TRACE_ID, loaded.getCallable().getTraceId());
+							if (loaded.getCallable()
+									.getActual() instanceof ExceptionHandleable) {
+								ExecuteContext.executeAs(ServiceRegistry.getRegistry()
+										.getService(TenantContextService.class)
+										.getTenantContext(t.getTenantId()), new Executable<Void>() {
+											@Override
+											public Void execute() {
+												AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(loaded.getTaskId(), getName());
+												ExecuteContext ec = ExecuteContext.getCurrentContext();
+												ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
+												try {
+													if (loaded.getCallable()
+															.getTraceId() != null) {
+														ec.mdcPut(ExecuteContext.MDC_TRACE_ID, loaded.getCallable()
+																.getTraceId());
+													}
+													((ExceptionHandleable) loaded.getCallable()
+															.getActual()).timeouted();
+
+												} finally {
+													ec.mdcPut(ExecuteContext.MDC_TRACE_ID, null);
+												}
+												return null;
 											}
-											((ExceptionHandleable) loaded.getCallable().getActual()).timeouted();
-											
-										} finally {
-											ec.mdcPut(ExecuteContext.MDC_TRACE_ID, null);
-										}
-										return null;
-									}
-								});
+										});
 							}
 						} catch (Throwable ee) {
-							fatalLogger.error("ExceptionHandleable's timeouted() call failed(queue:" + getConfig().getName() + ", task:" + loaded.getTaskId() + ",tenantId:" + loaded.getTenantId() + ")", ee);
+							fatalLogger.error("ExceptionHandleable's timeouted() call failed(queue:" + getConfig().getName() + ", task:"
+									+ loaded.getTaskId() + ",tenantId:" + loaded.getTenantId() + ")", ee);
 							Transaction tran = Transaction.getCurrent();
 							//timeoutの場合は、ステータスは更新する
 							if (tran != null && tran.getStatus() == TransactionStatus.ACTIVE && tran.isRollbackOnly()) {
@@ -333,7 +360,10 @@ public class Queue {
 
 			//update status & visibleTime
 			t.setStatus(TaskStatus.EXECUTING);
-			t.setVisibleTime(System.currentTimeMillis() + config.getWorker().getExecutionTimeout() + config.getWorker().getRestartDelay());
+			t.setVisibleTime(System.currentTimeMillis() + config.getWorker()
+					.getExecutionTimeout()
+					+ config.getWorker()
+							.getRestartDelay());
 
 			dao.update(t);
 
@@ -366,7 +396,8 @@ public class Queue {
 		Task loaded = dao.load(task.getTenantId(), task.getQueueId(), task.getTaskId(), true, false, true);
 		if (loaded != null) {
 			if (withTSCheck) {
-				if (!loaded.getUpdateTime().equals(task.getUpdateTime())) {
+				if (!loaded.getUpdateTime()
+						.equals(task.getUpdateTime())) {
 					return false;
 				}
 			}
@@ -417,7 +448,6 @@ public class Queue {
 		}
 	}
 
-
 	public Task pullResult(long taskId) {
 		//トランザクションはREQUIRES（呼び出し元と同じトランザクションに）
 		//ステータスをCOMPLETEに
@@ -430,8 +460,8 @@ public class Queue {
 			}
 		}
 
-
-		Task task = dao.load(ExecuteContext.getCurrentContext().getClientTenantId(),
+		Task task = dao.load(ExecuteContext.getCurrentContext()
+				.getClientTenantId(),
 				config.getId(), taskId, false, false, false);
 		if (task == null) {
 			//すでに完了済み、or 存在しないタスク
@@ -442,11 +472,11 @@ public class Queue {
 			return unkown;
 		}
 
-
 		if (task.getStatus() == TaskStatus.RETURNED
 				|| task.getStatus() == TaskStatus.ABORTED) {
 			//ロック＆ダブルチェック
-			task = dao.load(ExecuteContext.getCurrentContext().getClientTenantId(),
+			task = dao.load(ExecuteContext.getCurrentContext()
+					.getClientTenantId(),
 					config.getId(), taskId, true, false, true);
 			if (task.getStatus() == TaskStatus.RETURNED) {
 				dao.moveToHistory(task, TaskStatus.COMPLETED);
@@ -466,7 +496,8 @@ public class Queue {
 	}
 
 	public Task peek(long taskId, boolean withBinary, boolean withHistory) {
-		return dao.load(ExecuteContext.getCurrentContext().getClientTenantId(), config.getId(), taskId, withBinary, withHistory, false);
+		return dao.load(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), config.getId(), taskId, withBinary, withHistory, false);
 	}
 
 	public String getName() {
@@ -487,22 +518,25 @@ public class Queue {
 		cond.setUpdateDate(dateBefore);
 
 		List<Task> list = search(cond);
-		for (Task t: list) {
+		for (Task t : list) {
 			final Task target = t;
 			Task pulled = Transaction.requiresNew(tran -> {
-					return pullResult(target.getTaskId());
+				return pullResult(target.getTaskId());
 			});
 
 			if (pulled != null && pulled.getStatus() != TaskStatus.UNKNOWN) {
-				mtpLogger.warn("async task(" + "queue:" + getName() + ",tenantId:" + pulled.getTenantId() + ",taskId:" + pulled.getTaskId() + ") waiting get result timeout. so move to history");
+				mtpLogger.warn("async task(" + "queue:" + getName() + ",tenantId:" + pulled.getTenantId() + ",taskId:" + pulled.getTaskId()
+						+ ") waiting get result timeout. so move to history");
 			}
 		}
 	}
 
 	public void forceDelete(long taskId) {
-		Task t = dao.load(ExecuteContext.getCurrentContext().getClientTenantId(), config.getId(), taskId, false, false, false);
+		Task t = dao.load(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), config.getId(), taskId, false, false, false);
 		if (t == null) {
-			mtpLogger.warn("probably async task(" + "queue:" + getName() + ",taskId:" + taskId + ") has been moved to the history. so skip force delete");
+			mtpLogger.warn(
+					"probably async task(" + "queue:" + getName() + ",taskId:" + taskId + ") has been moved to the history. so skip force delete");
 		} else {
 			dao.delete(t);
 		}

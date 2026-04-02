@@ -26,8 +26,10 @@ public class AuthProviderCleaner extends MtpSilentBatch {
 
 	private static Logger logger = LoggerFactory.getLogger(AuthProviderCleaner.class);
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private static AuthService authService = ServiceRegistry.getRegistry().getService(AuthService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private static AuthService authService = ServiceRegistry.getRegistry()
+			.getService(AuthService.class);
 
 	private int tenantId;
 
@@ -54,7 +56,7 @@ public class AuthProviderCleaner extends MtpSilentBatch {
 				//全テナントを対象
 				List<TenantInfo> tenants = getValidTenantInfoList();
 				if (tenants != null) {
-					for (TenantInfo t: tenants) {
+					for (TenantInfo t : tenants) {
 						(new AuthProviderCleaner(t.getId())).clean();
 					}
 				}
@@ -93,11 +95,11 @@ public class AuthProviderCleaner extends MtpSilentBatch {
 
 				AuthenticationProvider[] aps = authService.getAuthenticationProviders();
 				if (aps != null) {
-					for (AuthenticationProvider ap: aps) {
+					for (AuthenticationProvider ap : aps) {
 						final AuthenticationProvider apFinal = ap;
 						Transaction.required(t -> {
-								apFinal.cleanupData();
-								return null;
+							apFinal.cleanupData();
+							return null;
 						});
 					}
 				}
@@ -119,13 +121,12 @@ public class AuthProviderCleaner extends MtpSilentBatch {
 		logInfo("");
 	}
 
-
 	/**
 	 * tenantIdを取得します。
 	 * @return tenantId
 	 */
 	public int getTenantId() {
-	    return tenantId;
+		return tenantId;
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class AuthProviderCleaner extends MtpSilentBatch {
 	 * @param tenantId tenantId
 	 */
 	public void setTenantId(int tenantId) {
-	    this.tenantId = tenantId;
+		this.tenantId = tenantId;
 	}
 
 	@Override

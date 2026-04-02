@@ -31,13 +31,13 @@ import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
 public class AsOfSyntax implements Syntax<AsOf>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
-	
+
 	public void init(SyntaxContext context) {
 		polynomial = context.getSyntax(PolynomialSyntax.class);
 	}
-	
+
 	public AsOf parse(ParseContext str) throws ParseException {
 		//AS OF
 		AsOfSpec asOfSpec = null;
@@ -67,12 +67,12 @@ public class AsOfSyntax implements Syntax<AsOf>, QueryConstants {
 			asOf = polynomial.parse(str);
 			asOfSpec = AsOfSpec.SPEC_VALUE;
 		}
-		
+
 		AsOf ao = new AsOf(asOfSpec);
 		if (asOf != null) {
 			ao.setValue(asOf);
 		}
-		
+
 		return ao;
 	}
 

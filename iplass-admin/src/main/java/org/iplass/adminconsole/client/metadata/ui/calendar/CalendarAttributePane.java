@@ -80,7 +80,8 @@ public class CalendarAttributePane extends HLayout {
 	 */
 	public void setCalendar(EntityCalendar calendar) {
 		if (calendar.getType() != null) {
-			typeField.setValue(calendar.getType().name());
+			typeField.setValue(calendar.getType()
+					.name());
 		} else {
 			typeField.setValue(CalendarType.MONTH.name());
 		}

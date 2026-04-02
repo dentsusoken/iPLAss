@@ -39,7 +39,7 @@ public class JavaClassValidation extends ValidationDefinition {
 
 	public JavaClassValidation() {
 	}
-	
+
 	public JavaClassValidation(String className, String errorMessage) {
 		this(className, errorMessage, null);
 	}
@@ -49,7 +49,7 @@ public class JavaClassValidation extends ValidationDefinition {
 		setErrorMessage(errorMessage);
 		setErrorCode(errorCode);
 	}
-	
+
 	public boolean isAsArray() {
 		return asArray;
 	}

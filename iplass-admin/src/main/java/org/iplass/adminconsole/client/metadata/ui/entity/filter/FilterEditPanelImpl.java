@@ -125,7 +125,6 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 	public void setTarget(final MetaDataItemMenuTreeNode targetNode, EntityPlugin manager) {
 		super.setTarget(targetNode, manager);
 
-
 		//レイアウト設定
 		setWidth100();
 
@@ -137,7 +136,8 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(ef.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(ef.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -157,7 +157,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 		filterListStack = new SectionStack();
 		filterListStack.setWidth("35%");
 		filterListSection = new SectionStackSection("Filter Items");
-		filterListSection.setCanCollapse(false);	//CLOSE不可
+		filterListSection.setCanCollapse(false); //CLOSE不可
 		filterListStack.addSection(filterListSection);
 		filterListStack.setShowResizeBar(true);
 //		filterListStack.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、次を収縮
@@ -165,7 +165,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 		//フィルタ条件表示部
 		SectionStack conditionStack = new SectionStack();
 		SectionStackSection conditionSection = new SectionStackSection("Filter Item Setting");
-		conditionSection.setCanCollapse(false);	//CLOSE不可
+		conditionSection.setCanCollapse(false); //CLOSE不可
 
 		VLayout conditionLayout = new VLayout(5);
 		conditionLayout.setMargin(5);
@@ -215,7 +215,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 				if (ed != null) {
 					for (PropertyDefinition property : ed.getPropertyList()) {
 						if (property instanceof ReferenceProperty) {
-							ReferenceProperty refp = (ReferenceProperty)property;
+							ReferenceProperty refp = (ReferenceProperty) property;
 							sb.append(refp.getName() + ".oid, ");
 							sb.append(refp.getName() + ".name, ");
 						} else {
@@ -226,10 +226,13 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 				} else {
 					sb.append("oid, name");
 				}
-				sb.append(" from ").append(FilterEditPanelImpl.this.defName);
-				sb.append(" where ").append(conditionField.getValueAsString());
+				sb.append(" from ")
+						.append(FilterEditPanelImpl.this.defName);
+				sb.append(" where ")
+						.append(conditionField.getValueAsString());
 				if (!SmartGWTUtil.isEmpty(sortField.getValueAsString())) {
-					sb.append(" order by ").append(sortField.getValueAsString());
+					sb.append(" order by ")
+							.append(sortField.getValueAsString());
 				}
 				execute(sb.toString());
 			}
@@ -260,8 +263,8 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 		langBtn = new ButtonItem("addDisplayName", "Languages");
 		langBtn.setShowTitle(false);
 		langBtn.setIcon("world.png");
-		langBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-		langBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
+		langBtn.setStartRow(false); //これを指定しないとButtonの場合、先頭にくる
+		langBtn.setEndRow(false); //これを指定しないと次のFormItemが先頭にいく
 		langBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_eachLangDspName"));
 		langBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -378,8 +381,10 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 
 				if (entry != null && entry.getDefinition() != null) {
 					ef = (EntityFilter) entry.getDefinition();
-					curVersion = entry.getDefinitionInfo().getVersion();
-					curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+					curVersion = entry.getDefinitionInfo()
+							.getVersion();
+					curDefinitionId = entry.getDefinitionInfo()
+							.getObjDefId();
 
 					//共通属性
 					commonSection.setDefinition(ef);
@@ -421,7 +426,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 			filterListStack.removeSection(0);
 		}
 		filterListSection = new SectionStackSection("Filter Items");
-		filterListSection.setCanCollapse(false);	//CLOSE不可
+		filterListSection.setCanCollapse(false); //CLOSE不可
 
 		ImgButton addItemButton = new ImgButton();
 		addItemButton.setSrc("icon_add_files.png");
@@ -440,7 +445,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 		});
 		filterListSection.setControls(addItemButton);
 
-		itemGrid = new ListGrid(){
+		itemGrid = new ListGrid() {
 			@Override
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				String fieldName = this.getFieldName(colNum);
@@ -459,7 +464,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 
 						@Override
 						public void onClick(ClickEvent event) {
-							EntityFilterItem item = (EntityFilterItem)record.getAttributeAsObject("valueObject");
+							EntityFilterItem item = (EntityFilterItem) record.getAttributeAsObject("valueObject");
 							setEntityFilterItem(item, itemGrid.getRecordIndex(record));
 						}
 
@@ -482,18 +487,19 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 						@Override
 						public void onClick(ClickEvent event) {
 							SC.confirm(AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_deleteConfirm"),
-									AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_deleteConfComment1") + record.getAttribute("name")
-									+ AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_deleteConfComment2")
-									, new BooleanCallback() {
+									AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_deleteConfComment1")
+											+ record.getAttribute("name")
+											+ AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_deleteConfComment2"),
+									new BooleanCallback() {
 
-								@Override
-								public void execute(Boolean value) {
-									if (value) {
-										itemGrid.removeData(record);
-									}
+										@Override
+										public void execute(Boolean value) {
+											if (value) {
+												itemGrid.removeData(record);
+											}
 
-								}
-							});
+										}
+									});
 						}
 					});
 
@@ -504,11 +510,12 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 
 		};
 		itemGrid.setEmptyMessage("no message item");
-		itemGrid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+		itemGrid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 		itemGrid.setShowHeader(false);
-		itemGrid.setBorder("none");				//外のSectionと線がかぶるので消す
+		itemGrid.setBorder("none"); //外のSectionと線がかぶるので消す
 
-		ListGridField namedField = new ListGridField(DataSourceConstants.FIELD_NAME, AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_name"));
+		ListGridField namedField = new ListGridField(DataSourceConstants.FIELD_NAME,
+				AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_name"));
 
 		ListGridField editField = new ListGridField("editButton");
 		editField.setWidth(25);
@@ -517,7 +524,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 		deleteField.setWidth(25);
 
 		itemGrid.setFields(namedField, editField, deleteField);
-		itemGrid.setSortField(DataSourceConstants.FIELD_NAME);			//MapなのでIDでソート
+		itemGrid.setSortField(DataSourceConstants.FIELD_NAME); //MapなのでIDでソート
 
 		//この２つを指定することでcreateRecordComponentが有効
 		itemGrid.setShowRecordComponents(true);
@@ -533,7 +540,8 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 				//初期化
-				EntityFilterItem item = (EntityFilterItem) event.getRecord().getAttributeAsObject("valueObject");
+				EntityFilterItem item = (EntityFilterItem) event.getRecord()
+						.getAttributeAsObject("valueObject");
 				setEntityFilterItem(item, event.getRecordNum());
 			}
 		});
@@ -595,31 +603,32 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_saveFilter") +
-					AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_saveFilterCaution") , new BooleanCallback() {
+							AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_saveFilterCaution"),
+					new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						if (ef == null) {
-							ef = new EntityFilter();
-							commonSection.getEditDefinition(ef);
-							ef.setDefinitionName(defName);
-							getItems();
-							createEntityFilter(ef);
-						} else {
-							commonSection.getEditDefinition(ef);
-							getItems();
-							updateEntityFilter(ef, true);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								if (ef == null) {
+									ef = new EntityFilter();
+									commonSection.getEditDefinition(ef);
+									ef.setDefinitionName(defName);
+									getItems();
+									createEntityFilter(ef);
+								} else {
+									commonSection.getEditDefinition(ef);
+									getItems();
+									updateEntityFilter(ef, true);
+								}
+							}
 						}
-					}
-				}
-			});
+					});
 		}
 	}
 
 	private void createEntityFilter(final EntityFilter definition) {
 		SmartGWTUtil.showSaveProgress();
-		service.createDefinition(TenantInfoHolder.getId(), definition, new MetaDataUpdateCallback(){
+		service.createDefinition(TenantInfoHolder.getId(), definition, new MetaDataUpdateCallback() {
 
 			@Override
 			protected void overwriteUpdate() {
@@ -656,11 +665,13 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 	}
 
 	private void getItems() {
-		ef.getItems().clear();
+		ef.getItems()
+				.clear();
 		ListGridRecord[] records = itemGrid.getRecords();
 		for (ListGridRecord record : records) {
 			EntityFilterItem item = (EntityFilterItem) record.getAttributeAsObject("valueObject");
-			if (item.getCondition() != null && !item.getCondition().isEmpty()) {
+			if (item.getCondition() != null && !item.getCondition()
+					.isEmpty()) {
 				ef.addItem(item);
 			}
 		}
@@ -675,16 +686,15 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_entity_filter_FilterEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 }

@@ -124,7 +124,8 @@ public class LoadEntityInterrupterHandler {
 	 * @return 実行結果
 	 */
 
-	public SearchQueryContext beforeSearchMassReference(Query query, ReferenceProperty referenceProperty, MassReferenceSection section, OutputType outputType) {
+	public SearchQueryContext beforeSearchMassReference(Query query, ReferenceProperty referenceProperty, MassReferenceSection section,
+			OutputType outputType) {
 		FormView formView = context.getView();
 		query.setLocalized(formView.isLocalizationData());
 		SearchQueryContext ret = interrupter.beforeSearchMassReference(request, formView, query, referenceProperty, section, outputType);
@@ -140,7 +141,8 @@ public class LoadEntityInterrupterHandler {
 	 * @param entity 検索結果
 	 * @param outputType 出力タイプ(VIEWまたはEDIT)
 	 */
-	public void afterSearchMassReference(Query query, ReferenceProperty referenceProperty, MassReferenceSection section, Entity entity, OutputType outputType) {
+	public void afterSearchMassReference(Query query, ReferenceProperty referenceProperty, MassReferenceSection section, Entity entity,
+			OutputType outputType) {
 		FormView formView = context.getView();
 		interrupter.afterSearchMassReference(request, formView, query, referenceProperty, section, entity, outputType);
 	}

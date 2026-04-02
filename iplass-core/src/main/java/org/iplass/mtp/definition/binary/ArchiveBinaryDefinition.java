@@ -29,7 +29,7 @@ import java.io.InputStream;
  *
  */
 public interface ArchiveBinaryDefinition extends BinaryDefinition {
-	
+
 	/**
 	 * 指定のpathで指し示されるzip（jar）内エントリのInputStreamを取得する。
 	 * 
@@ -37,7 +37,7 @@ public interface ArchiveBinaryDefinition extends BinaryDefinition {
 	 * @return
 	 */
 	public InputStream getEntryAsStream(String path);
-	
+
 	/**
 	 * 指定のpathで指し示されるzip（jar）内エントリのサイズを取得する。
 	 * 
@@ -45,7 +45,7 @@ public interface ArchiveBinaryDefinition extends BinaryDefinition {
 	 * @return
 	 */
 	public long getEntrySize(String path);
-	
+
 	/**
 	 * 指定のpathで指し示されるzip（jar）内エントリが存在するかを取得する。
 	 * 

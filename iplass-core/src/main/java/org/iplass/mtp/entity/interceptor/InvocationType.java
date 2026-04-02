@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.entity.interceptor;
 
-
 /**
  * Interceptor実装クラスで判断可能な、Entityの操作の種類。
  * 

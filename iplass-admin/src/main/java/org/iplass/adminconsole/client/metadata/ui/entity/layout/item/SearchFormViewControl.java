@@ -96,7 +96,8 @@ public class SearchFormViewControl extends ItemControl {
 
 		SearchFormView fv = new SearchFormView();
 		setValueObject(fv);
-		setClassName(fv.getClass().getName());
+		setClassName(fv.getClass()
+				.getName());
 	}
 
 	/**
@@ -149,7 +150,9 @@ public class SearchFormViewControl extends ItemControl {
 
 	public SearchFormView getForm() {
 		SearchFormView form = (SearchFormView) getValueObject();
-		if (form.getSections() != null) form.getSections().clear();
+		if (form.getSections() != null)
+			form.getSections()
+					.clear();
 		form.addSection(condition.getSection());
 		form.addSection(result.getSection());
 		form.setTopSection1(topDropLayout1.getSection());
@@ -212,11 +215,13 @@ public class SearchFormViewControl extends ItemControl {
 						String name = record.getAttribute("name");
 
 						Section section = null;
-						if (ScriptingSection.class.getName().equals(name)) {
+						if (ScriptingSection.class.getName()
+								.equals(name)) {
 							//HTMLセクション
 							section = new ScriptingSection();
 							section.setDispFlag(true);
-						} else if (TemplateSection.class.getName().equals(name)) {
+						} else if (TemplateSection.class.getName()
+								.equals(name)) {
 							//カスタムセクション
 							section = new TemplateSection();
 							section.setDispFlag(true);

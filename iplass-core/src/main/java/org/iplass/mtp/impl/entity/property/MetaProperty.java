@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.entity.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -40,6 +38,8 @@ import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.validation.MetaValidation;
 import org.iplass.mtp.impl.validation.ValidationService;
 import org.iplass.mtp.spi.ServiceRegistry;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ MetaPrimitiveProperty.class, MetaReferenceProperty.class })
 public abstract class MetaProperty implements MetaData {
@@ -187,7 +187,8 @@ public abstract class MetaProperty implements MetaData {
 
 		name = pDef.getName();
 
-		if (pDef.getDisplayName() != null && !pDef.getDisplayName().equals(pDef.getName())) {
+		if (pDef.getDisplayName() != null && !pDef.getDisplayName()
+				.equals(pDef.getName())) {
 			displayName = pDef.getDisplayName();
 		} else {
 			displayName = null;
@@ -200,7 +201,8 @@ public abstract class MetaProperty implements MetaData {
 
 		indexType = pDef.getIndexType();
 
-		ValidationService vService = ServiceRegistry.getRegistry().getService(ValidationService.class);
+		ValidationService vService = ServiceRegistry.getRegistry()
+				.getService(ValidationService.class);
 		validations = new ArrayList<MetaValidation>();
 		if (pDef.getValidations() != null) {
 			for (ValidationDefinition v : pDef.getValidations()) {
@@ -208,7 +210,8 @@ public abstract class MetaProperty implements MetaData {
 			}
 		}
 
-		NormalizerService nService = ServiceRegistry.getRegistry().getService(NormalizerService.class);
+		NormalizerService nService = ServiceRegistry.getRegistry()
+				.getService(NormalizerService.class);
 		normalizers = new ArrayList<>();
 		if (pDef.getNormalizers() != null) {
 			for (NormalizerDefinition n : pDef.getNormalizers()) {
@@ -276,7 +279,6 @@ public abstract class MetaProperty implements MetaData {
 //	}
 
 	public abstract PropertyHandler createRuntime(MetaEntity metaEntity);
-
 
 	@Override
 	public int hashCode() {

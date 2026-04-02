@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.tools.batch;
 
+import javax.sql.DataSource;
+
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.IOException;
@@ -29,8 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
-
-import javax.sql.DataSource;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -112,10 +112,12 @@ public abstract class MtpCuiBase {
 	protected void logDebug(String message) {
 		fireDebubLogMessage(message);
 	}
+
 	protected void logInfo(String message) {
 		fireInfoLogMessage(message);
 		logMessage.add(message);
 	}
+
 	protected void logInfo(String message, Throwable e) {
 		fireInfoLogMessage(message, e);
 		logMessage.add(message);
@@ -125,6 +127,7 @@ public abstract class MtpCuiBase {
 		fireWarnLogMessage(message);
 		logMessage.add(message);
 	}
+
 	protected void logWarn(String message, Throwable e) {
 		fireWarnLogMessage(message, e);
 		logMessage.add(message);
@@ -134,6 +137,7 @@ public abstract class MtpCuiBase {
 		fireErrorLogMessage(message);
 		logMessage.add(message);
 	}
+
 	protected void logError(String message, Throwable e) {
 		fireErrorLogMessage(message, e);
 		logMessage.add(message);
@@ -146,15 +150,18 @@ public abstract class MtpCuiBase {
 
 		try {
 			//Config FileName
-			String configFileName = BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
+			String configFileName = BootstrapProps.getInstance()
+					.getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
 
 			//Rdb Adapter
-			RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
+			RdbAdapterService adapterService = ServiceRegistry.getRegistry()
+					.getService(RdbAdapterService.class);
 			RdbAdapter adapter = adapterService.getRdbAdapter();
 
 			//Connection Factory
 			String conenctInfo = null;
-			ConnectionFactory factory = ServiceRegistry.getRegistry().getService(ConnectionFactory.class);
+			ConnectionFactory factory = ServiceRegistry.getRegistry()
+					.getService(ConnectionFactory.class);
 			if (factory instanceof DriverManagerConnectionFactory) {
 				DriverManagerConnectionFactory dmFactory = (DriverManagerConnectionFactory) factory;
 				conenctInfo = getDriverUrl(dmFactory);
@@ -174,16 +181,19 @@ public abstract class MtpCuiBase {
 
 	private String getDriverUrl(DriverManagerConnectionFactory dmFactory) throws Exception {
 		//private フィールドなのでリフレクションでセット
-		Field urlField = dmFactory.getClass().getDeclaredField("url");
+		Field urlField = dmFactory.getClass()
+				.getDeclaredField("url");
 		urlField.setAccessible(true);
-		return (String)urlField.get(dmFactory);
+		return (String) urlField.get(dmFactory);
 	}
 
 	private String getDataSourceClass(DataSourceConnectionFactory dsFactory) throws Exception {
 		//private フィールドなのでリフレクションでセット
-		Field dataSourceField = dsFactory.getClass().getDeclaredField("dataSource");
+		Field dataSourceField = dsFactory.getClass()
+				.getDeclaredField("dataSource");
 		dataSourceField.setAccessible(true);
-		return ((DataSource)dataSourceField.get(dsFactory)).getClass().getName();
+		return ((DataSource) dataSourceField.get(dsFactory)).getClass()
+				.getName();
 	}
 
 	/**
@@ -204,13 +214,15 @@ public abstract class MtpCuiBase {
 
 	//TODO mainで参照しているところが多いので一旦static
 	protected static List<TenantInfo> getValidTenantInfoList() {
-		TenantToolService tenantToolService = ServiceRegistry.getRegistry().getService(TenantToolService.class);
+		TenantToolService tenantToolService = ServiceRegistry.getRegistry()
+				.getService(TenantToolService.class);
 		return tenantToolService.getValidTenantInfoList();
 	}
 
 	//TODO mainで参照しているところが多いので一旦static
-	protected  static List<TenantInfo> getAllTenantInfoList() {
-		TenantToolService tenantToolService = ServiceRegistry.getRegistry().getService(TenantToolService.class);
+	protected static List<TenantInfo> getAllTenantInfoList() {
+		TenantToolService tenantToolService = ServiceRegistry.getRegistry()
+				.getService(TenantToolService.class);
 		return tenantToolService.getAllTenantInfoList();
 	}
 
@@ -431,11 +443,13 @@ public abstract class MtpCuiBase {
 			listner.debug(message);
 		}
 	}
+
 	private void fireInfoLogMessage(String message) {
 		for (LogListener listner : logListeners) {
 			listner.info(message);
 		}
 	}
+
 	private void fireInfoLogMessage(String message, Throwable e) {
 		for (LogListener listner : logListeners) {
 			listner.info(message, e);
@@ -447,6 +461,7 @@ public abstract class MtpCuiBase {
 			listner.warn(message);
 		}
 	}
+
 	private void fireWarnLogMessage(String message, Throwable e) {
 		for (LogListener listner : logListeners) {
 			listner.warn(message, e);
@@ -458,6 +473,7 @@ public abstract class MtpCuiBase {
 			listner.error(message);
 		}
 	}
+
 	private void fireErrorLogMessage(String message, Throwable e) {
 		for (LogListener listner : logListeners) {
 			listner.error(message, e);
@@ -485,12 +501,19 @@ public abstract class MtpCuiBase {
 	}
 
 	public interface LogListener {
-		default void debug(String message) {};
+		default void debug(String message) {
+		};
+
 		void info(String message);
+
 		void info(String message, Throwable e);
+
 		void warn(String message);
+
 		void warn(String message, Throwable e);
+
 		void error(String message);
+
 		void error(String message, Throwable e);
 	}
 
@@ -543,7 +566,7 @@ public abstract class MtpCuiBase {
 		@Override
 		public void warn(String message) {
 			if (console != null) {
-				console.printf("[WARN]%s%n",message);
+				console.printf("[WARN]%s%n", message);
 			} else {
 				//EclipseではConsoleがnull
 				System.out.println("[WARN]" + message);
@@ -558,7 +581,7 @@ public abstract class MtpCuiBase {
 		@Override
 		public void info(String message) {
 			if (console != null) {
-				console.printf("%s%n",message);
+				console.printf("%s%n", message);
 			} else {
 				//EclipseではConsoleがnull
 				System.out.println(message);

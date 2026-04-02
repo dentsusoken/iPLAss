@@ -22,14 +22,14 @@ package org.iplass.mtp.mail.listeners;
 
 import java.util.List;
 
-import jakarta.activation.DataHandler;
-import jakarta.mail.internet.InternetAddress;
-
 import org.iplass.mtp.mail.InlineContent;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.SendMailListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.activation.DataHandler;
+import jakarta.mail.internet.InternetAddress;
 
 /**
  * 送信メールをLogに出力します。
@@ -76,12 +76,16 @@ public class LoggingSendMailListener implements SendMailListener {
 
 			builder.append("PlainMessage:" + mail.getMessage() + "\n");
 			if (mail.getHtmlMessage() != null) {
-				builder.append("HtmlMessage:" + mail.getHtmlMessage().getContent() + "\n");
-				if (mail.getHtmlMessage().getInlineContents() != null) {
+				builder.append("HtmlMessage:" + mail.getHtmlMessage()
+						.getContent() + "\n");
+				if (mail.getHtmlMessage()
+						.getInlineContents() != null) {
 					builder.append("InlineContents:");
-					for (InlineContent ic: mail.getHtmlMessage().getInlineContents()) {
+					for (InlineContent ic : mail.getHtmlMessage()
+							.getInlineContents()) {
 						if (ic != null) {
-							builder.append(ic.getContentId()).append(", ");
+							builder.append(ic.getContentId())
+									.append(", ");
 						}
 					}
 					builder.append("\n");
@@ -112,7 +116,8 @@ public class LoggingSendMailListener implements SendMailListener {
 		if (address == null) {
 			return "";
 		}
-		if (address.getPersonal() != null && !address.getPersonal().isEmpty()) {
+		if (address.getPersonal() != null && !address.getPersonal()
+				.isEmpty()) {
 			return address.getPersonal() + "[" + address.getAddress() + "]";
 		} else {
 			return address.getAddress();

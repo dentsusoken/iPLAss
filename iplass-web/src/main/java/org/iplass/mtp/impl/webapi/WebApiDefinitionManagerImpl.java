@@ -35,7 +35,8 @@ public class WebApiDefinitionManagerImpl extends AbstractTypedDefinitionManager<
 //	private DefinitionManager dm;
 
 	public WebApiDefinitionManagerImpl() {
-		service = ServiceRegistry.getRegistry().getService(WebApiService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(WebApiService.class);
 //		dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
 	}
 

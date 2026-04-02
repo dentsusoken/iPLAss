@@ -33,7 +33,6 @@ import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.StateType;
 
-
 /**
  * WebAPIの定義。
  *
@@ -46,8 +45,11 @@ import org.iplass.mtp.webapi.definition.StateType;
 public @interface WebApi {
 
 	String id() default "##default";
+
 	String name();
+
 	String displayName() default "##default";
+
 	String description() default "##default";
 
 	/**
@@ -69,26 +71,36 @@ public @interface WebApi {
 	long cacheControlMaxAge() default -1;
 
 	boolean checkXRequestedWithHeader() default true;
+
 	/** @deprecated {@link #privileged()} を使用してください。 */
 	@Deprecated
 	boolean privilaged() default false;
+
 	boolean privileged() default false;
+
 	boolean publicWebApi() default false;
+
 	boolean overwritable() default true;
+
 	boolean permissionSharable() default false;
 
 	/** @deprecated {@link #accessControlAllowOrigin()} を使用してください。 */
 	@Deprecated
 	String accessControlAllowOrign() default "";
+
 	String accessControlAllowOrigin() default "";
+
 	boolean accessControlAllowCredentials() default false;
+
 	boolean needTrustedAuthenticate() default false;
 
 	WebApiParamMapping[] paramMapping() default {};
 
 	CommandConfig command() default @CommandConfig;
-	RequestType[] accepts() default{};
-	MethodType[] methods() default{};
+
+	RequestType[] accepts() default {};
+
+	MethodType[] methods() default {};
 
 	/**
 	 * 許可するリクエストボディのContentType。デフォルト未指定（＝すべて許可）。<br>
@@ -118,15 +130,18 @@ public @interface WebApi {
 	 * @return
 	 */
 	long maxFileSize() default Long.MIN_VALUE;
+
 	StateType state() default StateType.STATEFUL;
+
 	boolean supportBearerToken() default false;
-	String[] oauthScopes() default{};
+
+	String[] oauthScopes() default {};
 
 	/**
 	 * @deprecated {@link #responseResults()} を利用してください。本メソッドは大きなバージョンアップの際に削除する予定です。
 	 */
 	@Deprecated(since = "4.0.11", forRemoval = true)
-	String[] results() default {WebApiRequestConstants.DEFAULT_RESULT};
+	String[] results() default { WebApiRequestConstants.DEFAULT_RESULT };
 
 	/**
 	 * WebAPIの結果に関する属性を設定します。
@@ -134,15 +149,16 @@ public @interface WebApi {
 	 */
 	WebApiResultAttribute[] responseResults() default { @WebApiResultAttribute(name = WebApiRequestConstants.DEFAULT_RESULT) };
 
-	RestJson restJson() default @RestJson(parameterName="");
-	RestXml restXml() default @RestXml(parameterName="");
+	RestJson restJson() default @RestJson(parameterName = "");
+
+	RestXml restXml() default @RestXml(parameterName = "");
 
 	/**
 	 * <p>TokenCheck設定</p>
 	 *
 	 * デフォルトではTokenチェックは実行されません。
 	 */
-	WebApiTokenCheck tokenCheck() default @WebApiTokenCheck(executeCheck=false);
+	WebApiTokenCheck tokenCheck() default @WebApiTokenCheck(executeCheck = false);
 
 	/**
 	 * このAction処理をSessionにて同期化するか否か。デフォルトfalse。

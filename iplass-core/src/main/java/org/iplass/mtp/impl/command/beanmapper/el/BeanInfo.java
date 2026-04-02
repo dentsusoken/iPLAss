@@ -30,7 +30,7 @@ import jakarta.el.ELException;
 
 class BeanInfo {
 	private static SoftConcurrentHashMap<Class<?>, BeanInfo> biMap = new SoftConcurrentHashMap<>(256);
-	
+
 	static BeanInfo getBeanInfo(Class<?> beanClass) {
 		BeanInfo bi = biMap.get(beanClass);
 		if (bi == null) {
@@ -39,22 +39,23 @@ class BeanInfo {
 		}
 		return bi;
 	}
-	
+
 	static PropertyInfo getPropertyInfo(Class<?> beanClass, String propName) {
 		BeanInfo bi = getBeanInfo(beanClass);
 		return bi.getProperty(propName);
 	}
-	
+
 	private final Map<String, PropertyInfo> propertyMap = new HashMap<String, PropertyInfo>();
-	
+
 	BeanInfo(Class<?> beanClass) {
 		PropertyDescriptor[] descriptors;
 		try {
-			descriptors = Introspector.getBeanInfo(beanClass).getPropertyDescriptors();
+			descriptors = Introspector.getBeanInfo(beanClass)
+					.getPropertyDescriptors();
 		} catch (IntrospectionException ie) {
 			throw new ELException(ie);
 		}
-		for (PropertyDescriptor pd: descriptors) {
+		for (PropertyDescriptor pd : descriptors) {
 			PropertyInfo pi = new PropertyInfo(beanClass, pd);
 			if (pi.getTypeKind() != null) {
 				//型を判断できないプロパティは対象外にする
@@ -62,11 +63,11 @@ class BeanInfo {
 			}
 		}
 	}
-	
+
 	public Collection<PropertyInfo> getProperties() {
 		return propertyMap.values();
 	}
-	
+
 	public PropertyInfo getProperty(String property) {
 		return propertyMap.get(property);
 	}

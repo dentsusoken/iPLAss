@@ -27,8 +27,7 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
-public class UpdateSQL extends UpdateSqlHandler{
+public class UpdateSQL extends UpdateSqlHandler {
 
 	private static final String UPDATE_SQL;
 	private static final String UPDATE_WITH_PATH_SQL;
@@ -41,7 +40,6 @@ public class UpdateSQL extends UpdateSqlHandler{
 				+ " WHERE " + ObjMetaTable.TENANT_ID + "=?"
 				+ " AND " + ObjMetaTable.OBJ_DEF_ID + "=?"
 				+ " AND " + ObjMetaTable.STATUS + "='V'";
-
 
 		UPDATE_WITH_PATH_SQL = "UPDATE " + ObjMetaTable.TABLE_NAME
 				+ " SET " + ObjMetaTable.STATUS + "='D'"
@@ -57,7 +55,8 @@ public class UpdateSQL extends UpdateSqlHandler{
 	}
 
 	public void setUpdateParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String metaDataId) throws SQLException {
-		String clientId = ExecuteContext.getCurrentContext().getClientId();
+		String clientId = ExecuteContext.getCurrentContext()
+				.getClientId();
 		ps.setString(1, clientId);
 		ps.setInt(2, tenantId);
 		ps.setString(3, metaDataId);
@@ -68,12 +67,12 @@ public class UpdateSQL extends UpdateSqlHandler{
 	}
 
 	public void setUpdateWithPathParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String metaDataId, String path) throws SQLException {
-		String clientId = rdb.sanitize(ExecuteContext.getCurrentContext().getClientId());
+		String clientId = rdb.sanitize(ExecuteContext.getCurrentContext()
+				.getClientId());
 		ps.setString(1, path);
 		ps.setString(2, clientId);
 		ps.setInt(3, tenantId);
 		ps.setString(4, metaDataId);
 	}
-
 
 }

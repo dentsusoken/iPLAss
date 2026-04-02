@@ -63,7 +63,8 @@ public class FileNameGroovyTemplateBinding extends GroovyTemplateBinding {
 		ExecuteContext ex = ExecuteContext.getCurrentContext();
 		Timestamp date = ex.getCurrentTimestamp();//同一トランザクション内の時間を一緒にするため
 		setVariable("date", date);
-		setVariable("user", AuthContextHolder.getAuthContext().newUserBinding());
+		setVariable("user", AuthContextHolder.getAuthContext()
+				.newUserBinding());
 		SimpleDateFormat f = DateUtil.getSimpleDateFormat("yyyy", true);
 		setVariable("yyyy", f.format(date));
 		f.applyPattern("MM");

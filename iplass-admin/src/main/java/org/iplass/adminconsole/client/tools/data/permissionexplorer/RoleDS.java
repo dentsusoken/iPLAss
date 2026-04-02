@@ -46,11 +46,11 @@ public class RoleDS extends AbstractAdminDataSource {
 	static {
 		DataSourceField status = new DataSourceField("status", FieldType.TEXT);
 		DataSourceField oid = new DataSourceField("oid", FieldType.TEXT);
-		DataSourceField code = new DataSourceField("code",FieldType.TEXT);
-		DataSourceField name = new DataSourceField("name",FieldType.TEXT);
-		DataSourceField priority = new DataSourceField("priority",FieldType.TEXT);
+		DataSourceField code = new DataSourceField("code", FieldType.TEXT);
+		DataSourceField name = new DataSourceField("name", FieldType.TEXT);
+		DataSourceField priority = new DataSourceField("priority", FieldType.TEXT);
 
-		fields = new DataSourceField[] {status, oid, code, name, priority};
+		fields = new DataSourceField[] { status, oid, code, name, priority };
 	}
 
 	private PermissionExplorerServiceAsync service;
@@ -92,7 +92,7 @@ public class RoleDS extends AbstractAdminDataSource {
 		priorityField.setWidth(100);
 		fields.add(priorityField);
 
-		return fields.toArray(new ListGridField[]{});
+		return fields.toArray(new ListGridField[] {});
 	}
 
 	public List<Entity> getStoredRoleList() {

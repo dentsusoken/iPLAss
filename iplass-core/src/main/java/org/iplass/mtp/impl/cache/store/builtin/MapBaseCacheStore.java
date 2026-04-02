@@ -65,18 +65,18 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 			return true;
 		}
 	}
-	
+
 	@Override
 	protected void removeInvalidEntry() {
 		List<Object> keys = keySet();
 		if (keys != null) {
-			for (Object k: keys) {
+			for (Object k : keys) {
 				//getの中で、チェックしてるので
 				get(k);
 			}
 		}
 	}
-	
+
 	@Override
 	public CacheEntry get(Object key) {
 		if (key == null) {
@@ -162,7 +162,7 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 	@Override
 	public void removeAll() {
 		if (hasListener()) {
-			for (Object k: keySet()) {
+			for (Object k : keySet()) {
 				remove(k);
 			}
 		} else {
@@ -193,7 +193,8 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 
 	@Override
 	public boolean remove(CacheEntry entry) {
-		if (cache.containsKey(entry.getKey()) && cache.get(entry.getKey()).equals(entry)) {
+		if (cache.containsKey(entry.getKey()) && cache.get(entry.getKey())
+				.equals(entry)) {
 			cache.remove(entry.getKey());
 			removeFromIndex(entry, false);
 			notifyRemoved(entry);
@@ -218,10 +219,12 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 
 	@Override
 	public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-		if (!oldEntry.getKey().equals(newEntry.getKey())) {
+		if (!oldEntry.getKey()
+				.equals(newEntry.getKey())) {
 			throw new IllegalArgumentException("oldEntry key not equals newEntryKey");
 		}
-		if (cache.containsKey(newEntry.getKey()) && cache.get(newEntry.getKey()).equals(oldEntry)) {
+		if (cache.containsKey(newEntry.getKey()) && cache.get(newEntry.getKey())
+				.equals(oldEntry)) {
 			CacheEntry previous = cache.put(newEntry.getKey(), newEntry);
 			removeFromIndex(previous, false);
 			addToIndex(newEntry);
@@ -292,7 +295,7 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 	public List<CacheEntry> removeByIndex(int indexKey, Object indexValue) {
 		List<CacheEntry> list = getListByIndex(indexKey, indexValue);
 		if (list != null) {
-			for (CacheEntry e: list) {
+			for (CacheEntry e : list) {
 				remove(e.getKey());
 			}
 		}
@@ -303,7 +306,7 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 	protected void removeNullEntry(NullKey key) {
 		cache.remove(key);
 	}
-	
+
 	@Override
 	public int getSize() {
 		return cache.size();
@@ -328,7 +331,7 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 				builder.append("\n\tindexCache[" + i + "] entry size:" + indexCache[i].size());
 				for (Entry<Object, Object> entry : indexCache[i].entrySet()) {
 					if (entry.getValue() instanceof Object[]) {
-						builder.append("\n\t\t" + entry.getKey() + "=" + Arrays.toString((Object[])entry.getValue()));
+						builder.append("\n\t\t" + entry.getKey() + "=" + Arrays.toString((Object[]) entry.getValue()));
 					} else {
 						builder.append("\n\t\t" + entry.getKey() + "=" + entry.getValue());
 					}
@@ -340,7 +343,7 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 		builder.append("\n-----------------------------------");
 		return builder.toString();
 	}
-	
+
 	@Override
 	public void destroy() {
 		cache.clear();

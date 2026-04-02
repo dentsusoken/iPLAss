@@ -27,7 +27,7 @@ package org.iplass.mtp.entity.definition.properties;
  *
  */
 public enum VersionControlReferenceType {
-	
+
 	/** 参照元Entityを保存したバージョン（もしくは日付）で参照先を検索 */
 	RECORD_BASE,
 	/** 現時点の最新の状態（有効なバージョン、もしくは現在日付）で参照先を検索 */

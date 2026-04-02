@@ -26,7 +26,7 @@ import org.iplass.mtp.entity.definition.NormalizerDefinition;
 
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public abstract class NormalizerAttributePane extends VLayout implements EditablePane<NormalizerDefinition>{
+public abstract class NormalizerAttributePane extends VLayout implements EditablePane<NormalizerDefinition> {
 
 	public abstract int panelHeight();
 

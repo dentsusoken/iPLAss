@@ -32,7 +32,8 @@ import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
-public class AuthenticationPolicyService extends AbstractTypedMetaDataService<MetaAuthenticationPolicy, AuthenticationPolicyRuntime> implements Service {
+public class AuthenticationPolicyService extends AbstractTypedMetaDataService<MetaAuthenticationPolicy, AuthenticationPolicyRuntime>
+		implements Service {
 	public static final String AUTHN_POLICY_PATH = "/authNPolicy/";
 	public static final String DEFAULT_NAME = "DEFAULT";
 
@@ -40,9 +41,11 @@ public class AuthenticationPolicyService extends AbstractTypedMetaDataService<Me
 		public TypeMap() {
 			super(getFixedPath(), MetaAuthenticationPolicy.class, AuthenticationPolicyDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<AuthenticationPolicyDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(AuthenticationPolicyDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(AuthenticationPolicyDefinitionManager.class);
 		}
 
 		@Override
@@ -67,9 +70,11 @@ public class AuthenticationPolicyService extends AbstractTypedMetaDataService<Me
 		if (name == null) {
 			name = DEFAULT_NAME;
 		}
-		AuthenticationPolicyRuntime r = MetaDataContext.getContext().getMetaDataHandler(AuthenticationPolicyRuntime.class, AUTHN_POLICY_PATH  + name);
+		AuthenticationPolicyRuntime r = MetaDataContext.getContext()
+				.getMetaDataHandler(AuthenticationPolicyRuntime.class, AUTHN_POLICY_PATH + name);
 		if (r == null && !DEFAULT_NAME.equals(name)) {
-			r = MetaDataContext.getContext().getMetaDataHandler(AuthenticationPolicyRuntime.class, AUTHN_POLICY_PATH  + DEFAULT_NAME);
+			r = MetaDataContext.getContext()
+					.getMetaDataHandler(AuthenticationPolicyRuntime.class, AUTHN_POLICY_PATH + DEFAULT_NAME);
 		}
 		return r;
 	}

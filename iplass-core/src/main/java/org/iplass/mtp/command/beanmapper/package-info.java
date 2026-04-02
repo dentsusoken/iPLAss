@@ -19,6 +19,6 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/webapi"
+		namespace = "http://mtp.iplass.org/xml/webapi"
 )
 package org.iplass.mtp.command.beanmapper;

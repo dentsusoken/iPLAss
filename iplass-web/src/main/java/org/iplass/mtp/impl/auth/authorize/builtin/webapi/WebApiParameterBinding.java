@@ -43,7 +43,7 @@ public class WebApiParameterBinding {
 			paramValue = webApiParameter.getValue(name);
 		}
 		if (value != null) {
-			for (Object v: value) {
+			for (Object v : value) {
 				if (v == null) {
 					if (paramValue == null) {
 						return true;

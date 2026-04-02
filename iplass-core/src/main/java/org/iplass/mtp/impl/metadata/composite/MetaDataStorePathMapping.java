@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.metadata.composite;
 public class MetaDataStorePathMapping {
 	private String pathPrefix;
 	private String store;
-	
+
 	public String getPathPrefix() {
 		return pathPrefix;
 	}
@@ -37,5 +37,5 @@ public class MetaDataStorePathMapping {
 
 	public void setStore(String store) {
 		this.store = store;
-	}	
+	}
 }

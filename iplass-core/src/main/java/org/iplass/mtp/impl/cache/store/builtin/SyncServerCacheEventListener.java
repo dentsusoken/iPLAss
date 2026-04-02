@@ -23,9 +23,9 @@ package org.iplass.mtp.impl.cache.store.builtin;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 
 public interface SyncServerCacheEventListener {
-	
+
 	public void removeAll(String namespace);
-	
+
 	public void markDirty(String namespace, CacheEntry entry);
 
 }

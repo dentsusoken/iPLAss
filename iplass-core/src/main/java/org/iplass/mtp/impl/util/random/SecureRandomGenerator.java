@@ -32,11 +32,12 @@ import org.apache.commons.codec.binary.Base32;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 
 public class SecureRandomGenerator {
-	private static Encoder base64urlsafewop = Base64.getUrlEncoder().withoutPadding();
+	private static Encoder base64urlsafewop = Base64.getUrlEncoder()
+			.withoutPadding();
 	private static Base32 base32 = new Base32();
-	
+
 	private final Queue<SecureRandom> randoms = new ConcurrentLinkedQueue<SecureRandom>();
-	
+
 	private final int numBitsOfSecureRandomToken;
 	/** 2-36,64 */
 	private final int radixOfSecureRandomToken;
@@ -45,7 +46,7 @@ public class SecureRandomGenerator {
 	private final String provider;
 	/** base32,base64 */
 	private final String encode;
-	
+
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, boolean useStrongSecureRandom) {
 		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
 		this.radixOfSecureRandomToken = radixOfSecureRandomToken;
@@ -54,7 +55,7 @@ public class SecureRandomGenerator {
 		this.provider = null;
 		this.encode = null;
 	}
-	
+
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, boolean useStrongSecureRandom, String encode) {
 		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
 		this.radixOfSecureRandomToken = radixOfSecureRandomToken;
@@ -63,7 +64,7 @@ public class SecureRandomGenerator {
 		this.provider = null;
 		this.encode = encode;
 	}
-	
+
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, String algorithm) {
 		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
 		this.radixOfSecureRandomToken = radixOfSecureRandomToken;
@@ -72,7 +73,7 @@ public class SecureRandomGenerator {
 		this.provider = null;
 		this.encode = null;
 	}
-	
+
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, String algorithm, String provider) {
 		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
 		this.radixOfSecureRandomToken = radixOfSecureRandomToken;
@@ -90,7 +91,7 @@ public class SecureRandomGenerator {
 		this.provider = provider;
 		this.encode = encode;
 	}
-	
+
 	private SecureRandom createSecureRandom() {
 		try {
 			SecureRandom sr = null;
@@ -113,32 +114,32 @@ public class SecureRandomGenerator {
 			throw new ServiceConfigrationException("invalid secure random algorithm/provider", e);
 		}
 	}
-	
+
 	public String secureRandomToken() {
 		SecureRandom rand = randoms.poll();
 		if (rand == null) {
 			rand = createSecureRandom();
-        }
-		
-		if("base64".equals(encode)) {
+		}
+
+		if ("base64".equals(encode)) {
 			//numBitsOfSecureRandomTokenが8で割り切れない場合、数値を切り上げる。
-			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken/8));
+			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken / 8));
 			byte[] bytes = new byte[roundUpNumBytesOfSecureRandomToken];
 			rand.nextBytes(bytes);
 			randoms.add(rand);
 			return base64urlsafewop.encodeToString(bytes);
 		} else if ("base32".equals(encode)) {
 			//numBitsOfSecureRandomTokenが8で割り切れない場合、数値を切り上げる。
-			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken/8));
+			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken / 8));
 			byte[] bytes = new byte[roundUpNumBytesOfSecureRandomToken];
 			rand.nextBytes(bytes);
 			randoms.add(rand);
 			return base32.encodeToString(bytes);
 		}
-		
+
 		if (radixOfSecureRandomToken == 64) {
 			//numBitsOfSecureRandomTokenが8で割り切れない場合、数値を切り上げる。
-			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken/8));
+			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken / 8));
 			byte[] bytes = new byte[roundUpNumBytesOfSecureRandomToken];
 			rand.nextBytes(bytes);
 			randoms.add(rand);
@@ -149,7 +150,7 @@ public class SecureRandomGenerator {
 			return randInt.toString(radixOfSecureRandomToken);
 		}
 	}
-	
+
 	public int randomInt(int bound) {
 		SecureRandom rand = randoms.poll();
 		if (rand == null) {

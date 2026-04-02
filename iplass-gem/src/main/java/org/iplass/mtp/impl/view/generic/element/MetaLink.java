@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.generic.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
@@ -38,6 +36,8 @@ import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.Link;
+
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * リンクのメタデータ
@@ -254,9 +254,12 @@ public class MetaLink extends MetaElement {
 		public LinkRuntime(MetaLink metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
-			inputCustomStyleScriptKey = "Link_InputStyle_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+			inputCustomStyleScriptKey = "Link_InputStyle_" + GroovyTemplateCompiler.randomName()
+					.replace("-", "_");
 			if (StringUtil.isNotEmpty(inputCustomStyle)) {
-				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				inputCustomStyleScript = GroovyTemplateCompiler.compile(inputCustomStyle,
 						inputCustomStyleScriptKey + "_" + SCRIPT_PREFIX,
 						(GroovyScriptEngine) scriptEngine);

@@ -67,7 +67,7 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 
 	@Override
 	public void create(final MetaEntity newOne,
-			final EntityContext context/*, final int version*/) {
+			final EntityContext context/* , final int version */) {
 
 		MetaSchemalessRdbStoreMapping mapping = (MetaSchemalessRdbStoreMapping) newOne.getStoreMapping();
 		StorageSpaceMap ssMap = dataStore.getStorageSpaceMapOrDefault(mapping);
@@ -80,7 +80,7 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 		ssDef.setVersion(0);
 		ssDef.setTableNamePostfix(ssMap.generateTableNamePostfix(context.getLocalTenantId(), newOne.getId()));
 
-		for (MetaProperty prop: newOne.getDeclaredPropertyList()) {
+		for (MetaProperty prop : newOne.getDeclaredPropertyList()) {
 			if (prop instanceof MetaPrimitiveProperty) {
 				colResolver.allocateCol((MetaPrimitiveProperty) prop, null, newOne.getVersionControlType());
 			}
@@ -136,7 +136,8 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 			}
 
 		};
-		return exec.execute(rdb, true).booleanValue();
+		return exec.execute(rdb, true)
+				.booleanValue();
 	}
 
 	@Override
@@ -171,7 +172,8 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 
 		};
 
-		return exec.execute(rdb, true).booleanValue();
+		return exec.execute(rdb, true)
+				.booleanValue();
 	}
 
 	@Override
@@ -183,7 +185,7 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
 			@Override
 			public Boolean logic() throws SQLException {
-				for (int tenantId: targetTenantIds) {
+				for (int tenantId : targetTenantIds) {
 					updateDiff.applyToData(getStatement(), rdb, tenantId);
 				}
 
@@ -191,14 +193,16 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 				int newVer = ((MetaGRdbEntityStore) newOne.getEntityStoreDefinition()).getVersion();
 
 				//SchemaControlのOBJ_DEF_VER,CR_DATA_VER(データ変更が必要な場合のみ)更新
-				String sql = scuvSql.toSql(context.getLocalTenantId(), newOne.getId(), currentVer, newVer, updateDiff.needDataModify(), LockStatus.LOCK, rdb);
+				String sql = scuvSql.toSql(context.getLocalTenantId(), newOne.getId(), currentVer, newVer, updateDiff.needDataModify(), LockStatus.LOCK,
+						rdb);
 				int count = getStatement().executeUpdate(sql);
 
 				return count > 0;
 			}
 		};
 
-		return exec.execute(rdb, true).booleanValue();
+		return exec.execute(rdb, true)
+				.booleanValue();
 	}
 
 	@Override
@@ -244,7 +248,8 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 
 		Boolean res = exec.execute(rdb, true);
 		if (!res.booleanValue()) {
-			throw new EntityRuntimeException("fail unlock Entity:" + previous.getName() + "(tenant=" + context.getLocalTenantId() + ",id=" + toEnt.getId() + ",version=" + ver + ",modifyResult=" + modifyResult + ")");
+			throw new EntityRuntimeException("fail unlock Entity:" + previous.getName() + "(tenant=" + context.getLocalTenantId() + ",id="
+					+ toEnt.getId() + ",version=" + ver + ",modifyResult=" + modifyResult + ")");
 		}
 	}
 
@@ -263,18 +268,22 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 				colResolver.shrink();
 
 				//更新対象なし
-				if (!colResolver.getColContext().hasColCopy()) {
+				if (!colResolver.getColContext()
+						.hasColCopy()) {
 					return true;
 				}
 
 				int newVer = currentVer + 1;
-				colResolver.getMetaStore().setVersion(newVer);
+				colResolver.getMetaStore()
+						.setVersion(newVer);
 				target.setEntityStoreDefinition(colResolver.getMetaStore());
-				int newPageNo = colResolver.getMetaStore().currentMaxPage();
+				int newPageNo = colResolver.getMetaStore()
+						.currentMaxPage();
 
-				String tableNamePostfixRuntime = dataStore.getTableNamePostfix(target.getName(), colResolver.getMetaStore().getTableNamePostfix());
+				String tableNamePostfixRuntime = dataStore.getTableNamePostfix(target.getName(), colResolver.getMetaStore()
+						.getTableNamePostfix());
 
-				for (int tenantId: targetTenantIds) {
+				for (int tenantId : targetTenantIds) {
 					ObjStoreMaintenanceSql sc = rdb.getUpdateSqlCreator(ObjStoreMaintenanceSql.class);
 
 					switch (rdb.getMultiTableUpdateMethod()) {
@@ -289,16 +298,22 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 //						break;
 					case NO_SUPPORT:
 						//pageNo=0から更新
-						List<ColCopy> ccl = colResolver.getColContext().getColCopyList(0);
-						getStatement().executeUpdate(sc.updateCol(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
-						getStatement().executeUpdate(sc.updateColRB(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
+						List<ColCopy> ccl = colResolver.getColContext()
+								.getColCopyList(0);
+						getStatement().executeUpdate(sc.updateCol(tenantId, target.getId(), colResolver.getMetaStore()
+								.getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
+						getStatement().executeUpdate(sc.updateColRB(tenantId, target.getId(), colResolver.getMetaStore()
+								.getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
 
 						for (int i = 1; i <= newPageNo; i++) {
 							//pageNo=1以降更新
-							ccl = colResolver.getColContext().getColCopyList(i);
+							ccl = colResolver.getColContext()
+									.getColCopyList(i);
 							if (ccl != null) {
-								getStatement().executeUpdate(sc.updateCol(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
-								getStatement().executeUpdate(sc.updateColRB(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
+								getStatement().executeUpdate(sc.updateCol(tenantId, target.getId(), colResolver.getMetaStore()
+										.getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
+								getStatement().executeUpdate(sc.updateColRB(tenantId, target.getId(), colResolver.getMetaStore()
+										.getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
 							}
 						}
 						break;
@@ -306,10 +321,13 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 						@SuppressWarnings("unchecked")
 						List<ColCopy>[] ccls = new List[newPageNo + 1];
 						for (int i = 0; i <= newPageNo; i++) {
-							ccls[i] = colResolver.getColContext().getColCopyList(i);
+							ccls[i] = colResolver.getColContext()
+									.getColCopyList(i);
 						}
-						getStatement().executeUpdate(sc.updateColDirectJoin(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), ccls, tableNamePostfixRuntime, rdb));
-						getStatement().executeUpdate(sc.updateColDirectJoinRB(tenantId, target.getId(), colResolver.getMetaStore().getVersion(), ccls, tableNamePostfixRuntime, rdb));
+						getStatement().executeUpdate(sc.updateColDirectJoin(tenantId, target.getId(), colResolver.getMetaStore()
+								.getVersion(), ccls, tableNamePostfixRuntime, rdb));
+						getStatement().executeUpdate(sc.updateColDirectJoinRB(tenantId, target.getId(), colResolver.getMetaStore()
+								.getVersion(), ccls, tableNamePostfixRuntime, rdb));
 						break;
 					default:
 						break;
@@ -317,8 +335,10 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 
 					//不要ページ削除
 					if (newPageNo < currentPageNo) {
-						getStatement().executeUpdate(sc.deletePage(tenantId, target.getId(), newPageNo + 1, currentPageNo, tableNamePostfixRuntime, rdb));
-						getStatement().executeUpdate(sc.deletePageRB(tenantId, target.getId(), newPageNo + 1, currentPageNo, tableNamePostfixRuntime, rdb));
+						getStatement()
+								.executeUpdate(sc.deletePage(tenantId, target.getId(), newPageNo + 1, currentPageNo, tableNamePostfixRuntime, rdb));
+						getStatement()
+								.executeUpdate(sc.deletePageRB(tenantId, target.getId(), newPageNo + 1, currentPageNo, tableNamePostfixRuntime, rdb));
 					}
 				}
 
@@ -331,7 +351,8 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 			}
 		};
 
-		return exec.execute(rdb, true).booleanValue();
+		return exec.execute(rdb, true)
+				.booleanValue();
 	}
 
 }

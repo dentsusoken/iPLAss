@@ -21,6 +21,8 @@ package org.iplass.mtp.impl.auth.authenticate.token;
 
 public interface AuthTokenClientStore {
 	public void setToken(String token, int maxAgeSeconds);
+
 	public String getToken();
+
 	public void clearToken();
 }

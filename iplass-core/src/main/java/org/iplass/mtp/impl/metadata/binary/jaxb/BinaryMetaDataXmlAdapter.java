@@ -19,9 +19,9 @@
  */
 package org.iplass.mtp.impl.metadata.binary.jaxb;
 
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.iplass.mtp.impl.metadata.binary.BinaryMetaData;
+
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class BinaryMetaDataXmlAdapter extends XmlAdapter<ChunkedBinary, BinaryMetaData> {
 

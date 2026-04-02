@@ -81,7 +81,8 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 	 * @param roleIndex 対象ロールIndex
 	 * @param dialog ダイアログ
 	 */
-	protected abstract void showRolePermissionEditDialog(PermissionTreeNode record, String defName, String roleCode, int roleIndex, PermissionEditDialog dialog);
+	protected abstract void showRolePermissionEditDialog(PermissionTreeNode record, String defName, String roleCode, int roleIndex,
+			PermissionEditDialog dialog);
 
 	/**
 	 * <p>Permission編集ダイアログ結果反映処理</p>
@@ -96,8 +97,8 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 	 * @param roleIndex 対象ロールIndex
 	 * @param event 変更イベント
 	 */
-	protected abstract void applyEditRolePermission(PermissionTreeNode record, int rowNum, int colNum, String defName, String roleCode, int roleIndex, DataChangedEvent event);
-
+	protected abstract void applyEditRolePermission(PermissionTreeNode record, int rowNum, int colNum, String defName, String roleCode, int roleIndex,
+			DataChangedEvent event);
 
 	public PermissionTreeGrid(PermissionTreeGridDS ds, final Menu contextMenu) {
 		this.ds = ds;
@@ -114,7 +115,7 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 		setCanPickFields(false);
 		setCanSort(false);
 		setCanAutoFitFields(false);
-		setCanDragSelectText(true);	//セルの値をドラッグで選択可能（コピー用）にする
+		setCanDragSelectText(true); //セルの値をドラッグで選択可能（コピー用）にする
 		setCanSelectCells(true);
 
 		addCellContextClickHandler(new CellContextClickHandler() {
@@ -124,11 +125,11 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 				int rowNum = event.getRowNum();
 				int colNum = event.getColNum();
 
-				final PermissionTreeNode record = (PermissionTreeNode)event.getRecord();
+				final PermissionTreeNode record = (PermissionTreeNode) event.getRecord();
 
 				if (colNum == 0) {
 					//名前選択(全ロール対象)
-					contextMenu.setItems(new MenuItem[]{createDefinitionContextMenu(record, rowNum)});
+					contextMenu.setItems(new MenuItem[] { createDefinitionContextMenu(record, rowNum) });
 
 				} else {
 					//個別ロール選択
@@ -151,7 +152,7 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 				}
 
 				//編集処理
-				PermissionTreeNode record = (PermissionTreeNode)event.getRecord();
+				PermissionTreeNode record = (PermissionTreeNode) event.getRecord();
 				editPermission(record, rowNum, colNum);
 			}
 		});
@@ -159,7 +160,7 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 		setDataSource(ds);
 
 		setHeaderSpans(ds.getHeaderSpan());
-		setHeaderHeight(44);	//デフォルト × 2
+		setHeaderHeight(44); //デフォルト × 2
 
 		setFields(ds.getTreeGridField());
 
@@ -183,12 +184,12 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 		} else {
 			List<String> openDefNameList = new ArrayList<>();
 			for (TreeNode node : folders) {
-				PermissionTreeNode record = (PermissionTreeNode)node;
+				PermissionTreeNode record = (PermissionTreeNode) node;
 				openDefNameList.add(record.getDefinitionName());
 			}
 
 			for (TreeNode node : getTree().getAllNodes()) {
-				PermissionTreeNode record = (PermissionTreeNode)node;
+				PermissionTreeNode record = (PermissionTreeNode) node;
 				if (openDefNameList.contains(record.getDefinitionName())) {
 					//展開されているフォルダの親を展開
 					getTree().openFolder(getTree().getParent(node));
@@ -198,7 +199,7 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 	}
 
 	@Override
-    protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
+	protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
 		// grid.setBaseStyleだとセルの高さが不安定になる為ここで指定。
 
 		//名前列は無視
@@ -206,7 +207,7 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 			return TREE_CELL_STYLE_DEFAULT;
 		}
 
-		PermissionTreeNode precord = (PermissionTreeNode)record;
+		PermissionTreeNode precord = (PermissionTreeNode) record;
 		int roleIndex = ds.getColRoleCodeIndex(colNum);
 
 		if (ds.isDeletingPermission(precord, roleIndex)) {
@@ -277,7 +278,7 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 		});
 		delPermissionMenu.setEnabled(ds.canDeletePermission(record, roleIndex));
 
-		return new MenuItem[]{editPermissionMenu, delPermissionMenu};
+		return new MenuItem[] { editPermissionMenu, delPermissionMenu };
 	}
 
 	/**

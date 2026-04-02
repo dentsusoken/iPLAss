@@ -41,7 +41,7 @@ public class ActionMenuAction {
 	 * @return Action実行時に追加されるパラメータ
 	 */
 	public String getParameter() {
-	    return parameter;
+		return parameter;
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class ActionMenuAction {
 	 * @param parameter Action実行時に追加されるパラメータ
 	 */
 	public void setParameter(String parameter) {
-	    this.parameter = parameter;
+		this.parameter = parameter;
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class ActionMenuAction {
 	 * @return 実行するActionの名前
 	 */
 	public String getActionName() {
-	    return actionName;
+		return actionName;
 	}
 
 	/**
@@ -65,8 +65,7 @@ public class ActionMenuAction {
 	 * @param actionName 実行するActionの名前
 	 */
 	public void setActionName(String actionName) {
-	    this.actionName = actionName;
+		this.actionName = actionName;
 	}
-
 
 }

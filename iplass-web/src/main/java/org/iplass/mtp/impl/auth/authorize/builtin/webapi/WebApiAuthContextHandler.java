@@ -29,7 +29,7 @@ import org.iplass.mtp.impl.webapi.WebApiService;
 import org.iplass.mtp.webapi.permission.WebApiPermission;
 
 public class WebApiAuthContextHandler extends AuthorizationContextHandler {
-	private static final Class<?>[] PERM_TYPE = {WebApiPermission.class};
+	private static final Class<?>[] PERM_TYPE = { WebApiPermission.class };
 	private static final AllPermissionWebApiAuthContext DEFAULT = new AllPermissionWebApiAuthContext(false);
 
 	public WebApiAuthContextHandler() {
@@ -45,7 +45,7 @@ public class WebApiAuthContextHandler extends AuthorizationContextHandler {
 	protected String cacheNamespace() {
 		return "mtp.auth.builtin.webapi";
 	}
-	
+
 	@Override
 	protected String contextName(Permission permission) {
 		return ((WebApiPermission) permission).getWebApiName();
@@ -67,7 +67,7 @@ public class WebApiAuthContextHandler extends AuthorizationContextHandler {
 		if (contextName.length() == 0) {
 			contextName = "/";
 		}
-		
+
 		BuiltinAuthorizationContext webapiContext = super.get(contextName, tac);
 		if (webapiContext == null) {
 			//～/*指定の定義がないか検索

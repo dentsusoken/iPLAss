@@ -26,15 +26,15 @@ import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 
 public class ChecksumFactory {
-	
+
 	public static final String DEFAULT_ALGORITHM = "Adler-32";
-	
+
 	private static ChecksumFactory factory = new ChecksumFactory();
-	
+
 	public static ChecksumFactory getFactory() {
 		return factory;
 	}
-	
+
 	/**
 	 * Adler-32/CRC-32/MD5/SHA-1/SHA-256
 	 * 

@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
@@ -45,11 +43,13 @@ import org.iplass.mtp.webhook.WebhookHeader;
 import org.iplass.mtp.webhook.template.definition.WebhookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 @XmlRootElement
 public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMetaData<WebhookTemplateDefinition> {
 
 	private static final long serialVersionUID = 6383360434482999137L;
-	
+
 	/** webhook 内容部分 */
 	private String contentType;
 	private String webhookContent;
@@ -73,15 +73,15 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 		name = definition.getName();
 		displayName = definition.getDisplayName();
 		description = definition.getDescription();
-		
+
 		contentType = definition.getContentType();
 		webhookContent = definition.getWebhookContent();
 		httpMethod = definition.getHttpMethod();
 		pathAndQuery = definition.getPathAndQuery();
-		
+
 		ArrayList<MetaWebhookHeader> newHeaders = new ArrayList<MetaWebhookHeader>();
-		if (definition.getHeaders()!=null) {
-			for (WebhookHeaderDefinition headerDefinition: definition.getHeaders()) {
+		if (definition.getHeaders() != null) {
+			for (WebhookHeaderDefinition headerDefinition : definition.getHeaders()) {
 				MetaWebhookHeader temp = new MetaWebhookHeader();
 				temp.applyConfig(headerDefinition);
 				newHeaders.add(temp);
@@ -90,8 +90,6 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 		headers = newHeaders;
 	}
 
-
-
 	//Meta → Definition
 	@Override
 	public WebhookTemplateDefinition currentConfig() {
@@ -99,20 +97,20 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 		definition.setName(name);
 		definition.setDisplayName(displayName);
 		definition.setDescription(description);
-		
+
 		definition.setContentType(contentType);
 		definition.setWebhookContent(webhookContent);
 		definition.setPathAndQuery(pathAndQuery);
 		definition.setHttpMethod(httpMethod);
-		
+
 		ArrayList<WebhookHeaderDefinition> newHeaders = new ArrayList<WebhookHeaderDefinition>();
-		if (headers!=null) {
-			for (MetaWebhookHeader metaHeader: headers) {
+		if (headers != null) {
+			for (MetaWebhookHeader metaHeader : headers) {
 				newHeaders.add(metaHeader.currentConfig());
 			}
 		}
 		definition.setHeaders(newHeaders);
-		
+
 		return definition;
 	}
 
@@ -131,7 +129,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 	public void setHttpMethod(String httpMethod) {
 		this.httpMethod = httpMethod;
 	}
-	
+
 	public String getContentType() {
 		if (contentType == null) {
 			contentType = "";
@@ -168,40 +166,44 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 	public class WebhookTemplateRuntime extends BaseMetaDataRuntime {
 		private GroovyTemplate contentTemplate;
 		private GroovyTemplate pathAndQueryTemplate;
-		
+
 		public WebhookTemplateRuntime() {
 			super();
 			try {
-				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				contentTemplate = GroovyTemplateCompiler.compile(getWebhookContent(), "WebhookTemplate_" + getName() + "_Content", (GroovyScriptEngine) se);
-				pathAndQueryTemplate = GroovyTemplateCompiler.compile(getPathAndQuery(), "WebhookTemplate_" + getName() + "_PathAndQuery_", (GroovyScriptEngine) se);
+				ScriptEngine se = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
+				contentTemplate = GroovyTemplateCompiler.compile(getWebhookContent(), "WebhookTemplate_" + getName() + "_Content",
+						(GroovyScriptEngine) se);
+				pathAndQueryTemplate = GroovyTemplateCompiler.compile(getPathAndQuery(), "WebhookTemplate_" + getName() + "_PathAndQuery_",
+						(GroovyScriptEngine) se);
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
 		}
 
-
 		public GroovyTemplate getPathAndQueryTemplate() {
 			return pathAndQueryTemplate;
 		}
-		
+
 		public GroovyTemplate getContentTemplate() {
 			return contentTemplate;
 		}
+
 		@Override
 		public MetaWebhookTemplate getMetaData() {
 			return MetaWebhookTemplate.this;
 		}
-		
+
 		public Webhook createWebhook(Map<String, Object> parameter) {
 			checkState();
 
-			Webhook webhook = new Webhook(); 
-			
+			Webhook webhook = new Webhook();
+
 			ArrayList<WebhookHeader> newHeaders = new ArrayList<WebhookHeader>();
-			if (headers !=null) {
-				for (MetaWebhookHeader metaHeader: headers) {
-					newHeaders.add(new WebhookHeader(metaHeader.getKey(),metaHeader.getValue()));
+			if (headers != null) {
+				for (MetaWebhookHeader metaHeader : headers) {
+					newHeaders.add(new WebhookHeader(metaHeader.getKey(), metaHeader.getValue()));
 				}
 			}
 			webhook.setHeaders(newHeaders);
@@ -211,7 +213,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 			//common binding
 			Map<String, Object> binding = new HashMap<String, Object>();
 			if (parameter != null) {
-				for (Map.Entry<String, Object> e: parameter.entrySet()) {
+				for (Map.Entry<String, Object> e : parameter.entrySet()) {
 					binding.put(e.getKey(), e.getValue());
 				}
 			}
@@ -221,7 +223,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 			//template
 			if (contentTemplate != null) {
 				StringWriter sw = new StringWriter();
-				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw, binding);
 				try {
 					contentTemplate.doTemplate(gtb);
 				} catch (IOException e) {
@@ -229,9 +231,9 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 				}
 				webhook.setPayloadContent(sw.toString());
 			}
-			if (pathAndQueryTemplate!=null) {
+			if (pathAndQueryTemplate != null) {
 				StringWriter sw = new StringWriter();
-				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw, binding);
 				try {
 					pathAndQueryTemplate.doTemplate(gtb);
 				} catch (IOException e) {
@@ -241,8 +243,6 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 			}
 			return webhook;
 		}
-		
-		
-		
-	} 
+
+	}
 }

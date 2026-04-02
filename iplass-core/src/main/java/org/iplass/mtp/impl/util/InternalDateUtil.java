@@ -28,7 +28,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.util.DateUtil;
 
-
 /**
  *
  * @author 片野　博之
@@ -65,8 +64,10 @@ public final class InternalDateUtil {
 //	}
 
 	public static final Timestamp getNow() {
-		return ExecuteContext.getCurrentContext().getCurrentTimestamp();
+		return ExecuteContext.getCurrentContext()
+				.getCurrentTimestamp();
 	}
+
 	public static final Date getNowForSqlDate() {
 		//return new Date(ExecuteContext.getCurrentContext().getCurrentTimestamp().getTime());
 
@@ -74,23 +75,25 @@ public final class InternalDateUtil {
 		//return ExecuteContext.getCurrentContext().getCurrentLocalDate();
 
 		//時間をクリアして返す。
-		return new Date(DateUtils.truncate(ExecuteContext.getCurrentContext().getCurrentTimestamp(), Calendar.DAY_OF_MONTH).getTime());
+		return new Date(DateUtils.truncate(ExecuteContext.getCurrentContext()
+				.getCurrentTimestamp(), Calendar.DAY_OF_MONTH)
+				.getTime());
 	}
-
 
 	// FIXME 本来なら、Localごとに日付を持たないとおかしな状態となる。
 	// 2010/01/01 から新規部署に移動している場合、
 	// 現地時間と2時間時差がある場合に、
 	// 現地時間、2009/12/31 22:00 分から移動されてしまう。（時差が大きい場合にもっと問題になると思う。）
 	public static String formatYYYY_MM_DD(java.util.Date date) {
-		return DateUtil.getSimpleDateFormat("yyyyMMdd", false).format(date);
+		return DateUtil.getSimpleDateFormat("yyyyMMdd", false)
+				.format(date);
 	}
 
 //	public static Date toDate(Timestamp ts) {
 //		if (ts == null) {
 //			return null;
 //		}
-////		Calendar c = GregorianCalendar.getInstance();
+	////		Calendar c = GregorianCalendar.getInstance();
 //		Calendar c = DateUtil.getGregorianCalendar(true);
 //		c.setTimeInMillis(ts.getTime());
 //		c.set(Calendar.HOUR_OF_DAY, 0);
@@ -126,7 +129,8 @@ public final class InternalDateUtil {
 	 * @return 計算結果
 	 */
 	public static Date addDays(Date date, int amount) {
-		return new Date(DateUtils.addDays(date, amount).getTime());
+		return new Date(DateUtils.addDays(date, amount)
+				.getTime());
 	}
 
 	/**
@@ -144,7 +148,7 @@ public final class InternalDateUtil {
 
 		long days = (dateTime1 - dateTime2) / oneDateTime;
 
-		return (int)days;
+		return (int) days;
 	}
 
 }

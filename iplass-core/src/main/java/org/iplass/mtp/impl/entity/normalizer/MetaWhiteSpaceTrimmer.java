@@ -34,7 +34,8 @@ public class MetaWhiteSpaceTrimmer extends MetaNormalizer {
 	private static final int hash = -41241865;
 
 	public static void main(String[] args) {
-		System.out.println(MetaWhiteSpaceTrimmer.class.getName().hashCode());
+		System.out.println(MetaWhiteSpaceTrimmer.class.getName()
+				.hashCode());
 	}
 
 	@Override
@@ -53,7 +54,6 @@ public class MetaWhiteSpaceTrimmer extends MetaNormalizer {
 		return true;
 	}
 
-	
 	@Override
 	public MetaWhiteSpaceTrimmer copy() {
 		return ObjectUtil.deepCopy(this);
@@ -72,7 +72,7 @@ public class MetaWhiteSpaceTrimmer extends MetaNormalizer {
 	public NormalizerRuntime createRuntime(MetaEntity entity, MetaProperty property) {
 		return new WhiteSpaceTrimmerRuntime();
 	}
-	
+
 	public class WhiteSpaceTrimmerRuntime extends NormalizerRuntime {
 
 		@Override
@@ -80,10 +80,10 @@ public class MetaWhiteSpaceTrimmer extends MetaNormalizer {
 			if (value == null) {
 				return null;
 			}
-			
+
 			return StringUtils.strip(value.toString());
 		}
-		
+
 	}
 
 }

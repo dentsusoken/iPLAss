@@ -40,25 +40,27 @@ import org.slf4j.LoggerFactory;
 
 public class LuceneFulltextSearchContext {
 	private static Logger logger = LoggerFactory.getLogger(LuceneFulltextSearchContext.class);
-	
+
 	public static final String CACHE_NAMESPACE = "mtp.fulltextsearch.lucene.dir";
 
 	private LuceneFulltextSearchService service;
 	private CacheController<String, IndexDir> dirs;
 	private int tenantId;
-	
+
 	public LuceneFulltextSearchContext(LuceneFulltextSearchService service, TenantContext tc) {
 		this.service = service;
 		this.tenantId = tc.getTenantId();
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		dirs = new CacheController<>(cs.getCache(CACHE_NAMESPACE + "/" + tenantId), false, 0, new IndexDirLoadingAdapter(), false, true);
-		dirs.getStore().addCacheEventListenner(new IndexCacheEventListener());
+		dirs.getStore()
+				.addCacheEventListenner(new IndexCacheEventListener());
 	}
-	
+
 	public IndexDir getIndexDir(String defId) {
 		return dirs.get(defId);
 	}
-	
+
 	private void closeDir(CacheEntry ce) {
 		if (ce != null) {
 			IndexDir dir = (IndexDir) ce.getValue();
@@ -78,12 +80,14 @@ public class LuceneFulltextSearchContext {
 			dirs.invalidateCacheStore();
 		});
 	}
-	
+
 	public void refreshAll() {
 		dirs.maintenance(cc -> {
 			FulltextSearchRuntimeException ex = null;
-			for (Object key: cc.getStore().keySet()) {
-				CacheEntry ce = cc.getStore().get(key);
+			for (Object key : cc.getStore()
+					.keySet()) {
+				CacheEntry ce = cc.getStore()
+						.get(key);
 				if (ce.getValue() != null) {
 					try {
 						((IndexDir) ce.getValue()).refresh();
@@ -101,7 +105,7 @@ public class LuceneFulltextSearchContext {
 			}
 		});
 	}
-	
+
 	private class IndexDirLoadingAdapter implements LoadingAdapter<String, IndexDir> {
 		@Override
 		public IndexDir load(String key) {
@@ -127,24 +131,24 @@ public class LuceneFulltextSearchContext {
 		public String getKey(IndexDir val) {
 			return val.getDefId();
 		}
-		
+
 	}
-	
+
 	private class IndexCacheEventListener implements CacheEventListener {
 		@Override
 		public void updated(CacheUpdateEvent event) {
 		}
-		
+
 		@Override
 		public void removed(CacheRemoveEvent event) {
 			closeDir(event.getEntry());
 		}
-		
+
 		@Override
 		public void invalidated(CacheInvalidateEvent event) {
 			closeDir(event.getEntry());
 		}
-		
+
 		@Override
 		public void created(CacheCreateEvent event) {
 		}

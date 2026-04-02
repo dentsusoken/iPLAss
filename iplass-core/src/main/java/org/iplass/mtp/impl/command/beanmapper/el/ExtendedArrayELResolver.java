@@ -23,16 +23,16 @@ import java.beans.FeatureDescriptor;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELException;
-import jakarta.el.ELResolver;
-import jakarta.el.PropertyNotFoundException;
-
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.impl.command.beanmapper.el.PropertyInfo.TypeKind;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
 
 /**
  * <p>カスタムのArrayELResolver</p>
@@ -62,7 +62,8 @@ public class ExtendedArrayELResolver extends ELResolver {
 			throw new NullPointerException();
 		}
 
-		if (base != null && base.getClass().isArray()) {
+		if (base != null && base.getClass()
+				.isArray()) {
 			context.setPropertyResolved(base, property);
 			BeanMapperELContext bmc = (BeanMapperELContext) context.getContext(BeanMapperELContext.class);
 			int index = toInt(property);
@@ -70,35 +71,46 @@ public class ExtendedArrayELResolver extends ELResolver {
 			if (isInvalidIndex(index, arrayLength, bmc)) {
 				return null;
 			}
-			
+
 			try {
 				PropertyRef pr = null;
-				if (bmc.getElMapper().isAutoGrow()) {
+				if (bmc.getElMapper()
+						.isAutoGrow()) {
 					pr = bmc.getPropertyRef(base);
-					
+
 					if (index >= arrayLength &&
 							(pr.getComponentTypeKind() == TypeKind.BEAN || pr.getComponentTypeKind() == TypeKind.ENTITY)) {
-						Object newArray = Array.newInstance(base.getClass().getComponentType(), index + 1);
+						Object newArray = Array.newInstance(base.getClass()
+								.getComponentType(), index + 1);
 						System.arraycopy(base, 0, newArray, 0, arrayLength);
 						bmc.replacePropertyRef(base, newArray);
 						base = newArray;
 					}
 				}
-				
+
 				Object value = Array.get(base, index);
-				
-				if (value == null && bmc.getElMapper().isAutoGrow()) {
+
+				if (value == null && bmc.getElMapper()
+						.isAutoGrow()) {
 					switch (pr.getComponentTypeKind()) {
 					case BEAN:
-						value = pr.getPropertyInfo().getComponentType().newInstance();
+						value = pr.getPropertyInfo()
+								.getComponentType()
+								.newInstance();
 						break;
 					case ENTITY:
 						if (pr.getReferencePropertyHandler() != null) {
-							value = pr.getReferencePropertyHandler().getReferenceEntityHandler(EntityContext.getCurrentContext()).newInstance();
-						} else if (pr.getPropertyInfo().getComponentType().isInterface()) {
+							value = pr.getReferencePropertyHandler()
+									.getReferenceEntityHandler(EntityContext.getCurrentContext())
+									.newInstance();
+						} else if (pr.getPropertyInfo()
+								.getComponentType()
+								.isInterface()) {
 							value = new GenericEntity();
 						} else {
-							value = pr.getPropertyInfo().getComponentType().newInstance();
+							value = pr.getPropertyInfo()
+									.getComponentType()
+									.newInstance();
 						}
 						break;
 					case ARRAY:
@@ -112,12 +124,12 @@ public class ExtendedArrayELResolver extends ELResolver {
 					default:
 						break;
 					}
-				
+
 					if (value != null) {
 						Array.set(base, index, value);
 					}
 				}
-				
+
 				return value;
 			} catch (ELException e) {
 				throw e;
@@ -125,7 +137,7 @@ public class ExtendedArrayELResolver extends ELResolver {
 				throw new ELException(e);
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -134,18 +146,20 @@ public class ExtendedArrayELResolver extends ELResolver {
 		if (context == null) {
 			throw new NullPointerException();
 		}
-		
-		if (base != null && base.getClass().isArray()) {
+
+		if (base != null && base.getClass()
+				.isArray()) {
 			context.setPropertyResolved(true);
 			BeanMapperELContext bmc = (BeanMapperELContext) context.getContext(BeanMapperELContext.class);
 			int index = toInt(property);
 			if (isInvalidIndex(index, Array.getLength(base), bmc)) {
 				throw new PropertyNotFoundException();
 			}
-			return base.getClass().getComponentType();
+			return base.getClass()
+					.getComponentType();
 		}
 		return null;
-		
+
 	}
 
 	private int toInt(Object p) {
@@ -156,7 +170,7 @@ public class ExtendedArrayELResolver extends ELResolver {
 			return ((Character) p).charValue();
 		}
 		if (p instanceof Boolean) {
-			return ((Boolean) p).booleanValue()? 1: 0;
+			return ((Boolean) p).booleanValue() ? 1 : 0;
 		}
 		if (p instanceof String) {
 			return Integer.parseInt((String) p);
@@ -164,21 +178,27 @@ public class ExtendedArrayELResolver extends ELResolver {
 		throw new IllegalArgumentException();
 	}
 
-    @Override
+	@Override
 	public void setValue(ELContext context, Object base, Object property, Object value) {
 		if (context == null) {
 			throw new NullPointerException();
 		}
 
-		if (base != null && base.getClass().isArray()) {
+		if (base != null && base.getClass()
+				.isArray()) {
 			context.setPropertyResolved(base, property);
 			int index = toInt(property);
 			int arrayLength = Array.getLength(base);
-			
+
 			BeanMapperELContext bmc = (BeanMapperELContext) context.getContext(BeanMapperELContext.class);
 			try {
-				if (bmc.getElMapper().isAutoGrow() && index < bmc.getElMapper().getIndexedPropertySizeLimit() && index >= arrayLength) {
-					Object newArray = Array.newInstance(base.getClass().getComponentType(), index + 1);
+				if (bmc.getElMapper()
+						.isAutoGrow()
+						&& index < bmc.getElMapper()
+								.getIndexedPropertySizeLimit()
+						&& index >= arrayLength) {
+					Object newArray = Array.newInstance(base.getClass()
+							.getComponentType(), index + 1);
 					System.arraycopy(base, 0, newArray, 0, arrayLength);
 					bmc.replacePropertyRef(base, newArray);
 					base = newArray;
@@ -189,40 +209,48 @@ public class ExtendedArrayELResolver extends ELResolver {
 			} catch (Exception e) {
 				throw new ELException(e);
 			}
-			
+
 			if (index < 0 || index >= arrayLength) {
 				throw new PropertyNotFoundException();
 			}
-			
+
 			if (value instanceof String) {
 				//EL3.0の仕様上、nullをセットしようとしても、Stringの場合は空文字をセットしようとするのをnullをセットするようにする。
-				if (bmc.getElMapper().isTrim()) {
+				if (bmc.getElMapper()
+						.isTrim()) {
 					value = ((String) value).trim();
 				}
-				if (bmc.getElMapper().isEmptyToNull()) {
+				if (bmc.getElMapper()
+						.isEmptyToNull()) {
 					if (((String) value).isEmpty()) {
 						value = null;
 					}
 				}
 			}
-			
+
 			Array.set(base, index, value);
 		}
 	}
-    
-    private boolean isInvalidIndex(int index, int arrayLength, BeanMapperELContext bmc) {
+
+	private boolean isInvalidIndex(int index, int arrayLength, BeanMapperELContext bmc) {
 		return index < 0 ||
-				!bmc.getElMapper().isAutoGrow() && index >= arrayLength ||
-				bmc.getElMapper().isAutoGrow() && index >= bmc.getElMapper().getIndexedPropertySizeLimit();
-    }
+				!bmc.getElMapper()
+						.isAutoGrow() && index >= arrayLength
+				||
+				bmc.getElMapper()
+						.isAutoGrow()
+						&& index >= bmc.getElMapper()
+								.getIndexedPropertySizeLimit();
+	}
 
 	@Override
 	public boolean isReadOnly(ELContext context, Object base, Object property) {
 		if (context == null) {
 			throw new NullPointerException();
 		}
-		
-		if (base != null && base.getClass().isArray()) {
+
+		if (base != null && base.getClass()
+				.isArray()) {
 			context.setPropertyResolved(true);
 			int index = toInt(property);
 			BeanMapperELContext bmc = (BeanMapperELContext) context.getContext(BeanMapperELContext.class);
@@ -240,7 +268,8 @@ public class ExtendedArrayELResolver extends ELResolver {
 
 	@Override
 	public Class<?> getCommonPropertyType(ELContext context, Object base) {
-		if (base != null && base.getClass().isArray()) {
+		if (base != null && base.getClass()
+				.isArray()) {
 			return Integer.class;
 		}
 		return null;

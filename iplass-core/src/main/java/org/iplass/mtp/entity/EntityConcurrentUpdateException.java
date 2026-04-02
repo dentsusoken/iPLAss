@@ -28,7 +28,7 @@ package org.iplass.mtp.entity;
  */
 public class EntityConcurrentUpdateException extends EntityApplicationException {
 	private static final long serialVersionUID = -7337391382174601963L;
-	
+
 	/** デッドロックの検知か */
 	private boolean isDeadLock = false;
 	/** Nowaiteの検知か */
@@ -55,7 +55,7 @@ public class EntityConcurrentUpdateException extends EntityApplicationException 
 	 * @return デッドロックの検知か
 	 */
 	public boolean isDeadLock() {
-	    return isDeadLock;
+		return isDeadLock;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class EntityConcurrentUpdateException extends EntityApplicationException 
 	 * @param isDeadLock デッドロックの検知か
 	 */
 	public void setDeadLock(boolean isDeadLock) {
-	    this.isDeadLock = isDeadLock;
+		this.isDeadLock = isDeadLock;
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class EntityConcurrentUpdateException extends EntityApplicationException 
 	 * @return Nowaiteの検知か
 	 */
 	public boolean isNowait() {
-	    return isNowait;
+		return isNowait;
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class EntityConcurrentUpdateException extends EntityApplicationException 
 	 * @param isNowait Nowaiteの検知か
 	 */
 	public void setNowait(boolean isNowait) {
-	    this.isNowait = isNowait;
+		this.isNowait = isNowait;
 	}
 
 }

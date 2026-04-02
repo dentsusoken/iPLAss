@@ -56,6 +56,7 @@ public interface AuthManager extends Manager {
 	 * @return
 	 */
 	public boolean canUpdateCredential();
+
 	/**
 	 * 指定の認証ポリシーの定義にて、パスワード更新が可能か否か。
 	 * 複数のパスワード更新可能な認証プロバイダが存在する場合、認証ポリシーの定義によって、
@@ -153,7 +154,7 @@ public interface AuthManager extends Manager {
 	 * @param policyName
 	 */
 	public void resetLockoutStatus(String accountId, String policyName);
-	
+
 	/**
 	 * groupCodeで指定したグループのoid（のリスト）を一括で取得する。
 	 * typeによって、子グループ、親グループのoidのリストを一括で取得可能。

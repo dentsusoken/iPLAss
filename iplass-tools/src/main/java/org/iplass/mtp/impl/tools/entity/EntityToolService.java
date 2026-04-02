@@ -77,21 +77,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EntityToolService implements Service {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(EntityToolService.class);
-	
+
 	private static final String USER_ENTITY = "mtp.auth.User";
 
 	private AuthService as = null;
-	
+
 	private EntityManager em;
 	private EntityDefinitionManager edm;
 
 	@Override
 	public void init(Config config) {
-		as = ServiceRegistry.getRegistry().getService(AuthService.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		as = ServiceRegistry.getRegistry()
+				.getService(AuthService.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 	}
 
 	@Override
@@ -99,7 +102,11 @@ public class EntityToolService implements Service {
 	}
 
 	public void createJavaMappingClass(File file, EntityDefinition definition, String basePackage) {
-		Path path = Paths.get(file.getPath().substring(0, file.getPath().length() - file.getName().length()));
+		Path path = Paths.get(file.getPath()
+				.substring(0, file.getPath()
+						.length()
+						- file.getName()
+								.length()));
 		if (!Files.exists(path)) {
 			try {
 				Files.createDirectories(path);
@@ -108,9 +115,9 @@ public class EntityToolService implements Service {
 			}
 		}
 
-		String directClassName = StringUtil.isNotBlank(basePackage) ? basePackage + '.' + definition.getName() : null; 
-		try (EntityJavaMappingClassWriter writer = 
-				new EntityJavaMappingClassWriter(Files.newOutputStream(file.toPath()), definition, directClassName)) {
+		String directClassName = StringUtil.isNotBlank(basePackage) ? basePackage + '.' + definition.getName() : null;
+		try (EntityJavaMappingClassWriter writer = new EntityJavaMappingClassWriter(Files.newOutputStream(file.toPath()), definition,
+				directClassName)) {
 			writer.writeJavaClass();
 		} catch (IOException e) {
 			throw new EntityToolRuntimeException(getRS("unexpectedError"), e);
@@ -131,7 +138,8 @@ public class EntityToolService implements Service {
 			query.setVersioned(true);
 		}
 
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 
 		int count = 0;
 		try (SearchResult<Object[]> result = em.search(query, new SearchOption(ResultMode.STREAM).unnotifyListeners())) {
@@ -169,15 +177,19 @@ public class EntityToolService implements Service {
 	}
 
 	public int executeEQLWithAuth(String eql, boolean isSearchAllVersion, boolean isCount) {
-		return as.doSecuredAction(AuthContextHolder.getAuthContext().privilegedAuthContextHolder(), () -> {
-			return executeEQL(eql, isSearchAllVersion, isCount);
-		}).intValue();
+		return as.doSecuredAction(AuthContextHolder.getAuthContext()
+				.privilegedAuthContextHolder(), () -> {
+					return executeEQL(eql, isSearchAllVersion, isCount);
+				})
+				.intValue();
 	}
 
 	public int executeEQLWithAuth(OutputStream out, String charset, String eql, boolean isSearchAllVersion) {
-		return as.doSecuredAction(AuthContextHolder.getAuthContext().privilegedAuthContextHolder(), () -> {
-			return executeEQL(out, charset, eql, isSearchAllVersion);
-		}).intValue();
+		return as.doSecuredAction(AuthContextHolder.getAuthContext()
+				.privilegedAuthContextHolder(), () -> {
+					return executeEQL(out, charset, eql, isSearchAllVersion);
+				})
+				.intValue();
 	}
 
 	public int executeEQLWithAuth(String eql, boolean isSearchAllVersion, boolean isCount, String userId, String password) {
@@ -185,7 +197,8 @@ public class EntityToolService implements Service {
 			as.login(StringUtil.isNotEmpty(password) ? new IdPasswordCredential(userId, password) : new InternalCredential(userId));
 			return as.doSecuredAction(AuthContextHolder.getAuthContext(), () -> {
 				return executeEQL(eql, isSearchAllVersion, isCount);
-			}).intValue();
+			})
+					.intValue();
 		} finally {
 			as.logout();
 		}
@@ -196,12 +209,13 @@ public class EntityToolService implements Service {
 			as.login(StringUtil.isNotEmpty(password) ? new IdPasswordCredential(userId, password) : new InternalCredential(userId));
 			return as.doSecuredAction(AuthContextHolder.getAuthContext(), () -> {
 				return executeEQL(out, charset, eql, isSearchAllVersion);
-			}).intValue();
+			})
+					.intValue();
 		} finally {
 			as.logout();
 		}
 	}
-	
+
 	public EntityUpdateAllResultInfo updateAll(final EntityUpdateAllCondition cond) {
 
 		EntityUpdateAllResultInfo result = new EntityUpdateAllResultInfo();
@@ -304,7 +318,8 @@ public class EntityToolService implements Service {
 				return result;
 			}
 
-			if (cond.getWhere() != null && !cond.getWhere().isEmpty()) {
+			if (cond.getWhere() != null && !cond.getWhere()
+					.isEmpty()) {
 				updateCond.where(cond.getWhere());
 			}
 
@@ -367,11 +382,11 @@ public class EntityToolService implements Service {
 	private EntityDefinition getEntityDefinition(final String defName) {
 		return edm.get(defName);
 	}
-	
+
 	public EntityDataDeleteResultInfo deleteAll(final int tenantId, final String defName, final String whereClause, final boolean deleteSpecificVersion,
 			final boolean isNotifyListeners, final int commitLimit) {
 		return new Callable<EntityDataDeleteResultInfo>() {
-			
+
 			int allCount = 0;
 
 			EntityHandler eh = null;
@@ -480,13 +495,15 @@ public class EntityToolService implements Service {
 					logger.error(e.getMessage(), e);
 					result.setError(true);
 					result.addMessages("Result : FAILURE");
-					result.addMessages("Cause : " + (e.getMessage() != null ? e.getMessage() : e.getClass().getName()));
+					result.addMessages("Cause : " + (e.getMessage() != null ? e.getMessage()
+							: e.getClass()
+									.getName()));
 					return result;
 				}
 			}
 		}.call();
 	}
-	
+
 	public EntityDataDeleteResultInfo deleteAllByOid(final int tenantId, final String defName, final List<String> oids, final boolean isNotifyListeners,
 			final int commitLimit) {
 		return new Callable<EntityDataDeleteResultInfo>() {
@@ -544,7 +561,9 @@ public class EntityToolService implements Service {
 					logger.error(e.getMessage(), e);
 					result.setError(true);
 					result.addMessages("Result : FAILURE");
-					result.addMessages("Cause : " + (e.getMessage() != null ? e.getMessage() : e.getClass().getName()));
+					result.addMessages("Cause : " + (e.getMessage() != null ? e.getMessage()
+							: e.getClass()
+									.getName()));
 					return result;
 				}
 			}
@@ -617,7 +636,7 @@ public class EntityToolService implements Service {
 			}
 		}.call();
 	}
-	
+
 	/**
 	 * Entityデータの削除（1トランザクション分）
 	 *

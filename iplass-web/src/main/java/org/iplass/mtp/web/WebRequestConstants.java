@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.web;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.web.actionmapping.RequestInfo;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Webからの呼び出しの際、RequestContextで取得可能なattributeの名前の定数。
@@ -49,7 +49,6 @@ public interface WebRequestConstants {
 
 	/** RedirectPathを取得する為のキー */
 	public static final String REDIRECT_PATH = "redirectPath";
-
 
 	/** HTTPヘッダ（リクエストの）が格納されているMapのインスタンス。*/
 	public static final String HTTP_HEADER = "header";

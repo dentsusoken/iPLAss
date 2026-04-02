@@ -40,9 +40,8 @@ public class OIDCAccountHandle implements AccountHandle {
 	public static final String EMAIL = "email";
 	public static final String GIVEN_NAME = "given_name";
 	public static final String FAMILY_NAME = "family_name";
-	
-	public static final String UNIQUE_KEY_SEPARATOR = "@";
 
+	public static final String UNIQUE_KEY_SEPARATOR = "@";
 
 	private String id;
 	private String uniqueKey;
@@ -70,7 +69,7 @@ public class OIDCAccountHandle implements AccountHandle {
 		}
 		return uniqueKey;
 	}
-	
+
 	public static String[] subjectAndDefinitionNameFromUniqueKey(String uniqueKey) {
 		String sub = null;
 		String defName = null;
@@ -88,10 +87,11 @@ public class OIDCAccountHandle implements AccountHandle {
 			throw new SystemException(e);
 		}
 		defName = defName.replace('.', '/');
-		return new String[] {sub, defName};
+		return new String[] { sub, defName };
 	}
 
-	public OIDCAccountHandle(String subjectId, String subjectName, String openIdConnectDefinitionName, Map<String, Object> attributeMap, String accessToken, Long accessTokenExpiresIn, String refreshToken, Set<String> scopes) {
+	public OIDCAccountHandle(String subjectId, String subjectName, String openIdConnectDefinitionName, Map<String, Object> attributeMap,
+			String accessToken, Long accessTokenExpiresIn, String refreshToken, Set<String> scopes) {
 		this.subjectId = subjectId;
 		this.uniqueKey = createSubjectUniqueKey(subjectId, openIdConnectDefinitionName);
 		this.subjectName = subjectName;

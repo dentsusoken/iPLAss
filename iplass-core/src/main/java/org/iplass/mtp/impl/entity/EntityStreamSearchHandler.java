@@ -95,7 +95,7 @@ public class EntityStreamSearchHandler<T> {
 			}
 			List<T> ret = new ArrayList<>();
 			try {
-				for (T t: this) {
+				for (T t : this) {
 					ret.add(t);
 				}
 			} finally {
@@ -127,14 +127,14 @@ public class EntityStreamSearchHandler<T> {
 			if (it != null) {
 				throw new IllegalStateException("SearchResult Iterator already fetched, so can not get as list.");
 			}
-			if (resultType  != Entity.class) {
+			if (resultType != Entity.class) {
 				throw new EntityRuntimeException("for use getValueList(propertyName), result type must Entity.");
 			}
 
 			List<P> res = new ArrayList<>();
 			try {
-				for (T t: this) {
-					res.add(((Entity) t).<P>getValue(propertyName));
+				for (T t : this) {
+					res.add(((Entity) t).<P> getValue(propertyName));
 				}
 			} finally {
 				close();
@@ -148,13 +148,13 @@ public class EntityStreamSearchHandler<T> {
 			if (it != null) {
 				throw new IllegalStateException("SearchResult Iterator already fetched, so can not get as list.");
 			}
-			if (resultType  != Object[].class) {
+			if (resultType != Object[].class) {
 				throw new EntityRuntimeException("for use getValueList(index), result type must Object[].");
 			}
 
 			List<P> res = new ArrayList<P>();
 			try {
-				for (T t: this) {
+				for (T t : this) {
 					res.add((P) ((Object[]) t)[index]);
 				}
 			} finally {
@@ -218,7 +218,8 @@ public class EntityStreamSearchHandler<T> {
 
 			T t = null;
 			if (resultType == Object[].class) {
-				List<ValueExpression> select = q.getSelect().getSelectValues();
+				List<ValueExpression> select = q.getSelect()
+						.getSelectValues();
 				Object[] row = new Object[select.size()];
 				for (int i = 0; i < row.length; i++) {
 					row[i] = sri.getValue(i);

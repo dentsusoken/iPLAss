@@ -73,7 +73,8 @@ public class BeanMapperELContext extends ELContext {
 	}
 
 	void setPropertyRef(Object bean, ReferencePropertyHandler rph, Object propValue) {
-		if (rph.getMetaData().getMultiplicity() != 1) {
+		if (rph.getMetaData()
+				.getMultiplicity() != 1) {
 			if (propertyRefs == null) {
 				propertyRefs = new IdentityHashMap<>();
 			}
@@ -81,20 +82,24 @@ public class BeanMapperELContext extends ELContext {
 		}
 	}
 
-	void replacePropertyRef(Object oldPropValue, Object newPropValue) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	void replacePropertyRef(Object oldPropValue, Object newPropValue)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (propertyRefs == null) {
 			return;
 		}
 		PropertyRef propertyRef = propertyRefs.remove(oldPropValue);
 		propertyRefs.put(newPropValue, propertyRef);
 		if (propertyRef.getPropertyInfo() != null) {
-			Method setter = propertyRef.getPropertyInfo().getWriteMethod();
+			Method setter = propertyRef.getPropertyInfo()
+					.getWriteMethod();
 			if (setter != null) {
-				setter.invoke(propertyRef.getBean(), new Object[] {newPropValue});
+				setter.invoke(propertyRef.getBean(), new Object[] { newPropValue });
 			} else if (propertyRef.getBean() instanceof Entity) {
 				((Entity) propertyRef.getBean()).setValue(propertyRef.getPropertyName(), newPropValue);
 			} else {
-				throw new PropertyNotWritableException("The class:" + propertyRef.getBean().getClass().getName() + " does not have a writable property:" + propertyRef.getPropertyName());
+				throw new PropertyNotWritableException("The class:" + propertyRef.getBean()
+						.getClass()
+						.getName() + " does not have a writable property:" + propertyRef.getPropertyName());
 			}
 		} else {
 			//Entity
@@ -190,6 +195,5 @@ public class BeanMapperELContext extends ELContext {
 
 		return super.convertToType(obj, targetType);
 	}
-
 
 }

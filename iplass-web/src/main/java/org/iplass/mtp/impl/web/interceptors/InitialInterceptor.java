@@ -40,15 +40,16 @@ public class InitialInterceptor implements RequestInterceptor {
 			ExecuteContext exec = ExecuteContext.getCurrentContext();
 			lang.selectLangByRequest(invocation.getRequest(), exec);
 			preview.init(invocation.getRequest());
-			
+
 			invocation.proceedRequest();
 		} finally {
 			//transaction resource cleaning
-			TransactionManager tm = ManagerLocator.getInstance().getManager(TransactionManager.class);
+			TransactionManager tm = ManagerLocator.getInstance()
+					.getManager(TransactionManager.class);
 			if (tm instanceof LocalTransactionManager) {
 				((LocalTransactionManager) tm).checkAndClean();
 			}
 		}
 	}
-	
+
 }

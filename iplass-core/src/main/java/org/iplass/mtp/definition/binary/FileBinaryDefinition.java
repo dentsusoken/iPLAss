@@ -44,11 +44,11 @@ public class FileBinaryDefinition implements BinaryDefinition {
 	private transient boolean isTemp;
 	private long size;
 	private String name;
-	
+
 	public FileBinaryDefinition() {
 		isTemp = false;
 	}
-	
+
 	public FileBinaryDefinition(String name, Path file) {
 		this.name = name;
 		this.file = file;
@@ -107,13 +107,14 @@ public class FileBinaryDefinition implements BinaryDefinition {
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		BinaryMetaDataService service = ServiceRegistry.getRegistry().getService(BinaryMetaDataService.class);
+		BinaryMetaDataService service = ServiceRegistry.getRegistry()
+				.getService(BinaryMetaDataService.class);
 		name = in.readUTF();
 		size = in.readLong();
-		
+
 		Path tempDir = service.getTempFileDir();
 		file = Files.createTempFile(tempDir, "fbd_", ".tmp");
-		
+
 		try (OutputStream os = Files.newOutputStream(file)) {
 			byte[] buff = new byte[8192];
 			long remain = size;

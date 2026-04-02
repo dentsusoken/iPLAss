@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.util.ConvertUtil;
  *
  */
 public interface ValueFormatter /* extends Function<Object, String> */ {
-	
+
 	/**
 	 * デフォルトのValueFormatterです。
 	 * valueが文字列以外の場合、次のようにフォーマットします。
@@ -62,7 +62,7 @@ public interface ValueFormatter /* extends Function<Object, String> */ {
 			return ConvertUtil.convertToString(value);
 		}
 	};
-	
+
 	/**
 	 * 引数で指定されたvalueをフォーマットして返すように実装します。
 	 * 

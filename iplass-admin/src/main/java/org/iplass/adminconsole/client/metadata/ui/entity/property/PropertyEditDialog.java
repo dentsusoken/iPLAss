@@ -237,7 +237,7 @@ public class PropertyEditDialog extends MtpDialog {
 		//既存のタイプ設定をクリア
 		if (pnlTypeAttribute != null) {
 			pnlAttributeContainer.removeMember(typeSeparater);
-			pnlAttributeContainer.removeMember((Canvas)pnlTypeAttribute);
+			pnlAttributeContainer.removeMember((Canvas) pnlTypeAttribute);
 			pnlTypeAttribute = null;
 		}
 
@@ -245,10 +245,10 @@ public class PropertyEditDialog extends MtpDialog {
 			pnlTypeAttribute = typeController.createTypeAttributePane(type);
 			if (pnlTypeAttribute != null) {
 				if (pnlTypeAttribute instanceof NeedsEnableLangMap) {
-					((NeedsEnableLangMap)pnlTypeAttribute).setEnableLangMap(enableLangMap);
+					((NeedsEnableLangMap) pnlTypeAttribute).setEnableLangMap(enableLangMap);
 				}
 				pnlAttributeContainer.addMember(typeSeparater);
-				pnlAttributeContainer.addMember((Canvas)pnlTypeAttribute);
+				pnlAttributeContainer.addMember((Canvas) pnlTypeAttribute);
 
 				pnlTypeAttribute.applyFrom(defName, record, typeAttribute);
 			}

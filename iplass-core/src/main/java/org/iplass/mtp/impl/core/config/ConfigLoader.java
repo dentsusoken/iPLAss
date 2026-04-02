@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.core.config;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 
 public interface ConfigLoader {
-	
+
 	public String load(String configFileName) throws ServiceConfigrationException;
 
 }

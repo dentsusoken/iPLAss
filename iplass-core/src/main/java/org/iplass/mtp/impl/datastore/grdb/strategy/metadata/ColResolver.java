@@ -49,44 +49,48 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class ColResolver {
-	
-	private static ColConverterFactory ccFactory = ServiceRegistry.getRegistry().getService(ColConverterFactory.class);
-	
+
+	private static ColConverterFactory ccFactory = ServiceRegistry.getRegistry()
+			.getService(ColConverterFactory.class);
+
 	private StorageSpaceMap storage;
-	
+
 	private MetaGRdbEntityStore metaStore;
 	private MetaSchemalessRdbStoreMapping newStoreMap;
 	private ColContext colContext;
-	
+
 	private EnumMap<RawColType, EnumMap<RawColIndexType, List<ColumnPosition>>> unused = new EnumMap<>(RawColType.class);
-	
+
 	private HashSet<UsedCol> usedCol = new HashSet<>();
-	
+
 	private boolean storageSpaceMismatch;
-	
+
 	public ColResolver(MetaEntity currentMetaEntity, MetaSchemalessRdbStoreMapping newStoreMap, StorageSpaceMap storage, RdbAdapter rdb) {
 		if (newStoreMap != null) {
-			if (!storage.getStorageSpaceName().equals(newStoreMap.getStorageSpace())) {
+			if (!storage.getStorageSpaceName()
+					.equals(newStoreMap.getStorageSpace())) {
 				storageSpaceMismatch = true;
 			}
 		}
-		
+
 		if (currentMetaEntity == null) {
 			this.metaStore = new MetaGRdbEntityStore();
 		} else {
-			metaStore = (MetaGRdbEntityStore) currentMetaEntity.getEntityStoreDefinition().copy();
-			for (MetaProperty p: currentMetaEntity.getDeclaredPropertyList()) {
+			metaStore = (MetaGRdbEntityStore) currentMetaEntity.getEntityStoreDefinition()
+					.copy();
+			for (MetaProperty p : currentMetaEntity.getDeclaredPropertyList()) {
 				if (p instanceof MetaPrimitiveProperty) {
 					initUsed((MetaPrimitiveProperty) p);
 				}
 			}
 			//check unused
-			for (RawColType ct: RawColType.values()) {
-				for (RawColIndexType cit: RawColIndexType.values()) {
+			for (RawColType ct : RawColType.values()) {
+				for (RawColIndexType cit : RawColIndexType.values()) {
 					ColumnPosition currentMax = ct.getColumnPositionOf(metaStore, cit);
 					if (currentMax != null) {
 						for (int pageNo = currentMax.getPageNo(); pageNo >= 0; pageNo--) {
-							for (int colNo = (pageNo == currentMax.getPageNo() ? currentMax.getColumnNo(): ct.getMaxCol(storage, cit)); colNo > 0; colNo--) {
+							for (int colNo = (pageNo == currentMax.getPageNo() ? currentMax.getColumnNo()
+									: ct.getMaxCol(storage, cit)); colNo > 0; colNo--) {
 								ColumnPosition cp = new ColumnPosition(pageNo, colNo);
 								if (!usedCol.contains(new UsedCol(ct, cit, cp))) {
 									EnumMap<RawColIndexType, List<ColumnPosition>> perType = unused.get(ct);
@@ -107,21 +111,23 @@ public class ColResolver {
 				}
 			}
 		}
-		
+
 		this.newStoreMap = newStoreMap;
-		
+
 		this.storage = storage;
 		this.colContext = new ColContext();
 	}
-	
+
 	private void initUsed(MetaPrimitiveProperty p) {
-		if (p.getType().isVirtual()) {
+		if (p.getType()
+				.isVirtual()) {
 			return;
 		}
 		RawColType ct = RawColType.typeOf(p.getType());
 		if (p.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 			for (int i = 0; i < p.getMultiplicity(); i++) {
-				MetaGRdbPropertyStore col = ((MetaGRdbMultiplePropertyStore) p.getEntityStoreProperty()).getStore().get(i);
+				MetaGRdbPropertyStore col = ((MetaGRdbMultiplePropertyStore) p.getEntityStoreProperty()).getStore()
+						.get(i);
 				addUsedCol(p, col, ct);
 			}
 		} else {
@@ -130,12 +136,15 @@ public class ColResolver {
 			addUsedIndex(p, col, ct);
 		}
 	}
-	
+
 	private void addUsedCol(MetaPrimitiveProperty p, MetaGRdbPropertyStore col, RawColType ct) {
-		if (col.getColumnName().startsWith(ct.getColNamePrefix())) {
+		if (col.getColumnName()
+				.startsWith(ct.getColNamePrefix())) {
 			int no = -1;
 			try {
-				no = Integer.parseInt(col.getColumnName().substring(ct.getColNamePrefix().length()));
+				no = Integer.parseInt(col.getColumnName()
+						.substring(ct.getColNamePrefix()
+								.length()));
 			} catch (NumberFormatException e) {
 			}
 			if (no != -1) {
@@ -143,18 +152,18 @@ public class ColResolver {
 			}
 		}
 	}
-	
+
 	private void addUsedIndex(MetaPrimitiveProperty p, MetaGRdbPropertyStore col, RawColType ct) {
 		RawColIndexType cit = RawColIndexType.typeOf(p.getIndexType());
 		if (!col.isNative() && !col.isExternalIndex() && cit != RawColIndexType.NONE) {
 			usedCol.add(new UsedCol(ct, cit, new ColumnPosition(col.getIndexPageNo(), col.getIndexColumnNo()), col, p));
 		}
 	}
-	
+
 	public MetaGRdbEntityStore getMetaStore() {
 		return metaStore;
 	}
-	
+
 	public ColContext getColContext() {
 		return colContext;
 	}
@@ -163,8 +172,9 @@ public class ColResolver {
 		//存在しないstorageStapce指定した場合は、カラムマップしない
 		if (newStoreMap != null && !storageSpaceMismatch) {
 			if (newStoreMap.getColumnMappingList() != null) {
-				for (MetaRdbColumnMapping cm: newStoreMap.getColumnMappingList()) {
-					if (prop.getId().equals(cm.getPropertyId())) {
+				for (MetaRdbColumnMapping cm : newStoreMap.getColumnMappingList()) {
+					if (prop.getId()
+							.equals(cm.getPropertyId())) {
 						return cm;
 					}
 				}
@@ -172,35 +182,37 @@ public class ColResolver {
 		}
 		return null;
 	}
-	
+
 	private MetaGRdbPropertyStore newCol(RawColType pt) {
 		ColumnPosition current = pt.getColumnPositionOf(metaStore, RawColIndexType.NONE);
 		if (current == null) {
 			current = new ColumnPosition();
 			pt.setColumnPositionOf(metaStore, RawColIndexType.NONE, current);
 		}
-		
+
 		if (current.getColumnNo() >= pt.getMaxNormalCol(storage)) {
 			current.setPageNo(current.getPageNo() + 1);
 			current.setColumnNo(1);
 		} else {
 			current.setColumnNo(current.getColumnNo() + 1);
 		}
-		
+
 		MetaGRdbPropertyStore col = new MetaGRdbPropertyStore(current.getPageNo(), pt.getColNamePrefix() + current.getColumnNo());
 		return col;
 	}
-	
+
 	private boolean isNative(MetaPrimitiveProperty prop) {
 		if (prop.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
-			return ((MetaGRdbMultiplePropertyStore) prop.getEntityStoreProperty()).getStore().get(0).isNative();
+			return ((MetaGRdbMultiplePropertyStore) prop.getEntityStoreProperty()).getStore()
+					.get(0)
+					.isNative();
 		} else if (prop.getEntityStoreProperty() instanceof MetaGRdbPropertyStore) {
 			return ((MetaGRdbPropertyStore) prop.getEntityStoreProperty()).isNative();
 		} else {
 			return false;
 		}
 	}
-	
+
 //	private boolean canUseSameCol(PropertyType to, PropertyType from) {
 //		switch (to.getEnumType()) {
 //		case DECIMAL:
@@ -251,15 +263,16 @@ public class ColResolver {
 //			return to.equals(from);
 //		}
 //	}
-	
+
 	public void allocateCol(MetaPrimitiveProperty prop, MetaPrimitiveProperty old, VersionControlType vcType) {
-		if (prop.getType().isVirtual()) {
+		if (prop.getType()
+				.isVirtual()) {
 			return;
 		}
-		
+
 		MetaRdbColumnMapping colMapped = getMapping(prop);
 		RawColType newType = RawColType.typeOf(prop.getType());
-		
+
 		if (prop.getMultiplicity() == 1) {
 			//MetaGRdbPropertyStore
 			if (colMapped != null) {
@@ -272,12 +285,13 @@ public class ColResolver {
 				MetaGRdbPropertyStore oldPs = null;
 				if (old != null) {
 					if (old.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
-						oldPs = ((MetaGRdbMultiplePropertyStore) old.getEntityStoreProperty()).getStore().get(0);
+						oldPs = ((MetaGRdbMultiplePropertyStore) old.getEntityStoreProperty()).getStore()
+								.get(0);
 					} else if (old.getEntityStoreProperty() instanceof MetaGRdbPropertyStore) {
 						oldPs = (MetaGRdbPropertyStore) old.getEntityStoreProperty();
 					}
 				}
-				
+
 				MetaGRdbPropertyStore newPs;
 				if (converter != null && converter.canUseSameCol()) {
 					//既存があり、そのまま使えるのであれば、それを引き継ぎ
@@ -291,7 +305,7 @@ public class ColResolver {
 					}
 				}
 				prop.setEntityStoreProperty(newPs);
-				
+
 				//indexカラムの設定
 				IndexType newIt = (prop.getIndexType() == null) ? IndexType.NON_INDEXED : prop.getIndexType();
 				IndexType oldIt = (old == null || old.getMultiplicity() > 1 || old.getIndexType() == null) ? IndexType.NON_INDEXED : old.getIndexType();
@@ -309,7 +323,7 @@ public class ColResolver {
 					//		(a)同一IndexTypeかつ外部フラグ	：　newIndex割り当て、既存カラムから（変換）コピー
 					//		(b)それ以外					：　newIndex割り当て、既存カラムから（変換）コピー
 					//	(C)型互換なし						：　newIndex割り当て
-					
+
 					if (old == null) {
 						newIndex(prop.getType(), prop.getIndexType(), vcType, newPs, oldPs, null);
 					} else {
@@ -326,7 +340,7 @@ public class ColResolver {
 					}
 				}
 			}
-			
+
 		} else {
 			//MetaGRdbMultiplePropertyStore
 			if (colMapped != null) {
@@ -338,23 +352,24 @@ public class ColResolver {
 				}
 				ps.setStore(cols);
 				prop.setEntityStoreProperty(ps);
-				
+
 			} else {
 				//generic
 				ColConverter converter = (old == null || isNative(old)) ? null : ccFactory.getColConverter(old.getType(), prop.getType());
-				
+
 				//multiの場合、既存の情報を参照しつつ、追加もしくは削除or全く新規アロケートを判断
 				ArrayList<MetaGRdbPropertyStore> cols = new ArrayList<>();
 				int needSize = prop.getMultiplicity();
 				if (converter != null && converter.canUseSameCol()) {
 					if (old.getEntityStoreProperty() instanceof MetaGRdbPropertyStore) {
-						MetaGRdbPropertyStore copy = (MetaGRdbPropertyStore) old.getEntityStoreProperty().copy();
+						MetaGRdbPropertyStore copy = (MetaGRdbPropertyStore) old.getEntityStoreProperty()
+								.copy();
 						copy.resetIndex();
 						cols.add(copy);
 						needSize--;
 					} else if (old.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 						MetaGRdbMultiplePropertyStore mulStore = (MetaGRdbMultiplePropertyStore) old.getEntityStoreProperty();
-						for (MetaGRdbPropertyStore s: mulStore.getStore()) {
+						for (MetaGRdbPropertyStore s : mulStore.getStore()) {
 							if (needSize <= 0) {
 								break;
 							}
@@ -370,12 +385,12 @@ public class ColResolver {
 					}
 					prop.setEntityStoreProperty(new MetaGRdbMultiplePropertyStore(cols));
 				} else {
-					
+
 					//新規アロケート
 					for (int i = 0; i < prop.getMultiplicity(); i++) {
 						cols.add(newCol(newType));
 					}
-					
+
 					MetaGRdbMultiplePropertyStore ret = new MetaGRdbMultiplePropertyStore(cols);
 					if (converter != null) {
 						List<MetaGRdbPropertyStore> oldStoreCols = null;
@@ -384,7 +399,7 @@ public class ColResolver {
 						} else if (old.getEntityStoreProperty() instanceof MetaGRdbPropertyStore) {
 							oldStoreCols = Collections.singletonList((MetaGRdbPropertyStore) old.getEntityStoreProperty());
 						}
-						
+
 						if (oldStoreCols != null) {
 							int loops = Math.min(cols.size(), oldStoreCols.size());
 							for (int i = 0; i < loops; i++) {
@@ -398,13 +413,13 @@ public class ColResolver {
 			}
 		}
 	}
-	
+
 	private boolean isVersionedUnique(IndexType iType, VersionControlType vcType) {
 		return (iType == IndexType.UNIQUE || iType == IndexType.UNIQUE_WITHOUT_NULL)
 				&& (vcType == VersionControlType.VERSIONED || vcType == VersionControlType.TIMEBASE
-				|| vcType == VersionControlType.SIMPLE_TIMEBASE || vcType == VersionControlType.STATEBASE);
+						|| vcType == VersionControlType.SIMPLE_TIMEBASE || vcType == VersionControlType.STATEBASE);
 	}
-	
+
 //	public void allocateIndex(MetaPrimitiveProperty prop, VersionControlType vcType) {
 //		if (prop.getType().isVirtual()) {
 //			return;
@@ -435,23 +450,24 @@ public class ColResolver {
 //		}
 //		
 //	}
-	
-	private void newIndex(PropertyType pt, IndexType indexType, VersionControlType vcType, MetaGRdbPropertyStore ps, MetaGRdbPropertyStore fromStore, ColConverter converter) {
+
+	private void newIndex(PropertyType pt, IndexType indexType, VersionControlType vcType, MetaGRdbPropertyStore ps, MetaGRdbPropertyStore fromStore,
+			ColConverter converter) {
 		RawColType rawColType = RawColType.typeOf(pt);
 		int maxCol = rawColType.getMaxCol(storage, indexType);
 		boolean external = (maxCol == 0 || isVersionedUnique(indexType, vcType));
 
 		ps.setExternalIndex(external);
-		
+
 		if (!external) {
 			ColumnPosition current = rawColType.getColumnPositionOf(metaStore, indexType);
 			if (current == null) {
 				current = new ColumnPosition();
 				rawColType.setColumnPositionOf(metaStore, indexType, current);
 			}
-			
+
 			RawColIndexType rawColIndexType = RawColIndexType.typeOf(indexType);
-			
+
 			//check can re-use
 			boolean reuse = false;
 			ColumnPosition currentPosi = null;
@@ -479,7 +495,7 @@ public class ColResolver {
 				ps.setIndexPageNo(current.getPageNo());
 				ps.setIndexColumnNo(current.getColumnNo());
 			}
-			
+
 			if (converter != null) {
 				colContext.addIndexConvert(converter, indexType, ps, fromStore);
 			} else if (reuse && fromStore == null) {
@@ -488,9 +504,10 @@ public class ColResolver {
 			}
 		}
 	}
-	
+
 	public void moveToUnusedCol(UsedCol col) {
-		if (!col.getCol().isNative()) {
+		if (!col.getCol()
+				.isNative()) {
 			EnumMap<RawColIndexType, List<ColumnPosition>> perType = unused.get(col.getRawColType());
 			if (perType != null) {
 				List<ColumnPosition> list = perType.get(col.getRawColIndexType());
@@ -505,7 +522,8 @@ public class ColResolver {
 							break;
 						case INDEX:
 						case UNIQUE_INDEX:
-							it = col.getProperty().getIndexType();
+							it = col.getProperty()
+									.getIndexType();
 							break;
 						default:
 							it = null;
@@ -513,18 +531,26 @@ public class ColResolver {
 						}
 						colContext.addMove(toMove, col.getPosition(), col.getRawColType(), it);
 						colContext.addSetNull(col.getPosition(), col.getRawColType(), it);
-						col.getPosition().setPageNo(toMove.getPageNo());
-						col.getPosition().setColumnNo(toMove.getColumnNo());
+						col.getPosition()
+								.setPageNo(toMove.getPageNo());
+						col.getPosition()
+								.setColumnNo(toMove.getColumnNo());
 						MetaGRdbPropertyStore store = col.getCol();
 						switch (col.getRawColIndexType()) {
 						case NONE:
-							store.setPageNo(col.getPosition().getPageNo());
-							store.setColumnName(col.getRawColType().getColNamePrefix() + col.getPosition().getColumnNo());
+							store.setPageNo(col.getPosition()
+									.getPageNo());
+							store.setColumnName(col.getRawColType()
+									.getColNamePrefix()
+									+ col.getPosition()
+											.getColumnNo());
 							break;
 						case INDEX:
 						case UNIQUE_INDEX:
-							store.setIndexPageNo(col.getPosition().getPageNo());
-							store.setIndexColumnNo(col.getPosition().getColumnNo());
+							store.setIndexPageNo(col.getPosition()
+									.getPageNo());
+							store.setIndexColumnNo(col.getPosition()
+									.getColumnNo());
 						default:
 							break;
 						}
@@ -535,21 +561,21 @@ public class ColResolver {
 			}
 		}
 	}
-	
-	
+
 	public void shrink() {
 		if (unused.size() > 0) {
 			UsedCol[] orderedUsedCol = usedCol.toArray(new UsedCol[usedCol.size()]);
 			Arrays.sort(orderedUsedCol, Comparator.naturalOrder());
-			for (UsedCol uc: orderedUsedCol) {
+			for (UsedCol uc : orderedUsedCol) {
 				moveToUnusedCol(uc);
 			}
-			
+
 			//未使用のカラムをnullに
-			for (Map.Entry<RawColType, EnumMap<RawColIndexType, List<ColumnPosition>>> perType: unused.entrySet()) {
-				for (Map.Entry<RawColIndexType, List<ColumnPosition>> list: perType.getValue().entrySet()) {
+			for (Map.Entry<RawColType, EnumMap<RawColIndexType, List<ColumnPosition>>> perType : unused.entrySet()) {
+				for (Map.Entry<RawColIndexType, List<ColumnPosition>> list : perType.getValue()
+						.entrySet()) {
 					if (list.getValue() != null) {
-						for (ColumnPosition cp: list.getValue()) {
+						for (ColumnPosition cp : list.getValue()) {
 							IndexType it;
 							switch (list.getKey()) {
 							case NONE:
@@ -570,23 +596,27 @@ public class ColResolver {
 					}
 				}
 			}
-			
+
 			//currentMaxを更新
 			metaStore.clearColumnPosition();
-			for (UsedCol col: usedCol) {
-				ColumnPosition cp = col.getRawColType().getColumnPositionOf(metaStore, col.getRawColIndexType());
+			for (UsedCol col : usedCol) {
+				ColumnPosition cp = col.getRawColType()
+						.getColumnPositionOf(metaStore, col.getRawColIndexType());
 				if (cp == null) {
 					cp = new ColumnPosition();
-					col.getRawColType().setColumnPositionOf(metaStore, col.getRawColIndexType(), cp);
+					col.getRawColType()
+							.setColumnPositionOf(metaStore, col.getRawColIndexType(), cp);
 				}
 				if (cp.compareTo(col.getPosition()) < 0) {
-					cp.setPageNo(col.getPosition().getPageNo());
-					cp.setColumnNo(col.getPosition().getColumnNo());
+					cp.setPageNo(col.getPosition()
+							.getPageNo());
+					cp.setColumnNo(col.getPosition()
+							.getColumnNo());
 				}
 			}
 		}
 	}
-	
+
 //	public void adjustPropertyDef(MetaProperty prop, MetaEntity entity) {
 //		if (prop instanceof MetaReferenceProperty) {
 //			//Referenceの場合は、IndexなしStoreProperyなし

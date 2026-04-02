@@ -31,14 +31,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.GenericEntity;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.PropertyNotWritableException;
-
-import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.GenericEntity;
 
 /**
  * <p>カスタムのBeanELResolver</p>
@@ -77,11 +77,11 @@ public class ExtendedBeanELResolver extends ELResolver {
 		set.add("metaClass");
 		DEFAULT_SUPPRESS_PROPERTIES = Collections.unmodifiableSet(set);
 	}
-	
+
 	private Set<String> suppressProperties;
-	
+
 	private EntityELResolver entityResolver = new EntityELResolver();
-	
+
 	public ExtendedBeanELResolver() {
 		this(DEFAULT_SUPPRESS_PROPERTIES);
 	}
@@ -93,14 +93,14 @@ public class ExtendedBeanELResolver extends ELResolver {
 			this.suppressProperties = suppressProperties;
 		}
 	}
-	
+
 	private void checkSuppress(Object property) {
 		if (property != null && suppressProperties.contains(property.toString())) {
-		    throw new PropertyNotFoundException("The property:" + property.toString() + " is defined as must suppressed.");
+			throw new PropertyNotFoundException("The property:" + property.toString() + " is defined as must suppressed.");
 		}
 	}
-	
-    @Override
+
+	@Override
 	public Object getValue(ELContext context, Object base, Object property) {
 		if (context == null) {
 			throw new NullPointerException();
@@ -108,9 +108,9 @@ public class ExtendedBeanELResolver extends ELResolver {
 		if (base == null || property == null) {
 			return null;
 		}
-		
+
 		checkSuppress(property);
-		
+
 		PropertyInfo pi = BeanInfo.getPropertyInfo(base.getClass(), property.toString());
 		if (pi != null) {
 			Method method = pi.getReadMethod();
@@ -119,16 +119,17 @@ public class ExtendedBeanELResolver extends ELResolver {
 				try {
 					value = method.invoke(base, new Object[0]);
 					context.setPropertyResolved(base, property);
-					
+
 					BeanMapperELContext bmc = (BeanMapperELContext) context.getContext(BeanMapperELContext.class);
-					if (bmc.getElMapper().isAutoGrow()) {
+					if (bmc.getElMapper()
+							.isAutoGrow()) {
 						if (value == null) {
 							value = newPropertyInstance(pi);
 							if (value != null) {
 								setValue(pi, base, value);
 							}
 						}
-						
+
 						bmc.setPropertyRef(base, pi, value);
 					}
 				} catch (ELException e) {
@@ -138,30 +139,34 @@ public class ExtendedBeanELResolver extends ELResolver {
 				} catch (Exception e) {
 					throw new ELException(e);
 				}
-				
+
 				return value;
 			}
 		}
-		
+
 		if (base instanceof Entity) {
 			Object value = entityResolver.getValue(context, base, property);
 			if (context.isPropertyResolved()) {
 				return value;
 			}
 		}
-		
-	    throw new PropertyNotFoundException("The class:" + base.getClass().getName() + " does not have a readable property:" + property.toString());
+
+		throw new PropertyNotFoundException("The class:" + base.getClass()
+				.getName() + " does not have a readable property:" + property.toString());
 	}
-    
+
 	private Object newPropertyInstance(PropertyInfo propertyInfo) throws InstantiationException, IllegalAccessException {
 		switch (propertyInfo.getTypeKind()) {
 		case BEAN:
-			return propertyInfo.getPropertyType().newInstance();
+			return propertyInfo.getPropertyType()
+					.newInstance();
 		case ENTITY:
-			if (propertyInfo.getPropertyType().isInterface()) {
+			if (propertyInfo.getPropertyType()
+					.isInterface()) {
 				return new GenericEntity();
 			} else {
-				return propertyInfo.getPropertyType().newInstance();
+				return propertyInfo.getPropertyType()
+						.newInstance();
 			}
 		case ARRAY:
 			return Array.newInstance(propertyInfo.getComponentType(), 0);
@@ -175,13 +180,17 @@ public class ExtendedBeanELResolver extends ELResolver {
 			return null;
 		}
 	}
-	
-	private void setValue(PropertyInfo pi, Object bean, Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+	private void setValue(PropertyInfo pi, Object bean, Object value)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Method method = pi.getWriteMethod();
 		if (method == null) {
-			throw new PropertyNotWritableException("The class:" + bean.getClass().getName() + " does not have a writable property:" + pi.getDescriptor().getName());
+			throw new PropertyNotWritableException("The class:" + bean.getClass()
+					.getName() + " does not have a writable property:"
+					+ pi.getDescriptor()
+							.getName());
 		}
-		method.invoke(bean, new Object[] {value});
+		method.invoke(bean, new Object[] { value });
 	}
 
 	@Override
@@ -192,23 +201,24 @@ public class ExtendedBeanELResolver extends ELResolver {
 		if (base == null || property == null) {
 			return null;
 		}
-		
+
 		checkSuppress(property);
-		
+
 		PropertyInfo pi = BeanInfo.getPropertyInfo(base.getClass(), property.toString());
 		if (pi != null) {
 			context.setPropertyResolved(true);
 			return pi.getPropertyType();
 		}
-		
+
 		if (base instanceof Entity) {
 			Class<?> type = entityResolver.getType(context, base, property);
 			if (context.isPropertyResolved()) {
 				return type;
 			}
 		}
-		
-		throw new PropertyNotFoundException("The class:" + base.getClass().getName() + " does not have the property:" + property.toString());
+
+		throw new PropertyNotFoundException("The class:" + base.getClass()
+				.getName() + " does not have the property:" + property.toString());
 	}
 
 	@Override
@@ -219,23 +229,25 @@ public class ExtendedBeanELResolver extends ELResolver {
 		if (base == null || property == null) {
 			return;
 		}
-		
+
 		checkSuppress(property);
-		
+
 		if (value instanceof String) {
 			//EL3.0の仕様上、nullをセットしようとしても、Stringの場合は空文字をセットしようとするのをnullをセットするようにする。
 			//EL3.0の仕様上、nullをセットしようとしても、Stringの場合は空文字をセットしようとするのをnullをセットするようにする。
 			BeanMapperELContext bmc = (BeanMapperELContext) context.getContext(BeanMapperELContext.class);
-			if (bmc.getElMapper().isTrim()) {
+			if (bmc.getElMapper()
+					.isTrim()) {
 				value = ((String) value).trim();
 			}
-			if (bmc.getElMapper().isEmptyToNull()) {
+			if (bmc.getElMapper()
+					.isEmptyToNull()) {
 				if (((String) value).isEmpty()) {
 					value = null;
 				}
 			}
 		}
-		
+
 		PropertyInfo pi = BeanInfo.getPropertyInfo(base.getClass(), property.toString());
 		if (pi != null) {
 			try {
@@ -250,18 +262,20 @@ public class ExtendedBeanELResolver extends ELResolver {
 				if (null == value) {
 					value = "null";
 				}
-				throw new ELException("Can't set property:" +  property.toString() + " on class:" + base.getClass().getName() + " to value:" + value, e);
+				throw new ELException("Can't set property:" + property.toString() + " on class:" + base.getClass()
+						.getName() + " to value:" + value, e);
 			}
 		}
-		
+
 		if (base instanceof Entity) {
 			entityResolver.setValue(context, base, property, value);
 			if (context.isPropertyResolved()) {
 				return;
 			}
 		}
-		
-		throw new PropertyNotFoundException("The class:" + base.getClass().getName() + " does not have the property:" + property.toString());
+
+		throw new PropertyNotFoundException("The class:" + base.getClass()
+				.getName() + " does not have the property:" + property.toString());
 	}
 
 	@Override
@@ -272,20 +286,21 @@ public class ExtendedBeanELResolver extends ELResolver {
 		if (base == null || property == null) {
 			return false;
 		}
-		
+
 		checkSuppress(property);
-		
+
 		context.setPropertyResolved(true);
 		PropertyInfo pi = BeanInfo.getPropertyInfo(base.getClass(), property.toString());
 		if (pi != null) {
 			return pi.isReadOnly();
 		}
-		
+
 		if (base instanceof Entity) {
 			return false;
 		}
-		
-		throw new PropertyNotFoundException("The class:" + base.getClass().getName() + " does not have the property:" + property.toString());
+
+		throw new PropertyNotFoundException("The class:" + base.getClass()
+				.getName() + " does not have the property:" + property.toString());
 	}
 
 	@Override
@@ -293,13 +308,13 @@ public class ExtendedBeanELResolver extends ELResolver {
 		if (base == null) {
 			return null;
 		}
-		
+
 		BeanInfo info = BeanInfo.getBeanInfo(base.getClass());
 		if (info == null) {
 			return null;
 		}
 		ArrayList<FeatureDescriptor> list = new ArrayList<FeatureDescriptor>();
-		for (PropertyInfo pi: info.getProperties()) {
+		for (PropertyInfo pi : info.getProperties()) {
 			PropertyDescriptor pd = pi.getDescriptor();
 			pd.setValue("type", pd.getPropertyType());
 			pd.setValue("resolvableAtDesignTime", Boolean.TRUE);
@@ -313,7 +328,7 @@ public class ExtendedBeanELResolver extends ELResolver {
 		if (base == null) {
 			return null;
 		}
-		
+
 		return Object.class;
 	}
 

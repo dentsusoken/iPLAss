@@ -97,6 +97,7 @@ public class GRdbDataStore extends RdbDataStore {
 	public Map<String, StorageSpaceMap> getStorageSpaceMap() {
 		return storageSpaceMap;
 	}
+
 	public List<StorageSpaceMap> getStorageSpace() {
 		return storageSpace;
 	}
@@ -160,13 +161,14 @@ public class GRdbDataStore extends RdbDataStore {
 	public void inited(StoreService service, Config config) {
 		storageSpaceMap = new HashMap<>();
 		if (storageSpace != null) {
-			for (StorageSpaceMap m: storageSpace) {
+			for (StorageSpaceMap m : storageSpace) {
 				storageSpaceMap.put(m.getStorageSpaceName(), m);
 			}
 		}
 
 		CounterService cs = config.getDependentService(CounterService.OID_COUNTER_SERVICE_NAME);
-		RdbAdapter rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
+		RdbAdapter rdb = config.getDependentService(RdbAdapterService.class)
+				.getRdbAdapter();
 
 		entityStore = new GRdbEntityStoreStrategy(this, rdb, cs);
 		applyMeta = new GRdbApplyMetaDataStrategy(this, rdb);
@@ -185,7 +187,6 @@ public class GRdbDataStore extends RdbDataStore {
 	public Class<? extends MetaEntityStore> getEntityStoreType() {
 		return MetaGRdbEntityStore.class;
 	}
-
 
 	@Override
 	public List<String> getStorageSpaceList() {

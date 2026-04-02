@@ -37,43 +37,43 @@ public class WithinGroupSyntax implements Syntax<WithinGroup>, QueryConstants {
 	private OrderBySyntax orderBy;
 
 	public WithinGroup parse(ParseContext str) throws ParseException {
-		
+
 		//WITHIN
 		if (!str.equalsNextToken(WITHIN, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("WITHIN GROUP expected.", this, str));
 		}
 		str.consumeChars(WITHIN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//GROUP
 		if (!str.equalsNextToken(GROUP, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("GROUP expected.", this, str));
 		}
 		str.consumeChars(GROUP.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (!str.startsWith(LEFT_PAREN)) {
 			throw new ParseException(new EvalError("( expected.", this, str));
 		}
 		str.consumeChars(LEFT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//ORDER BY
 		OrderBy ob = orderBy.parse(str);
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (!str.startsWith(RIGHT_PAREN)) {
 			throw new ParseException(new EvalError(") expected.", this, str));
 		}
 		str.consumeChars(RIGHT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		WithinGroup withinGroup = new WithinGroup();
-		for (SortSpec ss: ob.getSortSpecList()) {
+		for (SortSpec ss : ob.getSortSpecList()) {
 			WithinGroupSortSpec wgss = new WithinGroupSortSpec(ss.getSortKey(), ss.getType(), ss.getNullOrderingSpec());
 			withinGroup.add(wgss);
 		}
-		
+
 		return withinGroup;
 	}
 

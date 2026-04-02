@@ -41,7 +41,7 @@ public class LanguageFonts {
 	 * @return 言語
 	 */
 	public String getLanguage() {
-	    return language;
+		return language;
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class LanguageFonts {
 	 * @param language 言語
 	 */
 	public void setLanguage(String language) {
-	    this.language = language;
+		this.language = language;
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class LanguageFonts {
 	 * @return フォント
 	 */
 	public List<String> getFonts() {
-	    return fonts;
+		return fonts;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class LanguageFonts {
 	 * @param fonts フォント
 	 */
 	public void setFonts(List<String> fonts) {
-	    this.fonts = fonts;
+		this.fonts = fonts;
 	}
 
 }

@@ -22,13 +22,13 @@ package org.iplass.mtp.view.generic;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BulkFormView extends FormView {
@@ -37,123 +37,114 @@ public class BulkFormView extends FormView {
 
 	/** 更新ボタン表示ラベル */
 	@MetaFieldInfo(
-			displayName="更新ボタン表示ラベル",
-			displayNameKey="generic_BulkFormView_updateDisplayLabelDisplaNameKey",
-			description="更新ボタンに表示されるラベルを設定します。",
-			descriptionKey="generic_BulkFormView_updateDisplayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "更新ボタン表示ラベル",
+			displayNameKey = "generic_BulkFormView_updateDisplayLabelDisplaNameKey",
+			description = "更新ボタンに表示されるラベルを設定します。",
+			descriptionKey = "generic_BulkFormView_updateDisplayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedUpdateDisplayLabelList",
-			displayOrder=200
+			displayOrder = 200
 	)
 	@MultiLang()
 	private String updateDisplayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_BulkFormView_localizedUpdateDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=210
+			displayName = "多言語設定",
+			displayNameKey = "generic_BulkFormView_localizedUpdateDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 210
 	)
 	private List<LocalizedStringDefinition> localizedUpdateDisplayLabelList;
 
-
-
-
 	/** 更新アクション名 */
 	@MetaFieldInfo(
-			displayName="更新アクション名",
-			displayNameKey="generic_BulkFormView_updateActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=300,
-			description="更新ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_BulkFormView_updateActionNameDescriptionKey"
+			displayName = "更新アクション名",
+			displayNameKey = "generic_BulkFormView_updateActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 300,
+			description = "更新ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_BulkFormView_updateActionNameDescriptionKey"
 	)
 	private String updateActionName;
 
 	/** 検索条件で更新アクション名 */
 	@MetaFieldInfo(
-			displayName="検索条件で更新アクション名",
-			displayNameKey="generic_BulkFormView_updateAllActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			displayOrder=310,
-			description="更新ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_BulkFormView_updateAllActionNameDescriptionKey"
+			displayName = "検索条件で更新アクション名",
+			displayNameKey = "generic_BulkFormView_updateAllActionNameDisplaNameKey",
+			inputType = InputType.ACTION,
+			displayOrder = 310,
+			description = "更新ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey = "generic_BulkFormView_updateAllActionNameDescriptionKey"
 	)
 	private String updateAllActionName;
 
-
-
-
 	/** JavaScriptコード */
 	@MetaFieldInfo(
-			displayName="JavaScriptコード",
-			displayNameKey="generic_BulkFormView_javaScriptDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			displayOrder=500,
-			mode="javascript",
-			description="SCRIPTタグ内に出力するJavaScriptコードを設定します。",
-			descriptionKey="generic_BulkFormView_javaScriptDescriptionKey"
+			displayName = "JavaScriptコード",
+			displayNameKey = "generic_BulkFormView_javaScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			displayOrder = 500,
+			mode = "javascript",
+			description = "SCRIPTタグ内に出力するJavaScriptコードを設定します。",
+			descriptionKey = "generic_BulkFormView_javaScriptDescriptionKey"
 	)
 	private String javaScript;
 
 	/** Javascriptコード有効可否 */
 	@MetaFieldInfo(
-			displayName="Javascriptコードを有効化",
-			displayNameKey="generic_BulkFormView_validJavascriptBulkPageDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=510,
-			description="Javascriptコードに設定した内容を一括更新画面で有効にするかを設定します。",
-			descriptionKey="generic_BulkFormView_validJavascriptBulkPageDescriptionKey"
+			displayName = "Javascriptコードを有効化",
+			displayNameKey = "generic_BulkFormView_validJavascriptBulkPageDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 510,
+			description = "Javascriptコードに設定した内容を一括更新画面で有効にするかを設定します。",
+			descriptionKey = "generic_BulkFormView_validJavascriptBulkPageDescriptionKey"
 	)
 	private boolean validJavascriptBulkPage;
 
-
-
-
 	/** 親子関係の参照を物理削除するか */
 	@MetaFieldInfo(
-			displayName="親子関係の参照を物理削除するか",
-			displayNameKey="generic_BulkFormView_purgeCompositionedEntityDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1600,
-			description="親子関係の参照を物理削除するかを設定します",
-			descriptionKey="generic_BulkFormView_purgeCompositionedEntityDescriptionKey"
+			displayName = "親子関係の参照を物理削除するか",
+			displayNameKey = "generic_BulkFormView_purgeCompositionedEntityDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1600,
+			description = "親子関係の参照を物理削除するかを設定します",
+			descriptionKey = "generic_BulkFormView_purgeCompositionedEntityDescriptionKey"
 	)
 	private boolean purgeCompositionedEntity;
 
 	/** 更新時に強制的に更新処理を行う */
 	@MetaFieldInfo(
-			displayName="更新時に強制的に更新処理を行う",
-			displayNameKey="generic_BulkFormView_forceUpadteDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1610,
-			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
-			descriptionKey="generic_BulkFormView_forceUpadteDescriptionKey"
+			displayName = "更新時に強制的に更新処理を行う",
+			displayNameKey = "generic_BulkFormView_forceUpadteDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1610,
+			description = "変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
+			descriptionKey = "generic_BulkFormView_forceUpadteDescriptionKey"
 	)
 	private boolean forceUpadte;
 
 	/** カスタム登録処理クラス名 */
 	@MetaFieldInfo(
-			displayName="カスタム登録処理クラス名",
-			displayNameKey="generic_BulkFormView_interrupterNameDisplaNameKey",
-			displayOrder=1620,
-			description="データ登録時に行うカスタム登録処理のクラス名を指定します。<br>" +
+			displayName = "カスタム登録処理クラス名",
+			displayNameKey = "generic_BulkFormView_interrupterNameDisplaNameKey",
+			displayOrder = 1620,
+			description = "データ登録時に行うカスタム登録処理のクラス名を指定します。<br>" +
 					"RegistrationInterrupterインターフェースを実装するクラスを指定してください。",
 
-			descriptionKey="generic_BulkFormView_interrupterNameDescriptionKey"
+			descriptionKey = "generic_BulkFormView_interrupterNameDescriptionKey"
 	)
 	private String interrupterName;
 
 	/** カスタムロード処理クラス名 */
 	@MetaFieldInfo(
-			displayName="カスタムロード処理クラス名",
-			displayNameKey="generic_BulkFormView_loadEntityInterrupterNameDisplaNameKey",
-			displayOrder=1630,
-			description="Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>" +
+			displayName = "カスタムロード処理クラス名",
+			displayNameKey = "generic_BulkFormView_loadEntityInterrupterNameDisplaNameKey",
+			displayOrder = 1630,
+			description = "Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>" +
 					"LoadEntityInterrupterインターフェースを実装するクラスを指定してください。",
 
-			descriptionKey="generic_BulkFormView_loadEntityInterrupterNameDescriptionKey"
+			descriptionKey = "generic_BulkFormView_loadEntityInterrupterNameDescriptionKey"
 	)
 	private String loadEntityInterrupterName;
 

@@ -30,36 +30,35 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.property.MetaPrimitiveProperty;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public class UpdProperty extends Diff {
-	
+
 	private UpdPropertyIndexType updPropertyIndexType;
-	
+
 	private MetaPrimitiveProperty previousProperty;
 	private MetaPrimitiveProperty nextProperty;
-	
+
 	private ColResolver colResolver;
 	private MetaEntity nextEntity;
-	
+
 	public UpdProperty(MetaPrimitiveProperty previousProperty, MetaPrimitiveProperty nextProperty, MetaEntity nextEntity, ColResolver colResolver,
 			GRdbDataStore dataStore) {
 		this.previousProperty = previousProperty;
 		this.nextProperty = nextProperty;
 		this.colResolver = colResolver;
 		this.nextEntity = nextEntity;
-		
-		if ((previousProperty.getIndexType() != null &&	previousProperty.getIndexType() != IndexType.NON_INDEXED)
+
+		if ((previousProperty.getIndexType() != null && previousProperty.getIndexType() != IndexType.NON_INDEXED)
 				|| (nextProperty.getIndexType() != null && nextProperty.getIndexType() != IndexType.NON_INDEXED)) {
 			updPropertyIndexType = new UpdPropertyIndexType(previousProperty, nextProperty, nextEntity, dataStore);
 		}
 	}
-	
+
 	@Override
 	public void applyToData(Statement stmt, RdbAdapter rdb, int tenantId) throws SQLException {
 		if (updPropertyIndexType != null) {
 			updPropertyIndexType.applyToData(stmt, rdb, tenantId);
 		}
-		
+
 	}
 
 	@Override
@@ -78,7 +77,7 @@ public class UpdProperty extends Diff {
 		if (updPropertyIndexType != null && updPropertyIndexType.needDataModify()) {
 			return true;
 		}
-		
+
 		return false;
 	}
 

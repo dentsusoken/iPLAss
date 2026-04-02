@@ -264,9 +264,11 @@ public final class DetailViewCommand extends DetailCommandBase {
 		}
 
 		Entity entity = null;
-		if (oid != null && oid.trim().length() > 0) {
+		if (oid != null && oid.trim()
+				.length() > 0) {
 			if (view.isLoadDefinedReferenceProperty()) {
-				entity = loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(), context.isLoadVersioned());
+				entity = loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName(),
+						context.isLoadVersioned());
 			} else {
 				entity = loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null, context.isLoadVersioned());
 			}
@@ -299,7 +301,8 @@ public final class DetailViewCommand extends DetailCommandBase {
 				Entity updateParam = context.createEntity();
 				data.setEntity(updateParam);
 			}
-			if (StringUtil.isNotBlank(context.getView().getInitScript())) {
+			if (StringUtil.isNotBlank(context.getView()
+					.getInitScript())) {
 				//初期化スクリプトで初期化
 				if (data.getEntity() != null) {
 					evm.initEntity(context.getDefinitionName(), context.getViewName(), data.getEntity());
@@ -313,7 +316,8 @@ public final class DetailViewCommand extends DetailCommandBase {
 			if (context.isUpdateByParam()) {
 				//パラメータの値を使って表示データの値更新
 				Entity updateParam = context.createEntity();
-				for (PropertyDefinition pd : context.getEntityDefinition().getPropertyList()) {
+				for (PropertyDefinition pd : context.getEntityDefinition()
+						.getPropertyList()) {
 					Object updateValue = updateParam.getValue(pd.getName());
 					if (updateValue != null) {
 						entity.setValue(pd.getName(), updateValue);
@@ -362,8 +366,11 @@ public final class DetailViewCommand extends DetailCommandBase {
 		} else {
 			//コピーじゃない場合はロック状態確認
 			if (entity != null && entity.getLockedBy() != null) {
-				String userOid = AuthContext.getCurrentContext().getUser().getOid();
-				if (!entity.getLockedBy().equals(userOid)) {
+				String userOid = AuthContext.getCurrentContext()
+						.getUser()
+						.getOid();
+				if (!entity.getLockedBy()
+						.equals(userOid)) {
 					//他ユーザーによるロックあり
 					Entity user = getLockedByUser(entity);
 					String message = null;

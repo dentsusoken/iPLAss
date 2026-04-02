@@ -72,11 +72,18 @@ public class AdminUploadActionResponseParser {
 		String jsonString = extractJsonString(eventResult);
 
 		// JSONを解析
-		JSONObject serverResponse = JSONParser.parseStrict(jsonString).isObject();
-		boolean isSuccess = serverResponse.get(AdminUploadConstant.ResponseKey.IS_SUCCESS).isBoolean().booleanValue();
+		JSONObject serverResponse = JSONParser.parseStrict(jsonString)
+				.isObject();
+		boolean isSuccess = serverResponse.get(AdminUploadConstant.ResponseKey.IS_SUCCESS)
+				.isBoolean()
+				.booleanValue();
 		JSONValue data = serverResponse.get(AdminUploadConstant.ResponseKey.DATA);
 		// 異常終了時のみエラーメッセージを設定する
-		String errorMessage = isSuccess ? null : data.isObject().get(AdminUploadConstant.ResponseKey.ERROR_MESSAGE).isString().stringValue();
+		String errorMessage = isSuccess ? null
+				: data.isObject()
+						.get(AdminUploadConstant.ResponseKey.ERROR_MESSAGE)
+						.isString()
+						.stringValue();
 
 		// response オブジェクトに変換
 		AdminUploadActionResponse parsed = new AdminUploadActionResponse();
@@ -111,7 +118,8 @@ public class AdminUploadActionResponseParser {
 				// <pre>
 				.getFirstChild()
 				// #text
-				.getFirstChild().getNodeValue();
+				.getFirstChild()
+				.getNodeValue();
 	}
 
 }

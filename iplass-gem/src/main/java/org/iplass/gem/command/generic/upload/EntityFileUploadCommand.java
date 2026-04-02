@@ -66,14 +66,28 @@ import org.slf4j.LoggerFactory;
  *
  * @author lis3wg
  */
-@ActionMapping(name = EntityFileUploadCommand.ACTION_NAME, displayName = "ファイルアップロード", paramMapping = {
-		@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
-		@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
-		@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2"), }, result = {
-				@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.JSP, value = Constants.CMD_RSLT_JSP_FILE_UPLOAD_RESULT, templateName = "gem/generic/upload/fileUploadResult", layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+@ActionMapping(
+		name = EntityFileUploadCommand.ACTION_NAME,
+		displayName = "ファイルアップロード",
+		paramMapping = {
+				@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+				@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+				@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2"), },
+		result = {
+				@Result(
+						status = Constants.CMD_EXEC_SUCCESS,
+						type = Type.JSP,
+						value = Constants.CMD_RSLT_JSP_FILE_UPLOAD_RESULT,
+						templateName = "gem/generic/upload/fileUploadResult",
+						layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
 				@Result(status = Constants.CMD_EXEC_SUCCESS_ASYNC, type = Type.TEMPLATE, value = Constants.TEMPLATE_FILE_UPLOAD),
 				@Result(status = Constants.CMD_EXEC_FAILURE, type = Type.TEMPLATE, value = Constants.TEMPLATE_FILE_UPLOAD),
-				@Result(status = Constants.CMD_EXEC_ERROR_VIEW, type = Type.TEMPLATE, value = Constants.TEMPLATE_COMMON_ERROR, layoutActionName = Constants.LAYOUT_NORMAL_ACTION) }, tokenCheck = @TokenCheck)
+				@Result(
+						status = Constants.CMD_EXEC_ERROR_VIEW,
+						type = Type.TEMPLATE,
+						value = Constants.TEMPLATE_COMMON_ERROR,
+						layoutActionName = Constants.LAYOUT_NORMAL_ACTION) },
+		tokenCheck = @TokenCheck)
 @CommandClass(name = "gem/generic/upload/EntityFileUploadCommand", displayName = "ファイルアップロード")
 public final class EntityFileUploadCommand extends DetailCommandBase {
 
@@ -81,7 +95,8 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 
 	public static final String ACTION_NAME = "gem/generic/upload/bin";
 
-	private GemConfigService gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+	private GemConfigService gcs = ServiceRegistry.getRegistry()
+			.getService(GemConfigService.class);
 
 	@Override
 	public String execute(final RequestContext request) {
@@ -109,11 +124,13 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 
 		FileSupportType fileSupportType = null;
 		if (searchFormView != null) {
-			fileSupportType = searchFormView.getCondSection().getFileSupportType();
+			fileSupportType = searchFormView.getCondSection()
+					.getFileSupportType();
 		}
 		// 未指定の場合は、GemConfigServiceから取得
 		if (fileSupportType == null) {
-			GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+			GemConfigService gemConfigService = ServiceRegistry.getRegistry()
+					.getService(GemConfigService.class);
 			fileSupportType = gemConfigService.getFileSupportType();
 		}
 
@@ -129,19 +146,22 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 		TargetVersion targetVersion = null;
 		if (ed.getVersionControlType() == VersionControlType.NONE) {
 			// バージョン管理対象外のEntityの場合
-			if (searchFormView.getCondSection().isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
+			if (searchFormView.getCondSection()
+					.isCanCsvUploadTargetVersionSelectForNoneVersionedEntity()) {
 				// 画面から指定
 				targetVersion = StringUtil.isNotEmpty(updateTargetVersion)
 						&& updateTargetVersion.equals(TargetVersion.SPECIFIC.name()) ? TargetVersion.SPECIFIC
 								: TargetVersion.CURRENT_VALID;
 			} else {
 				// 設定されていたら指定
-				targetVersion = searchFormView.getCondSection().getCsvUploadTargetVersionForNoneVersionedEntity();
+				targetVersion = searchFormView.getCondSection()
+						.getCsvUploadTargetVersionForNoneVersionedEntity();
 			}
 		}
 		EntityFileType entityFileType = getEntityFileType(request, searchFormView.getCondSection());
 
-		EntityFileUploadService service = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class);
+		EntityFileUploadService service = ServiceRegistry.getRegistry()
+				.getService(EntityFileUploadService.class);
 
 		if (file == null) {
 			request.setAttribute(Constants.MESSAGE,
@@ -164,7 +184,8 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 				if (logger.isDebugEnabled()) {
 					logger.debug(e.getMessage(), e);
 				}
-				request.setAttribute(Constants.MESSAGE, StringUtil.escapeHtml(e.getMessage()).replace("\n", "<br/>"));
+				request.setAttribute(Constants.MESSAGE, StringUtil.escapeHtml(e.getMessage())
+						.replace("\n", "<br/>"));
 				return Constants.CMD_EXEC_FAILURE;
 			} catch (Exception e) {
 				if (logger.isDebugEnabled()) {
@@ -180,18 +201,21 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 
 			try (InputStream is = file.getInputStream()) {
 				service.validate(is, entityFileType, defName, gcs.isCsvDownloadReferenceVersion(),
-						ignoreNotExistsProperty, searchFormView.getCondSection().getCsvUploadInterrupterName());
+						ignoreNotExistsProperty, searchFormView.getCondSection()
+								.getCsvUploadInterrupterName());
 			} catch (EntityCsvException e) {
 				if (logger.isDebugEnabled()) {
 					logger.debug(e.getMessage(), e);
 				}
-				request.setAttribute(Constants.MESSAGE, StringUtil.escapeHtml(e.getMessage()).replace("\n", "<br/>"));
+				request.setAttribute(Constants.MESSAGE, StringUtil.escapeHtml(e.getMessage())
+						.replace("\n", "<br/>"));
 				return Constants.CMD_EXEC_FAILURE;
 			} catch (ApplicationException e) {
 				if (logger.isDebugEnabled()) {
 					logger.debug(e.getMessage(), e);
 				}
-				request.setAttribute(Constants.MESSAGE, StringUtil.escapeHtml(e.getMessage()).replace("\n", "<br/>"));
+				request.setAttribute(Constants.MESSAGE, StringUtil.escapeHtml(e.getMessage())
+						.replace("\n", "<br/>"));
 				return Constants.CMD_EXEC_FAILURE;
 			} catch (Exception e) {
 				if (logger.isDebugEnabled()) {
@@ -206,7 +230,8 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 				EntityFileUploadStatus result = service.upload(is, defName, option);
 
 				request.setAttribute(Constants.MESSAGE,
-						result.getMessage() != null ? StringUtil.escapeHtml(result.getMessage()).replace("\n", "<br/>")
+						result.getMessage() != null ? StringUtil.escapeHtml(result.getMessage())
+								.replace("\n", "<br/>")
 								: null);
 				request.setAttribute("insertCount", result.getInsertCount());
 				request.setAttribute("updateCount", result.getUpdateCount());
@@ -222,7 +247,8 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 				if (logger.isDebugEnabled()) {
 					logger.debug(e.getMessage(), e);
 				}
-				request.setAttribute(Constants.MESSAGE, StringUtil.escapeHtml(e.getMessage()).replace("\n", "<br/>"));
+				request.setAttribute(Constants.MESSAGE, StringUtil.escapeHtml(e.getMessage())
+						.replace("\n", "<br/>"));
 				return Constants.CMD_EXEC_FAILURE;
 			} catch (Exception e) {
 				if (logger.isDebugEnabled()) {
@@ -270,9 +296,11 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 
 		if (fileSupportType == FileSupportType.SPECIFY) {
 			String specifyType = request.getParam(Constants.FILE_SUPPORT_TYPE);
-			if (FileSupportType.CSV.name().equals(specifyType)) {
+			if (FileSupportType.CSV.name()
+					.equals(specifyType)) {
 				fileSupportType = FileSupportType.CSV;
-			} else if (FileSupportType.EXCEL.name().equals(specifyType)) {
+			} else if (FileSupportType.EXCEL.name()
+					.equals(specifyType)) {
 				fileSupportType = FileSupportType.EXCEL;
 			} else {
 				fileSupportType = FileSupportType.CSV;
@@ -303,17 +331,21 @@ public final class EntityFileUploadCommand extends DetailCommandBase {
 	private Map<String, String> getCustomColumnNameMap(EntityDefinition ed, SearchFormView searchFormView) {
 
 		if (searchFormView != null) {
-			if (StringUtil.isNotEmpty(searchFormView.getCondSection().getCsvUploadInterrupterName())) {
+			if (StringUtil.isNotEmpty(searchFormView.getCondSection()
+					.getCsvUploadInterrupterName())) {
 				UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance()
 						.getManager(UtilityClassDefinitionManager.class);
 				SearchFormCsvUploadInterrupter interrupter = null;
 				try {
 					interrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class,
-							searchFormView.getCondSection().getCsvUploadInterrupterName());
+							searchFormView.getCondSection()
+									.getCsvUploadInterrupterName());
 					return interrupter.columnNameMap(ed);
 				} catch (ClassNotFoundException e) {
 					logger.error(
-							searchFormView.getCondSection().getCsvUploadInterrupterName() + " can not instantiate.", e);
+							searchFormView.getCondSection()
+									.getCsvUploadInterrupterName() + " can not instantiate.",
+							e);
 					throw new ApplicationException(GemResourceBundleUtil
 							.resourceString("command.generic.upload.CSVUploadCommand.internalErr"));
 				}

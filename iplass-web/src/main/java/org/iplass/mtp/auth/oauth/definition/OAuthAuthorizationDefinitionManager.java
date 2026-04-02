@@ -22,6 +22,5 @@ package org.iplass.mtp.auth.oauth.definition;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 
 public interface OAuthAuthorizationDefinitionManager extends TypedDefinitionManager<OAuthAuthorizationDefinition> {
-	
 
 }

@@ -40,22 +40,24 @@ import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
  * @author EDS Y.Yasuda
  *
  */
-@ActionMapping(name=ViewUserMaintenanceCommand.ACTION_VIEW_UPDATE_PASSWORD,
-		clientCacheType=ClientCacheType.CACHE,
-		needTrustedAuthenticate=true,
-		result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_UPDATE_PASSWORD)
+@ActionMapping(
+		name = ViewUserMaintenanceCommand.ACTION_VIEW_UPDATE_PASSWORD,
+		clientCacheType = ClientCacheType.CACHE,
+		needTrustedAuthenticate = true,
+		result = @Result(type = Type.TEMPLATE, value = Constants.TEMPLATE_UPDATE_PASSWORD)
 )
-@CommandClass(name="gem/auth/ViewUserMaintenanceCommand", displayName="ユーザー情報変更画面表示")
+@CommandClass(name = "gem/auth/ViewUserMaintenanceCommand", displayName = "ユーザー情報変更画面表示")
 @Template(
-		name=Constants.TEMPLATE_UPDATE_PASSWORD,
-		path=Constants.CMD_RSLT_JSP_UPDATE_PASSWORD,
-		layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+		name = Constants.TEMPLATE_UPDATE_PASSWORD,
+		path = Constants.CMD_RSLT_JSP_UPDATE_PASSWORD,
+		layoutActionName = Constants.LAYOUT_NORMAL_ACTION
 )
 public final class ViewUserMaintenanceCommand implements Command, AuthCommandConstants {
 
 	public static final String ACTION_VIEW_UPDATE_PASSWORD = "gem/auth/password";
 
-	private TopViewDefinitionManager tvdm = ManagerLocator.getInstance().getManager(TopViewDefinitionManager.class);
+	private TopViewDefinitionManager tvdm = ManagerLocator.getInstance()
+			.getManager(TopViewDefinitionManager.class);
 
 	@Override
 	public String execute(RequestContext request) {

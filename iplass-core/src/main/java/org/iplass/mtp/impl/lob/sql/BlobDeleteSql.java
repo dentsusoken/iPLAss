@@ -24,32 +24,41 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
 public class BlobDeleteSql extends UpdateSqlHandler {
-	
+
 	public String toSql(int tenantId, long lobId, RdbAdapter rdb) {
-		
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM OBJ_BLOB");
-		sb.append(" WHERE TENANT_ID=").append(tenantId);
-		sb.append(" AND LOB_ID=").append(lobId);
-		
+		sb.append(" WHERE TENANT_ID=")
+				.append(tenantId);
+		sb.append(" AND LOB_ID=")
+				.append(lobId);
+
 		return sb.toString();
 	}
-	
+
 	public String toSql(int tenantId, String defId, String propId,
 			String[] oid, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM OBJ_BLOB");
-		sb.append(" WHERE TENANT_ID=").append(tenantId);
-		sb.append(" AND OBJ_DEF_ID='").append(rdb.sanitize(defId)).append("'");
+		sb.append(" WHERE TENANT_ID=")
+				.append(tenantId);
+		sb.append(" AND OBJ_DEF_ID='")
+				.append(rdb.sanitize(defId))
+				.append("'");
 		if (propId != null) {
-			sb.append(" AND PROP_DEF_ID=").append(rdb.sanitize(propId)).append("'");
+			sb.append(" AND PROP_DEF_ID=")
+					.append(rdb.sanitize(propId))
+					.append("'");
 		}
 		sb.append(" AND OBJ_ID IN(");
 		for (int i = 0; i < oid.length; i++) {
 			if (i != 0) {
 				sb.append(",");
 			}
-			sb.append("'").append(rdb.sanitize(oid[i])).append("'");
+			sb.append("'")
+					.append(rdb.sanitize(oid[i]))
+					.append("'");
 		}
 		sb.append(")");
 		return sb.toString();
@@ -59,7 +68,8 @@ public class BlobDeleteSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM OBJ_BLOB");
 		sb.append(" WHERE LOB_STAT='T'");
-		sb.append(" AND UP_DATE<").append(rdb.addDate(rdb.systimestamp(), day));
+		sb.append(" AND UP_DATE<")
+				.append(rdb.addDate(rdb.systimestamp(), day));
 		return sb.toString();
 	}
 }

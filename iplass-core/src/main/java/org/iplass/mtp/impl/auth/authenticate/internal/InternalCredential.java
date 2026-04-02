@@ -23,21 +23,21 @@ package org.iplass.mtp.impl.auth.authenticate.internal;
 import org.iplass.mtp.auth.login.Credential;
 
 public class InternalCredential implements Credential {
-	
+
 	private String id;//accountId
-	
+
 	public InternalCredential() {
 	}
 
 	public InternalCredential(String id) {
 		this.id = id;
 	}
-	
+
 	@Override
 	public String getId() {
 		return id;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}

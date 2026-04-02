@@ -41,7 +41,7 @@ public class TenantAuthorizeContext implements TenantResource {
 	private static final String GROUP_CACHE_NAMESPACE = "mtp.auth.builtin.group";
 
 	private TenantContext tc;
-	
+
 	private HashMap<Class<? extends AuthorizationContextHandler>, CacheController<String, BuiltinAuthorizationContext>> contextCacheMap;
 	private CacheController<String, RoleContext> roleCache;
 	private CacheController<String, GroupContext> groupCache;
@@ -51,7 +51,7 @@ public class TenantAuthorizeContext implements TenantResource {
 
 	public TenantAuthorizeContext() {
 	}
-	
+
 	public CacheController<String, BuiltinAuthorizationContext> getContextCache(Class<? extends AuthorizationContextHandler> key) {
 		return contextCacheMap.get(key);
 	}
@@ -62,18 +62,23 @@ public class TenantAuthorizeContext implements TenantResource {
 		contextCacheMap = new HashMap<>();
 
 		//TODO CacheControlを一つにした方が、メモリ効率よいが、、
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 
 		//TODO バージョンの定義と実装
-		roleCache = new CacheController<String, RoleContext>(cs.getCache(ROLE_CACHE_NAMESPACE + "/" + tc.getTenantId()), false, 0, new RoleCacheLogic(this), true, true);
-		groupCache = new CacheController<String, GroupContext>(cs.getCache(GROUP_CACHE_NAMESPACE + "/" + tc.getTenantId()), false, 0, new GroupCacheLogic(this), true, true);
-		
-		AuthorizationProvider authz = ServiceRegistry.getRegistry().getService(AuthService.class).getAuthorizationProvider();
+		roleCache = new CacheController<String, RoleContext>(cs.getCache(ROLE_CACHE_NAMESPACE + "/" + tc.getTenantId()), false, 0,
+				new RoleCacheLogic(this), true, true);
+		groupCache = new CacheController<String, GroupContext>(cs.getCache(GROUP_CACHE_NAMESPACE + "/" + tc.getTenantId()), false, 0,
+				new GroupCacheLogic(this), true, true);
+
+		AuthorizationProvider authz = ServiceRegistry.getRegistry()
+				.getService(AuthService.class)
+				.getAuthorizationProvider();
 		if (authz instanceof BuiltinAuthorizationProvider) {
 			BuiltinAuthorizationProvider bauthz = (BuiltinAuthorizationProvider) authz;
 			this.grantAllPermissionsToAdmin = bauthz.isGrantAllPermissionsToAdmin();
 			if (bauthz.getAuthorizationContextHandler() != null) {
-				for (AuthorizationContextHandler ach: bauthz.getAuthorizationContextHandler()) {
+				for (AuthorizationContextHandler ach : bauthz.getAuthorizationContextHandler()) {
 					contextCacheMap.put(ach.getClass(), ach.initCache(this));
 				}
 			}
@@ -85,11 +90,11 @@ public class TenantAuthorizeContext implements TenantResource {
 
 	@Override
 	public void destory() {
-		
-		for (CacheController<String, BuiltinAuthorizationContext> c: contextCacheMap.values()) {
+
+		for (CacheController<String, BuiltinAuthorizationContext> c : contextCacheMap.values()) {
 			c.invalidateCacheStore();
 		}
-		
+
 		roleCache.invalidateCacheStore();
 		groupCache.invalidateCacheStore();
 	}
@@ -105,9 +110,10 @@ public class TenantAuthorizeContext implements TenantResource {
 	public TenantContext getTenantContext() {
 		return tc;
 	}
-	
+
 	public RoleContext getRoleContext(final String role) {
-		if (ExecuteContext.getCurrentContext().getClientTenantId() != tc.getTenantId()) {
+		if (ExecuteContext.getCurrentContext()
+				.getClientTenantId() != tc.getTenantId()) {
 			return ExecuteContext.executeAs(tc, new Executable<RoleContext>() {
 				@Override
 				public RoleContext execute() {
@@ -120,7 +126,8 @@ public class TenantAuthorizeContext implements TenantResource {
 	}
 
 	public void notifyRoleCreate(final String role) {
-		if (ExecuteContext.getCurrentContext().getClientTenantId() != tc.getTenantId()) {
+		if (ExecuteContext.getCurrentContext()
+				.getClientTenantId() != tc.getTenantId()) {
 			ExecuteContext.executeAs(tc, new Executable<Void>() {
 				@Override
 				public Void execute() {
@@ -134,7 +141,8 @@ public class TenantAuthorizeContext implements TenantResource {
 	}
 
 	public void notifyRoleDelete(final String role, final RoleContext roleContext) {
-		if (ExecuteContext.getCurrentContext().getClientTenantId() != tc.getTenantId()) {
+		if (ExecuteContext.getCurrentContext()
+				.getClientTenantId() != tc.getTenantId()) {
 			ExecuteContext.executeAs(tc, new Executable<Void>() {
 				@Override
 				public Void execute() {
@@ -148,7 +156,8 @@ public class TenantAuthorizeContext implements TenantResource {
 	}
 
 	public void notifyRoleUpdate(final String role) {
-		if (ExecuteContext.getCurrentContext().getClientTenantId() != tc.getTenantId()) {
+		if (ExecuteContext.getCurrentContext()
+				.getClientTenantId() != tc.getTenantId()) {
 			ExecuteContext.executeAs(tc, new Executable<Void>() {
 				@Override
 				public Void execute() {
@@ -174,7 +183,8 @@ public class TenantAuthorizeContext implements TenantResource {
 	}
 
 	public GroupContext getGroupContext(final String group) {
-		if (ExecuteContext.getCurrentContext().getClientTenantId() != tc.getTenantId()) {
+		if (ExecuteContext.getCurrentContext()
+				.getClientTenantId() != tc.getTenantId()) {
 			return ExecuteContext.executeAs(tc, new Executable<GroupContext>() {
 				@Override
 				public GroupContext execute() {
@@ -187,7 +197,8 @@ public class TenantAuthorizeContext implements TenantResource {
 	}
 
 	public void notifyGroupCreate(final String group) {
-		if (ExecuteContext.getCurrentContext().getClientTenantId() != tc.getTenantId()) {
+		if (ExecuteContext.getCurrentContext()
+				.getClientTenantId() != tc.getTenantId()) {
 			ExecuteContext.executeAs(tc, new Executable<Void>() {
 				@Override
 				public Void execute() {
@@ -201,7 +212,8 @@ public class TenantAuthorizeContext implements TenantResource {
 	}
 
 	public void notifyGroupDelete(final String group, final GroupContext groupContext) {
-		if (ExecuteContext.getCurrentContext().getClientTenantId() != tc.getTenantId()) {
+		if (ExecuteContext.getCurrentContext()
+				.getClientTenantId() != tc.getTenantId()) {
 			ExecuteContext.executeAs(tc, new Executable<Void>() {
 				@Override
 				public Void execute() {
@@ -215,7 +227,8 @@ public class TenantAuthorizeContext implements TenantResource {
 	}
 
 	public void notifyGroupUpdate(final String group) {
-		if (ExecuteContext.getCurrentContext().getClientTenantId() != tc.getTenantId()) {
+		if (ExecuteContext.getCurrentContext()
+				.getClientTenantId() != tc.getTenantId()) {
 			ExecuteContext.executeAs(tc, new Executable<Void>() {
 				@Override
 				public Void execute() {

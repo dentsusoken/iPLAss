@@ -27,7 +27,7 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
 public interface FunctionAdapter<T extends ASTNode> {
-	
+
 	public String getFunctionName();
 
 	public abstract Class<?> getType(T function,
@@ -37,14 +37,15 @@ public interface FunctionAdapter<T extends ASTNode> {
 			RdbAdapter rdb);
 
 	public abstract void toSQL(StringBuilder context, List<CharSequence> args, RdbAdapter rdb);
-	
+
 	public interface FunctionContext {
-		
+
 		public void append(String str);
+
 		public void appendArgument(ValueExpression arg);
-		
+
 	}
-	
+
 	public interface ArgumentTypeResolver {
 		public Class<?> resolveType(ValueExpression value);
 	}

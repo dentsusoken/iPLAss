@@ -36,13 +36,13 @@ import org.iplass.mtp.entity.query.value.primary.Literal;
  */
 public class Listagg extends OrderedSetFunction {
 	private static final long serialVersionUID = -175289204129911812L;
-	
+
 	private boolean distinct;
 	private Literal separator;
-	
+
 	public Listagg() {
 	}
-	
+
 	public Listagg(String propertyName) {
 		this(new EntityField(propertyName));
 	}
@@ -84,7 +84,7 @@ public class Listagg extends OrderedSetFunction {
 		if (getWithinGroup() == null) {
 			setWithinGroup(new WithinGroup());
 		}
-		for (WithinGroupSortSpec o: sortSpec) {
+		for (WithinGroupSortSpec o : sortSpec) {
 			getWithinGroup().add(o);
 		}
 		return this;
@@ -103,11 +103,13 @@ public class Listagg extends OrderedSetFunction {
 			}
 			sb.append(getValue());
 			if (separator != null) {
-				sb.append(",").append(separator);
+				sb.append(",")
+						.append(separator);
 			}
 			sb.append(")");
 			if (getWithinGroup() != null) {
-				sb.append(" ").append(getWithinGroup());
+				sb.append(" ")
+						.append(getWithinGroup());
 			}
 			return sb.toString();
 		}

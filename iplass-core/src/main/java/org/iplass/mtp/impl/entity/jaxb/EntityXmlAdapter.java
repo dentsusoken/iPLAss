@@ -20,14 +20,14 @@
 
 package org.iplass.mtp.impl.entity.jaxb;
 
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.util.StringUtil;
+
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * EntityのXmlAdapter。
@@ -40,16 +40,19 @@ public class EntityXmlAdapter extends XmlAdapter<GenericEntity, Entity> {
 	@Override
 	public Entity unmarshal(GenericEntity v) throws Exception {
 
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		EntityDefinitionManager edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 
 		// マッピングクラスがある場合はそのクラスで返してあげる
 		String definitionName = v.getDefinitionName();
 		EntityDefinition ed = edm.get(definitionName);
 
 		if (ed != null) {
-			if (ed.getMapping() != null && !StringUtil.isEmpty(ed.getMapping().getMappingModelClass())) {
+			if (ed.getMapping() != null && !StringUtil.isEmpty(ed.getMapping()
+					.getMappingModelClass())) {
 				@SuppressWarnings("unchecked")
-				Class<GenericEntity> retEntity = (Class<GenericEntity>) Class.forName(ed.getMapping().getMappingModelClass());
+				Class<GenericEntity> retEntity = (Class<GenericEntity>) Class.forName(ed.getMapping()
+						.getMappingModelClass());
 				return v.copyAs(retEntity);
 			}
 		}

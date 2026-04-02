@@ -22,11 +22,11 @@ package org.iplass.mtp.impl.report;
 
 import org.iplass.mtp.impl.web.WebRequestStack;
 
-public interface ReportingEngine{
+public interface ReportingEngine {
 
 	public ReportingOutputModel createOutputModel(byte[] binary, String type, String extension) throws Exception;
 
-	public void exportReport( WebRequestStack context, ReportingOutputModel model ) throws Exception;
+	public void exportReport(WebRequestStack context, ReportingOutputModel model) throws Exception;
 
 	public boolean isSupport(String type);
 

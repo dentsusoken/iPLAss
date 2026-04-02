@@ -22,9 +22,8 @@ package org.iplass.mtp.impl.script;
 
 import org.iplass.mtp.spi.Service;
 
-
 public interface ScriptService extends Service {
-	
+
 	public ScriptEngine createScriptEngine();
 
 }

@@ -33,7 +33,8 @@ import org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager;
  */
 public class EntityWebApiDefinitionManagerImpl extends AbstractTypedDefinitionManager<EntityWebApiDefinition> implements EntityWebApiDefinitionManager {
 
-	private EntityWebApiService service = ServiceRegistry.getRegistry().getService(EntityWebApiService.class);
+	private EntityWebApiService service = ServiceRegistry.getRegistry()
+			.getService(EntityWebApiService.class);
 
 	@Override
 	public Class<EntityWebApiDefinition> getDefinitionType() {

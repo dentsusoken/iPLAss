@@ -113,7 +113,10 @@ public class RoleListPane extends PermissionListPane {
 		//更新対象データの取得
 		UpdateRoleInfo storeInfo = grid.getStoreInfo();
 
-		if (storeInfo.getStoreEntityList().isEmpty() && storeInfo.getRemoveOidList().isEmpty()) {
+		if (storeInfo.getStoreEntityList()
+				.isEmpty()
+				&& storeInfo.getRemoveOidList()
+						.isEmpty()) {
 			//更新対象データなし
 			SC.say(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_PermissionListPane_notExistStoreData"));
 			return;
@@ -181,7 +184,7 @@ public class RoleListPane extends PermissionListPane {
 		public void refreshGrid() {
 			setEditState(false);
 
-			Criteria criteria = new Criteria("dummy", System.currentTimeMillis() + "");	//同じ条件だとDSに飛ばないので
+			Criteria criteria = new Criteria("dummy", System.currentTimeMillis() + ""); //同じ条件だとDSに飛ばないので
 			ds.fetchData(criteria, new DSCallback() {
 				@Override
 				public void execute(DSResponse dsResponse, Object data, DSRequest dsRequest) {
@@ -206,7 +209,7 @@ public class RoleListPane extends PermissionListPane {
 				return;
 			}
 
-			for (ListGridRecord record: records) {
+			for (ListGridRecord record : records) {
 				String status = record.getAttribute("status");
 				if (status != null && status.equals("I")) {
 					//追加データの削除は直接削除
@@ -262,7 +265,7 @@ public class RoleListPane extends PermissionListPane {
 
 			if (record != null) {
 				//編集モード
-				Entity editRole = (Entity)record.getAttributeAsObject("editEntity");
+				Entity editRole = (Entity) record.getAttributeAsObject("editEntity");
 				if (editRole != null) {
 					dialog.setEditRoleEntity(editRole);
 					dialog.show();
@@ -309,14 +312,14 @@ public class RoleListPane extends PermissionListPane {
 					removeOidList.add(record.getAttribute("oid"));
 				} else {
 					//更新データ(I or U)
-					storeEntityList.add((Entity)record.getAttributeAsObject("editEntity"));
+					storeEntityList.add((Entity) record.getAttributeAsObject("editEntity"));
 				}
 			}
 			return new UpdateRoleInfo(storeEntityList, removeOidList);
 		}
 
 		@Override
-	    protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
+		protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
 			// grid.setBaseStyleだとセルの高さが不安定になる為ここで指定。
 
 			String status = record.getAttribute("status");

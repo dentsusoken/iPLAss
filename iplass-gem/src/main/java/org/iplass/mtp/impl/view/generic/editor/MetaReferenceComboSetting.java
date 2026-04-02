@@ -63,7 +63,7 @@ public class MetaReferenceComboSetting implements MetaData {
 	 * @return プロパティID
 	 */
 	public String getPropertyId() {
-	    return propertyId;
+		return propertyId;
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class MetaReferenceComboSetting implements MetaData {
 	 * @param propertyId プロパティID
 	 */
 	public void setPropertyId(String propertyId) {
-	    this.propertyId = propertyId;
+		this.propertyId = propertyId;
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class MetaReferenceComboSetting implements MetaData {
 	 * @return 検索条件
 	 */
 	public String getCondition() {
-	    return condition;
+		return condition;
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class MetaReferenceComboSetting implements MetaData {
 	 * @param condition 検索条件
 	 */
 	public void setCondition(String condition) {
-	    this.condition = condition;
+		this.condition = condition;
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class MetaReferenceComboSetting implements MetaData {
 	 * @return 上位参照コンボ設定
 	 */
 	public MetaReferenceComboSetting getParent() {
-	    return parent;
+		return parent;
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class MetaReferenceComboSetting implements MetaData {
 	 * @param parent 上位参照コンボ設定
 	 */
 	public void setParent(MetaReferenceComboSetting parent) {
-	    this.parent = parent;
+		this.parent = parent;
 	}
 
 	public String getSortItem() {
@@ -134,7 +134,8 @@ public class MetaReferenceComboSetting implements MetaData {
 		EntityContext ctx = EntityContext.getCurrentContext();
 
 		PropertyHandler property = entity.getProperty(setting.getPropertyName(), ctx);
-		if (property == null && !(property instanceof ReferencePropertyHandler)) return;
+		if (property == null && !(property instanceof ReferencePropertyHandler))
+			return;
 
 		//プロパティのIDを取得
 		ReferencePropertyHandler referenceProperty = (ReferencePropertyHandler) property;
@@ -142,14 +143,16 @@ public class MetaReferenceComboSetting implements MetaData {
 		this.propertyId = referenceProperty.getId();
 		this.condition = setting.getCondition();
 
-		if (setting.getSortItem() != null && !setting.getSortItem().isEmpty()) {
+		if (setting.getSortItem() != null && !setting.getSortItem()
+				.isEmpty()) {
 			PropertyHandler sortProperty = referenceProperty.getReferenceEntityHandler(ctx)
 					.getProperty(setting.getSortItem(), ctx);
 			if (sortProperty != null) {
 				sortItem = sortProperty.getId();
 			}
 		}
-		if (setting.getDisplayLabelItem() != null && !setting.getDisplayLabelItem().isEmpty()) {
+		if (setting.getDisplayLabelItem() != null && !setting.getDisplayLabelItem()
+				.isEmpty()) {
 			PropertyHandler displayProperty = referenceProperty.getReferenceEntityHandler(ctx)
 					.getProperty(setting.getDisplayLabelItem(), ctx);
 			if (displayProperty != null) {
@@ -158,12 +161,14 @@ public class MetaReferenceComboSetting implements MetaData {
 		}
 		sortType = setting.getSortType();
 
-		if (setting.getParent() != null && setting.getParent().getPropertyName() != null) {
+		if (setting.getParent() != null && setting.getParent()
+				.getPropertyName() != null) {
 			MetaReferenceComboSetting meta = new MetaReferenceComboSetting();
 			meta.applyConfig(setting.getParent(), referenceProperty.getReferenceEntityHandler(ctx));
 
 			//プロパティIDが設定されてない場合は保存しない(不正なプロパティ名や参照でない場合等)
-			if (meta.propertyId != null) this.parent = meta;
+			if (meta.propertyId != null)
+				this.parent = meta;
 		}
 	}
 
@@ -171,7 +176,8 @@ public class MetaReferenceComboSetting implements MetaData {
 		EntityContext ctx = EntityContext.getCurrentContext();
 
 		PropertyHandler property = entity.getPropertyById(propertyId, ctx);
-		if (property == null && !(property instanceof ReferencePropertyHandler)) return null;
+		if (property == null && !(property instanceof ReferencePropertyHandler))
+			return null;
 
 		//プロパティ名を取得
 		ReferencePropertyHandler referenceProperty = (ReferencePropertyHandler) property;

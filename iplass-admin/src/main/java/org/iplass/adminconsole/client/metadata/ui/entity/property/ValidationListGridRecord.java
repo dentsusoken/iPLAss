@@ -31,9 +31,17 @@ public class ValidationListGridRecord extends ListGridRecord {
 
 	public enum ValidationType {
 
-		NOTNULL("Not Null"), LENGTH("Length (for String)"), RANGE("Range (for Number)"), REGEX("Regex (for String, Number)"), BINARYSIZE(
-				"Binary Size (for Binary)"), BINARYTYPE(
-						"Binary Type (for Binary)"), EXISTS("Exists (for Reference)"), SCRIPT("Script"), JAVA_CLASS("Java Class");
+		NOTNULL("Not Null"),
+		LENGTH("Length (for String)"),
+		RANGE("Range (for Number)"),
+		REGEX("Regex (for String, Number)"),
+		BINARYSIZE(
+				"Binary Size (for Binary)"),
+		BINARYTYPE(
+				"Binary Type (for Binary)"),
+		EXISTS("Exists (for Reference)"),
+		SCRIPT("Script"),
+		JAVA_CLASS("Java Class");
 
 		private String displayName;
 

@@ -31,7 +31,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 
-public final class CredentialResultDialog  extends MtpDialog {
+public final class CredentialResultDialog extends MtpDialog {
 
 	public CredentialResultDialog(String secret) {
 

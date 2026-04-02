@@ -19,10 +19,10 @@
  */
 package org.iplass.mtp.beanvalidation;
 
-import jakarta.validation.Validator;
-
 import org.iplass.mtp.impl.validation.ValidationService;
 import org.iplass.mtp.spi.ServiceRegistry;
+
+import jakarta.validation.Validator;
 
 /**
  * iPLAss用にコンフィグレーションされたBeanValidationのValidatorインスタンスを取得するためのユーティリティです。
@@ -31,9 +31,10 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public class BeanValidation {
-	
-	private static ValidationService service = ServiceRegistry.getRegistry().getService(ValidationService.class);
-	
+
+	private static ValidationService service = ServiceRegistry.getRegistry()
+			.getService(ValidationService.class);
+
 	public static Validator getValidator() {
 		return service.getValidator();
 	}

@@ -122,6 +122,7 @@ public class WebApiOpenApiOpenApiSpecTabPane extends VLayout {
 
 		super.destroy();
 	}
+
 	/**
 	 * OpenAPIの編集ボタンがクリックされたときの処理を行います。
 	 * @param event クリックイベント
@@ -140,21 +141,22 @@ public class WebApiOpenApiOpenApiSpecTabPane extends VLayout {
 				null,
 				new ScriptEditorDialogHandler() {
 
-			@Override
-			public void onSave(String text) {
-				openApiField.setValue(text);
-			}
+					@Override
+					public void onSave(String text) {
+						openApiField.setValue(text);
+					}
 
-			@Override
-			public void onCancel() {
-			}
+					@Override
+					public void onCancel() {
+					}
 
-			@Override
-			public void onSaveDialogSetting(ScriptEditorDialogSetting setting) {
-				// ScriptEditorDialogMode を取得する
-				openApiFileType = setting.getMode().name();
-			}
-		});
+					@Override
+					public void onSaveDialogSetting(ScriptEditorDialogSetting setting) {
+						// ScriptEditorDialogMode を取得する
+						openApiFileType = setting.getMode()
+								.name();
+					}
+				});
 	}
 
 	/**

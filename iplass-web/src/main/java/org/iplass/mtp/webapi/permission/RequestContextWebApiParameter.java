@@ -43,7 +43,7 @@ public class RequestContextWebApiParameter implements WebApiParameter {
 		this.request = request;
 		this.additionalParams = additionalParams;
 	}
-	
+
 	@Override
 	public Object getValue(String name) {
 		if (additionalParams != null) {
@@ -52,7 +52,7 @@ public class RequestContextWebApiParameter implements WebApiParameter {
 				return val;
 			}
 		}
-		
+
 		return request.getParam(name);
 	}
 

@@ -63,7 +63,7 @@ package org.iplass.mtp.command;
  *
  */
 public interface Command {
-	
+
 	/**
 	 * 実行するロジックを記述します。
 	 * 基本的にはexecute()呼び出し前にトランザクションは基盤側で自動的に開始されます。

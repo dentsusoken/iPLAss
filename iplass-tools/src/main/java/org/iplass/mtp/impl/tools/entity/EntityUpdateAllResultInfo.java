@@ -34,7 +34,6 @@ public class EntityUpdateAllResultInfo implements Serializable {
 	private boolean isError;
 	private List<String> logMessages;
 
-
 	/**
 	 * コンストラクタ
 	 */

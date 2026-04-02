@@ -29,9 +29,9 @@ import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition
 
 public class MetaJavaClassPoiReportOutputLogic extends MetaPoiReportOutputLogic {
 	private static final long serialVersionUID = 817043706754815712L;
-	
+
 	private String className;
-	
+
 	public String getClassName() {
 		return className;
 	}
@@ -65,16 +65,15 @@ public class MetaJavaClassPoiReportOutputLogic extends MetaPoiReportOutputLogic 
 	public JavaClassReportPoiOutputLogicRuntime createRuntime(MetaReportType reportType) {
 		return new JavaClassReportPoiOutputLogicRuntime();
 	}
-	
-	
-	
+
 	public class JavaClassReportPoiOutputLogicRuntime extends PoiReportOutputLogicRuntime {
-		
+
 		private PoiReportOutputLogic logic;
-		
+
 		public JavaClassReportPoiOutputLogicRuntime() {
 			try {
-				logic = (PoiReportOutputLogic) Class.forName(className).newInstance();
+				logic = (PoiReportOutputLogic) Class.forName(className)
+						.newInstance();
 			} catch (InstantiationException e) {
 				throw new TemplateRuntimeException("can not instantiate " + className, e);
 			} catch (IllegalAccessException e) {

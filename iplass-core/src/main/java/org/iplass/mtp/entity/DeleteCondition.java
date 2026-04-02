@@ -77,7 +77,9 @@ public class DeleteCondition {
 	public DeleteCondition where(String whereClause) {
 		String whereStr = QueryConstants.WHERE + " " + whereClause;
 		try {
-			where = QueryServiceHolder.getInstance().getQueryParser().parse(whereStr, WhereSyntax.class);
+			where = QueryServiceHolder.getInstance()
+					.getQueryParser()
+					.parse(whereStr, WhereSyntax.class);
 		} catch (ParseException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
@@ -95,7 +97,7 @@ public class DeleteCondition {
 		where = new Where(whereCondition);
 		return this;
 	}
-	
+
 	/**
 	 * 削除時に厳密にロック（oid順にソートしてロック取得）を取得する場合。
 	 * @see #setLockStrictly(boolean)
@@ -109,12 +111,15 @@ public class DeleteCondition {
 	public String getDefinitionName() {
 		return definitionName;
 	}
+
 	public void setDefinitionName(String definitionName) {
 		this.definitionName = definitionName;
 	}
+
 	public Where getWhere() {
 		return where;
 	}
+
 	public void setWhere(Where where) {
 		this.where = where;
 	}
@@ -144,16 +149,18 @@ public class DeleteCondition {
 			copy.where = (Where) where.copy();
 		}
 		copy.lockStrictly = lockStrictly;
-		
+
 		return copy;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("delete from ").append(definitionName);
+		sb.append("delete from ")
+				.append(definitionName);
 		if (where != null) {
-			sb.append(" ").append(where);
+			sb.append(" ")
+					.append(where);
 		}
 		return sb.toString();
 	}

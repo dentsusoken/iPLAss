@@ -61,7 +61,7 @@ public class ScriptingCacheCriteriaEditPane extends CacheCriteriaTypeEditPane {
 		form.setHeight100();
 //		form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
 //		form.setColWidths(100, "*", 100, "*", "*");
-		form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+		form.setNumCols(3); //間延びしないように最後に１つ余分に作成
 		form.setColWidths(50, "*", "*");
 
 		ButtonItem editScript = new ButtonItem("editScript", "Edit");
@@ -69,7 +69,8 @@ public class ScriptingCacheCriteriaEditPane extends CacheCriteriaTypeEditPane {
 		editScript.setStartRow(false);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_cache_ScriptingCacheCriteriaEditPane_displayDialogEditScript")));
+		editScript.setPrompt(SmartGWTUtil
+				.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_cache_ScriptingCacheCriteriaEditPane_displayDialogEditScript")));
 		editScript.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -85,6 +86,7 @@ public class ScriptingCacheCriteriaEditPane extends CacheCriteriaTypeEditPane {
 							public void onSave(String text) {
 								scriptField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -97,7 +99,7 @@ public class ScriptingCacheCriteriaEditPane extends CacheCriteriaTypeEditPane {
 		scriptField.setColSpan(2);
 		scriptField.setWidth("100%");
 //		scriptField.setHeight("100%");
-		scriptField.setHeight(600);	//高さを固定
+		scriptField.setHeight(600); //高さを固定
 		SmartGWTUtil.setRequired(scriptField);
 
 		form.setItems(new SpacerItem(), new SpacerItem(), editScript, scriptField);
@@ -110,7 +112,7 @@ public class ScriptingCacheCriteriaEditPane extends CacheCriteriaTypeEditPane {
 
 	@Override
 	public void setDefinition(CacheCriteriaDefinition definition) {
-		ScriptingCacheCriteriaDefinition def = (ScriptingCacheCriteriaDefinition)definition;
+		ScriptingCacheCriteriaDefinition def = (ScriptingCacheCriteriaDefinition) definition;
 		if (def != null) {
 			scriptField.setValue(def.getScript());
 		} else {
@@ -121,7 +123,7 @@ public class ScriptingCacheCriteriaEditPane extends CacheCriteriaTypeEditPane {
 	@Override
 	public CacheCriteriaDefinition getEditDefinition(
 			CacheCriteriaDefinition definition) {
-		ScriptingCacheCriteriaDefinition def = (ScriptingCacheCriteriaDefinition)definition;
+		ScriptingCacheCriteriaDefinition def = (ScriptingCacheCriteriaDefinition) definition;
 		def.setScript(SmartGWTUtil.getStringValue(scriptField));
 		return def;
 	}

@@ -130,7 +130,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtPasswordHistoryCount.setTitle("Password History Count");
 		SmartGWTUtil.setRequired(txtPasswordHistoryCount);
 		txtPasswordHistoryCount.setStartRow(true);
-		
+
 		txtPasswordHistoryPeriod = new MtpIntegerItem();
 		txtPasswordHistoryPeriod.setTitle("Password History Period");
 		SmartGWTUtil.setRequired(txtPasswordHistoryPeriod);
@@ -147,8 +147,8 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 				txtMaximumPasswordAge, txtMinimumPasswordAge, txtPasswordPattern, space,
 				chkDenySamePasswordAsAccountId,
 				txtDenyList,
-				txtPasswordPatternErrorMessage, space, langBtn, 
-				txtPasswordHistoryCount, txtPasswordHistoryPeriod, 
+				txtPasswordPatternErrorMessage, space, langBtn,
+				txtPasswordHistoryCount, txtPasswordHistoryPeriod,
 				space, chkCreateAccountWithSpecificPassword, new SpacerItem(), chkResetPasswordWithSpecificPassword);
 
 		addMember(form);
@@ -158,7 +158,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		spacer.setHeight(10);
 
 		addMember(spacer);
-		
+
 		txtRandomPasswordIncludeSigns = new MtpTextItem();
 		txtRandomPasswordIncludeSigns.setTitle("Random Password Include Signs");
 		txtRandomPasswordIncludeSigns.setStartRow(true);
@@ -174,13 +174,14 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtMaximumRandomPasswordAge = new MtpIntegerItem();
 		txtMaximumRandomPasswordAge.setTitle("Max Random Password Age(day)");
 		SmartGWTUtil.setRequired(txtMaximumRandomPasswordAge);
-		
+
 		customUserEndDateBtn = new ButtonItem();
 		customUserEndDateBtn.setTitle("Edit");
 		customUserEndDateBtn.setWidth(100);
 		customUserEndDateBtn.setStartRow(false);
 		customUserEndDateBtn.setColSpan(3);
-		customUserEndDateBtn.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyEditPane_displayEditDialogSource")));
+		customUserEndDateBtn.setPrompt(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyEditPane_displayEditDialogSource")));
 		customUserEndDateBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
@@ -196,6 +197,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 							public void onSave(String text) {
 								txaCustomUserEndDate.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -210,13 +212,15 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txaCustomUserEndDate.setWidth("100%");
 		txaCustomUserEndDate.setHeight(100);
 		SmartGWTUtil.setReadOnlyTextArea(txaCustomUserEndDate);
-		SmartGWTUtil.addHoverToFormItem(txaCustomUserEndDate, AdminClientMessageUtil.getString("metadata_auth_AuthenticationPolicyEditPane_customUserEndDateTooltip"));
+		SmartGWTUtil.addHoverToFormItem(txaCustomUserEndDate,
+				AdminClientMessageUtil.getString("metadata_auth_AuthenticationPolicyEditPane_customUserEndDateTooltip"));
 
 		passwordGenerationForm = new MtpForm2Column();
 		passwordGenerationForm.setGroupTitle("Password Generation Setting");
 		passwordGenerationForm.setIsGroup(true);
 		passwordGenerationForm.setPadding(5);
-		passwordGenerationForm.setItems(txtRandomPasswordIncludeSigns, txtRandomPasswordExcludeChars, txtRandomPasswordLength, txtMaximumRandomPasswordAge,
+		passwordGenerationForm.setItems(txtRandomPasswordIncludeSigns, txtRandomPasswordExcludeChars, txtRandomPasswordLength,
+				txtMaximumRandomPasswordAge,
 				space, customUserEndDateBtn, txaCustomUserEndDate);
 
 		addMember(passwordGenerationForm);

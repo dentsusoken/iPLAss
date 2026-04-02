@@ -23,13 +23,13 @@ package org.iplass.mtp.impl.script;
 import java.io.PrintWriter;
 
 public interface ScriptContext {
-	
+
 	public Object getAttribute(String name);
-	
+
 	public void setAttribute(String name, Object value);
-	
+
 	public void setOut(PrintWriter out);
-	
+
 	public PrintWriter getOut();
 
 }

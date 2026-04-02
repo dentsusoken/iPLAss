@@ -36,5 +36,4 @@ public class ObjectXmlAdapter<ValueType, BoundType> extends XmlAdapter<ValueType
 		return (BoundType) v;
 	}
 
-
 }

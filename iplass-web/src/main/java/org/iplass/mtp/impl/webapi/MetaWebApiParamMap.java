@@ -92,24 +92,25 @@ public class MetaWebApiParamMap implements MetaData {
 	public MetaData copy() {
 		return ObjectUtil.deepCopy(this);
 	}
-	
+
 	public WebApiParamMapRuntime createRuntime() {
 		return new WebApiParamMapRuntime();
 	}
-	
+
 	public class WebApiParamMapRuntime {
 		private Script conditionScript;
 		private MapType type;
 		private int depth;
-		
+
 		WebApiParamMapRuntime() {
 			if (condition != null && !condition.isEmpty()) {
-				TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+				TenantContext tc = ExecuteContext.getCurrentContext()
+						.getTenantContext();
 				ScriptEngine ss = tc.getScriptEngine();
 				KeyGenerator keyGen = new KeyGenerator();
 				conditionScript = ss.createScript(condition, SCRIPT_PREFIX + "_" + keyGen.generateId());
 			}
-			
+
 			if (name == null) {
 				throw new MetaDataRuntimeException("ParamMap's name must be specified.");
 			}
@@ -120,17 +121,21 @@ public class MetaWebApiParamMap implements MetaData {
 				//deprecated 昔の指定の仕方。いずれ消したい
 				//{n}形式の場合は、fullpathの「n」番目を返す(0から)
 				type = MapType.FULL_PATH;
-				depth = Integer.parseInt(mapFrom.substring(1, mapFrom.length() - 1).trim());
+				depth = Integer.parseInt(mapFrom.substring(1, mapFrom.length() - 1)
+						.trim());
 			} else if (mapFrom.startsWith("${")) {
-				String val = mapFrom.substring(2, mapFrom.length() - 1).trim();
+				String val = mapFrom.substring(2, mapFrom.length() - 1)
+						.trim();
 				if (val.startsWith("subPath[")) {
 					//${subPath[n]}形式、subPathのn番目
 					type = MapType.SUB_PATH;
-					depth = Integer.parseInt(val.substring(8, val.length() - 1).trim());
+					depth = Integer.parseInt(val.substring(8, val.length() - 1)
+							.trim());
 				} else if (val.startsWith("fullPath[")) {
 					//${fullPath[n]}形式、fullPathのn番目
 					type = MapType.FULL_PATH;
-					depth = Integer.parseInt(val.substring(9, val.length() - 1).trim());
+					depth = Integer.parseInt(val.substring(9, val.length() - 1)
+							.trim());
 				} else if ("paths".equals(val)) {
 					//deprecated 昔の指定の仕方。いずれ消したい
 					//${paths}形式の場合は、PathからWebApi名を除いたものを返す
@@ -144,24 +149,26 @@ public class MetaWebApiParamMap implements MetaData {
 			} else {
 				type = MapType.PARAM_ALIAS;
 			}
-			
+
 		}
-		
+
 		public MetaWebApiParamMap getMetaData() {
 			return MetaWebApiParamMap.this;
 		}
-		
+
 		public boolean isTarget(WebApiVariableParameterValueMap paramValueMap) {
 			if (conditionScript == null) {
 				return true;
 			}
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			ScriptEngine ss = tc.getScriptEngine();
 			ScriptContext sc = ss.newScriptContext();
 			sc.setAttribute("subPath", paramValueMap.getSubPaths());
 			sc.setAttribute("fullPath", paramValueMap.getFullPaths());
-			sc.setAttribute("paramMap", paramValueMap.getWrapped().getParamMap());
-			
+			sc.setAttribute("paramMap", paramValueMap.getWrapped()
+					.getParamMap());
+
 			Boolean ret = (Boolean) conditionScript.eval(sc);
 			if (ret != null && ret.booleanValue()) {
 				return true;
@@ -169,12 +176,13 @@ public class MetaWebApiParamMap implements MetaData {
 				return false;
 			}
 		}
-		
+
 		public Object getParam(WebApiVariableParameterValueMap paramValueMap) {
-			
+
 			switch (type) {
 			case PARAM_ALIAS:
-				return paramValueMap.getWrapped().getParam(mapFrom);
+				return paramValueMap.getWrapped()
+						.getParam(mapFrom);
 			case FULL_PATH:
 				String[] fullPaths = paramValueMap.getFullPaths();
 				if (fullPaths.length > depth) {
@@ -194,30 +202,32 @@ public class MetaWebApiParamMap implements MetaData {
 			default:
 				return null;
 			}
-			
+
 		}
+
 		public Object[] getParams(WebApiVariableParameterValueMap paramValueMap) {
 			switch (type) {
 			case PARAM_ALIAS:
-				return paramValueMap.getWrapped().getParams(mapFrom);
+				return paramValueMap.getWrapped()
+						.getParams(mapFrom);
 			case FULL_PATH:
 				String[] fullPaths = paramValueMap.getFullPaths();
 				if (fullPaths.length > depth) {
-					return new String[]{fullPaths[depth]};
+					return new String[] { fullPaths[depth] };
 				} else {
 					return null;
 				}
 			case SUB_PATH:
 				String[] subPaths = paramValueMap.getSubPaths();
 				if (subPaths.length > depth) {
-					return new String[]{subPaths[depth]};
+					return new String[] { subPaths[depth] };
 				} else {
 					return null;
 				}
 			case PATHS:
 				String paths = paramValueMap.getSubPath();
 				if (paths != null) {
-					return new String[]{paths};
+					return new String[] { paths };
 				} else {
 					return null;
 				}
@@ -226,7 +236,7 @@ public class MetaWebApiParamMap implements MetaData {
 			}
 		}
 	}
-	
+
 	private enum MapType {
 		PARAM_ALIAS,
 		FULL_PATH,

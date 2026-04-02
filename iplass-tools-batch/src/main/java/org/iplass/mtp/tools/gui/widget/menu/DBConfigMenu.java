@@ -20,19 +20,6 @@
 
 package org.iplass.mtp.tools.gui.widget.menu;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.lang.reflect.Field;
-import java.util.Properties;
-
 import javax.sql.DataSource;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -45,6 +32,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.lang.reflect.Field;
+import java.util.Properties;
 
 import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
@@ -73,7 +73,6 @@ public class DBConfigMenu extends JMenu {
 		});
 		add(item);
 	}
-
 
 	public static class ConfigSettingDialog extends JDialog {
 
@@ -161,13 +160,13 @@ public class DBConfigMenu extends JMenu {
 			JLabel lblConnectionDriver = new JLabel("Connection Driver");
 			txtConnectionDriver = new JTextField();
 			txtConnectionDriver.setPreferredSize(new Dimension(300, 25));
-			txtConnectionDriver.setEditable(false);	//RdbAdapterが変更できないのでこれも
+			txtConnectionDriver.setEditable(false); //RdbAdapterが変更できないのでこれも
 			createLableText(lblConnectionDriver, txtConnectionDriver, null, ++row, gridbag, constraints, headerPane);
 
 			JLabel lblDataSourceClass = new JLabel("DataSource Class");
 			txtDataSourceClass = new JTextField();
 			txtDataSourceClass.setPreferredSize(new Dimension(300, 25));
-			txtDataSourceClass.setEditable(false);	//RdbAdapterが変更できないのでこれも
+			txtDataSourceClass.setEditable(false); //RdbAdapterが変更できないのでこれも
 			createLableText(lblDataSourceClass, txtDataSourceClass, null, ++row, gridbag, constraints, headerPane);
 
 			JPanel mainPane = new JPanel();
@@ -175,7 +174,6 @@ public class DBConfigMenu extends JMenu {
 			mainPane.setLayout(new BorderLayout());
 			mainPane.add(headerPane, BorderLayout.CENTER);
 			mainPane.add(createFooterPane(), BorderLayout.SOUTH);
-
 
 			getContentPane().add(mainPane, BorderLayout.NORTH);
 
@@ -200,7 +198,7 @@ public class DBConfigMenu extends JMenu {
 
 			constraints.gridx = 0;
 			constraints.gridy = (row * 2);
-			constraints.gridwidth= 1;
+			constraints.gridwidth = 1;
 			constraints.gridheight = 1;
 			gridbag.setConstraints(label, constraints);
 			pane.add(label);
@@ -220,7 +218,7 @@ public class DBConfigMenu extends JMenu {
 			//行余白
 			constraints.gridx = 0;
 			constraints.gridy = (row * 2) + 1;
-			constraints.gridwidth= GridBagConstraints.REMAINDER;
+			constraints.gridwidth = GridBagConstraints.REMAINDER;
 			Box dummy = Box.createHorizontalBox();
 			dummy.setPreferredSize(new Dimension(15, 15));
 			gridbag.setConstraints(dummy, constraints);
@@ -252,27 +250,35 @@ public class DBConfigMenu extends JMenu {
 			ConfigSetting initConfig = new ConfigSetting();
 
 			//Config FileName
-			initConfig.configFileName = BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
+			initConfig.configFileName = BootstrapProps.getInstance()
+					.getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
 			txtConfigFileName.setText(initConfig.configFileName);
 
 			//Rdb Adapter
-			RdbAdapter adapter = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
-			initConfig.rdbAdapterName = adapter.getClass().getSimpleName();
+			RdbAdapter adapter = ServiceRegistry.getRegistry()
+					.getService(RdbAdapterService.class)
+					.getRdbAdapter();
+			initConfig.rdbAdapterName = adapter.getClass()
+					.getSimpleName();
 
 			//Connection Factory
-			ConnectionFactory factory = ServiceRegistry.getRegistry().getService(ConnectionFactory.class);
-			initConfig.connectionFactory = factory.getClass().getSimpleName();
+			ConnectionFactory factory = ServiceRegistry.getRegistry()
+					.getService(ConnectionFactory.class);
+			initConfig.connectionFactory = factory.getClass()
+					.getSimpleName();
 			if (factory instanceof DriverManagerConnectionFactory) {
 				DriverManagerConnectionFactory dmFactory = (DriverManagerConnectionFactory) factory;
 				initConfig.connectionUrl = getDriverUrl(dmFactory);
 
 				Properties properties = getDriverInfo(dmFactory);
-				if (properties.keySet().contains("user")) {
+				if (properties.keySet()
+						.contains("user")) {
 					initConfig.connectionUser = properties.getProperty("user");
 				} else {
 					initConfig.connectionUser = "not found";
 				}
-				if (properties.keySet().contains("driver")) {
+				if (properties.keySet()
+						.contains("driver")) {
 					initConfig.connectionDriver = properties.getProperty("driver");
 				} else {
 					initConfig.connectionDriver = "not found";
@@ -300,24 +306,28 @@ public class DBConfigMenu extends JMenu {
 
 		private String getDriverUrl(DriverManagerConnectionFactory dmFactory) throws Exception {
 			//private フィールドなのでリフレクションでセット
-			Field urlField = dmFactory.getClass().getDeclaredField("url");
+			Field urlField = dmFactory.getClass()
+					.getDeclaredField("url");
 			urlField.setAccessible(true);
-			return (String)urlField.get(dmFactory);
+			return (String) urlField.get(dmFactory);
 		}
 
 		private Properties getDriverInfo(DriverManagerConnectionFactory dmFactory) throws Exception {
 			//private フィールドなのでリフレクションでセット
-			Field infoField = dmFactory.getClass().getDeclaredField("info");
+			Field infoField = dmFactory.getClass()
+					.getDeclaredField("info");
 			infoField.setAccessible(true);
-			return (Properties)infoField.get(dmFactory);
+			return (Properties) infoField.get(dmFactory);
 
 		}
 
 		private String getDataSourceClass(DataSourceConnectionFactory dsFactory) throws Exception {
 			//private フィールドなのでリフレクションでセット
-			Field dataSourceField = dsFactory.getClass().getDeclaredField("dataSource");
+			Field dataSourceField = dsFactory.getClass()
+					.getDeclaredField("dataSource");
 			dataSourceField.setAccessible(true);
-			return ((DataSource)dataSourceField.get(dsFactory)).getClass().getName();
+			return ((DataSource) dataSourceField.get(dsFactory)).getClass()
+					.getName();
 		}
 
 		private static class ConfigSetting {

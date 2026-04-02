@@ -45,24 +45,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ActionMappings({
-	@ActionMapping(name=ReAuthCommand.ACTION_VIEW_RE_AUTH,
-			clientCacheType=ClientCacheType.NO_CACHE,
-			command={},
-			result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_REAUTH)),
-	@ActionMapping(name=ReAuthCommand.ACTION_RE_AUTH,
-			allowMethod=HttpMethodType.POST,
-			clientCacheType=ClientCacheType.NO_CACHE,
-			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.REDIRECT, value="mtp.auth.redirectPath"),
-				@Result(status=ReAuthCommand.CMD_EXEC_EXPIRE, type=Type.DYNAMIC, value="expirePath"),
-				@Result(status=ReAuthCommand.CMD_EXEC_TWOSTEP, type=Type.TEMPLATE, value=Constants.TEMPLATE_VERIFY2ND),
-				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_REAUTH),
-				@Result(exception=ApplicationException.class, type=Type.TEMPLATE, value=Constants.TEMPLATE_REAUTH)
+		@ActionMapping(
+				name = ReAuthCommand.ACTION_VIEW_RE_AUTH,
+				clientCacheType = ClientCacheType.NO_CACHE,
+				command = {},
+				result = @Result(type = Type.TEMPLATE, value = Constants.TEMPLATE_REAUTH)),
+		@ActionMapping(
+				name = ReAuthCommand.ACTION_RE_AUTH,
+				allowMethod = HttpMethodType.POST,
+				clientCacheType = ClientCacheType.NO_CACHE,
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.REDIRECT, value = "mtp.auth.redirectPath"),
+						@Result(status = ReAuthCommand.CMD_EXEC_EXPIRE, type = Type.DYNAMIC, value = "expirePath"),
+						@Result(status = ReAuthCommand.CMD_EXEC_TWOSTEP, type = Type.TEMPLATE, value = Constants.TEMPLATE_VERIFY2ND),
+						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_REAUTH),
+						@Result(exception = ApplicationException.class, type = Type.TEMPLATE, value = Constants.TEMPLATE_REAUTH)
 				}
-	)
+		)
 })
-@CommandClass(name="gem/auth/ReAuthCommand", displayName="再認証処理")
-@Template(name=Constants.TEMPLATE_REAUTH, path=Constants.CMD_RSLT_JSP_REAUTH, contentType="text/html; charset=utf-8")
+@CommandClass(name = "gem/auth/ReAuthCommand", displayName = "再認証処理")
+@Template(name = Constants.TEMPLATE_REAUTH, path = Constants.CMD_RSLT_JSP_REAUTH, contentType = "text/html; charset=utf-8")
 public final class ReAuthCommand implements Command, AuthCommandConstants {
 
 	private static Logger logger = LoggerFactory.getLogger(ReAuthCommand.class);
@@ -73,7 +75,8 @@ public final class ReAuthCommand implements Command, AuthCommandConstants {
 	public static final String CMD_EXEC_EXPIRE = "EXPIRE";
 	public static final String CMD_EXEC_TWOSTEP = "TWOSTEP";
 
-	private AuthManager am = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private AuthManager am = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	private boolean rememberMe(AuthContext authContext) {
 		return false;
@@ -82,7 +85,8 @@ public final class ReAuthCommand implements Command, AuthCommandConstants {
 	@Override
 	public String execute(RequestContext request) {
 		AuthContext authContext = AuthContext.getCurrentContext();
-		String accountId = authContext.getUser().getAccountId();
+		String accountId = authContext.getUser()
+				.getAccountId();
 		String redirectPath = request.getParam(PARAM_BACK_URL);
 
 		boolean remMe = rememberMe(authContext);

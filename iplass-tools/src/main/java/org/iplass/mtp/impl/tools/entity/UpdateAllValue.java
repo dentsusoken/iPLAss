@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.tools.entity;
 import java.io.Serializable;
 import java.util.List;
 
-public class UpdateAllValue  implements Serializable {
+public class UpdateAllValue implements Serializable {
 
 	public enum UpdateAllValueType {
 		LITERAL,
@@ -43,8 +43,9 @@ public class UpdateAllValue  implements Serializable {
 	// ARRAY、ARRAY_INDEXの場合の更新値
 	private List<UpdateAllArrayValue> arrayValues;
 
-	public UpdateAllValue() {}
-	
+	public UpdateAllValue() {
+	}
+
 	public UpdateAllValue(String propertyName, String value, UpdateAllValueType valueType) {
 		this.propertyName = propertyName;
 		this.value = value;

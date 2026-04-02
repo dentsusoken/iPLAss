@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/web/template",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/web/template", prefix="def-template")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/web/template",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/web/template", prefix = "def-template")
+		}
 )
 package org.iplass.mtp.web.template.report.definition;

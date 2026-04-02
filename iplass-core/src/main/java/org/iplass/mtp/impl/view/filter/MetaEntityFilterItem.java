@@ -23,14 +23,14 @@ package org.iplass.mtp.impl.view.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.view.filter.EntityFilterItem;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * Entityのフィルタ設定
@@ -135,7 +135,6 @@ public class MetaEntityFilterItem implements MetaData {
 	public void setLocalizedDisplayNameList(List<MetaLocalizedString> localizedDisplayNameList) {
 		this.localizedDisplayNameList = localizedDisplayNameList;
 	}
-
 
 	@Override
 	public MetaData copy() {

@@ -28,8 +28,9 @@ class SoftConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
 	private static final long serialVersionUID = 1L;
 
 	static private class SoftConcurrentHashMapValue<K, V> extends SoftReference<V> {
-        final K key;
-        SoftConcurrentHashMapValue(K key, V val, ReferenceQueue<V> q) {
+		final K key;
+
+		SoftConcurrentHashMapValue(K key, V val, ReferenceQueue<V> q) {
 			super(val, q);
 			this.key = key;
 		}
@@ -37,7 +38,7 @@ class SoftConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
 
 	private ConcurrentHashMap<K, SoftConcurrentHashMapValue<K, V>> map;
 	private ReferenceQueue<V> refQ;
-	
+
 	SoftConcurrentHashMap() {
 		map = new ConcurrentHashMap<K, SoftConcurrentHashMapValue<K, V>>();
 		refQ = new ReferenceQueue<V>();
@@ -47,7 +48,7 @@ class SoftConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
 		map = new ConcurrentHashMap<K, SoftConcurrentHashMapValue<K, V>>(initialCapacity);
 		refQ = new ReferenceQueue<V>();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void cleanup() {
 		SoftConcurrentHashMapValue<K, V> ref = null;
@@ -60,14 +61,14 @@ class SoftConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
 	public V put(K key, V value) {
 		cleanup();
 		SoftConcurrentHashMapValue<K, V> prev = map.put(key, new SoftConcurrentHashMapValue<K, V>(key, value, refQ));
-		return prev == null? null: prev.get();
+		return prev == null ? null : prev.get();
 	}
 
 	@Override
 	public V putIfAbsent(K key, V value) {
 		cleanup();
 		SoftConcurrentHashMapValue<K, V> prev = map.putIfAbsent(key, new SoftConcurrentHashMapValue<K, V>(key, value, refQ));
-		return prev == null? null: prev.get();
+		return prev == null ? null : prev.get();
 	}
 
 	@Override

@@ -456,7 +456,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @return 重複行をまとめるか
 	 */
 	public boolean isDistinct() {
-	    return distinct;
+		return distinct;
 	}
 
 	/**
@@ -464,7 +464,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @param distinct 重複行をまとめるか
 	 */
 	public void setDistinct(boolean distinct) {
-	    this.distinct = distinct;
+		this.distinct = distinct;
 	}
 
 	/**
@@ -520,7 +520,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @return CSVダウンロード項目
 	 */
 	public String getCsvdownloadProperties() {
-	    return csvdownloadProperties;
+		return csvdownloadProperties;
 	}
 
 	/**
@@ -528,7 +528,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @param csvdownloadProperties CSVダウンロード項目
 	 */
 	public void setCsvdownloadProperties(String csvdownloadProperties) {
-	    this.csvdownloadProperties = csvdownloadProperties;
+		this.csvdownloadProperties = csvdownloadProperties;
 	}
 
 	/**
@@ -536,7 +536,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @return Upload形式のCSVダウンロード項目
 	 */
 	public String getCsvdownloadUploadableProperties() {
-	    return csvdownloadUploadableProperties;
+		return csvdownloadUploadableProperties;
 	}
 
 	/**
@@ -544,7 +544,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @param csvdownloadUploadableProperties Upload形式のCSVダウンロード項目
 	 */
 	public void setCsvdownloadUploadableProperties(String csvdownloadUploadableProperties) {
-	    this.csvdownloadUploadableProperties = csvdownloadUploadableProperties;
+		this.csvdownloadUploadableProperties = csvdownloadUploadableProperties;
 	}
 
 	/**
@@ -584,7 +584,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @return デフォルト検索条件
 	 */
 	public String getDefaultCondition() {
-	    return defaultCondition;
+		return defaultCondition;
 	}
 
 	/**
@@ -592,7 +592,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @param defaultFilter デフォルト検索条件
 	 */
 	public void setDefaultCondition(String defaultFilter) {
-	    this.defaultCondition = defaultFilter;
+		this.defaultCondition = defaultFilter;
 	}
 
 	/**
@@ -600,7 +600,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @return デフォルト検索条件をフィルタ定義と一緒に利用するか
 	 */
 	public boolean isUseDefaultConditionWithFilterDefinition() {
-	    return useDefaultConditionWithFilterDefinition;
+		return useDefaultConditionWithFilterDefinition;
 	}
 
 	/**
@@ -608,7 +608,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @param useDefaultConditionWithFilterDefinition デフォルト検索条件をフィルタ定義と一緒に利用するか
 	 */
 	public void setUseDefaultConditionWithFilterDefinition(boolean useDefaultConditionWithFilterDefinition) {
-	    this.useDefaultConditionWithFilterDefinition = useDefaultConditionWithFilterDefinition;
+		this.useDefaultConditionWithFilterDefinition = useDefaultConditionWithFilterDefinition;
 	}
 
 	/**
@@ -616,7 +616,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @return デフォルトプロパティ条件設定スクリプト
 	 */
 	public String getDefaultPropertyConditionScript() {
-	    return defaultPropertyConditionScript;
+		return defaultPropertyConditionScript;
 	}
 
 	/**
@@ -624,7 +624,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @param defaultPropertyConditionScript デフォルトプロパティ条件設定スクリプト
 	 */
 	public void setDefaultPropertyConditionScript(String defaultPropertyConditionScript) {
-	    this.defaultPropertyConditionScript = defaultPropertyConditionScript;
+		this.defaultPropertyConditionScript = defaultPropertyConditionScript;
 	}
 
 	/**
@@ -635,7 +635,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		if (filterSetting == null) {
 			filterSetting = new ArrayList<>();
 		}
-	    return filterSetting;
+		return filterSetting;
 	}
 
 	/**
@@ -643,7 +643,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @param filterSetting フィルタ設定
 	 */
 	public void setFilterSetting(List<MetaFilterSetting> filterSetting) {
-	    this.filterSetting = filterSetting;
+		this.filterSetting = filterSetting;
 	}
 
 	public void addFilterSetting(MetaFilterSetting setting) {
@@ -658,7 +658,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		if (elements == null) {
 			elements = new ArrayList<>();
 		}
-	    return elements;
+		return elements;
 	}
 
 	/**
@@ -666,7 +666,7 @@ public class MetaSearchConditionSection extends MetaSection {
 	 * @param elements 要素
 	 */
 	public void setElements(List<MetaElement> elements) {
-	    this.elements = elements;
+		this.elements = elements;
 	}
 
 	public List<MetaSortSetting> getSortSetting() {
@@ -726,7 +726,8 @@ public class MetaSearchConditionSection extends MetaSection {
 //				if (p.getPropertyId() != null || p.isBlank()) this.addProperty(p);
 //			}
 //		}
-		if (section.getElements().size() > 0) {
+		if (section.getElements()
+				.size() > 0) {
 			for (Element elem : section.getElements()) {
 				MetaElement e = MetaElement.createInstance(elem);
 				e.applyConfig(elem, definitionId);
@@ -758,7 +759,8 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.csvdownloadFileNameFormat = section.getCsvdownloadFileNameFormat();
 		this.csvMultipleFormat = section.getCsvMultipleFormat();
 
-		if (!section.getSortSetting().isEmpty()) {
+		if (!section.getSortSetting()
+				.isEmpty()) {
 			for (SortSetting setting : section.getSortSetting()) {
 				MetaSortSetting meta = new MetaSortSetting();
 				meta.applyConfig(setting, ctx, handler);
@@ -766,7 +768,8 @@ public class MetaSearchConditionSection extends MetaSection {
 			}
 		}
 
-		if (!section.getFilterSetting().isEmpty()) {
+		if (!section.getFilterSetting()
+				.isEmpty()) {
 			for (FilterSetting setting : section.getFilterSetting()) {
 				MetaFilterSetting meta = new MetaFilterSetting();
 				meta.applyConfig(setting, ctx, handler);
@@ -797,7 +800,8 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setUseDefaultConditionWithFilterDefinition(this.useDefaultConditionWithFilterDefinition);
 		section.setDefaultPropertyConditionScript(this.defaultPropertyConditionScript);
 
-		if (this.getElements().size() > 0) {
+		if (this.getElements()
+				.size() > 0) {
 			for (MetaElement elem : this.getElements()) {
 				Element e = elem.currentConfig(definitionId);
 				//プロパティが無効な場合など、生成できない場合は追加しない
@@ -867,10 +871,12 @@ public class MetaSearchConditionSection extends MetaSection {
 			super(metadata, entityView);
 
 			EntityContext context = EntityContext.getCurrentContext();
-			EntityHandler eh = context.getHandlerById(entityView.getMetaData().getDefinitionId());
+			EntityHandler eh = context.getHandlerById(entityView.getMetaData()
+					.getDefinitionId());
 
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();
-			List<MetaPropertyItem> properties = metadata.getElements().stream()
+			List<MetaPropertyItem> properties = metadata.getElements()
+					.stream()
 					.filter(e -> e instanceof MetaPropertyItem)
 					.map(e -> (MetaPropertyItem) e)
 					.collect(Collectors.toList());
@@ -879,16 +885,17 @@ public class MetaSearchConditionSection extends MetaSection {
 
 				MetaPropertyEditor editor = property.getEditor();
 				if (editor != null) {
-					PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView, formView, property, context, eh);
+					PropertyEditorRuntime runtime = (PropertyEditorRuntime) editor.createRuntime(entityView, formView, property, context, eh);
 					customStyleMap.put(editor.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 					customStyleMap.put(editor.getOutputCustomStyleScriptKey(), runtime.getOutputCustomStyleScript());
 				}
 			}
 			//Script用のKEYを設定
-			metadata.scriptKey = "SearchConditionSection_Style_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+			metadata.scriptKey = "SearchConditionSection_Style_" + GroovyTemplateCompiler.randomName()
+					.replace("-", "_");
 
 			//EntityViewに登録
-			entityView.addCustomStyle(scriptKey , customStyleMap);
+			entityView.addCustomStyle(scriptKey, customStyleMap);
 
 			if (StringUtil.isNotEmpty(defaultCondition)) {
 				PreparedQuery query = new PreparedQuery(defaultCondition);

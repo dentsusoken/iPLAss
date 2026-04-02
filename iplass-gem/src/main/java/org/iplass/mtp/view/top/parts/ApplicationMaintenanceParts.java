@@ -31,12 +31,17 @@ public class ApplicationMaintenanceParts extends TopViewParts {
 	private static final long serialVersionUID = -523731839828453891L;
 
 	/** タイトル */
-	@MultiLang(itemKey = "title", itemGetter = "getTitle", itemSetter = "setTitle", multiLangGetter = "getLocalizedTitleList", multiLangSetter = "setLocalizedTitleList")
+	@MultiLang(
+			itemKey = "title",
+			itemGetter = "getTitle",
+			itemSetter = "setTitle",
+			multiLangGetter = "getLocalizedTitleList",
+			multiLangSetter = "setLocalizedTitleList")
 	private String title;
 
 	/** 多言語設定情報 */
 	private List<LocalizedStringDefinition> localizedTitleList;
-	
+
 	/** 個人アクセストークン機能を利用するか否か */
 	private boolean usePersonalAccessToken;
 
@@ -45,7 +50,7 @@ public class ApplicationMaintenanceParts extends TopViewParts {
 	 * @return タイトル
 	 */
 	public String getTitle() {
-	    return title;
+		return title;
 	}
 
 	/**
@@ -53,7 +58,7 @@ public class ApplicationMaintenanceParts extends TopViewParts {
 	 * @param title タイトル
 	 */
 	public void setTitle(String title) {
-	    this.title = title;
+		this.title = title;
 	}
 
 	/**
@@ -83,7 +88,7 @@ public class ApplicationMaintenanceParts extends TopViewParts {
 	public void setLocalizedTitleList(List<LocalizedStringDefinition> localizedTitleList) {
 		this.localizedTitleList = localizedTitleList;
 	}
-	
+
 	/**
 	 * 個人アクセストークン機能を利用の有無を示すフラグを取得します。
 	 * @return usePersonalAccessToken 個人アクセストークン機能を利用の有無を示すフラグ

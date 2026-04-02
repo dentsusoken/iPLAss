@@ -21,8 +21,9 @@
 package org.iplass.mtp.impl.cache.store.keyresolver;
 
 public interface CacheKeyResolver {
-	
+
 	public String toString(Object cacheKey);
+
 	public Object toCacheKey(String cacheKeyString);
 
 }

@@ -24,15 +24,15 @@ import org.iplass.mtp.impl.datastore.grdb.strategy.metadata.LockStatus;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class SchemaControlHandleLockSql extends UpdateSqlHandler {
-	
+
 	public String toSql(int tenantId, String defId, int ver, LockStatus fromLockStatus, LockStatus toLockStatus, RdbAdapter rdb) {
-		
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE SCHEMA_CTRL SET LOCK_STATUS='");
 		appendLockStatus(sb, toLockStatus);
-		sb.append("' WHERE TENANT_ID=").append(tenantId);
+		sb.append("' WHERE TENANT_ID=")
+				.append(tenantId);
 		sb.append(" AND OBJ_DEF_ID='");
 		sb.append(rdb.sanitize(defId));
 		sb.append("' AND OBJ_DEF_VER=");
@@ -40,10 +40,10 @@ public class SchemaControlHandleLockSql extends UpdateSqlHandler {
 		sb.append(" AND LOCK_STATUS='");
 		appendLockStatus(sb, fromLockStatus);
 		sb.append("'");
-		
+
 		return sb.toString();
 	}
-	
+
 	static void appendLockStatus(StringBuilder sb, LockStatus lockStatus) {
 		if (lockStatus == LockStatus.NO_LOCK) {
 			sb.append("0");

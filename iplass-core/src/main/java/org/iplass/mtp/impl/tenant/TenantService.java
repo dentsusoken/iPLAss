@@ -39,7 +39,7 @@ public class TenantService implements Service {
 	//FIXME TenantServiceとMetaTenantServiceの統合
 
 	private TenantStore store;
-	
+
 	@Override
 	public void init(Config config) {
 		store = config.getValueWithSupplier("store", TenantStore.class, () -> new RdbTenantStore());
@@ -88,12 +88,14 @@ public class TenantService implements Service {
 	 * @param tenant テナント情報
 	 */
 	public void updateTenant(final Tenant tenant) {
-		updateTenant(tenant, ExecuteContext.getCurrentContext().getClientId());
+		updateTenant(tenant, ExecuteContext.getCurrentContext()
+				.getClientId());
 	}
 
 	public void updateTenant(Tenant tenant, String updateId) {
 		updateTenant(tenant, updateId, false);
 	}
+
 	/**
 	 * テナントを更新する。<br>
 	 * 基本情報は更新できない(ID,HostName,URLは変更できない。)

@@ -59,7 +59,8 @@ public abstract class PermissionListGrid extends MtpListGrid implements Permissi
 	 * @param roleCode 対象ロールコード
 	 * @param roleIndex 対象ロールIndex
 	 */
-	protected abstract void removeRolePermission(PermissionListGridRecord record, int rowNum, int colNum, String defName, String roleCode, int roleIndex);
+	protected abstract void removeRolePermission(PermissionListGridRecord record, int rowNum, int colNum, String defName, String roleCode,
+			int roleIndex);
 
 	/**
 	 * <p>Permission編集ダイアログ表示処理</p>
@@ -73,7 +74,8 @@ public abstract class PermissionListGrid extends MtpListGrid implements Permissi
 	 * @param roleIndex 対象ロールIndex
 	 * @param dialog ダイアログ
 	 */
-	protected abstract void showRolePermissionEditDialog(PermissionListGridRecord record, String defName, String roleCode, int roleIndex, PermissionEditDialog dialog);
+	protected abstract void showRolePermissionEditDialog(PermissionListGridRecord record, String defName, String roleCode, int roleIndex,
+			PermissionEditDialog dialog);
 
 	/**
 	 * <p>Permission編集ダイアログ結果反映処理</p>
@@ -88,8 +90,8 @@ public abstract class PermissionListGrid extends MtpListGrid implements Permissi
 	 * @param roleIndex 対象ロールIndex
 	 * @param event 変更イベント
 	 */
-	protected abstract void applyEditRolePermission(PermissionListGridRecord record, int rowNum, int colNum, String defName, String roleCode, int roleIndex, DataChangedEvent event);
-
+	protected abstract void applyEditRolePermission(PermissionListGridRecord record, int rowNum, int colNum, String defName, String roleCode,
+			int roleIndex, DataChangedEvent event);
 
 	public PermissionListGrid(PermissionListGridDS ds, final Menu contextMenu) {
 		this.ds = ds;
@@ -126,11 +128,11 @@ public abstract class PermissionListGrid extends MtpListGrid implements Permissi
 					return;
 				}
 
-				final PermissionListGridRecord record = (PermissionListGridRecord)event.getRecord();
+				final PermissionListGridRecord record = (PermissionListGridRecord) event.getRecord();
 
 				if (colNum == 1) {
 					//名前選択(全ロール対象)
-					contextMenu.setItems(new MenuItem[]{createDefinitionContextMenu(record, rowNum)});
+					contextMenu.setItems(new MenuItem[] { createDefinitionContextMenu(record, rowNum) });
 
 				} else {
 					//個別ロール選択
@@ -153,7 +155,7 @@ public abstract class PermissionListGrid extends MtpListGrid implements Permissi
 				}
 
 				//編集処理
-				PermissionListGridRecord record = (PermissionListGridRecord)event.getRecord();
+				PermissionListGridRecord record = (PermissionListGridRecord) event.getRecord();
 				editPermission(record, rowNum, colNum);
 			}
 		});
@@ -161,13 +163,13 @@ public abstract class PermissionListGrid extends MtpListGrid implements Permissi
 		setDataSource(ds);
 
 		setHeaderSpans(ds.getHeaderSpan());
-		setHeaderHeight(44);	//デフォルト × 2
+		setHeaderHeight(44); //デフォルト × 2
 
 		setFields(ds.getListGridField());
 	}
 
 	@Override
-    protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
+	protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
 		// grid.setBaseStyleだとセルの高さが不安定になる為ここで指定。
 
 		//行番号、名前列は無視
@@ -175,7 +177,7 @@ public abstract class PermissionListGrid extends MtpListGrid implements Permissi
 			return CELL_STYLE_DEFAULT;
 		}
 
-		PermissionListGridRecord precord = (PermissionListGridRecord)record;
+		PermissionListGridRecord precord = (PermissionListGridRecord) record;
 		int roleIndex = ds.getColRoleCodeIndex(colNum);
 
 		if (ds.isDeletingPermission(precord, roleIndex)) {
@@ -246,7 +248,7 @@ public abstract class PermissionListGrid extends MtpListGrid implements Permissi
 		});
 		delPermissionMenu.setEnabled(ds.canDeletePermission(record, roleIndex));
 
-		return new MenuItem[]{editPermissionMenu, delPermissionMenu};
+		return new MenuItem[] { editPermissionMenu, delPermissionMenu };
 	}
 
 	/**

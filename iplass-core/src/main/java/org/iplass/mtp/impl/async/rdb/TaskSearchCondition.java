@@ -30,16 +30,16 @@ public class TaskSearchCondition {
 	private Long taskId;
 	private TaskStatus status;
 	private boolean withHistory;
-	
+
 	private String groupingKey;
 	private Integer retryCount;//以上をひっかける
 	private Boolean returnResult;
-	
+
 	private Timestamp updateDate;//以前をひっかける
-	
+
 	private Integer limit;
 	private Integer offset;
-	
+
 	public boolean hasCond() {
 		if (tenantId != null
 				|| queueId != null
@@ -54,7 +54,7 @@ public class TaskSearchCondition {
 			return false;
 		}
 	}
-	
+
 	public Timestamp getUpdateDate() {
 		return updateDate;
 	}
@@ -62,7 +62,7 @@ public class TaskSearchCondition {
 	public void setUpdateDate(Timestamp updateDate) {
 		this.updateDate = updateDate;
 	}
-	
+
 	public String getGroupingKey() {
 		return groupingKey;
 	}
@@ -90,42 +90,55 @@ public class TaskSearchCondition {
 	public Integer getLimit() {
 		return limit;
 	}
+
 	public void setLimit(Integer limit) {
 		this.limit = limit;
 	}
+
 	public Integer getOffset() {
 		return offset;
 	}
+
 	public void setOffset(Integer offset) {
 		this.offset = offset;
 	}
+
 	public Integer getTenantId() {
 		return tenantId;
 	}
+
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
+
 	public Integer getQueueId() {
 		return queueId;
 	}
+
 	public void setQueueId(Integer queueId) {
 		this.queueId = queueId;
 	}
+
 	public Long getTaskId() {
 		return taskId;
 	}
+
 	public void setTaskId(Long taskId) {
 		this.taskId = taskId;
 	}
+
 	public TaskStatus getStatus() {
 		return status;
 	}
+
 	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
+
 	public boolean isWithHistory() {
 		return withHistory;
 	}
+
 	public void setWithHistory(boolean withHistory) {
 		this.withHistory = withHistory;
 	}

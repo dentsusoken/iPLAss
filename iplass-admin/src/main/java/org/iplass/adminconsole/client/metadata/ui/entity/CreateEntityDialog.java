@@ -57,9 +57,9 @@ public class CreateEntityDialog extends MetaDataCreateDialog {
 		if (isCopyMode) {
 			setHeight(DEFAULT_HEIGHT + 120);
 
-			copyEntityView = new CheckboxItem("copyEntityView", "copy entity view (Search and Detail)") ;
-			copyEntityFilter = new CheckboxItem("copyEntityFilter", "copy entity filter") ;
-			copyEntityWebAPI = new CheckboxItem("copyEntityWebAPI", "copy entity webapi") ;
+			copyEntityView = new CheckboxItem("copyEntityView", "copy entity view (Search and Detail)");
+			copyEntityFilter = new CheckboxItem("copyEntityFilter", "copy entity filter");
+			copyEntityWebAPI = new CheckboxItem("copyEntityWebAPI", "copy entity webapi");
 
 			DynamicForm copyForm = createDefaultForm();
 			copyForm.setIsGroup(true);
@@ -90,7 +90,8 @@ public class CreateEntityDialog extends MetaDataCreateDialog {
 		if (isCopyMode) {
 			service.copyEntityDefinition(TenantInfoHolder.getId(), getSourceName(),
 					saveInfo.getName(), saveInfo.getDisplayName(), saveInfo.getDescription(),
-					SmartGWTUtil.getBooleanValue(copyEntityView), SmartGWTUtil.getBooleanValue(copyEntityFilter), SmartGWTUtil.getBooleanValue(copyEntityWebAPI),
+					SmartGWTUtil.getBooleanValue(copyEntityView), SmartGWTUtil.getBooleanValue(copyEntityFilter),
+					SmartGWTUtil.getBooleanValue(copyEntityWebAPI),
 					new SaveResultCallback());
 
 		} else {

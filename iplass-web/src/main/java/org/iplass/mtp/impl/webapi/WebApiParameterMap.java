@@ -30,7 +30,7 @@ public class WebApiParameterMap {
 
 	private List<WebApiParameter> params;
 
-	@XmlElement(name="param")
+	@XmlElement(name = "param")
 	public List<WebApiParameter> getParams() {
 		return params;
 	}

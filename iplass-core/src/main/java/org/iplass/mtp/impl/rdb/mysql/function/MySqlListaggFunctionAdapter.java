@@ -45,17 +45,21 @@ public class MySqlListaggFunctionAdapter extends ListaggFunctionAdapter {
 			context.append("DISTINCT ");
 		}
 		context.appendArgument(function.getValue());
-		
+
 		if (function.getWithinGroup() != null) {
 			context.append(" ORDER BY ");
-			for (int i = 0; i < function.getWithinGroup().getSortSpecList().size(); i++) {
+			for (int i = 0; i < function.getWithinGroup()
+					.getSortSpecList()
+					.size(); i++) {
 				if (i > 0) {
 					context.append(",");
 				}
-				toOrderBySpecSQL(context, function.getWithinGroup().getSortSpecList().get(i));
+				toOrderBySpecSQL(context, function.getWithinGroup()
+						.getSortSpecList()
+						.get(i));
 			}
 		}
-		
+
 		if (function.getSeparator() != null) {
 			context.append(" SEPARATOR ");
 			context.appendArgument(function.getSeparator());
@@ -65,9 +69,9 @@ public class MySqlListaggFunctionAdapter extends ListaggFunctionAdapter {
 			context.append("'");
 		}
 		context.append(")");
-		
+
 	}
-	
+
 	@Override
 	protected void toOrderBySpecSQL(FunctionContext context, WithinGroupSortSpec ss) {
 		if (ss.getNullOrderingSpec() != null) {
@@ -97,7 +101,7 @@ public class MySqlListaggFunctionAdapter extends ListaggFunctionAdapter {
 			}
 		}
 	}
-	
+
 	/**
 	 * GROUP_CONCAT(args[0] args[1] ORDER BY args[3] SEPARATOR 'args[2]')
 	 */
@@ -107,19 +111,19 @@ public class MySqlListaggFunctionAdapter extends ListaggFunctionAdapter {
 		if (args.size() != 4) {
 			throw new QueryException("LISTAGG argment mismatch.");
 		}
-		
+
 		context.append("GROUP_CONCAT(");
 		if (args.get(0) != null) {
 			context.append(args.get(0));
 			context.append(" ");
 		}
 		context.append(args.get(1));
-		
+
 		if (args.get(3) != null) {
 			context.append(" ORDER BY ");
 			context.append(args.get(3));
 		}
-		
+
 		if (args.get(2) != null) {
 			context.append(" SEPARATOR '");
 			context.append(args.get(2));

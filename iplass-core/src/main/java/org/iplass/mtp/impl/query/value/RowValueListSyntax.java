@@ -33,9 +33,8 @@ import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
-
 public class RowValueListSyntax implements Syntax<RowValueList>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 
 	@Override
@@ -45,13 +44,13 @@ public class RowValueListSyntax implements Syntax<RowValueList>, QueryConstants 
 
 	@Override
 	public RowValueList parse(ParseContext str) throws ParseException {
-		
+
 		if (!str.startsWith(LEFT_PAREN)) {
 			throw new ParseException(new EvalError("( expected.", this, str));
 		}
 		str.consumeChars(LEFT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		List<ValueExpression> rowValues = new ArrayList<ValueExpression>();
 		boolean isFirst = true;
 		while (!str.startsWith(RIGHT_PAREN) && !str.isEnd()) {
@@ -67,17 +66,17 @@ public class RowValueListSyntax implements Syntax<RowValueList>, QueryConstants 
 			rowValues.add(polynomial.parse(str));
 			str.consumeChars(ParseContext.WHITE_SPACES);
 		}
-		
+
 		if (!str.startsWith(RIGHT_PAREN)) {
 			throw new ParseException(new EvalError(") expected.", this, str));
 		}
 		str.consumeChars(RIGHT_PAREN.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (rowValues.size() < 2) {
 			throw new ParseException(new EvalError("row value list expression must have at least two row value .", this, str));
 		}
-		
+
 		RowValueList rowValueList = new RowValueList();
 		rowValueList.setRowValues(rowValues);
 		return rowValueList;

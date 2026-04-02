@@ -147,7 +147,8 @@ public class MetaTenantI18nInfo extends MetaTenantConfig<TenantI18nInfo> {
 		public MetaTenantI18nInfoRuntime() {
 
 			try {
-				I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
+				I18nService i18n = ServiceRegistry.getRegistry()
+						.getService(I18nService.class);
 				if (locale != null) {
 					localeRuntime = I18nUtil.getLocale(locale);
 				} else {

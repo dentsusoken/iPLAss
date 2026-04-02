@@ -49,7 +49,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 @TenantName("testDemo1")
-@AuthUser(userId="testuser", password="testtest")
+@AuthUser(userId = "testuser", password = "testtest")
 @ExtendWith(MTPJUnitTestExtension.class)
 class SampleJavaTest {
 
@@ -65,7 +65,8 @@ class SampleJavaTest {
 		req.setParam("accountId", "testuser");
 
 		//if test upload file, use TestUploadFileHandle
-		File upFile = Files.createFile(Paths.get(tempFolder.toString(), "upFile.txt")).toFile();
+		File upFile = Files.createFile(Paths.get(tempFolder.toString(), "upFile.txt"))
+				.toFile();
 		TestUploadFileHandle uh = new TestUploadFileHandle(upFile, "upFile.txt", "text/plain");
 		req.setParam("upFile", uh);
 
@@ -75,7 +76,8 @@ class SampleJavaTest {
 
 		@SuppressWarnings("unchecked")
 		SearchResult<Entity> res = (SearchResult<Entity>) req.getAttribute("res");
-		assertEquals("testuser", res.getFirst().getValue(User.ACCOUNT_ID));
+		assertEquals("testuser", res.getFirst()
+				.getValue(User.ACCOUNT_ID));
 	}
 
 	@Test
@@ -83,7 +85,9 @@ class SampleJavaTest {
 
 		//Create and set mock
 		EntityManager mock = (EntityManager) Proxy.newProxyInstance(
-				Thread.currentThread().getContextClassLoader(), new Class<?>[]{EntityManager.class},
+				Thread.currentThread()
+						.getContextClassLoader(),
+				new Class<?>[] { EntityManager.class },
 				(proxy, method, args) -> {
 					return null;
 				});
@@ -106,11 +110,11 @@ class SampleJavaTest {
 			req.setParam("accountId", "testuser");
 			MTPTest.invokeCommand(COMMAND_NAME, req);
 
-
 			//if you need to transaction-ed test code, use MTPTest#transaction
 			MTPTest.transaction(() -> {
 
-				EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+				EntityManager em = ManagerLocator.getInstance()
+						.getManager(EntityManager.class);
 				Group g = new Group();
 				g.setCode("testGroup");
 				em.insert(g);
@@ -120,11 +124,12 @@ class SampleJavaTest {
 	}
 
 	@Test
-	@AuthUser(userId="testuser2", password="testtest")
+	@AuthUser(userId = "testuser2", password = "testtest")
 	void runAnotherUser() {
 
 		AuthContext auth = AuthContext.getCurrentContext();
-		assertEquals("testuser2", auth.getUser().getAccountId());
+		assertEquals("testuser2", auth.getUser()
+				.getAccountId());
 	}
 
 	@Test
@@ -137,7 +142,7 @@ class SampleJavaTest {
 
 	@Test
 	@TenantName("testDemo2")
-	@AuthUser(userId="test", password="testtest")
+	@AuthUser(userId = "test", password = "testtest")
 	void runAnotherTenant() {
 		TestRequestContext req = new TestRequestContext();
 		req.setParam("accountId", "test");
@@ -148,7 +153,8 @@ class SampleJavaTest {
 
 		@SuppressWarnings("unchecked")
 		SearchResult<Entity> res = (SearchResult<Entity>) req.getAttribute("res");
-		assertEquals("test", res.getFirst().getValue(User.ACCOUNT_ID));
+		assertEquals("test", res.getFirst()
+				.getValue(User.ACCOUNT_ID));
 	}
 
 }

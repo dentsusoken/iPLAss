@@ -60,17 +60,19 @@ public class RequestTypePane extends HLayout {
 		form.setWidth100();
 		form.setHeight(30);
 		form.setNumCols(RequestType.values().length * 2 + 1);
-		form.setTitleWidth(0);	//チェックボックスを左に寄せるため。
+		form.setTitleWidth(0); //チェックボックスを左に寄せるため。
 		form.setCellPadding(0);
 
 		requestTypeItems = new LinkedHashMap<>();
 		for (RequestType type : RequestType.values()) {
 			CheckboxItem chkType = new CheckboxItem();
-			chkType.setTitle(type.name().replaceAll("_", " "));
+			chkType.setTitle(type.name()
+					.replaceAll("_", " "));
 			chkType.setWidth(50);
 			requestTypeItems.put(type, chkType);
 		}
-		form.setItems(requestTypeItems.values().toArray(new CheckboxItem[0]));
+		form.setItems(requestTypeItems.values()
+				.toArray(new CheckboxItem[0]));
 
 		addMember(caption);
 		addMember(form);
@@ -102,11 +104,13 @@ public class RequestTypePane extends HLayout {
 		if (definition.getAccepts() != null) {
 			for (RequestType type : definition.getAccepts()) {
 				if (requestTypeItems.containsKey(type)) {
-					requestTypeItems.get(type).setValue(true);
+					requestTypeItems.get(type)
+							.setValue(true);
 				}
 			}
 		}
 	}
+
 	/**
 	 * タイプ変更イベントを設定します。
 	 * @param handler
@@ -117,6 +121,7 @@ public class RequestTypePane extends HLayout {
 		}
 
 	}
+
 	/**
 	 * 選択されているタイプを返します。
 	 * @return

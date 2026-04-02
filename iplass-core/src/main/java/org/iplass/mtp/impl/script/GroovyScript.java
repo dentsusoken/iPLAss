@@ -25,7 +25,6 @@ import org.codehaus.groovy.GroovyBugError;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 
-
 public class GroovyScript implements Script {
 
 	static final String CODE_BASE = "/groovy/script";
@@ -90,7 +89,5 @@ public class GroovyScript implements Script {
 		//FIXME GroovyClassLoaderから自身の削除（sharedClassLoaderで、Scriptの場合だけか？）
 		super.finalize();
 	}
-
-
 
 }

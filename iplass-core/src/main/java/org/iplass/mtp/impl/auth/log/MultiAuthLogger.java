@@ -26,7 +26,7 @@ import org.iplass.mtp.impl.auth.UserContext;
 import org.iplass.mtp.spi.Config;
 
 public class MultiAuthLogger extends AuthLoggerBase {
-	
+
 	private AuthLogger[] logger;
 
 	public AuthLogger[] getLogger() {
@@ -48,7 +48,7 @@ public class MultiAuthLogger extends AuthLoggerBase {
 	@Override
 	public void loginFail(Credential credential, Exception e) {
 		if (logger != null) {
-			for (AuthLogger l: logger) {
+			for (AuthLogger l : logger) {
 				l.loginFail(credential, e);
 			}
 		}
@@ -57,7 +57,7 @@ public class MultiAuthLogger extends AuthLoggerBase {
 	@Override
 	public void loginLocked(Credential credential) {
 		if (logger != null) {
-			for (AuthLogger l: logger) {
+			for (AuthLogger l : logger) {
 				l.loginLocked(credential);
 			}
 		}
@@ -66,7 +66,7 @@ public class MultiAuthLogger extends AuthLoggerBase {
 	@Override
 	public void loginSuccess(UserContext user) {
 		if (logger != null) {
-			for (AuthLogger l: logger) {
+			for (AuthLogger l : logger) {
 				l.loginSuccess(user);
 			}
 		}
@@ -75,7 +75,7 @@ public class MultiAuthLogger extends AuthLoggerBase {
 	@Override
 	public void loginPasswordExpired(Credential credential) {
 		if (logger != null) {
-			for (AuthLogger l: logger) {
+			for (AuthLogger l : logger) {
 				l.loginPasswordExpired(credential);
 			}
 		}
@@ -84,7 +84,7 @@ public class MultiAuthLogger extends AuthLoggerBase {
 	@Override
 	public void updatePasswordSuccess(Credential credential) {
 		if (logger != null) {
-			for (AuthLogger l: logger) {
+			for (AuthLogger l : logger) {
 				l.updatePasswordSuccess(credential);
 			}
 		}
@@ -94,7 +94,7 @@ public class MultiAuthLogger extends AuthLoggerBase {
 	public void updatePasswordFail(Credential credential,
 			CredentialUpdateException e) {
 		if (logger != null) {
-			for (AuthLogger l: logger) {
+			for (AuthLogger l : logger) {
 				l.updatePasswordFail(credential, e);
 			}
 		}
@@ -103,7 +103,7 @@ public class MultiAuthLogger extends AuthLoggerBase {
 	@Override
 	public void resetPasswordSuccess(Credential credential) {
 		if (logger != null) {
-			for (AuthLogger l: logger) {
+			for (AuthLogger l : logger) {
 				l.resetPasswordSuccess(credential);
 			}
 		}

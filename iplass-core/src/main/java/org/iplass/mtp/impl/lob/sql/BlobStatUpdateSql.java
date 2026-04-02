@@ -24,32 +24,50 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
 public class BlobStatUpdateSql extends UpdateSqlHandler {
-	
+
 	public String toSql(int tenantId, long lobId, String defId, String propId,
 			String oid, Long version, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE " + ObjBlobTable.TABLE_NAME + " SET ");
 		sb.append(ObjBlobTable.LOB_STAT + "='V'," + ObjBlobTable.SESS_ID + "=null,");
-		sb.append(ObjBlobTable.UP_DATE + "=").append(rdb.systimestamp()).append(",");
-		sb.append(ObjBlobTable.OBJ_DEF_ID + "='").append(rdb.sanitize(defId)).append("',");
-		sb.append(ObjBlobTable.PROP_DEF_ID + "='").append(rdb.sanitize(propId)).append("',");
-		sb.append(ObjBlobTable.OBJ_ID + "='").append(rdb.sanitize(oid)).append("',");
-		sb.append(ObjBlobTable.OBJ_VER + "=").append(version);
-		sb.append(" WHERE " + ObjBlobTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjBlobTable.LOB_ID + "=").append(lobId);
+		sb.append(ObjBlobTable.UP_DATE + "=")
+				.append(rdb.systimestamp())
+				.append(",");
+		sb.append(ObjBlobTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(defId))
+				.append("',");
+		sb.append(ObjBlobTable.PROP_DEF_ID + "='")
+				.append(rdb.sanitize(propId))
+				.append("',");
+		sb.append(ObjBlobTable.OBJ_ID + "='")
+				.append(rdb.sanitize(oid))
+				.append("',");
+		sb.append(ObjBlobTable.OBJ_VER + "=")
+				.append(version);
+		sb.append(" WHERE " + ObjBlobTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjBlobTable.LOB_ID + "=")
+				.append(lobId);
 		return sb.toString();
 	}
-	
+
 	public String toInfoUpdateSql(int tenantId, long lobId, String name, String type, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE " + ObjBlobTable.TABLE_NAME + " SET ");
-		sb.append(ObjBlobTable.UP_DATE + "=").append(rdb.systimestamp()).append(",");
-		sb.append(ObjBlobTable.LOB_NAME + "='").append(rdb.sanitize(name)).append("',");
-		sb.append(ObjBlobTable.LOB_TYPE + "='").append(rdb.sanitize(type)).append("'");
-		sb.append(" WHERE " + ObjBlobTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjBlobTable.LOB_ID + "=").append(lobId);
+		sb.append(ObjBlobTable.UP_DATE + "=")
+				.append(rdb.systimestamp())
+				.append(",");
+		sb.append(ObjBlobTable.LOB_NAME + "='")
+				.append(rdb.sanitize(name))
+				.append("',");
+		sb.append(ObjBlobTable.LOB_TYPE + "='")
+				.append(rdb.sanitize(type))
+				.append("'");
+		sb.append(" WHERE " + ObjBlobTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjBlobTable.LOB_ID + "=")
+				.append(lobId);
 		return sb.toString();
 	}
-	
 
 }

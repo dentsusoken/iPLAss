@@ -24,17 +24,16 @@ import java.util.List;
 
 import org.iplass.mtp.impl.entity.EntityContext;
 
-
 public interface ComplexWrapperTypeLoadAdapter {
-	
+
 	public void setContext(EntityContext context);
-	
+
 	public void nextCalled(List<Object> values);
-	
+
 	public Object toComplexWrapperTypeValue(Object value);
-	
+
 	public Object[] newComplexWrapperTypeArray(int size);
 
 	public void close();
-	
+
 }
